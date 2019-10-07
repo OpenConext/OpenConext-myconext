@@ -1,0 +1,10 @@
+SSO URL -> Land on server
+1) Extract SAML request and store in mongoDB
+2) Redirect to client
+3) Ask for email address or phone
+4) Send magic-link or SMS depending on choice
+
+sms 5) if SMS then show code input
+sms 6) post code to server and return JSON contains the SAML parameters and the address to submit these too
+
+email 6) request for magic-link is clicked and picked up server side. Fetch the SAML request, create a response and post back
