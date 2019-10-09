@@ -1,10 +1,12 @@
 import { h, Component } from 'preact';
 import style from './style';
+import {user} from "../../api";
 
 export default class Profile extends Component {
 	state = {
 		time: Date.now(),
-		count: 10
+		count: 10,
+		user: {}
 	};
 
 	// update the current time
@@ -20,6 +22,7 @@ export default class Profile extends Component {
 	componentDidMount() {
 		// start a timer for the clock:
 		this.timer = setInterval(this.updateTime, 1000);
+		user().then(json => this.setState({user: json}));
 	}
 
 	// gets called just before navigating away from the route
@@ -28,11 +31,13 @@ export default class Profile extends Component {
 	}
 
 	// Note: `user` comes from the URL, courtesy of our router
-	render({ user }, { time, count }) {
+	render({ name }, { time, count, user }) {
 		return (
 			<div class={style.profile}>
-				<h1>Profile: {user}</h1>
-				<p>This is the user profile for a user named { user }.</p>
+				<h1>Profile: {user.name}</h1>
+				<p>This is the user profile for a user named { name }.</p>
+
+				<p>This is the user profile for a user named { user.name }.</p>
 
 				<div>Current time: {new Date(time).toLocaleString()}</div>
 

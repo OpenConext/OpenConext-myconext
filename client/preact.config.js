@@ -1,8 +1,8 @@
 export default (config, env, helpers) => {
     config.devServer.proxy = [
         {
-            path: '/api/**',
-            target: 'http://localhost:8080/',
+            path: '/surfid/api/**',
+            target: 'http://localhost:8081/',
         }
     ];
 }

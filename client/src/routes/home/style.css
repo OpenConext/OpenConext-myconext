@@ -30,8 +30,7 @@
 	margin-top: auto;
 }
 
-.button {
+.buttons {
 	display: inline-block;
 	margin: auto 15px 15px auto;
-	width: 125px;
 }
