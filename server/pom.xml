@@ -41,10 +41,11 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
-<!--        <dependency>-->
-<!--            <groupId>org.springframework.boot</groupId>-->
-<!--            <artifactId>spring-boot-starter-security</artifactId>-->
-<!--        </dependency>-->
+        <dependency>
+            <groupId>org.springframework.security.extensions</groupId>
+            <artifactId>spring-security-saml2-core</artifactId>
+            <version>2.0.0.M30</version>
+        </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-mail</artifactId>
@@ -67,6 +68,21 @@
             <groupId>com.github.mongobee</groupId>
             <artifactId>mongobee</artifactId>
             <version>0.13</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.mongodb</groupId>
+                    <artifactId>mongo-java-driver</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.springframework</groupId>
+                    <artifactId>spring-beans</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.springframework</groupId>
+                    <artifactId>spring-context</artifactId>
+                </exclusion>
+            </exclusions>
+
         </dependency>
         <dependency>
             <groupId>com.sun.mail</groupId>
@@ -156,7 +172,7 @@
             <plugin>
                 <groupId>org.jacoco</groupId>
                 <artifactId>jacoco-maven-plugin</artifactId>
-                <version>0.8.0</version>
+                <version>0.8.4</version>
                 <executions>
                     <execution>
                         <goals>
@@ -177,7 +193,7 @@
             <extension>
                 <groupId>org.apache.maven.wagon</groupId>
                 <artifactId>wagon-webdav-jackrabbit</artifactId>
-                <version>3.0.0</version>
+                <version>3.3.3</version>
             </extension>
         </extensions>
     </build>
@@ -187,35 +203,24 @@
                 <enabled>true</enabled>
             </snapshots>
             <releases>
-                <enabled>false</enabled>
-            </releases>
-            <id>openconext-snapshots</id>
-            <name>OpenConext public snapshot repository</name>
-            <url>https://build.openconext.org/repository/public/snapshots</url>
-        </repository>
-        <repository>
-            <snapshots>
-                <enabled>false</enabled>
-            </snapshots>
-            <releases>
-                <enabled>true</enabled>
-                <updatePolicy>never</updatePolicy>
-            </releases>
-            <id>openconext-releases</id>
-            <name>OpenConext public releases repository</name>
-            <url>https://build.openconext.org/repository/public/releases</url>
-        </repository>
-        <repository>
-            <id>openconext-third-party-releases</id>
-            <name>OpenConext third-party repository</name>
-            <url>https://build.openconext.org/repository/public/third-party</url>
-            <snapshots>
-                <enabled>false</enabled>
-            </snapshots>
-            <releases>
                 <enabled>true</enabled>
             </releases>
+            <id>spring-milestones</id>
+            <name>spring-milestones</name>
+            <url>https://repo.spring.io/milestone/</url>
         </repository>
     </repositories>
+    <distributionManagement>
+        <repository>
+            <id>openconext-releases</id>
+            <name>OpenConext public releases repository</name>
+            <url>dav:https://build.openconext.org/repository/public/releases</url>
+        </repository>
+        <snapshotRepository>
+            <id>openconext-snapshots</id>
+            <name>OpenConext public snapshot repository</name>
+            <url>dav:https://build.openconext.org/repository/public/snapshots</url>
+        </snapshotRepository>
+    </distributionManagement>
 
 </project>

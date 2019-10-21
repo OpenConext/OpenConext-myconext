@@ -1,2 +1,14 @@
+logging:
+  level:
+    org.springframework.data.mongodb: INFO
+    org.springframework.security: DEBUG
+
 server:
   port: 8081
+
+mongodb_db: surf_id_test
+
+spring:
+  data:
+    mongodb:
+      uri: mongodb://127.0.0.1:27017/${mongodb_db}
