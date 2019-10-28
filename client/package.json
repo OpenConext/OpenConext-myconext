@@ -3,37 +3,25 @@
   "name": "surfid",
   "version": "0.0.1",
   "license": "MIT",
-  "scripts": {
-    "start": "per-env",
-    "start:production": "npm run -s serve",
-    "start:development": "npm run -s dev",
-    "build": "preact build",
-    "serve": "preact build && preact serve",
-    "dev": "preact watch",
-    "lint": "eslint src",
-    "test": "jest"
-  },
-  "eslintConfig": {
-    "extends": "eslint-config-synacor"
-  },
-  "eslintIgnore": [
-    "build/*"
-  ],
   "devDependencies": {
-    "eslint": "^4.9.0",
-    "eslint-config-synacor": "^2.0.2",
-    "jest": "^24.9.0",
-    "jest-preset-preact": "^1.0.0",
-    "per-env": "^1.0.2",
-    "preact-cli": "^3.0.0-rc.6",
-    "preact-render-spy": "^1.2.1"
+    "cross-env": "^6.0.3",
+    "css-loader": "^3.2.0",
+    "mini-css-extract-plugin": "^0.8.0",
+    "serve": "^11.2.0",
+    "style-loader": "^1.0.0",
+    "svelte": "^3.12.1",
+    "svelte-loader": "2.13.6",
+    "webpack": "^4.41.2",
+    "webpack-cli": "^3.3.9",
+    "webpack-dev-server": "^3.9.0"
+  },
+  "scripts": {
+    "build": "cross-env NODE_ENV=production webpack",
+    "dev": "webpack-dev-server --content-base public"
   },
   "dependencies": {
+    "emotion": "^10.0.17",
     "i18n-js": "^3.3.0",
-    "js-cookie": "^2.2.1",
-    "preact": "^10.0.0-rc.3",
-    "preact-compat": "^3.17.0",
-    "preact-render-to-string": "^4.1.0",
-    "preact-router": "^3.0.1"
+    "js-cookie": "^2.2.1"
   }
 }

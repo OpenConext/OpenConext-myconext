@@ -1,4 +1,4 @@
-package surfid.security;
+package surfid.session;
 
 import com.fasterxml.jackson.databind.Module;
 import com.fasterxml.jackson.databind.module.SimpleModule;
