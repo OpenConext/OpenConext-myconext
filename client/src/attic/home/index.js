@@ -1,5 +1,5 @@
 import style from './style.css';
-import logo from './logo.svg';
+import logo from '../../routes/logo.svg';
 import InputElement from '../../components/input';
 import I18n from "i18n-js";
 import ButtonElement from "../../components/buttonX";

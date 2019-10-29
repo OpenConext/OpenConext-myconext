@@ -8,3 +8,5 @@ sms 5) if SMS then show code input
 sms 6) post code to server and return JSON contains the SAML parameters and the address to submit these too
 
 email 6) request for magic-link is clicked and picked up server side. Fetch the SAML request, create a response and post back
+
+https://github.com/EmilTholin/svelte-routing

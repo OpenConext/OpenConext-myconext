@@ -1,0 +1,4 @@
+.idea
+bundle*
+client/public/favicon.ico
+client/public/index.html
