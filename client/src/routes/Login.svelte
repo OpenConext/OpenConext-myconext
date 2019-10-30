@@ -1,9 +1,23 @@
 <script>
     import logo from "./logo.svg";
-    import InputElement from "../components/Input.svelte";
-    import ButtonElement from "../components/Button.svelte";
     import {user} from "../stores/user";
-    import I18n from "i18n-js";</script>
+    import I18n from "i18n-js";
+    import {getUser} from "../api/index";
+
+    export let id;
+
+    const next = () => {
+        const ref = user;
+        debugger;
+        getUser($user.email)
+                .then(json => {
+                    debugger;
+                }).catch(e => {
+                    debugger;
+        })
+    };
+
+</script>
 
 <style>
     .home {
@@ -47,6 +61,31 @@
         display: inline-block;
         margin: auto 15px 15px auto;
     }
+
+    button {
+        border-radius: 4px;
+        padding: 10px 20px;
+        display: inline-block;
+        font-size: larger;
+        background-color: #5da7c5;
+        color: whitesmoke;
+    }
+    button:hover {
+        cursor: pointer;
+    }
+
+    input {
+        border: 1px solid #dadce0;
+        border-radius: 4px;
+        padding: 10px;
+        font-size: larger;
+        width: 90%;
+        margin: 20px 10px;
+    }
+
+    h2 {
+        color: #767676
+    }
 </style>
 <div class="home">
     <div class="card">
@@ -55,12 +94,14 @@
                 {@html logo}
             </div>
             <h2>{I18n.t("login.header")}</h2>
-            <InputElement placeholder={I18n.t("login.emailPlaceholder")}
-                          onChange={e => $user.email = e.target.value})}
-                          value={$user.email}/>
+            <p>{id}</p>
+            <input type="email"
+                    placeholder={I18n.t("login.emailPlaceholder")}
+                    bind:value={$user.email}
+                    on:keydown={e => e.key === "Enter" && next()}>
         </div>
         <div class="buttons">
-            <ButtonElement text={I18n.t("login.next")}/>
+            <button on:click={next}>{I18n.t("login.next")}</button>
         </div>
     </div>
 </div>

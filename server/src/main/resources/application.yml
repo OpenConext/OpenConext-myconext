@@ -6,7 +6,13 @@ logging:
 server:
   port: 8081
 
+cron:
+  node-cron-job-responsible: true
+
 mongodb_db: surf_id_test
+
+base_path: http://localhost:8081
+redirect_url: http://localhost:3000
 
 spring:
   data:

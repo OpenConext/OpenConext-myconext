@@ -12,5 +12,9 @@
     <!--    <nav>-->
     <!--        <Link to="/">Login</Link>-->
     <!--    </nav>-->
-    <Route path="/" component="{Login}"/>
+    <Route path="/login" component={Login}/>
+    <Route path="/login/:id" let:params>
+        <Login id="{params.id}"></Login>
+    </Route>
+
 </Router>

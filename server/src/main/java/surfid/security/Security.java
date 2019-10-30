@@ -31,15 +31,15 @@ import static org.springframework.security.saml.saml2.signature.DigestMethod.SHA
 @EnableWebSecurity
 public class Security {
 
-    @Autowired
-    public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
-        //because Autowired this will end up in the global ProviderManager
-        PreAuthenticatedAuthenticationProvider authenticationProvider = new PreAuthenticatedAuthenticationProvider();
-        authenticationProvider.setPreAuthenticatedUserDetailsService(new GuestUserDetailService());
-        auth.authenticationProvider(authenticationProvider);
-    }
-
-
+//    @Autowired
+//    public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
+//        //because Autowired this will end up in the global ProviderManager
+//        PreAuthenticatedAuthenticationProvider authenticationProvider = new PreAuthenticatedAuthenticationProvider();
+//        authenticationProvider.setPreAuthenticatedUserDetailsService(new GuestUserDetailService());
+//        auth.authenticationProvider(authenticationProvider);
+//    }
+//
+//
     @Configuration
     @Order(1)
     public static class SamlSecurity extends SamlIdentityProviderSecurityConfiguration {
@@ -54,9 +54,10 @@ public class Security {
 
         @Override
         protected void configure(HttpSecurity http) throws Exception {
-            String prefix = getPrefix();
             super.configure(http);
-            SamlIdentityProviderSecurityDsl configurer = identityProvider();
+
+            String prefix = getPrefix();
+            SamlIdentityProviderSecurityDsl configurer = new GuestIdentityProviderDsl(beanConfig);
 
             http.apply(configurer)
                     .prefix(prefix)
@@ -83,32 +84,6 @@ public class Security {
 //						.setSkipSslValidation(true)
 //				)
             ;
-            Filter samlConfigurationFilter = beanConfig.samlConfigurationFilter();
-            Filter metadataFilter = beanConfig.idpMetadataFilter();
-            Filter idpInitiateLoginFilter = beanConfig.idpInitatedLoginFilter();
-            Filter idpAuthnRequestFilter = beanConfig.idpAuthnRequestFilter();
-            http
-                    .addFilterAfter(
-                            samlConfigurationFilter,
-                            SecurityContextPersistenceFilter.class
-                    )
-                    .addFilterAfter(
-                            metadataFilter,
-                            samlConfigurationFilter.getClass()
-                    )
-                    .addFilterAfter(
-                            idpInitiateLoginFilter,
-                            metadataFilter.getClass()
-                    )
-                    .addFilterAfter(
-                            idpAuthnRequestFilter,
-                            idpInitiateLoginFilter.getClass()
-                    )
-                    .addFilterBefore(
-                            new UserPreAuthenticatedProcessingFilter(authenticationManagerBean(), userRepository),
-                            metadataFilter.getClass()
-                    );
-
         }
 
 
@@ -171,16 +146,12 @@ public class Security {
                     .antMatcher("/**")
                     .csrf().disable()
                     .authorizeRequests()
-                    .antMatchers("/actuator/health", "/actuator/info", "favicon.ico")
+                    .antMatchers("/actuator/health", "/actuator/info", "/surfid/api/**")
                     .permitAll()
                     .and()
                     .authorizeRequests()
-                    .antMatchers("/**").authenticated()
-                    .and()
-                    .addFilterBefore(new UserPreAuthenticatedProcessingFilter(authenticationManagerBean(), userRepository),
-                            AbstractPreAuthenticatedProcessingFilter.class
-                    );
-
+                    .antMatchers("/**")
+                    .authenticated();
         }
     }
 

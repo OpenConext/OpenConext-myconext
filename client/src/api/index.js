@@ -34,8 +34,8 @@ function postPutJson(path, body, method) {
 }
 
 //Base
-export function user() {
-  return fetchJson("/surfid/api/user");
+export function getUser(email) {
+  return fetchJson(`/surfid/api/user?email=${email}`);
 }
 
 export function magicLink(body) {

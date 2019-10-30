@@ -19,7 +19,8 @@ module.exports = {
     output: {
         path: __dirname + '/public',
         filename: '[name].[hash].js',
-        chunkFilename: '[name].[hash].js'
+        chunkFilename: '[name].[hash].js',
+        publicPath: '/',
     },
     module: {
         rules: [
@@ -68,7 +69,8 @@ module.exports = {
     devServer: {
         port: 3000,
         proxy: {
-            '/api': 'http://localhost:8080'
-        }
+            '/surfid/api': 'http://localhost:8081'
+        },
+        historyApiFallback: true
     }
 };

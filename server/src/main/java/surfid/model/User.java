@@ -5,12 +5,13 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.annotation.Transient;
+import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.Collections;
@@ -24,9 +25,13 @@ public class User implements Serializable, UserDetails {
 
     @Id
     private String id;
+    @NotNull
     private String email;
+    @NotNull
     private String givenName;
+    @NotNull
     private String familyName;
+
     private long updatedAt = System.currentTimeMillis() / 1000L;
 
     public User(String email, String givenName, String familyName) {

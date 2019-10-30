@@ -2,11 +2,13 @@ package surfid.repository;
 
 
 import org.springframework.data.mongodb.repository.MongoRepository;
-import surfid.model.AuthenticationRequest;
+import org.springframework.stereotype.Repository;
+import surfid.model.SamlAuthenticationRequest;
 
 import java.util.Date;
 
-public interface AuthenticationRequestRepository extends MongoRepository<AuthenticationRequest, String> {
+@Repository
+public interface AuthenticationRequestRepository extends MongoRepository<SamlAuthenticationRequest, String> {
 
     Long deleteByExpiresInBefore(Date expiryDate);
 }

@@ -9,7 +9,7 @@
         padding: 10px 20px;
         display: inline-block;
         font-size: larger;
-        background-color: dodgerblue;
+        background-color: #5da7c5;
         color: whitesmoke;
     }
 
