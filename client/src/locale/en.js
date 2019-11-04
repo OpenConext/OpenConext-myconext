@@ -6,6 +6,7 @@ I18n.translations.en = {
         trust: "Trust this computer",
         email: "Email",
         emailPlaceholder: "Enter your email",
-        next: "Next"
+        next: "Next",
+        previous: "Previous"
     }
 };

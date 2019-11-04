@@ -69,20 +69,19 @@ public class Security {
                     .signatureAlgorithms(RSA_SHA512, SHA512)
                     .nameIds(asList(NameId.EMAIL))
                     .rotatingKeys(getKeys())
-                    .serviceProvider(
-                            new ExternalServiceProviderConfiguration()
-                                    .setAlias("boot-sample-sp")
-                                    .setLinktext("Spring Security SAML SP/8080")
-                                    .setMetadata("http://localhost:8080/sample-sp/saml/sp/metadata")
-                                    .setSkipSslValidation(true)
-                    )
-//				.serviceProvider(
-//					new ExternalServiceProviderConfiguration()
-//						.setAlias("https://engine.test2.surfconext.nl/authentication/sp/metadata")
-//						.setLinktext("Spring Security SAML SP/8080")
-//						.setMetadata("https://engine.test2.surfconext.nl/authentication/sp/metadata")
-//						.setSkipSslValidation(true)
-//				)
+//                    .serviceProvider(
+//                            new ExternalServiceProviderConfiguration()
+//                                    .setAlias("boot-sample-sp")
+//                                    .setLinktext("Spring Security SAML SP/8080")
+//                                    .setMetadata("http://localhost:8080/sample-sp/saml/sp/metadata")
+//                                    .setSkipSslValidation(true)
+//                    )
+				.serviceProvider(
+					new ExternalServiceProviderConfiguration()
+						.setAlias("https://engine.test.surfconext.nl/authentication/sp/metadata")
+						.setMetadata("https://engine.test.surfconext.nl/authentication/sp/metadata")
+						.setSkipSslValidation(true)
+				)
             ;
         }
 

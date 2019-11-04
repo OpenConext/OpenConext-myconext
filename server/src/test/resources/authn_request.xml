@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<samlp:AuthnRequest
+        AssertionConsumerServiceURL="https://engine.test.surfconext.nl/authentication/sp/consume-assertion"
+        Destination="https://mujina-idp.test.surfconext.nl/SingleSignOnService"
+        ID="%s" IssueInstant="%s"
+        ProtocolBinding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST" Version="2.0"
+        xmlns:saml="urn:oasis:names:tc:SAML:2.0:assertion"
+        xmlns:samlp="urn:oasis:names:tc:SAML:2.0:protocol">
+    <saml:Issuer>https://engine.test.surfconext.nl/authentication/sp/metadata</saml:Issuer>
+    <samlp:NameIDPolicy AllowCreate="true"
+                        Format="urn:mace:dir:attribute-def:eduPersonPrincipalName"/>
+</samlp:AuthnRequest>

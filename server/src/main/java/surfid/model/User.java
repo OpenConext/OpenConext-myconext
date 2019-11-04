@@ -1,5 +1,6 @@
 package surfid.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -10,6 +11,9 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.util.Assert;
+import org.springframework.util.StringUtils;
 
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
@@ -27,20 +31,37 @@ public class User implements Serializable, UserDetails {
     private String id;
     @NotNull
     private String email;
-    @NotNull
     private String givenName;
-    @NotNull
     private String familyName;
+    private String password;
 
     private long updatedAt = System.currentTimeMillis() / 1000L;
 
-    public User(String email, String givenName, String familyName) {
+    public User(@NotNull String email) {
+        this(email, null, null);
+    }
+
+    public User(@NotNull String email, String givenName, String familyName) {
         this.email = email;
         this.givenName = givenName;
         this.familyName = familyName;
     }
 
+    public void validate() {
+        Assert.notNull(email, "GivenName is required");
+        Assert.notNull(givenName, "GivenName is required");
+        Assert.notNull(familyName, "GivenName is required");
+    }
+
+    public void encryptPassword(PasswordEncoder encoder) {
+        if (StringUtils.hasText(password)) {
+            this.password = encoder.encode(this.password);
+        }
+    }
+
     @Override
+    @Transient
+    @JsonIgnore
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return Collections.singletonList(new SimpleGrantedAuthority("GUEST"));
     }

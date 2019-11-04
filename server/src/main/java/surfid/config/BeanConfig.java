@@ -7,6 +7,7 @@ import org.springframework.security.saml.provider.config.SamlConfigurationReposi
 import org.springframework.security.saml.provider.identity.ResponseEnhancer;
 import org.springframework.security.saml.provider.identity.config.SamlIdentityProviderServerBeanConfiguration;
 import surfid.repository.AuthenticationRequestRepository;
+import surfid.repository.UserRepository;
 import surfid.saml.ImmutableSamlConfigurationRepository;
 import surfid.security.GuestIdpAuthenticationRequestFilter;
 
@@ -17,13 +18,16 @@ public class BeanConfig extends SamlIdentityProviderServerBeanConfiguration {
 
     private final String redirectUrl;
     private final AuthenticationRequestRepository authenticationRequestRepository;
+    private final UserRepository userRepository;
 
     public BeanConfig(@Value("${base_path}") String basePath,
                       @Value("${redirect_url}") String redirectUrl,
-                      AuthenticationRequestRepository authenticationRequestRepository) {
+                      AuthenticationRequestRepository authenticationRequestRepository,
+                      UserRepository userRepository) {
         this.immutableSamlConfigurationRepository = new ImmutableSamlConfigurationRepository(basePath);
         this.redirectUrl = redirectUrl;
         this.authenticationRequestRepository = authenticationRequestRepository;
+        this.userRepository = userRepository;
     }
 
     private ImmutableSamlConfigurationRepository immutableSamlConfigurationRepository;
@@ -35,7 +39,7 @@ public class BeanConfig extends SamlIdentityProviderServerBeanConfiguration {
 
     @Override
     public Filter idpAuthnRequestFilter() {
-        return new GuestIdpAuthenticationRequestFilter(getSamlProvisioning(), samlAssertionStore(), redirectUrl, authenticationRequestRepository);
+        return new GuestIdpAuthenticationRequestFilter(getSamlProvisioning(), samlAssertionStore(), redirectUrl, authenticationRequestRepository, userRepository);
     }
 
     @Override

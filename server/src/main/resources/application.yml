@@ -6,6 +6,10 @@ logging:
 server:
   port: 8081
 
+email:
+  from: test@openconext.org
+  base-url: http://localhost:8081
+
 cron:
   node-cron-job-responsible: true
 
@@ -18,3 +22,11 @@ spring:
   data:
     mongodb:
       uri: mongodb://127.0.0.1:27017/${mongodb_db}
+  mail:
+    host: localhost
+    port: 3025
+
+management:
+  health:
+    mail:
+      enabled: false

@@ -1,14 +1,13 @@
 <script>
     import logo from "./logo.svg";
     import {user} from "../stores/user";
+    import {validEmail} from "../validation";
     import I18n from "i18n-js";
     import {getUser} from "../api/index";
 
     export let id;
-
+    let unknownUser = false;
     const next = () => {
-        const ref = user;
-        debugger;
         getUser($user.email)
                 .then(json => {
                     debugger;
@@ -16,6 +15,10 @@
                     debugger;
         })
     };
+
+    const previous = () => {
+        unknownUser = false;
+    }
 
 </script>
 
@@ -73,7 +76,11 @@
     button:hover {
         cursor: pointer;
     }
-
+    button.disabled {
+        cursor: not-allowed;
+        color: #C5C5C5;
+        background-color: whitesmoke;
+    }
     input {
         border: 1px solid #dadce0;
         border-radius: 4px;
@@ -101,7 +108,10 @@
                     on:keydown={e => e.key === "Enter" && next()}>
         </div>
         <div class="buttons">
-            <button on:click={next}>{I18n.t("login.next")}</button>
+            {#if unknownUser}
+                <button on:click={previous}>{I18n.t("login.previous")}</button>
+            {/if}}
+            <button class:disabled={validEmail($user.email)} on:click={next} disabled={validEmail($user.email)}>{I18n.t("login.next")}</button>
         </div>
     </div>
 </div>
