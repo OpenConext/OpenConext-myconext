@@ -1,7 +1,7 @@
 logging:
   level:
     org.springframework.data.mongodb: INFO
-    org.springframework.security: DEBUG
+    org.springframework.security: INFO
 
 server:
   port: 8081
@@ -17,6 +17,7 @@ mongodb_db: surf_id_test
 
 base_path: http://localhost:8081
 redirect_url: http://localhost:3000
+sp_entity_id: https://engine.test.surfconext.nl/authentication/sp/metadata
 
 spring:
   data:

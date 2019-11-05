@@ -46,18 +46,21 @@ public class GuestIdpAuthenticationRequestFilter extends IdpAuthenticationReques
     private final String redirectUrl;
     private final AuthenticationRequestRepository authenticationRequestRepository;
     private final UserRepository userRepository;
+    private final String  spEntityId;
 
     public GuestIdpAuthenticationRequestFilter(SamlProviderProvisioning<IdentityProviderService> provisioning,
                                                SamlMessageStore<Assertion, HttpServletRequest> assertionStore,
                                                String redirectUrl,
                                                AuthenticationRequestRepository authenticationRequestRepository,
-                                               UserRepository userRepository) {
+                                               UserRepository userRepository,
+                                               String spEntityId) {
         super(provisioning, assertionStore);
         this.ssoSamlRequestMatcher = new SamlRequestMatcher(provisioning, "SSO");
         this.magicSamlRequestMatcher = new SamlRequestMatcher(provisioning, "magic");
         this.redirectUrl = redirectUrl;
         this.authenticationRequestRepository = authenticationRequestRepository;
         this.userRepository = userRepository;
+        this.spEntityId = spEntityId;
     }
 
     @Override
@@ -72,28 +75,52 @@ public class GuestIdpAuthenticationRequestFilter extends IdpAuthenticationReques
         super.doFilterInternal(request, response, filterChain);
     }
 
+    private void sso(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        IdentityProviderService provider = getProvisioning().getHostedProvider();
+        String samlRequest = request.getParameter("SAMLRequest");
+        String relayState = request.getParameter("RelayState");
+
+        AuthenticationRequest authenticationRequest =
+                provider.fromXml(samlRequest, true, isDeflated(request), AuthenticationRequest.class);
+
+        provider.validate(authenticationRequest);
+
+        SamlAuthenticationRequest samlAuthenticationRequest = new SamlAuthenticationRequest(
+                authenticationRequest.getId(),
+                authenticationRequest.getAssertionConsumerService().getLocation(),
+                relayState);
+
+        // Use the returned instance for further operations as the save operation has added the _id
+        samlAuthenticationRequest = this.authenticationRequestRepository.save(samlAuthenticationRequest);
+        response.sendRedirect(this.redirectUrl + "/login/" + samlAuthenticationRequest.getId());
+    }
+
+    private boolean isDeflated(HttpServletRequest request) {
+        return HttpMethod.GET.name().equalsIgnoreCase(request.getMethod());
+    }
+
     private void magic(HttpServletRequest request, HttpServletResponse response) throws IOException {
         String hash = request.getParameter("h");
-        SamlAuthenticationRequest samlAuthenticationRequest = authenticationRequestRepository.findByHash(hash).orElseThrow(ExpiredAuthenticationException::new);
-        User user = userRepository.findById(samlAuthenticationRequest.getUserId()).orElseThrow(UserNotFoundException::new);
+        SamlAuthenticationRequest samlAuthenticationRequest = authenticationRequestRepository.findByHash(hash)
+                .orElseThrow(ExpiredAuthenticationException::new);
+        User user = userRepository.findById(samlAuthenticationRequest.getUserId())
+                .orElseThrow(UserNotFoundException::new);
 
         IdentityProviderService provider = getProvisioning().getHostedProvider();
-        // Use ServiceProviderMetadata from static content, but do validate - see getTargetProvider(request);
-        ServiceProviderMetadata recipient = getTargetProvider(request);
+        ServiceProviderMetadata serviceProviderMetadata = provider.getRemoteProvider(spEntityId);
 
         AuthenticationRequest authenticationRequest = new AuthenticationRequest();
         authenticationRequest.setId(samlAuthenticationRequest.getRequestId());
         authenticationRequest.setAssertionConsumerService(new Endpoint().setLocation(samlAuthenticationRequest.getConsumerAssertionServiceURL()));
 
-
-        Assertion assertion = provider.assertion(recipient, authenticationRequest, user.getEmail(), NameId.EMAIL);
+        Assertion assertion = provider.assertion(serviceProviderMetadata, authenticationRequest, user.getEmail(), NameId.EMAIL);
 
         attributes(user).forEach(assertion::addAttribute);
 
-        Response samlResponse = provider.response(authenticationRequest, assertion, recipient);
+        Response samlResponse = provider.response(authenticationRequest, assertion, serviceProviderMetadata);
 
         Endpoint acsUrl = provider.getPreferredEndpoint(
-                recipient.getServiceProvider().getAssertionConsumerService(),
+                serviceProviderMetadata.getServiceProvider().getAssertionConsumerService(),
                 Binding.POST,
                 -1
         );
@@ -135,24 +162,6 @@ public class GuestIdpAuthenticationRequestFilter extends IdpAuthenticationReques
 
     private Attribute attribute(String name, String value) {
         return new Attribute().setName(name).setNameFormat(AttributeNameFormat.URI).addValues(value);
-    }
-
-    private void sso(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        IdentityProviderService provider = getProvisioning().getHostedProvider();
-        String samlRequest = request.getParameter("SAMLRequest");
-        String relayState = request.getParameter("RelayState");
-
-        AuthenticationRequest authenticationRequest =
-                provider.fromXml(samlRequest, true, HttpMethod.GET.name().equalsIgnoreCase(request.getMethod()), AuthenticationRequest.class);
-
-        SamlAuthenticationRequest samlAuthenticationRequest = new SamlAuthenticationRequest(
-                authenticationRequest.getId(),
-                authenticationRequest.getAssertionConsumerService().getLocation(),
-                relayState);
-
-        // Use the returned instance for further operations as the save operation has added the _id
-        samlAuthenticationRequest = this.authenticationRequestRepository.save(samlAuthenticationRequest);
-        response.sendRedirect(this.redirectUrl + "/login/" + samlAuthenticationRequest.getId());
     }
 
     @Override

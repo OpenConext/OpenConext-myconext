@@ -80,7 +80,7 @@ public class Security {
 					new ExternalServiceProviderConfiguration()
 						.setAlias("https://engine.test.surfconext.nl/authentication/sp/metadata")
 						.setMetadata("https://engine.test.surfconext.nl/authentication/sp/metadata")
-						.setSkipSslValidation(true)
+						.setSkipSslValidation(false)
 				)
             ;
         }

@@ -2,6 +2,7 @@ package surfid.api;
 
 import io.restassured.response.Response;
 import io.restassured.specification.RequestSpecification;
+import org.apache.commons.io.IOUtils;
 import org.junit.Test;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -13,27 +14,42 @@ import surfid.model.SamlAuthenticationRequest;
 import surfid.model.User;
 
 import java.io.IOException;
+import java.nio.charset.Charset;
+import java.util.Base64;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 public class UserControllerTest extends AbstractIntegrationTest {
 
     @Test
     public void existingUser() throws IOException {
         MagicLinkResponse magicLinkResponse = magicLinkRequest(new User("jdoe@example.com"), HttpMethod.PUT);
-        magicLinkResponse
-                .response
+        magicLinkResponse.response
                 .body("givenName", equalTo("John"))
                 .body("familyName", equalTo("Doe"));
+
+        String samlResponse = samlResponse(magicLinkResponse);
+        assertTrue(samlResponse.contains("jdoe@example.com"));
+    }
+
+    private String samlResponse(MagicLinkResponse magicLinkResponse) throws IOException {
         SamlAuthenticationRequest samlAuthenticationRequest = authenticationRequestRepository.findById(magicLinkResponse.authenticationRequestId).get();
-        Response h = given().redirects().follow(false)
+        Response response = given().redirects().follow(false)
                 .when()
-                .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                 .queryParam("h", samlAuthenticationRequest.getHash())
                 .get("/saml/guest-idp/magic");
-        System.out.println(h.getHeader("location"));
+
+        assertEquals(200, response.getStatusCode());
+        String html = IOUtils.toString(response.asInputStream(), Charset.defaultCharset());
+
+        Matcher matcher = Pattern.compile("name=\"SAMLResponse\" value=\"(.*?)\"").matcher(html);
+        matcher.find();
+        return new String(Base64.getDecoder().decode(matcher.group(1)));
     }
 
     @Test
@@ -46,11 +62,14 @@ public class UserControllerTest extends AbstractIntegrationTest {
     @Test
     public void newUserProvisioned() throws IOException {
         User user = new User("new@example.com", "Mary", "Doe");
-        magicLinkRequest(user, HttpMethod.POST)
-                .response
+        MagicLinkResponse magicLinkResponse = magicLinkRequest(user, HttpMethod.POST);
+        magicLinkResponse.response
                 .body("givenName", equalTo("Mary"))
                 .body("familyName", equalTo("Doe"));
         assertEquals(user.getGivenName(), userRepository.findUserByEmail(user.getEmail()).get().getGivenName());
+
+        String samlResponse = samlResponse(magicLinkResponse);
+        assertTrue(samlResponse.contains("new@example.com"));
     }
 
     @Test
