@@ -1,7 +1,10 @@
 package surfid.security;
 
 import org.springframework.http.HttpMethod;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.saml.SamlMessageStore;
 import org.springframework.security.saml.SamlRequestMatcher;
 import org.springframework.security.saml.provider.identity.IdentityProviderService;
@@ -12,10 +15,12 @@ import org.springframework.security.saml.saml2.attribute.AttributeNameFormat;
 import org.springframework.security.saml.saml2.authentication.Assertion;
 import org.springframework.security.saml.saml2.authentication.AuthenticationRequest;
 import org.springframework.security.saml.saml2.authentication.Response;
+import org.springframework.security.saml.saml2.authentication.Scoping;
 import org.springframework.security.saml.saml2.metadata.Binding;
 import org.springframework.security.saml.saml2.metadata.Endpoint;
 import org.springframework.security.saml.saml2.metadata.NameId;
 import org.springframework.security.saml.saml2.metadata.ServiceProviderMetadata;
+import org.springframework.util.CollectionUtils;
 import org.springframework.web.util.HtmlUtils;
 import org.springframework.web.util.UriComponentsBuilder;
 import org.springframework.web.util.UriUtils;
@@ -28,15 +33,22 @@ import surfid.repository.UserRepository;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
+import java.util.function.Function;
+import java.util.function.Supplier;
+import java.util.stream.Stream;
 
+import static java.util.function.Function.identity;
 import static org.springframework.util.StringUtils.hasText;
 
 public class GuestIdpAuthenticationRequestFilter extends IdpAuthenticationRequestFilter {
@@ -46,14 +58,18 @@ public class GuestIdpAuthenticationRequestFilter extends IdpAuthenticationReques
     private final String redirectUrl;
     private final AuthenticationRequestRepository authenticationRequestRepository;
     private final UserRepository userRepository;
-    private final String  spEntityId;
+    private final String spEntityId;
+    private final int rememberMeMaxAge;
+    private final boolean secureCookie;
 
     public GuestIdpAuthenticationRequestFilter(SamlProviderProvisioning<IdentityProviderService> provisioning,
                                                SamlMessageStore<Assertion, HttpServletRequest> assertionStore,
                                                String redirectUrl,
                                                AuthenticationRequestRepository authenticationRequestRepository,
                                                UserRepository userRepository,
-                                               String spEntityId) {
+                                               String spEntityId,
+                                               int rememberMeMaxAge,
+                                               boolean secureCookie) {
         super(provisioning, assertionStore);
         this.ssoSamlRequestMatcher = new SamlRequestMatcher(provisioning, "SSO");
         this.magicSamlRequestMatcher = new SamlRequestMatcher(provisioning, "magic");
@@ -61,6 +77,8 @@ public class GuestIdpAuthenticationRequestFilter extends IdpAuthenticationReques
         this.authenticationRequestRepository = authenticationRequestRepository;
         this.userRepository = userRepository;
         this.spEntityId = spEntityId;
+        this.rememberMeMaxAge = rememberMeMaxAge;
+        this.secureCookie = secureCookie;
     }
 
     @Override
@@ -88,15 +106,52 @@ public class GuestIdpAuthenticationRequestFilter extends IdpAuthenticationReques
         SamlAuthenticationRequest samlAuthenticationRequest = new SamlAuthenticationRequest(
                 authenticationRequest.getId(),
                 authenticationRequest.getAssertionConsumerService().getLocation(),
-                relayState);
+                relayState,
+                requesterId(authenticationRequest)
+        );
 
         // Use the returned instance for further operations as the save operation has added the _id
-        samlAuthenticationRequest = this.authenticationRequestRepository.save(samlAuthenticationRequest);
-        response.sendRedirect(this.redirectUrl + "/login/" + samlAuthenticationRequest.getId());
+        samlAuthenticationRequest = authenticationRequestRepository.save(samlAuthenticationRequest);
+
+        Optional<Cookie> userFromRemembered = userRemembered(request);
+        Optional<User> userFromAuthentication = userFromAuthentication();
+        Optional<User> optionalUser = userFromRemembered.map(this::userFromCookie).orElse(userFromAuthentication);
+
+        if (optionalUser.isPresent() && !authenticationRequest.isForceAuth()) {
+            ServiceProviderMetadata serviceProviderMetadata = provider.getRemoteProvider(spEntityId);
+            User user = optionalUser.get();
+            sendAssertion(request, response, samlAuthenticationRequest, user, provider, serviceProviderMetadata, authenticationRequest);
+        } else {
+            response.sendRedirect(this.redirectUrl + "/login/" + samlAuthenticationRequest.getId());
+        }
+    }
+
+    private Optional<User> userFromCookie(Cookie remembered) {
+        return authenticationRequestRepository.findById(remembered.getValue()).map(req -> userRepository.findById(req.getUserId())).flatMap(identity());
+    }
+
+    private Optional<User> userFromAuthentication() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        return authentication != null && authentication.isAuthenticated() && authentication instanceof UsernamePasswordAuthenticationToken ?
+            Optional.of((User) authentication.getPrincipal()) : Optional.empty();
+    }
+
+    private Optional<Cookie> userRemembered(HttpServletRequest request) {
+        Cookie[] cookies = request.getCookies();
+        if (cookies != null) {
+            return Stream.of(cookies).filter(cookie -> cookie.getName().equals("guest-idp-remember-me")).findAny();
+        }
+        return Optional.empty();
     }
 
     private boolean isDeflated(HttpServletRequest request) {
         return HttpMethod.GET.name().equalsIgnoreCase(request.getMethod());
+    }
+
+    private String requesterId(AuthenticationRequest authenticationRequest) {
+        Scoping scoping = authenticationRequest.getScoping();
+        List<String> requesterIds = scoping != null ? scoping.getRequesterIds() : null;
+        return CollectionUtils.isEmpty(requesterIds) ? null : requesterIds.get(0);
     }
 
     private void magic(HttpServletRequest request, HttpServletResponse response) throws IOException {
@@ -113,6 +168,25 @@ public class GuestIdpAuthenticationRequestFilter extends IdpAuthenticationReques
         authenticationRequest.setId(samlAuthenticationRequest.getRequestId());
         authenticationRequest.setAssertionConsumerService(new Endpoint().setLocation(samlAuthenticationRequest.getConsumerAssertionServiceURL()));
 
+        UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(user, null,
+                Collections.singleton(new SimpleGrantedAuthority("ROLE_USER")));
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+        if (samlAuthenticationRequest.isRememberMe()) {
+            addRememberMeCookie(response, samlAuthenticationRequest);
+        }
+        sendAssertion(request, response, samlAuthenticationRequest, user, provider, serviceProviderMetadata, authenticationRequest);
+    }
+
+    private void addRememberMeCookie(HttpServletResponse response, SamlAuthenticationRequest samlAuthenticationRequest) {
+        Cookie cookie = new Cookie("guest-idp-remember-me", samlAuthenticationRequest.getId());
+        cookie.setMaxAge(rememberMeMaxAge);
+        cookie.setSecure(secureCookie);
+        response.addCookie(cookie);
+    }
+
+    private void sendAssertion(HttpServletRequest request, HttpServletResponse response, SamlAuthenticationRequest samlAuthenticationRequest,
+                               User user, IdentityProviderService provider, ServiceProviderMetadata serviceProviderMetadata,
+                               AuthenticationRequest authenticationRequest) throws IOException {
         Assertion assertion = provider.assertion(serviceProviderMetadata, authenticationRequest, user.getEmail(), NameId.EMAIL);
 
         attributes(user).forEach(assertion::addAttribute);
@@ -156,7 +230,7 @@ public class GuestIdpAuthenticationRequestFilter extends IdpAuthenticationReques
                 attribute("urn:mace:dir:attribute-def:mail", user.getEmail()),
                 attribute("urn:mace:dir:attribute-def:sn", user.getFamilyName()),
                 attribute("urn:mace:dir:attribute-def:uid", user.getEmail()),
-                attribute("urn:mace:terena.org:attribute-def:schacHomeOrganization", "surf.guest.id")
+                attribute("urn:mace:terena.org:attribute-def:schacHomeOrganization", "surfconext.guest.id")
         );
     }
 

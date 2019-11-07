@@ -20,15 +20,21 @@ public class BeanConfig extends SamlIdentityProviderServerBeanConfiguration {
     private final AuthenticationRequestRepository authenticationRequestRepository;
     private final UserRepository userRepository;
     private final String spEntityId;
+    private final int rememberMeMaxAge;
+    private final boolean secureCookie;
 
     public BeanConfig(@Value("${base_path}") String basePath,
                       @Value("${redirect_url}") String redirectUrl,
                       @Value("${sp_entity_id}") String spEntityId,
+                      @Value("${remember_me_max_age_seconds}") int rememberMeMaxAge,
+                      @Value("${secure_cookie}") boolean secureCookie,
                       AuthenticationRequestRepository authenticationRequestRepository,
                       UserRepository userRepository) {
         this.immutableSamlConfigurationRepository = new ImmutableSamlConfigurationRepository(basePath);
         this.redirectUrl = redirectUrl;
         this.spEntityId = spEntityId;
+        this.rememberMeMaxAge = rememberMeMaxAge;
+        this.secureCookie = secureCookie;
         this.authenticationRequestRepository = authenticationRequestRepository;
         this.userRepository = userRepository;
     }
@@ -43,7 +49,7 @@ public class BeanConfig extends SamlIdentityProviderServerBeanConfiguration {
     @Override
     public Filter idpAuthnRequestFilter() {
         return new GuestIdpAuthenticationRequestFilter(getSamlProvisioning(), samlAssertionStore(), redirectUrl,
-                authenticationRequestRepository, userRepository, spEntityId);
+                authenticationRequestRepository, userRepository, spEntityId, rememberMeMaxAge, secureCookie);
     }
 
     @Override

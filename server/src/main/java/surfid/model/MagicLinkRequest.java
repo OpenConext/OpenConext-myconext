@@ -17,4 +17,6 @@ public class MagicLinkRequest {
     @NotNull
     private User user;
 
+    private boolean rememberMe;
+
 }

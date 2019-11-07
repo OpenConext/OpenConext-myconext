@@ -1,20 +1,20 @@
 <script>
     import logo from "./logo.svg";
     import {user} from "../stores/user";
-    import {validEmail} from "../validation";
+    import {validEmail} from "../validation/regexp";
     import I18n from "i18n-js";
-    import {getUser} from "../api/index";
+    import {magicLinkNewUser, magicLinkExistingUser} from "../api/index";
 
     export let id;
     let unknownUser = false;
-    const next = () => {
-        getUser($user.email)
-                .then(json => {
-                    debugger;
-                }).catch(e => {
-                    debugger;
-        })
-    };
+    const handleNext = () => magicLinkExistingUser($user.email,$user.rememberMe, id)
+            .then(json => {
+                // debugger;
+            }).catch(e => {
+                // debugger;
+                unknownUser = true;
+            });
+
 
     const previous = () => {
         unknownUser = false;
@@ -48,6 +48,7 @@
         flex-direction: column;
         align-items: center;
         height: 100%;
+        padding: 25px;
     }
 
     .logo {
@@ -73,25 +74,33 @@
         background-color: #5da7c5;
         color: whitesmoke;
     }
+
     button:hover {
         cursor: pointer;
     }
+
     button.disabled {
         cursor: not-allowed;
         color: #C5C5C5;
         background-color: whitesmoke;
     }
-    input {
+
+    input[type=email], input[type=text] {
         border: 1px solid #dadce0;
         border-radius: 4px;
         padding: 10px;
         font-size: larger;
-        width: 90%;
+        width: 100%;
         margin: 20px 10px;
     }
 
-    h2 {
+    h2, label {
         color: #767676
+    }
+
+    div.checkbox {
+        display: flex;
+        margin-right: auto;
     }
 </style>
 <div class="home">
@@ -101,17 +110,31 @@
                 {@html logo}
             </div>
             <h2>{I18n.t("login.header")}</h2>
-            <p>{id}</p>
             <input type="email"
-                    placeholder={I18n.t("login.emailPlaceholder")}
-                    bind:value={$user.email}
-                    on:keydown={e => e.key === "Enter" && next()}>
+                   placeholder={I18n.t("login.emailPlaceholder")}
+                   bind:value={$user.email}
+                   on:keydown={e => e.key === "Enter" && handleNext()}>
+            {#if unknownUser}
+                <input type="text"
+                       placeholder={I18n.t("login.giveNamePlaceholder")}
+                       bind:value={$user.givenName}>
+                <input type="text"
+                       placeholder={I18n.t("login.familyNamePlaceholder")}
+                       bind:value={$user.familyName}>
+            {/if}
+            <div class="checkbox">
+                <input type="checkbox"
+                       id="remember-me"
+                       bind:checked={$user.rememberMe}/>
+                <label for="remember-me">{I18n.t("login.rememberMe")}</label>
+            </div>
         </div>
         <div class="buttons">
-            {#if unknownUser}
+            {#if unknownUser && false}
                 <button on:click={previous}>{I18n.t("login.previous")}</button>
-            {/if}}
-            <button class:disabled={validEmail($user.email)} on:click={next} disabled={validEmail($user.email)}>{I18n.t("login.next")}</button>
+            {/if}
+            <button class:disabled={!validEmail($user.email)} on:click={handleNext}
+                    disabled={!validEmail($user.email)}>{I18n.t("login.next")}</button>
         </div>
     </div>
 </div>

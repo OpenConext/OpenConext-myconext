@@ -3,13 +3,11 @@ package surfid;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.icegreen.greenmail.store.FolderException;
 import io.restassured.RestAssured;
 import io.restassured.response.Response;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.io.IOUtils;
 import org.junit.Before;
-import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -54,7 +52,9 @@ import static org.junit.Assert.assertTrue;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
         properties = {
                 "mongodb_db=surf_id_test",
-                "cron.node-cron-job-responsible=false"
+                "cron.node-cron-job-responsible=false",
+                "sp_entity_id=https://engine.test.surfconext.nl/authentication/sp/metadata",
+                "sp_entity_metadata_url=https://engine.test.surfconext.nl/authentication/sp/metadata"
         })
 @ActiveProfiles("dev")
 @SuppressWarnings("unchecked")
@@ -89,6 +89,10 @@ public abstract class AbstractIntegrationTest {
                 .execute();
         Arrays.asList(SamlAuthenticationRequest.class)
                 .forEach(clazz -> mongoTemplate.remove(new Query(), clazz));
+        authenticationRequestRepository.insert(new SamlAuthenticationRequest("1", UUID.randomUUID().toString(),
+                "http://localhost:3000/SSO", "relay_state", "hash",
+                Date.from(LocalDateTime.now().plusMonths(1).atZone(ZoneId.systemDefault()).toInstant()),
+                "jdoe@example.com", "http://mock-sp", false));
     }
 
     protected String samlAuthnRequest() throws IOException {

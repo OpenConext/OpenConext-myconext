@@ -7,6 +7,8 @@ import surfid.exceptions.ExpiredAuthenticationException;
 import surfid.model.SamlAuthenticationRequest;
 
 import java.util.Date;
+import java.util.Optional;
+import java.util.UUID;
 
 import static org.junit.Assert.assertEquals;
 
@@ -18,22 +20,29 @@ public class AuthenticationRequestRepositoryTest extends AbstractIntegrationTest
     public void before() throws Exception {
         super.before();
         SamlAuthenticationRequest req = new SamlAuthenticationRequest(
-                "requestId", "consumerAssertionServiceURL", "relayState");
-        req.setHash("hash");
+                "requestId", "consumerAssertionServiceURL", "relayState", "http://mock-sp");
+        req.setHash(UUID.randomUUID().toString());
         request = authenticationRequestRepository.save(req);
+
+        SamlAuthenticationRequest reqRememberMe = new SamlAuthenticationRequest(
+                "requestId", "consumerAssertionServiceURL", "relayState", "http://mock-sp");
+        reqRememberMe.setHash("differentHash");
+        reqRememberMe.setRememberMe(true);
+        authenticationRequestRepository.save(reqRememberMe);
     }
 
     @Test
     public void testDeleteByExpiresInBefore() {
         doExpireWithFindProperty(SamlAuthenticationRequest.class, "requestId", "requestId");
 
-        long deleted = authenticationRequestRepository.deleteByExpiresInBefore(new Date());
+        long deleted = authenticationRequestRepository.deleteByExpiresInBeforeAndRememberMe(new Date(), false);
         assertEquals(1L, deleted);
     }
 
     @Test
     public void testFindByHash() {
-        assertEquals(true, authenticationRequestRepository.findByHash("hash").isPresent());
+        Optional<SamlAuthenticationRequest> hash = authenticationRequestRepository.findByHash(request.getHash());
+        assertEquals(true, hash.isPresent());
     }
 
     @Test(expected = ExpiredAuthenticationException.class)

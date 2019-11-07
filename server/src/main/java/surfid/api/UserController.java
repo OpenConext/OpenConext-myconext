@@ -44,6 +44,9 @@ public class UserController {
 
     @PostMapping("/magic_link_request")
     public User newMagicLinkRequest(@Valid @RequestBody MagicLinkRequest magicLinkRequest) throws IOException, MessagingException {
+        SamlAuthenticationRequest samlAuthenticationRequest = authenticationRequestRepository.findByIdAndNotExpired(magicLinkRequest.getAuthenticationRequestId())
+                .orElseThrow(ExpiredAuthenticationException::new);
+
         User user = magicLinkRequest.getUser();
         Optional<User> userByEmail = userRepository.findUserByEmail(user.getEmail());
         if (userByEmail.isPresent()) {
@@ -51,27 +54,29 @@ public class UserController {
         }
         user.validate();
         user.encryptPassword(passwordEncoder);
-        SamlAuthenticationRequest samlAuthenticationRequest = authenticationRequestRepository.findByIdAndNotExpired(magicLinkRequest.getAuthenticationRequestId())
-                .orElseThrow(ExpiredAuthenticationException::new);
         userRepository.save(user);
 
-        return this.doMagicLink(user, samlAuthenticationRequest);
+        return this.doMagicLink(user, samlAuthenticationRequest, magicLinkRequest);
     }
 
     @PutMapping("/magic_link_request")
     public User magicLinkRequest(@Valid @RequestBody MagicLinkRequest magicLinkRequest) throws IOException, MessagingException {
+        SamlAuthenticationRequest samlAuthenticationRequest = authenticationRequestRepository.findByIdAndNotExpired(magicLinkRequest.getAuthenticationRequestId())
+                .orElseThrow(ExpiredAuthenticationException::new);
+
         User providedUser = magicLinkRequest.getUser();
         User user = userRepository.findUserByEmail(providedUser.getEmail()).orElseThrow(UserNotFoundException::new);
 
-        SamlAuthenticationRequest samlAuthenticationRequest = authenticationRequestRepository.findByIdAndNotExpired(magicLinkRequest.getAuthenticationRequestId())
-                .orElseThrow(ExpiredAuthenticationException::new);
-        return doMagicLink(user, samlAuthenticationRequest);
+        return doMagicLink(user, samlAuthenticationRequest, magicLinkRequest);
     }
 
-    private User doMagicLink(User user, SamlAuthenticationRequest samlAuthenticationRequest) throws MessagingException, IOException {
+    private User doMagicLink(User user, SamlAuthenticationRequest samlAuthenticationRequest, MagicLinkRequest magicLinkRequest) throws MessagingException, IOException {
         samlAuthenticationRequest.setHash(hash());
         samlAuthenticationRequest.setUserId(user.getId());
+        samlAuthenticationRequest.setRememberMe(magicLinkRequest.isRememberMe());
+
         authenticationRequestRepository.save(samlAuthenticationRequest);
+
         mailBox.sendMagicLink(user, samlAuthenticationRequest.getHash());
         return user;
     }

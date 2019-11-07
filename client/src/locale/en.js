@@ -6,6 +6,9 @@ I18n.translations.en = {
         trust: "Trust this computer",
         email: "Email",
         emailPlaceholder: "Enter your email",
+        familyNamePlaceholder: "Enter your family / last name",
+        giveNamePlaceholder: "Enter your given / first name",
+        rememberMe: "Remember me",
         next: "Next",
         previous: "Previous"
     }

@@ -78,7 +78,7 @@ public class UserControllerTest extends AbstractIntegrationTest {
         doExpireWithFindProperty(SamlAuthenticationRequest.class, "id", authenticationRequestId);
 
         MagicLinkRequest linkRequest = new MagicLinkRequest(authenticationRequestId,
-                new User("new@example.com", "Mary", "Doe"));
+                new User("new@example.com", "Mary", "Doe"), false);
 
         magicLinkRequest(linkRequest, HttpMethod.POST)
                 .response
@@ -87,7 +87,7 @@ public class UserControllerTest extends AbstractIntegrationTest {
 
     private MagicLinkResponse magicLinkRequest(User user, HttpMethod method) throws IOException {
         String authenticationRequestId = samlAuthnRequest();
-        return magicLinkRequest(new MagicLinkRequest(authenticationRequestId, user), method);
+        return magicLinkRequest(new MagicLinkRequest(authenticationRequestId, user, false), method);
     }
 
     private MagicLinkResponse magicLinkRequest(MagicLinkRequest linkRequest, HttpMethod method) {
