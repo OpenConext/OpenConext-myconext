@@ -9,6 +9,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import surfid.AbstractIntegrationTest;
 import surfid.model.MagicLinkRequest;
 import surfid.model.SamlAuthenticationRequest;
@@ -68,7 +69,7 @@ public class UserControllerTest extends AbstractIntegrationTest {
 
         magicLinkRequest(user, HttpMethod.POST);
         user = userRepository.findUserByEmail(user.getEmail()).get();
-        System.out.println(user);
+        new BCryptPasswordEncoder().matches("secret", user.getPassword());
     }
 
     @Test
