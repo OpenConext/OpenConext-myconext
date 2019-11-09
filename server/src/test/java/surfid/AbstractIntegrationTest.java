@@ -4,8 +4,10 @@ package surfid;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.restassured.RestAssured;
+import io.restassured.http.Cookie;
 import io.restassured.response.Response;
 import org.apache.commons.codec.binary.Base64;
+
 import org.apache.commons.io.IOUtils;
 import org.junit.Before;
 import org.junit.runner.RunWith;
@@ -20,6 +22,7 @@ import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.util.ReflectionTestUtils;
+import org.springframework.util.StringUtils;
 import surfid.model.SamlAuthenticationRequest;
 import surfid.model.User;
 import surfid.repository.AuthenticationRequestRepository;
@@ -34,6 +37,7 @@ import java.time.ZoneId;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -96,20 +100,33 @@ public abstract class AbstractIntegrationTest {
     }
 
     protected String samlAuthnRequest() throws IOException {
-        String samlRequestTemplate = IOUtils.toString(new ClassPathResource("authn_request.xml").getInputStream(), Charset.defaultCharset());
-        String samlRequest = String.format(samlRequestTemplate, UUID.randomUUID().toString(), issueFormat.format(new Date()));
-        String samlRequestEncoded = deflatedBase64encoded(samlRequest);
-        Map<String, String> queryParams = Collections.singletonMap("SAMLRequest", samlRequestEncoded);
-        Response response = given().redirects().follow(false)
-                .when()
-                .queryParams(queryParams)
-                .get("/saml/guest-idp/SSO");
+        return samlAuthnRequest(null);
+    }
+
+    protected String samlAuthnRequest(String relayState) throws IOException {
+        Response response = samlAuthnRequestResponse(null, relayState);
         assertEquals(302, response.getStatusCode());
 
         String location = response.getHeader("Location");
         assertTrue(location.startsWith("http://localhost:3000/login/"));
 
         return location.substring(location.lastIndexOf("/") + 1);
+    }
+
+    protected Response samlAuthnRequestResponse(Cookie cookie, String relayState) throws IOException {
+        String samlRequestTemplate = IOUtils.toString(new ClassPathResource("authn_request.xml").getInputStream(), Charset.defaultCharset());
+        String samlRequest = String.format(samlRequestTemplate, UUID.randomUUID().toString(), issueFormat.format(new Date()));
+        String samlRequestEncoded = deflatedBase64encoded(samlRequest);
+        Map<String, String> queryParams = new HashMap<>();
+        queryParams.put("SAMLRequest", samlRequestEncoded);
+        if (StringUtils.hasText(relayState)) {
+            queryParams.put("RelayState" ,relayState);
+        }
+        return given().redirects().follow(false)
+                .when()
+                .queryParams(queryParams)
+                .cookie(cookie != null ? cookie : new Cookie.Builder("dummy", "dummy").build())
+                .get("/saml/guest-idp/SSO");
     }
 
     private String deflatedBase64encoded(String input) throws IOException {

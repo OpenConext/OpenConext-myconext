@@ -4,12 +4,13 @@
     import {validEmail} from "../validation/regexp";
     import I18n from "i18n-js";
     import {magicLinkNewUser, magicLinkExistingUser} from "../api/index";
+    import { navigate } from "svelte-routing";
 
     export let id;
     let unknownUser = false;
     const handleNext = () => magicLinkExistingUser($user.email,$user.rememberMe, id)
             .then(json => {
-                // debugger;
+                navigate("/magic", {replace:  true});
             }).catch(e => {
                 // debugger;
                 unknownUser = true;
@@ -101,6 +102,15 @@
     div.checkbox {
         display: flex;
         margin-right: auto;
+        align-items: center;
+    }
+    div.checkbox input {
+        margin: 0 10px 0 0;
+        font-size: 36px;
+        cursor: pointer;
+    }
+    div.checkbox label {
+        cursor: pointer;
     }
 </style>
 <div class="home">

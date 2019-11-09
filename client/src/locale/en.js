@@ -11,5 +11,8 @@ I18n.translations.en = {
         rememberMe: "Remember me",
         next: "Next",
         previous: "Previous"
+    },
+    magicLink: {
+        header: "An email is send to {{email}} with a magic link to proceed to your destination."
     }
 };

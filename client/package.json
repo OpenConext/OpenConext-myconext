@@ -19,7 +19,7 @@
   },
   "scripts": {
     "build": "cross-env NODE_ENV=production webpack",
-    "dev": "webpack-dev-server --content-base public"
+    "dev": "webpack-dev-server --open --content-base public"
   },
   "dependencies": {
     "emotion": "^10.0.17",

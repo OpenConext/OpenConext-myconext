@@ -1,6 +1,7 @@
 <script>
     import {Route, Router} from "svelte-routing";
     import Login from "./routes/Login.svelte";
+    import MagicLink from "./routes/MagicLink.svelte";
 
     export let url = "";
 </script>
@@ -9,12 +10,8 @@
 </style>
 
 <Router url="{url}">
-    <!--    <nav>-->
-    <!--        <Link to="/">Login</Link>-->
-    <!--    </nav>-->
-    <Route path="/login" component={Login}/>
     <Route path="/login/:id" let:params>
         <Login id="{params.id}"></Login>
     </Route>
-
+    <Route path="/magic" component={MagicLink}/>
 </Router>

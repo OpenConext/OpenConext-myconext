@@ -48,9 +48,6 @@ public class JsonErrorController implements ErrorController {
         if (error == null) {
             statusCode = result.containsKey("status") ? HttpStatus.valueOf((Integer) result.get("status")) : INTERNAL_SERVER_ERROR;
         } else {
-
-            LOG.error("Error occurred", error);
-
             //https://github.com/spring-projects/spring-boot/issues/3057
             ResponseStatus annotation = AnnotationUtils.getAnnotation(error.getClass(), ResponseStatus.class);
             statusCode = annotation != null ? annotation.value() : BAD_REQUEST;

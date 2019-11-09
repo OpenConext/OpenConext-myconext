@@ -1,5 +1,6 @@
 package surfid.api;
 
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -43,7 +44,7 @@ public class UserController {
     }
 
     @PostMapping("/magic_link_request")
-    public User newMagicLinkRequest(@Valid @RequestBody MagicLinkRequest magicLinkRequest) throws IOException, MessagingException {
+    public ResponseEntity newMagicLinkRequest(@Valid @RequestBody MagicLinkRequest magicLinkRequest) throws IOException, MessagingException {
         SamlAuthenticationRequest samlAuthenticationRequest = authenticationRequestRepository.findByIdAndNotExpired(magicLinkRequest.getAuthenticationRequestId())
                 .orElseThrow(ExpiredAuthenticationException::new);
 
@@ -60,7 +61,7 @@ public class UserController {
     }
 
     @PutMapping("/magic_link_request")
-    public User magicLinkRequest(@Valid @RequestBody MagicLinkRequest magicLinkRequest) throws IOException, MessagingException {
+    public ResponseEntity magicLinkRequest(@Valid @RequestBody MagicLinkRequest magicLinkRequest) throws IOException, MessagingException {
         SamlAuthenticationRequest samlAuthenticationRequest = authenticationRequestRepository.findByIdAndNotExpired(magicLinkRequest.getAuthenticationRequestId())
                 .orElseThrow(ExpiredAuthenticationException::new);
 
@@ -70,7 +71,7 @@ public class UserController {
         return doMagicLink(user, samlAuthenticationRequest, magicLinkRequest);
     }
 
-    private User doMagicLink(User user, SamlAuthenticationRequest samlAuthenticationRequest, MagicLinkRequest magicLinkRequest) throws MessagingException, IOException {
+    private ResponseEntity doMagicLink(User user, SamlAuthenticationRequest samlAuthenticationRequest, MagicLinkRequest magicLinkRequest) throws MessagingException, IOException {
         samlAuthenticationRequest.setHash(hash());
         samlAuthenticationRequest.setUserId(user.getId());
         samlAuthenticationRequest.setRememberMe(magicLinkRequest.isRememberMe());
@@ -78,7 +79,7 @@ public class UserController {
         authenticationRequestRepository.save(samlAuthenticationRequest);
 
         mailBox.sendMagicLink(user, samlAuthenticationRequest.getHash());
-        return user;
+        return ResponseEntity.status(201).build();
     }
 
     private String hash() {

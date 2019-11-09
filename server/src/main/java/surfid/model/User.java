@@ -1,6 +1,7 @@
 package surfid.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -8,6 +9,7 @@ import lombok.ToString;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.Transient;
 import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.security.core.CredentialsContainer;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -23,8 +25,6 @@ import java.util.Collections;
 @NoArgsConstructor
 @Getter
 @Document(collection = "users")
-@EqualsAndHashCode(of = {"id"})
-@ToString
 public class User implements Serializable, UserDetails {
 
     @Id
@@ -42,9 +42,14 @@ public class User implements Serializable, UserDetails {
     }
 
     public User(@NotNull String email, String givenName, String familyName) {
+        this(email, givenName, familyName, null);
+    }
+
+    public User(@NotNull String email, String givenName, String familyName, String password) {
         this.email = email;
         this.givenName = givenName;
         this.familyName = familyName;
+        this.password = password;
     }
 
     public void validate() {
@@ -60,16 +65,14 @@ public class User implements Serializable, UserDetails {
     }
 
     @Override
-    @Transient
     @JsonIgnore
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return Collections.singletonList(new SimpleGrantedAuthority("GUEST"));
     }
 
     @Override
-    @Transient
     public String getPassword() {
-        return null;
+        return password;
     }
 
     @Override
@@ -100,4 +103,5 @@ public class User implements Serializable, UserDetails {
     public boolean isEnabled() {
         return true;
     }
+
 }
