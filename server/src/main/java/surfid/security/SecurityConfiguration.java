@@ -146,28 +146,28 @@ public class SecurityConfiguration {
     }
 
 
-    @Configuration
-    public class AppSecurity extends WebSecurityConfigurerAdapter {
-
-        private UserRepository userRepository;
-
-        public AppSecurity(UserRepository userRepository) {
-            this.userRepository = userRepository;
-        }
-
-        @Override
-        protected void configure(HttpSecurity http) throws Exception {
-            http
-                    .antMatcher("/**")
-                    .csrf().disable()
-                    .authorizeRequests()
-                    .antMatchers("/actuator/health", "/actuator/info", "/surfid/api/**")
-                    .permitAll()
-                    .and()
-                    .authorizeRequests()
-                    .antMatchers("/**")
-                    .authenticated();
-        }
-    }
+//    @Configuration
+//    public class AppSecurity extends WebSecurityConfigurerAdapter {
+//
+//        private UserRepository userRepository;
+//
+//        public AppSecurity(UserRepository userRepository) {
+//            this.userRepository = userRepository;
+//        }
+//
+//        @Override
+//        protected void configure(HttpSecurity http) throws Exception {
+//            http
+//                    .antMatcher("/**")
+//                    .csrf().disable()
+//                    .authorizeRequests()
+//                    .antMatchers("/actuator/health", "/actuator/info", "/surfid/api/**")
+//                    .permitAll()
+//                    .and()
+//                    .authorizeRequests()
+//                    .antMatchers("/**")
+//                    .authenticated();
+//        }
+//    }
 
 }
