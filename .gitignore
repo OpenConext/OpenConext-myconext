@@ -1,6 +1,4 @@
 .idea
 bundle*
-client/public/favicon.ico
-client/public/index.html
 id_rsa
 id_rsa.pub

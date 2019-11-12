@@ -1,8 +1,10 @@
 package surfid.api;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -10,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import surfid.exceptions.DuplicateUserEmailException;
 import surfid.exceptions.ExpiredAuthenticationException;
+import surfid.exceptions.ForbiddenException;
 import surfid.exceptions.UserNotFoundException;
 import surfid.mail.MailBox;
 import surfid.model.MagicLinkRequest;
@@ -20,10 +23,10 @@ import surfid.repository.UserRepository;
 
 import javax.mail.MessagingException;
 import javax.validation.Valid;
-import javax.validation.constraints.NotNull;
 import java.io.IOException;
 import java.security.SecureRandom;
 import java.util.Base64;
+import java.util.Collections;
 import java.util.Optional;
 
 @RestController
@@ -43,7 +46,7 @@ public class UserController {
         this.mailBox = mailBox;
     }
 
-    @PostMapping("/magic_link_request")
+    @PostMapping("/idp/magic_link_request")
     public ResponseEntity newMagicLinkRequest(@Valid @RequestBody MagicLinkRequest magicLinkRequest) throws IOException, MessagingException {
         SamlAuthenticationRequest samlAuthenticationRequest = authenticationRequestRepository.findByIdAndNotExpired(magicLinkRequest.getAuthenticationRequestId())
                 .orElseThrow(ExpiredAuthenticationException::new);
@@ -53,14 +56,16 @@ public class UserController {
         if (userByEmail.isPresent()) {
             throw new DuplicateUserEmailException();
         }
-        user.validate();
-        user.encryptPassword(passwordEncoder);
-        userRepository.save(user);
 
-        return this.doMagicLink(user, samlAuthenticationRequest, magicLinkRequest);
+        User userToSave = new User(user.getEmail());
+        //prevent not-wanted attributes in the database
+        userToSave.merge(user, passwordEncoder);
+        userToSave = userRepository.save(userToSave);
+
+        return this.doMagicLink(userToSave, samlAuthenticationRequest, magicLinkRequest);
     }
 
-    @PutMapping("/magic_link_request")
+    @PutMapping("/idp/magic_link_request")
     public ResponseEntity magicLinkRequest(@Valid @RequestBody MagicLinkRequest magicLinkRequest) throws IOException, MessagingException {
         SamlAuthenticationRequest samlAuthenticationRequest = authenticationRequestRepository.findByIdAndNotExpired(magicLinkRequest.getAuthenticationRequestId())
                 .orElseThrow(ExpiredAuthenticationException::new);
@@ -68,7 +73,39 @@ public class UserController {
         User providedUser = magicLinkRequest.getUser();
         User user = userRepository.findUserByEmail(providedUser.getEmail()).orElseThrow(UserNotFoundException::new);
 
+        if (magicLinkRequest.isUsePassword()) {
+            if (!passwordEncoder.matches(providedUser.getPassword(), user.getPassword())) {
+                throw new ForbiddenException();
+            }
+        }
+
         return doMagicLink(user, samlAuthenticationRequest, magicLinkRequest);
+    }
+
+    @PutMapping("/sp/update")
+    public ResponseEntity updateUser(Authentication authentication, @RequestBody User deltaUser) {
+        User user = verifyAndFetchUser(authentication, deltaUser);
+        user.merge(deltaUser, passwordEncoder);
+        userRepository.save(user);
+
+        return ResponseEntity.status(201).body(user);
+    }
+
+    @PutMapping("/sp/delete")
+    public ResponseEntity deleteUser(Authentication authentication, @Valid @RequestBody User deltaUser) {
+        User user = verifyAndFetchUser(authentication, deltaUser);
+        userRepository.delete(user);
+
+        return ResponseEntity.status(201).build();
+    }
+
+    private User verifyAndFetchUser(Authentication authentication, User deltaUser) {
+        User principal = (User) authentication.getPrincipal();
+        if (!principal.getId().equals(deltaUser.getId())) {
+            throw new ForbiddenException();
+        }
+        //Strictly not necessary, but mid-air collisions can occur in theory
+        return userRepository.findOneUserByEmail(principal.getEmail());
     }
 
     private ResponseEntity doMagicLink(User user, SamlAuthenticationRequest samlAuthenticationRequest, MagicLinkRequest magicLinkRequest) throws MessagingException, IOException {
@@ -79,7 +116,7 @@ public class UserController {
         authenticationRequestRepository.save(samlAuthenticationRequest);
 
         mailBox.sendMagicLink(user, samlAuthenticationRequest.getHash());
-        return ResponseEntity.status(201).build();
+        return ResponseEntity.status(201).body(Collections.singletonMap("result", "ok"));
     }
 
     private String hash() {

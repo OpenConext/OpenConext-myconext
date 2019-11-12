@@ -9,9 +9,9 @@
         <relativePath>../pom.xml</relativePath>
     </parent>
 
-    <artifactId>client</artifactId>
+    <artifactId>sp</artifactId>
     <packaging>pom</packaging>
-    <name>client</name>
+    <name>sp</name>
     <version>0.0.1-SNAPSHOT</version>
 
     <build>

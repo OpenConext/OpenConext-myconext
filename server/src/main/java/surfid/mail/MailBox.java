@@ -17,15 +17,15 @@ import java.util.Map;
 public class MailBox {
 
     private JavaMailSender mailSender;
-    private String baseUrl;
+    private String magicLinkUrl;
     private String emailFrom;
 
     private final MustacheFactory mustacheFactory = new DefaultMustacheFactory();
 
-    public MailBox(JavaMailSender mailSender, String emailFrom, String baseUrl) {
+    public MailBox(JavaMailSender mailSender, String emailFrom, String magicLinkUrl) {
         this.mailSender = mailSender;
         this.emailFrom = emailFrom;
-        this.baseUrl = baseUrl;
+        this.magicLinkUrl = magicLinkUrl;
     }
 
     public void sendMagicLink(User user, String hash) throws MessagingException, IOException {
@@ -35,7 +35,7 @@ public class MailBox {
         variables.put("title", title);
         variables.put("user", user);
         variables.put("hash", hash);
-        variables.put("base_url", baseUrl);
+        variables.put("magicLinkUrl", magicLinkUrl);
         sendMail("mail_templates/magic_link.html", title, variables, user.getEmail());
     }
 

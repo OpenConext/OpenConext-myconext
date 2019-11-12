@@ -9,8 +9,9 @@ I18n.translations.en = {
         familyNamePlaceholder: "Enter your family / last name",
         giveNamePlaceholder: "Enter your given / first name",
         rememberMe: "Remember me",
-        next: "Next",
-        previous: "Previous"
+        next: "Login",
+        create: "Create",
+        createAccount: "Create a new account"
     },
     magicLink: {
         header: "An email is send to {{email}} with a magic link to proceed to your destination."

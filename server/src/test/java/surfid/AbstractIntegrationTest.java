@@ -14,9 +14,11 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.web.server.LocalServerPort;
+import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.data.mongodb.core.BulkOperations;
 import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.test.context.ActiveProfiles;
@@ -60,7 +62,7 @@ import static org.junit.Assert.assertTrue;
                 "sp_entity_id=https://engine.test.surfconext.nl/authentication/sp/metadata",
                 "sp_entity_metadata_url=https://engine.test.surfconext.nl/authentication/sp/metadata"
         })
-@ActiveProfiles("dev")
+@ActiveProfiles({"dev", "test"})
 @SuppressWarnings("unchecked")
 public abstract class AbstractIntegrationTest {
 
@@ -79,24 +81,16 @@ public abstract class AbstractIntegrationTest {
     @Autowired
     protected AuthenticationRequestRepository authenticationRequestRepository;
 
-    private TypeReference<List<User>> userTypeReference = new TypeReference<List<User>>() {
-    };
-
     private SimpleDateFormat issueFormat = new SimpleDateFormat("yyyy-MM-dd'T'H:mm:ss");
 
     @Before
     public void before() throws Exception {
         RestAssured.port = port;
-        mongoTemplate.bulkOps(BulkOperations.BulkMode.ORDERED, User.class)
-                .remove(new Query())
-                .insert(objectMapper.readValue(new ClassPathResource("users.json").getInputStream(), userTypeReference))
-                .execute();
-        Arrays.asList(SamlAuthenticationRequest.class)
-                .forEach(clazz -> mongoTemplate.remove(new Query(), clazz));
-        authenticationRequestRepository.insert(new SamlAuthenticationRequest("1", UUID.randomUUID().toString(),
-                "http://localhost:3000/SSO", "relay_state", "hash",
-                Date.from(LocalDateTime.now().plusMonths(1).atZone(ZoneId.systemDefault()).toInstant()),
-                "jdoe@example.com", "http://mock-sp", false));
+        Arrays.asList(SamlAuthenticationRequest.class, User.class)
+                .forEach(clazz -> mongoTemplate.bulkOps(BulkOperations.BulkMode.ORDERED, User.class)
+                        .remove(new Query())
+                        .insert(readFromFile(clazz))
+                        .execute());
     }
 
     protected String samlAuthnRequest() throws IOException {
@@ -138,6 +132,15 @@ public abstract class AbstractIntegrationTest {
         return new String(Base64.encodeBase64(bytesOut.toByteArray()));
     }
 
+    private <T> List<T> readFromFile(Class<T> clazz) {
+        try {
+            String name = AnnotationUtils.findAnnotation(clazz, Document.class).collection() + ".json";
+            return objectMapper.readValue(new ClassPathResource(name).getInputStream(), new TypeReference<List<T>>() {
+            });
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
     protected <T> void doExpireWithFindProperty(Class<T> clazz, String property, String value) {
         T t = mongoTemplate.findOne(Query.query(Criteria.where(property).is(value)), clazz);

@@ -1,0 +1,13 @@
+[
+  {
+    "_id": "1",
+    "requestId": "4ee8f597-8748-4188-a415-85a1e54a631b",
+    "consumerAssertionServiceURL": "http://localhost:3000/SSO",
+    "relayState": "relay_state",
+    "hash": "hash",
+    "expiresIn": "2019-12-12T07:55:50.229Z",
+    "userId": "jdoe@example.com",
+    "requesterEntityId": "http://mock-sp",
+    "rememberMe": false
+  }
+]

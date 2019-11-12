@@ -22,12 +22,14 @@ public class BeanConfig extends SamlIdentityProviderServerBeanConfiguration {
     private final String spEntityId;
     private final int rememberMeMaxAge;
     private final boolean secureCookie;
+    private final String magicLinkUrl;
 
     public BeanConfig(@Value("${base_path}") String basePath,
                       @Value("${redirect_url}") String redirectUrl,
                       @Value("${sp_entity_id}") String spEntityId,
                       @Value("${remember_me_max_age_seconds}") int rememberMeMaxAge,
                       @Value("${secure_cookie}") boolean secureCookie,
+                      @Value("${email.magic-link-url}") String magicLinkUrl,
                       AuthenticationRequestRepository authenticationRequestRepository,
                       UserRepository userRepository) {
         this.immutableSamlConfigurationRepository = new ImmutableSamlConfigurationRepository(basePath);
@@ -37,6 +39,7 @@ public class BeanConfig extends SamlIdentityProviderServerBeanConfiguration {
         this.secureCookie = secureCookie;
         this.authenticationRequestRepository = authenticationRequestRepository;
         this.userRepository = userRepository;
+        this.magicLinkUrl = magicLinkUrl;
     }
 
     private ImmutableSamlConfigurationRepository immutableSamlConfigurationRepository;
@@ -49,14 +52,7 @@ public class BeanConfig extends SamlIdentityProviderServerBeanConfiguration {
     @Override
     public Filter idpAuthnRequestFilter() {
         return new GuestIdpAuthenticationRequestFilter(getSamlProvisioning(), samlAssertionStore(), redirectUrl,
-                authenticationRequestRepository, userRepository, spEntityId, rememberMeMaxAge, secureCookie);
-    }
-
-    @Override
-    public ResponseEnhancer samlResponseEnhancer() {
-        return response -> {
-            return response;
-        };
+                authenticationRequestRepository, userRepository, spEntityId, rememberMeMaxAge, secureCookie, magicLinkUrl);
     }
 
     public Filter samlConfigurationFilter(SamlServerConfiguration serverConfig) {

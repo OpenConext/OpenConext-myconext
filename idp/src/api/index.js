@@ -1,4 +1,6 @@
 //Internal API
+let csrfToken = null;
+
 function validateResponse(res) {
 
     if (!res.ok) {
@@ -8,7 +10,7 @@ function validateResponse(res) {
         }
         throw res;
     }
-
+    csrfToken = res.headers.get("x-csrf-token");
     return res.json();
 }
 
@@ -19,7 +21,8 @@ function validFetch(path, options) {
         redirect: "manual",
         headers: {
             Accept: "application/json",
-            "Content-Type": "application/json"
+            "Content-Type": "application/json",
+            "X-CSRF-TOKEN": csrfToken
         }
     };
     return fetch(path, fetchOptions).then(res => validateResponse(res));
@@ -36,14 +39,14 @@ function postPutJson(path, body, method) {
 //Base
 export function magicLinkNewUser(email, givenName, familyName, rememberMe, authenticationRequestId) {
     const body = {user: {email, givenName, familyName}, authenticationRequestId, rememberMe};
-    return postPutJson("/surfid/api/magic_link_request", body, "POST");
+    return postPutJson("/surfid/api/idp/magic_link_request", body, "POST");
 }
 
-export function magicLinkExistingUser(email, rememberMe, authenticationRequestId) {
-    const body = {user: {email}, authenticationRequestId, rememberMe};
-    return postPutJson("/surfid/api/magic_link_request", body, "PUT");
+export function magicLinkExistingUser(email, password, rememberMe, authenticationRequestId, usePassword) {
+    const body = {user: {email, password}, authenticationRequestId, rememberMe, usePassword};
+    return postPutJson("/surfid/api/idp/magic_link_request", body, "PUT");
 }
 
 export function reportError(error) {
-    return postPutJson("/oidc/api/error", error, "POST");
+    return postPutJson("/surfid/api/error", error, "POST");
 }

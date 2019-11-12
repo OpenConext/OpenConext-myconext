@@ -3,7 +3,6 @@ package surfid.security;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.saml.SamlMessageStore;
 import org.springframework.security.saml.SamlRequestMatcher;
@@ -35,8 +34,9 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.net.URLEncoder;
+import java.nio.charset.Charset;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -58,6 +58,7 @@ public class GuestIdpAuthenticationRequestFilter extends IdpAuthenticationReques
     private final String spEntityId;
     private final int rememberMeMaxAge;
     private final boolean secureCookie;
+    private final String magicLinkUrl;
 
     public GuestIdpAuthenticationRequestFilter(SamlProviderProvisioning<IdentityProviderService> provisioning,
                                                SamlMessageStore<Assertion, HttpServletRequest> assertionStore,
@@ -66,7 +67,8 @@ public class GuestIdpAuthenticationRequestFilter extends IdpAuthenticationReques
                                                UserRepository userRepository,
                                                String spEntityId,
                                                int rememberMeMaxAge,
-                                               boolean secureCookie) {
+                                               boolean secureCookie,
+                                               String magicLinkUrl) {
         super(provisioning, assertionStore);
         this.ssoSamlRequestMatcher = new SamlRequestMatcher(provisioning, "SSO");
         this.magicSamlRequestMatcher = new SamlRequestMatcher(provisioning, "magic");
@@ -76,6 +78,7 @@ public class GuestIdpAuthenticationRequestFilter extends IdpAuthenticationReques
         this.spEntityId = spEntityId;
         this.rememberMeMaxAge = rememberMeMaxAge;
         this.secureCookie = secureCookie;
+        this.magicLinkUrl = magicLinkUrl;
     }
 
     @Override
@@ -160,6 +163,14 @@ public class GuestIdpAuthenticationRequestFilter extends IdpAuthenticationReques
         User user = userRepository.findById(samlAuthenticationRequest.getUserId())
                 .orElseThrow(UserNotFoundException::new);
 
+        if (user.isNewUser()) {
+            user.setNewUser(false);
+            userRepository.save(user);
+            String name = Charset.defaultCharset().name();
+            response.sendRedirect(this.redirectUrl + "/confirm?h=" + hash +
+                    "&redirect=" + URLEncoder.encode(this.magicLinkUrl, name) +
+                    "&email=" + URLEncoder.encode(user.getEmail(), name));
+        }
         IdentityProviderService provider = getProvisioning().getHostedProvider();
         ServiceProviderMetadata serviceProviderMetadata = provider.getRemoteProvider(spEntityId);
 

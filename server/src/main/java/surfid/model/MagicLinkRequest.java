@@ -19,4 +19,6 @@ public class MagicLinkRequest {
 
     private boolean rememberMe;
 
+    private boolean usePassword;
+
 }

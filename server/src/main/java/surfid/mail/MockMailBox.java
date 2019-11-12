@@ -1,5 +1,7 @@
 package surfid.mail;
 
+import org.springframework.core.env.Environment;
+import org.springframework.core.env.Profiles;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.util.FileCopyUtils;
@@ -11,8 +13,11 @@ import java.io.IOException;
 
 public class MockMailBox extends MailBox {
 
-    public MockMailBox(JavaMailSender mailSender, String emailFrom, String baseUrl) {
+    private Environment env;
+
+    MockMailBox(JavaMailSender mailSender, String emailFrom, String baseUrl, Environment env) {
         super(mailSender, emailFrom, baseUrl);
+        this.env = env;
     }
 
     @Override
@@ -23,7 +28,7 @@ public class MockMailBox extends MailBox {
     @Override
     protected void setText(String html, MimeMessageHelper helper) throws MessagingException, IOException {
         String osName = System.getProperty("os.name").toLowerCase();
-        if (osName.contains("mac os x")) {
+        if (osName.contains("mac os x") && !env.acceptsProfiles(Profiles.of("test"))) {
             openInBrowser(html);
         }
     }

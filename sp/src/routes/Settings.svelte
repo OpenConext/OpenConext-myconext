@@ -17,8 +17,8 @@
             });
 
 
-    const previous = () => {
-        unknownUser = false;
+    const createAccount = () => {
+        unknownUser = true;
     }
 
 </script>
@@ -140,11 +140,9 @@
             </div>
         </div>
         <div class="buttons">
-            {#if unknownUser && false}
-                <button on:click={previous}>{I18n.t("login.previous")}</button>
-            {/if}
+            <a href="/create" on:click={createAccount}>{I18n.t("login.createAccount")}</a>
             <button class:disabled={!validEmail($user.email)} on:click={handleNext}
-                    disabled={!validEmail($user.email)}>{I18n.t("login.next")}</button>
+                    disabled={!validEmail($user.email)}>{unknownUser ? I18n.t("login.create") : I18n.t("login.next")}</button>
         </div>
     </div>
 </div>

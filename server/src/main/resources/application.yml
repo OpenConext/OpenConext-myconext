@@ -1,6 +1,7 @@
 logging:
   level:
     org.springframework.data.mongodb: INFO
+    org.springframework.data.convert: ERROR
     org.springframework.security: INFO
 
 server:
@@ -8,7 +9,7 @@ server:
 
 email:
   from: test@openconext.org
-  base-url: http://localhost:8081
+  magic-link-url: http://localhost:8081/saml/guest-idp/magic
 
 cron:
   node-cron-job-responsible: true

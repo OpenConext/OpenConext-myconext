@@ -20,7 +20,8 @@
 
     <modules>
         <module>server</module>
-        <module>client</module>
+        <module>idp</module>
+        <module>sp</module>
     </modules>
 
     <build>

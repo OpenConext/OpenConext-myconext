@@ -8,6 +8,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 import org.springframework.context.annotation.Profile;
+import org.springframework.core.env.Environment;
 import org.springframework.mail.javamail.JavaMailSender;
 
 @Configuration
@@ -17,8 +18,8 @@ public class MailConfiguration {
     @Value("${email.from}")
     private String emailFrom;
 
-    @Value("${email.base-url}")
-    private String baseUrl;
+    @Value("${email.magic-link-url}")
+    private String magicLinkUrl;
 
     @Autowired
     private JavaMailSender mailSender;
@@ -26,14 +27,14 @@ public class MailConfiguration {
     @Bean
     @Profile({"!dev"})
     public MailBox mailSenderProd() {
-        return new MailBox(mailSender, emailFrom, baseUrl);
+        return new MailBox(mailSender, emailFrom, magicLinkUrl);
     }
 
     @Bean
     @Profile({"dev"})
     @Primary
-    public MailBox mailSenderDev() {
-        return new MockMailBox(mailSender, emailFrom, baseUrl);
+    public MailBox mailSenderDev(Environment environment) {
+        return new MockMailBox(mailSender, emailFrom, magicLinkUrl, environment);
     }
 
 

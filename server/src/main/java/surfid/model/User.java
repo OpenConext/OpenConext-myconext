@@ -1,26 +1,25 @@
 package surfid.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.ToString;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.Transient;
 import org.springframework.data.mongodb.core.mapping.Document;
-import org.springframework.security.core.CredentialsContainer;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
+import surfid.exceptions.WeakPasswordException;
 
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.Collections;
+
+import static surfid.validation.PasswordStrength.strongEnough;
 
 @NoArgsConstructor
 @Getter
@@ -34,6 +33,7 @@ public class User implements Serializable, UserDetails {
     private String givenName;
     private String familyName;
     private String password;
+    private boolean newUser;
 
     private long updatedAt = System.currentTimeMillis() / 1000L;
 
@@ -50,16 +50,20 @@ public class User implements Serializable, UserDetails {
         this.givenName = givenName;
         this.familyName = familyName;
         this.password = password;
+        this.newUser = true;
     }
 
     public void validate() {
-        Assert.notNull(email, "GivenName is required");
+        Assert.notNull(email, "Email is required");
         Assert.notNull(givenName, "GivenName is required");
-        Assert.notNull(familyName, "GivenName is required");
+        Assert.notNull(familyName, "FamilyName is required");
     }
 
     public void encryptPassword(PasswordEncoder encoder) {
         if (StringUtils.hasText(password)) {
+            if (!strongEnough(password)) {
+                throw new WeakPasswordException();
+            }
             this.password = encoder.encode(this.password);
         }
     }
@@ -102,6 +106,20 @@ public class User implements Serializable, UserDetails {
     @Transient
     public boolean isEnabled() {
         return true;
+    }
+
+    public void setNewUser(boolean newUser) {
+        this.newUser = newUser;
+    }
+
+    public void merge(User user, PasswordEncoder encoder) {
+        this.familyName = user.getFamilyName();
+        this.givenName = user.getGivenName();
+        if (StringUtils.hasText(user.getPassword())) {
+            this.password = user.getPassword();
+            encryptPassword(encoder);
+        }
+        this.validate();
     }
 
 }

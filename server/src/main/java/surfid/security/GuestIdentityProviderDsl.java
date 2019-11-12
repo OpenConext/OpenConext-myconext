@@ -3,6 +3,7 @@ package surfid.security;
 import org.springframework.context.ApplicationContext;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.saml.provider.SamlServerConfiguration;
+import org.springframework.security.saml.provider.identity.IdpInitiatedLoginFilter;
 import org.springframework.security.saml.provider.identity.config.SamlIdentityProviderSecurityDsl;
 import org.springframework.security.web.context.SecurityContextPersistenceFilter;
 import surfid.config.BeanConfig;
@@ -13,7 +14,7 @@ public class GuestIdentityProviderDsl extends SamlIdentityProviderSecurityDsl {
 
     private final BeanConfig beanConfig;
 
-    public GuestIdentityProviderDsl(BeanConfig beanConfig) {
+    GuestIdentityProviderDsl(BeanConfig beanConfig) {
         this.beanConfig = beanConfig;
     }
 
@@ -28,7 +29,6 @@ public class GuestIdentityProviderDsl extends SamlIdentityProviderSecurityDsl {
 
         Filter samlConfigurationFilter = beanConfig.samlConfigurationFilter(serverConfig);
         Filter metadataFilter = beanConfig.idpMetadataFilter();
-        Filter idpInitiateLoginFilter = beanConfig.idpInitatedLoginFilter();
         Filter idpAuthnRequestFilter = beanConfig.idpAuthnRequestFilter();
         http
                 .addFilterAfter(
@@ -40,16 +40,8 @@ public class GuestIdentityProviderDsl extends SamlIdentityProviderSecurityDsl {
                         samlConfigurationFilter.getClass()
                 )
                 .addFilterAfter(
-                        idpInitiateLoginFilter,
-                        metadataFilter.getClass()
-                )
-                .addFilterAfter(
                         idpAuthnRequestFilter,
-                        idpInitiateLoginFilter.getClass()
+                        metadataFilter.getClass()
                 );
-//                .addFilterAfter(
-//                        new UserPreAuthenticatedProcessingFilter(authenticationManagerBean(), userRepository),
-//                        metadataFilter.getClass()
-//                );
     }
 }

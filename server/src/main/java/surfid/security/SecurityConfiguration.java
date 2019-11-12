@@ -3,30 +3,48 @@ package surfid.security;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
+import org.springframework.core.env.Environment;
+import org.springframework.core.env.Profiles;
 import org.springframework.core.io.Resource;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.saml.key.SimpleKey;
 import org.springframework.security.saml.provider.config.RotatingKeys;
 import org.springframework.security.saml.provider.identity.config.ExternalServiceProviderConfiguration;
 import org.springframework.security.saml.provider.identity.config.SamlIdentityProviderSecurityConfiguration;
 import org.springframework.security.saml.provider.identity.config.SamlIdentityProviderSecurityDsl;
 import org.springframework.security.saml.saml2.metadata.NameId;
+import org.springframework.security.web.authentication.preauth.AbstractPreAuthenticatedProcessingFilter;
+import org.springframework.security.web.authentication.preauth.PreAuthenticatedAuthenticationProvider;
+import org.springframework.security.web.authentication.www.BasicAuthenticationEntryPoint;
+import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
+import org.springframework.security.web.csrf.CsrfFilter;
 import surfid.config.BeanConfig;
 import surfid.repository.UserRepository;
+import surfid.shibboleth.ShibbolethPreAuthenticatedProcessingFilter;
+import surfid.shibboleth.ShibbolethUserDetailService;
+import surfid.shibboleth.mock.MockShibbolethFilter;
 
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
 import java.security.NoSuchAlgorithmException;
+import java.util.Arrays;
 import java.util.Base64;
+import java.util.List;
+import java.util.stream.Stream;
 
 import static java.util.Arrays.asList;
+import static java.util.stream.Collectors.toList;
 import static org.springframework.security.saml.saml2.signature.AlgorithmMethod.RSA_SHA512;
 import static org.springframework.security.saml.saml2.signature.DigestMethod.SHA512;
 
@@ -35,15 +53,6 @@ public class SecurityConfiguration {
 
     private static final Log LOG = LogFactory.getLog(SecurityConfiguration.class);
 
-    //    @Autowired
-//    public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
-//        //because Autowired this will end up in the global ProviderManager
-//        PreAuthenticatedAuthenticationProvider authenticationProvider = new PreAuthenticatedAuthenticationProvider();
-//        authenticationProvider.setPreAuthenticatedUserDetailsService(new GuestUserDetailService());
-//        auth.authenticationProvider(authenticationProvider);
-//    }
-//
-//
     @Configuration
     @Order(1)
     public static class SamlSecurity extends SamlIdentityProviderSecurityConfiguration {
@@ -53,17 +62,14 @@ public class SecurityConfiguration {
         private final String spMetaDataUrl;
         private final String idpEntityId;
         private BeanConfig beanConfig;
-        private UserRepository userRepository;
 
         public SamlSecurity(BeanConfig beanConfig,
-                            UserRepository userRepository,
                             @Value("${private_key_path}") Resource privateKeyPath,
                             @Value("${certificate_path}") Resource certificatePath,
                             @Value("${idp_entity_id}") String idpEntityId,
                             @Value("${sp_entity_id}") String spEntityId,
                             @Value("${sp_entity_metadata_url}") String spMetaDataUrl) {
             super("/saml/guest-idp/", beanConfig);
-            this.userRepository = userRepository;
             this.beanConfig = beanConfig;
             this.privateKeyPath = privateKeyPath;
             this.certificatePath = certificatePath;
@@ -146,28 +152,58 @@ public class SecurityConfiguration {
     }
 
 
-//    @Configuration
-//    public class AppSecurity extends WebSecurityConfigurerAdapter {
-//
-//        private UserRepository userRepository;
-//
-//        public AppSecurity(UserRepository userRepository) {
-//            this.userRepository = userRepository;
-//        }
-//
-//        @Override
-//        protected void configure(HttpSecurity http) throws Exception {
-//            http
-//                    .antMatcher("/**")
-//                    .csrf().disable()
-//                    .authorizeRequests()
-//                    .antMatchers("/actuator/health", "/actuator/info", "/surfid/api/**")
-//                    .permitAll()
-//                    .and()
-//                    .authorizeRequests()
-//                    .antMatchers("/**")
-//                    .authenticated();
-//        }
-//    }
+    @Autowired
+    public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
+        //because Autowired this will end up in the global ProviderManager
+        PreAuthenticatedAuthenticationProvider authenticationProvider = new PreAuthenticatedAuthenticationProvider();
+        authenticationProvider.setPreAuthenticatedUserDetailsService(new ShibbolethUserDetailService());
+        auth.authenticationProvider(authenticationProvider);
+    }
+
+    @Order
+    @Configuration
+    public static class InternalSecurityConfigurationAdapter extends WebSecurityConfigurerAdapter {
+
+
+        private Environment environment;
+
+         private UserRepository userRepository;
+
+        public InternalSecurityConfigurationAdapter(Environment environment, UserRepository userRepository) {
+            this.environment = environment;
+            this.userRepository = userRepository;
+        }
+
+        @Override
+        public void configure(WebSecurity web) throws Exception {
+            web.ignoring().antMatchers("/actuator/**", "/surfid/api/idp/**");
+        }
+
+        @Override
+        protected void configure(HttpSecurity http) throws Exception {
+            http
+                    .requestMatchers().antMatchers("/surfid/api/sp/**")
+                    .and()
+                    .sessionManagement()
+                    .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
+                    .and()
+                    .csrf()
+                    .requireCsrfProtectionMatcher(new CsrfProtectionMatcher())
+                    .and()
+                    .addFilterAfter(new CsrfTokenResponseHeaderBindingFilter(), CsrfFilter.class)
+                    .addFilterBefore(
+                            new ShibbolethPreAuthenticatedProcessingFilter(authenticationManagerBean(), userRepository),
+                            AbstractPreAuthenticatedProcessingFilter.class
+                    )
+                    .authorizeRequests()
+                    .antMatchers("/account/**").hasRole("GUEST");
+
+            if (environment.acceptsProfiles(Profiles.of("dev"))) {
+                //we can't use @Profile, because we need to add it before the real filter
+                http.csrf().disable();
+                http.addFilterBefore(new MockShibbolethFilter(), ShibbolethPreAuthenticatedProcessingFilter.class);
+            }
+        }
+    }
 
 }
