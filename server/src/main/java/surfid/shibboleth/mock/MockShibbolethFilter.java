@@ -1,5 +1,7 @@
 package surfid.shibboleth.mock;
 
+import org.springframework.core.env.Environment;
+import org.springframework.core.env.Profiles;
 import org.springframework.web.filter.GenericFilterBean;
 import surfid.shibboleth.ShibbolethPreAuthenticatedProcessingFilter;
 
@@ -13,6 +15,12 @@ import java.io.IOException;
 import java.util.HashMap;
 
 public class MockShibbolethFilter extends GenericFilterBean {
+
+    private Environment environment;
+
+    public MockShibbolethFilter(Environment environment) {
+        this.environment = environment;
+    }
 
     private static class SetHeader extends HttpServletRequestWrapper {
 
@@ -37,12 +45,19 @@ public class MockShibbolethFilter extends GenericFilterBean {
     }
 
     @Override
-    public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain)
+    public void doFilter(ServletRequest request, ServletResponse response, FilterChain filterChain)
             throws IOException, ServletException {
-        SetHeader wrapper = new SetHeader((HttpServletRequest) servletRequest);
-        wrapper.setHeader(ShibbolethPreAuthenticatedProcessingFilter.SHIB_EMAIL, "jdoe@example.com");
-        wrapper.setHeader(ShibbolethPreAuthenticatedProcessingFilter.SHIB_GIVEN_NAME, "John");
-        wrapper.setHeader(ShibbolethPreAuthenticatedProcessingFilter.SHIB_SUR_NAME, "Doe");
-        filterChain.doFilter(wrapper, servletResponse);
+        HttpServletRequest servletRequest = (HttpServletRequest) request;
+
+        if (environment.acceptsProfiles(Profiles.of("test")) ||
+                (environment.acceptsProfiles(Profiles.of("dev")) && ((HttpServletRequest) request).getRequestURI().startsWith("/startSSO"))) {
+            SetHeader wrapper = new SetHeader(servletRequest);
+            wrapper.setHeader(ShibbolethPreAuthenticatedProcessingFilter.SHIB_EMAIL, "jdoe@example.com");
+            wrapper.setHeader(ShibbolethPreAuthenticatedProcessingFilter.SHIB_GIVEN_NAME, "John");
+            wrapper.setHeader(ShibbolethPreAuthenticatedProcessingFilter.SHIB_SUR_NAME, "Doe");
+            filterChain.doFilter(wrapper, response);
+        } else {
+            filterChain.doFilter(request, response);
+        }
     }
 }

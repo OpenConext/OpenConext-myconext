@@ -16,6 +16,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 import surfid.AbstractIntegrationTest;
 import surfid.model.MagicLinkRequest;
 import surfid.model.SamlAuthenticationRequest;
+import surfid.model.UpdateUserRequest;
 import surfid.model.User;
 
 import java.io.IOException;
@@ -32,6 +33,8 @@ import static org.junit.Assert.assertTrue;
 import static surfid.security.GuestIdpAuthenticationRequestFilter.GUEST_IDP_REMEMBER_ME_COOKIE_NAME;
 
 public class UserControllerTest extends AbstractIntegrationTest {
+
+    private BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
     @Test
     public void existingUser() throws IOException {
@@ -117,11 +120,11 @@ public class UserControllerTest extends AbstractIntegrationTest {
     @Test
     public void updateUser() {
         User user = userRepository.findOneUserByEmail("jdoe@example.com");
-        user.merge(new User(user.getEmail(), "Mary", "Poppins", "secretA12"), new BCryptPasswordEncoder());
+        user.merge(new User(user.getEmail(), "Mary", "Poppins", "secretA12"), passwordEncoder);
         given()
                 .when()
                 .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
-                .body(user)
+                .body(new UpdateUserRequest(user, true, false, null))
                 .put("/surfid/api/sp/update")
                 .then()
                 .statusCode(201);
@@ -130,7 +133,7 @@ public class UserControllerTest extends AbstractIntegrationTest {
 
         assertEquals(user.getGivenName(), userFromDB.getGivenName());
         assertEquals(user.getFamilyName(), userFromDB.getFamilyName());
-        assertTrue(userFromDB.getPassword().startsWith("$"));
+        assertTrue(passwordEncoder.matches(user.getPassword(), userFromDB.getPassword()));
     }
 
     @Test
@@ -138,7 +141,7 @@ public class UserControllerTest extends AbstractIntegrationTest {
         given()
                 .when()
                 .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
-                .body(new User())
+                .body(new UpdateUserRequest(new User(), false, false, null))
                 .put("/surfid/api/sp/update")
                 .then()
                 .statusCode(403);

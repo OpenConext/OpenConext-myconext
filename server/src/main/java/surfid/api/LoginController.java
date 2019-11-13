@@ -15,17 +15,18 @@ import java.nio.charset.Charset;
 @RestController
 public class LoginController {
 
-    @RequestMapping(value = "/startSSO")
-    public void login(HttpServletResponse response, @RequestParam("redirect_url") String redirectUrl) throws IOException {
-        redirectUrl = URLDecoder.decode(redirectUrl, Charset.defaultCharset().name());
-        response.sendRedirect(redirectUrl);
-    }
-
     @RequestMapping(value = "/login")
-    public void start(HttpServletRequest request, HttpServletResponse response, @RequestParam("redirect_url") String redirectUrl)
+    public void login(HttpServletRequest request, HttpServletResponse response, @RequestParam("redirect_url") String redirectUrl)
             throws IOException, ServletException {
         SecurityContextHolder.clearContext();
         request.logout();
         response.sendRedirect("/startSSO?redirect_url=" + redirectUrl);
     }
+
+    @RequestMapping(value = "/startSSO")
+    public void startSSO(HttpServletResponse response, @RequestParam("redirect_url") String redirectUrl) throws IOException {
+        redirectUrl = URLDecoder.decode(redirectUrl, Charset.defaultCharset().name());
+        response.sendRedirect(redirectUrl);
+    }
+
 }

@@ -22,7 +22,6 @@ import static org.awaitility.Awaitility.await;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, value = {"spring.profiles.active=prod"})
 @ActiveProfiles(value = "prod", inheritProfiles = false)
 public class MailBoxTest extends AbstractIntegrationTest {
 

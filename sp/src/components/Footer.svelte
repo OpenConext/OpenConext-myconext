@@ -103,18 +103,15 @@
             <span>
             {@html marker}
                 <a href="https://www.google.com/maps/place/SURFnet/@52.0890566,5.1112714,17z/data=!3m1!4b1!4m5!3m4!1s0x47c66f5d2eed70a7:0x9a30e9ae49e2b7f3!8m2!3d52.0890566!4d5.1134654"
-                   title="Bekijk de locatie van SURFnet via GoogleMaps" target="_blank"
-                   class="icon-pin-marker">SURFnet bv | Postbus 19035, 3501 DA Utrecht</a>
+                   title="Bekijk de locatie van SURFnet via GoogleMaps" target="_blank">SURFnet bv | Postbus 19035, 3501 DA Utrecht</a>
                 </span>
             <span>
             {@html phone}
-                <a href="tel:+31887873000" title="Neem telefonisch contact op via +31 88 787 30 00"
-                   class="icon-phone-white">+31 88 787 30 00</a>
+                <a href="tel:+31887873000" title="Neem telefonisch contact op via +31 88 787 30 00">+31 88 787 30 00</a>
             </span>
             <span>
             {@html mail}
-                <a href="mailto:surfconext@surfnet.nl" title="Verstuur een e-mail naar surfconext@SURFnet.nl"
-                   class="icon-mail-white">surfconext@SURFnet.nl</a>
+                <a href="mailto:surfconext@surfnet.nl" title="Verstuur een e-mail naar surfconext@SURFnet.nl">surfconext@SURFnet.nl</a>
                 </span>
 
         </div>

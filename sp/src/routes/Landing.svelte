@@ -69,6 +69,7 @@
 
     h3 {
         font-family: "Montserrat", sans-serif;
+        padding: 15px 0;
         font-weight: 400;
         font-size: 28px;
         color: #676767;
@@ -116,29 +117,19 @@
     <div class="container body-content">
 
         <div class="top-nav row">
-            <h2 class="title">Log in op SURFopzichter</h2>
+            <h2 class="title">{I18n.t("landing.loginHeader")}</h2>
         </div>
 
         <div class="block">
 
-            <p>SURFopzichter is het selfservice portal voor ICT beheerders en contactpersonen van de op SURFnet
-                aangesloten instellingen.<br>
-                Voor toegang tot SURFdashboard dient u minimaal een SURFnet Autorisatie Rol te hebben.</p>
-
-
-            <h3>Bent u een geautoriseerd medewerker?</h3>
-            <p>Log in bij SURFnet met de login gegevens van uw instelling om door te gaan naar het
-                SURFdashboard</p>
-            <input type="submit" id="submit" class="button"
-                   value="Inloggen">
-            <p/>
-            <h3>Geen autorisatie</h3>
+            <p>{I18n.t("landing.info")}</p>
+            <span class="button" on:click={login}>{I18n.t("landing.login")}</span>
+            <h3>{I18n.t("landing.questionsTitle")}</h3>
             <p>
-                Bent u wel medewerker maar heeft u geen autorisatie. Vraag deze dan aan via uw
-                instellingscontactpersoon.<br>
-                Weet u niet wie dit is? Neem dan contact op met <a
-                    href="mailto:klantsupport@surfnet.nl">klantsupport</a>
-                van SURFnet.</p>
+                {I18n.t("landing.whatCanYouDo")}<br>
+                {@html I18n.t("landing.questions")}
+            </p>
+
         </div>
     </div>
 </div>

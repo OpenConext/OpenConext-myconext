@@ -60,8 +60,8 @@ public class User implements Serializable, UserDetails {
     }
 
     public void encryptPassword(PasswordEncoder encoder) {
-        if (StringUtils.hasText(password)) {
-            if (!strongEnough(password)) {
+        if (StringUtils.hasText(this.password)) {
+            if (!strongEnough(this.password)) {
                 throw new WeakPasswordException();
             }
             this.password = encoder.encode(this.password);
@@ -71,7 +71,7 @@ public class User implements Serializable, UserDetails {
     @Override
     @JsonIgnore
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return Collections.singletonList(new SimpleGrantedAuthority("GUEST"));
+        return Collections.singletonList(new SimpleGrantedAuthority("ROLE_GUEST"));
     }
 
     @Override
@@ -120,6 +120,10 @@ public class User implements Serializable, UserDetails {
             encryptPassword(encoder);
         }
         this.validate();
+    }
+
+    public void clearPassword() {
+        this.password = null;
     }
 
 }

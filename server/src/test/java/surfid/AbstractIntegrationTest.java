@@ -62,7 +62,7 @@ import static org.junit.Assert.assertTrue;
                 "sp_entity_id=https://engine.test.surfconext.nl/authentication/sp/metadata",
                 "sp_entity_metadata_url=https://engine.test.surfconext.nl/authentication/sp/metadata"
         })
-@ActiveProfiles({"dev", "test"})
+@ActiveProfiles({"test"})
 @SuppressWarnings("unchecked")
 public abstract class AbstractIntegrationTest {
 
@@ -87,7 +87,7 @@ public abstract class AbstractIntegrationTest {
     public void before() throws Exception {
         RestAssured.port = port;
         Arrays.asList(SamlAuthenticationRequest.class, User.class)
-                .forEach(clazz -> mongoTemplate.bulkOps(BulkOperations.BulkMode.ORDERED, User.class)
+                .forEach(clazz -> mongoTemplate.bulkOps(BulkOperations.BulkMode.ORDERED, clazz)
                         .remove(new Query())
                         .insert(readFromFile(clazz))
                         .execute());

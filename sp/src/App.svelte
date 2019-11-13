@@ -2,6 +2,7 @@
     import Footer from "./components/Footer.svelte";
     import {Route, Router} from "svelte-routing";
     import Landing from "./routes/Landing.svelte";
+    import NotFound from "./routes/NotFound.svelte";
     import Header from "./components/Header.svelte";
 
     export let url = "";
@@ -18,6 +19,7 @@
     <Header/>
     <Router url="{url}">
         <Route path="/" component={Landing}/>
+        <Route component={NotFound} />
     </Router>
     <Footer/>
 </div>

@@ -24,8 +24,6 @@ import org.springframework.security.saml.provider.identity.config.SamlIdentityPr
 import org.springframework.security.saml.saml2.metadata.NameId;
 import org.springframework.security.web.authentication.preauth.AbstractPreAuthenticatedProcessingFilter;
 import org.springframework.security.web.authentication.preauth.PreAuthenticatedAuthenticationProvider;
-import org.springframework.security.web.authentication.www.BasicAuthenticationEntryPoint;
-import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 import org.springframework.security.web.csrf.CsrfFilter;
 import surfid.config.BeanConfig;
 import surfid.repository.UserRepository;
@@ -38,13 +36,9 @@ import java.nio.charset.Charset;
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
 import java.security.NoSuchAlgorithmException;
-import java.util.Arrays;
 import java.util.Base64;
-import java.util.List;
-import java.util.stream.Stream;
 
 import static java.util.Arrays.asList;
-import static java.util.stream.Collectors.toList;
 import static org.springframework.security.saml.saml2.signature.AlgorithmMethod.RSA_SHA512;
 import static org.springframework.security.saml.saml2.signature.DigestMethod.SHA512;
 
@@ -73,8 +67,8 @@ public class SecurityConfiguration {
             this.beanConfig = beanConfig;
             this.privateKeyPath = privateKeyPath;
             this.certificatePath = certificatePath;
-            this.idpEntityId =idpEntityId;
-            this.spEntityId =spEntityId;
+            this.idpEntityId = idpEntityId;
+            this.spEntityId = spEntityId;
             this.spMetaDataUrl = spMetaDataUrl;
         }
 
@@ -167,7 +161,7 @@ public class SecurityConfiguration {
 
         private Environment environment;
 
-         private UserRepository userRepository;
+        private UserRepository userRepository;
 
         public InternalSecurityConfigurationAdapter(Environment environment, UserRepository userRepository) {
             this.environment = environment;
@@ -182,7 +176,7 @@ public class SecurityConfiguration {
         @Override
         protected void configure(HttpSecurity http) throws Exception {
             http
-                    .requestMatchers().antMatchers("/surfid/api/sp/**")
+                    .requestMatchers().antMatchers("/surfid/api/sp/**", "/startSSO")
                     .and()
                     .sessionManagement()
                     .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
@@ -196,12 +190,12 @@ public class SecurityConfiguration {
                             AbstractPreAuthenticatedProcessingFilter.class
                     )
                     .authorizeRequests()
-                    .antMatchers("/account/**").hasRole("GUEST");
+                    .antMatchers("/**").hasRole("GUEST");
 
-            if (environment.acceptsProfiles(Profiles.of("dev"))) {
+            if (environment.acceptsProfiles(Profiles.of("test", "dev"))) {
                 //we can't use @Profile, because we need to add it before the real filter
                 http.csrf().disable();
-                http.addFilterBefore(new MockShibbolethFilter(), ShibbolethPreAuthenticatedProcessingFilter.class);
+                http.addFilterBefore(new MockShibbolethFilter(environment), ShibbolethPreAuthenticatedProcessingFilter.class);
             }
         }
     }

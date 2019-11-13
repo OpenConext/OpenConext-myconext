@@ -4,7 +4,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.util.StringUtils;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -17,7 +19,9 @@ import surfid.exceptions.UserNotFoundException;
 import surfid.mail.MailBox;
 import surfid.model.MagicLinkRequest;
 import surfid.model.SamlAuthenticationRequest;
+import surfid.model.UpdateUserRequest;
 import surfid.model.User;
+import surfid.model.UserResponse;
 import surfid.repository.AuthenticationRequestRepository;
 import surfid.repository.UserRepository;
 
@@ -82,13 +86,27 @@ public class UserController {
         return doMagicLink(user, samlAuthenticationRequest, magicLinkRequest);
     }
 
+    @GetMapping("/sp/me")
+    public ResponseEntity me(Authentication authentication) {
+        return ResponseEntity.ok(new UserResponse((User) authentication.getPrincipal()) );
+    }
+
     @PutMapping("/sp/update")
-    public ResponseEntity updateUser(Authentication authentication, @RequestBody User deltaUser) {
+    public ResponseEntity updateUser(Authentication authentication, @RequestBody UpdateUserRequest updateUserRequest) {
+        User deltaUser = updateUserRequest.getUser();
         User user = verifyAndFetchUser(authentication, deltaUser);
+        if ((updateUserRequest.isUpdatePassword() || updateUserRequest.isClearPassword()) && !StringUtils.isEmpty(user.getPassword())) {
+            if (!passwordEncoder.matches(updateUserRequest.getCurrentPassword(), user.getPassword())) {
+                throw new ForbiddenException();
+            }
+        }
         user.merge(deltaUser, passwordEncoder);
+        if (updateUserRequest.isClearPassword()) {
+            user.clearPassword();
+        }
         userRepository.save(user);
 
-        return ResponseEntity.status(201).body(user);
+        return ResponseEntity.status(201).body(new UserResponse(user));
     }
 
     @PutMapping("/sp/delete")
