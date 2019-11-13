@@ -1,19 +1,7 @@
 import I18n from "i18n-js";
 
 I18n.translations.en = {
-    login : {
-        header: "Sign in / Sign up",
-        trust: "Trust this computer",
-        email: "Email",
-        emailPlaceholder: "Enter your email",
-        familyNamePlaceholder: "Enter your family / last name",
-        giveNamePlaceholder: "Enter your given / first name",
-        rememberMe: "Remember me",
-        next: "Login",
-        create: "Create",
-        createAccount: "Create a new account"
-    },
-    magicLink: {
-        header: "An email is send to {{email}} with a magic link to proceed to your destination."
+    header : {
+        title: "MY SURFCONEXT",
     }
 };

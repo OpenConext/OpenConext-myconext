@@ -1,4 +1,10 @@
 .idea
+*.iml
 bundle*
 id_rsa
 id_rsa.pub
+node_modules
+target
+index.html
+bundle.*.css
+bundle.*.js

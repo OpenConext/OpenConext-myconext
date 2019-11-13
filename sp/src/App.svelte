@@ -1,17 +1,23 @@
 <script>
+    import Footer from "./components/Footer.svelte";
     import {Route, Router} from "svelte-routing";
-    import Login from "./routes/Login.svelte";
-    import MagicLink from "./routes/MagicLink.svelte";
+    import Landing from "./routes/Landing.svelte";
+    import Header from "./components/Header.svelte";
 
     export let url = "";
 </script>
 
 <style>
+    .sp {
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+    }
 </style>
-
-<Router url="{url}">
-    <Route path="/login/:id" let:params>
-        <Login id="{params.id}"></Login>
-    </Route>
-    <Route path="/magic" component={MagicLink}/>
-</Router>
+<div class="sp">
+    <Header/>
+    <Router url="{url}">
+        <Route path="/" component={Landing}/>
+    </Router>
+    <Footer/>
+</div>

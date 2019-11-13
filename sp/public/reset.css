@@ -4,13 +4,16 @@ html {
     height: 100%;
 }
 
-*, *:before, *:after {
-    box-sizing: inherit;
+*, *::before, *::after {
+    box-sizing: border-box;
 }
 
 body {
     height: 100%;
-    font-family: "Roboto", sans-serif;
+    font-family: "Source Sans Pro", sans-serif;
+    font-size: 18px;
+    color: #212121;
+    font-weight: 300;
 }
 
 body, h1, h2, h3, h4, h5, h6, p, ol, ul {
@@ -21,9 +24,4 @@ body, h1, h2, h3, h4, h5, h6, p, ol, ul {
 
 ol, ul {
     list-style: none;
-}
-
-img {
-    max-width: 100%;
-    height: auto;
 }
