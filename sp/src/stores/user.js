@@ -1,8 +1,11 @@
 import {writable} from 'svelte/store';
 
 export const user = writable({
+    id: "",
     email: "",
     givenName: "",
     familyName: "",
-    rememberMe: false
+    guest: true
 });
+
+export const redirectPath = writable("");

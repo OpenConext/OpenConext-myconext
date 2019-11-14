@@ -31,7 +31,7 @@ public class MailConfiguration {
     }
 
     @Bean
-    @Profile({"dev"})
+    @Profile({"dev", "test"})
     @Primary
     public MailBox mailSenderDev(Environment environment) {
         return new MockMailBox(mailSender, emailFrom, magicLinkUrl, environment);

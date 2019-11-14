@@ -11,6 +11,7 @@ import surfid.model.UserResponse;
 
 import static io.restassured.RestAssured.given;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 
 
@@ -30,11 +31,11 @@ public class LoginControllerTest extends AbstractIntegrationTest {
     public void login() {
         given().redirects().follow(false)
                 .when()
-                .param("redirect_url", "http://localhost/redirect")
+                .param("redirect_path", "/redirect")
                 .get("/login")
                 .then()
                 .statusCode(302)
-                .header("Location", "http://localhost:" + port + "/startSSO?redirect_url=http://localhost/redirect");
+                .header("Location", "http://localhost:" + port + "/startSSO?redirect_url=http://localhost:3000/redirect");
     }
 
     @Test
@@ -61,7 +62,7 @@ public class LoginControllerTest extends AbstractIntegrationTest {
         assertEquals("jdoe@example.com", userResponse.getEmail());
         assertEquals("John", userResponse.getGivenName());
         assertEquals("Doe", userResponse.getFamilyName());
-        assertEquals(false, userResponse.isHasPassword());
+        assertFalse(userResponse.isHasPassword());
         assertNotNull(userResponse.getId());
 
 

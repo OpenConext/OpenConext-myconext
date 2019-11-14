@@ -37,10 +37,7 @@ public class MockShibbolethFilter extends GenericFilterBean {
 
         @Override
         public String getHeader(String name) {
-            if (headers.containsKey(name)) {
-                return headers.get(name);
-            }
-            return super.getHeader(name);
+            return headers.getOrDefault(name, super.getHeader(name));
         }
     }
 

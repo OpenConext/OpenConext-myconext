@@ -38,6 +38,10 @@ export function me() {
     return fetchJson("/surfid/api/sp/me");
 }
 
+export function config() {
+    return fetchJson("/config");
+}
+
 export function updateUser(user) {
     return postPutJson("/surfid/api/sp/update", body, "PUT");
 }
