@@ -27,15 +27,16 @@
         min-width: 500px;
         max-width: 500px;
         align-items: center;
+        color: #767676;
     }
-
-    h3 {
-        color: #767676
+    h2 {
+        margin-bottom: 40px;
     }
 
 </style>
 <div class="home">
     <div class="card">
-        <h3>{I18n.t("magicLink.header", {email: $user.email})}</h3>
+        <h2>{I18n.t("session.title")}</h2>
+        <p>{@html I18n.t("session.info")}</p>
     </div>
 </div>

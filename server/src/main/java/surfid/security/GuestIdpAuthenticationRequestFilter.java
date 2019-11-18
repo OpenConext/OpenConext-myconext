@@ -49,6 +49,7 @@ import static org.springframework.util.StringUtils.hasText;
 public class GuestIdpAuthenticationRequestFilter extends IdpAuthenticationRequestFilter {
 
     public static final String GUEST_IDP_REMEMBER_ME_COOKIE_NAME = "guest-idp-remember-me";
+    public static final String BROWSER_SESSION_COOKIE_NAME = "BROWSERSESSION";
 
     private final SamlRequestMatcher ssoSamlRequestMatcher;
     private final SamlRequestMatcher magicSamlRequestMatcher;
@@ -113,7 +114,7 @@ public class GuestIdpAuthenticationRequestFilter extends IdpAuthenticationReques
         // Use the returned instance for further operations as the save operation has added the _id
         samlAuthenticationRequest = authenticationRequestRepository.save(samlAuthenticationRequest);
 
-        Optional<Cookie> userFromRemembered = userRemembered(request);
+        Optional<Cookie> userFromRemembered = cookieByName(request, GUEST_IDP_REMEMBER_ME_COOKIE_NAME);
         Optional<User> userFromAuthentication = userFromAuthentication();
 
         Optional<User> optionalUser = userFromRemembered.map(this::userFromCookie).orElse(userFromAuthentication);
@@ -123,6 +124,7 @@ public class GuestIdpAuthenticationRequestFilter extends IdpAuthenticationReques
             User user = optionalUser.get();
             sendAssertion(request, response, samlAuthenticationRequest.getRelayState(), user, provider, serviceProviderMetadata, authenticationRequest);
         } else {
+            addBrowserIdentificationCookie(response);
             response.sendRedirect(this.redirectUrl + "/login/" + samlAuthenticationRequest.getId());
         }
     }
@@ -138,12 +140,19 @@ public class GuestIdpAuthenticationRequestFilter extends IdpAuthenticationReques
                 Optional.of((User) authentication.getPrincipal()) : Optional.empty();
     }
 
-    private Optional<Cookie> userRemembered(HttpServletRequest request) {
+    private Optional<Cookie> cookieByName(HttpServletRequest request, String cookieName) {
         Cookie[] cookies = request.getCookies();
         if (cookies != null) {
-            return Stream.of(cookies).filter(cookie -> cookie.getName().equals(GUEST_IDP_REMEMBER_ME_COOKIE_NAME)).findAny();
+            return Stream.of(cookies).filter(cookie -> cookie.getName().equals(cookieName)).findAny();
         }
         return Optional.empty();
+    }
+
+    private void addBrowserIdentificationCookie(HttpServletResponse response) {
+        Cookie cookie = new Cookie("browser_session", "true");
+        cookie.setSecure(secureCookie);
+        response.setHeader("Set-Cookie", BROWSER_SESSION_COOKIE_NAME + "=true; SameSite=Lax" + (secureCookie ? "; Secure" : ""));
+        response.addCookie(cookie);
     }
 
     private boolean isDeflated(HttpServletRequest request) {
@@ -157,6 +166,11 @@ public class GuestIdpAuthenticationRequestFilter extends IdpAuthenticationReques
     }
 
     private void magic(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        Optional<Cookie> optionalCookie = cookieByName(request, BROWSER_SESSION_COOKIE_NAME);
+        if (!optionalCookie.isPresent()) {
+            response.sendRedirect(this.redirectUrl + "/session");
+            return;
+        }
         String hash = request.getParameter("h");
         SamlAuthenticationRequest samlAuthenticationRequest = authenticationRequestRepository.findByHash(hash)
                 .orElseThrow(ExpiredAuthenticationException::new);
@@ -170,6 +184,7 @@ public class GuestIdpAuthenticationRequestFilter extends IdpAuthenticationReques
             response.sendRedirect(this.redirectUrl + "/confirm?h=" + hash +
                     "&redirect=" + URLEncoder.encode(this.magicLinkUrl, name) +
                     "&email=" + URLEncoder.encode(user.getEmail(), name));
+            return;
         }
         IdentityProviderService provider = getProvisioning().getHostedProvider();
         ServiceProviderMetadata serviceProviderMetadata = provider.getRemoteProvider(spEntityId);

@@ -1,7 +1,7 @@
 <script>
-    import logo from "./logo.svg";
     import I18n from "i18n-js";
     import {onMount} from 'svelte';
+    import {user} from "../stores/user";
 
     let email = null;
 
@@ -42,13 +42,7 @@
         min-height: 500px;
         width: auto;
         min-width: 500px;
-    }
-
-    .container {
-        display: flex;
-        flex-direction: column;
         align-items: center;
-        height: 100%;
         padding: 25px;
     }
 
@@ -61,16 +55,6 @@
         color: whitesmoke;
     }
 
-    .logo {
-        padding: 40px;
-        margin-top: auto;
-    }
-
-    :global(.logo) svg {
-        height: 51px;
-        width: 122px;
-    }
-
     h3 {
         color: #767676;
         margin-bottom: 35px;
@@ -79,12 +63,7 @@
 </style>
 <div class="home">
     <div class="card">
-        <div class="container">
-            <div class="logo">
-                {@html logo}
-            </div>
-            <h3>{I18n.t("confirm.header", {email: email})}</h3>
-            <button on:click={proceed}>{I18n.t("confirm.link")}</button>
-        </div>
+        <h3>{I18n.t("confirm.header", {email: email})}</h3>
+        <button on:click={proceed}>{I18n.t("confirm.link")}</button>
     </div>
 </div>

@@ -1,11 +1,13 @@
 package surfid.api;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.util.StringUtils;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -26,6 +28,7 @@ import surfid.repository.AuthenticationRequestRepository;
 import surfid.repository.UserRepository;
 
 import javax.mail.MessagingException;
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.io.IOException;
 import java.security.SecureRandom;
@@ -40,14 +43,19 @@ public class UserController {
     private UserRepository userRepository;
     private AuthenticationRequestRepository authenticationRequestRepository;
     private MailBox mailBox;
+    private String magicLinkUrl;
 
     private SecureRandom random = new SecureRandom();
     private PasswordEncoder passwordEncoder = new BCryptPasswordEncoder(-1, random);
 
-    public UserController(UserRepository userRepository, AuthenticationRequestRepository authenticationRequestRepository, MailBox mailBox) {
+    public UserController(UserRepository userRepository,
+                          AuthenticationRequestRepository authenticationRequestRepository,
+                          MailBox mailBox,
+                          @Value("${email.magic-link-url}") String magicLinkUrl) {
         this.userRepository = userRepository;
         this.authenticationRequestRepository = authenticationRequestRepository;
         this.mailBox = mailBox;
+        this.magicLinkUrl = magicLinkUrl;
     }
 
     @PostMapping("/idp/magic_link_request")
@@ -66,11 +74,11 @@ public class UserController {
         userToSave.merge(user, passwordEncoder);
         userToSave = userRepository.save(userToSave);
 
-        return this.doMagicLink(userToSave, samlAuthenticationRequest, magicLinkRequest);
+        return this.doMagicLink(userToSave, samlAuthenticationRequest, magicLinkRequest, false);
     }
 
     @PutMapping("/idp/magic_link_request")
-    public ResponseEntity magicLinkRequest(@Valid @RequestBody MagicLinkRequest magicLinkRequest) throws IOException, MessagingException {
+    public ResponseEntity magicLinkRequest(HttpServletResponse response, @Valid @RequestBody MagicLinkRequest magicLinkRequest) throws IOException, MessagingException {
         SamlAuthenticationRequest samlAuthenticationRequest = authenticationRequestRepository.findByIdAndNotExpired(magicLinkRequest.getAuthenticationRequestId())
                 .orElseThrow(ExpiredAuthenticationException::new);
 
@@ -81,14 +89,16 @@ public class UserController {
             if (!passwordEncoder.matches(providedUser.getPassword(), user.getPassword())) {
                 throw new ForbiddenException();
             }
+            UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(user, null,
+                    user.getAuthorities());
+            SecurityContextHolder.getContext().setAuthentication(authentication);
         }
-
-        return doMagicLink(user, samlAuthenticationRequest, magicLinkRequest);
+        return doMagicLink(user, samlAuthenticationRequest, magicLinkRequest, magicLinkRequest.isUsePassword());
     }
 
     @GetMapping("/sp/me")
     public ResponseEntity me(Authentication authentication) {
-        return ResponseEntity.ok(new UserResponse((User) authentication.getPrincipal()) );
+        return ResponseEntity.ok(new UserResponse((User) authentication.getPrincipal()));
     }
 
     @PutMapping("/sp/update")
@@ -126,15 +136,19 @@ public class UserController {
         return userRepository.findOneUserByEmail(principal.getEmail());
     }
 
-    private ResponseEntity doMagicLink(User user, SamlAuthenticationRequest samlAuthenticationRequest, MagicLinkRequest magicLinkRequest) throws MessagingException, IOException {
+    private ResponseEntity doMagicLink(User user, SamlAuthenticationRequest samlAuthenticationRequest, MagicLinkRequest magicLinkRequest,
+                                       boolean passwordFlow) throws MessagingException, IOException {
         samlAuthenticationRequest.setHash(hash());
         samlAuthenticationRequest.setUserId(user.getId());
         samlAuthenticationRequest.setRememberMe(magicLinkRequest.isRememberMe());
 
         authenticationRequestRepository.save(samlAuthenticationRequest);
-
-        mailBox.sendMagicLink(user, samlAuthenticationRequest.getHash());
-        return ResponseEntity.status(201).body(Collections.singletonMap("result", "ok"));
+        if (passwordFlow) {
+            return ResponseEntity.status(201).body(Collections.singletonMap("url", this.magicLinkUrl + "?h=" + samlAuthenticationRequest.getHash()));
+        } else {
+            mailBox.sendMagicLink(user, samlAuthenticationRequest.getHash());
+            return ResponseEntity.status(201).body(Collections.singletonMap("result", "ok"));
+        }
     }
 
     private String hash() {

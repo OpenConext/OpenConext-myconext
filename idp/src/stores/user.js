@@ -4,5 +4,7 @@ export const user = writable({
     email: "",
     givenName: "",
     familyName: "",
-    rememberMe: false
+    rememberMe: false,
+    usePassword: false,
+    createAccount: false
 });

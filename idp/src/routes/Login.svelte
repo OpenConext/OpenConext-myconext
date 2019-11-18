@@ -1,58 +1,76 @@
 <script>
-    import logo from "./logo.svg";
     import {user} from "../stores/user";
     import {validEmail} from "../validation/regexp";
     import I18n from "i18n-js";
     import {magicLinkNewUser, magicLinkExistingUser} from "../api/index";
     import {navigate} from "svelte-routing";
+    import {onMount} from "svelte";
+    import Cookies from "js-cookie";
 
     export let id;
-    let unknownUser = false;
-    let usePassword = false;
     let emailInUse = false;
     let emailNotFound = false;
+    let sessionExpired = false;
+    let initial = true;
 
-    const handleNext = () => {
-        if (unknownUser) {
-            magicLinkNewUser($user.email, $user.givenName, $user.familyName, $user.rememberMe, id)
-                    .then(() => {
-                        navigate("/magic", {replace: true});
-                    }).catch(() => {
-                emailInUse = true;
-                emailNotFound = false;
-            });
+    onMount(() => {
+        const value = Cookies.get("login_preference");
+        $user.usePassword = value === "usePassword";
+    });
+
+    const handleNext = passwordFlow => () => {
+        if (($user.usePassword && passwordFlow) || (!$user.usePassword && !passwordFlow)) {
+            if (allowedNext($user.email, $user.givenName, $user.familyName)) {
+                if ($user.createAccount) {
+                    magicLinkNewUser($user.email, $user.givenName, $user.familyName, $user.rememberMe, id)
+                            .then(() => navigate("/magic", {replace: true}))
+                            .catch(e => {
+                                if (e.status === 410) {
+                                    sessionExpired = true;
+                                } else {
+                                    emailInUse = true;
+                                    emailNotFound = false;
+                                }
+                            });
+                } else {
+                    magicLinkExistingUser($user.email, $user.password, $user.rememberMe, $user.usePassword, id)
+                            .then(json => {
+                                Cookies.set("login_preference", $user.usePassword ? "usePassword" : "useLink", {expires: 365});
+                                if ($user.usePassword) {
+                                    window.location.href = json.url
+                                } else {
+                                    navigate("/magic", {replace: true});
+                                }
+                            }).catch(e => {
+                        if (e.status === 410) {
+                            sessionExpired = true;
+                        } else {
+                            emailNotFound = true;
+                            emailInUse = false;
+                        }
+                    });
+                }
+            } else {
+                initial = false;
+            }
         } else {
-            magicLinkExistingUser($user.email, $user.password, $user.rememberMe, id, usePassword)
-                    .then(() => {
-                        navigate("/magic", {replace: true});
-                    }).catch(() => {
-                emailNotFound = true;
-                emailInUse = false;
-            });
+            $user.usePassword = passwordFlow;
         }
     };
 
-    const togglePassword = usePasswordRef => {
-        const p = document.getElementById("password");
-        if (p) {
-            p.classList.toggle("hidden")
-        }
-
-    };
-
-    $: togglePassword(usePassword) ;
+    const init = el => el.focus();
 
     const allowedNext = (email, familyName, givenName) => {
-        return unknownUser ?
-                validEmail(email) && familyName && givenName : validEmail(email);
+        return $user.createAccount ? validEmail(email) && familyName && givenName : validEmail(email);
     };
 
-    const createAccount = () => {
-        unknownUser = !unknownUser;
-        emailInUse = false;
-        emailNotFound = false;
+    const createAccount = newAccount => () => {
+        $user.createAccount = newAccount;
+        $user.usePassword = false;
         $user.givenName = "";
         $user.familyName = "";
+        emailInUse = false;
+        emailNotFound = false;
     }
 
 </script>
@@ -60,16 +78,17 @@
 <style>
     .home {
         display: flex;
-        align-items: center;
         justify-content: center;
         width: 100%;
-        height: 100%;
+        font-size: 18px;
     }
 
     .card {
         display: flex;
         flex-direction: column;
-        border: 1px solid #dadce0;
+        /*border: 1px solid #dadce0;*/
+        /*box-shadow: 1px 1px 5px 0 rgba(158, 158, 158, 0.6);*/
+        padding: 50px;
         border-radius: 4px;
         background-color: white;
         height: auto;
@@ -79,55 +98,58 @@
         max-width: 500px;
     }
 
-    .container {
+    h2 {
+        margin-bottom: 20px;
+    }
+
+    h2.top {
+        margin-bottom: 40px;
+    }
+
+    .options {
         display: flex;
-        flex-direction: column;
-        align-items: center;
-        height: 100%;
-        padding: 25px;
+        justify-content: space-between;
+        width: 100%;
+        padding-bottom: 30px;
+        border-bottom: 2px solid #dadce0;
     }
 
-    .logo {
-        padding: 40px;
-        margin-top: auto;
-    }
-
-    :global(.logo) svg {
-        height: 51px;
-        width: 122px;
-    }
-
-    .buttons {
-        display: flex;
-        margin: auto 15px 15px 15px;
-        align-items: center;
-    }
-
-    button {
-        border-radius: 4px;
+    .button {
+        border: 1px solid #818181;
+        width: 100%;
+        background-color: #c7c7c7;
+        border-radius: 2px;
         padding: 10px 20px;
         display: inline-block;
-        font-size: larger;
-        background-color: #5da7c5;
-        color: whitesmoke;
-    }
-
-    button:hover {
+        color: #818181;
+        text-decoration: none;
         cursor: pointer;
+        text-align: center;
     }
 
-    a.create-link {
-        margin-right: auto;
+    .button.child:first-child {
+        margin-right: 10px;
     }
 
-    button.disabled {
+    .button.child:nth-child(2) {
+        margin-left: 10px;
+    }
+
+    .button.non-active {
+        border: 1px solid #c5c5c5;
+        color: #818181;
+        background-color: white;
+    }
+
+    .button.disabled {
+        border: none;
         cursor: not-allowed;
-        color: #C5C5C5;
-        background-color: whitesmoke;
+        color: #c7c7c7;
+        background-color: #f3f3f3;
     }
 
-    span.new-to {
-        margin-right: 5px;
+    .button.full {
+        margin-top: 15px;
     }
 
     span.error {
@@ -136,28 +158,31 @@
         color: #d00000;
     }
 
-    span.info {
-        display: inline-block;
-        margin: 0 auto 10px 0;
-        color: #767676;
-        font-size: 14px;
-    }
-
     input[type=email], input[type=text], input[type=password] {
         border: 1px solid #dadce0;
         border-radius: 4px;
         padding: 10px;
         font-size: larger;
         width: 100%;
-        margin: 20px 10px;
+        margin: 5px 0;
     }
 
-    input[type=password].hidden {
+    .hidden {
         display: none;
     }
 
     h2, label {
         color: #767676
+    }
+
+    .pre-input-label {
+        font-weight: bold;
+    }
+
+    .post-input-label {
+        font-size: 16px;
+        margin: 5px 0 20px 0;
+        display: inline-block;
     }
 
     div.checkbox {
@@ -176,72 +201,96 @@
     div.checkbox label {
         cursor: pointer;
     }
+
+    div.info-bottom {
+        margin-top: 30px;
+    }
+
+    div.info-bottom a {
+        display: inline-block;
+        margin-top: 10px;
+    }
 </style>
 <div class="home">
     <div class="card">
-        <div class="container">
-            <div class="logo">
-                {@html logo}
+        <h2 class="top">{@html I18n.t("login.header")}</h2>
+        <label class="pre-input-label">{I18n.t("login.email")}</label>
+        <input type="email"
+               use:init
+               bind:value={$user.email}>
+        {#if !$user.createAccount && emailNotFound}
+            <span class="error">{I18n.t("login.emailNotFound")}</span>
+        {/if}
+        {#if !initial && !validEmail($user.email)}
+            <span class="error">{I18n.t("login.invalidEmail")}</span>
+        {/if}
+        {#if $user.createAccount && emailInUse}
+            <span class="error">{I18n.t("login.emailInUse")}</span>
+        {/if}
+        {#if !$user.usePassword}
+            <label class="post-input-label">{I18n.t("login.magicLinkText")}</label>
+        {/if}
+        {#if $user.createAccount}
+            <label class="pre-input-label">{I18n.t("login.givenName")}</label>
+            <input type="text"
+                   placeholder={I18n.t("login.givenNamePlaceholder")}
+                   bind:value={$user.givenName}>
+            {#if !initial && !$user.givenName}
+                <span class="error">{I18n.t("login.requiredAttribute", {attr: I18n.t("login.givenName")})}</span>
+            {/if}
+            <label class="pre-input-label">{I18n.t("login.familyName")}</label>
+            <input type="text"
+                   placeholder={I18n.t("login.familyNamePlaceholder")}
+                   bind:value={$user.familyName}>
+            {#if !initial && !$user.familyName}
+                <span class="error">{I18n.t("login.requiredAttribute", {attr: I18n.t("login.familyName")})}</span>
+            {/if}
+            <div class="options">
+                <a class="button full"
+                   class:disabled={!initial && !allowedNext($user.email, $user.familyName, $user.givenName)}
+                   href="/magic" on:click|preventDefault|stopPropagation={handleNext(false)}>
+                    {I18n.t("login.sendMagicLink")}
+                </a>
             </div>
-            <h2>{I18n.t("login.header")}</h2>
-            <input type="email"
-                   placeholder={I18n.t("login.emailPlaceholder")}
-                   bind:value={$user.email}
-                   on:keydown={e => e.key === "Enter" && handleNext()}>
-            {#if !unknownUser && emailNotFound}
-                <span class="error">{I18n.t("login.emailNotFound")}</span>
-            {/if}
-            {#if unknownUser && emailInUse}
-                <span class="error">{I18n.t("login.emailInUse")}</span>
-            {/if}
-            {#if unknownUser}
-                <input type="text"
-                       placeholder={I18n.t("login.giveNamePlaceholder")}
-                       bind:value={$user.givenName}>
-                <input type="text"
-                       placeholder={I18n.t("login.familyNamePlaceholder")}
-                       bind:value={$user.familyName}>
-            {:else}
-                    <input class="hidden"
-                           type="password"
-                           id="password"
-                           placeholder={I18n.t("login.passwordPlaceholder")}
-                           bind:value={$user.password}>
-                {#if usePassword}
-                    <span class="info">{I18n.t("login.passwordDisclaimer")}</span>
-                {/if}
-                <div class="checkbox">
-                    <input type="radio"
-                           id="use-magic-link"
-                           bind:group={usePassword}
-                           value={false}/>
-                    <label for="use-magic-link">{I18n.t("login.useMagicLink")}</label>
-                </div>
-                <div class="checkbox">
-                    <input type="radio"
-                           id="use-password"
-                           bind:group={usePassword}
-                           value={true}/>
-                    <label for="use-password">{I18n.t("login.usePassword")}</label>
-                </div>
-            {/if}
+        {:else}
+            <div id="password" class:hidden={!$user.usePassword}>
+                <label class="pre-input-label">{I18n.t("login.password")}</label>
+                <input type="password"
+                       bind:value={$user.password}>
+                <label class="post-input-label">{I18n.t("login.passwordForgotten")}</label>
+            </div>
             <div class="checkbox">
                 <input type="checkbox"
                        id="remember-me"
                        bind:checked={$user.rememberMe}/>
                 <label for="remember-me">{I18n.t("login.rememberMe")}</label>
             </div>
-        </div>
-        <div class="buttons">
-            {#if !unknownUser}
-                <span class="new-to">{I18n.t("login.newTo")}</span>
+            <div class="options">
+                <a class="button child" class:non-active={!$user.usePassword} href="/password"
+                   class:disabled={!initial && !allowedNext($user.email, $user.familyName, $user.givenName) && $user.usePassword}
+                   on:click|preventDefault|stopPropagation={handleNext(true)}>
+                    {$user.usePassword ?  I18n.t("login.login") : I18n.t("login.usePassword")}
+                </a>
+                <a class="button child" class:non-active={$user.usePassword} href="/magic"
+                   class:disabled={!initial && !allowedNext($user.email, $user.familyName, $user.givenName) && !$user.usePassword}
+                   on:click|preventDefault|stopPropagation={handleNext(false)}>
+                    {$user.usePassword ?  I18n.t("login.useMagicLink") : I18n.t("login.sendMagicLink")}
+                </a>
+            </div>
+        {/if}
+        <div class="info-bottom">
+            {#if !$user.createAccount}
+                <h2>{@html I18n.t("login.noGuestAccount")}</h2>
+                <p>{@html I18n.t("login.noGuestAccountInfo")}</p>
+                <a href="/reguest"
+                   on:click|preventDefault|stopPropagation={createAccount(true)}>{I18n.t("login.requestGuestAccount")}</a>
+            {:else}
+                <h2>{@html I18n.t("login.alreadyGuestAccount")}</h2>
+                <a href="/login"
+                   on:click|preventDefault|stopPropagation={createAccount(false)}>{I18n.t("login.login")}</a>
+
             {/if}
-            <a class="create-link" href="/create"
-               on:click|preventDefault|stopPropagation={createAccount}>{unknownUser ? I18n.t("login.useExistingAccount") : I18n.t("login.createAccount")}</a>
-            <button class:disabled={!allowedNext($user.email, $user.familyName, $user.givenName)} on:click={handleNext}
-                    disabled={!allowedNext($user.email, $user.familyName, $user.givenName)}>
-                {unknownUser ? I18n.t("login.create") : I18n.t("login.next")}
-            </button>
         </div>
+
     </div>
 </div>

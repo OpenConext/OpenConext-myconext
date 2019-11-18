@@ -30,6 +30,7 @@ import java.util.regex.Pattern;
 import static io.restassured.RestAssured.given;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+import static surfid.security.GuestIdpAuthenticationRequestFilter.BROWSER_SESSION_COOKIE_NAME;
 import static surfid.security.GuestIdpAuthenticationRequestFilter.GUEST_IDP_REMEMBER_ME_COOKIE_NAME;
 
 public class UserControllerTest extends AbstractIntegrationTest {
@@ -76,7 +77,7 @@ public class UserControllerTest extends AbstractIntegrationTest {
 
         magicLinkRequest(user, HttpMethod.POST);
         user = userRepository.findUserByEmail(user.getEmail()).get();
-        assertTrue(new BCryptPasswordEncoder().matches("secretA12", user.getPassword()));
+        assertTrue(this.passwordEncoder.matches("secretA12", user.getPassword()));
     }
 
     @Test
@@ -167,6 +168,7 @@ public class UserControllerTest extends AbstractIntegrationTest {
         Response response = given().redirects().follow(false)
                 .when()
                 .queryParam("h", samlAuthenticationRequest.getHash())
+                .cookie(BROWSER_SESSION_COOKIE_NAME)
                 .get("/saml/guest-idp/magic");
 
         if (response.getStatusCode() == 302) {
