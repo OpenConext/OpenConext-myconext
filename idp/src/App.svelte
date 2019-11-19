@@ -15,7 +15,6 @@
         display: flex;
         flex-direction: column;
         height: 100%;
-        background-color: #fafafa;
     }
 </style>
 <div class="idp">

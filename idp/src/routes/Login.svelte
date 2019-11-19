@@ -86,16 +86,10 @@
     .card {
         display: flex;
         flex-direction: column;
-        /*border: 1px solid #dadce0;*/
-        /*box-shadow: 1px 1px 5px 0 rgba(158, 158, 158, 0.6);*/
         padding: 50px;
         border-radius: 4px;
         background-color: white;
-        height: auto;
-        min-height: 500px;
-        width: auto;
-        min-width: 500px;
-        max-width: 500px;
+        width: 500px;
     }
 
     h2 {
@@ -121,24 +115,21 @@
         border-radius: 2px;
         padding: 10px 20px;
         display: inline-block;
-        color: #818181;
+        color: black;
         text-decoration: none;
         cursor: pointer;
         text-align: center;
-    }
-
-    .button.child:first-child {
-        margin-right: 10px;
-    }
-
-    .button.child:nth-child(2) {
-        margin-left: 10px;
     }
 
     .button.non-active {
         border: 1px solid #c5c5c5;
         color: #818181;
         background-color: white;
+    }
+
+    .button:not(.non-active) {
+        order: 1;
+        margin-left: 20px;
     }
 
     .button.disabled {
@@ -150,6 +141,7 @@
 
     .button.full {
         margin-top: 15px;
+        margin-left: 0;
     }
 
     span.error {
@@ -206,9 +198,9 @@
         margin-top: 30px;
     }
 
-    div.info-bottom a {
+    div.info-bottom p {
         display: inline-block;
-        margin-top: 10px;
+        margin-bottom: 10px;
     }
 </style>
 <div class="home">

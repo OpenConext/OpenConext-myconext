@@ -168,7 +168,7 @@ public class UserControllerTest extends AbstractIntegrationTest {
         Response response = given().redirects().follow(false)
                 .when()
                 .queryParam("h", samlAuthenticationRequest.getHash())
-                .cookie(BROWSER_SESSION_COOKIE_NAME)
+                .cookie(BROWSER_SESSION_COOKIE_NAME, "true")
                 .get("/saml/guest-idp/magic");
 
         if (response.getStatusCode() == 302) {
@@ -178,7 +178,10 @@ public class UserControllerTest extends AbstractIntegrationTest {
             String redirect = URLDecoder.decode(parameters.getFirst("redirect"), Charset.defaultCharset().name());
             redirect = redirect.replace("8081", this.port + "");
             String h = parameters.getFirst("h");
-            response = given().when().get(redirect + "?h=" + h);
+            response = given().when()
+                    .queryParam("h", h)
+                    .cookie(BROWSER_SESSION_COOKIE_NAME, "true")
+                    .get(redirect);
         }
         return response;
     }

@@ -7,7 +7,6 @@
 <style>
     .home {
         display: flex;
-        align-items: center;
         justify-content: center;
         width: 100%;
         height: 100%;
@@ -16,8 +15,6 @@
     .card {
         display: flex;
         flex-direction: column;
-        border: 1px solid #dadce0;
-        box-shadow: 1px 1px 5px 0 rgba(158, 158, 158, 0.6);
         padding: 50px;
         border-radius: 4px;
         background-color: white;

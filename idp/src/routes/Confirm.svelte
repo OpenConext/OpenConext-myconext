@@ -26,16 +26,13 @@
 <style>
     .home {
         display: flex;
-        align-items: center;
         justify-content: center;
         width: 100%;
-        height: 100%;
     }
 
     .card {
         display: flex;
         flex-direction: column;
-        border: 1px solid #dadce0;
         border-radius: 4px;
         background-color: white;
         height: auto;
@@ -46,13 +43,17 @@
         padding: 25px;
     }
 
-    button {
-        border-radius: 4px;
+    .button {
+        border: 1px solid #818181;
+        width: 100%;
+        background-color: #c7c7c7;
+        border-radius: 2px;
         padding: 10px 20px;
         display: inline-block;
-        font-size: larger;
-        background-color: #5da7c5;
-        color: whitesmoke;
+        color: black;
+        text-decoration: none;
+        cursor: pointer;
+        text-align: center;
     }
 
     h3 {
@@ -64,6 +65,7 @@
 <div class="home">
     <div class="card">
         <h3>{I18n.t("confirm.header", {email: email})}</h3>
-        <button on:click={proceed}>{I18n.t("confirm.link")}</button>
+        <a href="/proceed" class="button"
+           on:click|preventDefault|stopPropagation={proceed}>{I18n.t("confirm.link")}</a>
     </div>
 </div>

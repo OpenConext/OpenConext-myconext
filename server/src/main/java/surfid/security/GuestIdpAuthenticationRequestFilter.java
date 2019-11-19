@@ -149,10 +149,7 @@ public class GuestIdpAuthenticationRequestFilter extends IdpAuthenticationReques
     }
 
     private void addBrowserIdentificationCookie(HttpServletResponse response) {
-        Cookie cookie = new Cookie("browser_session", "true");
-        cookie.setSecure(secureCookie);
         response.setHeader("Set-Cookie", BROWSER_SESSION_COOKIE_NAME + "=true; SameSite=Lax" + (secureCookie ? "; Secure" : ""));
-        response.addCookie(cookie);
     }
 
     private boolean isDeflated(HttpServletRequest request) {
