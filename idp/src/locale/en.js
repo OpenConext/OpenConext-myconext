@@ -38,8 +38,9 @@ I18n.translations.en = {
         wrongEmail: "Woops, wrong email"
     },
     confirm: {
-        header: "<strong>Check</strong> your inbox",
-
+        header: "<strong>Success</strong>, your account is activated",
+        thanks: "Thank you for verifying your email address.",
+        info:"Click on the link below to proceed to the Service with your new Guest Account.",
         link: "Proceed to your destination"
     },
     footer: {
@@ -52,5 +53,8 @@ I18n.translations.en = {
     session: {
         title: "Your Session was lost.",
         info: "You must open the Magic Link from the mail in the same browser session as where you requested the Magic Link. <br/><br/>  Please go back to the service you where heading to and request a new Magic Link."
+    },
+    notFound: {
+        main: "404 - Not Found"
     }
 };

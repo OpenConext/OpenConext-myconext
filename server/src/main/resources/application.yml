@@ -10,6 +10,7 @@ server:
 email:
   from: noreply@surfconext.nl
   magic-link-url: http://localhost:8081/saml/guest-idp/magic
+  my-surfconext-url: http://localhost:3001
 
 cron:
   node-cron-job-responsible: true

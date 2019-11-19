@@ -21,20 +21,23 @@ public class MailConfiguration {
     @Value("${email.magic-link-url}")
     private String magicLinkUrl;
 
+    @Value("${email.my-surfconext-url}")
+    private String mySURFconextURL;
+
     @Autowired
     private JavaMailSender mailSender;
 
     @Bean
     @Profile({"!dev"})
     public MailBox mailSenderProd() {
-        return new MailBox(mailSender, emailFrom, magicLinkUrl);
+        return new MailBox(mailSender, emailFrom, magicLinkUrl, mySURFconextURL);
     }
 
     @Bean
     @Profile({"dev", "test"})
     @Primary
     public MailBox mailSenderDev(Environment environment) {
-        return new MockMailBox(mailSender, emailFrom, magicLinkUrl, environment);
+        return new MockMailBox(mailSender, emailFrom, magicLinkUrl, mySURFconextURL, environment);
     }
 
 

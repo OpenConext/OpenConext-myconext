@@ -69,7 +69,7 @@ module.exports = {
     ],
     devtool: prod ? false : 'source-map',
     devServer: {
-        port: 3000,
+        port: 3001,
         proxy: {
             '/surfid/api': 'http://localhost:8081',
             '/config': 'http://localhost:8081'

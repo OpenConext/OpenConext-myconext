@@ -27,10 +27,8 @@ import surfid.model.UserResponse;
 import surfid.repository.AuthenticationRequestRepository;
 import surfid.repository.UserRepository;
 
-import javax.mail.MessagingException;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
-import java.io.IOException;
 import java.security.SecureRandom;
 import java.util.Base64;
 import java.util.Collections;
@@ -59,7 +57,7 @@ public class UserController {
     }
 
     @PostMapping("/idp/magic_link_request")
-    public ResponseEntity newMagicLinkRequest(@Valid @RequestBody MagicLinkRequest magicLinkRequest) throws IOException, MessagingException {
+    public ResponseEntity newMagicLinkRequest(@Valid @RequestBody MagicLinkRequest magicLinkRequest) {
         SamlAuthenticationRequest samlAuthenticationRequest = authenticationRequestRepository.findByIdAndNotExpired(magicLinkRequest.getAuthenticationRequestId())
                 .orElseThrow(ExpiredAuthenticationException::new);
 
@@ -78,7 +76,7 @@ public class UserController {
     }
 
     @PutMapping("/idp/magic_link_request")
-    public ResponseEntity magicLinkRequest(HttpServletResponse response, @Valid @RequestBody MagicLinkRequest magicLinkRequest) throws IOException, MessagingException {
+    public ResponseEntity magicLinkRequest(HttpServletResponse response, @Valid @RequestBody MagicLinkRequest magicLinkRequest) {
         SamlAuthenticationRequest samlAuthenticationRequest = authenticationRequestRepository.findByIdAndNotExpired(magicLinkRequest.getAuthenticationRequestId())
                 .orElseThrow(ExpiredAuthenticationException::new);
 
@@ -137,7 +135,7 @@ public class UserController {
     }
 
     private ResponseEntity doMagicLink(User user, SamlAuthenticationRequest samlAuthenticationRequest, MagicLinkRequest magicLinkRequest,
-                                       boolean passwordFlow) throws MessagingException, IOException {
+                                       boolean passwordFlow) {
         samlAuthenticationRequest.setHash(hash());
         samlAuthenticationRequest.setUserId(user.getId());
         samlAuthenticationRequest.setRememberMe(magicLinkRequest.isRememberMe());
@@ -146,7 +144,12 @@ public class UserController {
         if (passwordFlow) {
             return ResponseEntity.status(201).body(Collections.singletonMap("url", this.magicLinkUrl + "?h=" + samlAuthenticationRequest.getHash()));
         } else {
-            mailBox.sendMagicLink(user, samlAuthenticationRequest.getHash());
+            if (user.isNewUser()) {
+                mailBox.sendAccountVerification(user, samlAuthenticationRequest.getHash());
+            } else {
+                mailBox.sendMagicLink(user, samlAuthenticationRequest.getHash(), samlAuthenticationRequest.getRequesterEntityId());
+            }
+
             return ResponseEntity.status(201).body(Collections.singletonMap("result", "ok"));
         }
     }

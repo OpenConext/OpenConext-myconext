@@ -15,8 +15,8 @@ public class MockMailBox extends MailBox {
 
     private Environment env;
 
-    MockMailBox(JavaMailSender mailSender, String emailFrom, String baseUrl, Environment env) {
-        super(mailSender, emailFrom, baseUrl);
+    MockMailBox(JavaMailSender mailSender, String emailFrom, String baseUrl, String mySURFconextURL, Environment env) {
+        super(mailSender, emailFrom, baseUrl, mySURFconextURL);
         this.env = env;
     }
 

@@ -182,7 +182,7 @@ public class GuestIdpAuthenticationRequestFilter extends IdpAuthenticationReques
             user.setNewUser(false);
             userRepository.save(user);
             String name = Charset.defaultCharset().name();
-            mailBox.sendAccountConfirmation(user, samlAuthenticationRequest.getRequesterEntityId());
+            mailBox.sendAccountConfirmation(user);
             response.sendRedirect(this.redirectUrl + "/confirm?h=" + hash +
                     "&redirect=" + URLEncoder.encode(this.magicLinkUrl, name) +
                     "&email=" + URLEncoder.encode(user.getEmail(), name));

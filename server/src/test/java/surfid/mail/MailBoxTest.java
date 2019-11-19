@@ -16,6 +16,7 @@ import javax.mail.Message;
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
 import java.io.IOException;
+import java.util.UUID;
 
 import static com.icegreen.greenmail.util.GreenMailUtil.getBody;
 import static org.awaitility.Awaitility.await;
@@ -39,15 +40,16 @@ public class MailBoxTest extends AbstractIntegrationTest {
     }
 
     @After
-    public void after() throws Exception {
+    public void after() {
         greenMail.stop();
     }
 
     @Test
-    public void sendMagicLink() throws IOException, MessagingException {
-        mailBox.sendMagicLink(new User("jdoe@example.com", "John", "Doe"), "hash");
+    public void sendMagicLink() throws MessagingException {
+        String hash = UUID.randomUUID().toString();
+        mailBox.sendMagicLink(new User("jdoe@example.com", "John", "Doe"), hash, "http://mock-sp");
         String mail = mailBody();
-        assertTrue(mail.contains("<a href=\"http://localhost:8081/saml/guest-idp/magic?h=hash\">Click to login</a>"));
+        assertTrue(mail.contains(hash));
     }
 
     private String mailBody() throws MessagingException {

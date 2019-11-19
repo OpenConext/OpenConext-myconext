@@ -1,7 +1,7 @@
 import {writable} from 'svelte/store';
 
 export const user = writable({
-    email: "",
+    email: "nice@qwert.com",
     givenName: "",
     familyName: "",
     rememberMe: false,

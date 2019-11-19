@@ -2,7 +2,7 @@
 Install the dependencies.
 
 ```bash
-cd client
+cd idp
 yarn install
 ```
 then start webpack:

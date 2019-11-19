@@ -33,13 +33,10 @@
     .card {
         display: flex;
         flex-direction: column;
-        border-radius: 4px;
         background-color: white;
         height: auto;
         min-height: 500px;
-        width: auto;
-        min-width: 500px;
-        align-items: center;
+        width: 500px;
         padding: 25px;
     }
 
@@ -56,7 +53,11 @@
         text-align: center;
     }
 
-    h3 {
+    h1 {
+        color: #767676;
+        margin-bottom: 35px;
+    }
+    p {
         color: #767676;
         margin-bottom: 35px;
     }
@@ -64,7 +65,9 @@
 </style>
 <div class="home">
     <div class="card">
-        <h3>{I18n.t("confirm.header", {email: email})}</h3>
+        <h1>{@html I18n.t("confirm.header")}</h1>
+        <p>{I18n.t("confirm.thanks")}</p>
+        <p>{I18n.t("confirm.info")}</p>
         <a href="/proceed" class="button"
            on:click|preventDefault|stopPropagation={proceed}>{I18n.t("confirm.link")}</a>
     </div>

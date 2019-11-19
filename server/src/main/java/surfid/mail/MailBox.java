@@ -29,12 +29,11 @@ public class MailBox {
         this.mySURFconextURL = mySURFconextURL;
     }
 
-    public void sendMagicLink(User user, String hash) {
+    public void sendMagicLink(User user, String hash,  String requesterId) {
         String title = "Magic Link";
 
-        Map<String, Object> variables = new HashMap<>();
-        variables.put("title", title);
-        variables.put("user", user);
+        Map<String, Object> variables = variables(user, title);
+        variables.put("destination", requesterId);
         variables.put("hash", hash);
         variables.put("magicLinkUrl", magicLinkUrl);
         sendMail("mail_templates/magic_link.html", title, variables, user.getEmail());
@@ -43,22 +42,25 @@ public class MailBox {
     public void sendAccountVerification(User user, String hash) {
         String title = "Please verify your email address for your SURFconext Guest Account";
 
-        Map<String, Object> variables = new HashMap<>();
-        variables.put("title", title);
-        variables.put("user", user);
+        Map<String, Object> variables = variables(user, title);
         variables.put("hash", hash);
         variables.put("magicLinkUrl", magicLinkUrl);
-        sendMail("mail_templates/magic_link.html", title, variables, user.getEmail());
+        sendMail("mail_templates/account_verification.html", title, variables, user.getEmail());
     }
 
-    public void sendAccountConfirmation(User user, String requestID) {
+    public void sendAccountConfirmation(User user) {
         String title = "Your Guest Account has been created";
 
-        Map<String, Object> variables = new HashMap<>();
-        variables.put("title", title);
-        variables.put("user", user);
+        Map<String, Object> variables = variables(user, title);
         variables.put("mySurfConextURL", mySURFconextURL);
         sendMail("mail_templates/account_confirmation.html", title, variables, user.getEmail());
+    }
+
+    private Map<String, Object> variables(User user, String title) {
+        Map<String, Object> variables = new HashMap<>();
+        variables.put("title", title);
+        variables.put("name", user.getGivenName() + " " + user.getFamilyName());
+        return variables;
     }
 
     private void sendMail(String templateName, String subject, Map<String, Object> variables, String... to) {

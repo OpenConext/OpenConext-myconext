@@ -23,7 +23,7 @@
             if (allowedNext($user.email, $user.givenName, $user.familyName)) {
                 if ($user.createAccount) {
                     magicLinkNewUser($user.email, $user.givenName, $user.familyName, $user.rememberMe, id)
-                            .then(() => navigate("/magic", {replace: true}))
+                            .then(() => navigate(`/magic/${id}`, {replace: true}))
                             .catch(e => {
                                 if (e.status === 410) {
                                     sessionExpired = true;
