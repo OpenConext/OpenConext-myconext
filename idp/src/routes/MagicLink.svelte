@@ -2,6 +2,8 @@
     import I18n from "i18n-js";
     import {user} from "../stores/user";
 
+    export let id;
+
 </script>
 
 <style>
@@ -32,6 +34,9 @@
 </style>
 <div class="home">
     <div class="card">
-        <h3>{I18n.t("magicLink.header", {email: $user.email})}</h3>
+        <h3>{I18n.t("magicLink.header")}</h3>
+        <p class="info">{I18n.t("magicLink.info")}</p>
+        <p class="mail">{$user.email}</p>
+        <a href="/login/{id}">{I18n.t("magicLink.wrongEmail")}</a>
     </div>
 </div>

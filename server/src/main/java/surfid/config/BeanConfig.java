@@ -6,6 +6,7 @@ import org.springframework.security.saml.provider.SamlServerConfiguration;
 import org.springframework.security.saml.provider.config.SamlConfigurationRepository;
 import org.springframework.security.saml.provider.identity.ResponseEnhancer;
 import org.springframework.security.saml.provider.identity.config.SamlIdentityProviderServerBeanConfiguration;
+import surfid.mail.MailBox;
 import surfid.repository.AuthenticationRequestRepository;
 import surfid.repository.UserRepository;
 import surfid.saml.ImmutableSamlConfigurationRepository;
@@ -23,6 +24,7 @@ public class BeanConfig extends SamlIdentityProviderServerBeanConfiguration {
     private final int rememberMeMaxAge;
     private final boolean secureCookie;
     private final String magicLinkUrl;
+    private final MailBox mailBox;
 
     public BeanConfig(@Value("${base_path}") String basePath,
                       @Value("${redirect_url}") String redirectUrl,
@@ -31,7 +33,8 @@ public class BeanConfig extends SamlIdentityProviderServerBeanConfiguration {
                       @Value("${secure_cookie}") boolean secureCookie,
                       @Value("${email.magic-link-url}") String magicLinkUrl,
                       AuthenticationRequestRepository authenticationRequestRepository,
-                      UserRepository userRepository) {
+                      UserRepository userRepository,
+                      MailBox mailBox) {
         this.immutableSamlConfigurationRepository = new ImmutableSamlConfigurationRepository(basePath);
         this.redirectUrl = redirectUrl;
         this.spEntityId = spEntityId;
@@ -40,6 +43,7 @@ public class BeanConfig extends SamlIdentityProviderServerBeanConfiguration {
         this.authenticationRequestRepository = authenticationRequestRepository;
         this.userRepository = userRepository;
         this.magicLinkUrl = magicLinkUrl;
+        this.mailBox = mailBox;
     }
 
     private ImmutableSamlConfigurationRepository immutableSamlConfigurationRepository;
@@ -52,7 +56,8 @@ public class BeanConfig extends SamlIdentityProviderServerBeanConfiguration {
     @Override
     public Filter idpAuthnRequestFilter() {
         return new GuestIdpAuthenticationRequestFilter(getSamlProvisioning(), samlAssertionStore(), redirectUrl,
-                authenticationRequestRepository, userRepository, spEntityId, rememberMeMaxAge, secureCookie, magicLinkUrl);
+                authenticationRequestRepository, userRepository, spEntityId, rememberMeMaxAge, secureCookie, magicLinkUrl,
+                mailBox);
     }
 
     public Filter samlConfigurationFilter(SamlServerConfiguration serverConfig) {

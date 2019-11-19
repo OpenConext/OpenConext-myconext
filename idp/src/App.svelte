@@ -23,7 +23,9 @@
         <Route path="/login/:id" let:params>
             <Login id="{params.id}"></Login>
         </Route>
-        <Route path="/magic" component={MagicLink}/>
+        <Route path="/magic/:id" let:params>
+            <MagicLink id="{params.id}"></MagicLink>
+        </Route>
         <Route path="/confirm" component={Confirm}/>
         <Route path="/session" component={SessionLost}/>
     </Router>

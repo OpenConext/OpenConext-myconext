@@ -1,104 +1,38 @@
+<!DOCTYPE html>
 <html>
-<head><title>{{title}}</title>
+<head>
+    <title>{{title}}</title>
 </head>
 <body>
-<table width="100%" border="0" cellspacing="0" cellpadding="0">
-    <tr>
-        <td>
-            <style type="text/css">
-                body {
-                    color: #333333;
-                    mso-line-height-rule: exactly;
-                    line-height: 18px;
-                    font-size: 13px;
-                    font-family: Arial, sans-serif;
-                    color: #333333;
-                    background-color: #EFF4F5;
-                    margin: 0;
-                }
+<div class="main" style="font-family: Helvetica, Arial, sans-serif;line-height: 18px;font-size: 13px;color: #636363;">
+    <div class="head" style="background-color: #f5f5f5;padding: 30px 0 20px 60px;">
+        <p class="title" style="font-weight: 300;font-size: 42px;">Magic Link</p>
+        <p class="subtitle" style="font-weight: 300;font-size: 26px;">Click the button below to sign in to proceed to your destination:</p>
+        <a class="button" href="{{magicLinkUrl}}?h={{hash}}" style="border-radius: 2px;color: white;border: 1px solid #648fd9;background-color: #64a7f1;text-decoration: none;display: inline-block;margin: 15px 0;padding: 14px 26px;font-size: 18px;">Sign in to {{destination}}</a>
+        <p class="subtitle" style="font-weight: 300;font-size: 26px;">This link will expire in 10 minutes and can only be used once.</p>
+    </div>
+    <div class="middle" style="padding: 20px 0 40px 60px;max-width: 600px;">
+        <p>Hi <strong>{{name}}</strong>,</p>
+        <p>Someone just requested a Magic Link on SURFconext using this email address. If this was you, you can sign in by clicking the button above.</p>
+        <p>If you didn't request the Magic Link , just ignore and delete this message.</p>
+    </div>
+    <div class="footer" style="text-align: center;padding: 20px 0 40px 60px;line-height: 24px;background-color: #f5f5f5;">
+        <div class="links">
+            <a class="external" href="https://www.surf.nl/en/surfconext-global-access-with-1-set-of-credentials" style="color: #636363;">Help</a>
+            <span> * </span>
+            <a class="external" href="https://wiki.surfnet.nl/pages/viewpage.action?pageId=10132152" style="color: #636363;">SURFConext Teams</a>
+            <span> * </span>
+            <a class="external" href="https://www.surf.nl/en/purchasing-services-from-surfnet/247-surfnet-services-helpdesk" style="color: #636363;">SURFconext
+                helpdesk></a>
+        </div>
+        <div class="about">
+            <a class="external" href="https://blog.surf.nl/en/access-and-authorisation-for-guest-users-with-surfconext/" style="color: #636363;">SURFConext Guest IdP</a>
+            is part of <a class="external" href="https://www.surf.nl/en/surfconext-global-access-with-1-set-of-credentials" style="color: #636363;">SURFconext</a> - a product
+            of <a class="external" href="https://www.surf.nl/en" style="color: #636363;">SURF</a>
+        </div>
+        <svg version="1.1" id="Laag_1" xmlns="http://www.w3.org/2000/svg" x="0" y="0" width="100" height="52" viewbox="0 0 100 52" xml:space="preserve" style="margin-top: 24px;"><path id="a_1_" d="M92.4 31.4c4.2 0 7.6 3.5 7.6 7.8v5c0 4.3-3.4 7.8-7.6 7.8H80.9c-4.2 0-7.6-3.5-7.6-7.8v-3.1c0-5.4-4.3-9.7-9.5-9.7H9.5c-5.3 0-9.5-4.3-9.5-9.7v-12C0 4.3 4.3 0 9.5 0h54.3c5.3 0 9.5 4.3 9.5 9.7v12c0 5.4 4.3 9.7 9.5 9.7h9.6z"></path><path d="M60.6 17.8c1 0 1.5-.5 1.5-1.5s-.5-1.6-1.5-1.6h-3.8v-3h6c1 0 1.5-.5 1.5-1.6 0-1-.5-1.5-1.5-1.5h-7.6c-1 0-1.6.5-1.6 1.6v11c0 1.1.5 1.6 1.6 1.6 1 0 1.6-.5 1.6-1.6v-3.5c0 .1 3.8.1 3.8.1zm-12.5-.3c1.4-.7 2.2-2.1 2.2-3.9 0-2.9-2.1-5-5.1-5h-4.5c-1 0-1.6.5-1.6 1.6v11c0 1.1.5 1.6 1.6 1.6 1 0 1.6-.5 1.6-1.6v-2.9H45l1.6 3.4c.3.7.7 1 1.3 1 .8 0 1.8-.6 1.8-1.5 0-.3-.1-.6-.2-.9l-1.4-2.8zm-3.3-2h-2.7v-3.8h2.7c1.2 0 2.2.6 2.2 1.9 0 1.3-1 1.9-2.2 1.9zm-12.7.8c0 2.2-1.3 3.5-3.1 3.5s-3.1-1.3-3.1-3.5v-6.2c0-1.1-.5-1.6-1.6-1.6-1 0-1.6.5-1.6 1.6v6.2c0 4.1 2.7 6.7 6.3 6.7 3.6 0 6.3-2.6 6.3-6.7v-6.2c0-1.1-.5-1.6-1.6-1.6-1 0-1.6.5-1.6 1.6v6.2zM14.2 20c-1.2 0-2.1-.3-2.7-.5-.5-.2-.9-.3-1.4-.3-.9 0-1.4.6-1.4 1.5 0 1.5 3 2.3 5.6 2.3 3.1 0 5.5-1.7 5.5-4.3 0-2.4-1.6-3.5-3.3-4.1l-2.6-.8c-1.1-.3-1.6-.6-1.6-1.3 0-.7 1.1-1.1 2-1.1 1.1 0 1.9.3 2.5.5.4.1.8.3 1.3.3.8 0 1.3-.6 1.3-1.5 0-1.5-2.7-2.3-5.1-2.3-3 0-5.2 1.7-5.2 4.2 0 2.1 1.5 3.3 3.1 3.8l2.3.7c1.2.4 2.1.7 2.1 1.4-.2 1-1.4 1.5-2.4 1.5z" fill="#fff"></path></svg>
+    </div>
 
-                body, td {
-                    font-family: Arial, sans-serif;
-                    font-size: 13px;
-                    mso-line-height-rule: exactly;
-                    line-height: 18px;
-                    color: #333333;
-                }
-
-                #title {
-                    font-size: 28px;
-                    font-weight: normal;
-                    mso-line-height-rule: exactly;
-                    line-height: 33px;
-                    background-color: #D4AF37;
-                    color: #FFFFFF;
-                    padding: 25px;
-                    margin: 0;
-                }
-
-                a, a:visited {
-                    color: whitesmoke;
-                    font-size: 26px;
-                }
-
-                #main_div {
-                    max-width: 720px;
-                    margin: 0 auto;
-                    border: 1px solid #D8DADC;
-                    background-color: #FFFFFF;
-                }
-
-                #inner_div {
-                    padding: 25px;
-                }
-
-
-                #magic-link-table {
-                    margin: 1em auto;
-                    font-weight: bold;
-                }
-
-                #magic-link-table td {
-                    mso-line-height-rule: exactly;
-                    line-height: 18px;
-                    font-size: 13px;
-                    font-family: Arial, sans-serif;
-                }
-
-                #magic-link-table td.magic-link {
-                    border-radius: 4px 4px 4px 4px;
-                    color: white;
-                    border: 1px solid #D4AF37;
-                    background-color: #DCB737;
-                }
-
-            </style>
-            <div id="main_div">
-
-                <h1 id="title">{{title}}</h1>
-                <div id="inner_div">
-
-                    <p>
-                        You have requested a magic link. Here it is.
-                    </p>
-
-                    <table id="magic-link-table" cellpadding="10" width="90%" align="center">
-                        <tr>
-                            <td class="magic-link" align="center" width="50%">
-                                <span><a href="{{magicLinkUrl}}?h={{hash}}">Click to login</a></span>
-                            </td>
-                        </tr>
-                    </table>
-
-                    <p>
-                        <strong>Need help?</strong><br>TODO
-                    </p>
-
-
-                </div>
-            </div>
-        </td>
-    </tr>
-</table>
+</div>
 </body>
 </html>

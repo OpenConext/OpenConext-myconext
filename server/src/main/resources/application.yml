@@ -8,7 +8,7 @@ server:
   port: 8081
 
 email:
-  from: test@openconext.org
+  from: noreply@surfconext.nl
   magic-link-url: http://localhost:8081/saml/guest-idp/magic
 
 cron:

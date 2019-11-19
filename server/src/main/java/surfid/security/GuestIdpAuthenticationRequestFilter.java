@@ -23,6 +23,7 @@ import org.springframework.util.CollectionUtils;
 import org.springframework.web.util.HtmlUtils;
 import surfid.exceptions.ExpiredAuthenticationException;
 import surfid.exceptions.UserNotFoundException;
+import surfid.mail.MailBox;
 import surfid.model.SamlAuthenticationRequest;
 import surfid.model.User;
 import surfid.repository.AuthenticationRequestRepository;
@@ -60,6 +61,7 @@ public class GuestIdpAuthenticationRequestFilter extends IdpAuthenticationReques
     private final int rememberMeMaxAge;
     private final boolean secureCookie;
     private final String magicLinkUrl;
+    private final MailBox mailBox;
 
     public GuestIdpAuthenticationRequestFilter(SamlProviderProvisioning<IdentityProviderService> provisioning,
                                                SamlMessageStore<Assertion, HttpServletRequest> assertionStore,
@@ -69,7 +71,8 @@ public class GuestIdpAuthenticationRequestFilter extends IdpAuthenticationReques
                                                String spEntityId,
                                                int rememberMeMaxAge,
                                                boolean secureCookie,
-                                               String magicLinkUrl) {
+                                               String magicLinkUrl,
+                                               MailBox mailBox) {
         super(provisioning, assertionStore);
         this.ssoSamlRequestMatcher = new SamlRequestMatcher(provisioning, "SSO");
         this.magicSamlRequestMatcher = new SamlRequestMatcher(provisioning, "magic");
@@ -80,6 +83,7 @@ public class GuestIdpAuthenticationRequestFilter extends IdpAuthenticationReques
         this.rememberMeMaxAge = rememberMeMaxAge;
         this.secureCookie = secureCookie;
         this.magicLinkUrl = magicLinkUrl;
+        this.mailBox = mailBox;
     }
 
     @Override
@@ -178,6 +182,7 @@ public class GuestIdpAuthenticationRequestFilter extends IdpAuthenticationReques
             user.setNewUser(false);
             userRepository.save(user);
             String name = Charset.defaultCharset().name();
+            mailBox.sendAccountConfirmation(user, samlAuthenticationRequest.getRequesterEntityId());
             response.sendRedirect(this.redirectUrl + "/confirm?h=" + hash +
                     "&redirect=" + URLEncoder.encode(this.magicLinkUrl, name) +
                     "&email=" + URLEncoder.encode(user.getEmail(), name));

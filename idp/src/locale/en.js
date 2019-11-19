@@ -33,10 +33,13 @@ I18n.translations.en = {
 
     },
     magicLink: {
-        header: "An email is send to {{email}} with a magic link to proceed to your destination."
+        header: "<strong>Check</strong> your inbox",
+        info: "We have sent an email with a magic link to:",
+        wrongEmail: "Woops, wrong email"
     },
     confirm: {
-        header: "An account was created for {{email}}.",
+        header: "<strong>Check</strong> your inbox",
+
         link: "Proceed to your destination"
     },
     footer: {
