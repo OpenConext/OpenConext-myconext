@@ -13,6 +13,8 @@
     let sessionExpired = false;
     let initial = true;
 
+    let passwordField;
+
     onMount(() => {
         const value = Cookies.get("login_preference");
         $user.usePassword = value === "usePassword";
@@ -71,7 +73,21 @@
         $user.familyName = "";
         emailInUse = false;
         emailNotFound = false;
-    }
+    };
+
+    const handleEmailEnter = e => {
+        if (e.key === "Enter") {
+            if (!$user.createAccount && !$user.usePassword) {
+                handleNext(false)();
+            } else if ($user.usePassword) {
+                passwordField.focus();
+            }
+        }
+    };
+
+    const handlePasswordEnter = e => e.key === "Enter" && handleNext(true)();
+
+    const handleLinkClick = e => e.key === " " && e.target.click();
 
 </script>
 
@@ -209,7 +225,8 @@
         <label class="pre-input-label">{I18n.t("login.email")}</label>
         <input type="email"
                use:init
-               bind:value={$user.email}>
+               bind:value={$user.email}
+               on:keydown={handleEmailEnter}>
         {#if !$user.createAccount && emailNotFound}
             <span class="error">{I18n.t("login.emailNotFound")}</span>
         {/if}
@@ -238,9 +255,10 @@
                 <span class="error">{I18n.t("login.requiredAttribute", {attr: I18n.t("login.familyName")})}</span>
             {/if}
             <div class="options">
-                <a class="button full"
+                <a class="button full" href="/magic"
                    class:disabled={!initial && !allowedNext($user.email, $user.familyName, $user.givenName)}
-                   href="/magic" on:click|preventDefault|stopPropagation={handleNext(false)}>
+                   on:keydown={handleLinkClick}
+                   on:click|preventDefault|stopPropagation={handleNext(false)}>
                     {I18n.t("login.sendMagicLink")}
                 </a>
             </div>
@@ -248,7 +266,9 @@
             <div id="password" class:hidden={!$user.usePassword}>
                 <label class="pre-input-label">{I18n.t("login.password")}</label>
                 <input type="password"
-                       bind:value={$user.password}>
+                       on:keydown={handlePasswordEnter}
+                       bind:value={$user.password}
+                       bind:this={passwordField}>
                 <label class="post-input-label">{I18n.t("login.passwordForgotten")}</label>
             </div>
             <div class="checkbox">
