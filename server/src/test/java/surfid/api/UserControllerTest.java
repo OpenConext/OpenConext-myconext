@@ -1,15 +1,18 @@
 package surfid.api;
 
+import io.restassured.filter.cookie.CookieFilter;
 import io.restassured.http.Cookie;
 import io.restassured.response.Response;
 import io.restassured.specification.RequestSpecification;
 import org.apache.commons.io.IOUtils;
+import org.apache.http.client.CookieStore;
 import org.junit.Test;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.util.MultiValueMap;
 import org.springframework.util.StringUtils;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -24,11 +27,15 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.nio.charset.Charset;
 import java.util.Base64;
+import java.util.Map;
+import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import static io.restassured.RestAssured.given;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static surfid.security.GuestIdpAuthenticationRequestFilter.BROWSER_SESSION_COOKIE_NAME;
 import static surfid.security.GuestIdpAuthenticationRequestFilter.GUEST_IDP_REMEMBER_ME_COOKIE_NAME;
@@ -146,6 +153,133 @@ public class UserControllerTest extends AbstractIntegrationTest {
                 .put("/surfid/api/sp/update")
                 .then()
                 .statusCode(403);
+    }
+
+    @Test
+    public void updateUserWeakPassword() {
+        User user = userRepository.findOneUserByEmail("jdoe@example.com");
+        ReflectionTestUtils.setField(user, "password", "secret");
+
+        given()
+                .when()
+                .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+                .body(new UpdateUserRequest(user, true, false, null))
+                .put("/surfid/api/sp/update")
+                .then()
+                .statusCode(422);
+    }
+
+    @Test
+    public void updateUserWrongPassword() {
+        User user = userRepository.findOneUserByEmail("jdoe@example.com");
+        ReflectionTestUtils.setField(user, "password", "abcdefghijklmnop");
+        userRepository.save(user);
+
+        given()
+                .when()
+                .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+                .body(new UpdateUserRequest(user, true, false, "nope"))
+                .put("/surfid/api/sp/update")
+                .then()
+                .statusCode(403);
+    }
+
+    @Test
+    public void clearPassword() {
+        User user = userRepository.findOneUserByEmail("jdoe@example.com");
+        String password = "abcdefghijklmnop";
+        ReflectionTestUtils.setField(user, "password", passwordEncoder.encode(password));
+        userRepository.save(user);
+
+        given()
+                .when()
+                .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+                .body(new UpdateUserRequest(user, false, true, password))
+                .put("/surfid/api/sp/update")
+                .then()
+                .statusCode(201);
+
+        user = userRepository.findOneUserByEmail("jdoe@example.com");
+        assertNull(user.getPassword());
+    }
+
+    @Test
+    public void deleteUser() {
+        User user = userRepository.findOneUserByEmail("jdoe@example.com");
+        given()
+                .when()
+                .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+                .body(user)
+                .delete("/surfid/api/sp/delete")
+                .then()
+                .statusCode(201);
+
+        Optional<User> optionalUser = userRepository.findUserByEmail("jdoe@example.com");
+        assertFalse(optionalUser.isPresent());
+    }
+
+    @Test
+    public void loginWithPassword() throws IOException {
+        User user = new User("mdoe@example.com", null, null, "Secret123");
+        String authenticationRequestId = samlAuthnRequest();
+        MagicLinkRequest magicLinkRequest = new MagicLinkRequest(authenticationRequestId, user, false, true);
+
+        Response response = given()
+                .when()
+                .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+                .body(magicLinkRequest)
+                .put("/surfid/api/idp/magic_link_request");
+
+        String url = (String) response.body().as(Map.class).get("url");
+        url = url.replace("8081", this.port + "");
+
+        CookieFilter cookieFilter = new CookieFilter();
+        response = given()
+                .redirects().follow(false)
+                .cookie(BROWSER_SESSION_COOKIE_NAME, "true")
+                .filter(cookieFilter)
+                .get(url);
+        String html = samlAuthnResponse(response);
+        assertTrue(html.contains("mdoe@example.com"));
+
+        //now that we are logged in we can use the JSESSION COOKIE to test SSO
+        CookieStore cookieStore = (CookieStore) ReflectionTestUtils.getField(cookieFilter, "cookieStore");
+        org.apache.http.cookie.Cookie cookie = cookieStore.getCookies().get(0);
+        response = samlAuthnRequestResponse(new Cookie.Builder(cookie.getName(), cookie.getValue()).build(), "relay");
+        html = samlAuthnResponse(response);
+        assertTrue(html.contains("mdoe@example.com"));
+    }
+
+    @Test
+    public void loginWithWrongPassword() throws IOException {
+        User user = new User("mdoe@example.com", null, null, "nope");
+        String authenticationRequestId = samlAuthnRequest();
+        MagicLinkRequest magicLinkRequest = new MagicLinkRequest(authenticationRequestId, user, false, true);
+
+        given()
+                .when()
+                .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+                .body(magicLinkRequest)
+                .put("/surfid/api/idp/magic_link_request")
+                .then()
+                .statusCode(HttpStatus.FORBIDDEN.value());
+    }
+
+    @Test
+    public void magicLinkCanNotBeReused() throws IOException {
+        MagicLinkResponse magicLinkResponse = magicLinkRequest(new User("jdoe@example.com"), HttpMethod.PUT);
+        SamlAuthenticationRequest samlAuthenticationRequest = authenticationRequestRepository.findById(magicLinkResponse.authenticationRequestId).get();
+        String samlResponse = samlResponse(magicLinkResponse);
+        assertTrue(samlResponse.contains("jdoe@example.com"));
+
+        given().redirects().follow(false)
+                .when()
+                .queryParam("h", samlAuthenticationRequest.getHash())
+                .cookie(BROWSER_SESSION_COOKIE_NAME, "true")
+                .get("/saml/guest-idp/magic")
+                .then()
+                .statusCode(410);
+
     }
 
     private String samlResponse(MagicLinkResponse magicLinkResponse) throws IOException {

@@ -14,5 +14,8 @@ I18n.translations.en = {
     },
     notFound: {
       main: "404 - Not Found"
+    },
+    settings:{
+        passwordDisclaimer: "Make sure it's at least 15 characters OR at least 8 characters including a number and a uppercase letter."
     }
 };

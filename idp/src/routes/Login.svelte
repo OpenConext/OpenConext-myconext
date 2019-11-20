@@ -39,7 +39,7 @@
                                 if ($user.usePassword) {
                                     window.location.href = json.url
                                 } else {
-                                    navigate("/magic", {replace: true});
+                                    navigate(`/magic/${id}`, {replace: true});
                                 }
                             }).catch(e => {
                         if (e.status === 410) {

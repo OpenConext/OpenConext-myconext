@@ -187,6 +187,10 @@ public class GuestIdpAuthenticationRequestFilter extends IdpAuthenticationReques
                     "&redirect=" + URLEncoder.encode(this.magicLinkUrl, name) +
                     "&email=" + URLEncoder.encode(user.getEmail(), name));
             return;
+        } else {
+            //ensure the magic link can't bee used twice
+            samlAuthenticationRequest.setHash(null);
+            authenticationRequestRepository.save(samlAuthenticationRequest);
         }
         IdentityProviderService provider = getProvisioning().getHostedProvider();
         ServiceProviderMetadata serviceProviderMetadata = provider.getRemoteProvider(spEntityId);

@@ -10,10 +10,10 @@ import surfid.AbstractIntegrationTest;
 import surfid.model.UserResponse;
 
 import static io.restassured.RestAssured.given;
+import static org.hamcrest.core.IsEqual.equalTo;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
-
 
 @ActiveProfiles(value = "dev", inheritProfiles = false)
 public class LoginControllerTest extends AbstractIntegrationTest {
@@ -64,7 +64,15 @@ public class LoginControllerTest extends AbstractIntegrationTest {
         assertEquals("Doe", userResponse.getFamilyName());
         assertFalse(userResponse.isHasPassword());
         assertNotNull(userResponse.getId());
-
-
     }
+
+    @Test
+    public void config() {
+        given()
+                .when()
+                .get("/config")
+                .then()
+                .body("loginUrl", equalTo("http://localhost:8081/login"));
+    }
+
 }

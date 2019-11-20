@@ -8,6 +8,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.util.StringUtils;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -117,7 +118,7 @@ public class UserController {
         return ResponseEntity.status(201).body(new UserResponse(user));
     }
 
-    @PutMapping("/sp/delete")
+    @DeleteMapping("/sp/delete")
     public ResponseEntity deleteUser(Authentication authentication, @Valid @RequestBody User deltaUser) {
         User user = verifyAndFetchUser(authentication, deltaUser);
         userRepository.delete(user);
@@ -149,7 +150,6 @@ public class UserController {
             } else {
                 mailBox.sendMagicLink(user, samlAuthenticationRequest.getHash(), samlAuthenticationRequest.getRequesterEntityId());
             }
-
             return ResponseEntity.status(201).body(Collections.singletonMap("result", "ok"));
         }
     }

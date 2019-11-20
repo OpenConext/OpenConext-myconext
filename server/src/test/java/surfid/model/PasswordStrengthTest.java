@@ -16,5 +16,6 @@ public class PasswordStrengthTest {
 
         assertTrue(strongEnough("A1qwerty"));
         assertTrue(strongEnough("abcdefghijklmno"));
+        assertTrue(strongEnough("Secret123"));
     }
 }

@@ -1,8 +1,6 @@
 package surfid.validation;
 
-import org.apache.commons.codec.language.bm.Rule;
 import org.springframework.util.StringUtils;
-import surfid.exceptions.WeakPasswordException;
 
 import java.util.regex.Pattern;
 
