@@ -59,6 +59,7 @@ public class JsonErrorController implements ErrorController {
             statusCode = annotation != null ? annotation.value() : BAD_REQUEST;
         }
         result.remove("message");
+        result.put("status", statusCode.value());
 
         return ResponseEntity.status(statusCode).body(result);
     }
