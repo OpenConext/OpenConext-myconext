@@ -97,7 +97,8 @@ public class UserControllerTest extends AbstractIntegrationTest {
 
         magicLinkRequest(linkRequest, HttpMethod.POST)
                 .response
-                .statusCode(HttpStatus.GONE.value());
+                .statusCode(HttpStatus.FOUND.value())
+                .header("Location", "http://localhost:3000/expired");
     }
 
     @Test
@@ -278,8 +279,8 @@ public class UserControllerTest extends AbstractIntegrationTest {
                 .cookie(BROWSER_SESSION_COOKIE_NAME, "true")
                 .get("/saml/guest-idp/magic")
                 .then()
-                .statusCode(410);
-
+                .statusCode(HttpStatus.FOUND.value())
+                .header("Location", "http://localhost:3000/expired");
     }
 
     private String samlResponse(MagicLinkResponse magicLinkResponse) throws IOException {

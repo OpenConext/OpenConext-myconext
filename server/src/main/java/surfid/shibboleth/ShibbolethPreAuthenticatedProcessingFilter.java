@@ -17,8 +17,8 @@ public class ShibbolethPreAuthenticatedProcessingFilter extends AbstractPreAuthe
 
     private static final Logger LOG = LoggerFactory.getLogger(ShibbolethPreAuthenticatedProcessingFilter.class);
 
-    public static final String SHIB_GIVEN_NAME = "urn:mace:dir:attribute-def:givenName";
-    public static final String SHIB_SUR_NAME = "urn:mace:dir:attribute-def:sn";
+    public static final String SHIB_GIVEN_NAME = "Shib-givenName";
+    public static final String SHIB_SUR_NAME = "Shib-surName";
     public static final String SHIB_EMAIL = "Shib-InetOrgPerson-mail";
 
     private final UserRepository userRepository;

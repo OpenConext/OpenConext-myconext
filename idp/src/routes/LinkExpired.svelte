@@ -28,7 +28,7 @@
 </style>
 <div class="home">
     <div class="card">
-        <h2>{I18n.t("session.title")}</h2>
-        <p>{@html I18n.t("session.info")}</p>
+        <h2>{I18n.t("expired.title")}</h2>
+        <p>{@html I18n.t("expired.info")}</p>
     </div>
 </div>

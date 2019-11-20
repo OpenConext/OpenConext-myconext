@@ -1,31 +1,65 @@
 import I18n from "i18n-js";
 
 I18n.translations.nl = {
-    login : {
-        header: "Inloggen / registreren",
-        trust: "Trust this computer",
-        email: "Email",
-        emailPlaceholder: "Email",
-        familyNamePlaceholder: "Family name",
-        giveNamePlaceholder: "Given name",
-        usePassword: "Use password",
-        useMagicLink: "Use magic link",
-        rememberMe: "Remember me",
-        passwordPlaceholder: "Password",
-        next: "Login",
-        create: "Create",
-        newTo: "New to surfConext?",
-        createAccount: " Create an account.",
-        useExistingAccount: "Use existing account",
-        emailInUse: "Email is already in use.",
-        emailNotFound: "Email not found.",
-        passwordDisclaimer: "Make sure it's at least 15 characters OR at least 8 characters including a number and a uppercase letter."
+    login: {
+        header: "<strong>Login</strong> met je Gast account",
+        trust: "Vertrouw deze computer",
+        email: "Je e-mail adres",
+        familyName: "Achternaam",
+        givenName: "Voornaam",
+        familyNamePlaceholder: "e.g. Janssen",
+        givenNamePlaceholder: "e.g. Tom",
+        usePassword: "Gebruik wachtwoord",
+        useMagicLink: "Gebruik magic link",
+        sendMagicLink: "Verstuur magic link",
+        rememberMe: "Onthoud dit apparaat",
+        password: "Je wachtwoord",
+        passwordForgotten: "Als je je wachtwoord vergeten bent, gebruik dan de magic link",
+        magicLinkText: "Geen wachtwoord nodig. We mailen je een magic link waarmee je  direct kunt inloggen.",
+        login: "Login",
+        create: "Aanmaken",
+        newTo: "Voor het eerst bij SURFconext?",
+        createAccount: " Maak een account aan.",
+        useExistingAccount: "Gebruik een bestaande account",
+        invalidEmail: "Ongeldige e-mail",
+        requiredAttribute: "{{attr}} is verplicht",
+        emailInUse: "E-mail is al reeds in gebruik.",
+        emailNotFound: "E-mail niet gevonden.",
+        passwordDisclaimer: "Je wachtwoord moet minimaal 15 karakters lang zijn of 8 inclusief een hoofdletter en een getal.",
+        noGuestAccount: "Heb je nog geen <strong>gastaccount?</strong>",
+        noGuestAccountInfo: "Een SURFconext Guest-account is bedoeld voor gebruikers die diensten willen gebruiken via <a href=\"https://surfconext.nl\" target=\"_blank\"> SURFconext </a>, maar die geen instellings account hebben.",
+        requestGuestAccount: "Vraag een gastaccount aan",
+        alreadyGuestAccount: "Al een <strong>gastaccount?</strong>",
+
     },
     magicLink: {
-        header: "An email is send to {{email}} with a magic link to proceed to your destination."
+        header: "<strong>Controleer</strong> je inbox",
+        info: "We hebben een e-mail met een magische link verzonden naar:",
+        wrongEmail: "Woops, verkeerde e-mail"
     },
     confirm: {
-        header: "An account was created for {{email}}.",
-        link: "Proceed to your destination"
+        header: "<strong>Succes</strong>, uw account is geactiveerd",
+        thanks: "Bedankt voor het verifiëren van uw e-mailadres.",
+        info:"Klik op de onderstaande link om door te gaan naar de Service met je nieuwe gastaccount.",
+        link: "Ga door naar je bestemming"
+    },
+    footer: {
+        tip: "Tip of info nodig?",
+        help: "Help & FAQ",
+        poweredBy: "Trots aangeboden door",
+        surfconext: "SURFconext",
+
+    },
+    session: {
+        title: "Je sessie is weg.",
+        info: "Je moet de Magic Link vanuit de mail openen in dezelfde browsersessie als waar je de Magic Link hebt aangevraagd. <br/> <br/> Ga terug naar de service waar je naartoe gaat en vraag een nieuwe Magic Link aan."
+    },
+    expired: {
+        title: "Je Magic Link is verlopen.",
+        info: "\n" +
+            "De Magic Link die u hebt gebruikt, is verlopen of al in gebruik. <br/> <br/> Ga terug naar de service waar u naartoe gaat en vraag een nieuwe Magic Link aan."
+    },
+    notFound: {
+        main: "404 - Niet gevonden"
     }
 };

@@ -5,7 +5,7 @@
     "consumerAssertionServiceURL": "http://localhost:3000/SSO",
     "relayState": "relay_state",
     "hash": "hash",
-    "expiresIn": "2019-12-12T07:55:50.229Z",
+    "expiresIn": "2500-12-12T07:55:50.229Z",
     "userId": "jdoe@example.com",
     "requesterEntityId": "http://mock-sp",
     "rememberMe": false

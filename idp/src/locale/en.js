@@ -54,6 +54,10 @@ I18n.translations.en = {
         title: "Your Session was lost.",
         info: "You must open the Magic Link from the mail in the same browser session as where you requested the Magic Link. <br/><br/>  Please go back to the service you where heading to and request a new Magic Link."
     },
+    expired: {
+        title: "Your Magic Link is expired.",
+        info: "The Magic Link you have used is either expired or already used.<br/><br/>  Please go back to the service you where heading to and request a new Magic Link."
+    },
     notFound: {
         main: "404 - Not Found"
     }
