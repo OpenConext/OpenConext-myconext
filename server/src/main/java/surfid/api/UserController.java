@@ -22,7 +22,7 @@ import surfid.exceptions.UserNotFoundException;
 import surfid.mail.MailBox;
 import surfid.model.MagicLinkRequest;
 import surfid.model.SamlAuthenticationRequest;
-import surfid.model.UpdateUserRequest;
+import surfid.model.UpdateUserSecurityRequest;
 import surfid.model.User;
 import surfid.model.UserResponse;
 import surfid.repository.AuthenticationRequestRepository;
@@ -67,10 +67,9 @@ public class UserController {
         if (userByEmail.isPresent()) {
             throw new DuplicateUserEmailException();
         }
-
-        User userToSave = new User(user.getEmail());
         //prevent not-wanted attributes in the database
-        userToSave.merge(user, passwordEncoder);
+        User userToSave = new User(user.getEmail(), user.getGivenName(), user.getFamilyName());
+        userToSave.encryptPassword(user.getPassword(), passwordEncoder);
         userToSave = userRepository.save(userToSave);
 
         return this.doMagicLink(userToSave, samlAuthenticationRequest, magicLinkRequest, false);
@@ -97,26 +96,42 @@ public class UserController {
 
     @GetMapping("/sp/me")
     public ResponseEntity me(Authentication authentication) {
-        return ResponseEntity.ok(new UserResponse((User) authentication.getPrincipal()));
+        User user = userRepository.findOneUserByEmail(((User) authentication.getPrincipal()).getEmail());
+        return ResponseEntity.ok(new UserResponse(user));
     }
 
     @PutMapping("/sp/update")
-    public ResponseEntity updateUser(Authentication authentication, @RequestBody UpdateUserRequest updateUserRequest) {
-        User deltaUser = updateUserRequest.getUser();
+    public ResponseEntity updateUserProfile(Authentication authentication, @RequestBody User deltaUser ) {
+        User user = verifyAndFetchUser(authentication, deltaUser);
+
+        user.setFamilyName(deltaUser.getFamilyName());
+        user.setGivenName(deltaUser.getGivenName());
+        user.validate();
+
+        userRepository.save(user);
+
+        return ResponseEntity.status(201).body(new UserResponse(user));
+    }
+
+    @PutMapping("/sp/security")
+    public ResponseEntity updateUserSecurity(Authentication authentication, @RequestBody UpdateUserSecurityRequest updateUserRequest) {
+        User deltaUser = userRepository.findById(updateUserRequest.getUserId()).orElseThrow(UserNotFoundException::new);
         User user = verifyAndFetchUser(authentication, deltaUser);
         if ((updateUserRequest.isUpdatePassword() || updateUserRequest.isClearPassword()) && !StringUtils.isEmpty(user.getPassword())) {
             if (!passwordEncoder.matches(updateUserRequest.getCurrentPassword(), user.getPassword())) {
                 throw new ForbiddenException();
             }
         }
-        user.merge(deltaUser, passwordEncoder);
-        if (updateUserRequest.isClearPassword()) {
+        if (updateUserRequest.isUpdatePassword()) {
+            user.encryptPassword(updateUserRequest.getNewPassword(), passwordEncoder);
+        } else if (updateUserRequest.isClearPassword()) {
             user.clearPassword();
         }
         userRepository.save(user);
 
         return ResponseEntity.status(201).body(new UserResponse(user));
     }
+
 
     @DeleteMapping("/sp/delete")
     public ResponseEntity deleteUser(Authentication authentication, @Valid @RequestBody User deltaUser) {

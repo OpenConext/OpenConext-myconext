@@ -35,7 +35,7 @@ public class LoginControllerTest extends AbstractIntegrationTest {
                 .get("/login")
                 .then()
                 .statusCode(302)
-                .header("Location", "http://localhost:" + port + "/startSSO?redirect_url=http://localhost:3000/redirect");
+                .header("Location", "http://localhost:" + port + "/startSSO?redirect_url=http://localhost:3001/redirect");
     }
 
     @Test
@@ -62,7 +62,7 @@ public class LoginControllerTest extends AbstractIntegrationTest {
         assertEquals("jdoe@example.com", userResponse.getEmail());
         assertEquals("John", userResponse.getGivenName());
         assertEquals("Doe", userResponse.getFamilyName());
-        assertFalse(userResponse.isHasPassword());
+        assertFalse(userResponse.isUsePassword());
         assertNotNull(userResponse.getId());
     }
 

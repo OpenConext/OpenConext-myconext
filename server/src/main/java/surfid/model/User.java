@@ -59,12 +59,14 @@ public class User implements Serializable, UserDetails {
         Assert.notNull(familyName, "FamilyName is required");
     }
 
-    public void encryptPassword(PasswordEncoder encoder) {
-        if (StringUtils.hasText(this.password)) {
-            if (!strongEnough(this.password)) {
+    public void encryptPassword(String password, PasswordEncoder encoder) {
+        if (StringUtils.hasText(password)) {
+            if (!strongEnough(password)) {
                 throw new WeakPasswordException();
             }
-            this.password = encoder.encode(this.password);
+            this.password = encoder.encode(password);
+        } else {
+            this.password = null;
         }
     }
 
@@ -112,18 +114,16 @@ public class User implements Serializable, UserDetails {
         this.newUser = newUser;
     }
 
-    public void merge(User user, PasswordEncoder encoder) {
-        this.familyName = user.getFamilyName();
-        this.givenName = user.getGivenName();
-        if (StringUtils.hasText(user.getPassword())) {
-            this.password = user.getPassword();
-            encryptPassword(encoder);
-        }
-        this.validate();
-    }
-
     public void clearPassword() {
         this.password = null;
+    }
+
+    public void setGivenName(String givenName) {
+        this.givenName = givenName;
+    }
+
+    public void setFamilyName(String familyName) {
+        this.familyName = familyName;
     }
 
 }

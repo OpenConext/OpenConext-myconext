@@ -5,7 +5,10 @@ export const user = writable({
     email: "",
     givenName: "",
     familyName: "",
-    guest: true
+    guest: true,
+    usePassword: false
 });
 
 export const redirectPath = writable("");
+
+export const flash = writable("");

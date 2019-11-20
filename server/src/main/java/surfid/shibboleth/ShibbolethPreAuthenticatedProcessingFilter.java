@@ -37,7 +37,7 @@ public class ShibbolethPreAuthenticatedProcessingFilter extends AbstractPreAuthe
 
         if (StringUtils.isEmpty(givenName) || StringUtils.isEmpty(familyName) || StringUtils.isEmpty(email)) {
             //this is the contract. See AbstractPreAuthenticatedProcessingFilter#doAuthenticate
-            LOG.error("Missing required attribute(s): givenName {} familyName {} email {}", givenName, familyName, email);
+            LOG.warn("Missing required attribute(s): givenName {} familyName {} email {}", givenName, familyName, email);
             return null;
         }
         Optional<User> optionalUser = userRepository.findUserByEmail(email);

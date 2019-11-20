@@ -12,13 +12,13 @@ public class UserResponse {
     private String email;
     private String givenName;
     private String familyName;
-    private boolean hasPassword;
+    private boolean usePassword;
 
     public UserResponse(User user) {
         this.id = user.getId();
         this.email = user.getEmail();
         this.givenName = user.getGivenName();
         this.familyName = user.getFamilyName();
-        this.hasPassword = StringUtils.hasText(user.getPassword());
+        this.usePassword = StringUtils.hasText(user.getPassword());
     }
 }

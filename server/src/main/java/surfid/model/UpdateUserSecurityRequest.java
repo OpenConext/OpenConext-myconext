@@ -7,10 +7,11 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
-public class UpdateUserRequest {
+public class UpdateUserSecurityRequest {
 
-    private User user;
+    private String userId;
     private boolean updatePassword;
     private boolean clearPassword;
     private String currentPassword;
+    private String newPassword;
 }

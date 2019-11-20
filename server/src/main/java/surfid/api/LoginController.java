@@ -22,7 +22,7 @@ public class LoginController {
     private String redirectUrl;
     private String basePath;
 
-    public LoginController(@Value("${base_path}") String basePath, @Value("${redirect_url}") String redirectUrl) {
+    public LoginController(@Value("${base_path}") String basePath, @Value("${sp_redirect_url}") String redirectUrl) {
         this.basePath = basePath;
         this.redirectUrl = redirectUrl;
     }

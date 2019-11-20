@@ -24,6 +24,9 @@ function validFetch(path, options) {
     };
     return fetch(path, fetchOptions).then(res => validateResponse(res));
 }
+function fetchDelete(path) {
+    return validFetch(path, {method: "delete"});
+}
 
 function fetchJson(path, options = {}) {
     return validFetch(path, options);
@@ -43,5 +46,14 @@ export function config() {
 }
 
 export function updateUser(user) {
-    return postPutJson("/surfid/api/sp/update", body, "PUT");
+    return postPutJson("/surfid/api/sp/update", user, "PUT");
+}
+
+export function updateSecurity(userId, updatePassword, clearPassword, currentPassword, newPassword) {
+    const body = {userId, updatePassword, clearPassword, currentPassword, newPassword};
+    return postPutJson("/surfid/api/sp/security", body, "PUT");
+}
+
+export function deleteUser(user) {
+    return fetchDelete("/surfid/api/sp/delete");
 }

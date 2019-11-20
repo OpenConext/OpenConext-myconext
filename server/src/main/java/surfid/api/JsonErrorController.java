@@ -31,7 +31,7 @@ public class JsonErrorController implements ErrorController {
     private final String redirectUrl;
 
     @Autowired
-    public JsonErrorController(ErrorAttributes errorAttributes, @Value("${redirect_url}") String redirectUrl) {
+    public JsonErrorController(ErrorAttributes errorAttributes, @Value("${idp_redirect_url}") String redirectUrl) {
         this.errorAttributes = errorAttributes;
         this.redirectUrl = redirectUrl;
     }

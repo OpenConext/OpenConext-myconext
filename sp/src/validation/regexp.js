@@ -1,1 +1,1 @@
-export const validEmail = email => /^(.+)@(.+){2,}\.(.+){2,}$/.test(email);
+export const validPassword = password => /^(((?=.*[A-Z])(?=.*[0-9])[a-zA-Z\d]{8,})|(.{15,}))$/.test(password);

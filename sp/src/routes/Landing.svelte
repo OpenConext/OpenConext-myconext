@@ -1,17 +1,21 @@
 <script>
-    import {redirectPath} from "../stores/user";
+    import {user, redirectPath} from "../stores/user";
     import {onMount} from "svelte";
     import I18n from "i18n-js";
     import {config} from "../api/index";
     import {navigate} from "svelte-routing";
-
     let loginUrl;
 
     onMount(() => config()
-            .then(json => loginUrl = json.loginUrl));
+            .then(json => {
+                loginUrl = json.loginUrl;
+                if ($user.id) {
+                    navigate("/");
+                }
+            }));
 
     const login = () => {
-        window.location.href = `${loginUrl}?redirect_path=${encodeURIComponent($redirectPath || "/settings")}`;
+        window.location.href = `${loginUrl}?redirect_path=${encodeURIComponent($redirectPath || "/")}`;
     };
 
 

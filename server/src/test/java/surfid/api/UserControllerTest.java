@@ -19,7 +19,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 import surfid.AbstractIntegrationTest;
 import surfid.model.MagicLinkRequest;
 import surfid.model.SamlAuthenticationRequest;
-import surfid.model.UpdateUserRequest;
+import surfid.model.UpdateUserSecurityRequest;
 import surfid.model.User;
 
 import java.io.IOException;
@@ -129,11 +129,12 @@ public class UserControllerTest extends AbstractIntegrationTest {
     @Test
     public void updateUser() {
         User user = userRepository.findOneUserByEmail("jdoe@example.com");
-        user.merge(new User(user.getEmail(), "Mary", "Poppins", "secretA12"), passwordEncoder);
+        user.setGivenName("Mary");
+        user.setFamilyName("Poppins");
         given()
                 .when()
                 .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
-                .body(new UpdateUserRequest(user, true, false, null))
+                .body(user)
                 .put("/surfid/api/sp/update")
                 .then()
                 .statusCode(201);
@@ -142,7 +143,6 @@ public class UserControllerTest extends AbstractIntegrationTest {
 
         assertEquals(user.getGivenName(), userFromDB.getGivenName());
         assertEquals(user.getFamilyName(), userFromDB.getFamilyName());
-        assertTrue(passwordEncoder.matches(user.getPassword(), userFromDB.getPassword()));
     }
 
     @Test
@@ -150,7 +150,7 @@ public class UserControllerTest extends AbstractIntegrationTest {
         given()
                 .when()
                 .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
-                .body(new UpdateUserRequest(new User(), false, false, null))
+                .body(new User())
                 .put("/surfid/api/sp/update")
                 .then()
                 .statusCode(403);
@@ -159,13 +159,11 @@ public class UserControllerTest extends AbstractIntegrationTest {
     @Test
     public void updateUserWeakPassword() {
         User user = userRepository.findOneUserByEmail("jdoe@example.com");
-        ReflectionTestUtils.setField(user, "password", "secret");
-
         given()
                 .when()
                 .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
-                .body(new UpdateUserRequest(user, true, false, null))
-                .put("/surfid/api/sp/update")
+                .body(new UpdateUserSecurityRequest(user.getId(), true, false, null, "secret"))
+                .put("/surfid/api/sp/security")
                 .then()
                 .statusCode(422);
     }
@@ -179,8 +177,8 @@ public class UserControllerTest extends AbstractIntegrationTest {
         given()
                 .when()
                 .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
-                .body(new UpdateUserRequest(user, true, false, "nope"))
-                .put("/surfid/api/sp/update")
+                .body(new UpdateUserSecurityRequest(user.getId(), true, false, "nope", "nope"))
+                .put("/surfid/api/sp/security")
                 .then()
                 .statusCode(403);
     }
@@ -195,8 +193,8 @@ public class UserControllerTest extends AbstractIntegrationTest {
         given()
                 .when()
                 .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
-                .body(new UpdateUserRequest(user, false, true, password))
-                .put("/surfid/api/sp/update")
+                .body(new UpdateUserSecurityRequest(user.getId(), false, true, password, null))
+                .put("/surfid/api/sp/security")
                 .then()
                 .statusCode(201);
 

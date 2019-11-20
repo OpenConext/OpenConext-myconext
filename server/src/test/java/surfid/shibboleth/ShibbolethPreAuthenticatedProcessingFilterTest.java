@@ -33,7 +33,7 @@ public class ShibbolethPreAuthenticatedProcessingFilterTest extends AbstractInte
                 .body("email", equalTo("steven.doe@example.org"))
                 .body("givenName", equalTo("Steven"))
                 .body("familyName", equalTo("Doe"))
-                .body("hasPassword", equalTo(false))
+                .body("usePassword", equalTo(false))
                 .body("id", notNullValue());
 
     }

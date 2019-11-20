@@ -27,7 +27,7 @@ public class BeanConfig extends SamlIdentityProviderServerBeanConfiguration {
     private final MailBox mailBox;
 
     public BeanConfig(@Value("${base_path}") String basePath,
-                      @Value("${redirect_url}") String redirectUrl,
+                      @Value("${idp_redirect_url}") String redirectUrl,
                       @Value("${sp_entity_id}") String spEntityId,
                       @Value("${remember_me_max_age_seconds}") int rememberMeMaxAge,
                       @Value("${secure_cookie}") boolean secureCookie,

@@ -19,7 +19,8 @@ cron:
 mongodb_db: surf_id_test
 
 base_path: http://localhost:8081
-redirect_url: http://localhost:3000
+idp_redirect_url: http://localhost:3000
+sp_redirect_url: http://localhost:3001
 sp_entity_id: https://engine.test2.surfconext.nl/authentication/sp/metadata
 sp_entity_metadata_url: https://engine.test2.surfconext.nl/authentication/sp/metadata
 

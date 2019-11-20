@@ -13,9 +13,27 @@ I18n.translations.en = {
         questions: "If you have any questions you can contact <a href=\"mailto:surfconext@surfnet.nl\">surfconext@SURFnet.nl</a>"
     },
     notFound: {
-      main: "404 - Not Found"
+        main: "404 - Not Found"
     },
-    settings:{
+    profile: {
+        givenName: "Your given name",
+        familyName: "Your family name",
+        update: "Update",
+        updated: "Your profile has been updated"
+    },
+    security: {
+        currentPassword: "Current password",
+        newPassword: "New password",
+        confirmPassword: "Confirm new password",
+        usePassword: "Use password",
+        useMagicLink: "Use Magic Link",
+        update: "Update",
+        updated: "Your security settings have been updated",
         passwordDisclaimer: "Make sure it's at least 15 characters OR at least 8 characters including a number and a uppercase letter."
+    },
+    home: {
+        welcome: "Welcome {{name}}",
+        profile: "Profile",
+        security: "Security"
     }
 };
