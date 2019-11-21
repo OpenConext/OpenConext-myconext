@@ -1,8 +1,20 @@
 package myconext.security;
 
+import myconext.config.BeanConfig;
+import myconext.repository.UserRepository;
+import myconext.shibboleth.ShibbolethPreAuthenticatedProcessingFilter;
+import myconext.shibboleth.ShibbolethUserDetailService;
+import myconext.shibboleth.mock.MockShibbolethFilter;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.bouncycastle.asn1.x500.X500Name;
+import org.bouncycastle.cert.jcajce.JcaX509CertificateConverter;
+import org.bouncycastle.cert.jcajce.JcaX509v3CertificateBuilder;
+import org.bouncycastle.jce.provider.BouncyCastleProvider;
+import org.bouncycastle.operator.ContentSigner;
+import org.bouncycastle.operator.OperatorCreationException;
+import org.bouncycastle.operator.jcajce.JcaContentSignerBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
@@ -25,18 +37,20 @@ import org.springframework.security.saml.saml2.metadata.NameId;
 import org.springframework.security.web.authentication.preauth.AbstractPreAuthenticatedProcessingFilter;
 import org.springframework.security.web.authentication.preauth.PreAuthenticatedAuthenticationProvider;
 import org.springframework.security.web.csrf.CsrfFilter;
-import myconext.config.BeanConfig;
-import myconext.repository.UserRepository;
-import myconext.shibboleth.ShibbolethPreAuthenticatedProcessingFilter;
-import myconext.shibboleth.ShibbolethUserDetailService;
-import myconext.shibboleth.mock.MockShibbolethFilter;
 
 import java.io.IOException;
+import java.math.BigInteger;
 import java.nio.charset.Charset;
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
-import java.security.NoSuchAlgorithmException;
+import java.security.Provider;
+import java.security.Security;
+import java.security.cert.Certificate;
+import java.security.cert.CertificateException;
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.util.Base64;
+import java.util.Date;
 
 import static java.util.Arrays.asList;
 import static org.springframework.security.saml.saml2.signature.AlgorithmMethod.RSA_SHA512;
@@ -98,7 +112,7 @@ public class SecurityConfiguration {
             ;
         }
 
-        private RotatingKeys getKeys() throws IOException, NoSuchAlgorithmException {
+        private RotatingKeys getKeys() throws Exception {
             String privateKey;
             String certificate;
             if (this.privateKeyPath.exists() && this.certificatePath.exists()) {
@@ -125,10 +139,14 @@ public class SecurityConfiguration {
             return IOUtils.toString(resource.getInputStream(), Charset.defaultCharset());
         }
 
-        private String[] generateKeys() throws NoSuchAlgorithmException {
+        private String[] generateKeys() throws Exception {
             LOG.info("Generating public / private key pair for SAML trusted proxy");
+            Provider bcProvider = new BouncyCastleProvider();
+            Security.addProvider(bcProvider);
+
             Base64.Encoder encoder = Base64.getEncoder();
-            KeyPairGenerator kpg = KeyPairGenerator.getInstance("RSA");
+
+            KeyPairGenerator kpg = KeyPairGenerator.getInstance("RSA", "BC");
             kpg.initialize(2048);
             KeyPair kp = kpg.generateKeyPair();
 
@@ -136,15 +154,40 @@ public class SecurityConfiguration {
             privateKey += encoder.encodeToString(kp.getPrivate().getEncoded());
             privateKey += "\n-----END RSA PRIVATE KEY-----\n";
 
-            String publicKey = "-----BEGIN RSA PUBLIC KEY-----\n";
-            publicKey += encoder.encodeToString(kp.getPublic().getEncoded());
-            publicKey += "\n-----END RSA PUBLIC KEY-----\n";
+            Certificate certificate = selfSign(kp, "CN=test,O=Test Certificate", bcProvider);
 
-            return new String[]{privateKey, publicKey};
+            String certificateS = "-----BEGIN CERTIFICATE-----\n";
+            certificateS += encoder.encodeToString(certificate.getEncoded());
+            certificateS += "\n-----END CERTIFICATE-----\n";
+            return new String[]{privateKey, certificateS};
         }
 
     }
 
+    public static Certificate selfSign(KeyPair keyPair, String subjectDN, Provider bcProvider) throws OperatorCreationException, CertificateException {
+
+        Date startDate = new Date();
+
+        X500Name dnName = new X500Name(subjectDN);
+        BigInteger certSerialNumber = new BigInteger(Long.toString(System.currentTimeMillis())); // <-- Using the current timestamp as the certificate serial number
+        Date endDate = Date.from(LocalDateTime.now().plusYears(1).toInstant(ZoneOffset.UTC));
+        String signatureAlgorithm = "SHA256WithRSA";
+
+        ContentSigner contentSigner = new JcaContentSignerBuilder(signatureAlgorithm).build(keyPair.getPrivate());
+
+        JcaX509v3CertificateBuilder certBuilder = new JcaX509v3CertificateBuilder(dnName, certSerialNumber, startDate, endDate, dnName, keyPair.getPublic());
+
+        // Extensions --------------------------
+
+        // Basic Constraints
+//        BasicConstraints basicConstraints = new BasicConstraints(true); // <-- true for CA, false for EndEntity
+//
+//        certBuilder.addExtension(new ASN1ObjectIdentifier("2.5.29.19"), true, basicConstraints); // Basic Constraints is usually marked as critical.
+
+        // -------------------------------------
+
+        return new JcaX509CertificateConverter().setProvider(bcProvider).getCertificate(certBuilder.build(contentSigner));
+    }
 
     @Autowired
     public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {

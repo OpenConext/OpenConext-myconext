@@ -22,6 +22,7 @@ import static org.hamcrest.core.IsEqual.equalTo;
         })
 @ActiveProfiles("dev")
 public class SecurityConfigurationTest extends AbstractIntegrationTest {
+
     @Test
     public void generateKeys() {
         given()

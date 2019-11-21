@@ -6,8 +6,11 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import io.restassured.RestAssured;
 import io.restassured.http.Cookie;
 import io.restassured.response.Response;
+import myconext.model.SamlAuthenticationRequest;
+import myconext.model.User;
+import myconext.repository.AuthenticationRequestRepository;
+import myconext.repository.UserRepository;
 import org.apache.commons.codec.binary.Base64;
-
 import org.apache.commons.io.IOUtils;
 import org.junit.Before;
 import org.junit.runner.RunWith;
@@ -25,10 +28,6 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.util.StringUtils;
-import myconext.model.SamlAuthenticationRequest;
-import myconext.model.User;
-import myconext.repository.AuthenticationRequestRepository;
-import myconext.repository.UserRepository;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -113,7 +112,7 @@ public abstract class AbstractIntegrationTest {
         Map<String, String> queryParams = new HashMap<>();
         queryParams.put("SAMLRequest", samlRequestEncoded);
         if (StringUtils.hasText(relayState)) {
-            queryParams.put("RelayState" ,relayState);
+            queryParams.put("RelayState", relayState);
         }
         return given().redirects().follow(false)
                 .when()
