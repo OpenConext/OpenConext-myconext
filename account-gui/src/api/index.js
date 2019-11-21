@@ -39,14 +39,10 @@ function postPutJson(path, body, method) {
 //Base
 export function magicLinkNewUser(email, givenName, familyName, rememberMe, authenticationRequestId) {
     const body = {user: {email, givenName, familyName}, authenticationRequestId, rememberMe};
-    return postPutJson("/surfid/api/idp/magic_link_request", body, "POST");
+    return postPutJson("/myconext/api/idp/magic_link_request", body, "POST");
 }
 
 export function magicLinkExistingUser(email, password, rememberMe, usePassword, authenticationRequestId) {
     const body = {user: {email, password}, authenticationRequestId, rememberMe, usePassword};
-    return postPutJson("/surfid/api/idp/magic_link_request", body, "PUT");
-}
-
-export function reportError(error) {
-    return postPutJson("/surfid/api/error", error, "POST");
+    return postPutJson("/myconext/api/idp/magic_link_request", body, "PUT");
 }

@@ -170,13 +170,13 @@ public class SecurityConfiguration {
 
         @Override
         public void configure(WebSecurity web) throws Exception {
-            web.ignoring().antMatchers("/actuator/**", "/surfid/api/idp/**");
+            web.ignoring().antMatchers("/actuator/**", "/myconext/api/idp/**");
         }
 
         @Override
         protected void configure(HttpSecurity http) throws Exception {
             http
-                    .requestMatchers().antMatchers("/surfid/api/sp/**", "/startSSO")
+                    .requestMatchers().antMatchers("/myconext/api/sp/**", "/startSSO")
                     .and()
                     .sessionManagement()
                     .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)

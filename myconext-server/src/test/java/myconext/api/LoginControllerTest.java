@@ -22,7 +22,7 @@ public class LoginControllerTest extends AbstractIntegrationTest {
     public void secureMe() {
         given()
                 .when()
-                .get("/surfid/api/sp/me")
+                .get("/myconext/api/sp/me")
                 .then()
                 .statusCode(403);
     }
@@ -55,7 +55,7 @@ public class LoginControllerTest extends AbstractIntegrationTest {
                 .when()
                 .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                 .header(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE)
-                .get("/surfid/api/sp/me")
+                .get("/myconext/api/sp/me")
                 .body()
                 .as(UserResponse.class);
 

@@ -38,7 +38,7 @@ function postPutJson(path, body, method) {
 
 //Base
 export function me() {
-    return fetchJson("/surfid/api/sp/me");
+    return fetchJson("/myconext/api/sp/me");
 }
 
 export function config() {
@@ -46,14 +46,14 @@ export function config() {
 }
 
 export function updateUser(user) {
-    return postPutJson("/surfid/api/sp/update", user, "PUT");
+    return postPutJson("/myconext/api/sp/update", user, "PUT");
 }
 
 export function updateSecurity(userId, updatePassword, clearPassword, currentPassword, newPassword) {
     const body = {userId, updatePassword, clearPassword, currentPassword, newPassword};
-    return postPutJson("/surfid/api/sp/security", body, "PUT");
+    return postPutJson("/myconext/api/sp/security", body, "PUT");
 }
 
 export function deleteUser(user) {
-    return fetchDelete("/surfid/api/sp/delete");
+    return fetchDelete("/myconext/api/sp/delete");
 }

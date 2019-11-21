@@ -135,7 +135,7 @@ public class UserControllerTest extends AbstractIntegrationTest {
                 .when()
                 .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                 .body(user)
-                .put("/surfid/api/sp/update")
+                .put("/myconext/api/sp/update")
                 .then()
                 .statusCode(201);
 
@@ -151,7 +151,7 @@ public class UserControllerTest extends AbstractIntegrationTest {
                 .when()
                 .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                 .body(new User())
-                .put("/surfid/api/sp/update")
+                .put("/myconext/api/sp/update")
                 .then()
                 .statusCode(403);
     }
@@ -163,7 +163,7 @@ public class UserControllerTest extends AbstractIntegrationTest {
                 .when()
                 .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                 .body(new UpdateUserSecurityRequest(user.getId(), true, false, null, "secret"))
-                .put("/surfid/api/sp/security")
+                .put("/myconext/api/sp/security")
                 .then()
                 .statusCode(422);
     }
@@ -178,7 +178,7 @@ public class UserControllerTest extends AbstractIntegrationTest {
                 .when()
                 .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                 .body(new UpdateUserSecurityRequest(user.getId(), true, false, "nope", "nope"))
-                .put("/surfid/api/sp/security")
+                .put("/myconext/api/sp/security")
                 .then()
                 .statusCode(403);
     }
@@ -194,7 +194,7 @@ public class UserControllerTest extends AbstractIntegrationTest {
                 .when()
                 .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                 .body(new UpdateUserSecurityRequest(user.getId(), false, true, password, null))
-                .put("/surfid/api/sp/security")
+                .put("/myconext/api/sp/security")
                 .then()
                 .statusCode(201);
 
@@ -209,7 +209,7 @@ public class UserControllerTest extends AbstractIntegrationTest {
                 .when()
                 .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                 .body(user)
-                .delete("/surfid/api/sp/delete")
+                .delete("/myconext/api/sp/delete")
                 .then()
                 .statusCode(201);
 
@@ -227,7 +227,7 @@ public class UserControllerTest extends AbstractIntegrationTest {
                 .when()
                 .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                 .body(magicLinkRequest)
-                .put("/surfid/api/idp/magic_link_request");
+                .put("/myconext/api/idp/magic_link_request");
 
         String url = (String) response.body().as(Map.class).get("url");
         url = url.replace("8081", this.port + "");
@@ -259,7 +259,7 @@ public class UserControllerTest extends AbstractIntegrationTest {
                 .when()
                 .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                 .body(magicLinkRequest)
-                .put("/surfid/api/idp/magic_link_request")
+                .put("/myconext/api/idp/magic_link_request")
                 .then()
                 .statusCode(HttpStatus.FORBIDDEN.value());
     }
@@ -331,7 +331,7 @@ public class UserControllerTest extends AbstractIntegrationTest {
                 .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                 .body(linkRequest);
 
-        String path = "/surfid/api/idp/magic_link_request";
+        String path = "/myconext/api/idp/magic_link_request";
         Response response = method.equals(HttpMethod.POST) ? requestSpecification.post(path) : requestSpecification.put(path);
         return new MagicLinkResponse(linkRequest.getAuthenticationRequestId(), response.then());
     }

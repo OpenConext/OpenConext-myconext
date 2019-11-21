@@ -71,7 +71,7 @@ module.exports = {
     devServer: {
         port: 3001,
         proxy: {
-            '/surfid/api': 'http://localhost:8081',
+            '/myconext/api': 'http://localhost:8081',
             '/config': 'http://localhost:8081'
         },
         historyApiFallback: true

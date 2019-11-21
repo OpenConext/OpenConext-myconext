@@ -36,7 +36,7 @@ import java.util.Collections;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/surfid/api")
+@RequestMapping("/myconext/api")
 public class UserController {
 
     private UserRepository userRepository;

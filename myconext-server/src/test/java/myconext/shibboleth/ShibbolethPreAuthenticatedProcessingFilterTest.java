@@ -28,7 +28,7 @@ public class ShibbolethPreAuthenticatedProcessingFilterTest extends AbstractInte
         given()
                 .headers(headers)
                 .when()
-                .get("/surfid/api/sp/me")
+                .get("/myconext/api/sp/me")
                 .then()
                 .body("email", equalTo("steven.doe@example.org"))
                 .body("givenName", equalTo("Steven"))

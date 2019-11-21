@@ -11,7 +11,7 @@ public class CsrfProtectionMatcher implements RequestMatcher {
 
     @Override
     public boolean matches(HttpServletRequest request) {
-        return request.getServletPath().startsWith("/surfid/api/sp")
+        return request.getServletPath().startsWith("/myconext/api/sp")
             && !allowedMethods.matcher(request.getMethod().toUpperCase()).matches();
     }
 
