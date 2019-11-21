@@ -1,3 +1,7 @@
+# MyConext
+[![Build Status](https://travis-ci.org/oharsta/myconext.svg)](https://travis-ci.org/oharsta/myconext)
+[![codecov.io](https://codecov.io/github/oharsta/myconext/coverage.svg)](https://codecov.io/github/oharsta/myconext)
+
 ## Client
 Install the dependencies.
 
