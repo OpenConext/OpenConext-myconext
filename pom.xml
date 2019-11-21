@@ -4,12 +4,12 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>org.openconext</groupId>
-    <artifactId>surf-id</artifactId>
+    <artifactId>myconext</artifactId>
     <version>10.0.0</version>
     <packaging>pom</packaging>
 
-    <name>surf-id</name>
-    <description>SURF ID Guest IdP</description>
+    <name>myconext</name>
+    <description>My OpenConext</description>
 
     <parent>
   		<groupId>org.springframework.boot</groupId>
@@ -19,9 +19,9 @@
   	</parent>
 
     <modules>
-        <module>server</module>
-        <module>idp</module>
-        <module>sp</module>
+        <module>myconext-server</module>
+        <module>account-gui</module>
+        <module>myconext-gui</module>
     </modules>
 
     <build>
