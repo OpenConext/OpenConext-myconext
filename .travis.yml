@@ -34,8 +34,8 @@ before_script:
 - ${PWD}/mongodb-linux-x86_64-${MONGODB}/bin/mongod --dbpath ${PWD}/mongodb-linux-x86_64-${MONGODB}/data --logpath ${PWD}/mongodb-linux-x86_64-${MONGODB}/mongodb.log --fork
 script:
 - mvn test
-- cd myconext-gui && yarn build && cd ..
-- cd account-gui && yarn build && cd ...
+- cd myconext-gui && yarn build && yarn test && cd ..
+- cd account-gui && yarn build && yarn test && cd ..
 after_script:
 - pkill mongod
 after_success:
