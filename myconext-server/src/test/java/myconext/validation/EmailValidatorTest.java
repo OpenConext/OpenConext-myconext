@@ -4,16 +4,17 @@ import org.junit.Test;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-import static myconext.validation.EmailValidator.validEmail;
 
 public class EmailValidatorTest {
 
+    private EmailValidator subject = new EmailValidator();
+
     @Test
     public void validEmails() {
-        assertFalse(validEmail(null));
-        assertFalse(validEmail(" "));
-        assertFalse(validEmail("a@a.a"));
+        assertFalse(subject.validEmail(null));
+        assertFalse(subject.validEmail(" "));
+        assertFalse(subject.validEmail("a@a.a"));
 
-        assertTrue(validEmail("jdoe@example.com"));
+        assertTrue(subject.validEmail("jdoe@example.com"));
     }
 }

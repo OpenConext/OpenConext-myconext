@@ -1,5 +1,6 @@
 package myconext.api;
 
+import myconext.validation.EmailValidator;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -46,6 +47,7 @@ public class UserController {
 
     private SecureRandom random = new SecureRandom();
     private PasswordEncoder passwordEncoder = new BCryptPasswordEncoder(-1, random);
+    private EmailValidator emailValidator = new EmailValidator();
 
     public UserController(UserRepository userRepository,
                           AuthenticationRequestRepository authenticationRequestRepository,
@@ -67,6 +69,8 @@ public class UserController {
         if (userByEmail.isPresent()) {
             throw new DuplicateUserEmailException();
         }
+        emailValidator.validEmail(user.getEmail());
+
         //prevent not-wanted attributes in the database
         User userToSave = new User(user.getEmail(), user.getGivenName(), user.getFamilyName());
         userToSave.encryptPassword(user.getPassword(), passwordEncoder);

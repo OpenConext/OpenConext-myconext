@@ -8,7 +8,7 @@ public class EmailValidator {
 
     private static Pattern pattern = Pattern.compile("^(.+)@(.+){2,}\\.(.+){2,}$");
 
-    public static boolean validEmail(String email) {
+    public boolean validEmail(String email) {
         return StringUtils.hasText(email) && pattern.matcher(email).matches();
     }
 }
