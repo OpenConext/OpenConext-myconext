@@ -85,15 +85,15 @@
 <div class="home">
     <div class="card">
 
-        <h2 class="title">{I18n.t("landing.loginHeader")}</h2>
+        <h2 class="title">{I18n.ts("landing.loginHeader")}</h2>
 
         <div class="block">
 
-            <p>{I18n.t("landing.info")}</p>
-            <span class="button" on:click={login}>{I18n.t("landing.login")}</span>
-            <h2>{I18n.t("landing.questionsTitle")}</h2>
-            <p>{I18n.t("landing.whatCanYouDo")}</p>
-            <p>{@html I18n.t("landing.questions")}</p>
+            <p>{I18n.ts("landing.info")}</p>
+            <span class="button" on:click={login}>{I18n.ts("landing.login")}</span>
+            <h2>{I18n.ts("landing.questionsTitle")}</h2>
+            <p>{I18n.ts("landing.whatCanYouDo")}</p>
+            <p>{@html I18n.ts("landing.questions")}</p>
 
 
         </div>

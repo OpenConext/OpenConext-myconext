@@ -12,6 +12,9 @@ email:
   magic-link-url: http://localhost:8081/saml/guest-idp/magic
   my-surfconext-url: http://localhost:3001
 
+branding: OpenConext
+#SURFconext
+
 cron:
   node-cron-job-responsible: true
   token-cleaner-expression: "0 0/15 * * * *"

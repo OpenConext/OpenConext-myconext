@@ -65,13 +65,13 @@
 </style>
 <div class="profile">
     <div class="inner">
-        <h2>{I18n.t("profile.title")}</h2>
+        <h2>{I18n.ts("profile.title")}</h2>
         <div class="form-field">
-            <label for="email">{I18n.t("profile.email")}</label>
+            <label for="email">{I18n.ts("profile.email")}</label>
             <input id="email" type="text" bind:value={$user.email} disabled>
         </div>
         <div class="form-field">
-            <label for="name">{I18n.t("profile.name")}</label>
+            <label for="name">{I18n.ts("profile.name")}</label>
             <input id="name" type="text" value={`${$user.givenName} ${$user.familyName}`} disabled>
             <span class="more" on:click={ () => navigate("/edit")}>→</span>
         </div>

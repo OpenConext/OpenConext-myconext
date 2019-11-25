@@ -99,26 +99,26 @@
 <div class="home">
     <div class="inner">
         <nav>
-            <p class="settings">{I18n.t("home.settings")}</p>
+            <p class="settings">{I18n.ts("home.settings")}</p>
             <ul>
                 {#each tabs as tab}
                     <li>
                         {@html tab.icon}
                         <a href="/{tab.name}" class:active={tab.name === currentTab.name}
                            on:click|preventDefault|stopPropagation={switchTab(tab.name)}>
-                            {I18n.t(`home.${tab.name}`)}
+                            {I18n.ts(`home.${tab.name}`)}
                         </a>
                     </li>
                 {/each}
             </ul>
-            <p class="favorites">{I18n.t("home.favorites")}</p>
+            <p class="favorites">{I18n.ts("home.favorites")}</p>
             <ul>
                 {#each links as link}
                     <li>
                         {@html mail}
-                        <a href="{I18n.t(`home.links.${link.name}Href`, {baseDomain: $config.baseDomain})}"
+                        <a href="{I18n.ts(`home.links.${link.name}Href`, {baseDomain: $config.baseDomain})}"
                            target="_blank">
-                            {I18n.t(`home.links.${link.name}`)}
+                            {I18n.ts(`home.links.${link.name}`)}
                         </a>
                     </li>
                 {/each}

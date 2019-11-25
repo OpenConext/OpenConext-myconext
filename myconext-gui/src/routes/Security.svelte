@@ -75,18 +75,18 @@
 </style>
 <div class="security">
     <div class="inner">
-        <h2>{I18n.t("security.title")}</h2>
-        <p>{I18n.t("security.subTitle")}</p>
+        <h2>{I18n.ts("security.title")}</h2>
+        <p>{I18n.ts("security.subTitle")}</p>
         <div class="form-field">
-            <label for="email">{I18n.t("security.useMagicLink")}</label>
+            <label for="email">{I18n.ts("security.useMagicLink")}</label>
             <input id="email" type="text" value={$user.email} disabled>
         </div>
         <div class="form-field">
-            <label for="name">{I18n.t("security.usePassword")}</label>
+            <label for="name">{I18n.ts("security.usePassword")}</label>
             {#if $user.usePassword}
                 <input id="name" type="password" value="123456789012345" disabled>
             {:else}
-                <input id="name" type="text" value={I18n.t("security.notSet")} disabled>
+                <input id="name" type="text" value={I18n.ts("security.notSet")} disabled>
             {/if}
             <span class="more" on:click={ () => navigate("/password")}>→</span>
         </div>

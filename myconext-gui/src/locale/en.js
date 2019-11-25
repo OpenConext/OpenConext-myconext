@@ -80,3 +80,11 @@ I18n.translations.en = {
         confirm: "Confirm"
     }
 };
+
+I18n.ts = (key, model) => {
+    let res = I18n.t(key, model);
+    if (I18n.branding && I18n.branding !== "SURFconext") {
+        res = res.replace(/SURFconext/g, I18n.branding);
+    }
+    return res;
+};

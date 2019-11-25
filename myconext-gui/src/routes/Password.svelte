@@ -22,7 +22,7 @@
             updateSecurity($user.id, currentPassword, newPassword)
                     .then(json => {
                         $user = {$user, ...json};
-                        $flash = usePassword ? I18n.t("password.updated") : I18n.t("password.set");
+                        $flash = usePassword ? I18n.ts("password.updated") : I18n.ts("password.set");
                         navigate("/security");
                     })
                     .catch(() => {
@@ -150,38 +150,38 @@
 <div class="password">
     <div class="inner">
 
-        <h2><a class="back" href="/{I18n.t('password.back')}"
+        <h2><a class="back" href="/{I18n.ts('password.back')}"
                on:click|preventDefault|stopPropagation={cancel}>
             ←
-        </a>{usePassword ? I18n.t("password.updateTitle") : I18n.t("password.setTitle")}</h2>
-        <p>{I18n.t("password.passwordDisclaimer")}</p>
+        </a>{usePassword ? I18n.ts("password.updateTitle") : I18n.ts("password.setTitle")}</h2>
+        <p>{I18n.ts("password.passwordDisclaimer")}</p>
         {#if usePassword}
             <div class="form-field">
-                <label for="currentPassword">{I18n.t("password.currentPassword")}</label>
+                <label for="currentPassword">{I18n.ts("password.currentPassword")}</label>
                 <input id="currentPassword" type="password" bind:value={currentPassword}>
             </div>
         {/if}
         {#if currentPasswordInvalid}
-            <span class="error">{I18n.t("password.invalidCurrentPassword")}</span>
+            <span class="error">{I18n.ts("password.invalidCurrentPassword")}</span>
         {/if}
         <div class="form-field">
-            <label for="newPassword">{I18n.t("password.newPassword")}</label>
+            <label for="newPassword">{I18n.ts("password.newPassword")}</label>
             <input id="newPassword" type="password" bind:value={newPassword}>
         </div>
         <div class="form-field">
-            <label for="confirmPassword">{I18n.t("password.confirmPassword")}</label>
+            <label for="confirmPassword">{I18n.ts("password.confirmPassword")}</label>
             <input id="confirmPassword" type="password" bind:value={confirmPassword}>
         </div>
         <div class="options">
             <a class="button" href="/cancel"
                on:click|preventDefault|stopPropagation={cancel}>
-                {I18n.t("password.cancel")}
+                {I18n.ts("password.cancel")}
             </a>
             <a class="button" href="/update"
                class:disabled={!((usePassword && currentPassword && validPassword(newPassword) && newPassword === confirmPassword) ||
                 (!usePassword && validPassword(newPassword) && newPassword === confirmPassword))}
                on:click|preventDefault|stopPropagation={update}>
-                {usePassword ? I18n.t("password.updateUpdate") : I18n.t("password.setUpdate")}
+                {usePassword ? I18n.ts("password.updateUpdate") : I18n.ts("password.setUpdate")}
             </a>
         </div>
 

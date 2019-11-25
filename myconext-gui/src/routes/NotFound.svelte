@@ -19,5 +19,5 @@
 
 </style>
 <div class="not-found">
-            <h1>{I18n.t("notFound.main")}</h1>
+            <h1>{I18n.ts("notFound.main")}</h1>
 </div>

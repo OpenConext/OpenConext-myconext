@@ -103,15 +103,15 @@
 
 <div class="account">
     <div class="inner">
-        <h2>{I18n.t("account.title")}</h2>
+        <h2>{I18n.ts("account.title")}</h2>
         <div class="form-field">
-            <label for="email">{I18n.t("security.useMagicLink")}</label>
+            <label for="email">{I18n.ts("security.useMagicLink")}</label>
             <input id="email" type="text" value={$user.email} disabled>
         </div>
         <div class="options">
             <a class="button" href="/delete"
                on:click|preventDefault|stopPropagation={deleteUserAction(true)}>
-                {I18n.t("account.deleteAccount")}
+                {I18n.ts("account.deleteAccount")}
             </a>
         </div>
 
@@ -122,10 +122,10 @@
 {#if showModal}
     <Modal submit={deleteUserAction(false)} cancel={() => showModal = false}>
         <h2 slot="header">
-            {I18n.t("account.deleteAccount")}
+            {I18n.ts("account.deleteAccount")}
         </h2>
         <p slot="body">
-            {I18n.t("account.deleteAccountConfirmation")}
+            {I18n.ts("account.deleteAccountConfirmation")}
         </p>
     </Modal>
 {/if}

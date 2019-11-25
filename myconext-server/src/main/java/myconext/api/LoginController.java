@@ -24,10 +24,12 @@ public class LoginController {
 
     public LoginController(@Value("${base_path}") String basePath,
                            @Value("${base_domain}") String baseDomain,
+                           @Value("${branding}") String branding,
                            @Value("${sp_redirect_url}") String redirectUrl) {
         this.config = new HashMap<>();
         this.config.put("loginUrl", basePath + "/login");
         this.config.put("baseDomain", baseDomain);
+        this.config.put("branding", branding);
         this.redirectUrl = redirectUrl;
     }
 

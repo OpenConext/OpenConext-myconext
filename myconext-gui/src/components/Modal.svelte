@@ -24,11 +24,11 @@
     <div class="options">
         <a class="button" href="/cancel"
            on:click|preventDefault|stopPropagation={cancel}>
-            {I18n.t("modal.cancel")}
+            {I18n.ts("modal.cancel")}
         </a>
         <a class="button" href="/delete"
            on:click|preventDefault|stopPropagation={submit}>
-            {I18n.t("modal.confirm")}
+            {I18n.ts("modal.confirm")}
         </a>
     </div>
 </div>

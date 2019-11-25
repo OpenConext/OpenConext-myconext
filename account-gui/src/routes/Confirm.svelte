@@ -65,10 +65,10 @@
 </style>
 <div class="home">
     <div class="card">
-        <h1>{@html I18n.t("confirm.header")}</h1>
-        <p>{I18n.t("confirm.thanks")}</p>
-        <p>{I18n.t("confirm.info")}</p>
+        <h1>{@html I18n.ts("confirm.header")}</h1>
+        <p>{I18n.ts("confirm.thanks")}</p>
+        <p>{I18n.ts("confirm.info")}</p>
         <a href="/proceed" class="button"
-           on:click|preventDefault|stopPropagation={proceed}>{I18n.t("confirm.link")}</a>
+           on:click|preventDefault|stopPropagation={proceed}>{I18n.ts("confirm.link")}</a>
     </div>
 </div>

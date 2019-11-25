@@ -220,85 +220,85 @@
 </style>
 <div class="home">
     <div class="card">
-        <h2 class="top">{@html I18n.t("login.header")}</h2>
-        <label class="pre-input-label">{I18n.t("login.email")}</label>
+        <h2 class="top">{@html I18n.ts("login.header")}</h2>
+        <label class="pre-input-label">{I18n.ts("login.email")}</label>
         <input type="email"
                use:init
                bind:value={$user.email}
                on:keydown={handleEmailEnter}>
         {#if !$user.createAccount && emailNotFound}
-            <span class="error">{I18n.t("login.emailNotFound")}</span>
+            <span class="error">{I18n.ts("login.emailNotFound")}</span>
         {/if}
         {#if !initial && !validEmail($user.email)}
-            <span class="error">{I18n.t("login.invalidEmail")}</span>
+            <span class="error">{I18n.ts("login.invalidEmail")}</span>
         {/if}
         {#if $user.createAccount && emailInUse}
-            <span class="error">{I18n.t("login.emailInUse")}</span>
+            <span class="error">{I18n.ts("login.emailInUse")}</span>
         {/if}
         {#if !$user.usePassword}
-            <label class="post-input-label">{I18n.t("login.magicLinkText")}</label>
+            <label class="post-input-label">{I18n.ts("login.magicLinkText")}</label>
         {/if}
         {#if $user.createAccount}
-            <label class="pre-input-label">{I18n.t("login.givenName")}</label>
+            <label class="pre-input-label">{I18n.ts("login.givenName")}</label>
             <input type="text"
-                   placeholder={I18n.t("login.givenNamePlaceholder")}
+                   placeholder={I18n.ts("login.givenNamePlaceholder")}
                    bind:value={$user.givenName}>
             {#if !initial && !$user.givenName}
-                <span class="error">{I18n.t("login.requiredAttribute", {attr: I18n.t("login.givenName")})}</span>
+                <span class="error">{I18n.ts("login.requiredAttribute", {attr: I18n.ts("login.givenName")})}</span>
             {/if}
-            <label class="pre-input-label">{I18n.t("login.familyName")}</label>
+            <label class="pre-input-label">{I18n.ts("login.familyName")}</label>
             <input type="text"
-                   placeholder={I18n.t("login.familyNamePlaceholder")}
+                   placeholder={I18n.ts("login.familyNamePlaceholder")}
                    bind:value={$user.familyName}>
             {#if !initial && !$user.familyName}
-                <span class="error">{I18n.t("login.requiredAttribute", {attr: I18n.t("login.familyName")})}</span>
+                <span class="error">{I18n.ts("login.requiredAttribute", {attr: I18n.ts("login.familyName")})}</span>
             {/if}
             <div class="options">
                 <a class="button full" href="/magic"
                    class:disabled={!initial && !allowedNext($user.email, $user.familyName, $user.givenName)}
                    on:keydown={handleLinkClick}
                    on:click|preventDefault|stopPropagation={handleNext(false)}>
-                    {I18n.t("login.sendMagicLink")}
+                    {I18n.ts("login.sendMagicLink")}
                 </a>
             </div>
         {:else}
             <div id="password" class:hidden={!$user.usePassword}>
-                <label class="pre-input-label">{I18n.t("login.password")}</label>
+                <label class="pre-input-label">{I18n.ts("login.password")}</label>
                 <input type="password"
                        on:keydown={handlePasswordEnter}
                        bind:value={$user.password}
                        bind:this={passwordField}>
-                <label class="post-input-label">{I18n.t("login.passwordForgotten")}</label>
+                <label class="post-input-label">{I18n.ts("login.passwordForgotten")}</label>
             </div>
             <div class="checkbox">
                 <input type="checkbox"
                        id="remember-me"
                        bind:checked={$user.rememberMe}/>
-                <label for="remember-me">{I18n.t("login.rememberMe")}</label>
+                <label for="remember-me">{I18n.ts("login.rememberMe")}</label>
             </div>
             <div class="options">
                 <a class="button child" class:non-active={!$user.usePassword} href="/password"
                    class:disabled={!initial && !allowedNext($user.email, $user.familyName, $user.givenName) && $user.usePassword}
                    on:click|preventDefault|stopPropagation={handleNext(true)}>
-                    {$user.usePassword ?  I18n.t("login.login") : I18n.t("login.usePassword")}
+                    {$user.usePassword ?  I18n.ts("login.login") : I18n.ts("login.usePassword")}
                 </a>
                 <a class="button child" class:non-active={$user.usePassword} href="/magic"
                    class:disabled={!initial && !allowedNext($user.email, $user.familyName, $user.givenName) && !$user.usePassword}
                    on:click|preventDefault|stopPropagation={handleNext(false)}>
-                    {$user.usePassword ?  I18n.t("login.useMagicLink") : I18n.t("login.sendMagicLink")}
+                    {$user.usePassword ?  I18n.ts("login.useMagicLink") : I18n.ts("login.sendMagicLink")}
                 </a>
             </div>
         {/if}
         <div class="info-bottom">
             {#if !$user.createAccount}
-                <h2>{@html I18n.t("login.noGuestAccount")}</h2>
-                <p>{@html I18n.t("login.noGuestAccountInfo")}</p>
+                <h2>{@html I18n.ts("login.noGuestAccount")}</h2>
+                <p>{@html I18n.ts("login.noGuestAccountInfo")}</p>
                 <a href="/reguest"
-                   on:click|preventDefault|stopPropagation={createAccount(true)}>{I18n.t("login.requestGuestAccount")}</a>
+                   on:click|preventDefault|stopPropagation={createAccount(true)}>{I18n.ts("login.requestGuestAccount")}</a>
             {:else}
-                <h2>{@html I18n.t("login.alreadyGuestAccount")}</h2>
+                <h2>{@html I18n.ts("login.alreadyGuestAccount")}</h2>
                 <a href="/login"
-                   on:click|preventDefault|stopPropagation={createAccount(false)}>{I18n.t("login.login")}</a>
+                   on:click|preventDefault|stopPropagation={createAccount(false)}>{I18n.ts("login.login")}</a>
 
             {/if}
         </div>

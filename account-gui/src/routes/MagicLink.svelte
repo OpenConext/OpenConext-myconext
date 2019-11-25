@@ -42,9 +42,9 @@
 </style>
 <div class="home">
     <div class="card">
-        <h1>{@html I18n.t("magicLink.header")}</h1>
-        <p class="info">{I18n.t("magicLink.info")}</p>
+        <h1>{@html I18n.ts("magicLink.header")}</h1>
+        <p class="info">{I18n.ts("magicLink.info")}</p>
         <p class="mail">{$user.email}</p>
-        <a href="/login/{id}">{I18n.t("magicLink.wrongEmail")}</a>
+        <a href="/login/{id}">{I18n.ts("magicLink.wrongEmail")}</a>
     </div>
 </div>

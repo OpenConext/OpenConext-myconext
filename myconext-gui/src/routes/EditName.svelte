@@ -7,7 +7,7 @@
     const update = () => {
         if ($user.familyName && $user.givenName) {
             updateUser($user).then(() => {
-                $flash = I18n.t("edit.updated");
+                $flash = I18n.ts("edit.updated");
                 navigate("/profile");
             });
         }
@@ -99,28 +99,28 @@
 </style>
 <div class="profile">
     <div class="inner">
-        <h2> <a class="back" href="/{I18n.t('edit.back')}"
+        <h2> <a class="back" href="/{I18n.ts('edit.back')}"
                 on:click|preventDefault|stopPropagation={cancel}>
             ←
-        </a>{I18n.t("edit.title")}</h2>
+        </a>{I18n.ts("edit.title")}</h2>
         <div class="form-field">
-            <label for="givenName">{I18n.t("edit.givenName")}</label>
+            <label for="givenName">{I18n.ts("edit.givenName")}</label>
             <input id="givenName" type="text" bind:value={$user.givenName}/>
         </div>
         <div class="form-field">
-            <label for="familyName">{I18n.t("edit.familyName")}</label>
+            <label for="familyName">{I18n.ts("edit.familyName")}</label>
             <input id="familyName" type="text" bind:value={$user.familyName}/>
         </div>
 
         <div class="options">
             <a class="button" href="/cancel"
                on:click|preventDefault|stopPropagation={cancel}>
-                {I18n.t("edit.cancel")}
+                {I18n.ts("edit.cancel")}
             </a>
             <a class="button" href="/update"
                class:disabled={!($user.familyName && $user.givenName)}
                on:click|preventDefault|stopPropagation={update}>
-                {I18n.t("edit.update")}
+                {I18n.ts("edit.update")}
             </a>
         </div>
     </div>
