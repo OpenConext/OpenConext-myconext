@@ -26,14 +26,13 @@
 
 </style>
 <div class="header">
-    {#if I18n.branding !== "SURFconext"}
-        <a href="/">{@html openConextLogo}</a>
-    {:else}
-        <a href="/">{@html logo}</a>
-    {/if}
 
     <div class="logo">
-        {@html logo}
+        {#if I18n.branding !== "SURFconext"}
+            {@html openConextLogo}
+        {:else}
+            {@html logo}
+        {/if}
     </div>
 
 </div>
