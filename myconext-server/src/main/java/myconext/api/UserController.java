@@ -12,6 +12,7 @@ import myconext.model.User;
 import myconext.model.UserResponse;
 import myconext.repository.AuthenticationRequestRepository;
 import myconext.repository.UserRepository;
+import myconext.security.EmailGuessingPreventor;
 import myconext.validation.EmailValidator;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
@@ -51,6 +52,7 @@ public class UserController {
     private SecureRandom random = new SecureRandom();
     private PasswordEncoder passwordEncoder = new BCryptPasswordEncoder(-1, random);
     private EmailValidator emailValidator = new EmailValidator();
+    private EmailGuessingPreventor emailGuessingPreventor = new EmailGuessingPreventor();
 
     public UserController(UserRepository userRepository,
                           AuthenticationRequestRepository authenticationRequestRepository,
@@ -63,13 +65,14 @@ public class UserController {
     }
 
     @PostMapping("/idp/magic_link_request")
-    public ResponseEntity newMagicLinkRequest(@Valid @RequestBody MagicLinkRequest magicLinkRequest) {
+    public ResponseEntity newMagicLinkRequest(@Valid @RequestBody MagicLinkRequest magicLinkRequest) throws InterruptedException {
         SamlAuthenticationRequest samlAuthenticationRequest = authenticationRequestRepository.findByIdAndNotExpired(magicLinkRequest.getAuthenticationRequestId())
                 .orElseThrow(ExpiredAuthenticationException::new);
 
         User user = magicLinkRequest.getUser();
         Optional<User> userByEmail = userRepository.findUserByEmail(user.getEmail());
         if (userByEmail.isPresent()) {
+            emailGuessingPreventor.potentialUserEmailGuess();
             throw new DuplicateUserEmailException();
         }
         emailValidator.validEmail(user.getEmail());
@@ -83,13 +86,18 @@ public class UserController {
     }
 
     @PutMapping("/idp/magic_link_request")
-    public ResponseEntity magicLinkRequest(HttpServletResponse response, @Valid @RequestBody MagicLinkRequest magicLinkRequest) {
+    public ResponseEntity magicLinkRequest(HttpServletResponse response, @Valid @RequestBody MagicLinkRequest magicLinkRequest) throws InterruptedException {
         SamlAuthenticationRequest samlAuthenticationRequest = authenticationRequestRepository.findByIdAndNotExpired(magicLinkRequest.getAuthenticationRequestId())
                 .orElseThrow(ExpiredAuthenticationException::new);
 
         User providedUser = magicLinkRequest.getUser();
-        User user = userRepository.findUserByEmail(providedUser.getEmail()).orElseThrow(UserNotFoundException::new);
-
+        Optional<User> optionalUser = userRepository.findUserByEmail(providedUser.getEmail());
+        if (!optionalUser.isPresent()) {
+            //Omission in Optional interface for not having ifNotPresent
+            emailGuessingPreventor.potentialUserEmailGuess();
+            throw new UserNotFoundException();
+        }
+        User user = optionalUser.get();
         if (magicLinkRequest.isUsePassword()) {
             if (!passwordEncoder.matches(providedUser.getPassword(), user.getPassword())) {
                 throw new ForbiddenException();
