@@ -49,8 +49,9 @@ I18n.translations.nl = {
         }
     },
     account :{
-        deleteAccount : "Verwijder mijn account",
-        deleteAccountConfirmation : "Weet je het zeker dat je je my.conext account wilt verwijderen?"
+        title: "Je my.SURFconext account",
+        deleteAccount : "Delete my account",
+        deleteAccountConfirmation : "Are you sure you want to delete your my.surfconext account?"
     },
     password: {
         setTitle: "Wachtwoord instellen",
