@@ -1,106 +1,65 @@
 <script>
-    import {user, redirectPath} from "../stores/user";
+    import {user, config, redirectPath} from "../stores/user";
     import {onMount} from "svelte";
     import I18n from "i18n-js";
-    import {config} from "../api/index";
     import {navigate} from "svelte-routing";
-    let loginUrl;
 
-    onMount(() => config()
-            .then(json => {
-                loginUrl = json.loginUrl;
+    onMount(() => {
                 if ($user.id) {
                     navigate("/");
                 }
-            }));
+            });
 
     const login = () => {
-        window.location.href = `${loginUrl}?redirect_path=${encodeURIComponent($redirectPath || "/")}`;
+        window.location.href = `${$config.loginUrl}?redirect_path=${encodeURIComponent($redirectPath || "/")}`;
     };
 
 
 </script>
 
 <style>
-    .wrapper {
-        position: relative;
-        flex: 1 0 auto;
-    }
-
-    .top-bar {
-        width: 100%;
-        min-height: 250px;
-        height: 250px;
-        position: absolute;
-        top: 0;
-        z-index: -5;
-        background: #efefef;
-    }
-
-    .container {
-        max-width: 1140px;
-        width: 100%;
-        padding-right: 15px;
-        padding-left: 15px;
-        margin-right: auto;
-        margin-left: auto;
-    }
-
-    .top-nav {
-        height: 100px;
+    .home {
         display: flex;
-        align-items: center;
-        margin-left: 16px;
-        position: relative;
-    }
-
-    .row {
+        justify-content: center;
         width: 100%;
-        flex-wrap: wrap;
-        margin-right: 0;
-        margin-left: 0;
     }
 
-    .top-nav h2 {
-        overflow: hidden;
-        white-space: nowrap;
-        z-index: 10;
-        margin: 0;
+    .card {
+        display: flex;
+        flex-direction: column;
+        background-color: white;
+        height: auto;
+        min-height: 500px;
+        width: 1080px;
+        padding: 25px;
     }
 
-    h2.title {
-        font-family: "Montserrat", sans-serif;
-        padding: 0 15px;
-        font-size: 36px;
-        line-height: 50px;
-        font-weight: 400;
-        color: #772583;
+    .button {
+        border: 1px solid #818181;
+        width: 70px;
+        background-color: #c7c7c7;
+        border-radius: 2px;
+        padding: 10px 20px;
+        display: inline-block;
+        color: black;
+        text-decoration: none;
+        cursor: pointer;
+        text-align: center;
     }
 
-    h3 {
-        font-family: "Montserrat", sans-serif;
-        padding: 15px 0;
-        font-weight: 400;
-        font-size: 28px;
-        color: #676767;
-    }
-
-    .block {
-        padding: 30px 45px;
-        min-height: 200px;
-        border-radius: 40px;
-        background: #fff;
+    h2 {
+        color: #767676;
+        margin-bottom: 35px;
     }
 
     p {
-        line-height: 28px;
-        margin-top: 0;
-        margin-bottom: 1rem;
+        color: #767676;
+        margin-bottom: 35px;
     }
 
     .button {
         height: 44px;
-        margin: 30px 0;
+        margin: 30px 0 55px 0;
         background-color: #0077C8;
         min-width: 400px;
         display: inline-block;
@@ -114,6 +73,7 @@
         transition: color .15s ease-in-out, background-color .15s ease-in-out, border-color .15s ease-in-out, box-shadow .15s ease-in-out;
         color: #fff;
     }
+
     .button:hover {
         background: #004C79;
         border-color: #0062cc;
@@ -122,23 +82,19 @@
 </style>
 
 
-<div class="wrapper">
-    <div class="top-bar"></div>
-    <div class="container body-content">
+<div class="home">
+    <div class="card">
 
-        <div class="top-nav row">
-            <h2 class="title">{I18n.t("landing.loginHeader")}</h2>
-        </div>
+        <h2 class="title">{I18n.t("landing.loginHeader")}</h2>
 
         <div class="block">
 
             <p>{I18n.t("landing.info")}</p>
             <span class="button" on:click={login}>{I18n.t("landing.login")}</span>
-            <h3>{I18n.t("landing.questionsTitle")}</h3>
-            <p>
-                {I18n.t("landing.whatCanYouDo")}<br>
-                {@html I18n.t("landing.questions")}
-            </p>
+            <h2>{I18n.t("landing.questionsTitle")}</h2>
+            <p>{I18n.t("landing.whatCanYouDo")}</p>
+            <p>{@html I18n.t("landing.questions")}</p>
+
 
         </div>
     </div>

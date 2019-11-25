@@ -31,18 +31,18 @@
 
     .message-container p {
         padding: 10px 25px 10px 15px;
-        font-weight: bold;
+        font-weight: 300;
     }
 
     a.close {
         text-decoration: none;
         position: absolute;
         right: 10px;
-        top: -5px;
+        top: 0;
         color: white;
-        font-size: larger;
+        font-size: 14px;
         padding: 6px;
-    }
+        font-weight: 700;    }
 
 </style>
 
@@ -50,7 +50,7 @@
     <div class="message-container">
         <p>{$flash}
             <a href="/close" class="close" on:click|preventDefault|stopPropagation={clearFlash}>
-                x
+                ╳
             </a>
         </p>
     </div>

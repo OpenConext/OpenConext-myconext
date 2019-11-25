@@ -17,7 +17,7 @@ cron:
   token-cleaner-expression: "0 0/15 * * * *"
 
 mongodb_db: surf_id_test
-
+base_domain: test2.surfconext.nl
 base_path: http://localhost:8081
 idp_redirect_url: http://localhost:3000
 sp_redirect_url: http://localhost:3001

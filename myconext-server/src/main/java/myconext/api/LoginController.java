@@ -13,22 +13,27 @@ import java.io.IOException;
 import java.net.URLDecoder;
 import java.nio.charset.Charset;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Map;
 
 @RestController
 public class LoginController {
 
     private String redirectUrl;
-    private String basePath;
+    private Map<String, String> config;
 
-    public LoginController(@Value("${base_path}") String basePath, @Value("${sp_redirect_url}") String redirectUrl) {
-        this.basePath = basePath;
+    public LoginController(@Value("${base_path}") String basePath,
+                           @Value("${base_domain}") String baseDomain,
+                           @Value("${sp_redirect_url}") String redirectUrl) {
+        this.config = new HashMap<>();
+        this.config.put("loginUrl", basePath + "/login");
+        this.config.put("baseDomain", baseDomain);
         this.redirectUrl = redirectUrl;
     }
 
     @GetMapping(value = "/config")
     public Map<String, String> config() {
-        return Collections.singletonMap("loginUrl", this.basePath + "/login" );
+        return config;
     }
 
     @GetMapping(value = "/login")

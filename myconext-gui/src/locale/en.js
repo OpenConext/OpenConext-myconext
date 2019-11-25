@@ -16,24 +16,56 @@ I18n.translations.en = {
         main: "404 - Not Found"
     },
     profile: {
+        title: "Profile",
+        email: "Email",
+        name: "Name",
+    },
+    edit :{
+        title: "Change profile values",
         givenName: "Your given name",
         familyName: "Your family name",
         update: "Update",
-        updated: "Your profile has been updated"
+        cancel: "Cancel",
+        updated: "Your profile has been updated",
+        back: "/profile"
     },
     security: {
-        currentPassword: "Current password",
-        newPassword: "New password",
-        confirmPassword: "Confirm new password",
-        usePassword: "Use password",
-        useMagicLink: "Use Magic Link",
-        update: "Update",
-        updated: "Your security settings have been updated",
-        passwordDisclaimer: "Make sure it's at least 15 characters OR at least 8 characters including a number and a uppercase letter."
+        title: "Security",
+        subTitle: "We support the following sign in options for My SURFconext:",
+        usePassword: "Password",
+        notSet: "Not set",
+        useMagicLink: "Email magic link",
     },
     home: {
         welcome: "Welcome {{name}}",
         profile: "Profile",
-        security: "Security"
-    }
+        security: "Security",
+        favorites: "Favorites",
+        settings: "Settings",
+        links: {
+            teams: "Teams",
+            teamsHref: "https://teams.{{baseDomain}}",
+        }
+    },
+    password: {
+        setTitle: "Set password",
+        updateTitle: "Change password",
+        currentPassword: "Current password",
+        newPassword: "New password",
+        confirmPassword: "Confirm new password",
+        setUpdate: "Set password",
+        updateUpdate: "Update password",
+        cancel: "Cancel",
+        set: "Your password has been set",
+        updated: "Your password has been updated",
+        back: "/security",
+        passwordDisclaimer: "Make sure it's at least 15 characters OR at least 8 characters including a number and a uppercase letter."
+    },
+    footer: {
+        tip: "Need tip or info?",
+        help: "Help & FAQ",
+        poweredBy: "Proudly powered by",
+        surfconext: "SURFconext",
+    },
+
 };

@@ -10,8 +10,6 @@ import lombok.NoArgsConstructor;
 public class UpdateUserSecurityRequest {
 
     private String userId;
-    private boolean updatePassword;
-    private boolean clearPassword;
     private String currentPassword;
     private String newPassword;
 }

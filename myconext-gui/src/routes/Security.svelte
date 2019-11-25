@@ -1,133 +1,96 @@
 <script>
     import {user, flash} from "../stores/user";
     import I18n from "i18n-js";
-    import {validPassword} from "../validation/regexp";
-    import {updateSecurity} from "../api";
-
-    let currentPassword = "", newPassword= "", confirmPassword = "";
-    let usePassword = $user.usePassword;
-
-    const valid = () => (usePassword && validPassword(newPassword) && newPassword === confirmPassword) || !usePassword;
-
-    const update = () => {
-        debugger;
-        if (valid()) {
-            updateSecurity($user.id, usePassword, !usePassword, currentPassword, newPassword).then(json => {
-                $flash = I18n.t("security.updated");
-                currentPassword = "";;
-                        newPassword= "";
-                        confirmPassword = "";
-                $user = {$user, ...json}
-                usePassword = $user.usePassword;
-            });
-        }
-    };
-
+    import {navigate} from "svelte-routing";
 
 </script>
 
 <style>
-    .settings {
+    .security {
+        width: 100%;
     }
 
     .inner {
         max-width: 1080px;
         margin: 0 auto;
-        padding: 60px 20px 0;
-        font-size: 20px;
+        padding: 15px 0;
+        font-size: 18px;
         display: flex;
         flex-direction: column;
     }
 
+    h2 {
+        font-size: 22px;
+        margin-bottom: 20px;
+    }
+
+    p {
+        font-weight: 300;
+        margin-bottom: 20px;
+    }
+
     label {
         font-weight: 300;
-        margin-top: 15px;
+        margin-right: 20px;
+        width: 120px;
     }
 
-    em {
-        font-weight: 300;
-        font-size: 14px;
-    }
-
-    input[type=password] {
+    input[type=text], input[type=password] {
         border: 1px solid #dadce0;
         border-radius: 4px;
-        padding: 10px;
-        font-size: larger;
-        width: 100%;
+        font-weight: 300;
+        padding: 6px;
         margin: 5px 0;
+        font-size: 18px;
+        flex-grow: 2;
     }
 
-    .button {
-        border: 1px solid #818181;
-        width: 100%;
-        background-color: #c7c7c7;
-        border-radius: 2px;
-        padding: 10px 20px;
-        display: inline-block;
-        color: black;
-        text-decoration: none;
-        cursor: pointer;
-        text-align: center;
-    }
-
-    div.checkbox {
+    div.form-field {
         display: flex;
+        width: 100%;
         align-items: center;
-        margin: 15px 0;
+        margin-bottom: 15px;
+        position: relative;
     }
 
-    div.checkbox input {
-        margin: 0 10px 0 0;
-        font-size: 36px;
+    span.more {
+        position: absolute;
+        right: 10px;
+        font-size: 32px;
         cursor: pointer;
+        color: #007bff;
     }
 
-    div.checkbox label {
-        cursor: pointer;
-        margin-top: 0;
+    @media (max-width: 720px) {
+        div.form-field {
+            flex-direction: column;
+            align-items: flex-start;
+        }
+        span.more {
+            right: 34px;
+            top: 25px;
+        }
+
     }
 
 
 </style>
-<div class="settings">
+<div class="security">
     <div class="inner">
-        <div class="checkbox">
-            <input type="radio"
-                   id="useMagicLink"
-                   bind:group={usePassword}
-                   value={false}/>
-            <label for="useMagicLink">{I18n.t("security.useMagicLink")}</label>
+        <h2>{I18n.t("security.title")}</h2>
+        <p>{I18n.t("security.subTitle")}</p>
+        <div class="form-field">
+            <label for="email">{I18n.t("security.useMagicLink")}</label>
+            <input id="email" type="text" value={$user.email} disabled>
         </div>
-
-        <div class="checkbox">
-            <input type="radio"
-                   id="usePassword"
-                   bind:group={usePassword}
-                   value={true}/>
-            <label for="usePassword">{I18n.t("security.usePassword")}</label>
-        </div>
-        {#if $user.usePassword && usePassword}
-            <label for="currentPassword">{I18n.t("security.currentPassword")}</label>
-            <input id="currentPassword" type="password" bind:value={currentPassword}>
-        {/if}
-
-        {#if usePassword}
-            <label for="newPassword">{I18n.t("security.newPassword")}</label>
-            <input id="newPassword" type="password" bind:value={newPassword}>
-            <em>{I18n.t("security.passwordDisclaimer")}</em>
-
-            <label for="confirmPassword">{I18n.t("security.confirmPassword")}</label>
-            <input id="confirmPassword" type="password" bind:value={confirmPassword}>
-        {/if}
-
-
-        <div class="options">
-            <a class="button" href="/magic"
-               class:disabled={!valid()}
-               on:click|preventDefault|stopPropagation={update}>
-                {I18n.t("security.update")}
-            </a>
+        <div class="form-field">
+            <label for="name">{I18n.t("security.usePassword")}</label>
+            {#if $user.usePassword}
+                <input id="name" type="password" value="123456789012345" disabled>
+            {:else}
+                <input id="name" type="text" value={I18n.t("security.notSet")} disabled>
+            {/if}
+            <span class="more" on:click={ () => navigate("/password")}>→</span>
         </div>
 
     </div>

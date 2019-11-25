@@ -4,6 +4,11 @@ import io.restassured.filter.cookie.CookieFilter;
 import io.restassured.http.Cookie;
 import io.restassured.response.Response;
 import io.restassured.specification.RequestSpecification;
+import myconext.AbstractIntegrationTest;
+import myconext.model.MagicLinkRequest;
+import myconext.model.SamlAuthenticationRequest;
+import myconext.model.UpdateUserSecurityRequest;
+import myconext.model.User;
 import org.apache.commons.io.IOUtils;
 import org.apache.http.client.CookieStore;
 import org.junit.Test;
@@ -16,11 +21,6 @@ import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.util.MultiValueMap;
 import org.springframework.util.StringUtils;
 import org.springframework.web.util.UriComponentsBuilder;
-import myconext.AbstractIntegrationTest;
-import myconext.model.MagicLinkRequest;
-import myconext.model.SamlAuthenticationRequest;
-import myconext.model.UpdateUserSecurityRequest;
-import myconext.model.User;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -33,12 +33,12 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import static io.restassured.RestAssured.given;
+import static myconext.security.GuestIdpAuthenticationRequestFilter.BROWSER_SESSION_COOKIE_NAME;
+import static myconext.security.GuestIdpAuthenticationRequestFilter.GUEST_IDP_REMEMBER_ME_COOKIE_NAME;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
-import static myconext.security.GuestIdpAuthenticationRequestFilter.BROWSER_SESSION_COOKIE_NAME;
-import static myconext.security.GuestIdpAuthenticationRequestFilter.GUEST_IDP_REMEMBER_ME_COOKIE_NAME;
 
 public class UserControllerTest extends AbstractIntegrationTest {
 
@@ -162,7 +162,7 @@ public class UserControllerTest extends AbstractIntegrationTest {
         given()
                 .when()
                 .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
-                .body(new UpdateUserSecurityRequest(user.getId(), true, false, null, "secret"))
+                .body(new UpdateUserSecurityRequest(user.getId(), null, "secret"))
                 .put("/myconext/api/sp/security")
                 .then()
                 .statusCode(422);
@@ -177,29 +177,10 @@ public class UserControllerTest extends AbstractIntegrationTest {
         given()
                 .when()
                 .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
-                .body(new UpdateUserSecurityRequest(user.getId(), true, false, "nope", "nope"))
+                .body(new UpdateUserSecurityRequest(user.getId(), "nope", "nope"))
                 .put("/myconext/api/sp/security")
                 .then()
                 .statusCode(403);
-    }
-
-    @Test
-    public void clearPassword() {
-        User user = userRepository.findOneUserByEmail("jdoe@example.com");
-        String password = "abcdefghijklmnop";
-        ReflectionTestUtils.setField(user, "password", passwordEncoder.encode(password));
-        userRepository.save(user);
-
-        given()
-                .when()
-                .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
-                .body(new UpdateUserSecurityRequest(user.getId(), false, true, password, null))
-                .put("/myconext/api/sp/security")
-                .then()
-                .statusCode(201);
-
-        user = userRepository.findOneUserByEmail("jdoe@example.com");
-        assertNull(user.getPassword());
     }
 
     @Test

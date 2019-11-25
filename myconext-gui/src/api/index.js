@@ -41,7 +41,7 @@ export function me() {
     return fetchJson("/myconext/api/sp/me");
 }
 
-export function config() {
+export function configuration() {
     return fetchJson("/config");
 }
 
@@ -49,8 +49,8 @@ export function updateUser(user) {
     return postPutJson("/myconext/api/sp/update", user, "PUT");
 }
 
-export function updateSecurity(userId, updatePassword, clearPassword, currentPassword, newPassword) {
-    const body = {userId, updatePassword, clearPassword, currentPassword, newPassword};
+export function updateSecurity(userId, currentPassword, newPassword) {
+    const body = {userId, currentPassword, newPassword};
     return postPutJson("/myconext/api/sp/security", body, "PUT");
 }
 

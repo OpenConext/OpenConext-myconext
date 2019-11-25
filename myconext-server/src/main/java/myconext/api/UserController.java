@@ -1,5 +1,17 @@
 package myconext.api;
 
+import myconext.exceptions.DuplicateUserEmailException;
+import myconext.exceptions.ExpiredAuthenticationException;
+import myconext.exceptions.ForbiddenException;
+import myconext.exceptions.UserNotFoundException;
+import myconext.mail.MailBox;
+import myconext.model.MagicLinkRequest;
+import myconext.model.SamlAuthenticationRequest;
+import myconext.model.UpdateUserSecurityRequest;
+import myconext.model.User;
+import myconext.model.UserResponse;
+import myconext.repository.AuthenticationRequestRepository;
+import myconext.repository.UserRepository;
 import myconext.validation.EmailValidator;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
@@ -16,18 +28,6 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import myconext.exceptions.DuplicateUserEmailException;
-import myconext.exceptions.ExpiredAuthenticationException;
-import myconext.exceptions.ForbiddenException;
-import myconext.exceptions.UserNotFoundException;
-import myconext.mail.MailBox;
-import myconext.model.MagicLinkRequest;
-import myconext.model.SamlAuthenticationRequest;
-import myconext.model.UpdateUserSecurityRequest;
-import myconext.model.User;
-import myconext.model.UserResponse;
-import myconext.repository.AuthenticationRequestRepository;
-import myconext.repository.UserRepository;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
@@ -105,7 +105,7 @@ public class UserController {
     }
 
     @PutMapping("/sp/update")
-    public ResponseEntity updateUserProfile(Authentication authentication, @RequestBody User deltaUser ) {
+    public ResponseEntity updateUserProfile(Authentication authentication, @RequestBody User deltaUser) {
         User user = verifyAndFetchUser(authentication, deltaUser);
 
         user.setFamilyName(deltaUser.getFamilyName());
@@ -121,16 +121,12 @@ public class UserController {
     public ResponseEntity updateUserSecurity(Authentication authentication, @RequestBody UpdateUserSecurityRequest updateUserRequest) {
         User deltaUser = userRepository.findById(updateUserRequest.getUserId()).orElseThrow(UserNotFoundException::new);
         User user = verifyAndFetchUser(authentication, deltaUser);
-        if ((updateUserRequest.isUpdatePassword() || updateUserRequest.isClearPassword()) && !StringUtils.isEmpty(user.getPassword())) {
+        if (StringUtils.hasText(user.getPassword())) {
             if (!passwordEncoder.matches(updateUserRequest.getCurrentPassword(), user.getPassword())) {
                 throw new ForbiddenException();
             }
         }
-        if (updateUserRequest.isUpdatePassword()) {
-            user.encryptPassword(updateUserRequest.getNewPassword(), passwordEncoder);
-        } else if (updateUserRequest.isClearPassword()) {
-            user.clearPassword();
-        }
+        user.encryptPassword(updateUserRequest.getNewPassword(), passwordEncoder);
         userRepository.save(user);
 
         return ResponseEntity.status(201).body(new UserResponse(user));

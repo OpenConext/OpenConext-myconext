@@ -13,9 +13,11 @@ public class PasswordStrengthTest {
         assertFalse(strongEnough(null));
         assertFalse(strongEnough("ABCDEFGH"));
         assertFalse(strongEnough("abcdefghijklmn"));
+        assertFalse(strongEnough("#!@$%$Aaaa"));
 
         assertTrue(strongEnough("A1qwerty"));
         assertTrue(strongEnough("abcdefghijklmno"));
         assertTrue(strongEnough("Secret123"));
+        assertTrue(strongEnough("#!@$%$A1"));
     }
 }

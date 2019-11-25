@@ -1,4 +1,5 @@
 import {writable} from 'svelte/store';
+import {me} from "../api";
 
 export const user = writable({
     id: "",
@@ -7,6 +8,11 @@ export const user = writable({
     familyName: "",
     guest: true,
     usePassword: false
+});
+
+export const config = writable({
+    loginUrl: "",
+    baseDomain: ""
 });
 
 export const redirectPath = writable("");

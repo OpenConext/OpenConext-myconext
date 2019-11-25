@@ -4,31 +4,38 @@
     import {onMount} from "svelte";
     import Landing from "./routes/Landing.svelte";
     import NotFound from "./routes/NotFound.svelte";
+    import EditName from "./routes/EditName.svelte";
+    import Password from "./routes/Password.svelte";
     import Home from "./routes/Home.svelte";
     import Header from "./components/Header.svelte";
     import Flash from "./components/Flash.svelte";
-    import {me} from "./api";
-    import {user, redirectPath} from "./stores/user";
+    import {me, configuration} from "./api";
+    import {user, config, redirectPath} from "./stores/user";
 
     export let url = "";
 
-    onMount(() => me()
-            .then(json => $user = {$user, ...json, guest: false})
-            .catch(() => {
-                $redirectPath = window.location.pathname;
-                navigate("/landing");
-            }));
+    onMount(() => configuration()
+            .then(json => {
+                $config = json;
+                me()
+                        .then(json => $user = {$user, ...json, guest: false})
+                        .catch(() => {
+                            $redirectPath = window.location.pathname;
+                            navigate("/landing");
+                        })
+            })
+    );
 
 </script>
 
 <style>
-    .sp {
+    .myconext {
         display: flex;
         flex-direction: column;
         height: 100%;
     }
 </style>
-<div class="sp">
+<div class="myconext">
     <Flash/>
     <Header/>
     <Router url="{url}">
@@ -40,6 +47,8 @@
             <Home bookmark="security"/>
         </Route>
         <Route path="/landing" component={Landing}/>
+        <Route path="/edit" component={EditName}/>
+        <Route path="/password" component={Password}/>
         <Route component={NotFound}/>
     </Router>
     <Footer/>
