@@ -2,6 +2,7 @@
 
     import I18n from "i18n-js";
     import logo from "./logo.svg";
+    import openConextLogo from "./open_conext.svg";
 
 </script>
 
@@ -25,6 +26,12 @@
 
 </style>
 <div class="header">
+    {#if $config.branding !== "SURFconext"}
+        <a href="/">{@html openConextLogo}</a>
+    {:else}
+        <a href="/">{@html logo}</a>
+    {/if}
+
     <div class="logo">
         {@html logo}
     </div>
