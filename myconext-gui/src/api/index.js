@@ -1,4 +1,5 @@
 //Internal API
+let csrfToken = null;
 function validateResponse(res) {
 
     if (!res.ok) {
@@ -8,7 +9,7 @@ function validateResponse(res) {
         }
         throw res;
     }
-
+    csrfToken = res.headers.get("x-csrf-token");
     return res.json();
 }
 
@@ -19,7 +20,8 @@ function validFetch(path, options) {
         redirect: "manual",
         headers: {
             Accept: "application/json",
-            "Content-Type": "application/json"
+            "Content-Type": "application/json",
+            "X-CSRF-TOKEN": csrfToken
         }
     };
     return fetch(path, fetchOptions).then(res => validateResponse(res));
@@ -55,5 +57,5 @@ export function updateSecurity(userId, currentPassword, newPassword) {
 }
 
 export function deleteUser(user) {
-    return fetchDelete("/myconext/api/sp/delete");
+    return fetchDelete(`/myconext/api/sp/delete/${user.id}`, user, "DELETE");
 }

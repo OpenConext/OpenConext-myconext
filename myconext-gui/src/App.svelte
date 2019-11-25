@@ -43,12 +43,15 @@
         <Route path="/profile">
             <Home bookmark="profile"/>
         </Route>
+        <Route path="/account">
+            <Home bookmark="account"/>
+        </Route>
         <Route path="/security">
             <Home bookmark="security"/>
         </Route>
-        <Route path="/landing" component={Landing}/>
         <Route path="/edit" component={EditName}/>
         <Route path="/password" component={Password}/>
+        <Route path="/landing" component={Landing}/>
         <Route component={NotFound}/>
     </Router>
     <Footer/>

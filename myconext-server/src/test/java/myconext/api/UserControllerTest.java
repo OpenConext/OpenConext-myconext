@@ -37,7 +37,6 @@ import static myconext.security.GuestIdpAuthenticationRequestFilter.BROWSER_SESS
 import static myconext.security.GuestIdpAuthenticationRequestFilter.GUEST_IDP_REMEMBER_ME_COOKIE_NAME;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 public class UserControllerTest extends AbstractIntegrationTest {
@@ -189,8 +188,7 @@ public class UserControllerTest extends AbstractIntegrationTest {
         given()
                 .when()
                 .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
-                .body(user)
-                .delete("/myconext/api/sp/delete")
+                .delete("/myconext/api/sp/delete/" + user.getId())
                 .then()
                 .statusCode(201);
 

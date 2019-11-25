@@ -103,7 +103,6 @@
         display: flex;
         flex-direction: column;
         padding: 50px;
-        border-radius: 4px;
         background-color: white;
         width: 500px;
     }

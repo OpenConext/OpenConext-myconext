@@ -8,12 +8,14 @@
 
     import Profile from "./Profile.svelte";
     import Security from "./Security.svelte";
+    import Account from "./Account.svelte";
 
     export let bookmark;
 
     const tabs = [
         {name: "profile", component: Profile, icon: mail},
-        {name: "security", component: Security, icon: phone}
+        {name: "security", component: Security, icon: phone},
+        {name: "account", component: Account, icon: phone}
     ];
 
     const links = [

@@ -15,7 +15,6 @@
         display: flex;
         flex-direction: column;
         padding: 50px;
-        border-radius: 4px;
         background-color: white;
         min-height: 500px;
         width: 500px;

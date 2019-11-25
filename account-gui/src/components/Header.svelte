@@ -9,13 +9,14 @@
 
     .header {
         width: 100%;
+        max-width: 500px;
+        margin: 0 auto;
         display: flex;
         background-color: #e7e7e7;
         align-items: center;
         align-content: center;
         position: relative;
         justify-content: center;
-
     }
 
     .logo {

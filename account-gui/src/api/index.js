@@ -10,7 +10,7 @@ function validateResponse(res) {
         }
         throw res;
     }
-    csrfToken = res.headers.get("x-csrf-token");
+    csrfToken = res.headers.get("X-CSRF-TOKEN");
     return res.json();
 }
 

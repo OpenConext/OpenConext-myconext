@@ -15,7 +15,6 @@ import java.util.UUID;
 @Document(collection = "authentication_requests")
 @Getter
 @NoArgsConstructor
-@AllArgsConstructor
 public class SamlAuthenticationRequest {
 
     @Id

@@ -40,6 +40,7 @@ I18n.translations.en = {
         welcome: "Welcome {{name}}",
         profile: "Profile",
         security: "Security",
+        account: "Account",
         favorites: "Favorites",
         settings: "Settings",
         links: {
@@ -47,6 +48,12 @@ I18n.translations.en = {
             teamsHref: "https://teams.{{baseDomain}}",
         }
     },
+    account :{
+        title: "Your my.SURFconext account",
+        deleteAccount : "Delete my account",
+        deleteAccountConfirmation : "Are you sure you want to delete your my.surfconext account?"
+    },
+
     password: {
         setTitle: "Set password",
         updateTitle: "Change password",
@@ -67,5 +74,8 @@ I18n.translations.en = {
         poweredBy: "Proudly powered by",
         surfconext: "SURFconext",
     },
-
+    modal: {
+        cancel: "Cancel",
+        confirm: "Confirm"
+    }
 };

@@ -40,12 +40,17 @@ I18n.translations.nl = {
         welcome: "Welkom {{name}}",
         profile: "Profiel",
         security: "Beveiliging",
+        account: "Account",
         favorites: "Favorieten",
         settings: "Instellingen",
         links: {
             teams: "Teams",
             teamsHref: "https://teams.{{baseDomain}}",
         }
+    },
+    account :{
+        deleteAccount : "Verwijder mijn account",
+        deleteAccountConfirmation : "Weet je het zeker dat je je my.conext account wilt verwijderen?"
     },
     password: {
         setTitle: "Wachtwoord instellen",
@@ -67,5 +72,9 @@ I18n.translations.nl = {
         poweredBy: "Trots aangeboden door",
         surfconext: "SURFconext",
     },
+    modal: {
+        cancel: "Annuleren",
+        confirm: "Bevestigen"
+    }
 
 };

@@ -13,16 +13,18 @@
 <style>
 
     .footer {
-        margin-top: auto;
         background-color: #e7e7e7;
         padding: 18px;
+        width: 100%;
+        max-width: 500px;
+        margin: 0 auto;
     }
     .inner {
         display: flex;
         align-items: center;
         justify-content: space-between;
         margin: 0 auto;
-        max-width: 1080px;
+        width: 100%;
     }
 
     .help, .info {

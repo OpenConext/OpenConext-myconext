@@ -102,7 +102,6 @@ public class SecurityConfiguration {
                 privateKey = read(this.privateKeyPath);
                 certificate = read(this.certificatePath);
             } else {
-                LOG.info("Generating public / private key pair for SAML trusted proxy");
                 String[] keys = new KeyGenerator().generateKeys();
                 privateKey = keys[0];
                 certificate = keys[1];
