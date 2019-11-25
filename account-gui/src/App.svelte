@@ -10,6 +10,7 @@
     import Footer from "./components/Footer.svelte";
     import {onMount} from "svelte";
     import {configuration} from "./api";
+    import I18n from "i18n-js";
 
     export let url = "";
 
@@ -30,6 +31,7 @@
         height: 100%;
         background-color: #4db3cf;
     }
+
     .loader:empty,
     .loader:empty:after {
         border-radius: 50%;
@@ -75,22 +77,22 @@
 
 </style>
 {#if loaded}
-<div class="idp">
-    <Header />
-    <Router url="{url}">
-        <Route path="/login/:id" let:params>
-            <Login id="{params.id}"></Login>
-        </Route>
-        <Route path="/magic/:id" let:params>
-            <MagicLink id="{params.id}"></MagicLink>
-        </Route>
-        <Route path="/confirm" component={Confirm}/>
-        <Route path="/session" component={SessionLost}/>
-        <Route path="/expired" component={LinkExpired}/>
-        <Route component={NotFound} />
-    </Router>
-    <Footer />
-</div>
+    <div class="idp">
+        <Header/>
+        <Router url="{url}">
+            <Route path="/login/:id" let:params>
+                <Login id="{params.id}"></Login>
+            </Route>
+            <Route path="/magic/:id" let:params>
+                <MagicLink id="{params.id}"></MagicLink>
+            </Route>
+            <Route path="/confirm" component={Confirm}/>
+            <Route path="/session" component={SessionLost}/>
+            <Route path="/expired" component={LinkExpired}/>
+            <Route component={NotFound}/>
+        </Router>
+        <Footer/>
+    </div>
 {:else}
     <div class="loader"></div>
 {/if}

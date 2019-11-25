@@ -26,7 +26,7 @@
 
 </style>
 <div class="header">
-    {#if $config.branding !== "SURFconext"}
+    {#if I18n.branding !== "SURFconext"}
         <a href="/">{@html openConextLogo}</a>
     {:else}
         <a href="/">{@html logo}</a>
