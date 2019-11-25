@@ -8,6 +8,7 @@
     let currentPassword = "";
     let newPassword = "";
     let confirmPassword = "";
+    let currentPasswordInvalid = false;
     let usePassword = $user.usePassword;
 
     const valid = () => {
@@ -21,11 +22,11 @@
             updateSecurity($user.id, currentPassword, newPassword)
                     .then(json => {
                         $user = {$user, ...json};
-                        $flash = usePassword ?  I18n.t("password.updated") : I18n.t("password.set");
+                        $flash = usePassword ? I18n.t("password.updated") : I18n.t("password.set");
                         navigate("/security");
                     })
-                    .catch(e => {
-                        debugger;
+                    .catch(() => {
+                        currentPasswordInvalid = true;
                     });
         }
     };
@@ -88,6 +89,7 @@
         margin-bottom: 15px;
         position: relative;
     }
+
     .button {
         border: 1px solid #818181;
         width: 100%;
@@ -107,6 +109,7 @@
         color: #c7c7c7;
         background-color: #f3f3f3;
     }
+
     .button:last-child {
         margin-left: 95px;
     }
@@ -121,11 +124,19 @@
         .inner {
             margin: 0 15px;
         }
+
         div.form-field {
             flex-direction: column;
             align-items: flex-start;
         }
     }
+
+    span.error {
+        display: inline-block;
+        margin: 0 auto 10px 0;
+        color: #d00000;
+    }
+
     a.back {
         text-decoration: none;
         font-size: 32px;
@@ -149,6 +160,9 @@
                 <label for="currentPassword">{I18n.t("password.currentPassword")}</label>
                 <input id="currentPassword" type="password" bind:value={currentPassword}>
             </div>
+        {/if}
+        {#if currentPasswordInvalid}
+            <span class="error">{I18n.t("password.invalidCurrentPassword")}</span>
         {/if}
         <div class="form-field">
             <label for="newPassword">{I18n.t("password.newPassword")}</label>

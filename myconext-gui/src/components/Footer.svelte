@@ -1,10 +1,12 @@
 <script>
 
     import I18n from "i18n-js";
+    import Cookies from "js-cookie";
 
     const changeLanguage = lang => () => {
         const urlSearchParams = new URLSearchParams(window.location.search);
         urlSearchParams.set("lang", lang);
+        Cookies.set("lang", lang, { expires: 365 });
         window.location.search = urlSearchParams.toString();
     }
 

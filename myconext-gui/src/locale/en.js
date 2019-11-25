@@ -66,7 +66,8 @@ I18n.translations.en = {
         set: "Your password has been set",
         updated: "Your password has been updated",
         back: "/security",
-        passwordDisclaimer: "Make sure it's at least 15 characters OR at least 8 characters including a number and a uppercase letter."
+        passwordDisclaimer: "Make sure it's at least 15 characters OR at least 8 characters including a number and a uppercase letter.",
+        invalidCurrentPassword: "Your current password is invalid."
     },
     footer: {
         tip: "Need tip or info?",

@@ -50,22 +50,23 @@ I18n.translations.nl = {
     },
     account :{
         title: "Je my.SURFconext account",
-        deleteAccount : "Delete my account",
-        deleteAccountConfirmation : "Are you sure you want to delete your my.surfconext account?"
+        deleteAccount : "Verwijder mijn account",
+        deleteAccountConfirmation : "Weet je zeker dat je je my.surfconext account wil verwijderen?"
     },
     password: {
         setTitle: "Wachtwoord instellen",
         updateTitle: "Verander wachtwoord",
         currentPassword: "Huidige wachtwoord",
         newPassword: "Nieuwe wachtwoord",
-        confirmPassword: "bevestig nieuwe wachtwoord",
+        confirmPassword: "Bevestig nieuwe wachtwoord",
         setUpdate: "Zet wachtwoord",
         updateUpdate: "Verander wachtwoord",
         cancel: "Annuleer",
         set: "Je wachtwoord is gezet",
         updated: "je wachtwoord is aangepast",
         back: "/security",
-        passwordDisclaimer: "je wachtwoord moet minimaal 15 karakters zijn of 8 met en dan inclusief een hoofdletter en cijfer."
+        passwordDisclaimer: "je wachtwoord moet minimaal 15 karakters zijn of 8 met en dan inclusief een hoofdletter en cijfer.",
+        invalidCurrentPassword: "Je huidige wachtwoord is niet correct."
     },
     footer: {
         tip: "Tip of info nodig?",

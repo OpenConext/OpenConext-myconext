@@ -67,10 +67,8 @@
             align-items: flex-start;
         }
         span.more {
-            right: 34px;
-            top: 25px;
+            position: unset;
         }
-
     }
 
 
