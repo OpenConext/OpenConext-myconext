@@ -1,5 +1,6 @@
 package myconext.model;
 
+import myconext.validation.PasswordStrength;
 import org.junit.Test;
 
 import static org.junit.Assert.assertFalse;
@@ -19,5 +20,12 @@ public class PasswordStrengthTest {
         assertTrue(strongEnough("abcdefghijklmno"));
         assertTrue(strongEnough("Secret123"));
         assertTrue(strongEnough("#!@$%$A1"));
+    }
+
+    @Test
+    @SuppressWarnings("static-access")
+    public void constructor() {
+        PasswordStrength passwordStrength = new PasswordStrength();
+        assertTrue(passwordStrength.strongEnough("#!@$%$A1"));
     }
 }
