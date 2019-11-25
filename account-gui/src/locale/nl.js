@@ -51,13 +51,12 @@ I18n.translations.nl = {
 
     },
     session: {
-        title: "Je sessie is weg.",
+        title: "Je sessie is verloren gegaan.",
         info: "Je moet de Magic Link vanuit de mail openen in dezelfde browsersessie als waar je de Magic Link hebt aangevraagd. <br/> <br/> Ga terug naar de service waar je naartoe gaat en vraag een nieuwe Magic Link aan."
     },
     expired: {
         title: "Je Magic Link is verlopen.",
-        info: "\n" +
-            "De Magic Link die u hebt gebruikt, is verlopen of al in gebruik. <br/> <br/> Ga terug naar de service waar u naartoe gaat en vraag een nieuwe Magic Link aan."
+        info: "De Magic Link die u hebt gebruikt, is verlopen of al in gebruik. <br/> <br/> Ga terug naar de service waar u naartoe gaat en vraag een nieuwe Magic Link aan."
     },
     notFound: {
         main: "404 - Niet gevonden"

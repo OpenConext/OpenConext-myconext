@@ -58,3 +58,10 @@ To deploy production bundles
 ```bash
 mvn deploy
 ```
+
+### [Miscellaneous](#miscellaneous)
+
+To get an overview of the git source file's:
+```
+cloc --read-lang-def=cloc_definitions.txt --vcs=git
+```
