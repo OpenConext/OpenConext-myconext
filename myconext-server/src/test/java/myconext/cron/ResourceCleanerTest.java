@@ -1,8 +1,8 @@
 package myconext.cron;
 
-import org.junit.Test;
 import myconext.AbstractIntegrationTest;
 import myconext.model.SamlAuthenticationRequest;
+import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
 

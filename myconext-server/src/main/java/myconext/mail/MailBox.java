@@ -2,9 +2,9 @@ package myconext.mail;
 
 import com.github.mustachejava.DefaultMustacheFactory;
 import com.github.mustachejava.MustacheFactory;
+import myconext.model.User;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
-import myconext.model.User;
 
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
@@ -29,7 +29,7 @@ public class MailBox {
         this.mySURFconextURL = mySURFconextURL;
     }
 
-    public void sendMagicLink(User user, String hash,  String requesterId) {
+    public void sendMagicLink(User user, String hash, String requesterId) {
         String title = "Magic Link";
 
         Map<String, Object> variables = variables(user, title);

@@ -1,13 +1,13 @@
 package myconext.shibboleth;
 
 
+import myconext.model.User;
+import myconext.repository.UserRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.web.authentication.preauth.AbstractPreAuthenticatedProcessingFilter;
 import org.springframework.util.StringUtils;
-import myconext.model.User;
-import myconext.repository.UserRepository;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.UnsupportedEncodingException;

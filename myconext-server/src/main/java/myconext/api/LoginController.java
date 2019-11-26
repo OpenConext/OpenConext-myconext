@@ -12,7 +12,6 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.net.URLDecoder;
 import java.nio.charset.Charset;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -49,7 +48,7 @@ public class LoginController {
     @GetMapping(value = "/startSSO")
     public void startSSO(HttpServletResponse response, @RequestParam("redirect_url") String redirectUrl) throws IOException {
         redirectUrl = URLDecoder.decode(redirectUrl, Charset.defaultCharset().name());
-        response.sendRedirect( redirectUrl);
+        response.sendRedirect(redirectUrl);
     }
 
 }

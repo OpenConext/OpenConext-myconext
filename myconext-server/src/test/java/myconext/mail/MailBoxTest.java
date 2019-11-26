@@ -2,14 +2,14 @@ package myconext.mail;
 
 import com.icegreen.greenmail.junit.GreenMailRule;
 import com.icegreen.greenmail.util.ServerSetupTest;
+import myconext.AbstractIntegrationTest;
+import myconext.model.User;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ActiveProfiles;
-import myconext.AbstractIntegrationTest;
-import myconext.model.User;
 
 import javax.mail.Message;
 import javax.mail.MessagingException;

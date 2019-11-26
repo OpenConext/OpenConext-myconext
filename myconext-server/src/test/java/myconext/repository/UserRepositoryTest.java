@@ -1,9 +1,9 @@
 package myconext.repository;
 
-import org.junit.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import myconext.AbstractIntegrationTest;
 import myconext.model.User;
+import org.junit.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Optional;
 

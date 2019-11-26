@@ -1,14 +1,14 @@
 package myconext.cron;
 
 
+import myconext.model.SamlAuthenticationRequest;
+import myconext.repository.AuthenticationRequestRepository;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
-import myconext.model.SamlAuthenticationRequest;
-import myconext.repository.AuthenticationRequestRepository;
 
 import java.util.Date;
 

@@ -1,5 +1,12 @@
 package myconext.security;
 
+import myconext.exceptions.ExpiredAuthenticationException;
+import myconext.exceptions.UserNotFoundException;
+import myconext.mail.MailBox;
+import myconext.model.SamlAuthenticationRequest;
+import myconext.model.User;
+import myconext.repository.AuthenticationRequestRepository;
+import myconext.repository.UserRepository;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -21,13 +28,6 @@ import org.springframework.security.saml.saml2.metadata.NameId;
 import org.springframework.security.saml.saml2.metadata.ServiceProviderMetadata;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.util.HtmlUtils;
-import myconext.exceptions.ExpiredAuthenticationException;
-import myconext.exceptions.UserNotFoundException;
-import myconext.mail.MailBox;
-import myconext.model.SamlAuthenticationRequest;
-import myconext.model.User;
-import myconext.repository.AuthenticationRequestRepository;
-import myconext.repository.UserRepository;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;

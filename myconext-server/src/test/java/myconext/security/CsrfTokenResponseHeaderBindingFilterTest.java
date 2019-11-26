@@ -4,16 +4,13 @@ import org.junit.Test;
 import org.springframework.mock.web.MockFilterChain;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
-import org.springframework.security.web.csrf.CsrfToken;
 import org.springframework.security.web.csrf.DefaultCsrfToken;
 
 import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletResponse;
-
 import java.io.IOException;
 import java.util.UUID;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 public class CsrfTokenResponseHeaderBindingFilterTest {
 

@@ -1,12 +1,12 @@
 package myconext.security;
 
 
+import myconext.AbstractIntegrationTest;
 import org.junit.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
-import myconext.AbstractIntegrationTest;
 
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.core.IsEqual.equalTo;

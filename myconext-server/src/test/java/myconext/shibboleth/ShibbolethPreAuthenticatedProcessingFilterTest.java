@@ -2,18 +2,18 @@ package myconext.shibboleth;
 
 import io.restassured.http.Header;
 import io.restassured.http.Headers;
+import myconext.AbstractIntegrationTest;
 import org.junit.Test;
 import org.springframework.test.context.ActiveProfiles;
-import myconext.AbstractIntegrationTest;
 
 import java.io.UnsupportedEncodingException;
 
 import static io.restassured.RestAssured.given;
-import static org.hamcrest.core.IsEqual.equalTo;
-import static org.hamcrest.core.IsNull.notNullValue;
 import static myconext.shibboleth.ShibbolethPreAuthenticatedProcessingFilter.SHIB_EMAIL;
 import static myconext.shibboleth.ShibbolethPreAuthenticatedProcessingFilter.SHIB_GIVEN_NAME;
 import static myconext.shibboleth.ShibbolethPreAuthenticatedProcessingFilter.SHIB_SUR_NAME;
+import static org.hamcrest.core.IsEqual.equalTo;
+import static org.hamcrest.core.IsNull.notNullValue;
 
 @ActiveProfiles(value = "dev", inheritProfiles = false)
 public class ShibbolethPreAuthenticatedProcessingFilterTest extends AbstractIntegrationTest {

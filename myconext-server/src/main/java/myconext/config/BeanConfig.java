@@ -1,15 +1,15 @@
 package myconext.config;
 
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.security.saml.provider.SamlServerConfiguration;
-import org.springframework.security.saml.provider.config.SamlConfigurationRepository;
-import org.springframework.security.saml.provider.identity.config.SamlIdentityProviderServerBeanConfiguration;
 import myconext.mail.MailBox;
 import myconext.repository.AuthenticationRequestRepository;
 import myconext.repository.UserRepository;
 import myconext.saml.ImmutableSamlConfigurationRepository;
 import myconext.security.GuestIdpAuthenticationRequestFilter;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.security.saml.provider.SamlServerConfiguration;
+import org.springframework.security.saml.provider.config.SamlConfigurationRepository;
+import org.springframework.security.saml.provider.identity.config.SamlIdentityProviderServerBeanConfiguration;
 
 import javax.servlet.Filter;
 

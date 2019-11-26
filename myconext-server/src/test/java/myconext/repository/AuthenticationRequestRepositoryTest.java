@@ -1,10 +1,10 @@
 package myconext.repository;
 
-import org.junit.Before;
-import org.junit.Test;
 import myconext.AbstractIntegrationTest;
 import myconext.exceptions.ExpiredAuthenticationException;
 import myconext.model.SamlAuthenticationRequest;
+import org.junit.Before;
+import org.junit.Test;
 
 import java.util.Date;
 import java.util.Optional;

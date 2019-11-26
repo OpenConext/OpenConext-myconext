@@ -1,11 +1,11 @@
 package myconext.security;
 
+import myconext.config.BeanConfig;
 import org.springframework.context.ApplicationContext;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.saml.provider.SamlServerConfiguration;
 import org.springframework.security.saml.provider.identity.config.SamlIdentityProviderSecurityDsl;
 import org.springframework.security.web.context.SecurityContextPersistenceFilter;
-import myconext.config.BeanConfig;
 
 import javax.servlet.Filter;
 
@@ -24,7 +24,7 @@ public class GuestIdentityProviderDsl extends SamlIdentityProviderSecurityDsl {
 
         ApplicationContext context = http.getSharedObject(ApplicationContext.class);
 
-        SamlServerConfiguration serverConfig = context.getBean("idpSamlServerConfiguration",SamlServerConfiguration.class);
+        SamlServerConfiguration serverConfig = context.getBean("idpSamlServerConfiguration", SamlServerConfiguration.class);
 
         Filter samlConfigurationFilter = beanConfig.samlConfigurationFilter(serverConfig);
         Filter metadataFilter = beanConfig.idpMetadataFilter();

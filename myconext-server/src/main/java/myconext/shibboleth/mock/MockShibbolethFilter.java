@@ -1,9 +1,9 @@
 package myconext.shibboleth.mock;
 
+import myconext.shibboleth.ShibbolethPreAuthenticatedProcessingFilter;
 import org.springframework.core.env.Environment;
 import org.springframework.core.env.Profiles;
 import org.springframework.web.filter.GenericFilterBean;
-import myconext.shibboleth.ShibbolethPreAuthenticatedProcessingFilter;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
