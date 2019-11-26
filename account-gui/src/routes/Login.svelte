@@ -92,21 +92,21 @@
 </script>
 
 <style>
-    .home {
-        display: flex;
-        justify-content: center;
-        width: 100%;
-    }
+    /*.home {*/
+    /*    display: flex;*/
+    /*    justify-content: center;*/
+    /*    width: 100%;*/
+    /*}*/
 
-    .card {
-        border-left: 2px solid #0061b0;
-        border-right: 2px solid #0061b0;
-        display: flex;
-        flex-direction: column;
-        padding: 62px 188px;
-        background-color: white;
-        width: 835px;
-    }
+    /*.card {*/
+    /*    border-left: 2px solid #0061b0;*/
+    /*    border-right: 2px solid #0061b0;*/
+    /*    display: flex;*/
+    /*    flex-direction: column;*/
+    /*    padding: 62px 188px;*/
+    /*    background-color: white;*/
+    /*    width: 835px;*/
+    /*}*/
 
     @media (max-width: 720px) {
         .card {

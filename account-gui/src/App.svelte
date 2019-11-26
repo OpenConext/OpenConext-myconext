@@ -74,23 +74,35 @@
             transform: rotate(360deg);
         }
     }
-
+    .content {
+        display: flex;
+        justify-content: center;
+        border-left: 2px solid #0061b0;
+        border-right: 2px solid #0061b0;
+        flex-direction: column;
+        padding: 62px 188px;
+        background-color: white;
+        width: 835px;
+        margin: 0 auto;
+    }
 </style>
 {#if loaded}
     <div class="idp">
         <Header/>
-        <Router url="{url}">
-            <Route path="/login/:id" let:params>
-                <Login id="{params.id}"></Login>
-            </Route>
-            <Route path="/magic/:id" let:params>
-                <MagicLink id="{params.id}"></MagicLink>
-            </Route>
-            <Route path="/confirm" component={Confirm}/>
-            <Route path="/session" component={SessionLost}/>
-            <Route path="/expired" component={LinkExpired}/>
-            <Route component={NotFound}/>
-        </Router>
+        <div class="content">
+            <Router url="{url}">
+                <Route path="/login/:id" let:params>
+                    <Login id="{params.id}"></Login>
+                </Route>
+                <Route path="/magic/:id" let:params>
+                    <MagicLink id="{params.id}"></MagicLink>
+                </Route>
+                <Route path="/confirm" component={Confirm}/>
+                <Route path="/session" component={SessionLost}/>
+                <Route path="/expired" component={LinkExpired}/>
+                <Route component={NotFound}/>
+            </Router>
+        </div>
         <Footer/>
     </div>
 {:else}
