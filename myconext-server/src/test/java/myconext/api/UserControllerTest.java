@@ -190,7 +190,8 @@ public class UserControllerTest extends AbstractIntegrationTest {
                 .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                 .delete("/myconext/api/sp/delete/" + user.getId())
                 .then()
-                .statusCode(201);
+                .statusCode(302)
+                .cookie("SESSION", "");
 
         Optional<User> optionalUser = userRepository.findUserByEmail("jdoe@example.com");
         assertFalse(optionalUser.isPresent());

@@ -35,6 +35,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.security.SecureRandom;
 import java.util.Base64;
 import java.util.Collections;
@@ -145,14 +147,14 @@ public class UserController {
 
 
     @DeleteMapping("/sp/delete/{id}")
-    public ResponseEntity deleteUser(Authentication authentication, HttpServletRequest request, @PathVariable("id") String id) {
+    public ResponseEntity deleteUser(Authentication authentication, HttpServletRequest request, @PathVariable("id") String id) throws URISyntaxException {
         User user = verifyAndFetchUser(authentication, id);
         userRepository.delete(user);
         HttpSession session = request.getSession();
         session.invalidate();
         SecurityContextHolder.getContext().setAuthentication(null);
         SecurityContextHolder.clearContext();
-        return ResponseEntity.status(201).body(Collections.singletonMap("status", "ok"));
+        return ResponseEntity.status(302).location(new URI("/")).build();
     }
 
     private User verifyAndFetchUser(Authentication authentication, User deltaUser) {
