@@ -58,6 +58,26 @@ To deploy production bundles
 ```bash
 mvn deploy
 ```
+### [Crypto](#crypto)
+
+The myconext application uses a private RSA key and corresponding certificate to sign the SAML requests. We don't want
+to provide defaults, so in the integration tests the key / certificate pair in generated on the fly. if you want to
+deploy the application in an environment where the certificate needs to be registered with the Service Provider (Proxy)
+then you can generate a key pair with the following commands:
+```
+cd myconext/myconext-server/src/main/resources
+openssl req -subj '/O=Organization, CN=OIDC/' -newkey rsa:2048 -new -x509 -days 3652 -nodes -out myconext.crt -keyout myconext.pem
+```
+The Java KeyStore expects a pkcs8 DER format for RSA private keys so we have to re-format that key:
+
+```
+openssl pkcs8 -nocrypt  -in myconext.pem -topk8 -out myconext.der
+``` 
+Add the key pair to the [application.yml](myconext-server/src/main/resources/application.yml) file:
+```
+private_key_path: classpath:/myconext.pem
+certificate_path: classpath:/myconext.crt
+```
 
 ### [Miscellaneous](#miscellaneous)
 
