@@ -17,7 +17,7 @@
         padding: 50px;
         background-color: white;
         min-height: 500px;
-        width: 500px;
+        width: 835px;
         color: #767676;
     }
     h2 {

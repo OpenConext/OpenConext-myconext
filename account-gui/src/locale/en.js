@@ -2,7 +2,8 @@ import I18n from "i18n-js";
 
 I18n.translations.en = {
     login: {
-        header: "<strong>Login</strong> with your Guest Account",
+        header: "<strong>Login</strong>",
+        header2: "with your Guest Account",
         trust: "Trust this computer",
         email: "Your email address",
         familyName: "Family name",

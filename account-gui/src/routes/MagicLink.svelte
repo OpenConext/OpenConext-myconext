@@ -20,7 +20,7 @@
         background-color: white;
         height: auto;
         min-height: 500px;
-        width: 500px;
+        width: 835px;
     }
 
     h1 {

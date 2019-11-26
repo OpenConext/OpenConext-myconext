@@ -10,14 +10,15 @@
 
     .header {
         width: 100%;
-        max-width: 500px;
+        max-width: 835px;
         margin: 0 auto;
         display: flex;
-        background-color: #e7e7e7;
+        background-color: #0061b0;
         align-items: center;
         align-content: center;
         position: relative;
         justify-content: center;
+        height: 110px;
     }
 
     .logo {

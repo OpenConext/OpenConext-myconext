@@ -15,25 +15,43 @@
 <style>
 
     .footer {
-        background-color: #e7e7e7;
-        padding: 18px;
+        background-color: #ffffff;
+        padding: 0 70px;
         width: 100%;
-        max-width: 500px;
+        max-width: 835px;
+        height: 122px;
         margin: 0 auto;
+        border-left: 2px solid #0061b0;
+        border-bottom-left-radius: 10px;
+        border-bottom-right-radius: 10px;
+        border-right: 2px solid #0061b0;
+        border-bottom: 4px solid #0061b0;;
     }
+
+    @media (max-width: 720px) {
+        .footer {
+            padding: 0 28px;
+        }
+    }
+
     .inner {
         display: flex;
-        align-items: center;
         justify-content: space-between;
         margin: 0 auto;
         width: 100%;
+        font-size: 16px;
+        font-weight: 300;
+        padding-top: 42px;
+        border-top: 2px solid #e6e9e8;
     }
 
     .help, .info {
         display: flex;
         flex-direction: column;
     }
-
+    .info {
+        text-align: right;
+    }
     span {
         display: inline-block;
         margin-bottom: 5px;
@@ -46,14 +64,10 @@
     li {
         display: inline-block;
         padding: 0 10px;
-        font-size: 20px;
     }
-
-    li a {
-        text-decoration: none;
-        color: #a3a3a3;
+    a {
+        font-weight: 400;
     }
-
     li:last-child {
         border-left: 1px solid black;
     }

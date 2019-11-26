@@ -3,9 +3,11 @@
     import {validEmail} from "../validation/regexp";
     import I18n from "i18n-js";
     import {magicLinkNewUser, magicLinkExistingUser} from "../api/index";
+    import CheckBox from "../components/CheckBox.svelte";
     import {navigate} from "svelte-routing";
     import {onMount} from "svelte";
     import Cookies from "js-cookie";
+    import Button from "../components/Button.svelte";
 
     export let id;
     let emailInUse = false;
@@ -87,8 +89,6 @@
 
     const handlePasswordEnter = e => e.key === "Enter" && handleNext(true)();
 
-    const handleLinkClick = e => e.key === " " && e.target.click();
-
 </script>
 
 <style>
@@ -96,67 +96,51 @@
         display: flex;
         justify-content: center;
         width: 100%;
-        font-size: 18px;
     }
 
     .card {
+        border-left: 2px solid #0061b0;
+        border-right: 2px solid #0061b0;
         display: flex;
         flex-direction: column;
-        padding: 50px;
+        padding: 62px 188px;
         background-color: white;
-        width: 500px;
+        width: 835px;
     }
 
-    h2 {
-        margin-bottom: 20px;
+    @media (max-width: 720px) {
+        .card {
+            padding: 32px 28px;
+        }
+    }
+
+    h1, h2, h3 {
+        font-family: Proxima Nova, sans-serif;
+    }
+
+    h1 {
+        font-size: 52px;
     }
 
     h2.top {
-        margin-bottom: 40px;
+        margin-bottom: 25px;
+        font-size: 36px;
+        font-weight: bold;
+        color: #008738;
+    }
+
+    h3 {
+        margin-bottom: 20px;
+        font-size: 18px;
+        font-weight: bold;
     }
 
     .options {
         display: flex;
         justify-content: space-between;
         width: 100%;
-        padding-bottom: 30px;
-        border-bottom: 2px solid #dadce0;
-    }
-
-    .button {
-        border: 1px solid #818181;
-        width: 100%;
-        background-color: #c7c7c7;
-        border-radius: 2px;
-        padding: 10px 20px;
-        display: inline-block;
-        color: black;
-        text-decoration: none;
-        cursor: pointer;
-        text-align: center;
-    }
-
-    .button.non-active {
-        border: 1px solid #c5c5c5;
-        color: #818181;
-        background-color: white;
-    }
-
-    .button:not(.non-active) {
-        order: 1;
-        margin-left: 20px;
-    }
-
-    .button.disabled {
-        border: none;
-        cursor: not-allowed;
-        color: #c7c7c7;
-        background-color: #f3f3f3;
-    }
-
-    .button.full {
-        margin-top: 15px;
-        margin-left: 0;
+        padding: 40px 0;
+        border-bottom: 2px solid #5bd685;
     }
 
     span.error {
@@ -166,47 +150,27 @@
     }
 
     input[type=email], input[type=text], input[type=password] {
-        border: 1px solid #dadce0;
+        border: 1px solid #727272;
         border-radius: 4px;
         padding: 10px;
-        font-size: larger;
+        font-size: 18px;
         width: 100%;
-        margin: 5px 0;
+        margin: 15px 0;
     }
 
     .hidden {
         display: none;
     }
 
-    h2, label {
-        color: #767676
-    }
-
     .pre-input-label {
-        font-weight: bold;
+        color: #202020;
     }
 
     .post-input-label {
-        font-size: 16px;
+        color: #202020;
+        font-size: 15px;
         margin: 5px 0 20px 0;
         display: inline-block;
-    }
-
-    div.checkbox {
-        display: flex;
-        margin-right: auto;
-        align-items: center;
-        margin-bottom: 15px;
-    }
-
-    div.checkbox input {
-        margin: 0 10px 0 0;
-        font-size: 36px;
-        cursor: pointer;
-    }
-
-    div.checkbox label {
-        cursor: pointer;
     }
 
     div.info-bottom {
@@ -215,12 +179,23 @@
 
     div.info-bottom p {
         display: inline-block;
-        margin-bottom: 10px;
+        margin-bottom: 20px;
+        font-size: 14px;
+        font-weight: 300;
+        line-height: 18px;
     }
+
+    a.toggle-link {
+        font-family: Proxima Nova, sans-serif;
+        text-decoration: none;
+        color: #0077c8;
+    }
+
 </style>
 <div class="home">
     <div class="card">
-        <h2 class="top">{@html I18n.ts("login.header")}</h2>
+        <h1>{@html I18n.ts("login.header")}</h1>
+        <h2 class="top">{@html I18n.ts("login.header2")}</h2>
         <label class="pre-input-label">{I18n.ts("login.email")}</label>
         <input type="email"
                use:init
@@ -254,12 +229,11 @@
                 <span class="error">{I18n.ts("login.requiredAttribute", {attr: I18n.ts("login.familyName")})}</span>
             {/if}
             <div class="options">
-                <a class="button full" href="/magic"
-                   class:disabled={!initial && !allowedNext($user.email, $user.familyName, $user.givenName)}
-                   on:keydown={handleLinkClick}
-                   on:click|preventDefault|stopPropagation={handleNext(false)}>
-                    {I18n.ts("login.sendMagicLink")}
-                </a>
+                <Button disabled={!allowedNext($user.email, $user.familyName, $user.givenName)}
+                        href="/magic"
+                        className="full"
+                        label={I18n.ts("login.sendMagicLink")}
+                        onClick={handleNext(false)}/>
             </div>
         {:else}
             <div id="password" class:hidden={!$user.usePassword}>
@@ -270,12 +244,10 @@
                        bind:this={passwordField}>
                 <label class="post-input-label">{I18n.ts("login.passwordForgotten")}</label>
             </div>
-            <div class="checkbox">
-                <input type="checkbox"
-                       id="remember-me"
-                       bind:checked={$user.rememberMe}/>
-                <label for="remember-me">{I18n.ts("login.rememberMe")}</label>
-            </div>
+            <CheckBox value={$user.rememberMe}
+                      label={I18n.ts("login.rememberMe")}
+                      name="remember-me"
+                      onChange={val => $user.rememberMe = val}/>
             <div class="options">
                 <a class="button child" class:non-active={!$user.usePassword} href="/password"
                    class:disabled={!initial && !allowedNext($user.email, $user.familyName, $user.givenName) && $user.usePassword}
@@ -291,13 +263,13 @@
         {/if}
         <div class="info-bottom">
             {#if !$user.createAccount}
-                <h2>{@html I18n.ts("login.noGuestAccount")}</h2>
-                <p>{@html I18n.ts("login.noGuestAccountInfo")}</p>
-                <a href="/reguest"
+                <h3>{@html I18n.ts("login.noGuestAccount")}</h3>
+                <p class="mini">{@html I18n.ts("login.noGuestAccountInfo")}</p>
+                <a class="toggle-link" href="/reguest"
                    on:click|preventDefault|stopPropagation={createAccount(true)}>{I18n.ts("login.requestGuestAccount")}</a>
             {:else}
-                <h2>{@html I18n.ts("login.alreadyGuestAccount")}</h2>
-                <a href="/login"
+                <h3>{@html I18n.ts("login.alreadyGuestAccount")}</h3>
+                <a class="toggle-link" href="/login"
                    on:click|preventDefault|stopPropagation={createAccount(false)}>{I18n.ts("login.login")}</a>
 
             {/if}

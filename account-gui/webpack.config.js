@@ -69,7 +69,8 @@ module.exports = {
     devServer: {
         port: 3000,
         proxy: {
-            '/myconext/api': 'http://localhost:8081'
+            '/myconext/api': 'http://localhost:8081',
+            '/config': 'http://localhost:8081'
         },
         historyApiFallback: true
     }

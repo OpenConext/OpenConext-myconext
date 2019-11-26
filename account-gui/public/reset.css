@@ -8,9 +8,21 @@ html {
     box-sizing: inherit;
 }
 
+
+@font-face {
+    font-family: "Open Sans";
+    src: url("/fonts/source_sans_pro/SourceSansPro-Regular.ttf"), url("/fonts/source_sans_pro/SourceSansPro-Light.ttf");
+}
+
+@font-face {
+    font-family: "Proxima Nova";
+    src: url("/fonts/proxima_nova/ProximaNovaSoft-Regular.otf"), url("/fonts/proxima_nova/ProximaNovaSoft-Medium.otf");
+}
+
 body {
     height: 100%;
-    font-family: "Roboto", sans-serif;
+    font-family: "Source Sans Pro", sans-serif;
+    font-size: 18px;
 }
 
 body, h1, h2, h3, h4, h5, h6, p, ol, ul {
@@ -26,4 +38,13 @@ ol, ul {
 img {
     max-width: 100%;
     height: auto;
+}
+
+a, a:visited {
+    color: #0077c8;
+    text-decoration: none;
+}
+
+p, label, span {
+    line-height: 18px;
 }
