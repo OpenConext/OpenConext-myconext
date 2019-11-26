@@ -3,6 +3,8 @@
 bundle*
 id_rsa
 id_rsa.pub
+myconext.pem
+myconext.crt
 node_modules
 target
 index.html

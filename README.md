@@ -66,13 +66,9 @@ deploy the application in an environment where the certificate needs to be regis
 then you can generate a key pair with the following commands:
 ```
 cd myconext/myconext-server/src/main/resources
-openssl req -subj '/O=Organization, CN=OIDC/' -newkey rsa:2048 -new -x509 -days 3652 -nodes -out myconext.crt -keyout myconext.pem
+openssl genrsa  -out myconext.pem 2048
+openssl req -subj '/O=Organization, CN=OIDC/' -key myconext.pem -new -x509 -days 365 -out myconext.crt
 ```
-The Java KeyStore expects a pkcs8 DER format for RSA private keys so we have to re-format that key:
-
-```
-openssl pkcs8 -nocrypt  -in myconext.pem -topk8 -out myconext.der
-``` 
 Add the key pair to the [application.yml](myconext-server/src/main/resources/application.yml) file:
 ```
 private_key_path: classpath:/myconext.pem

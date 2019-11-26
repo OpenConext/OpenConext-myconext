@@ -29,8 +29,10 @@ sp_entity_metadata_url: https://engine.test2.surfconext.nl/authentication/sp/met
 
 secure_cookie: false
 idp_entity_id: https://localhost.surf.id
-private_key_path: classpath:/id_rsaX
-certificate_path: classpath:/id_rsa.pubX
+private_key_path: classpath:/id_rsa
+certificate_path: classpath:/id_rsa.pub
+#private_key_path: classpath:/myconext.pem
+#certificate_path: classpath:/myconext.crt
 
 remember_me_max_age_seconds: 15_768_000
 
