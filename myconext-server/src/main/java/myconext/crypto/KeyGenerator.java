@@ -52,19 +52,20 @@ public class KeyGenerator {
 
     private String certificate(KeyPair keyPair) throws OperatorCreationException, CertificateException, CertIOException {
         X500Name dnName = new X500Name("CN=test,O=Test Certificate");
-        BigInteger certSerialNumber = new BigInteger(Long.toString(System.currentTimeMillis()));
         ContentSigner contentSigner = new JcaContentSignerBuilder("SHA256WithRSA").build(keyPair.getPrivate());
 
         JcaX509v3CertificateBuilder certBuilder =
                 new JcaX509v3CertificateBuilder(
                         dnName,
-                        certSerialNumber,
+                        new BigInteger(Long.toString(System.currentTimeMillis())),
                         new Date(),
                         Date.from(LocalDateTime.now().plusYears(1).toInstant(ZoneOffset.UTC)),
                         dnName,
                         keyPair.getPublic());
 
-        X509Certificate certificate = new JcaX509CertificateConverter().setProvider(bcProvider).getCertificate(certBuilder.build(contentSigner));
+        X509Certificate certificate = new JcaX509CertificateConverter()
+                .setProvider(bcProvider)
+                .getCertificate(certBuilder.build(contentSigner));
 
         String result = "-----BEGIN CERTIFICATE-----\n";
         result += Base64.getEncoder().encodeToString(certificate.getEncoded());

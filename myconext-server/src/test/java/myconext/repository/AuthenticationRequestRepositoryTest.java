@@ -11,6 +11,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 public class AuthenticationRequestRepositoryTest extends AbstractIntegrationTest {
 
@@ -42,7 +43,7 @@ public class AuthenticationRequestRepositoryTest extends AbstractIntegrationTest
     @Test
     public void testFindByHash() {
         Optional<SamlAuthenticationRequest> hash = authenticationRequestRepository.findByHash(request.getHash());
-        assertEquals(true, hash.isPresent());
+        assertTrue(hash.isPresent());
     }
 
     @Test(expected = ExpiredAuthenticationException.class)
@@ -52,7 +53,13 @@ public class AuthenticationRequestRepositoryTest extends AbstractIntegrationTest
     }
 
     @Test
+    public void testFindByIdAndNotExpiredButRememberMe() {
+        doExpireWithFindProperty(SamlAuthenticationRequest.class, "hash", "differentHash");
+        assertTrue(authenticationRequestRepository.findByIdAndNotExpired(request.getId()).isPresent());
+    }
+
+    @Test
     public void testFindByIdAndExpired() {
-        assertEquals(true, authenticationRequestRepository.findByIdAndNotExpired(request.getId()).isPresent());
+        assertTrue(authenticationRequestRepository.findByIdAndNotExpired(request.getId()).isPresent());
     }
 }
