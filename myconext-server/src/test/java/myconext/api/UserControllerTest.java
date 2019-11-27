@@ -167,6 +167,21 @@ public class UserControllerTest extends AbstractIntegrationTest {
     }
 
     @Test
+    public void updateUserSecurity() {
+        User user = userRepository.findOneUserByEmail("jdoe@example.com");
+        UpdateUserSecurityRequest updateUserSecurityRequest = new UpdateUserSecurityRequest(user.getId(), null, "correctSecret001");
+        given()
+                .when()
+                .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+                .body(updateUserSecurityRequest)
+                .put("/myconext/api/sp/security")
+                .then()
+                .statusCode(201);
+        user = userRepository.findOneUserByEmail("jdoe@example.com");
+        assertTrue(passwordEncoder.matches(updateUserSecurityRequest.getNewPassword(), user.getPassword()));
+    }
+
+    @Test
     public void updateUserWrongPassword() {
         User user = userRepository.findOneUserByEmail("jdoe@example.com");
         ReflectionTestUtils.setField(user, "password", "abcdefghijklmnop");
