@@ -5,6 +5,7 @@ import myconext.exceptions.ExpiredAuthenticationException;
 import myconext.exceptions.ForbiddenException;
 import myconext.exceptions.UserNotFoundException;
 import myconext.mail.MailBox;
+import myconext.manage.ServiceNameResolver;
 import myconext.model.MagicLinkRequest;
 import myconext.model.SamlAuthenticationRequest;
 import myconext.model.UpdateUserSecurityRequest;
@@ -14,6 +15,7 @@ import myconext.repository.AuthenticationRequestRepository;
 import myconext.repository.UserRepository;
 import myconext.security.EmailGuessingPreventor;
 import myconext.validation.EmailValidator;
+import org.opensaml.saml.saml2.metadata.ServiceName;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -49,6 +51,7 @@ public class UserController {
     private UserRepository userRepository;
     private AuthenticationRequestRepository authenticationRequestRepository;
     private MailBox mailBox;
+    private ServiceNameResolver serviceNameResolver;
     private String magicLinkUrl;
 
     private SecureRandom random = new SecureRandom();
@@ -59,10 +62,12 @@ public class UserController {
     public UserController(UserRepository userRepository,
                           AuthenticationRequestRepository authenticationRequestRepository,
                           MailBox mailBox,
+                          ServiceNameResolver serviceNameResolver,
                           @Value("${email.magic-link-url}") String magicLinkUrl) {
         this.userRepository = userRepository;
         this.authenticationRequestRepository = authenticationRequestRepository;
         this.mailBox = mailBox;
+        this.serviceNameResolver = serviceNameResolver;
         this.magicLinkUrl = magicLinkUrl;
     }
 
@@ -183,7 +188,8 @@ public class UserController {
             if (user.isNewUser()) {
                 mailBox.sendAccountVerification(user, samlAuthenticationRequest.getHash());
             } else {
-                mailBox.sendMagicLink(user, samlAuthenticationRequest.getHash(), samlAuthenticationRequest.getRequesterEntityId());
+                String serviceName = serviceNameResolver.resolve(samlAuthenticationRequest.getRequesterEntityId());
+                mailBox.sendMagicLink(user, samlAuthenticationRequest.getHash(), serviceName);
             }
             return ResponseEntity.status(201).body(Collections.singletonMap("result", "ok"));
         }

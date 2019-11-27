@@ -1,6 +1,7 @@
 package myconext.config;
 
 import myconext.mail.MailBox;
+import myconext.manage.ServiceNameResolver;
 import myconext.repository.AuthenticationRequestRepository;
 import myconext.repository.UserRepository;
 import myconext.saml.ImmutableSamlConfigurationRepository;
@@ -24,6 +25,7 @@ public class BeanConfig extends SamlIdentityProviderServerBeanConfiguration {
     private final boolean secureCookie;
     private final String magicLinkUrl;
     private final MailBox mailBox;
+    private final ServiceNameResolver serviceNameResolver;
 
     public BeanConfig(@Value("${base_path}") String basePath,
                       @Value("${idp_redirect_url}") String redirectUrl,
@@ -33,7 +35,8 @@ public class BeanConfig extends SamlIdentityProviderServerBeanConfiguration {
                       @Value("${email.magic-link-url}") String magicLinkUrl,
                       AuthenticationRequestRepository authenticationRequestRepository,
                       UserRepository userRepository,
-                      MailBox mailBox) {
+                      MailBox mailBox,
+                      ServiceNameResolver serviceNameResolver) {
         this.immutableSamlConfigurationRepository = new ImmutableSamlConfigurationRepository(basePath);
         this.redirectUrl = redirectUrl;
         this.spEntityId = spEntityId;
@@ -43,6 +46,7 @@ public class BeanConfig extends SamlIdentityProviderServerBeanConfiguration {
         this.userRepository = userRepository;
         this.magicLinkUrl = magicLinkUrl;
         this.mailBox = mailBox;
+        this.serviceNameResolver = serviceNameResolver;
     }
 
     private ImmutableSamlConfigurationRepository immutableSamlConfigurationRepository;
@@ -54,7 +58,7 @@ public class BeanConfig extends SamlIdentityProviderServerBeanConfiguration {
 
     @Override
     public Filter idpAuthnRequestFilter() {
-        return new GuestIdpAuthenticationRequestFilter(getSamlProvisioning(), samlAssertionStore(), redirectUrl,
+        return new GuestIdpAuthenticationRequestFilter(getSamlProvisioning(), samlAssertionStore(), redirectUrl, serviceNameResolver,
                 authenticationRequestRepository, userRepository, spEntityId, rememberMeMaxAge, secureCookie, magicLinkUrl,
                 mailBox);
     }

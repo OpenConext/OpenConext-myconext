@@ -3,12 +3,15 @@
     import {onMount} from 'svelte';
     import {user} from "../stores/user";
     import Button from "../components/Button.svelte";
+
     let email = null;
+    let serviceName = null;
 
     onMount(() => {
         if (typeof window !== "undefined") {
             const urlSearchParams = new URLSearchParams(window.location.search);
             email = decodeURIComponent(urlSearchParams.get("email"));
+            serviceName = decodeURIComponent(urlSearchParams.get("name"));
         }
     });
 
@@ -46,7 +49,7 @@
         <h1>{I18n.ts("confirm.header")}</h1>
         <h2>{I18n.ts("confirm.header2")}</h2>
         <p>{I18n.ts("confirm.thanks")}</p>
-        <p>{I18n.ts("confirm.info")}</p>
+        <p>{I18n.ts("confirm.info", {name: serviceName})}</p>
         <Button href="/proceed" onClick={proceed}
                 className="full"
                 active={true} label={I18n.ts("confirm.link")}/>

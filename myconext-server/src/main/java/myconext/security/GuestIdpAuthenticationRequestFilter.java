@@ -3,6 +3,7 @@ package myconext.security;
 import myconext.exceptions.ExpiredAuthenticationException;
 import myconext.exceptions.UserNotFoundException;
 import myconext.mail.MailBox;
+import myconext.manage.ServiceNameResolver;
 import myconext.model.SamlAuthenticationRequest;
 import myconext.model.User;
 import myconext.repository.AuthenticationRequestRepository;
@@ -62,10 +63,12 @@ public class GuestIdpAuthenticationRequestFilter extends IdpAuthenticationReques
     private final boolean secureCookie;
     private final String magicLinkUrl;
     private final MailBox mailBox;
+    private final ServiceNameResolver serviceNameResolver;
 
     public GuestIdpAuthenticationRequestFilter(SamlProviderProvisioning<IdentityProviderService> provisioning,
                                                SamlMessageStore<Assertion, HttpServletRequest> assertionStore,
                                                String redirectUrl,
+                                               ServiceNameResolver serviceNameResolver,
                                                AuthenticationRequestRepository authenticationRequestRepository,
                                                UserRepository userRepository,
                                                String spEntityId,
@@ -77,6 +80,7 @@ public class GuestIdpAuthenticationRequestFilter extends IdpAuthenticationReques
         this.ssoSamlRequestMatcher = new SamlRequestMatcher(provisioning, "SSO");
         this.magicSamlRequestMatcher = new SamlRequestMatcher(provisioning, "magic");
         this.redirectUrl = redirectUrl;
+        this.serviceNameResolver = serviceNameResolver;
         this.authenticationRequestRepository = authenticationRequestRepository;
         this.userRepository = userRepository;
         this.spEntityId = spEntityId;
@@ -185,11 +189,12 @@ public class GuestIdpAuthenticationRequestFilter extends IdpAuthenticationReques
         if (user.isNewUser()) {
             user.setNewUser(false);
             userRepository.save(user);
-            String name = Charset.defaultCharset().name();
+            String charSet = Charset.defaultCharset().name();
             mailBox.sendAccountConfirmation(user);
             response.sendRedirect(this.redirectUrl + "/confirm?h=" + hash +
-                    "&redirect=" + URLEncoder.encode(this.magicLinkUrl, name) +
-                    "&email=" + URLEncoder.encode(user.getEmail(), name));
+                    "&redirect=" + URLEncoder.encode(this.magicLinkUrl, charSet) +
+                    "&email=" + URLEncoder.encode(user.getEmail(), charSet) +
+                    "&name=" + URLEncoder.encode(serviceNameResolver.resolve(samlAuthenticationRequest.getRequesterEntityId()), charSet));
             return;
         } else {
             //ensure the magic link can't bee used twice
