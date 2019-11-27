@@ -134,7 +134,7 @@
     span.error {
         display: inline-block;
         margin: 0 auto 10px 0;
-        color: #d00000;
+        color: var(--color-primary-red);
     }
 
     a.back {

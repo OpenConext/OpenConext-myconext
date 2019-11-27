@@ -16,7 +16,7 @@
         margin-bottom: 25px;
         font-size: 36px;
         font-weight: bold;
-        color: #008738;
+        color: var(--color-primary-green);
     }
 
     p.info {

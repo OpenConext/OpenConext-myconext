@@ -21,7 +21,7 @@
         width: 7px;
         height: 7px;
         border-radius: 50%;
-        background: #006cb8;
+        background: var(--color-primary-blue);
         margin: -4px 0 0 -4px;
     }
 

@@ -13,7 +13,7 @@
         max-width: 835px;
         margin: 0 auto;
         display: flex;
-        background-color: #006cb8;
+        background-color: var(--color-primary-blue);
         align-items: center;
         align-content: center;
         position: relative;

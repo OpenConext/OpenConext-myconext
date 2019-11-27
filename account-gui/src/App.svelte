@@ -25,6 +25,14 @@
 </script>
 
 <style>
+
+    :global(:root){
+        --color-primary-blue: #0061b0;
+        --color-primary-green: #008738;
+        --color-primary-black: #202020;
+        --color-primary-red: #d00000;
+    }
+
     .idp {
         display: flex;
         flex-direction: column;
@@ -33,8 +41,8 @@
     .content {
         display: flex;
         justify-content: center;
-        border-left: 2px solid #0061b0;
-        border-right: 2px solid #0061b0;
+        border-left: 2px solid var(--color-primary-blue);
+        border-right: 2px solid var(--color-primary-blue);
         flex-direction: column;
         padding: 50px 188px;
         background-color: white;
@@ -94,7 +102,6 @@
             transform: rotate(360deg);
         }
     }
-
 </style>
 {#if loaded}
     <div class="idp">

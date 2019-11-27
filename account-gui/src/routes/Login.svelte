@@ -107,7 +107,7 @@
         margin-bottom: 25px;
         font-size: 36px;
         font-weight: bold;
-        color: #008738;
+        color: var(--color-primary-green);
     }
 
     h3 {
@@ -127,7 +127,7 @@
     span.error {
         display: inline-block;
         margin: 0 auto 10px 0;
-        color: #d00000;
+        color: var(--color-primary-red);
     }
 
     input[type=email], input[type=text], input[type=password] {
@@ -144,11 +144,11 @@
     }
 
     .pre-input-label {
-        color: #202020;
+        color: var(--color-primary-black);
     }
 
     .post-input-label {
-        color: #202020;
+        color: var(--color-primary-black);
         font-size: 15px;
         margin: 5px 0 20px 0;
         display: inline-block;

@@ -10,7 +10,7 @@
         font-size: 38px;
     }
     p {
-        color: #202020;
+        color: var(--color-primary-black);
     }
 
 </style>

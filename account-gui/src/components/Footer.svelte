@@ -21,11 +21,11 @@
         max-width: 835px;
         height: 122px;
         margin: 0 auto;
-        border-left: 2px solid #0061b0;
+        border-left: 2px solid var(--color-primary-blue);
         border-bottom-left-radius: 10px;
         border-bottom-right-radius: 10px;
-        border-right: 2px solid #0061b0;
-        border-bottom: 4px solid #0061b0;;
+        border-right: 2px solid var(--color-primary-blue);
+        border-bottom: 4px solid var(--color-primary-blue);
     }
 
     @media (max-width: 720px) {
