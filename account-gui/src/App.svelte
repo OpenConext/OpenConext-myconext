@@ -31,6 +31,8 @@
         --color-primary-green: #008738;
         --color-primary-black: #202020;
         --color-primary-red: #d00000;
+
+        --width-app: 600px;
     }
 
     .idp {
@@ -44,13 +46,13 @@
         border-left: 2px solid var(--color-primary-blue);
         border-right: 2px solid var(--color-primary-blue);
         flex-direction: column;
-        padding: 50px 188px;
+        padding: 50px 72px;
         background-color: white;
-        width: 835px;
+        width: var(--width-app);
         margin: 0 auto;
     }
 
-    @media (max-width: 860px) {
+    @media (max-width: 600px) {
         .idp {
             margin: 0 15px;
         }

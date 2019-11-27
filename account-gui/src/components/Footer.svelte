@@ -18,7 +18,7 @@
         background-color: #ffffff;
         padding: 0 70px;
         width: 100%;
-        max-width: 835px;
+        max-width: var(--width-app);
         height: 122px;
         margin: 0 auto;
         border-left: 2px solid var(--color-primary-blue);
@@ -28,7 +28,7 @@
         border-bottom: 4px solid var(--color-primary-blue);
     }
 
-    @media (max-width: 720px) {
+    @media (max-width: 600px) {
         .footer {
             padding: 0 28px;
         }
