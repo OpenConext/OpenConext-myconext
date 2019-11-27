@@ -2,7 +2,8 @@ import I18n from "i18n-js";
 
 I18n.translations.nl = {
     login: {
-        header: "<strong>Login</strong> met je Gast account",
+        header: "Login",
+        header2: "met je Gast account",
         trust: "Vertrouw deze computer",
         email: "Je e-mail adres",
         familyName: "Achternaam",
@@ -33,12 +34,14 @@ I18n.translations.nl = {
 
     },
     magicLink: {
-        header: "<strong>Controleer</strong> je inbox",
+        header: "Controleer",
+        header2: "je inbox",
         info: "We hebben een e-mail met een magische link verzonden naar:",
         wrongEmail: "Woops, verkeerde e-mail"
     },
     confirm: {
-        header: "<strong>Succes</strong>, uw account is geactiveerd",
+        header: "Succes",
+        header2: "uw account is geactiveerd",
         thanks: "Bedankt voor het verifiëren van uw e-mailadres.",
         info:"Klik op de onderstaande link om door te gaan naar de Service met je nieuwe gastaccount.",
         link: "Ga door naar je bestemming"

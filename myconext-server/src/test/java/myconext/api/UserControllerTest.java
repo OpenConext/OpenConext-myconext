@@ -96,8 +96,7 @@ public class UserControllerTest extends AbstractIntegrationTest {
 
         magicLinkRequest(linkRequest, HttpMethod.POST)
                 .response
-                .statusCode(HttpStatus.FOUND.value())
-                .header("Location", "http://localhost:3000/expired");
+                .statusCode(HttpStatus.BAD_REQUEST.value());
     }
 
     @Test
