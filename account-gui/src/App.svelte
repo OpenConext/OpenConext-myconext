@@ -28,8 +28,7 @@
     div.idp {
         display: flex;
         flex-direction: column;
-        height: 100%;
-        background-color: #5daff1;
+        /*margin-bottom: 100px;*/
     }
 
     .loader:empty,
