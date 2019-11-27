@@ -28,9 +28,6 @@
 
     .button.active {
         background-color: #003980;
-    }
-
-    .button:not(.non-active) {
         order: 1;
         margin-left: 20px;
     }
@@ -53,7 +50,7 @@
 </style>
 
 <a class="{`button ${className}`}"
-   class:non-active={!active}
+   class:active={active}
    href="{href}"
    class:disabled={disabled}
    on:click|preventDefault|stopPropagation={() => !disabled && onClick()}

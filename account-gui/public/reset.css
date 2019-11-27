@@ -1,7 +1,6 @@
 html {
     box-sizing: border-box;
     font-size: 16px;
-    height: 100%;
 }
 
 *, *:before, *:after {
@@ -20,9 +19,9 @@ html {
 }
 
 body {
-    height: 100%;
     font-family: "Source Sans Pro", sans-serif;
     font-size: 18px;
+    background-color: #5daff1;
 }
 
 body, h1, h2, h3, h4, h5, h6, p, ol, ul {
@@ -47,4 +46,8 @@ a, a:visited {
 
 p, label, span {
     line-height: 18px;
+}
+
+h1, h2, h3 {
+    font-family: Proxima Nova, sans-serif;
 }

@@ -25,11 +25,31 @@
 </script>
 
 <style>
-    div.idp {
+    .idp {
         display: flex;
         flex-direction: column;
-        height: 100%;
-        background-color: #5daff1;
+        margin-bottom: 100px;
+    }
+    .content {
+        display: flex;
+        justify-content: center;
+        border-left: 2px solid #0061b0;
+        border-right: 2px solid #0061b0;
+        flex-direction: column;
+        padding: 50px 188px;
+        background-color: white;
+        width: 835px;
+        margin: 0 auto;
+    }
+
+    @media (max-width: 860px) {
+        .idp {
+            margin: 0 15px;
+        }
+        .content {
+            padding: 32px 28px;
+            width: 100%;
+        }
     }
 
     .loader:empty,
@@ -74,17 +94,7 @@
             transform: rotate(360deg);
         }
     }
-    .content {
-        display: flex;
-        justify-content: center;
-        border-left: 2px solid #0061b0;
-        border-right: 2px solid #0061b0;
-        flex-direction: column;
-        padding: 62px 188px;
-        background-color: white;
-        width: 835px;
-        margin: 0 auto;
-    }
+
 </style>
 {#if loaded}
     <div class="idp">

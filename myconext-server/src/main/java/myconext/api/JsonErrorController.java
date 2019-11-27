@@ -51,8 +51,6 @@ public class JsonErrorController implements ErrorController {
 
         if (error == null) {
             statusCode = result.containsKey("status") ? HttpStatus.valueOf((Integer) result.get("status")) : INTERNAL_SERVER_ERROR;
-        } else if (error instanceof ExpiredAuthenticationException) {
-            return ResponseEntity.status(HttpStatus.FOUND).header("Location", this.redirectUrl + "/expired").build();
         } else {
             //https://github.com/spring-projects/spring-boot/issues/3057
             ResponseStatus annotation = AnnotationUtils.getAnnotation(error.getClass(), ResponseStatus.class);

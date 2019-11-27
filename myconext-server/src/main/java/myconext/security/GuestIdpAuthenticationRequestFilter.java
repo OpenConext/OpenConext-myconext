@@ -173,8 +173,12 @@ public class GuestIdpAuthenticationRequestFilter extends IdpAuthenticationReques
             return;
         }
         String hash = request.getParameter("h");
-        SamlAuthenticationRequest samlAuthenticationRequest = authenticationRequestRepository.findByHash(hash)
-                .orElseThrow(ExpiredAuthenticationException::new);
+        Optional<SamlAuthenticationRequest> optionalSamlAuthenticationRequest = authenticationRequestRepository.findByHash(hash);
+        if (!optionalSamlAuthenticationRequest.isPresent()) {
+            response.sendRedirect(this.redirectUrl + "/expired");
+            return;
+        }
+        SamlAuthenticationRequest samlAuthenticationRequest = optionalSamlAuthenticationRequest.get();
         User user = userRepository.findById(samlAuthenticationRequest.getUserId())
                 .orElseThrow(UserNotFoundException::new);
 

@@ -7,25 +7,16 @@
 </script>
 
 <style>
-    .home {
-        display: flex;
-        justify-content: center;
-        width: 100%;
-    }
-
-    .card {
-        display: flex;
-        flex-direction: column;
-        padding: 50px;
-        background-color: white;
-        height: auto;
-        min-height: 500px;
-        width: 835px;
-    }
-
     h1 {
-        color: #767676;
-        margin-bottom: 20px;
+        font-size: 52px;
+        font-weight: bold;
+    }
+
+    h2 {
+        margin-bottom: 25px;
+        font-size: 36px;
+        font-weight: bold;
+        color: #008738;
     }
 
     p.info {
@@ -40,11 +31,8 @@
     }
 
 </style>
-<div class="home">
-    <div class="card">
-        <h1>{@html I18n.ts("magicLink.header")}</h1>
-        <p class="info">{I18n.ts("magicLink.info")}</p>
-        <p class="mail">{$user.email}</p>
-        <a href="/login/{id}">{I18n.ts("magicLink.wrongEmail")}</a>
-    </div>
-</div>
+<h1>{I18n.ts("magicLink.header")}</h1>
+<h2>{I18n.ts("magicLink.header2")}</h2>
+<p class="info">{I18n.ts("magicLink.info")}</p>
+<p class="mail">{$user.email}</p>
+<a href="/login/{id}">{I18n.ts("magicLink.wrongEmail")}</a>
