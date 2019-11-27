@@ -43,7 +43,7 @@ I18n.translations.en = {
         header: "Success",
         header2: "your account is activated",
         thanks: "Thank you for verifying your email address.",
-        info:"Click on the link below to proceed to '{{name}}' with your new Guest Account.",
+        info:"Click on the link below to proceed to <strong>{{name}}</strong> with your new Guest Account.",
         link: "Proceed to your destination"
     },
     footer: {
