@@ -8,16 +8,21 @@
         display: flex;
         align-items: center;
         justify-content: center;
-        width: 100%;
-        height: 100%;
+        flex-direction: column;
     }
 
     h1 {
-        color: hotpink;
-        font-size: 126px;
+        color: #fe675c;
+        font-size: 128px;
+    }
+
+    h2 {
+        font-family: Proxima Nova, sans-serif;
+        font-size: 66px;
     }
 
 </style>
 <div class="not-found">
-            <h1>{I18n.ts("notFound.main")}</h1>
+    <h1>{I18n.ts("notFound.title")}</h1>
+    <h2>{I18n.ts("notFound.title2")}</h2>
 </div>

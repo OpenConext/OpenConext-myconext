@@ -5,23 +5,12 @@
 </script>
 
 <style>
-    .home {
-        display: flex;
-        justify-content: center;
-        width: 100%;
-    }
-
-    .card {
-        display: flex;
-        flex-direction: column;
-        padding: 50px;
-        background-color: white;
-        min-height: 500px;
-        width: 835px;
-        color: #767676;
-    }
     h2 {
         margin-bottom: 40px;
+        font-size: 38px;
+    }
+    p {
+        color: #202020;
     }
 
 </style>

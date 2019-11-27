@@ -25,10 +25,31 @@
 </script>
 
 <style>
-    div.idp {
+    .idp {
         display: flex;
         flex-direction: column;
-        /*margin-bottom: 100px;*/
+        margin-bottom: 100px;
+    }
+    .content {
+        display: flex;
+        justify-content: center;
+        border-left: 2px solid #0061b0;
+        border-right: 2px solid #0061b0;
+        flex-direction: column;
+        padding: 50px 188px;
+        background-color: white;
+        width: 835px;
+        margin: 0 auto;
+    }
+
+    @media (max-width: 860px) {
+        .idp {
+            margin: 0 15px;
+        }
+        .content {
+            padding: 32px 28px;
+            width: 100%;
+        }
     }
 
     .loader:empty,
@@ -78,18 +99,20 @@
 {#if loaded}
     <div class="idp">
         <Header/>
-        <Router url="{url}">
-            <Route path="/login/:id" let:params>
-                <Login id="{params.id}"></Login>
-            </Route>
-            <Route path="/magic/:id" let:params>
-                <MagicLink id="{params.id}"></MagicLink>
-            </Route>
-            <Route path="/confirm" component={Confirm}/>
-            <Route path="/session" component={SessionLost}/>
-            <Route path="/expired" component={LinkExpired}/>
-            <Route component={NotFound}/>
-        </Router>
+        <div class="content">
+            <Router url="{url}">
+                <Route path="/login/:id" let:params>
+                    <Login id="{params.id}"></Login>
+                </Route>
+                <Route path="/magic/:id" let:params>
+                    <MagicLink id="{params.id}"></MagicLink>
+                </Route>
+                <Route path="/confirm" component={Confirm}/>
+                <Route path="/session" component={SessionLost}/>
+                <Route path="/expired" component={LinkExpired}/>
+                <Route component={NotFound}/>
+            </Router>
+        </div>
         <Footer/>
     </div>
 {:else}

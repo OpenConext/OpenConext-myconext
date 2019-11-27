@@ -2,7 +2,7 @@ import I18n from "i18n-js";
 
 I18n.translations.en = {
     login: {
-        header: "<strong>Login</strong>",
+        header: "Login",
         header2: "with your Guest Account",
         trust: "Trust this computer",
         email: "Your email address",
@@ -34,12 +34,14 @@ I18n.translations.en = {
 
     },
     magicLink: {
-        header: "<strong>Check</strong> your inbox",
+        header: "Check",
+        header2: "your inbox",
         info: "We have sent an email with a magic link to:",
         wrongEmail: "Woops, wrong email"
     },
     confirm: {
-        header: "<strong>Success</strong>, your account is activated",
+        header: "Success",
+        header2: "your account is activated",
         thanks: "Thank you for verifying your email address.",
         info:"Click on the link below to proceed to the Service with your new Guest Account.",
         link: "Proceed to your destination"
@@ -60,7 +62,8 @@ I18n.translations.en = {
         info: "The Magic Link you have used is either expired or already used.<br/><br/>  Please go back to the service you where heading to and request a new Magic Link."
     },
     notFound: {
-        main: "404 - Not Found"
+        title: "404",
+        title2: "Not Found"
     }
 };
 

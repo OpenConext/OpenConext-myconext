@@ -13,7 +13,7 @@ email:
   my-surfconext-url: http://localhost:3001
 
 branding: SURFconext
-#OpenConext
+#branding: OpenConext
 
 cron:
   node-cron-job-responsible: True

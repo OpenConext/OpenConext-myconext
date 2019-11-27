@@ -46,6 +46,7 @@ export function magicLinkExistingUser(email, password, rememberMe, usePassword, 
     const body = {user: {email, password}, authenticationRequestId, rememberMe, usePassword};
     return postPutJson("/myconext/api/idp/magic_link_request", body, "PUT");
 }
+
 export function configuration() {
     return fetchJson("/config");
 }

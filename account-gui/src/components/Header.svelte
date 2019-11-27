@@ -1,8 +1,8 @@
 <script>
 
     import I18n from "i18n-js";
-    import logo from "./logo.svg";
-    import openConextLogo from "./open_conext.svg";
+    import logo from "../img/logo_SURFconext_blue.svg";
+    import openConextLogo from "../img/logo_OPEN_conext_blue.svg";
 
 </script>
 
@@ -13,7 +13,7 @@
         max-width: 835px;
         margin: 0 auto;
         display: flex;
-        background-color: #0061b0;
+        background-color: #006cb8;
         align-items: center;
         align-content: center;
         position: relative;

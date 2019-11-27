@@ -31,7 +31,7 @@
         width: 18px;
         border: 1px solid #004c97;
         border-radius: 2px;
-        box-shadow: 0 1px 1px 0 rgba(141, 141, 141, 0.75);
+        /*box-shadow: 0 1px 1px 0 rgba(141, 141, 141, 0.75);*/
     }
 
     /* On mouse-over, add a grey background color */

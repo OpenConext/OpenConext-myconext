@@ -59,6 +59,7 @@ I18n.translations.nl = {
         info: "De Magic Link die u hebt gebruikt, is verlopen of al in gebruik. <br/> <br/> Ga terug naar de service waar u naartoe gaat en vraag een nieuwe Magic Link aan."
     },
     notFound: {
-        main: "404 - Niet gevonden"
+        title: "404",
+        title2: "Niet gevonden"
     }
 };

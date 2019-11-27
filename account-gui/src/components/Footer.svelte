@@ -41,7 +41,7 @@
         width: 100%;
         font-size: 16px;
         font-weight: 300;
-        padding-top: 42px;
+        padding: 42px 0;
         border-top: 2px solid #e6e9e8;
     }
 

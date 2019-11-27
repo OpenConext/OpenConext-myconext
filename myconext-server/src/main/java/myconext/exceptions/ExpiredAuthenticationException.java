@@ -3,6 +3,6 @@ package myconext.exceptions;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
-@ResponseStatus(HttpStatus.GONE)
+@ResponseStatus(HttpStatus.BAD_REQUEST)
 public class ExpiredAuthenticationException extends RuntimeException {
 }
