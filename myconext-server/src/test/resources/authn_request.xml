@@ -9,4 +9,7 @@
     <saml:Issuer>https://engine.test.surfconext.nl/authentication/sp/metadata</saml:Issuer>
     <samlp:NameIDPolicy AllowCreate="true"
                         Format="urn:mace:dir:attribute-def:eduPersonPrincipalName"/>
+    <samlp:Scoping>
+        <samlp:RequesterID>https://manage.surfconext.nl/shibboleth</samlp:RequesterID>
+    </samlp:Scoping>
 </samlp:AuthnRequest>

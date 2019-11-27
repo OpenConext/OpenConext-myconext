@@ -28,6 +28,7 @@ import org.springframework.security.saml.saml2.metadata.Endpoint;
 import org.springframework.security.saml.saml2.metadata.NameId;
 import org.springframework.security.saml.saml2.metadata.ServiceProviderMetadata;
 import org.springframework.util.CollectionUtils;
+import org.springframework.util.StringUtils;
 import org.springframework.web.util.HtmlUtils;
 
 import javax.servlet.FilterChain;
@@ -112,11 +113,12 @@ public class GuestIdpAuthenticationRequestFilter extends IdpAuthenticationReques
 
         provider.validate(authenticationRequest);
 
+        String requesterEntityId = requesterId(authenticationRequest);
         SamlAuthenticationRequest samlAuthenticationRequest = new SamlAuthenticationRequest(
                 authenticationRequest.getId(),
                 authenticationRequest.getAssertionConsumerService().getLocation(),
                 relayState,
-                requesterId(authenticationRequest)
+                StringUtils.hasText(requesterEntityId) ? requesterEntityId : ""
         );
 
         // Use the returned instance for further operations as the save operation has added the _id
