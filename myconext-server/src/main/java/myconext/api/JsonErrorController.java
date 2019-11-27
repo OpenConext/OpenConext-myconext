@@ -1,6 +1,5 @@
 package myconext.api;
 
-import myconext.exceptions.ExpiredAuthenticationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,7 +49,8 @@ public class JsonErrorController implements ErrorController {
         HttpStatus statusCode;
 
         if (error == null) {
-            statusCode = result.containsKey("status") ? HttpStatus.valueOf((Integer) result.get("status")) : INTERNAL_SERVER_ERROR;
+            statusCode = result.containsKey("status") && (int) result.get("status") != 999 ?
+                    HttpStatus.valueOf((int) result.get("status")) : INTERNAL_SERVER_ERROR;
         } else {
             //https://github.com/spring-projects/spring-boot/issues/3057
             ResponseStatus annotation = AnnotationUtils.getAnnotation(error.getClass(), ResponseStatus.class);
