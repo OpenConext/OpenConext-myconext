@@ -31,7 +31,6 @@ I18n.translations.nl = {
         noGuestAccountInfo: "Een SURFconext Guest-account is bedoeld voor gebruikers die diensten willen gebruiken via <a href=\"https://surfconext.nl\" target=\"_blank\"> SURFconext </a>, maar die geen instellings account hebben.",
         requestGuestAccount: "Vraag een gastaccount aan",
         alreadyGuestAccount: "Al een <strong>gastaccount?</strong>",
-
     },
     magicLink: {
         header: "Controleer",
