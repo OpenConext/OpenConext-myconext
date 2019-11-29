@@ -51,14 +51,18 @@
                                     navigate(`/magic/${id}`, {replace: true});
                                 }
                             }).catch(e => {
-                        debugger;
+                        showSpinner = false;
                         if (e.status === 404) {
-                            showSpinner = false;
-                            emailNotFound = true;
-                            emailOrPasswordIncorrect = false;
-                            emailInUse = false;
+                            if ($user.usePassword) {
+                                emailNotFound = false;
+                                emailOrPasswordIncorrect = true;
+                                emailInUse = false;
+                            } else {
+                                emailNotFound = true;
+                                emailOrPasswordIncorrect = false;
+                                emailInUse = false;
+                            }
                         } else if (e.status === 403) {
-                            showSpinner = false;
                             emailNotFound = false;
                             emailOrPasswordIncorrect = true;
                             emailInUse = false;
