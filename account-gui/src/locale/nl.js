@@ -26,6 +26,7 @@ I18n.translations.nl = {
         requiredAttribute: "{{attr}} is verplicht",
         emailInUse: "E-mail is al reeds in gebruik.",
         emailNotFound: "E-mail niet gevonden.",
+        emailOrPasswordIncorrect: "E-mail of wachtwoord zijn niet juist",
         passwordDisclaimer: "Je wachtwoord moet minimaal 15 karakters lang zijn of 8 inclusief een hoofdletter en een getal.",
         noGuestAccount: "Heb je nog geen <strong>gastaccount?</strong>",
         noGuestAccountInfo: "Een SURFconext Guest-account is bedoeld voor gebruikers die diensten willen gebruiken via <a href=\"https://surfconext.nl\" target=\"_blank\"> SURFconext </a>, maar die geen instellings account hebben.",

@@ -107,6 +107,7 @@ public class UserController {
         User user = optionalUser.get();
         if (magicLinkRequest.isUsePassword()) {
             if (!passwordEncoder.matches(providedUser.getPassword(), user.getPassword())) {
+                emailGuessingPreventor.potentialUserEmailGuess();
                 throw new ForbiddenException();
             }
             UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(user, null,

@@ -13,6 +13,7 @@
     export let id;
     let emailInUse = false;
     let emailNotFound = false;
+    let emailOrPasswordIncorrect = false;
     let initial = true;
     let showSpinner = false;
 
@@ -35,6 +36,7 @@
                                 if (e.status === 409) {
                                     emailInUse = true;
                                     emailNotFound = false;
+                                    emailOrPasswordIncorrect = false;
                                 } else {
                                     navigate("/expired", {replace: true});
                                 }
@@ -49,10 +51,18 @@
                                     navigate(`/magic/${id}`, {replace: true});
                                 }
                             }).catch(e => {
+                        debugger;
                         if (e.status === 404) {
                             showSpinner = false;
                             emailNotFound = true;
+                            emailOrPasswordIncorrect = false;
                             emailInUse = false;
+                        } else if (e.status === 403) {
+                            showSpinner = false;
+                            emailNotFound = false;
+                            emailOrPasswordIncorrect = true;
+                            emailInUse = false;
+
                         } else {
                             navigate("/expired", {replace: true});
                         }
@@ -186,6 +196,9 @@
        on:keydown={handleEmailEnter}>
 {#if !$user.createAccount && emailNotFound}
     <span class="error">{I18n.ts("login.emailNotFound")}</span>
+{/if}
+{#if $user.usePassword && emailOrPasswordIncorrect}
+    <span class="error">{I18n.ts("login.emailOrPasswordIncorrect")}</span>
 {/if}
 {#if !initial && !validEmail($user.email)}
     <span class="error">{I18n.ts("login.invalidEmail")}</span>
