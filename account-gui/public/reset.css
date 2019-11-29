@@ -44,8 +44,12 @@ a, a:visited {
     text-decoration: none;
 }
 
-p, label, span {
+label, span {
     line-height: 18px;
+}
+
+p {
+    line-height: 22px;
 }
 
 h1, h2, h3 {
