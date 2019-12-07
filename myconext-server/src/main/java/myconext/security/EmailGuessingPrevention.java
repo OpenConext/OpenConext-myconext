@@ -1,6 +1,6 @@
 package myconext.security;
 
-public class EmailGuessingPreventor {
+public class EmailGuessingPrevention {
 
     public void potentialUserEmailGuess() throws InterruptedException {
         Thread.sleep(1000);

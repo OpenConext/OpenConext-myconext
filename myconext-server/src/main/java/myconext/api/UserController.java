@@ -13,9 +13,8 @@ import myconext.model.User;
 import myconext.model.UserResponse;
 import myconext.repository.AuthenticationRequestRepository;
 import myconext.repository.UserRepository;
-import myconext.security.EmailGuessingPreventor;
+import myconext.security.EmailGuessingPrevention;
 import myconext.validation.EmailValidator;
-import org.opensaml.saml.saml2.metadata.ServiceName;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -57,7 +56,7 @@ public class UserController {
     private SecureRandom random = new SecureRandom();
     private PasswordEncoder passwordEncoder = new BCryptPasswordEncoder(-1, random);
     private EmailValidator emailValidator = new EmailValidator();
-    private EmailGuessingPreventor emailGuessingPreventor = new EmailGuessingPreventor();
+    private EmailGuessingPrevention emailGuessingPreventor = new EmailGuessingPrevention();
 
     public UserController(UserRepository userRepository,
                           AuthenticationRequestRepository authenticationRequestRepository,

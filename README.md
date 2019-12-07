@@ -61,7 +61,7 @@ mvn deploy
 ### [Crypto](#crypto)
 
 The myconext application uses a private RSA key and corresponding certificate to sign the SAML requests. We don't want
-to provide defaults, so in the integration tests the key / certificate pair in generated on the fly. if you want to
+to provide defaults, so in the integration tests the key / certificate pair is generated on the fly. if you want to
 deploy the application in an environment where the certificate needs to be registered with the Service Provider (Proxy)
 then you can generate a key pair with the following commands:
 ```
