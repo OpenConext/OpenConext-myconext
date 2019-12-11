@@ -40,7 +40,7 @@ public class ServiceNameResolver {
             serviceNames = objectMapper.readValue(metaDataResource.getInputStream(), new
                     TypeReference<List<Map<String, Map<String, String>>>>() {
                     }).stream().collect(Collectors.toMap(m -> m.keySet().iterator().next(), m -> m.values().iterator().next()));
-            LOG.info("Refreshed all Service names from " + metaDataResource + "in " + (System.currentTimeMillis() - start) + " ms");
+            LOG.info("Refreshed all " + serviceNames.size() + " Service names from " + metaDataResource + "in " + (System.currentTimeMillis() - start) + " ms");
         } catch (Throwable t) {
             LOG.error("Error in refreshing service names from " + metaDataResource, t);
         }
@@ -48,7 +48,7 @@ public class ServiceNameResolver {
 
     public String resolve(String entityId) {
         Map<String, String> names = serviceNames.getOrDefault(entityId, Collections.emptyMap());
-        String name = names.get("en");
+        String name = names.getOrDefault("en", names.get("nl"));
         return StringUtils.hasText(name) ? name : entityId;
     }
 }
