@@ -37,7 +37,6 @@
     }
 
     .inner {
-        max-width: 1080px;
         height: 100%;
         margin: 0 auto;
         font-size: 20px;
@@ -47,6 +46,7 @@
     nav {
         margin-right: 50px;
         min-width: 270px;
+        background-color: #f3f6f8;
     }
 
     @media (max-width: 720px) {
@@ -56,7 +56,6 @@
     }
 
     nav ul {
-        margin: 15px 40px 25px 15px;
         text-align: center;
         border: 1px solid #d1d5da;
         border-radius: 3px;
@@ -85,21 +84,12 @@
         font-weight: 400;
     }
 
-    p.settings {
-        margin: 15px 0 0 15px;
-        font-size: 22px;
-    }
 
-    p.favorites {
-        margin: 65px 0 0 15px;
-        font-size: 22px;
-    }
 
 </style>
 <div class="home">
     <div class="inner">
         <nav>
-            <p class="settings">{I18n.ts("home.settings")}</p>
             <ul>
                 {#each tabs as tab}
                     <li>
@@ -107,18 +97,6 @@
                         <a href="/{tab.name}" class:active={tab.name === currentTab.name}
                            on:click|preventDefault|stopPropagation={switchTab(tab.name)}>
                             {I18n.ts(`home.${tab.name}`)}
-                        </a>
-                    </li>
-                {/each}
-            </ul>
-            <p class="favorites">{I18n.ts("home.favorites")}</p>
-            <ul>
-                {#each links as link}
-                    <li>
-                        {@html mail}
-                        <a href="{I18n.ts(`home.links.${link.name}Href`, {baseDomain: $config.baseDomain})}"
-                           target="_blank">
-                            {I18n.ts(`home.links.${link.name}`)}
                         </a>
                     </li>
                 {/each}

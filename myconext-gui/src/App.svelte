@@ -37,10 +37,48 @@
 </script>
 
 <style>
+
+    :global(:root) {
+        --color-primary-blue: #0061b0;
+        --color-primary-green: #008738;
+        --color-primary-black: #202020;
+        --color-primary-red: #d00000;
+
+        --width-app: 1244px;
+    }
+
     .myconext {
         display: flex;
         flex-direction: column;
         height: 100%;
+        margin-bottom: 100px;
+    }
+
+    .content {
+        display: flex;
+        border-left: 2px solid var(--color-primary-blue);
+        border-right: 2px solid var(--color-primary-blue);
+        flex-direction: column;
+        background-color: white;
+        max-width: var(--width-app);
+        width: 100%;
+        min-height: 75vh;
+        margin: 0 auto;
+        border-left: 2px solid var(--color-primary-blue);
+        border-bottom-left-radius: 10px;
+        border-bottom-right-radius: 10px;
+        border-right: 2px solid var(--color-primary-blue);
+        border-bottom: 4px solid var(--color-primary-blue);
+    }
+
+    @media (max-width: 1250px) {
+        .myconext {
+            margin: 0 15px;
+        }
+
+        .content {
+            width: 100%;
+        }
     }
 
     .loader:empty,
@@ -90,22 +128,24 @@
     <div class="myconext">
         <Flash/>
         <Header/>
-        <Router url="{url}">
-            <Route path="/" component={Home}/>
-            <Route path="/profile">
-                <Home bookmark="profile"/>
-            </Route>
-            <Route path="/account">
-                <Home bookmark="account"/>
-            </Route>
-            <Route path="/security">
-                <Home bookmark="security"/>
-            </Route>
-            <Route path="/edit" component={EditName}/>
-            <Route path="/password" component={Password}/>
-            <Route path="/landing" component={Landing}/>
-            <Route component={NotFound}/>
-        </Router>
+        <div class="content">
+            <Router url="{url}">
+                <Route path="/" component={Home}/>
+                <Route path="/profile">
+                    <Home bookmark="profile"/>
+                </Route>
+                <Route path="/account">
+                    <Home bookmark="account"/>
+                </Route>
+                <Route path="/security">
+                    <Home bookmark="security"/>
+                </Route>
+                <Route path="/edit" component={EditName}/>
+                <Route path="/password" component={Password}/>
+                <Route path="/landing" component={Landing}/>
+                <Route component={NotFound}/>
+            </Router>
+        </div>
         <Footer/>
     </div>
 {:else}

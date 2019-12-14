@@ -16,11 +16,12 @@
     let emailOrPasswordIncorrect = false;
     let initial = true;
     let showSpinner = false;
+    let serviceName = "";
 
     let passwordField;
 
     const intervalId = setInterval(() => {
-        const value = passwordField.value;
+        const value = (passwordField || {}).value;
         if (value && !$user.usePassword) {
             $user.usePassword = true;
             clearInterval(intervalId);
@@ -30,6 +31,8 @@
     onMount(() => {
         const value = Cookies.get("login_preference");
         $user.usePassword = value === "usePassword";
+        const urlParams = new URLSearchParams(window.location.search);
+        serviceName = urlParams.get("name")
     });
 
 
@@ -192,7 +195,7 @@
 {/if}
 
 <h1>{@html I18n.ts("login.header")}</h1>
-<h2 class="top">{@html I18n.ts("login.header2")}</h2>
+<h2 class="top">{@html I18n.ts("login.header2", {name: serviceName})}</h2>
 <label class="pre-input-label">{I18n.ts("login.email")}</label>
 <input type="email"
        use:init

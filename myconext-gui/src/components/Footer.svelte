@@ -15,23 +15,36 @@
 <style>
 
     .footer {
-        margin-top: auto;
-        background-color: #e7e7e7;
-        padding: 18px;
+        background-color: #5daff1;
+        padding: 0 25px;
+        width: 100%;
+        max-width: var(--width-app);
+        height: 122px;
+        margin: 0 auto;
     }
+
+    @media (max-width: 600px) {
+        .footer {
+            padding: 0 28px;
+        }
+    }
+
     .inner {
         display: flex;
-        align-items: center;
         justify-content: space-between;
         margin: 0 auto;
-        max-width: 1080px;
+        width: 100%;
+        font-size: 16px;
+        padding-top: 18px;
     }
 
     .help, .info {
         display: flex;
         flex-direction: column;
     }
-
+    .info {
+        text-align: right;
+    }
     span {
         display: inline-block;
         margin-bottom: 5px;
@@ -44,23 +57,21 @@
     li {
         display: inline-block;
         padding: 0 10px;
-        font-size: 20px;
     }
-
-    li a {
-        text-decoration: none;
-        color: #a3a3a3;
+    a {
+        font-weight: bold;
+        color: #002568;
     }
-
     li:last-child {
         border-left: 1px solid black;
     }
 
+    li.non_active a {
+        font-weight: normal;
+    }
     li.active a {
         color: black;
-        font-weight: bold;
         cursor: not-allowed;
-
     }
 
 
@@ -73,10 +84,10 @@
         </div>
 
         <ul>
-            <li class:active="{I18n.locale == 'en'}">
+            <li class="{I18n.locale === 'en' ? 'active' : 'non_active'}">
                 <a href="/en" on:click|preventDefault|stopPropagation={changeLanguage("en")}>EN</a>
             </li>
-            <li class:active="{I18n.locale == 'nl'}">
+            <li class="{I18n.locale === 'nl' ? 'active' : 'non_active'}">
                 <a href="/nl" on:click|preventDefault|stopPropagation={changeLanguage("nl")}>NL</a>
             </li>
         </ul>

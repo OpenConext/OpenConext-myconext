@@ -1,6 +1,5 @@
 package myconext.security;
 
-import myconext.exceptions.ExpiredAuthenticationException;
 import myconext.exceptions.UserNotFoundException;
 import myconext.mail.MailBox;
 import myconext.manage.ServiceNameResolver;
@@ -135,7 +134,9 @@ public class GuestIdpAuthenticationRequestFilter extends IdpAuthenticationReques
             sendAssertion(request, response, samlAuthenticationRequest.getRelayState(), user, provider, serviceProviderMetadata, authenticationRequest);
         } else {
             addBrowserIdentificationCookie(response);
-            response.sendRedirect(this.redirectUrl + "/login/" + samlAuthenticationRequest.getId());
+            String serviceName = serviceNameResolver.resolve(requesterEntityId);
+            response.sendRedirect(this.redirectUrl + "/login/" + samlAuthenticationRequest.getId() +
+                    "?name=" + URLEncoder.encode(serviceName, "UTF-8"));
         }
     }
 

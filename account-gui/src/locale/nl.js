@@ -2,14 +2,14 @@ import I18n from "i18n-js";
 
 I18n.translations.nl = {
     login: {
-        header: "Login",
-        header2: "met je Gast account",
+        header: "Gebruik SURFconext",
+        header2: "om in te loggen op {{name}}",
         trust: "Vertrouw deze computer",
         email: "Je e-mail adres",
         familyName: "Achternaam",
         givenName: "Voornaam",
-        familyNamePlaceholder: "e.g. Janssen",
-        givenNamePlaceholder: "e.g. Tom",
+        familyNamePlaceholder: "e.g. Berners-Lee",
+        givenNamePlaceholder: "e.g. Tim",
         usePassword: "Gebruik wachtwoord",
         useMagicLink: "Gebruik magic link",
         sendMagicLink: "Verstuur magic link",

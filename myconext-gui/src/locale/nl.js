@@ -5,12 +5,8 @@ I18n.translations.nl = {
         title: "Mijn SURFconext"
     },
     landing: {
-        loginHeader: "Inloggen op my.SURFconext",
-        info: "My.SURFconext biedt een overzicht van uw accountinstellingen voor de Guest Identity Provider van SURF. Om te tekenen heeft u een account nodig dat direct kan worden aangemaakt.",
-        login: "Inloggen",
-        questionsTitle: "Wat kan je doen met my.SURFconext?",
-        whatCanYouDo: "My.SURFconext is het overzicht voor al uw persoonlijke SURFconext-instellingen.",
-        questions: "Als u vragen heeft, kunt u contact opnemen met <a href=\"mailto:surfconext@surfnet.nl\"> surfconext@SURFnet.nl </a>"
+        info: "Online samenwerken in het onderwijs",
+        login: "Enter",
     },
     notFound: {
         main: "404 - Not Found"

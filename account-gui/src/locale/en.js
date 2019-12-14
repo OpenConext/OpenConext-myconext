@@ -2,13 +2,13 @@ import I18n from "i18n-js";
 
 I18n.translations.en = {
     login: {
-        header: "Login",
-        header2: "with your Guest Account",
+        header: "Use SURFconext",
+        header2: "to login to {{name}}",
         trust: "Trust this computer",
         email: "Your email address",
         familyName: "Family name",
         givenName: "Given name",
-        familyNamePlaceholder: "e.g. Berner-Lee",
+        familyNamePlaceholder: "e.g. Berners-Lee",
         givenNamePlaceholder: "e.g. Tim",
         usePassword: "Use password",
         useMagicLink: "Use magic link",

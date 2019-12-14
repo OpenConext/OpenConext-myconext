@@ -13,11 +13,10 @@
     }
 
     p.info {
-        margin-bottom: 40px;
+        margin-bottom: 60px;
     }
 
     p.mail {
-        color: #404040;
         margin-bottom: 60px;
         font-size: 24px;
     }
