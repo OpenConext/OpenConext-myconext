@@ -26,20 +26,14 @@
 </script>
 
 <style>
-    h1 {
-        font-size: 52px;
-        font-weight: bold;
-    }
+
 
     h2 {
-        margin-bottom: 25px;
-        font-size: 36px;
-        font-weight: bold;
+        margin: 6px 0 35px 0;
         color: var(--color-primary-green);
     }
 
     p {
-        color: #767676;
         margin-bottom: 35px;
     }
 
@@ -52,6 +46,6 @@
         <p>{@html I18n.ts("confirm.info", {name: serviceName})}</p>
         <Button href="/proceed" onClick={proceed}
                 className="full"
-                active={true} label={I18n.ts("confirm.link")}/>
+                label={I18n.ts("confirm.link")}/>
     </div>
 </div>

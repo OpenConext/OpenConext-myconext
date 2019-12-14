@@ -7,7 +7,6 @@
 <style>
     h2 {
         margin-bottom: 40px;
-        font-size: 38px;
     }
     p {
         color: var(--color-primary-black);

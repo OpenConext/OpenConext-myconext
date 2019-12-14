@@ -13,7 +13,7 @@
     .button {
         width: 100%;
         background-color: #0077c8;
-        border-radius: 4px;
+        border-radius: 8px;
         padding: 10px 20px;
         display: inline-block;
         color: white;

@@ -7,20 +7,12 @@
 </script>
 
 <style>
-    h1 {
-        font-size: 52px;
-        font-weight: bold;
-    }
-
     h2 {
-        margin-bottom: 25px;
-        font-size: 36px;
-        font-weight: bold;
+        margin: 6px 0 35px 0;
         color: var(--color-primary-green);
     }
 
     p.info {
-        color: #767676;
         margin-bottom: 40px;
     }
 

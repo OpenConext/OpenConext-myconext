@@ -9,14 +9,14 @@ I18n.translations.en = {
         familyName: "Family name",
         givenName: "Given name",
         familyNamePlaceholder: "e.g. Berner-Lee",
-        givenNamePlaceholder: "e.g. Tom",
+        givenNamePlaceholder: "e.g. Tim",
         usePassword: "Use password",
         useMagicLink: "Use magic link",
         sendMagicLink: "Send magic link",
         rememberMe: "Remember this device",
         password: "Your password",
-        passwordForgotten: "If you forgot your password, use the magic link",
-        magicLinkText: "No password needed. We'll send a magic link to your email to sign in instantly.",
+        passwordForgotten: "If you forgot your password,",
+        passwordForgottenLink: " use the magic link",
         login: "Login",
         create: "Create",
         newTo: "New to surfConext?",
@@ -32,6 +32,8 @@ I18n.translations.en = {
         noGuestAccountInfo: "A SURFconext Guest account is meant for users who wants to use services via <a href=\"https://surfconext.nl\" target=\"_blank\">SURFconext</a>, but who don't have a institutional account.",
         requestGuestAccount: "Request a Guest Account",
         alreadyGuestAccount: "<strong>Already</strong> have a Guest Account?",
+        noPasswordNeeded: "No password needed. We'll send a magic link to your email to sign in instantly.",
+        usePasswordLink: "Type a password anyway."
 
     },
     magicLink: {

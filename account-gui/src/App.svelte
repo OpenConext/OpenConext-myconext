@@ -50,6 +50,11 @@
         background-color: white;
         width: var(--width-app);
         margin: 0 auto;
+        border-left: 2px solid var(--color-primary-blue);
+        border-bottom-left-radius: 10px;
+        border-bottom-right-radius: 10px;
+        border-right: 2px solid var(--color-primary-blue);
+        border-bottom: 4px solid var(--color-primary-blue);
     }
 
     @media (max-width: 600px) {

@@ -4,12 +4,12 @@
     export let label;
 </script>
 <style>
-    .checkbox {
+    label.checkbox {
         display: block;
+        margin-top: 10px;
         position: relative;
         padding-left: 28px;
         cursor: pointer;
-        font-size: 18px;
         user-select: none;
     }
 

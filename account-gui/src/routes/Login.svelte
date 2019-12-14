@@ -19,10 +19,20 @@
 
     let passwordField;
 
+    const intervalId = setInterval(() => {
+        const value = passwordField.value;
+        if (value && !$user.usePassword) {
+            $user.usePassword = true;
+            clearInterval(intervalId);
+        }
+    }, 750);
+
     onMount(() => {
         const value = Cookies.get("login_preference");
         $user.usePassword = value === "usePassword";
     });
+
+
 
     const handleNext = passwordFlow => () => {
         if (($user.usePassword && passwordFlow) || (!$user.usePassword && !passwordFlow)) {
@@ -77,6 +87,9 @@
             }
         } else {
             $user.usePassword = passwordFlow;
+            if (!passwordFlow) {
+                $user.password = "";
+            }
         }
     };
 
@@ -112,29 +125,20 @@
 
 <style>
 
-    h1 {
-        font-size: 52px;
-        font-weight: bold;
-    }
-
     h2.top {
-        margin-bottom: 25px;
-        font-size: 36px;
-        font-weight: bold;
+        margin: 6px 0 35px 0;
         color: var(--color-primary-green);
     }
 
     h3 {
-        margin-bottom: 20px;
-        font-size: 18px;
-        font-weight: bold;
+        margin-bottom: 15px;
     }
 
     .options {
         display: flex;
-        justify-content: space-between;
+        flex-direction: column;
         width: 100%;
-        padding: 30px 0;
+        padding: 25px 0 30px 0;
         border-bottom: 2px solid #5bd685;
     }
 
@@ -161,13 +165,9 @@
         color: var(--color-primary-black);
     }
 
-    .post-input-label {
-        color: var(--color-primary-black);
-        font-size: 15px;
-        margin: 5px 0 20px 0;
-        display: inline-block;
+    div.password-option {
+        margin-top: 20px;
     }
-
     div.info-bottom {
         margin-top: 30px;
     }
@@ -175,14 +175,14 @@
     div.info-bottom p {
         display: inline-block;
         margin-bottom: 20px;
-        font-size: 14px;
-        font-weight: 300;
-        line-height: 18px;
     }
 
     a.toggle-link {
         font-family: Proxima Nova, sans-serif;
         text-decoration: none;
+        font-size: 18px;
+        line-height: 20px;
+        font-weight: bold;
         color: #0077c8;
     }
 
@@ -210,9 +210,6 @@
 {#if $user.createAccount && emailInUse}
     <span class="error">{I18n.ts("login.emailInUse")}</span>
 {/if}
-{#if !$user.usePassword}
-    <label class="post-input-label">{I18n.ts("login.magicLinkText")}</label>
-{/if}
 {#if $user.createAccount}
     <label class="pre-input-label">{I18n.ts("login.givenName")}</label>
     <input type="text"
@@ -239,32 +236,46 @@
 {:else}
     <div id="password" class:hidden={!$user.usePassword}>
         <label class="pre-input-label">{I18n.ts("login.password")}</label>
-        <input type="password"
+        <input type="password" id="password-field"
                on:keydown={handlePasswordEnter}
                bind:value={$user.password}
-               bind:this={passwordField}>
-        <label class="post-input-label">{I18n.ts("login.passwordForgotten")}</label>
+               bind:this={passwordField}
+                >
     </div>
     <CheckBox value={$user.rememberMe}
               label={I18n.ts("login.rememberMe")}
               name="remember-me"
               onChange={val => $user.rememberMe = val}/>
     <div class="options">
-        <Button className="child" active={$user.usePassword}
-                href={`/${$user.usePassword ?  I18n.ts("login.login") : I18n.ts("login.usePassword")}`}
-                disabled={showSpinner ||!allowedNext($user.email, $user.familyName, $user.givenName, $user.password) && $user.usePassword}
-                label={$user.usePassword ?  I18n.ts("login.login") : I18n.ts("login.usePassword")}
-                onClick={handleNext(true)}/>
-        <Button className="child" active={!$user.usePassword} href="/magic"
-                disabled={showSpinner ||!allowedNext($user.email, $user.familyName, $user.givenName, $user.password) && !$user.usePassword}
-                label={$user.usePassword ?  I18n.ts("login.useMagicLink") : I18n.ts("login.sendMagicLink")}
-                onClick={handleNext(false)}/>
+        {#if $user.usePassword}
+            <Button href={`/${$user.usePassword ?  I18n.ts("login.login") : I18n.ts("login.usePassword")}`}
+                    disabled={showSpinner ||!allowedNext($user.email, $user.familyName, $user.givenName, $user.password) && $user.usePassword}
+                    label={$user.usePassword ?  I18n.ts("login.login") : I18n.ts("login.usePassword")}
+                    onClick={handleNext(true)}/>
+            <div class="password-option">
+                <span>{I18n.ts("login.passwordForgotten")}</span>
+                <a href={I18n.ts("login.login")}
+                   on:click|preventDefault|stopPropagation={handleNext(false)}>{I18n.ts("login.passwordForgottenLink")}</a>
+            </div>
+
+
+        {:else}
+            <Button href="/magic"
+                    disabled={showSpinner ||!allowedNext($user.email, $user.familyName, $user.givenName, $user.password) && !$user.usePassword}
+                    label={$user.usePassword ?  I18n.ts("login.useMagicLink") : I18n.ts("login.sendMagicLink")}
+                    onClick={handleNext(false)}/>
+            <div class="password-option">
+                <span>{I18n.t("login.noPasswordNeeded")}</span>
+                <a href={I18n.ts("login.usePassword")}
+                   on:click|preventDefault|stopPropagation={handleNext(true)}>{I18n.ts("login.usePasswordLink")}</a>
+            </div>
+        {/if}
     </div>
 {/if}
 <div class="info-bottom">
     {#if !$user.createAccount}
         <h3>{@html I18n.ts("login.noGuestAccount")}</h3>
-        <p class="mini">{@html I18n.ts("login.noGuestAccountInfo")}</p>
+        <p>{@html I18n.ts("login.noGuestAccountInfo")}</p>
         <a class="toggle-link" href="/reguest"
            on:click|preventDefault|stopPropagation={createAccount(true)}>{I18n.ts("login.requestGuestAccount")}</a>
     {:else}

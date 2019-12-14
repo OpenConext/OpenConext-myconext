@@ -1,26 +1,39 @@
 html {
     box-sizing: border-box;
     font-size: 16px;
+    line-height: 22px;
 }
 
 *, *:before, *:after {
     box-sizing: inherit;
 }
 
-
 @font-face {
-    font-family: "Open Sans";
-    src: url("/fonts/source_sans_pro/SourceSansPro-Regular.ttf"), url("/fonts/source_sans_pro/SourceSansPro-Light.ttf");
+    font-family: "Proxima Nova";
+    font-weight: normal;
+    src: url("/fonts/proxima_nova/ProximaNovaSoft-Regular.otf");
 }
 
 @font-face {
     font-family: "Proxima Nova";
-    src: url("/fonts/proxima_nova/ProximaNovaSoft-Regular.otf"), url("/fonts/proxima_nova/ProximaNovaSoft-Medium.otf");
+    font-weight: bold;
+    src: url("/fonts/proxima_nova/ProximaNovaSoft-Semibold.otf");
+}
+
+@font-face {
+    font-family: "Open Sans";
+    font-weight: normal;
+    src: url("/fonts/source_sans_pro/SourceSansPro-Regular.ttf");
+}
+@font-face {
+    font-family: "Open Sans";
+    font-weight: bold;
+    src: url("/fonts/source_sans_pro/SourceSansPro-Semibold.ttf");
 }
 
 body {
     font-family: "Source Sans Pro", sans-serif;
-    font-size: 18px;
+    font-size: 16px;
     background-color: #5daff1;
 }
 
@@ -54,4 +67,22 @@ p {
 
 h1, h2, h3 {
     font-family: Proxima Nova, sans-serif;
+}
+
+h1 {
+    font-size: 40px;
+    line-height: 40px;
+    font-weight: normal;
+}
+
+h2 {
+    font-size: 32px;
+    line-height: 34px;
+    font-weight: bold;
+}
+
+h3 {
+    font-size: 20px;
+    line-height: 24px;
+    font-weight: bold;
 }

@@ -14,10 +14,10 @@
     h1 {
         color: #fe675c;
         font-size: 128px;
+        margin: 75px 0;
     }
 
     h2 {
-        font-family: Proxima Nova, sans-serif;
         font-size: 66px;
     }
 
