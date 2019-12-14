@@ -15,8 +15,8 @@ I18n.translations.nl = {
         sendMagicLink: "Verstuur magic link",
         rememberMe: "Onthoud dit apparaat",
         password: "Je wachtwoord",
-        passwordForgotten: "Als je je wachtwoord vergeten bent, gebruik dan de magic link",
-        magicLinkText: "Geen wachtwoord nodig. We mailen je een magic link waarmee je  direct kunt inloggen.",
+        passwordForgotten: "Als je je wachtwoord vergeten bent,",
+        passwordForgottenLink: " gebruik dan de magic link",
         login: "Login",
         create: "Aanmaken",
         newTo: "Voor het eerst bij SURFconext?",
@@ -32,6 +32,8 @@ I18n.translations.nl = {
         noGuestAccountInfo: "Een SURFconext Guest-account is bedoeld voor gebruikers die diensten willen gebruiken via <a href=\"https://surfconext.nl\" target=\"_blank\"> SURFconext </a>, maar die geen instellings account hebben.",
         requestGuestAccount: "Vraag een gastaccount aan",
         alreadyGuestAccount: "Al een <strong>gastaccount?</strong>",
+        noPasswordNeeded: "Geen wachtwoord nodig. We mailen je een magic link waarmee je  direct kunt inloggen.",
+        usePasswordLink: "Gebruik toch een wachtwoord"
     },
     magicLink: {
         header: "Controleer",

@@ -20,6 +20,7 @@
         text-decoration: none;
         cursor: pointer;
         text-align: center;
+        font-weight: bold;
     }
     .button:hover {
         background-color: #004c97;

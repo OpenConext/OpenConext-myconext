@@ -34,7 +34,6 @@ I18n.translations.en = {
         alreadyGuestAccount: "<strong>Already</strong> have a Guest Account?",
         noPasswordNeeded: "No password needed. We'll send a magic link to your email to sign in instantly.",
         usePasswordLink: "Type a password anyway."
-
     },
     magicLink: {
         header: "Check",
