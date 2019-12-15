@@ -102,7 +102,7 @@ public abstract class AbstractIntegrationTest {
         String location = response.getHeader("Location");
         assertTrue(location.startsWith("http://localhost:3000/login/"));
 
-        return location.substring(location.lastIndexOf("/") + 1);
+        return location.substring(location.lastIndexOf("/") + 1, location.lastIndexOf("?"));
     }
 
     protected Response samlAuthnRequestResponse(Cookie cookie, String relayState) throws IOException {

@@ -34,12 +34,6 @@
 <style>
     .home {
         height: 100%;
-    }
-
-    .inner {
-        height: 100%;
-        margin: 0 auto;
-        font-size: 20px;
         display: flex;
     }
 
@@ -47,6 +41,7 @@
         margin-right: 50px;
         min-width: 270px;
         background-color: #f3f6f8;
+        min-height: 74vh;
     }
 
     @media (max-width: 720px) {
@@ -57,8 +52,7 @@
 
     nav ul {
         text-align: center;
-        border: 1px solid #d1d5da;
-        border-radius: 3px;
+        padding: 25px 0 0 22px;
     }
 
     nav ul li {
@@ -82,13 +76,13 @@
 
     nav ul li a.active {
         font-weight: 400;
+        color: var(--color-primary-green)
     }
 
 
 
 </style>
-<div class="home">
-    <div class="inner">
+    <div class="home">
         <nav>
             <ul>
                 {#each tabs as tab}
@@ -104,5 +98,3 @@
         </nav>
         <svelte:component this={currentTab.component}/>
     </div>
-
-</div>
