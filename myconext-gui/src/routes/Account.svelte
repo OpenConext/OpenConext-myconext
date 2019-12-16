@@ -102,7 +102,7 @@
         </table>
         <div class="options">
             <Button href="/delete" label={I18n.ts("account.deleteAccount")}
-                    onClick={deleteUserAction(true)} className="cancel"/>
+                    onClick={deleteUserAction(true)} className="full cancel"/>
         </div>
     </div>
 

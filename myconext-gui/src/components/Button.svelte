@@ -59,6 +59,10 @@
         background-color: #efefef;
     }
 
+    .button.full {
+        width: 260px;
+    }
+
 </style>
 
 <a class="{`button ${className}`}"
