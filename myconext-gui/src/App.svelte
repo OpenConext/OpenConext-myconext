@@ -29,8 +29,7 @@
                         .catch(() => {
                             loaded = true;
                             $redirectPath = window.location.pathname;
-                            navigate("/account");
-                            // navigate("/landing");
+                            navigate("/landing");
                         })
             })
     );
