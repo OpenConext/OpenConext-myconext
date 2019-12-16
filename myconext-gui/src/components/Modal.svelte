@@ -1,8 +1,11 @@
 <script>
     import I18n from "i18n-js";
+    import Button from "./Button.svelte";
 
     export let submit;
     export let cancel;
+    export let title;
+    export let question;
 
     let modal;
 
@@ -19,17 +22,19 @@
 <div class="modal-background" on:click={cancel}></div>
 
 <div class="modal" role="dialog" aria-modal="true" bind:this={modal}>
-    <slot name="header"></slot>
-    <slot name="body"></slot>
+    <div class="modal-header">
+        <h3>{title}</h3>
+    </div>
+    <div class="modal-body">
+        <p>{question}</p>
+    </div>
+
     <div class="options">
-        <a class="button" href="/cancel"
-           on:click|preventDefault|stopPropagation={cancel}>
-            {I18n.ts("modal.cancel")}
-        </a>
-        <a class="button" href="/delete"
-           on:click|preventDefault|stopPropagation={submit}>
-            {I18n.ts("modal.confirm")}
-        </a>
+        <Button className="cancel" onClick={cancel}
+                label={I18n.ts("modal.cancel")}/>
+
+        <Button onClick={submit}
+                label={I18n.ts("modal.confirm")}/>
     </div>
 </div>
 
@@ -40,10 +45,12 @@
         left: 0;
         width: 100%;
         height: 100%;
-        background: rgba(0, 0, 0, 0.3);
+        background: rgba(0, 57, 128, 0.8);
     }
 
     .modal {
+
+        z-index: 9999;
         position: absolute;
         left: 50%;
         top: 35%;
@@ -52,30 +59,19 @@
         max-height: calc(100vh - 4em);
         overflow: auto;
         transform: translate(-50%, -50%);
-        padding: 1em;
-        border-radius: 0.2em;
+
+        border-radius: 8px;
         background: white;
     }
-    .button {
-        border: 1px solid #818181;
-        width: 100%;
-        background-color: #c7c7c7;
-        border-radius: 2px;
-        padding: 10px 20px;
-        display: inline-block;
-        color: black;
-        text-decoration: none;
-        cursor: pointer;
-        text-align: center;
+    .modal-header {
+        padding: 18px 32px;
+        background-color: #dfe3e8;
     }
 
-    .button:last-child {
-        margin-left: 95px;
+    .modal-body {
+        padding: 18px 32px;
     }
-
     div.options {
-        display: flex;
-        margin-top: 60px;
-        align-content: space-between;
+        padding: 18px ;
     }
 </style>

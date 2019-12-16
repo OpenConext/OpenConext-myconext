@@ -2,73 +2,65 @@
     import {user, flash} from "../stores/user";
     import I18n from "i18n-js";
     import {navigate} from "svelte-routing";
+    import chevron_right from "../icons/chevron-right.svg";
+
+    let password = $user.usePassword ? "************************" : I18n.ts("security.notSet");
 
 </script>
 
 <style>
     .security {
         width: 100%;
+        height: 100%;
     }
 
     .inner {
-        max-width: 1080px;
+        height: 100%;
         margin: 0 auto;
-        padding: 15px 0;
-        font-size: 18px;
+        padding: 15px 30px 15px 0;
         display: flex;
         flex-direction: column;
     }
 
     h2 {
-        font-size: 22px;
-        margin-bottom: 20px;
+        margin: 20px 0;
+        color: var(--color-primary-green);
     }
 
-    p {
+    p.info {
         font-weight: 300;
-        margin-bottom: 20px;
+        margin-bottom: 40px;
     }
 
-    label {
-        font-weight: 300;
-        margin-right: 20px;
-        width: 120px;
-    }
-
-    input[type=text], input[type=password] {
-        border: 1px solid #dadce0;
-        border-radius: 4px;
-        font-weight: 300;
-        padding: 6px;
-        margin: 5px 0;
-        font-size: 18px;
-        flex-grow: 2;
-    }
-
-    div.form-field {
-        display: flex;
+    table {
         width: 100%;
-        align-items: center;
-        margin-bottom: 15px;
-        position: relative;
     }
 
-    span.more {
-        position: absolute;
-        right: 10px;
-        font-size: 32px;
+    tr.name {
         cursor: pointer;
-        color: #007bff;
     }
 
-    @media (max-width: 720px) {
-        div.form-field {
-            flex-direction: column;
-            align-items: flex-start;
-        }
-        span.more {
-            position: unset;
-        }
+    td {
+        border-top: 1px solid var(--color-primary-grey);
+        padding: 20px;
+    }
+
+    td.attr {
+        width: 30%;
+    }
+
+    td.value {
+        width: 60%;
+    }
+
+    td.link {
+        width: 10%;
+        text-align: right;
+        padding-right: 0;
+    }
+
+    :global(a svg) {
+        fill: var(--color-primary-green);
     }
 
 
@@ -76,20 +68,26 @@
 <div class="security">
     <div class="inner">
         <h2>{I18n.ts("security.title")}</h2>
-        <p>{I18n.ts("security.subTitle")}</p>
-        <div class="form-field">
-            <label for="email">{I18n.ts("security.useMagicLink")}</label>
-            <input id="email" type="text" value={$user.email} disabled>
-        </div>
-        <div class="form-field">
-            <label for="name">{I18n.ts("security.usePassword")}</label>
-            {#if $user.usePassword}
-                <input id="name" type="password" value="123456789012345" disabled>
-            {:else}
-                <input id="name" type="text" value={I18n.ts("security.notSet")} disabled>
-            {/if}
-            <span class="more" on:click={ () => navigate("/password")}>→</span>
-        </div>
+        <p class="info">{I18n.ts("security.subTitle")}</p>
+
+        <table cellspacing="0">
+            <thead></thead>
+            <tbody>
+            <tr>
+                <td class="attr">{I18n.t("security.useMagicLink")}</td>
+                <td class="value">{$user.email}</td>
+                <td class="link"></td>
+            </tr>
+            <tr class="name" on:click={() => navigate("/edit")}>
+                <td class="attr">{I18n.t("security.usePassword")}</td>
+                <td class="value">{password}</td>
+                <td class="link">
+                    <a class="menu-link" href="/name"
+                       on:click|preventDefault|stopPropagation={() => navigate("/password")}>{@html chevron_right}</a>
+                </td>
+            </tr>
+            </tbody>
+        </table>
 
     </div>
 

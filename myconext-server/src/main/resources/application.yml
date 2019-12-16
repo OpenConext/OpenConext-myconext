@@ -19,7 +19,7 @@ cron:
   node-cron-job-responsible: True
   token-cleaner-expression: "0 0/15 * * * *"
 
-metadata_sp_url: https://metadata.test2.surfconext.nl/sp-names.json
+metadata_sp_url: https://metadata.test.surfconext.nl/sp-names.json
 
 mongodb_db: surf_id_test
 base_domain: test2.surfconext.nl

@@ -3,6 +3,8 @@
     import I18n from "i18n-js";
     import {me, updateUser} from "../api";
     import {navigate} from "svelte-routing";
+    import chevron_left from "../icons/chevron-left.svg";
+    import Button from "../components/Button.svelte";
 
     const update = () => {
         if ($user.familyName && $user.givenName) {
@@ -25,103 +27,93 @@
 <style>
     .profile {
         width: 100%;
+        display: flex;
+        height: 100%;
     }
+
+    @media (max-width: 820px) {
+        .left {
+            display: none;
+        }
+        .inner {
+            border-left: none;
+        }
+    }
+
+    .left {
+        background-color: #f3f6f8;
+        width: 270px;
+        height: 100%;
+        border-bottom-left-radius: 8px;
+    }
+
     .inner {
-        max-width: 680px;
-        margin: 0 auto;
-        padding: 15px 20px;
-        font-size: 18px;
+        margin: 20px 0 190px 0;
+        padding: 15px 15px 0 40px;
+        border-left: 2px solid var(--color-primary-grey);
         display: flex;
         flex-direction: column;
+        background-color: white;
     }
+
+    .header {
+        display: flex;
+        align-items: center;
+        align-content: center;
+        color: var(--color-primary-green);
+    }
+
     h2 {
-        font-size: 22px;
-        margin-bottom: 20px;
-        display: flex;
-        align-items: center;
-
+        margin-left: 25px;
     }
+
+    p.info {
+        margin: 12px 0 32px 0;
+    }
+
     label {
-        font-weight: 300;
-        margin-right: 20px;
-        width: 220px;
-    }
-    input[type=text] {
-        border: 1px solid #dadce0;
-        border-radius: 4px;
-        font-weight: 300;
-        padding: 6px;
-        margin: 5px 0;
-        font-size: 18px;
-        flex-grow: 2;
-    }
-    .button {
-        border: 1px solid #818181;
-        width: 100%;
-        background-color: #c7c7c7;
-        border-radius: 2px;
-        padding: 10px 20px;
+        font-weight: bold;
+        margin: 33px 0 13px 0;
         display: inline-block;
-        color: black;
-        text-decoration: none;
-        cursor: pointer;
-        text-align: center;
     }
 
-    .button.disabled {
-        border: none;
-        cursor: not-allowed;
-        color: #c7c7c7;
-        background-color: #f3f3f3;
+    input {
+        border-radius: 8px;
+        border: solid 1px #676767;
+        padding: 14px;
+        font-size: 16px;
     }
-    .button:last-child {
-        margin-left: 95px;
-    }
-    div.form-field {
-        display: flex;
-        width: 100%;
-        align-items: center;
-        margin-bottom: 15px;
-    }
-    div.options {
-        display: flex;
+
+    .options {
         margin-top: 60px;
-        align-content: space-between;
     }
-    a.back  {
-        text-decoration: none;
-        font-size: 32px;
-        color: #007bff;
-        display: inline-block;
-        margin-right: 15px;
 
+    :global(.options a:not(:first-child)) {
+        margin-left: 25px;
     }
+
+
 </style>
 <div class="profile">
+    <div class="left"></div>
     <div class="inner">
-        <h2> <a class="back" href="/{I18n.ts('edit.back')}"
-                on:click|preventDefault|stopPropagation={cancel}>
-            ←
-        </a>{I18n.ts("edit.title")}</h2>
-        <div class="form-field">
-            <label for="givenName">{I18n.ts("edit.givenName")}</label>
-            <input id="givenName" type="text" bind:value={$user.givenName}/>
+        <div class="header">
+            <a href="/back" on:click|preventDefault|stopPropagation={cancel}>
+                {@html chevron_left}
+            </a>
+            <h2>{I18n.ts("edit.title")}</h2>
         </div>
-        <div class="form-field">
-            <label for="familyName">{I18n.ts("edit.familyName")}</label>
-            <input id="familyName" type="text" bind:value={$user.familyName}/>
-        </div>
+        <p class="info">{I18n.t("edit.info")}</p>
+        <label for="givenName">{I18n.ts("edit.givenName")}</label>
+        <input id="givenName" type="text" bind:value={$user.givenName}/>
+        <label for="familyName">{I18n.ts("edit.familyName")}</label>
+        <input id="familyName" type="text" bind:value={$user.familyName}/>
 
         <div class="options">
-            <a class="button" href="/cancel"
-               on:click|preventDefault|stopPropagation={cancel}>
-                {I18n.ts("edit.cancel")}
-            </a>
-            <a class="button" href="/update"
-               class:disabled={!($user.familyName && $user.givenName)}
-               on:click|preventDefault|stopPropagation={update}>
-                {I18n.ts("edit.update")}
-            </a>
+            <Button className="cancel" label={I18n.ts("edit.cancel")} onClick={cancel}/>
+
+            <Button label={I18n.ts("edit.update")} onClick={update}
+                    disabled={!($user.familyName && $user.givenName)}/>
         </div>
     </div>
 

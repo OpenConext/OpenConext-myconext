@@ -20,7 +20,12 @@
         cursor: pointer;
         text-align: center;
         font-weight: bold;
-        width: 240px;
+        width: 216px;
+    }
+    @media (max-width: 820px) {
+        .button {
+            width: 176px;
+        }
     }
     .button:hover {
         background-color: #004c97;
@@ -33,6 +38,17 @@
         margin-left: 20px;
     }
 
+    .button.cancel {
+        color: #0077c8;
+        background-color: white;
+        border: 1px solid #0066b8;
+    }
+
+    .button.cancel:hover {
+        color: #0066b8;
+        background-color: whitesmoke;
+    }
+
     .button.disabled {
         cursor: not-allowed;
         color: #ababab;
@@ -41,11 +57,6 @@
     .button.disabled:hover {
         color: #ababab;
         background-color: #efefef;
-    }
-
-    .button.full {
-        margin-top: 15px;
-        margin-left: 0;
     }
 
 </style>

@@ -1,6 +1,6 @@
 <script>
     import {flash} from "../stores/user";
-
+    import closeIcon from "../icons/close_smll.svg"
     const clearFlash = () => {$flash = "";
     }
 </script>
@@ -34,24 +34,27 @@
         font-weight: 300;
     }
 
-    a.close {
+    span.close {
         text-decoration: none;
         position: absolute;
         right: 10px;
         top: 0;
         color: white;
-        font-size: 14px;
         padding: 6px;
-        font-weight: 700;    }
+        cursor: pointer;
+    }
+    :global(span.close svg) {
+        fill: white;
+    }
 
 </style>
 
 <div class="flash" class:hide={!$flash}>
     <div class="message-container">
         <p>{$flash}
-            <a href="/close" class="close" on:click|preventDefault|stopPropagation={clearFlash}>
-                ╳
-            </a>
+            <span href="/close" class="close" on:click|preventDefault|stopPropagation={clearFlash}>
+                {@html closeIcon}
+            </span>
         </p>
     </div>
 </div>

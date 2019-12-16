@@ -30,10 +30,9 @@ public class ServiceNameResolver {
     public ServiceNameResolver(@Value("${metadata_sp_url}") Resource metaDataResource, ObjectMapper objectMapper) {
         this.metaDataResource = metaDataResource;
         this.objectMapper = objectMapper;
-        this.refresh();
     }
 
-    @Scheduled(cron = "0 0/60 * * * *")
+    @Scheduled(initialDelay=1, fixedRate=1000 * 60 * 60)
     public void refresh() {
         long start = System.currentTimeMillis();
         try {

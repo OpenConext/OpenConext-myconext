@@ -29,7 +29,8 @@
                         .catch(() => {
                             loaded = true;
                             $redirectPath = window.location.pathname;
-                            navigate("/landing");
+                            navigate("/account");
+                            // navigate("/landing");
                         })
             })
     );
@@ -43,7 +44,7 @@
         --color-primary-green: #008738;
         --color-primary-black: #202020;
         --color-primary-red: #d00000;
-
+        --color-primary-grey: #c4cdd5;
         --width-app: 1244px;
     }
 
@@ -56,18 +57,17 @@
 
     .content {
         display: flex;
-        border-left: 2px solid var(--color-primary-blue);
-        border-right: 2px solid var(--color-primary-blue);
         flex-direction: column;
         background-color: white;
+        align-items: stretch;
         max-width: var(--width-app);
         width: 100%;
-        min-height: 75vh;
+        height: 75vh;
         margin: 0 auto;
         border-left: 2px solid var(--color-primary-blue);
+        border-right: 2px solid var(--color-primary-blue);
         border-bottom-left-radius: 10px;
         border-bottom-right-radius: 10px;
-        border-right: 2px solid var(--color-primary-blue);
         border-bottom: 4px solid var(--color-primary-blue);
     }
 

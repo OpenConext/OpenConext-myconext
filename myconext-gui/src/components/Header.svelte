@@ -3,7 +3,7 @@
     import I18n from "i18n-js";
     import logo from "../img/logo_SURFconext_blue.svg";
     import openConextLogo from "../img/logo_OPEN_conext_blue.svg";
-
+    import {navigate} from "svelte-routing";
 </script>
 
 <style>
@@ -37,12 +37,13 @@
 <div class="header">
 
     <div class="logo">
-        {#if I18n.branding !== "SURFconext"}
-            {@html openConextLogo}
-        {:else}
-            {@html logo}
-        {/if}
-
+        <a href="/" on:click|preventDefault|stopPropagation={() => navigate("/")}>
+            {#if I18n.branding !== "SURFconext"}
+                {@html openConextLogo}
+            {:else}
+                {@html logo}
+            {/if}
+        </a>
     </div>
     <h1>{I18n.ts("header.title")}</h1>
 </div>
