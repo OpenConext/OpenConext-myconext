@@ -123,7 +123,7 @@
         }
     }
 </style>
-{#if loaded}
+{#if loaded && !$user.guest}
     <div class="myconext">
         <Flash/>
         <Header/>
@@ -144,6 +144,14 @@
                 <Route path="/landing" component={Landing}/>
                 <Route component={NotFound}/>
             </Router>
+        </div>
+        <Footer/>
+    </div>
+{:else if loaded && $user.guest}
+    <div class="myconext">
+        <Header/>
+        <div class="content">
+            <Landing/>
         </div>
         <Footer/>
     </div>
