@@ -27,12 +27,22 @@ public class ServiceNameResolver {
     private Map<String, Map<String, String>> serviceNames = new HashMap<>();
 
     @Autowired
-    public ServiceNameResolver(@Value("${metadata_sp_url}") Resource metaDataResource, ObjectMapper objectMapper) {
-        this.metaDataResource = metaDataResource;
-        this.objectMapper = objectMapper;
+    public ServiceNameResolver(@Value("${metadata_sp_url}") Resource metaDataResource,
+                               ObjectMapper objectMapper) {
+        this(metaDataResource, objectMapper, true);
     }
 
-    @Scheduled(initialDelay=1, fixedRate=1000 * 60 * 60)
+    ServiceNameResolver(@Value("${metadata_sp_url}") Resource metaDataResource,
+                        ObjectMapper objectMapper,
+                        boolean lazy) {
+        this.metaDataResource = metaDataResource;
+        this.objectMapper = objectMapper;
+        if (!lazy) {
+            this.refresh();
+        }
+    }
+
+    @Scheduled(initialDelay = 0, fixedRate = 1000 * 60 * 60)
     public void refresh() {
         long start = System.currentTimeMillis();
         try {

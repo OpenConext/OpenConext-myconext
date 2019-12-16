@@ -11,6 +11,13 @@ I18n.translations.en = {
     notFound: {
         main: "404 - Not Found"
     },
+    profile: {
+        title: "Personal information",
+        info: "Basic information like your name and email address, and the information we have received from your institution",
+        email: "Email address",
+        name: "Name",
+        profile: "Profile"
+    },
     edit :{
         title: "Name",
         info: "Please provide your full name",
@@ -40,21 +47,12 @@ I18n.translations.en = {
             teamsHref: "https://teams.{{baseDomain}}",
         }
     },
-    profile: {
-        title: "Personal information",
-        info: "Basic information like your name and email address, and the information we have received from your institution",
-        email: "Email address",
-        name: "Name",
-        profile: "Profile"
-    },
-
     account :{
         title: "Your my.SURFconext account",
         info: "You can choose to remove your SURFconext account",
         deleteAccount : "Delete my account",
         deleteAccountConfirmation : "Are you sure you want to delete your my.SURFconext account?"
     },
-
     password: {
         setTitle: "Set password",
         updateTitle: "Change password",

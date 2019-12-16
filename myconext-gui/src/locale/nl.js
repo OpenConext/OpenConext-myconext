@@ -12,12 +12,15 @@ I18n.translations.nl = {
         main: "404 - Not Found"
     },
     profile: {
-        title: "Profiel",
+        title: "Persoonlijke informatie",
+        info: "Basisinformatie zoals uw naam en e-mailadres en de informatie die we van uw instelling hebben ontvangen",
         email: "Email",
         name: "Naam",
+        profile: "Profiele"
     },
-    edit :{
+    edit: {
         title: "Aanpassen profiel gegevens",
+        info: "Voer je volledige naam in",
         givenName: "Je voornaam",
         familyName: "Je achternaam",
         update: "Verstuur",
@@ -44,10 +47,11 @@ I18n.translations.nl = {
             teamsHref: "https://teams.{{baseDomain}}",
         }
     },
-    account :{
+    account: {
         title: "Je my.SURFconext account",
-        deleteAccount : "Verwijder mijn account",
-        deleteAccountConfirmation : "Weet je zeker dat je je my.surfconext account wil verwijderen?"
+        info: "U kunt ervoor kiezen om uw SURFconext-account te verwijderen",
+        deleteAccount: "Verwijder mijn account",
+        deleteAccountConfirmation: "Weet je zeker dat je je my.surfconext account wil verwijderen?"
     },
     password: {
         setTitle: "Wachtwoord instellen",
