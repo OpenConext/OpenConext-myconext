@@ -2,9 +2,9 @@ import {writable} from 'svelte/store';
 
 export const user = writable({
     id: "",
-    email: "jdoe@example.com",
-    givenName: "John",
-    familyName: "Doe",
+    email: "",
+    givenName: "",
+    familyName: "",
     guest: true,
     usePassword: false
 });
