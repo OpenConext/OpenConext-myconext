@@ -78,11 +78,11 @@
                 <td class="value">{$user.email}</td>
                 <td class="link"></td>
             </tr>
-            <tr class="name" on:click={() => navigate("/edit")}>
+            <tr class="name" on:click={() => navigate("/password")}>
                 <td class="attr">{I18n.t("security.usePassword")}</td>
                 <td class="value">{password}</td>
                 <td class="link">
-                    <a class="menu-link" href="/name"
+                    <a class="menu-link" href="/password"
                        on:click|preventDefault|stopPropagation={() => navigate("/password")}>{@html chevron_right}</a>
                 </td>
             </tr>
