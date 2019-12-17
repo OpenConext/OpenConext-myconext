@@ -16,7 +16,7 @@ I18n.translations.nl = {
         info: "Basisinformatie zoals uw naam en e-mailadres en de informatie die we van uw instelling hebben ontvangen",
         email: "Email",
         name: "Naam",
-        profile: "Profiele"
+        profile: "Profiel"
     },
     edit: {
         title: "Aanpassen profiel gegevens",
