@@ -1,6 +1,6 @@
 # MyConext
-[![Build Status](https://travis-ci.org/oharsta/myconext.svg)](https://travis-ci.org/oharsta/myconext)
-[![codecov.io](https://codecov.io/github/oharsta/myconext/coverage.svg)](https://codecov.io/github/oharsta/myconext)
+[![Build Status](https://travis-ci.org/OpenConext/OpenConext-myconext.svg)](https://travis-ci.org/OpenConext/OpenConext-myconext)
+[![codecov.io](https://codecov.io/github/OpenConext/OpenConext-myconext/coverage.svg)](https://codecov.io/github/OpenConext/OpenConext-myconext)
 
 Me environment for OpenConext
 
