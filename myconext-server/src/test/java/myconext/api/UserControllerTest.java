@@ -275,6 +275,22 @@ public class UserControllerTest extends AbstractIntegrationTest {
                 .header("Location", "http://localhost:3000/expired");
     }
 
+    @Test
+    public void magicLinkRequiresSameBrowser() throws IOException {
+        MagicLinkResponse magicLinkResponse = magicLinkRequest(new User("jdoe@example.com"), HttpMethod.PUT);
+        SamlAuthenticationRequest samlAuthenticationRequest = authenticationRequestRepository.findById(magicLinkResponse.authenticationRequestId).get();
+        String samlResponse = samlResponse(magicLinkResponse);
+        assertTrue(samlResponse.contains("jdoe@example.com"));
+
+        given().redirects().follow(false)
+                .when()
+                .queryParam("h", samlAuthenticationRequest.getHash())
+                .get("/saml/guest-idp/magic")
+                .then()
+                .statusCode(HttpStatus.FOUND.value())
+                .header("Location", "http://localhost:3000/session");
+    }
+
     private String samlResponse(MagicLinkResponse magicLinkResponse) throws IOException {
         Response response = magicResponse(magicLinkResponse);
 

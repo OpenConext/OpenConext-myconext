@@ -12,7 +12,12 @@ public class ServiceNameResolverTest {
 
     @Test
     public void resolveLocally() throws InterruptedException {
-        //Will not change
         assertEquals("SURFconext Manage | SURFconext", subject.resolve("https://manage.surfconext.nl/shibboleth"));
     }
+
+    @Test
+    public void doNotRefreshing() {
+        new ServiceNameResolver(new ClassPathResource("sp_names_wrong.json"), new ObjectMapper(), false);
+    }
+
 }
