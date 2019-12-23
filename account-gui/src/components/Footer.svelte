@@ -52,6 +52,7 @@
 
     ul {
         list-style: none;
+        font-size: 18px;
     }
 
     li {

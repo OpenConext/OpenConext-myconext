@@ -166,6 +166,7 @@
 
     .pre-input-label {
         color: var(--color-primary-black);
+        font-weight: 600;
     }
 
     div.password-option {

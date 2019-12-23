@@ -10,25 +10,31 @@ html {
 
 @font-face {
     font-family: "Proxima Nova";
-    font-weight: normal;
+    font-weight: 300;
     src: url("/fonts/proxima_nova/ProximaNovaSoft-Regular.otf");
 }
 
 @font-face {
     font-family: "Proxima Nova";
-    font-weight: bold;
+    font-weight: 500;
+    src: url("/fonts/proxima_nova/ProximaNovaSoft-Medium.otf");
+}
+
+@font-face {
+    font-family: "Proxima Nova";
+    font-weight: 600;
     src: url("/fonts/proxima_nova/ProximaNovaSoft-Semibold.otf");
 }
 
 @font-face {
     font-family: "Open Sans";
-    font-weight: normal;
+    font-weight: 300;
     src: url("/fonts/source_sans_pro/SourceSansPro-Regular.ttf");
 }
 
 @font-face {
     font-family: "Open Sans";
-    font-weight: bold;
+    font-weight: 600;
     src: url("/fonts/source_sans_pro/SourceSansPro-Semibold.ttf");
 }
 
@@ -71,19 +77,19 @@ h1, h2, h3 {
 }
 
 h1 {
-    font-size: 40px;
-    line-height: 40px;
-    font-weight: normal;
+    font-size: 30px;
+    line-height: 36px;
+    font-weight: 400;
 }
 
 h2 {
-    font-size: 32px;
-    line-height: 34px;
+    font-size: 26px;
+    line-height: 30px;
     font-weight: bold;
 }
 
 h3 {
-    font-size: 20px;
-    line-height: 24px;
+    font-size: 18px;
+    line-height: 26px;
     font-weight: bold;
 }

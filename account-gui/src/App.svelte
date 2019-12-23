@@ -32,7 +32,7 @@
         --color-primary-black: #202020;
         --color-primary-red: #d00000;
 
-        --width-app: 600px;
+        --width-app: 502px;
     }
 
     .idp {
@@ -46,7 +46,7 @@
         border-left: 2px solid var(--color-primary-blue);
         border-right: 2px solid var(--color-primary-blue);
         flex-direction: column;
-        padding: 50px 72px;
+        padding: 24px 33px 40px;
         background-color: white;
         width: var(--width-app);
         margin: 0 auto;

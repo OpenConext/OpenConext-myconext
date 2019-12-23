@@ -11,6 +11,7 @@
         padding-left: 28px;
         cursor: pointer;
         user-select: none;
+        font-weight: 600;
     }
 
     /* Hide the browser's default checkbox */

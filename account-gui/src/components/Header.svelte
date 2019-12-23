@@ -18,7 +18,7 @@
         align-content: center;
         position: relative;
         justify-content: center;
-        height: 110px;
+        height: 80px;
     }
 
     .logo {
