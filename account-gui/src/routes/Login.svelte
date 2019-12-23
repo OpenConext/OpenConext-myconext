@@ -153,9 +153,9 @@
 
     input[type=email], input[type=text], input[type=password] {
         border: 1px solid #727272;
-        border-radius: 4px;
-        padding: 10px;
-        font-size: 18px;
+        border-radius: 6px;
+        padding: 14px;
+        font-size: 16px;
         width: 100%;
         margin: 8px 0 15px 0;
     }
@@ -199,6 +199,7 @@
 <h2 class="top">{@html I18n.ts("login.header2", {name: serviceName})}</h2>
 <label class="pre-input-label">{I18n.ts("login.email")}</label>
 <input type="email"
+       placeholder={I18n.ts("login.emailPlaceholder")}
        use:init
        bind:value={$user.email}
        on:keydown={handleEmailEnter}>

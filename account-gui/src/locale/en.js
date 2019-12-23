@@ -6,6 +6,7 @@ I18n.translations.en = {
         header2: "to login to {{name}}",
         trust: "Trust this computer",
         email: "Your email address",
+        emailPlaceholder: "Email address",
         familyName: "Family name",
         givenName: "Given name",
         familyNamePlaceholder: "e.g. Berners-Lee",

@@ -6,6 +6,7 @@ I18n.translations.nl = {
         header2: "om in te loggen op {{name}}",
         trust: "Vertrouw deze computer",
         email: "Je e-mail adres",
+        emailPlaceholder: "E-mail adres",
         familyName: "Achternaam",
         givenName: "Voornaam",
         familyNamePlaceholder: "e.g. Berners-Lee",
