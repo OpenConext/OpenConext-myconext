@@ -33,7 +33,7 @@ I18n.translations.nl = {
         subTitle: "We ondersteunen de volgende aanmeldingsopties voor Mijn SURFconext:",
         usePassword: "Wachtwoord",
         notSet: "Niet ingesteld",
-        useMagicLink: "Email magic link",
+        useMagicLink: "Email magic link naar",
     },
     home: {
         welcome: "Welkom {{name}}",

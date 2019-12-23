@@ -33,7 +33,7 @@ I18n.translations.en = {
         subTitle: "We support the following sign in options for My SURFconext:",
         usePassword: "Password",
         notSet: "Not set",
-        useMagicLink: "Email magic link",
+        useMagicLink: "Send magic link to",
     },
     home: {
         welcome: "Welcome {{name}}",

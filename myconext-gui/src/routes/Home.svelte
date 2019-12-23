@@ -112,6 +112,7 @@
 
     nav ul li.active {
         border-right: 7px solid var(--color-primary-green);
+        background-color: white;
     }
 
     nav ul li a {

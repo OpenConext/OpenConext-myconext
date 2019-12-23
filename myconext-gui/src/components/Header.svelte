@@ -18,7 +18,7 @@
         align-content: center;
         position: relative;
         flex-direction: row;
-        height: 110px;
+        height: 80px;
         color: #94d6ff;
     }
 
