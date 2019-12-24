@@ -115,6 +115,10 @@
         background-color: white;
     }
 
+    nav ul li.active a {
+        cursor: default;
+    }
+
     nav ul li a {
         font-weight: 600;
     }

@@ -1,4 +1,6 @@
 <script>
+    import check from "../icons/check.svg";
+
     export let value;
     export let onChange;
     export let label;
@@ -37,7 +39,7 @@
 
     /* On mouse-over, add a grey background color */
     .checkbox:hover input ~ .checkmark {
-        background-color: #fafafa;
+        background-color: #ebebeb;
     }
 
     /* When the checkbox is checked, add a blue background */
@@ -45,21 +47,13 @@
         background-color: #b3e5ff;
     }
 
-    /* Create the checkmark/indicator (hidden when not checked) */
-    .checkmark:after {
-        content: "";
-        position: absolute;
-        display: none;
-    }
-
-    /* Show the checkmark when checked */
-    .checkbox input:checked ~ .checkmark:after {
-        display: block;
-    }
-
 </style>
 <label class="checkbox">
     <span>{label}</span>
     <input type="checkbox" checked={value} on:change={e => onChange(e.target.checked)}>
-    <span class="checkmark"></span>
+    <span class="checkmark">
+        {#if value}
+            {@html check}
+        {/if}
+    </span>
 </label>
