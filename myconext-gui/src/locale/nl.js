@@ -13,7 +13,7 @@ I18n.translations.nl = {
     },
     profile: {
         title: "Persoonlijke informatie",
-        info: "Basisinformatie zoals uw naam en e-mailadres en de informatie die we van uw instelling hebben ontvangen",
+        info: "Basisinformatie zoals je naam en e-mailadres en de informatie die we van je instelling hebben ontvangen",
         email: "Email",
         name: "Naam",
         profile: "Profiel"
@@ -49,7 +49,7 @@ I18n.translations.nl = {
     },
     account: {
         title: "Je my.SURFconext account",
-        info: "U kunt ervoor kiezen om uw SURFconext-account te verwijderen",
+        info: "Je kan ervoor kiezen om je SURFconext-account te verwijderen",
         deleteAccount: "Verwijder mijn account",
         deleteAccountConfirmation: "Weet je zeker dat je je my.surfconext account wil verwijderen?"
     },
