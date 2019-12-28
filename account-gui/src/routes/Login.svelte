@@ -150,6 +150,10 @@
         margin: 0 auto 10px 0;
         color: var(--color-primary-red);
     }
+    span.error a {
+        color: #820000;
+        font-weight: 600;
+    }
 
     input[type=email], input[type=text], input[type=password] {
         border: 1px solid #727272;
@@ -204,7 +208,10 @@
        bind:value={$user.email}
        on:keydown={handleEmailEnter}>
 {#if !$user.createAccount && emailNotFound}
-    <span class="error">{I18n.ts("login.emailNotFound")}</span>
+    <span class="error">{I18n.ts("login.emailNotFound")}
+        <a class="toggle-link" href="/reguest"
+           on:click|preventDefault|stopPropagation={createAccount(true)}>{I18n.ts("login.emailNotFoundLink")}</a>
+    </span>
 {/if}
 {#if $user.usePassword && emailOrPasswordIncorrect}
     <span class="error">{I18n.ts("login.emailOrPasswordIncorrect")}</span>
