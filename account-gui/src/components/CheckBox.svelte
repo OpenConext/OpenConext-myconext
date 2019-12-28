@@ -16,7 +16,6 @@
         font-weight: 600;
     }
 
-    /* Hide the browser's default checkbox */
     .checkbox input {
         position: absolute;
         opacity: 0;
@@ -25,7 +24,6 @@
         width: 0;
     }
 
-    /* Create a custom checkbox */
     .checkmark {
         position: absolute;
         top: 0;
@@ -34,17 +32,22 @@
         width: 18px;
         border: 1px solid #004c97;
         border-radius: 2px;
-        /*box-shadow: 0 1px 1px 0 rgba(141, 141, 141, 0.75);*/
     }
 
-    /* On mouse-over, add a grey background color */
     .checkbox:hover input ~ .checkmark {
         background-color: #ebebeb;
     }
 
-    /* When the checkbox is checked, add a blue background */
     .checkbox input:checked ~ .checkmark {
         background-color: #b3e5ff;
+    }
+
+    :global(.checkbox input ~ .checkmark svg) {
+        display: none;
+    }
+
+    :global(.checkbox input:checked ~ .checkmark svg) {
+        display: inherit;
     }
 
 </style>
@@ -52,8 +55,6 @@
     <span>{label}</span>
     <input type="checkbox" checked={value} on:change={e => onChange(e.target.checked)}>
     <span class="checkmark">
-        {#if value}
-            {@html check}
-        {/if}
+        {@html check}
     </span>
 </label>

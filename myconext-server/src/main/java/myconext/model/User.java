@@ -114,10 +114,6 @@ public class User implements Serializable, UserDetails {
         this.newUser = newUser;
     }
 
-    public void clearPassword() {
-        this.password = null;
-    }
-
     public void setGivenName(String givenName) {
         this.givenName = givenName;
     }
