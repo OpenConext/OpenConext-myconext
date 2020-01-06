@@ -42,19 +42,17 @@
     }
     .content {
         display: flex;
-        justify-content: center;
-        border-left: 2px solid var(--color-primary-blue);
-        border-right: 2px solid var(--color-primary-blue);
         flex-direction: column;
         padding: 24px 33px 40px;
         background-color: white;
         width: var(--width-app);
         margin: 0 auto;
+        justify-content: center;
         border-left: 2px solid var(--color-primary-blue);
-        border-bottom-left-radius: 10px;
-        border-bottom-right-radius: 10px;
         border-right: 2px solid var(--color-primary-blue);
         border-bottom: 4px solid var(--color-primary-blue);
+        border-bottom-left-radius: 10px;
+        border-bottom-right-radius: 10px;
     }
 
     @media (max-width: 600px) {
