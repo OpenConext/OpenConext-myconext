@@ -11,31 +11,36 @@ html {
 @font-face {
     font-family: "Proxima Nova";
     font-weight: 300;
-    src: url("/fonts/proxima_nova/ProximaNovaSoft-Regular.otf");
+    src: url("/fonts/proxima_nova/proximanovasoft-regular-webfont.woff") format("woff"),
+    url("/fonts/proxima_nova/proximanovasoft-regular-webfont.woff2") format("woff2");
 }
 
 @font-face {
     font-family: "Proxima Nova";
     font-weight: 500;
-    src: url("/fonts/proxima_nova/ProximaNovaSoft-Medium.otf");
+    src: url("/fonts/proxima_nova/proximanovasoft-medium-webfont.woff") format("woff"),
+    url("/fonts/proxima_nova/proximanovasoft-medium-webfont.woff2") format("woff2");
 }
 
 @font-face {
     font-family: "Proxima Nova";
     font-weight: 600;
-    src: url("/fonts/proxima_nova/ProximaNovaSoft-Semibold.otf");
+    src: url("/fonts/proxima_nova/proximanovasoft-semibold-webfont.woff") format("woff"),
+    url("/fonts/proxima_nova/proximanovasoft-semibold-webfont.woff2") format("woff2");
 }
 
 @font-face {
-    font-family: "Open Sans";
+    font-family: "Source Sans Pro";
     font-weight: 300;
-    src: url("/fonts/source_sans_pro/SourceSansPro-Regular.ttf");
+    src: url("/fonts/source_sans_pro/sourcesanspro-regular-webfont.woff") format("woff"),
+    url("/fonts/source_sans_pro/sourcesanspro-regular-webfont.woff2") format("woff2");
 }
 
 @font-face {
-    font-family: "Open Sans";
+    font-family: "Source Sans Pro";
     font-weight: 600;
-    src: url("/fonts/source_sans_pro/SourceSansPro-Semibold.ttf");
+    src: url("/fonts/source_sans_pro/sourcesanspro-semibold-webfont.woff") format('woff'),
+    url("/fonts/source_sans_pro/sourcesanspro-semibold-webfont.woff2") format('woff2');
 }
 
 body {
