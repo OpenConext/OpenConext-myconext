@@ -13,14 +13,14 @@ import java.util.Map;
 import static org.junit.Assert.assertEquals;
 
 @SuppressWarnings("unchecked")
-public class JsonErrorControllerTest {
+public class DefaultErrorControllerTest {
 
     private DefaultErrorController subject;
 
     @Before
     public void before() {
         DefaultErrorAttributes errorAttributes = new DefaultErrorAttributes(true);
-        subject = new DefaultErrorController(errorAttributes, "http://redirect");
+        subject = new DefaultErrorController(errorAttributes);
     }
 
     @Test
