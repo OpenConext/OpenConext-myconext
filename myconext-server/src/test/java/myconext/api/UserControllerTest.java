@@ -113,6 +113,11 @@ public class UserControllerTest extends AbstractIntegrationTest {
 
         String saml = samlAuthnResponse(samlAuthnRequestResponse(new Cookie.Builder(GUEST_IDP_REMEMBER_ME_COOKIE_NAME, cookie).build(), null));
         assertTrue(saml.contains("steve@example.com<"));
+
+        user = userRepository.findOneUserByEmail("steve@example.com");
+        long count = authenticationRequestRepository.deleteByUserId(user.getId());
+        assertEquals(1, count);
+
     }
 
     @Test
@@ -209,6 +214,15 @@ public class UserControllerTest extends AbstractIntegrationTest {
 
         Optional<User> optionalUser = userRepository.findUserByEmail("jdoe@example.com");
         assertFalse(optionalUser.isPresent());
+    }
+
+    @Test
+    public void forgetMe() {
+        String s = given()
+                .when()
+                .delete("/myconext/api/sp/forget")
+                .getBody().asString();
+        assertEquals("0", s);
     }
 
     @Test

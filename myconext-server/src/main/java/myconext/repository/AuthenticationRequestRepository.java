@@ -16,6 +16,10 @@ public interface AuthenticationRequestRepository extends MongoRepository<SamlAut
 
     Optional<SamlAuthenticationRequest> findByHash(String hash);
 
+    Optional<SamlAuthenticationRequest> findByUserId(String userId);
+
+    Long deleteByUserId(String userId);
+
     default Optional<SamlAuthenticationRequest> findByIdAndNotExpired(String id) {
         Optional<SamlAuthenticationRequest> authenticationRequestOptional = findById(id);
         authenticationRequestOptional.ifPresent(req -> {

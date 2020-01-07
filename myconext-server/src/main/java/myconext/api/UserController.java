@@ -119,7 +119,15 @@ public class UserController {
     @GetMapping("/sp/me")
     public ResponseEntity me(Authentication authentication) {
         User user = userRepository.findOneUserByEmail(((User) authentication.getPrincipal()).getEmail());
-        return ResponseEntity.ok(new UserResponse(user));
+        Optional<SamlAuthenticationRequest> samlAuthenticationRequestOptional = authenticationRequestRepository.findByUserId(user.getId());
+        return ResponseEntity.ok(new UserResponse(user, samlAuthenticationRequestOptional.isPresent()));
+    }
+
+    @DeleteMapping("/sp/forget")
+    public ResponseEntity forgetMe(Authentication authentication) {
+        String userId = ((User) authentication.getPrincipal()).getId();
+        Long count = authenticationRequestRepository.deleteByUserId(userId);
+        return ResponseEntity.ok(count);
     }
 
     @PutMapping("/sp/update")
@@ -132,7 +140,7 @@ public class UserController {
 
         userRepository.save(user);
 
-        return ResponseEntity.status(201).body(new UserResponse(user));
+        return ResponseEntity.status(201).body(new UserResponse(user, false));
     }
 
     @PutMapping("/sp/security")
@@ -147,7 +155,7 @@ public class UserController {
         user.encryptPassword(updateUserRequest.getNewPassword(), passwordEncoder);
         userRepository.save(user);
 
-        return ResponseEntity.status(201).body(new UserResponse(user));
+        return ResponseEntity.status(201).body(new UserResponse(user, false));
     }
 
 
