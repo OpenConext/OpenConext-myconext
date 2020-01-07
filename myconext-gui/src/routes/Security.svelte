@@ -3,6 +3,7 @@
     import I18n from "i18n-js";
     import {navigate} from "svelte-routing";
     import chevron_right from "../icons/chevron-right.svg";
+    import CheckBox from "../components/CheckBox.svelte";
 
     let password = $user.usePassword ? "************************" : I18n.ts("security.notSet");
 
@@ -36,7 +37,7 @@
         width: 100%;
     }
 
-    tr.name {
+    tr.name, tr.rememberme {
         cursor: pointer;
     }
 
@@ -84,6 +85,16 @@
                 <td class="link">
                     <a class="menu-link" href="/password"
                        on:click|preventDefault|stopPropagation={() => navigate("/password")}>{@html chevron_right}</a>
+                </td>
+            </tr>
+            <tr class:rememberme={$user.rememberMe} on:click={() => $user.rememberMe && navigate("/rememberme")}>
+                <td class="attr">{I18n.t("security.rememberMe")}</td>
+                <td class="value">{I18n.t(`security.rememberMe${$user.rememberMe}`)}</td>
+                <td class="link">
+                    {#if $user.rememberMe}
+                    <a class="menu-link" href="/rememberme"
+                       on:click|preventDefault|stopPropagation={() => navigate("/rememberme")}>{@html chevron_right}</a>
+                    {/if}
                 </td>
             </tr>
             </tbody>

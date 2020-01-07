@@ -34,6 +34,9 @@ I18n.translations.nl = {
         usePassword: "Wachtwoord",
         notSet: "Niet ingesteld",
         useMagicLink: "Email magic link naar",
+        rememberMe: "Onthoud dit apparaat",
+        rememberMetrue: "Ja",
+        rememberMefalse: "Nee",
     },
     home: {
         welcome: "Welkom {{name}}",
@@ -67,6 +70,15 @@ I18n.translations.nl = {
         back: "/security",
         passwordDisclaimer: "je wachtwoord moet minimaal 15 karakters zijn of 8 met en dan inclusief een hoofdletter en cijfer.",
         invalidCurrentPassword: "Je huidige wachtwoord is niet correct."
+    },
+    rememberMe: {
+        updated: "Dit apparaat is niet langer onthouden",
+        forgetMeTitle: "Onthoud dit apparaat.",
+        info: "Je huidige apparaat wordt onthouden. Je bent hierdoor automatisch ingelogt op de SURFconext Guest IdP.",
+        cancel: "Annuleer",
+        update: "Vergeet me",
+        forgetMeConfirmation: "Weet je zeker dat je dit apparaat niet langer wilt onthouden?",
+        forgetMe: "Vergeet dit apparaat"
     },
     footer: {
         tip: "Tip of info nodig?",

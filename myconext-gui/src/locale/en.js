@@ -34,6 +34,9 @@ I18n.translations.en = {
         usePassword: "Password",
         notSet: "Not set",
         useMagicLink: "Send magic link to",
+        rememberMe: "Remember this device",
+        rememberMetrue: "Yes",
+        rememberMefalse: "No",
     },
     home: {
         welcome: "Welcome {{name}}",
@@ -67,6 +70,15 @@ I18n.translations.en = {
         back: "/security",
         passwordDisclaimer: "Make sure it's at least 15 characters OR at least 8 characters including a number and a uppercase letter.",
         invalidCurrentPassword: "Your current password is invalid."
+    },
+    rememberMe: {
+        updated: "Your device is no longer remembered",
+        forgetMeTitle: "Remember this device.",
+        info: "Your device is currently remembered. You will be automatically logged in on the SURFconext Guest IdP.",
+        cancel: "Cancel",
+        update: "Forget me",
+        forgetMeConfirmation: "Are you sure you no longer want this device remembered?",
+        forgetMe: "Forget this device"
     },
     footer: {
         tip: "Need tip or info?",

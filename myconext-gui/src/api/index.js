@@ -1,5 +1,6 @@
 //Internal API
 let csrfToken = null;
+
 function validateResponse(res) {
 
     if (!res.ok) {
@@ -26,6 +27,7 @@ function validFetch(path, options) {
     };
     return fetch(path, fetchOptions).then(res => validateResponse(res));
 }
+
 function fetchDelete(path) {
     return validFetch(path, {method: "delete"});
 }
@@ -57,5 +59,9 @@ export function updateSecurity(userId, currentPassword, newPassword) {
 }
 
 export function deleteUser(user) {
-    return fetchDelete(`/myconext/api/sp/delete/${user.id}`, user, "DELETE");
+    return fetchDelete(`/myconext/api/sp/delete/${user.id}`);
+}
+
+export function forgetMe() {
+    return fetchDelete("/myconext/api/sp/forget");
 }

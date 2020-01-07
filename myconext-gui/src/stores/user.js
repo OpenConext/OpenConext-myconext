@@ -6,7 +6,8 @@ export const user = writable({
     givenName: "",
     familyName: "",
     guest: true,
-    usePassword: false
+    usePassword: false,
+    rememberMe: true
 });
 
 export const config = writable({

@@ -41,6 +41,7 @@ import java.net.URISyntaxException;
 import java.security.SecureRandom;
 import java.util.Base64;
 import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 
 @RestController
@@ -119,8 +120,8 @@ public class UserController {
     @GetMapping("/sp/me")
     public ResponseEntity me(Authentication authentication) {
         User user = userRepository.findOneUserByEmail(((User) authentication.getPrincipal()).getEmail());
-        Optional<SamlAuthenticationRequest> samlAuthenticationRequestOptional = authenticationRequestRepository.findByUserId(user.getId());
-        return ResponseEntity.ok(new UserResponse(user, samlAuthenticationRequestOptional.isPresent()));
+        List<SamlAuthenticationRequest> samlAuthenticationRequests = authenticationRequestRepository.findByUserIdAndRememberMe(user.getId(), true);
+        return ResponseEntity.ok(new UserResponse(user, !samlAuthenticationRequests.isEmpty()));
     }
 
     @DeleteMapping("/sp/forget")

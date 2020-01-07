@@ -6,6 +6,7 @@
     import NotFound from "./routes/NotFound.svelte";
     import EditName from "./routes/EditName.svelte";
     import Password from "./routes/Password.svelte";
+    import RememberMe from "./routes/RememberMe.svelte";
     import Home from "./routes/Home.svelte";
     import Header from "./components/Header.svelte";
     import Flash from "./components/Flash.svelte";
@@ -141,6 +142,7 @@
                 </Route>
                 <Route path="/edit" component={EditName}/>
                 <Route path="/password" component={Password}/>
+                <Route path="/rememberme" component={RememberMe}/>
                 <Route path="/landing" component={Landing}/>
                 <Route component={NotFound}/>
             </Router>

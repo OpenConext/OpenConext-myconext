@@ -7,6 +7,7 @@ import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -16,7 +17,7 @@ public interface AuthenticationRequestRepository extends MongoRepository<SamlAut
 
     Optional<SamlAuthenticationRequest> findByHash(String hash);
 
-    Optional<SamlAuthenticationRequest> findByUserId(String userId);
+    List<SamlAuthenticationRequest> findByUserIdAndRememberMe(String userId, boolean rememberMe);
 
     Long deleteByUserId(String userId);
 
