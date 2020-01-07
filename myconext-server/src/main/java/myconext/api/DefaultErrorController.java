@@ -1,9 +1,6 @@
 package myconext.api;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.servlet.error.ErrorAttributes;
 import org.springframework.boot.web.servlet.error.ErrorController;
 import org.springframework.core.annotation.AnnotationUtils;
@@ -22,17 +19,13 @@ import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
 
 @RestController
-public class JsonErrorController implements ErrorController {
-
-    private static final Logger LOG = LoggerFactory.getLogger(JsonErrorController.class);
+public class DefaultErrorController implements ErrorController {
 
     private final ErrorAttributes errorAttributes;
-    private final String redirectUrl;
 
     @Autowired
-    public JsonErrorController(ErrorAttributes errorAttributes, @Value("${idp_redirect_url}") String redirectUrl) {
+    public DefaultErrorController(ErrorAttributes errorAttributes) {
         this.errorAttributes = errorAttributes;
-        this.redirectUrl = redirectUrl;
     }
 
     @Override

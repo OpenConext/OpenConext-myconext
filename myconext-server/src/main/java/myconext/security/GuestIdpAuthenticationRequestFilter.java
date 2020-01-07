@@ -200,7 +200,7 @@ public class GuestIdpAuthenticationRequestFilter extends IdpAuthenticationReques
                     "&name=" + URLEncoder.encode(serviceNameResolver.resolve(samlAuthenticationRequest.getRequesterEntityId()), charSet));
             return;
         } else {
-            //ensure the magic link can't bee used twice
+            //ensure the magic link can't be used twice
             samlAuthenticationRequest.setHash(null);
             authenticationRequestRepository.save(samlAuthenticationRequest);
         }
@@ -231,7 +231,7 @@ public class GuestIdpAuthenticationRequestFilter extends IdpAuthenticationReques
 
     private void sendAssertion(HttpServletRequest request, HttpServletResponse response, String relayState,
                                User user, IdentityProviderService provider, ServiceProviderMetadata serviceProviderMetadata,
-                               AuthenticationRequest authenticationRequest) throws IOException {
+                               AuthenticationRequest authenticationRequest) {
         Assertion assertion = provider.assertion(serviceProviderMetadata, authenticationRequest, user.getEmail(), NameId.EMAIL);
 
         attributes(user).forEach(assertion::addAttribute);

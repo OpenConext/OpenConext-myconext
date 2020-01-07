@@ -15,12 +15,12 @@ import static org.junit.Assert.assertEquals;
 @SuppressWarnings("unchecked")
 public class JsonErrorControllerTest {
 
-    private JsonErrorController subject;
+    private DefaultErrorController subject;
 
     @Before
     public void before() {
         DefaultErrorAttributes errorAttributes = new DefaultErrorAttributes(true);
-        subject = new JsonErrorController(errorAttributes, "http://redirect");
+        subject = new DefaultErrorController(errorAttributes, "http://redirect");
     }
 
     @Test

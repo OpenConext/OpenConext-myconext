@@ -77,11 +77,10 @@ public class UserController {
                 .orElseThrow(ExpiredAuthenticationException::new);
 
         User user = magicLinkRequest.getUser();
-        Optional<User> userByEmail = userRepository.findUserByEmail(user.getEmail());
-        if (userByEmail.isPresent()) {
+        userRepository.findUserByEmail(user.getEmail()).ifPresent(u -> {
             emailGuessingPreventor.potentialUserEmailGuess();
             throw new DuplicateUserEmailException();
-        }
+        });
         emailValidator.validEmail(user.getEmail());
 
         //prevent not-wanted attributes in the database
@@ -93,18 +92,16 @@ public class UserController {
     }
 
     @PutMapping("/idp/magic_link_request")
-    public ResponseEntity magicLinkRequest(HttpServletResponse response, @Valid @RequestBody MagicLinkRequest magicLinkRequest) throws InterruptedException {
+    public ResponseEntity magicLinkRequest(@Valid @RequestBody MagicLinkRequest magicLinkRequest) throws InterruptedException {
         SamlAuthenticationRequest samlAuthenticationRequest = authenticationRequestRepository.findByIdAndNotExpired(magicLinkRequest.getAuthenticationRequestId())
                 .orElseThrow(ExpiredAuthenticationException::new);
 
         User providedUser = magicLinkRequest.getUser();
         Optional<User> optionalUser = userRepository.findUserByEmail(providedUser.getEmail());
-        if (!optionalUser.isPresent()) {
-            //Omission in Optional interface for not having ifNotPresent
+        User user = optionalUser.orElseThrow(() -> {
             emailGuessingPreventor.potentialUserEmailGuess();
-            throw new UserNotFoundException();
-        }
-        User user = optionalUser.get();
+            return new UserNotFoundException();
+        });
         if (magicLinkRequest.isUsePassword()) {
             if (!passwordEncoder.matches(providedUser.getPassword(), user.getPassword())) {
                 emailGuessingPreventor.potentialUserEmailGuess();
