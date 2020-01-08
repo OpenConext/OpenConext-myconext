@@ -17,6 +17,7 @@ I18n.translations.nl = {
         title: "Persoonlijke informatie",
         info: "Basisinformatie zoals je naam en e-mailadres en de informatie die we van je instelling hebben ontvangen",
         email: "Email",
+        schacHomeOrganization: "Instellings ID",
         name: "Naam",
         profile: "Profiel"
     },
@@ -91,6 +92,12 @@ I18n.translations.nl = {
     modal: {
         cancel: "Annuleren",
         confirm: "Bevestigen"
+    },
+    migration: {
+        header: "Account migratie",
+        header2: "Migratie van Onegine naar SURFconext Guest Account",
+        info: "Uw Onegini-account is succesvol gemigreerd naar een SURFconext-gastaccount. Ga door met het beheren van uw account en wijzig eventueel uw beveiligingsinstellingen.",
+        link: "Doorgaan"
     }
 
 };

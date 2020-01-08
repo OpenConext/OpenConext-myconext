@@ -13,6 +13,8 @@ public class UserResponse {
     private String givenName;
     private String familyName;
     private boolean usePassword;
+    private String schacHomeOrganization;
+    private String uid;
     private boolean rememberMe;
 
     public UserResponse(User user, boolean rememberMe) {
@@ -20,6 +22,8 @@ public class UserResponse {
         this.email = user.getEmail();
         this.givenName = user.getGivenName();
         this.familyName = user.getFamilyName();
+        this.schacHomeOrganization = user.getSchacHomeOrganization();
+        this.uid = user.getUid();
         this.usePassword = StringUtils.hasText(user.getPassword());
         this.rememberMe = rememberMe;
     }

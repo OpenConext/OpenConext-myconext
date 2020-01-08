@@ -6,6 +6,8 @@ export const user = writable({
     givenName: "",
     familyName: "",
     guest: true,
+    schacHomeOrganization: "",
+    uid: "",
     usePassword: false,
     rememberMe: true
 });

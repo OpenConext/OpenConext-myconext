@@ -262,8 +262,8 @@ public class GuestIdpAuthenticationRequestFilter extends IdpAuthenticationReques
                 attribute("urn:mace:dir:attribute-def:givenName", user.getGivenName()),
                 attribute("urn:mace:dir:attribute-def:mail", user.getEmail()),
                 attribute("urn:mace:dir:attribute-def:sn", user.getFamilyName()),
-                attribute("urn:mace:dir:attribute-def:uid", user.getEmail()),
-                attribute("urn:mace:terena.org:attribute-def:schacHomeOrganization", "surfconext.guest.id")
+                attribute("urn:mace:dir:attribute-def:uid", user.getUid()),
+                attribute("urn:mace:terena.org:attribute-def:schacHomeOrganization", user.getSchacHomeOrganization())
         );
     }
 

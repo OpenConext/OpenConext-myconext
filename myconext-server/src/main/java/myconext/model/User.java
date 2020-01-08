@@ -32,24 +32,19 @@ public class User implements Serializable, UserDetails {
     private String email;
     private String givenName;
     private String familyName;
+    private String uid;
+    private String schacHomeOrganization;
     private String password;
     private boolean newUser;
 
     private long updatedAt = System.currentTimeMillis() / 1000L;
 
-    public User(@NotNull String email) {
-        this(email, null, null);
-    }
-
-    public User(@NotNull String email, String givenName, String familyName) {
-        this(email, givenName, familyName, null);
-    }
-
-    public User(@NotNull String email, String givenName, String familyName, String password) {
+    public User(@NotNull String uid, @NotNull String email, String givenName, String familyName, String schacHomeOrganization) {
+        this.uid = uid;
         this.email = email;
         this.givenName = givenName;
         this.familyName = familyName;
-        this.password = password;
+        this.schacHomeOrganization = schacHomeOrganization;
         this.newUser = true;
     }
 

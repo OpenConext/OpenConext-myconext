@@ -15,6 +15,8 @@ email:
 branding: SURFconext
 #branding: OpenConext
 
+schac_home_organization: surfguest.nl
+
 cron:
   node-cron-job-responsible: True
   token-cleaner-expression: "0 0/15 * * * *"
@@ -28,7 +30,8 @@ idp_redirect_url: http://localhost:3000
 sp_redirect_url: http://localhost:3001
 sp_entity_id: https://engine.test2.surfconext.nl/authentication/sp/metadata
 sp_entity_metadata_url: https://engine.test2.surfconext.nl/authentication/sp/metadata
-
+onegini_entity_id: http://mock-idp
+my_conext_url: https://my.test2.surfconext.nl
 secure_cookie: false
 idp_entity_id: https://localhost.surf.id
 private_key_path: classpath:/id_rsa

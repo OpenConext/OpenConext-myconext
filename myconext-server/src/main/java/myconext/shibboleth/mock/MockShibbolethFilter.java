@@ -13,10 +13,13 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletRequestWrapper;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.UUID;
 
 public class MockShibbolethFilter extends GenericFilterBean {
 
     private Environment environment;
+
+    private static String uid = "1234567890";
 
     public MockShibbolethFilter(Environment environment) {
         this.environment = environment;
@@ -49,6 +52,8 @@ public class MockShibbolethFilter extends GenericFilterBean {
         if (environment.acceptsProfiles(Profiles.of("test")) ||
                 (environment.acceptsProfiles(Profiles.of("dev")) && ((HttpServletRequest) request).getRequestURI().startsWith("/startSSO"))) {
             SetHeader wrapper = new SetHeader(servletRequest);
+            wrapper.setHeader(ShibbolethPreAuthenticatedProcessingFilter.SHIB_SCHAC_HOME_ORGANIZATION, "surfguest.nl");
+            wrapper.setHeader(ShibbolethPreAuthenticatedProcessingFilter.SHIB_UID, uid);
             wrapper.setHeader(ShibbolethPreAuthenticatedProcessingFilter.SHIB_EMAIL, "jdoe@example.com");
             wrapper.setHeader(ShibbolethPreAuthenticatedProcessingFilter.SHIB_GIVEN_NAME, "John");
             wrapper.setHeader(ShibbolethPreAuthenticatedProcessingFilter.SHIB_SUR_NAME, "Doe");

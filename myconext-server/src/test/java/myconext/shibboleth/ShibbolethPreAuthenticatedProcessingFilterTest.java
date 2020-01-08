@@ -7,11 +7,14 @@ import org.junit.Test;
 import org.springframework.test.context.ActiveProfiles;
 
 import java.io.UnsupportedEncodingException;
+import java.util.UUID;
 
 import static io.restassured.RestAssured.given;
 import static myconext.shibboleth.ShibbolethPreAuthenticatedProcessingFilter.SHIB_EMAIL;
 import static myconext.shibboleth.ShibbolethPreAuthenticatedProcessingFilter.SHIB_GIVEN_NAME;
+import static myconext.shibboleth.ShibbolethPreAuthenticatedProcessingFilter.SHIB_SCHAC_HOME_ORGANIZATION;
 import static myconext.shibboleth.ShibbolethPreAuthenticatedProcessingFilter.SHIB_SUR_NAME;
+import static myconext.shibboleth.ShibbolethPreAuthenticatedProcessingFilter.SHIB_UID;
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.hamcrest.core.IsNull.notNullValue;
 
@@ -21,6 +24,8 @@ public class ShibbolethPreAuthenticatedProcessingFilterTest extends AbstractInte
     @Test
     public void getPreAuthenticatedPrincipal() throws UnsupportedEncodingException {
         Headers headers = new Headers(
+                new Header(SHIB_UID, UUID.randomUUID().toString()),
+                new Header(SHIB_SCHAC_HOME_ORGANIZATION, "surfguest.nl"),
                 new Header(SHIB_GIVEN_NAME, "Steven"),
                 new Header(SHIB_SUR_NAME, "Doe"),
                 new Header(SHIB_EMAIL, "steven.doe@example.org")
@@ -34,6 +39,8 @@ public class ShibbolethPreAuthenticatedProcessingFilterTest extends AbstractInte
                 .body("givenName", equalTo("Steven"))
                 .body("familyName", equalTo("Doe"))
                 .body("usePassword", equalTo(false))
+                .body("rememberMe", equalTo(false))
+                .body("schacHomeOrganization", equalTo("surfguest.nl"))
                 .body("id", notNullValue());
 
     }

@@ -45,7 +45,7 @@ public class UserControllerTest extends AbstractIntegrationTest {
 
     @Test
     public void existingUser() throws IOException {
-        MagicLinkResponse magicLinkResponse = magicLinkRequest(new User("jdoe@example.com"), HttpMethod.PUT);
+        MagicLinkResponse magicLinkResponse = magicLinkRequest(user("jdoe@example.com"), HttpMethod.PUT);
         magicLinkResponse.response
                 .statusCode(HttpStatus.CREATED.value());
         String samlResponse = samlResponse(magicLinkResponse);
@@ -54,21 +54,21 @@ public class UserControllerTest extends AbstractIntegrationTest {
 
     @Test
     public void newUserNotFound() throws IOException {
-        magicLinkRequest(new User("new@example.com"), HttpMethod.PUT)
+        magicLinkRequest(user("new@example.com"), HttpMethod.PUT)
                 .response
                 .statusCode(HttpStatus.NOT_FOUND.value());
     }
 
     @Test
     public void duplicateEmailNewUser() throws IOException {
-        magicLinkRequest(new User("jdoe@example.com"), HttpMethod.POST)
+        magicLinkRequest(user("jdoe@example.com"), HttpMethod.POST)
                 .response
                 .statusCode(HttpStatus.CONFLICT.value());
     }
 
     @Test
     public void newUserProvisioned() throws IOException {
-        User user = new User("new@example.com", "Mary", "Doe");
+        User user = user("new@example.com", "Mary", "Doe");
 
         MagicLinkResponse magicLinkResponse = magicLinkRequest(user, HttpMethod.POST);
         assertEquals(user.getGivenName(), userRepository.findUserByEmail(user.getEmail()).get().getGivenName());
@@ -79,7 +79,8 @@ public class UserControllerTest extends AbstractIntegrationTest {
 
     @Test
     public void newUserProvisionedWithPassword() throws IOException {
-        User user = new User("new@example.com", "Mary", "Doe", "secretA12");
+        User user = user("new@example.com", "Mary", "Doe");
+        userSetPassword(user, "secretA12");
 
         magicLinkRequest(user, HttpMethod.POST);
         user = userRepository.findUserByEmail(user.getEmail()).get();
@@ -92,7 +93,7 @@ public class UserControllerTest extends AbstractIntegrationTest {
         doExpireWithFindProperty(SamlAuthenticationRequest.class, "id", authenticationRequestId);
 
         MagicLinkRequest linkRequest = new MagicLinkRequest(authenticationRequestId,
-                new User("new@example.com", "Mary", "Doe"), false, false);
+                user("new@example.com", "Mary", "Doe"), false, false);
 
         magicLinkRequest(linkRequest, HttpMethod.POST)
                 .response
@@ -102,7 +103,7 @@ public class UserControllerTest extends AbstractIntegrationTest {
     @Test
     public void rememberMe() throws IOException {
         String authenticationRequestId = samlAuthnRequest();
-        User user = new User("steve@example.com", "Steve", "Doe");
+        User user = user("steve@example.com", "Steve", "Doe");
         MagicLinkResponse magicLinkResponse = magicLinkRequest(new MagicLinkRequest(authenticationRequestId, user, true, false), HttpMethod.POST);
         Response response = magicResponse(magicLinkResponse);
 
@@ -122,7 +123,7 @@ public class UserControllerTest extends AbstractIntegrationTest {
 
     @Test
     public void relayState() throws IOException {
-        User user = new User("steve@example.com", "Steve", "Doe");
+        User user = user("steve@example.com", "Steve", "Doe");
         String authenticationRequestId = samlAuthnRequest("Nice");
         MagicLinkResponse magicLinkResponse = magicLinkRequest(new MagicLinkRequest(authenticationRequestId, user, false, false), HttpMethod.POST);
         Response response = magicResponse(magicLinkResponse);
@@ -227,7 +228,8 @@ public class UserControllerTest extends AbstractIntegrationTest {
 
     @Test
     public void loginWithPassword() throws IOException {
-        User user = new User("mdoe@example.com", null, null, "Secret123");
+        User user = user("mdoe@example.com");
+        userSetPassword(user, "Secret123");
         String authenticationRequestId = samlAuthnRequest();
         MagicLinkRequest magicLinkRequest = new MagicLinkRequest(authenticationRequestId, user, false, true);
 
@@ -259,7 +261,8 @@ public class UserControllerTest extends AbstractIntegrationTest {
 
     @Test
     public void loginWithWrongPassword() throws IOException {
-        User user = new User("mdoe@example.com", null, null, "nope");
+        User user = user("mdoe@example.com");
+        userSetPassword(user, "nope");
         String authenticationRequestId = samlAuthnRequest();
         MagicLinkRequest magicLinkRequest = new MagicLinkRequest(authenticationRequestId, user, false, true);
 
@@ -274,7 +277,7 @@ public class UserControllerTest extends AbstractIntegrationTest {
 
     @Test
     public void magicLinkCanNotBeReused() throws IOException {
-        MagicLinkResponse magicLinkResponse = magicLinkRequest(new User("jdoe@example.com"), HttpMethod.PUT);
+        MagicLinkResponse magicLinkResponse = magicLinkRequest(user("jdoe@example.com"), HttpMethod.PUT);
         SamlAuthenticationRequest samlAuthenticationRequest = authenticationRequestRepository.findById(magicLinkResponse.authenticationRequestId).get();
         String samlResponse = samlResponse(magicLinkResponse);
         assertTrue(samlResponse.contains("jdoe@example.com"));
@@ -291,7 +294,7 @@ public class UserControllerTest extends AbstractIntegrationTest {
 
     @Test
     public void magicLinkRequiresSameBrowser() throws IOException {
-        MagicLinkResponse magicLinkResponse = magicLinkRequest(new User("jdoe@example.com"), HttpMethod.PUT);
+        MagicLinkResponse magicLinkResponse = magicLinkRequest(user("jdoe@example.com"), HttpMethod.PUT);
         SamlAuthenticationRequest samlAuthenticationRequest = authenticationRequestRepository.findById(magicLinkResponse.authenticationRequestId).get();
         String samlResponse = samlResponse(magicLinkResponse);
         assertTrue(samlResponse.contains("jdoe@example.com"));

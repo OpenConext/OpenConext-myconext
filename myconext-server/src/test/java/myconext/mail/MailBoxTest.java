@@ -45,7 +45,7 @@ public class MailBoxTest extends AbstractIntegrationTest {
     @Test
     public void sendMagicLink() throws MessagingException {
         String hash = UUID.randomUUID().toString();
-        mailBox.sendMagicLink(new User("jdoe@example.com", "John", "Doe"), hash, "http://mock-sp");
+        mailBox.sendMagicLink(user("jdoe@example.com"), hash, "http://mock-sp");
         String mail = mailBody();
         assertTrue(mail.contains(hash));
     }

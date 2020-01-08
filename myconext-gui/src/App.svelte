@@ -5,6 +5,7 @@
     import Landing from "./routes/Landing.svelte";
     import NotFound from "./routes/NotFound.svelte";
     import EditName from "./routes/EditName.svelte";
+    import Migration from "./routes/Migration.svelte";
     import Password from "./routes/Password.svelte";
     import RememberMe from "./routes/RememberMe.svelte";
     import Home from "./routes/Home.svelte";
@@ -93,13 +94,14 @@
         font-size: 10px;
         position: relative;
         text-indent: -9999em;
-        border: 1.1em solid #4DB2CF;
-        border-left-color: white;
+        border: 1.1em solid white;
+        border-top-color: var(--color-primary-green);
+        border-bottom-color: var(--color-primary-blue);
         -webkit-transform: translateZ(0);
         -ms-transform: translateZ(0);
         transform: translateZ(0);
-        -webkit-animation: load8 1.1s infinite linear;
-        animation: load8 1.1s infinite linear;
+        -webkit-animation: load8 1.5s infinite linear;
+        animation: load8 1.5s infinite linear;
     }
 
     @-webkit-keyframes load8 {
@@ -141,6 +143,7 @@
                     <Home bookmark="security"/>
                 </Route>
                 <Route path="/edit" component={EditName}/>
+                <Route path="/migration" component={Migration}/>
                 <Route path="/password" component={Password}/>
                 <Route path="/rememberme" component={RememberMe}/>
                 <Route path="/landing" component={Landing}/>

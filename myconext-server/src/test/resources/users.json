@@ -1,13 +1,16 @@
 [
   {
+    "uid": "1234567890",
     "email": "jdoe@example.com",
     "givenName": "John",
-    "familyName": "Doe"
+    "familyName": "Doe",
+    "schacHomeOrganization": "surfguest.nl"
   },
   {
     "email": "mdoe@example.com",
     "givenName": "Mary",
     "familyName": "Doe",
-    "password": "$2a$10$kUSu/Or0IX.E1WRaJtpUk.NWd83yV0mnt8CRnkbcQhvz6Qe3ntcAK"
+    "password": "$2a$10$kUSu/Or0IX.E1WRaJtpUk.NWd83yV0mnt8CRnkbcQhvz6Qe3ntcAK",
+    "schacHomeOrganization": "surfguest.nl"
   }
 ]

@@ -42,6 +42,7 @@ import java.util.Base64;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/myconext/api")
@@ -52,6 +53,7 @@ public class UserController {
     private MailBox mailBox;
     private ServiceNameResolver serviceNameResolver;
     private String magicLinkUrl;
+    private String schacHomeOrganization;
 
     private SecureRandom random = new SecureRandom();
     private PasswordEncoder passwordEncoder = new BCryptPasswordEncoder(-1, random);
@@ -62,12 +64,14 @@ public class UserController {
                           AuthenticationRequestRepository authenticationRequestRepository,
                           MailBox mailBox,
                           ServiceNameResolver serviceNameResolver,
-                          @Value("${email.magic-link-url}") String magicLinkUrl) {
+                          @Value("${email.magic-link-url}") String magicLinkUrl,
+                          @Value("${schac_home_organization}") String schacHomeOrganization) {
         this.userRepository = userRepository;
         this.authenticationRequestRepository = authenticationRequestRepository;
         this.mailBox = mailBox;
         this.serviceNameResolver = serviceNameResolver;
         this.magicLinkUrl = magicLinkUrl;
+        this.schacHomeOrganization = schacHomeOrganization;
     }
 
     @PostMapping("/idp/magic_link_request")
@@ -83,7 +87,7 @@ public class UserController {
         emailValidator.validEmail(user.getEmail());
 
         //prevent not-wanted attributes in the database
-        User userToSave = new User(user.getEmail(), user.getGivenName(), user.getFamilyName());
+        User userToSave = new User(UUID.randomUUID().toString(), user.getEmail(), user.getGivenName(), user.getFamilyName(), schacHomeOrganization);
         userToSave.encryptPassword(user.getPassword(), passwordEncoder);
         userToSave = userRepository.save(userToSave);
 

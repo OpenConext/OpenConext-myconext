@@ -146,4 +146,16 @@ public abstract class AbstractIntegrationTest {
         ReflectionTestUtils.setField(t, "expiresIn", expiresIn);
         mongoTemplate.save(t);
     }
+
+    protected User user(String email) {
+        return user(email, "John", "Doe");
+    }
+
+    protected User user(String email, String givenName, String familyName) {
+        return new User(UUID.randomUUID().toString(), email, givenName, familyName, "surfguest.nl");
+    }
+
+    protected void userSetPassword(User user, String plainTextPassword) {
+        ReflectionTestUtils.setField(user, "password", plainTextPassword);
+    }
 }

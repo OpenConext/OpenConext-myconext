@@ -24,11 +24,14 @@ public class LoginController {
     public LoginController(@Value("${base_path}") String basePath,
                            @Value("${base_domain}") String baseDomain,
                            @Value("${branding}") String branding,
+                           @Value("${my_conext_url}") String myConextUrl,
+                           @Value("${onegini_entity_id}") String oneGiniEntityId,
                            @Value("${sp_redirect_url}") String redirectUrl) {
         this.config = new HashMap<>();
         this.config.put("loginUrl", basePath + "/login");
         this.config.put("baseDomain", baseDomain);
         this.config.put("branding", branding);
+        this.config.put("migrationUrl", String.format("%s/Shibboleth.sso/Login?entityID=%s&target=/startSSO?redirect_url=/migration", myConextUrl, oneGiniEntityId));
         this.redirectUrl = redirectUrl;
     }
 

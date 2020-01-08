@@ -17,6 +17,7 @@ I18n.translations.en = {
         title: "Personal information",
         info: "Basic information like your name and email address, and the information we have received from your institution",
         email: "Email address",
+        schacHomeOrganization: "Institution ID",
         name: "Name",
         profile: "Profile"
     },
@@ -91,6 +92,12 @@ I18n.translations.en = {
     modal: {
         cancel: "Cancel",
         confirm: "Confirm"
+    },
+    migration: {
+        header: "Account migration",
+        header2: "Migration from Onegine to SURFconext Guest Account",
+        info: "Your Onegini account is successfully migrated to a SURFconext Guest Account. Proceed to manage your account and optionally change your security settings",
+        link: "Proceed"
     }
 };
 

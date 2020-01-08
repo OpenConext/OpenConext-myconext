@@ -68,5 +68,11 @@ I18n.translations.nl = {
     notFound: {
         title: "404",
         title2: "Niet gevonden"
+    },
+    migration: {
+        header: "Account migratie",
+        header2: "Migratie van Onegine naar SURFconext Guest Account",
+        info: "SURFconext zal niet langer Onegini gebruiken om gastaccounts te ondersteunen. Wanneer u doorgaat, wordt u doorgestuurd naar Onegini om in te loggen en na een succesvolle login wordt uw account gemigreerd naar een SURConext-gastaccount.",
+        link: "Doorgaan"
     }
 };

@@ -68,6 +68,12 @@ I18n.translations.en = {
     notFound: {
         title: "404",
         title2: "Not Found"
+    },
+    migration: {
+        header: "Account migration",
+        header2: "Migration from Onegine to SURFconext Guest Account",
+        info: "SURFconext will no longer use Onegini to support guests accounts. When you proceed you'll be redirected to Onegini to login and after a successful login your account will be migrated to a SURConext Guest Account.",
+        link: "Proceed"
     }
 };
 
