@@ -95,8 +95,9 @@ I18n.translations.nl = {
     },
     migration: {
         header: "Account migratie",
-        header2: "Migratie van Onegine naar SURFconext Guest Account",
+        header2: "Migratie van Onegini naar SURFconext Guest Account",
         info: "Uw Onegini-account is succesvol gemigreerd naar een SURFconext-gastaccount. Ga door met het beheren van uw account en wijzig eventueel uw beveiligingsinstellingen.",
+        info2: "In de toekomst kan je de <a href=\"https://surfconext.nl\" target=\"_blank\">SURFconext Guest IdP</a> gebruiken om in te loggen bij services waar je eerder Onegini gebruikte.",
         link: "Doorgaan"
     }
 

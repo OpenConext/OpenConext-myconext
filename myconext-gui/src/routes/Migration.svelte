@@ -72,6 +72,7 @@
         <h2>{I18n.ts("migration.header")}</h2>
         <h3>{I18n.ts("migration.header2")}</h3>
         <p class="info">{I18n.t("migration.info")}</p>
+        <p class="info">{@html I18n.t("migration.info2")}</p>
         <div class="options">
             <Button label={I18n.ts("migration.link")} onClick={proceed}/>
         </div>
