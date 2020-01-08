@@ -63,7 +63,6 @@
         align-items: stretch;
         max-width: var(--width-app);
         width: 100%;
-        height: 75vh;
         margin: 0 auto;
         border-left: 2px solid var(--color-primary-blue);
         border-right: 2px solid var(--color-primary-blue);

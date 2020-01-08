@@ -49,6 +49,7 @@
         background-color: #f3f6f8;
         min-height: 100%;
         border-bottom-left-radius: 8px;
+        padding-bottom: 400px;
     }
 
     nav ul {

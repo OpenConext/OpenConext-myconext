@@ -67,6 +67,10 @@
         color: var(--color-primary-green);
     }
 
+    .header a {
+        margin-top: 8px;
+    }
+
     h2 {
         margin-left: 25px;
     }
