@@ -81,3 +81,7 @@ To get an overview of the git source file's:
 ```
 cloc --read-lang-def=cloc_definitions.txt --vcs=git
 ```
+
+### [Migration](#migration)
+
+[Migrate your account](https://my.test2.surfconext.nl/Shibboleth.sso/Login?entityID=http://mock-idp&target=/startSSO?redirect_url=/migration)
