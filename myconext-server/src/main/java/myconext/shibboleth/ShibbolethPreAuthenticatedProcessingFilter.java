@@ -1,6 +1,7 @@
 package myconext.shibboleth;
 
 
+import myconext.exceptions.DuplicateUserEmailException;
 import myconext.model.User;
 import myconext.repository.UserRepository;
 import org.slf4j.Logger;
@@ -48,6 +49,12 @@ public class ShibbolethPreAuthenticatedProcessingFilter extends AbstractPreAuthe
             return null;
         }
         Optional<User> optionalUser = userRepository.findUserByUid(uid);
+        if (!optionalUser.isPresent()) {
+            //If we would provision this email and it already exisyt we would introduce a duplicate email
+            userRepository.findUserByEmail(email).ifPresent(user -> {
+                throw new DuplicateUserEmailException();
+            });
+        }
         return optionalUser.orElseGet(() -> provisionUser(uid, schacHomeOrganization, givenName, familyName, email));
     }
 
