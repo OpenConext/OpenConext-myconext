@@ -2,11 +2,13 @@ import I18n from "i18n-js";
 
 I18n.translations.nl = {
     header: {
-        title: "Mijn SURFconext"
+        title: "Mijn SURFconext",
+        logout: "Logout"
     },
     landing: {
         info: "Online samenwerken in het onderwijs",
         login: "Enter",
+        logoutStatus: "Je bent succesvol uitgelogd. Om het uitlogproces te voltooien, moet je je browser sluiten"
     },
     notFound: {
         main: "404 - Not Found"

@@ -22,7 +22,7 @@
                     guest: true,
                     usePassword: false
                 };
-                navigate("/landing");
+                navigate("/logout");
             });
         }
     }

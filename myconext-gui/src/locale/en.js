@@ -2,11 +2,13 @@ import I18n from "i18n-js";
 
 I18n.translations.en = {
     header: {
-        title: "My SURFconext"
+        title: "My SURFconext",
+        logout: "Logout"
     },
     landing: {
         info: "Collaborate online in higher education",
         login: "Enter",
+        logoutStatus: "You have successfully logged out. To complete the logout process, you must close your browser"
     },
     notFound: {
         main: "404 - Not Found"

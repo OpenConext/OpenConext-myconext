@@ -33,7 +33,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 import java.net.URI;
@@ -156,16 +155,24 @@ public class UserController {
         return ResponseEntity.status(201).body(new UserResponse(user, false));
     }
 
+    @GetMapping("/sp/logout")
+    public ResponseEntity logout(HttpServletRequest request) throws URISyntaxException {
+        return doLogout(request);
+    }
 
     @DeleteMapping("/sp/delete/{id}")
     public ResponseEntity deleteUser(Authentication authentication, HttpServletRequest request, @PathVariable("id") String id) throws URISyntaxException {
         User user = verifyAndFetchUser(authentication, id);
         userRepository.delete(user);
+        return doLogout(request);
+    }
+
+    private ResponseEntity doLogout(HttpServletRequest request) throws URISyntaxException {
         HttpSession session = request.getSession();
         session.invalidate();
         SecurityContextHolder.getContext().setAuthentication(null);
         SecurityContextHolder.clearContext();
-        return ResponseEntity.status(302).location(new URI("/")).build();
+        return ResponseEntity.status(302).location(new URI("/logout")).build();
     }
 
     private User verifyAndFetchUser(Authentication authentication, User deltaUser) {

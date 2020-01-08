@@ -59,7 +59,11 @@ export function updateSecurity(userId, currentPassword, newPassword) {
 }
 
 export function deleteUser(user) {
-    return fetchDelete(`/myconext/api/sp/delete/${user.id}`);
+    return fetch("/Shibboleth.sso/Logout").then(() => fetchDelete(`/myconext/api/sp/delete/${user.id}`));
+}
+
+export function logout() {
+    return fetch("/Shibboleth.sso/Logout").then(() => fetchJson("/myconext/api/sp/logout"));
 }
 
 export function forgetMe() {

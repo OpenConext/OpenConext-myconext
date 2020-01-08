@@ -63,6 +63,10 @@
         width: 260px;
     }
 
+    .button.small {
+        width: 140px;
+    }
+
 </style>
 
 <a class="{`button ${className}`}"
