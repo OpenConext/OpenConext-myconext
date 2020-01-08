@@ -52,6 +52,8 @@ public class ShibbolethPreAuthenticatedProcessingFilter extends AbstractPreAuthe
         if (!optionalUser.isPresent()) {
             //If we would provision this email and it already exisyt we would introduce a duplicate email
             userRepository.findUserByEmail(email).ifPresent(user -> {
+                //TODO use a custom / other exception and redirect in the DefaultErrorController / or redirect here
+                //to the myconext SP to a dedicated error page for this
                 throw new DuplicateUserEmailException();
             });
         }
