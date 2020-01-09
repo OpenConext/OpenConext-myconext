@@ -28,18 +28,15 @@ public class ShibbolethPreAuthenticatedProcessingFilter extends AbstractPreAuthe
     public static final String SHIB_AUTHENTICATING_AUTHORITY = "Shib-Authenticating-Authority";
 
     private final UserRepository userRepository;
-    private final String guestIdpEntityId;
     private final MailBox mailBox;
 
     public ShibbolethPreAuthenticatedProcessingFilter(AuthenticationManager authenticationManager,
                                                       UserRepository userRepository,
-                                                      MailBox mailBox,
-                                                      String guestIdpEntityId) {
+                                                      MailBox mailBox) {
         super();
         setAuthenticationManager(authenticationManager);
         this.userRepository = userRepository;
         this.mailBox = mailBox;
-        this.guestIdpEntityId = guestIdpEntityId;
     }
 
     @Override
@@ -70,13 +67,15 @@ public class ShibbolethPreAuthenticatedProcessingFilter extends AbstractPreAuthe
 
     private User provisionUser(String uid, String schacHomeOrganization, String givenName, String familyName, String email, String authenticatingAuthority) {
         User user = new User(uid, email, givenName, familyName, schacHomeOrganization, authenticatingAuthority);
+        user.setNewUser(false);
+        user = userRepository.save(user);
+
         LOG.info("Provision new User: uid {}, email {}, givenName {}, familyName {}, schacHomeOrganization {}, authenticatingAuthority {}",
                 uid, email, givenName, familyName, schacHomeOrganization, authenticatingAuthority);
-        user = userRepository.save(user);
-        if (!guestIdpEntityId.equalsIgnoreCase(authenticatingAuthority)) {
-            //migrated user
-            mailBox.sendAccountMigration(user);
-        }
+
+        //migrated user, as users from Guest IdP are provisioned in the UserController
+        mailBox.sendAccountMigration(user);
+
         return user;
     }
 

@@ -139,16 +139,13 @@ public class SecurityConfiguration {
         private Environment environment;
         private UserRepository userRepository;
         private MailBox mailBox;
-        private String guestIdpEntityId;
 
         public InternalSecurityConfigurationAdapter(Environment environment,
                                                     UserRepository userRepository,
-                                                    MailBox mailBox,
-                                                    @Value("${guest_idp_entity_id}") String guestIdpEntityId) {
+                                                    MailBox mailBox) {
             this.environment = environment;
             this.userRepository = userRepository;
             this.mailBox = mailBox;
-            this.guestIdpEntityId = guestIdpEntityId;
         }
 
         @Override
@@ -172,8 +169,7 @@ public class SecurityConfiguration {
                             new ShibbolethPreAuthenticatedProcessingFilter(
                                     authenticationManagerBean(),
                                     userRepository,
-                                    mailBox,
-                                    guestIdpEntityId),
+                                    mailBox),
                             AbstractPreAuthenticatedProcessingFilter.class
                     )
                     .authorizeRequests()
