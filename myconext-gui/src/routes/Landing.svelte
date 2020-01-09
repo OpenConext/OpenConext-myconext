@@ -8,7 +8,8 @@
     let isLogoutRedirect = false;
 
     onMount(() => {
-        isLogoutRedirect = ($redirectPath|| "").indexOf("logout") > -1;
+        const urlSearchParams = new URLSearchParams(window.location.search);
+        isLogoutRedirect = urlSearchParams.get("logout");
         if ($user.id) {
             navigate("/");
         }

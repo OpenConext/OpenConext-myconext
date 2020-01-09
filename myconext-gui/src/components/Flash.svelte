@@ -11,7 +11,6 @@
         width: 100%;
         height: 28px;
         z-index: 6;
-        opacity: .7;
         left: 0;
         background-color: green;
         transition: height 650ms ease-in-out;
@@ -29,9 +28,9 @@
     }
 
     .message-container p {
-        padding: 2px 25px 0 15px;
+        padding: 4px 25px 0 15px;
         font-weight: 300;
-        font-size: 14px;
+        font-size: 15px;
     }
 
     span.close {

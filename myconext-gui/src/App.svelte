@@ -17,7 +17,6 @@
     import Flash from "./components/Flash.svelte";
 
     export let url = "";
-
     let loaded = false;
 
     onMount(() => configuration()
@@ -32,10 +31,13 @@
                         .catch(() => {
                             loaded = true;
                             $redirectPath = window.location.pathname;
+                            const urlSearchParams = new URLSearchParams(window.location.search);
+                            const logout = urlSearchParams.get("logout");
                             if ($redirectPath.indexOf("migration-error") > -1) {
-                                const urlSearchParams = new URLSearchParams(window.location.search);
                                 const email = decodeURIComponent(urlSearchParams.get("email"));
                                 navigate(`/migration-error?email=${email}`);
+                            } else if (logout) {
+                                navigate("/landing?logout=true");
                             } else {
                                 navigate("/landing");
                             }
@@ -162,9 +164,9 @@
         <Header/>
         <div class="content">
             <Router url="{url}">
+                <Route path="/" component={Landing}/>
                 <Route path="/landing" component={Landing}/>
                 <Route path="/migration-error" component={MigrationError}/>
-                <Route component={NotFound}/>
             </Router>
         </div>
         <Footer/>

@@ -18,7 +18,7 @@
                 guest: true,
                 usePassword: false
             };
-            navigate("/logout");
+            navigate("/landing?logout=true");
         });
     }
 

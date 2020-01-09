@@ -135,6 +135,8 @@
             <span class="error">{I18n.ts("password.invalidCurrentPassword")}</span>
         {/if}
 
+        <input id="username" type="hidden" name="username" value={$user.email}>
+
         <label for="newPassword">{I18n.ts("password.newPassword")}</label>
         <input id="newPassword" type="password" bind:value={newPassword}>
 
