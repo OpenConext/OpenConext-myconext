@@ -46,8 +46,10 @@
         text-align: center;
     }
 
-    h2.logout {
+    p.logout {
         color: var(--color-primary-black);
+        font-size: 22px;
+        margin-bottom: 74px;
     }
 
 </style>
@@ -55,7 +57,7 @@
 
 <div class="landing">
     {#if isLogoutRedirect}
-        <h2 class="logout">{I18n.ts("landing.logoutStatus")}</h2>
+        <p class="logout">{I18n.ts("landing.logoutStatus")}</p>
     {/if}
     <h1>{I18n.ts("header.title")}</h1>
     <h2>{I18n.ts("landing.info")}</h2>

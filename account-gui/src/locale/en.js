@@ -72,7 +72,7 @@ I18n.translations.en = {
     migration: {
         header: "Account migration",
         header2: "Migration from Onegini to SURFconext Guest Account",
-        info: "SURFconext will no longer use Onegini to support guests accounts. When you proceed you'll be redirected to Onegini to login and after a successful login your account will be migrated to a SURConext Guest Account.",
+        info: "SURFconext will no longer use Onegini to support guest accounts. When you proceed you'll be redirected to Onegini to login and after a successful login your current Onegini account will be migrated to a SURConext Guest Account.",
         link: "Proceed"
     }
 };
