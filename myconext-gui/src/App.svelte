@@ -11,10 +11,10 @@
     import RememberMe from "./routes/RememberMe.svelte";
     import Home from "./routes/Home.svelte";
     import Header from "./components/Header.svelte";
-    import Flash from "./components/Flash.svelte";
     import {me, configuration} from "./api";
     import {user, config, redirectPath} from "./stores/user";
     import I18n from "i18n-js";
+    import Flash from "./components/Flash.svelte";
 
     export let url = "";
 
@@ -134,7 +134,6 @@
 </style>
 {#if loaded && !$user.guest}
     <div class="myconext">
-        <Flash/>
         <Header/>
         <div class="content">
             <Router url="{url}">
@@ -148,6 +147,7 @@
                 <Route path="/security">
                     <Home bookmark="security"/>
                 </Route>
+                <Route path="/landing" component={Landing}/>
                 <Route path="/edit" component={EditName}/>
                 <Route path="/migration" component={Migration}/>
                 <Route path="/password" component={Password}/>

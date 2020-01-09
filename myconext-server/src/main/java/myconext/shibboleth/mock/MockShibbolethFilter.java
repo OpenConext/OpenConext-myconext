@@ -13,13 +13,14 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletRequestWrapper;
 import java.io.IOException;
 import java.util.HashMap;
-import java.util.UUID;
 
 public class MockShibbolethFilter extends GenericFilterBean {
 
-    private Environment environment;
+    private String uid = "1234567890";
+    public String email = "jdoe@example.com";
+    public String authenticatingAuthority = "https://account.test2.surfconext.nl";
 
-    private static String uid = "1234567890";
+    private Environment environment;
 
     public MockShibbolethFilter(Environment environment) {
         this.environment = environment;
@@ -53,8 +54,9 @@ public class MockShibbolethFilter extends GenericFilterBean {
                 (environment.acceptsProfiles(Profiles.of("dev")) && ((HttpServletRequest) request).getRequestURI().startsWith("/startSSO"))) {
             SetHeader wrapper = new SetHeader(servletRequest);
             wrapper.setHeader(ShibbolethPreAuthenticatedProcessingFilter.SHIB_SCHAC_HOME_ORGANIZATION, "surfguest.nl");
+            wrapper.setHeader(ShibbolethPreAuthenticatedProcessingFilter.SHIB_AUTHENTICATING_AUTHORITY, authenticatingAuthority);
             wrapper.setHeader(ShibbolethPreAuthenticatedProcessingFilter.SHIB_UID, uid);
-            wrapper.setHeader(ShibbolethPreAuthenticatedProcessingFilter.SHIB_EMAIL, "jdoe@example.com");
+            wrapper.setHeader(ShibbolethPreAuthenticatedProcessingFilter.SHIB_EMAIL, email);
             wrapper.setHeader(ShibbolethPreAuthenticatedProcessingFilter.SHIB_GIVEN_NAME, "John");
             wrapper.setHeader(ShibbolethPreAuthenticatedProcessingFilter.SHIB_SUR_NAME, "Doe");
             filterChain.doFilter(wrapper, response);

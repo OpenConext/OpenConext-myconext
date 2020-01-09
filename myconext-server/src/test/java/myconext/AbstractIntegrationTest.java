@@ -152,7 +152,8 @@ public abstract class AbstractIntegrationTest {
     }
 
     protected User user(String email, String givenName, String familyName) {
-        return new User(UUID.randomUUID().toString(), email, givenName, familyName, "surfguest.nl");
+        return new User(UUID.randomUUID().toString(), email, givenName, familyName, "surfguest.nl",
+                "https://account.test2.surfconext.nl");
     }
 
     protected void userSetPassword(User user, String plainTextPassword) {

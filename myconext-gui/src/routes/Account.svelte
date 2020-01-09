@@ -1,5 +1,5 @@
 <script>
-    import {user, flash} from "../stores/user";
+    import {user} from "../stores/user";
     import I18n from "i18n-js";
     import {navigate} from "svelte-routing";
 

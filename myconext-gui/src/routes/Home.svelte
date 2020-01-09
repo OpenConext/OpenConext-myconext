@@ -12,6 +12,7 @@
     import Profile from "./Profile.svelte";
     import Security from "./Security.svelte";
     import Account from "./Account.svelte";
+    import Flash from "../components/Flash.svelte";
 
     export let bookmark;
 
@@ -44,7 +45,6 @@
     }
 
     nav {
-        margin-right: 50px;
         min-width: 270px;
         background-color: #f3f6f8;
         min-height: 100%;
@@ -73,6 +73,7 @@
             margin-right: 0;
             position: absolute;
             min-width: 270px;
+            padding-bottom: 0;
         }
 
         a.menu-link {
@@ -132,6 +133,18 @@
         fill: var(--color-primary-green);
     }
 
+    div.component-container {
+        position: relative;
+        padding: 0 50px;
+        width: 100%;
+    }
+
+    @media (max-width: 820px) {
+        div.component-container {
+            padding: 0;
+        }
+    }
+
 </style>
 <div class="home">
     <nav class:open={displayMenu}>
@@ -149,5 +162,9 @@
             {/each}
         </ul>
     </nav>
-    <svelte:component this={currentTab.component}/>
+    <div class="component-container">
+        <Flash/>
+        <svelte:component this={currentTab.component}/>
+    </div>
+
 </div>

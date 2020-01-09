@@ -24,8 +24,8 @@
             updateSecurity($user.id, currentPassword, newPassword)
                     .then(json => {
                         $user = {$user, ...json};
-                        $flash = usePassword ? I18n.ts("password.updated") : I18n.ts("password.set");
                         navigate("/security");
+                        flash.setValue(usePassword ? I18n.ts("password.updated") : I18n.ts("password.set"));
                     })
                     .catch(() => {
                         currentPasswordInvalid = true;

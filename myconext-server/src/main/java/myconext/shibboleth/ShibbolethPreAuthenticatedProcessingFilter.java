@@ -1,8 +1,8 @@
 package myconext.shibboleth;
 
 
-import myconext.exceptions.DuplicateUserEmailException;
 import myconext.exceptions.MigrationDuplicateUserEmailException;
+import myconext.mail.MailBox;
 import myconext.model.User;
 import myconext.repository.UserRepository;
 import org.slf4j.Logger;
@@ -25,13 +25,21 @@ public class ShibbolethPreAuthenticatedProcessingFilter extends AbstractPreAuthe
     public static final String SHIB_EMAIL = "Shib-InetOrgPerson-mail";
     public static final String SHIB_UID = "uid";
     public static final String SHIB_SCHAC_HOME_ORGANIZATION = "schacHomeOrganization";
+    public static final String SHIB_AUTHENTICATING_AUTHORITY = "Shib-Authenticating-Authority";
 
     private final UserRepository userRepository;
+    private final String guestIdpEntityId;
+    private final MailBox mailBox;
 
-    public ShibbolethPreAuthenticatedProcessingFilter(AuthenticationManager authenticationManager, UserRepository userRepository) {
+    public ShibbolethPreAuthenticatedProcessingFilter(AuthenticationManager authenticationManager,
+                                                      UserRepository userRepository,
+                                                      MailBox mailBox,
+                                                      String guestIdpEntityId) {
         super();
         setAuthenticationManager(authenticationManager);
         this.userRepository = userRepository;
+        this.mailBox = mailBox;
+        this.guestIdpEntityId = guestIdpEntityId;
     }
 
     @Override
@@ -41,6 +49,7 @@ public class ShibbolethPreAuthenticatedProcessingFilter extends AbstractPreAuthe
         String email = getHeader(SHIB_EMAIL, request);
         String givenName = getHeader(SHIB_GIVEN_NAME, request);
         String familyName = getHeader(SHIB_SUR_NAME, request);
+        String authenticatingAuthority = getHeader(SHIB_AUTHENTICATING_AUTHORITY, request);
 
         boolean valid = Stream.of(uid, schacHomeOrganization, email, givenName, familyName).allMatch(StringUtils::hasText);
         if (!valid) {
@@ -56,15 +65,19 @@ public class ShibbolethPreAuthenticatedProcessingFilter extends AbstractPreAuthe
                 throw new MigrationDuplicateUserEmailException(email);
             });
         }
-        return optionalUser.orElseGet(() -> provisionUser(uid, schacHomeOrganization, givenName, familyName, email));
+        return optionalUser.orElseGet(() -> provisionUser(uid, schacHomeOrganization, givenName, familyName, email, authenticatingAuthority));
     }
 
-    private User provisionUser(String uid, String schacHomeOrganization, String givenName, String familyName, String email) {
-        User user = new User(uid, email, givenName, familyName, schacHomeOrganization);
-        LOG.info("Provision new User: uid {}, email {}, givenName {}, familyName {}, schacHomeOrganization {}",
-                uid, email, givenName, familyName, schacHomeOrganization);
-        return userRepository.save(user);
-
+    private User provisionUser(String uid, String schacHomeOrganization, String givenName, String familyName, String email, String authenticatingAuthority) {
+        User user = new User(uid, email, givenName, familyName, schacHomeOrganization, authenticatingAuthority);
+        LOG.info("Provision new User: uid {}, email {}, givenName {}, familyName {}, schacHomeOrganization {}, authenticatingAuthority {}",
+                uid, email, givenName, familyName, schacHomeOrganization, authenticatingAuthority);
+        user = userRepository.save(user);
+        if (!guestIdpEntityId.equalsIgnoreCase(authenticatingAuthority)) {
+            //migrated user
+            mailBox.sendAccountMigration(user);
+        }
+        return user;
     }
 
     @Override

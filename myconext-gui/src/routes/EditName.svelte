@@ -9,8 +9,8 @@
     const update = () => {
         if ($user.familyName && $user.givenName) {
             updateUser($user).then(() => {
-                $flash = I18n.ts("edit.updated");
                 navigate("/profile");
+                flash.setValue(I18n.ts("edit.updated"));
             });
         }
     };

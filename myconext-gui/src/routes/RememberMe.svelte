@@ -16,8 +16,8 @@
         } else {
             forgetMe().then(() => {
                 $user.rememberMe = false;
-                $flash = I18n.ts("rememberMe.updated");
                 navigate("/security");
+                flash.setValue(I18n.ts("rememberMe.updated"));
             });
         }
     };

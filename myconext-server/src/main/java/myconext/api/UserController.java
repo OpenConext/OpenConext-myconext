@@ -54,6 +54,7 @@ public class UserController {
     private ServiceNameResolver serviceNameResolver;
     private String magicLinkUrl;
     private String schacHomeOrganization;
+    private String guestIdpEntityId;
 
     private SecureRandom random = new SecureRandom();
     private PasswordEncoder passwordEncoder = new BCryptPasswordEncoder(-1, random);
@@ -65,17 +66,19 @@ public class UserController {
                           MailBox mailBox,
                           ServiceNameResolver serviceNameResolver,
                           @Value("${email.magic-link-url}") String magicLinkUrl,
-                          @Value("${schac_home_organization}") String schacHomeOrganization) {
+                          @Value("${schac_home_organization}") String schacHomeOrganization,
+                          @Value("${guest_idp_entity_id}") String guestIdpEntityId) {
         this.userRepository = userRepository;
         this.authenticationRequestRepository = authenticationRequestRepository;
         this.mailBox = mailBox;
         this.serviceNameResolver = serviceNameResolver;
         this.magicLinkUrl = magicLinkUrl;
         this.schacHomeOrganization = schacHomeOrganization;
+        this.guestIdpEntityId = guestIdpEntityId;
     }
 
     @PostMapping("/idp/magic_link_request")
-    public ResponseEntity newMagicLinkRequest(@Valid @RequestBody MagicLinkRequest magicLinkRequest) throws InterruptedException {
+    public ResponseEntity newMagicLinkRequest(@Valid @RequestBody MagicLinkRequest magicLinkRequest) {
         SamlAuthenticationRequest samlAuthenticationRequest = authenticationRequestRepository.findByIdAndNotExpired(magicLinkRequest.getAuthenticationRequestId())
                 .orElseThrow(ExpiredAuthenticationException::new);
 
@@ -87,7 +90,8 @@ public class UserController {
         emailValidator.validEmail(user.getEmail());
 
         //prevent not-wanted attributes in the database
-        User userToSave = new User(UUID.randomUUID().toString(), user.getEmail(), user.getGivenName(), user.getFamilyName(), schacHomeOrganization);
+        User userToSave = new User(UUID.randomUUID().toString(), user.getEmail(), user.getGivenName(),
+                user.getFamilyName(), schacHomeOrganization, guestIdpEntityId);
         userToSave.encryptPassword(user.getPassword(), passwordEncoder);
         userToSave = userRepository.save(userToSave);
 

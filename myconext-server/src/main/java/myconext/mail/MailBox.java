@@ -56,6 +56,14 @@ public class MailBox {
         sendMail("mail_templates/account_confirmation.html", title, variables, user.getEmail());
     }
 
+    public void sendAccountMigration(User user) {
+        String title = "Your Onegini account has been migrated to a SURFconext Guest Account";
+
+        Map<String, Object> variables = variables(user, title);
+        variables.put("mySurfConextURL", mySURFconextURL);
+        sendMail("mail_templates/account_migration.html", title, variables, user.getEmail());
+    }
+
     private Map<String, Object> variables(User user, String title) {
         Map<String, Object> variables = new HashMap<>();
         variables.put("title", title);

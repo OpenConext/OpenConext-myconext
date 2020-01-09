@@ -34,17 +34,20 @@ public class User implements Serializable, UserDetails {
     private String familyName;
     private String uid;
     private String schacHomeOrganization;
+    private String authenticatingAuthority;
     private String password;
     private boolean newUser;
 
     private long updatedAt = System.currentTimeMillis() / 1000L;
 
-    public User(@NotNull String uid, @NotNull String email, String givenName, String familyName, String schacHomeOrganization) {
+    public User(@NotNull String uid, @NotNull String email, String givenName, String familyName,
+                String schacHomeOrganization, String authenticatingAuthority) {
         this.uid = uid;
         this.email = email;
         this.givenName = givenName;
         this.familyName = familyName;
         this.schacHomeOrganization = schacHomeOrganization;
+        this.authenticatingAuthority = authenticatingAuthority;
         this.newUser = true;
     }
 

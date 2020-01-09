@@ -1,26 +1,25 @@
 <script>
     import {flash} from "../stores/user";
     import closeIcon from "../icons/close_smll.svg"
-    const clearFlash = () => {$flash = "";
-    }
+
 </script>
 
 <style>
     .flash {
         color: white;
-
         position: absolute;
         width: 100%;
-        top: 0;
+        height: 28px;
         z-index: 6;
-        opacity: .9;
+        opacity: .7;
+        left: 0;
         background-color: green;
-        transition: top 150ms ease-in-out;
+        transition: height 650ms ease-in-out;
     }
 
     .flash.hide {
-        transition: top 1000ms ease-in-out;
-        top: -80px;
+        transition: height 650ms ease-in-out;
+        height: 0;
     }
 
     .message-container {
@@ -30,8 +29,9 @@
     }
 
     .message-container p {
-        padding: 10px 25px 10px 15px;
+        padding: 2px 25px 0 15px;
         font-weight: 300;
+        font-size: 14px;
     }
 
     span.close {
@@ -40,11 +40,12 @@
         right: 10px;
         top: 0;
         color: white;
-        padding: 6px;
         cursor: pointer;
     }
+
     :global(span.close svg) {
         fill: white;
+        width: 20px;
     }
 
 </style>
@@ -52,7 +53,7 @@
 <div class="flash" class:hide={!$flash}>
     <div class="message-container">
         <p>{$flash}
-            <span href="/close" class="close" on:click|preventDefault|stopPropagation={clearFlash}>
+            <span href="/close" class="close" on:click|preventDefault|stopPropagation={() => flash.setValue("")}>
                 {@html closeIcon}
             </span>
         </p>

@@ -2,6 +2,7 @@ package myconext.security;
 
 import myconext.config.BeanConfig;
 import myconext.crypto.KeyGenerator;
+import myconext.mail.MailBox;
 import myconext.repository.UserRepository;
 import myconext.shibboleth.ShibbolethPreAuthenticatedProcessingFilter;
 import myconext.shibboleth.ShibbolethUserDetailService;
@@ -135,14 +136,19 @@ public class SecurityConfiguration {
     @Configuration
     public static class InternalSecurityConfigurationAdapter extends WebSecurityConfigurerAdapter {
 
-
         private Environment environment;
-
         private UserRepository userRepository;
+        private MailBox mailBox;
+        private String guestIdpEntityId;
 
-        public InternalSecurityConfigurationAdapter(Environment environment, UserRepository userRepository) {
+        public InternalSecurityConfigurationAdapter(Environment environment,
+                                                    UserRepository userRepository,
+                                                    MailBox mailBox,
+                                                    @Value("${guest_idp_entity_id}") String guestIdpEntityId) {
             this.environment = environment;
             this.userRepository = userRepository;
+            this.mailBox = mailBox;
+            this.guestIdpEntityId = guestIdpEntityId;
         }
 
         @Override
@@ -163,7 +169,11 @@ public class SecurityConfiguration {
                     .and()
                     .addFilterAfter(new CsrfTokenResponseHeaderBindingFilter(), CsrfFilter.class)
                     .addFilterBefore(
-                            new ShibbolethPreAuthenticatedProcessingFilter(authenticationManagerBean(), userRepository),
+                            new ShibbolethPreAuthenticatedProcessingFilter(
+                                    authenticationManagerBean(),
+                                    userRepository,
+                                    mailBox,
+                                    guestIdpEntityId),
                             AbstractPreAuthenticatedProcessingFilter.class
                     )
                     .authorizeRequests()
