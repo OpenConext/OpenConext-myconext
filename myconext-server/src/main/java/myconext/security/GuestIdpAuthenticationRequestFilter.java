@@ -7,6 +7,8 @@ import myconext.model.SamlAuthenticationRequest;
 import myconext.model.User;
 import myconext.repository.AuthenticationRequestRepository;
 import myconext.repository.UserRepository;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -53,6 +55,8 @@ public class GuestIdpAuthenticationRequestFilter extends IdpAuthenticationReques
     public static final String GUEST_IDP_REMEMBER_ME_COOKIE_NAME = "guest-idp-remember-me";
     public static final String BROWSER_SESSION_COOKIE_NAME = "BROWSERSESSION";
 
+    private static final Log LOG = LogFactory.getLog(GuestIdpAuthenticationRequestFilter.class);
+
     private final SamlRequestMatcher ssoSamlRequestMatcher;
     private final SamlRequestMatcher magicSamlRequestMatcher;
     private final String redirectUrl;
@@ -93,9 +97,11 @@ public class GuestIdpAuthenticationRequestFilter extends IdpAuthenticationReques
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         if (this.ssoSamlRequestMatcher.matches(request)) {
+            LOG.debug("Starting SSO filter");
             sso(request, response);
             return;
         } else if (this.magicSamlRequestMatcher.matches(request)) {
+            LOG.debug("Starting magic filter");
             magic(request, response);
             return;
         }
@@ -123,15 +129,16 @@ public class GuestIdpAuthenticationRequestFilter extends IdpAuthenticationReques
         // Use the returned instance for further operations as the save operation has added the _id
         samlAuthenticationRequest = authenticationRequestRepository.save(samlAuthenticationRequest);
 
-        Optional<Cookie> userFromRemembered = cookieByName(request, GUEST_IDP_REMEMBER_ME_COOKIE_NAME);
+        Optional<Cookie> rememberMeCookieOptional = cookieByName(request, GUEST_IDP_REMEMBER_ME_COOKIE_NAME);
+        Optional<User> userRememberedOptional = rememberMeCookieOptional.map(this::userFromCookie).flatMap(identity());
+
         Optional<User> userFromAuthentication = userFromAuthentication();
 
-        Optional<User> optionalUser = userFromRemembered.map(this::userFromCookie).orElse(userFromAuthentication);
+        User previousAuthenticatedUser = userRememberedOptional.orElse(userFromAuthentication.orElse(null));
 
-        if (optionalUser.isPresent() && !authenticationRequest.isForceAuth()) {
+        if (previousAuthenticatedUser != null && !authenticationRequest.isForceAuth()) {
             ServiceProviderMetadata serviceProviderMetadata = provider.getRemoteProvider(spEntityId);
-            User user = optionalUser.get();
-            sendAssertion(request, response, samlAuthenticationRequest.getRelayState(), user, provider, serviceProviderMetadata, authenticationRequest);
+            sendAssertion(request, response, samlAuthenticationRequest.getRelayState(), previousAuthenticatedUser, provider, serviceProviderMetadata, authenticationRequest);
         } else {
             addBrowserIdentificationCookie(response);
             String serviceName = serviceNameResolver.resolve(requesterEntityId);
@@ -141,12 +148,15 @@ public class GuestIdpAuthenticationRequestFilter extends IdpAuthenticationReques
     }
 
     private Optional<User> userFromCookie(Cookie remembered) {
+        LOG.info("Returning user from rememberMe cookie");
         return authenticationRequestRepository.findById(remembered.getValue())
                 .map(req -> userRepository.findById(req.getUserId())).flatMap(identity());
     }
 
     private Optional<User> userFromAuthentication() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        LOG.info("Attempting user authentication from security context: " + authentication);
         return authentication != null && authentication.isAuthenticated() && authentication instanceof UsernamePasswordAuthenticationToken ?
                 Optional.of((User) authentication.getPrincipal()) : Optional.empty();
     }

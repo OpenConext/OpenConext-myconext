@@ -57,7 +57,7 @@ public class MailBox {
     }
 
     public void sendAccountMigration(User user) {
-        String title = "Your Onegini account has been migrated to a SURFconext Guest Account";
+        String title = "Your Guest Account has been migrated";
 
         Map<String, Object> variables = variables(user, title);
         variables.put("mySurfConextURL", mySURFconextURL);
