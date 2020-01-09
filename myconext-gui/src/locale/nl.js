@@ -99,6 +99,13 @@ I18n.translations.nl = {
         info: "Uw Onegini-account is succesvol gemigreerd naar een SURFconext-gastaccount. Ga door met het beheren van uw account en wijzig eventueel uw beveiligingsinstellingen.",
         info2: "In de toekomst kan je de <a href=\"https://surfconext.nl\" target=\"_blank\">SURFconext Guest IdP</a> gebruiken om in te loggen bij services waar je eerder Onegini gebruikte.",
         link: "Doorgaan"
+    },
+    migrationError: {
+        header: "Account migratie Error",
+        header2: "Migratie van Onegini naar SURFconext Guest Account is mislukt",
+        info: "We kunnen je Onegini-account NIET migreren naar een SURFconext-gastaccount omdat je een e-mail hebt gebruikt die al is gekoppeld aan een andere gastaccount gebruiker.",
+        info2: "Kopieer de onderstaande link, sluit je browser en probeer het opnieuw met de gekopieerde link met een andere e-mail.",
+        info3: "Als je wel de eigenaar bent van de e-mail <strong>{{email}}</strong>, kan je naar de <a href=\"{{url}}\">SURFconext Guest IdP</a> gaan en een magic link aanvragen om in te loggen met deze e-mail.",
     }
 
 };

@@ -1,9 +1,16 @@
 <script>
     import I18n from "i18n-js";
-    import {navigate} from "svelte-routing";
-    import Button from "../components/Button.svelte";
+    import {config} from "../stores/user";
+    import {onMount} from 'svelte';
 
-    const proceed = () => navigate("/");
+    let email = null;
+
+    onMount(() => {
+        if (typeof window !== "undefined") {
+            const urlSearchParams = new URLSearchParams(window.location.search);
+            email = decodeURIComponent(urlSearchParams.get("email"));
+        }
+    });
 
 </script>
 
@@ -41,7 +48,7 @@
     }
 
     h2 {
-        color: var(--color-primary-green);
+        color: var(--color-primary-red);
         margin-bottom: 18px;
     }
 
@@ -53,8 +60,12 @@
         margin: 12px 0 16px 0;
     }
 
-    .options {
-        margin-top: 60px;
+    input {
+        border-radius: 8px;
+        border: solid 1px #676767;
+        padding: 14px;
+        font-size: 16px;
+        margin: 15px 25px;
     }
 
     :global(.options a:not(:first-child)) {
@@ -66,13 +77,12 @@
 <div class="migration">
     <div class="left"></div>
     <div class="inner">
-        <h2>{I18n.ts("migration.header")}</h2>
-        <h3>{I18n.ts("migration.header2")}</h3>
-        <p class="info">{I18n.t("migration.info")}</p>
-        <p class="info">{@html I18n.t("migration.info2")}</p>
-        <div class="options">
-            <Button label={I18n.ts("migration.link")} onClick={proceed}/>
-        </div>
+        <h2>{I18n.ts("migrationError.header")}</h2>
+        <h3>{I18n.ts("migrationError.header2")}</h3>
+        <p class="info">{I18n.t("migrationError.info")}</p>
+        <p class="info">{I18n.t("migrationError.info2")}</p>
+        <input type="text" disabled={true} value={$config.migrationLandingPageUrl}>
+        <p class="info">{@html I18n.t("migrationError.info3", {email: email, url: $config.myConextUrlGuestIdp})}</p>
     </div>
 
 </div>

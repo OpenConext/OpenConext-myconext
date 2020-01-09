@@ -14,7 +14,9 @@ export const user = writable({
 
 export const config = writable({
     loginUrl: "",
-    baseDomain: ""
+    baseDomain: "",
+    migrationLandingPageUrl: "",
+    myConextUrlGuestIdp: ""
 });
 
 export const redirectPath = writable("");

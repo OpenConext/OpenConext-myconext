@@ -7,8 +7,8 @@
         if (typeof window !== "undefined") {
             window.location.href = `${$conf.migrationUrl}`;
         }
-
     };
+
 </script>
 
 <style>

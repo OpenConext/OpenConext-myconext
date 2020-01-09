@@ -6,6 +6,7 @@
     import NotFound from "./routes/NotFound.svelte";
     import EditName from "./routes/EditName.svelte";
     import Migration from "./routes/Migration.svelte";
+    import MigrationError from "./routes/MigrationError.svelte";
     import Password from "./routes/Password.svelte";
     import RememberMe from "./routes/RememberMe.svelte";
     import Home from "./routes/Home.svelte";
@@ -31,7 +32,13 @@
                         .catch(() => {
                             loaded = true;
                             $redirectPath = window.location.pathname;
-                            navigate("/landing");
+                            if ($redirectPath.indexOf("migration-error") > -1) {
+                                const urlSearchParams = new URLSearchParams(window.location.search);
+                                const email = decodeURIComponent(urlSearchParams.get("email"));
+                                navigate(`/migration-error?email=${email}`);
+                            } else {
+                                navigate("/landing");
+                            }
                         })
             })
     );
@@ -145,7 +152,6 @@
                 <Route path="/migration" component={Migration}/>
                 <Route path="/password" component={Password}/>
                 <Route path="/rememberme" component={RememberMe}/>
-                <Route path="/landing" component={Landing}/>
                 <Route component={NotFound}/>
             </Router>
         </div>
@@ -155,7 +161,11 @@
     <div class="myconext">
         <Header/>
         <div class="content">
-            <Landing/>
+            <Router url="{url}">
+                <Route path="/landing" component={Landing}/>
+                <Route path="/migration-error" component={MigrationError}/>
+                <Route component={NotFound}/>
+            </Router>
         </div>
         <Footer/>
     </div>

@@ -1,6 +1,8 @@
 package myconext.api;
 
+import myconext.exceptions.MigrationDuplicateUserEmailException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.servlet.error.ErrorAttributes;
 import org.springframework.boot.web.servlet.error.ErrorController;
 import org.springframework.core.annotation.AnnotationUtils;
@@ -13,6 +15,8 @@ import org.springframework.web.context.request.ServletWebRequest;
 import org.springframework.web.context.request.WebRequest;
 
 import javax.servlet.http.HttpServletRequest;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.Map;
 
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
@@ -22,10 +26,12 @@ import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
 public class DefaultErrorController implements ErrorController {
 
     private final ErrorAttributes errorAttributes;
+    private final String redirectUrl;
 
     @Autowired
-    public DefaultErrorController(ErrorAttributes errorAttributes) {
+    public DefaultErrorController(ErrorAttributes errorAttributes, @Value("${sp_redirect_url}") String redirectUrl) {
         this.errorAttributes = errorAttributes;
+        this.redirectUrl = redirectUrl;
     }
 
     @Override
@@ -34,7 +40,7 @@ public class DefaultErrorController implements ErrorController {
     }
 
     @RequestMapping("/error")
-    public ResponseEntity error(HttpServletRequest request) {
+    public ResponseEntity error(HttpServletRequest request) throws URISyntaxException {
         WebRequest webRequest = new ServletWebRequest(request);
         Map<String, Object> result = this.errorAttributes.getErrorAttributes(webRequest, false);
 
@@ -48,7 +54,13 @@ public class DefaultErrorController implements ErrorController {
             //https://github.com/spring-projects/spring-boot/issues/3057
             ResponseStatus annotation = AnnotationUtils.getAnnotation(error.getClass(), ResponseStatus.class);
             statusCode = annotation != null ? annotation.value() : BAD_REQUEST;
+            if (error instanceof MigrationDuplicateUserEmailException) {
+                String email = ((MigrationDuplicateUserEmailException) error).getEmail();
+                return ResponseEntity.status(302).location(new URI(this.redirectUrl + "/migration-error?email=" + email)).build();
+            }
+
         }
+
         result.remove("message");
         result.put("status", statusCode.value());
 
