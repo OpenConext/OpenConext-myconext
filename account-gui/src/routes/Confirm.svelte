@@ -43,7 +43,7 @@
         <h1>{I18n.ts("confirm.header")}</h1>
         <h2>{I18n.ts("confirm.header2")}</h2>
         <p>{I18n.ts("confirm.thanks")}</p>
-        <p>{@html I18n.ts("confirm.info", {name: serviceName})}</p>
+        <p>{I18n.ts("confirm.info1")} <strong>{serviceName}</strong> {I18n.ts("confirm.info2")}</p>
         <Button href="/proceed" onClick={proceed}
                 className="full"
                 label={I18n.ts("confirm.link")}/>

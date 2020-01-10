@@ -32,18 +32,23 @@
         const value = Cookies.get("login_preference");
         $user.usePassword = value === "usePassword";
         const urlParams = new URLSearchParams(window.location.search);
-        serviceName = urlParams.get("name")
+        serviceName = urlParams.get("name");
+
+        const modus = urlParams.get("modus");
+        if (modus && modus === "cr") {
+            $user.createAccount = true;
+        }
+
     });
-
-
 
     const handleNext = passwordFlow => () => {
         if (($user.usePassword && passwordFlow) || (!$user.usePassword && !passwordFlow)) {
             if (allowedNext($user.email, $user.givenName, $user.familyName, $user.password)) {
                 showSpinner = true;
+                const modus = $user.createAccount ? "cr" : "ea";
                 if ($user.createAccount) {
                     magicLinkNewUser($user.email, $user.givenName, $user.familyName, $user.rememberMe, id)
-                            .then(() => navigate(`/magic/${id}`, {replace: true}))
+                            .then(() => navigate(`/magic/${id}?name=${encodeURIComponent(serviceName)}&modus=${modus}`, {replace: true}))
                             .catch(e => {
                                 showSpinner = false;
                                 if (e.status === 409) {
@@ -61,7 +66,7 @@
                                 if ($user.usePassword) {
                                     window.location.href = json.url
                                 } else {
-                                    navigate(`/magic/${id}`, {replace: true});
+                                    navigate(`/magic/${id}?name=${encodeURIComponent(serviceName)}&modus=${modus}`, {replace: true});
                                 }
                             }).catch(e => {
                         showSpinner = false;
@@ -199,10 +204,12 @@
     <Spinner/>
 {/if}
 
-<h1>{@html I18n.ts("login.header")}</h1>
-<h2 class="top">{@html I18n.ts("login.header2", {name: serviceName})}</h2>
-<label class="pre-input-label">{I18n.ts("login.email")}</label>
+<h1>{I18n.ts("login.header")}</h1>
+<h2 class="top">{I18n.ts("login.header2", {name: serviceName})}</h2>
+<label for="email" class="pre-input-label">{I18n.ts("login.email")}</label>
 <input type="email"
+       autocomplete="username"
+       id="email"
        placeholder={I18n.ts("login.emailPlaceholder")}
        use:init
        bind:value={$user.email}
@@ -223,15 +230,17 @@
     <span class="error">{I18n.ts("login.emailInUse")}</span>
 {/if}
 {#if $user.createAccount}
-    <label class="pre-input-label">{I18n.ts("login.givenName")}</label>
+    <label for="given-name" class="pre-input-label">{I18n.ts("login.givenName")}</label>
     <input type="text"
+           id="given-name"
            placeholder={I18n.ts("login.givenNamePlaceholder")}
            bind:value={$user.givenName}>
     {#if !initial && !$user.givenName}
         <span class="error">{I18n.ts("login.requiredAttribute", {attr: I18n.ts("login.givenName")})}</span>
     {/if}
-    <label class="pre-input-label">{I18n.ts("login.familyName")}</label>
+    <label for="family-name" class="pre-input-label">{I18n.ts("login.familyName")}</label>
     <input type="text"
+           id="family-name"
            placeholder={I18n.ts("login.familyNamePlaceholder")}
            bind:value={$user.familyName}>
     {#if !initial && !$user.familyName}
@@ -247,8 +256,10 @@
     </div>
 {:else}
     <div id="password" class:hidden={!$user.usePassword}>
-        <label class="pre-input-label">{I18n.ts("login.password")}</label>
-        <input type="password" id="password-field"
+        <label for="password-field" class="pre-input-label">{I18n.ts("login.password")}</label>
+        <input type="password"
+               autocomplete="current-password"
+               id="password-field"
                on:keydown={handlePasswordEnter}
                bind:value={$user.password}
                bind:this={passwordField}

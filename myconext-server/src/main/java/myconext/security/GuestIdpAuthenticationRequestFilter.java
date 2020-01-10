@@ -236,6 +236,7 @@ public class GuestIdpAuthenticationRequestFilter extends IdpAuthenticationReques
         Cookie cookie = new Cookie(GUEST_IDP_REMEMBER_ME_COOKIE_NAME, samlAuthenticationRequest.getId());
         cookie.setMaxAge(rememberMeMaxAge);
         cookie.setSecure(secureCookie);
+        cookie.setHttpOnly(true);
         response.addCookie(cookie);
     }
 
@@ -268,7 +269,8 @@ public class GuestIdpAuthenticationRequestFilter extends IdpAuthenticationReques
         return Arrays.asList(
                 attribute("urn:mace:dir:attribute-def:cn", displayName),
                 attribute("urn:mace:dir:attribute-def:displayName", displayName),
-                attribute("urn:mace:dir:attribute-def:eduPersonPrincipalName", user.getEmail()),
+                attribute("urn:mace:dir:attribute-def:eduPersonPrincipalName",
+                        user.getUid() + "@" + user.getSchacHomeOrganization()),
                 attribute("urn:mace:dir:attribute-def:givenName", user.getGivenName()),
                 attribute("urn:mace:dir:attribute-def:mail", user.getEmail()),
                 attribute("urn:mace:dir:attribute-def:sn", user.getFamilyName()),

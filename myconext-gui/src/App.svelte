@@ -14,7 +14,6 @@
     import {me, configuration} from "./api";
     import {user, config, redirectPath} from "./stores/user";
     import I18n from "i18n-js";
-    import Flash from "./components/Flash.svelte";
 
     export let url = "";
     let loaded = false;
