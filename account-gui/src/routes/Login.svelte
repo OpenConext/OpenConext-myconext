@@ -129,6 +129,9 @@
 
     const handlePasswordEnter = e => e.key === "Enter" && handleNext(true)();
 
+    const clearGivenName = () => $user.givenName = $user.givenName.replace(/[<>]/g, "");
+    const clearFamilyName = () => $user.familyName = $user.familyName.replace(/[<>]/g, "");
+
 </script>
 
 <style>
@@ -234,7 +237,10 @@
     <input type="text"
            id="given-name"
            placeholder={I18n.ts("login.givenNamePlaceholder")}
-           bind:value={$user.givenName}>
+           value={$user.givenName}
+           bind:value={$user.givenName}
+           on:change={clearGivenName}>
+    <span>{$user.givenName}</span>
     {#if !initial && !$user.givenName}
         <span class="error">{I18n.ts("login.requiredAttribute", {attr: I18n.ts("login.givenName")})}</span>
     {/if}
@@ -242,7 +248,9 @@
     <input type="text"
            id="family-name"
            placeholder={I18n.ts("login.familyNamePlaceholder")}
-           bind:value={$user.familyName}>
+           value={$user.familyName}
+           bind:value={$user.familyName}
+           on:change={clearFamilyName}>
     {#if !initial && !$user.familyName}
         <span class="error">{I18n.ts("login.requiredAttribute", {attr: I18n.ts("login.familyName")})}</span>
     {/if}
@@ -262,8 +270,7 @@
                id="password-field"
                on:keydown={handlePasswordEnter}
                bind:value={$user.password}
-               bind:this={passwordField}
-                >
+               bind:this={passwordField}>
     </div>
     <CheckBox value={$user.rememberMe}
               label={I18n.ts("login.rememberMe")}
