@@ -67,7 +67,7 @@
         </a>
     </div>
     <h1>{I18n.ts("header.title")}</h1>
-    {#if !$user.guest}
+    {#if !$user.guest && window.location.href.indexOf("migration") === -1}
         <div class="logout">
             <Button href="/logout" label={I18n.t("header.logout")} onClick={logoutUser} className="cancel small"/>
         </div>
