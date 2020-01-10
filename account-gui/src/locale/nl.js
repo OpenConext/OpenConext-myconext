@@ -47,7 +47,9 @@ I18n.translations.nl = {
         header: "Succes",
         header2: "uw account is geactiveerd",
         thanks: "Bedankt voor het verifiëren van uw e-mailadres.",
-        info:"Klik op de onderstaande link om door te gaan naar <strong>{{name}}</strong> met je nieuwe gastaccount.",
+        info1: "Klik op de onderstaande link om door te gaan naar",
+        info2: "met je nieuwe gastaccount.",
+
         link: "Ga door naar je bestemming"
     },
     footer: {
