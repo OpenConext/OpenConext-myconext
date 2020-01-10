@@ -14,9 +14,9 @@
 <style>
 
 
-    h2 {
+    h1 {
         margin: 6px 0 35px 0;
-        color: var(--color-primary-green);
+        text-align: center;
     }
 
     p {
@@ -26,9 +26,9 @@
 </style>
 <div class="migration">
     <div class="card">
-        <h1>{I18n.ts("migration.header")}</h1>
-        <h2>{I18n.ts("migration.header2")}</h2>
-        <p>{@html I18n.ts("migration.info")}</p>
+        <h1>{@html I18n.ts("migration.header")}</h1>
+        <p>{I18n.ts("migration.info1")}</p>
+        <p>{I18n.ts("migration.info2")}</p>
         <Button href="/migrate" onClick={migrate} className="full" label={I18n.ts("migration.link")}/>
     </div>
 </div>
