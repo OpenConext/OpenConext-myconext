@@ -78,7 +78,7 @@
         margin-top: 60px;
     }
 
-    :global(a svg) {
+    :global(a svg.menu-link) {
         fill: var(--color-primary-green);
     }
 

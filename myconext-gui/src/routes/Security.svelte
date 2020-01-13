@@ -60,7 +60,7 @@
         padding-right: 0;
     }
 
-    :global(a svg) {
+    :global(a svg.menu-link) {
         fill: var(--color-primary-green);
     }
 
