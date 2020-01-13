@@ -72,9 +72,9 @@ I18n.translations.nl = {
         title2: "Niet gevonden"
     },
     migration: {
-        header: "Account migratie",
-        header2: "Migratie van Onegini naar SURFconext Guest Account",
-        info: "SURFconext zal niet langer Onegini gebruiken om gastaccounts te ondersteunen. Wanneer je doorgaat, wordt je doorgestuurd naar Onegini om in te loggen en na een succesvolle login wordt je huidige Onegini account gemigreerd naar een SURConext-gastaccount.",
-        link: "Doorgaan"
+        header: "Migreer naar een <br/>SURFconext gastaccount",
+        info1: "SURF zal het gebruik van Onegini geleidelijk uitfaseren. Om toegang te behouden, moet je je Onegini account migreren naar een SURFconext gastaccount.",
+        info2: "Je hoeft slechts op de knop te klikken en je één keer aan te melden met je bestaande Onegini account. We migreren je account vervolgens naar een nieuw SURConext gastaccount en sturen je na voltooiing een e-mail.",
+        link: "Start migratie"
     }
 };
