@@ -94,11 +94,12 @@ I18n.translations.nl = {
         confirm: "Bevestigen"
     },
     migration: {
-        header: "Account migratie",
-        header2: "Migratie van Onegini naar SURFconext Guest Account",
-        info: "Uw Onegini-account is succesvol gemigreerd naar een SURFconext-gastaccount. Ga door met het beheren van uw account en wijzig eventueel uw beveiligingsinstellingen.",
-        info2: "In de toekomst kan je de <a href=\"https://surfconext.nl\" target=\"_blank\">SURFconext Guest IdP</a> gebruiken om in te loggen bij services waar je eerder Onegini gebruikte.",
-        link: "Doorgaan"
+        header: "Je SURFconext gastaccount is aangemaakt!",
+        info: "je Onegini account is succesvol gemigreerd.",
+        info2: "Vanaf nu moet je je SURFconext gastaccount gebruiken om inte loggene bij services waar je voorheen Onegini gebruikte.",
+        info3: "Tip! je SURFconext gastaccount heeft standaard geen wachtwoord nodig (we sturen een magische link naar je e-mail om in te loggen), maar als je wilt, kan je een wachtwoord instellen op het ",
+        securityLink: " tabblad Beveiliging.",
+        link: "Naar mijn account gegevens"
     },
     migrationError: {
         header: "Account migratie Error",

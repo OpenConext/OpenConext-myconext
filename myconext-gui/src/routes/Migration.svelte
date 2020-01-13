@@ -2,6 +2,7 @@
     import I18n from "i18n-js";
     import {navigate} from "svelte-routing";
     import Button from "../components/Button.svelte";
+    const src = "img/WAYF.png";
 
     const proceed = () => navigate("/");
 
@@ -10,47 +11,23 @@
 <style>
     .migration {
         width: 100%;
-        display: flex;
         height: 100%;
-    }
-
-    @media (max-width: 820px) {
-        .left {
-            display: none;
-        }
-
-        .inner {
-            border-left: none;
-        }
-    }
-
-    .left {
-        background-color: #f3f6f8;
-        width: 270px;
-        height: 100%;
-        border-bottom-left-radius: 8px;
     }
 
     .inner {
-        margin: 20px 0 190px 0;
-        padding: 15px 15px 0 40px;
-        border-left: 2px solid var(--color-primary-grey);
+        height: 100%;
+        margin: 0 auto;
+        padding: 15px 0;
         display: flex;
-        flex-direction: column;
-        background-color: white;
-    }
-
-    h2 {
-        color: var(--color-primary-green);
-        margin-bottom: 18px;
     }
 
     h3 {
-        margin-bottom: 28px;
+        margin: 15px 0 30px 0;
     }
 
     p.info {
-        margin: 12px 0 16px 0;
+        font-weight: 300;
+        margin-bottom: 30px;
     }
 
     .options {
@@ -61,17 +38,38 @@
         margin-left: 25px;
     }
 
+    div.right {
+        margin: 0 0 0 30px;
+    }
+
+    @media (max-width: 1250px) {
+        .inner {
+            flex-direction: column;
+        }
+        div.right {
+            margin: 30px 0 0 0 ;
+        }
+    }
+
+
+
 
 </style>
 <div class="migration">
-    <div class="left"></div>
     <div class="inner">
-        <h2>{I18n.ts("migration.header")}</h2>
-        <h3>{I18n.ts("migration.header2")}</h3>
-        <p class="info">{I18n.t("migration.info")}</p>
-        <p class="info">{@html I18n.t("migration.info2")}</p>
-        <div class="options">
-            <Button label={I18n.ts("migration.link")} onClick={proceed}/>
+        <div class="left">
+            <h3>{I18n.ts("migration.header")}</h3>
+            <p class="info">{I18n.t("migration.info")}</p>
+            <p class="info">{I18n.t("migration.info2")}</p>
+            <p class="info">{I18n.t("migration.info3")}
+                <a href="/security" on:click|preventDefault|stopPropagation={() => navigate("/security")}
+                                                          >{I18n.t("migration.securityLink")}</a> </p>
+            <div class="options">
+                <Button label={I18n.ts("migration.link")} className="full" onClick={proceed}/>
+            </div>
+        </div>
+        <div class="right">
+            <img {src} alt="WAYF"/>
         </div>
     </div>
 

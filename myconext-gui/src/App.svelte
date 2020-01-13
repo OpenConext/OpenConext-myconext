@@ -150,7 +150,9 @@
                 </Route>
                 <Route path="/landing" component={Landing}/>
                 <Route path="/edit" component={EditName}/>
-                <Route path="/migration" component={Migration}/>
+                <Route path="/migration">
+                    <Home bookmark="migration"/>
+                </Route>
                 <Route path="/password" component={Password}/>
                 <Route path="/rememberme" component={RememberMe}/>
                 <Route component={NotFound}/>

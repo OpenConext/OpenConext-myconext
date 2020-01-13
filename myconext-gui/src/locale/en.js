@@ -94,11 +94,12 @@ I18n.translations.en = {
         confirm: "Confirm"
     },
     migration: {
-        header: "Account migration",
-        header2: "Migration from Onegini to SURFconext Guest Account",
-        info: "Your Onegini account is successfully migrated to a SURFconext Guest Account. Proceed to manage your account and optionally change your security settings",
-        info2: "In the future you can use the <a href=\"https://surfconext.nl\" target=\"_blank\">SURFconext Guest IdP</a> to login into services where you previously used Onegini.",
-        link: "Proceed"
+        header: "Your SURFconext guest account has been created!",
+        info: "Your Onegini account is succesfully migrated.",
+        info2: "From now on you must use your SURFconext guest account to logon to services where you previously used Onegini.",
+        info3: "Tip! Your eduID account by default doesn’t need a password (we send a magic link to your email to sign in), but if you want to, you can set one right now under the",
+        securityLink: " Security tab.",
+        link: "Show my account details"
     },
     migrationError: {
         header: "Account migration Error",

@@ -12,6 +12,7 @@
     import Profile from "./Profile.svelte";
     import Security from "./Security.svelte";
     import Account from "./Account.svelte";
+    import Migration from "./Migration.svelte";
     import Flash from "../components/Flash.svelte";
 
     export let bookmark;
@@ -19,7 +20,8 @@
     const tabs = [
         {name: "profile", component: Profile, icon: personal_info},
         {name: "security", component: Security, icon: security},
-        {name: "account", component: Account, icon: data_activity}
+        {name: "account", component: Account, icon: data_activity},
+        {name: "migration", component: Migration, icon: data_activity, ignore: true}
     ];
 
     let currentTab = tabs[0];
@@ -152,13 +154,15 @@
            on:click|preventDefault|stopPropagation={showMenu}>{@html menuIcon}</a>
         <ul class:hide={!displayMenu}>
             {#each tabs as tab}
-                <li class:active={tab.name === currentTab.name}>
-                    {@html tab.icon}
-                    <a href="/{tab.name}"
-                       on:click|preventDefault|stopPropagation={switchTab(tab.name)}>
-                        {I18n.ts(`home.${tab.name}`)}
-                    </a>
-                </li>
+                {#if !tab.ignore}
+                    <li class:active={tab.name === currentTab.name}>
+                        {@html tab.icon}
+                        <a href="/{tab.name}"
+                           on:click|preventDefault|stopPropagation={switchTab(tab.name)}>
+                            {I18n.ts(`home.${tab.name}`)}
+                        </a>
+                    </li>
+                {/if}
             {/each}
         </ul>
     </nav>
