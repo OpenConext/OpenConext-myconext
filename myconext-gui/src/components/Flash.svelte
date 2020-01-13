@@ -21,6 +21,12 @@
         height: 0;
     }
 
+    .flash.green {
+        transition: height 650ms ease-in-out;
+        height: 0;
+        color: green;
+    }
+
     .message-container {
         max-width: 1180px;
         margin: 0 auto;
@@ -49,10 +55,10 @@
 
 </style>
 
-<div class="flash" class:hide={!$flash}>
+<div class="flash" class:hide={!$flash} class:green={$flash === " "}>
     <div class="message-container">
         <p>{$flash}
-            <span href="/close" class="close" on:click|preventDefault|stopPropagation={() => flash.setValue("")}>
+            <span href="/close" class="close" on:click|preventDefault|stopPropagation={() => flash.setValue(" ")}>
                 {@html closeIcon}
             </span>
         </p>

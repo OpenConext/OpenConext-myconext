@@ -55,7 +55,7 @@
     td.link {
         width: 10%;
         text-align: right;
-        padding-right: 0;
+        padding: 0;
     }
 
     :global(a svg.menu-link) {

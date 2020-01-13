@@ -29,14 +29,17 @@ public class ShibbolethPreAuthenticatedProcessingFilter extends AbstractPreAuthe
 
     private final UserRepository userRepository;
     private final MailBox mailBox;
+    private final String oneginiEntityId;
 
     public ShibbolethPreAuthenticatedProcessingFilter(AuthenticationManager authenticationManager,
                                                       UserRepository userRepository,
+                                                      String oneginiEntityId,
                                                       MailBox mailBox) {
         super();
         setAuthenticationManager(authenticationManager);
         this.userRepository = userRepository;
         this.mailBox = mailBox;
+        this.oneginiEntityId = oneginiEntityId;
     }
 
     @Override
@@ -73,8 +76,10 @@ public class ShibbolethPreAuthenticatedProcessingFilter extends AbstractPreAuthe
         LOG.info("Provision new User: uid {}, email {}, givenName {}, familyName {}, schacHomeOrganization {}, authenticatingAuthority {}",
                 uid, email, givenName, familyName, schacHomeOrganization, authenticatingAuthority);
 
-        //migrated user, as users from Guest IdP are provisioned in the UserController
-        mailBox.sendAccountMigration(user);
+        if (oneginiEntityId.equalsIgnoreCase(user.getAuthenticatingAuthority())) {
+            mailBox.sendAccountMigration(user);
+
+        }
 
         return user;
     }

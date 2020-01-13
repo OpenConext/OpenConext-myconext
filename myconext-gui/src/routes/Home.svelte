@@ -1,5 +1,5 @@
 <script>
-    import {user, config} from "../stores/user";
+    import {user, config, flash} from "../stores/user";
     import I18n from "i18n-js";
     import security from "../icons/security.svg";
     import data_activity from "../icons/data_activity.svg";
@@ -140,7 +140,9 @@
         padding: 0 50px;
         width: 100%;
     }
-
+    div.component-container.flash {
+        position: initial;
+    }
     @media (max-width: 820px) {
         div.component-container {
             padding: 0;
@@ -166,7 +168,7 @@
             {/each}
         </ul>
     </nav>
-    <div class="component-container">
+    <div class="component-container" class:flash={!$flash} >
         <Flash/>
         <svelte:component this={currentTab.component}/>
     </div>

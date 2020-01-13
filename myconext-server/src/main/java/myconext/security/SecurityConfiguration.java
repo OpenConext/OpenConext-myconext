@@ -139,13 +139,16 @@ public class SecurityConfiguration {
         private Environment environment;
         private UserRepository userRepository;
         private MailBox mailBox;
+        private String oneginiEntityId;
 
         public InternalSecurityConfigurationAdapter(Environment environment,
                                                     UserRepository userRepository,
+                                                    @Value("${onegini_entity_id}") String oneginiEntityId,
                                                     MailBox mailBox) {
             this.environment = environment;
             this.userRepository = userRepository;
             this.mailBox = mailBox;
+            this.oneginiEntityId = oneginiEntityId;
         }
 
         @Override
@@ -169,6 +172,7 @@ public class SecurityConfiguration {
                             new ShibbolethPreAuthenticatedProcessingFilter(
                                     authenticationManagerBean(),
                                     userRepository,
+                                    oneginiEntityId,
                                     mailBox),
                             AbstractPreAuthenticatedProcessingFilter.class
                     )

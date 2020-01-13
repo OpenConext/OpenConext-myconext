@@ -27,8 +27,14 @@ const createFlash = () => {
     return {
         subscribe,
         setValue: value => {
-            setTimeout(() => set(value), 85);
-            setTimeout(() => set(""), 3500);
+            setTimeout(() => {
+                set(value);
+                setTimeout(() => {
+                    set(" ");
+                    setTimeout(() => set(""), 1500)
+                }, 3500)
+            }, 85);
+
         },
 
     };

@@ -57,7 +57,7 @@
     td.link {
         width: 10%;
         text-align: right;
-        padding-right: 0;
+        padding: 0;
     }
 
     :global(a svg.menu-link) {
@@ -91,7 +91,7 @@
                 <td class="attr">{I18n.t("security.rememberMe")}</td>
                 <td class="value">{I18n.t(`security.rememberMe${$user.rememberMe}`)}</td>
                 <td class="link">
-                    {#if $user.rememberMe}
+                    {#if $user.rememberMe || true}
                     <a class="menu-link" href="/rememberme"
                        on:click|preventDefault|stopPropagation={() => navigate("/rememberme")}>{@html chevron_right}</a>
                     {/if}

@@ -219,7 +219,7 @@
        on:keydown={handleEmailEnter}>
 {#if !$user.createAccount && emailNotFound}
     <span class="error">{I18n.ts("login.emailNotFound")}
-        <a class="toggle-link" href="/reguest"
+        <a class="toggle-link-internal" href="/reguest"
            on:click|preventDefault|stopPropagation={createAccount(true)}>{I18n.ts("login.emailNotFoundLink")}</a>
     </span>
 {/if}
