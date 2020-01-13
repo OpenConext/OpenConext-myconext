@@ -240,7 +240,6 @@
            value={$user.givenName}
            bind:value={$user.givenName}
            on:change={clearGivenName}>
-    <span>{$user.givenName}</span>
     {#if !initial && !$user.givenName}
         <span class="error">{I18n.ts("login.requiredAttribute", {attr: I18n.ts("login.givenName")})}</span>
     {/if}
