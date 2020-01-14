@@ -49,13 +49,13 @@ public class ShibbolethPreAuthenticatedProcessingFilter extends AbstractPreAuthe
         String email = getHeader(SHIB_EMAIL, request);
         String givenName = getHeader(SHIB_GIVEN_NAME, request);
         String familyName = getHeader(SHIB_SUR_NAME, request);
-        String authenticatingAuthority = getHeader(SHIB_AUTHENTICATING_AUTHORITY, request);
+        String authenticatingAuthorities = getHeader(SHIB_AUTHENTICATING_AUTHORITY, request);
 
-        boolean valid = Stream.of(uid, schacHomeOrganization, email, givenName, familyName).allMatch(StringUtils::hasText);
+        boolean valid = Stream.of(uid, schacHomeOrganization, email, givenName, familyName, authenticatingAuthorities).allMatch(StringUtils::hasText);
         if (!valid) {
             //this is the contract. See AbstractPreAuthenticatedProcessingFilter#doAuthenticate
-            LOG.warn("Missing required attribute(s): uid {}, schacHomeOrganization {}, givenName {}, familyName {}, email {}",
-                    uid, schacHomeOrganization, givenName, familyName, email);
+            LOG.warn("Missing required attribute(s): uid {}, schacHomeOrganization {}, givenName {}, familyName {}, email {}, authenticatingAuthorities {}",
+                    uid, schacHomeOrganization, givenName, familyName, email, authenticatingAuthorities);
             return null;
         }
         Optional<User> optionalUser = userRepository.findUserByUid(uid);
@@ -65,6 +65,9 @@ public class ShibbolethPreAuthenticatedProcessingFilter extends AbstractPreAuthe
                 throw new MigrationDuplicateUserEmailException(email);
             });
         }
+        //The authenticatingAuthority in the SAML / Shibd heading is a ';' separated list
+        String authenticatingAuthority = Stream.of(authenticatingAuthorities.split(";")).map(String::trim).findFirst().orElseThrow(
+                () -> new IllegalArgumentException(String.format("No valid authenticatingAuthority '%s'", authenticatingAuthorities)));
         return optionalUser.orElseGet(() -> provisionUser(uid, schacHomeOrganization, givenName, familyName, email, authenticatingAuthority));
     }
 
