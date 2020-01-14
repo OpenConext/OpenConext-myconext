@@ -77,8 +77,10 @@ public class ShibbolethPreAuthenticatedProcessingFilter extends AbstractPreAuthe
                 uid, email, givenName, familyName, schacHomeOrganization, authenticatingAuthority);
 
         if (oneginiEntityId.equalsIgnoreCase(user.getAuthenticatingAuthority())) {
+            LOG.info("Sending account migration mail to {}", user.getEmail());
             mailBox.sendAccountMigration(user);
-
+        } else {
+            LOG.info("Not sending account migration mail. The authenticatingAuthority of the user '{}' does not equal the configured oneginiEntityId '{}'", authenticatingAuthority, oneginiEntityId);
         }
 
         return user;
