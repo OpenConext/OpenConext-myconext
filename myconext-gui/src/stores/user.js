@@ -31,8 +31,8 @@ const createFlash = () => {
                 set(value);
                 setTimeout(() => {
                     set(" ");
-                    setTimeout(() => set(""), 1500)
-                }, 3500)
+                    setTimeout(() => set(""), 850)
+                }, 3000)
             }, 85);
 
         },
