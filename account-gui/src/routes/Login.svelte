@@ -158,6 +158,7 @@
         margin: 0 auto 10px 0;
         color: var(--color-primary-red);
     }
+
     span.error a {
         color: #820000;
         font-weight: 600;

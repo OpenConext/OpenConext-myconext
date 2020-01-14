@@ -107,6 +107,12 @@
         font-size: 16px;
     }
 
+    span.error {
+        margin-top: 5px;
+        display: inline-block;
+        color: var(--color-primary-red);
+    }
+
     .options {
         margin-top: 60px;
     }
