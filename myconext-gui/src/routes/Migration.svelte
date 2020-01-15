@@ -2,6 +2,8 @@
     import I18n from "i18n-js";
     import {navigate} from "svelte-routing";
     import Button from "../components/Button.svelte";
+    import ModalImage from "../components/ModalImage.svelte";
+
     const src = "img/WAYF.png";
 
     const proceed = () => navigate("/");
@@ -46,12 +48,11 @@
         .inner {
             flex-direction: column;
         }
+
         div.right {
-            margin: 30px 0 0 0 ;
+            margin: 30px 0 0 0;
         }
     }
-
-
 
 
 </style>
@@ -63,13 +64,13 @@
             <p class="info">{I18n.t("migration.info2")}</p>
             <p class="info">{I18n.t("migration.info3")}
                 <a href="/security" on:click|preventDefault|stopPropagation={() => navigate("/security")}
-                                                          >{I18n.t("migration.securityLink")}</a> </p>
+                >{I18n.t("migration.securityLink")}</a></p>
             <div class="options">
                 <Button label={I18n.ts("migration.link")} className="full" onClick={proceed}/>
             </div>
         </div>
         <div class="right">
-            <img {src} alt="WAYF"/>
+            <ModalImage src={src} alt="WAYF"/>
         </div>
     </div>
 

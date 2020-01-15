@@ -1,6 +1,6 @@
 <script>
     import {flash} from "../stores/user";
-    import closeIcon from "../icons/close_smll.svg"
+    import closeIcon from "../icons/close_smll.svg";
 
 </script>
 
