@@ -8,7 +8,8 @@ I18n.translations.en = {
     landing: {
         info: "Collaborate online in higher education",
         login: "Enter",
-        logoutStatus: "You have successfully logged out. To complete the logout process, you must close your browser"
+        logoutStatus: "You have successfully logged out. To complete the logout process, you must close your browser",
+        deletionStatus: "You have successfully deleted your account. To complete the process, you must close your browser"
     },
     notFound: {
         main: "404 - Not Found"

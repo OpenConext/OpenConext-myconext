@@ -32,11 +32,14 @@
                             $redirectPath = window.location.pathname;
                             const urlSearchParams = new URLSearchParams(window.location.search);
                             const logout = urlSearchParams.get("logout");
+                            const afterDelete = urlSearchParams.get("delete");
                             if ($redirectPath.indexOf("migration-error") > -1) {
                                 const email = decodeURIComponent(urlSearchParams.get("email"));
                                 navigate(`/migration-error?email=${email}`);
                             } else if (logout) {
                                 navigate("/landing?logout=true");
+                            } else if (afterDelete) {
+                                navigate("/landing?delete=true");
                             } else {
                                 navigate("/landing");
                             }

@@ -6,10 +6,12 @@
     import Button from "../components/Button.svelte";
 
     let isLogoutRedirect = false;
+    let isAccountDeletionRedirect = false;
 
     onMount(() => {
         const urlSearchParams = new URLSearchParams(window.location.search);
         isLogoutRedirect = urlSearchParams.get("logout");
+        isAccountDeletionRedirect = urlSearchParams.get("delete");
         if ($user.id) {
             navigate("/");
         }
@@ -59,6 +61,9 @@
 <div class="landing">
     {#if isLogoutRedirect}
         <p class="logout">{I18n.ts("landing.logoutStatus")}</p>
+    {/if}
+    {#if isAccountDeletionRedirect}
+        <p class="logout">{I18n.ts("landing.deletionStatus")}</p>
     {/if}
     <h1>{I18n.ts("header.title")}</h1>
     <h2>{I18n.ts("landing.info")}</h2>

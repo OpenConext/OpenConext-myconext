@@ -8,7 +8,8 @@ I18n.translations.nl = {
     landing: {
         info: "Online samenwerken in het onderwijs",
         login: "Enter",
-        logoutStatus: "Je bent succesvol uitgelogd. Om het uitlogproces te voltooien, moet je je browser sluiten"
+        logoutStatus: "Je bent succesvol uitgelogd. Om het uitlogproces te voltooien, moet je je browser sluiten",
+        deletionStatus: "Je hebt succesvol je account verwijderd. Om het proces te voltooien, moet je je browser sluiten"
     },
     notFound: {
         main: "404 - Not Found"
