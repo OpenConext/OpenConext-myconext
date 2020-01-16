@@ -21,23 +21,17 @@
         height: 0;
     }
 
-    .flash.green {
-        transition: height 650ms ease-in-out;
-        height: 0;
-        color: green;
-    }
-
-    .message-container {
-        max-width: 1180px;
-        margin: 0 auto;
-        position: relative;
-    }
-
     .message-container p {
-        padding: 4px 25px 0 15px;
-        font-weight: 300;
-        font-size: 15px;
+        padding: 3px 25px 0 20px;
+        font-size: 16px;
     }
+
+    @media (max-width: 820px) {
+        .message-container p {
+            padding: 3px 25px 0 60px;
+        }
+    }
+
 
     span.close {
         text-decoration: none;
@@ -55,10 +49,10 @@
 
 </style>
 
-<div class="flash" class:hide={!$flash} class:green={$flash === " "}>
+<div class="flash" class:hide={!$flash}>
     <div class="message-container">
         <p>{$flash}
-            <span href="/close" class="close" on:click|preventDefault|stopPropagation={() => flash.setValue(" ")}>
+            <span href="/close" class="close" on:click|preventDefault|stopPropagation={() => flash.setValue("")}>
                 {@html closeIcon}
             </span>
         </p>

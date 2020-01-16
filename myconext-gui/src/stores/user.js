@@ -22,21 +22,14 @@ export const config = writable({
 export const redirectPath = writable("");
 
 const createFlash = () => {
-    const {subscribe, set, update} = writable("");
+    const {subscribe, set} = writable("");
 
     return {
         subscribe,
-        setValue: value => {
-            setTimeout(() => {
-                set(value);
-                setTimeout(() => {
-                    set(" ");
-                    setTimeout(() => set(""), 850)
-                }, 3000)
-            }, 85);
-
-        },
-
+        setValue: value => setTimeout(() => {
+            set(value);
+            setTimeout(() => set(""), 3000)
+        }, 125),
     };
 };
 export const flash = createFlash();

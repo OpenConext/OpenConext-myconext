@@ -136,13 +136,10 @@
     }
 
     div.component-container {
-        position: relative;
         padding: 0 50px;
         width: 100%;
     }
-    div.component-container.flash {
-        position: initial;
-    }
+
     @media (max-width: 820px) {
         div.component-container {
             padding: 0;
@@ -168,7 +165,7 @@
             {/each}
         </ul>
     </nav>
-    <div class="component-container" class:flash={!$flash} >
+    <div class="component-container">
         <Flash/>
         <svelte:component this={currentTab.component}/>
     </div>

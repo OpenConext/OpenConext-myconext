@@ -6,7 +6,7 @@
     let isModalActive = false;
 
     const cancel = () => isModalActive = false;
-
+    const toggle = () => isModalActive  = !isModalActive;
     const handle_keydown = e => {
         if (e.key === "Escape") {
             cancel();
@@ -21,10 +21,10 @@
         <span href="/close" class="cancel" on:click|preventDefault|stopPropagation={cancel}>
             {@html closeIcon}
         </span>
-        <img class="full" {src} alt={alt} on:click={() => isModalActive  = !isModalActive}/>
+        <img class="full" {src} alt={alt} on:click={toggle}/>
     </div>
 {:else}
-    <img {src} alt={alt} on:click={() => isModalActive  = !isModalActive}/>
+    <img {src} alt={alt} on:click={toggle}/>
 {/if}
 
 <style>
@@ -37,8 +37,6 @@
         background: rgba(0, 57, 128, 0.8);
         z-index: 999;
         display: flex;
-        align-items: center;
-        align-content: center;
     }
 
     img {
