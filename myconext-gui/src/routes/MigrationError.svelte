@@ -82,7 +82,7 @@
         <p class="info">{I18n.t("migrationError.info")}</p>
         <p class="info">{I18n.t("migrationError.info2")}</p>
         <input type="text" disabled={true} value={$config.migrationLandingPageUrl}>
-        <p class="info">{@html I18n.t("migrationError.info3", {email: email, url: $config.myConextUrlGuestIdp})}</p>
+        <p class="info">{@html I18n.t("migrationError.info3", {email: encodeURI(email), url: $config.myConextUrlGuestIdp})}</p>
     </div>
 
 </div>
