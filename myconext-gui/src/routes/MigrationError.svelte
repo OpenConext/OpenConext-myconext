@@ -21,16 +21,6 @@
         height: 100%;
     }
 
-    @media (max-width: 820px) {
-        .left {
-            display: none;
-        }
-
-        .inner {
-            border-left: none;
-        }
-    }
-
     .left {
         background-color: #f3f6f8;
         width: 270px;
@@ -65,7 +55,20 @@
         border: solid 1px #676767;
         padding: 14px;
         font-size: 16px;
-        margin: 15px 25px;
+        margin: 15px 55px 15px 25px;
+    }
+
+    @media (max-width: 820px) {
+        .left {
+            display: none;
+        }
+
+        .inner {
+            border-left: none;
+        }
+        input {
+            margin: 15px 0;
+        }
     }
 
     :global(.options a:not(:first-child)) {
