@@ -76,7 +76,7 @@ public class MailBox {
 
         MimeMessage message = mailSender.createMimeMessage();
         try {
-            MimeMessageHelper helper = new MimeMessageHelper(message, false);
+            MimeMessageHelper helper = new MimeMessageHelper(message, true);
             helper.setSubject(subject);
             helper.setTo(to);
             setText(html, helper);
@@ -88,7 +88,7 @@ public class MailBox {
     }
 
     protected void setText(String html, MimeMessageHelper helper) throws MessagingException, IOException {
-        helper.setText(html, true);
+        helper.setText("Placeholder plain text", html);
     }
 
     protected void doSendMail(MimeMessage message) {
