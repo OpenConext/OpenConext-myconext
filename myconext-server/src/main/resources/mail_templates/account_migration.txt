@@ -1,0 +1,11 @@
+Hi {{name}},
+
+Your guest account has successfully been migrated to a new and activated Guest Account for SURFconext.
+
+With this Guest Account you can access tools and services that are connected to SURFconext and who accepts guests.
+In the future you can use the SURFconext Guest IdP to login into services where you previously used Onegini.
+
+For help see: https://www.surf.nl/en/surfconext-global-access-with-1-set-of-credentials
+For more info see: https://blog.surf.nl/en/access-and-authorisation-for-guest-users-with-surfconext
+
+SURFConext Guest IdP is a product of SURF.

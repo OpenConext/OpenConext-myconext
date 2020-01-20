@@ -1,0 +1,19 @@
+Magic Link
+
+Follow the link below to sign in to proceed to your destination:
+
+{{magicLinkUrl}}?h={{hash}}
+
+
+Sign in to {{destination}}. This link will expire in 10 minutes and can only be used once.
+
+
+Hi <strong>{{name}},
+
+Someone just requested a Magic Link on SURFconext using this email address. If this was you, you can sign in by following the link above.
+If you didn't request the Magic Link , just ignore and delete this message.
+
+For help see: https://www.surf.nl/en/surfconext-global-access-with-1-set-of-credentials
+For more info see: https://blog.surf.nl/en/access-and-authorisation-for-guest-users-with-surfconext
+
+SURFConext Guest IdP is a product of SURF.

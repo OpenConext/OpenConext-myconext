@@ -36,7 +36,7 @@ public class MailBox {
         variables.put("destination", requesterId);
         variables.put("hash", hash);
         variables.put("magicLinkUrl", magicLinkUrl);
-        sendMail("mail_templates/magic_link.html", title, variables, user.getEmail());
+        sendMail("magic_link", title, variables, user.getEmail());
     }
 
     public void sendAccountVerification(User user, String hash) {
@@ -45,7 +45,7 @@ public class MailBox {
         Map<String, Object> variables = variables(user, title);
         variables.put("hash", hash);
         variables.put("magicLinkUrl", magicLinkUrl);
-        sendMail("mail_templates/account_verification.html", title, variables, user.getEmail());
+        sendMail("account_verification", title, variables, user.getEmail());
     }
 
     public void sendAccountConfirmation(User user) {
@@ -53,7 +53,7 @@ public class MailBox {
 
         Map<String, Object> variables = variables(user, title);
         variables.put("mySurfConextURL", mySURFconextURL);
-        sendMail("mail_templates/account_confirmation.html", title, variables, user.getEmail());
+        sendMail("account_confirmation", title, variables, user.getEmail());
     }
 
     public void sendAccountMigration(User user) {
@@ -61,7 +61,7 @@ public class MailBox {
 
         Map<String, Object> variables = variables(user, title);
         variables.put("mySurfConextURL", mySURFconextURL);
-        sendMail("mail_templates/account_migration.html", title, variables, user.getEmail());
+        sendMail("account_migration", title, variables, user.getEmail());
     }
 
     private Map<String, Object> variables(User user, String title) {
@@ -72,23 +72,24 @@ public class MailBox {
     }
 
     private void sendMail(String templateName, String subject, Map<String, Object> variables, String... to) {
-        String html = this.mailTemplate(templateName, variables);
+        String html = this.mailTemplate(String.format("mail_templates/%s.html", templateName), variables);
+        String text = this.mailTemplate(String.format("mail_templates/%s.txt", templateName), variables);
 
         MimeMessage message = mailSender.createMimeMessage();
         try {
             MimeMessageHelper helper = new MimeMessageHelper(message, true);
             helper.setSubject(subject);
             helper.setTo(to);
-            setText(html, helper);
+            setText(html, text, helper);
             helper.setFrom(emailFrom);
             doSendMail(message);
-        } catch (MessagingException | IOException e) {
+        } catch (MessagingException e) {
             throw new IllegalArgumentException(e);
         }
     }
 
-    protected void setText(String html, MimeMessageHelper helper) throws MessagingException, IOException {
-        helper.setText("Placeholder plain text", html);
+    protected void setText(String html, String text, MimeMessageHelper helper) throws MessagingException {
+        helper.setText(text, html);
     }
 
     protected void doSendMail(MimeMessage message) {

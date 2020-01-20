@@ -66,15 +66,11 @@
         .inner {
             border-left: none;
         }
+
         input {
             margin: 15px 0;
         }
     }
-
-    :global(.options a:not(:first-child)) {
-        margin-left: 25px;
-    }
-
 
 </style>
 <div class="migration">

@@ -98,3 +98,19 @@ h3 {
     line-height: 30px;
     font-weight: bold;
 }
+
+@media (max-width: 580px) {
+    table, thead, tbody, th, td, tr {
+        display: block;
+    }
+
+    thead tr {
+        display: none;
+    }
+
+    td {
+        position: relative;
+        width: 100% !important;
+    }
+
+}
