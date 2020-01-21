@@ -63,9 +63,24 @@
         width: 260px;
     }
 
+    @media (max-width: 580px) {
+        .button.full {
+            width: 200px;
+        }
+
+    }
+
     .button.small {
         width: 140px;
     }
+
+    @media (max-width: 580px) {
+        .button.small {
+            width: 90px;
+        }
+
+    }
+
 
 </style>
 

@@ -85,7 +85,7 @@ public class SecurityConfiguration {
                     .singleLogout(false)
                     .signMetadata(true)
                     .signatureAlgorithms(RSA_SHA512, SHA512)
-                    .nameIds(asList(NameId.EMAIL))
+                    .nameIds(asList(NameId.PERSISTENT))
                     .rotatingKeys(getKeys())
                     .serviceProvider(
                             new ExternalServiceProviderConfiguration()
