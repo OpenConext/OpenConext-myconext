@@ -112,6 +112,7 @@ h3 {
         position: relative;
         width: 100% !important;
     }
+
     .options a:not(:first-child) {
         margin-left: 0 !important;
         margin-top: 25px !important;

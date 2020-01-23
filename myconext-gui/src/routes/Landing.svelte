@@ -41,6 +41,7 @@
 
     h1 {
         margin-bottom: 35px;
+        text-align: center;
     }
 
     h2 {

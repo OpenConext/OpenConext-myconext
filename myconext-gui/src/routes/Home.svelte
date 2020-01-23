@@ -112,11 +112,13 @@
 
     nav ul li {
         border-right: 2px solid var(--color-primary-grey);
+        cursor: pointer;
     }
 
     nav ul li.active {
         border-right: 7px solid var(--color-primary-green);
         background-color: white;
+        cursor: default;
     }
 
     nav ul li.active a {
@@ -154,7 +156,8 @@
         <ul class:hide={!displayMenu}>
             {#each tabs as tab}
                 {#if !tab.ignore}
-                    <li class:active={tab.name === currentTab.name}>
+                    <li class:active={tab.name === currentTab.name}
+                        on:click|preventDefault|stopPropagation={switchTab(tab.name)}>
                         {@html tab.icon}
                         <a href="/{tab.name}"
                            on:click|preventDefault|stopPropagation={switchTab(tab.name)}>
