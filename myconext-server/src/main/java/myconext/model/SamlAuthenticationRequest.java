@@ -35,6 +35,8 @@ public class SamlAuthenticationRequest {
 
     private boolean rememberMe;
 
+    private String rememberMeValue;
+
     public SamlAuthenticationRequest(String requestId, String consumerAssertionServiceURL, String relayState, String requesterEntityId) {
         this.id = UUID.randomUUID().toString();
         this.requestId = requestId;
@@ -54,6 +56,10 @@ public class SamlAuthenticationRequest {
 
     public void setRememberMe(boolean rememberMe) {
         this.rememberMe = rememberMe;
+    }
+
+    public void setRememberMeValue(String rememberMeValue) {
+        this.rememberMeValue = rememberMeValue;
     }
 
     @Transient

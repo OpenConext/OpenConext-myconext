@@ -149,7 +149,7 @@ public class GuestIdpAuthenticationRequestFilter extends IdpAuthenticationReques
 
     private Optional<User> userFromCookie(Cookie remembered) {
         LOG.info("Returning user from rememberMe cookie");
-        return authenticationRequestRepository.findById(remembered.getValue())
+        return authenticationRequestRepository.findByRememberMeValue(remembered.getValue())
                 .map(req -> userRepository.findById(req.getUserId())).flatMap(identity());
     }
 
@@ -233,7 +233,7 @@ public class GuestIdpAuthenticationRequestFilter extends IdpAuthenticationReques
     }
 
     private void addRememberMeCookie(HttpServletResponse response, SamlAuthenticationRequest samlAuthenticationRequest) {
-        Cookie cookie = new Cookie(GUEST_IDP_REMEMBER_ME_COOKIE_NAME, samlAuthenticationRequest.getId());
+        Cookie cookie = new Cookie(GUEST_IDP_REMEMBER_ME_COOKIE_NAME, samlAuthenticationRequest.getRememberMeValue());
         cookie.setMaxAge(rememberMeMaxAge);
         cookie.setSecure(secureCookie);
         cookie.setHttpOnly(true);

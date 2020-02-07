@@ -17,6 +17,8 @@ public interface AuthenticationRequestRepository extends MongoRepository<SamlAut
 
     Optional<SamlAuthenticationRequest> findByHash(String hash);
 
+    Optional<SamlAuthenticationRequest> findByRememberMeValue(String rememberMeValue);
+
     List<SamlAuthenticationRequest> findByUserIdAndRememberMe(String userId, boolean rememberMe);
 
     Long deleteByUserId(String userId);

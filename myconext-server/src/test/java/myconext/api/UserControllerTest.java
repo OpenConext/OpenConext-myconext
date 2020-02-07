@@ -108,7 +108,9 @@ public class UserControllerTest extends AbstractIntegrationTest {
         Response response = magicResponse(magicLinkResponse);
 
         String cookie = response.cookie(GUEST_IDP_REMEMBER_ME_COOKIE_NAME);
-        SamlAuthenticationRequest samlAuthenticationRequest = authenticationRequestRepository.findById(cookie).orElseThrow(IllegalArgumentException::new);
+        SamlAuthenticationRequest samlAuthenticationRequest = authenticationRequestRepository
+                .findByRememberMeValue(cookie)
+                .orElseThrow(IllegalArgumentException::new);
 
         assertEquals(true, samlAuthenticationRequest.isRememberMe());
 

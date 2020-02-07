@@ -198,6 +198,9 @@ public class UserController {
         samlAuthenticationRequest.setHash(hash());
         samlAuthenticationRequest.setUserId(user.getId());
         samlAuthenticationRequest.setRememberMe(magicLinkRequest.isRememberMe());
+        if (magicLinkRequest.isRememberMe()) {
+            samlAuthenticationRequest.setRememberMeValue(UUID.randomUUID().toString());
+        }
 
         authenticationRequestRepository.save(samlAuthenticationRequest);
         if (passwordFlow) {
