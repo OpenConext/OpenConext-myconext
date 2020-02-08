@@ -1,6 +1,8 @@
 package myconext.api;
 
 import myconext.exceptions.MigrationDuplicateUserEmailException;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.servlet.error.ErrorAttributes;
@@ -24,6 +26,8 @@ import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
 
 @RestController
 public class DefaultErrorController implements ErrorController {
+
+    private static final Log LOG = LogFactory.getLog(DefaultErrorController.class);
 
     private final ErrorAttributes errorAttributes;
     private final String redirectUrl;
@@ -55,8 +59,14 @@ public class DefaultErrorController implements ErrorController {
             ResponseStatus annotation = AnnotationUtils.getAnnotation(error.getClass(), ResponseStatus.class);
             statusCode = annotation != null ? annotation.value() : BAD_REQUEST;
             if (error instanceof MigrationDuplicateUserEmailException) {
-                String email = ((MigrationDuplicateUserEmailException) error).getEmail();
-                return ResponseEntity.status(302).location(new URI(this.redirectUrl + "/migration-error?email=" + email)).build();
+                MigrationDuplicateUserEmailException duplicateUserEmailException = (MigrationDuplicateUserEmailException) error;
+                if (duplicateUserEmailException.getRequestUrl().endsWith("startSSO")) {
+                    // We only want to redirect for non api calls
+                    return ResponseEntity.status(302)
+                            .location(new URI(this.redirectUrl + "/migration-error?email=" + duplicateUserEmailException.getEmail()))
+                            .build();
+                }
+                result.put("email", duplicateUserEmailException.getEmail());
             }
         }
         result.remove("message");

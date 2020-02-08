@@ -27,15 +27,17 @@
                             loaded = true;
                             $user = {$user, ...json, guest: false};
                         })
-                        .catch(() => {
+                        .catch(e => {
                             loaded = true;
                             $redirectPath = window.location.pathname;
                             const urlSearchParams = new URLSearchParams(window.location.search);
                             const logout = urlSearchParams.get("logout");
                             const afterDelete = urlSearchParams.get("delete");
-                            if ($redirectPath.indexOf("migration-error") > -1) {
-                                const email = decodeURIComponent(urlSearchParams.get("email"));
-                                navigate(`/migration-error?email=${email}`);
+                            if (e.status === 409) {
+                                e.json().then(res => {
+                                    const email = res.email;
+                                    navigate(`/migration-error?email=${email}`);
+                                });
                             } else if (logout) {
                                 navigate("/landing?logout=true");
                             } else if (afterDelete) {

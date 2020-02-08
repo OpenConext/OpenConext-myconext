@@ -62,7 +62,7 @@ public class ShibbolethPreAuthenticatedProcessingFilter extends AbstractPreAuthe
         if (!optionalUser.isPresent()) {
             //If we would provision this email we would introduce a duplicate email
             userRepository.findUserByEmail(email).ifPresent(user -> {
-                throw new MigrationDuplicateUserEmailException(email);
+                throw new MigrationDuplicateUserEmailException(email, request.getRequestURI());
             });
         }
         //The authenticatingAuthority in the SAML / Shibd heading is a ';' separated list

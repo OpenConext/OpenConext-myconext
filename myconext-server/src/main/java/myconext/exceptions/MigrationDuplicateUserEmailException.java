@@ -8,9 +8,16 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 @Getter
 public class MigrationDuplicateUserEmailException extends RuntimeException {
 
-    private final String email;
+    private String email;
+    private String requestUrl;
 
-    public MigrationDuplicateUserEmailException(String email) {
+    public MigrationDuplicateUserEmailException(String email, String requestUrl) {
         this.email = email;
+        this.requestUrl = requestUrl;
+    }
+
+    @Override
+    public String toString() {
+        return String.format("%s with email: %s during request: %s", this.getClass().getSimpleName(), email, requestUrl);
     }
 }
