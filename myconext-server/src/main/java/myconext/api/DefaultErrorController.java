@@ -58,12 +58,9 @@ public class DefaultErrorController implements ErrorController {
                 String email = ((MigrationDuplicateUserEmailException) error).getEmail();
                 return ResponseEntity.status(302).location(new URI(this.redirectUrl + "/migration-error?email=" + email)).build();
             }
-
         }
-
         result.remove("message");
         result.put("status", statusCode.value());
-
         return ResponseEntity.status(statusCode).body(result);
     }
 
