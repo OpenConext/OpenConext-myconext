@@ -1,6 +1,19 @@
 <script>
     import I18n from "i18n-js";
-    import {config, duplicatedEmail} from "../stores/user";
+    import {flash, duplicatedEmail, user} from "../stores/user";
+    import Button from "../components/Button.svelte";
+    import {mergeAfterMigration, proceedAfterMigration} from "../api";
+    import {navigate} from "svelte-routing";
+
+    const proceed = () => proceedAfterMigration().then(json => {
+        $user = {$user, ...json, guest: false};
+        navigate("/");
+    });
+
+    const migrate = () => mergeAfterMigration().then(json => {
+        $user = {$user, ...json, guest: false};
+        navigate("/migration");
+    });
 
 </script>
 
@@ -32,20 +45,12 @@
         margin-bottom: 18px;
     }
 
-    h3 {
-        margin-bottom: 28px;
-    }
-
     p.info {
         margin: 12px 0 16px 0;
     }
 
-    input {
-        border-radius: 8px;
-        border: solid 1px #676767;
-        padding: 14px;
-        font-size: 16px;
-        margin: 15px 55px 15px 25px;
+    .options {
+        margin: 40px;
     }
 
     @media (max-width: 820px) {
@@ -57,9 +62,6 @@
             border-left: none;
         }
 
-        input {
-            margin: 15px 0;
-        }
     }
 
 </style>
@@ -67,11 +69,14 @@
     <div class="left"></div>
     <div class="inner">
         <h2>{I18n.ts("migrationError.header")}</h2>
-        <h3>{I18n.ts("migrationError.header2")}</h3>
-        <p class="info">{I18n.t("migrationError.info")}</p>
-        <p class="info">{I18n.t("migrationError.info2")}</p>
-        <input type="text" disabled={true} value={$config.migrationLandingPageUrl}>
-        <p class="info">{@html I18n.t("migrationError.info3", {email: encodeURI($duplicatedEmail), url: $config.myConextUrlGuestIdp})}</p>
+        <p class="info">{I18n.t("migrationError.info", {email: $duplicatedEmail} )}</p>
+        <p class="question">{I18n.t("migrationError.question")}</p>
+        <div class="options">
+            <Button className="cancel" href={I18n.t("migrationError.proceed")} label={I18n.t("migrationError.proceed")}
+                    onClick={proceed}/>
+            <Button href={I18n.t("migrationError.migrate")} label={I18n.t("migrationError.migrate")} onClick={migrate}/>
+        </div>
+        <div class="help">{@html I18n.t("migrationError.help")}</div>
     </div>
 
 </div>

@@ -103,11 +103,11 @@ I18n.translations.nl = {
         link: "Naar mijn account gegevens"
     },
     migrationError: {
-        header: "Account migratie Error",
-        header2: "Migratie van Onegini naar SURFconext Guest Account is mislukt",
-        info: "We kunnen je Onegini-account NIET migreren naar een SURFconext-gastaccount omdat je een e-mail hebt gebruikt die al is gekoppeld aan een andere gastaccount gebruiker.",
-        info2: "Kopieer de onderstaande link, sluit je browser en probeer het opnieuw met de gekopieerde link met een andere e-mail.",
-        info3: "Als je wel de eigenaar bent van de e-mail <strong>{{email}}</strong>, kan je naar de <a href=\"{{url}}\">SURFconext Guest IdP</a> gaan en een magic link aanvragen om in te loggen met deze e-mail.",
+        header: "Account Migration Conflict",
+        info: "We have NOT migrated your existing Onegini account to a SURFconext Guest Account as you already have a Guest Account user.",
+        question: "If you want to migrate your Onegini account then click migrate. If you want proceed with your existing SURFconext Guest Account then click proceed",
+        migrate: "Migrate",
+        proceed: "Proceed",
+        help : "If you have any questions about this then please contact <a href=\"mailto:support@surfconext.nl\" >support@surfconext.nl</a>."
     }
-
 };

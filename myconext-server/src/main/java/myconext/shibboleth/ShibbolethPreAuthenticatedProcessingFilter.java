@@ -12,6 +12,7 @@ import org.springframework.security.web.authentication.preauth.AbstractPreAuthen
 import org.springframework.util.StringUtils;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import java.io.UnsupportedEncodingException;
 import java.util.Optional;
 import java.util.stream.Stream;
@@ -43,7 +44,7 @@ public class ShibbolethPreAuthenticatedProcessingFilter extends AbstractPreAuthe
     }
 
     @Override
-    protected Object getPreAuthenticatedPrincipal(final HttpServletRequest request) {
+    protected Object getPreAuthenticatedPrincipal(HttpServletRequest request) {
         String uid = getHeader(SHIB_UID, request);
         String schacHomeOrganization = getHeader(SHIB_SCHAC_HOME_ORGANIZATION, request);
         String email = getHeader(SHIB_EMAIL, request);
@@ -60,10 +61,22 @@ public class ShibbolethPreAuthenticatedProcessingFilter extends AbstractPreAuthe
         }
         Optional<User> optionalUser = userRepository.findUserByUid(uid);
         if (!optionalUser.isPresent()) {
-            //If we would provision this email we would introduce a duplicate email
-            userRepository.findUserByEmail(email).ifPresent(user -> {
-                throw new MigrationDuplicateUserEmailException(email, request.getRequestURI());
-            });
+            Optional<User> optionalUserByEmail = userRepository.findUserByEmail(email);
+            if (optionalUserByEmail.isPresent()) {
+                //If we would provision this email we would introduce a duplicate email
+                String requestURI = request.getRequestURI();
+                if (requestURI.endsWith("sp/migrate/merge")) {
+                    //We will provision a new user, so we delete the current one
+                    userRepository.delete(optionalUserByEmail.get());
+                } else if (requestURI.endsWith("sp/migrate/proceed")) {
+                    //Now discard everything from the IdP and use the current account
+                    optionalUser = optionalUserByEmail;
+                } else {
+                    //need to be picked up by the client
+                    throw new MigrationDuplicateUserEmailException(email, request.getRequestURI());
+                }
+
+            }
         }
         //The authenticatingAuthority in the SAML / Shibd heading is a ';' separated list
         String authenticatingAuthority = Stream.of(authenticatingAuthorities.split(";")).map(String::trim).findFirst().orElseThrow(

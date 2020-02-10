@@ -103,11 +103,12 @@ I18n.translations.en = {
         link: "Show my account details"
     },
     migrationError: {
-        header: "Account migration Error",
-        header2: "Migration from Onegini to SURFconext Guest Account failed",
-        info: "We could NOT migrate your Onegini account to a SURFconext Guest Account as you have used a email that is already associated with a different Guest Account user.",
-        info2 : "Please copy the link below, close your browser and retry with the copied link using a different email.",
-        info3: "If you do own the email <strong>{{email}}</strong> then you can proceed to <a href=\"{{url}}\">SURFconext Guest IdP</a> and request a magic link to login with this email.",
+        header: "Account Migration Conflict",
+        info: "We have NOT migrated your existing Onegini account to a SURFconext Guest Account as you already have a Guest Account user with the email {{email}}.",
+        question: "If you want to migrate your Onegini account then click migrate. If you want proceed with your existing SURFconext Guest Account then click proceed.",
+        migrate: "Migrate",
+        proceed: "Proceed",
+        help : "If you have any questions about this please contact <a href=\"mailto:support@surfconext.nl\" >support@surfconext.nl</a>."
     }
 };
 

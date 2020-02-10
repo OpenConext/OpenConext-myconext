@@ -12,7 +12,9 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletRequestWrapper;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 
 public class MockShibbolethFilter extends GenericFilterBean {
 
@@ -20,7 +22,9 @@ public class MockShibbolethFilter extends GenericFilterBean {
     public String email = "jdoe@example.com";
     public String authenticatingAuthority = "https://account.test2.surfconext.nl";
 
+
     private Environment environment;
+    private List<String> devProfileProceedSSOUrls = Arrays.asList("startSSO", "sp/migrate/");
 
     public MockShibbolethFilter(Environment environment) {
         this.environment = environment;
@@ -49,9 +53,10 @@ public class MockShibbolethFilter extends GenericFilterBean {
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain filterChain)
             throws IOException, ServletException {
         HttpServletRequest servletRequest = (HttpServletRequest) request;
-
+        String requestURI = servletRequest.getRequestURI();
         if (environment.acceptsProfiles(Profiles.of("test")) ||
-                (environment.acceptsProfiles(Profiles.of("dev")) && ((HttpServletRequest) request).getRequestURI().startsWith("/startSSO"))) {
+                (environment.acceptsProfiles(Profiles.of("dev")) &&
+                        devProfileProceedSSOUrls.stream().anyMatch(url -> requestURI.contains(url)))) {
             SetHeader wrapper = new SetHeader(servletRequest);
             wrapper.setHeader(ShibbolethPreAuthenticatedProcessingFilter.SHIB_SCHAC_HOME_ORGANIZATION, "surfguest.nl");
             wrapper.setHeader(ShibbolethPreAuthenticatedProcessingFilter.SHIB_AUTHENTICATING_AUTHORITY, authenticatingAuthority);

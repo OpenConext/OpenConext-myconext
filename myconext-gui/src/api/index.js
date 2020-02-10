@@ -69,3 +69,11 @@ export function logout() {
 export function forgetMe() {
     return fetchDelete("/myconext/api/sp/forget");
 }
+
+export function mergeAfterMigration() {
+    return fetchJson("/myconext/api/sp/migrate/merge");
+}
+
+export function proceedAfterMigration() {
+    return fetchJson("/myconext/api/sp/migrate/proceed");
+}

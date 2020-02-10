@@ -12,12 +12,9 @@ public class MigrationDuplicateUserEmailException extends RuntimeException {
     private String requestUrl;
 
     public MigrationDuplicateUserEmailException(String email, String requestUrl) {
+        super(String.format("MigrationDuplicateUserEmailException with email: %s during request: %s", email, requestUrl));
         this.email = email;
         this.requestUrl = requestUrl;
     }
 
-    @Override
-    public String toString() {
-        return String.format("%s with email: %s during request: %s", this.getClass().getSimpleName(), email, requestUrl);
-    }
 }

@@ -118,7 +118,7 @@ public class UserController {
         return doMagicLink(user, samlAuthenticationRequest, magicLinkRequest, magicLinkRequest.isUsePassword());
     }
 
-    @GetMapping("/sp/me")
+    @GetMapping(value = {"/sp/me", "sp/migrate/merge", "sp/migrate/proceed"})
     public ResponseEntity me(Authentication authentication) {
         User user = userRepository.findOneUserByEmail(((User) authentication.getPrincipal()).getEmail());
         List<SamlAuthenticationRequest> samlAuthenticationRequests = authenticationRequestRepository.findByUserIdAndRememberMe(user.getId(), true);

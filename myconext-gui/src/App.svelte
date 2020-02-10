@@ -5,7 +5,6 @@
     import Landing from "./routes/Landing.svelte";
     import NotFound from "./routes/NotFound.svelte";
     import EditName from "./routes/EditName.svelte";
-    import Migration from "./routes/Migration.svelte";
     import MigrationError from "./routes/MigrationError.svelte";
     import Password from "./routes/Password.svelte";
     import RememberMe from "./routes/RememberMe.svelte";
