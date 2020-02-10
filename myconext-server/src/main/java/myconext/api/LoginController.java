@@ -1,5 +1,8 @@
 package myconext.api;
 
+import myconext.exceptions.OpenRedirectException;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -18,8 +21,10 @@ import java.util.Map;
 @RestController
 public class LoginController {
 
+    private static final Log LOG = LogFactory.getLog(LoginController.class);
+
     private String redirectUrl;
-    private Map<String, String> config;
+    private final Map<String, String> config = new HashMap<>();
 
     public LoginController(@Value("${base_path}") String basePath,
                            @Value("${base_domain}") String baseDomain,
@@ -28,14 +33,15 @@ public class LoginController {
                            @Value("${migration_landing_page_url}") String migrationLandingPageUrl,
                            @Value("${onegini_entity_id}") String oneGiniEntityId,
                            @Value("${guest_idp_entity_id}") String guestIdpEntityId,
-                           @Value("${sp_redirect_url}") String redirectUrl) {
-        this.config = new HashMap<>();
+                           @Value("${sp_redirect_url}") String redirectUrl,
+                           @Value("${email.magic-link-url}") String magicLinkUrl) {
         this.config.put("loginUrl", basePath + "/login");
         this.config.put("baseDomain", baseDomain);
         this.config.put("branding", branding);
         this.config.put("migrationUrl", String.format("%s/Shibboleth.sso/Login?entityID=%s&target=/startSSO?redirect_url=/migration", myConextUrl, oneGiniEntityId));
         this.config.put("myConextUrlGuestIdp", String.format("%s/Shibboleth.sso/Login?entityID=%s&target=/startSSO?redirect_url=/", myConextUrl, guestIdpEntityId));
         this.config.put("migrationLandingPageUrl", migrationLandingPageUrl);
+        this.config.put("magicLinkUrl", magicLinkUrl);
         this.redirectUrl = redirectUrl;
     }
 
@@ -49,13 +55,25 @@ public class LoginController {
             throws IOException, ServletException {
         SecurityContextHolder.clearContext();
         request.logout();
-        response.sendRedirect("/startSSO?redirect_url=" + redirectUrl + redirectPath);
+
+        String location = "/startSSO?redirect_url=" + redirectUrl + redirectPath;
+
+        LOG.info("Sending redirect after /login to " + location);
+
+        response.sendRedirect(location);
     }
 
     @GetMapping(value = "/startSSO")
-    public void startSSO(HttpServletResponse response, @RequestParam("redirect_url") String redirectUrl) throws IOException {
-        redirectUrl = URLDecoder.decode(redirectUrl, Charset.defaultCharset().name());
-        response.sendRedirect(redirectUrl);
+    public void startSSO(HttpServletResponse response, @RequestParam("redirect_url") String redirectUrlPart) throws IOException {
+        String decodedRedirectUrl = URLDecoder.decode(redirectUrlPart, Charset.defaultCharset().name());
+
+        LOG.info("Attempt sending redirect after /startSSO to " + decodedRedirectUrl);
+        //either it is a relative path or a path starting with the registered redirectUrl
+        if (!decodedRedirectUrl.startsWith("/") && !decodedRedirectUrl.startsWith(this.redirectUrl)) {
+            throw new OpenRedirectException("Illegal redirect: '" + decodedRedirectUrl + "'");
+        }
+
+        response.sendRedirect(decodedRedirectUrl);
     }
 
 }

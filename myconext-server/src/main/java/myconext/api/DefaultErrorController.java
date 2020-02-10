@@ -27,8 +27,6 @@ import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
 @RestController
 public class DefaultErrorController implements ErrorController {
 
-    private static final Log LOG = LogFactory.getLog(DefaultErrorController.class);
-
     private final ErrorAttributes errorAttributes;
     private final String redirectUrl;
 
@@ -63,7 +61,7 @@ public class DefaultErrorController implements ErrorController {
                 if (duplicateUserEmailException.getRequestUrl().endsWith("startSSO")) {
                     // We only want to redirect for non api calls
                     return ResponseEntity.status(302)
-                            .location(new URI(this.redirectUrl + "/migration-error?email=" + duplicateUserEmailException.getEmail()))
+                            .location(new URI(this.redirectUrl + "/migration-error"))
                             .build();
                 }
                 result.put("email", duplicateUserEmailException.getEmail());

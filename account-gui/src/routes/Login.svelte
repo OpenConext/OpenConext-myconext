@@ -62,7 +62,7 @@
                 } else {
                     magicLinkExistingUser($user.email, $user.password, $user.rememberMe, $user.usePassword, id)
                             .then(json => {
-                                Cookies.set("login_preference", $user.usePassword ? "usePassword" : "useLink", {expires: 365});
+                                Cookies.set("login_preference", $user.usePassword ? "usePassword" : "useLink", {expires: 365, secure: true, sameSite: "strict" });
                                 if ($user.usePassword) {
                                     window.location.href = json.url
                                 } else {

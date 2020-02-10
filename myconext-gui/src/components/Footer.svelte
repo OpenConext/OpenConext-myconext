@@ -6,7 +6,7 @@
     const changeLanguage = lang => () => {
         const urlSearchParams = new URLSearchParams(window.location.search);
         urlSearchParams.set("lang", lang);
-        Cookies.set("lang", lang, { expires: 365 });
+        Cookies.set("lang", lang, {expires: 365, secure: true, sameSite: "strict"});
         window.location.search = urlSearchParams.toString();
     }
 
@@ -42,9 +42,11 @@
         display: flex;
         flex-direction: column;
     }
+
     .info {
         text-align: right;
     }
+
     span {
         display: inline-block;
         margin-bottom: 5px;
@@ -58,10 +60,12 @@
         display: inline-block;
         padding: 0 10px;
     }
+
     a {
         font-weight: bold;
         color: #002568;
     }
+
     li:last-child {
         border-left: 1px solid black;
     }
@@ -69,6 +73,7 @@
     li.non_active a {
         font-weight: normal;
     }
+
     li.active a {
         color: black;
         cursor: not-allowed;

@@ -1,7 +1,7 @@
 <script>
     import I18n from "i18n-js";
     import {onMount} from 'svelte';
-    import {user} from "../stores/user";
+    import {conf} from "../stores/conf";
     import Button from "../components/Button.svelte";
 
     let email = null;
@@ -19,7 +19,13 @@
         if (typeof window !== "undefined") {
             const urlSearchParams = new URLSearchParams(window.location.search);
             const redirect = decodeURIComponent(urlSearchParams.get("redirect"));
-            window.location.href = `${redirect}?h=${urlSearchParams.get('h')}`;
+            //Ensure we are not attacked by an open redirect
+            if (redirect.startsWith($conf.magicLinkUrl)) {
+                window.location.href = `${redirect}?h=${urlSearchParams.get('h')}`;
+            } else {
+                throw new Error("Invalid redirect: " + redirect);
+            }
+
         }
 
     };

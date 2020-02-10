@@ -74,7 +74,7 @@ public class DefaultErrorControllerTest {
         ResponseEntity responseEntity = doErrorMigration("/startSSO");
 
         assertEquals(HttpStatus.FOUND, responseEntity.getStatusCode());
-        assertEquals("http://localhost:3001/migration-error?email=jdoe@example.com", responseEntity.getHeaders().getLocation().toString());
+        assertEquals("http://localhost:3001/migration-error", responseEntity.getHeaders().getLocation().toString());
     }
 
     @Test

@@ -16,10 +16,13 @@ export const config = writable({
     loginUrl: "",
     baseDomain: "",
     migrationLandingPageUrl: "",
-    myConextUrlGuestIdp: ""
+    myConextUrlGuestIdp: "",
+    magicLinkUrl: ""
 });
 
 export const redirectPath = writable("");
+
+export const duplicatedEmail = writable("");
 
 const createFlash = () => {
     const {subscribe, set} = writable("");

@@ -1,16 +1,6 @@
 <script>
     import I18n from "i18n-js";
-    import {config} from "../stores/user";
-    import {onMount} from 'svelte';
-
-    let email = null;
-
-    onMount(() => {
-        if (typeof window !== "undefined") {
-            const urlSearchParams = new URLSearchParams(window.location.search);
-            email = decodeURIComponent(urlSearchParams.get("email"));
-        }
-    });
+    import {config, duplicatedEmail} from "../stores/user";
 
 </script>
 
@@ -81,7 +71,7 @@
         <p class="info">{I18n.t("migrationError.info")}</p>
         <p class="info">{I18n.t("migrationError.info2")}</p>
         <input type="text" disabled={true} value={$config.migrationLandingPageUrl}>
-        <p class="info">{@html I18n.t("migrationError.info3", {email: encodeURI(email), url: $config.myConextUrlGuestIdp})}</p>
+        <p class="info">{@html I18n.t("migrationError.info3", {email: encodeURI($duplicatedEmail), url: $config.myConextUrlGuestIdp})}</p>
     </div>
 
 </div>

@@ -12,7 +12,7 @@
     import Home from "./routes/Home.svelte";
     import Header from "./components/Header.svelte";
     import {me, configuration} from "./api";
-    import {user, config, redirectPath} from "./stores/user";
+    import {user, config, redirectPath, duplicatedEmail} from "./stores/user";
     import I18n from "i18n-js";
 
     export let url = "";
@@ -35,8 +35,8 @@
                             const afterDelete = urlSearchParams.get("delete");
                             if (e.status === 409) {
                                 e.json().then(res => {
-                                    const email = res.email;
-                                    navigate(`/migration-error?email=${email}`);
+                                    $duplicatedEmail = res.email;
+                                    navigate("/migration-error");
                                 });
                             } else if (logout) {
                                 navigate("/landing?logout=true");

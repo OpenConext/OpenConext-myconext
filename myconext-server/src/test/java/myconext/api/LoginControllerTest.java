@@ -44,11 +44,11 @@ public class LoginControllerTest extends AbstractIntegrationTest {
         given().redirects().follow(false)
                 .when()
                 .filter(cookieFilter)
-                .param("redirect_url", "http://localhost/redirect")
+                .param("redirect_url", "http://localhost:3001/redirect")
                 .get("/startSSO")
                 .then()
                 .statusCode(302)
-                .header("Location", "http://localhost/redirect");
+                .header("Location", "http://localhost:3001/redirect");
 
         UserResponse userResponse = given()
                 .filter(cookieFilter)
@@ -64,6 +64,18 @@ public class LoginControllerTest extends AbstractIntegrationTest {
         assertEquals("Doe", userResponse.getFamilyName());
         assertFalse(userResponse.isUsePassword());
         assertNotNull(userResponse.getId());
+    }
+
+    @Test
+    public void startSSOInvalidRedirect() {
+        Filter cookieFilter = new CookieFilter();
+        given().redirects().follow(false)
+                .when()
+                .filter(cookieFilter)
+                .param("redirect_url", "http://bogus")
+                .get("/startSSO")
+                .then()
+                .statusCode(400);
     }
 
     @Test

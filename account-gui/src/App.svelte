@@ -21,7 +21,7 @@
     onMount(() => configuration()
             .then(json => {
                 I18n.branding = json.branding;
-                $conf.migrationUrl = json.migrationUrl;
+                $conf = json;
                 loaded = true;
             }));
 
