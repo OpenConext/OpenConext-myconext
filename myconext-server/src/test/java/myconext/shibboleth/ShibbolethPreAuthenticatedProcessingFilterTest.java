@@ -5,9 +5,10 @@ import io.restassured.http.Headers;
 import myconext.AbstractIntegrationTest;
 import myconext.model.User;
 import org.junit.Test;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
 import org.springframework.test.context.ActiveProfiles;
 
-import java.io.UnsupportedEncodingException;
 import java.util.UUID;
 
 import static io.restassured.RestAssured.given;
@@ -21,19 +22,15 @@ import static org.hamcrest.core.IsEqual.equalTo;
 import static org.hamcrest.core.IsNull.notNullValue;
 import static org.junit.Assert.assertEquals;
 
-@ActiveProfiles(value = "dev", inheritProfiles = false)
+@ActiveProfiles(value = "shib", inheritProfiles = false)
 public class ShibbolethPreAuthenticatedProcessingFilterTest extends AbstractIntegrationTest {
+
+    @Value("${onegini_entity_id}")
+    private String oneGiniEntityId;
 
     @Test
     public void getPreAuthenticatedPrincipal() {
-        Headers headers = new Headers(
-                new Header(SHIB_UID, UUID.randomUUID().toString()),
-                new Header(SHIB_SCHAC_HOME_ORGANIZATION, "surfguest.nl"),
-                new Header(SHIB_GIVEN_NAME, "Steven"),
-                new Header(SHIB_SUR_NAME, "Doe"),
-                new Header(SHIB_AUTHENTICATING_AUTHORITY, "http://mock-sp ; http://mock-sp"),
-                new Header(SHIB_EMAIL, "steven.doe@example.org")
-        );
+        Headers headers = headers(UUID.randomUUID().toString(), "steven.doe@example.org", oneGiniEntityId);
         given()
                 .headers(headers)
                 .when()
@@ -48,6 +45,57 @@ public class ShibbolethPreAuthenticatedProcessingFilterTest extends AbstractInte
                 .body("id", notNullValue());
 
         User user = super.userRepository.findOneUserByEmail("steven.doe@example.org");
-        assertEquals("http://mock-sp", user.getAuthenticatingAuthority());
+        assertEquals("http://mock-idp", user.getAuthenticatingAuthority());
+    }
+
+    @Test
+    public void migrationConflict() {
+        Headers headers = headers(UUID.randomUUID().toString(), "jdoe@example.com", oneGiniEntityId);
+        given()
+                .headers(headers)
+                .when()
+                .get("/myconext/api/sp/me")
+                .then()
+                .statusCode(HttpStatus.CONFLICT.value())
+                .body("email", equalTo("jdoe@example.com"));
+    }
+
+    @Test
+    public void migrationConflictMerged() {
+        String uid = UUID.randomUUID().toString();
+        Headers headers = headers(uid, "jdoe@example.com", oneGiniEntityId);
+        given()
+                .headers(headers)
+                .when()
+                .get("/myconext/api/sp/migrate/merge")
+                .then()
+                .statusCode(HttpStatus.OK.value())
+                .body("email", equalTo("jdoe@example.com"));
+        assertEquals("jdoe@example.com", userRepository.findUserByUid(uid).get().getEmail());
+    }
+
+    @Test
+    public void migrationConflictProceed() {
+        String uid = UUID.randomUUID().toString();
+        Headers headers = headers(uid, "jdoe@example.com", oneGiniEntityId);
+        given()
+                .headers(headers)
+                .when()
+                .get("/myconext/api/sp/migrate/proceed")
+                .then()
+                .statusCode(HttpStatus.OK.value())
+                .body("email", equalTo("jdoe@example.com"));
+        assertEquals(false, userRepository.findUserByUid(uid).isPresent());
+    }
+
+    private Headers headers(String uid, String email, String authenticatingAuthority) {
+        return new Headers(
+                new Header(SHIB_UID, uid),
+                new Header(SHIB_SCHAC_HOME_ORGANIZATION, "surfguest.nl"),
+                new Header(SHIB_GIVEN_NAME, "Steven"),
+                new Header(SHIB_SUR_NAME, "Doe"),
+                new Header(SHIB_AUTHENTICATING_AUTHORITY, authenticatingAuthority + " ; " + authenticatingAuthority),
+                new Header(SHIB_EMAIL, email)
+        );
     }
 }

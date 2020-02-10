@@ -34,7 +34,7 @@ public class MailConfiguration {
     }
 
     @Bean
-    @Profile({"dev", "test"})
+    @Profile({"dev", "test", "shib"})
     @Primary
     public MailBox mailSenderDev(Environment environment) {
         return new MockMailBox(mailSender, emailFrom, magicLinkUrl, mySURFconextURL, environment);

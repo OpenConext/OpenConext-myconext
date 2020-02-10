@@ -12,8 +12,8 @@ import org.springframework.security.web.authentication.preauth.AbstractPreAuthen
 import org.springframework.util.StringUtils;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
 import java.io.UnsupportedEncodingException;
+import java.util.Arrays;
 import java.util.Optional;
 import java.util.stream.Stream;
 
@@ -79,8 +79,7 @@ public class ShibbolethPreAuthenticatedProcessingFilter extends AbstractPreAuthe
             }
         }
         //The authenticatingAuthority in the SAML / Shibd heading is a ';' separated list
-        String authenticatingAuthority = Stream.of(authenticatingAuthorities.split(";")).map(String::trim).findFirst().orElseThrow(
-                () -> new IllegalArgumentException(String.format("No valid authenticatingAuthority '%s'", authenticatingAuthorities)));
+        String authenticatingAuthority = authenticatingAuthorities.split(";")[0].trim();
         return optionalUser.orElseGet(() -> provisionUser(uid, schacHomeOrganization, givenName, familyName, email, authenticatingAuthority));
     }
 
@@ -111,7 +110,7 @@ public class ShibbolethPreAuthenticatedProcessingFilter extends AbstractPreAuthe
         String header = request.getHeader(name);
         try {
             return StringUtils.hasText(header) ?
-                    new String(header.getBytes("ISO8859-1"), "UTF-8") : header;
+                    new String(header.getBytes("ISO8859-1"), "UTF-8") : "";
         } catch (UnsupportedEncodingException e) {
             throw new IllegalArgumentException(e);
         }
