@@ -55,10 +55,10 @@ I18n.translations.nl = {
         }
     },
     account: {
-        title: "Je my.SURFconext account",
-        info: "Je kan ervoor kiezen om je SURFconext-account te verwijderen",
+        title: "Je eduID account",
+        info: "Je kan ervoor kiezen om je eduID-account te verwijderen",
         deleteAccount: "Verwijder mijn account",
-        deleteAccountConfirmation: "Weet je zeker dat je je my.surfconext account wil verwijderen?"
+        deleteAccountConfirmation: "Weet je zeker dat je je eduID account wil verwijderen?"
     },
     password: {
         setTitle: "Wachtwoord instellen",
@@ -78,7 +78,7 @@ I18n.translations.nl = {
     rememberMe: {
         updated: "Dit apparaat is niet langer onthouden",
         forgetMeTitle: "Onthoud dit apparaat.",
-        info: "Je huidige apparaat wordt onthouden. Je bent hierdoor automatisch ingelogt op de SURFconext Guest IdP.",
+        info: "Je huidige apparaat wordt onthouden. Je bent hierdoor automatisch ingelogt op de eduID Guest IdP.",
         cancel: "Annuleer",
         update: "Vergeet me",
         forgetMeConfirmation: "Weet je zeker dat je dit apparaat niet langer wilt onthouden?",
@@ -95,19 +95,19 @@ I18n.translations.nl = {
         confirm: "Bevestigen"
     },
     migration: {
-        header: "Je SURFconext gastaccount is aangemaakt!",
+        header: "Je eduID gastaccount is aangemaakt!",
         info: "je Onegini account is succesvol gemigreerd.",
-        info2: "Vanaf nu moet je je SURFconext gastaccount gebruiken om inte loggene bij services waar je voorheen Onegini gebruikte.",
-        info3: "Tip! je SURFconext gastaccount heeft standaard geen wachtwoord nodig (we sturen een magische link naar je e-mail om in te loggen), maar als je wilt, kan je een wachtwoord instellen op het ",
+        info2: "Vanaf nu moet je je eduID gastaccount gebruiken om inte loggene bij services waar je voorheen Onegini gebruikte.",
+        info3: "Tip! je eduID gastaccount heeft standaard geen wachtwoord nodig (we sturen een magische link naar je e-mail om in te loggen), maar als je wilt, kan je een wachtwoord instellen op het ",
         securityLink: " tabblad Beveiliging.",
         link: "Naar mijn account gegevens"
     },
     migrationError: {
-        header: "Account Migration Conflict",
-        info: "We have NOT migrated your existing Onegini account to a SURFconext Guest Account as you already have a Guest Account user.",
-        question: "If you want to migrate your Onegini account then click migrate. If you want proceed with your existing SURFconext Guest Account then click proceed",
-        migrate: "Migrate",
-        proceed: "Proceed",
-        help : "If you have any questions about this then please contact <a href=\"mailto:support@surfconext.nl\" >support@surfconext.nl</a>."
+        header: "Account Migratie Conflict",
+        info: "We hebben uw bestaande Onegini-account NIET gemigreerd naar een eduID-gastaccount omdat u al een gebruiker van een gastaccount hebt.",
+        question: "Als u uw Onegini-account wilt migreren, klikt u op migreren. Als u wilt doorgaan met uw bestaande eduID-gastaccount, klikt u op doorgaan",
+        migrate: "Migreren",
+        proceed: "Doorgaan",
+        help : "Als je hier vragen over hebt, neem dan contact op met <a href=\"mailto:support@surfconext.nl\"> support@surfconext.nl </a>."
     }
 };
