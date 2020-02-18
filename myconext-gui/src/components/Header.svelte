@@ -3,6 +3,7 @@
     import I18n from "i18n-js";
     import logo from "../img/logo_SURFconext_blue.svg";
     import openConextLogo from "../img/logo_OPEN_conext_blue.svg";
+    import eduidLogo from "../img/logo_eduid.svg";
     import {navigate} from "svelte-routing";
     import {logout} from "../api";
     import {user} from "../stores/user";
@@ -44,6 +45,10 @@
         padding: 10px 0;
     }
 
+    h1 {
+        display: none;
+    }
+
     @media (max-width: 800px) {
         h1 {
             display: none;
@@ -60,9 +65,9 @@
     <div class="logo">
         <a href="/" on:click|preventDefault|stopPropagation={() => navigate("/")}>
             {#if I18n.branding !== "SURFconext"}
-                {@html openConextLogo}
+                {@html eduidLogo}
             {:else}
-                {@html logo}
+                {@html eduidLogo}
             {/if}
         </a>
     </div>

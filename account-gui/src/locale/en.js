@@ -2,7 +2,7 @@ import I18n from "i18n-js";
 
 I18n.translations.en = {
     login: {
-        header: "Use SURFconext",
+        header: "Use eduID",
         header2: "to login to {{name}}",
         trust: "Trust this computer",
         email: "Your email address",
@@ -20,7 +20,7 @@ I18n.translations.en = {
         passwordForgottenLink: " use the magic link",
         login: "Login",
         create: "Create",
-        newTo: "New to surfConext?",
+        newTo: "New to eduID?",
         createAccount: " Create an account.",
         useExistingAccount: "Use existing account",
         invalidEmail: "Invalid email",
@@ -31,7 +31,7 @@ I18n.translations.en = {
         emailOrPasswordIncorrect: "Email or password are incorrect",
         passwordDisclaimer: "Make sure it's at least 15 characters OR at least 8 characters including a number and a uppercase letter.",
         noGuestAccount: "<strong>Don't</strong> have a Guest Account yet?",
-        noGuestAccountInfo: "A SURFconext Guest account is meant for users who wants to use services via <a href=\"https://surfconext.nl\" target=\"_blank\">SURFconext</a>, but who don't have a institutional account.",
+        noGuestAccountInfo: "A eduID Guest account is meant for users who wants to use services via <a href=\"https://surfconext.nl\" target=\"_blank\">SURFconext</a>, but who don't have a institutional account.",
         requestGuestAccount: "Request a Guest Account",
         alreadyGuestAccount: "<strong>Already</strong> have a Guest Account?",
         noPasswordNeeded: "No password needed. We'll send a magic link to your email to sign in instantly.",
@@ -71,8 +71,8 @@ I18n.translations.en = {
         title2: "Not Found"
     },
     migration: {
-        header: "Migrate to a <br/>SURFconext guest account",
-        info1: "SURF will phase out the use of Onegini. To retain access, you must migrate your Onegini account to an SURFconext guest account.",
+        header: "Migrate to a <br/>eduID guest account",
+        info1: "SURF will phase out the use of Onegini. To retain access, you must migrate your Onegini account to an eduID guest account.",
         info2: "You only need to click the button and log in with your existing Onegini account once. We will then migrate your account to a new SURConext Guest Account and send you an email after completion.",
         link: "Start migration"
     }

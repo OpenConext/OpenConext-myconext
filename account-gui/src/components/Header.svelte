@@ -3,6 +3,7 @@
     import I18n from "i18n-js";
     import logo from "../img/logo_SURFconext_blue.svg";
     import openConextLogo from "../img/logo_OPEN_conext_blue.svg";
+    import eduIDLogo from "../img/logo_eduid.svg";
 
 </script>
 
@@ -30,9 +31,9 @@
 
     <div class="logo">
         {#if I18n.branding !== "SURFconext"}
-            {@html openConextLogo}
+            {@html eduIDLogo}
         {:else}
-            {@html logo}
+            {@html eduIDLogo}
         {/if}
     </div>
 

@@ -15,7 +15,7 @@ email:
 branding: SURFconext
 #branding: OpenConext
 
-schac_home_organization: surfguest.nl
+schac_home_organization: eduid.nl
 
 cron:
   node-cron-job-responsible: True
@@ -43,6 +43,7 @@ certificate_path: classpath:/id_rsa.pub
 #certificate_path: classpath:/myconext.crt
 
 remember_me_max_age_seconds: 15_768_000
+email_guessing_sleep_millis: 500
 
 spring:
   data:

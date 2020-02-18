@@ -202,6 +202,9 @@ public class GuestIdpAuthenticationRequestFilter extends IdpAuthenticationReques
         if (user.isNewUser()) {
             user.setNewUser(false);
             userRepository.save(user);
+
+            LOG.info(String.format("Saving user %s after new registration and magic link", user.getUsername()));
+
             String charSet = Charset.defaultCharset().name();
             mailBox.sendAccountConfirmation(user);
             response.sendRedirect(this.redirectUrl + "/confirm?h=" + hash +
@@ -212,6 +215,9 @@ public class GuestIdpAuthenticationRequestFilter extends IdpAuthenticationReques
         } else {
             //ensure the magic link can't be used twice
             samlAuthenticationRequest.setHash(null);
+
+            LOG.info(String.format("Disabling magic link after use by %s ", user.getUsername()));
+
             authenticationRequestRepository.save(samlAuthenticationRequest);
         }
         IdentityProviderService provider = getProvisioning().getHostedProvider();
@@ -226,6 +232,7 @@ public class GuestIdpAuthenticationRequestFilter extends IdpAuthenticationReques
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
         if (samlAuthenticationRequest.isRememberMe()) {
+            LOG.info(String.format("Remember me functionality activated for %s ", user.getUsername()));
             addRememberMeCookie(response, samlAuthenticationRequest);
         }
 

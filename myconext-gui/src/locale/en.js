@@ -2,7 +2,7 @@ import I18n from "i18n-js";
 
 I18n.translations.en = {
     header: {
-        title: "My SURFconext",
+        title: "eduID",
         logout: "Logout"
     },
     landing: {
@@ -34,7 +34,7 @@ I18n.translations.en = {
     },
     security: {
         title: "Security",
-        subTitle: "We support the following sign in options for My SURFconext:",
+        subTitle: "We support the following sign in options for eduID:",
         usePassword: "Password",
         notSet: "Not set",
         useMagicLink: "Send magic link to",

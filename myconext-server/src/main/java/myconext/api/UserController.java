@@ -14,6 +14,8 @@ import myconext.model.UserResponse;
 import myconext.repository.AuthenticationRequestRepository;
 import myconext.repository.UserRepository;
 import myconext.security.EmailGuessingPrevention;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -47,6 +49,8 @@ import java.util.UUID;
 @RequestMapping("/myconext/api")
 public class UserController {
 
+    private static final Log LOG = LogFactory.getLog(UserController.class);
+
     private UserRepository userRepository;
     private AuthenticationRequestRepository authenticationRequestRepository;
     private MailBox mailBox;
@@ -57,7 +61,7 @@ public class UserController {
 
     private SecureRandom random = new SecureRandom();
     private PasswordEncoder passwordEncoder = new BCryptPasswordEncoder(-1, random);
-    private EmailGuessingPrevention emailGuessingPreventor = new EmailGuessingPrevention();
+    private EmailGuessingPrevention emailGuessingPreventor;
 
     public UserController(UserRepository userRepository,
                           AuthenticationRequestRepository authenticationRequestRepository,
@@ -65,7 +69,8 @@ public class UserController {
                           ServiceNameResolver serviceNameResolver,
                           @Value("${email.magic-link-url}") String magicLinkUrl,
                           @Value("${schac_home_organization}") String schacHomeOrganization,
-                          @Value("${guest_idp_entity_id}") String guestIdpEntityId) {
+                          @Value("${guest_idp_entity_id}") String guestIdpEntityId,
+                          @Value("${email_guessing_sleep_millis}") int emailGuessingSleepMillis) {
         this.userRepository = userRepository;
         this.authenticationRequestRepository = authenticationRequestRepository;
         this.mailBox = mailBox;
@@ -73,6 +78,7 @@ public class UserController {
         this.magicLinkUrl = magicLinkUrl;
         this.schacHomeOrganization = schacHomeOrganization;
         this.guestIdpEntityId = guestIdpEntityId;
+        this.emailGuessingPreventor = new EmailGuessingPrevention(emailGuessingSleepMillis);
     }
 
     @PostMapping("/idp/magic_link_request")
@@ -81,8 +87,10 @@ public class UserController {
                 .orElseThrow(ExpiredAuthenticationException::new);
 
         User user = magicLinkRequest.getUser();
+
+        emailGuessingPreventor.potentialUserEmailGuess();
+
         userRepository.findUserByEmail(user.getEmail()).ifPresent(u -> {
-            emailGuessingPreventor.potentialUserEmailGuess();
             throw new DuplicateUserEmailException();
         });
 
@@ -96,23 +104,25 @@ public class UserController {
     }
 
     @PutMapping("/idp/magic_link_request")
-    public ResponseEntity magicLinkRequest(@Valid @RequestBody MagicLinkRequest magicLinkRequest) throws InterruptedException {
+    public ResponseEntity magicLinkRequest(@Valid @RequestBody MagicLinkRequest magicLinkRequest) {
         SamlAuthenticationRequest samlAuthenticationRequest = authenticationRequestRepository.findByIdAndNotExpired(magicLinkRequest.getAuthenticationRequestId())
                 .orElseThrow(ExpiredAuthenticationException::new);
 
         User providedUser = magicLinkRequest.getUser();
+
+        emailGuessingPreventor.potentialUserEmailGuess();
+
         Optional<User> optionalUser = userRepository.findUserByEmail(providedUser.getEmail());
-        User user = optionalUser.orElseThrow(() -> {
-            emailGuessingPreventor.potentialUserEmailGuess();
-            return new UserNotFoundException();
-        });
+        User user = optionalUser.orElseThrow(UserNotFoundException::new);
         if (magicLinkRequest.isUsePassword()) {
             if (!passwordEncoder.matches(providedUser.getPassword(), user.getPassword())) {
-                emailGuessingPreventor.potentialUserEmailGuess();
                 throw new ForbiddenException();
             }
             UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(user, null,
                     user.getAuthorities());
+
+            LOG.info(String.format("User %s successfully logged in with password", user.getUsername()));
+
             SecurityContextHolder.getContext().setAuthentication(authentication);
         }
         return doMagicLink(user, samlAuthenticationRequest, magicLinkRequest, magicLinkRequest.isUsePassword());
@@ -127,8 +137,12 @@ public class UserController {
 
     @DeleteMapping("/sp/forget")
     public ResponseEntity forgetMe(Authentication authentication) {
-        String userId = ((User) authentication.getPrincipal()).getId();
+        User user = (User) authentication.getPrincipal();
+        String userId = user.getId();
         Long count = authenticationRequestRepository.deleteByUserId(userId);
+
+        LOG.info(String.format("Do not remember user %s anymore", user.getUsername()));
+
         return ResponseEntity.ok(count);
     }
 
@@ -141,6 +155,8 @@ public class UserController {
         user.validate();
 
         userRepository.save(user);
+
+        LOG.info(String.format("Update user profile for %s", user.getUsername()));
 
         return ResponseEntity.status(201).body(new UserResponse(user, false));
     }
@@ -157,6 +173,8 @@ public class UserController {
         user.encryptPassword(updateUserRequest.getNewPassword(), passwordEncoder);
         userRepository.save(user);
 
+        LOG.info(String.format("Updates / set password for user %s", user.getUsername()));
+
         return ResponseEntity.status(201).body(new UserResponse(user, false));
     }
 
@@ -168,6 +186,9 @@ public class UserController {
     @DeleteMapping("/sp/delete/{id}")
     public ResponseEntity deleteUser(Authentication authentication, HttpServletRequest request, @PathVariable("id") String id) throws URISyntaxException {
         User user = verifyAndFetchUser(authentication, id);
+
+        LOG.info(String.format("Deleted user %s", user.getUsername()));
+
         userRepository.delete(user);
         return doLogout(request);
     }
@@ -207,9 +228,14 @@ public class UserController {
             return ResponseEntity.status(201).body(Collections.singletonMap("url", this.magicLinkUrl + "?h=" + samlAuthenticationRequest.getHash()));
         } else {
             if (user.isNewUser()) {
+                LOG.info(String.format("Sending magic link for new user %s", user.getUsername()));
+
                 mailBox.sendAccountVerification(user, samlAuthenticationRequest.getHash());
             } else {
                 String serviceName = serviceNameResolver.resolve(samlAuthenticationRequest.getRequesterEntityId());
+
+                LOG.info(String.format("Sending magic link for existing user %s", user.getUsername()));
+
                 mailBox.sendMagicLink(user, samlAuthenticationRequest.getHash(), serviceName);
             }
             return ResponseEntity.status(201).body(Collections.singletonMap("result", "ok"));
