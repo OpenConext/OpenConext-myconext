@@ -16,7 +16,7 @@ I18n.translations.nl = {
     },
     profile: {
         title: "Persoonlijke informatie",
-        info: "Basisinformatie zoals je naam en e-mailadres en de informatie die we van je instelling hebben ontvangen",
+        info: "Basisinformatie zoals je naam en e-mailadres.",
         email: "Email",
         schacHomeOrganization: "Instellings ID",
         name: "Naam",
@@ -33,12 +33,13 @@ I18n.translations.nl = {
         back: "/profile"
     },
     security: {
-        title: "Beveliging",
-        subTitle: "We ondersteunen de volgende aanmeldingsopties voor eduID:",
+        title: "Beveiligingsinstellingen",
+        subTitle: "We bieden verschillende methoden om in te loggen op je eduID-account.",
+        secondSubTitle: "Inlog methoden",
         usePassword: "Wachtwoord",
         notSet: "Niet ingesteld",
         useMagicLink: "Email magic link naar",
-        rememberMe: "Onthoud dit apparaat",
+        rememberMe: "Ingelogd blijven",
         rememberMetrue: "Ja",
         rememberMefalse: "Nee",
     },
@@ -85,10 +86,9 @@ I18n.translations.nl = {
         forgetMe: "Vergeet dit apparaat"
     },
     footer: {
-        tip: "Tip of info nodig?",
-        help: "Help & FAQ",
-        poweredBy: "Trots aangeboden door",
-        surfconext: "SURFconext",
+        privacy: "Privacybeleid | Voorwaarden",
+        help: "Help",
+        poweredBy: "Aangeboden door"
     },
     modal: {
         cancel: "Annuleren",

@@ -26,6 +26,14 @@
             });
         }
     }
+    const createdAt = new Date(0);
+    createdAt.setUTCSeconds($user.created);
+    var options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+    d.toLocaleString("nl", options);
+    d.getHours()
+    d.getMinutes()
+    "Your eduID account was created on wednesday 24th February at 09:00 am"
+    const createdAt = I18n.t("")
 
 </script>
 

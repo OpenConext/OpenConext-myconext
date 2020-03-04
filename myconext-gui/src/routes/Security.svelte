@@ -6,6 +6,7 @@
     import CheckBox from "../components/CheckBox.svelte";
 
     let password = $user.usePassword ? "************************" : I18n.ts("security.notSet");
+    let passwordStyle = $user.usePassword ? "value" : "value-alt"
 
 </script>
 
@@ -24,13 +25,19 @@
     }
 
     h2 {
-        margin: 20px 0;
+        margin: 20px 0 10px 0;
         color: var(--color-primary-green);
     }
 
     p.info {
         font-weight: 300;
-        margin-bottom: 40px;
+        margin-bottom: 26px;
+    }
+
+    p.info2 {
+        font-size: 22px;
+        margin-bottom: 24px;
+        font-family: Proxima Nova, sans-serif;
     }
 
     table {
@@ -42,7 +49,7 @@
     }
 
     td {
-        border-top: 1px solid var(--color-primary-grey);
+        border-bottom: 1px solid var(--color-primary-grey);
         padding: 20px;
     }
 
@@ -52,6 +59,13 @@
 
     td.value {
         width: 60%;
+        font-weight: bold;
+    }
+
+    td.value-alt {
+        width: 60%;
+        font-style: italic;
+        color: #797979;
     }
 
     td.link {
@@ -70,6 +84,7 @@
     <div class="inner">
         <h2>{I18n.ts("security.title")}</h2>
         <p class="info">{I18n.ts("security.subTitle")}</p>
+        <p class="info2">{I18n.ts("security.secondSubTitle")}</p>
 
         <table cellspacing="0">
             <thead></thead>
@@ -81,7 +96,7 @@
             </tr>
             <tr class="name" on:click={() => navigate("/password")}>
                 <td class="attr">{I18n.t("security.usePassword")}</td>
-                <td class="value">{password}</td>
+                <td class="{passwordStyle}">{password}</td>
                 <td class="link">
                     <a class="menu-link" href="/password"
                        on:click|preventDefault|stopPropagation={() => navigate("/password")}>{@html chevron_right}</a>

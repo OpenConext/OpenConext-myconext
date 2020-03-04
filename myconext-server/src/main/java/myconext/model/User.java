@@ -38,6 +38,7 @@ public class User implements Serializable, UserDetails {
     private String password;
     private boolean newUser;
 
+    private long created;
     private long updatedAt = System.currentTimeMillis() / 1000L;
 
     public User(@NotNull String uid, @NotNull String email, String givenName, String familyName,
@@ -49,6 +50,7 @@ public class User implements Serializable, UserDetails {
         this.schacHomeOrganization = schacHomeOrganization;
         this.authenticatingAuthority = authenticatingAuthority;
         this.newUser = true;
+        this.created = System.currentTimeMillis() / 1000L;
     }
 
     public void validate() {

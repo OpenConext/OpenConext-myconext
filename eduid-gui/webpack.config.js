@@ -5,6 +5,8 @@ const path = require('path');
 const mode = process.env.NODE_ENV || 'development';
 const prod = mode === 'production';
 
+process.traceDeprecation = true;
+
 module.exports = {
     entry: {
         bundle: ['./src/main.js']
@@ -67,11 +69,9 @@ module.exports = {
     ],
     devtool: prod ? false : 'source-map',
     devServer: {
-        port: 3000,
+        port: 3002,
         proxy: {
-            '/myconext/api': 'http://localhost:8081',
-            '/config': 'http://localhost:8081',
-            '/register': 'http://localhost:8081'
+            '/config': 'http://localhost:8081'
         },
         historyApiFallback: true
     }

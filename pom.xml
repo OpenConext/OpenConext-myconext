@@ -22,6 +22,7 @@
         <module>myconext-server</module>
         <module>account-gui</module>
         <module>myconext-gui</module>
+        <module>eduid-gui</module>
     </modules>
 
     <build>

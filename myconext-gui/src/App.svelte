@@ -53,12 +53,13 @@
 <style>
 
     :global(:root) {
-        --color-primary-blue: #0061b0;
+        --color-primary-blue: #0062b0;
         --color-primary-green: #008738;
         --color-primary-black: #202020;
         --color-primary-red: #d00000;
         --color-primary-grey: #c4cdd5;
-        --width-app: 1244px;
+        --color-background: #f9f9f9;
+        --width-app: 1024px;
     }
 
     .myconext {
@@ -76,11 +77,7 @@
         max-width: var(--width-app);
         width: 100%;
         margin: 0 auto;
-        border-left: 2px solid var(--color-primary-blue);
-        border-right: 2px solid var(--color-primary-blue);
-        border-bottom-left-radius: 10px;
-        border-bottom-right-radius: 10px;
-        border-bottom: 4px solid var(--color-primary-blue);
+        box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.5);
     }
 
     @media (max-width: 1250px) {

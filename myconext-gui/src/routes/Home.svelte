@@ -111,7 +111,7 @@
     }
 
     nav ul li {
-        border-right: 2px solid var(--color-primary-grey);
+        /*border-right: 2px solid var(--color-primary-grey);*/
         cursor: pointer;
     }
 

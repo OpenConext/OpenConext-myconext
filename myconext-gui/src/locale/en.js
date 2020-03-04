@@ -16,7 +16,7 @@ I18n.translations.en = {
     },
     profile: {
         title: "Personal information",
-        info: "Basic information like your name and email address, and the information we have received from your institution",
+        info: "Basic information like your name and email address.",
         email: "Email address",
         schacHomeOrganization: "Institution ID",
         name: "Name",
@@ -33,12 +33,13 @@ I18n.translations.en = {
         back: "/profile"
     },
     security: {
-        title: "Security",
-        subTitle: "We support the following sign in options for eduID:",
+        title: "Security settings",
+        subTitle: "We provide different methods to sign in to your eduID account.",
+        secondSubTitle: "Signin methods",
         usePassword: "Password",
         notSet: "Not set",
         useMagicLink: "Send magic link to",
-        rememberMe: "Remember this device",
+        rememberMe: "Stay logged in",
         rememberMetrue: "Yes",
         rememberMefalse: "No",
     },
@@ -85,10 +86,9 @@ I18n.translations.en = {
         forgetMe: "Forget this device"
     },
     footer: {
-        tip: "Need tip or info?",
-        help: "Help & FAQ",
-        poweredBy: "Proudly powered by",
-        surfconext: "SURFconext",
+        privacy: "Privacy policy | Terms of Use",
+        help: "Help",
+        poweredBy: "Powered by"
     },
     modal: {
         cancel: "Cancel",

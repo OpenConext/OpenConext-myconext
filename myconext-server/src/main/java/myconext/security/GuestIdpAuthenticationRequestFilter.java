@@ -54,6 +54,7 @@ public class GuestIdpAuthenticationRequestFilter extends IdpAuthenticationReques
 
     public static final String GUEST_IDP_REMEMBER_ME_COOKIE_NAME = "guest-idp-remember-me";
     public static final String BROWSER_SESSION_COOKIE_NAME = "BROWSERSESSION";
+    public static final String REGISTER_MODUS_COOKIE_NAME = "REGISTER_MODUS_COOKIE_NAME";
 
     private static final Log LOG = LogFactory.getLog(GuestIdpAuthenticationRequestFilter.class);
 
@@ -108,7 +109,7 @@ public class GuestIdpAuthenticationRequestFilter extends IdpAuthenticationReques
         super.doFilterInternal(request, response, filterChain);
     }
 
-    private void sso(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    private void sso(HttpServletRequest request, final HttpServletResponse response) throws IOException {
         IdentityProviderService provider = getProvisioning().getHostedProvider();
         String samlRequest = request.getParameter("SAMLRequest");
         String relayState = request.getParameter("RelayState");
@@ -142,8 +143,10 @@ public class GuestIdpAuthenticationRequestFilter extends IdpAuthenticationReques
         } else {
             addBrowserIdentificationCookie(response);
             String serviceName = serviceNameResolver.resolve(requesterEntityId);
+            String modus = cookieByName(request, REGISTER_MODUS_COOKIE_NAME).map(c -> "&modus=cr").orElse("");
+
             response.sendRedirect(this.redirectUrl + "/login/" + samlAuthenticationRequest.getId() +
-                    "?name=" + URLEncoder.encode(serviceName, "UTF-8"));
+                    "?name=" + URLEncoder.encode(serviceName, "UTF-8") + modus);
         }
     }
 

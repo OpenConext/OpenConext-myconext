@@ -16,6 +16,7 @@ public class UserResponse {
     private String schacHomeOrganization;
     private String uid;
     private boolean rememberMe;
+    private long created;
 
     public UserResponse(User user, boolean rememberMe) {
         this.id = user.getId();
@@ -26,5 +27,6 @@ public class UserResponse {
         this.uid = user.getUid();
         this.usePassword = StringUtils.hasText(user.getPassword());
         this.rememberMe = rememberMe;
+        this.created = user.getCreated();
     }
 }

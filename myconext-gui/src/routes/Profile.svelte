@@ -41,7 +41,7 @@
         cursor: pointer;
     }
     td {
-        border-top: 1px solid var(--color-primary-grey);
+        border-bottom: 1px solid var(--color-primary-grey);
         padding: 20px;
     }
     td.attr {
@@ -50,6 +50,7 @@
 
     td.value {
         width: 60%;
+        font-weight: bold;
     }
 
     td.link {
@@ -75,11 +76,6 @@
             <tr>
                 <td class="attr">{I18n.ts("profile.email")}</td>
                 <td class="value">{$user.email}</td>
-                <td class="link"></td>
-            </tr>
-            <tr>
-                <td class="attr">{I18n.ts("profile.schacHomeOrganization")}</td>
-                <td class="value">{$user.schacHomeOrganization}</td>
                 <td class="link"></td>
             </tr>
             <tr class="name" on:click={() => navigate("/edit")}>
