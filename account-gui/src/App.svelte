@@ -57,11 +57,12 @@
 
     @media (max-width: 600px) {
         .idp {
-            margin: 0 15px;
+            margin: 0;
         }
         .content {
             padding: 32px 28px;
             width: 100%;
+            border-radius: 0;
         }
     }
 
