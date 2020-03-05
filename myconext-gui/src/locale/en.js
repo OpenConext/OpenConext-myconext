@@ -25,8 +25,8 @@ I18n.translations.en = {
     edit: {
         title: "Name",
         info: "Please provide your full name",
-        givenName: "Your given name",
-        familyName: "Your family name",
+        givenName: "Your first name",
+        familyName: "Your surname",
         update: "Update",
         cancel: "Cancel",
         updated: "Your profile has been updated",

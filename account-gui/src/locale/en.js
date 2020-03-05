@@ -8,8 +8,8 @@ I18n.translations.en = {
         trust: "Trust this computer",
         email: "Email address",
         emailPlaceholder: "e.g. user@example.com",
-        familyName: "Family name",
-        givenName: "Given name",
+        familyName: "Surname",
+        givenName: "First name",
         familyNamePlaceholder: "e.g. Berners-Lee",
         givenNamePlaceholder: "e.g. Tim",
         usePassword: "Use password",
@@ -50,11 +50,10 @@ I18n.translations.en = {
         wrongEmail2: "Please start over."
     },
     confirm: {
-        header: "Success",
-        header2: "your account is activated",
-        thanks: "Thank you for verifying your email address.",
+        header: "Success!",
+        thanks: "Your eduID Account has been created.",
         info1: "Click on the link below to proceed to",
-        info2: "with your new Guest Account.",
+        info2: "with your new eduID.",
         link: "Proceed to your destination"
     },
     footer: {
@@ -68,12 +67,13 @@ I18n.translations.en = {
         info: "You must open the Magic Link from the mail in the same browser session as where you requested the Magic Link. <br/><br/>  Please go back to the service you where heading to and request a new Magic Link."
     },
     expired: {
-        title: "Your Magic Link is expired.",
-        info: "The Magic Link you have used is either expired or already used.<br/><br/>  Please go back to the service you where heading to and request a new Magic Link."
+        title: "Expired magic link",
+        info: "The magic link you have used is either expired or already used.",
+        back: "Go to eduid.nl"
     },
     notFound: {
-        title: "404",
-        title2: "Not Found"
+        title: "Whoops...",
+        title2: "Something went wrong (404)."
     },
     migration: {
         header: "Migrate to a <br/>eduID guest account",

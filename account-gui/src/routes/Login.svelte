@@ -183,6 +183,11 @@
         margin: 8px 0 15px 0;
     }
 
+    input.error {
+        border: solid 1px var(--color-primary-red);
+        background-color: #fff5f3;
+    }
+
     .hidden {
         display: none;
     }

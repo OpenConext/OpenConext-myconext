@@ -50,12 +50,10 @@ I18n.translations.nl = {
         wrongEmail2: "Begin opnieuw."
     },
     confirm: {
-        header: "Succes",
-        header2: "uw account is geactiveerd",
-        thanks: "Bedankt voor het verifiëren van uw e-mailadres.",
+        header: "Succes!",
+        thanks: "je eduID account is geactiveerd.",
         info1: "Klik op de onderstaande link om door te gaan naar",
-        info2: "met je nieuwe gastaccount.",
-
+        info2: "met je nieuwe eduID.",
         link: "Ga door naar je bestemming"
     },
     footer: {
@@ -69,12 +67,13 @@ I18n.translations.nl = {
         info: "Je moet de Magic Link vanuit de mail openen in dezelfde browsersessie als waar je de Magic Link hebt aangevraagd. <br/> <br/> Ga terug naar de service waar je naar toe ging en vraag een nieuwe Magic Link aan."
     },
     expired: {
-        title: "Je Magic Link is verlopen.",
-        info: "De Magic Link die u hebt gebruikt, is verlopen of al in gebruik. <br/> <br/> Ga terug naar de service waar je naar toe ging en vraag een nieuwe Magic Link aan."
+        title: "Verlopen magic link",
+        info: "De magic link die u hebt gebruikt, is verlopen of al in gebruik.",
+        back: "Ga naar eduid.nl"
     },
     notFound: {
-        title: "404",
-        title2: "Niet gevonden"
+        title: "Whoops...",
+        title2: "Er is iets fout gegaan (404)."
     },
     migration: {
         header: "Migreer naar een <br/>SURFconext gastaccount",

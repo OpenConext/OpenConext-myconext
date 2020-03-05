@@ -35,19 +35,19 @@
 
 
     h2 {
-        margin: 6px 0 35px 0;
+        margin: 30px 0 40px 0;
+        font-size: 32px;
         color: var(--color-primary-green);
     }
 
     p {
-        margin-bottom: 35px;
+        margin-bottom: 25px;
     }
 
 </style>
 <div class="home">
     <div class="card">
-        <h1>{I18n.ts("confirm.header")}</h1>
-        <h2>{I18n.ts("confirm.header2")}</h2>
+        <h2>{I18n.ts("confirm.header")}</h2>
         <p>{I18n.ts("confirm.thanks")}</p>
         <p>{I18n.ts("confirm.info1")} <strong>{serviceName}</strong> {I18n.ts("confirm.info2")}</p>
         <Button href="/proceed" onClick={proceed}
