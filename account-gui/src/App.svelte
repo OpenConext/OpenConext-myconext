@@ -30,12 +30,12 @@
 <style>
 
     :global(:root){
-        --color-primary-blue: #0061b0;
+        --color-primary-blue: #0062b0;
         --color-primary-green: #008738;
         --color-primary-black: #202020;
         --color-primary-red: #d00000;
 
-        --width-app: 502px;
+        --width-app: 400px;
     }
 
     .idp {
@@ -51,11 +51,8 @@
         width: var(--width-app);
         margin: 0 auto;
         justify-content: center;
-        border-left: 2px solid var(--color-primary-blue);
-        border-right: 2px solid var(--color-primary-blue);
-        border-bottom: 4px solid var(--color-primary-blue);
-        border-bottom-left-radius: 10px;
-        border-bottom-right-radius: 10px;
+        border-radius: 4px;
+        box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.5);
     }
 
     @media (max-width: 600px) {

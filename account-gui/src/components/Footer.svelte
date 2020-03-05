@@ -2,11 +2,12 @@
 
     import I18n from "i18n-js";
     import Cookies from "js-cookie";
+    import surfLogo from "../img/logo-surf.svg";
 
     const changeLanguage = lang => () => {
         const urlSearchParams = new URLSearchParams(window.location.search);
         urlSearchParams.set("lang", lang);
-        Cookies.set("lang", lang, { expires: 365, secure: true, sameSite: "strict" });
+        Cookies.set("lang", lang, {expires: 365, secure: true, sameSite: "strict"});
         window.location.search = urlSearchParams.toString();
     }
 
@@ -15,17 +16,16 @@
 <style>
 
     .footer {
-        background-color: #5daff1;
-        padding: 0 25px;
         width: 100%;
         max-width: var(--width-app);
         height: 122px;
         margin: 0 auto;
+        color: white;
     }
 
     @media (max-width: 600px) {
-        .footer {
-            padding: 0 28px;
+        div.info span {
+            display: none;
         }
     }
 
@@ -34,44 +34,52 @@
         justify-content: space-between;
         margin: 0 auto;
         width: 100%;
-        font-size: 16px;
+        font-size: 14px;
         padding-top: 18px;
     }
 
-    .help, .info {
+    .help {
         display: flex;
         flex-direction: column;
+        padding-left: 10px;
     }
+
+    .help a.white {
+        color: white;
+    }
+
     .info {
         text-align: right;
+        display: flex;
+        flex-direction: row;
     }
+
     span {
         display: inline-block;
-        margin-bottom: 5px;
+        margin-right: 10px;
     }
 
     ul {
         list-style: none;
-        font-size: 18px;
     }
 
     li {
         display: inline-block;
         padding: 0 10px;
     }
-    a {
-        font-weight: bold;
-        color: #002568;
-    }
+
     li:last-child {
-        border-left: 1px solid black;
+        border-left: 1px solid white;
     }
 
     li.non_active a {
+        color: white;
         font-weight: normal;
     }
+
     li.active a {
-        color: black;
+        font-weight: bold;
+        color: white;
         cursor: not-allowed;
     }
 
@@ -80,8 +88,8 @@
 <div class="footer">
     <div class="inner">
         <div class="help">
-            <span>{I18n.ts("footer.tip")}</span>
-            <a href="https://surfconext.nl" target="_blank">{I18n.ts("footer.help")}</a>
+            <a class="white" href="https://surfconext.nl" target="_blank">{I18n.t("footer.terms")}</a>
+            <a class="white" href="https://surfconext.nl" target="_blank">{I18n.t("footer.privacy")}</a>
         </div>
 
         <ul>
@@ -94,8 +102,8 @@
         </ul>
 
         <div class="info">
-            <span>{I18n.ts("footer.poweredBy")}</span>
-            <a href="https://surfconext.nl" target="_blank">{I18n.ts("footer.surfconext")}</a>
+            <span>{I18n.t("footer.poweredBy")}</span>
+            <a href="https://surfconext.nl" target="_blank">{@html surfLogo}</a>
         </div>
     </div>
 </div>

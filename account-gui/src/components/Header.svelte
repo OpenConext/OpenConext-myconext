@@ -1,9 +1,7 @@
 <script>
 
     import I18n from "i18n-js";
-    import logo from "../img/logo_SURFconext_blue.svg";
-    import openConextLogo from "../img/logo_OPEN_conext_blue.svg";
-    import eduIDLogo from "../img/logo_eduid.svg";
+    import eduIDLogo from "../img/logo_eduID_2020.svg";
 
 </script>
 
@@ -14,12 +12,10 @@
         max-width: var(--width-app);
         margin: 0 auto;
         display: flex;
-        background-color: var(--color-primary-blue);
         align-items: center;
         align-content: center;
         position: relative;
         justify-content: center;
-        height: 80px;
     }
 
     .logo {
@@ -30,11 +26,7 @@
 <div class="header">
 
     <div class="logo">
-        {#if I18n.branding !== "SURFconext"}
-            {@html eduIDLogo}
-        {:else}
-            {@html eduIDLogo}
-        {/if}
+        {@html eduIDLogo}
     </div>
 
 </div>

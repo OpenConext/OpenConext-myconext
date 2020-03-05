@@ -1,15 +1,14 @@
-You have requested a Guest Account for SURFconext. Click the link below to verify that this email belongs to you:
+You have requested a eduID. Click the link below to verify that this email belongs to you:
 
 {{magicLinkUrl}}?h={{hash}}
 
-Hi <strong>{{name}},
+Hi {{name}},
 
-Someone just requested a Guest Account on SURFconext using this email address. If this was you, you can verify your
+Someone just requested a eduID using this email address. If this was you, you must verify your
 address by clicking the link above.
 
-If you don't want a Guest Account or didn't request one in the first place, just ignore or delete this message.
+If you don't want a eduID or didn't request one in the first place, just ignore or delete this message.
 
-For help see: https://www.surf.nl/en/surfconext-global-access-with-1-set-of-credentials
-For more info see: https://blog.surf.nl/en/access-and-authorisation-for-guest-users-with-surfconext
+Want to learn more about eduID? Visit https://www.eduid.nl
 
-SURFConext Guest IdP is a product of SURF.
+eduID is powered by SURF.

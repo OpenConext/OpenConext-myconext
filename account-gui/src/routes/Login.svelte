@@ -19,6 +19,7 @@
     let serviceName = "";
 
     let passwordField;
+    let agreedWithTerms = false;
 
     const intervalId = setInterval(() => {
         const value = (passwordField || {}).value;
@@ -43,7 +44,7 @@
 
     const handleNext = passwordFlow => () => {
         if (($user.usePassword && passwordFlow) || (!$user.usePassword && !passwordFlow)) {
-            if (allowedNext($user.email, $user.givenName, $user.familyName, $user.password)) {
+            if (allowedNext($user.email, $user.givenName, $user.familyName, $user.password, agreedWithTerms)) {
                 showSpinner = true;
                 const modus = $user.createAccount ? "cr" : "ea";
                 if ($user.createAccount) {
@@ -62,7 +63,11 @@
                 } else {
                     magicLinkExistingUser($user.email, $user.password, $user.rememberMe, $user.usePassword, id)
                             .then(json => {
-                                Cookies.set("login_preference", $user.usePassword ? "usePassword" : "useLink", {expires: 365, secure: true, sameSite: "strict" });
+                                Cookies.set("login_preference", $user.usePassword ? "usePassword" : "useLink", {
+                                    expires: 365,
+                                    secure: true,
+                                    sameSite: "strict"
+                                });
                                 if ($user.usePassword) {
                                     window.location.href = json.url
                                 } else {
@@ -103,8 +108,8 @@
 
     const init = el => el.focus();
 
-    const allowedNext = (email, familyName, givenName, password) => {
-        return $user.createAccount ? validEmail(email) && familyName && givenName :
+    const allowedNext = (email, familyName, givenName, password, agreedWithTerms) => {
+        return $user.createAccount ? validEmail(email) && familyName && givenName && agreedWithTerms:
                 $user.usePassword ? validEmail(email) && password : validEmail(email);
     };
 
@@ -136,21 +141,26 @@
 
 <style>
 
-    h2.top {
-        margin: 6px 0 35px 0;
-        color: var(--color-primary-green);
+    h2.header {
+        font-weight: 300;
     }
 
-    h3 {
-        margin-bottom: 15px;
+    h2.top {
+        margin: 6px 0 30px 0;
+        color: var(--color-primary-green);
+        font-size: 28px;
+    }
+
+    h3.mixed {
+        font-weight: normal;
     }
 
     .options {
         display: flex;
         flex-direction: column;
         width: 100%;
-        padding: 25px 0 30px 0;
-        border-bottom: 2px solid #5bd685;
+        padding: 5px 0 20px 0;
+        border-bottom: 1px solid #979797;
     }
 
     span.error {
@@ -185,35 +195,44 @@
     div.password-option {
         margin-top: 20px;
     }
-    div.info-bottom {
-        margin-top: 30px;
+
+    span.no-password-needed {
+        display: inline-block;
+        margin-bottom: 10px;
     }
 
-    div.info-bottom p {
-        display: inline-block;
-        margin-bottom: 20px;
+    div.info-bottom {
+        margin-top: 15px;
+        padding-left: 10px;
+    }
+
+    a {
+        text-decoration: underline;
     }
 
     a.toggle-link {
-        font-family: Proxima Nova, sans-serif;
-        text-decoration: none;
-        font-size: 18px;
-        line-height: 20px;
-        font-weight: bold;
-        color: #0077c8;
+        font-size: 14px;
+        line-height: 2.42;
+        color: #0062b0;
+        display: block;
     }
 
 </style>
 {#if showSpinner}
     <Spinner/>
 {/if}
-
-<h1>{I18n.ts("login.header")}</h1>
-<h2 class="top">{I18n.ts("login.header2", {name: serviceName})}</h2>
+{#if $user.createAccount}
+    <h2 class="header">{I18n.ts("login.header2")}</h2>
+    <h2 class="top">{I18n.ts("login.header3")}</h2>
+{:else}
+    <h2 class="header">{I18n.ts("login.header")}</h2>
+    <h2 class="top">{serviceName}</h2>
+{/if}
 <label for="email" class="pre-input-label">{I18n.ts("login.email")}</label>
 <input type="email"
        autocomplete="username"
        id="email"
+       class={`${emailNotFound || emailOrPasswordIncorrect || emailInUse ? 'error' : ''}`}
        placeholder={I18n.ts("login.emailPlaceholder")}
        use:init
        bind:value={$user.email}
@@ -254,12 +273,17 @@
     {#if !initial && !$user.familyName}
         <span class="error">{I18n.ts("login.requiredAttribute", {attr: I18n.ts("login.familyName")})}</span>
     {/if}
+    <CheckBox value={agreedWithTerms}
+              className="light"
+              label={I18n.ts("login.agreeWithTerms")}
+              name="agreeWithTerms"
+              onChange={val => agreedWithTerms = val}/>
     <div class="options">
-        <Button disabled={showSpinner || !allowedNext($user.email, $user.familyName, $user.givenName, $user.password)}
-                active={allowedNext($user.email, $user.familyName, $user.givenName, $user.password)}
+        <Button disabled={showSpinner || !allowedNext($user.email, $user.familyName, $user.givenName, $user.password, agreedWithTerms)}
+                active={allowedNext($user.email, $user.familyName, $user.givenName, $user.password, agreedWithTerms)}
                 href="/magic"
                 className="full"
-                label={I18n.ts("login.sendMagicLink")}
+                label={$user.createAccount ? I18n.ts("login.requestEduId"): I18n.ts("login.sendMagicLink")}
                 onClick={handleNext(false)}/>
     </div>
 {:else}
@@ -272,6 +296,11 @@
                bind:value={$user.password}
                bind:this={passwordField}>
     </div>
+
+    {#if !$user.usePassword}
+        <span class="no-password-needed">{I18n.t("login.noPasswordNeeded")}</span>
+    {/if}
+
     <CheckBox value={$user.rememberMe}
               label={I18n.ts("login.rememberMe")}
               name="remember-me"
@@ -279,39 +308,40 @@
     <div class="options">
         {#if $user.usePassword}
             <Button href={`/${$user.usePassword ?  I18n.ts("login.login") : I18n.ts("login.usePassword")}`}
-                    disabled={showSpinner ||!allowedNext($user.email, $user.familyName, $user.givenName, $user.password) && $user.usePassword}
+                    disabled={showSpinner ||!allowedNext($user.email, $user.familyName, $user.givenName, $user.password, true) && $user.usePassword}
                     label={$user.usePassword ?  I18n.ts("login.login") : I18n.ts("login.usePassword")}
+                    className="full"
                     onClick={handleNext(true)}/>
             <div class="password-option">
                 <span>{I18n.ts("login.passwordForgotten")}</span>
                 <a href={I18n.ts("login.login")}
                    on:click|preventDefault|stopPropagation={handleNext(false)}>{I18n.ts("login.passwordForgottenLink")}</a>
             </div>
-
-
         {:else}
             <Button href="/magic"
-                    disabled={showSpinner ||!allowedNext($user.email, $user.familyName, $user.givenName, $user.password) && !$user.usePassword}
+                    disabled={showSpinner ||!allowedNext($user.email, $user.familyName, $user.givenName, $user.password, true) && !$user.usePassword}
                     label={$user.usePassword ?  I18n.ts("login.useMagicLink") : I18n.ts("login.sendMagicLink")}
+                    className="full"
                     onClick={handleNext(false)}/>
             <div class="password-option">
-                <span>{I18n.t("login.noPasswordNeeded")}</span>
                 <a href={I18n.ts("login.usePassword")}
                    on:click|preventDefault|stopPropagation={handleNext(true)}>{I18n.ts("login.usePasswordLink")}</a>
+                <span>{I18n.t("login.usePasswordLinkInfo")}</span>
             </div>
         {/if}
     </div>
 {/if}
 <div class="info-bottom">
     {#if !$user.createAccount}
-        <h3>{@html I18n.ts("login.noGuestAccount")}</h3>
-        <p>{@html I18n.ts("login.noGuestAccountInfo")}</p>
+        <h3 class="mixed">{@html I18n.ts("login.noGuestAccount")}</h3>
         <a class="toggle-link" href="/reguest"
            on:click|preventDefault|stopPropagation={createAccount(true)}>{I18n.ts("login.requestGuestAccount")}</a>
     {:else}
-        <h3>{@html I18n.ts("login.alreadyGuestAccount")}</h3>
+        <h3 class="mixed">{@html I18n.ts("login.alreadyGuestAccount")}</h3>
         <a class="toggle-link" href="/login"
            on:click|preventDefault|stopPropagation={createAccount(false)}>{I18n.ts("login.login")}</a>
 
     {/if}
+
+    <a class="toggle-link" target="_blank" href="https://eduid.nl">{I18n.ts("login.whatis")}</a>
 </div>

@@ -4,6 +4,8 @@
     export let value;
     export let onChange;
     export let label;
+    export let className;
+
 </script>
 <style>
     label.checkbox {
@@ -14,6 +16,10 @@
         cursor: pointer;
         user-select: none;
         font-weight: 600;
+    }
+
+    label.checkbox.light {
+        font-weight: 300;
     }
 
     .checkbox input {
@@ -51,8 +57,8 @@
     }
 
 </style>
-<label class="checkbox">
-    <span>{label}</span>
+<label class={`checkbox ${className}`}>
+    <span>{@html label}</span>
     <input type="checkbox" checked={value} on:change={e => onChange(e.target.checked)}>
     <span class="checkmark">
         {@html check}

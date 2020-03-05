@@ -10,10 +10,9 @@ Sign in to {{destination}}. This link will expire in 10 minutes and can only be 
 
 Hi <strong>{{name}},
 
-Someone just requested a Magic Link on SURFconext using this email address. If this was you, you can sign in by following the link above.
+Someone just requested a Magic Link using this email address. If this was you, you can sign in by following the link above.
 If you didn't request the Magic Link , just ignore and delete this message.
 
-For help see: https://www.surf.nl/en/surfconext-global-access-with-1-set-of-credentials
-For more info see: https://blog.surf.nl/en/access-and-authorisation-for-guest-users-with-surfconext
+Want to learn more about eduID? Visit https://www.eduid.nl
 
-SURFConext Guest IdP is a product of SURF.
+eduID is powered by SURF.

@@ -2,6 +2,7 @@
     import I18n from "i18n-js";
     import {user} from "../stores/user";
     import {onMount} from "svelte";
+    import info from "../icons/icons8-info.svg";
 
     export let id;
     let serviceName;
@@ -16,23 +17,48 @@
 </script>
 
 <style>
-    h2 {
-        margin: 6px 0 35px 0;
-        color: var(--color-primary-green);
+    h2.header {
+        font-weight: 300;
     }
 
-    p.info {
-        margin-bottom: 60px;
+    h2.top {
+        margin: 6px 0 30px 0;
+        color: var(--color-primary-green);
+        font-size: 28px;
     }
 
     p.mail {
-        margin-bottom: 60px;
-        font-size: 24px;
+        font-weight: bold;
+    }
+
+    div.whoops {
+        margin: 40px 0;
+        display: flex;
+        padding: 25px;
+        border-radius: 8px;
+        background-color: #efefef;
+        font-size: 14px;
+        align-items: center;
+    }
+    div.whoops .info {
+        margin-right: 20px;
+    }
+
+    div.whoops a {
+        text-decoration: underline;
     }
 
 </style>
-<h1>{I18n.ts("magicLink.header")}</h1>
-<h2>{I18n.ts("magicLink.header2")}</h2>
-<p class="info">{I18n.ts("magicLink.info")}</p>
+<h2 class="header">{I18n.ts("magicLink.header")}</h2>
+<h2 class="top">{I18n.ts("magicLink.header2")}</h2>
+<p>{I18n.ts("magicLink.info1")}</p>
 <p class="mail">{$user.email}</p>
-<a href={`/login/${id}?name=${serviceName}&modus=${modus}`}>{I18n.ts("magicLink.wrongEmail")}</a>
+<p>{I18n.ts("magicLink.info2")}</p>
+<div class="whoops">
+    <div class="info">{@html info}</div>
+    <div>
+        <p>{I18n.ts("magicLink.wrongEmail")}</p>
+        <a href={`/login/${id}?name=${serviceName}&modus=${modus}`}>{I18n.ts("magicLink.wrongEmail2")}</a>
+    </div>
+</div>
+

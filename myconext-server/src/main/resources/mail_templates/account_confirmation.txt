@@ -1,10 +1,7 @@
 Hi {{name}},
 
-Your Guest Account is now activated.
+Your eduID is now activated.
 
-With this Guest Account you can access tools and services that are connected to SURFconext and who accepts guests
+Want to learn more about eduID? Visit https://www.eduid.nl
 
-For help see: https://www.surf.nl/en/surfconext-global-access-with-1-set-of-credentials
-For more info see: https://blog.surf.nl/en/access-and-authorisation-for-guest-users-with-surfconext
-
-SURFConext Guest IdP is a product of SURF.
+eduID is powered by SURF.

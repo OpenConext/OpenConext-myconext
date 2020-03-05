@@ -2,11 +2,12 @@ import I18n from "i18n-js";
 
 I18n.translations.en = {
     login: {
-        header: "Use eduID",
-        header2: "to login to {{name}}",
+        header: "Use your eduID to login to",
+        header2: "Request",
+        header3: "Your eduID",
         trust: "Trust this computer",
-        email: "Your email address",
-        emailPlaceholder: "Email address",
+        email: "Email address",
+        emailPlaceholder: "e.g. user@example.com",
         familyName: "Family name",
         givenName: "Given name",
         familyNamePlaceholder: "e.g. Berners-Lee",
@@ -14,10 +15,11 @@ I18n.translations.en = {
         usePassword: "Use password",
         useMagicLink: "Use magic link",
         sendMagicLink: "Send magic link",
-        rememberMe: "Remember this device",
+        requestEduId: "Request your eduID",
+        rememberMe: "Stay logged in",
         password: "Your password",
-        passwordForgotten: "If you forgot your password,",
-        passwordForgottenLink: " use the magic link",
+        passwordForgotten: "Forgot your password or prefer a magic link? ",
+        passwordForgottenLink: "Receive an email to sign in instantly.",
         login: "Login",
         create: "Create",
         newTo: "New to eduID?",
@@ -30,18 +32,22 @@ I18n.translations.en = {
         emailNotFoundLink: " click here.",
         emailOrPasswordIncorrect: "Email or password are incorrect",
         passwordDisclaimer: "Make sure it's at least 15 characters OR at least 8 characters including a number and a uppercase letter.",
-        noGuestAccount: "<strong>Don't</strong> have a Guest Account yet?",
-        noGuestAccountInfo: "A eduID Guest account is meant for users who wants to use services via <a href=\"https://surfconext.nl\" target=\"_blank\">SURFconext</a>, but who don't have a institutional account.",
-        requestGuestAccount: "Request a Guest Account",
-        alreadyGuestAccount: "<strong>Already</strong> have a Guest Account?",
+        noGuestAccount: "<strong>Don't</strong> have an eduID yet?",
+        requestGuestAccount: "Request an eduID",
+        alreadyGuestAccount: "<strong>Already</strong> have a eduID?",
         noPasswordNeeded: "No password needed. We'll send a magic link to your email to sign in instantly.",
-        usePasswordLink: "Type a password anyway."
+        usePasswordLink: "Type a password anyway ",
+        usePasswordLinkInfo: "if you have set one.",
+        whatis: "What is eduID?",
+        agreeWithTerms: "<span>I agree with <a href='https://www.eduid.nl' target='_blank'>the terms of service.</a></span>"
     },
     magicLink: {
-        header: "Check",
-        header2: "your inbox",
-        info: "We have sent an email with a magic link to:",
-        wrongEmail: "Woops, wrong email"
+        header: "Please",
+        header2: "Check your email",
+        info1: "We sent an email to you at",
+        info2: "It has a magic link that will sign you in.",
+        wrongEmail: "Is the above email not correct?",
+        wrongEmail2: "Please start over."
     },
     confirm: {
         header: "Success",
@@ -52,11 +58,10 @@ I18n.translations.en = {
         link: "Proceed to your destination"
     },
     footer: {
-        tip: "Need tip or info?",
-        help: "Help & FAQ",
-        poweredBy: "Proudly powered by",
-        surfconext: "SURFconext",
-
+        privacy: "Privacy policy",
+        terms: "Terms of Use",
+        help: "Help",
+        poweredBy: "Powered by"
     },
     session: {
         title: "Your Session was lost.",

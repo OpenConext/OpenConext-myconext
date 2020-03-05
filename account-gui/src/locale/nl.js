@@ -2,11 +2,12 @@ import I18n from "i18n-js";
 
 I18n.translations.nl = {
     login: {
-        header: "Gebruik SURFconext",
-        header2: "om in te loggen op {{name}}",
+        header: "Gebruik je eduID om in te loggen op",
+        header2: "Aanvraag",
+        header3: "Van je eduID",
         trust: "Vertrouw deze computer",
-        email: "Je e-mail adres",
-        emailPlaceholder: "E-mail adres",
+        email: "E-mail adres",
+        emailPlaceholder: "e.g. user@example.com",
         familyName: "Achternaam",
         givenName: "Voornaam",
         familyNamePlaceholder: "e.g. Berners-Lee",
@@ -14,10 +15,11 @@ I18n.translations.nl = {
         usePassword: "Gebruik wachtwoord",
         useMagicLink: "Gebruik magic link",
         sendMagicLink: "Verstuur magic link",
-        rememberMe: "Onthoud dit apparaat",
+        requestEduId: "Vraag je eduID aan",
+        rememberMe: "Blijf ingelogd",
         password: "Je wachtwoord",
-        passwordForgotten: "Als je je wachtwoord vergeten bent,",
-        passwordForgottenLink: " gebruik dan de magic link",
+        passwordForgotten: "Wachtwoord vergeten of liever een magische link?",
+        passwordForgottenLink: "Ontvang een e-mail om direct in te loggen.",
         login: "Login",
         create: "Aanmaken",
         newTo: "Voor het eerst bij SURFconext?",
@@ -30,18 +32,22 @@ I18n.translations.nl = {
         emailNotFoundLink: " hier.",
         emailOrPasswordIncorrect: "E-mail of wachtwoord zijn niet juist",
         passwordDisclaimer: "Je wachtwoord moet minimaal 15 karakters lang zijn of 8 inclusief een hoofdletter en een getal.",
-        noGuestAccount: "Heb je nog geen <strong>gastaccount?</strong>",
-        noGuestAccountInfo: "Een SURFconext Guest-account is bedoeld voor gebruikers die diensten willen gebruiken via <a href=\"https://surfconext.nl\" target=\"_blank\"> SURFconext </a>, maar die geen instellings account hebben.",
-        requestGuestAccount: "Vraag een gastaccount aan",
-        alreadyGuestAccount: "Al een <strong>gastaccount?</strong>",
+        noGuestAccount: "Heb je nog geen <strong>eduID?</strong>",
+        requestGuestAccount: "Vraag een eduID aan",
+        alreadyGuestAccount: "Al een <strong>eduID?</strong>",
         noPasswordNeeded: "Geen wachtwoord nodig. We mailen je een magic link waarmee je  direct kunt inloggen.",
-        usePasswordLink: "Gebruik toch een wachtwoord"
+        usePasswordLink: "Gebruik toch een wachtwoord ",
+        usePasswordLinkInfo: "als je deze hebt ingesteld.",
+        whatis: "Wat is eduID?",
+        agreeWithTerms: "<span>Ik ga akkoord met <a href='https://www.eduid.nl' target='_blank'>de gebruikersvoorwaarden.</a></span>"
     },
     magicLink: {
-        header: "Controleer",
-        header2: "je inbox",
-        info: "We hebben een e-mail met een magische link verzonden naar:",
-        wrongEmail: "Woops, verkeerde e-mail"
+        header: "Please",
+        header2: "Controleer uw e-mail",
+        info1: "We hebben een e-mail gestuurd naar",
+        info2: "Het bevat de magische link waarmee je inlogd.",
+        wrongEmail: "Is de bovenstaande e-mail niet correct?",
+        wrongEmail2: "Begin opnieuw."
     },
     confirm: {
         header: "Succes",
@@ -53,11 +59,10 @@ I18n.translations.nl = {
         link: "Ga door naar je bestemming"
     },
     footer: {
-        tip: "Tip of info nodig?",
-        help: "Help & FAQ",
-        poweredBy: "Trots aangeboden door",
-        surfconext: "SURFconext",
-
+        privacy: "Privacy",
+        terms: "Voorwaarden",
+        help: "Help",
+        poweredBy: "Aangeboden door"
     },
     session: {
         title: "Je sessie is verloren gegaan.",

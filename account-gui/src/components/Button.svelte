@@ -21,6 +21,7 @@
         cursor: pointer;
         text-align: center;
         font-weight: bold;
+        font-size: 18px;
     }
     .button:hover {
         background-color: #004c97;
