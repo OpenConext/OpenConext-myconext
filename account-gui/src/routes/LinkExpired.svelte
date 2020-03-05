@@ -23,6 +23,6 @@
     <div class="card">
         <h1>{I18n.t("expired.title")}</h1>
         <p>{@html I18n.t("expired.info")}</p>
-        <Button label={I18n.t("expired.back")} href="https://www.eduid.nl" onClick={() => window.location.href = "https://www/eduid.nl"} />
+        <Button label={I18n.t("expired.back")} href="https://www.eduid.nl" onClick={() => window.location.href = "https://www.eduid.nl"} />
     </div>
 </div>

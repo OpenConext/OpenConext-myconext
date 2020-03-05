@@ -26,5 +26,5 @@
 <div class="not-found">
     <h1>{I18n.ts("notFound.title")}</h1>
     <p>{I18n.ts("notFound.title2")}</p>
-    <Button label={I18n.t("expired.back")} href="https://www.eduid.nl" onClick={() => window.location.href = "https://www/eduid.nl"} />
+    <Button label={I18n.t("expired.back")} href="https://www.eduid.nl" onClick={() => window.location.href = "https://www.eduid.nl"} />
 </div>
