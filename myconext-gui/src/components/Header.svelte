@@ -63,7 +63,7 @@
 <div class="header">
 
     <div class="logo">
-        <a href="/" on:click|preventDefault|stopPropagation={() => navigate("/")}>
+        <a href="/">
             {@html eduidLogo}
         </a>
     </div>

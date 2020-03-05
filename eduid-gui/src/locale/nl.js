@@ -23,5 +23,5 @@ I18n.translations.nl = {
         privacy: "Privacy | Voorwaarden",
         help: "Help",
         poweredBy: "Aangeboden door"
-    },
+    }
 };

@@ -42,7 +42,8 @@
                             } else if (afterDelete) {
                                 navigate("/landing?delete=true");
                             } else {
-                                navigate("/landing");
+                                const path = encodeURIComponent($redirectPath || "/");
+                                window.location.href = `${$config.loginUrl}?redirect_path=${path}`;
                             }
                         })
             })

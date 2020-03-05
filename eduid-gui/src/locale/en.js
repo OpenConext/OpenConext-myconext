@@ -23,5 +23,5 @@ I18n.translations.en = {
         privacy: "Privacy policy | Terms of Use",
         help: "Help",
         poweredBy: "Powered by"
-    },
+    }
 };

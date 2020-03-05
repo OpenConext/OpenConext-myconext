@@ -9,7 +9,7 @@
         <relativePath>../pom.xml</relativePath>
     </parent>
 
-    <artifactId>myconext-gui</artifactId>
+    <artifactId>eduid-gui</artifactId>
     <packaging>pom</packaging>
     <name>eduid-gui</name>
     <version>0.0.3-SNAPSHOT</version>

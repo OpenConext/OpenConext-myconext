@@ -6,10 +6,10 @@ I18n.translations.nl = {
         logout: "Logout"
     },
     landing: {
-        info: "Online samenwerken in het onderwijs",
-        login: "Enter",
-        logoutStatus: "Je bent succesvol uitgelogd. Om het uitlogproces te voltooien, moet je je browser sluiten",
-        deletionStatus: "Je hebt succesvol je account verwijderd. Om het proces te voltooien, moet je je browser sluiten"
+        logoutTitle: "Je bent uitgelogd",
+        logoutStatus: "Om het uilogproces te voltooien, moet je de browser sluiten.",
+        deleteTitle: "Je eduID account is verwijderd",
+        deleteStatus: "Om het verwijderingsproces te voltooien, moet je de browser sluiten."
     },
     notFound: {
         main: "404 - Not Found"
@@ -57,7 +57,11 @@ I18n.translations.nl = {
     },
     account: {
         title: "Je eduID account",
-        info: "Je kan ervoor kiezen om je eduID-account te verwijderen",
+        deleteTitle: "Je eduID account verwijderen",
+        info1: "U kunt dit account verwijderen wanneer u maar wilt.",
+        info2: "Let op, u verliest het unieke eduID-nummer dat momenteel aan uw e-mailadres is gekoppeld. Wanneer u zich opnieuw registreert voor een nieuwe eduID met hetzelfde e-mailadres, ontvangt u een nieuw eduID-nummer. Sommige services gebruiken dit unieke nummer om identificeer u, dus voor die services wordt u behandeld als een nieuwe gebruiker. ",
+        info3: "Houd er rekening mee dat het verwijderen van uw eduID-account niet betekent dat alle services die u met dat eduID-account hebt gebruikt, ook uw gegevens zullen verwijderen.",
+        info4: "Om het verwijderen van uw eduID-account volledig te voltooien, moet u uw browser sluiten nadat uw account is verwijderd.",
         deleteAccount: "Verwijder mijn account",
         deleteAccountConfirmation: "Weet je zeker dat je je eduID account wil verwijderen?"
     },
@@ -108,6 +112,9 @@ I18n.translations.nl = {
         question: "Als u uw Onegini-account wilt migreren, klikt u op migreren. Als u wilt doorgaan met uw bestaande eduID-gastaccount, klikt u op doorgaan",
         migrate: "Migreren",
         proceed: "Doorgaan",
-        help : "Als je hier vragen over hebt, neem dan contact op met <a href=\"mailto:support@surfconext.nl\"> support@surfconext.nl </a>."
+        help: "Als je hier vragen over hebt, neem dan contact op met <a href=\"mailto:support@surfconext.nl\"> support@surfconext.nl </a>."
+    },
+    format: {
+        creationDate: "Je eduID account is aangemaakt op {{date}} om {{hours}}:{{minutes}}"
     }
 };

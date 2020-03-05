@@ -28,46 +28,40 @@
 <style>
     .landing {
         display: flex;
-        justify-content: center;
         flex-direction: column;
         background-color: white;
         height: auto;
         min-height: 500px;
-        padding: 25px;
         align-items: center;
         align-content: center;
     }
 
-
-    h1 {
-        margin-bottom: 35px;
-        text-align: center;
+    div.inner {
+        margin: 25px auto;
     }
 
-    h2 {
-        margin-bottom: 60px;
+    h3 {
         color: var(--color-primary-green);
-        text-align: center;
+        margin-bottom: 20px;
     }
 
-    p.logout {
+    p {
         color: var(--color-primary-black);
-        font-size: 22px;
-        margin-bottom: 74px;
+        font-size: 18px;
     }
 
 </style>
 
 
 <div class="landing">
-    {#if isLogoutRedirect}
-        <p class="logout">{I18n.ts("landing.logoutStatus")}</p>
-    {/if}
-    {#if isAccountDeletionRedirect}
-        <p class="logout">{I18n.ts("landing.deletionStatus")}</p>
-    {/if}
-    <h1>{I18n.ts("header.title")}</h1>
-    <h2>{I18n.ts("landing.info")}</h2>
-    <Button label={I18n.ts("landing.login")} className="short" href={I18n.ts("landing.login")} onClick={login}/>
-
+    <div class="inner">
+        {#if isLogoutRedirect}
+            <h3>{I18n.ts("landing.logoutTitle")}</h3>
+            <p>{I18n.ts("landing.logoutStatus")}</p>
+        {/if}
+        {#if isAccountDeletionRedirect}
+            <h3>{I18n.ts("landing.deleteTitle")}</h3>
+            <p>{I18n.ts("landing.deleteStatus")}</p>
+        {/if}
+    </div>
 </div>

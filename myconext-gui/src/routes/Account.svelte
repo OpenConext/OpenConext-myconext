@@ -1,5 +1,6 @@
 <script>
     import {user} from "../stores/user";
+    import {formatCreateDate} from "../format/date";
     import I18n from "i18n-js";
     import {navigate} from "svelte-routing";
 
@@ -26,14 +27,6 @@
             });
         }
     }
-    const createdAt = new Date(0);
-    createdAt.setUTCSeconds($user.created);
-    var options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
-    d.toLocaleString("nl", options);
-    d.getHours()
-    d.getMinutes()
-    "Your eduID account was created on wednesday 24th February at 09:00 am"
-    const createdAt = I18n.t("")
 
 </script>
 
@@ -52,7 +45,7 @@
     }
 
     h2 {
-        margin: 20px 0;
+        margin: 20px 0 10px 0;
         color: var(--color-primary-green);
     }
 
@@ -62,28 +55,21 @@
     }
 
     h3 {
-        margin-bottom: 30px;
+        margin-bottom: 10px;
     }
 
-    table {
-        width: 100%;
+    p {
+        font-size: 18px;
+        line-height: 1.33;
+        letter-spacing: normal;
     }
 
-    td {
-        border-top: 1px solid var(--color-primary-grey);
-        padding: 20px;
-    }
-
-    td.attr {
-        width: 30%;
-    }
-
-    td.value {
-        width: 60%;
+    p.divider {
+        margin-bottom: 22px;
     }
 
     .options {
-        margin-top: 60px;
+        margin: 30px 0;
     }
 
     :global(a svg.menu-link) {
@@ -97,17 +83,11 @@
 
     <div class="inner">
         <h2>{I18n.t("account.title")}</h2>
-        <p class="info">{I18n.ts("account.info")}</p>
-        <h3>{I18n.t("profile.profile")}</h3>
-        <table cellspacing="0">
-            <thead></thead>
-            <tbody>
-            <tr>
-                <td class="attr">{I18n.ts("security.useMagicLink")}</td>
-                <td class="value">{$user.email}</td>
-            </tr>
-            </tbody>
-        </table>
+        <p class="info">{formatCreateDate($user.created)}</p>
+        <h3>{I18n.t("account.deleteTitle")}</h3>
+        {#each [1,2,3,4] as i}
+            <p class="divider">{I18n.t("account.info"+i)}</p>
+        {/each}
         <div class="options">
             <Button href="/delete" label={I18n.ts("account.deleteAccount")}
                     onClick={deleteUserAction(true)} className="full cancel"/>

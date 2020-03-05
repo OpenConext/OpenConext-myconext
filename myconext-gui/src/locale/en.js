@@ -6,10 +6,10 @@ I18n.translations.en = {
         logout: "Logout"
     },
     landing: {
-        info: "Collaborate online in higher education",
-        login: "Enter",
-        logoutStatus: "You have successfully logged out. To complete the logout process, you must close your browser",
-        deletionStatus: "You have successfully deleted your account. To complete the process, you must close your browser"
+        logoutTitle: "Your have been logged out",
+        logoutStatus: "To finalise the logout process you must now close this browser.",
+        deleteTitle: "Your eduID account has been deleted",
+        deleteStatus: "To finalise the removal process you must now close this browser."
     },
     notFound: {
         main: "404 - Not Found"
@@ -22,7 +22,7 @@ I18n.translations.en = {
         name: "Name",
         profile: "Profile"
     },
-    edit :{
+    edit: {
         title: "Name",
         info: "Please provide your full name",
         givenName: "Your given name",
@@ -55,11 +55,15 @@ I18n.translations.en = {
             teamsHref: "https://teams.{{baseDomain}}",
         }
     },
-    account :{
+    account: {
         title: "Your eduID account",
-        info: "You can choose to remove your eduID account",
-        deleteAccount : "Delete my account",
-        deleteAccountConfirmation : "Are you sure you want to delete your eduID account?"
+        deleteTitle: "Deleting your eduID account",
+        info1: "You can delete this account whenever you want.",
+        info2: "Pay attention, you will lose the unique eduID number currently associated with your email address. When you re-register for a new eduID with that same email address, you will receive a new eduID number. Some services use this unique number to identify you, so for those services you will be treated as a new user.",
+        info3: "Please note that deleting your eduID account does not mean all services you accessed with that eduID account will also have your data removed.",
+        info4: "To fully complete the process of deleting your eduID account you must close your browser after your account has been removed.",
+        deleteAccount: "Delete my account",
+        deleteAccountConfirmation: "Are you sure you want to delete your eduID account?"
     },
     password: {
         setTitle: "Set password",
@@ -108,7 +112,10 @@ I18n.translations.en = {
         question: "If you want to migrate your Onegini account then click migrate. If you want proceed with your existing eduID Guest Account then click proceed.",
         migrate: "Migrate",
         proceed: "Proceed",
-        help : "If you have any questions about this please contact <a href=\"mailto:support@surfconext.nl\" >support@surfconext.nl</a>."
+        help: "If you have any questions about this please contact <a href=\"mailto:support@surfconext.nl\" >support@surfconext.nl</a>."
+    },
+    format: {
+        creationDate: "Your eduID account was created on {{date}} at {{hours}}:{{minutes}}"
     }
 };
 
