@@ -2,7 +2,7 @@
     import I18n from "i18n-js";
     import {user} from "../stores/user";
     import {onMount} from "svelte";
-    import info from "../icons/icons8-info.svg";
+    import info from "../icons/informational.svg";
 
     export let id;
     let serviceName;
@@ -41,7 +41,7 @@
         align-items: center;
     }
     div.whoops .info {
-        margin-right: 20px;
+        margin-right: 10px;
     }
 
     div.whoops a {
