@@ -29,6 +29,12 @@
         }
     }
 
+    @media (max-width: 800px) {
+        .footer {
+            max-width: none;
+        }
+    }
+
     .inner {
         display: flex;
         justify-content: space-between;
