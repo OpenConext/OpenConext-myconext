@@ -51,6 +51,7 @@
         color: #ababab;
         background-color: #efefef;
     }
+
     .button.disabled:hover {
         color: #ababab;
         background-color: #efefef;
@@ -69,13 +70,6 @@
 
     .button.small {
         width: 140px;
-    }
-
-    @media (max-width: 580px) {
-        .button.small {
-            width: 90px;
-        }
-
     }
 
 
