@@ -2,6 +2,7 @@ package myconext.session;
 
 import com.fasterxml.jackson.databind.Module;
 import com.fasterxml.jackson.databind.module.SimpleModule;
+import myconext.model.User;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -37,6 +38,7 @@ public class SessionConfig extends AbstractHttpSessionApplicationInitializer {
                 super.setupModule(context);
                 context.setMixInAnnotations(Assertion.class, AssertionMixin.class);
                 context.setMixInAnnotations(HashSet.class, HashSetMixin.class);
+                context.setMixInAnnotations(User.class, UserMixin.class);
             }
         };
 
@@ -52,4 +54,6 @@ public class SessionConfig extends AbstractHttpSessionApplicationInitializer {
     private static class HashSetMixin {
     }
 
+    private static class UserMixin {
+    }
 }
