@@ -11,15 +11,6 @@ import static org.hamcrest.core.IsEqual.equalTo;
 public class LoginControllerTest extends AbstractIntegrationTest {
 
     @Test
-    public void secureMe() {
-        given()
-                .when()
-                .get("/myconext/api/sp/me")
-                .then()
-                .statusCode(403);
-    }
-
-    @Test
     public void config() {
         given()
                 .when()
