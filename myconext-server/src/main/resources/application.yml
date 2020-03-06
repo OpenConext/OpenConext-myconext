@@ -12,9 +12,6 @@ email:
   magic-link-url: http://localhost:8081/saml/guest-idp/magic
   my-surfconext-url: http://localhost:3001
 
-branding: SURFconext
-#branding: OpenConext
-
 schac_home_organization: eduid.nl
 
 cron:

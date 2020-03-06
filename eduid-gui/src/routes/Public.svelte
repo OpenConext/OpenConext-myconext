@@ -101,8 +101,7 @@
             <div class="inner">
                 <h3>{I18n.t("public.request.header")}</h3>
                 <p>{I18n.t("public.request.info")}</p>
-                <Button label={I18n.t("public.request.request")} href={`/{$I18n.t("landing.login")}`}
-                        onClick={register}/>
+                <Button label={I18n.t("public.request.request")} href="/eduID" onClick={register}/>
             </div>
         </div>
     </div>

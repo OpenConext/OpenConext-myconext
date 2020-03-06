@@ -20,7 +20,6 @@
 
     onMount(() => configuration()
             .then(json => {
-                I18n.branding = json.branding;
                 $conf = json;
                 loaded = true;
             }));
