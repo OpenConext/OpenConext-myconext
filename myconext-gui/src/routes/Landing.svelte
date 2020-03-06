@@ -12,8 +12,8 @@
         const urlSearchParams = new URLSearchParams(window.location.search);
         isLogoutRedirect = urlSearchParams.get("logout");
         isAccountDeletionRedirect = urlSearchParams.get("delete");
-        if ($user.id) {
-            navigate("/");
+        if (!isLogoutRedirect && !isAccountDeletionRedirect) {
+            navigate("/404");
         }
     });
 

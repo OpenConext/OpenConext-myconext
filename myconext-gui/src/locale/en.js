@@ -6,13 +6,14 @@ I18n.translations.en = {
         logout: "Logout"
     },
     landing: {
-        logoutTitle: "Your have been logged out",
+        logoutTitle: "You have been logged out",
         logoutStatus: "To finalise the logout process you must now close this browser.",
         deleteTitle: "Your eduID account has been deleted",
         deleteStatus: "To finalise the removal process you must now close this browser."
     },
     notFound: {
-        main: "404 - Not Found"
+        title: "Whoops...",
+        title2: "Something went wrong (404)."
     },
     profile: {
         title: "Personal information",

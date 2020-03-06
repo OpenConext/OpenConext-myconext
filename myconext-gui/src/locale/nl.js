@@ -12,7 +12,8 @@ I18n.translations.nl = {
         deleteStatus: "Om het verwijderingsproces te voltooien, moet je de browser sluiten."
     },
     notFound: {
-        main: "404 - Not Found"
+        title: "Whoops...",
+        title2: "Er is iets fout gegaan (404)."
     },
     profile: {
         title: "Persoonlijke informatie",

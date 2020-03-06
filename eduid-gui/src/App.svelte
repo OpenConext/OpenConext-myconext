@@ -59,6 +59,15 @@
         }
     }
 
+    @media (max-width: 800px) {
+        .myconext {
+            margin: 0;
+        }
+        .content {
+            box-shadow: none;
+        }
+    }
+
     .loader:empty,
     .loader:empty:after {
         border-radius: 50%;

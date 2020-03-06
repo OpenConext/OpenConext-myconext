@@ -24,7 +24,6 @@ public class MockShibbolethFilter extends GenericFilterBean {
 
 
     private Environment environment;
-    private List<String> devProfileProceedSSOUrls = Arrays.asList("startSSO", "sp/migrate/");
 
     public MockShibbolethFilter(Environment environment) {
         this.environment = environment;
@@ -53,10 +52,7 @@ public class MockShibbolethFilter extends GenericFilterBean {
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain filterChain)
             throws IOException, ServletException {
         HttpServletRequest servletRequest = (HttpServletRequest) request;
-        String requestURI = servletRequest.getRequestURI();
-        if (environment.acceptsProfiles(Profiles.of("test")) ||
-                (environment.acceptsProfiles(Profiles.of("dev")) &&
-                        devProfileProceedSSOUrls.stream().anyMatch(url -> requestURI.contains(url)))) {
+        if (environment.acceptsProfiles(Profiles.of("test | dev"))) {
             SetHeader wrapper = new SetHeader(servletRequest);
             wrapper.setHeader(ShibbolethPreAuthenticatedProcessingFilter.SHIB_SCHAC_HOME_ORGANIZATION, "surfguest.nl");
             wrapper.setHeader(ShibbolethPreAuthenticatedProcessingFilter.SHIB_AUTHENTICATING_AUTHORITY, authenticatingAuthority);

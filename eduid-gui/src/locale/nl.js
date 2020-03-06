@@ -17,7 +17,8 @@ I18n.translations.nl = {
         },
     },
     notFound: {
-        main: "404 - Not Found"
+        title: "Whoops...",
+        title2: "Er is iets fout gegaan (404)."
     },
     footer: {
         privacy: "Privacy | Voorwaarden",

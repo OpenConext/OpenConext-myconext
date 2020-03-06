@@ -56,7 +56,7 @@
         --color-primary-blue: #0062b0;
         --color-primary-green: #008738;
         --color-primary-black: #202020;
-        --color-primary-red: #d00000;
+        --color-primary-red: #ff0000;
         --color-primary-grey: #c4cdd5;
         --color-background: #f9f9f9;
         --width-app: 1024px;
@@ -87,6 +87,16 @@
 
         .content {
             width: 100%;
+        }
+    }
+
+    @media (max-width: 800px) {
+        .myconext {
+            margin: 0;
+        }
+
+        .content {
+            box-shadow: none;
         }
     }
 
@@ -169,6 +179,7 @@
                 <Route path="/" component={Landing}/>
                 <Route path="/landing" component={Landing}/>
                 <Route path="/migration-error" component={MigrationError}/>
+                <Route component={NotFound}/>
             </Router>
         </div>
         <Footer/>

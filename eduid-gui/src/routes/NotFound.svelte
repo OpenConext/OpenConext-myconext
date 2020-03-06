@@ -6,18 +6,24 @@
 <style>
     .not-found {
         display: flex;
-        align-items: center;
-        justify-content: center;
-        width: 100%;
-        height: 100%;
+        flex-direction: column;
+        padding: 25px;
     }
 
     h1 {
-        color: hotpink;
-        font-size: 126px;
+        color:var(--color-primary-red);
+        font-size: 32px;
+        font-weight: bold;
+        margin: 40px 0;
+    }
+
+    p {
+        margin-bottom: 40px;
+        font-size: 18px;
     }
 
 </style>
 <div class="not-found">
-            <h1>{I18n.t("notFound.main")}</h1>
+    <h1>{I18n.t("notFound.title")}</h1>
+    <p>{I18n.t("notFound.title2")}</p>
 </div>

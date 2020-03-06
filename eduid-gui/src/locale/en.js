@@ -17,7 +17,8 @@ I18n.translations.en = {
         },
     },
     notFound: {
-        main: "404 - Not Found"
+        title: "Whoops...",
+        title2: "Something went wrong (404)."
     },
     footer: {
         privacy: "Privacy policy | Terms of Use",

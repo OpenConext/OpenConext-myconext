@@ -52,6 +52,7 @@
         text-align: right;
         display: flex;
         flex-direction: row;
+        padding-right: 10px;
     }
 
     span {
