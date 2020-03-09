@@ -17,12 +17,6 @@
         }
     });
 
-    const login = () => {
-        const path = isLogoutRedirect ? "/" : encodeURIComponent($redirectPath || "/");
-        window.location.href = `${$config.loginUrl}?redirect_path=${path}`;
-    };
-
-
 </script>
 
 <style>

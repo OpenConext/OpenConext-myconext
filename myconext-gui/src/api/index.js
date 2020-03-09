@@ -59,11 +59,19 @@ export function updateSecurity(userId, currentPassword, newPassword) {
 }
 
 export function deleteUser(user) {
-    return fetch("/Shibboleth.sso/Logout").then(() => fetchDelete(`/myconext/api/sp/delete/${user.id}`));
+    const fetchOptions = {
+        credentials: "same-origin",
+        redirect: "manual"
+    };
+    return fetch("/Shibboleth.sso/Logout", fetchOptions).then(() => fetchDelete(`/myconext/api/sp/delete/${user.id}`));
 }
 
 export function logout() {
-    return fetch("/Shibboleth.sso/Logout").then(() => fetchJson("/myconext/api/sp/logout"));
+    const fetchOptions = {
+        credentials: "same-origin",
+        redirect: "manual"
+    };
+    return fetch("/Shibboleth.sso/Logout", fetchOptions).then(() => fetchJson("/myconext/api/sp/logout"));
 }
 
 export function forgetMe() {
