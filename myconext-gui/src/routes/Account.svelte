@@ -14,7 +14,7 @@
         if (showConfirmation) {
             showModal = true
         } else {
-            deleteUser($user).then(() => {
+            deleteUser().then(() => {
                 $user = {
                     id: "",
                     email: "",

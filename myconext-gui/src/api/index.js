@@ -58,12 +58,12 @@ export function updateSecurity(userId, currentPassword, newPassword) {
     return postPutJson("/myconext/api/sp/security", body, "PUT");
 }
 
-export function deleteUser(user) {
+export function deleteUser() {
     const fetchOptions = {
         credentials: "same-origin",
         redirect: "manual"
     };
-    return fetchDelete(`/myconext/api/sp/delete/${user.id}`).then(() => fetch("/Shibboleth.sso/Logout", fetchOptions));
+    return fetchDelete("/myconext/api/sp/delete").then(() => fetch("/Shibboleth.sso/Logout", fetchOptions));
 }
 
 export function logout() {
