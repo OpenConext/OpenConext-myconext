@@ -63,7 +63,7 @@ export function deleteUser(user) {
         credentials: "same-origin",
         redirect: "manual"
     };
-    return fetch("/Shibboleth.sso/Logout", fetchOptions).then(() => fetchDelete(`/myconext/api/sp/delete/${user.id}`));
+    return fetchDelete(`/myconext/api/sp/delete/${user.id}`).then(() => fetch("/Shibboleth.sso/Logout", fetchOptions));
 }
 
 export function logout() {
@@ -71,7 +71,7 @@ export function logout() {
         credentials: "same-origin",
         redirect: "manual"
     };
-    return fetch("/Shibboleth.sso/Logout", fetchOptions).then(() => fetchJson("/myconext/api/sp/logout"));
+    return fetchJson("/myconext/api/sp/logout").then(() => fetch("/Shibboleth.sso/Logout", fetchOptions));
 }
 
 export function forgetMe() {

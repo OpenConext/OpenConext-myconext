@@ -193,12 +193,12 @@ public class UserController {
         return doLogout(request);
     }
 
-    private ResponseEntity doLogout(HttpServletRequest request) throws URISyntaxException {
+    private ResponseEntity doLogout(HttpServletRequest request) {
         HttpSession session = request.getSession();
         session.invalidate();
         SecurityContextHolder.getContext().setAuthentication(null);
         SecurityContextHolder.clearContext();
-        return ResponseEntity.status(302).location(new URI("/logout")).build();
+        return ResponseEntity.ok(Collections.singletonMap("status", "oke"));
     }
 
     private User verifyAndFetchUser(Authentication authentication, User deltaUser) {

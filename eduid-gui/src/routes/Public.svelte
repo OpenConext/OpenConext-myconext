@@ -25,7 +25,7 @@
     }
 
     h1 {
-        margin: 42px 0 35px 0;
+        margin: 15px 0 44px 0;
         font-size: 50px;
         font-weight: 500;
         font-stretch: normal;

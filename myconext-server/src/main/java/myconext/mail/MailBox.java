@@ -40,7 +40,7 @@ public class MailBox {
     }
 
     public void sendAccountVerification(User user, String hash) {
-        String title = "Please verify your email address for your SURFconext Guest Account";
+        String title = "Please verify your email address for your eduID Account";
 
         Map<String, Object> variables = variables(user, title);
         variables.put("hash", hash);
@@ -49,7 +49,7 @@ public class MailBox {
     }
 
     public void sendAccountConfirmation(User user) {
-        String title = "Your Guest Account has been created";
+        String title = "Your eduID Account has been created";
 
         Map<String, Object> variables = variables(user, title);
         variables.put("mySurfConextURL", mySURFconextURL);
