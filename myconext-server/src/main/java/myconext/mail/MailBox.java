@@ -3,6 +3,7 @@ package myconext.mail;
 import com.github.mustachejava.DefaultMustacheFactory;
 import com.github.mustachejava.MustacheFactory;
 import myconext.model.User;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 
@@ -11,6 +12,7 @@ import javax.mail.internet.MimeMessage;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 
 public class MailBox {
@@ -72,8 +74,9 @@ public class MailBox {
     }
 
     private void sendMail(String templateName, String subject, Map<String, Object> variables, String... to) {
-        String html = this.mailTemplate(String.format("mail_templates/%s.html", templateName), variables);
-        String text = this.mailTemplate(String.format("mail_templates/%s.txt", templateName), variables);
+        String language = LocaleContextHolder.getLocale().getLanguage();
+        String html = this.mailTemplate(String.format("mail_templates/%s_%s.html", templateName, language), variables);
+        String text = this.mailTemplate(String.format("mail_templates/%s_%s.txt", templateName, language), variables);
 
         MimeMessage message = mailSender.createMimeMessage();
         try {

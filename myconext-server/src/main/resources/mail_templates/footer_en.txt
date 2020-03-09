@@ -1,7 +1,3 @@
-Hi {{name}},
-
-Your eduID is now activated.
-
 Want to learn more about eduID? Visit https://www.eduid.nl
 
 eduID is powered by SURF.

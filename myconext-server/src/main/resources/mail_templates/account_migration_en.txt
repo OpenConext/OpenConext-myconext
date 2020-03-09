@@ -2,6 +2,4 @@ Hi {{name}},
 
 Your guest account has successfully been migrated to a new and activated eduID.
 
-Want to learn more about eduID? Visit https://www.eduid.nl
-
-eduID is powered by SURF.
+{{> footer_en.txt}}

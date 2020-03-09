@@ -9,6 +9,4 @@ address by clicking the link above.
 
 If you don't want a eduID or didn't request one in the first place, just ignore or delete this message.
 
-Want to learn more about eduID? Visit https://www.eduid.nl
-
-eduID is powered by SURF.
+{{> footer_en.txt}}

@@ -1,0 +1,5 @@
+Hi {{name}},
+
+Je gastaccount is succesvol gemigreerd naar een nieuw en geactiveerd eduID.
+
+{{> footer_nl.txt}}

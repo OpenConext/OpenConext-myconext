@@ -1,0 +1,5 @@
+Hi {{name}},
+
+Your eduID is now activated.
+
+{{> footer_en.txt}}

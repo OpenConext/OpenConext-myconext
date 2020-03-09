@@ -13,6 +13,4 @@ Hi <strong>{{name}},
 Someone just requested a Magic Link using this email address. If this was you, you can sign in by following the link above.
 If you didn't request the Magic Link , just ignore and delete this message.
 
-Want to learn more about eduID? Visit https://www.eduid.nl
-
-eduID is powered by SURF.
+{{> footer_en.txt}}

@@ -1,0 +1,12 @@
+U heeft een eduID aangevraagd. Klik op de onderstaande link om te controleren of deze e-mail van u is:
+
+{{magicLinkUrl}}?h={{hash}}
+
+Hallo {{name}},
+
+Iemand heeft zojuist een eduID aangevraagd met dit e-mailadres. Als u dit was, moet u uw verifiëren
+adres door op de bovenstaande link te klikken.
+
+Als u geen eduID wilt of er niet om heeft gevraagd, negeert of verwijdert u dit bericht.
+
+{{> footer_nl.txt}}

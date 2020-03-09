@@ -1,4 +1,6 @@
 //Internal API
+import I18n from "i18n-js";
+
 let csrfToken = null;
 
 function validateResponse(res) {
@@ -22,6 +24,7 @@ function validFetch(path, options) {
         headers: {
             Accept: "application/json",
             "Content-Type": "application/json",
+            "Accept-Language": I18n.locale,
             "X-CSRF-TOKEN": csrfToken
         }
     };
