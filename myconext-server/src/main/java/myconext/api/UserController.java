@@ -183,13 +183,13 @@ public class UserController {
         return doLogout(request);
     }
 
-    @DeleteMapping("/sp/delete/{id}")
-    public ResponseEntity deleteUser(Authentication authentication, HttpServletRequest request, @PathVariable("id") String id) throws URISyntaxException {
-        User user = verifyAndFetchUser(authentication, id);
+    @DeleteMapping("/sp/delete")
+    public ResponseEntity deleteUser(Authentication authentication, HttpServletRequest request) throws URISyntaxException {
+        User principal = (User) authentication.getPrincipal();
+        userRepository.deleteById(principal.getId());
 
-        LOG.info(String.format("Deleted user %s", user.getUsername()));
+        LOG.info(String.format("Deleted user %s", principal.getEmail()));
 
-        userRepository.delete(user);
         return doLogout(request);
     }
 

@@ -27,6 +27,8 @@ import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
 @RestController
 public class DefaultErrorController implements ErrorController {
 
+    private static final Log LOG = LogFactory.getLog(DefaultErrorController.class);
+
     private final ErrorAttributes errorAttributes;
     private final String redirectUrl;
 
@@ -53,6 +55,8 @@ public class DefaultErrorController implements ErrorController {
             statusCode = result.containsKey("status") && (int) result.get("status") != 999 ?
                     HttpStatus.valueOf((int) result.get("status")) : INTERNAL_SERVER_ERROR;
         } else {
+            LOG.error("Error occurred", error);
+
             //https://github.com/spring-projects/spring-boot/issues/3057
             ResponseStatus annotation = AnnotationUtils.getAnnotation(error.getClass(), ResponseStatus.class);
             statusCode = annotation != null ? annotation.value() : BAD_REQUEST;

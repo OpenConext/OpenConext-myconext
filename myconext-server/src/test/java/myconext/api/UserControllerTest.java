@@ -210,7 +210,7 @@ public class UserControllerTest extends AbstractIntegrationTest {
         given()
                 .when()
                 .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
-                .delete("/myconext/api/sp/delete/" + user.getId())
+                .delete("/myconext/api/sp/delete")
                 .then()
                 .statusCode(200)
                 .cookie("SESSION", "");
