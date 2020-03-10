@@ -91,7 +91,8 @@ I18n.translations.nl = {
         forgetMe: "Vergeet dit apparaat"
     },
     footer: {
-        privacy: "Privacybeleid | Voorwaarden",
+        privacy: "Privacybeleid",
+        terms: "Voorwaarden",
         help: "Help",
         poweredBy: "Aangeboden door"
     },

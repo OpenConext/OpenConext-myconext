@@ -21,7 +21,8 @@ I18n.translations.en = {
         title2: "Something went wrong (404)."
     },
     footer: {
-        privacy: "Privacy policy | Terms of Use",
+        privacy: "Privacy policy",
+        terms: "Terms of Use",
         help: "Help",
         poweredBy: "Powered by"
     }

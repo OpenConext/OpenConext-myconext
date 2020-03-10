@@ -9,7 +9,12 @@
         urlSearchParams.set("lang", lang);
         Cookies.set("lang", lang, {expires: 365, secure: true, sameSite: "strict"});
         window.location.search = urlSearchParams.toString();
-    }
+    };
+
+    let isEn = I18n.locale === "en";
+    let helpUrl = isEn ? "/help_en/" : "/help/";
+    let privacyUrl = isEn ? "/privacy_policy/" : "/privacyverklaring/";
+    let termsUrl = isEn ? "/terms_of_service/" : "/terms_of_service/";
 
 </script>
 
@@ -41,6 +46,17 @@
         display: flex;
         flex-direction: column;
         padding-left: 10px;
+    }
+
+    .terms {
+        display: flex;
+        flex-direction: row;
+    }
+
+    .terms span {
+        color: #0077c8;
+        display: inline-block;
+        margin: 0 5px;
     }
 
     .info {
@@ -84,8 +100,12 @@
 <div class="footer">
     <div class="inner">
         <div class="help">
-            <a href="https://surfconext.nl" target="_blank">{I18n.ts("footer.privacy")}</a>
-            <a href="https://surfconext.nl" target="_blank">{I18n.ts("footer.help")}</a>
+            <div class="terms">
+                <a href={privacyUrl} target="_blank">{I18n.t("footer.privacy")}</a>
+                <span>|</span>
+                <a href={termsUrl} target="_blank">{I18n.t("footer.terms")}</a>
+            </div>
+            <a href={helpUrl} target="_blank">{I18n.t("footer.help")}</a>
         </div>
 
         <ul>

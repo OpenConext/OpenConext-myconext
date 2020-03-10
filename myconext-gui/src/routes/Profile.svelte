@@ -42,24 +42,28 @@
     }
     td {
         border-bottom: 1px solid var(--color-primary-grey);
-        padding: 20px;
     }
     td.attr {
         width: 30%;
+        padding: 20px;
     }
 
     td.value {
-        width: 60%;
+        width: 70%;
         font-weight: bold;
+        padding-left: 20px;
     }
 
-    td.link {
-        width: 10%;
-        text-align: right;
-        padding: 0;
+    div.value-container {
+        display: flex;
+        align-items: center;
     }
 
-    :global(a svg.menu-link) {
+    div.value-container a.menu-link{
+        margin-left: auto;
+    }
+
+    :global(a.menu-link svg) {
         fill: var(--color-primary-green);
     }
 
@@ -76,14 +80,15 @@
             <tr>
                 <td class="attr">{I18n.ts("profile.email")}</td>
                 <td class="value">{$user.email}</td>
-                <td class="link"></td>
             </tr>
             <tr class="name" on:click={() => navigate("/edit")}>
                 <td class="attr">{I18n.ts("profile.name")}</td>
-                <td class="value">{`${$user.givenName} ${$user.familyName}`}</td>
-                <td class="link">
+                <td class="value">
+                    <div class="value-container">
+                    <span>{`${$user.givenName} ${$user.familyName}`}</span>
                     <a class="menu-link" href="/name"
                        on:click|preventDefault|stopPropagation={() => navigate("/edit")}>{@html chevron_right}</a>
+                    </div>
                 </td>
             </tr>
             </tbody>

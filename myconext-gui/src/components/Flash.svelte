@@ -13,11 +13,11 @@
         z-index: 6;
         left: 0;
         background-color: green;
-        transition: height 650ms ease-in-out;
+        transition: height 750ms ease-in-out;
     }
 
     .flash.hide {
-        transition: height 650ms ease-in-out;
+        transition: height 750ms ease-in-out;
         height: 0;
     }
 
@@ -33,15 +33,6 @@
     }
 
 
-    span.close {
-        text-decoration: none;
-        position: absolute;
-        right: 10px;
-        top: 0;
-        color: white;
-        cursor: pointer;
-    }
-
     :global(span.close svg) {
         fill: white;
         width: 20px;
@@ -51,10 +42,6 @@
 
 <div class="flash" class:hide={!$flash}>
     <div class="message-container">
-        <p>{$flash}
-            <span href="/close" class="close" on:click|preventDefault|stopPropagation={() => flash.setValue("")}>
-                {@html closeIcon}
-            </span>
-        </p>
+        <p>{$flash}</p>
     </div>
 </div>

@@ -28,7 +28,7 @@ I18n.translations.en = {
         invalidEmail: "Invalid email",
         requiredAttribute: "{{attr}} is required",
         emailInUse: "Email is already in use.",
-        emailNotFound: "Email not found. To request a new account,",
+        emailNotFound: "Email not found.",
         emailNotFoundLink: " click here.",
         emailOrPasswordIncorrect: "Email or password are incorrect",
         passwordDisclaimer: "Make sure it's at least 15 characters OR at least 8 characters including a number and a uppercase letter.",
@@ -51,10 +51,7 @@ I18n.translations.en = {
     },
     confirm: {
         header: "Success!",
-        thanks: "Your eduID Account has been created.",
-        info1: "Click on the link below to proceed to",
-        info2: "with your new eduID.",
-        link: "Proceed to your destination"
+        thanks: "Your eduID Account has been created. Proceed to your destination."
     },
     footer: {
         privacy: "Privacy policy",

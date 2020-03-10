@@ -32,9 +32,9 @@
     }
 
     div.whoops {
-        margin: 40px 0;
+        margin: 32px 0 16px 0;
         display: flex;
-        padding: 25px;
+        padding: 16px;
         border-radius: 8px;
         background-color: #efefef;
         font-size: 14px;

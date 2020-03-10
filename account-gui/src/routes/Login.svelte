@@ -2,6 +2,7 @@
     import {user} from "../stores/user";
     import {validEmail} from "../validation/regexp";
     import I18n from "i18n-js";
+    import critical from "../icons/critical.svg"
     import {magicLinkNewUser, magicLinkExistingUser} from "../api/index";
     import CheckBox from "../components/CheckBox.svelte";
     import Spinner from "../components/Spinner.svelte";
@@ -109,7 +110,7 @@
     const init = el => el.focus();
 
     const allowedNext = (email, familyName, givenName, password, agreedWithTerms) => {
-        return $user.createAccount ? validEmail(email) && familyName && givenName && agreedWithTerms:
+        return $user.createAccount ? validEmail(email) && familyName && givenName && agreedWithTerms :
                 $user.usePassword ? validEmail(email) && password : validEmail(email);
     };
 
@@ -163,15 +164,22 @@
         border-bottom: 1px solid #979797;
     }
 
+    div.error {
+        display: flex;
+        align-items: center;
+        color: var(--color-primary-red);
+        margin-bottom: 10px;
+    }
+
+    div.error span.svg {
+        display: inline-block;
+        margin-right: 10px;
+    }
+
     span.error {
         display: inline-block;
         margin: 0 auto 10px 0;
         color: var(--color-primary-red);
-    }
-
-    span.error a {
-        color: #820000;
-        font-weight: 600;
     }
 
     input[type=email], input[type=text], input[type=password] {
@@ -243,19 +251,16 @@
        bind:value={$user.email}
        on:keydown={handleEmailEnter}>
 {#if !$user.createAccount && emailNotFound}
-    <span class="error">{I18n.ts("login.emailNotFound")}
-        <a class="toggle-link-internal" href="/reguest"
-           on:click|preventDefault|stopPropagation={createAccount(true)}>{I18n.ts("login.emailNotFoundLink")}</a>
-    </span>
+    <div class="error"><span class="svg">{@html critical}</span><span>{I18n.ts("login.emailNotFound")}</span></div>
 {/if}
 {#if $user.usePassword && emailOrPasswordIncorrect}
-    <span class="error">{I18n.ts("login.emailOrPasswordIncorrect")}</span>
+    <div class="error"><span class="svg">{@html critical}</span><span>{I18n.ts("login.emailOrPasswordIncorrect")}</span></div>
 {/if}
 {#if !initial && !validEmail($user.email)}
-    <span class="error">{I18n.ts("login.invalidEmail")}</span>
+    <div class="error"><span class="svg">{@html critical}</span><span>{I18n.ts("login.invalidEmail")}</span></div>
 {/if}
 {#if $user.createAccount && emailInUse}
-    <span class="error">{I18n.ts("login.emailInUse")}</span>
+    <div class="error"><span class="svg">{@html critical}</span><span>{I18n.ts("login.emailInUse")}</span></div>
 {/if}
 {#if $user.createAccount}
     <label for="given-name" class="pre-input-label">{I18n.ts("login.givenName")}</label>
@@ -285,7 +290,6 @@
               onChange={val => agreedWithTerms = val}/>
     <div class="options">
         <Button disabled={showSpinner || !allowedNext($user.email, $user.familyName, $user.givenName, $user.password, agreedWithTerms)}
-                active={allowedNext($user.email, $user.familyName, $user.givenName, $user.password, agreedWithTerms)}
                 href="/magic"
                 className="full"
                 label={$user.createAccount ? I18n.ts("login.requestEduId"): I18n.ts("login.sendMagicLink")}

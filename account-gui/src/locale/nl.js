@@ -28,8 +28,7 @@ I18n.translations.nl = {
         invalidEmail: "Ongeldige e-mail",
         requiredAttribute: "{{attr}} is verplicht",
         emailInUse: "E-mail is al reeds in gebruik.",
-        emailNotFound: "E-mail niet gevonden. Om een nieuw account aan te vragen klik",
-        emailNotFoundLink: " hier.",
+        emailNotFound: "E-mail niet gevonden.",
         emailOrPasswordIncorrect: "E-mail of wachtwoord zijn niet juist",
         passwordDisclaimer: "Je wachtwoord moet minimaal 15 karakters lang zijn of 8 inclusief een hoofdletter en een getal.",
         noGuestAccount: "Heb je nog geen <strong>eduID?</strong>",
@@ -51,10 +50,7 @@ I18n.translations.nl = {
     },
     confirm: {
         header: "Succes!",
-        thanks: "je eduID account is geactiveerd.",
-        info1: "Klik op de onderstaande link om door te gaan naar",
-        info2: "met je nieuwe eduID.",
-        link: "Ga door naar je bestemming"
+        thanks: "je eduID account is geactiveerd. Ga door naar je bestemming."
     },
     footer: {
         privacy: "Privacy",

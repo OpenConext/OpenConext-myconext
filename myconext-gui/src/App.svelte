@@ -69,6 +69,15 @@
         margin-bottom: 100px;
     }
 
+    .container {
+        max-width: var(--width-app);
+        margin: 0 auto;
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.5);
+    }
+
     .content {
         display: flex;
         flex-direction: column;
@@ -77,7 +86,6 @@
         max-width: var(--width-app);
         width: 100%;
         margin: 0 auto;
-        box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.5);
     }
 
     @media (max-width: 1250px) {
@@ -146,41 +154,45 @@
 </style>
 {#if loaded && !$user.guest}
     <div class="myconext">
-        <Header/>
-        <div class="content">
-            <Router url="{url}">
-                <Route path="/" component={Home}/>
-                <Route path="/profile">
-                    <Home bookmark="profile"/>
-                </Route>
-                <Route path="/account">
-                    <Home bookmark="account"/>
-                </Route>
-                <Route path="/security">
-                    <Home bookmark="security"/>
-                </Route>
-                <Route path="/landing" component={Landing}/>
-                <Route path="/edit" component={EditName}/>
-                <Route path="/migration">
-                    <Home bookmark="migration"/>
-                </Route>
-                <Route path="/password" component={Password}/>
-                <Route path="/rememberme" component={RememberMe}/>
-                <Route component={NotFound}/>
-            </Router>
+        <div class="container">
+            <Header/>
+            <div class="content">
+                <Router url="{url}">
+                    <Route path="/" component={Home}/>
+                    <Route path="/profile">
+                        <Home bookmark="profile"/>
+                    </Route>
+                    <Route path="/account">
+                        <Home bookmark="account"/>
+                    </Route>
+                    <Route path="/security">
+                        <Home bookmark="security"/>
+                    </Route>
+                    <Route path="/landing" component={Landing}/>
+                    <Route path="/edit" component={EditName}/>
+                    <Route path="/migration">
+                        <Home bookmark="migration"/>
+                    </Route>
+                    <Route path="/password" component={Password}/>
+                    <Route path="/rememberme" component={RememberMe}/>
+                    <Route component={NotFound}/>
+                </Router>
+            </div>
         </div>
         <Footer/>
     </div>
 {:else if loaded && $user.guest}
     <div class="myconext">
-        <Header/>
-        <div class="content">
-            <Router url="{url}">
-                <Route path="/" component={Landing}/>
-                <Route path="/landing" component={Landing}/>
-                <Route path="/migration-error" component={MigrationError}/>
-                <Route component={NotFound}/>
-            </Router>
+        <div class="container">
+            <Header/>
+            <div class="content">
+                <Router url="{url}">
+                    <Route path="/" component={Landing}/>
+                    <Route path="/landing" component={Landing}/>
+                    <Route path="/migration-error" component={MigrationError}/>
+                    <Route component={NotFound}/>
+                </Router>
+            </div>
         </div>
         <Footer/>
     </div>

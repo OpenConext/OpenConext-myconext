@@ -9,7 +9,11 @@
         urlSearchParams.set("lang", lang);
         Cookies.set("lang", lang, {expires: 365, secure: true, sameSite: "strict"});
         window.location.search = urlSearchParams.toString();
-    }
+    };
+
+    let isEn = I18n.locale === "en";
+    let privacyUrl = isEn ? "/privacy_policy/" : "/privacyverklaring/";
+    let termsUrl = isEn ? "/terms_of_service/" : "/terms_of_service/";
 
 </script>
 
@@ -95,8 +99,8 @@
 <div class="footer">
     <div class="inner">
         <div class="help">
-            <a class="white" href="https://surfconext.nl" target="_blank">{I18n.t("footer.terms")}</a>
-            <a class="white" href="https://surfconext.nl" target="_blank">{I18n.t("footer.privacy")}</a>
+            <a class="white" href={privacyUrl} target="_blank">{I18n.t("footer.privacy")}</a>
+            <a class="white" href={termsUrl} target="_blank">{I18n.t("footer.terms")}</a>
         </div>
 
         <ul>

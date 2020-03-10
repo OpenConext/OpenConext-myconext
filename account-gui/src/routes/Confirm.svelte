@@ -40,7 +40,7 @@
         color: var(--color-primary-green);
     }
 
-    p {
+    p.info {
         margin-bottom: 25px;
     }
 
@@ -48,10 +48,9 @@
 <div class="home">
     <div class="card">
         <h2>{I18n.ts("confirm.header")}</h2>
-        <p>{I18n.ts("confirm.thanks")}</p>
-        <p>{I18n.ts("confirm.info1")} <strong>{serviceName}</strong> {I18n.ts("confirm.info2")}</p>
+        <p class="info">{I18n.ts("confirm.thanks")}</p>
         <Button href="/proceed" onClick={proceed}
                 className="full"
-                label={I18n.ts("confirm.link")}/>
+                label={serviceName}/>
     </div>
 </div>

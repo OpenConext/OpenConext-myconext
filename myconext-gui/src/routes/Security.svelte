@@ -50,11 +50,11 @@
 
     td {
         border-bottom: 1px solid var(--color-primary-grey);
-        padding: 20px;
     }
 
     td.attr {
         width: 30%;
+        padding: 20px;
     }
 
     td.value {
@@ -62,8 +62,22 @@
         font-weight: bold;
     }
 
+    td.value {
+        width: 70%;
+        font-weight: bold;
+    }
+
+    div.value-container {
+        display: flex;
+        align-items: center;
+    }
+
+    div.value-container a.menu-link {
+        margin-left: auto;
+    }
+
     td.value-alt {
-        width: 60%;
+        width: 70%;
         font-style: italic;
         color: #797979;
     }
@@ -92,24 +106,27 @@
             <tr>
                 <td class="attr">{I18n.t("security.useMagicLink")}</td>
                 <td class="value">{$user.email}</td>
-                <td class="link"></td>
             </tr>
             <tr class="name" on:click={() => navigate("/password")}>
                 <td class="attr">{I18n.t("security.usePassword")}</td>
-                <td class="{passwordStyle}">{password}</td>
-                <td class="link">
-                    <a class="menu-link" href="/password"
-                       on:click|preventDefault|stopPropagation={() => navigate("/password")}>{@html chevron_right}</a>
+                <td class="{passwordStyle}">
+                    <div class="value-container">
+                        <span>{password}</span>
+                        <a class="menu-link" href="/password"
+                           on:click|preventDefault|stopPropagation={() => navigate("/password")}>{@html chevron_right}</a>
+                    </div>
                 </td>
             </tr>
             <tr class:rememberme={$user.rememberMe} on:click={() => $user.rememberMe && navigate("/rememberme")}>
                 <td class="attr">{I18n.t("security.rememberMe")}</td>
-                <td class="value">{I18n.t(`security.rememberMe${$user.rememberMe}`)}</td>
-                <td class="link">
-                    {#if $user.rememberMe}
-                    <a class="menu-link" href="/rememberme"
-                       on:click|preventDefault|stopPropagation={() => navigate("/rememberme")}>{@html chevron_right}</a>
-                    {/if}
+                <td class="value">
+                    <div class="value-container">
+                        <span>{I18n.t(`security.rememberMe${$user.rememberMe}`)}</span>
+                        {#if $user.rememberMe}
+                            <a class="menu-link" href="/rememberme"
+                               on:click|preventDefault|stopPropagation={() => navigate("/rememberme")}>{@html chevron_right}</a>
+                        {/if}
+                    </div>
                 </td>
             </tr>
             </tbody>

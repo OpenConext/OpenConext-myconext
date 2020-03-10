@@ -14,7 +14,7 @@
 
     .header {
         width: 100%;
-        max-width: calc(var(--width-app) + 3px);
+        max-width: var(--width-app);
         margin: 0 auto;
         display: flex;
         background-color: var(--color-primary-blue);

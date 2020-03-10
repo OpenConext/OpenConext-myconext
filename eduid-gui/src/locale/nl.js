@@ -21,7 +21,8 @@ I18n.translations.nl = {
         title2: "Er is iets fout gegaan (404)."
     },
     footer: {
-        privacy: "Privacy | Voorwaarden",
+        privacy: "Privacy",
+        terms: "Voorwaarden",
         help: "Help",
         poweredBy: "Aangeboden door"
     }

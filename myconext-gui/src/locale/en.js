@@ -91,7 +91,8 @@ I18n.translations.en = {
         forgetMe: "Forget this device"
     },
     footer: {
-        privacy: "Privacy policy | Terms of Use",
+        privacy: "Privacy policy",
+        terms: "Terms of Use",
         help: "Help",
         poweredBy: "Powered by"
     },

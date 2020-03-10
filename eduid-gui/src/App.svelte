@@ -5,7 +5,7 @@
     import Public from "./routes/Public.svelte";
     import NotFound from "./routes/NotFound.svelte";
     import Header from "./components/Header.svelte";
-    import { configuration} from "./api";
+    import {configuration} from "./api";
     import {config} from "./stores/config";
     import I18n from "i18n-js";
 
@@ -38,6 +38,14 @@
         margin-bottom: 100px;
     }
 
+    .container {
+        max-width: calc(var(--width-app));
+        margin: 0 auto;
+        display: flex;
+        flex-direction: column;
+        box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.5);
+    }
+
     .content {
         display: flex;
         flex-direction: column;
@@ -46,7 +54,6 @@
         max-width: var(--width-app);
         width: 100%;
         margin: 0 auto;
-        box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.5);
     }
 
     @media (max-width: 1250px) {
@@ -63,6 +70,7 @@
         .myconext {
             margin: 0;
         }
+
         .content {
             box-shadow: none;
         }
@@ -114,12 +122,14 @@
 </style>
 {#if loaded }
     <div class="myconext">
-        <Header/>
-        <div class="content">
-            <Router url="{url}">
-                <Route path="/" component={Public}/>
-                <Route component={NotFound}/>
-            </Router>
+        <div class="container">
+            <Header/>
+            <div class="content">
+                <Router url="{url}">
+                    <Route path="/" component={Public}/>
+                    <Route component={NotFound}/>
+                </Router>
+            </div>
         </div>
         <Footer/>
     </div>
