@@ -29,7 +29,6 @@ I18n.translations.en = {
         requiredAttribute: "{{attr}} is required",
         emailInUse: "Email is already in use.",
         emailNotFound: "Email not found.",
-        emailNotFoundLink: " click here.",
         emailOrPasswordIncorrect: "Email or password are incorrect",
         passwordDisclaimer: "Make sure it's at least 15 characters OR at least 8 characters including a number and a uppercase letter.",
         noGuestAccount: "<strong>Don't</strong> have an eduID yet?",
