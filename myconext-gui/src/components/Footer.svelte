@@ -14,7 +14,7 @@
     let isEn = I18n.locale === "en";
     let helpUrl = isEn ? "/help_en/" : "/help/";
     let privacyUrl = isEn ? "/privacy_policy/" : "/privacyverklaring/";
-    let termsUrl = isEn ? "/terms_of_service/" : "/terms_of_service/";
+    let termsUrl = isEn ? "/terms_of_service/" : "/voorwaarden/";
 
 </script>
 

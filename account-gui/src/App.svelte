@@ -35,6 +35,11 @@
         --color-primary-red: #ff0000;
 
         --width-app: 400px;
+
+    }
+
+    :global(input::placeholder) {
+        color: #8b8b8b;
     }
 
     .idp {

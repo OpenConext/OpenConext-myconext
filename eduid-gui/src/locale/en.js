@@ -2,7 +2,7 @@ import I18n from "i18n-js";
 
 I18n.translations.en = {
     header: {
-        mine: "Mine eduID"
+        mine: "My eduID"
     },
     public: {
         header: "Check-in and check-out with one educational identity",
