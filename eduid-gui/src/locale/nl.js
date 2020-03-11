@@ -5,11 +5,10 @@ I18n.translations.nl = {
         mine: "Mijn eduID"
     },
     public: {
-        header: "Check-in en check-uit met één onderwijsidentiteit",
-        info: "<p>Een eduID is een account voor het hoger onderwijs in Nederland.</p>" +
-            "<p class='divider'>Het is van jou, en onafhankelijk van een onderwijsinstelling.</p>" +
-            "<p class='divider'>Je kunt het straks gebruiken bij andere instellingen dan waar je nu studeert. Ook kun je het na je studie blijven gebruiken, bijvoorbeeld als alumnus of als je in de toekomst ergens anders onderwijs gaat volgen.</p>" +
-            "<p class='divider'>eduID is nog volop in ontwikkeling. Op dit moment kan het gebruikt worden voor gasttoegang op  SURFconext als vervanger van OneGini.</p>",
+        header: "eduID: 1 gastaccount voor onderwijs en onderzoek",
+        info: "<p>Een eduID is een account voor gastgebruikers binnen onderwijs en onderzoek in Nederland. Het is van jou, en bestaat onafhankelijk van een onderwijsinstelling.</p>" +
+            "<p class='divider'>Je kunt eduID gebruiken om als gast in te loggen op diverse diensten aangesloten op <a href=\"https://surfconext.nl\" target=\"_blank\">SURFconext</a>. Een gastgebruiker is iemand die geen account heeft bij 1 van de aangesloten instellingen.</p>" +
+            "<p class='divider'>eduID is nog volop in ontwikkeling. In de toekomst kun je eduID gebruiken voor nog veel meer dingen dan alleen gasttoegang via SURFconext. Zo kun je eduID bijvoorbeeld gebruiken na je studie, als alumnus, of tijdens je studie, als je bij meerdere instellingen tegelijk onderwijs wilt volgen.</p>",
         request: {
             header: "Aanvragen",
             info: "Je hebt alleen een e-mailadres nodig.",
@@ -17,7 +16,7 @@ I18n.translations.nl = {
         },
     },
     notFound: {
-        title: "Whoops...",
+        title: "Oeps...",
         title2: "Er is iets fout gegaan (404)."
     },
     footer: {
