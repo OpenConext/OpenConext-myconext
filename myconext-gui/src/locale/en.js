@@ -36,7 +36,7 @@ I18n.translations.en = {
     security: {
         title: "Security settings",
         subTitle: "We provide different methods to sign in to your eduID account.",
-        secondSubTitle: "Signin methods",
+        secondSubTitle: "Sign-in methods",
         usePassword: "Password",
         notSet: "Not set",
         useMagicLink: "Send magic link to",
@@ -59,8 +59,8 @@ I18n.translations.en = {
     account: {
         title: "Your eduID account",
         deleteTitle: "Deleting your eduID account",
-        info1: "You can delete this account whenever you want.",
-        info2: "Pay attention, you will lose the unique eduID number currently associated with your email address. When you re-register for a new eduID with that same email address, you will receive a new eduID number. Some services use this unique number to identify you, so for those services you will be treated as a new user.",
+        info1: "You can delete your eduID whenever you want.",
+        info2: "Proceed with care, as you will lose the unique eduID number currently associated with your email address. When you re-register for a new eduID with that same email address, you will receive a new eduID number. Some services use this unique number to identify you, so for those services you will be treated as a new user.",
         info3: "Please note that deleting your eduID account does not mean all services you accessed with that eduID account will also have your data removed.",
         info4: "To fully complete the process of deleting your eduID account you must close your browser after your account has been removed.",
         deleteAccount: "Delete my account",
@@ -84,7 +84,7 @@ I18n.translations.en = {
     rememberMe: {
         updated: "Your device is no longer remembered",
         forgetMeTitle: "Remember this device.",
-        info: "Your device is currently remembered. You will be automatically logged in on the eduID Guest IdP.",
+        info: "Your device is currently remembered. You will be automatically logged in on the eduID.",
         cancel: "Cancel",
         update: "Forget me",
         forgetMeConfirmation: "Are you sure you no longer want this device remembered?",
@@ -101,17 +101,17 @@ I18n.translations.en = {
         confirm: "Confirm"
     },
     migration: {
-        header: "Your eduID guest account has been created!",
+        header: "Your eduID has been created!",
         info: "Your Onegini account is succesfully migrated.",
         info2: "From now on you must use your eduID guest account to logon to services where you previously used Onegini.",
-        info3: "Tip! Your eduID account by default doesn’t need a password (we send a magic link to your email to sign in), but if you want to, you can set one right now under the",
+        info3: "Tip! Your eduID account by default doesn’t need a password (we will send a magic link to your email to sign you in), but if you want to, you can set one right now under the",
         securityLink: " Security tab.",
         link: "Show my account details"
     },
     migrationError: {
         header: "Account Migration Conflict",
-        info: "We have NOT migrated your existing Onegini account to a eduID Guest Account as you already have a Guest Account user with the email {{email}}.",
-        question: "If you want to migrate your Onegini account then click migrate. If you want proceed with your existing eduID Guest Account then click proceed.",
+        info: "We have NOT migrated your existing Onegini account to eduID as you already have an eduID with the same email {{email}}.",
+        question: "If you want to migrate your Onegini account then click migrate. If you want proceed with your existing eduID then click proceed.",
         migrate: "Migrate",
         proceed: "Proceed",
         help: "If you have any questions about this please contact <a href=\"mailto:support@surfconext.nl\" >support@surfconext.nl</a>."
