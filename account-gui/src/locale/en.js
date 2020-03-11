@@ -38,14 +38,14 @@ I18n.translations.en = {
         usePasswordLink: "Type a password anyway ",
         usePasswordLinkInfo: "if you have set one.",
         whatis: "What is eduID?",
-        agreeWithTerms: "<span>I agree with <a href='https://www.eduid.nl' target='_blank'>the terms of service.</a></span>"
+        agreeWithTerms: "<span>I agree with <a href='https://eduid.nl/terms_of_service/' target='_blank'>the terms of service.</a></span>"
     },
     magicLink: {
         header: "Please",
         header2: "Check your email",
-        info1: "We sent an email to you at",
-        info2: "It has a magic link that will sign you in.",
-        wrongEmail: "Is the above email not correct?",
+        info1: "We've sent you an email at",
+        info2: "It contains a magic link that will sign you in.",
+        wrongEmail: "Is the above email incorrect?",
         wrongEmail2: "Please start over."
     },
     confirm: {
@@ -59,8 +59,8 @@ I18n.translations.en = {
         poweredBy: "Powered by"
     },
     session: {
-        title: "Your Session was lost.",
-        info: "You must open the Magic Link from the mail in the same browser session as where you requested the Magic Link. <br/><br/>  Please go back to the service you where heading to and request a new Magic Link."
+        title: "Your session was lost.",
+        info: "You must open the magic link from the email in the same browser session as where you requested the magic link. <br/><br/>  Please go back to the service you where heading to and request a new Magic Link."
     },
     expired: {
         title: "Expired magic link",
@@ -73,8 +73,8 @@ I18n.translations.en = {
     },
     migration: {
         header: "Migrate to a <br/>eduID guest account",
-        info1: "SURF will phase out the use of Onegini. To retain access, you must migrate your Onegini account to an eduID guest account.",
-        info2: "You only need to click the button and log in with your existing Onegini account once. We will then migrate your account to a new SURConext Guest Account and send you an email after completion.",
+        info1: "SURF will phase out the use of Onegini. To retain access, you must migrate your Onegini account to an eduID account.",
+        info2: "You only need to click the button and log in with your existing Onegini account once. We will then migrate your account to eduID and send you an email after completion.",
         link: "Start migration"
     }
 };
