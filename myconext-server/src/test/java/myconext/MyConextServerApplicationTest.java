@@ -2,7 +2,7 @@ package myconext;
 
 import org.junit.Test;
 
-public class SurfIdServerApplicationTest {
+public class MyConextServerApplicationTest {
 
     @Test
     public void main() {
