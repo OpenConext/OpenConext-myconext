@@ -6,9 +6,9 @@ I18n.translations.en = {
         header2: "Request",
         header3: "Your eduID",
         trust: "Trust this computer",
-        email: "Email address",
-        emailPlaceholder: "e.g. user@example.com",
-        familyName: "Surname",
+        email: "Your personal email address",
+        emailPlaceholder: "e.g. user@gmail.com",
+        familyName: "Last name",
         givenName: "First name",
         familyNamePlaceholder: "e.g. Berners-Lee",
         givenNamePlaceholder: "e.g. Tim",
@@ -30,13 +30,13 @@ I18n.translations.en = {
         emailInUse: "Email is already in use.",
         emailNotFound: "Email not found.",
         emailOrPasswordIncorrect: "Email or password are incorrect",
-        passwordDisclaimer: "Make sure it's at least 15 characters OR at least 8 characters including a number and a uppercase letter.",
+        passwordDisclaimer: "Make sure it's at least 15 characters OR at least 8 characters including a number and an UpperCase letter.",
         noGuestAccount: "<strong>Don't</strong> have an eduID yet?",
         requestGuestAccount: "Request an eduID",
-        alreadyGuestAccount: "<strong>Already</strong> have a eduID?",
+        alreadyGuestAccount: "<strong>Already</strong> have an eduID?",
         noPasswordNeeded: "No password needed. We'll send a magic link to your email to sign in instantly.",
-        usePasswordLink: "Type a password anyway ",
-        usePasswordLinkInfo: "if you have set one.",
+        usePasswordLink: "Type a password anyway",
+        usePasswordLinkInfo: " if you have set one.",
         whatis: "What is eduID?",
         agreeWithTerms: "<span>I agree with <a href='https://eduid.nl/terms_of_service/' target='_blank'>the terms of service.</a></span>"
     },
@@ -50,7 +50,7 @@ I18n.translations.en = {
     },
     confirm: {
         header: "Success!",
-        thanks: "Your eduID Account has been created. Proceed to your destination."
+        thanks: "Your eduID account has been created. Proceed to your destination."
     },
     footer: {
         privacy: "Privacy policy",
@@ -60,19 +60,19 @@ I18n.translations.en = {
     },
     session: {
         title: "Your session was lost.",
-        info: "You must open the magic link from the email in the same browser session as where you requested the magic link. <br/><br/>  Please go back to the service you where heading to and request a new Magic Link."
+        info: "You must open the magic link from the email in the same browser session as where you requested the magic link. <br/><br/>  Please go back to the service you were heading to and request a new magic link."
     },
     expired: {
         title: "Expired magic link",
-        info: "The magic link you have used is either expired or already used.",
+        info: "The magic link you have used is either expired or has already been used.",
         back: "Go to eduid.nl"
     },
     notFound: {
         title: "Whoops...",
-        title2: "Something went wrong (404)."
+        title2: "Something went wrong (404)"
     },
     migration: {
-        header: "Migrate to a <br/>eduID guest account",
+        header: "Migrate to an <br/>eduID guest account",
         info1: "SURF will phase out the use of Onegini. To retain access, you must migrate your Onegini account to an eduID account.",
         info2: "You only need to click the button and log in with your existing Onegini account once. We will then migrate your account to eduID and send you an email after completion.",
         link: "Start migration"
