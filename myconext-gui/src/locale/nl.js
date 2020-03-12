@@ -39,7 +39,7 @@ I18n.translations.nl = {
         secondSubTitle: "Loginmethoden",
         usePassword: "Wachtwoord",
         notSet: "Niet ingesteld",
-        useMagicLink: "Stuur magic link naar",
+        useMagicLink: "Stuur magische link naar",
         rememberMe: "Ingelogd blijven",
         rememberMetrue: "Ja",
         rememberMefalse: "Nee",
@@ -104,7 +104,7 @@ I18n.translations.nl = {
         header: "Je eduID is aangemaakt!",
         info: "je Onegini account is succesvol gemigreerd.",
         info2: "Vanaf nu moet je eduID gebruiken om in te loggen bij diensten waar je voorheen Onegini gebruikte.",
-        info3: "Tip! je eduID heeft standaard geen wachtwoord nodig (we sturen een magic link naar je e-mail om in te loggen), maar als je wilt, kan je toch een wachtwoord instellen op het ",
+        info3: "Tip! je eduID heeft standaard geen wachtwoord nodig (we sturen een magische link naar je e-mail om in te loggen), maar als je wilt, kan je toch een wachtwoord instellen op het ",
         securityLink: " tabblad Beveiliging.",
         link: "Naar mijn account gegevens"
     },
