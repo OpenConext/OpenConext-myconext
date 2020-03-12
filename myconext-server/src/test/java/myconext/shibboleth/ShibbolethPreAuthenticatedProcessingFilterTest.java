@@ -9,6 +9,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.test.context.ActiveProfiles;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 import static io.restassured.RestAssured.given;
@@ -46,6 +48,20 @@ public class ShibbolethPreAuthenticatedProcessingFilterTest extends AbstractInte
 
         User user = super.userRepository.findOneUserByEmail("steven.doe@example.org");
         assertEquals("http://mock-idp", user.getAuthenticatingAuthority());
+    }
+
+    @Test
+    public void getPreAuthenticatedPrincipalMissingAttributes() {
+        Headers headers = headers(UUID.randomUUID().toString(), "steven.doe@example.org", oneGiniEntityId);
+        List<Header> headersAsList = new ArrayList<>(headers.asList());
+        headersAsList.removeIf(header -> header.getName().equals(SHIB_EMAIL));
+        headers = new Headers(headersAsList);
+        given()
+                .headers(headers)
+                .when()
+                .get("/myconext/api/sp/me")
+                .then()
+                .statusCode(403);
     }
 
     @Test
