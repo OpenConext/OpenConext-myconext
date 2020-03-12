@@ -3,7 +3,7 @@ import I18n from "i18n-js";
 I18n.translations.nl = {
     header: {
         title: "eduID",
-        logout: "Log uit"
+        logout: "Uitloggen"
     },
     landing: {
         logoutTitle: "Je bent uitgelogd",
