@@ -4,7 +4,7 @@
     import Button from "../components/Button.svelte";
     import ModalImage from "../components/ModalImage.svelte";
 
-    const src = "img/WAYF.png";
+    const src = "img/WAYF_prod.png";
 
     const proceed = () => navigate("/");
 
