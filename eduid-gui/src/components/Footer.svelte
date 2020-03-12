@@ -8,7 +8,7 @@
     const changeLanguage = lang => () => {
         const urlSearchParams = new URLSearchParams(window.location.search);
         urlSearchParams.set("lang", lang);
-        Cookies.set("lang", lang, {expires: 365, secure: true, sameSite: "strict", domain: $config.domain});
+        Cookies.set("lang", lang, {expires: 365, secure: true, sameSite: "Lax", domain: $config.domain});
         window.location.search = urlSearchParams.toString();
     };
 

@@ -67,7 +67,7 @@
                                 Cookies.set("login_preference", $user.usePassword ? "usePassword" : "useLink", {
                                     expires: 365,
                                     secure: true,
-                                    sameSite: "strict"
+                                    sameSite: "Lax"
                                 });
                                 if ($user.usePassword) {
                                     window.location.href = json.url
