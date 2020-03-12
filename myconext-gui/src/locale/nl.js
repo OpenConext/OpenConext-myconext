@@ -7,9 +7,9 @@ I18n.translations.nl = {
     },
     landing: {
         logoutTitle: "Je bent uitgelogd",
-        logoutStatus: "Om het uitlogproces te voltooien, moet je de browser nu sluiten.",
+        logoutStatus: "Om het uitlogproces te voltooien, moet je de browser nu afsluiten.",
         deleteTitle: "Je eduID is verwijderd",
-        deleteStatus: "Om het verwijderingsproces te voltooien, moet je je browser nu sluiten."
+        deleteStatus: "Om het verwijderingsproces te voltooien, moet je je browser nu afsluiten."
     },
     notFound: {
         title: "Oeps...",
@@ -25,11 +25,11 @@ I18n.translations.nl = {
     },
     edit: {
         title: "Aanpassen profielgegevens",
-        info: "Voer je volledige naam in",
+        info: "Voer je volledige naam in.",
         givenName: "Je voornaam",
         familyName: "Je achternaam",
-        update: "Verstuur",
-        cancel: "Annuleer",
+        update: "Opslaan",
+        cancel: "Annuleren",
         updated: "Je profiel is bijgewerkt.",
         back: "/profile"
     },
@@ -61,7 +61,7 @@ I18n.translations.nl = {
         deleteTitle: "Je eduID verwijderen",
         info1: "U kunt je eduID verwijderen wanneer je maar wilt.",
         info2: "Let op, je verliest het unieke eduID-nummer dat momenteel aan je e-mailadres is gekoppeld. Wanneer je je opnieuw registreert voor eduID met hetzelfde e-mailadres, krijg je een nieuw eduID-nummer. Sommige diensten gebruiken dit unieke nummer om je te identificeren, dus voor die diensten word je dan gezien als een nieuwe gebruiker. ",
-        info3: "Houdt er rekening mee dat het verwijderen van je eduID niet betekent dat alle diensten die je met je eduID hebt gebruikt, ook je gegevens zullen verwijderen.",
+        info3: "Houd er rekening mee dat het verwijderen van je eduID niet betekent dat alle diensten die je met je eduID hebt gebruikt, ook je gegevens zullen verwijderen.",
         info4: "Om het verwijderen van je eduID volledig te voltooien, moet je nadat je account is verwijderd je browser afsluiten.",
         deleteAccount: "Verwijder mijn eduID",
         deleteAccountConfirmation: "Weet je zeker dat je je eduID wilt verwijderen?"
@@ -72,21 +72,21 @@ I18n.translations.nl = {
         currentPassword: "Huidig wachtwoord",
         newPassword: "Nieuw wachtwoord",
         confirmPassword: "Bevestig nieuw wachtwoord",
-        setUpdate: "Zet wachtwoord",
-        updateUpdate: "Verander wachtwoord",
-        cancel: "Annuleer",
-        set: "Je wachtwoord is gezet",
-        updated: "je wachtwoord is aangepast",
+        setUpdate: "Wachtwoord instellen",
+        updateUpdate: "Opslaan",
+        cancel: "Annuleren",
+        set: "Je wachtwoord is ingesteld",
+        updated: "Je wachtwoord is aangepast",
         back: "/security",
-        passwordDisclaimer: "Je wachtwoord moet minimaal 15 karakters zijn of 8 met dan minstens een hoofdletter en cijfer.",
+        passwordDisclaimer: "Kies een wachtwoord van tenminste 8 karakters met minimaal een hoofdletter en een cijfer. Een langer wachtwoord van minimaal 15 karakters mag ook.",
         invalidCurrentPassword: "Je huidige wachtwoord is niet correct."
     },
     rememberMe: {
         updated: "Dit apparaat wordt niet langer onthouden",
-        forgetMeTitle: "Onthoudt dit apparaat.",
+        forgetMeTitle: "Onthoud dit apparaat",
         info: "Dit apparaat wordt onthouden. Je bent hierdoor automatisch ingelogt met eduID.",
-        cancel: "Annuleer",
-        update: "Vergeet mij",
+        cancel: "Annuleren",
+        update: "Vergeet dit apparaat",
         forgetMeConfirmation: "Weet je zeker dat je dit apparaat niet langer wilt onthouden?",
         forgetMe: "Vergeet dit apparaat"
     },
@@ -104,7 +104,7 @@ I18n.translations.nl = {
         header: "Je eduID is aangemaakt!",
         info: "je Onegini account is succesvol gemigreerd.",
         info2: "Vanaf nu moet je eduID gebruiken om in te loggen bij diensten waar je voorheen Onegini gebruikte.",
-        info3: "Tip! je eduID heeft standaard geen wachtwoord nodig (we sturen een magig link naar je e-mail om in te loggen), maar als je wilt, kan je toch een wachtwoord instellen op het ",
+        info3: "Tip! je eduID heeft standaard geen wachtwoord nodig (we sturen een magic link naar je e-mail om in te loggen), maar als je wilt, kan je toch een wachtwoord instellen op het ",
         securityLink: " tabblad Beveiliging.",
         link: "Naar mijn account gegevens"
     },
