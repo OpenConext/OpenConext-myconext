@@ -114,7 +114,7 @@ I18n.translations.en = {
         question: "If you want to migrate your Onegini account then click migrate. If you want proceed with your existing eduID then click proceed.",
         migrate: "Migrate",
         proceed: "Proceed",
-        help: "If you have any questions about this please contact <a href=\"mailto:support@surfconext.nl\" >support@surfconext.nl</a>."
+        help: "If you have any questions about this please contact <a href=\"mailto:support@surfconext.nl\">support@surfconext.nl</a>."
     },
     format: {
         creationDate: "Your eduID account was created on {{date}} at {{hours}}:{{minutes}}"

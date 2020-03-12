@@ -3,11 +3,12 @@
     import I18n from "i18n-js";
     import Cookies from "js-cookie";
     import surfLogo from "../img/logo-surf.svg";
+    import {config} from "../stores/config";
 
     const changeLanguage = lang => () => {
         const urlSearchParams = new URLSearchParams(window.location.search);
         urlSearchParams.set("lang", lang);
-        Cookies.set("lang", lang, {expires: 365, secure: true, sameSite: "strict"});
+        Cookies.set("lang", lang, {expires: 365, secure: true, sameSite: "strict", domain: $config.domain});
         window.location.search = urlSearchParams.toString();
     };
 

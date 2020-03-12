@@ -18,7 +18,8 @@ public class LoginControllerTest extends AbstractIntegrationTest {
                 .then()
                 .body("baseDomain", equalTo("test2.surfconext.nl"))
                 .body("loginUrl", equalTo("http://localhost:8081/login"))
-                .body("migrationUrl", equalTo("https://my.test2.surfconext.nl/Shibboleth.sso/Login?entityID=http://mock-idp&target=/migration"));
+                .body("migrationUrl", equalTo(
+                        "https://my.test2.surfconext.nl/Shibboleth.sso/Login?entityID=http://mock-idp&target=/migration"));
     }
 
     @Test
@@ -29,6 +30,7 @@ public class LoginControllerTest extends AbstractIntegrationTest {
                 .get("/register")
                 .then()
                 .statusCode(302)
-                .header("Location", "https://my.test2.surfconext.nl/Shibboleth.sso/Login?entityID=https://localhost.surf.id");
+                .header("Location",
+                        "https://my.test2.surfconext.nl/Shibboleth.sso/Login?entityID=https://localhost.surf.id&lang=en");
     }
 }

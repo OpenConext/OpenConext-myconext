@@ -3,7 +3,7 @@
     import I18n from "i18n-js";
     import Button from "../components/Button.svelte";
 
-    const register = () => window.location.href = $config.eduIDRegisterUrl;
+    const register = () => window.location.href = `${$config.eduIDRegisterUrl}?lang=${I18n.locale}`;
 
 
 </script>

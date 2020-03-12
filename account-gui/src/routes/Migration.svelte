@@ -5,7 +5,7 @@
 
     const migrate = () => {
         if (typeof window !== "undefined") {
-            window.location.href = `${$conf.migrationUrl}`;
+            window.location.href = `${$conf.migrationUrl}&lang=${I18n.locale}`;
         }
     };
 

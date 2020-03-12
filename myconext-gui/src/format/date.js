@@ -7,5 +7,7 @@ export const formatCreateDate = epoch => {
     date.setUTCSeconds(epoch);
     const locale = I18n.locale === "en" ? "en-US" : "nl-NL";
     const datePart = date.toLocaleDateString(locale, formatOptions);
-    return I18n.t("format.creationDate", {date: datePart, hours: date.getHours(), minutes: date.getMinutes()});
+    let minutes = date.getMinutes().toString();
+    minutes = minutes.length === 2 ? minutes : "0" + minutes;
+    return I18n.t("format.creationDate", {date: datePart, hours: date.getHours(), minutes: minutes});
 };

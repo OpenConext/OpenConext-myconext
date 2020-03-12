@@ -14,6 +14,18 @@
 
     onMount(() => configuration().then(json => {
         $config = json;
+        if (typeof window !== "undefined") {
+            const urlSearchParams = new URLSearchParams(window.location.search);
+            if (urlSearchParams.has("lang")) {
+                I18n.locale = urlSearchParams.get("lang");
+            } else if (Cookies.get("lang", {domain: $config.domain})) {
+                I18n.locale = Cookies.get("lang", {domain: $config.domain});
+            } else {
+                I18n.locale = navigator.language.toLowerCase().substring(0, 2);
+            }
+        } else {
+            I18n.locale = "en";
+        }
         loaded = true;
     }));
 

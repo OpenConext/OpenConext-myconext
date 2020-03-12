@@ -30,6 +30,7 @@ sp_entity_metadata_url: https://engine.test2.surfconext.nl/authentication/sp/met
 onegini_entity_id: http://mock-idp
 guest_idp_entity_id: https://localhost.surf.id
 my_conext_url: https://my.test2.surfconext.nl
+domain: eduid.nl
 
 secure_cookie: false
 idp_entity_id: https://localhost.surf.id

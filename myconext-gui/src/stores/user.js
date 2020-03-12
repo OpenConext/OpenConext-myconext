@@ -18,7 +18,8 @@ export const config = writable({
     baseDomain: "",
     migrationLandingPageUrl: "",
     myConextUrlGuestIdp: "",
-    magicLinkUrl: ""
+    magicLinkUrl: "",
+    domain: ""
 });
 
 export const redirectPath = writable("");

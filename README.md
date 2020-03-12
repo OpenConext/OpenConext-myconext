@@ -50,7 +50,7 @@ yarn install
 yarn start
 ```
 
-There is no home page, you'll need to visit a SP and choose the Guest IdP to login.
+There is no home page, you'll need to visit a SP and choose eduID to login.
 
 ### [Build](#build)
 
@@ -84,4 +84,4 @@ cloc --read-lang-def=cloc_definitions.txt --vcs=git
 
 ### [Migration](#migration)
 
-[Migrate your account](https://account.test2.surfconext.nl/migration)
+[Migrate your account](https://login.test2.eduid.nl/migration)
