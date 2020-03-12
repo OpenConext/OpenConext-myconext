@@ -7,18 +7,18 @@ I18n.translations.nl = {
         header3: "Van je eduID",
         trust: "Vertrouw deze computer",
         email: "E-mail adres",
-        emailPlaceholder: "e.g. user@example.com",
+        emailPlaceholder: "bijv. naam@gmail.com",
         familyName: "Achternaam",
         givenName: "Voornaam",
-        familyNamePlaceholder: "e.g. Berners-Lee",
-        givenNamePlaceholder: "e.g. Tim",
+        familyNamePlaceholder: "bijv. Berners-Lee",
+        givenNamePlaceholder: "bijv. Tim",
         usePassword: "Gebruik wachtwoord",
-        useMagicLink: "Gebruik magic link",
-        sendMagicLink: "Verstuur magic link",
+        useMagicLink: "Gebruik magische link",
+        sendMagicLink: "Verstuur magische link",
         requestEduId: "Vraag je eduID aan",
-        rememberMe: "Blijf ingelogd",
+        rememberMe: "Ingelogd blijven",
         password: "Je wachtwoord",
-        passwordForgotten: "Wachtwoord vergeten of liever een magic link?",
+        passwordForgotten: "Wachtwoord vergeten of liever een magische link?",
         passwordForgottenLink: "Ontvang een e-mail om direct in te loggen.",
         login: "Login",
         create: "Aanmaken",
@@ -33,38 +33,38 @@ I18n.translations.nl = {
         passwordDisclaimer: "Je wachtwoord moet minimaal 15 karakters bevatten of 8 inclusief een hoofdletter en een getal.",
         noGuestAccount: "Heb je nog geen <strong>eduID?</strong>",
         requestGuestAccount: "Vraag een eduID aan",
-        alreadyGuestAccount: "Al een <strong>eduID?</strong>",
-        noPasswordNeeded: "Geen wachtwoord nodig. We e-mailen je een magic link waarmee je  direct kunt inloggen.",
+        alreadyGuestAccount: "Heb je al een <strong>eduID?</strong>",
+        noPasswordNeeded: "Geen wachtwoord nodig. We e-mailen je een magische link waarmee je direct kunt inloggen.",
         usePasswordLink: "Gebruik toch een wachtwoord",
         usePasswordLinkInfo: "als je deze hebt ingesteld.",
         whatis: "Wat is eduID?",
         agreeWithTerms: "<span>Ik ga akkoord met <a href='https://eduid.nl/voorwaarden/' target='_blank'>de voorwaarden.</a></span>"
     },
     magicLink: {
-        header: "Please",
-        header2: "Controleer uw e-mail",
+        header: "Bijna klaar!",
+        header2: "Open nu je mailbox",
         info1: "We hebben een e-mail gestuurd naar",
-        info2: "Deze bevat de magic link waarmee je kunt inloggen.",
+        info2: "Deze bevat de magische link waarmee je kunt inloggen.",
         wrongEmail: "Is het bovenstaande e-mail adres niet correct?",
         wrongEmail2: "Begin opnieuw."
     },
     confirm: {
         header: "Gelukt!",
-        thanks: "je eduID is geactiveerd. Ga door naar je bestemming."
+        thanks: "Je eduID is geactiveerd. Ga door naar je bestemming."
     },
     footer: {
         privacy: "Privacy",
         terms: "Voorwaarden",
         help: "Help",
-        poweredBy: "Aangeboden door"
+        poweredBy: "Powered by"
     },
     session: {
-        title: "Je sessie is verloren gegaan.",
-        info: "Je moet de magic link vanuit de e-mail openen in dezelfde browsersessie als waar je de magic link hebt aangevraagd. <br/> <br/> Ga terug naar de service waar je naar toe ging en vraag een nieuwe magic link aan."
+        title: "Je sessie is verlopen.",
+        info: "Je moet de magische link vanuit de e-mail openen in dezelfde browsersessie als waar je de magic link hebt aangevraagd. <br/> <br/> Ga terug naar de service waar je naar toe ging en vraag een nieuwe magische link aan."
     },
     expired: {
-        title: "Verlopen magic link",
-        info: "De magic link die je hebt gebruikt, is verlopen of al een keer gebruikt",
+        title: "Verlopen magische link",
+        info: "De magische link die je hebt gebruikt, is verlopen of al een keer gebruikt",
         back: "Ga naar eduid.nl"
     },
     notFound: {
