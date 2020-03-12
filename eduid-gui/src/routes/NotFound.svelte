@@ -8,6 +8,8 @@
         display: flex;
         flex-direction: column;
         padding: 25px;
+        width: 100%;
+
     }
 
     h1 {
