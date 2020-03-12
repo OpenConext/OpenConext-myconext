@@ -3,6 +3,8 @@ let csrfToken = null;
 
 function validateResponse(res) {
 
+    csrfToken = res.headers.get("x-csrf-token") || csrfToken;
+
     if (!res.ok) {
         if (res.type === "opaqueredirect") {
             setTimeout(() => window.location.reload(), 100);
@@ -10,7 +12,7 @@ function validateResponse(res) {
         }
         throw res;
     }
-    csrfToken = res.headers.get("x-csrf-token");
+
     return res.json();
 }
 

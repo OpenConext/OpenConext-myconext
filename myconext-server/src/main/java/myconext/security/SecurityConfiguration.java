@@ -31,7 +31,6 @@ import org.springframework.security.saml.provider.identity.config.SamlIdentityPr
 import org.springframework.security.saml.saml2.metadata.NameId;
 import org.springframework.security.web.authentication.preauth.AbstractPreAuthenticatedProcessingFilter;
 import org.springframework.security.web.authentication.preauth.PreAuthenticatedAuthenticationProvider;
-import org.springframework.security.web.csrf.CsrfFilter;
 
 import java.io.IOException;
 import java.nio.charset.Charset;
@@ -165,9 +164,7 @@ public class SecurityConfiguration {
                     .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
                     .and()
                     .csrf()
-                    .requireCsrfProtectionMatcher(new CsrfProtectionMatcher())
-                    .and()
-                    .addFilterAfter(new CsrfTokenResponseHeaderBindingFilter(), CsrfFilter.class)
+                    .disable()
                     .addFilterBefore(
                             new ShibbolethPreAuthenticatedProcessingFilter(
                                     authenticationManagerBean(),
@@ -181,7 +178,6 @@ public class SecurityConfiguration {
 
             if (environment.acceptsProfiles(Profiles.of("test", "dev"))) {
                 //we can't use @Profile, because we need to add it before the real filter
-                http.csrf().disable();
                 http.addFilterBefore(new MockShibbolethFilter(environment), ShibbolethPreAuthenticatedProcessingFilter.class);
             }
         }
