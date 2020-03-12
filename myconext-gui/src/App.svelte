@@ -2,6 +2,7 @@
     import Footer from "./components/Footer.svelte";
     import {Route, Router, navigate} from "svelte-routing";
     import {onMount} from "svelte";
+    import Cookies from "js-cookie";
     import Landing from "./routes/Landing.svelte";
     import NotFound from "./routes/NotFound.svelte";
     import EditName from "./routes/EditName.svelte";

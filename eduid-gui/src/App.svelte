@@ -1,5 +1,6 @@
 <script>
     import Footer from "./components/Footer.svelte";
+    import Cookies from "js-cookie";
     import {Route, Router} from "svelte-routing";
     import {onMount} from "svelte";
     import Public from "./routes/Public.svelte";

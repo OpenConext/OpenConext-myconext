@@ -1,5 +1,6 @@
 <script>
     import {Route, Router} from "svelte-routing";
+    import Cookies from "js-cookie";
     import Login from "./routes/Login.svelte";
     import SessionLost from "./routes/SessionLost.svelte";
     import MagicLink from "./routes/MagicLink.svelte";
