@@ -4,9 +4,9 @@ I18n.translations.nl = {
     login: {
         header: "Login met eduID op",
         header2: "Aanvraag",
-        header3: "Van je eduID",
+        header3: "van je eduID",
         trust: "Vertrouw deze computer",
-        email: "E-mail adres",
+        email: "E-mailadres",
         emailPlaceholder: "bijv. naam@gmail.com",
         familyName: "Achternaam",
         givenName: "Voornaam",
@@ -25,12 +25,12 @@ I18n.translations.nl = {
         newTo: "Voor het eerst bij eduID?",
         createAccount: "Maak een account aan.",
         useExistingAccount: "Gebruik een bestaand account",
-        invalidEmail: "Ongeldig e-mail adres",
+        invalidEmail: "Ongeldig e-mailadres",
         requiredAttribute: "{{attr}} is verplicht",
-        emailInUse: "E-mail adres is al in gebruik.",
-        emailNotFound: "E-mail adres niet gevonden.",
-        emailOrPasswordIncorrect: "E-mail adres of wachtwoord zijn niet juist",
-        passwordDisclaimer: "Je wachtwoord moet minimaal 15 karakters bevatten of 8 inclusief een hoofdletter en een getal.",
+        emailInUse: "E-mailadres is al in gebruik.",
+        emailNotFound: "E-mailadres niet gevonden.",
+        emailOrPasswordIncorrect: "E-mailadres of wachtwoord is niet juist",
+        passwordDisclaimer: "Je wachtwoord moet minimaal 15 karakters lang zijn, of minimaal 8 als het een hoofdletter en een getal bevat.",
         noGuestAccount: "Heb je nog geen <strong>eduID?</strong>",
         requestGuestAccount: "Vraag een eduID aan",
         alreadyGuestAccount: "Heb je al een <strong>eduID?</strong>",
@@ -45,7 +45,7 @@ I18n.translations.nl = {
         header2: "Open nu je mailbox",
         info1: "We hebben een e-mail gestuurd naar",
         info2: "Deze bevat de magische link waarmee je kunt inloggen.",
-        wrongEmail: "Is het bovenstaande e-mail adres niet correct?",
+        wrongEmail: "Is het bovenstaande e-mailadres niet correct?",
         wrongEmail2: "Begin opnieuw."
     },
     confirm: {
@@ -60,7 +60,7 @@ I18n.translations.nl = {
     },
     session: {
         title: "Je sessie is verlopen.",
-        info: "Je moet de magische link vanuit de e-mail openen in dezelfde browsersessie als waar je de magic link hebt aangevraagd. <br/> <br/> Ga terug naar de service waar je naar toe ging en vraag een nieuwe magische link aan."
+        info: "Je moet de magische link vanuit de e-mail openen in dezelfde browsersessie als waar je de magische link hebt aangevraagd. <br/> <br/> Ga terug naar de service waar je naar toe ging en vraag een nieuwe magische link aan."
     },
     expired: {
         title: "Verlopen magische link",
@@ -73,8 +73,8 @@ I18n.translations.nl = {
     },
     migration: {
         header: "Migreer naar <br/>eduID",
-        info1: "SURF zal het gebruik van Onegini geleidelijk uitfaseren. Om toegang te behouden, moet je je Onegini account migreren naar eduID.",
-        info2: "Je hoeft slechts op de knop te klikken en je één keer aan te melden met je bestaande Onegini account. We maken vervolgens naar een nieuw eduID aan en sturen je na voltooiing een e-mail.",
+        info1: "SURF zal het gebruik van Onegini geleidelijk uitfaseren. Om toegang te behouden, moet je je Onegini-account migreren naar eduID.",
+        info2: "Je hoeft slechts op de knop te klikken en je één keer aan te melden met je bestaande Onegini account. We maken vervolgens een nieuw eduID aan en sturen je na voltooiing een e-mail.",
         link: "Start migratie"
     }
 };

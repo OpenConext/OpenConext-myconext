@@ -1,6 +1,6 @@
 Magische link
 
-Volg de onderstaande link om in te loggen om door te gaan naar uw bestemming:
+Volg de onderstaande link om in te loggen en door te gaan naar je bestemming:
 
 {{magicLinkUrl}}?h={{hash}}
 
@@ -8,7 +8,7 @@ Meld je aan bij {{destination}}. Deze link verloopt na 10 minuten en kan slechts
 
 Hallo {{name}},
 
-Iemand heeft zojuist om een Magic Link gevraagd via dit e-mailadres. Als jij dit was, kun je inloggen door de bovenstaande link te volgen.
-Negeer en verwijder dit bericht als u niet om de Magic Link hebt gevraagd.
+Iemand heeft zojuist om een magische link aangevraagd op eduID voor dit e-mailadres. Als jij dit was, kun je inloggen door de bovenstaande link te volgen.
+Als je deze magische link niet hebt aangevraagd, kun je dit bericht negeren of verwijderen.
 
 {{> footer_nl.txt}}

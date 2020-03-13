@@ -10,7 +10,7 @@ Sign in to {{destination}}. This link will expire in 10 minutes and can only be 
 
 Hi <strong>{{name}},
 
-Someone just requested a Magic Link using this email address. If this was you, you can sign in by following the link above.
-If you didn't request the Magic Link , just ignore and delete this message.
+Someone just requested a magic link on eduID using this email address. If this was you, you can sign in by following the link above.
+If you didn't request the magic link, you can just ignore or delete this message.
 
 {{> footer_en.txt}}

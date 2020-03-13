@@ -4,7 +4,7 @@ I18n.translations.en = {
     login: {
         header: "Use your eduID to login to",
         header2: "Request",
-        header3: "Your eduID",
+        header3: "your eduID",
         trust: "Trust this computer",
         email: "Your personal email address",
         emailPlaceholder: "e.g. user@gmail.com",
@@ -30,11 +30,11 @@ I18n.translations.en = {
         emailInUse: "Email is already in use.",
         emailNotFound: "Email not found.",
         emailOrPasswordIncorrect: "Email or password are incorrect",
-        passwordDisclaimer: "Make sure it's at least 15 characters OR at least 8 characters including a number and an UpperCase letter.",
+        passwordDisclaimer: "Make sure it's at least 15 characters long OR at least 8 characters when including a number and an UpperCase letter.",
         noGuestAccount: "<strong>Don't</strong> have an eduID yet?",
         requestGuestAccount: "Request an eduID",
         alreadyGuestAccount: "<strong>Already</strong> have an eduID?",
-        noPasswordNeeded: "No password needed. We'll send a magic link to your email to sign in instantly.",
+        noPasswordNeeded: "No password needed. We'll send a magic link to your email address to sign in instantly.",
         usePasswordLink: "Type a password anyway",
         usePasswordLinkInfo: " if you have set one.",
         whatis: "What is eduID?",
@@ -45,7 +45,7 @@ I18n.translations.en = {
         header2: "Check your email",
         info1: "We've sent you an email at",
         info2: "It contains a magic link that will sign you in.",
-        wrongEmail: "Is the above email incorrect?",
+        wrongEmail: "Is the above email address incorrect?",
         wrongEmail2: "Please start over."
     },
     confirm: {
