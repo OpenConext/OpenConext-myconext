@@ -26,7 +26,7 @@
 
     h1 {
         margin: 15px 0 44px 0;
-        font-size: 50px;
+        font-size: 46px;
         font-weight: 500;
         font-stretch: normal;
         font-style: normal;
@@ -69,7 +69,7 @@
     }
 
     :global(p.divider) {
-        margin-bottom: 34px;
+        margin-bottom: 24px;
     }
 
     @media (max-width: 800px) {
