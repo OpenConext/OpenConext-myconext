@@ -50,16 +50,18 @@
     }
 
     p.info {
+        font-size: 18px;
         font-weight: 300;
-        margin-bottom: 40px;
+        margin-bottom: 26px;
     }
 
-    h3 {
-        margin-bottom: 10px;
+    p.info2 {
+        font-size: 22px;
+        margin-bottom: 24px;
+        font-family: Proxima Nova, sans-serif;
     }
 
     p {
-        font-size: 18px;
         line-height: 1.33;
         letter-spacing: normal;
     }
@@ -84,7 +86,7 @@
     <div class="inner">
         <h2>{I18n.t("account.title")}</h2>
         <p class="info">{formatCreateDate($user.created)}</p>
-        <h3>{I18n.t("account.deleteTitle")}</h3>
+        <p class="info2">{I18n.t("account.deleteTitle")}</p>
         {#each [1,2,3,4] as i}
             <p class="divider">{I18n.t("account.info"+i)}</p>
         {/each}

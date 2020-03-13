@@ -51,6 +51,20 @@ public class ShibbolethPreAuthenticatedProcessingFilterTest extends AbstractInte
     }
 
     @Test
+    public void getPreAuthenticatedPrincipalUnknownAuthenticatingAuthority() {
+        Headers headers = headers(UUID.randomUUID().toString(), "bob.doe@example.org", "unknown");
+        given()
+                .headers(headers)
+                .when()
+                .get("/myconext/api/sp/me")
+                .then()
+                .statusCode(200);
+
+        User user = super.userRepository.findOneUserByEmail("bob.doe@example.org");
+        assertEquals("unknown", user.getAuthenticatingAuthority());
+    }
+
+    @Test
     public void getPreAuthenticatedPrincipalMissingAttributes() {
         Headers headers = headers(UUID.randomUUID().toString(), "steven.doe@example.org", oneGiniEntityId);
         List<Header> headersAsList = new ArrayList<>(headers.asList());

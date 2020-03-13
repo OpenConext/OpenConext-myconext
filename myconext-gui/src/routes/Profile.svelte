@@ -21,17 +21,25 @@
     }
 
     h2 {
-        margin: 20px 0;
+        margin: 20px 0 10px 0;
         color: var(--color-primary-green);
     }
 
     p.info {
         font-weight: 300;
-        margin-bottom: 40px;
+        margin-bottom: 26px;
     }
 
-    h3 {
-        margin-bottom: 30px;
+    p.info2 {
+        font-size: 22px;
+        margin-bottom: 24px;
+        font-family: Proxima Nova, sans-serif;
+    }
+
+    p {
+        font-size: 18px;
+        line-height: 1.33;
+        letter-spacing: normal;
     }
 
     table {
@@ -73,7 +81,7 @@
     <div class="inner">
         <h2>{I18n.t("profile.title")}</h2>
         <p class="info">{I18n.ts("profile.info")}</p>
-        <h3>{I18n.t("profile.profile")}</h3>
+        <p class="info2">{I18n.t("profile.profile")}</p>
         <table cellspacing="0">
             <thead></thead>
             <tbody>

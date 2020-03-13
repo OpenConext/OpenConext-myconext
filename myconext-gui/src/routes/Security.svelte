@@ -40,6 +40,12 @@
         font-family: Proxima Nova, sans-serif;
     }
 
+    p {
+        font-size: 18px;
+        line-height: 1.33;
+        letter-spacing: normal;
+    }
+
     table {
         width: 100%;
     }

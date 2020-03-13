@@ -5,7 +5,6 @@ import lombok.NoArgsConstructor;
 import org.springframework.util.StringUtils;
 
 @Getter
-@NoArgsConstructor
 public class UserResponse {
 
     private String id;

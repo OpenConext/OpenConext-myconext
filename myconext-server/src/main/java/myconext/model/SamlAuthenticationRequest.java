@@ -62,8 +62,4 @@ public class SamlAuthenticationRequest {
         this.rememberMeValue = rememberMeValue;
     }
 
-    @Transient
-    public boolean isExpired() {
-        return new Date().after(expiresIn);
-    }
 }
