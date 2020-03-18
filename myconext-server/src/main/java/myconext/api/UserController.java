@@ -1,6 +1,5 @@
 package myconext.api;
 
-import myconext.exceptions.DuplicateUserEmailException;
 import myconext.exceptions.ExpiredAuthenticationException;
 import myconext.exceptions.ForbiddenException;
 import myconext.exceptions.UserNotFoundException;
@@ -17,6 +16,7 @@ import myconext.security.EmailGuessingPrevention;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -88,10 +88,11 @@ public class UserController {
 
         emailGuessingPreventor.potentialUserEmailGuess();
 
-        userRepository.findUserByEmail(user.getEmail()).ifPresent(u -> {
-            throw new DuplicateUserEmailException();
-        });
-
+        Optional<User> optionalUser = userRepository.findUserByEmail(user.getEmail());
+        if (optionalUser.isPresent()) {
+            return ResponseEntity.status(HttpStatus.CONFLICT)
+                    .body(Collections.singletonMap("status", HttpStatus.CONFLICT.value()));
+        }
         //prevent not-wanted attributes in the database
         User userToSave = new User(UUID.randomUUID().toString(), user.getEmail(), user.getGivenName(),
                 user.getFamilyName(), schacHomeOrganization, guestIdpEntityId);
@@ -111,10 +112,14 @@ public class UserController {
         emailGuessingPreventor.potentialUserEmailGuess();
 
         Optional<User> optionalUser = userRepository.findUserByEmail(providedUser.getEmail());
-        User user = optionalUser.orElseThrow(UserNotFoundException::new);
+        if (!optionalUser.isPresent()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Collections.singletonMap("status", HttpStatus.NOT_FOUND.value()));
+        }
+        User user = optionalUser.get();
         if (magicLinkRequest.isUsePassword()) {
             if (!passwordEncoder.matches(providedUser.getPassword(), user.getPassword())) {
-                throw new ForbiddenException();
+                return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                        .body(Collections.singletonMap("status", HttpStatus.FORBIDDEN.value()));
             }
             UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(user, null,
                     user.getAuthorities());

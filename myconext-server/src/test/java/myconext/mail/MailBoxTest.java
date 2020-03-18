@@ -45,12 +45,12 @@ public class MailBoxTest extends AbstractIntegrationTest {
 
     @Test
     public void sendMagicLink() throws MessagingException {
-        doSendMagicLink("Magic Link", "en");
+        doSendMagicLink("Magic Link to login", "en");
     }
 
     @Test
     public void sendMagicLinkNl() throws MessagingException {
-        doSendMagicLink("Magische link", "nl");
+        doSendMagicLink("Magische link om in te loggen", "nl");
     }
 
     private void doSendMagicLink(String expectedSubject, String lang) throws MessagingException {
@@ -92,12 +92,12 @@ public class MailBoxTest extends AbstractIntegrationTest {
 
     @Test
     public void sendAccountConfirmation() throws MessagingException {
-        doSendAccountConfirmation("Your eduID Account has been created", "en");
+        doSendAccountConfirmation("Your eduID has been created", "en");
     }
 
     @Test
     public void sendAccountConfirmationNl() throws MessagingException {
-        doSendAccountConfirmation("Je eduID-account is aangemaakt", "nl");
+        doSendAccountConfirmation("Je eduID is aangemaakt", "nl");
     }
 
     private void doSendAccountConfirmation(String expectedSubject, String lang) throws MessagingException {
@@ -112,12 +112,12 @@ public class MailBoxTest extends AbstractIntegrationTest {
 
     @Test
     public void sendAccountMigration() throws MessagingException {
-        doSendAccountMigration("Your Guest Account has been migrated", "en");
+        doSendAccountMigration("Your Onegini Guest Account has been migrated to eduID", "en");
     }
 
     @Test
     public void sendAccountMigrationNl() throws MessagingException {
-        doSendAccountMigration("Je gastaccount is gemigreerd", "nl");
+        doSendAccountMigration("Je Onegini gastaccount is gemigreerd naar eduID", "nl");
     }
 
     private void doSendAccountMigration(String expectedSubject, String lang) throws MessagingException {
