@@ -1,0 +1,18 @@
+{
+  "account_confirmation": {
+    "en": "Your eduID Account has been created",
+    "nl": "Je eduID-account is aangemaakt"
+  },
+  "account_migration": {
+    "en": "Your Guest Account has been migrated",
+    "nl": "Je gastaccount is gemigreerd"
+  },
+  "account_verification": {
+    "en": "Please verify your email address for your eduID Account",
+    "nl": "Verifieer je e-mailadres voor je eduID-account"
+  },
+  "magic_link": {
+    "en": "Magic Link",
+    "nl": "Magische link"
+  }
+}

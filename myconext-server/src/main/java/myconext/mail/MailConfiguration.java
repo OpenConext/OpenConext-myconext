@@ -1,5 +1,6 @@
 package myconext.mail;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.mail.MailProperties;
@@ -10,6 +11,8 @@ import org.springframework.context.annotation.Primary;
 import org.springframework.context.annotation.Profile;
 import org.springframework.core.env.Environment;
 import org.springframework.mail.javamail.JavaMailSender;
+
+import java.io.IOException;
 
 @Configuration
 @EnableConfigurationProperties(MailProperties.class)
@@ -27,17 +30,20 @@ public class MailConfiguration {
     @Autowired
     private JavaMailSender mailSender;
 
+    @Autowired
+    private ObjectMapper objectMapper;
+
     @Bean
     @Profile({"!dev"})
-    public MailBox mailSenderProd() {
-        return new MailBox(mailSender, emailFrom, magicLinkUrl, mySURFconextURL);
+    public MailBox mailSenderProd() throws IOException {
+        return new MailBox(mailSender, emailFrom, magicLinkUrl, mySURFconextURL, objectMapper);
     }
 
     @Bean
     @Profile({"dev", "test", "shib"})
     @Primary
-    public MailBox mailSenderDev(Environment environment) {
-        return new MockMailBox(mailSender, emailFrom, magicLinkUrl, mySURFconextURL, environment);
+    public MailBox mailSenderDev(Environment environment) throws IOException {
+        return new MockMailBox(mailSender, emailFrom, magicLinkUrl, mySURFconextURL, objectMapper, environment);
     }
 
 

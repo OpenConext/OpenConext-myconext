@@ -1,9 +1,11 @@
 package myconext.mail;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.mustachejava.DefaultMustacheFactory;
 import com.github.mustachejava.MustacheFactory;
 import myconext.model.User;
 import org.springframework.context.i18n.LocaleContextHolder;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 
@@ -12,7 +14,6 @@ import javax.mail.internet.MimeMessage;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.util.HashMap;
-import java.util.Locale;
 import java.util.Map;
 
 public class MailBox {
@@ -21,19 +22,22 @@ public class MailBox {
     private String magicLinkUrl;
     private String mySURFconextURL;
     private String emailFrom;
+    private Map<String, Map<String, String>> subjects;
 
     private final MustacheFactory mustacheFactory = new DefaultMustacheFactory();
 
-    public MailBox(JavaMailSender mailSender, String emailFrom, String magicLinkUrl, String mySURFconextURL) {
+    public MailBox(JavaMailSender mailSender, String emailFrom, String magicLinkUrl, String mySURFconextURL,
+                   ObjectMapper objectMapper) throws IOException {
         this.mailSender = mailSender;
         this.emailFrom = emailFrom;
         this.magicLinkUrl = magicLinkUrl;
         this.mySURFconextURL = mySURFconextURL;
+        this.subjects = objectMapper.readValue(new ClassPathResource("mail_templates/subjects.json").getInputStream(), Map.class);
+
     }
 
     public void sendMagicLink(User user, String hash, String requesterId) {
-        String title = "Magic Link";
-
+        String title = this.getTitle("magic_link");
         Map<String, Object> variables = variables(user, title);
         variables.put("destination", requesterId);
         variables.put("hash", hash);
@@ -42,8 +46,7 @@ public class MailBox {
     }
 
     public void sendAccountVerification(User user, String hash) {
-        String title = "Please verify your email address for your eduID Account";
-
+        String title = this.getTitle("account_verification");
         Map<String, Object> variables = variables(user, title);
         variables.put("hash", hash);
         variables.put("magicLinkUrl", magicLinkUrl);
@@ -51,16 +54,14 @@ public class MailBox {
     }
 
     public void sendAccountConfirmation(User user) {
-        String title = "Your eduID Account has been created";
-
+        String title = this.getTitle("account_confirmation");
         Map<String, Object> variables = variables(user, title);
         variables.put("mySurfConextURL", mySURFconextURL);
         sendMail("account_confirmation", title, variables, user.getEmail());
     }
 
     public void sendAccountMigration(User user) {
-        String title = "Your Guest Account has been migrated";
-
+        String title = this.getTitle("account_migration");
         Map<String, Object> variables = variables(user, title);
         variables.put("mySurfConextURL", mySURFconextURL);
         sendMail("account_migration", title, variables, user.getEmail());
@@ -103,4 +104,7 @@ public class MailBox {
         return mustacheFactory.compile(templateName).execute(new StringWriter(), context).toString();
     }
 
+    private String getTitle(String templateName) {
+        return this.subjects.get(templateName).get(LocaleContextHolder.getLocale().getLanguage());
+    }
 }

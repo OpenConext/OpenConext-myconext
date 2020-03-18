@@ -1,7 +1,6 @@
 package myconext.crypto;
 
 import org.bouncycastle.asn1.x500.X500Name;
-import org.bouncycastle.cert.CertIOException;
 import org.bouncycastle.cert.jcajce.JcaX509CertificateConverter;
 import org.bouncycastle.cert.jcajce.JcaX509v3CertificateBuilder;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
@@ -10,11 +9,14 @@ import org.bouncycastle.operator.ContentSigner;
 import org.bouncycastle.operator.OperatorCreationException;
 import org.bouncycastle.operator.jcajce.JcaContentSignerBuilder;
 
+import java.io.IOException;
 import java.io.StringWriter;
 import java.io.Writer;
 import java.math.BigInteger;
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
+import java.security.NoSuchAlgorithmException;
+import java.security.NoSuchProviderException;
 import java.security.Security;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
@@ -33,24 +35,32 @@ public class KeyGenerator {
     }
 
     public String[] generateKeys() throws Exception {
-        KeyPairGenerator kpg = KeyPairGenerator.getInstance("RSA", "BC");
-        kpg.initialize(2048);
-        KeyPair kp = kpg.generateKeyPair();
+        KeyPair kp = keyPairGenerator();
 
+        String pemString = privateKey(kp);
+        String certificate = certificate(kp);
+
+        return new String[]{pemString, certificate};
+    }
+
+    private String privateKey(KeyPair kp) throws IOException {
         //PrivateKey is PKCS8 format and we need to end up in PEM format
         Writer writer = new StringWriter();
         JcaPEMWriter pemWriter = new JcaPEMWriter(writer);
         pemWriter.writeObject(kp.getPrivate());
         pemWriter.close();
 
-        String pemString = writer.toString();
-        String certificate = certificate(kp);
+        return writer.toString();
+    }
 
-        return new String[]{pemString, certificate};
+    private KeyPair keyPairGenerator() throws NoSuchAlgorithmException, NoSuchProviderException {
+        KeyPairGenerator kpg = KeyPairGenerator.getInstance("RSA", "BC");
+        kpg.initialize(2048);
+        return kpg.generateKeyPair();
     }
 
 
-    private String certificate(KeyPair keyPair) throws OperatorCreationException, CertificateException, CertIOException {
+    private String certificate(KeyPair keyPair) throws OperatorCreationException, CertificateException {
         X500Name dnName = new X500Name("CN=test,O=Test Certificate");
         ContentSigner contentSigner = new JcaContentSignerBuilder("SHA256WithRSA").build(keyPair.getPrivate());
 
