@@ -33,31 +33,36 @@
                 } else {
                     I18n.locale = "en";
                 }
-                me()
-                        .then(json => {
-                            loaded = true;
-                            $user = {$user, ...json, guest: false};
-                        })
-                        .catch(e => {
-                            loaded = true;
-                            $redirectPath = window.location.pathname;
-                            const urlSearchParams = new URLSearchParams(window.location.search);
-                            const logout = urlSearchParams.get("logout");
-                            const afterDelete = urlSearchParams.get("delete");
-                            if (e.status === 409) {
-                                e.json().then(res => {
-                                    $duplicatedEmail = res.email;
-                                    navigate("/migration-error");
-                                });
-                            } else if (logout) {
-                                navigate("/landing?logout=true");
-                            } else if (afterDelete) {
-                                navigate("/landing?delete=true");
-                            } else {
-                                const path = encodeURIComponent($redirectPath || "/");
-                                window.location.href = `${$config.loginUrl}?redirect_path=${path}`;
-                            }
-                        })
+                if (window.location.pathname.indexOf("landing") > -1) {
+                    navigate("/404");
+                } else {
+                    me()
+                            .then(json => {
+                                loaded = true;
+                                $user = {$user, ...json, guest: false};
+                            })
+                            .catch(e => {
+                                loaded = true;
+                                $redirectPath = window.location.pathname;
+                                const urlSearchParams = new URLSearchParams(window.location.search);
+                                const logout = urlSearchParams.get("logout");
+                                const afterDelete = urlSearchParams.get("delete");
+                                if (e.status === 409) {
+                                    e.json().then(res => {
+                                        $duplicatedEmail = res.email;
+                                        navigate("/migration-error");
+                                    });
+                                } else if (logout) {
+                                    navigate("/landing?logout=true");
+                                } else if (afterDelete) {
+                                    navigate("/landing?delete=true");
+                                } else {
+                                    const path = encodeURIComponent($redirectPath || "/");
+                                    window.location.href = `${$config.loginUrl}?redirect_path=${path}`;
+                                }
+                            })
+                }
+
             })
     );
 
