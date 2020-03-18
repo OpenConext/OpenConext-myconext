@@ -34,7 +34,7 @@
                     I18n.locale = "en";
                 }
                 if (window.location.pathname.indexOf("landing") > -1) {
-                    navigate("/404");
+                    loaded = true;
                 } else {
                     me()
                             .then(json => {
@@ -205,7 +205,7 @@
             <Header/>
             <div class="content">
                 <Router url="{url}">
-                    <Route path="/" component={Landing}/>
+                    <Route path="/" component={Home}/>
                     <Route path="/landing" component={Landing}/>
                     <Route path="/migration-error" component={MigrationError}/>
                     <Route component={NotFound}/>
