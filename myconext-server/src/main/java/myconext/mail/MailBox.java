@@ -38,7 +38,7 @@ public class MailBox {
     }
 
     public void sendMagicLink(User user, String hash, String requesterId) {
-        String title = this.getTitle("magic_link");
+        String title = this.getTitle("magic_link", user);
         Map<String, Object> variables = variables(user, title);
         variables.put("destination", requesterId);
         variables.put("hash", hash);
@@ -47,7 +47,7 @@ public class MailBox {
     }
 
     public void sendAccountVerification(User user, String hash) {
-        String title = this.getTitle("account_verification");
+        String title = this.getTitle("account_verification", user);
         Map<String, Object> variables = variables(user, title);
         variables.put("hash", hash);
         variables.put("magicLinkUrl", magicLinkUrl);
@@ -55,14 +55,14 @@ public class MailBox {
     }
 
     public void sendAccountConfirmation(User user) {
-        String title = this.getTitle("account_confirmation");
+        String title = this.getTitle("account_confirmation", user);
         Map<String, Object> variables = variables(user, title);
         variables.put("mySurfConextURL", mySURFconextURL);
         sendMail("account_confirmation", title, variables, preferredLanguage(user), user.getEmail());
     }
 
     public void sendAccountMigration(User user) {
-        String title = this.getTitle("account_migration");
+        String title = this.getTitle("account_migration", user);
         Map<String, Object> variables = variables(user, title);
         variables.put("mySurfConextURL", mySURFconextURL);
         sendMail("account_migration", title, variables, preferredLanguage(user), user.getEmail());
@@ -104,8 +104,8 @@ public class MailBox {
         return mustacheFactory.compile(templateName).execute(new StringWriter(), context).toString();
     }
 
-    private String getTitle(String templateName) {
-        return this.subjects.get(templateName).get(LocaleContextHolder.getLocale().getLanguage());
+    private String getTitle(String templateName, User user) {
+        return this.subjects.get(templateName).get(preferredLanguage(user));
     }
 
     private String preferredLanguage(User user) {

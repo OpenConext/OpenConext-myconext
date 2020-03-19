@@ -255,7 +255,7 @@ public class GuestIdpAuthenticationRequestFilter extends IdpAuthenticationReques
                                User user, IdentityProviderService provider, ServiceProviderMetadata serviceProviderMetadata,
                                AuthenticationRequest authenticationRequest) {
         Assertion assertion = provider.assertion(
-                serviceProviderMetadata, authenticationRequest, UUID.fromString(user.getEmail()).toString(), NameId.PERSISTENT);
+                serviceProviderMetadata, authenticationRequest, user.getUid(), NameId.PERSISTENT);
 
         attributes(user).forEach(assertion::addAttribute);
 
