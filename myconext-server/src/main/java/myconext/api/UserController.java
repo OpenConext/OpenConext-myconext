@@ -118,6 +118,14 @@ public class UserController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Collections.singletonMap("status", HttpStatus.NOT_FOUND.value()));
         }
         User user = optionalUser.get();
+        String preferredLanguage = user.getPreferredLanguage();
+        String language = LocaleContextHolder.getLocale().getLanguage();
+
+        if (StringUtils.isEmpty(preferredLanguage) || !preferredLanguage.equals(language)) {
+            user.setPreferredLanguage(language);
+            userRepository.save(user);
+        }
+
         if (magicLinkRequest.isUsePassword()) {
             if (!passwordEncoder.matches(providedUser.getPassword(), user.getPassword())) {
                 return ResponseEntity.status(HttpStatus.FORBIDDEN)

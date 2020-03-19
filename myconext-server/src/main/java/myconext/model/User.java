@@ -124,4 +124,7 @@ public class User implements Serializable, UserDetails {
         this.familyName = familyName;
     }
 
+    public void setPreferredLanguage(String preferredLanguage) {
+        this.preferredLanguage = preferredLanguage;
+    }
 }
