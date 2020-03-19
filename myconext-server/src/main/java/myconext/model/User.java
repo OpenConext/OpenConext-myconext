@@ -37,18 +37,20 @@ public class User implements Serializable, UserDetails {
     private String authenticatingAuthority;
     private String password;
     private boolean newUser;
+    private String preferredLanguage;
 
     private long created;
     private long updatedAt = System.currentTimeMillis() / 1000L;
 
     public User(@NotNull String uid, @NotNull String email, String givenName, String familyName,
-                String schacHomeOrganization, String authenticatingAuthority) {
+                String schacHomeOrganization, String authenticatingAuthority, String preferredLanguage) {
         this.uid = uid;
         this.email = email;
         this.givenName = givenName;
         this.familyName = familyName;
         this.schacHomeOrganization = schacHomeOrganization;
         this.authenticatingAuthority = authenticatingAuthority;
+        this.preferredLanguage = preferredLanguage;
         this.newUser = true;
         this.created = System.currentTimeMillis() / 1000L;
     }

@@ -75,7 +75,6 @@ public class ShibbolethPreAuthenticatedProcessingFilter extends AbstractPreAuthe
                     //need to be picked up by the client
                     throw new MigrationDuplicateUserEmailException(email, request.getRequestURI());
                 }
-
             }
         }
         //The authenticatingAuthority in the SAML / Shibd heading is a ';' separated list
@@ -84,7 +83,7 @@ public class ShibbolethPreAuthenticatedProcessingFilter extends AbstractPreAuthe
     }
 
     private User provisionUser(String uid, String schacHomeOrganization, String givenName, String familyName, String email, String authenticatingAuthority) {
-        User user = new User(uid, email, givenName, familyName, schacHomeOrganization, authenticatingAuthority);
+        User user = new User(uid, email, givenName, familyName, schacHomeOrganization, authenticatingAuthority, "en");
         user.setNewUser(false);
         user = userRepository.save(user);
 

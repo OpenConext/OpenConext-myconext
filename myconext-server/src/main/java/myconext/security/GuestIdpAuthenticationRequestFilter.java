@@ -45,6 +45,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.UUID;
 import java.util.stream.Stream;
 
 import static java.util.function.Function.identity;
@@ -253,7 +254,8 @@ public class GuestIdpAuthenticationRequestFilter extends IdpAuthenticationReques
     private void sendAssertion(HttpServletRequest request, HttpServletResponse response, String relayState,
                                User user, IdentityProviderService provider, ServiceProviderMetadata serviceProviderMetadata,
                                AuthenticationRequest authenticationRequest) {
-        Assertion assertion = provider.assertion(serviceProviderMetadata, authenticationRequest, user.getEmail(), NameId.EMAIL);
+        Assertion assertion = provider.assertion(
+                serviceProviderMetadata, authenticationRequest, UUID.fromString(user.getEmail()).toString(), NameId.PERSISTENT);
 
         attributes(user).forEach(assertion::addAttribute);
 

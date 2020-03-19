@@ -8,6 +8,7 @@ import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
+import org.springframework.util.StringUtils;
 
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
@@ -42,7 +43,7 @@ public class MailBox {
         variables.put("destination", requesterId);
         variables.put("hash", hash);
         variables.put("magicLinkUrl", magicLinkUrl);
-        sendMail("magic_link", title, variables, user.getEmail());
+        sendMail("magic_link", title, variables, preferredLanguage(user), user.getEmail());
     }
 
     public void sendAccountVerification(User user, String hash) {
@@ -50,21 +51,21 @@ public class MailBox {
         Map<String, Object> variables = variables(user, title);
         variables.put("hash", hash);
         variables.put("magicLinkUrl", magicLinkUrl);
-        sendMail("account_verification", title, variables, user.getEmail());
+        sendMail("account_verification", title, variables, preferredLanguage(user), user.getEmail());
     }
 
     public void sendAccountConfirmation(User user) {
         String title = this.getTitle("account_confirmation");
         Map<String, Object> variables = variables(user, title);
         variables.put("mySurfConextURL", mySURFconextURL);
-        sendMail("account_confirmation", title, variables, user.getEmail());
+        sendMail("account_confirmation", title, variables, preferredLanguage(user), user.getEmail());
     }
 
     public void sendAccountMigration(User user) {
         String title = this.getTitle("account_migration");
         Map<String, Object> variables = variables(user, title);
         variables.put("mySurfConextURL", mySURFconextURL);
-        sendMail("account_migration", title, variables, user.getEmail());
+        sendMail("account_migration", title, variables, preferredLanguage(user), user.getEmail());
     }
 
     private Map<String, Object> variables(User user, String title) {
@@ -74,8 +75,7 @@ public class MailBox {
         return variables;
     }
 
-    private void sendMail(String templateName, String subject, Map<String, Object> variables, String... to) {
-        String language = LocaleContextHolder.getLocale().getLanguage();
+    private void sendMail(String templateName, String subject, Map<String, Object> variables, String language, String to) {
         String html = this.mailTemplate(String.format("mail_templates/%s_%s.html", templateName, language), variables);
         String text = this.mailTemplate(String.format("mail_templates/%s_%s.txt", templateName, language), variables);
 
@@ -106,5 +106,11 @@ public class MailBox {
 
     private String getTitle(String templateName) {
         return this.subjects.get(templateName).get(LocaleContextHolder.getLocale().getLanguage());
+    }
+
+    private String preferredLanguage(User user) {
+        String preferredLanguage = user.getPreferredLanguage();
+        return StringUtils.hasText(preferredLanguage) ? preferredLanguage : LocaleContextHolder.getLocale().getLanguage();
+
     }
 }

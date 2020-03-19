@@ -54,10 +54,8 @@ public class MailBoxTest extends AbstractIntegrationTest {
     }
 
     private void doSendMagicLink(String expectedSubject, String lang) throws MessagingException {
-        LocaleContextHolder.setLocale(new Locale(lang));
-
         String hash = UUID.randomUUID().toString();
-        mailBox.sendMagicLink(user("jdoe@example.com"), hash, "http://mock-sp");
+        mailBox.sendMagicLink(user("jdoe@example.com", lang), hash, "http://mock-sp");
 
         MimeMessage mimeMessage = mailMessage();
         assertEquals("jdoe@example.com", mimeMessage.getRecipients(Message.RecipientType.TO)[0].toString());
@@ -80,10 +78,8 @@ public class MailBoxTest extends AbstractIntegrationTest {
     }
 
     private void doSendAccountVerification(String expectedSubject, String lang) throws MessagingException {
-        LocaleContextHolder.setLocale(new Locale(lang));
-
         String hash = UUID.randomUUID().toString();
-        mailBox.sendAccountVerification(user("jdoe@examplee.com"), hash);
+        mailBox.sendAccountVerification(user("jdoe@examplee.com", lang), hash);
 
         MimeMessage mimeMessage = mailMessage();
         String subject = mimeMessage.getSubject();
@@ -101,9 +97,7 @@ public class MailBoxTest extends AbstractIntegrationTest {
     }
 
     private void doSendAccountConfirmation(String expectedSubject, String lang) throws MessagingException {
-        LocaleContextHolder.setLocale(new Locale(lang));
-
-        mailBox.sendAccountConfirmation(user("jdoe@examplee.com"));
+        mailBox.sendAccountConfirmation(user("jdoe@examplee.com", lang));
 
         MimeMessage mimeMessage = mailMessage();
         String subject = mimeMessage.getSubject();
@@ -121,16 +115,14 @@ public class MailBoxTest extends AbstractIntegrationTest {
     }
 
     private void doSendAccountMigration(String expectedSubject, String lang) throws MessagingException {
-        LocaleContextHolder.setLocale(new Locale(lang));
-
-        mailBox.sendAccountMigration(user("jdoe@examplee.com"));
+        mailBox.sendAccountMigration(user("jdoe@examplee.com", lang));
 
         MimeMessage mimeMessage = mailMessage();
         String subject = mimeMessage.getSubject();
         assertEquals(expectedSubject, subject);
     }
 
-    private MimeMessage mailMessage() throws MessagingException {
+    private MimeMessage mailMessage() {
         await().until(() -> greenMail.getReceivedMessages().length != 0);
         return greenMail.getReceivedMessages()[0];
     }

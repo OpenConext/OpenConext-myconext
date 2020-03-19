@@ -68,7 +68,7 @@ public class UserControllerTest extends AbstractIntegrationTest {
 
     @Test
     public void newUserProvisioned() throws IOException {
-        User user = user("new@example.com", "Mary", "Doe");
+        User user = user("new@example.com", "Mary", "Doe", "en");
 
         MagicLinkResponse magicLinkResponse = magicLinkRequest(user, HttpMethod.POST);
         assertEquals(user.getGivenName(), userRepository.findUserByEmail(user.getEmail()).get().getGivenName());
@@ -79,7 +79,7 @@ public class UserControllerTest extends AbstractIntegrationTest {
 
     @Test
     public void newUserProvisionedWithPassword() throws IOException {
-        User user = user("new@example.com", "Mary", "Doe");
+        User user = user("new@example.com", "Mary", "Doe", "en");
         userSetPassword(user, "secretA12");
 
         magicLinkRequest(user, HttpMethod.POST);
@@ -93,7 +93,7 @@ public class UserControllerTest extends AbstractIntegrationTest {
         doExpireWithFindProperty(SamlAuthenticationRequest.class, "id", authenticationRequestId);
 
         MagicLinkRequest linkRequest = new MagicLinkRequest(authenticationRequestId,
-                user("new@example.com", "Mary", "Doe"), false, false);
+                user("new@example.com", "Mary", "Doe", "en"), false, false);
 
         magicLinkRequest(linkRequest, HttpMethod.POST)
                 .response
@@ -103,7 +103,7 @@ public class UserControllerTest extends AbstractIntegrationTest {
     @Test
     public void rememberMe() throws IOException {
         String authenticationRequestId = samlAuthnRequest();
-        User user = user("steve@example.com", "Steve", "Doe");
+        User user = user("steve@example.com", "Steve", "Doe", "en");
         MagicLinkResponse magicLinkResponse = magicLinkRequest(new MagicLinkRequest(authenticationRequestId, user, true, false), HttpMethod.POST);
         Response response = magicResponse(magicLinkResponse);
 
@@ -125,7 +125,7 @@ public class UserControllerTest extends AbstractIntegrationTest {
 
     @Test
     public void relayState() throws IOException {
-        User user = user("steve@example.com", "Steve", "Doe");
+        User user = user("steve@example.com", "Steve", "Doe", "en");
         String authenticationRequestId = samlAuthnRequest("Nice");
         MagicLinkResponse magicLinkResponse = magicLinkRequest(new MagicLinkRequest(authenticationRequestId, user, false, false), HttpMethod.POST);
         Response response = magicResponse(magicLinkResponse);

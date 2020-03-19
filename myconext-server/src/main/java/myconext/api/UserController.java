@@ -16,6 +16,7 @@ import myconext.security.EmailGuessingPrevention;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -93,9 +94,10 @@ public class UserController {
             return ResponseEntity.status(HttpStatus.CONFLICT)
                     .body(Collections.singletonMap("status", HttpStatus.CONFLICT.value()));
         }
+        String preferredLanguage = LocaleContextHolder.getLocale().getLanguage();
         //prevent not-wanted attributes in the database
         User userToSave = new User(UUID.randomUUID().toString(), user.getEmail(), user.getGivenName(),
-                user.getFamilyName(), schacHomeOrganization, guestIdpEntityId);
+                user.getFamilyName(), schacHomeOrganization, guestIdpEntityId, preferredLanguage);
         userToSave.encryptPassword(user.getPassword(), passwordEncoder);
         userToSave = userRepository.save(userToSave);
 
