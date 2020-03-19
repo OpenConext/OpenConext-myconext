@@ -67,12 +67,12 @@ public class MailBoxTest extends AbstractIntegrationTest {
 
     @Test
     public void sendAccountVerification() throws MessagingException {
-        doSendAccountVerification("Please verify your email address for your eduID Account", "en");
+        doSendAccountVerification("Please verify your email address for your eduID", "en");
     }
 
     @Test
     public void sendAccountVerificationNl() throws MessagingException {
-        doSendAccountVerification("Verifieer je e-mailadres voor je eduID-account", "nl");
+        doSendAccountVerification("Verifieer je e-mailadres voor je eduID", "nl");
     }
 
     private void doSendAccountVerification(String expectedSubject, String lang) throws MessagingException {
@@ -104,7 +104,7 @@ public class MailBoxTest extends AbstractIntegrationTest {
 
     @Test
     public void sendAccountMigration() throws MessagingException {
-        doSendAccountMigration("Your Onegini Guest Account has been migrated to eduID", "en");
+        doSendAccountMigration("Your Onegini guest account has been migrated to eduID", "en");
     }
 
     @Test
