@@ -63,13 +63,16 @@ public class ShibbolethPreAuthenticatedProcessingFilter extends AbstractPreAuthe
         if (!optionalUser.isPresent()) {
             Optional<User> optionalUserByEmail = userRepository.findUserByEmail(email);
             if (optionalUserByEmail.isPresent()) {
+                User existingUser = optionalUserByEmail.get();
                 //If we would provision this email we would introduce a duplicate email
                 String requestURI = request.getRequestURI();
                 if (requestURI.endsWith("sp/migrate/merge")) {
                     //We will provision a new user, so we delete the current one
-                    userRepository.delete(optionalUserByEmail.get());
+                    LOG.info("Migrate oneGini account {} to eduID account", existingUser.getEmail());
+                    userRepository.delete(existingUser);
                 } else if (requestURI.endsWith("sp/migrate/proceed")) {
                     //Now discard everything from the IdP and use the current account
+                    LOG.info("Not migrating oneGini account {} to eduID account", existingUser.getEmail());
                     optionalUser = optionalUserByEmail;
                 } else {
                     //need to be picked up by the client
