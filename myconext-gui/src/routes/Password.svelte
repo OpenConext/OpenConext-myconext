@@ -23,7 +23,11 @@
         if (valid()) {
             updateSecurity($user.id, currentPassword, newPassword)
                     .then(json => {
-                        $user = {$user, ...json};
+                        for (const key in json) {
+                            if (json.hasOwnProperty(key)) {
+                                $user[key] = json[key];
+                            }
+                        }
                         navigate("/security");
                         flash.setValue(usePassword ? I18n.ts("password.updated") : I18n.ts("password.set"));
                     })
@@ -34,7 +38,11 @@
     };
     const cancel = () => {
         me().then(json => {
-            $user = {$user, ...json};
+            for (const key in json) {
+                if (json.hasOwnProperty(key)) {
+                    $user[key] = json[key];
+                }
+            }
             navigate("/security");
         });
     }

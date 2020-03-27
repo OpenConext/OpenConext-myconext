@@ -39,7 +39,12 @@
                     me()
                             .then(json => {
                                 loaded = true;
-                                $user = {$user, ...json, guest: false};
+                                for (const key in json) {
+                                    if (json.hasOwnProperty(key)) {
+                                        $user[key] = json[key];
+                                    }
+                                }
+                                $user.guest = false;
                             })
                             .catch(e => {
                                 loaded = true;

@@ -17,7 +17,11 @@
 
     const cancel = () => {
         me().then(json => {
-            $user = {$user, ...json};
+            for (const key in json) {
+                if (json.hasOwnProperty(key)) {
+                    $user[key] = json[key];
+                }
+            }
             navigate("/profile");
         });
     }

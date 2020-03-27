@@ -6,12 +6,22 @@
     import {navigate} from "svelte-routing";
 
     const proceed = () => proceedAfterMigration().then(json => {
-        $user = {$user, ...json, guest: false};
+        for (const key in json) {
+            if (json.hasOwnProperty(key)) {
+                $user[key] = json[key];
+            }
+        }
+        $user.guest = false;
         navigate("/");
     });
 
     const migrate = () => mergeAfterMigration().then(json => {
-        $user = {$user, ...json, guest: false};
+        for (const key in json) {
+            if (json.hasOwnProperty(key)) {
+                $user[key] = json[key];
+            }
+        }
+        $user.guest = false;
         navigate("/migration");
     });
 

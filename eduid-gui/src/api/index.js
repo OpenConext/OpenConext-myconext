@@ -17,17 +17,16 @@ function validateResponse(res) {
 }
 
 function validFetch(path, options) {
-    const fetchOptions = {
-        ...options,
-        credentials: "same-origin",
-        redirect: "manual",
-        headers: {
-            Accept: "application/json",
-            "Content-Type": "application/json",
-            "X-CSRF-TOKEN": csrfToken
-        }
-    };
-    return fetch(path, fetchOptions).then(res => validateResponse(res));
+    options = options || {};
+    options.credentials = "same-origin";
+    options.redirect = "manual";
+    options. headers = {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+        "Accept-Language": I18n.locale,
+        "X-CSRF-TOKEN": csrfToken
+    }   ;
+    return fetch(path, options).then(res => validateResponse(res));
 }
 
 function fetchJson(path, options = {}) {
