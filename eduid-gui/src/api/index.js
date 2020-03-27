@@ -1,3 +1,5 @@
+import I18n from "i18n-js";
+
 //Internal API
 let csrfToken = null;
 
