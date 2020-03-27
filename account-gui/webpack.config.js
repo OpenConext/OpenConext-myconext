@@ -25,14 +25,22 @@ module.exports = {
     module: {
         rules: [
             {
+                test: /\.m?js$/,
+                include: [/svelte/],
+                use: ['babel-loader'],
+            },
+            {
                 test: /\.svelte$/,
-                use: {
-                    loader: 'svelte-loader',
-                    options: {
-                        emitCss: true,
-                        hotReload: true
+                use: [
+                    'babel-loader',
+                    {
+                        loader: 'svelte-loader',
+                        options: {
+                            emitCss: true,
+                            hotReload: true
+                        }
                     }
-                }
+                ]
             },
             {
                 test: /\.css$/,
