@@ -39,7 +39,7 @@
                     me()
                             .then(json => {
                                 loaded = true;
-                                for (const key in json) {
+                                for (var key in json) {
                                     if (json.hasOwnProperty(key)) {
                                         $user[key] = json[key];
                                     }

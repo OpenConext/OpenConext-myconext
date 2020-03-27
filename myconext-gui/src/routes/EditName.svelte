@@ -17,7 +17,7 @@
 
     const cancel = () => {
         me().then(json => {
-            for (const key in json) {
+            for (var key in json) {
                 if (json.hasOwnProperty(key)) {
                     $user[key] = json[key];
                 }
