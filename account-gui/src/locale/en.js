@@ -38,7 +38,7 @@ I18n.translations.en = {
         usePasswordLink: "Type a password anyway",
         usePasswordLinkInfo: " if you have set one.",
         whatis: "What is eduID?",
-        agreeWithTerms: "<span>I agree with <a href='https://eduid.nl/terms_of_service/' target='_blank'>the terms of service.</a></span>"
+        agreeWithTerms: "<span>I agree with <a href='https://eduid.nl/terms_of_service/' target='_blank'>the terms of service.</a> I also understand <a href='https://eduid.nl/privacy_policy/' target='_blank'>the privacy policy</a>.</span>"
     },
     magicLink: {
         header: "Please",
