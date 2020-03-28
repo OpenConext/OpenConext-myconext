@@ -26,21 +26,29 @@ module.exports = {
         rules: [
             {
                 test: /\.m?js$/,
-                include: [/svelte/],
-                use: ['babel-loader'],
+                use: {
+                    loader: 'babel-loader'
+                },
+                exclude: /\bcore-js\b/,
             },
             {
                 test: /\.svelte$/,
                 use: [
-                    'babel-loader',
+                    {
+                        loader: 'babel-loader',
+                    },
                     {
                         loader: 'svelte-loader',
                         options: {
+                            preprocess: require('svelte-preprocess')({
+                                postcss: true
+                            }),
                             emitCss: true,
-                            hotReload: true
-                        }
+                            accessors: true,
+                            dev: true
+                        },
                     }
-                ]
+                ],
             },
             {
                 test: /\.css$/,
