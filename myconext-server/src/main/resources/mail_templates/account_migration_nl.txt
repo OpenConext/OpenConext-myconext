@@ -1,5 +1,5 @@
 Hi {{name}},
 
-Je gastaccount is succesvol gemigreerd naar een nieuw en geactiveerd eduID.
+Je Onegini-account is succesvol gemigreerd naar een nieuw eduID.
 
 {{> footer_nl.txt}}
