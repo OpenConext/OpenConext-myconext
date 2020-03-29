@@ -49,6 +49,7 @@ import java.util.UUID;
 import java.util.stream.Stream;
 
 import static java.util.function.Function.identity;
+import static myconext.security.CookieResolver.cookieByName;
 import static org.springframework.util.StringUtils.hasText;
 
 public class GuestIdpAuthenticationRequestFilter extends IdpAuthenticationRequestFilter {
@@ -163,14 +164,6 @@ public class GuestIdpAuthenticationRequestFilter extends IdpAuthenticationReques
         LOG.info("Attempting user authentication from security context: " + authentication);
         return authentication != null && authentication.isAuthenticated() && authentication instanceof UsernamePasswordAuthenticationToken ?
                 Optional.of((User) authentication.getPrincipal()) : Optional.empty();
-    }
-
-    private Optional<Cookie> cookieByName(HttpServletRequest request, String cookieName) {
-        Cookie[] cookies = request.getCookies();
-        if (cookies != null) {
-            return Stream.of(cookies).filter(cookie -> cookie.getName().equals(cookieName)).findAny();
-        }
-        return Optional.empty();
     }
 
     private void addBrowserIdentificationCookie(HttpServletResponse response) {

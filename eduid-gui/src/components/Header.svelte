@@ -1,7 +1,7 @@
 <script>
 
     import I18n from "i18n-js";
-    import eduidLogo from "../img/logo_eduID_2020.svg";
+    import eduidLogo from "../img/logo_eduID.svg";
     import Button from "./Button.svelte";
     import {config} from "../stores/config";
     import {navigate} from "svelte-routing";

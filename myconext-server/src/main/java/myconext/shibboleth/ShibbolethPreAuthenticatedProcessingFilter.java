@@ -11,11 +11,14 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.web.authentication.preauth.AbstractPreAuthenticatedProcessingFilter;
 import org.springframework.util.StringUtils;
 
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import java.io.UnsupportedEncodingException;
 import java.util.Arrays;
 import java.util.Optional;
 import java.util.stream.Stream;
+
+import static myconext.security.CookieResolver.cookieByName;
 
 public class ShibbolethPreAuthenticatedProcessingFilter extends AbstractPreAuthenticatedProcessingFilter {
 
@@ -82,11 +85,13 @@ public class ShibbolethPreAuthenticatedProcessingFilter extends AbstractPreAuthe
         }
         //The authenticatingAuthority in the SAML / Shibd heading is a ';' separated list
         String authenticatingAuthority = authenticatingAuthorities.split(";")[0].trim();
-        return optionalUser.orElseGet(() -> provisionUser(uid, schacHomeOrganization, givenName, familyName, email, authenticatingAuthority));
+        String preferredLanguage = cookieByName(request, "lang").map(Cookie::getValue).orElse("en");
+        return optionalUser.orElseGet(() ->
+                provisionUser(uid, schacHomeOrganization, givenName, familyName, email, authenticatingAuthority, preferredLanguage));
     }
 
-    private User provisionUser(String uid, String schacHomeOrganization, String givenName, String familyName, String email, String authenticatingAuthority) {
-        User user = new User(uid, email, givenName, familyName, schacHomeOrganization, authenticatingAuthority, "en");
+    private User provisionUser(String uid, String schacHomeOrganization, String givenName, String familyName, String email, String authenticatingAuthority, String preferredLanguage) {
+        User user = new User(uid, email, givenName, familyName, schacHomeOrganization, authenticatingAuthority, preferredLanguage);
         user.setNewUser(false);
         user = userRepository.save(user);
 
