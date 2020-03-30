@@ -102,7 +102,7 @@ I18n.translations.nl = {
     },
     migration: {
         header: "Je eduID is aangemaakt!",
-        info: "je Onegini-account is succesvol gemigreerd.",
+        info: "Je Onegini-account is succesvol gemigreerd.",
         info2: "Vanaf nu moet je eduID gebruiken om in te loggen bij diensten waar je voorheen Onegini gebruikte.",
         info3: "Tip! je eduID heeft standaard geen wachtwoord nodig (we sturen een magische link naar je e-mail om in te loggen), maar als je wilt, kan je toch een wachtwoord instellen op het ",
         securityLink: " tabblad Beveiliging.",
