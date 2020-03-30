@@ -109,12 +109,19 @@ I18n.translations.en = {
         link: "Show my account details"
     },
     migrationError: {
-        header: "Account Migration Conflict",
-        info: "We have NOT migrated your existing Onegini account to eduID as you already have an eduID with the same email {{email}}.",
-        question: "If you want to migrate your Onegini account then click migrate. If you want proceed with your existing eduID then click proceed.",
-        migrate: "Migrate",
-        proceed: "Proceed",
-        help: "If you have any questions about this please contact <a href=\"mailto:support@surfconext.nl\">support@surfconext.nl</a>."
+        header: "Warning: email address already used for eduID",
+        info: "You already have an {{email}} eduID with the same email address as your Onegini account. You must therefore choose how you wish to proceed:",
+        sub1: "Continue with migrating your existing Onegini account to a new eduID. This means:",
+        sub1Inner1: "Existing SURFconext Teams memberships and authorisations within services belonging to your current Onegini account will be transferred to your new eduID.",
+        sub1Inner2: "Team memberships and authorisations linked to your current eduID will be lost.",
+        sub2: "Abort migration and continue with your existing eduID. This means:",
+        sub2Inner1: "You will continue to use your current eduID.",
+        sub2Inner2: "You can no longer use your existing Onegini account per 1 July 2020. Existing SURFconext Teams memberships and authorisations within services belonging to your current Onegini account will be lost.",
+        abortMigration: "Abort migration",
+        continueMigration: "Continue migration",
+        abort: "abort",
+        continue: "continue",
+        help: "Need help? Send an email to <a href=\"mailto:support@surfconext.nl\">support@surfconext.nl</a>."
     },
     format: {
         creationDate: "Your eduID account was created on {{date}} at {{hours}}:{{minutes}}"

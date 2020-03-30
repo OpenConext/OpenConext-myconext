@@ -115,7 +115,7 @@ h3 {
     }
 
     .options a:not(:first-child) {
-        margin-left: 0 !important;
+        margin-left: 10px !important;
         margin-top: 25px !important;
     }
 }

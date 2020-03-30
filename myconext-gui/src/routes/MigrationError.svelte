@@ -59,6 +59,22 @@
         margin: 12px 0 16px 0;
     }
 
+    ol.ordered-list {
+        list-style: decimal;
+        margin-top: 15px;
+        margin-left: 40px;
+        line-height: 24px;
+    }
+
+    li.last-child {
+        margin-top: 15px;
+    }
+
+    ul.non-ordered-list {
+        list-style: initial;
+        margin-left: 40px;
+    }
+
     .options {
         margin: 40px;
     }
@@ -71,6 +87,9 @@
         .inner {
             border-left: none;
         }
+        .options {
+            margin: 40px 10px;
+        }
 
     }
 
@@ -80,11 +99,26 @@
     <div class="inner">
         <h2>{I18n.ts("migrationError.header")}</h2>
         <p class="info">{I18n.t("migrationError.info", {email: $duplicatedEmail} )}</p>
-        <p class="question">{I18n.t("migrationError.question")}</p>
+        <ol class="ordered-list">
+            <li>
+                <span>{I18n.t("migrationError.sub1")}</span>
+                <ul class="non-ordered-list">
+                    <li>{I18n.t("migrationError.sub1Inner1")}</li>
+                    <li>{I18n.t("migrationError.sub1Inner2")}</li>
+                </ul>
+            </li>
+            <li class="last-child">
+                <span>{I18n.t("migrationError.sub2")}</span>
+                <ul class="non-ordered-list">
+                    <li>{I18n.t("migrationError.sub2Inner1")}</li>
+                    <li>{I18n.t("migrationError.sub2Inner2")}</li>
+                </ul>
+            </li>
+        </ol>
         <div class="options">
-            <Button className="cancel" href={I18n.t("migrationError.proceed")} label={I18n.t("migrationError.proceed")}
+            <Button className="cancel" href={I18n.t("migrationError.abort")} label={I18n.t("migrationError.abortMigration")}
                     onClick={proceed}/>
-            <Button href={I18n.t("migrationError.migrate")} label={I18n.t("migrationError.migrate")} onClick={migrate}/>
+            <Button href={I18n.t("migrationError.continue")} label={I18n.t("migrationError.continueMigration")} onClick={migrate}/>
         </div>
         <div class="help">{@html I18n.t("migrationError.help")}</div>
     </div>

@@ -109,12 +109,19 @@ I18n.translations.nl = {
         link: "Naar mijn account gegevens"
     },
     migrationError: {
-        header: "Account Migratie Conflict",
-        info: "We hebben je bestaande Onegini-account NIET gemigreerd naar eduID omdat je al een eduID hebt met hetzelfde e-mailadres.",
-        question: "Als je je Onegini-account wilt migreren, klik dan op migreren. Als je wilt doorgaan met je bestaande eduID, klik dan op doorgaan",
-        migrate: "Migreren",
-        proceed: "Doorgaan",
-        help: "Als je hier vragen over hebt, neem dan contact op met <a href=\"mailto:support@surfconext.nl\"> support@surfconext.nl </a>."
+        header: "Let op: eduID met zelfde e-mail adres bestaat al",
+        info: "Je hebt al een eduID met hetzelfde e-mailadres als je Onegini-account. Je hebt daarom nu twee keuzes:",
+        sub1: "Doorgaan met migreren van je bestaande Onegini-account naar een nieuw eduID. Dit betekent:",
+        sub1Inner1: "Teamlidmaatschappen in SURFconext Teams en autorisaties binnen diensten van je bestaande Onegini-account gaan mee naar je nieuwe eduID.",
+        sub1Inner2: "Teamlidmaatschappen en autorisaties voor diensten van je bestaande eduID gaan verloren.",
+        sub2: "Migratie afbreken en doorgaan met je bestaande eduID. Dit betekent:",
+        sub2Inner1: "Je blijft je bestaande eduID gebruiken.",
+        sub2Inner2: "Je bestaande Onegini-account kun je per 1 juli 2020 niet meer gebruiken. Teamlidmaatschappen in SURFconext Teams en autorisaties binnen diensten van dit Onegini-account gaan verloren.",
+        abortMigration: "Migratie afbreken ",
+        continueMigration: "Doorgaan met migreren",
+        abort: "afbreken",
+        continue: "doorgaan",
+        help: "Hulp nodig? Stuur een e-mail naar <a href=\"mailto:support@surfconext.nl\">support@surfconext.nl</a>."
     },
     format: {
         creationDate: "Je eduID is aangemaakt op {{date}} om {{hours}}:{{minutes}}"
