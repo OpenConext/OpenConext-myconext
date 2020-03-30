@@ -6,7 +6,7 @@ I18n.translations.nl = {
         header2: "Aanvraag",
         header3: "van je eduID",
         trust: "Vertrouw deze computer",
-        email: "E-mailadres",
+        email: "Je e-mailadres",
         emailPlaceholder: "bijv. naam@gmail.com",
         familyName: "Achternaam",
         givenName: "Voornaam",
