@@ -33,4 +33,17 @@ public class LoginControllerTest extends AbstractIntegrationTest {
                 .header("Location",
                         "https://my.test2.surfconext.nl/Shibboleth.sso/Login?entityID=https://localhost.surf.id&lang=en");
     }
+
+    @Test
+    public void registerWithCustomLocation() {
+        String location = "http://localhost?query=123";
+        given()
+                .redirects().follow(false)
+                .when()
+                .queryParam("location", location)
+                .get("/register")
+                .then()
+                .statusCode(302)
+                .header("Location", location);
+    }
 }

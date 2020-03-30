@@ -3,6 +3,7 @@ package myconext.api;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -43,11 +44,14 @@ public class LoginController {
     }
 
     @GetMapping("/register")
-    public void register(@RequestParam(value = "lang", required = false, defaultValue = "en") String lang, HttpServletResponse response) throws IOException {
+    public void register(@RequestParam(value = "lang", required = false, defaultValue = "en") String lang,
+                         @RequestParam(value = "location", required = false) String location,
+                         HttpServletResponse response) throws IOException {
         response.setHeader("Set-Cookie", REGISTER_MODUS_COOKIE_NAME + "=true; SameSite=Lax" + (secureCookie ? "; Secure" : ""));
-        String location = this.config.get("eduIDLoginUrl") + "&lang=" + lang;
-        response.sendRedirect(location);
+        String redirectLocation = StringUtils.hasText(location) ?  location : this.config.get("eduIDLoginUrl") + "&lang=" + lang;
+        response.sendRedirect(redirectLocation);
     }
+
 
     @GetMapping("/config")
     public Map<String, String> config() {
