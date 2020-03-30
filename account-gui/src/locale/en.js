@@ -6,7 +6,7 @@ I18n.translations.en = {
         header2: "Request",
         header3: "your eduID",
         trust: "Trust this computer",
-        email: "Your personal email address",
+        email: "Your email address",
         emailPlaceholder: "e.g. user@gmail.com",
         familyName: "Last name",
         givenName: "First name",
