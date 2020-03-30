@@ -1,6 +1,5 @@
 <script>
 
-    import I18n from "i18n-js";
     import eduIDLogo from "../img/logo_eduID.svg";
 
 </script>

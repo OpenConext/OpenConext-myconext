@@ -14,11 +14,11 @@
                         <g id="navigation-/-ic_check" transform="translate(13.000000, 7.000000)">
                             <g id="Group">
                                 <g id="basis-/-check-3px">
-                                    <mask id="mask-2" fill="white">
+                                    <mask id="mask-succes-2" fill="white">
                                         <use xlink:href="#path-1"></use>
                                     </mask>
                                     <use id="Shape" fill="#000000" fill-rule="nonzero" xlink:href="#path-1"></use>
-                                    <g id="00-basic-colors-/-reg-icon-SEC-/-default-blue500-#0077C8" mask="url(#mask-2)" fill-rule="evenodd" stroke-width="1">
+                                    <g id="00-basic-colors-/-reg-icon-SEC-/-default-blue500-#0077C8" mask="url(#mask-succes-2)" fill-rule="evenodd" stroke-width="1">
                                         <g transform="translate(16.000000, 16.000000) rotate(90.000000) translate(-16.000000, -16.000000) " id="colors-/-Signal-/-Good">
                                             <g>
                                                 <g id="Colors/Gray-700-Copy" fill="#00BB07">
