@@ -36,14 +36,13 @@ public class LoginControllerTest extends AbstractIntegrationTest {
 
     @Test
     public void registerWithCustomLocation() {
-        String location = "http://localhost?query=123";
+        String location = "/register?location=https%3A//connect.test2.surfconext.nl/oidc/authorize%3Flocation%3Dstate%3D%5B%22%5B%5C%22%5C%22%5D%22%2C%201%2C%20%22%22%2C%20%22%22%2C%20%22%22%5D%26client_id%3Dedubadges%26response_type%3Dcode%26scope%3Dopenid%26redirect_uri%3Dhttp%3A//localhost%3A8000/account/eduid/login/callback/";
         given()
                 .redirects().follow(false)
                 .when()
-                .queryParam("location", location)
-                .get("/register")
+                .get(location)
                 .then()
                 .statusCode(302)
-                .header("Location", location);
+                .header("Location", "https://connect.test2.surfconext.nl/oidc/authorize?location=state=[\"[\\\"\\\"]\", 1, \"\", \"\", \"\"]&client_id=edubadges&response_type=code&scope=openid&redirect_uri=http://localhost:8000/account/eduid/login/callback/");
     }
 }
