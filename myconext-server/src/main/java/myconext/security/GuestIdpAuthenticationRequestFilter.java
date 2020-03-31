@@ -55,8 +55,8 @@ import static org.springframework.util.StringUtils.hasText;
 public class GuestIdpAuthenticationRequestFilter extends IdpAuthenticationRequestFilter {
 
     public static final String GUEST_IDP_REMEMBER_ME_COOKIE_NAME = "guest-idp-remember-me";
-    public static final String BROWSER_SESSION_COOKIE_NAME = "BROWSERSESSION";
-    public static final String REGISTER_MODUS_COOKIE_NAME = "REGISTER_MODUS_COOKIE_NAME";
+    public static final String BROWSER_SESSION_COOKIE_NAME = "BROWSER_SESSION";
+    public static final String REGISTER_MODUS_COOKIE_NAME = "REGISTER_MODUS";
 
     private static final Log LOG = LogFactory.getLog(GuestIdpAuthenticationRequestFilter.class);
 
