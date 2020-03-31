@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.net.URLDecoder;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -49,7 +48,7 @@ public class LoginController {
                          @RequestParam(value = "location", required = false) String location,
                          HttpServletResponse response) throws IOException {
         response.setHeader("Set-Cookie", REGISTER_MODUS_COOKIE_NAME + "=true; SameSite=Lax" + (secureCookie ? "; Secure" : ""));
-        String redirectLocation = StringUtils.hasText(location) ?  URLDecoder.decode(location, "utf-8") : this.config.get("eduIDLoginUrl") + "&lang=" + lang;
+        String redirectLocation = StringUtils.hasText(location) ? location : this.config.get("eduIDLoginUrl") + "&lang=" + lang;
         response.sendRedirect(redirectLocation);
     }
 
