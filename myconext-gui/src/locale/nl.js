@@ -109,7 +109,7 @@ I18n.translations.nl = {
         link: "Naar mijn account gegevens"
     },
     migrationError: {
-        header: "Let op: eduID met zelfde e-mail adres bestaat al",
+        header: "Let op: eduID met zelfde e-mailadres bestaat al",
         info: "Je hebt al een eduID met hetzelfde e-mailadres als je Onegini-account. Je hebt daarom nu twee keuzes:",
         sub1: "Doorgaan met migreren van je bestaande Onegini-account naar een nieuw eduID. Dit betekent:",
         sub1Inner1: "Teamlidmaatschappen in SURFconext Teams en autorisaties binnen diensten van je bestaande Onegini-account gaan mee naar je nieuwe eduID.",
