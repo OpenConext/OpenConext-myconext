@@ -4,7 +4,7 @@
     export let value;
     export let onChange;
     export let label;
-    export let className;
+    export let className = "";
 
 </script>
 <style>
