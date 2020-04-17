@@ -89,7 +89,7 @@ public class UserController {
 
         emailGuessingPreventor.potentialUserEmailGuess();
 
-        Optional<User> optionalUser = userRepository.findUserByEmail(user.getEmail());
+        Optional<User> optionalUser = userRepository.findUserByEmailIgnoreCase(user.getEmail());
         if (optionalUser.isPresent()) {
             return ResponseEntity.status(HttpStatus.CONFLICT)
                     .body(Collections.singletonMap("status", HttpStatus.CONFLICT.value()));
@@ -113,7 +113,7 @@ public class UserController {
 
         emailGuessingPreventor.potentialUserEmailGuess();
 
-        Optional<User> optionalUser = userRepository.findUserByEmail(providedUser.getEmail());
+        Optional<User> optionalUser = userRepository.findUserByEmailIgnoreCase(providedUser.getEmail());
         if (!optionalUser.isPresent()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Collections.singletonMap("status", HttpStatus.NOT_FOUND.value()));
         }
@@ -143,7 +143,7 @@ public class UserController {
 
     @GetMapping(value = {"/sp/me", "sp/migrate/merge", "sp/migrate/proceed"})
     public ResponseEntity me(Authentication authentication) {
-        User user = userRepository.findOneUserByEmail(((User) authentication.getPrincipal()).getEmail());
+        User user = userRepository.findOneUserByEmailIgnoreCase(((User) authentication.getPrincipal()).getEmail());
         List<SamlAuthenticationRequest> samlAuthenticationRequests = authenticationRequestRepository.findByUserIdAndRememberMe(user.getId(), true);
         return ResponseEntity.ok(new UserResponse(user, !samlAuthenticationRequests.isEmpty()));
     }
@@ -224,7 +224,7 @@ public class UserController {
             throw new ForbiddenException();
         }
         //Strictly not necessary, but mid-air collisions can occur in theory
-        return userRepository.findOneUserByEmail(principal.getEmail());
+        return userRepository.findOneUserByEmailIgnoreCase(principal.getEmail());
     }
 
     private ResponseEntity doMagicLink(User user, SamlAuthenticationRequest samlAuthenticationRequest, MagicLinkRequest magicLinkRequest,

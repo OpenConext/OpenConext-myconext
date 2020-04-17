@@ -71,7 +71,7 @@ public class UserControllerTest extends AbstractIntegrationTest {
         User user = user("new@example.com", "Mary", "Doe", "en");
 
         MagicLinkResponse magicLinkResponse = magicLinkRequest(user, HttpMethod.POST);
-        assertEquals(user.getGivenName(), userRepository.findUserByEmail(user.getEmail()).get().getGivenName());
+        assertEquals(user.getGivenName(), userRepository.findUserByEmailIgnoreCase(user.getEmail()).get().getGivenName());
 
         String samlResponse = samlResponse(magicLinkResponse);
         assertTrue(samlResponse.contains("new@example.com"));
@@ -83,7 +83,7 @@ public class UserControllerTest extends AbstractIntegrationTest {
         userSetPassword(user, "secretA12");
 
         magicLinkRequest(user, HttpMethod.POST);
-        user = userRepository.findUserByEmail(user.getEmail()).get();
+        user = userRepository.findUserByEmailIgnoreCase(user.getEmail()).get();
         assertTrue(this.passwordEncoder.matches("secretA12", user.getPassword()));
     }
 
@@ -117,7 +117,7 @@ public class UserControllerTest extends AbstractIntegrationTest {
         String saml = samlAuthnResponse(samlAuthnRequestResponse(new Cookie.Builder(GUEST_IDP_REMEMBER_ME_COOKIE_NAME, cookie).build(), null));
         assertTrue(saml.contains("steve@example.com<"));
 
-        user = userRepository.findOneUserByEmail("steve@example.com");
+        user = userRepository.findOneUserByEmailIgnoreCase("steve@example.com");
         long count = authenticationRequestRepository.deleteByUserId(user.getId());
         assertEquals(1, count);
 
@@ -134,7 +134,7 @@ public class UserControllerTest extends AbstractIntegrationTest {
 
     @Test
     public void updateUser() {
-        User user = userRepository.findOneUserByEmail("jdoe@example.com");
+        User user = userRepository.findOneUserByEmailIgnoreCase("jdoe@example.com");
         user.setGivenName("Mary");
         user.setFamilyName("Poppins");
         given()
@@ -145,7 +145,7 @@ public class UserControllerTest extends AbstractIntegrationTest {
                 .then()
                 .statusCode(201);
 
-        User userFromDB = userRepository.findOneUserByEmail("jdoe@example.com");
+        User userFromDB = userRepository.findOneUserByEmailIgnoreCase("jdoe@example.com");
 
         assertEquals(user.getGivenName(), userFromDB.getGivenName());
         assertEquals(user.getFamilyName(), userFromDB.getFamilyName());
@@ -164,7 +164,7 @@ public class UserControllerTest extends AbstractIntegrationTest {
 
     @Test
     public void updateUserWeakPassword() {
-        User user = userRepository.findOneUserByEmail("jdoe@example.com");
+        User user = userRepository.findOneUserByEmailIgnoreCase("jdoe@example.com");
         given()
                 .when()
                 .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
@@ -176,7 +176,7 @@ public class UserControllerTest extends AbstractIntegrationTest {
 
     @Test
     public void updateUserSecurity() {
-        User user = userRepository.findOneUserByEmail("jdoe@example.com");
+        User user = userRepository.findOneUserByEmailIgnoreCase("jdoe@example.com");
         UpdateUserSecurityRequest updateUserSecurityRequest = new UpdateUserSecurityRequest(user.getId(), null, "correctSecret001");
         given()
                 .when()
@@ -185,13 +185,13 @@ public class UserControllerTest extends AbstractIntegrationTest {
                 .put("/myconext/api/sp/security")
                 .then()
                 .statusCode(201);
-        user = userRepository.findOneUserByEmail("jdoe@example.com");
+        user = userRepository.findOneUserByEmailIgnoreCase("jdoe@example.com");
         assertTrue(passwordEncoder.matches(updateUserSecurityRequest.getNewPassword(), user.getPassword()));
     }
 
     @Test
     public void updateUserWrongPassword() {
-        User user = userRepository.findOneUserByEmail("jdoe@example.com");
+        User user = userRepository.findOneUserByEmailIgnoreCase("jdoe@example.com");
         ReflectionTestUtils.setField(user, "password", "abcdefghijklmnop");
         userRepository.save(user);
 
@@ -206,7 +206,7 @@ public class UserControllerTest extends AbstractIntegrationTest {
 
     @Test
     public void deleteUser() {
-        User user = userRepository.findOneUserByEmail("jdoe@example.com");
+        User user = userRepository.findOneUserByEmailIgnoreCase("jdoe@example.com");
         given()
                 .when()
                 .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
@@ -215,7 +215,7 @@ public class UserControllerTest extends AbstractIntegrationTest {
                 .statusCode(200)
                 .cookie("SESSION", "");
 
-        Optional<User> optionalUser = userRepository.findUserByEmail("jdoe@example.com");
+        Optional<User> optionalUser = userRepository.findUserByEmailIgnoreCase("jdoe@example.com");
         assertFalse(optionalUser.isPresent());
     }
 

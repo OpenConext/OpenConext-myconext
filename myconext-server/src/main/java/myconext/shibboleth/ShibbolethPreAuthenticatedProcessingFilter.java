@@ -14,7 +14,6 @@ import org.springframework.util.StringUtils;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import java.io.UnsupportedEncodingException;
-import java.util.Arrays;
 import java.util.Optional;
 import java.util.stream.Stream;
 
@@ -64,7 +63,7 @@ public class ShibbolethPreAuthenticatedProcessingFilter extends AbstractPreAuthe
         }
         Optional<User> optionalUser = userRepository.findUserByUid(uid);
         if (!optionalUser.isPresent()) {
-            Optional<User> optionalUserByEmail = userRepository.findUserByEmail(email);
+            Optional<User> optionalUserByEmail = userRepository.findUserByEmailIgnoreCase(email);
             if (optionalUserByEmail.isPresent()) {
                 User existingUser = optionalUserByEmail.get();
                 //If we would provision this email we would introduce a duplicate email

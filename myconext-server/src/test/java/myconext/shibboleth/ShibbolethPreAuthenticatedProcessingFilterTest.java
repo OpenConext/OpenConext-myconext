@@ -46,7 +46,7 @@ public class ShibbolethPreAuthenticatedProcessingFilterTest extends AbstractInte
                 .body("schacHomeOrganization", equalTo("surfguest.nl"))
                 .body("id", notNullValue());
 
-        User user = super.userRepository.findOneUserByEmail("steven.doe@example.org");
+        User user = super.userRepository.findOneUserByEmailIgnoreCase("steven.doe@example.org");
         assertEquals("http://mock-idp", user.getAuthenticatingAuthority());
     }
 
@@ -60,7 +60,7 @@ public class ShibbolethPreAuthenticatedProcessingFilterTest extends AbstractInte
                 .then()
                 .statusCode(200);
 
-        User user = super.userRepository.findOneUserByEmail("bob.doe@example.org");
+        User user = super.userRepository.findOneUserByEmailIgnoreCase("bob.doe@example.org");
         assertEquals("unknown", user.getAuthenticatingAuthority());
     }
 
