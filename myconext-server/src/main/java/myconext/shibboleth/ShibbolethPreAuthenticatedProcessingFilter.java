@@ -1,6 +1,7 @@
 package myconext.shibboleth;
 
 
+import myconext.exceptions.EmailNotConfirmedException;
 import myconext.exceptions.MigrationDuplicateUserEmailException;
 import myconext.mail.MailBox;
 import myconext.model.User;
@@ -54,6 +55,14 @@ public class ShibbolethPreAuthenticatedProcessingFilter extends AbstractPreAuthe
         String familyName = getHeader(SHIB_SUR_NAME, request);
         String authenticatingAuthorities = getHeader(SHIB_AUTHENTICATING_AUTHORITY, request);
 
+        //The authenticatingAuthority in the SAML / Shibd heading is a ';' separated list
+        String authenticatingAuthority = authenticatingAuthorities.split(";")[0].trim();
+
+        if (oneginiEntityId.equalsIgnoreCase(authenticatingAuthority) && StringUtils.isEmpty(email)) {
+            LOG.warn("User {} {} has not confirmed her email with oneGini", givenName, familyName);
+            throw new EmailNotConfirmedException(uid);
+        }
+
         boolean valid = Stream.of(uid, schacHomeOrganization, email, givenName, familyName, authenticatingAuthorities).allMatch(StringUtils::hasText);
         if (!valid) {
             //this is the contract. See AbstractPreAuthenticatedProcessingFilter#doAuthenticate
@@ -82,8 +91,6 @@ public class ShibbolethPreAuthenticatedProcessingFilter extends AbstractPreAuthe
                 }
             }
         }
-        //The authenticatingAuthority in the SAML / Shibd heading is a ';' separated list
-        String authenticatingAuthority = authenticatingAuthorities.split(";")[0].trim();
         String preferredLanguage = cookieByName(request, "lang").map(Cookie::getValue).orElse("en");
         return optionalUser.orElseGet(() ->
                 provisionUser(uid, schacHomeOrganization, givenName, familyName, email, authenticatingAuthority, preferredLanguage));

@@ -1,5 +1,6 @@
 package myconext.api;
 
+import myconext.exceptions.EmailNotConfirmedException;
 import myconext.exceptions.MigrationDuplicateUserEmailException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -17,6 +18,7 @@ import org.springframework.web.context.request.ServletWebRequest;
 import org.springframework.web.context.request.WebRequest;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Map;
@@ -44,7 +46,7 @@ public class DefaultErrorController implements ErrorController {
     }
 
     @RequestMapping("/error")
-    public ResponseEntity error(HttpServletRequest request) throws URISyntaxException {
+    public ResponseEntity error(HttpServletRequest request, HttpServletResponse response) throws URISyntaxException {
         WebRequest webRequest = new ServletWebRequest(request);
         Map<String, Object> result = this.errorAttributes.getErrorAttributes(webRequest, false);
 
@@ -69,6 +71,13 @@ public class DefaultErrorController implements ErrorController {
                             .build();
                 }
                 result.put("email", duplicateUserEmailException.getEmail());
+            }
+            if (error instanceof EmailNotConfirmedException) {
+                EmailNotConfirmedException emailNotConfirmedException = (EmailNotConfirmedException) error;
+                request.getSession(true).setAttribute();
+                return ResponseEntity.status(302)
+                        .location(new URI(this.redirectUrl + "/migration-error"))
+                        .build();
             }
         }
         result.remove("message");
