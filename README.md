@@ -23,7 +23,7 @@ This project uses Spring Boot and Maven. To run locally, type:
 
 `cd manage-server`
 
-`mvn spring-boot:run -Drun.jvmArguments="-Dspring.profiles.active=dev"`
+`mvn spring-boot:run -Dspring-boot.run.profiles=dev`
 
 When developing, it's convenient to just execute the applications main-method, which is in [Application](myconext-server/src/main/java/myconext/MyConextServerApplication.java).
 Don't forget to set the active profile to dev.
