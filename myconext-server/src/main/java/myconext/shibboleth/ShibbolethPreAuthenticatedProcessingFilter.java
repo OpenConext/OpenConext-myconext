@@ -39,7 +39,7 @@ public class ShibbolethPreAuthenticatedProcessingFilter extends AbstractPreAuthe
                                                       String oneginiEntityId,
                                                       MailBox mailBox) {
         super();
-        setAuthenticationManager(authenticationManager);
+        super.setAuthenticationManager(authenticationManager);
         this.userRepository = userRepository;
         this.mailBox = mailBox;
         this.oneginiEntityId = oneginiEntityId;

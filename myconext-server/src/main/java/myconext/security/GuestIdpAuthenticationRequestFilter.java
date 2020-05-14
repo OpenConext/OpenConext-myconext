@@ -65,7 +65,6 @@ public class GuestIdpAuthenticationRequestFilter extends IdpAuthenticationReques
     private final String redirectUrl;
     private final AuthenticationRequestRepository authenticationRequestRepository;
     private final UserRepository userRepository;
-    private final String spEntityId;
     private final int rememberMeMaxAge;
     private final boolean secureCookie;
     private final String magicLinkUrl;
@@ -78,7 +77,6 @@ public class GuestIdpAuthenticationRequestFilter extends IdpAuthenticationReques
                                                ServiceNameResolver serviceNameResolver,
                                                AuthenticationRequestRepository authenticationRequestRepository,
                                                UserRepository userRepository,
-                                               String spEntityId,
                                                int rememberMeMaxAge,
                                                boolean secureCookie,
                                                String magicLinkUrl,
@@ -90,7 +88,6 @@ public class GuestIdpAuthenticationRequestFilter extends IdpAuthenticationReques
         this.serviceNameResolver = serviceNameResolver;
         this.authenticationRequestRepository = authenticationRequestRepository;
         this.userRepository = userRepository;
-        this.spEntityId = spEntityId;
         this.rememberMeMaxAge = rememberMeMaxAge;
         this.secureCookie = secureCookie;
         this.magicLinkUrl = magicLinkUrl;
@@ -118,12 +115,13 @@ public class GuestIdpAuthenticationRequestFilter extends IdpAuthenticationReques
 
         AuthenticationRequest authenticationRequest =
                 provider.fromXml(samlRequest, true, isDeflated(request), AuthenticationRequest.class);
-
         provider.validate(authenticationRequest);
 
         String requesterEntityId = requesterId(authenticationRequest);
+        String issuer = authenticationRequest.getIssuer().getValue();
         SamlAuthenticationRequest samlAuthenticationRequest = new SamlAuthenticationRequest(
                 authenticationRequest.getId(),
+                issuer,
                 authenticationRequest.getAssertionConsumerService().getLocation(),
                 relayState,
                 StringUtils.hasText(requesterEntityId) ? requesterEntityId : ""
@@ -140,7 +138,7 @@ public class GuestIdpAuthenticationRequestFilter extends IdpAuthenticationReques
         User previousAuthenticatedUser = userRememberedOptional.orElse(userFromAuthentication.orElse(null));
 
         if (previousAuthenticatedUser != null && !authenticationRequest.isForceAuth()) {
-            ServiceProviderMetadata serviceProviderMetadata = provider.getRemoteProvider(spEntityId);
+            ServiceProviderMetadata serviceProviderMetadata = provider.getRemoteProvider(samlAuthenticationRequest.getIssuer());
             sendAssertion(request, response, samlAuthenticationRequest.getRelayState(), previousAuthenticatedUser, provider, serviceProviderMetadata, authenticationRequest);
         } else {
             addBrowserIdentificationCookie(response);
@@ -218,7 +216,7 @@ public class GuestIdpAuthenticationRequestFilter extends IdpAuthenticationReques
             authenticationRequestRepository.save(samlAuthenticationRequest);
         }
         IdentityProviderService provider = getProvisioning().getHostedProvider();
-        ServiceProviderMetadata serviceProviderMetadata = provider.getRemoteProvider(spEntityId);
+        ServiceProviderMetadata serviceProviderMetadata = provider.getRemoteProvider(samlAuthenticationRequest.getIssuer());
 
         AuthenticationRequest authenticationRequest = new AuthenticationRequest();
         authenticationRequest.setId(samlAuthenticationRequest.getRequestId());

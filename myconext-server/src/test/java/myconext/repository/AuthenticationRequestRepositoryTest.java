@@ -21,12 +21,12 @@ public class AuthenticationRequestRepositoryTest extends AbstractIntegrationTest
     public void before() throws Exception {
         super.before();
         SamlAuthenticationRequest req = new SamlAuthenticationRequest(
-                "requestId", "consumerAssertionServiceURL", "relayState", "http://mock-sp");
+                "requestId", "issuer", "consumerAssertionServiceURL", "relayState", "http://mock-sp");
         req.setHash(UUID.randomUUID().toString());
         request = authenticationRequestRepository.save(req);
 
         SamlAuthenticationRequest reqRememberMe = new SamlAuthenticationRequest(
-                "requestId", "consumerAssertionServiceURL", "relayState", "http://mock-sp");
+                "requestId", "issuer", "consumerAssertionServiceURL", "relayState", "http://mock-sp");
         reqRememberMe.setHash("differentHash");
         reqRememberMe.setRememberMe(true);
         authenticationRequestRepository.save(reqRememberMe);

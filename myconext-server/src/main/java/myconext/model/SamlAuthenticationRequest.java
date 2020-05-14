@@ -21,6 +21,8 @@ public class SamlAuthenticationRequest {
 
     private String requestId;
 
+    private String issuer;
+
     private String consumerAssertionServiceURL;
 
     private String relayState;
@@ -37,9 +39,10 @@ public class SamlAuthenticationRequest {
 
     private String rememberMeValue;
 
-    public SamlAuthenticationRequest(String requestId, String consumerAssertionServiceURL, String relayState, String requesterEntityId) {
+    public SamlAuthenticationRequest(String requestId, String issuer, String consumerAssertionServiceURL, String relayState, String requesterEntityId) {
         this.id = UUID.randomUUID().toString();
         this.requestId = requestId;
+        this.issuer = issuer;
         this.consumerAssertionServiceURL = consumerAssertionServiceURL;
         this.relayState = relayState;
         this.expiresIn = Date.from(LocalDateTime.now().plusHours(1).atZone(ZoneId.systemDefault()).toInstant());

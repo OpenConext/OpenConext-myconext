@@ -3,6 +3,7 @@ package myconext.security;
 import myconext.config.BeanConfig;
 import myconext.crypto.KeyGenerator;
 import myconext.mail.MailBox;
+import myconext.model.ServiceProvider;
 import myconext.repository.UserRepository;
 import myconext.shibboleth.ShibbolethPreAuthenticatedProcessingFilter;
 import myconext.shibboleth.ShibbolethUserDetailService;
@@ -34,24 +35,27 @@ import org.springframework.security.web.authentication.preauth.PreAuthenticatedA
 
 import java.io.IOException;
 import java.nio.charset.Charset;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 import static java.util.Arrays.asList;
+import static java.util.stream.Collectors.toList;
 import static org.springframework.security.saml.saml2.signature.AlgorithmMethod.RSA_SHA512;
 import static org.springframework.security.saml.saml2.signature.DigestMethod.SHA512;
 
 @EnableWebSecurity
 public class SecurityConfiguration {
 
-    private static final Log LOG = LogFactory.getLog(SecurityConfiguration.class);
+    private static Log LOG = LogFactory.getLog(SecurityConfiguration.class);
 
     @Configuration
     @Order(1)
     public static class SamlSecurity extends SamlIdentityProviderSecurityConfiguration {
-        private final Resource privateKeyPath;
-        private final Resource certificatePath;
-        private final String spEntityId;
-        private final String spMetaDataUrl;
-        private final String idpEntityId;
+        private Resource privateKeyPath;
+        private Resource certificatePath;
+        private List<ServiceProvider> serviceProviders = new ArrayList<>();
+        private String idpEntityId;
         private BeanConfig beanConfig;
 
         public SamlSecurity(BeanConfig beanConfig,
@@ -65,8 +69,16 @@ public class SecurityConfiguration {
             this.privateKeyPath = privateKeyPath;
             this.certificatePath = certificatePath;
             this.idpEntityId = idpEntityId;
-            this.spEntityId = spEntityId;
-            this.spMetaDataUrl = spMetaDataUrl;
+
+            List<String> spEntityIdentifiers = commaSeparatedToList(spEntityId);
+            List<String> spMetaDataUrls = commaSeparatedToList(spMetaDataUrl);
+            for (int i = 0; i < spEntityIdentifiers.size(); i++) {
+                serviceProviders.add(new ServiceProvider(spEntityIdentifiers.get(i), spMetaDataUrls.get(i)));
+            }
+        }
+
+        private List<String> commaSeparatedToList(@Value("${sp_entity_id}") String spEntityId) {
+            return Arrays.stream(spEntityId.split(",")).map(String::trim).collect(toList());
         }
 
         @Override
@@ -76,7 +88,7 @@ public class SecurityConfiguration {
             String prefix = getPrefix();
             SamlIdentityProviderSecurityDsl configurer = new GuestIdentityProviderDsl(beanConfig);
 
-            http.apply(configurer)
+            SamlIdentityProviderSecurityDsl samlIdentityProviderSecurityDsl = http.apply(configurer)
                     .prefix(prefix)
                     .useStandardFilters(false)
                     .entityId(idpEntityId)
@@ -85,14 +97,14 @@ public class SecurityConfiguration {
                     .signMetadata(true)
                     .signatureAlgorithms(RSA_SHA512, SHA512)
                     .nameIds(asList(NameId.PERSISTENT))
-                    .rotatingKeys(getKeys())
-                    .serviceProvider(
-                            new ExternalServiceProviderConfiguration()
-                                    .setAlias(spEntityId)
-                                    .setMetadata(spMetaDataUrl)
-                                    .setSkipSslValidation(false)
-                    )
-            ;
+                    .rotatingKeys(getKeys());
+            serviceProviders.forEach(sp -> samlIdentityProviderSecurityDsl.serviceProvider(
+                    new ExternalServiceProviderConfiguration()
+                            .setAlias(sp.getEntityId())
+                            .setMetadata(sp.getMetaDataUrl())
+                            .setSkipSslValidation(false)
+
+            ));
         }
 
         private RotatingKeys getKeys() throws Exception {

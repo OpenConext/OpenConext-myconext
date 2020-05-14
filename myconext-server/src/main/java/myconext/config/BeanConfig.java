@@ -20,7 +20,6 @@ public class BeanConfig extends SamlIdentityProviderServerBeanConfiguration {
     private final String redirectUrl;
     private final AuthenticationRequestRepository authenticationRequestRepository;
     private final UserRepository userRepository;
-    private final String spEntityId;
     private final int rememberMeMaxAge;
     private final boolean secureCookie;
     private final String magicLinkUrl;
@@ -29,7 +28,6 @@ public class BeanConfig extends SamlIdentityProviderServerBeanConfiguration {
 
     public BeanConfig(@Value("${base_path}") String basePath,
                       @Value("${idp_redirect_url}") String redirectUrl,
-                      @Value("${sp_entity_id}") String spEntityId,
                       @Value("${remember_me_max_age_seconds}") int rememberMeMaxAge,
                       @Value("${secure_cookie}") boolean secureCookie,
                       @Value("${email.magic-link-url}") String magicLinkUrl,
@@ -39,7 +37,6 @@ public class BeanConfig extends SamlIdentityProviderServerBeanConfiguration {
                       ServiceNameResolver serviceNameResolver) {
         this.immutableSamlConfigurationRepository = new ImmutableSamlConfigurationRepository(basePath);
         this.redirectUrl = redirectUrl;
-        this.spEntityId = spEntityId;
         this.rememberMeMaxAge = rememberMeMaxAge;
         this.secureCookie = secureCookie;
         this.authenticationRequestRepository = authenticationRequestRepository;
@@ -59,7 +56,7 @@ public class BeanConfig extends SamlIdentityProviderServerBeanConfiguration {
     @Override
     public Filter idpAuthnRequestFilter() {
         return new GuestIdpAuthenticationRequestFilter(getSamlProvisioning(), samlAssertionStore(), redirectUrl, serviceNameResolver,
-                authenticationRequestRepository, userRepository, spEntityId, rememberMeMaxAge, secureCookie, magicLinkUrl,
+                authenticationRequestRepository, userRepository, rememberMeMaxAge, secureCookie, magicLinkUrl,
                 mailBox);
     }
 

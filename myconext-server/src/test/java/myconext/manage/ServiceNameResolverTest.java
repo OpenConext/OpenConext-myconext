@@ -11,7 +11,7 @@ public class ServiceNameResolverTest {
     private ServiceNameResolver subject = new ServiceNameResolver(new ClassPathResource("sp_names.json"), new ObjectMapper(), false);
 
     @Test
-    public void resolveLocally() throws InterruptedException {
+    public void resolveLocally() {
         assertEquals("SURFconext Manage | SURFconext", subject.resolve("https://manage.surfconext.nl/shibboleth"));
     }
 
