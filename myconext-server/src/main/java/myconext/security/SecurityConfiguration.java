@@ -77,7 +77,7 @@ public class SecurityConfiguration {
             }
         }
 
-        private List<String> commaSeparatedToList(@Value("${sp_entity_id}") String spEntityId) {
+        private List<String> commaSeparatedToList(String spEntityId) {
             return Arrays.stream(spEntityId.split(",")).map(String::trim).collect(toList());
         }
 
