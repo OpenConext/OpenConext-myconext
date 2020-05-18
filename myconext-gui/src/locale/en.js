@@ -38,6 +38,7 @@ I18n.translations.en = {
         subTitle: "We provide different methods to sign in to your eduID account.",
         secondSubTitle: "Sign-in methods",
         usePassword: "Password",
+        usePublicKey: "WebAuthn",
         notSet: "Not set",
         useMagicLink: "Send magic link to",
         rememberMe: "Stay logged in",

@@ -12,6 +12,7 @@ public class UserResponse {
     private String givenName;
     private String familyName;
     private boolean usePassword;
+    private boolean usePublicKey;
     private String schacHomeOrganization;
     private String uid;
     private boolean rememberMe;
@@ -25,6 +26,7 @@ public class UserResponse {
         this.schacHomeOrganization = user.getSchacHomeOrganization();
         this.uid = user.getUid();
         this.usePassword = StringUtils.hasText(user.getPassword());
+        this.usePublicKey = StringUtils.hasText(user.getPublicKey());
         this.rememberMe = rememberMe;
         this.created = user.getCreated();
     }

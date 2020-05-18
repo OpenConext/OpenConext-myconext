@@ -36,6 +36,7 @@ public class User implements Serializable, UserDetails {
     private String schacHomeOrganization;
     private String authenticatingAuthority;
     private String password;
+    private String publicKey;
     private boolean newUser;
     private String preferredLanguage;
 
@@ -70,6 +71,10 @@ public class User implements Serializable, UserDetails {
         } else {
             this.password = null;
         }
+    }
+
+    public void setPublicKey(String publicKey) {
+        this.publicKey = publicKey;
     }
 
     @Override

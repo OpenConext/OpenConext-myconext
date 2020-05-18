@@ -8,6 +8,7 @@
     import EditName from "./routes/EditName.svelte";
     import MigrationError from "./routes/MigrationError.svelte";
     import Password from "./routes/Password.svelte";
+    import WebAuthn from "./routes/WebAuthn.svelte";
     import RememberMe from "./routes/RememberMe.svelte";
     import Home from "./routes/Home.svelte";
     import Header from "./components/Header.svelte";
@@ -197,6 +198,7 @@
                         <Home bookmark="migration"/>
                     </Route>
                     <Route path="/password" component={Password}/>
+                    <Route path="/webauthn" component={WebAuthn}/>
                     <Route path="/rememberme" component={RememberMe}/>
                     <Route component={NotFound}/>
                 </Router>

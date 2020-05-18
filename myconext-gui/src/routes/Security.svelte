@@ -8,6 +8,8 @@
     let password = $user.usePassword ? "************************" : I18n.ts("security.notSet");
     let passwordStyle = $user.usePassword ? "value" : "value-alt"
 
+    let publicKey = $user.publicKey ? "************************" : I18n.ts("security.notSet");
+    let publicKeyStyle = $user.publicKey ? "value" : "value-alt"
 </script>
 
 <style>
@@ -120,6 +122,16 @@
                         <span>{password}</span>
                         <a class="menu-link" href="/password"
                            on:click|preventDefault|stopPropagation={() => navigate("/password")}>{@html chevron_right}</a>
+                    </div>
+                </td>
+            </tr>
+            <tr class="name" on:click={() => navigate("/webauthn")}>
+                <td class="attr">{I18n.t("security.usePublicKey")}</td>
+                <td class="{publicKeyStyle}">
+                    <div class="value-container">
+                        <span>{publicKey}</span>
+                        <a class="menu-link" href="/webauthn"
+                           on:click|preventDefault|stopPropagation={() => navigate("/webauthn")}>{@html chevron_right}</a>
                     </div>
                 </td>
             </tr>

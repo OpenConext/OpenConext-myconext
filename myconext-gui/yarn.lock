@@ -658,6 +658,11 @@
     exec-sh "^0.3.2"
     minimist "^1.2.0"
 
+"@github/webauthn-json@^0.4.1":
+  version "0.4.1"
+  resolved "https://registry.yarnpkg.com/@github/webauthn-json/-/webauthn-json-0.4.1.tgz#1666441e10806c5871f3ac26e8bca169407560b3"
+  integrity sha512-fKztp5tBqlt/73fWItVOHLAENH6yUvncA+Sdv+/fhpwzIOp1yF7FvOVM3JwN6oRUxvzRNIyg/MnajICbcQqkQQ==
+
 "@jest/console@^24.7.1", "@jest/console@^24.9.0":
   version "24.9.0"
   resolved "https://registry.yarnpkg.com/@jest/console/-/console-24.9.0.tgz#79b1bc06fb74a8cfb01cbdedf945584b1b9707f0"

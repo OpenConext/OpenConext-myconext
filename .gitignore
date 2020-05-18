@@ -10,3 +10,4 @@ target
 index.html
 bundle.*.css
 bundle.*.js
+yarn-error.log
