@@ -28,7 +28,7 @@
   },
   "scripts": {
     "build": "cross-env NODE_ENV=production webpack",
-    "dev": "webpack-dev-server --open --content-base public",
+    "dev": "webpack-dev-server --open --content-base public --disable-host-check",
     "test": "jest src",
     "test:watch": "npm run test -- --watch"
   },
