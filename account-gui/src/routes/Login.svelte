@@ -267,7 +267,6 @@
     <input type="text"
            id="given-name"
            placeholder={I18n.ts("login.givenNamePlaceholder")}
-           value={$user.givenName}
            bind:value={$user.givenName}
            on:change={clearGivenName}>
     {#if !initial && !$user.givenName}
@@ -277,7 +276,6 @@
     <input type="text"
            id="family-name"
            placeholder={I18n.ts("login.familyNamePlaceholder")}
-           value={$user.familyName}
            bind:value={$user.familyName}
            on:change={clearFamilyName}>
     {#if !initial && !$user.familyName}

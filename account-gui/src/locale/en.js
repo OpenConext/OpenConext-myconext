@@ -71,6 +71,9 @@ I18n.translations.en = {
         title: "Whoops...",
         title2: "Something went wrong (404)"
     },
+    webAuthn: {
+        info: "Enable Public Key Cryptography and Web Authentication (WebAuthn)",
+    },
     migration: {
         header: "Migrate to an <br/>eduID guest account",
         info1: "SURF will phase out the use of Onegini. To retain access, you must migrate your Onegini account to an eduID account.",

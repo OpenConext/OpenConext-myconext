@@ -1,5 +1,20 @@
 package myconext.api;
 
+import com.yubico.webauthn.FinishRegistrationOptions;
+import com.yubico.webauthn.RegistrationResult;
+import com.yubico.webauthn.RelyingParty;
+import com.yubico.webauthn.StartRegistrationOptions;
+import com.yubico.webauthn.data.AuthenticatorAttestationResponse;
+import com.yubico.webauthn.data.ByteArray;
+import com.yubico.webauthn.data.ClientRegistrationExtensionOutputs;
+import com.yubico.webauthn.data.PublicKeyCredential;
+import com.yubico.webauthn.data.PublicKeyCredentialCreationOptions;
+import com.yubico.webauthn.data.PublicKeyCredentialDescriptor;
+import com.yubico.webauthn.data.RelyingPartyIdentity;
+import com.yubico.webauthn.data.UserIdentity;
+import com.yubico.webauthn.data.exception.Base64UrlException;
+import com.yubico.webauthn.exception.RegistrationFailedException;
+import lombok.NonNull;
 import myconext.exceptions.ExpiredAuthenticationException;
 import myconext.exceptions.ForbiddenException;
 import myconext.exceptions.UserNotFoundException;
@@ -13,6 +28,7 @@ import myconext.model.UserResponse;
 import myconext.repository.AuthenticationRequestRepository;
 import myconext.repository.UserRepository;
 import myconext.security.EmailGuessingPrevention;
+import myconext.webauthn.UserCredentialRepository;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -36,11 +52,14 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
+import java.io.IOException;
+import java.net.URI;
 import java.net.URISyntaxException;
 import java.security.SecureRandom;
 import java.util.Base64;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -57,26 +76,32 @@ public class UserController {
     private String magicLinkUrl;
     private String schacHomeOrganization;
     private String guestIdpEntityId;
+    private String webAuthnSpRedirectUrl;
+    private UserCredentialRepository userCredentialRepository;
 
     private SecureRandom random = new SecureRandom();
     private PasswordEncoder passwordEncoder = new BCryptPasswordEncoder(-1, random);
     private EmailGuessingPrevention emailGuessingPreventor;
 
     public UserController(UserRepository userRepository,
+                          UserCredentialRepository userCredentialRepository,
                           AuthenticationRequestRepository authenticationRequestRepository,
                           MailBox mailBox,
                           ServiceNameResolver serviceNameResolver,
                           @Value("${email.magic-link-url}") String magicLinkUrl,
                           @Value("${schac_home_organization}") String schacHomeOrganization,
                           @Value("${guest_idp_entity_id}") String guestIdpEntityId,
-                          @Value("${email_guessing_sleep_millis}") int emailGuessingSleepMillis) {
+                          @Value("${email_guessing_sleep_millis}") int emailGuessingSleepMillis,
+                          @Value("${sp_redirect_url}") String spBaseUrl) {
         this.userRepository = userRepository;
+        this.userCredentialRepository = userCredentialRepository;
         this.authenticationRequestRepository = authenticationRequestRepository;
         this.mailBox = mailBox;
         this.serviceNameResolver = serviceNameResolver;
         this.magicLinkUrl = magicLinkUrl;
         this.schacHomeOrganization = schacHomeOrganization;
         this.guestIdpEntityId = guestIdpEntityId;
+        this.webAuthnSpRedirectUrl = String.format("%s/webauthn", spBaseUrl);
         this.emailGuessingPreventor = new EmailGuessingPrevention(emailGuessingSleepMillis);
     }
 
@@ -189,6 +214,86 @@ public class UserController {
         LOG.info(String.format("Updates / set password for user %s", user.getUsername()));
 
         return ResponseEntity.status(201).body(new UserResponse(user, false));
+    }
+
+    @GetMapping("sp/security/webauthn")
+    public ResponseEntity spStartWebauthFlow(Authentication authentication) {
+        //We need to go from the SP to the IdP and best is too do everything server side, but we need a temporary identifier for the user
+        User user = (User) authentication.getPrincipal();
+        byte bytes[] = new byte[64];
+        this.random.nextBytes(bytes);
+        Base64.Encoder encoder = Base64.getUrlEncoder().withoutPadding();
+        String webAuthnIdentifier = encoder.encodeToString(bytes);
+        user.setWebAuthnIdentifier(webAuthnIdentifier);
+        userRepository.save(user);
+        return ResponseEntity.status(200).body(Collections.singletonMap("token", webAuthnIdentifier));
+    }
+
+    @PostMapping("idp/security/webauthn")
+    public ResponseEntity idpWebAuthnRegistration(@RequestBody Map<String, String> body) throws Base64UrlException {
+        String token = body.get("token");
+        Optional<User> optionalUser = userRepository.findUserByWebAuthnIdentifier(token);
+        if (!optionalUser.isPresent()) {
+            throw new UserNotFoundException();
+        }
+
+        User user = optionalUser.get();
+        PublicKeyCredentialCreationOptions request = publicKeyCredentialCreationOptions(relyingParty(), user);
+                /*
+        We must store the PublicKeyCredentialCreationOptions instance in a cache because in step 11, we need to pass this object to the finishRegistration() method as an argument.
+         */
+        /*
+        Store this as JSON in MongoDB
+         */
+
+        return ResponseEntity.status(200).body(request);
+    }
+
+    private PublicKeyCredentialCreationOptions publicKeyCredentialCreationOptions(RelyingParty relyingParty, User user) throws Base64UrlException {
+        return relyingParty.startRegistration(StartRegistrationOptions.builder()
+                    .user(UserIdentity.builder()
+                            .name(user.getEmail())
+                            .displayName(String.format("%s %s", user.getGivenName(), user.getFamilyName()))
+                            .id(ByteArray.fromBase64Url(user.getWebAuthnIdentifier()))
+                            .build())
+                    .build());
+    }
+
+    private RelyingParty relyingParty() {
+        RelyingPartyIdentity rpIdentity = RelyingPartyIdentity.builder()
+                .id("localhost")
+                .name("eduID")
+                .build();
+        return RelyingParty.builder()
+                    .identity(rpIdentity)
+                    .credentialRepository(this.userCredentialRepository)
+                    .origins(Collections.singleton("http://localhost:3000"))
+                    .build();
+    }
+
+    @PutMapping("idp/security/webauthn")
+    public ResponseEntity idpWebAuthn(@RequestBody Map<String, String> body) throws URISyntaxException, IOException, Base64UrlException, RegistrationFailedException {
+        String token = body.get("token");
+        Optional<User> optionalUser = userRepository.findUserByWebAuthnIdentifier(token);
+        if (!optionalUser.isPresent()) {
+            throw new UserNotFoundException();
+        }
+        PublicKeyCredential<AuthenticatorAttestationResponse, ClientRegistrationExtensionOutputs> pkc =
+                PublicKeyCredential.parseRegistrationResponseJson(body.get("credentials"));
+        RelyingParty rp = relyingParty();
+
+        User user = optionalUser.get();
+        PublicKeyCredentialCreationOptions request = this.publicKeyCredentialCreationOptions(rp, user);
+        RegistrationResult result = rp.finishRegistration(FinishRegistrationOptions.builder()
+                .request(request)
+                .response(pkc)
+                .build());
+//https://github.com/Yubico/java-webauthn-server
+        //storeCredential("alice", result.getKeyId(), result.getPublicKeyCose());
+        PublicKeyCredentialDescriptor keyId = result.getKeyId();
+        ByteArray publicKeyCose = result.getPublicKeyCose();
+        //how are we going to store this - base64.urlEncoding ?
+        return ResponseEntity.status(302).location(new URI(webAuthnSpRedirectUrl)).build();
     }
 
     @GetMapping("/sp/logout")

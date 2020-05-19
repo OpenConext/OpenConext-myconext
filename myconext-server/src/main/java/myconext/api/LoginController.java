@@ -39,6 +39,7 @@ public class LoginController {
         this.config.put("magicLinkUrl", magicLinkUrl);
         this.config.put("eduIDLoginUrl", String.format("%s/Shibboleth.sso/Login?entityID=%s", myConextUrl, guestIdpEntityId));
         this.config.put("eduIDRegisterUrl", String.format("%s/register", idpBaseUrl));
+        this.config.put("eduIDWebAuthnUrl", String.format("%s/webauthn", idpBaseUrl));
         this.config.put("domain", domain);
         this.secureCookie = secureCookie;
     }

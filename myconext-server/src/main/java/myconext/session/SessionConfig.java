@@ -1,11 +1,16 @@
 package myconext.session;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.Module;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.module.SimpleModule;
+import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
 import myconext.model.User;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Primary;
 import org.springframework.security.jackson2.CoreJackson2Module;
 import org.springframework.security.saml.saml2.authentication.Assertion;
 import org.springframework.session.data.mongo.JacksonMongoSessionConverter;
@@ -21,6 +26,15 @@ import java.util.List;
 @Configuration
 @EnableMongoHttpSession
 public class SessionConfig extends AbstractHttpSessionApplicationInitializer {
+
+    @Bean(name = "jsonMapper")
+    @Primary
+    public ObjectMapper jsonMapper() {
+        return new ObjectMapper()
+                .configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false)
+                .setSerializationInclusion(JsonInclude.Include.NON_ABSENT)
+                .registerModule(new Jdk8Module());
+    }
 
     @Bean
     CookieSerializer cookieSerializer(@Value("${secure_cookie}") boolean secureCookie) {

@@ -82,6 +82,19 @@ I18n.translations.en = {
         passwordDisclaimer: "Make sure it's at least 15 characters OR at least 8 characters including a number and a uppercase letter.",
         invalidCurrentPassword: "Your current password is invalid."
     },
+    webauthn: {
+      setTitle: "Enable WebAuthn",
+      updateTitle: "Configure WebAuthn",
+      publicKeys: "Your public keys",
+      revoke: "Revoke",
+      addDevice: "Add device",
+      info: "Public Key Cryptography and Web Authentication (a.k.a. WebAuthn) allows eduID to authenticate you using public key cryptography instead of a magic link or password.",
+      info2: "When your click on {{action}} you will be redirected to the eduID identity server and your browser will prompt you for your identity.",
+      back: "/security",
+      setUpdate: "Start",
+      updateUpdate: "Add device",
+
+    },
     rememberMe: {
         updated: "Your device is no longer remembered",
         forgetMeTitle: "Remember this device.",

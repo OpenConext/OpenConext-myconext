@@ -18,6 +18,7 @@ export const config = writable({
     baseDomain: "",
     migrationLandingPageUrl: "",
     myConextUrlGuestIdp: "",
+    eduIDWebAuthnUrl: "",
     magicLinkUrl: "",
     domain: ""
 });

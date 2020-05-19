@@ -1,51 +1,31 @@
 <script>
-    import {onMount} from "svelte";
-    import { create, get, supported } from "@github/webauthn-json"
-    import {user, flash} from "../stores/user";
+    import {create, get, supported} from "@github/webauthn-json"
+    import {config, user, flash} from "../stores/user";
     import I18n from "i18n-js";
-    import {validPassword} from "../validation/regexp";
-    import {me, updateSecurity} from "../api";
+    import {startWebAuthFlow} from "../api";
     import {navigate} from "svelte-routing";
     import chevron_left from "../icons/chevron-left.svg";
     import Button from "../components/Button.svelte";
-
-    let response = {};
+    import Spinner from "../components/Spinner.svelte";
 
     let usePublicKey = $user.usePublicKey;
+    let loading = false;
 
-    onMount(() => {
-        create({
-            publicKey: {
-                challenge: "CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC",
-                rp: { name: "Localhost, Inc." },
-                user: { id: "IIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII", name: "test_user", displayName: "Test User" },
-                pubKeyCredParams: [{ type: "public-key", alg: -7 }],
-                excludeCredentials: []
-            }
-        }).then(res => {
-          debugger;
-          response = res;
+    const startWebAuthn = () => {
+        loading = true;
+        startWebAuthFlow().then(res => {
+            window.location.href = `${$config.eduIDWebAuthnUrl}?token=${res.token}`
         });
-    });
 
-    const update = () => {}
-
-    const cancel = () => {
-        me().then(json => {
-            for (var key in json) {
-                if (json.hasOwnProperty(key)) {
-                    $user[key] = json[key];
-                }
-            }
-            navigate("/security");
-        });
     }
+
+    const cancel = () => navigate("/security");
 
 
 </script>
 
 <style>
-    .password {
+    .web-authn {
         width: 100%;
         display: flex;
         height: 100%;
@@ -93,26 +73,12 @@
     }
 
     p.info {
-        margin: 12px 0 32px 0;
+        margin-top: 32px;
     }
 
-    label {
-        font-weight: bold;
-        margin: 33px 0 13px 0;
-        display: inline-block;
-    }
-
-    input {
-        border-radius: 8px;
-        border: solid 1px #676767;
-        padding: 14px;
-        font-size: 16px;
-    }
-
-    span.error {
-        margin-top: 5px;
-        display: inline-block;
-        color: var(--color-primary-red);
+    p.info2 {
+        margin-top: 22px;
+        margin-bottom: 32px;
     }
 
     .options {
@@ -125,28 +91,25 @@
 
 
 </style>
-<div class="password">
+<div class="web-authn">
     <div class="left"></div>
     <div class="inner">
         <div class="header">
             <a href="/back" on:click|preventDefault|stopPropagation={cancel}>
                 {@html chevron_left}
             </a>
-            <h2>{usePublicKey ? I18n.ts("password.updateTitle") : I18n.ts("password.setTitle")}</h2>
+            <h2>{usePublicKey ? I18n.ts("webauthn.updateTitle") : I18n.ts("webauthn.setTitle")}</h2>
         </div>
-        <p class="info">{I18n.t("password.passwordDisclaimer")}</p>
-
-        <input id="username" autocomplete="username email" type="hidden" name="username" value={$user.email}>
-
-        <textarea name="" id="" cols="30" rows="10">
-            {JSON.stringify(response)}
-        </textarea>
-
+        <p class="info">{I18n.t("webauthn.info")}</p>
+        <p class="info2">{I18n.t("webauthn.info2", {action: usePublicKey ? I18n.ts("webauthn.updateUpdate") : I18n.ts("webauthn.setUpdate")})}</p>
+        {#if loading}
+            <Spinner/>
+        {/if}
         <div class="options">
             <Button className="cancel" label={I18n.ts("password.cancel")} onClick={cancel}/>
 
-            <Button label={usePublicKey ? I18n.ts("password.updateUpdate") : I18n.ts("password.setUpdate")}
-                    onClick={update}
+            <Button label={usePublicKey ? I18n.ts("webauthn.updateUpdate") : I18n.ts("webauthn.setUpdate")}
+                    onClick={startWebAuthn}
                     disabled={false}/>
         </div>
     </div>

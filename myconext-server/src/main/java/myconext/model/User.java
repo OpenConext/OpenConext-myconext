@@ -39,6 +39,7 @@ public class User implements Serializable, UserDetails {
     private String publicKey;
     private boolean newUser;
     private String preferredLanguage;
+    private String webAuthnIdentifier;
 
     private long created;
     private long updatedAt = System.currentTimeMillis() / 1000L;
@@ -131,5 +132,9 @@ public class User implements Serializable, UserDetails {
 
     public void setPreferredLanguage(String preferredLanguage) {
         this.preferredLanguage = preferredLanguage;
+    }
+
+    public void setWebAuthnIdentifier(String webAuthnIdentifier) {
+        this.webAuthnIdentifier = webAuthnIdentifier;
     }
 }

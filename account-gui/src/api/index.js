@@ -53,3 +53,11 @@ export function magicLinkExistingUser(email, password, rememberMe, usePassword, 
 export function configuration() {
     return fetchJson("/config");
 }
+
+export function webAuthnRegistration(token) {
+    return postPutJson("/myconext/api/idp/security/webauthn", {token}, "POST");
+}
+
+export function webAuthnRegistrationResponse(token, credentials) {
+    return postPutJson("/myconext/api/idp/security/webauthn", {token, credentials}, "PUT");
+}

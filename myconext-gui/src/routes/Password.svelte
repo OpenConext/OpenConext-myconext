@@ -99,7 +99,7 @@
     }
 
     p.info {
-        margin: 12px 0 32px 0;
+        margin: 22px 0 32px 0;
     }
 
     label {

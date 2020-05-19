@@ -61,6 +61,10 @@ export function updateSecurity(userId, currentPassword, newPassword) {
     return postPutJson("/myconext/api/sp/security", body, "PUT");
 }
 
+export function startWebAuthFlow() {
+    return fetchJson("/myconext/api/sp/security/webauthn");
+}
+
 export function deleteUser() {
     const fetchOptions = {
         credentials: "same-origin",
