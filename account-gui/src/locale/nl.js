@@ -71,6 +71,9 @@ I18n.translations.nl = {
         title: "Oeps...",
         title2: "Er is iets fout gegaan (404)."
     },
+    webAuthn: {
+        info: "Enable Public Key Cryptography and Web Authentication (WebAuthn)",
+    },
     migration: {
         header: "Migreer naar <br/>eduID",
         info1: "SURF zal het gebruik van Onegini geleidelijk uitfaseren. Om toegang te behouden, moet je je Onegini-account migreren naar eduID.",

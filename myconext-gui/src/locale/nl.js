@@ -38,7 +38,9 @@ I18n.translations.nl = {
         subTitle: "We bieden verschillende methoden om in te loggen met je eduID.",
         secondSubTitle: "Loginmethoden",
         usePassword: "Wachtwoord",
+        usePublicKey: "WebAuthn",
         notSet: "Niet ingesteld",
+        notSupported: "Not supported",
         useMagicLink: "Stuur magische link naar",
         rememberMe: "Ingelogd blijven",
         rememberMetrue: "Ja",
@@ -80,6 +82,19 @@ I18n.translations.nl = {
         back: "/security",
         passwordDisclaimer: "Kies een wachtwoord van tenminste 8 karakters lang met minimaal een hoofdletter en een cijfer. Een langer wachtwoord van minimaal 15 karakters mag ook.",
         invalidCurrentPassword: "Je huidige wachtwoord is niet correct."
+    },
+    webauthn: {
+        setTitle: "Enable WebAuthn",
+        updateTitle: "Configure WebAuthn",
+        publicKeys: "Your public keys",
+        revoke: "Revoke",
+        addDevice: "Add device",
+        info: "Public Key Cryptography and Web Authentication (a.k.a. WebAuthn) allows eduID to authenticate you using public key cryptography instead of a magic link or password.",
+        info2: "When your click on {{action}} you will be redirected to the eduID identity server and your browser will prompt you for your identity.",
+        back: "/security",
+        setUpdate: "Start",
+        updateUpdate: "Add device",
+
     },
     rememberMe: {
         updated: "Dit apparaat wordt niet langer onthouden",
