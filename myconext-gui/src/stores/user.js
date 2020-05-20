@@ -9,8 +9,10 @@ export const user = writable({
     schacHomeOrganization: "",
     uid: "",
     usePassword: false,
+    usePublicKey: false,
     rememberMe: true,
-    created: 0
+    created: 0,
+    publicKeyCredentials: {}
 });
 
 export const config = writable({

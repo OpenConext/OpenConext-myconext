@@ -4,12 +4,17 @@
     import {navigate} from "svelte-routing";
     import chevron_right from "../icons/chevron-right.svg";
     import CheckBox from "../components/CheckBox.svelte";
+    import {supported} from "@github/webauthn-json"
 
     let password = $user.usePassword ? "************************" : I18n.ts("security.notSet");
-    let passwordStyle = $user.usePassword ? "value" : "value-alt"
+    let passwordStyle = $user.usePassword ? "value" : "value-alt";
 
-    let publicKey = $user.publicKey ? "************************" : I18n.ts("security.notSet");
-    let publicKeyStyle = $user.publicKey ? "value" : "value-alt"
+    const supportsWebAuthn = supported();
+    let publicKey = $user.usePublicKey ? "************************" :
+            supportsWebAuthn ? I18n.ts("security.notSet") : I18n.ts("security.notSupported");
+
+    let publicKeyStyle = $user.usePublicKey ? "value" : "value-alt";
+
 </script>
 
 <style>
@@ -125,13 +130,15 @@
                     </div>
                 </td>
             </tr>
-            <tr class="name" on:click={() => navigate("/webauthn")}>
+            <tr class:name={supportsWebAuthn} on:click={() => supportsWebAuthn && navigate("/webauthn")}>
                 <td class="attr">{I18n.t("security.usePublicKey")}</td>
                 <td class="{publicKeyStyle}">
                     <div class="value-container">
                         <span>{publicKey}</span>
-                        <a class="menu-link" href="/webauthn"
-                           on:click|preventDefault|stopPropagation={() => navigate("/webauthn")}>{@html chevron_right}</a>
+                        {#if supportsWebAuthn}
+                            <a class="menu-link" href="/webauthn"
+                               on:click|preventDefault|stopPropagation={() => supported() && navigate("/webauthn")}>{@html chevron_right}</a>
+                        {/if}
                     </div>
                 </td>
             </tr>

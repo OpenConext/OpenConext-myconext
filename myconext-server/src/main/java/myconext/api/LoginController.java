@@ -32,7 +32,8 @@ public class LoginController {
                            @Value("${email.magic-link-url}") String magicLinkUrl,
                            @Value("${domain}") String domain,
                            @Value("${secure_cookie}") boolean secureCookie,
-                           @Value("${idp_redirect_url}") String idpBaseUrl) {
+                           @Value("${idp_redirect_url}") String idpBaseUrl,
+                           @Value("${sp_redirect_url}") String spBaseUrl) {
         this.config.put("loginUrl", basePath + "/login");
         this.config.put("baseDomain", baseDomain);
         this.config.put("migrationUrl", String.format("%s/Shibboleth.sso/Login?entityID=%s&target=/migration", myConextUrl, oneGiniEntityId));
@@ -40,6 +41,7 @@ public class LoginController {
         this.config.put("eduIDLoginUrl", String.format("%s/Shibboleth.sso/Login?entityID=%s", myConextUrl, guestIdpEntityId));
         this.config.put("eduIDRegisterUrl", String.format("%s/register", idpBaseUrl));
         this.config.put("eduIDWebAuthnUrl", String.format("%s/webauthn", idpBaseUrl));
+        this.config.put("eduIDWebAuthnRedirectSpUrl", String.format("%s/webauthn", spBaseUrl));
         this.config.put("domain", domain);
         this.secureCookie = secureCookie;
     }

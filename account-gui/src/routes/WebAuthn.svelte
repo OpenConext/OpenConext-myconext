@@ -1,5 +1,6 @@
 <script>
-    import {create, get, supported} from "@github/webauthn-json"
+    import {create, get, supported} from "@github/webauthn-json";
+    import {conf} from "../stores/conf";
     import {onMount} from "svelte";
     import {webAuthnRegistration, webAuthnRegistrationResponse} from "../api";
     import Spinner from "../components/Spinner.svelte";
@@ -12,15 +13,21 @@
         const urlSearchParams = new URLSearchParams(window.location.search);
         const token = urlSearchParams.get("token");
         webAuthnRegistration(token)
-                .then(res => {
+                .then(request => {
                     loading = false;
-                    create({publicKey: res}).then(credentials => {
-                        delete credentials["rawId"];
-                        webAuthnRegistrationResponse(token, JSON.stringify(credentials))
-                    })
+                    create({publicKey: request})
+                            .then(credentials => {
+                                //rawId is not supported server-side
+                                delete credentials["rawId"];
+                                webAuthnRegistrationResponse(token, JSON.stringify(credentials), request)
+                                        .then(res => window.location.href = res.location);
+                            })
+                            .catch(() => {
+                                //happens when the key is already registered
+                                window.location.href = $conf.eduIDWebAuthnRedirectSpUrl;
+                            })
                 })
                 .catch(() => navigate("/404"));
-
     });
 
 </script>

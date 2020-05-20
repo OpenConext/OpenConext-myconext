@@ -1,5 +1,4 @@
 <script>
-    import {create, get, supported} from "@github/webauthn-json"
     import {config, user, flash} from "../stores/user";
     import I18n from "i18n-js";
     import {startWebAuthFlow} from "../api";
@@ -16,7 +15,6 @@
         startWebAuthFlow().then(res => {
             window.location.href = `${$config.eduIDWebAuthnUrl}?token=${res.token}`
         });
-
     }
 
     const cancel = () => navigate("/security");
@@ -104,6 +102,12 @@
         <p class="info2">{I18n.t("webauthn.info2", {action: usePublicKey ? I18n.ts("webauthn.updateUpdate") : I18n.ts("webauthn.setUpdate")})}</p>
         {#if loading}
             <Spinner/>
+        {/if}
+        {#if usePublicKey}
+            {#each Object.keys($user.publicKeyCredentials) as key}
+                <p>{key}</p>
+                <p>{$user.publicKeyCredentials[key]}</p>
+            {/each}
         {/if}
         <div class="options">
             <Button className="cancel" label={I18n.ts("password.cancel")} onClick={cancel}/>

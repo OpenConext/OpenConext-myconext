@@ -1,11 +1,17 @@
 package myconext.api;
 
+import com.yubico.webauthn.AssertionRequest;
+import com.yubico.webauthn.AssertionResult;
+import com.yubico.webauthn.FinishAssertionOptions;
 import com.yubico.webauthn.FinishRegistrationOptions;
 import com.yubico.webauthn.RegistrationResult;
 import com.yubico.webauthn.RelyingParty;
+import com.yubico.webauthn.StartAssertionOptions;
 import com.yubico.webauthn.StartRegistrationOptions;
+import com.yubico.webauthn.data.AuthenticatorAssertionResponse;
 import com.yubico.webauthn.data.AuthenticatorAttestationResponse;
 import com.yubico.webauthn.data.ByteArray;
+import com.yubico.webauthn.data.ClientAssertionExtensionOutputs;
 import com.yubico.webauthn.data.ClientRegistrationExtensionOutputs;
 import com.yubico.webauthn.data.PublicKeyCredential;
 import com.yubico.webauthn.data.PublicKeyCredentialCreationOptions;
@@ -13,8 +19,8 @@ import com.yubico.webauthn.data.PublicKeyCredentialDescriptor;
 import com.yubico.webauthn.data.RelyingPartyIdentity;
 import com.yubico.webauthn.data.UserIdentity;
 import com.yubico.webauthn.data.exception.Base64UrlException;
+import com.yubico.webauthn.exception.AssertionFailedException;
 import com.yubico.webauthn.exception.RegistrationFailedException;
-import lombok.NonNull;
 import myconext.exceptions.ExpiredAuthenticationException;
 import myconext.exceptions.ForbiddenException;
 import myconext.exceptions.UserNotFoundException;
@@ -53,7 +59,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 import java.io.IOException;
-import java.net.URI;
+import java.lang.reflect.Field;
 import java.net.URISyntaxException;
 import java.security.SecureRandom;
 import java.util.Base64;
@@ -77,6 +83,7 @@ public class UserController {
     private String schacHomeOrganization;
     private String guestIdpEntityId;
     private String webAuthnSpRedirectUrl;
+    private RelyingParty relyingParty;
     private UserCredentialRepository userCredentialRepository;
 
     private SecureRandom random = new SecureRandom();
@@ -92,7 +99,9 @@ public class UserController {
                           @Value("${schac_home_organization}") String schacHomeOrganization,
                           @Value("${guest_idp_entity_id}") String guestIdpEntityId,
                           @Value("${email_guessing_sleep_millis}") int emailGuessingSleepMillis,
-                          @Value("${sp_redirect_url}") String spBaseUrl) {
+                          @Value("${sp_redirect_url}") String spBaseUrl,
+                          @Value("${rp_origin}") String rpOrigin,
+                          @Value("${rp_id}") String rpId) {
         this.userRepository = userRepository;
         this.userCredentialRepository = userCredentialRepository;
         this.authenticationRequestRepository = authenticationRequestRepository;
@@ -102,6 +111,7 @@ public class UserController {
         this.schacHomeOrganization = schacHomeOrganization;
         this.guestIdpEntityId = guestIdpEntityId;
         this.webAuthnSpRedirectUrl = String.format("%s/webauthn", spBaseUrl);
+        this.relyingParty = relyingParty(rpId, rpOrigin);
         this.emailGuessingPreventor = new EmailGuessingPrevention(emailGuessingSleepMillis);
     }
 
@@ -126,7 +136,7 @@ public class UserController {
         userToSave.encryptPassword(user.getPassword(), passwordEncoder);
         userToSave = userRepository.save(userToSave);
 
-        return this.doMagicLink(userToSave, samlAuthenticationRequest, magicLinkRequest, false);
+        return this.doMagicLink(userToSave, samlAuthenticationRequest, magicLinkRequest.isRememberMe(), false);
     }
 
     @PutMapping("/idp/magic_link_request")
@@ -163,7 +173,7 @@ public class UserController {
 
             SecurityContextHolder.getContext().setAuthentication(authentication);
         }
-        return doMagicLink(user, samlAuthenticationRequest, magicLinkRequest, magicLinkRequest.isUsePassword());
+        return doMagicLink(user, samlAuthenticationRequest, magicLinkRequest.isRememberMe(), magicLinkRequest.isUsePassword());
     }
 
     @GetMapping(value = {"/sp/me", "sp/migrate/merge", "sp/migrate/proceed"})
@@ -217,19 +227,19 @@ public class UserController {
     }
 
     @GetMapping("sp/security/webauthn")
-    public ResponseEntity spStartWebauthFlow(Authentication authentication) {
+    public ResponseEntity spStartWebAuthFlow(Authentication authentication) {
         //We need to go from the SP to the IdP and best is too do everything server side, but we need a temporary identifier for the user
-        User user = (User) authentication.getPrincipal();
-        byte bytes[] = new byte[64];
-        this.random.nextBytes(bytes);
-        Base64.Encoder encoder = Base64.getUrlEncoder().withoutPadding();
-        String webAuthnIdentifier = encoder.encodeToString(bytes);
+        String id = ((User) authentication.getPrincipal()).getId();
+        User user = userRepository.findById(id).orElseThrow(UserNotFoundException::new);
+
+        String webAuthnIdentifier = this.hash();
         user.setWebAuthnIdentifier(webAuthnIdentifier);
         userRepository.save(user);
+
         return ResponseEntity.status(200).body(Collections.singletonMap("token", webAuthnIdentifier));
     }
 
-    @PostMapping("idp/security/webauthn")
+    @PostMapping("idp/security/webauthn/registration")
     public ResponseEntity idpWebAuthnRegistration(@RequestBody Map<String, String> body) throws Base64UrlException {
         String token = body.get("token");
         Optional<User> optionalUser = userRepository.findUserByWebAuthnIdentifier(token);
@@ -238,62 +248,146 @@ public class UserController {
         }
 
         User user = optionalUser.get();
-        PublicKeyCredentialCreationOptions request = publicKeyCredentialCreationOptions(relyingParty(), user);
-                /*
-        We must store the PublicKeyCredentialCreationOptions instance in a cache because in step 11, we need to pass this object to the finishRegistration() method as an argument.
-         */
-        /*
-        Store this as JSON in MongoDB
-         */
-
+        if (StringUtils.isEmpty(user.getUserHandle())) {
+            user.setUserHandle(this.hash());
+            userRepository.save(user);
+        }
+        PublicKeyCredentialCreationOptions request = publicKeyCredentialCreationOptions(this.relyingParty, user);
         return ResponseEntity.status(200).body(request);
+    }
+
+    @PostMapping("idp/security/webauthn/authentication")
+    public ResponseEntity idpWebAuthnStartAuthentication(@RequestBody Map<String, String> body) throws Base64UrlException {
+        String email = body.get("email");
+        emailGuessingPreventor.potentialUserEmailGuess();
+        User user = userRepository.findUserByEmailIgnoreCase(email).orElseThrow(UserNotFoundException::new);
+
+        AssertionRequest request = this.relyingParty.startAssertion(StartAssertionOptions.builder()
+                .username(Optional.of(user.getEmail()))
+                .build());
+        return ResponseEntity.status(200).body(request);
+    }
+
+    @PutMapping("idp/security/webauthn/authentication")
+    public ResponseEntity idpWebAuthnTryAuthentication(@RequestBody Map<String, Object> body) throws Base64UrlException, IOException, AssertionFailedException, NoSuchFieldException, IllegalAccessException {
+        String authenticationRequestId = (String) body.get("authenticationRequestId");
+        SamlAuthenticationRequest samlAuthenticationRequest = authenticationRequestRepository.findByIdAndNotExpired(authenticationRequestId)
+                .orElseThrow(ExpiredAuthenticationException::new);
+
+        boolean rememberMe = (boolean) body.get("rememberMe");
+        Map<String, Object> request = (Map<String, Object>) body.get("request");
+        Map<String, Object> publicKeyCredentialRequestOptions = (Map<String, Object>) request.get("publicKeyCredentialRequestOptions");
+        String challenge = (String) publicKeyCredentialRequestOptions.get("challenge");
+        String email = (String) request.get("username");
+
+        PublicKeyCredential<AuthenticatorAssertionResponse, ClientAssertionExtensionOutputs> pkc =
+                PublicKeyCredential.parseAssertionResponseJson((String) body.get("credentials"));
+
+        AssertionRequest assertionRequest = this.relyingParty.startAssertion(StartAssertionOptions.builder()
+                .username(Optional.of(email))
+                .build());
+        this.restoreChallenge(assertionRequest.getPublicKeyCredentialRequestOptions(), ByteArray.fromBase64Url(challenge));
+
+        AssertionResult result = this.relyingParty.finishAssertion(FinishAssertionOptions.builder()
+                .request(assertionRequest)
+                .response(pkc)
+                .build());
+
+        if (!result.isSuccess()) {
+            throw new ForbiddenException();
+        }
+
+        Optional<User> optionalUser = userRepository.findUserByEmailIgnoreCase(email);
+        if (!optionalUser.isPresent()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Collections.singletonMap("status", HttpStatus.NOT_FOUND.value()));
+        }
+        User user = optionalUser.get();
+        String preferredLanguage = user.getPreferredLanguage();
+        String language = LocaleContextHolder.getLocale().getLanguage();
+
+        if (StringUtils.isEmpty(preferredLanguage) || !preferredLanguage.equals(language)) {
+            user.setPreferredLanguage(language);
+            userRepository.save(user);
+        }
+
+        UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(user, null,
+                user.getAuthorities());
+
+        LOG.info(String.format("User %s successfully logged in with AuthnWeb", user.getUsername()));
+
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+        return doMagicLink(user, samlAuthenticationRequest, rememberMe, true);
     }
 
     private PublicKeyCredentialCreationOptions publicKeyCredentialCreationOptions(RelyingParty relyingParty, User user) throws Base64UrlException {
         return relyingParty.startRegistration(StartRegistrationOptions.builder()
-                    .user(UserIdentity.builder()
-                            .name(user.getEmail())
-                            .displayName(String.format("%s %s", user.getGivenName(), user.getFamilyName()))
-                            .id(ByteArray.fromBase64Url(user.getWebAuthnIdentifier()))
-                            .build())
-                    .build());
+                .user(UserIdentity.builder()
+                        .name(user.getEmail())
+                        .displayName(String.format("%s %s", user.getGivenName(), user.getFamilyName()))
+                        .id(ByteArray.fromBase64Url(user.getUserHandle()))
+                        .build())
+                .build());
     }
 
-    private RelyingParty relyingParty() {
+    private RelyingParty relyingParty(String rpId, String rpOrigin) {
         RelyingPartyIdentity rpIdentity = RelyingPartyIdentity.builder()
-                .id("localhost")
+                .id(rpId)
                 .name("eduID")
                 .build();
         return RelyingParty.builder()
-                    .identity(rpIdentity)
-                    .credentialRepository(this.userCredentialRepository)
-                    .origins(Collections.singleton("http://localhost:3000"))
-                    .build();
+                .identity(rpIdentity)
+                .credentialRepository(this.userCredentialRepository)
+                .origins(Collections.singleton(rpOrigin))
+                .build();
     }
 
-    @PutMapping("idp/security/webauthn")
-    public ResponseEntity idpWebAuthn(@RequestBody Map<String, String> body) throws URISyntaxException, IOException, Base64UrlException, RegistrationFailedException {
-        String token = body.get("token");
+    /*
+     * See https://github.com/Yubico/java-webauthn-server
+     */
+    @PutMapping("idp/security/webauthn/registration")
+    public ResponseEntity idpWebAuthn(@RequestBody Map<String, Object> body) {
+        try {
+            return doIdpWebAuthn(body);
+        } catch (Exception e) {
+            //We always want to redirect back to the SP
+            return ResponseEntity.status(201).body(Collections.singletonMap("location", webAuthnSpRedirectUrl));
+        }
+    }
+
+    private ResponseEntity doIdpWebAuthn(Map<String, Object> body) throws IOException, Base64UrlException, RegistrationFailedException, NoSuchFieldException, IllegalAccessException {
+        String token = (String) body.get("token");
         Optional<User> optionalUser = userRepository.findUserByWebAuthnIdentifier(token);
         if (!optionalUser.isPresent()) {
             throw new UserNotFoundException();
         }
         PublicKeyCredential<AuthenticatorAttestationResponse, ClientRegistrationExtensionOutputs> pkc =
-                PublicKeyCredential.parseRegistrationResponseJson(body.get("credentials"));
-        RelyingParty rp = relyingParty();
+                PublicKeyCredential.parseRegistrationResponseJson((String) body.get("credentials"));
 
         User user = optionalUser.get();
-        PublicKeyCredentialCreationOptions request = this.publicKeyCredentialCreationOptions(rp, user);
-        RegistrationResult result = rp.finishRegistration(FinishRegistrationOptions.builder()
+        //remove the webAuthnIdentifier
+        user.setWebAuthnIdentifier(null);
+
+        Object previousStepRequest = body.get("request");
+        PublicKeyCredentialCreationOptions request = this.publicKeyCredentialCreationOptions(this.relyingParty, user);
+        this.restoreChallenge(request, ByteArray.fromBase64Url((String) ((Map) previousStepRequest).get("challenge")));
+
+        RegistrationResult result = this.relyingParty.finishRegistration(FinishRegistrationOptions.builder()
                 .request(request)
                 .response(pkc)
                 .build());
-//https://github.com/Yubico/java-webauthn-server
-        //storeCredential("alice", result.getKeyId(), result.getPublicKeyCose());
+
         PublicKeyCredentialDescriptor keyId = result.getKeyId();
         ByteArray publicKeyCose = result.getPublicKeyCose();
-        //how are we going to store this - base64.urlEncoding ?
-        return ResponseEntity.status(302).location(new URI(webAuthnSpRedirectUrl)).build();
+        user.addPublicKeyCredential(keyId, publicKeyCose);
+        userRepository.save(user);
+
+        return ResponseEntity.status(201).body(Collections.singletonMap("location", webAuthnSpRedirectUrl));
+    }
+
+    private void restoreChallenge(Object challengeContainer, ByteArray challenge) throws NoSuchFieldException, IllegalAccessException {
+        Field challengeField = challengeContainer.getClass().getDeclaredField("challenge");
+        challengeField.setAccessible(true);
+        challengeField.set(challengeContainer, challenge);
     }
 
     @GetMapping("/sp/logout")
@@ -332,17 +426,17 @@ public class UserController {
         return userRepository.findOneUserByEmailIgnoreCase(principal.getEmail());
     }
 
-    private ResponseEntity doMagicLink(User user, SamlAuthenticationRequest samlAuthenticationRequest, MagicLinkRequest magicLinkRequest,
-                                       boolean passwordFlow) {
+    private ResponseEntity doMagicLink(User user, SamlAuthenticationRequest samlAuthenticationRequest, boolean rememberMe,
+                                       boolean passwordOrWebAuthnFlow) {
         samlAuthenticationRequest.setHash(hash());
         samlAuthenticationRequest.setUserId(user.getId());
-        samlAuthenticationRequest.setRememberMe(magicLinkRequest.isRememberMe());
-        if (magicLinkRequest.isRememberMe()) {
+        samlAuthenticationRequest.setRememberMe(rememberMe);
+        if (rememberMe) {
             samlAuthenticationRequest.setRememberMeValue(UUID.randomUUID().toString());
         }
 
         authenticationRequestRepository.save(samlAuthenticationRequest);
-        if (passwordFlow) {
+        if (passwordOrWebAuthnFlow) {
             return ResponseEntity.status(201).body(Collections.singletonMap("url", this.magicLinkUrl + "?h=" + samlAuthenticationRequest.getHash()));
         } else {
             if (user.isNewUser()) {

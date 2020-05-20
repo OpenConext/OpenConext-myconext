@@ -40,6 +40,7 @@ I18n.translations.en = {
         usePassword: "Password",
         usePublicKey: "WebAuthn",
         notSet: "Not set",
+        notSupported: "Not supported",
         useMagicLink: "Send magic link to",
         rememberMe: "Stay logged in",
         rememberMetrue: "Yes",

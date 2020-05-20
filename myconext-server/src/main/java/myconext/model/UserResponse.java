@@ -2,7 +2,10 @@ package myconext.model;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
+
+import java.util.Map;
 
 @Getter
 public class UserResponse {
@@ -13,6 +16,7 @@ public class UserResponse {
     private String familyName;
     private boolean usePassword;
     private boolean usePublicKey;
+    private Map<String, String> publicKeyCredentials;
     private String schacHomeOrganization;
     private String uid;
     private boolean rememberMe;
@@ -26,7 +30,8 @@ public class UserResponse {
         this.schacHomeOrganization = user.getSchacHomeOrganization();
         this.uid = user.getUid();
         this.usePassword = StringUtils.hasText(user.getPassword());
-        this.usePublicKey = StringUtils.hasText(user.getPublicKey());
+        this.publicKeyCredentials = user.getPublicKeyCredentials();
+        this.usePublicKey = !CollectionUtils.isEmpty(this.publicKeyCredentials);
         this.rememberMe = rememberMe;
         this.created = user.getCreated();
     }

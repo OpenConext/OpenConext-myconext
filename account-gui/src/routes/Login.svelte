@@ -1,5 +1,7 @@
 <script>
     import {user} from "../stores/user";
+
+    import {get} from "@github/webauthn-json";
     import {validEmail} from "../validation/regexp";
     import I18n from "i18n-js";
     import critical from "../icons/critical.svg"
@@ -10,11 +12,13 @@
     import {onMount} from "svelte";
     import Cookies from "js-cookie";
     import Button from "../components/Button.svelte";
+    import {webAuthnStartAuthentication, webAuthnTryAuthentication} from "../api";
 
     export let id;
     let emailInUse = false;
     let emailNotFound = false;
     let emailOrPasswordIncorrect = false;
+    let webAuthIncorrect = false;
     let initial = true;
     let showSpinner = false;
     let serviceName = "";
@@ -70,7 +74,7 @@
                                     sameSite: "Lax"
                                 });
                                 if ($user.usePassword) {
-                                    window.location.href = json.url
+                                    window.location.href = json.url;
                                 } else {
                                     navigate(`/magic/${id}?name=${encodeURIComponent(serviceName)}&modus=${modus}`, {replace: true});
                                 }
@@ -113,6 +117,34 @@
         return $user.createAccount ? validEmail(email) && familyName && givenName && agreedWithTerms :
                 $user.usePassword ? validEmail(email) && password : validEmail(email);
     };
+
+    const webAuthnStart = email => {
+        webAuthnStartAuthentication(email)
+                .then(request => {
+                    get({publicKey: request.publicKeyCredentialRequestOptions})
+                            .then(credentials => {
+                                //rawId is not supported server-side
+                                delete credentials["rawId"];
+                                webAuthnTryAuthentication(JSON.stringify(credentials), request, id, $user.rememberMe)
+                                        .then(json => window.location.href = json.url)
+                                        .catch(() => {
+                                            debugger;
+                                            webAuthIncorrect = true;
+                                        })
+                            }).catch(e => {
+                        webAuthIncorrect = true;
+                        debugger;
+                    });
+                })
+                .catch(e => {
+                    debugger;
+                    if (e.status === 404) {
+                        emailNotFound = true;
+                        emailOrPasswordIncorrect = false;
+                        emailInUse = false;
+                    }
+                })
+    }
 
     const createAccount = newAccount => () => {
         $user.createAccount = newAccount;
@@ -254,7 +286,8 @@
     <div class="error"><span class="svg">{@html critical}</span><span>{I18n.ts("login.emailNotFound")}</span></div>
 {/if}
 {#if $user.usePassword && emailOrPasswordIncorrect}
-    <div class="error"><span class="svg">{@html critical}</span><span>{I18n.ts("login.emailOrPasswordIncorrect")}</span></div>
+    <div class="error"><span class="svg">{@html critical}</span><span>{I18n.ts("login.emailOrPasswordIncorrect")}</span>
+    </div>
 {/if}
 {#if !initial && !validEmail($user.email)}
     <div class="error"><span class="svg">{@html critical}</span><span>{I18n.ts("login.invalidEmail")}</span></div>
@@ -336,6 +369,12 @@
                 <span>{I18n.t("login.usePasswordLinkInfo")}</span>
             </div>
         {/if}
+        <Button href="/webauthn"
+                disabled={showSpinner || (!validEmail($user.email) && !$user.usePassword)}
+                label={"WEBAUTHN"}
+                className="full"
+                onClick={() => webAuthnStart($user.email)}/>
+
     </div>
 {/if}
 <div class="info-bottom">

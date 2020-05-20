@@ -1,6 +1,8 @@
 package myconext.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.yubico.webauthn.data.ByteArray;
+import com.yubico.webauthn.data.PublicKeyCredentialDescriptor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import myconext.exceptions.WeakPasswordException;
@@ -18,6 +20,8 @@ import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 
 import static myconext.validation.PasswordStrength.strongEnough;
 
@@ -36,10 +40,11 @@ public class User implements Serializable, UserDetails {
     private String schacHomeOrganization;
     private String authenticatingAuthority;
     private String password;
-    private String publicKey;
+    private Map<String, String> publicKeyCredentials = new HashMap<>();
     private boolean newUser;
     private String preferredLanguage;
     private String webAuthnIdentifier;
+    private String userHandle;
 
     private long created;
     private long updatedAt = System.currentTimeMillis() / 1000L;
@@ -74,8 +79,11 @@ public class User implements Serializable, UserDetails {
         }
     }
 
-    public void setPublicKey(String publicKey) {
-        this.publicKey = publicKey;
+    public void addPublicKeyCredential(PublicKeyCredentialDescriptor publicKeyCredentialDescriptor,
+                                       ByteArray publicKeyCredential) {
+        this.publicKeyCredentials.put(
+                publicKeyCredentialDescriptor.getId().getBase64Url(),
+                publicKeyCredential.getBase64Url());
     }
 
     @Override
@@ -136,5 +144,9 @@ public class User implements Serializable, UserDetails {
 
     public void setWebAuthnIdentifier(String webAuthnIdentifier) {
         this.webAuthnIdentifier = webAuthnIdentifier;
+    }
+
+    public void setUserHandle(String userHandle) {
+        this.userHandle = userHandle;
     }
 }
