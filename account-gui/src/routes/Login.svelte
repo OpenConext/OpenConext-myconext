@@ -1,5 +1,6 @@
 <script>
     import {user} from "../stores/user";
+    import {conf} from "../stores/conf";
 
     import {get} from "@github/webauthn-json";
     import {validEmail} from "../validation/regexp";
@@ -37,6 +38,7 @@
     onMount(() => {
         const value = Cookies.get("login_preference");
         $user.usePassword = value === "usePassword";
+        $user.useWebAuth = value === "useWebAuth";
         const urlParams = new URLSearchParams(window.location.search);
         serviceName = urlParams.get("name");
 
@@ -68,7 +70,7 @@
                 } else {
                     magicLinkExistingUser($user.email, $user.password, $user.rememberMe, $user.usePassword, id)
                             .then(json => {
-                                Cookies.set("login_preference", $user.usePassword ? "usePassword" : "useLink", {
+                                Cookies.set("login_preference", $user.usePassword ? "usePassword" : $user.useWebAuth ? "useWebAuth" : "useLink", {
                                     expires: 365,
                                     secure: true,
                                     sameSite: "Lax"
@@ -111,6 +113,11 @@
         }
     };
 
+    const switchBackToMagicLink = () => {
+        $user.useWebAuth = false;
+        $user.usePassword = false;
+    }
+
     const init = el => el.focus();
 
     const allowedNext = (email, familyName, givenName, password, agreedWithTerms) => {
@@ -119,13 +126,13 @@
     };
 
     const webAuthnStart = email => {
-        webAuthnStartAuthentication(email)
+        webAuthnStartAuthentication(email, id)
                 .then(request => {
                     get({publicKey: request.publicKeyCredentialRequestOptions})
                             .then(credentials => {
                                 //rawId is not supported server-side
                                 delete credentials["rawId"];
-                                webAuthnTryAuthentication(JSON.stringify(credentials), request, id, $user.rememberMe)
+                                webAuthnTryAuthentication(JSON.stringify(credentials), id, $user.rememberMe)
                                         .then(json => window.location.href = json.url)
                                         .catch(() => {
                                             debugger;
@@ -241,6 +248,10 @@
         margin-top: 20px;
     }
 
+    div.password-option div.part {
+        margin-top: 8px;
+    }
+
     span.no-password-needed {
         display: inline-block;
         margin-bottom: 10px;
@@ -323,7 +334,7 @@
         <Button disabled={showSpinner || !allowedNext($user.email, $user.familyName, $user.givenName, $user.password, agreedWithTerms)}
                 href="/magic"
                 className="full"
-                label={$user.createAccount ? I18n.ts("login.requestEduId"): I18n.ts("login.sendMagicLink")}
+                label={I18n.ts("login.requestEduId")}
                 onClick={handleNext(false)}/>
     </div>
 {:else}
@@ -346,34 +357,63 @@
               name="remember-me"
               onChange={val => $user.rememberMe = val}/>
     <div class="options">
-        {#if $user.usePassword}
+        {#if $user.usePassword && !$user.useWebAuth}
             <Button href={`/${$user.usePassword ?  I18n.ts("login.login") : I18n.ts("login.usePassword")}`}
                     disabled={showSpinner ||!allowedNext($user.email, $user.familyName, $user.givenName, $user.password, true) && $user.usePassword}
                     label={$user.usePassword ?  I18n.ts("login.login") : I18n.ts("login.usePassword")}
                     className="full"
                     onClick={handleNext(true)}/>
             <div class="password-option">
-                <span>{I18n.ts("login.passwordForgotten")}</span>
-                <a href={I18n.ts("login.login")}
-                   on:click|preventDefault|stopPropagation={handleNext(false)}>{I18n.ts("login.passwordForgottenLink")}</a>
+                <div>
+                    <span>{I18n.ts("login.passwordForgotten")}</span>
+                    <a href={I18n.ts("login.login")}
+                       on:click|preventDefault|stopPropagation={handleNext(false)}>{I18n.ts("login.passwordForgottenLink")}</a>
+                </div>
+                {#if $conf.featureWebAuthn}
+                    <div class="part"><a href={I18n.ts("login.useWebAuth")}
+                                         on:click|preventDefault|stopPropagation={() => $user.useWebAuth = true}>{I18n.ts("login.useWebAuthnLink")}</a>
+                        <span>{I18n.t("login.useWebAuthnLinkInfo")}</span></div>
+                {/if}
             </div>
-        {:else}
+        {:else if !$user.usePassword && !$user.useWebAuth}
             <Button href="/magic"
                     disabled={showSpinner ||!allowedNext($user.email, $user.familyName, $user.givenName, $user.password, true) && !$user.usePassword}
                     label={$user.usePassword ?  I18n.ts("login.useMagicLink") : I18n.ts("login.sendMagicLink")}
                     className="full"
                     onClick={handleNext(false)}/>
             <div class="password-option">
-                <a href={I18n.ts("login.usePassword")}
-                   on:click|preventDefault|stopPropagation={handleNext(true)}>{I18n.ts("login.usePasswordLink")}</a>
-                <span>{I18n.t("login.usePasswordLinkInfo")}</span>
+                <div>
+                    <a href={I18n.ts("login.usePassword")}
+                       on:click|preventDefault|stopPropagation={handleNext(true)}>{I18n.ts("login.usePasswordLink")}</a>
+                    <span>{I18n.t("login.usePasswordLinkInfo")}</span>
+                </div>
+                {#if $conf.featureWebAuthn}
+                    <div class="part">
+                        <a href={I18n.ts("login.useWebAuth")}
+                           on:click|preventDefault|stopPropagation={() => $user.useWebAuth = true}>{I18n.ts("login.useWebAuthnLink")}</a>
+                        <span>{I18n.t("login.useWebAuthnLinkInfo")}</span>
+                    </div>
+                {/if}
             </div>
+        {:else}
+            <Button href="/webauthn"
+                    disabled={showSpinner || (!validEmail($user.email) && !$user.usePassword)}
+                    label={I18n.t("login.useWebAuth")}
+                    className="full"
+                    onClick={() => webAuthnStart($user.email)}/>
+            <div class="password-option">
+                <div>
+                    <a href={I18n.ts("login.usePassword")}
+                       on:click|preventDefault|stopPropagation={handleNext(true)}>{I18n.ts("login.usePasswordLink")}</a>
+                    <span>{I18n.t("login.usePasswordLinkInfo")}</span>
+                </div>
+                <div class="part">
+                    <a href={I18n.ts("login.login")}
+                       on:click|preventDefault|stopPropagation={switchBackToMagicLink}>{I18n.ts("login.passwordForgottenLink")}</a>
+                </div>
+            </div>
+
         {/if}
-        <Button href="/webauthn"
-                disabled={showSpinner || (!validEmail($user.email) && !$user.usePassword)}
-                label={"WEBAUTHN"}
-                className="full"
-                onClick={() => webAuthnStart($user.email)}/>
 
     </div>
 {/if}

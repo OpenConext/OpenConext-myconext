@@ -15,6 +15,7 @@ I18n.translations.en = {
         usePassword: "Use password",
         useMagicLink: "Use magic link",
         sendMagicLink: "Send magic link",
+        useWebAuth: "Use webAuthn",
         requestEduId: "Request your eduID",
         rememberMe: "Stay logged in",
         password: "Your password",
@@ -37,6 +38,8 @@ I18n.translations.en = {
         noPasswordNeeded: "No password needed. We'll send a magic link to your email address to sign in instantly.",
         usePasswordLink: "Type a password anyway",
         usePasswordLinkInfo: " if you have set one.",
+        useWebAuthnLink: "Or use WebAuthn",
+        useWebAuthnLinkInfo: " if you have added public keys.",
         whatis: "What is eduID?",
         agreeWithTerms: "<span>I agree with <a href='https://eduid.nl/terms_of_service/' target='_blank'>the terms of service.</a> I also understand <a href='https://eduid.nl/privacy_policy/' target='_blank'>the privacy policy</a>.</span>"
     },

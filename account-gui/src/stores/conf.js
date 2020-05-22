@@ -4,5 +4,6 @@ export const conf = writable({
     migrationUrl: "",
     magicLinkUrl: "",
     domain: "",
-    eduIDWebAuthnRedirectSpUrl: ""
+    eduIDWebAuthnRedirectSpUrl: "",
+    featureWebAuthn: false
 });

@@ -7,5 +7,6 @@ export const user = writable({
     password: "",
     rememberMe: false,
     usePassword: false,
+    useWebAuth: false,
     createAccount: false
 });

@@ -94,6 +94,7 @@ I18n.translations.en = {
       back: "/security",
       setUpdate: "Start",
       updateUpdate: "Add device",
+      currentKeys: "You currently have registered {{count}} public key(s)."
 
     },
     rememberMe: {

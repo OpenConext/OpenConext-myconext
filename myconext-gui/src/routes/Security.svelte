@@ -1,5 +1,5 @@
 <script>
-    import {user, flash} from "../stores/user";
+    import {user, flash, config} from "../stores/user";
     import I18n from "i18n-js";
     import {navigate} from "svelte-routing";
     import chevron_right from "../icons/chevron-right.svg";
@@ -130,18 +130,20 @@
                     </div>
                 </td>
             </tr>
-            <tr class:name={supportsWebAuthn} on:click={() => supportsWebAuthn && navigate("/webauthn")}>
-                <td class="attr">{I18n.t("security.usePublicKey")}</td>
-                <td class="{publicKeyStyle}">
-                    <div class="value-container">
-                        <span>{publicKey}</span>
-                        {#if supportsWebAuthn}
-                            <a class="menu-link" href="/webauthn"
-                               on:click|preventDefault|stopPropagation={() => supported() && navigate("/webauthn")}>{@html chevron_right}</a>
-                        {/if}
-                    </div>
-                </td>
-            </tr>
+            {#if $config.featureWebAuthn }
+                <tr class:name={supportsWebAuthn} on:click={() => supportsWebAuthn && navigate("/webauthn")}>
+                    <td class="attr">{I18n.t("security.usePublicKey")}</td>
+                    <td class="{publicKeyStyle}">
+                        <div class="value-container">
+                            <span>{publicKey}</span>
+                            {#if supportsWebAuthn}
+                                <a class="menu-link" href="/webauthn"
+                                   on:click|preventDefault|stopPropagation={() => supported() && navigate("/webauthn")}>{@html chevron_right}</a>
+                            {/if}
+                        </div>
+                    </td>
+                </tr>
+            {/if}
             <tr class:rememberme={$user.rememberMe} on:click={() => $user.rememberMe && navigate("/rememberme")}>
                 <td class="attr">{I18n.t("security.rememberMe")}</td>
                 <td class="value">

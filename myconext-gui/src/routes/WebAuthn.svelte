@@ -19,7 +19,6 @@
 
     const cancel = () => navigate("/security");
 
-
 </script>
 
 <style>
@@ -79,6 +78,11 @@
         margin-bottom: 32px;
     }
 
+    p.info3 {
+        margin-top: 22px;
+        margin-bottom: 32px;
+    }
+
     .options {
         margin-top: 60px;
     }
@@ -104,10 +108,7 @@
             <Spinner/>
         {/if}
         {#if usePublicKey}
-            {#each Object.keys($user.publicKeyCredentials) as key}
-                <p>{key}</p>
-                <p>{$user.publicKeyCredentials[key]}</p>
-            {/each}
+                <p class="info3">{I18n.t("webauthn.currentKeys", {count: Object.keys($user.publicKeyCredentials).length})}</p>
         {/if}
         <div class="options">
             <Button className="cancel" label={I18n.ts("password.cancel")} onClick={cancel}/>

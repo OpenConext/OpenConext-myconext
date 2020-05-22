@@ -34,6 +34,9 @@ guest_idp_entity_id: https://localhost.surf.id
 my_conext_url: https://my.test2.surfconext.nl
 domain: eduid.nl
 
+feature:
+  webauthn: True
+
 secure_cookie: false
 idp_entity_id: https://localhost.surf.id
 private_key_path: classpath:/id_rsa

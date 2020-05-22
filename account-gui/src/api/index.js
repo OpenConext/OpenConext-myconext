@@ -62,11 +62,11 @@ export function webAuthnRegistrationResponse(token, credentials, request) {
   return postPutJson("/myconext/api/idp/security/webauthn/registration", {token, credentials, request}, "PUT");
 }
 
-export function webAuthnStartAuthentication(email) {
-  return postPutJson("/myconext/api/idp/security/webauthn/authentication", {email}, "POST");
+export function webAuthnStartAuthentication(email, authenticationRequestId) {
+  return postPutJson("/myconext/api/idp/security/webauthn/authentication", {email, authenticationRequestId}, "POST");
 }
 
-export function webAuthnTryAuthentication(credentials, request, authenticationRequestId, rememberMe) {
-  const body = {credentials, request, authenticationRequestId, rememberMe};
+export function webAuthnTryAuthentication(credentials, authenticationRequestId, rememberMe) {
+  const body = {credentials, authenticationRequestId, rememberMe};
   return postPutJson("/myconext/api/idp/security/webauthn/authentication", body, "PUT");
 }

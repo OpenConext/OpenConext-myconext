@@ -22,7 +22,8 @@ export const config = writable({
     myConextUrlGuestIdp: "",
     eduIDWebAuthnUrl: "",
     magicLinkUrl: "",
-    domain: ""
+    domain: "",
+    featureWebAuthn: false
 });
 
 export const redirectPath = writable("");

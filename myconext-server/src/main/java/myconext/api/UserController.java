@@ -26,12 +26,14 @@ import myconext.exceptions.ForbiddenException;
 import myconext.exceptions.UserNotFoundException;
 import myconext.mail.MailBox;
 import myconext.manage.ServiceNameResolver;
+import myconext.model.Challenge;
 import myconext.model.MagicLinkRequest;
 import myconext.model.SamlAuthenticationRequest;
 import myconext.model.UpdateUserSecurityRequest;
 import myconext.model.User;
 import myconext.model.UserResponse;
 import myconext.repository.AuthenticationRequestRepository;
+import myconext.repository.ChallengeRepository;
 import myconext.repository.UserRepository;
 import myconext.security.EmailGuessingPrevention;
 import myconext.webauthn.UserCredentialRepository;
@@ -85,6 +87,7 @@ public class UserController {
     private String webAuthnSpRedirectUrl;
     private RelyingParty relyingParty;
     private UserCredentialRepository userCredentialRepository;
+    private ChallengeRepository challengeRepository;
 
     private SecureRandom random = new SecureRandom();
     private PasswordEncoder passwordEncoder = new BCryptPasswordEncoder(-1, random);
@@ -92,6 +95,7 @@ public class UserController {
 
     public UserController(UserRepository userRepository,
                           UserCredentialRepository userCredentialRepository,
+                          ChallengeRepository challengeRepository,
                           AuthenticationRequestRepository authenticationRequestRepository,
                           MailBox mailBox,
                           ServiceNameResolver serviceNameResolver,
@@ -104,6 +108,7 @@ public class UserController {
                           @Value("${rp_id}") String rpId) {
         this.userRepository = userRepository;
         this.userCredentialRepository = userCredentialRepository;
+        this.challengeRepository = challengeRepository;
         this.authenticationRequestRepository = authenticationRequestRepository;
         this.mailBox = mailBox;
         this.serviceNameResolver = serviceNameResolver;
@@ -148,18 +153,11 @@ public class UserController {
 
         emailGuessingPreventor.potentialUserEmailGuess();
 
-        Optional<User> optionalUser = userRepository.findUserByEmailIgnoreCase(providedUser.getEmail());
+        Optional<User> optionalUser = findUserStoreLanguage(providedUser.getEmail());
         if (!optionalUser.isPresent()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Collections.singletonMap("status", HttpStatus.NOT_FOUND.value()));
+            return return404();
         }
         User user = optionalUser.get();
-        String preferredLanguage = user.getPreferredLanguage();
-        String language = LocaleContextHolder.getLocale().getLanguage();
-
-        if (StringUtils.isEmpty(preferredLanguage) || !preferredLanguage.equals(language)) {
-            user.setPreferredLanguage(language);
-            userRepository.save(user);
-        }
 
         if (magicLinkRequest.isUsePassword()) {
             if (!passwordEncoder.matches(providedUser.getPassword(), user.getPassword())) {
@@ -244,7 +242,7 @@ public class UserController {
         String token = body.get("token");
         Optional<User> optionalUser = userRepository.findUserByWebAuthnIdentifier(token);
         if (!optionalUser.isPresent()) {
-            throw new UserNotFoundException();
+            return return404();
         }
 
         User user = optionalUser.get();
@@ -253,18 +251,76 @@ public class UserController {
             userRepository.save(user);
         }
         PublicKeyCredentialCreationOptions request = publicKeyCredentialCreationOptions(this.relyingParty, user);
+        String challenge = request.getChallenge().getBase64Url();
+        //we need to store the challenge to retrieve it later on the way back
+        challengeRepository.save(new Challenge(token, challenge));
         return ResponseEntity.status(200).body(request);
     }
+
+    /*
+     * See https://github.com/Yubico/java-webauthn-server
+     */
+    @PutMapping("idp/security/webauthn/registration")
+    public ResponseEntity idpWebAuthn(@RequestBody Map<String, Object> body) {
+        try {
+            return doIdpWebAuthn(body);
+        } catch (Exception e) {
+            //We always want to redirect back to the SP
+            return ResponseEntity.status(201).body(Collections.singletonMap("location", webAuthnSpRedirectUrl));
+        }
+    }
+
+    private ResponseEntity doIdpWebAuthn(Map<String, Object> body) throws IOException, Base64UrlException, RegistrationFailedException, NoSuchFieldException, IllegalAccessException {
+        String token = (String) body.get("token");
+        Optional<User> optionalUser = userRepository.findUserByWebAuthnIdentifier(token);
+        if (!optionalUser.isPresent()) {
+            return return404();
+        }
+        PublicKeyCredential<AuthenticatorAttestationResponse, ClientRegistrationExtensionOutputs> pkc =
+                PublicKeyCredential.parseRegistrationResponseJson((String) body.get("credentials"));
+
+        User user = optionalUser.get();
+        //remove the webAuthnIdentifier
+        user.setWebAuthnIdentifier(null);
+
+        PublicKeyCredentialCreationOptions request = this.publicKeyCredentialCreationOptions(this.relyingParty, user);
+        //Needed to succeed the validation
+        Challenge challenge = challengeRepository.findByToken(token).orElseThrow(ForbiddenException::new);
+        this.restoreChallenge(request, ByteArray.fromBase64Url(challenge.getChallenge()));
+        challengeRepository.delete(challenge);
+
+        RegistrationResult result = this.relyingParty.finishRegistration(FinishRegistrationOptions.builder()
+                .request(request)
+                .response(pkc)
+                .build());
+        PublicKeyCredentialDescriptor keyId = result.getKeyId();
+        ByteArray publicKeyCose = result.getPublicKeyCose();
+        user.addPublicKeyCredential(keyId, publicKeyCose);
+        userRepository.save(user);
+
+        return ResponseEntity.status(201).body(Collections.singletonMap("location", webAuthnSpRedirectUrl));
+    }
+
 
     @PostMapping("idp/security/webauthn/authentication")
     public ResponseEntity idpWebAuthnStartAuthentication(@RequestBody Map<String, String> body) throws Base64UrlException {
         String email = body.get("email");
         emailGuessingPreventor.potentialUserEmailGuess();
-        User user = userRepository.findUserByEmailIgnoreCase(email).orElseThrow(UserNotFoundException::new);
+
+        Optional<User> optionalUser = userRepository.findUserByEmailIgnoreCase(email);
+        if (!optionalUser.isPresent()) {
+            return return404();
+        }
+        User user = optionalUser.get();
 
         AssertionRequest request = this.relyingParty.startAssertion(StartAssertionOptions.builder()
                 .username(Optional.of(user.getEmail()))
                 .build());
+
+        String authenticationRequestId = body.get("authenticationRequestId");
+        String challenge = request.getPublicKeyCredentialRequestOptions().getChallenge().getBase64Url();
+        challengeRepository.save(new Challenge(authenticationRequestId, challenge, user.getEmail()));
+
         return ResponseEntity.status(200).body(request);
     }
 
@@ -275,18 +331,15 @@ public class UserController {
                 .orElseThrow(ExpiredAuthenticationException::new);
 
         boolean rememberMe = (boolean) body.get("rememberMe");
-        Map<String, Object> request = (Map<String, Object>) body.get("request");
-        Map<String, Object> publicKeyCredentialRequestOptions = (Map<String, Object>) request.get("publicKeyCredentialRequestOptions");
-        String challenge = (String) publicKeyCredentialRequestOptions.get("challenge");
-        String email = (String) request.get("username");
 
         PublicKeyCredential<AuthenticatorAssertionResponse, ClientAssertionExtensionOutputs> pkc =
                 PublicKeyCredential.parseAssertionResponseJson((String) body.get("credentials"));
 
+        Challenge challenge = challengeRepository.findByToken(authenticationRequestId).orElseThrow(ForbiddenException::new);
         AssertionRequest assertionRequest = this.relyingParty.startAssertion(StartAssertionOptions.builder()
-                .username(Optional.of(email))
+                .username(Optional.of(challenge.getEmail()))
                 .build());
-        this.restoreChallenge(assertionRequest.getPublicKeyCredentialRequestOptions(), ByteArray.fromBase64Url(challenge));
+        this.restoreChallenge(assertionRequest.getPublicKeyCredentialRequestOptions(), ByteArray.fromBase64Url(challenge.getChallenge()));
 
         AssertionResult result = this.relyingParty.finishAssertion(FinishAssertionOptions.builder()
                 .request(assertionRequest)
@@ -296,19 +349,13 @@ public class UserController {
         if (!result.isSuccess()) {
             throw new ForbiddenException();
         }
+        challengeRepository.delete(challenge);
 
-        Optional<User> optionalUser = userRepository.findUserByEmailIgnoreCase(email);
+        Optional<User> optionalUser = findUserStoreLanguage(challenge.getEmail());
         if (!optionalUser.isPresent()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Collections.singletonMap("status", HttpStatus.NOT_FOUND.value()));
+            return return404();
         }
         User user = optionalUser.get();
-        String preferredLanguage = user.getPreferredLanguage();
-        String language = LocaleContextHolder.getLocale().getLanguage();
-
-        if (StringUtils.isEmpty(preferredLanguage) || !preferredLanguage.equals(language)) {
-            user.setPreferredLanguage(language);
-            userRepository.save(user);
-        }
 
         UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(user, null,
                 user.getAuthorities());
@@ -339,49 +386,6 @@ public class UserController {
                 .credentialRepository(this.userCredentialRepository)
                 .origins(Collections.singleton(rpOrigin))
                 .build();
-    }
-
-    /*
-     * See https://github.com/Yubico/java-webauthn-server
-     */
-    @PutMapping("idp/security/webauthn/registration")
-    public ResponseEntity idpWebAuthn(@RequestBody Map<String, Object> body) {
-        try {
-            return doIdpWebAuthn(body);
-        } catch (Exception e) {
-            //We always want to redirect back to the SP
-            return ResponseEntity.status(201).body(Collections.singletonMap("location", webAuthnSpRedirectUrl));
-        }
-    }
-
-    private ResponseEntity doIdpWebAuthn(Map<String, Object> body) throws IOException, Base64UrlException, RegistrationFailedException, NoSuchFieldException, IllegalAccessException {
-        String token = (String) body.get("token");
-        Optional<User> optionalUser = userRepository.findUserByWebAuthnIdentifier(token);
-        if (!optionalUser.isPresent()) {
-            throw new UserNotFoundException();
-        }
-        PublicKeyCredential<AuthenticatorAttestationResponse, ClientRegistrationExtensionOutputs> pkc =
-                PublicKeyCredential.parseRegistrationResponseJson((String) body.get("credentials"));
-
-        User user = optionalUser.get();
-        //remove the webAuthnIdentifier
-        user.setWebAuthnIdentifier(null);
-
-        Object previousStepRequest = body.get("request");
-        PublicKeyCredentialCreationOptions request = this.publicKeyCredentialCreationOptions(this.relyingParty, user);
-        this.restoreChallenge(request, ByteArray.fromBase64Url((String) ((Map) previousStepRequest).get("challenge")));
-
-        RegistrationResult result = this.relyingParty.finishRegistration(FinishRegistrationOptions.builder()
-                .request(request)
-                .response(pkc)
-                .build());
-
-        PublicKeyCredentialDescriptor keyId = result.getKeyId();
-        ByteArray publicKeyCose = result.getPublicKeyCose();
-        user.addPublicKeyCredential(keyId, publicKeyCose);
-        userRepository.save(user);
-
-        return ResponseEntity.status(201).body(Collections.singletonMap("location", webAuthnSpRedirectUrl));
     }
 
     private void restoreChallenge(Object challengeContainer, ByteArray challenge) throws NoSuchFieldException, IllegalAccessException {
@@ -452,6 +456,24 @@ public class UserController {
             }
             return ResponseEntity.status(201).body(Collections.singletonMap("result", "ok"));
         }
+    }
+
+    private Optional<User> findUserStoreLanguage(String email) {
+        Optional<User> optionalUser = userRepository.findUserByEmailIgnoreCase(email);
+        optionalUser.ifPresent(user -> {
+            String preferredLanguage = user.getPreferredLanguage();
+            String language = LocaleContextHolder.getLocale().getLanguage();
+
+            if (StringUtils.isEmpty(preferredLanguage) || !preferredLanguage.equals(language)) {
+                user.setPreferredLanguage(language);
+                userRepository.save(user);
+            }
+        });
+        return optionalUser;
+    }
+
+    private ResponseEntity return404() {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Collections.singletonMap("status", HttpStatus.NOT_FOUND.value()));
     }
 
     private String hash() {
