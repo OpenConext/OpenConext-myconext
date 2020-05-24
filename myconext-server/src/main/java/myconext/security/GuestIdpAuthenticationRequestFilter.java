@@ -1,5 +1,7 @@
 package myconext.security;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import myconext.exceptions.UserNotFoundException;
 import myconext.mail.MailBox;
 import myconext.manage.ServiceNameResolver;
@@ -7,8 +9,10 @@ import myconext.model.SamlAuthenticationRequest;
 import myconext.model.User;
 import myconext.repository.AuthenticationRequestRepository;
 import myconext.repository.UserRepository;
+import myconext.saml.SamlOidcMapping;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -21,6 +25,7 @@ import org.springframework.security.saml.provider.provisioning.SamlProviderProvi
 import org.springframework.security.saml.saml2.attribute.Attribute;
 import org.springframework.security.saml.saml2.attribute.AttributeNameFormat;
 import org.springframework.security.saml.saml2.authentication.Assertion;
+import org.springframework.security.saml.saml2.authentication.AuthenticationContextClassReference;
 import org.springframework.security.saml.saml2.authentication.AuthenticationRequest;
 import org.springframework.security.saml.saml2.authentication.Response;
 import org.springframework.security.saml.saml2.authentication.Scoping;
@@ -45,8 +50,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.UUID;
-import java.util.stream.Stream;
+import java.util.stream.Collectors;
 
 import static java.util.function.Function.identity;
 import static myconext.security.CookieResolver.cookieByName;
@@ -70,6 +74,7 @@ public class GuestIdpAuthenticationRequestFilter extends IdpAuthenticationReques
     private final String magicLinkUrl;
     private final MailBox mailBox;
     private final ServiceNameResolver serviceNameResolver;
+    private final List<SamlOidcMapping> samlOidcMappings;
 
     public GuestIdpAuthenticationRequestFilter(SamlProviderProvisioning<IdentityProviderService> provisioning,
                                                SamlMessageStore<Assertion, HttpServletRequest> assertionStore,
@@ -80,7 +85,8 @@ public class GuestIdpAuthenticationRequestFilter extends IdpAuthenticationReques
                                                int rememberMeMaxAge,
                                                boolean secureCookie,
                                                String magicLinkUrl,
-                                               MailBox mailBox) {
+                                               MailBox mailBox,
+                                               ObjectMapper objectMapper) throws IOException {
         super(provisioning, assertionStore);
         this.ssoSamlRequestMatcher = new SamlRequestMatcher(provisioning, "SSO");
         this.magicSamlRequestMatcher = new SamlRequestMatcher(provisioning, "magic");
@@ -92,6 +98,8 @@ public class GuestIdpAuthenticationRequestFilter extends IdpAuthenticationReques
         this.secureCookie = secureCookie;
         this.magicLinkUrl = magicLinkUrl;
         this.mailBox = mailBox;
+        this.samlOidcMappings = objectMapper.readValue(new ClassPathResource("saml_oidc_mapping.json").getInputStream(), new TypeReference<List<SamlOidcMapping>>() {
+        });
     }
 
     @Override
@@ -119,12 +127,15 @@ public class GuestIdpAuthenticationRequestFilter extends IdpAuthenticationReques
 
         String requesterEntityId = requesterId(authenticationRequest);
         String issuer = authenticationRequest.getIssuer().getValue();
+        String authenticationContextClassReferenceValue = getAuthenticationContextClassReferenceValue(authenticationRequest);
+
         SamlAuthenticationRequest samlAuthenticationRequest = new SamlAuthenticationRequest(
                 authenticationRequest.getId(),
                 issuer,
                 authenticationRequest.getAssertionConsumerService().getLocation(),
                 relayState,
-                StringUtils.hasText(requesterEntityId) ? requesterEntityId : ""
+                StringUtils.hasText(requesterEntityId) ? requesterEntityId : "",
+                authenticationContextClassReferenceValue
         );
 
         // Use the returned instance for further operations as the save operation has added the _id
@@ -139,7 +150,8 @@ public class GuestIdpAuthenticationRequestFilter extends IdpAuthenticationReques
 
         if (previousAuthenticatedUser != null && !authenticationRequest.isForceAuth()) {
             ServiceProviderMetadata serviceProviderMetadata = provider.getRemoteProvider(samlAuthenticationRequest.getIssuer());
-            sendAssertion(request, response, samlAuthenticationRequest.getRelayState(), previousAuthenticatedUser, provider, serviceProviderMetadata, authenticationRequest);
+            sendAssertion(request, response, samlAuthenticationRequest.getRelayState(), previousAuthenticatedUser,
+                    provider, serviceProviderMetadata, authenticationRequest, requesterEntityId);
         } else {
             addBrowserIdentificationCookie(response);
             String serviceName = serviceNameResolver.resolve(requesterEntityId);
@@ -148,6 +160,11 @@ public class GuestIdpAuthenticationRequestFilter extends IdpAuthenticationReques
             response.sendRedirect(this.redirectUrl + "/login/" + samlAuthenticationRequest.getId() +
                     "?name=" + URLEncoder.encode(serviceName, "UTF-8") + modus);
         }
+    }
+
+    private String getAuthenticationContextClassReferenceValue(AuthenticationRequest authenticationRequest) {
+        List<AuthenticationContextClassReference> authenticationContextClassReferences = authenticationRequest.getAuthenticationContextClassReferences();
+        return CollectionUtils.isEmpty(authenticationContextClassReferences) ? null : authenticationContextClassReferences.get(0).getValue();
     }
 
     private Optional<User> userFromCookie(Cookie remembered) {
@@ -231,7 +248,8 @@ public class GuestIdpAuthenticationRequestFilter extends IdpAuthenticationReques
             addRememberMeCookie(response, samlAuthenticationRequest);
         }
 
-        sendAssertion(request, response, samlAuthenticationRequest.getRelayState(), user, provider, serviceProviderMetadata, authenticationRequest);
+        sendAssertion(request, response, samlAuthenticationRequest.getRelayState(), user, provider,
+                serviceProviderMetadata, authenticationRequest, samlAuthenticationRequest.getRequesterEntityId());
     }
 
     private void addRememberMeCookie(HttpServletResponse response, SamlAuthenticationRequest samlAuthenticationRequest) {
@@ -244,11 +262,11 @@ public class GuestIdpAuthenticationRequestFilter extends IdpAuthenticationReques
 
     private void sendAssertion(HttpServletRequest request, HttpServletResponse response, String relayState,
                                User user, IdentityProviderService provider, ServiceProviderMetadata serviceProviderMetadata,
-                               AuthenticationRequest authenticationRequest) {
+                               AuthenticationRequest authenticationRequest, String requesterEntityId) {
         Assertion assertion = provider.assertion(
                 serviceProviderMetadata, authenticationRequest, user.getUid(), NameId.PERSISTENT);
 
-        attributes(user).forEach(assertion::addAttribute);
+        attributes(user, requesterEntityId).forEach(assertion::addAttribute);
 
         Response samlResponse = provider.response(authenticationRequest, assertion, serviceProviderMetadata);
 
@@ -267,23 +285,33 @@ public class GuestIdpAuthenticationRequestFilter extends IdpAuthenticationReques
         processHtml(request, response, getPostBindingTemplate(), model);
     }
 
-    private List<Attribute> attributes(User user) {
+    private List<Attribute> attributes(User user, String requesterEntityId) {
         String displayName = String.format("%s %s", user.getGivenName(), user.getFamilyName());
-        return Arrays.asList(
+        List<Attribute> attributes = Arrays.asList(
                 attribute("urn:mace:dir:attribute-def:cn", displayName),
                 attribute("urn:mace:dir:attribute-def:displayName", displayName),
-                attribute("urn:mace:dir:attribute-def:eduPersonPrincipalName",
-                        user.getUid() + "@" + user.getSchacHomeOrganization()),
+                attribute("urn:mace:dir:attribute-def:eduPersonPrincipalName", user.getEduPersonPrincipalName()),
                 attribute("urn:mace:dir:attribute-def:givenName", user.getGivenName()),
                 attribute("urn:mace:dir:attribute-def:mail", user.getEmail()),
                 attribute("urn:mace:dir:attribute-def:sn", user.getFamilyName()),
                 attribute("urn:mace:dir:attribute-def:uid", user.getUid()),
                 attribute("urn:mace:terena.org:attribute-def:schacHomeOrganization", user.getSchacHomeOrganization())
         );
+        if (user.getEduIdPerServiceProvider().containsKey(requesterEntityId)) {
+            attribute("urn:mace:eduid.nl:1.1", user.getEduIdPerServiceProvider().get(requesterEntityId));
+        }
+        Map<String, List<String>> userAttributes = user.getAttributes();
+        List<Attribute> collectedAttributes = this.samlOidcMappings.stream()
+                .filter(samlOidcMapping -> userAttributes.containsKey(samlOidcMapping.getOidc()))
+                .map(samlOidcMapping -> attribute(samlOidcMapping.getSaml(),
+                        userAttributes.get(samlOidcMapping.getOidc()).toArray(new String[]{})))
+                .collect(Collectors.toList());
+        attributes.addAll(collectedAttributes);
+        return attributes;
     }
 
-    private Attribute attribute(String name, String value) {
-        return new Attribute().setName(name).setNameFormat(AttributeNameFormat.URI).addValues(value);
+    private Attribute attribute(String name, String... value) {
+        return new Attribute().setName(name).setNameFormat(AttributeNameFormat.URI).addValues((Object[]) value);
     }
 
 }

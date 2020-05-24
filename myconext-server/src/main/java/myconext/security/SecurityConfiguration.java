@@ -170,7 +170,8 @@ public class SecurityConfiguration {
         @Override
         protected void configure(HttpSecurity http) throws Exception {
             http
-                    .requestMatchers().antMatchers("/myconext/api/sp/**", "/startSSO")
+                    .requestMatchers()
+                    .antMatchers("/myconext/api/sp/**", "/startSSO")
                     .and()
                     .sessionManagement()
                     .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
@@ -194,6 +195,44 @@ public class SecurityConfiguration {
             }
         }
     }
+
+    @Configuration
+    @Order(2)
+    public static class AppSecurity extends WebSecurityConfigurerAdapter {
+
+        @Value("${attribute_aggregation.user}")
+        private String user;
+
+        @Value("${attribute_aggregation.password}")
+        private String password;
+
+        @Override
+        protected void configure(HttpSecurity http) throws Exception {
+            http.requestMatchers()
+                    .antMatchers("/myconext/api/attribute-aggregation/**")
+                    .and()
+                    .csrf()
+                    .disable()
+                    .authorizeRequests()
+                    .antMatchers("/myconext/api/attribute-aggregation/**")
+                    .authenticated()
+                    .and()
+                    .httpBasic()
+                    .and()
+                    .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+            ;
+        }
+
+        @Override
+        protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+            auth
+                    .inMemoryAuthentication()
+                    .withUser(user)
+                    .password("{noop}" + password)
+                    .roles("aa");
+        }
+    }
+
 }
 
 

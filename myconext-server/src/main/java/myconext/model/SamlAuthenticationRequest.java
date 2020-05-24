@@ -35,11 +35,14 @@ public class SamlAuthenticationRequest {
 
     private String requesterEntityId;
 
+    private String authenticationContextClassReferenceValue;
+
     private boolean rememberMe;
 
     private String rememberMeValue;
 
-    public SamlAuthenticationRequest(String requestId, String issuer, String consumerAssertionServiceURL, String relayState, String requesterEntityId) {
+    public SamlAuthenticationRequest(String requestId, String issuer, String consumerAssertionServiceURL,
+                                     String relayState, String requesterEntityId, String authenticationContextClassReferenceValue) {
         this.id = UUID.randomUUID().toString();
         this.requestId = requestId;
         this.issuer = issuer;
@@ -47,6 +50,7 @@ public class SamlAuthenticationRequest {
         this.relayState = relayState;
         this.expiresIn = Date.from(LocalDateTime.now().plusHours(1).atZone(ZoneId.systemDefault()).toInstant());
         this.requesterEntityId = requesterEntityId;
+        this.authenticationContextClassReferenceValue = authenticationContextClassReferenceValue;
     }
 
     public void setHash(String hash) {

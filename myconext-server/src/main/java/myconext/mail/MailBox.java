@@ -1,5 +1,6 @@
 package myconext.mail;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.mustachejava.DefaultMustacheFactory;
 import com.github.mustachejava.MustacheFactory;
@@ -33,7 +34,8 @@ public class MailBox {
         this.emailFrom = emailFrom;
         this.magicLinkUrl = magicLinkUrl;
         this.mySURFconextURL = mySURFconextURL;
-        this.subjects = objectMapper.readValue(new ClassPathResource("mail_templates/subjects.json").getInputStream(), Map.class);
+        this.subjects = objectMapper.readValue(new ClassPathResource("mail_templates/subjects.json").getInputStream(), new TypeReference<Map<String, Map<String, String>>>() {
+        });
 
     }
 

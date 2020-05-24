@@ -2,7 +2,7 @@ logging:
   level:
     org.springframework.data.mongodb: INFO
     org.springframework.data.convert: ERROR
-    org.springframework.security: INFO
+    org.springframework.security: DEBUG
 
 server:
   port: 8081
@@ -47,10 +47,15 @@ certificate_path: classpath:/id_rsa.pub
 remember_me_max_age_seconds: 15_768_000
 email_guessing_sleep_millis: 500
 
+attribute_aggregation:
+  user: aa
+  password: secret
+
 spring:
   data:
     mongodb:
       uri: mongodb://127.0.0.1:27017/${mongodb_db}
+      auto-index-creation: false
   mail:
     host: localhost
     port: 3025

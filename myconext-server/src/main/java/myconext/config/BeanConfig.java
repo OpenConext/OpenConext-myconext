@@ -1,11 +1,13 @@
 package myconext.config;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import myconext.mail.MailBox;
 import myconext.manage.ServiceNameResolver;
 import myconext.repository.AuthenticationRequestRepository;
 import myconext.repository.UserRepository;
 import myconext.saml.ImmutableSamlConfigurationRepository;
 import myconext.security.GuestIdpAuthenticationRequestFilter;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.saml.provider.SamlServerConfiguration;
@@ -13,6 +15,7 @@ import org.springframework.security.saml.provider.config.SamlConfigurationReposi
 import org.springframework.security.saml.provider.identity.config.SamlIdentityProviderServerBeanConfiguration;
 
 import javax.servlet.Filter;
+import java.io.IOException;
 
 @Configuration
 public class BeanConfig extends SamlIdentityProviderServerBeanConfiguration {
@@ -25,6 +28,7 @@ public class BeanConfig extends SamlIdentityProviderServerBeanConfiguration {
     private final String magicLinkUrl;
     private final MailBox mailBox;
     private final ServiceNameResolver serviceNameResolver;
+    private final ObjectMapper objectMapper;
 
     public BeanConfig(@Value("${base_path}") String basePath,
                       @Value("${idp_redirect_url}") String redirectUrl,
@@ -34,7 +38,8 @@ public class BeanConfig extends SamlIdentityProviderServerBeanConfiguration {
                       AuthenticationRequestRepository authenticationRequestRepository,
                       UserRepository userRepository,
                       MailBox mailBox,
-                      ServiceNameResolver serviceNameResolver) {
+                      ServiceNameResolver serviceNameResolver,
+                      @Qualifier("jsonMapper") ObjectMapper objectMapper) {
         this.immutableSamlConfigurationRepository = new ImmutableSamlConfigurationRepository(basePath);
         this.redirectUrl = redirectUrl;
         this.rememberMeMaxAge = rememberMeMaxAge;
@@ -44,6 +49,7 @@ public class BeanConfig extends SamlIdentityProviderServerBeanConfiguration {
         this.magicLinkUrl = magicLinkUrl;
         this.mailBox = mailBox;
         this.serviceNameResolver = serviceNameResolver;
+        this.objectMapper = objectMapper;
     }
 
     private ImmutableSamlConfigurationRepository immutableSamlConfigurationRepository;
@@ -55,9 +61,13 @@ public class BeanConfig extends SamlIdentityProviderServerBeanConfiguration {
 
     @Override
     public Filter idpAuthnRequestFilter() {
-        return new GuestIdpAuthenticationRequestFilter(getSamlProvisioning(), samlAssertionStore(), redirectUrl, serviceNameResolver,
-                authenticationRequestRepository, userRepository, rememberMeMaxAge, secureCookie, magicLinkUrl,
-                mailBox);
+        try {
+            return new GuestIdpAuthenticationRequestFilter(getSamlProvisioning(), samlAssertionStore(), redirectUrl, serviceNameResolver,
+                    authenticationRequestRepository, userRepository, rememberMeMaxAge, secureCookie, magicLinkUrl,
+                    mailBox, objectMapper);
+        } catch (IOException e) {
+            throw new IllegalArgumentException(e);
+        }
     }
 
     public Filter samlConfigurationFilter(SamlServerConfiguration serverConfig) {

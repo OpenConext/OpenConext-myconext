@@ -16,12 +16,13 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 
-import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import static myconext.validation.PasswordStrength.strongEnough;
 
@@ -32,7 +33,7 @@ public class User implements Serializable, UserDetails {
 
     @Id
     private String id;
-    @NotNull
+
     private String email;
     private String givenName;
     private String familyName;
@@ -40,24 +41,38 @@ public class User implements Serializable, UserDetails {
     private String schacHomeOrganization;
     private String authenticatingAuthority;
     private String password;
-    private Map<String, String> publicKeyCredentials = new HashMap<>();
     private boolean newUser;
     private String preferredLanguage;
     private String webAuthnIdentifier;
     private String userHandle;
+    private String eduPersonPrincipalName;
+
+    private Map<String, String> eduIdPerServiceProvider = new HashMap<>();
+    private Map<String, String> publicKeyCredentials = new HashMap<>();
+    private Map<String, List<String>> attributes = new HashMap<>();
 
     private long created;
     private long updatedAt = System.currentTimeMillis() / 1000L;
 
-    public User(@NotNull String uid, @NotNull String email, String givenName, String familyName,
-                String schacHomeOrganization, String authenticatingAuthority, String preferredLanguage) {
+    public User(String uid, String eduPersonPrincipalName, String serviceProviderEntityId) {
+        this.uid = uid;
+        this.eduPersonPrincipalName = eduPersonPrincipalName;
+        this.computeEduIdForServiceProviderIfAbsent(serviceProviderEntityId);
+    }
+
+    public User(String uid, String email, String givenName, String familyName,
+                String schacHomeOrganization, String authenticatingAuthority,
+                String serviceProviderEntityId, String preferredLanguage) {
         this.uid = uid;
         this.email = email;
         this.givenName = givenName;
         this.familyName = familyName;
         this.schacHomeOrganization = schacHomeOrganization;
+        this.eduPersonPrincipalName = deriveEduPersonPrincipalName();
         this.authenticatingAuthority = authenticatingAuthority;
         this.preferredLanguage = preferredLanguage;
+
+        this.computeEduIdForServiceProviderIfAbsent(serviceProviderEntityId);
         this.newUser = true;
         this.created = System.currentTimeMillis() / 1000L;
     }
@@ -79,12 +94,21 @@ public class User implements Serializable, UserDetails {
         }
     }
 
+    @Transient
     public void addPublicKeyCredential(PublicKeyCredentialDescriptor publicKeyCredentialDescriptor,
                                        ByteArray publicKeyCredential) {
         this.publicKeyCredentials.put(
                 publicKeyCredentialDescriptor.getId().getBase64Url(),
                 publicKeyCredential.getBase64Url());
     }
+
+    @Transient
+    public void computeEduIdForServiceProviderIfAbsent(String serviceProviderEntityId) {
+        if (StringUtils.hasText(serviceProviderEntityId)) {
+            this.eduIdPerServiceProvider.computeIfAbsent(serviceProviderEntityId, s -> UUID.randomUUID().toString());
+        }
+    }
+
 
     @Override
     @JsonIgnore
@@ -98,32 +122,46 @@ public class User implements Serializable, UserDetails {
     }
 
     @Override
+    @JsonIgnore
     public String getUsername() {
         return email;
     }
 
     @Override
     @Transient
+    @JsonIgnore
     public boolean isAccountNonExpired() {
         return true;
     }
 
     @Override
     @Transient
+    @JsonIgnore
     public boolean isAccountNonLocked() {
         return true;
     }
 
     @Override
     @Transient
+    @JsonIgnore
     public boolean isCredentialsNonExpired() {
         return true;
     }
 
     @Override
     @Transient
+    @JsonIgnore
     public boolean isEnabled() {
         return true;
+    }
+
+    @Transient
+    private String deriveEduPersonPrincipalName() {
+        return uid + "@" + schacHomeOrganization;
+    }
+
+    public String getEduPersonPrincipalName() {
+        return StringUtils.hasText(eduPersonPrincipalName) ? eduPersonPrincipalName : deriveEduPersonPrincipalName();
     }
 
     public void setNewUser(boolean newUser) {

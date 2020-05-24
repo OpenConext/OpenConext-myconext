@@ -4,7 +4,11 @@
     "email": "jdoe@example.com",
     "givenName": "John",
     "familyName": "Doe",
-    "schacHomeOrganization": "surfguest.nl"
+    "schacHomeOrganization": "surfguest.nl",
+    "publicKeyCredentials": {
+      "AYF22iCGkHySQrbX2ClNXqs3KsEDt7A1eELysDEg74Z2HwJF2XkQNCnbPL3zkZeycHBGurWMZE6J1vOs8c5JwOXroT72m9foU2_Gtxnz57T6HDUwj-LAdle7QXGhYq3_KTtC8hK1kPKkp30XB9fPS_nPJfcxd1pbLGUu": "pQMmAQIgASFYIALwgFv7Vb-8RiH3nkNZbC_iJULkhg8n_Tnalc89TmnrIlgg9Z3T7mBPZvgdikhi6viphhQitOa-49bjuDMwkm2g24E"
+    },
+    "userHandle": "ILWqa-yfidIbr-tmLbegkl_q9GYY53s5h-WPxDGJ36rzvDfR-lZqMlqARdUlPDRH_KH95owGCoEqMuigryV_qA"
   },
   {
     "email": "mdoe@example.com",

@@ -136,8 +136,9 @@ public class UserController {
         }
         String preferredLanguage = LocaleContextHolder.getLocale().getLanguage();
         //prevent not-wanted attributes in the database
+        String requesterEntityId = samlAuthenticationRequest.getRequesterEntityId();
         User userToSave = new User(UUID.randomUUID().toString(), user.getEmail(), user.getGivenName(),
-                user.getFamilyName(), schacHomeOrganization, guestIdpEntityId, preferredLanguage);
+                user.getFamilyName(), schacHomeOrganization, guestIdpEntityId, requesterEntityId, preferredLanguage);
         userToSave.encryptPassword(user.getPassword(), passwordEncoder);
         userToSave = userRepository.save(userToSave);
 
