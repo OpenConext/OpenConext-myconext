@@ -16,8 +16,8 @@ import org.springframework.data.mongodb.core.mapping.MongoMappingContext;
 @Configuration
 public class MongoMapping {
 
-    private MongoTemplate mongoTemplate;
-    private MongoConverter mongoConverter;
+    private final MongoTemplate mongoTemplate;
+    private final MongoConverter mongoConverter;
 
     @Autowired
     public MongoMapping(MongoTemplate mongoTemplate, MongoConverter mongoConverter) {
@@ -29,7 +29,7 @@ public class MongoMapping {
     public void initIndicesAfterStartup() {
         ((MappingMongoConverter) mongoConverter).setMapKeyDotReplacement("@");
         MongoMappingContext mappingContext = (MongoMappingContext) this.mongoConverter.getMappingContext();
-        mappingContext.setAutoIndexCreation(true);
+
         for (BasicMongoPersistentEntity<?> persistentEntity : mappingContext.getPersistentEntities()) {
             Class clazz = persistentEntity.getType();
             if (clazz.isAnnotationPresent(Document.class)) {
