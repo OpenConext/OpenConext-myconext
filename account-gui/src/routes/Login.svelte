@@ -133,18 +133,17 @@
                                 //rawId is not supported server-side
                                 delete credentials["rawId"];
                                 webAuthnTryAuthentication(JSON.stringify(credentials), id, $user.rememberMe)
-                                        .then(json => window.location.href = json.url)
+                                        .then(json => {
+                                          window.location.href = json.url
+                                        })
                                         .catch(() => {
-                                            debugger;
                                             webAuthIncorrect = true;
                                         })
                             }).catch(e => {
                         webAuthIncorrect = true;
-                        debugger;
                     });
                 })
                 .catch(e => {
-                    debugger;
                     if (e.status === 404) {
                         emailNotFound = true;
                         emailOrPasswordIncorrect = false;
@@ -348,8 +347,12 @@
                bind:this={passwordField}>
     </div>
 
-    {#if !$user.usePassword}
+    {#if !$user.usePassword && !$user.useWebAuth}
         <span class="no-password-needed">{I18n.t("login.noPasswordNeeded")}</span>
+    {/if}
+
+    {#if !$user.usePassword && $user.useWebAuth}
+        <span class="no-password-needed">{I18n.t("login.noPasswordNeededWebAuthn")}</span>
     {/if}
 
     <CheckBox value={$user.rememberMe}

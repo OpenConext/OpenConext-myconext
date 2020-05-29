@@ -1,7 +1,5 @@
 package myconext.security;
 
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import myconext.exceptions.UserNotFoundException;
 import myconext.mail.MailBox;
 import myconext.manage.ServiceNameResolver;
@@ -9,10 +7,8 @@ import myconext.model.SamlAuthenticationRequest;
 import myconext.model.User;
 import myconext.repository.AuthenticationRequestRepository;
 import myconext.repository.UserRepository;
-import myconext.saml.SamlOidcMapping;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.springframework.core.io.ClassPathResource;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -46,11 +42,11 @@ import java.io.IOException;
 import java.net.URLEncoder;
 import java.nio.charset.Charset;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import static java.util.function.Function.identity;
 import static myconext.security.CookieResolver.cookieByName;
@@ -61,6 +57,8 @@ public class GuestIdpAuthenticationRequestFilter extends IdpAuthenticationReques
     public static final String GUEST_IDP_REMEMBER_ME_COOKIE_NAME = "guest-idp-remember-me";
     public static final String BROWSER_SESSION_COOKIE_NAME = "BROWSER_SESSION";
     public static final String REGISTER_MODUS_COOKIE_NAME = "REGISTER_MODUS";
+    public static final String EDUPERSON_ENTITLEMENT_VERIFIED_BY_INSTITUTION =
+            "urn:mace:eduid.nl:entitlement:verified-by-institution";
 
     private static final Log LOG = LogFactory.getLog(GuestIdpAuthenticationRequestFilter.class);
 
@@ -69,12 +67,12 @@ public class GuestIdpAuthenticationRequestFilter extends IdpAuthenticationReques
     private final String redirectUrl;
     private final AuthenticationRequestRepository authenticationRequestRepository;
     private final UserRepository userRepository;
+    private final String accountLinkingAuthenticationContextClassReferenceValue;
     private final int rememberMeMaxAge;
     private final boolean secureCookie;
     private final String magicLinkUrl;
     private final MailBox mailBox;
     private final ServiceNameResolver serviceNameResolver;
-    private final List<SamlOidcMapping> samlOidcMappings;
 
     public GuestIdpAuthenticationRequestFilter(SamlProviderProvisioning<IdentityProviderService> provisioning,
                                                SamlMessageStore<Assertion, HttpServletRequest> assertionStore,
@@ -82,11 +80,11 @@ public class GuestIdpAuthenticationRequestFilter extends IdpAuthenticationReques
                                                ServiceNameResolver serviceNameResolver,
                                                AuthenticationRequestRepository authenticationRequestRepository,
                                                UserRepository userRepository,
+                                               String accountLinkingAuthenticationContextClassReferenceValue,
                                                int rememberMeMaxAge,
                                                boolean secureCookie,
                                                String magicLinkUrl,
-                                               MailBox mailBox,
-                                               ObjectMapper objectMapper) throws IOException {
+                                               MailBox mailBox) {
         super(provisioning, assertionStore);
         this.ssoSamlRequestMatcher = new SamlRequestMatcher(provisioning, "SSO");
         this.magicSamlRequestMatcher = new SamlRequestMatcher(provisioning, "magic");
@@ -94,12 +92,11 @@ public class GuestIdpAuthenticationRequestFilter extends IdpAuthenticationReques
         this.serviceNameResolver = serviceNameResolver;
         this.authenticationRequestRepository = authenticationRequestRepository;
         this.userRepository = userRepository;
+        this.accountLinkingAuthenticationContextClassReferenceValue = accountLinkingAuthenticationContextClassReferenceValue;
         this.rememberMeMaxAge = rememberMeMaxAge;
         this.secureCookie = secureCookie;
         this.magicLinkUrl = magicLinkUrl;
         this.mailBox = mailBox;
-        this.samlOidcMappings = objectMapper.readValue(new ClassPathResource("saml_oidc_mapping.json").getInputStream(), new TypeReference<List<SamlOidcMapping>>() {
-        });
     }
 
     @Override
@@ -129,13 +126,15 @@ public class GuestIdpAuthenticationRequestFilter extends IdpAuthenticationReques
         String issuer = authenticationRequest.getIssuer().getValue();
         String authenticationContextClassReferenceValue = getAuthenticationContextClassReferenceValue(authenticationRequest);
 
+        boolean accountLinkingRequired = isAccountLinkingRequired(authenticationContextClassReferenceValue);
+
         SamlAuthenticationRequest samlAuthenticationRequest = new SamlAuthenticationRequest(
                 authenticationRequest.getId(),
                 issuer,
                 authenticationRequest.getAssertionConsumerService().getLocation(),
                 relayState,
                 StringUtils.hasText(requesterEntityId) ? requesterEntityId : "",
-                authenticationContextClassReferenceValue
+                accountLinkingRequired
         );
 
         // Use the returned instance for further operations as the save operation has added the _id
@@ -148,18 +147,31 @@ public class GuestIdpAuthenticationRequestFilter extends IdpAuthenticationReques
 
         User previousAuthenticatedUser = userRememberedOptional.orElse(userFromAuthentication.orElse(null));
 
+        String encodedServiceName = URLEncoder.encode(serviceNameResolver.resolve(requesterEntityId), "UTF-8");
+
         if (previousAuthenticatedUser != null && !authenticationRequest.isForceAuth()) {
-            ServiceProviderMetadata serviceProviderMetadata = provider.getRemoteProvider(samlAuthenticationRequest.getIssuer());
-            sendAssertion(request, response, samlAuthenticationRequest.getRelayState(), previousAuthenticatedUser,
-                    provider, serviceProviderMetadata, authenticationRequest, requesterEntityId);
+            if (accountLinkingRequired && !isUserVerifiedByInstitution(previousAuthenticatedUser)) {
+                response.sendRedirect(this.redirectUrl + "/stepup/" + samlAuthenticationRequest.getId() + "?name=" + encodedServiceName + "&existing=true");
+            } else {
+                ServiceProviderMetadata serviceProviderMetadata = provider.getRemoteProvider(samlAuthenticationRequest.getIssuer());
+                sendAssertion(request, response, samlAuthenticationRequest.getRelayState(), previousAuthenticatedUser,
+                        provider, serviceProviderMetadata, authenticationRequest, requesterEntityId);
+            }
         } else {
             addBrowserIdentificationCookie(response);
-            String serviceName = serviceNameResolver.resolve(requesterEntityId);
             String modus = cookieByName(request, REGISTER_MODUS_COOKIE_NAME).map(c -> "&modus=cr").orElse("");
-
+            String stepUp = accountLinkingRequired ? "&stepup=true" : "";
             response.sendRedirect(this.redirectUrl + "/login/" + samlAuthenticationRequest.getId() +
-                    "?name=" + URLEncoder.encode(serviceName, "UTF-8") + modus);
+                    "?name=" + encodedServiceName + modus + stepUp);
         }
+    }
+
+    private boolean isAccountLinkingRequired(String authenticationContextClassReferenceValue) {
+        return this.accountLinkingAuthenticationContextClassReferenceValue.equalsIgnoreCase(authenticationContextClassReferenceValue);
+    }
+
+    public static boolean isUserVerifiedByInstitution(User user) {
+        return user.getAttributes().getOrDefault("eduperson_entitlement", Collections.emptyList()).contains(EDUPERSON_ENTITLEMENT_VERIFIED_BY_INSTITUTION);
     }
 
     private String getAuthenticationContextClassReferenceValue(AuthenticationRequest authenticationRequest) {
@@ -219,6 +231,7 @@ public class GuestIdpAuthenticationRequestFilter extends IdpAuthenticationReques
 
             String charSet = Charset.defaultCharset().name();
             mailBox.sendAccountConfirmation(user);
+
             response.sendRedirect(this.redirectUrl + "/confirm?h=" + hash +
                     "&redirect=" + URLEncoder.encode(this.magicLinkUrl, charSet) +
                     "&email=" + URLEncoder.encode(user.getEmail(), charSet) +
@@ -297,16 +310,11 @@ public class GuestIdpAuthenticationRequestFilter extends IdpAuthenticationReques
                 attribute("urn:mace:dir:attribute-def:uid", user.getUid()),
                 attribute("urn:mace:terena.org:attribute-def:schacHomeOrganization", user.getSchacHomeOrganization())
         );
-        if (user.getEduIdPerServiceProvider().containsKey(requesterEntityId)) {
-            attribute("urn:mace:eduid.nl:1.1", user.getEduIdPerServiceProvider().get(requesterEntityId));
-        }
-        Map<String, List<String>> userAttributes = user.getAttributes();
-        List<Attribute> collectedAttributes = this.samlOidcMappings.stream()
-                .filter(samlOidcMapping -> userAttributes.containsKey(samlOidcMapping.getOidc()))
-                .map(samlOidcMapping -> attribute(samlOidcMapping.getSaml(),
-                        userAttributes.get(samlOidcMapping.getOidc()).toArray(new String[]{})))
-                .collect(Collectors.toList());
-        attributes.addAll(collectedAttributes);
+        Optional<String> eduIDOptional = user.computeEduIdForServiceProviderIfAbsent(requesterEntityId);
+        eduIDOptional.ifPresent(eduID -> attribute("urn:mace:eduid.nl:1.1", eduID));
+
+        user.getAttributes()
+                .forEach((key, value) -> attributes.add(attribute(key, value.toArray(new String[]{}))));
         return attributes;
     }
 

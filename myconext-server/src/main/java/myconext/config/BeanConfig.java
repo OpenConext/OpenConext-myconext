@@ -15,7 +15,6 @@ import org.springframework.security.saml.provider.config.SamlConfigurationReposi
 import org.springframework.security.saml.provider.identity.config.SamlIdentityProviderServerBeanConfiguration;
 
 import javax.servlet.Filter;
-import java.io.IOException;
 
 @Configuration
 public class BeanConfig extends SamlIdentityProviderServerBeanConfiguration {
@@ -23,6 +22,7 @@ public class BeanConfig extends SamlIdentityProviderServerBeanConfiguration {
     private final String redirectUrl;
     private final AuthenticationRequestRepository authenticationRequestRepository;
     private final UserRepository userRepository;
+    private final String accountLinkingAuthenticationContextClassReferenceValue;
     private final int rememberMeMaxAge;
     private final boolean secureCookie;
     private final String magicLinkUrl;
@@ -35,6 +35,7 @@ public class BeanConfig extends SamlIdentityProviderServerBeanConfiguration {
                       @Value("${remember_me_max_age_seconds}") int rememberMeMaxAge,
                       @Value("${secure_cookie}") boolean secureCookie,
                       @Value("${email.magic-link-url}") String magicLinkUrl,
+                      @Value("${account_linking_authentication_context_class_reference_value}") String accountLinkingAuthenticationContextClassReferenceValue,
                       AuthenticationRequestRepository authenticationRequestRepository,
                       UserRepository userRepository,
                       MailBox mailBox,
@@ -47,6 +48,7 @@ public class BeanConfig extends SamlIdentityProviderServerBeanConfiguration {
         this.authenticationRequestRepository = authenticationRequestRepository;
         this.userRepository = userRepository;
         this.magicLinkUrl = magicLinkUrl;
+        this.accountLinkingAuthenticationContextClassReferenceValue = accountLinkingAuthenticationContextClassReferenceValue;
         this.mailBox = mailBox;
         this.serviceNameResolver = serviceNameResolver;
         this.objectMapper = objectMapper;
@@ -61,13 +63,18 @@ public class BeanConfig extends SamlIdentityProviderServerBeanConfiguration {
 
     @Override
     public Filter idpAuthnRequestFilter() {
-        try {
-            return new GuestIdpAuthenticationRequestFilter(getSamlProvisioning(), samlAssertionStore(), redirectUrl, serviceNameResolver,
-                    authenticationRequestRepository, userRepository, rememberMeMaxAge, secureCookie, magicLinkUrl,
-                    mailBox, objectMapper);
-        } catch (IOException e) {
-            throw new IllegalArgumentException(e);
-        }
+        return new GuestIdpAuthenticationRequestFilter(
+                getSamlProvisioning(),
+                samlAssertionStore(),
+                redirectUrl,
+                serviceNameResolver,
+                authenticationRequestRepository,
+                userRepository,
+                accountLinkingAuthenticationContextClassReferenceValue,
+                rememberMeMaxAge,
+                secureCookie,
+                magicLinkUrl,
+                mailBox);
     }
 
     public Filter samlConfigurationFilter(SamlServerConfiguration serverConfig) {

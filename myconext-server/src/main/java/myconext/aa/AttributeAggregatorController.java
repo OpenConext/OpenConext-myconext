@@ -43,9 +43,11 @@ public class AttributeAggregatorController {
                 .orElseGet(() -> serviceProviderRepository.save(new ServiceProvider(spEntityId)));
 
         User user = findUser(eduPersonPrincipalName, spEntityId);
-        user.computeEduIdForServiceProviderIfAbsent(serviceProvider.getEntityId());
+        String eduID = user.computeEduIdForServiceProviderIfAbsent(serviceProvider.getEntityId()).orElseThrow(IllegalArgumentException::new);
 
         List<UserAttribute> userAttributes = new ArrayList<>();
+        userAttributes.add(new UserAttribute("urn:mace:eduid.nl:1.1", eduID));
+
        // userAttributes.add(new UserAttribute("urn:mace:dir:attribute-def:eduPersonTargetedID", user.getUid())
         //TODO need to return SAML attributes names, see test_attribute_aggregation.py
         return ResponseEntity.ok(user);

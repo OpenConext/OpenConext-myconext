@@ -36,6 +36,7 @@ import myconext.repository.AuthenticationRequestRepository;
 import myconext.repository.ChallengeRepository;
 import myconext.repository.UserRepository;
 import myconext.security.EmailGuessingPrevention;
+import myconext.security.GuestIdpAuthenticationRequestFilter;
 import myconext.webauthn.UserCredentialRepository;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -61,8 +62,11 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Field;
+import java.net.URI;
 import java.net.URISyntaxException;
+import java.net.URLEncoder;
 import java.security.SecureRandom;
 import java.util.Base64;
 import java.util.Collections;
@@ -85,6 +89,7 @@ public class UserController {
     private String schacHomeOrganization;
     private String guestIdpEntityId;
     private String webAuthnSpRedirectUrl;
+    private String idpBaseUrl;
     private RelyingParty relyingParty;
     private UserCredentialRepository userCredentialRepository;
     private ChallengeRepository challengeRepository;
@@ -104,6 +109,7 @@ public class UserController {
                           @Value("${guest_idp_entity_id}") String guestIdpEntityId,
                           @Value("${email_guessing_sleep_millis}") int emailGuessingSleepMillis,
                           @Value("${sp_redirect_url}") String spBaseUrl,
+                          @Value("${idp_redirect_url}") String idpBaseUrl,
                           @Value("${rp_origin}") String rpOrigin,
                           @Value("${rp_id}") String rpId) {
         this.userRepository = userRepository;
@@ -115,13 +121,14 @@ public class UserController {
         this.magicLinkUrl = magicLinkUrl;
         this.schacHomeOrganization = schacHomeOrganization;
         this.guestIdpEntityId = guestIdpEntityId;
+        this.idpBaseUrl = idpBaseUrl;
         this.webAuthnSpRedirectUrl = String.format("%s/webauthn", spBaseUrl);
         this.relyingParty = relyingParty(rpId, rpOrigin);
         this.emailGuessingPreventor = new EmailGuessingPrevention(emailGuessingSleepMillis);
     }
 
     @PostMapping("/idp/magic_link_request")
-    public ResponseEntity newMagicLinkRequest(@Valid @RequestBody MagicLinkRequest magicLinkRequest) {
+    public ResponseEntity newMagicLinkRequest(@Valid @RequestBody MagicLinkRequest magicLinkRequest) throws UnsupportedEncodingException {
         SamlAuthenticationRequest samlAuthenticationRequest = authenticationRequestRepository.findByIdAndNotExpired(magicLinkRequest.getAuthenticationRequestId())
                 .orElseThrow(ExpiredAuthenticationException::new);
 
@@ -146,7 +153,7 @@ public class UserController {
     }
 
     @PutMapping("/idp/magic_link_request")
-    public ResponseEntity magicLinkRequest(@Valid @RequestBody MagicLinkRequest magicLinkRequest) {
+    public ResponseEntity magicLinkRequest(@Valid @RequestBody MagicLinkRequest magicLinkRequest) throws UnsupportedEncodingException {
         SamlAuthenticationRequest samlAuthenticationRequest = authenticationRequestRepository.findByIdAndNotExpired(magicLinkRequest.getAuthenticationRequestId())
                 .orElseThrow(ExpiredAuthenticationException::new);
 
@@ -432,15 +439,21 @@ public class UserController {
     }
 
     private ResponseEntity doMagicLink(User user, SamlAuthenticationRequest samlAuthenticationRequest, boolean rememberMe,
-                                       boolean passwordOrWebAuthnFlow) {
+                                       boolean passwordOrWebAuthnFlow) throws UnsupportedEncodingException {
         samlAuthenticationRequest.setHash(hash());
         samlAuthenticationRequest.setUserId(user.getId());
         samlAuthenticationRequest.setRememberMe(rememberMe);
         if (rememberMe) {
             samlAuthenticationRequest.setRememberMeValue(UUID.randomUUID().toString());
         }
-
         authenticationRequestRepository.save(samlAuthenticationRequest);
+
+        boolean userVerifiedByInstitution = GuestIdpAuthenticationRequestFilter.isUserVerifiedByInstitution(user);
+        if (!userVerifiedByInstitution && samlAuthenticationRequest.isAccountLinkingRequired()) {
+            String encodedServiceName = URLEncoder.encode(serviceNameResolver.resolve(samlAuthenticationRequest.getRequesterEntityId()), "UTF-8");
+            return ResponseEntity.status(HttpStatus.FOUND).location(URI.create(this.idpBaseUrl + "/stepup/" + samlAuthenticationRequest.getId() + "?name=" + encodedServiceName + "&existing=" + user.isNewUser())).build();
+        }
+
         if (passwordOrWebAuthnFlow) {
             return ResponseEntity.status(201).body(Collections.singletonMap("url", this.magicLinkUrl + "?h=" + samlAuthenticationRequest.getHash()));
         } else {

@@ -22,6 +22,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.UUID;
 
 import static myconext.validation.PasswordStrength.strongEnough;
@@ -103,10 +104,10 @@ public class User implements Serializable, UserDetails {
     }
 
     @Transient
-    public void computeEduIdForServiceProviderIfAbsent(String serviceProviderEntityId) {
-        if (StringUtils.hasText(serviceProviderEntityId)) {
-            this.eduIdPerServiceProvider.computeIfAbsent(serviceProviderEntityId, s -> UUID.randomUUID().toString());
-        }
+    public Optional<String> computeEduIdForServiceProviderIfAbsent(String serviceProviderEntityId) {
+        return StringUtils.hasText(serviceProviderEntityId) ?
+                Optional.of(this.eduIdPerServiceProvider.computeIfAbsent(serviceProviderEntityId, s -> UUID.randomUUID().toString())) :
+                Optional.empty();
     }
 
 

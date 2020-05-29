@@ -1,8 +1,8 @@
 logging:
   level:
     org.springframework.data.mongodb: INFO
-    org.springframework.data.convert: ERROR
-    org.springframework.security: DEBUG
+    org.springframework.data.convert: INFO
+    org.springframework.security: INFO
 
 server:
   port: 8081
@@ -33,6 +33,7 @@ onegini_entity_id: http://mock-idp
 guest_idp_entity_id: https://localhost.surf.id
 my_conext_url: https://my.test2.surfconext.nl
 domain: eduid.nl
+account_linking_authentication_context_class_reference_value: http://test2.surfconext.nl/assurance/loa3
 
 feature:
   webauthn: True
@@ -50,6 +51,12 @@ email_guessing_sleep_millis: 500
 attribute_aggregation:
   user: aa
   password: secret
+
+oidc:
+  client-id: myconext.rp.localhost
+  secret: secret
+  redirect-url: http://localhost:8081/idp/oidc/redirect
+  base-url: https://connect.test2.surfconext.nl
 
 spring:
   data:
