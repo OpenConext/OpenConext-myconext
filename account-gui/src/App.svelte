@@ -16,6 +16,7 @@
     import I18n from "i18n-js";
     import {conf} from "./stores/conf";
     import Loader from "./components/Loader.svelte";
+    import Stepup from "./routes/Stepup.svelte";
 
     export let url = "";
 
@@ -97,6 +98,9 @@
                 </Route>
                 <Route path="/magic/:id" let:params>
                     <MagicLink id="{params.id}"></MagicLink>
+                </Route>
+                <Route path="/stepup/:id" let:params>
+                    <Stepup id="{params.id}"></Stepup>
                 </Route>
                 <Route path="/confirm" component={Confirm}/>
                 <Route path="/migration" component={Migration}/>

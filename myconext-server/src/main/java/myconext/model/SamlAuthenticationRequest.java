@@ -37,6 +37,8 @@ public class SamlAuthenticationRequest {
 
     private boolean accountLinkingRequired;
 
+    private boolean passwordOrWebAuthnFlow;
+
     private boolean rememberMe;
 
     private String rememberMeValue;
@@ -69,4 +71,7 @@ public class SamlAuthenticationRequest {
         this.rememberMeValue = rememberMeValue;
     }
 
+    public void setPasswordOrWebAuthnFlow(boolean passwordOrWebAuthnFlow) {
+        this.passwordOrWebAuthnFlow = passwordOrWebAuthnFlow;
+    }
 }

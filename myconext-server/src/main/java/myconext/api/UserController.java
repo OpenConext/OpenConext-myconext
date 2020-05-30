@@ -64,9 +64,7 @@ import javax.validation.Valid;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Field;
-import java.net.URI;
 import java.net.URISyntaxException;
-import java.net.URLEncoder;
 import java.security.SecureRandom;
 import java.util.Base64;
 import java.util.Collections;
@@ -146,7 +144,6 @@ public class UserController {
         String requesterEntityId = samlAuthenticationRequest.getRequesterEntityId();
         User userToSave = new User(UUID.randomUUID().toString(), user.getEmail(), user.getGivenName(),
                 user.getFamilyName(), schacHomeOrganization, guestIdpEntityId, requesterEntityId, preferredLanguage);
-        userToSave.encryptPassword(user.getPassword(), passwordEncoder);
         userToSave = userRepository.save(userToSave);
 
         return this.doMagicLink(userToSave, samlAuthenticationRequest, magicLinkRequest.isRememberMe(), false);
@@ -177,7 +174,8 @@ public class UserController {
 
             LOG.info(String.format("User %s successfully logged in with password", user.getUsername()));
 
-            SecurityContextHolder.getContext().setAuthentication(authentication);
+            //TODO - why, this can be done by the GuestIdpAuthenticationRequestFilter
+            //SecurityContextHolder.getContext().setAuthentication(authentication);
         }
         return doMagicLink(user, samlAuthenticationRequest, magicLinkRequest.isRememberMe(), magicLinkRequest.isUsePassword());
     }
@@ -327,6 +325,9 @@ public class UserController {
 
         String authenticationRequestId = body.get("authenticationRequestId");
         String challenge = request.getPublicKeyCredentialRequestOptions().getChallenge().getBase64Url();
+        // The user might have started webauthn already (and cancelled it). Need to prevent duplicates
+        challengeRepository.findByToken(authenticationRequestId)
+                .ifPresent(existingChallenge -> challengeRepository.delete(existingChallenge));
         challengeRepository.save(new Challenge(authenticationRequestId, challenge, user.getEmail()));
 
         return ResponseEntity.status(200).body(request);
@@ -370,7 +371,8 @@ public class UserController {
 
         LOG.info(String.format("User %s successfully logged in with AuthnWeb", user.getUsername()));
 
-        SecurityContextHolder.getContext().setAuthentication(authentication);
+        //TODO - why, this can be done by the GuestIdpAuthenticationRequestFilter
+//        SecurityContextHolder.getContext().setAuthentication(authentication);
         return doMagicLink(user, samlAuthenticationRequest, rememberMe, true);
     }
 
@@ -439,37 +441,30 @@ public class UserController {
     }
 
     private ResponseEntity doMagicLink(User user, SamlAuthenticationRequest samlAuthenticationRequest, boolean rememberMe,
-                                       boolean passwordOrWebAuthnFlow) throws UnsupportedEncodingException {
+                                       boolean passwordOrWebAuthnFlow) {
         samlAuthenticationRequest.setHash(hash());
         samlAuthenticationRequest.setUserId(user.getId());
+        samlAuthenticationRequest.setPasswordOrWebAuthnFlow(passwordOrWebAuthnFlow);
         samlAuthenticationRequest.setRememberMe(rememberMe);
         if (rememberMe) {
             samlAuthenticationRequest.setRememberMeValue(UUID.randomUUID().toString());
         }
         authenticationRequestRepository.save(samlAuthenticationRequest);
-
-        boolean userVerifiedByInstitution = GuestIdpAuthenticationRequestFilter.isUserVerifiedByInstitution(user);
-        if (!userVerifiedByInstitution && samlAuthenticationRequest.isAccountLinkingRequired()) {
-            String encodedServiceName = URLEncoder.encode(serviceNameResolver.resolve(samlAuthenticationRequest.getRequesterEntityId()), "UTF-8");
-            return ResponseEntity.status(HttpStatus.FOUND).location(URI.create(this.idpBaseUrl + "/stepup/" + samlAuthenticationRequest.getId() + "?name=" + encodedServiceName + "&existing=" + user.isNewUser())).build();
-        }
+        String serviceName = serviceNameResolver.resolve(samlAuthenticationRequest.getRequesterEntityId());
 
         if (passwordOrWebAuthnFlow) {
+            LOG.info(String.format("Returning passwordOrWebAuthnFlow magic link for existing user %s", user.getUsername()));
             return ResponseEntity.status(201).body(Collections.singletonMap("url", this.magicLinkUrl + "?h=" + samlAuthenticationRequest.getHash()));
-        } else {
-            if (user.isNewUser()) {
-                LOG.info(String.format("Sending magic link for new user %s", user.getUsername()));
-
-                mailBox.sendAccountVerification(user, samlAuthenticationRequest.getHash());
-            } else {
-                String serviceName = serviceNameResolver.resolve(samlAuthenticationRequest.getRequesterEntityId());
-
-                LOG.info(String.format("Sending magic link for existing user %s", user.getUsername()));
-
-                mailBox.sendMagicLink(user, samlAuthenticationRequest.getHash(), serviceName);
-            }
-            return ResponseEntity.status(201).body(Collections.singletonMap("result", "ok"));
         }
+
+        if (user.isNewUser()) {
+            LOG.info(String.format("Sending account verification mail with magic link for new user %s", user.getUsername()));
+            mailBox.sendAccountVerification(user, samlAuthenticationRequest.getHash());
+        } else {
+            LOG.info(String.format("Sending magic link email for existing user %s", user.getUsername()));
+            mailBox.sendMagicLink(user, samlAuthenticationRequest.getHash(), serviceName);
+        }
+        return ResponseEntity.status(201).body(Collections.singletonMap("result", "ok"));
     }
 
     private Optional<User> findUserStoreLanguage(String email) {

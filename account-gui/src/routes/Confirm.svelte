@@ -8,26 +8,20 @@
     let serviceName = null;
 
     onMount(() => {
-        if (typeof window !== "undefined") {
-            const urlSearchParams = new URLSearchParams(window.location.search);
-            email = decodeURIComponent(urlSearchParams.get("email"));
-            serviceName = decodeURIComponent(urlSearchParams.get("name"));
-        }
+        const urlSearchParams = new URLSearchParams(window.location.search);
+        email = decodeURIComponent(urlSearchParams.get("email"));
+        serviceName = decodeURIComponent(urlSearchParams.get("name"));
     });
 
     const proceed = () => {
-        if (typeof window !== "undefined") {
-            const urlSearchParams = new URLSearchParams(window.location.search);
-            const redirect = decodeURIComponent(urlSearchParams.get("redirect"));
-            //Ensure we are not attacked by an open redirect
-            if (redirect.startsWith($conf.magicLinkUrl)) {
-                window.location.href = `${redirect}?h=${urlSearchParams.get('h')}`;
-            } else {
-                throw new Error("Invalid redirect: " + redirect);
-            }
-
+        const urlSearchParams = new URLSearchParams(window.location.search);
+        const redirect = decodeURIComponent(urlSearchParams.get("redirect"));
+        //Ensure we are not attacked by an open redirect
+        if (redirect.startsWith($conf.magicLinkUrl)) {
+            window.location.href = `${redirect}?h=${urlSearchParams.get('h')}`;
+        } else {
+            throw new Error("Invalid redirect: " + redirect);
         }
-
     };
 </script>
 

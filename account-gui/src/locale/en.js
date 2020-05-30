@@ -56,6 +56,12 @@ I18n.translations.en = {
         header: "Success!",
         thanks: "Your eduID account has been created. Proceed to your destination."
     },
+    stepup: {
+        header: "Almost there!",
+        info: "You have successfully authenticated, however the service {{name}} requires you to link your eduID account to a SURFconext institution.",
+        proceed: "Click on the link below to proceed and select your home institution and login.",
+        link: "Proceed to SURFconext"
+    },
     footer: {
         privacy: "Privacy policy",
         terms: "Terms of Use",

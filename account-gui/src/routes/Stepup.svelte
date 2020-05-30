@@ -4,30 +4,18 @@
     import {conf} from "../stores/conf";
     import Button from "../components/Button.svelte";
 
-    let email = null;
+    export let id;
+    let existing = null;
     let serviceName = null;
 
     onMount(() => {
-        if (typeof window !== "undefined") {
-            const urlSearchParams = new URLSearchParams(window.location.search);
-            email = decodeURIComponent(urlSearchParams.get("email"));
-            serviceName = decodeURIComponent(urlSearchParams.get("name"));
-        }
+        const urlSearchParams = new URLSearchParams(window.location.search);
+        existing = "true" === urlSearchParams.get("existing");
+        serviceName = decodeURIComponent(urlSearchParams.get("name"));
     });
 
     const proceed = () => {
-        if (typeof window !== "undefined") {
-            const urlSearchParams = new URLSearchParams(window.location.search);
-            const redirect = decodeURIComponent(urlSearchParams.get("redirect"));
-            //Ensure we are not attacked by an open redirect
-            if (redirect.startsWith($conf.magicLinkUrl)) {
-                window.location.href = `${redirect}?h=${urlSearchParams.get('h')}`;
-            } else {
-                throw new Error("Invalid redirect: " + redirect);
-            }
-
-        }
-
+        window.location.href = `/myconext/api/idp/oidc/account/${id}`;
     };
 </script>
 
@@ -47,10 +35,11 @@
 </style>
 <div class="home">
     <div class="card">
-        <h2>{I18n.ts("confirm.header")}</h2>
-        <p class="info">{I18n.ts("confirm.thanks")}</p>
+        <h2>{I18n.ts("stepup.header")}</h2>
+        <p class="info">{I18n.ts("stepup.info", {name: serviceName})}</p>
+        <p class="info">{I18n.ts("stepup.proceed")}</p>
         <Button href="/proceed" onClick={proceed}
                 className="full"
-                label={serviceName}/>
+                label={I18n.ts("stepup.link")}/>
     </div>
 </div>

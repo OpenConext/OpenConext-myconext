@@ -56,7 +56,11 @@
                 const modus = $user.createAccount ? "cr" : "ea";
                 if ($user.createAccount) {
                     magicLinkNewUser($user.email, $user.givenName, $user.familyName, $user.rememberMe, id)
-                            .then(() => navigate(`/magic/${id}?name=${encodeURIComponent(serviceName)}&modus=${modus}`, {replace: true}))
+                            .then(res => {
+                              const url = res.stepup  ? `/stepup/${id}?name=${encodeURIComponent(serviceName)}&existing=false` :
+                                      `/magic/${id}?name=${encodeURIComponent(serviceName)}&modus=${modus}`;
+                              navigate(url, {replace: true})
+                            })
                             .catch(e => {
                                 showSpinner = false;
                                 if (e.status === 409) {
@@ -75,7 +79,9 @@
                                     secure: true,
                                     sameSite: "Lax"
                                 });
-                                if ($user.usePassword) {
+                                if (json.stepup) {
+                                    navigate(`/stepup/${id}?name=${encodeURIComponent(serviceName)}&existing=true`, {replace: true})
+                                } else if ($user.usePassword) {
                                     window.location.href = json.url;
                                 } else {
                                     navigate(`/magic/${id}?name=${encodeURIComponent(serviceName)}&modus=${modus}`, {replace: true});
@@ -134,8 +140,12 @@
                                 delete credentials["rawId"];
                                 webAuthnTryAuthentication(JSON.stringify(credentials), id, $user.rememberMe)
                                         .then(json => {
-                                          window.location.href = json.url
-                                        })
+                                            if (json.stepup) {
+                                                navigate(`/stepup/${id}?name=${encodeURIComponent(serviceName)}&existing=true`, {replace: true})
+                                            } else {
+                                                window.location.href = json.url
+                                            }
+                                       })
                                         .catch(() => {
                                             webAuthIncorrect = true;
                                         })

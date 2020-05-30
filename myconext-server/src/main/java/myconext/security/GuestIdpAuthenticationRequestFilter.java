@@ -41,6 +41,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.net.URLEncoder;
 import java.nio.charset.Charset;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
@@ -59,6 +60,7 @@ public class GuestIdpAuthenticationRequestFilter extends IdpAuthenticationReques
     public static final String REGISTER_MODUS_COOKIE_NAME = "REGISTER_MODUS";
     public static final String EDUPERSON_ENTITLEMENT_VERIFIED_BY_INSTITUTION =
             "urn:mace:eduid.nl:entitlement:verified-by-institution";
+    public static final String EDUPERSON_ENTITLEMENT_SAML = "urn:mace:dir:attribute-def:eduPersonEntitlement";
 
     private static final Log LOG = LogFactory.getLog(GuestIdpAuthenticationRequestFilter.class);
 
@@ -113,7 +115,7 @@ public class GuestIdpAuthenticationRequestFilter extends IdpAuthenticationReques
         super.doFilterInternal(request, response, filterChain);
     }
 
-    private void sso(HttpServletRequest request, final HttpServletResponse response) throws IOException {
+    private void sso(HttpServletRequest request, HttpServletResponse response) throws IOException {
         IdentityProviderService provider = getProvisioning().getHostedProvider();
         String samlRequest = request.getParameter("SAMLRequest");
         String relayState = request.getParameter("RelayState");
@@ -171,7 +173,7 @@ public class GuestIdpAuthenticationRequestFilter extends IdpAuthenticationReques
     }
 
     public static boolean isUserVerifiedByInstitution(User user) {
-        return user.getAttributes().getOrDefault("eduperson_entitlement", Collections.emptyList()).contains(EDUPERSON_ENTITLEMENT_VERIFIED_BY_INSTITUTION);
+        return user.getAttributes().getOrDefault(EDUPERSON_ENTITLEMENT_SAML, Collections.emptyList()).contains(EDUPERSON_ENTITLEMENT_VERIFIED_BY_INSTITUTION);
     }
 
     private String getAuthenticationContextClassReferenceValue(AuthenticationRequest authenticationRequest) {
@@ -223,13 +225,23 @@ public class GuestIdpAuthenticationRequestFilter extends IdpAuthenticationReques
         User user = userRepository.findById(samlAuthenticationRequest.getUserId())
                 .orElseThrow(UserNotFoundException::new);
 
+        boolean accountLinkingRequired = samlAuthenticationRequest.isAccountLinkingRequired() &&
+                !GuestIdpAuthenticationRequestFilter.isUserVerifiedByInstitution(user);
+
+        String charSet = Charset.defaultCharset().name();
+        String encodedServiceName = URLEncoder.encode(serviceNameResolver.resolve(samlAuthenticationRequest.getRequesterEntityId()), charSet);
+        if (accountLinkingRequired) {
+            response.sendRedirect(this.redirectUrl + "/stepup/" + samlAuthenticationRequest.getId()
+                    + "?name=" + encodedServiceName + "&existing=true");
+            return;
+        }
+
         if (user.isNewUser()) {
             user.setNewUser(false);
             userRepository.save(user);
 
             LOG.info(String.format("Saving user %s after new registration and magic link", user.getUsername()));
 
-            String charSet = Charset.defaultCharset().name();
             mailBox.sendAccountConfirmation(user);
 
             response.sendRedirect(this.redirectUrl + "/confirm?h=" + hash +
@@ -237,14 +249,14 @@ public class GuestIdpAuthenticationRequestFilter extends IdpAuthenticationReques
                     "&email=" + URLEncoder.encode(user.getEmail(), charSet) +
                     "&name=" + URLEncoder.encode(serviceNameResolver.resolve(samlAuthenticationRequest.getRequesterEntityId()), charSet));
             return;
-        } else {
-            //ensure the magic link can't be used twice
-            samlAuthenticationRequest.setHash(null);
-
-            LOG.info(String.format("Disabling magic link after use by %s ", user.getUsername()));
-
-            authenticationRequestRepository.save(samlAuthenticationRequest);
         }
+        //ensure the magic link can't be used twice
+        samlAuthenticationRequest.setHash(null);
+
+        LOG.info(String.format("Disabling magic link after use by %s ", user.getUsername()));
+
+        authenticationRequestRepository.save(samlAuthenticationRequest);
+
         IdentityProviderService provider = getProvisioning().getHostedProvider();
         ServiceProviderMetadata serviceProviderMetadata = provider.getRemoteProvider(samlAuthenticationRequest.getIssuer());
 
@@ -300,7 +312,7 @@ public class GuestIdpAuthenticationRequestFilter extends IdpAuthenticationReques
 
     private List<Attribute> attributes(User user, String requesterEntityId) {
         String displayName = String.format("%s %s", user.getGivenName(), user.getFamilyName());
-        List<Attribute> attributes = Arrays.asList(
+        List<Attribute> attributes = new ArrayList(Arrays.asList(
                 attribute("urn:mace:dir:attribute-def:cn", displayName),
                 attribute("urn:mace:dir:attribute-def:displayName", displayName),
                 attribute("urn:mace:dir:attribute-def:eduPersonPrincipalName", user.getEduPersonPrincipalName()),
@@ -309,9 +321,9 @@ public class GuestIdpAuthenticationRequestFilter extends IdpAuthenticationReques
                 attribute("urn:mace:dir:attribute-def:sn", user.getFamilyName()),
                 attribute("urn:mace:dir:attribute-def:uid", user.getUid()),
                 attribute("urn:mace:terena.org:attribute-def:schacHomeOrganization", user.getSchacHomeOrganization())
-        );
+        ));
         Optional<String> eduIDOptional = user.computeEduIdForServiceProviderIfAbsent(requesterEntityId);
-        eduIDOptional.ifPresent(eduID -> attribute("urn:mace:eduid.nl:1.1", eduID));
+        eduIDOptional.ifPresent(eduID -> attributes.add(attribute("urn:mace:eduid.nl:1.1", eduID)));
 
         user.getAttributes()
                 .forEach((key, value) -> attributes.add(attribute(key, value.toArray(new String[]{}))));

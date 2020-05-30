@@ -55,7 +55,7 @@ attribute_aggregation:
 oidc:
   client-id: myconext.rp.localhost
   secret: secret
-  redirect-url: http://localhost:8081/idp/oidc/redirect
+  redirect-url: http://localhost:8081/myconext/api/idp/oidc/redirect
   base-url: https://connect.test2.surfconext.nl
 
 spring:
