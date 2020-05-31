@@ -1,8 +1,6 @@
 package myconext.aa;
 
-import myconext.model.ServiceProvider;
 import myconext.model.User;
-import myconext.repository.ServiceProviderRepository;
 import myconext.repository.UserRepository;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -15,7 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/myconext/api")
@@ -24,48 +22,27 @@ public class AttributeAggregatorController {
     private static final Log LOG = LogFactory.getLog(AttributeAggregatorController.class);
 
     private UserRepository userRepository;
-    private ServiceProviderRepository serviceProviderRepository;
 
-    public AttributeAggregatorController(UserRepository userRepository, ServiceProviderRepository serviceProviderRepository) {
+    public AttributeAggregatorController(UserRepository userRepository) {
         this.userRepository = userRepository;
-        this.serviceProviderRepository = serviceProviderRepository;
     }
 
     @GetMapping(value = {"attribute-aggregation"})
-    public ResponseEntity<User> aggregate(Authentication authentication,
-                                          @RequestParam("sp_entity_id") String spEntityId,
-                                          @RequestParam("eduperson_principal_name") String eduPersonPrincipalName) {
+    public ResponseEntity<List<UserAttribute>> aggregate(Authentication authentication,
+                                                         @RequestParam("sp_entity_id") String spEntityId,
+                                                         @RequestParam("eduperson_principal_name") String eduPersonPrincipalName) {
         LOG.info(String.format("Attribute aggregation for eduPersonPrincipalName %s and spEntityId %s requested by %s",
                 eduPersonPrincipalName, spEntityId, authentication.getPrincipal()));
 
-        ServiceProvider serviceProvider = serviceProviderRepository
-                .findByEntityId(spEntityId)
-                .orElseGet(() -> serviceProviderRepository.save(new ServiceProvider(spEntityId)));
-
-        User user = findUser(eduPersonPrincipalName, spEntityId);
-        String eduID = user.computeEduIdForServiceProviderIfAbsent(serviceProvider.getEntityId()).orElseThrow(IllegalArgumentException::new);
-
+        Optional<User> userOptional = userRepository
+                .findUserByEduPersonPrincipalName(eduPersonPrincipalName);
         List<UserAttribute> userAttributes = new ArrayList<>();
-        userAttributes.add(new UserAttribute("urn:mace:eduid.nl:1.1", eduID));
-
-       // userAttributes.add(new UserAttribute("urn:mace:dir:attribute-def:eduPersonTargetedID", user.getUid())
-        //TODO need to return SAML attributes names, see test_attribute_aggregation.py
-        return ResponseEntity.ok(user);
+        userOptional.ifPresent(user -> {
+            Optional<String> optionalEduID = user.computeEduIdForServiceProviderIfAbsent(spEntityId);
+            optionalEduID.ifPresent(eduID -> userAttributes.add(
+                    new UserAttribute("urn:mace:eduid.nl:1.1", eduID)));
+        });
+        return ResponseEntity.ok(userAttributes);
     }
 
-    private User findUser(String eduPersonPrincipalName, String spEntityId) {
-        return userRepository
-                .findUserByEduPersonPrincipalName(eduPersonPrincipalName)
-                .orElseGet(() -> {
-                    String[] split = eduPersonPrincipalName.split("@");
-                    return split.length == 2 ?
-                            userRepository.findUserByUidAndSchacHomeOrganization(split[0], split[1])
-                                    .orElse(newUser(eduPersonPrincipalName, spEntityId)) :
-                            newUser(eduPersonPrincipalName, spEntityId);
-                });
-    }
-
-    private User newUser(String eduPersonPrincipalName, String spEntityId) {
-        return new User(UUID.randomUUID().toString(), eduPersonPrincipalName, spEntityId);
-    }
 }

@@ -12,4 +12,5 @@
     <samlp:Scoping>
         <samlp:RequesterID>https://manage.surfconext.nl/shibboleth</samlp:RequesterID>
     </samlp:Scoping>
+    %s
 </samlp:AuthnRequest>

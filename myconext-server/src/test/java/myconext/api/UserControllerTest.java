@@ -12,6 +12,7 @@ import myconext.model.User;
 import org.apache.commons.io.IOUtils;
 import org.apache.http.client.CookieStore;
 import org.junit.Test;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
@@ -75,16 +76,6 @@ public class UserControllerTest extends AbstractIntegrationTest {
 
         String samlResponse = samlResponse(magicLinkResponse);
         assertTrue(samlResponse.contains("new@example.com"));
-    }
-
-    @Test
-    public void newUserProvisionedWithPassword() throws IOException {
-        User user = user("new@example.com", "Mary", "Doe", "en");
-        userSetPassword(user, "secretA12");
-
-        magicLinkRequest(user, HttpMethod.POST);
-        user = userRepository.findUserByEmailIgnoreCase(user.getEmail()).get();
-        assertTrue(this.passwordEncoder.matches("secretA12", user.getPassword()));
     }
 
     @Test
@@ -308,6 +299,43 @@ public class UserControllerTest extends AbstractIntegrationTest {
                 .then()
                 .statusCode(HttpStatus.FOUND.value())
                 .header("Location", "http://localhost:3000/session");
+    }
+
+    @Test
+    public void stepup() throws IOException {
+        String authnContext = IOUtils.toString(new ClassPathResource("request_authn_context.xml").getInputStream(), Charset.defaultCharset());
+        Response response = samlAuthnRequestResponseWithLoa(null, null, authnContext);
+        assertEquals(302, response.getStatusCode());
+
+        String location = response.getHeader("Location");
+        assertTrue(location.startsWith("http://localhost:3000/login/"));
+
+        String authenticationRequestId = location.substring(location.lastIndexOf("/") + 1, location.lastIndexOf("?"));
+        User user = user("jdoe@example.com");
+        MagicLinkResponse magicLinkResponse = magicLinkRequest(new MagicLinkRequest(authenticationRequestId, user, false, StringUtils.hasText(user.getPassword())), HttpMethod.PUT);
+
+        SamlAuthenticationRequest samlAuthenticationRequest = authenticationRequestRepository.findById(magicLinkResponse.authenticationRequestId).get();
+        response = given().redirects().follow(false)
+                .when()
+                .queryParam("h", samlAuthenticationRequest.getHash())
+                .cookie(BROWSER_SESSION_COOKIE_NAME, "true")
+                .get("/saml/guest-idp/magic");
+
+        //stepup screen
+        String uri = response.getHeader("Location");
+        assertTrue(uri.contains("stepup"));
+
+        response = given().redirects().follow(false)
+                .when()
+                .get("/myconext/api/idp/oidc/account/" + samlAuthenticationRequest.getId());
+        location = response.getHeader("Location");
+        assertEquals("https://connect.test2.surfconext.nl/oidc/authorize?" +
+                        "scope=openid&response_type=code&" +
+                        "redirect_uri=http://localhost:8081/myconext/api/idp/oidc/redirect&" +
+                        "state=" + samlAuthenticationRequest.getId() + "&" +
+                        "client_id=myconext.rp.localhost",
+                location);
+
     }
 
     private String samlResponse(MagicLinkResponse magicLinkResponse) throws IOException {

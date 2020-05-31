@@ -18,8 +18,6 @@ public interface UserRepository extends MongoRepository<User, String> {
 
     Optional<User> findUserByEduPersonPrincipalName(String eduPersonPrincipalName);
 
-    Optional<User> findUserByUidAndSchacHomeOrganization(String uid, String schacHomeOrganization);
-
     Optional<User> findUserByWebAuthnIdentifier(String webAuthnIdentifier);
 
     Optional<User> findUserByUserHandle(String userHandle);

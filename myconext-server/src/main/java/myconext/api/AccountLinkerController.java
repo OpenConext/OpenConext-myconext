@@ -1,6 +1,5 @@
 package myconext.api;
 
-import myconext.exceptions.ForbiddenException;
 import myconext.exceptions.UserNotFoundException;
 import myconext.model.SamlAuthenticationRequest;
 import myconext.model.User;
@@ -24,10 +23,6 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -48,10 +43,10 @@ public class AccountLinkerController {
     private final String redirectUri;
     private final RestTemplate restTemplate = new RestTemplate();
     private final HttpHeaders headers = new HttpHeaders();
-    private AuthenticationRequestRepository authenticationRequestRepository;
-    private UserRepository userRepository;
-    private String magicLinkUrl;
-private String idpRedirectUrl;
+    private final AuthenticationRequestRepository authenticationRequestRepository;
+    private final UserRepository userRepository;
+    private final String magicLinkUrl;
+    private final String idpRedirectUrl;
 
     public AccountLinkerController(
             AuthenticationRequestRepository authenticationRequestRepository,
@@ -65,6 +60,7 @@ private String idpRedirectUrl;
         this.authenticationRequestRepository = authenticationRequestRepository;
         this.userRepository = userRepository;
         this.magicLinkUrl = magicLinkUrl;
+        this.idpRedirectUrl = idpRedirectUrl;
         this.clientId = clientId;
         this.clientSecret = clientSecret;
         this.redirectUri = redirectUri;
@@ -124,6 +120,7 @@ private String idpRedirectUrl;
         User user = userRepository.findById(samlAuthenticationRequest.getUserId())
                 .orElseThrow(UserNotFoundException::new);
         user.getAttributes().computeIfAbsent(EDUPERSON_ENTITLEMENT_SAML, key -> new ArrayList<>()).add(EDUPERSON_ENTITLEMENT_VERIFIED_BY_INSTITUTION);
+        //TODO do we need to store additional attributes from the userinfo endpoint
         userRepository.save(user);
 
         //TODO Do we need to redirect to client for yet another confirmation screen

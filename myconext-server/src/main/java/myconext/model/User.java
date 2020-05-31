@@ -55,12 +55,6 @@ public class User implements Serializable, UserDetails {
     private long created;
     private long updatedAt = System.currentTimeMillis() / 1000L;
 
-    public User(String uid, String eduPersonPrincipalName, String serviceProviderEntityId) {
-        this.uid = uid;
-        this.eduPersonPrincipalName = eduPersonPrincipalName;
-        this.computeEduIdForServiceProviderIfAbsent(serviceProviderEntityId);
-    }
-
     public User(String uid, String email, String givenName, String familyName,
                 String schacHomeOrganization, String authenticatingAuthority,
                 String serviceProviderEntityId, String preferredLanguage) {

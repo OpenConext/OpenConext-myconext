@@ -108,8 +108,12 @@ public abstract class AbstractIntegrationTest {
     }
 
     protected Response samlAuthnRequestResponse(Cookie cookie, String relayState) throws IOException {
+        return samlAuthnRequestResponseWithLoa(cookie, relayState, "");
+    }
+
+    protected Response samlAuthnRequestResponseWithLoa(Cookie cookie, String relayState, String loaLevel) throws IOException {
         String samlRequestTemplate = IOUtils.toString(new ClassPathResource("authn_request.xml").getInputStream(), Charset.defaultCharset());
-        String samlRequest = String.format(samlRequestTemplate, UUID.randomUUID().toString(), issueFormat.format(new Date()));
+        String samlRequest = String.format(samlRequestTemplate, UUID.randomUUID().toString(), issueFormat.format(new Date()), loaLevel);
         String samlRequestEncoded = deflatedBase64encoded(samlRequest);
         Map<String, String> queryParams = new HashMap<>();
         queryParams.put("SAMLRequest", samlRequestEncoded);

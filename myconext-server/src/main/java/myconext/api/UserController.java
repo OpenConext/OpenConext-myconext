@@ -126,7 +126,7 @@ public class UserController {
     }
 
     @PostMapping("/idp/magic_link_request")
-    public ResponseEntity newMagicLinkRequest(@Valid @RequestBody MagicLinkRequest magicLinkRequest) throws UnsupportedEncodingException {
+    public ResponseEntity newMagicLinkRequest(@Valid @RequestBody MagicLinkRequest magicLinkRequest) {
         SamlAuthenticationRequest samlAuthenticationRequest = authenticationRequestRepository.findByIdAndNotExpired(magicLinkRequest.getAuthenticationRequestId())
                 .orElseThrow(ExpiredAuthenticationException::new);
 
@@ -150,7 +150,7 @@ public class UserController {
     }
 
     @PutMapping("/idp/magic_link_request")
-    public ResponseEntity magicLinkRequest(@Valid @RequestBody MagicLinkRequest magicLinkRequest) throws UnsupportedEncodingException {
+    public ResponseEntity magicLinkRequest(@Valid @RequestBody MagicLinkRequest magicLinkRequest) {
         SamlAuthenticationRequest samlAuthenticationRequest = authenticationRequestRepository.findByIdAndNotExpired(magicLinkRequest.getAuthenticationRequestId())
                 .orElseThrow(ExpiredAuthenticationException::new);
 
@@ -163,19 +163,18 @@ public class UserController {
             return return404();
         }
         User user = optionalUser.get();
+        String requesterEntityId = samlAuthenticationRequest.getRequesterEntityId();
+        if (!user.getEduIdPerServiceProvider().containsKey(requesterEntityId)) {
+            user.computeEduIdForServiceProviderIfAbsent(requesterEntityId);
+            userRepository.save(user);
+        }
 
         if (magicLinkRequest.isUsePassword()) {
             if (!passwordEncoder.matches(providedUser.getPassword(), user.getPassword())) {
                 return ResponseEntity.status(HttpStatus.FORBIDDEN)
                         .body(Collections.singletonMap("status", HttpStatus.FORBIDDEN.value()));
             }
-            UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(user, null,
-                    user.getAuthorities());
-
             LOG.info(String.format("User %s successfully logged in with password", user.getUsername()));
-
-            //TODO - why, this can be done by the GuestIdpAuthenticationRequestFilter
-            //SecurityContextHolder.getContext().setAuthentication(authentication);
         }
         return doMagicLink(user, samlAuthenticationRequest, magicLinkRequest.isRememberMe(), magicLinkRequest.isUsePassword());
     }
@@ -371,8 +370,6 @@ public class UserController {
 
         LOG.info(String.format("User %s successfully logged in with AuthnWeb", user.getUsername()));
 
-        //TODO - why, this can be done by the GuestIdpAuthenticationRequestFilter
-//        SecurityContextHolder.getContext().setAuthentication(authentication);
         return doMagicLink(user, samlAuthenticationRequest, rememberMe, true);
     }
 
