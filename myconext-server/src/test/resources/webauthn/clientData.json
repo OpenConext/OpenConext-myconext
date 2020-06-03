@@ -1,0 +1,6 @@
+{
+  "type": "webauthn.create",
+  "challenge": "U8VMjMX33hG-hW0bzK2ir4u4bUvEDfSoaUsxzaSvVm0",
+  "origin": "http://localhost:3000",
+  "crossOrigin": false
+}

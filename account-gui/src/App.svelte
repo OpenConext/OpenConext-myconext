@@ -28,13 +28,16 @@
                 if (typeof window !== "undefined") {
                     const urlSearchParams = new URLSearchParams(window.location.search);
                     if (urlSearchParams.has("lang")) {
-                        I18n.locale = urlSearchParams.get("lang");
+                        I18n.locale = urlSearchParams.get("lang").toLowerCase();
                     } else if (Cookies.get("lang", {domain: $conf.domain})) {
-                        I18n.locale = Cookies.get("lang", {domain: $conf.domain});
+                        I18n.locale = Cookies.get("lang", {domain: $conf.domain}).toLowerCase();
                     } else {
                         I18n.locale = navigator.language.toLowerCase().substring(0, 2);
                     }
                 } else {
+                    I18n.locale = "en";
+                }
+                if (["nl", "en"].indexOf(I18n.locale) < 0) {
                     I18n.locale = "en";
                 }
                 loaded = true;

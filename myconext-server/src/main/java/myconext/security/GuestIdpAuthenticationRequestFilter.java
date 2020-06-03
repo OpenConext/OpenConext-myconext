@@ -48,6 +48,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import static java.util.function.Function.identity;
 import static myconext.security.CookieResolver.cookieByName;
@@ -58,9 +59,9 @@ public class GuestIdpAuthenticationRequestFilter extends IdpAuthenticationReques
     public static final String GUEST_IDP_REMEMBER_ME_COOKIE_NAME = "guest-idp-remember-me";
     public static final String BROWSER_SESSION_COOKIE_NAME = "BROWSER_SESSION";
     public static final String REGISTER_MODUS_COOKIE_NAME = "REGISTER_MODUS";
-    public static final String EDUPERSON_ENTITLEMENT_VERIFIED_BY_INSTITUTION =
-            "urn:mace:eduid.nl:entitlement:verified-by-institution";
-    public static final String EDUPERSON_ENTITLEMENT_SAML = "urn:mace:dir:attribute-def:eduPersonEntitlement";
+    public static final String EDUPERSON_SCOPED_AFFILIATION_VERIFIED_BY_INSTITUTION =
+            "verified@eduid.nl";
+    public static final String EDUPERSON_SCOPED_AFFILIATION_SAML = "urn:mace:dir:attribute-def:eduPersonScopedAffiliation";
 
     private static final Log LOG = LogFactory.getLog(GuestIdpAuthenticationRequestFilter.class);
 
@@ -69,7 +70,8 @@ public class GuestIdpAuthenticationRequestFilter extends IdpAuthenticationReques
     private final String redirectUrl;
     private final AuthenticationRequestRepository authenticationRequestRepository;
     private final UserRepository userRepository;
-    private final String accountLinkingAuthenticationContextClassReferenceValue;
+    private final String accountLinkingContextClassRef;
+
     private final int rememberMeMaxAge;
     private final boolean secureCookie;
     private final String magicLinkUrl;
@@ -82,7 +84,7 @@ public class GuestIdpAuthenticationRequestFilter extends IdpAuthenticationReques
                                                ServiceNameResolver serviceNameResolver,
                                                AuthenticationRequestRepository authenticationRequestRepository,
                                                UserRepository userRepository,
-                                               String accountLinkingAuthenticationContextClassReferenceValue,
+                                               String accountLinkingContextClassRef,
                                                int rememberMeMaxAge,
                                                boolean secureCookie,
                                                String magicLinkUrl,
@@ -94,7 +96,7 @@ public class GuestIdpAuthenticationRequestFilter extends IdpAuthenticationReques
         this.serviceNameResolver = serviceNameResolver;
         this.authenticationRequestRepository = authenticationRequestRepository;
         this.userRepository = userRepository;
-        this.accountLinkingAuthenticationContextClassReferenceValue = accountLinkingAuthenticationContextClassReferenceValue;
+        this.accountLinkingContextClassRef = accountLinkingContextClassRef;
         this.rememberMeMaxAge = rememberMeMaxAge;
         this.secureCookie = secureCookie;
         this.magicLinkUrl = magicLinkUrl;
@@ -126,9 +128,9 @@ public class GuestIdpAuthenticationRequestFilter extends IdpAuthenticationReques
 
         String requesterEntityId = requesterId(authenticationRequest);
         String issuer = authenticationRequest.getIssuer().getValue();
-        String authenticationContextClassReferenceValue = getAuthenticationContextClassReferenceValue(authenticationRequest);
+        List<String> authenticationContextClassReferenceValues = getAuthenticationContextClassReferenceValue(authenticationRequest);
 
-        boolean accountLinkingRequired = isAccountLinkingRequired(authenticationContextClassReferenceValue);
+        boolean accountLinkingRequired = isAccountLinkingRequired(authenticationContextClassReferenceValues);
 
         SamlAuthenticationRequest samlAuthenticationRequest = new SamlAuthenticationRequest(
                 authenticationRequest.getId(),
@@ -156,8 +158,8 @@ public class GuestIdpAuthenticationRequestFilter extends IdpAuthenticationReques
                 response.sendRedirect(this.redirectUrl + "/stepup/" + samlAuthenticationRequest.getId() + "?name=" + encodedServiceName + "&existing=true");
             } else {
                 ServiceProviderMetadata serviceProviderMetadata = provider.getRemoteProvider(samlAuthenticationRequest.getIssuer());
-                sendAssertion(request, response, samlAuthenticationRequest.getRelayState(), previousAuthenticatedUser,
-                        provider, serviceProviderMetadata, authenticationRequest, requesterEntityId);
+                sendAssertion(request, response, samlAuthenticationRequest, previousAuthenticatedUser,
+                        provider, serviceProviderMetadata, authenticationRequest);
             }
         } else {
             addBrowserIdentificationCookie(response);
@@ -168,17 +170,19 @@ public class GuestIdpAuthenticationRequestFilter extends IdpAuthenticationReques
         }
     }
 
-    private boolean isAccountLinkingRequired(String authenticationContextClassReferenceValue) {
-        return this.accountLinkingAuthenticationContextClassReferenceValue.equalsIgnoreCase(authenticationContextClassReferenceValue);
+    private boolean isAccountLinkingRequired(List<String> authenticationContextClassReferenceValues) {
+        return authenticationContextClassReferenceValues.contains(this.accountLinkingContextClassRef);
     }
 
     public static boolean isUserVerifiedByInstitution(User user) {
-        return user.getAttributes().getOrDefault(EDUPERSON_ENTITLEMENT_SAML, Collections.emptyList()).contains(EDUPERSON_ENTITLEMENT_VERIFIED_BY_INSTITUTION);
+        return user.getAttributes().getOrDefault(EDUPERSON_SCOPED_AFFILIATION_SAML, Collections.emptyList())
+                .contains(EDUPERSON_SCOPED_AFFILIATION_VERIFIED_BY_INSTITUTION);
     }
 
-    private String getAuthenticationContextClassReferenceValue(AuthenticationRequest authenticationRequest) {
+    private List<String> getAuthenticationContextClassReferenceValue(AuthenticationRequest authenticationRequest) {
         List<AuthenticationContextClassReference> authenticationContextClassReferences = authenticationRequest.getAuthenticationContextClassReferences();
-        return CollectionUtils.isEmpty(authenticationContextClassReferences) ? null : authenticationContextClassReferences.get(0).getValue();
+        return CollectionUtils.isEmpty(authenticationContextClassReferences) ? Collections.emptyList() :
+                authenticationContextClassReferences.stream().map(ref -> ref.getValue()).collect(Collectors.toList());
     }
 
     private Optional<User> userFromCookie(Cookie remembered) {
@@ -273,8 +277,8 @@ public class GuestIdpAuthenticationRequestFilter extends IdpAuthenticationReques
             addRememberMeCookie(response, samlAuthenticationRequest);
         }
 
-        sendAssertion(request, response, samlAuthenticationRequest.getRelayState(), user, provider,
-                serviceProviderMetadata, authenticationRequest, samlAuthenticationRequest.getRequesterEntityId());
+        sendAssertion(request, response, samlAuthenticationRequest, user, provider,
+                serviceProviderMetadata, authenticationRequest);
     }
 
     private void addRememberMeCookie(HttpServletResponse response, SamlAuthenticationRequest samlAuthenticationRequest) {
@@ -285,15 +289,23 @@ public class GuestIdpAuthenticationRequestFilter extends IdpAuthenticationReques
         response.addCookie(cookie);
     }
 
-    private void sendAssertion(HttpServletRequest request, HttpServletResponse response, String relayState,
+    private void sendAssertion(HttpServletRequest request, HttpServletResponse response, SamlAuthenticationRequest samlAuthenticationRequest,
                                User user, IdentityProviderService provider, ServiceProviderMetadata serviceProviderMetadata,
-                               AuthenticationRequest authenticationRequest, String requesterEntityId) {
+                               AuthenticationRequest authenticationRequest) {
+        String relayState = samlAuthenticationRequest.getRelayState();
+        String requesterEntityId = samlAuthenticationRequest.getRequesterEntityId();
         Assertion assertion = provider.assertion(
                 serviceProviderMetadata, authenticationRequest, user.getUid(), NameId.PERSISTENT);
 
         attributes(user, requesterEntityId).forEach(assertion::addAttribute);
 
         Response samlResponse = provider.response(authenticationRequest, assertion, serviceProviderMetadata);
+
+        if (samlAuthenticationRequest.isAccountLinkingRequired()) {
+            samlResponse.getAssertions().get(0).getAuthenticationStatements().get(0)
+                    .getAuthenticationContext()
+                    .setClassReference(AuthenticationContextClassReference.fromUrn(accountLinkingContextClassRef));
+        }
 
         Endpoint acsUrl = provider.getPreferredEndpoint(
                 serviceProviderMetadata.getServiceProvider().getAssertionConsumerService(),

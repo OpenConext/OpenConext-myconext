@@ -9,6 +9,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Date;
+import java.util.List;
 import java.util.UUID;
 
 @Document(collection = "authentication_requests")
@@ -44,7 +45,8 @@ public class SamlAuthenticationRequest {
     private String rememberMeValue;
 
     public SamlAuthenticationRequest(String requestId, String issuer, String consumerAssertionServiceURL,
-                                     String relayState, String requesterEntityId, boolean accountLinkingRequired) {
+                                     String relayState, String requesterEntityId,
+                                     boolean accountLinkingRequired) {
         this.id = UUID.randomUUID().toString();
         this.requestId = requestId;
         this.issuer = issuer;

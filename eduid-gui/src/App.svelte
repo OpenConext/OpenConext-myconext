@@ -27,6 +27,9 @@
         } else {
             I18n.locale = "en";
         }
+        if (["nl", "en"].indexOf(I18n.locale) < 0) {
+            I18n.locale = "en";
+        }
         loaded = true;
     }));
 

@@ -33,7 +33,7 @@ onegini_entity_id: http://mock-idp
 guest_idp_entity_id: https://localhost.surf.id
 my_conext_url: https://my.test2.surfconext.nl
 domain: eduid.nl
-account_linking_authentication_context_class_reference_value: http://test2.surfconext.nl/assurance/loa3
+account_linking_context_class_ref: https://eduid.nl/trust/linked-institution
 
 feature:
   webauthn: True

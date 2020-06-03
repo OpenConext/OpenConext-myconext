@@ -80,7 +80,7 @@ public class UserCredentialRepository implements CredentialRepository {
         return Collections.emptySet();
     }
 
-    private ByteArray byteArrayFromBase64Url(String base64Url) {
+    protected ByteArray byteArrayFromBase64Url(String base64Url) {
         try {
             return ByteArray.fromBase64Url(base64Url);
         } catch (Base64UrlException e) {

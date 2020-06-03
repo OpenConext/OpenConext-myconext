@@ -1,5 +1,6 @@
 package myconext.api;
 
+import myconext.crypto.KeyGenerator;
 import myconext.exceptions.UserNotFoundException;
 import myconext.model.SamlAuthenticationRequest;
 import myconext.model.User;
@@ -15,6 +16,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -30,8 +32,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
-import static myconext.security.GuestIdpAuthenticationRequestFilter.EDUPERSON_ENTITLEMENT_SAML;
-import static myconext.security.GuestIdpAuthenticationRequestFilter.EDUPERSON_ENTITLEMENT_VERIFIED_BY_INSTITUTION;
+import static myconext.security.GuestIdpAuthenticationRequestFilter.EDUPERSON_SCOPED_AFFILIATION_SAML;
+import static myconext.security.GuestIdpAuthenticationRequestFilter.EDUPERSON_SCOPED_AFFILIATION_VERIFIED_BY_INSTITUTION;
 
 @RestController
 @RequestMapping("/myconext/api")
@@ -119,11 +121,14 @@ public class AccountLinkerController {
         SamlAuthenticationRequest samlAuthenticationRequest = optionalSamlAuthenticationRequest.get();
         User user = userRepository.findById(samlAuthenticationRequest.getUserId())
                 .orElseThrow(UserNotFoundException::new);
-        user.getAttributes().computeIfAbsent(EDUPERSON_ENTITLEMENT_SAML, key -> new ArrayList<>()).add(EDUPERSON_ENTITLEMENT_VERIFIED_BY_INSTITUTION);
-        //TODO do we need to store additional attributes from the userinfo endpoint
+        user.getAttributes().computeIfAbsent(EDUPERSON_SCOPED_AFFILIATION_SAML, key -> new ArrayList<>()).add(EDUPERSON_SCOPED_AFFILIATION_VERIFIED_BY_INSTITUTION);
+
+        String eppn = (String) body.get("eduperson_principal_name");
+        if (StringUtils.hasText(eppn)) {
+            user.setLinkedAccountEppn(eppn);
+        }
         userRepository.save(user);
 
-        //TODO Do we need to redirect to client for yet another confirmation screen
         String location = this.magicLinkUrl + "?h=" + samlAuthenticationRequest.getHash();
         return ResponseEntity.status(HttpStatus.FOUND).location(URI.create(location)).build();
     }

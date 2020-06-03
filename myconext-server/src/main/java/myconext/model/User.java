@@ -46,7 +46,7 @@ public class User implements Serializable, UserDetails {
     private String preferredLanguage;
     private String webAuthnIdentifier;
     private String userHandle;
-    private String eduPersonPrincipalName;
+    private String linkedAccountEppn;
 
     private Map<String, String> eduIdPerServiceProvider = new HashMap<>();
     private Map<String, String> publicKeyCredentials = new HashMap<>();
@@ -63,7 +63,6 @@ public class User implements Serializable, UserDetails {
         this.givenName = givenName;
         this.familyName = familyName;
         this.schacHomeOrganization = schacHomeOrganization;
-        this.eduPersonPrincipalName = deriveEduPersonPrincipalName();
         this.authenticatingAuthority = authenticatingAuthority;
         this.preferredLanguage = preferredLanguage;
 
@@ -150,13 +149,8 @@ public class User implements Serializable, UserDetails {
         return true;
     }
 
-    @Transient
-    private String deriveEduPersonPrincipalName() {
-        return uid + "@" + schacHomeOrganization;
-    }
-
     public String getEduPersonPrincipalName() {
-        return StringUtils.hasText(eduPersonPrincipalName) ? eduPersonPrincipalName : deriveEduPersonPrincipalName();
+        return uid + "@" + schacHomeOrganization;
     }
 
     public void setNewUser(boolean newUser) {
@@ -181,5 +175,9 @@ public class User implements Serializable, UserDetails {
 
     public void setUserHandle(String userHandle) {
         this.userHandle = userHandle;
+    }
+
+    public void setLinkedAccountEppn(String linkedAccountEppn) {
+        this.linkedAccountEppn = linkedAccountEppn;
     }
 }

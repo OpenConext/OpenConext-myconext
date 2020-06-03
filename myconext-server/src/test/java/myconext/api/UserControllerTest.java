@@ -1,17 +1,33 @@
 package myconext.api;
 
+import com.yubico.webauthn.data.AuthenticatorAssertionResponse;
+import com.yubico.webauthn.data.AuthenticatorAttestationResponse;
+import com.yubico.webauthn.data.AuthenticatorResponse;
+import com.yubico.webauthn.data.ByteArray;
+import com.yubico.webauthn.data.ClientAssertionExtensionOutputs;
+import com.yubico.webauthn.data.ClientExtensionOutputs;
+import com.yubico.webauthn.data.ClientRegistrationExtensionOutputs;
+import com.yubico.webauthn.data.PublicKeyCredential;
+import com.yubico.webauthn.data.PublicKeyCredentialType;
+import com.yubico.webauthn.data.exception.Base64UrlException;
 import io.restassured.filter.cookie.CookieFilter;
+import io.restassured.http.ContentType;
 import io.restassured.http.Cookie;
 import io.restassured.response.Response;
+import io.restassured.response.ValidatableResponse;
 import io.restassured.specification.RequestSpecification;
 import myconext.AbstractIntegrationTest;
+import myconext.model.Challenge;
 import myconext.model.MagicLinkRequest;
 import myconext.model.SamlAuthenticationRequest;
 import myconext.model.UpdateUserSecurityRequest;
 import myconext.model.User;
+import myconext.repository.ChallengeRepository;
+import myconext.repository.UserRepository;
 import org.apache.commons.io.IOUtils;
 import org.apache.http.client.CookieStore;
 import org.junit.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -27,7 +43,10 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.nio.charset.Charset;
+import java.security.SecureRandom;
 import java.util.Base64;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 import java.util.regex.Matcher;
@@ -36,13 +55,19 @@ import java.util.regex.Pattern;
 import static io.restassured.RestAssured.given;
 import static myconext.security.GuestIdpAuthenticationRequestFilter.BROWSER_SESSION_COOKIE_NAME;
 import static myconext.security.GuestIdpAuthenticationRequestFilter.GUEST_IDP_REMEMBER_ME_COOKIE_NAME;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.startsWith;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 public class UserControllerTest extends AbstractIntegrationTest {
 
-    private BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+    private final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+    private final SecureRandom random = new SecureRandom();
+
+    @Autowired
+    private ChallengeRepository challengeRepository;
 
     @Test
     public void existingUser() throws IOException {
@@ -111,7 +136,20 @@ public class UserControllerTest extends AbstractIntegrationTest {
         user = userRepository.findOneUserByEmailIgnoreCase("steve@example.com");
         long count = authenticationRequestRepository.deleteByUserId(user.getId());
         assertEquals(1, count);
+    }
 
+    @Test
+    public void rememberMeButAccountLinkingRequired() throws IOException {
+        String authenticationRequestId = samlAuthnRequest();
+        User user = user("steve@example.com", "Steve", "Doe", "en");
+        MagicLinkResponse magicLinkResponse = magicLinkRequest(new MagicLinkRequest(authenticationRequestId, user, true, false), HttpMethod.POST);
+        Response response = magicResponse(magicLinkResponse);
+
+        String cookie = response.cookie(GUEST_IDP_REMEMBER_ME_COOKIE_NAME);
+        String authnContext = readFile("request_authn_context.xml");
+        response = samlAuthnRequestResponseWithLoa(
+                new Cookie.Builder(GUEST_IDP_REMEMBER_ME_COOKIE_NAME, cookie).build(), null, authnContext);
+        response.then().header("Location", startsWith("http://localhost:3000/stepup/"));
     }
 
     @Test
@@ -303,7 +341,7 @@ public class UserControllerTest extends AbstractIntegrationTest {
 
     @Test
     public void stepup() throws IOException {
-        String authnContext = IOUtils.toString(new ClassPathResource("request_authn_context.xml").getInputStream(), Charset.defaultCharset());
+        String authnContext = readFile("request_authn_context.xml");
         Response response = samlAuthnRequestResponseWithLoa(null, null, authnContext);
         assertEquals(302, response.getStatusCode());
 
@@ -335,6 +373,143 @@ public class UserControllerTest extends AbstractIntegrationTest {
                         "state=" + samlAuthenticationRequest.getId() + "&" +
                         "client_id=myconext.rp.localhost",
                 location);
+
+    }
+
+    @Test
+    public void webAuhthRegistration() throws Base64UrlException, IOException {
+        User user = userRepository.findOneUserByEmailIgnoreCase("jdoe@example.com");
+        assertEquals(1, user.getPublicKeyCredentials().size());
+
+        String token = given().when().get("/myconext/api/sp/security/webauthn")
+                .then().extract().body().jsonPath().getString("token");
+        String attestation = "o2NmbXRkbm9uZWdhdHRTdG10oGhhdXRoRGF0YVj_SZYN5YgOjGh0NBcPZHZgW4_krrmihjLHmVzzuoMdl2NFXtS5-K3OAAI1vMYKZIsLJfHwVQMAewFBb2GSzftwFaO2t01mWWDmvgjYzJfp9YL55miRnO9cO4jnIIyPjPgXY7XoJCXHf70tN9cMrM8haGb8D1TfpS-1ijer4ChFgDypfhNGUfAxbfs7mk-IQR3gS8Afxfks17mE68fid_4lZt7lOi6Z9-RiWx_m6BbX0OjViaUBAgMmIAEhWCAyic9YLBoxd3zvxePnDbBktATOgR5jBvrUFdPptlyg-SJYIFv4tjumhccPrGTFkUBvtbQKhrDZcGWdIBhFlF_JtGIR";
+
+        Map res = given()
+                .when()
+                .body(Collections.singletonMap("token", token))
+                .contentType(ContentType.JSON)
+                .accept(ContentType.JSON)
+                .post("/myconext/api/idp/security/webauthn/registration")
+                .as(Map.class);
+
+        Map clientData = objectMapper.readValue(readFile("webauthn/clientData.json"), Map.class);
+        clientData.put("challenge", res.get("challenge"));
+        String base64EncodeClientData = Base64.getUrlEncoder().withoutPadding().encodeToString(objectMapper.writeValueAsString(clientData).getBytes());
+
+        AuthenticatorAttestationResponse response =
+                AuthenticatorAttestationResponse.builder()
+                        .attestationObject(ByteArray.fromBase64Url(attestation))
+                        .clientDataJSON(ByteArray.fromBase64Url(base64EncodeClientData))
+                        .build();
+        ClientRegistrationExtensionOutputs clientExtensions = ClientRegistrationExtensionOutputs.builder().build();
+        PublicKeyCredential<AuthenticatorResponse, ClientExtensionOutputs> pkc = PublicKeyCredential.builder()
+                .id(ByteArray.fromBase64Url(hash()))
+                .response(response)
+                .clientExtensionResults(clientExtensions)
+                .type(PublicKeyCredentialType.PUBLIC_KEY)
+                .build();
+
+        Map<String, Object> postData = new HashMap<>();
+        postData.put("token", token);
+        postData.put("credentials", objectMapper.writeValueAsString(pkc));
+        given()
+                .when()
+                .body(postData)
+                .contentType(ContentType.JSON)
+                .accept(ContentType.JSON)
+                .put("/myconext/api/idp/security/webauthn/registration")
+                .then()
+                .body("location", equalTo("http://localhost:3001/webauthn"));
+
+        user = userRepository.findOneUserByEmailIgnoreCase("jdoe@example.com");
+        assertEquals(2, user.getPublicKeyCredentials().size());
+    }
+
+    @Test
+    public void webAuhthAuthentication() throws Base64UrlException, IOException {
+        String authenticationRequestId = samlAuthnRequest();
+        Map<String, Object> body = new HashMap<>();
+        body.put("email", "jdoe@example.com");
+        body.put("authenticationRequestId", authenticationRequestId);
+        given()
+                .when()
+                .body(body)
+                .contentType(ContentType.JSON)
+                .accept(ContentType.JSON)
+                .post("/myconext/api/idp/security/webauthn/authentication");
+
+        body.put("rememberMe", false);
+
+        Map authentication = objectMapper.readValue(readFile("webauthn/authentication.json"), Map.class);
+        Map credentials = objectMapper.readValue((String) authentication.get("credentials"), Map.class);
+        Map<String, String> responseMap = (Map) credentials.get("response");
+        AuthenticatorAssertionResponse authenticatorAssertionResponse =
+                AuthenticatorAssertionResponse.builder()
+                        .authenticatorData(ByteArray.fromBase64Url(responseMap.get("authenticatorData")))
+                        .clientDataJSON(ByteArray.fromBase64Url(responseMap.get("clientDataJSON")))
+                        .signature(ByteArray.fromBase64Url(responseMap.get("signature")))
+                        .userHandle(ByteArray.fromBase64Url(responseMap.get("userHandle")))
+                        .build();
+
+        ClientAssertionExtensionOutputs clientExtensions = ClientAssertionExtensionOutputs.builder().build();
+        PublicKeyCredential<AuthenticatorResponse, ClientExtensionOutputs> pkc = PublicKeyCredential.builder()
+                .id(ByteArray.fromBase64Url((String) credentials.get("id")))
+                .response(authenticatorAssertionResponse)
+                .clientExtensionResults(clientExtensions)
+                .type(PublicKeyCredentialType.PUBLIC_KEY)
+                .build();
+        body.put("credentials", objectMapper.writeValueAsString(pkc));
+        //We can't use the original challenge as the signature is based on challenge
+        Challenge challenge = challengeRepository.findByToken(authenticationRequestId).get();
+        String challengeFromServer = (String) objectMapper.readValue(Base64.getUrlDecoder().decode( responseMap.get("clientDataJSON")), Map.class).get("challenge");
+        ReflectionTestUtils.setField(challenge, "challenge", challengeFromServer);
+        challengeRepository.save(challenge);
+
+        ValidatableResponse validatableResponse = given()
+                .when()
+                .body(body)
+                .contentType(ContentType.JSON)
+                .accept(ContentType.JSON)
+                .put("/myconext/api/idp/security/webauthn/authentication")
+                .then();
+
+        Response response = magicResponse(new MagicLinkResponse(authenticationRequestId, validatableResponse));
+        String saml = samlAuthnResponse(response);
+
+        User user = userRepository.findOneUserByEmailIgnoreCase("jdoe@example.com");
+        Map<String, String> eduIdPerServiceProvider = user.getEduIdPerServiceProvider();
+
+        assertTrue(saml.contains("Attribute Name=\"urn:mace:eduid.nl:1.1\""));
+        String eduId = eduIdPerServiceProvider.get("https://manage.surfconext.nl/shibboleth");
+        assertTrue(saml.contains(eduId));
+    }
+
+    @Test
+    public void webAuhtnRegistrationNotFound() {
+        Map<String, Object> body = new HashMap<>();
+        body.put("token", "nope");
+
+        given()
+                .when()
+                .body(body)
+                .contentType(ContentType.JSON)
+                .accept(ContentType.JSON)
+                .post("/myconext/api/idp/security/webauthn/registration")
+                .then()
+                .statusCode(404);
+    }
+
+    @Test
+    public void webAuthnAuthenticationNotFound() {
+        given()
+                .when()
+                .body(Collections.singletonMap("token", "nope"))
+                .contentType(ContentType.JSON)
+                .accept(ContentType.JSON)
+                .put("/myconext/api/idp/security/webauthn/registration")
+                .then()
+                .statusCode(404);
 
     }
 
@@ -391,6 +566,17 @@ public class UserControllerTest extends AbstractIntegrationTest {
         String path = "/myconext/api/idp/magic_link_request";
         Response response = method.equals(HttpMethod.POST) ? requestSpecification.post(path) : requestSpecification.put(path);
         return new MagicLinkResponse(linkRequest.getAuthenticationRequestId(), response.then());
+    }
+
+    private String hash() {
+        byte[] bytes = new byte[64];
+        random.nextBytes(bytes);
+        return Base64.getUrlEncoder().withoutPadding().encodeToString(bytes);
+    }
+
+    private String base64UrlEncode(String fileName) throws IOException {
+        String json = IOUtils.toString(new ClassPathResource(fileName).getInputStream(), "utf-8");
+        return Base64.getUrlEncoder().withoutPadding().encodeToString(json.getBytes());
     }
 
 }

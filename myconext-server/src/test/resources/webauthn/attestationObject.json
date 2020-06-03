@@ -1,0 +1,28 @@
+{
+  "fmt": "none",
+  "attStmt": {},
+  "authData": {
+    "rpIdHash": "f95bc73828ee21f9fd3bbe72d97908013b0a3759e9aea3dae318766cd2e1ad",
+    "flags": {
+      "userPresent": true,
+      "reserved1": false,
+      "userVerified": true,
+      "reserved2": "0",
+      "attestedCredentialData": true,
+      "extensionDataIncluded": false
+    },
+    "signCount": 1590996826,
+    "attestedCredentialData": {
+      "aaguid": "adce0235bcc6a648bb25f1f0553",
+      "credentialIdLength": 80,
+      "credentialId": "12f81ef4cb094cb388bf8d157713093483213881c2b96b04c799bad9f832768882903d5ac1a721b86c96f9bdab5221492a52742b18a7e3570a095a5b20dd5b0e06f3fc992fc46de9a5f6ef",
+      "credentialPublicKey": {
+        "kty": "EC",
+        "alg": "ECDSA_w_SHA256",
+        "crv": "P-256",
+        "x": "TK2DO7/4Lis68VNYitoPr8egkkojsEL3wqv6Z9klEAM=",
+        "y": "ZpvEB937J6K5FB2ik/rdAlKcwQq6nZxiXi5E/vopgN8="
+      }
+    }
+  }
+}

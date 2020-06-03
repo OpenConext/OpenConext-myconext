@@ -81,7 +81,7 @@ public abstract class AbstractIntegrationTest {
     @Autowired
     protected AuthenticationRequestRepository authenticationRequestRepository;
 
-    private SimpleDateFormat issueFormat = new SimpleDateFormat("yyyy-MM-dd'T'H:mm:ss");
+    private final SimpleDateFormat issueFormat = new SimpleDateFormat("yyyy-MM-dd'T'H:mm:ss");
 
     @Before
     public void before() throws Exception {
@@ -112,7 +112,7 @@ public abstract class AbstractIntegrationTest {
     }
 
     protected Response samlAuthnRequestResponseWithLoa(Cookie cookie, String relayState, String loaLevel) throws IOException {
-        String samlRequestTemplate = IOUtils.toString(new ClassPathResource("authn_request.xml").getInputStream(), Charset.defaultCharset());
+        String samlRequestTemplate = readFile("authn_request.xml");
         String samlRequest = String.format(samlRequestTemplate, UUID.randomUUID().toString(), issueFormat.format(new Date()), loaLevel);
         String samlRequestEncoded = deflatedBase64encoded(samlRequest);
         Map<String, String> queryParams = new HashMap<>();
@@ -125,6 +125,10 @@ public abstract class AbstractIntegrationTest {
                 .queryParams(queryParams)
                 .cookie(cookie != null ? cookie : new Cookie.Builder("dummy", "dummy").build())
                 .get("/saml/guest-idp/SSO");
+    }
+
+    protected String readFile(String path) throws IOException {
+        return IOUtils.toString(new ClassPathResource(path).getInputStream(), Charset.defaultCharset());
     }
 
     private String deflatedBase64encoded(String input) throws IOException {

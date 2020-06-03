@@ -6,6 +6,7 @@ import myconext.model.SamlAuthenticationRequest;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.util.Collections;
 import java.util.Date;
 import java.util.Optional;
 import java.util.UUID;

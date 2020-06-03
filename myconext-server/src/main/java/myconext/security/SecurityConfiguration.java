@@ -114,7 +114,7 @@ public class SecurityConfiguration {
                 privateKey = read(this.privateKeyPath);
                 certificate = read(this.certificatePath);
             } else {
-                String[] keys = new KeyGenerator().generateKeys();
+                String[] keys = KeyGenerator.generateKeys();
                 privateKey = keys[0];
                 certificate = keys[1];
             }
@@ -208,13 +208,14 @@ public class SecurityConfiguration {
 
         @Override
         protected void configure(HttpSecurity http) throws Exception {
+            String[] antPatterns = {"/myconext/api/attribute-aggregation/**", "/myconext/api/attribute-manipulation/**"};
             http.requestMatchers()
-                    .antMatchers("/myconext/api/attribute-aggregation/**")
+                    .antMatchers(antPatterns)
                     .and()
                     .csrf()
                     .disable()
                     .authorizeRequests()
-                    .antMatchers("/myconext/api/attribute-aggregation/**")
+                    .antMatchers(antPatterns)
                     .authenticated()
                     .and()
                     .httpBasic()

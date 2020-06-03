@@ -281,8 +281,9 @@ public class UserController {
         if (!optionalUser.isPresent()) {
             return return404();
         }
+        String credentials = (String) body.get("credentials");
         PublicKeyCredential<AuthenticatorAttestationResponse, ClientRegistrationExtensionOutputs> pkc =
-                PublicKeyCredential.parseRegistrationResponseJson((String) body.get("credentials"));
+                PublicKeyCredential.parseRegistrationResponseJson(credentials);
 
         User user = optionalUser.get();
         //remove the webAuthnIdentifier
@@ -365,9 +366,6 @@ public class UserController {
         }
         User user = optionalUser.get();
 
-        UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(user, null,
-                user.getAuthorities());
-
         LOG.info(String.format("User %s successfully logged in with AuthnWeb", user.getUsername()));
 
         return doMagicLink(user, samlAuthenticationRequest, rememberMe, true);
@@ -395,7 +393,7 @@ public class UserController {
                 .build();
     }
 
-    private void restoreChallenge(Object challengeContainer, ByteArray challenge) throws NoSuchFieldException, IllegalAccessException {
+    protected static void restoreChallenge(Object challengeContainer, ByteArray challenge) throws NoSuchFieldException, IllegalAccessException {
         Field challengeField = challengeContainer.getClass().getDeclaredField("challenge");
         challengeField.setAccessible(true);
         challengeField.set(challengeContainer, challenge);
@@ -487,6 +485,4 @@ public class UserController {
         random.nextBytes(bytes);
         return Base64.getUrlEncoder().withoutPadding().encodeToString(bytes);
     }
-
-
 }

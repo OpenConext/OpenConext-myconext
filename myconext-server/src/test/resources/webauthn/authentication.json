@@ -1,0 +1,5 @@
+{
+  "credentials": "{\"type\":\"public-key\",\"id\":\"AYF22iCGkHySQrbX2ClNXqs3KsEDt7A1eELysDEg74Z2HwJF2XkQNCnbPL3zkZeycHBGurWMZE6J1vOs8c5JwOXroT72m9foU2_Gtxnz57T6HDUwj-LAdle7QXGhYq3_KTtC8hK1kPKkp30XB9fPS_nPJfcxd1pbLGUu\",\"response\":{\"clientDataJSON\":\"eyJ0eXBlIjoid2ViYXV0aG4uZ2V0IiwiY2hhbGxlbmdlIjoiMENQdnFpZlBoaDJpdi1wOTZLV3hxTUp5TERDc29MVmlseVVHMm5vdHBiRSIsIm9yaWdpbiI6Imh0dHA6Ly9sb2NhbGhvc3Q6MzAwMCIsImNyb3NzT3JpZ2luIjpmYWxzZX0\",\"authenticatorData\":\"SZYN5YgOjGh0NBcPZHZgW4_krrmihjLHmVzzuoMdl2MFXtYK9w\",\"signature\":\"MEYCIQCzfGmM53sTQw44_0jcUVZ_FyVinjQBbR086C0cZi0UnAIhALBZPWhINdP6PipBZREWHC57Y1s1Uo6r5BryE9I_pYij\",\"userHandle\":\"ILWqa-yfidIbr-tmLbegkl_q9GYY53s5h-WPxDGJ36rzvDfR-lZqMlqARdUlPDRH_KH95owGCoEqMuigryV_qA\"},\"clientExtensionResults\":{}}",
+  "authenticationRequestId": "b5930352-d13a-45d6-8c36-9839bc21a906",
+  "rememberMe": false
+}

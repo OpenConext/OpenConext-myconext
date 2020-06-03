@@ -14,15 +14,17 @@ import org.springframework.http.MediaType;
 
 import java.io.IOException;
 import java.util.Collections;
+import java.util.Map;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
 import static com.github.tomakehurst.wiremock.client.WireMock.post;
 import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlPathMatching;
 import static io.restassured.RestAssured.given;
-import static myconext.security.GuestIdpAuthenticationRequestFilter.EDUPERSON_ENTITLEMENT_SAML;
-import static myconext.security.GuestIdpAuthenticationRequestFilter.EDUPERSON_ENTITLEMENT_VERIFIED_BY_INSTITUTION;
+import static myconext.security.GuestIdpAuthenticationRequestFilter.EDUPERSON_SCOPED_AFFILIATION_SAML;
+import static myconext.security.GuestIdpAuthenticationRequestFilter.EDUPERSON_SCOPED_AFFILIATION_VERIFIED_BY_INSTITUTION;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
@@ -59,11 +61,23 @@ public class AccountLinkerControllerTest extends AbstractIntegrationTest {
 
     @Test
     public void redirect() throws IOException {
+        String eppn = "some@institute.nl";
+        User user = doRedirect(Collections.singletonMap("eduperson_principal_name", eppn));
+        assertEquals(eppn, user.getLinkedAccountEppn());
+    }
+
+    @Test
+    public void redirectWithEmptyEppn() throws IOException {
+        User user = doRedirect(Collections.emptyMap());
+        assertNull(user.getLinkedAccountEppn());
+    }
+
+    private User doRedirect(Map<Object, Object> userInfo) throws IOException {
         String authenticationRequestId = samlAuthnRequest();
         //This ensures the user is tied to the authnRequest
         given().when()
                 .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
-                .body(new MagicLinkRequest(authenticationRequestId, user("jdoe@example.com"), false, false))
+                .body(new MagicLinkRequest(authenticationRequestId, user("mdoe@example.com"), false, false))
                 .put("/myconext/api/idp/magic_link_request")
                 .then()
                 .statusCode(HttpStatus.CREATED.value());
@@ -72,7 +86,7 @@ public class AccountLinkerControllerTest extends AbstractIntegrationTest {
                 .withBody(objectMapper.writeValueAsString(Collections.singletonMap("access_token", "123456")))));
         stubFor(post(urlPathMatching("/oidc/userinfo")).willReturn(aResponse()
                 .withHeader("Content-Type", "application/json")
-                .withBody(objectMapper.writeValueAsString(Collections.emptyMap()))));
+                .withBody(objectMapper.writeValueAsString(userInfo))));
 
         String location = given().redirects().follow(false)
                 .when()
@@ -83,8 +97,9 @@ public class AccountLinkerControllerTest extends AbstractIntegrationTest {
                 .getHeader("Location");
         assertTrue(location.startsWith("http://localhost:8081/saml/guest-idp/magic?h="));
 
-        User user = userRepository.findOneUserByEmailIgnoreCase("jdoe@example.com");
-        assertEquals(EDUPERSON_ENTITLEMENT_VERIFIED_BY_INSTITUTION, user.getAttributes().get(EDUPERSON_ENTITLEMENT_SAML).get(0));
+        User user = userRepository.findOneUserByEmailIgnoreCase("mdoe@example.com");
+        assertEquals(EDUPERSON_SCOPED_AFFILIATION_VERIFIED_BY_INSTITUTION, user.getAttributes().get(EDUPERSON_SCOPED_AFFILIATION_SAML).get(0));
+        return user;
     }
 
     @Test

@@ -34,6 +34,9 @@
                 } else {
                     I18n.locale = "en";
                 }
+                if (["nl", "en"].indexOf(I18n.locale) < 0) {
+                    I18n.locale = "en";
+                }
                 if (window.location.pathname.indexOf("landing") > -1) {
                     loaded = true;
                 } else {
