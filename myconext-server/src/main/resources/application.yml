@@ -52,11 +52,16 @@ attribute_aggregation:
   user: aa
   password: secret
 
+attribute_manipulation:
+  user: oidcng
+  password: secret
+
 oidc:
   client-id: myconext.rp.localhost
   secret: secret
   redirect-url: http://localhost:8081/myconext/api/idp/oidc/redirect
   base-url: https://connect.test2.surfconext.nl
+  expiry-duration-days: 90
 
 spring:
   data:

@@ -2,6 +2,7 @@ package myconext.aa;
 
 import io.restassured.http.ContentType;
 import myconext.AbstractIntegrationTest;
+import myconext.model.LinkedAccount;
 import myconext.model.User;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Value;
@@ -16,22 +17,28 @@ import static org.junit.Assert.assertEquals;
 public class AttributeAggregatorControllerTest extends AbstractIntegrationTest {
 
     @Value("${attribute_aggregation.user}")
-    private String userName;
+    private String attributeAggregationUserName;
 
     @Value("${attribute_aggregation.password}")
-    private String password;
+    private String attributeAggregationPassword;
+
+    @Value("${attribute_manipulation.user}")
+    private String attributeManipulationUserName;
+
+    @Value("${attribute_manipulation.password}")
+    private String attributeManipulationPassword;
 
     private String eppn = "1234567890@surfguest.nl";
 
     @Test
     public void aggregate() {
-        List<UserAttribute> userAttributes = doAggregate(userName, password, "http://mock-sp", eppn);
+        List<UserAttribute> userAttributes = doAggregate(attributeAggregationUserName, attributeAggregationPassword, "http://mock-sp", eppn);
         assertEquals(1, userAttributes.size());
     }
 
     @Test
     public void aggregateUserNotFound() {
-        List<UserAttribute> userAttributes = doAggregate(userName, password, "http://mock-sp", "nope");
+        List<UserAttribute> userAttributes = doAggregate(attributeAggregationUserName, attributeAggregationPassword, "http://mock-sp", "nope");
         assertEquals(0, userAttributes.size());
     }
 
@@ -41,7 +48,7 @@ public class AttributeAggregatorControllerTest extends AbstractIntegrationTest {
         String spEntityId = "http://mock-sp";
         String eduId = user.computeEduIdForServiceProviderIfAbsent(spEntityId).get();
         userRepository.save(user);
-        List<UserAttribute> userAttributes = doAggregate(userName, password, spEntityId, eppn);
+        List<UserAttribute> userAttributes = doAggregate(attributeAggregationUserName, attributeAggregationPassword, spEntityId, eppn);
 
         assertEquals(1, userAttributes.size());
         assertEquals(eduId, userAttributes.get(0).getValues().get(0));
@@ -57,25 +64,53 @@ public class AttributeAggregatorControllerTest extends AbstractIntegrationTest {
                 .get("/myconext/api/attribute-aggregation")
                 .then()
                 .statusCode(401);
+    }
 
+    @Test
+    public void aggregate400WrongUser() {
+        given()
+                .when()
+                .auth().preemptive().basic(attributeManipulationUserName, attributeManipulationPassword)
+                .queryParam("sp_entity_id", "n/a")
+                .queryParam("eduperson_principal_name", "n/a")
+                .contentType(ContentType.JSON)
+                .get("/myconext/api/attribute-aggregation")
+                .then()
+                .statusCode(400);
     }
 
     @Test
     public void manipulate() {
         String spEntityId = "http://mock-sp";
-        Map<String, Object> res = doManipulate(spEntityId, "1234567890");
-        assertEquals("1234567890@surfguest.nl", res.get("home_organization_eppn"));
+        LinkedAccount linkedAccount = userRepository.findUserByUid("1234567890").get()
+                .getLinkedAccounts().get(0);
+
+        Map<String, Object> res = doManipulate(spEntityId, "1234567890", linkedAccount.getInstitutionIdentifier());
+        assertEquals(linkedAccount.getEduPersonPrincipalName(), res.get("eduperson_principal_name"));
     }
 
     @Test
     public void manipulateNewSP() {
-        doManipulate("http://new-sp", "1234567890");
+        doManipulate("http://new-sp", "1234567890", null);
     }
 
     @Test
     public void manipulateNotFound() {
-        Map<String, Object> res = doManipulate("http://new-sp", "nope");
+        Map<String, Object> res = doManipulate("http://new-sp", "nope", null);
         assertEquals(404, res.get("status"));
+    }
+
+    @Test
+    public void manipulate400WrongUser() {
+        given()
+                .when()
+                .auth().preemptive().basic(attributeAggregationUserName, attributeAggregationPassword)
+                .queryParam("sp_entity_id", "n/a")
+                .queryParam("uid", "n/a")
+                .contentType(ContentType.JSON)
+                .get("/myconext/api/attribute-manipulation")
+                .then()
+                .statusCode(400);
     }
 
     private List<UserAttribute> doAggregate(String user, String password, String spEntityId, String edupersonPrincipalName) {
@@ -91,12 +126,13 @@ public class AttributeAggregatorControllerTest extends AbstractIntegrationTest {
     }
 
     @SuppressWarnings("unchecked")
-    private Map<String, Object> doManipulate(String spEntityId, String uid) {
+    private Map<String, Object> doManipulate(String spEntityId, String uid, String spInstitutionIdentifier) {
         Map<String, Object> res = given()
                 .when()
-                .auth().preemptive().basic(userName, password)
+                .auth().preemptive().basic(attributeManipulationUserName, attributeManipulationPassword)
                 .queryParam("sp_entity_id", spEntityId)
                 .queryParam("uid", uid)
+                .queryParam("sp_institution_guid", spInstitutionIdentifier)
                 .contentType(ContentType.JSON)
                 .get("/myconext/api/attribute-manipulation")
                 .as(Map.class);

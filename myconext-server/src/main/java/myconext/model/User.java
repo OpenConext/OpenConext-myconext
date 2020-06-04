@@ -17,6 +17,7 @@ import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -46,8 +47,8 @@ public class User implements Serializable, UserDetails {
     private String preferredLanguage;
     private String webAuthnIdentifier;
     private String userHandle;
-    private String linkedAccountEppn;
 
+    private List<LinkedAccount> linkedAccounts = new ArrayList<>();
     private Map<String, String> eduIdPerServiceProvider = new HashMap<>();
     private Map<String, String> publicKeyCredentials = new HashMap<>();
     private Map<String, List<String>> attributes = new HashMap<>();
@@ -177,7 +178,7 @@ public class User implements Serializable, UserDetails {
         this.userHandle = userHandle;
     }
 
-    public void setLinkedAccountEppn(String linkedAccountEppn) {
-        this.linkedAccountEppn = linkedAccountEppn;
+    public void setLinkedAccounts(List<LinkedAccount> linkedAccounts) {
+        this.linkedAccounts = linkedAccounts;
     }
 }

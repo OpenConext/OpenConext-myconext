@@ -19,6 +19,7 @@ import org.springframework.core.env.Environment;
 import org.springframework.core.env.Profiles;
 import org.springframework.core.io.Resource;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -45,6 +46,7 @@ import static org.springframework.security.saml.saml2.signature.AlgorithmMethod.
 import static org.springframework.security.saml.saml2.signature.DigestMethod.SHA512;
 
 @EnableWebSecurity
+@EnableGlobalMethodSecurity(prePostEnabled = true)
 public class SecurityConfiguration {
 
     private static Log LOG = LogFactory.getLog(SecurityConfiguration.class);
@@ -201,10 +203,16 @@ public class SecurityConfiguration {
     public static class AppSecurity extends WebSecurityConfigurerAdapter {
 
         @Value("${attribute_aggregation.user}")
-        private String user;
+        private String attributeAggregationUser;
 
         @Value("${attribute_aggregation.password}")
-        private String password;
+        private String attributeAggregationPassword;
+
+        @Value("${attribute_manipulation.user}")
+        private String attributeManipulationUser;
+
+        @Value("${attribute_manipulation.password}")
+        private String attributeManipulationPassword;
 
         @Override
         protected void configure(HttpSecurity http) throws Exception {
@@ -228,9 +236,13 @@ public class SecurityConfiguration {
         protected void configure(AuthenticationManagerBuilder auth) throws Exception {
             auth
                     .inMemoryAuthentication()
-                    .withUser(user)
-                    .password("{noop}" + password)
-                    .roles("aa");
+                    .withUser(attributeAggregationUser)
+                    .password("{noop}" + attributeAggregationPassword)
+                    .roles("attribute-aggregation")
+                    .and()
+                    .withUser(attributeManipulationUser)
+                    .password("{noop}" + attributeManipulationPassword)
+                    .roles("attribute-manipulation");
         }
     }
 

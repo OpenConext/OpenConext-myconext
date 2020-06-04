@@ -5,6 +5,8 @@ import myconext.model.User;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -16,7 +18,9 @@ public interface UserRepository extends MongoRepository<User, String> {
 
     User findOneUserByEmailIgnoreCase(String email);
 
-    Optional<User> findUserByLinkedAccountEppn(String linkedAccountEppn);
+    Optional<User> findUserByLinkedAccounts_eduPersonPrincipalName(String eduPersonPrincipalName);
+
+    List<User> findByLinkedAccounts_ExpiresAtBefore(Date expiryDate);
 
     Optional<User> findUserByWebAuthnIdentifier(String webAuthnIdentifier);
 

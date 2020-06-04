@@ -152,7 +152,7 @@ public abstract class AbstractIntegrationTest {
 
     protected <T> void doExpireWithFindProperty(Class<T> clazz, String property, String value) {
         T t = mongoTemplate.findOne(Query.query(Criteria.where(property).is(value)), clazz);
-        Date expiresIn = Date.from(LocalDateTime.now().minusYears(1L).atZone(ZoneId.systemDefault()).toInstant());
+        Date expiresIn = Date.from(LocalDateTime.now().minusYears(10L).atZone(ZoneId.systemDefault()).toInstant());
         ReflectionTestUtils.setField(t, "expiresIn", expiresIn);
         mongoTemplate.save(t);
     }

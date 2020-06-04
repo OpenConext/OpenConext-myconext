@@ -1,11 +1,14 @@
 package myconext.api;
 
-import myconext.crypto.KeyGenerator;
 import myconext.exceptions.UserNotFoundException;
+import myconext.model.LinkedAccount;
 import myconext.model.SamlAuthenticationRequest;
 import myconext.model.User;
 import myconext.repository.AuthenticationRequestRepository;
 import myconext.repository.UserRepository;
+import myconext.shibboleth.ShibbolethPreAuthenticatedProcessingFilter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
@@ -26,9 +29,12 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.net.URI;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -38,6 +44,8 @@ import static myconext.security.GuestIdpAuthenticationRequestFilter.EDUPERSON_SC
 @RestController
 @RequestMapping("/myconext/api")
 public class AccountLinkerController {
+
+    private static final Logger LOG = LoggerFactory.getLogger(AccountLinkerController.class);
 
     private final String oidcBaseUrl;
     private final String clientId;
@@ -49,6 +57,7 @@ public class AccountLinkerController {
     private final UserRepository userRepository;
     private final String magicLinkUrl;
     private final String idpRedirectUrl;
+    private final long expiryDurationDays;
 
     public AccountLinkerController(
             AuthenticationRequestRepository authenticationRequestRepository,
@@ -58,7 +67,8 @@ public class AccountLinkerController {
             @Value("${oidc.client-id}") String clientId,
             @Value("${oidc.secret}") String clientSecret,
             @Value("${oidc.redirect-url}") String redirectUri,
-            @Value("${oidc.base-url}") String oidcBaseUrl) {
+            @Value("${oidc.base-url}") String oidcBaseUrl,
+            @Value("${oidc.expiry-duration-days}") long expiryDurationDays) {
         this.authenticationRequestRepository = authenticationRequestRepository;
         this.userRepository = userRepository;
         this.magicLinkUrl = magicLinkUrl;
@@ -67,6 +77,7 @@ public class AccountLinkerController {
         this.clientSecret = clientSecret;
         this.redirectUri = redirectUri;
         this.oidcBaseUrl = oidcBaseUrl;
+        this.expiryDurationDays = expiryDurationDays;
         this.headers.set("Accept", "application/json");
     }
 
@@ -121,12 +132,29 @@ public class AccountLinkerController {
         SamlAuthenticationRequest samlAuthenticationRequest = optionalSamlAuthenticationRequest.get();
         User user = userRepository.findById(samlAuthenticationRequest.getUserId())
                 .orElseThrow(UserNotFoundException::new);
-        user.getAttributes().computeIfAbsent(EDUPERSON_SCOPED_AFFILIATION_SAML, key -> new ArrayList<>()).add(EDUPERSON_SCOPED_AFFILIATION_VERIFIED_BY_INSTITUTION);
+        user.getAttributes()
+                .computeIfAbsent(EDUPERSON_SCOPED_AFFILIATION_SAML, key -> new ArrayList<>())
+                .add(EDUPERSON_SCOPED_AFFILIATION_VERIFIED_BY_INSTITUTION);
 
         String eppn = (String) body.get("eduperson_principal_name");
-        if (StringUtils.hasText(eppn)) {
-            user.setLinkedAccountEppn(eppn);
-        }
+        String surfCrmId = (String) body.get("surf-crm-id");
+        String schacHomeOrganization = (String) body.get("schac_home_organization");
+
+        Date expiresAt = Date.from(new Date().toInstant().plus(expiryDurationDays, ChronoUnit.DAYS));
+        List<LinkedAccount> linkedAccounts = user.getLinkedAccounts();
+        String institutionIdentifier = StringUtils.hasText(surfCrmId) ? surfCrmId : schacHomeOrganization;
+        boolean newLinkedAccountAdded = linkedAccounts.stream()
+                .filter(linkedAccount -> linkedAccount.getInstitutionIdentifier().equals(surfCrmId) ||
+                        linkedAccount.getInstitutionIdentifier().equals(schacHomeOrganization))
+                .findFirst()
+                .map(linkedAccount -> linkedAccount.updateExpiresIn(institutionIdentifier, expiresAt))
+                .orElse(linkedAccounts.add(new LinkedAccount(institutionIdentifier, eppn, expiresAt)));
+        String action = newLinkedAccountAdded ? "created" : "updated";
+        String eppnValue = StringUtils.hasText(eppn) ? String.format("eppn %s", eppn) : "NO eppn";
+
+        LOG.info("An account link has been %s for User %s with %s to institution %s",
+                action, user.getEmail(), eppnValue, institutionIdentifier);
+
         userRepository.save(user);
 
         String location = this.magicLinkUrl + "?h=" + samlAuthenticationRequest.getHash();
