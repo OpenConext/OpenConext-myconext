@@ -3,6 +3,7 @@
     import I18n from "i18n-js";
     import security from "../icons/security.svg";
     import data_activity from "../icons/data_activity.svg";
+    import teams from "../icons/teams.svg";
     import personal_info from "../icons/personal_info.svg";
     import chevron_left from "../icons/chevron-left.svg";
     import chevron_right from "../icons/chevron-right.svg";
@@ -11,6 +12,7 @@
 
     import Profile from "./Profile.svelte";
     import Security from "./Security.svelte";
+    import Institutions from "./Institutions.svelte"
     import Account from "./Account.svelte";
     import Migration from "./Migration.svelte";
     import Flash from "../components/Flash.svelte";
@@ -20,6 +22,7 @@
     const tabs = [
         {name: "profile", component: Profile, icon: personal_info},
         {name: "security", component: Security, icon: security},
+        {name: "institutions", component: Institutions, icon: teams},
         {name: "account", component: Account, icon: data_activity},
         {name: "migration", component: Migration, icon: data_activity, ignore: true}
     ];

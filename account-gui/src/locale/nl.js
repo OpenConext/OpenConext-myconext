@@ -82,7 +82,8 @@ I18n.translations.nl = {
     title2: "Er is iets fout gegaan (404)."
   },
   webAuthn: {
-    info: "Enable Public Key Cryptography and Web Authentication (WebAuthn)",
+    info: "Inschakelen Public Key Cryptography en Web Authentication (WebAuthn)",
+    browserPrompt: "Je browser vraagt ​je om een ​​van je beveiligingssleutels of vingerafdruk te registreren bij je account."
   },
   migration: {
     header: "Migreer naar <br/>eduID",

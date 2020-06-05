@@ -14,7 +14,9 @@ import java.util.Date;
 public class LinkedAccount {
 
     private String institutionIdentifier;
+    private String schacHomeOrganization;
     private String eduPersonPrincipalName;
+    private Date createdAt;
     private Date expiresAt;
 
     @Transient

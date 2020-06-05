@@ -7,9 +7,11 @@
     "schacHomeOrganization": "surfguest.nl",
     "linkedAccounts": [
       {
-        "expiresAt": "2500-12-12T07:55:50.229Z",
+        "createdAt": "2020-11-12T13:55:50.229Z",
+        "expiresAt": "2026-12-12T07:55:50.229Z",
         "eduPersonPrincipalName": "1234567890@surfguest.nl",
-        "institutionIdentifier": "institution.com"
+        "institutionIdentifier": "institution.com",
+        "schacHomeOrganization": "groningen.nl"
       }
     ],
     "attributes": {},
@@ -19,7 +21,8 @@
     "userHandle": "ILWqa-yfidIbr-tmLbegkl_q9GYY53s5h-WPxDGJ36rzvDfR-lZqMlqARdUlPDRH_KH95owGCoEqMuigryV_qA",
     "eduIdPerServiceProvider": {
       "http://mock-sp": "3060b9ce-9cf2-4e5b-8164-bf0a2b706720"
-    }
+    },
+    "created": 1583337392
   },
   {
     "email": "mdoe@example.com",

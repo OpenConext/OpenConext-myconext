@@ -73,6 +73,14 @@ export function deleteUser() {
     return fetchDelete("/myconext/api/sp/delete").then(() => fetch("/Shibboleth.sso/Logout", fetchOptions));
 }
 
+export function deleteLinkedAccount(linkedAccount) {
+    return postPutJson("/myconext/api/sp/institution", linkedAccount, "PUT");
+}
+
+export function startLinkAccountFlow() {
+    return fetchJson("/myconext/api/sp/link");
+}
+
 export function logout() {
     const fetchOptions = {
         credentials: "same-origin",

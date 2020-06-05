@@ -85,7 +85,7 @@
 
     <div class="inner">
         <h2>{I18n.t("account.title")}</h2>
-        <p class="info">{formatCreateDate($user.created)}</p>
+        <p class="info">{I18n.t("format.creationDate", formatCreateDate($user.created, true))}</p>
         <p class="info2">{I18n.t("account.deleteTitle")}</p>
         {#each [1,2,3,4] as i}
             <p class="divider">{I18n.t("account.info"+i)}</p>

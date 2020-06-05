@@ -83,6 +83,7 @@ I18n.translations.en = {
     },
     webAuthn: {
         info: "Enable Public Key Cryptography and Web Authentication (WebAuthn)",
+        browserPrompt: "Your browser is prompting you to register one of your security keys or fingerprint with your account"
     },
     migration: {
         header: "Migrate to an <br/>eduID guest account",

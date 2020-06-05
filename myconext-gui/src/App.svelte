@@ -6,6 +6,7 @@
     import Landing from "./routes/Landing.svelte";
     import NotFound from "./routes/NotFound.svelte";
     import EditName from "./routes/EditName.svelte";
+    import Institution from "./routes/Institution.svelte";
     import MigrationError from "./routes/MigrationError.svelte";
     import Password from "./routes/Password.svelte";
     import WebAuthn from "./routes/WebAuthn.svelte";
@@ -192,11 +193,15 @@
                     <Route path="/account">
                         <Home bookmark="account"/>
                     </Route>
+                    <Route path="/institutions">
+                        <Home bookmark="institutions"/>
+                    </Route>
                     <Route path="/security">
                         <Home bookmark="security"/>
                     </Route>
                     <Route path="/landing" component={Landing}/>
                     <Route path="/edit" component={EditName}/>
+                    <Route path="/institution" component={Institution}/>
                     <Route path="/migration">
                         <Home bookmark="migration"/>
                     </Route>

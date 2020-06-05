@@ -51,6 +51,7 @@ I18n.translations.nl = {
     profile: "Profiel",
     security: "Beveiliging",
     account: "Account",
+    institutions: "Instellingen",
     favorites: "Favorieten",
     settings: "Instellingen",
     links: {
@@ -67,6 +68,31 @@ I18n.translations.nl = {
     info4: "Om het verwijderen van je eduID volledig te voltooien, moet je nadat je account is verwijderd je browser afsluiten.",
     deleteAccount: "Verwijder mijn eduID",
     deleteAccountConfirmation: "Weet je zeker dat je je eduID wilt verwijderen?"
+  },
+  institutions: {
+    title: "Gelinkte instellingen",
+    info: "Je kunt je eduID-account koppelen aan een of meer onderwijsinstellingen.",
+    explanation: "Door je basisonderwijsinstelling aan je eduID-account te koppelen, kun je je in de toekomst inschrijven voor lessen bij meerdere instellingen tegelijk.",
+    noInstitutions: "Je hebt geen onderwijsinstelling gekoppeld. Klik op de onderstaande knop om een ​​instelling toe te voegen.",
+    name: "Korte naam",
+    add: "Instelling toevoegen",
+    addInstitutionConfirmation: "Als je doorgaat, word je doorverwezen naar SURFconext WAYF waar je de instelling kunt selecteren die je wilt. <br/> <br/> Nadat je je identiteit bij die instelling hebt bevestigd, kom je hier terug.",
+    proceed: "Doorgaan",
+    addInstitution: "Instelling toevoegen"
+  },
+  institution: {
+    title: "Instelling",
+    info: "Deze instelling is op {{date}} om {{hours}}: {{minutes}} gelinkt aan je eduID-account",
+    name: "Korte naam",
+    eppn: "Je EPPN",
+    expires: "verloopt",
+    expiresValue: "{{date}} om {{hours}}: {{minutes}}",
+    delete: "Verwijderen",
+    cancel: "Annuleren",
+    deleted: "Je instellingslink met {{name}} is verwijderd",
+    back: "/instellingen",
+    deleteInstitution: "Verwijder instelling",
+    deleteInstitutionConfirmation: "Weet je zeker dat je deze gelinkte instelling uit je eduID-account wilt verwijderen? <br/> <br/> Sommige diensten vereisen gelinkte instellingen en je wordt mogelijk gevraagd een instelling te linken als je één van die services gebruikt."
   },
   password: {
     setTitle: "Wachtwoord instellen",

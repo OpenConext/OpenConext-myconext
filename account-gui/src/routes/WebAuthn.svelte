@@ -39,8 +39,12 @@
         min-height: 35vh;
     }
 
+    h3 {
+        margin: 2vh 0;
+    }
+
     p.info {
-        margin: 15vh 0;
+        margin: 25px 0;
     }
 
 </style>
@@ -48,6 +52,7 @@
     {#if loading}
         <Spinner/>
     {:else}
-        <p class="info">{I18n.t("webAuthn.info")}</p>
+        <h3>{I18n.t("webAuthn.info")}</h3>
+        <p class="info">{I18n.t("webAuthn.browserPrompt")}</p>
     {/if}
 </div>

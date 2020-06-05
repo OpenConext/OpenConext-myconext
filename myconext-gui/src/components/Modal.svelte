@@ -6,6 +6,7 @@
     export let cancel;
     export let title;
     export let question;
+    export let confirmTitle;
 
     let modal;
 
@@ -25,7 +26,7 @@
             <h3>{title}</h3>
         </div>
         <div class="modal-body">
-            <p>{question}</p>
+            <p>{@html question}</p>
         </div>
 
         <div class="options">
@@ -33,7 +34,7 @@
                     label={I18n.ts("modal.cancel")}/>
 
             <Button onClick={submit}
-                    label={I18n.ts("modal.confirm")}/>
+                    label={confirmTitle || I18n.ts("modal.confirm")}/>
         </div>
     </div>
 </div>

@@ -27,6 +27,7 @@ import myconext.exceptions.UserNotFoundException;
 import myconext.mail.MailBox;
 import myconext.manage.ServiceNameResolver;
 import myconext.model.Challenge;
+import myconext.model.LinkedAccount;
 import myconext.model.MagicLinkRequest;
 import myconext.model.SamlAuthenticationRequest;
 import myconext.model.UpdateUserSecurityRequest;
@@ -49,6 +50,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -72,6 +74,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
+
+import static myconext.security.GuestIdpAuthenticationRequestFilter.EDUPERSON_SCOPED_AFFILIATION_SAML;
 
 @RestController
 @RequestMapping("/myconext/api")
@@ -182,8 +187,7 @@ public class UserController {
     @GetMapping(value = {"/sp/me", "sp/migrate/merge", "sp/migrate/proceed"})
     public ResponseEntity me(Authentication authentication) {
         User user = userRepository.findOneUserByEmailIgnoreCase(((User) authentication.getPrincipal()).getEmail());
-        List<SamlAuthenticationRequest> samlAuthenticationRequests = authenticationRequestRepository.findByUserIdAndRememberMe(user.getId(), true);
-        return ResponseEntity.ok(new UserResponse(user, !samlAuthenticationRequests.isEmpty()));
+        return userResponseRememberMe(user);
     }
 
     @DeleteMapping("/sp/forget")
@@ -228,6 +232,41 @@ public class UserController {
 
         return ResponseEntity.status(201).body(new UserResponse(user, false));
     }
+
+    @GetMapping("/sp/link")
+    public ResponseEntity startLinkAccountFlow(Authentication authentication) {
+        return ResponseEntity.ok(Collections.singletonMap("url", "https://www.google.com"));
+    }
+
+    @PutMapping("/sp/institution")
+    public ResponseEntity removeUserLinkedAccounts(Authentication authentication, @RequestBody LinkedAccount linkedAccount) {
+        String id = ((User) authentication.getPrincipal()).getId();
+        User user = userRepository.findById(id).orElseThrow(UserNotFoundException::new);
+
+        List<LinkedAccount> linkedAccounts = user.getLinkedAccounts().stream()
+                .filter(la -> !la.getSchacHomeOrganization().equals(linkedAccount.getSchacHomeOrganization()))
+                .collect(Collectors.toList());
+        user.setLinkedAccounts(linkedAccounts);
+
+        if (CollectionUtils.isEmpty(linkedAccounts)) {
+            user.getAttributes().remove(EDUPERSON_SCOPED_AFFILIATION_SAML);
+            LOG.info(String.format("Removed %s for user %s as there are no linked accounts anymore",
+                    EDUPERSON_SCOPED_AFFILIATION_SAML, user.getEmail()));
+        }
+
+        userRepository.save(user);
+
+        LOG.info(String.format("Deleted linked account %s from user %s",
+                linkedAccount.getSchacHomeOrganization(), user.getUsername()));
+
+        return userResponseRememberMe(user);
+    }
+
+    private ResponseEntity userResponseRememberMe(User user) {
+        List<SamlAuthenticationRequest> samlAuthenticationRequests = authenticationRequestRepository.findByUserIdAndRememberMe(user.getId(), true);
+        return ResponseEntity.ok(new UserResponse(user, !samlAuthenticationRequests.isEmpty()));
+    }
+
 
     @GetMapping("sp/security/webauthn")
     public ResponseEntity spStartWebAuthFlow(Authentication authentication) {

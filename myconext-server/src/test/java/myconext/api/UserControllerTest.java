@@ -18,6 +18,7 @@ import io.restassured.response.ValidatableResponse;
 import io.restassured.specification.RequestSpecification;
 import myconext.AbstractIntegrationTest;
 import myconext.model.Challenge;
+import myconext.model.LinkedAccount;
 import myconext.model.MagicLinkRequest;
 import myconext.model.SamlAuthenticationRequest;
 import myconext.model.UpdateUserSecurityRequest;
@@ -54,6 +55,8 @@ import java.util.regex.Pattern;
 
 import static io.restassured.RestAssured.given;
 import static myconext.security.GuestIdpAuthenticationRequestFilter.BROWSER_SESSION_COOKIE_NAME;
+import static myconext.security.GuestIdpAuthenticationRequestFilter.EDUPERSON_SCOPED_AFFILIATION_SAML;
+import static myconext.security.GuestIdpAuthenticationRequestFilter.EDUPERSON_SCOPED_AFFILIATION_VERIFIED_BY_INSTITUTION;
 import static myconext.security.GuestIdpAuthenticationRequestFilter.GUEST_IDP_REMEMBER_ME_COOKIE_NAME;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.startsWith;
@@ -178,6 +181,24 @@ public class UserControllerTest extends AbstractIntegrationTest {
 
         assertEquals(user.getGivenName(), userFromDB.getGivenName());
         assertEquals(user.getFamilyName(), userFromDB.getFamilyName());
+    }
+
+    @Test
+    public void removeUserLinkedAccounts() {
+        User user = userRepository.findOneUserByEmailIgnoreCase("jdoe@example.com");
+        LinkedAccount linkedAccount = user.getLinkedAccounts().get(0);
+        given()
+                .when()
+                .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+                .body(linkedAccount)
+                .put("/myconext/api/sp/institution")
+                .then()
+                .statusCode(200);
+
+        User userFromDB = userRepository.findOneUserByEmailIgnoreCase("jdoe@example.com");
+
+        assertEquals(0, userFromDB.getLinkedAccounts().size());
+        assertFalse(userFromDB.getAttributes().containsKey(EDUPERSON_SCOPED_AFFILIATION_SAML));
     }
 
     @Test

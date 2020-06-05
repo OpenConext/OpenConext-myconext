@@ -6,7 +6,6 @@ import myconext.model.SamlAuthenticationRequest;
 import myconext.model.User;
 import myconext.repository.AuthenticationRequestRepository;
 import myconext.repository.UserRepository;
-import myconext.shibboleth.ShibbolethPreAuthenticatedProcessingFilter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -148,11 +147,12 @@ public class AccountLinkerController {
                         linkedAccount.getInstitutionIdentifier().equals(schacHomeOrganization))
                 .findFirst()
                 .map(linkedAccount -> linkedAccount.updateExpiresIn(institutionIdentifier, expiresAt))
-                .orElse(linkedAccounts.add(new LinkedAccount(institutionIdentifier, eppn, expiresAt)));
+                .orElse(linkedAccounts.add(
+                        new LinkedAccount(institutionIdentifier, schacHomeOrganization, eppn, new Date(), expiresAt)));
         String action = newLinkedAccountAdded ? "created" : "updated";
         String eppnValue = StringUtils.hasText(eppn) ? String.format("eppn %s", eppn) : "NO eppn";
 
-        LOG.info("An account link has been %s for User %s with %s to institution %s",
+        LOG.info("An account link has been {} for User {} with {} to institution {}",
                 action, user.getEmail(), eppnValue, institutionIdentifier);
 
         userRepository.save(user);
