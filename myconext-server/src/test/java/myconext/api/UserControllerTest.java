@@ -24,7 +24,6 @@ import myconext.model.SamlAuthenticationRequest;
 import myconext.model.UpdateUserSecurityRequest;
 import myconext.model.User;
 import myconext.repository.ChallengeRepository;
-import myconext.repository.UserRepository;
 import org.apache.commons.io.IOUtils;
 import org.apache.http.client.CookieStore;
 import org.junit.Test;
@@ -56,7 +55,6 @@ import java.util.regex.Pattern;
 import static io.restassured.RestAssured.given;
 import static myconext.security.GuestIdpAuthenticationRequestFilter.BROWSER_SESSION_COOKIE_NAME;
 import static myconext.security.GuestIdpAuthenticationRequestFilter.EDUPERSON_SCOPED_AFFILIATION_SAML;
-import static myconext.security.GuestIdpAuthenticationRequestFilter.EDUPERSON_SCOPED_AFFILIATION_VERIFIED_BY_INSTITUTION;
 import static myconext.security.GuestIdpAuthenticationRequestFilter.GUEST_IDP_REMEMBER_ME_COOKIE_NAME;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.startsWith;
@@ -267,6 +265,15 @@ public class UserControllerTest extends AbstractIntegrationTest {
 
         Optional<User> optionalUser = userRepository.findUserByEmailIgnoreCase("jdoe@example.com");
         assertFalse(optionalUser.isPresent());
+    }
+
+    @Test
+    public void logout() {
+        Map res = given()
+                .when()
+                .get("/myconext/api/sp/logout")
+                .as(Map.class);
+        assertEquals("ok", res.get("status"));
     }
 
     @Test
@@ -483,7 +490,7 @@ public class UserControllerTest extends AbstractIntegrationTest {
         body.put("credentials", objectMapper.writeValueAsString(pkc));
         //We can't use the original challenge as the signature is based on challenge
         Challenge challenge = challengeRepository.findByToken(authenticationRequestId).get();
-        String challengeFromServer = (String) objectMapper.readValue(Base64.getUrlDecoder().decode( responseMap.get("clientDataJSON")), Map.class).get("challenge");
+        String challengeFromServer = (String) objectMapper.readValue(Base64.getUrlDecoder().decode(responseMap.get("clientDataJSON")), Map.class).get("challenge");
         ReflectionTestUtils.setField(challenge, "challenge", challengeFromServer);
         challengeRepository.save(challenge);
 
@@ -504,6 +511,20 @@ public class UserControllerTest extends AbstractIntegrationTest {
         assertTrue(saml.contains("Attribute Name=\"urn:mace:eduid.nl:1.1\""));
         String eduId = eduIdPerServiceProvider.get("https://manage.surfconext.nl/shibboleth");
         assertTrue(saml.contains(eduId));
+    }
+
+    @Test
+    public void webAuhthAuthenticationUserNotFound() {
+        Map<String, Object> body = new HashMap<>();
+        body.put("email", "nope");
+        given()
+                .when()
+                .body(body)
+                .contentType(ContentType.JSON)
+                .accept(ContentType.JSON)
+                .post("/myconext/api/idp/security/webauthn/authentication")
+                .then()
+                .statusCode(404);
     }
 
     @Test

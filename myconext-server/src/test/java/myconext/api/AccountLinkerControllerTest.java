@@ -1,5 +1,6 @@
 package myconext.api;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.github.tomakehurst.wiremock.junit.WireMockRule;
 import io.restassured.http.ContentType;
 import myconext.AbstractIntegrationTest;
@@ -14,7 +15,9 @@ import org.springframework.http.MediaType;
 
 import java.io.IOException;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
 import static com.github.tomakehurst.wiremock.client.WireMock.post;
@@ -24,7 +27,6 @@ import static io.restassured.RestAssured.given;
 import static myconext.security.GuestIdpAuthenticationRequestFilter.EDUPERSON_SCOPED_AFFILIATION_SAML;
 import static myconext.security.GuestIdpAuthenticationRequestFilter.EDUPERSON_SCOPED_AFFILIATION_VERIFIED_BY_INSTITUTION;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
@@ -62,8 +64,13 @@ public class AccountLinkerControllerTest extends AbstractIntegrationTest {
     @Test
     public void redirect() throws IOException {
         String eppn = "some@institute.nl";
-        User user = doRedirect(Collections.singletonMap("eduperson_principal_name", eppn));
-        System.out.println(user);
+
+        Map<Object, Object> body = new HashMap<>();
+        body.put("eduperson_principal_name", eppn);
+        body.put("schac_home_organization", "mock.idp");
+
+        User user = doRedirect(body);
+        assertEquals(eppn, user.getLinkedAccounts().get(0).getEduPersonPrincipalName());
     }
 
     @Test
@@ -81,12 +88,7 @@ public class AccountLinkerControllerTest extends AbstractIntegrationTest {
                 .put("/myconext/api/idp/magic_link_request")
                 .then()
                 .statusCode(HttpStatus.CREATED.value());
-        stubFor(post(urlPathMatching("/oidc/token")).willReturn(aResponse()
-                .withHeader("Content-Type", "application/json")
-                .withBody(objectMapper.writeValueAsString(Collections.singletonMap("access_token", "123456")))));
-        stubFor(post(urlPathMatching("/oidc/userinfo")).willReturn(aResponse()
-                .withHeader("Content-Type", "application/json")
-                .withBody(objectMapper.writeValueAsString(userInfo))));
+        stubForTokenUserInfo(userInfo);
 
         String location = given().redirects().follow(false)
                 .when()
@@ -115,4 +117,56 @@ public class AccountLinkerControllerTest extends AbstractIntegrationTest {
                 .getHeader("Location");
         assertEquals("http://localhost:3000/expired", location);
     }
+
+
+    @Test
+    public void spOidcLink() {
+        User user = userRepository.findOneUserByEmailIgnoreCase("jdoe@example.com");
+        Map res = given()
+                .when()
+                .get("/myconext/api/sp/oidc/link")
+                .as(Map.class);
+        assertEquals(res.get("url"),
+                "http://localhost:8099/oidc/authorize?" +
+                        "scope=openid&" +
+                        "response_type=code&" +
+                        "redirect_uri=http://localhost:8081/myconext/api/sp/oidc/redirect" +
+                        "&state=" + UUID.nameUUIDFromBytes(user.getId().getBytes()).toString() +
+                        "&client_id=myconext.rp.localhost");
+    }
+
+    @Test
+    public void spFlowRedirect() throws IOException {
+        User user = userRepository.findOneUserByEmailIgnoreCase("jdoe@example.com");
+        String eppn = "some@institute.nl";
+
+        Map<Object, Object> userInfo = new HashMap<>();
+        userInfo.put("eduperson_principal_name", eppn);
+        userInfo.put("schac_home_organization", "mock.idp");
+
+        stubForTokenUserInfo(userInfo);
+
+        String location = given().redirects().follow(false)
+                .when()
+                .queryParam("code", "123456")
+                .queryParam("state", UUID.nameUUIDFromBytes(user.getId().getBytes()).toString())
+                .contentType(ContentType.JSON)
+                .get("/myconext/api/sp/oidc/redirect")
+                .getHeader("Location");
+        assertEquals(location, "http://localhost:3001/institutions");
+
+        user = userRepository.findOneUserByEmailIgnoreCase("jdoe@example.com");
+        assertEquals(EDUPERSON_SCOPED_AFFILIATION_VERIFIED_BY_INSTITUTION, user.getAttributes().get(EDUPERSON_SCOPED_AFFILIATION_SAML).get(0));
+        assertEquals(2, user.getLinkedAccounts().size());
+    }
+
+    private void stubForTokenUserInfo(Map<Object, Object> userInfo) throws JsonProcessingException {
+        stubFor(post(urlPathMatching("/oidc/token")).willReturn(aResponse()
+                .withHeader("Content-Type", "application/json")
+                .withBody(objectMapper.writeValueAsString(Collections.singletonMap("access_token", "123456")))));
+        stubFor(post(urlPathMatching("/oidc/userinfo")).willReturn(aResponse()
+                .withHeader("Content-Type", "application/json")
+                .withBody(objectMapper.writeValueAsString(userInfo))));
+    }
+
 }

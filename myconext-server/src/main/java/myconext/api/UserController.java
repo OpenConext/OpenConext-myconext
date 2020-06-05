@@ -453,7 +453,7 @@ public class UserController {
         session.invalidate();
         SecurityContextHolder.getContext().setAuthentication(null);
         SecurityContextHolder.clearContext();
-        return ResponseEntity.ok(Collections.singletonMap("status", "oke"));
+        return ResponseEntity.ok(Collections.singletonMap("status", "ok"));
     }
 
     private User verifyAndFetchUser(Authentication authentication, User deltaUser) {
