@@ -233,11 +233,6 @@ public class UserController {
         return ResponseEntity.status(201).body(new UserResponse(user, false));
     }
 
-    @GetMapping("/sp/link")
-    public ResponseEntity startLinkAccountFlow(Authentication authentication) {
-        return ResponseEntity.ok(Collections.singletonMap("url", "https://www.google.com"));
-    }
-
     @PutMapping("/sp/institution")
     public ResponseEntity removeUserLinkedAccounts(Authentication authentication, @RequestBody LinkedAccount linkedAccount) {
         String id = ((User) authentication.getPrincipal()).getId();

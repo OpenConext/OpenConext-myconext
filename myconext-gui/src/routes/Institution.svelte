@@ -158,7 +158,7 @@
                 <td class="attr">{I18n.ts("institution.expires")}</td>
                 <td class="value">
                     <div class="value-container">
-                        <span>{I18n.ts("institution.expiresValue",formatCreateDate(linkedAccount.expiresAt))}</span>
+                        <span>{I18n.ts("institution.expiresValue", {date: formatCreateDate(linkedAccount.expiresAt).date})}</span>
                     </div>
                 </td>
             </tr>

@@ -122,6 +122,10 @@ public class GuestIdpAuthenticationRequestFilter extends IdpAuthenticationReques
         String samlRequest = request.getParameter("SAMLRequest");
         String relayState = request.getParameter("RelayState");
 
+        if (StringUtils.isEmpty(samlRequest)) {
+            //prevent null-pointer and drop dead
+            return;
+        }
         AuthenticationRequest authenticationRequest =
                 provider.fromXml(samlRequest, true, isDeflated(request), AuthenticationRequest.class);
         provider.validate(authenticationRequest);

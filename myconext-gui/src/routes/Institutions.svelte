@@ -16,7 +16,9 @@
         if (showConfirmation) {
             showModal = true
         } else {
-            startLinkAccountFlow().then(json => window.location.href = json.url);
+            startLinkAccountFlow().then(json => {
+              window.location.href = json.url;
+            });
         }
     }
 

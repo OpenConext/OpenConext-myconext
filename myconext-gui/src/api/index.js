@@ -78,7 +78,7 @@ export function deleteLinkedAccount(linkedAccount) {
 }
 
 export function startLinkAccountFlow() {
-    return fetchJson("/myconext/api/sp/link");
+    return fetchJson("/myconext/api/sp/oidc/link");
 }
 
 export function logout() {

@@ -69,7 +69,7 @@ public class AccountLinkerControllerTest extends AbstractIntegrationTest {
     @Test
     public void redirectWithEmptyEppn() throws IOException {
         User user = doRedirect(Collections.emptyMap());
-        System.out.println(user);
+        assertEquals(0, user.getLinkedAccounts().size());
     }
 
     private User doRedirect(Map<Object, Object> userInfo) throws IOException {
@@ -98,7 +98,9 @@ public class AccountLinkerControllerTest extends AbstractIntegrationTest {
         assertTrue(location.startsWith("http://localhost:8081/saml/guest-idp/magic?h="));
 
         User user = userRepository.findOneUserByEmailIgnoreCase("mdoe@example.com");
-        assertEquals(EDUPERSON_SCOPED_AFFILIATION_VERIFIED_BY_INSTITUTION, user.getAttributes().get(EDUPERSON_SCOPED_AFFILIATION_SAML).get(0));
+        if (user.getLinkedAccounts().size() > 0) {
+            assertEquals(EDUPERSON_SCOPED_AFFILIATION_VERIFIED_BY_INSTITUTION, user.getAttributes().get(EDUPERSON_SCOPED_AFFILIATION_SAML).get(0));
+        }
         return user;
     }
 

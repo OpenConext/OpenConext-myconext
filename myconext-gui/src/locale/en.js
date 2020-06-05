@@ -86,7 +86,7 @@ I18n.translations.en = {
     name: "Short name",
     eppn: "Your EPPN",
     expires: "Expires",
-    expiresValue: "{{date}} at {{hours}}:{{minutes}}",
+    expiresValue: "{{date}}",
     delete: "Delete",
     cancel: "Cancel",
     deleted: "Your institution link with {{name}} has been deleted",

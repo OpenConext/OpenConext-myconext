@@ -22,6 +22,7 @@ metadata_sp_url: https://metadata.test.surfconext.nl/sp-names.json
 
 mongodb_db: surf_id_test
 base_domain: test2.surfconext.nl
+saml_metadata_base_path: http://localhost:8081
 base_path: http://localhost:8081
 idp_redirect_url: http://localhost:3000
 rp_id: localhost
@@ -59,7 +60,8 @@ attribute_manipulation:
 oidc:
   client-id: myconext.rp.localhost
   secret: secret
-  redirect-url: http://localhost:8081/myconext/api/idp/oidc/redirect
+  idp-flow-redirect-url: http://localhost:8081/myconext/api/idp/oidc/redirect
+  sp-flow-redirect-url: http://localhost:8081/myconext/api/sp/oidc/redirect
   base-url: https://connect.test2.surfconext.nl
   expiry-duration-days: 90
 

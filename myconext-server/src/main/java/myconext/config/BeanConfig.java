@@ -27,7 +27,7 @@ public class BeanConfig extends SamlIdentityProviderServerBeanConfiguration {
     private final MailBox mailBox;
     private final ServiceNameResolver serviceNameResolver;
 
-    public BeanConfig(@Value("${base_path}") String basePath,
+    public BeanConfig(@Value("${saml_metadata_base_path}") String samlMetadataBasePath,
                       @Value("${idp_redirect_url}") String redirectUrl,
                       @Value("${remember_me_max_age_seconds}") int rememberMeMaxAge,
                       @Value("${secure_cookie}") boolean secureCookie,
@@ -37,7 +37,7 @@ public class BeanConfig extends SamlIdentityProviderServerBeanConfiguration {
                       UserRepository userRepository,
                       MailBox mailBox,
                       ServiceNameResolver serviceNameResolver) {
-        this.immutableSamlConfigurationRepository = new ImmutableSamlConfigurationRepository(basePath);
+        this.immutableSamlConfigurationRepository = new ImmutableSamlConfigurationRepository(samlMetadataBasePath);
         this.redirectUrl = redirectUrl;
         this.rememberMeMaxAge = rememberMeMaxAge;
         this.secureCookie = secureCookie;
