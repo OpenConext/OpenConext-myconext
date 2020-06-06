@@ -71,6 +71,11 @@ public class AccountLinkerControllerTest extends AbstractIntegrationTest {
 
         User user = doRedirect(body);
         assertEquals(eppn, user.getLinkedAccounts().get(0).getEduPersonPrincipalName());
+        assertEquals(eppn, user.getLinkedAccounts().get(0).getInstitutionIdentifier(), "mock.idp");
+        //second time the institution identifier is updated from the surf-crm-id
+        body.put("surf-crm-id", "12345678");
+        user = doRedirect(body);
+        assertEquals(user.getLinkedAccounts().get(0).getInstitutionIdentifier(), "12345678");
     }
 
     @Test

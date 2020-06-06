@@ -55,6 +55,7 @@ import java.util.regex.Pattern;
 import static io.restassured.RestAssured.given;
 import static myconext.security.GuestIdpAuthenticationRequestFilter.BROWSER_SESSION_COOKIE_NAME;
 import static myconext.security.GuestIdpAuthenticationRequestFilter.EDUPERSON_SCOPED_AFFILIATION_SAML;
+import static myconext.security.GuestIdpAuthenticationRequestFilter.EDUPERSON_SCOPED_AFFILIATION_VERIFIED_BY_INSTITUTION;
 import static myconext.security.GuestIdpAuthenticationRequestFilter.GUEST_IDP_REMEMBER_ME_COOKIE_NAME;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.startsWith;
@@ -151,6 +152,33 @@ public class UserControllerTest extends AbstractIntegrationTest {
         response = samlAuthnRequestResponseWithLoa(
                 new Cookie.Builder(GUEST_IDP_REMEMBER_ME_COOKIE_NAME, cookie).build(), null, authnContext);
         response.then().header("Location", startsWith("http://localhost:3000/stepup/"));
+    }
+
+    @Test
+    public void accountLinkingRequiredNotNeeded() throws IOException {
+        User user = userRepository.findOneUserByEmailIgnoreCase("jdoe@example.com");
+        user.getAttributes()
+                .put(EDUPERSON_SCOPED_AFFILIATION_SAML, Collections.singletonList(EDUPERSON_SCOPED_AFFILIATION_VERIFIED_BY_INSTITUTION));
+        userRepository.save(user);
+
+        String authnContext = readFile("request_authn_context.xml");
+        Response response = samlAuthnRequestResponseWithLoa(null, "relay", authnContext);
+        String authenticationRequestId = extractAuthenticationRequestIdFromAuthnResponse(response);
+
+        MagicLinkResponse magicLinkResponse = magicLinkRequest(new MagicLinkRequest(authenticationRequestId, user, false, false), HttpMethod.PUT);
+        String samlResponse = samlResponse(magicLinkResponse);
+
+        assertTrue(samlResponse.contains("https://eduid.nl/trust/linked-institution"));
+    }
+
+    @Test
+    public void emptySamlRequest() {
+        given().redirects().follow(false)
+                .when()
+                .queryParams(Collections.emptyMap())
+                .get("/saml/guest-idp/SSO")
+                .then()
+                .statusCode(200);
     }
 
     @Test

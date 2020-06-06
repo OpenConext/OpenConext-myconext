@@ -99,6 +99,10 @@ public abstract class AbstractIntegrationTest {
 
     protected String samlAuthnRequest(String relayState) throws IOException {
         Response response = samlAuthnRequestResponse(null, relayState);
+        return extractAuthenticationRequestIdFromAuthnResponse(response);
+    }
+
+    protected String extractAuthenticationRequestIdFromAuthnResponse(Response response) {
         assertEquals(302, response.getStatusCode());
 
         String location = response.getHeader("Location");
