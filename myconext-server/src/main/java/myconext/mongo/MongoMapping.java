@@ -26,6 +26,7 @@ public class MongoMapping {
     }
 
     @EventListener(ApplicationReadyEvent.class)
+    @SuppressWarnings("unchecked")
     public void initIndicesAfterStartup() {
         ((MappingMongoConverter) mongoConverter).setMapKeyDotReplacement("@");
         MongoMappingContext mappingContext = (MongoMappingContext) this.mongoConverter.getMappingContext();

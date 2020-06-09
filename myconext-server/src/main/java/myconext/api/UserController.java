@@ -76,8 +76,6 @@ import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-import static myconext.security.GuestIdpAuthenticationRequestFilter.EDUPERSON_SCOPED_AFFILIATION_SAML;
-
 @RestController
 @RequestMapping("/myconext/api")
 public class UserController {
@@ -242,13 +240,6 @@ public class UserController {
                 .filter(la -> !la.getSchacHomeOrganization().equals(linkedAccount.getSchacHomeOrganization()))
                 .collect(Collectors.toList());
         user.setLinkedAccounts(linkedAccounts);
-
-        if (CollectionUtils.isEmpty(linkedAccounts)) {
-            user.getAttributes().remove(EDUPERSON_SCOPED_AFFILIATION_SAML);
-            LOG.info(String.format("Removed %s for user %s as there are no linked accounts anymore",
-                    EDUPERSON_SCOPED_AFFILIATION_SAML, user.getEmail()));
-        }
-
         userRepository.save(user);
 
         LOG.info(String.format("Deleted linked account %s from user %s",

@@ -20,7 +20,6 @@ public class BeanConfig extends SamlIdentityProviderServerBeanConfiguration {
     private final String redirectUrl;
     private final AuthenticationRequestRepository authenticationRequestRepository;
     private final UserRepository userRepository;
-    private final String accountLinkingContextClassRef;
     private final int rememberMeMaxAge;
     private final boolean secureCookie;
     private final String magicLinkUrl;
@@ -32,7 +31,6 @@ public class BeanConfig extends SamlIdentityProviderServerBeanConfiguration {
                       @Value("${remember_me_max_age_seconds}") int rememberMeMaxAge,
                       @Value("${secure_cookie}") boolean secureCookie,
                       @Value("${email.magic-link-url}") String magicLinkUrl,
-                      @Value("${account_linking_context_class_ref}") String accountLinkingContextClassRef,
                       AuthenticationRequestRepository authenticationRequestRepository,
                       UserRepository userRepository,
                       MailBox mailBox,
@@ -44,7 +42,6 @@ public class BeanConfig extends SamlIdentityProviderServerBeanConfiguration {
         this.authenticationRequestRepository = authenticationRequestRepository;
         this.userRepository = userRepository;
         this.magicLinkUrl = magicLinkUrl;
-        this.accountLinkingContextClassRef = accountLinkingContextClassRef;
         this.mailBox = mailBox;
         this.serviceNameResolver = serviceNameResolver;
     }
@@ -65,7 +62,6 @@ public class BeanConfig extends SamlIdentityProviderServerBeanConfiguration {
                 serviceNameResolver,
                 authenticationRequestRepository,
                 userRepository,
-                accountLinkingContextClassRef,
                 rememberMeMaxAge,
                 secureCookie,
                 magicLinkUrl,

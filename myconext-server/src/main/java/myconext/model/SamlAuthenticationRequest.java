@@ -5,6 +5,9 @@ import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.Transient;
 import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.security.saml.saml2.authentication.AuthenticationContextClassReference;
+import org.springframework.util.Assert;
+import org.springframework.util.StringUtils;
 
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -38,6 +41,8 @@ public class SamlAuthenticationRequest {
 
     private boolean accountLinkingRequired;
 
+    private String authenticationContextClassReference;
+
     private boolean passwordOrWebAuthnFlow;
 
     private boolean rememberMe;
@@ -46,7 +51,8 @@ public class SamlAuthenticationRequest {
 
     public SamlAuthenticationRequest(String requestId, String issuer, String consumerAssertionServiceURL,
                                      String relayState, String requesterEntityId,
-                                     boolean accountLinkingRequired) {
+                                     boolean accountLinkingRequired,
+                                     String authenticationContextClassReference) {
         this.id = UUID.randomUUID().toString();
         this.requestId = requestId;
         this.issuer = issuer;
@@ -55,6 +61,15 @@ public class SamlAuthenticationRequest {
         this.expiresIn = Date.from(LocalDateTime.now().plusHours(1).atZone(ZoneId.systemDefault()).toInstant());
         this.requesterEntityId = requesterEntityId;
         this.accountLinkingRequired = accountLinkingRequired;
+        this.authenticationContextClassReference = authenticationContextClassReference;
+        invariant();
+    }
+
+    @Transient
+    private void invariant() {
+        if (this.isAccountLinkingRequired() && StringUtils.isEmpty(this.authenticationContextClassReference)) {
+            throw new IllegalArgumentException("authenticationContextClassReference is required when account linking is required");
+        }
     }
 
     public void setHash(String hash) {

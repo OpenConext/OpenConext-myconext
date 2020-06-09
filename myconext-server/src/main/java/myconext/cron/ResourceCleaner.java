@@ -12,13 +12,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
-import org.springframework.util.CollectionUtils;
 
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
-
-import static myconext.security.GuestIdpAuthenticationRequestFilter.EDUPERSON_SCOPED_AFFILIATION_SAML;
 
 @Component
 public class ResourceCleaner {
@@ -53,11 +50,6 @@ public class ResourceCleaner {
                     .collect(Collectors.toList());
             user.setLinkedAccounts(linkedAccounts);
             LOG.info(String.format("Removed expired linked account for user %s", user.getEmail()));
-            if (CollectionUtils.isEmpty(linkedAccounts)) {
-                user.getAttributes().remove(EDUPERSON_SCOPED_AFFILIATION_SAML);
-                LOG.info(String.format("Removed %s for user %s as there are no linked accounts anymore",
-                        EDUPERSON_SCOPED_AFFILIATION_SAML, user.getEmail()));
-            }
             userRepository.save(user);
 
         });

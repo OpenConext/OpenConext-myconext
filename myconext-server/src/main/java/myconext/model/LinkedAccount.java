@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.springframework.util.StringUtils;
 
 import java.beans.Transient;
 import java.util.Date;
@@ -16,6 +17,8 @@ public class LinkedAccount {
     private String institutionIdentifier;
     private String schacHomeOrganization;
     private String eduPersonPrincipalName;
+    private String givenName;
+    private String familyName;
     private Date createdAt;
     private Date expiresAt;
 
@@ -26,4 +29,11 @@ public class LinkedAccount {
         this.expiresAt = expiresAt;
         return true;
     }
+
+    @Transient
+    @JsonIgnore
+    public boolean areNamesValidated() {
+        return StringUtils.hasText(givenName) && StringUtils.hasText(familyName);
+    }
+
 }

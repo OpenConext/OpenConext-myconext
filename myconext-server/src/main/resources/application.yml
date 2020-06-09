@@ -34,7 +34,6 @@ onegini_entity_id: http://mock-idp
 guest_idp_entity_id: https://localhost.surf.id
 my_conext_url: https://my.test2.surfconext.nl
 domain: eduid.nl
-account_linking_context_class_ref: https://eduid.nl/trust/linked-institution
 
 feature:
   webauthn: True
@@ -63,7 +62,8 @@ oidc:
   idp-flow-redirect-url: http://localhost:8081/myconext/api/idp/oidc/redirect
   sp-flow-redirect-url: http://localhost:8081/myconext/api/sp/oidc/redirect
   base-url: https://connect.test2.surfconext.nl
-  expiry-duration-days: 90
+  expiry-duration-days-non-validated: 180
+  expiry-duration-days-validated: 2190
 
 spring:
   data:

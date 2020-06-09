@@ -20,11 +20,13 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import static myconext.validation.PasswordStrength.strongEnough;
 
@@ -148,6 +150,12 @@ public class User implements Serializable, UserDetails {
     @JsonIgnore
     public boolean isEnabled() {
         return true;
+    }
+
+    @Transient
+    @JsonIgnore
+    public List<LinkedAccount> linkedAccountsSorted() {
+        return this.linkedAccounts.stream().sorted(Comparator.comparing(LinkedAccount::getExpiresAt).reversed()).collect(Collectors.toList());
     }
 
     public String getEduPersonPrincipalName() {

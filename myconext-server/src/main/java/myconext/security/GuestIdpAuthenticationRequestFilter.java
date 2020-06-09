@@ -3,6 +3,7 @@ package myconext.security;
 import myconext.exceptions.UserNotFoundException;
 import myconext.mail.MailBox;
 import myconext.manage.ServiceNameResolver;
+import myconext.model.LinkedAccount;
 import myconext.model.SamlAuthenticationRequest;
 import myconext.model.User;
 import myconext.repository.AuthenticationRequestRepository;
@@ -44,24 +45,25 @@ import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Comparator;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static java.util.function.Function.identity;
 import static myconext.security.CookieResolver.cookieByName;
 import static org.springframework.util.StringUtils.hasText;
 
+@SuppressWarnings("unchecked")
 public class GuestIdpAuthenticationRequestFilter extends IdpAuthenticationRequestFilter {
 
     public static final String GUEST_IDP_REMEMBER_ME_COOKIE_NAME = "guest-idp-remember-me";
     public static final String BROWSER_SESSION_COOKIE_NAME = "BROWSER_SESSION";
     public static final String REGISTER_MODUS_COOKIE_NAME = "REGISTER_MODUS";
-    public static final String EDUPERSON_SCOPED_AFFILIATION_VERIFIED_BY_INSTITUTION =
-            "verified@eduid.nl";
-    public static final String EDUPERSON_SCOPED_AFFILIATION_SAML = "urn:mace:dir:attribute-def:eduPersonScopedAffiliation";
 
     private static final Log LOG = LogFactory.getLog(GuestIdpAuthenticationRequestFilter.class);
 
@@ -70,7 +72,7 @@ public class GuestIdpAuthenticationRequestFilter extends IdpAuthenticationReques
     private final String redirectUrl;
     private final AuthenticationRequestRepository authenticationRequestRepository;
     private final UserRepository userRepository;
-    private final String accountLinkingContextClassRef;
+    private final List<String> accountLinkingContextClassReferences;
 
     private final int rememberMeMaxAge;
     private final boolean secureCookie;
@@ -84,7 +86,6 @@ public class GuestIdpAuthenticationRequestFilter extends IdpAuthenticationReques
                                                ServiceNameResolver serviceNameResolver,
                                                AuthenticationRequestRepository authenticationRequestRepository,
                                                UserRepository userRepository,
-                                               String accountLinkingContextClassRef,
                                                int rememberMeMaxAge,
                                                boolean secureCookie,
                                                String magicLinkUrl,
@@ -96,7 +97,7 @@ public class GuestIdpAuthenticationRequestFilter extends IdpAuthenticationReques
         this.serviceNameResolver = serviceNameResolver;
         this.authenticationRequestRepository = authenticationRequestRepository;
         this.userRepository = userRepository;
-        this.accountLinkingContextClassRef = accountLinkingContextClassRef;
+        this.accountLinkingContextClassReferences =  Stream.of(ACR.values()).map(ACR::getValue).collect(Collectors.toList());
         this.rememberMeMaxAge = rememberMeMaxAge;
         this.secureCookie = secureCookie;
         this.magicLinkUrl = magicLinkUrl;
@@ -142,7 +143,9 @@ public class GuestIdpAuthenticationRequestFilter extends IdpAuthenticationReques
                 authenticationRequest.getAssertionConsumerService().getLocation(),
                 relayState,
                 StringUtils.hasText(requesterEntityId) ? requesterEntityId : "",
-                accountLinkingRequired
+                accountLinkingRequired,
+                authenticationContextClassReferenceValues.stream()
+                        .filter(val -> this.accountLinkingContextClassReferences.contains(val)).findFirst().orElse(null)
         );
 
         // Use the returned instance for further operations as the save operation has added the _id
@@ -175,12 +178,14 @@ public class GuestIdpAuthenticationRequestFilter extends IdpAuthenticationReques
     }
 
     private boolean isAccountLinkingRequired(List<String> authenticationContextClassReferenceValues) {
-        return authenticationContextClassReferenceValues.contains(this.accountLinkingContextClassRef);
+        return authenticationContextClassReferenceValues.stream().anyMatch(ref -> this.accountLinkingContextClassReferences.contains(ref));
     }
 
     public static boolean isUserVerifiedByInstitution(User user) {
-        return user.getAttributes().getOrDefault(EDUPERSON_SCOPED_AFFILIATION_SAML, Collections.emptyList())
-                .contains(EDUPERSON_SCOPED_AFFILIATION_VERIFIED_BY_INSTITUTION);
+        Date now = new Date();
+        List<LinkedAccount> linkedAccounts = user.getLinkedAccounts();
+        return !CollectionUtils.isEmpty(linkedAccounts) &&
+                linkedAccounts.stream().allMatch(linkedAccount -> now.toInstant().isBefore(linkedAccount.getExpiresAt().toInstant()));
     }
 
     private List<String> getAuthenticationContextClassReferenceValue(AuthenticationRequest authenticationRequest) {
@@ -305,14 +310,15 @@ public class GuestIdpAuthenticationRequestFilter extends IdpAuthenticationReques
         Assertion assertion = provider.assertion(
                 serviceProviderMetadata, authenticationRequest, user.getUid(), NameId.PERSISTENT);
 
-        attributes(user, requesterEntityId).forEach(assertion::addAttribute);
+        String authenticationContextClassReference = samlAuthenticationRequest.getAuthenticationContextClassReference();
+        attributes(user, requesterEntityId, authenticationContextClassReference).forEach(assertion::addAttribute);
 
         Response samlResponse = provider.response(authenticationRequest, assertion, serviceProviderMetadata);
 
         if (samlAuthenticationRequest.isAccountLinkingRequired()) {
             samlResponse.getAssertions().get(0).getAuthenticationStatements().get(0)
                     .getAuthenticationContext()
-                    .setClassReference(AuthenticationContextClassReference.fromUrn(accountLinkingContextClassRef));
+                    .setClassReference(AuthenticationContextClassReference.fromUrn(authenticationContextClassReference));
         }
 
         Endpoint acsUrl = provider.getPreferredEndpoint(
@@ -330,15 +336,27 @@ public class GuestIdpAuthenticationRequestFilter extends IdpAuthenticationReques
         processHtml(request, response, getPostBindingTemplate(), model);
     }
 
-    private List<Attribute> attributes(User user, String requesterEntityId) {
-        String displayName = String.format("%s %s", user.getGivenName(), user.getFamilyName());
+    private List<Attribute> attributes(User user, String requesterEntityId, String authenticationContextClassReference) {
+        List<LinkedAccount> linkedAccounts = user.linkedAccountsSorted();
+        String givenName = user.getGivenName();
+        String familyName = user.getFamilyName();
+
+        if (ACR.VALIDATE_NAMES.getValue().equals(authenticationContextClassReference) && !CollectionUtils.isEmpty(linkedAccounts)) {
+            LinkedAccount linkedAccount = linkedAccounts.get(0);
+            if (linkedAccount.areNamesValidated()) {
+                givenName = linkedAccount.getGivenName();
+                familyName = linkedAccount.getFamilyName();
+            }
+        }
+
+        String displayName = String.format("%s %s", givenName, familyName);
         List<Attribute> attributes = new ArrayList(Arrays.asList(
                 attribute("urn:mace:dir:attribute-def:cn", displayName),
                 attribute("urn:mace:dir:attribute-def:displayName", displayName),
                 attribute("urn:mace:dir:attribute-def:eduPersonPrincipalName", user.getEduPersonPrincipalName()),
-                attribute("urn:mace:dir:attribute-def:givenName", user.getGivenName()),
+                attribute("urn:mace:dir:attribute-def:givenName", givenName),
                 attribute("urn:mace:dir:attribute-def:mail", user.getEmail()),
-                attribute("urn:mace:dir:attribute-def:sn", user.getFamilyName()),
+                attribute("urn:mace:dir:attribute-def:sn", familyName),
                 attribute("urn:mace:dir:attribute-def:uid", user.getUid()),
                 attribute("urn:mace:terena.org:attribute-def:schacHomeOrganization", user.getSchacHomeOrganization())
         ));
@@ -352,14 +370,14 @@ public class GuestIdpAuthenticationRequestFilter extends IdpAuthenticationReques
         user.getAttributes()
                 .forEach((key, value) -> attributes.add(attribute(key, value.toArray(new String[]{}))));
         //Use case for the student mobility intake app
-        List<String> personalUniqueCodes = user.getLinkedAccounts().stream()
+        List<String> scopedAffiliations = linkedAccounts.stream()
                 .map(linkedAccount ->
-                        String.format("urn:schac:personalUniqueCode:nl:local:%s:studentid:%s",
-                                linkedAccount.getSchacHomeOrganization(), linkedAccount.getInstitutionIdentifier()))
+                        String.format("student@%s",
+                                linkedAccount.getSchacHomeOrganization()))
                 .collect(Collectors.toList());
-        if (!CollectionUtils.isEmpty(personalUniqueCodes)) {
-            attributes.add(attribute("urn:schac:attribute-def:schacPersonalUniqueCode",
-                    personalUniqueCodes.toArray(new String[]{})));
+        if (!CollectionUtils.isEmpty(scopedAffiliations)) {
+            attributes.add(attribute("urn:mace:dir:attribute-def:eduPersonScopedAffiliation",
+                    scopedAffiliations.toArray(new String[]{})));
         }
         return attributes;
     }

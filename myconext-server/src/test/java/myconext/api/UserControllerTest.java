@@ -19,11 +19,13 @@ import io.restassured.specification.RequestSpecification;
 import myconext.AbstractIntegrationTest;
 import myconext.model.Challenge;
 import myconext.model.LinkedAccount;
+import myconext.model.LinkedAccountTest;
 import myconext.model.MagicLinkRequest;
 import myconext.model.SamlAuthenticationRequest;
 import myconext.model.UpdateUserSecurityRequest;
 import myconext.model.User;
 import myconext.repository.ChallengeRepository;
+import myconext.security.ACR;
 import org.apache.commons.io.IOUtils;
 import org.apache.http.client.CookieStore;
 import org.junit.Test;
@@ -44,8 +46,11 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.nio.charset.Charset;
 import java.security.SecureRandom;
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.Base64;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -54,8 +59,6 @@ import java.util.regex.Pattern;
 
 import static io.restassured.RestAssured.given;
 import static myconext.security.GuestIdpAuthenticationRequestFilter.BROWSER_SESSION_COOKIE_NAME;
-import static myconext.security.GuestIdpAuthenticationRequestFilter.EDUPERSON_SCOPED_AFFILIATION_SAML;
-import static myconext.security.GuestIdpAuthenticationRequestFilter.EDUPERSON_SCOPED_AFFILIATION_VERIFIED_BY_INSTITUTION;
 import static myconext.security.GuestIdpAuthenticationRequestFilter.GUEST_IDP_REMEMBER_ME_COOKIE_NAME;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.startsWith;
@@ -63,6 +66,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
+@SuppressWarnings("unchecked")
 public class UserControllerTest extends AbstractIntegrationTest {
 
     private final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
@@ -157,8 +161,8 @@ public class UserControllerTest extends AbstractIntegrationTest {
     @Test
     public void accountLinkingRequiredNotNeeded() throws IOException {
         User user = userRepository.findOneUserByEmailIgnoreCase("jdoe@example.com");
-        user.getAttributes()
-                .put(EDUPERSON_SCOPED_AFFILIATION_SAML, Collections.singletonList(EDUPERSON_SCOPED_AFFILIATION_VERIFIED_BY_INSTITUTION));
+        user.getLinkedAccounts().add(new LinkedAccount("institution", "schacHome",
+                "eppn", null, null, new Date(), Date.from(new Date().toInstant().plus(1, ChronoUnit.DAYS))));
         userRepository.save(user);
 
         String authnContext = readFile("request_authn_context.xml");
@@ -168,7 +172,27 @@ public class UserControllerTest extends AbstractIntegrationTest {
         MagicLinkResponse magicLinkResponse = magicLinkRequest(new MagicLinkRequest(authenticationRequestId, user, false, false), HttpMethod.PUT);
         String samlResponse = samlResponse(magicLinkResponse);
 
-        assertTrue(samlResponse.contains("https://eduid.nl/trust/linked-institution"));
+        assertTrue(samlResponse.contains(ACR.LINKED_INSTITUTION.getValue()));
+    }
+
+    @Test
+    public void accountLinkingWithValidatedNames() throws IOException {
+        User user = userRepository.findOneUserByEmailIgnoreCase("jdoe@example.com");
+        Date createdAt = Date.from(Instant.now().plus(30 * 365, ChronoUnit.DAYS));
+        LinkedAccount linkedAccount = LinkedAccountTest.linkedAccount("Mary", "Steward", createdAt);
+        user.getLinkedAccounts().add(linkedAccount);
+        userRepository.save(user);
+
+        String authnContext = readFile("request_authn_context_validated_name.xml");
+        Response response = samlAuthnRequestResponseWithLoa(null, "relay", authnContext);
+        String authenticationRequestId = extractAuthenticationRequestIdFromAuthnResponse(response);
+
+        MagicLinkResponse magicLinkResponse = magicLinkRequest(new MagicLinkRequest(authenticationRequestId, user, false, false), HttpMethod.PUT);
+        String samlResponse = samlResponse(magicLinkResponse);
+
+        assertTrue(samlResponse.contains(ACR.VALIDATE_NAMES.getValue()));
+        assertTrue(samlResponse.contains(linkedAccount.getFamilyName()));
+        assertTrue(samlResponse.contains(linkedAccount.getGivenName()));
     }
 
     @Test
@@ -224,7 +248,6 @@ public class UserControllerTest extends AbstractIntegrationTest {
         User userFromDB = userRepository.findOneUserByEmailIgnoreCase("jdoe@example.com");
 
         assertEquals(0, userFromDB.getLinkedAccounts().size());
-        assertFalse(userFromDB.getAttributes().containsKey(EDUPERSON_SCOPED_AFFILIATION_SAML));
     }
 
     @Test
@@ -397,6 +420,10 @@ public class UserControllerTest extends AbstractIntegrationTest {
 
     @Test
     public void stepup() throws IOException {
+        User jdoe = userRepository.findOneUserByEmailIgnoreCase("jdoe@example.com");
+        jdoe.getLinkedAccounts().clear();
+        userRepository.save(jdoe);
+
         String authnContext = readFile("request_authn_context.xml");
         Response response = samlAuthnRequestResponseWithLoa(null, null, authnContext);
         assertEquals(302, response.getStatusCode());
@@ -430,6 +457,22 @@ public class UserControllerTest extends AbstractIntegrationTest {
                         "client_id=myconext.rp.localhost",
                 location);
 
+    }
+
+    @Test
+    public void stepUpValidateName() throws IOException {
+        User jdoe = userRepository.findOneUserByEmailIgnoreCase("jdoe@example.com");
+        jdoe.getLinkedAccounts().clear();
+        userRepository.save(jdoe);
+
+        String authnContext = readFile("request_authn_context_validated_name.xml");
+        Response response = samlAuthnRequestResponseWithLoa(null, null, authnContext);
+
+        String location = response.getHeader("Location");
+        String authenticationRequestId = location.substring(location.lastIndexOf("/") + 1, location.lastIndexOf("?"));
+
+        SamlAuthenticationRequest samlAuthenticationRequest  = authenticationRequestRepository.findById(authenticationRequestId).get();
+        assertEquals(ACR.VALIDATE_NAMES.getValue(), samlAuthenticationRequest.getAuthenticationContextClassReference());
     }
 
     @Test

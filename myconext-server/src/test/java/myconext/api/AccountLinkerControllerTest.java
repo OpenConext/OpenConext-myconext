@@ -24,8 +24,6 @@ import static com.github.tomakehurst.wiremock.client.WireMock.post;
 import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlPathMatching;
 import static io.restassured.RestAssured.given;
-import static myconext.security.GuestIdpAuthenticationRequestFilter.EDUPERSON_SCOPED_AFFILIATION_SAML;
-import static myconext.security.GuestIdpAuthenticationRequestFilter.EDUPERSON_SCOPED_AFFILIATION_VERIFIED_BY_INSTITUTION;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
@@ -105,9 +103,6 @@ public class AccountLinkerControllerTest extends AbstractIntegrationTest {
         assertTrue(location.startsWith("http://localhost:8081/saml/guest-idp/magic?h="));
 
         User user = userRepository.findOneUserByEmailIgnoreCase("mdoe@example.com");
-        if (user.getLinkedAccounts().size() > 0) {
-            assertEquals(EDUPERSON_SCOPED_AFFILIATION_VERIFIED_BY_INSTITUTION, user.getAttributes().get(EDUPERSON_SCOPED_AFFILIATION_SAML).get(0));
-        }
         return user;
     }
 
@@ -161,7 +156,6 @@ public class AccountLinkerControllerTest extends AbstractIntegrationTest {
         assertEquals(location, "http://localhost:3001/institutions");
 
         user = userRepository.findOneUserByEmailIgnoreCase("jdoe@example.com");
-        assertEquals(EDUPERSON_SCOPED_AFFILIATION_VERIFIED_BY_INSTITUTION, user.getAttributes().get(EDUPERSON_SCOPED_AFFILIATION_SAML).get(0));
         assertEquals(2, user.getLinkedAccounts().size());
     }
 

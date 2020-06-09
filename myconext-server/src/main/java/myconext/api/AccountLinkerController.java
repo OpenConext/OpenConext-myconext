@@ -8,6 +8,7 @@ import myconext.model.SamlAuthenticationRequest;
 import myconext.model.User;
 import myconext.repository.AuthenticationRequestRepository;
 import myconext.repository.UserRepository;
+import myconext.security.ACR;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -34,6 +35,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 import java.net.URI;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
@@ -41,9 +43,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
-
-import static myconext.security.GuestIdpAuthenticationRequestFilter.EDUPERSON_SCOPED_AFFILIATION_SAML;
-import static myconext.security.GuestIdpAuthenticationRequestFilter.EDUPERSON_SCOPED_AFFILIATION_VERIFIED_BY_INSTITUTION;
 
 @RestController
 @RequestMapping("/myconext/api")
@@ -63,7 +62,8 @@ public class AccountLinkerController {
     private final String magicLinkUrl;
     private final String idpErrorRedirectUrl;
     private final String spRedirectUrl;
-    private final long expiryDurationDays;
+    private final long expiryNonValidatedDurationDays;
+    private final long expiryValidatedDurationDays;
 
     public AccountLinkerController(
             AuthenticationRequestRepository authenticationRequestRepository,
@@ -76,7 +76,8 @@ public class AccountLinkerController {
             @Value("${oidc.idp-flow-redirect-url}") String idpFlowRedirectUri,
             @Value("${oidc.sp-flow-redirect-url}") String spFlowRedirectUri,
             @Value("${oidc.base-url}") String oidcBaseUrl,
-            @Value("${oidc.expiry-duration-days}") long expiryDurationDays) {
+            @Value("${oidc.expiry-duration-days-non-validated}") long expiryNonValidatedDurationDays,
+            @Value("${oidc.expiry-duration-days-validated}") long expiryValidatedDurationDays) {
         this.authenticationRequestRepository = authenticationRequestRepository;
         this.userRepository = userRepository;
         this.magicLinkUrl = magicLinkUrl;
@@ -87,13 +88,15 @@ public class AccountLinkerController {
         this.idpFlowRedirectUri = idpFlowRedirectUri;
         this.spFlowRedirectUri = spFlowRedirectUri;
         this.oidcBaseUrl = oidcBaseUrl;
-        this.expiryDurationDays = expiryDurationDays;
+        this.expiryNonValidatedDurationDays = expiryNonValidatedDurationDays;
+        this.expiryValidatedDurationDays = expiryValidatedDurationDays;
+
         this.headers.set("Accept", "application/json");
     }
 
     @GetMapping("/idp/oidc/account/{id}")
     public ResponseEntity startIdPLinkAccountFlow(@PathVariable("id") String id) {
-        LOG.info("Start IdP link account flow for userId " + id);
+        LOG.info("Start IdP link account flow for SAML Authentication Request ID " + id);
 
         UriComponents uriComponents = doStartLinkAccountFlow(id, idpFlowRedirectUri);
         return ResponseEntity.status(HttpStatus.FOUND).location(uriComponents.toUri()).build();
@@ -134,7 +137,7 @@ public class AccountLinkerController {
         if (!previousState.equals(state)) {
             throw new ForbiddenException();
         }
-        return doRedirect(code, user.getId(), this.spFlowRedirectUri, this.spRedirectUrl + "/institutions");
+        return doRedirect(code, user.getId(), this.spFlowRedirectUri, this.spRedirectUrl + "/institutions", false);
     }
 
     @GetMapping("/idp/oidc/redirect")
@@ -145,14 +148,16 @@ public class AccountLinkerController {
         }
         SamlAuthenticationRequest samlAuthenticationRequest = optionalSamlAuthenticationRequest.get();
         String userId = samlAuthenticationRequest.getUserId();
+        boolean validateNames = ACR.VALIDATE_NAMES.getValue().equals(samlAuthenticationRequest.getAuthenticationContextClassReference());
 
         LOG.info("In IdP redirect for link account flow for user " + userId);
 
         String location = this.magicLinkUrl + "?h=" + samlAuthenticationRequest.getHash();
-        return doRedirect(code, userId, this.idpFlowRedirectUri, location);
+        return doRedirect(code, userId, this.idpFlowRedirectUri, location, validateNames);
     }
 
-    private ResponseEntity doRedirect(@RequestParam("code") String code, String userId, String oidcRedirectUri, String clientRedirectUri) {
+    private ResponseEntity doRedirect(@RequestParam("code") String code, String userId, String oidcRedirectUri,
+                                      String clientRedirectUri, boolean validateNames) {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
         headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
@@ -164,7 +169,6 @@ public class AccountLinkerController {
         map.add("grant_type", "authorization_code");
         map.add("redirect_uri", oidcRedirectUri);
         map.add("scope", "openid");
-        //TODO add requested claims and parse the ID-token. This way we can avoid the userinfo
 
         HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<>(map, headers);
 
@@ -179,20 +183,21 @@ public class AccountLinkerController {
         body = restTemplate.exchange(oidcBaseUrl + "/oidc/userinfo", HttpMethod.POST, request, new ParameterizedTypeReference<Map<String, Object>>() {
         }).getBody();
 
-        User user = userRepository.findById(userId)
-                .orElseThrow(UserNotFoundException::new);
-        user.getAttributes()
-                .computeIfAbsent(EDUPERSON_SCOPED_AFFILIATION_SAML, key -> new ArrayList<>())
-                .add(EDUPERSON_SCOPED_AFFILIATION_VERIFIED_BY_INSTITUTION);
-
         String eppn = (String) body.get("eduperson_principal_name");
         String surfCrmId = (String) body.get("surf-crm-id");
         String schacHomeOrganization = (String) body.get("schac_home_organization");
 
+        String givenName = validateNames ? (String) body.get("given_name") : null;
+        String familyName = validateNames ? (String) body.get("family_name") : null;
+
         String institutionIdentifier = StringUtils.hasText(surfCrmId) ? surfCrmId : schacHomeOrganization;
 
+        User user = userRepository.findById(userId)
+                .orElseThrow(UserNotFoundException::new);
+
         if (StringUtils.hasText(eppn) && StringUtils.hasText(institutionIdentifier)) {
-            Date expiresAt = Date.from(new Date().toInstant().plus(expiryDurationDays, ChronoUnit.DAYS));
+            Date expiresAt = Date.from(new Date().toInstant()
+                    .plus(validateNames ? this.expiryValidatedDurationDays : this.expiryNonValidatedDurationDays, ChronoUnit.DAYS));
             List<LinkedAccount> linkedAccounts = user.getLinkedAccounts();
             boolean newLinkedAccountAdded = linkedAccounts.stream()
                     .filter(linkedAccount -> linkedAccount.getInstitutionIdentifier().equals(surfCrmId) ||
@@ -200,7 +205,7 @@ public class AccountLinkerController {
                     .findFirst()
                     .map(linkedAccount -> linkedAccount.updateExpiresIn(institutionIdentifier, expiresAt))
                     .orElse(linkedAccounts.add(
-                            new LinkedAccount(institutionIdentifier, schacHomeOrganization, eppn, new Date(), expiresAt)));
+                            new LinkedAccount(institutionIdentifier, schacHomeOrganization, eppn, givenName, familyName, new Date(), expiresAt)));
             String action = newLinkedAccountAdded ? "created" : "updated";
             String eppnValue = StringUtils.hasText(eppn) ? String.format("eppn %s", eppn) : "NO eppn";
 
