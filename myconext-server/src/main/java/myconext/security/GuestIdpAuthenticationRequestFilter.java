@@ -199,8 +199,12 @@ public class GuestIdpAuthenticationRequestFilter extends IdpAuthenticationReques
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
         LOG.info("Attempting user authentication from security context: " + authentication);
-        return authentication != null && authentication.isAuthenticated() && authentication instanceof UsernamePasswordAuthenticationToken ?
-                Optional.of((User) authentication.getPrincipal()) : Optional.empty();
+        if (authentication != null && authentication.isAuthenticated() && authentication instanceof  UsernamePasswordAuthenticationToken) {
+            //The user from the mongodb session possible contains the "@" dot replacement - need to refetch to prevent this
+            User user = (User) authentication.getPrincipal();
+            return userRepository.findById(user.getId());
+        }
+        return Optional.empty();
     }
 
     private void addBrowserIdentificationCookie(HttpServletResponse response) {
@@ -347,6 +351,16 @@ public class GuestIdpAuthenticationRequestFilter extends IdpAuthenticationReques
 
         user.getAttributes()
                 .forEach((key, value) -> attributes.add(attribute(key, value.toArray(new String[]{}))));
+        //Use case for the student mobility intake app
+        List<String> personalUniqueCodes = user.getLinkedAccounts().stream()
+                .map(linkedAccount ->
+                        String.format("urn:schac:personalUniqueCode:nl:local:%s:studentid:%s",
+                                linkedAccount.getSchacHomeOrganization(), linkedAccount.getInstitutionIdentifier()))
+                .collect(Collectors.toList());
+        if (!CollectionUtils.isEmpty(personalUniqueCodes)) {
+            attributes.add(attribute("urn:schac:attribute-def:schacPersonalUniqueCode",
+                    personalUniqueCodes.toArray(new String[]{})));
+        }
         return attributes;
     }
 

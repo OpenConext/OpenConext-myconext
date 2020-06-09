@@ -92,5 +92,4 @@ public class KeyGenerator {
         return new String(Hex.encode(MessageDigest.getInstance("SHA-256").digest(s.getBytes())));
     }
 
-
 }
