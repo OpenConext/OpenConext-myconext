@@ -65,6 +65,11 @@ oidc:
   expiry-duration-days-non-validated: 180
   expiry-duration-days-validated: 2190
 
+account_linking_context_class_ref:
+  linked_institution: https://eduid.nl/trust/linked-institution
+  validate_names: https://eduid.nl/trust/validate-names
+
+
 spring:
   data:
     mongodb:

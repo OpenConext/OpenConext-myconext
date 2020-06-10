@@ -1,17 +1,16 @@
 package myconext.security;
 
-public enum ACR {
+public class ACR {
 
-    LINKED_INSTITUTION("https://eduid.nl/trust/linked-institution"),
-    VALIDATE_NAMES("https://eduid.nl/trust/validate-names");
-
-    private String value;
-
-    private ACR(String s) {
-        this.value = s;
+    private ACR() {
     }
 
-    public String getValue() {
-        return value;
+    public static String LINKED_INSTITUTION;
+    public static String VALIDATE_NAMES;
+
+    public static void initialize(String linkedInstitution, String validateNames) {
+        ACR.LINKED_INSTITUTION = linkedInstitution;
+        ACR.VALIDATE_NAMES = validateNames;
     }
+
 }

@@ -97,7 +97,7 @@ public class GuestIdpAuthenticationRequestFilter extends IdpAuthenticationReques
         this.serviceNameResolver = serviceNameResolver;
         this.authenticationRequestRepository = authenticationRequestRepository;
         this.userRepository = userRepository;
-        this.accountLinkingContextClassReferences =  Stream.of(ACR.values()).map(ACR::getValue).collect(Collectors.toList());
+        this.accountLinkingContextClassReferences =  Arrays.asList(ACR.VALIDATE_NAMES, ACR.LINKED_INSTITUTION);
         this.rememberMeMaxAge = rememberMeMaxAge;
         this.secureCookie = secureCookie;
         this.magicLinkUrl = magicLinkUrl;
@@ -341,7 +341,7 @@ public class GuestIdpAuthenticationRequestFilter extends IdpAuthenticationReques
         String givenName = user.getGivenName();
         String familyName = user.getFamilyName();
 
-        if (ACR.VALIDATE_NAMES.getValue().equals(authenticationContextClassReference) && !CollectionUtils.isEmpty(linkedAccounts)) {
+        if (ACR.VALIDATE_NAMES.equals(authenticationContextClassReference) && !CollectionUtils.isEmpty(linkedAccounts)) {
             LinkedAccount linkedAccount = linkedAccounts.get(0);
             if (linkedAccount.areNamesValidated()) {
                 givenName = linkedAccount.getGivenName();

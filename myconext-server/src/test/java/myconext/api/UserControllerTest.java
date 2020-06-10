@@ -172,7 +172,7 @@ public class UserControllerTest extends AbstractIntegrationTest {
         MagicLinkResponse magicLinkResponse = magicLinkRequest(new MagicLinkRequest(authenticationRequestId, user, false, false), HttpMethod.PUT);
         String samlResponse = samlResponse(magicLinkResponse);
 
-        assertTrue(samlResponse.contains(ACR.LINKED_INSTITUTION.getValue()));
+        assertTrue(samlResponse.contains(ACR.LINKED_INSTITUTION));
     }
 
     @Test
@@ -190,7 +190,7 @@ public class UserControllerTest extends AbstractIntegrationTest {
         MagicLinkResponse magicLinkResponse = magicLinkRequest(new MagicLinkRequest(authenticationRequestId, user, false, false), HttpMethod.PUT);
         String samlResponse = samlResponse(magicLinkResponse);
 
-        assertTrue(samlResponse.contains(ACR.VALIDATE_NAMES.getValue()));
+        assertTrue(samlResponse.contains(ACR.VALIDATE_NAMES));
         assertTrue(samlResponse.contains(linkedAccount.getFamilyName()));
         assertTrue(samlResponse.contains(linkedAccount.getGivenName()));
     }
@@ -472,7 +472,7 @@ public class UserControllerTest extends AbstractIntegrationTest {
         String authenticationRequestId = location.substring(location.lastIndexOf("/") + 1, location.lastIndexOf("?"));
 
         SamlAuthenticationRequest samlAuthenticationRequest  = authenticationRequestRepository.findById(authenticationRequestId).get();
-        assertEquals(ACR.VALIDATE_NAMES.getValue(), samlAuthenticationRequest.getAuthenticationContextClassReference());
+        assertEquals(ACR.VALIDATE_NAMES, samlAuthenticationRequest.getAuthenticationContextClassReference());
     }
 
     @Test

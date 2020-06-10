@@ -148,7 +148,7 @@ public class AccountLinkerController {
         }
         SamlAuthenticationRequest samlAuthenticationRequest = optionalSamlAuthenticationRequest.get();
         String userId = samlAuthenticationRequest.getUserId();
-        boolean validateNames = ACR.VALIDATE_NAMES.getValue().equals(samlAuthenticationRequest.getAuthenticationContextClassReference());
+        boolean validateNames = ACR.VALIDATE_NAMES.equals(samlAuthenticationRequest.getAuthenticationContextClassReference());
 
         LOG.info("In IdP redirect for link account flow for user " + userId);
 

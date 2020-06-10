@@ -5,6 +5,7 @@ import myconext.manage.ServiceNameResolver;
 import myconext.repository.AuthenticationRequestRepository;
 import myconext.repository.UserRepository;
 import myconext.saml.ImmutableSamlConfigurationRepository;
+import myconext.security.ACR;
 import myconext.security.GuestIdpAuthenticationRequestFilter;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
@@ -31,6 +32,8 @@ public class BeanConfig extends SamlIdentityProviderServerBeanConfiguration {
                       @Value("${remember_me_max_age_seconds}") int rememberMeMaxAge,
                       @Value("${secure_cookie}") boolean secureCookie,
                       @Value("${email.magic-link-url}") String magicLinkUrl,
+                      @Value("${account_linking_context_class_ref.linked_institution}") String linkedInstitution,
+                      @Value("${account_linking_context_class_ref.validate_names}") String validateNames,
                       AuthenticationRequestRepository authenticationRequestRepository,
                       UserRepository userRepository,
                       MailBox mailBox,
@@ -44,6 +47,8 @@ public class BeanConfig extends SamlIdentityProviderServerBeanConfiguration {
         this.magicLinkUrl = magicLinkUrl;
         this.mailBox = mailBox;
         this.serviceNameResolver = serviceNameResolver;
+
+        ACR.initialize(linkedInstitution, validateNames);
     }
 
     private ImmutableSamlConfigurationRepository immutableSamlConfigurationRepository;
