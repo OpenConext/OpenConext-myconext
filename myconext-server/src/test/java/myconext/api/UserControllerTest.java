@@ -48,6 +48,7 @@ import java.nio.charset.Charset;
 import java.security.SecureRandom;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
+import java.util.Arrays;
 import java.util.Base64;
 import java.util.Collections;
 import java.util.Date;
@@ -162,7 +163,7 @@ public class UserControllerTest extends AbstractIntegrationTest {
     public void accountLinkingRequiredNotNeeded() throws IOException {
         User user = userRepository.findOneUserByEmailIgnoreCase("jdoe@example.com");
         user.getLinkedAccounts().add(new LinkedAccount("institution", "schacHome",
-                "eppn", null, null, new Date(), Date.from(new Date().toInstant().plus(1, ChronoUnit.DAYS))));
+                "eppn", null, null, Arrays.asList("student"), new Date(), Date.from(new Date().toInstant().plus(1, ChronoUnit.DAYS))));
         userRepository.save(user);
 
         String authnContext = readFile("request_authn_context.xml");

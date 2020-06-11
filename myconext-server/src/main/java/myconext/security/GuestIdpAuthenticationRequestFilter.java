@@ -44,8 +44,8 @@ import java.net.URLEncoder;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -97,7 +97,7 @@ public class GuestIdpAuthenticationRequestFilter extends IdpAuthenticationReques
         this.serviceNameResolver = serviceNameResolver;
         this.authenticationRequestRepository = authenticationRequestRepository;
         this.userRepository = userRepository;
-        this.accountLinkingContextClassReferences =  Arrays.asList(ACR.VALIDATE_NAMES, ACR.LINKED_INSTITUTION);
+        this.accountLinkingContextClassReferences = Arrays.asList(ACR.VALIDATE_NAMES, ACR.LINKED_INSTITUTION);
         this.rememberMeMaxAge = rememberMeMaxAge;
         this.secureCookie = secureCookie;
         this.magicLinkUrl = magicLinkUrl;
@@ -204,7 +204,7 @@ public class GuestIdpAuthenticationRequestFilter extends IdpAuthenticationReques
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
         LOG.info("Attempting user authentication from security context: " + authentication);
-        if (authentication != null && authentication.isAuthenticated() && authentication instanceof  UsernamePasswordAuthenticationToken) {
+        if (authentication != null && authentication.isAuthenticated() && authentication instanceof UsernamePasswordAuthenticationToken) {
             //The user from the mongodb session possible contains the "@" dot replacement - need to refetch to prevent this
             User user = (User) authentication.getPrincipal();
             return userRepository.findById(user.getId());
@@ -337,7 +337,7 @@ public class GuestIdpAuthenticationRequestFilter extends IdpAuthenticationReques
     }
 
     private List<Attribute> attributes(User user, String requesterEntityId, String authenticationContextClassReference) {
-        List<LinkedAccount> linkedAccounts = user.linkedAccountsSorted();
+        List<LinkedAccount> linkedAccounts = safeSortedAffiliations(user);
         String givenName = user.getGivenName();
         String familyName = user.getFamilyName();
 
@@ -369,17 +369,31 @@ public class GuestIdpAuthenticationRequestFilter extends IdpAuthenticationReques
 
         user.getAttributes()
                 .forEach((key, value) -> attributes.add(attribute(key, value.toArray(new String[]{}))));
-        //Use case for the student mobility intake app
+
         List<String> scopedAffiliations = linkedAccounts.stream()
-                .map(linkedAccount ->
-                        String.format("student@%s",
-                                linkedAccount.getSchacHomeOrganization()))
+                .map(linkedAccount -> linkedAccount.getEduPersonAffiliations().stream()
+                        .map(affiliation -> String.format("%s@%s", affiliation, linkedAccount.getSchacHomeOrganization()))
+                        .collect(Collectors.toList()))
+                .flatMap(Collection::stream)
                 .collect(Collectors.toList());
+
         if (!CollectionUtils.isEmpty(scopedAffiliations)) {
             attributes.add(attribute("urn:mace:dir:attribute-def:eduPersonScopedAffiliation",
                     scopedAffiliations.toArray(new String[]{})));
         }
         return attributes;
+    }
+
+    private List<LinkedAccount> safeSortedAffiliations(User user) {
+        List<LinkedAccount> linkedAccounts = user.linkedAccountsSorted();
+        List<LinkedAccount> linkedAccountsEmptyAffiliations = linkedAccounts.stream()
+                .filter(linkedAccount -> CollectionUtils.isEmpty(linkedAccount.getEduPersonAffiliations()))
+                .collect(Collectors.toList());
+        linkedAccountsEmptyAffiliations.forEach(linkedAccount -> linkedAccount.setEduPersonAffiliations(Arrays.asList("affiliation")));
+        if (!linkedAccountsEmptyAffiliations.isEmpty()) {
+            userRepository.save(user);
+        }
+        return user.linkedAccountsSorted();
     }
 
     private Attribute attribute(String name, String... value) {

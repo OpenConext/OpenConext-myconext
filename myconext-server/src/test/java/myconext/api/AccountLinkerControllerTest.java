@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.github.tomakehurst.wiremock.junit.WireMockRule;
 import io.restassured.http.ContentType;
 import myconext.AbstractIntegrationTest;
+import myconext.model.LinkedAccount;
 import myconext.model.MagicLinkRequest;
 import myconext.model.User;
 import org.junit.Rule;
@@ -14,6 +15,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -68,12 +70,30 @@ public class AccountLinkerControllerTest extends AbstractIntegrationTest {
         body.put("schac_home_organization", "mock.idp");
 
         User user = doRedirect(body);
-        assertEquals(eppn, user.getLinkedAccounts().get(0).getEduPersonPrincipalName());
-        assertEquals(eppn, user.getLinkedAccounts().get(0).getInstitutionIdentifier(), "mock.idp");
+        LinkedAccount linkedAccount = user.getLinkedAccounts().get(0);
+        assertEquals(eppn, linkedAccount.getEduPersonPrincipalName());
+        assertEquals(eppn, linkedAccount.getInstitutionIdentifier(), "mock.idp");
         //second time the institution identifier is updated from the surf-crm-id
         body.put("surf-crm-id", "12345678");
         user = doRedirect(body);
-        assertEquals(user.getLinkedAccounts().get(0).getInstitutionIdentifier(), "12345678");
+        linkedAccount = user.getLinkedAccounts().get(0);
+
+        assertEquals(linkedAccount.getInstitutionIdentifier(), "12345678");
+        assertEquals("affiliate", linkedAccount.getEduPersonAffiliations().get(0));
+    }
+
+    @Test
+    public void redirectWithAffiliations() throws IOException {
+        String eppn = "some@institute.nl";
+
+        Map<Object, Object> body = new HashMap<>();
+        body.put("eduperson_principal_name", eppn);
+        body.put("schac_home_organization", "mock.idp");
+        body.put("eduperson_affiliation", Arrays.asList("student", "faculty"));
+
+        User user = doRedirect(body);
+        LinkedAccount linkedAccount = user.getLinkedAccounts().get(0);
+        assertEquals(Arrays.asList("student", "faculty"), linkedAccount.getEduPersonAffiliations());
     }
 
     @Test
@@ -102,8 +122,7 @@ public class AccountLinkerControllerTest extends AbstractIntegrationTest {
                 .getHeader("Location");
         assertTrue(location.startsWith("http://localhost:8081/saml/guest-idp/magic?h="));
 
-        User user = userRepository.findOneUserByEmailIgnoreCase("mdoe@example.com");
-        return user;
+        return userRepository.findOneUserByEmailIgnoreCase("mdoe@example.com");
     }
 
     @Test

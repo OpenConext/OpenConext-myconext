@@ -20,6 +20,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
+import org.springframework.util.CollectionUtils;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.util.StringUtils;
@@ -156,6 +157,7 @@ public class AccountLinkerController {
         return doRedirect(code, userId, this.idpFlowRedirectUri, location, validateNames);
     }
 
+    @SuppressWarnings("unchecked")
     private ResponseEntity doRedirect(@RequestParam("code") String code, String userId, String oidcRedirectUri,
                                       String clientRedirectUri, boolean validateNames) {
         HttpHeaders headers = new HttpHeaders();
@@ -192,6 +194,9 @@ public class AccountLinkerController {
 
         String institutionIdentifier = StringUtils.hasText(surfCrmId) ? surfCrmId : schacHomeOrganization;
 
+        List<String> eduPersonAffiliations = (List<String>) body.get("eduperson_affiliation");
+        List<String> affiliations = CollectionUtils.isEmpty(eduPersonAffiliations) ? Arrays.asList("affiliate") : eduPersonAffiliations;
+
         User user = userRepository.findById(userId)
                 .orElseThrow(UserNotFoundException::new);
 
@@ -203,14 +208,15 @@ public class AccountLinkerController {
                     .filter(linkedAccount -> linkedAccount.getInstitutionIdentifier().equals(surfCrmId) ||
                             linkedAccount.getInstitutionIdentifier().equals(schacHomeOrganization))
                     .findFirst()
-                    .map(linkedAccount -> linkedAccount.updateExpiresIn(institutionIdentifier, expiresAt))
+                    .map(linkedAccount -> linkedAccount.updateExpiresIn(institutionIdentifier, affiliations, expiresAt))
                     .orElse(linkedAccounts.add(
-                            new LinkedAccount(institutionIdentifier, schacHomeOrganization, eppn, givenName, familyName, new Date(), expiresAt)));
+                            new LinkedAccount(institutionIdentifier, schacHomeOrganization, eppn, givenName, familyName, affiliations,
+                                    new Date(), expiresAt)));
             String action = newLinkedAccountAdded ? "created" : "updated";
             String eppnValue = StringUtils.hasText(eppn) ? String.format("eppn %s", eppn) : "NO eppn";
 
-            LOG.info("An account link has been {} for User {} with {} to institution {}",
-                    action, user.getEmail(), eppnValue, institutionIdentifier);
+            LOG.info("An account link has been {} for User {} with {} to institution {} with the affiliations {}",
+                    action, user.getEmail(), eppnValue, institutionIdentifier, affiliations);
 
             userRepository.save(user);
         } else {

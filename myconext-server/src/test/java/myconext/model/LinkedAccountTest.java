@@ -3,6 +3,7 @@ package myconext.model;
 import org.junit.Test;
 
 import java.time.temporal.ChronoUnit;
+import java.util.Arrays;
 import java.util.Date;
 
 import static org.junit.Assert.assertFalse;
@@ -21,6 +22,6 @@ public class LinkedAccountTest {
 
     public static LinkedAccount linkedAccount(String givenName, String familyName, Date createdAt) {
         return new LinkedAccount("id", "schac", "eppn",
-                givenName, familyName, createdAt, Date.from(createdAt.toInstant().plus(90, ChronoUnit.DAYS)));
+                givenName, familyName, Arrays.asList("student"), createdAt, Date.from(createdAt.toInstant().plus(90, ChronoUnit.DAYS)));
     }
 }

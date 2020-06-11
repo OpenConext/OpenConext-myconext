@@ -85,3 +85,8 @@ cloc --read-lang-def=cloc_definitions.txt --vcs=git
 ### [Migration](#migration)
 
 [Migrate your account](https://login.test2.eduid.nl/migration)
+
+### [Attribute Manipulation](#attribue-manipulation)
+```
+curl -u oidcng:secret "http://login.test2.eduid.nl/myconext/api/attribute-manipulation?sp_entity_id=https://test.okke&uid=0eaa7fb2-4f94-476f-b3f6-c8dfc4115a87&sp_institution_guid=null"
+```
