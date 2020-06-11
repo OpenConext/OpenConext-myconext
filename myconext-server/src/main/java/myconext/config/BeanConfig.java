@@ -34,6 +34,7 @@ public class BeanConfig extends SamlIdentityProviderServerBeanConfiguration {
                       @Value("${email.magic-link-url}") String magicLinkUrl,
                       @Value("${account_linking_context_class_ref.linked_institution}") String linkedInstitution,
                       @Value("${account_linking_context_class_ref.validate_names}") String validateNames,
+                      @Value("${account_linking_context_class_ref.affiliation_student}") String affiliationStudent,
                       AuthenticationRequestRepository authenticationRequestRepository,
                       UserRepository userRepository,
                       MailBox mailBox,
@@ -48,7 +49,7 @@ public class BeanConfig extends SamlIdentityProviderServerBeanConfiguration {
         this.mailBox = mailBox;
         this.serviceNameResolver = serviceNameResolver;
 
-        ACR.initialize(linkedInstitution, validateNames);
+        ACR.initialize(linkedInstitution, validateNames, affiliationStudent);
     }
 
     private ImmutableSamlConfigurationRepository immutableSamlConfigurationRepository;

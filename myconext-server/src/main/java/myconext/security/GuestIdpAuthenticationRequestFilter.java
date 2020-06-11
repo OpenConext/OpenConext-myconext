@@ -45,14 +45,12 @@ import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import static java.util.function.Function.identity;
 import static myconext.security.CookieResolver.cookieByName;
@@ -97,7 +95,7 @@ public class GuestIdpAuthenticationRequestFilter extends IdpAuthenticationReques
         this.serviceNameResolver = serviceNameResolver;
         this.authenticationRequestRepository = authenticationRequestRepository;
         this.userRepository = userRepository;
-        this.accountLinkingContextClassReferences = Arrays.asList(ACR.VALIDATE_NAMES, ACR.LINKED_INSTITUTION);
+        this.accountLinkingContextClassReferences = ACR.all();
         this.rememberMeMaxAge = rememberMeMaxAge;
         this.secureCookie = secureCookie;
         this.magicLinkUrl = magicLinkUrl;
@@ -133,9 +131,9 @@ public class GuestIdpAuthenticationRequestFilter extends IdpAuthenticationReques
 
         String requesterEntityId = requesterId(authenticationRequest);
         String issuer = authenticationRequest.getIssuer().getValue();
-        List<String> authenticationContextClassReferenceValues = getAuthenticationContextClassReferenceValue(authenticationRequest);
 
-        boolean accountLinkingRequired = isAccountLinkingRequired(authenticationContextClassReferenceValues);
+        String authenticationContextClassReferenceValue = getAuthenticationContextClassReferenceValue(authenticationRequest);
+        boolean accountLinkingRequired = this.accountLinkingContextClassReferences.contains(authenticationContextClassReferenceValue);
 
         SamlAuthenticationRequest samlAuthenticationRequest = new SamlAuthenticationRequest(
                 authenticationRequest.getId(),
@@ -144,8 +142,7 @@ public class GuestIdpAuthenticationRequestFilter extends IdpAuthenticationReques
                 relayState,
                 StringUtils.hasText(requesterEntityId) ? requesterEntityId : "",
                 accountLinkingRequired,
-                authenticationContextClassReferenceValues.stream()
-                        .filter(val -> this.accountLinkingContextClassReferences.contains(val)).findFirst().orElse(null)
+                authenticationContextClassReferenceValue
         );
 
         // Use the returned instance for further operations as the save operation has added the _id
@@ -161,7 +158,8 @@ public class GuestIdpAuthenticationRequestFilter extends IdpAuthenticationReques
         String encodedServiceName = URLEncoder.encode(serviceNameResolver.resolve(requesterEntityId), "UTF-8");
 
         if (previousAuthenticatedUser != null && !authenticationRequest.isForceAuth()) {
-            if (accountLinkingRequired && !isUserVerifiedByInstitution(previousAuthenticatedUser)) {
+            if (accountLinkingRequired && !isUserVerifiedByInstitution(previousAuthenticatedUser,
+                    authenticationContextClassReferenceValue)) {
                 response.sendRedirect(this.redirectUrl + "/stepup/" + samlAuthenticationRequest.getId() + "?name=" + encodedServiceName + "&existing=true");
             } else {
                 ServiceProviderMetadata serviceProviderMetadata = provider.getRemoteProvider(samlAuthenticationRequest.getIssuer());
@@ -177,21 +175,29 @@ public class GuestIdpAuthenticationRequestFilter extends IdpAuthenticationReques
         }
     }
 
-    private boolean isAccountLinkingRequired(List<String> authenticationContextClassReferenceValues) {
-        return authenticationContextClassReferenceValues.stream().anyMatch(ref -> this.accountLinkingContextClassReferences.contains(ref));
-    }
-
-    public static boolean isUserVerifiedByInstitution(User user) {
+    public static boolean isUserVerifiedByInstitution(User user, String authenticationContextClassReferenceValue) {
         Date now = new Date();
         List<LinkedAccount> linkedAccounts = user.getLinkedAccounts();
-        return !CollectionUtils.isEmpty(linkedAccounts) &&
-                linkedAccounts.stream().allMatch(linkedAccount -> now.toInstant().isBefore(linkedAccount.getExpiresAt().toInstant()));
+        if (CollectionUtils.isEmpty(linkedAccounts)) {
+            return false;
+        }
+        boolean atLeastOneNotExpired = linkedAccounts.stream()
+                .anyMatch(linkedAccount -> now.toInstant().isBefore(linkedAccount.getExpiresAt().toInstant()));
+        boolean hasRequiredStudentAffiliation = !ACR.AFFILIATION_STUDENT.equals(authenticationContextClassReferenceValue) ||
+                linkedAccounts.stream()
+                        .anyMatch(linkedAccount ->
+                                linkedAccount.getEduPersonAffiliations().stream()
+                                        .anyMatch(affiliation -> affiliation.startsWith("student")));
+        return atLeastOneNotExpired && hasRequiredStudentAffiliation;
     }
 
-    private List<String> getAuthenticationContextClassReferenceValue(AuthenticationRequest authenticationRequest) {
+    private String getAuthenticationContextClassReferenceValue(AuthenticationRequest authenticationRequest) {
         List<AuthenticationContextClassReference> authenticationContextClassReferences = authenticationRequest.getAuthenticationContextClassReferences();
-        return CollectionUtils.isEmpty(authenticationContextClassReferences) ? Collections.emptyList() :
-                authenticationContextClassReferences.stream().map(ref -> ref.getValue()).collect(Collectors.toList());
+        return CollectionUtils.isEmpty(authenticationContextClassReferences) ? null :
+                authenticationContextClassReferences.stream()
+                        .map(ref -> ref.getValue())
+                        .findAny()
+                        .orElse(null);
     }
 
     private Optional<User> userFromCookie(Cookie remembered) {
@@ -243,7 +249,8 @@ public class GuestIdpAuthenticationRequestFilter extends IdpAuthenticationReques
                 .orElseThrow(UserNotFoundException::new);
 
         boolean accountLinkingRequired = samlAuthenticationRequest.isAccountLinkingRequired() &&
-                !GuestIdpAuthenticationRequestFilter.isUserVerifiedByInstitution(user);
+                !GuestIdpAuthenticationRequestFilter.isUserVerifiedByInstitution(user,
+                        samlAuthenticationRequest.getAuthenticationContextClassReference());
 
         String charSet = Charset.defaultCharset().name();
         String encodedServiceName = URLEncoder.encode(serviceNameResolver.resolve(samlAuthenticationRequest.getRequesterEntityId()), charSet);

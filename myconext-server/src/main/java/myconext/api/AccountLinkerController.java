@@ -35,7 +35,6 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import java.net.URI;
 import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
@@ -138,7 +137,8 @@ public class AccountLinkerController {
         if (!previousState.equals(state)) {
             throw new ForbiddenException();
         }
-        return doRedirect(code, user.getId(), this.spFlowRedirectUri, this.spRedirectUrl + "/institutions", false);
+        return doRedirect(code, user.getId(), this.spFlowRedirectUri, this.spRedirectUrl + "/institutions",
+                false, false);
     }
 
     @GetMapping("/idp/oidc/redirect")
@@ -149,17 +149,19 @@ public class AccountLinkerController {
         }
         SamlAuthenticationRequest samlAuthenticationRequest = optionalSamlAuthenticationRequest.get();
         String userId = samlAuthenticationRequest.getUserId();
+
         boolean validateNames = ACR.VALIDATE_NAMES.equals(samlAuthenticationRequest.getAuthenticationContextClassReference());
+        boolean studentAffiliationRequired = ACR.AFFILIATION_STUDENT.equals(samlAuthenticationRequest.getAuthenticationContextClassReference());
 
         LOG.info("In IdP redirect for link account flow for user " + userId);
 
         String location = this.magicLinkUrl + "?h=" + samlAuthenticationRequest.getHash();
-        return doRedirect(code, userId, this.idpFlowRedirectUri, location, validateNames);
+        return doRedirect(code, userId, this.idpFlowRedirectUri, location, validateNames, studentAffiliationRequired);
     }
 
     @SuppressWarnings("unchecked")
     private ResponseEntity doRedirect(@RequestParam("code") String code, String userId, String oidcRedirectUri,
-                                      String clientRedirectUri, boolean validateNames) {
+                                      String clientRedirectUri, boolean validateNames, boolean studentAffiliationRequired) {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
         headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
@@ -221,6 +223,15 @@ public class AccountLinkerController {
             userRepository.save(user);
         } else {
             LOG.error(String.format("User %s has linked his account, but no institutional identifier or EPPN was provided by the IdP", user.getEmail()));
+        }
+        boolean hasStudentAffiliation = user.getLinkedAccounts().stream()
+                .anyMatch(linkedAccount ->
+                        (CollectionUtils.isEmpty(linkedAccount.getEduPersonAffiliations()) ? Collections.<String>emptyList() :linkedAccount.getEduPersonAffiliations())
+                        .stream()
+                                .anyMatch(affiliation -> affiliation.startsWith("student")));
+        if (studentAffiliationRequired && !hasStudentAffiliation) {
+            //TODO custom feedback page in IdP domain that the account linking was successful, but required affiliations are missing
+
         }
 
         return ResponseEntity.status(HttpStatus.FOUND).location(URI.create(clientRedirectUri)).build();
