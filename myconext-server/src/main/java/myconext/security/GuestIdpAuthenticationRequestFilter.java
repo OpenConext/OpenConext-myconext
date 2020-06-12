@@ -5,6 +5,7 @@ import myconext.mail.MailBox;
 import myconext.manage.ServiceNameResolver;
 import myconext.model.LinkedAccount;
 import myconext.model.SamlAuthenticationRequest;
+import myconext.model.StepUpStatus;
 import myconext.model.User;
 import myconext.repository.AuthenticationRequestRepository;
 import myconext.repository.UserRepository;
@@ -45,6 +46,7 @@ import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -132,8 +134,9 @@ public class GuestIdpAuthenticationRequestFilter extends IdpAuthenticationReques
         String requesterEntityId = requesterId(authenticationRequest);
         String issuer = authenticationRequest.getIssuer().getValue();
 
-        String authenticationContextClassReferenceValue = getAuthenticationContextClassReferenceValue(authenticationRequest);
-        boolean accountLinkingRequired = this.accountLinkingContextClassReferences.contains(authenticationContextClassReferenceValue);
+        List<String> authenticationContextClassReferenceValues = getAuthenticationContextClassReferenceValues(authenticationRequest);
+        boolean accountLinkingRequired =
+                this.accountLinkingContextClassReferences.stream().anyMatch(s -> authenticationContextClassReferenceValues.contains(s));
 
         SamlAuthenticationRequest samlAuthenticationRequest = new SamlAuthenticationRequest(
                 authenticationRequest.getId(),
@@ -142,7 +145,7 @@ public class GuestIdpAuthenticationRequestFilter extends IdpAuthenticationReques
                 relayState,
                 StringUtils.hasText(requesterEntityId) ? requesterEntityId : "",
                 accountLinkingRequired,
-                authenticationContextClassReferenceValue
+                authenticationContextClassReferenceValues
         );
 
         // Use the returned instance for further operations as the save operation has added the _id
@@ -159,7 +162,7 @@ public class GuestIdpAuthenticationRequestFilter extends IdpAuthenticationReques
 
         if (previousAuthenticatedUser != null && !authenticationRequest.isForceAuth()) {
             if (accountLinkingRequired && !isUserVerifiedByInstitution(previousAuthenticatedUser,
-                    authenticationContextClassReferenceValue)) {
+                    authenticationContextClassReferenceValues)) {
                 response.sendRedirect(this.redirectUrl + "/stepup/" + samlAuthenticationRequest.getId() + "?name=" + encodedServiceName + "&existing=true");
             } else {
                 ServiceProviderMetadata serviceProviderMetadata = provider.getRemoteProvider(samlAuthenticationRequest.getIssuer());
@@ -175,7 +178,10 @@ public class GuestIdpAuthenticationRequestFilter extends IdpAuthenticationReques
         }
     }
 
-    public static boolean isUserVerifiedByInstitution(User user, String authenticationContextClassReferenceValue) {
+    public static boolean isUserVerifiedByInstitution(User user, List<String> authenticationContextClassReferenceValues) {
+        if (CollectionUtils.isEmpty(authenticationContextClassReferenceValues)) {
+            return true;
+        }
         Date now = new Date();
         List<LinkedAccount> linkedAccounts = user.getLinkedAccounts();
         if (CollectionUtils.isEmpty(linkedAccounts)) {
@@ -183,7 +189,7 @@ public class GuestIdpAuthenticationRequestFilter extends IdpAuthenticationReques
         }
         boolean atLeastOneNotExpired = linkedAccounts.stream()
                 .anyMatch(linkedAccount -> now.toInstant().isBefore(linkedAccount.getExpiresAt().toInstant()));
-        boolean hasRequiredStudentAffiliation = !ACR.AFFILIATION_STUDENT.equals(authenticationContextClassReferenceValue) ||
+        boolean hasRequiredStudentAffiliation = !authenticationContextClassReferenceValues.contains(ACR.AFFILIATION_STUDENT) ||
                 linkedAccounts.stream()
                         .anyMatch(linkedAccount ->
                                 linkedAccount.getEduPersonAffiliations().stream()
@@ -191,13 +197,14 @@ public class GuestIdpAuthenticationRequestFilter extends IdpAuthenticationReques
         return atLeastOneNotExpired && hasRequiredStudentAffiliation;
     }
 
-    private String getAuthenticationContextClassReferenceValue(AuthenticationRequest authenticationRequest) {
+    private List<String> getAuthenticationContextClassReferenceValues(AuthenticationRequest authenticationRequest) {
         List<AuthenticationContextClassReference> authenticationContextClassReferences = authenticationRequest.getAuthenticationContextClassReferences();
-        return CollectionUtils.isEmpty(authenticationContextClassReferences) ? null :
-                authenticationContextClassReferences.stream()
-                        .map(ref -> ref.getValue())
-                        .findAny()
-                        .orElse(null);
+        if (authenticationContextClassReferences == null) {
+            return Collections.emptyList();
+        }
+        return authenticationContextClassReferences.stream()
+                .map(ref -> ref.getValue())
+                .collect(Collectors.toList());
     }
 
     private Optional<User> userFromCookie(Cookie remembered) {
@@ -250,15 +257,17 @@ public class GuestIdpAuthenticationRequestFilter extends IdpAuthenticationReques
 
         boolean accountLinkingRequired = samlAuthenticationRequest.isAccountLinkingRequired() &&
                 !GuestIdpAuthenticationRequestFilter.isUserVerifiedByInstitution(user,
-                        samlAuthenticationRequest.getAuthenticationContextClassReference());
+                        samlAuthenticationRequest.getAuthenticationContextClassReferences());
 
         String charSet = Charset.defaultCharset().name();
         String encodedServiceName = URLEncoder.encode(serviceNameResolver.resolve(samlAuthenticationRequest.getRequesterEntityId()), charSet);
-        if (accountLinkingRequired) {
+        if (accountLinkingRequired && StepUpStatus.NONE.equals(samlAuthenticationRequest.getSteppedUp())) {
             response.sendRedirect(this.redirectUrl + "/stepup/" + samlAuthenticationRequest.getId()
                     + "?name=" + encodedServiceName + "&existing=true");
             return;
         }
+
+        boolean inStepUpFlow = StepUpStatus.IN_STEP_UP.equals(samlAuthenticationRequest.getSteppedUp());
 
         if (user.isNewUser()) {
             user.setNewUser(false);
@@ -271,8 +280,19 @@ public class GuestIdpAuthenticationRequestFilter extends IdpAuthenticationReques
             response.sendRedirect(this.redirectUrl + "/confirm?h=" + hash +
                     "&redirect=" + URLEncoder.encode(this.magicLinkUrl, charSet) +
                     "&email=" + URLEncoder.encode(user.getEmail(), charSet) +
-                    "&name=" + URLEncoder.encode(serviceNameResolver.resolve(samlAuthenticationRequest.getRequesterEntityId()), charSet));
+                    "&name=" + URLEncoder.encode(serviceNameResolver.resolve(samlAuthenticationRequest.getRequesterEntityId()), charSet) +
+                    "&stepupFlow=" + !StepUpStatus.NONE.equals(samlAuthenticationRequest.getSteppedUp()));
+            if (inStepUpFlow) {
+                finishStepUp(samlAuthenticationRequest);
+            }
             return;
+        } else if (inStepUpFlow) {
+            response.sendRedirect(this.redirectUrl + "/confirm-stepup?h=" + hash +
+                    "&redirect=" + URLEncoder.encode(this.magicLinkUrl, charSet) +
+                    "&name=" + URLEncoder.encode(serviceNameResolver.resolve(samlAuthenticationRequest.getRequesterEntityId()), charSet));
+            finishStepUp(samlAuthenticationRequest);
+            return;
+
         }
         //ensure the magic link can't be used twice
         samlAuthenticationRequest.setHash(null);
@@ -301,6 +321,11 @@ public class GuestIdpAuthenticationRequestFilter extends IdpAuthenticationReques
                 serviceProviderMetadata, authenticationRequest);
     }
 
+    private void finishStepUp(SamlAuthenticationRequest samlAuthenticationRequest) {
+        samlAuthenticationRequest.setSteppedUp(StepUpStatus.FINISHED_STEP_UP);
+        authenticationRequestRepository.save(samlAuthenticationRequest);
+    }
+
     private void addRememberMeCookie(HttpServletResponse response, SamlAuthenticationRequest samlAuthenticationRequest) {
         Cookie cookie = new Cookie(GUEST_IDP_REMEMBER_ME_COOKIE_NAME, samlAuthenticationRequest.getRememberMeValue());
         cookie.setMaxAge(rememberMeMaxAge);
@@ -317,15 +342,19 @@ public class GuestIdpAuthenticationRequestFilter extends IdpAuthenticationReques
         Assertion assertion = provider.assertion(
                 serviceProviderMetadata, authenticationRequest, user.getUid(), NameId.PERSISTENT);
 
-        String authenticationContextClassReference = samlAuthenticationRequest.getAuthenticationContextClassReference();
-        attributes(user, requesterEntityId, authenticationContextClassReference).forEach(assertion::addAttribute);
+        List<String> authenticationContextClassReferences = samlAuthenticationRequest.getAuthenticationContextClassReferences();
+        attributes(user, requesterEntityId, authenticationContextClassReferences).forEach(assertion::addAttribute);
 
         Response samlResponse = provider.response(authenticationRequest, assertion, serviceProviderMetadata);
 
         if (samlAuthenticationRequest.isAccountLinkingRequired()) {
+            boolean studentAffiliationPresent = authenticationContextClassReferences.contains(ACR.AFFILIATION_STUDENT) &&
+                    user.allEduPersonAffiliations().stream().anyMatch(affiliation -> affiliation.startsWith("student"));
+            //We can't change the status of the response as EB stops the flow if status is not success
             samlResponse.getAssertions().get(0).getAuthenticationStatements().get(0)
                     .getAuthenticationContext()
-                    .setClassReference(AuthenticationContextClassReference.fromUrn(authenticationContextClassReference));
+                    .setClassReference(AuthenticationContextClassReference
+                            .fromUrn(ACR.selectACR(authenticationContextClassReferences, studentAffiliationPresent)));
         }
 
         Endpoint acsUrl = provider.getPreferredEndpoint(
@@ -343,14 +372,17 @@ public class GuestIdpAuthenticationRequestFilter extends IdpAuthenticationReques
         processHtml(request, response, getPostBindingTemplate(), model);
     }
 
-    private List<Attribute> attributes(User user, String requesterEntityId, String authenticationContextClassReference) {
+    private List<Attribute> attributes(User user, String requesterEntityId, List<String> authenticationContextClassReferences) {
         List<LinkedAccount> linkedAccounts = safeSortedAffiliations(user);
         String givenName = user.getGivenName();
         String familyName = user.getFamilyName();
 
-        if (ACR.VALIDATE_NAMES.equals(authenticationContextClassReference) && !CollectionUtils.isEmpty(linkedAccounts)) {
-            LinkedAccount linkedAccount = linkedAccounts.get(0);
-            if (linkedAccount.areNamesValidated()) {
+        if (authenticationContextClassReferences.contains(ACR.VALIDATE_NAMES) && !CollectionUtils.isEmpty(linkedAccounts)) {
+            Optional<LinkedAccount> first = linkedAccounts.stream()
+                    .filter(LinkedAccount::areNamesValidated).findFirst();
+            //Can't use non-final variables in lambda
+            if (first.isPresent()) {
+                LinkedAccount linkedAccount = first.get();
                 givenName = linkedAccount.getGivenName();
                 familyName = linkedAccount.getFamilyName();
             }

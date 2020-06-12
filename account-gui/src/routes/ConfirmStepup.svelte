@@ -6,13 +6,10 @@
 
     let email = null;
     let serviceName = null;
-    let stepupFlow = false;
 
     onMount(() => {
         const urlSearchParams = new URLSearchParams(window.location.search);
-        email = decodeURIComponent(urlSearchParams.get("email"));
         serviceName = decodeURIComponent(urlSearchParams.get("name"));
-        stepupFlow = "true" === urlSearchParams.get("stepupFlow");
     });
 
     const proceed = () => {
@@ -43,8 +40,8 @@
 </style>
 <div class="home">
     <div class="card">
-        <h2>{I18n.ts("confirm.header")}</h2>
-        <p class="info">{stepupFlow ? I18n.ts("confirm.thanksStepup") : I18n.ts("confirm.thanks")}</p>
+        <h2>{I18n.ts("confirmStepup.header")}</h2>
+        <p class="info">{I18n.ts("confirmStepup.thanks")}</p>
         <Button href="/proceed" onClick={proceed}
                 className="full"
                 label={serviceName}/>

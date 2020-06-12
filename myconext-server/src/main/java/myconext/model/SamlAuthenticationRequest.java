@@ -7,6 +7,7 @@ import org.springframework.data.annotation.Transient;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.security.saml.saml2.authentication.AuthenticationContextClassReference;
 import org.springframework.util.Assert;
+import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
 import java.time.LocalDateTime;
@@ -41,7 +42,7 @@ public class SamlAuthenticationRequest {
 
     private boolean accountLinkingRequired;
 
-    private String authenticationContextClassReference;
+    private List<String> authenticationContextClassReferences;
 
     private boolean passwordOrWebAuthnFlow;
 
@@ -49,10 +50,12 @@ public class SamlAuthenticationRequest {
 
     private String rememberMeValue;
 
+    private StepUpStatus steppedUp = StepUpStatus.NONE;
+
     public SamlAuthenticationRequest(String requestId, String issuer, String consumerAssertionServiceURL,
                                      String relayState, String requesterEntityId,
                                      boolean accountLinkingRequired,
-                                     String authenticationContextClassReference) {
+                                     List<String> authenticationContextClassReferences) {
         this.id = UUID.randomUUID().toString();
         this.requestId = requestId;
         this.issuer = issuer;
@@ -61,13 +64,13 @@ public class SamlAuthenticationRequest {
         this.expiresIn = Date.from(LocalDateTime.now().plusHours(1).atZone(ZoneId.systemDefault()).toInstant());
         this.requesterEntityId = requesterEntityId;
         this.accountLinkingRequired = accountLinkingRequired;
-        this.authenticationContextClassReference = authenticationContextClassReference;
+        this.authenticationContextClassReferences = authenticationContextClassReferences;
         invariant();
     }
 
     @Transient
     private void invariant() {
-        if (this.isAccountLinkingRequired() && StringUtils.isEmpty(this.authenticationContextClassReference)) {
+        if (this.isAccountLinkingRequired() && CollectionUtils.isEmpty(this.authenticationContextClassReferences)) {
             throw new IllegalArgumentException("authenticationContextClassReference is required when account linking is required");
         }
     }
@@ -90,5 +93,9 @@ public class SamlAuthenticationRequest {
 
     public void setPasswordOrWebAuthnFlow(boolean passwordOrWebAuthnFlow) {
         this.passwordOrWebAuthnFlow = passwordOrWebAuthnFlow;
+    }
+
+    public void setSteppedUp(StepUpStatus steppedUp) {
+        this.steppedUp = steppedUp;
     }
 }

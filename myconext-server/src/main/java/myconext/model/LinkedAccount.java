@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import org.springframework.util.StringUtils;
 
 import java.beans.Transient;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -20,15 +21,17 @@ public class LinkedAccount {
     private String eduPersonPrincipalName;
     private String givenName;
     private String familyName;
-    private List<String> eduPersonAffiliations;
+    private List<String> eduPersonAffiliations = new ArrayList<>();
     private Date createdAt;
     private Date expiresAt;
 
     @Transient
     @JsonIgnore
-    public boolean updateExpiresIn(String institutionIdentifier, List<String> eduPersonAffiliations, Date expiresAt) {
+    public boolean updateExpiresIn(String institutionIdentifier, List<String> eduPersonAffiliations, String givenName, String familyName, Date expiresAt) {
         this.institutionIdentifier = institutionIdentifier;
         this.eduPersonAffiliations = eduPersonAffiliations;
+        this.givenName = givenName;
+        this.familyName = familyName;
         this.expiresAt = expiresAt;
         return true;
     }

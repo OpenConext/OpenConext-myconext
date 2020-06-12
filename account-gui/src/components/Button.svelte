@@ -44,6 +44,17 @@
         background-color: #efefef;
     }
 
+    .button.cancel {
+        color: #0077c8;
+        background-color: white;
+        border: 1px solid #0066b8;
+    }
+
+    .button.cancel:hover {
+        color: #0066b8;
+        background-color: whitesmoke;
+    }
+
     .button.full {
         margin-top: 15px;
         margin-left: 0;

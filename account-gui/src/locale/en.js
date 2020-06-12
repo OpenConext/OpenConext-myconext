@@ -54,7 +54,12 @@ I18n.translations.en = {
     },
     confirm: {
         header: "Success!",
-        thanks: "Your eduID account has been created. Proceed to your destination."
+        thanks: "Your eduID account has been created. Proceed to your destination.",
+        thanksStepup: "Your eduID account has been created and successfully linked to your home institution. Proceed to your destination."
+    },
+    confirmStepup: {
+        header: "Success!",
+        thanks: "Your eduID account is successfully linked to your home institution. Proceed to your destination."
     },
     stepup: {
         header: "Almost there!",
@@ -90,6 +95,13 @@ I18n.translations.en = {
         info1: "SURF will phase out the use of Onegini. To retain access, you must migrate your Onegini account to an eduID account.",
         info2: "You only need to click the button and log in with your existing Onegini account once. We will then migrate your account to eduID and send you an email after completion.",
         link: "Start migration"
+    },
+    affiliationMissing: {
+        header: "Account linked, but...",
+        info: "Your eduID is successfully linked, however the institution you choose did not provide you with the correct affiliation",
+        proceed: "You can try to link to another institution or proceed to {{name}}",
+        proceedLink: "Proceed",
+        retryLink: "Retry"
     }
 };
 

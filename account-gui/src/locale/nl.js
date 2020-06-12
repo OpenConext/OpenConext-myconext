@@ -54,7 +54,12 @@ I18n.translations.nl = {
   },
   confirm: {
     header: "Gelukt!",
-    thanks: "Je eduID is geactiveerd. Ga door naar je bestemming."
+    thanks: "Je eduID is geactiveerd. Ga door naar je bestemming.",
+    thanksStepup: "Je eduID is geactiveerd en gekoppeld aan een instelling. Ga door naar je bestemming."
+  },
+  confirmStepup: {
+    header: "Gelukt!",
+    thanks: "Je eduID is nu gekoppeld aan je thuisinstelling. Ga door naar je bestemming."
   },
   stepup: {
     header: "Bijna daar!",
@@ -90,5 +95,12 @@ I18n.translations.nl = {
     info1: "SURF zal het gebruik van Onegini geleidelijk uitfaseren. Om toegang te behouden, moet je je Onegini-account migreren naar eduID.",
     info2: "Je hoeft slechts op de knop te klikken en je één keer aan te melden met je bestaande Onegini account. We maken vervolgens een nieuw eduID aan en sturen je na voltooiing een e-mail.",
     link: "Start migratie"
+  },
+  affiliationMissing: {
+    header: "Account is gekoppeld, maar...",
+    info: "Je eduID is succesvol gekoppeld, maar de instelling die je hebt gekozen heeft niet de juiste attributen teruggegeven",
+    proceed: "Je kan het nogmaals met een andere instelling proberen of doorgaan naar {{name}}",
+    proceedLink: "Doorgaan",
+    retryLink: "Opnieuw proberen"
   }
 };

@@ -5,6 +5,7 @@
     import SessionLost from "./routes/SessionLost.svelte";
     import MagicLink from "./routes/MagicLink.svelte";
     import Confirm from "./routes/Confirm.svelte";
+    import ConfirmStepup from "./routes/ConfirmStepup.svelte";
     import Migration from "./routes/Migration.svelte";
     import LinkExpired from "./routes/LinkExpired.svelte";
     import NotFound from "./routes/NotFound.svelte";
@@ -17,6 +18,7 @@
     import {conf} from "./stores/conf";
     import Loader from "./components/Loader.svelte";
     import Stepup from "./routes/Stepup.svelte";
+    import AffiliationMissing from "./routes/AffiliationMissing.svelte";
 
     export let url = "";
 
@@ -105,7 +107,11 @@
                 <Route path="/stepup/:id" let:params>
                     <Stepup id="{params.id}"></Stepup>
                 </Route>
+                <Route path="/affiliation-missing/:id" let:params>
+                    <AffiliationMissing id="{params.id}"></AffiliationMissing>
+                </Route>
                 <Route path="/confirm" component={Confirm}/>
+                <Route path="/confirm-stepup" component={ConfirmStepup}/>
                 <Route path="/migration" component={Migration}/>
                 <Route path="/session" component={SessionLost}/>
                 <Route path="/expired" component={LinkExpired}/>

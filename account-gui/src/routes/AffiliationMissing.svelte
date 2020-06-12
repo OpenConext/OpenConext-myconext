@@ -4,16 +4,17 @@
     import {conf} from "../stores/conf";
     import Button from "../components/Button.svelte";
 
-    let email = null;
+    export let id;
     let serviceName = null;
-    let stepupFlow = false;
 
     onMount(() => {
         const urlSearchParams = new URLSearchParams(window.location.search);
-        email = decodeURIComponent(urlSearchParams.get("email"));
         serviceName = decodeURIComponent(urlSearchParams.get("name"));
-        stepupFlow = "true" === urlSearchParams.get("stepupFlow");
     });
+
+    const retry = () => {
+        window.location.href = `/myconext/api/idp/oidc/account/${id}?forceAuth=true`;
+    };
 
     const proceed = () => {
         const urlSearchParams = new URLSearchParams(window.location.search);
@@ -25,6 +26,7 @@
             throw new Error("Invalid redirect: " + redirect);
         }
     };
+
 </script>
 
 <style>
@@ -40,13 +42,24 @@
         margin-bottom: 25px;
     }
 
+    div.last {
+        margin-top: 25px;
+    }
+
 </style>
 <div class="home">
     <div class="card">
-        <h2>{I18n.ts("confirm.header")}</h2>
-        <p class="info">{stepupFlow ? I18n.ts("confirm.thanksStepup") : I18n.ts("confirm.thanks")}</p>
+        <h2>{I18n.ts("affiliationMissing.header")}</h2>
+        <p class="info">{I18n.ts("affiliationMissing.info")}</p>
+        <p class="info">{I18n.ts("affiliationMissing.proceed", {name: serviceName})}</p>
+
         <Button href="/proceed" onClick={proceed}
-                className="full"
-                label={serviceName}/>
+                className="cancel"
+                label={I18n.ts("affiliationMissing.proceedLink")}/>
+        <div class="last">
+            <Button href="/retry" onClick={retry}
+                    label={I18n.ts("affiliationMissing.retryLink")}/>
+        </div>
+
     </div>
 </div>

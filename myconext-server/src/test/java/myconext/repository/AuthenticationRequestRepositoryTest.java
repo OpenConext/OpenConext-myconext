@@ -7,6 +7,7 @@ import myconext.security.ACR;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.util.Collections;
 import java.util.Date;
 import java.util.Optional;
 import java.util.UUID;
@@ -21,16 +22,20 @@ public class AuthenticationRequestRepositoryTest extends AbstractIntegrationTest
     @Before
     public void before() throws Exception {
         super.before();
-        SamlAuthenticationRequest req = new SamlAuthenticationRequest(
-                "requestId", "issuer", "consumerAssertionServiceURL", "relayState", "http://mock-sp", false, ACR.LINKED_INSTITUTION);
+        SamlAuthenticationRequest req = samlAuthenticationRequest();
         req.setHash(UUID.randomUUID().toString());
         request = authenticationRequestRepository.save(req);
 
-        SamlAuthenticationRequest reqRememberMe = new SamlAuthenticationRequest(
-                "requestId", "issuer", "consumerAssertionServiceURL", "relayState", "http://mock-sp", false, ACR.LINKED_INSTITUTION);
+        SamlAuthenticationRequest reqRememberMe = samlAuthenticationRequest();
         reqRememberMe.setHash("differentHash");
         reqRememberMe.setRememberMe(true);
         authenticationRequestRepository.save(reqRememberMe);
+    }
+
+    private SamlAuthenticationRequest samlAuthenticationRequest() {
+        return new SamlAuthenticationRequest(
+                "requestId", "issuer", "consumerAssertionServiceURL",
+                "relayState", "http://mock-sp", false, Collections.singletonList(ACR.LINKED_INSTITUTION));
     }
 
     @Test

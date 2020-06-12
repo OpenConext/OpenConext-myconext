@@ -158,6 +158,12 @@ public class User implements Serializable, UserDetails {
         return this.linkedAccounts.stream().sorted(Comparator.comparing(LinkedAccount::getExpiresAt).reversed()).collect(Collectors.toList());
     }
 
+    @Transient
+    @JsonIgnore
+    public List<String> allEduPersonAffiliations() {
+        return linkedAccounts.stream().map(LinkedAccount::getEduPersonAffiliations).flatMap(Collection::stream).collect(Collectors.toList());
+    }
+
     public String getEduPersonPrincipalName() {
         return uid + "@" + schacHomeOrganization;
     }
