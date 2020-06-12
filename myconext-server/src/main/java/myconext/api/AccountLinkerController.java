@@ -117,8 +117,7 @@ public class AccountLinkerController {
 
         LOG.info("Start link account flow for authentication " + user.getEmail());
 
-        String state = UUID.nameUUIDFromBytes(user.getId().getBytes()).toString();
-        UriComponents uriComponents = doStartLinkAccountFlow(state, spFlowRedirectUri, true);
+        UriComponents uriComponents = doStartLinkAccountFlow("state", spFlowRedirectUri, true);
         return ResponseEntity.ok(Collections.singletonMap("url", uriComponents.toUriString()));
     }
 
@@ -141,15 +140,13 @@ public class AccountLinkerController {
 
     @GetMapping("/sp/oidc/redirect")
     public ResponseEntity spFlowRedirect(Authentication authentication, @RequestParam("code") String code, @RequestParam("state") String state) {
-        User user = (User) authentication.getPrincipal();
+        User principal = (User) authentication.getPrincipal();
+        User user = userRepository.findById(principal.getId()).orElseThrow(UserNotFoundException::new);
+
 
         LOG.info("In SP redirect for link account flow for authentication " + user.getEmail());
 
-        String previousState = UUID.nameUUIDFromBytes(user.getId().getBytes()).toString();
-        if (!previousState.equals(state)) {
-            throw new ForbiddenException();
-        }
-        return doRedirect(code, user.getId(), this.spFlowRedirectUri, this.spRedirectUrl + "/institutions",
+        return doRedirect(code, user, this.spFlowRedirectUri, this.spRedirectUrl + "/institutions",
                 false, false, null);
     }
 
@@ -160,12 +157,12 @@ public class AccountLinkerController {
             return ResponseEntity.status(HttpStatus.FOUND).location(URI.create(this.idpErrorRedirectUrl + "/expired")).build();
         }
         SamlAuthenticationRequest samlAuthenticationRequest = optionalSamlAuthenticationRequest.get();
-        String userId = samlAuthenticationRequest.getUserId();
+        User user = userRepository.findById(samlAuthenticationRequest.getUserId()).orElseThrow(UserNotFoundException::new);
 
         boolean validateNames = samlAuthenticationRequest.getAuthenticationContextClassReferences().contains(ACR.VALIDATE_NAMES);
         boolean studentAffiliationRequired = samlAuthenticationRequest.getAuthenticationContextClassReferences().contains(ACR.AFFILIATION_STUDENT);
 
-        LOG.info("In IdP redirect for link account flow for user " + userId);
+        LOG.info("In IdP redirect for link account flow for user " + user);
 
         String location = this.magicLinkUrl + "?h=" + samlAuthenticationRequest.getHash();
 
@@ -178,7 +175,7 @@ public class AccountLinkerController {
                 "&redirect=" + URLEncoder.encode(this.magicLinkUrl, charSet) +
                 "&name=" + URLEncoder.encode(serviceName, charSet);
 
-        ResponseEntity redirect = doRedirect(code, userId, this.idpFlowRedirectUri, location, validateNames, studentAffiliationRequired,
+        ResponseEntity redirect = doRedirect(code, user, this.idpFlowRedirectUri, location, validateNames, studentAffiliationRequired,
                 idpStudentAffiliationRequiredUri);
         StepUpStatus stepUpStatus = redirect.getHeaders().getLocation()
                 .toString().contains("affiliation-missing") ? StepUpStatus.MISSING_AFFILIATION : StepUpStatus.IN_STEP_UP;
@@ -188,7 +185,7 @@ public class AccountLinkerController {
     }
 
     @SuppressWarnings("unchecked")
-    private ResponseEntity doRedirect(@RequestParam("code") String code, String userId, String oidcRedirectUri,
+    private ResponseEntity doRedirect(@RequestParam("code") String code, User user, String oidcRedirectUri,
                                       String clientRedirectUri, boolean validateNames, boolean studentAffiliationRequired,
                                       String idpStudentAffiliationRequiredUri) {
         HttpHeaders headers = new HttpHeaders();
@@ -227,9 +224,6 @@ public class AccountLinkerController {
 
         List<String> eduPersonAffiliations = (List<String>) body.get("eduperson_affiliation");
         List<String> affiliations = CollectionUtils.isEmpty(eduPersonAffiliations) ? Arrays.asList("affiliate") : eduPersonAffiliations;
-
-        User user = userRepository.findById(userId)
-                .orElseThrow(UserNotFoundException::new);
 
         if (StringUtils.hasText(eppn) && StringUtils.hasText(institutionIdentifier)) {
             Date expiresAt = Date.from(new Date().toInstant()

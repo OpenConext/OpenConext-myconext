@@ -3,6 +3,7 @@ package myconext.api;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.github.tomakehurst.wiremock.junit.WireMockRule;
 import io.restassured.http.ContentType;
+import io.restassured.response.Response;
 import myconext.AbstractIntegrationTest;
 import myconext.model.LinkedAccount;
 import myconext.model.MagicLinkRequest;
@@ -71,8 +72,10 @@ public class AccountLinkerControllerTest extends AbstractIntegrationTest {
 
         User user = doRedirect(body);
         LinkedAccount linkedAccount = user.getLinkedAccounts().get(0);
+
         assertEquals(eppn, linkedAccount.getEduPersonPrincipalName());
         assertEquals(eppn, linkedAccount.getInstitutionIdentifier(), "mock.idp");
+
         //second time the institution identifier is updated from the surf-crm-id
         body.put("surf-crm-id", "12345678");
         user = doRedirect(body);
@@ -80,6 +83,36 @@ public class AccountLinkerControllerTest extends AbstractIntegrationTest {
 
         assertEquals(linkedAccount.getInstitutionIdentifier(), "12345678");
         assertEquals("affiliate", linkedAccount.getEduPersonAffiliations().get(0));
+    }
+
+    @Test
+    public void redirectWithValidateNames() throws IOException {
+        Map<Object, Object> body = new HashMap<>();
+        body.put("eduperson_principal_name", "some@institute.nl");
+        body.put("schac_home_organization", "mock.idp");
+        body.put("given_name", "Roger");
+        body.put("family_name", "Johnson");
+
+        String authnContext = readFile("request_authn_context_validated_name.xml");
+
+        User user = doRedirect(body, authnContext, "http://localhost:8081/saml/guest-idp/magic?h");
+        LinkedAccount linkedAccount = user.getLinkedAccounts().get(0);
+
+        assertEquals("Roger", linkedAccount.getGivenName());
+        assertEquals("Johnson", linkedAccount.getFamilyName());
+    }
+
+    @Test
+    public void redirectWithAffiliationStudent() throws IOException {
+        Map<Object, Object> body = new HashMap<>();
+        body.put("eduperson_principal_name", "some@institute.nl");
+        body.put("schac_home_organization", "mock.idp");
+        body.put("given_name", "Roger");
+        body.put("family_name", "Johnson");
+
+        String authnContext = readFile("request_authn_context_affiliation_student.xml");
+
+        doRedirect(body, authnContext, "http://localhost:3000/affiliation-missing");
     }
 
     @Test
@@ -104,6 +137,17 @@ public class AccountLinkerControllerTest extends AbstractIntegrationTest {
 
     private User doRedirect(Map<Object, Object> userInfo) throws IOException {
         String authenticationRequestId = samlAuthnRequest();
+        return doRedirectResult(userInfo, authenticationRequestId,
+                "http://localhost:8081/saml/guest-idp/magic?h=");
+    }
+
+    private User doRedirect(Map<Object, Object> userInfo, String loaContext, String expectedLocation) throws IOException {
+        Response response = samlAuthnRequestResponseWithLoa(null, null, loaContext);
+        String authenticationRequestId = extractAuthenticationRequestIdFromAuthnResponse(response);
+        return doRedirectResult(userInfo, authenticationRequestId, expectedLocation);
+    }
+
+    private User doRedirectResult(Map<Object, Object> userInfo, String authenticationRequestId, String expectedLocation) throws JsonProcessingException {
         //This ensures the user is tied to the authnRequest
         given().when()
                 .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
@@ -120,7 +164,7 @@ public class AccountLinkerControllerTest extends AbstractIntegrationTest {
                 .contentType(ContentType.JSON)
                 .get("/myconext/api/idp/oidc/redirect")
                 .getHeader("Location");
-        assertTrue(location.startsWith("http://localhost:8081/saml/guest-idp/magic?h="));
+        assertTrue(location, location.startsWith(expectedLocation));
 
         return userRepository.findOneUserByEmailIgnoreCase("mdoe@example.com");
     }
@@ -150,7 +194,7 @@ public class AccountLinkerControllerTest extends AbstractIntegrationTest {
                         "scope=openid&" +
                         "response_type=code&" +
                         "redirect_uri=http://localhost:8081/myconext/api/sp/oidc/redirect" +
-                        "&state=" + UUID.nameUUIDFromBytes(user.getId().getBytes()).toString() +
+                        "&state=state" +
                         "&prompt=login" +
                         "&client_id=myconext.rp.localhost");
     }
