@@ -151,6 +151,7 @@ public class AccountLinkerControllerTest extends AbstractIntegrationTest {
                         "response_type=code&" +
                         "redirect_uri=http://localhost:8081/myconext/api/sp/oidc/redirect" +
                         "&state=" + UUID.nameUUIDFromBytes(user.getId().getBytes()).toString() +
+                        "&prompt=login" +
                         "&client_id=myconext.rp.localhost");
     }
 

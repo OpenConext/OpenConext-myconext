@@ -179,14 +179,13 @@ public class GuestIdpAuthenticationRequestFilter extends IdpAuthenticationReques
     }
 
     public static boolean isUserVerifiedByInstitution(User user, List<String> authenticationContextClassReferenceValues) {
-        if (CollectionUtils.isEmpty(authenticationContextClassReferenceValues)) {
-            return true;
-        }
         Date now = new Date();
         List<LinkedAccount> linkedAccounts = user.getLinkedAccounts();
         if (CollectionUtils.isEmpty(linkedAccounts)) {
             return false;
         }
+        authenticationContextClassReferenceValues = authenticationContextClassReferenceValues == null ?
+                Collections.emptyList() : authenticationContextClassReferenceValues;
         boolean atLeastOneNotExpired = linkedAccounts.stream()
                 .anyMatch(linkedAccount -> now.toInstant().isBefore(linkedAccount.getExpiresAt().toInstant()));
         boolean hasRequiredStudentAffiliation = !authenticationContextClassReferenceValues.contains(ACR.AFFILIATION_STUDENT) ||
