@@ -4,8 +4,10 @@
             <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n
             </pattern>
         </encoder>
-        <filter class="myconext.config.CustomThresholdFilter">
+        <filter class="filter.CustomThresholdFilter">
             <level>INFO</level>
+            <clazz>myconext.exceptions.ExpiredAuthenticationException</clazz>
+            <clazz>myconext.exceptions.MigrationDuplicateUserEmailException</clazz>
         </filter>
     </appender>
 
