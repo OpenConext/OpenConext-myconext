@@ -107,8 +107,6 @@ public class AccountLinkerControllerTest extends AbstractIntegrationTest {
         Map<Object, Object> body = new HashMap<>();
         body.put("eduperson_principal_name", "some@institute.nl");
         body.put("schac_home_organization", "mock.idp");
-        body.put("given_name", "Roger");
-        body.put("family_name", "Johnson");
 
         String authnContext = readFile("request_authn_context_affiliation_student.xml");
 

@@ -42,7 +42,7 @@ public class ServiceNameResolver {
         }
     }
 
-    @Scheduled(initialDelay = 0, fixedRate = 1000 * 60 * 60)
+    @Scheduled(initialDelay = 1000 * 60, fixedRate = 1000 * 60 * 60)
     public void refresh() {
         long start = System.currentTimeMillis();
         try {

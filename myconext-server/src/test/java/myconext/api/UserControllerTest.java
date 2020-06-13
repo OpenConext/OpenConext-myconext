@@ -22,6 +22,7 @@ import myconext.model.LinkedAccount;
 import myconext.model.LinkedAccountTest;
 import myconext.model.MagicLinkRequest;
 import myconext.model.SamlAuthenticationRequest;
+import myconext.model.StepUpStatus;
 import myconext.model.UpdateUserSecurityRequest;
 import myconext.model.User;
 import myconext.repository.ChallengeRepository;
@@ -623,7 +624,29 @@ public class UserControllerTest extends AbstractIntegrationTest {
                 .put("/myconext/api/idp/security/webauthn/registration")
                 .then()
                 .statusCode(404);
+    }
 
+    @Test
+    public void testStepUpFlow() throws IOException {
+        String authnContext = readFile("request_authn_context_affiliation_student.xml");
+        Response response = samlAuthnRequestResponseWithLoa(null, "relay", authnContext);
+        String authenticationRequestId = extractAuthenticationRequestIdFromAuthnResponse(response);
+
+        SamlAuthenticationRequest samlAuthenticationRequest = authenticationRequestRepository.findById(authenticationRequestId).get();
+        samlAuthenticationRequest.setSteppedUp(StepUpStatus.IN_STEP_UP);
+        authenticationRequestRepository.save(samlAuthenticationRequest);
+
+        User user = userRepository.findOneUserByEmailIgnoreCase("jdoe@example.com");
+        magicLinkRequest(new MagicLinkRequest(authenticationRequestId, user, false, false), HttpMethod.PUT);
+
+        samlAuthenticationRequest = authenticationRequestRepository.findById(authenticationRequestId).get();
+        response = given().redirects().follow(false)
+                .when()
+                .queryParam("h", samlAuthenticationRequest.getHash())
+                .cookie(BROWSER_SESSION_COOKIE_NAME, "true")
+                .get("/saml/guest-idp/magic");
+        String location = response.getHeader("Location");
+        assertTrue(location.startsWith("http://localhost:3000/confirm-stepup?h="));
     }
 
     private String samlResponse(MagicLinkResponse magicLinkResponse) throws IOException {
@@ -685,11 +708,6 @@ public class UserControllerTest extends AbstractIntegrationTest {
         byte[] bytes = new byte[64];
         random.nextBytes(bytes);
         return Base64.getUrlEncoder().withoutPadding().encodeToString(bytes);
-    }
-
-    private String base64UrlEncode(String fileName) throws IOException {
-        String json = IOUtils.toString(new ClassPathResource(fileName).getInputStream(), "utf-8");
-        return Base64.getUrlEncoder().withoutPadding().encodeToString(json.getBytes());
     }
 
 }
