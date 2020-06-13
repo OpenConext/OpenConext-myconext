@@ -76,7 +76,7 @@ I18n.translations.en = {
     noInstitutions: "You have not linked any educational institution. Click on the button below to add an institution.",
     name: "Short name",
     add: "Add institution",
-    addInstitutionConfirmation: "When you proceed you will be redirect to the SURFconext WAYF where can you select the institution that you wan to.<br/><br/>After confirming your identity at that institution you will return here.",
+    addInstitutionConfirmation: "When you proceed you will be redirect to the SURFconext WAYF where can you select the institution that you want to to link with.<br/><br/>After confirming your identity at that institution you will return here.",
     proceed: "Proceed",
     addInstitution: "Add institution"
   },

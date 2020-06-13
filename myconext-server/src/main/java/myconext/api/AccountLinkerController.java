@@ -143,7 +143,6 @@ public class AccountLinkerController {
         User principal = (User) authentication.getPrincipal();
         User user = userRepository.findOneUserByEmailIgnoreCase(principal.getEmail());
 
-
         LOG.info("In SP redirect for link account flow for authentication " + user.getEmail());
 
         return doRedirect(code, user, this.spFlowRedirectUri, this.spRedirectUrl + "/institutions",
@@ -177,10 +176,12 @@ public class AccountLinkerController {
 
         ResponseEntity redirect = doRedirect(code, user, this.idpFlowRedirectUri, location, validateNames, studentAffiliationRequired,
                 idpStudentAffiliationRequiredUri);
+
         StepUpStatus stepUpStatus = redirect.getHeaders().getLocation()
                 .toString().contains("affiliation-missing") ? StepUpStatus.MISSING_AFFILIATION : StepUpStatus.IN_STEP_UP;
         samlAuthenticationRequest.setSteppedUp(stepUpStatus);
         authenticationRequestRepository.save(samlAuthenticationRequest);
+
         return redirect;
     }
 
@@ -225,7 +226,7 @@ public class AccountLinkerController {
         List<String> eduPersonAffiliations = (List<String>) body.get("eduperson_affiliation");
         List<String> affiliations = CollectionUtils.isEmpty(eduPersonAffiliations) ? Arrays.asList("affiliate") : eduPersonAffiliations;
 
-        if (StringUtils.hasText(eppn) && StringUtils.hasText(institutionIdentifier)) {
+        if (StringUtils.hasText(schacHomeOrganization)) {
             Date expiresAt = Date.from(new Date().toInstant()
                     .plus(validateNames ? this.expiryValidatedDurationDays : this.expiryNonValidatedDurationDays, ChronoUnit.DAYS));
             List<LinkedAccount> linkedAccounts = user.getLinkedAccounts();

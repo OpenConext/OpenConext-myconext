@@ -98,7 +98,7 @@ I18n.translations.en = {
     },
     affiliationMissing: {
         header: "Account linked, but...",
-        info: "Your eduID is successfully linked, however the institution you choose did not provide you with the correct affiliation",
+        info: "Your eduID is successfully linked, however the institution you choose did not provide the correct affiliation.",
         proceed: "You can try to link to another institution or proceed to {{name}}",
         proceedLink: "Proceed",
         retryLink: "Retry"
