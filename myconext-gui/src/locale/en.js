@@ -85,6 +85,7 @@ I18n.translations.en = {
     info: "This institution was linked to your eduID account on {{date}} at {{hours}}:{{minutes}}",
     name: "Short name",
     eppn: "Your EPPN",
+    affiliations: "Affiliations",
     expires: "Expires",
     expiresValue: "{{date}}",
     delete: "Delete",

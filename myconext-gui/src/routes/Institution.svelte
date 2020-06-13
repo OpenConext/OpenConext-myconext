@@ -9,7 +9,7 @@
     import {formatCreateDate} from "../format/date";
     import Modal from "../components/Modal.svelte";
 
-    let linkedAccount = {};
+    let linkedAccount = {eduPersonAffiliations:[]};
     let showModal = false;
 
     onMount(() => {
@@ -111,9 +111,12 @@
 
     div.value-container {
         display: flex;
-        align-items: center;
+        flex-direction: column;
     }
 
+    div.value-container span {
+        padding: 5px 0;
+    }
     .options {
         margin-top: 60px;
     }
@@ -151,6 +154,16 @@
                 <td class="value">
                     <div class="value-container">
                         <span>{`${linkedAccount.eduPersonPrincipalName}`}</span>
+                    </div>
+                </td>
+            </tr>
+            <tr class="name">
+                <td class="attr">{I18n.ts("institution.affiliations")}</td>
+                <td class="value">
+                    <div class="value-container">
+                        {#each linkedAccount.eduPersonAffiliations as affiliation}
+                            <span>{`${affiliation}`}</span>
+                        {/each}
                     </div>
                 </td>
             </tr>

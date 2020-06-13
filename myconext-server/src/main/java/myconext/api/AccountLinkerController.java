@@ -141,7 +141,7 @@ public class AccountLinkerController {
     @GetMapping("/sp/oidc/redirect")
     public ResponseEntity spFlowRedirect(Authentication authentication, @RequestParam("code") String code, @RequestParam("state") String state) {
         User principal = (User) authentication.getPrincipal();
-        User user = userRepository.findById(principal.getId()).orElseThrow(UserNotFoundException::new);
+        User user = userRepository.findOneUserByEmailIgnoreCase(principal.getEmail());
 
 
         LOG.info("In SP redirect for link account flow for authentication " + user.getEmail());
