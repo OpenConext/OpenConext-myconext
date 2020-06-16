@@ -6,12 +6,12 @@
     import CheckBox from "../components/CheckBox.svelte";
     import {supported} from "@github/webauthn-json"
 
-    let password = $user.usePassword ? "************************" : I18n.ts("security.notSet");
+    let password = $user.usePassword ? "************************" : I18n.t("security.notSet");
     let passwordStyle = $user.usePassword ? "value" : "value-alt";
 
     const supportsWebAuthn = supported();
     let publicKey = $user.usePublicKey ? "************************" :
-            supportsWebAuthn ? I18n.ts("security.notSet") : I18n.ts("security.notSupported");
+            supportsWebAuthn ? I18n.t("security.notSet") : I18n.t("security.notSupported");
 
     let publicKeyStyle = $user.usePublicKey ? "value" : "value-alt";
 
@@ -109,9 +109,9 @@
 </style>
 <div class="security">
     <div class="inner">
-        <h2>{I18n.ts("security.title")}</h2>
-        <p class="info">{I18n.ts("security.subTitle")}</p>
-        <p class="info2">{I18n.ts("security.secondSubTitle")}</p>
+        <h2>{I18n.t("security.title")}</h2>
+        <p class="info">{I18n.t("security.subTitle")}</p>
+        <p class="info2">{I18n.t("security.secondSubTitle")}</p>
 
         <table cellspacing="0">
             <thead></thead>

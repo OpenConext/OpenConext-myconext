@@ -59,14 +59,14 @@
 <div class="migration">
     <div class="inner">
         <div class="left">
-            <h3>{I18n.ts("migration.header")}</h3>
+            <h3>{I18n.t("migration.header")}</h3>
             <p class="info">{I18n.t("migration.info")}</p>
             <p class="info">{I18n.t("migration.info2")}</p>
             <p class="info">{I18n.t("migration.info3")}
                 <a href="/security" on:click|preventDefault|stopPropagation={() => navigate("/security")}
                 >{I18n.t("migration.securityLink")}</a></p>
             <div class="options">
-                <Button label={I18n.ts("migration.link")} className="full" onClick={proceed}/>
+                <Button label={I18n.t("migration.link")} className="full" onClick={proceed}/>
             </div>
         </div>
         <div class="right">

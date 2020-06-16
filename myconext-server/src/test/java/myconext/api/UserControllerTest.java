@@ -18,6 +18,7 @@ import io.restassured.response.ValidatableResponse;
 import io.restassured.specification.RequestSpecification;
 import myconext.AbstractIntegrationTest;
 import myconext.model.Challenge;
+import myconext.model.EduID;
 import myconext.model.LinkedAccount;
 import myconext.model.LinkedAccountTest;
 import myconext.model.MagicLinkRequest;
@@ -249,6 +250,23 @@ public class UserControllerTest extends AbstractIntegrationTest {
         User userFromDB = userRepository.findOneUserByEmailIgnoreCase("jdoe@example.com");
 
         assertEquals(0, userFromDB.getLinkedAccounts().size());
+    }
+
+    @Test
+    public void removeUserService() {
+        User user = userRepository.findOneUserByEmailIgnoreCase("jdoe@example.com");
+        EduID eduID = user.getEduIdPerServiceProvider().get("http://mock-sp");
+        given()
+                .when()
+                .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+                .body(Collections.singletonMap("eduId", eduID.getValue()))
+                .put("/myconext/api/sp/service")
+                .then()
+                .statusCode(200);
+
+        User userFromDB = userRepository.findOneUserByEmailIgnoreCase("jdoe@example.com");
+
+        assertFalse(userFromDB.getEduIdPerServiceProvider().containsKey("http://mock-sp"));
     }
 
     @Test
@@ -578,10 +596,10 @@ public class UserControllerTest extends AbstractIntegrationTest {
         String saml = samlAuthnResponse(response);
 
         User user = userRepository.findOneUserByEmailIgnoreCase("jdoe@example.com");
-        Map<String, String> eduIdPerServiceProvider = user.getEduIdPerServiceProvider();
+        Map<String, EduID> eduIdPerServiceProvider = user.getEduIdPerServiceProvider();
 
         assertTrue(saml.contains("Attribute Name=\"urn:mace:eduid.nl:1.1\""));
-        String eduId = eduIdPerServiceProvider.get("https://manage.surfconext.nl/shibboleth");
+        String eduId = eduIdPerServiceProvider.get("https://manage.surfconext.nl/shibboleth").getValue();
         assertTrue(saml.contains(eduId));
     }
 

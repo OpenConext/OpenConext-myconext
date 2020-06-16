@@ -40,8 +40,8 @@
 </style>
 <div class="home">
     <div class="card">
-        <h2>{I18n.ts("confirmStepup.header")}</h2>
-        <p class="info">{I18n.ts("confirmStepup.thanks")}</p>
+        <h2>{I18n.t("confirmStepup.header")}</h2>
+        <p class="info">{I18n.t("confirmStepup.thanks")}</p>
         <Button href="/proceed" onClick={proceed}
                 className="full"
                 label={serviceName}/>

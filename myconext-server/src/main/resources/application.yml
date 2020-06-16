@@ -17,6 +17,9 @@ schac_home_organization: eduid.nl
 cron:
   node-cron-job-responsible: True
   token-cleaner-expression: "0 0/15 * * * *"
+  service-name-resolver-initial-delay-milliseconds: 1
+  service-name-resolver-fixed-rate-milliseconds: 3600000
+
 
 metadata_sp_url: https://metadata.test.surfconext.nl/sp-names.json
 

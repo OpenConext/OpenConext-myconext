@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -51,7 +52,7 @@ public class User implements Serializable, UserDetails {
     private String userHandle;
 
     private List<LinkedAccount> linkedAccounts = new ArrayList<>();
-    private Map<String, String> eduIdPerServiceProvider = new HashMap<>();
+    private Map<String, EduID> eduIdPerServiceProvider = new HashMap<>();
     private Map<String, String> publicKeyCredentials = new HashMap<>();
     private Map<String, List<String>> attributes = new HashMap<>();
 
@@ -102,7 +103,8 @@ public class User implements Serializable, UserDetails {
     @Transient
     public Optional<String> computeEduIdForServiceProviderIfAbsent(String serviceProviderEntityId) {
         return StringUtils.hasText(serviceProviderEntityId) ?
-                Optional.of(this.eduIdPerServiceProvider.computeIfAbsent(serviceProviderEntityId, s -> UUID.randomUUID().toString())) :
+                Optional.of(this.eduIdPerServiceProvider.computeIfAbsent(serviceProviderEntityId, s ->
+                        new EduID(UUID.randomUUID().toString(), new Date())).getValue()) :
                 Optional.empty();
     }
 
@@ -194,5 +196,9 @@ public class User implements Serializable, UserDetails {
 
     public void setLinkedAccounts(List<LinkedAccount> linkedAccounts) {
         this.linkedAccounts = linkedAccounts;
+    }
+
+    public void setEduIdPerServiceProvider(Map<String, EduID> eduIdPerServiceProvider) {
+        this.eduIdPerServiceProvider = eduIdPerServiceProvider;
     }
 }

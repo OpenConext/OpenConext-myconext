@@ -43,8 +43,8 @@
 </style>
 <div class="home">
     <div class="card">
-        <h2>{I18n.ts("confirm.header")}</h2>
-        <p class="info">{stepupFlow ? I18n.ts("confirm.thanksStepup") : I18n.ts("confirm.thanks")}</p>
+        <h2>{I18n.t("confirm.header")}</h2>
+        <p class="info">{stepupFlow ? I18n.t("confirm.thanksStepup") : I18n.t("confirm.thanks")}</p>
         <Button href="/proceed" onClick={proceed}
                 className="full"
                 label={serviceName}/>

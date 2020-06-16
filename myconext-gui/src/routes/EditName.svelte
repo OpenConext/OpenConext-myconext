@@ -10,7 +10,7 @@
         if ($user.familyName && $user.givenName) {
             updateUser($user).then(() => {
                 navigate("/profile");
-                flash.setValue(I18n.ts("edit.updated"));
+                flash.setValue(I18n.t("edit.updated"));
             });
         }
     };
@@ -109,18 +109,18 @@
             <a href="/back" on:click|preventDefault|stopPropagation={cancel}>
                 {@html chevron_left}
             </a>
-            <h2>{I18n.ts("edit.title")}</h2>
+            <h2>{I18n.t("edit.title")}</h2>
         </div>
         <p class="info">{I18n.t("edit.info")}</p>
-        <label for="givenName">{I18n.ts("edit.givenName")}</label>
+        <label for="givenName">{I18n.t("edit.givenName")}</label>
         <input id="givenName" type="text" bind:value={$user.givenName}/>
-        <label for="familyName">{I18n.ts("edit.familyName")}</label>
+        <label for="familyName">{I18n.t("edit.familyName")}</label>
         <input id="familyName" type="text" bind:value={$user.familyName}/>
 
         <div class="options">
-            <Button className="cancel" label={I18n.ts("edit.cancel")} onClick={cancel}/>
+            <Button className="cancel" label={I18n.t("edit.cancel")} onClick={cancel}/>
 
-            <Button label={I18n.ts("edit.update")} onClick={update}
+            <Button label={I18n.t("edit.update")} onClick={update}
                     disabled={!($user.familyName && $user.givenName)}/>
         </div>
     </div>

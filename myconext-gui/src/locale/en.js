@@ -52,6 +52,7 @@ I18n.translations.en = {
     security: "Security",
     account: "Account",
     institutions: "Institutions",
+    services: "Services",
     favorites: "Favorites",
     settings: "Settings",
     links: {
@@ -94,6 +95,25 @@ I18n.translations.en = {
     back: "/institutions",
     deleteInstitution: "Delete institution",
     deleteInstitutionConfirmation: "Are you sure you want to delete this linked institution from your eduID account?<br/><br/>Some services require linked institutions and you might be prompted to link an institution if you access one of those services."
+  },
+  services: {
+    title: "Used services",
+    info: "Each service you use with eduID receives your unique pseudonymized eduID to identify your account.",
+    explanation: "These are all the services where you logged in with eduID.",
+    noServices: "You have not used any service yet with your eduID account.",
+    name: "Name",
+  },
+  service: {
+    title: "Service",
+    info: "This service received your unique pseudonymized eduID on {{date}} at {{hours}}:{{minutes}}",
+    name: "Name",
+    eduId: "EduID",
+    delete: "Delete",
+    cancel: "Cancel",
+    deleted: "Your service eduID for {{name}} has been deleted",
+    back: "/services",
+    deleteService: "Delete service",
+    deleteServiceConfirmation: "Are you sure you want to delete your unique pseudonymized eduID for {{name}}?<br/><br/>This service might not recognize you the next time you login and all your personal data with this Service could be deleted."
   },
   password: {
     setTitle: "Set password",
@@ -170,5 +190,3 @@ I18n.translations.en = {
     creationDate: "Your eduID account was created on {{date}} at {{hours}}:{{minutes}}"
   }
 };
-
-I18n.ts = (key, model) => I18n.t(key, model);

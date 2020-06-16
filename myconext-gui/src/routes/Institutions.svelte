@@ -105,7 +105,7 @@
 <div class="institutions">
     <div class="inner">
         <h2>{I18n.t("institutions.title")}</h2>
-        <p class="info">{I18n.ts("institutions.info")}</p>
+        <p class="info">{I18n.t("institutions.info")}</p>
         <p class="info">{I18n.t("institutions.explanation")}</p>
         {#if $user.linkedAccounts.length === 0}
             <p class="no-institutions">{I18n.t("institutions.noInstitutions")}</p>
@@ -115,7 +115,7 @@
                 <tbody>
                 {#each $user.linkedAccounts as linkedAccount}
                     <tr class="name" on:click={institutionDetails(linkedAccount)}>
-                        <td class="attr">{I18n.ts("institutions.name")}</td>
+                        <td class="attr">{I18n.t("institutions.name")}</td>
                         <td class="value">
                             <div class="value-container">
                                 <span>{`${linkedAccount.schacHomeOrganization}`}</span>

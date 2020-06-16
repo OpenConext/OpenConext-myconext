@@ -20,15 +20,25 @@
     },
     "userHandle": "ILWqa-yfidIbr-tmLbegkl_q9GYY53s5h-WPxDGJ36rzvDfR-lZqMlqARdUlPDRH_KH95owGCoEqMuigryV_qA",
     "eduIdPerServiceProvider": {
-      "http://mock-sp": "3060b9ce-9cf2-4e5b-8164-bf0a2b706720"
+      "http://mock-sp": {
+        "value": "3060b9ce-9cf2-4e5b-8164-bf0a2b706720",
+        "createdAt": "2020-11-12T13:55:50.229Z"
+      },
+      "https://teams.test.surfconext.nl/shibboleth": {
+        "value": "fc75dcc7-6def-4054-b8ba-3c3cc504dd4b",
+        "createdAt": "2020-11-12T13:55:50.229Z"
+      }
     },
     "created": 1583337392
   },
   {
+    "uid": "mdoe",
     "email": "mdoe@example.com",
     "givenName": "Mary",
     "familyName": "Doe",
     "password": "$2a$10$kUSu/Or0IX.E1WRaJtpUk.NWd83yV0mnt8CRnkbcQhvz6Qe3ntcAK",
-    "schacHomeOrganization": "surfguest.nl"
+    "schacHomeOrganization": "surfguest.nl",
+    "created": 1583337392
   }
+
 ]

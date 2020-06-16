@@ -49,16 +49,16 @@
     }
 
 </style>
-<h2 class="header">{I18n.ts("magicLink.header")}</h2>
-<h2 class="top">{I18n.ts("magicLink.header2")}</h2>
-<p>{I18n.ts("magicLink.info1")}</p>
+<h2 class="header">{I18n.t("magicLink.header")}</h2>
+<h2 class="top">{I18n.t("magicLink.header2")}</h2>
+<p>{I18n.t("magicLink.info1")}</p>
 <p class="mail">{$user.email}</p>
-<p>{I18n.ts("magicLink.info2")}</p>
+<p>{I18n.t("magicLink.info2")}</p>
 <div class="whoops">
     <div class="info">{@html info}</div>
     <div>
-        <p>{I18n.ts("magicLink.wrongEmail")}</p>
-        <a href={`/login/${id}?name=${serviceName}&modus=${modus}`}>{I18n.ts("magicLink.wrongEmail2")}</a>
+        <p>{I18n.t("magicLink.wrongEmail")}</p>
+        <a href={`/login/${id}?name=${serviceName}&modus=${modus}`}>{I18n.t("magicLink.wrongEmail2")}</a>
     </div>
 </div>
 

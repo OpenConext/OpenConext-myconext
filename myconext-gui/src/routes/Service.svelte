@@ -1,7 +1,7 @@
 <script>
     import {user, flash} from "../stores/user";
     import I18n from "i18n-js";
-    import {me, deleteLinkedAccount} from "../api";
+    import {me, deleteLinkedAccount, deleteService} from "../api";
     import {navigate} from "svelte-routing";
     import chevron_left from "../icons/chevron-left.svg";
     import Button from "../components/Button.svelte";
@@ -9,37 +9,42 @@
     import {formatCreateDate} from "../format/date";
     import Modal from "../components/Modal.svelte";
 
-    let linkedAccount = {eduPersonAffiliations:[]};
+    let service = {};
     let showModal = false;
 
     onMount(() => {
         const urlSearchParams = new URLSearchParams(window.location.search);
-        const name = urlSearchParams.get("name");
-        linkedAccount = $user.linkedAccounts.find(linkedAccount => linkedAccount.schacHomeOrganization === name);
+        const eduid = urlSearchParams.get("eduid");
+        const services = Object.keys($user.eduIdPerServiceProvider).map(k => ({
+            name: k,
+            eduId: $user.eduIdPerServiceProvider[k].value,
+            createdAt: $user.eduIdPerServiceProvider[k].createdAt
+        }));
+        service = services.find(o => o.eduId === eduid);
     });
 
-    const deleteAccountLink = showConfirmation => () => {
+    const deleteEduId = showConfirmation => () => {
         if (showConfirmation) {
             showModal = true;
         } else {
-            deleteLinkedAccount(linkedAccount).then(json => {
+            deleteService(service).then(json => {
                 for (var key in json) {
                     if (json.hasOwnProperty(key)) {
                         $user[key] = json[key];
                     }
                 }
-                navigate("/institutions");
-                flash.setValue(I18n.t("institution.deleted", {name: linkedAccount.schacHomeOrganization}));
+                navigate("/services");
+                flash.setValue(I18n.t("service.deleted", {name: service.name}));
             });
         }
     }
 
-    const cancel = () => navigate("/institutions");
+    const cancel = () => navigate("/services");
 
 </script>
 
 <style>
-    .institution {
+    .service {
         width: 100%;
         display: flex;
         height: 100%;
@@ -127,7 +132,7 @@
 
 
 </style>
-<div class="institution">
+<div class="service">
     <div class="left"></div>
     <div class="inner">
         <div class="header">
@@ -136,42 +141,24 @@
             </a>
             <h2>{I18n.t("institution.title")}</h2>
         </div>
-        <p class="info">{I18n.t("institution.info", formatCreateDate(linkedAccount.createdAt))}</p>
+        <p class="info">{I18n.t("institution.info", formatCreateDate(service.createdAt))}</p>
 
         <table cellspacing="0">
             <thead></thead>
             <tbody>
             <tr class="name">
-                <td class="attr">{I18n.t("institution.name")}</td>
+                <td class="attr">{I18n.t("service.name")}</td>
                 <td class="value">
                     <div class="value-container">
-                        <span>{`${linkedAccount.schacHomeOrganization}`}</span>
+                        <span>{`${service.name}`}</span>
                     </div>
                 </td>
             </tr>
             <tr class="name">
-                <td class="attr">{I18n.t("institution.eppn")}</td>
+                <td class="attr">{I18n.t("service.eduId")}</td>
                 <td class="value">
                     <div class="value-container">
-                        <span>{`${linkedAccount.eduPersonPrincipalName}`}</span>
-                    </div>
-                </td>
-            </tr>
-            <tr class="name">
-                <td class="attr">{I18n.t("institution.affiliations")}</td>
-                <td class="value">
-                    <div class="value-container">
-                        {#each linkedAccount.eduPersonAffiliations as affiliation}
-                            <span>{`${affiliation}`}</span>
-                        {/each}
-                    </div>
-                </td>
-            </tr>
-            <tr class="name">
-                <td class="attr">{I18n.t("institution.expires")}</td>
-                <td class="value">
-                    <div class="value-container">
-                        <span>{I18n.t("institution.expiresValue", {date: formatCreateDate(linkedAccount.expiresAt).date})}</span>
+                        <span>{`${service.eduId}`}</span>
                     </div>
                 </td>
             </tr>
@@ -182,16 +169,16 @@
         <div class="options">
             <Button className="cancel" label={I18n.t("institution.cancel")} onClick={cancel}/>
 
-            <Button label={I18n.t("institution.delete")} className="cancel" onClick={deleteAccountLink(true)}/>
+            <Button label={I18n.t("institution.delete")} className="cancel" onClick={deleteEduId(true)}/>
         </div>
     </div>
 
 </div>
 
 {#if showModal}
-    <Modal submit={deleteAccountLink(false)}
+    <Modal submit={deleteEduId(false)}
            cancel={() => showModal = false}
-           question={I18n.t("institution.deleteInstitutionConfirmation")}
-                   title={I18n.t("institution.deleteInstitution")}>
+           question={I18n.t("service.deleteServiceConfirmation", {name: service.name})}
+                   title={I18n.t("service.deleteService")}>
     </Modal>
 {/if}

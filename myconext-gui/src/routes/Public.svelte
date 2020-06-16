@@ -55,8 +55,8 @@
 
 
 <div class="public">
-    <h1>{I18n.ts("header.title")}</h1>
-    <h2>{I18n.ts("landing.info")}</h2>
-    <Button label={I18n.ts("landing.login")} className="short" href={I18n.ts("landing.login")} onClick={login}/>
+    <h1>{I18n.t("header.title")}</h1>
+    <h2>{I18n.t("landing.info")}</h2>
+    <Button label={I18n.t("landing.login")} className="short" href={I18n.t("landing.login")} onClick={login}/>
 
 </div>

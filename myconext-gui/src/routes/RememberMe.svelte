@@ -17,7 +17,7 @@
             forgetMe().then(() => {
                 $user.rememberMe = false;
                 navigate("/security");
-                flash.setValue(I18n.ts("rememberMe.updated"));
+                flash.setValue(I18n.t("rememberMe.updated"));
             });
         }
     };
@@ -100,9 +100,9 @@
         </div>
         <p class="info">{I18n.t("rememberMe.info")}</p>
         <div class="options">
-            <Button className="cancel" label={I18n.ts("rememberMe.cancel")} onClick={cancel}/>
+            <Button className="cancel" label={I18n.t("rememberMe.cancel")} onClick={cancel}/>
 
-            <Button label={I18n.ts("rememberMe.update")}
+            <Button label={I18n.t("rememberMe.update")}
                     onClick={doForgetMe(true)}/>
         </div>
     </div>
@@ -110,7 +110,7 @@
     {#if showModal}
         <Modal submit={doForgetMe(false)}
                cancel={() => showModal = false}
-               question={I18n.ts("rememberMe.forgetMeConfirmation")}
-                       title={I18n.ts("rememberMe.forgetMe")}></Modal>
+               question={I18n.t("rememberMe.forgetMeConfirmation")}
+                       title={I18n.t("rememberMe.forgetMe")}></Modal>
     {/if}
 </div>

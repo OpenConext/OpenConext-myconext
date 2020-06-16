@@ -52,6 +52,7 @@ I18n.translations.nl = {
     security: "Beveiliging",
     account: "Account",
     institutions: "Instellingen",
+    services: "Diensten",
     favorites: "Favorieten",
     settings: "Instellingen",
     links: {
@@ -94,6 +95,25 @@ I18n.translations.nl = {
     back: "/instellingen",
     deleteInstitution: "Verwijder instelling",
     deleteInstitutionConfirmation: "Weet je zeker dat je deze gelinkte instelling uit je eduID-account wilt verwijderen? <br/> <br/> Sommige diensten vereisen gelinkte instellingen en je wordt mogelijk gevraagd een instelling te linken als je één van die services gebruikt."
+  },
+  services: {
+    title: "Gebruikte diensten",
+    info: "Elke service die je met eduID gebruikt, ontvangt je unieke gepseudonimiseerde eduID om je account te identificeren.",
+    explanation: "Dit zijn alle services waar je bent ingelogd met eduID.",
+    noServices: "Je hebt nog geen service gebruikt met je eduID-account.",
+    name: "Naam",
+  },
+  service: {
+    title: "Dienst",
+    info: "Deze service heeft je unieke gepseudonimiseerde eduID ontvangen op {{date}} om {{hours}}: {{minutes}}",
+    name: "Naam",
+    eduId: "EduID",
+    delete: "Verwijderen",
+    cancel: "Annuleren",
+    deleted: "Je eduID voor dienst {{name}} is verwijderd",
+    back: "/services",
+    deleteService: "Verwijder dienst",
+    deleteServiceConfirmation: "Weet je zeker dat je je unieke gepseudonimiseerde eduID voor {{name}} wilt verwijderen? <br/> <br/> Deze service herkent je wellicht niet de volgende keer dat je inlogt en je persoonlijke gegevens bij deze service kunnen worden verwijderd."
   },
   password: {
     setTitle: "Wachtwoord instellen",

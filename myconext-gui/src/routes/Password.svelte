@@ -29,7 +29,7 @@
                             }
                         }
                         navigate("/security");
-                        flash.setValue(usePassword ? I18n.ts("password.updated") : I18n.ts("password.set"));
+                        flash.setValue(usePassword ? I18n.t("password.updated") : I18n.t("password.set"));
                     })
                     .catch(() => {
                         currentPasswordInvalid = true;
@@ -138,29 +138,29 @@
             <a href="/back" on:click|preventDefault|stopPropagation={cancel}>
                 {@html chevron_left}
             </a>
-            <h2>{usePassword ? I18n.ts("password.updateTitle") : I18n.ts("password.setTitle")}</h2>
+            <h2>{usePassword ? I18n.t("password.updateTitle") : I18n.t("password.setTitle")}</h2>
         </div>
         <p class="info">{I18n.t("password.passwordDisclaimer")}</p>
         {#if usePassword}
-            <label for="currentPassword">{I18n.ts("password.currentPassword")}</label>
+            <label for="currentPassword">{I18n.t("password.currentPassword")}</label>
             <input id="currentPassword" autocomplete="current-password" type="password" bind:value={currentPassword}/>
         {/if}
         {#if currentPasswordInvalid}
-            <span class="error">{I18n.ts("password.invalidCurrentPassword")}</span>
+            <span class="error">{I18n.t("password.invalidCurrentPassword")}</span>
         {/if}
 
         <input id="username" autocomplete="username email" type="hidden" name="username" value={$user.email}>
 
-        <label for="newPassword">{I18n.ts("password.newPassword")}</label>
+        <label for="newPassword">{I18n.t("password.newPassword")}</label>
         <input id="newPassword" type="password" autocomplete="new-password" bind:value={newPassword}>
 
-        <label for="confirmPassword">{I18n.ts("password.confirmPassword")}</label>
+        <label for="confirmPassword">{I18n.t("password.confirmPassword")}</label>
         <input id="confirmPassword" type="password" autocomplete="new-password" bind:value={confirmPassword}>
 
         <div class="options">
-            <Button className="cancel" label={I18n.ts("password.cancel")} onClick={cancel}/>
+            <Button className="cancel" label={I18n.t("password.cancel")} onClick={cancel}/>
 
-            <Button label={usePassword ? I18n.ts("password.updateUpdate") : I18n.ts("password.setUpdate")}
+            <Button label={usePassword ? I18n.t("password.updateUpdate") : I18n.t("password.setUpdate")}
                     onClick={update}
                     disabled={!((usePassword && currentPassword && validPassword(newPassword) && newPassword === confirmPassword) ||
                 (!usePassword && validPassword(newPassword) && newPassword === confirmPassword))}/>

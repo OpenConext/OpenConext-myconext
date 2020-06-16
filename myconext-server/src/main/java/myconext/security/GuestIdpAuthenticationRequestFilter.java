@@ -402,7 +402,7 @@ public class GuestIdpAuthenticationRequestFilter extends IdpAuthenticationReques
             user.computeEduIdForServiceProviderIfAbsent(requesterEntityId);
             userRepository.save(user);
         }
-        String eduID = user.getEduIdPerServiceProvider().get(requesterEntityId);
+        String eduID = user.getEduIdPerServiceProvider().get(requesterEntityId).getValue();
         attributes.add(attribute("urn:mace:eduid.nl:1.1", eduID));
 
         user.getAttributes()
@@ -410,7 +410,8 @@ public class GuestIdpAuthenticationRequestFilter extends IdpAuthenticationReques
 
         List<String> scopedAffiliations = linkedAccounts.stream()
                 .map(linkedAccount -> linkedAccount.getEduPersonAffiliations().stream()
-                        .map(affiliation -> String.format("%s@%s", affiliation, linkedAccount.getSchacHomeOrganization()))
+                        .map(affiliation -> affiliation.contains("@")
+                                ? affiliation : String.format("%s@%s", affiliation, linkedAccount.getSchacHomeOrganization()))
                         .collect(Collectors.toList()))
                 .flatMap(Collection::stream)
                 .collect(Collectors.toList());

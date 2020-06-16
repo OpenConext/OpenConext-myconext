@@ -104,5 +104,3 @@ I18n.translations.en = {
         retryLink: "Retry"
     }
 };
-
-I18n.ts = (key, model) => I18n.t(key, model);

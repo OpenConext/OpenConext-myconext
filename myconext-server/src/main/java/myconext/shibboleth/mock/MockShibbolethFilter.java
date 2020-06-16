@@ -1,7 +1,6 @@
 package myconext.shibboleth.mock;
 
 import myconext.shibboleth.ShibbolethPreAuthenticatedProcessingFilter;
-import org.springframework.core.env.Environment;
 import org.springframework.web.filter.GenericFilterBean;
 
 import javax.servlet.FilterChain;
@@ -15,8 +14,8 @@ import java.util.HashMap;
 
 public class MockShibbolethFilter extends GenericFilterBean {
 
-    private String uid = "1234567890";
-    public String email = "jdoe@example.com";
+    private String uid = "1234567890";//"mdoe";
+    public String email = "jdoe@example.com";//"mdoe@example.com";
     public String authenticatingAuthority = "https://account.test2.surfconext.nl";
 
     private static class SetHeader extends HttpServletRequestWrapper {

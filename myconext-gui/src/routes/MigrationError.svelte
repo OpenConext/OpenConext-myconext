@@ -97,7 +97,7 @@
 <div class="migration">
     <div class="left"></div>
     <div class="inner">
-        <h2>{I18n.ts("migrationError.header")}</h2>
+        <h2>{I18n.t("migrationError.header")}</h2>
         <p class="info">{I18n.t("migrationError.info", {email: $duplicatedEmail} )}</p>
         <ol class="ordered-list">
             <li>

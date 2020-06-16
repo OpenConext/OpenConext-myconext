@@ -80,17 +80,17 @@
 <div class="profile">
     <div class="inner">
         <h2>{I18n.t("profile.title")}</h2>
-        <p class="info">{I18n.ts("profile.info")}</p>
+        <p class="info">{I18n.t("profile.info")}</p>
         <p class="info2">{I18n.t("profile.profile")}</p>
         <table cellspacing="0">
             <thead></thead>
             <tbody>
             <tr>
-                <td class="attr">{I18n.ts("profile.email")}</td>
+                <td class="attr">{I18n.t("profile.email")}</td>
                 <td class="value">{$user.email}</td>
             </tr>
             <tr class="name" on:click={() => navigate("/edit")}>
-                <td class="attr">{I18n.ts("profile.name")}</td>
+                <td class="attr">{I18n.t("profile.name")}</td>
                 <td class="value">
                     <div class="value-container">
                     <span>{`${$user.givenName} ${$user.familyName}`}</span>

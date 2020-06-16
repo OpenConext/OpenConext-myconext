@@ -5,6 +5,7 @@ import lombok.NoArgsConstructor;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -23,8 +24,9 @@ public class UserResponse {
     private String uid;
     private boolean rememberMe;
     private long created;
+    private Map<String, EduID> eduIdPerServiceProvider;
 
-    public UserResponse(User user, boolean rememberMe) {
+    public UserResponse(User user, Map<String, EduID> eduIdPerServiceProvider, boolean rememberMe) {
         this.id = user.getId();
         this.email = user.getEmail();
         this.givenName = user.getGivenName();
@@ -37,5 +39,6 @@ public class UserResponse {
         this.usePublicKey = !CollectionUtils.isEmpty(this.publicKeyCredentials);
         this.rememberMe = rememberMe;
         this.created = user.getCreated();
+        this.eduIdPerServiceProvider = eduIdPerServiceProvider;
     }
 }

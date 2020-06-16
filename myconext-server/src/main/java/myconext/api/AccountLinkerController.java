@@ -1,7 +1,6 @@
 package myconext.api;
 
 
-import myconext.exceptions.ForbiddenException;
 import myconext.exceptions.UserNotFoundException;
 import myconext.manage.ServiceNameResolver;
 import myconext.model.LinkedAccount;
@@ -40,6 +39,7 @@ import java.net.URI;
 import java.net.URLEncoder;
 import java.nio.charset.Charset;
 import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
@@ -47,7 +47,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.UUID;
 
 @RestController
 @RequestMapping("/myconext/api")
@@ -223,8 +222,10 @@ public class AccountLinkerController {
 
         String institutionIdentifier = StringUtils.hasText(surfCrmId) ? surfCrmId : schacHomeOrganization;
 
-        List<String> eduPersonAffiliations = (List<String>) body.get("eduperson_affiliation");
-        List<String> affiliations = CollectionUtils.isEmpty(eduPersonAffiliations) ? Arrays.asList("affiliate") : eduPersonAffiliations;
+        List<String> eduPersonAffiliations = (List<String>) body.getOrDefault("eduperson_affiliation", new ArrayList<>());
+        List<String> eduPersonScopedAffiliations = (List<String>) body.getOrDefault("eduperson_scoped_affiliation", eduPersonAffiliations);
+        List<String> affiliations = CollectionUtils.isEmpty(eduPersonScopedAffiliations)
+                ? Arrays.asList("affiliate") : eduPersonScopedAffiliations;
 
         if (StringUtils.hasText(schacHomeOrganization)) {
             Date expiresAt = Date.from(new Date().toInstant()

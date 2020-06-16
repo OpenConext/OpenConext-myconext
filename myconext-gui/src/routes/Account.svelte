@@ -91,7 +91,7 @@
             <p class="divider">{I18n.t("account.info"+i)}</p>
         {/each}
         <div class="options">
-            <Button href="/delete" label={I18n.ts("account.deleteAccount")}
+            <Button href="/delete" label={I18n.t("account.deleteAccount")}
                     onClick={deleteUserAction(true)} className="full cancel"/>
         </div>
     </div>
@@ -101,6 +101,6 @@
 {#if showModal}
     <Modal submit={deleteUserAction(false)}
            cancel={() => showModal = false}
-           question={I18n.ts("account.deleteAccountConfirmation")}
-                   title={I18n.ts("account.deleteAccount")}></Modal>
+           question={I18n.t("account.deleteAccountConfirmation")}
+                   title={I18n.t("account.deleteAccount")}></Modal>
 {/if}

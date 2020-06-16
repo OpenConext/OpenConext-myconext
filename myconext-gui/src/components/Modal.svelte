@@ -31,10 +31,10 @@
 
         <div class="options">
             <Button className="cancel" onClick={cancel}
-                    label={I18n.ts("modal.cancel")}/>
+                    label={I18n.t("modal.cancel")}/>
 
             <Button onClick={submit}
-                    label={confirmTitle || I18n.ts("modal.confirm")}/>
+                    label={confirmTitle || I18n.t("modal.confirm")}/>
         </div>
     </div>
 </div>

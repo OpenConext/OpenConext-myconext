@@ -100,10 +100,10 @@
             <a href="/back" on:click|preventDefault|stopPropagation={cancel}>
                 {@html chevron_left}
             </a>
-            <h2>{usePublicKey ? I18n.ts("webauthn.updateTitle") : I18n.ts("webauthn.setTitle")}</h2>
+            <h2>{usePublicKey ? I18n.t("webauthn.updateTitle") : I18n.t("webauthn.setTitle")}</h2>
         </div>
         <p class="info">{I18n.t("webauthn.info")}</p>
-        <p class="info2">{I18n.t("webauthn.info2", {action: usePublicKey ? I18n.ts("webauthn.updateUpdate") : I18n.ts("webauthn.setUpdate")})}</p>
+        <p class="info2">{I18n.t("webauthn.info2", {action: usePublicKey ? I18n.t("webauthn.updateUpdate") : I18n.t("webauthn.setUpdate")})}</p>
         {#if loading}
             <Spinner/>
         {/if}
@@ -111,9 +111,9 @@
                 <p class="info3">{I18n.t("webauthn.currentKeys", {count: Object.keys($user.publicKeyCredentials).length})}</p>
         {/if}
         <div class="options">
-            <Button className="cancel" label={I18n.ts("password.cancel")} onClick={cancel}/>
+            <Button className="cancel" label={I18n.t("password.cancel")} onClick={cancel}/>
 
-            <Button label={usePublicKey ? I18n.ts("webauthn.updateUpdate") : I18n.ts("webauthn.setUpdate")}
+            <Button label={usePublicKey ? I18n.t("webauthn.updateUpdate") : I18n.t("webauthn.setUpdate")}
                     onClick={startWebAuthn}
                     disabled={false}/>
         </div>

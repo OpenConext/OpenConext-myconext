@@ -60,7 +60,8 @@ import static org.junit.Assert.assertTrue;
                 "email_guessing_sleep_millis=1",
                 "sp_entity_id=https://engine.test.surfconext.nl/authentication/sp/metadata",
                 "sp_entity_metadata_url=https://engine.test.surfconext.nl/authentication/sp/metadata",
-                "spring.main.lazy-initialization=true"
+                "spring.main.lazy-initialization=true",
+                "cron.service-name-resolver-initial-delay-milliseconds=60000"
         })
 @ActiveProfiles({"test"})
 @SuppressWarnings("unchecked")

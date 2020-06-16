@@ -50,12 +50,12 @@
 <div class="landing">
     <div class="inner">
         {#if isLogoutRedirect}
-            <h3>{I18n.ts("landing.logoutTitle")}</h3>
-            <p>{I18n.ts("landing.logoutStatus")}</p>
+            <h3>{I18n.t("landing.logoutTitle")}</h3>
+            <p>{I18n.t("landing.logoutStatus")}</p>
         {/if}
         {#if isAccountDeletionRedirect}
-            <h3>{I18n.ts("landing.deleteTitle")}</h3>
-            <p>{I18n.ts("landing.deleteStatus")}</p>
+            <h3>{I18n.t("landing.deleteTitle")}</h3>
+            <p>{I18n.t("landing.deleteStatus")}</p>
         {/if}
     </div>
 </div>

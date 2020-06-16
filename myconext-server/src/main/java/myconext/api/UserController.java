@@ -27,6 +27,7 @@ import myconext.exceptions.UserNotFoundException;
 import myconext.mail.MailBox;
 import myconext.manage.ServiceNameResolver;
 import myconext.model.Challenge;
+import myconext.model.EduID;
 import myconext.model.LinkedAccount;
 import myconext.model.MagicLinkRequest;
 import myconext.model.SamlAuthenticationRequest;
@@ -37,7 +38,6 @@ import myconext.repository.AuthenticationRequestRepository;
 import myconext.repository.ChallengeRepository;
 import myconext.repository.UserRepository;
 import myconext.security.EmailGuessingPrevention;
-import myconext.security.GuestIdpAuthenticationRequestFilter;
 import myconext.webauthn.UserCredentialRepository;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -45,12 +45,10 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -64,7 +62,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Field;
 import java.net.URISyntaxException;
 import java.security.SecureRandom;
@@ -211,7 +208,7 @@ public class UserController {
 
         LOG.info(String.format("Update user profile for %s", user.getUsername()));
 
-        return ResponseEntity.status(201).body(new UserResponse(user, false));
+        return ResponseEntity.status(201).body(new UserResponse(user, convertEduIdPerServiceProvider(user), false));
     }
 
     @PutMapping("/sp/security")
@@ -228,13 +225,12 @@ public class UserController {
 
         LOG.info(String.format("Updates / set password for user %s", user.getUsername()));
 
-        return ResponseEntity.status(201).body(new UserResponse(user, false));
+        return ResponseEntity.status(201).body(new UserResponse(user, convertEduIdPerServiceProvider(user), false));
     }
 
     @PutMapping("/sp/institution")
     public ResponseEntity removeUserLinkedAccounts(Authentication authentication, @RequestBody LinkedAccount linkedAccount) {
-        String id = ((User) authentication.getPrincipal()).getId();
-        User user = userRepository.findById(id).orElseThrow(UserNotFoundException::new);
+        User user = userFromAuthentication(authentication);
 
         List<LinkedAccount> linkedAccounts = user.getLinkedAccounts().stream()
                 .filter(la -> !la.getSchacHomeOrganization().equals(linkedAccount.getSchacHomeOrganization()))
@@ -248,17 +244,37 @@ public class UserController {
         return userResponseRememberMe(user);
     }
 
+    @PutMapping("/sp/service")
+    public ResponseEntity removeUserService(Authentication authentication, @RequestBody Map<String, Object> service) {
+        User user = userFromAuthentication(authentication);
+
+        String eduId = (String) service.get("eduId");
+        Map<String, EduID> eduIdPerServiceProvider = user.getEduIdPerServiceProvider().entrySet().stream()
+                .filter(entry -> !entry.getValue().getValue().equals(eduId))
+                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+        user.setEduIdPerServiceProvider(eduIdPerServiceProvider);
+        userRepository.save(user);
+
+        LOG.info(String.format("Deleted eduID %s from user %s", eduId, user.getUsername()));
+
+        return userResponseRememberMe(user);
+    }
+
+    private User userFromAuthentication(Authentication authentication) {
+        String id = ((User) authentication.getPrincipal()).getId();
+        return userRepository.findById(id).orElseThrow(UserNotFoundException::new);
+    }
+
     private ResponseEntity userResponseRememberMe(User user) {
         List<SamlAuthenticationRequest> samlAuthenticationRequests = authenticationRequestRepository.findByUserIdAndRememberMe(user.getId(), true);
-        return ResponseEntity.ok(new UserResponse(user, !samlAuthenticationRequests.isEmpty()));
+        return ResponseEntity.ok(new UserResponse(user, convertEduIdPerServiceProvider(user), !samlAuthenticationRequests.isEmpty()));
     }
 
 
     @GetMapping("sp/security/webauthn")
     public ResponseEntity spStartWebAuthFlow(Authentication authentication) {
         //We need to go from the SP to the IdP and best is too do everything server side, but we need a temporary identifier for the user
-        String id = ((User) authentication.getPrincipal()).getId();
-        User user = userRepository.findById(id).orElseThrow(UserNotFoundException::new);
+        User user = userFromAuthentication(authentication);
 
         String webAuthnIdentifier = this.hash();
         user.setWebAuthnIdentifier(webAuthnIdentifier);
@@ -485,6 +501,12 @@ public class UserController {
             mailBox.sendMagicLink(user, samlAuthenticationRequest.getHash(), serviceName);
         }
         return ResponseEntity.status(201).body(Collections.singletonMap("result", "ok"));
+    }
+
+    private Map<String, EduID> convertEduIdPerServiceProvider(User user) {
+        Map<String, EduID> eduIdPerServiceProvider = user.getEduIdPerServiceProvider();
+        return eduIdPerServiceProvider.entrySet().stream()
+                .collect(Collectors.toMap(entry -> serviceNameResolver.resolve(entry.getKey()), Map.Entry::getValue));
     }
 
     private Optional<User> findUserStoreLanguage(String email) {

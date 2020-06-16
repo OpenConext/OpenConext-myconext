@@ -35,11 +35,11 @@
 </style>
 <div class="home">
     <div class="card">
-        <h2>{I18n.ts("stepup.header")}</h2>
-        <p class="info">{I18n.ts("stepup.info", {name: serviceName})}</p>
-        <p class="info">{I18n.ts("stepup.proceed")}</p>
+        <h2>{I18n.t("stepup.header")}</h2>
+        <p class="info">{I18n.t("stepup.info", {name: serviceName})}</p>
+        <p class="info">{I18n.t("stepup.proceed")}</p>
         <Button href="/proceed" onClick={proceed}
                 className="full"
-                label={I18n.ts("stepup.link")}/>
+                label={I18n.t("stepup.link")}/>
     </div>
 </div>

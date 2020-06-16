@@ -3,6 +3,7 @@
     import I18n from "i18n-js";
     import security from "../icons/security.svg";
     import data_activity from "../icons/data_activity.svg";
+    import connections from "../icons/connections.svg";
     import teams from "../icons/teams.svg";
     import personal_info from "../icons/personal_info.svg";
     import chevron_left from "../icons/chevron-left.svg";
@@ -12,7 +13,8 @@
 
     import Profile from "./Profile.svelte";
     import Security from "./Security.svelte";
-    import Institutions from "./Institutions.svelte"
+    import Institutions from "./Institutions.svelte";
+    import Services from "./Services.svelte"
     import Account from "./Account.svelte";
     import Migration from "./Migration.svelte";
     import Flash from "../components/Flash.svelte";
@@ -23,6 +25,7 @@
         {name: "profile", component: Profile, icon: personal_info},
         {name: "security", component: Security, icon: security},
         {name: "institutions", component: Institutions, icon: teams},
+        {name: "services", component: Services, icon: connections},
         {name: "account", component: Account, icon: data_activity},
         {name: "migration", component: Migration, icon: data_activity, ignore: true}
     ];
@@ -164,7 +167,7 @@
                         {@html tab.icon}
                         <a href="/{tab.name}"
                            on:click|preventDefault|stopPropagation={switchTab(tab.name)}>
-                            {I18n.ts(`home.${tab.name}`)}
+                            {I18n.t(`home.${tab.name}`)}
                         </a>
                     </li>
                 {/if}

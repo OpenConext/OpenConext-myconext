@@ -13,7 +13,8 @@ export const user = writable({
     rememberMe: true,
     created: 0,
     publicKeyCredentials: {},
-    linkedAccounts: []
+    linkedAccounts: [],
+    eduIdPerServiceProvider: {}
 });
 
 export const config = writable({

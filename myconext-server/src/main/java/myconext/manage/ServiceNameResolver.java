@@ -28,6 +28,7 @@ public class ServiceNameResolver {
 
     @Autowired
     public ServiceNameResolver(@Value("${metadata_sp_url}") Resource metaDataResource,
+
                                ObjectMapper objectMapper) {
         this(metaDataResource, objectMapper, true);
     }
@@ -42,13 +43,15 @@ public class ServiceNameResolver {
         }
     }
 
-    @Scheduled(initialDelay = 1000 * 60, fixedRate = 1000 * 60 * 60)
+    @Scheduled(initialDelayString = "${cron.service-name-resolver-initial-delay-milliseconds}",
+            fixedRateString = "${cron.service-name-resolver-fixed-rate-milliseconds}")
     public void refresh() {
         long start = System.currentTimeMillis();
         try {
             serviceNames = objectMapper.readValue(metaDataResource.getInputStream(), new
                     TypeReference<List<Map<String, Map<String, String>>>>() {
-                    }).stream().collect(Collectors.toMap(m -> m.keySet().iterator().next(), m -> m.values().iterator().next()));
+                    }).stream()
+                    .collect(Collectors.toMap(m -> m.keySet().iterator().next(), m -> m.values().iterator().next()));
             LOG.info("Refreshed all " + serviceNames.size() + " Service names from " + metaDataResource + "in " + (System.currentTimeMillis() - start) + " ms");
         } catch (Throwable t) {
             LOG.error("Error in refreshing service names from " + metaDataResource, t);

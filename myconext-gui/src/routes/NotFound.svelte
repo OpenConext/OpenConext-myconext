@@ -24,6 +24,6 @@
 
 </style>
 <div class="not-found">
-    <h1>{I18n.ts("notFound.title")}</h1>
-    <p>{I18n.ts("notFound.title2")}</p>
+    <h1>{I18n.t("notFound.title")}</h1>
+    <p>{I18n.t("notFound.title2")}</p>
 </div>
