@@ -2,7 +2,7 @@
 [![Build Status](https://travis-ci.org/OpenConext/OpenConext-myconext.svg)](https://travis-ci.org/OpenConext/OpenConext-myconext)
 [![codecov.io](https://codecov.io/github/OpenConext/OpenConext-myconext/coverage.svg)](https://codecov.io/github/OpenConext/OpenConext-myconext)
 
-Me environment for OpenConext
+An IdP for OpenConext. A user can create and manage his own identity. Authentication uses a magic-link by default, and a password can be added later.
 
 ## [Getting started](#getting-started)
 
@@ -21,7 +21,7 @@ Me environment for OpenConext
 
 This project uses Spring Boot and Maven. To run locally, type:
 
-`cd manage-server`
+`cd myconext-server`
 
 `mvn spring-boot:run -Dspring-boot.run.profiles=dev`
 
@@ -33,7 +33,7 @@ Don't forget to set the active profile to dev.
 The myconext client is build with Svetle and to get initially started:
 
 ```
-cd manage-gui
+cd account-gui
 yarn install
 yarn dev
 ```
@@ -42,10 +42,10 @@ Browse to the [application homepage](http://localhost:3001/).
 
 ### [The myconext-gui](#myconext-gui)
 
-The Guest-IdP is also build with Svelte and to get initially started:
+The IdP is also build with Svelte and to get initially started:
 
 ```
-cd manage-gui
+cd myconext-gui
 yarn install
 yarn start
 ```
@@ -84,7 +84,7 @@ cloc --read-lang-def=cloc_definitions.txt --vcs=git
 
 ### [Migration](#migration)
 
-[Migrate your account](https://login.test2.eduid.nl/migration)
+It's possoble to migrate from an existing IdP to this IdP. A new identity will be created, and the eppn wil be copied.
 
 ### [Attribute Manipulation](#attribue-manipulation)
 ```
