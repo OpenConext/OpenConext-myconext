@@ -20,6 +20,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import static myconext.log.MDCContext.mdcContext;
+
 @RestController
 @RequestMapping("/myconext/api")
 public class AttributeAggregatorController {
@@ -34,12 +36,8 @@ public class AttributeAggregatorController {
 
     @GetMapping(value = {"attribute-aggregation"})
     @PreAuthorize("hasRole('ROLE_attribute-aggregation')")
-    public ResponseEntity<List<UserAttribute>> aggregate(Authentication authentication,
-                                                         @RequestParam("sp_entity_id") String spEntityId,
+    public ResponseEntity<List<UserAttribute>> aggregate(@RequestParam("sp_entity_id") String spEntityId,
                                                          @RequestParam("eduperson_principal_name") String eduPersonPrincipalName) {
-        LOG.info(String.format("Attribute aggregation for eduPersonPrincipalName %s and spEntityId %s requested by %s",
-                eduPersonPrincipalName, spEntityId, authentication.getPrincipal()));
-
         Optional<User> userOptional = userRepository
                 .findUserByLinkedAccounts_eduPersonPrincipalName(eduPersonPrincipalName);
         List<UserAttribute> userAttributes = new ArrayList<>();
@@ -48,18 +46,19 @@ public class AttributeAggregatorController {
             optionalEduID.ifPresent(eduID -> userAttributes.add(
                     new UserAttribute("urn:mace:eduid.nl:1.1", eduID)));
         });
+
+        mdcContext(userOptional, "action", "attribute aggregation", "sp_entity_id", spEntityId, "eduperson_principal_name", eduPersonPrincipalName);
+        LOG.info(String.format("Attribute aggregation response %s", userAttributes));
+
         return ResponseEntity.ok(userAttributes);
     }
 
     //Note that the spEntityId is the same as the  OIDC client ID
     @GetMapping(value = "attribute-manipulation")
     @PreAuthorize("hasRole('ROLE_attribute-manipulation')")
-    public ResponseEntity<Map> manipulate(Authentication authentication,
-                                          @RequestParam("sp_entity_id") String spEntityId,
+    public ResponseEntity<Map> manipulate(@RequestParam("sp_entity_id") String spEntityId,
                                           @RequestParam("uid") String uid,
                                           @RequestParam(value = "sp_institution_guid", required = false) String spInstitutionGuid) {
-        LOG.info(String.format("Attribute manipulation for uid %s and spEntityId %s requested by %s",
-                uid, spEntityId, authentication.getPrincipal()));
         User user = userRepository.findUserByUid(uid).orElseThrow(UserNotFoundException::new);
         boolean needToSave = !user.getEduIdPerServiceProvider().containsKey(spEntityId);
         String eduId = user.computeEduIdForServiceProviderIfAbsent(spEntityId).get();
@@ -74,6 +73,10 @@ public class AttributeAggregatorController {
                     .findFirst()
                     .ifPresent(linkedAccount -> result.put("eduperson_principal_name", linkedAccount.getEduPersonPrincipalName()));
         }
+
+        mdcContext(Optional.of(user), "action", "attribute manipulation", "uid", uid, "sp_institution_guid", spInstitutionGuid);
+        LOG.info(String.format("Attribute manipulation response %s", result));
+
         return ResponseEntity.ok(result);
     }
 

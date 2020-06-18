@@ -1,20 +1,22 @@
 <configuration>
     <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
-        <encoder>
-            <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n
-            </pattern>
+        <encoder class="net.logstash.logback.encoder.LogstashEncoder">
+            <shortenedLoggerNameLength>36</shortenedLoggerNameLength>
+            <customFields>{"app":"eduID"}</customFields>
+            <fieldNames>
+                <thread>[ignore]</thread>
+                <version>[ignore]</version>
+                <levelValue>[ignore]</levelValue>
+            </fieldNames>
         </encoder>
-        <filter class="filter.CustomThresholdFilter">
-            <level>INFO</level>
-            <clazz>myconext.exceptions.ExpiredAuthenticationException</clazz>
-            <clazz>myconext.exceptions.MigrationDuplicateUserEmailException</clazz>
-        </filter>
     </appender>
 
-    <root level="INFO">
+    <logger name="org.springframework" additivity="false" level="WARN"/>
+    <logger name="org.eclipse.jetty" level="ERROR"/>
+    <logger name="myconext" level="DEBUG"/>
+
+    <root level="WARN">
         <appender-ref ref="STDOUT"/>
     </root>
-
-    <logger name="myconext" level="DEBUG"/>
 
 </configuration>

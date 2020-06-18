@@ -73,6 +73,8 @@ import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+import static myconext.log.MDCContext.mdcContext;
+
 @RestController
 @RequestMapping("/myconext/api")
 public class UserController {
@@ -174,7 +176,8 @@ public class UserController {
                 return ResponseEntity.status(HttpStatus.FORBIDDEN)
                         .body(Collections.singletonMap("status", HttpStatus.FORBIDDEN.value()));
             }
-            LOG.info(String.format("User %s successfully logged in with password", user.getUsername()));
+            mdcContext(Optional.of(user), "action", "successful login with password");
+            LOG.info("Successfully logged in with password");
         }
         return doMagicLink(user, samlAuthenticationRequest, magicLinkRequest.isRememberMe(), magicLinkRequest.isUsePassword());
     }
@@ -191,7 +194,8 @@ public class UserController {
         String userId = user.getId();
         Long count = authenticationRequestRepository.deleteByUserId(userId);
 
-        LOG.info(String.format("Do not remember user %s anymore", user.getUsername()));
+        mdcContext(Optional.of(user), "action", "forget me");
+        LOG.info("Do not remember user anymore");
 
         return ResponseEntity.ok(count);
     }
@@ -206,7 +210,8 @@ public class UserController {
 
         userRepository.save(user);
 
-        LOG.info(String.format("Update user profile for %s", user.getUsername()));
+        mdcContext(Optional.of(user), "action", "update user profile");
+        LOG.info("Update user profile");
 
         return ResponseEntity.status(201).body(new UserResponse(user, convertEduIdPerServiceProvider(user), false));
     }
@@ -407,7 +412,8 @@ public class UserController {
         }
         User user = optionalUser.get();
 
-        LOG.info(String.format("User %s successfully logged in with AuthnWeb", user.getUsername()));
+        mdcContext(Optional.of(user), "action", "successful login with authn");
+        LOG.info("successfully logged in with AuthnWeb");
 
         return doMagicLink(user, samlAuthenticationRequest, rememberMe, true);
     }
@@ -497,7 +503,9 @@ public class UserController {
             LOG.info(String.format("Sending account verification mail with magic link for new user %s", user.getUsername()));
             mailBox.sendAccountVerification(user, samlAuthenticationRequest.getHash());
         } else {
-            LOG.info(String.format("Sending magic link email for existing user %s", user.getUsername()));
+            mdcContext(Optional.of(user), "action", "Sending magic link email", "service", serviceName);
+            LOG.info("Sending magic link email for existing user");
+
             mailBox.sendMagicLink(user, samlAuthenticationRequest.getHash(), serviceName);
         }
         return ResponseEntity.status(201).body(Collections.singletonMap("result", "ok"));

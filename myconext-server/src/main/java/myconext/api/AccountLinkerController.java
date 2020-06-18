@@ -48,6 +48,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import static myconext.log.MDCContext.mdcContext;
+
 @RestController
 @RequestMapping("/myconext/api")
 public class AccountLinkerController {
@@ -104,7 +106,8 @@ public class AccountLinkerController {
     @GetMapping("/idp/oidc/account/{id}")
     public ResponseEntity startIdPLinkAccountFlow(@PathVariable("id") String id,
                                                   @RequestParam(value = "forceAuth", required = false, defaultValue = "false") boolean forceAuth) {
-        LOG.info("Start IdP link account flow for SAML Authentication Request ID " + id);
+        mdcContext("action", "Start IdP link account ", "saml_authentication_request_id", id);
+        LOG.info("IdP link account flow");
 
         UriComponents uriComponents = doStartLinkAccountFlow(id, idpFlowRedirectUri, forceAuth);
         return ResponseEntity.status(HttpStatus.FOUND).location(uriComponents.toUri()).build();
@@ -114,7 +117,8 @@ public class AccountLinkerController {
     public ResponseEntity startSPLinkAccountFlow(Authentication authentication) {
         User user = (User) authentication.getPrincipal();
 
-        LOG.info("Start link account flow for authentication " + user.getEmail());
+        mdcContext(Optional.of(user), "action", "Start link account flow");
+        LOG.info("Start link account flow");
 
         UriComponents uriComponents = doStartLinkAccountFlow("state", spFlowRedirectUri, true);
         return ResponseEntity.ok(Collections.singletonMap("url", uriComponents.toUriString()));
@@ -142,7 +146,8 @@ public class AccountLinkerController {
         User principal = (User) authentication.getPrincipal();
         User user = userRepository.findOneUserByEmailIgnoreCase(principal.getEmail());
 
-        LOG.info("In SP redirect for link account flow for authentication " + user.getEmail());
+        mdcContext(Optional.of(user), "action", "SP redirect link account");
+        LOG.info("In SP redirect link account");
 
         return doRedirect(code, user, this.spFlowRedirectUri, this.spRedirectUrl + "/institutions",
                 false, false, null);
@@ -160,7 +165,8 @@ public class AccountLinkerController {
         boolean validateNames = samlAuthenticationRequest.getAuthenticationContextClassReferences().contains(ACR.VALIDATE_NAMES);
         boolean studentAffiliationRequired = samlAuthenticationRequest.getAuthenticationContextClassReferences().contains(ACR.AFFILIATION_STUDENT);
 
-        LOG.info("In IdP redirect for link account flow for user " + user);
+        mdcContext(Optional.of(user), "action", "IdP redirect link account");
+        LOG.info("In IdP redirect link account");
 
         String location = this.magicLinkUrl + "?h=" + samlAuthenticationRequest.getHash();
 
@@ -244,12 +250,14 @@ public class AccountLinkerController {
             String action = optionalLinkedAccount.isPresent() ? "updated" : "created";
             String eppnValue = StringUtils.hasText(eppn) ? String.format("eppn %s", eppn) : "NO eppn";
 
-            LOG.info("An account link has been {} for User {} with {} to institution {} with the affiliations {}",
-                    action, user.getEmail(), eppnValue, institutionIdentifier, affiliations);
+            mdcContext(Optional.of(user), "action", "account link " + action);
+            LOG.info("Account link with EPPN {} for institution {} with the affiliations {}",
+                    eppnValue, institutionIdentifier, affiliations);
 
             userRepository.save(user);
         } else {
-            LOG.error(String.format("User %s has linked his account, but no institutional identifier or EPPN was provided by the IdP", user.getEmail()));
+            mdcContext(Optional.of(user));
+            LOG.error("Account linking requested, but no schacHomeOrganization provided by the IdP");
         }
         boolean hasStudentAffiliation = user.getLinkedAccounts().stream()
                 .anyMatch(linkedAccount ->
