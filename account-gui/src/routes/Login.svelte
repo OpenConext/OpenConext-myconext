@@ -135,6 +135,11 @@
                                 delete credentials["rawId"];
                                 webAuthnTryAuthentication(JSON.stringify(credentials), id, $user.rememberMe)
                                         .then(json => {
+                                            Cookies.set("login_preference", "useWebAuth", {
+                                                expires: 365,
+                                                secure: true,
+                                                sameSite: "Lax"
+                                            });
                                             if (json.stepup) {
                                                 navigate(`/stepup/${id}?name=${encodeURIComponent(serviceName)}&existing=true`, {replace: true})
                                             } else {
