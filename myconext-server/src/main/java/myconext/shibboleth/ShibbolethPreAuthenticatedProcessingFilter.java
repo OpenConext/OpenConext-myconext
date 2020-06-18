@@ -17,6 +17,7 @@ import java.io.UnsupportedEncodingException;
 import java.util.Optional;
 import java.util.stream.Stream;
 
+import static myconext.log.MDCContext.mdcContext;
 import static myconext.security.CookieResolver.cookieByName;
 
 public class ShibbolethPreAuthenticatedProcessingFilter extends AbstractPreAuthenticatedProcessingFilter {
@@ -68,13 +69,14 @@ public class ShibbolethPreAuthenticatedProcessingFilter extends AbstractPreAuthe
                 User existingUser = optionalUserByEmail.get();
                 //If we would provision this email we would introduce a duplicate email
                 String requestURI = request.getRequestURI();
+                mdcContext(optionalUser, "action", requestURI);
                 if (requestURI.endsWith("sp/migrate/merge")) {
                     //We will provision a new user, so we delete the current one
-                    LOG.info("Migrate oneGini account {} to eduID account", existingUser.getEmail());
+                    LOG.info("Migrate oneGini account to eduID account");
                     userRepository.delete(existingUser);
                 } else if (requestURI.endsWith("sp/migrate/proceed")) {
                     //Now discard everything from the IdP and use the current account
-                    LOG.info("Not migrating oneGini account {} to eduID account", existingUser.getEmail());
+                    LOG.info("Not migrating oneGini account to eduID account");
                     optionalUser = optionalUserByEmail;
                 } else {
                     //need to be picked up by the client
@@ -94,16 +96,16 @@ public class ShibbolethPreAuthenticatedProcessingFilter extends AbstractPreAuthe
         user.setNewUser(false);
         user = userRepository.save(user);
 
-        LOG.info("Provision new User: uid {}, email {}, givenName {}, familyName {}, schacHomeOrganization {}, authenticatingAuthority {}",
-                uid, email, givenName, familyName, schacHomeOrganization, authenticatingAuthority);
 
-        if (oneginiEntityId.equalsIgnoreCase(user.getAuthenticatingAuthority())) {
-            LOG.info("Sending account migration mail to {}", user.getEmail());
+        boolean isOneGini = oneginiEntityId.equalsIgnoreCase(user.getAuthenticatingAuthority());
+
+        String action = isOneGini ? "Sending account migration mail" : "Not sending account migration mail";
+        mdcContext(Optional.of(user), "action", action, "authenticating_authority", authenticatingAuthority);
+        LOG.info("Provision new user");
+
+        if (isOneGini) {
             mailBox.sendAccountMigration(user);
-        } else {
-            LOG.info("Not sending account migration mail. The authenticatingAuthority of the user '{}' does not equal the configured oneginiEntityId '{}'", authenticatingAuthority, oneginiEntityId);
         }
-
         return user;
     }
 
