@@ -139,9 +139,9 @@
             <a href="/back" on:click|preventDefault|stopPropagation={cancel}>
                 {@html chevron_left}
             </a>
-            <h2>{I18n.t("institution.title")}</h2>
+            <h2>{I18n.t("service.title")}</h2>
         </div>
-        <p class="info">{I18n.t("institution.info", formatCreateDate(service.createdAt))}</p>
+        <p class="info">{I18n.t("service.info", formatCreateDate(service.createdAt))}</p>
 
         <table cellspacing="0">
             <thead></thead>
@@ -167,9 +167,9 @@
 
 
         <div class="options">
-            <Button className="cancel" label={I18n.t("institution.cancel")} onClick={cancel}/>
+            <Button className="cancel" label={I18n.t("service.cancel")} onClick={cancel}/>
 
-            <Button label={I18n.t("institution.delete")} className="cancel" onClick={deleteEduId(true)}/>
+            <Button label={I18n.t("service.delete")} className="cancel" onClick={deleteEduId(true)}/>
         </div>
     </div>
 

@@ -36,7 +36,7 @@ I18n.translations.nl = {
     requestGuestAccount: "Vraag een eduID aan",
     alreadyGuestAccount: "Heb je al een <strong>eduID?</strong>",
     noPasswordNeeded: "Geen wachtwoord nodig. We e-mailen je een magische link waarmee je direct kunt inloggen.",
-    noPasswordNeededWebAuthn: "Geen wachtwoord nodig. Gebruik je UBI-key of vingerafdruk om direct in te loggen.",
+    noPasswordNeededWebAuthn: "Geen wachtwoord nodig. Gebruik je Yubikey of vingerafdruk om direct in te loggen.",
     usePasswordLink: "Gebruik toch een wachtwoord",
     usePasswordLinkInfo: "als je deze hebt ingesteld.",
     useWebAuthnLink: "Of gebruik WebAuthn",

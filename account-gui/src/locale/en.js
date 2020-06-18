@@ -36,7 +36,7 @@ I18n.translations.en = {
         requestGuestAccount: "Request an eduID",
         alreadyGuestAccount: "<strong>Already</strong> have an eduID?",
         noPasswordNeeded: "No password needed. We'll send a magic link to your email address to sign in instantly.",
-        noPasswordNeededWebAuthn: "No password needed. Use your UBI-key or fingerprint to sign in instantly.",
+        noPasswordNeededWebAuthn: "No password needed. Use your Yubikey or fingerprint to sign in instantly.",
         usePasswordLink: "Type a password anyway",
         usePasswordLinkInfo: " if you have set one.",
         useWebAuthnLink: "Or use WebAuthn",
