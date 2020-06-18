@@ -27,6 +27,8 @@ import org.springframework.security.saml.saml2.authentication.AuthenticationCont
 import org.springframework.security.saml.saml2.authentication.AuthenticationRequest;
 import org.springframework.security.saml.saml2.authentication.Response;
 import org.springframework.security.saml.saml2.authentication.Scoping;
+import org.springframework.security.saml.saml2.authentication.Status;
+import org.springframework.security.saml.saml2.authentication.StatusCode;
 import org.springframework.security.saml.saml2.metadata.Binding;
 import org.springframework.security.saml.saml2.metadata.Endpoint;
 import org.springframework.security.saml.saml2.metadata.NameId;
@@ -347,13 +349,22 @@ public class GuestIdpAuthenticationRequestFilter extends IdpAuthenticationReques
         Response samlResponse = provider.response(authenticationRequest, assertion, serviceProviderMetadata);
 
         if (samlAuthenticationRequest.isAccountLinkingRequired()) {
-            boolean studentAffiliationPresent = authenticationContextClassReferences.contains(ACR.AFFILIATION_STUDENT) &&
-                    user.allEduPersonAffiliations().stream().anyMatch(affiliation -> affiliation.startsWith("student"));
-            //We can't change the status of the response as EB stops the flow if status is not success
-            samlResponse.getAssertions().get(0).getAuthenticationStatements().get(0)
-                    .getAuthenticationContext()
-                    .setClassReference(AuthenticationContextClassReference
-                            .fromUrn(ACR.selectACR(authenticationContextClassReferences, studentAffiliationPresent)));
+            boolean hasStudentAffiliation = user.allEduPersonAffiliations().stream().anyMatch(affiliation -> affiliation.startsWith("student"));
+
+            //When we change the status of the response to NO_AUTH_CONTEXT EB stops the flow but this will be fixed upstream
+            if (authenticationContextClassReferences.contains(ACR.AFFILIATION_STUDENT) && !hasStudentAffiliation) {
+                String msg = "The requesting service has indicated that the authenticated user is required to have an affiliation Student." +
+                        " Your institution has not provided this affiliation.";
+                samlResponse.setStatus(new Status()
+                        .setCode(StatusCode.NO_AUTH_CONTEXT)
+                        .setMessage(msg)
+                        .setDetail(msg));
+            } else {
+                samlResponse.getAssertions().get(0).getAuthenticationStatements().get(0)
+                        .getAuthenticationContext()
+                        .setClassReference(AuthenticationContextClassReference
+                                .fromUrn(ACR.selectACR(authenticationContextClassReferences, hasStudentAffiliation)));
+            }
         }
 
         Endpoint acsUrl = provider.getPreferredEndpoint(
