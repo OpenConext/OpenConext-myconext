@@ -59,6 +59,12 @@ attribute_manipulation:
   user: oidcng
   password: secret
 
+oidc-token-api:
+  token-url: https://connect.test2.surfconext.nl/tokens
+  user: eduid
+  password: secret
+  enabled: true
+
 oidc:
   client-id: myconext.rp.localhost
   secret: secret

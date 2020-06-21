@@ -31,9 +31,11 @@ import myconext.model.EduID;
 import myconext.model.LinkedAccount;
 import myconext.model.MagicLinkRequest;
 import myconext.model.SamlAuthenticationRequest;
+import myconext.model.TokenRepresentation;
 import myconext.model.UpdateUserSecurityRequest;
 import myconext.model.User;
 import myconext.model.UserResponse;
+import myconext.oidcng.OpenIDConnect;
 import myconext.repository.AuthenticationRequestRepository;
 import myconext.repository.ChallengeRepository;
 import myconext.repository.UserRepository;
@@ -81,22 +83,23 @@ public class UserController {
 
     private static final Log LOG = LogFactory.getLog(UserController.class);
 
-    private UserRepository userRepository;
-    private AuthenticationRequestRepository authenticationRequestRepository;
-    private MailBox mailBox;
-    private ServiceNameResolver serviceNameResolver;
-    private String magicLinkUrl;
-    private String schacHomeOrganization;
-    private String guestIdpEntityId;
-    private String webAuthnSpRedirectUrl;
-    private String idpBaseUrl;
-    private RelyingParty relyingParty;
-    private UserCredentialRepository userCredentialRepository;
-    private ChallengeRepository challengeRepository;
+    private final UserRepository userRepository;
+    private final AuthenticationRequestRepository authenticationRequestRepository;
+    private final MailBox mailBox;
+    private final ServiceNameResolver serviceNameResolver;
+    private final OpenIDConnect openIDConnect;
+    private final String magicLinkUrl;
+    private final String schacHomeOrganization;
+    private final String guestIdpEntityId;
+    private final String webAuthnSpRedirectUrl;
+    private final String idpBaseUrl;
+    private final RelyingParty relyingParty;
+    private final UserCredentialRepository userCredentialRepository;
+    private final ChallengeRepository challengeRepository;
 
-    private SecureRandom random = new SecureRandom();
-    private PasswordEncoder passwordEncoder = new BCryptPasswordEncoder(-1, random);
-    private EmailGuessingPrevention emailGuessingPreventor;
+    private final SecureRandom random = new SecureRandom();
+    private final PasswordEncoder passwordEncoder = new BCryptPasswordEncoder(-1, random);
+    private final EmailGuessingPrevention emailGuessingPreventor;
 
     public UserController(UserRepository userRepository,
                           UserCredentialRepository userCredentialRepository,
@@ -104,6 +107,7 @@ public class UserController {
                           AuthenticationRequestRepository authenticationRequestRepository,
                           MailBox mailBox,
                           ServiceNameResolver serviceNameResolver,
+                          OpenIDConnect openIDConnect,
                           @Value("${email.magic-link-url}") String magicLinkUrl,
                           @Value("${schac_home_organization}") String schacHomeOrganization,
                           @Value("${guest_idp_entity_id}") String guestIdpEntityId,
@@ -118,6 +122,7 @@ public class UserController {
         this.authenticationRequestRepository = authenticationRequestRepository;
         this.mailBox = mailBox;
         this.serviceNameResolver = serviceNameResolver;
+        this.openIDConnect = openIDConnect;
         this.magicLinkUrl = magicLinkUrl;
         this.schacHomeOrganization = schacHomeOrganization;
         this.guestIdpEntityId = guestIdpEntityId;
@@ -183,13 +188,13 @@ public class UserController {
     }
 
     @GetMapping(value = {"/sp/me", "sp/migrate/merge", "sp/migrate/proceed"})
-    public ResponseEntity me(Authentication authentication) {
+    public ResponseEntity<UserResponse> me(Authentication authentication) {
         User user = userRepository.findOneUserByEmailIgnoreCase(((User) authentication.getPrincipal()).getEmail());
         return userResponseRememberMe(user);
     }
 
     @DeleteMapping("/sp/forget")
-    public ResponseEntity forgetMe(Authentication authentication) {
+    public ResponseEntity<Long> forgetMe(Authentication authentication) {
         User user = (User) authentication.getPrincipal();
         String userId = user.getId();
         Long count = authenticationRequestRepository.deleteByUserId(userId);
@@ -250,7 +255,7 @@ public class UserController {
     }
 
     @PutMapping("/sp/service")
-    public ResponseEntity removeUserService(Authentication authentication, @RequestBody Map<String, Object> service) {
+    public ResponseEntity<UserResponse> removeUserService(Authentication authentication, @RequestBody Map<String, Object> service) {
         User user = userFromAuthentication(authentication);
 
         String eduId = (String) service.get("eduId");
@@ -265,12 +270,25 @@ public class UserController {
         return userResponseRememberMe(user);
     }
 
+    @GetMapping("/sp/tokens")
+    public ResponseEntity<List<Map<String, Object>>> tokens(Authentication authentication) {
+        User user = userFromAuthentication(authentication);
+        return ResponseEntity.ok(this.openIDConnect.tokens(user));
+    }
+
+    @PutMapping("/sp/tokens")
+    public ResponseEntity<Void> deleteTokens(Authentication authentication,
+                                             @RequestBody List<TokenRepresentation> tokenIdentifiers) {
+        HttpStatus httpStatus = openIDConnect.deleteTokens(tokenIdentifiers);
+        return ResponseEntity.status(httpStatus).build();
+    }
+
     private User userFromAuthentication(Authentication authentication) {
         String id = ((User) authentication.getPrincipal()).getId();
         return userRepository.findById(id).orElseThrow(UserNotFoundException::new);
     }
 
-    private ResponseEntity userResponseRememberMe(User user) {
+    private ResponseEntity<UserResponse> userResponseRememberMe(User user) {
         List<SamlAuthenticationRequest> samlAuthenticationRequests = authenticationRequestRepository.findByUserIdAndRememberMe(user.getId(), true);
         return ResponseEntity.ok(new UserResponse(user, convertEduIdPerServiceProvider(user), !samlAuthenticationRequests.isEmpty()));
     }

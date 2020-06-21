@@ -182,7 +182,6 @@ public class AccountLinkerControllerTest extends AbstractIntegrationTest {
 
     @Test
     public void spOidcLink() {
-        User user = userRepository.findOneUserByEmailIgnoreCase("jdoe@example.com");
         Map res = given()
                 .when()
                 .get("/myconext/api/sp/oidc/link")

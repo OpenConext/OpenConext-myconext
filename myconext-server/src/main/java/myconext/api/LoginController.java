@@ -34,7 +34,8 @@ public class LoginController {
                            @Value("${secure_cookie}") boolean secureCookie,
                            @Value("${idp_redirect_url}") String idpBaseUrl,
                            @Value("${sp_redirect_url}") String spBaseUrl,
-                           @Value("${feature.webauthn}") boolean featureWebAuthn)  {
+                           @Value("${feature.webauthn}") boolean featureWebAuthn,
+                           @Value("${oidc-token-api.enabled}") boolean featureOidcTokenAPI)  {
         this.config.put("loginUrl", basePath + "/login");
         this.config.put("baseDomain", baseDomain);
         this.config.put("migrationUrl", String.format("%s/Shibboleth.sso/Login?entityID=%s&target=/migration", myConextUrl, oneGiniEntityId));
@@ -45,6 +46,7 @@ public class LoginController {
         this.config.put("eduIDWebAuthnRedirectSpUrl", String.format("%s/webauthn", spBaseUrl));
         this.config.put("domain", domain);
         this.config.put("featureWebAuthn", featureWebAuthn);
+        this.config.put("featureOidcTokenAPI", featureOidcTokenAPI);
         this.secureCookie = secureCookie;
     }
 
