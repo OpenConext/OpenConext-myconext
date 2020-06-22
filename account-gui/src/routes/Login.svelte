@@ -173,10 +173,12 @@
 
     const handleEmailEnter = e => {
         if (e.key === "Enter") {
-            if (!$user.createAccount && !$user.usePassword) {
+            if (!$user.createAccount && !$user.usePassword && !$user.useWebAuth) {
                 handleNext(false)();
             } else if ($user.usePassword) {
                 passwordField.focus();
+            } else if ($user.useWebAuth) {
+                webAuthnStart($user.email)
             }
         }
     };
