@@ -174,8 +174,11 @@ public class UserController {
         }
         User user = optionalUser.get();
         String requesterEntityId = samlAuthenticationRequest.getRequesterEntityId();
-        if (!user.getEduIdPerServiceProvider().containsKey(requesterEntityId)) {
-            user.computeEduIdForServiceProviderIfAbsent(requesterEntityId, serviceNameResolver.resolve(requesterEntityId));
+        String serviceProviderName = serviceNameResolver.resolve(requesterEntityId);
+
+        boolean needToSave = user.eduIdForServiceProviderNeedsUpdate(requesterEntityId, serviceProviderName);
+        if (needToSave) {
+            user.computeEduIdForServiceProviderIfAbsent(requesterEntityId, serviceProviderName);
             userRepository.save(user);
         }
 

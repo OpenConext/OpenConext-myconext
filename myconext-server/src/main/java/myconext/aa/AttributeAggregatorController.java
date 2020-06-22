@@ -65,8 +65,10 @@ public class AttributeAggregatorController {
                                           @RequestParam("uid") String uid,
                                           @RequestParam(value = "sp_institution_guid", required = false) String spInstitutionGuid) {
         User user = userRepository.findUserByUid(uid).orElseThrow(UserNotFoundException::new);
-        boolean needToSave = !user.getEduIdPerServiceProvider().containsKey(spEntityId);
-        String eduId = user.computeEduIdForServiceProviderIfAbsent(spEntityId, serviceNameResolver.resolve(spEntityId)).get();
+        String serviceProviderName = serviceNameResolver.resolve(spEntityId);
+
+        boolean needToSave = user.eduIdForServiceProviderNeedsUpdate(spEntityId, serviceProviderName);
+        String eduId = user.computeEduIdForServiceProviderIfAbsent(spEntityId, serviceProviderName).get();
         if (needToSave) {
             userRepository.save(user);
         }

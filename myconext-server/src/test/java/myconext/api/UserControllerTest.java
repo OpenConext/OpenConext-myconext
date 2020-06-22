@@ -183,7 +183,7 @@ public class UserControllerTest extends AbstractIntegrationTest {
     @Test
     public void accountLinkingWithValidatedNames() throws IOException {
         User user = userRepository.findOneUserByEmailIgnoreCase("jdoe@example.com");
-        Date createdAt = Date.from(Instant.now().plus(30 * 365, ChronoUnit.DAYS));
+        Date createdAt = Date.from(Instant.now());
         LinkedAccount linkedAccount = LinkedAccountTest.linkedAccount("Mary", "Steward", createdAt);
         user.getLinkedAccounts().add(linkedAccount);
         userRepository.save(user);
@@ -198,6 +198,32 @@ public class UserControllerTest extends AbstractIntegrationTest {
         assertTrue(samlResponse.contains(ACR.VALIDATE_NAMES));
         assertTrue(samlResponse.contains(linkedAccount.getFamilyName()));
         assertTrue(samlResponse.contains(linkedAccount.getGivenName()));
+    }
+
+    @Test
+    public void accountLinkingWithoutStudentAffiliation() throws IOException {
+        User user = userRepository.findOneUserByEmailIgnoreCase("jdoe@example.com");
+        Date createdAt = Date.from(Instant.now().plus(30 * 365, ChronoUnit.DAYS));
+        LinkedAccount linkedAccount = LinkedAccountTest.linkedAccount(createdAt, Arrays.asList("nope"));
+        user.getLinkedAccounts().add(linkedAccount);
+        userRepository.save(user);
+
+        String authnContext = readFile("request_authn_context_affiliation_student.xml");
+        Response response = samlAuthnRequestResponseWithLoa(null, "relay", authnContext);
+
+        String authenticationRequestId = extractAuthenticationRequestIdFromAuthnResponse(response);
+        SamlAuthenticationRequest samlAuthenticationRequest = authenticationRequestRepository.findById(authenticationRequestId).get();
+        //fake that we want to proceed
+        samlAuthenticationRequest.setSteppedUp(StepUpStatus.FINISHED_STEP_UP);
+        authenticationRequestRepository.save(samlAuthenticationRequest);
+
+        MagicLinkResponse magicLinkResponse = magicLinkRequest(new MagicLinkRequest(authenticationRequestId, user, false, false), HttpMethod.PUT);
+        String samlResponse = this.samlResponse(magicLinkResponse);
+
+        assertTrue(samlResponse.contains("Your institution has not provided this affiliation"));
+        assertTrue(samlResponse.contains("urn:oasis:names:tc:SAML:2.0:status:NoAuthnContext"));
+        assertTrue(samlResponse.contains("<saml2:AuthnContextClassRef>urn:oasis:names:tc:SAML:2.0:ac:classes:unspecified</saml2:AuthnContextClassRef>"));
+        assertFalse(samlResponse.contains(ACR.AFFILIATION_STUDENT));
     }
 
     @Test

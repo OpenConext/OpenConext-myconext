@@ -102,12 +102,31 @@ public class User implements Serializable, UserDetails {
 
     @Transient
     public Optional<String> computeEduIdForServiceProviderIfAbsent(String serviceProviderEntityId, String serviceProviderName) {
-        return StringUtils.hasText(serviceProviderEntityId) ?
+        Optional<String> result = StringUtils.hasText(serviceProviderEntityId) ?
                 Optional.of(this.eduIdPerServiceProvider.computeIfAbsent(serviceProviderEntityId, s ->
                         new EduID(UUID.randomUUID().toString(), serviceProviderName, new Date())).getValue()) :
                 Optional.empty();
+        syncServiceName(serviceProviderEntityId, serviceProviderName);
+        return result;
     }
 
+    private boolean syncServiceName(String serviceProviderEntityId, String serviceProviderName) {
+        EduID eduID = this.eduIdPerServiceProvider.get(serviceProviderEntityId);
+        boolean needsSyncing = StringUtils.hasText(serviceProviderName) && !serviceProviderName.equals(eduID.getServiceName());
+        if (needsSyncing) {
+            eduID.updateServiceName(serviceProviderName);
+        }
+        return needsSyncing;
+    }
+
+    @Transient
+    public boolean eduIdForServiceProviderNeedsUpdate(String serviceProviderEntityId, String serviceProviderName) {
+        if (!this.eduIdPerServiceProvider.containsKey(serviceProviderEntityId)) {
+            return true;
+        }
+        return syncServiceName(serviceProviderEntityId, serviceProviderName);
+
+    }
 
     @Override
     @JsonIgnore

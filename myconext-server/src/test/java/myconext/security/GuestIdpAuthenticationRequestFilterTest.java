@@ -57,12 +57,12 @@ public class GuestIdpAuthenticationRequestFilterTest {
         User user = AbstractIntegrationTest.user("s@s.com", "nl");
         LinkedAccount linkedAccount = linkedAccount(new Date(), Arrays.asList("student"));
         user.getLinkedAccounts().add(linkedAccount);
-        boolean userVerifiedByInstitution =userVerifiedByInstitution(user, ACR.AFFILIATION_STUDENT);
+        boolean userVerifiedByInstitution = userVerifiedByInstitution(user, ACR.AFFILIATION_STUDENT);
         assertTrue(userVerifiedByInstitution);
     }
 
     private boolean userVerifiedByInstitution(User user, String acr) {
-        return  GuestIdpAuthenticationRequestFilter.isUserVerifiedByInstitution(user, Collections.singletonList(acr));
+        return GuestIdpAuthenticationRequestFilter.isUserVerifiedByInstitution(user, Collections.singletonList(acr));
     }
 
 

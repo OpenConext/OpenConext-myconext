@@ -8,13 +8,15 @@ import java.util.Date;
 import java.util.List;
 import java.util.regex.Pattern;
 
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 public class UserTest {
 
     @Test
     public void linkedAccountsSorted() {
-        User user = user();
+        User user = user("http://mock-sp", "Mock SP");
         user.getLinkedAccounts().add(LinkedAccountTest.linkedAccount("John", "Doe", new Date()));
         user.getLinkedAccounts().add(LinkedAccountTest.linkedAccount("Mary", "Steward", Date.from(Instant.now().plus(1, ChronoUnit.DAYS))));
 
@@ -24,14 +26,34 @@ public class UserTest {
 
     @Test
     public void computeEduIdForServiceProviderIfAbsent() {
-        User user = user();
+        User user = user("http://mock-sp", "Mock SP");
         String eduId = user.computeEduIdForServiceProviderIfAbsent("http://test.sp", "Mock SP").get();
         boolean matches = Pattern.compile("^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$").matcher(eduId).matches();
         assertTrue(matches);
 
+        assertFalse(user.computeEduIdForServiceProviderIfAbsent(null, null).isPresent());
+
     }
 
-    private User user() {
-        return new User("uid", "email", "John", "Doe", "schac", "aa", "http://mock-sp", "Mock SP", "en");
+    @Test
+    public void eduIdForServiceProviderNeedsUpdate() {
+        User user = user("http://mock-sp", null);
+
+        assertTrue(user.eduIdForServiceProviderNeedsUpdate("http://rp", null));
+        assertTrue(user.eduIdForServiceProviderNeedsUpdate(null, null));
+        assertTrue(user.eduIdForServiceProviderNeedsUpdate("http://mock-sp", "Mock SP - EN"));
+        assertTrue(user.eduIdForServiceProviderNeedsUpdate("http://mock-sp", "Mock SP"));
+    }
+
+    @Test
+    public void encryptPassword() {
+        User user = new User();
+        user.encryptPassword(null, null);
+        assertNull(user.getPassword());
+    }
+
+    private User user(String serviceProviderEntityId, String serviceProviderName) {
+        return new User("uid", "email", "John", "Doe", "schac",
+                "aa", serviceProviderEntityId, serviceProviderName, "en");
     }
 }

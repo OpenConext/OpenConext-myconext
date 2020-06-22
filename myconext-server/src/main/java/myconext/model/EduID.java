@@ -14,4 +14,8 @@ public class EduID {
     private String value;
     private String serviceName;
     private Date createdAt;
+
+    public void updateServiceName(String serviceName) {
+        this.serviceName = serviceName;
+    }
 }
