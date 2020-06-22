@@ -4,14 +4,14 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.util.Date;
+import java.util.List;
 
+@Getter
 @NoArgsConstructor
 @AllArgsConstructor
-@Getter
-public class EduID {
+public class DeleteServiceTokens {
 
-    private String value;
-    private String serviceName;
-    private Date createdAt;
+    private String eduId;
+    private List<TokenRepresentation> tokens;
+
 }

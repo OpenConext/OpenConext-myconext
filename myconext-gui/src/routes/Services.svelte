@@ -11,7 +11,7 @@
     let services = [];
 
     onMount(() => services = Object.keys($user.eduIdPerServiceProvider).map(k => ({
-        name: k,
+        name: $user.eduIdPerServiceProvider[k].serviceName,
         eduId: $user.eduIdPerServiceProvider[k].value
     })));
 
@@ -65,6 +65,10 @@
         border-bottom: 1px solid var(--color-primary-grey);
     }
 
+    td.last {
+        border-bottom: none;
+    }
+
     td.value {
         width: 70%;
         font-weight: bold;
@@ -97,10 +101,9 @@
             <table cellspacing="0">
                 <thead></thead>
                 <tbody>
-                {#each services as service}
+                {#each services as service, i}
                     <tr class="name" on:click={serviceDetails(service.eduId)}>
-
-                        <td class="value">
+                        <td class="value" class:last={i === services.length - 1}>
                             <div class="value-container">
                                 <span>{`${service.name}`}</span>
                                 <a class="menu-link" href="/edit"

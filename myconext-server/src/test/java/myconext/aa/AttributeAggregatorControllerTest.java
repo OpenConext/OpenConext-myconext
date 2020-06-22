@@ -46,7 +46,7 @@ public class AttributeAggregatorControllerTest extends AbstractIntegrationTest {
     public void aggregateExistingEduID() {
         User user = userRepository.findOneUserByEmailIgnoreCase("jdoe@example.com");
         String spEntityId = "http://mock-sp";
-        String eduId = user.computeEduIdForServiceProviderIfAbsent(spEntityId).get();
+        String eduId = user.computeEduIdForServiceProviderIfAbsent(spEntityId, null).get();
         userRepository.save(user);
         List<UserAttribute> userAttributes = doAggregate(attributeAggregationUserName, attributeAggregationPassword, spEntityId, eppn);
 
@@ -138,7 +138,8 @@ public class AttributeAggregatorControllerTest extends AbstractIntegrationTest {
                 .as(Map.class);
         Optional<User> optionalUser = userRepository.findUserByUid(uid);
         optionalUser.ifPresent(user -> {
-            assertEquals(res.get("eduid"), user.computeEduIdForServiceProviderIfAbsent(spEntityId).get());
+            assertEquals(res.get("eduid"),
+                    user.computeEduIdForServiceProviderIfAbsent(spEntityId, null).get());
         });
         return res;
     }

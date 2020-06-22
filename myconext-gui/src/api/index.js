@@ -77,10 +77,13 @@ export function deleteLinkedAccount(linkedAccount) {
     return postPutJson("/myconext/api/sp/institution", linkedAccount, "PUT");
 }
 
-export function deleteService(service) {
-    return postPutJson("/myconext/api/sp/service", service, "PUT");
+export function deleteServiceAndTokens(eduId, tokens) {
+    return postPutJson("/myconext/api/sp/service", {eduId, tokens}, "PUT");
 }
 
+export function oidcTokens() {
+    return fetchJson("/myconext/api/sp/tokens");
+}
 
 export function startLinkAccountFlow() {
     return fetchJson("/myconext/api/sp/oidc/link");

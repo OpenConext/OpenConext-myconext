@@ -6,11 +6,11 @@ import org.springframework.http.HttpStatus;
 
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 public class OpenIDConnectMock implements OpenIDConnect {
 
-
-    private final List<Map<String, Object>> tokens;
+    private List<Map<String, Object>> tokens;
 
     public OpenIDConnectMock(List<Map<String, Object>> tokens) {
         this.tokens = tokens;
@@ -23,6 +23,10 @@ public class OpenIDConnectMock implements OpenIDConnect {
 
     @Override
     public HttpStatus deleteTokens(List<TokenRepresentation> tokenIdentifiers) {
+        this.tokens = this.tokens.stream()
+                .filter(token -> tokenIdentifiers.stream()
+                        .noneMatch(tokenRepresentation -> tokenRepresentation.getId().equals(token.get("id"))))
+                .collect(Collectors.toList());
         return HttpStatus.NO_CONTENT;
     }
 }

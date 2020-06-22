@@ -14,7 +14,7 @@
     import RememberMe from "./routes/RememberMe.svelte";
     import Home from "./routes/Home.svelte";
     import Header from "./components/Header.svelte";
-    import {me, configuration} from "./api";
+    import {me, configuration, oidcTokens} from "./api";
     import {user, config, redirectPath, duplicatedEmail} from "./stores/user";
     import I18n from "i18n-js";
 
@@ -44,13 +44,21 @@
                 } else {
                     me()
                             .then(json => {
-                                loaded = true;
                                 for (var key in json) {
                                     if (json.hasOwnProperty(key)) {
                                         $user[key] = json[key];
                                     }
                                 }
                                 $user.guest = false;
+                                const useOidcApi = $config.featureOidcTokenAPI;
+                                if (useOidcApi) {
+                                    oidcTokens().then(tokens => {
+                                        $user.oidcTokens = tokens;
+                                        loaded = true;
+                                    });
+                                } else {
+                                    loaded = true;
+                                }
                             })
                             .catch(e => {
                                 loaded = true;

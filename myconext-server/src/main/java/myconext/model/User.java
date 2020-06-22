@@ -61,7 +61,7 @@ public class User implements Serializable, UserDetails {
 
     public User(String uid, String email, String givenName, String familyName,
                 String schacHomeOrganization, String authenticatingAuthority,
-                String serviceProviderEntityId, String preferredLanguage) {
+                String serviceProviderEntityId,String serviceProviderName, String preferredLanguage) {
         this.uid = uid;
         this.email = email;
         this.givenName = givenName;
@@ -70,7 +70,7 @@ public class User implements Serializable, UserDetails {
         this.authenticatingAuthority = authenticatingAuthority;
         this.preferredLanguage = preferredLanguage;
 
-        this.computeEduIdForServiceProviderIfAbsent(serviceProviderEntityId);
+        this.computeEduIdForServiceProviderIfAbsent(serviceProviderEntityId, serviceProviderName);
         this.newUser = true;
         this.created = System.currentTimeMillis() / 1000L;
     }
@@ -101,10 +101,10 @@ public class User implements Serializable, UserDetails {
     }
 
     @Transient
-    public Optional<String> computeEduIdForServiceProviderIfAbsent(String serviceProviderEntityId) {
+    public Optional<String> computeEduIdForServiceProviderIfAbsent(String serviceProviderEntityId, String serviceProviderName) {
         return StringUtils.hasText(serviceProviderEntityId) ?
                 Optional.of(this.eduIdPerServiceProvider.computeIfAbsent(serviceProviderEntityId, s ->
-                        new EduID(UUID.randomUUID().toString(), new Date())).getValue()) :
+                        new EduID(UUID.randomUUID().toString(), serviceProviderName, new Date())).getValue()) :
                 Optional.empty();
     }
 

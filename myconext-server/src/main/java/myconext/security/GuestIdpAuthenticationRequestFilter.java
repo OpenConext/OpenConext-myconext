@@ -410,7 +410,7 @@ public class GuestIdpAuthenticationRequestFilter extends IdpAuthenticationReques
                 attribute("urn:mace:terena.org:attribute-def:schacHomeOrganization", user.getSchacHomeOrganization())
         ));
         if (!user.getEduIdPerServiceProvider().containsKey(requesterEntityId)) {
-            user.computeEduIdForServiceProviderIfAbsent(requesterEntityId);
+            user.computeEduIdForServiceProviderIfAbsent(requesterEntityId, serviceNameResolver.resolve(requesterEntityId));
             userRepository.save(user);
         }
         String eduID = user.getEduIdPerServiceProvider().get(requesterEntityId).getValue();

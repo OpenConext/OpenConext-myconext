@@ -14,7 +14,8 @@ export const user = writable({
     created: 0,
     publicKeyCredentials: {},
     linkedAccounts: [],
-    eduIdPerServiceProvider: {}
+    eduIdPerServiceProvider: {},
+    oidcTokens: []
 });
 
 export const config = writable({
@@ -25,7 +26,8 @@ export const config = writable({
     eduIDWebAuthnUrl: "",
     magicLinkUrl: "",
     domain: "",
-    featureWebAuthn: false
+    featureWebAuthn: false,
+    featureOidcTokenAPI: false
 });
 
 export const redirectPath = writable("");

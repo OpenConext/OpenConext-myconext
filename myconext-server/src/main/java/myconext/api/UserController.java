@@ -27,6 +27,7 @@ import myconext.exceptions.UserNotFoundException;
 import myconext.mail.MailBox;
 import myconext.manage.ServiceNameResolver;
 import myconext.model.Challenge;
+import myconext.model.DeleteServiceTokens;
 import myconext.model.EduID;
 import myconext.model.LinkedAccount;
 import myconext.model.MagicLinkRequest;
@@ -51,6 +52,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -150,7 +152,8 @@ public class UserController {
         //prevent not-wanted attributes in the database
         String requesterEntityId = samlAuthenticationRequest.getRequesterEntityId();
         User userToSave = new User(UUID.randomUUID().toString(), user.getEmail(), user.getGivenName(),
-                user.getFamilyName(), schacHomeOrganization, guestIdpEntityId, requesterEntityId, preferredLanguage);
+                user.getFamilyName(), schacHomeOrganization, guestIdpEntityId, requesterEntityId,
+                serviceNameResolver.resolve(requesterEntityId), preferredLanguage);
         userToSave = userRepository.save(userToSave);
 
         return this.doMagicLink(userToSave, samlAuthenticationRequest, magicLinkRequest.isRememberMe(), false);
@@ -172,7 +175,7 @@ public class UserController {
         User user = optionalUser.get();
         String requesterEntityId = samlAuthenticationRequest.getRequesterEntityId();
         if (!user.getEduIdPerServiceProvider().containsKey(requesterEntityId)) {
-            user.computeEduIdForServiceProviderIfAbsent(requesterEntityId);
+            user.computeEduIdForServiceProviderIfAbsent(requesterEntityId, serviceNameResolver.resolve(requesterEntityId));
             userRepository.save(user);
         }
 
@@ -255,10 +258,11 @@ public class UserController {
     }
 
     @PutMapping("/sp/service")
-    public ResponseEntity<UserResponse> removeUserService(Authentication authentication, @RequestBody Map<String, Object> service) {
+    public ResponseEntity<UserResponse> removeUserService(Authentication authentication,
+                                                          @RequestBody DeleteServiceTokens serviceAndTokens) {
         User user = userFromAuthentication(authentication);
 
-        String eduId = (String) service.get("eduId");
+        String eduId = serviceAndTokens.getEduId();
         Map<String, EduID> eduIdPerServiceProvider = user.getEduIdPerServiceProvider().entrySet().stream()
                 .filter(entry -> !entry.getValue().getValue().equals(eduId))
                 .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
@@ -267,6 +271,11 @@ public class UserController {
 
         LOG.info(String.format("Deleted eduID %s from user %s", eduId, user.getUsername()));
 
+        List<TokenRepresentation> tokens = serviceAndTokens.getTokens();
+        if (!CollectionUtils.isEmpty(tokens)) {
+            openIDConnect.deleteTokens(tokens);
+        }
+
         return userResponseRememberMe(user);
     }
 
@@ -274,13 +283,6 @@ public class UserController {
     public ResponseEntity<List<Map<String, Object>>> tokens(Authentication authentication) {
         User user = userFromAuthentication(authentication);
         return ResponseEntity.ok(this.openIDConnect.tokens(user));
-    }
-
-    @PutMapping("/sp/tokens")
-    public ResponseEntity<Void> deleteTokens(Authentication authentication,
-                                             @RequestBody List<TokenRepresentation> tokenIdentifiers) {
-        HttpStatus httpStatus = openIDConnect.deleteTokens(tokenIdentifiers);
-        return ResponseEntity.status(httpStatus).build();
     }
 
     private User userFromAuthentication(Authentication authentication) {
@@ -530,9 +532,7 @@ public class UserController {
     }
 
     private Map<String, EduID> convertEduIdPerServiceProvider(User user) {
-        Map<String, EduID> eduIdPerServiceProvider = user.getEduIdPerServiceProvider();
-        return eduIdPerServiceProvider.entrySet().stream()
-                .collect(Collectors.toMap(entry -> serviceNameResolver.resolve(entry.getKey()), Map.Entry::getValue));
+        return user.getEduIdPerServiceProvider();
     }
 
     private Optional<User> findUserStoreLanguage(String email) {

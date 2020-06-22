@@ -1,6 +1,7 @@
 package myconext.aa;
 
 import myconext.exceptions.UserNotFoundException;
+import myconext.manage.ServiceNameResolver;
 import myconext.model.User;
 import myconext.repository.UserRepository;
 import org.apache.commons.logging.Log;
@@ -28,10 +29,13 @@ public class AttributeAggregatorController {
 
     private static final Log LOG = LogFactory.getLog(AttributeAggregatorController.class);
 
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
+    private final ServiceNameResolver serviceNameResolver;
 
-    public AttributeAggregatorController(UserRepository userRepository) {
+    public AttributeAggregatorController(UserRepository userRepository,
+                                         ServiceNameResolver serviceNameResolver) {
         this.userRepository = userRepository;
+        this.serviceNameResolver = serviceNameResolver;
     }
 
     @GetMapping(value = {"attribute-aggregation"})
@@ -42,7 +46,8 @@ public class AttributeAggregatorController {
                 .findUserByLinkedAccounts_eduPersonPrincipalName(eduPersonPrincipalName);
         List<UserAttribute> userAttributes = new ArrayList<>();
         userOptional.ifPresent(user -> {
-            Optional<String> optionalEduID = user.computeEduIdForServiceProviderIfAbsent(spEntityId);
+            Optional<String> optionalEduID = user.computeEduIdForServiceProviderIfAbsent(spEntityId,
+                    serviceNameResolver.resolve(spEntityId));
             optionalEduID.ifPresent(eduID -> userAttributes.add(
                     new UserAttribute("urn:mace:eduid.nl:1.1", eduID)));
         });
@@ -61,7 +66,7 @@ public class AttributeAggregatorController {
                                           @RequestParam(value = "sp_institution_guid", required = false) String spInstitutionGuid) {
         User user = userRepository.findUserByUid(uid).orElseThrow(UserNotFoundException::new);
         boolean needToSave = !user.getEduIdPerServiceProvider().containsKey(spEntityId);
-        String eduId = user.computeEduIdForServiceProviderIfAbsent(spEntityId).get();
+        String eduId = user.computeEduIdForServiceProviderIfAbsent(spEntityId, serviceNameResolver.resolve(spEntityId)).get();
         if (needToSave) {
             userRepository.save(user);
         }

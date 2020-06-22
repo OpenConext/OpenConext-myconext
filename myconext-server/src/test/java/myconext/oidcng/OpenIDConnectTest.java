@@ -3,15 +3,19 @@ package myconext.oidcng;
 import com.github.tomakehurst.wiremock.junit.WireMockRule;
 import io.restassured.http.ContentType;
 import myconext.AbstractIntegrationTest;
+import myconext.model.DeleteServiceTokens;
 import myconext.model.TokenRepresentation;
 import myconext.model.TokenType;
+import myconext.model.User;
 import org.junit.ClassRule;
-import org.junit.Rule;
 import org.junit.Test;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -23,6 +27,7 @@ import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlPathMatching;
 import static io.restassured.RestAssured.given;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
@@ -73,15 +78,14 @@ public class OpenIDConnectTest extends AbstractIntegrationTest {
                         .withStatus(HttpStatus.NO_CONTENT.value())
                         .withHeader("Content-Type", "application/json")
                         .withBody("{}")));
-
         given()
                 .when()
-                .accept(ContentType.JSON)
-                .contentType(ContentType.JSON)
-                .body(Arrays.asList(new TokenRepresentation("id", TokenType.ACCESS)))
-                .put("/myconext/api/sp/tokens")
+                .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+                .body(new DeleteServiceTokens("eduid", Arrays.asList(new TokenRepresentation("id", TokenType.ACCESS))))
+                .put("/myconext/api" +
+                        "/sp/service")
                 .then()
-                .statusCode(HttpStatus.NO_CONTENT.value());
+                .statusCode(200);
     }
 
     private void stubForTokens(String jsonPath, int status) throws IOException {

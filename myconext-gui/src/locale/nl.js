@@ -98,22 +98,24 @@ I18n.translations.nl = {
   },
   services: {
     title: "Gebruikte diensten",
-    info: "Elke service die je met eduID gebruikt, ontvangt je unieke gepseudonimiseerde eduID om je account te identificeren.",
+    info: "Elke service die je met je eduID-account gebruikt, onvangt attributen van je account, waaronder een unieke gepseudonimiseerde eduID om je account te identificeren.",
     explanation: "Dit zijn alle services waar je bent ingelogd met eduID.",
     noServices: "Je hebt nog geen service gebruikt met je eduID-account.",
     name: "Naam",
   },
   service: {
     title: "Dienst",
-    info: "Deze service heeft je unieke gepseudonimiseerde eduID ontvangen op {{date}} om {{hours}}: {{minutes}}",
+    info: "Je bent voor de eerste keer ingelogd op deze dienst op {{date}} om {{hours}}: {{minutes}}",
     name: "Naam",
     eduId: "EduID",
+    access: "Toegang",
+    accounts: "Accounts",
     delete: "Verwijderen",
     cancel: "Annuleren",
     deleted: "Je eduID voor dienst {{name}} is verwijderd",
     back: "/services",
     deleteService: "Verwijder dienst",
-    deleteServiceConfirmation: "Weet je zeker dat je je unieke gepseudonimiseerde eduID voor {{name}} wilt verwijderen? <br/> <br/> Deze service herkent je wellicht niet de volgende keer dat je inlogt en je persoonlijke gegevens bij deze service kunnen worden verwijderd."
+    deleteServiceConfirmation: "Weet je zeker dat je je unieke gepseudonimiseerde eduID voor {{name}} wilt verwijderen? <br/> <br/> Deze service herkent je wellicht niet de volgende keer dat je inlogt en je persoonlijke gegevens bij deze service worden mogelijkerwijs verwijderd."
   },
   password: {
     setTitle: "Wachtwoord instellen",

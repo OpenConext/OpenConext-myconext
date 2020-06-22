@@ -18,6 +18,7 @@ import io.restassured.response.ValidatableResponse;
 import io.restassured.specification.RequestSpecification;
 import myconext.AbstractIntegrationTest;
 import myconext.model.Challenge;
+import myconext.model.DeleteServiceTokens;
 import myconext.model.EduID;
 import myconext.model.LinkedAccount;
 import myconext.model.LinkedAccountTest;
@@ -50,6 +51,8 @@ import java.nio.charset.Charset;
 import java.security.SecureRandom;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Base64;
 import java.util.Collections;
 import java.util.Date;
@@ -259,8 +262,9 @@ public class UserControllerTest extends AbstractIntegrationTest {
         given()
                 .when()
                 .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
-                .body(Collections.singletonMap("eduId", eduID.getValue()))
-                .put("/myconext/api/sp/service")
+                .body(new DeleteServiceTokens(eduID.getValue(), new ArrayList<>()))
+                .put("/myconext/api" +
+                        "/sp/service")
                 .then()
                 .statusCode(200);
 

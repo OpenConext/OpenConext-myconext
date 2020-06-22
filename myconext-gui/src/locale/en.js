@@ -98,22 +98,24 @@ I18n.translations.en = {
   },
   services: {
     title: "Used services",
-    info: "Each service you use with eduID receives your unique pseudonymized eduID to identify your account.",
-    explanation: "These are all the services where you logged in with eduID.",
+    info: "Each service you access with your eduID account receives attributes from your account including an unique pseudonymized eduID to identify your account.",
+    explanation: "These are all the services where you logged in using your eduID account.",
     noServices: "You have not used any service yet with your eduID account.",
     name: "Name",
   },
   service: {
     title: "Service",
-    info: "This service received your unique pseudonymized eduID on {{date}} at {{hours}}:{{minutes}}",
+    info: "You first logged in to this service on {{date}} at {{hours}}:{{minutes}}",
     name: "Name",
     eduId: "EduID",
+    access: "Access",
+    accounts: "Accounts",
     delete: "Delete",
     cancel: "Cancel",
     deleted: "Your service eduID for {{name}} has been deleted",
     back: "/services",
     deleteService: "Delete service",
-    deleteServiceConfirmation: "Are you sure you want to delete your unique pseudonymized eduID for {{name}}?<br/><br/>This service might not recognize you the next time you login and all your personal data with this Service could be deleted."
+    deleteServiceConfirmation: "Are you sure you want to delete your unique pseudonymized eduID for {{name}} and revoke access to your linked accounts?<br/><br/>This service might not recognize you the next time you login and all your personal data with this Service could be deleted."
   },
   password: {
     setTitle: "Set password",
