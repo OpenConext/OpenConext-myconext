@@ -3,16 +3,22 @@ package myconext.oidcng;
 import com.github.tomakehurst.wiremock.junit.WireMockRule;
 import io.restassured.http.ContentType;
 import myconext.AbstractIntegrationTest;
+import myconext.model.TokenRepresentation;
+import myconext.model.TokenType;
+import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.HttpStatus;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
 import static com.github.tomakehurst.wiremock.client.WireMock.get;
+import static com.github.tomakehurst.wiremock.client.WireMock.put;
 import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlPathMatching;
 import static io.restassured.RestAssured.given;
@@ -27,12 +33,12 @@ import static org.junit.Assert.assertTrue;
                 "sp_entity_id=https://engine.test.surfconext.nl/authentication/sp/metadata",
                 "sp_entity_metadata_url=https://engine.test.surfconext.nl/authentication/sp/metadata",
                 "spring.main.lazy-initialization=true",
-                "oidc-token-api.token-url=http://localhost:8099/tokens",
+                "oidc-token-api.token-url=http://localhost:8098/tokens",
         })
 public class OpenIDConnectTest extends AbstractIntegrationTest {
 
-    @Rule
-    public WireMockRule wireMockRule = new WireMockRule(8099);
+    @ClassRule
+    public static WireMockRule wireMockRule = new WireMockRule(8098);
 
     @Test
     @SuppressWarnings("unchecked")
@@ -58,6 +64,24 @@ public class OpenIDConnectTest extends AbstractIntegrationTest {
                 .get("/myconext/api/sp/tokens")
                 .then()
                 .statusCode(400);
+    }
+
+    @Test
+    public void deleteTokens() {
+        stubFor(put(urlPathMatching("/tokens"))
+                .willReturn(aResponse()
+                        .withStatus(HttpStatus.NO_CONTENT.value())
+                        .withHeader("Content-Type", "application/json")
+                        .withBody("{}")));
+
+        given()
+                .when()
+                .accept(ContentType.JSON)
+                .contentType(ContentType.JSON)
+                .body(Arrays.asList(new TokenRepresentation("id", TokenType.ACCESS)))
+                .put("/myconext/api/sp/tokens")
+                .then()
+                .statusCode(HttpStatus.NO_CONTENT.value());
     }
 
     private void stubForTokens(String jsonPath, int status) throws IOException {
