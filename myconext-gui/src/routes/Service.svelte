@@ -121,6 +121,7 @@
     }
 
     div.value-container span {
+        word-break: break-word;
         padding: 5px 0;
     }
 

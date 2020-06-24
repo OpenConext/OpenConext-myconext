@@ -23,7 +23,7 @@
         height: 100%;
     }
 
-    .inner {
+    .inner-container {
         height: 100%;
         margin: 0 auto;
         padding: 15px 30px 15px 0;
@@ -80,6 +80,10 @@
         align-items: center;
     }
 
+    div.value-container span {
+        word-break: break-word;
+    }
+
     div.value-container a.menu-link {
         margin-left: auto;
     }
@@ -91,7 +95,7 @@
 
 </style>
 <div class="services">
-    <div class="inner">
+    <div class="inner-container">
         <h2>{I18n.t("services.title")}</h2>
         <p class="info">{I18n.t("services.info")}</p>
         {#if services.length === 0}

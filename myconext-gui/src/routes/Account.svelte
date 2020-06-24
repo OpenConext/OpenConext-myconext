@@ -36,7 +36,7 @@
         height: 100%;
     }
 
-    .inner {
+    .inner-container {
         height: 100%;
         margin: 0 auto;
         padding: 15px 30px 15px 0;
@@ -83,7 +83,7 @@
 
 <div class="account">
 
-    <div class="inner">
+    <div class="inner-container">
         <h2>{I18n.t("account.title")}</h2>
         <p class="info">{I18n.t("format.creationDate", formatCreateDate($user.created, true))}</p>
         <p class="info2">{I18n.t("account.deleteTitle")}</p>

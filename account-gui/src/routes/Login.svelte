@@ -208,6 +208,7 @@
         margin: 6px 0 30px 0;
         color: var(--color-primary-green);
         font-size: 28px;
+        word-break: break-word;
     }
 
     h3.mixed {
