@@ -58,7 +58,6 @@ I18n.translations.nl = {
   },
   confirmStepup: {
     header: "Gelukt!",
-    thanks: "Je eduID is nu gekoppeld aan je thuisinstelling. Ga door naar je bestemming.",
     conditionMet: "Je hebt aan alle voorwaarden voldaan.",
     proceed: "Ga naar {{name}}"
   },
