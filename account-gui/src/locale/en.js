@@ -55,17 +55,16 @@ I18n.translations.en = {
     confirm: {
         header: "Success!",
         thanks: "Your eduID account has been created. Proceed to your destination.",
-        thanksStepup: "Your eduID account has been created and successfully linked to your home institution. Proceed to your destination."
     },
     confirmStepup: {
-        header: "Success!",
-        thanks: "Your eduID account is successfully linked to your home institution. Proceed to your destination."
+        header: "Thanks!",
+        proceed: "Go to {{name}}",
+        conditionMet: "All conditions are met."
     },
     stepup: {
-        header: "Almost there!",
-        info: "You have successfully authenticated, however the service {{name}} requires you to link your eduID account to a SURFconext institution.",
-        proceed: "Click on the link below to proceed and select your home institution and login.",
-        link: "Proceed to SURFconext"
+        header: "One more thing!",
+        info: "To proceed to <strong> {{name}} </strong>, you must meet the following condition(s).",
+        link: "Verify this via SURFconext"
     },
     footer: {
         privacy: "Privacy policy",
@@ -102,5 +101,16 @@ I18n.translations.en = {
         proceed: "You can try to link to another institution or proceed to {{name}}",
         proceedLink: "Proceed",
         retryLink: "Retry"
+    },
+    stepUpExplanation: {
+        linked_institution: "Your eduID account must be linked to a trusted party.",
+        validate_names: "Your first name and last name must be verified by a trusted party.",
+        affiliation_student: "You must prove that you are following education by linking your eduID account to a trusted party."
+    },
+    stepUpVerification: {
+        linked_institution: "Your eduID account is linked to a trusted party.",
+        validate_names: "Your first name and last name are verified by a trusted party.",
+        affiliation_student: "You have proven that you are following education by linking your eduID account to a trusted party.."
     }
+
 };

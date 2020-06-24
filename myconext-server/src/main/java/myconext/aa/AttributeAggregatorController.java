@@ -8,7 +8,6 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.Authentication;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -74,7 +73,7 @@ public class AttributeAggregatorController {
         }
         Map<String, String> result = new HashMap<>();
         result.put("eduid", eduId);
-        if (StringUtils.hasText(spInstitutionGuid) ) {
+        if (StringUtils.hasText(spInstitutionGuid)) {
             user.getLinkedAccounts().stream()
                     .filter(linkedAccount -> linkedAccount.getInstitutionIdentifier().equals(spInstitutionGuid))
                     .findFirst()

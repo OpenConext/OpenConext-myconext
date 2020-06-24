@@ -36,10 +36,6 @@
         margin-top: 60px;
     }
 
-    :global(.options a:not(:first-child)) {
-        margin-left: 25px;
-    }
-
     div.right {
         margin: 0 0 0 30px;
     }

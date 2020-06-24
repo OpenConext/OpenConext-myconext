@@ -67,22 +67,6 @@
         }
     }
 
-    .left {
-        background-color: #f3f6f8;
-        width: 270px;
-        height: 100%;
-        border-bottom-left-radius: 8px;
-    }
-
-    .inner {
-        margin: 20px 0 190px 0;
-        padding: 15px 15px 0 40px;
-        border-left: 2px solid var(--color-primary-grey);
-        display: flex;
-        flex-direction: column;
-        background-color: white;
-    }
-
     .header {
         display: flex;
         align-items: center;
@@ -124,11 +108,6 @@
     .options {
         margin-top: 60px;
     }
-
-    :global(.options a:not(:first-child)) {
-        margin-left: 25px;
-    }
-
 
 </style>
 <div class="password">

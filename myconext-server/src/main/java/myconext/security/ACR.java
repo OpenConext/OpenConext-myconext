@@ -32,4 +32,14 @@ public class ACR {
         return ACR.LINKED_INSTITUTION;
     }
 
+    public static String explanationKeyWord(List<String> acrValues, boolean studentAffiliationPresent) {
+        if (acrValues.contains(ACR.VALIDATE_NAMES)) {
+            return "validate_names";
+        }
+        if (acrValues.contains(ACR.AFFILIATION_STUDENT) && studentAffiliationPresent) {
+            return "affiliation_student";
+        }
+        return "linked_institution";
+    }
+
 }

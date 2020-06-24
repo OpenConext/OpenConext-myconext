@@ -34,7 +34,7 @@ I18n.translations.nl = {
     back: "/profile"
   },
   security: {
-    title: "Beveiligingsinstellingen",
+    title: "Beveiliging",
     subTitle: "We bieden verschillende methoden om in te loggen met je eduID.",
     secondSubTitle: "Loginmethoden",
     usePassword: "Wachtwoord",

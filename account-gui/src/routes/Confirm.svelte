@@ -3,16 +3,17 @@
     import {onMount} from 'svelte';
     import {conf} from "../stores/conf";
     import Button from "../components/Button.svelte";
+    import Verification from "../components/Verification.svelte";
 
     let email = null;
     let serviceName = null;
-    let stepupFlow = false;
+    let explanation = null;
 
     onMount(() => {
         const urlSearchParams = new URLSearchParams(window.location.search);
         email = decodeURIComponent(urlSearchParams.get("email"));
         serviceName = decodeURIComponent(urlSearchParams.get("name"));
-        stepupFlow = "true" === urlSearchParams.get("stepupFlow");
+        explanation = urlSearchParams.get("explanation");
     });
 
     const proceed = () => {
@@ -44,9 +45,12 @@
 <div class="home">
     <div class="card">
         <h2>{I18n.t("confirm.header")}</h2>
-        <p class="info">{stepupFlow ? I18n.t("confirm.thanksStepup") : I18n.t("confirm.thanks")}</p>
+        <p class="info">{I18n.t("confirm.thanks")}</p>
+        {#if explanation}
+            <Verification explanation={explanation} verified={true}/>
+        {/if}
         <Button href="/proceed" onClick={proceed}
                 className="full"
-                label={serviceName}/>
+                label={I18n.t("confirmStepup.proceed", {name: serviceName})}/>
     </div>
 </div>

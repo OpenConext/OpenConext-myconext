@@ -54,18 +54,18 @@ I18n.translations.nl = {
   },
   confirm: {
     header: "Gelukt!",
-    thanks: "Je eduID is geactiveerd. Ga door naar je bestemming.",
-    thanksStepup: "Je eduID is geactiveerd en gekoppeld aan een instelling. Ga door naar je bestemming."
+    thanks: "Je eduID is geactiveerd. Ga door naar je bestemming."
   },
   confirmStepup: {
     header: "Gelukt!",
-    thanks: "Je eduID is nu gekoppeld aan je thuisinstelling. Ga door naar je bestemming."
+    thanks: "Je eduID is nu gekoppeld aan je thuisinstelling. Ga door naar je bestemming.",
+    conditionMet: "Je hebt aan alle voorwaarden voldaan.",
+    proceed: "Ga naar {{name}}"
   },
   stepup: {
-    header: "Bijna daar!",
-    info: "Je bent succesvol geverifieerd, maar voor de dienst {{name}} moet je je eduID-account koppelen aan een SURFconext-instelling.",
-    proceed: "Klik op de onderstaande link om verder te gaan en selecteer je thuisinstelling en log in.",
-    link: "Ga verder naar SURFconext"
+    header: "Nog één ding!",
+    info: "Om door te gaan naar <strong> {{name}} </strong>, moet je nog aan de volgende voorwaarde(n) voldoen.",
+    link: "Verifieer dit via SURFconext"
   },
   footer: {
     privacy: "Privacy",
@@ -102,5 +102,16 @@ I18n.translations.nl = {
     proceed: "Je kan het nogmaals met een andere instelling proberen of doorgaan naar {{name}}",
     proceedLink: "Doorgaan",
     retryLink: "Opnieuw proberen"
+  },
+  stepUpExplanation: {
+    linked_institution: "Je eduID-account moet gekoppeld zijn aan een vertrouwde instelling.",
+    validate_names: "Je voornaam en achternaam moeten worden geverifieerd door een vertrouwde instelling.",
+    affiliation_student: "Je moet aantonen dat je onderwijs volgt door je eduID-account te koppelen aan een vertrouwde instelling."
+  },
+  stepUpVerification: {
+    linked_institution: "Je eduID-account is gekoppeld aan een vertrouwde instelling.",
+    validate_names: "Je voornaam en achternaam zijn geverifieerd door een vertrouwde instelling.",
+    affiliation_student: "Je hebt aangetoont dat je onderwijs volgt doordat je eduID-account is gekoppeld aan een vertrouwde instelling."
   }
+
 };

@@ -12,7 +12,7 @@
     <artifactId>account-gui</artifactId>
     <packaging>pom</packaging>
     <name>account-gui</name>
-    <version>3.0.1-FB-TOKENS</version>
+    <version>3.0.2-FB-TOKENS-SNAPSHOT</version>
 
     <build>
         <plugins>

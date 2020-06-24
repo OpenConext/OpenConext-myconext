@@ -114,8 +114,4 @@ h3 {
         width: 100% !important;
     }
 
-    .options a:not(:first-child) {
-        margin-left: 10px !important;
-        margin-top: 25px !important;
-    }
 }

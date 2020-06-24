@@ -13,7 +13,7 @@
     <artifactId>myconext-server</artifactId>
     <packaging>jar</packaging>
     <name>myconext-server</name>
-    <version>3.0.1-FB-TOKENS</version>
+    <version>3.0.2-FB-TOKENS-SNAPSHOT</version>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>

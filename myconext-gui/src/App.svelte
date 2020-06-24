@@ -135,6 +135,26 @@
         }
     }
 
+    :global(.options a:not(:first-child)) {
+        margin-left: 25px;
+    }
+    :global(.left) {
+        background-color: #f3f6f8;
+        width: 270px;
+        height: 100%;
+        border-bottom-left-radius: 8px;
+    }
+
+    :global(.inner) {
+        margin: 20px 0 190px 0;
+        padding: 15px 15px 0 40px;
+        border-left: 2px solid var(--color-primary-grey);
+        display: flex;
+        flex-direction: column;
+        background-color: white;
+    }
+
+
     @media (max-width: 800px) {
         .myconext {
             margin: 0;
@@ -143,6 +163,21 @@
         .content {
             box-shadow: none;
         }
+
+        :global(.options) {
+            display: flex;
+            flex-direction: column;
+        }
+
+        :global(.options a:not(:first-child)) {
+            margin-top: 15px;
+            margin-left: 0;
+        }
+
+        :global(.inner) {
+            margin: 20px 0;
+        }
+
     }
 
     .loader:empty,

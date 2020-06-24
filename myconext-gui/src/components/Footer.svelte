@@ -34,7 +34,7 @@
         }
     }
 
-    .inner {
+    .inner-container {
         display: flex;
         justify-content: space-between;
         margin: 0 auto;
@@ -53,6 +53,13 @@
         display: flex;
         flex-direction: row;
     }
+
+    @media (max-width: 580px) {
+        .terms {
+            display: none;
+        }
+    }
+
 
     .terms span {
         color: #0077c8;
@@ -99,7 +106,7 @@
 
 </style>
 <div class="footer">
-    <div class="inner">
+    <div class="inner-container">
         <div class="help">
             <div class="terms">
                 <a href={privacyUrl} target="_blank">{I18n.t("footer.privacy")}</a>

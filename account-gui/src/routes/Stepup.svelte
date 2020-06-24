@@ -3,14 +3,16 @@
     import {onMount} from 'svelte';
     import {conf} from "../stores/conf";
     import Button from "../components/Button.svelte";
+    import Verification from "../components/Verification.svelte";
+    import oneMoreThing from "../icons/onemorething_empty.svg";
 
     export let id;
-    let existing = null;
+    let explanation = null;
     let serviceName = null;
 
     onMount(() => {
         const urlSearchParams = new URLSearchParams(window.location.search);
-        existing = "true" === urlSearchParams.get("existing");
+        explanation = decodeURIComponent(urlSearchParams.get("explanation"));
         serviceName = decodeURIComponent(urlSearchParams.get("name"));
     });
 
@@ -23,7 +25,7 @@
 
 
     h2 {
-        margin: 30px 0 40px 0;
+        margin: 30px 0;
         font-size: 32px;
         color: var(--color-primary-green);
     }
@@ -36,8 +38,8 @@
 <div class="home">
     <div class="card">
         <h2>{I18n.t("stepup.header")}</h2>
-        <p class="info">{I18n.t("stepup.info", {name: serviceName})}</p>
-        <p class="info">{I18n.t("stepup.proceed")}</p>
+        <p class="info">{@html I18n.t("stepup.info", {name: serviceName})}</p>
+        <Verification explanation={explanation} verified={false}/>
         <Button href="/proceed" onClick={proceed}
                 className="full"
                 label={I18n.t("stepup.link")}/>

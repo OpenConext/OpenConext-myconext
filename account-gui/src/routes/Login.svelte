@@ -57,7 +57,7 @@
                 if ($user.createAccount) {
                     magicLinkNewUser($user.email, $user.givenName, $user.familyName, $user.rememberMe, id)
                             .then(res => {
-                              const url = res.stepup  ? `/stepup/${id}?name=${encodeURIComponent(serviceName)}&existing=false` :
+                              const url = res.stepup  ? `/stepup/${id}?name=${encodeURIComponent(serviceName)}&explanation=${res.explanation}` :
                                       `/magic/${id}?name=${encodeURIComponent(serviceName)}&modus=${modus}`;
                               navigate(url, {replace: true})
                             })
@@ -80,7 +80,7 @@
                                     sameSite: "Lax"
                                 });
                                 if (json.stepup) {
-                                    navigate(`/stepup/${id}?name=${encodeURIComponent(serviceName)}&existing=true`, {replace: true})
+                                    navigate(`/stepup/${id}?name=${encodeURIComponent(serviceName)}&explanation=${json.explanation}`, {replace: true})
                                 } else if ($user.usePassword) {
                                     window.location.href = json.url;
                                 } else {
@@ -141,7 +141,7 @@
                                                 sameSite: "Lax"
                                             });
                                             if (json.stepup) {
-                                                navigate(`/stepup/${id}?name=${encodeURIComponent(serviceName)}&existing=true`, {replace: true})
+                                                navigate(`/stepup/${id}?name=${encodeURIComponent(serviceName)}&explanation=${json.explanation}`, {replace: true})
                                             } else {
                                                 window.location.href = json.url
                                             }

@@ -54,6 +54,7 @@
         --color-primary-green: #008738;
         --color-primary-black: #202020;
         --color-primary-red: #ff0000;
+        --color-primary-grey: #d0d0d0;
 
         --width-app: 400px;
 

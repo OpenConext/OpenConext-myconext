@@ -165,7 +165,9 @@ public class GuestIdpAuthenticationRequestFilter extends IdpAuthenticationReques
         if (previousAuthenticatedUser != null && !authenticationRequest.isForceAuth()) {
             if (accountLinkingRequired && !isUserVerifiedByInstitution(previousAuthenticatedUser,
                     authenticationContextClassReferenceValues)) {
-                response.sendRedirect(this.redirectUrl + "/stepup/" + samlAuthenticationRequest.getId() + "?name=" + encodedServiceName + "&existing=true");
+                boolean hasStudentAffiliation = previousAuthenticatedUser.allEduPersonAffiliations().stream().anyMatch(affiliation -> affiliation.startsWith("student"));
+                String explanation = ACR.explanationKeyWord(authenticationContextClassReferenceValues, hasStudentAffiliation);
+                response.sendRedirect(this.redirectUrl + "/stepup/" + samlAuthenticationRequest.getId() + "?name=" + encodedServiceName + "&explanation=" + explanation);
             } else {
                 ServiceProviderMetadata serviceProviderMetadata = provider.getRemoteProvider(samlAuthenticationRequest.getIssuer());
                 sendAssertion(request, response, samlAuthenticationRequest, previousAuthenticatedUser,
@@ -256,15 +258,19 @@ public class GuestIdpAuthenticationRequestFilter extends IdpAuthenticationReques
         User user = userRepository.findById(samlAuthenticationRequest.getUserId())
                 .orElseThrow(UserNotFoundException::new);
 
+        List<String> authenticationContextClassReferences = samlAuthenticationRequest.getAuthenticationContextClassReferences();
         boolean accountLinkingRequired = samlAuthenticationRequest.isAccountLinkingRequired() &&
                 !GuestIdpAuthenticationRequestFilter.isUserVerifiedByInstitution(user,
-                        samlAuthenticationRequest.getAuthenticationContextClassReferences());
+                        authenticationContextClassReferences);
 
         String charSet = Charset.defaultCharset().name();
         String encodedServiceName = URLEncoder.encode(serviceNameResolver.resolve(samlAuthenticationRequest.getRequesterEntityId()), charSet);
+        boolean hasStudentAffiliation = user.allEduPersonAffiliations().stream().anyMatch(affiliation -> affiliation.startsWith("student"));
+        String explanation = ACR.explanationKeyWord(authenticationContextClassReferences, hasStudentAffiliation);
+
         if (accountLinkingRequired && StepUpStatus.NONE.equals(samlAuthenticationRequest.getSteppedUp())) {
             response.sendRedirect(this.redirectUrl + "/stepup/" + samlAuthenticationRequest.getId()
-                    + "?name=" + encodedServiceName + "&existing=true");
+                    + "?name=" + encodedServiceName + "&explanation=" + explanation);
             return;
         }
 
@@ -278,11 +284,14 @@ public class GuestIdpAuthenticationRequestFilter extends IdpAuthenticationReques
 
             mailBox.sendAccountConfirmation(user);
 
-            response.sendRedirect(this.redirectUrl + "/confirm?h=" + hash +
+            String url = this.redirectUrl + "/confirm?h=" + hash +
                     "&redirect=" + URLEncoder.encode(this.magicLinkUrl, charSet) +
                     "&email=" + URLEncoder.encode(user.getEmail(), charSet) +
-                    "&name=" + URLEncoder.encode(serviceNameResolver.resolve(samlAuthenticationRequest.getRequesterEntityId()), charSet) +
-                    "&stepupFlow=" + !StepUpStatus.NONE.equals(samlAuthenticationRequest.getSteppedUp()));
+                    "&name=" + URLEncoder.encode(serviceNameResolver.resolve(samlAuthenticationRequest.getRequesterEntityId()), charSet);
+            if (!StepUpStatus.NONE.equals(samlAuthenticationRequest.getSteppedUp())) {
+                url += "&explanation=" + explanation;
+            }
+            response.sendRedirect(url);
             if (inStepUpFlow) {
                 finishStepUp(samlAuthenticationRequest);
             }
@@ -290,7 +299,8 @@ public class GuestIdpAuthenticationRequestFilter extends IdpAuthenticationReques
         } else if (inStepUpFlow) {
             response.sendRedirect(this.redirectUrl + "/confirm-stepup?h=" + hash +
                     "&redirect=" + URLEncoder.encode(this.magicLinkUrl, charSet) +
-                    "&name=" + URLEncoder.encode(serviceNameResolver.resolve(samlAuthenticationRequest.getRequesterEntityId()), charSet));
+                    "&name=" + URLEncoder.encode(serviceNameResolver.resolve(samlAuthenticationRequest.getRequesterEntityId()), charSet)+
+                    "&explanation="+explanation);
             finishStepUp(samlAuthenticationRequest);
             return;
 

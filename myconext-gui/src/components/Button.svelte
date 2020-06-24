@@ -77,6 +77,7 @@
     @media (max-width: 580px) {
         .button.small {
             width: 90px;
+            padding: 10px;
         }
 
     }
