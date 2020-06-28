@@ -12,6 +12,7 @@
     onMount(() => {
         const urlSearchParams = new URLSearchParams(window.location.search);
         const token = urlSearchParams.get("token");
+        const name = urlSearchParams.get("name");
         webAuthnRegistration(token)
                 .then(request => {
                     loading = false;
@@ -19,6 +20,7 @@
                             .then(credentials => {
                                 //rawId is not supported server-side
                                 delete credentials["rawId"];
+                                credentials.name = name;
                                 webAuthnRegistrationResponse(token, JSON.stringify(credentials), request)
                                         .then(res => window.location.href = res.location);
                             })

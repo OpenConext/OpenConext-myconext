@@ -12,19 +12,19 @@ import java.util.Map;
 @Getter
 public class UserResponse {
 
-    private String id;
-    private String email;
-    private String givenName;
-    private String familyName;
-    private boolean usePassword;
-    private boolean usePublicKey;
-    private Map<String, String> publicKeyCredentials;
-    private List<LinkedAccount> linkedAccounts;
-    private String schacHomeOrganization;
-    private String uid;
-    private boolean rememberMe;
-    private long created;
-    private Map<String, EduID> eduIdPerServiceProvider;
+    private final String id;
+    private final String email;
+    private final String givenName;
+    private final String familyName;
+    private final boolean usePassword;
+    private final boolean usePublicKey;
+    private final List<PublicKeyCredentials> publicKeyCredentials;
+    private final List<LinkedAccount> linkedAccounts;
+    private final String schacHomeOrganization;
+    private final String uid;
+    private final boolean rememberMe;
+    private final long created;
+    private final Map<String, EduID> eduIdPerServiceProvider;
 
     public UserResponse(User user, Map<String, EduID> eduIdPerServiceProvider, boolean rememberMe) {
         this.id = user.getId();

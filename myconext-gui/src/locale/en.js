@@ -117,6 +117,17 @@ I18n.translations.en = {
     deleteService: "Delete service",
     deleteServiceConfirmation: "Are you sure you want to delete your unique pseudonymized eduID for {{name}} and revoke access to your linked accounts?<br/><br/>This service might not recognize you the next time you login and all your personal data with this Service could be deleted."
   },
+  credential: {
+    title: "Public Key Credential",
+    info: "You added this key on {{date}} at {{hours}}:{{minutes}}",
+    name: "Name",
+    delete: "Delete",
+    cancel: "Cancel",
+    deleted: "Your key {{name}} has been deleted",
+    back: "/weauthn",
+    deleteCredential: "Delete key",
+    deleteCredentialConfirmation: "Are you sure you want to delete your public key credential {{name}}? The key will be deleted from your eduID account, but will not be removed from your browser and / or YubiKey device."
+  },
   password: {
     setTitle: "Set password",
     updateTitle: "Change password",
@@ -136,6 +147,8 @@ I18n.translations.en = {
     setTitle: "Enable WebAuthn",
     updateTitle: "Configure WebAuthn",
     publicKeys: "Your public keys",
+    noPublicKeys: "You have not added any keys. ",
+    nameRequired: "Before you can add a new key you will need to give it a name.",
     revoke: "Revoke",
     addDevice: "Add device",
     info: "Public Key Cryptography and Web Authentication (a.k.a. WebAuthn) allows eduID to authenticate you using public key cryptography instead of a magic link or password.",
@@ -143,8 +156,8 @@ I18n.translations.en = {
     back: "/security",
     setUpdate: "Start",
     updateUpdate: "Add device",
-    currentKeys: "You currently have registered {{count}} public key(s)."
-
+    credentialName: "Device name",
+    credentialNamePlaceholder: "e.g. my red YubiKey"
   },
   rememberMe: {
     updated: "Your device is no longer remembered",

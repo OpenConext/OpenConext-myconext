@@ -13,13 +13,9 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
 import java.util.Collections;
-import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
-
-import static java.util.stream.Collectors.toList;
 
 @Component
 public class UserCredentialRepository implements CredentialRepository {
@@ -34,10 +30,10 @@ public class UserCredentialRepository implements CredentialRepository {
     @Override
     public Set<PublicKeyCredentialDescriptor> getCredentialIdsForUsername(String email) {
         Optional<User> userOptional = userRepository.findUserByEmailIgnoreCase(email);
-        return userOptional.map(user -> user.getPublicKeyCredentials().keySet().stream()
-                .map(id ->
+        return userOptional.map(user -> user.getPublicKeyCredentials().stream()
+                .map(publicKeyCredentials ->
                         PublicKeyCredentialDescriptor.builder()
-                                .id(byteArrayFromBase64Url(id))
+                                .id(byteArrayFromBase64Url(publicKeyCredentials.getIdentifier()))
                                 .type(PublicKeyCredentialType.PUBLIC_KEY)
                                 .build())
                 .collect(Collectors.toSet())).orElse(Collections.emptySet());
@@ -62,8 +58,11 @@ public class UserCredentialRepository implements CredentialRepository {
         if (!optionalUser.isPresent()) {
             return Optional.empty();
         }
-        Map<String, String> publicKeyCredentials = optionalUser.get().getPublicKeyCredentials();
-        String publicKeyCose = publicKeyCredentials.get(credentialKey);
+        String publicKeyCose = optionalUser.get().getPublicKeyCredentials().stream()
+                .filter(publicKeyCredential -> publicKeyCredential.getIdentifier().equals(credentialKey))
+                .findFirst()
+                .map(publicKeyCredential -> publicKeyCredential.getCredential())
+                .orElse("");
         if (StringUtils.isEmpty(publicKeyCose)) {
             return Optional.empty();
         }

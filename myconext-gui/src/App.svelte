@@ -15,6 +15,7 @@
     import Home from "./routes/Home.svelte";
     import Header from "./components/Header.svelte";
     import {me, configuration, oidcTokens} from "./api";
+    import Credential from "./routes/Credential.svelte";
     import {user, config, redirectPath, duplicatedEmail} from "./stores/user";
     import I18n from "i18n-js";
 
@@ -250,6 +251,7 @@
                     <Route path="/edit" component={EditName}/>
                     <Route path="/institution" component={Institution}/>
                     <Route path="/service" component={Service}/>
+                    <Route path="/credential" component={Credential}/>
                     <Route path="/migration">
                         <Home bookmark="migration"/>
                     </Route>

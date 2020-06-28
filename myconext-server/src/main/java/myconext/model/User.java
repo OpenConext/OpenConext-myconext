@@ -53,7 +53,7 @@ public class User implements Serializable, UserDetails {
 
     private List<LinkedAccount> linkedAccounts = new ArrayList<>();
     private Map<String, EduID> eduIdPerServiceProvider = new HashMap<>();
-    private Map<String, String> publicKeyCredentials = new HashMap<>();
+    private List<PublicKeyCredentials> publicKeyCredentials = new ArrayList<>();
     private Map<String, List<String>> attributes = new HashMap<>();
 
     private long created;
@@ -61,7 +61,7 @@ public class User implements Serializable, UserDetails {
 
     public User(String uid, String email, String givenName, String familyName,
                 String schacHomeOrganization, String authenticatingAuthority,
-                String serviceProviderEntityId,String serviceProviderName, String preferredLanguage) {
+                String serviceProviderEntityId, String serviceProviderName, String preferredLanguage) {
         this.uid = uid;
         this.email = email;
         this.givenName = givenName;
@@ -94,10 +94,12 @@ public class User implements Serializable, UserDetails {
 
     @Transient
     public void addPublicKeyCredential(PublicKeyCredentialDescriptor publicKeyCredentialDescriptor,
-                                       ByteArray publicKeyCredential) {
-        this.publicKeyCredentials.put(
-                publicKeyCredentialDescriptor.getId().getBase64Url(),
-                publicKeyCredential.getBase64Url());
+                                       ByteArray publicKeyCredential,
+                                       String name) {
+        this.publicKeyCredentials.add(new PublicKeyCredentials(
+                publicKeyCredentialDescriptor,
+                publicKeyCredential,
+                name));
     }
 
     @Transient
@@ -219,5 +221,9 @@ public class User implements Serializable, UserDetails {
 
     public void setEduIdPerServiceProvider(Map<String, EduID> eduIdPerServiceProvider) {
         this.eduIdPerServiceProvider = eduIdPerServiceProvider;
+    }
+
+    public void setPublicKeyCredentials(List<PublicKeyCredentials> publicKeyCredentials) {
+        this.publicKeyCredentials = publicKeyCredentials;
     }
 }
