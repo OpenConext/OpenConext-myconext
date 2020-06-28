@@ -12,7 +12,7 @@
     onMount(() => {
         const urlSearchParams = new URLSearchParams(window.location.search);
         const token = urlSearchParams.get("token");
-        const name = urlSearchParams.get("name");
+        const name = decodeURIComponent(urlSearchParams.get("name"));
         webAuthnRegistration(token)
                 .then(request => {
                     loading = false;
