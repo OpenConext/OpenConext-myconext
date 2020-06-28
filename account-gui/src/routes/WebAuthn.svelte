@@ -20,8 +20,7 @@
                             .then(credentials => {
                                 //rawId is not supported server-side
                                 delete credentials["rawId"];
-                                credentials.name = name;
-                                webAuthnRegistrationResponse(token, JSON.stringify(credentials), request)
+                                webAuthnRegistrationResponse(token, name, JSON.stringify(credentials), request)
                                         .then(res => window.location.href = res.location);
                             })
                             .catch(() => {
