@@ -106,16 +106,20 @@ I18n.translations.nl = {
   service: {
     title: "Dienst",
     info: "Je bent voor de eerste keer ingelogd op deze dienst op {{date}} om {{hours}}: {{minutes}}",
+    tokenInfo: "De dienst {{name}} heeft eenAPI token met toegang tot je account.",
     name: "Naam",
     eduId: "EduID",
     access: "Toegang",
     accounts: "Accounts",
     delete: "Verwijderen",
     cancel: "Annuleren",
+    revoke: "Intrekken",
     deleted: "Je eduID voor dienst {{name}} is verwijderd",
     back: "/services",
     deleteService: "Verwijder dienst",
-    deleteServiceConfirmation: "Weet je zeker dat je je unieke gepseudonimiseerde eduID voor {{name}} wilt verwijderen? <br/> <br/> Deze service herkent je wellicht niet de volgende keer dat je inlogt en je persoonlijke gegevens bij deze service worden mogelijkerwijs verwijderd."
+    deleteServiceConfirmation: "Weet je zeker dat je je unieke gepseudonimiseerde eduID voor {{name}} wilt verwijderen? <br/> <br/> Deze service herkent je wellicht niet de volgende keer dat je inlogt en je persoonlijke gegevens bij deze service worden mogelijkerwijs verwijderd.",
+    deleteTokenConfirmation: "Weet je zeker dat het API access token voor {{name}} wilt intrekken?",
+    deleteToken: "Token intrekken",
   },
   credential: {
     title: "Public Key Credential",
