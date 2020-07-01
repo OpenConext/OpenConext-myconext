@@ -293,6 +293,20 @@ public class UserController {
 
         LOG.info(String.format("Deleted eduID %s from user %s", eduId, user.getUsername()));
 
+        return doRemoveTokens(serviceAndTokens, user);
+    }
+
+    @PutMapping("/sp/tokens")
+    public ResponseEntity<UserResponse> removeTokens(Authentication authentication,
+                                                          @RequestBody DeleteServiceTokens serviceAndTokens) {
+        User user = userFromAuthentication(authentication);
+
+        return doRemoveTokens(serviceAndTokens, user);
+    }
+
+    private ResponseEntity<UserResponse> doRemoveTokens(@RequestBody DeleteServiceTokens serviceAndTokens, User user) {
+        LOG.info(String.format("Deleted tokens %s from user %s", serviceAndTokens.getTokens(), user.getUsername()));
+
         List<TokenRepresentation> tokens = serviceAndTokens.getTokens();
         if (!CollectionUtils.isEmpty(tokens)) {
             openIDConnect.deleteTokens(tokens);

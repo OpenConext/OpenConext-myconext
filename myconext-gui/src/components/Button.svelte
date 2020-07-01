@@ -3,6 +3,7 @@
     export let active = false;
     export let href = "/";
     export let disabled = false;
+    export let warning= false;
     export let label;
     export let onClick;
 
@@ -63,6 +64,15 @@
         width: 260px;
     }
 
+    .button.warning {
+        background-color: var(--color-warning-red);
+
+    }
+    .button.warning:hover {
+        background-color: #8e0000;
+        color: whitesmoke;
+    }
+
     @media (max-width: 580px) {
         .button.full {
             width: 200px;
@@ -87,6 +97,7 @@
 
 <a class="{`button ${className}`}"
    class:active={active}
+   class:warning={warning}
    href="{href}"
    class:disabled={disabled}
    on:click|preventDefault|stopPropagation={() => !disabled && onClick()}

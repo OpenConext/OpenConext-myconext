@@ -9,6 +9,7 @@ import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
 import myconext.model.EduID;
 import myconext.model.LinkedAccount;
+import myconext.model.PublicKeyCredentials;
 import myconext.model.User;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -61,6 +62,7 @@ public class SessionConfig extends AbstractHttpSessionApplicationInitializer {
                 context.setMixInAnnotations(User.class, UserMixin.class);
                 context.setMixInAnnotations(LinkedAccount.class, LinkedAccountMixin.class);
                 context.setMixInAnnotations(EduID.class, EduIDMixin.class);
+                context.setMixInAnnotations(PublicKeyCredentials.class, PublicKeyCredentialsMixin.class);
                 context.setMixInAnnotations(LinkedHashMap.class, LinkedHashMapMixin.class);
                 context.setMixInAnnotations(HashMap.class, HashMapMixin.class);
             }
@@ -85,6 +87,9 @@ public class SessionConfig extends AbstractHttpSessionApplicationInitializer {
     }
 
     private static class EduIDMixin {
+    }
+
+    private static class PublicKeyCredentialsMixin {
     }
 
     private static class LinkedHashMapMixin {

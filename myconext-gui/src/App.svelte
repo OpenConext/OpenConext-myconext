@@ -95,6 +95,7 @@
         --color-primary-green: #008738;
         --color-primary-black: #202020;
         --color-primary-red: #ff0000;
+        --color-warning-red: #a70000;
         --color-primary-grey: #c4cdd5;
         --color-background: #f9f9f9;
         --width-app: 1024px;

@@ -85,6 +85,10 @@ export function deleteServiceAndTokens(eduId, tokens) {
     return postPutJson("/myconext/api/sp/service", {eduId, tokens}, "PUT");
 }
 
+export function deleteTokens(tokens) {
+    return postPutJson("/myconext/api/sp/tokens", {tokens}, "PUT");
+}
+
 export function oidcTokens() {
     return fetchJson("/myconext/api/sp/tokens");
 }

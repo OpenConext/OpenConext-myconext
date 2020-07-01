@@ -145,6 +145,7 @@
 {#if showModal}
     <Modal submit={deleteCredential(false)}
            cancel={() => showModal = false}
+           warning={true}
            question={I18n.t("credential.deleteCredentialConfirmation", {name: credential.name})}
                    title={I18n.t("credential.deleteCredential")}>
     </Modal>

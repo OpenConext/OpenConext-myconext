@@ -106,16 +106,20 @@ I18n.translations.en = {
   service: {
     title: "Service",
     info: "You first logged in to this service on {{date}} at {{hours}}:{{minutes}}",
+    tokenInfo: "The service {{name}} has an API token to access your account.",
     name: "Name",
     eduId: "EduID",
     access: "Access",
     accounts: "Accounts",
     delete: "Delete",
     cancel: "Cancel",
+    revoke: "Revoke",
     deleted: "Your service eduID for {{name}} has been deleted",
     back: "/services",
     deleteService: "Delete service",
-    deleteServiceConfirmation: "Are you sure you want to delete your unique pseudonymized eduID for {{name}} and revoke access to your linked accounts?<br/><br/>This service might not recognize you the next time you login and all your personal data with this Service could be deleted."
+    deleteServiceConfirmation: "Are you sure you want to delete your unique pseudonymized eduID for {{name}} and revoke access to your linked accounts?<br/><br/>This service might not recognize you the next time you login and all your personal data with this Service could be deleted.",
+    deleteTokenConfirmation: "Are you sure you want to revoke the API access token for {{name}}?",
+    deleteToken: "Revoke token",
   },
   credential: {
     title: "Public Key Credential",

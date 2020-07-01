@@ -171,6 +171,7 @@
 {#if showModal}
     <Modal submit={deleteAccountLink(false)}
            cancel={() => showModal = false}
+           warning={true}
            question={I18n.t("institution.deleteInstitutionConfirmation")}
                    title={I18n.t("institution.deleteInstitution")}>
     </Modal>
