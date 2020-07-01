@@ -117,6 +117,17 @@ I18n.translations.nl = {
     deleteService: "Verwijder dienst",
     deleteServiceConfirmation: "Weet je zeker dat je je unieke gepseudonimiseerde eduID voor {{name}} wilt verwijderen? <br/> <br/> Deze service herkent je wellicht niet de volgende keer dat je inlogt en je persoonlijke gegevens bij deze service worden mogelijkerwijs verwijderd."
   },
+  credential: {
+    title: "Public Key Credential",
+    info: "Je hebt deze key toegevoegd op {{date}} om {{hours}}: {{minutes}}",
+    name: "Naam",
+    delete: "Verwijderen",
+    cancel: "Annuleren",
+    deleted: "Je key {{name}} is verwijderd",
+    back: "/weauthn",
+    deleteCredential: "Verwijder key",
+    deleteCredentialConfirmation: "Weet je zeker dat je de key {{name}} wilt verwijderen? De key wordt verwijderd uit je eduID-account, maar wordt niet verwijderd uit je browser en / of van je YubiKey-apparaat."
+  },
   password: {
     setTitle: "Wachtwoord instellen",
     updateTitle: "Wijzig wachtwoord",
@@ -136,6 +147,8 @@ I18n.translations.nl = {
     setTitle: "WebAuthn instellen",
     updateTitle: "WebAuthn instellen",
     publicKeys: "Je publieke keys",
+    noPublicKeys: "Je hebt nog geen keys toegevoegd.",
+    nameRequired: "Voordat je een key kan toevoegen, moet je deze eerst een naam geven.",
     revoke: "Revoke",
     addDevice: "Voeg dit apparaat toe",
     info: "Public Key Cryptography and Web Authentication (ook bekend als WebAuthn) stelt eduID in staat om u te authenticeren met behulp van public key cryptografie in plaats van een magische link of wachtwoord.",
@@ -143,7 +156,8 @@ I18n.translations.nl = {
     back: "/security",
     setUpdate: "Start",
     updateUpdate: "Voeg dit apparaat toe",
-    currentKeys: "Je hebt momenteel {{count}} publieke keys(s) geregistreerd."
+    credentialName: "Device naam",
+    credentialNamePlaceholder: "e.g. mijn gele YubiKey"
   },
   rememberMe: {
     updated: "Dit apparaat wordt niet langer onthouden",

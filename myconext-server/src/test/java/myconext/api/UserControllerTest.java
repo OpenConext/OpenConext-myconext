@@ -23,6 +23,7 @@ import myconext.model.EduID;
 import myconext.model.LinkedAccount;
 import myconext.model.LinkedAccountTest;
 import myconext.model.MagicLinkRequest;
+import myconext.model.PublicKeyCredentials;
 import myconext.model.SamlAuthenticationRequest;
 import myconext.model.StepUpStatus;
 import myconext.model.UpdateUserSecurityRequest;
@@ -33,7 +34,6 @@ import org.apache.commons.io.IOUtils;
 import org.apache.http.client.CookieStore;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.ClassPathResource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
@@ -279,6 +279,24 @@ public class UserControllerTest extends AbstractIntegrationTest {
         User userFromDB = userRepository.findOneUserByEmailIgnoreCase("jdoe@example.com");
 
         assertEquals(0, userFromDB.getLinkedAccounts().size());
+    }
+
+    @Test
+    public void removePublicKeyCredential() {
+        User user = userRepository.findOneUserByEmailIgnoreCase("jdoe@example.com");
+        PublicKeyCredentials publicKeyCredentials = user.getPublicKeyCredentials().get(0);
+        Map<String, String> body = Collections.singletonMap("identifier", publicKeyCredentials.getIdentifier());
+        given()
+                .when()
+                .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+                .body(body)
+                .put("/myconext/api/sp/credential")
+                .then()
+                .statusCode(200);
+
+        User userFromDB = userRepository.findOneUserByEmailIgnoreCase("jdoe@example.com");
+
+        assertEquals(0, userFromDB.getPublicKeyCredentials().size());
     }
 
     @Test

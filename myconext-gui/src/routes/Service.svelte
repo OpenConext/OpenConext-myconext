@@ -1,7 +1,7 @@
 <script>
     import {user, flash} from "../stores/user";
     import I18n from "i18n-js";
-    import {deleteServiceAndTokens} from "../api";
+    import {deleteServiceAndTokens, deleteTokens} from "../api";
     import {navigate} from "svelte-routing";
     import chevron_left from "../icons/chevron-left.svg";
     import Button from "../components/Button.svelte";
@@ -13,6 +13,20 @@
     let token = null;
     let tokens = [];
     let showModal = false;
+
+    let modalOptions = {};
+
+    const modalDeleteEduId = () => ({
+        submit: deleteEduId(false),
+        question: I18n.t("service.deleteServiceConfirmation", {name: service.name}),
+        title: I18n.t("service.deleteService")
+    });
+
+    const modalRevokeTokens = () => ({
+        submit: revokeTokens(false),
+        question: I18n.t("service.deleteTokenConfirmation", {name: service.name}),
+        title: I18n.t("service.deleteToken")
+    });
 
     const useToken = allTokens => {
         if (allTokens.length === 0) {
@@ -35,13 +49,19 @@
             createdAt: $user.eduIdPerServiceProvider[k].createdAt
         }));
         service = services.find(o => o.eduId === eduid);
+        refreshTokens();
+    });
+
+    const refreshTokens = () => {
         const allTokens = $user.oidcTokens.filter(token => token.clientId === service.entityId);
         token = useToken(allTokens);
         tokens = allTokens.map(t => ({id: t.id, tokenType: t.type}));
-    });
+    };
+
 
     const deleteEduId = showConfirmation => () => {
         if (showConfirmation) {
+            modalOptions = modalDeleteEduId();
             showModal = true;
         } else {
             deleteServiceAndTokens(service.eduId, tokens).then(json => {
@@ -50,8 +70,28 @@
                         $user[key] = json[key];
                     }
                 }
+                $user.oidcTokens = $user.oidcTokens.filter(token => token.clientId !== service.entityId);
                 navigate("/services");
                 flash.setValue(I18n.t("service.deleted", {name: service.name}));
+            });
+        }
+    }
+
+    const revokeTokens = showConfirmation => () => {
+        if (showConfirmation) {
+            showModal = true;
+            modalOptions = modalRevokeTokens();
+        } else {
+            deleteTokens(tokens).then(json => {
+                showModal = false;
+                for (var key in json) {
+                    if (json.hasOwnProperty(key)) {
+                        $user[key] = json[key];
+                    }
+                }
+                $user.oidcTokens = $user.oidcTokens.filter(token => token.clientId !== service.entityId);
+                refreshTokens();
+                flash.setValue(I18n.t("service.tokenDeleted", {name: service.name}));
             });
         }
     }
@@ -134,6 +174,10 @@
         margin-top: 60px;
     }
 
+    .options.first {
+        margin-bottom: 40px;
+    }
+
 </style>
 <div class="service">
     <div class="left"></div>
@@ -165,7 +209,21 @@
                     </div>
                 </td>
             </tr>
-            {#if token && token.scopes && token.scopes.find(scope => scope.name !== "openid" && scope.descriptions[I18n.locale])}
+            </tbody>
+        </table>
+
+        <div class="options first">
+            <Button className="cancel" label={I18n.t("service.cancel")} onClick={cancel}/>
+
+            <Button label={I18n.t("service.delete")} className="cancel" onClick={deleteEduId(true)}/>
+        </div>
+
+
+        {#if token && token.scopes && token.scopes.find(scope => scope.name !== "openid" && scope.descriptions[I18n.locale])}
+            <p class="info">{I18n.t("service.tokenInfo", {name: service.name})}</p>
+            <table cellspacing="0">
+                <thead></thead>
+                <tbody>
                 <tr class="name">
                     <td class="attr">{I18n.t("service.access")}</td>
                     <td class="value">
@@ -192,24 +250,22 @@
                         </td>
                     </tr>
                 {/if}
-            {/if}
-            </tbody>
-        </table>
+                </tbody>
+            </table>
 
-
-        <div class="options">
-            <Button className="cancel" label={I18n.t("service.cancel")} onClick={cancel}/>
-
-            <Button label={I18n.t("service.delete")} className="cancel" onClick={deleteEduId(true)}/>
-        </div>
+            <div class="options">
+                <Button label={I18n.t("service.revoke")} className="cancel" onClick={revokeTokens(true)}/>
+            </div>
+        {/if}
     </div>
 
 </div>
 
 {#if showModal}
-    <Modal submit={deleteEduId(false)}
+    <Modal submit={modalOptions.submit}
            cancel={() => showModal = false}
-           question={I18n.t("service.deleteServiceConfirmation", {name: service.name})}
-                   title={I18n.t("service.deleteService")}>
+           warning={true}
+           question={modalOptions.question}
+                   title={modalOptions.title}>
     </Modal>
 {/if}

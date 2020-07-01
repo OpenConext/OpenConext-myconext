@@ -12,7 +12,7 @@ export const user = writable({
     usePublicKey: false,
     rememberMe: true,
     created: 0,
-    publicKeyCredentials: {},
+    publicKeyCredentials: [],
     linkedAccounts: [],
     eduIdPerServiceProvider: {},
     oidcTokens: []

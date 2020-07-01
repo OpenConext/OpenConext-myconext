@@ -12,7 +12,7 @@
     <artifactId>myconext-gui</artifactId>
     <packaging>pom</packaging>
     <name>myconext-gui</name>
-    <version>3.0.2-FB-TOKENS-SNAPSHOT</version>
+    <version>3.0.5-SNAPSHOT</version>
 
     <build>
         <plugins>

@@ -15,6 +15,7 @@
     import Home from "./routes/Home.svelte";
     import Header from "./components/Header.svelte";
     import {me, configuration, oidcTokens} from "./api";
+    import Credential from "./routes/Credential.svelte";
     import {user, config, redirectPath, duplicatedEmail} from "./stores/user";
     import I18n from "i18n-js";
 
@@ -94,6 +95,7 @@
         --color-primary-green: #008738;
         --color-primary-black: #202020;
         --color-primary-red: #ff0000;
+        --color-warning-red: #a70000;
         --color-primary-grey: #c4cdd5;
         --color-background: #f9f9f9;
         --width-app: 1024px;
@@ -250,6 +252,7 @@
                     <Route path="/edit" component={EditName}/>
                     <Route path="/institution" component={Institution}/>
                     <Route path="/service" component={Service}/>
+                    <Route path="/credential" component={Credential}/>
                     <Route path="/migration">
                         <Home bookmark="migration"/>
                     </Route>

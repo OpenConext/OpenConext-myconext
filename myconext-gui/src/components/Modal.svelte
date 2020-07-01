@@ -6,7 +6,8 @@
     export let cancel;
     export let title;
     export let question;
-    export let confirmTitle;
+    export let warning = false;
+    export let confirmTitle = I18n.t("modal.confirm");
 
     let modal;
 
@@ -17,27 +18,6 @@
     };
 
 </script>
-
-<svelte:window on:keydown={handle_keydown}/>
-
-<div class="modal">
-    <div class="modal-content">
-        <div class="modal-header">
-            <h3>{title}</h3>
-        </div>
-        <div class="modal-body">
-            <p>{@html question}</p>
-        </div>
-
-        <div class="options">
-            <Button className="cancel" onClick={cancel}
-                    label={I18n.t("modal.cancel")}/>
-
-            <Button onClick={submit}
-                    label={confirmTitle || I18n.t("modal.confirm")}/>
-        </div>
-    </div>
-</div>
 
 <style>
     .modal {
@@ -67,6 +47,11 @@
         border-top-right-radius: 8px;
     }
 
+    .modal-header.warning {
+        background-color: var(--color-warning-red);
+        color: white;
+    }
+
     .modal-body {
         padding: 18px 32px;
     }
@@ -76,3 +61,24 @@
         text-align: center;
     }
 </style>
+
+<svelte:window on:keydown={handle_keydown}/>
+
+<div class="modal">
+    <div class="modal-content">
+        <div class="modal-header" class:warning>
+            <h3>{title}</h3>
+        </div>
+        <div class="modal-body">
+            <p>{@html question}</p>
+        </div>
+
+        <div class="options">
+            <Button className="cancel" onClick={cancel}
+                    label={I18n.t("modal.cancel")}/>
+
+            <Button onClick={submit} warning={warning}
+                    label={confirmTitle}/>
+        </div>
+    </div>
+</div>

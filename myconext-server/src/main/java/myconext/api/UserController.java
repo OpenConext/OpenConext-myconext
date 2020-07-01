@@ -31,6 +31,7 @@ import myconext.model.DeleteServiceTokens;
 import myconext.model.EduID;
 import myconext.model.LinkedAccount;
 import myconext.model.MagicLinkRequest;
+import myconext.model.PublicKeyCredentials;
 import myconext.model.SamlAuthenticationRequest;
 import myconext.model.TokenRepresentation;
 import myconext.model.UpdateUserSecurityRequest;
@@ -260,6 +261,24 @@ public class UserController {
         return userResponseRememberMe(user);
     }
 
+    @PutMapping("/sp/credential")
+    public ResponseEntity removePublicKeyCredential(Authentication authentication,
+                                                    @RequestBody Map<String, String> credential) {
+        User user = userFromAuthentication(authentication);
+
+        String identifier = credential.get("identifier");
+        List<PublicKeyCredentials> publicKeyCredentials = user.getPublicKeyCredentials().stream()
+                .filter(key -> !key.getIdentifier().equals(identifier))
+                .collect(Collectors.toList());
+        user.setPublicKeyCredentials(publicKeyCredentials);
+        userRepository.save(user);
+
+        LOG.info(String.format("Deleted publicKeyCredentials %s from user %s",
+                identifier, user.getUsername()));
+
+        return userResponseRememberMe(user);
+    }
+
     @PutMapping("/sp/service")
     public ResponseEntity<UserResponse> removeUserService(Authentication authentication,
                                                           @RequestBody DeleteServiceTokens serviceAndTokens) {
@@ -273,6 +292,20 @@ public class UserController {
         userRepository.save(user);
 
         LOG.info(String.format("Deleted eduID %s from user %s", eduId, user.getUsername()));
+
+        return doRemoveTokens(serviceAndTokens, user);
+    }
+
+    @PutMapping("/sp/tokens")
+    public ResponseEntity<UserResponse> removeTokens(Authentication authentication,
+                                                          @RequestBody DeleteServiceTokens serviceAndTokens) {
+        User user = userFromAuthentication(authentication);
+
+        return doRemoveTokens(serviceAndTokens, user);
+    }
+
+    private ResponseEntity<UserResponse> doRemoveTokens(@RequestBody DeleteServiceTokens serviceAndTokens, User user) {
+        LOG.info(String.format("Deleted tokens %s from user %s", serviceAndTokens.getTokens(), user.getUsername()));
 
         List<TokenRepresentation> tokens = serviceAndTokens.getTokens();
         if (!CollectionUtils.isEmpty(tokens)) {
@@ -346,6 +379,8 @@ public class UserController {
 
     private ResponseEntity doIdpWebAuthn(Map<String, Object> body) throws IOException, Base64UrlException, RegistrationFailedException, NoSuchFieldException, IllegalAccessException {
         String token = (String) body.get("token");
+        String name = (String) body.get("name");
+
         Optional<User> optionalUser = userRepository.findUserByWebAuthnIdentifier(token);
         if (!optionalUser.isPresent()) {
             return return404();
@@ -370,7 +405,8 @@ public class UserController {
                 .build());
         PublicKeyCredentialDescriptor keyId = result.getKeyId();
         ByteArray publicKeyCose = result.getPublicKeyCose();
-        user.addPublicKeyCredential(keyId, publicKeyCose);
+
+        user.addPublicKeyCredential(keyId, publicKeyCose, name);
         userRepository.save(user);
 
         return ResponseEntity.status(201).body(Collections.singletonMap("location", webAuthnSpRedirectUrl));

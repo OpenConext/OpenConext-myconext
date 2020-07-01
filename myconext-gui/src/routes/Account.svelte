@@ -101,6 +101,7 @@
 {#if showModal}
     <Modal submit={deleteUserAction(false)}
            cancel={() => showModal = false}
+           warning={true}
            question={I18n.t("account.deleteAccountConfirmation")}
                    title={I18n.t("account.deleteAccount")}></Modal>
 {/if}

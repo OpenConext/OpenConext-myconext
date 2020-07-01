@@ -13,7 +13,7 @@
     <artifactId>myconext-server</artifactId>
     <packaging>jar</packaging>
     <name>myconext-server</name>
-    <version>3.0.2-FB-TOKENS-SNAPSHOT</version>
+    <version>3.0.5-SNAPSHOT</version>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -45,11 +45,6 @@
             <groupId>org.springframework.security.extensions</groupId>
             <artifactId>spring-security-saml2-core</artifactId>
             <version>2.0.0.M31</version>
-        </dependency>
-        <dependency>
-            <groupId>com.github.cybuch</groupId>
-            <artifactId>mongobeej</artifactId>
-            <version>0.17</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -105,6 +100,28 @@
             <groupId>com.yubico</groupId>
             <artifactId>webauthn-server-core</artifactId>
             <version>1.6.2</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>com.google.guava</groupId>
+                    <artifactId>guava</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+            <version>29.0-jre</version>
+        </dependency>
+        <dependency>
+            <groupId>com.github.cybuch</groupId>
+            <artifactId>mongobeej</artifactId>
+            <version>0.17</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.mongodb</groupId>
+                    <artifactId>mongo-java-driver</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>org.openconext</groupId>

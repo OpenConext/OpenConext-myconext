@@ -82,10 +82,17 @@ public class OpenIDConnectTest extends AbstractIntegrationTest {
                 .when()
                 .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                 .body(new DeleteServiceTokens("eduid", Arrays.asList(new TokenRepresentation("id", TokenType.ACCESS))))
-                .put("/myconext/api" +
-                        "/sp/service")
+                .put("/myconext/api/sp/service")
                 .then()
                 .statusCode(200);
+        given()
+                .when()
+                .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+                .body(new DeleteServiceTokens(null, Arrays.asList(new TokenRepresentation("id", TokenType.ACCESS))))
+                .put("/myconext/api/sp/tokens")
+                .then()
+                .statusCode(200);
+
     }
 
     private void stubForTokens(String jsonPath, int status) throws IOException {
