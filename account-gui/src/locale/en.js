@@ -2,7 +2,7 @@ import I18n from "i18n-js";
 
 I18n.translations.en = {
     login: {
-        header: "Use your eduID to login to",
+        header: "Use your eduID to continue to",
         header2: "Request",
         header3: "your eduID",
         trust: "Trust this computer",
