@@ -86,6 +86,7 @@ I18n.translations.nl = {
     info: "Deze instelling is op {{date}} om {{hours}}: {{minutes}} gelinkt aan je eduID-account",
     name: "Korte naam",
     eppn: "Je EPPN",
+    displayName: "Gebruikersnaam",
     affiliations: "Affiliations",
     expires: "Verloopt",
     expiresValue: "{{date}}",
