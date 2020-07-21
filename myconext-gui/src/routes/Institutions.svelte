@@ -135,7 +135,7 @@
             </table>
         {/if}
         <div class="options">
-            <Button label={I18n.t("institutions.add")} onClick={addInstitution(true)}/>
+            <Button large={true} label={I18n.t("institutions.add")} onClick={addInstitution(true)}/>
         </div>
 
     </div>

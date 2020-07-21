@@ -5,6 +5,7 @@
     import data_activity from "../icons/data_activity.svg";
     import connections from "../icons/connections.svg";
     import teams from "../icons/teams.svg";
+    import services from "../icons/streamline-icon-cloud-storage-drive.svg";
     import personal_info from "../icons/personal_info.svg";
     import chevron_left from "../icons/chevron-left.svg";
     import chevron_right from "../icons/chevron-right.svg";
@@ -24,8 +25,8 @@
     const tabs = [
         {name: "profile", component: Profile, icon: personal_info},
         {name: "security", component: Security, icon: security},
-        {name: "institutions", component: Institutions, icon: teams},
-        {name: "services", component: Services, icon: connections},
+        {name: "institutions", component: Institutions, icon: connections},
+        {name: "services", component: Services, icon: services},
         {name: "account", component: Account, icon: data_activity},
         {name: "migration", component: Migration, icon: data_activity, ignore: true}
     ];
@@ -117,7 +118,6 @@
     }
 
     nav ul li {
-        /*border-right: 2px solid var(--color-primary-grey);*/
         cursor: pointer;
     }
 
@@ -137,6 +137,17 @@
 
     nav ul li.active a {
         color: var(--color-primary-green);
+    }
+
+    :global(nav ul li svg) {
+        width: 32px;
+        height: 32px;
+    }
+
+    :global(nav ul li svg.services) {
+        width: 26px;
+        height: 26px;
+        margin-right: 6px;
     }
 
     :global(nav ul li.active svg) {

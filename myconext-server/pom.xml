@@ -13,7 +13,7 @@
     <artifactId>myconext-server</artifactId>
     <packaging>jar</packaging>
     <name>myconext-server</name>
-    <version>3.0.7</version>
+   <version>3.0.8</version>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -141,7 +141,7 @@
         <dependency>
             <groupId>io.rest-assured</groupId>
             <artifactId>rest-assured</artifactId>
-            <version>3.0.7</version>
+           <version>3.0.7</version>
             <scope>test</scope>
         </dependency>
         <!-- https://mvnrepository.com/artifact/com.github.tomakehurst/wiremock -->
