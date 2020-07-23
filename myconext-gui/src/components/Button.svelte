@@ -3,9 +3,11 @@
     export let active = false;
     export let href = "/";
     export let disabled = false;
-    export let warning= false;
+    export let warning = false;
     export let label;
     export let onClick;
+    export let full;
+    export let large;
 
     const handleLinkClick = e => e.key === " " && e.target.click();
 
@@ -23,11 +25,16 @@
         font-weight: bold;
         width: 216px;
     }
+
     @media (max-width: 820px) {
         .button {
             width: 176px;
         }
+        .button.large {
+            width: 260px;
+        }
     }
+
     .button:hover {
         background-color: #004c97;
         color: #94d6ff;
@@ -55,12 +62,17 @@
         color: #ababab;
         background-color: #efefef;
     }
+
     .button.disabled:hover {
         color: #ababab;
         background-color: #efefef;
     }
 
-    .button.full {
+    .button.full{
+        width: 260px;
+    }
+
+    .button.large {
         width: 260px;
     }
 
@@ -68,6 +80,7 @@
         background-color: var(--color-warning-red);
 
     }
+
     .button.warning:hover {
         background-color: #8e0000;
         color: whitesmoke;
@@ -99,6 +112,8 @@
    class:active={active}
    class:warning={warning}
    href="{href}"
+   class:full={full}
+   class:large={large}
    class:disabled={disabled}
    on:click|preventDefault|stopPropagation={() => !disabled && onClick()}
    on:keydown={handleLinkClick}>

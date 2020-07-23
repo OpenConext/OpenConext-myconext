@@ -137,6 +137,16 @@
                     </div>
                 </td>
             </tr>
+            {#if linkedAccount.givenName && linkedAccount.familyName}
+                <tr class="name">
+                    <td class="attr">{I18n.t("institution.displayName")}</td>
+                    <td class="value">
+                        <div class="value-container">
+                            <span>{`${linkedAccount.givenName} ${linkedAccount.familyName}`}</span>
+                        </div>
+                    </td>
+                </tr>
+            {/if}
             <tr class="name">
                 <td class="attr">{I18n.t("institution.affiliations")}</td>
                 <td class="value">
