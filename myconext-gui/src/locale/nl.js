@@ -72,8 +72,8 @@ I18n.translations.nl = {
   },
   institutions: {
     title: "Gekoppelde instellingen",
-    info: "Je kunt je eduID koppelen aan een of meer onderwijsinstellingen.",
-    explanation: "Door je onderwijsinstelling aan je eduID te koppelen, kun je via eduID bewijzen dat je aan een onderwijsinstelling studeert of werkt.<br/><br/><font color='#A70000'>Let op: deze functionaliteit is nog niet beschikbaar.</font>",
+    info: "Let op: deze functionaliteit is nog niet beschikbaar.",
+    explanation: "Door je onderwijsinstelling aan je eduID te koppelen, kun je via eduID bewijzen dat je aan een onderwijsinstelling studeert of werkt.",
     noInstitutions: "Je hebt geen onderwijsinstelling(en) gekoppeld. Klik op de onderstaande knop als je een instelling wilt koppelen.",
     name: "Korte naam",
     add: "Nieuwe instelling koppelen",
