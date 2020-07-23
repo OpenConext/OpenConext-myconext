@@ -74,10 +74,10 @@ I18n.translations.nl = {
     title: "Gekoppelde instellingen",
     info: "Je kunt je eduID koppelen aan een of meer onderwijsinstellingen.",
     explanation: "Door je onderwijsinstelling aan je eduID te koppelen, kun je via eduID bewijzen dat je aan een onderwijsinstelling studeert of werkt.",
-    noInstitutions: "Je hebt geen onderwijsinstelling(en) gekoppeld. Klik op de onderstaande knop als je een instelling wilt koppelen.",
+    noInstitutions: "Je hebt geen onderwijsinstelling(en) gekoppeld. Klik op de onderstaande knop als je een instelling wilt koppelen.<br/><br/><font color='#A70000'>Let op: deze functionaliteit is nog niet beschikbaar.</font>",
     name: "Korte naam",
     add: "Nieuwe instelling koppelen",
-    addInstitutionConfirmation: "Als je doorgaat word je gevraagd in te loggen via de onderwijsinstelling die je wilt koppelen. Selecteer eerst welke instelling je wilt koppelen en log daarna in.<br/> <br/>Nadat je succesvol bent ingelogd kom je hier weer terug.",
+    addInstitutionConfirmation: "<font color='#A70000'>Let op: deze functionaliteit is nog niet beschikbaar.</font><br/><br/>Als je doorgaat word je gevraagd in te loggen via de onderwijsinstelling die je wilt koppelen. Selecteer eerst welke instelling je wilt koppelen en log daarna in.<br/> <br/>Nadat je succesvol bent ingelogd kom je hier weer terug.",
     proceed: "Doorgaan",
     addInstitution: "Instelling toevoegen"
   },
