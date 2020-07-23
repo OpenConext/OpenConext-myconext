@@ -73,8 +73,8 @@ I18n.translations.en = {
   institutions: {
     title: "Connected institutions",
     info: "You can connect your eduID to one or more educational institutions.",
-    explanation: "By connecting your educational institution to your eduID, you will be able to prove through eduID that you study or work at one of these institutions.",
-    noInstitutions: "You currently have not connected any educational institutions to your eduID. Click the button below to connect an institution.<br/><br/><font color='#A70000'>Warning: this feature is not yet available.</font>",
+    explanation: "By connecting your educational institution to your eduID, you will be able to prove through eduID that you study or work at one of these institutions.<br/><br/><font color='#A70000'>Warning: this feature is not yet available.</font>",
+    noInstitutions: "You currently have not connected any educational institutions to your eduID. Click the button below to connect an institution.",
     name: "Short name",
     add: "Connect new institution",
     addInstitutionConfirmation: "<font color='#A70000'>Warning: this feature is not yet available.</font><br/><br/>When you proceed you will be asked to login at the institution you want to connect to your eduID. First, select which institution you want to connect; then, login at that institution.<br/><br/>After a successful login you will come back here.",
