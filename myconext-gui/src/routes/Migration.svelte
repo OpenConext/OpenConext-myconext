@@ -16,11 +16,12 @@
         height: 100%;
     }
 
-    .inner {
+    .inner-container {
         height: 100%;
         margin: 0 auto;
-        padding: 15px 0;
+        padding: 15px 30px 15px 0;
         display: flex;
+        background-color: white;
     }
 
     h3 {
@@ -41,7 +42,7 @@
     }
 
     @media (max-width: 1250px) {
-        .inner {
+        .inner-container {
             flex-direction: column;
         }
 
@@ -53,8 +54,8 @@
 
 </style>
 <div class="migration">
-    <div class="inner">
-        <div class="left">
+    <div class="inner-container">
+        <div class="leftish">
             <h3>{I18n.t("migration.header")}</h3>
             <p class="info">{I18n.t("migration.info")}</p>
             <p class="info">{I18n.t("migration.info2")}</p>
