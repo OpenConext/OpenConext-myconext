@@ -84,7 +84,7 @@ cloc --read-lang-def=cloc_definitions.txt --vcs=git
 
 ### [Migration](#migration)
 
-It's possoble to migrate from an existing IdP to this IdP. A new identity will be created, and the eppn wil be copied.
+It's possible to migrate from an existing IdP to this IdP. A new identity will be created, and the eppn wil be copied.
 
 ### [Attribute Manipulation](#attribue-manipulation)
 ```
