@@ -144,7 +144,7 @@ public class UserController {
 
         emailGuessingPreventor.potentialUserEmailGuess();
 
-        Optional<User> optionalUser = userRepository.findUserByEmailIgnoreCase(user.getEmail());
+        Optional<User> optionalUser = userRepository.findUserByEmailIgnoreCase(emailGuessingPreventor.sanitizeEmail(user.getEmail()));
         if (optionalUser.isPresent()) {
             return ResponseEntity.status(HttpStatus.CONFLICT)
                     .body(Collections.singletonMap("status", HttpStatus.CONFLICT.value()));
@@ -414,11 +414,11 @@ public class UserController {
 
 
     @PostMapping("idp/security/webauthn/authentication")
-    public ResponseEntity idpWebAuthnStartAuthentication(@RequestBody Map<String, String> body) throws Base64UrlException {
+    public ResponseEntity idpWebAuthnStartAuthentication(@RequestBody Map<String, String> body) {
         String email = body.get("email");
         emailGuessingPreventor.potentialUserEmailGuess();
 
-        Optional<User> optionalUser = userRepository.findUserByEmailIgnoreCase(email);
+        Optional<User> optionalUser = userRepository.findUserByEmailIgnoreCase(emailGuessingPreventor.sanitizeEmail(email));
         if (!optionalUser.isPresent()) {
             return return404();
         }
@@ -575,7 +575,7 @@ public class UserController {
     }
 
     private Optional<User> findUserStoreLanguage(String email) {
-        Optional<User> optionalUser = userRepository.findUserByEmailIgnoreCase(email);
+        Optional<User> optionalUser = userRepository.findUserByEmailIgnoreCase(emailGuessingPreventor.sanitizeEmail(email));
         optionalUser.ifPresent(user -> {
             String preferredLanguage = user.getPreferredLanguage();
             String language = LocaleContextHolder.getLocale().getLanguage();

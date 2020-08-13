@@ -6,6 +6,7 @@ import com.yubico.webauthn.data.ByteArray;
 import com.yubico.webauthn.data.PublicKeyCredentialDescriptor;
 import com.yubico.webauthn.data.PublicKeyCredentialType;
 import com.yubico.webauthn.data.exception.Base64UrlException;
+import myconext.model.PublicKeyCredentials;
 import myconext.model.User;
 import myconext.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,7 +21,7 @@ import java.util.stream.Collectors;
 @Component
 public class UserCredentialRepository implements CredentialRepository {
 
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
 
     @Autowired
     public UserCredentialRepository(UserRepository userRepository) {
@@ -29,7 +30,7 @@ public class UserCredentialRepository implements CredentialRepository {
 
     @Override
     public Set<PublicKeyCredentialDescriptor> getCredentialIdsForUsername(String email) {
-        Optional<User> userOptional = userRepository.findUserByEmailIgnoreCase(email);
+        Optional<User> userOptional = userRepository.findUserByEmailIgnoreCase(email.trim());
         return userOptional.map(user -> user.getPublicKeyCredentials().stream()
                 .map(publicKeyCredentials ->
                         PublicKeyCredentialDescriptor.builder()
@@ -41,13 +42,13 @@ public class UserCredentialRepository implements CredentialRepository {
 
     @Override
     public Optional<ByteArray> getUserHandleForUsername(String email) {
-        return userRepository.findUserByEmailIgnoreCase(email)
+        return userRepository.findUserByEmailIgnoreCase(email.trim())
                 .map(user -> byteArrayFromBase64Url(user.getUserHandle()));
     }
 
     @Override
     public Optional<String> getUsernameForUserHandle(ByteArray userHandle) {
-        return userRepository.findUserByUserHandle(userHandle.getBase64Url()).map(user -> user.getEmail());
+        return userRepository.findUserByUserHandle(userHandle.getBase64Url()).map(User::getEmail);
     }
 
     @Override
@@ -61,7 +62,7 @@ public class UserCredentialRepository implements CredentialRepository {
         String publicKeyCose = optionalUser.get().getPublicKeyCredentials().stream()
                 .filter(publicKeyCredential -> publicKeyCredential.getIdentifier().equals(credentialKey))
                 .findFirst()
-                .map(publicKeyCredential -> publicKeyCredential.getCredential())
+                .map(PublicKeyCredentials::getCredential)
                 .orElse("");
         if (StringUtils.isEmpty(publicKeyCose)) {
             return Optional.empty();

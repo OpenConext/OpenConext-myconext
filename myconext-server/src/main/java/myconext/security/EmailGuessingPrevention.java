@@ -15,4 +15,8 @@ public class EmailGuessingPrevention {
             //don't care
         }
     }
+
+    public String sanitizeEmail(String email) {
+        return email != null ? email.trim() : email;
+    }
 }
