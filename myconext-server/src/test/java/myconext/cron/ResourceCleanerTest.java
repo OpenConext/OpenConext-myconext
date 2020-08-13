@@ -16,6 +16,22 @@ import static org.junit.Assert.assertEquals;
 public class ResourceCleanerTest extends AbstractIntegrationTest {
 
     @Test
+    public void cleanNewUsersNotFinishedRegistration() {
+        ResourceCleaner resourceCleaner = new ResourceCleaner(authenticationRequestRepository, userRepository, true);
+
+        User user = user("mp@example.org");
+        long twoDaysAgo = (System.currentTimeMillis() / 1000L) - (2 * 24 * 60 * 60);
+        ReflectionTestUtils.setField(user, "created", twoDaysAgo);
+        userRepository.save(user);
+
+        long prev = userRepository.count();
+
+        resourceCleaner.clean();
+
+        assertEquals(prev - 1, userRepository.count());
+    }
+
+    @Test
     public void clean() {
         doTest(true, 0);
     }

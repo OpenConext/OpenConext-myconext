@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
+import java.time.temporal.ChronoUnit;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -51,8 +52,14 @@ public class ResourceCleaner {
             user.setLinkedAccounts(linkedAccounts);
             LOG.info(String.format("Removed expired linked account for user %s", user.getEmail()));
             userRepository.save(user);
-
         });
+
+        long dayAgo = now.toInstant().minus(1, ChronoUnit.DAYS).toEpochMilli() / 1000L;
+        List<User> newUsersExpired = userRepository.findByNewUserTrueAndCreatedLessThan(dayAgo);
+        LOG.info(String.format(
+                "Removing new users that have not finished registration last 24 hours %s",
+                newUsersExpired.stream().map(User::getEmail).collect(Collectors.joining(", "))));
+        userRepository.deleteAll(newUsersExpired);
     }
 
     private void info(Class clazz, long count) {
