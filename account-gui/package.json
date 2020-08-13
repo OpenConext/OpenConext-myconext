@@ -15,7 +15,7 @@
     "jest": "^24.9.0",
     "mini-css-extract-plugin": "^0.8.0",
     "regenerator-runtime": "^0.13.5",
-    "serialize-javascript": "^2.1.2",
+    "serialize-javascript": "^4.0.0",
     "serve": "^11.2.0",
     "style-loader": "^1.0.0",
     "svelte": "^3.12.1",
