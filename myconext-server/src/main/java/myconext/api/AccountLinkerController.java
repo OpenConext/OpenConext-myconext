@@ -223,8 +223,8 @@ public class AccountLinkerController {
         String surfCrmId = (String) body.get("surf-crm-id");
         String schacHomeOrganization = (String) body.get("schac_home_organization");
 
-        String givenName = validateNames ? (String) body.get("given_name") : null;
-        String familyName = validateNames ? (String) body.get("family_name") : null;
+        String givenName = (String) body.get("given_name");
+        String familyName = (String) body.get("family_name") ;
 
         String institutionIdentifier = StringUtils.hasText(surfCrmId) ? surfCrmId : schacHomeOrganization;
 
