@@ -102,6 +102,13 @@ I18n.translations.nl = {
     proceedLink: "Doorgaan",
     retryLink: "Opnieuw proberen"
   },
+  validNameMissing: {
+    header: "Account is gekoppeld, maar...",
+    info: "Je eduID is succesvol gekoppeld, maar de instelling die je hebt gekozen heeft niet de juiste attributen teruggegeven",
+    proceed: "Je kan het nogmaals met een andere instelling proberen of doorgaan naar {{name}}",
+    proceedLink: "Doorgaan",
+    retryLink: "Opnieuw proberen"
+  },
   stepUpExplanation: {
     linked_institution: "Je eduID-account moet gekoppeld zijn aan een vertrouwde instelling.",
     validate_names: "Je voornaam en achternaam moeten worden geverifieerd door een vertrouwde instelling.",

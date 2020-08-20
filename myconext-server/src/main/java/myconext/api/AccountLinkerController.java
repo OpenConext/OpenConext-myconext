@@ -49,6 +49,8 @@ import java.util.Map;
 import java.util.Optional;
 
 import static myconext.log.MDCContext.mdcContext;
+import static myconext.security.GuestIdpAuthenticationRequestFilter.hasRequiredStudentAffiliation;
+import static myconext.security.GuestIdpAuthenticationRequestFilter.hasValidatedName;
 
 @RestController
 @RequestMapping("/myconext/api")
@@ -150,7 +152,7 @@ public class AccountLinkerController {
         LOG.info("In SP redirect link account");
 
         return doRedirect(code, user, this.spFlowRedirectUri, this.spRedirectUrl + "/institutions",
-                false, false, null);
+                false, false, null, null);
     }
 
     @GetMapping("/idp/oidc/redirect")
@@ -179,8 +181,14 @@ public class AccountLinkerController {
                 "&redirect=" + URLEncoder.encode(this.magicLinkUrl, charSet) +
                 "&name=" + URLEncoder.encode(serviceName, charSet);
 
+        String idpValidNamesRequiredUri = this.idpErrorRedirectUrl + "/valid-name-missing/" +
+                samlAuthenticationRequest.getId() +
+                "?h=" + samlAuthenticationRequest.getHash() +
+                "&redirect=" + URLEncoder.encode(this.magicLinkUrl, charSet) +
+                "&name=" + URLEncoder.encode(serviceName, charSet);
+
         ResponseEntity redirect = doRedirect(code, user, this.idpFlowRedirectUri, location, validateNames, studentAffiliationRequired,
-                idpStudentAffiliationRequiredUri);
+                idpStudentAffiliationRequiredUri, idpValidNamesRequiredUri);
 
         StepUpStatus stepUpStatus = redirect.getHeaders().getLocation()
                 .toString().contains("affiliation-missing") ? StepUpStatus.MISSING_AFFILIATION : StepUpStatus.IN_STEP_UP;
@@ -193,7 +201,7 @@ public class AccountLinkerController {
     @SuppressWarnings("unchecked")
     private ResponseEntity doRedirect(@RequestParam("code") String code, User user, String oidcRedirectUri,
                                       String clientRedirectUri, boolean validateNames, boolean studentAffiliationRequired,
-                                      String idpStudentAffiliationRequiredUri) {
+                                      String idpStudentAffiliationRequiredUri, String idpValidNamesRequiredUri) {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
         headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
@@ -241,7 +249,7 @@ public class AccountLinkerController {
                     .filter(linkedAccount -> linkedAccount.getSchacHomeOrganization().equals(schacHomeOrganization))
                     .findFirst();
             if (optionalLinkedAccount.isPresent()) {
-                optionalLinkedAccount.get().updateExpiresIn(institutionIdentifier, affiliations, givenName, familyName, expiresAt);
+                optionalLinkedAccount.get().updateExpiresIn(institutionIdentifier, eppn, givenName, familyName, affiliations, expiresAt);
             } else {
                 linkedAccounts.add(
                         new LinkedAccount(institutionIdentifier, schacHomeOrganization, eppn, givenName, familyName, affiliations,
@@ -260,13 +268,16 @@ public class AccountLinkerController {
             LOG.error("Account linking requested, but no schacHomeOrganization provided by the IdP");
         }
         boolean hasStudentAffiliation = user.getLinkedAccounts().stream()
-                .anyMatch(linkedAccount ->
-                        (CollectionUtils.isEmpty(linkedAccount.getEduPersonAffiliations()) ? Collections.<String>emptyList() : linkedAccount.getEduPersonAffiliations())
-                                .stream()
-                                .anyMatch(affiliation -> affiliation.startsWith("student")));
+                .anyMatch(linkedAccount -> hasRequiredStudentAffiliation(linkedAccount.getEduPersonAffiliations()));
         if (studentAffiliationRequired && !hasStudentAffiliation) {
             //Corner case where the user has been stepped Up, but there is no student affiliation
             return ResponseEntity.status(HttpStatus.FOUND).location(URI.create(idpStudentAffiliationRequiredUri)).build();
+        }
+
+        boolean hasValidNames = hasValidatedName(user);
+        if (validateNames && !hasValidNames) {
+            //Corner case where the user has been stepped Up, but there is no valid name
+            return ResponseEntity.status(HttpStatus.FOUND).location(URI.create(idpValidNamesRequiredUri)).build();
         }
 
         return ResponseEntity.status(HttpStatus.FOUND).location(URI.create(clientRedirectUri)).build();

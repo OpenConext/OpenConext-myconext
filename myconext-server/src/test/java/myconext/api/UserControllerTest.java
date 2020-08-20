@@ -227,6 +227,30 @@ public class UserControllerTest extends AbstractIntegrationTest {
     }
 
     @Test
+    public void accountLinkingWithoutValidNames() throws IOException {
+        User user = userRepository.findOneUserByEmailIgnoreCase("jdoe@example.com");
+        Date createdAt = Date.from(Instant.now().plus(30 * 365, ChronoUnit.DAYS));
+        LinkedAccount linkedAccount = LinkedAccountTest.linkedAccount("", "", new Date());
+        user.getLinkedAccounts().add(linkedAccount);
+        userRepository.save(user);
+
+        String authnContext = readFile("request_authn_context_validated_name.xml");
+        Response response = samlAuthnRequestResponseWithLoa(null, "relay", authnContext);
+
+        String authenticationRequestId = extractAuthenticationRequestIdFromAuthnResponse(response);
+        SamlAuthenticationRequest samlAuthenticationRequest = authenticationRequestRepository.findById(authenticationRequestId).get();
+        //fake that we want to proceed
+        samlAuthenticationRequest.setSteppedUp(StepUpStatus.FINISHED_STEP_UP);
+        authenticationRequestRepository.save(samlAuthenticationRequest);
+
+        MagicLinkResponse magicLinkResponse = magicLinkRequest(new MagicLinkRequest(authenticationRequestId, user, false, false), HttpMethod.PUT);
+        String samlResponse = this.samlResponse(magicLinkResponse);
+
+        assertTrue(samlResponse.contains("Your institution has not provided those attributes"));
+        assertTrue(samlResponse.contains("urn:oasis:names:tc:SAML:2.0:status:NoAuthnContext"));
+    }
+
+    @Test
     public void emptySamlRequest() {
         given().redirects().follow(false)
                 .when()

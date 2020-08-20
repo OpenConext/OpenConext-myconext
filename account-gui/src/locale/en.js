@@ -102,6 +102,13 @@ I18n.translations.en = {
         proceedLink: "Proceed",
         retryLink: "Retry"
     },
+    validNameMissing: {
+        header: "Account linked, but...",
+        info: "Your eduID is successfully linked, however the institution you choose did not provide a valid name.",
+        proceed: "You can try to link to another institution or proceed to {{name}}",
+        proceedLink: "Proceed",
+        retryLink: "Retry"
+    },
     stepUpExplanation: {
         linked_institution: "Your eduID account must be linked to a trusted party.",
         validate_names: "Your first name and last name must be verified by a trusted party.",

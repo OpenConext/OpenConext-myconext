@@ -61,6 +61,22 @@ public class GuestIdpAuthenticationRequestFilterTest {
         assertTrue(userVerifiedByInstitution);
     }
 
+    @Test
+    public void isUserVerifiedByInstitutionNoValidNames() {
+        User user = AbstractIntegrationTest.user("s@s.com", "nl");
+        user.getLinkedAccounts().add(linkedAccount("John", "Doe", new Date()));
+        boolean userVerifiedByInstitution = userVerifiedByInstitution(user, ACR.VALIDATE_NAMES);
+        assertTrue(userVerifiedByInstitution);
+    }
+
+    @Test
+    public void isUserVerifiedByInstitutionValidNames() {
+        User user = AbstractIntegrationTest.user("s@s.com", "nl");
+        user.getLinkedAccounts().add(linkedAccount("", "", new Date()));
+        boolean userVerifiedByInstitution = userVerifiedByInstitution(user, ACR.VALIDATE_NAMES);
+        assertFalse(userVerifiedByInstitution);
+    }
+
     private boolean userVerifiedByInstitution(User user, String acr) {
         return GuestIdpAuthenticationRequestFilter.isUserVerifiedByInstitution(user, Collections.singletonList(acr));
     }

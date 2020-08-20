@@ -54,9 +54,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import static java.util.function.Function.identity;
+import static java.util.stream.Collectors.toList;
 import static myconext.security.CookieResolver.cookieByName;
 import static org.springframework.util.StringUtils.hasText;
 
@@ -138,7 +138,7 @@ public class GuestIdpAuthenticationRequestFilter extends IdpAuthenticationReques
 
         List<String> authenticationContextClassReferenceValues = getAuthenticationContextClassReferenceValues(authenticationRequest);
         boolean accountLinkingRequired =
-                this.accountLinkingContextClassReferences.stream().anyMatch(s -> authenticationContextClassReferenceValues.contains(s));
+                this.accountLinkingContextClassReferences.stream().anyMatch(authenticationContextClassReferenceValues::contains);
 
         SamlAuthenticationRequest samlAuthenticationRequest = new SamlAuthenticationRequest(
                 authenticationRequest.getId(),
@@ -165,7 +165,7 @@ public class GuestIdpAuthenticationRequestFilter extends IdpAuthenticationReques
         if (previousAuthenticatedUser != null && !authenticationRequest.isForceAuth()) {
             if (accountLinkingRequired && !isUserVerifiedByInstitution(previousAuthenticatedUser,
                     authenticationContextClassReferenceValues)) {
-                boolean hasStudentAffiliation = previousAuthenticatedUser.allEduPersonAffiliations().stream().anyMatch(affiliation -> affiliation.startsWith("student"));
+                boolean hasStudentAffiliation = hasRequiredStudentAffiliation((previousAuthenticatedUser.allEduPersonAffiliations()));
                 String explanation = ACR.explanationKeyWord(authenticationContextClassReferenceValues, hasStudentAffiliation);
                 response.sendRedirect(this.redirectUrl + "/stepup/" + samlAuthenticationRequest.getId() + "?name=" + encodedServiceName + "&explanation=" + explanation);
             } else {
@@ -190,14 +190,29 @@ public class GuestIdpAuthenticationRequestFilter extends IdpAuthenticationReques
         }
         authenticationContextClassReferenceValues = authenticationContextClassReferenceValues == null ?
                 Collections.emptyList() : authenticationContextClassReferenceValues;
-        boolean atLeastOneNotExpired = linkedAccounts.stream()
-                .anyMatch(linkedAccount -> now.toInstant().isBefore(linkedAccount.getExpiresAt().toInstant()));
+        List<LinkedAccount> nonExpiredLinkedAccounts = linkedAccounts.stream()
+                .filter(linkedAccount -> now.toInstant().isBefore(linkedAccount.getExpiresAt().toInstant()))
+                .collect(toList());
+        boolean atLeastOneNotExpired = !CollectionUtils.isEmpty(nonExpiredLinkedAccounts);
         boolean hasRequiredStudentAffiliation = !authenticationContextClassReferenceValues.contains(ACR.AFFILIATION_STUDENT) ||
-                linkedAccounts.stream()
-                        .anyMatch(linkedAccount ->
-                                linkedAccount.getEduPersonAffiliations().stream()
-                                        .anyMatch(affiliation -> affiliation.startsWith("student")));
-        return atLeastOneNotExpired && hasRequiredStudentAffiliation;
+                nonExpiredLinkedAccounts.stream()
+                        .anyMatch(linkedAccount -> hasRequiredStudentAffiliation(linkedAccount.getEduPersonAffiliations()));
+        boolean hasValidatedNames = !authenticationContextClassReferenceValues.contains(ACR.VALIDATE_NAMES) ||
+                hasValidatedName(user);
+        return atLeastOneNotExpired && hasRequiredStudentAffiliation && hasValidatedNames;
+    }
+
+    public static boolean hasValidatedName(User user) {
+        return hasValidatedName(user.getLinkedAccounts());
+    }
+
+    private static boolean hasValidatedName(List<LinkedAccount> linkedAccounts) {
+        return linkedAccounts.stream().anyMatch(LinkedAccount::areNamesValidated);
+    }
+
+    public static boolean hasRequiredStudentAffiliation(List<String> affiliations) {
+        return !CollectionUtils.isEmpty(affiliations) && affiliations.stream()
+                .anyMatch(affiliation -> affiliation.startsWith("student"));
     }
 
     private List<String> getAuthenticationContextClassReferenceValues(AuthenticationRequest authenticationRequest) {
@@ -207,7 +222,7 @@ public class GuestIdpAuthenticationRequestFilter extends IdpAuthenticationReques
         }
         return authenticationContextClassReferences.stream()
                 .map(ref -> ref.getValue())
-                .collect(Collectors.toList());
+                .collect(toList());
     }
 
     private Optional<User> userFromCookie(Cookie remembered) {
@@ -265,7 +280,7 @@ public class GuestIdpAuthenticationRequestFilter extends IdpAuthenticationReques
 
         String charSet = Charset.defaultCharset().name();
         String encodedServiceName = URLEncoder.encode(serviceNameResolver.resolve(samlAuthenticationRequest.getRequesterEntityId()), charSet);
-        boolean hasStudentAffiliation = user.allEduPersonAffiliations().stream().anyMatch(affiliation -> affiliation.startsWith("student"));
+        boolean hasStudentAffiliation = hasRequiredStudentAffiliation(user.allEduPersonAffiliations());
         String explanation = ACR.explanationKeyWord(authenticationContextClassReferences, hasStudentAffiliation);
 
         if (accountLinkingRequired && StepUpStatus.NONE.equals(samlAuthenticationRequest.getSteppedUp())) {
@@ -299,8 +314,8 @@ public class GuestIdpAuthenticationRequestFilter extends IdpAuthenticationReques
         } else if (inStepUpFlow) {
             response.sendRedirect(this.redirectUrl + "/confirm-stepup?h=" + hash +
                     "&redirect=" + URLEncoder.encode(this.magicLinkUrl, charSet) +
-                    "&name=" + URLEncoder.encode(serviceNameResolver.resolve(samlAuthenticationRequest.getRequesterEntityId()), charSet)+
-                    "&explanation="+explanation);
+                    "&name=" + URLEncoder.encode(serviceNameResolver.resolve(samlAuthenticationRequest.getRequesterEntityId()), charSet) +
+                    "&explanation=" + explanation);
             finishStepUp(samlAuthenticationRequest);
             return;
 
@@ -359,12 +374,22 @@ public class GuestIdpAuthenticationRequestFilter extends IdpAuthenticationReques
         Response samlResponse = provider.response(authenticationRequest, assertion, serviceProviderMetadata);
 
         if (samlAuthenticationRequest.isAccountLinkingRequired()) {
-            boolean hasStudentAffiliation = user.allEduPersonAffiliations().stream().anyMatch(affiliation -> affiliation.startsWith("student"));
+            boolean hasStudentAffiliation = hasRequiredStudentAffiliation(user.allEduPersonAffiliations());
 
             //When we change the status of the response to NO_AUTH_CONTEXT EB stops the flow but this will be fixed upstream
-            if (authenticationContextClassReferences.contains(ACR.AFFILIATION_STUDENT) && !hasStudentAffiliation) {
-                String msg = "The requesting service has indicated that the authenticated user is required to have an affiliation Student." +
-                        " Your institution has not provided this affiliation.";
+            boolean missingStudentAffilaiation = authenticationContextClassReferences.contains(ACR.AFFILIATION_STUDENT) &&
+                    !hasStudentAffiliation;
+            boolean missingValidName = authenticationContextClassReferences.contains(ACR.VALIDATE_NAMES) &&
+                    !hasValidatedName(user);
+            if (missingStudentAffilaiation || missingValidName) {
+                String msg;
+                if (missingValidName) {
+                    msg = "The requesting service has indicated that the authenticated user is required to have a first_name and last_name." +
+                            " Your institution has not provided those attributes.";
+                } else {
+                   msg = "The requesting service has indicated that the authenticated user is required to have an affiliation Student." +
+                           " Your institution has not provided this affiliation.";
+                }
                 samlResponse.setStatus(new Status()
                         .setCode(StatusCode.NO_AUTH_CONTEXT)
                         .setMessage(msg)
@@ -435,9 +460,9 @@ public class GuestIdpAuthenticationRequestFilter extends IdpAuthenticationReques
                 .map(linkedAccount -> linkedAccount.getEduPersonAffiliations().stream()
                         .map(affiliation -> affiliation.contains("@")
                                 ? affiliation : String.format("%s@%s", affiliation, linkedAccount.getSchacHomeOrganization()))
-                        .collect(Collectors.toList()))
+                        .collect(toList()))
                 .flatMap(Collection::stream)
-                .collect(Collectors.toList());
+                .collect(toList());
 
         if (!CollectionUtils.isEmpty(scopedAffiliations)) {
             attributes.add(attribute("urn:mace:dir:attribute-def:eduPersonScopedAffiliation",
@@ -450,7 +475,7 @@ public class GuestIdpAuthenticationRequestFilter extends IdpAuthenticationReques
         List<LinkedAccount> linkedAccounts = user.linkedAccountsSorted();
         List<LinkedAccount> linkedAccountsEmptyAffiliations = linkedAccounts.stream()
                 .filter(linkedAccount -> CollectionUtils.isEmpty(linkedAccount.getEduPersonAffiliations()))
-                .collect(Collectors.toList());
+                .collect(toList());
         linkedAccountsEmptyAffiliations.forEach(linkedAccount -> linkedAccount.setEduPersonAffiliations(Arrays.asList("affiliation")));
         if (!linkedAccountsEmptyAffiliations.isEmpty()) {
             userRepository.save(user);
