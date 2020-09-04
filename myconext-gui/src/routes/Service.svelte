@@ -8,6 +8,7 @@
     import {onMount} from "svelte";
     import {formatCreateDate} from "../format/date";
     import Modal from "../components/Modal.svelte";
+    import {serviceName} from "../utils/services";
 
     let service = {};
     let token = null;
@@ -44,7 +45,7 @@
         const eduid = urlSearchParams.get("eduid");
         const services = Object.keys($user.eduIdPerServiceProvider).map(k => ({
             entityId: k,
-            name: $user.eduIdPerServiceProvider[k].serviceName,
+            name: serviceName($user.eduIdPerServiceProvider[k]),
             eduId: $user.eduIdPerServiceProvider[k].value,
             createdAt: $user.eduIdPerServiceProvider[k].createdAt
         }));

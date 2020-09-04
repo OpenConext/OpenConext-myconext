@@ -27,11 +27,11 @@ public class UserTest {
     @Test
     public void computeEduIdForServiceProviderIfAbsent() {
         User user = user("http://mock-sp", "Mock SP");
-        String eduId = user.computeEduIdForServiceProviderIfAbsent("http://test.sp", "Mock SP").get();
+        String eduId = user.computeEduIdForServiceProviderIfAbsent("http://test.sp", "Mock SP", "Mock SP NL").get();
         boolean matches = Pattern.compile("^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$").matcher(eduId).matches();
         assertTrue(matches);
 
-        assertFalse(user.computeEduIdForServiceProviderIfAbsent(null, null).isPresent());
+        assertFalse(user.computeEduIdForServiceProviderIfAbsent(null, null, null).isPresent());
 
     }
 
@@ -39,10 +39,10 @@ public class UserTest {
     public void eduIdForServiceProviderNeedsUpdate() {
         User user = user("http://mock-sp", null);
 
-        assertTrue(user.eduIdForServiceProviderNeedsUpdate("http://rp", null));
-        assertTrue(user.eduIdForServiceProviderNeedsUpdate(null, null));
-        assertTrue(user.eduIdForServiceProviderNeedsUpdate("http://mock-sp", "Mock SP - EN"));
-        assertTrue(user.eduIdForServiceProviderNeedsUpdate("http://mock-sp", "Mock SP"));
+        assertTrue(user.eduIdForServiceProviderNeedsUpdate("http://rp", null, null));
+        assertTrue(user.eduIdForServiceProviderNeedsUpdate(null, null, null));
+        assertTrue(user.eduIdForServiceProviderNeedsUpdate("http://mock-sp", "Mock SP - EN", "Mock SP - NL"));
+        assertTrue(user.eduIdForServiceProviderNeedsUpdate("http://mock-sp", "Mock SP", "Mock SP - NL"));
     }
 
     @Test
@@ -54,6 +54,6 @@ public class UserTest {
 
     private User user(String serviceProviderEntityId, String serviceProviderName) {
         return new User("uid", "email", "John", "Doe", "schac",
-                "aa", serviceProviderEntityId, serviceProviderName, "en");
+                "aa", serviceProviderEntityId, serviceProviderName, serviceProviderName, "en");
     }
 }

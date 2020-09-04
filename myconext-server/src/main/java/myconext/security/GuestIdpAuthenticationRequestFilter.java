@@ -160,7 +160,8 @@ public class GuestIdpAuthenticationRequestFilter extends IdpAuthenticationReques
 
         User previousAuthenticatedUser = userRememberedOptional.orElse(userFromAuthentication.orElse(null));
 
-        String encodedServiceName = URLEncoder.encode(serviceNameResolver.resolve(requesterEntityId), "UTF-8");
+        String lang = cookieByName(request, "lang").map(cookie -> cookie.getValue()).orElse("en");
+        String encodedServiceName = URLEncoder.encode(serviceNameResolver.resolve(requesterEntityId, lang), "UTF-8");
 
         if (previousAuthenticatedUser != null && !authenticationRequest.isForceAuth()) {
             if (accountLinkingRequired && !isUserVerifiedByInstitution(previousAuthenticatedUser,
@@ -279,7 +280,9 @@ public class GuestIdpAuthenticationRequestFilter extends IdpAuthenticationReques
                         authenticationContextClassReferences);
 
         String charSet = Charset.defaultCharset().name();
-        String encodedServiceName = URLEncoder.encode(serviceNameResolver.resolve(samlAuthenticationRequest.getRequesterEntityId()), charSet);
+
+        String lang = cookieByName(request, "lang").map(cookie -> cookie.getValue()).orElse("en");
+        String encodedServiceName = URLEncoder.encode(serviceNameResolver.resolve(samlAuthenticationRequest.getRequesterEntityId(), lang), charSet);
         boolean hasStudentAffiliation = hasRequiredStudentAffiliation(user.allEduPersonAffiliations());
         String explanation = ACR.explanationKeyWord(authenticationContextClassReferences, hasStudentAffiliation);
 
@@ -302,7 +305,7 @@ public class GuestIdpAuthenticationRequestFilter extends IdpAuthenticationReques
             String url = this.redirectUrl + "/confirm?h=" + hash +
                     "&redirect=" + URLEncoder.encode(this.magicLinkUrl, charSet) +
                     "&email=" + URLEncoder.encode(user.getEmail(), charSet) +
-                    "&name=" + URLEncoder.encode(serviceNameResolver.resolve(samlAuthenticationRequest.getRequesterEntityId()), charSet);
+                    "&name=" + URLEncoder.encode(serviceNameResolver.resolve(samlAuthenticationRequest.getRequesterEntityId(), lang), charSet);
             if (!StepUpStatus.NONE.equals(samlAuthenticationRequest.getSteppedUp())) {
                 url += "&explanation=" + explanation;
             }
@@ -314,7 +317,7 @@ public class GuestIdpAuthenticationRequestFilter extends IdpAuthenticationReques
         } else if (inStepUpFlow) {
             response.sendRedirect(this.redirectUrl + "/confirm-stepup?h=" + hash +
                     "&redirect=" + URLEncoder.encode(this.magicLinkUrl, charSet) +
-                    "&name=" + URLEncoder.encode(serviceNameResolver.resolve(samlAuthenticationRequest.getRequesterEntityId()), charSet) +
+                    "&name=" + URLEncoder.encode(serviceNameResolver.resolve(samlAuthenticationRequest.getRequesterEntityId(), lang), charSet) +
                     "&explanation=" + explanation);
             finishStepUp(samlAuthenticationRequest);
             return;
@@ -387,8 +390,8 @@ public class GuestIdpAuthenticationRequestFilter extends IdpAuthenticationReques
                     msg = "The requesting service has indicated that the authenticated user is required to have a first_name and last_name." +
                             " Your institution has not provided those attributes.";
                 } else {
-                   msg = "The requesting service has indicated that the authenticated user is required to have an affiliation Student." +
-                           " Your institution has not provided this affiliation.";
+                    msg = "The requesting service has indicated that the authenticated user is required to have an affiliation Student." +
+                            " Your institution has not provided this affiliation.";
                 }
                 samlResponse.setStatus(new Status()
                         .setCode(StatusCode.NO_AUTH_CONTEXT)
@@ -444,9 +447,10 @@ public class GuestIdpAuthenticationRequestFilter extends IdpAuthenticationReques
                 attribute("urn:mace:dir:attribute-def:uid", user.getUid()),
                 attribute("urn:mace:terena.org:attribute-def:schacHomeOrganization", user.getSchacHomeOrganization())
         ));
-        String serviceProviderName = serviceNameResolver.resolve(requesterEntityId);
-        if (user.eduIdForServiceProviderNeedsUpdate(requesterEntityId, serviceProviderName)) {
-            user.computeEduIdForServiceProviderIfAbsent(requesterEntityId, serviceProviderName);
+        String serviceProviderName = serviceNameResolver.resolve(requesterEntityId, "en");
+        String serviceProviderNameNl = serviceNameResolver.resolve(requesterEntityId, "nl");
+        if (user.eduIdForServiceProviderNeedsUpdate(requesterEntityId, serviceProviderName, serviceProviderNameNl)) {
+            user.computeEduIdForServiceProviderIfAbsent(requesterEntityId, serviceProviderName, serviceProviderNameNl);
             userRepository.save(user);
         }
 

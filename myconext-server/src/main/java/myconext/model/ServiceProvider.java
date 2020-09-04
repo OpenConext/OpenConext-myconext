@@ -4,8 +4,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Getter
-public class
-ServiceProvider {
+public class ServiceProvider {
 
     private String entityId;
 

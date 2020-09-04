@@ -3,7 +3,6 @@ package myconext.shibboleth;
 
 import myconext.exceptions.MigrationDuplicateUserEmailException;
 import myconext.mail.MailBox;
-import myconext.manage.ServiceNameResolver;
 import myconext.model.User;
 import myconext.repository.UserRepository;
 import org.slf4j.Logger;
@@ -93,7 +92,7 @@ public class ShibbolethPreAuthenticatedProcessingFilter extends AbstractPreAuthe
     }
 
     private User provisionUser(String uid, String schacHomeOrganization, String givenName, String familyName, String email, String authenticatingAuthority, String preferredLanguage) {
-        User user = new User(uid, email, givenName, familyName, schacHomeOrganization, authenticatingAuthority, null, null, preferredLanguage);
+        User user = new User(uid, email, givenName, familyName, schacHomeOrganization, authenticatingAuthority, null, null, null, preferredLanguage);
         user.setNewUser(false);
         user = userRepository.save(user);
 

@@ -34,6 +34,7 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponents;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import javax.servlet.http.HttpServletRequest;
 import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URLEncoder;
@@ -49,6 +50,7 @@ import java.util.Map;
 import java.util.Optional;
 
 import static myconext.log.MDCContext.mdcContext;
+import static myconext.security.CookieResolver.cookieByName;
 import static myconext.security.GuestIdpAuthenticationRequestFilter.hasRequiredStudentAffiliation;
 import static myconext.security.GuestIdpAuthenticationRequestFilter.hasValidatedName;
 
@@ -156,7 +158,7 @@ public class AccountLinkerController {
     }
 
     @GetMapping("/idp/oidc/redirect")
-    public ResponseEntity idpFlowRedirect(@RequestParam("code") String code, @RequestParam("state") String state) throws UnsupportedEncodingException {
+    public ResponseEntity idpFlowRedirect(HttpServletRequest request, @RequestParam("code") String code, @RequestParam("state") String state) throws UnsupportedEncodingException {
         Optional<SamlAuthenticationRequest> optionalSamlAuthenticationRequest = authenticationRequestRepository.findByIdAndNotExpired(state);
         if (!optionalSamlAuthenticationRequest.isPresent()) {
             return ResponseEntity.status(HttpStatus.FOUND).location(URI.create(this.idpErrorRedirectUrl + "/expired")).build();
@@ -173,7 +175,9 @@ public class AccountLinkerController {
         String location = this.magicLinkUrl + "?h=" + samlAuthenticationRequest.getHash();
 
         String charSet = Charset.defaultCharset().name();
-        String serviceName = serviceNameResolver.resolve(samlAuthenticationRequest.getRequesterEntityId());
+
+        String lang = cookieByName(request, "lang").map(cookie -> cookie.getValue()).orElse("en");
+        String serviceName = serviceNameResolver.resolve(samlAuthenticationRequest.getRequesterEntityId(), lang);
 
         String idpStudentAffiliationRequiredUri = this.idpErrorRedirectUrl + "/affiliation-missing/" +
                 samlAuthenticationRequest.getId() +

@@ -58,9 +58,10 @@ public class ServiceNameResolver {
         }
     }
 
-    public String resolve(String entityId) {
+    public String resolve(String entityId, String languageAbbreviation) {
         Map<String, String> names = serviceNames.getOrDefault(entityId, Collections.emptyMap());
-        String name = names.getOrDefault("en", names.get("nl"));
+        String fallBackLanguage = "en".equals(languageAbbreviation) ? "nl" : "en";
+        String name = names.getOrDefault(languageAbbreviation, names.get(fallBackLanguage));
         return StringUtils.hasText(name) ? name : entityId;
     }
 }

@@ -13,9 +13,11 @@ public class EduID {
 
     private String value;
     private String serviceName;
+    private String serviceNameNl;
     private Date createdAt;
 
-    public void updateServiceName(String serviceName) {
+    public void updateServiceName(String serviceName, String serviceNameNl) {
         this.serviceName = serviceName;
+        this.serviceNameNl = serviceNameNl;
     }
 }

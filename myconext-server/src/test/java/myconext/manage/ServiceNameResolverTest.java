@@ -12,7 +12,8 @@ public class ServiceNameResolverTest {
 
     @Test
     public void resolveLocally() {
-        assertEquals("SURFconext Manage | SURFconext", subject.resolve("https://manage.surfconext.nl/shibboleth"));
+        assertEquals("SURFconext Manage | SURFconext", subject.resolve("https://manage.surfconext.nl/shibboleth", "en"));
+        assertEquals("SURFconext Manage | SURFconext NL", subject.resolve("https://manage.surfconext.nl/shibboleth", "nl"));
     }
 
     @Test

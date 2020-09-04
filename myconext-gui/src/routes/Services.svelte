@@ -4,6 +4,7 @@
     import {navigate} from "svelte-routing";
     import chevron_right from "../icons/chevron-right.svg";
     import {onMount} from "svelte";
+    import {serviceName} from "../utils/services";
 
     const serviceDetails = eduid => () =>
             navigate(`/service?eduid=${encodeURIComponent(eduid)}`);
@@ -11,7 +12,7 @@
     let services = [];
 
     onMount(() => services = Object.keys($user.eduIdPerServiceProvider).map(k => ({
-        name: $user.eduIdPerServiceProvider[k].serviceName,
+        name: serviceName($user.eduIdPerServiceProvider[k]),
         eduId: $user.eduIdPerServiceProvider[k].value
     })));
 

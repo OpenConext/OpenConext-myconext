@@ -79,6 +79,7 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 import static myconext.log.MDCContext.mdcContext;
+import static myconext.security.CookieResolver.cookieByName;
 
 @RestController
 @RequestMapping("/myconext/api")
@@ -136,7 +137,7 @@ public class UserController {
     }
 
     @PostMapping("/idp/magic_link_request")
-    public ResponseEntity newMagicLinkRequest(@Valid @RequestBody MagicLinkRequest magicLinkRequest) {
+    public ResponseEntity newMagicLinkRequest(HttpServletRequest request, @Valid @RequestBody MagicLinkRequest magicLinkRequest) {
         SamlAuthenticationRequest samlAuthenticationRequest = authenticationRequestRepository.findByIdAndNotExpired(magicLinkRequest.getAuthenticationRequestId())
                 .orElseThrow(ExpiredAuthenticationException::new);
 
@@ -154,14 +155,15 @@ public class UserController {
         String requesterEntityId = samlAuthenticationRequest.getRequesterEntityId();
         User userToSave = new User(UUID.randomUUID().toString(), user.getEmail(), user.getGivenName(),
                 user.getFamilyName(), schacHomeOrganization, guestIdpEntityId, requesterEntityId,
-                serviceNameResolver.resolve(requesterEntityId), preferredLanguage);
+                serviceNameResolver.resolve(requesterEntityId, "en"),
+                serviceNameResolver.resolve(requesterEntityId, "nl"), preferredLanguage);
         userToSave = userRepository.save(userToSave);
 
-        return this.doMagicLink(userToSave, samlAuthenticationRequest, magicLinkRequest.isRememberMe(), false);
+        return this.doMagicLink(userToSave, samlAuthenticationRequest, magicLinkRequest.isRememberMe(), false, request);
     }
 
     @PutMapping("/idp/magic_link_request")
-    public ResponseEntity magicLinkRequest(@Valid @RequestBody MagicLinkRequest magicLinkRequest) {
+    public ResponseEntity magicLinkRequest(HttpServletRequest request, @Valid @RequestBody MagicLinkRequest magicLinkRequest) {
         SamlAuthenticationRequest samlAuthenticationRequest = authenticationRequestRepository.findByIdAndNotExpired(magicLinkRequest.getAuthenticationRequestId())
                 .orElseThrow(ExpiredAuthenticationException::new);
 
@@ -175,11 +177,12 @@ public class UserController {
         }
         User user = optionalUser.get();
         String requesterEntityId = samlAuthenticationRequest.getRequesterEntityId();
-        String serviceProviderName = serviceNameResolver.resolve(requesterEntityId);
 
-        boolean needToSave = user.eduIdForServiceProviderNeedsUpdate(requesterEntityId, serviceProviderName);
+        String serviceProviderName = serviceNameResolver.resolve(requesterEntityId, "en");
+        String serviceProviderNameNl = serviceNameResolver.resolve(requesterEntityId, "nl");
+        boolean needToSave = user.eduIdForServiceProviderNeedsUpdate(requesterEntityId, serviceProviderName, serviceProviderNameNl);
         if (needToSave) {
-            user.computeEduIdForServiceProviderIfAbsent(requesterEntityId, serviceProviderName);
+            user.computeEduIdForServiceProviderIfAbsent(requesterEntityId, serviceProviderName, serviceProviderNameNl);
             userRepository.save(user);
         }
 
@@ -191,7 +194,7 @@ public class UserController {
             mdcContext(Optional.of(user), "action", "successful login with password");
             LOG.info("Successfully logged in with password");
         }
-        return doMagicLink(user, samlAuthenticationRequest, magicLinkRequest.isRememberMe(), magicLinkRequest.isUsePassword());
+        return doMagicLink(user, samlAuthenticationRequest, magicLinkRequest.isRememberMe(), magicLinkRequest.isUsePassword(), request);
     }
 
     @GetMapping(value = {"/sp/me", "sp/migrate/merge", "sp/migrate/proceed"})
@@ -298,7 +301,7 @@ public class UserController {
 
     @PutMapping("/sp/tokens")
     public ResponseEntity<UserResponse> removeTokens(Authentication authentication,
-                                                          @RequestBody DeleteServiceTokens serviceAndTokens) {
+                                                     @RequestBody DeleteServiceTokens serviceAndTokens) {
         User user = userFromAuthentication(authentication);
 
         return doRemoveTokens(serviceAndTokens, user);
@@ -439,7 +442,7 @@ public class UserController {
     }
 
     @PutMapping("idp/security/webauthn/authentication")
-    public ResponseEntity idpWebAuthnTryAuthentication(@RequestBody Map<String, Object> body) throws Base64UrlException, IOException, AssertionFailedException, NoSuchFieldException, IllegalAccessException {
+    public ResponseEntity idpWebAuthnTryAuthentication(HttpServletRequest request, @RequestBody Map<String, Object> body) throws Base64UrlException, IOException, AssertionFailedException, NoSuchFieldException, IllegalAccessException {
         String authenticationRequestId = (String) body.get("authenticationRequestId");
         SamlAuthenticationRequest samlAuthenticationRequest = authenticationRequestRepository.findByIdAndNotExpired(authenticationRequestId)
                 .orElseThrow(ExpiredAuthenticationException::new);
@@ -474,7 +477,7 @@ public class UserController {
         mdcContext(Optional.of(user), "action", "successful login with authn");
         LOG.info("successfully logged in with AuthnWeb");
 
-        return doMagicLink(user, samlAuthenticationRequest, rememberMe, true);
+        return doMagicLink(user, samlAuthenticationRequest, rememberMe, true, request);
     }
 
     private PublicKeyCredentialCreationOptions publicKeyCredentialCreationOptions(RelyingParty relyingParty, User user) throws Base64UrlException {
@@ -542,7 +545,7 @@ public class UserController {
     }
 
     private ResponseEntity doMagicLink(User user, SamlAuthenticationRequest samlAuthenticationRequest, boolean rememberMe,
-                                       boolean passwordOrWebAuthnFlow) {
+                                       boolean passwordOrWebAuthnFlow, HttpServletRequest request) {
         samlAuthenticationRequest.setHash(hash());
         samlAuthenticationRequest.setUserId(user.getId());
         samlAuthenticationRequest.setPasswordOrWebAuthnFlow(passwordOrWebAuthnFlow);
@@ -551,7 +554,9 @@ public class UserController {
             samlAuthenticationRequest.setRememberMeValue(UUID.randomUUID().toString());
         }
         authenticationRequestRepository.save(samlAuthenticationRequest);
-        String serviceName = serviceNameResolver.resolve(samlAuthenticationRequest.getRequesterEntityId());
+
+        String lang = cookieByName(request, "lang").map(cookie -> cookie.getValue()).orElse("en");
+        String serviceName = serviceNameResolver.resolve(samlAuthenticationRequest.getRequesterEntityId(), lang);
 
         if (passwordOrWebAuthnFlow) {
             LOG.info(String.format("Returning passwordOrWebAuthnFlow magic link for existing user %s", user.getUsername()));

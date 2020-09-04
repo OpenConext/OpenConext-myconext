@@ -46,7 +46,8 @@ public class AttributeAggregatorController {
         List<UserAttribute> userAttributes = new ArrayList<>();
         userOptional.ifPresent(user -> {
             Optional<String> optionalEduID = user.computeEduIdForServiceProviderIfAbsent(spEntityId,
-                    serviceNameResolver.resolve(spEntityId));
+                    serviceNameResolver.resolve(spEntityId, "en"),
+                    serviceNameResolver.resolve(spEntityId, "nl"));
             optionalEduID.ifPresent(eduID -> userAttributes.add(
                     new UserAttribute("urn:mace:eduid.nl:1.1", eduID)));
         });
@@ -64,10 +65,11 @@ public class AttributeAggregatorController {
                                           @RequestParam("uid") String uid,
                                           @RequestParam(value = "sp_institution_guid", required = false) String spInstitutionGuid) {
         User user = userRepository.findUserByUid(uid).orElseThrow(UserNotFoundException::new);
-        String serviceProviderName = serviceNameResolver.resolve(spEntityId);
+        String serviceProviderName = serviceNameResolver.resolve(spEntityId, "en");
+        String serviceProviderNameNl = serviceNameResolver.resolve(spEntityId, "nl");
 
-        boolean needToSave = user.eduIdForServiceProviderNeedsUpdate(spEntityId, serviceProviderName);
-        String eduId = user.computeEduIdForServiceProviderIfAbsent(spEntityId, serviceProviderName).get();
+        boolean needToSave = user.eduIdForServiceProviderNeedsUpdate(spEntityId, serviceProviderName, serviceProviderNameNl);
+        String eduId = user.computeEduIdForServiceProviderIfAbsent(spEntityId, serviceProviderName, serviceProviderNameNl).get();
         if (needToSave) {
             userRepository.save(user);
         }

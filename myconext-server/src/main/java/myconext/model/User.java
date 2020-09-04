@@ -61,7 +61,7 @@ public class User implements Serializable, UserDetails {
 
     public User(String uid, String email, String givenName, String familyName,
                 String schacHomeOrganization, String authenticatingAuthority,
-                String serviceProviderEntityId, String serviceProviderName, String preferredLanguage) {
+                String serviceProviderEntityId, String serviceProviderName, String serviceProviderNameNl, String preferredLanguage) {
         this.uid = uid;
         this.email = email;
         this.givenName = givenName;
@@ -70,7 +70,7 @@ public class User implements Serializable, UserDetails {
         this.authenticatingAuthority = authenticatingAuthority;
         this.preferredLanguage = preferredLanguage;
 
-        this.computeEduIdForServiceProviderIfAbsent(serviceProviderEntityId, serviceProviderName);
+        this.computeEduIdForServiceProviderIfAbsent(serviceProviderEntityId, serviceProviderName, serviceProviderNameNl);
         this.newUser = true;
         this.created = System.currentTimeMillis() / 1000L;
     }
@@ -103,30 +103,31 @@ public class User implements Serializable, UserDetails {
     }
 
     @Transient
-    public Optional<String> computeEduIdForServiceProviderIfAbsent(String serviceProviderEntityId, String serviceProviderName) {
+    public Optional<String> computeEduIdForServiceProviderIfAbsent(String serviceProviderEntityId, String serviceProviderName, String serviceProviderNameNl) {
         Optional<String> result = StringUtils.hasText(serviceProviderEntityId) ?
                 Optional.of(this.eduIdPerServiceProvider.computeIfAbsent(serviceProviderEntityId, s ->
-                        new EduID(UUID.randomUUID().toString(), serviceProviderName, new Date())).getValue()) :
+                        new EduID(UUID.randomUUID().toString(), serviceProviderName, serviceProviderNameNl, new Date())).getValue()) :
                 Optional.empty();
-        syncServiceName(serviceProviderEntityId, serviceProviderName);
+        syncServiceName(serviceProviderEntityId, serviceProviderName, serviceProviderNameNl);
         return result;
     }
 
-    private boolean syncServiceName(String serviceProviderEntityId, String serviceProviderName) {
+    private boolean syncServiceName(String serviceProviderEntityId, String serviceProviderName, String serviceProviderNameNl) {
         EduID eduID = this.eduIdPerServiceProvider.get(serviceProviderEntityId);
-        boolean needsSyncing = StringUtils.hasText(serviceProviderName) && !serviceProviderName.equals(eduID.getServiceName());
+        boolean needsSyncing = (StringUtils.hasText(serviceProviderName) && !serviceProviderName.equals(eduID.getServiceName())) ||
+                (StringUtils.hasText(serviceProviderNameNl) && !serviceProviderNameNl.equals(eduID.getServiceNameNl()));
         if (needsSyncing) {
-            eduID.updateServiceName(serviceProviderName);
+            eduID.updateServiceName(serviceProviderName, serviceProviderNameNl);
         }
         return needsSyncing;
     }
 
     @Transient
-    public boolean eduIdForServiceProviderNeedsUpdate(String serviceProviderEntityId, String serviceProviderName) {
+    public boolean eduIdForServiceProviderNeedsUpdate(String serviceProviderEntityId, String serviceProviderName, String serviceProviderNameNl) {
         if (!this.eduIdPerServiceProvider.containsKey(serviceProviderEntityId)) {
             return true;
         }
-        return syncServiceName(serviceProviderEntityId, serviceProviderName);
+        return syncServiceName(serviceProviderEntityId, serviceProviderName, serviceProviderNameNl);
 
     }
 
