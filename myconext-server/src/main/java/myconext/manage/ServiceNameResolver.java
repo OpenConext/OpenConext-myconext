@@ -28,12 +28,11 @@ public class ServiceNameResolver {
 
     @Autowired
     public ServiceNameResolver(@Value("${metadata_sp_url}") Resource metaDataResource,
-
                                ObjectMapper objectMapper) {
         this(metaDataResource, objectMapper, true);
     }
 
-    ServiceNameResolver(@Value("${metadata_sp_url}") Resource metaDataResource,
+    public ServiceNameResolver(@Value("${metadata_sp_url}") Resource metaDataResource,
                         ObjectMapper objectMapper,
                         boolean lazy) {
         this.metaDataResource = metaDataResource;

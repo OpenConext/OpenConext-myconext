@@ -179,7 +179,8 @@ public class User implements Serializable, UserDetails {
     @Transient
     @JsonIgnore
     public List<LinkedAccount> linkedAccountsSorted() {
-        return this.linkedAccounts.stream().sorted(Comparator.comparing(LinkedAccount::getExpiresAt).reversed()).collect(Collectors.toList());
+        return this.linkedAccounts.stream()
+                .sorted(Comparator.comparing(LinkedAccount::getExpiresAt).reversed()).collect(Collectors.toList());
     }
 
     @Transient

@@ -420,7 +420,7 @@ public class GuestIdpAuthenticationRequestFilter extends IdpAuthenticationReques
         processHtml(request, response, getPostBindingTemplate(), model);
     }
 
-    private List<Attribute> attributes(User user, String requesterEntityId, List<String> authenticationContextClassReferences) {
+    protected List<Attribute> attributes(User user, String requesterEntityId, List<String> authenticationContextClassReferences) {
         List<LinkedAccount> linkedAccounts = safeSortedAffiliations(user);
         String givenName = user.getGivenName();
         String familyName = user.getFamilyName();
