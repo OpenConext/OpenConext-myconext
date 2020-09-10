@@ -1,12 +1,11 @@
 package myconext.mongo;
 
-import com.github.mongobeej.Mongobee;
-import com.mongodb.MongoClient;
-import com.mongodb.MongoClientURI;
+import com.github.cloudyrock.mongock.driver.mongodb.springdata.v3.SpringDataMongo3Driver;
+import com.github.cloudyrock.spring.v5.MongockSpring5;
 import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
+import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.event.EventListener;
@@ -25,19 +24,29 @@ public class MongoMapping {
 
     private final MongoTemplate mongoTemplate;
     private final MongoConverter mongoConverter;
-    private final String mongoUri;
 
     @Autowired
-    public MongoMapping(MongoTemplate mongoTemplate, MongoConverter mongoConverter,
-                        @Value("${spring.data.mongodb.uri}") String mongoUri) {
+    public MongoMapping(MongoTemplate mongoTemplate, MongoConverter mongoConverter) {
         this.mongoTemplate = mongoTemplate;
         this.mongoConverter = mongoConverter;
-        this.mongoUri = mongoUri;
     }
 
     @Bean
     public MongoTransactionManager transactionManager() {
         return new MongoTransactionManager(mongoTemplate.getMongoDbFactory());
+    }
+
+    @Bean
+    public MongockSpring5.MongockApplicationRunner mongockApplicationRunner(ApplicationContext springContext,
+                                                                            MongoTemplate mongoTemplate) {
+        SpringDataMongo3Driver driver = SpringDataMongo3Driver.withDefaultLock(mongoTemplate);
+        driver.disableTransaction();
+
+        return MongockSpring5.builder()
+                .setDriver(driver)
+                .addChangeLogsScanPackage("myconext.mongo")
+                .setSpringContext(springContext)
+                .buildApplicationRunner();
     }
 
     @SneakyThrows
@@ -55,9 +64,6 @@ public class MongoMapping {
                 resolver.resolveIndexFor(clazz).forEach(indexOps::ensureIndex);
             }
         }
-        Mongobee mongobee = new Mongobee(new MongoClientURI(mongoUri));
-        mongobee.setChangeLogsScanPackage(this.getClass().getPackage().getName());
-        mongobee.execute();
     }
 
 }

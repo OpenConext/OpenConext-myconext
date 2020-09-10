@@ -321,7 +321,8 @@ public class UserController {
     @GetMapping("/sp/tokens")
     public ResponseEntity<List<Map<String, Object>>> tokens(Authentication authentication) {
         User user = userFromAuthentication(authentication);
-        return ResponseEntity.ok(this.openIDConnect.tokens(user));
+        List<Map<String, Object>> tokens = this.openIDConnect.tokens(user);
+        return ResponseEntity.ok(tokens);
     }
 
     private User userFromAuthentication(Authentication authentication) {

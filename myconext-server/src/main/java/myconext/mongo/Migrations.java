@@ -1,35 +1,36 @@
 package myconext.mongo;
 
-import com.github.mongobeej.changeset.ChangeLog;
-import com.github.mongobeej.changeset.ChangeSet;
+import com.github.cloudyrock.mongock.ChangeLog;
+import com.github.cloudyrock.mongock.ChangeSet;
+import com.github.cloudyrock.mongock.driver.mongodb.springdata.v3.decorator.impl.MongockTemplate;
 import myconext.model.PublicKeyCredentials;
-import myconext.model.User;
-import org.springframework.data.mongodb.core.MongoTemplate;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.CollectionUtils;
 
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-@ChangeLog
+@ChangeLog(order = "001")
 public class Migrations {
 
     @SuppressWarnings("unchecked")
     @ChangeSet(order = "001", id = "transformUserPublicKeyCredentials", author = "okke.harsta@surf.nl")
-    @Transactional
-    public void transformUserPublicKeyCredentials(MongoTemplate mongoTemplate) {
+    public void transformUserPublicKeyCredentials(MongockTemplate mongoTemplate) {
         List<Map> usersAsMaps = mongoTemplate.findAll(Map.class, "users");
         usersAsMaps.forEach(userAsMap -> {
             if (userAsMap.containsKey("publicKeyCredentials")) {
-                Map<String, String> credentials = (Map<String, String>) userAsMap.get("publicKeyCredentials");
-                List<PublicKeyCredentials> publicKeyCredentials = credentials.entrySet().stream()
-                        .map(entry -> new PublicKeyCredentials(entry.getKey(), entry.getValue(),
-                                "key-" + UUID.randomUUID().toString()))
-                        .collect(Collectors.toList());
-                userAsMap.put("publicKeyCredentials", publicKeyCredentials);
-                mongoTemplate.save(userAsMap, "users");
+                Object o = userAsMap.get("publicKeyCredentials");
+                if (o instanceof Map) {
+                    Map<String, String> credentials = (Map<String, String>) userAsMap.get("publicKeyCredentials");
+                    if (!credentials.containsKey("name")) {
+                        List<PublicKeyCredentials> publicKeyCredentials = credentials.entrySet().stream()
+                                .map(entry -> new PublicKeyCredentials(entry.getKey(), entry.getValue(),
+                                        "key-" + UUID.randomUUID().toString()))
+                                .collect(Collectors.toList());
+                        userAsMap.put("publicKeyCredentials", publicKeyCredentials);
+                        mongoTemplate.save(userAsMap, "users");
+                    }
+                }
             }
         });
     }
