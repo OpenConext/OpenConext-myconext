@@ -96,7 +96,6 @@ public class ShibbolethPreAuthenticatedProcessingFilter extends AbstractPreAuthe
         user.setNewUser(false);
         user = userRepository.save(user);
 
-
         boolean isOneGini = oneginiEntityId.equalsIgnoreCase(user.getAuthenticatingAuthority());
 
         String action = isOneGini ? "Sending account migration mail" : "Not sending account migration mail";
