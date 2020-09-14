@@ -109,7 +109,6 @@
 <div class="institutions">
     <div class="inner-container">
         <h2>{I18n.t("institutions.title")}</h2>
-        <p class="info">{I18n.t("institutions.info")}</p>
         <p class="info">{I18n.t("institutions.explanation")}</p>
         {#if $user.linkedAccounts.length === 0}
             <p class="no-institutions">{I18n.t("institutions.noInstitutions")}</p>
