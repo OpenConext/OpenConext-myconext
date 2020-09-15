@@ -98,9 +98,9 @@ I18n.translations.en = {
   },
   services: {
     title: "Used services",
-    info: "Each service you access with your eduID account receives attributes from your account including an unique pseudonymized eduID to identify your account.",
-    explanation: "These are all the services where you logged in using your eduID account.",
-    noServices: "You have not used any service yet with your eduID account.",
+    info: "Each service you accessed through eduID receives certain personal data (attributes) from your eduID account. For example, your name, your email address or a pseudonym which the service can use to uniquely identify you.",
+    explanation: "The overview below shows you all services you have logged in to using eduID.",
+    noServices: "You did not yet use eduID to login to any service.",
     name: "Name",
   },
   service: {
