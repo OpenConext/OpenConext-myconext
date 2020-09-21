@@ -380,11 +380,11 @@ public class GuestIdpAuthenticationRequestFilter extends IdpAuthenticationReques
             boolean hasStudentAffiliation = hasRequiredStudentAffiliation(user.allEduPersonAffiliations());
 
             //When we change the status of the response to NO_AUTH_CONTEXT EB stops the flow but this will be fixed upstream
-            boolean missingStudentAffilaiation = authenticationContextClassReferences.contains(ACR.AFFILIATION_STUDENT) &&
+            boolean missingStudentAffiliation = authenticationContextClassReferences.contains(ACR.AFFILIATION_STUDENT) &&
                     !hasStudentAffiliation;
             boolean missingValidName = authenticationContextClassReferences.contains(ACR.VALIDATE_NAMES) &&
                     !hasValidatedName(user);
-            if (missingStudentAffilaiation || missingValidName) {
+            if (missingStudentAffiliation || missingValidName) {
                 String msg;
                 if (missingValidName) {
                     msg = "The requesting service has indicated that the authenticated user is required to have a first_name and last_name." +
