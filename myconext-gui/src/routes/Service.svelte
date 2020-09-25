@@ -36,6 +36,7 @@
         if (allTokens.length === 1) {
             return allTokens[0];
         }
+        //TODO - filter on scope !== "openid"
         const refreshToken = allTokens.find(t => t.type === "REFRESH");
         return refreshToken || allTokens[0];
     }
