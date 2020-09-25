@@ -33,12 +33,12 @@
         if (allTokens.length === 0) {
             return null;
         }
-        if (allTokens.length === 1) {
-            return allTokens[0];
+        const validTokens = allTokens.filter(token => token.scopes && token.scopes.find(scope => scope.name !== "openid" && scope.descriptions[I18n.locale]));
+        if (validTokens.length === 0) {
+            return null;
         }
-        //TODO - filter on scope !== "openid"
-        const refreshToken = allTokens.find(t => t.type === "REFRESH");
-        return refreshToken || allTokens[0];
+        const refreshToken = validTokens.find(t => t.type === "REFRESH");
+        return refreshToken || validTokens[0];
     }
 
     onMount(() => {
@@ -51,10 +51,10 @@
             createdAt: $user.eduIdPerServiceProvider[k].createdAt
         }));
         service = services.find(o => o.eduId === eduid);
-        refreshTokens();
+        fetchTokens();
     });
 
-    const refreshTokens = () => {
+    const fetchTokens = () => {
         const allTokens = $user.oidcTokens.filter(token => token.clientId === service.entityId);
         token = useToken(allTokens);
         tokens = allTokens.map(t => ({id: t.id, tokenType: t.type}));
@@ -92,7 +92,7 @@
                     }
                 }
                 $user.oidcTokens = $user.oidcTokens.filter(token => token.clientId !== service.entityId);
-                refreshTokens();
+                fetchTokens();
                 flash.setValue(I18n.t("service.tokenDeleted", {name: service.name}));
             });
         }
@@ -221,7 +221,7 @@
         </div>
 
 
-        {#if token && token.scopes && token.scopes.find(scope => scope.name !== "openid" && scope.descriptions[I18n.locale])}
+        {#if token }
             <p class="info">{I18n.t("service.tokenInfo", {name: service.name})}</p>
             <table cellspacing="0">
                 <thead></thead>
