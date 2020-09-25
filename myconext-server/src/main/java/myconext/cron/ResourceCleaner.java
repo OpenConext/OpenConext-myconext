@@ -56,10 +56,14 @@ public class ResourceCleaner {
 
         long dayAgo = now.toInstant().minus(1, ChronoUnit.DAYS).toEpochMilli() / 1000L;
         List<User> newUsersExpired = userRepository.findByNewUserTrueAndCreatedLessThan(dayAgo);
-        LOG.info(String.format(
-                "Removing new users that have not finished registration last 24 hours %s",
-                newUsersExpired.stream().map(User::getEmail).collect(Collectors.joining(", "))));
-        userRepository.deleteAll(newUsersExpired);
+        if (newUsersExpired.isEmpty()) {
+            LOG.info("No users found that have not finished registration last 24 hours");
+        } else {
+            LOG.info(String.format(
+                    "Removing new users that have not finished registration last 24 hours %s",
+                    newUsersExpired.stream().map(User::getEmail).collect(Collectors.joining(", "))));
+            userRepository.deleteAll(newUsersExpired);
+        }
     }
 
     private void info(Class clazz, long count) {

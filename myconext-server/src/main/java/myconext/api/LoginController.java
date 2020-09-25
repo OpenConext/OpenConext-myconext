@@ -42,6 +42,7 @@ public class LoginController {
         this.config.put("magicLinkUrl", magicLinkUrl);
         this.config.put("eduIDLoginUrl", String.format("%s/Shibboleth.sso/Login?entityID=%s", myConextUrl, guestIdpEntityId));
         this.config.put("eduIDRegisterUrl", String.format("%s/register", idpBaseUrl));
+        this.config.put("eduIDDoLoginUrl", String.format("%s/doLogin", idpBaseUrl));
         this.config.put("eduIDWebAuthnUrl", String.format("%s/webauthn", idpBaseUrl));
         this.config.put("eduIDWebAuthnRedirectSpUrl", String.format("%s/webauthn", spBaseUrl));
         this.config.put("domain", domain);
@@ -59,6 +60,14 @@ public class LoginController {
         response.sendRedirect(redirectLocation);
     }
 
+    @GetMapping("/doLogin")
+    public void doLogin(@RequestParam(value = "lang", required = false, defaultValue = "en") String lang,
+                         @RequestParam(value = "location", required = false) String location,
+                         HttpServletResponse response) throws IOException {
+        response.setHeader("Set-Cookie", REGISTER_MODUS_COOKIE_NAME + "=; expires=Thu, 01 Jan 1970 00:00:00 GMT; SameSite=Lax" + (secureCookie ? "; Secure" : ""));
+        String redirectLocation = StringUtils.hasText(location) ? location : this.config.get("eduIDLoginUrl") + "&lang=" + lang;
+        response.sendRedirect(redirectLocation);
+    }
 
     @GetMapping("/config")
     public Map<String, Object> config() {

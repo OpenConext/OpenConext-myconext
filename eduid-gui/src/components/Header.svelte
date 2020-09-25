@@ -6,7 +6,7 @@
     import {config} from "../stores/config";
     import {navigate} from "svelte-routing";
 
-    const login = () => window.location.href = `${$config.eduIDLoginUrl}&lang=${I18n.locale}`;
+    const login = () => window.location.href = `${$config.eduIDDoLoginUrl}?lang=${I18n.locale}`;
 
 </script>
 

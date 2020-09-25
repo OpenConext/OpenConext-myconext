@@ -43,10 +43,10 @@
         serviceName = urlParams.get("name");
 
         const modus = urlParams.get("modus");
-        if (modus && modus === "cr") {
+        const registerModus = Cookies.get("REGISTER_MODUS");
+        if ((modus && modus === "cr") || registerModus) {
             $user.createAccount = true;
         }
-
     });
 
     const handleNext = passwordFlow => () => {

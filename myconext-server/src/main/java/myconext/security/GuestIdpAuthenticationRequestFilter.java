@@ -176,7 +176,11 @@ public class GuestIdpAuthenticationRequestFilter extends IdpAuthenticationReques
             }
         } else {
             addBrowserIdentificationCookie(response);
-            String modus = cookieByName(request, REGISTER_MODUS_COOKIE_NAME).map(c -> "&modus=cr").orElse("");
+            Optional<Cookie> optionalCookie = cookieByName(request, REGISTER_MODUS_COOKIE_NAME);
+
+            LOG.info("Cookie REGISTER_MODUS_COOKIE_NAME is: " + optionalCookie.map(Cookie::getValue).orElse("Null"));
+
+            String modus = optionalCookie.map(c -> "&modus=cr").orElse("");
             String stepUp = accountLinkingRequired ? "&stepup=true" : "";
             response.sendRedirect(this.redirectUrl + "/login/" + samlAuthenticationRequest.getId() +
                     "?name=" + encodedServiceName + modus + stepUp);
