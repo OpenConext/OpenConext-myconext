@@ -22,7 +22,7 @@ public class IdPMetaDataResolver {
 
     private static final Log LOG = LogFactory.getLog(IdPMetaDataResolver.class);
 
-    private Resource metaDataResource;
+    private final Resource metaDataResource;
     private Set<String> domainNames = new HashSet<>();
 
     @Autowired
@@ -33,21 +33,21 @@ public class IdPMetaDataResolver {
     @Scheduled(initialDelayString = "${cron.metadata-resolver-initial-delay-milliseconds}",
             fixedRateString = "${cron.metadata-resolver-fixed-rate-milliseconds}")
     public void resolveIdpMetaData() {
+        long start = System.currentTimeMillis();
         XMLStreamReader reader;
         Set<String> newDomainNames = new HashSet<>();
         try {
             reader = getXMLStreamReader(metaDataResource);
             while (reader.hasNext()) {
-                int next = reader.next();
-                if (next == START_ELEMENT) {
-                    String startLocalName = reader.getLocalName();
-                    if ("Scope".equals(startLocalName)) {
+                if (reader.next() == START_ELEMENT) {
+                    if ("Scope".equals(reader.getLocalName())) {
                         newDomainNames.add(reader.getElementText());
                     }
                 }
             }
             this.domainNames = newDomainNames;
-            LOG.info(String.format("Parsed %s domain names from %s", domainNames.size(), metaDataResource.getDescription()));
+            LOG.info(String.format("Parsed %s institution domain names from %s in %s",
+                    domainNames.size(), metaDataResource.getDescription(), System.currentTimeMillis() - start));
         } catch (Exception e) {
             LOG.error("Error in resolveIdpMetaData", e);
         }

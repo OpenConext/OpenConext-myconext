@@ -18,7 +18,7 @@ cron:
   node-cron-job-responsible: True
   token-cleaner-expression: "0 0/15 * * * *"
   service-name-resolver-initial-delay-milliseconds: 1
-  service-name-resolver-fixed-rate-milliseconds: 3600000
+  service-name-resolver-fixed-rate-milliseconds: 360_0000
   metadata-resolver-initial-delay-milliseconds: 1
   metadata-resolver-fixed-rate-milliseconds: 86_400_000
   metadata-resolver-url: "https://metadata.surfconext.nl/idps-metadata.xml"
