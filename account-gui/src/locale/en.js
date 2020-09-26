@@ -31,6 +31,7 @@ I18n.translations.en = {
         emailInUse: "Email is already in use.",
         emailNotFound: "Email not found.",
         emailOrPasswordIncorrect: "Email or password are incorrect",
+        institutionDomainNameWarning: "We advise you not to use your institution email, but for example a gmail account",
         passwordDisclaimer: "Make sure it's at least 15 characters long OR at least 8 characters when including a number and an UpperCase letter.",
         noGuestAccount: "<strong>Don't</strong> have an eduID yet?",
         requestGuestAccount: "Request an eduID",

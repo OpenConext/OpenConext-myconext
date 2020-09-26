@@ -66,6 +66,7 @@ import static io.restassured.RestAssured.given;
 import static myconext.security.GuestIdpAuthenticationRequestFilter.BROWSER_SESSION_COOKIE_NAME;
 import static myconext.security.GuestIdpAuthenticationRequestFilter.GUEST_IDP_REMEMBER_ME_COOKIE_NAME;
 import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.startsWith;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -248,6 +249,16 @@ public class UserControllerTest extends AbstractIntegrationTest {
 
         assertTrue(samlResponse.contains("Your institution has not provided those attributes"));
         assertTrue(samlResponse.contains("urn:oasis:names:tc:SAML:2.0:status:NoAuthnContext"));
+    }
+
+    @Test
+    public void domainNames() {
+        given()
+                .when()
+                .get("/myconext/api/idp/email/domain/names")
+                .then()
+                .statusCode(200)
+                .body("size()", is(316));
     }
 
     @Test

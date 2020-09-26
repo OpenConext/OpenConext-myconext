@@ -21,6 +21,7 @@ import com.yubico.webauthn.data.UserIdentity;
 import com.yubico.webauthn.data.exception.Base64UrlException;
 import com.yubico.webauthn.exception.AssertionFailedException;
 import com.yubico.webauthn.exception.RegistrationFailedException;
+import myconext.cron.IdPMetaDataResolver;
 import myconext.exceptions.ExpiredAuthenticationException;
 import myconext.exceptions.ForbiddenException;
 import myconext.exceptions.UserNotFoundException;
@@ -75,6 +76,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -96,7 +98,6 @@ public class UserController {
     private final String schacHomeOrganization;
     private final String guestIdpEntityId;
     private final String webAuthnSpRedirectUrl;
-    private final String idpBaseUrl;
     private final RelyingParty relyingParty;
     private final UserCredentialRepository userCredentialRepository;
     private final ChallengeRepository challengeRepository;
@@ -104,6 +105,7 @@ public class UserController {
     private final SecureRandom random = new SecureRandom();
     private final PasswordEncoder passwordEncoder = new BCryptPasswordEncoder(-1, random);
     private final EmailGuessingPrevention emailGuessingPreventor;
+    private final IdPMetaDataResolver idPMetaDataResolver;
 
     public UserController(UserRepository userRepository,
                           UserCredentialRepository userCredentialRepository,
@@ -112,6 +114,7 @@ public class UserController {
                           MailBox mailBox,
                           ServiceNameResolver serviceNameResolver,
                           OpenIDConnect openIDConnect,
+                          IdPMetaDataResolver idPMetaDataResolver,
                           @Value("${email.magic-link-url}") String magicLinkUrl,
                           @Value("${schac_home_organization}") String schacHomeOrganization,
                           @Value("${guest_idp_entity_id}") String guestIdpEntityId,
@@ -127,13 +130,18 @@ public class UserController {
         this.mailBox = mailBox;
         this.serviceNameResolver = serviceNameResolver;
         this.openIDConnect = openIDConnect;
+        this.idPMetaDataResolver = idPMetaDataResolver;
         this.magicLinkUrl = magicLinkUrl;
         this.schacHomeOrganization = schacHomeOrganization;
         this.guestIdpEntityId = guestIdpEntityId;
-        this.idpBaseUrl = idpBaseUrl;
         this.webAuthnSpRedirectUrl = String.format("%s/webauthn", spBaseUrl);
         this.relyingParty = relyingParty(rpId, rpOrigin);
         this.emailGuessingPreventor = new EmailGuessingPrevention(emailGuessingSleepMillis);
+    }
+
+    @GetMapping("/idp/email/domain/names")
+    public Set<String> domainNames() {
+        return this.idPMetaDataResolver.getDomainNames();
     }
 
     @PostMapping("/idp/magic_link_request")

@@ -31,6 +31,7 @@ I18n.translations.nl = {
     emailInUse: "E-mailadres is al in gebruik.",
     emailNotFound: "E-mailadres niet gevonden.",
     emailOrPasswordIncorrect: "E-mailadres of wachtwoord is niet juist",
+    institutionDomainNameWarning: "We adviseren je om niet je instellings-email te gebruiken, maar bijvoorbeeld een gmail account",
     passwordDisclaimer: "Je wachtwoord moet minimaal 15 karakters lang zijn, of minimaal 8 als het een hoofdletter en een getal bevat.",
     noGuestAccount: "Heb je nog geen <strong>eduID?</strong>",
     requestGuestAccount: "Vraag een eduID aan",

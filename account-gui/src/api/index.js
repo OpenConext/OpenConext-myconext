@@ -50,6 +50,10 @@ export function magicLinkExistingUser(email, password, rememberMe, usePassword, 
   return postPutJson("/myconext/api/idp/magic_link_request", body, "PUT");
 }
 
+export function domainNames() {
+  return fetchJson("/myconext/api/idp/email/domain/names")
+}
+
 export function configuration() {
   return fetchJson("/config");
 }
