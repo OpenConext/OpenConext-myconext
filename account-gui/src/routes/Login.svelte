@@ -5,7 +5,9 @@
   import {get} from "@github/webauthn-json";
   import {validEmail} from "../validation/regexp";
   import I18n from "i18n-js";
-  import critical from "../icons/critical.svg"
+  import critical from "../icons/critical.svg";
+  import attention from "../icons/attention.svg";
+  import close from "../icons/close.svg";
   import {
     domainNames,
     magicLinkExistingUser,
@@ -178,8 +180,15 @@
     $user.familyName = "";
     emailInUse = false;
     emailNotFound = false;
-    if (newAccount && institutionDomainNames.length === 0) {
-      domainNames().then(json => institutionDomainNames = json);
+    if (newAccount) {
+      if (institutionDomainNames.length === 0) {
+        domainNames().then(json => {
+          institutionDomainNames = json;
+          handleEmailBlur({target: {value: $user.email}});
+        });
+      } else {
+        handleEmailBlur({target: {value: $user.email}});
+      }
     }
   };
 
@@ -209,6 +218,10 @@
         }
       }
     }
+    institutionDomainNameWarning = false;
+  }
+
+  const clearInstitutionDomainNameWarning = () => {
     institutionDomainNameWarning = false;
   }
 
@@ -257,6 +270,27 @@
         align-items: center;
         color: var(--color-primary-red);
         margin-bottom: 10px;
+    }
+
+    div.institution-warning {
+        border-radius: 8px;
+        box-shadow: 0 1px 0 2px #ff9d0b;
+        background-color: #ffd89d;
+        display: flex;
+        padding: 10px 30px 5px 5px;
+        margin-bottom: 15px;
+        position: relative;
+    }
+
+    div.text {
+        padding: 5px 5px 5px 10px;
+    }
+
+    span.close {
+        cursor: pointer;
+        position: absolute;
+        top: 3px;
+        right: 3px;
     }
 
     div.error span.svg {
@@ -357,7 +391,16 @@
     <div class="error"><span class="svg">{@html critical}</span><span>{I18n.t("login.emailInUse")}</span></div>
 {/if}
 {#if $user.createAccount && institutionDomainNameWarning}
-    <div class="error"><span class="svg">{@html critical}</span><span>{I18n.t("login.institutionDomainNameWarning")}</span></div>
+    <div class="institution-warning">
+        <span class="svg attention">{@html attention}</span>
+        <div class="text">
+            <span>{I18n.t("login.institutionDomainNameWarning")}</span>
+            <br/>
+            <span>{I18n.t("login.institutionDomainNameWarning2")}</span>
+        </div>
+        <span class="svg close" on:click={clearInstitutionDomainNameWarning}>{@html close}</span>
+    </div>
+
 {/if}
 
 {#if $user.createAccount}
