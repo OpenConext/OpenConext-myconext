@@ -44,7 +44,7 @@
     p.info2 {
         font-size: 22px;
         margin-bottom: 24px;
-        font-family: Proxima Nova, sans-serif;
+        font-family: Nunito, sans-serif;
     }
 
     p {

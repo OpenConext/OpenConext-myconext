@@ -20,7 +20,7 @@
     import Migration from "./Migration.svelte";
     import Flash from "../components/Flash.svelte";
 
-    export let bookmark;
+    export let bookmark = "profile";
 
     const tabs = [
         {name: "profile", component: Profile, icon: personal_info},

@@ -6,8 +6,8 @@
     export let warning = false;
     export let label;
     export let onClick;
-    export let full;
-    export let large;
+    export let full = false;
+    export let large = false;
 
     const handleLinkClick = e => e.key === " " && e.target.click();
 

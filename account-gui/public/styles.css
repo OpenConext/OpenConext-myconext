@@ -8,25 +8,32 @@ html {
     box-sizing: inherit;
 }
 
+/* nunito-300 - latin */
 @font-face {
-    font-family: "Proxima Nova";
+    font-family: 'Nunito';
+    font-style: normal;
     font-weight: 300;
-    src: url("/fonts/proxima_nova/proximanovasoft-regular-webfont.woff2") format("woff2"),
-    url("/fonts/proxima_nova/proximanovasoft-regular-webfont.woff") format("woff");
+    src: local('Nunito Light'), local('Nunito-Light'),
+    url('/fonts/nunito/nunito-v14-latin-300.woff2') format('woff2'), /* Chrome 26+, Opera 23+, Firefox 39+ */
+    url('/fonts/nunito/nunito-v14-latin-300.woff') format('woff'); /* Chrome 6+, Firefox 3.6+, IE 9+, Safari 5.1+ */
 }
-
+/* nunito-regular - latin */
 @font-face {
-    font-family: "Proxima Nova";
-    font-weight: 500;
-    src: url("/fonts/proxima_nova/proximanovasoft-medium-webfont.woff2") format("woff2"),
-    url("/fonts/proxima_nova/proximanovasoft-medium-webfont.woff") format("woff");
+    font-family: 'Nunito';
+    font-style: normal;
+    font-weight: 400;
+    src: local('Nunito Regular'), local('Nunito-Regular'),
+    url('/fonts/nunito/nunito-v14-latin-regular.woff2') format('woff2'), /* Chrome 26+, Opera 23+, Firefox 39+ */
+    url('/fonts/nunito/nunito-v14-latin-regular.woff') format('woff'); /* Chrome 6+, Firefox 3.6+, IE 9+, Safari 5.1+ */
 }
-
+/* nunito-700 - latin */
 @font-face {
-    font-family: "Proxima Nova";
-    font-weight: 600;
-    src: url("/fonts/proxima_nova/proximanovasoft-semibold-webfont.woff2") format("woff2"),
-    url("/fonts/proxima_nova/proximanovasoft-semibold-webfont.woff") format("woff");
+    font-family: 'Nunito';
+    font-style: normal;
+    font-weight: 700;
+    src: local('Nunito Bold'), local('Nunito-Bold'),
+    url('/fonts/nunito/nunito-v14-latin-700.woff2') format('woff2'), /* Chrome 26+, Opera 23+, Firefox 39+ */
+    url('/fonts/nunito/nunito-v14-latin-700.woff') format('woff'); /* Chrome 6+, Firefox 3.6+, IE 9+, Safari 5.1+ */
 }
 
 @font-face {
@@ -78,7 +85,7 @@ p {
 }
 
 h1, h2, h3 {
-    font-family: Proxima Nova, sans-serif;
+    font-family: Nunito, sans-serif;
 }
 
 h1 {
