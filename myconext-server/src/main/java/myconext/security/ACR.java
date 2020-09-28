@@ -1,5 +1,7 @@
 package myconext.security;
 
+import org.springframework.util.CollectionUtils;
+
 import java.util.Arrays;
 import java.util.List;
 
@@ -33,6 +35,9 @@ public class ACR {
     }
 
     public static String explanationKeyWord(List<String> acrValues, boolean studentAffiliationPresent) {
+        if (CollectionUtils.isEmpty(acrValues)) {
+            return "linked_institution";
+        }
         if (acrValues.contains(ACR.VALIDATE_NAMES)) {
             return "validate_names";
         }

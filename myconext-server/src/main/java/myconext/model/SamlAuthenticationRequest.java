@@ -12,6 +12,7 @@ import org.springframework.util.StringUtils;
 
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
@@ -58,7 +59,9 @@ public class SamlAuthenticationRequest {
         this.id = UUID.randomUUID().toString();
         this.testInstance = testInstance;
         this.requesterEntityId = "test";
+        this.authenticationContextClassReferences = new ArrayList<>();
         this.expiresIn = Date.from(LocalDateTime.now().plusHours(1).atZone(ZoneId.systemDefault()).toInstant());
+
     }
 
     public SamlAuthenticationRequest(String requestId, String issuer, String consumerAssertionServiceURL,
