@@ -27,7 +27,7 @@
   onMount(() => {
     const urlSearchParams = new URLSearchParams(window.location.search);
     hash = urlSearchParams.get("h");
-    userForgotPassword = hash !== undefined;
+    userForgotPassword = hash !== undefined && hash !== null;
   });
 
     const update = () => {
