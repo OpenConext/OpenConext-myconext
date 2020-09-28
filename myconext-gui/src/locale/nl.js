@@ -161,7 +161,10 @@ I18n.translations.nl = {
     setUpdate: "Start",
     updateUpdate: "Voeg dit apparaat toe",
     credentialName: "Device naam",
-    credentialNamePlaceholder: "e.g. mijn gele YubiKey"
+    credentialNamePlaceholder: "e.g. mijn gele YubiKey",
+    test: "Test",
+    testInfo: "Druk op de <strong>test</strong>knop om een 1 van je WebAuthn-sleutels te testen. Je wordt doorgestuurd naar de eduID-identiteitsserver.",
+    testFlash: "Je hebt met succes je WebAuthn-sleutel getest voor authenticatie"
   },
   rememberMe: {
     updated: "Dit apparaat wordt niet langer onthouden",
