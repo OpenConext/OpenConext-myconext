@@ -1,28 +1,44 @@
 <script>
-    import {config, user, flash} from "../stores/user";
-    import I18n from "i18n-js";
-    import {startWebAuthFlow} from "../api";
-    import {navigate} from "svelte-routing";
-    import chevron_left from "../icons/chevron-left.svg";
-    import Button from "../components/Button.svelte";
-    import Spinner from "../components/Spinner.svelte";
-    import chevron_right from "../icons/chevron-right.svg";
+  import {config, user, flash} from "../stores/user";
+  import I18n from "i18n-js";
+  import {startWebAuthFlow, testWebAutnUrl} from "../api";
+  import {navigate} from "svelte-routing";
+  import chevron_left from "../icons/chevron-left.svg";
+  import Button from "../components/Button.svelte";
+  import Spinner from "../components/Spinner.svelte";
+  import chevron_right from "../icons/chevron-right.svg";
+  import {onMount} from "svelte";
+  import Flash from "../components/Flash.svelte";
 
-    let usePublicKey = $user.usePublicKey;
-    let loading = false;
-    let credentialName;
+  let usePublicKey = $user.usePublicKey;
+  let loading = false;
+  let credentialName;
 
-    const startWebAuthn = () => {
-        loading = true;
-        startWebAuthFlow().then(res => {
-            window.location.href = `${$config.eduIDWebAuthnUrl}?token=${res.token}&name=${encodeURIComponent(credentialName)}`
-        });
+  onMount(() => {
+    const urlSearchParams = new URLSearchParams(window.location.search);
+    const testWebAuthn = urlSearchParams.get("success");
+    if (testWebAuthn) {
+      flash.setValue(I18n.t("webauthn.testFlash"), 3750);
     }
+  });
 
-    const credentialsDetails = credential => () =>
-            navigate(`/credential?id=${encodeURIComponent(credential.identifier)}`);
+  const startWebAuthn = () => {
+    loading = true;
+    startWebAuthFlow().then(res => {
+      window.location.href = `${$config.eduIDWebAuthnUrl}?token=${res.token}&name=${encodeURIComponent(credentialName)}`
+    });
+  }
 
-    const cancel = () => navigate("/security");
+  const startTestFlow = () => {
+    testWebAutnUrl().then(res => {
+      window.location.href = res.url;
+    });
+  }
+
+  const credentialsDetails = credential => () =>
+    navigate(`/credential?id=${encodeURIComponent(credential.identifier)}`);
+
+  const cancel = () => navigate("/security");
 
 </script>
 
@@ -31,6 +47,8 @@
         width: 100%;
         display: flex;
         height: 100%;
+        max-width: var(--width-app);
+        position: relative;
     }
 
     @media (max-width: 820px) {
@@ -90,6 +108,16 @@
         padding: 20px;
     }
 
+    section.test {
+        padding-bottom: 30px;
+        border-bottom: 1px solid var(--color-primary-grey);
+    }
+
+    section.test span {
+        display: inline-block;
+        margin-bottom: 15px;
+    }
+
     div.value-container {
         display: flex;
         align-items: center;
@@ -126,6 +154,7 @@
     {#if loading}
         <Spinner/>
     {:else}
+        <Flash/>
         <div class="left"></div>
         <div class="inner">
             <div class="header">
@@ -155,6 +184,10 @@
                     {/each}
                     </tbody>
                 </table>
+                <section class="test">
+                    <span>{@html I18n.t("webauthn.testInfo")}</span>
+                    <Button label={I18n.t("webauthn.test")} onClick={startTestFlow}/>
+                </section>
             {:else}
                 <p class="keys">{I18n.t("webauthn.noPublicKeys")}</p>
 

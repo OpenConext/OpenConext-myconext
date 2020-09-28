@@ -39,10 +39,10 @@ const createFlash = () => {
 
     return {
         subscribe,
-        setValue: value => setTimeout(() => {
+        setValue: (value, duration = 3250) => setTimeout(() => {
             set(value);
-            setTimeout(() => set(""), 3000)
-        }, 125),
+            setTimeout(() => set(""), duration);
+        }, 75),
     };
 };
 export const flash = createFlash();

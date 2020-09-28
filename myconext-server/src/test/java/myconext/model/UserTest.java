@@ -1,7 +1,10 @@
 package myconext.model;
 
 import org.junit.Test;
+import org.springframework.web.util.UriComponentsBuilder;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.Date;
@@ -56,4 +59,5 @@ public class UserTest {
         return new User("uid", "email", "John", "Doe", "schac",
                 "aa", serviceProviderEntityId, serviceProviderName, serviceProviderName, "en");
     }
+
 }

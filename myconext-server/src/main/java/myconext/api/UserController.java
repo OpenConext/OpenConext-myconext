@@ -68,8 +68,11 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Field;
 import java.net.URISyntaxException;
+import java.net.URLEncoder;
+import java.nio.charset.Charset;
 import java.security.SecureRandom;
 import java.util.Base64;
 import java.util.Collections;
@@ -98,6 +101,7 @@ public class UserController {
     private final String schacHomeOrganization;
     private final String guestIdpEntityId;
     private final String webAuthnSpRedirectUrl;
+    private final String idpBaseUrl;
     private final RelyingParty relyingParty;
     private final UserCredentialRepository userCredentialRepository;
     private final ChallengeRepository challengeRepository;
@@ -106,6 +110,7 @@ public class UserController {
     private final PasswordEncoder passwordEncoder = new BCryptPasswordEncoder(-1, random);
     private final EmailGuessingPrevention emailGuessingPreventor;
     private final IdPMetaDataResolver idPMetaDataResolver;
+    private final String spBaseUrl;
 
     public UserController(UserRepository userRepository,
                           UserCredentialRepository userCredentialRepository,
@@ -134,6 +139,8 @@ public class UserController {
         this.magicLinkUrl = magicLinkUrl;
         this.schacHomeOrganization = schacHomeOrganization;
         this.guestIdpEntityId = guestIdpEntityId;
+        this.idpBaseUrl = idpBaseUrl;
+        this.spBaseUrl = spBaseUrl;
         this.webAuthnSpRedirectUrl = String.format("%s/webauthn", spBaseUrl);
         this.relyingParty = relyingParty(rpId, rpOrigin);
         this.emailGuessingPreventor = new EmailGuessingPrevention(emailGuessingSleepMillis);
@@ -315,6 +322,18 @@ public class UserController {
         return doRemoveTokens(serviceAndTokens, user);
     }
 
+    @GetMapping("/sp/testWebAuthnUrl")
+    public ResponseEntity<Map<String, String>> testWebAuthnUrl(Authentication authentication) throws UnsupportedEncodingException {
+        User user = this.userFromAuthentication(authentication);
+        SamlAuthenticationRequest samlAuthenticationRequest = new SamlAuthenticationRequest(true);
+        samlAuthenticationRequest = authenticationRequestRepository.save(samlAuthenticationRequest);
+        String email = URLEncoder.encode(user.getEmail(), Charset.defaultCharset().name());
+
+        String loginUrl = String.format("%s/login/%s?name=Test-webAuthn&email=%s&testWebAuthn=true",
+                idpBaseUrl, samlAuthenticationRequest.getId(), email);
+        return ResponseEntity.status(200).body(Collections.singletonMap("url", loginUrl));
+    }
+
     private ResponseEntity<UserResponse> doRemoveTokens(@RequestBody DeleteServiceTokens serviceAndTokens, User user) {
         LOG.info(String.format("Deleted tokens %s from user %s", serviceAndTokens.getTokens(), user.getUsername()));
 
@@ -473,6 +492,12 @@ public class UserController {
                 .build());
 
         if (!result.isSuccess()) {
+            if (samlAuthenticationRequest.isTestInstance()) {
+                //back to SP
+
+                String url = String.format("%s/webauthn?success=false", spBaseUrl);
+                return ResponseEntity.status(201).body(Collections.singletonMap("url", url));
+            }
             throw new ForbiddenException();
         }
         challengeRepository.delete(challenge);
@@ -485,6 +510,12 @@ public class UserController {
 
         mdcContext(Optional.of(user), "action", "successful login with authn");
         LOG.info("successfully logged in with AuthnWeb");
+
+        if (samlAuthenticationRequest.isTestInstance()) {
+            //back to SP
+            String url = String.format("%s/webauthn?success=true", spBaseUrl);
+            return ResponseEntity.status(201).body(Collections.singletonMap("url", url));
+        }
 
         return doMagicLink(user, samlAuthenticationRequest, rememberMe, true, request);
     }

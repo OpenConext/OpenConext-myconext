@@ -52,6 +52,14 @@ public class SamlAuthenticationRequest {
 
     private StepUpStatus steppedUp = StepUpStatus.NONE;
 
+    private boolean testInstance;
+
+    public SamlAuthenticationRequest(boolean testInstance) {
+        this.id = UUID.randomUUID().toString();
+        this.testInstance = testInstance;
+        this.expiresIn = Date.from(LocalDateTime.now().plusHours(1).atZone(ZoneId.systemDefault()).toInstant());
+    }
+
     public SamlAuthenticationRequest(String requestId, String issuer, String consumerAssertionServiceURL,
                                      String relayState, String requesterEntityId,
                                      boolean accountLinkingRequired,

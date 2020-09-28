@@ -116,3 +116,7 @@ export function mergeAfterMigration() {
 export function proceedAfterMigration() {
     return fetchJson("/myconext/api/sp/migrate/proceed");
 }
+
+export function testWebAutnUrl() {
+    return fetchJson("/myconext/api/sp/testWebAuthnUrl");
+}

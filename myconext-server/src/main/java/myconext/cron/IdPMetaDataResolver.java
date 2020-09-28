@@ -46,7 +46,7 @@ public class IdPMetaDataResolver {
                 }
             }
             this.domainNames = newDomainNames;
-            LOG.info(String.format("Parsed %s institution domain names from %s in %s",
+            LOG.info(String.format("Parsed %s institution domain names from %s in %s ms",
                     domainNames.size(), metaDataResource.getDescription(), System.currentTimeMillis() - start));
         } catch (Exception e) {
             LOG.error("Error in resolveIdpMetaData", e);

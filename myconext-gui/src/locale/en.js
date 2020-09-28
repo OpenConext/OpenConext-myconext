@@ -161,7 +161,10 @@ I18n.translations.en = {
     setUpdate: "Start",
     updateUpdate: "Add device",
     credentialName: "Device name",
-    credentialNamePlaceholder: "e.g. my red YubiKey"
+    credentialNamePlaceholder: "e.g. my red YubiKey",
+    test: "Test",
+    testInfo: "Hit the <strong>test</strong> button to test one of your WebAuthn keys. You will be redirected to the eduID identity server.",
+    testFlash: "You successfully tested your WebAuthn key to authenticate"
   },
   rememberMe: {
     updated: "Your device is no longer remembered",

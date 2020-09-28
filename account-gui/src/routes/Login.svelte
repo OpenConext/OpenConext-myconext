@@ -58,6 +58,14 @@
       $user.createAccount = true;
       domainNames().then(json => institutionDomainNames = json);
     }
+
+    const testWebAuthn = urlParams.get("testWebAuthn");
+    const email = urlParams.get("email")
+    if (testWebAuthn && email) {
+      $user.email = decodeURIComponent(email);
+      $user.useWebAuth = true;
+      webAuthnStart(email, true);
+    }
   });
 
   const handleNext = passwordFlow => () => {
@@ -137,8 +145,8 @@
       $user.usePassword ? validEmail(email) && password : validEmail(email);
   };
 
-  const webAuthnStart = email => {
-    webAuthnStartAuthentication(email, id)
+  const webAuthnStart = (email, test = false) => {
+    webAuthnStartAuthentication(email, id, test)
       .then(request => {
         get({publicKey: request.publicKeyCredentialRequestOptions})
           .then(credentials => {

@@ -66,8 +66,8 @@ export function webAuthnRegistrationResponse(token, name, credentials, request) 
   return postPutJson("/myconext/api/idp/security/webauthn/registration", {token, name, credentials, request}, "PUT");
 }
 
-export function webAuthnStartAuthentication(email, authenticationRequestId) {
-  return postPutJson("/myconext/api/idp/security/webauthn/authentication", {email, authenticationRequestId}, "POST");
+export function webAuthnStartAuthentication(email, authenticationRequestId, test) {
+  return postPutJson("/myconext/api/idp/security/webauthn/authentication", {email, authenticationRequestId, test}, "POST");
 }
 
 export function webAuthnTryAuthentication(credentials, authenticationRequestId, rememberMe) {
