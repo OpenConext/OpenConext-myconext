@@ -369,7 +369,7 @@ public class UserControllerTest extends AbstractIntegrationTest {
         given()
                 .when()
                 .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
-                .body(new UpdateUserSecurityRequest(user.getId(), null, "secret"))
+                .body(new UpdateUserSecurityRequest(user.getId(), null, "secret", null))
                 .put("/myconext/api/sp/security")
                 .then()
                 .statusCode(422);
@@ -378,7 +378,7 @@ public class UserControllerTest extends AbstractIntegrationTest {
     @Test
     public void updateUserSecurity() {
         User user = userRepository.findOneUserByEmailIgnoreCase("jdoe@example.com");
-        UpdateUserSecurityRequest updateUserSecurityRequest = new UpdateUserSecurityRequest(user.getId(), null, "correctSecret001");
+        UpdateUserSecurityRequest updateUserSecurityRequest = new UpdateUserSecurityRequest(user.getId(), null, "correctSecret001", null);
         given()
                 .when()
                 .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
@@ -399,7 +399,7 @@ public class UserControllerTest extends AbstractIntegrationTest {
         given()
                 .when()
                 .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
-                .body(new UpdateUserSecurityRequest(user.getId(), "nope", "nope"))
+                .body(new UpdateUserSecurityRequest(user.getId(), "nope", "nope", null))
                 .put("/myconext/api/sp/security")
                 .then()
                 .statusCode(403);

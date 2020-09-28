@@ -257,6 +257,7 @@
                         <Home bookmark="migration"/>
                     </Route>
                     <Route path="/password" component={Password}/>
+                    <Route path="/forgot-password" component={Password}/>
                     <Route path="/webauthn" component={WebAuthn}/>
                     <Route path="/rememberme" component={RememberMe}/>
                     <Route component={NotFound}/>

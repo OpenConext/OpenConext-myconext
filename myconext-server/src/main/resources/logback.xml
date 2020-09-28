@@ -1,0 +1,25 @@
+<configuration>
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder class="net.logstash.logback.encoder.LogstashEncoder">
+            <throwableConverter class="net.logstash.logback.stacktrace.ShortenedThrowableConverter">
+            </throwableConverter>
+            <shortenedLoggerNameLength>36</shortenedLoggerNameLength>
+            <customFields>{"app":"eduID"}</customFields>
+            <fieldNames>
+                <thread>[ignore]</thread>
+                <version>[ignore]</version>
+                <levelValue>[ignore]</levelValue>
+            </fieldNames>
+        </encoder>
+    </appender>
+
+    <root level="ERROR">
+        <appender-ref ref="STDOUT"/>
+    </root>
+
+    <logger name="org.springframework" additivity="false" level="INFO"/>
+    <logger name="org.eclipse.jetty" level="ERROR"/>
+    <logger name="myconext"  level="DEBUG"/>
+
+
+</configuration>

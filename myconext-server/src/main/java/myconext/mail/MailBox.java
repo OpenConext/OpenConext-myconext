@@ -70,6 +70,14 @@ public class MailBox {
         sendMail("account_migration", title, variables, preferredLanguage(user), user.getEmail());
     }
 
+    public void sendForgotPassword(User user, String hash) {
+        String title = this.getTitle("forgot_password", user);
+        Map<String, Object> variables = variables(user, title);
+        variables.put("mySurfConextURL", mySURFconextURL);
+        variables.put("hash", hash);
+        sendMail("forgot_password", title, variables, preferredLanguage(user), user.getEmail());
+    }
+
     private Map<String, Object> variables(User user, String title) {
         Map<String, Object> variables = new HashMap<>();
         variables.put("title", title);

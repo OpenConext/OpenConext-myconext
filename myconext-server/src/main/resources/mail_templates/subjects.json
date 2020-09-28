@@ -14,5 +14,9 @@
   "magic_link": {
     "en": "Magic Link to login",
     "nl": "Magische link om in te loggen"
+  },
+  "forgot_password": {
+    "en": "Reset your eduID password",
+    "nl": "Reset je  eduID wachtwoord"
   }
 }

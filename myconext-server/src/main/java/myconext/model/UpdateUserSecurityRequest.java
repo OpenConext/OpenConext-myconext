@@ -12,4 +12,5 @@ public class UpdateUserSecurityRequest {
     private String userId;
     private String currentPassword;
     private String newPassword;
+    private String hash;
 }

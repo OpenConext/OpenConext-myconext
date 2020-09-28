@@ -135,6 +135,7 @@ I18n.translations.en = {
   password: {
     setTitle: "Set password",
     updateTitle: "Change password",
+    resetTitle: "Reset forgotten password",
     currentPassword: "Current password",
     newPassword: "New password",
     confirmPassword: "Confirm new password",
@@ -142,10 +143,16 @@ I18n.translations.en = {
     updateUpdate: "Update password",
     cancel: "Cancel",
     set: "Your password has been set",
+    reset: "Your password has been reset to a new password",
     updated: "Your password has been updated",
     back: "/security",
     passwordDisclaimer: "Make sure it's at least 15 characters OR at least 8 characters including a number and a uppercase letter.",
-    invalidCurrentPassword: "Your current password is invalid."
+    invalidCurrentPassword: "Your current password is invalid.",
+    forgotPassword: "I forgot my password",
+    forgotPasswordConfirmation: "Are you sure you want to receive an email to reset and change your current password?",
+    flash: {
+      passwordLink: "An email has been sent to {{name}} with a link to reset your password"
+    }
   },
   webauthn: {
     setTitle: "Enable WebAuthn",
