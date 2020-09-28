@@ -57,6 +57,7 @@ public class SamlAuthenticationRequest {
     public SamlAuthenticationRequest(boolean testInstance) {
         this.id = UUID.randomUUID().toString();
         this.testInstance = testInstance;
+        this.requesterEntityId = "test";
         this.expiresIn = Date.from(LocalDateTime.now().plusHours(1).atZone(ZoneId.systemDefault()).toInstant());
     }
 
