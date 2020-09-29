@@ -83,16 +83,11 @@ public class User implements Serializable, UserDetails {
     }
 
     public void encryptPassword(String password, PasswordEncoder encoder) {
-        if (StringUtils.hasText(password)) {
-            if (!strongEnough(password)) {
-                throw new WeakPasswordException();
-            }
-            this.password = encoder.encode(password);
-            this.forgottenPassword = false;
-        } else {
-            this.password = null;
-            this.forgottenPassword = true;
+        if (!strongEnough(password)) {
+            throw new WeakPasswordException();
         }
+        this.password = encoder.encode(password);
+        this.forgottenPassword = false;
     }
 
     @Transient
@@ -230,5 +225,9 @@ public class User implements Serializable, UserDetails {
 
     public void setPublicKeyCredentials(List<PublicKeyCredentials> publicKeyCredentials) {
         this.publicKeyCredentials = publicKeyCredentials;
+    }
+
+    public void setForgottenPassword(boolean forgottenPassword) {
+        this.forgottenPassword = forgottenPassword;
     }
 }

@@ -2,7 +2,7 @@
   import {user, flash} from "../stores/user";
   import I18n from "i18n-js";
   import {validPassword} from "../validation/regexp";
-  import {me, updateSecurity, forgotPasswordLink} from "../api";
+  import {forgotPasswordLink, me, updateSecurity} from "../api";
   import {navigate} from "svelte-routing";
   import chevron_left from "../icons/chevron-left.svg";
   import Button from "../components/Button.svelte";
@@ -13,6 +13,7 @@
   let newPassword = "";
   let confirmPassword = "";
   let currentPasswordInvalid = false;
+  let passwordResetHashExpired = false;
   let usePassword = $user.usePassword;
   let showModal = false;
   let hash;
@@ -27,10 +28,10 @@
   onMount(() => {
     const urlSearchParams = new URLSearchParams(window.location.search);
     hash = urlSearchParams.get("h");
-    userForgotPassword = hash !== undefined && hash !== null;
+    userForgotPassword = (hash !== undefined && hash !== null) || $user.forgottenPassword;
   });
 
-    const update = () => {
+  const update = () => {
     if (valid()) {
       updateSecurity($user.id, currentPassword, newPassword, hash)
         .then(json => {
@@ -43,7 +44,11 @@
           flash.setValue(userForgotPassword ? I18n.t("password.reset") : usePassword ? I18n.t("password.updated") : I18n.t("password.set"));
         })
         .catch(() => {
-          currentPasswordInvalid = true;
+          if (userForgotPassword) {
+            passwordResetHashExpired = true;
+          } else {
+            currentPasswordInvalid = true;
+          }
         });
     }
   };
@@ -115,7 +120,7 @@
         display: flex;
     }
 
-    div.forgot-password a{
+    div.forgot-password a {
         margin-left: auto;
     }
 
@@ -153,7 +158,7 @@
             <h2>{userForgotPassword ? I18n.t("password.resetTitle") : usePassword ? I18n.t("password.updateTitle") : I18n.t("password.setTitle")}</h2>
         </div>
         <p class="info">{I18n.t("password.passwordDisclaimer")}</p>
-        {#if usePassword}
+        {#if usePassword }
             <label for="currentPassword">{I18n.t("password.currentPassword")}</label>
             <input id="currentPassword" autocomplete="current-password" type="password" bind:value={currentPassword}/>
             <div class="forgot-password">
@@ -165,6 +170,14 @@
         {/if}
         {#if currentPasswordInvalid}
             <span class="error">{I18n.t("password.invalidCurrentPassword")}</span>
+        {/if}
+        {#if passwordResetHashExpired}
+            <span class="error">{I18n.t("password.passwordResetHashExpired")}
+                <a href="/forgot" on:click|preventDefault|stopPropagation={forgotPassword(true)}>
+                    {I18n.t("password.passwordResetSendAgain")}
+                </a>
+            </span>
+
         {/if}
 
         <input id="username" autocomplete="username email" type="hidden" name="username" value={$user.email}>
@@ -189,7 +202,7 @@
                cancel={() => showModal = false}
                warning={false}
                question={I18n.t("password.forgotPasswordConfirmation")}
-                   title={I18n.t("password.forgotPassword")}>
+               title={I18n.t("password.forgotPassword")}>
         </Modal>
     {/if}
 

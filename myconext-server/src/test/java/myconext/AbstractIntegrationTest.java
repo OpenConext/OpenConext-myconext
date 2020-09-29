@@ -6,9 +6,12 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import io.restassured.RestAssured;
 import io.restassured.http.Cookie;
 import io.restassured.response.Response;
+import myconext.model.Challenge;
+import myconext.model.PasswordForgottenHash;
 import myconext.model.SamlAuthenticationRequest;
 import myconext.model.User;
 import myconext.repository.AuthenticationRequestRepository;
+import myconext.repository.PasswordForgottenHashRepository;
 import myconext.repository.UserRepository;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.io.IOUtils;
@@ -83,6 +86,9 @@ public abstract class AbstractIntegrationTest {
     @Autowired
     protected AuthenticationRequestRepository authenticationRequestRepository;
 
+    @Autowired
+    protected PasswordForgottenHashRepository passwordForgottenHashRepository;
+
     private final SimpleDateFormat issueFormat = new SimpleDateFormat("yyyy-MM-dd'T'H:mm:ss");
 
     @Before
@@ -92,6 +98,10 @@ public abstract class AbstractIntegrationTest {
                 .forEach(clazz -> mongoTemplate.bulkOps(BulkOperations.BulkMode.ORDERED, clazz)
                         .remove(new Query())
                         .insert(readFromFile(clazz))
+                        .execute());
+        Arrays.asList(PasswordForgottenHash.class, Challenge.class)
+                .forEach(clazz -> mongoTemplate.bulkOps(BulkOperations.BulkMode.ORDERED, clazz)
+                        .remove(new Query())
                         .execute());
     }
 

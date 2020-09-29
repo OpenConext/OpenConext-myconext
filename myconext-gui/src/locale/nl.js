@@ -135,6 +135,7 @@ I18n.translations.nl = {
   password: {
     setTitle: "Wachtwoord instellen",
     updateTitle: "Wijzig wachtwoord",
+    resetTitle: "Reset vergeten wachtwoord",
     currentPassword: "Huidig wachtwoord",
     newPassword: "Nieuw wachtwoord",
     confirmPassword: "Bevestig nieuw wachtwoord",
@@ -142,10 +143,19 @@ I18n.translations.nl = {
     updateUpdate: "Opslaan",
     cancel: "Annuleren",
     set: "Je wachtwoord is ingesteld",
+    reset: "Je wachtwoord is gereset naar een nieuw wachtwoord",
     updated: "Je wachtwoord is aangepast",
     back: "/security",
     passwordDisclaimer: "Kies een wachtwoord van tenminste 8 karakters lang met minimaal een hoofdletter en een cijfer. Een langer wachtwoord van minimaal 15 karakters mag ook.",
-    invalidCurrentPassword: "Je huidige wachtwoord is niet correct."
+    invalidCurrentPassword: "Je huidige wachtwoord is niet correct.",
+    passwordResetHashExpired: "Je reset wachtwoord link is verlopen. ",
+    forgotPassword: "Ik ben mijn wachtwoord vergeten",
+    passwordResetSendAgain: "Stuur me opnieuw een e-mail met een nieuwe link om mijn password te resetten.",
+    forgotPasswordConfirmation: "Weet je  zeker dat je een mail wilt ontvangen met daarin een link om je  wachtwoord te veranderen?",
+    flash: {
+      passwordLink: "Een e-mail is verstuurd naar  {{name}} met daarin een link om je wachtwoord te resetten"
+    }
+
   },
   webauthn: {
     setTitle: "WebAuthn instellen",

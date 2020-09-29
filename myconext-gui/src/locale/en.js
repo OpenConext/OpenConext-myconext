@@ -148,7 +148,9 @@ I18n.translations.en = {
     back: "/security",
     passwordDisclaimer: "Make sure it's at least 15 characters OR at least 8 characters including a number and a uppercase letter.",
     invalidCurrentPassword: "Your current password is invalid.",
+    passwordResetHashExpired: "Your reset password link has expired. ",
     forgotPassword: "I forgot my password",
+    passwordResetSendAgain: "Send me new email with a fresh reset password link.",
     forgotPasswordConfirmation: "Are you sure you want to receive an email to reset and change your current password?",
     flash: {
       passwordLink: "An email has been sent to {{name}} with a link to reset your password"

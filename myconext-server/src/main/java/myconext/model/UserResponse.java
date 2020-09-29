@@ -18,6 +18,7 @@ public class UserResponse {
     private final String familyName;
     private final boolean usePassword;
     private final boolean usePublicKey;
+    private final boolean forgottenPassword;
     private final List<PublicKeyCredentials> publicKeyCredentials;
     private final List<LinkedAccount> linkedAccounts;
     private final String schacHomeOrganization;
@@ -37,6 +38,7 @@ public class UserResponse {
         this.publicKeyCredentials = user.getPublicKeyCredentials();
         this.linkedAccounts = user.getLinkedAccounts();
         this.usePublicKey = !CollectionUtils.isEmpty(this.publicKeyCredentials);
+        this.forgottenPassword = user.isForgottenPassword();
         this.rememberMe = rememberMe;
         this.created = user.getCreated();
         this.eduIdPerServiceProvider = eduIdPerServiceProvider;

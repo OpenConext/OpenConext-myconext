@@ -1,5 +1,6 @@
 package myconext.model;
 
+import myconext.exceptions.WeakPasswordException;
 import org.junit.Test;
 import org.springframework.web.util.UriComponentsBuilder;
 
@@ -48,11 +49,10 @@ public class UserTest {
         assertTrue(user.eduIdForServiceProviderNeedsUpdate("http://mock-sp", "Mock SP", "Mock SP - NL"));
     }
 
-    @Test
+    @Test(expected = WeakPasswordException.class)
     public void encryptPassword() {
         User user = new User();
         user.encryptPassword(null, null);
-        assertNull(user.getPassword());
     }
 
     private User user(String serviceProviderEntityId, String serviceProviderName) {

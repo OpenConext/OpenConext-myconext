@@ -248,6 +248,10 @@ public class UserController {
         mdcContext(Optional.of(user), "action", "update user profile");
         LOG.info("Update user profile");
 
+        return returnUserResponse(user);
+    }
+
+    private ResponseEntity<UserResponse> returnUserResponse(User user) {
         return ResponseEntity.status(201).body(new UserResponse(user, convertEduIdPerServiceProvider(user), false));
     }
 
@@ -255,14 +259,20 @@ public class UserController {
     public ResponseEntity updateUserSecurity(Authentication authentication, @RequestBody UpdateUserSecurityRequest updateUserRequest) {
         User deltaUser = userRepository.findById(updateUserRequest.getUserId()).orElseThrow(UserNotFoundException::new);
         User user = verifyAndFetchUser(authentication, deltaUser);
-        if (StringUtils.hasText(user.getPassword())) {
-            if (!passwordEncoder.matches(updateUserRequest.getCurrentPassword(), user.getPassword())) {
-                throw new ForbiddenException();
-            }
+
+        String password = user.getPassword();
+
+        boolean existingPassword = StringUtils.hasText(password);
+        boolean passwordMatches = passwordEncoder.matches(updateUserRequest.getCurrentPassword(), password);
+
+        if (existingPassword && !passwordMatches) {
+                throw new ForbiddenException("no_match");
         }
+
         if (user.isForgottenPassword()) {
             PasswordForgottenHash passwordForgottenHash = passwordForgottenHashRepository
-                    .findByHashAndUserId(updateUserRequest.getHash(),user.getId()).orElseThrow(ForbiddenException::new);
+                    .findByHashAndUserId(updateUserRequest.getHash(), user.getId())
+                    .orElseThrow(() -> new ForbiddenException("wrong_hash"));
             passwordForgottenHashRepository.delete(passwordForgottenHash);
         }
         user.encryptPassword(updateUserRequest.getNewPassword(), passwordEncoder);
@@ -270,22 +280,25 @@ public class UserController {
 
         LOG.info(String.format("Updates / set password for user %s", user.getUsername()));
 
-        return ResponseEntity.status(201).body(new UserResponse(user, convertEduIdPerServiceProvider(user), false));
+        return returnUserResponse(user);
     }
 
     @PutMapping("/sp/forgot-password")
-    public ResponseEntity forgotPassword(Authentication authentication, @RequestBody UpdateUserSecurityRequest updateUserRequest) {
+    public ResponseEntity forgotPassword(Authentication authentication) {
         User user = userFromAuthentication(authentication);
-        user.encryptPassword(null, passwordEncoder);
+        List<PasswordForgottenHash> passwordForgottenHashes = passwordForgottenHashRepository.findByUserId(user.getId());
+        passwordForgottenHashRepository.deleteAll(passwordForgottenHashes);
+
+        user.setForgottenPassword(true);
         userRepository.save(user);
 
-        String hash = hash();
-        passwordForgottenHashRepository.save(new PasswordForgottenHash(user, hash));
+        String hashValue = hash();
+        passwordForgottenHashRepository.save(new PasswordForgottenHash(user, hashValue));
 
         LOG.info(String.format("Send password forgotten mail to user %s", user.getUsername()));
 
-        mailBox.sendForgotPassword(user, hash());
-        return ResponseEntity.status(201).body(new UserResponse(user, convertEduIdPerServiceProvider(user), false));
+        mailBox.sendForgotPassword(user, hashValue);
+        return returnUserResponse(user);
     }
 
 

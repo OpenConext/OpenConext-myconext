@@ -9,6 +9,7 @@ export const user = writable({
     schacHomeOrganization: "",
     uid: "",
     usePassword: false,
+    forgottenPassword: false,
     usePublicKey: false,
     rememberMe: true,
     created: 0,
