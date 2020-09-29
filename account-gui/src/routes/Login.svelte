@@ -229,10 +229,6 @@
     institutionDomainNameWarning = false;
   }
 
-  const clearInstitutionDomainNameWarning = () => {
-    institutionDomainNameWarning = false;
-  }
-
   const handlePasswordEnter = e => e.key === "Enter" && handleNext(true)();
 
   const clearGivenName = () => $user.givenName = $user.givenName.replace(/[<>]/g, "");
@@ -282,23 +278,14 @@
 
     div.institution-warning {
         border-radius: 8px;
-        box-shadow: 0 1px 0 2px #ff9d0b;
         background-color: #ffd89d;
         display: flex;
-        padding: 10px 30px 5px 5px;
+        padding: 6px;
         margin-bottom: 15px;
-        position: relative;
     }
 
     div.text {
         padding: 5px 5px 5px 10px;
-    }
-
-    span.close {
-        cursor: pointer;
-        position: absolute;
-        top: 3px;
-        right: 3px;
     }
 
     div.error span.svg {
@@ -406,7 +393,6 @@
             <br/>
             <span>{I18n.t("login.institutionDomainNameWarning2")}</span>
         </div>
-        <span class="svg close" on:click={clearInstitutionDomainNameWarning}>{@html close}</span>
     </div>
 
 {/if}
