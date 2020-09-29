@@ -219,7 +219,7 @@
       if (email) {
         const domain = email.substring(email.lastIndexOf("@") + 1);
         if (domain) {
-          if (institutionDomainNames.some(name => name === domain)) {
+          if (institutionDomainNames.some(name => name === domain || domain.endsWith("." + name))) {
             institutionDomainNameWarning = true;
             return;
           }
