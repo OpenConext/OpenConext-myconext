@@ -219,7 +219,8 @@
       if (email) {
         const domain = email.substring(email.lastIndexOf("@") + 1);
         if (domain) {
-          if (institutionDomainNames.some(name => name === domain || domain.endsWith("." + name))) {
+          const domainLower = domain.toLowerCase();
+          if (institutionDomainNames.some(name => name === domainLower || domainLower.endsWith("." + name))) {
             institutionDomainNameWarning = true;
             return;
           }

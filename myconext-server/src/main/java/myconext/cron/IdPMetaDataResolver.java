@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
 
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
@@ -41,7 +42,10 @@ public class IdPMetaDataResolver {
             while (reader.hasNext()) {
                 if (reader.next() == START_ELEMENT) {
                     if ("Scope".equals(reader.getLocalName())) {
-                        newDomainNames.add(reader.getElementText());
+                        String elementText = reader.getElementText();
+                        if (StringUtils.hasText(elementText)) {
+                            newDomainNames.add(elementText.toLowerCase());
+                        }
                     }
                 }
             }
