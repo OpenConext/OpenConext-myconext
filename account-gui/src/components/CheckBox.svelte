@@ -10,12 +10,10 @@
 <style>
     label.checkbox {
         display: block;
-        margin-top: 10px;
         position: relative;
         padding-left: 28px;
         cursor: pointer;
         user-select: none;
-        font-weight: 600;
     }
 
     label.checkbox.light {

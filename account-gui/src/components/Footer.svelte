@@ -100,8 +100,8 @@
 <div class="footer">
     <div class="inner">
         <div class="help">
-            <a class="white" href={privacyUrl} target="_blank">{I18n.t("footer.privacy")}</a>
             <a class="white" href={termsUrl} target="_blank">{I18n.t("footer.terms")}</a>
+            <a class="white" href={privacyUrl} target="_blank">{I18n.t("footer.privacy")}</a>
         </div>
 
         <ul>

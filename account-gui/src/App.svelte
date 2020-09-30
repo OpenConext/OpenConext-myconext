@@ -63,6 +63,7 @@
 
     :global(input::placeholder) {
         color: #8b8b8b;
+        font-style: italic;
     }
 
     .idp {

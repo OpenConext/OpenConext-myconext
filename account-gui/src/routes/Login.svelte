@@ -7,7 +7,7 @@
   import I18n from "i18n-js";
   import critical from "../icons/critical.svg";
   import attention from "../icons/attention.svg";
-  import close from "../icons/close.svg";
+
   import {
     domainNames,
     magicLinkExistingUser,
@@ -21,6 +21,7 @@
   import {onMount} from "svelte";
   import Cookies from "js-cookie";
   import Button from "../components/Button.svelte";
+  import LoginOptions from "../components/LoginOptions.svelte";
 
   export let id;
   let emailInUse = false;
@@ -247,27 +248,48 @@
 
 <style>
 
+    div.info-top {
+        display: flex;
+        flex-direction: column;
+        margin-bottom: 30px;
+    }
+
+    div.info-top span {
+        margin-left: auto;
+    }
+
+    /*div.info-top span:first-child {*/
+    /*    margin-bottom: 5px;*/
+    /*}*/
+    a {
+        text-decoration: underline;
+    }
+
+    a.toggle-link {
+        color: #0062b0;
+    }
+
     h2.header {
-        font-weight: 300;
+        font-size: 24px;
     }
 
     h2.top {
-        margin: 6px 0 30px 0;
-        color: var(--color-primary-green);
-        font-size: 28px;
+        margin: 0 0 15px 0;
         word-break: break-word;
+        font-size: 16px;
     }
 
-    h3.mixed {
-        font-weight: normal;
+    h2.top span {
+        color: var(--color-primary-green);
+        font-size: 16px;
+        font-family: Nunito, sans-serif;
     }
 
     .options {
         display: flex;
         flex-direction: column;
         width: 100%;
-        padding: 5px 0 20px 0;
-        border-bottom: 1px solid #979797;
+        padding: 5px 0 30px 0;
     }
 
     div.error {
@@ -324,46 +346,34 @@
     }
 
     div.password-option {
-        margin-top: 20px;
-    }
-
-    div.password-option div.part {
-        margin-top: 8px;
-    }
-
-    span.no-password-needed {
-        display: inline-block;
-        margin-bottom: 10px;
-    }
-
-    div.info-bottom {
-        margin-top: 15px;
-        padding-left: 10px;
-    }
-
-    a {
-        text-decoration: underline;
-    }
-
-    a.toggle-link {
-        font-size: 14px;
-        line-height: 2.42;
-        color: #0062b0;
-        display: block;
+        margin-top: 10px;
     }
 
 </style>
 {#if showSpinner}
     <Spinner/>
 {/if}
+<div class="info-top">
+    {#if $user.createAccount}
+        <span>{I18n.t("login.alreadyGuestAccount")} <a class="toggle-link" href="/login"
+                                                       on:click|preventDefault|stopPropagation={createAccount(false)}>{I18n.t("login.loginEduId")}</a></span>
+        <!--        <span><a class="toggle-link" target="_blank" href="https://eduid.nl">{I18n.t("login.whatis")}</a></span>-->
+    {:else}
+        <span>{I18n.t("login.requestEduId")} <a class="toggle-link" href="/reguest"
+                                                on:click|preventDefault|stopPropagation={createAccount(true)}>{I18n.t("login.requestEduId2")}</a></span>
+    {/if}
+</div>
+
 {#if $user.createAccount}
     <h2 class="header">{I18n.t("login.header2")}</h2>
-    <h2 class="top">{I18n.t("login.header3")}</h2>
+    <h2 class="top">{I18n.t("login.headerSubTitle")}<span>{serviceName}</span></h2>
 {:else}
     <h2 class="header">{I18n.t("login.header")}</h2>
-    <h2 class="top">{serviceName}</h2>
+    <h2 class="top">{I18n.t("login.headerSubTitle")}<span>{serviceName}</span></h2>
 {/if}
-<label for="email" class="pre-input-label">{I18n.t("login.email")}</label>
+{#if $user.createAccount}
+    <label for="email" class="pre-input-label">{I18n.t("login.email")}</label>
+{/if}
 <input type="email"
        autocomplete="username"
        id="email"
@@ -425,31 +435,24 @@
         <Button disabled={showSpinner || !allowedNext($user.email, $user.familyName, $user.givenName, $user.password, agreedWithTerms)}
                 href="/magic"
                 className="full"
-                label={I18n.t("login.requestEduId")}
+                label={I18n.t("login.requestEduIdButton")}
                 onClick={handleNext(false)}/>
     </div>
 {:else}
     <div id="password" class:hidden={!$user.usePassword || $user.useWebAuth}>
-        <label for="password-field" class="pre-input-label">{I18n.t("login.password")}</label>
         <input type="password"
                autocomplete="current-password"
                id="password-field"
+               placeholder={I18n.t("login.passwordPlaceholder")}
                on:keydown={handlePasswordEnter}
                bind:value={$user.password}
                bind:this={passwordField}>
     </div>
 
-    {#if !$user.usePassword && !$user.useWebAuth}
-        <span class="no-password-needed">{I18n.t("login.noPasswordNeeded")}</span>
-    {/if}
-
-    {#if !$user.usePassword && $user.useWebAuth}
-        <span class="no-password-needed">{I18n.t("login.noPasswordNeededWebAuthn")}</span>
-    {/if}
-
     <CheckBox value={$user.rememberMe}
               label={I18n.t("login.rememberMe")}
               onChange={val => $user.rememberMe = val}/>
+
     <div class="options">
         {#if $user.usePassword && !$user.useWebAuth}
             <Button href={`/${$user.usePassword ?  I18n.t("login.login") : I18n.t("login.usePassword")}`}
@@ -457,17 +460,13 @@
                     label={$user.usePassword ?  I18n.t("login.login") : I18n.t("login.usePassword")}
                     className="full"
                     onClick={handleNext(true)}/>
+            <LoginOptions/>
             <div class="password-option">
-                <div>
-                    <span>{I18n.t("login.passwordForgotten")}</span>
-                    <a href={I18n.t("login.login")}
-                       on:click|preventDefault|stopPropagation={handleNext(false)}>{I18n.t("login.passwordForgottenLink")}</a>
-                </div>
-                {#if $conf.featureWebAuthn}
-                    <div class="part"><a href={I18n.t("login.useWebAuth")}
-                                         on:click|preventDefault|stopPropagation={switchWebAuthnPassword(true, false)}>{I18n.t("login.useWebAuthnLink")}</a>
-                        <span>{I18n.t("login.useWebAuthnLinkInfo")}</span></div>
-                {/if}
+                <a href="/password"
+                   on:click|preventDefault|stopPropagation={handleNext(false)}>{I18n.t("login.useMagicLink")}</a>
+                <span>{I18n.t("login.useOr")}</span>
+                <a href="/webauthn"
+                   on:click|preventDefault|stopPropagation={switchWebAuthnPassword(true, false)}>{I18n.t("login.useWebAuth").toLowerCase()}</a>
             </div>
         {:else if !$user.usePassword && !$user.useWebAuth}
             <Button href="/magic"
@@ -475,53 +474,30 @@
                     label={$user.usePassword ?  I18n.t("login.useMagicLink") : I18n.t("login.sendMagicLink")}
                     className="full"
                     onClick={handleNext(false)}/>
+            <LoginOptions/>
             <div class="password-option">
-                <div>
-                    <a href={I18n.t("login.usePassword")}
-                       on:click|preventDefault|stopPropagation={switchWebAuthnPassword(false, true)}>{I18n.t("login.usePasswordLink")}</a>
-                    <span>{I18n.t("login.usePasswordLinkInfo")}</span>
-                </div>
-                {#if $conf.featureWebAuthn}
-                    <div class="part">
-                        <a href={I18n.t("login.useWebAuth")}
-                           on:click|preventDefault|stopPropagation={switchWebAuthnPassword(true, false)}>{I18n.t("login.useWebAuthnLink")}</a>
-                        <span>{I18n.t("login.useWebAuthnLinkInfo")}</span>
-                    </div>
-                {/if}
+                <a href="/webauthn"
+                   on:click|preventDefault|stopPropagation={switchWebAuthnPassword(true, false)}>{I18n.t("login.useWebAuth")}</a>
+                <span>{I18n.t("login.useOr")}</span>
+                <a href="/password"
+                   on:click|preventDefault|stopPropagation={switchWebAuthnPassword(false, true)}>{I18n.t("login.usePassword")}</a>
             </div>
         {:else}
             <Button href="/webauthn"
                     disabled={showSpinner || (!validEmail($user.email) && !$user.usePassword)}
-                    label={I18n.t("login.useWebAuth")}
+                    label={I18n.t("login.loginWebAuthn")}
                     className="full"
                     onClick={() => webAuthnStart($user.email)}/>
+            <LoginOptions/>
             <div class="password-option">
-                <div>
-                    <a href={I18n.t("login.usePassword")}
-                       on:click|preventDefault|stopPropagation={switchWebAuthnPassword(false, true)}>{I18n.t("login.usePasswordLink")}</a>
-                    <span>{I18n.t("login.usePasswordLinkInfo")}</span>
-                </div>
-                <div class="part">
-                    <a href={I18n.t("login.login")}
-                       on:click|preventDefault|stopPropagation={switchWebAuthnPassword(false, false)}>{I18n.t("login.passwordForgottenLink")}</a>
-                </div>
+                <a href="/magiclink"
+                   on:click|preventDefault|stopPropagation={switchWebAuthnPassword(false, false)}>{I18n.t("login.useMagicLink")}</a>
+                <span>{I18n.t("login.useOr")}</span>
+                <a href="/password"
+                   on:click|preventDefault|stopPropagation={switchWebAuthnPassword(false, true)}>{I18n.t("login.usePassword")}</a>
             </div>
 
         {/if}
 
     </div>
 {/if}
-<div class="info-bottom">
-    {#if !$user.createAccount}
-        <h3 class="mixed">{@html I18n.t("login.noGuestAccount")}</h3>
-        <a class="toggle-link" href="/reguest"
-           on:click|preventDefault|stopPropagation={createAccount(true)}>{I18n.t("login.requestGuestAccount")}</a>
-    {:else}
-        <h3 class="mixed">{@html I18n.t("login.alreadyGuestAccount")}</h3>
-        <a class="toggle-link" href="/login"
-           on:click|preventDefault|stopPropagation={createAccount(false)}>{I18n.t("login.login")}</a>
-
-    {/if}
-
-    <a class="toggle-link" target="_blank" href="https://eduid.nl">{I18n.t("login.whatis")}</a>
-</div>
