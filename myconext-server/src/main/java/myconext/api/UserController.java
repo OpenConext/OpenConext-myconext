@@ -263,7 +263,8 @@ public class UserController {
         String password = user.getPassword();
 
         boolean existingPassword = StringUtils.hasText(password);
-        boolean passwordMatches = passwordEncoder.matches(updateUserRequest.getCurrentPassword(), password);
+        String currentPasswordFromUser = updateUserRequest.getCurrentPassword();
+        boolean passwordMatches =  currentPasswordFromUser != null && passwordEncoder.matches(currentPasswordFromUser, password);
         boolean forgottenPassword = user.isForgottenPassword();
 
         if (existingPassword && !passwordMatches && !forgottenPassword) {
