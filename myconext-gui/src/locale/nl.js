@@ -151,7 +151,7 @@ I18n.translations.nl = {
     passwordResetHashExpired: "Je reset wachtwoord link is verlopen. ",
     forgotPassword: "Ik ben mijn wachtwoord vergeten",
     passwordResetSendAgain: "Stuur me opnieuw een e-mail met een nieuwe link om mijn password te resetten.",
-    forgotPasswordConfirmation: "Weet je  zeker dat je een mail wilt ontvangen met daarin een link om je  wachtwoord te veranderen?",
+    forgotPasswordConfirmation: "Bevestig dat je je wachtwoord bent vergeten. We sturen je een e-mail met een link om je huidige wachtwoord opnieuw in te stellen en te wijzigen.",
     flash: {
       passwordLink: "Een e-mail is verstuurd naar  {{name}} met daarin een link om je wachtwoord te resetten"
     }

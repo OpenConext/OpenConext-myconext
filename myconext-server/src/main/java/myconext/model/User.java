@@ -87,7 +87,6 @@ public class User implements Serializable, UserDetails {
             throw new WeakPasswordException();
         }
         this.password = encoder.encode(password);
-        this.forgottenPassword = false;
     }
 
     @Transient

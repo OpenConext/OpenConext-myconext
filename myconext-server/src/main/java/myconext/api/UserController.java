@@ -264,19 +264,22 @@ public class UserController {
 
         boolean existingPassword = StringUtils.hasText(password);
         boolean passwordMatches = passwordEncoder.matches(updateUserRequest.getCurrentPassword(), password);
+        boolean forgottenPassword = user.isForgottenPassword();
 
-        if (existingPassword && !passwordMatches) {
+        if (existingPassword && !passwordMatches && !forgottenPassword) {
                 throw new ForbiddenException("no_match");
         }
 
-        if (user.isForgottenPassword()) {
-            PasswordForgottenHash passwordForgottenHash = passwordForgottenHashRepository
+        if (forgottenPassword && !passwordMatches) {
+            passwordForgottenHashRepository
                     .findByHashAndUserId(updateUserRequest.getHash(), user.getId())
                     .orElseThrow(() -> new ForbiddenException("wrong_hash"));
-            passwordForgottenHashRepository.delete(passwordForgottenHash);
         }
         user.encryptPassword(updateUserRequest.getNewPassword(), passwordEncoder);
+        user.setForgottenPassword(false);
+
         userRepository.save(user);
+        passwordForgottenHashRepository.deleteByUserId(user.getId());
 
         LOG.info(String.format("Updates / set password for user %s", user.getUsername()));
 
@@ -286,8 +289,7 @@ public class UserController {
     @PutMapping("/sp/forgot-password")
     public ResponseEntity forgotPassword(Authentication authentication) {
         User user = userFromAuthentication(authentication);
-        List<PasswordForgottenHash> passwordForgottenHashes = passwordForgottenHashRepository.findByUserId(user.getId());
-        passwordForgottenHashRepository.deleteAll(passwordForgottenHashes);
+        passwordForgottenHashRepository.deleteByUserId(user.getId());
 
         user.setForgottenPassword(true);
         userRepository.save(user);

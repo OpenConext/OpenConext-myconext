@@ -20,7 +20,7 @@
   let userForgotPassword = false;
 
   const valid = () => {
-    let existingPasswordValid = usePassword && currentPassword && validPassword(newPassword) && newPassword === confirmPassword;
+    let existingPasswordValid = usePassword && (currentPassword || userForgotPassword) && validPassword(newPassword) && newPassword === confirmPassword;
     let newPasswordValid = !usePassword && validPassword(newPassword) && newPassword === confirmPassword;
     return (existingPasswordValid || newPasswordValid);
   };
@@ -28,7 +28,7 @@
   onMount(() => {
     const urlSearchParams = new URLSearchParams(window.location.search);
     hash = urlSearchParams.get("h");
-    userForgotPassword = (hash !== undefined && hash !== null) || $user.forgottenPassword;
+    userForgotPassword = (hash !== undefined && hash !== null);
   });
 
   const update = () => {
@@ -71,7 +71,6 @@
       forgotPasswordLink().then(() => {
         showModal = false;
         navigate("/security");
-        $user.usePassword = false;
         flash.setValue(I18n.t("password.flash.passwordLink", {name: $user.email}));
       });
     }
@@ -115,12 +114,12 @@
         margin: 22px 0 32px 0;
     }
 
-    div.forgot-password {
+    div.error-container {
         margin-top: 10px;
         display: flex;
     }
 
-    div.forgot-password a {
+    div.error-container a {
         margin-left: auto;
     }
 
@@ -138,7 +137,6 @@
     }
 
     span.error {
-        margin-top: 5px;
         display: inline-block;
         color: var(--color-primary-red);
     }
@@ -158,27 +156,28 @@
             <h2>{userForgotPassword ? I18n.t("password.resetTitle") : usePassword ? I18n.t("password.updateTitle") : I18n.t("password.setTitle")}</h2>
         </div>
         <p class="info">{I18n.t("password.passwordDisclaimer")}</p>
-        {#if usePassword }
+        {#if usePassword && !userForgotPassword}
             <label for="currentPassword">{I18n.t("password.currentPassword")}</label>
             <input id="currentPassword" autocomplete="current-password" type="password" bind:value={currentPassword}/>
-            <div class="forgot-password">
-                <a href="/forgot" on:click|preventDefault|stopPropagation={forgotPassword(true)}>
-                    {I18n.t("password.forgotPassword")}
-                </a>
-            </div>
 
         {/if}
-        {#if currentPasswordInvalid}
-            <span class="error">{I18n.t("password.invalidCurrentPassword")}</span>
-        {/if}
-        {#if passwordResetHashExpired}
+        <div class="error-container">
+            {#if currentPasswordInvalid}
+                <span class="error">{I18n.t("password.invalidCurrentPassword")}</span>
+            {/if}
+            {#if passwordResetHashExpired}
             <span class="error">{I18n.t("password.passwordResetHashExpired")}
                 <a href="/forgot" on:click|preventDefault|stopPropagation={forgotPassword(true)}>
                     {I18n.t("password.passwordResetSendAgain")}
                 </a>
             </span>
-
-        {/if}
+            {/if}
+            {#if usePassword && !passwordResetHashExpired && !userForgotPassword}
+                <a class="forgot-password" href="/forgot" on:click|preventDefault|stopPropagation={forgotPassword(true)}>
+                    {I18n.t("password.forgotPassword")}
+                </a>
+            {/if}
+        </div>
 
         <input id="username" autocomplete="username email" type="hidden" name="username" value={$user.email}>
 
@@ -193,7 +192,7 @@
 
             <Button label={usePassword ? I18n.t("password.updateUpdate") : I18n.t("password.setUpdate")}
                     onClick={update}
-                    disabled={!((usePassword && currentPassword && validPassword(newPassword) && newPassword === confirmPassword) ||
+                    disabled={!((usePassword && (currentPassword || userForgotPassword) && validPassword(newPassword) && newPassword === confirmPassword) ||
                 (!usePassword && validPassword(newPassword) && newPassword === confirmPassword))}/>
         </div>
     </div>

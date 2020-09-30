@@ -150,8 +150,8 @@ I18n.translations.en = {
     invalidCurrentPassword: "Your current password is invalid.",
     passwordResetHashExpired: "Your reset password link has expired. ",
     forgotPassword: "I forgot my password",
-    passwordResetSendAgain: "Send me new email with a fresh reset password link.",
-    forgotPasswordConfirmation: "Are you sure you want to receive an email to reset and change your current password?",
+    passwordResetSendAgain: "Send me a email with a new link to reset my password.",
+    forgotPasswordConfirmation: "Please confirm that you have forgotten your password. We will send you a mail with a link to reset and change your current password.",
     flash: {
       passwordLink: "An email has been sent to {{name}} with a link to reset your password"
     }
