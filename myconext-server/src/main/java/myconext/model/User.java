@@ -50,6 +50,7 @@ public class User implements Serializable, UserDetails {
     private String preferredLanguage;
     private String webAuthnIdentifier;
     private String userHandle;
+    private boolean forgottenPassword;
 
     private List<LinkedAccount> linkedAccounts = new ArrayList<>();
     private Map<String, EduID> eduIdPerServiceProvider = new HashMap<>();
@@ -82,14 +83,10 @@ public class User implements Serializable, UserDetails {
     }
 
     public void encryptPassword(String password, PasswordEncoder encoder) {
-        if (StringUtils.hasText(password)) {
-            if (!strongEnough(password)) {
-                throw new WeakPasswordException();
-            }
-            this.password = encoder.encode(password);
-        } else {
-            this.password = null;
+        if (!strongEnough(password)) {
+            throw new WeakPasswordException();
         }
+        this.password = encoder.encode(password);
     }
 
     @Transient
@@ -227,5 +224,9 @@ public class User implements Serializable, UserDetails {
 
     public void setPublicKeyCredentials(List<PublicKeyCredentials> publicKeyCredentials) {
         this.publicKeyCredentials = publicKeyCredentials;
+    }
+
+    public void setForgottenPassword(boolean forgottenPassword) {
+        this.forgottenPassword = forgottenPassword;
     }
 }

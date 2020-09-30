@@ -32,6 +32,7 @@ import myconext.model.DeleteServiceTokens;
 import myconext.model.EduID;
 import myconext.model.LinkedAccount;
 import myconext.model.MagicLinkRequest;
+import myconext.model.PasswordForgottenHash;
 import myconext.model.PublicKeyCredentials;
 import myconext.model.SamlAuthenticationRequest;
 import myconext.model.TokenRepresentation;
@@ -41,6 +42,7 @@ import myconext.model.UserResponse;
 import myconext.oidcng.OpenIDConnect;
 import myconext.repository.AuthenticationRequestRepository;
 import myconext.repository.ChallengeRepository;
+import myconext.repository.PasswordForgottenHashRepository;
 import myconext.repository.UserRepository;
 import myconext.security.EmailGuessingPrevention;
 import myconext.webauthn.UserCredentialRepository;
@@ -105,6 +107,7 @@ public class UserController {
     private final RelyingParty relyingParty;
     private final UserCredentialRepository userCredentialRepository;
     private final ChallengeRepository challengeRepository;
+    private final PasswordForgottenHashRepository passwordForgottenHashRepository;
 
     private final SecureRandom random = new SecureRandom();
     private final PasswordEncoder passwordEncoder = new BCryptPasswordEncoder(-1, random);
@@ -115,6 +118,7 @@ public class UserController {
     public UserController(UserRepository userRepository,
                           UserCredentialRepository userCredentialRepository,
                           ChallengeRepository challengeRepository,
+                          PasswordForgottenHashRepository passwordForgottenHashRepository,
                           AuthenticationRequestRepository authenticationRequestRepository,
                           MailBox mailBox,
                           ServiceNameResolver serviceNameResolver,
@@ -131,6 +135,7 @@ public class UserController {
         this.userRepository = userRepository;
         this.userCredentialRepository = userCredentialRepository;
         this.challengeRepository = challengeRepository;
+        this.passwordForgottenHashRepository = passwordForgottenHashRepository;
         this.authenticationRequestRepository = authenticationRequestRepository;
         this.mailBox = mailBox;
         this.serviceNameResolver = serviceNameResolver;
@@ -243,6 +248,10 @@ public class UserController {
         mdcContext(Optional.of(user), "action", "update user profile");
         LOG.info("Update user profile");
 
+        return returnUserResponse(user);
+    }
+
+    private ResponseEntity<UserResponse> returnUserResponse(User user) {
         return ResponseEntity.status(201).body(new UserResponse(user, convertEduIdPerServiceProvider(user), false));
     }
 
@@ -250,18 +259,51 @@ public class UserController {
     public ResponseEntity updateUserSecurity(Authentication authentication, @RequestBody UpdateUserSecurityRequest updateUserRequest) {
         User deltaUser = userRepository.findById(updateUserRequest.getUserId()).orElseThrow(UserNotFoundException::new);
         User user = verifyAndFetchUser(authentication, deltaUser);
-        if (StringUtils.hasText(user.getPassword())) {
-            if (!passwordEncoder.matches(updateUserRequest.getCurrentPassword(), user.getPassword())) {
-                throw new ForbiddenException();
-            }
+
+        String password = user.getPassword();
+
+        boolean existingPassword = StringUtils.hasText(password);
+        String currentPasswordFromUser = updateUserRequest.getCurrentPassword();
+        boolean passwordMatches =  currentPasswordFromUser != null && passwordEncoder.matches(currentPasswordFromUser, password);
+        boolean forgottenPassword = user.isForgottenPassword();
+
+        if (existingPassword && !passwordMatches && !forgottenPassword) {
+                throw new ForbiddenException("no_match");
+        }
+
+        if (forgottenPassword && !passwordMatches) {
+            passwordForgottenHashRepository
+                    .findByHashAndUserId(updateUserRequest.getHash(), user.getId())
+                    .orElseThrow(() -> new ForbiddenException("wrong_hash"));
         }
         user.encryptPassword(updateUserRequest.getNewPassword(), passwordEncoder);
+        user.setForgottenPassword(false);
+
         userRepository.save(user);
+        passwordForgottenHashRepository.deleteByUserId(user.getId());
 
         LOG.info(String.format("Updates / set password for user %s", user.getUsername()));
 
-        return ResponseEntity.status(201).body(new UserResponse(user, convertEduIdPerServiceProvider(user), false));
+        return returnUserResponse(user);
     }
+
+    @PutMapping("/sp/forgot-password")
+    public ResponseEntity forgotPassword(Authentication authentication) {
+        User user = userFromAuthentication(authentication);
+        passwordForgottenHashRepository.deleteByUserId(user.getId());
+
+        user.setForgottenPassword(true);
+        userRepository.save(user);
+
+        String hashValue = hash();
+        passwordForgottenHashRepository.save(new PasswordForgottenHash(user, hashValue));
+
+        LOG.info(String.format("Send password forgotten mail to user %s", user.getUsername()));
+
+        mailBox.sendForgotPassword(user, hashValue);
+        return returnUserResponse(user);
+    }
+
 
     @PutMapping("/sp/institution")
     public ResponseEntity removeUserLinkedAccounts(Authentication authentication, @RequestBody LinkedAccount linkedAccount) {

@@ -3,6 +3,8 @@ package myconext.mail;
 import com.icegreen.greenmail.junit.GreenMailRule;
 import com.icegreen.greenmail.util.ServerSetupTest;
 import myconext.AbstractIntegrationTest;
+import myconext.model.User;
+import org.apache.commons.mail.util.MimeMessageParser;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
@@ -13,6 +15,7 @@ import org.springframework.test.context.ActiveProfiles;
 import javax.mail.Message;
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
+import java.io.IOException;
 import java.util.UUID;
 
 import static com.icegreen.greenmail.util.GreenMailUtil.getBody;
@@ -110,6 +113,19 @@ public class MailBoxTest extends AbstractIntegrationTest {
     @Test
     public void sendAccountMigrationNl() throws MessagingException {
         doSendAccountMigration("Je Onegini gastaccount is gemigreerd naar eduID", "nl");
+    }
+
+    @Test
+    public void sendForgotPassword() throws Exception {
+        User user = user("jdoe@example.com");
+        mailBox.sendForgotPassword(user,"hash");
+
+        MimeMessage mimeMessage = mailMessage();
+        MimeMessageParser parser = new MimeMessageParser(mimeMessage);
+        parser.parse();
+
+        String htmlContent = parser.getHtmlContent();
+        assertTrue(htmlContent.contains("http://localhost:3001/forgot-password?h=hash"));
     }
 
     private void doSendAccountMigration(String expectedSubject, String lang) throws MessagingException {

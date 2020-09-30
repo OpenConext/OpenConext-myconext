@@ -56,9 +56,13 @@ export function updateUser(user) {
     return postPutJson("/myconext/api/sp/update", user, "PUT");
 }
 
-export function updateSecurity(userId, currentPassword, newPassword) {
-    const body = {userId, currentPassword, newPassword};
+export function updateSecurity(userId, currentPassword, newPassword, hash) {
+    const body = {userId, currentPassword, newPassword, hash};
     return postPutJson("/myconext/api/sp/security", body, "PUT");
+}
+
+export function forgotPasswordLink() {
+    return postPutJson("/myconext/api/sp/forgot-password", {}, "PUT");
 }
 
 export function startWebAuthFlow() {

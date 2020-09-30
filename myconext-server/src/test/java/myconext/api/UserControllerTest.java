@@ -23,6 +23,7 @@ import myconext.model.EduID;
 import myconext.model.LinkedAccount;
 import myconext.model.LinkedAccountTest;
 import myconext.model.MagicLinkRequest;
+import myconext.model.PasswordForgottenHash;
 import myconext.model.PublicKeyCredentials;
 import myconext.model.SamlAuthenticationRequest;
 import myconext.model.StepUpStatus;
@@ -70,6 +71,7 @@ import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.startsWith;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertTrue;
 
 @SuppressWarnings("unchecked")
@@ -369,7 +371,7 @@ public class UserControllerTest extends AbstractIntegrationTest {
         given()
                 .when()
                 .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
-                .body(new UpdateUserSecurityRequest(user.getId(), null, "secret"))
+                .body(new UpdateUserSecurityRequest(user.getId(), null, "secret", null))
                 .put("/myconext/api/sp/security")
                 .then()
                 .statusCode(422);
@@ -378,7 +380,7 @@ public class UserControllerTest extends AbstractIntegrationTest {
     @Test
     public void updateUserSecurity() {
         User user = userRepository.findOneUserByEmailIgnoreCase("jdoe@example.com");
-        UpdateUserSecurityRequest updateUserSecurityRequest = new UpdateUserSecurityRequest(user.getId(), null, "correctSecret001");
+        UpdateUserSecurityRequest updateUserSecurityRequest = new UpdateUserSecurityRequest(user.getId(), null, "correctSecret001", null);
         given()
                 .when()
                 .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
@@ -399,7 +401,45 @@ public class UserControllerTest extends AbstractIntegrationTest {
         given()
                 .when()
                 .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
-                .body(new UpdateUserSecurityRequest(user.getId(), "nope", "nope"))
+                .body(new UpdateUserSecurityRequest(user.getId(), "nope", "nope", null))
+                .put("/myconext/api/sp/security")
+                .then()
+                .statusCode(403);
+    }
+
+    @Test
+    public void updateUserAfterPasswordForgotten() {
+        User user = userRepository.findOneUserByEmailIgnoreCase("jdoe@example.com");
+        user.setForgottenPassword(true);
+        ReflectionTestUtils.setField(user, "password", "abcdefghijklmnop");
+        userRepository.save(user);
+
+        passwordForgottenHashRepository.save(new PasswordForgottenHash(user, "hash"));
+
+        UpdateUserSecurityRequest securityRequest = new UpdateUserSecurityRequest(user.getId(), null, "abcdefghujklmnop", "hash");
+        given()
+                .when()
+                .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+                .body(securityRequest)
+                .put("/myconext/api/sp/security")
+                .then()
+                .statusCode(201);
+        user = userRepository.findOneUserByEmailIgnoreCase("jdoe@example.com");
+        assertTrue(passwordEncoder.matches(securityRequest.getNewPassword(), user.getPassword()));
+    }
+
+    @Test
+    public void updateUserAfterPasswordForgottenNoHash() {
+        User user = userRepository.findOneUserByEmailIgnoreCase("jdoe@example.com");
+        user.setForgottenPassword(true);
+        ReflectionTestUtils.setField(user, "password", "abcdefghijklmnop");
+        userRepository.save(user);
+
+        UpdateUserSecurityRequest securityRequest = new UpdateUserSecurityRequest(user.getId(), null, "abcdefghujklmnop", "hash");
+        given()
+                .when()
+                .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+                .body(securityRequest)
                 .put("/myconext/api/sp/security")
                 .then()
                 .statusCode(403);
@@ -628,6 +668,28 @@ public class UserControllerTest extends AbstractIntegrationTest {
     }
 
     @Test
+    public void webAuhthRegistrationNewUserHandle() throws Base64UrlException, IOException {
+        User user = userRepository.findOneUserByEmailIgnoreCase("jdoe@example.com");
+        String userHandle = user.getUserHandle();
+        user.setUserHandle(null);
+        userRepository.save(user);
+
+        String token = given().when().get("/myconext/api/sp/security/webauthn")
+                .then().extract().body().jsonPath().getString("token");
+        String attestation = "o2NmbXRkbm9uZWdhdHRTdG10oGhhdXRoRGF0YVj_SZYN5YgOjGh0NBcPZHZgW4_krrmihjLHmVzzuoMdl2NFXtS5-K3OAAI1vMYKZIsLJfHwVQMAewFBb2GSzftwFaO2t01mWWDmvgjYzJfp9YL55miRnO9cO4jnIIyPjPgXY7XoJCXHf70tN9cMrM8haGb8D1TfpS-1ijer4ChFgDypfhNGUfAxbfs7mk-IQR3gS8Afxfks17mE68fid_4lZt7lOi6Z9-RiWx_m6BbX0OjViaUBAgMmIAEhWCAyic9YLBoxd3zvxePnDbBktATOgR5jBvrUFdPptlyg-SJYIFv4tjumhccPrGTFkUBvtbQKhrDZcGWdIBhFlF_JtGIR";
+
+        given()
+                .when()
+                .body(Collections.singletonMap("token", token))
+                .contentType(ContentType.JSON)
+                .accept(ContentType.JSON)
+                .post("/myconext/api/idp/security/webauthn/registration");
+        User userFromDb = userRepository.findOneUserByEmailIgnoreCase("jdoe@example.com");
+        String newUserHandle = userFromDb.getUserHandle();
+        assertNotEquals(userHandle, newUserHandle);
+    }
+
+        @Test
     public void webAuhthAuthentication() throws Base64UrlException, IOException {
         String authenticationRequestId = samlAuthnRequest();
         Map<String, Object> body = new HashMap<>();
@@ -684,6 +746,23 @@ public class UserControllerTest extends AbstractIntegrationTest {
         assertTrue(saml.contains("Attribute Name=\"urn:mace:eduid.nl:1.1\""));
         String eduId = eduIdPerServiceProvider.get("https://manage.surfconext.nl/shibboleth").getValue();
         assertTrue(saml.contains(eduId));
+    }
+
+    @Test
+    public void testWebAuthnUrl() {
+        Map map = given()
+                .when()
+                .accept(ContentType.JSON)
+                .get("/myconext/api/sp/testWebAuthnUrl")
+                .as(Map.class);
+        String url = (String) map.get("url");
+        assertTrue(url.startsWith("http://localhost:3000/login/"));
+
+        Matcher matcher = Pattern.compile("/login/(.+?)\\?").matcher(url);
+        matcher.find();
+        String authenticationRequestId = matcher.group(1);
+        SamlAuthenticationRequest samlAuthenticationRequest = authenticationRequestRepository.findById(authenticationRequestId).get();
+        assertTrue(samlAuthenticationRequest.isTestInstance());
     }
 
     @Test
@@ -748,6 +827,16 @@ public class UserControllerTest extends AbstractIntegrationTest {
                 .get("/saml/guest-idp/magic");
         String location = response.getHeader("Location");
         assertTrue(location.startsWith("http://localhost:3000/confirm-stepup?h="));
+    }
+
+    @Test
+    public void testForgotPassword() {
+        Map map = given()
+                .when()
+                .accept(ContentType.JSON)
+                .put("/myconext/api/sp/forgot-password")
+                .as(Map.class);
+        assertTrue((Boolean) map.get("forgottenPassword"));
     }
 
     private String samlResponse(MagicLinkResponse magicLinkResponse) throws IOException {
