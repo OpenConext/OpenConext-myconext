@@ -150,8 +150,8 @@ I18n.translations.nl = {
     invalidCurrentPassword: "Je huidige wachtwoord is niet correct.",
     passwordResetHashExpired: "Je reset wachtwoord link is verlopen. ",
     forgotPassword: "Ik ben mijn wachtwoord vergeten",
-    passwordResetSendAgain: "Stuur me opnieuw een e-mail met een nieuwe link om mijn password te resetten.",
-    forgotPasswordConfirmation: "Bevestig dat je je wachtwoord bent vergeten. We sturen je een e-mail met een link om je huidige wachtwoord opnieuw in te stellen en te wijzigen.",
+    passwordResetSendAgain: "Stuur me opnieuw een e-mail om mijn wachtwoord te resetten.",
+    forgotPasswordConfirmation: "Bevestig dat je jouw wachtwoord bent vergeten. We sturen je een e-mail met een link om je huidige wachtwoord opnieuw in te stellen.",
     flash: {
       passwordLink: "Een e-mail is verstuurd naar  {{name}} met daarin een link om je wachtwoord te resetten"
     }
