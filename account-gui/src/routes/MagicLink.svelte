@@ -80,7 +80,7 @@
 
     div.spam {
         margin-top: 30px;
-        font-size: 14px;
+        font-size: 15px;
     }
 
 </style>
