@@ -57,7 +57,7 @@
         display:flex;
         align-items: center;
         align-content: center;
-        font-size: 14px;
+        font-size: 15px;
     }
 
     div.mail-client img {
@@ -76,7 +76,6 @@
 
     div.mail-clients a {
         text-decoration: none;
-        color: black;
     }
 
     div.spam {
