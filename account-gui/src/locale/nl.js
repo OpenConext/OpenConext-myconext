@@ -47,7 +47,7 @@ I18n.translations.nl = {
     institutionDomainNameWarning: "Het lijkt erop dat je een instellings e-mailadres hebt ingevoerd. Houd er rekening mee dat wanneer je niet meer studeert of werkt bij die instelling, je geen toegang meer hebt tot dat e-mail adres.",
     institutionDomainNameWarning2: "We raden je aan om je persoonlijke e-mailadres te gebruiken voor eduID.",
     passwordDisclaimer: "Je wachtwoord moet minimaal 15 karakters lang zijn, of minimaal 8 als het een hoofdletter en een getal bevat.",
-    alreadyGuestAccount: "Heb je al een <strong>eduID?</strong>",
+    alreadyGuestAccount: "Heb je al een eduID?",
     usePasswordLink: "Gebruik toch een wachtwoord",
     useWebAuthnLink: "Of gebruik WebAuthn",
     agreeWithTerms: "<span>Ik ga akkoord met <a href='https://eduid.nl/voorwaarden/' target='_blank'>de voorwaarden.</a> En ik begrijp <a href='https://eduid.nl/privacyverklaring/' target='_blank'>de privacyverklaring</a>.</span>"
