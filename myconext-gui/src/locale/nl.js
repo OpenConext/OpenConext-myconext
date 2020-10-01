@@ -148,12 +148,12 @@ I18n.translations.nl = {
     back: "/security",
     passwordDisclaimer: "Kies een wachtwoord van tenminste 8 karakters lang met minimaal een hoofdletter en een cijfer. Een langer wachtwoord van minimaal 15 karakters mag ook.",
     invalidCurrentPassword: "Je huidige wachtwoord is niet correct.",
-    passwordResetHashExpired: "Je reset wachtwoord link is verlopen. ",
-    forgotPassword: "Ik ben mijn wachtwoord vergeten",
-    passwordResetSendAgain: "Stuur me opnieuw een e-mail om mijn wachtwoord te resetten.",
-    forgotPasswordConfirmation: "Bevestig dat je jouw wachtwoord bent vergeten. We sturen je een e-mail met een link om je huidige wachtwoord opnieuw in te stellen.",
+    passwordResetHashExpired: "De link om je wachtwoord opnieuw in te stellen is verlopen. ",
+    forgotPassword: "Ik wil mijn wachtwoord opnieuw instellen",
+    passwordResetSendAgain: "Stuur een e-mail om mijn wachtwoord opnieuw in te stellen.",
+    forgotPasswordConfirmation: "Bevestig dat je je wachtwoord opnieuw wilt instellen. Je ontvangt hierna een e-mail waarmee je je huidige wachtwoord opnieuw in te stellen.",
     flash: {
-      passwordLink: "Een e-mail is verstuurd naar  {{name}} met daarin een link om je wachtwoord te resetten"
+      passwordLink: "Een e-mail is verstuurd naar {{name}} om je wachtwoord opnieuw in te stellen."
     }
 
   },
