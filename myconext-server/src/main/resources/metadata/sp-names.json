@@ -1,0 +1,7000 @@
+[
+  {
+    "https://engine.test.surfconext.nl/authentication/sp/metadata": {
+      "en": "SURFconext Engine",
+      "nl": "SURFconext Engine"
+    }
+  },
+  {
+    "https://profile.test.surfconext.nl/authentication/metadata": {
+      "en": "SURFconext Profile",
+      "nl": "SURFconext Profile"
+    }
+  },
+  {
+    "http://mock-sp": {
+      "en": "SURFconext Mujina SP",
+      "nl": "SURFconext Mujina SP"
+    }
+  },
+  {
+    "https://teams.test.surfconext.nl/shibboleth": {
+      "en": "SURFconext Teams",
+      "nl": "SURFconext Teams"
+    }
+  },
+  {
+    "https://authz.test.surfconext.nl/shibboleth": {
+      "en": "SURFconext Authz Server",
+      "nl": "SURFconext Authz Server"
+    }
+  },
+  {
+    "https://authz-admin.test.surfconext.nl/shibboleth": {
+      "en": "SURFconext Authz Admin",
+      "nl": "SURFconext Authz Admin"
+    }
+  },
+  {
+    "https://pdp.test.surfconext.nl/shibboleth": {
+      "en": "SURFconext PDP Server",
+      "nl": "SURFconext PDP Server"
+    }
+  },
+  {
+    "https://oidc.test.surfconext.nl": {
+      "en": "SURFconext OpenID Connect Gateway",
+      "nl": "SURFconext OpenID Connect Gateway"
+    }
+  },
+  {
+    "https://manage.test.surfconext.nl/shibboleth": {
+      "en": "SURFconext Manage",
+      "nl": "SURFconext Manage"
+    }
+  },
+  {
+    "https://aa.test.surfconext.nl/shibboleth": {
+      "en": "SURFconext Attribute Aggregation Server",
+      "nl": "SURFconext Attribute Aggregation Server"
+    }
+  },
+  {
+    "https://link.test.surfconext.nl/shibboleth": {
+      "en": "SURFconext Linking Service",
+      "nl": "SURFconext Linking Service"
+    }
+  },
+  {
+    "http://hu.instructure.com/saml2": {
+      "en": "Service Provider",
+      "nl": "Service Provider"
+    }
+  },
+  {
+    "https://vs2015.mibris.local:44307/AuthServices": {
+      "en": "PaNaMa",
+      "nl": "PaNaMa Development"
+    }
+  },
+  {
+    "http://ubuntusimplesamlsp.pt-118.utr.surfcloud.nl/simplesaml/module.php/saml/sp/metadata.php/andre-sp": {
+      "en": "Trevo SimpleSAMLphp | Andre",
+      "nl": "Trevo SimpleSAMLphp | Andre"
+    }
+  },
+  {
+    "https://jobboard.test.yrsrc.nl/onelogin_saml/metadata": {
+      "en": "UVA Jobboard test",
+      "nl": "UVA Jobboard test"
+    }
+  },
+  {
+    "https://jobboard.acc.yrsrc.nl/onelogin_saml/metadata": {
+      "en": "UVA Jobboard Acceptation",
+      "nl": "UVA Jobboard Acceptation"
+    }
+  },
+  {
+    "https://jobboard.development.yrsrc.nl/onelogin_saml/metadata": {
+      "en": "UVA Jobboard development",
+      "nl": "UVA Jobboard development"
+    }
+  },
+  {
+    "https://oefenen.bouw-infra.avans.nl/auth/saml2/sp/metadata.php": {
+      "en": "Oefenen Bouw-Infra",
+      "nl": "Oefenen Bouw-Infra"
+    }
+  },
+  {
+    "https://bloomreach.test.saxion.nl": {
+      "en": "Bloomreach Experience",
+      "nl": "Bloomreach Experience"
+    }
+  },
+  {
+    "https://bloomreach.acceptatie.saxion.nl": {
+      "en": "Bloomreach Experience",
+      "nl": "Bloomreach Experience"
+    }
+  },
+  {
+    "https://dev.api.dmssolutions.eu/saml/metadata": {
+      "en": "dms-test",
+      "nl": "dms-test"
+    }
+  },
+  {
+    "urn:federation:MicrosoftOnline": {
+      "en": "Windows Azure AD | Microsoft",
+      "nl": "Windows Azure AD | Microsoft"
+    }
+  },
+  {
+    "https://intranet.tudelft.nl": {
+      "en": "TU Delft employee portal",
+      "nl": "TU Delft medewerkerportaal"
+    }
+  },
+  {
+    "https://test.inzichtsociaaldomein.nl": {
+      "en": "Inzicht sociaal domein",
+      "nl": "Inzicht sociaal domein"
+    }
+  },
+  {
+    "https://disqover.dh.maastrichtuniversity.nl/users/saml/metadata": {
+      "en": "DataHub Disqover",
+      "nl": "DataHub Disqover"
+    }
+  },
+  {
+    "https://dev.mijncloudoplossingen.nl/shibboleth": {
+      "en": "PortalPlus",
+      "nl": "PortalPlus"
+    }
+  },
+  {
+    "https://orchestrator.staging.automation.surf.net": {
+      "en": "orchestrator-client"
+    }
+  },
+  {
+    "https://authz-playground.test.surfconext.nl": {
+      "en": "Authz-playground OIDC  client",
+      "nl": "Authz-playground OIDC  client"
+    }
+  },
+  {
+    "http://ikbesta": {
+      "en": "Ik besta"
+    }
+  },
+  {
+    "https://dashboard.staging.automation.surf.net": {
+      "en": "dashboard-client"
+    }
+  },
+  {
+    "https://summacollege-staging.klantsite.net": {
+      "en": "[Staging] Summa College Intake Planner",
+      "nl": "[Staging] Summa College Intake Planner"
+    }
+  },
+  {
+    "https://zm.kpnzorg.nl/msrv/auth/5fa7d235-8d9e-4622-b5ef-e4d8422ff54e": {
+      "en": "KPN Zorg Messenger",
+      "nl": "KPN Zorg Messenger"
+    }
+  },
+  {
+    "https://radboudumc.topdesk.net/saml-metadata/06a7ad37-b25d-4d22-b611-d4195754235b": {
+      "en": "TOPdesk (Radboudumc) secure",
+      "nl": "TOPdesk (Radboudumc) secure"
+    }
+  },
+  {
+    "https://radboudumc.topdesk.net/saml-metadata/78183415-4ab5-46d2-a5c7-4c8659783035": {
+      "en": "TOPdesk (Radboudmc) public",
+      "nl": "TOPdesk (Radboudmc) public"
+    }
+  },
+  {
+    "https://radboudumc-test.topdesk.net/saml-metadata/e996db3a-922a-4646-935f-b74b7c3543f4": {
+      "en": "TOPdesk (Radboudumc - TEST) public",
+      "nl": "TOPdesk (Radboudumc - TEST) public"
+    }
+  },
+  {
+    "https://radboudumc-test.topdesk.net/saml-metadata/eae833ea-7529-4e0a-821e-78fc3fb4929d": {
+      "en": "TOPdesk (Radboudumc - test) secure",
+      "nl": "TOPdesk (Radboudumc - test) secure"
+    }
+  },
+  {
+    "https://zm.kpnzorg.nl/msrv/auth/2b3dba27-a842-46bb-9f0a-1b38e51b7dae": {
+      "en": "KPN Zorg Messenger",
+      "nl": "KPN Zorg Messenger"
+    }
+  },
+  {
+    "https://summacollege.klantsite.net": {
+      "en": "Summa College Intake Planner",
+      "nl": "Summa College Intake Planner"
+    }
+  },
+  {
+    "http://nl.caci.osiris.tudelft.nl/osiris-oauth2-server-prd": {
+      "en": "TU Delft Studenten App PRD",
+      "nl": "TU Delft Studenten App PRD"
+    }
+  },
+  {
+    "https://sciauth.scientia.com/Metadata/SamlMetadata": {
+      "en": "SciAuth Test",
+      "nl": "SciAuth Test"
+    }
+  },
+  {
+    "https://beta.surfnet.nl/SURFdropjesSP": {
+      "en": "SURFdropjes test SP [EN] | Braindrops",
+      "nl": "SURFdropjes test SP [NL] | Braindrops"
+    }
+  },
+  {
+    "https://bestellen-accept.avans.nl": {
+      "en": "Avans Proquro Accept",
+      "nl": "Avans Proquro Acceptatie"
+    }
+  },
+  {
+    "https://toetsstart.avans.nl/simplesaml/module.php/saml/sp/metadata.php/default-sp": {
+      "en": "Toetsstart DIY Pre-test",
+      "nl": "Toetsstart DIY Pre-test"
+    }
+  },
+  {
+    "https://mumc.mibris.nl/panama/AuthServices": {
+      "en": "PaNaMa Research Projects - MUMC/UM | Mibris BV",
+      "nl": "PaNaMa Research Projects - MUMC/UM | Mibris BV"
+    }
+  },
+  {
+    "https://api.cirrusbeta.com": {
+      "en": "Cirrus Test",
+      "nl": "Cirrus Test"
+    }
+  },
+  {
+    "https://zm.kpnzorg.nl/msrv/auth/00af25fe-8433-4dd5-a76a-3d990c7e0860": {
+      "en": "KPN Zorg Messenger",
+      "nl": "KPN Zorg Messenger"
+    }
+  },
+  {
+    "http://localhost:6984": {
+      "en": "localhost test",
+      "nl": "localhost test"
+    }
+  },
+  {
+    "https://sp.benque.nl/surfconext": {
+      "en": "BENQUE (Online purchase to pay)",
+      "nl": "BENQUE (Online verkoop op rekening)"
+    }
+  },
+  {
+    "https://exam-services.boy.care.local/saml/metadata": {
+      "en": "Campus Exam",
+      "nl": "Campus Exam"
+    }
+  },
+  {
+    "https://windesheim-test.mycampusprint.nl/saml": {
+      "en": "New Way To Print",
+      "nl": "Het Nieuwe Printen"
+    }
+  },
+  {
+    "https://leerplanner.hu.nl/": {
+      "en": "HU Education planner",
+      "nl": "HU Leerplanner"
+    }
+  },
+  {
+    "https://poc.eduid.lab.surf.nl": {
+      "en": "eduID PoC & Dev | SURFnet",
+      "nl": "eduID PoC & Dev | SURFnet"
+    }
+  },
+  {
+    "https://develop.svia.nl/saml/metadata/": {
+      "en": "VIA website - test",
+      "nl": "VIA website - test"
+    }
+  },
+  {
+    "https://noorderpoort-ota.mycampusprint.nl/saml": {
+      "en": "New Way To Print",
+      "nl": "Het Nieuwe Printen"
+    }
+  },
+  {
+    "https://universiteitleiden.mapiq.net": {
+      "en": "Mapiq for Leiden University (Production)",
+      "nl": "Mapiq voor Universiteit Leiden (Production)"
+    }
+  },
+  {
+    "https://umcn.mibris.nl/panama/AuthServices": {
+      "en": "PaNaMa Research Projects - Radboudumc | Mibris BV",
+      "nl": "PaNaMa Research Projects - Radboudumc | Mibris BV"
+    }
+  },
+  {
+    "https://test.proxy.ub.rug.nl/shibboleth": {
+      "en": "EZproxy RUG TEST",
+      "nl": "EZproxy RUG TEST"
+    }
+  },
+  {
+    "https://uat.edu.barco.com/_saml/metadata": {
+      "en": "WeConnect",
+      "nl": "WeConnect"
+    }
+  },
+  {
+    "https://ezproxy.avans.nl/": {
+      "en": "Ezproxy Avans",
+      "nl": "Ezproxy Avans"
+    }
+  },
+  {
+    "https://test.proxy.ub.rug.nl/shibbolethUMCG": {
+      "en": "EZproxy UMCG TEST",
+      "nl": "EZproxy UMCG TEST"
+    }
+  },
+  {
+    "https://tudlft-tudproj-dt1.pegacloud.net:443/prweb/sp/1527881782": {
+      "en": "TestJBDrEng (not active)",
+      "nl": "TestJBDr (niet actief)"
+    }
+  },
+  {
+    "https://wshsldz85.avans.nl/simplesaml/module.php/saml/sp/metadata.php/surfconext-test": {
+      "en": "Avans Webservices",
+      "nl": "Avans Webservices"
+    }
+  },
+  {
+    "https://hva.mapiq.net": {
+      "en": "Mapiq for Amsterdam University of Applied Sciences (Staging)",
+      "nl": "Mapiq voor Hogeschool van Amsterdam (Staging)"
+    }
+  },
+  {
+    "https://testcloud.reflexappointment.nl/": {
+      "en": "Reflex",
+      "nl": "Reflex"
+    }
+  },
+  {
+    "https://vmwareaa.avans.nl/simplesaml/module.php/saml/sp/metadata.php/surfconext-test": {
+      "en": "MSDNAA en VMWAREAA webstores",
+      "nl": "VMWAREAA webwinkels"
+    }
+  },
+  {
+    "https://sso-vandale-dev.isaac.local/auth/realms/vanDale": {
+      "en": "Test - Search - ISAAC Dev",
+      "nl": "Test - Zoeken - ISAAC Dev"
+    }
+  },
+  {
+    "https://proxy-ub.rug.nl/shibboleth": {
+      "en": "EZproxy RUG",
+      "nl": "EZproxy RUG"
+    }
+  },
+  {
+    "http://summwise.test": {
+      "en": "SummWise | Summa College",
+      "nl": "SummWise | Summa College"
+    }
+  },
+  {
+    "https://repository-acc.nki.nl/shibboleth": {
+      "en": "NCI Repository",
+      "nl": "NKI Repository"
+    }
+  },
+  {
+    "https://conext.pitch2peer.com/simplesaml/module.php/saml/sp/metadata.php/default-sp": {
+      "en": "Pitch2Peer",
+      "nl": "Pitch2Peer"
+    }
+  },
+  {
+    "https://test.testersuite.nl": {
+      "en": "Surfconext test",
+      "nl": "Surfconext test"
+    }
+  },
+  {
+    "https://blackboardacc.ic.uva.nl/auth-saml/saml/SSO/alias/_136_1": {
+      "en": "Blackboard Acceptance",
+      "nl": "Blackboard Acceptatie"
+    }
+  },
+  {
+    "https://ondemand.questionmark.eu/sso/module.php/saml/sp/metadata.php/surfconext-euod-staging": {
+      "en": "Questionmark Test Environment",
+      "nl": "Questionmark Testomgeving"
+    }
+  },
+  {
+    "https://rocmnsaas-test.blackboard.com/": {
+      "en": "BlackBoard SaaS test",
+      "nl": "BlackBoard SaaS test"
+    }
+  },
+  {
+    "https://cloud.reflexappointment.nl/": {
+      "en": "Reflex",
+      "nl": "Reflex"
+    }
+  },
+  {
+    "https://www.dmsdevelopment.nl/en/auth/connect_uva/metadata": {
+      "en": "UVA",
+      "nl": "UVA"
+    }
+  },
+  {
+    "https://sso-sp.sollicity.nl/module.php/saml/sp/metadata.php/uva_surfnet_production-sp": {
+      "en": "Uvacareercheck",
+      "nl": "Uvacareercheck"
+    }
+  },
+  {
+    "http://hth.osiris.caci.nl/osiris-oauth2-server-inr": {
+      "en": "HTH Students App INR (Test)",
+      "nl": "HTH Studenten App INR (Test)"
+    }
+  },
+  {
+    "https://staging.testersuite.nl": {
+      "en": "Testersuite",
+      "nl": "Testersuite (staging.testersuite.nl)"
+    }
+  },
+  {
+    "http://sitecore.erasmusmc.local": {
+      "en": "Sitecore (test) | ErasmusMC",
+      "nl": "Sitecore (test) | ErasmusMC"
+    }
+  },
+  {
+    "https://flp-dev.sap.uva.nl": {
+      "en": "Fiori HvA and UvA Development",
+      "nl": "Fiori HvA en UvA Ontwikkelomgeving"
+    }
+  },
+  {
+    "https://login.simulise.develop/saml/sp/b07ca3ac-5f2d-4249-a2e9-f4b15b0ab7da/metadata": {
+      "en": "Simulise Development",
+      "nl": "Simulise Development"
+    }
+  },
+  {
+    "https://login.staging.simulise.com/saml/sp/48e95568-580f-428f-947f-dadb63fca985/metadata": {
+      "en": "Simulise Staging",
+      "nl": "Simulise Staging"
+    }
+  },
+  {
+    "https://www.valuecare.nl/saml-test": {
+      "en": "spd_valuecare",
+      "nl": "spd_valuecare"
+    }
+  },
+  {
+    "https://test.mijncloudoplossingen.nl/shibboleth": {
+      "en": "PortalPlus",
+      "nl": "PortalPlus"
+    }
+  },
+  {
+    "https://radboudumc-acceptatie.topdesk.net/saml-metadata/a1b20ded-1051-4034-968b-728151d55c32": {
+      "en": "TOPdesk (Radboudumc - ACC) public",
+      "nl": "TOPdesk (Radboudumc - ACC) public"
+    }
+  },
+  {
+    "https://radboudumc-acceptatie.topdesk.net/saml-metadata/509a8e10-f6cd-40fb-958f-ef5be155805f": {
+      "en": "TOPdesk (Radboudumc - ACC) secure",
+      "nl": "TOPdesk (Radboudumc - ACC) secure"
+    }
+  },
+  {
+    "https://verkiezingen.avans.nl/simplesaml/module.php/saml/sp/metadata.php/surfconext-test": {
+      "en": "Avans Elections",
+      "nl": "Avans Verkiezingen"
+    }
+  },
+  {
+    "http://sp-test.proto.utwente.nl": {
+      "en": "S.A. Proto Test SP (Jonathan)",
+      "nl": "S.A. Proto Test SP (Jonathan)"
+    }
+  },
+  {
+    "https://myhu-accp.mendixcloud.com": {
+      "en": "MyHU POC Acceptance",
+      "nl": "MyHU POC Acceptatieomgeving"
+    }
+  },
+  {
+    "https://prod.mijncloudoplossingen.nl/shibboleth": {
+      "en": "PortalPlus",
+      "nl": "PortalPlus"
+    }
+  },
+  {
+    "https://tiu.mycampusprint.nl/saml": {
+      "en": "New Way To Print",
+      "nl": "Het Nieuwe Printen"
+    }
+  },
+  {
+    "https://staging.edubox.nl": {
+      "en": "Versatest | Clearcode",
+      "nl": "Versatest | Clearcode"
+    }
+  },
+  {
+    "https://hva--dstdevhva.cs89.my.salesforce.com": {
+      "en": "Salesforce (DstDev)",
+      "nl": "Salesforce (DstDev)"
+    }
+  },
+  {
+    "https://dmsnew.utwente.nl/en/auth/connect_saxion/metadata": {
+      "en": "Saxion-DMS",
+      "nl": "Saxion-DMS"
+    }
+  },
+  {
+    "http://erasmusmc.flw3.org/surfconext/": {
+      "en": "FlexWareConext | Interactive Blueprints",
+      "nl": "FlexWareConext | Interactive Blueprints"
+    }
+  },
+  {
+    "https://login.simulise.com/saml/sp/0f9ca77a-bff2-4b05-974c-a2a4d1ef61e2/metadata": {
+      "en": "Simulise",
+      "nl": "Simulise"
+    }
+  },
+  {
+    "https://tudlft-tudproj-dt1.pegacloud.net:443/prweb/sp/1530904135": {
+      "en": "JBDr SSO (active)",
+      "nl": "JBDr SSO (Actief)"
+    }
+  },
+  {
+    "https://tiotest.trajectplanner.nl/saml/module.php/saml/sp/metadata.php/surfconext2048": {
+      "en": "Trajectplanner TIO test",
+      "nl": "Trajectplanner TIO test"
+    }
+  },
+  {
+    "http://vumc.devel.gxsoftware.com": {
+      "en": "GX Software - XperienCentral",
+      "nl": "GX Software - XperienCentral"
+    }
+  },
+  {
+    "https://dev.dmssolutions.eu/en/auth/connect_uva1/metadata": {
+      "en": "Delcom koppeling met UVA (surfconext idp)",
+      "nl": "Delcom koppeling met UVA (surfconext idp)"
+    }
+  },
+  {
+    "https://dev.vandale.nl": {
+      "en": "Test - Search - UAT",
+      "nl": "Test - Zoeken - UAT"
+    }
+  },
+  {
+    "https://login.awo.ou.nl/oam/fed": {
+      "en": "Open Universiteit YL test",
+      "nl": "Open Universiteit YL test"
+    }
+  },
+  {
+    "https://login.afasonline.com": {
+      "en": "AFAS Online (test) | AFAS",
+      "nl": "AFAS Online (test) | AFAS"
+    }
+  },
+  {
+    "https://analytics-acc.ic.uva.nl/index.php?module=LoginSaml&action=metadata": {
+      "en": "Matomo ACC",
+      "nl": "Matomo ACC"
+    }
+  },
+  {
+    "https://tud-tst.firelaycloud.com": {
+      "en": "TU Delft employee portal",
+      "nl": "TU Delft medewerkerportaal"
+    }
+  },
+  {
+    "https://data-dev.sap.uva.nl:443/BOE/saml/metadata": {
+      "en": "HvA-UvA Reporting Services",
+      "nl": "HvA-UvA Reporting Diensten"
+    }
+  },
+  {
+    "https://test.goodhabitz.com/shibboleth": {
+      "en": "GoodHabitz",
+      "nl": "GoodHabitz"
+    }
+  },
+  {
+    "https://tio.topdesk.net/saml-metadata/aa8f01b6-2438-4b0d-9b70-42e64bcef70f": {
+      "en": "TOPdesk (Tio University) Public | TOPdesk (test)",
+      "nl": "TOPdesk (Hogeschool Tio) Public | TOPdesk (test)"
+    }
+  },
+  {
+    "https://saasdemo-saml.caci.nl/osirissaml/saml2/metadata/osiris-student-surf-pilot-mfa": {
+      "en": "osiris-student-surf-pilot-mfa",
+      "nl": "osiris-student-surf-pilot-mfa"
+    }
+  },
+  {
+    "https://tio.topdesk.net/saml-metadata/5fc6b271-dd05-49b9-a975-1a2e487a11d2": {
+      "en": "TOPdesk (Hogeschool Tio) Secure | TOPdesk (test)",
+      "nl": "TOPdesk (Hogeschool Tio) Secure | TOPdesk (test)"
+    }
+  },
+  {
+    "https://surfconext.valuecare.nl/dbpvumc": {
+      "en": "ValueCare-VUMC",
+      "nl": "ValueCare-VUMC"
+    }
+  },
+  {
+    "https://bestellen.avans.nl": {
+      "en": "Avans Proquro",
+      "nl": "Avans Proquro"
+    }
+  },
+  {
+    "LawFirmIDP": {
+      "en": "kluwernavigator (Development) | Kluwer",
+      "nl": "kluwernavigator (Ontwikkel) | Kluwer"
+    }
+  },
+  {
+    "https://fse.maastrichtuniversity.nl/simplesamlphp/www/module.php/saml/sp/metadata.php/default-sp": {
+      "en": "Intranet FSE",
+      "nl": "Intranet FSE"
+    }
+  },
+  {
+    "https://test.voorlichtingsysteem.nl/": {
+      "en": "voorlichtingsysteem.nl -- studievoorlichting | Web-walker",
+      "nl": "voorlichtingsysteem.nl -- studievoorlichting | Web-walker"
+    }
+  },
+  {
+    "https://edu.barco.com/_saml/metadata": {
+      "en": "WeConnect",
+      "nl": "WeConnect"
+    }
+  },
+  {
+    "http://sts.dossiermanageronline.nl/adfs/services/trust": {
+      "en": "Dossier Manager | Exite ICT",
+      "nl": "Dossier Manager | Exite ICT"
+    }
+  },
+  {
+    "https://saasdemo-saml.caci.nl/osirissaml/saml2/metadata/osiris-student-surf": {
+      "en": "saasdemo - saascons student surf",
+      "nl": "saasdemo - saascons student surf"
+    }
+  },
+  {
+    "https://mail.un-ihe-test.org": {
+      "en": "IHE Delft webmail",
+      "nl": "IHE Delft webmail"
+    }
+  },
+  {
+    "https://omp-dev.beeldengeluid.nl/": {
+      "en": "Netherlands Institute for Sound and Vision",
+      "nl": "Nederlands Instituut voor Beeld en Geluid"
+    }
+  },
+  {
+    "https://nhtv.local/simplesaml/module.php/saml/sp/metadata.php/SURFconext": {
+      "en": "NHTV MyJob (DEV)",
+      "nl": "NHTV MyJob (DEV)"
+    }
+  },
+  {
+    "https://lab.dev.parantion.nl/simplesaml/module.php/saml/sp/metadata.php/surfconext_v3_test_choice": {
+      "en": "Test Scorion3 Choice",
+      "nl": "Test Scorion3 Keuze"
+    }
+  },
+  {
+    "https://remindoconnect.com/saml/module.php/saml/sp/metadata.php/238-surfconext": {
+      "en": "RemindoConnect - EUR | Paragin BV",
+      "nl": "RemindoConnect - EUR | Paragin BV"
+    }
+  },
+  {
+    "https://nu.spinteq.com": {
+      "en": "Spinteq | Golden Egg Check",
+      "nl": "Spinteq | Golden Egg Check"
+    }
+  },
+  {
+    "https://fr2-authprod.planoncloud.com/auth/realms/tiu-prod": {
+      "en": "Test",
+      "nl": "Test"
+    }
+  },
+  {
+    "https://sa.test.surfconext.nl/authentication/metadata": {
+      "en": "SURFsecureID SelfService Portal TEST"
+    }
+  },
+  {
+    "https://ra.test.surfconext.nl/authentication/metadata": {
+      "en": "SURFsecureID RA Portal TEST"
+    }
+  },
+  {
+    "https://sa-gw.test.surfconext.nl/authentication/metadata": {
+      "en": "SURFsecureID Gateway TEST"
+    }
+  },
+  {
+    "https://poc.eduid.lab.surf.nl/eduID": {
+      "en": "eduID Test SP | SURFnet",
+      "nl": "eduID Test SP | SURFnet"
+    }
+  },
+  {
+    "https://cadi.threeships.nl": {
+      "en": "Three Ships SE Development",
+      "nl": "Three Ships SE Development"
+    }
+  },
+  {
+    "https://hva--acceptatie.cs86.my.salesforce.com": {
+      "en": "Salesforce (Acceptatie)",
+      "nl": "Salesforce (Acceptatie)"
+    }
+  },
+  {
+    "https://hva.my.salesforce.com": {
+      "en": "HvA - Salesforce",
+      "nl": "HvA - Salesforce"
+    }
+  },
+  {
+    "https://sfdc.stahlhofen.com": {
+      "en": "Salesforce (Productie - SC Test)",
+      "nl": "Salesforce (Productie - SC Test)"
+    }
+  },
+  {
+    "https://pilot.edubadges.nl/": {
+      "en": "SURF Open Badges (Pilot) | SURFnet",
+      "nl": "SURF Open Badges (Pilot) | SURFnet"
+    }
+  },
+  {
+    "https://lab.dev.easion.nl/simplesaml/module.php/saml/sp/metadata.php/surfconext_v5_test_choice": {
+      "en": "Test Backend Choice",
+      "nl": "Test Backend Keuze"
+    }
+  },
+  {
+    "https://backend.local/simplesaml/module.php/saml/sp/metadata.php/surfconext_v5_local_list": {
+      "en": "Local Backend List",
+      "nl": "Local Backend Lijst"
+    }
+  },
+  {
+    "https://backend.local/simplesaml/module.php/saml/sp/metadata.php/surfconext_v5_local_choice": {
+      "en": "Local Backend Choice",
+      "nl": "Local Backend Keuze"
+    }
+  },
+  {
+    "https://lab.dev.easion.nl/simplesaml/module.php/saml/sp/metadata.php/surfconext_v5_test_list": {
+      "en": "Test Backend List",
+      "nl": "Test Backend Lijst"
+    }
+  },
+  {
+    "https://bc.vitalsource.com/federation/surfcontext/authentications/metadata": {
+      "en": "VitalSource",
+      "nl": "VitalSource"
+    }
+  },
+  {
+    "https://voucher.med.rug.nl/Sso": {
+      "en": "Voucher Education (test) | RUG",
+      "nl": "Voucher Education (test) | RUG"
+    }
+  },
+  {
+    "https://surf-sp.id.rug.nl": {
+      "en": "RUG DFH",
+      "nl": "RUG DFH"
+    }
+  },
+  {
+    "https://uu.konjoin.nl/saml2/metadata": {
+      "en": "KonJoin UU",
+      "nl": "KonJoin UU"
+    }
+  },
+  {
+    "https://demosc-diy.presentations2go.eu/p2g/": {
+      "en": "Demosc-DIY (Presentations2Go Test server)",
+      "nl": "Demosc-DIY (Presentations2Go Test server)"
+    }
+  },
+  {
+    "https://auth.staging.traintool.com": {
+      "en": "TrainTool",
+      "nl": "TrainTool"
+    }
+  },
+  {
+    "https://nhtv.acceptatie.indicia.nl/simplesaml/module.php/saml/sp/metadata.php/SURFconext": {
+      "en": "NHTV MyJob (Acceptatie)",
+      "nl": "NHTV MyJob (Acceptatie)"
+    }
+  },
+  {
+    "https://login.voorlichtingsysteem.nl/": {
+      "en": "voorlichtingsysteem.nl -- study information",
+      "nl": "voorlichtingsysteem.nl -- studievoorlichting"
+    }
+  },
+  {
+    "https://disqover.acc.dh.unimaas.nl/users/saml/metadata": {
+      "en": "DataHub Disqover (acc)",
+      "nl": "DataHub Disqover (acc)"
+    }
+  },
+  {
+    "https://dev.horafinita.nl/simplesaml/module.php/saml/sp/metadata.php/test-sp": {
+      "en": "dev.horafinita.nl",
+      "nl": "dev.horafinita.nl"
+    }
+  },
+  {
+    "https://tiu.jobteaser.com/users/auth/tiu_saml/metadata": {
+      "en": "Tillburg Career Portal",
+      "nl": "Tillburg Career Portal"
+    }
+  },
+  {
+    "https://bw-dev.sap.uva.nl": {
+      "en": "UvA Reporting Services SAP System",
+      "nl": "UvA Reporting Services SAP Systeem"
+    }
+  },
+  {
+    "https://tinbergen.knack.com": {
+      "en": "knack - Tinbergen | VU",
+      "nl": "knack - Tinbergen | VU"
+    }
+  },
+  {
+    "https://sso.cirrusplatform.com": {
+      "en": "Radboud - Cirrus EAssessment",
+      "nl": "Radboud - Cirrus EAssessment"
+    }
+  },
+  {
+    "https://api.knack.com/v1/applications5b3e31d8134e033dc0be5083/auth/SAML2-SC": {
+      "en": "Knack - UvA",
+      "nl": "nameindutch"
+    }
+  },
+  {
+    "https://dev.api.dmssolutions.eu/auth/Connect_TUDelft/metadata": {
+      "en": "TU Delft | Delcom",
+      "nl": "TU Delft | Delcom"
+    }
+  },
+  {
+    "https://extra.avans.nl/saml2/metadata": {
+      "en": "Avans Extra",
+      "nl": "Avans Extra"
+    }
+  },
+  {
+    "https://uva.valiantys.net/jira/plugins/servlet/samlsso": {
+      "en": "Valiantys",
+      "nl": "Valiantys"
+    }
+  },
+  {
+    "https://researchdrive.surfsara.nl/": {
+      "en": "SURF Research Drive",
+      "nl": "SURF Research Drive"
+    }
+  },
+  {
+    "http://dev.summ-ar.nl": {
+      "en": "Nederlands Summar | Hulan B.V.",
+      "nl": "Nederlands Summar | Hulan B.V."
+    }
+  },
+  {
+    "https://dev.api.dmssolutions.eu/auth/Connect_HHS/metadata": {
+      "en": "HHS | Delcom",
+      "nl": "HHS | Delcom"
+    }
+  },
+  {
+    "https://dev.api.dmssolutions.eu/auth/Connect_Inholland/metadata": {
+      "en": "Inholland | Delcom",
+      "nl": "Inholland | Delcom"
+    }
+  },
+  {
+    "https://dev-bw.hva.nl": {
+      "en": "HvA Reporting Services SAP System",
+      "nl": "HvA Reporting Services SAP Systeem"
+    }
+  },
+  {
+    "https://tst-rdrive.data.surfsara.nl/": {
+      "en": "SURF Research Drive (TST)",
+      "nl": "SURF Research Drive (TST)"
+    }
+  },
+  {
+    "https://omnimanagerwebapi.azurewebsites.net": {
+      "en": "OmniPORTAL",
+      "nl": "OmniPORTAL"
+    }
+  },
+  {
+    "https://omnimanagerwebapi-development.azurewebsites.net": {
+      "en": "OmniPORTAL Development",
+      "nl": "OmniPORTAL Development"
+    }
+  },
+  {
+    "https://myprint.onderwijsgroeptilburg.nl/RicohmyPrint": {
+      "en": "Printshop - Tilburg University | Ricoh",
+      "nl": "Printshop - Tilburg University | Ricoh"
+    }
+  },
+  {
+    "https://login.em2.oraclecloud.com:443/oam/fed/cloud/a477541": {
+      "en": "Oracle | Inholland Cloud Services for Planning and Budgeting Cloud & Enterprise Performance Reporting",
+      "nl": "Oracle | Inholland Cloud Services voor Planning & Budgeting Cloud & Enterprise Performance Reporting"
+    }
+  },
+  {
+    "https://specialistsportieveengezondeschool.nl.moodletest.eu/auth/saml2/sp/metadata.php": {
+      "en": "Specialist Sportieve en Gezonde School",
+      "nl": "Specialist Sportieve en Gezonde school"
+    }
+  },
+  {
+    "https://uva.valiantys.net/confluence/plugins/servlet/samlsso": {
+      "en": "Atlassian Valiantys",
+      "nl": "Atlassian Valiantys"
+    }
+  },
+  {
+    "https://student.stagepleinzorg-training.b3net.nl/simplesaml/module.php/saml/sp/metadata.php/surfconext-staging": {
+      "en": "B3net single-sign-on service",
+      "nl": "B3net single-sign-on service"
+    }
+  },
+  {
+    "https://cssctst.sscps.mcx.nl/shibboleth": {
+      "en": "SURFconext Connection Demo Deug 2016",
+      "nl": "SURFconext koppeling Demo Deug 2016"
+    }
+  },
+  {
+    "https://website-summacollege-staging.klantsite.net": {
+      "en": "[Staging-frontend] Summa College Intake Planner",
+      "nl": "[Staging-frontend] Summa College Intake Planner"
+    }
+  },
+  {
+    "https://site-summacollege.klantsite.net": {
+      "en": "[frontend] Summa College Intake Planner",
+      "nl": "[frontend] Summa College Intake Planner"
+    }
+  },
+  {
+    "http://rocva.instructure.com/saml2": {
+      "en": "Instructure Canvas",
+      "nl": "Instructure Canvas"
+    }
+  },
+  {
+    "https://bc-dev.gc.vitalbook.com/federation/surfcontext/authentications/metadata": {
+      "en": "VitalSource",
+      "nl": "VitalSource Testing"
+    }
+  },
+  {
+    "https://staging.mypup.nl": {
+      "en": "My Pick Up Point - UvA/HvA (staging) | MYPUP",
+      "nl": "My Pick Up Point - UvA/HvA (staging) | MYPUP"
+    }
+  },
+  {
+    "https://follio.eu": {
+      "en": "Follio",
+      "nl": "Follio"
+    }
+  },
+  {
+    "https://vt-topdesk-1.education.ihe.nl/saml-metadata/35682743-bdf8-4876-aca5-4be90d826e0d": {
+      "en": "Stichting IHE Delft TOPdesk Test environment",
+      "nl": "Stichting IHE Delft TOPdesk test-omgeving"
+    }
+  },
+  {
+    "https://staging-api.buddycheck.io/api/v1/auth/saml/metadata": {
+      "en": "Buddycheck",
+      "nl": "Buddycheck Staging"
+    }
+  },
+  {
+    "https://buddycheck.eu.ngrok.io/api/v1/auth/saml/metadata": {
+      "en": "Buddycheck Test",
+      "nl": "Buddycheck Test"
+    }
+  },
+  {
+    "https://sso.cirrusplatform.com/demo-radboud/saml2": {
+      "en": "Radboud Demo - Cirrus EAssessment",
+      "nl": "Radboud Demo - Cirrus EAssessment"
+    }
+  },
+  {
+    "https://tim.beverwijk.office.kingsquare.nl/simplesaml/module.php/saml/sp/metadata.php/default-sp": {
+      "en": "Mediaweb (OUD - simplesaml)",
+      "nl": "Mediaweb (OUD - simplesaml)"
+    }
+  },
+  {
+    "https://tim.beverwijk.office.kingsquare.nl": {
+      "en": "Mediaweb",
+      "nl": "Mediaweb"
+    }
+  },
+  {
+    "https://bc-dev.gc.vitalbook.com/federation/saml2/authentications/metadata": {
+      "en": "John Lepanto",
+      "nl": "VitalSource"
+    }
+  },
+  {
+    "https://bc-dev.gc.vitalbook.com/federation/saml_auth/authentications/metadata": {
+      "en": "VitalSource",
+      "nl": "VitalSource"
+    }
+  },
+  {
+    "https://summacollege.educator.eu/saml/SSO/alias/summacollege": {
+      "en": "Educator",
+      "nl": "Educator"
+    }
+  },
+  {
+    "https://lab.dev.parantion.nl/simplesaml/module.php/saml/sp/metadata.php/surfconext_v3_test_list": {
+      "en": "Test Scorion3 List",
+      "nl": "Test Scorion3 Lijst"
+    }
+  },
+  {
+    "http://www.molgenis.org": {
+      "en": "Molgenis | UMCG",
+      "nl": "Molgenis | UMCG"
+    }
+  },
+  {
+    "https://portal-api-test.surfdomeinen.nl/simplesaml/module.php/saml/sp/metadata.php/default-sp": {
+      "en": "SURFdomeinen | SURFnet",
+      "nl": "SURFdomeinen | SURFnet"
+    }
+  },
+  {
+    "https://pvs.tst.uu.nl/simplesaml/module.php/saml/sp/metadata.php/test-sp": {
+      "en": "Hora Finita | Fargeau",
+      "nl": "Hora Finita | Fargeau"
+    }
+  },
+  {
+    "https://espee-test.surfnet.nl/saml2/sp": {
+      "en": "SURFnet SP (TEST)",
+      "nl": "SURFnet SP (TEST)"
+    }
+  },
+  {
+    "https://test.qdnatool.org/simplesamlphp/module.php/saml/sp/metadata.php/SURFconext": {
+      "en": "qDNAtool",
+      "nl": "qDNAtool"
+    }
+  },
+  {
+    "https://padlet.io/auth/saml/metadata": {
+      "en": "Padlet Io",
+      "nl": "Padlet Io"
+    }
+  },
+  {
+    "https://padletcollege.padlet.org/auth/saml/metadata": {
+      "en": "Padlet Prod",
+      "nl": "Padlet Prod"
+    }
+  },
+  {
+    "http://padlet.test/auth/saml/metadata": {
+      "en": "Padlet Test",
+      "nl": "Padlet Test"
+    }
+  },
+  {
+    "http://surfspace.preview.uselab.com/auth/simplesaml/module.php/saml/sp/metadata.php/default-sp": {
+      "en": "SURFnet",
+      "nl": "SURFnet"
+    }
+  },
+  {
+    "https://internships-beta-acc.roes.nl": {
+      "en": "St-App",
+      "nl": "St-App"
+    }
+  },
+  {
+    "https://miskatonic.data.surfsara.nl/": {
+      "en": "Miskatonic University Data Sharing Cloud",
+      "nl": "Miskatonic University Data Sharing Cloud"
+    }
+  },
+  {
+    "https://sandbox02-eu.primo.exlibrisgroup.com/mng/login": {
+      "en": "Primo",
+      "nl": "Primo"
+    }
+  },
+  {
+    "https://lab.dev.parantion.nl/simplesaml/module.php/saml/sp/metadata.php/surfconext_v3_test_erasmus": {
+      "en": "Test Scorion3 Erasmus",
+      "nl": "Test Scorion3 Erasmus"
+    }
+  },
+  {
+    "https://sso-acc.sqill.it/module.php/saml/sp/metadata.php/surfconext": {
+      "en": "SQill",
+      "nl": "SQill"
+    }
+  },
+  {
+    "https://myinholland.ibis.inholland.nl": {
+      "en": "My Inholland Portal",
+      "nl": "My Inholland Portal"
+    }
+  },
+  {
+    "https://scorion3.dev.parantion.nl/simplesaml/module.php/saml/sp/metadata.php/surfconext_v3_dev_list": {
+      "en": "Test Scorion3 List",
+      "nl": "Test Scorion3 Lijst"
+    }
+  },
+  {
+    "https://erasmusifms.parantion.nl/simplesaml/module.php/saml/sp/metadata.php/surfconext_v3_erasmus": {
+      "en": "Scorion3 Erasmus IFMS",
+      "nl": "Scorion3 Erasmus IFMS"
+    }
+  },
+  {
+    "https://acc-dam.rocmondriaan.nl/simplesaml/module.php/saml/sp/metadata.php/SURFconext": {
+      "en": "ROC Mondriaan DAM [Acceptation]",
+      "nl": "ROC Mondriaan DAM [Acceptatie]"
+    }
+  },
+  {
+    "http://padletcollege.padletorg.test/auth/saml/metadata": {
+      "en": "Padlet College Test",
+      "nl": "Padlet College Test"
+    }
+  },
+  {
+    "https://scorion3.parantion.nl/simplesaml/module.php/saml/sp/metadata.php/surfconext_v3_list": {
+      "en": "Scorion3 List",
+      "nl": "Scorion3 Lijst"
+    }
+  },
+  {
+    "https://han-ota.mycampusprint.nl/saml": {
+      "en": "New Way To Print",
+      "nl": "Het Nieuwe Printen"
+    }
+  },
+  {
+    "https://lab.easion.nl/simplesaml/module.php/saml/sp/metadata.php/surfconext_v5_list": {
+      "en": "Backend List",
+      "nl": "Backend Lijst"
+    }
+  },
+  {
+    "https://lab.easion.nl/simplesaml/module.php/saml/sp/metadata.php/surfconext_v5_choice": {
+      "en": "Backend Choice",
+      "nl": "Backend Keuze"
+    }
+  },
+  {
+    "https://internships-beta-tst.roes.nl": {
+      "en": "St-App",
+      "nl": "St-App"
+    }
+  },
+  {
+    "https://rooster.hsleiden.nl": {
+      "en": "MyTimeTable",
+      "nl": "Mijn Rooster"
+    }
+  },
+  {
+    "https://saml.hubl.hu.nl": {
+      "en": "Hogeschool Utrecht",
+      "nl": "Hogeschool Utrecht"
+    }
+  },
+  {
+    "https://sso.debug.myedumundo.com/saml/surfconext": {
+      "en": "- - -",
+      "nl": "-"
+    }
+  },
+  {
+    "https://80.65.101.87": {
+      "en": "RationaleOnline Test",
+      "nl": "RationaleOnline Test"
+    }
+  },
+  {
+    "https://apitstinh.azure-api.net": {
+      "en": "Apitstinh | Inholland",
+      "nl": "Apitstinh | Inholland"
+    }
+  },
+  {
+    "https://saml.eurekos.utwente.nl/delete_me_please": {
+      "en": "University of Twente",
+      "nl": "University of Twente"
+    }
+  },
+  {
+    "https://staging.grasple.com": {
+      "en": "Grasple (staging) | IHS",
+      "nl": "Grasple (staging) | IHS"
+    }
+  },
+  {
+    "https://grasple.test": {
+      "en": "Grasple (test) | IHS",
+      "nl": "Grasple (test) | IHS"
+    }
+  },
+  {
+    "https://play.ihatestatistics.com": {
+      "en": "Grasple | IHS",
+      "nl": "Grasple | IHS"
+    }
+  },
+  {
+    "https://www.inqdo.com/inqdoconnect": {
+      "en": " Proof of Concept VHL Portal"
+    }
+  },
+  {
+    "https://dgrs.tst.inholland.nl/": {
+      "en": "DGRS (TEST)",
+      "nl": "Inholland University of Applied Sciences (DGRS test)"
+    }
+  },
+  {
+    "https://metadata.test.surfconext.nl/idp-metadata.xml": {
+      "en": "Eumedianet",
+      "nl": "Eumedianet"
+    }
+  },
+  {
+    "https://das-staging.snt.utwente.nl/": {
+      "en": "DAS - SNT (Staging) | UTwente",
+      "nl": "DAS - SNT (Staging) | UTwente"
+    }
+  },
+  {
+    "google.com/a/eur.nl": {
+      "en": "Google G-Suite EUR",
+      "nl": "Google G-Suite EUR"
+    }
+  },
+  {
+    "https://data.hva.nl/simplesaml/module.php/saml/sp/metadata.php/default-sp": {
+      "en": "HvA Institutional Research",
+      "nl": "HvA Institutional Research"
+    }
+  },
+  {
+    "https://portal-test.surfmarket.nl": {
+      "en": "Mijn SURFmarket Portal Test",
+      "nl": "Mijn SURFmarket Portal Test"
+    }
+  },
+  {
+    "https://portal-dev.surfmarket.nl": {
+      "en": "Mijn SURFmarket Portal Dev",
+      "nl": "Mijn SURFmarket Portal Dev"
+    }
+  },
+  {
+    "https://pmc.mibris.nl/panama/AuthServices": {
+      "en": "PaNaMa Research Management System - PMC",
+      "nl": "PaNaMa Research Management System - PMC"
+    }
+  },
+  {
+    "https://sso.cirrusplatform.com/radboudtraining/saml2": {
+      "en": "Radboud Training - Cirrus EAssessment",
+      "nl": "Radboud Training - Cirrus EAssessment"
+    }
+  },
+  {
+    "https://rijnijssel-acc.krd.education-online.nl": {
+      "en": "itelligence education-online ACC Rijn IJssel",
+      "nl": "itelligence education-online ACC Rijn IJssel"
+    }
+  },
+  {
+    "oidc-test-arte": {
+      "en": "OIDC Test | ArTe",
+      "nl": "OIDC Test | ArTe"
+    }
+  },
+  {
+    "https://proxy.test.scz.lab.surf.nl/md/SamlSP.xml": {
+      "en": "SURF Science Collaboration Zone: test instance",
+      "nl": "SURF Science Collaboration Zone: test instance"
+    }
+  },
+  {
+    "https://has-test.blackboard.com": {
+      "en": "Blackboard (MH Test) | HAS",
+      "nl": "Blackboard (MH Test) | HAS"
+    }
+  },
+  {
+    "https://amc-vumc-dev.the-cortex.com": {
+      "en": "Zorgpunt development sandbox | AMC",
+      "nl": "Zorgpunt development sandbox | AMC"
+    }
+  },
+  {
+    "https://harold-vm.malengo.nl/444/": {
+      "en": "Embrace Test | Hogeschool VHL",
+      "nl": "Embrace Test | Hogeschool VHL"
+    }
+  },
+  {
+    "https://surfconext-test.jobteaser.com/users/auth/surfconext_test_saml/metadata": {
+      "en": "jobteaser test feature env",
+      "nl": "jobteaser test feature env"
+    }
+  },
+  {
+    "https://old.viewer07.peoplepower.nl/html/UvA-HvA": {
+      "en": "Webviewer | PeoplePower",
+      "nl": "Webviewer | PeoplePower"
+    }
+  },
+  {
+    "https://hu.oerwrite.nl/users/saml/metadata": {
+      "en": "OER Write",
+      "nl": "OER Write"
+    }
+  },
+  {
+    "https://sso.cirrusplatform.com/test-tueindhoven/saml2": {
+      "en": "TUe Eindhoven Test - Cirrus Assessment",
+      "nl": "TUe Eindhoven Test - Cirrus Assessment"
+    }
+  },
+  {
+    "https://iam-acceptatie.saxion.nl/IdentityManager": {
+      "en": "Saxion_ACC_IdentityManager SSO",
+      "nl": "Saxion_ACC_IdentityManager SSO"
+    }
+  },
+  {
+    "http://localhost.edubadges.nl": {
+      "en": "SURF Open Badges (local development) | SURFnet",
+      "nl": "SURF Open Badges (local development) | SURFnet"
+    }
+  },
+  {
+    "https://demoapi.myexams.nl/saml/metadata": {
+      "en": "Campus Exam",
+      "nl": "Campus Exam"
+    }
+  },
+  {
+    "https://careerservices.ontwikkel.zuyd.nl": {
+      "en": "Career Services Zuyd (development)",
+      "nl": "Career Services Zuyd (ontwikkeling)"
+    }
+  },
+  {
+    "https://acceptatie.petear.nl/saml/metadata.xml": {
+      "en": "Petear Meeting Application",
+      "nl": "Petear"
+    }
+  },
+  {
+    "https://api.acc.inholland.nl/": {
+      "en": "InHolland API’s - Acceptatie-omgeving | InHolland",
+      "nl": "InHolland API’s - Acceptatie-omgeving | InHolland"
+    }
+  },
+  {
+    "https://cms2.collectiveaccess.tudelft.nl/": {
+      "en": "Collective Access TU Delft",
+      "nl": "Collective Access TU Delft"
+    }
+  },
+  {
+    "https://cms.collectiveaccess.tudelft.nl/": {
+      "en": "Collective Access TU Delft",
+      "nl": "Collective Access TU Delft"
+    }
+  },
+  {
+    "http://konjoin.test/saml2/metadata": {
+      "en": "KonJoin local dev environment",
+      "nl": "KonJoin lokale dev omgeving"
+    }
+  },
+  {
+    "http://uvadlo-acc.instructure.com/saml2": {
+      "en": "Canvas Acceptance | UvA",
+      "nl": "Canvas Acceptatie | UvA"
+    }
+  },
+  {
+    "https://lab.dev.parantion.nl/simplesaml/module.php/saml/sp/metadata.php/surfconext_v3_test_umcg": {
+      "en": "Test Scorion3 UMC Groningen",
+      "nl": "Test Scorion3 UMC Groningen"
+    }
+  },
+  {
+    "https://surfconext-test.15232.jt.dev.jobteaser.ninja/users/auth/surfconext_test_saml/metadata": {
+      "en": "surfconext test preprod",
+      "nl": "surfconext test preprod"
+    }
+  },
+  {
+    "https://lab.dev.parantion.nl/simplesaml/module.php/saml/sp/metadata.php/surfconext_v3_test_radboudumc": {
+      "en": "Test Scorion3 Radboud UMC",
+      "nl": "Test Scorion3 Radboud UMC"
+    }
+  },
+  {
+    "https://localhost_44379/": {
+      "en": "QlikView Access App (test) | TIG",
+      "nl": "QlikView Access App (test) | TIG"
+    }
+  },
+  {
+    "https://surf.stg.mqd.me/": {
+      "en": "Zoekportaal open leermaterialen | SURF",
+      "nl": "Zoekportaal open leermaterialen | SURF"
+    }
+  },
+  {
+    "http://impacter.local/sso/metadata": {
+      "en": "Impacter",
+      "nl": "Impacter"
+    }
+  },
+  {
+    "https://impacter.local/sso/metadata": {
+      "en": "Impacter",
+      "nl": "Impacter"
+    }
+  },
+  {
+    "https://bc.vitalsource.com/federation/saml_auth/authentications/metadata": {
+      "en": "VitalSource",
+      "nl": "VitalSource"
+    }
+  },
+  {
+    "https://surfdrive-tst.surf.nl/": {
+      "en": "SURFdrive-tst | SURF",
+      "nl": "SURFdrive-tst | SURF"
+    }
+  },
+  {
+    "https://redgrasp.com/saml/metadata": {
+      "en": "Redgrasp",
+      "nl": "Redgrasp"
+    }
+  },
+  {
+    "https://surfsara.cust.vector.im/saml2/sp.xml": {
+      "en": "Matrix",
+      "nl": "Matrix"
+    }
+  },
+  {
+    "http://www.gartner.com": {
+      "en": "Gartner",
+      "nl": "Gartner"
+    }
+  },
+  {
+    "http://zuyd.osiris.caci.nl/osiris-oauth2-server-acc": {
+      "en": "Zuyd Studenten App ACC (Test)",
+      "nl": "Zuyd Studenten App ACC (Test)"
+    }
+  },
+  {
+    "https://autentica.uab.pt/simplesaml/module.php/saml/sp/metadata.php/sp1": {
+      "en": "Open University",
+      "nl": "Universidade Aberta"
+    }
+  },
+  {
+    "https://localtest.goodhabitz.com/shibboleth": {
+      "en": "GoodHabitz LocalTest",
+      "nl": "GoodHabitz LocalTest"
+    }
+  },
+  {
+    "http://uvadlo-dev.instructure.com/saml2": {
+      "en": "Canvas Development",
+      "nl": "Canvas Development omgeving"
+    }
+  },
+  {
+    "https://umcg02.parantion.nl/simplesaml/module.php/saml/sp/metadata.php/surfconext_v3_umcg": {
+      "en": "Scorion3 UMC Groningen",
+      "nl": "Scorion3 UMC Groningen"
+    }
+  },
+  {
+    "https://radboudumc01.parantion.nl/simplesaml/module.php/saml/sp/metadata.php/surfconext_v3_radboudumc": {
+      "en": "Scorion3 Radboud UMC",
+      "nl": "Scorion3 Radboud UMC"
+    }
+  },
+  {
+    "https://0240.api.dmssolutions.eu/auth/Connect_TUEindhoven/metadata": {
+      "en": "Fontys | Delcom",
+      "nl": "Fontys | Delcom"
+    }
+  },
+  {
+    "https://demo.mibris.nl/panama/AuthServices": {
+      "en": "PaNaMa RMS - Demo | Mibris BV",
+      "nl": "PaNaMa RMS - Demo | Mibris BV"
+    }
+  },
+  {
+    "https://verkiezingen.avans.nl/simplesaml/module.php/saml/sp/metadata.php/default-sp": {
+      "en": "Avans Elections",
+      "nl": "Avans Verkiezingen"
+    }
+  },
+  {
+    "https://fr3-authacc.planoncloud.com/auth/realms/uvahva-acc": {
+      "en": "Planon Cloud (Test) | UvA/HvA",
+      "nl": "Planon Cloud (Test) | UvA/HvA"
+    }
+  },
+  {
+    "https://schedule-testaz.optimumassessment.com/Shibboleth": {
+      "en": "10voordeleraar",
+      "nl": "10voordeleraar"
+    }
+  },
+  {
+    "https://meet.surfcloud.nl/login/acs/metadata": {
+      "en": "Jitsi Meet",
+      "nl": "Jitsi Meet"
+    }
+  },
+  {
+    "https://develop.therapieland.nl/external/surfconext/saml/metadata": {
+      "en": "Therapieland Develop",
+      "nl": "Therapieland Develop"
+    }
+  },
+  {
+    "https://faith.sw1v.org:9091/saml2/sp.xml": {
+      "en": "Matrix",
+      "nl": "Matrix"
+    }
+  },
+  {
+    "https://sso.edumundo.local/saml/surfconext": {
+      "en": "-",
+      "nl": "-"
+    }
+  },
+  {
+    "https://evasystportal.campus.test.tue.nl:443/secure/": {
+      "en": "Evasystportal (Test)",
+      "nl": "Evasystportal (Test)"
+    }
+  },
+  {
+    "http://localhost/TUeConEva/": {
+      "en": "evaSys (Development) | TU/e",
+      "nl": "evaSys (Development) | TU/e"
+    }
+  },
+  {
+    "http://taarlo.hosting.ru.nl/saml-service-provider": {
+      "en": "Ysoft SafeQ",
+      "nl": "Ysoft SafeQ"
+    }
+  },
+  {
+    "https://visacare-test.visacare.nl": {
+      "en": "VisaCare Test-omgeving",
+      "nl": "VisaCare Test-omgeving"
+    }
+  },
+  {
+    "https://meldingteller.avans.nl/simplesaml/module.php/saml/sp/metadata.php/surfconext-test": {
+      "en": "Servicedesk IssueCounter",
+      "nl": "Servicedesk Meldingenteller"
+    }
+  },
+  {
+    "https://auth.acceptatie.summit.nl/surfconext/metadata": {
+      "en": "Summit Test",
+      "nl": "Summit Test"
+    }
+  },
+  {
+    "http://w0377.infoland.local/iProva510x/7C6FD87FA29DDB7E": {
+      "en": "iProva",
+      "nl": "iProva"
+    }
+  },
+  {
+    "https://staging.ans-delft.nl/saml/surf/metadata": {
+      "en": "Ans (test) (deprecated)",
+      "nl": "Ans (test) (deprecated)"
+    }
+  },
+  {
+    "https://osirisacc.ipabo.nl/osirissaml/saml2/metadata/osiris-medewerker": {
+      "en": "ipabo acc medewerker",
+      "nl": "ipabo acc medewerker"
+    }
+  },
+  {
+    "https://osiris.ipabo.nl/osirissaml/saml2/metadata/osiris-student": {
+      "en": "ipabo acc en prd student",
+      "nl": "ipabo acc en prd student"
+    }
+  },
+  {
+    "http://gridlock/martijn.devel/": {
+      "en": "Procureplan (Development) | Procurance bv",
+      "nl": "Procureplan (Development) | Procurance bv"
+    }
+  },
+  {
+    "https://g.jib.st/": {
+      "en": "Procureplan (Setaging) | Procurance bv",
+      "nl": "Procureplan (Acceptatie) | Procurance bv"
+    }
+  },
+  {
+    "https://natschooltest.horizoncollege.nl": {
+      "en": "N@tschool ELO (test) | ROC Horizon College",
+      "nl": "N@tschool ELO (test) | ROC Horizon College"
+    }
+  },
+  {
+    "https://psptest.eur.nl/shibboleth": {
+      "en": "TEST PSP | Erasmus University Rotterdam",
+      "nl": "TEST PSP | Erasmus University Rotterdam"
+    }
+  },
+  {
+    "https://myinfo.acceptatie.hva.nl/login/metadata": {
+      "en": "Loket en zaaksysteem van Brein - HvA (acceptatie) | Brein",
+      "nl": "Loket en zaaksysteem van Brein - HvA (acceptatie) | Brein"
+    }
+  },
+  {
+    "https://reports4students-tst.ic.uva.nl:443/secure/": {
+      "en": "reports4students-tst",
+      "nl": "reports4students-tst"
+    }
+  },
+  {
+    "https://sso.cirrusplatform.com/tueindhoven/saml2": {
+      "en": "TUe Eindhoven - Cirrus Assessment",
+      "nl": "TUe Eindhoven - Cirrus Assessment"
+    }
+  },
+  {
+    "https://vu-uas-test.42.nl": {
+      "en": "AscMe",
+      "nl": "AscMe"
+    }
+  },
+  {
+    "https://test.webshop.hu.nl/shibboleth": {
+      "en": "TEST Webshop | Hogeschool Utrecht",
+      "nl": "TEST Webshop | Hogeschool Utrecht"
+    }
+  },
+  {
+    "https://umcg01.parantion.nl/simplesaml/module.php/saml/sp/metadata.php/surfconext_v3_rug": {
+      "en": "Scorion3 RUG",
+      "nl": "Scorion3 RUG"
+    }
+  },
+  {
+    "https://auth.tst.onkpn.com/v2/test0001/saml2/sp/metadata": {
+      "en": "Grip",
+      "nl": "Grip"
+    }
+  },
+  {
+    "https://auth.tst.onkpn.com/v2/33333333/saml2/sp/metadata": {
+      "en": "Grip",
+      "nl": "Grip"
+    }
+  },
+  {
+    "https://rijnijssel.krd.education-online.nl": {
+      "en": "itelligence education-online PRD Rijn IJssel",
+      "nl": "itelligence education-online PRD Rijn IJssel"
+    }
+  },
+  {
+    "https://www.ricohmyprint.nl/RicohmyPrint": {
+      "en": "Ricoh myPrint",
+      "nl": "Ricoh myPrint"
+    }
+  },
+  {
+    "https://kluitje.eduvpn.nl/saml": {
+      "en": "eduvpn | SURFnet"
+    }
+  },
+  {
+    "https://surf.mapiq.net": {
+      "en": "Mapiq for SURF (Staging)",
+      "nl": "Mapiq voor SURF (Staging)"
+    }
+  },
+  {
+    "https://lab.easion.nl/simplesaml/module.php/saml/sp/metadata.php/surfconext_v5_radboudumc": {
+      "en": "ScorionX Radboud UMC",
+      "nl": "ScorionX Radboud UMC"
+    }
+  },
+  {
+    "http://aeres.instructure.com/saml2": {
+      "en": "Canvas Aeres | Instructure Global Limited",
+      "nl": "Canvas Aeres | Instructure Global Limited"
+    }
+  },
+  {
+    "http://ipabo.osiris.caci.nl/osiris-oauth2-server-prd": {
+      "en": "iPabo Studenten App (Test)",
+      "nl": "iPabo Studenten App (Test)"
+    }
+  },
+  {
+    "https://portal.commerce-hub.com": {
+      "en": "Negometrix Geant - Test | Negometrix B.V.",
+      "nl": "Negometrix Geant- Test | Negometrix B.V."
+    }
+  },
+  {
+    "https://dev.datanose.nl:44322/": {
+      "en": "DataNose (Development) | UvA",
+      "nl": "DataNose (Development) | UvA"
+    }
+  },
+  {
+    "https://amc.mibris.nl/panama/AuthServices": {
+      "en": "PaNaMa Research Management System - AMC | Mibris BV",
+      "nl": "PaNaMa Research Management System - AMC | Mibris BV"
+    }
+  },
+  {
+    "https://nl1198t-web.planonsoftware.com": {
+      "en": "Planon ROCvA - Test environment",
+      "nl": "Planon ROCvA - Test omgeving"
+    }
+  },
+  {
+    "https://ebrok.elevate.projectendemo.nl/auth/saml2/sp/metadata.php": {
+      "en": "NFU eBROK",
+      "nl": "NFU eBROK"
+    }
+  },
+  {
+    "https://surfchat.nl/saml2/sp.xml": {
+      "en": "SURFchat",
+      "nl": "SURFchat"
+    }
+  },
+  {
+    "https://sandbox02-eu.alma.exlibrisgroup.com/mng/login": {
+      "en": "Alma",
+      "nl": "Alma"
+    }
+  },
+  {
+    "https://apex181.freedba.nl/shibboleth": {
+      "en": "FreeDBA (Staging) | Avans",
+      "nl": "FreeDBA (Acceptatie) | Avans"
+    }
+  },
+  {
+    "https://ebrok2.elevate.projectendemo.nl": {
+      "en": "NFU eBROK [OpenID Conect]",
+      "nl": "NFU eBROK [OpenID Conect]"
+    }
+  },
+  {
+    "https://pieter.aai.surfnet.nl/simplesamlphp/module.php/saml/sp/metadata.php/default-sp": {
+      "en": "pieter.aai.surfnet.nl default-sp"
+    }
+  },
+  {
+    "https://marnixacademie.mynetpay.nl/metadata": {
+      "en": "myNetPay",
+      "nl": "myNetPay"
+    }
+  },
+  {
+    "https://mborijnland.mynetpay.nl/metadata": {
+      "en": "myNetPay",
+      "nl": "myNetPay"
+    }
+  },
+  {
+    "https://satosa.onderwijsgroeptilburg.nl/Saml2/ogt_proxy.xml": {
+      "en": "Onderwijsgroep Tilburg Proxy",
+      "nl": "Onderwijsgroep Tilburg Proxy"
+    }
+  },
+  {
+    "https://spamexpertstest.surfmailfilter.nl": {
+      "en": "Spamexperts SURFmailfiltertest",
+      "nl": "Spamexperts SURFmailfiltertest"
+    }
+  },
+  {
+    "https://che.itsltest.com/": {
+      "en": "Itslearning - Christian University of Applied Sciences | Itslearning (test)",
+      "nl": "Itslearning - Christelijke Hogeschool Ede | Itslearning (test)"
+    }
+  },
+  {
+    "https://portal.kentik.com/sp/surfnet": {
+      "en": "Kentik Detect Portal | SURFnet",
+      "nl": "Kentik Detect Portal | SURFnet"
+    }
+  },
+  {
+    "https://wurnltest.brightspace.com/shibboleth-sp": {
+      "en": "Brightspace (Test) - Wageningen University and Research| D2L",
+      "nl": "Brightspace (Test) - Wageningen University and Research| D2L"
+    }
+  },
+  {
+    "https://nyenrode.mycampusprint.nl/saml": {
+      "en": "New Way To Print",
+      "nl": "Het Nieuwe Printen"
+    }
+  },
+  {
+    "https://int.getabstract.com": {
+      "en": "getAbstract [integration]",
+      "nl": "getAbstract [integration]"
+    }
+  },
+  {
+    "https://mborijnland.azurewebsites.net/simplesamlphp/www/module.php/saml/sp/metadata.php/default-sp": {
+      "en": "Mijnomnipas for MBO Rijnland Azure",
+      "nl": "Mijnomnipas voor MBO Rijnland Azure"
+    }
+  },
+  {
+    "https://dev7.getabstract.com": {
+      "en": "getAbstract [dev]",
+      "nl": "getAbstract [dev]"
+    }
+  },
+  {
+    "urn:auth0:spinque:SURFconext": {
+      "en": "Spinque DESK",
+      "nl": "Spinque DESK"
+    }
+  },
+  {
+    "https://praktijkplein.leernetwerkeducatie.nl": {
+      "en": "Praktijkplein ONI | Inholland",
+      "nl": "Praktijkplein ONI | Inholland"
+    }
+  },
+  {
+    "https://testsite.onderwijsgroeptilburg.nl/plugins/authentication/miniorangesaml/": {
+      "en": "http://testsite.onderwijsgroeptilburg.nl/iportal.gif",
+      "nl": "Testsite"
+    }
+  },
+  {
+    "https://fontyskaart.azurewebsites.net/simplesamlphp/www/module.php/saml/sp/metadata.php/default-sp": {
+      "en": "MyOmniPas Fontys",
+      "nl": "MijnOmniPas Fontys"
+    }
+  },
+  {
+    "https://careerservices.test.zuyd.nl": {
+      "en": "Career Services Zuyd (test)",
+      "nl": "Career Services Zuyd (test)"
+    }
+  },
+  {
+    "https://bundle.dev.thelearningnetwork.nl": {
+      "en": "ebooks StudyStore (test) | The Learning Network",
+      "nl": "ebooks StudyStore (test) | The Learning Network"
+    }
+  },
+  {
+    "https://www.getabstract.com": {
+      "en": "getAbstract",
+      "nl": "getAbstract"
+    }
+  },
+  {
+    "https://travelhub.atpi.com/saml2/sp": {
+      "en": "TravelHub",
+      "nl": "TravelHub"
+    }
+  },
+  {
+    "https://sis-tst-saml.eur.nl/osirissaml/saml2/metadata/osiris-medewerker": {
+      "en": "EUR TST Medewerker",
+      "nl": "EUR TST Medewerker"
+    }
+  },
+  {
+    "https://mediawiki.onderwijsgroeptilburg.nl/": {
+      "en": "Mediawiki",
+      "nl": "Mediawiki"
+    }
+  },
+  {
+    "http://euracc.osiris.caci.nl/osiris-oauth2-server": {
+      "en": "EUR Studenten App (Test)",
+      "nl": "EUR Studenten App ACC (Test)"
+    }
+  },
+  {
+    "https://universiteitleiden.data.surfsara.nl/": {
+      "en": "Universiteit Leiden Research Drive",
+      "nl": "Universiteit Leiden Research Drive"
+    }
+  },
+  {
+    "https://test.brill.com/oa/entity": {
+      "en": "Brill",
+      "nl": "Brill"
+    }
+  },
+  {
+    "https://tst-universiteitleiden.data.surfsara.nl/": {
+      "en": "Universiteit Leiden (TST) Research Drive",
+      "nl": "Universiteit Leiden (TST) Research Drive"
+    }
+  },
+  {
+    "https://spinque-test.eu.auth0.com": {
+      "en": "DESK (test) | Spinque",
+      "nl": "DESK (test) | Spinque"
+    }
+  },
+  {
+    "https://sis-saml.eur.nl/osirissaml/saml2/metadata/osiris-student": {
+      "en": "OSIRIS Erasmus Universiteit Rotterdam - Student | CACI",
+      "nl": "OSIRIS Erasmus Universiteit Rotterdam - Student | CACI"
+    }
+  },
+  {
+    "https://han.data.surfsara.nl/": {
+      "en": "HAN Research Cloud Drive",
+      "nl": "HAN Research Cloud Drive"
+    }
+  },
+  {
+    "http://tudacc.osiris.caci.nl/osiris-oauth2-server": {
+      "en": "TU Delft Studenten App Test",
+      "nl": "TU Delft Studenten App Test"
+    }
+  },
+  {
+    "https://nijmegen-ss.cardyourself.com/Shibboleth": {
+      "en": "SelfService - Photo Uploader | ID-Ware",
+      "nl": "Zelfservice - Foto uploader | ID-Ware"
+    }
+  },
+  {
+    "https://inholland02.parantion.nl/simplesaml/module.php/saml/sp/metadata.php/surfconext_v3_inholland": {
+      "en": "Scorion3 InHolland",
+      "nl": "Scorion3 InHolland"
+    }
+  },
+  {
+    "https://wurnldev.brightspace.com/shibboleth-sp": {
+      "en": "Brightspace (Dev) - Wageningen University and Research | D2L",
+      "nl": "Brightspace (Dev) - Wageningen University and Research | D2L"
+    }
+  },
+  {
+    "https://umcu01.parantion.nl/simplesaml/module.php/saml/sp/metadata.php/surfconext_v3_umcu": {
+      "en": "Scorion3 UMC Utrecht",
+      "nl": "Scorion3 UMC Utrecht"
+    }
+  },
+  {
+    "https://testsite.onderwijsgroeptilburg.nl/": {
+      "en": "iPortal (testsite) | Onderwijsgroep Tilburg",
+      "nl": "iPortal (testsite) | Onderwijsgroep Tilburg"
+    }
+  },
+  {
+    "https://gvo-accp.mendixcloud.com": {
+      "en": "GVO",
+      "nl": "GVO"
+    }
+  },
+  {
+    "https://osirissamlota.avans.nl/username-password": {
+      "en": "Osiris OTA Avans",
+      "nl": "Osiris OTA Avans"
+    }
+  },
+  {
+    "https://toetsrooster.avans.nl/shibboleth": {
+      "en": "exam timetable",
+      "nl": "Toetsrooster"
+    }
+  },
+  {
+    "https://idbroker.webex.com/165a4d83-ffba-4d14-9663-e4cd1a283e04": {
+      "en": "Cisco WebEx - UvA | Webex",
+      "nl": "Cisco WebEx - UvA | Webex"
+    }
+  },
+  {
+    "https://nhlstenden.smart-pia.com:443/saml/nhlstenden_saml": {
+      "en": "SMART PIA",
+      "nl": "SMART PIA"
+    }
+  },
+  {
+    "https://sso.cirrusplatform.com/tuetraining/saml2": {
+      "en": "TU Eindhoven Training - Cirrus Assessment",
+      "nl": "TU Eindhoven Training - Cirrus Assessment"
+    }
+  },
+  {
+    "https://sso.cirrusplatform.com/tueindhovendemo/saml2": {
+      "en": "TU Eindhoven Demo - Cirrus Assessment",
+      "nl": "TU Eindhoven Demo - Cirrus Assessment"
+    }
+  },
+  {
+    "https://sso.cirrusbeta.com/tueindhoven/saml2": {
+      "en": "TU Eindhoven Beta - Cirrus Assessment",
+      "nl": "TU Eindhoven Beta - Cirrus Assessment"
+    }
+  },
+  {
+    "https://selfservice.rsc.ru.nl": {
+      "en": "Radboud Sports Centre Selfservice",
+      "nl": "Radboud Sportcentrum Selfservice"
+    }
+  },
+  {
+    "http://front-dev.surfcatalog.nl/": {
+      "en": "Zoekportaal open leermaterialen (new) | SURF",
+      "nl": "Zoekportaal open leermaterialen (nieuw) | SURF"
+    }
+  },
+  {
+    "https://xnat-poc.utsp.utwente.nl/xnat": {
+      "en": "XNAT Proof of Concept | UTwente",
+      "nl": "XNAT Proof of Concept | UTwente"
+    }
+  },
+  {
+    "https://catalogue-acc.bbmri.nl/": {
+      "en": "BBMRI-NL Catalogue (Acceptation)",
+      "nl": "BBMRI-NL Catalogue (Acceptatie)"
+    }
+  },
+  {
+    "https://sis-tst-saml.eur.nl/osirissaml/saml2/metadata/osiris-student": {
+      "en": "EUR TST Student",
+      "nl": "EUR TST Student"
+    }
+  },
+  {
+    "https://ppmanager.easyscreen.tv/simplesaml/module.php/saml/sp/metadata.php/default-sp": {
+      "en": "Easyscreen",
+      "nl": "Easyscreen"
+    }
+  },
+  {
+    "https://thki-sid.pt-48.utr.surfcloud.nl/wp-rp": {
+      "en": "THKI WPRP"
+    }
+  },
+  {
+    "https://uvaapi.myexams.nl/saml": {
+      "en": "Campus Exam",
+      "nl": "Campus Exam"
+    }
+  },
+  {
+    "https://saalach.nikhef.nl/shibboleth": {
+      "en": "Indico Nikhef",
+      "nl": "Indico Nikhef"
+    }
+  },
+  {
+    "https://auth.brill.com/saml/sp": {
+      "en": "Authentication Gateway",
+      "nl": "Authenticatie Gateway"
+    }
+  },
+  {
+    "https://plexuz.nl/": {
+      "en": "Plexuz",
+      "nl": "Plexuz"
+    }
+  },
+  {
+    "https://www.aanmelder.local:8443/i/surfconext-saml/metadata": {
+      "en": "aanmelder.nl",
+      "nl": "aanmelder.nl"
+    }
+  },
+  {
+    "https://idm.test.okku.io/auth/realms/okku-dashboard": {
+      "en": "Okku workplace reservation system and sensor technology",
+      "nl": "Okku werkplek reserveringssysteem en sensortechnologie"
+    }
+  },
+  {
+    "https://tdr-devel.surfsara.nl/": {
+      "en": "SURFsara SDR",
+      "nl": "SURFsara SDR"
+    }
+  },
+  {
+    "https://flp-sbx.sap.uva.nl": {
+      "en": "Fiori HvA and UvA SBX",
+      "nl": "Fiori HvA en UvA Zandbak"
+    }
+  },
+  {
+    "https://speeltuin.im.hum.uu.nl/mellon/metadata": {
+      "en": "ICT&Media saml speeltuin",
+      "nl": "ICT&Media saml speeltuin"
+    }
+  },
+  {
+    "http://sphackathon.cloudbouwers.nl:8000/oidc/": {
+      "en": "SP hackathon Nils",
+      "nl": "SP hackathon Nils"
+    }
+  },
+  {
+    "https://radboud.data.surfsara.nl/": {
+      "en": "Radboud Universiteit Research Drive",
+      "nl": "Radboud Universiteit Research Drive"
+    }
+  },
+  {
+    "https://aventus.av01.frontend.acc01.netzozeker.info/aventus/metadata": {
+      "en": "Netzozeker Aventus Acceptatie",
+      "nl": "Netzozeker Aventus Acceptatie"
+    }
+  },
+  {
+    "https://wshsldz117.avans.nl/simplesaml/module.php/saml/sp/metadata.php/surfconext-test": {
+      "en": "Avans webservices",
+      "nl": "Avans Webservices"
+    }
+  },
+  {
+    "https://confluence-acc.ic.uva.nl/plugins/servlet/samlsso": {
+      "en": "Confluence SSO",
+      "nl": "Confluence SSO"
+    }
+  },
+  {
+    "https://mborijnland.mijnomnipas.nl/simplesamlphp/www/module.php/saml/sp/metadata.php/default-sp": {
+      "en": "Mijnomnipas for MBO Rijnland Bizway",
+      "nl": "Mijnomnipas voor MBO Rijnland Bizway"
+    }
+  },
+  {
+    "https://noorderpoortapi.myexams.nl/saml": {
+      "en": "Campus Exam",
+      "nl": "Campus Exam"
+    }
+  },
+  {
+    "https://accapi.myexams.nl/saml": {
+      "en": "Campus Exam",
+      "nl": "Campus Exam"
+    }
+  },
+  {
+    "https://osiris.ipabo.nl/osirissaml/saml2/metadata/osiris-medewerker": {
+      "en": "OSIRIS iPabo - Medewerker - PRD | CACI",
+      "nl": "OSIRIS iPabo - Medewerker - PRD | CACI"
+    }
+  },
+  {
+    "https://wurnlacc.brightspace.com/shibboleth-sp": {
+      "en": "Brightspace (Acc) - Wageningen University and Research| D2L",
+      "nl": "Brightspace (Acc) - Wageningen University and Research| D2L"
+    }
+  },
+  {
+    "https://brightspace.wur.nl/shibboleth-sp": {
+      "en": "Brightspace (Prod) - Wageningen University and Research | D2L",
+      "nl": "Brightspace (Prod) - Wageningen University and Research | D2L"
+    }
+  },
+  {
+    "https://bbstage.avans.nl/shibboleth": {
+      "en": "Avans Blackboard staging environment",
+      "nl": "Avans Blackboard staging environment"
+    }
+  },
+  {
+    "https://gartneraccept-access-portal.ic.uva.nl": {
+      "en": "GartnerPortal (Acceptatie) - UvA | UvA",
+      "nl": "GartnerPortal (Acceptatie) - UvA | UvA"
+    }
+  },
+  {
+    "https://gartneraccept.ict.hva.nl": {
+      "en": "GartnerPortal (Acceptatie) - HvA | UvA",
+      "nl": "GartnerPortal (Acceptatie) - HvA | UvA"
+    }
+  },
+  {
+    "https://vumc01.parantion.nl/simplesaml/module.php/saml/sp/metadata.php/surfconext_v3_vumc": {
+      "en": "Scorion3 VU MC",
+      "nl": "Scorion3 VU MC"
+    }
+  },
+  {
+    "https://hr01.parantion.nl/simplesaml/module.php/saml/sp/metadata.php/surfconext_v3_hr": {
+      "en": "Scorion3 Hogeschool Rotterdam",
+      "nl": "Scorion3 Hogeschool Rotterdam"
+    }
+  },
+  {
+    "https://api.myexams.niek.care.local/saml": {
+      "en": "Campus Exam",
+      "nl": "Campus Exam"
+    }
+  },
+  {
+    "https://lab.easion.nl/simplesaml/module.php/saml/sp/metadata.php/surfconext_v5_vumc": {
+      "en": "ScorionX VU MC",
+      "nl": "ScorionX VU MC"
+    }
+  },
+  {
+    "https://idstaging.logex.nl": {
+      "en": "LOGEX Online (test) | LOGEX",
+      "nl": "LOGEX Online (test) | LOGEX"
+    }
+  },
+  {
+    "https://confluence.ic.uva.nl/plugins/servlet/samlsso": {
+      "en": "Confluence SSO",
+      "nl": "Confluence SSO"
+    }
+  },
+  {
+    "https://beta.redgrasp.com/saml/metadata": {
+      "en": "Redgrasp",
+      "nl": "Redgrasp"
+    }
+  },
+  {
+    "https://acue.sam.avans.nl/simplesaml/module.php/saml/sp/metadata.php/default-sp": {
+      "en": "Avans internship manager ACUE",
+      "nl": "Avans stage en afstudeermanager ACUE"
+    }
+  },
+  {
+    "urn:mace:oclc.org:idm:metaauth:dev": {
+      "en": "OCLC, Online Computer Library Center [Development] | OCLC",
+      "nl": "OCLC, Online Computer Library Center [Development] | OCLC"
+    }
+  },
+  {
+    "urn:mace:oclc.org:idm:metaauth:ci": {
+      "en": "OCLC, Online Computer Library Center [rollup] | OCLC",
+      "nl": "OCLC, Online Computer Library Center [rollup] | OCLC"
+    }
+  },
+  {
+    "urn:mace:oclc.org:idm:metaauth:qa": {
+      "en": "OCLC, Online Computer Library Center [integration] | OCLC",
+      "nl": "OCLC, Online Computer Library Center [integration] | OCLC"
+    }
+  },
+  {
+    "https://sam.avans.nl/simplesaml/module.php/saml/sp/metadata.php/default-sp": {
+      "en": "Avans internship manager AE&I and AI&I",
+      "nl": "Avans stage en afstudeermanager AE&I en AI&I"
+    }
+  },
+  {
+    "https://uva-test-auth.securew2.com/auth/saml": {
+      "en": "University of Amsterdam Test",
+      "nl": "Universiteit van Amsterdam Test"
+    }
+  },
+  {
+    "https://inschrijventoets-acc.avans.nl": {
+      "en": "Avans ToetsIt (Acceptance)",
+      "nl": "Avans ToetsIt (Acceptatie)"
+    }
+  },
+  {
+    "https://afm.sam.avans.nl/simplesaml/module.php/saml/sp/metadata.php/default-sp": {
+      "en": "Avans internship manager for AFM",
+      "nl": "Avans stage en afstudeermanager AFM"
+    }
+  },
+  {
+    "https://ahb.sam.avans.nl/simplesaml/module.php/saml/sp/metadata.php/default-sp": {
+      "en": "Avans internship manager AHB",
+      "nl": "Avans stage en afstudeermanager AHB"
+    }
+  },
+  {
+    "https://ash.sam.avans.nl/simplesaml/module.php/saml/sp/metadata.php/default-sp": {
+      "en": "Avans internship manager ASH",
+      "nl": "Avans stage en afstudeermanager ASH"
+    }
+  },
+  {
+    "https://aafm.sam.avans.nl/simplesaml/module.php/saml/sp/metadata.php/default-sp": {
+      "en": "Avans internship manager AAFM",
+      "nl": "Avans stage en afstudeermanager AAFM"
+    }
+  },
+  {
+    "https://wshsldz119.avans.nl/simplesaml/module.php/saml/sp/metadata.php/surfconext-test": {
+      "en": "Avans webservices",
+      "nl": "Avans Webservices"
+    }
+  },
+  {
+    "http://care-test.mycampusprint.nl/saml": {
+      "en": "New Way To Print",
+      "nl": "Het Nieuwe Printen"
+    }
+  },
+  {
+    "https://caste.serveo.net/saml2/metadata": {
+      "en": "minorenmarktavans",
+      "nl": "minorenmarktavans"
+    }
+  },
+  {
+    "https://localhost_9443/portal/": {
+      "en": "Facility Pro 5 payment platform (test) | Ximedes",
+      "nl": "Facility Pro 5 payment platform (test) | Ximedes"
+    }
+  },
+  {
+    "https://acceptatie.pscribe.nl/": {
+      "en": "Pscribe",
+      "nl": "Pscribe"
+    }
+  },
+  {
+    "http://www.csaml.com/module.php/saml/sp/metadata.php/test": {
+      "en": "Questionmark Test Environment",
+      "nl": "Questionmark Test Environment"
+    }
+  },
+  {
+    "https://surveillant.avans.nl/shibboleth": {
+      "en": "proctor",
+      "nl": "Surveillant"
+    }
+  },
+  {
+    "https://authenticeren.test.thiememeulenhoff.nl/openaselect/profiles/saml2": {
+      "en": "ThiemeMeulenhoff SSO (TST) @ Sentia",
+      "nl": "ThiemeMeulenhoff SSO (TST) @ Sentia"
+    }
+  },
+  {
+    "https://test.webelect.nl": {
+      "en": "Webelect",
+      "nl": "Webelect"
+    }
+  },
+  {
+    "https://storm.qm-labs.com/sso/module.php/saml/sp/metadata.php/82140": {
+      "en": "Questionmark Test Environment",
+      "nl": "Questionmark Testomgeving"
+    }
+  },
+  {
+    "https://jira-acc.ic.uva.nl/plugins/servlet/samlsso": {
+      "en": "Jira SSO",
+      "nl": "Jira SSO"
+    }
+  },
+  {
+    "https://authenticeren.stag.thiememeulenhoff.nl/openaselect/profiles/saml2": {
+      "en": "ThiemeMeulenhoff SSO (ACC) @ Sentia",
+      "nl": "ThiemeMeulenhoff SSO (ACC) @ Sentia"
+    }
+  },
+  {
+    "https://delft-eln.researchspace.com/shibboleth": {
+      "en": "RSpace",
+      "nl": "RSpace"
+    }
+  },
+  {
+    "https://grafana.surf.net": {
+      "en": "SURFnet Grafana | SURFnet",
+      "nl": "SURFnet Grafana | SURFnet"
+    }
+  },
+  {
+    "https://test.surfcumulus.nl/saml2/metadata/": {
+      "en": "SURFcumulus (test) | SURFnet",
+      "nl": "SURFcumulus (test) | SURFnet"
+    }
+  },
+  {
+    "https://ecampusxl.un-ihe-test.org/simplesaml/module.php/saml/sp/metadata.php/SURFconext": {
+      "en": "Stichting IHE Delft Moodle Test environment",
+      "nl": "Stichting IHE Delft Moodle test-omgeving"
+    }
+  },
+  {
+    "https://scol.mycampusprint.nl/saml": {
+      "en": "New Way To Print",
+      "nl": "Het Nieuwe Printen"
+    }
+  },
+  {
+    "https://wereldkaart.biomedia.nl": {
+      "en": "UvA World Map",
+      "nl": "Wereldkaart UvA"
+    }
+  },
+  {
+    "https://urenregistratie-fnwi.nl": {
+      "en": "UvA Time Registration FNWI",
+      "nl": "UvA TSM"
+    }
+  },
+  {
+    "http://saml.hva-tst-1.edia.nl": {
+      "en": "HVA-TST-1",
+      "nl": "HVA-TST-1"
+    }
+  },
+  {
+    "http://145.100.190.34/plugins/servlet/samlsso": {
+      "en": "SURFin test",
+      "nl": "SURFin test"
+    }
+  },
+  {
+    "http://saml.english.hva-tst-1.edia.nl": {
+      "en": "English-HVA-TST-1",
+      "nl": "English-HVA-TST-1"
+    }
+  },
+  {
+    "https://localhost.projecttycho.nl:8000/saml2/metadata/": {
+      "en": "Lorem ipsum",
+      "nl": "lorem ipsum"
+    }
+  },
+  {
+    "https://saml.declareeacceptatie.com": {
+      "en": "Expense management (test) | Declaree",
+      "nl": "Expense management (test) | Declaree"
+    }
+  },
+  {
+    "http://saml.cursio-hva.edia.nl": {
+      "en": "CURSIO-HVA-TST",
+      "nl": "CURSIO-HVA-TST"
+    }
+  },
+  {
+    "http://185.184.188.24": {
+      "en": "Deltion College Test",
+      "nl": "Deltion College Test"
+    }
+  },
+  {
+    "https://lt-18-020.proquro.nl/819": {
+      "en": "Chris Witterholt Dev Environment",
+      "nl": "Chris Witterholt Dev Environment"
+    }
+  },
+  {
+    "https://uvacommunities.tst-2.edia.nl": {
+      "en": "UVA-COMMUNITIES-TST",
+      "nl": "UVA-COMMUNITIES-TST"
+    }
+  },
+  {
+    "https://signon.ibabsdev.eu": {
+      "en": "iBabs",
+      "nl": "iBabs"
+    }
+  },
+  {
+    "https://wg.spoor.nu/wg_edu": {
+      "en": "WireGuard PoC | SURFnet",
+      "nl": "WireGuard PoC | SURFnet"
+    }
+  },
+  {
+    "https://jhs.sam.avans.nl/simplesaml/module.php/saml/sp/metadata.php/default-sp": {
+      "en": "Avans internship manager JHS",
+      "nl": "Avans stage en afstudeermanager JHS"
+    }
+  },
+  {
+    "https://avb.sam.avans.nl/simplesaml/module.php/saml/sp/metadata.php/default-sp": {
+      "en": "Avans internship manager AVB",
+      "nl": "Avans stage en afstudeermanager AVB"
+    }
+  },
+  {
+    "https://ambm.sam.avans.nl/simplesaml/module.php/saml/sp/metadata.php/default-sp": {
+      "en": "Avans internship manager AMBM",
+      "nl": "Avans stage en afstudeermanager AMBM"
+    }
+  },
+  {
+    "https://aaad.sam.avans.nl/simplesaml/module.php/saml/sp/metadata.php/default-sp": {
+      "en": "Avans internship manager AAAD",
+      "nl": "Avans stage en afstudeermanager AAAD"
+    }
+  },
+  {
+    "https://pabo.sam.avans.nl/simplesaml/module.php/saml/sp/metadata.php/default-sp": {
+      "en": "Avans internship manager PABO",
+      "nl": "Avans stage en afstudeermanager PABO"
+    }
+  },
+  {
+    "https://abi.sam.avans.nl/simplesaml/module.php/saml/sp/metadata.php/default-sp": {
+      "en": "Avans internship manager  ABI",
+      "nl": "Avans stage en afstudeermanager ABI"
+    }
+  },
+  {
+    "https://avd.sam.avans.nl/simplesaml/module.php/saml/sp/metadata.php/default-sp": {
+      "en": "Avans internship manager  AVD",
+      "nl": "Avans stage en afstudeermanager AVD"
+    }
+  },
+  {
+    "https://webcollegesacc.ic.uva.nl/Mediasite": {
+      "en": "Webcolleges UvA (ACC)",
+      "nl": "Webcolleges UvA (ACC)"
+    }
+  },
+  {
+    "https://api.dmssolutions.eu/auth/Connect_AcloRUG/metadata": {
+      "en": "Aclo-RUG | Delcom",
+      "nl": "Aclo-RUG | Delcom"
+    }
+  },
+  {
+    "https://signon-test.ibabs.eu": {
+      "en": "iBabs",
+      "nl": "iBabs"
+    }
+  },
+  {
+    "https://dothu.eloo.test/surfconext/metadata": {
+      "en": "DOT",
+      "nl": "DOT"
+    }
+  },
+  {
+    "https://vu-fss.jobteaser.com/users/auth/vu_fss_saml/metadata": {
+      "en": "JobTeaser Career Center - VU FSS | JobTeaser",
+      "nl": "JobTeaser Career Center - VU FSS | JobTeaser"
+    }
+  },
+  {
+    "https://pleitvrij.nl/sso": {
+      "en": "Pleitvrij",
+      "nl": "Pleitvrij"
+    }
+  },
+  {
+    "https://www-staging.altmetric.com/explorer/shibboleth": {
+      "en": "Altmetric LLP",
+      "nl": "Altmetric LLP"
+    }
+  },
+  {
+    "https://roosters.rest.test.saxion.nl": {
+      "en": "Saxion Course Schedules (test)",
+      "nl": "Saxion Roosters (test)"
+    }
+  },
+  {
+    "https://omp-staging.beeldengeluid.nl/": {
+      "en": "Netherlands Institute for Sound and Vision",
+      "nl": "Nederlands Instituut voor Beeld en Geluid"
+    }
+  },
+  {
+    "https://rocn-selfservice.cardyourself.com/Shibboleth": {
+      "en": "ROC Nijmegen Card Selfservice",
+      "nl": "ROC Nijmegen Card Selfservice"
+    }
+  },
+  {
+    "https://testlane.mapiq.net": {
+      "en": "MApiq",
+      "nl": "Mapiq"
+    }
+  },
+  {
+    "https://qlikview.onderwijsgroeptilburg.nl/": {
+      "en": "Qlikview webserver [OpenID Connect] | Onderwijsgroep Tilburg",
+      "nl": "Qlikview webserver [OpenID Connect] | Onderwijsgroep Tilburg"
+    }
+  },
+  {
+    "https://search.saxionbibliotheek.nl/sp": {
+      "en": "kohasaxionlibrary",
+      "nl": "kohasaxionbibliotheek"
+    }
+  },
+  {
+    "https://dothu.lesobservatie.school/surfconext/metadata": {
+      "en": "DOT",
+      "nl": "DOT"
+    }
+  },
+  {
+    "https://academieportal.nl/saml/module.php/saml/sp/metadata.php/SURFconext": {
+      "en": "SkillsTown",
+      "nl": "SkillsTown"
+    }
+  },
+  {
+    "https://www.factos.nl/facts-maps-test": {
+      "en": "Facts Maps",
+      "nl": "Facts Maps"
+    }
+  },
+  {
+    "https://ssl2.peoplexs.com/Shibboleth.sso": {
+      "en": "PeopleXS_SSL2",
+      "nl": "PeopleXS_SSL2"
+    }
+  },
+  {
+    "http://sis.eur.nl": {
+      "en": "Osiris (production) Erasmus University Rotterdam",
+      "nl": "Osiris (produktie) Erasmus Universiteit Rotterdam"
+    }
+  },
+  {
+    "https://horizoncollege.mycampusprint.nl/saml": {
+      "en": "New Way To Print",
+      "nl": "Het Nieuwe Printen"
+    }
+  },
+  {
+    "https://rocwb.mycampusprint.nl/saml": {
+      "en": "New Way To Print",
+      "nl": "Het Nieuwe Printen"
+    }
+  },
+  {
+    "https://horizoncollege-ota.mycampusprint.nl/saml": {
+      "en": "New Way To Print",
+      "nl": "Het Nieuwe Printen"
+    }
+  },
+  {
+    "https://api-test.avans.nl": {
+      "en": "Avans Api (test)",
+      "nl": "Avans Api (test)"
+    }
+  },
+  {
+    "http://sp.dev-ontrac.xebic.com": {
+      "en": "Examen Inschrijving Software (Development) | OnTrac Software",
+      "nl": "Examen Inschrijving Software (Development) | OnTrac Software"
+    }
+  },
+  {
+    "http://sp.dev-onstage.xebic.com": {
+      "en": "OnStage (Dev) - BPV Software",
+      "nl": "OnStage (Dev) - BPV Software"
+    }
+  },
+  {
+    "https://gridlock.martijn.believe-it.dev/": {
+      "en": "Procureplan (Development) | Procurance bv",
+      "nl": "Procureplan (Development) | Procurance bv"
+    }
+  },
+  {
+    "https://testlane-staging.mapiq.net": {
+      "en": "MApiq Testlane",
+      "nl": "Mapiq Testlane"
+    }
+  },
+  {
+    "https://gridlock.nick.believe-it.dev/": {
+      "en": "Procureplan (Development) | Procurance bv",
+      "nl": "Procureplan (Development) | Procurance bv"
+    }
+  },
+  {
+    "https://academy.edutrainers.com/auth/saml2/sp/metadata.php": {
+      "en": "Edutrainers Academy",
+      "nl": "Edutrainers Academy"
+    }
+  },
+  {
+    "https://erp-dev.sap.uva.nl": {
+      "en": "SAP Backend - RUD (Development) | UvA",
+      "nl": "SAP Backend - RUD (Development) | UvA"
+    }
+  },
+  {
+    "https://bulldog.proquro.nl/rump370059/Basis/SURFCONEXT": {
+      "en": "DEV-6268 Surfconext (testomgeving)",
+      "nl": "Naam NL"
+    }
+  },
+  {
+    "https://maglr.com": {
+      "en": "Interactieve Publicaties (test) | Maglr",
+      "nl": "Interactieve Publicaties (test) | Maglr"
+    }
+  },
+  {
+    "https://remindoconnect.com/saml/module.php/saml/sp/metadata.php/1-surfconext": {
+      "en": "RemindoConnect | Paragin BV",
+      "nl": "RemindoConnect | Paragin BV"
+    }
+  },
+  {
+    "https://remindoconnect.vm/saml/module.php/saml/sp/metadata.php/1-surfconext": {
+      "en": "RemindoConnect (test) | Paragin BV",
+      "nl": "RemindoConnect (test) | Paragin BV"
+    }
+  },
+  {
+    "https://staging.remindoconnect.com/saml/module.php/saml/sp/metadata.php/1-surfconext": {
+      "en": "RemindoConnect (Staging) | Paragin BV",
+      "nl": "RemindoConnect (Acceptatie) | Paragin BV"
+    }
+  },
+  {
+    "https://az-test.cms.hva.nl": {
+      "en": "AZ test environment Hippo",
+      "nl": "AZ test omgeving Hippo"
+    }
+  },
+  {
+    "https://sso-vandale-dev.isaac.local": {
+      "en": "Isaac development - tomcat",
+      "nl": "Van Dale Online (nieuw) | Van Dale Uitgevers"
+    }
+  },
+  {
+    "https://djdev.pt-48.utr.surfcloud.nl/simplesamlphp/module.php/saml/sp/metadata.php/surfconext": {
+      "en": "DOMjudge djdev",
+      "nl": "DOMjudge djdev"
+    }
+  },
+  {
+    "https://tools.avans.nl": {
+      "en": "tools.avans.nl",
+      "nl": "tools.avans.nl"
+    }
+  },
+  {
+    "https://elgvo.iprova.nl/3EB41D0D424D1FC": {
+      "en": "Radboud VOHA iProva",
+      "nl": "Radboud VOHA iProva"
+    }
+  },
+  {
+    "https://i-streaming.hu.nl/p2g/": {
+      "en": "Weblectures (new) | HU",
+      "nl": "Weblectures (nieuw) | HU"
+    }
+  },
+  {
+    "https://ont.smile.nl/surfont": {
+      "en": "Smile test environment",
+      "nl": "Smile ontwikkelomgeving"
+    }
+  },
+  {
+    "urn:auth0:clarifying-healthcare:SURFconext": {
+      "en": "Medify Jojo",
+      "nl": "Medify Auth0"
+    }
+  },
+  {
+    "https://az-acc.cms.hva.nl": {
+      "en": "AZ acceptatie enviroment Hippo",
+      "nl": "AZ acceptatie environment Hippo"
+    }
+  },
+  {
+    "https://benchmark-acceptatie.surfaudit.nl": {
+      "en": "Benchmark (Staging) | SURFnet",
+      "nl": "Benchmark (Acceptatie) | SURFnet"
+    }
+  },
+  {
+    "https://1488871.mediaspace.kaltura.com": {
+      "en": "Kaltura Saxion test",
+      "nl": "Kaltura Saxion test"
+    }
+  },
+  {
+    "https://bombay.proquro.nl/beum370072/ROCAmsterdam/SUP_24151": {
+      "en": "Leander Test",
+      "nl": "Leander Test"
+    }
+  },
+  {
+    "https://acta-zorgnet-demo.accept.yard.nl/saml/metadata": {
+      "en": "ACTA zorgnet (demo/acceptatie) | Yard",
+      "nl": "ACTA zorgnet (demo/acceptatie) | Yard"
+    }
+  },
+  {
+    "https://regioapi.omnicardcloud.com": {
+      "en": "Stand",
+      "nl": "Stand"
+    }
+  },
+  {
+    "https://opzichter-devel.surfnet.nl/simplesaml/module.php/saml/sp/metadata.php/default-sp": {
+      "en": "SURFopzichter (Dev) | SURFnet",
+      "nl": "SURFopzichter (Dev) | SURFnet"
+    }
+  },
+  {
+    "https://dashboard-devel.surfnet.nl/simplesaml/module.php/saml/sp/metadata.php/default-sp": {
+      "en": "SURFdashboard (devel) | SURFnet",
+      "nl": "SURFdashboard (devel) | SURFnet"
+    }
+  },
+  {
+    "https://dashboard-test.surfnet.nl/simplesaml/module.php/saml/sp/metadata.php/default-sp": {
+      "en": "SURFdashboard (Test) | SURFnet",
+      "nl": "SURFdashboard (Test) | SURFnet"
+    }
+  },
+  {
+    "https://opzichter-test.surfnet.nl/simplesaml/module.php/saml/sp/metadata.php/default-sp": {
+      "en": "SURFopzichter (Test) | SURFnet",
+      "nl": "SURFopzichter (Test) | SURFnet"
+    }
+  },
+  {
+    "https://sab-ng.surfnet.nl/simplesaml/module.php/saml/sp/metadata.php/default-sp": {
+      "en": "SURFnet Autorisatie Beheer (test) | SURFnet",
+      "nl": "SURFnet Autorisatie Beheer (test) | SURFnet"
+    }
+  },
+  {
+    "https://dashboard-test.surfnet.nl/simplesaml/module.php/saml/sp/metadata.php/dashboard-hi": {
+      "en": "SURFdashboard Step-Up (test) | SURFnet",
+      "nl": "SURFdashboard Step-Up (Test) | SURFnet"
+    }
+  },
+  {
+    "https://rapportage-test.surfnet.nl/simplesaml/module.php/saml/sp/metadata.php/default-sp": {
+      "en": "SURFrapportage (Test) | SURFnet",
+      "nl": "SURFrapportage (Test) | SURFnet"
+    }
+  },
+  {
+    "https://sab-devel.surfnet.nl/simplesaml/module.php/saml/sp/metadata.php/default-sp": {
+      "en": "SURFnet Autorisatie Beheer (devel) | SURFnet",
+      "nl": "SURFnet Autorisatie Beheer (devel) | SURFnet"
+    }
+  },
+  {
+    "https://sab-enroll-ng.surfnet.nl/simplesaml/module.php/saml/sp/metadata.php/default-sp": {
+      "en": "SURFnet Autorisatie Beheer - Enrolment (test) | SURFnet",
+      "nl": "SURFnet Autorisatie Beheer - Enrolment (test) | SURFnet"
+    }
+  },
+  {
+    "https://sab-enroll-devel.surfnet.nl/simplesaml/module.php/saml/sp/metadata.php/default-sp": {
+      "en": "SURFnet Autorisatie Beheer - Enrolment (devel) | SURFnet",
+      "nl": "SURFnet Autorisatie Beheer - Enrolment (devel) | SURFnet"
+    }
+  },
+  {
+    "https://4tudata-libtest.tudelft.nl/saml/metadata": {
+      "en": "4TU.Centre for Research Data Test",
+      "nl": "4TU.Centre for Research Data Test"
+    }
+  },
+  {
+    "https://4tudata-libaccp.tudelft.nl/saml/metadata": {
+      "en": "4TU.Centre for Research Data Acceptatie",
+      "nl": "4TU.Centre for Research Data Acceptatie"
+    }
+  },
+  {
+    "google.com/a/student.s-res.uva.nl": {
+      "en": "Google Apps (test UvA)",
+      "nl": "Google Apps (test UvA)"
+    }
+  },
+  {
+    "https://tud-acc.firelaycloud.com": {
+      "en": "TU Delft employee portal",
+      "nl": "TU Delft medewerkerportaal"
+    }
+  },
+  {
+    "https://rocmn.mynetpay.nl/metadata": {
+      "en": "myNetPay",
+      "nl": "myNetPay"
+    }
+  },
+  {
+    "https://buas.mynetpay.nl/metadata": {
+      "en": "myNetPay",
+      "nl": "myNetPay"
+    }
+  },
+  {
+    "https://mytimetables-tst.inholland.nl": {
+      "en": "MyTimetables Hogeschool Inholland",
+      "nl": "MyTimetables Hogeschool Inholland"
+    }
+  },
+  {
+    "https://metistst.ru.nl/federation/login/personalmetis": {
+      "en": "Metis Personal (Test) | RU",
+      "nl": "Metis Personal (Test) | RU"
+    }
+  },
+  {
+    "https://eur.eduvpn.nl/saml": {
+      "en": "eduVPN [eur.eduvpn.nl] | SURFnet",
+      "nl": "eduVPN [eur.eduvpn.nl] | SURFnet"
+    }
+  },
+  {
+    "http://acc2.mycampusprint.nl/saml": {
+      "en": "New Way To Print",
+      "nl": "Het Nieuwe Printen"
+    }
+  },
+  {
+    "https://www.desan.nl/net/HvARapportageAccept": {
+      "en": "HvAConex (ACC) | Desan",
+      "nl": "HvAConex (ACC) | Desan"
+    }
+  },
+  {
+    "https://fr3-authacc.planoncloud.com/auth/realms/rocva-acc": {
+      "en": "Planon ACC",
+      "nl": "Planon ACC"
+    }
+  },
+  {
+    "https://projectcampus-staging.herokuapp.com/auth/v1/saml/metadata": {
+      "en": "Projectcampus",
+      "nl": "Projectcampus"
+    }
+  },
+  {
+    "https://uvanose-dev.ic.uva.nl/shibboleth": {
+      "en": "UvANose (development) | UvA",
+      "nl": "UvANose (ontwikkeling) | UvA"
+    }
+  },
+  {
+    "https://mytimetable-acc.uva.nl": {
+      "en": "MyTimetable - UvA (acc) | Eveoh",
+      "nl": "MyTimetable - UvA (acc) | Eveoh"
+    }
+  },
+  {
+    "urn:thki:sid:ee1": {
+      "en": "thkisid",
+      "nl": "thkisid"
+    }
+  },
+  {
+    "https://han01.parantion.nl/simplesaml/module.php/saml/sp/metadata.php/surfconext_v3_han": {
+      "en": "Scorion3 HAN",
+      "nl": "Scorion3 HAN"
+    }
+  },
+  {
+    "https://videobelpilot.surf.nl/login/acs/metadata": {
+      "en": "Video conference pilot",
+      "nl": "Videobel pilot"
+    }
+  },
+  {
+    "https://test-printservice-tue.dmxprint.nl/saml2/metadata": {
+      "en": "TEST Printservice TU/e ADC-Dereumaux",
+      "nl": "TEST Printservice TU/e ADC-Dereumaux"
+    }
+  },
+  {
+    "https://bluedolphin.b2clogin.com/bluedolphin.onmicrosoft.com/B2C_1A_bd_base": {
+      "en": "BlueDolphin",
+      "nl": "BlueDolphin"
+    }
+  },
+  {
+    "https://campus-dev.inholland.nl/shibboleth": {
+      "en": "Inholland Campus - Development | Inholland",
+      "nl": "Inholland Campus - Development | Inholland"
+    }
+  },
+  {
+    "https://ota-dev-qs.tig.local/surfconext/": {
+      "en": "Qlik Sense (test) | TIG",
+      "nl": "Qlik Sense (test) | TIG"
+    }
+  },
+  {
+    "https://mir-test.utsp.utwente.nl/xnat": {
+      "en": "XNAT Test | UTwente",
+      "nl": "XNAT Test | UTwente"
+    }
+  },
+  {
+    "https://www.okta.com/saml2/service-provider/spim7hee26rSTLujA0x7": {
+      "en": "Adobe Cloud | Avans",
+      "nl": "Adobe Cloud | Avans"
+    }
+  },
+  {
+    "https://surfconext.patientsafety.com/vendor/simplesamlphp/simplesamlphp/www/module.php/saml/sp/metadata.php/surfconext.patientsafety.com": {
+      "en": "TPSC - RadboudUMC | Patientsafety (TEST) ",
+      "nl": "TPSC - RadboudUMC | Patientsafety (TEST) "
+    }
+  },
+  {
+    "https://radboudumc-rie-test.patientsafety.com/vendor/simplesamlphp/simplesamlphp/www/module.php/saml/sp/metadata.php/radboud-rie-test.patientsafety.com": {
+      "en": "TPSC - RadboudUMC RIE | Patientsafety (TEST) ",
+      "nl": "TPSC - RadboudUMC RIE | Patientsafety (TEST) "
+    }
+  },
+  {
+    "https://rick.defacto.nl": {
+      "en": "OpenID Test Connection",
+      "nl": "OpenID Test Connection"
+    }
+  },
+  {
+    "https://acc.planzelf.nl/": {
+      "en": "Planzelf Education (Staging) | N-Nine",
+      "nl": "Planzelf Education (Acceptatie) | N-Nine"
+    }
+  },
+  {
+    "google.com/a/student.utwente.net": {
+      "en": "Google Apps students Utwente.net | Google",
+      "nl": "Google Apps studenten Utwente.net | Google"
+    }
+  },
+  {
+    "https://authentication.test.thiememeulenhoff.nl/am": {
+      "en": "ThiemeMeulenhoff SSO (TST) @ iWelcome",
+      "nl": "ThiemeMeulenhoff SSO (TST) @ iWelcome"
+    }
+  },
+  {
+    "https://authentication.acc.thiememeulenhoff.nl/am": {
+      "en": "ThiemeMeulenhoff SSO (ACC) @ iWelcome",
+      "nl": "ThiemeMeulenhoff SSO (ACC) @ iWelcome"
+    }
+  },
+  {
+    "https://selfservicetest.rsc.ru.nl": {
+      "en": "RSC server test",
+      "nl": "RSC server test"
+    }
+  },
+  {
+    "https://vu.eduvpn.nl/saml": {
+      "en": "eduVPN [vu.eduvpn.nl] | SURFnet",
+      "nl": "eduVPN [vu.eduvpn.nl] | SURFnet"
+    }
+  },
+  {
+    "https://idp.dev.dlo.surf.nl/module.php/saml/sp/metadata.php/SURFconext": {
+      "en": "DLO - DEV environment",
+      "nl": "DLO - DEV environment"
+    }
+  },
+  {
+    "http://surfconext-acc.ats-platform.com/trust": {
+      "en": "Hireserve",
+      "nl": "Hireserve"
+    }
+  },
+  {
+    "https://ucbooks.education": {
+      "en": "ucbooks.education",
+      "nl": "ucbooks.education"
+    }
+  },
+  {
+    "https://tt.ucbooks.education/shibboleth": {
+      "en": "ucbooks.education",
+      "nl": "ucbooks.education"
+    }
+  },
+  {
+    "https://git.ia.surfsara.nl": {
+      "en": "SURFsara internal Gitlab",
+      "nl": "SURFsara interne Gitlab"
+    }
+  },
+  {
+    "https://www.test.hooghuissportservice.nl": {
+      "en": "Hooghuis Sport- en Kledingservice",
+      "nl": "Hooghuis Sport- en Kledingservice"
+    }
+  },
+  {
+    "https://ru-bestel.nl/simplesaml/module.php/saml/sp/metadata.php/test-sp": {
+      "en": "RU ordering website (test)",
+      "nl": "RU Bestel (test)"
+    }
+  },
+  {
+    "https://www.uva-tsm.nl": {
+      "en": "UvA Time Registration",
+      "nl": "UvA TSM"
+    }
+  },
+  {
+    "https://sso.cirrusplatform.com/nyenrode/saml2": {
+      "en": "Nyenrode Business Universiteit - Cirrus Assessment",
+      "nl": "Nyenrode Business Universiteit - Cirrus Assessment"
+    }
+  },
+  {
+    "https://portal.surfcert.nl": {
+      "en": "SURFcert portal | SURFnet bv",
+      "nl": "SURFcert portal | SURFnet bv"
+    }
+  },
+  {
+    "https://ota-dev-qs.tig.local/surfsecureid/": {
+      "en": "Qlik Sense (test) | TIG | 2FA",
+      "nl": "Qlik Sense (test) | TIG | 2FA"
+    }
+  },
+  {
+    "https://videobelpilot-test.surf.nl/login/acs/metadata": {
+      "en": "Video conference pilot (TEST)",
+      "nl": "Videobel pilot (TEST)"
+    }
+  },
+  {
+    "http://fgm.nfv.surfnet.nl/metadata/": {
+      "en": "Pilot Firewall as a Service Dashboard",
+      "nl": "Pilot Firewall as a Service Dashboard"
+    }
+  },
+  {
+    "http://respectmysurfnet.azurewebsites.net": {
+      "en": "RespectMyStudy",
+      "nl": "RespectMyStudy"
+    }
+  },
+  {
+    "http://elotest.windesheim.nl": {
+      "en": "ELO (test) | Windesheim",
+      "nl": "ELO (test) | Windesheim"
+    }
+  },
+  {
+    "https://dev.proquro.nl/819": {
+      "en": "Nick Jansen",
+      "nl": "Nick Jansen"
+    }
+  },
+  {
+    "https://dev-1.procademy-test.nl/sso/channel/3/metadata": {
+      "en": "Procademy (dev omgeving)",
+      "nl": "Procademy (dev omgeving)"
+    }
+  },
+  {
+    "https://www.mentimeter.com/auth/saml/metadata": {
+      "en": "Mentimeter",
+      "nl": "Mentimeter"
+    }
+  },
+  {
+    "https://federatedid-na1.services.adobe.com/federated/saml/metadata/alias/f8ad12c3-58e3-4209-93a0-7b1f1ff4bf4c": {
+      "en": "Adobe Suite OGT",
+      "nl": "Adobe Suite OGT"
+    }
+  },
+  {
+    "https://uvacommunities.acc-2.edia.nl/": {
+      "en": "UVA-COMMUNITIES-ACC",
+      "nl": "UVA-COMMUNITIES-ACC"
+    }
+  },
+  {
+    "https://demo.tiqr.org/simplesaml/module.php/saml/sp/metadata.php/default-sp": {
+      "en": "tiqr demo service",
+      "nl": "tiqr demo service"
+    }
+  },
+  {
+    "http://wurtst.osiris.caci.nl/osiris-oauth2-server": {
+      "en": "WUR Studenten App (TST)",
+      "nl": "WUR Studenten App (TST)"
+    }
+  },
+  {
+    "https://viaa.oerwrite.nl/users/saml/metadata": {
+      "en": "OER Write",
+      "nl": "OER Write"
+    }
+  },
+  {
+    "https://www.beeldengeluidopschool.nl/": {
+      "en": "Netherlands Institute for Sound and Vision",
+      "nl": "Nederlands Instituut voor Beeld en Geluid"
+    }
+  },
+  {
+    "https://mijn.usc.uva.nl/en/auth/connect_uva/metadata": {
+      "en": "Delcom - UvA | Delcom",
+      "nl": "Delcom - UvA | Delcom"
+    }
+  },
+  {
+    "https://tig-nb-19010.tig.local/Tig.SurfSecureId.Saml/Saml2": {
+      "en": "QlikView Access App SAML (test) | TIG",
+      "nl": "QlikView Access App SAML (test) | TIG"
+    }
+  },
+  {
+    "https://myinfo.test.uva.nl/login/metadata": {
+      "en": "Loket en zaaksysteem van Brein (test) | UvA",
+      "nl": "uva"
+    }
+  },
+  {
+    "https://mborijnlandapi.cardexchangecloud.com": {
+      "en": "MBO Rijnland Stand",
+      "nl": "MBO Rijnland Stand"
+    }
+  },
+  {
+    "https://myinfo.test.hva.nl/login/metadata": {
+      "en": "Loket en zaaksysteem van Brein (test) | HvA",
+      "nl": "hva"
+    }
+  },
+  {
+    "https://dpc-test.uba.uva.nl:8534/simplesaml/module.php/saml/sp/metadata.php/SURFconext": {
+      "en": "Personal Page Publication Selection tool (Test) | UvA",
+      "nl": "Personal Page Publication Selection tool (Test) | UvA"
+    }
+  },
+  {
+    "https://reports4students-acc.ic.uva.nl:443/secure/": {
+      "en": "Reports4Students (Acceptatie) | UvA",
+      "nl": "Reports4Students (Acceptatie) | UvA"
+    }
+  },
+  {
+    "google.com/a/g-apps-test.ic.uva.nl": {
+      "en": "Google Apps UvA Dev | Google",
+      "nl": "Google Apps UvA Dev | Google"
+    }
+  },
+  {
+    "https://libtest.uva.nl/primo_library/libweb/UVA": {
+      "en": "Primo (new test) | UvA",
+      "nl": "Primo (new test) | UvA"
+    }
+  },
+  {
+    "http://test.com/simplesaml/module.php/saml/sp/metadata.php/default-sp": {
+      "en": "default-sp",
+      "nl": "default-test"
+    }
+  },
+  {
+    "https://knowledgemile--dzdev.cs89.my.salesforce.com": {
+      "en": "HVA Sustainable (Sandbox)",
+      "nl": "HvA - Door en Door Duurzaam - Sandbox"
+    }
+  },
+  {
+    "https://spa-tst.datanose.nl/shibboleth": {
+      "en": "Academic Plan (test) | UvA",
+      "nl": "Academic Plan (test) | UvA"
+    }
+  },
+  {
+    "https://topdesk-test.onderwijsgroeptilburg.nl/tas/public/login/verify": {
+      "en": "TOPdesk (OG Tilburg - test 2) Public | Onderwijsgroep Tilburg",
+      "nl": "TOPdesk (OG Tilburg - test 2) Public | Onderwijsgroep Tilburg"
+    }
+  },
+  {
+    "https://topdesk-test.onderwijsgroeptilburg.nl/tas/secure/login/verify": {
+      "en": "TOPdesk (OG Tilburg - test 2) Secure | Onderwijsgroep Tilburg",
+      "nl": "TOPdesk (OG Tilburg - test 2) Secure | Onderwijsgroep Tilburg"
+    }
+  },
+  {
+    "https://onderwijsgroep-test.topdesk.net/tas/public/login/verify": {
+      "en": "OG Tilburg (test) | TOPdesk",
+      "nl": "OG Tilburg (test) | TOPdesk"
+    }
+  },
+  {
+    "https://az.site.local": {
+      "en": "AZ development environment Hippo",
+      "nl": "AZ development omgeving Hippo"
+    }
+  },
+  {
+    "https://cs-acc.inholland.nl/shibboleth": {
+      "en": "Inholland Campus - Acceptatie | Inholland",
+      "nl": "Inholland Campus - Acceptatie | Inholland"
+    }
+  },
+  {
+    "https://vu.data.surfsara.nl/": {
+      "en": "VU Research Drive",
+      "nl": "VU Research Drive"
+    }
+  },
+  {
+    "https://connect.test.surfconext.nl": {
+      "en": "OIDC NG Gateway | SURFconext"
+    }
+  },
+  {
+    "https://id-staging.signhost.com/aselectserver/server": {
+      "en": "Evidos - identification and signing service",
+      "nl": "Evidos - identification and signing service"
+    }
+  },
+  {
+    "https://amc-imstest.patientsafety.com/vendor/simplesamlphp/simplesamlphp/www/module.php/saml/sp/metadata.php/amc-imstest.patientsafety.com": {
+      "en": "TPSC - AMC-IMSTEST | Patientsafety (TEST)",
+      "nl": "TPSC - AMC-IMSTEST | Patientsafety (TEST)"
+    }
+  },
+  {
+    "https://tst-miskatonic.data.surfsara.nl/": {
+      "en": "Miskatonic University TST Data Sharing Cloud",
+      "nl": "Miskatonic University TST Data Sharing Cloud"
+    }
+  },
+  {
+    "https://amc-imsaccept.patientsafety.com/vendor/simplesamlphp/simplesamlphp/www/module.php/saml/sp/metadata.php/amc-imsaccept.patientsafety.com": {
+      "en": "TPSC - AMC-IMSACCEPT | Patientsafety (TEST)",
+      "nl": "TPSC - AMC-IMSACCEPT | Patientsafety (TEST)"
+    }
+  },
+  {
+    "https://rapportage-dev.surfnet.nl/simplesaml/module.php/saml/sp/metadata.php/default-sp": {
+      "en": "SURFrapportage (Development) | SURFnet",
+      "nl": "SURFrapportage (Ontwikkeling) | SURFnet"
+    }
+  },
+  {
+    "https://uvt-test.mediasite.com/Mediasite": {
+      "en": "Mediasite Dev Tilburg University | Sonic Foundry",
+      "nl": "Mediasite Dev Tilburg University | Sonic Foundry"
+    }
+  },
+  {
+    "https://roosters-test.hvhl.nl": {
+      "en": "MyTimeTable (acceptatie) | Hogeschool VHL",
+      "nl": "MyTimeTable (acceptatie) | Hogeschool VHL"
+    }
+  },
+  {
+    "http://idp.surfwerkplek.nl/adfs/services/trust": {
+      "en": "KPN Workspace",
+      "nl": "KPN Werkplek"
+    }
+  },
+  {
+    "https://campussolutions.inholland.nl/shibboleth": {
+      "en": "Inholland CampusSolutions | Inholland",
+      "nl": "Inholland CampusSolutions | Inholland"
+    }
+  },
+  {
+    "https://studentportal.inholland.nl/shibboleth": {
+      "en": "Inholland StudentPortal | Inholland",
+      "nl": "Inholland StudentPortal | Inholland"
+    }
+  },
+  {
+    "https://wiki-test.surfnet.nl/plugins/servlet/samlsso": {
+      "en": "WiKi-test",
+      "nl": "WiKi-test"
+    }
+  },
+  {
+    "https://auth-test.aattendance.nl/saml/module.php/saml/sp/metadata.php/surfconext": {
+      "en": "Academy Attendance",
+      "nl": "Academy Attendance"
+    }
+  },
+  {
+    "https://wurtv3.wur.nl/p2g/": {
+      "en": "Presentations2Go Server WUR Akamai (test) | WUR",
+      "nl": "Presentations2Go Server WUR Akamai (test) | WUR"
+    }
+  },
+  {
+    "https://acc.weblectures.wur.nl/p2g/": {
+      "en": "Weblectures (Staging) | WUR",
+      "nl": "Weblectures (Acceptatie) | WUR"
+    }
+  },
+  {
+    "http://8c6f78ac23b4a7b8c0182d7a89e9b1.cwi.nl": {
+      "en": "Michael Guravage",
+      "nl": "Michael Guravage"
+    }
+  },
+  {
+    "https://klantinzicht.surfmarket.nl/surfconext/": {
+      "en": "SURFmarket reporting dashboard",
+      "nl": "SURFmarket Klantinzicht portaal"
+    }
+  },
+  {
+    "https://simplesaml.dev.mizar-it.nl/module.php/saml/sp/metadata.php/default-sp": {
+      "en": "onlineafspraken",
+      "nl": "onlineafspraken"
+    }
+  },
+  {
+    "https://idp.test.dlo.surf.nl/module.php/saml/sp/metadata.php/SURFconext": {
+      "en": "DLO - TEST environment",
+      "nl": "DLO - TEST environment"
+    }
+  },
+  {
+    "https://idp.experimenteer.dlo.surf.nl/module.php/saml/sp/metadata.php/SURFconext": {
+      "en": "DLO - EXPERIMENTEER environment",
+      "nl": "DLO - EXPERIMENTEER environment"
+    }
+  },
+  {
+    "https://sp.example.org/shibboleth": {
+      "en": "Shibboleth demo SP"
+    }
+  },
+  {
+    "https://edubookv5-dev-sso.azurewebsites.net/saml/surfconext": {
+      "en": "-",
+      "nl": "-"
+    }
+  },
+  {
+    "https://staging.ans.app/saml/surf/metadata": {
+      "en": "Ans (test)",
+      "nl": "Ans (test)"
+    }
+  },
+  {
+    "http://test.com/simplesaml/module.php/saml/sp/metadata.php/surfconext-sp": {
+      "en": "surfconext-sp",
+      "nl": "surfconext-sp"
+    }
+  },
+  {
+    "https://roosters.hvhl.nl": {
+      "en": "MyTimeTable | Hogeschool VHL",
+      "nl": "MyTimeTable | Hogeschool VHL"
+    }
+  },
+  {
+    "https://idp.privacybydesign.foundation/simplesaml/saml2/idp/metadata.php": {
+      "en": "IRMA Guest IdP | Privacy by Design Foundation",
+      "nl": "IRMA Guest IdP | Privacy by Design Foundation"
+    }
+  },
+  {
+    "https://thki-sid.pt-48.utr.surfcloud.nl/ssp/module.php/saml/sp/metadata.php/default-sp": {
+      "en": "thkisid sp"
+    }
+  },
+  {
+    "https://gitlab.rijnijssel.nl": {
+      "en": "Gitlab",
+      "nl": "Gitlab"
+    }
+  },
+  {
+    "https://www.altmetric.com/explorer/shibboleth": {
+      "en": "Altmetric Explorer",
+      "nl": "Altmetric Explorer"
+    }
+  },
+  {
+    "http://accept.books.surfspot.nl/simplesaml/module.php/saml/sp/metadata.php/saml": {
+      "en": "SURFspot Boeken (ACC) | SURFmarket",
+      "nl": "SURFspot Boeken (ACC) | SURFmarket"
+    }
+  },
+  {
+    "https://uat-span.nureva.com": {
+      "en": "Span Workspace",
+      "nl": "Span Workspace"
+    }
+  },
+  {
+    "https://newdev.timplicity.com/simplesaml/module.php/saml/sp/metadata.php/dev-surfconext-sp": {
+      "en": "dev-surfconext-sp",
+      "nl": "dev-surfconext-sp"
+    }
+  },
+  {
+    "https://fontys01.parantion.nl/simplesaml/module.php/saml/sp/metadata.php/surfconext_v3_fontys": {
+      "en": "Scorion3 Fontys",
+      "nl": "Scorion3 Fontys"
+    }
+  },
+  {
+    "https://hn.parantion.nl/simplesaml/module.php/saml/sp/metadata.php/surfconext_v3_hn": {
+      "en": "Scorion3 Huisartsopleiding Nederland",
+      "nl": "Scorion3 Huisartsopleiding Nederland"
+    }
+  },
+  {
+    "https://erasmusmc-intranet.test": {
+      "en": "ErasmusMC Intranet",
+      "nl": "ErasmusMC Intranet"
+    }
+  },
+  {
+    "https://www.okta.com/saml2/service-provider/spiml9h35ag8aqK4X0x7": {
+      "en": "Adobe (test) | ROC Friese Poort",
+      "nl": "Adobe (test) | ROC Friese Poort"
+    }
+  },
+  {
+    "https://acchva.brightspace.com/shibboleth-sp": {
+      "en": "Brightspace (staging) - Hogeschool van Amsterdam | D2L",
+      "nl": "Brightspace (acceptatie) - Hogeschool van Amsterdam | D2L"
+    }
+  },
+  {
+    "https://tsm-acc.ic.uva.nl": {
+      "en": "UvA TSM staging",
+      "nl": "UvA TSM acceptatie"
+    }
+  },
+  {
+    "https://tsm.uva.nl": {
+      "en": "UvA TSM",
+      "nl": "UvA TSM"
+    }
+  },
+  {
+    "https://gilde.itsltest.com/": {
+      "en": "Itslearning - Gilde Education | Itslearning (test)",
+      "nl": "Itslearning - Gilde Opleidingen | Itslearning (test)"
+    }
+  },
+  {
+    "https://hetperron.itslearning.com/samlmetadata/saml2v2/1": {
+      "en": "COG (Christelijke Onderwijs Groep)",
+      "nl": "COG (Christelijke Onderwijs Groep)"
+    }
+  },
+  {
+    "http://orioncommanderij.mycampusprint.nl/saml": {
+      "en": "New Way To Print",
+      "nl": "Het Nieuwe Printen"
+    }
+  },
+  {
+    "https://dev.sun.snt.utwente.nl/saml2/metadata/": {
+      "en": "Student Union Network Development | UTwente",
+      "nl": "Student Union Network Ontwikkel | UTwente"
+    }
+  },
+  {
+    "https://testpsp.uvt.nl/shibboleth": {
+      "en": "PSP (test) | UvT",
+      "nl": "PSP (test) | UvT"
+    }
+  },
+  {
+    "https://test-portal.surfwireless.nl/simplesaml/module.php/saml/sp/metadata.php/default-sp": {
+      "en": "SURFwireless Test Portal",
+      "nl": "SURFwireless Test Portal"
+    }
+  },
+  {
+    "https://www.dmsdevelopment.nl": {
+      "en": "DMS development | Delcom",
+      "nl": "DMS development | Delcom"
+    }
+  },
+  {
+    "https://nhl.topdesk.net/saml-metadata/5dc84dde-64c0-453b-a924-37dc9c08a91c": {
+      "en": "TOPdesk (NHL Stenden) Secure | TopDesk",
+      "nl": "TOPdesk (NHL Stenden) Secure | TopDesk"
+    }
+  },
+  {
+    "https://hu-staging.mapiq.net": {
+      "en": "Mapiq for Hogeschool Utrecht",
+      "nl": "Mapiq voor HU"
+    }
+  },
+  {
+    "https://sb2-deltion-tst.azurewebsites.net": {
+      "en": "SBII - Dev/Tst",
+      "nl": "SBII - Dev/Tst"
+    }
+  },
+  {
+    "https://cms-avans.test.onehippo.com/saml/metadata": {
+      "en": "Nextweb",
+      "nl": "Nextweb"
+    }
+  },
+  {
+    "https://summa.itsltest.com/": {
+      "en": "Itslearning - Summa College | Itslearning (test)",
+      "nl": "Itslearning - Summa College | Itslearning (test)"
+    }
+  },
+  {
+    "https://wiebenik.test.vu.nl": {
+      "en": "wiebenik",
+      "nl": "wiebenik"
+    }
+  },
+  {
+    "https://hu.mapiq.net": {
+      "en": "Mapiq for Hogeschool Utrecht (Production)",
+      "nl": "Mapiq voor Hogeschool Utrecht (Production)"
+    }
+  },
+  {
+    "https://stc.eduvpn.nl/saml": {
+      "en": "eduVPN [stc.eduvpn.nl] | SURFnet",
+      "nl": "eduVPN [stc.eduvpn.nl] | SURFnet"
+    }
+  },
+  {
+    "https://app2.sandbox.tudelft.nl/simplesaml/module.php/saml/sp/metadata.php/app2-docker-sp": {
+      "en": "App2",
+      "nl": "App2"
+    }
+  },
+  {
+    "https://app1.sandbox.tudelft.nl/simplesaml/module.php/saml/sp/metadata.php/app1-docker-sp": {
+      "en": "App1",
+      "nl": "App1"
+    }
+  },
+  {
+    "https://staging-api.buku.io/saml2/metadata": {
+      "en": "BUKU (staging)",
+      "nl": "BUKU (staging)"
+    }
+  },
+  {
+    "https://avans-oefen.topdesk.net/saml-metadata/cd2311bf-b77a-4733-b3b4-a19ab621cc06": {
+      "en": "Topdesk Service Portal (practice) | Avans",
+      "nl": "Topdesk Service Portaal (Oefen) | Avans"
+    }
+  },
+  {
+    "https://avans-oefen.topdesk.net/saml-metadata/262e3621-21c0-47ca-95af-d2b5762f2dba": {
+      "en": "Topdesk Service Portal for practitioners (practrice) | Avans",
+      "nl": "Topdesk Service Portaal voor behandelaars (oefen) | Avans"
+    }
+  },
+  {
+    "https://selfservice.local": {
+      "en": "RSC local test",
+      "nl": "RSC local test"
+    }
+  },
+  {
+    "https://selfseasdsdrvice.local": {
+      "en": "test2",
+      "nl": "test1"
+    }
+  },
+  {
+    "https://vcd01-test.cs.vancis.nl/cloud/org/surfconext/saml/metadata/alias/vcd": {
+      "en": "vCD test environment - SURFConext tenant",
+      "nl": "vCD test environment - SURFConext tenant"
+    }
+  },
+  {
+    "https://avans-acceptatie.topdesk.net/saml-metadata/817792ba-d6f2-4a48-b9ec-73a0d06d06b0": {
+      "en": "Topdesk Service Portal (acceptance) | Avans",
+      "nl": "Topdesk Service Portaal (acceptatie) | Avans"
+    }
+  },
+  {
+    "https://avans-acceptatie.topdesk.net/saml-metadata/f5698920-b69d-4fe3-b01b-3300224cbb3f": {
+      "en": "Topdesk Practitioners Portal (acceptance) | Avans",
+      "nl": "Topdesk Behandelaars Portaal (acceptatie) | Avans"
+    }
+  },
+  {
+    "https://sso.cirrusbeta.com/nyenrode/saml2": {
+      "en": "Digitaal toetsplatform - Nyenrode Business Universiteit | Cirrus Assessment [Beta]",
+      "nl": "Digitaal toetsplatform - Nyenrode Business Universiteit | Cirrus Assessment [Beta]"
+    }
+  },
+  {
+    "https://portal-acc.surf.nl": {
+      "en": "Mijn SURFmarket Portal Accept",
+      "nl": "Mijn SURFmarket Portal Accept"
+    }
+  },
+  {
+    "https://data-test.ru.nl": {
+      "en": "Radboud Research Data Repository (Test) | RU",
+      "nl": "Radboud Research Data Repository (Test) | RU"
+    }
+  },
+  {
+    "https://manager.easyscreen.tv/simplesaml/module.php/saml/sp/metadata.php/es2-sp": {
+      "en": "Easyscreen",
+      "nl": "Easyscreen"
+    }
+  },
+  {
+    "https://orchestrator-web.staging.automation.surf.net": {
+      "en": "NWA Network Orchestrator - Web (Staging) | SURFnet",
+      "nl": "NWA Network Orchestrator - Web (Staging) | SURFnet"
+    }
+  },
+  {
+    "https://netwerkdashboard-web.staging.automation.surf.net": {
+      "en": "Netwerkdashboard automation - Web (Staging) | SURFnet",
+      "nl": "Netwerkdashboard automation - Web (Staging) | SURFnet"
+    }
+  },
+  {
+    "https://test.pluform.com/nl/saml_surfconext/metadata": {
+      "en": "Pluform testing",
+      "nl": "Pluform testing"
+    }
+  },
+  {
+    "https://www.okta.com/saml2/service-provider/spimomsqd7n9NfW2j0x7": {
+      "en": "Adobe Creative Cloud - Nuffic test",
+      "nl": "Adobe Creative Cloud - Nuffic test"
+    }
+  },
+  {
+    "https://trimbos.eduvpn.nl/saml": {
+      "en": "eduVPN [trimbos.eduvpn.nl] | SURFnet",
+      "nl": "eduVPN [trimbos.eduvpn.nl] | SURFnet"
+    }
+  },
+  {
+    "https://yuri.commerce-hub.com": {
+      "en": "Negometrix test Yuri",
+      "nl": "Negometrix test Yuri"
+    }
+  },
+  {
+    "https://test-login.educus.nl/273C528E-3BF5-4C0D-BC34-CD2133409B67": {
+      "en": "EduArte - Friesland College (test) | Educus",
+      "nl": "EduArte - Friesland College (test) | Educus"
+    }
+  },
+  {
+    "https://qv-test.rijnijssel.nl": {
+      "en": "Qlikview - Rijn IJssel",
+      "nl": "Qlikview - Rijn IJssel"
+    }
+  },
+  {
+    "http://videolab.local": {
+      "en": "Codific",
+      "nl": "Codific"
+    }
+  },
+  {
+    "https://vpn.tuxed.net/php-saml-sp/metadata": {
+      "en": "eduVPN (vpn.tuxed.net)",
+      "nl": "eduVPN (vpn.tuxed.net)"
+    }
+  },
+  {
+    "https://avansdemo-sandbox.mxapps.io": {
+      "en": "Avans Notifications (Temporary environment)",
+      "nl": "Avans Notificaties (Tijdelijke omgeving)"
+    }
+  },
+  {
+    "https://acc-login.educus.nl/6337A2B1769841BDB36F372EBDE2E772": {
+      "en": "test",
+      "nl": "test"
+    }
+  },
+  {
+    "https://mobile-api.hr.nl": {
+      "en": "App by Rotterdam University of Applied Sciences",
+      "nl": "App van Hogeschool Rotterdam"
+    }
+  },
+  {
+    "https://amc01.parantion.nl/simplesaml/module.php/saml/sp/metadata.php/surfconext_v3_amc01": {
+      "en": "Scorion - AMC",
+      "nl": "Scorion - AMC"
+    }
+  },
+  {
+    "https://0014.testapi.dmssolutions.eu/auth/Connect_UVA/metadata": {
+      "en": "UVA - Delcom",
+      "nl": "UVA - Delcom"
+    }
+  },
+  {
+    "https://weblectures-a.leidenuniv.nl/Mediasite": {
+      "en": "Weblectures Mediasite Leiden Test | UL",
+      "nl": "Weblectures Mediasite Leiden Test | UL"
+    }
+  },
+  {
+    "https://front-test.surfcatalog.nl/": {
+      "en": "Searchportal Open Learningmaterials Test",
+      "nl": "Zoekportaal Open Leermaterialen Test"
+    }
+  },
+  {
+    "https://sportopmaat.impercode.com": {
+      "en": "Sport op Maat | ImperCode BV",
+      "nl": "Sport op Maat | ImperCode BV"
+    }
+  },
+  {
+    "https://fontys.data.surfsara.nl/": {
+      "en": "Fontys Research Drive",
+      "nl": "Fontys Research Drive"
+    }
+  },
+  {
+    "https://rdm.acc.dh.unimaas.nl/simplesaml/module.php/saml/sp/metadata.php/default-sp": {
+      "en": "DataHub RDM portal",
+      "nl": "DataHub RDM portal"
+    }
+  },
+  {
+    "https://mymedia-test.avans.nl": {
+      "en": "MediaSpace Avans (Test) | Kaltura",
+      "nl": "MediaSpace Avans (Test) | Kaltura"
+    }
+  },
+  {
+    "https://greatlibrary.nl": {
+      "en": "The Great Library",
+      "nl": "The Great Library"
+    }
+  },
+  {
+    "https://newdemo.timplicity.com/simplesaml/module.php/saml/sp/metadata.php/dev-surfconext-sp": {
+      "en": "demo-surfconext-sp",
+      "nl": "demo-surfconext-sp"
+    }
+  },
+  {
+    "https://secure-apis-acc.ic.uva.nl/": {
+      "en": "Oauth Authorization Server (ACC) | UvA",
+      "nl": "Oauth Authorization Server (ACC) | UvA"
+    }
+  },
+  {
+    "https://www.linkedin.com/learning/ABEAAAAAAANwRgEAAAAAA8DaWQGVoVFlYuGSORA-5NZyKPAD4yz9cQ": {
+      "en": "Linkedin Learning",
+      "nl": "Linkedin Learning"
+    }
+  },
+  {
+    "https://umcg.topdesk.net/saml-metadata/ece0769b-cc57-4b67-a81c-6419495561f3": {
+      "en": "TOPdesk (UMCG) Public | TOPdesk",
+      "nl": "TOPdesk (UMCG) Public | TOPdesk"
+    }
+  },
+  {
+    "https://classification.rug.nl": {
+      "en": "BIV Toolkit",
+      "nl": "BIV Toolkit"
+    }
+  },
+  {
+    "https://umcg-test.topdesk.net/saml-metadata/37832824-39b6-4508-b454-5c57cd094746": {
+      "en": "TOPdesk (UMCG) Public (Test) | TOPdesk",
+      "nl": "TOPdesk (UMCG) Public (Test) | TOPdesk"
+    }
+  },
+  {
+    "https://spa-dev.datanose.nl/shibboleth": {
+      "en": "Academic Plan (dev) | UvA",
+      "nl": "Academic Plan (dev) | UvA"
+    }
+  },
+  {
+    "https://acc-miskatonic.data.surfsara.nl/": {
+      "en": "Miskatonic University ACC Data Sharing Cloud",
+      "nl": "Miskatonic University ACC Data Sharing Cloud"
+    }
+  },
+  {
+    "https://amc-ims.patientsafety.com/vendor/simplesamlphp/simplesamlphp/www/module.php/saml/sp/metadata.php/amc-ims.patientsafety.com": {
+      "en": "TPSC - AMC-IMS | Patientsafety (TEST)",
+      "nl": "TPSC - AMC-IMS | Patientsafety (TEST)"
+    }
+  },
+  {
+    "https://blackboard.has.nl/": {
+      "en": "Blackboard HAS Hogeschool",
+      "nl": "Blackboard HAS Hogeschool"
+    }
+  },
+  {
+    "http://acc.connect.nen.nl": {
+      "en": "NEN Connect acc",
+      "nl": "NEN Connect acc"
+    }
+  },
+  {
+    "https://front-dev.surfcatalog.nl/": {
+      "en": "Searchportal Open Learningmaterials DEV",
+      "nl": "Zoekportaal Open Leermaterialen Development"
+    }
+  },
+  {
+    "https://dailyupdate2.iprova.nl/iProva/540CC7A046E1CB": {
+      "en": "Infoland test - DailyUpdate2",
+      "nl": "Infoland test - DailyUpdate2"
+    }
+  },
+  {
+    "http://DailyBuild7.infoland.local/iProva/212BAFA4CC9C55CA": {
+      "en": "Infoland test - DailyBuild7",
+      "nl": "Infoland test - DailyBuild7"
+    }
+  },
+  {
+    "https://qm-storm-lab.eastus.cloudapp.azure.com/sso/module.php/saml/sp/metadata.php/srikartestsaml": {
+      "en": "Questionmark Test Environment",
+      "nl": "Questionmark Storm testing"
+    }
+  },
+  {
+    "https://rdm.datahubmaastricht.nl/simplesaml/module.php/saml/sp/metadata.php/default-sp": {
+      "en": "DataHub RDM portal | Maastricht University",
+      "nl": "DataHub RDM portal | Maastricht University"
+    }
+  },
+  {
+    "https://testapp.kortext.com/shibboleth": {
+      "en": "Kortext",
+      "nl": "Kortext"
+    }
+  },
+  {
+    "https://spinozacentre.flywheel.io/shibboleth": {
+      "en": "Flywheel",
+      "nl": "Flywheel"
+    }
+  },
+  {
+    "https://staging.gezondeboel.nl/external/surfconext/saml/metadata": {
+      "en": "Gezondeboel",
+      "nl": "Gezondeboel Staging"
+    }
+  },
+  {
+    "https://umcg.topdesk.net/saml-metadata/95eeddd0-7cf0-4b98-98f5-2c8427e9a59f": {
+      "en": "TOPdesk (UMCG) Secure |  TOPdesk",
+      "nl": "TOPdesk (UMCG) Secure |  TOPdesk"
+    }
+  },
+  {
+    "https://tig-nb-19010.tig.local/": {
+      "en": "QlikView Access App OIDC (test) | TIG",
+      "nl": "QlikView Access App OIDC (test) | TIG"
+    }
+  },
+  {
+    "http://radboudumc.mycampusprint.nl/saml": {
+      "en": "New Way To Print",
+      "nl": "Het Nieuwe Printen"
+    }
+  },
+  {
+    "https://nlbt.presentations2go.eu/p2g/": {
+      "en": "nlbt (Presentations2Go loadbalancer Test server)",
+      "nl": "nlbt (Presentations2Go loadbalancer Test server)"
+    }
+  },
+  {
+    "https://readers-test.uba.uva.nl/simplesaml/module.php/saml/sp/metadata.php/default-sp": {
+      "en": "Readers Online UVA (test) | UU",
+      "nl": "Readers Online UVA (test) | UU"
+    }
+  },
+  {
+    "https://tudelft.plusport.com": {
+      "en": "Plusport Academy - TU Delft | PlusPort",
+      "nl": "Plusport Academy - TU Delft | PlusPort"
+    }
+  },
+  {
+    "https://login-stg.wolterskluwer.eu": {
+      "en": "Navigator | Wolters Kluwer",
+      "nl": "Navigator | Wolters Kluwer"
+    }
+  },
+  {
+    "https://eduteam-account-registry-localhost": {
+      "en": "eduteam-account-registry-localhost"
+    }
+  },
+  {
+    "https://hanze.parantion.nl/simplesaml/module.php/saml/sp/metadata.php/surfconext_v3_hanze": {
+      "en": "Scorion3 Hanze - Parantion",
+      "nl": "Scorion3 Hanze - Parantion"
+    }
+  },
+  {
+    "https://gilde.itslearning.com/samlmetadata/saml2v2/1": {
+      "en": "Itslearning - Gilde Education | Itslearning",
+      "nl": "Itslearning - Gilde Opleidingen | Itslearning"
+    }
+  },
+  {
+    "https://nlb.presentations2go.eu/p2g/": {
+      "en": "nlb (Presentations2Go loadbalancer Test server)",
+      "nl": "nlb (Presentations2Go loadbalancer Test server)"
+    }
+  },
+  {
+    "https://proeftuin.plusport.com": {
+      "en": "PlusPort",
+      "nl": "PlusPort TEST"
+    }
+  },
+  {
+    "https://www.peerwith.com": {
+      "en": "Peerwith",
+      "nl": "Peerwith"
+    }
+  },
+  {
+    "https://signon.ibabsdev.eu/surfsecureid": {
+      "en": "iBabs",
+      "nl": "iBabs"
+    }
+  },
+  {
+    "https://signon-test.ibabs.eu/surfsecureid": {
+      "en": "iBabs",
+      "nl": "iBabs"
+    }
+  },
+  {
+    "https://keycloak-test.edu-actief.nl": {
+      "en": "Boom Accounts - Acceptance environment",
+      "nl": "Boom Accounts - Acceptatie Omgeving"
+    }
+  },
+  {
+    "https://vcd01-test.cs.vancis.nl/tenant/surfconext": {
+      "en": "vCD test environment - SURFConext tenant",
+      "nl": "vCD test environment - SURFConext tenant"
+    }
+  },
+  {
+    "https://sp.handemo.hh-software.com": {
+      "en": "HAN Demo",
+      "nl": "HAN Demo"
+    }
+  },
+  {
+    "https://mytimetables.inholland.nl": {
+      "en": "MyTimetables Hogeschool Inholland",
+      "nl": "MyTimetables Hogeschool Inholland"
+    }
+  },
+  {
+    "http://demo.mycampusprint.nl/saml": {
+      "en": "New Way To Print",
+      "nl": "Het Nieuwe Printen"
+    }
+  },
+  {
+    "https://amcmssc.staging001.cloud.basicorange.nl/": {
+      "en": "sp_basicorangtestEN",
+      "nl": "sp_basicorangtestNL"
+    }
+  },
+  {
+    "https://tue.data.surfsara.nl/": {
+      "en": "TUE Research Drive | a Service by SURF",
+      "nl": "TUE Research Drive | a Service by SURF"
+    }
+  },
+  {
+    "https://www.okta.com/saml2/service-provider/spimvdmn2fJwRh2pr0x7": {
+      "en": "Adobe Connect | Sint Lucas",
+      "nl": "Adobe Connect | Sint Lucas"
+    }
+  },
+  {
+    "https://demo.commerce-hub.com": {
+      "en": "Negometrix demo",
+      "nl": "Negometrix demo"
+    }
+  },
+  {
+    "https://vidatum.umcutrecht.nl/uat/": {
+      "en": "Vidatum Academic - UMC Utrecht",
+      "nl": "Vidatum Academic - UMC Utrecht"
+    }
+  },
+  {
+    "https://clabs.un-ihe.org": {
+      "en": "Computer Labs | IHE Delft",
+      "nl": "Computer Labs | IHE Delft"
+    }
+  },
+  {
+    "https://app-manage-backend.auth.eu-central-1.amazoncognito.com": {
+      "en": "Cognito Test",
+      "nl": "Cognito Test"
+    }
+  },
+  {
+    "https://sb2-deltion-prd.azurewebsites.net": {
+      "en": "SB2 - Deltion Studentenbegeleiding (students guidance)",
+      "nl": "SB2 - Deltion Studentenbegeleiding"
+    }
+  },
+  {
+    "https://intranet.erasmusmc.nl": {
+      "en": "ErasmusMC Intranet",
+      "nl": "ErasmusMC Intranet"
+    }
+  },
+  {
+    "https://surfcommunities.lmn.gr/simplesaml/module.php/saml/sp/metadata.php/default-sp": {
+      "en": "SURFcommunities",
+      "nl": "SURFcommunities"
+    }
+  },
+  {
+    "https://ukfed-sso.angdev.com/simplesaml/module.php/saml/sp/metadata.php/default-sp": {
+      "en": "Aluminate",
+      "nl": "Aluminate"
+    }
+  },
+  {
+    "https://api-test.avans.nl/oauth2/": {
+      "en": "Avans Api-manager (test)",
+      "nl": "Avans Api-manager (test)"
+    }
+  },
+  {
+    "https://amsterdam.testvision.nl/online/services/SAML.svc": {
+      "en": "Test environment Amsterdam",
+      "nl": "Testomgeving Amsterdam"
+    }
+  },
+  {
+    "https://hana.ondemand.com/b21shnk7lc": {
+      "en": "SAP Cloud Platform - UvA/HvA DEV Mobile Platform",
+      "nl": "SAP Cloud Platform - UvA/HvA ONT mobiel platform"
+    }
+  },
+  {
+    "https://noorderpoortapi.cardexchangecloud.com": {
+      "en": "Stand",
+      "nl": "Stand"
+    }
+  },
+  {
+    "https://avans-architectuur-sandbox.mxapps.io": {
+      "en": "Avans OpenId test",
+      "nl": "Avans OpenId test"
+    }
+  },
+  {
+    "https://seminars.localhost": {
+      "en": "Physics Talks in Amsterdam",
+      "nl": "Physics Talks in Amsterdam"
+    }
+  },
+  {
+    "https://testen.testvision.nl/onlinetest/services/SAML.svc": {
+      "en": "Test environment Teelen",
+      "nl": "Testomgeving Teelen"
+    }
+  },
+  {
+    "https://tst-rugtc.poweredbymentor.nl/sso/saml2/metadata/?provider=idp_surfconext": {
+      "en": "Mentor-RUG (tst)",
+      "nl": "Mentor-RUG (tst)"
+    }
+  },
+  {
+    "https://tudelft-acc.topdesk.net/saml-metadata/344d8fd1-a5fc-47ca-88ba-91b73f5f93b0": {
+      "en": "TOPDesk (Operators)",
+      "nl": "TOPDesk (Behandelaars)"
+    }
+  },
+  {
+    "http://uva.popdat.nl.staging.tremani.nl": {
+      "en": "popdat-test",
+      "nl": "popdat-test"
+    }
+  },
+  {
+    "https://login.simulise.develop/oidc/sp/c42ffb82-ffa5-485c-ba16-1adeb1132a1c/": {
+      "en": "Simulise Development",
+      "nl": "Simulise development"
+    }
+  },
+  {
+    "https://surfcommunities-test.limoengroen.nl/simplesaml/module.php/saml/sp/metadata.php/default-sp": {
+      "en": "SURFcommunities",
+      "nl": "SURFcommunities"
+    }
+  },
+  {
+    "https://131.174.62.118:8443": {
+      "en": "portal-lokaal-ernst",
+      "nl": "portal-lokaal-ernst"
+    }
+  },
+  {
+    "https://dev.api.dmssolutions.eu/auth/Connect_AcloRUG/metadata": {
+      "en": "AcloRUG-test",
+      "nl": "AcloRUG-test"
+    }
+  },
+  {
+    "https://dev.api.dmssolutions.eu/auth/Connect_AcloHanze/metadata": {
+      "en": "AcloHanze-test",
+      "nl": "AcloHanze-test"
+    }
+  },
+  {
+    "https://tudelft-staging.mapiq.net": {
+      "en": "Mapiq for TU-Delft TEST",
+      "nl": "Mapiq voor TU-Delft"
+    }
+  },
+  {
+    "https://tvbtest-a.mediasite.com/Mediasite": {
+      "en": "Mediasite TVBTest | Sonic Foundry",
+      "nl": "Mediasite TVBTest | Sonic Foundry"
+    }
+  },
+  {
+    "https://flp-acc.sap.uva.nl": {
+      "en": "Fiori HvA and UvA Acceptance",
+      "nl": "Fiori HvA en UvA Acceptatieomgeving"
+    }
+  },
+  {
+    "https://physicstalks.amsterdam": {
+      "en": "Physics Talks in Amsterdam",
+      "nl": "Physics Talks in Amsterdam"
+    }
+  },
+  {
+    "https://avans.topdesk.net/saml-metadata/91f6aac7-4dd8-4c03-ada5-34d8601a3970": {
+      "en": "Topdesk Service Portal (production) | Avans",
+      "nl": "Topdesk Service Portaal (Productie) | Avans"
+    }
+  },
+  {
+    "https://avans.topdesk.net/saml-metadata/6c30f0b0-5e48-488e-96ea-bf47e53c4b7d": {
+      "en": "Topdesk Service Portal for practitioners (production) | Avans",
+      "nl": "Topdesk Service Portaal for behandelaars (productie) | Avans"
+    }
+  },
+  {
+    "https://dbatest1.utsp.utwente.nl/xnat": {
+      "en": "XNAT dbatest | UTwente",
+      "nl": "XNAT dbatest | UTwente"
+    }
+  },
+  {
+    "https://www.popdat.tech": {
+      "en": "Popdat",
+      "nl": "Popdat"
+    }
+  },
+  {
+    "https://comproved-staging.herokuapp.com/api/v1/auth/saml/metadata": {
+      "en": "Comproved",
+      "nl": "Comproved"
+    }
+  },
+  {
+    "https://acc-fontys.data.surfsara.nl/": {
+      "en": "fontys acc Data Sharing Cloud",
+      "nl": "fontys acc Data Sharing Cloud"
+    }
+  },
+  {
+    "https://acc-han.data.surfsara.nl/": {
+      "en": "han acc Data Sharing Cloud",
+      "nl": "han acc Data Sharing Cloud"
+    }
+  },
+  {
+    "https://acc-rdrive.data.surfsara.nl/": {
+      "en": "rdrive acc Data Sharing Cloud",
+      "nl": "rdrive acc Data Sharing Cloud"
+    }
+  },
+  {
+    "https://acc-saxion.data.surfsara.nl/": {
+      "en": "saxion acc Data Sharing Cloud",
+      "nl": "saxion acc Data Sharing Cloud"
+    }
+  },
+  {
+    "https://acc-uva.data.surfsara.nl/": {
+      "en": "uva acc Data Sharing Cloud",
+      "nl": "uva acc Data Sharing Cloud"
+    }
+  },
+  {
+    "https://acc-vu.data.surfsara.nl/": {
+      "en": "vu acc Data Sharing Cloud",
+      "nl": "vu acc Data Sharing Cloud"
+    }
+  },
+  {
+    "https://tudelft.mapiq.net": {
+      "en": "Mapiq for TU Delft (Production)",
+      "nl": "Mapiq voor TU Delft (Production)"
+    }
+  },
+  {
+    "https://ota-dev-qv.tig.local/TigQvSurfConext/Saml2": {
+      "en": "QlikView Access App SAML (test2) | TIG",
+      "nl": "QlikView Access App SAML (test2) | TIG"
+    }
+  },
+  {
+    "https://portal132-test.mendixcloud.com": {
+      "en": "Avans Portal (Test) | Avans",
+      "nl": "Avans Portaal (Test) | Avans"
+    }
+  },
+  {
+    "https://avans-test.mendixcloud.com": {
+      "en": "Avans ToetsIt (Test)",
+      "nl": "Avans ToetsIt (Test)"
+    }
+  },
+  {
+    "https://saml2.stage.order2cash.com": {
+      "en": "Order2Cash environment",
+      "nl": "Order2Cash environment"
+    }
+  },
+  {
+    "https://uva-planningsportal.acc.eveoh.nl": {
+      "en": "Webcollege Planner (acceptance)",
+      "nl": "Webcollege Planner (acceptatie)"
+    }
+  },
+  {
+    "https://ru.capp12.nl": {
+      "en": "gROW | Defacto",
+      "nl": "gROW | Defacto"
+    }
+  },
+  {
+    "https://enabling.io": {
+      "en": "enabling",
+      "nl": "enabling"
+    }
+  },
+  {
+    "https://signon.ibabs.eu/surfsecureid": {
+      "en": "iBabs",
+      "nl": "iBabs"
+    }
+  },
+  {
+    "https://qlikview.aventus.nl/TigQvSurfConext/Saml2": {
+      "en": "Qlikview Aventus",
+      "nl": "Qlikview Aventus"
+    }
+  },
+  {
+    "https://staging-auth.mazemap.com/saml2/surfconext": {
+      "en": "Mazemap Saml2 Auth",
+      "nl": "Mazemap Saml2 Auth"
+    }
+  },
+  {
+    "https://devsurfnet.paragon-ebiz.com": {
+      "en": "Paragon",
+      "nl": "Paragon"
+    }
+  },
+  {
+    "https://trafmon-new.surfnet.nl": {
+      "en": "TrafMon | SURFnet",
+      "nl": "TrafMon | SURFnet"
+    }
+  },
+  {
+    "https://hhs-dice-test.42.nl": {
+      "en": "DiCE",
+      "nl": "DiCE"
+    }
+  },
+  {
+    "https://int-identity.cisco.com/api/tenants/SurfConext/v1/am": {
+      "en": "OneID INT",
+      "nl": "OneID INT"
+    }
+  },
+  {
+    "urn:amazon:webservices": {
+      "en": "AWS Management Console Single Sign-On | Amazon Web Services, Inc.",
+      "nl": "AWS Management Console Single Sign-On | Amazon Web Services, Inc."
+    }
+  },
+  {
+    "http://master.stg.remotelabs.wolfpackit.nl": {
+      "en": "RemoteLabs Staging",
+      "nl": "RemoteLabs Staging"
+    }
+  },
+  {
+    "https://surfcotest.sensus-designer.com": {
+      "en": "Sensus Process Management Test",
+      "nl": "Sensus Process Management Test"
+    }
+  },
+  {
+    "https://webstats-test.surf.nl/index.php?module=LoginSaml&action=metadata": {
+      "en": "Webstats test environment",
+      "nl": "Webstats-test omgeving"
+    }
+  },
+  {
+    "https://bm1.nl": {
+      "en": "BusinessMonitor-CursusMonitor",
+      "nl": "BusinessMonitor-CursusMonitor"
+    }
+  },
+  {
+    "https://auth.mazemap.com/saml2/mazemap": {
+      "en": "Mazemap Prod Saml2 Auth",
+      "nl": "Mazemap Prod Saml2 Auth"
+    }
+  },
+  {
+    "https://stg-app.researchplanner.net/Shibboleth.sso": {
+      "en": "ResearchPlanner",
+      "nl": "ResearchPlanner"
+    }
+  },
+  {
+    "https://surfnpm.surfnet.nl/shibboleth": {
+      "en": "SURFstat | SURFnet",
+      "nl": "SURFstat | SURFnet"
+    }
+  },
+  {
+    "https://andrestest.pathxl.com/": {
+      "en": "Philips Tutor",
+      "nl": "Philips Tutor"
+    }
+  },
+  {
+    "rp.joostd.nl": {
+      "en": "JoDi OIDC test"
+    }
+  },
+  {
+    "https://hsleiden.data.surfsara.nl/": {
+      "en": "hsleiden prd Data Sharing Cloud",
+      "nl": "hsleiden prd Data Sharing Cloud"
+    }
+  },
+  {
+    "https://comproved.eu.ngrok.io/api/v1/auth/saml/metadata": {
+      "en": "Comproved",
+      "nl": "Comproved"
+    }
+  },
+  {
+    "https://lumc.mibris.nl/panama/AuthServices": {
+      "en": "PaNaMa Research Management System - LUMC",
+      "nl": "PaNaMa Research Management System - LUMC"
+    }
+  },
+  {
+    "https://erasmus.mibris.nl/panama/AuthServices": {
+      "en": "PaNaMa Research Management System - Erasmus MC",
+      "nl": "PaNaMa Research Management System - Erasmus MC"
+    }
+  },
+  {
+    "https://acc-demo.data.surfsara.nl/": {
+      "en": "Demo University ACC Data Sharing Cloud",
+      "nl": "Demo University ACC Data Sharing Cloud"
+    }
+  },
+  {
+    "https://route47-test.mendixcloud.com": {
+      "en": "Avans Route 47 (Test)",
+      "nl": "Avans Route 47 (Test)"
+    }
+  },
+  {
+    "http://erasmus.dsb/": {
+      "en": "Werken bij Erasmus MC",
+      "nl": "Werken bij Erasmus MC"
+    }
+  },
+  {
+    "https://svs.ontwikkelstatus.nl": {
+      "en": "Studentvoorstudent",
+      "nl": "Studentvoorstudent"
+    }
+  },
+  {
+    "https://hana.ondemand.com/lszt404vqf": {
+      "en": "SAP Cloud Platform - HvA ACC Mobile Platform",
+      "nl": "SAP Cloud Platform - HvA ACC mobiel platform"
+    }
+  },
+  {
+    "https://smdmmsbacc.ic.uva.nl/simplesaml/module.php/saml/sp/metadata.php/default-sp": {
+      "en": "Mediamosa Sitebuilder (ACC) | UvA",
+      "nl": "Mediamosa Sitebuilder (ACC) | UvA"
+    }
+  },
+  {
+    "https://hana.ondemand.com/h0q74kt20s": {
+      "en": "SAP Cloud Platform - UvA ACC Mobile Platform",
+      "nl": "SAP Cloud Platform - UvA ACC mobiel platform"
+    }
+  },
+  {
+    "https://www.zuydintranet.acct.onehippo.com/saml/metadata/alias/hs-zuyd-intranet": {
+      "en": "ZUYDNET",
+      "nl": "ZUYDNET"
+    }
+  },
+  {
+    "https://radius-ssid.local/simplesaml/module.php/saml/sp/metadata.php/surfconext-test": {
+      "en": "Radius-ssid",
+      "nl": "Radius-ssid"
+    }
+  },
+  {
+    "https://storm.qm-labs.com/sso/module.php/saml/sp/metadata.php/80026": {
+      "en": "Questionmark Test Environment",
+      "nl": "Questionmark Testomgeving"
+    }
+  },
+  {
+    "https://staging.ondemand.questionmark.com/sso/module.php/saml/sp/metadata.php/455964": {
+      "en": "Questionmark - Hanzehogeschool (2de staging) | Questionmark",
+      "nl": "Questionmark - Hanzehogeschool (2de staging) | Questionmark"
+    }
+  },
+  {
+    "https://samltest.wikixl.nl/module.php/saml/sp/metadata.php/surfconext-sp": {
+      "en": "WikiXL (test) | ArchiXL",
+      "nl": "WikiXL (test) | ArchiXL"
+    }
+  },
+  {
+    "https://saml.staging.wikixl.nl/module.php/saml/sp/metadata.php/surfconext-sp": {
+      "en": "WikiXL (staging) | ArchiXL",
+      "nl": "WikiXL (staging) | ArchiXL"
+    }
+  },
+  {
+    "https://samltest.devimg/module.php/saml/sp/metadata.php/surfconext-sp": {
+      "en": "WikiXL | Devimg",
+      "nl": "WikiXL | Devimg"
+    }
+  },
+  {
+    "https://dashboard-devel.surfnet.nl/simplesaml/module.php/saml/sp/metadata.php/dashboard-hi": {
+      "en": "SURFdashboard Step-Up (Devel) | SURFnet",
+      "nl": "SURFdashboard Step-Up (Devel) | SURFnet"
+    }
+  },
+  {
+    "http://pentest1.mycampusprint.nl/saml": {
+      "en": "New Way To Print",
+      "nl": "Het Nieuwe Printen"
+    }
+  },
+  {
+    "http://pentest2.mycampusprint.nl/saml": {
+      "en": "New Way To Print",
+      "nl": "Het Nieuwe Printen"
+    }
+  },
+  {
+    "https://erasmusmc.arapreview.nl": {
+      "en": "Werken bij Erasmus MC (Preview)",
+      "nl": "Werken bij Erasmus MC (Preview)"
+    }
+  },
+  {
+    "https://alpha.surfnet.nl/SURFdropjesSP": {
+      "en": "SURFdropjes test SP (Alpha) | Braindrops",
+      "nl": "SURFdropjes test SP (Alpha) | Braindrops"
+    }
+  },
+  {
+    "https://oidcdebugger.com": {
+      "en": "OIDC debugger"
+    }
+  },
+  {
+    "https://eosc.astron.nl/simplesaml/module.php/saml/sp/metadata.php/default-sp": {
+      "en": "ASTRON SDC Test Proxy",
+      "nl": "ASTRON SDC Test Proxy"
+    }
+  },
+  {
+    "https://login.figsh.com/shibboleth": {
+      "en": "Figshare (test) | Figshare",
+      "nl": "Figshare (test) | Figshare"
+    }
+  },
+  {
+    "https://test.releezme.net/": {
+      "en": "Vecos Locker Management",
+      "nl": "Vecos Locker Management"
+    }
+  },
+  {
+    "http://stedelijkcollege.mycampusprint.nl/saml": {
+      "en": "New Way To Print",
+      "nl": "Het Nieuwe Printen"
+    }
+  },
+  {
+    "https://repub.eur.nl/saml/metadata": {
+      "en": "Erasmus Repositories",
+      "nl": "Erasmus Repositories"
+    }
+  },
+  {
+    "https://sitestest.hum.uu.nl/": {
+      "en": "sitestest",
+      "nl": "sitestest"
+    }
+  },
+  {
+    "https://demov6-dev.presentations2go.eu/p2g/": {
+      "en": "demov6",
+      "nl": "demov6"
+    }
+  },
+  {
+    "https://demov6.presentations2go.eu/p2g/": {
+      "en": "demov6-dev",
+      "nl": "demov6-dev"
+    }
+  },
+  {
+    "https://saml.xpressionmanager.nl/saml/metadata?idp=surftest": {
+      "en": "Xpressionlabs test",
+      "nl": "Xpressionlabs test"
+    }
+  },
+  {
+    "https://hu.data.surfsara.nl/": {
+      "en": "hu prd Data Sharing Cloud",
+      "nl": "hu prd Data Sharing Cloud"
+    }
+  },
+  {
+    "https://shibbolethtest.authore.com/Shibboleth": {
+      "en": "Author-e acces",
+      "nl": "Author-e toegang"
+    }
+  },
+  {
+    "https://portal-dev.surfmarket-onegini.nl": {
+      "en": "Mijn SURFmarket Portal Dev",
+      "nl": "Mijn SURFmarket Portal Dev"
+    }
+  },
+  {
+    "https://ounl-staging.elsevierpure.com": {
+      "en": "Pure-staging | Open Universiteit",
+      "nl": "Pure-staging | Open Universiteit"
+    }
+  },
+  {
+    "https://london.evado-cms.nl": {
+      "en": "Evado",
+      "nl": "Evado"
+    }
+  },
+  {
+    "https://acct-communities.surf.nl/simplesaml/module.php/saml/sp/metadata.php/default-sp": {
+      "en": "SURFcommunities",
+      "nl": "SURFcommunities"
+    }
+  },
+  {
+    "https://portal-test.surfmarket-onegini.nl": {
+      "en": "Mijn SURFmarket Portal Test",
+      "nl": "Mijn SURFmarket Portal Test"
+    }
+  },
+  {
+    "https://e1375b98af1b.ngrok.io/sso/saml2/metadata/?provider=idp_surfconext": {
+      "en": "Mentor-RUGTC (dvl)",
+      "nl": "Mentor-RUGTC (dvl)"
+    }
+  },
+  {
+    "https://elevator.elevate.projectendemo.nl/auth/saml2/sp/metadata.php": {
+      "en": "Elevate Health ole",
+      "nl": "Elevate Health elo"
+    }
+  },
+  {
+    "https://v3.querio.nl": {
+      "en": "Querio Planning",
+      "nl": "Querio"
+    }
+  },
+  {
+    "https://web.zaurus.io/msrv/auth/552811f5-fc9e-48f6-802f-43b9e657bcd2": {
+      "en": "Zaurus Digital consulting rooms",
+      "nl": "Zaurus Digitale spreekkamers"
+    }
+  },
+  {
+    "https://surfdrive-acc.surf.nl/": {
+      "en": "SURFdrive-acc | SURF",
+      "nl": "SURFdrive-acc | SURF"
+    }
+  },
+  {
+    "http://a-eobs.eur.nl:443/sso/module.php/saml/sp/metadata.php/default-sp": {
+      "en": "EOBs",
+      "nl": "EOBs"
+    }
+  },
+  {
+    "https://mboutrsaml.s2.telartis.nl/simplesaml/module.php/saml/sp/metadata.php/default-sp": {
+      "en": "MBO Utrecht",
+      "nl": "MBO Utrecht"
+    }
+  },
+  {
+    "https://bb-archief.hvhl.nl": {
+      "en": "BB-Archief | Hogeschool VHL",
+      "nl": "BB-Archief | Hogeschool VHL"
+    }
+  },
+  {
+    "http://tue.mycampusprint.nl/saml": {
+      "en": "New Way To Print",
+      "nl": "Het Nieuwe Printen"
+    }
+  },
+  {
+    "https://elearning.elevatehealth.release.id5r": {
+      "en": "Elevate Health ole dev",
+      "nl": "Elevate Health elo dev"
+    }
+  },
+  {
+    "https://wiki.surfnet.nl/plugins/servlet/samlsso": {
+      "en": "SURF Wiki",
+      "nl": "SURF Wiki"
+    }
+  },
+  {
+    "https://portal-acc.surf-onegini.nl": {
+      "en": "Mijn SURFmarket Portal Accept",
+      "nl": "Mijn SURFmarket Portal Accept"
+    }
+  },
+  {
+    "https://www.okta.com/saml2/service-provider/spimkj6b59l5Nsak20x7": {
+      "en": "Adobe Cloud 4 ZonMw",
+      "nl": "Adobe Cloud 4 ZonMw"
+    }
+  },
+  {
+    "https://rsm.jobteaser.com/users/auth/rsm_shibboleth/metadata": {
+      "en": "JobTeaser Career Center - RSM (EUR) | JobTeaser",
+      "nl": "JobTeaser Career Center - RSM (EUR) | JobTeaser"
+    }
+  },
+  {
+    "https://ondemand.questionmark.eu/sso/module.php/saml/sp/metadata.php/611774": {
+      "en": "Questionmark - CHE Test environment | Questionmark",
+      "nl": "Questionmark - CHE Test environment | Questionmark"
+    }
+  },
+  {
+    "https://mijn.test.eduid.nl/shibboleth": {
+      "en": "My eduID",
+      "nl": "Mijn eduID"
+    }
+  },
+  {
+    "https://dev.asa.ewi.tudelft.nl/saml2/tudelft/metadata": {
+      "en": "ASA simulator | TU Delft",
+      "nl": "ASA simulator | TU Delft"
+    }
+  },
+  {
+    "https://acc-secure-apis.hva.nl/": {
+      "en": "OAuth Authorization Server (ACC) | HvA",
+      "nl": "OAuth Authorization Server (ACC) | HvA"
+    }
+  },
+  {
+    "digicert.aai.surfnet.nl": {
+      "en": "Digicert Portal"
+    }
+  },
+  {
+    "https://surfconext.plek.co/saml/trust": {
+      "en": "plek",
+      "nl": "Plek"
+    }
+  },
+  {
+    "https://partneruniversities.tudelft.nl": {
+      "en": "TU Delft Partner Universities Search",
+      "nl": "TU Delft Partner Universities Zoeken"
+    }
+  },
+  {
+    "https://ebrok.id5r/auth/saml2/sp/metadata.php": {
+      "en": "NFU eBROK dev",
+      "nl": "NFU eBROK dev"
+    }
+  },
+  {
+    "https://umaastricht.elsevierpure.com": {
+      "en": "PURE UM - TEST",
+      "nl": "PURE UM - TEST"
+    }
+  },
+  {
+    "https://acceptatie.owik.net": {
+      "en": "Owik Acceptation Environment",
+      "nl": "Owik Acceptatie Omgeving"
+    }
+  },
+  {
+    "https://csnytst.rocnijmegen.mcx.nl/shibboleth": {
+      "en": "Peoplesoft CS TEST",
+      "nl": "Peoplesoft CS TEST"
+    }
+  },
+  {
+    "http://nl.caci.osiris.has/osiris-oauth2-server-acc": {
+      "en": "HAS Studenten App ACC (Test)",
+      "nl": "HAS Studenten App ACC (Test)"
+    }
+  },
+  {
+    "https://lll.elevate.projectendemo.nl/auth/saml2/sp/metadata.php": {
+      "en": "Life Long Learning platform UU",
+      "nl": "Leven Lang Leren platform UU"
+    }
+  },
+  {
+    "https://lll-platform-uu.id5r/auth/saml2/sp/metadata.php": {
+      "en": "Life Long Learning platform UU",
+      "nl": "Leven Lang Leren platform UU"
+    }
+  },
+  {
+    "https://moodle-dev.fdmci.hva.nl/accmoodle/auth/saml2/sp/metadata.php": {
+      "en": "moodle hva test",
+      "nl": "moodle hva test"
+    }
+  },
+  {
+    "https://backend.dev.parantion.nl/simplesaml/module.php/saml/sp/metadata.php/surfconext_v5_backend_list": {
+      "en": "Test Backend V5.1 List",
+      "nl": "Test Backend V5.1 Lijst"
+    }
+  },
+  {
+    "https://backend.dev.parantion.nl/simplesaml/module.php/saml/sp/metadata.php/surfconext_v5_test_choice": {
+      "en": "Test backend V5.1 Choice",
+      "nl": "Test backend V5.1 Keuze"
+    }
+  },
+  {
+    "https://bkadhok2.bk.tudelft.nl/simplesaml/module.php/saml/sp/metadata.php/tud_dev_sp_bkadhok2": {
+      "en": "Adhok Staff",
+      "nl": "Adhok Staff"
+    }
+  },
+  {
+    "https://inholland.oerwrite.nl/users/saml/metadata": {
+      "en": "OER Write - Inholland | Drieam",
+      "nl": "OER Write - Inholland | Drieam"
+    }
+  },
+  {
+    "https://acceptatie.owik.net/shibboleth": {
+      "en": "Example Service",
+      "nl": "Voorbeelddienst"
+    }
+  },
+  {
+    "https://fr-authacc.planoncloud.com/auth/realms/zuyd-acc": {
+      "en": "https://fr-authacc.planoncloud.com",
+      "nl": "https://fr-authacc.planoncloud.com"
+    }
+  },
+  {
+    "https://ufe.my.salesforce.com": {
+      "en": "TUe/UFE Salesforce",
+      "nl": "TUe/UFE Salesforce"
+    }
+  },
+  {
+    "https://devel.atira.dk/cust_dk_aau/admin/": {
+      "en": "PureAAU",
+      "nl": "PureAAU"
+    }
+  },
+  {
+    "https://inholland.data.surfsara.nl/": {
+      "en": "Hogeschool Inholland Data Sharing Cloud",
+      "nl": "Hogeschool Inholland Data Sharing Cloud"
+    }
+  },
+  {
+    "https://5d7e8f6f.ngrok.io/sso/surf_conext/metadata": {
+      "en": "Officebooking Test",
+      "nl": "Officebooking Test"
+    }
+  },
+  {
+    "https://blue-staging.officebooking.net/sso/surf_conext/metadata": {
+      "en": "Officebooking blue-staging",
+      "nl": "Officebooking blue-staging"
+    }
+  },
+  {
+    "https://federatedid-na1.services.adobe.com/federated/saml/metadata/alias/2c3f1797-cd3c-4073-b00c-020aeb63a148": {
+      "en": "Adobe Creative Cloud | OBA",
+      "nl": "Adobe Creative Cloud | OBA"
+    }
+  },
+  {
+    "https://erasmusmc.parantion.nl/simplesaml/module.php/saml/sp/metadata.php/surfconext_v3_erasmusmc": {
+      "en": "Scorion3 ErasmusMC",
+      "nl": "Scorion3 ErasmusMC"
+    }
+  },
+  {
+    "https://tilburguniversity.data.surfsara.nl/": {
+      "en": "Tilburg University Data Sharing Cloud",
+      "nl": "Tilburg University Data Sharing Cloud"
+    }
+  },
+  {
+    "https://roc.acc.hireserve.nl/wp-content/plugins/miniorange-saml-20-single-sign-on": {
+      "en": "Careersite ROC van Amsterdam en Flevoland",
+      "nl": "Werkenbij-site ROC van Amsterdam en Flevoland"
+    }
+  },
+  {
+    "https://auth.tudelft.ninja/auth/realms/TUDelftNinja": {
+      "en": "KeyCloak TUDelft Ninja",
+      "nl": "KeyCloak TUDelft Ninja"
+    }
+  },
+  {
+    "https://acc-rugtc.poweredbymentor.nl/sso/saml2/metadata/?provider=idp_surfconext": {
+      "en": "Mentor-RUG (acc)",
+      "nl": "Mentor-RUG (acc)"
+    }
+  },
+  {
+    "https://federatedid-na1.services.adobe.com/federated/saml/metadata/alias/2b99d1e1-37db-41ed-ae5c-cbb3bff8e5ff": {
+      "en": "Adobe Creative Cloud | Nimeto",
+      "nl": "Adobe Creative Cloud | Nimeto"
+    }
+  },
+  {
+    "http://mockup.mycampusprint.nl/saml": {
+      "en": "New Way To Print",
+      "nl": "Het Nieuwe Printen"
+    }
+  },
+  {
+    "http://achmea-test.mycampusprint.nl/saml": {
+      "en": "New Way To Print",
+      "nl": "Het Nieuwe Printen"
+    }
+  },
+  {
+    "https://acc-dam.universiteitleiden.nl/simplesaml/module.php/saml/sp/metadata.php/SURFconext": {
+      "en": "Leiden UMC DAM [Acceptation]",
+      "nl": "Leiden UMC DAM [Acceptatie]"
+    }
+  },
+  {
+    "https://communities.surf.nl/simplesaml/module.php/saml/sp/metadata.php/default-sp": {
+      "en": "SURF Communities",
+      "nl": "SURF Communities"
+    }
+  },
+  {
+    "https://sso.skillstown.com/saml/module.php/saml/sp/metadata.php/SURFconext_test": {
+      "en": "SkillsTown Test",
+      "nl": "SkillsTown Test"
+    }
+  },
+  {
+    "https://plan-acc.ic.uva.nl/saml2/metadata": {
+      "en": "Plan (Acc) | UvA",
+      "nl": "Plan (Acc) | UvA"
+    }
+  },
+  {
+    "https://route47-accp.mendixcloud.com": {
+      "en": "Avans Route 47 (accp)",
+      "nl": "Avans Route 47 (accp)"
+    }
+  },
+  {
+    "urn:saml:sso:my:ValidSign:nl": {
+      "en": "ValidSign",
+      "nl": "ValidSign"
+    }
+  },
+  {
+    "https://onderwijscatalogus-test.avans.nl": {
+      "en": "Avans Onderwijscatalogus (Test)",
+      "nl": "Avans Onderwijscatalogus (Test)"
+    }
+  },
+  {
+    "https://avanskenniscentrum-accp.mendixcloud.com": {
+      "en": "Avans knowledge base",
+      "nl": "Avans Kennis Centrum"
+    }
+  },
+  {
+    "https://elo.horizoncollege.nl": {
+      "en": "cumlaude ELO | ROC Horizon College",
+      "nl": "cumlaude ELO | ROC Horizon College"
+    }
+  },
+  {
+    "https://s-eu-ids1-preview.unit4cloud.com/identity-sp1": {
+      "en": "https://s-eu-ids1-preview.unit4cloud.com/identity-sp1",
+      "nl": "https://s-eu-ids1-preview.unit4cloud.com/identity-sp1"
+    }
+  },
+  {
+    "https://hotelschool.mynetpay.nl/metadata": {
+      "en": "myNetPay",
+      "nl": "myNetPay"
+    }
+  },
+  {
+    "https://mytimetable-accp.tudelft.nl": {
+      "en": "Delft University of Technology | MyTimetable acceptance",
+      "nl": "Technische Universiteit Delft | MyTimetable acceptatie"
+    }
+  },
+  {
+    "https://buas.mapiq.net": {
+      "en": "Mapiq for Breda University of Applied Sciences",
+      "nl": "Mapiq voor BUas"
+    }
+  },
+  {
+    "https://onderwijscatalogus-acc.avans.nl": {
+      "en": "Avans Onderwijscatalogus (Acceptance)",
+      "nl": "Avans Onderwijscatalogus (Acceptance)"
+    }
+  },
+  {
+    "https://hva.data.surfsara.nl/": {
+      "en": "Hogeschool van Amsterdam Data Sharing Cloud",
+      "nl": "Hogeschool van Amsterdam Data Sharing Cloud"
+    }
+  },
+  {
+    "https://eur.data.surfsara.nl/": {
+      "en": "Erasmus Universiteit Rotterdam Data Sharing Cloud",
+      "nl": "Erasmus Universiteit Rotterdam Data Sharing Cloud"
+    }
+  },
+  {
+    "https://surf.use-cocoon.nl/saml/metadata/": {
+      "en": "SURF Beeldbank | SURFsara",
+      "nl": "SURF Beeldbank | SURFsara"
+    }
+  },
+  {
+    "https://surf.onlinebeeldbank.nl/saml/metadata/": {
+      "en": "SURF Image Database | SURFsara",
+      "nl": "SURF Beeldbank | SURFsara"
+    }
+  },
+  {
+    "https://umcu.elabjournal.com/": {
+      "en": "eLABJournal - UMCU | Bio-ITech",
+      "nl": "eLABJournal - UMCU | Bio-ITech"
+    }
+  },
+  {
+    "https://codimd.lab.surf.nl": {
+      "en": "CodiMD MaKr | SURFnet"
+    }
+  },
+  {
+    "https://federatedid-na1.services.adobe.com/federated/saml/metadata/alias/7548e3cd-b154-49ef-a727-b76aa0fe545b": {
+      "en": "Adobe Creative Cloud | HZ University of Applied Sciences",
+      "nl": "Adobe Creative Cloud | HZ University of Applied Sciences"
+    }
+  },
+  {
+    "urn:mace:surfnet.nl:thki:sp:melonen": {
+      "en": "THKIsid Meloen"
+    }
+  },
+  {
+    "https://fileflow.nl": {
+      "en": "FileFlow",
+      "nl": "FileFlow"
+    }
+  },
+  {
+    "https://brightspace-test.avans.nl/shibboleth-sp": {
+      "en": "Brightspace (Test) - Avans University of Applied Sciences",
+      "nl": "Brightspace (Test) - Avans University of Applied Sciences"
+    }
+  },
+  {
+    "https://ou.data.surfsara.nl/": {
+      "en": "Open Universiteit Data Sharing Cloud",
+      "nl": "Open Universiteit Data Sharing Cloud"
+    }
+  },
+  {
+    "https://www.realtimeix.com/api/simplesamlphp/www/module.php/saml/sp/metadata.php/surfconext_test": {
+      "en": "RealtimeMonitor",
+      "nl": "RealtimeMonitor"
+    }
+  },
+  {
+    "https://ssotest4eu.eu.qualtrics.com/WRSAML/simplesaml/www/module.php/saml/sp/metadata.php/default-sp": {
+      "en": "Qualtrics Survey Software - TU Delft (Test) | Qualtrics",
+      "nl": "Qualtrics Survey Software - TU Delft (Test) | Qualtrics"
+    }
+  },
+  {
+    "https://portal132-accp.mendixcloud.com": {
+      "en": "Portal (Acceptance)",
+      "nl": "Portaal (Acceptatie)"
+    }
+  },
+  {
+    "https://ssotesteu4.eu.qualtrics.com": {
+      "en": "Qualtrics Survey Software - TU Delft (Test2) | Qualtrics",
+      "nl": "Qualtrics Survey Software - TU Delft (Test2) | Qualtrics"
+    }
+  },
+  {
+    "https://rugtc.poweredbymentor.nl/sso/saml2/metadata/?provider=idp_surfconext": {
+      "en": "Mentor-RUG",
+      "nl": "Mentor-RUG"
+    }
+  },
+  {
+    "IAMShowcase": {
+      "en": "RSA SAML Test Service Provider"
+    }
+  },
+  {
+    "https://labservant.ls1.tudelft.nl/saml2/module.php/saml/sp/metadata.php/tud_login_ls1": {
+      "en": "Lab Servant",
+      "nl": "Lab Servant"
+    }
+  },
+  {
+    "https://gitlab.surf.nl": {
+      "en": "gitlab.surf.nl | SURFsara",
+      "nl": "gitlab.surf.nl | SURFsara"
+    }
+  },
+  {
+    "https://federatedid-na1.services.adobe.com/federated/saml/metadata/alias/cd7d9a39-4fe6-492d-9b23-57dec735782c": {
+      "en": "Adobe Creative Cloud | Amolf",
+      "nl": "Adobe Creative Cloud | Amolf"
+    }
+  },
+  {
+    "https://fashionfabriek.ecfit.eu/samltst": {
+      "en": "Ecmanage | Saml SSO Test",
+      "nl": "Ecmanage | Saml SSO Test"
+    }
+  },
+  {
+    "https://labservant-acc2.forux.nl/saml/module.php/saml/sp/metadata.php/uva_prd": {
+      "en": "The Lab Servant - UvA| Lab Servant",
+      "nl": "The Lab Servant - UvA| Lab Servant"
+    }
+  },
+  {
+    "https://surf.itsltest.com": {
+      "en": "Itslearning - SURFconext test | Itslearning (test)",
+      "nl": "Itslearning - SURFconext test | Itslearning (test)"
+    }
+  },
+  {
+    "urn:amazon:cognito:sp:eu-west-1_8BgE1sGBx": {
+      "en": "inct",
+      "nl": "inct"
+    }
+  },
+  {
+    "https://mooc.saxion.nl/auth/saml/metadata.xml": {
+      "en": "MOOC Saxion",
+      "nl": "MOOC Saxion"
+    }
+  },
+  {
+    "https://suiteacc.eu/sp/789": {
+      "en": "PrivacySuite Surf",
+      "nl": "PrivacySuite Surf"
+    }
+  },
+  {
+    "https://anj4fmjnc.accounts.ondemand.com": {
+      "en": "SAP Cloud - ACC Identity Authentication Service",
+      "nl": "SAP Cloud - ACC Identity Authentication Service"
+    }
+  },
+  {
+    "https://federatedid-na1.services.adobe.com/federated/saml/metadata/alias/ce7f6b71-aedb-4aaf-9831-73346b1dad2d": {
+      "en": "Adobe Creative Cloud (test) | KNAW",
+      "nl": "Adobe Creative Cloud (test) | KNAW"
+    }
+  },
+  {
+    "https://domjudge.org/thki-sp": {
+      "en": "Stichting DOMjudge Foundation"
+    }
+  },
+  {
+    "https://peergrade.io": {
+      "en": "Peergrade",
+      "nl": "Peergrade"
+    }
+  },
+  {
+    "https://radboudfonds--devronald.my.salesforce.com": {
+      "en": "Salesforce environment for Radboud Fonds",
+      "nl": "Radboud Fonds"
+    }
+  },
+  {
+    "https://server.tor.nl/~tom/xotdev/library/Xerte/Authentication/Saml2/endpoints/metadata.php": {
+      "en": "Development instance of Xerte",
+      "nl": "Development instance of Xerte"
+    }
+  },
+  {
+    "https://portal132.mendixcloud.com": {
+      "en": "Portal Authentication Test",
+      "nl": "Portal Authentication Test"
+    }
+  },
+  {
+    "https://www.successfactors.eu/uvaT1": {
+      "en": "SAP Successfactors - ACC UvA/HvA (uvaT1)",
+      "nl": "SAP Successfactors - ACC UvA/HvA (uvaT1)"
+    }
+  },
+  {
+    "https://dev.api.dmssolutions.eu/auth/Connect_TUEindhoven/metadata": {
+      "en": "Delcom - Test",
+      "nl": "Delcom - Test"
+    }
+  },
+  {
+    "https://hanzehogeschoolapi.myexams.nl/saml": {
+      "en": "Campus Exam",
+      "nl": "Campus Exam"
+    }
+  },
+  {
+    "https://moodle-dev.fdmci.hva.nl/simplesamlphp/www/module.php/saml/sp/metadata.php/default-sp": {
+      "en": "moodle-dev-saml test",
+      "nl": "moodle-dev-saml test"
+    }
+  },
+  {
+    "https://moodle-dev.fdmci.hva.nl/moodle/auth/saml2/sp/metadata.php": {
+      "en": "moodle hva dev new test",
+      "nl": "moodle hva dev new test"
+    }
+  },
+  {
+    "http://weblog-tst.tudelft.nl": {
+      "en": "Weblog Delft | TU Delft",
+      "nl": "Weblog Delft | TU Delft"
+    }
+  },
+  {
+    "https://mijn.bizway.nl/saml2/test/metadata": {
+      "en": "BIZWAY TEST STORMCATCH",
+      "nl": "BIZWAY TEST STORMCATCH"
+    }
+  },
+  {
+    "https://lab.test.easion.nl/simplesaml/module.php/saml/sp/metadata.php/surfconext_v5_test_challenge": {
+      "en": "Test Backend SurfChallenge",
+      "nl": "Test Backend SurfChallenge"
+    }
+  },
+  {
+    "https://surfconext.dev.privacyperfect.com": {
+      "en": "PrivacyPerfect",
+      "nl": "PrivacyPerfect"
+    }
+  },
+  {
+    "https://newest.edu.nl": {
+      "en": "newest.edu.nl",
+      "nl": "newest.edu.nl"
+    }
+  },
+  {
+    "https://cms-avans.acct.onehippo.com/saml/metadata": {
+      "en": "Hippo CMS Test Extern",
+      "nl": "Hippo CMS Test Extern"
+    }
+  },
+  {
+    "https://edu.ans.app/saml/surf/metadata": {
+      "en": "Ans (education)",
+      "nl": "Ans (educatie)"
+    }
+  },
+  {
+    "https://sso.cirrusrc.eu/tueindhoven/saml2": {
+      "en": "TU Endhoven Release Candidates - Cirrus Assessment",
+      "nl": "TU Endhoven Release Candidates - Cirrus Assessment"
+    }
+  },
+  {
+    "http://b-ware.com/DocSysOnline/Test/ROCvanAmsterdam": {
+      "en": "DocSys Online Test ROC van Amsterdam",
+      "nl": "DocSys Online Test ROC van Amsterdam"
+    }
+  },
+  {
+    "https://ssotest.dlearning.nl/endpoints/metadata.php": {
+      "en": "Xerte Online Toolkits | DLearning",
+      "nl": "Xerte Online Toolkits | DLearning"
+    }
+  },
+  {
+    "http://b-ware.com/ROCvanAmsterdamDEV": {
+      "en": "DEV - DocSys Online Test ROC van Amsterdam",
+      "nl": "DEV - DocSys Online Test ROC van Amsterdam"
+    }
+  },
+  {
+    "https://proxy.acc.sram.eduteams.org/metadata/backend.xml": {
+      "en": "SURF Research Access Management Service (Acceptance environment)"
+    }
+  },
+  {
+    "https://knaw.elsevierpure.com/admin": {
+      "en": "KNAW Pure at AWS",
+      "nl": "KNAW Pure bij AWS"
+    }
+  },
+  {
+    "https://acta.parantion.nl/simplesaml/module.php/saml/sp/metadata.php/surfconext_v3_acta": {
+      "en": "Scorion3 Acta",
+      "nl": "Scorion3 Acta"
+    }
+  },
+  {
+    "https://vhl-acc.mediasite.com/Mediasite": {
+      "en": "Mediasite Hogeschool VHL Test | Sonic Foundry",
+      "nl": "Mediasite Hogeschool VHL Test | Sonic Foundry"
+    }
+  },
+  {
+    "https://federatedid-na1.services.adobe.com/federated/saml/metadata/alias/e7323ac2-23b2-49dd-bcfd-d962fe18ad48": {
+      "en": "Adobe Creative Cloud | Zadkine",
+      "nl": "Adobe Creative Cloud | Zadkine"
+    }
+  },
+  {
+    "https://tii-connect-uscald.turnitin.dev/sso/redwood/surfconext/saml/metadata": {
+      "en": "Turnitin",
+      "nl": "Turnitin"
+    }
+  },
+  {
+    "https://tioapi.myexams.nl/saml": {
+      "en": "Campus Exam",
+      "nl": "Campus Exam"
+    }
+  },
+  {
+    "https://backend-cms-accept.tiekinetix.net/external/sso/SAML/surfnet/callback": {
+      "en": "FLOW eInvoicing",
+      "nl": "FLOW e-facturatie"
+    }
+  },
+  {
+    "https://lms.localnet/samlmetadata": {
+      "en": "Electude LMS SAML testing",
+      "nl": "Electude LMS SAML testing"
+    }
+  },
+  {
+    "https://staging.smartmansys.com/saml/metadata": {
+      "en": "SmartManSys",
+      "nl": "SmartManSys"
+    }
+  },
+  {
+    "https://idm.surf.nl/osp/a/idm/auth/saml2/metadata": {
+      "en": "IDM User Portal",
+      "nl": "IDM User Portal"
+    }
+  },
+  {
+    "https://eduapp-dev.herokuapp.com/api/v1/auth/saml/metadata": {
+      "en": "Eduapp STAGING",
+      "nl": "Eduapp STAGING"
+    }
+  },
+  {
+    "https://canon-campus.rik.care.local/saml": {
+      "en": "New Way To Print",
+      "nl": "Het Nieuwe Printen"
+    }
+  },
+  {
+    "https://nyenrode.cloud.panopto.eu": {
+      "en": "Panopto Video Platform - Nyenrode | Panopto",
+      "nl": "Panopto Video Platform - Nyenrode | Panopto"
+    }
+  },
+  {
+    "https://hzresearchdrive.data.surfsara.nl/": {
+      "en": "Hogeschool Zeeland Data Sharing Cloud",
+      "nl": "Hogeschool Zeeland Data Sharing Cloud"
+    }
+  },
+  {
+    "https://inholland.brand-spot.net/simplesaml/module.php/saml/sp/metadata.php/surfconext": {
+      "en": "BrandSpot Publishing Platform - INH | Cordeo",
+      "nl": "BrandSpot Publishing Platform - INH | Cordeo"
+    }
+  },
+  {
+    "https://dev.omnicard.nl/mijnomnipas/3.2/0_standaard/mijnomnipas_3.2.0/simplesamlphp/www/module.php/saml/sp/metadata.php/default-sp": {
+      "en": "My OmniCard (development)",
+      "nl": "Mijn OmniPas (development)"
+    }
+  },
+  {
+    "https://test.sowiso.nl/simplesaml/module.php/saml/sp/metadata.php/default-sp": {
+      "en": "Test SP | SOWISO",
+      "nl": "Test SP | SOWISO"
+    }
+  },
+  {
+    "https://surfconext-test.dev.jobteaser.net/users/auth/surfconext_test_saml/metadata": {
+      "en": "jobteaser preprod",
+      "nl": "jobteaser preprod"
+    }
+  },
+  {
+    "https://uva-live.zoom.us": {
+      "en": "Zoom UvA",
+      "nl": "Zoom UvA"
+    }
+  },
+  {
+    "https://federatedid-na1.services.adobe.com/federated/saml/metadata/alias/e9ccfdfe-7ae0-4a71-8078-a0b1cce6d33f": {
+      "en": "Adobe Creative Cloud | SURFnet",
+      "nl": "Adobe Creative Cloud | SURFnet"
+    }
+  },
+  {
+    "https://idm-dev-be1.ic.uva.nl": {
+      "en": "OIM DEV",
+      "nl": "OIM DEV"
+    }
+  },
+  {
+    "https://xatlas-staging.ia.surfsara.nl/jira/plugins/servlet/samlsso": {
+      "en": "xatlas-staging",
+      "nl": "xatlas-staging"
+    }
+  },
+  {
+    "https://intranet-test.surf.nl/plugins/servlet/samlsso": {
+      "en": "SURF Intranet-test",
+      "nl": "SURF Intranet-test"
+    }
+  },
+  {
+    "https://servicedesk.surfsara.nl/jira/plugins/servlet/samlsso": {
+      "en": "SURFsara Servicedesk",
+      "nl": "SURFsara Servicedesk"
+    }
+  },
+  {
+    "https://webtoetsen-ousum.qmark.nl/": {
+      "en": "UPlearning - Open Universiteit | OU",
+      "nl": "UPlearning - Open Universiteit | OU"
+    }
+  },
+  {
+    "https://test.omnicard.nl/mijnomnipas/3.2/0_standaard/mijnomnipas_3.2.0/simplesamlphp/www/module.php/saml/sp/metadata.php/default-sp": {
+      "en": "My OmniCard (test)",
+      "nl": "Mijn OmniPas (test)"
+    }
+  },
+  {
+    "https://rocvantwentetest.simacpresto.com/module.php/saml/sp/saml2-acs.php/default-sp": {
+      "en": "Presto - ROC van Twente Test | Simac IDS",
+      "nl": "Presto - ROC van Twente | Simac IDS"
+    }
+  },
+  {
+    "http://fs.thinking1.com/adfs/services/trust": {
+      "en": "Thinking Portfolio",
+      "nl": "Thinking Portfolio"
+    }
+  },
+  {
+    "https://csnpacc.noorderpoort.mcx.nl/shibboleth": {
+      "en": "CS Acceptance | Noorderpoort",
+      "nl": "CS Acceptatie | Noorderpoort"
+    }
+  },
+  {
+    "https://covid-19onderzoek-test.mendixcloud.com": {
+      "en": "Covid-19 Research Erasmus MC",
+      "nl": "Covid-19 Onderzoek Erasmus MC"
+    }
+  },
+  {
+    "https://nieuwsgierig.rocvantwente.nl/shibboleth": {
+      "en": "Nieuwsgierig Test",
+      "nl": "ROC Nieuwsgierig"
+    }
+  },
+  {
+    "https://covid-19onderzoek-accp.mendixcloud.com": {
+      "en": "Covid-19 Research Erasmus MC",
+      "nl": "Covid-19 Onderzoek Erasmus MC"
+    }
+  },
+  {
+    "https://studypath-test.avans.nl": {
+      "en": "StudyPath (Test)",
+      "nl": "StudyPath (Test)"
+    }
+  },
+  {
+    "https://aventus.mycampusprint.nl/saml": {
+      "en": "New Way To Print",
+      "nl": "Het Nieuwe Printen"
+    }
+  },
+  {
+    "https://test.omnicard.nl/mijnomnipas/3.2/noorderpoort/mijnomnipas_3.2.0/simplesamlphp/www/module.php/saml/sp/metadata.php/default-sp": {
+      "en": "Noorderpoortkaart (test)",
+      "nl": "Noorderpoortkaart (test)"
+    }
+  },
+  {
+    "https://surfconext.xafax.nl/shibboleth": {
+      "en": "myNetPay",
+      "nl": "myNetPay"
+    }
+  },
+  {
+    "https://sso-beta.docreader.nl/shibboleth": {
+      "en": "OurMeeting",
+      "nl": "OurMeeting"
+    }
+  },
+  {
+    "https://mijn.proactive.nl/simplesaml/module.php/saml/sp/metadata.php/default-sp": {
+      "en": "ProActive Spend Cloud",
+      "nl": "ProActive Spend Cloud"
+    }
+  },
+  {
+    "https://ssltest.digitaleverkiezing.nl/simplesaml/module.php/saml/sp/metadata.php/digitaleverkiezing-test": {
+      "en": "Digital Elections",
+      "nl": "Digitale verkiezingen"
+    }
+  },
+  {
+    "https://federatedid-na1.services.adobe.com/federated/saml/metadata/alias/d4154755-026b-4648-84b1-1184d7c232af": {
+      "en": "Adobe Creative Cloud | TU/e",
+      "nl": "Adobe Creative Cloud | TU/e"
+    }
+  },
+  {
+    "https://survey-mstc.nhlstenden.com/simplesaml/module.php/saml/sp/metadata.php/default-sp": {
+      "en": "Limesurvey Surveys MSTC Terschelling",
+      "nl": "Limesurvey Entreetoets MSTC Terschelling"
+    }
+  },
+  {
+    "https://survey-miwb.nhlstenden.com/simplesaml/module.php/saml/sp/metadata.php/default-sp": {
+      "en": "Limesurvey Surveys MIWB Terschelling",
+      "nl": "Limesurvey Enquetes MIWB Terschelling"
+    }
+  },
+  {
+    "https://legacy-web-api.staging.uva.delcom.nl/auth/Connect_UVA/metadata": {
+      "en": "UVA staging - Delcom test",
+      "nl": "uva staging - Delcom test"
+    }
+  },
+  {
+    "https://auth.rs.tudelft.nl/auth/realms/innovatie-test": {
+      "en": "TU Delft Innovation-test",
+      "nl": "TU Delft Innovatie-test"
+    }
+  },
+  {
+    "http://acc1.mycampusprint.nl/saml": {
+      "en": "New Way To Print",
+      "nl": "Het Nieuwe Printen"
+    }
+  },
+  {
+    "https://rocvantwenteintake.simacpresto.com/saml2/metadata": {
+      "en": "Presto - ROC van Twente Intake | Simac IDS",
+      "nl": "Presto - ROC van Twente Intake | Simac IDS"
+    }
+  },
+  {
+    "https://rocvantwente.simacpresto.com/module.php/saml/sp/saml2-acs.php/default-sp": {
+      "en": "Presto - ROC van Twente | Simac IDS",
+      "nl": "Presto - ROC van Twente | Simac IDS"
+    }
+  },
+  {
+    "https://testsurfconext-sandbox.mxapps.io": {
+      "en": "SURFconext Test",
+      "nl": "SURFconext Test"
+    }
+  },
+  {
+    "https://connect.dev.jobteaser.net/sso/surfconect/metadata": {
+      "en": "Connect",
+      "nl": "Connect"
+    }
+  },
+  {
+    "https://proxy.test.sram.surf.nl/md/SamlSP.xml": {
+      "en": "SURF Research Access Management (test environment)",
+      "nl": "SURF Research Access Management (test environment)"
+    }
+  },
+  {
+    "https://consult.esize.nl": {
+      "en": "Proactis",
+      "nl": "Proactis"
+    }
+  },
+  {
+    "https://secure.nature.com/shibboleth": {
+      "en": "Nature Research",
+      "nl": "Nature Research"
+    }
+  },
+  {
+    "https://app-acc.examservices.nl": {
+      "en": "Canon Exam Services",
+      "nl": "Canon Exam Services"
+    }
+  },
+  {
+    "https://studypath-acc.avans.nl": {
+      "en": "StudyPath (Accp)",
+      "nl": "StudyPath (Accp)"
+    }
+  },
+  {
+    "https://acta.iprova.nl/3FC15ADD5897ECC2": {
+      "en": "iProva - Academisch Centrum Tandheelkunde Amsterdam | Infoland",
+      "nl": "iProva - Academisch Centrum Tandheelkunde Amsterdam | Infoland"
+    }
+  },
+  {
+    "http://local.360-toolkit.com": {
+      "en": "360-toolkit Test Local",
+      "nl": "360-toolkit Test Local"
+    }
+  },
+  {
+    "https://hhs.data.surfsara.nl/": {
+      "en": "De Haagse Hogeschool Data Sharing Cloud",
+      "nl": "De Haagse Hogeschool Data Sharing Cloud"
+    }
+  },
+  {
+    "https://fsso.springer.com": {
+      "en": "Springer",
+      "nl": "Springer"
+    }
+  },
+  {
+    "https://portal.intermaxhealth.cloud/tenant/Erasmus_Research_Test": {
+      "en": "Intermax Healthcloud - Erasmus Research Test",
+      "nl": "Intermax Healthcloud - Erasmus Research Test"
+    }
+  },
+  {
+    "https://geteduroam.nl/simplesaml/module.php/saml/sp/metadata.php/default-sp": {
+      "en": "geteduroam",
+      "nl": "geteduroam"
+    }
+  },
+  {
+    "https://suiteont.eu/sp/1049": {
+      "en": "PrivacySuite ROC-Nijmegen Ont",
+      "nl": "PrivacySuite ROC-Nijmegen Ont"
+    }
+  },
+  {
+    "https://tst-datanose.nl/": {
+      "en": "tst.datanose.nl",
+      "nl": "tst.datanose.nl"
+    }
+  },
+  {
+    "https://federatedid-na1.services.adobe.com/federated/saml/metadata/alias/d3ded419-3f4c-4d37-860c-5a510ace63b7": {
+      "en": "Adobe Creative Cloud | SURFbureau",
+      "nl": "Adobe Creative Cloud | SURFbureau"
+    }
+  },
+  {
+    "https://arttest.surfsara.nl/artifactory/webapp/saml/loginResponse": {
+      "en": "Arttest",
+      "nl": "Arttest"
+    }
+  },
+  {
+    "https://login.staging.oerwrite.nl/users/saml/metadata": {
+      "en": "OER Write (Staging) - multi-tenant | Docflow",
+      "nl": "OER Write (Staging) - multi-tenant | Docflow"
+    }
+  },
+  {
+    "https://dev.bbb.surfcloud.nl/b/auth/saml/metadata": {
+      "en": "BBB SURFcloud",
+      "nl": "BBB SURFcloud"
+    }
+  },
+  {
+    "https://tudelft.eduvpn.nl/saml": {
+      "en": "eduVPN [tudelft.eduvpn.nl] | SURFnet",
+      "nl": "eduVPN [tudelft.eduvpn.nl] | SURFnet"
+    }
+  },
+  {
+    "https://qa.portfolium.com/shibboleth": {
+      "en": "Portfolium - QA",
+      "nl": "Portfolium - QA"
+    }
+  },
+  {
+    "https://dspace6-acc.ubn.ru.nl/shibboleth": {
+      "en": "Radboud Repository TEST",
+      "nl": "Radboud Repository TEST"
+    }
+  },
+  {
+    "https://nhlstendenstudiekeuzecheck.nl/simplesaml/module.php/saml/sp/metadata.php/default-sp": {
+      "en": "NHL/Stenden Matching Questionnaire",
+      "nl": "NHL/Stenden Studiekeuzecheck"
+    }
+  },
+  {
+    "https://repository-test.maastrichtuniversity.nl/saml/module.php/saml/sp/metadata.php/SURFconext": {
+      "en": "Digital Repository (test) | Maastricht University",
+      "nl": "Digital Repository (test) | Maastricht University"
+    }
+  },
+  {
+    "https://t360-testing.herokuapp.com/": {
+      "en": "360-toolkit Test Heroku",
+      "nl": "360-toolkit Test Heroku"
+    }
+  },
+  {
+    "https://hu01.parantion.nl/simplesaml/module.php/saml/sp/metadata.php/surfconext_v3_hu01": {
+      "en": "Scorion3 Hogeschool Utrecht",
+      "nl": "Scorion3 Hogeschool Utrecht"
+    }
+  },
+  {
+    "https://dev.academy.ide.tudelft.nl/saml/metadata.xml": {
+      "en": "IDE Academy Certificates",
+      "nl": "IDE Academy Certificates"
+    }
+  },
+  {
+    "http://um.mycampusprint.nl/saml": {
+      "en": "New Way To Print",
+      "nl": "Het Nieuwe Printen"
+    }
+  },
+  {
+    "https://aventus-tst.osiris-mbo.nl/osirissaml/saml2/metadata/osiris-student": {
+      "en": "OSIRIS Aventus TST Student | CACI",
+      "nl": "OSIRIS Aventus TST Student | CACI"
+    }
+  },
+  {
+    "https://prestotest.rocmondriaan.nl/module.php/saml/sp/saml2-acs.php/default-sp": {
+      "en": "PrestoTest - ROC Mondriaan | Simac IDS",
+      "nl": "PrestoTest - ROC Mondriaan | Simac IDS"
+    }
+  },
+  {
+    "https://saml-test.mobius.cloud/saml/metadata": {
+      "en": "Möbius Platform (Test)",
+      "nl": "Möbius Platform (Test)"
+    }
+  },
+  {
+    "https://training-vhl.querio.nl/sso-connect/module.php/saml/sp/metadata.php/default-sp": {
+      "en": "Querio Planning",
+      "nl": "Querio Planning"
+    }
+  },
+  {
+    "https://surfconext-test.foleon.com/saml": {
+      "en": "Foleon",
+      "nl": "Foleon"
+    }
+  },
+  {
+    "https://test-surf-shibboleth.moveon4.com/shibboleth": {
+      "en": "Moveon",
+      "nl": "Moveon SSO"
+    }
+  },
+  {
+    "https://t360-acceptance.herokuapp.com/": {
+      "en": "360-toolkit Acceptance Heroku",
+      "nl": "360-toolkit Acceptatie Heroku"
+    }
+  },
+  {
+    "http://clusius.mycampusprint.nl/saml": {
+      "en": "New Way To Print",
+      "nl": "Het Nieuwe Printen"
+    }
+  },
+  {
+    "https://acc.ans.app/saml/surf/metadata": {
+      "en": "Ans (acceptance)",
+      "nl": "Ans (acceptatie)"
+    }
+  },
+  {
+    "https://eduapp.eu.ngrok.io/api/v1/auth/saml/metadata": {
+      "en": "Eduapp LOCAL",
+      "nl": "Eduapp LOCAL"
+    }
+  },
+  {
+    "https://studentresearch-develop.pre-atom.nl": {
+      "en": "StudentResearch acceptance",
+      "nl": "StudentResearch acceptance"
+    }
+  },
+  {
+    "https://umcg.mibris.nl/PaNaMa/AuthServices": {
+      "en": "PaNaMa Research Management System - UMCG",
+      "nl": "PaNaMa Research Management System - UMCG"
+    }
+  },
+  {
+    "https://prestostudenttest.rocmondriaan.nl/saml2/metadata": {
+      "en": "PrestoStudentTest - ROC Mondriaan | Simac IDS",
+      "nl": "PrestoStudentTest - ROC Mondriaan | Simac IDS"
+    }
+  },
+  {
+    "https://tst.osiris.wur.nl/osirissaml/saml2/metadata/osiris-student": {
+      "en": "OSIRIS WUR OTA - Student | CACI",
+      "nl": "OSIRIS WUR OTA - Student | CACI"
+    }
+  },
+  {
+    "https://api-avans.capturetech.cloud/api/saml/surfconexttest/metadata.xml": {
+      "en": "CaptureTech Reservationplatform",
+      "nl": "CaptureTech Reserveringsplatform"
+    }
+  },
+  {
+    "http://care.mycampusprint.nl/saml": {
+      "en": "New Way To Print",
+      "nl": "Het Nieuwe Printen"
+    }
+  },
+  {
+    "https://itforms.un-ihe.org/saml/metadata/": {
+      "en": "IT Forms",
+      "nl": "IT forms"
+    }
+  },
+  {
+    "https://saxion.eduvpn.nl/saml": {
+      "en": "eduVPN [saxion.eduvpn.nl] | SURFnet",
+      "nl": "eduVPN [saxion.eduvpn.nl] | SURFnet"
+    }
+  },
+  {
+    "https://radboudumc02.parantion.nl/simplesaml/module.php/saml/sp/metadata.php/surfconext_v3_radboudumc02": {
+      "en": "Scorion3 Radboud UMC THK",
+      "nl": "Scorion3 Radboud UMC THK"
+    }
+  },
+  {
+    "https://filmacademie.foleon.com/saml": {
+      "en": "Foleon - AHK",
+      "nl": "Foleon - AHK"
+    }
+  },
+  {
+    "https://drupalcms-dev.ru.nl": {
+      "en": "Radboud University Website (development)",
+      "nl": "Radboud Universiteit Website (ontwikkelomgeving)"
+    }
+  },
+  {
+    "https://prestodocenttest.rocmondriaan.nl/saml2/metadata": {
+      "en": "PrestoDocentTest - ROC Mondriaan | Simac IDS",
+      "nl": "PrestoDocentTest - ROC Mondriaan | Simac IDS"
+    }
+  },
+  {
+    "https://techniekcollege.acceptatie.mediavisie.net/simplesaml/module.php/saml/sp/metadata.php/default-sp": {
+      "en": "Mediavisie Development",
+      "nl": "Mediavisie Development"
+    }
+  },
+  {
+    "https://sso-test.myesl.nl/module.php/saml/sp/metadata.php/default-sp": {
+      "en": "MyESL | EUR",
+      "nl": "MyESL | EUR"
+    }
+  },
+  {
+    "https://login-t.rechtsorde.nl/": {
+      "en": "Rechtsorde portal (TEST) | Rechtsorde",
+      "nl": "Rechtsorde portaal (TEST) | Rechtsorde"
+    }
+  },
+  {
+    "https://osirisacc-saml.test.zuyd.nl/osirissaml/saml2/metadata/osiris-student": {
+      "en": "OSIRIS Zuyd OTA - Student | CACI",
+      "nl": "OSIRIS Zuyd OTA - Student | CACI"
+    }
+  },
+  {
+    "https://novacollege.mijnomnipas.nl/simplesamlphp/www/module.php/saml/sp/metadata.php/default-sp": {
+      "en": "Novapas",
+      "nl": "Novapas"
+    }
+  },
+  {
+    "https://test-eduvpn01.geant.org/saml/metadata": {
+      "en": "GÉANT eduVPN (institutional access, test environment)",
+      "nl": "GÉANT eduVPN (institutional access, test environment)"
+    }
+  },
+  {
+    "https://demo.connect.nen.nl": {
+      "en": "NEN Connect demo",
+      "nl": "NEN Connect demo"
+    }
+  },
+  {
+    "https://erp-acc.sap.uva.nl": {
+      "en": "SAP Backend - RUA (Acceptatie) | UvA",
+      "nl": "SAP Backend - RUA (Acceptatie) | UvA"
+    }
+  },
+  {
+    "https://shib.rsc-uat.org/shibboleth": {
+      "en": "Royal Society of Chemistry Publications Online",
+      "nl": "Royal Society of Chemistry Publications Online"
+    }
+  },
+  {
+    "https://designacademy.mynetpay.nl/metadata": {
+      "en": "myNetPay",
+      "nl": "myNetPay"
+    }
+  },
+  {
+    "https://hsleiden.mynetpay.nl/metadata": {
+      "en": "myNetPay",
+      "nl": "myNetPay"
+    }
+  },
+  {
+    "https://bulldog.proquro.nl/witt370057/Basis/DEV_7577": {
+      "en": "Chris Witterholt DEV-7577",
+      "nl": "Chris Witterholt DEV-7577"
+    }
+  },
+  {
+    "https://studeersamen.nl/studeersamen_content/plugins/miniorange-saml-20-single-sign-on/": {
+      "en": "StudeerSamen",
+      "nl": "StudeerSamen"
+    }
+  },
+  {
+    "https://testauthentication.di.huc.knaw.nl/Saml2/proxy_saml2_backend.xml": {
+      "en": "testauthentication.di.huc.knaw.nl",
+      "nl": "CLARIAH IAA  Engine | CLARIN (test)"
+    }
+  },
+  {
+    "https://student.ncvbweb.nl/shibboleth": {
+      "en": "Student Portal NCVB Bedrijfsopleidingen.",
+      "nl": "Studenten Portaal NCVB Bedrijfsopleidingen"
+    }
+  },
+  {
+    "https://u4ids4-dev.azurewebsites.net/identity": {
+      "en": "TestU4",
+      "nl": "Draisaitel"
+    }
+  },
+  {
+    "https://suiteacc.eu/sp/1068": {
+      "en": "PrivacySuite Friesland College Ont",
+      "nl": "PrivacySuite Friesland College Ont"
+    }
+  },
+  {
+    "https://login.surftest.educus.nl/709A2B1C-6760-46DF-A4AE-0FF2C672939D": {
+      "en": "Eduarte - Educus college (test static)",
+      "nl": "Eduarte - Educus college (test static)"
+    }
+  },
+  {
+    "https://discourse-imphys.tudelft.nl": {
+      "en": "Discourse ImPhys",
+      "nl": "Discourse ImPhys"
+    }
+  },
+  {
+    "https://tudelftgs.opleidingsportaal.nl": {
+      "en": "Opleidingsportaal GS - TU Delft | Coachview",
+      "nl": "Opleidingsportaal GS - TU Delft | Coachview"
+    }
+  },
+  {
+    "https://talnet.mycampusprint.nl/saml": {
+      "en": "New Way To Print",
+      "nl": "Het Nieuwe Printen"
+    }
+  },
+  {
+    "https://onderwijsovereenkomsten.han.nl/users/saml/metadata": {
+      "en": "Onderwijsovereenkomsten (HAN) | Docflow",
+      "nl": "Onderwijsovereenkomsten (HAN) | Docflow"
+    }
+  },
+  {
+    "https://mijnhorizonpas.mijnomnipas.nl/simplesamlphp/www/module.php/saml/sp/metadata.php/default-sp": {
+      "en": "My Horizonpas",
+      "nl": "Mijn Horizonpas"
+    }
+  },
+  {
+    "https://osirisacc-saml.test.zuyd.nl/osirissaml/saml2/metadata/osiris-medewerker": {
+      "en": "OSIRIS OTA - Zuyd Hogeschool [Employees] | CACI",
+      "nl": "OSIRIS OTA - Zuyd Hogeschool [Medewerkers] | CACI"
+    }
+  },
+  {
+    "https://dev-auth.nexus-bay.com/saml2/mytestidp1/metadata": {
+      "en": "Nxus Authentication Test",
+      "nl": "Nxus Authentication Test NL"
+    }
+  },
+  {
+    "https://horafinita-accept.eur.nl/simplesaml/module.php/saml/sp/metadata.php/test-sp": {
+      "en": "Hora Finita (EUR) | Fargeau | ACC",
+      "nl": "Hora Finita (EUR) | Fargeau | ACC"
+    }
+  },
+  {
+    "https://demofontys.itslearning.com/samlmetadata/saml2v2/2": {
+      "en": "Itslearning - Fontys University | Itslearning (demo)",
+      "nl": "Itslearning - Fontys Hogescholen | Itslearning (demo)"
+    }
+  },
+  {
+    "https://www.releezme.net/": {
+      "en": "Vecos Locker Management System",
+      "nl": "Vecos Locker Management"
+    }
+  },
+  {
+    "https://uva-eval.mediasite.com/Mediasite": {
+      "en": "Mediasite Universiteit of Amsterdam Test | Sonic Foundry",
+      "nl": "Mediasite Universiteit van Amsterdam Test | Sonic Foundry"
+    }
+  },
+  {
+    "https://app.sportenbewegenhilversum.nl/wp-login.php": {
+      "en": "ROCvA Sport en Bewegen Hilversum",
+      "nl": "ROCvA Sport en Bewegen Hilversum"
+    }
+  },
+  {
+    "https://fontys-test.base27.eu/": {
+      "en": "Base27",
+      "nl": "Base27"
+    }
+  },
+  {
+    "urn:jobteaser:connect_sp": {
+      "en": "connect",
+      "nl": "connect"
+    }
+  },
+  {
+    "https://federatedid-na1.services.adobe.com/federated/saml/metadata/alias/88015101-6335-4525-b53f-b554e6db2fa5": {
+      "en": "Adobe Creative Cloud - AUAS (Staging)",
+      "nl": "Adobe Creative Cloud - HvA (Acceptatie)"
+    }
+  },
+  {
+    "https://abeltasman.service.rug.nl/simplesaml/module.php/saml/sp/metadata.php/default-sp": {
+      "en": "Moca",
+      "nl": "Moca"
+    }
+  },
+  {
+    "https://drupalcms-tst.ru.nl": {
+      "en": "Radboud University Website (test)",
+      "nl": "Radboud Universiteit Website (Testomgeving)"
+    }
+  },
+  {
+    "https://p2gdemov6-share.presentations2go.eu/p2g/": {
+      "en": "p2gdemov6-share",
+      "nl": "p2gdemov6-share"
+    }
+  },
+  {
+    "https://rstudio-tst.datanose.nl": {
+      "en": "RStudio Server - test",
+      "nl": "RStudio Server - test"
+    }
+  },
+  {
+    "https://10vdl-schedule-acc.optimumassessment.com/Shibboleth": {
+      "en": "10voordeleraar",
+      "nl": "10voordeleraar"
+    }
+  },
+  {
+    "https://uva.mediaspace.kaltura.com/saml/index/sp-metadata": {
+      "en": "Kaltura UvA demo",
+      "nl": "Kaltura UvA demo"
+    }
+  },
+  {
+    "https://acceptatie.myresearchmanager.com/METCVUmc/Metadata": {
+      "en": "Research Manager",
+      "nl": "Research Manager"
+    }
+  },
+  {
+    "https://nyenrode.jobteaser.com/users/auth/nyenrode_saml/metadata": {
+      "en": "JobTeaser Career Center - Nyenrode",
+      "nl": "JobTeaser Career Center - Nyenrode | JobTeaser"
+    }
+  },
+  {
+    "https://video-acc.ic.uva.nl/saml/index/sp-metadata": {
+      "en": "Kaltura UvA acc",
+      "nl": "Kaltura UvA acc"
+    }
+  },
+  {
+    "https://video.uva.nl/saml/index/sp-metadata": {
+      "en": "Kaltura UvA",
+      "nl": "Kaltura UvA"
+    }
+  },
+  {
+    "urn:mace:surfnet.nl:sp:naar.surf.nl": {
+      "en": "naar.surf.nl",
+      "nl": "naar.surf.nl"
+    }
+  },
+  {
+    "https://hr.data.surfsara.nl/": {
+      "en": "Hogeschool Rotterdam Data Sharing Cloud",
+      "nl": "Hogeschool Rotterdam Data Sharing Cloud"
+    }
+  },
+  {
+    "https://portal132-pentest.mendixcloud.com": {
+      "en": "Avans Portal (Pentest) | Avans",
+      "nl": "Avans Portaal (Pentest) | Avans"
+    }
+  },
+  {
+    "https://portal132-performance.mendixcloud.com": {
+      "en": "Avans Portal (Performance) | Avans",
+      "nl": "Avans Portaal (Performance) | Avans"
+    }
+  },
+  {
+    "https://im.alterdesk.com/msrv/auth/335a5190-c70b-4e52-ace9-7ffa999acf51": {
+      "en": "Alterdesk messenger",
+      "nl": "Alterdesk messenger"
+    }
+  },
+  {
+    "http://prosamldemo.crsapp204.bct-ota.local/web/index.html": {
+      "en": "MyCorsa NxT - development",
+      "nl": "MyCorsa NxT - development"
+    }
+  },
+  {
+    "https://nimeto.educator.eu/saml/SSO/alias/nimeto": {
+      "en": "Educator",
+      "nl": "Educator"
+    }
+  },
+  {
+    "https://projectenesrinl.maps.arcgis.com": {
+      "en": "ArcGIS Online Dev and Test Organization - projectenesrinl",
+      "nl": "ArcGIS Online Dev and Test Organization - projectenesrinl"
+    }
+  },
+  {
+    "https://rocvantwenteintaketest.simacpresto.com/saml2/metadata": {
+      "en": "Presto - ROC van Twente Intake Test  | Simac IDS",
+      "nl": "Presto - ROC van Twente Intake Test  | Simac IDS"
+    }
+  },
+  {
+    "https://sg-accept.nl/studentenverdeel/saml/module.php/saml/sp/metadata.php/default-sp": {
+      "en": "Studentassign Accept",
+      "nl": "Studentenverdeel accept"
+    }
+  },
+  {
+    "https://pasbeheer.screencheck.net/": {
+      "en": "CardsOnline",
+      "nl": "CardsOnline"
+    }
+  },
+  {
+    "https://mijnpas.screencheck.net": {
+      "en": "CardsOnline ServicePortal",
+      "nl": "CardsOnline ServicePortal"
+    }
+  },
+  {
+    "https://saml-eu.mobius.cloud/saml/metadata": {
+      "en": "Möbius Platform (EU)",
+      "nl": "Möbius Platform (EU)"
+    }
+  },
+  {
+    "https://saml-na.mobius.cloud/saml/metadata": {
+      "en": "Möbius Platform (NA)",
+      "nl": "Möbius Platform (NA)"
+    }
+  },
+  {
+    "https://saml-oc.mobius.cloud/saml/metadata": {
+      "en": "Möbius Platform (OC)",
+      "nl": "Möbius Platform (OC)"
+    }
+  },
+  {
+    "https://elo.vistacollege.nl": {
+      "en": "VISTA college",
+      "nl": "VISTA college"
+    }
+  },
+  {
+    "https://tud-planningsportal.acc.eveoh.nl": {
+      "en": "Delft University of Technology | Collegarama Planning acceptance",
+      "nl": "Technische Universiteit Delft | Collegarama Planning acceptatie"
+    }
+  },
+  {
+    "https://corsa208.bct-ota.local/Corsa/web/index.html": {
+      "en": "MyCorsa NxT - Corsa 2019 Progress OTA",
+      "nl": "MyCorsa NxT - Corsa 2019 Progress OTA"
+    }
+  },
+  {
+    "https://vhl.querio.nl/sso-connect/module.php/saml/sp/metadata.php/default-sp": {
+      "en": "Querio Planning",
+      "nl": "Querio Planning"
+    }
+  },
+  {
+    "https://v31.querio.nl/sso-connect/module.php/saml/sp/metadata.php/default-sp": {
+      "en": "Querio Planning",
+      "nl": "Querio Planning"
+    }
+  },
+  {
+    "https://prestostudent.rocmondriaan.nl/saml2/metadata": {
+      "en": "PrestoStudent - ROC Mondriaan | Simac IDS",
+      "nl": "PrestoStudent - ROC Mondriaan | Simac IDS"
+    }
+  },
+  {
+    "https://prestodocent.rocmondriaan.nl/saml2/metadata": {
+      "en": "PrestoDocent - ROC Mondriaan | Simac IDS",
+      "nl": "PrestoDocent - ROC Mondriaan | Simac IDS"
+    }
+  },
+  {
+    "https://www.service4mobility.com/HU_TEST": {
+      "en": "Hogeschool Utrecht Mobility-Online Test",
+      "nl": "Hogeschool Utrecht Mobility-Online Test"
+    }
+  },
+  {
+    "https://rug.print.ricoh.nl/DSF/": {
+      "en": "Rijksuniversiteit Groningen DSF portal Ricoh",
+      "nl": "Rijksuniversiteit Groningen DSF portal Ricoh"
+    }
+  },
+  {
+    "https://alfacollege.print.ricoh.nl/DSF/": {
+      "en": "Alfacollege DSF portal Ricoh",
+      "nl": "Alfacollege DSF portal Ricoh"
+    }
+  },
+  {
+    "https://video-test.ic.uva.nl/saml/index/sp-metadata": {
+      "en": "Kaltura UvA test",
+      "nl": "Kalturava UvA test"
+    }
+  },
+  {
+    "https://umsa-test.mendixcloud.com": {
+      "en": "University Maastricht Sport Application",
+      "nl": "Universiteit Maastricht Sport Applicatie"
+    }
+  },
+  {
+    "https://uva.eu.qualtrics.com": {
+      "en": "Qualtrics Survey Software - UvA | Qualtrics",
+      "nl": "Qualtrics Survey Software - UvA | Qualtrics"
+    }
+  },
+  {
+    "https://alfa-college.itsltest.com/": {
+      "en": "Itslearning - Alfa-college | Itslearning (test)",
+      "nl": "Itslearning - Alfa-college | Itslearning (test)"
+    }
+  },
+  {
+    "https://deltion.itsltest.com/": {
+      "en": "itslearning - Deltion College | itslearning (test)",
+      "nl": "itslearning - Deltion College | itslearning (test)"
+    }
+  },
+  {
+    "https://presto.rocmondriaan.nl/module.php/saml/sp/saml2-acs.php/default-sp": {
+      "en": "Presto - ROC Mondriaan | Simac IDS",
+      "nl": "Presto - ROC Mondriaan | Simac IDS"
+    }
+  },
+  {
+    "https://1920presto.rocmondriaan.nl/module.php/saml/sp/saml2-acs.php/default-sp": {
+      "en": "PrestoArchief - ROC Mondriaan | Simac IDS",
+      "nl": "PrestoArchief - ROC Mondriaan | Simac IDS"
+    }
+  },
+  {
+    "https://pfs-test.westeurope.cloudapp.azure.com": {
+      "en": "test",
+      "nl": "test"
+    }
+  },
+  {
+    "https://hsleiden01.parantion.nl/simplesaml/module.php/saml/sp/metadata.php/surfconext_v3_hsleiden01": {
+      "en": "Scorion3 Hogeschool Leiden",
+      "nl": "Scorion3 Hogeschool Leiden"
+    }
+  },
+  {
+    "https://rug.parantion.nl/simplesaml/module.php/saml/sp/metadata.php/surfconext_v3_rug2": {
+      "en": "Scorion3 Rijksuniversiteit Groningen",
+      "nl": "Scorion3 Rijksuniversiteit Groningen"
+    }
+  },
+  {
+    "https://so.parantion.nl/simplesaml/module.php/saml/sp/metadata.php/surfconext_v3_so": {
+      "en": "Scorion3 SOON",
+      "nl": "Scorion3 SOON"
+    }
+  },
+  {
+    "https://dev-thomas.codegra.de/api/sso/saml2/metadata/5cb96bb4-c542-4ff7-b06f-6cdfe30bae48": {
+      "en": "CodeGrade",
+      "nl": "CodeGrade"
+    }
+  },
+  {
+    "https://hruvt-test.topdesk.net/saml-metadata/6fb18802-518c-46a2-b1e2-c3a0d91f4f3d": {
+      "en": "TopDeskHR test Tilburg University",
+      "nl": "TopdeskHR test Tilburg University"
+    }
+  },
+  {
+    "https://uvt-acc.mediasite.com/Mediasite": {
+      "en": "Mediasite ACC Tilburg University | Sonic Foundry",
+      "nl": "Mediasite ACC Tilburg University | Sonic Foundry"
+    }
+  },
+  {
+    "https://student-test.b3net.nl/simplesaml/module.php/saml/sp/metadata.php/surfconext-staging": {
+      "en": "B3net single-sign-on service",
+      "nl": "B3net single-sign-on service"
+    }
+  },
+  {
+    "https://bis-prd1.tudelft.nl": {
+      "en": "bis-prd1 Delft | TU Delft",
+      "nl": "bis-prd1 Delft | TU Delft"
+    }
+  },
+  {
+    "https://student-avans-b3net.pqa.nl/simplesaml/module.php/saml/sp/metadata.php/surfconext-staging": {
+      "en": "B3net single-sign-on service",
+      "nl": "B3net single-sign-on service"
+    }
+  },
+  {
+    "https://drupalcms-acc.ru.nl": {
+      "en": "Radboud University Website (acceptance)",
+      "nl": "Radboud Universiteit Website (acceptatieomgeving)"
+    }
+  },
+  {
+    "https://uat.protocolbuster.com/radboud": {
+      "en": "Radboud_Uat",
+      "nl": "Radboud_Uat"
+    }
+  },
+  {
+    "https://www.mijncmd.nl/simplesaml/module.php/saml/sp/metadata.php/default-sp": {
+      "en": "My CMD",
+      "nl": "Mijn CMD"
+    }
+  },
+  {
+    "https://fontys.eduvpn.nl/saml": {
+      "en": "eduVPN [fontys.eduvpn.nl] | SURFnet",
+      "nl": "eduVPN [fontys.eduvpn.nl] | SURFnet"
+    }
+  },
+  {
+    "https://thesisfair-dev.datanose.nl/metadata.xml": {
+      "en": "Online Thesis Fair Platform - dev",
+      "nl": "Online Thesis Fair Platform - dev"
+    }
+  },
+  {
+    "https://tudelftsd.opleidingsportaal.nl": {
+      "en": "Opleidingsportaal - TU Delft | Coachview",
+      "nl": "Opleidingsportaal - TU Delft | Coachview"
+    }
+  },
+  {
+    "https://test.healthychronos.eu": {
+      "en": "HealthyChronos",
+      "nl": "HealthyChronos"
+    }
+  },
+  {
+    "https://api.growflow.app/api/v1/auth/saml/metadata": {
+      "en": "Growflow",
+      "nl": "Growflow"
+    }
+  },
+  {
+    "https://bibliotheek.windesheim.nl/koha-opac": {
+      "en": "koha opac voor windesheim",
+      "nl": "koha opac for windesheim"
+    }
+  },
+  {
+    "https://growflow-staging.herokuapp.com/api/v1/auth/saml/metadata": {
+      "en": "Growflow",
+      "nl": "Growflow"
+    }
+  },
+  {
+    "https://tdans-dataverse.dans.knaw.nl/sp": {
+      "en": "DansDataverse (test) | DANS",
+      "nl": "DansDataverse (test) | DANS"
+    }
+  },
+  {
+    "https://baliemc.windesheim.nl/koha-pro": {
+      "en": "koha staff for windesheim",
+      "nl": "koha staff voor windesheim"
+    }
+  },
+  {
+    "http://surfconext-prdacc.ats-platform.com/trust": {
+      "en": "Hireserve",
+      "nl": "Hireserve"
+    }
+  },
+  {
+    "https://hsleiden.codegra.de/api/sso/saml2/metadata/7755714d-331e-43e5-adc8-5edaa3286929": {
+      "en": "CodeGrade",
+      "nl": "CodeGrade"
+    }
+  },
+  {
+    "https://eduwin506.eduoffice.local/TigQvSurfConext/Saml2": {
+      "en": "TIG QlikView Access App",
+      "nl": "TIG QlikView Access App"
+    }
+  },
+  {
+    "https://oege.ie.hva.nl/simplesaml/module.php/saml/sp/metadata.php/default-sp": {
+      "en": "oege HvA",
+      "nl": "Oege HvA"
+    }
+  },
+  {
+    "https://uva.mediasite.com/Mediasite": {
+      "en": "Mediasite Universiteit of Amsterdam | Sonic Foundry",
+      "nl": "Mediasite Universiteit van Amsterdam | Sonic Foundry"
+    }
+  },
+  {
+    "https://federatedid-na1.services.adobe.com/federated/saml/metadata/alias/2bb8adf0-3581-4591-8daf-450e518b1ab6": {
+      "en": "Adobe Connect | Sint Lucas",
+      "nl": "Adobe Connect | Sint Lucas"
+    }
+  },
+  {
+    "https://sp.rosettastone.com/platform": {
+      "en": "Rosetta Stone",
+      "nl": "Rosetta Stone"
+    }
+  },
+  {
+    "https://pbl.data.surfsara.nl/": {
+      "en": "Planbureau voor de Leefomgeving Data Sharing Cloud",
+      "nl": "Planbureau voor de Leefomgeving Data Sharing Cloud"
+    }
+  },
+  {
+    "https://aperture.data.surfsara.nl/": {
+      "en": "Aperture Laboratories (display) Data Sharing Cloud",
+      "nl": "Aperture Laboratories (display) Data Sharing Cloud"
+    }
+  },
+  {
+    "https://alfa-college.mycampusprint.nl/saml": {
+      "en": "New Way To Print",
+      "nl": "Het Nieuwe Printen"
+    }
+  },
+  {
+    "https://projectforum.tudelft.nl/users/saml/metadata": {
+      "en": "Project Forum",
+      "nl": "Project Forum"
+    }
+  },
+  {
+    "https://dmp.acc.dh.unimaas.nl/shibboleth": {
+      "en": "DataHub DMP Maastricht",
+      "nl": "DataHub DMP Maastricht"
+    }
+  },
+  {
+    "https://stackoverflow.com/c/tud-cs/auth/saml2/info": {
+      "en": "Stack Overflow for Teams",
+      "nl": "Stack Overflow for Teams"
+    }
+  },
+  {
+    "https://maastrichtuniversity.opleidingsportaal.nl": {
+      "en": "Opleidingsportaal - Universiteit Maastricht | Coachview",
+      "nl": "Opleidingsportaal - Universiteit Maastricht | Coachview"
+    }
+  },
+  {
+    "http://uva-inschrijftool.local/saml/metadata": {
+      "en": "UVA careerevents dev",
+      "nl": "UVA careerevents dev"
+    }
+  },
+  {
+    "https://growflow.eu.ngrok.io/api/v1/auth/saml/metadata": {
+      "en": "Growflow",
+      "nl": "Growflow"
+    }
+  },
+  {
+    "https://tudelfttls.opleidingsportaal.nl": {
+      "en": "Opleidingsportaal TLS - TU Delft | Coachview",
+      "nl": "Opleidingsportaal TLS - TU Delft | Coachview"
+    }
+  },
+  {
+    "https://marnix.parantion.nl/simplesaml/module.php/saml/sp/metadata.php/surfconext_v3_marnix": {
+      "en": "Scorion3 - Marnix | Parantion",
+      "nl": "Scorion3 - Marnix | Parantion"
+    }
+  },
+  {
+    "https://e1375b98af1b.ngrok.io/sso/saml2/metadata/?provider=idp_utwente": {
+      "en": "Mentor-RUGTC (dvl-2)",
+      "nl": "Mentor-RUGTC (dvl-2)"
+    }
+  },
+  {
+    "https://uva-test.eduvpn.nl/saml": {
+      "en": "eduVPN [uva-test.eduvpn.nl] | SURFnet",
+      "nl": "eduVPN [uva-test.eduvpn.nl] | SURFnet"
+    }
+  },
+  {
+    "https://healthychronos.eu": {
+      "en": "HealthyChronos",
+      "nl": "HealthyChronos"
+    }
+  },
+  {
+    "https://app.wooclap.com/api/auth/saml/test.surfconext.nl": {
+      "en": "Wooclap",
+      "nl": "Wooclap"
+    }
+  },
+  {
+    "http://testshib2.haplo-services.net/shibboleth": {
+      "en": "Haplo",
+      "nl": "Haplo"
+    }
+  },
+  {
+    "https://acc-icreate.hhs.nl/simplesaml/module.php/saml/sp/metadata.php/default-sp": {
+      "en": "iCreate - De Haagse Hogeschool | Comrads",
+      "nl": "iCreate - De Haagse Hogeschool | Comrads"
+    }
+  },
+  {
+    "https://uva-inschrijftool.acc.ysci.nl/saml/metadata": {
+      "en": "UVA careerevents acc",
+      "nl": "UVA careerevents acc"
+    }
+  },
+  {
+    "https://tools.hr.nl/": {
+      "en": "HR Toolbox",
+      "nl": "HR Toolbox"
+    }
+  },
+  {
+    "https://videocollege.uvt.nl/Mediasite": {
+      "en": "Mediasite Tilburg University | Sonic Foundry",
+      "nl": "MediasiteTilburg University | Sonic Foundry"
+    }
+  },
+  {
+    "https://topowiki.tudelft.nl/simplesaml/module.php/saml/sp/metadata.php/dokuwiki": {
+      "en": "TOPOwiki",
+      "nl": "TOPOwiki"
+    }
+  },
+  {
+    "http://talnet.instructure.com/saml2": {
+      "en": "Canvas - ROC van Amsterdam | TALNET | Instructure Global Limited",
+      "nl": "Canvas - ROC van Amsterdam | TALNET | Instructure Global Limited"
+    }
+  },
+  {
+    "https://www.careerevents.uva.nl/saml/metadata": {
+      "en": "UvA CareerEvents production",
+      "nl": "UvA CareerEvents production"
+    }
+  },
+  {
+    "http://fd.nl": {
+      "en": "Het Financieele Dagblad",
+      "nl": "Het Financieele Dagblad"
+    }
+  },
+  {
+    "https://acc-v2.pluform.com/saml/metadata": {
+      "en": "Pluform2 testing",
+      "nl": "Pluform2 testing"
+    }
+  },
+  {
+    "https://tudelft.awareways-engine.com": {
+      "en": "Awareways",
+      "nl": "Awareways"
+    }
+  },
+  {
+    "https://serf-staging.mdsetechnology.org/saml/metadata": {
+      "en": "SERF Staging",
+      "nl": "SERF Staging"
+    }
+  },
+  {
+    "https://psptest.somtuniversity.nl/shibboleth": {
+      "en": "PSP-TEST | SOMT University",
+      "nl": "PSP-TEST | SOMT University"
+    }
+  },
+  {
+    "urn:dummy:protocolbuster_protocolmanager": {
+      "en": "Radbound_DEV",
+      "nl": "Radbound_DEV"
+    }
+  },
+  {
+    "https://boot.eloo.test/surfconext/metadata": {
+      "en": "BOOT",
+      "nl": "BOOT"
+    }
+  },
+  {
+    "https://serf.win.tue.nl/saml/metadata": {
+      "en": "SERF",
+      "nl": "SERF"
+    }
+  },
+  {
+    "https://tue.mediasite.com/Mediasite": {
+      "en": "Mediasite Technical University of Eindhoven | Sonic Foundry",
+      "nl": "Mediasite Technical University of Eindhoven | Sonic Foundry"
+    }
+  },
+  {
+    "https://academicrouteplanner-accp.mendixcloud.com": {
+      "en": "Academic Routeplanner",
+      "nl": "Academic Routeplanner"
+    }
+  },
+  {
+    "https://wellanttest.trajectplanner.nl/saml/module.php/saml/sp/metadata.php/surfconexttest2048": {
+      "en": "Trajectplanner Wellant test",
+      "nl": "Trajectplanner Wellant test"
+    }
+  },
+  {
+    "https://pro-windesheim-koha.test.biblibre.eu/koha-pro": {
+      "en": "koha test staff for windesheim",
+      "nl": "koha test staff voor windesheim"
+    }
+  },
+  {
+    "https://catalogue-windesheim-koha.test.biblibre.eu/koha-opac": {
+      "en": "koha test opac for windesheim",
+      "nl": "koha test opac voor windesheim"
+    }
+  },
+  {
+    "https://wur.jobteaser.com/users/auth/wur_shibboleth/metadata": {
+      "en": "JobTeaser Career Center - WUR | JobTeaser",
+      "nl": "JobTeaser Career Center - WUR | JobTeaser"
+    }
+  },
+  {
+    "http://fontys.instructure.com/saml2": {
+      "en": "Canvas - Fontys Hogescholen - Test",
+      "nl": "Canvas - Fontys Hogescholen - Test"
+    }
+  },
+  {
+    "https://rocmn.itsltest.com": {
+      "en": "Itslearning - ROC Midden Nederland | Itslearning (test)",
+      "nl": "Itslearning - ROC Midden Nederland | Itslearning (test)"
+    }
+  },
+  {
+    "https://avansone-test.avans.nl": {
+      "en": "AvansOne (Test) | Avans",
+      "nl": "AvansOne (Test) | Avans"
+    }
+  },
+  {
+    "http://nyenrode.instructure.com/saml2": {
+      "en": "Canvas - Nyenrode Business Universiteit - Test",
+      "nl": "Canvas - Nyenrode Business Universiteit - Test"
+    }
+  },
+  {
+    "https://acc-login.evalytics.xyz/auth/metadata": {
+      "en": "Evalytics",
+      "nl": "Evalytics"
+    }
+  },
+  {
+    "https://che.jvdict.com/saml2/surfconext/metadata": {
+      "en": "CHE",
+      "nl": "CHE"
+    }
+  },
+  {
+    "https://che-catering.test/saml2/surfconext/metadata": {
+      "en": "CHE Catering",
+      "nl": "CHE Catering"
+    }
+  },
+  {
+    "https://avansone-acc.avans.nl": {
+      "en": "AvansOne (Acc) | Avans",
+      "nl": "AvansOne (Acc) | Avans"
+    }
+  }
+]

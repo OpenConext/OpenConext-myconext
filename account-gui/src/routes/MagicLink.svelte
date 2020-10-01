@@ -2,7 +2,9 @@
     import I18n from "i18n-js";
     import {user} from "../stores/user";
     import {onMount} from "svelte";
-    import info from "../icons/informational.svg";
+    import backArrow from "../icons/back-arrow.svg";
+    const gmail = "/img/get-started-icon-gmail@2x-e80b706.png";
+    const outlook = "/img/get-started-icon-outlook-55f9ac5.png";
 
     export let id;
     let serviceName;
@@ -17,48 +19,92 @@
 </script>
 
 <style>
-    h2.header {
-        font-weight: 300;
+
+    .back-container {
+        position: absolute;
+        left: 10px;
+        top: 10px;
+        cursor: pointer;
     }
 
-    h2.top {
+    div.magic-link {
+        margin-top: 40px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        align-content: center;
+    }
+
+    p {
+     text-align: center;
+    }
+
+    h2.header {
         margin: 6px 0 30px 0;
         color: var(--color-primary-green);
         font-size: 28px;
     }
 
-    p.mail {
-        font-weight: bold;
-    }
-
-    div.whoops {
-        margin: 32px 0 16px 0;
-        display: flex;
-        padding: 16px;
-        border-radius: 8px;
-        background-color: #efefef;
-        font-size: 14px;
+    div.mail-clients {
+        width: 100%;
+        display:flex;
+        margin-top: 75px;
         align-items: center;
-    }
-    div.whoops .info {
-        margin-right: 10px;
+        align-content: center;
     }
 
-    div.whoops a {
-        text-decoration: underline;
+    div.mail-client {
+        display:flex;
+        align-items: center;
+        align-content: center;
+        font-size: 14px;
+    }
+
+    div.mail-client img {
+        display: inline-block;
+        margin-right: 7px;
+    }
+
+    div.mail-client.gmail {
+        margin-right: auto;
+        cursor: pointer;
+    }
+
+    div.mail-client.outlook {
+        margin-left: auto;
+    }
+
+    div.mail-clients a {
+        text-decoration: none;
+        color: black;
+    }
+
+    div.spam {
+        margin-top: 30px;
+        font-size: 14px;
     }
 
 </style>
-<h2 class="header">{I18n.t("magicLink.header")}</h2>
-<h2 class="top">{I18n.t("magicLink.header2")}</h2>
-<p>{I18n.t("magicLink.info1")}</p>
-<p class="mail">{$user.email}</p>
-<p>{I18n.t("magicLink.info2")}</p>
-<div class="whoops">
-    <div class="info">{@html info}</div>
-    <div>
-        <p>{I18n.t("magicLink.wrongEmail")}</p>
-        <a href={`/login/${id}?name=${serviceName}&modus=${modus}`}>{I18n.t("magicLink.wrongEmail2")}</a>
+<div class="back-container">
+    <a href={`/login/${id}?name=${serviceName}&modus=${modus}`}>{@html backArrow}</a>
+</div>
+
+<div class="magic-link">
+    <h2 class="header">{I18n.t("magicLink.header")}</h2>
+    <p>{@html I18n.t("magicLink.info", {email: $user.email})}</p>
+    <div class="mail-clients">
+        <div class="mail-client gmail">
+        <img src={gmail} alt="gmail" width="26px" on:click={() => window.location.href="https://www.gmail.com"}/>
+            <a href="https://www.gmail.com">{I18n.t("magicLink.openGMail")}</a>
+        </div>
+        <div class="mail-client outlook">
+        <img src={outlook} alt="outlook" on:click={() => window.location.href="https://outlook.live.com/owa/"}/>
+            <a href="https://outlook.live.com/owa/">{I18n.t("magicLink.openOutlook")}</a>
+        </div>
     </div>
+    <div class="spam">
+        <span>{I18n.t("magicLink.spam")}</span>
+    </div>
+
 </div>
 

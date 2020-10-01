@@ -22,9 +22,9 @@ cron:
   service-name-resolver-fixed-rate-milliseconds: 360_0000
   metadata-resolver-initial-delay-milliseconds: 1
   metadata-resolver-fixed-rate-milliseconds: 86_400_000
-  metadata-resolver-url: "https://metadata.surfconext.nl/idps-metadata.xml"
+  metadata-resolver-url: "classpath:/metadata/idps-metadata.xml"
 
-metadata_sp_url: https://metadata.test.surfconext.nl/sp-names.json
+metadata_sp_url: "classpath:/metadata/sp-names.json"
 
 mongodb_db: surf_id_test
 base_domain: test2.surfconext.nl

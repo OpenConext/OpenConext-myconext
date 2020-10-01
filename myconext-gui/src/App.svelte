@@ -97,6 +97,7 @@
         --color-primary-red: #ff0000;
         --color-warning-red: #a70000;
         --color-primary-grey: #c4cdd5;
+        --color-secondary-grey: #737373;
         --color-background: #f9f9f9;
         --width-app: 1024px;
     }

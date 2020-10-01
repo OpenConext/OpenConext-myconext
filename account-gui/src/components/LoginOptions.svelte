@@ -1,5 +1,5 @@
 <script>
-  import SvelteTooltip from 'svelte-tooltip';
+  import Tooltip from './ToolTip.svelte';
   import question from "../icons/question.svg";
   import I18n from "i18n-js";
 
@@ -29,8 +29,8 @@
 <div class="login-options">
     <span>{I18n.t("login.loginOptions")}</span>
     <div class="wrapper">
-        <SvelteTooltip tip={I18n.t("login.loginOptionsToolTip")} top color="#d6e9fd">
+        <Tooltip tip={I18n.t("login.loginOptionsToolTip")}>
             {@html question}
-        </SvelteTooltip>
+        </Tooltip>
     </div>
 </div>

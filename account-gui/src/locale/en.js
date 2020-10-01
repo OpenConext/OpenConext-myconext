@@ -11,7 +11,7 @@ I18n.translations.en = {
         header2: "Request your eduID",
         trust: "Trust this computer",
         loginOptions: "Other sign-in options",
-        loginOptionsToolTip: "The sign-in options are managed in your eduID.",
+        loginOptionsToolTip: "Your different sign-in options<br/>can be managed in mijn eduID.<br/><br/>Check your eduID account<br/>creation mail for the URL.",
         email: "Your email address",
         emailPlaceholder: "Email, e.g. user@gmail.com",
         passwordPlaceholder: "Password",
@@ -37,8 +37,12 @@ I18n.translations.en = {
         useExistingAccount: "Use existing account",
         invalidEmail: "Invalid email",
         requiredAttribute: "{{attr}} is required",
-        emailInUse: "Email is already in use.",
-        emailNotFound: "Email not found.",
+        emailInUse1: "This email is already in use.",
+        emailInUse2: "Try another, or ",
+        emailInUse3: " login with this eduID account.",
+        emailNotFound1: "We could not find an eduID with that email.",
+        emailNotFound2: "Try another, or ",
+        emailNotFound3: "request a new eduID account.",
         emailOrPasswordIncorrect: "Email or password are incorrect",
         institutionDomainNameWarning: "It looks like you entered an institutional email address. Please note that when you no longer study at or work for that institution, you can no longer use that email address.",
         institutionDomainNameWarning2: "We recommend using your personal email address for eduID.",
@@ -49,12 +53,11 @@ I18n.translations.en = {
         agreeWithTerms: "<span>I agree with <a href='https://eduid.nl/terms_of_service/' target='_blank'>the terms of service.</a> I also understand <a href='https://eduid.nl/privacy_policy/' target='_blank'>the privacy policy</a>.</span>"
     },
     magicLink: {
-        header: "Please",
-        header2: "Check your email",
-        info1: "We've sent you an email at",
-        info2: "It contains a magic link that will sign you in.",
-        wrongEmail: "Is the above email address incorrect?",
-        wrongEmail2: "Please start over."
+        header: "Check your email!",
+        info: "To sign in, click the link in the email we sent to <strong>{{email}}</strong>.",
+        openGMail: "Open Gmail.com",
+        openOutlook: "Open Outlook.com",
+        spam: "Can't find it? Check your spam folder."
     },
     confirm: {
         header: "Success!",

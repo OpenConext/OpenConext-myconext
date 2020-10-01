@@ -336,6 +336,10 @@
         background-color: #fff5f3;
     }
 
+    input.error:focus {
+        outline: none;
+    }
+
     .hidden {
         display: none;
     }
@@ -384,17 +388,34 @@
        on:blur={handleEmailBlur}
        on:keydown={handleEmailEnter}>
 {#if !$user.createAccount && emailNotFound}
-    <div class="error"><span class="svg">{@html critical}</span><span>{I18n.t("login.emailNotFound")}</span></div>
+    <div class="error">
+        <span class="svg">{@html critical}</span>
+        <div>
+            <span>{I18n.t("login.emailNotFound1")}</span>
+            <span>{I18n.t("login.emailNotFound2")}</span>
+            <a href="/reguest"
+               on:click|preventDefault|stopPropagation={createAccount(true)}>{I18n.t("login.emailNotFound3")}</a>
+        </div>
+    </div>
 {/if}
 {#if $user.usePassword && emailOrPasswordIncorrect}
-    <div class="error"><span class="svg">{@html critical}</span><span>{I18n.t("login.emailOrPasswordIncorrect")}</span>
+    <div class="error"><span class="svg">{@html critical}</span>
+        <span>{I18n.t("login.emailOrPasswordIncorrect")}</span>
     </div>
 {/if}
 {#if !initial && !validEmail($user.email)}
     <div class="error"><span class="svg">{@html critical}</span><span>{I18n.t("login.invalidEmail")}</span></div>
 {/if}
 {#if $user.createAccount && emailInUse}
-    <div class="error"><span class="svg">{@html critical}</span><span>{I18n.t("login.emailInUse")}</span></div>
+    <div class="error">
+        <span class="svg">{@html critical}</span>
+        <div>
+            <span>{I18n.t("login.emailInUse1")}</span>
+            <span>{I18n.t("login.emailInUse2")}</span>
+            <a href="/reguest"
+               on:click|preventDefault|stopPropagation={createAccount(false)}>{I18n.t("login.emailInUse3")}</a>
+        </div>
+    </div>
 {/if}
 {#if $user.createAccount && institutionDomainNameWarning}
     <div class="institution-warning">

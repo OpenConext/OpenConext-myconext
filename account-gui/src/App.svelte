@@ -74,6 +74,7 @@
     .content {
         display: flex;
         flex-direction: column;
+        position: relative;
         padding: 24px 33px 40px;
         background-color: white;
         width: var(--width-app);
