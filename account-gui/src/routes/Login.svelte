@@ -359,7 +359,7 @@
 {/if}
 <div class="info-top">
     {#if $user.createAccount}
-        <span>{I18n.t("login.alreadyGuestAccount")} <a class="toggle-link" href="/login"
+        <span>{@html I18n.t("login.alreadyGuestAccount")} <a class="toggle-link" href="/login"
                                                        on:click|preventDefault|stopPropagation={createAccount(false)}>{I18n.t("login.loginEduId")}</a></span>
         <!--        <span><a class="toggle-link" target="_blank" href="https://eduid.nl">{I18n.t("login.whatis")}</a></span>-->
     {:else}
