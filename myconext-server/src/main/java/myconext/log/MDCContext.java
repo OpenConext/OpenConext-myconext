@@ -25,7 +25,7 @@ public class MDCContext {
     }
 
     public static void logWithContext(User user, String action, String target, Log log, String message) {
-        mdcContext(user, "action", action, "target", target, "resullt", "ok");
+        mdcContext(user, "action", action, "target", target, "result", "ok");
         log.info(message);
     }
 
