@@ -260,7 +260,7 @@ public class UserControllerTest extends AbstractIntegrationTest {
                 .get("/myconext/api/idp/email/domain/names")
                 .then()
                 .statusCode(200)
-                .body("size()", is(316));
+                .body("size()", is(2));
     }
 
     @Test

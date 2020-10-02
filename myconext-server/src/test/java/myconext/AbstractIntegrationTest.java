@@ -61,7 +61,6 @@ import static org.junit.Assert.assertTrue;
                 "mongodb_db=surf_id_test",
                 "cron.node-cron-job-responsible=false",
                 "email_guessing_sleep_millis=1",
-                "cron.metadata-resolver-url=classpath:idps-metadata.xml",
                 "sp_entity_id=https://engine.test.surfconext.nl/authentication/sp/metadata",
                 "sp_entity_metadata_url=https://engine.test.surfconext.nl/authentication/sp/metadata",
                 "spring.main.lazy-initialization=true",
