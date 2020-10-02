@@ -5,8 +5,8 @@ import myconext.exceptions.MigrationDuplicateUserEmailException;
 import myconext.mail.MailBox;
 import myconext.model.User;
 import myconext.repository.UserRepository;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.web.authentication.preauth.AbstractPreAuthenticatedProcessingFilter;
 import org.springframework.util.StringUtils;
@@ -17,12 +17,13 @@ import java.io.UnsupportedEncodingException;
 import java.util.Optional;
 import java.util.stream.Stream;
 
-import static myconext.log.MDCContext.mdcContext;
+
+import static myconext.log.MDCContext.logWithContext;
 import static myconext.security.CookieResolver.cookieByName;
 
 public class ShibbolethPreAuthenticatedProcessingFilter extends AbstractPreAuthenticatedProcessingFilter {
 
-    private static final Logger LOG = LoggerFactory.getLogger(ShibbolethPreAuthenticatedProcessingFilter.class);
+    private static final Log LOG = LogFactory.getLog(ShibbolethPreAuthenticatedProcessingFilter.class);
 
     public static final String SHIB_GIVEN_NAME = "Shib-givenName";
     public static final String SHIB_SUR_NAME = "Shib-surName";
@@ -58,8 +59,8 @@ public class ShibbolethPreAuthenticatedProcessingFilter extends AbstractPreAuthe
         boolean valid = Stream.of(uid, schacHomeOrganization, email, givenName, familyName, authenticatingAuthorities).allMatch(StringUtils::hasText);
         if (!valid) {
             //this is the contract. See AbstractPreAuthenticatedProcessingFilter#doAuthenticate
-            LOG.warn("Missing required attribute(s): uid {}, schacHomeOrganization {}, givenName {}, familyName {}, email {}, authenticatingAuthorities {}",
-                    uid, schacHomeOrganization, givenName, familyName, email, authenticatingAuthorities);
+            LOG.warn(String.format("Missing required attribute(s): uid %s, schacHomeOrganization %s, givenName %s, familyName %s, email %s, authenticatingAuthorities %s",
+                    uid, schacHomeOrganization, givenName, familyName, email, authenticatingAuthorities));
             return null;
         }
         Optional<User> optionalUser = userRepository.findUserByUid(uid);
@@ -69,7 +70,6 @@ public class ShibbolethPreAuthenticatedProcessingFilter extends AbstractPreAuthe
                 User existingUser = optionalUserByEmail.get();
                 //If we would provision this email we would introduce a duplicate email
                 String requestURI = request.getRequestURI();
-                mdcContext(optionalUser, "action", requestURI);
                 if (requestURI.endsWith("sp/migrate/merge")) {
                     //We will provision a new user, so we delete the current one
                     LOG.info("Migrate oneGini account to eduID account");
@@ -98,11 +98,10 @@ public class ShibbolethPreAuthenticatedProcessingFilter extends AbstractPreAuthe
 
         boolean isOneGini = oneginiEntityId.equalsIgnoreCase(user.getAuthenticatingAuthority());
 
-        String action = isOneGini ? "Sending account migration mail" : "Not sending account migration mail";
-        mdcContext(Optional.of(user), "action", action, "authenticating_authority", authenticatingAuthority);
-        LOG.info("Provision new user");
+        logWithContext(user, "add", "user",LOG, String.format("Provisioned new user %s from %s", user.getEmail(), authenticatingAuthority));
 
         if (isOneGini) {
+            LOG.info(String.format("Sending account migration mail to %s who migrated from OneGini", user.getEmail()));
             mailBox.sendAccountMigration(user);
         }
         return user;

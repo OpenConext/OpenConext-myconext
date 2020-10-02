@@ -85,7 +85,8 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-import static myconext.log.MDCContext.mdcContext;
+import static myconext.log.MDCContext.logLoginWithContext;
+import static myconext.log.MDCContext.logWithContext;
 import static myconext.security.CookieResolver.cookieByName;
 
 @RestController
@@ -202,16 +203,18 @@ public class UserController {
         String serviceProviderNameNl = serviceNameResolver.resolve(requesterEntityId, "nl");
         boolean needToSave = user.eduIdForServiceProviderNeedsUpdate(requesterEntityId, serviceProviderName, serviceProviderNameNl);
         if (needToSave) {
+            logWithContext(user, "add", "eppn", LOG, "New eppn for user for first time use SP " + requesterEntityId);
             user.computeEduIdForServiceProviderIfAbsent(requesterEntityId, serviceProviderName, serviceProviderNameNl);
             userRepository.save(user);
         }
 
         if (magicLinkRequest.isUsePassword()) {
             if (!passwordEncoder.matches(providedUser.getPassword(), user.getPassword())) {
+                logLoginWithContext(user, "password", false, LOG, "Bad attempt to login with password");
                 return ResponseEntity.status(HttpStatus.FORBIDDEN)
                         .body(Collections.singletonMap("status", HttpStatus.FORBIDDEN.value()));
             }
-            mdcContext(Optional.of(user), "action", "successful login with password");
+            logLoginWithContext(user, "password", true, LOG, "Successfully logged in with password");
             LOG.info("Successfully logged in with password");
         }
         return doMagicLink(user, samlAuthenticationRequest, magicLinkRequest.isRememberMe(), magicLinkRequest.isUsePassword(), request);
@@ -228,10 +231,7 @@ public class UserController {
         User user = (User) authentication.getPrincipal();
         String userId = user.getId();
         Long count = authenticationRequestRepository.deleteByUserId(userId);
-
-        mdcContext(Optional.of(user), "action", "forget me");
-        LOG.info("Do not remember user anymore");
-
+        logWithContext(user, "delete", "rememberme", LOG, "Do not remember user anymore");
         return ResponseEntity.ok(count);
     }
 
@@ -244,10 +244,7 @@ public class UserController {
         user.validate();
 
         userRepository.save(user);
-
-        mdcContext(Optional.of(user), "action", "update user profile");
-        LOG.info("Update user profile");
-
+        logWithContext(user, "update", "name", LOG, "Update user profile");
         return returnUserResponse(user);
     }
 
@@ -264,11 +261,11 @@ public class UserController {
 
         boolean existingPassword = StringUtils.hasText(password);
         String currentPasswordFromUser = updateUserRequest.getCurrentPassword();
-        boolean passwordMatches =  currentPasswordFromUser != null && passwordEncoder.matches(currentPasswordFromUser, password);
+        boolean passwordMatches = currentPasswordFromUser != null && passwordEncoder.matches(currentPasswordFromUser, password);
         boolean forgottenPassword = user.isForgottenPassword();
 
         if (existingPassword && !passwordMatches && !forgottenPassword) {
-                throw new ForbiddenException("no_match");
+            throw new ForbiddenException("no_match");
         }
 
         if (forgottenPassword && !passwordMatches) {
@@ -282,7 +279,8 @@ public class UserController {
         userRepository.save(user);
         passwordForgottenHashRepository.deleteByUserId(user.getId());
 
-        LOG.info(String.format("Updates / set password for user %s", user.getUsername()));
+        String action = existingPassword ? "update" : "add";
+        logWithContext(user, action, "password", LOG, action + " password");
 
         return returnUserResponse(user);
     }
@@ -298,7 +296,7 @@ public class UserController {
         String hashValue = hash();
         passwordForgottenHashRepository.save(new PasswordForgottenHash(user, hashValue));
 
-        LOG.info(String.format("Send password forgotten mail to user %s", user.getUsername()));
+        logWithContext(user, "delete", "rememberme", LOG, "Send password forgotten mail");
 
         mailBox.sendForgotPassword(user, hashValue);
         return returnUserResponse(user);
@@ -315,8 +313,7 @@ public class UserController {
         user.setLinkedAccounts(linkedAccounts);
         userRepository.save(user);
 
-        LOG.info(String.format("Deleted linked account %s from user %s",
-                linkedAccount.getSchacHomeOrganization(), user.getUsername()));
+        logWithContext(user, "delete", "linked_account", LOG, "Deleted linked account " + linkedAccount.getSchacHomeOrganization());
 
         return userResponseRememberMe(user);
     }
@@ -333,8 +330,7 @@ public class UserController {
         user.setPublicKeyCredentials(publicKeyCredentials);
         userRepository.save(user);
 
-        LOG.info(String.format("Deleted publicKeyCredentials %s from user %s",
-                identifier, user.getUsername()));
+        logWithContext(user, "delete", "webauthn_key", LOG, "Deleted publicKeyCredential " + credential.get("name"));
 
         return userResponseRememberMe(user);
     }
@@ -351,7 +347,7 @@ public class UserController {
         user.setEduIdPerServiceProvider(eduIdPerServiceProvider);
         userRepository.save(user);
 
-        LOG.info(String.format("Deleted eduID %s from user %s", eduId, user.getUsername()));
+        logWithContext(user, "delete", "eppn", LOG, "Deleted eduID " + eduId);
 
         return doRemoveTokens(serviceAndTokens, user);
     }
@@ -377,13 +373,10 @@ public class UserController {
     }
 
     private ResponseEntity<UserResponse> doRemoveTokens(@RequestBody DeleteServiceTokens serviceAndTokens, User user) {
-        LOG.info(String.format("Deleted tokens %s from user %s", serviceAndTokens.getTokens(), user.getUsername()));
-
         List<TokenRepresentation> tokens = serviceAndTokens.getTokens();
         if (!CollectionUtils.isEmpty(tokens)) {
-            openIDConnect.deleteTokens(tokens);
+            openIDConnect.deleteTokens(tokens, user);
         }
-
         return userResponseRememberMe(user);
     }
 
@@ -482,6 +475,8 @@ public class UserController {
         user.addPublicKeyCredential(keyId, publicKeyCose, name);
         userRepository.save(user);
 
+        logWithContext(user, "add", "webauthn_key", LOG, "Created publicKeyCredential " + name);
+
         return ResponseEntity.status(201).body(Collections.singletonMap("location", webAuthnSpRedirectUrl));
     }
 
@@ -536,7 +531,6 @@ public class UserController {
         if (!result.isSuccess()) {
             if (samlAuthenticationRequest.isTestInstance()) {
                 //back to SP
-
                 String url = String.format("%s/webauthn?success=false", spBaseUrl);
                 return ResponseEntity.status(201).body(Collections.singletonMap("url", url));
             }
@@ -550,8 +544,7 @@ public class UserController {
         }
         User user = optionalUser.get();
 
-        mdcContext(Optional.of(user), "action", "successful login with authn");
-        LOG.info("successfully logged in with AuthnWeb");
+        logLoginWithContext(user, "webauthn", true, LOG, "Successfully logged in with webauthn");
 
         if (samlAuthenticationRequest.isTestInstance()) {
             //back to SP
@@ -591,16 +584,19 @@ public class UserController {
     }
 
     @GetMapping("/sp/logout")
-    public ResponseEntity logout(HttpServletRequest request) throws URISyntaxException {
+    public ResponseEntity logout(HttpServletRequest request, Authentication authentication) {
+        User user = this.userFromAuthentication(authentication);
+        logWithContext(user, "logout", "user", LOG, "Logout");
+
         return doLogout(request);
     }
 
     @DeleteMapping("/sp/delete")
-    public ResponseEntity deleteUser(Authentication authentication, HttpServletRequest request) throws URISyntaxException {
-        User principal = (User) authentication.getPrincipal();
-        userRepository.deleteById(principal.getId());
+    public ResponseEntity deleteUser(Authentication authentication, HttpServletRequest request) {
+        User user = userFromAuthentication(authentication);
+        userRepository.delete(user);
 
-        LOG.info(String.format("Deleted user %s", principal.getEmail()));
+        logWithContext(user, "delete", "account", LOG, "Delete account");
 
         return doLogout(request);
     }
@@ -641,16 +637,15 @@ public class UserController {
         String serviceName = serviceNameResolver.resolve(samlAuthenticationRequest.getRequesterEntityId(), lang);
 
         if (passwordOrWebAuthnFlow) {
-            LOG.info(String.format("Returning passwordOrWebAuthnFlow magic link for existing user %s", user.getUsername()));
+            LOG.debug(String.format("Returning passwordOrWebAuthnFlow magic link for existing user %s", user.getUsername()));
             return ResponseEntity.status(201).body(Collections.singletonMap("url", this.magicLinkUrl + "?h=" + samlAuthenticationRequest.getHash()));
         }
 
         if (user.isNewUser()) {
-            LOG.info(String.format("Sending account verification mail with magic link for new user %s", user.getUsername()));
+            LOG.debug(String.format("Sending account verification mail with magic link for new user %s", user.getUsername()));
             mailBox.sendAccountVerification(user, samlAuthenticationRequest.getHash());
         } else {
-            mdcContext(Optional.of(user), "action", "Sending magic link email", "service", serviceName);
-            LOG.info("Sending magic link email for existing user");
+            LOG.debug("Sending magic link email for existing user");
 
             mailBox.sendMagicLink(user, samlAuthenticationRequest.getHash(), serviceName);
         }

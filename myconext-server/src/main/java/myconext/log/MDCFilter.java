@@ -8,15 +8,14 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.preauth.PreAuthenticatedAuthenticationToken;
 import org.springframework.web.filter.OncePerRequestFilter;
 
-import javax.servlet.Filter;
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import java.io.IOException;
-import java.util.UUID;
+
+import static myconext.log.MDCContext.USER_ID;
 
 public class MDCFilter extends OncePerRequestFilter {
 
@@ -25,16 +24,18 @@ public class MDCFilter extends OncePerRequestFilter {
         MDCAdapter mdcAdapter = MDC.getMDCAdapter();
         mdcAdapter.clear();
 
-        MDC.put("Sessionid", UUID.randomUUID().toString());
-        
+        HttpSession session = request.getSession(false);
+        if (session != null) {
+            mdcAdapter.put("session_id", session.getId());
+        }
+
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication instanceof PreAuthenticatedAuthenticationToken) {
             PreAuthenticatedAuthenticationToken token = (PreAuthenticatedAuthenticationToken) authentication;
             Object principal = token.getPrincipal();
             if (principal instanceof User) {
                 User user = (User) principal;
-                MDC.put("user_id", user.getId());
-                MDC.put("user_email", user.getEmail());
+                mdcAdapter.put(USER_ID, user.getEmail());
             }
         }
         chain.doFilter(request, response);

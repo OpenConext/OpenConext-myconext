@@ -11,5 +11,5 @@ public interface OpenIDConnect {
 
     List<Map<String, Object>> tokens(User user);
 
-    HttpStatus deleteTokens(List<TokenRepresentation> tokenIdentifiers);
+    HttpStatus deleteTokens(List<TokenRepresentation> tokenIdentifiers, User user);
 }

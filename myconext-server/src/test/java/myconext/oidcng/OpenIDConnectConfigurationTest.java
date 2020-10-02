@@ -23,10 +23,10 @@ public class OpenIDConnectConfigurationTest {
         List<Map<String, Object>> tokens = openIDConnect.tokens(new User());
 
         assertEquals(4, tokens.size());
-        assertEquals(HttpStatus.NO_CONTENT, openIDConnect.deleteTokens(Collections.emptyList()));
+        assertEquals(HttpStatus.NO_CONTENT, openIDConnect.deleteTokens(Collections.emptyList(), new User()));
         assertEquals(4, tokens.size());
 
-        openIDConnect.deleteTokens(Arrays.asList(new TokenRepresentation((String) tokens.get(0).get("id"), TokenType.ACCESS)));
+        openIDConnect.deleteTokens(Arrays.asList(new TokenRepresentation((String) tokens.get(0).get("id"), TokenType.ACCESS)), new User());
 
         tokens = openIDConnect.tokens(new User());
         assertEquals(3, tokens.size());

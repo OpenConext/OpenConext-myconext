@@ -2,8 +2,8 @@ package myconext.manage;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
@@ -20,7 +20,7 @@ import java.util.stream.Collectors;
 @Component
 public class ServiceNameResolver {
 
-    private static final Logger LOG = LoggerFactory.getLogger(ServiceNameResolver.class);
+    private static final Log LOG = LogFactory.getLog(ServiceNameResolver.class);
 
     private final Resource metaDataResource;
     private final ObjectMapper objectMapper;

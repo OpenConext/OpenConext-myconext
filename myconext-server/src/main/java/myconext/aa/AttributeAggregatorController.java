@@ -20,7 +20,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-import static myconext.log.MDCContext.mdcContext;
 
 @RestController
 @RequestMapping("/myconext/api")
@@ -52,8 +51,7 @@ public class AttributeAggregatorController {
                     new UserAttribute("urn:mace:eduid.nl:1.1", eduID)));
         });
 
-        mdcContext(userOptional, "action", "attribute aggregation", "sp_entity_id", spEntityId, "eduperson_principal_name", eduPersonPrincipalName);
-        LOG.info(String.format("Attribute aggregation response %s", userAttributes));
+        LOG.debug(String.format("Attribute aggregation response %s", userAttributes));
 
         return ResponseEntity.ok(userAttributes);
     }
@@ -82,8 +80,7 @@ public class AttributeAggregatorController {
                     .ifPresent(linkedAccount -> result.put("eduperson_principal_name", linkedAccount.getEduPersonPrincipalName()));
         }
 
-        mdcContext(Optional.of(user), "action", "attribute manipulation", "uid", uid, "sp_institution_guid", spInstitutionGuid);
-        LOG.info(String.format("Attribute manipulation response %s", result));
+        LOG.debug(String.format("Attribute manipulation response %s", result));
 
         return ResponseEntity.ok(result);
     }

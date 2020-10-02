@@ -81,8 +81,8 @@ export function deleteLinkedAccount(linkedAccount) {
     return postPutJson("/myconext/api/sp/institution", linkedAccount, "PUT");
 }
 
-export function deletePublicKeyCredential(identifier) {
-    return postPutJson("/myconext/api/sp/credential", {identifier}, "PUT");
+export function deletePublicKeyCredential(credential) {
+    return postPutJson("/myconext/api/sp/credential", credential, "PUT");
 }
 
 export function deleteServiceAndTokens(eduId, tokens) {

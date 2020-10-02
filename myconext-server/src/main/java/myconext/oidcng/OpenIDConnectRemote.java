@@ -4,7 +4,6 @@ import myconext.model.TokenRepresentation;
 import myconext.model.User;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -12,7 +11,6 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
@@ -20,9 +18,9 @@ import java.net.URI;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
-import static myconext.log.MDCContext.mdcContext;
+import static myconext.log.MDCContext.logWithContext;
+
 
 public class OpenIDConnectRemote implements OpenIDConnect {
 
@@ -48,8 +46,7 @@ public class OpenIDConnectRemote implements OpenIDConnect {
     public List<Map<String, Object>> tokens(User user) {
         String unspecifiedID = String.format("urn:collab:person:%s:%s", user.getSchacHomeOrganization(), user.getUid());
 
-        mdcContext(Optional.of(user), "action", "oidcng-tokens", "unspecifiedID", unspecifiedID);
-        LOG.info("Start fetching tokens from oidc-ng");
+        LOG.info(String.format("Start fetching tokens from oidc-ng for %s", user.getEmail()));
 
         HttpEntity<?> requestEntity = new HttpEntity<>(headers);
         String uriString = UriComponentsBuilder.fromUri(oidcngUri)
@@ -64,9 +61,8 @@ public class OpenIDConnectRemote implements OpenIDConnect {
     }
 
     @Override
-    public HttpStatus deleteTokens(List<TokenRepresentation> tokenIdentifiers) {
-        mdcContext("action", "delete-oidc-tokens", "token-identifiers", tokenIdentifiers.toString());
-        LOG.info("Deleting oidcng tokens");
+    public HttpStatus deleteTokens(List<TokenRepresentation> tokenIdentifiers, User user) {
+        logWithContext(user, "delete", "tokens", LOG, "Deleting oidcng tokens");
 
         HttpEntity<List<TokenRepresentation>> requestEntity = new HttpEntity<>(tokenIdentifiers, headers);
         String uriString = UriComponentsBuilder.fromUri(oidcngUri).toUriString();

@@ -22,7 +22,7 @@ public class OpenIDConnectMock implements OpenIDConnect {
     }
 
     @Override
-    public HttpStatus deleteTokens(List<TokenRepresentation> tokenIdentifiers) {
+    public HttpStatus deleteTokens(List<TokenRepresentation> tokenIdentifiers, User user) {
         this.tokens = this.tokens.stream()
                 .filter(token -> tokenIdentifiers.stream()
                         .noneMatch(tokenRepresentation -> tokenRepresentation.getId().equals(token.get("id"))))

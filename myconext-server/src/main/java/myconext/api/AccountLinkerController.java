@@ -10,8 +10,8 @@ import myconext.model.User;
 import myconext.repository.AuthenticationRequestRepository;
 import myconext.repository.UserRepository;
 import myconext.security.ACR;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
@@ -49,7 +49,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-import static myconext.log.MDCContext.mdcContext;
+import static myconext.log.MDCContext.logWithContext;
 import static myconext.security.CookieResolver.cookieByName;
 import static myconext.security.GuestIdpAuthenticationRequestFilter.hasRequiredStudentAffiliation;
 import static myconext.security.GuestIdpAuthenticationRequestFilter.hasValidatedName;
@@ -58,7 +58,7 @@ import static myconext.security.GuestIdpAuthenticationRequestFilter.hasValidated
 @RequestMapping("/myconext/api")
 public class AccountLinkerController {
 
-    private static final Logger LOG = LoggerFactory.getLogger(AccountLinkerController.class);
+    private static final Log LOG = LogFactory.getLog(AccountLinkerController.class);
 
     private final String oidcBaseUrl;
     private final String clientId;
@@ -110,8 +110,7 @@ public class AccountLinkerController {
     @GetMapping("/idp/oidc/account/{id}")
     public ResponseEntity startIdPLinkAccountFlow(@PathVariable("id") String id,
                                                   @RequestParam(value = "forceAuth", required = false, defaultValue = "false") boolean forceAuth) {
-        mdcContext("action", "Start IdP link account ", "saml_authentication_request_id", id);
-        LOG.info("IdP link account flow");
+        LOG.debug("Start IdP link account flow");
 
         UriComponents uriComponents = doStartLinkAccountFlow(id, idpFlowRedirectUri, forceAuth);
         return ResponseEntity.status(HttpStatus.FOUND).location(uriComponents.toUri()).build();
@@ -119,10 +118,7 @@ public class AccountLinkerController {
 
     @GetMapping("/sp/oidc/link")
     public ResponseEntity startSPLinkAccountFlow(Authentication authentication) {
-        User user = (User) authentication.getPrincipal();
-
-        mdcContext(Optional.of(user), "action", "Start link account flow");
-        LOG.info("Start link account flow");
+        LOG.debug("Start link account flow");
 
         UriComponents uriComponents = doStartLinkAccountFlow("state", spFlowRedirectUri, true);
         return ResponseEntity.ok(Collections.singletonMap("url", uriComponents.toUriString()));
@@ -150,8 +146,7 @@ public class AccountLinkerController {
         User principal = (User) authentication.getPrincipal();
         User user = userRepository.findOneUserByEmailIgnoreCase(principal.getEmail());
 
-        mdcContext(Optional.of(user), "action", "SP redirect link account");
-        LOG.info("In SP redirect link account");
+        LOG.debug("In SP redirect link account");
 
         return doRedirect(code, user, this.spFlowRedirectUri, this.spRedirectUrl + "/institutions",
                 false, false, null, null);
@@ -169,8 +164,7 @@ public class AccountLinkerController {
         boolean validateNames = samlAuthenticationRequest.getAuthenticationContextClassReferences().contains(ACR.VALIDATE_NAMES);
         boolean studentAffiliationRequired = samlAuthenticationRequest.getAuthenticationContextClassReferences().contains(ACR.AFFILIATION_STUDENT);
 
-        mdcContext(Optional.of(user), "action", "IdP redirect link account");
-        LOG.info("In IdP redirect link account");
+        LOG.debug("In IdP redirect link account");
 
         String location = this.magicLinkUrl + "?h=" + samlAuthenticationRequest.getHash();
 
@@ -236,7 +230,7 @@ public class AccountLinkerController {
         String schacHomeOrganization = (String) body.get("schac_home_organization");
 
         String givenName = (String) body.get("given_name");
-        String familyName = (String) body.get("family_name") ;
+        String familyName = (String) body.get("family_name");
 
         String institutionIdentifier = StringUtils.hasText(surfCrmId) ? surfCrmId : schacHomeOrganization;
 
@@ -262,13 +256,11 @@ public class AccountLinkerController {
             String action = optionalLinkedAccount.isPresent() ? "updated" : "created";
             String eppnValue = StringUtils.hasText(eppn) ? String.format("eppn %s", eppn) : "NO eppn";
 
-            mdcContext(Optional.of(user), "action", "account link " + action);
-            LOG.info("Account link with EPPN {} for institution {} with the affiliations {}",
-                    eppnValue, institutionIdentifier, affiliations);
+            logWithContext(user, "add", "linked_accounts", LOG, String.format("Account link with EPPN %s for institution %s with the affiliations %s",
+                    eppnValue, institutionIdentifier, affiliations));
 
             userRepository.save(user);
         } else {
-            mdcContext(Optional.of(user));
             LOG.error("Account linking requested, but no schacHomeOrganization provided by the IdP");
         }
         boolean hasStudentAffiliation = user.getLinkedAccounts().stream()

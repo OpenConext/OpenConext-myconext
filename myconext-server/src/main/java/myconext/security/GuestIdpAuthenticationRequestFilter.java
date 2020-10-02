@@ -57,6 +57,8 @@ import java.util.Optional;
 
 import static java.util.function.Function.identity;
 import static java.util.stream.Collectors.toList;
+import static myconext.log.MDCContext.logLoginWithContext;
+import static myconext.log.MDCContext.logWithContext;
 import static myconext.security.CookieResolver.cookieByName;
 import static org.springframework.util.StringUtils.hasText;
 
@@ -178,7 +180,7 @@ public class GuestIdpAuthenticationRequestFilter extends IdpAuthenticationReques
             addBrowserIdentificationCookie(response);
             Optional<Cookie> optionalCookie = cookieByName(request, REGISTER_MODUS_COOKIE_NAME);
 
-            LOG.info("Cookie REGISTER_MODUS_COOKIE_NAME is: " + optionalCookie.map(Cookie::getValue).orElse("Null"));
+            LOG.debug("Cookie REGISTER_MODUS_COOKIE_NAME is: " + optionalCookie.map(Cookie::getValue).orElse("Null"));
 
             String modus = optionalCookie.map(c -> "&modus=cr").orElse("");
             String stepUp = accountLinkingRequired ? "&stepup=true" : "";
@@ -231,7 +233,7 @@ public class GuestIdpAuthenticationRequestFilter extends IdpAuthenticationReques
     }
 
     private Optional<User> userFromCookie(Cookie remembered) {
-        LOG.info("Returning user from rememberMe cookie");
+        LOG.debug("Returning user from rememberMe cookie");
         return authenticationRequestRepository.findByRememberMeValue(remembered.getValue())
                 .map(req -> userRepository.findById(req.getUserId())).flatMap(identity());
     }
@@ -239,7 +241,7 @@ public class GuestIdpAuthenticationRequestFilter extends IdpAuthenticationReques
     private Optional<User> userFromAuthentication() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
-        LOG.info("Attempting user authentication from security context: " + authentication);
+        LOG.debug("Attempting user authentication from security context: " + authentication);
         if (authentication != null && authentication.isAuthenticated() && authentication instanceof UsernamePasswordAuthenticationToken) {
             //The user from the mongodb session possible contains the "@" dot replacement - need to refetch to prevent this
             User user = (User) authentication.getPrincipal();
@@ -302,8 +304,7 @@ public class GuestIdpAuthenticationRequestFilter extends IdpAuthenticationReques
             user.setNewUser(false);
             userRepository.save(user);
 
-            LOG.info(String.format("Saving user %s after new registration and magic link", user.getUsername()));
-
+            logWithContext(user, "add", "account", LOG, "Saving user after new registration and magic link");
             mailBox.sendAccountConfirmation(user);
 
             String url = this.redirectUrl + "/confirm?h=" + hash +
@@ -330,7 +331,7 @@ public class GuestIdpAuthenticationRequestFilter extends IdpAuthenticationReques
         //ensure the magic link can't be used twice
         samlAuthenticationRequest.setHash(null);
 
-        LOG.info(String.format("Disabling magic link after use by %s ", user.getUsername()));
+        LOG.debug(String.format("Disabling magic link after use by %s ", user.getUsername()));
 
         authenticationRequestRepository.save(samlAuthenticationRequest);
 
@@ -349,7 +350,7 @@ public class GuestIdpAuthenticationRequestFilter extends IdpAuthenticationReques
             LOG.info(String.format("Remember me functionality activated for %s ", user.getUsername()));
             addRememberMeCookie(response, samlAuthenticationRequest);
         }
-
+        logLoginWithContext(user, "magiclink", true, LOG, "Successfully logged in with magiclink");
         sendAssertion(request, response, samlAuthenticationRequest, user, provider,
                 serviceProviderMetadata, authenticationRequest);
     }

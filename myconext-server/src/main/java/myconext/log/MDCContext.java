@@ -1,30 +1,38 @@
 package myconext.log;
 
 import myconext.model.User;
+import org.apache.commons.logging.Log;
 import org.slf4j.MDC;
 import org.slf4j.spi.MDCAdapter;
 import org.springframework.util.Assert;
 
-import java.util.Optional;
-
 public class MDCContext {
 
-    public static void mdcContext(String... args) {
-        mdcContext(Optional.empty(), args);
-    }
+    public static final String USER_ID = "userid";
 
-    public static void mdcContext(Optional<User> optionalUser, String... args) {
+    private static void mdcContext(User user, String... args) {
         Assert.isTrue(args.length % 2 == 0, "contextMap requires an even number of arguments");
         MDCAdapter mdcAdapter = MDC.getMDCAdapter();
         for (int i = 0; i < args.length - 1; i += 2) {
             mdcAdapter.put(args[i], args[i + 1]);
         }
-        if (MDC.get("user_id") == null && optionalUser.isPresent()) {
-            User user = optionalUser.get();
-            mdcAdapter.put("user_id", user.getId());
-            mdcAdapter.put("user_email", user.getEmail());
+
+        mdcAdapter.put("tag", "myconext_loginstats");
+
+        if (MDC.get(USER_ID) == null && user != null) {
+            mdcAdapter.put(USER_ID, user.getEmail());
         }
     }
 
+    public static void logWithContext(User user, String action, String target, Log log, String message) {
+        mdcContext(user, "action", action, "target", target, "resullt", "ok");
+        log.info(message);
+    }
+
+
+    public static void logLoginWithContext(User user, String loginMethod, boolean success, Log log, String message) {
+        mdcContext(user, "login_method", loginMethod, "action", "login", "result", success ? "ok" : "error");
+        log.info(message);
+    }
 
 }
