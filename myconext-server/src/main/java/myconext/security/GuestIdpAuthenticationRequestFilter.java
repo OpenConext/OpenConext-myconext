@@ -168,6 +168,8 @@ public class GuestIdpAuthenticationRequestFilter extends IdpAuthenticationReques
                     authenticationContextClassReferenceValues)) {
                 boolean hasStudentAffiliation = hasRequiredStudentAffiliation((previousAuthenticatedUser.allEduPersonAffiliations()));
                 String explanation = ACR.explanationKeyWord(authenticationContextClassReferenceValues, hasStudentAffiliation);
+                samlAuthenticationRequest.setUserId(previousAuthenticatedUser.getId());
+                authenticationRequestRepository.save(samlAuthenticationRequest);
                 response.sendRedirect(this.redirectUrl + "/stepup/" + samlAuthenticationRequest.getId() + "?name=" + encodedServiceName + "&explanation=" + explanation);
             } else {
                 ServiceProviderMetadata serviceProviderMetadata = provider.getRemoteProvider(samlAuthenticationRequest.getIssuer());
