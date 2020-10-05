@@ -253,10 +253,10 @@ public class AccountLinkerController {
                         new LinkedAccount(institutionIdentifier, schacHomeOrganization, eppn, givenName, familyName, affiliations,
                                 new Date(), expiresAt));
             }
-            String action = optionalLinkedAccount.isPresent() ? "updated" : "created";
+            String action = optionalLinkedAccount.isPresent() ? "updated" : "add";
             String eppnValue = StringUtils.hasText(eppn) ? String.format("eppn %s", eppn) : "NO eppn";
 
-            logWithContext(user, "add", "linked_accounts", LOG, String.format("Account link with EPPN %s for institution %s with the affiliations %s",
+            logWithContext(user, action, "linked_accounts", LOG, String.format("Account link with EPPN %s for institution %s with the affiliations %s",
                     eppnValue, institutionIdentifier, affiliations));
 
             userRepository.save(user);
