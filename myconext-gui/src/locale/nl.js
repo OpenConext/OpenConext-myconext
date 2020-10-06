@@ -98,9 +98,9 @@ I18n.translations.nl = {
   },
   services: {
     title: "Gebruikte diensten",
-    info: "Elke service die je met je eduID-account gebruikt, onvangt attributen van je account, waaronder een unieke gepseudonimiseerde eduID om je account te identificeren.",
-    explanation: "Dit zijn alle services waar je bent ingelogd met eduID.",
-    noServices: "Je hebt nog geen service gebruikt met je eduID-account.",
+    info: "Elke dienst waarvoor je eduID gebruikt ontvangt bepaalde gegevens (attributen) vanuit jouw eduID-account. Denk hierbij aan je naam, e-mailadres of aan een pseudoniem waarmee de dienst jou uniek kan identificeren.",
+    explanation: "Hieronder vind je het overzicht van alle diensten waarop je bent ingelogd met eduID.",
+    noServices: "Je bent nog niet ingelogd geweest op een dienst via eduID.",
     name: "Naam",
   },
   service: {
@@ -117,7 +117,7 @@ I18n.translations.nl = {
     deleted: "Je eduID voor dienst {{name}} is verwijderd",
     back: "/services",
     deleteService: "Verwijder dienst",
-    deleteServiceConfirmation: "Weet je zeker dat je je unieke gepseudonimiseerde eduID voor {{name}} wilt verwijderen? <br/> <br/> Deze service herkent je wellicht niet de volgende keer dat je inlogt en je persoonlijke gegevens bij deze service worden mogelijkerwijs verwijderd.",
+    deleteServiceConfirmation: "Weet je zeker dat je je unieke gepseudonimiseerde eduID voor {{name}} wilt verwijderen? <br/> <br/> Deze dienst herkent je wellicht niet meer de volgende keer dat je inlogt en je persoonlijke gegevens bij deze dienst worden daardoor mogelijkerwijs verwijderd.",
     deleteTokenConfirmation: "Weet je zeker dat het API access token voor {{name}} wilt intrekken?",
     deleteToken: "Token intrekken",
   },
