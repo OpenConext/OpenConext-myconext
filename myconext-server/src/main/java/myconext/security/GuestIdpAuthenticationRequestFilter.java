@@ -57,6 +57,7 @@ import java.util.Optional;
 
 import static java.util.function.Function.identity;
 import static java.util.stream.Collectors.toList;
+import static myconext.api.UserController.hash;
 import static myconext.security.CookieResolver.cookieByName;
 import static org.springframework.util.StringUtils.hasText;
 
@@ -169,7 +170,9 @@ public class GuestIdpAuthenticationRequestFilter extends IdpAuthenticationReques
                 boolean hasStudentAffiliation = hasRequiredStudentAffiliation((previousAuthenticatedUser.allEduPersonAffiliations()));
                 String explanation = ACR.explanationKeyWord(authenticationContextClassReferenceValues, hasStudentAffiliation);
                 samlAuthenticationRequest.setUserId(previousAuthenticatedUser.getId());
+                samlAuthenticationRequest.setHash(hash());
                 authenticationRequestRepository.save(samlAuthenticationRequest);
+                addBrowserIdentificationCookie(response);
                 response.sendRedirect(this.redirectUrl + "/stepup/" + samlAuthenticationRequest.getId() + "?name=" + encodedServiceName + "&explanation=" + explanation);
             } else {
                 ServiceProviderMetadata serviceProviderMetadata = provider.getRemoteProvider(samlAuthenticationRequest.getIssuer());

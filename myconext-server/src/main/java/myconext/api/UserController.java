@@ -101,7 +101,7 @@ public class UserController {
     private final UserCredentialRepository userCredentialRepository;
     private final ChallengeRepository challengeRepository;
 
-    private final SecureRandom random = new SecureRandom();
+    private final static SecureRandom random = new SecureRandom();
     private final PasswordEncoder passwordEncoder = new BCryptPasswordEncoder(-1, random);
     private final EmailGuessingPrevention emailGuessingPreventor;
 
@@ -597,7 +597,7 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Collections.singletonMap("status", HttpStatus.NOT_FOUND.value()));
     }
 
-    private String hash() {
+    public static String hash() {
         byte[] bytes = new byte[64];
         random.nextBytes(bytes);
         return Base64.getUrlEncoder().withoutPadding().encodeToString(bytes);
