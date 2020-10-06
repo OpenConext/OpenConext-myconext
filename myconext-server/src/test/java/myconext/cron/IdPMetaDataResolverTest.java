@@ -14,7 +14,9 @@ public class IdPMetaDataResolverTest {
         IdPMetaDataResolver metaDataResolver = new IdPMetaDataResolver(new ClassPathResource("metadata/idps-metadata.xml"));
         metaDataResolver.resolveIdpMetaData();
         Set<String> domainNames = metaDataResolver.getDomainNames();
+
         assertEquals(2, domainNames.size());
+        assertEquals("rug.nl", domainNames.iterator().next());
     }
 
     @Test

@@ -76,6 +76,11 @@
 
     div.mail-clients a {
         text-decoration: none;
+        color: #606060;
+    }
+    div.mail-clients a:hover {
+        text-decoration: underline;
+        color: var(--color-primary-blue);
     }
 
     div.spam {

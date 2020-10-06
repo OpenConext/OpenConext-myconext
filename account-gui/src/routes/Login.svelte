@@ -296,7 +296,7 @@
         display: flex;
         align-items: center;
         color: var(--color-primary-red);
-        margin-bottom: 10px;
+        margin-bottom: 25px;
     }
 
     div.institution-warning {
