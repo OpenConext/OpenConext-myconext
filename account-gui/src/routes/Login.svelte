@@ -7,6 +7,7 @@
   import I18n from "i18n-js";
   import critical from "../icons/critical.svg";
   import attention from "../icons/attention.svg";
+  import error from "../icons/error.svg";
 
   import {
     institutionalEmailDomains,
@@ -22,6 +23,7 @@
   import Cookies from "js-cookie";
   import Button from "../components/Button.svelte";
   import LoginOptions from "../components/LoginOptions.svelte";
+  import {allowedEmailDomains} from "../api";
 
   export let id;
   let emailInUse = false;
@@ -39,7 +41,7 @@
   let institutionDomainNameWarning = false;
 
   let allowedDomainNames = [];
-  let allowedDomainNamesWarning = false;
+  let allowedDomainNamesError = false;
 
   const intervalId = setInterval(() => {
     const value = (passwordField || {}).value;
@@ -49,15 +51,20 @@
     }
   }, 750);
 
-  const fetchInstitutionalDomains = callback => {
-    if (conf && $conf.featureWarningEducationalEmailDomain) {
+  const fetchDomainsForValidation = callback => {
+    if (institutionDomainNames.length === 0 && conf && $conf.featureWarningEducationalEmailDomain) {
       institutionalEmailDomains().then(json => {
         institutionDomainNames = json;
         callback && callback();
       });
-    } else {
-      callback && callback();
     }
+    if (allowedDomainNames.length === 0 && $conf.featureAllowList) {
+      allowedEmailDomains().then(json => {
+        allowedDomainNames = json;
+        callback && callback();
+      })
+    }
+    callback && callback();
   }
 
   onMount(() => {
@@ -74,7 +81,7 @@
     const registerModus = Cookies.get("REGISTER_MODUS");
     if ((modus && modus === "cr") || registerModus) {
       $user.createAccount = true;
-      fetchInstitutionalDomains();
+      fetchDomainsForValidation();
     }
 
     const testWebAuthn = urlParams.get("testWebAuthn");
@@ -159,7 +166,7 @@
   const init = el => el.focus();
 
   const allowedNext = (email, familyName, givenName, password, agreedWithTerms) => {
-    return $user.createAccount ? validEmail(email) && familyName && givenName && agreedWithTerms :
+    return $user.createAccount ? validEmail(email) && familyName && givenName && agreedWithTerms && !allowedDomainNamesError:
       $user.usePassword ? validEmail(email) && password : validEmail(email);
   };
 
@@ -207,11 +214,9 @@
     emailInUse = false;
     emailNotFound = false;
     if (newAccount) {
-      if (institutionDomainNames.length === 0) {
-        fetchInstitutionalDomains(() => handleEmailBlur({target: {value: $user.email}}));
-      } else {
-        handleEmailBlur({target: {value: $user.email}});
-      }
+      fetchDomainsForValidation(() => handleEmailBlur({target: {value: $user.email}}));
+    } else {
+      handleEmailBlur({target: {value: $user.email}});
     }
   };
 
@@ -231,10 +236,14 @@
     if ($user.createAccount) {
       const email = e.target.value;
       //defensive, in edge-cases we don't validate
-      if (email) {
+      if (email && email.lastIndexOf("@") > -1) {
         const domain = email.substring(email.lastIndexOf("@") + 1);
         if (domain) {
           const domainLower = domain.toLowerCase();
+          if (!allowedDomainNames.some(name => name === domainLower || domainLower.endsWith("." + name))) {
+            allowedDomainNamesError = true;
+            return;
+          }
           if (institutionDomainNames.some(name => name === domainLower || domainLower.endsWith("." + name))) {
             institutionDomainNameWarning = true;
             return;
@@ -243,6 +252,7 @@
       }
     }
     institutionDomainNameWarning = false;
+    allowedDomainNamesError = false;
   }
 
   const handlePasswordEnter = e => e.key === "Enter" && handleNext(true)();
@@ -316,6 +326,14 @@
     div.institution-warning {
         border-radius: 8px;
         background-color: #ffd89d;
+        display: flex;
+        padding: 6px;
+        margin-bottom: 15px;
+    }
+
+    div.domain-not-allowed {
+        border-radius: 8px;
+        background-color: #ffc5c1;
         display: flex;
         padding: 6px;
         margin-bottom: 15px;
@@ -438,6 +456,18 @@
             <span>{I18n.t("login.institutionDomainNameWarning")}</span>
             <br/>
             <span>{I18n.t("login.institutionDomainNameWarning2")}</span>
+        </div>
+    </div>
+
+{/if}
+
+{#if $user.createAccount && allowedDomainNamesError}
+    <div class="domain-not-allowed">
+        <span class="svg error">{@html error}</span>
+        <div class="text">
+            <span>{"BIG FAT ERROR - domain not allowed"}</span>
+            <br/>
+            <span>{"WHOOPS"}</span>
         </div>
     </div>
 
