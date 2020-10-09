@@ -1,9 +1,10 @@
 logging:
-  config: classpath:logback.xml
+#  config: classpath:logback.xml
   level:
     org.springframework.data.mongodb: INFO
     org.springframework.data.convert: INFO
     org.springframework.security: INFO
+    org.springframework: DEBUG
 
 server:
   port: 8081
@@ -43,6 +44,10 @@ domain: eduid.nl
 
 feature:
   webauthn: True
+  warning_educational_email_domain: True
+  use_deny_allow_list:
+    allow_enabled: True
+    allow_location: "classpath:/denylist/allowed.json"
 
 secure_cookie: false
 idp_entity_id: https://localhost.surf.id

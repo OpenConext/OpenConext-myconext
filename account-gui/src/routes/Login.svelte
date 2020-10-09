@@ -9,7 +9,7 @@
   import attention from "../icons/attention.svg";
 
   import {
-    domainNames,
+    institutionalEmailDomains,
     magicLinkExistingUser,
     magicLinkNewUser,
     webAuthnStartAuthentication,
@@ -38,6 +38,9 @@
   let institutionDomainNames = [];
   let institutionDomainNameWarning = false;
 
+  let allowedDomainNames = [];
+  let allowedDomainNamesWarning = false;
+
   const intervalId = setInterval(() => {
     const value = (passwordField || {}).value;
     if (value && !$user.usePassword) {
@@ -46,7 +49,21 @@
     }
   }, 750);
 
+  const fetchInstitutionalDomains = callback => {
+    if (conf && $conf.featureWarningEducationalEmailDomain) {
+      institutionalEmailDomains().then(json => {
+        institutionDomainNames = json;
+        callback && callback();
+      });
+    } else {
+      callback && callback();
+    }
+  }
+
   onMount(() => {
+    if (!user) {
+      throw new Error();
+    }
     const value = Cookies.get("login_preference");
     $user.usePassword = value === "usePassword";
     $user.useWebAuth = value === "useWebAuth";
@@ -57,7 +74,7 @@
     const registerModus = Cookies.get("REGISTER_MODUS");
     if ((modus && modus === "cr") || registerModus) {
       $user.createAccount = true;
-      domainNames().then(json => institutionDomainNames = json);
+      fetchInstitutionalDomains();
     }
 
     const testWebAuthn = urlParams.get("testWebAuthn");
@@ -191,10 +208,7 @@
     emailNotFound = false;
     if (newAccount) {
       if (institutionDomainNames.length === 0) {
-        domainNames().then(json => {
-          institutionDomainNames = json;
-          handleEmailBlur({target: {value: $user.email}});
-        });
+        fetchInstitutionalDomains(() => handleEmailBlur({target: {value: $user.email}}));
       } else {
         handleEmailBlur({target: {value: $user.email}});
       }
@@ -360,7 +374,7 @@
 <div class="info-top">
     {#if $user.createAccount}
         <span>{@html I18n.t("login.alreadyGuestAccount")} <a class="toggle-link" href="/login"
-                                                       on:click|preventDefault|stopPropagation={createAccount(false)}>{I18n.t("login.loginEduId")}</a></span>
+                                                             on:click|preventDefault|stopPropagation={createAccount(false)}>{I18n.t("login.loginEduId")}</a></span>
         <!--        <span><a class="toggle-link" target="_blank" href="https://eduid.nl">{I18n.t("login.whatis")}</a></span>-->
     {:else}
         <span>{I18n.t("login.requestEduId")} <a class="toggle-link" href="/reguest"

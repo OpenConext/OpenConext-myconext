@@ -254,13 +254,23 @@ public class UserControllerTest extends AbstractIntegrationTest {
     }
 
     @Test
-    public void domainNames() {
+    public void institutionalDomainNames() {
         given()
                 .when()
-                .get("/myconext/api/idp/email/domain/names")
+                .get("/myconext/api/idp/email/domain/institutional")
                 .then()
                 .statusCode(200)
                 .body("size()", is(2));
+    }
+
+    @Test
+    public void allowedDomainNames() {
+        given()
+                .when()
+                .get("/myconext/api/idp/email/domain/allowed")
+                .then()
+                .statusCode(200)
+                .body("size()", is(0));
     }
 
     @Test

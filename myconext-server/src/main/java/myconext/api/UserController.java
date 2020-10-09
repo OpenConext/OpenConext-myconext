@@ -44,6 +44,7 @@ import myconext.repository.AuthenticationRequestRepository;
 import myconext.repository.ChallengeRepository;
 import myconext.repository.PasswordForgottenHashRepository;
 import myconext.repository.UserRepository;
+import myconext.security.EmailDomainGuard;
 import myconext.security.EmailGuessingPrevention;
 import myconext.webauthn.UserCredentialRepository;
 import org.apache.commons.logging.Log;
@@ -72,7 +73,6 @@ import javax.validation.Valid;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Field;
-import java.net.URISyntaxException;
 import java.net.URLEncoder;
 import java.nio.charset.Charset;
 import java.security.SecureRandom;
@@ -113,6 +113,7 @@ public class UserController {
     private final static SecureRandom random = new SecureRandom();
     private final PasswordEncoder passwordEncoder = new BCryptPasswordEncoder(-1, random);
     private final EmailGuessingPrevention emailGuessingPreventor;
+    private final EmailDomainGuard emailDomainGuard;
     private final IdPMetaDataResolver idPMetaDataResolver;
     private final String spBaseUrl;
 
@@ -125,6 +126,7 @@ public class UserController {
                           ServiceNameResolver serviceNameResolver,
                           OpenIDConnect openIDConnect,
                           IdPMetaDataResolver idPMetaDataResolver,
+                          EmailDomainGuard emailDomainGuard,
                           @Value("${email.magic-link-url}") String magicLinkUrl,
                           @Value("${schac_home_organization}") String schacHomeOrganization,
                           @Value("${guest_idp_entity_id}") String guestIdpEntityId,
@@ -142,6 +144,7 @@ public class UserController {
         this.serviceNameResolver = serviceNameResolver;
         this.openIDConnect = openIDConnect;
         this.idPMetaDataResolver = idPMetaDataResolver;
+        this.emailDomainGuard = emailDomainGuard;
         this.magicLinkUrl = magicLinkUrl;
         this.schacHomeOrganization = schacHomeOrganization;
         this.guestIdpEntityId = guestIdpEntityId;
@@ -152,9 +155,14 @@ public class UserController {
         this.emailGuessingPreventor = new EmailGuessingPrevention(emailGuessingSleepMillis);
     }
 
-    @GetMapping("/idp/email/domain/names")
-    public Set<String> domainNames() {
+    @GetMapping("/idp/email/domain/institutional")
+    public Set<String> institutionalDomains() {
         return this.idPMetaDataResolver.getDomainNames();
+    }
+
+    @GetMapping("/idp/email/domain/allowed")
+    public Set<String> allowedDomains() {
+        return this.emailDomainGuard.getAllowedDomains();
     }
 
     @PostMapping("/idp/magic_link_request")
@@ -164,9 +172,11 @@ public class UserController {
 
         User user = magicLinkRequest.getUser();
 
+        String email = user.getEmail();
+        emailDomainGuard.enforceIsAllowed(email);
         emailGuessingPreventor.potentialUserEmailGuess();
 
-        Optional<User> optionalUser = userRepository.findUserByEmailIgnoreCase(emailGuessingPreventor.sanitizeEmail(user.getEmail()));
+        Optional<User> optionalUser = userRepository.findUserByEmailIgnoreCase(emailGuessingPreventor.sanitizeEmail(email));
         if (optionalUser.isPresent()) {
             return ResponseEntity.status(HttpStatus.CONFLICT)
                     .body(Collections.singletonMap("status", HttpStatus.CONFLICT.value()));
@@ -174,7 +184,7 @@ public class UserController {
         String preferredLanguage = LocaleContextHolder.getLocale().getLanguage();
         //prevent not-wanted attributes in the database
         String requesterEntityId = samlAuthenticationRequest.getRequesterEntityId();
-        User userToSave = new User(UUID.randomUUID().toString(), user.getEmail(), user.getGivenName(),
+        User userToSave = new User(UUID.randomUUID().toString(), email, user.getGivenName(),
                 user.getFamilyName(), schacHomeOrganization, guestIdpEntityId, requesterEntityId,
                 serviceNameResolver.resolve(requesterEntityId, "en"),
                 serviceNameResolver.resolve(requesterEntityId, "nl"), preferredLanguage);
@@ -190,9 +200,11 @@ public class UserController {
 
         User providedUser = magicLinkRequest.getUser();
 
+        String email = providedUser.getEmail();
+        emailDomainGuard.enforceIsAllowed(email);
         emailGuessingPreventor.potentialUserEmailGuess();
 
-        Optional<User> optionalUser = findUserStoreLanguage(providedUser.getEmail());
+        Optional<User> optionalUser = findUserStoreLanguage(email);
         if (!optionalUser.isPresent()) {
             return return404();
         }
@@ -484,6 +496,7 @@ public class UserController {
     @PostMapping("idp/security/webauthn/authentication")
     public ResponseEntity idpWebAuthnStartAuthentication(@RequestBody Map<String, String> body) {
         String email = body.get("email");
+        emailDomainGuard.enforceIsAllowed(email);
         emailGuessingPreventor.potentialUserEmailGuess();
 
         Optional<User> optionalUser = userRepository.findUserByEmailIgnoreCase(emailGuessingPreventor.sanitizeEmail(email));

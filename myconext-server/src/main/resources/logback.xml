@@ -13,11 +13,11 @@
         </encoder>
     </appender>
 
-    <root level="ERROR">
+    <root level="DEBUG">
         <appender-ref ref="STDOUT"/>
     </root>
 
-    <logger name="org.springframework" additivity="false" level="INFO"/>
+    <logger name="org.springframework" additivity="false" level="DEBUG"/>
     <logger name="org.eclipse.jetty" level="ERROR"/>
     <logger name="myconext"  level="DEBUG"/>
 
