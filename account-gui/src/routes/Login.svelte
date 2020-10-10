@@ -465,9 +465,10 @@
     <div class="domain-not-allowed">
         <span class="svg error">{@html error}</span>
         <div class="text">
-            <span>{"BIG FAT ERROR - domain not allowed"}</span>
+            <span>{I18n.t("login.allowedDomainNamesError",
+              {domain: $user.email.substring($user.email.indexOf("@") + 1)})}</span>
             <br/>
-            <span>{"WHOOPS"}</span>
+            <span>{I18n.t("login.allowedDomainNamesError2")}</span>
         </div>
     </div>
 
