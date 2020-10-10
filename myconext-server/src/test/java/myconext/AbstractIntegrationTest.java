@@ -6,7 +6,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import io.restassured.RestAssured;
 import io.restassured.http.Cookie;
 import io.restassured.response.Response;
+import io.restassured.specification.RequestSpecification;
+import myconext.api.MagicLinkResponse;
 import myconext.model.Challenge;
+import myconext.model.MagicLinkRequest;
 import myconext.model.PasswordForgottenHash;
 import myconext.model.SamlAuthenticationRequest;
 import myconext.model.User;
@@ -18,6 +21,7 @@ import org.apache.commons.io.IOUtils;
 import org.junit.Before;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.core.annotation.AnnotationUtils;
@@ -27,6 +31,9 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.util.ReflectionTestUtils;
@@ -76,6 +83,7 @@ public abstract class AbstractIntegrationTest {
     @Autowired
     protected MongoTemplate mongoTemplate;
 
+    @Qualifier("jsonMapper")
     @Autowired
     protected ObjectMapper objectMapper;
 
@@ -124,6 +132,22 @@ public abstract class AbstractIntegrationTest {
 
     protected Response samlAuthnRequestResponse(Cookie cookie, String relayState) throws IOException {
         return samlAuthnRequestResponseWithLoa(cookie, relayState, "");
+    }
+
+    protected MagicLinkResponse magicLinkRequest(User user, HttpMethod method) throws IOException {
+        String authenticationRequestId = samlAuthnRequest();
+        return magicLinkRequest(new MagicLinkRequest(authenticationRequestId, user, false, StringUtils.hasText(user.getPassword())), method);
+    }
+
+    protected MagicLinkResponse magicLinkRequest(MagicLinkRequest linkRequest, HttpMethod method) {
+        RequestSpecification requestSpecification = given()
+                .when()
+                .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+                .body(linkRequest);
+
+        String path = "/myconext/api/idp/magic_link_request";
+        Response response = method.equals(HttpMethod.POST) ? requestSpecification.post(path) : requestSpecification.put(path);
+        return new MagicLinkResponse(linkRequest.getAuthenticationRequestId(), response.then());
     }
 
     protected Response samlAuthnRequestResponseWithLoa(Cookie cookie, String relayState, String loaLevel) throws IOException {

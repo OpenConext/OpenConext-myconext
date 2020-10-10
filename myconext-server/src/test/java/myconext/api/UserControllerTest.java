@@ -888,22 +888,6 @@ public class UserControllerTest extends AbstractIntegrationTest {
     }
 
 
-    private MagicLinkResponse magicLinkRequest(User user, HttpMethod method) throws IOException {
-        String authenticationRequestId = samlAuthnRequest();
-        return magicLinkRequest(new MagicLinkRequest(authenticationRequestId, user, false, StringUtils.hasText(user.getPassword())), method);
-    }
-
-    private MagicLinkResponse magicLinkRequest(MagicLinkRequest linkRequest, HttpMethod method) {
-        RequestSpecification requestSpecification = given()
-                .when()
-                .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
-                .body(linkRequest);
-
-        String path = "/myconext/api/idp/magic_link_request";
-        Response response = method.equals(HttpMethod.POST) ? requestSpecification.post(path) : requestSpecification.put(path);
-        return new MagicLinkResponse(linkRequest.getAuthenticationRequestId(), response.then());
-    }
-
     private String hash() {
         byte[] bytes = new byte[64];
         random.nextBytes(bytes);
