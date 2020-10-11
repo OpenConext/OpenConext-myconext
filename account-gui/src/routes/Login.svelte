@@ -241,11 +241,11 @@
         if (domain) {
           const domainLower = domain.toLowerCase();
           if (!allowedDomainNames.some(name => name === domainLower || domainLower.endsWith("." + name))) {
-            allowedDomainNamesError = true;
+            allowedDomainNamesError = $conf.featureAllowList;
             return;
           }
           if (institutionDomainNames.some(name => name === domainLower || domainLower.endsWith("." + name))) {
-            institutionDomainNameWarning = true;
+            institutionDomainNameWarning = $conf.featureWarningEducationalEmailDomain;
             return;
           }
         }
