@@ -22,7 +22,6 @@ public class EmailDomainGuard {
 
     private static final Log LOG = LogFactory.getLog(EmailDomainGuard.class);
 
-
     private final boolean allowEnabled;
     private final Set<String> allowedDomains;
 
@@ -39,7 +38,7 @@ public class EmailDomainGuard {
 
     public void enforceIsAllowed(String email) {
         if (allowEnabled) {
-            String domain = email.substring(email.lastIndexOf("@") + 1);
+            String domain = email.substring(email.lastIndexOf("@") + 1).trim();
             final String domainLowerCase = domain.toLowerCase();
             boolean allowed = allowedDomains.stream().anyMatch(name -> name.equals(domainLowerCase) || domainLowerCase.endsWith("." + name));
             if (!allowed) {

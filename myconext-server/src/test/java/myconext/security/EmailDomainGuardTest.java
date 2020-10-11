@@ -22,6 +22,7 @@ public class EmailDomainGuardTest {
         doIsAllowed(guard, "john@aaaapolitie.nl", false);
 
         doIsAllowed(guard, "john@politie.nl", true);
+        doIsAllowed(guard, " john@politie.nl ", true);
         doIsAllowed(guard, "john@subdomain.politie.nl", true);
 
         assertEquals(2, guard.getAllowedDomains().size());
