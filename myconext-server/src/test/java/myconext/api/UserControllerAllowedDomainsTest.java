@@ -28,7 +28,7 @@ public class UserControllerAllowedDomainsTest extends AbstractIntegrationTest {
 
     @Test
     public void allowedEmailNewUser() throws IOException {
-        magicLinkRequest(user("jdoe@SUBDOMAIN.pOliTie.NL"), HttpMethod.POST)
+        magicLinkRequest(user("jdoe@SUBDOMAIN.stRanGe.ME"), HttpMethod.POST)
                 .response
                 .statusCode(HttpStatus.CREATED.value());
     }

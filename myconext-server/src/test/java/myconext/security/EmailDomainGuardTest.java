@@ -19,11 +19,11 @@ public class EmailDomainGuardTest {
         EmailDomainGuard guard = new EmailDomainGuard(true, new ClassPathResource("/deny-allow/allowed.json"), new ObjectMapper());
 
         doIsAllowed(guard, "john@example.com", false);
-        doIsAllowed(guard, "john@aaaapolitie.nl", false);
+        doIsAllowed(guard, "john@aaaastrange.me", false);
 
-        doIsAllowed(guard, "john@politie.nl", true);
-        doIsAllowed(guard, " john@politie.nl ", true);
-        doIsAllowed(guard, "john@subdomain.politie.nl", true);
+        doIsAllowed(guard, "john@strange.me", true);
+        doIsAllowed(guard, " john@strange.me ", true);
+        doIsAllowed(guard, "john@subdomain.strange.me", true);
 
         assertEquals(2, guard.getAllowedDomains().size());
     }
