@@ -240,12 +240,12 @@
         const domain = email.substring(email.lastIndexOf("@") + 1);
         if (domain) {
           const domainLower = domain.toLowerCase();
-          if (!allowedDomainNames.some(name => name === domainLower || domainLower.endsWith("." + name))) {
-            allowedDomainNamesError = $conf.featureAllowList;
+          if ($conf.featureAllowList && !allowedDomainNames.some(name => name === domainLower || domainLower.endsWith("." + name))) {
+            allowedDomainNamesError = true;
             return;
           }
-          if (institutionDomainNames.some(name => name === domainLower || domainLower.endsWith("." + name))) {
-            institutionDomainNameWarning = $conf.featureWarningEducationalEmailDomain;
+          if ($conf.featureWarningEducationalEmailDomain && institutionDomainNames.some(name => name === domainLower || domainLower.endsWith("." + name))) {
+            institutionDomainNameWarning = true;
             return;
           }
         }
