@@ -46,7 +46,7 @@ I18n.translations.en = {
         emailOrPasswordIncorrect: "Email or password are incorrect",
         institutionDomainNameWarning: "It looks like you entered an institutional email address. Please note that when you no longer study at or work for that institution, you can no longer use that email address.",
         institutionDomainNameWarning2: "We recommend using your personal email address for eduID.",
-        allowedDomainNamesError: "Domain name {{domain}} not allowed",
+        allowedDomainNamesError: "Domain name {{domain}} not allowed.",
         allowedDomainNamesError2: "eduID is restricted to be used only for allowed domains.",
         passwordDisclaimer: "Make sure it's at least 15 characters long OR at least 8 characters when including a number and an UpperCase letter.",
         alreadyGuestAccount: "Already have an eduID?",
