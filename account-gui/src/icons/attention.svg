@@ -1,15 +1,29 @@
-<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="32" height="32" viewBox="0 0 32 32">
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="28px" height="28px" viewBox="0 0 28 28" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>basis / check 3px copy</title>
     <defs>
-        <path id="a" d="M12 0c6.624.007 11.993 5.376 12 12 0 6.627-5.373 12-12 12S0 18.627 0 12 5.373 0 12 0zm.375 15.5c-.758 0-1.375.617-1.375 1.375s.617 1.375 1.375 1.375 1.375-.617 1.375-1.375-.617-1.375-1.375-1.375zm0-10.5a1 1 0 0 0-1 1v7.5l.007.117a1 1 0 0 0 1.993-.117V6l-.007-.117A1 1 0 0 0 12.375 5z"/>
+        <path d="M16,4 C22.624447,4.00716485 27.9928352,9.37555305 28,16 C28,22.627417 22.627417,28 16,28 C9.372583,28 4,22.627417 4,16 C4,9.372583 9.372583,4 16,4 Z M16.375,19.5 C15.617,19.5 15,20.117 15,20.875 C15,21.633 15.617,22.25 16.375,22.25 C17.133,22.25 17.75,21.633 17.75,20.875 C17.75,20.117 17.133,19.5 16.375,19.5 Z M16.375,9 C15.823,9 15.375,9.448 15.375,10 L15.375,10 L15.375,17.5 L15.3817318,17.6167533 C15.4395306,18.1145765 15.8624286,18.5 16.375,18.5 C16.927,18.5 17.375,18.053 17.375,17.5 L17.375,17.5 L17.375,10 L17.3682682,9.88343149 C17.3104694,9.38628571 16.8875714,9 16.375,9 Z" id="path-1"></path>
     </defs>
-    <g fill="none" fill-rule="evenodd" transform="translate(4 4)">
-        <path fill="#FFF" fill-rule="nonzero" stroke="#FFF" stroke-width="2" d="M12-1h.001C19.177-.992 24.992 4.823 25 12c0 7.18-5.82 13-13 13S-1 19.18-1 12 4.82-1 12-1z"/>
-        <mask id="b" fill="#fff">
-            <use xlink:href="#a"/>
-        </mask>
-        <use fill="#000" fill-rule="nonzero" xlink:href="#a"/>
-        <g fill="#FF9D0B" mask="url(#b)">
-            <path d="M-4-4h32v32H-4V-4z"/>
+    <g id="Styleboard" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="EDUbadges_styleboard" transform="translate(-1231.000000, -7010.000000)">
+            <g id="notifications" transform="translate(460.000000, 6372.000000)">
+                <g id="Tip-inside-card-with-close-icon" transform="translate(754.000000, 465.000000)">
+                    <g id="more-lines" transform="translate(1.999939, 157.999839)">
+                        <g id="basis-/-check-3px-copy" transform="translate(13.000061, 13.000161)">
+                            <path d="M16.0010816,3.00000058 C19.589025,3.00388122 22.8368141,4.45963898 25.1885876,6.81141243 C27.540361,9.16318588 28.9961188,12.410975 29,16 C29,19.5898509 27.5449254,22.8398509 25.1923882,25.1923882 C22.8398509,27.5449254 19.5898509,29 16,29 C12.4101491,29 9.16014913,27.5449254 6.80761184,25.1923882 C4.45507456,22.8398509 3,19.5898509 3,16 C3,12.4101491 4.45507456,9.16014913 6.80761184,6.80761184 C9.16014913,4.45507456 12.4101491,3 16.0010816,3.00000058 Z" id="Path" stroke="#FFFFFF" stroke-width="2" fill="#FFFFFF" fill-rule="nonzero"></path>
+                            <mask id="mask-2" fill="white">
+                                <use xlink:href="#path-1"></use>
+                            </mask>
+                            <use id="Shape" fill="#000000" fill-rule="nonzero" xlink:href="#path-1"></use>
+                            <g id="Group" mask="url(#mask-2)" fill="#FF9D0B">
+                                <g id="🎨-Color">
+                                    <path d="M0,0 L32,0 L32,32 L0,32 L0,0 Z" id="Colors/Your_color_2"></path>
+                                </g>
+                            </g>
+                        </g>
+                    </g>
+                </g>
+            </g>
         </g>
     </g>
 </svg>

@@ -7,7 +7,6 @@
   import I18n from "i18n-js";
   import critical from "../icons/critical.svg";
   import attention from "../icons/attention.svg";
-  import error from "../icons/error.svg";
 
   import {
     institutionalEmailDomains,
@@ -463,7 +462,7 @@
 
 {#if $user.createAccount && allowedDomainNamesError}
     <div class="domain-not-allowed">
-        <span class="svg error">{@html error}</span>
+        <span class="svg error">{@html critical}</span>
         <div class="text">
             <span>{I18n.t("login.allowedDomainNamesError",
               {domain: $user.email.substring($user.email.indexOf("@") + 1)})}</span>
