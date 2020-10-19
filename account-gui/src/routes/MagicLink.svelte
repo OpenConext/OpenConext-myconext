@@ -2,7 +2,7 @@
     import I18n from "i18n-js";
     import {user} from "../stores/user";
     import {onMount} from "svelte";
-    import backArrow from "../icons/back-arrow.svg";
+    import backArrow from "../icons/arrow-left.svg";
     const gmail = "/img/get-started-icon-gmail@2x-e80b706.png";
     const outlook = "/img/get-started-icon-outlook-55f9ac5.png";
 
@@ -22,8 +22,8 @@
 
     .back-container {
         position: absolute;
-        left: 10px;
-        top: 10px;
+        left: 15px;
+        top: 15px;
         cursor: pointer;
     }
 
