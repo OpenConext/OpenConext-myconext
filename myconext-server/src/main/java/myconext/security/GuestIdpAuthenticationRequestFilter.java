@@ -233,7 +233,7 @@ public class GuestIdpAuthenticationRequestFilter extends IdpAuthenticationReques
             return Collections.emptyList();
         }
         return authenticationContextClassReferences.stream()
-                .map(ref -> ref.getValue())
+                .map(AuthenticationContextClassReference::getValue)
                 .collect(toList());
     }
 
@@ -413,8 +413,14 @@ public class GuestIdpAuthenticationRequestFilter extends IdpAuthenticationReques
                         .setClassReference(AuthenticationContextClassReference
                                 .fromUrn(ACR.selectACR(authenticationContextClassReferences, hasStudentAffiliation)));
             }
+        } else if (!CollectionUtils.isEmpty(authenticationContextClassReferences)) {
+            String msg = String.format("The specified authentication context requirements '%s' cannot be met by the responder.",
+                    String.join(", ", authenticationContextClassReferences));
+            samlResponse.setStatus(new Status()
+                    .setCode(StatusCode.NO_AUTH_CONTEXT)
+                    .setMessage(msg)
+                    .setDetail(msg));
         }
-
         Endpoint acsUrl = provider.getPreferredEndpoint(
                 serviceProviderMetadata.getServiceProvider().getAssertionConsumerService(),
                 Binding.POST,

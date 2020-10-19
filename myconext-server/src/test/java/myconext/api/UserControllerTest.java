@@ -232,7 +232,6 @@ public class UserControllerTest extends AbstractIntegrationTest {
     @Test
     public void accountLinkingWithoutValidNames() throws IOException {
         User user = userRepository.findOneUserByEmailIgnoreCase("jdoe@example.com");
-        Date createdAt = Date.from(Instant.now().plus(30 * 365, ChronoUnit.DAYS));
         LinkedAccount linkedAccount = LinkedAccountTest.linkedAccount("", "", new Date());
         user.getLinkedAccounts().add(linkedAccount);
         userRepository.save(user);
@@ -250,6 +249,21 @@ public class UserControllerTest extends AbstractIntegrationTest {
         String samlResponse = this.samlResponse(magicLinkResponse);
 
         assertTrue(samlResponse.contains("Your institution has not provided those attributes"));
+        assertTrue(samlResponse.contains("urn:oasis:names:tc:SAML:2.0:status:NoAuthnContext"));
+    }
+
+    @Test
+    public void invalidLoaLevel() throws IOException {
+        User user = userRepository.findOneUserByEmailIgnoreCase("jdoe@example.com");
+        String authnContext = readFile("request_authn_context_invalid.xml");
+        Response response = samlAuthnRequestResponseWithLoa(null, "relay", authnContext);
+
+        String authenticationRequestId = extractAuthenticationRequestIdFromAuthnResponse(response);
+        MagicLinkResponse magicLinkResponse = magicLinkRequest(new MagicLinkRequest(authenticationRequestId, user, false, false), HttpMethod.PUT);
+        String samlResponse = this.samlResponse(magicLinkResponse);
+
+        assertTrue(samlResponse.contains("The specified authentication context requirements"));
+        assertTrue(samlResponse.contains("cannot be met by the responder"));
         assertTrue(samlResponse.contains("urn:oasis:names:tc:SAML:2.0:status:NoAuthnContext"));
     }
 
