@@ -6,7 +6,7 @@
   import {validEmail} from "../validation/regexp";
   import I18n from "i18n-js";
   import critical from "../icons/critical.svg";
-  import attention from "../icons/attention.svg";
+  import attention from "../icons/alert-circle.svg";
 
   import {
     institutionalEmailDomains,
@@ -281,9 +281,12 @@
         margin-left: auto;
     }
 
-    /*div.info-top span:first-child {*/
-    /*    margin-bottom: 5px;*/
-    /*}*/
+    :global(span.svg.attention svg) {
+        width: 32px;
+        height: 32px;
+        margin: 5px;
+    }
+
     a {
         text-decoration: underline;
     }

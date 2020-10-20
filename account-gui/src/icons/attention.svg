@@ -7,9 +7,9 @@
     <g id="Styleboard" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
         <g id="EDUbadges_styleboard" transform="translate(-1231.000000, -7010.000000)">
             <g id="notifications" transform="translate(460.000000, 6372.000000)">
-                <g id="Tip-inside-card-with-close-icon" transform="translate(754.000000, 465.000000)">
+                <g id="whatever" transform="translate(754.000000, 465.000000)">
                     <g id="more-lines" transform="translate(1.999939, 157.999839)">
-                        <g id="basis-/-check-3px-copy" transform="translate(13.000061, 13.000161)">
+                        <g id="attention" transform="translate(13.000061, 13.000161)">
                             <path d="M16.0010816,3.00000058 C19.589025,3.00388122 22.8368141,4.45963898 25.1885876,6.81141243 C27.540361,9.16318588 28.9961188,12.410975 29,16 C29,19.5898509 27.5449254,22.8398509 25.1923882,25.1923882 C22.8398509,27.5449254 19.5898509,29 16,29 C12.4101491,29 9.16014913,27.5449254 6.80761184,25.1923882 C4.45507456,22.8398509 3,19.5898509 3,16 C3,12.4101491 4.45507456,9.16014913 6.80761184,6.80761184 C9.16014913,4.45507456 12.4101491,3 16.0010816,3.00000058 Z" id="Path" stroke="#FFFFFF" stroke-width="2" fill="#FFFFFF" fill-rule="nonzero"></path>
                             <mask id="mask-2" fill="white">
                                 <use xlink:href="#path-1"></use>
