@@ -17,7 +17,7 @@
         transition: opacity 150ms, visibility 150ms;
         padding: 8px 16px;
         border-radius: 6px;
-        color: #0062b0;
+        color: var(--color-primary-blue);
         background-color: #d6e9fd;
 
     }

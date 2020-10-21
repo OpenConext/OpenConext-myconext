@@ -288,11 +288,18 @@
     }
 
     a {
+        text-decoration: none;
+        font-weight: 600;
+    }
+
+    a:hover, a.toggle-link:hover  {
         text-decoration: underline;
+        color: var(--color-hover-blue);
+
     }
 
     a.toggle-link {
-        color: #0062b0;
+        color: var(--color-primary-blue);
     }
 
     h2.header {

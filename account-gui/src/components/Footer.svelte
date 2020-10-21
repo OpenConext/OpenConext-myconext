@@ -57,6 +57,7 @@
 
     .help a.white {
         color: white;
+        line-height: 22px;
     }
 
     .info {
