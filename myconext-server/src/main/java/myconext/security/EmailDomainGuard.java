@@ -29,7 +29,7 @@ public class EmailDomainGuard {
                             @Value("${feature.use_deny_allow_list.allow_location}") Resource allowLocationResource,
                             @Qualifier("jsonMapper") ObjectMapper objectMapper) throws IOException {
         this.allowEnabled = allowEnabled;
-        allowedDomains = allowEnabled ? objectMapper.readValue(allowLocationResource.getInputStream(), new TypeReference<List<String>>() {
+        this.allowedDomains = allowEnabled ? objectMapper.readValue(allowLocationResource.getInputStream(), new TypeReference<List<String>>() {
         }).stream().map(String::toLowerCase).collect(Collectors.toSet()) : new HashSet<>();
 
         LOG.info(String.format("Parsed %s allowed domain names from resource %s. Whitelist is %s",
