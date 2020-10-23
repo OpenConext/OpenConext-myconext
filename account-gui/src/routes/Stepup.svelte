@@ -1,10 +1,8 @@
 <script>
     import I18n from "i18n-js";
     import {onMount} from 'svelte';
-    import {conf} from "../stores/conf";
     import Button from "../components/Button.svelte";
     import Verification from "../components/Verification.svelte";
-    import oneMoreThing from "../icons/onemorething_empty.svg";
 
     export let id;
     let explanation = null;

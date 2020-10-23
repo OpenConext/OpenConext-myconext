@@ -3,6 +3,7 @@
     import {user} from "../stores/user";
     import {onMount} from "svelte";
     import backArrow from "../icons/arrow-left.svg";
+
     const gmail = "/img/get-started-icon-gmail@2x-e80b706.png";
     const outlook = "/img/get-started-icon-outlook-55f9ac5.png";
 
@@ -36,7 +37,7 @@
     }
 
     p {
-     text-align: center;
+        text-align: center;
     }
 
     h2.header {
@@ -47,14 +48,14 @@
 
     div.mail-clients {
         width: 100%;
-        display:flex;
+        display: flex;
         margin-top: 75px;
         align-items: center;
         align-content: center;
     }
 
     div.mail-client {
-        display:flex;
+        display: flex;
         align-items: center;
         align-content: center;
         font-size: 15px;
@@ -78,6 +79,7 @@
         text-decoration: none;
         color: #606060;
     }
+
     div.mail-clients a:hover {
         text-decoration: underline;
         color: var(--color-primary-blue);
@@ -98,11 +100,11 @@
     <p>{@html I18n.t("magicLink.info", {email: $user.email})}</p>
     <div class="mail-clients">
         <div class="mail-client gmail">
-        <img src={gmail} alt="gmail" width="26px" on:click={() => window.location.href="https://www.gmail.com"}/>
+            <img src={gmail} alt="gmail" width="26px" on:click={() => window.location.href="https://www.gmail.com"}/>
             <a href="https://www.gmail.com">{I18n.t("magicLink.openGMail")}</a>
         </div>
         <div class="mail-client outlook">
-        <img src={outlook} alt="outlook" on:click={() => window.location.href="https://outlook.live.com/owa/"}/>
+            <img src={outlook} alt="outlook" on:click={() => window.location.href="https://outlook.live.com/owa/"}/>
             <a href="https://outlook.live.com/owa/">{I18n.t("magicLink.openOutlook")}</a>
         </div>
     </div>
