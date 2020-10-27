@@ -3,6 +3,10 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+## [4.0.1] - 2020-10-27
+### Fixes/improvement
+- Minor extual changes
+
 ## [4.0.0] - 2020-10-20
 ### New
 - Warn a user when using an institutional email adres
