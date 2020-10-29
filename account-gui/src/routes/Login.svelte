@@ -1,271 +1,271 @@
 <script>
-  import {user} from "../stores/user";
-  import {conf} from "../stores/conf";
+    import {user} from "../stores/user";
+    import {conf} from "../stores/conf";
 
-  import {get} from "@github/webauthn-json";
-  import {validEmail} from "../validation/regexp";
-  import I18n from "i18n-js";
-  import critical from "../icons/critical.svg";
-  import attention from "../icons/alert-circle.svg";
+    import {get} from "@github/webauthn-json";
+    import {validEmail} from "../validation/regexp";
+    import I18n from "i18n-js";
+    import critical from "../icons/critical.svg";
+    import attention from "../icons/alert-circle.svg";
 
-  import {
-    institutionalEmailDomains,
-    magicLinkExistingUser,
-    magicLinkNewUser,
-    webAuthnStartAuthentication,
-    webAuthnTryAuthentication
-  } from "../api/index";
-  import CheckBox from "../components/CheckBox.svelte";
-  import Spinner from "../components/Spinner.svelte";
-  import {navigate} from "svelte-routing";
-  import {onMount} from "svelte";
-  import Cookies from "js-cookie";
-  import Button from "../components/Button.svelte";
-  import LoginOptions from "../components/LoginOptions.svelte";
-  import {allowedEmailDomains} from "../api";
+    import {
+        institutionalEmailDomains,
+        magicLinkExistingUser,
+        magicLinkNewUser,
+        webAuthnStartAuthentication,
+        webAuthnTryAuthentication
+    } from "../api/index";
+    import CheckBox from "../components/CheckBox.svelte";
+    import Spinner from "../components/Spinner.svelte";
+    import {navigate} from "svelte-routing";
+    import {onMount} from "svelte";
+    import Cookies from "js-cookie";
+    import Button from "../components/Button.svelte";
+    import LoginOptions from "../components/LoginOptions.svelte";
+    import {allowedEmailDomains} from "../api";
 
-  export let id;
-  let emailInUse = false;
-  let emailNotFound = false;
-  let emailOrPasswordIncorrect = false;
-  let webAuthIncorrect = false;
-  let initial = true;
-  let showSpinner = false;
-  let serviceName = "";
+    export let id;
+    let emailInUse = false;
+    let emailNotFound = false;
+    let emailOrPasswordIncorrect = false;
+    let webAuthIncorrect = false;
+    let initial = true;
+    let showSpinner = false;
+    let serviceName = "";
 
-  let passwordField;
-  let agreedWithTerms = false;
+    let passwordField;
+    let agreedWithTerms = false;
 
-  let institutionDomainNames = [];
-  let institutionDomainNameWarning = false;
+    let institutionDomainNames = [];
+    let institutionDomainNameWarning = false;
 
-  let allowedDomainNames = [];
-  let allowedDomainNamesError = false;
+    let allowedDomainNames = [];
+    let allowedDomainNamesError = false;
 
-  const intervalId = setInterval(() => {
-    const value = (passwordField || {}).value;
-    if (value && !$user.usePassword) {
-      $user.usePassword = true;
-      clearInterval(intervalId);
-    }
-  }, 750);
+    const intervalId = setInterval(() => {
+        const value = (passwordField || {}).value;
+        if (value && !$user.usePassword) {
+            $user.usePassword = true;
+            clearInterval(intervalId);
+        }
+    }, 750);
 
-  const fetchDomainsForValidation = callback => {
-    if (institutionDomainNames.length === 0 && conf && $conf.featureWarningEducationalEmailDomain) {
-      institutionalEmailDomains().then(json => {
-        institutionDomainNames = json;
+    const fetchDomainsForValidation = callback => {
+        if (institutionDomainNames.length === 0 && conf && $conf.featureWarningEducationalEmailDomain) {
+            institutionalEmailDomains().then(json => {
+                institutionDomainNames = json;
+                callback && callback();
+            });
+        }
+        if (allowedDomainNames.length === 0 && $conf.featureAllowList) {
+            allowedEmailDomains().then(json => {
+                allowedDomainNames = json;
+                callback && callback();
+            })
+        }
         callback && callback();
-      });
-    }
-    if (allowedDomainNames.length === 0 && $conf.featureAllowList) {
-      allowedEmailDomains().then(json => {
-        allowedDomainNames = json;
-        callback && callback();
-      })
-    }
-    callback && callback();
-  }
-
-  onMount(() => {
-    if (!user) {
-      throw new Error();
-    }
-    const value = Cookies.get("login_preference");
-    $user.usePassword = value === "usePassword";
-    $user.useWebAuth = value === "useWebAuth";
-    const urlParams = new URLSearchParams(window.location.search);
-    serviceName = urlParams.get("name");
-
-    const modus = urlParams.get("modus");
-    const registerModus = Cookies.get("REGISTER_MODUS");
-    if ((modus && modus === "cr") || registerModus) {
-      $user.createAccount = true;
-      fetchDomainsForValidation();
     }
 
-    const testWebAuthn = urlParams.get("testWebAuthn");
-    const email = urlParams.get("email")
-    if (testWebAuthn && email) {
-      $user.email = decodeURIComponent(email);
-      $user.useWebAuth = true;
-      webAuthnStart(email, true);
-    }
-  });
+    onMount(() => {
+        if (!user) {
+            throw new Error();
+        }
+        const value = Cookies.get("login_preference");
+        $user.usePassword = value === "usePassword";
+        $user.useWebAuth = value === "useWebAuth" && $conf.featureWebAuthn;
+        const urlParams = new URLSearchParams(window.location.search);
+        serviceName = urlParams.get("name");
 
-  const handleNext = passwordFlow => () => {
-    if (($user.usePassword && passwordFlow) || (!$user.usePassword && !passwordFlow)) {
-      if (allowedNext($user.email, $user.givenName, $user.familyName, $user.password, agreedWithTerms)) {
-        showSpinner = true;
-        const modus = $user.createAccount ? "cr" : "ea";
-        if ($user.createAccount) {
-          magicLinkNewUser($user.email, $user.givenName, $user.familyName, $user.rememberMe, id)
-            .then(res => {
-              const url = res.stepup ? `/stepup/${id}?name=${encodeURIComponent(serviceName)}&explanation=${res.explanation}` :
-                `/magic/${id}?name=${encodeURIComponent(serviceName)}&modus=${modus}`;
-              navigate(url, {replace: true})
+        const modus = urlParams.get("modus");
+        const registerModus = Cookies.get("REGISTER_MODUS");
+        if ((modus && modus === "cr") || registerModus) {
+            $user.createAccount = true;
+            fetchDomainsForValidation();
+        }
+
+        const testWebAuthn = urlParams.get("testWebAuthn");
+        const email = urlParams.get("email")
+        if (testWebAuthn && email && $conf.featureWebAuthn) {
+            $user.email = decodeURIComponent(email);
+            $user.useWebAuth = true;
+            webAuthnStart(email, true);
+        }
+    });
+
+    const handleNext = passwordFlow => () => {
+        if (($user.usePassword && passwordFlow) || (!$user.usePassword && !passwordFlow)) {
+            if (allowedNext($user.email, $user.givenName, $user.familyName, $user.password, agreedWithTerms)) {
+                showSpinner = true;
+                const modus = $user.createAccount ? "cr" : "ea";
+                if ($user.createAccount) {
+                    magicLinkNewUser($user.email, $user.givenName, $user.familyName, $user.rememberMe, id)
+                        .then(res => {
+                            const url = res.stepup ? `/stepup/${id}?name=${encodeURIComponent(serviceName)}&explanation=${res.explanation}` :
+                                `/magic/${id}?name=${encodeURIComponent(serviceName)}&modus=${modus}`;
+                            navigate(url, {replace: true})
+                        })
+                        .catch(e => {
+                            showSpinner = false;
+                            if (e.status === 409) {
+                                emailInUse = true;
+                                emailNotFound = false;
+                                emailOrPasswordIncorrect = false;
+                            } else {
+                                navigate("/expired", {replace: true});
+                            }
+                        });
+                } else {
+                    magicLinkExistingUser($user.email, $user.password, $user.rememberMe, $user.usePassword, id)
+                        .then(json => {
+                            Cookies.set("login_preference", $user.usePassword ? "usePassword" : $user.useWebAuth ? "useWebAuth" : "useLink", {
+                                expires: 365,
+                                secure: true,
+                                sameSite: "Lax"
+                            });
+                            if (json.stepup) {
+                                navigate(`/stepup/${id}?name=${encodeURIComponent(serviceName)}&explanation=${json.explanation}`, {replace: true})
+                            } else if ($user.usePassword) {
+                                window.location.href = json.url;
+                            } else {
+                                navigate(`/magic/${id}?name=${encodeURIComponent(serviceName)}&modus=${modus}`, {replace: true});
+                            }
+                        }).catch(e => {
+                        showSpinner = false;
+                        if (e.status === 404) {
+                            if ($user.usePassword) {
+                                emailNotFound = false;
+                                emailOrPasswordIncorrect = true;
+                                emailInUse = false;
+                            } else {
+                                emailNotFound = true;
+                                emailOrPasswordIncorrect = false;
+                                emailInUse = false;
+                            }
+                        } else if (e.status === 403) {
+                            emailNotFound = false;
+                            emailOrPasswordIncorrect = true;
+                            emailInUse = false;
+
+                        } else {
+                            navigate("/expired", {replace: true});
+                        }
+                    });
+                }
+            } else {
+                initial = false;
+            }
+        } else {
+            $user.usePassword = passwordFlow;
+            if (!passwordFlow) {
+                $user.password = "";
+            }
+        }
+    };
+
+    const init = el => el.focus();
+
+    const allowedNext = (email, familyName, givenName, password, agreedWithTerms) => {
+        return $user.createAccount ? validEmail(email) && familyName && givenName && agreedWithTerms && !allowedDomainNamesError :
+            $user.usePassword ? validEmail(email) && password : validEmail(email);
+    };
+
+    const webAuthnStart = (email, test = false) => {
+        webAuthnStartAuthentication(email, id, test)
+            .then(request => {
+                get({publicKey: request.publicKeyCredentialRequestOptions})
+                    .then(credentials => {
+                        //rawId is not supported server-side
+                        delete credentials["rawId"];
+                        webAuthnTryAuthentication(JSON.stringify(credentials), id, $user.rememberMe)
+                            .then(json => {
+                                Cookies.set("login_preference", "useWebAuth", {
+                                    expires: 365,
+                                    secure: true,
+                                    sameSite: "Lax"
+                                });
+                                if (json.stepup) {
+                                    navigate(`/stepup/${id}?name=${encodeURIComponent(serviceName)}&explanation=${json.explanation}`, {replace: true})
+                                } else {
+                                    window.location.href = json.url
+                                }
+                            })
+                            .catch(() => {
+                                webAuthIncorrect = true;
+                            })
+                    }).catch(e => {
+                    webAuthIncorrect = true;
+                });
             })
             .catch(e => {
-              showSpinner = false;
-              if (e.status === 409) {
-                emailInUse = true;
-                emailNotFound = false;
-                emailOrPasswordIncorrect = false;
-              } else {
-                navigate("/expired", {replace: true});
-              }
-            });
-        } else {
-          magicLinkExistingUser($user.email, $user.password, $user.rememberMe, $user.usePassword, id)
-            .then(json => {
-              Cookies.set("login_preference", $user.usePassword ? "usePassword" : $user.useWebAuth ? "useWebAuth" : "useLink", {
-                expires: 365,
-                secure: true,
-                sameSite: "Lax"
-              });
-              if (json.stepup) {
-                navigate(`/stepup/${id}?name=${encodeURIComponent(serviceName)}&explanation=${json.explanation}`, {replace: true})
-              } else if ($user.usePassword) {
-                window.location.href = json.url;
-              } else {
-                navigate(`/magic/${id}?name=${encodeURIComponent(serviceName)}&modus=${modus}`, {replace: true});
-              }
-            }).catch(e => {
-            showSpinner = false;
-            if (e.status === 404) {
-              if ($user.usePassword) {
-                emailNotFound = false;
-                emailOrPasswordIncorrect = true;
-                emailInUse = false;
-              } else {
-                emailNotFound = true;
-                emailOrPasswordIncorrect = false;
-                emailInUse = false;
-              }
-            } else if (e.status === 403) {
-              emailNotFound = false;
-              emailOrPasswordIncorrect = true;
-              emailInUse = false;
-
-            } else {
-              navigate("/expired", {replace: true});
-            }
-          });
-        }
-      } else {
-        initial = false;
-      }
-    } else {
-      $user.usePassword = passwordFlow;
-      if (!passwordFlow) {
-        $user.password = "";
-      }
-    }
-  };
-
-  const init = el => el.focus();
-
-  const allowedNext = (email, familyName, givenName, password, agreedWithTerms) => {
-    return $user.createAccount ? validEmail(email) && familyName && givenName && agreedWithTerms && !allowedDomainNamesError:
-      $user.usePassword ? validEmail(email) && password : validEmail(email);
-  };
-
-  const webAuthnStart = (email, test = false) => {
-    webAuthnStartAuthentication(email, id, test)
-      .then(request => {
-        get({publicKey: request.publicKeyCredentialRequestOptions})
-          .then(credentials => {
-            //rawId is not supported server-side
-            delete credentials["rawId"];
-            webAuthnTryAuthentication(JSON.stringify(credentials), id, $user.rememberMe)
-              .then(json => {
-                Cookies.set("login_preference", "useWebAuth", {
-                  expires: 365,
-                  secure: true,
-                  sameSite: "Lax"
-                });
-                if (json.stepup) {
-                  navigate(`/stepup/${id}?name=${encodeURIComponent(serviceName)}&explanation=${json.explanation}`, {replace: true})
-                } else {
-                  window.location.href = json.url
+                if (e.status === 404) {
+                    emailNotFound = true;
+                    emailOrPasswordIncorrect = false;
+                    emailInUse = false;
                 }
-              })
-              .catch(() => {
-                webAuthIncorrect = true;
-              })
-          }).catch(e => {
-          webAuthIncorrect = true;
-        });
-      })
-      .catch(e => {
-        if (e.status === 404) {
-          emailNotFound = true;
-          emailOrPasswordIncorrect = false;
-          emailInUse = false;
+            })
+    }
+
+    const createAccount = newAccount => () => {
+        $user.createAccount = newAccount;
+        $user.usePassword = false;
+        $user.givenName = "";
+        $user.familyName = "";
+        emailInUse = false;
+        emailNotFound = false;
+        if (newAccount) {
+            fetchDomainsForValidation(() => handleEmailBlur({target: {value: $user.email}}));
+        } else {
+            handleEmailBlur({target: {value: $user.email}});
         }
-      })
-  }
+    };
 
-  const createAccount = newAccount => () => {
-    $user.createAccount = newAccount;
-    $user.usePassword = false;
-    $user.givenName = "";
-    $user.familyName = "";
-    emailInUse = false;
-    emailNotFound = false;
-    if (newAccount) {
-      fetchDomainsForValidation(() => handleEmailBlur({target: {value: $user.email}}));
-    } else {
-      handleEmailBlur({target: {value: $user.email}});
-    }
-  };
-
-  const handleEmailEnter = e => {
-    if (e.key === "Enter") {
-      if (!$user.createAccount && !$user.usePassword && !$user.useWebAuth) {
-        handleNext(false)();
-      } else if ($user.usePassword) {
-        passwordField.focus();
-      } else if ($user.useWebAuth) {
-        webAuthnStart($user.email)
-      }
-    }
-  };
-
-  const handleEmailBlur = e => {
-    if ($user.createAccount) {
-      const email = e.target.value;
-      //defensive, in edge-cases we don't validate
-      if (email && email.lastIndexOf("@") > -1) {
-        const domain = email.substring(email.lastIndexOf("@") + 1);
-        if (domain) {
-          const domainLower = domain.toLowerCase();
-          if ($conf.featureAllowList && !allowedDomainNames.some(name => name === domainLower || domainLower.endsWith("." + name))) {
-            allowedDomainNamesError = true;
-            return;
-          }
-          if ($conf.featureWarningEducationalEmailDomain && institutionDomainNames.some(name => name === domainLower || domainLower.endsWith("." + name))) {
-            institutionDomainNameWarning = true;
-            return;
-          }
+    const handleEmailEnter = e => {
+        if (e.key === "Enter") {
+            if (!$user.createAccount && !$user.usePassword && !$user.useWebAuth) {
+                handleNext(false)();
+            } else if ($user.usePassword) {
+                passwordField.focus();
+            } else if ($user.useWebAuth) {
+                webAuthnStart($user.email)
+            }
         }
-      }
+    };
+
+    const handleEmailBlur = e => {
+        if ($user.createAccount) {
+            const email = e.target.value;
+            //defensive, in edge-cases we don't validate
+            if (email && email.lastIndexOf("@") > -1) {
+                const domain = email.substring(email.lastIndexOf("@") + 1);
+                if (domain) {
+                    const domainLower = domain.toLowerCase();
+                    if ($conf.featureAllowList && !allowedDomainNames.some(name => name === domainLower || domainLower.endsWith("." + name))) {
+                        allowedDomainNamesError = true;
+                        return;
+                    }
+                    if ($conf.featureWarningEducationalEmailDomain && institutionDomainNames.some(name => name === domainLower || domainLower.endsWith("." + name))) {
+                        institutionDomainNameWarning = true;
+                        return;
+                    }
+                }
+            }
+        }
+        institutionDomainNameWarning = false;
+        allowedDomainNamesError = false;
     }
-    institutionDomainNameWarning = false;
-    allowedDomainNamesError = false;
-  }
 
-  const handlePasswordEnter = e => e.key === "Enter" && handleNext(true)();
+    const handlePasswordEnter = e => e.key === "Enter" && handleNext(true)();
 
-  const clearGivenName = () => $user.givenName = $user.givenName.replace(/[<>]/g, "");
-  const clearFamilyName = () => $user.familyName = $user.familyName.replace(/[<>]/g, "");
+    const clearGivenName = () => $user.givenName = $user.givenName.replace(/[<>]/g, "");
+    const clearFamilyName = () => $user.familyName = $user.familyName.replace(/[<>]/g, "");
 
-  const switchWebAuthnPassword = (webAuth, password) => () => {
-    $user.useWebAuth = webAuth;
-    $user.usePassword = password;
-    if (!password) {
-      $user.password = "";
+    const switchWebAuthnPassword = (webAuth, password) => () => {
+        $user.useWebAuth = webAuth;
+        $user.usePassword = password;
+        if (!password) {
+            $user.password = "";
+        }
     }
-  }
 
 </script>
 
@@ -292,7 +292,7 @@
         font-weight: 600;
     }
 
-    a:hover, a.toggle-link:hover  {
+    a:hover, a.toggle-link:hover {
         text-decoration: underline;
         color: var(--color-hover-blue);
 
@@ -475,7 +475,7 @@
         <span class="svg error">{@html critical}</span>
         <div class="text">
             <span>{I18n.t("login.allowedDomainNamesError",
-              {domain: $user.email.substring($user.email.indexOf("@") + 1)})}</span>
+                {domain: $user.email.substring($user.email.indexOf("@") + 1)})}</span>
             <br/>
             <span>{I18n.t("login.allowedDomainNamesError2")}</span>
         </div>
@@ -537,11 +537,16 @@
                     onClick={handleNext(true)}/>
             <LoginOptions/>
             <div class="password-option">
-                <a href="/password"
-                   on:click|preventDefault|stopPropagation={handleNext(false)}>{I18n.t("login.useMagicLink")}</a>
-                <span>{I18n.t("login.useOr")}</span>
-                <a href="/webauthn"
-                   on:click|preventDefault|stopPropagation={switchWebAuthnPassword(true, false)}>{I18n.t("login.useWebAuth").toLowerCase()}</a>
+                {#if $conf.featureWebAuthn}
+                    <a href="/password"
+                       on:click|preventDefault|stopPropagation={handleNext(false)}>{I18n.t("login.useMagicLink")}</a>
+                    <span>{I18n.t("login.useOr")}</span>
+                    <a href="/webauthn"
+                       on:click|preventDefault|stopPropagation={switchWebAuthnPassword(true, false)}>{I18n.t("login.useWebAuth").toLowerCase()}</a>
+                {:else}
+                    <a href="/password"
+                       on:click|preventDefault|stopPropagation={handleNext(false)}>{I18n.t("login.useMagicLinkNoWebAuthn")}</a>
+                {/if}
             </div>
         {:else if !$user.usePassword && !$user.useWebAuth}
             <Button href="/magic"
@@ -551,11 +556,16 @@
                     onClick={handleNext(false)}/>
             <LoginOptions/>
             <div class="password-option">
+                {#if $conf.featureWebAuthn}
                 <a href="/webauthn"
                    on:click|preventDefault|stopPropagation={switchWebAuthnPassword(true, false)}>{I18n.t("login.useWebAuth")}</a>
                 <span>{I18n.t("login.useOr")}</span>
                 <a href="/password"
                    on:click|preventDefault|stopPropagation={switchWebAuthnPassword(false, true)}>{I18n.t("login.usePassword")}</a>
+                    {:else}
+                    <a href="/password"
+                       on:click|preventDefault|stopPropagation={switchWebAuthnPassword(false, true)}>{I18n.t("login.usePasswordNoWebAuthn")}</a>
+                    {/if}
             </div>
         {:else}
             <Button href="/webauthn"

@@ -10,7 +10,7 @@ I18n.translations.nl = {
     headerSubTitle: "om door te gaan naar ",
     header2: "Vraag een eduID aan",
     trust: "Vertrouw deze computer",
-    loginOptions: "Andere inlog manieren",
+    loginOptions: "Andere inlog manieren:",
     loginOptionsToolTip: "Je verschillende manieren om in te<br/>loggen kan je beheren in mijn edu.<br/><br/>Bekijk de eduID account<br/>bevestigings e-mail voor de URL.",
     email: "Je e-mailadres",
     emailPlaceholder: "bijv. naam@gmail.com",
@@ -22,7 +22,9 @@ I18n.translations.nl = {
     sendMagicLink: "Mail een magische link",
     loginWebAuthn: "Login in met een security key",
     usePassword: "type een wachtwoord",
+    usePasswordNoWebAuthn: "Type een wachtwoord",
     useMagicLink: "Gebruik magische link",
+    useMagicLinkNoWebAuthn: "Gebruik magische link.",
     useWebAuth: "Login in met een security key",
     useOr: " of ",
     requestEduIdButton: "Vraag een eduID aan",
@@ -67,8 +69,8 @@ I18n.translations.nl = {
   },
   confirmStepup: {
     header: "Gelukt!",
-    conditionMet: "Je hebt aan alle voorwaarden voldaan.",
-    proceed: "Ga naar {{name}}"
+    proceed: "Ga naar {{name}}",
+    conditionMet: "Je hebt aan alle voorwaarden voldaan."
   },
   stepup: {
     header: "Nog één ding!",
