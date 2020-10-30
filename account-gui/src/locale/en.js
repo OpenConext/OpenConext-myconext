@@ -10,7 +10,7 @@ I18n.translations.en = {
         headerSubTitle: "to continue to ",
         header2: "Request your eduID",
         trust: "Trust this computer",
-        loginOptions: "Other sign-in options:",
+        loginOptions: "Other sign-in options",
         loginOptionsToolTip: "Your different sign-in options<br/>can be managed in mijn eduID.<br/><br/>Check your eduID account<br/>creation mail for the URL.",
         email: "Your email address",
         emailPlaceholder: "e.g. user@gmail.com",

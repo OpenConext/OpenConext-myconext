@@ -10,7 +10,7 @@ I18n.translations.nl = {
     headerSubTitle: "om door te gaan naar ",
     header2: "Vraag een eduID aan",
     trust: "Vertrouw deze computer",
-    loginOptions: "Andere inlog manieren:",
+    loginOptions: "Andere inlog manieren",
     loginOptionsToolTip: "Je verschillende manieren om in te<br/>loggen kan je beheren in mijn edu.<br/><br/>Bekijk de eduID account<br/>bevestigings e-mail voor de URL.",
     email: "Je e-mailadres",
     emailPlaceholder: "bijv. naam@gmail.com",
