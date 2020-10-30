@@ -3,6 +3,10 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+## [4.0.2] - 2020-10-29
+### Fixes/improvement
+- Feature toggle for webauthn was nog honored in IdP
+
 ## [4.0.1] - 2020-10-27
 ### Fixes/improvement
 - Minor extual changes
