@@ -22,13 +22,7 @@ import org.springframework.security.saml.provider.identity.IdpAuthenticationRequ
 import org.springframework.security.saml.provider.provisioning.SamlProviderProvisioning;
 import org.springframework.security.saml.saml2.attribute.Attribute;
 import org.springframework.security.saml.saml2.attribute.AttributeNameFormat;
-import org.springframework.security.saml.saml2.authentication.Assertion;
-import org.springframework.security.saml.saml2.authentication.AuthenticationContextClassReference;
-import org.springframework.security.saml.saml2.authentication.AuthenticationRequest;
-import org.springframework.security.saml.saml2.authentication.Response;
-import org.springframework.security.saml.saml2.authentication.Scoping;
-import org.springframework.security.saml.saml2.authentication.Status;
-import org.springframework.security.saml.saml2.authentication.StatusCode;
+import org.springframework.security.saml.saml2.authentication.*;
 import org.springframework.security.saml.saml2.metadata.Binding;
 import org.springframework.security.saml.saml2.metadata.Endpoint;
 import org.springframework.security.saml.saml2.metadata.NameId;
@@ -264,9 +258,11 @@ public class GuestIdpAuthenticationRequestFilter extends IdpAuthenticationReques
     }
 
     private String requesterId(AuthenticationRequest authenticationRequest) {
+        Issuer issuer = authenticationRequest.getIssuer();
+        String issuerValue = issuer != null ? issuer.getValue() : "";
         Scoping scoping = authenticationRequest.getScoping();
         List<String> requesterIds = scoping != null ? scoping.getRequesterIds() : null;
-        return CollectionUtils.isEmpty(requesterIds) ? null : requesterIds.get(0);
+        return CollectionUtils.isEmpty(requesterIds) ? issuerValue : requesterIds.get(0);
     }
 
     private void magic(HttpServletRequest request, HttpServletResponse response) throws IOException {
