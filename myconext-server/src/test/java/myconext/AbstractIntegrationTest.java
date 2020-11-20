@@ -206,7 +206,7 @@ public abstract class AbstractIntegrationTest {
 
     public static User user(String email, String givenName, String familyName, String lang) {
         return new User(UUID.randomUUID().toString(), email, givenName, familyName, "surfguest.nl",
-                "https://account.test2.surfconext.nl", "http://mock-sp", "Mock SP", "Mock SP NL", lang);
+                "http://mock-sp", "Mock SP", "Mock SP NL", lang);
     }
 
     protected void userSetPassword(User user, String plainTextPassword) {

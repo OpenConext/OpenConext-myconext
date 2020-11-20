@@ -57,7 +57,7 @@ public class UserTest {
 
     private User user(String serviceProviderEntityId, String serviceProviderName) {
         return new User("uid", "email", "John", "Doe", "schac",
-                "aa", serviceProviderEntityId, serviceProviderName, serviceProviderName, "en");
+                serviceProviderEntityId, serviceProviderName, serviceProviderName, "en");
     }
 
 }

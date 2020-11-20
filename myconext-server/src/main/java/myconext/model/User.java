@@ -44,7 +44,6 @@ public class User implements Serializable, UserDetails {
     private String familyName;
     private String uid;
     private String schacHomeOrganization;
-    private String authenticatingAuthority;
     private String password;
     private boolean newUser;
     private String preferredLanguage;
@@ -60,15 +59,13 @@ public class User implements Serializable, UserDetails {
     private long created;
     private long updatedAt = System.currentTimeMillis() / 1000L;
 
-    public User(String uid, String email, String givenName, String familyName,
-                String schacHomeOrganization, String authenticatingAuthority,
+    public User(String uid, String email, String givenName, String familyName, String schacHomeOrganization,
                 String serviceProviderEntityId, String serviceProviderName, String serviceProviderNameNl, String preferredLanguage) {
         this.uid = uid;
         this.email = email;
         this.givenName = givenName;
         this.familyName = familyName;
         this.schacHomeOrganization = schacHomeOrganization;
-        this.authenticatingAuthority = authenticatingAuthority;
         this.preferredLanguage = preferredLanguage;
 
         this.computeEduIdForServiceProviderIfAbsent(serviceProviderEntityId, serviceProviderName, serviceProviderNameNl);

@@ -102,7 +102,6 @@ public class UserController {
     private final OpenIDConnect openIDConnect;
     private final String magicLinkUrl;
     private final String schacHomeOrganization;
-    private final String guestIdpEntityId;
     private final String webAuthnSpRedirectUrl;
     private final String idpBaseUrl;
     private final RelyingParty relyingParty;
@@ -129,7 +128,6 @@ public class UserController {
                           EmailDomainGuard emailDomainGuard,
                           @Value("${email.magic-link-url}") String magicLinkUrl,
                           @Value("${schac_home_organization}") String schacHomeOrganization,
-                          @Value("${guest_idp_entity_id}") String guestIdpEntityId,
                           @Value("${email_guessing_sleep_millis}") int emailGuessingSleepMillis,
                           @Value("${sp_redirect_url}") String spBaseUrl,
                           @Value("${idp_redirect_url}") String idpBaseUrl,
@@ -147,7 +145,6 @@ public class UserController {
         this.emailDomainGuard = emailDomainGuard;
         this.magicLinkUrl = magicLinkUrl;
         this.schacHomeOrganization = schacHomeOrganization;
-        this.guestIdpEntityId = guestIdpEntityId;
         this.idpBaseUrl = idpBaseUrl;
         this.spBaseUrl = spBaseUrl;
         this.webAuthnSpRedirectUrl = String.format("%s/webauthn", spBaseUrl);
@@ -185,7 +182,7 @@ public class UserController {
         //prevent not-wanted attributes in the database
         String requesterEntityId = samlAuthenticationRequest.getRequesterEntityId();
         User userToSave = new User(UUID.randomUUID().toString(), email, user.getGivenName(),
-                user.getFamilyName(), schacHomeOrganization, guestIdpEntityId, requesterEntityId,
+                user.getFamilyName(), schacHomeOrganization, requesterEntityId,
                 serviceNameResolver.resolve(requesterEntityId, "en"),
                 serviceNameResolver.resolve(requesterEntityId, "nl"), preferredLanguage);
         userToSave = userRepository.save(userToSave);

@@ -1,5 +1,0 @@
-Hi {{name}},
-
-Your Onegini-account has successfully been migrated to a new eduID.
-
-{{> footer_en.txt}}

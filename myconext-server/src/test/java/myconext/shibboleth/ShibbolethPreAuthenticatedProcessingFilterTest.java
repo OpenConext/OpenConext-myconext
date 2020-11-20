@@ -14,7 +14,6 @@ import java.util.List;
 import java.util.UUID;
 
 import static io.restassured.RestAssured.given;
-import static myconext.shibboleth.ShibbolethPreAuthenticatedProcessingFilter.SHIB_AUTHENTICATING_AUTHORITY;
 import static myconext.shibboleth.ShibbolethPreAuthenticatedProcessingFilter.SHIB_EMAIL;
 import static myconext.shibboleth.ShibbolethPreAuthenticatedProcessingFilter.SHIB_GIVEN_NAME;
 import static myconext.shibboleth.ShibbolethPreAuthenticatedProcessingFilter.SHIB_SCHAC_HOME_ORGANIZATION;
@@ -47,7 +46,7 @@ public class ShibbolethPreAuthenticatedProcessingFilterTest extends AbstractInte
                 .body("id", notNullValue());
 
         User user = super.userRepository.findOneUserByEmailIgnoreCase("steven.doe@example.org");
-        assertEquals("http://mock-idp", user.getAuthenticatingAuthority());
+        assertEquals("surfguest.nl", user.getSchacHomeOrganization());
     }
 
     @Test
@@ -61,7 +60,7 @@ public class ShibbolethPreAuthenticatedProcessingFilterTest extends AbstractInte
                 .statusCode(200);
 
         User user = super.userRepository.findOneUserByEmailIgnoreCase("bob.doe@example.org");
-        assertEquals("unknown", user.getAuthenticatingAuthority());
+        assertEquals("surfguest.nl", user.getSchacHomeOrganization());
     }
 
     @Test
@@ -124,7 +123,6 @@ public class ShibbolethPreAuthenticatedProcessingFilterTest extends AbstractInte
                 new Header(SHIB_SCHAC_HOME_ORGANIZATION, "surfguest.nl"),
                 new Header(SHIB_GIVEN_NAME, "Steven"),
                 new Header(SHIB_SUR_NAME, "Doe"),
-                new Header(SHIB_AUTHENTICATING_AUTHORITY, authenticatingAuthority + " ; " + authenticatingAuthority),
                 new Header(SHIB_EMAIL, email)
         );
     }

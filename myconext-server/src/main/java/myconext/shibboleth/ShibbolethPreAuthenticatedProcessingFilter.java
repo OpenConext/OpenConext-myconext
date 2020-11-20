@@ -54,13 +54,12 @@ public class ShibbolethPreAuthenticatedProcessingFilter extends AbstractPreAuthe
         String email = getHeader(SHIB_EMAIL, request);
         String givenName = getHeader(SHIB_GIVEN_NAME, request);
         String familyName = getHeader(SHIB_SUR_NAME, request);
-        String authenticatingAuthorities = getHeader(SHIB_AUTHENTICATING_AUTHORITY, request);
 
-        boolean valid = Stream.of(uid, schacHomeOrganization, email, givenName, familyName, authenticatingAuthorities).allMatch(StringUtils::hasText);
+        boolean valid = Stream.of(uid, schacHomeOrganization, email, givenName, familyName).allMatch(StringUtils::hasText);
         if (!valid) {
             //this is the contract. See AbstractPreAuthenticatedProcessingFilter#doAuthenticate
-            LOG.warn(String.format("Missing required attribute(s): uid %s, schacHomeOrganization %s, givenName %s, familyName %s, email %s, authenticatingAuthorities %s",
-                    uid, schacHomeOrganization, givenName, familyName, email, authenticatingAuthorities));
+            LOG.warn(String.format("Missing required attribute(s): uid %s, schacHomeOrganization %s, givenName %s, familyName %s, email %s",
+                    uid, schacHomeOrganization, givenName, familyName, email));
             return null;
         }
         Optional<User> optionalUser = userRepository.findUserByUid(uid);
@@ -85,25 +84,18 @@ public class ShibbolethPreAuthenticatedProcessingFilter extends AbstractPreAuthe
             }
         }
         //The authenticatingAuthority in the SAML / Shibd heading is a ';' separated list
-        String authenticatingAuthority = authenticatingAuthorities.split(";")[0].trim();
         String preferredLanguage = cookieByName(request, "lang").map(Cookie::getValue).orElse("en");
         return optionalUser.orElseGet(() ->
-                provisionUser(uid, schacHomeOrganization, givenName, familyName, email, authenticatingAuthority, preferredLanguage));
+                provisionUser(uid, schacHomeOrganization, givenName, familyName, email, preferredLanguage));
     }
 
-    private User provisionUser(String uid, String schacHomeOrganization, String givenName, String familyName, String email, String authenticatingAuthority, String preferredLanguage) {
-        User user = new User(uid, email, givenName, familyName, schacHomeOrganization, authenticatingAuthority, null, null, null, preferredLanguage);
+    private User provisionUser(String uid, String schacHomeOrganization, String givenName, String familyName, String email, String preferredLanguage) {
+        User user = new User(uid, email, givenName, familyName, schacHomeOrganization, null, null, null, preferredLanguage);
         user.setNewUser(false);
         user = userRepository.save(user);
 
-        boolean isOneGini = oneginiEntityId.equalsIgnoreCase(user.getAuthenticatingAuthority());
+        logWithContext(user, "add", "user",LOG, String.format("Provisioned new user %s", user.getEmail()));
 
-        logWithContext(user, "add", "user",LOG, String.format("Provisioned new user %s from %s", user.getEmail(), authenticatingAuthority));
-
-        if (isOneGini) {
-            LOG.info(String.format("Sending account migration mail to %s who migrated from OneGini", user.getEmail()));
-            mailBox.sendAccountMigration(user);
-        }
         return user;
     }
 

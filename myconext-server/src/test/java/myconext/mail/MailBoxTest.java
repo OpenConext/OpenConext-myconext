@@ -106,16 +106,6 @@ public class MailBoxTest extends AbstractIntegrationTest {
     }
 
     @Test
-    public void sendAccountMigration() throws MessagingException {
-        doSendAccountMigration("Your Onegini guest account has been migrated to eduID", "en");
-    }
-
-    @Test
-    public void sendAccountMigrationNl() throws MessagingException {
-        doSendAccountMigration("Je Onegini gastaccount is gemigreerd naar eduID", "nl");
-    }
-
-    @Test
     public void sendForgotPassword() throws Exception {
         User user = user("jdoe@example.com");
         mailBox.sendForgotPassword(user,"hash");
@@ -126,14 +116,6 @@ public class MailBoxTest extends AbstractIntegrationTest {
 
         String htmlContent = parser.getHtmlContent();
         assertTrue(htmlContent.contains("http://localhost:3001/forgot-password?h=hash"));
-    }
-
-    private void doSendAccountMigration(String expectedSubject, String lang) throws MessagingException {
-        mailBox.sendAccountMigration(user("jdoe@examplee.com", lang));
-
-        MimeMessage mimeMessage = mailMessage();
-        String subject = mimeMessage.getSubject();
-        assertEquals(expectedSubject, subject);
     }
 
     private MimeMessage mailMessage() {
