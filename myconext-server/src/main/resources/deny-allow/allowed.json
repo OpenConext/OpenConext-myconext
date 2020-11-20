@@ -1,4 +1,10 @@
 [
-  "strange.me",
-  "noops.eu"
+  {
+    "emailDomain": "strange.me",
+    "schacHomeOrganization": "strange.org"
+  },
+  {
+    "emailDomain": "noops.eu",
+    "schacHomeOrganization": "noops.org"
+  }
 ]

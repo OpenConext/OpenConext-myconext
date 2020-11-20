@@ -181,6 +181,8 @@ public class UserController {
         String preferredLanguage = LocaleContextHolder.getLocale().getLanguage();
         //prevent not-wanted attributes in the database
         String requesterEntityId = samlAuthenticationRequest.getRequesterEntityId();
+        String schacHomeOrganization = this.emailDomainGuard.schacHomeOrganizationByDomain(this.schacHomeOrganization, email);
+
         User userToSave = new User(UUID.randomUUID().toString(), email, user.getGivenName(),
                 user.getFamilyName(), schacHomeOrganization, requesterEntityId,
                 serviceNameResolver.resolve(requesterEntityId, "en"),
