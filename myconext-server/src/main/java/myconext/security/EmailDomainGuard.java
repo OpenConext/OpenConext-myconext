@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 import java.io.IOException;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
@@ -54,9 +55,13 @@ public class EmailDomainGuard {
             return schacHomeOrganization;
         }
         String domainName = domainName(email);
-        return allowedDomains.stream().filter(allowedDomainPredicate(domainName))
-                .findFirst().map(AllowedDomain::getSchacHomeOrganization)
-                .orElse(schacHomeOrganization);
+        LOG.info(String.format("Starting to lookup schacHomeOrganization for email domain %s", domainName));
+
+        Optional<String> s = allowedDomains.stream().filter(allowedDomainPredicate(domainName))
+                .findFirst().map(AllowedDomain::getSchacHomeOrganization);
+        LOG.info(String.format("Returning schacHomeOrganization %s for email domain %s", s));
+
+        return s.orElse(schacHomeOrganization);
     }
 
     public Set<String> getAllowedDomains() {
