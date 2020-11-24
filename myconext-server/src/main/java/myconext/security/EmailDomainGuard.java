@@ -59,7 +59,7 @@ public class EmailDomainGuard {
 
         Optional<String> s = allowedDomains.stream().filter(allowedDomainPredicate(domainName))
                 .findFirst().map(AllowedDomain::getSchacHomeOrganization);
-        LOG.info(String.format("Returning schacHomeOrganization %s for email domain %s", s));
+        LOG.info(String.format("Returning schacHomeOrganization %s for email domain %s", s,  domainName));
 
         return s.orElse(schacHomeOrganization);
     }
