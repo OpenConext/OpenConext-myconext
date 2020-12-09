@@ -1,6 +1,7 @@
 package myconext.api;
 
 
+import myconext.exceptions.ForbiddenException;
 import myconext.exceptions.UserNotFoundException;
 import myconext.manage.ServiceNameResolver;
 import myconext.model.LinkedAccount;
@@ -21,6 +22,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
@@ -76,6 +78,8 @@ public class AccountLinkerController {
     private final long expiryNonValidatedDurationDays;
     private final long expiryValidatedDurationDays;
 
+    private final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+
     public AccountLinkerController(
             AuthenticationRequestRepository authenticationRequestRepository,
             UserRepository userRepository,
@@ -109,18 +113,28 @@ public class AccountLinkerController {
 
     @GetMapping("/idp/oidc/account/{id}")
     public ResponseEntity startIdPLinkAccountFlow(@PathVariable("id") String id,
-                                                  @RequestParam(value = "forceAuth", required = false, defaultValue = "false") boolean forceAuth) {
+                                                  @RequestParam(value = "forceAuth", required = false, defaultValue = "false") boolean forceAuth) throws UnsupportedEncodingException {
         LOG.debug("Start IdP link account flow");
 
-        UriComponents uriComponents = doStartLinkAccountFlow(id, idpFlowRedirectUri, forceAuth);
+        Optional<SamlAuthenticationRequest> optionalSamlAuthenticationRequest = authenticationRequestRepository.findByIdAndNotExpired(id);
+        if (!optionalSamlAuthenticationRequest.isPresent()) {
+            return ResponseEntity.status(HttpStatus.FOUND).location(URI.create(this.idpErrorRedirectUrl + "/expired")).build();
+        }
+        SamlAuthenticationRequest samlAuthenticationRequest = optionalSamlAuthenticationRequest.get();
+        User user = userRepository.findById(samlAuthenticationRequest.getUserId()).orElseThrow(UserNotFoundException::new);
+
+        String state = URLEncoder.encode(String.format("id=%s&user_uid=%s", id, passwordEncoder.encode(user.getUid())), "UTF-8");
+        UriComponents uriComponents = doStartLinkAccountFlow(state, idpFlowRedirectUri, forceAuth);
         return ResponseEntity.status(HttpStatus.FOUND).location(uriComponents.toUri()).build();
     }
 
     @GetMapping("/sp/oidc/link")
     public ResponseEntity startSPLinkAccountFlow(Authentication authentication) {
         LOG.debug("Start link account flow");
+        User principal = (User) authentication.getPrincipal();
+        String state = passwordEncoder.encode(principal.getUid());
 
-        UriComponents uriComponents = doStartLinkAccountFlow("state", spFlowRedirectUri, true);
+        UriComponents uriComponents = doStartLinkAccountFlow(state, spFlowRedirectUri, true);
         return ResponseEntity.ok(Collections.singletonMap("url", uriComponents.toUriString()));
     }
 
@@ -146,6 +160,10 @@ public class AccountLinkerController {
         User principal = (User) authentication.getPrincipal();
         User user = userRepository.findOneUserByEmailIgnoreCase(principal.getEmail());
 
+        if (!passwordEncoder.matches(user.getUid(), state)) {
+            throw new ForbiddenException("Non matching user");
+        }
+
         LOG.debug("In SP redirect link account");
 
         return doRedirect(code, user, this.spFlowRedirectUri, this.spRedirectUrl + "/institutions",
@@ -154,12 +172,20 @@ public class AccountLinkerController {
 
     @GetMapping("/idp/oidc/redirect")
     public ResponseEntity idpFlowRedirect(HttpServletRequest request, @RequestParam("code") String code, @RequestParam("state") String state) throws UnsupportedEncodingException {
-        Optional<SamlAuthenticationRequest> optionalSamlAuthenticationRequest = authenticationRequestRepository.findByIdAndNotExpired(state);
+        MultiValueMap<String, String> params = UriComponentsBuilder.fromHttpUrl("http://localhost?" + state).build().getQueryParams();
+        String id = params.getFirst("id");
+        String encodedUserUid = params.getFirst("user_uid");
+
+        Optional<SamlAuthenticationRequest> optionalSamlAuthenticationRequest = authenticationRequestRepository.findByIdAndNotExpired(id);
         if (!optionalSamlAuthenticationRequest.isPresent()) {
             return ResponseEntity.status(HttpStatus.FOUND).location(URI.create(this.idpErrorRedirectUrl + "/expired")).build();
         }
         SamlAuthenticationRequest samlAuthenticationRequest = optionalSamlAuthenticationRequest.get();
         User user = userRepository.findById(samlAuthenticationRequest.getUserId()).orElseThrow(UserNotFoundException::new);
+
+        if (!passwordEncoder.matches(user.getUid(), encodedUserUid)) {
+            throw new ForbiddenException("Non matching user");
+        }
 
         boolean validateNames = samlAuthenticationRequest.getAuthenticationContextClassReferences().contains(ACR.VALIDATE_NAMES);
         boolean studentAffiliationRequired = samlAuthenticationRequest.getAuthenticationContextClassReferences().contains(ACR.AFFILIATION_STUDENT);

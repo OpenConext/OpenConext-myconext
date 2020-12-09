@@ -16,16 +16,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
-import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
-import static com.github.tomakehurst.wiremock.client.WireMock.post;
-import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
-import static com.github.tomakehurst.wiremock.client.WireMock.urlPathMatching;
+import static com.github.tomakehurst.wiremock.client.WireMock.*;
 import static io.restassured.RestAssured.given;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -47,19 +40,26 @@ public class AccountLinkerControllerTest extends AbstractIntegrationTest {
 
     @Test
     public void linkAccountRedirect() throws IOException {
-        String samlAuthnRequestId = "123456";
+        Response response = samlAuthnRequestResponseWithLoa(null, null, "");
+        String authenticationRequestId = extractAuthenticationRequestIdFromAuthnResponse(response);
+        //This ensures the user is tied to the authnRequest
+        given().when()
+                .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+                .body(new MagicLinkRequest(authenticationRequestId, user("mdoe@example.com"), false, false))
+                .put("/myconext/api/idp/magic_link_request")
+                .then()
+                .statusCode(HttpStatus.CREATED.value());
 
         String location = given().redirects().follow(false)
                 .when()
                 .contentType(ContentType.JSON)
-                .get("/myconext/api/idp/oidc/account/" + samlAuthnRequestId)
+                .get("/myconext/api/idp/oidc/account/" + authenticationRequestId)
                 .getHeader("Location");
-        assertEquals("http://localhost:8099/oidc/authorize?" +
+        assertTrue(location.startsWith("http://localhost:8099/oidc/authorize?" +
                 "scope=openid&" +
                 "response_type=code&" +
                 "redirect_uri=http://localhost:8081/myconext/api/idp/oidc/redirect&" +
-                "state=123456&" +
-                "client_id=myconext.rp.localhost", location);
+                "state="));
     }
 
     @Test
@@ -83,6 +83,26 @@ public class AccountLinkerControllerTest extends AbstractIntegrationTest {
 
         assertEquals(linkedAccount.getInstitutionIdentifier(), "12345678");
         assertEquals("affiliate", linkedAccount.getEduPersonAffiliations().get(0));
+    }
+
+    @Test
+    public void redirectWrongUser() throws IOException {
+        String authenticationRequestId = samlAuthnRequest();
+        given().when()
+                .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+                .body(new MagicLinkRequest(authenticationRequestId, user("mdoe@example.com"), false, false))
+                .put("/myconext/api/idp/magic_link_request")
+                .then()
+                .statusCode(HttpStatus.CREATED.value());
+        given().redirects().follow(false)
+                .when()
+                .queryParam("code", "123456")
+                .queryParam("state", String.format("id=%s&user_uid=%s", authenticationRequestId, "nope"))
+                .contentType(ContentType.JSON)
+                .get("/myconext/api/idp/oidc/redirect")
+                .then()
+                .statusCode(403);
+
     }
 
     @Test
@@ -154,11 +174,10 @@ public class AccountLinkerControllerTest extends AbstractIntegrationTest {
                 .then()
                 .statusCode(HttpStatus.CREATED.value());
         stubForTokenUserInfo(userInfo);
-
         String location = given().redirects().follow(false)
                 .when()
                 .queryParam("code", "123456")
-                .queryParam("state", authenticationRequestId)
+                .queryParam("state", stateParameterIdP(authenticationRequestId))
                 .contentType(ContentType.JSON)
                 .get("/myconext/api/idp/oidc/redirect")
                 .getHeader("Location");
@@ -172,13 +191,12 @@ public class AccountLinkerControllerTest extends AbstractIntegrationTest {
         String location = given().redirects().follow(false)
                 .when()
                 .queryParam("code", "123456")
-                .queryParam("state", "nope")
+                .queryParam("state", stateParameterIdP("nope"))
                 .contentType(ContentType.JSON)
                 .get("/myconext/api/idp/oidc/redirect")
                 .getHeader("Location");
         assertEquals("http://localhost:3000/expired", location);
     }
-
 
     @Test
     public void spOidcLink() {
@@ -186,19 +204,25 @@ public class AccountLinkerControllerTest extends AbstractIntegrationTest {
                 .when()
                 .get("/myconext/api/sp/oidc/link")
                 .as(Map.class);
-        assertEquals(res.get("url"),
-                "http://localhost:8099/oidc/authorize?" +
-                        "scope=openid&" +
-                        "response_type=code&" +
-                        "redirect_uri=http://localhost:8081/myconext/api/sp/oidc/redirect" +
-                        "&state=state" +
-                        "&prompt=login" +
-                        "&client_id=myconext.rp.localhost");
+        assertTrue(((String) res.get("url")).startsWith("http://localhost:8099/oidc/authorize?" +
+                "scope=openid&" +
+                "response_type=code&" +
+                "redirect_uri=http://localhost:8081/myconext/api/sp/oidc/redirect"));
+    }
+
+    @Test
+    public void spFlowRedirectWrongUser() throws IOException {
+        given().redirects().follow(false)
+                .when()
+                .queryParam("code", "123456")
+                .queryParam("state", passwordEncoder.encode("nope"))
+                .contentType(ContentType.JSON)
+                .get("/myconext/api/sp/oidc/redirect")
+                .then().statusCode(403);
     }
 
     @Test
     public void spFlowRedirect() throws IOException {
-        User user = userRepository.findOneUserByEmailIgnoreCase("jdoe@example.com");
         String eppn = "some@institute.nl";
 
         Map<Object, Object> userInfo = new HashMap<>();
@@ -210,13 +234,13 @@ public class AccountLinkerControllerTest extends AbstractIntegrationTest {
         String location = given().redirects().follow(false)
                 .when()
                 .queryParam("code", "123456")
-                .queryParam("state", UUID.nameUUIDFromBytes(user.getId().getBytes()).toString())
+                .queryParam("state", passwordEncoder.encode("1234567890"))
                 .contentType(ContentType.JSON)
                 .get("/myconext/api/sp/oidc/redirect")
                 .getHeader("Location");
         assertEquals(location, "http://localhost:3001/institutions");
 
-        user = userRepository.findOneUserByEmailIgnoreCase("jdoe@example.com");
+        User user = userRepository.findOneUserByEmailIgnoreCase("jdoe@example.com");
         assertEquals(2, user.getLinkedAccounts().size());
     }
 
@@ -229,4 +253,11 @@ public class AccountLinkerControllerTest extends AbstractIntegrationTest {
                 .withBody(objectMapper.writeValueAsString(userInfo))));
     }
 
+    private String stateParameterSp() {
+        return passwordEncoder.encode("mdoe");
+    }
+
+    private String stateParameterIdP(String authenticationRequestId) {
+        return String.format("id=%s&user_uid=%s", authenticationRequestId, stateParameterSp());
+    }
 }

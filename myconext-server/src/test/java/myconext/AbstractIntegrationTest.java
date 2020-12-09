@@ -4,15 +4,12 @@ package myconext;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.restassured.RestAssured;
+import io.restassured.filter.session.SessionFilter;
 import io.restassured.http.Cookie;
 import io.restassured.response.Response;
 import io.restassured.specification.RequestSpecification;
 import myconext.api.MagicLinkResponse;
-import myconext.model.Challenge;
-import myconext.model.MagicLinkRequest;
-import myconext.model.PasswordForgottenHash;
-import myconext.model.SamlAuthenticationRequest;
-import myconext.model.User;
+import myconext.model.*;
 import myconext.repository.AuthenticationRequestRepository;
 import myconext.repository.PasswordForgottenHashRepository;
 import myconext.repository.UserRepository;
@@ -34,6 +31,7 @@ import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.util.ReflectionTestUtils;
@@ -45,12 +43,7 @@ import java.nio.charset.Charset;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 import java.util.zip.Deflater;
 import java.util.zip.DeflaterOutputStream;
 
@@ -97,6 +90,8 @@ public abstract class AbstractIntegrationTest {
     protected PasswordForgottenHashRepository passwordForgottenHashRepository;
 
     private final SimpleDateFormat issueFormat = new SimpleDateFormat("yyyy-MM-dd'T'H:mm:ss");
+
+    protected final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
     @Before
     public void before() throws Exception {

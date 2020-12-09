@@ -43,6 +43,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.util.MultiValueMap;
 import org.springframework.util.StringUtils;
+import org.springframework.web.util.UriComponents;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.io.IOException;
@@ -77,7 +78,6 @@ import static org.junit.Assert.assertTrue;
 @SuppressWarnings("unchecked")
 public class UserControllerTest extends AbstractIntegrationTest {
 
-    private final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
     private final SecureRandom random = new SecureRandom();
 
     @Autowired
@@ -616,13 +616,10 @@ public class UserControllerTest extends AbstractIntegrationTest {
                 .when()
                 .get("/myconext/api/idp/oidc/account/" + samlAuthenticationRequest.getId());
         location = response.getHeader("Location");
-        assertEquals("https://connect.test2.surfconext.nl/oidc/authorize?" +
+        assertTrue(location.startsWith("https://connect.test2.surfconext.nl/oidc/authorize?" +
                         "scope=openid&response_type=code&" +
                         "redirect_uri=http://localhost:8081/myconext/api/idp/oidc/redirect&" +
-                        "state=" + samlAuthenticationRequest.getId() + "&" +
-                        "client_id=myconext.rp.localhost",
-                location);
-
+                        "state="));
     }
 
     @Test
