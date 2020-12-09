@@ -129,7 +129,7 @@ public class AccountLinkerController {
     }
 
     @GetMapping("/sp/oidc/link")
-    public ResponseEntity startSPLinkAccountFlow(Authentication authentication) {
+    public ResponseEntity startSPLinkAccountFlow(Authentication authentication) throws UnsupportedEncodingException {
         LOG.debug("Start link account flow");
         User principal = (User) authentication.getPrincipal();
         String state = passwordEncoder.encode(principal.getUid());
@@ -138,14 +138,14 @@ public class AccountLinkerController {
         return ResponseEntity.ok(Collections.singletonMap("url", uriComponents.toUriString()));
     }
 
-    private UriComponents doStartLinkAccountFlow(String state, String redirectUri, boolean forceAuth) {
+    private UriComponents doStartLinkAccountFlow(String state, String redirectUri, boolean forceAuth) throws UnsupportedEncodingException {
         Map<String, String> params = new HashMap<>();
 
         params.put("client_id", clientId);
         params.put("response_type", "code");
         params.put("scope", "openid");
         params.put("redirect_uri", redirectUri);
-        params.put("state", state);
+        params.put("state", URLEncoder.encode(state, "UTF-8"));
         if (forceAuth) {
             params.put("prompt", "login");
         }
