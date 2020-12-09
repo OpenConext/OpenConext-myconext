@@ -123,7 +123,7 @@ public class AccountLinkerController {
         SamlAuthenticationRequest samlAuthenticationRequest = optionalSamlAuthenticationRequest.get();
         User user = userRepository.findById(samlAuthenticationRequest.getUserId()).orElseThrow(UserNotFoundException::new);
 
-        String state = URLEncoder.encode(String.format("id=%s&user_uid=%s", id, passwordEncoder.encode(user.getUid())), "UTF-8");
+        String state = String.format("id=%s&user_uid=%s", id, passwordEncoder.encode(user.getUid()));
         UriComponents uriComponents = doStartLinkAccountFlow(state, idpFlowRedirectUri, forceAuth);
         return ResponseEntity.status(HttpStatus.FOUND).location(uriComponents.toUri()).build();
     }
@@ -145,7 +145,7 @@ public class AccountLinkerController {
         params.put("response_type", "code");
         params.put("scope", "openid");
         params.put("redirect_uri", redirectUri);
-        params.put("state", URLEncoder.encode(state, "UTF-8"));
+        params.put("state", state);
         if (forceAuth) {
             params.put("prompt", "login");
         }
