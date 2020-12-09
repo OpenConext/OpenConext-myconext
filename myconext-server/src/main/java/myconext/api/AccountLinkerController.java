@@ -39,6 +39,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 import javax.servlet.http.HttpServletRequest;
 import java.io.UnsupportedEncodingException;
 import java.net.URI;
+import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.nio.charset.Charset;
 import java.time.temporal.ChronoUnit;
@@ -145,7 +146,7 @@ public class AccountLinkerController {
         params.put("response_type", "code");
         params.put("scope", "openid");
         params.put("redirect_uri", redirectUri);
-        params.put("state", state);
+        params.put("state", URLEncoder.encode(state, "UTF-8"));
         if (forceAuth) {
             params.put("prompt", "login");
         }
@@ -156,11 +157,11 @@ public class AccountLinkerController {
     }
 
     @GetMapping("/sp/oidc/redirect")
-    public ResponseEntity spFlowRedirect(Authentication authentication, @RequestParam("code") String code, @RequestParam("state") String state) {
+    public ResponseEntity spFlowRedirect(Authentication authentication, @RequestParam("code") String code, @RequestParam("state") String state) throws UnsupportedEncodingException {
         User principal = (User) authentication.getPrincipal();
         User user = userRepository.findOneUserByEmailIgnoreCase(principal.getEmail());
 
-        if (!passwordEncoder.matches(user.getUid(), state)) {
+        if (!passwordEncoder.matches(user.getUid(), URLDecoder.decode(state, "UTF-8"))) {
             throw new ForbiddenException("Non matching user");
         }
 
@@ -172,7 +173,8 @@ public class AccountLinkerController {
 
     @GetMapping("/idp/oidc/redirect")
     public ResponseEntity idpFlowRedirect(HttpServletRequest request, @RequestParam("code") String code, @RequestParam("state") String state) throws UnsupportedEncodingException {
-        MultiValueMap<String, String> params = UriComponentsBuilder.fromHttpUrl("http://localhost?" + state).build().getQueryParams();
+        String decodedState = URLDecoder.decode(state, "UTF-8");
+        MultiValueMap<String, String> params = UriComponentsBuilder.fromHttpUrl("http://localhost?" + decodedState).build().getQueryParams();
         String id = params.getFirst("id");
         String encodedUserUid = params.getFirst("user_uid");
 
