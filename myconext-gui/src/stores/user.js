@@ -28,7 +28,8 @@ export const config = writable({
     magicLinkUrl: "",
     domain: "",
     featureWebAuthn: false,
-    featureOidcTokenAPI: false
+    featureOidcTokenAPI: false,
+    featureConnections: false
 });
 
 export const redirectPath = writable("");

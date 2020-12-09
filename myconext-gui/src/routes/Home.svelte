@@ -25,7 +25,7 @@
     const tabs = [
         {name: "profile", component: Profile, icon: personal_info},
         {name: "security", component: Security, icon: security},
-        {name: "institutions", component: Institutions, icon: connections},
+        {name: "institutions", component: Institutions, icon: connections, ignore: !$config.featureConnections},
         {name: "services", component: Services, icon: services},
         {name: "account", component: Account, icon: data_activity},
         {name: "migration", component: Migration, icon: data_activity, ignore: true}

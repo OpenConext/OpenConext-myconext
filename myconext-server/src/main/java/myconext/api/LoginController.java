@@ -35,6 +35,7 @@ public class LoginController {
                            @Value("${idp_redirect_url}") String idpBaseUrl,
                            @Value("${sp_redirect_url}") String spBaseUrl,
                            @Value("${feature.webauthn}") boolean featureWebAuthn,
+                           @Value("${feature.connections}") boolean featureConnections,
                            @Value("${feature.warning_educational_email_domain}") boolean featureWarningEducationalEmailDomain,
                            @Value("${feature.use_deny_allow_list.allow_enabled}") boolean featureAllowList,
                            @Value("${oidc-token-api.enabled}") boolean featureOidcTokenAPI)  {
@@ -52,6 +53,7 @@ public class LoginController {
         this.config.put("featureWarningEducationalEmailDomain", featureWarningEducationalEmailDomain);
         this.config.put("featureAllowList", featureAllowList);
         this.config.put("featureOidcTokenAPI", featureOidcTokenAPI);
+        this.config.put("featureConnections", featureConnections);
         this.secureCookie = secureCookie;
     }
 

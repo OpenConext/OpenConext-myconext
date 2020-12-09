@@ -44,6 +44,8 @@ domain: eduid.nl
 feature:
   webauthn: False
   warning_educational_email_domain: True
+  # Swow / hide the connections page in the mijn GUI
+  connections: True
   use_deny_allow_list:
     allow_enabled: False
     allow_location: "classpath:/deny-allow/allowed.json"
