@@ -59,6 +59,7 @@ I18n.translations.nl = {
     magicLink: {
         header: "Open je mailbox!",
         info: "Om in te loggen, klik op de link in de e-mail die we hebben verstuurd naar <strong>{{email}}</strong>.",
+        awaiting: "Wachten tot je op de link klikt ...",
         openGMail: "Open Gmail.com",
         openOutlook: "Open Outlook.com",
         spam: "Kan je de mail niet vinden? Kijk in je spam folder.",
