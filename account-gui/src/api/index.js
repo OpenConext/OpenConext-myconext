@@ -78,3 +78,7 @@ export function webAuthnTryAuthentication(credentials, authenticationRequestId, 
   const body = {credentials, authenticationRequestId, rememberMe};
   return postPutJson("/myconext/api/idp/security/webauthn/authentication", body, "PUT");
 }
+
+export function successfullyLoggedIn(id) {
+  return fetchJson(`/myconext/api/idp/security/success?id=${id}`);
+}

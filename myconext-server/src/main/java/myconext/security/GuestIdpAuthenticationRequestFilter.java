@@ -3,10 +3,7 @@ package myconext.security;
 import myconext.exceptions.UserNotFoundException;
 import myconext.mail.MailBox;
 import myconext.manage.ServiceNameResolver;
-import myconext.model.LinkedAccount;
-import myconext.model.SamlAuthenticationRequest;
-import myconext.model.StepUpStatus;
-import myconext.model.User;
+import myconext.model.*;
 import myconext.repository.AuthenticationRequestRepository;
 import myconext.repository.UserRepository;
 import org.apache.commons.logging.Log;
@@ -68,6 +65,7 @@ public class GuestIdpAuthenticationRequestFilter extends IdpAuthenticationReques
 
     private final SamlRequestMatcher ssoSamlRequestMatcher;
     private final SamlRequestMatcher magicSamlRequestMatcher;
+    private final SamlRequestMatcher continueAfterloginSamlRequestMatcher;
     private final String redirectUrl;
     private final AuthenticationRequestRepository authenticationRequestRepository;
     private final UserRepository userRepository;
@@ -92,6 +90,7 @@ public class GuestIdpAuthenticationRequestFilter extends IdpAuthenticationReques
         super(provisioning, assertionStore);
         this.ssoSamlRequestMatcher = new SamlRequestMatcher(provisioning, "SSO");
         this.magicSamlRequestMatcher = new SamlRequestMatcher(provisioning, "magic");
+        this.continueAfterloginSamlRequestMatcher = new SamlRequestMatcher(provisioning, "continue");
         this.redirectUrl = redirectUrl;
         this.serviceNameResolver = serviceNameResolver;
         this.authenticationRequestRepository = authenticationRequestRepository;
@@ -107,11 +106,15 @@ public class GuestIdpAuthenticationRequestFilter extends IdpAuthenticationReques
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         if (this.ssoSamlRequestMatcher.matches(request)) {
             LOG.debug("Starting SSO filter");
-            sso(request, response);
+            this.sso(request, response);
             return;
         } else if (this.magicSamlRequestMatcher.matches(request)) {
             LOG.debug("Starting magic filter");
-            magic(request, response);
+            this.magic(request, response);
+            return;
+        } else if (this.continueAfterloginSamlRequestMatcher.matches(request)) {
+            LOG.debug("Starting continue after login filter");
+            this.continueAfterLogin(request, response);
             return;
         }
         super.doFilterInternal(request, response, filterChain);
@@ -266,11 +269,6 @@ public class GuestIdpAuthenticationRequestFilter extends IdpAuthenticationReques
     }
 
     private void magic(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        Optional<Cookie> optionalCookie = cookieByName(request, BROWSER_SESSION_COOKIE_NAME);
-        if (!optionalCookie.isPresent()) {
-            response.sendRedirect(this.redirectUrl + "/session");
-            return;
-        }
         String hash = request.getParameter("h");
         Optional<SamlAuthenticationRequest> optionalSamlAuthenticationRequest = authenticationRequestRepository.findByHash(hash);
         if (!optionalSamlAuthenticationRequest.isPresent()) {
@@ -329,6 +327,38 @@ public class GuestIdpAuthenticationRequestFilter extends IdpAuthenticationReques
             return;
 
         }
+
+        Optional<Cookie> optionalCookie = cookieByName(request, BROWSER_SESSION_COOKIE_NAME);
+        if (!optionalCookie.isPresent()) {
+            samlAuthenticationRequest.setLoginStatus(LoginStatus.LOGGED_IN_DIFFERENT_DEVICE);
+            authenticationRequestRepository.save(samlAuthenticationRequest);
+            response.sendRedirect(this.redirectUrl + "/success");
+            return;
+        }
+
+        samlAuthenticationRequest.setLoginStatus(LoginStatus.LOGGED_IN_SAME_DEVICE);
+        doSendAssertion(request, response, samlAuthenticationRequest, user);
+    }
+
+    private void continueAfterLogin(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        String id = request.getParameter("id");
+        Optional<SamlAuthenticationRequest> optionalSamlAuthenticationRequest = authenticationRequestRepository.findById(id);
+        if (!optionalSamlAuthenticationRequest.isPresent()) {
+            response.sendRedirect(this.redirectUrl + "/expired");
+            return;
+        }
+        SamlAuthenticationRequest samlAuthenticationRequest = optionalSamlAuthenticationRequest.get();
+        if (samlAuthenticationRequest.getLoginStatus().equals(LoginStatus.NOT_LOGGED_IN)) {
+            response.sendRedirect(this.redirectUrl + "/expired");
+            return;
+        }
+        User user = userRepository.findById(samlAuthenticationRequest.getUserId())
+                .orElseThrow(UserNotFoundException::new);
+
+        doSendAssertion(request, response, samlAuthenticationRequest, user);
+    }
+
+    private void doSendAssertion(HttpServletRequest request, HttpServletResponse response, SamlAuthenticationRequest samlAuthenticationRequest, User user) {
         //ensure the magic link can't be used twice
         samlAuthenticationRequest.setHash(null);
 

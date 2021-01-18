@@ -1,34 +1,14 @@
 package myconext.api;
 
-import com.yubico.webauthn.data.AuthenticatorAssertionResponse;
-import com.yubico.webauthn.data.AuthenticatorAttestationResponse;
-import com.yubico.webauthn.data.AuthenticatorResponse;
-import com.yubico.webauthn.data.ByteArray;
-import com.yubico.webauthn.data.ClientAssertionExtensionOutputs;
-import com.yubico.webauthn.data.ClientExtensionOutputs;
-import com.yubico.webauthn.data.ClientRegistrationExtensionOutputs;
-import com.yubico.webauthn.data.PublicKeyCredential;
-import com.yubico.webauthn.data.PublicKeyCredentialType;
+import com.yubico.webauthn.data.*;
 import com.yubico.webauthn.data.exception.Base64UrlException;
 import io.restassured.filter.cookie.CookieFilter;
 import io.restassured.http.ContentType;
 import io.restassured.http.Cookie;
 import io.restassured.response.Response;
 import io.restassured.response.ValidatableResponse;
-import io.restassured.specification.RequestSpecification;
 import myconext.AbstractIntegrationTest;
-import myconext.model.Challenge;
-import myconext.model.DeleteServiceTokens;
-import myconext.model.EduID;
-import myconext.model.LinkedAccount;
-import myconext.model.LinkedAccountTest;
-import myconext.model.MagicLinkRequest;
-import myconext.model.PasswordForgottenHash;
-import myconext.model.PublicKeyCredentials;
-import myconext.model.SamlAuthenticationRequest;
-import myconext.model.StepUpStatus;
-import myconext.model.UpdateUserSecurityRequest;
-import myconext.model.User;
+import myconext.model.*;
 import myconext.repository.ChallengeRepository;
 import myconext.security.ACR;
 import org.apache.commons.io.IOUtils;
@@ -39,11 +19,9 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.util.MultiValueMap;
 import org.springframework.util.StringUtils;
-import org.springframework.web.util.UriComponents;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.io.IOException;
@@ -53,27 +31,15 @@ import java.nio.charset.Charset;
 import java.security.SecureRandom;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Base64;
-import java.util.Collections;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import static io.restassured.RestAssured.given;
 import static myconext.security.GuestIdpAuthenticationRequestFilter.BROWSER_SESSION_COOKIE_NAME;
 import static myconext.security.GuestIdpAuthenticationRequestFilter.GUEST_IDP_REMEMBER_ME_COOKIE_NAME;
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.startsWith;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertTrue;
+import static org.hamcrest.Matchers.*;
+import static org.junit.Assert.*;
 
 @SuppressWarnings("unchecked")
 public class UserControllerTest extends AbstractIntegrationTest {
@@ -572,16 +538,26 @@ public class UserControllerTest extends AbstractIntegrationTest {
     public void magicLinkRequiresSameBrowser() throws IOException {
         MagicLinkResponse magicLinkResponse = magicLinkRequest(user("jdoe@example.com"), HttpMethod.PUT);
         SamlAuthenticationRequest samlAuthenticationRequest = authenticationRequestRepository.findById(magicLinkResponse.authenticationRequestId).get();
-        String samlResponse = samlResponse(magicLinkResponse);
-        assertTrue(samlResponse.contains("jdoe@example.com"));
-
         given().redirects().follow(false)
                 .when()
                 .queryParam("h", samlAuthenticationRequest.getHash())
                 .get("/saml/guest-idp/magic")
                 .then()
                 .statusCode(HttpStatus.FOUND.value())
-                .header("Location", "http://localhost:3000/session");
+                .header("Location", "http://localhost:3000/success");
+        given()
+                .when()
+                .queryParam("id", samlAuthenticationRequest.getId())
+                .get("/myconext/api/idp/security/success")
+                .then()
+                .body(equalTo("" + LoginStatus.LOGGED_IN_DIFFERENT_DEVICE.ordinal()));
+        Response response = given().redirects().follow(false)
+                .when()
+                .queryParam("id", samlAuthenticationRequest.getId())
+                .get("/saml/guest-idp/continue");
+        String saml = samlAuthnResponse(response);
+
+        assertTrue(saml.contains("jdoe@example.com"));
     }
 
     @Test
@@ -617,9 +593,9 @@ public class UserControllerTest extends AbstractIntegrationTest {
                 .get("/myconext/api/idp/oidc/account/" + samlAuthenticationRequest.getId());
         location = response.getHeader("Location");
         assertTrue(location.startsWith("https://connect.test2.surfconext.nl/oidc/authorize?" +
-                        "scope=openid&response_type=code&" +
-                        "redirect_uri=http://localhost:8081/myconext/api/idp/oidc/redirect&" +
-                        "state="));
+                "scope=openid&response_type=code&" +
+                "redirect_uri=http://localhost:8081/myconext/api/idp/oidc/redirect&" +
+                "state="));
     }
 
     @Test
@@ -710,7 +686,7 @@ public class UserControllerTest extends AbstractIntegrationTest {
         assertNotEquals(userHandle, newUserHandle);
     }
 
-        @Test
+    @Test
     public void webAuhthAuthentication() throws Base64UrlException, IOException {
         String authenticationRequestId = samlAuthnRequest();
         Map<String, Object> body = new HashMap<>();
