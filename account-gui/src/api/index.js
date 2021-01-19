@@ -1,5 +1,6 @@
 //Internal API
 import I18n from "i18n-js";
+import {status} from "../validation/loginStatus";
 
 let csrfToken = null;
 
@@ -80,5 +81,8 @@ export function webAuthnTryAuthentication(credentials, authenticationRequestId, 
 }
 
 export function successfullyLoggedIn(id) {
+  if (typeof document.hidden !== "undefined" && document.hidden) {
+    return Promise.resolve(status.NOT_LOGGED_IN)
+  }
   return fetchJson(`/myconext/api/idp/security/success?id=${id}`);
 }

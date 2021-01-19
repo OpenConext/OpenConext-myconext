@@ -66,7 +66,7 @@ I18n.translations.en = {
         loggedIn: "Login succeeded!",
         loggedInInfo: "You can close this tab / window.",
         timeOutReached: "Timeout!",
-        timeOutReachedInfo: "There has been a timeout. Please go back to the service tou where heading to and re-try again."
+        timeOutReachedInfo: "Your link has expired. Please go back to the service you where heading to and re-try again."
     },
     confirm: {
         header: "Success!",

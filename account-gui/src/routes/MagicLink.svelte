@@ -6,15 +6,10 @@
     import Spinner from "../components/Spinner.svelte";
     import {successfullyLoggedIn} from "../api";
     import {conf} from "../stores/conf";
+    import {status} from "../validation/loginStatus";
 
     const gmail = "/img/get-started-icon-gmail@2x-e80b706.png";
     const outlook = "/img/get-started-icon-outlook-55f9ac5.png";
-
-    const status = {
-        NOT_LOGGED_IN: 0,
-        LOGGED_IN_DIFFERENT_DEVICE: 1,
-        LOGGED_IN_SAME_DEVICE: 2
-    }
 
     export let id;
     let serviceName;
@@ -39,9 +34,10 @@
             } else if (loginStatus === status.NOT_LOGGED_IN) {
                 ++counter;
                 if (counter % 30 === 0) {
-                    timeOutSeconds = timeOutSeconds + 1;
+                    //sequence 1, 3, 6, 10 with every timeOut applied 30 times results in total of 10 minutes
+                    timeOutSeconds = (0.5 * Math.pow(timeOutSeconds, 2)) + (0.5 * timeOutSeconds);
                 }
-                if (timeOutSeconds > 5) {
+                if (counter > (30 * 4)) {
                     timeOutReached = true;
                 } else {
                     setTimeout(isLoggedIn, timeOutSeconds * 1000);

@@ -66,7 +66,7 @@ I18n.translations.nl = {
         loggedIn: "Inloggen geslaagd!",
         loggedInInfo: "Je kan dit tabblad / venster sluiten.",
         timeOutReached: "Timeout!",
-        timeOutReachedInfo: "Er is een time-out opgetreden. Ga terug naar de dienst waar je naartoe ging en probeer het opnieuw."
+        timeOutReachedInfo: "Je link is verlopen. Ga terug naar de dienst waar je heen wou en probeer het opnieuw."
     },
     confirm: {
         header: "Gelukt!",
