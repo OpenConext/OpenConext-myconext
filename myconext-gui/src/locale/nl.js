@@ -62,6 +62,9 @@ I18n.translations.nl = {
   },
   account: {
     title: "Je eduID account",
+    personalTitle: "Je persoonlijke gegevens",
+    personalInfo: "Klik op de onderstaande knop om al je persoonlijke gegevens te downloaden.",
+    download: "Download",
     deleteTitle: "Je eduID verwijderen",
     info1: "Je kunt je eduID verwijderen wanneer je maar wilt.",
     info2: "Let op, je verliest het unieke eduID-nummer dat momenteel aan je e-mailadres is gekoppeld. Wanneer je je opnieuw registreert voor eduID met hetzelfde e-mailadres, krijg je een nieuw eduID-nummer. Sommige diensten gebruiken dit unieke nummer om je te identificeren, dus voor die diensten word je dan gezien als een nieuwe gebruiker. ",

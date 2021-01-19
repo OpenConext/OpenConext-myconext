@@ -1,5 +1,7 @@
 package myconext.api;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.yubico.webauthn.*;
 import com.yubico.webauthn.data.*;
 import com.yubico.webauthn.data.exception.Base64UrlException;
@@ -22,9 +24,11 @@ import myconext.security.EmailGuessingPrevention;
 import myconext.webauthn.UserCredentialRepository;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -70,12 +74,14 @@ public class UserController {
     private final ChallengeRepository challengeRepository;
     private final PasswordForgottenHashRepository passwordForgottenHashRepository;
 
+
     private final static SecureRandom random = new SecureRandom();
     private final PasswordEncoder passwordEncoder = new BCryptPasswordEncoder(-1, random);
     private final EmailGuessingPrevention emailGuessingPreventor;
     private final EmailDomainGuard emailDomainGuard;
     private final IdPMetaDataResolver idPMetaDataResolver;
     private final String spBaseUrl;
+    private final ObjectMapper objectMapper;
 
     public UserController(UserRepository userRepository,
                           UserCredentialRepository userCredentialRepository,
@@ -87,6 +93,7 @@ public class UserController {
                           OpenIDConnect openIDConnect,
                           IdPMetaDataResolver idPMetaDataResolver,
                           EmailDomainGuard emailDomainGuard,
+                          @Qualifier("jsonMapper") ObjectMapper objectMapper,
                           @Value("${email.magic-link-url}") String magicLinkUrl,
                           @Value("${schac_home_organization}") String schacHomeOrganization,
                           @Value("${email_guessing_sleep_millis}") int emailGuessingSleepMillis,
@@ -104,6 +111,7 @@ public class UserController {
         this.openIDConnect = openIDConnect;
         this.idPMetaDataResolver = idPMetaDataResolver;
         this.emailDomainGuard = emailDomainGuard;
+        this.objectMapper = objectMapper;
         this.magicLinkUrl = magicLinkUrl;
         this.schacHomeOrganization = schacHomeOrganization;
         this.idpBaseUrl = idpBaseUrl;
@@ -190,6 +198,21 @@ public class UserController {
             LOG.info("Successfully logged in with password");
         }
         return doMagicLink(user, samlAuthenticationRequest, magicLinkRequest.isRememberMe(), magicLinkRequest.isUsePassword(), request);
+    }
+
+    @GetMapping("/idp/resend_magic_link_request")
+    public ResponseEntity resendMagicLinkRequest(HttpServletRequest request, @RequestParam("id") String authenticationRequestId) {
+        SamlAuthenticationRequest samlAuthenticationRequest = authenticationRequestRepository.findByIdAndNotExpired(authenticationRequestId)
+                .orElseThrow(ExpiredAuthenticationException::new);
+        User user = userRepository.findById(samlAuthenticationRequest.getUserId()).orElseThrow(UserNotFoundException::new);
+        if (user.isNewUser()) {
+            mailBox.sendAccountVerification(user, samlAuthenticationRequest.getHash());
+        } else {
+            String lang = cookieByName(request, "lang").map(cookie -> cookie.getValue()).orElse("en");
+            String serviceName = serviceNameResolver.resolve(samlAuthenticationRequest.getRequesterEntityId(), lang);
+            mailBox.sendMagicLink(user, samlAuthenticationRequest.getHash(), serviceName);
+        }
+        return ResponseEntity.ok(true);
     }
 
     @GetMapping("/idp/security/success")
@@ -562,6 +585,14 @@ public class UserController {
         challengeField.set(challengeContainer, challenge);
     }
 
+    @GetMapping("sp/personal")
+    public ResponseEntity personal(Authentication authentication) throws JsonProcessingException {
+        User user = this.userFromAuthentication(authentication);
+        return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON)
+                .body(objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(user));
+    }
+
+
     @GetMapping("/sp/logout")
     public ResponseEntity logout(HttpServletRequest request, Authentication authentication) {
         User user = this.userFromAuthentication(authentication);
@@ -625,7 +656,6 @@ public class UserController {
             mailBox.sendAccountVerification(user, samlAuthenticationRequest.getHash());
         } else {
             LOG.debug("Sending magic link email for existing user");
-
             mailBox.sendMagicLink(user, samlAuthenticationRequest.getHash(), serviceName);
         }
         return ResponseEntity.status(201).body(Collections.singletonMap("result", "ok"));

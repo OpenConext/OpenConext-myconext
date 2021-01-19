@@ -4,12 +4,13 @@
     import {onMount} from "svelte";
     import backArrow from "../icons/arrow-left.svg";
     import Spinner from "../components/Spinner.svelte";
-    import {successfullyLoggedIn} from "../api";
+    import {resendMagicLinkMail, successfullyLoggedIn} from "../api";
     import {conf} from "../stores/conf";
     import {status} from "../validation/loginStatus";
 
     const gmail = "/img/get-started-icon-gmail@2x-e80b706.png";
     const outlook = "/img/get-started-icon-outlook-55f9ac5.png";
+    const resendMailAllowedTimeOut = 15 * 1000;
 
     export let id;
     let serviceName;
@@ -18,13 +19,31 @@
     let counter = 0;
     let timeOutSeconds = 1;
     let timeOutReached = false;
+    let allowedToResend = false;
+    let mailHasBeenResend = false;
 
     onMount(() => {
         const urlParams = new URLSearchParams(window.location.search);
         serviceName = urlParams.get("name");
         modus = urlParams.get("modus");
         setTimeout(isLoggedIn, timeOutSeconds * 1000);
+        setTimeout(() => allowedToResend = true, resendMailAllowedTimeOut);
     });
+
+    const resendMail = () => {
+        allowedToResend = false;
+        resendMagicLinkMail(id).then(() => {
+            mailHasBeenResend = true;
+            //reset timeout
+            counter = 1;
+            timeOutSeconds = 1;
+            setTimeout(() => {
+                allowedToResend = true;
+                mailHasBeenResend = false;
+            }, resendMailAllowedTimeOut);
+
+        });
+    }
 
     const isLoggedIn = () => {
         successfullyLoggedIn(id).then(res => {
@@ -34,8 +53,9 @@
             } else if (loginStatus === status.NOT_LOGGED_IN) {
                 ++counter;
                 if (counter % 30 === 0) {
-                    //sequence 1, 3, 6, 10 with every timeOut applied 30 times results in total of 10 minutes
-                    timeOutSeconds = (0.5 * Math.pow(timeOutSeconds, 2)) + (0.5 * timeOutSeconds);
+                    //timeOuts 1, 3, 6, 10 with every timeOut applied 30 times results in total of 10 minutes
+                    const base = (counter / 30) + 1;
+                    timeOutSeconds = ((0.5 * Math.pow(base, 2)) + (0.5 * base));
                 }
                 if (counter > (30 * 4)) {
                     timeOutReached = true;
@@ -126,9 +146,10 @@
         color: var(--color-primary-blue);
     }
 
-    div.spam {
+    div.spam, div.resend-mail {
         margin-top: 30px;
         font-size: 15px;
+        text-align: center;
     }
 
 </style>
@@ -163,6 +184,15 @@
         </div>
         <div class="spam">
             <span>{I18n.t("magicLink.spam")}</span>
+        </div>
+        <div class="resend-mail">
+            {#if allowedToResend}
+                <span class="link" on:click={resendMail}>{I18n.t("magicLink.resend")}</span>
+                <a href="resend" on:click|preventDefault|stopPropagation={resendMail}>{I18n.t("magicLink.resendLink")}</a>
+            {:else if mailHasBeenResend}
+                <span>{I18n.t("magicLink.mailResend")}</span>
+            {/if}
+
         </div>
 
     </div>

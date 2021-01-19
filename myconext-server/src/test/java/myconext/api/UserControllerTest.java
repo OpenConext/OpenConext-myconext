@@ -36,6 +36,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import static io.restassured.RestAssured.given;
+import static io.restassured.RestAssured.when;
 import static myconext.security.GuestIdpAuthenticationRequestFilter.BROWSER_SESSION_COOKIE_NAME;
 import static myconext.security.GuestIdpAuthenticationRequestFilter.GUEST_IDP_REMEMBER_ME_COOKIE_NAME;
 import static org.hamcrest.Matchers.*;
@@ -56,6 +57,11 @@ public class UserControllerTest extends AbstractIntegrationTest {
                 .statusCode(HttpStatus.CREATED.value());
         String samlResponse = samlResponse(magicLinkResponse);
         assertTrue(samlResponse.contains("jdoe@example.com"));
+
+        when()
+                .get("/myconext/api/idp/resend_magic_link_request?id=" + magicLinkResponse.authenticationRequestId)
+                .then()
+                .statusCode(200);
     }
 
     @Test
@@ -81,6 +87,12 @@ public class UserControllerTest extends AbstractIntegrationTest {
 
         String samlResponse = samlResponse(magicLinkResponse);
         assertTrue(samlResponse.contains("new@example.com"));
+
+        when()
+                .get("/myconext/api/idp/resend_magic_link_request?id=" + magicLinkResponse.authenticationRequestId)
+                .then()
+                .statusCode(200);
+
     }
 
     @Test

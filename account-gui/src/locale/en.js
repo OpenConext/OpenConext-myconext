@@ -66,7 +66,10 @@ I18n.translations.en = {
         loggedIn: "Login succeeded!",
         loggedInInfo: "You can close this tab / window.",
         timeOutReached: "Timeout!",
-        timeOutReachedInfo: "Your link has expired. Please go back to the service you where heading to and re-try again."
+        timeOutReachedInfo: "Your link has expired. Please go back to the service you where heading to and re-try again.",
+        resend: "Still can't find it?",
+        resendLink: " Send me the mail again.",
+        mailResend: "Check your inbox again. We have sent the mail with the magic link again.",
     },
     confirm: {
         header: "Success!",

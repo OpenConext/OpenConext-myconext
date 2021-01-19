@@ -62,6 +62,9 @@ I18n.translations.en = {
   },
   account: {
     title: "Your eduID account",
+    personalTitle: "Your personal data",
+    personalInfo: "Click the button below to download all your personal data.",
+    download: "Download",
     deleteTitle: "Deleting your eduID account",
     info1: "You can delete your eduID whenever you want.",
     info2: "Proceed with care, as you will lose the unique eduID number currently associated with your email address. When you re-register for a new eduID with that same email address, you will receive a new eduID number. Some services use this unique number to identify you, so for those services you will be treated as a new user.",
