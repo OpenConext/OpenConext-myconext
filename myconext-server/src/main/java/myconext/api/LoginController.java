@@ -27,6 +27,7 @@ public class LoginController {
                            @Value("${my_conext_url}") String myConextUrl,
                            @Value("${onegini_entity_id}") String oneGiniEntityId,
                            @Value("${guest_idp_entity_id}") String guestIdpEntityId,
+                           @Value("${continue_after_login_url}") String continueAfterLoginUrl,
                            @Value("${email.magic-link-url}") String magicLinkUrl,
                            @Value("${domain}") String domain,
                            @Value("${secure_cookie}") boolean secureCookie,
@@ -38,7 +39,7 @@ public class LoginController {
                            @Value("${feature.use_deny_allow_list.allow_enabled}") boolean featureAllowList,
                            @Value("${oidc-token-api.enabled}") boolean featureOidcTokenAPI)  {
         this.config.put("loginUrl", basePath + "/login");
-        this.config.put("continueAfterLoginUrl", basePath + "/saml/guest-idp/continue");
+        this.config.put("continueAfterLoginUrl", continueAfterLoginUrl);
         this.config.put("baseDomain", baseDomain);
         this.config.put("migrationUrl", String.format("%s/Shibboleth.sso/Login?entityID=%s&target=/migration", myConextUrl, oneGiniEntityId));
         this.config.put("magicLinkUrl", magicLinkUrl);

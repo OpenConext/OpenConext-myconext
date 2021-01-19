@@ -30,6 +30,7 @@ mongodb_db: surf_id_test
 base_domain: test2.surfconext.nl
 saml_metadata_base_path: http://localhost:8081
 base_path: http://localhost:8081
+continue_after_login_url: http://localhost:8081/saml/guest-idp/continue
 idp_redirect_url: http://localhost:3000
 rp_id: localhost
 rp_origin: http://localhost:3000
