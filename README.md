@@ -74,7 +74,10 @@ Add the key pair to the [application.yml](myconext-server/src/main/resources/app
 private_key_path: classpath:/myconext.pem
 certificate_path: classpath:/myconext.crt
 ```
-
+If you need to register the public key in EB then issue this command and copy & paste it in Manage for the correct IdP:
+```
+cat myconext.crt |ghead -n -1 |tail -n +2 | tr -d '\n'; echo
+```
 ### [Miscellaneous](#miscellaneous)
 
 To get an overview of the git source file's:
