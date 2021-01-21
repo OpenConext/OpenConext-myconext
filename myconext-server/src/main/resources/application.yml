@@ -53,10 +53,8 @@ feature:
 
 secure_cookie: false
 idp_entity_id: https://localhost.surf.id
-private_key_path: classpath:/id_rsa
-certificate_path: classpath:/id_rsa.pub
-#private_key_path: classpath:/myconext.pem
-#certificate_path: classpath:/myconext.crt
+private_key_path: classpath:/myconext.pem
+certificate_path: classpath:/myconext.crt
 
 remember_me_max_age_seconds: 15_768_000
 email_guessing_sleep_millis: 500
