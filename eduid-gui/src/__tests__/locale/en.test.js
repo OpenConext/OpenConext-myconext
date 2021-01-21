@@ -1,7 +1,6 @@
 import I18n from "i18n-js";
-import init from "../init";
-
-init();
+import en from "../../locale/en";
+import nl from "../../locale/nl";
 
 expect.extend({
     toContainKey(translation, key) {
@@ -13,6 +12,10 @@ expect.extend({
 });
 
 test("All translations exists in EN and NL", () => {
+    //we need to use them, otherwise the imports are deleted when organizing them
+    expect(en).toBeDefined();
+    expect(nl).toBeDefined();
+
     const contains = (translation, translationToVerify) => {
         Object.keys(translation).forEach(key => {
             expect(translationToVerify).toContainKey(key);
