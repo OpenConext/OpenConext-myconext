@@ -71,6 +71,14 @@ public class MailBox {
         sendMail("forgot_password", title, variables, preferredLanguage(user), user.getEmail());
     }
 
+    public void sendUpdateEmail(User user, String newMail, String hash) {
+        String title = this.getTitle("update_email", user);
+        Map<String, Object> variables = variables(user, title);
+        variables.put("mySurfConextURL", mySURFconextURL);
+        variables.put("hash", hash);
+        sendMail("update_email", title, variables, preferredLanguage(user), newMail);
+    }
+
     private Map<String, Object> variables(User user, String title) {
         Map<String, Object> variables = new HashMap<>();
         variables.put("title", title);

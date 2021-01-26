@@ -56,6 +56,11 @@ export function updateUser(user) {
     return postPutJson("/myconext/api/sp/update", user, "PUT");
 }
 
+export function updateEmail(user) {
+    debugger;
+    return postPutJson("/myconext/api/sp/email", user, "PUT");
+}
+
 export function updateSecurity(userId, currentPassword, newPassword, hash) {
     const body = {userId, currentPassword, newPassword, hash};
     return postPutJson("/myconext/api/sp/security", body, "PUT");
@@ -97,7 +102,8 @@ export function oidcTokens() {
     return fetchJson("/myconext/api/sp/tokens");
 }
 
-export function startLinkAccountFlow() {
+export function startLinkAccountFlow(back = "institutions") {
+    window.localStorage.setItem("back", back);
     return fetchJson("/myconext/api/sp/oidc/link");
 }
 

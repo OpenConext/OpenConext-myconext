@@ -9,7 +9,7 @@
     import {formatCreateDate} from "../format/date";
     import Modal from "../components/Modal.svelte";
 
-    let linkedAccount = {eduPersonAffiliations:[]};
+    let linkedAccount = {eduPersonAffiliations: []};
     let showModal = false;
 
     onMount(() => {
@@ -42,32 +42,13 @@
     .institution {
         width: 100%;
         display: flex;
+        flex-direction: column;
         height: 100%;
     }
 
-    @media (max-width: 820px) {
-        .left {
-            display: none;
-        }
-
-        .inner {
-            border-left: none;
-        }
-    }
-
-    .header {
-        display: flex;
-        align-items: center;
-        align-content: center;
-        color: var(--color-primary-green);
-    }
-
-    .header a {
-        margin-top: 8px;
-    }
-
     h2 {
-        margin-left: 25px;
+        margin-top: 25px;
+        color: var(--color-primary-green);
     }
 
     p.info {
@@ -101,6 +82,7 @@
     div.value-container span {
         padding: 5px 0;
     }
+
     .options {
         margin-top: 60px;
     }
@@ -108,74 +90,65 @@
 
 </style>
 <div class="institution">
-    <div class="left"></div>
-    <div class="inner">
-        <div class="header">
-            <a href="/back" on:click|preventDefault|stopPropagation={cancel}>
-                {@html chevron_left}
-            </a>
-            <h2>{I18n.t("institution.title")}</h2>
-        </div>
-        <p class="info">{I18n.t("institution.info", formatCreateDate(linkedAccount.createdAt))}</p>
+    <h2>{I18n.t("institution.title")}</h2>
+    <p class="info">{I18n.t("institution.info", formatCreateDate(linkedAccount.createdAt))}</p>
 
-        <table cellspacing="0">
-            <thead></thead>
-            <tbody>
+    <table cellspacing="0">
+        <thead></thead>
+        <tbody>
+        <tr class="name">
+            <td class="attr">{I18n.t("institution.name")}</td>
+            <td class="value">
+                <div class="value-container">
+                    <span>{`${linkedAccount.schacHomeOrganization}`}</span>
+                </div>
+            </td>
+        </tr>
+        <tr class="name">
+            <td class="attr">{I18n.t("institution.eppn")}</td>
+            <td class="value">
+                <div class="value-container">
+                    <span>{`${linkedAccount.eduPersonPrincipalName}`}</span>
+                </div>
+            </td>
+        </tr>
+        {#if linkedAccount.givenName && linkedAccount.familyName}
             <tr class="name">
-                <td class="attr">{I18n.t("institution.name")}</td>
+                <td class="attr">{I18n.t("institution.displayName")}</td>
                 <td class="value">
                     <div class="value-container">
-                        <span>{`${linkedAccount.schacHomeOrganization}`}</span>
+                        <span>{`${linkedAccount.givenName} ${linkedAccount.familyName}`}</span>
                     </div>
                 </td>
             </tr>
-            <tr class="name">
-                <td class="attr">{I18n.t("institution.eppn")}</td>
-                <td class="value">
-                    <div class="value-container">
-                        <span>{`${linkedAccount.eduPersonPrincipalName}`}</span>
-                    </div>
-                </td>
-            </tr>
-            {#if linkedAccount.givenName && linkedAccount.familyName}
-                <tr class="name">
-                    <td class="attr">{I18n.t("institution.displayName")}</td>
-                    <td class="value">
-                        <div class="value-container">
-                            <span>{`${linkedAccount.givenName} ${linkedAccount.familyName}`}</span>
-                        </div>
-                    </td>
-                </tr>
-            {/if}
-            <tr class="name">
-                <td class="attr">{I18n.t("institution.affiliations")}</td>
-                <td class="value">
-                    <div class="value-container">
-                        {#each linkedAccount.eduPersonAffiliations as affiliation}
-                            <span>{`${affiliation}`}</span>
-                        {/each}
-                    </div>
-                </td>
-            </tr>
-            <tr class="name">
-                <td class="attr">{I18n.t("institution.expires")}</td>
-                <td class="value">
-                    <div class="value-container">
-                        <span>{I18n.t("institution.expiresValue", {date: formatCreateDate(linkedAccount.expiresAt).date})}</span>
-                    </div>
-                </td>
-            </tr>
-            </tbody>
-        </table>
+        {/if}
+        <tr class="name">
+            <td class="attr">{I18n.t("institution.affiliations")}</td>
+            <td class="value">
+                <div class="value-container">
+                    {#each linkedAccount.eduPersonAffiliations as affiliation}
+                        <span>{`${affiliation}`}</span>
+                    {/each}
+                </div>
+            </td>
+        </tr>
+        <tr class="name">
+            <td class="attr">{I18n.t("institution.expires")}</td>
+            <td class="value">
+                <div class="value-container">
+                    <span>{I18n.t("institution.expiresValue", {date: formatCreateDate(linkedAccount.expiresAt).date})}</span>
+                </div>
+            </td>
+        </tr>
+        </tbody>
+    </table>
 
 
-        <div class="options">
-            <Button className="cancel" label={I18n.t("institution.cancel")} onClick={cancel}/>
+    <div class="options">
+        <Button className="cancel" label={I18n.t("institution.cancel")} onClick={cancel}/>
 
-            <Button label={I18n.t("institution.delete")} className="cancel" onClick={deleteAccountLink(true)}/>
-        </div>
+        <Button label={I18n.t("institution.delete")} className="cancel" onClick={deleteAccountLink(true)}/>
     </div>
-
 </div>
 
 {#if showModal}
@@ -183,6 +156,6 @@
            cancel={() => showModal = false}
            warning={true}
            question={I18n.t("institution.deleteInstitutionConfirmation")}
-                   title={I18n.t("institution.deleteInstitution")}>
+           title={I18n.t("institution.deleteInstitution")}>
     </Modal>
 {/if}

@@ -1,11 +1,9 @@
 package myconext.cron;
 
 
-import myconext.model.LinkedAccount;
-import myconext.model.PasswordForgottenHash;
-import myconext.model.SamlAuthenticationRequest;
-import myconext.model.User;
+import myconext.model.*;
 import myconext.repository.AuthenticationRequestRepository;
+import myconext.repository.ChangeEmailHashRepository;
 import myconext.repository.PasswordForgottenHashRepository;
 import myconext.repository.UserRepository;
 import org.apache.commons.logging.Log;
@@ -28,16 +26,19 @@ public class ResourceCleaner {
     private final AuthenticationRequestRepository authenticationRequestRepository;
     private final UserRepository userRepository;
     private final PasswordForgottenHashRepository passwordForgottenHashRepository;
+    private final ChangeEmailHashRepository changeEmailHashRepository;
     private final boolean cronJobResponsible;
 
     @Autowired
     public ResourceCleaner(AuthenticationRequestRepository authenticationRequestRepository,
                            UserRepository userRepository,
                            PasswordForgottenHashRepository passwordForgottenHashRepository,
+                           ChangeEmailHashRepository changeEmailHashRepository,
                            @Value("${cron.node-cron-job-responsible}") boolean cronJobResponsible) {
         this.authenticationRequestRepository = authenticationRequestRepository;
         this.userRepository = userRepository;
         this.passwordForgottenHashRepository = passwordForgottenHashRepository;
+        this.changeEmailHashRepository = changeEmailHashRepository;
         this.cronJobResponsible = cronJobResponsible;
     }
 
@@ -49,6 +50,7 @@ public class ResourceCleaner {
         Date now = new Date();
         info(SamlAuthenticationRequest.class, authenticationRequestRepository.deleteByExpiresInBeforeAndRememberMe(now, false));
         info(PasswordForgottenHash.class, passwordForgottenHashRepository.deleteByExpiresInBefore(now));
+        info(ChangeEmailHash.class, changeEmailHashRepository.deleteByExpiresInBefore(now));
 
         List<User> users = userRepository.findByLinkedAccounts_ExpiresAtBefore(now);
         users.forEach(user -> {

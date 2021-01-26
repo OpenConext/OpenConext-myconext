@@ -1,10 +1,7 @@
 package myconext.cron;
 
 import myconext.AbstractIntegrationTest;
-import myconext.model.LinkedAccount;
-import myconext.model.PasswordForgottenHash;
-import myconext.model.SamlAuthenticationRequest;
-import myconext.model.User;
+import myconext.model.*;
 import org.junit.Test;
 import org.springframework.test.util.ReflectionTestUtils;
 
@@ -19,7 +16,7 @@ public class ResourceCleanerTest extends AbstractIntegrationTest {
     @Test
     public void cleanNewUsersNotFinishedRegistration() {
         ResourceCleaner resourceCleaner =
-                new ResourceCleaner(authenticationRequestRepository, userRepository, passwordForgottenHashRepository, true);
+                new ResourceCleaner(authenticationRequestRepository, userRepository, passwordForgottenHashRepository, changeEmailHashRepository, true);
 
         User user = user("mp@example.org");
         long twoDaysAgo = (System.currentTimeMillis() / 1000L) - (2 * 24 * 60 * 60);
@@ -36,7 +33,7 @@ public class ResourceCleanerTest extends AbstractIntegrationTest {
     @Test
     public void cleanPassForgottenHash() {
         ResourceCleaner resourceCleaner =
-                new ResourceCleaner(authenticationRequestRepository, userRepository, passwordForgottenHashRepository, true);
+                new ResourceCleaner(authenticationRequestRepository, userRepository, passwordForgottenHashRepository, changeEmailHashRepository, true);
 
         PasswordForgottenHash passwordForgottenHash = new PasswordForgottenHash(user("qwert@exp.com"), "1234567890");
         Date twoHoursAgo = Date.from(LocalDateTime.now().minusHours(2).atZone(ZoneId.systemDefault()).toInstant());
@@ -52,6 +49,24 @@ public class ResourceCleanerTest extends AbstractIntegrationTest {
     }
 
     @Test
+    public void cleanChangeEmailHash() {
+        ResourceCleaner resourceCleaner =
+                new ResourceCleaner(authenticationRequestRepository, userRepository, passwordForgottenHashRepository, changeEmailHashRepository, true);
+
+        ChangeEmailHash changeEmailHash = new ChangeEmailHash(user("qwert@exp.com"), "new@email.com" ,"1234567890");
+        Date twoHoursAgo = Date.from(LocalDateTime.now().minusHours(2).atZone(ZoneId.systemDefault()).toInstant());
+
+        ReflectionTestUtils.setField(changeEmailHash, "expiresIn", twoHoursAgo);
+        changeEmailHashRepository.save(changeEmailHash);
+
+        long prev = changeEmailHashRepository.count();
+
+        resourceCleaner.clean();
+
+        assertEquals(prev - 1, changeEmailHashRepository.count());
+    }
+
+    @Test
     public void clean() {
         doTest(true, 0);
     }
@@ -62,7 +77,7 @@ public class ResourceCleanerTest extends AbstractIntegrationTest {
     }
 
     private void doTest(boolean cronJobResponsible, int deletedAuthenticationRequests) {
-        ResourceCleaner resourceCleaner = new ResourceCleaner(authenticationRequestRepository, userRepository, passwordForgottenHashRepository, cronJobResponsible);
+        ResourceCleaner resourceCleaner = new ResourceCleaner(authenticationRequestRepository, userRepository, passwordForgottenHashRepository, changeEmailHashRepository, cronJobResponsible);
         doExpireWithFindProperty(SamlAuthenticationRequest.class, "id", "1");
         expireUserLinkedAccount();
 

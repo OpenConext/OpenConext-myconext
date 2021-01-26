@@ -107,31 +107,12 @@
         width: 100%;
         display: flex;
         height: 100%;
-    }
-
-    @media (max-width: 820px) {
-        .left {
-            display: none;
-        }
-
-        .inner {
-            border-left: none;
-        }
-    }
-
-    .header {
-        display: flex;
-        align-items: center;
-        align-content: center;
-        color: var(--color-primary-green);
-    }
-
-    .header a {
-        margin-top: 8px;
+        flex-direction: column;
     }
 
     h2 {
-        margin-left: 25px;
+        margin-top: 25px;
+        color: var(--color-primary-green);
     }
 
     p.info {
@@ -182,92 +163,84 @@
 
 </style>
 <div class="service">
-    <div class="left"></div>
-    <div class="inner">
-        <div class="header">
-            <a href="/back" on:click|preventDefault|stopPropagation={cancel}>
-                {@html chevron_left}
-            </a>
-            <h2>{I18n.t("service.title")}</h2>
-        </div>
-        <p class="info">{I18n.t("service.info", formatCreateDate(service.createdAt))}</p>
+    <h2>{I18n.t("service.title")}</h2>
+    <p class="info">{I18n.t("service.info", formatCreateDate(service.createdAt))}</p>
 
+    <table cellspacing="0">
+        <thead></thead>
+        <tbody>
+        <tr class="name">
+            <td class="attr">{I18n.t("service.name")}</td>
+            <td class="value">
+                <div class="value-container">
+                    <span>{`${service.name}`}</span>
+                </div>
+            </td>
+        </tr>
+        <tr class="name">
+            <td class="attr">{I18n.t("service.eduId")}</td>
+            <td class="value">
+                <div class="value-container">
+                    <span>{`${service.eduId}`}</span>
+                </div>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+
+    <div class="options first">
+        <Button className="cancel" label={I18n.t("service.cancel")} onClick={cancel}/>
+
+        <Button label={I18n.t("service.delete")} className="cancel" onClick={deleteEduId(true)}/>
+    </div>
+
+
+    {#if token }
+        <p class="info">{I18n.t("service.tokenInfo", {name: service.name})}</p>
         <table cellspacing="0">
             <thead></thead>
             <tbody>
             <tr class="name">
-                <td class="attr">{I18n.t("service.name")}</td>
+                <td class="attr">{I18n.t("service.access")}</td>
                 <td class="value">
                     <div class="value-container">
-                        <span>{`${service.name}`}</span>
+                        <ul>
+                            {#each token.scopes.filter(sc => sc.descriptions[I18n.locale] && sc.name !== "openid") as scope}
+                                <li>{scope.descriptions[I18n.locale]}</li>
+                            {/each}
+                        </ul>
                     </div>
                 </td>
             </tr>
-            <tr class="name">
-                <td class="attr">{I18n.t("service.eduId")}</td>
-                <td class="value">
-                    <div class="value-container">
-                        <span>{`${service.eduId}`}</span>
-                    </div>
-                </td>
-            </tr>
-            </tbody>
-        </table>
-
-        <div class="options first">
-            <Button className="cancel" label={I18n.t("service.cancel")} onClick={cancel}/>
-
-            <Button label={I18n.t("service.delete")} className="cancel" onClick={deleteEduId(true)}/>
-        </div>
-
-
-        {#if token }
-            <p class="info">{I18n.t("service.tokenInfo", {name: service.name})}</p>
-            <table cellspacing="0">
-                <thead></thead>
-                <tbody>
+            {#if token.audiences && token.audiences.length > 0}
                 <tr class="name">
-                    <td class="attr">{I18n.t("service.access")}</td>
+                    <td class="attr">{I18n.t("service.accounts")}</td>
                     <td class="value">
                         <div class="value-container">
                             <ul>
-                                {#each token.scopes.filter(sc => sc.descriptions[I18n.locale] && sc.name !== "openid") as scope}
-                                    <li>{scope.descriptions[I18n.locale]}</li>
+                                {#each token.audiences as audience}
+                                    <li>{audience}</li>
                                 {/each}
                             </ul>
                         </div>
                     </td>
                 </tr>
-                {#if token.audiences && token.audiences.length > 0}
-                    <tr class="name">
-                        <td class="attr">{I18n.t("service.accounts")}</td>
-                        <td class="value">
-                            <div class="value-container">
-                                <ul>
-                                    {#each token.audiences as audience}
-                                        <li>{audience}</li>
-                                    {/each}
-                                </ul>
-                            </div>
-                        </td>
-                    </tr>
-                {/if}
-                </tbody>
-            </table>
+            {/if}
+            </tbody>
+        </table>
 
-            <div class="options">
-                <Button label={I18n.t("service.revoke")} className="cancel" onClick={revokeTokens(true)}/>
-            </div>
-        {/if}
-    </div>
-
+        <div class="options">
+            <Button label={I18n.t("service.revoke")} className="cancel" onClick={revokeTokens(true)}/>
+        </div>
+    {/if}
 </div>
+
 
 {#if showModal}
     <Modal submit={modalOptions.submit}
            cancel={() => showModal = false}
            warning={true}
            question={modalOptions.question}
-                   title={modalOptions.title}>
+           title={modalOptions.title}>
     </Modal>
 {/if}

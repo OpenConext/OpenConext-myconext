@@ -17,6 +17,11 @@
   },
   "forgot_password": {
     "en": "Reset your eduID password",
-    "nl": "Reset je  eduID wachtwoord"
+    "nl": "Reset je eduID wachtwoord"
+  },
+  "update_email": {
+    "en": "Update your eduID email",
+    "nl": "Verander je eduID email"
   }
+
 }

@@ -9,7 +9,7 @@
     const update = () => {
         if ($user.familyName && $user.givenName) {
             updateUser($user).then(() => {
-                navigate("/profile");
+                navigate("/personal");
                 flash.setValue(I18n.t("edit.updated"));
             });
         }
@@ -22,7 +22,7 @@
                     $user[key] = json[key];
                 }
             }
-            navigate("/profile");
+            navigate("/personal");
         });
     }
 
@@ -32,33 +32,14 @@
     .profile {
         width: 100%;
         display: flex;
+        flex-direction: column;
         height: 100%;
     }
 
-    @media (max-width: 820px) {
-        .left {
-            display: none;
-        }
-        .inner {
-            border-left: none;
-        }
-    }
-
-    .header {
-        display: flex;
-        align-items: center;
-        align-content: center;
+    h2 {
+        margin-top: 25px;
         color: var(--color-primary-green);
     }
-
-    .header a {
-        margin-top: 8px;
-    }
-
-    h2 {
-        margin-left: 25px;
-    }
-
     p.info {
         margin: 12px 0 32px 0;
     }
@@ -82,26 +63,16 @@
 
 </style>
 <div class="profile">
-    <div class="left"></div>
-    <div class="inner">
-        <div class="header">
-            <a href="/back" on:click|preventDefault|stopPropagation={cancel}>
-                {@html chevron_left}
-            </a>
-            <h2>{I18n.t("edit.title")}</h2>
-        </div>
-        <p class="info">{I18n.t("edit.info")}</p>
-        <label for="givenName">{I18n.t("edit.givenName")}</label>
-        <input id="givenName" type="text" bind:value={$user.givenName}/>
-        <label for="familyName">{I18n.t("edit.familyName")}</label>
-        <input id="familyName" type="text" bind:value={$user.familyName}/>
+    <h2>{I18n.t("edit.title")}</h2>
+    <p class="info">{I18n.t("edit.info")}</p>
+    <label for="givenName">{I18n.t("edit.givenName")}</label>
+    <input id="givenName" type="text" bind:value={$user.givenName}/>
+    <label for="familyName">{I18n.t("edit.familyName")}</label>
+    <input id="familyName" type="text" bind:value={$user.familyName}/>
 
-        <div class="options">
-            <Button className="cancel" label={I18n.t("edit.cancel")} onClick={cancel}/>
-
-            <Button label={I18n.t("edit.update")} onClick={update}
-                    disabled={!($user.familyName && $user.givenName)}/>
-        </div>
+    <div class="options">
+        <Button className="cancel" label={I18n.t("edit.cancel")} onClick={cancel}/>
+        <Button label={I18n.t("edit.update")} onClick={update}
+                disabled={!($user.familyName && $user.givenName)}/>
     </div>
-
 </div>

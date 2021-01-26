@@ -1,0 +1,16 @@
+Update email
+
+Follow the link below to change your eduID email.
+This link will expire in an hour and can only be used once.
+
+{{mySurfConextURL}} / update-email? h = {{hash}}
+
+Change your eduID email
+
+Hi {{name}},
+
+Someone has just requested a link to change your email for eduID to this email address. If this was you
+you can change your email by clicking the button above.
+If you do not wish to change your email, you can ignore this message.
+
+{{> footer_en.txt}}

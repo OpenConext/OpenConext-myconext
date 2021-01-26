@@ -11,6 +11,7 @@ import io.restassured.specification.RequestSpecification;
 import myconext.api.MagicLinkResponse;
 import myconext.model.*;
 import myconext.repository.AuthenticationRequestRepository;
+import myconext.repository.ChangeEmailHashRepository;
 import myconext.repository.PasswordForgottenHashRepository;
 import myconext.repository.UserRepository;
 import org.apache.commons.codec.binary.Base64;
@@ -88,6 +89,9 @@ public abstract class AbstractIntegrationTest {
 
     @Autowired
     protected PasswordForgottenHashRepository passwordForgottenHashRepository;
+
+    @Autowired
+    protected ChangeEmailHashRepository changeEmailHashRepository;
 
     private final SimpleDateFormat issueFormat = new SimpleDateFormat("yyyy-MM-dd'T'H:mm:ss");
 

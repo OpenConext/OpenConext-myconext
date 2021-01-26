@@ -15,9 +15,13 @@
 
     import Start from "./Start.svelte";
     import PersonalInfo from "./PersonalInfo.svelte";
+    import EditName from "./EditName.svelte";
+    import EditEmail from "./EditEmail.svelte";
     import Security from "./Security.svelte";
     import Institutions from "./Institutions.svelte";
-    import Services from "./Services.svelte"
+    import Institution from "./Institution.svelte";
+    import Services from "./Services.svelte";
+    import Service from "./Service.svelte";
     import Account from "./Account.svelte";
     import Migration from "./Migration.svelte";
     import Flash from "../components/Flash.svelte";
@@ -27,9 +31,13 @@
     const tabs = [
         {name: "home", component: Start, icon: home_icon},
         {name: "personal", component: PersonalInfo, icon: personalInfoSvg},
+        {name: "edit-name", alias: "personal", component: EditName, ignore: true},
+        {name: "edit-email", alias: "personal", component: EditEmail, ignore: true},
         {name: "security", component: Security, icon: security},
         {name: "institutions", component: Institutions, icon: connections, ignore: !$config.featureConnections},
+        {name: "institution", alias: "institutions", component: Institution, ignore: true},
         {name: "services", component: Services, icon: services},
+        {name: "service", alias: "services", component: Service, ignore: true},
         {name: "account", component: Account, icon: data_activity},
         {name: "migration", component: Migration, icon: data_activity, ignore: true}
     ];
@@ -49,7 +57,7 @@
 
 </script>
 
-<style>
+<style lang="scss">
     .home {
         height: 100%;
         display: flex;
@@ -62,6 +70,7 @@
         min-height: 100%;
         border-bottom-left-radius: 8px;
         padding-bottom: 400px;
+        border-right: 2px solid var(--color-primary-grey);
     }
 
     nav ul {
@@ -122,12 +131,23 @@
 
     nav ul li {
         cursor: pointer;
-    }
+        position: relative;
 
-    nav ul li.active {
-        border-right: 7px solid var(--color-primary-green);
-        background-color: white;
-        cursor: default;
+        &.active {
+            background-color: white;
+            cursor: default;
+
+            &:after {
+                content: "";
+                height: 100%;
+                border-right: 7px solid var(--color-primary-green);
+                display: block;
+                position: absolute;
+                right: -5px;
+            }
+
+        }
+
     }
 
     nav ul li.active a {
@@ -182,7 +202,7 @@
         <ul class:hide={!displayMenu}>
             {#each tabs as tab}
                 {#if !tab.ignore}
-                    <li class:active={tab.name === currentTab.name}
+                    <li class:active={tab.name === currentTab.name || tab.name === currentTab.alias}
                         on:click|preventDefault|stopPropagation={switchTab(tab.name)}>
                         {@html tab.icon}
                         <a href="/{tab.name}"

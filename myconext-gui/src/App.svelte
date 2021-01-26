@@ -92,12 +92,14 @@
 
     :global(:root) {
         --color-primary-blue: #0062b0;
+        --color-secondary-blue: #b3e5ff;
         --color-primary-green: #008738;
         --color-primary-black: #202020;
         --color-primary-red: #ff0000;
         --color-warning-red: #a70000;
         --color-primary-grey: #c4cdd5;
-        --color-secondary-grey: #737373;
+        --color-secondary-grey: #707070;
+        --color-tertiare-grey: #989898;
         --color-background: #f9f9f9;
         --width-app: 1024px;
     }
@@ -251,9 +253,18 @@
                         <Home bookmark="security"/>
                     </Route>
                     <Route path="/landing" component={Landing}/>
-                    <Route path="/edit" component={EditName}/>
-                    <Route path="/institution" component={Institution}/>
-                    <Route path="/service" component={Service}/>
+                    <Route path="/edit-name">
+                        <Home bookmark="edit-name"/>
+                    </Route>
+                    <Route path="/edit-email">
+                        <Home bookmark="edit-email"/>
+                    </Route>
+                    <Route path="/institution">
+                        <Home bookmark="institution"/>
+                    </Route>
+                    <Route path="/service">
+                        <Home bookmark="service"/>
+                    </Route>
                     <Route path="/credential" component={Credential}/>
                     <Route path="/migration">
                         <Home bookmark="migration"/>

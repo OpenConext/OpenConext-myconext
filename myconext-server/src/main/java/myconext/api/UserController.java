@@ -15,10 +15,7 @@ import myconext.mail.MailBox;
 import myconext.manage.ServiceNameResolver;
 import myconext.model.*;
 import myconext.oidcng.OpenIDConnect;
-import myconext.repository.AuthenticationRequestRepository;
-import myconext.repository.ChallengeRepository;
-import myconext.repository.PasswordForgottenHashRepository;
-import myconext.repository.UserRepository;
+import myconext.repository.*;
 import myconext.security.EmailDomainGuard;
 import myconext.security.EmailGuessingPrevention;
 import myconext.webauthn.UserCredentialRepository;
@@ -73,7 +70,7 @@ public class UserController {
     private final UserCredentialRepository userCredentialRepository;
     private final ChallengeRepository challengeRepository;
     private final PasswordForgottenHashRepository passwordForgottenHashRepository;
-
+    private final ChangeEmailHashRepository changeEmailHashRepository;
 
     private final static SecureRandom random = new SecureRandom();
     private final PasswordEncoder passwordEncoder = new BCryptPasswordEncoder(-1, random);
@@ -87,6 +84,7 @@ public class UserController {
                           UserCredentialRepository userCredentialRepository,
                           ChallengeRepository challengeRepository,
                           PasswordForgottenHashRepository passwordForgottenHashRepository,
+                          ChangeEmailHashRepository changeEmailHashRepository,
                           AuthenticationRequestRepository authenticationRequestRepository,
                           MailBox mailBox,
                           ServiceNameResolver serviceNameResolver,
@@ -105,6 +103,7 @@ public class UserController {
         this.userCredentialRepository = userCredentialRepository;
         this.challengeRepository = challengeRepository;
         this.passwordForgottenHashRepository = passwordForgottenHashRepository;
+        this.changeEmailHashRepository = changeEmailHashRepository;
         this.authenticationRequestRepository = authenticationRequestRepository;
         this.mailBox = mailBox;
         this.serviceNameResolver = serviceNameResolver;
@@ -249,6 +248,20 @@ public class UserController {
         return returnUserResponse(user);
     }
 
+    @PutMapping("/sp/email")
+    public ResponseEntity updateEmail(Authentication authentication, @RequestBody User deltaUser) {
+        User user = userFromAuthentication(authentication);
+        changeEmailHashRepository.deleteByUserId(user.getId());
+
+        String hashValue = hash();
+        changeEmailHashRepository.save(new ChangeEmailHash(user, deltaUser.getEmail(), hashValue));
+
+        logWithContext(user, "update", "update-email", LOG, "Send update email mail");
+
+        mailBox.sendUpdateEmail(user, deltaUser.getEmail(), hashValue);
+        return returnUserResponse(user);
+    }
+
     private ResponseEntity<UserResponse> returnUserResponse(User user) {
         return ResponseEntity.status(201).body(new UserResponse(user, convertEduIdPerServiceProvider(user), false));
     }
@@ -297,7 +310,7 @@ public class UserController {
         String hashValue = hash();
         passwordForgottenHashRepository.save(new PasswordForgottenHash(user, hashValue));
 
-        logWithContext(user, "delete", "rememberme", LOG, "Send password forgotten mail");
+        logWithContext(user, "update", "forgot-password", LOG, "Send password forgotten mail");
 
         mailBox.sendForgotPassword(user, hashValue);
         return returnUserResponse(user);

@@ -6,8 +6,17 @@
     import Modal from "../components/Modal.svelte";
     import Button from "../components/Button.svelte";
     import {startLinkAccountFlow} from "../api";
+    import {onMount} from "svelte";
 
     let showModal = false;
+
+    onMount(() => {
+        const back = window.localStorage.getItem("back");
+        if (back) {
+            window.localStorage.removeItem("back");
+            navigate(`/${back}`);
+        }
+    });
 
     const institutionDetails = linkedAccount => () =>
             navigate(`/institution?name=${encodeURIComponent(linkedAccount.schacHomeOrganization)}`);

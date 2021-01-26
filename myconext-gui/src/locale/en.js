@@ -31,7 +31,6 @@ I18n.translations.en = {
         info: "When you use eduID to logon to other websites, some of your personal information needs to be shared. Some services require that your personal information is validated by a third party.",
         basic: "Basic information",
         email: "Email address",
-        schacHomeOrganization: "Institution ID",
         name: "Name",
         validated: "Validated information",
         firstAndLastName: "First and last name",
@@ -42,7 +41,11 @@ I18n.translations.en = {
         prove: "Prove",
         trusted: "Trusted party link",
         trustedInfo: "You eduID account is not yet linked to a trusted party",
-        link: "Link"
+        link: "Link",
+        institution: "Institution",
+        affiliations: "Affiliation(s)",
+        expires: "Connection expires",
+        expiresValue: "{{date}}",
     },
     edit: {
         title: "Name",
@@ -52,7 +55,16 @@ I18n.translations.en = {
         update: "Update",
         cancel: "Cancel",
         updated: "Your profile has been updated",
-        back: "/profile"
+        back: "/personal"
+    },
+    email: {
+        title: "Email",
+        info: "Please enter your new email. A verification mail will be send to this address.",
+        email: "Your new email",
+        update: "Request",
+        cancel: "Cancel",
+        updated: "A mail has been send to {{email}}",
+        back: "/personal"
     },
     security: {
         title: "Security settings",
