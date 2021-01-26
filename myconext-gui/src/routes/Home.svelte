@@ -6,13 +6,15 @@
     import connections from "../icons/connections.svg";
     import teams from "../icons/teams.svg";
     import services from "../icons/streamline-icon-cloud-storage-drive.svg";
-    import personal_info from "../icons/personal_info.svg";
+    import home_icon from "../icons/redesign/home.svg";
+    import personalInfoSvg from "../icons/redesign/presentation-analytics.svg";
     import chevron_left from "../icons/chevron-left.svg";
     import chevron_right from "../icons/chevron-right.svg";
     import {navigate} from "svelte-routing";
     import {onMount} from "svelte";
 
-    import Profile from "./Profile.svelte";
+    import Start from "./Start.svelte";
+    import PersonalInfo from "./PersonalInfo.svelte";
     import Security from "./Security.svelte";
     import Institutions from "./Institutions.svelte";
     import Services from "./Services.svelte"
@@ -20,10 +22,11 @@
     import Migration from "./Migration.svelte";
     import Flash from "../components/Flash.svelte";
 
-    export let bookmark = "profile";
+    export let bookmark = "home";
 
     const tabs = [
-        {name: "profile", component: Profile, icon: personal_info},
+        {name: "home", component: Start, icon: home_icon},
+        {name: "personal", component: PersonalInfo, icon: personalInfoSvg},
         {name: "security", component: Security, icon: security},
         {name: "institutions", component: Institutions, icon: connections, ignore: !$config.featureConnections},
         {name: "services", component: Services, icon: services},
@@ -141,7 +144,12 @@
 
     :global(nav ul li svg) {
         width: 32px;
-        height: 32px;
+        height: auto;
+    }
+
+    :global(nav ul li svg.personal-info) {
+        width: 26px;
+        margin-right: 6px;
     }
 
     :global(nav ul li svg.services) {
@@ -152,6 +160,7 @@
 
     :global(nav ul li.active svg) {
         fill: var(--color-primary-green);
+        color: var(--color-primary-green);
     }
 
     div.component-container {

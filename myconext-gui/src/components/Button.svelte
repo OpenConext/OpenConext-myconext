@@ -8,6 +8,7 @@
     export let onClick;
     export let full = false;
     export let large = false;
+    export let small = false;
 
     const handleLinkClick = e => e.key === " " && e.target.click();
 
@@ -68,11 +69,7 @@
         background-color: #efefef;
     }
 
-    .button.full{
-        width: 260px;
-    }
-
-    .button.large {
+    .button.full, .button.large{
         width: 260px;
     }
 
@@ -94,17 +91,9 @@
     }
 
     .button.small {
-        width: 140px;
+        width: 90px;
+        padding: 10px;
     }
-
-    @media (max-width: 580px) {
-        .button.small {
-            width: 90px;
-            padding: 10px;
-        }
-
-    }
-
 
 </style>
 
@@ -113,6 +102,7 @@
    class:warning={warning}
    href="{href}"
    class:full={full}
+   class:small={small}
    class:large={large}
    class:disabled={disabled}
    on:click|preventDefault|stopPropagation={() => !disabled && onClick()}

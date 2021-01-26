@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="personal-info">
+    <defs>
+        <style>.personal-info-class{fill:none;stroke:currentColor;stroke-linecap:round;stroke-linejoin:round;stroke-width:1.5px;}</style>
+    </defs>
+    <line class="personal-info-class" x1="16.5" y1="0.75" x2="16.5" y2="3"/>
+    <path class="personal-info-class" d="M12,3H22.1A1.157,1.157,0,0,1,23.25,4.159V14.591A1.157,1.157,0,0,1,22.1,15.75H15"/>
+    <path class="personal-info-class" d="M13.64,9.725,15.467,7.9a.578.578,0,0,1,.816,0L17.7,9.319a.578.578,0,0,0,.816,0l2.437-2.437"/>
+    <line class="personal-info-class" x1="16.5" y1="15.75" x2="16.5" y2="21"/>
+    <line class="personal-info-class" x1="16.5" y1="21" x2="13.5" y2="23.25"/>
+    <line class="personal-info-class" x1="16.5" y1="21" x2="19.191" y2="23.25"/>
+    <circle class="personal-info-class" cx="6" cy="3.75" r="3"/>
+    <path class="personal-info-class" d="M11.25,13.5a5.25,5.25,0,0,0-10.5,0v2.25H3l.75,7.5h4.5L9,15.75h2.25Z"/>
+</svg>

@@ -234,8 +234,9 @@
             <div class="content">
                 <Router url="{url}">
                     <Route path="/" component={Home}/>
-                    <Route path="/profile">
-                        <Home bookmark="profile"/>
+                    <Route path="/home" component={Home}/>
+                    <Route path="/personal">
+                        <Home bookmark="personal"/>
                     </Route>
                     <Route path="/account">
                         <Home bookmark="account"/>
