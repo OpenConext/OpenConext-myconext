@@ -2,7 +2,7 @@
   import {Route, Router} from "svelte-routing";
   import Cookies from "js-cookie";
   import Login from "./routes/Login.svelte";
-  import SessionLost from "./routes/SessionLost.svelte";
+  import Success from "./routes/Success.svelte";
   import MagicLink from "./routes/MagicLink.svelte";
   import Confirm from "./routes/Confirm.svelte";
   import ConfirmStepup from "./routes/ConfirmStepup.svelte";
@@ -121,7 +121,7 @@
                 <Route path="/confirm" component={Confirm}/>
                 <Route path="/confirm-stepup" component={ConfirmStepup}/>
                 <Route path="/migration" component={Migration}/>
-                <Route path="/session" component={SessionLost}/>
+                <Route path="/success" component={Success}/>
                 <Route path="/expired" component={LinkExpired}/>
                 <Route path="/webauthn" component={WebAuthn}/>
                 <Route component={NotFound}/>

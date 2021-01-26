@@ -31,6 +31,7 @@ I18n.translations.en = {
         info: "When you use eduID to logon to other websites, some of your personal information needs to be shared. Some services require that your personal information is validated by a third party.",
         basic: "Basic information",
         email: "Email address",
+        schacHomeOrganization: "Institution ID",
         name: "Name",
         validated: "Validated information",
         firstAndLastName: "First and last name",
@@ -64,7 +65,7 @@ I18n.translations.en = {
         useMagicLink: "Send magic link to",
         rememberMe: "Stay logged in",
         rememberMetrue: "Yes",
-        rememberMefalse: "No",
+        rememberMefalse: "No"
     },
     home: {
         home: "Home",
@@ -78,11 +79,14 @@ I18n.translations.en = {
         settings: "Settings",
         links: {
             teams: "Teams",
-            teamsHref: "https://teams.{{baseDomain}}",
+            teamsHref: "https://teams.{{baseDomain}}"
         }
     },
     account: {
         title: "Your eduID account",
+        personalTitle: "Your personal data",
+        personalInfo: "Click the button below to download all your personal data.",
+        download: "Download",
         deleteTitle: "Deleting your eduID account",
         info1: "You can delete your eduID whenever you want.",
         info2: "Proceed with care, as you will lose the unique eduID number currently associated with your email address. When you re-register for a new eduID with that same email address, you will receive a new eduID number. Some services use this unique number to identify you, so for those services you will be treated as a new user.",
@@ -122,7 +126,7 @@ I18n.translations.en = {
         info: "Each service you accessed through eduID receives certain personal data (attributes) from your eduID account. For example, your name, your email address or a pseudonym which the service can use to uniquely identify you.",
         explanation: "The overview below shows you all services you have logged in to using eduID.",
         noServices: "You did not yet use eduID to login to any service.",
-        name: "Name",
+        name: "Name"
     },
     service: {
         title: "Service",
@@ -140,7 +144,7 @@ I18n.translations.en = {
         deleteService: "Delete service",
         deleteServiceConfirmation: "Are you sure you want to delete your unique pseudonymized eduID for {{name}} and revoke access to your linked accounts?<br/><br/>This service might not recognize you the next time you login and all your personal data with this Service could be deleted.",
         deleteTokenConfirmation: "Are you sure you want to revoke the API access token for {{name}}?",
-        deleteToken: "Revoke token",
+        deleteToken: "Revoke token"
     },
     credential: {
         title: "Public Key Credential",

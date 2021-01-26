@@ -63,13 +63,6 @@ public class MailBox {
         sendMail("account_confirmation", title, variables, preferredLanguage(user), user.getEmail());
     }
 
-    public void sendAccountMigration(User user) {
-        String title = this.getTitle("account_migration", user);
-        Map<String, Object> variables = variables(user, title);
-        variables.put("mySurfConextURL", mySURFconextURL);
-        sendMail("account_migration", title, variables, preferredLanguage(user), user.getEmail());
-    }
-
     public void sendForgotPassword(User user, String hash) {
         String title = this.getTitle("forgot_password", user);
         Map<String, Object> variables = variables(user, title);

@@ -55,6 +55,8 @@ public class SamlAuthenticationRequest {
 
     private boolean testInstance;
 
+    private LoginStatus loginStatus = LoginStatus.NOT_LOGGED_IN;
+
     public SamlAuthenticationRequest(boolean testInstance) {
         this.id = UUID.randomUUID().toString();
         this.testInstance = testInstance;
@@ -109,5 +111,9 @@ public class SamlAuthenticationRequest {
 
     public void setSteppedUp(StepUpStatus steppedUp) {
         this.steppedUp = steppedUp;
+    }
+
+    public void setLoginStatus(LoginStatus loginStatus) {
+        this.loginStatus = loginStatus;
     }
 }

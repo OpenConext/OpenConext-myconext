@@ -1,3 +1,6 @@
+<script>
+    export let relative = false;
+</script>
 <style>
     .lds-roller {
         display: inline-block;
@@ -7,6 +10,10 @@
         top: 118px;
         left: 50%;
         margin-left: -40px;
+    }
+
+    .lds-roller.relative {
+        position: static;
     }
 
     .lds-roller div {
@@ -107,7 +114,7 @@
     }
 
 </style>
-<div class="lds-roller">
+<div class="lds-roller" class:relative={relative}>
     <div></div>
     <div></div>
     <div></div>

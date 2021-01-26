@@ -59,9 +59,17 @@ I18n.translations.en = {
     magicLink: {
         header: "Check your email!",
         info: "To sign in, click the link in the email we sent to <strong>{{email}}</strong>.",
+        awaiting: "Waiting for you to click the link...",
         openGMail: "Open Gmail.com",
         openOutlook: "Open Outlook.com",
-        spam: "Can't find it? Check your spam folder."
+        spam: "Can't find it? Check your spam folder.",
+        loggedIn: "Login succeeded!",
+        loggedInInfo: "You can close this tab / window.",
+        timeOutReached: "Timeout!",
+        timeOutReachedInfo: "Your link has expired. Please go back to the service you where heading to and re-try again.",
+        resend: "Still can't find it?",
+        resendLink: " Send me the mail again.",
+        mailResend: "Check your inbox again. We have sent the mail with the magic link again.",
     },
     confirm: {
         header: "Success!",
@@ -83,9 +91,9 @@ I18n.translations.en = {
         help: "Help",
         poweredBy: "Powered by"
     },
-    session: {
-        title: "Your session was lost.",
-        info: "You must open the magic link from the email in the same browser session as where you requested the magic link. <br/><br/>  Please go back to the service you were heading to and request a new magic link."
+    success: {
+        title: "Login succeeded!",
+        info: "Please go back to the screen where you have requested the magic link.<br/><br/>You can close this tab / window."
     },
     expired: {
         title: "Expired magic link",

@@ -9,6 +9,7 @@
     export let full = false;
     export let large = false;
     export let small = false;
+    export let download = false;
 
     const handleLinkClick = e => e.key === " " && e.target.click();
 
@@ -31,6 +32,7 @@
         .button {
             width: 176px;
         }
+
         .button.large {
             width: 260px;
         }
@@ -69,7 +71,7 @@
         background-color: #efefef;
     }
 
-    .button.full, .button.large{
+    .button.full, .button.large {
         width: 260px;
     }
 
@@ -97,15 +99,27 @@
 
 </style>
 
-<a class="{`button ${className}`}"
-   class:active={active}
-   class:warning={warning}
-   href="{href}"
-   class:full={full}
-   class:small={small}
-   class:large={large}
-   class:disabled={disabled}
-   on:click|preventDefault|stopPropagation={() => !disabled && onClick()}
-   on:keydown={handleLinkClick}>
-    {label}
-</a>
+{#if download}
+    <a class="{`button ${className}`}"
+       href="{href}"
+       download={download}
+       class:full={full}
+       class:large={large}
+       class:disabled={disabled}>
+        {label}
+    </a>
+{:else}
+    <a class="{`button ${className}`}"
+       class:active={active}
+       class:warning={warning}
+       href="{href}"
+       class:full={full}
+       class:small={small}
+       class:large={large}
+       class:disabled={disabled}
+       on:click|preventDefault|stopPropagation={() => !disabled && onClick()}
+       on:keydown={handleLinkClick}>
+        {label}
+    </a>
+{/if}
+

@@ -71,7 +71,7 @@
     }
 
     .options {
-        margin: 30px 0;
+        margin: 5px 0 40px 0;
     }
 
     :global(a svg.menu-link) {
@@ -86,9 +86,14 @@
     <div class="inner-container">
         <h2>{I18n.t("account.title")}</h2>
         <p class="info">{I18n.t("format.creationDate", formatCreateDate($user.created, true))}</p>
+        <p class="info2">{I18n.t("account.personalTitle")}</p>
+        <p class="divider">{I18n.t("account.personalInfo")}</p>
+        <div class="options">
+            <Button href="/myconext/api/sp/personal" className="full cancel" download="personal" label={I18n.t("account.download")}/>
+        </div>
         <p class="info2">{I18n.t("account.deleteTitle")}</p>
-        {#each [1,2,3,4] as i}
-            <p class="divider">{I18n.t("account.info"+i)}</p>
+        {#each [1, 2, 3, 4] as i}
+            <p class="divider">{I18n.t("account.info" + i)}</p>
         {/each}
         <div class="options">
             <Button href="/delete" label={I18n.t("account.deleteAccount")}
@@ -103,5 +108,5 @@
            cancel={() => showModal = false}
            warning={true}
            question={I18n.t("account.deleteAccountConfirmation")}
-                   title={I18n.t("account.deleteAccount")}></Modal>
+           title={I18n.t("account.deleteAccount")}></Modal>
 {/if}
