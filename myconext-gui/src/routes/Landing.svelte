@@ -41,7 +41,6 @@
 
     p {
         color: var(--color-primary-black);
-        font-size: 18px;
     }
 
 </style>

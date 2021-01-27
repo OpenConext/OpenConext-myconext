@@ -46,6 +46,7 @@ I18n.translations.en = {
         affiliations: "Affiliation(s)",
         expires: "Connection expires",
         expiresValue: "{{date}}",
+        verifiedAt: "Verified by <strong>{{name}}</strong> on {{date}}"
     },
     edit: {
         title: "Name",
@@ -64,7 +65,10 @@ I18n.translations.en = {
         update: "Request",
         cancel: "Cancel",
         updated: "A mail has been send to {{email}}",
-        back: "/personal"
+        confirmed: "Your email has been changed to {{email}}",
+        back: "/personal",
+        emailEquality: "Your new email equals your current email",
+        duplicateEmail: "This email is already in use."
     },
     security: {
         title: "Security settings",
@@ -82,6 +86,7 @@ I18n.translations.en = {
     home: {
         home: "Home",
         welcome: "Welcome {{name}}",
+        "data-activity": "Data & activity",
         personal: "Personal info",
         security: "Security",
         account: "Account",
@@ -107,11 +112,12 @@ I18n.translations.en = {
         deleteAccount: "Delete my account",
         deleteAccountConfirmation: "Are you sure you want to delete your eduID account?"
     },
-    institutions: {
-        title: "Connected institutions",
-        explanation: "By connecting your educational institution to your eduID, you will be able to prove through eduID that you study or work at one of these institutions.",
-        noInstitutions: "You currently have not connected any educational institutions to your eduID. Click the button below to connect an institution.",
-        name: "Short name",
+    dataActivity: {
+        title: "Data & Activity",
+        info: "Each service you accessed through eduID receives certain personal data (attributes) from your eduID account. For example, your name, your email address or a pseudonym which the service can use to uniquely identify you.",
+        explanation: "Apps you logged in to using eduID.",
+        noServices: "You did not yet use eduID to login to any service.",
+        name: "Name",
         add: "Connect new institution",
         addInstitutionConfirmation: "When you proceed you will be asked to login at the institution you want to connect to your eduID. First, select which institution you want to connect; then, login at that institution.<br/><br/>After a successful login you will come back here.",
         proceed: "Proceed",
@@ -132,13 +138,6 @@ I18n.translations.en = {
         back: "/institutions",
         deleteInstitution: "Delete institution",
         deleteInstitutionConfirmation: "Are you sure you want to delete the connection with this institution?<br/><br/>Some services require that you your eduID is connected to an institution. You might be prompted to connect an institution if you access one of those services."
-    },
-    services: {
-        title: "Used services",
-        info: "Each service you accessed through eduID receives certain personal data (attributes) from your eduID account. For example, your name, your email address or a pseudonym which the service can use to uniquely identify you.",
-        explanation: "The overview below shows you all services you have logged in to using eduID.",
-        noServices: "You did not yet use eduID to login to any service.",
-        name: "Name"
     },
     service: {
         title: "Service",

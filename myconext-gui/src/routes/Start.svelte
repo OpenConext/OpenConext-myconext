@@ -15,6 +15,7 @@
     height: 100%;
     display: flex;
     flex-direction: column;
+    margin-bottom: 80px;
   }
 
   h2 {

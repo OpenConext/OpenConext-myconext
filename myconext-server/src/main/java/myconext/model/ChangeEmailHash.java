@@ -29,6 +29,7 @@ public class ChangeEmailHash implements Serializable {
     public ChangeEmailHash(User user, String newEmail, String hash) {
         this.userId = user.getId();
         this.hash = hash;
+        this.newEmail = newEmail;
         this.expiresIn = Date.from(LocalDateTime.now().plusHours(1).atZone(ZoneId.systemDefault()).toInstant());
     }
 }

@@ -1,54 +1,43 @@
 <script>
-    import {user, flash} from "../stores/user";
+    import {user} from "../stores/user";
     import I18n from "i18n-js";
     import {navigate} from "svelte-routing";
     import writeSvg from "../icons/redesign/pencil-write.svg";
     import verifiedSvg from "../icons/redesign/shield-full.svg";
-    import nonVerifiedSvg from "../icons/redesign/shield-empty.svg";
     import {onMount} from "svelte";
-    import Button from "../components/Button.svelte";
-    import {startLinkAccountFlow} from "../api";
-    import Modal from "../components/Modal.svelte";
-    import chevronDownSvg from "../icons/chevron-down.svg";
-    import chevronUpSvg from "../icons/chevron-up.svg";
-    import {formatCreateDate} from "../format/date";
+    import VerifiedUserRow from "../components/VerifiedUserRow.svelte";
 
     let nameVerified = false;
     let studentVerified = false;
     let eduIDLinked = false;
-    let linkedAccount = undefined;
-    let verifiedStudent = undefined;
-    let showModal = false;
+
+    let nameVerifiedAccount = {};
+    let studentVerifiedAccount = {};
+    let eduIDLinkedAccount = {};
+
     let showNameDetails = false;
     let showStudentDetails = false;
-    let showTrustedDetails = false;
+    let showEduIDDetails = false;
 
-    onMount(() => {
-        const back = window.localStorage.getItem("back");
-        if (back) {
-            window.localStorage.removeItem("back");
-            navigate(`/${back}`);
-        }
-        nameVerified = $user.linkedAccounts.length > 0;
-        studentVerified = $user.linkedAccounts.length > 0 &&
-            $user.linkedAccounts.find(account => (account.eduPersonAffiliations || []).some(aff => aff === "student"));
+    const refresh = () => {
+        showNameDetails = false;
+        showStudentDetails = false;
+        showEduIDDetails = false;
+
+        const sortedAccounts = ($user.linkedAccounts || []).sort((a, b) => b.createdAt = a.createdAt);
+
+        studentVerifiedAccount = sortedAccounts.find(account => (account.eduPersonAffiliations || []).some(aff => aff === "student")) || {};
+        studentVerified = studentVerifiedAccount != undefined && Object.keys(studentVerifiedAccount).length > 0;
+
         eduIDLinked = $user.linkedAccounts.length > 0;
-        if (nameVerified) {
-            linkedAccount = $user.linkedAccounts.sort((a, b) => b.createdAt = a.createdAt)[0];
-            verifiedStudent = $user.linkedAccounts.map(account => account.eduPersonAffiliations).flat().join(", ");
-        }
-    });
+        eduIDLinkedAccount = eduIDLinked ? sortedAccounts[0] : {};
 
-    const addInstitution = showConfirmation => () => {
-        if (showConfirmation) {
-            showModal = true
-        } else {
-            startLinkAccountFlow("personal").then(json => {
-                window.location.href = json.url;
-            });
-        }
+        nameVerifiedAccount = sortedAccounts.find(account => account.givenName && account.familyName) || {};
+        nameVerified = nameVerifiedAccount !== undefined && Object.keys(nameVerifiedAccount).length > 0;
+
     }
 
+    refresh();
 
 </script>
 
@@ -83,57 +72,39 @@
     }
 
     p {
-        font-size: 18px;
         line-height: 1.33;
         letter-spacing: normal;
     }
 
     table {
         width: 100%;
-    }
 
-    tr.full {
-        background-color: var(--color-background);
-    }
-
-    tr.name {
-        cursor: pointer;
-    }
-
-    td {
-        border-bottom: 1px solid var(--color-primary-grey);
-    }
-
-    td.attr {
-        width: 30%;
-        padding: 20px;
-        font-weight: normal;
-    }
-
-    td.value {
-        width: 70%;
-        font-weight: bold;
-        padding-left: 20px;
-
-        &.details {
-            padding-left: 0;
+        tr.name {
+            cursor: pointer;
         }
 
-        table {
-            width: 100%;
-            background-color: var(--color-background);
+        td {
+            border-bottom: 1px solid var(--color-primary-grey);
+        }
 
-            tr:last-child {
-                td {
-                    border-bottom: none;
-                }
-            }
+        td.attr {
+            width: 30%;
+            padding: 20px;
+            font-weight: normal;
+        }
 
-            td {
-                padding: 10px;
+        td.value {
+            width: 70%;
+            font-weight: bold;
+            padding-left: 20px;
+
+            a.right-link {
+                margin-left: auto;
             }
         }
+
     }
+
 
     :global(td.verified svg) {
         width: 22px;
@@ -154,19 +125,6 @@
 
     div.value-container span {
         word-break: break-word;
-
-        &.info {
-            max-width: 270px;
-            font-weight: normal;
-        }
-    }
-
-    div.value-container a.right-link, div.value-container a.toggle-link {
-        margin-left: auto;
-    }
-
-    :global(div.value-container a.button) {
-        margin-left: auto;
     }
 
     :global(a.right-link svg) {
@@ -218,87 +176,35 @@
         <table cellspacing="0">
             <thead></thead>
             <tbody>
-            <tr class:full={showNameDetails}>
-                <td class="attr">{I18n.t("profile.firstAndLastName")}</td>
-                <td class="verified">{@html nameVerified ? verifiedSvg : nonVerifiedSvg}</td>
-                <td class="value">
-                    <div class="value-container">
-                        {#if nameVerified}
-                            <span>{`${linkedAccount.givenName} ${linkedAccount.familyName}`}</span>
-                            <a class="toggle-link" href="/"
-                               on:click|preventDefault|stopPropagation={() => showNameDetails = !showNameDetails}>
-                                {@html showNameDetails ? chevronUpSvg : chevronDownSvg}
-                            </a>
-                        {:else}
-                            <span class="info">{I18n.t("profile.firstAndLastNameInfo")}</span>
-                            <Button href="/verify" label={I18n.t("profile.verify")} onClick={addInstitution(true)}
-                                    small={true}/>
-                        {/if}
-
-                    </div>
-                </td>
-            </tr>
-            {#if showNameDetails}
-                <tr class="full">
-                    <td class="attr"></td>
-                    <td class="verified"></td>
-                    <td class="value details">
-                        <table class="inner-details">
-                            <thead></thead>
-                            <tbody>
-                            <tr>
-                                <td class="attr">{I18n.t("profile.institution")}</td>
-                                <td class="value">{linkedAccount.schacHomeOrganization}</td>
-                            </tr>
-                            <tr>
-                                <td class="attr">{I18n.t("profile.affiliations")}</td>
-                                <td class="value">{linkedAccount.eduPersonAffiliations.join(", ")}</td>
-                            </tr>
-                            <tr>
-                                <td class="attr">{I18n.t("profile.expires")}</td>
-                                <td class="value">
-                                    {I18n.t("profile.expiresValue", formatCreateDate(linkedAccount.expiresAt))}
-                                </td>
-                            </tr>
-                            </tbody>
-                        </table>
-
-                    </td>
-                </tr>
-            {/if}
-            <tr>
-                <td class="attr">{I18n.t("profile.student")}</td>
-                <td class="verified">{@html studentVerified ? verifiedSvg : nonVerifiedSvg}</td>
-                <td class="value">
-                    <div class="value-container" class:full={showStudentDetails}>
-                        {#if showStudentDetails}
-                            <span>{verifiedStudent}</span>
-                            <a class="toggle-link" href="/"
-                               on:click|preventDefault|stopPropagation={() => showStudentDetails = !showStudentDetails}>
-                                {@html chevronDownSvg}
-                            </a>
-                            {#if showStudentDetails}
-
-                            {/if}
-                        {:else}
-                            <span class="info">{I18n.t("profile.studentInfo")}</span>
-                            <Button href="/prove" label={I18n.t("profile.prove")} onClick={addInstitution(true)}
-                                    small={true}/>
-                        {/if}
-
-                    </div>
-                </td>
-            </tr>
+            <VerifiedUserRow
+                    bind:showDetails={showNameDetails}
+                    attr={I18n.t("profile.firstAndLastName")}
+                    verified={nameVerified}
+                    account={nameVerifiedAccount}
+                    verifiedValue={`${nameVerifiedAccount.givenName} ${nameVerifiedAccount.familyName}`}
+                    info={I18n.t("profile.firstAndLastNameInfo")}
+                    buttonTxt={I18n.t("profile.verify")}
+                    refresh={refresh}/>
+            <VerifiedUserRow
+                    bind:showDetails={showStudentDetails}
+                    attr={I18n.t("profile.student")}
+                    verified={studentVerified}
+                    account={studentVerifiedAccount}
+                    verifiedValue={`${studentVerifiedAccount.schacHomeOrganization} ${(studentVerifiedAccount.eduPersonAffiliations || []).join(", ")}`}
+                    info={I18n.t("profile.studentInfo")}
+                    buttonTxt={I18n.t("profile.prove")}
+                    refresh={refresh}/>
+            <VerifiedUserRow
+                    bind:showDetails={showEduIDDetails}
+                    attr={I18n.t("profile.trusted")}
+                    verified={eduIDLinked}
+                    account={eduIDLinkedAccount}
+                    verifiedValue={`${eduIDLinkedAccount.schacHomeOrganization}`}
+                    info={I18n.t("profile.trustedInfo")}
+                    buttonTxt={I18n.t("profile.link")}
+                    refresh={refresh}/>
             </tbody>
         </table>
     </div>
 
 </div>
-{#if showModal}
-    <Modal submit={addInstitution(false)}
-           cancel={() => showModal = false}
-           question={I18n.t("institutions.addInstitutionConfirmation")}
-           title={I18n.t("institutions.addInstitution")}
-           confirmTitle={I18n.t("institutions.proceed")}>
-    </Modal>
-{/if}

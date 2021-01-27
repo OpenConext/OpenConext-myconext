@@ -28,21 +28,25 @@ I18n.translations.nl = {
     },
     profile: {
         title: "Persoonlijke informatie",
-        info: "Basisinformatie zoals je naam en e-mailadres.",
+        info: "Wanneer je eduID gebruikt om in te loggen op andere websites, moet een deel van je persoonlijke informatie worden gedeeld. Sommige services vereisen dat je persoonlijke gegevens worden gevalideerd door een derde partij.",
         basic: "Basic information",
         email: "E-mail",
-        schacHomeOrganization: "Instellings ID",
         name: "Naam",
         validated: "Validated information",
-        firstAndLastName: "First and last name",
-        firstAndLastNameInfo: "Your first and lastname are not yet verified by a trusted party",
-        verify: "Verify",
-        student: "Prove of student",
-        studentInfo: "You have not yet proven that you are following education in the Netherlands.",
-        prove: "Prove",
-        trusted: "Trusted party link",
-        trustedInfo: "You eduID account is not yet linked to a trusted party",
-        link: "Link"
+        firstAndLastName: "Voor- en achternaam",
+        firstAndLastNameInfo: "Je voor- en achternaam zijn nog niet geverifieerd door een vertrouwde partij",
+        verify: "Verifïeer",
+        student: "Bewijs van studie",
+        studentInfo: "je hebt nog niet bewezen dat je in Nederland een studie volgt.",
+        prove: "Bewijs",
+        trusted: "Link naar vertrouwde partij",
+        trustedInfo: "Je eduID-account is nog niet gekoppeld aan een vertrouwde partij",
+        link: "Koppel",
+        institution: "Instelling",
+        affiliations: "Affiliation(s)",
+        expires: "Koppeling verloopt",
+        expiresValue: "{{date}}",
+        verifiedAt: "Geverifïeerd door <strong>{{name}}</strong> op {{date}}"
     },
     edit: {
         title: "Aanpassen profielgegevens",
@@ -53,6 +57,18 @@ I18n.translations.nl = {
         cancel: "Annuleren",
         updated: "Je profiel is bijgewerkt.",
         back: "/profile"
+    },
+    email: {
+        title: "E-mail",
+        info: "Voer je nieuwe e-mailadres in. Er wordt een verificatiemail naar dit adres gestuurd.",
+        email: "Je nieuwe e-mail",
+        update: "Verstuur",
+        cancel: "Annuleer",
+        updated: "Een e-mail is verzonden naar {{email}}",
+        confirmed: "Je e-mail is gewijzigd naar {{email}}",
+        back: "/personal",
+        emailEquality: "Je nieuwe e-mailadres is gelijk aan je huidige e-mailadres",
+        duplicateEmail: "Dit e-mailadres is al in gebruik."
     },
     security: {
         title: "Beveiliging",
@@ -70,6 +86,7 @@ I18n.translations.nl = {
     home: {
         home: "Home",
         welcome: "Welkom {{name}}",
+        "data-activity": "Data & activiteit",
         personal: "Personal info",
         security: "Beveiliging",
         account: "Account",
@@ -94,6 +111,17 @@ I18n.translations.nl = {
         info4: "Om het verwijderen van je eduID volledig te voltooien, moet je nadat je account is verwijderd je browser afsluiten.",
         deleteAccount: "Verwijder mijn eduID",
         deleteAccountConfirmation: "Weet je zeker dat je je eduID wilt verwijderen?"
+    },
+    dataActivity: {
+        title: "Gebruikte diensten",
+        info: "Elke dienst waarvoor je eduID gebruikt ontvangt bepaalde gegevens (attributen) vanuit jouw eduID-account. Denk hierbij aan je naam, e-mailadres of aan een pseudoniem waarmee de dienst jou uniek kan identificeren.",
+        explanation: "Diensten waarop je ben ingelogd via eduID.",
+        noServices: "Je bent nog niet ingelogd geweest op een dienst via eduID.",
+        name: "Naam",
+        add: "Nieuwe instelling koppelen",
+        addInstitutionConfirmation: "Als je doorgaat word je gevraagd in te loggen via de onderwijsinstelling die je wilt koppelen. Selecteer eerst welke instelling je wilt koppelen en log daarna in.<br/> <br/>Nadat je succesvol bent ingelogd kom je hier weer terug.",
+        proceed: "Doorgaan",
+        addInstitution: "Instelling toevoegen"
     },
     institutions: {
         title: "Gekoppelde instellingen",
@@ -120,13 +148,6 @@ I18n.translations.nl = {
         back: "/instellingen",
         deleteInstitution: "Verwijder koppeling",
         deleteInstitutionConfirmation: "Weet je zeker dat je de koppeling met deze instelling wilt verwijderen?<br/> <br/>Sommige diensten vereisen dat je een koppeling hebt met een onderwijsinstelling. Je wordt mogelijk gevraagd een instelling te koppelen als je één van die diensten gebruikt."
-    },
-    services: {
-        title: "Gebruikte diensten",
-        info: "Elke dienst waarvoor je eduID gebruikt ontvangt bepaalde gegevens (attributen) vanuit jouw eduID-account. Denk hierbij aan je naam, e-mailadres of aan een pseudoniem waarmee de dienst jou uniek kan identificeren.",
-        explanation: "Hieronder vind je het overzicht van alle diensten waarop je bent ingelogd met eduID.",
-        noServices: "Je bent nog niet ingelogd geweest op een dienst via eduID.",
-        name: "Naam",
     },
     service: {
         title: "Dienst",

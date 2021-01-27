@@ -93,8 +93,8 @@
     }
 
     .button.small {
-        width: 90px;
-        padding: 10px;
+        max-width: 90px;
+        padding: 6px;
     }
 
 </style>

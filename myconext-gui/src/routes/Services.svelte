@@ -43,7 +43,6 @@
     }
 
     p {
-        font-size: 18px;
         line-height: 1.33;
         letter-spacing: normal;
     }

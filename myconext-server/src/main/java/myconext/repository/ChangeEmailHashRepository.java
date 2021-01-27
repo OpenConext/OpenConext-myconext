@@ -12,7 +12,7 @@ import java.util.Optional;
 @Repository
 public interface ChangeEmailHashRepository extends MongoRepository<ChangeEmailHash, String> {
 
-    Optional<PasswordForgottenHash> findByHashAndUserId(String hash, String userId);
+    Optional<ChangeEmailHash> findByHashAndUserId(String hash, String userId);
 
     Long deleteByUserId(String userId);
 

@@ -1,13 +1,12 @@
 <script>
     import {user, config, flash} from "../stores/user";
     import I18n from "i18n-js";
-    import security from "../icons/security.svg";
-    import data_activity from "../icons/data_activity.svg";
-    import connections from "../icons/connections.svg";
-    import teams from "../icons/teams.svg";
+    import securitySvg from "../icons/redesign/lock-1.svg";
     import services from "../icons/streamline-icon-cloud-storage-drive.svg";
-    import home_icon from "../icons/redesign/home.svg";
-    import personalInfoSvg from "../icons/redesign/presentation-analytics.svg";
+    import home_icon from "../icons/redesign/house.svg";
+    import personalInfoSvg from "../icons/redesign/single-neutral-id-card-double.svg";
+    import accountSvg from "../icons/redesign/cog.svg";
+    import dataActivitySvg from "../icons/redesign/presentation-analytics.svg";
     import chevron_left from "../icons/chevron-left.svg";
     import chevron_right from "../icons/chevron-right.svg";
     import {navigate} from "svelte-routing";
@@ -18,12 +17,9 @@
     import EditName from "./EditName.svelte";
     import EditEmail from "./EditEmail.svelte";
     import Security from "./Security.svelte";
-    import Institutions from "./Institutions.svelte";
-    import Institution from "./Institution.svelte";
-    import Services from "./Services.svelte";
+    import DataActivity from "./DataActivity.svelte";
     import Service from "./Service.svelte";
     import Account from "./Account.svelte";
-    import Migration from "./Migration.svelte";
     import Flash from "../components/Flash.svelte";
 
     export let bookmark = "home";
@@ -31,15 +27,13 @@
     const tabs = [
         {name: "home", component: Start, icon: home_icon},
         {name: "personal", component: PersonalInfo, icon: personalInfoSvg},
+        {name: "data-activity", component: DataActivity, icon: dataActivitySvg},
+        {name: "security", component: Security, icon: securitySvg},
+        {name: "account", component: Account, icon: accountSvg},
+
         {name: "edit-name", alias: "personal", component: EditName, ignore: true},
         {name: "edit-email", alias: "personal", component: EditEmail, ignore: true},
-        {name: "security", component: Security, icon: security},
-        {name: "institutions", component: Institutions, icon: connections, ignore: !$config.featureConnections},
-        {name: "institution", alias: "institutions", component: Institution, ignore: true},
-        {name: "services", component: Services, icon: services},
         {name: "service", alias: "services", component: Service, ignore: true},
-        {name: "account", component: Account, icon: data_activity},
-        {name: "migration", component: Migration, icon: data_activity, ignore: true}
     ];
 
     let currentTab = tabs[0];
@@ -163,19 +157,8 @@
     }
 
     :global(nav ul li svg) {
-        width: 32px;
+        width: 24px;
         height: auto;
-    }
-
-    :global(nav ul li svg.personal-info) {
-        width: 26px;
-        margin-right: 6px;
-    }
-
-    :global(nav ul li svg.services) {
-        width: 26px;
-        height: 26px;
-        margin-right: 6px;
     }
 
     :global(nav ul li.active svg) {

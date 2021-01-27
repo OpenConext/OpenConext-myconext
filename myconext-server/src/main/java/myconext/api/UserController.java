@@ -245,6 +245,7 @@ public class UserController {
 
         userRepository.save(user);
         logWithContext(user, "update", "name", LOG, "Update user profile");
+        authenticationRequestRepository.deleteByUserId(user.getId());
         return returnUserResponse(user);
     }
 
@@ -254,11 +255,30 @@ public class UserController {
         changeEmailHashRepository.deleteByUserId(user.getId());
 
         String hashValue = hash();
-        changeEmailHashRepository.save(new ChangeEmailHash(user, deltaUser.getEmail(), hashValue));
+        String newEmail = deltaUser.getEmail();
+        Optional<User> optionalUser = userRepository.findUserByEmailIgnoreCase(emailGuessingPreventor.sanitizeEmail(newEmail));
+        if (optionalUser.isPresent()) {
+            return ResponseEntity.status(HttpStatus.CONFLICT)
+                    .body(Collections.singletonMap("status", HttpStatus.CONFLICT.value()));
+        }
 
+        changeEmailHashRepository.save(new ChangeEmailHash(user, newEmail, hashValue));
         logWithContext(user, "update", "update-email", LOG, "Send update email mail");
 
-        mailBox.sendUpdateEmail(user, deltaUser.getEmail(), hashValue);
+        mailBox.sendUpdateEmail(user, newEmail, hashValue);
+        authenticationRequestRepository.deleteByUserId(user.getId());
+        return returnUserResponse(user);
+    }
+
+    @GetMapping("/sp/confirm-email")
+    public ResponseEntity confirmUpdateEmail(Authentication authentication, @RequestParam(value = "h") String hash) {
+        User user = userFromAuthentication(authentication);
+        ChangeEmailHash changeEmailHash = changeEmailHashRepository.findByHashAndUserId(hash, user.getId())
+                .orElseThrow(() -> new ForbiddenException("wrong_hash"));
+
+        user.setEmail(changeEmailHash.getNewEmail());
+        userRepository.save(user);
+        authenticationRequestRepository.deleteByUserId(user.getId());
         return returnUserResponse(user);
     }
 
@@ -295,7 +315,7 @@ public class UserController {
 
         String action = existingPassword ? "update" : "add";
         logWithContext(user, action, "password", LOG, action + " password");
-
+        authenticationRequestRepository.deleteByUserId(user.getId());
         return returnUserResponse(user);
     }
 
@@ -313,6 +333,7 @@ public class UserController {
         logWithContext(user, "update", "forgot-password", LOG, "Send password forgotten mail");
 
         mailBox.sendForgotPassword(user, hashValue);
+        authenticationRequestRepository.deleteByUserId(user.getId());
         return returnUserResponse(user);
     }
 

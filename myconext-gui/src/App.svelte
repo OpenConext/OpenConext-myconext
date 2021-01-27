@@ -5,9 +5,7 @@
     import Cookies from "js-cookie";
     import Landing from "./routes/Landing.svelte";
     import NotFound from "./routes/NotFound.svelte";
-    import EditName from "./routes/EditName.svelte";
-    import Institution from "./routes/Institution.svelte";
-    import Service from "./routes/Service.svelte";
+    import ConfirmUpdateEmail from "./routes/ConfirmUpdateEmail.svelte";
     import MigrationError from "./routes/MigrationError.svelte";
     import Password from "./routes/Password.svelte";
     import WebAuthn from "./routes/WebAuthn.svelte";
@@ -23,67 +21,67 @@
     let loaded = false;
 
     onMount(() => configuration()
-            .then(json => {
-                $config = json;
-                if (typeof window !== "undefined") {
-                    const urlSearchParams = new URLSearchParams(window.location.search);
-                    if (urlSearchParams.has("lang")) {
-                        I18n.locale = urlSearchParams.get("lang");
-                    } else if (Cookies.get("lang", {domain: $config.domain})) {
-                        I18n.locale = Cookies.get("lang", {domain: $config.domain});
-                    } else {
-                        I18n.locale = navigator.language.toLowerCase().substring(0, 2);
-                    }
+        .then(json => {
+            $config = json;
+            if (typeof window !== "undefined") {
+                const urlSearchParams = new URLSearchParams(window.location.search);
+                if (urlSearchParams.has("lang")) {
+                    I18n.locale = urlSearchParams.get("lang");
+                } else if (Cookies.get("lang", {domain: $config.domain})) {
+                    I18n.locale = Cookies.get("lang", {domain: $config.domain});
                 } else {
-                    I18n.locale = "en";
+                    I18n.locale = navigator.language.toLowerCase().substring(0, 2);
                 }
-                if (["nl", "en"].indexOf(I18n.locale) < 0) {
-                    I18n.locale = "en";
-                }
-                if (window.location.pathname.indexOf("landing") > -1) {
-                    loaded = true;
-                } else {
-                    me()
-                            .then(json => {
-                                for (var key in json) {
-                                    if (json.hasOwnProperty(key)) {
-                                        $user[key] = json[key];
-                                    }
-                                }
-                                $user.guest = false;
-                                const useOidcApi = $config.featureOidcTokenAPI;
-                                if (useOidcApi) {
-                                    oidcTokens().then(tokens => {
-                                        $user.oidcTokens = tokens;
-                                        loaded = true;
-                                    });
-                                } else {
-                                    loaded = true;
-                                }
-                            })
-                            .catch(e => {
+            } else {
+                I18n.locale = "en";
+            }
+            if (["nl", "en"].indexOf(I18n.locale) < 0) {
+                I18n.locale = "en";
+            }
+            if (window.location.pathname.indexOf("landing") > -1) {
+                loaded = true;
+            } else {
+                me()
+                    .then(json => {
+                        for (var key in json) {
+                            if (json.hasOwnProperty(key)) {
+                                $user[key] = json[key];
+                            }
+                        }
+                        $user.guest = false;
+                        const useOidcApi = $config.featureOidcTokenAPI;
+                        if (useOidcApi) {
+                            oidcTokens().then(tokens => {
+                                $user.oidcTokens = tokens;
                                 loaded = true;
-                                $redirectPath = window.location.pathname;
-                                const urlSearchParams = new URLSearchParams(window.location.search);
-                                const logout = urlSearchParams.get("logout");
-                                const afterDelete = urlSearchParams.get("delete");
-                                if (e.status === 409) {
-                                    e.json().then(res => {
-                                        $duplicatedEmail = res.email;
-                                        navigate("/migration-error");
-                                    });
-                                } else if (logout) {
-                                    navigate("/landing?logout=true");
-                                } else if (afterDelete) {
-                                    navigate("/landing?delete=true");
-                                } else {
-                                    const path = encodeURIComponent($redirectPath || "/");
-                                    window.location.href = `${$config.loginUrl}?redirect_path=${path}`;
-                                }
-                            })
-                }
+                            });
+                        } else {
+                            loaded = true;
+                        }
+                    })
+                    .catch(e => {
+                        loaded = true;
+                        $redirectPath = window.location.pathname;
+                        const urlSearchParams = new URLSearchParams(window.location.search);
+                        const logout = urlSearchParams.get("logout");
+                        const afterDelete = urlSearchParams.get("delete");
+                        if (e.status === 409) {
+                            e.json().then(res => {
+                                $duplicatedEmail = res.email;
+                                navigate("/migration-error");
+                            });
+                        } else if (logout) {
+                            navigate("/landing?logout=true");
+                        } else if (afterDelete) {
+                            navigate("/landing?delete=true");
+                        } else {
+                            const path = encodeURIComponent($redirectPath || "/");
+                            window.location.href = `${$config.loginUrl}?redirect_path=${path}`;
+                        }
+                    })
+            }
 
-            })
+        })
     );
 
 </script>
@@ -143,6 +141,7 @@
     :global(.options a:not(:first-child)) {
         margin-left: 25px;
     }
+
     :global(.left) {
         background-color: #f3f6f8;
         width: 270px;
@@ -240,17 +239,17 @@
                     <Route path="/personal">
                         <Home bookmark="personal"/>
                     </Route>
+                    <Route path="/data-activity">
+                        <Home bookmark="data-activity"/>
+                    </Route>
                     <Route path="/account">
                         <Home bookmark="account"/>
                     </Route>
-                    <Route path="/institutions">
-                        <Home bookmark="institutions"/>
+                    <Route path="/security">
+                        <Home bookmark="security"/>
                     </Route>
                     <Route path="/services">
                         <Home bookmark="services"/>
-                    </Route>
-                    <Route path="/security">
-                        <Home bookmark="security"/>
                     </Route>
                     <Route path="/landing" component={Landing}/>
                     <Route path="/edit-name">
@@ -272,6 +271,7 @@
                     <Route path="/password" component={Password}/>
                     <Route path="/forgot-password" component={Password}/>
                     <Route path="/webauthn" component={WebAuthn}/>
+                    <Route path="/update-email" component={ConfirmUpdateEmail}/>
                     <Route path="/rememberme" component={RememberMe}/>
                     <Route component={NotFound}/>
                 </Router>

@@ -30,7 +30,7 @@
 
 </script>
 
-<style>
+<style lang="scss">
     .account {
         width: 100%;
         height: 100%;
@@ -50,7 +50,6 @@
     }
 
     p.info {
-        font-size: 18px;
         font-weight: 300;
         margin-bottom: 26px;
     }
@@ -86,7 +85,7 @@
     <div class="inner-container">
         <h2>{I18n.t("account.title")}</h2>
         <p class="info">{I18n.t("format.creationDate", formatCreateDate($user.created, true))}</p>
-        <p class="info2">{I18n.t("account.personalTitle")}</p>
+        <h4 class="info2">{I18n.t("account.personalTitle")}</h4>
         <p class="divider">{I18n.t("account.personalInfo")}</p>
         <div class="options">
             <Button href="/myconext/api/sp/personal" className="full cancel" download="personal" label={I18n.t("account.download")}/>

@@ -223,6 +223,10 @@ public class User implements Serializable, UserDetails {
         this.publicKeyCredentials = publicKeyCredentials;
     }
 
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
     public void setForgottenPassword(boolean forgottenPassword) {
         this.forgottenPassword = forgottenPassword;
     }

@@ -28,13 +28,13 @@
                         $user[key] = json[key];
                     }
                 }
-                navigate("/institutions");
+                navigate("/data-activity");
                 flash.setValue(I18n.t("institution.deleted", {name: linkedAccount.schacHomeOrganization}));
             });
         }
     }
 
-    const cancel = () => navigate("/institutions");
+    const cancel = () => navigate("/data-activity");
 
 </script>
 

@@ -41,14 +41,11 @@
         margin-bottom: 26px;
     }
 
-    p.info2 {
-        font-size: 22px;
+    h4 {
         margin-bottom: 24px;
-        font-family: Nunito, sans-serif;
     }
 
     p {
-        font-size: 18px;
         line-height: 1.33;
         letter-spacing: normal;
     }
@@ -115,7 +112,7 @@
     <div class="inner-container">
         <h2>{I18n.t("security.title")}</h2>
         <p class="info">{I18n.t("security.subTitle")}</p>
-        <p class="info2">{I18n.t("security.secondSubTitle")}</p>
+        <h4 class="info2">{I18n.t("security.secondSubTitle")}</h4>
 
         <table cellspacing="0">
             <thead></thead>

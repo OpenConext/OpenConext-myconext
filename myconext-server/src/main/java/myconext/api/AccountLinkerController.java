@@ -167,7 +167,7 @@ public class AccountLinkerController {
 
         LOG.debug("In SP redirect link account");
 
-        return doRedirect(code, user, this.spFlowRedirectUri, this.spRedirectUrl + "/institutions",
+        return doRedirect(code, user, this.spFlowRedirectUri, this.spRedirectUrl + "/personal",
                 false, false, null, null);
     }
 
