@@ -86,6 +86,11 @@
         font-weight: normal;
     }
 
+    td.verified {
+        width: 10%;
+        text-align: center;
+    }
+
     td.attr {
         width: 30%;
         padding: 20px;

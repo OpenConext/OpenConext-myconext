@@ -12,5 +12,5 @@ import lombok.ToString;
 public class TokenRepresentation {
 
     private String id;
-    private TokenType tokenType;
+    private TokenType type;
 }

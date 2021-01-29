@@ -6,7 +6,8 @@
     import chevronDownSvg from "../icons/chevron-down.svg";
     import chevronUpSvg from "../icons/chevron-up.svg";
     import informationalSvg from "../icons/informational.svg";
-    import {formatCreateDate} from "../format/date";
+    import {formatOptions} from "../format/date";
+    import Service from "./Service.svelte";
 
     const serviceDetails = service => () => {
         showDetails = {...showDetails, [service.eduId]: !showDetails[service.eduId]};
@@ -18,16 +19,33 @@
     const refresh = () => {
         services = Object.keys($user.eduIdPerServiceProvider).map(k => {
             const service = $user.eduIdPerServiceProvider[k];
-            const tokens = $user.oidcTokens
-                .filter(token => token.clientId === k)
-                .filter(token => token.scopes && token.scopes.find(scope => scope.name !== "openid" && scope.descriptions[I18n.locale]));
+            const allTokens = $user.oidcTokens
+                .filter(token => token.clientId === k);
+            const tokens = allTokens
+                .filter(token => token.scopes && token.scopes.find(scope => scope.name !== "openid" && (
+                    scope.descriptions[I18n.locale] || scope.descriptions["en"])));
             const token = tokens.length === 0 ? null : (tokens.find(t => t.type === "REFRESH") || tokens[0]);
+            const seen = new Set();
+            const scopes = allTokens.reduce((acc, token) => {
+                token.scopes.forEach(scope => {
+                    if (!seen.has(scope.name)) {
+                        seen.add(scope.name);
+                        acc.push(scope);
+                    }
+                })
+                return acc;
+            }, []);
+            const locale = I18n.locale === "en" ? "en-US" : "nl-NL";
             return {
                 name: serviceName(service),
                 eduId: service.value,
-                createdAt: formatCreateDate(service.createdAt).date,
+                createdAt: new Date(service.createdAt).toLocaleDateString(locale, formatOptions),
+                expiresIn: new Date(service.expiresIn).toLocaleDateString(locale, formatOptions),
                 data: $user.eduIdPerServiceProvider[k],
-                token: token
+                token: token,
+                tokens: tokens,
+                allTokens: allTokens,
+                scopes: scopes
             }
         });
         showDetails = Object.keys($user.eduIdPerServiceProvider).reduce((acc, key) => {
@@ -77,15 +95,22 @@
         }
     }
 
-    table {
+    table.data-activity {
         margin-top: 30px;
         width: 100%;
 
         tr {
             cursor: pointer;
+
+            &.full {
+                background-color: var(--color-background);
+            }
+
         }
 
         td {
+            padding: 15px 0 15px 10px;
+
             border-bottom: 1px solid var(--color-primary-grey);
 
             &.first {
@@ -97,9 +122,15 @@
             }
 
             &.value {
-                width: 70%;
                 font-weight: bold;
-                padding: 20px;
+            }
+
+            &.logo {
+                width: 72px;
+                img {
+                    width: 72px;
+                    height: auto;
+                }
             }
         }
 
@@ -120,7 +151,7 @@
         }
 
         div.value-container a.toggle-link {
-            margin-left: 15px;
+            margin-left: 22px;
         }
 
         div.access {
@@ -131,6 +162,7 @@
             align-content: center;
             border-radius: 8px;
             margin-left: auto;
+            font-weight: normal;
 
             span.svg-informational {
                 margin-left: 1px;
@@ -163,14 +195,21 @@
             <p class="no-services">{I18n.t("dataActivity.noServices")}</p>
         {:else}
             <h4>{I18n.t("dataActivity.explanation")}</h4>
-            <table cellspacing="0">
+            <table cellspacing="0" class="data-activity">
                 <thead></thead>
                 <tbody>
                 {#each services as service, i}
                     <tr class="name"
                         class:full={showDetails[service.eduId]}
                         on:click={serviceDetails(service)}>
-                        <td class="value" class:first={i === 0} class:last={i === services.length - 1}>
+                        <td class="logo" class:first={i === 0}
+                            class:last={i === services.length - 1 || showDetails[service.eduId]}>
+                            {#if service.data.serviceLogoUrl}
+                                <span><img src={service.data.serviceLogoUrl} alt=""></span>
+                            {/if}
+                        </td>
+                        <td class="value" class:first={i === 0}
+                            class:last={i === services.length - 1 || showDetails[service.eduId]}>
                             <div class="value-container">
                                 <span>{`${service.name}`}</span>
                                 <div class="value-container-inner">
@@ -189,16 +228,7 @@
                         </td>
                     </tr>
                     {#if showDetails[service.eduId]}
-                        <tr class="full">
-                            <table class="inner-details">
-                                <thead></thead>
-                                <tbody>
-                                    <tr>
-                                        <td colspan="2" class="details">{I18n.t("dataActivity.")}</td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </tr>
+                        <Service service={service}/>
                     {/if}
                 {/each}
                 </tbody>

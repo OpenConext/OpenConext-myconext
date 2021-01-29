@@ -2,79 +2,42 @@
     import {user, flash} from "../stores/user";
     import I18n from "i18n-js";
     import {deleteServiceAndTokens, deleteTokens} from "../api";
-    import {navigate} from "svelte-routing";
-    import chevron_left from "../icons/chevron-left.svg";
     import Button from "../components/Button.svelte";
-    import {onMount} from "svelte";
-    import {formatCreateDate} from "../format/date";
     import Modal from "../components/Modal.svelte";
-    import {serviceName} from "../utils/services";
+    import {onMount} from "svelte";
 
-    let service = {};
-    let token = null;
-    let tokens = [];
+    const {formatJsDate} = require("../format/date");
+    export let service = {data: {}};
+
     let showModal = false;
-
     let modalOptions = {};
+    let refresh = () => true;
 
     const modalDeleteEduId = () => ({
         submit: deleteEduId(false),
-        question: I18n.t("service.deleteServiceConfirmation", {name: service.name}),
-        title: I18n.t("service.deleteService")
+        question: I18n.t("dataActivity.deleteServiceConfirmation", {name: service.name}),
+        title: I18n.t("dataActivity.deleteService")
     });
 
     const modalRevokeTokens = () => ({
         submit: revokeTokens(false),
-        question: I18n.t("service.deleteTokenConfirmation", {name: service.name}),
-        title: I18n.t("service.deleteToken")
+        question: I18n.t("dataActivity.deleteTokenConfirmation", {name: service.name}),
+        title: I18n.t("dataActivity.deleteToken")
     });
-
-    const useToken = allTokens => {
-        if (allTokens.length === 0) {
-            return null;
-        }
-        const validTokens = allTokens.filter(token => token.scopes && token.scopes.find(scope => scope.name !== "openid" && scope.descriptions[I18n.locale]));
-        if (validTokens.length === 0) {
-            return null;
-        }
-        const refreshToken = validTokens.find(t => t.type === "REFRESH");
-        return refreshToken || validTokens[0];
-    }
-
-    onMount(() => {
-        const urlSearchParams = new URLSearchParams(window.location.search);
-        const eduid = urlSearchParams.get("eduid");
-        const services = Object.keys($user.eduIdPerServiceProvider).map(k => ({
-            entityId: k,
-            name: serviceName($user.eduIdPerServiceProvider[k]),
-            eduId: $user.eduIdPerServiceProvider[k].value,
-            createdAt: $user.eduIdPerServiceProvider[k].createdAt
-        }));
-        service = services.find(o => o.eduId === eduid);
-        fetchTokens();
-    });
-
-    const fetchTokens = () => {
-        const allTokens = $user.oidcTokens.filter(token => token.clientId === service.entityId);
-        token = useToken(allTokens);
-        tokens = allTokens.map(t => ({id: t.id, tokenType: t.type}));
-    };
-
 
     const deleteEduId = showConfirmation => () => {
         if (showConfirmation) {
             modalOptions = modalDeleteEduId();
             showModal = true;
         } else {
-            deleteServiceAndTokens(service.eduId, tokens).then(json => {
+            deleteServiceAndTokens(service.eduId, service.allTokens).then(json => {
                 for (var key in json) {
                     if (json.hasOwnProperty(key)) {
                         $user[key] = json[key];
                     }
                 }
-                $user.oidcTokens = $user.oidcTokens.filter(token => token.clientId !== service.entityId);
-                navigate("/services");
-                flash.setValue(I18n.t("service.deleted", {name: service.name}));
+                refresh();
+                flash.setValue(I18n.t("dataActivity.deleted", {name: service.name}));
             });
         }
     }
@@ -84,157 +47,165 @@
             showModal = true;
             modalOptions = modalRevokeTokens();
         } else {
-            deleteTokens(tokens).then(json => {
+            deleteTokens(service.allTokens).then(json => {
                 showModal = false;
                 for (var key in json) {
                     if (json.hasOwnProperty(key)) {
                         $user[key] = json[key];
                     }
                 }
-                $user.oidcTokens = $user.oidcTokens.filter(token => token.clientId !== service.entityId);
-                fetchTokens();
-                flash.setValue(I18n.t("service.tokenDeleted", {name: service.name}));
+                flash.setValue(I18n.t("dataActivity.tokenDeleted", {name: service.name}));
+                refresh();
             });
         }
     }
 
-    const cancel = () => navigate("/services");
-
 </script>
 
-<style>
-    .service {
-        width: 100%;
-        display: flex;
-        height: 100%;
-        flex-direction: column;
-    }
-
-    h2 {
-        margin-top: 25px;
-        color: var(--color-primary-green);
-    }
-
-    p.info {
-        margin: 12px 0 32px 0;
+<style lang="scss">
+    tr.full {
+        background-color: var(--color-background);
     }
 
     table {
         width: 100%;
+
+        td {
+            border-bottom: 1px solid var(--color-primary-grey);
+            padding: 10px;
+
+            &.details {
+                font-weight: bold;
+
+                div.content {
+                    display: flex;
+                    align-items: center;
+
+                    span.button {
+                        margin-left: auto;
+                    }
+                }
+            }
+
+            &.attr {
+                width: 30%;
+            }
+
+            &.value {
+                width: 70%;
+                font-weight: bold;
+
+                ul {
+                    list-style: disc outside none;
+                    margin-left: 18px;
+
+                    li {
+                        font-weight: bold;
+
+                        &:not(:last-child) {
+                            margin-bottom: 5px;
+                        }
+                    }
+                }
+            }
+
+            &.disclaimer {
+                font-size: 13px;
+                border-bottom: none;
+                padding-top: 2px;
+
+                div.content {
+                    display: flex;
+                }
+            }
+
+            &.last {
+                border-bottom: 1px solid var(--color-secondary-grey);
+            }
+        }
+
     }
 
-    td {
-        border-bottom: 1px solid var(--color-primary-grey);
-    }
-
-    td.attr {
-        width: 30%;
-        padding: 20px;
-    }
-
-    td.value {
-        width: 70%;
-        font-weight: bold;
-        padding-left: 20px;
-    }
-
-    div.value-container {
-        display: flex;
-        flex-direction: column;
-    }
-
-    div.value-container span {
-        word-break: break-word;
-        padding: 5px 0;
-    }
-
-    div.value-container ul {
-        padding: 5px 0;
-        font-weight: bold;
-    }
-
-    .options {
-        margin-top: 60px;
-    }
-
-    .options.first {
-        margin-bottom: 40px;
-    }
 
 </style>
-<div class="service">
-    <h2>{I18n.t("service.title")}</h2>
-    <p class="info">{I18n.t("service.info", formatCreateDate(service.createdAt))}</p>
 
-    <table cellspacing="0">
-        <thead></thead>
-        <tbody>
-        <tr class="name">
-            <td class="attr">{I18n.t("service.name")}</td>
-            <td class="value">
-                <div class="value-container">
-                    <span>{`${service.name}`}</span>
-                </div>
-            </td>
-        </tr>
-        <tr class="name">
-            <td class="attr">{I18n.t("service.eduId")}</td>
-            <td class="value">
-                <div class="value-container">
-                    <span>{`${service.eduId}`}</span>
-                </div>
-            </td>
-        </tr>
-        </tbody>
-    </table>
-
-    <div class="options first">
-        <Button className="cancel" label={I18n.t("service.cancel")} onClick={cancel}/>
-
-        <Button label={I18n.t("service.delete")} className="cancel" onClick={deleteEduId(true)}/>
-    </div>
-
-
-    {#if token }
-        <p class="info">{I18n.t("service.tokenInfo", {name: service.name})}</p>
-        <table cellspacing="0">
+<tr class="full">
+    <td colspan="2">
+        <table class="inner-details" cellspacing="0">
             <thead></thead>
             <tbody>
-            <tr class="name">
-                <td class="attr">{I18n.t("service.access")}</td>
-                <td class="value">
-                    <div class="value-container">
-                        <ul>
-                            {#each token.scopes.filter(sc => sc.descriptions[I18n.locale] && sc.name !== "openid") as scope}
-                                <li>{scope.descriptions[I18n.locale]}</li>
-                            {/each}
-                        </ul>
+            <tr>
+                <td class="details" colspan="2">
+                    <div class="content">
+                        <span>{I18n.t("dataActivity.details.login")}</span>
+                        <span class="button">
+                            <Button onClick={deleteEduId(true)} label={I18n.t("dataActivity.details.delete")}/>
+                        </span>
                     </div>
                 </td>
             </tr>
-            {#if token.audiences && token.audiences.length > 0}
-                <tr class="name">
-                    <td class="attr">{I18n.t("service.accounts")}</td>
-                    <td class="value">
-                        <div class="value-container">
-                            <ul>
-                                {#each token.audiences as audience}
-                                    <li>{audience}</li>
-                                {/each}
-                            </ul>
+            <tr>
+                <td class="attr">{I18n.t("dataActivity.details.first")}</td>
+                <td class="value">{service.createdAt}</td>
+            </tr>
+            <tr>
+                <td class="attr" class:last={!service.data.serviceHomeUrl}>{I18n.t("dataActivity.details.eduID")}</td>
+                <td class="value" class:last={!service.data.serviceHomeUrl}>{service.data.value}</td>
+            </tr>
+            {#if service.data.serviceHomeUrl}
+                <tr>
+                    <td class="attr last">{I18n.t("dataActivity.details.homePage")}</td>
+                    <td class="value last"><a href={service.data.serviceHomeUrl}
+                                              target="_blank">{service.data.serviceHomeUrl}</a></td>
+                </tr>
+            {/if}
+            <tr>
+                <td colspan="2" class="disclaimer">
+                    <div class="content">
+                        <span><sup>*</sup> </span>
+                        <span>{I18n.t("dataActivity.details.deleteDisclaimer")}</span>
+                    </div>
+                </td>
+            </tr>
+            {#if service.token}
+                <tr>
+                    <td class="details" colspan="2">
+                        <div class="content">
+                            <span>{I18n.t("dataActivity.details.access")}</span>
+                            <span class="button">
+                                <Button onClick={revokeTokens(true)} label={I18n.t("dataActivity.details.revoke")}/>
+                            </span>
                         </div>
                     </td>
                 </tr>
+                <tr>
+                    <td class="attr">{I18n.t("dataActivity.details.details")}</td>
+                    <td class="value">
+                        <ul>
+                            {#each service.scopes as scope}
+                                {#if scope.descriptions[I18n.locale] || scope.descriptions["en"]}
+                                    <li>{scope.descriptions[I18n.locale] || scope.descriptions["en"]}</li>
+                                {/if}
+                            {/each}
+                        </ul>
+                    </td>
+
+                </tr>
+                <tr>
+                    <td class="attr">{I18n.t("dataActivity.details.consent")}</td>
+                    <td class="value">{formatJsDate(service.token.createdAt)}</td>
+                </tr>
+                <tr>
+                    <td class="attr last">{I18n.t("dataActivity.details.expires")}</td>
+                    <td class="value last">
+                        {formatJsDate(service.token.expiresIn)}</td>
+                </tr>
             {/if}
             </tbody>
+
         </table>
-
-        <div class="options">
-            <Button label={I18n.t("service.revoke")} className="cancel" onClick={revokeTokens(true)}/>
-        </div>
-    {/if}
-</div>
-
+    </td>
+</tr>
 
 {#if showModal}
     <Modal submit={modalOptions.submit}

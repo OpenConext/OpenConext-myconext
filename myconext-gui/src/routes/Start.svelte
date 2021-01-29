@@ -72,15 +72,15 @@
             {@html personalInfoSvg}
             <h3>{I18n.t("sidebar.personalInfo")}</h3>
         </div>
-        <div class="card">
+        <div class="card" on:click={() => navigate("/data-activity")}>
             {@html dataActivitySvg}
             <h3>{I18n.t("sidebar.dataActivity")}</h3>
         </div>
-        <div class="card">
+        <div class="card" on:click={() => navigate("/security")}>
             {@html securitySvg}
             <h3>{I18n.t("sidebar.security")}</h3>
         </div>
-        <div class="card">
+        <div class="card" on:click={() => navigate("/account")}>
             {@html settingsSvg}
             <h3>{I18n.t("sidebar.account")}</h3>
         </div>

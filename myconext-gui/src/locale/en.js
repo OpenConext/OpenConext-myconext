@@ -127,14 +127,22 @@ I18n.translations.en = {
             login: "Login details",
             delete: "Delete login details",
             first: "First login",
-            eduID: "Unique eduID identifier",
+            eduID: "Unique eduID",
             homePage: "Homepage",
-            deleteDisclaimer: "<sup>*</sup> Deleting these login details means eduID removes this information from your eduID account. You still have an account at the service itself. If you want that removed, please doso at the service.",
+            deleteDisclaimer: "Deleting these login details means eduID removes this information from your eduID account. You still have an account at the service itself. If you want that removed, please do so at the service.",
             access: "Access rights",
             details: "Access details",
             consent: "Date of consent",
+            expires: "Date of expiry",
             revoke: "Revoke access"
-        }
+        },
+        deleteService: "Delete service",
+        deleteServiceConfirmation: "Are you sure you want to delete your unique pseudonymized eduID for {{name}} and revoke access to your linked accounts?<br/><br/>This service might not recognize you the next time you login and all your personal data with this Service could be deleted.",
+        deleteTokenConfirmation: "Are you sure you want to revoke the API access token for {{name}}?",
+        deleteToken: "Revoke token",
+        deleted: "eduID removed",
+        tokenDeleted: "Tokens removed"
+
     },
     institution: {
         title: "Connected institution",
@@ -151,24 +159,6 @@ I18n.translations.en = {
         back: "/institutions",
         deleteInstitution: "Delete institution",
         deleteInstitutionConfirmation: "Are you sure you want to delete the connection with this institution?<br/><br/>Some services require that you your eduID is connected to an institution. You might be prompted to connect an institution if you access one of those services."
-    },
-    service: {
-        title: "Service",
-        info: "You first logged in to this service on {{date}} at {{hours}}:{{minutes}}",
-        tokenInfo: "The service {{name}} has an API token to access your account.",
-        name: "Name",
-        eduId: "EduID",
-        access: "Access",
-        accounts: "Accounts",
-        delete: "Delete",
-        cancel: "Cancel",
-        revoke: "Revoke",
-        deleted: "Your service eduID for {{name}} has been deleted",
-        back: "/services",
-        deleteService: "Delete service",
-        deleteServiceConfirmation: "Are you sure you want to delete your unique pseudonymized eduID for {{name}} and revoke access to your linked accounts?<br/><br/>This service might not recognize you the next time you login and all your personal data with this Service could be deleted.",
-        deleteTokenConfirmation: "Are you sure you want to revoke the API access token for {{name}}?",
-        deleteToken: "Revoke token"
     },
     credential: {
         title: "Public Key Credential",

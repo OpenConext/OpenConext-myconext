@@ -88,13 +88,16 @@
         }
 
         td.attr {
-            width: 30%;
+            width: 27%;
             padding: 20px;
             font-weight: normal;
         }
-
+        td.verified {
+            width: 10%;
+            text-align: center;
+        }
         td.value {
-            width: 70%;
+            width: 63%;
             font-weight: bold;
             padding-left: 20px;
 
