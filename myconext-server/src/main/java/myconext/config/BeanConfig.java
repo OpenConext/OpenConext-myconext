@@ -1,7 +1,7 @@
 package myconext.config;
 
 import myconext.mail.MailBox;
-import myconext.manage.ServiceNameResolver;
+import myconext.manage.ServiceProviderResolver;
 import myconext.repository.AuthenticationRequestRepository;
 import myconext.repository.UserRepository;
 import myconext.saml.ImmutableSamlConfigurationRepository;
@@ -25,7 +25,7 @@ public class BeanConfig extends SamlIdentityProviderServerBeanConfiguration {
     private final boolean secureCookie;
     private final String magicLinkUrl;
     private final MailBox mailBox;
-    private final ServiceNameResolver serviceNameResolver;
+    private final ServiceProviderResolver serviceProviderResolver;
 
     public BeanConfig(@Value("${saml_metadata_base_path}") String samlMetadataBasePath,
                       @Value("${idp_redirect_url}") String redirectUrl,
@@ -38,7 +38,7 @@ public class BeanConfig extends SamlIdentityProviderServerBeanConfiguration {
                       AuthenticationRequestRepository authenticationRequestRepository,
                       UserRepository userRepository,
                       MailBox mailBox,
-                      ServiceNameResolver serviceNameResolver) {
+                      ServiceProviderResolver serviceProviderResolver) {
         this.immutableSamlConfigurationRepository = new ImmutableSamlConfigurationRepository(samlMetadataBasePath);
         this.redirectUrl = redirectUrl;
         this.rememberMeMaxAge = rememberMeMaxAge;
@@ -47,7 +47,7 @@ public class BeanConfig extends SamlIdentityProviderServerBeanConfiguration {
         this.userRepository = userRepository;
         this.magicLinkUrl = magicLinkUrl;
         this.mailBox = mailBox;
-        this.serviceNameResolver = serviceNameResolver;
+        this.serviceProviderResolver = serviceProviderResolver;
 
         ACR.initialize(linkedInstitution, validateNames, affiliationStudent);
     }
@@ -65,7 +65,7 @@ public class BeanConfig extends SamlIdentityProviderServerBeanConfiguration {
                 getSamlProvisioning(),
                 samlAssertionStore(),
                 redirectUrl,
-                serviceNameResolver,
+                serviceProviderResolver,
                 authenticationRequestRepository,
                 userRepository,
                 rememberMeMaxAge,

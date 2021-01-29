@@ -2,7 +2,7 @@ package myconext.security;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import myconext.AbstractIntegrationTest;
-import myconext.manage.ServiceNameResolver;
+import myconext.manage.MetaDataServiceProviderResolver;
 import myconext.model.LinkedAccount;
 import myconext.model.User;
 import myconext.repository.UserRepository;
@@ -91,7 +91,7 @@ public class GuestIdpAuthenticationRequestFilterTest {
                 new GuestIdpAuthenticationRequestFilter(null,
                         null,
                         null,
-                        new ServiceNameResolver(new ClassPathResource("sp_names.json"), new ObjectMapper(), false),
+                        new MetaDataServiceProviderResolver(new ClassPathResource("sp_names.json"), new ObjectMapper(), false),
                         null,
                         Mockito.mock(UserRepository.class),
                         90,

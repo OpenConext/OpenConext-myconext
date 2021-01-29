@@ -2,7 +2,7 @@ package myconext.shibboleth;
 
 
 import myconext.exceptions.MigrationDuplicateUserEmailException;
-import myconext.mail.MailBox;
+import myconext.manage.ServiceProviderResolver;
 import myconext.model.User;
 import myconext.repository.UserRepository;
 import org.apache.commons.logging.Log;
@@ -30,21 +30,20 @@ public class ShibbolethPreAuthenticatedProcessingFilter extends AbstractPreAuthe
     public static final String SHIB_EMAIL = "Shib-InetOrgPerson-mail";
     public static final String SHIB_UID = "uid";
     public static final String SHIB_SCHAC_HOME_ORGANIZATION = "schacHomeOrganization";
-    public static final String SHIB_AUTHENTICATING_AUTHORITY = "Shib-Authenticating-Authority";
 
     private final UserRepository userRepository;
-    private final MailBox mailBox;
-    private final String oneginiEntityId;
+    private final ServiceProviderResolver serviceProviderResolver;
+    private final String mijnEduIDEntityId;
 
     public ShibbolethPreAuthenticatedProcessingFilter(AuthenticationManager authenticationManager,
                                                       UserRepository userRepository,
-                                                      String oneginiEntityId,
-                                                      MailBox mailBox) {
+                                                      ServiceProviderResolver serviceProviderResolver,
+                                                      String mijnEduIDEntityId) {
         super();
         super.setAuthenticationManager(authenticationManager);
         this.userRepository = userRepository;
-        this.mailBox = mailBox;
-        this.oneginiEntityId = oneginiEntityId;
+        this.serviceProviderResolver = serviceProviderResolver;
+        this.mijnEduIDEntityId = mijnEduIDEntityId;
     }
 
     @Override
@@ -83,14 +82,14 @@ public class ShibbolethPreAuthenticatedProcessingFilter extends AbstractPreAuthe
                 }
             }
         }
-        //The authenticatingAuthority in the SAML / Shibd heading is a ';' separated list
         String preferredLanguage = cookieByName(request, "lang").map(Cookie::getValue).orElse("en");
         return optionalUser.orElseGet(() ->
                 provisionUser(uid, schacHomeOrganization, givenName, familyName, email, preferredLanguage));
     }
 
-    private User provisionUser(String uid, String schacHomeOrganization, String givenName, String familyName, String email, String preferredLanguage) {
-        User user = new User(uid, email, givenName, familyName, schacHomeOrganization, null, null, null, preferredLanguage);
+    private User provisionUser(String uid, String schacHomeOrganization, String givenName, String familyName,
+                               String email, String preferredLanguage) {
+        User user = new User(uid, email, givenName, familyName, schacHomeOrganization, preferredLanguage, mijnEduIDEntityId, serviceProviderResolver);
         user.setNewUser(false);
         user = userRepository.save(user);
 

@@ -127,15 +127,9 @@
         word-break: break-word;
     }
 
-    :global(a.right-link svg) {
+    :global(div.value-container a.right-link svg) {
         color: var(--color-secondary-grey);
         width: 22px;
-        height: auto;
-    }
-
-    :global(a.toggle-link svg) {
-        fill: var(--color-secondary-grey);
-        width: 30px;
         height: auto;
     }
 

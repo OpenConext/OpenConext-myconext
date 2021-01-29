@@ -3,11 +3,8 @@ package myconext.api;
 
 import myconext.exceptions.ForbiddenException;
 import myconext.exceptions.UserNotFoundException;
-import myconext.manage.ServiceNameResolver;
-import myconext.model.LinkedAccount;
-import myconext.model.SamlAuthenticationRequest;
-import myconext.model.StepUpStatus;
-import myconext.model.User;
+import myconext.manage.ServiceProviderResolver;
+import myconext.model.*;
 import myconext.repository.AuthenticationRequestRepository;
 import myconext.repository.UserRepository;
 import myconext.security.ACR;
@@ -71,7 +68,7 @@ public class AccountLinkerController {
     private final RestTemplate restTemplate = new RestTemplate();
     private final HttpHeaders headers = new HttpHeaders();
     private final AuthenticationRequestRepository authenticationRequestRepository;
-    private final ServiceNameResolver serviceNameResolver;
+    private final ServiceProviderResolver serviceProviderResolver;
     private final UserRepository userRepository;
     private final String magicLinkUrl;
     private final String idpErrorRedirectUrl;
@@ -84,7 +81,7 @@ public class AccountLinkerController {
     public AccountLinkerController(
             AuthenticationRequestRepository authenticationRequestRepository,
             UserRepository userRepository,
-            ServiceNameResolver serviceNameResolver,
+            ServiceProviderResolver serviceProviderResolver,
             @Value("${email.magic-link-url}") String magicLinkUrl,
             @Value("${idp_redirect_url}") String idpErrorRedirectUrl,
             @Value("${sp_redirect_url}") String spRedirectUrl,
@@ -97,7 +94,7 @@ public class AccountLinkerController {
             @Value("${oidc.expiry-duration-days-validated}") long expiryValidatedDurationDays) {
         this.authenticationRequestRepository = authenticationRequestRepository;
         this.userRepository = userRepository;
-        this.serviceNameResolver = serviceNameResolver;
+        this.serviceProviderResolver = serviceProviderResolver;
         this.magicLinkUrl = magicLinkUrl;
         this.idpErrorRedirectUrl = idpErrorRedirectUrl;
         this.spRedirectUrl = spRedirectUrl;
@@ -199,7 +196,9 @@ public class AccountLinkerController {
         String charSet = Charset.defaultCharset().name();
 
         String lang = cookieByName(request, "lang").map(cookie -> cookie.getValue()).orElse("en");
-        String serviceName = serviceNameResolver.resolve(samlAuthenticationRequest.getRequesterEntityId(), lang);
+        Optional<ServiceProvider> optionalServiceProvider = serviceProviderResolver.resolve(samlAuthenticationRequest.getRequesterEntityId());
+        String serviceName = optionalServiceProvider.map(serviceProvider -> lang.equals("en") ? serviceProvider.getName() : serviceProvider.getNameNl())
+                .orElse(samlAuthenticationRequest.getRequesterEntityId());
 
         String idpStudentAffiliationRequiredUri = this.idpErrorRedirectUrl + "/affiliation-missing/" +
                 samlAuthenticationRequest.getId() +

@@ -2,6 +2,7 @@ package myconext.aa;
 
 import io.restassured.http.ContentType;
 import myconext.AbstractIntegrationTest;
+import myconext.manage.MockServiceProviderResolver;
 import myconext.model.LinkedAccount;
 import myconext.model.User;
 import org.junit.Test;
@@ -46,7 +47,7 @@ public class AttributeAggregatorControllerTest extends AbstractIntegrationTest {
     public void aggregateExistingEduID() {
         User user = userRepository.findOneUserByEmailIgnoreCase("jdoe@example.com");
         String spEntityId = "http://mock-sp";
-        String eduId = user.computeEduIdForServiceProviderIfAbsent(spEntityId, null, null).get();
+        String eduId = user.computeEduIdForServiceProviderIfAbsent(spEntityId, new MockServiceProviderResolver());
         userRepository.save(user);
         List<UserAttribute> userAttributes = doAggregate(attributeAggregationUserName, attributeAggregationPassword, spEntityId, eppn);
 
@@ -139,7 +140,7 @@ public class AttributeAggregatorControllerTest extends AbstractIntegrationTest {
         Optional<User> optionalUser = userRepository.findUserByUid(uid);
         optionalUser.ifPresent(user -> {
             assertEquals(res.get("eduid"),
-                    user.computeEduIdForServiceProviderIfAbsent(spEntityId, null, null).get());
+                    user.computeEduIdForServiceProviderIfAbsent(spEntityId, new MockServiceProviderResolver()));
         });
         return res;
     }

@@ -16,7 +16,6 @@ public class MockShibbolethFilter extends GenericFilterBean {
 
     private String uid = "1234567890";//"mdoe";
     public String email = "jdoe@example.com";//"mdoe@example.com";
-    public String authenticatingAuthority = "https://account.test2.surfconext.nl";
 
     private static class SetHeader extends HttpServletRequestWrapper {
 
@@ -43,7 +42,6 @@ public class MockShibbolethFilter extends GenericFilterBean {
         HttpServletRequest servletRequest = (HttpServletRequest) request;
         SetHeader wrapper = new SetHeader(servletRequest);
         wrapper.setHeader(ShibbolethPreAuthenticatedProcessingFilter.SHIB_SCHAC_HOME_ORGANIZATION, "surfguest.nl");
-        wrapper.setHeader(ShibbolethPreAuthenticatedProcessingFilter.SHIB_AUTHENTICATING_AUTHORITY, authenticatingAuthority);
         wrapper.setHeader(ShibbolethPreAuthenticatedProcessingFilter.SHIB_UID, uid);
         wrapper.setHeader(ShibbolethPreAuthenticatedProcessingFilter.SHIB_EMAIL, email);
         wrapper.setHeader(ShibbolethPreAuthenticatedProcessingFilter.SHIB_GIVEN_NAME, "John");

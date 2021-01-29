@@ -26,7 +26,7 @@
         if (showConfirmation) {
             showModal = true
         } else {
-            startLinkAccountFlow("personal").then(json => {
+            startLinkAccountFlow().then(json => {
                 window.location.href = json.url;
             });
         }
@@ -72,6 +72,11 @@
         }
     }
 
+    :global(div.value-container a.toggle-link svg) {
+        fill: var(--color-secondary-grey);
+        width: 30px;
+        height: auto;
+    }
 
     tr.full {
         background-color: var(--color-background);
@@ -200,9 +205,9 @@
 {#if showModal}
     <Modal submit={addInstitution(false)}
            cancel={() => showModal = false}
-           question={I18n.t("dataActivity.addInstitutionConfirmation")}
-           title={I18n.t("dataActivity.addInstitution")}
-           confirmTitle={I18n.t("dataActivity.proceed")}>
+           question={I18n.t("profile.addInstitutionConfirmation")}
+           title={I18n.t("profile.addInstitution")}
+           confirmTitle={I18n.t("profile.proceed")}>
     </Modal>
 {/if}
 

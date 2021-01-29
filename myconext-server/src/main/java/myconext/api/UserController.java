@@ -12,7 +12,7 @@ import myconext.exceptions.ExpiredAuthenticationException;
 import myconext.exceptions.ForbiddenException;
 import myconext.exceptions.UserNotFoundException;
 import myconext.mail.MailBox;
-import myconext.manage.ServiceNameResolver;
+import myconext.manage.ServiceProviderResolver;
 import myconext.model.*;
 import myconext.oidcng.OpenIDConnect;
 import myconext.repository.*;
@@ -60,7 +60,7 @@ public class UserController {
     private final UserRepository userRepository;
     private final AuthenticationRequestRepository authenticationRequestRepository;
     private final MailBox mailBox;
-    private final ServiceNameResolver serviceNameResolver;
+    private final ServiceProviderResolver serviceProviderResolver;
     private final OpenIDConnect openIDConnect;
     private final String magicLinkUrl;
     private final String schacHomeOrganization;
@@ -87,7 +87,7 @@ public class UserController {
                           ChangeEmailHashRepository changeEmailHashRepository,
                           AuthenticationRequestRepository authenticationRequestRepository,
                           MailBox mailBox,
-                          ServiceNameResolver serviceNameResolver,
+                          ServiceProviderResolver serviceProviderResolver,
                           OpenIDConnect openIDConnect,
                           IdPMetaDataResolver idPMetaDataResolver,
                           EmailDomainGuard emailDomainGuard,
@@ -106,7 +106,7 @@ public class UserController {
         this.changeEmailHashRepository = changeEmailHashRepository;
         this.authenticationRequestRepository = authenticationRequestRepository;
         this.mailBox = mailBox;
-        this.serviceNameResolver = serviceNameResolver;
+        this.serviceProviderResolver = serviceProviderResolver;
         this.openIDConnect = openIDConnect;
         this.idPMetaDataResolver = idPMetaDataResolver;
         this.emailDomainGuard = emailDomainGuard;
@@ -152,9 +152,7 @@ public class UserController {
         String schacHomeOrganization = this.emailDomainGuard.schacHomeOrganizationByDomain(this.schacHomeOrganization, email);
 
         User userToSave = new User(UUID.randomUUID().toString(), email, user.getGivenName(),
-                user.getFamilyName(), schacHomeOrganization, requesterEntityId,
-                serviceNameResolver.resolve(requesterEntityId, "en"),
-                serviceNameResolver.resolve(requesterEntityId, "nl"), preferredLanguage);
+                user.getFamilyName(), schacHomeOrganization, preferredLanguage, requesterEntityId, serviceProviderResolver);
         userToSave = userRepository.save(userToSave);
 
         return this.doMagicLink(userToSave, samlAuthenticationRequest, magicLinkRequest.isRememberMe(), false, request);
@@ -178,14 +176,9 @@ public class UserController {
         User user = optionalUser.get();
         String requesterEntityId = samlAuthenticationRequest.getRequesterEntityId();
 
-        String serviceProviderName = serviceNameResolver.resolve(requesterEntityId, "en");
-        String serviceProviderNameNl = serviceNameResolver.resolve(requesterEntityId, "nl");
-        boolean needToSave = user.eduIdForServiceProviderNeedsUpdate(requesterEntityId, serviceProviderName, serviceProviderNameNl);
-        if (needToSave) {
-            logWithContext(user, "add", "eppn", LOG, "New eppn for user for first time use SP " + requesterEntityId);
-            user.computeEduIdForServiceProviderIfAbsent(requesterEntityId, serviceProviderName, serviceProviderNameNl);
-            userRepository.save(user);
-        }
+        logWithContext(user, "update", "user", LOG, "Updating user " + user.getEmail());
+        user.computeEduIdForServiceProviderIfAbsent(requesterEntityId, serviceProviderResolver);
+        userRepository.save(user);
 
         if (magicLinkRequest.isUsePassword()) {
             if (!passwordEncoder.matches(providedUser.getPassword(), user.getPassword())) {
@@ -207,11 +200,18 @@ public class UserController {
         if (user.isNewUser()) {
             mailBox.sendAccountVerification(user, samlAuthenticationRequest.getHash());
         } else {
-            String lang = cookieByName(request, "lang").map(cookie -> cookie.getValue()).orElse("en");
-            String serviceName = serviceNameResolver.resolve(samlAuthenticationRequest.getRequesterEntityId(), lang);
+            String serviceName = getServiceName(request, samlAuthenticationRequest);
             mailBox.sendMagicLink(user, samlAuthenticationRequest.getHash(), serviceName);
         }
         return ResponseEntity.ok(true);
+    }
+
+    private String getServiceName(HttpServletRequest request, SamlAuthenticationRequest samlAuthenticationRequest) {
+        String lang = cookieByName(request, "lang").map(cookie -> cookie.getValue()).orElse("en");
+        Optional<ServiceProvider> optionalServiceProvider = serviceProviderResolver.resolve(samlAuthenticationRequest.getRequesterEntityId());
+        String serviceName = optionalServiceProvider.map(serviceProvider -> lang.equals("en") ? serviceProvider.getName() : serviceProvider.getNameNl())
+                .orElse(samlAuthenticationRequest.getRequesterEntityId());
+        return serviceName;
     }
 
     @GetMapping("/idp/security/success")
@@ -676,9 +676,7 @@ public class UserController {
             samlAuthenticationRequest.setRememberMeValue(UUID.randomUUID().toString());
         }
         authenticationRequestRepository.save(samlAuthenticationRequest);
-
-        String lang = cookieByName(request, "lang").map(cookie -> cookie.getValue()).orElse("en");
-        String serviceName = serviceNameResolver.resolve(samlAuthenticationRequest.getRequesterEntityId(), lang);
+        String serviceName = getServiceName(request, samlAuthenticationRequest);
 
         if (passwordOrWebAuthnFlow) {
             LOG.debug(String.format("Returning passwordOrWebAuthnFlow magic link for existing user %s", user.getUsername()));

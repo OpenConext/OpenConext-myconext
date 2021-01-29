@@ -46,7 +46,11 @@ I18n.translations.nl = {
         affiliations: "Affiliation(s)",
         expires: "Koppeling verloopt",
         expiresValue: "{{date}}",
-        verifiedAt: "Geverifïeerd door <strong>{{name}}</strong> op {{date}}"
+        verifiedAt: "Geverifïeerd door <strong>{{name}}</strong> op {{date}}",
+        addInstitutionConfirmation: "Als je doorgaat word je gevraagd in te loggen via de onderwijsinstelling die je wilt koppelen. Selecteer eerst welke instelling je wilt koppelen en log daarna in.<br/> <br/>Nadat je succesvol bent ingelogd kom je hier weer terug.",
+        proceed: "Doorgaan",
+        addInstitution: "Instelling toevoegen"
+
     },
     edit: {
         title: "Aanpassen profielgegevens",
@@ -119,19 +123,6 @@ I18n.translations.nl = {
         noServices: "Je bent nog niet ingelogd geweest op een dienst via eduID.",
         name: "Naam",
         add: "Nieuwe instelling koppelen",
-        addInstitutionConfirmation: "Als je doorgaat word je gevraagd in te loggen via de onderwijsinstelling die je wilt koppelen. Selecteer eerst welke instelling je wilt koppelen en log daarna in.<br/> <br/>Nadat je succesvol bent ingelogd kom je hier weer terug.",
-        proceed: "Doorgaan",
-        addInstitution: "Instelling toevoegen"
-    },
-    institutions: {
-        title: "Gekoppelde instellingen",
-        explanation: "Door je onderwijsinstelling aan je eduID te koppelen, kun je via eduID bewijzen dat je aan een onderwijsinstelling studeert of werkt.",
-        noInstitutions: "Je hebt geen onderwijsinstelling(en) gekoppeld. Klik op de onderstaande knop als je een instelling wilt koppelen.",
-        name: "Korte naam",
-        add: "Nieuwe instelling koppelen",
-        addInstitutionConfirmation: "Als je doorgaat word je gevraagd in te loggen via de onderwijsinstelling die je wilt koppelen. Selecteer eerst welke instelling je wilt koppelen en log daarna in.<br/> <br/>Nadat je succesvol bent ingelogd kom je hier weer terug.",
-        proceed: "Doorgaan",
-        addInstitution: "Instelling toevoegen"
     },
     institution: {
         title: "Gekoppelde instelling",

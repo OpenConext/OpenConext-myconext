@@ -41,6 +41,7 @@ onegini_entity_id: http://mock-idp
 guest_idp_entity_id: https://localhost.surf.id
 my_conext_url: https://my.test2.surfconext.nl
 domain: eduid.nl
+mijn_eduid_entity_id: http://mijn.localhost/shibboleth
 
 feature:
   webauthn: True

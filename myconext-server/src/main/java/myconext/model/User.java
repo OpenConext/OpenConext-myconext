@@ -6,6 +6,7 @@ import com.yubico.webauthn.data.PublicKeyCredentialDescriptor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import myconext.exceptions.WeakPasswordException;
+import myconext.manage.ServiceProviderResolver;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.Transient;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -14,14 +15,12 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.util.Assert;
-import org.springframework.util.StringUtils;
 
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -51,16 +50,17 @@ public class User implements Serializable, UserDetails {
     private String userHandle;
     private boolean forgottenPassword;
 
+    private Map<String, List<String>> attributes = new HashMap<>();
+
+    private List<PublicKeyCredentials> publicKeyCredentials = new ArrayList<>();
     private List<LinkedAccount> linkedAccounts = new ArrayList<>();
     private Map<String, EduID> eduIdPerServiceProvider = new HashMap<>();
-    private List<PublicKeyCredentials> publicKeyCredentials = new ArrayList<>();
-    private Map<String, List<String>> attributes = new HashMap<>();
 
     private long created;
     private long updatedAt = System.currentTimeMillis() / 1000L;
 
-    public User(String uid, String email, String givenName, String familyName, String schacHomeOrganization,
-                String serviceProviderEntityId, String serviceProviderName, String serviceProviderNameNl, String preferredLanguage) {
+    public User(String uid, String email, String givenName, String familyName, String schacHomeOrganization, String preferredLanguage,
+                String serviceProviderEntityId, ServiceProviderResolver serviceProviderResolver) {
         this.uid = uid;
         this.email = email;
         this.givenName = givenName;
@@ -68,9 +68,10 @@ public class User implements Serializable, UserDetails {
         this.schacHomeOrganization = schacHomeOrganization;
         this.preferredLanguage = preferredLanguage;
 
-        this.computeEduIdForServiceProviderIfAbsent(serviceProviderEntityId, serviceProviderName, serviceProviderNameNl);
+        this.computeEduIdForServiceProviderIfAbsent(serviceProviderEntityId, serviceProviderResolver);
         this.newUser = true;
         this.created = System.currentTimeMillis() / 1000L;
+        this.updatedAt = created;
     }
 
     public void validate() {
@@ -97,32 +98,17 @@ public class User implements Serializable, UserDetails {
     }
 
     @Transient
-    public Optional<String> computeEduIdForServiceProviderIfAbsent(String serviceProviderEntityId, String serviceProviderName, String serviceProviderNameNl) {
-        Optional<String> result = StringUtils.hasText(serviceProviderEntityId) ?
-                Optional.of(this.eduIdPerServiceProvider.computeIfAbsent(serviceProviderEntityId, s ->
-                        new EduID(UUID.randomUUID().toString(), serviceProviderName, serviceProviderNameNl, new Date())).getValue()) :
-                Optional.empty();
-        syncServiceName(serviceProviderEntityId, serviceProviderName, serviceProviderNameNl);
-        return result;
-    }
-
-    private boolean syncServiceName(String serviceProviderEntityId, String serviceProviderName, String serviceProviderNameNl) {
-        EduID eduID = this.eduIdPerServiceProvider.get(serviceProviderEntityId);
-        boolean needsSyncing = (StringUtils.hasText(serviceProviderName) && !serviceProviderName.equals(eduID.getServiceName())) ||
-                (StringUtils.hasText(serviceProviderNameNl) && !serviceProviderNameNl.equals(eduID.getServiceNameNl()));
-        if (needsSyncing) {
-            eduID.updateServiceName(serviceProviderName, serviceProviderNameNl);
+    public String computeEduIdForServiceProviderIfAbsent(String serviceProviderEntityId, ServiceProviderResolver serviceProviderResolver) {
+        Optional<ServiceProvider> optionalServiceProvider = serviceProviderResolver.resolve(serviceProviderEntityId);
+        if (this.eduIdPerServiceProvider.containsKey(serviceProviderEntityId)) {
+            EduID eduID = this.eduIdPerServiceProvider.get(serviceProviderEntityId);
+            optionalServiceProvider.ifPresent(eduID::updateServiceProvider);
+            return eduID.getValue();
+        } else {
+            EduID eduID = new EduID(UUID.randomUUID().toString(), serviceProviderEntityId, optionalServiceProvider);
+            this.eduIdPerServiceProvider.put(serviceProviderEntityId, eduID);
+            return eduID.getValue();
         }
-        return needsSyncing;
-    }
-
-    @Transient
-    public boolean eduIdForServiceProviderNeedsUpdate(String serviceProviderEntityId, String serviceProviderName, String serviceProviderNameNl) {
-        if (!this.eduIdPerServiceProvider.containsKey(serviceProviderEntityId)) {
-            return true;
-        }
-        return syncServiceName(serviceProviderEntityId, serviceProviderName, serviceProviderNameNl);
-
     }
 
     @Override

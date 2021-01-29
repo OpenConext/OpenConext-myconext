@@ -28,13 +28,13 @@
       "http://mock-sp": {
         "value": "3060b9ce-9cf2-4e5b-8164-bf0a2b706720",
         "serviceName": "Mock SP",
-        "serviceNameNl" : "Mock SP NL",
+        "serviceNameNl": "Mock SP NL",
+        "logoUrl": "https://static.surfconext.nl/media/sp/eduid.png",
+        "homeUrl": "https://eduid.nl/",
         "createdAt": "2020-11-12T13:55:50.229Z"
       },
       "playground_client": {
         "value": "fc75dcc7-6def-4054-b8ba-3c3cc504dd4b",
-        "serviceName": "Playground Client",
-        "serviceNameNl" : "Playground Client NL",
         "createdAt": "2020-11-12T13:55:50.229Z"
       }
     },

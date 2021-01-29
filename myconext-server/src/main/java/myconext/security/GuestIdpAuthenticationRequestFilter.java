@@ -2,7 +2,7 @@ package myconext.security;
 
 import myconext.exceptions.UserNotFoundException;
 import myconext.mail.MailBox;
-import myconext.manage.ServiceNameResolver;
+import myconext.manage.ServiceProviderResolver;
 import myconext.model.*;
 import myconext.repository.AuthenticationRequestRepository;
 import myconext.repository.UserRepository;
@@ -75,12 +75,12 @@ public class GuestIdpAuthenticationRequestFilter extends IdpAuthenticationReques
     private final boolean secureCookie;
     private final String magicLinkUrl;
     private final MailBox mailBox;
-    private final ServiceNameResolver serviceNameResolver;
+    private final ServiceProviderResolver serviceProviderResolver;
 
     public GuestIdpAuthenticationRequestFilter(SamlProviderProvisioning<IdentityProviderService> provisioning,
                                                SamlMessageStore<Assertion, HttpServletRequest> assertionStore,
                                                String redirectUrl,
-                                               ServiceNameResolver serviceNameResolver,
+                                               ServiceProviderResolver serviceProviderResolver,
                                                AuthenticationRequestRepository authenticationRequestRepository,
                                                UserRepository userRepository,
                                                int rememberMeMaxAge,
@@ -92,7 +92,7 @@ public class GuestIdpAuthenticationRequestFilter extends IdpAuthenticationReques
         this.magicSamlRequestMatcher = new SamlRequestMatcher(provisioning, "magic");
         this.continueAfterloginSamlRequestMatcher = new SamlRequestMatcher(provisioning, "continue");
         this.redirectUrl = redirectUrl;
-        this.serviceNameResolver = serviceNameResolver;
+        this.serviceProviderResolver = serviceProviderResolver;
         this.authenticationRequestRepository = authenticationRequestRepository;
         this.userRepository = userRepository;
         this.accountLinkingContextClassReferences = ACR.all();
@@ -160,8 +160,8 @@ public class GuestIdpAuthenticationRequestFilter extends IdpAuthenticationReques
 
         User previousAuthenticatedUser = userRememberedOptional.orElse(userFromAuthentication.orElse(null));
 
-        String lang = cookieByName(request, "lang").map(cookie -> cookie.getValue()).orElse("en");
-        String encodedServiceName = URLEncoder.encode(serviceNameResolver.resolve(requesterEntityId, lang), "UTF-8");
+        String serviceName = this.getServiceName(request, samlAuthenticationRequest);
+        String encodedServiceName = URLEncoder.encode(serviceName, "UTF-8");
 
         if (previousAuthenticatedUser != null && !authenticationRequest.isForceAuth()) {
             if (accountLinkingRequired && !isUserVerifiedByInstitution(previousAuthenticatedUser,
@@ -189,6 +189,14 @@ public class GuestIdpAuthenticationRequestFilter extends IdpAuthenticationReques
             response.sendRedirect(this.redirectUrl + "/login/" + samlAuthenticationRequest.getId() +
                     "?name=" + encodedServiceName + modus + stepUp);
         }
+    }
+
+    private String getServiceName(HttpServletRequest request, SamlAuthenticationRequest samlAuthenticationRequest) {
+        String lang = cookieByName(request, "lang").map(cookie -> cookie.getValue()).orElse("en");
+        Optional<ServiceProvider> optionalServiceProvider = serviceProviderResolver.resolve(samlAuthenticationRequest.getRequesterEntityId());
+        String serviceName = optionalServiceProvider.map(serviceProvider -> lang.equals("en") ? serviceProvider.getName() : serviceProvider.getNameNl())
+                .orElse(samlAuthenticationRequest.getRequesterEntityId());
+        return serviceName;
     }
 
     public static boolean isUserVerifiedByInstitution(User user, List<String> authenticationContextClassReferenceValues) {
@@ -286,8 +294,8 @@ public class GuestIdpAuthenticationRequestFilter extends IdpAuthenticationReques
 
         String charSet = Charset.defaultCharset().name();
 
-        String lang = cookieByName(request, "lang").map(cookie -> cookie.getValue()).orElse("en");
-        String encodedServiceName = URLEncoder.encode(serviceNameResolver.resolve(samlAuthenticationRequest.getRequesterEntityId(), lang), charSet);
+        String serviceName = this.getServiceName(request, samlAuthenticationRequest);
+        String encodedServiceName = URLEncoder.encode(serviceName, "UTF-8");
         boolean hasStudentAffiliation = hasRequiredStudentAffiliation(user.allEduPersonAffiliations());
         String explanation = ACR.explanationKeyWord(authenticationContextClassReferences, hasStudentAffiliation);
 
@@ -309,7 +317,7 @@ public class GuestIdpAuthenticationRequestFilter extends IdpAuthenticationReques
             String url = this.redirectUrl + "/confirm?h=" + hash +
                     "&redirect=" + URLEncoder.encode(this.magicLinkUrl, charSet) +
                     "&email=" + URLEncoder.encode(user.getEmail(), charSet) +
-                    "&name=" + URLEncoder.encode(serviceNameResolver.resolve(samlAuthenticationRequest.getRequesterEntityId(), lang), charSet);
+                    "&name=" + encodedServiceName;
             if (!StepUpStatus.NONE.equals(samlAuthenticationRequest.getSteppedUp())) {
                 url += "&explanation=" + explanation;
             }
@@ -321,7 +329,7 @@ public class GuestIdpAuthenticationRequestFilter extends IdpAuthenticationReques
         } else if (inStepUpFlow) {
             response.sendRedirect(this.redirectUrl + "/confirm-stepup?h=" + hash +
                     "&redirect=" + URLEncoder.encode(this.magicLinkUrl, charSet) +
-                    "&name=" + URLEncoder.encode(serviceNameResolver.resolve(samlAuthenticationRequest.getRequesterEntityId(), lang), charSet) +
+                    "&name=" + encodedServiceName +
                     "&explanation=" + explanation);
             finishStepUp(samlAuthenticationRequest);
             return;
@@ -489,12 +497,8 @@ public class GuestIdpAuthenticationRequestFilter extends IdpAuthenticationReques
                 attribute("urn:mace:dir:attribute-def:uid", user.getUid()),
                 attribute("urn:mace:terena.org:attribute-def:schacHomeOrganization", user.getSchacHomeOrganization())
         ));
-        String serviceProviderName = serviceNameResolver.resolve(requesterEntityId, "en");
-        String serviceProviderNameNl = serviceNameResolver.resolve(requesterEntityId, "nl");
-        if (user.eduIdForServiceProviderNeedsUpdate(requesterEntityId, serviceProviderName, serviceProviderNameNl)) {
-            user.computeEduIdForServiceProviderIfAbsent(requesterEntityId, serviceProviderName, serviceProviderNameNl);
-            userRepository.save(user);
-        }
+        user.computeEduIdForServiceProviderIfAbsent(requesterEntityId, serviceProviderResolver);
+        userRepository.save(user);
 
         String eduID = user.getEduIdPerServiceProvider().get(requesterEntityId).getValue();
         attributes.add(attribute("urn:mace:eduid.nl:1.1", eduID));

@@ -4,11 +4,12 @@ package myconext;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.restassured.RestAssured;
-import io.restassured.filter.session.SessionFilter;
 import io.restassured.http.Cookie;
 import io.restassured.response.Response;
 import io.restassured.specification.RequestSpecification;
 import myconext.api.MagicLinkResponse;
+import myconext.manage.MockServiceProviderResolver;
+import myconext.manage.ServiceProviderResolver;
 import myconext.model.*;
 import myconext.repository.AuthenticationRequestRepository;
 import myconext.repository.ChangeEmailHashRepository;
@@ -70,6 +71,8 @@ import static org.junit.Assert.assertTrue;
 @ActiveProfiles({"test"})
 @SuppressWarnings("unchecked")
 public abstract class AbstractIntegrationTest {
+
+    private static final ServiceProviderResolver serviceProviderResolver = new MockServiceProviderResolver();
 
     @LocalServerPort
     protected int port;
@@ -204,8 +207,8 @@ public abstract class AbstractIntegrationTest {
     }
 
     public static User user(String email, String givenName, String familyName, String lang) {
-        return new User(UUID.randomUUID().toString(), email, givenName, familyName, "surfguest.nl",
-                "http://mock-sp", "Mock SP", "Mock SP NL", lang);
+        return new User(UUID.randomUUID().toString(), email, givenName, familyName, "surfguest.nl", lang,
+                "http://mock-sp", serviceProviderResolver);
     }
 
     protected void userSetPassword(User user, String plainTextPassword) {

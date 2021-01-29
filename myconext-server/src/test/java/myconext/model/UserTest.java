@@ -1,6 +1,8 @@
 package myconext.model;
 
 import myconext.exceptions.WeakPasswordException;
+import myconext.manage.MockServiceProviderResolver;
+import myconext.manage.ServiceProviderResolver;
 import org.junit.Test;
 import org.springframework.web.util.UriComponentsBuilder;
 
@@ -10,11 +12,13 @@ import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 import java.util.regex.Pattern;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 public class UserTest {
 
@@ -30,23 +34,16 @@ public class UserTest {
 
     @Test
     public void computeEduIdForServiceProviderIfAbsent() {
+        ServiceProviderResolver serviceProviderResolver = mock(ServiceProviderResolver.class);
+        when(serviceProviderResolver.resolve(anyString())).thenReturn(Optional.empty());
         User user = user("http://mock-sp", "Mock SP");
-        String eduId = user.computeEduIdForServiceProviderIfAbsent("http://test.sp", "Mock SP", "Mock SP NL").get();
+        String eduId = user.computeEduIdForServiceProviderIfAbsent("http://test.sp", serviceProviderResolver);
         boolean matches = Pattern.compile("^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$").matcher(eduId).matches();
         assertTrue(matches);
 
-        assertFalse(user.computeEduIdForServiceProviderIfAbsent(null, null, null).isPresent());
+        String existingEduId = user.computeEduIdForServiceProviderIfAbsent("http://test.sp", serviceProviderResolver);
+        assertEquals(eduId, existingEduId);
 
-    }
-
-    @Test
-    public void eduIdForServiceProviderNeedsUpdate() {
-        User user = user("http://mock-sp", null);
-
-        assertTrue(user.eduIdForServiceProviderNeedsUpdate("http://rp", null, null));
-        assertTrue(user.eduIdForServiceProviderNeedsUpdate(null, null, null));
-        assertTrue(user.eduIdForServiceProviderNeedsUpdate("http://mock-sp", "Mock SP - EN", "Mock SP - NL"));
-        assertTrue(user.eduIdForServiceProviderNeedsUpdate("http://mock-sp", "Mock SP", "Mock SP - NL"));
     }
 
     @Test(expected = WeakPasswordException.class)
@@ -56,8 +53,8 @@ public class UserTest {
     }
 
     private User user(String serviceProviderEntityId, String serviceProviderName) {
-        return new User("uid", "email", "John", "Doe", "schac",
-                serviceProviderEntityId, serviceProviderName, serviceProviderName, "en");
+        return new User("uid", "email", "John", "Doe", "schac", "en",
+                serviceProviderEntityId, new MockServiceProviderResolver());
     }
 
 }

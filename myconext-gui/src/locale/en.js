@@ -46,7 +46,10 @@ I18n.translations.en = {
         affiliations: "Affiliation(s)",
         expires: "Connection expires",
         expiresValue: "{{date}}",
-        verifiedAt: "Verified by <strong>{{name}}</strong> on {{date}}"
+        verifiedAt: "Verified by <strong>{{name}}</strong> on {{date}}",
+        addInstitutionConfirmation: "When you proceed you will be asked to login at the institution you want to connect to your eduID. First, select which institution you want to connect; then, login at that institution.<br/><br/>After a successful login you will come back here.",
+        proceed: "Proceed",
+        addInstitution: "Add institution"
     },
     edit: {
         title: "Name",
@@ -119,9 +122,19 @@ I18n.translations.en = {
         noServices: "You did not yet use eduID to login to any service.",
         name: "Name",
         add: "Connect new institution",
-        addInstitutionConfirmation: "When you proceed you will be asked to login at the institution you want to connect to your eduID. First, select which institution you want to connect; then, login at that institution.<br/><br/>After a successful login you will come back here.",
-        proceed: "Proceed",
-        addInstitution: "Add institution"
+        access: "Can access your data",
+        details: {
+            login: "Login details",
+            delete: "Delete login details",
+            first: "First login",
+            eduID: "Unique eduID identifier",
+            homePage: "Homepage",
+            deleteDisclaimer: "<sup>*</sup> Deleting these login details means eduID removes this information from your eduID account. You still have an account at the service itself. If you want that removed, please doso at the service.",
+            access: "Access rights",
+            details: "Access details",
+            consent: "Date of consent",
+            revoke: "Revoke access"
+        }
     },
     institution: {
         title: "Connected institution",

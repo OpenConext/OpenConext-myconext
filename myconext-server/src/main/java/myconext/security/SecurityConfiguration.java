@@ -3,7 +3,7 @@ package myconext.security;
 import myconext.config.BeanConfig;
 import myconext.crypto.KeyGenerator;
 import myconext.log.MDCFilter;
-import myconext.mail.MailBox;
+import myconext.manage.ServiceProviderResolver;
 import myconext.model.ServiceProvider;
 import myconext.repository.UserRepository;
 import myconext.shibboleth.ShibbolethPreAuthenticatedProcessingFilter;
@@ -151,19 +151,19 @@ public class SecurityConfiguration {
     @Configuration
     public static class InternalSecurityConfigurationAdapter extends WebSecurityConfigurerAdapter {
 
-        private Environment environment;
-        private UserRepository userRepository;
-        private MailBox mailBox;
-        private String oneginiEntityId;
+        private final Environment environment;
+        private final UserRepository userRepository;
+        private final ServiceProviderResolver serviceProviderResolver;
+        private final String mijnEduIDEntityId;
 
         public InternalSecurityConfigurationAdapter(Environment environment,
                                                     UserRepository userRepository,
-                                                    @Value("${onegini_entity_id}") String oneginiEntityId,
-                                                    MailBox mailBox) {
+                                                    ServiceProviderResolver serviceProviderResolver,
+                                                    @Value("${mijn_eduid_entity_id}") String mijnEduIDEntityId) {
             this.environment = environment;
             this.userRepository = userRepository;
-            this.mailBox = mailBox;
-            this.oneginiEntityId = oneginiEntityId;
+            this.serviceProviderResolver = serviceProviderResolver;
+            this.mijnEduIDEntityId = mijnEduIDEntityId;
         }
 
         @Override
@@ -187,8 +187,8 @@ public class SecurityConfiguration {
                             new ShibbolethPreAuthenticatedProcessingFilter(
                                     authenticationManagerBean(),
                                     userRepository,
-                                    oneginiEntityId,
-                                    mailBox),
+                                    serviceProviderResolver,
+                                    mijnEduIDEntityId),
                             AbstractPreAuthenticatedProcessingFilter.class
                     )
                     .authorizeRequests()
