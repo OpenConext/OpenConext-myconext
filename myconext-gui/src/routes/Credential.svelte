@@ -1,7 +1,7 @@
 <script>
     import {user, flash} from "../stores/user";
     import I18n from "i18n-js";
-    import {deletePublicKeyCredential} from "../api";
+    import {deletePublicKeyCredential, updatePublicKeyCredential} from "../api";
     import {navigate} from "svelte-routing";
     import chevron_left from "../icons/chevron-left.svg";
     import Button from "../components/Button.svelte";
@@ -11,12 +11,26 @@
 
     let credential = {};
     let showModal = false;
+    let name = "";
 
     onMount(() => {
         const urlSearchParams = new URLSearchParams(window.location.search);
         const id = urlSearchParams.get("id");
         credential = $user.publicKeyCredentials.find(cred => cred.identifier === id)
     });
+
+    const updateCredential = () => {
+        updatePublicKeyCredential({...credential, name: name})
+            .then(json => {
+                for (var key in json) {
+                    if (json.hasOwnProperty(key)) {
+                        $user[key] = json[key];
+                    }
+                }
+                navigate("/security");
+                flash.setValue(I18n.t("credential.updated", {name: name}));
+            });
+    }
 
     const deleteCredential = showConfirmation => () => {
         if (showConfirmation) {
@@ -28,46 +42,27 @@
                         $user[key] = json[key];
                     }
                 }
-                navigate("/webauthn");
+                navigate("/security");
                 flash.setValue(I18n.t("credential.deleted", {name: credential.name}));
             });
         }
     }
 
-    const cancel = () => navigate("/webauthn");
+    const cancel = () => navigate("/security");
 
 </script>
 
-<style>
+<style lang="scss">
     .credential {
         width: 100%;
         display: flex;
+        flex-direction: column;
         height: 100%;
     }
 
-    @media (max-width: 820px) {
-        .left {
-            display: none;
-        }
-
-        .inner {
-            border-left: none;
-        }
-    }
-
-    .header {
-        display: flex;
-        align-items: center;
-        align-content: center;
-        color: var(--color-primary-green);
-    }
-
-    .header a {
-        margin-top: 8px;
-    }
-
     h2 {
-        margin-left: 25px;
+        margin-top: 25px;
+        color: var(--color-primary-green);
     }
 
     p.info {
@@ -105,41 +100,39 @@
 
     .options {
         margin-top: 60px;
+        display: flex;
+        align-items: center;
+        span.first {
+            margin-right: auto;
+        }
+
     }
 
 </style>
 <div class="credential">
-    <div class="left"></div>
-    <div class="inner">
-        <div class="header">
-            <a href="/back" on:click|preventDefault|stopPropagation={cancel}>
-                {@html chevron_left}
-            </a>
-            <h2>{I18n.t("credential.title")}</h2>
-        </div>
-        <p class="info">{I18n.t("credential.info", formatCreateDate(credential.createdAt))}</p>
+    <h2>{I18n.t("credential.title")}</h2>
+    <p class="info">{I18n.t("credential.info", formatCreateDate(credential.createdAt))}</p>
 
-        <table cellspacing="0">
-            <thead></thead>
-            <tbody>
-            <tr class="name">
-                <td class="attr">{I18n.t("credential.name")}</td>
-                <td class="value">
-                    <div class="value-container">
-                        <span>{`${credential.name}`}</span>
-                    </div>
-                </td>
-            </tr>
-            </tbody>
-        </table>
+    <table cellspacing="0">
+        <thead></thead>
+        <tbody>
+        <tr class="name">
+            <td class="attr">{I18n.t("credential.name")}</td>
+            <td class="value">
+                <div class="value-container">
+                    <span>{`${credential.name}`}</span>
+                </div>
+            </td>
+        </tr>
+        </tbody>
+    </table>
 
 
-        <div class="options">
-            <Button className="cancel" label={I18n.t("credential.cancel")} onClick={cancel}/>
-            <Button label={I18n.t("credential.delete")} className="cancel" onClick={deleteCredential(true)}/>
-        </div>
+    <div class="options">
+        <span class="first"><Button deletion={true} onClick={deleteCredential(true)}/></span>
+        <Button small={true} className="cancel" label={I18n.t("credential.cancel")} onClick={cancel}/>
+        <Button medium={true} label={I18n.t("credential.update")} onClick={updateCredential}/>
     </div>
-
 </div>
 
 {#if showModal}
@@ -147,6 +140,6 @@
            cancel={() => showModal = false}
            warning={true}
            question={I18n.t("credential.deleteCredentialConfirmation", {name: credential.name})}
-                   title={I18n.t("credential.deleteCredential")}>
+           title={I18n.t("credential.deleteCredential")}>
     </Modal>
 {/if}

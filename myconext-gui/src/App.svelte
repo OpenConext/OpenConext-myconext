@@ -264,7 +264,9 @@
                     <Route path="/service">
                         <Home bookmark="service"/>
                     </Route>
-                    <Route path="/credential" component={Credential}/>
+                    <Route path="/credential">
+                        <Home bookmark="credential"/>
+                    </Route>
                     <Route path="/migration">
                         <Home bookmark="migration"/>
                     </Route>

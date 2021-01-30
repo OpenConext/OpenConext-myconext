@@ -49,6 +49,11 @@
         }
     }
 
+    const toggleDetails = () => {
+        if (verified) {
+            showDetails = !showDetails;
+        }
+    }
 
 </script>
 <style lang="scss">
@@ -80,6 +85,14 @@
 
     tr.full {
         background-color: var(--color-background);
+    }
+
+    tr.verified {
+        cursor: pointer;
+
+        &:hover {
+            background-color: var(--color-background);
+        }
     }
 
     td.verified-at {
@@ -148,7 +161,7 @@
 
 </style>
 
-<tr class:full={showDetails}>
+<tr class:full={showDetails} class:verified={verified} on:click={toggleDetails}>
     <td class="attr">{attr}</td>
     <td class="verified">{@html verified ? verifiedSvg : nonVerifiedSvg}</td>
     <td class="value">
@@ -156,7 +169,7 @@
             {#if verified}
                 <span>{verifiedValue}</span>
                 <a class="toggle-link" href="/"
-                   on:click|preventDefault|stopPropagation={() => showDetails = !showDetails}>
+                   on:click|preventDefault|stopPropagation={toggleDetails}>
                     {@html showDetails ? chevronUpSvg : chevronDownSvg}
                 </a>
             {:else}
@@ -178,7 +191,10 @@
                 <tbody>
                 <tr>
                     <td colspan="2" class="verified-at">
-                        {@html I18n.t("profile.verifiedAt", {...formatCreateDate(account.createdAt), name: account.schacHomeOrganization})}
+                        {@html I18n.t("profile.verifiedAt", {
+                            ...formatCreateDate(account.createdAt),
+                            name: account.schacHomeOrganization
+                        })}
                     </td>
                 </tr>
                 <tr>

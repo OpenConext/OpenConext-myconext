@@ -24,6 +24,7 @@ import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.i18n.LocaleContextHolder;
+import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -349,6 +350,27 @@ public class UserController {
         userRepository.save(user);
 
         logWithContext(user, "delete", "linked_account", LOG, "Deleted linked account " + linkedAccount.getSchacHomeOrganization());
+
+        return userResponseRememberMe(user);
+    }
+
+    @PostMapping("/sp/credential")
+    public ResponseEntity updatePublicKeyCredential(Authentication authentication,
+                                                    @RequestBody Map<String, String> credential) {
+        User user = userFromAuthentication(authentication);
+
+        String identifier = credential.get("identifier");
+        Optional<PublicKeyCredentials> publicKeyCredentials = user.getPublicKeyCredentials().stream()
+                .filter(key -> key.getIdentifier().equals(identifier))
+                .findFirst();
+        if (!publicKeyCredentials.isPresent()) {
+            return return404();
+        }
+        PublicKeyCredentials credentials = publicKeyCredentials.get();
+        credentials.setName(credential.get("name"));
+        userRepository.save(user);
+
+        logWithContext(user, "update", "webauthn_key", LOG, "Deleted publicKeyCredential " + credential.get("name"));
 
         return userResponseRememberMe(user);
     }

@@ -321,6 +321,26 @@ public class UserControllerTest extends AbstractIntegrationTest {
     }
 
     @Test
+    public void updatePublicKeyCredential() {
+        User user = userRepository.findOneUserByEmailIgnoreCase("jdoe@example.com");
+        PublicKeyCredentials publicKeyCredentials = user.getPublicKeyCredentials().get(0);
+        Map<String, String> body = new HashMap<>();
+        body.put("identifier", publicKeyCredentials.getIdentifier());
+        body.put("name", "Red ubi-key");
+        given()
+                .when()
+                .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+                .body(body)
+                .post("/myconext/api/sp/credential")
+                .then()
+                .statusCode(200);
+
+        User userFromDB = userRepository.findOneUserByEmailIgnoreCase("jdoe@example.com");
+
+        assertEquals(body.get("name"), userFromDB.getPublicKeyCredentials().get(0).getName());
+    }
+
+    @Test
     public void removePublicKeyCredential() {
         User user = userRepository.findOneUserByEmailIgnoreCase("jdoe@example.com");
         PublicKeyCredentials publicKeyCredentials = user.getPublicKeyCredentials().get(0);

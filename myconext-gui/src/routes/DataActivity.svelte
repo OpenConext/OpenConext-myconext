@@ -102,6 +102,10 @@
         tr {
             cursor: pointer;
 
+            &:hover {
+                background-color: var(--color-background);
+            }
+
             &.full {
                 background-color: var(--color-background);
             }
@@ -127,6 +131,7 @@
 
             &.logo {
                 width: 72px;
+
                 img {
                     width: 72px;
                     height: auto;
@@ -228,7 +233,7 @@
                         </td>
                     </tr>
                     {#if showDetails[service.eduId]}
-                        <Service service={service}/>
+                        <Service service={service} refresh={refresh}/>
                     {/if}
                 {/each}
                 </tbody>

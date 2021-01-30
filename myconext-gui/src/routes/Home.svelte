@@ -16,6 +16,7 @@
     import PersonalInfo from "./PersonalInfo.svelte";
     import EditName from "./EditName.svelte";
     import EditEmail from "./EditEmail.svelte";
+    import Credential from "./Credential.svelte";
     import Security from "./Security.svelte";
     import DataActivity from "./DataActivity.svelte";
     import Service from "./Service.svelte";
@@ -34,6 +35,8 @@
         {name: "edit-name", alias: "personal", component: EditName, ignore: true},
         {name: "edit-email", alias: "personal", component: EditEmail, ignore: true},
         {name: "service", alias: "services", component: Service, ignore: true},
+        {name: "credential", alias: "security", component: Credential, ignore: true},
+
     ];
 
     let currentTab = tabs[0];
@@ -59,7 +62,7 @@
     }
 
     nav {
-        min-width: 270px;
+        min-width: 246px;
         background-color: #f3f6f8;
         min-height: 100%;
         border-bottom-left-radius: 8px;
@@ -87,7 +90,7 @@
         nav.open {
             margin-right: 0;
             position: absolute;
-            min-width: 270px;
+            min-width: 246px;
             padding-bottom: 0;
         }
 

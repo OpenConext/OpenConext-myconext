@@ -7,15 +7,22 @@
 
     const {validEmail} = require("../validation/regexp");
     import Button from "../components/Button.svelte";
+    import {onMount} from "svelte";
 
     let verifiedEmail = "";
     let duplicateEmail = false;
+    let back = "personal";
+
+    onMount(() => {
+        const urlSearchParams = new URLSearchParams(window.location.search);
+        back = urlSearchParams.get("back") || back;
+    })
 
     const update = () => {
         if (validEmail(verifiedEmail) && verifiedEmail.toLowerCase() !== $user.email.toLowerCase()) {
             updateEmail({...$user, email: verifiedEmail})
                 .then(() => {
-                    navigate("/personal");
+                    navigate(`/${back}`);
                     flash.setValue(I18n.t("email.updated", {email: verifiedEmail}));
                 }).catch(e => {
                 if (e.status === 409) {
@@ -25,7 +32,9 @@
         }
     };
 
-    const cancel = () => navigate("/personal");
+    const cancel = () => {
+        navigate(`/${back}`);
+    }
 
     $: emailEquality = verifiedEmail.toLowerCase() === $user.email.toLowerCase();
 

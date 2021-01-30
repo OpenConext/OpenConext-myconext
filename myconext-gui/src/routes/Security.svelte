@@ -2,22 +2,51 @@
     import {user, flash, config} from "../stores/user";
     import I18n from "i18n-js";
     import {navigate} from "svelte-routing";
-    import chevron_right from "../icons/chevron-right.svg";
-    import CheckBox from "../components/CheckBox.svelte";
+    import writeSvg from "../icons/redesign/pencil-write.svg";
+    import rocketSvg from "../icons/redesign/space-rocket-flying.svg";
     import {supported} from "@github/webauthn-json"
+    import Button from "../components/Button.svelte";
+    import {forgetMe, testWebAutnUrl} from "../api";
+    import verifiedSvg from "../icons/redesign/shield-full.svg";
+    import nonVerifiedSvg from "../icons/redesign/shield-empty.svg";
+    import Modal from "../components/Modal.svelte";
 
     let password = $user.usePassword ? "************************" : I18n.t("security.notSet");
     let passwordStyle = $user.usePassword ? "value" : "value-alt";
 
     const supportsWebAuthn = supported();
     let publicKey = $user.usePublicKey ? "************************" :
-            supportsWebAuthn ? I18n.t("security.notSet") : I18n.t("security.notSupported");
+        supportsWebAuthn ? I18n.t("security.notSet") : I18n.t("security.notSupported");
 
     let publicKeyStyle = $user.usePublicKey ? "value" : "value-alt";
+    let usePublicKey = $user.usePublicKey;
+
+    let showModal = false;
+
+    const doForgetMe = showConfirmation => () => {
+        if (showConfirmation) {
+            showModal = true
+        } else {
+            forgetMe().then(() => {
+                $user.rememberMe = false;
+                showModal = false;
+                flash.setValue(I18n.t("rememberMe.updated"));
+            });
+        }
+    };
+
+    const credentialsDetails = credential => () =>
+        navigate(`/credential?id=${encodeURIComponent(credential.identifier)}`);
+
+    const startTestFlow = () => {
+        testWebAutnUrl().then(res => {
+            window.location.href = res.url;
+        });
+    }
 
 </script>
 
-<style>
+<style lang="scss">
     .security {
         width: 100%;
         height: 100%;
@@ -42,7 +71,7 @@
     }
 
     h4 {
-        margin-bottom: 24px;
+        margin-bottom: 2px;
     }
 
     p {
@@ -52,60 +81,100 @@
 
     table {
         width: 100%;
+        margin-bottom: 30px;
+
+        tr.link {
+            cursor: pointer;
+
+            &:hover {
+                background-color: var(--color-background);
+            }
+
+        }
+
+        td {
+            border-bottom: 1px solid var(--color-primary-grey);
+        }
+
+        td.attr {
+            width: 35%;
+            padding: 20px;
+        }
+
+        td.value {
+            width: 65%;
+            font-weight: bold;
+        }
+
+        div.value-container {
+            display: flex;
+            align-items: center;
+
+            span {
+                word-break: break-word;
+            }
+
+            a.right-link {
+                margin-left: auto;
+            }
+
+            div.actions {
+                display: flex;
+                margin-left: auto;
+                align-items: center;
+
+                a.right-link {
+                    margin-left: 20px;
+                }
+
+            }
+        }
+
+        td.value-alt {
+            width: 65%;
+            font-style: italic;
+            color: #797979;
+
+        }
+
+        td.link {
+            width: 10%;
+            text-align: right;
+            padding: 0;
+        }
+
     }
 
-    tr.name, tr.rememberme {
-        cursor: pointer;
+    table.security-settings {
+        td {
+            &.attr {
+                width: 28%;
+            }
+
+            &.icon {
+                width: 70px;
+                text-align: center;
+            }
+
+            &.info {
+                width: 80%;
+                &.verified {
+                    width: 56%;
+                }
+            }
+            &.forget-me {
+                width: 122px;
+                text-align: right;
+            }
+
+        }
     }
 
-    td {
-        border-bottom: 1px solid var(--color-primary-grey);
+    :global(div.value-container a.right-link svg) {
+        color: var(--color-secondary-grey);
+        width: 22px;
+        height: auto;
     }
-
-    td.attr {
-        width: 30%;
-        padding: 20px;
-    }
-
-    td.value {
-        width: 60%;
-        font-weight: bold;
-    }
-
-    td.value {
-        width: 70%;
-        font-weight: bold;
-    }
-
-    div.value-container {
-        display: flex;
-        align-items: center;
-    }
-
-    div.value-container span {
-        word-break: break-word;
-    }
-
-    div.value-container a.menu-link {
-        margin-left: auto;
-    }
-
-    td.value-alt {
-        width: 70%;
-        font-style: italic;
-        color: #797979;
-    }
-
-    td.link {
-        width: 10%;
-        text-align: right;
-        padding: 0;
-    }
-
-    :global(a svg.menu-link) {
-        fill: var(--color-primary-green);
-    }
-
 
 </style>
 <div class="security">
@@ -117,49 +186,88 @@
         <table cellspacing="0">
             <thead></thead>
             <tbody>
-            <tr>
+            <tr class="link" on:click={() => navigate("/edit-email?back=security")}>
                 <td class="attr">{I18n.t("security.useMagicLink")}</td>
-                <td class="value">{$user.email}</td>
+                <td class="value">
+                    <div class="value-container">
+                        <span>{$user.email}</span>
+                        <a class="right-link" href="/edit-email"
+                           on:click|preventDefault|stopPropagation={() => navigate("/edit-email?back=security")}>{@html writeSvg}</a>
+                    </div>
+                </td>
             </tr>
-            <tr class="name" on:click={() => navigate("/password")}>
+            <tr class="link" on:click={() => navigate("/password")}>
                 <td class="attr">{I18n.t("security.usePassword")}</td>
                 <td class="{passwordStyle}">
                     <div class="value-container">
                         <span>{password}</span>
-                        <a class="menu-link" href="/password"
-                           on:click|preventDefault|stopPropagation={() => navigate("/password")}>{@html chevron_right}</a>
+                        <a class="right-link" href="/password"
+                           on:click|preventDefault|stopPropagation={() => navigate("/password")}>{@html writeSvg}</a>
                     </div>
                 </td>
             </tr>
+            {#if $config.featureWebAuthn && usePublicKey}
+                {#each $user.publicKeyCredentials as credential, i}
+                    <tr class="link" on:click={credentialsDetails(credential)}>
+                        <td class="attr">{I18n.t("security.securityKey", {nbr: i + 1})}</td>
+                        <td class="value">
+                            <div class="value-container">
+                                <span>{`${credential.name}`}</span>
+                                <div class="actions">
+                                    <Button small={true}
+                                            label={I18n.t("security.test")}
+                                            icon={rocketSvg}
+                                            onClick={startTestFlow}/>
+                                    <a class="right-link" href="/edit"
+                                       on:click|preventDefault|stopPropagation={credentialsDetails(credential)}>
+                                        {@html writeSvg}
+                                    </a>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                {/each}
+            {/if}
             {#if $config.featureWebAuthn }
-                <tr class:name={supportsWebAuthn} on:click={() => supportsWebAuthn && navigate("/webauthn")}>
-                    <td class="attr">{I18n.t("security.usePublicKey")}</td>
-                    <td class="{publicKeyStyle}">
-                        <div class="value-container">
-                            <span>{publicKey}</span>
-                            {#if supportsWebAuthn}
-                                <a class="menu-link" href="/webauthn"
-                                   on:click|preventDefault|stopPropagation={() => supported() && navigate("/webauthn")}>{@html chevron_right}</a>
-                            {/if}
-                        </div>
+                <tr>
+                    <td class="attr">
+                        <Button medium={true} label={I18n.t("security.addSecurityKey")}
+                                onClick={() => navigate("/webauthn")}/>
                     </td>
+                    <td>{I18n.t("security.addSecurityKeyInfo")}</td>
                 </tr>
             {/if}
-            <tr class:rememberme={$user.rememberMe} on:click={() => $user.rememberMe && navigate("/rememberme")}>
+            </tbody>
+        </table>
+        <h4 class="info2">{I18n.t("security.settings")}</h4>
+        <table class="security-settings" cellspacing="0">
+            <thead></thead>
+            <tbody>
+            <tr>
                 <td class="attr">{I18n.t("security.rememberMe")}</td>
-                <td class="value">
-                    <div class="value-container">
-                        <span>{I18n.t(`security.rememberMe${$user.rememberMe}`)}</span>
-                        {#if $user.rememberMe}
-                            <a class="menu-link" href="/rememberme"
-                               on:click|preventDefault|stopPropagation={() => navigate("/rememberme")}>{@html chevron_right}</a>
-                        {/if}
-                    </div>
+                <td class="icon">{@html $user.rememberMe ? verifiedSvg : nonVerifiedSvg}</td>
+                <td class="info" class:verified={$user.rememberMe}>
+                    <span>{@html $user.rememberMe ? I18n.t("security.rememberMeInfo") : I18n.t("security.noRememberMeInfo")}</span>
                 </td>
+                {#if $user.rememberMe}
+                    <td class="forget-me">
+                        <Button label={I18n.t("rememberMe.update")}
+                                small={true}
+                                onClick={doForgetMe(true)}/>
+                    </td>
+                {/if}
             </tr>
             </tbody>
         </table>
-
     </div>
 
 </div>
+
+{#if showModal}
+    <Modal submit={doForgetMe(false)}
+           cancel={() => showModal = false}
+           question={I18n.t("rememberMe.forgetMeConfirmation")}
+           title={I18n.t("rememberMe.forgetMe")}>
+
+    </Modal>
+{/if}

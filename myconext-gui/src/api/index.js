@@ -94,6 +94,10 @@ export function deletePublicKeyCredential(credential) {
     return postPutJson("/myconext/api/sp/credential", credential, "PUT");
 }
 
+export function updatePublicKeyCredential(credential) {
+    return postPutJson("/myconext/api/sp/credential", credential, "POST");
+}
+
 export function deleteServiceAndTokens(eduId, tokens) {
     return postPutJson("/myconext/api/sp/service", {eduId, tokens}, "PUT");
 }

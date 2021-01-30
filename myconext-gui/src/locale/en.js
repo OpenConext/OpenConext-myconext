@@ -84,7 +84,15 @@ I18n.translations.en = {
         useMagicLink: "Send magic link to",
         rememberMe: "Stay logged in",
         rememberMetrue: "Yes",
-        rememberMefalse: "No"
+        rememberMefalse: "No",
+        securityKey: "Security key {{nbr}}",
+        test: "Test",
+        addSecurityKey: "Add security key",
+        addSecurityKeyInfo: "You can register biometrics (TouchID, FaceID or Windows Hello) or hardware security tokens (Yubikey).",
+        settings: "Sign-in settings",
+        rememberMeInfo: "<strong>Your device is currently remembered. You will be automatically logged in on eduD</strong>",
+        noRememberMeInfo: "When logging in with your eduID, you can choose to <strong>stay logged in</strong>. This remembers your login on the device you use at that moment.",
+        forgetMe: "Forget me"
     },
     home: {
         home: "Home",
@@ -161,12 +169,13 @@ I18n.translations.en = {
         deleteInstitutionConfirmation: "Are you sure you want to delete the connection with this institution?<br/><br/>Some services require that you your eduID is connected to an institution. You might be prompted to connect an institution if you access one of those services."
     },
     credential: {
-        title: "Public Key Credential",
+        title: "Edit security key",
         info: "You added this key on {{date}} at {{hours}}:{{minutes}}",
-        name: "Name",
-        delete: "Delete",
+        name: "Security key name",
         cancel: "Cancel",
+        update: "Update",
         deleted: "Your key {{name}} has been deleted",
+        updated:"Your key {{name}} has been updated",
         back: "/weauthn",
         deleteCredential: "Delete key",
         deleteCredentialConfirmation: "Are you sure you want to delete your public key credential {{name}}? The key will be deleted from your eduID account, but will not be removed from your browser and / or YubiKey device."

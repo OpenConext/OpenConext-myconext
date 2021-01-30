@@ -4,7 +4,6 @@
     import {navigate} from "svelte-routing";
     import writeSvg from "../icons/redesign/pencil-write.svg";
     import verifiedSvg from "../icons/redesign/shield-full.svg";
-    import {onMount} from "svelte";
     import VerifiedUserRow from "../components/VerifiedUserRow.svelte";
 
     let nameVerified = false;
@@ -79,8 +78,12 @@
     table {
         width: 100%;
 
-        tr.name {
+        tr {
             cursor: pointer;
+
+            &:hover {
+                background-color: var(--color-background);
+            }
         }
 
         td {
@@ -92,10 +95,12 @@
             padding: 20px;
             font-weight: normal;
         }
+
         td.verified {
             width: 10%;
             text-align: center;
         }
+
         td.value {
             width: 63%;
             font-weight: bold;
@@ -107,7 +112,6 @@
         }
 
     }
-
 
     :global(td.verified svg) {
         width: 22px;
@@ -145,7 +149,7 @@
         <table cellspacing="0">
             <thead></thead>
             <tbody>
-            <tr>
+            <tr on:click={() => navigate("/edit-email")}>
                 <td class="attr">{I18n.t("profile.email")}</td>
                 <td class="verified">{@html verifiedSvg}</td>
                 <td class="value">
@@ -156,7 +160,7 @@
                     </div>
                 </td>
             </tr>
-            <tr class="name" on:click={() => navigate("/edit")}>
+            <tr class="name" on:click={() => navigate("/edit-name")}>
                 <td class="attr">{I18n.t("profile.name")}</td>
                 <td class="verified"></td>
                 <td class="value">

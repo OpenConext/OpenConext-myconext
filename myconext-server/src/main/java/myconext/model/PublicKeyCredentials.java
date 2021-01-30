@@ -26,4 +26,8 @@ public class PublicKeyCredentials {
         this.name = name;
         this.createdAt = new Date();
     }
+
+    public void setName(String name) {
+        this.name = name;
+    }
 }

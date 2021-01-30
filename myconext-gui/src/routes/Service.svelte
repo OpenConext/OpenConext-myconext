@@ -4,14 +4,13 @@
     import {deleteServiceAndTokens, deleteTokens} from "../api";
     import Button from "../components/Button.svelte";
     import Modal from "../components/Modal.svelte";
-    import {onMount} from "svelte";
+    import {formatJsDate} from "../format/date";
 
-    const {formatJsDate} = require("../format/date");
     export let service = {data: {}};
+    export let refresh;
 
     let showModal = false;
     let modalOptions = {};
-    let refresh = () => true;
 
     const modalDeleteEduId = () => ({
         submit: deleteEduId(false),
@@ -36,8 +35,9 @@
                         $user[key] = json[key];
                     }
                 }
-                refresh();
+                showModal = false;
                 flash.setValue(I18n.t("dataActivity.deleted", {name: service.name}));
+                refresh();
             });
         }
     }
@@ -54,6 +54,7 @@
                         $user[key] = json[key];
                     }
                 }
+                showModal = true;
                 flash.setValue(I18n.t("dataActivity.tokenDeleted", {name: service.name}));
                 refresh();
             });
@@ -67,8 +68,9 @@
         background-color: var(--color-background);
     }
 
-    table {
+    table.inner-details {
         width: 100%;
+        table-layout: auto;
 
         td {
             border-bottom: 1px solid var(--color-primary-grey);
@@ -88,11 +90,11 @@
             }
 
             &.attr {
-                width: 30%;
+                width: 38%;
             }
 
             &.value {
-                width: 70%;
+                width: 62%;
                 font-weight: bold;
 
                 ul {
