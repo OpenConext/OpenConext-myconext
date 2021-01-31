@@ -48,14 +48,10 @@
         color: var(--color-primary-green);
     }
 
-    p.info {
+    p.divider {
         line-height: 1.33;
         letter-spacing: normal;
         font-weight: 300;
-        margin-bottom: 26px;
-    }
-
-    p.divider {
         margin-bottom: 22px;
     }
 
