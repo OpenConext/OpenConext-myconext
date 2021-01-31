@@ -125,7 +125,7 @@
             </div>
             <p>{I18n.t("account.proceed")}</p>
             <label for="name">{I18n.t("account.name")}</label>
-            <input id="name" type="text" bind:value={name}/>
+            <input id="name" placeholder={I18n.t("account.namePlaceholder")} type="text" bind:value={name}/>
         </div>
     </Modal>
 {/if}

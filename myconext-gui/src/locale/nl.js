@@ -86,6 +86,15 @@ I18n.translations.nl = {
         rememberMe: "Ingelogd blijven",
         rememberMetrue: "Ja",
         rememberMefalse: "Nee",
+        securityKey: "Security key {{nbr}}",
+        test: "Test",
+        addSecurityKey: "Security key toevoegen",
+        addSecurityKeyInfo: "Je kan biometrieken (TouchID, FaceID of Windows Hello) of hardware security tokens (Yubikey).",
+        settings: "Inlog instellngen",
+        rememberMeInfo: "<strong> Uw apparaat wordt momenteel onthouden. Je wordt automatisch ingelogd op eduD </strong>",
+        noRememberMeInfo: "Als u inlogt met uw eduID, kunt u ervoor kiezen om <strong> ingelogd te blijven </strong>. Dit onthoudt uw login op het apparaat dat u op dat moment gebruikt.",
+        forgetMe: "Vergeet me"
+
     },
     home: {
         home: "Home",
@@ -105,16 +114,26 @@ I18n.translations.nl = {
     },
     account: {
         title: "Je eduID account",
-        personalTitle: "Je persoonlijke gegevens",
+        titleDelete: "Verijder je eduID account",
+        info: "Op deze pagna kan je je account beheren.",
+        created: "Aangemaakt op",
+        delete: "Verijder mijn account",
+        cancel: "Annuleer",
+        deleteInfo: "Ga voorzichtig te werk, want je verliest de unieke eduID-ID's die momenteel aan je e-mailadres zijn gekoppeld.",
+        data: "Download je data",
         personalInfo: "Klik op de onderstaande knop om al je persoonlijke gegevens te downloaden.",
-        download: "Download",
         deleteTitle: "Je eduID verwijderen",
         info1: "Je kunt je eduID verwijderen wanneer je maar wilt.",
         info2: "Let op, je verliest het unieke eduID-nummer dat momenteel aan je e-mailadres is gekoppeld. Wanneer je je opnieuw registreert voor eduID met hetzelfde e-mailadres, krijg je een nieuw eduID-nummer. Sommige diensten gebruiken dit unieke nummer om je te identificeren, dus voor die diensten word je dan gezien als een nieuwe gebruiker. ",
         info3: "Houd er rekening mee dat het verwijderen van je eduID niet betekent dat alle diensten die je met je eduID hebt gebruikt, ook je gegevens zullen verwijderen.",
         info4: "Om het verwijderen van je eduID volledig te voltooien, moet je nadat je account is verwijderd je browser afsluiten.",
         deleteAccount: "Verwijder mijn eduID",
-        deleteAccountConfirmation: "Weet je zeker dat je je eduID wilt verwijderen?"
+        deleteAccountConfirmation: "Weet je zeker dat je je eduID wilt verwijderen?",
+        deleteAccountSure: "Je account voor alle eeuwigheid verwijderen?",
+        deleteAccountWarning: "Er is geen manier om deze actie ongedaan te maken.",
+        proceed: "Als je wilt doorgaan, typ dan je volledige naam in ter bevestiging.",
+        name: "Volledige naam",
+        namePlaceholder: "Je volledige naam zoals gebruikt in uw profiel"
     },
     dataActivity: {
         title: "Gebruikte diensten",
@@ -161,12 +180,13 @@ I18n.translations.nl = {
         deleteInstitutionConfirmation: "Weet je zeker dat je de koppeling met deze instelling wilt verwijderen?<br/> <br/>Sommige diensten vereisen dat je een koppeling hebt met een onderwijsinstelling. Je wordt mogelijk gevraagd een instelling te koppelen als je één van die diensten gebruikt."
     },
     credential: {
-        title: "Public Key Credential",
+        title: "Bewerk security key",
         info: "Je hebt deze key toegevoegd op {{date}} om {{hours}}: {{minutes}}",
         name: "Naam",
-        delete: "Verwijderen",
         cancel: "Annuleren",
+        update: "Bewaar",
         deleted: "Je key {{name}} is verwijderd",
+        updated: "Je key {{name}} is bewaard",
         back: "/weauthn",
         deleteCredential: "Verwijder key",
         deleteCredentialConfirmation: "Weet je zeker dat je de key {{name}} wilt verwijderen? De key wordt verwijderd uit je eduID-account, maar wordt niet verwijderd uit je browser en / of van je YubiKey-apparaat."
@@ -205,7 +225,6 @@ I18n.translations.nl = {
         revoke: "Revoke",
         addDevice: "Voeg dit apparaat toe",
         info: "Public Key Cryptography and Web Authentication (ook bekend als WebAuthn) stelt eduID in staat om u te authenticeren met behulp van public key cryptografie in plaats van een magische link of wachtwoord.",
-        info2: "Wanneer je op {{action}} klikt, wordt je doorgestuurd naar de eduID-identiteitsserver en vraagt je browser je om je identiteit te bevestigen.",
         back: "/security",
         setUpdate: "Start",
         updateUpdate: "Voeg dit apparaat toe",

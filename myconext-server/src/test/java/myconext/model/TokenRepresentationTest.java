@@ -8,6 +8,6 @@ public class TokenRepresentationTest {
 
     @Test
     public void testToString() {
-        assertEquals("TokenRepresentation(id=1, tokenType=ACCESS)", new TokenRepresentation("1", TokenType.ACCESS).toString());
+        assertEquals("TokenRepresentation(id=1, type=ACCESS)", new TokenRepresentation("1", TokenType.ACCESS).toString());
     }
 }
