@@ -158,6 +158,7 @@
        href="{href}"
        download={download}
        class:full={full}
+       class:medium={medium}
        class:large={large}
        class:disabled={disabled}>
         {label}

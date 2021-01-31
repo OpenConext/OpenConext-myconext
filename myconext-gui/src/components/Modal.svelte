@@ -8,6 +8,7 @@
     export let question;
     export let warning = false;
     export let confirmTitle = I18n.t("modal.confirm");
+    export let disableSubmit = false;
 
     let modal;
 
@@ -69,8 +70,12 @@
         <div class="modal-header" class:warning>
             <h3>{title}</h3>
         </div>
+
         <div class="modal-body">
-            <p>{@html question}</p>
+            {#if question}
+                <p>{@html question}</p>
+            {/if}
+            <slot></slot>
         </div>
 
         <div class="options">
@@ -78,6 +83,7 @@
                     label={I18n.t("modal.cancel")}/>
 
             <Button onClick={submit} warning={warning}
+                    disabled={disableSubmit}
                     label={confirmTitle}/>
         </div>
     </div>

@@ -17,10 +17,13 @@
     import EditName from "./EditName.svelte";
     import EditEmail from "./EditEmail.svelte";
     import Credential from "./Credential.svelte";
+    import WebAuthn from "./WebAuthn.svelte";
     import Security from "./Security.svelte";
     import DataActivity from "./DataActivity.svelte";
     import Service from "./Service.svelte";
     import Account from "./Account.svelte";
+    import DeleteAccount from "./DeleteAccount.svelte";
+    import Password from "./Password.svelte";
     import Flash from "../components/Flash.svelte";
 
     export let bookmark = "home";
@@ -36,6 +39,10 @@
         {name: "edit-email", alias: "personal", component: EditEmail, ignore: true},
         {name: "service", alias: "services", component: Service, ignore: true},
         {name: "credential", alias: "security", component: Credential, ignore: true},
+        {name: "webauthn", alias: "security", component: WebAuthn, ignore: true},
+        {name: "password", alias: "security", component: Password, ignore: true},
+        {name: "forgot-password", alias: "security", component: Password, ignore: true},
+        {name: "delete-account", alias: "account", component: DeleteAccount, ignore: true},
 
     ];
 

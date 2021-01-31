@@ -370,7 +370,7 @@ public class UserController {
         credentials.setName(credential.get("name"));
         userRepository.save(user);
 
-        logWithContext(user, "update", "webauthn_key", LOG, "Deleted publicKeyCredential " + credential.get("name"));
+        logWithContext(user, "update", "webauthn_key", LOG, "Updated publicKeyCredential " + credential.get("name"));
 
         return userResponseRememberMe(user);
     }
@@ -589,7 +589,7 @@ public class UserController {
         if (!result.isSuccess()) {
             if (samlAuthenticationRequest.isTestInstance()) {
                 //back to SP
-                String url = String.format("%s/webauthn?success=false", spBaseUrl);
+                String url = String.format("%s/security?success=false", spBaseUrl);
                 return ResponseEntity.status(201).body(Collections.singletonMap("url", url));
             }
             throw new ForbiddenException();
@@ -606,7 +606,7 @@ public class UserController {
 
         if (samlAuthenticationRequest.isTestInstance()) {
             //back to SP
-            String url = String.format("%s/webauthn?success=true", spBaseUrl);
+            String url = String.format("%s/security?success=true", spBaseUrl);
             return ResponseEntity.status(201).body(Collections.singletonMap("url", url));
         }
 

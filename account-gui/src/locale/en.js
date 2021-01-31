@@ -11,7 +11,11 @@ I18n.translations.en = {
         header2: "Request your eduID",
         trust: "Trust this computer",
         loginOptions: "Other sign-in options",
-        loginOptionsToolTip: "Your different sign-in options<br/>can be managed in mijn eduID.<br/><br/>Check your eduID account<br/>creation mail for the URL.",
+        loginOptionsToolTip: "We offer 3 ways to sign-in:</br><ol>" +
+            "<li>We can send you a magic link to your email.</li>" +
+            "<li>You can use your own password, you need to set this up first within My eduID.</li>" +
+            "<li>You can use a security key, you need to register this key first within My eduID.</li>" +
+            "</ol>",
         email: "Your email address",
         emailPlaceholder: "e.g. user@gmail.com",
         passwordPlaceholder: "Password",

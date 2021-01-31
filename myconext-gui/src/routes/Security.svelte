@@ -10,6 +10,7 @@
     import verifiedSvg from "../icons/redesign/shield-full.svg";
     import nonVerifiedSvg from "../icons/redesign/shield-empty.svg";
     import Modal from "../components/Modal.svelte";
+    import {onMount} from "svelte";
 
     let password = $user.usePassword ? "************************" : I18n.t("security.notSet");
     let passwordStyle = $user.usePassword ? "value" : "value-alt";
@@ -22,6 +23,14 @@
     let usePublicKey = $user.usePublicKey;
 
     let showModal = false;
+
+    onMount(() => {
+        const urlSearchParams = new URLSearchParams(window.location.search);
+        const testWebAuthn = urlSearchParams.get("success");
+        if (testWebAuthn) {
+            flash.setValue(I18n.t("webauthn.testFlash"), 3750);
+        }
+    });
 
     const doForgetMe = showConfirmation => () => {
         if (showConfirmation) {

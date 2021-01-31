@@ -18,19 +18,19 @@
         margin-right: 5px;
     }
 
-    /*.wrapper {*/
-    /*    font-size: 14px;*/
-    /*    color: #0062b0;*/
-    /*}*/
+    .wrapper {
+        font-size: 14px;
+        color: #0062b0;
+    }
 
 
 </style>
 
 <div class="login-options">
     <span>{I18n.t("login.loginOptions")}</span>
-<!--    <div class="wrapper">-->
-<!--        <Tooltip tip={I18n.t("login.loginOptionsToolTip")}>-->
-<!--            {@html question}-->
-<!--        </Tooltip>-->
-<!--    </div>-->
+    <div class="wrapper">
+        <Tooltip tip={I18n.t("login.loginOptionsToolTip")}>
+            {@html question}
+        </Tooltip>
+    </div>
 </div>

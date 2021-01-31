@@ -4,39 +4,14 @@
     import I18n from "i18n-js";
     import {navigate} from "svelte-routing";
 
-    import Modal from '../components/Modal.svelte';
-    import {deleteUser} from "../api";
     import Button from "../components/Button.svelte";
 
-    let showModal = false;
-
-    const deleteUserAction = showConfirmation => () => {
-        if (showConfirmation) {
-            showModal = true
-        } else {
-            deleteUser().then(() => {
-                $user = {
-                    id: "",
-                    email: "",
-                    givenName: "",
-                    familyName: "",
-                    guest: true,
-                    usePassword: false
-                };
-                navigate("/landing?delete=true");
-            });
-        }
-    }
 
 </script>
 
 <style lang="scss">
     .account {
         width: 100%;
-        height: 100%;
-    }
-
-    .inner-container {
         height: 100%;
         margin: 0 auto;
         padding: 15px 30px 15px 0;
@@ -54,58 +29,55 @@
         margin-bottom: 26px;
     }
 
-    p.info2 {
-        font-size: 22px;
-        margin-bottom: 24px;
-        font-family: Nunito, sans-serif;
-    }
+    table {
+        width: 100%;
 
-    p {
-        line-height: 1.33;
-        letter-spacing: normal;
-    }
+        td {
+            border-bottom: 1px solid var(--color-primary-grey);
+            padding: 15px 0 15px 0;
 
-    p.divider {
-        margin-bottom: 22px;
-    }
+            &.attr {
+                width: 35%;
+            }
 
-    .options {
-        margin: 5px 0 40px 0;
+            &.value {
+                width: 65%;
+                font-weight: bold;
+            }
+        }
     }
-
-    :global(a svg.menu-link) {
-        fill: var(--color-primary-green);
-    }
-
 
 </style>
 
 <div class="account">
 
-    <div class="inner-container">
-        <h2>{I18n.t("account.title")}</h2>
-        <p class="info">{I18n.t("format.creationDate", formatCreateDate($user.created, true))}</p>
-        <h4 class="info2">{I18n.t("account.personalTitle")}</h4>
-        <p class="divider">{I18n.t("account.personalInfo")}</p>
-        <div class="options">
-            <Button href="/myconext/api/sp/personal" className="full cancel" download="personal" label={I18n.t("account.download")}/>
-        </div>
-        <p class="info2">{I18n.t("account.deleteTitle")}</p>
-        {#each [1, 2, 3, 4] as i}
-            <p class="divider">{I18n.t("account.info" + i)}</p>
-        {/each}
-        <div class="options">
-            <Button href="/delete" label={I18n.t("account.deleteAccount")}
-                    onClick={deleteUserAction(true)} className="full cancel"/>
-        </div>
-    </div>
+    <h2>{I18n.t("account.title")}</h2>
+    <p class="info">{I18n.t("account.info")}</p>
+    <table cellspacing="0">
+        <thead/>
+        <tbody>
+        <tr>
+            <td class="attr">{I18n.t("account.created")}</td>
+            <td class="value">{I18n.t("format.creationDate", formatCreateDate($user.created, true))}</td>
+        </tr>
+        <tr>
+            <td>
+                <Button href="/myconext/api/sp/personal" download="personal"
+                        medium={true}
+                        label={I18n.t("account.data")}/>
+            </td>
+            <td>{I18n.t("account.personalInfo")}</td>
+        </tr>
+        <tr>
+            <td>
+                <Button onClick={() => navigate("/delete-account")}
+                        medium={true}
+                        label={I18n.t("account.delete")}/>
+            </td>
+            <td>{I18n.t("account.deleteInfo")}</td>
+        </tr>
+        </tbody>
+    </table>
+
 
 </div>
-
-{#if showModal}
-    <Modal submit={deleteUserAction(false)}
-           cancel={() => showModal = false}
-           warning={true}
-           question={I18n.t("account.deleteAccountConfirmation")}
-           title={I18n.t("account.deleteAccount")}></Modal>
-{/if}

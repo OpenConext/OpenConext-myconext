@@ -111,17 +111,27 @@ I18n.translations.en = {
         }
     },
     account: {
-        title: "Your eduID account",
-        personalTitle: "Your personal data",
-        personalInfo: "Click the button below to download all your personal data.",
-        download: "Download",
+        title: "Your account",
+        titleDelete: "Delete your eduID account",
+        info: "On this page you can manage your account.",
+        created: "Created on",
+        delete: "Delete my account",
+        cancel: "Cancel",
+        deleteInfo:"Proceed with care, as you will lost the unique eduID identifiers currently associated wth your email address.",
+        data: "Download your data",
+        personalInfo: "Click the button left to download all your personal data.",
         deleteTitle: "Deleting your eduID account",
         info1: "You can delete your eduID whenever you want.",
         info2: "Proceed with care, as you will lose the unique eduID number currently associated with your email address. When you re-register for a new eduID with that same email address, you will receive a new eduID number. Some services use this unique number to identify you, so for those services you will be treated as a new user.",
         info3: "Please note that deleting your eduID account does not mean all services you accessed with that eduID account will also have your data removed.",
         info4: "To fully complete the process of deleting your eduID account you must close your browser after your account has been removed.",
         deleteAccount: "Delete my account",
-        deleteAccountConfirmation: "Are you sure you want to delete your eduID account?"
+        deleteAccountConfirmation: "Are you sure you want to delete your eduID account?",
+        deleteAccountSure: "Delete your account for all eternity?",
+        deleteAccountWarning: "There is no way to revert this action.",
+        proceed: "If you wish to proceed, please type in your full name for confirmation.",
+        name: "Full name",
+        namePlaceholder: "Your full name as used on your profile"
     },
     dataActivity: {
         title: "Data & Activity",
@@ -206,18 +216,17 @@ I18n.translations.en = {
     },
     webauthn: {
         setTitle: "Enable WebAuthn",
-        updateTitle: "Configure WebAuthn",
+        updateTitle: "Add security key",
         publicKeys: "Your public keys",
         noPublicKeys: "You have not added any keys. ",
         nameRequired: "Before you can add a new key you will need to give it a name.",
         revoke: "Revoke",
         addDevice: "Add device",
-        info: "Public Key Cryptography and Web Authentication (a.k.a. WebAuthn) allows eduID to authenticate you using public key cryptography instead of a magic link or password.",
-        info2: "When your click on {{action}} you will be redirected to the eduID identity server and your browser will prompt you for your identity.",
+        info: "You can choose to use a Bluetooth security key, USB security key or the security key built into your device.",
         back: "/security",
         setUpdate: "Start",
         updateUpdate: "Add device",
-        credentialName: "Device name",
+        credentialName: "Security key name",
         credentialNamePlaceholder: "e.g. my red YubiKey",
         test: "Test",
         testInfo: "Hit the <strong>test</strong> button to test one of your WebAuthn keys. You will be redirected to the eduID identity server.",
@@ -266,6 +275,6 @@ I18n.translations.en = {
         help: "Need help? Send an email to <a href=\"mailto:support@surfconext.nl\">support@surfconext.nl</a>."
     },
     format: {
-        creationDate: "Your eduID account was created on {{date}} at {{hours}}:{{minutes}}"
+        creationDate: "{{date}} at {{hours}}:{{minutes}}"
     }
 };

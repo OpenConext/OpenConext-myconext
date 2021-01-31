@@ -16,7 +16,8 @@
     onMount(() => {
         const urlSearchParams = new URLSearchParams(window.location.search);
         const id = urlSearchParams.get("id");
-        credential = $user.publicKeyCredentials.find(cred => cred.identifier === id)
+        credential = $user.publicKeyCredentials.find(cred => cred.identifier === id);
+        name = credential.name;
     });
 
     const updateCredential = () => {
@@ -65,37 +66,17 @@
         color: var(--color-primary-green);
     }
 
-    p.info {
-        margin: 12px 0 32px 0;
+    label {
+      font-weight: bold;
+      margin: 33px 0 13px 0;
+      display: inline-block;
     }
 
-    table {
-        width: 100%;
-    }
-
-    td {
-        border-bottom: 1px solid var(--color-primary-grey);
-    }
-
-    td.attr {
-        width: 30%;
-        padding: 20px;
-    }
-
-    td.value {
-        width: 70%;
-        font-weight: bold;
-        padding-left: 20px;
-    }
-
-    div.value-container {
-        display: flex;
-        flex-direction: column;
-    }
-
-    div.value-container span {
-        word-break: break-word;
-        padding: 5px 0;
+    input {
+      border-radius: 8px;
+      border: solid 1px #676767;
+      padding: 14px;
+      font-size: 16px;
     }
 
     .options {
@@ -111,27 +92,16 @@
 </style>
 <div class="credential">
     <h2>{I18n.t("credential.title")}</h2>
-    <p class="info">{I18n.t("credential.info", formatCreateDate(credential.createdAt))}</p>
-
-    <table cellspacing="0">
-        <thead></thead>
-        <tbody>
-        <tr class="name">
-            <td class="attr">{I18n.t("credential.name")}</td>
-            <td class="value">
-                <div class="value-container">
-                    <span>{`${credential.name}`}</span>
-                </div>
-            </td>
-        </tr>
-        </tbody>
-    </table>
-
+    <label for="credentialName">{I18n.t("credential.name")}</label>
+    <input id="credentialName" type="text" bind:value={name}>
 
     <div class="options">
         <span class="first"><Button deletion={true} onClick={deleteCredential(true)}/></span>
         <Button small={true} className="cancel" label={I18n.t("credential.cancel")} onClick={cancel}/>
-        <Button medium={true} label={I18n.t("credential.update")} onClick={updateCredential}/>
+        <Button medium={true}
+                label={I18n.t("credential.update")}
+                disabled={!name || name.trim().length === 0}
+                onClick={updateCredential}/>
     </div>
 </div>
 

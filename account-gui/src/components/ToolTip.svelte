@@ -1,5 +1,5 @@
 <script>
-  export let tip = "";
+    export let tip = "";
 </script>
 
 <style>
@@ -11,7 +11,6 @@
     .tooltip {
         position: absolute;
         display: inline-block;
-        white-space: nowrap;
         opacity: 0;
         visibility: hidden;
         transition: opacity 150ms, visibility 150ms;
@@ -26,12 +25,24 @@
         left: 50%;
         transform: translate(-50%, -100%);
         margin-top: -6px;
+        width: 280px;
     }
 
     .tooltip-slot:hover + .tooltip {
         opacity: 1;
         visibility: initial;
     }
+
+    :global(.tooltip-slot svg:hover circle, .tooltip-slot svg:hover path  ) {
+        color: #0c66c4;
+        fill: #0c66c4;
+    }
+
+    :global(.tooltip.top ol) {
+        list-style: decimal;
+        margin-left: 12px;
+    }
+
 </style>
 
 <div class="tooltip-wrapper">

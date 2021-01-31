@@ -11,7 +11,11 @@ I18n.translations.nl = {
         header2: "Vraag een eduID aan",
         trust: "Vertrouw deze computer",
         loginOptions: "Andere inlog manieren",
-        loginOptionsToolTip: "Je verschillende manieren om in te<br/>loggen kan je beheren in mijn edu.<br/><br/>Bekijk de eduID account<br/>bevestigings e-mail voor de URL.",
+        loginOptionsToolTip: "We bieden drie manieren om in te loggen:</br><ol>" +
+            "<li>We kunnen een magische link naar je e-mailadres sturen.</li>" +
+            "<li>Je kan je eigen wachtwoord gebruiken, dit dien je eerst in Mijn eduID in te stellen.</li>" +
+            "<li>Je kunt een security key gebruiken, je moet deze key eerst registreren in Mijn eduID.</li>" +
+            "</ol>",
         email: "Je e-mailadres",
         emailPlaceholder: "bijv. naam@gmail.com",
         passwordPlaceholder: "Wachtwoord",

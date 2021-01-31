@@ -258,6 +258,6 @@ I18n.translations.nl = {
         help: "Hulp nodig? Stuur een e-mail naar <a href=\"mailto:support@surfconext.nl\">support@surfconext.nl</a>."
     },
     format: {
-        creationDate: "Je eduID is aangemaakt op {{date}} om {{hours}}:{{minutes}}"
+        creationDate: "{{date}} om {{hours}}:{{minutes}}"
     }
 };

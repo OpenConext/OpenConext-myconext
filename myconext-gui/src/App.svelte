@@ -7,13 +7,9 @@
     import NotFound from "./routes/NotFound.svelte";
     import ConfirmUpdateEmail from "./routes/ConfirmUpdateEmail.svelte";
     import MigrationError from "./routes/MigrationError.svelte";
-    import Password from "./routes/Password.svelte";
-    import WebAuthn from "./routes/WebAuthn.svelte";
-    import RememberMe from "./routes/RememberMe.svelte";
     import Home from "./routes/Home.svelte";
     import Header from "./components/Header.svelte";
     import {me, configuration, oidcTokens} from "./api";
-    import Credential from "./routes/Credential.svelte";
     import {user, config, redirectPath, duplicatedEmail} from "./stores/user";
     import I18n from "i18n-js";
 
@@ -245,6 +241,9 @@
                     <Route path="/account">
                         <Home bookmark="account"/>
                     </Route>
+                    <Route path="/delete-account">
+                        <Home bookmark="delete-account"/>
+                    </Route>
                     <Route path="/security">
                         <Home bookmark="security"/>
                     </Route>
@@ -267,14 +266,19 @@
                     <Route path="/credential">
                         <Home bookmark="credential"/>
                     </Route>
+                    <Route path="/webauthn">
+                        <Home bookmark="webauthn"/>
+                    </Route>
                     <Route path="/migration">
                         <Home bookmark="migration"/>
                     </Route>
-                    <Route path="/password" component={Password}/>
-                    <Route path="/forgot-password" component={Password}/>
-                    <Route path="/webauthn" component={WebAuthn}/>
+                    <Route path="/forgot-password">
+                        <Home bookmark="forgot-password"/>
+                    </Route>
+                    <Route path="/password">
+                        <Home bookmark="password"/>
+                    </Route>
                     <Route path="/update-email" component={ConfirmUpdateEmail}/>
-                    <Route path="/rememberme" component={RememberMe}/>
                     <Route component={NotFound}/>
                 </Router>
             </div>

@@ -47,7 +47,7 @@ public class LoginController {
         this.config.put("eduIDRegisterUrl", String.format("%s/register", idpBaseUrl));
         this.config.put("eduIDDoLoginUrl", String.format("%s/doLogin", idpBaseUrl));
         this.config.put("eduIDWebAuthnUrl", String.format("%s/webauthn", idpBaseUrl));
-        this.config.put("eduIDWebAuthnRedirectSpUrl", String.format("%s/webauthn", spBaseUrl));
+        this.config.put("eduIDWebAuthnRedirectSpUrl", String.format("%s/security", spBaseUrl));
         this.config.put("domain", domain);
         this.config.put("featureWebAuthn", featureWebAuthn);
         this.config.put("featureWarningEducationalEmailDomain", featureWarningEducationalEmailDomain);
