@@ -1,16 +1,18 @@
 <script>
     import {user, flash} from "../stores/user";
     import I18n from "i18n-js";
-    import {deleteServiceAndTokens, deleteTokens} from "../api";
+    import {deleteServiceAndTokens, deleteTokens, oidcTokens} from "../api";
     import Button from "../components/Button.svelte";
     import Modal from "../components/Modal.svelte";
     import {formatJsDate} from "../format/date";
+    import Spinner from "../components/Spinner.svelte";
 
     export let service = {data: {}};
     export let refresh;
 
     let showModal = false;
     let modalOptions = {};
+    let loading = false;
 
     const modalDeleteEduId = () => ({
         submit: deleteEduId(false),
@@ -24,21 +26,29 @@
         title: I18n.t("dataActivity.deleteToken")
     });
 
+    const doRefresh = (json, flashMsg) => {
+        for (var key in json) {
+            if (json.hasOwnProperty(key)) {
+                $user[key] = json[key];
+            }
+        }
+        loading = false;
+        flash.setValue(I18n.t(flashMsg, {name: service.name}));
+        refresh();
+    }
+
     const deleteEduId = showConfirmation => () => {
         if (showConfirmation) {
             modalOptions = modalDeleteEduId();
             showModal = true;
         } else {
-            deleteServiceAndTokens(service.eduId, service.allTokens).then(json => {
-                for (var key in json) {
-                    if (json.hasOwnProperty(key)) {
-                        $user[key] = json[key];
-                    }
-                }
-                showModal = false;
-                flash.setValue(I18n.t("dataActivity.deleted", {name: service.name}));
-                refresh();
-            });
+            loading = true;
+            showModal = false;
+            Promise.all([oidcTokens(), deleteServiceAndTokens(service.eduId, service.allTokens)])
+                .then(res => {
+                    $user.oidcTokens = res[0];
+                    doRefresh(res[1], "dataActivity.deleted");
+                });
         }
     }
 
@@ -47,17 +57,13 @@
             showModal = true;
             modalOptions = modalRevokeTokens();
         } else {
-            deleteTokens(service.allTokens).then(json => {
-                showModal = false;
-                for (var key in json) {
-                    if (json.hasOwnProperty(key)) {
-                        $user[key] = json[key];
-                    }
-                }
-                showModal = true;
-                flash.setValue(I18n.t("dataActivity.tokenDeleted", {name: service.name}));
-                refresh();
-            });
+            loading = true;
+            showModal = false;
+            Promise.all([oidcTokens(), deleteTokens(service.allTokens)])
+                .then(res => {
+                    $user.oidcTokens = res[0];
+                    doRefresh(res[1], "dataActivity.tokenDeleted");
+                });
         }
     }
 
@@ -130,7 +136,9 @@
 
 
 </style>
-
+{#if loading}
+    <Spinner/>
+    {:else}
 <tr class="full">
     <td colspan="2">
         <table class="inner-details" cellspacing="0">
@@ -208,6 +216,7 @@
         </table>
     </td>
 </tr>
+{/if}
 
 {#if showModal}
     <Modal submit={modalOptions.submit}
