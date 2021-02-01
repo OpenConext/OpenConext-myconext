@@ -286,8 +286,8 @@ public class AccountLinkerController {
                 optionalLinkedAccount.get().updateExpiresIn(institutionIdentifier, eppn, givenName, familyName, affiliations, expiresAt);
             } else {
                 //Ensure that an institution account is only be linked to 1 eduID
-                Optional<User> optionalUser = userRepository.findOneByLinkedAccounts_EduPersonPrincipalName(eppn);
-                if (optionalUser.isPresent()) {
+                List<User> optionalUsers = userRepository.findByLinkedAccounts_EduPersonPrincipalName(eppn);
+                if (optionalUsers.size() > 0) {
                     return ResponseEntity.status(HttpStatus.FOUND).location(URI.create(eppnAlreadyLinkedRequiredUri)).build();
                 }
                 linkedAccounts.add(
