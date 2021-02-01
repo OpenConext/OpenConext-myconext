@@ -57,6 +57,8 @@ public class SamlAuthenticationRequest {
 
     private LoginStatus loginStatus = LoginStatus.NOT_LOGGED_IN;
 
+    private String verificationCode;
+
     public SamlAuthenticationRequest(boolean testInstance) {
         this.id = UUID.randomUUID().toString();
         this.testInstance = testInstance;
@@ -115,5 +117,9 @@ public class SamlAuthenticationRequest {
 
     public void setLoginStatus(LoginStatus loginStatus) {
         this.loginStatus = loginStatus;
+    }
+
+    public void setVerificationCode(String verificationCode) {
+        this.verificationCode = verificationCode;
     }
 }

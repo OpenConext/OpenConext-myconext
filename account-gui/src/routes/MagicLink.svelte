@@ -15,6 +15,7 @@
     export let id;
     let serviceName;
     let modus;
+    let verificationCode = "";
     let loginStatus = status.NOT_LOGGED_IN;
     let counter = 0;
     let timeOutSeconds = 1;
@@ -45,11 +46,17 @@
         });
     }
 
+    const verify = () => {
+        window.location.href = `${$conf.continueAfterLoginUrl}?id=${id}&code=${verificationCode}`;
+    }
+
     const isLoggedIn = () => {
         successfullyLoggedIn(id).then(res => {
             loginStatus = res;
             if (loginStatus === status.LOGGED_IN_DIFFERENT_DEVICE) {
-                window.location.href = `${$conf.continueAfterLoginUrl}?id=${id}`;
+                //First check the verification code that was send
+
+
             } else if (loginStatus === status.NOT_LOGGED_IN) {
                 ++counter;
                 if (counter % 30 === 0) {

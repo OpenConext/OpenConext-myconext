@@ -49,16 +49,16 @@
 </style>
 <div class="home">
     <div class="card">
-        <h2>{I18n.t("validNameMissing.header")}</h2>
-        <p class="info">{I18n.t("validNameMissing.info")}</p>
-        <p class="info">{I18n.t("validNameMissing.proceed", {name: serviceName})}</p>
+        <h2>{I18n.t("eppnAlreadyLinked.header")}</h2>
+        <p class="info">{I18n.t("eppnAlreadyLinked.info")}</p>
+        <p class="info">{I18n.t("eppnAlreadyLinked.proceed", {name: serviceName})}</p>
 
         <Button href="/proceed" onClick={proceed}
                 className="cancel"
-                label={I18n.t("validNameMissing.proceedLink")}/>
+                label={I18n.t("eppnAlreadyLinked.proceedLink")}/>
         <div class="last">
             <Button href="/retry" onClick={retry}
-                    label={I18n.t("validNameMissing.retryLink")}/>
+                    label={I18n.t("eppnAlreadyLinked.retryLink")}/>
         </div>
 
     </div>
