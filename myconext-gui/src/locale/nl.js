@@ -50,7 +50,12 @@ I18n.translations.nl = {
         addInstitutionConfirmation: "Als je doorgaat word je gevraagd in te loggen via de onderwijsinstelling die je wilt koppelen. Selecteer eerst welke instelling je wilt koppelen en log daarna in.<br/> <br/>Nadat je succesvol bent ingelogd kom je hier weer terug.",
         proceed: "Doorgaan",
         addInstitution: "Instelling toevoegen"
-
+    },
+    eppnAlreadyLinked: {
+        header: "Account niet gekoppeld!",
+        info: "Je eduID kon niet worden gekoppeld, omdat het account waarmee je bent ingelogd, al aan een ander eduID-account is gekoppeld.",
+        proceed: "Je kan het nogmaals met een andere instelling proberen.",
+        retryLink: "Opnieuw proberen"
     },
     edit: {
         title: "Aanpassen profielgegevens",

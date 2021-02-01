@@ -235,6 +235,10 @@
                     <Route path="/personal">
                         <Home bookmark="personal"/>
                     </Route>
+                    <Route path="/eppn-already-linked">
+                        <Home bookmark="eppn-already-linked"/>
+                    </Route>
+
                     <Route path="/data-activity">
                         <Home bookmark="data-activity"/>
                     </Route>

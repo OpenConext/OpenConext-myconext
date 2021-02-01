@@ -14,8 +14,8 @@ import java.util.HashMap;
 
 public class MockShibbolethFilter extends GenericFilterBean {
 
-    private String uid = "1234567890";//"mdoe";
-    public String email = "jdoe@example.com";//"mdoe@example.com";
+    private String uid = "mdoe";//"1234567890";
+    public String email = "mdoe@example.com";//"jdoe@example.com";
 
     private static class SetHeader extends HttpServletRequestWrapper {
 

@@ -22,6 +22,8 @@ public interface UserRepository extends MongoRepository<User, String> {
 
     List<User> findByLinkedAccounts_ExpiresAtBefore(Date expiryDate);
 
+    Optional<User> findOneByLinkedAccounts_EduPersonPrincipalName(String eduPersonPrincipalName);
+
     List<User> findByNewUserTrueAndCreatedLessThan(long millis);
 
     Optional<User> findUserByWebAuthnIdentifier(String webAuthnIdentifier);

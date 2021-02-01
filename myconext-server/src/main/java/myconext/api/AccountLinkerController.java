@@ -165,7 +165,8 @@ public class AccountLinkerController {
         LOG.debug("In SP redirect link account");
 
         return doRedirect(code, user, this.spFlowRedirectUri, this.spRedirectUrl + "/personal",
-                false, false, null, null);
+                false, false, null, null,
+                this.spRedirectUrl + "/eppn-already-linked");
     }
 
     @GetMapping("/idp/oidc/redirect")
@@ -212,8 +213,14 @@ public class AccountLinkerController {
                 "&redirect=" + URLEncoder.encode(this.magicLinkUrl, charSet) +
                 "&name=" + URLEncoder.encode(serviceName, charSet);
 
+        String eppnAlreadyLinkedRequiredUri = this.idpErrorRedirectUrl + "/eppn-already-linked/" +
+                samlAuthenticationRequest.getId() +
+                "?h=" + samlAuthenticationRequest.getHash() +
+                "&redirect=" + URLEncoder.encode(this.magicLinkUrl, charSet) +
+                "&name=" + URLEncoder.encode(serviceName, charSet);
+
         ResponseEntity redirect = doRedirect(code, user, this.idpFlowRedirectUri, location, validateNames, studentAffiliationRequired,
-                idpStudentAffiliationRequiredUri, idpValidNamesRequiredUri);
+                idpStudentAffiliationRequiredUri, idpValidNamesRequiredUri, eppnAlreadyLinkedRequiredUri);
 
         StepUpStatus stepUpStatus = redirect.getHeaders().getLocation()
                 .toString().contains("affiliation-missing") ? StepUpStatus.MISSING_AFFILIATION : StepUpStatus.IN_STEP_UP;
@@ -226,7 +233,8 @@ public class AccountLinkerController {
     @SuppressWarnings("unchecked")
     private ResponseEntity doRedirect(@RequestParam("code") String code, User user, String oidcRedirectUri,
                                       String clientRedirectUri, boolean validateNames, boolean studentAffiliationRequired,
-                                      String idpStudentAffiliationRequiredUri, String idpValidNamesRequiredUri) {
+                                      String idpStudentAffiliationRequiredUri, String idpValidNamesRequiredUri,
+                                      String eppnAlreadyLinkedRequiredUri) {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
         headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
@@ -276,6 +284,11 @@ public class AccountLinkerController {
             if (optionalLinkedAccount.isPresent()) {
                 optionalLinkedAccount.get().updateExpiresIn(institutionIdentifier, eppn, givenName, familyName, affiliations, expiresAt);
             } else {
+                //Ensure that an institution account is only be linked to 1 eduID
+                Optional<User> optionalUser = userRepository.findOneByLinkedAccounts_EduPersonPrincipalName(eppn);
+                if (optionalUser.isPresent()) {
+                    return ResponseEntity.status(HttpStatus.FOUND).location(URI.create(eppnAlreadyLinkedRequiredUri)).build();
+                }
                 linkedAccounts.add(
                         new LinkedAccount(institutionIdentifier, schacHomeOrganization, eppn, givenName, familyName, affiliations,
                                 new Date(), expiresAt));

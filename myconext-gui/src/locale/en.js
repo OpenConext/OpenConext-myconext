@@ -51,6 +51,12 @@ I18n.translations.en = {
         proceed: "Proceed",
         addInstitution: "Add institution"
     },
+    eppnAlreadyLinked: {
+        header: "Account not linked!",
+        info: "Your eduID could not be linked, because the trusted account with which you logged in, is already linked to a different eduID account.",
+        proceed: "You can try to link to another institution.",
+        retryLink: "Retry"
+    },
     edit: {
         title: "Name",
         info: "Please provide your full name",

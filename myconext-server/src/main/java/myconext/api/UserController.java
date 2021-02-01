@@ -116,7 +116,7 @@ public class UserController {
         this.schacHomeOrganization = schacHomeOrganization;
         this.idpBaseUrl = idpBaseUrl;
         this.spBaseUrl = spBaseUrl;
-        this.webAuthnSpRedirectUrl = String.format("%s/webauthn", spBaseUrl);
+        this.webAuthnSpRedirectUrl = String.format("%s/security", spBaseUrl);
         this.relyingParty = relyingParty(rpId, rpOrigin);
         this.emailGuessingPreventor = new EmailGuessingPrevention(emailGuessingSleepMillis);
     }

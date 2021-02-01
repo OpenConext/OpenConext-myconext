@@ -132,6 +132,13 @@ I18n.translations.en = {
         proceedLink: "Proceed",
         retryLink: "Retry"
     },
+    eppnAlreadyLinked: {
+        header: "Account not linked!",
+        info: "Your eduID could not be linked, because the trusted account with which you logged in, is already linked to a different eduID account.",
+        proceed: "You can try to link to another institution or proceed to {{name}}",
+        proceedLink: "Proceed",
+        retryLink: "Retry"
+    },
     stepUpExplanation: {
         linked_institution: "Your eduID account must be linked to a trusted party.",
         validate_names: "Your first name and last name must be verified by a trusted party.",
