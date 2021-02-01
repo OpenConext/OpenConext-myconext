@@ -156,7 +156,8 @@ public class AccountLinkerController {
     @GetMapping("/sp/oidc/redirect")
     public ResponseEntity spFlowRedirect(Authentication authentication, @RequestParam("code") String code, @RequestParam("state") String state) throws UnsupportedEncodingException {
         User principal = (User) authentication.getPrincipal();
-        User user = userRepository.findOneUserByEmailIgnoreCase(principal.getEmail());
+        Optional<User> userOptional = userRepository.findUserByUid(principal.getUid());
+        User user = userOptional.orElseThrow(UserNotFoundException::new);
 
         if (!passwordEncoder.matches(user.getUid(), URLDecoder.decode(state, "UTF-8"))) {
             throw new ForbiddenException("Non matching user");

@@ -469,7 +469,6 @@ public class UserControllerTest extends AbstractIntegrationTest {
 
     @Test
     public void deleteUser() {
-        User user = userRepository.findOneUserByEmailIgnoreCase("jdoe@example.com");
         given()
                 .when()
                 .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
@@ -690,7 +689,7 @@ public class UserControllerTest extends AbstractIntegrationTest {
                 .accept(ContentType.JSON)
                 .put("/myconext/api/idp/security/webauthn/registration")
                 .then()
-                .body("location", equalTo("http://localhost:3001/webauthn"));
+                .body("location", equalTo("http://localhost:3001/security"));
 
         user = userRepository.findOneUserByEmailIgnoreCase("jdoe@example.com");
         assertEquals(2, user.getPublicKeyCredentials().size());
@@ -866,6 +865,27 @@ public class UserControllerTest extends AbstractIntegrationTest {
                 .put("/myconext/api/sp/forgot-password")
                 .as(Map.class);
         assertTrue((Boolean) map.get("forgottenPassword"));
+    }
+
+    @Test
+    public void updateEmail() {
+        given()
+                .when()
+                .accept(ContentType.JSON)
+                .contentType(ContentType.JSON)
+                .body(Collections.singletonMap("email", "changed@example.com"))
+                .put("/myconext/api/sp/email")
+                .then()
+                .statusCode(201);
+        ChangeEmailHash changeEmailHash = changeEmailHashRepository.findAll().get(0);
+
+        Map map = given()
+                .when()
+                .accept(ContentType.JSON)
+                .queryParam("h", changeEmailHash.getHash())
+                .get("/myconext/api/sp/confirm-email")
+                .as(Map.class);
+        assertEquals("changed@example.com", map.get("email"));
     }
 
     private String samlResponse(MagicLinkResponse magicLinkResponse) throws IOException {

@@ -223,7 +223,7 @@ public class UserController {
 
     @GetMapping(value = {"/sp/me", "sp/migrate/merge", "sp/migrate/proceed"})
     public ResponseEntity<UserResponse> me(Authentication authentication) {
-        User user = userRepository.findOneUserByEmailIgnoreCase(((User) authentication.getPrincipal()).getEmail());
+        User user = userRepository.findById(((User) authentication.getPrincipal()).getId()).orElseThrow(UserNotFoundException::new);
         return userResponseRememberMe(user);
     }
 
@@ -278,6 +278,8 @@ public class UserController {
                 .orElseThrow(() -> new ForbiddenException("wrong_hash"));
 
         user.setEmail(changeEmailHash.getNewEmail());
+        Authentication authentication1 = SecurityContextHolder.getContext().getAuthentication();
+        Object principal = authentication1.getPrincipal();
         userRepository.save(user);
         authenticationRequestRepository.deleteByUserId(user.getId());
         return returnUserResponse(user);
@@ -685,7 +687,7 @@ public class UserController {
             throw new ForbiddenException();
         }
         //Strictly not necessary, but mid-air collisions can occur in theory
-        return userRepository.findOneUserByEmailIgnoreCase(principal.getEmail());
+        return userRepository.findUserByUid(principal.getUid()).orElseThrow(UserNotFoundException::new);
     }
 
     private ResponseEntity doMagicLink(User user, SamlAuthenticationRequest samlAuthenticationRequest, boolean rememberMe,
