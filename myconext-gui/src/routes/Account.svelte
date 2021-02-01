@@ -6,6 +6,12 @@
 
     import Button from "../components/Button.svelte";
 
+    const addLeadingZero = s => s.length < 2 ? `${0}s` : s;
+
+    const personalDataFileName = () => {
+        const today = new Date();
+        return `eduid_export_${addLeadingZero(today.getDate())}${addLeadingZero(today.getMonth() + 1)}${today.getFullYear()}.json`
+    }
 
 </script>
 
@@ -62,7 +68,7 @@
         </tr>
         <tr>
             <td>
-                <Button href="/myconext/api/sp/personal" download="personal"
+                <Button href="/myconext/api/sp/personal" download={personalDataFileName()}
                         medium={true}
                         label={I18n.t("account.data")}/>
             </td>
