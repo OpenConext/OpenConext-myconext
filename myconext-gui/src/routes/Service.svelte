@@ -32,9 +32,12 @@
                 $user[key] = json[key];
             }
         }
-        loading = false;
-        flash.setValue(I18n.t(flashMsg, {name: service.name}));
-        refresh();
+        oidcTokens().then(res => {
+            $user.oidcTokens = res;
+            loading = false;
+            flash.setValue(I18n.t(flashMsg, {name: service.name}));
+            refresh();
+        })
     }
 
     const deleteEduId = showConfirmation => () => {
@@ -44,10 +47,9 @@
         } else {
             loading = true;
             showModal = false;
-            Promise.all([oidcTokens(), deleteServiceAndTokens(service.eduId, service.allTokens)])
+            deleteServiceAndTokens(service.eduId, service.allTokens)
                 .then(res => {
-                    $user.oidcTokens = res[0];
-                    doRefresh(res[1], "dataActivity.deleted");
+                    doRefresh(res, "dataActivity.deleted");
                 });
         }
     }
@@ -59,10 +61,9 @@
         } else {
             loading = true;
             showModal = false;
-            Promise.all([oidcTokens(), deleteTokens(service.allTokens)])
+            deleteTokens(service.allTokens)
                 .then(res => {
-                    $user.oidcTokens = res[0];
-                    doRefresh(res[1], "dataActivity.tokenDeleted");
+                    doRefresh(res, "dataActivity.tokenDeleted");
                 });
         }
     }
@@ -80,7 +81,7 @@
 
         td {
             border-bottom: 1px solid var(--color-primary-grey);
-            padding: 10px;
+            padding: 15px 10px;
 
             &.details {
                 font-weight: bold;
