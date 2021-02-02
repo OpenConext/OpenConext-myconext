@@ -113,8 +113,9 @@ I18n.translations.en = {
         title2: "Something went wrong (404)"
     },
     webAuthn: {
-        info: "Enable Public Key Cryptography and Web Authentication (WebAuthn)",
-        browserPrompt: "Your browser is prompting you to register one of your security keys or fingerprint with your account"
+        info: "Add security key",
+        browserPrompt: "Click the button below to add a Bluetooth security key, USB security key or the security key built into your device to your eduID account.",
+        start: "Start"
     },
     migration: {
         header: "Migrate to an <br/>eduID guest account",

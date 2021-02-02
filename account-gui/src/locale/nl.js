@@ -113,8 +113,9 @@ I18n.translations.nl = {
         title2: "Er is iets fout gegaan (404)."
     },
     webAuthn: {
-        info: "Inschakelen Public Key Cryptography en Web Authentication (WebAuthn)",
-        browserPrompt: "Je browser vraagt ​je om een ​​van je beveiligingssleutels of vingerafdruk te registreren bij je account."
+        info: "Voeg een security key toe",
+        browserPrompt: "Klik op de onderstaande knop om een Bluetooth-security key, USB-security key of de in je device ingebouwde security key toe te voegen aan je eduID-account.",
+        start: "Start"
     },
     migration: {
         header: "Migreer naar <br/>eduID",

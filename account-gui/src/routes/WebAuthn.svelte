@@ -6,30 +6,37 @@
     import Spinner from "../components/Spinner.svelte";
     import {navigate} from "svelte-routing";
     import I18n from "i18n-js";
+    import Button from "../components/Button.svelte";
 
     let loading = true;
+    let token;
+    let name;
 
     onMount(() => {
         const urlSearchParams = new URLSearchParams(window.location.search);
-        const token = urlSearchParams.get("token");
-        const name = decodeURIComponent(urlSearchParams.get("name"));
-        webAuthnRegistration(token)
-                .then(request => {
-                    loading = false;
-                    create({publicKey: request})
-                            .then(credentials => {
-                                //rawId is not supported server-side
-                                delete credentials["rawId"];
-                                webAuthnRegistrationResponse(token, name, JSON.stringify(credentials), request)
-                                        .then(res => window.location.href = res.location);
-                            })
-                            .catch(() => {
-                                //happens when the key is already registered
-                                window.location.href = $conf.eduIDWebAuthnRedirectSpUrl;
-                            })
-                })
-                .catch(() => navigate("/404"));
+        token = urlSearchParams.get("token");
+        name = decodeURIComponent(urlSearchParams.get("name"));
+        loading = false;
     });
+
+    const startWebAuthnRegistration = () => {
+        webAuthnRegistration(token)
+            .then(request => {
+                loading = false;
+                create({publicKey: request})
+                    .then(credentials => {
+                        //rawId is not supported server-side
+                        delete credentials["rawId"];
+                        webAuthnRegistrationResponse(token, name, JSON.stringify(credentials), request)
+                            .then(res => window.location.href = res.location);
+                    })
+                    .catch(() => {
+                        //happens when the key is already registered
+                        window.location.href = $conf.eduIDWebAuthnRedirectSpUrl;
+                    })
+            })
+            .catch(() => navigate("/404"));
+    };
 
 </script>
 
@@ -38,10 +45,6 @@
         display: flex;
         flex-direction: column;
         min-height: 35vh;
-    }
-
-    h3 {
-        margin: 2vh 0;
     }
 
     p.info {
@@ -53,7 +56,8 @@
     {#if loading}
         <Spinner/>
     {:else}
-        <h3>{I18n.t("webAuthn.info")}</h3>
+        <h2>{I18n.t("webAuthn.info")}</h2>
         <p class="info">{I18n.t("webAuthn.browserPrompt")}</p>
+        <Button label={I18n.t("webAuthn.start")} onClick={startWebAuthnRegistration}/>
     {/if}
 </div>
