@@ -37,6 +37,7 @@ import java.util.regex.Pattern;
 
 import static io.restassured.RestAssured.given;
 import static io.restassured.RestAssured.when;
+import static myconext.model.LinkedAccountTest.*;
 import static myconext.security.GuestIdpAuthenticationRequestFilter.BROWSER_SESSION_COOKIE_NAME;
 import static myconext.security.GuestIdpAuthenticationRequestFilter.GUEST_IDP_REMEMBER_ME_COOKIE_NAME;
 import static org.hamcrest.Matchers.*;
@@ -147,7 +148,7 @@ public class UserControllerTest extends AbstractIntegrationTest {
     @Test
     public void accountLinkingRequiredNotNeeded() throws IOException {
         User user = userRepository.findOneUserByEmailIgnoreCase("jdoe@example.com");
-        LinkedAccount linkedAccount = LinkedAccountTest.linkedAccount("John", "Doe", new Date());
+        LinkedAccount linkedAccount = linkedAccount("John", "Doe", new Date());
         user.getLinkedAccounts().add(linkedAccount);
         userRepository.save(user);
 
@@ -165,7 +166,7 @@ public class UserControllerTest extends AbstractIntegrationTest {
     public void accountLinkingWithValidatedNames() throws IOException {
         User user = userRepository.findOneUserByEmailIgnoreCase("jdoe@example.com");
         Date createdAt = Date.from(Instant.now());
-        LinkedAccount linkedAccount = LinkedAccountTest.linkedAccount("Mary", "Steward", createdAt);
+        LinkedAccount linkedAccount = linkedAccount("Mary", "Steward", createdAt);
         user.getLinkedAccounts().add(linkedAccount);
         userRepository.save(user);
 
@@ -185,7 +186,7 @@ public class UserControllerTest extends AbstractIntegrationTest {
     public void accountLinkingWithoutStudentAffiliation() throws IOException {
         User user = userRepository.findOneUserByEmailIgnoreCase("jdoe@example.com");
         Date createdAt = Date.from(Instant.now().plus(30 * 365, ChronoUnit.DAYS));
-        LinkedAccount linkedAccount = LinkedAccountTest.linkedAccount(createdAt, Arrays.asList("nope"));
+        LinkedAccount linkedAccount = linkedAccount(createdAt, Arrays.asList("nope"));
         user.getLinkedAccounts().add(linkedAccount);
         userRepository.save(user);
 
@@ -210,7 +211,7 @@ public class UserControllerTest extends AbstractIntegrationTest {
     @Test
     public void accountLinkingWithoutValidNames() throws IOException {
         User user = userRepository.findOneUserByEmailIgnoreCase("jdoe@example.com");
-        LinkedAccount linkedAccount = LinkedAccountTest.linkedAccount("", "", new Date());
+        LinkedAccount linkedAccount = linkedAccount("", "", new Date());
         user.getLinkedAccounts().add(linkedAccount);
         userRepository.save(user);
 
@@ -567,6 +568,59 @@ public class UserControllerTest extends AbstractIntegrationTest {
 
     @Test
     public void magicLinkRequiresSameBrowser() throws IOException {
+        SamlAuthenticationRequest samlAuthenticationRequest = doMagicLinkRequiredSameBrowser();
+        Response response = given().redirects().follow(false)
+                .when()
+                .queryParam("id", samlAuthenticationRequest.getId())
+                .queryParam("verificationCode", samlAuthenticationRequest.getVerificationCode())
+                .get("/saml/guest-idp/continue");
+        String saml = samlAuthnResponse(response);
+
+        assertTrue(saml.contains("jdoe@example.com"));
+    }
+
+    @Test
+    public void magicLinkRequiresSameBrowseWrongCode() throws IOException {
+        SamlAuthenticationRequest samlAuthenticationRequest = doMagicLinkRequiredSameBrowser();
+        given().redirects().follow(false)
+                .when()
+                .queryParam("id", samlAuthenticationRequest.getId())
+                .queryParam("verificationCode", "NOP-123")
+                .get("/saml/guest-idp/continue")
+                .then()
+                .statusCode(302)
+                .header("Location", equalTo("http://localhost:3000/expired"));
+    }
+
+    @Test
+    public void magicLinkRequiresSameBrowseNotLoggedIn() throws IOException {
+        SamlAuthenticationRequest samlAuthenticationRequest = doMagicLinkRequiredSameBrowser();
+        samlAuthenticationRequest.setLoginStatus(LoginStatus.NOT_LOGGED_IN);
+        authenticationRequestRepository.save(samlAuthenticationRequest);
+        given().redirects().follow(false)
+                .when()
+                .queryParam("id", samlAuthenticationRequest.getId())
+                .queryParam("verificationCode", samlAuthenticationRequest.getVerificationCode())
+                .get("/saml/guest-idp/continue")
+                .then()
+                .statusCode(302)
+                .header("Location", equalTo("http://localhost:3000/expired"));
+    }
+
+    @Test
+    public void magicLinkRequiresSameBrowseExpiredRequest() throws IOException {
+        SamlAuthenticationRequest samlAuthenticationRequest = doMagicLinkRequiredSameBrowser();
+        authenticationRequestRepository.delete(samlAuthenticationRequest);
+        given().redirects().follow(false)
+                .when()
+                .queryParam("id", samlAuthenticationRequest.getId())
+                .get("/saml/guest-idp/continue")
+                .then()
+                .statusCode(302)
+                .header("Location", equalTo("http://localhost:3000/expired"));
+    }
+
+    private SamlAuthenticationRequest doMagicLinkRequiredSameBrowser() throws IOException {
         MagicLinkResponse magicLinkResponse = magicLinkRequest(user("jdoe@example.com"), HttpMethod.PUT);
         SamlAuthenticationRequest samlAuthenticationRequest = authenticationRequestRepository.findById(magicLinkResponse.authenticationRequestId).get();
         given().redirects().follow(false)
@@ -582,13 +636,9 @@ public class UserControllerTest extends AbstractIntegrationTest {
                 .get("/myconext/api/idp/security/success")
                 .then()
                 .body(equalTo("" + LoginStatus.LOGGED_IN_DIFFERENT_DEVICE.ordinal()));
-        Response response = given().redirects().follow(false)
-                .when()
-                .queryParam("id", samlAuthenticationRequest.getId())
-                .get("/saml/guest-idp/continue");
-        String saml = samlAuthnResponse(response);
 
-        assertTrue(saml.contains("jdoe@example.com"));
+        samlAuthenticationRequest = authenticationRequestRepository.findById(magicLinkResponse.authenticationRequestId).get();
+        return samlAuthenticationRequest;
     }
 
     @Test
