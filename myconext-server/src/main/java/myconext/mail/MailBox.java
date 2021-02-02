@@ -79,9 +79,17 @@ public class MailBox {
         sendMail("update_email", title, variables, preferredLanguage(user), newMail);
     }
 
+    public void sendUpdateConfirmationEmail(User user, String email) {
+        String title = this.getTitle("confirmation_update_email", user);
+        Map<String, Object> variables = variables(user, title);
+        variables.put("mySurfConextURL", mySURFconextURL);
+        sendMail("confirmation_update_email", title, variables, preferredLanguage(user), email);
+    }
+
     public void sendVerificationCode(User user, String verificationCode ) {
         String title = this.getTitle("verification_code", user);
         Map<String, Object> variables = variables(user, title);
+        variables.put("mySurfConextURL", mySURFconextURL);
         variables.put("verificationCode", verificationCode);
         sendMail("verification_code", title, variables, preferredLanguage(user), user.getEmail());
     }

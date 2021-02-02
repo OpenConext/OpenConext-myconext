@@ -23,6 +23,11 @@
     "en": "Update your eduID email",
     "nl": "Verander je eduID email"
   },
+  "confirmation_update_email": {
+    "en": "Change of eduID email",
+    "nl": "Aanpassing eduID email"
+  },
+
   "verification_code": {
     "en": "eduID verification code",
     "nl": "eduID verificatie code"

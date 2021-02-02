@@ -1,0 +1,6 @@
+Hi <strong>{{name}}</strong>,
+    We hebben je eduID-e-mailadres gewijzigd zoals je hebt gevraagd.
+        Als u deze wijziging heeft doorgevoerd, kunt u deze e-mail negeren. Het is alleen verzonden om u te waarschuwen voor het geval u deze wijziging niet zelf had doorgevoerd.
+        Als u deze wijziging niet heeft doorgevoerd, raden we u aan naar {{mySURFconextURL}} te gaan om uw wachtwoord te wijzigen.
+
+{{> footer_en.txt}}

@@ -274,14 +274,15 @@ public class UserController {
     @GetMapping("/sp/confirm-email")
     public ResponseEntity confirmUpdateEmail(Authentication authentication, @RequestParam(value = "h") String hash) {
         User user = userFromAuthentication(authentication);
+        String oldEmail = user.getEmail();
         ChangeEmailHash changeEmailHash = changeEmailHashRepository.findByHashAndUserId(hash, user.getId())
                 .orElseThrow(() -> new ForbiddenException("wrong_hash"));
 
         user.setEmail(changeEmailHash.getNewEmail());
-        Authentication authentication1 = SecurityContextHolder.getContext().getAuthentication();
-        Object principal = authentication1.getPrincipal();
         userRepository.save(user);
         authenticationRequestRepository.deleteByUserId(user.getId());
+        mailBox.sendUpdateConfirmationEmail(user, oldEmail);
+        mailBox.sendUpdateConfirmationEmail(user, user.getEmail());
         return returnUserResponse(user);
     }
 

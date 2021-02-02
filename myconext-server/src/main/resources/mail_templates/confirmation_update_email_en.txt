@@ -1,0 +1,6 @@
+Hi <strong>{{name}}</strong>,
+    We have changed your eduID email as you requested.
+    If you initiated this change, you can disregard this email. It was only sent to alert you in case you had not initiated this change yourself.
+    If you did not initiate this change, we recommend that you go to {{mySURFconextURL}} to change your password.
+
+{{> footer_en.txt}}
