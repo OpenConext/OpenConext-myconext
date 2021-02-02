@@ -74,6 +74,10 @@ I18n.translations.en = {
         resend: "Still can't find it?",
         resendLink: " Send me the mail again.",
         mailResend: "Check your inbox again. We have sent the mail with the magic link again.",
+        loggedInDifferentDevice: "Verification code required",
+        loggedInDifferentDeviceInInfo: "You have used the magic link we sent you, in a different browser where you have requested the magic link. As an extra security precaution you'll have to enter a verification code.",
+        loggedInDifferentDeviceInInfo2: "We have send you an email containing the verification code.",
+        verify: "Verify"
     },
     confirm: {
         header: "Success!",
@@ -96,8 +100,8 @@ I18n.translations.en = {
         poweredBy: "Powered by"
     },
     success: {
-        title: "Login succeeded!",
-        info: "Please go back to the screen where you have requested the magic link.<br/><br/>You can close this tab / window."
+        title: "Login almost done!",
+        info: "Please go back to the screen where you have requested the magic link and follow the instructions there.<br/><br/>You can close this tab / window."
     },
     expired: {
         title: "Expired magic link",

@@ -22,6 +22,10 @@
   "update_email": {
     "en": "Update your eduID email",
     "nl": "Verander je eduID email"
+  },
+  "verification_code": {
+    "en": "eduID verification code",
+    "nl": "eduID verificatie code"
   }
 
 }

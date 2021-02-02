@@ -59,6 +59,8 @@ public class SamlAuthenticationRequest {
 
     private String verificationCode;
 
+    private int retryVerificationCode;
+
     public SamlAuthenticationRequest(boolean testInstance) {
         this.id = UUID.randomUUID().toString();
         this.testInstance = testInstance;
@@ -121,5 +123,9 @@ public class SamlAuthenticationRequest {
 
     public void setVerificationCode(String verificationCode) {
         this.verificationCode = verificationCode;
+    }
+
+    public void setRetryVerificationCode(int retryVerificationCode) {
+        this.retryVerificationCode = retryVerificationCode;
     }
 }

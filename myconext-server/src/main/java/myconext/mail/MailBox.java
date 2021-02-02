@@ -79,6 +79,13 @@ public class MailBox {
         sendMail("update_email", title, variables, preferredLanguage(user), newMail);
     }
 
+    public void sendVerificationCode(User user, String verificationCode ) {
+        String title = this.getTitle("verification_code", user);
+        Map<String, Object> variables = variables(user, title);
+        variables.put("verificationCode", verificationCode);
+        sendMail("verification_code", title, variables, preferredLanguage(user), user.getEmail());
+    }
+
     private Map<String, Object> variables(User user, String title) {
         Map<String, Object> variables = new HashMap<>();
         variables.put("title", title);

@@ -1,6 +1,5 @@
 <script>
     import I18n from "i18n-js";
-    import {user} from "../stores/user";
 
 </script>
 

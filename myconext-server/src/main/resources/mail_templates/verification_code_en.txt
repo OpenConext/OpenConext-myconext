@@ -1,0 +1,13 @@
+Verificatie code
+
+Uw verificatiecode staat hieronder - voer deze in uw geopende browservenster in en we helpen u zich aan te melden.
+
+{{verificatie code}}
+
+Hallo {{name}},
+
+Je hebt je magische link geverifieerd in een ander browserapparaat dan waar je de link hebt aangevraagd.
+Als extra veiligheidsmaatregel moet u de verificatiecode invoeren in uw geopende browser.
+Als je geen magische link hebt aangevraagd, kun je dit bericht negeren of verwijderen.
+
+{{> footer_en.txt}}

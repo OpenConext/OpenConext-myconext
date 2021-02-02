@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>{{title}}</title>
+</head>
+<body>
+<div class="main" style="font-family: Helvetica, Arial, sans-serif;line-height: 18px;font-size: 14px;color: #353535;">
+    <div class="head" style="background-color: #f5f5f5;padding: 30px 0 20px 60px;">
+        <p class="title" style="font-weight: 600;font-size: 38px;line-height: 38px; margin: 0;">Verificatiecode</p>
+        <p class="subtitle" style="font-weight: 300;font-size: 26px;line-height: 30px; margin: 0.6em;">
+            Je verificatiecode staat hieronder -
+            voer het in je geopende browservenster in en we helpen je om aan te melden.</p>
+        <p class="subtitle" style="font-weight: 300;font-size: 26px;line-height: 30px; margin: 0.6em;">Deze code vervalt over 10 uur
+            minuten en kan maar één keer worden gebruikt.</p>
+        <p class="verification-code"
+           style="padding: 25px;margin: 25px 0;border:1px solid #eaeaea;font-weight: bold;background-color: white;font-size: 26px;border-radius: 8px;">
+            {{verificationCode}}
+        </p>
+    </div>
+    <div class="middle" style="padding: 20px 0 40px 60px;max-width: 600px;">
+        <p>Hi <strong>{{name}}</strong>,</p>
+        <p>Je hebt je magische link geverifieerd in een ander browserapparaat dan waar je de link hebt aangevraagd.
+            Als extra veiligheidsmaatregel moet u de verificatiecode invoeren in uw geopende browser. </p>
+        <p> Als je geen magische link hebt aangevraagd, negeer of verwijder dan dit bericht. </p>
+    </div>
+    {{> footer_en.html}}
+</div>
+</body>
+</html>

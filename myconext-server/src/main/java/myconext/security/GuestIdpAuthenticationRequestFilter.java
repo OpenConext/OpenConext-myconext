@@ -1,5 +1,6 @@
 package myconext.security;
 
+import myconext.exceptions.ForbiddenException;
 import myconext.exceptions.UserNotFoundException;
 import myconext.mail.MailBox;
 import myconext.manage.ServiceProviderResolver;
@@ -339,11 +340,17 @@ public class GuestIdpAuthenticationRequestFilter extends IdpAuthenticationReques
         Optional<Cookie> optionalCookie = cookieByName(request, BROWSER_SESSION_COOKIE_NAME);
         if (!optionalCookie.isPresent()) {
             samlAuthenticationRequest.setLoginStatus(LoginStatus.LOGGED_IN_DIFFERENT_DEVICE);
+            samlAuthenticationRequest.setVerificationCode(VerificationCodeGenerator.generate());
+            int retryVerificationCode = samlAuthenticationRequest.getRetryVerificationCode();
+            samlAuthenticationRequest.setRetryVerificationCode(retryVerificationCode + 1);
             authenticationRequestRepository.save(samlAuthenticationRequest);
+            if (retryVerificationCode > 2) {
+                throw new ForbiddenException();
+            }
+            mailBox.sendVerificationCode(user, samlAuthenticationRequest.getVerificationCode());
             response.sendRedirect(this.redirectUrl + "/success");
             return;
         }
-
         samlAuthenticationRequest.setLoginStatus(LoginStatus.LOGGED_IN_SAME_DEVICE);
         doSendAssertion(request, response, samlAuthenticationRequest, user);
     }
@@ -356,6 +363,11 @@ public class GuestIdpAuthenticationRequestFilter extends IdpAuthenticationReques
             return;
         }
         SamlAuthenticationRequest samlAuthenticationRequest = optionalSamlAuthenticationRequest.get();
+        String verificationCode = request.getParameter("verificationCode");
+        if (!StringUtils.hasText(verificationCode) || !verificationCode.equals(samlAuthenticationRequest.getVerificationCode())) {
+            response.sendRedirect(this.redirectUrl + "/expired");
+            return;
+        }
         if (samlAuthenticationRequest.getLoginStatus().equals(LoginStatus.NOT_LOGGED_IN)) {
             response.sendRedirect(this.redirectUrl + "/expired");
             return;

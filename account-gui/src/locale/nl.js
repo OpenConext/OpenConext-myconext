@@ -74,6 +74,10 @@ I18n.translations.nl = {
         resend: "Mail nog steeds niet gevonden?",
         resendLink: " Stuur me de mail opnieuw.",
         mailResend: "Check je inbox. We hebben je de mail met de magische link opnieuw verzonden.",
+        loggedInDifferentDevice: "Verificatie code vereist",
+        loggedInDifferentDeviceInInfo: "Je hebt de magische link gebruikt die we je hebben gestuurd, in een andere browser waar je de magische link hebt aangevraagd. Als extra veiligheidsmaatregel moet je een verificatiecode invoeren.",
+        loggedInDifferentDeviceInInfo2: "We hebben je een e-mail gestuurd met de verificatiecode.",
+        verify: "Verifïeer"
     },
     confirm: {
         header: "Gelukt!",
@@ -96,8 +100,8 @@ I18n.translations.nl = {
         poweredBy: "Powered by"
     },
     success: {
-        title: "Inloggen geslaagd!",
-        info: "Ga terug naar het scherm waar je de magische link hebt aangevraagd.<br/><br/>Je kan dit tabblad / venster sluiten."
+        title: "Inloggen bijna geslaagd!",
+        info: "Ga terug naar het scherm waar je de magische link hebt aangevraagd en volg de instructies daar.<br/><br/>Je kan dit tabblad / venster sluiten."
     },
     expired: {
         title: "Verlopen magische link",

@@ -7,6 +7,8 @@
     import {resendMagicLinkMail, successfullyLoggedIn} from "../api";
     import {conf} from "../stores/conf";
     import {status} from "../validation/loginStatus";
+    import Button from "../components/Button.svelte";
+    import {validVerificationCode} from "../validation/regexp";
 
     const gmail = "/img/get-started-icon-gmail@2x-e80b706.png";
     const outlook = "/img/get-started-icon-outlook-55f9ac5.png";
@@ -31,6 +33,8 @@
         setTimeout(() => allowedToResend = true, resendMailAllowedTimeOut);
     });
 
+    const init = el => el.focus();
+
     const resendMail = () => {
         allowedToResend = false;
         resendMagicLinkMail(id).then(() => {
@@ -47,7 +51,7 @@
     }
 
     const verify = () => {
-        window.location.href = `${$conf.continueAfterLoginUrl}?id=${id}&code=${verificationCode}`;
+        window.location.href = `${$conf.continueAfterLoginUrl}?id=${id}&verificationCode=${verificationCode}`;
     }
 
     const isLoggedIn = () => {
@@ -55,8 +59,6 @@
             loginStatus = res;
             if (loginStatus === status.LOGGED_IN_DIFFERENT_DEVICE) {
                 //First check the verification code that was send
-
-
             } else if (loginStatus === status.NOT_LOGGED_IN) {
                 ++counter;
                 if (counter % 30 === 0) {
@@ -75,7 +77,7 @@
 
 </script>
 
-<style>
+<style lang="scss">
 
     .back-container {
         position: absolute;
@@ -90,10 +92,20 @@
         flex-direction: column;
         align-items: center;
         align-content: center;
+
+        &.no-center {
+            align-items: normal;
+            align-content: normal;
+        }
     }
 
     p {
         text-align: center;
+
+        &.no-center {
+            text-align: left;
+            margin-bottom: 15px;
+        }
     }
 
     h2.header {
@@ -159,6 +171,16 @@
         text-align: center;
     }
 
+    input[type=text] {
+        border: 1px solid #727272;
+        border-radius: 6px;
+        padding: 14px;
+        font-size: 16px;
+        width: 100%;
+        margin: 8px 0 35px 0;
+    }
+
+
 </style>
 {#if timeOutReached}
     <div class="magic-link">
@@ -208,4 +230,17 @@
         <h2 class="header">{I18n.t("magicLink.loggedIn")}</h2>
         <p>{@html I18n.t("magicLink.loggedInInfo")}</p>
     </div>
+{:else if loginStatus === status.LOGGED_IN_DIFFERENT_DEVICE}
+    <div class="magic-link no-center ">
+        <h2 class="header">{I18n.t("magicLink.loggedInDifferentDevice")}</h2>
+        <p class="no-center">{@html I18n.t("magicLink.loggedInDifferentDeviceInInfo")}</p>
+        <p  class="no-center">{@html I18n.t("magicLink.loggedInDifferentDeviceInInfo2")}</p>
+        <input class="verification-code"
+               type="text"
+               use:init
+               bind:value={verificationCode}>
+        <Button label={I18n.t("magicLink.verify")} onClick={verify}
+                disabled={!validVerificationCode(verificationCode)}/>
+    </div>
+
 {/if}
