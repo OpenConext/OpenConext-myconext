@@ -3,14 +3,14 @@ import I18n from "i18n-js";
 I18n.translations.nl = {
     sidebar: {
         home: "Home",
-        personalInfo: "Personal info",
-        dataActivity: "Data & activity",
-        security: "Security",
+        personalInfo: "Persoonlijke info",
+        dataActivity: "Data & activiteiten",
+        security: "Beveiliging",
         account: "Account"
     },
     start: {
         hi: "Hi {{name}}!",
-        manage: "Manage your personal info, your privacy, and the security of your eduID account."
+        manage: "Beheer jouw persoonlijke informatie, jouw privacy, en de beveiliging van jouw eduID account."
     },
     header: {
         title: "eduID",
@@ -19,8 +19,8 @@ I18n.translations.nl = {
     landing: {
         logoutTitle: "Je bent uitgelogd",
         logoutStatus: "Om het uitlogproces te voltooien, moet je de browser nu afsluiten.",
-        deleteTitle: "Je eduID is verwijderd",
-        deleteStatus: "Om het verwijderingsproces te voltooien, moet je je browser nu afsluiten."
+        deleteTitle: "Jouw eduID is verwijderd",
+        deleteStatus: "Om het verwijderingsproces te voltooien, moet je jouw browser nu afsluiten."
     },
     notFound: {
         title: "Oeps...",
@@ -29,12 +29,12 @@ I18n.translations.nl = {
     profile: {
         title: "Persoonlijke informatie",
         info: "Wanneer je eduID gebruikt om in te loggen op andere websites, moet een deel van je persoonlijke informatie worden gedeeld. Sommige services vereisen dat je persoonlijke gegevens worden gevalideerd door een derde partij.",
-        basic: "Basic information",
+        basic: "Basis informatie",
         email: "E-mail",
         name: "Naam",
-        validated: "Validated information",
+        validated: "Gevalideerde informatie",
         firstAndLastName: "Voor- en achternaam",
-        firstAndLastNameInfo: "Je voor- en achternaam zijn nog niet geverifieerd door een vertrouwde partij",
+        firstAndLastNameInfo: "Jouw voor- en achternaam zijn nog niet geverifieerd door een vertrouwde partij",
         verify: "Verifïeer",
         student: "Bewijs van studie",
         studentInfo: "je hebt nog niet bewezen dat je in Nederland een studie volgt.",
@@ -43,7 +43,7 @@ I18n.translations.nl = {
         trustedInfo: "Je eduID-account is nog niet gekoppeld aan een vertrouwde partij",
         link: "Koppel",
         institution: "Instelling",
-        affiliations: "Affiliation(s)",
+        affiliations: "Betrekking(en)",
         expires: "Koppeling verloopt",
         expiresValue: "{{date}}",
         verifiedAt: "Geverifïeerd door <strong>{{name}}</strong> op {{date}}",
@@ -64,7 +64,7 @@ I18n.translations.nl = {
         familyName: "Je achternaam",
         update: "Opslaan",
         cancel: "Annuleren",
-        updated: "Je profiel is bijgewerkt.",
+        updated: "Jouw profiel is bijgewerkt.",
         back: "/profile"
     },
     email: {
@@ -74,7 +74,7 @@ I18n.translations.nl = {
         update: "Verstuur",
         cancel: "Annuleer",
         updated: "Een e-mail is verzonden naar {{email}}",
-        confirmed: "Je e-mail is gewijzigd naar {{email}}",
+        confirmed: "Jouw e-mail is gewijzigd naar {{email}}",
         back: "/personal",
         emailEquality: "Je nieuwe e-mailadres is gelijk aan je huidige e-mailadres",
         duplicateEmail: "Dit e-mailadres is al in gebruik."
@@ -94,18 +94,18 @@ I18n.translations.nl = {
         securityKey: "Security key {{nbr}}",
         test: "Test",
         addSecurityKey: "Security key toevoegen",
-        addSecurityKeyInfo: "Je kan biometrieken (TouchID, FaceID of Windows Hello) of hardware security tokens (Yubikey).",
+        addSecurityKeyInfo: "Je kan biometrische tokens (TouchID, FaceID of Windows Hello) of hardware security tokens (Yubikey, SoloKeys, FEITIAN en anderen) registreren.",
         settings: "Inlog instellngen",
-        rememberMeInfo: "<strong> Uw apparaat wordt momenteel onthouden. Je wordt automatisch ingelogd op eduD </strong>",
-        noRememberMeInfo: "Als u inlogt met uw eduID, kunt u ervoor kiezen om <strong> ingelogd te blijven </strong>. Dit onthoudt uw login op het apparaat dat u op dat moment gebruikt.",
-        forgetMe: "Vergeet me"
+        rememberMeInfo: "<strong> Dit apparaat wordt momenteel onthouden. Je wordt automatisch ingelogd op eduD </strong>",
+        noRememberMeInfo: "Als je inlogt met jouw eduID, kunt je ervoor kiezen om <strong> ingelogd te blijven </strong>. Dit onthoudt jouw login op het apparaat dat je op dat moment gebruikt.",
+        forgetMe: "Vergeet dit apparaat"
 
     },
     home: {
         home: "Home",
         welcome: "Welkom {{name}}",
         "data-activity": "Data & activiteit",
-        personal: "Personal info",
+        personal: "Persoonlijke info",
         security: "Beveiliging",
         account: "Account",
         institutions: "Koppelingen",
@@ -157,7 +157,7 @@ I18n.translations.nl = {
             deleteDisclaimer: "Als je deze inloggegevens verwijdert, verwijdert eduID deze informatie uit je eduID-account. Je hebt nog een account bij de dienst zelf. Als je dat wilt laten verwijderen, doe dat dan bij de dienst.",
             access: "Toegangsrechten",
             details: "Account gegevens",
-            consent: "Consent datum",
+            consent: "Toestemming datum",
             expires: "Vervaldatum",
             revoke: "Intrekken"
         },
@@ -170,14 +170,14 @@ I18n.translations.nl = {
     },
     institution: {
         title: "Gekoppelde instelling",
-        info: "Deze instelling is op {{date}} om {{hours}}: {{minutes}} gekoppeld aan je eduID.",
+        info: "Deze instelling is op {{date}} om {{hours}}: {{minutes}} gekoppeld aan jouw eduID.",
         name: "Naam van de instelling",
         eppn: "Identifier bij de instelling",
         displayName: "Weergavenaam",
         affiliations: "Betrekking(en) bij de instelling",
         expires: "Koppeling verloopt op",
         expiresValue: "{{date}}",
-        delete: "Verwijder Koppeling",
+        delete: "Verwijder koppeling",
         cancel: "Annuleren",
         deleted: "De koppeling met instelling {{name}} is verwijderd",
         back: "/instellingen",
@@ -227,7 +227,7 @@ I18n.translations.nl = {
         publicKeys: "Je publieke keys",
         noPublicKeys: "Je hebt nog geen keys toegevoegd.",
         nameRequired: "Voordat je een key kan toevoegen, moet je deze eerst een naam geven.",
-        revoke: "Revoke",
+        revoke: "Intrekken",
         addDevice: "Voeg dit apparaat toe",
         info: "Public Key Cryptography and Web Authentication (ook bekend als WebAuthn) stelt eduID in staat om u te authenticeren met behulp van public key cryptografie in plaats van een magische link of wachtwoord.",
         back: "/security",

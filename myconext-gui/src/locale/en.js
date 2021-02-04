@@ -94,7 +94,7 @@ I18n.translations.en = {
         securityKey: "Security key {{nbr}}",
         test: "Test",
         addSecurityKey: "Add security key",
-        addSecurityKeyInfo: "You can register biometrics (TouchID, FaceID or Windows Hello) or hardware security tokens (Yubikey).",
+        addSecurityKeyInfo: "You can register biometric tokens (TouchID, FaceID or Windows Hello) or hardware security tokens (Yubikey, SoloKeys, FEITIAN and others).",
         settings: "Sign-in settings",
         rememberMeInfo: "<strong>Your device is currently remembered. You will be automatically logged in on eduD</strong>",
         noRememberMeInfo: "When logging in with your eduID, you can choose to <strong>stay logged in</strong>. This remembers your login on the device you use at that moment.",
