@@ -479,6 +479,11 @@ public class GuestIdpAuthenticationRequestFilter extends IdpAuthenticationReques
         if (hasText(relayState)) {
             model.put("RelayState", HtmlUtils.htmlEscape(relayState));
         }
+        Optional<Cookie> optionalCookie = cookieByName(request, BROWSER_SESSION_COOKIE_NAME);
+        optionalCookie.ifPresent(cookie -> {
+            cookie.setMaxAge(0);
+            response.addCookie(cookie);
+        });
         processHtml(request, response, getPostBindingTemplate(), model);
     }
 
