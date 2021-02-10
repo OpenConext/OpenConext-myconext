@@ -69,7 +69,7 @@
         <tr>
             <td>
                 <Button href="/myconext/api/sp/personal" download={personalDataFileName()}
-                        medium={true}
+                        large={true}
                         label={I18n.t("account.data")}/>
             </td>
             <td>{I18n.t("account.personalInfo")}</td>
@@ -77,7 +77,7 @@
         <tr>
             <td>
                 <Button onClick={() => navigate("/delete-account")}
-                        medium={true}
+                        large={true}
                         label={I18n.t("account.delete")}/>
             </td>
             <td>{I18n.t("account.deleteInfo")}</td>

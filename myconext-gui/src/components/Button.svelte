@@ -8,13 +8,13 @@
     export let warning = false;
     export let label;
     export let onClick;
-    export let full = false;
     export let medium = false;
     export let large = false;
     export let small = false;
     export let download = false;
     export let deletion = false;
     export let icon = undefined;
+    export let inline = undefined;
 
     const handleLinkClick = e => e.key === " " && e.target.click();
 
@@ -23,7 +23,7 @@
     .button {
         background-color: #0077c8;
         border-radius: 8px;
-        padding: 10px 20px;
+        padding: 8px 10px;
         display: inline-block;
         position: relative;
         color: white;
@@ -31,7 +31,7 @@
         cursor: pointer;
         text-align: center;
         font-weight: bold;
-        width: 216px;
+        width: 140px;
     }
 
     @media (max-width: 820px) {
@@ -40,7 +40,7 @@
         }
 
         .button.large {
-            width: 260px;
+            width: 180px;
         }
     }
 
@@ -77,10 +77,9 @@
         background-color: #efefef;
     }
 
-    .button.full, .button.large {
-        width: 260px;
+    .button.large {
+        width: 180px;
     }
-
     .button.warning {
         background-color: var(--color-warning-red);
 
@@ -91,21 +90,13 @@
         color: whitesmoke;
     }
 
-    @media (max-width: 580px) {
-        .button.full {
-            width: 200px;
-        }
-
-    }
-
     .button.small {
         max-width: 90px;
         padding: 6px;
     }
 
     .button.medium {
-        width: 166px;
-        padding: 6px;
+        width: 140px;
     }
 
     .button.icon {
@@ -134,6 +125,17 @@
 
     }
 
+    .button.inline {
+        color: var(--color-primary-blue);
+        border: 1px solid var(--color-primary-blue);
+        background-color: white;
+
+        &:hover {
+            background-color: var(--color-secondary-blue);
+            color: var(--color-primary-blue);
+        }
+    }
+
     :global(a.button span.trash svg) {
         position: absolute;
         width: 20px;
@@ -145,10 +147,12 @@
 
     :global(a.button span.icon svg) {
         position: absolute;
-        width: 20px;
+        width: 16px;
         height: auto;
+        color: var(--color-primary-blue);
+        fill: var(--color-primary-blue);
         left: 6px;
-        top: 6px;
+        top: 8px;
     }
 
 </style>
@@ -157,7 +161,6 @@
     <a class="{`button ${className}`}"
        href="{href}"
        download={download}
-       class:full={full}
        class:medium={medium}
        class:large={large}
        class:disabled={disabled}>
@@ -168,10 +171,10 @@
        class:active={active}
        class:warning={warning}
        href="{href}"
-       class:full={full}
        class:icon={icon != undefined}
        class:small={small}
        class:deletion={deletion}
+       class:inline={inline}
        class:medium={medium}
        class:large={large}
        class:disabled={disabled}

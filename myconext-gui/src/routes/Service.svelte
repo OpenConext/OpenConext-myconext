@@ -150,7 +150,10 @@
                     <div class="content">
                         <span>{I18n.t("dataActivity.details.login")}</span>
                         <span class="button">
-                            <Button onClick={deleteEduId(true)} label={I18n.t("dataActivity.details.delete")}/>
+                            <Button onClick={deleteEduId(true)}
+                                    large={true}
+                                    inline={true}
+                                    label={I18n.t("dataActivity.details.delete")}/>
                         </span>
                     </div>
                 </td>
@@ -184,7 +187,10 @@
                         <div class="content">
                             <span>{I18n.t("dataActivity.details.access")}</span>
                             <span class="button">
-                                <Button onClick={revokeTokens(true)} label={I18n.t("dataActivity.details.revoke")}/>
+                                <Button onClick={revokeTokens(true)}
+                                        large={true}
+                                        inline={true}
+                                        label={I18n.t("dataActivity.details.revoke")}/>
                             </span>
                         </div>
                     </td>

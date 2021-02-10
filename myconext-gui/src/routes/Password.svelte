@@ -1,10 +1,9 @@
 <script>
-    import {user, flash} from "../stores/user";
+    import {flash, user} from "../stores/user";
     import I18n from "i18n-js";
     import {validPassword} from "../validation/regexp";
     import {forgotPasswordLink, me, updateSecurity} from "../api";
     import {navigate} from "svelte-routing";
-    import chevron_left from "../icons/chevron-left.svg";
     import Button from "../components/Button.svelte";
     import Modal from "../components/Modal.svelte";
     import {onMount} from "svelte";
@@ -87,8 +86,8 @@
     }
 
     h2 {
+        margin-top: 35px;
         color: var(--color-primary-green);
-        margin-top: 25px;
     }
 
     p.info {

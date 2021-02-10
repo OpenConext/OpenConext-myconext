@@ -37,7 +37,7 @@
     }
 
     h2 {
-        margin-top: 25px;
+        margin-top: 35px;
         color: var(--color-primary-green);
     }
     p.info {

@@ -16,6 +16,7 @@
     export let account = {};
     export let verifiedValue = "";
     export let info = "";
+    export let verifyType = "";
     export let buttonTxt = "";
     export let refresh = () => true;
 
@@ -93,6 +94,10 @@
         &:hover {
             background-color: var(--color-background);
         }
+    }
+
+    td {
+      border-bottom: 1px solid var(--color-primary-grey)
     }
 
     td.verified-at {
@@ -213,7 +218,10 @@
                 </tr>
                 <tr>
                     <td colspan="2">
-                        <Button label={I18n.t("institution.delete")} onClick={() => deleteAccountLink(true)}/>
+                        <Button label={I18n.t("institution.delete")}
+                                large={true}
+                                inline={true}
+                                onClick={() => deleteAccountLink(true)}/>
                     </td>
                 </tr>
                 </tbody>
@@ -226,8 +234,8 @@
 {#if showModal}
     <Modal submit={addInstitution(false)}
            cancel={() => showModal = false}
-           question={I18n.t("profile.addInstitutionConfirmation")}
-           title={I18n.t("profile.addInstitution")}
+           question={I18n.t(`profile.${verifyType}.addInstitutionConfirmation`)}
+           title={I18n.t(`profile.${verifyType}.addInstitution`)}
            confirmTitle={I18n.t("profile.proceed")}>
     </Modal>
 {/if}

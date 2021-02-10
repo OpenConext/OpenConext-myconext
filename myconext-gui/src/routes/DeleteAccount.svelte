@@ -104,7 +104,8 @@
         <Button href="/cancel" label={I18n.t("account.cancel")}
                 onClick={() => navigate("/account")} small={true} className="cancel"/>
         <Button href="/delete" label={I18n.t("account.deleteAccount")}
-                onClick={deleteUserAction(true)} className="full"/>
+                large={true}
+                onClick={deleteUserAction(true)} />
     </div>
 </div>
 

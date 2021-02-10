@@ -181,6 +181,7 @@
                     bind:showDetails={showNameDetails}
                     attr={I18n.t("profile.firstAndLastName")}
                     verified={nameVerified}
+                    verifyType="verifyFirstAndLastName"
                     account={nameVerifiedAccount}
                     verifiedValue={`${nameVerifiedAccount.givenName} ${nameVerifiedAccount.familyName}`}
                     info={I18n.t("profile.firstAndLastNameInfo")}
@@ -190,6 +191,7 @@
                     bind:showDetails={showStudentDetails}
                     attr={I18n.t("profile.student")}
                     verified={studentVerified}
+                    verifyType="verifyStudent"
                     account={studentVerifiedAccount}
                     verifiedValue={`${studentVerifiedAccount.schacHomeOrganization} ${(studentVerifiedAccount.eduPersonAffiliations || []).join(", ")}`}
                     info={I18n.t("profile.studentInfo")}
@@ -199,6 +201,7 @@
                     bind:showDetails={showEduIDDetails}
                     attr={I18n.t("profile.trusted")}
                     verified={eduIDLinked}
+                    verifyType="verifyParty"
                     account={eduIDLinkedAccount}
                     verifiedValue={`${eduIDLinkedAccount.schacHomeOrganization}`}
                     info={I18n.t("profile.trustedInfo")}

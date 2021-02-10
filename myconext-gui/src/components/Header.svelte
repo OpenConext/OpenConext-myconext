@@ -70,7 +70,9 @@
     <h1>{I18n.t("header.title")}</h1>
     {#if !$user.guest}
         <div class="logout">
-            <Button href="/logout" label={I18n.t("header.logout")} onClick={logoutUser} className="cancel small"/>
+            <Button href="/logout" label={I18n.t("header.logout")} onClick={logoutUser}
+                    medium={true}
+                    className="cancel"/>
         </div>
     {/if}
 </div>

@@ -19,7 +19,7 @@
   }
 
   h2 {
-    margin: 20px 0 10px 0;
+    margin: 35px 0 10px 0;
     color: var(--color-primary-green);
   }
 

@@ -1,5 +1,5 @@
 <script>
-    import {user, flash, config} from "../stores/user";
+    import {config, flash, user} from "../stores/user";
     import I18n from "i18n-js";
     import {navigate} from "svelte-routing";
     import writeSvg from "../icons/redesign/pencil-write.svg";
@@ -103,6 +103,15 @@
 
         td {
             border-bottom: 1px solid var(--color-primary-grey);
+
+            &.last {
+                border-bottom: none;
+            }
+
+            &.space {
+                padding: 5px 0;
+            }
+
         }
 
         td.attr {
@@ -154,8 +163,14 @@
 
     }
 
+    h4.last {
+        margin-top: 25px;
+    }
+
     table.security-settings {
         td {
+            border-bottom: none;
+
             &.attr {
                 width: 28%;
             }
@@ -167,10 +182,12 @@
 
             &.info {
                 width: 80%;
+
                 &.verified {
                     width: 56%;
                 }
             }
+
             &.forget-me {
                 width: 122px;
                 text-align: right;
@@ -224,6 +241,7 @@
                                 <span>{`${credential.name}`}</span>
                                 <div class="actions">
                                     <Button small={true}
+                                            inline={true}
                                             label={I18n.t("security.test")}
                                             icon={rocketSvg}
                                             onClick={startTestFlow}/>
@@ -239,16 +257,16 @@
             {/if}
             {#if $config.featureWebAuthn }
                 <tr>
-                    <td class="attr">
+                    <td class="attr last">
                         <Button medium={true} label={I18n.t("security.addSecurityKey")}
                                 onClick={() => navigate("/webauthn")}/>
                     </td>
-                    <td>{I18n.t("security.addSecurityKeyInfo")}</td>
+                    <td class="last space">{I18n.t("security.addSecurityKeyInfo")}</td>
                 </tr>
             {/if}
             </tbody>
         </table>
-        <h4 class="info2">{I18n.t("security.settings")}</h4>
+        <h4 class="info2 last">{I18n.t("security.settings")}</h4>
         <table class="security-settings" cellspacing="0">
             <thead></thead>
             <tbody>

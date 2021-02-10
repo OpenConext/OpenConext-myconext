@@ -47,12 +47,22 @@ I18n.translations.nl = {
         expires: "Koppeling verloopt",
         expiresValue: "{{date}}",
         verifiedAt: "Geverifieerd door <strong>{{name}}</strong> op {{date}}",
-        addInstitutionConfirmation: "Als je doorgaat word je gevraagd in te loggen via de onderwijsinstelling die je wilt koppelen. Selecteer eerst welke instelling je wilt koppelen en log daarna in.<br/> <br/>Nadat je succesvol bent ingelogd kom je hier weer terug.",
         proceed: "Doorgaan",
-        addInstitution: "Verificatie toevoegen"
+        verifyFirstAndLastName: {
+            addInstitution: "Verifieer naam",
+            addInstitutionConfirmation: "Als je doorgaat word je gevraagd in te loggen via de onderwijsinstelling die je wilt koppelen. Selecteer eerst welke instelling je wilt koppelen en log daarna in.<br/> <br/>Nadat je succesvol bent ingelogd kom je hier weer terug.",
+        },
+        verifyStudent: {
+            addInstitution: "Bewijs student",
+            addInstitutionConfirmation: "Als je doorgaat word je gevraagd in te loggen via de onderwijsinstelling die je wilt koppelen. Selecteer eerst welke instelling je wilt koppelen en log daarna in.<br/> <br/>Nadat je succesvol bent ingelogd kom je hier weer terug.",
+        },
+        verifyParty: {
+            addInstitution: "Koppel instelling",
+            addInstitutionConfirmation: "Als je doorgaat word je gevraagd in te loggen via de onderwijsinstelling die je wilt koppelen. Selecteer eerst welke instelling je wilt koppelen en log daarna in.<br/> <br/>Nadat je succesvol bent ingelogd kom je hier weer terug.",
+        }
     },
     eppnAlreadyLinked: {
-        header: "Account niet gekoppeld!",
+        header: "Koppeling niet gemaakt!",
         info: "Je eduID kon niet worden gekoppeld, omdat het account waarmee je bent ingelogd, al aan een ander eduID account is gekoppeld.",
         proceed: "Je kan het nogmaals met een andere instelling proberen.",
         retryLink: "Opnieuw proberen"

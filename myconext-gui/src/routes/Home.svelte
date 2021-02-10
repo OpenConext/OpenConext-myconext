@@ -119,7 +119,7 @@
     nav ul li {
         display: flex;
         align-items: center;
-        padding: 10px 55px 10px 15px;
+        padding: 10px 25px 10px 15px;
     }
 
 

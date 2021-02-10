@@ -86,7 +86,7 @@
 
     :global(:root) {
         --color-primary-blue: #0062b0;
-        --color-secondary-blue: #9adbe8;
+        --color-secondary-blue: #ddf2fd;
         --color-primary-green: #008738;
         --color-primary-black: #202020;
         --color-primary-red: #ff0000;

@@ -47,12 +47,22 @@ I18n.translations.en = {
         expires: "Link expires",
         expiresValue: "{{date}}",
         verifiedAt: "Verified by <strong>{{name}}</strong> on {{date}}",
-        addInstitutionConfirmation: "When you proceed you will be asked to login at the institution you want to link to your eduID. First, select which institution you want to connect; then, login at that institution.<br/><br/>After a successful login you will come back here.",
         proceed: "Proceed",
-        addInstitution: "Add verification"
+        verifyFirstAndLastName: {
+            addInstitution: "Verify name",
+            addInstitutionConfirmation: "When you proceed you will be asked to login at the institution you want to link to your eduID. First, select which institution you want to connect; then, login at that institution.<br/><br/>After a successful login you will come back here.",
+        },
+        verifyStudent: {
+            addInstitution: "Prove student",
+            addInstitutionConfirmation: "When you proceed you will be asked to login at the institution you want to link to your eduID. First, select which institution you want to connect; then, login at that institution.<br/><br/>After a successful login you will come back here.",
+        },
+        verifyParty: {
+            addInstitution: "Link party",
+            addInstitutionConfirmation: "When you proceed you will be asked to login at the institution you want to link to your eduID. First, select which institution you want to connect; then, login at that institution.<br/><br/>After a successful login you will come back here.",
+        }
     },
     eppnAlreadyLinked: {
-        header: "Account not linked!",
+        header: "Connection not added!",
         info: "Your eduID could not be linked, because the trusted account you want to use is already linked to a different eduID account.",
         proceed: "You can try to link to another institution.",
         retryLink: "Retry"
@@ -94,7 +104,7 @@ I18n.translations.en = {
         securityKey: "Token {{nbr}}",
         test: "Test",
         addSecurityKey: "Add token",
-        addSecurityKeyInfo: "You can register add tokens within your eduID which can be used to login. You can use, for example, the built-in sensor of your device (TouchID, FaceID) or a separate hardware token (YubiKey).",
+        addSecurityKeyInfo: "You can register tokens within your eduID which can be used to login. You can use, for example, the built-in sensor of your device (TouchID, FaceID) or a separate hardware token (YubiKey).",
         settings: "Sign-in settings",
         rememberMeInfo: "<strong>Your device is currently remembered. You will be automatically logged in to eduID.</strong>",
         noRememberMeInfo: "When logging in with your eduID, you can choose to <strong>stay logged in</strong>. This remembers your login on the device you use at that moment.",
@@ -123,7 +133,7 @@ I18n.translations.en = {
         created: "Created on",
         delete: "Delete my account",
         cancel: "Cancel",
-        deleteInfo:"Proceed with care, as you will lose the unique eduID identifiers currently associated wth your email address.",
+        deleteInfo: "Proceed with care, as you will lose the unique eduID identifiers currently associated wth your email address.",
         data: "Download your data",
         personalInfo: "Click the button left to download all your personal data from your eduID account.",
         deleteTitle: "Deleting your eduID account",
@@ -191,7 +201,7 @@ I18n.translations.en = {
         cancel: "Cancel",
         update: "Update",
         deleted: "Your token {{name}} has been deleted",
-        updated:"Your token {{name}} has been updated",
+        updated: "Your token {{name}} has been updated",
         back: "/weauthn",
         deleteCredential: "Delete key",
         deleteCredentialConfirmation: "Are you sure you want to delete your public key credential {{name}}? The key will be deleted from your eduID account, but will not be removed from your browser and / or YubiKey device."
