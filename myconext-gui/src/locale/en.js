@@ -136,6 +136,8 @@ I18n.translations.en = {
         deleteInfo: "Proceed with care, as you will lose the unique eduID identifiers currently associated wth your email address.",
         data: "Download your data",
         personalInfo: "Click the button left to download all your personal data from your eduID account.",
+        downloadData: "Download",
+        downloadDataConfirmation: "The download of your personal data from your eduID account contains all the information we have about you. It also contains technical keys and references.",
         deleteTitle: "Deleting your eduID account",
         info1: "You can delete your eduID whenever you want.",
         info2: "Proceed with care, as you will lose the unique eduID number currently associated with your email address. When you re-register for a new eduID with that same email address, you will receive a new eduID number. Some services use this unique number to identify you, so for those services you will be treated as a new user.",

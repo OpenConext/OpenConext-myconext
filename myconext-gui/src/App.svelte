@@ -167,6 +167,7 @@
         :global(.options) {
             display: flex;
             flex-direction: column;
+            align-items: center;
         }
 
         :global(.options a:not(:first-child)) {

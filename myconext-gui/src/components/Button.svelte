@@ -163,8 +163,10 @@
        download={download}
        class:medium={medium}
        class:large={large}
+       on:click={() => onClick && onClick()}
        class:disabled={disabled}>
         {label}
+
     </a>
 {:else}
     <a class="{`button ${className}`}"

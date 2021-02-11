@@ -136,6 +136,8 @@ I18n.translations.nl = {
         cancel: "Annuleer",
         deleteInfo: "Ga voorzichtig te werk, want je verliest de unieke eduID ID's die momenteel aan je e-mailadres zijn gekoppeld.",
         data: "Download je data",
+        downloadData: "Download",
+        downloadDataConfirmation: "De download van je persoonlijke gegevens van je eduID-account bevat alle informatie die we over je  hebben. Het bevat ook technische sleutels en referenties.",
         personalInfo: "Klik op de onderstaande knop om al je persoonlijke gegevens uit je eduID account te downloaden.",
         deleteTitle: "Je eduID account verwijderen",
         info1: "Je kunt je eduID account verwijderen wanneer je maar wilt.",

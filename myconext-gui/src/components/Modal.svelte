@@ -9,6 +9,7 @@
     export let warning = false;
     export let confirmTitle = I18n.t("modal.confirm");
     export let disableSubmit = false;
+    export let download = undefined;
 
     let modal;
 
@@ -82,7 +83,9 @@
             <Button className="cancel" onClick={cancel}
                     label={I18n.t("modal.cancel")}/>
 
-            <Button onClick={submit} warning={warning}
+            <Button onClick={submit}
+                    warning={warning}
+                    download={download}
                     disabled={disableSubmit}
                     label={confirmTitle}/>
         </div>

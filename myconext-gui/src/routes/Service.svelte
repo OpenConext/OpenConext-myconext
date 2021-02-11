@@ -89,11 +89,22 @@
                 div.content {
                     display: flex;
                     align-items: center;
-
                     span.button {
                         margin-left: auto;
                     }
                 }
+
+                @media (max-width: 800px) {
+                    div.content {
+                        flex-direction: column;
+                        align-items: flex-start;
+                        span.button {
+                            margin-top: 15px;
+                            margin-left: 0;
+                        }
+                    }
+                }
+
             }
 
             &.attr {

@@ -5,6 +5,9 @@
     import {navigate} from "svelte-routing";
 
     import Button from "../components/Button.svelte";
+    import Modal from "../components/Modal.svelte";
+
+    let showModal = false;
 
     const addLeadingZero = s => s.length < 2 ? `${0}s` : s;
 
@@ -68,7 +71,8 @@
         </tr>
         <tr>
             <td>
-                <Button href="/myconext/api/sp/personal" download={personalDataFileName()}
+                <Button href="/myconext/api/sp/personal"
+                        onClick={() => showModal = true}
                         large={true}
                         label={I18n.t("account.data")}/>
             </td>
@@ -87,3 +91,13 @@
 
 
 </div>
+
+{#if showModal}
+    <Modal submit={() => setTimeout(() => showModal = false, 750)}
+           cancel={() => showModal = false}
+           download={personalDataFileName()}
+           question={I18n.t("account.downloadDataConfirmation")}
+           title={I18n.t("account.downloadData")}
+           confirmTitle={I18n.t("account.downloadData")}>
+    </Modal>
+{/if}
