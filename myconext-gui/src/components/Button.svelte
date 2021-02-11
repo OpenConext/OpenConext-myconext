@@ -23,7 +23,7 @@
     .button {
         background-color: #0077c8;
         border-radius: 8px;
-        padding: 8px 10px;
+        padding: 8px 40px;
         display: inline-block;
         position: relative;
         color: white;
@@ -31,17 +31,7 @@
         cursor: pointer;
         text-align: center;
         font-weight: bold;
-        width: 140px;
-    }
-
-    @media (max-width: 820px) {
-        .button {
-            width: 176px;
-        }
-
-        .button.large {
-            width: 180px;
-        }
+        min-width: 180px;
     }
 
     .button:hover {
@@ -77,9 +67,6 @@
         background-color: #efefef;
     }
 
-    .button.large {
-        width: 180px;
-    }
     .button.warning {
         background-color: var(--color-warning-red);
 
@@ -91,11 +78,14 @@
     }
 
     .button.small {
+        min-width: 90px;
         max-width: 90px;
         padding: 6px;
     }
 
     .button.medium {
+        min-width: 140px;
+        max-width: 140px;
         width: 140px;
     }
 
@@ -111,9 +101,12 @@
         color: var(--color-warning-red);
         border: none;
         background-color: #f1f1f1;;
+        min-width: 42px;
         width: 42px;
         height: 42px;
+        min-height: 42px;
         font-size: 22px;
+        padding: 8px;
 
         &:hover {
             color: #800101;

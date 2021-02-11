@@ -97,9 +97,8 @@
 
     <div class="options">
         <span class="first"><Button deletion={true} onClick={deleteCredential(true)}/></span>
-        <Button small={true} className="cancel" label={I18n.t("credential.cancel")} onClick={cancel}/>
-        <Button medium={true}
-                label={I18n.t("credential.update")}
+        <Button className="cancel" label={I18n.t("credential.cancel")} onClick={cancel}/>
+        <Button label={I18n.t("credential.update")}
                 disabled={!name || name.trim().length === 0}
                 onClick={updateCredential}/>
     </div>

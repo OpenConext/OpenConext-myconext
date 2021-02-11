@@ -102,7 +102,7 @@
     {/each}
     <div class="options">
         <Button href="/cancel" label={I18n.t("account.cancel")}
-                onClick={() => navigate("/account")} small={true} className="cancel"/>
+                onClick={() => navigate("/account")} className="cancel"/>
         <Button href="/delete" label={I18n.t("account.deleteAccount")}
                 large={true}
                 onClick={deleteUserAction(true)} />

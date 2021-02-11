@@ -148,6 +148,23 @@
             }
         }
 
+        @media (max-width: 820px) {
+            div.value-container {
+                flex-direction: column;
+                align-items: flex-start;
+
+                div.actions {
+                    margin-left: 0;
+                    width: 100%;
+
+                    a.right-link {
+                        margin-left: auto;
+                    }
+
+                }
+            }
+        }
+
         td.value-alt {
             width: 65%;
             font-style: italic;
@@ -258,7 +275,7 @@
             {#if $config.featureWebAuthn }
                 <tr>
                     <td class="attr last">
-                        <Button medium={true} label={I18n.t("security.addSecurityKey")}
+                        <Button label={I18n.t("security.addSecurityKey")}
                                 onClick={() => navigate("/webauthn")}/>
                     </td>
                     <td class="last space">{I18n.t("security.addSecurityKeyInfo")}</td>
@@ -279,7 +296,6 @@
                 {#if $user.rememberMe}
                     <td class="forget-me">
                         <Button label={I18n.t("rememberMe.update")}
-                                small={true}
                                 onClick={doForgetMe(true)}/>
                     </td>
                 {/if}

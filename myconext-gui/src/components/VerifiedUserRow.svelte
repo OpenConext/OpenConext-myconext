@@ -73,7 +73,7 @@
             &.info {
                 max-width: 270px;
                 font-weight: normal;
-                margin-right: 15px;
+                margin: 5px 15px 5px 0;
             }
         }
     }
@@ -97,7 +97,7 @@
     }
 
     td {
-      border-bottom: 1px solid var(--color-primary-grey)
+        border-bottom: 1px solid var(--color-primary-grey)
     }
 
     td.verified-at {
@@ -155,6 +155,11 @@
     }
 
     @media (max-width: 820px) {
+        div.value-container {
+            flex-direction: column;
+            align-items: flex-start;
+
+        }
         td.verified {
             display: none;
         }
@@ -162,6 +167,11 @@
 
     :global(div.value-container a.button) {
         margin-left: auto;
+
+        @media (max-width: 820px) {
+            margin-top: 15px;
+            margin-left: 0;
+        }
     }
 
 </style>
