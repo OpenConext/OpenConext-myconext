@@ -281,8 +281,7 @@ public class UserController {
         user.setEmail(changeEmailHash.getNewEmail());
         userRepository.save(user);
         authenticationRequestRepository.deleteByUserId(user.getId());
-        mailBox.sendUpdateConfirmationEmail(user, oldEmail);
-        mailBox.sendUpdateConfirmationEmail(user, user.getEmail());
+        mailBox.sendUpdateConfirmationEmail(user, oldEmail, user.getEmail());
         return returnUserResponse(user);
     }
 

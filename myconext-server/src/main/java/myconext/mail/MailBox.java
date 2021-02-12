@@ -79,11 +79,14 @@ public class MailBox {
         sendMail("update_email", title, variables, preferredLanguage(user), newMail);
     }
 
-    public void sendUpdateConfirmationEmail(User user, String email) {
+    public void sendUpdateConfirmationEmail(User user, String oldEmail, String newEmail) {
         String title = this.getTitle("confirmation_update_email", user);
         Map<String, Object> variables = variables(user, title);
+        variables.put("oldEmail", oldEmail);
+        variables.put("newEmail", newEmail);
         variables.put("mySurfConextURL", mySURFconextURL);
-        sendMail("confirmation_update_email", title, variables, preferredLanguage(user), email);
+        sendMail("confirmation_update_email", title, variables, preferredLanguage(user), oldEmail);
+        sendMail("confirmation_update_email", title, variables, preferredLanguage(user), newEmail);
     }
 
     public void sendVerificationCode(User user, String verificationCode ) {
