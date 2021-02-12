@@ -96,6 +96,7 @@
     <Modal submit={() => setTimeout(() => showModal = false, 750)}
            cancel={() => showModal = false}
            download={personalDataFileName()}
+           href="/myconext/api/sp/personal"
            question={I18n.t("account.downloadDataConfirmation")}
            title={I18n.t("account.downloadData")}
            confirmTitle={I18n.t("account.downloadData")}>

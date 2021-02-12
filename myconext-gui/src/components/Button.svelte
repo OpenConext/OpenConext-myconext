@@ -89,6 +89,13 @@
         width: 140px;
     }
 
+    .button.large {
+        min-width: 200px;
+        max-width: 200px;
+        width: 200px;
+        padding: 8px 0;
+    }
+
     .button.icon {
         padding: 10px 20px 10px 24px;
 

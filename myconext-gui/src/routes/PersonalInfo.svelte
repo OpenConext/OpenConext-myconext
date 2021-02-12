@@ -23,7 +23,7 @@
         showStudentDetails = false;
         showEduIDDetails = false;
 
-        const sortedAccounts = ($user.linkedAccounts || []).sort((a, b) => b.createdAt = a.createdAt);
+        const sortedAccounts = ($user.linkedAccounts || []).sort((a, b) => b.createdAt - a.createdAt);
 
         studentVerifiedAccount = sortedAccounts.find(account => (account.eduPersonAffiliations || []).some(aff => aff === "student")) || {};
         studentVerified = studentVerifiedAccount != undefined && Object.keys(studentVerifiedAccount).length > 0;
