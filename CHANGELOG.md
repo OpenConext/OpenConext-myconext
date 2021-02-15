@@ -3,13 +3,24 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+## [5.0.1] 2021-02-15
+### New
+- Allow the user to change the email address
+- Only allow an institution account to be linked to one myconext account
+- Redesign of landing page
+- Allow downloading of personal data
+
+### Fixes/improvement
+- Fix FIDO2 login on Apple devices
+- Fix session lost if opening the magic-link in an other browser
+
 ## [4.0.4] 2020-12-10
 ### Fixes/improvement
 - Fix security issue in account linking
 
 ## [4.0.3] - 2020-10-29
 ### Fixes/improvement
-- Feature toggle for webauthn was nog honored in IdP
+- Feature toggle for webauthn was not honored in IdP
 - Minor textual changes
 
 ## [4.0.1] - 2020-10-27
