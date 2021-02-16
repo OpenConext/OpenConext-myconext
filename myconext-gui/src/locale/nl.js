@@ -249,7 +249,7 @@ I18n.translations.nl = {
         credentialNamePlaceholder: "e.g. mijn gele YubiKey",
         test: "Test",
         testInfo: "Druk op de <strong>test</strong>knop om een 1 van je WebAuthn-sleutels te testen. Je wordt doorgestuurd naar de eduID-identiteitsserver.",
-        testFlash: "Je hebt met succes je WebAuthn-sleutel getest voor authenticatie"
+        testFlash: "Je hebt met succes je beveligingssleutel getest voor authenticatie"
     },
     rememberMe: {
         updated: "Dit apparaat wordt niet langer onthouden",

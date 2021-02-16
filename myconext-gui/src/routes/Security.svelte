@@ -115,12 +115,12 @@
         }
 
         td.attr {
-            width: 35%;
+            width: 40%;
             padding: 20px;
         }
 
         td.value {
-            width: 65%;
+            width: 60%;
             font-weight: bold;
         }
 
