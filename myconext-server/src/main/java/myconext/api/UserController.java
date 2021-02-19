@@ -622,6 +622,7 @@ public class UserController {
                         .displayName(String.format("%s %s", user.getGivenName(), user.getFamilyName()))
                         .id(ByteArray.fromBase64Url(user.getUserHandle()))
                         .build())
+//                .authenticatorSelection(AuthenticatorSelectionCriteria.builder().authenticatorAttachment(AuthenticatorAttachment.CROSS_PLATFORM).build())
                 .build());
     }
 
