@@ -12,9 +12,9 @@ I18n.translations.nl = {
         trust: "Vertrouw deze computer",
         loginOptions: "Andere inlog manieren",
         loginOptionsToolTip: "We bieden drie manieren om in te loggen:</br><ol>" +
-            "<li>We kunnen een magische link naar je e-mailadres sturen.</li>" +
-            "<li>Je kan je eigen wachtwoord gebruiken, dit dien je eerst in Mijn eduID in te stellen.</li>" +
-            "<li>Je kunt een security key gebruiken, je moet deze key eerst registreren in Mijn eduID.</li>" +
+            "<li>Je kunt een magische link ontvangen op je e-mailadres.</li>" +
+            "<li>Je kunt een wachtwoord gebruiken. Dit dien je eerst in Mijn eduID in te stellen.</li>" +
+            "<li>Je kunt een beveiligingssleutel gebruiken. Dit dien je eerst in Mijn eduID in te stellen.</li>" +
             "</ol>",
         email: "Je e-mailadres",
         emailPlaceholder: "bijv. naam@gmail.com",
@@ -24,12 +24,12 @@ I18n.translations.nl = {
         familyNamePlaceholder: "bijv. Berners-Lee",
         givenNamePlaceholder: "bijv. Tim",
         sendMagicLink: "Mail een magische link",
-        loginWebAuthn: "Login in met een security key",
+        loginWebAuthn: "Login in met een beveiligingssleutel",
         usePassword: "type een wachtwoord",
         usePasswordNoWebAuthn: "Type een wachtwoord",
         useMagicLink: "Gebruik magische link",
         useMagicLinkNoWebAuthn: "Gebruik magische link.",
-        useWebAuth: "Login in met een security key",
+        useWebAuth: "Login in met een beveligingssleutel",
         useOr: " of ",
         requestEduIdButton: "Vraag een eduID aan",
         rememberMe: "Ingelogd blijven",
@@ -53,30 +53,30 @@ I18n.translations.nl = {
         institutionDomainNameWarning: "Het lijkt erop dat je een instellings e-mailadres hebt ingevoerd. Houd er rekening mee dat wanneer je niet meer studeert of werkt bij die instelling, je geen toegang meer hebt tot dat e-mail adres.",
         institutionDomainNameWarning2: "We raden je aan om je persoonlijke e-mailadres te gebruiken voor eduID.",
         allowedDomainNamesError: "Domeinnaam {{domain}} niet toegestaan.",
-        allowedDomainNamesError2: "ediID is beperkt om alleen te worden gebruikt voor toegestane domeinen.",
+        allowedDomainNamesError2: "eduID is beperkt om alleen te worden gebruikt door toegestane domeinen.",
         passwordDisclaimer: "Je wachtwoord moet minimaal 15 karakters lang zijn, of minimaal 8 als het een hoofdletter en een getal bevat.",
         alreadyGuestAccount: "Heb je al een eduID?",
         usePasswordLink: "Gebruik toch een wachtwoord",
-        useWebAuthnLink: "Of gebruik WebAuthn",
+        useWebAuthnLink: "Of gebruik een beveiligingssleutel",
         agreeWithTerms: "<span>Ik ga akkoord met <a href='https://eduid.nl/voorwaarden/' target='_blank'>de voorwaarden.</a> En ik begrijp <a href='https://eduid.nl/privacyverklaring/' target='_blank'>de privacyverklaring</a>.</span>"
     },
     magicLink: {
         header: "Open je mailbox!",
         info: "Om in te loggen, klik op de link in de e-mail die we hebben verstuurd naar <strong>{{email}}</strong>.",
-        awaiting: "Wachten tot je op de link klikt ...",
+        awaiting: "Wachten tot je op de link klikt...",
         openGMail: "Open Gmail.com",
         openOutlook: "Open Outlook.com",
-        spam: "Kan je de mail niet vinden? Kijk in je spam folder.",
+        spam: "Kan je de e-mail niet vinden? Kijk in je spam.",
         loggedIn: "Inloggen geslaagd!",
         loggedInInfo: "Je kan dit tabblad / venster sluiten.",
         timeOutReached: "Timeout!",
-        timeOutReachedInfo: "Je link is verlopen. Ga terug naar de dienst waar je heen wou en probeer het opnieuw.",
-        resend: "Mail nog steeds niet gevonden?",
-        resendLink: " Stuur me de mail opnieuw.",
-        mailResend: "Check je inbox. We hebben je de mail met de magische link opnieuw verzonden.",
-        loggedInDifferentDevice: "Verificatie code vereist",
-        loggedInDifferentDeviceInInfo: "Je hebt de magische link gebruikt die we je hebben gestuurd, in een andere browser waar je de magische link hebt aangevraagd. Als extra veiligheidsmaatregel moet je een verificatiecode invoeren.",
-        loggedInDifferentDeviceInInfo2: "We hebben je een e-mail gestuurd met de verificatiecode.",
+        timeOutReachedInfo: "Je magische link is verlopen. Ga terug naar de dienst waar je heen wou en probeer het opnieuw.",
+        resend: "E-mail nog steeds niet gevonden?",
+        resendLink: " Stuur de e-mail opnieuw.",
+        mailResend: "Check je inbox. We hebben je de e-mail met de magische link opnieuw verzonden.",
+        loggedInDifferentDevice: "Verificatiecode vereist",
+        loggedInDifferentDeviceInInfo: "Je hebt de magische link gebruikt in een andere browser dan van waaruit je de magische link hebt aangevraagd. Als extra veiligheidsmaatregel moet je een verificatiecode invoeren.",
+        loggedInDifferentDeviceInInfo2: "We hebben je een extra e-mail gestuurd met de verificatiecode.",
         verify: "Verifïeer"
     },
     confirm: {
@@ -101,7 +101,7 @@ I18n.translations.nl = {
     },
     success: {
         title: "Inloggen bijna geslaagd!",
-        info: "Ga terug naar het scherm waar je de magische link hebt aangevraagd en volg de instructies daar.<br/><br/>Je kan dit tabblad / venster sluiten."
+        info: "Ga terug naar het scherm waar je de magische link hebt aangevraagd en volg de instructies daar op.<br/><br/>Je kunt dit tabblad / venster sluiten."
     },
     expired: {
         title: "Verlopen magische link",
@@ -113,8 +113,8 @@ I18n.translations.nl = {
         title2: "Er is iets fout gegaan (404)."
     },
     webAuthn: {
-        info: "Voeg een security key toe",
-        browserPrompt: "Klik op de onderstaande knop om een Bluetooth-security key, USB-security key of de in je device ingebouwde security key toe te voegen aan je eduID-account.",
+        info: "Voeg een beveligingssleutel toe",
+        browserPrompt: "Klik op de onderstaande knop om een beveligingssleutel toe te voegen aan je eduID-account. Volg daarbij de instructies van je browser op.",
         start: "Start"
     },
     migration: {
