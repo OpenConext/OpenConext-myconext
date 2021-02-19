@@ -12,9 +12,9 @@ I18n.translations.en = {
         trust: "Trust this computer",
         loginOptions: "Other sign-in options",
         loginOptionsToolTip: "We offer 3 ways to sign-in:</br><ol>" +
-            "<li>We can send you a magic link to your email.</li>" +
-            "<li>You can use your own password, you need to set this up first within My eduID.</li>" +
-            "<li>You can use a security key, you need to register this key first within My eduID.</li>" +
+            "<li>You can receive a magic link sent to your email address.</li>" +
+            "<li>You can use a password. You must first set this up in My eduID.</li>" +
+            "<li>You can use a security key. You must first set this up in My eduID.</li>" +
             "</ol>",
         email: "Your email address",
         emailPlaceholder: "e.g. user@gmail.com",
@@ -24,7 +24,7 @@ I18n.translations.en = {
         familyNamePlaceholder: "e.g. Berners-Lee",
         givenNamePlaceholder: "e.g. Tim",
         sendMagicLink: "Email a magic link",
-        loginWebAuthn: "Login with security key",
+        loginWebAuthn: "Login with ",
         usePassword: "type a password.",
         usePasswordNoWebAuthn: "Type a password.",
         useMagicLink: "Email a magic link",
@@ -57,7 +57,7 @@ I18n.translations.en = {
         passwordDisclaimer: "Make sure it's at least 15 characters long OR at least 8 characters when including a number and an UpperCase letter.",
         alreadyGuestAccount: "Already have an eduID?",
         usePasswordLink: "Type a password anyway",
-        useWebAuthnLink: "Or use WebAuthn",
+        useWebAuthnLink: "Or use a security key",
         agreeWithTerms: "<span>I agree with <a href='https://eduid.nl/terms_of_service/' target='_blank'>the terms of service.</a> I also understand <a href='https://eduid.nl/privacy_policy/' target='_blank'>the privacy policy</a>.</span>"
     },
     magicLink: {
@@ -66,17 +66,17 @@ I18n.translations.en = {
         awaiting: "Waiting for you to click the link...",
         openGMail: "Open Gmail.com",
         openOutlook: "Open Outlook.com",
-        spam: "Can't find it? Check your spam folder.",
+        spam: "Can't find the email? Check your spam folder.",
         loggedIn: "Login succeeded!",
         loggedInInfo: "You can close this tab / window.",
         timeOutReached: "Timeout!",
-        timeOutReachedInfo: "Your link has expired. Please go back to the service you where heading to and re-try again.",
-        resend: "Still can't find it?",
-        resendLink: " Send me the mail again.",
-        mailResend: "Check your inbox again. We have sent the mail with the magic link again.",
+        timeOutReachedInfo: "Your link has expired. Please go back to the service you where heading to and try again.",
+        resend: "Still can't find the email?",
+        resendLink: "Send the email again.",
+        mailResend: "Check your inbox again. We've sent another email with a magic link.",
         loggedInDifferentDevice: "Verification code required",
-        loggedInDifferentDeviceInInfo: "You have used the magic link we sent you, in a different browser where you have requested the magic link. As an extra security precaution you'll have to enter a verification code.",
-        loggedInDifferentDeviceInInfo2: "We have send you an email containing the verification code.",
+        loggedInDifferentDeviceInInfo: "The magic link we sent you opened in a different browser than the one used to request the magic link. As an extra security measure you must enter a verification code.",
+        loggedInDifferentDeviceInInfo2: "We sent you an extra email with the verification code.",
         verify: "Verify"
     },
     confirm: {
@@ -101,11 +101,11 @@ I18n.translations.en = {
     },
     success: {
         title: "Login almost done!",
-        info: "Please go back to the screen where you have requested the magic link and follow the instructions there.<br/><br/>You can close this tab / window."
+        info: "Please go back to the screen where you requested the magic link and follow the instructions there.<br/><br/>You can close this tab / window."
     },
     expired: {
         title: "Expired magic link",
-        info: "The magic link you have used is either expired or has already been used.",
+        info: "The magic link you used is either expired or has already been used.",
         back: "Go to eduid.nl"
     },
     notFound: {
@@ -114,7 +114,7 @@ I18n.translations.en = {
     },
     webAuthn: {
         info: "Add security key",
-        browserPrompt: "Click the button below to add a Bluetooth security key, USB security key or the security key built into your device to your eduID account.",
+        browserPrompt: "Click the button below to add a security key to your eduID account. Please follow the instructions given by your browser.",
         start: "Start"
     },
     migration: {
