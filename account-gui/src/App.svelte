@@ -10,6 +10,7 @@
     import LinkExpired from "./routes/LinkExpired.svelte";
     import NotFound from "./routes/NotFound.svelte";
     import WebAuthn from "./routes/WebAuthn.svelte";
+    import WebAuthnTest from "./routes/WebAuthnTest.svelte";
     import Header from "./components/Header.svelte";
     import Footer from "./components/Footer.svelte";
     import {onMount} from "svelte";
@@ -128,6 +129,9 @@
                 <Route path="/success" component={Success}/>
                 <Route path="/expired" component={LinkExpired}/>
                 <Route path="/webauthn" component={WebAuthn}/>
+                <Route path="/webauthnTest/:id" let:params>
+                    <WebAuthnTest id="{params.id}"></WebAuthnTest>
+                </Route>
                 <Route component={NotFound}/>
             </Router>
         </div>

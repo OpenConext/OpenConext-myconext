@@ -622,9 +622,9 @@ public class UserController {
                         .displayName(String.format("%s %s", user.getGivenName(), user.getFamilyName()))
                         .id(ByteArray.fromBase64Url(user.getUserHandle()))
                         .build())
-                .authenticatorSelection(AuthenticatorSelectionCriteria.builder()
-                        .authenticatorAttachment(AuthenticatorAttachment.PLATFORM)
-                        .build())
+//                .authenticatorSelection(AuthenticatorSelectionCriteria.builder()
+//                        .authenticatorAttachment(AuthenticatorAttachment.PLATFORM)
+//                        .build())
                 .build());
     }
 
@@ -637,7 +637,6 @@ public class UserController {
                 .identity(rpIdentity)
                 .credentialRepository(this.userCredentialRepository)
                 .origins(Collections.singleton(rpOrigin))
-//                .attestationConveyancePreference(AttestationConveyancePreference.DIRECT)
                 .build();
     }
 

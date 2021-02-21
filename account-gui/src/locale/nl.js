@@ -117,6 +117,11 @@ I18n.translations.nl = {
         browserPrompt: "Klik op de onderstaande knop om een beveligingssleutel toe te voegen aan je eduID-account. Volg daarbij de instructies van je browser op.",
         start: "Start"
     },
+    webAuthnTest: {
+        info: "Test een beveligingssleutel",
+        browserPrompt: "Klik op de onderstaande knop om een beveligingssleutel te testen. Volg daarbij de instructies van je browser op.",
+        start: "Test"
+    },
     migration: {
         header: "Migreer naar <br/>eduID",
         info1: "SURF zal het gebruik van Onegini geleidelijk uitfaseren. Om toegang te behouden, moet je je Onegini-account migreren naar eduID.",

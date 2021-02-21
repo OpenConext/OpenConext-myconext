@@ -84,11 +84,9 @@
         }
 
         const testWebAuthn = urlParams.get("testWebAuthn");
-        const email = urlParams.get("email")
-        if (testWebAuthn && email && $conf.featureWebAuthn) {
-            $user.email = decodeURIComponent(email);
-            $user.useWebAuth = true;
-            webAuthnStart(email, true);
+        if (testWebAuthn && $conf.featureWebAuthn) {
+            const email = urlParams.get("email")
+            navigate(`/webauthnTest/${id}?email=${email}&name=${serviceName}`);
         }
     });
 
@@ -408,7 +406,6 @@
                                                 on:click|preventDefault|stopPropagation={createAccount(true)}>{I18n.t("login.requestEduId2")}</a></span>
     {/if}
 </div>
-
 {#if $user.createAccount}
     <h2 class="header">{I18n.t("login.header2")}</h2>
     <h2 class="top">{I18n.t("login.headerSubTitle")}<span>{serviceName}</span></h2>

@@ -117,6 +117,11 @@ I18n.translations.en = {
         browserPrompt: "Click the button below to add a security key to your eduID account. Please follow the instructions given by your browser.",
         start: "Start"
     },
+    webAuthnTest: {
+        info: "Test Add security key",
+        browserPrompt: "Click the button below to test a security key. Please follow the instructions given by your browser.",
+        start: "Test"
+    },
     migration: {
         header: "Migrate to an <br/>eduID guest account",
         info1: "SURF will phase out the use of Onegini. To retain access, you must migrate your Onegini account to an eduID account.",
