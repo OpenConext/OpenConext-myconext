@@ -24,7 +24,7 @@ I18n.translations.en = {
         familyNamePlaceholder: "e.g. Berners-Lee",
         givenNamePlaceholder: "e.g. Tim",
         sendMagicLink: "Email a magic link",
-        loginWebAuthn: "Login with ",
+        loginWebAuthn: "Login with security key",
         usePassword: "type a password.",
         usePasswordNoWebAuthn: "Type a password.",
         useMagicLink: "Email a magic link",
