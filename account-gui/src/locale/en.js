@@ -118,7 +118,7 @@ I18n.translations.en = {
         start: "Start"
     },
     webAuthnTest: {
-        info: "Test Add security key",
+        info: "Test security key",
         browserPrompt: "Click the button below to test a security key. Please follow the instructions given by your browser.",
         start: "Test"
     },

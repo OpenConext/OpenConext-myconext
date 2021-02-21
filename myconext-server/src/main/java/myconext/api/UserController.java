@@ -426,7 +426,7 @@ public class UserController {
         samlAuthenticationRequest = authenticationRequestRepository.save(samlAuthenticationRequest);
         String email = URLEncoder.encode(user.getEmail(), Charset.defaultCharset().name());
 
-        String loginUrl = String.format("%s/login/%s?name=Test-webAuthn&email=%s&testWebAuthn=true",
+        String loginUrl = String.format("%s/webauthnTest/%s?name=Test-webAuthn&email=%s&testWebAuthn=true",
                 idpBaseUrl, samlAuthenticationRequest.getId(), email);
         return ResponseEntity.status(200).body(Collections.singletonMap("url", loginUrl));
     }

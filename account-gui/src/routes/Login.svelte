@@ -73,6 +73,7 @@
         const value = Cookies.get("login_preference");
         $user.usePassword = value === "usePassword";
         $user.useWebAuth = value === "useWebAuth" && $conf.featureWebAuthn;
+
         const urlParams = new URLSearchParams(window.location.search);
         serviceName = urlParams.get("name");
 
@@ -81,12 +82,6 @@
         if ((modus && modus === "cr") || registerModus) {
             $user.createAccount = true;
             fetchDomainsForValidation();
-        }
-
-        const testWebAuthn = urlParams.get("testWebAuthn");
-        if (testWebAuthn && $conf.featureWebAuthn) {
-            const email = urlParams.get("email")
-            navigate(`/webauthnTest/${id}?email=${email}&name=${serviceName}`);
         }
     });
 

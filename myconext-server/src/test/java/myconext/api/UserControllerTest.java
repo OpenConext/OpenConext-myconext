@@ -834,7 +834,7 @@ public class UserControllerTest extends AbstractIntegrationTest {
                 .get("/myconext/api/sp/testWebAuthnUrl")
                 .as(Map.class);
         String url = (String) map.get("url");
-        assertTrue(url.startsWith("http://localhost:3000/login/"));
+        assertTrue(url.startsWith("http://localhost:3000/webauthnTest/"));
 
         Matcher matcher = Pattern.compile("/login/(.+?)\\?").matcher(url);
         matcher.find();
