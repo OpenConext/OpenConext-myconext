@@ -836,7 +836,7 @@ public class UserControllerTest extends AbstractIntegrationTest {
         String url = (String) map.get("url");
         assertTrue(url.startsWith("http://localhost:3000/webauthnTest/"));
 
-        Matcher matcher = Pattern.compile("/login/(.+?)\\?").matcher(url);
+        Matcher matcher = Pattern.compile("/webauthnTest/(.+?)\\?").matcher(url);
         matcher.find();
         String authenticationRequestId = matcher.group(1);
         SamlAuthenticationRequest samlAuthenticationRequest = authenticationRequestRepository.findById(authenticationRequestId).get();
