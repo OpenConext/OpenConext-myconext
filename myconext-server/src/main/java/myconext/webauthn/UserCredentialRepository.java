@@ -16,6 +16,7 @@ import org.springframework.util.StringUtils;
 import java.util.Collections;
 import java.util.Optional;
 import java.util.Set;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Component
@@ -55,24 +56,19 @@ public class UserCredentialRepository implements CredentialRepository {
     public Optional<RegisteredCredential> lookup(ByteArray credentialId, ByteArray userHandle) {
         String credentialKey = credentialId.getBase64Url();
         Optional<User> optionalUser = userRepository.findUserByUserHandle(userHandle.getBase64Url());
-        //Deliberately non-functional to improve code readability
-        if (!optionalUser.isPresent()) {
-            return Optional.empty();
-        }
-        String publicKeyCose = optionalUser.get().getPublicKeyCredentials().stream()
-                .filter(publicKeyCredential -> publicKeyCredential.getIdentifier().equals(credentialKey))
-                .findFirst()
-                .map(PublicKeyCredentials::getCredential)
-                .orElse("");
-        if (StringUtils.isEmpty(publicKeyCose)) {
-            return Optional.empty();
-        }
-        RegisteredCredential registeredCredential = RegisteredCredential.builder()
-                .credentialId(credentialId)
-                .userHandle(userHandle)
-                .publicKeyCose(byteArrayFromBase64Url(publicKeyCose))
-                .build();
-        return Optional.of(registeredCredential);
+        return optionalUser.map(user ->
+                user.getPublicKeyCredentials()
+                        .stream()
+                        .filter(publicKeyCredential -> publicKeyCredential.getIdentifier().equals(credentialKey))
+                        .map(PublicKeyCredentials::getCredential)
+                        .filter(StringUtils::hasText)
+                        .findFirst())
+                .flatMap(Function.identity())
+                .map(publicKeyCose -> RegisteredCredential.builder()
+                        .credentialId(credentialId)
+                        .userHandle(userHandle)
+                        .publicKeyCose(byteArrayFromBase64Url(publicKeyCose))
+                        .build());
     }
 
     @Override
