@@ -2,6 +2,8 @@
 All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
+### Fixes/improvement
+- Fix FIDO2 login on Apple devices
 
 ## [5.0.1] 2021-02-15
 ### New
