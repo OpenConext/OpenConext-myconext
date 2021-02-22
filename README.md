@@ -2,7 +2,7 @@
 [![Build Status](https://travis-ci.org/OpenConext/OpenConext-myconext.svg)](https://travis-ci.org/OpenConext/OpenConext-myconext)
 [![codecov.io](https://codecov.io/github/OpenConext/OpenConext-myconext/coverage.svg)](https://codecov.io/github/OpenConext/OpenConext-myconext)
 
-An IdP for OpenConext. A user can create and manage his own identity. Authentication uses a magic-link by default, and a password can be added later.
+An IdP for OpenConext. A user can create and manage his own identity. Authentication uses a magic-link by default, and FIDO2 or a password can be added later.
 
 ## [Getting started](#getting-started)
 
