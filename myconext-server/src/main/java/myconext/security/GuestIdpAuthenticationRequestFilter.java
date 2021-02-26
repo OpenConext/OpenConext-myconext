@@ -306,6 +306,32 @@ public class GuestIdpAuthenticationRequestFilter extends IdpAuthenticationReques
             return;
         }
 
+
+        Optional<Cookie> optionalCookie = cookieByName(request, BROWSER_SESSION_COOKIE_NAME);
+        if (!optionalCookie.isPresent()) {
+            samlAuthenticationRequest.setLoginStatus(LoginStatus.LOGGED_IN_DIFFERENT_DEVICE);
+            samlAuthenticationRequest.setVerificationCode(VerificationCodeGenerator.generate());
+            int retryVerificationCode = samlAuthenticationRequest.getRetryVerificationCode();
+            samlAuthenticationRequest.setRetryVerificationCode(retryVerificationCode + 1);
+            authenticationRequestRepository.save(samlAuthenticationRequest);
+            if (retryVerificationCode > 2) {
+                throw new ForbiddenException();
+            }
+            mailBox.sendVerificationCode(user, samlAuthenticationRequest.getVerificationCode());
+            response.sendRedirect(this.redirectUrl + "/success");
+            return;
+        }
+
+        boolean proceed = checkStepUp(response, hash, samlAuthenticationRequest, user, charSet, encodedServiceName, explanation);
+        if (!proceed) {
+            return;
+        }
+
+        samlAuthenticationRequest.setLoginStatus(LoginStatus.LOGGED_IN_SAME_DEVICE);
+        doSendAssertion(request, response, samlAuthenticationRequest, user);
+    }
+
+    private boolean checkStepUp(HttpServletResponse response, String hash, SamlAuthenticationRequest samlAuthenticationRequest, User user, String charSet, String encodedServiceName, String explanation) throws IOException {
         boolean inStepUpFlow = StepUpStatus.IN_STEP_UP.equals(samlAuthenticationRequest.getSteppedUp());
 
         if (user.isNewUser()) {
@@ -326,33 +352,27 @@ public class GuestIdpAuthenticationRequestFilter extends IdpAuthenticationReques
             if (inStepUpFlow) {
                 finishStepUp(samlAuthenticationRequest);
             }
-            return;
+            return false;
         } else if (inStepUpFlow) {
-            response.sendRedirect(this.redirectUrl + "/confirm-stepup?h=" + hash +
-                    "&redirect=" + URLEncoder.encode(this.magicLinkUrl, charSet) +
-                    "&name=" + encodedServiceName +
-                    "&explanation=" + explanation);
-            finishStepUp(samlAuthenticationRequest);
-            return;
-
-        }
-
-        Optional<Cookie> optionalCookie = cookieByName(request, BROWSER_SESSION_COOKIE_NAME);
-        if (!optionalCookie.isPresent()) {
-            samlAuthenticationRequest.setLoginStatus(LoginStatus.LOGGED_IN_DIFFERENT_DEVICE);
-            samlAuthenticationRequest.setVerificationCode(VerificationCodeGenerator.generate());
-            int retryVerificationCode = samlAuthenticationRequest.getRetryVerificationCode();
-            samlAuthenticationRequest.setRetryVerificationCode(retryVerificationCode + 1);
-            authenticationRequestRepository.save(samlAuthenticationRequest);
-            if (retryVerificationCode > 2) {
-                throw new ForbiddenException();
+            boolean hasStudentAffiliation = hasRequiredStudentAffiliation(user.allEduPersonAffiliations());
+            List<String> authenticationContextClassReferences = samlAuthenticationRequest.getAuthenticationContextClassReferences();
+            boolean missingStudentAffiliation = authenticationContextClassReferences.contains(ACR.AFFILIATION_STUDENT) &&
+                    !hasStudentAffiliation;
+            boolean missingValidName = authenticationContextClassReferences.contains(ACR.VALIDATE_NAMES) &&
+                    !hasValidatedName(user);
+            if (missingStudentAffiliation || missingValidName) {
+                //When we send the assertion EB stops the flow but this will be fixed upstream
+                return true;
+            } else {
+                response.sendRedirect(this.redirectUrl + "/confirm-stepup?h=" + hash +
+                        "&redirect=" + URLEncoder.encode(this.magicLinkUrl, charSet) +
+                        "&name=" + encodedServiceName +
+                        "&explanation=" + explanation);
+                finishStepUp(samlAuthenticationRequest);
+                return false;
             }
-            mailBox.sendVerificationCode(user, samlAuthenticationRequest.getVerificationCode());
-            response.sendRedirect(this.redirectUrl + "/success");
-            return;
         }
-        samlAuthenticationRequest.setLoginStatus(LoginStatus.LOGGED_IN_SAME_DEVICE);
-        doSendAssertion(request, response, samlAuthenticationRequest, user);
+        return true;
     }
 
     private void continueAfterLogin(HttpServletRequest request, HttpServletResponse response) throws IOException {
@@ -375,6 +395,17 @@ public class GuestIdpAuthenticationRequestFilter extends IdpAuthenticationReques
         User user = userRepository.findById(samlAuthenticationRequest.getUserId())
                 .orElseThrow(UserNotFoundException::new);
 
+        String charSet = Charset.defaultCharset().name();
+        String serviceName = this.getServiceName(request, samlAuthenticationRequest);
+        String encodedServiceName = URLEncoder.encode(serviceName, "UTF-8");
+        boolean hasStudentAffiliation = hasRequiredStudentAffiliation(user.allEduPersonAffiliations());
+        List<String> authenticationContextClassReferences = samlAuthenticationRequest.getAuthenticationContextClassReferences();
+        String explanation = ACR.explanationKeyWord(authenticationContextClassReferences, hasStudentAffiliation);
+
+        boolean proceed = this.checkStepUp(response, samlAuthenticationRequest.getHash(), samlAuthenticationRequest, user, charSet, encodedServiceName, explanation);
+        if (!proceed) {
+            return;
+        }
         doSendAssertion(request, response, samlAuthenticationRequest, user);
     }
 
