@@ -37,15 +37,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.net.URLEncoder;
 import java.nio.charset.Charset;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 import static java.util.function.Function.identity;
 import static java.util.stream.Collectors.toList;
@@ -334,13 +326,26 @@ public class GuestIdpAuthenticationRequestFilter extends IdpAuthenticationReques
     private boolean checkStepUp(HttpServletResponse response, String hash, SamlAuthenticationRequest samlAuthenticationRequest, User user, String charSet, String encodedServiceName, String explanation) throws IOException {
         boolean inStepUpFlow = StepUpStatus.IN_STEP_UP.equals(samlAuthenticationRequest.getSteppedUp());
 
+        boolean hasStudentAffiliation = hasRequiredStudentAffiliation(user.allEduPersonAffiliations());
+        List<String> authenticationContextClassReferences = samlAuthenticationRequest.getAuthenticationContextClassReferences();
+        boolean missingStudentAffiliation = authenticationContextClassReferences.contains(ACR.AFFILIATION_STUDENT) &&
+                !hasStudentAffiliation;
+        boolean missingValidName = authenticationContextClassReferences.contains(ACR.VALIDATE_NAMES) &&
+                !hasValidatedName(user);
+
         if (user.isNewUser()) {
             user.setNewUser(false);
             userRepository.save(user);
 
             logWithContext(user, "add", "account", LOG, "Saving user after new registration and magic link");
             mailBox.sendAccountConfirmation(user);
-
+            if (inStepUpFlow) {
+                finishStepUp(samlAuthenticationRequest);
+            }
+            if (missingStudentAffiliation || missingValidName) {
+                //When we send the assertion EB stops the flow but this will be fixed upstream
+                return true;
+            }
             String url = this.redirectUrl + "/confirm?h=" + hash +
                     "&redirect=" + URLEncoder.encode(this.magicLinkUrl, charSet) +
                     "&email=" + URLEncoder.encode(user.getEmail(), charSet) +
@@ -349,28 +354,18 @@ public class GuestIdpAuthenticationRequestFilter extends IdpAuthenticationReques
                 url += "&explanation=" + explanation;
             }
             response.sendRedirect(url);
-            if (inStepUpFlow) {
-                finishStepUp(samlAuthenticationRequest);
-            }
             return false;
         } else if (inStepUpFlow) {
-            boolean hasStudentAffiliation = hasRequiredStudentAffiliation(user.allEduPersonAffiliations());
-            List<String> authenticationContextClassReferences = samlAuthenticationRequest.getAuthenticationContextClassReferences();
-            boolean missingStudentAffiliation = authenticationContextClassReferences.contains(ACR.AFFILIATION_STUDENT) &&
-                    !hasStudentAffiliation;
-            boolean missingValidName = authenticationContextClassReferences.contains(ACR.VALIDATE_NAMES) &&
-                    !hasValidatedName(user);
+            finishStepUp(samlAuthenticationRequest);
             if (missingStudentAffiliation || missingValidName) {
                 //When we send the assertion EB stops the flow but this will be fixed upstream
                 return true;
-            } else {
-                response.sendRedirect(this.redirectUrl + "/confirm-stepup?h=" + hash +
-                        "&redirect=" + URLEncoder.encode(this.magicLinkUrl, charSet) +
-                        "&name=" + encodedServiceName +
-                        "&explanation=" + explanation);
-                finishStepUp(samlAuthenticationRequest);
-                return false;
             }
+            response.sendRedirect(this.redirectUrl + "/confirm-stepup?h=" + hash +
+                    "&redirect=" + URLEncoder.encode(this.magicLinkUrl, charSet) +
+                    "&name=" + encodedServiceName +
+                    "&explanation=" + explanation);
+            return false;
         }
         return true;
     }
