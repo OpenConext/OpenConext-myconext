@@ -48,7 +48,7 @@ I18n.translations.en = {
         emailInUse3: " login with this eduID account.",
         emailNotFound1: "We could not find an eduID with that email.",
         emailNotFound2: "Try another, or ",
-        emailNotFound3: "request a new eduID account.",
+        emailNotFound3: "create a new eduID account.",
         emailOrPasswordIncorrect: "Email or password are incorrect",
         institutionDomainNameWarning: "It looks like you entered an institutional email address. Please note that when you no longer study at or work for that institution, you can no longer use that email address.",
         institutionDomainNameWarning2: "We recommend using your personal email address for eduID.",

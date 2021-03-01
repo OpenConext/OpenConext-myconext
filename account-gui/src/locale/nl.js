@@ -48,7 +48,7 @@ I18n.translations.nl = {
         emailInUse3: " login met dit eduID account.",
         emailNotFound1: "We konden geen eduID vinden met deze mail.",
         emailNotFound2: "Probeer een andere, of ",
-        emailNotFound3: "vraag een nieuw eduID account aan.",
+        emailNotFound3: "maak een nieuw eduID account aan.",
         emailOrPasswordIncorrect: "E-mailadres of wachtwoord is niet juist",
         institutionDomainNameWarning: "Het lijkt erop dat je een instellings e-mailadres hebt ingevoerd. Houd er rekening mee dat wanneer je niet meer studeert of werkt bij die instelling, je geen toegang meer hebt tot dat e-mail adres.",
         institutionDomainNameWarning2: "We raden je aan om je persoonlijke e-mailadres te gebruiken voor eduID.",
