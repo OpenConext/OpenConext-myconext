@@ -155,7 +155,7 @@ I18n.translations.nl = {
     dataActivity: {
         title: "Gebruikte diensten",
         info: "Elke dienst waarvoor je eduID gebruikt ontvangt bepaalde gegevens (attributen) vanuit jouw eduID account. Denk hierbij aan je naam, e-mailadres of aan een pseudoniem waarmee de dienst jou uniek kan identificeren.",
-        explanation: "Diensten waarop je ben ingelogd via eduID.",
+        explanation: "Diensten waarop je bent ingelogd via eduID.",
         noServices: "Je bent nog niet ingelogd geweest op een dienst via eduID.",
         name: "Naam",
         add: "Nieuwe instelling koppelen",
