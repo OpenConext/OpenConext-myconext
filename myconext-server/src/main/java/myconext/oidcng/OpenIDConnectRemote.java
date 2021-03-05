@@ -29,12 +29,15 @@ public class OpenIDConnectRemote implements OpenIDConnect {
     private final RestTemplate restTemplate;
     private final HttpHeaders headers;
     private final URI oidcngUri;
+    private final boolean featureOidcTokenAPI;
 
     public OpenIDConnectRemote(URI oidcngUri,
                                String user,
-                               String password) {
+                               String password,
+                               boolean featureOidcTokenAPI) {
         this.restTemplate = new RestTemplate();
         this.oidcngUri = oidcngUri;
+        this.featureOidcTokenAPI = featureOidcTokenAPI;
 
         this.headers = new HttpHeaders();
         this.headers.setContentType(MediaType.APPLICATION_JSON);
@@ -44,6 +47,9 @@ public class OpenIDConnectRemote implements OpenIDConnect {
 
     @Override
     public List<Map<String, Object>> tokens(User user) {
+        if (!featureOidcTokenAPI) {
+            return Collections.emptyList();
+        }
         String unspecifiedID = String.format("urn:collab:person:%s:%s", user.getSchacHomeOrganization(), user.getUid());
 
         LOG.info(String.format("Start fetching tokens from oidc-ng for %s", user.getEmail()));
@@ -62,6 +68,9 @@ public class OpenIDConnectRemote implements OpenIDConnect {
 
     @Override
     public HttpStatus deleteTokens(List<TokenRepresentation> tokenIdentifiers, User user) {
+        if (!featureOidcTokenAPI) {
+            return HttpStatus.OK;
+        }
         logWithContext(user, "delete", "tokens", LOG, "Deleting oidcng tokens");
 
         HttpEntity<List<TokenRepresentation>> requestEntity = new HttpEntity<>(tokenIdentifiers, headers);

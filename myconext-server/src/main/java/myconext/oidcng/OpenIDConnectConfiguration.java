@@ -30,7 +30,8 @@ public class OpenIDConnectConfiguration {
     @Profile({"!dev"})
     public OpenIDConnect openIDConnectRemote(@Value("${oidc-token-api.token-url}") URI oidcngUri,
                                              @Value("${oidc-token-api.user}") String user,
-                                             @Value("${oidc-token-api.password}") String password) {
-        return new OpenIDConnectRemote(oidcngUri, user, password);
+                                             @Value("${oidc-token-api.password}") String password,
+                                             @Value("${oidc-token-api.enabled}") boolean featureOidcTokenAPI) {
+        return new OpenIDConnectRemote(oidcngUri, user, password, featureOidcTokenAPI);
     }
 }
