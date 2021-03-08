@@ -271,6 +271,10 @@ public class GuestIdpAuthenticationRequestFilter extends IdpAuthenticationReques
 
     private void magic(HttpServletRequest request, HttpServletResponse response) throws IOException {
         String hash = request.getParameter("h");
+        if (StringUtils.isEmpty(hash)) {
+            response.sendRedirect(this.redirectUrl + "/expired");
+            return;
+        }
         Optional<SamlAuthenticationRequest> optionalSamlAuthenticationRequest = authenticationRequestRepository.findByHash(hash);
         if (!optionalSamlAuthenticationRequest.isPresent()) {
             response.sendRedirect(this.redirectUrl + "/expired");
