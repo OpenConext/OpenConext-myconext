@@ -41,6 +41,7 @@ import java.util.*;
 
 import static java.util.function.Function.identity;
 import static java.util.stream.Collectors.toList;
+import static java.util.stream.Collectors.toMap;
 import static myconext.api.UserController.hash;
 import static myconext.log.MDCContext.logLoginWithContext;
 import static myconext.log.MDCContext.logWithContext;
@@ -272,6 +273,11 @@ public class GuestIdpAuthenticationRequestFilter extends IdpAuthenticationReques
     private void magic(HttpServletRequest request, HttpServletResponse response) throws IOException {
         String hash = request.getParameter("h");
         if (StringUtils.isEmpty(hash)) {
+            //Log all headers to verify / confirm that this is a prefetch
+            Map<String, String> headerMap = Collections.list(request.getHeaderNames()).stream()
+                    .collect(toMap(headerName -> headerName, request::getHeader));
+            LOG.warn("Magic endpoint without 'h' parameter. Headers: " + headerMap);
+
             response.sendRedirect(this.redirectUrl + "/expired");
             return;
         }
