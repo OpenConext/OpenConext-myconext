@@ -99,8 +99,6 @@ I18n.translations.nl = {
         notSupported: "Niet ondersteund",
         useMagicLink: "Stuur magische link naar",
         rememberMe: "Ingelogd blijven",
-        rememberMetrue: "Ja",
-        rememberMefalse: "Nee",
         securityKey: "Beveiligingssleutel {{nbr}}",
         test: "Test",
         addSecurityKey: "Beveiligingssleutel toevoegen",

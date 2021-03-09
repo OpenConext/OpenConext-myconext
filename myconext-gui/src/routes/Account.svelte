@@ -65,10 +65,12 @@
     <table cellspacing="0">
         <thead/>
         <tbody>
-        <tr>
-            <td class="attr">{I18n.t("account.created")}</td>
-            <td class="value">{I18n.t("format.creationDate", formatCreateDate($user.created, true))}</td>
-        </tr>
+        {#if $user.created && $user.created > 0}
+            <tr>
+                <td class="attr">{I18n.t("account.created")}</td>
+                <td class="value">{I18n.t("format.creationDate", formatCreateDate($user.created, true))}</td>
+            </tr>
+        {/if}
         <tr>
             <td>
                 <Button href="/myconext/api/sp/personal"

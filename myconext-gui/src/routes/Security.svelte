@@ -7,8 +7,8 @@
     import {supported} from "@github/webauthn-json"
     import Button from "../components/Button.svelte";
     import {forgetMe, testWebAutnUrl} from "../api";
-    import verifiedSvg from "../icons/redesign/shield-full.svg";
-    import nonVerifiedSvg from "../icons/redesign/shield-empty.svg";
+    import verifiedSvg from "../icons/redesign/remembered.svg";
+    import nonVerifiedSvg from "../icons/redesign/not-remembered.svg";
     import Modal from "../components/Modal.svelte";
     import {onMount} from "svelte";
 
