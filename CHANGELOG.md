@@ -1,6 +1,12 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [5.0.3] 
+### Fixes
+- Apply feature toggle OINCNG token
+- Update translations
+- Handle magic link without magic
+
 ## [5.0.2] 2021-02-22
 ### Fixes/improvement
 - Fix FIDO2 login on Apple devices
