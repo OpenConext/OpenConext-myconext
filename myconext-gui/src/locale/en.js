@@ -48,8 +48,6 @@ I18n.translations.en = {
         expiresValue: "{{date}}",
         verifiedAt: "Verified by <strong>{{name}}</strong> on {{date}}",
         proceed: "Proceed",
-        validatedTooltip:"Validated",
-        nonValidatedTooltip:"Not validated",
         verifyFirstAndLastName: {
             addInstitution: "Verify name",
             addInstitutionConfirmation: "When you proceed you will be asked to login at the institution you want to link to your eduID. First, select which institution you want to connect; then, login at that institution.<br/><br/>After a successful login you will come back here.",
