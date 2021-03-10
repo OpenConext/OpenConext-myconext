@@ -12,7 +12,7 @@
     <artifactId>myconext-gui</artifactId>
     <packaging>pom</packaging>
     <name>myconext-gui</name>
-    <version>5.0.3</version>
+    <version>5.1.0-SNAPSHOT</version>
 
     <build>
         <plugins>
