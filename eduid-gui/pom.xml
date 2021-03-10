@@ -12,7 +12,7 @@
     <artifactId>eduid-gui</artifactId>
     <packaging>pom</packaging>
     <name>eduid-gui</name>
-    <version>5.0.3-SNAPSHOT</version>
+    <version>5.0.3</version>
 
     <build>
         <plugins>
