@@ -93,7 +93,7 @@ account_linking_context_class_ref:
 eduid_api:
 #  oidcng_introspection_uri: http://localhost:8098/introspect
   oidcng_introspection_uri: https://connect.test2.surfconext/nl/oidc/introspect
-  oidcng_client_id: myconext.local.rp
+  oidcng_client_id: myconext.local.rs
   oidcng_secret: secret
 
 
