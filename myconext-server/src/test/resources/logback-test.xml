@@ -10,7 +10,7 @@
         <appender-ref ref="STDOUT"/>
     </root>
 
-    <logger name="org.springframework" level="INFO"/>
+    <logger name="org.springframework" level="DEBUG"/>
     <!--   Set to TRACE to log mongodb queries  -->
     <logger name="org.springframework.data.mongodb" level="ERROR"/>
 
