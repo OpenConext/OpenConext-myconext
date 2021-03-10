@@ -1,7 +1,7 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
-## [5.0.3] 
+## [5.0.3] 2021-03-10
 ### Fixes
 - Apply feature toggle OINCNG token
 - Update translations
