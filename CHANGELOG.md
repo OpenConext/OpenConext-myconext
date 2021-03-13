@@ -1,6 +1,13 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [5.1.0] 2021-??-??
+### New
+- API for linked accounts info
+
+### Fixes
+- Focus on custom checkbox, select with _space_
+
 ## [5.0.3] 2021-03-10
 ### Fixes
 - Apply feature toggle OINCNG token
