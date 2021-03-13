@@ -7,7 +7,7 @@
     export let className = "";
 
 </script>
-<style>
+<style lang="scss">
     label.checkbox {
         display: block;
         position: relative;
@@ -42,6 +42,11 @@
         background-color: #ebebeb;
     }
 
+    .checkbox input:focus ~ .checkmark {
+        border: 2px solid #013266;
+        outline: none;
+    }
+
     .checkbox input:checked ~ .checkmark {
         background-color: #b3e5ff;
     }
@@ -57,7 +62,7 @@
 </style>
 <label class={`checkbox ${className}`}>
     <span>{@html label}</span>
-    <input type="checkbox" checked={value} on:change={e => onChange(e.target.checked)}>
+    <input type="checkbox" tabindex="0" checked={value} on:change={e => onChange(e.target.checked)}>
     <span class="checkmark">
         {@html check}
     </span>
