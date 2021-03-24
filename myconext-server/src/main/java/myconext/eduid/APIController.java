@@ -1,12 +1,10 @@
 package myconext.eduid;
 
 import myconext.exceptions.UserNotFoundException;
-import myconext.model.LinkedAccount;
 import myconext.model.User;
 import myconext.repository.UserRepository;
 import org.springframework.http.MediaType;
 import org.springframework.security.oauth2.server.resource.authentication.BearerTokenAuthentication;
-import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -30,24 +28,18 @@ public class APIController {
     }
 
     @GetMapping("/eppn")
-    public Map<String, List<String>> eppn(BearerTokenAuthentication authentication, @RequestParam(value = "schachome", required = false) String schachome) {
+    public List<Map<String, String>> eppn(BearerTokenAuthentication authentication, @RequestParam(value = "schachome", required = false) String schachome) {
         List<String> uids = (ArrayList<String>) authentication.getTokenAttributes().get("uids");
         User user = userRepository.findUserByUid(uids.get(0)).orElseThrow(UserNotFoundException::new);
-        List<LinkedAccount> linkedAccounts = user.getLinkedAccounts();
-        List<String> eppnList = new ArrayList<>();
-        if (!CollectionUtils.isEmpty(linkedAccounts)) {
-            if (StringUtils.hasText(schachome)) {
-                linkedAccounts.stream().filter(account -> schachome.equals(account.getSchacHomeOrganization()))
-                        .findFirst()
-                        .map(LinkedAccount::getEduPersonPrincipalName)
-                        .ifPresent(eppnList::add);
-            } else {
-                eppnList = linkedAccounts.stream().map(linkedAccount -> linkedAccount.getEduPersonPrincipalName()).collect(Collectors.toList());
-            }
-        }
-        Map<String, List<String>> result = new HashMap<>();
-        result.put("eppn", eppnList);
-        return result;
+        return user.getLinkedAccounts().stream()
+                .map(linkedAccount -> {
+                    Map<String, String> info = new HashMap<>();
+                    info.put("eppn", linkedAccount.getEduPersonPrincipalName());
+                    info.put("schac_home_organization", linkedAccount.getSchacHomeOrganization());
+                    return info;
+                })
+                .filter(info -> !StringUtils.hasText(schachome) || schachome.equals(info.get("schac_home_organization")))
+                .collect(Collectors.toList());
     }
 
 }

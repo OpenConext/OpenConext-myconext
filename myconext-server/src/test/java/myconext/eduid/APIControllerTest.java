@@ -23,27 +23,27 @@ public class APIControllerTest extends AbstractIntegrationTest {
 
     @Test
     public void eppn() throws Exception {
-        Map map = given()
+        List<Map<String, String>> results = given()
                 .when()
                 .accept(ContentType.JSON)
                 .auth().oauth2(opaqueAccessToken(true, "eduid.nl/eppn"))
                 .get("/myconext/api/eduid/eppn")
-                .as(Map.class);
-        List<String> values = (List<String>) map.get("eppn");
-        assertEquals("1234567890@surfguest.nl", values.get(0));
+                .as(List.class);
+        String value = results.get(0).get("eppn");
+        assertEquals("1234567890@surfguest.nl", value);
     }
 
     @Test
     public void eppnBySchacHome() throws Exception {
-        Map map = given()
+        List<Map<String, String>> results = given()
                 .when()
                 .accept(ContentType.JSON)
                 .auth().oauth2(opaqueAccessToken(true, "eduid.nl/eppn"))
                 .queryParam("schachome", "groningen.nl")
                 .get("/myconext/api/eduid/eppn")
-                .as(Map.class);
-        List<String> values = (List<String>) map.get("eppn");
-        assertEquals("1234567890@surfguest.nl", values.get(0));
+                .as(List.class);
+        String value = results.get(0).get("eppn");
+        assertEquals("1234567890@surfguest.nl", value);
     }
 
     @Test
@@ -70,14 +70,13 @@ public class APIControllerTest extends AbstractIntegrationTest {
 
     @Test
     public void eppnNoLinkedAccounts() throws Exception {
-        Map map = given()
+        List<Map<String, String>> results = given()
                 .when()
                 .accept(ContentType.JSON)
                 .auth().oauth2(opaqueAccessTokenWithNoLinkedAccount("eduid.nl/eppn"))
                 .get("/myconext/api/eduid/eppn")
-                .as(Map.class);
-        List<String> values = (List<String>) map.get("eppn");
-        assertEquals(0, values.size());
+                .as(List.class);
+        assertEquals(0, results.size());
     }
 
     private String doOpaqueAccessToken(boolean valid, String[] scopes, String filePart) throws IOException {
