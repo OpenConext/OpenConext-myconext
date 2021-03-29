@@ -10,7 +10,7 @@ I18n.translations.nl = {
         headerSubTitle: "om door te gaan naar ",
         header2: "Vraag een eduID aan",
         trust: "Vertrouw deze computer",
-        loginOptions: "Andere inlog manieren",
+        loginOptions: "Andere inlogmanieren",
         loginOptionsToolTip: "We bieden drie manieren om in te loggen:</br><ol>" +
             "<li>Je kunt een magische link ontvangen op je e-mailadres.</li>" +
             "<li>Je kunt een wachtwoord gebruiken. Dit dien je eerst in Mijn eduID in te stellen.</li>" +
@@ -25,8 +25,8 @@ I18n.translations.nl = {
         givenNamePlaceholder: "bijv. Tim",
         sendMagicLink: "Mail een magische link",
         loginWebAuthn: "Login in met een beveiligingssleutel",
-        usePassword: "type een wachtwoord",
-        usePasswordNoWebAuthn: "Type een wachtwoord",
+        usePassword: "typ een wachtwoord",
+        usePasswordNoWebAuthn: "Typ een wachtwoord",
         useMagicLink: "Gebruik magische link",
         useMagicLinkNoWebAuthn: "Gebruik magische link.",
         useWebAuth: "Login in met een beveligingssleutel",
