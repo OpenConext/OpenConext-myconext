@@ -48,7 +48,7 @@ I18n.translations.nl = {
         emailInUse3: " login met dit eduID account.",
         emailNotFound1: "We konden geen eduID vinden met deze mail.",
         emailNotFound2: "Probeer een andere, of ",
-        emailNotFound3: "vraag een nieuw eduID account aan.",
+        emailNotFound3: "maak een nieuw eduID account aan.",
         emailOrPasswordIncorrect: "E-mailadres of wachtwoord is niet juist",
         institutionDomainNameWarning: "Het lijkt erop dat je een instellings e-mailadres hebt ingevoerd. Houd er rekening mee dat wanneer je niet meer studeert of werkt bij die instelling, je geen toegang meer hebt tot dat e-mail adres.",
         institutionDomainNameWarning2: "We raden je aan om je persoonlijke e-mailadres te gebruiken voor eduID.",
@@ -58,7 +58,7 @@ I18n.translations.nl = {
         alreadyGuestAccount: "Heb je al een eduID?",
         usePasswordLink: "Gebruik toch een wachtwoord",
         useWebAuthnLink: "Of gebruik een beveiligingssleutel",
-        agreeWithTerms: "<span>Ik ga akkoord met <a href='https://eduid.nl/voorwaarden/' target='_blank'>de voorwaarden.</a> En ik begrijp <a href='https://eduid.nl/privacyverklaring/' target='_blank'>de privacyverklaring</a>.</span>"
+        agreeWithTerms: "<span>Ik ga akkoord met <a tabindex='-1' href='https://eduid.nl/voorwaarden/' target='_blank'>de voorwaarden.</a> En ik begrijp <a tabindex='-1' href='https://eduid.nl/privacyverklaring/' target='_blank'>de privacyverklaring</a>.</span>"
     },
     magicLink: {
         header: "Open je mailbox!",
@@ -116,6 +116,11 @@ I18n.translations.nl = {
         info: "Voeg een beveligingssleutel toe",
         browserPrompt: "Klik op de onderstaande knop om een beveligingssleutel toe te voegen aan je eduID-account. Volg daarbij de instructies van je browser op.",
         start: "Start"
+    },
+    webAuthnTest: {
+        info: "Test een beveligingssleutel",
+        browserPrompt: "Klik op de onderstaande knop om een beveligingssleutel te testen. Volg daarbij de instructies van je browser op.",
+        start: "Test"
     },
     migration: {
         header: "Migreer naar <br/>eduID",

@@ -22,15 +22,15 @@
     }
 
     .tooltip.top {
-        left: 50%;
-        transform: translate(-50%, -100%);
         margin-top: -6px;
         width: 280px;
+        top: -170px;
+        left: -100px;
     }
 
     .tooltip-slot:hover + .tooltip {
-        opacity: 1;
-        visibility: initial;
+      opacity: 1;
+      visibility: initial;
     }
 
     :global(.tooltip-slot svg:hover circle, .tooltip-slot svg:hover path  ) {

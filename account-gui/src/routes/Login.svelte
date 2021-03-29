@@ -73,6 +73,7 @@
         const value = Cookies.get("login_preference");
         $user.usePassword = value === "usePassword";
         $user.useWebAuth = value === "useWebAuth" && $conf.featureWebAuthn;
+
         const urlParams = new URLSearchParams(window.location.search);
         serviceName = urlParams.get("name");
 
@@ -81,14 +82,6 @@
         if ((modus && modus === "cr") || registerModus) {
             $user.createAccount = true;
             fetchDomainsForValidation();
-        }
-
-        const testWebAuthn = urlParams.get("testWebAuthn");
-        const email = urlParams.get("email")
-        if (testWebAuthn && email && $conf.featureWebAuthn) {
-            $user.email = decodeURIComponent(email);
-            $user.useWebAuth = true;
-            webAuthnStart(email, true);
         }
     });
 
@@ -408,7 +401,6 @@
                                                 on:click|preventDefault|stopPropagation={createAccount(true)}>{I18n.t("login.requestEduId2")}</a></span>
     {/if}
 </div>
-
 {#if $user.createAccount}
     <h2 class="header">{I18n.t("login.header2")}</h2>
     <h2 class="top">{I18n.t("login.headerSubTitle")}<span>{serviceName}</span></h2>

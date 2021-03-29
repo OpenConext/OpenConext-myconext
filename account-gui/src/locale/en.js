@@ -24,7 +24,7 @@ I18n.translations.en = {
         familyNamePlaceholder: "e.g. Berners-Lee",
         givenNamePlaceholder: "e.g. Tim",
         sendMagicLink: "Email a magic link",
-        loginWebAuthn: "Login with ",
+        loginWebAuthn: "Login with security key",
         usePassword: "type a password.",
         usePasswordNoWebAuthn: "Type a password.",
         useMagicLink: "Email a magic link",
@@ -48,7 +48,7 @@ I18n.translations.en = {
         emailInUse3: " login with this eduID account.",
         emailNotFound1: "We could not find an eduID with that email.",
         emailNotFound2: "Try another, or ",
-        emailNotFound3: "request a new eduID account.",
+        emailNotFound3: "create a new eduID account.",
         emailOrPasswordIncorrect: "Email or password are incorrect",
         institutionDomainNameWarning: "It looks like you entered an institutional email address. Please note that when you no longer study at or work for that institution, you can no longer use that email address.",
         institutionDomainNameWarning2: "We recommend using your personal email address for eduID.",
@@ -58,7 +58,7 @@ I18n.translations.en = {
         alreadyGuestAccount: "Already have an eduID?",
         usePasswordLink: "Type a password anyway",
         useWebAuthnLink: "Or use a security key",
-        agreeWithTerms: "<span>I agree with <a href='https://eduid.nl/terms_of_service/' target='_blank'>the terms of service.</a> I also understand <a href='https://eduid.nl/privacy_policy/' target='_blank'>the privacy policy</a>.</span>"
+        agreeWithTerms: "<span>I agree with <a tabindex='-1' href='https://eduid.nl/terms_of_service/' target='_blank'>the terms of service.</a> I also understand <a tabindex='-1' href='https://eduid.nl/privacy_policy/' target='_blank'>the privacy policy</a>.</span>"
     },
     magicLink: {
         header: "Check your email!",
@@ -116,6 +116,11 @@ I18n.translations.en = {
         info: "Add security key",
         browserPrompt: "Click the button below to add a security key to your eduID account. Please follow the instructions given by your browser.",
         start: "Start"
+    },
+    webAuthnTest: {
+        info: "Test security key",
+        browserPrompt: "Click the button below to test a security key. Please follow the instructions given by your browser.",
+        start: "Test"
     },
     migration: {
         header: "Migrate to an <br/>eduID guest account",

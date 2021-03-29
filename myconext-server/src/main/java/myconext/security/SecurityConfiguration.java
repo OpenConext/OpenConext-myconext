@@ -249,6 +249,35 @@ public class SecurityConfiguration {
         }
     }
 
+    @Configuration
+    @Order(3)
+    public static class JWTSecurityConfig extends WebSecurityConfigurerAdapter {
+
+        @Value("${eduid_api.oidcng_introspection_uri}")
+        private String introspectionUri;
+
+        @Value("${eduid_api.oidcng_client_id}")
+        private String clientId;
+
+        @Value("${eduid_api.oidcng_secret}")
+        private String secret;
+
+        @Override
+        protected void configure(HttpSecurity http) throws Exception {
+            String[] antPatterns = {"/myconext/api/eduid/**"};
+            http
+                    .requestMatchers()
+                    .antMatchers(antPatterns)
+                    .and()
+                    .authorizeRequests(authz -> authz
+                            .antMatchers("/myconext/api/eduid/eppn").hasAuthority("SCOPE_eduid.nl/eppn")
+                            .antMatchers("/myconext/api/eduid/eduid").hasAuthority("SCOPE_eduid.nl/eduid")
+                            .anyRequest().authenticated())
+                    .oauth2ResourceServer(oauth2 -> oauth2.opaqueToken(token -> token
+                            .introspectionUri(introspectionUri)
+                            .introspectionClientCredentials(clientId, secret)));
+        }
+    }
 }
 
 

@@ -40,6 +40,11 @@
         background-color: #ebebeb;
     }
 
+    .checkbox input:focus ~ .checkmark {
+        border: 2px solid #013266;
+        outline: none;
+    }
+
     .checkbox input:checked ~ .checkmark {
         background-color: #b3e5ff;
     }

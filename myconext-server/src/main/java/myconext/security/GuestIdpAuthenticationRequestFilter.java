@@ -37,18 +37,11 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.net.URLEncoder;
 import java.nio.charset.Charset;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 import static java.util.function.Function.identity;
 import static java.util.stream.Collectors.toList;
+import static java.util.stream.Collectors.toMap;
 import static myconext.api.UserController.hash;
 import static myconext.log.MDCContext.logLoginWithContext;
 import static myconext.log.MDCContext.logWithContext;
@@ -279,6 +272,15 @@ public class GuestIdpAuthenticationRequestFilter extends IdpAuthenticationReques
 
     private void magic(HttpServletRequest request, HttpServletResponse response) throws IOException {
         String hash = request.getParameter("h");
+        if (StringUtils.isEmpty(hash)) {
+            //Log all headers to verify / confirm that this is a prefetch
+            Map<String, String> headerMap = Collections.list(request.getHeaderNames()).stream()
+                    .collect(toMap(headerName -> headerName, request::getHeader));
+            LOG.warn("Magic endpoint without 'h' parameter. Headers: " + headerMap);
+
+            response.sendRedirect(this.redirectUrl + "/expired");
+            return;
+        }
         Optional<SamlAuthenticationRequest> optionalSamlAuthenticationRequest = authenticationRequestRepository.findByHash(hash);
         if (!optionalSamlAuthenticationRequest.isPresent()) {
             response.sendRedirect(this.redirectUrl + "/expired");
@@ -306,36 +308,6 @@ public class GuestIdpAuthenticationRequestFilter extends IdpAuthenticationReques
             return;
         }
 
-        boolean inStepUpFlow = StepUpStatus.IN_STEP_UP.equals(samlAuthenticationRequest.getSteppedUp());
-
-        if (user.isNewUser()) {
-            user.setNewUser(false);
-            userRepository.save(user);
-
-            logWithContext(user, "add", "account", LOG, "Saving user after new registration and magic link");
-            mailBox.sendAccountConfirmation(user);
-
-            String url = this.redirectUrl + "/confirm?h=" + hash +
-                    "&redirect=" + URLEncoder.encode(this.magicLinkUrl, charSet) +
-                    "&email=" + URLEncoder.encode(user.getEmail(), charSet) +
-                    "&name=" + encodedServiceName;
-            if (!StepUpStatus.NONE.equals(samlAuthenticationRequest.getSteppedUp())) {
-                url += "&explanation=" + explanation;
-            }
-            response.sendRedirect(url);
-            if (inStepUpFlow) {
-                finishStepUp(samlAuthenticationRequest);
-            }
-            return;
-        } else if (inStepUpFlow) {
-            response.sendRedirect(this.redirectUrl + "/confirm-stepup?h=" + hash +
-                    "&redirect=" + URLEncoder.encode(this.magicLinkUrl, charSet) +
-                    "&name=" + encodedServiceName +
-                    "&explanation=" + explanation);
-            finishStepUp(samlAuthenticationRequest);
-            return;
-
-        }
 
         Optional<Cookie> optionalCookie = cookieByName(request, BROWSER_SESSION_COOKIE_NAME);
         if (!optionalCookie.isPresent()) {
@@ -351,8 +323,61 @@ public class GuestIdpAuthenticationRequestFilter extends IdpAuthenticationReques
             response.sendRedirect(this.redirectUrl + "/success");
             return;
         }
+
+        boolean proceed = checkStepUp(response, hash, samlAuthenticationRequest, user, charSet, encodedServiceName, explanation);
+        if (!proceed) {
+            return;
+        }
+
         samlAuthenticationRequest.setLoginStatus(LoginStatus.LOGGED_IN_SAME_DEVICE);
         doSendAssertion(request, response, samlAuthenticationRequest, user);
+    }
+
+    private boolean checkStepUp(HttpServletResponse response, String hash, SamlAuthenticationRequest samlAuthenticationRequest, User user, String charSet, String encodedServiceName, String explanation) throws IOException {
+        boolean inStepUpFlow = StepUpStatus.IN_STEP_UP.equals(samlAuthenticationRequest.getSteppedUp());
+
+        boolean hasStudentAffiliation = hasRequiredStudentAffiliation(user.allEduPersonAffiliations());
+        List<String> authenticationContextClassReferences = samlAuthenticationRequest.getAuthenticationContextClassReferences();
+        boolean missingStudentAffiliation = authenticationContextClassReferences.contains(ACR.AFFILIATION_STUDENT) &&
+                !hasStudentAffiliation;
+        boolean missingValidName = authenticationContextClassReferences.contains(ACR.VALIDATE_NAMES) &&
+                !hasValidatedName(user);
+
+        if (user.isNewUser()) {
+            user.setNewUser(false);
+            userRepository.save(user);
+
+            logWithContext(user, "add", "account", LOG, "Saving user after new registration and magic link");
+            mailBox.sendAccountConfirmation(user);
+            if (inStepUpFlow) {
+                finishStepUp(samlAuthenticationRequest);
+            }
+            if (missingStudentAffiliation || missingValidName) {
+                //When we send the assertion EB stops the flow but this will be fixed upstream
+                return true;
+            }
+            String url = this.redirectUrl + "/confirm?h=" + hash +
+                    "&redirect=" + URLEncoder.encode(this.magicLinkUrl, charSet) +
+                    "&email=" + URLEncoder.encode(user.getEmail(), charSet) +
+                    "&name=" + encodedServiceName;
+            if (!StepUpStatus.NONE.equals(samlAuthenticationRequest.getSteppedUp())) {
+                url += "&explanation=" + explanation;
+            }
+            response.sendRedirect(url);
+            return false;
+        } else if (inStepUpFlow) {
+            finishStepUp(samlAuthenticationRequest);
+            if (missingStudentAffiliation || missingValidName) {
+                //When we send the assertion EB stops the flow but this will be fixed upstream
+                return true;
+            }
+            response.sendRedirect(this.redirectUrl + "/confirm-stepup?h=" + hash +
+                    "&redirect=" + URLEncoder.encode(this.magicLinkUrl, charSet) +
+                    "&name=" + encodedServiceName +
+                    "&explanation=" + explanation);
+            return false;
+        }
+        return true;
     }
 
     private void continueAfterLogin(HttpServletRequest request, HttpServletResponse response) throws IOException {
@@ -375,6 +400,17 @@ public class GuestIdpAuthenticationRequestFilter extends IdpAuthenticationReques
         User user = userRepository.findById(samlAuthenticationRequest.getUserId())
                 .orElseThrow(UserNotFoundException::new);
 
+        String charSet = Charset.defaultCharset().name();
+        String serviceName = this.getServiceName(request, samlAuthenticationRequest);
+        String encodedServiceName = URLEncoder.encode(serviceName, "UTF-8");
+        boolean hasStudentAffiliation = hasRequiredStudentAffiliation(user.allEduPersonAffiliations());
+        List<String> authenticationContextClassReferences = samlAuthenticationRequest.getAuthenticationContextClassReferences();
+        String explanation = ACR.explanationKeyWord(authenticationContextClassReferences, hasStudentAffiliation);
+
+        boolean proceed = this.checkStepUp(response, samlAuthenticationRequest.getHash(), samlAuthenticationRequest, user, charSet, encodedServiceName, explanation);
+        if (!proceed) {
+            return;
+        }
         doSendAssertion(request, response, samlAuthenticationRequest, user);
     }
 

@@ -9,7 +9,7 @@
     const handleLinkClick = e => e.key === " " && e.target.click();
 
 </script>
-<style>
+<style lang="scss">
     .button {
         width: 100%;
         background-color: #0077c8;
@@ -22,10 +22,17 @@
         text-align: center;
         font-weight: bold;
         font-size: 18px;
-    }
-    .button:hover {
-        background-color: #004c97;
-        color: #94d6ff;
+
+        &:hover {
+            background-color: #004c97;
+            color: #94d6ff;
+        }
+
+        &:focus {
+            background-color: #003980;
+            color: #dcedff;
+            outline: none;
+        }
     }
 
     .button.active {

@@ -27,7 +27,7 @@ public class LinkedAccount {
 
     @Transient
     @JsonIgnore
-    public boolean updateExpiresIn(String institutionIdentifier, String eppn, String givenName, String familyName,List<String> eduPersonAffiliations,  Date expiresAt) {
+    public boolean updateExpiresIn(String institutionIdentifier, String eppn, String givenName, String familyName, List<String> eduPersonAffiliations, Date expiresAt) {
         this.institutionIdentifier = institutionIdentifier;
         this.eduPersonPrincipalName = eppn;
         this.givenName = givenName;

@@ -6,6 +6,7 @@ import myconext.model.SamlAuthenticationRequest;
 import myconext.security.ACR;
 import org.junit.Before;
 import org.junit.Test;
+import org.springframework.dao.IncorrectResultSizeDataAccessException;
 
 import java.util.Collections;
 import java.util.Date;
@@ -67,5 +68,14 @@ public class AuthenticationRequestRepositoryTest extends AbstractIntegrationTest
     @Test
     public void testFindByIdAndExpired() {
         assertTrue(authenticationRequestRepository.findByIdAndNotExpired(request.getId()).isPresent());
+    }
+
+    @Test(expected = IncorrectResultSizeDataAccessException.class)
+    public void testFindByHashWithNullValue() {
+        //Two AuthenticationRequests with null values
+        authenticationRequestRepository.save(samlAuthenticationRequest());
+        authenticationRequestRepository.save(samlAuthenticationRequest());
+        authenticationRequestRepository.findByHash(null);
+
     }
 }

@@ -1,0 +1,13 @@
+{
+  "active": true,
+  "exp": 1606140430,
+  "iss": "https://connect.test2.surfconext.nl",
+  "schac_home_organization": "example.com",
+  "scope": "%s",
+  "sub": "b60ecf97cc90f3d7dae8bc4b6a331370167775bf",
+  "token_type": "Bearer",
+  "uids": [
+    "mdoe"
+  ],
+  "updated_at": 1606133230
+}

@@ -33,7 +33,7 @@
     "test:watch": "npm run test -- --watch"
   },
   "dependencies": {
-    "@github/webauthn-json": "^0.4.1",
+    "@github/webauthn-json": "^0.5.7",
     "i18n-js": "^3.3.0",
     "isomorphic-fetch": "^2.2.1",
     "js-cookie": "^2.2.1",

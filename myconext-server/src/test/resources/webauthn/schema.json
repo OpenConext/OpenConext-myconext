@@ -1,0 +1,254 @@
+{
+  "credentialCreationOptions": {
+    "publicKey": {
+      "required": true,
+      "schema": {
+        "rp": {
+          "required": true,
+          "schema": "copy"
+        },
+        "user": {
+          "required": true,
+          "schema": {
+            "id": {
+              "required": true,
+              "schema": "convert"
+            },
+            "name": {
+              "required": true,
+              "schema": "copy"
+            },
+            "displayName": {
+              "required": true,
+              "schema": "copy"
+            }
+          }
+        },
+        "challenge": {
+          "required": true,
+          "schema": "convert"
+        },
+        "pubKeyCredParams": {
+          "required": true,
+          "schema": "copy"
+        },
+        "timeout": {
+          "required": false,
+          "schema": "copy"
+        },
+        "excludeCredentials": {
+          "required": false,
+          "schema": [
+            {
+              "type": {
+                "required": true,
+                "schema": "copy"
+              },
+              "id": {
+                "required": true,
+                "schema": "convert"
+              },
+              "transports": {
+                "required": false,
+                "schema": "copy"
+              }
+            }
+          ]
+        },
+        "authenticatorSelection": {
+          "required": false,
+          "schema": "copy"
+        },
+        "attestation": {
+          "required": false,
+          "schema": "copy"
+        },
+        "extensions": {
+          "required": false,
+          "schema": {
+            "appid": {
+              "required": false,
+              "schema": "copy"
+            },
+            "appidExclude": {
+              "required": false,
+              "schema": "copy"
+            },
+            "credProps": {
+              "required": false,
+              "schema": "copy"
+            }
+          }
+        }
+      }
+    },
+    "signal": {
+      "required": false,
+      "schema": "copy"
+    }
+  },
+  "publicKeyCredentialWithAttestation": {
+    "type": {
+      "required": true,
+      "schema": "copy"
+    },
+    "id": {
+      "required": true,
+      "schema": "copy"
+    },
+    "rawId": {
+      "required": true,
+      "schema": "convert"
+    },
+    "response": {
+      "required": true,
+      "schema": {
+        "clientDataJSON": {
+          "required": true,
+          "schema": "convert"
+        },
+        "attestationObject": {
+          "required": true,
+          "schema": "convert"
+        }
+      }
+    },
+    "clientExtensionResults": {
+      "required": true,
+      "schema": {
+        "appid": {
+          "required": false,
+          "schema": "copy"
+        },
+        "appidExclude": {
+          "required": false,
+          "schema": "copy"
+        },
+        "credProps": {
+          "required": false,
+          "schema": "copy"
+        }
+      }
+    }
+  },
+  "credentialRequestOptions": {
+    "mediation": {
+      "required": false,
+      "schema": "copy"
+    },
+    "publicKey": {
+      "required": true,
+      "schema": {
+        "challenge": {
+          "required": true,
+          "schema": "convert"
+        },
+        "timeout": {
+          "required": false,
+          "schema": "copy"
+        },
+        "rpId": {
+          "required": false,
+          "schema": "copy"
+        },
+        "allowCredentials": {
+          "required": false,
+          "schema": [
+            {
+              "type": {
+                "required": true,
+                "schema": "copy"
+              },
+              "id": {
+                "required": true,
+                "schema": "convert"
+              },
+              "transports": {
+                "required": false,
+                "schema": "copy"
+              }
+            }
+          ]
+        },
+        "userVerification": {
+          "required": false,
+          "schema": "copy"
+        },
+        "extensions": {
+          "required": false,
+          "schema": {
+            "appid": {
+              "required": false,
+              "schema": "copy"
+            },
+            "appidExclude": {
+              "required": false,
+              "schema": "copy"
+            },
+            "credProps": {
+              "required": false,
+              "schema": "copy"
+            }
+          }
+        }
+      }
+    },
+    "signal": {
+      "required": false,
+      "schema": "copy"
+    }
+  },
+  "publicKeyCredentialWithAssertion": {
+    "type": {
+      "required": true,
+      "schema": "copy"
+    },
+    "id": {
+      "required": true,
+      "schema": "copy"
+    },
+    "rawId": {
+      "required": true,
+      "schema": "convert"
+    },
+    "response": {
+      "required": true,
+      "schema": {
+        "clientDataJSON": {
+          "required": true,
+          "schema": "convert"
+        },
+        "authenticatorData": {
+          "required": true,
+          "schema": "convert"
+        },
+        "signature": {
+          "required": true,
+          "schema": "convert"
+        },
+        "userHandle": {
+          "required": true,
+          "schema": "convert"
+        }
+      }
+    },
+    "clientExtensionResults": {
+      "required": true,
+      "schema": {
+        "appid": {
+          "required": false,
+          "schema": "copy"
+        },
+        "appidExclude": {
+          "required": false,
+          "schema": "copy"
+        },
+        "credProps": {
+          "required": false,
+          "schema": "copy"
+        }
+      }
+    }
+  },
+  "version": "0.5.7"
+}

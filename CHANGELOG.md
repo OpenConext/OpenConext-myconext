@@ -1,7 +1,22 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
-## [Unreleased]
+## [5.1.0] 2021-??-??
+### New
+- API for linked accounts info
+
+### Fixes
+- Focus on custom checkbox, select with _space_
+
+## [5.0.3] 2021-03-10
+### Fixes
+- Apply feature toggle OINCNG token
+- Update translations
+- Handle magic link without magic
+
+## [5.0.2] 2021-02-22
+### Fixes/improvement
+- Fix FIDO2 login on Apple devices
 
 ## [5.0.1] 2021-02-15
 ### New

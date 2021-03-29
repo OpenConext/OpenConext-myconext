@@ -99,8 +99,6 @@ I18n.translations.en = {
         notSupported: "Not supported",
         useMagicLink: "Send magic link to",
         rememberMe: "Stay logged in",
-        rememberMetrue: "Yes",
-        rememberMefalse: "No",
         securityKey: "Security key {{nbr}}",
         test: "Test",
         addSecurityKey: "Add security key",

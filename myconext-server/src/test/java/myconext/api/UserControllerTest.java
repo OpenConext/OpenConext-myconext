@@ -834,9 +834,9 @@ public class UserControllerTest extends AbstractIntegrationTest {
                 .get("/myconext/api/sp/testWebAuthnUrl")
                 .as(Map.class);
         String url = (String) map.get("url");
-        assertTrue(url.startsWith("http://localhost:3000/login/"));
+        assertTrue(url.startsWith("http://localhost:3000/webauthnTest/"));
 
-        Matcher matcher = Pattern.compile("/login/(.+?)\\?").matcher(url);
+        Matcher matcher = Pattern.compile("/webauthnTest/(.+?)\\?").matcher(url);
         matcher.find();
         String authenticationRequestId = matcher.group(1);
         SamlAuthenticationRequest samlAuthenticationRequest = authenticationRequestRepository.findById(authenticationRequestId).get();
@@ -895,6 +895,11 @@ public class UserControllerTest extends AbstractIntegrationTest {
         authenticationRequestRepository.save(samlAuthenticationRequest);
 
         User user = userRepository.findOneUserByEmailIgnoreCase("jdoe@example.com");
+        List<LinkedAccount> linkedAccounts = user.getLinkedAccounts();
+        linkedAccounts.get(0).setEduPersonAffiliations(Arrays.asList("student"));
+        user.setLinkedAccounts(linkedAccounts);
+        userRepository.save(user);
+
         magicLinkRequest(new MagicLinkRequest(authenticationRequestId, user, false, false), HttpMethod.PUT);
 
         samlAuthenticationRequest = authenticationRequestRepository.findById(authenticationRequestId).get();
@@ -905,6 +910,29 @@ public class UserControllerTest extends AbstractIntegrationTest {
                 .get("/saml/guest-idp/magic");
         String location = response.getHeader("Location");
         assertTrue(location.startsWith("http://localhost:3000/confirm-stepup?h="));
+    }
+
+    @Test
+    public void testStepUpFlowProceedAfterFailure() throws IOException {
+        String authnContext = readFile("request_authn_context_affiliation_student.xml");
+        Response response = samlAuthnRequestResponseWithLoa(null, "relay", authnContext);
+        String authenticationRequestId = extractAuthenticationRequestIdFromAuthnResponse(response);
+
+        SamlAuthenticationRequest samlAuthenticationRequest = authenticationRequestRepository.findById(authenticationRequestId).get();
+        samlAuthenticationRequest.setSteppedUp(StepUpStatus.IN_STEP_UP);
+        authenticationRequestRepository.save(samlAuthenticationRequest);
+
+        User user = userRepository.findOneUserByEmailIgnoreCase("jdoe@example.com");
+        magicLinkRequest(new MagicLinkRequest(authenticationRequestId, user, false, false), HttpMethod.PUT);
+
+        samlAuthenticationRequest = authenticationRequestRepository.findById(authenticationRequestId).get();
+        response = given().redirects().follow(false)
+                .when()
+                .queryParam("h", samlAuthenticationRequest.getHash())
+                .cookie(BROWSER_SESSION_COOKIE_NAME, "true")
+                .get("/saml/guest-idp/magic");
+        String body = response.getBody().asString();
+        assertTrue(body.contains("Since your browser does not support JavaScript"));
     }
 
     @Test

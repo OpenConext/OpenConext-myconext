@@ -32,6 +32,12 @@
         text-align: center;
         font-weight: bold;
         min-width: 180px;
+
+        &:focus {
+            background-color: #003980;
+            color: #dcedff;
+            outline: none;
+        }
     }
 
     .button:hover {
