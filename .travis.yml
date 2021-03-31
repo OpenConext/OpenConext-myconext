@@ -5,10 +5,7 @@ dist: trusty
 node_js:
   - '15'
 services:
-  - mysql
-
-env:
-  - MONGODB=4.0.9
+  - mongodb
 
 matrix:
   fast_finish: true
@@ -18,25 +15,18 @@ cache:
   directories:
     - node_modules
 before_install:
-  - wget http://fastdl.mongodb.org/linux/mongodb-linux-x86_64-${MONGODB}.tgz
-  - tar xzf mongodb-linux-x86_64-${MONGODB}.tgz
-  - ${PWD}/mongodb-linux-x86_64-${MONGODB}/bin/mongod --version
   - pip install --user codecov
   - nvm install 15.6.0
+  - mongo --version
   - npm install -g yarn
   - yarn install
 install:
   - cd myconext-gui && yarn install && cd ..
   - cd account-gui && yarn install && cd ..
   - mvn install -DskipTests=true -Dmaven.javadoc.skip=true -B -V
-before_script:
-  - mkdir ${PWD}/mongodb-linux-x86_64-${MONGODB}/data
-  - ${PWD}/mongodb-linux-x86_64-${MONGODB}/bin/mongod --dbpath ${PWD}/mongodb-linux-x86_64-${MONGODB}/data --logpath ${PWD}/mongodb-linux-x86_64-${MONGODB}/mongodb.log --fork
 script:
   - mvn test
   - cd myconext-gui && yarn build && yarn test && cd ..
   - cd account-gui && yarn build && yarn test && cd ..
-after_script:
-  - pkill mongod
 after_success:
   - codecov
