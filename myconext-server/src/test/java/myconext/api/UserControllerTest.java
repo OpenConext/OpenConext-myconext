@@ -362,7 +362,7 @@ public class UserControllerTest extends AbstractIntegrationTest {
     @Test
     public void removeUserService() {
         User user = userRepository.findOneUserByEmailIgnoreCase("jdoe@example.com");
-        EduID eduID = user.getEduIdPerServiceProvider().get("http://mock-sp");
+        EduID eduID = user.getEduIDS().stream().filter(val -> val.getServiceProviderEntityId().equals(("http://mock-sp"))).findFirst().get();
         given()
                 .when()
                 .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
@@ -374,7 +374,7 @@ public class UserControllerTest extends AbstractIntegrationTest {
 
         User userFromDB = userRepository.findOneUserByEmailIgnoreCase("jdoe@example.com");
 
-        assertFalse(userFromDB.getEduIdPerServiceProvider().containsKey("http://mock-sp"));
+        assertFalse(userFromDB.getEduIDS().stream().anyMatch(val -> val.getServiceProviderEntityId().equals(("http://mock-sp"))));
     }
 
     @Test
@@ -819,10 +819,11 @@ public class UserControllerTest extends AbstractIntegrationTest {
         String saml = samlAuthnResponse(response);
 
         User user = userRepository.findOneUserByEmailIgnoreCase("jdoe@example.com");
-        Map<String, EduID> eduIdPerServiceProvider = user.getEduIdPerServiceProvider();
-
         assertTrue(saml.contains("Attribute Name=\"urn:mace:eduid.nl:1.1\""));
-        String eduId = eduIdPerServiceProvider.get("https://manage.surfconext.nl/shibboleth").getValue();
+
+        String eduId = user.getEduIDS().stream()
+                .filter(eduID -> eduID.getServiceProviderEntityId().equals("https://manage.surfconext.nl/shibboleth"))
+                .findFirst().get().getValue();
         assertTrue(saml.contains(eduId));
     }
 

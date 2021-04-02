@@ -24,6 +24,8 @@ public interface UserRepository extends MongoRepository<User, String> {
 
     List<User> findByLinkedAccounts_EduPersonPrincipalName(String eduPersonPrincipalName);
 
+    Optional<User> findByEduIDS_value(String value);
+
     List<User> findByNewUserTrueAndCreatedLessThan(long millis);
 
     Optional<User> findUserByWebAuthnIdentifier(String webAuthnIdentifier);

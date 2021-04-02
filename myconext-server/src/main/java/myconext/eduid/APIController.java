@@ -28,6 +28,7 @@ public class APIController {
     }
 
     @GetMapping("/eppn")
+    @SuppressWarnings("unchecked")
     public List<Map<String, String>> eppn(BearerTokenAuthentication authentication, @RequestParam(value = "schachome", required = false) String schachome) {
         List<String> uids = (ArrayList<String>) authentication.getTokenAttributes().get("uids");
         User user = userRepository.findUserByUid(uids.get(0)).orElseThrow(UserNotFoundException::new);

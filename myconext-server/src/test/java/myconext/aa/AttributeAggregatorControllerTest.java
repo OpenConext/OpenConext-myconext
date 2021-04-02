@@ -88,7 +88,7 @@ public class AttributeAggregatorControllerTest extends AbstractIntegrationTest {
         String spEntityId = "http://mock-sp";
         User user = userRepository.findUserByUid(uid).get();
         LinkedAccount linkedAccount = user.getLinkedAccounts().get(0);
-        String value = user.getEduIdPerServiceProvider().values().iterator().next().getValue();
+        String value = user.getEduIDS().get(0).getValue();
 
         Map<String, Object> res = doManipulate(spEntityId, value, uid, linkedAccount.getInstitutionIdentifier());
         assertEquals(linkedAccount.getEduPersonPrincipalName(), res.get("eduperson_principal_name"));

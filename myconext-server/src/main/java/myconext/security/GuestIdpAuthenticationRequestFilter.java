@@ -119,7 +119,7 @@ public class GuestIdpAuthenticationRequestFilter extends IdpAuthenticationReques
         String samlRequest = request.getParameter("SAMLRequest");
         String relayState = request.getParameter("RelayState");
 
-        if (StringUtils.isEmpty(samlRequest)) {
+        if (!StringUtils.hasText(samlRequest)) {
             //prevent null-pointer and drop dead
             return;
         }
@@ -272,7 +272,7 @@ public class GuestIdpAuthenticationRequestFilter extends IdpAuthenticationReques
 
     private void magic(HttpServletRequest request, HttpServletResponse response) throws IOException {
         String hash = request.getParameter("h");
-        if (StringUtils.isEmpty(hash)) {
+        if (!StringUtils.hasText(hash)) {
             //Log all headers to verify / confirm that this is a prefetch
             Map<String, String> headerMap = Collections.list(request.getHeaderNames()).stream()
                     .collect(toMap(headerName -> headerName, request::getHeader));
@@ -550,11 +550,10 @@ public class GuestIdpAuthenticationRequestFilter extends IdpAuthenticationReques
                 attribute("urn:mace:dir:attribute-def:uid", user.getUid()),
                 attribute("urn:mace:terena.org:attribute-def:schacHomeOrganization", user.getSchacHomeOrganization())
         ));
-        user.computeEduIdForServiceProviderIfAbsent(requesterEntityId, serviceProviderResolver);
+        String eduIDValue = user.computeEduIdForServiceProviderIfAbsent(requesterEntityId, serviceProviderResolver);
         userRepository.save(user);
 
-        String eduID = user.getEduIdPerServiceProvider().get(requesterEntityId).getValue();
-        attributes.add(attribute("urn:mace:eduid.nl:1.1", eduID));
+        attributes.add(attribute("urn:mace:eduid.nl:1.1", eduIDValue));
 
         user.getAttributes()
                 .forEach((key, value) -> attributes.add(attribute(key, value.toArray(new String[]{}))));
