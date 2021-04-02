@@ -3,6 +3,7 @@ package myconext.model;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.SneakyThrows;
+import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.util.StringUtils;
 
 import java.text.ParseException;
@@ -18,6 +19,7 @@ import java.util.Optional;
 public class EduID {
 
     private String serviceProviderEntityId;
+    @Indexed
     private String value;
     private String serviceName;
     private String serviceNameNl;
