@@ -183,7 +183,7 @@ public class AccountLinkerControllerTest extends AbstractIntegrationTest {
                 .getHeader("Location");
         assertTrue(location, location.startsWith(expectedLocation));
 
-        return userRepository.findOneUserByEmailIgnoreCase("mdoe@example.com");
+        return userRepository.findOneUserByEmail("mdoe@example.com");
     }
 
     @Test
@@ -240,7 +240,7 @@ public class AccountLinkerControllerTest extends AbstractIntegrationTest {
                 .getHeader("Location");
         assertEquals(location, "http://localhost:3001/personal");
 
-        User user = userRepository.findOneUserByEmailIgnoreCase("jdoe@example.com");
+        User user = userRepository.findOneUserByEmail("jdoe@example.com");
         assertEquals(2, user.getLinkedAccounts().size());
     }
 

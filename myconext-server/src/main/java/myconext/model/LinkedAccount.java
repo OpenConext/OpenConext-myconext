@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.util.StringUtils;
 
 import java.beans.Transient;
@@ -18,6 +19,7 @@ public class LinkedAccount {
 
     private String institutionIdentifier;
     private String schacHomeOrganization;
+    @Indexed
     private String eduPersonPrincipalName;
     private String givenName;
     private String familyName;

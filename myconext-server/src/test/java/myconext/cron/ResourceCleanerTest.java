@@ -86,13 +86,13 @@ public class ResourceCleanerTest extends AbstractIntegrationTest {
         assertEquals(deletedAuthenticationRequests, authenticationRequestRepository.findAll().size());
 
         if (cronJobResponsible) {
-            User user = userRepository.findOneUserByEmailIgnoreCase("jdoe@example.com");
+            User user = userRepository.findOneUserByEmail("jdoe@example.com");
             assertEquals(0, user.getLinkedAccounts().size());
         }
     }
 
     private void expireUserLinkedAccount() {
-        User user = userRepository.findOneUserByEmailIgnoreCase("jdoe@example.com");
+        User user = userRepository.findOneUserByEmail("jdoe@example.com");
 
         LinkedAccount linkedAccount = user.getLinkedAccounts().get(0);
         Date expiresIn = Date.from(LocalDateTime.now().minusYears(10L).atZone(ZoneId.systemDefault()).toInstant());

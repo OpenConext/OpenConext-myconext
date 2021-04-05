@@ -12,7 +12,7 @@
 
     <logger name="org.springframework" level="INFO"/>
     <!--   Set to TRACE to log mongodb queries  -->
-    <logger name="org.springframework.data.mongodb" level="ERROR"/>
+    <logger name="org.springframework.data.mongodb" level="TRACE"/>
 
     <logger name="oidc" level="DEBUG"/>
 

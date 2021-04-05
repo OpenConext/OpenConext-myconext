@@ -20,19 +20,19 @@ public class UserRepositoryTest extends AbstractIntegrationTest {
 
     @Test
     public void testFindUserByEmail() {
-        Optional<User> user = userRepository.findUserByEmailIgnoreCase("jdoe@example.com");
+        Optional<User> user = userRepository.findUserByEmail("jdoe@example.com");
         assertEquals("John", user.get().getGivenName());
 
-        user = userRepository.findUserByEmailIgnoreCase("JDOE@EXAMPLE.COM");
+        user = userRepository.findUserByEmail("JDOE@EXAMPLE.COM");
         assertEquals("John", user.get().getGivenName());
     }
 
     @Test
     public void testFindOneUserByEmail() {
-        User user = userRepository.findOneUserByEmailIgnoreCase("jdoe@example.com");
+        User user = userRepository.findOneUserByEmail("jdoe@example.com");
         assertEquals("John", user.getGivenName());
 
-        user = userRepository.findOneUserByEmailIgnoreCase("JDOE@EXAMPLE.COM");
+        user = userRepository.findOneUserByEmail("JDOE@EXAMPLE.COM");
         assertEquals("John", user.getGivenName());
     }
 

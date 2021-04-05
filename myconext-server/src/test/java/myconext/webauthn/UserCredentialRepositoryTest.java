@@ -42,7 +42,7 @@ public class UserCredentialRepositoryTest extends AbstractIntegrationTest {
 
     @Test
     public void getUsernameForUserHandle() throws Base64UrlException {
-        User user = userRepository.findOneUserByEmailIgnoreCase("jdoe@example.com");
+        User user = userRepository.findOneUserByEmail("jdoe@example.com");
         Optional<String> userHandle = userCredentialRepository.getUsernameForUserHandle(ByteArray.fromBase64Url(user.getUserHandle()));
         assertTrue(userHandle.isPresent());
 
@@ -53,7 +53,7 @@ public class UserCredentialRepositoryTest extends AbstractIntegrationTest {
 
     @Test
     public void lookup() throws Base64UrlException {
-        User user = userRepository.findOneUserByEmailIgnoreCase("jdoe@example.com");
+        User user = userRepository.findOneUserByEmail("jdoe@example.com");
         ByteArray userHandle = ByteArray.fromBase64Url(user.getUserHandle());
         String credentialId = user.getPublicKeyCredentials().iterator().next().getIdentifier();
 

@@ -4,7 +4,6 @@ logging:
     org.springframework.data.mongodb: INFO
     org.springframework.data.convert: INFO
     org.springframework.security: INFO
-
 server:
   port: 8081
 

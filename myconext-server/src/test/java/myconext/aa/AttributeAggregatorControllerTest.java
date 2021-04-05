@@ -48,7 +48,7 @@ public class AttributeAggregatorControllerTest extends AbstractIntegrationTest {
 
     @Test
     public void aggregateExistingEduID() {
-        User user = userRepository.findOneUserByEmailIgnoreCase("jdoe@example.com");
+        User user = userRepository.findOneUserByEmail("jdoe@example.com");
         String spEntityId = "http://mock-sp";
         String eduId = user.computeEduIdForServiceProviderIfAbsent(spEntityId, new MockServiceProviderResolver());
         userRepository.save(user);

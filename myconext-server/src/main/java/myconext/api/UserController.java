@@ -24,7 +24,6 @@ import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.i18n.LocaleContextHolder;
-import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -142,7 +141,7 @@ public class UserController {
         emailDomainGuard.enforceIsAllowed(email);
         emailGuessingPreventor.potentialUserEmailGuess();
 
-        Optional<User> optionalUser = userRepository.findUserByEmailIgnoreCase(emailGuessingPreventor.sanitizeEmail(email));
+        Optional<User> optionalUser = userRepository.findUserByEmail(emailGuessingPreventor.sanitizeEmail(email));
         if (optionalUser.isPresent()) {
             return ResponseEntity.status(HttpStatus.CONFLICT)
                     .body(Collections.singletonMap("status", HttpStatus.CONFLICT.value()));
@@ -257,7 +256,7 @@ public class UserController {
 
         String hashValue = hash();
         String newEmail = deltaUser.getEmail();
-        Optional<User> optionalUser = userRepository.findUserByEmailIgnoreCase(emailGuessingPreventor.sanitizeEmail(newEmail));
+        Optional<User> optionalUser = userRepository.findUserByEmail(emailGuessingPreventor.sanitizeEmail(newEmail));
         if (optionalUser.isPresent()) {
             return ResponseEntity.status(HttpStatus.CONFLICT)
                     .body(Collections.singletonMap("status", HttpStatus.CONFLICT.value()));
@@ -546,7 +545,7 @@ public class UserController {
         emailDomainGuard.enforceIsAllowed(email);
         emailGuessingPreventor.potentialUserEmailGuess();
 
-        Optional<User> optionalUser = userRepository.findUserByEmailIgnoreCase(emailGuessingPreventor.sanitizeEmail(email));
+        Optional<User> optionalUser = userRepository.findUserByEmail(emailGuessingPreventor.sanitizeEmail(email));
         if (!optionalUser.isPresent()) {
             return return404();
         }
@@ -722,7 +721,7 @@ public class UserController {
     }
 
     private Optional<User> findUserStoreLanguage(String email) {
-        Optional<User> optionalUser = userRepository.findUserByEmailIgnoreCase(emailGuessingPreventor.sanitizeEmail(email));
+        Optional<User> optionalUser = userRepository.findUserByEmail(emailGuessingPreventor.sanitizeEmail(email));
         optionalUser.ifPresent(user -> {
             String preferredLanguage = user.getPreferredLanguage();
             String language = LocaleContextHolder.getLocale().getLanguage();

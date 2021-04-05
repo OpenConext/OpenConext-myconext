@@ -63,7 +63,7 @@ public class ShibbolethPreAuthenticatedProcessingFilter extends AbstractPreAuthe
         }
         Optional<User> optionalUser = userRepository.findUserByUid(uid);
         if (!optionalUser.isPresent()) {
-            Optional<User> optionalUserByEmail = userRepository.findUserByEmailIgnoreCase(email.trim());
+            Optional<User> optionalUserByEmail = userRepository.findUserByEmail(email.trim());
             if (optionalUserByEmail.isPresent()) {
                 User existingUser = optionalUserByEmail.get();
                 //If we would provision this email we would introduce a duplicate email
