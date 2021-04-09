@@ -1,13 +1,13 @@
-Verificatie code
+Verification code
 
-Uw verificatiecode staat hieronder - voer deze in uw geopende browservenster in en we helpen u zich aan te melden.
+Your verification code is shown below - enter it in your open browser window to login.
 
-{{verificatie code}}
+{{verificationCode}}
 
-Hallo {{name}},
+Hi {{name}},
 
-Je hebt je magische link geverifieerd in een ander browserapparaat dan waar je de link hebt aangevraagd.
-Als extra veiligheidsmaatregel moet u de verificatiecode invoeren in uw geopende browser.
-Als je geen magische link hebt aangevraagd, kun je dit bericht negeren of verwijderen.
+The magic link we sent you opened in a different browser than the one used to request the magic link.
+As an extra security measure you must enter the verification code in your open browser window.
+If you didn't request a magic link, just ignore or delete this message
 
 {{> footer_en.txt}}
