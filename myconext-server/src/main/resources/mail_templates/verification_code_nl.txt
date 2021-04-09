@@ -1,14 +1,13 @@
-Magische link
+Verificatiecode
 
-Volg de onderstaande link om in te loggen en door te gaan naar je bestemming:
+Je verificatiecode staat hieronder - voer deze in je openstaande browservenster in en je bent ingelogd.
 
-{{magicLinkUrl}}?h={{hash}}
-
-Meld je aan bij {{destination}}. Deze link verloopt na 10 minuten en kan slechts eenmaal worden gebruikt.
+{{verificationCode}}
 
 Hallo {{name}},
 
-Iemand heeft zojuist om een magische link aangevraagd op eduID voor dit e-mailadres. Als jij dit was, kun je inloggen door de bovenstaande link te volgen.
-Als je deze magische link niet hebt aangevraagd, kun je dit bericht negeren of verwijderen.
+Je hebt de magische link gebruikt in een andere browser dan van waaruit je de magische link hebt aangevraagd.
+Als extra veiligheidsmaatregel moet je de verificatiecode invoeren in je openstaande browservenster.
+Als je geen magische link hebt aangevraagd, kun je dit bericht negeren of verwijderen.
 
-{{> footer_nl.txt}}
+{{> footer_en.txt}}
