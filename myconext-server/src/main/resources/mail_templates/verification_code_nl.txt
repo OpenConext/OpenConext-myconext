@@ -2,7 +2,7 @@ Verificatiecode
 
 Je verificatiecode staat hieronder - voer deze in je openstaande browservenster in en je bent ingelogd.
 
-{{verificatie code}}
+{{verificationCode}}
 
 Hallo {{name}},
 
