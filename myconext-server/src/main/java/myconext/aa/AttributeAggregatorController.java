@@ -6,6 +6,9 @@ import myconext.model.User;
 import myconext.repository.UserRepository;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.aggregation.*;
+import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.util.StringUtils;
@@ -20,6 +23,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import static org.springframework.data.mongodb.core.aggregation.Aggregation.*;
+
 
 @RestController
 @RequestMapping("/myconext/api")
@@ -31,6 +36,7 @@ public class AttributeAggregatorController {
     private final ServiceProviderResolver serviceProviderResolver;
 
     public AttributeAggregatorController(UserRepository userRepository,
+                                         MongoTemplate mongoTemplate,
                                          ServiceProviderResolver serviceProviderResolver) {
         this.userRepository = userRepository;
         this.serviceProviderResolver = serviceProviderResolver;
@@ -57,9 +63,9 @@ public class AttributeAggregatorController {
     @GetMapping(value = "attribute-manipulation")
     @PreAuthorize("hasRole('ROLE_attribute-manipulation')")
     public ResponseEntity<Map> manipulate(@RequestParam("sp_entity_id") String spEntityId,
-                                          @RequestParam("uid") String uid,
+                                          @RequestParam("eduid") String eduid,
                                           @RequestParam(value = "sp_institution_guid", required = false) String spInstitutionGuid) {
-        User user = userRepository.findUserByUid(uid).orElseThrow(UserNotFoundException::new);
+        User user = userRepository.findByEduIDS_value(eduid).orElseThrow(UserNotFoundException::new);
         String eduId = user.computeEduIdForServiceProviderIfAbsent(spEntityId, serviceProviderResolver);
         userRepository.save(user);
         Map<String, String> result = new HashMap<>();

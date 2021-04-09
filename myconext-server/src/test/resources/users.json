@@ -24,8 +24,9 @@
       }
     ],
     "userHandle": "ILWqa-yfidIbr-tmLbegkl_q9GYY53s5h-WPxDGJ36rzvDfR-lZqMlqARdUlPDRH_KH95owGCoEqMuigryV_qA",
-    "eduIdPerServiceProvider": {
-      "http://mock-sp": {
+    "eduIDS": [
+      {
+        "serviceProviderEntityId": "http://mock-sp",
         "value": "3060b9ce-9cf2-4e5b-8164-bf0a2b706720",
         "serviceName": "Mock SP",
         "serviceNameNl": "Mock SP NL",
@@ -33,12 +34,13 @@
         "serviceHomeUrl": "https://eduid.nl/",
         "createdAt": "2020-11-12T13:55:50.229Z"
       },
-      "playground_client": {
+      {
+        "serviceProviderEntityId": "playground_client",
         "value": "fc75dcc7-6def-4054-b8ba-3c3cc504dd4b",
         "serviceName": "https://playground.client",
         "createdAt": "2020-11-12T13:55:50.229Z"
       }
-    },
+    ],
     "created": 1583337392
   },
   {

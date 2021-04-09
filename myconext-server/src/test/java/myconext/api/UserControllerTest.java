@@ -84,7 +84,7 @@ public class UserControllerTest extends AbstractIntegrationTest {
         User user = user("new@example.com", "Mary", "Doe", "en");
 
         MagicLinkResponse magicLinkResponse = magicLinkRequest(user, HttpMethod.POST);
-        assertEquals(user.getGivenName(), userRepository.findUserByEmailIgnoreCase(user.getEmail()).get().getGivenName());
+        assertEquals(user.getGivenName(), userRepository.findUserByEmail(user.getEmail()).get().getGivenName());
 
         String samlResponse = samlResponse(magicLinkResponse);
         assertTrue(samlResponse.contains("new@example.com"));
@@ -126,7 +126,7 @@ public class UserControllerTest extends AbstractIntegrationTest {
         String saml = samlAuthnResponse(samlAuthnRequestResponse(new Cookie.Builder(GUEST_IDP_REMEMBER_ME_COOKIE_NAME, cookie).build(), null));
         assertTrue(saml.contains("steve@example.com<"));
 
-        user = userRepository.findOneUserByEmailIgnoreCase("steve@example.com");
+        user = userRepository.findOneUserByEmail("steve@example.com");
         long count = authenticationRequestRepository.deleteByUserId(user.getId());
         assertEquals(1, count);
     }
@@ -147,7 +147,7 @@ public class UserControllerTest extends AbstractIntegrationTest {
 
     @Test
     public void accountLinkingRequiredNotNeeded() throws IOException {
-        User user = userRepository.findOneUserByEmailIgnoreCase("jdoe@example.com");
+        User user = userRepository.findOneUserByEmail("jdoe@example.com");
         LinkedAccount linkedAccount = linkedAccount("John", "Doe", new Date());
         user.getLinkedAccounts().add(linkedAccount);
         userRepository.save(user);
@@ -164,7 +164,7 @@ public class UserControllerTest extends AbstractIntegrationTest {
 
     @Test
     public void accountLinkingWithValidatedNames() throws IOException {
-        User user = userRepository.findOneUserByEmailIgnoreCase("jdoe@example.com");
+        User user = userRepository.findOneUserByEmail("jdoe@example.com");
         Date createdAt = Date.from(Instant.now());
         LinkedAccount linkedAccount = linkedAccount("Mary", "Steward", createdAt);
         user.getLinkedAccounts().add(linkedAccount);
@@ -184,7 +184,7 @@ public class UserControllerTest extends AbstractIntegrationTest {
 
     @Test
     public void accountLinkingWithoutStudentAffiliation() throws IOException {
-        User user = userRepository.findOneUserByEmailIgnoreCase("jdoe@example.com");
+        User user = userRepository.findOneUserByEmail("jdoe@example.com");
         Date createdAt = Date.from(Instant.now().plus(30 * 365, ChronoUnit.DAYS));
         LinkedAccount linkedAccount = linkedAccount(createdAt, Arrays.asList("nope"));
         user.getLinkedAccounts().add(linkedAccount);
@@ -210,7 +210,7 @@ public class UserControllerTest extends AbstractIntegrationTest {
 
     @Test
     public void accountLinkingWithoutValidNames() throws IOException {
-        User user = userRepository.findOneUserByEmailIgnoreCase("jdoe@example.com");
+        User user = userRepository.findOneUserByEmail("jdoe@example.com");
         LinkedAccount linkedAccount = linkedAccount("", "", new Date());
         user.getLinkedAccounts().add(linkedAccount);
         userRepository.save(user);
@@ -233,7 +233,7 @@ public class UserControllerTest extends AbstractIntegrationTest {
 
     @Test
     public void invalidLoaLevel() throws IOException {
-        User user = userRepository.findOneUserByEmailIgnoreCase("jdoe@example.com");
+        User user = userRepository.findOneUserByEmail("jdoe@example.com");
         String authnContext = readFile("request_authn_context_invalid.xml");
         Response response = samlAuthnRequestResponseWithLoa(null, "relay", authnContext);
 
@@ -287,7 +287,7 @@ public class UserControllerTest extends AbstractIntegrationTest {
 
     @Test
     public void updateUser() {
-        User user = userRepository.findOneUserByEmailIgnoreCase("jdoe@example.com");
+        User user = userRepository.findOneUserByEmail("jdoe@example.com");
         user.setGivenName("Mary");
         user.setFamilyName("Poppins");
         given()
@@ -298,7 +298,7 @@ public class UserControllerTest extends AbstractIntegrationTest {
                 .then()
                 .statusCode(201);
 
-        User userFromDB = userRepository.findOneUserByEmailIgnoreCase("jdoe@example.com");
+        User userFromDB = userRepository.findOneUserByEmail("jdoe@example.com");
 
         assertEquals(user.getGivenName(), userFromDB.getGivenName());
         assertEquals(user.getFamilyName(), userFromDB.getFamilyName());
@@ -306,7 +306,7 @@ public class UserControllerTest extends AbstractIntegrationTest {
 
     @Test
     public void removeUserLinkedAccounts() {
-        User user = userRepository.findOneUserByEmailIgnoreCase("jdoe@example.com");
+        User user = userRepository.findOneUserByEmail("jdoe@example.com");
         LinkedAccount linkedAccount = user.getLinkedAccounts().get(0);
         given()
                 .when()
@@ -316,14 +316,14 @@ public class UserControllerTest extends AbstractIntegrationTest {
                 .then()
                 .statusCode(200);
 
-        User userFromDB = userRepository.findOneUserByEmailIgnoreCase("jdoe@example.com");
+        User userFromDB = userRepository.findOneUserByEmail("jdoe@example.com");
 
         assertEquals(0, userFromDB.getLinkedAccounts().size());
     }
 
     @Test
     public void updatePublicKeyCredential() {
-        User user = userRepository.findOneUserByEmailIgnoreCase("jdoe@example.com");
+        User user = userRepository.findOneUserByEmail("jdoe@example.com");
         PublicKeyCredentials publicKeyCredentials = user.getPublicKeyCredentials().get(0);
         Map<String, String> body = new HashMap<>();
         body.put("identifier", publicKeyCredentials.getIdentifier());
@@ -336,14 +336,14 @@ public class UserControllerTest extends AbstractIntegrationTest {
                 .then()
                 .statusCode(200);
 
-        User userFromDB = userRepository.findOneUserByEmailIgnoreCase("jdoe@example.com");
+        User userFromDB = userRepository.findOneUserByEmail("jdoe@example.com");
 
         assertEquals(body.get("name"), userFromDB.getPublicKeyCredentials().get(0).getName());
     }
 
     @Test
     public void removePublicKeyCredential() {
-        User user = userRepository.findOneUserByEmailIgnoreCase("jdoe@example.com");
+        User user = userRepository.findOneUserByEmail("jdoe@example.com");
         PublicKeyCredentials publicKeyCredentials = user.getPublicKeyCredentials().get(0);
         Map<String, String> body = Collections.singletonMap("identifier", publicKeyCredentials.getIdentifier());
         given()
@@ -354,15 +354,15 @@ public class UserControllerTest extends AbstractIntegrationTest {
                 .then()
                 .statusCode(200);
 
-        User userFromDB = userRepository.findOneUserByEmailIgnoreCase("jdoe@example.com");
+        User userFromDB = userRepository.findOneUserByEmail("jdoe@example.com");
 
         assertEquals(0, userFromDB.getPublicKeyCredentials().size());
     }
 
     @Test
     public void removeUserService() {
-        User user = userRepository.findOneUserByEmailIgnoreCase("jdoe@example.com");
-        EduID eduID = user.getEduIdPerServiceProvider().get("http://mock-sp");
+        User user = userRepository.findOneUserByEmail("jdoe@example.com");
+        EduID eduID = user.getEduIDS().stream().filter(val -> val.getServiceProviderEntityId().equals(("http://mock-sp"))).findFirst().get();
         given()
                 .when()
                 .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
@@ -372,9 +372,9 @@ public class UserControllerTest extends AbstractIntegrationTest {
                 .then()
                 .statusCode(200);
 
-        User userFromDB = userRepository.findOneUserByEmailIgnoreCase("jdoe@example.com");
+        User userFromDB = userRepository.findOneUserByEmail("jdoe@example.com");
 
-        assertFalse(userFromDB.getEduIdPerServiceProvider().containsKey("http://mock-sp"));
+        assertFalse(userFromDB.getEduIDS().stream().anyMatch(val -> val.getServiceProviderEntityId().equals(("http://mock-sp"))));
     }
 
     @Test
@@ -390,7 +390,7 @@ public class UserControllerTest extends AbstractIntegrationTest {
 
     @Test
     public void updateUserWeakPassword() {
-        User user = userRepository.findOneUserByEmailIgnoreCase("jdoe@example.com");
+        User user = userRepository.findOneUserByEmail("jdoe@example.com");
         given()
                 .when()
                 .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
@@ -402,7 +402,7 @@ public class UserControllerTest extends AbstractIntegrationTest {
 
     @Test
     public void updateUserSecurity() {
-        User user = userRepository.findOneUserByEmailIgnoreCase("jdoe@example.com");
+        User user = userRepository.findOneUserByEmail("jdoe@example.com");
         UpdateUserSecurityRequest updateUserSecurityRequest = new UpdateUserSecurityRequest(user.getId(), null, "correctSecret001", null);
         given()
                 .when()
@@ -411,13 +411,13 @@ public class UserControllerTest extends AbstractIntegrationTest {
                 .put("/myconext/api/sp/security")
                 .then()
                 .statusCode(201);
-        user = userRepository.findOneUserByEmailIgnoreCase("jdoe@example.com");
+        user = userRepository.findOneUserByEmail("jdoe@example.com");
         assertTrue(passwordEncoder.matches(updateUserSecurityRequest.getNewPassword(), user.getPassword()));
     }
 
     @Test
     public void updateUserWrongPassword() {
-        User user = userRepository.findOneUserByEmailIgnoreCase("jdoe@example.com");
+        User user = userRepository.findOneUserByEmail("jdoe@example.com");
         ReflectionTestUtils.setField(user, "password", "abcdefghijklmnop");
         userRepository.save(user);
 
@@ -432,7 +432,7 @@ public class UserControllerTest extends AbstractIntegrationTest {
 
     @Test
     public void updateUserAfterPasswordForgotten() {
-        User user = userRepository.findOneUserByEmailIgnoreCase("jdoe@example.com");
+        User user = userRepository.findOneUserByEmail("jdoe@example.com");
         user.setForgottenPassword(true);
         ReflectionTestUtils.setField(user, "password", "abcdefghijklmnop");
         userRepository.save(user);
@@ -447,13 +447,13 @@ public class UserControllerTest extends AbstractIntegrationTest {
                 .put("/myconext/api/sp/security")
                 .then()
                 .statusCode(201);
-        user = userRepository.findOneUserByEmailIgnoreCase("jdoe@example.com");
+        user = userRepository.findOneUserByEmail("jdoe@example.com");
         assertTrue(passwordEncoder.matches(securityRequest.getNewPassword(), user.getPassword()));
     }
 
     @Test
     public void updateUserAfterPasswordForgottenNoHash() {
-        User user = userRepository.findOneUserByEmailIgnoreCase("jdoe@example.com");
+        User user = userRepository.findOneUserByEmail("jdoe@example.com");
         user.setForgottenPassword(true);
         ReflectionTestUtils.setField(user, "password", "abcdefghijklmnop");
         userRepository.save(user);
@@ -478,7 +478,7 @@ public class UserControllerTest extends AbstractIntegrationTest {
                 .statusCode(200)
                 .cookie("SESSION", "");
 
-        Optional<User> optionalUser = userRepository.findUserByEmailIgnoreCase("jdoe@example.com");
+        Optional<User> optionalUser = userRepository.findUserByEmail("jdoe@example.com");
         assertFalse(optionalUser.isPresent());
     }
 
@@ -643,7 +643,7 @@ public class UserControllerTest extends AbstractIntegrationTest {
 
     @Test
     public void stepup() throws IOException {
-        User jdoe = userRepository.findOneUserByEmailIgnoreCase("jdoe@example.com");
+        User jdoe = userRepository.findOneUserByEmail("jdoe@example.com");
         jdoe.getLinkedAccounts().clear();
         userRepository.save(jdoe);
 
@@ -681,7 +681,7 @@ public class UserControllerTest extends AbstractIntegrationTest {
 
     @Test
     public void stepUpValidateName() throws IOException {
-        User jdoe = userRepository.findOneUserByEmailIgnoreCase("jdoe@example.com");
+        User jdoe = userRepository.findOneUserByEmail("jdoe@example.com");
         jdoe.getLinkedAccounts().clear();
         userRepository.save(jdoe);
 
@@ -697,7 +697,7 @@ public class UserControllerTest extends AbstractIntegrationTest {
 
     @Test
     public void webAuhthRegistration() throws Base64UrlException, IOException {
-        User user = userRepository.findOneUserByEmailIgnoreCase("jdoe@example.com");
+        User user = userRepository.findOneUserByEmail("jdoe@example.com");
         assertEquals(1, user.getPublicKeyCredentials().size());
 
         String token = given().when().get("/myconext/api/sp/security/webauthn")
@@ -741,13 +741,13 @@ public class UserControllerTest extends AbstractIntegrationTest {
                 .then()
                 .body("location", equalTo("http://localhost:3001/security"));
 
-        user = userRepository.findOneUserByEmailIgnoreCase("jdoe@example.com");
+        user = userRepository.findOneUserByEmail("jdoe@example.com");
         assertEquals(2, user.getPublicKeyCredentials().size());
     }
 
     @Test
     public void webAuhthRegistrationNewUserHandle() throws Base64UrlException, IOException {
-        User user = userRepository.findOneUserByEmailIgnoreCase("jdoe@example.com");
+        User user = userRepository.findOneUserByEmail("jdoe@example.com");
         String userHandle = user.getUserHandle();
         user.setUserHandle(null);
         userRepository.save(user);
@@ -762,7 +762,7 @@ public class UserControllerTest extends AbstractIntegrationTest {
                 .contentType(ContentType.JSON)
                 .accept(ContentType.JSON)
                 .post("/myconext/api/idp/security/webauthn/registration");
-        User userFromDb = userRepository.findOneUserByEmailIgnoreCase("jdoe@example.com");
+        User userFromDb = userRepository.findOneUserByEmail("jdoe@example.com");
         String newUserHandle = userFromDb.getUserHandle();
         assertNotEquals(userHandle, newUserHandle);
     }
@@ -818,11 +818,12 @@ public class UserControllerTest extends AbstractIntegrationTest {
         Response response = magicResponse(new MagicLinkResponse(authenticationRequestId, validatableResponse));
         String saml = samlAuthnResponse(response);
 
-        User user = userRepository.findOneUserByEmailIgnoreCase("jdoe@example.com");
-        Map<String, EduID> eduIdPerServiceProvider = user.getEduIdPerServiceProvider();
-
+        User user = userRepository.findOneUserByEmail("jdoe@example.com");
         assertTrue(saml.contains("Attribute Name=\"urn:mace:eduid.nl:1.1\""));
-        String eduId = eduIdPerServiceProvider.get("https://manage.surfconext.nl/shibboleth").getValue();
+
+        String eduId = user.getEduIDS().stream()
+                .filter(eduID -> eduID.getServiceProviderEntityId().equals("https://manage.surfconext.nl/shibboleth"))
+                .findFirst().get().getValue();
         assertTrue(saml.contains(eduId));
     }
 
@@ -894,7 +895,7 @@ public class UserControllerTest extends AbstractIntegrationTest {
         samlAuthenticationRequest.setSteppedUp(StepUpStatus.IN_STEP_UP);
         authenticationRequestRepository.save(samlAuthenticationRequest);
 
-        User user = userRepository.findOneUserByEmailIgnoreCase("jdoe@example.com");
+        User user = userRepository.findOneUserByEmail("jdoe@example.com");
         List<LinkedAccount> linkedAccounts = user.getLinkedAccounts();
         linkedAccounts.get(0).setEduPersonAffiliations(Arrays.asList("student"));
         user.setLinkedAccounts(linkedAccounts);
@@ -922,7 +923,7 @@ public class UserControllerTest extends AbstractIntegrationTest {
         samlAuthenticationRequest.setSteppedUp(StepUpStatus.IN_STEP_UP);
         authenticationRequestRepository.save(samlAuthenticationRequest);
 
-        User user = userRepository.findOneUserByEmailIgnoreCase("jdoe@example.com");
+        User user = userRepository.findOneUserByEmail("jdoe@example.com");
         magicLinkRequest(new MagicLinkRequest(authenticationRequestId, user, false, false), HttpMethod.PUT);
 
         samlAuthenticationRequest = authenticationRequestRepository.findById(authenticationRequestId).get();

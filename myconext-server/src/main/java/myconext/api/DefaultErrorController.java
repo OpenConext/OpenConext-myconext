@@ -5,6 +5,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.web.error.ErrorAttributeOptions;
 import org.springframework.boot.web.servlet.error.ErrorAttributes;
 import org.springframework.boot.web.servlet.error.ErrorController;
 import org.springframework.core.annotation.AnnotationUtils;
@@ -46,7 +47,7 @@ public class DefaultErrorController implements ErrorController {
     @RequestMapping("/error")
     public ResponseEntity error(HttpServletRequest request) throws URISyntaxException {
         WebRequest webRequest = new ServletWebRequest(request);
-        Map<String, Object> result = this.errorAttributes.getErrorAttributes(webRequest, false);
+        Map<String, Object> result = this.errorAttributes.getErrorAttributes(webRequest, ErrorAttributeOptions.defaults());
 
         Throwable error = this.errorAttributes.getError(webRequest);
         HttpStatus statusCode;

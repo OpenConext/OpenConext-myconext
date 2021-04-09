@@ -75,6 +75,10 @@
         });
     }
 
+    const updateVerificationCode = e => {
+        verificationCode = e.target.value.toUpperCase();
+    }
+
 </script>
 
 <style lang="scss">
@@ -238,7 +242,8 @@
         <input class="verification-code"
                type="text"
                use:init
-               bind:value={verificationCode}>
+               value={verificationCode}
+               on:input={updateVerificationCode}>
         <Button label={I18n.t("magicLink.verify")} onClick={verify}
                 disabled={!validVerificationCode(verificationCode)}/>
     </div>

@@ -21,8 +21,7 @@ public class DefaultErrorControllerTest {
 
     @Before
     public void before() {
-        DefaultErrorAttributes errorAttributes = new DefaultErrorAttributes(true);
-        subject = new DefaultErrorController(errorAttributes, "http://localhost:3001");
+        subject = new DefaultErrorController(new DefaultErrorAttributes(true), "http://localhost:3001");
     }
 
     @Test

@@ -31,6 +31,9 @@ public class AttributeAggregatorControllerTest extends AbstractIntegrationTest {
 
     private String eppn = "1234567890@surfguest.nl";
 
+    private String uid = "1234567890";
+    private String eduid = "fc75dcc7-6def-4054-b8ba-3c3cc504dd4b";
+
     @Test
     public void aggregate() {
         List<UserAttribute> userAttributes = doAggregate(attributeAggregationUserName, attributeAggregationPassword, "http://mock-sp", eppn);
@@ -45,7 +48,7 @@ public class AttributeAggregatorControllerTest extends AbstractIntegrationTest {
 
     @Test
     public void aggregateExistingEduID() {
-        User user = userRepository.findOneUserByEmailIgnoreCase("jdoe@example.com");
+        User user = userRepository.findOneUserByEmail("jdoe@example.com");
         String spEntityId = "http://mock-sp";
         String eduId = user.computeEduIdForServiceProviderIfAbsent(spEntityId, new MockServiceProviderResolver());
         userRepository.save(user);
@@ -83,21 +86,22 @@ public class AttributeAggregatorControllerTest extends AbstractIntegrationTest {
     @Test
     public void manipulate() {
         String spEntityId = "http://mock-sp";
-        LinkedAccount linkedAccount = userRepository.findUserByUid("1234567890").get()
-                .getLinkedAccounts().get(0);
+        User user = userRepository.findUserByUid(uid).get();
+        LinkedAccount linkedAccount = user.getLinkedAccounts().get(0);
+        String value = user.getEduIDS().get(0).getValue();
 
-        Map<String, Object> res = doManipulate(spEntityId, "1234567890", linkedAccount.getInstitutionIdentifier());
+        Map<String, Object> res = doManipulate(spEntityId, value, uid, linkedAccount.getInstitutionIdentifier());
         assertEquals(linkedAccount.getEduPersonPrincipalName(), res.get("eduperson_principal_name"));
     }
 
     @Test
     public void manipulateNewSP() {
-        doManipulate("http://new-sp", "1234567890", null);
+        doManipulate("http://new-sp", eduid, uid,null);
     }
 
     @Test
     public void manipulateNotFound() {
-        Map<String, Object> res = doManipulate("http://new-sp", "nope", null);
+        Map<String, Object> res = doManipulate("http://new-sp", "nope","nope", null);
         assertEquals(404, res.get("status"));
     }
 
@@ -107,7 +111,7 @@ public class AttributeAggregatorControllerTest extends AbstractIntegrationTest {
                 .when()
                 .auth().preemptive().basic(attributeAggregationUserName, attributeAggregationPassword)
                 .queryParam("sp_entity_id", "n/a")
-                .queryParam("uid", "n/a")
+                .queryParam("eduid", "n/a")
                 .contentType(ContentType.JSON)
                 .get("/myconext/api/attribute-manipulation")
                 .then()
@@ -127,12 +131,12 @@ public class AttributeAggregatorControllerTest extends AbstractIntegrationTest {
     }
 
     @SuppressWarnings("unchecked")
-    private Map<String, Object> doManipulate(String spEntityId, String uid, String spInstitutionIdentifier) {
+    private Map<String, Object> doManipulate(String spEntityId, String eduid, String uid, String spInstitutionIdentifier) {
         Map<String, Object> res = given()
                 .when()
                 .auth().preemptive().basic(attributeManipulationUserName, attributeManipulationPassword)
                 .queryParam("sp_entity_id", spEntityId)
-                .queryParam("uid", uid)
+                .queryParam("eduid", eduid)
                 .queryParam("sp_institution_guid", spInstitutionIdentifier)
                 .contentType(ContentType.JSON)
                 .get("/myconext/api/attribute-manipulation")

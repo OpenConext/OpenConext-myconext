@@ -24,7 +24,6 @@ import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.i18n.LocaleContextHolder;
-import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -142,7 +141,7 @@ public class UserController {
         emailDomainGuard.enforceIsAllowed(email);
         emailGuessingPreventor.potentialUserEmailGuess();
 
-        Optional<User> optionalUser = userRepository.findUserByEmailIgnoreCase(emailGuessingPreventor.sanitizeEmail(email));
+        Optional<User> optionalUser = userRepository.findUserByEmail(emailGuessingPreventor.sanitizeEmail(email));
         if (optionalUser.isPresent()) {
             return ResponseEntity.status(HttpStatus.CONFLICT)
                     .body(Collections.singletonMap("status", HttpStatus.CONFLICT.value()));
@@ -237,7 +236,7 @@ public class UserController {
     }
 
     @PutMapping("/sp/update")
-    public ResponseEntity updateUserProfile(Authentication authentication, @RequestBody User deltaUser) {
+    public ResponseEntity<UserResponse> updateUserProfile(Authentication authentication, @RequestBody User deltaUser) {
         User user = verifyAndFetchUser(authentication, deltaUser);
 
         user.setFamilyName(deltaUser.getFamilyName());
@@ -257,7 +256,7 @@ public class UserController {
 
         String hashValue = hash();
         String newEmail = deltaUser.getEmail();
-        Optional<User> optionalUser = userRepository.findUserByEmailIgnoreCase(emailGuessingPreventor.sanitizeEmail(newEmail));
+        Optional<User> optionalUser = userRepository.findUserByEmail(emailGuessingPreventor.sanitizeEmail(newEmail));
         if (optionalUser.isPresent()) {
             return ResponseEntity.status(HttpStatus.CONFLICT)
                     .body(Collections.singletonMap("status", HttpStatus.CONFLICT.value()));
@@ -272,7 +271,7 @@ public class UserController {
     }
 
     @GetMapping("/sp/confirm-email")
-    public ResponseEntity confirmUpdateEmail(Authentication authentication, @RequestParam(value = "h") String hash) {
+    public ResponseEntity<UserResponse> confirmUpdateEmail(Authentication authentication, @RequestParam(value = "h") String hash) {
         User user = userFromAuthentication(authentication);
         String oldEmail = user.getEmail();
         ChangeEmailHash changeEmailHash = changeEmailHashRepository.findByHashAndUserId(hash, user.getId())
@@ -283,10 +282,6 @@ public class UserController {
         authenticationRequestRepository.deleteByUserId(user.getId());
         mailBox.sendUpdateConfirmationEmail(user, oldEmail, user.getEmail());
         return returnUserResponse(user);
-    }
-
-    private ResponseEntity<UserResponse> returnUserResponse(User user) {
-        return ResponseEntity.status(201).body(new UserResponse(user, convertEduIdPerServiceProvider(user), false));
     }
 
     @PutMapping("/sp/security")
@@ -323,7 +318,7 @@ public class UserController {
     }
 
     @PutMapping("/sp/forgot-password")
-    public ResponseEntity forgotPassword(Authentication authentication) {
+    public ResponseEntity<UserResponse> forgotPassword(Authentication authentication) {
         User user = userFromAuthentication(authentication);
         passwordForgottenHashRepository.deleteByUserId(user.getId());
 
@@ -342,7 +337,7 @@ public class UserController {
 
 
     @PutMapping("/sp/institution")
-    public ResponseEntity removeUserLinkedAccounts(Authentication authentication, @RequestBody LinkedAccount linkedAccount) {
+    public ResponseEntity<UserResponse> removeUserLinkedAccounts(Authentication authentication, @RequestBody LinkedAccount linkedAccount) {
         User user = userFromAuthentication(authentication);
 
         List<LinkedAccount> linkedAccounts = user.getLinkedAccounts().stream()
@@ -399,14 +394,14 @@ public class UserController {
                                                           @RequestBody DeleteServiceTokens serviceAndTokens) {
         User user = userFromAuthentication(authentication);
 
-        String eduId = serviceAndTokens.getEduId();
-        Map<String, EduID> eduIdPerServiceProvider = user.getEduIdPerServiceProvider().entrySet().stream()
-                .filter(entry -> !entry.getValue().getValue().equals(eduId))
-                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
-        user.setEduIdPerServiceProvider(eduIdPerServiceProvider);
+        String eduIdValue = serviceAndTokens.getEduId();
+        List<EduID> newEduIDs = user.getEduIDS().stream()
+                .filter(eduID -> !eduID.getValue().equals(eduIdValue))
+                .collect(Collectors.toList());
+        user.setEduIDS(newEduIDs);
         userRepository.save(user);
 
-        logWithContext(user, "delete", "eppn", LOG, "Deleted eduID " + eduId);
+        logWithContext(user, "delete", "eppn", LOG, "Deleted eduID " + eduIdValue);
 
         return doRemoveTokens(serviceAndTokens, user);
     }
@@ -451,11 +446,15 @@ public class UserController {
         return userRepository.findById(id).orElseThrow(UserNotFoundException::new);
     }
 
+    private ResponseEntity<UserResponse> returnUserResponse(User user) {
+        return ResponseEntity.status(201).body(new UserResponse(user, convertEduIdPerServiceProvider(user), false));
+    }
+
+
     private ResponseEntity<UserResponse> userResponseRememberMe(User user) {
         List<SamlAuthenticationRequest> samlAuthenticationRequests = authenticationRequestRepository.findByUserIdAndRememberMe(user.getId(), true);
         return ResponseEntity.ok(new UserResponse(user, convertEduIdPerServiceProvider(user), !samlAuthenticationRequests.isEmpty()));
     }
-
 
     @GetMapping("sp/security/webauthn")
     public ResponseEntity spStartWebAuthFlow(Authentication authentication) {
@@ -478,7 +477,7 @@ public class UserController {
         }
 
         User user = optionalUser.get();
-        if (StringUtils.isEmpty(user.getUserHandle())) {
+        if (!StringUtils.hasText(user.getUserHandle())) {
             user.setUserHandle(this.hash());
             userRepository.save(user);
         }
@@ -546,7 +545,7 @@ public class UserController {
         emailDomainGuard.enforceIsAllowed(email);
         emailGuessingPreventor.potentialUserEmailGuess();
 
-        Optional<User> optionalUser = userRepository.findUserByEmailIgnoreCase(emailGuessingPreventor.sanitizeEmail(email));
+        Optional<User> optionalUser = userRepository.findUserByEmail(emailGuessingPreventor.sanitizeEmail(email));
         if (!optionalUser.isPresent()) {
             return return404();
         }
@@ -718,16 +717,16 @@ public class UserController {
     }
 
     private Map<String, EduID> convertEduIdPerServiceProvider(User user) {
-        return user.getEduIdPerServiceProvider();
+        return user.getEduIDS().stream().collect(Collectors.toMap(EduID::getServiceProviderEntityId, eduID -> eduID));
     }
 
     private Optional<User> findUserStoreLanguage(String email) {
-        Optional<User> optionalUser = userRepository.findUserByEmailIgnoreCase(emailGuessingPreventor.sanitizeEmail(email));
+        Optional<User> optionalUser = userRepository.findUserByEmail(emailGuessingPreventor.sanitizeEmail(email));
         optionalUser.ifPresent(user -> {
             String preferredLanguage = user.getPreferredLanguage();
             String language = LocaleContextHolder.getLocale().getLanguage();
 
-            if (StringUtils.isEmpty(preferredLanguage) || !preferredLanguage.equals(language)) {
+            if (!StringUtils.hasText(preferredLanguage) || !preferredLanguage.equals(language)) {
                 user.setPreferredLanguage(language);
                 userRepository.save(user);
             }

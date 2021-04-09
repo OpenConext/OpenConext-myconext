@@ -17,15 +17,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.util.Assert;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static myconext.validation.PasswordStrength.strongEnough;
@@ -54,7 +46,7 @@ public class User implements Serializable, UserDetails {
 
     private List<PublicKeyCredentials> publicKeyCredentials = new ArrayList<>();
     private List<LinkedAccount> linkedAccounts = new ArrayList<>();
-    private Map<String, EduID> eduIdPerServiceProvider = new HashMap<>();
+    private List<EduID> eduIDS = new ArrayList<>();
 
     private long created;
     private long updatedAt = System.currentTimeMillis() / 1000L;
@@ -100,13 +92,14 @@ public class User implements Serializable, UserDetails {
     @Transient
     public String computeEduIdForServiceProviderIfAbsent(String serviceProviderEntityId, ServiceProviderResolver serviceProviderResolver) {
         Optional<ServiceProvider> optionalServiceProvider = serviceProviderResolver.resolve(serviceProviderEntityId);
-        if (this.eduIdPerServiceProvider.containsKey(serviceProviderEntityId)) {
-            EduID eduID = this.eduIdPerServiceProvider.get(serviceProviderEntityId);
+        Optional<EduID> optionalEduID = this.eduIDS.stream().filter(eduID -> eduID.getServiceProviderEntityId().equals(serviceProviderEntityId)).findFirst();
+        if (optionalEduID.isPresent()) {
+            EduID eduID = optionalEduID.get();
             optionalServiceProvider.ifPresent(eduID::updateServiceProvider);
             return eduID.getValue();
         } else {
             EduID eduID = new EduID(UUID.randomUUID().toString(), serviceProviderEntityId, optionalServiceProvider);
-            this.eduIdPerServiceProvider.put(serviceProviderEntityId, eduID);
+            this.eduIDS.add(eduID);
             return eduID.getValue();
         }
     }
@@ -201,8 +194,8 @@ public class User implements Serializable, UserDetails {
         this.linkedAccounts = linkedAccounts;
     }
 
-    public void setEduIdPerServiceProvider(Map<String, EduID> eduIdPerServiceProvider) {
-        this.eduIdPerServiceProvider = eduIdPerServiceProvider;
+    public void setEduIDS(List<EduID> eduIDS) {
+        this.eduIDS = eduIDS;
     }
 
     public void setPublicKeyCredentials(List<PublicKeyCredentials> publicKeyCredentials) {

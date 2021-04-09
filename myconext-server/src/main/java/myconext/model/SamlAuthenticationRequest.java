@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.Transient;
+import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.security.saml.saml2.authentication.AuthenticationContextClassReference;
 import org.springframework.util.Assert;
@@ -33,6 +34,7 @@ public class SamlAuthenticationRequest {
 
     private String relayState;
 
+    @Indexed
     private String hash;
 
     private Date expiresIn;

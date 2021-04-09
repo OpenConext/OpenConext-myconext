@@ -16,6 +16,7 @@ import static com.github.tomakehurst.wiremock.client.WireMock.*;
 import static io.restassured.RestAssured.given;
 import static org.junit.Assert.assertEquals;
 
+@SuppressWarnings("unchecked")
 public class APIControllerTest extends AbstractIntegrationTest {
 
     @ClassRule
