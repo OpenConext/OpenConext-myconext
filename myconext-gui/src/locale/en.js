@@ -36,7 +36,7 @@ I18n.translations.en = {
         firstAndLastName: "First and last name",
         firstAndLastNameInfo: "Your first and lastname are not yet verified by a third party",
         verify: "Verify",
-        student: "Prove of student",
+        student: "Proof of student",
         studentInfo: "You have not yet proven that you are a student in the Netherlands.",
         prove: "Prove",
         trusted: "Link with third party",
