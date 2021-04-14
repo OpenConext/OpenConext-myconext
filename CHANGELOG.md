@@ -1,12 +1,14 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
-## [5.1.0] 2021-??-??
+## [5.1.1] 2021-04-14
 ### New
 - API for linked accounts info
-
-### Fixes
+### Fixes/improvement
+- Improved lookup of email and eduid in backend
+- Verification mail code case insensitive
 - Focus on custom checkbox, select with _space_
+- Update translations
 
 ## [5.0.3] 2021-03-10
 ### Fixes
