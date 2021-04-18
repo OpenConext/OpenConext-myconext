@@ -14,6 +14,7 @@ import org.springframework.util.StringUtils;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 import java.util.Optional;
 import java.util.stream.Stream;
 
@@ -105,12 +106,8 @@ public class ShibbolethPreAuthenticatedProcessingFilter extends AbstractPreAuthe
 
     private String getHeader(String name, HttpServletRequest request) {
         String header = request.getHeader(name);
-        try {
-            return StringUtils.hasText(header) ?
-                    new String(header.getBytes("ISO8859-1"), "UTF-8") : "";
-        } catch (UnsupportedEncodingException e) {
-            throw new IllegalArgumentException(e);
-        }
+        return StringUtils.hasText(header) ?
+                new String(header.getBytes(StandardCharsets.ISO_8859_1), StandardCharsets.UTF_8) : "";
     }
 
 
