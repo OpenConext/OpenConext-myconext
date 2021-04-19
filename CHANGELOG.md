@@ -1,7 +1,12 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
-## 5.1.2
+## 5.1.3 WIP
+### Fixes
+- Update dependencies
+- Log token deletion
+
+## [5.1.2] 2021-04-19
 ### Fixes
 - Fix problem with diacritics in names
 
