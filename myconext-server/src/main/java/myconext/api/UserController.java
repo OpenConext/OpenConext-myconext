@@ -411,6 +411,9 @@ public class UserController {
                                                      @RequestBody DeleteServiceTokens serviceAndTokens) {
         User user = userFromAuthentication(authentication);
 
+        String eduIdValue = serviceAndTokens.getEduId();
+        logWithContext(user, "delete", "tokens", LOG, "Deleted tokens " + eduIdValue);
+
         return doRemoveTokens(serviceAndTokens, user);
     }
 
