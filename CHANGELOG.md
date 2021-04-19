@@ -1,6 +1,10 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## 5.1.2
+### Fixes
+- Fix problem with diacritics in names
+
 ## [5.1.1] 2021-04-14
 ### New
 - API for linked accounts info
