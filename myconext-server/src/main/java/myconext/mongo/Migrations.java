@@ -6,7 +6,6 @@ import com.github.cloudyrock.mongock.driver.mongodb.springdata.v3.decorator.impl
 import myconext.model.EduID;
 import myconext.model.PublicKeyCredentials;
 import myconext.model.User;
-import myconext.security.GuestIdpAuthenticationRequestFilter;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -86,7 +85,7 @@ public class Migrations {
                         remove = copiedEduIDs.stream().anyMatch(someEduID -> someEduID.getServiceProviderEntityId().equals(oldEntityId));
                     }
                     if (remove) {
-                        LOG.info("Removing "+ eduID);
+                        LOG.info("Removing " + eduID + " for user: " + user.getEmail());
                     }
                     return !remove;
                 })
