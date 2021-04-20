@@ -69,4 +69,19 @@ public class EduID {
         serviceHomeUrl = serviceProvider.getHomeUrl();
         serviceLogoUrl = serviceProvider.getLogoUrl();
     }
+
+    public void replaceAtWithDot() {
+        if (this.serviceProviderEntityId.contains("@")) {
+            this.serviceProviderEntityId = this.serviceProviderEntityId.replaceAll("@", ".");
+        }
+    }
+
+    @Override
+    public String toString() {
+        return "EduID{" +
+                "serviceProviderEntityId='" + serviceProviderEntityId + '\'' +
+                ", value='" + value + '\'' +
+                ", createdAt=" + createdAt +
+                '}';
+    }
 }
