@@ -130,8 +130,7 @@ public class AccountLinkerControllerTest extends AbstractIntegrationTest {
 
         String authnContext = readFile("request_authn_context_validated_name.xml");
 
-        User user = doRedirect(body, authnContext, "http://localhost:3000/valid-name-missing/");
-        assertEquals(0, user.getLinkedAccounts().size());
+        doRedirect(body, authnContext, "http://localhost:3000/valid-name-missing/");
     }
 
     @Test
