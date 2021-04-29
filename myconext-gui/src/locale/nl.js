@@ -63,7 +63,7 @@ I18n.translations.nl = {
     },
     eppnAlreadyLinked: {
         header: "Koppeling niet gemaakt!",
-        info: "Je eduID kon niet worden gekoppeld, omdat het account waarmee je bent ingelogd, al aan een ander eduID account is gekoppeld.",
+        info: "Je eduID kon niet worden gekoppeld, omdat het account waarmee je bent ingelogd, al aan een ander eduID account is gekoppeld met identifier {{eppn}}.",
         proceed: "Je kan het nogmaals met een andere instelling proberen.",
         retryLink: "Opnieuw proberen"
     },

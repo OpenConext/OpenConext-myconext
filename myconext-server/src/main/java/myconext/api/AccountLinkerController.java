@@ -235,7 +235,7 @@ public class AccountLinkerController {
     private ResponseEntity doRedirect(@RequestParam("code") String code, User user, String oidcRedirectUri,
                                       String clientRedirectUri, boolean validateNames, boolean studentAffiliationRequired,
                                       String idpStudentAffiliationRequiredUri, String idpValidNamesRequiredUri,
-                                      String eppnAlreadyLinkedRequiredUri) {
+                                      String eppnAlreadyLinkedRequiredUri) throws UnsupportedEncodingException {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
         headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
@@ -288,6 +288,9 @@ public class AccountLinkerController {
                 //Ensure that an institution account is only be linked to 1 eduID
                 List<User> optionalUsers = userRepository.findByLinkedAccounts_EduPersonPrincipalName(eppn);
                 if (optionalUsers.size() > 0) {
+                    String charSet = Charset.defaultCharset().name();
+                    eppnAlreadyLinkedRequiredUri += eppnAlreadyLinkedRequiredUri.contains("?") ? "&" : "?";
+                    eppnAlreadyLinkedRequiredUri += "eppn=" + URLEncoder.encode(eppn, charSet);
                     return ResponseEntity.status(HttpStatus.FOUND).location(URI.create(eppnAlreadyLinkedRequiredUri)).build();
                 }
                 linkedAccounts.add(

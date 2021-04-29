@@ -123,6 +123,18 @@ public class AccountLinkerControllerTest extends AbstractIntegrationTest {
     }
 
     @Test
+    public void redirectWithoutValidateNames() throws IOException {
+        Map<Object, Object> body = new HashMap<>();
+        body.put("eduperson_principal_name", "some@institute.nl");
+        body.put("schac_home_organization", "mock.idp");
+
+        String authnContext = readFile("request_authn_context_validated_name.xml");
+
+        User user = doRedirect(body, authnContext, "http://localhost:3000/valid-name-missing/");
+        assertEquals(0, user.getLinkedAccounts().size());
+    }
+
+    @Test
     public void redirectWithAffiliationStudent() throws IOException {
         Map<Object, Object> body = new HashMap<>();
         body.put("eduperson_principal_name", "some@institute.nl");
@@ -145,6 +157,21 @@ public class AccountLinkerControllerTest extends AbstractIntegrationTest {
         User user = doRedirect(body);
         LinkedAccount linkedAccount = user.getLinkedAccounts().get(0);
         assertEquals(Arrays.asList("student", "faculty"), linkedAccount.getEduPersonAffiliations());
+    }
+
+    @Test
+    public void redirectWithExistingEppn() throws IOException {
+        User jdoe = userRepository.findOneUserByEmail("jdoe@example.com");
+        String eppn = jdoe.getLinkedAccounts().get(0).getEduPersonPrincipalName();
+
+        Map<Object, Object> userInfo = new HashMap<>();
+        userInfo.put("eduperson_principal_name", eppn);
+        userInfo.put("schac_home_organization", "mock.idp");
+
+        String authenticationRequestId = samlAuthnRequest();
+        User user = doRedirectResult(userInfo, authenticationRequestId,
+                "http://localhost:3000/eppn-already-linked/");
+        assertEquals(0, user.getLinkedAccounts().size());
     }
 
     @Test

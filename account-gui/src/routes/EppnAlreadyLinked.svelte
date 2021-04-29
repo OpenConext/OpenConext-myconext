@@ -6,10 +6,12 @@
 
     export let id;
     let serviceName = null;
+    let eppn;
 
     onMount(() => {
         const urlSearchParams = new URLSearchParams(window.location.search);
         serviceName = decodeURIComponent(urlSearchParams.get("name"));
+        eppn = decodeURIComponent(urlSearchParams.get("eppn"));
     });
 
     const retry = () => {
@@ -50,7 +52,7 @@
 <div class="home">
     <div class="card">
         <h2>{I18n.t("eppnAlreadyLinked.header")}</h2>
-        <p class="info">{I18n.t("eppnAlreadyLinked.info")}</p>
+        <p class="info">{I18n.t("eppnAlreadyLinked.info", {eppn: eppn})}</p>
         <p class="info">{I18n.t("eppnAlreadyLinked.proceed", {name: serviceName})}</p>
 
         <Button href="/proceed" onClick={proceed}
