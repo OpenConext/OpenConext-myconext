@@ -144,7 +144,7 @@ I18n.translations.en = {
     },
     eppnAlreadyLinked: {
         header: "Account not linked!",
-        info: "Your eduID could not be linked, because the trusted account with which you logged in, is already linked to a different eduID account with identifier {{eppn}}.",
+        info: "Your eduID could not be linked. The trusted account with which you just logged in, is already linked to a different eduID account: {{eppn}}.",
         proceed: "You can try to link to another institution or proceed to {{name}}",
         proceedLink: "Proceed",
         retryLink: "Retry"

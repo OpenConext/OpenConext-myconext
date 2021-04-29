@@ -137,7 +137,7 @@ I18n.translations.nl = {
     },
     eppnAlreadyLinked: {
         header: "Account niet gekoppeld!",
-        info: "Je eduID kon niet worden gekoppeld, omdat het vertrouwde account waarmee je bent ingelogd, al aan een ander eduID-account met identifier {{eppn}} is gekoppeld.",
+        info: "Je eduID kon niet worden gekoppeld. Het vertrouwde account waarmee je zojuist bent ingelogd, is al aan een ander eduID-account gekoppeld: {{eppn}}.",
         proceed: "Je kan het nogmaals met een andere instelling proberen of doorgaan naar {{name}}",
         proceedLink: "Doorgaan",
         retryLink: "Opnieuw proberen"
