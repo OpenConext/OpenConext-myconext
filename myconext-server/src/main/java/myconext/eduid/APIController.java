@@ -31,7 +31,8 @@ public class APIController {
     @SuppressWarnings("unchecked")
     public List<Map<String, String>> eppn(BearerTokenAuthentication authentication, @RequestParam(value = "schachome", required = false) String schachome) {
         List<String> uids = (ArrayList<String>) authentication.getTokenAttributes().get("uids");
-        User user = userRepository.findUserByUid(uids.get(0)).orElseThrow(UserNotFoundException::new);
+        String uid = uids.get(0);
+        User user = userRepository.findUserByUid(uid).orElseThrow(() -> new UserNotFoundException(uid));
         return user.getLinkedAccounts().stream()
                 .map(linkedAccount -> {
                     Map<String, String> info = new HashMap<>();

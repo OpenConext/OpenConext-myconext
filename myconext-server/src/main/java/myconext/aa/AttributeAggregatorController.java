@@ -65,7 +65,7 @@ public class AttributeAggregatorController {
     public ResponseEntity<Map> manipulate(@RequestParam("sp_entity_id") String spEntityId,
                                           @RequestParam("eduid") String eduid,
                                           @RequestParam(value = "sp_institution_guid", required = false) String spInstitutionGuid) {
-        User user = userRepository.findByEduIDS_value(eduid).orElseThrow(UserNotFoundException::new);
+        User user = userRepository.findByEduIDS_value(eduid).orElseThrow(() -> new UserNotFoundException(eduid));
         String eduId = user.computeEduIdForServiceProviderIfAbsent(spEntityId, serviceProviderResolver);
         userRepository.save(user);
         Map<String, String> result = new HashMap<>();

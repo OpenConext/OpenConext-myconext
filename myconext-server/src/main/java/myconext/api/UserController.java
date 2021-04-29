@@ -196,7 +196,8 @@ public class UserController {
     public ResponseEntity resendMagicLinkRequest(HttpServletRequest request, @RequestParam("id") String authenticationRequestId) {
         SamlAuthenticationRequest samlAuthenticationRequest = authenticationRequestRepository.findByIdAndNotExpired(authenticationRequestId)
                 .orElseThrow(ExpiredAuthenticationException::new);
-        User user = userRepository.findById(samlAuthenticationRequest.getUserId()).orElseThrow(UserNotFoundException::new);
+        String userId = samlAuthenticationRequest.getUserId();
+        User user = userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException(userId));
         if (user.isNewUser()) {
             mailBox.sendAccountVerification(user, samlAuthenticationRequest.getHash());
         } else {
@@ -222,7 +223,8 @@ public class UserController {
 
     @GetMapping(value = {"/sp/me", "sp/migrate/merge", "sp/migrate/proceed"})
     public ResponseEntity<UserResponse> me(Authentication authentication) {
-        User user = userRepository.findById(((User) authentication.getPrincipal()).getId()).orElseThrow(UserNotFoundException::new);
+        String userId = ((User) authentication.getPrincipal()).getId();
+        User user = userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException(userId));
         return userResponseRememberMe(user);
     }
 
@@ -286,7 +288,8 @@ public class UserController {
 
     @PutMapping("/sp/security")
     public ResponseEntity updateUserSecurity(Authentication authentication, @RequestBody UpdateUserSecurityRequest updateUserRequest) {
-        User deltaUser = userRepository.findById(updateUserRequest.getUserId()).orElseThrow(UserNotFoundException::new);
+        String userId = updateUserRequest.getUserId();
+        User deltaUser = userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException(userId));
         User user = verifyAndFetchUser(authentication, deltaUser);
 
         String password = user.getPassword();
@@ -445,8 +448,8 @@ public class UserController {
     }
 
     private User userFromAuthentication(Authentication authentication) {
-        String id = ((User) authentication.getPrincipal()).getId();
-        return userRepository.findById(id).orElseThrow(UserNotFoundException::new);
+        String userId = ((User) authentication.getPrincipal()).getId();
+        return userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException(userId));
     }
 
     private ResponseEntity<UserResponse> returnUserResponse(User user) {
@@ -689,7 +692,8 @@ public class UserController {
             throw new ForbiddenException();
         }
         //Strictly not necessary, but mid-air collisions can occur in theory
-        return userRepository.findUserByUid(principal.getUid()).orElseThrow(UserNotFoundException::new);
+        String uid = principal.getUid();
+        return userRepository.findUserByUid(uid).orElseThrow(() -> new UserNotFoundException(uid));
     }
 
     private ResponseEntity doMagicLink(User user, SamlAuthenticationRequest samlAuthenticationRequest, boolean rememberMe,

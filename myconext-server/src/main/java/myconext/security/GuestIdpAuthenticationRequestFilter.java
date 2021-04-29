@@ -287,8 +287,8 @@ public class GuestIdpAuthenticationRequestFilter extends IdpAuthenticationReques
             return;
         }
         SamlAuthenticationRequest samlAuthenticationRequest = optionalSamlAuthenticationRequest.get();
-        User user = userRepository.findById(samlAuthenticationRequest.getUserId())
-                .orElseThrow(UserNotFoundException::new);
+        String userId = samlAuthenticationRequest.getUserId();
+        User user = userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException(userId));
 
         List<String> authenticationContextClassReferences = samlAuthenticationRequest.getAuthenticationContextClassReferences();
         boolean accountLinkingRequired = samlAuthenticationRequest.isAccountLinkingRequired() &&
@@ -397,8 +397,8 @@ public class GuestIdpAuthenticationRequestFilter extends IdpAuthenticationReques
             response.sendRedirect(this.redirectUrl + "/expired");
             return;
         }
-        User user = userRepository.findById(samlAuthenticationRequest.getUserId())
-                .orElseThrow(UserNotFoundException::new);
+        String userId = samlAuthenticationRequest.getUserId();
+        User user = userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException(userId));
 
         String charSet = Charset.defaultCharset().name();
         String serviceName = this.getServiceName(request, samlAuthenticationRequest);

@@ -59,6 +59,17 @@ public class APIControllerTest extends AbstractIntegrationTest {
     }
 
     @Test
+    public void eppnInvalidUid() throws Exception {
+        given()
+                .when()
+                .accept(ContentType.JSON)
+                .auth().oauth2(doOpaqueAccessToken(true, new String[] {"eduid.nl/eppn"}, "introspect_invalid_user"))
+                .get("/myconext/api/eduid/eppn")
+                .then()
+                .statusCode(404);
+    }
+
+    @Test
     public void eppnInvalidScope() throws Exception {
         given()
                 .when()
