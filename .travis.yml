@@ -15,8 +15,8 @@ cache:
   directories:
     - node_modules
 before_install:
-  - pip install urllib3[secure]
-  - pip install --user codecov
+#  - pip3 install urllib3[secure]
+  - pip3 install --user codecov
   - nvm install 15.6.0
   - mongo --version
   - npm install -g yarn
