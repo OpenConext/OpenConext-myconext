@@ -12,13 +12,11 @@
     import Cookies from "js-cookie";
 
     export let id;
-    let name;
     let email;
     let loading = true;
 
     onMount(() => {
         const urlSearchParams = new URLSearchParams(window.location.search);
-        name = decodeURIComponent(urlSearchParams.get("name"));
         email = urlSearchParams.get("email")
         loading = false;
     });

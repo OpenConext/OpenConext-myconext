@@ -136,6 +136,12 @@ public class UserController {
                 authenticationRequestRepository.findById(id).orElseThrow(ExpiredAuthenticationException::new).getServiceName());
     }
 
+    @GetMapping("/idp/service/hash/{hash}")
+    public Map<String, String> serviceNameByHash(@PathVariable("hash") String hash) {
+        return Collections.singletonMap("name",
+                authenticationRequestRepository.findByHash(hash).orElseThrow(ExpiredAuthenticationException::new).getServiceName());
+    }
+
     @PostMapping("/idp/magic_link_request")
     public ResponseEntity newMagicLinkRequest(HttpServletRequest request, @Valid @RequestBody MagicLinkRequest magicLinkRequest) {
         SamlAuthenticationRequest samlAuthenticationRequest = authenticationRequestRepository.findByIdAndNotExpired(magicLinkRequest.getAuthenticationRequestId())

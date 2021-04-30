@@ -3,13 +3,18 @@
     import {onMount} from 'svelte';
     import {conf} from "../stores/conf";
     import Button from "../components/Button.svelte";
+    import Spinner from "../components/Spinner.svelte";
+    import {fetchServiceName} from "../api";
 
     export let id;
     let serviceName = null;
+    let showSpinner = true;
 
     onMount(() => {
-        const urlSearchParams = new URLSearchParams(window.location.search);
-        serviceName = decodeURIComponent(urlSearchParams.get("name"));
+        fetchServiceName(id).then(res => {
+            serviceName = res.name;
+            showSpinner = false;
+        });
     });
 
     const retry = () => {
@@ -47,6 +52,9 @@
     }
 
 </style>
+{#if showSpinner}
+    <Spinner/>
+{/if}
 <div class="home">
     <div class="card">
         <h2>{I18n.t("validNameMissing.header")}</h2>

@@ -96,5 +96,10 @@ export function successfullyLoggedIn(id) {
 }
 
 export function fetchServiceName(id) {
-    return fetchJson(`/myconext/api/idp/service/name/${id}`)
+    return fetchJson(`/myconext/api/idp/service/name/${id}`).catch(() => Promise.resolve({name: "?"}));
 }
+
+export function fetchServiceNameByHash(id) {
+    return fetchJson(`/myconext/api/idp/service/hash/${id}`).catch(() => Promise.resolve({name: "?"}))
+}
+

@@ -4,16 +4,21 @@
     import {conf} from "../stores/conf";
     import Button from "../components/Button.svelte";
     import Verification from "../components/Verification.svelte";
+    import Spinner from "../components/Spinner.svelte";
+    import {fetchServiceNameByHash} from "../api";
 
-    let email = null;
     let serviceName = null;
     let explanation = null;
+    let showSpinner = true;
 
     onMount(() => {
         const urlSearchParams = new URLSearchParams(window.location.search);
-        email = decodeURIComponent(urlSearchParams.get("email"));
-        serviceName = decodeURIComponent(urlSearchParams.get("name"));
         explanation = urlSearchParams.get("explanation");
+        const hash = urlSearchParams.get('h');
+        fetchServiceNameByHash(hash).then(res => {
+            serviceName = res.name;
+            showSpinner = false;
+        });
     });
 
     const proceed = () => {
@@ -42,6 +47,10 @@
     }
 
 </style>
+{#if showSpinner}
+    <Spinner/>
+{/if}
+
 <div class="home">
     <div class="card">
         <h2>{I18n.t("confirm.header")}</h2>

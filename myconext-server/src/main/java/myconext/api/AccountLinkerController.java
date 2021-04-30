@@ -192,20 +192,17 @@ public class AccountLinkerController {
         String idpStudentAffiliationRequiredUri = this.idpErrorRedirectUrl + "/affiliation-missing/" +
                 samlAuthenticationRequest.getId() +
                 "?h=" + samlAuthenticationRequest.getHash() +
-                "&redirect=" + URLEncoder.encode(this.magicLinkUrl, charSet) +
-                "&name=" + URLEncoder.encode(serviceName, charSet);
+                "&redirect=" + URLEncoder.encode(this.magicLinkUrl, charSet);
 
         String idpValidNamesRequiredUri = this.idpErrorRedirectUrl + "/valid-name-missing/" +
                 samlAuthenticationRequest.getId() +
                 "?h=" + samlAuthenticationRequest.getHash() +
-                "&redirect=" + URLEncoder.encode(this.magicLinkUrl, charSet) +
-                "&name=" + URLEncoder.encode(serviceName, charSet);
+                "&redirect=" + URLEncoder.encode(this.magicLinkUrl, charSet);
 
         String eppnAlreadyLinkedRequiredUri = this.idpErrorRedirectUrl + "/eppn-already-linked/" +
                 samlAuthenticationRequest.getId() +
                 "?h=" + samlAuthenticationRequest.getHash() +
-                "&redirect=" + URLEncoder.encode(this.magicLinkUrl, charSet) +
-                "&name=" + URLEncoder.encode(serviceName, charSet);
+                "&redirect=" + URLEncoder.encode(this.magicLinkUrl, charSet);
 
         ResponseEntity redirect = doRedirect(code, user, this.idpFlowRedirectUri, location, validateNames, studentAffiliationRequired,
                 idpStudentAffiliationRequiredUri, idpValidNamesRequiredUri, eppnAlreadyLinkedRequiredUri);

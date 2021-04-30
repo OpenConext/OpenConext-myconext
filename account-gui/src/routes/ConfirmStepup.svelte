@@ -5,15 +5,22 @@
     import Button from "../components/Button.svelte";
     import oneMoreThing from "../icons/onemorething_filled.svg";
     import Verification from "../components/Verification.svelte";
+    import {fetchServiceNameByHash} from "../api";
+    import Spinner from "../components/Spinner.svelte";
 
-    let email = null;
     let serviceName = null;
     let explanation = null;
+    let showSpinner = true;
 
     onMount(() => {
         const urlSearchParams = new URLSearchParams(window.location.search);
-        serviceName = decodeURIComponent(urlSearchParams.get("name"));
         explanation = decodeURIComponent(urlSearchParams.get("explanation"));
+        const hash = urlSearchParams.get('h')
+        fetchServiceNameByHash(hash).then(res => {
+            serviceName = res.name;
+            showSpinner = false;
+        });
+
     });
 
     const proceed = () => {
@@ -38,6 +45,9 @@
     }
 
 </style>
+{#if showSpinner}
+    <Spinner/>
+{/if}
 <div class="home">
     <div class="card">
         <h2>{I18n.t("confirmStepup.header")}</h2>
