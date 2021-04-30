@@ -15,7 +15,7 @@ cache:
   directories:
     - node_modules
 before_install:
-  - pyenv install 3.6 && pyenv global system 3.6
+  - pyenv global system 3.6
   - pip3 install --user codecov
   - nvm install 15.6.0
   - mongo --version
