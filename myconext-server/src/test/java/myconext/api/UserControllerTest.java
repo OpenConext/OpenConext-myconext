@@ -54,6 +54,12 @@ public class UserControllerTest extends AbstractIntegrationTest {
     @Test
     public void existingUser() throws IOException {
         MagicLinkResponse magicLinkResponse = magicLinkRequest(user("jdoe@example.com"), HttpMethod.PUT);
+
+        when()
+                .get("/myconext/api/idp/service/name/" + magicLinkResponse.authenticationRequestId)
+                .then()
+                .body("name", equalTo("https://manage.surfconext.nl/shibboleth"));
+
         magicLinkResponse.response
                 .statusCode(HttpStatus.CREATED.value());
         String samlResponse = samlResponse(magicLinkResponse);
@@ -911,6 +917,12 @@ public class UserControllerTest extends AbstractIntegrationTest {
                 .get("/saml/guest-idp/magic");
         String location = response.getHeader("Location");
         assertTrue(location.startsWith("http://localhost:3000/confirm-stepup?h="));
+
+        when()
+                .get("/myconext/api/idp/service/hash/" + samlAuthenticationRequest.getHash())
+                .then()
+                .body("name", equalTo("https://manage.surfconext.nl/shibboleth"));
+
     }
 
     @Test
