@@ -1,10 +1,14 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
-## 5.1.3 WIP
+## [5.1.4]
 ### Fixes
 - Update dependencies
 - Log token deletion
+### New
+- Show to user with which eduID account institutional account is linked
+- Log invalid tokens in API requests
+- Log usage of deleted token
 
 ## [5.1.2] 2021-04-19
 ### Fixes
