@@ -9,6 +9,7 @@
     import attention from "../icons/alert-circle.svg";
 
     import {
+        fetchServiceName,
         institutionalEmailDomains,
         magicLinkExistingUser,
         magicLinkNewUser,
@@ -30,7 +31,7 @@
     let emailOrPasswordIncorrect = false;
     let webAuthIncorrect = false;
     let initial = true;
-    let showSpinner = false;
+    let showSpinner = true;
     let serviceName = "";
 
     let passwordField;
@@ -70,12 +71,14 @@
         if (!user) {
             throw new Error();
         }
+        fetchServiceName(id).then(res => {
+            serviceName = res.name;
+            showSpinner = false;
+        });
         const value = Cookies.get("login_preference");
         $user.usePassword = value === "usePassword";
         $user.useWebAuth = value === "useWebAuth" && $conf.featureWebAuthn;
-
         const urlParams = new URLSearchParams(window.location.search);
-        serviceName = urlParams.get("name");
 
         const modus = urlParams.get("modus");
         const registerModus = Cookies.get("REGISTER_MODUS");

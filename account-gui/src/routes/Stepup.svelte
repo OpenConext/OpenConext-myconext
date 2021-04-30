@@ -3,15 +3,21 @@
     import {onMount} from 'svelte';
     import Button from "../components/Button.svelte";
     import Verification from "../components/Verification.svelte";
+    import {fetchServiceName} from "../api";
+    import Spinner from "../components/Spinner.svelte";
 
     export let id;
     let explanation = null;
     let serviceName = null;
+    let showSpinner = true;
 
     onMount(() => {
         const urlSearchParams = new URLSearchParams(window.location.search);
         explanation = decodeURIComponent(urlSearchParams.get("explanation"));
-        serviceName = decodeURIComponent(urlSearchParams.get("name"));
+        fetchServiceName(id).then(res => {
+            serviceName = res.name;
+            showSpinner = false;
+        });
     });
 
     const proceed = () => {
@@ -33,6 +39,9 @@
     }
 
 </style>
+{#if showSpinner}
+    <Spinner/>
+{/if}
 <div class="home">
     <div class="card">
         <h2>{I18n.t("stepup.header")}</h2>

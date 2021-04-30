@@ -144,9 +144,6 @@ public class GuestIdpAuthenticationRequestFilter extends IdpAuthenticationReques
                 authenticationContextClassReferenceValues
         );
 
-        // Use the returned instance for further operations as the save operation has added the _id
-        samlAuthenticationRequest = authenticationRequestRepository.save(samlAuthenticationRequest);
-
         Optional<Cookie> rememberMeCookieOptional = cookieByName(request, GUEST_IDP_REMEMBER_ME_COOKIE_NAME);
         Optional<User> userRememberedOptional = rememberMeCookieOptional.map(this::userFromCookie).flatMap(identity());
 
@@ -155,7 +152,10 @@ public class GuestIdpAuthenticationRequestFilter extends IdpAuthenticationReques
         User previousAuthenticatedUser = userRememberedOptional.orElse(userFromAuthentication.orElse(null));
 
         String serviceName = this.getServiceName(request, samlAuthenticationRequest);
-        String encodedServiceName = URLEncoder.encode(serviceName, "UTF-8");
+
+        // Use the returned instance for further operations as the save operation has added the _id
+        samlAuthenticationRequest.setServiceName(serviceName);
+        samlAuthenticationRequest = authenticationRequestRepository.save(samlAuthenticationRequest);
 
         if (previousAuthenticatedUser != null && !authenticationRequest.isForceAuth()) {
             if (accountLinkingRequired && !isUserVerifiedByInstitution(previousAuthenticatedUser,
@@ -166,7 +166,7 @@ public class GuestIdpAuthenticationRequestFilter extends IdpAuthenticationReques
                 samlAuthenticationRequest.setHash(hash());
                 authenticationRequestRepository.save(samlAuthenticationRequest);
                 addBrowserIdentificationCookie(response);
-                response.sendRedirect(this.redirectUrl + "/stepup/" + samlAuthenticationRequest.getId() + "?name=" + encodedServiceName + "&explanation=" + explanation);
+                response.sendRedirect(this.redirectUrl + "/stepup/" + samlAuthenticationRequest.getId() + "?explanation=" + explanation);
             } else {
                 ServiceProviderMetadata serviceProviderMetadata = provider.getRemoteProvider(samlAuthenticationRequest.getIssuer());
                 sendAssertion(request, response, samlAuthenticationRequest, previousAuthenticatedUser,
@@ -180,8 +180,9 @@ public class GuestIdpAuthenticationRequestFilter extends IdpAuthenticationReques
 
             String modus = optionalCookie.map(c -> "&modus=cr").orElse("");
             String stepUp = accountLinkingRequired ? "&stepup=true" : "";
+            String separator = StringUtils.hasText(modus) || StringUtils.hasText(stepUp) ? "?n=1" : "";
             response.sendRedirect(this.redirectUrl + "/login/" + samlAuthenticationRequest.getId() +
-                    "?name=" + encodedServiceName + modus + stepUp);
+                    separator + modus + stepUp);
         }
     }
 
@@ -297,14 +298,12 @@ public class GuestIdpAuthenticationRequestFilter extends IdpAuthenticationReques
 
         String charSet = Charset.defaultCharset().name();
 
-        String serviceName = this.getServiceName(request, samlAuthenticationRequest);
-        String encodedServiceName = URLEncoder.encode(serviceName, "UTF-8");
         boolean hasStudentAffiliation = hasRequiredStudentAffiliation(user.allEduPersonAffiliations());
         String explanation = ACR.explanationKeyWord(authenticationContextClassReferences, hasStudentAffiliation);
 
         if (accountLinkingRequired && StepUpStatus.NONE.equals(samlAuthenticationRequest.getSteppedUp())) {
             response.sendRedirect(this.redirectUrl + "/stepup/" + samlAuthenticationRequest.getId()
-                    + "?name=" + encodedServiceName + "&explanation=" + explanation);
+                    + "?explanation=" + explanation);
             return;
         }
 
@@ -324,7 +323,7 @@ public class GuestIdpAuthenticationRequestFilter extends IdpAuthenticationReques
             return;
         }
 
-        boolean proceed = checkStepUp(response, hash, samlAuthenticationRequest, user, charSet, encodedServiceName, explanation);
+        boolean proceed = checkStepUp(response, hash, samlAuthenticationRequest, user, charSet, explanation);
         if (!proceed) {
             return;
         }
@@ -333,7 +332,7 @@ public class GuestIdpAuthenticationRequestFilter extends IdpAuthenticationReques
         doSendAssertion(request, response, samlAuthenticationRequest, user);
     }
 
-    private boolean checkStepUp(HttpServletResponse response, String hash, SamlAuthenticationRequest samlAuthenticationRequest, User user, String charSet, String encodedServiceName, String explanation) throws IOException {
+    private boolean checkStepUp(HttpServletResponse response, String hash, SamlAuthenticationRequest samlAuthenticationRequest, User user, String charSet, String explanation) throws IOException {
         boolean inStepUpFlow = StepUpStatus.IN_STEP_UP.equals(samlAuthenticationRequest.getSteppedUp());
 
         boolean hasStudentAffiliation = hasRequiredStudentAffiliation(user.allEduPersonAffiliations());
@@ -358,8 +357,7 @@ public class GuestIdpAuthenticationRequestFilter extends IdpAuthenticationReques
             }
             String url = this.redirectUrl + "/confirm?h=" + hash +
                     "&redirect=" + URLEncoder.encode(this.magicLinkUrl, charSet) +
-                    "&email=" + URLEncoder.encode(user.getEmail(), charSet) +
-                    "&name=" + encodedServiceName;
+                    "&email=" + URLEncoder.encode(user.getEmail(), charSet) ;
             if (!StepUpStatus.NONE.equals(samlAuthenticationRequest.getSteppedUp())) {
                 url += "&explanation=" + explanation;
             }
@@ -373,7 +371,6 @@ public class GuestIdpAuthenticationRequestFilter extends IdpAuthenticationReques
             }
             response.sendRedirect(this.redirectUrl + "/confirm-stepup?h=" + hash +
                     "&redirect=" + URLEncoder.encode(this.magicLinkUrl, charSet) +
-                    "&name=" + encodedServiceName +
                     "&explanation=" + explanation);
             return false;
         }
@@ -401,13 +398,11 @@ public class GuestIdpAuthenticationRequestFilter extends IdpAuthenticationReques
         User user = userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException(userId));
 
         String charSet = Charset.defaultCharset().name();
-        String serviceName = this.getServiceName(request, samlAuthenticationRequest);
-        String encodedServiceName = URLEncoder.encode(serviceName, "UTF-8");
         boolean hasStudentAffiliation = hasRequiredStudentAffiliation(user.allEduPersonAffiliations());
         List<String> authenticationContextClassReferences = samlAuthenticationRequest.getAuthenticationContextClassReferences();
         String explanation = ACR.explanationKeyWord(authenticationContextClassReferences, hasStudentAffiliation);
 
-        boolean proceed = this.checkStepUp(response, samlAuthenticationRequest.getHash(), samlAuthenticationRequest, user, charSet, encodedServiceName, explanation);
+        boolean proceed = this.checkStepUp(response, samlAuthenticationRequest.getHash(), samlAuthenticationRequest, user, charSet, explanation);
         if (!proceed) {
             return;
         }

@@ -94,3 +94,7 @@ export function successfullyLoggedIn(id) {
     }
     return fetchJson(`/myconext/api/idp/security/success?id=${id}`);
 }
+
+export function fetchServiceName(id) {
+    return fetchJson(`/myconext/api/idp/service/name/${id}`)
+}
