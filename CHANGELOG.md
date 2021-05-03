@@ -5,6 +5,8 @@ All notable changes to this project will be documented in this file.
 ### Fixes
 - Update dependencies
 - Log token deletion
+- Use eduID if no UID is present in a token.
+- Prevent string manipulation in login-page
 ### New
 - Show to user with which eduID account institutional account is linked
 - Log invalid tokens in API requests
