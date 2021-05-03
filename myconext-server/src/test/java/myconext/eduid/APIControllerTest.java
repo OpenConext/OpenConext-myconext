@@ -63,10 +63,22 @@ public class APIControllerTest extends AbstractIntegrationTest {
         given()
                 .when()
                 .accept(ContentType.JSON)
-                .auth().oauth2(doOpaqueAccessToken(true, new String[] {"eduid.nl/eppn"}, "introspect_invalid_user"))
+                .auth().oauth2(doOpaqueAccessToken(true, new String[]{"eduid.nl/eppn"}, "introspect_invalid_user"))
                 .get("/myconext/api/eduid/eppn")
                 .then()
                 .statusCode(404);
+    }
+
+    @Test
+    public void missingUid() throws Exception {
+        List<Map<String, String>> results = given()
+                .when()
+                .accept(ContentType.JSON)
+                .auth().oauth2(doOpaqueAccessToken(true, new String[]{"eduid.nl/eppn"}, "introspect_missing_uid"))
+                .get("/myconext/api/eduid/eppn")
+                .as(List.class);
+        String value = results.get(0).get("eppn");
+        assertEquals("1234567890@surfguest.nl", value);
     }
 
     @Test
