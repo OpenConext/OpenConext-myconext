@@ -44,7 +44,6 @@
 </style>
 <div class="eppn-already-linked">
     <h1>{I18n.t("eppnAlreadyLinked.header")}</h1>
-    <p>{I18n.t("eppnAlreadyLinked.info", {eppn: eppn})}</p>
-    <p class="last">{I18n.t("eppnAlreadyLinked.proceed")}</p>
+    <p class="last">{I18n.t("eppnAlreadyLinked.info", {eppn: eppn})}</p>
     <Button href={`/link`} label={I18n.t("eppnAlreadyLinked.retryLink")} onClick={retry}/>
 </div>
