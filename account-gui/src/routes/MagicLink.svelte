@@ -76,7 +76,7 @@
     }
 
     const updateVerificationCode = e => {
-        verificationCode = e.target.value.toUpperCase();
+        verificationCode = e.target.value.toUpperCase().trim();
     }
 
 </script>
