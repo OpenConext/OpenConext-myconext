@@ -4,6 +4,7 @@ All notable changes to this project will be documented in this file.
 ## [next]
 ### Fixes
 - Remove spaces from one time verification code
+- Update dependencies
 
 ## [5.1.4]
 ### Fixes
