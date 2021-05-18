@@ -1,7 +1,7 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
-## [next]
+## [5.1.6]
 ### Fixes
 - Remove spaces from one time verification code
 - Update dependencies
