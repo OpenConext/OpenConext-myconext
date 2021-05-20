@@ -1,6 +1,11 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [5.1.7]
+### Fixes
+- Update links to privacy and terms
+- Show email of the eduID instead of the linked account, if the account is already linked to an eduid
+
 ## [5.1.6]
 ### Fixes
 - Remove spaces from one time verification code
