@@ -184,11 +184,6 @@ public class AccountLinkerController {
 
         String charSet = Charset.defaultCharset().name();
 
-        String lang = cookieByName(request, "lang").map(cookie -> cookie.getValue()).orElse("en");
-        Optional<ServiceProvider> optionalServiceProvider = serviceProviderResolver.resolve(samlAuthenticationRequest.getRequesterEntityId());
-        String serviceName = optionalServiceProvider.map(serviceProvider -> lang.equals("en") ? serviceProvider.getName() : serviceProvider.getNameNl())
-                .orElse(samlAuthenticationRequest.getRequesterEntityId());
-
         String idpStudentAffiliationRequiredUri = this.idpErrorRedirectUrl + "/affiliation-missing/" +
                 samlAuthenticationRequest.getId() +
                 "?h=" + samlAuthenticationRequest.getHash() +
@@ -274,7 +269,7 @@ public class AccountLinkerController {
                 if (optionalUsers.size() > 0) {
                     String charSet = Charset.defaultCharset().name();
                     eppnAlreadyLinkedRequiredUri += eppnAlreadyLinkedRequiredUri.contains("?") ? "&" : "?";
-                    eppnAlreadyLinkedRequiredUri += "eppn=" + URLEncoder.encode(eppn, charSet);
+                    eppnAlreadyLinkedRequiredUri += "email=" + URLEncoder.encode(optionalUsers.get(0).getEmail(), charSet);
                     return ResponseEntity.status(HttpStatus.FOUND).location(URI.create(eppnAlreadyLinkedRequiredUri)).build();
                 }
                 linkedAccounts.add(

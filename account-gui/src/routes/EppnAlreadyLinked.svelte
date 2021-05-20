@@ -8,12 +8,12 @@
 
     export let id;
     let serviceName = null;
-    let eppn = null;
+    let email = null;
     let showSpinner = true;
 
     onMount(() => {
         const urlSearchParams = new URLSearchParams(window.location.search);
-        eppn = decodeURIComponent(urlSearchParams.get("eppn"));
+        email = decodeURIComponent(urlSearchParams.get("email"));
         fetchServiceName(id).then(res => {
             serviceName = res.name;
             showSpinner = false;
@@ -61,7 +61,7 @@
 <div class="home">
     <div class="card">
         <h2>{I18n.t("eppnAlreadyLinked.header")}</h2>
-        <p class="info">{I18n.t("eppnAlreadyLinked.info", {eppn: eppn})}</p>
+        <p class="info">{I18n.t("eppnAlreadyLinked.info", {email: email})}</p>
         <p class="info">{I18n.t("eppnAlreadyLinked.proceed", {name: serviceName})}</p>
 
         <Button href="/proceed" onClick={proceed}

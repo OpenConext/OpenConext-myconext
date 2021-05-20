@@ -4,11 +4,11 @@
     import Button from "../components/Button.svelte";
     import {onMount} from "svelte";
 
-    let eppn;
+    let email;
 
     onMount(() => {
         const urlParams = new URLSearchParams(window.location.search);
-        eppn = decodeURIComponent(urlParams.get("eppn"));
+        email = decodeURIComponent(urlParams.get("email"));
     });
 
     const retry = () => startLinkAccountFlow().then(json => {
@@ -44,6 +44,6 @@
 </style>
 <div class="eppn-already-linked">
     <h1>{I18n.t("eppnAlreadyLinked.header")}</h1>
-    <p class="last">{I18n.t("eppnAlreadyLinked.info", {eppn: eppn})}</p>
+    <p class="last">{I18n.t("eppnAlreadyLinked.info", {email: email})}</p>
     <Button href={`/link`} label={I18n.t("eppnAlreadyLinked.retryLink")} onClick={retry}/>
 </div>
