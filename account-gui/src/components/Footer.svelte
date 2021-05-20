@@ -13,8 +13,8 @@
     };
 
     let isEn = I18n.locale === "en";
-    let privacyUrl = isEn ? "/privacy_policy/" : "/privacyverklaring/";
-    let termsUrl = isEn ? "/terms_of_service/" : "/voorwaarden/";
+    let privacyUrl = isEn ? "https://eduid.nl/privacy-policy/" : "https://eduid.nl/privacy/";
+    let termsUrl = isEn ? "https://eduid.nl/terms-of-use/" : "https://eduid.nl/gebruiksvoorwaarden/";
 
 </script>
 

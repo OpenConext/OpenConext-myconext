@@ -58,7 +58,7 @@ I18n.translations.en = {
         alreadyGuestAccount: "Already have an eduID?",
         usePasswordLink: "Type a password anyway",
         useWebAuthnLink: "Or use a security key",
-        agreeWithTerms: "<span>I agree with <a tabindex='-1' href='https://eduid.nl/terms_of_service/' target='_blank'>the terms of service.</a> I also understand <a tabindex='-1' href='https://eduid.nl/privacy_policy/' target='_blank'>the privacy policy</a>.</span>"
+        agreeWithTerms: "<span>I agree with <a tabindex='-1' href='https://eduid.nl/terms-of-use/' target='_blank'>the terms of service.</a> I also understand <a tabindex='-1' href='https://eduid.nl/privacy_policy/' target='_blank'>the privacy policy</a>.</span>"
     },
     magicLink: {
         header: "Check your email!",
