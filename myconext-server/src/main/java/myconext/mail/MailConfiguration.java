@@ -11,7 +11,7 @@ import org.springframework.context.annotation.Primary;
 import org.springframework.context.annotation.Profile;
 import org.springframework.core.env.Environment;
 import org.springframework.mail.javamail.JavaMailSender;
-
+import org.springframework.core.io.Resource;
 import java.io.IOException;
 
 @Configuration
@@ -27,6 +27,9 @@ public class MailConfiguration {
     @Value("${email.my-surfconext-url}")
     private String mySURFconextURL;
 
+    @Value("${email.mail-templates-directory}")
+    private Resource mailTemplatesDirectory;
+
     @Autowired
     private JavaMailSender mailSender;
 
@@ -36,14 +39,14 @@ public class MailConfiguration {
     @Bean
     @Profile({"!dev"})
     public MailBox mailSenderProd() throws IOException {
-        return new MailBox(mailSender, emailFrom, magicLinkUrl, mySURFconextURL, objectMapper);
+        return new MailBox(mailSender, emailFrom, magicLinkUrl, mySURFconextURL, objectMapper, mailTemplatesDirectory);
     }
 
     @Bean
     @Profile({"dev", "test", "shib"})
     @Primary
     public MailBox mailSenderDev(Environment environment) throws IOException {
-        return new MockMailBox(mailSender, emailFrom, magicLinkUrl, mySURFconextURL, objectMapper, environment);
+        return new MockMailBox(mailSender, emailFrom, magicLinkUrl, mySURFconextURL, objectMapper, mailTemplatesDirectory, environment);
     }
 
 

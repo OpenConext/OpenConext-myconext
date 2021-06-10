@@ -3,6 +3,7 @@ package myconext.mail;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.core.env.Environment;
 import org.springframework.core.env.Profiles;
+import org.springframework.core.io.Resource;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.util.FileCopyUtils;
@@ -15,8 +16,9 @@ public class MockMailBox extends MailBox {
 
     private Environment env;
 
-    MockMailBox(JavaMailSender mailSender, String emailFrom, String baseUrl, String mySURFconextURL, ObjectMapper objectMapper, Environment env) throws IOException {
-        super(mailSender, emailFrom, baseUrl, mySURFconextURL, objectMapper);
+    MockMailBox(JavaMailSender mailSender, String emailFrom, String baseUrl, String mySURFconextURL, ObjectMapper objectMapper,
+                Resource mailTemplatesDirectory, Environment env) throws IOException {
+        super(mailSender, emailFrom, baseUrl, mySURFconextURL,  objectMapper, mailTemplatesDirectory);
         this.env = env;
     }
 

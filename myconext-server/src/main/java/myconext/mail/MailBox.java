@@ -4,17 +4,18 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.mustachejava.DefaultMustacheFactory;
 import com.github.mustachejava.MustacheFactory;
+import lombok.SneakyThrows;
 import myconext.model.User;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.Resource;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.util.StringUtils;
 
+import java.io.*;
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
-import java.io.IOException;
-import java.io.StringWriter;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -25,18 +26,20 @@ public class MailBox {
     private String mySURFconextURL;
     private String emailFrom;
     private Map<String, Map<String, String>> subjects;
+    private Resource mailTemplatesDirectory;
 
-    private final MustacheFactory mustacheFactory = new DefaultMustacheFactory();
+    private final MustacheFactory mustacheFactory;
 
     public MailBox(JavaMailSender mailSender, String emailFrom, String magicLinkUrl, String mySURFconextURL,
-                   ObjectMapper objectMapper) throws IOException {
+                   ObjectMapper objectMapper, Resource mailTemplatesDirectory) throws IOException {
         this.mailSender = mailSender;
         this.emailFrom = emailFrom;
         this.magicLinkUrl = magicLinkUrl;
         this.mySURFconextURL = mySURFconextURL;
-        this.subjects = objectMapper.readValue(new ClassPathResource("mail_templates/subjects.json").getInputStream(), new TypeReference<Map<String, Map<String, String>>>() {
+        this.mailTemplatesDirectory = mailTemplatesDirectory;
+        mustacheFactory = new DefaultMustacheFactory(mailTemplatesDirectory.getFile());
+        this.subjects = objectMapper.readValue(inputStream("subjects.json"), new TypeReference<Map<String, Map<String, String>>>() {
         });
-
     }
 
     public void sendMagicLink(User user, String hash, String requesterId) {
@@ -104,9 +107,10 @@ public class MailBox {
         return variables;
     }
 
+    @SneakyThrows
     private void sendMail(String templateName, String subject, Map<String, Object> variables, String language, String to) {
-        String html = this.mailTemplate(String.format("mail_templates/%s_%s.html", templateName, language), variables);
-        String text = this.mailTemplate(String.format("mail_templates/%s_%s.txt", templateName, language), variables);
+        String html = this.mailTemplate(String.format("%s_%s.html", templateName, language), variables);
+        String text = this.mailTemplate(String.format("%s_%s.txt", templateName, language), variables);
 
         MimeMessage message = mailSender.createMimeMessage();
         try {
@@ -129,8 +133,9 @@ public class MailBox {
         new Thread(() -> mailSender.send(message)).start();
     }
 
-    private String mailTemplate(String templateName, Map<String, Object> context) {
-        return mustacheFactory.compile(templateName).execute(new StringWriter(), context).toString();
+    @SneakyThrows
+    private String mailTemplate(String name, Map<String, Object> context) {
+        return mustacheFactory.compile(name).execute(new StringWriter(), context).toString();
     }
 
     private String getTitle(String templateName, User user) {
@@ -140,6 +145,13 @@ public class MailBox {
     private String preferredLanguage(User user) {
         String preferredLanguage = user.getPreferredLanguage();
         return StringUtils.hasText(preferredLanguage) ? preferredLanguage : LocaleContextHolder.getLocale().getLanguage();
+    }
 
+    @SneakyThrows
+    private InputStream inputStream(String name) {
+        FilenameFilter filter = (dir, fileName) -> name.equals(fileName);
+        File[] files = mailTemplatesDirectory.getFile().listFiles(filter);
+        File file = files[0];
+        return new FileInputStream(file);
     }
 }
