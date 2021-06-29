@@ -264,13 +264,15 @@ public class AccountLinkerController {
             if (optionalLinkedAccount.isPresent()) {
                 optionalLinkedAccount.get().updateExpiresIn(institutionIdentifier, eppn, givenName, familyName, affiliations, expiresAt);
             } else {
-                //Ensure that an institution account is only be linked to 1 eduID
-                List<User> optionalUsers = userRepository.findByLinkedAccounts_EduPersonPrincipalName(eppn);
-                if (optionalUsers.size() > 0) {
-                    String charSet = Charset.defaultCharset().name();
-                    eppnAlreadyLinkedRequiredUri += eppnAlreadyLinkedRequiredUri.contains("?") ? "&" : "?";
-                    eppnAlreadyLinkedRequiredUri += "email=" + URLEncoder.encode(optionalUsers.get(0).getEmail(), charSet);
-                    return ResponseEntity.status(HttpStatus.FOUND).location(URI.create(eppnAlreadyLinkedRequiredUri)).build();
+                //Ensure that an institution account is only be linked to 1 eduID, but only when an eppn is provided for the linked account
+                if(eppn != null && !eppn.trim().isEmpty()) {
+                  List<User> optionalUsers = userRepository.findByLinkedAccounts_EduPersonPrincipalName(eppn);
+                  if (optionalUsers.size() > 0) {
+                      String charSet = Charset.defaultCharset().name();
+                      eppnAlreadyLinkedRequiredUri += eppnAlreadyLinkedRequiredUri.contains("?") ? "&" : "?";
+                      eppnAlreadyLinkedRequiredUri += "email=" + URLEncoder.encode(optionalUsers.get(0).getEmail(), charSet);
+                      return ResponseEntity.status(HttpStatus.FOUND).location(URI.create(eppnAlreadyLinkedRequiredUri)).build();
+                  }
                 }
                 linkedAccounts.add(
                         new LinkedAccount(institutionIdentifier, schacHomeOrganization, eppn, givenName, familyName, affiliations,
