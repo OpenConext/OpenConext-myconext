@@ -16,12 +16,14 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
 import java.io.IOException;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.*;
 import static io.restassured.RestAssured.given;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
         properties = {
@@ -120,6 +122,21 @@ public class AccountLinkerControllerTest extends AbstractIntegrationTest {
 
         assertEquals("Roger", linkedAccount.getGivenName());
         assertEquals("Johnson", linkedAccount.getFamilyName());
+    }
+
+    @Test
+    public void redirectWithNoEppn() throws IOException {
+        Map<Object, Object> body = new HashMap<>();
+        body.put("schac_home_organization", "mock.idp");
+        body.put("given_name", "Roger");
+        body.put("family_name", "Johnson");
+
+        String authnContext = readFile("request_authn_context_validated_name.xml");
+
+        User user = doRedirect(body, authnContext, "http://localhost:8081/saml/guest-idp/magic?h");
+        LinkedAccount linkedAccount = user.getLinkedAccounts().get(0);
+
+        assertNull(linkedAccount.getEduPersonPrincipalName());
     }
 
     @Test
