@@ -50,7 +50,7 @@ public class MetaDataServiceProviderResolver implements ServiceProviderResolver 
                     TypeReference<List<Map<String, Map<String, String>>>>() {
                     }).stream()
                     .collect(Collectors.toMap(m -> m.keySet().iterator().next(), m -> this.serviceProvider(m)));
-            LOG.info("Refreshed all " + serviceProviders.size() + " Service provders" + metaDataResource + "in " + (System.currentTimeMillis() - start) + " ms");
+            LOG.info("Refreshed all " + serviceProviders.size() + " Service providers " + metaDataResource + " in " + (System.currentTimeMillis() - start) + " ms");
         } catch (Throwable t) {
             LOG.error("Error in refreshing service names from " + metaDataResource, t);
         }
