@@ -12,4 +12,5 @@ bundle.*.css
 bundle.*.js
 yarn-error.log
 .DS_Store
+MFA.md
 *~
