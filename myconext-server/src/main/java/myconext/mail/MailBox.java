@@ -6,6 +6,8 @@ import com.github.mustachejava.DefaultMustacheFactory;
 import com.github.mustachejava.MustacheFactory;
 import lombok.SneakyThrows;
 import myconext.model.User;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
@@ -13,20 +15,21 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.util.StringUtils;
 
-import java.io.*;
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
+import java.io.*;
 import java.util.HashMap;
 import java.util.Map;
 
 public class MailBox {
+
+    private static final Log LOG = LogFactory.getLog(MailBox.class);
 
     private JavaMailSender mailSender;
     private String magicLinkUrl;
     private String mySURFconextURL;
     private String emailFrom;
     private Map<String, Map<String, String>> subjects;
-    private Resource mailTemplatesDirectory;
 
     private final MustacheFactory mustacheFactory;
 
@@ -36,9 +39,14 @@ public class MailBox {
         this.emailFrom = emailFrom;
         this.magicLinkUrl = magicLinkUrl;
         this.mySURFconextURL = mySURFconextURL;
-        this.mailTemplatesDirectory = mailTemplatesDirectory;
-        mustacheFactory = new DefaultMustacheFactory(mailTemplatesDirectory.getFile());
-        this.subjects = objectMapper.readValue(inputStream("subjects.json"), new TypeReference<Map<String, Map<String, String>>>() {
+        if (mailTemplatesDirectory.isFile()) {
+            LOG.info("Initializing mail templates from file system: " + mailTemplatesDirectory.getFile().getAbsolutePath());
+            mustacheFactory = new DefaultMustacheFactory(mailTemplatesDirectory.getFile());
+        } else {
+            LOG.info("Initializing mail templates from JAR resoruce: " + mailTemplatesDirectory.getFilename());
+            mustacheFactory = new DefaultMustacheFactory(mailTemplatesDirectory.getFilename());
+        }
+        this.subjects = objectMapper.readValue(inputStream("subjects.json", mailTemplatesDirectory), new TypeReference<Map<String, Map<String, String>>>() {
         });
     }
 
@@ -92,7 +100,7 @@ public class MailBox {
         sendMail("confirmation_update_email", title, variables, preferredLanguage(user), newEmail);
     }
 
-    public void sendVerificationCode(User user, String verificationCode ) {
+    public void sendVerificationCode(User user, String verificationCode) {
         String title = this.getTitle("verification_code", user);
         Map<String, Object> variables = variables(user, title);
         variables.put("mySurfConextURL", mySURFconextURL);
@@ -148,10 +156,14 @@ public class MailBox {
     }
 
     @SneakyThrows
-    private InputStream inputStream(String name) {
-        FilenameFilter filter = (dir, fileName) -> name.equals(fileName);
-        File[] files = mailTemplatesDirectory.getFile().listFiles(filter);
-        File file = files[0];
-        return new FileInputStream(file);
+    private InputStream inputStream(String name, Resource mailTemplatesDirectory) {
+        if (mailTemplatesDirectory.isFile()) {
+            FilenameFilter filter = (dir, fileName) -> name.equals(fileName);
+            File[] files = mailTemplatesDirectory.getFile().listFiles(filter);
+            File file = files[0];
+            return new FileInputStream(file);
+        } else {
+            return new ClassPathResource(mailTemplatesDirectory.getFilename() + "/" + name).getInputStream();
+        }
     }
 }
