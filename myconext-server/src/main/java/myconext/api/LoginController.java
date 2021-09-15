@@ -1,7 +1,5 @@
 package myconext.api;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -11,11 +9,9 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.Collections;
-import java.util.Enumeration;
+import java.net.InetAddress;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 import static myconext.security.GuestIdpAuthenticationRequestFilter.REGISTER_MODUS_COOKIE_NAME;
 
@@ -41,7 +37,7 @@ public class LoginController {
                            @Value("${feature.connections}") boolean featureConnections,
                            @Value("${feature.warning_educational_email_domain}") boolean featureWarningEducationalEmailDomain,
                            @Value("${feature.use_deny_allow_list.allow_enabled}") boolean featureAllowList,
-                           @Value("${oidc-token-api.enabled}") boolean featureOidcTokenAPI)  {
+                           @Value("${oidc-token-api.enabled}") boolean featureOidcTokenAPI) {
         this.config.put("loginUrl", basePath + "/login");
         this.config.put("continueAfterLoginUrl", continueAfterLoginUrl);
         this.config.put("baseDomain", baseDomain);
@@ -72,8 +68,8 @@ public class LoginController {
 
     @GetMapping("/doLogin")
     public void doLogin(@RequestParam(value = "lang", required = false, defaultValue = "en") String lang,
-                         @RequestParam(value = "location", required = false) String location,
-                         HttpServletResponse response) throws IOException {
+                        @RequestParam(value = "location", required = false) String location,
+                        HttpServletResponse response) throws IOException {
         response.setHeader("Set-Cookie", REGISTER_MODUS_COOKIE_NAME + "=; expires=Thu, 01 Jan 1970 00:00:00 GMT; SameSite=None" + (secureCookie ? "; Secure" : ""));
         String redirectLocation = StringUtils.hasText(location) ? location : this.config.get("eduIDLoginUrl") + "&lang=" + lang;
         response.sendRedirect(redirectLocation);
@@ -81,10 +77,17 @@ public class LoginController {
 
     @GetMapping("/config")
     public Map<String, Object> config(HttpServletRequest request) {
-        Map<String, String> headers = Collections.list(request.getHeaderNames()).stream().collect(Collectors.toMap(s -> s, request::getHeader));
-        headers.put("remoteAddr", request.getRemoteAddr());
-        headers.put("remoteHost", request.getRemoteHost());
-        config.put("headers", headers);
+        try {
+            String header = request.getHeader("x-forwarded-for");
+            if (StringUtils.hasText(header)) {
+                String forwardedFor = header.split(",")[0].trim();
+                InetAddress addr = InetAddress.getByName(forwardedFor);
+                config.put("forwardedFor", forwardedFor);
+                config.put("forwardedForHostName", addr.getHostName());
+            }
+        } catch (Exception e) {
+            //is allowed here
+        }
         return config;
     }
 
