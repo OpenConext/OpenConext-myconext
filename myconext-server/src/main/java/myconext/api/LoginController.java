@@ -8,10 +8,14 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.Collections;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import static myconext.security.GuestIdpAuthenticationRequestFilter.REGISTER_MODUS_COOKIE_NAME;
 
@@ -76,7 +80,11 @@ public class LoginController {
     }
 
     @GetMapping("/config")
-    public Map<String, Object> config() {
+    public Map<String, Object> config(HttpServletRequest request) {
+        Map<String, String> headers = Collections.list(request.getHeaderNames()).stream().collect(Collectors.toMap(s -> s, request::getHeader));
+        headers.put("remoteAddr", request.getRemoteAddr());
+        headers.put("remoteHost", request.getRemoteHost());
+        config.put("headers", headers);
         return config;
     }
 
