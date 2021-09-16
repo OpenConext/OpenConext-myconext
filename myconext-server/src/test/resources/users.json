@@ -12,6 +12,15 @@
         "eduPersonPrincipalName": "1234567890@surfguest.nl",
         "institutionIdentifier": "institution.com",
         "schacHomeOrganization": "groningen.nl"
+      },
+      {
+        "createdAt": "2019-11-12T13:55:50.229Z",
+        "expiresAt": "2024-12-12T07:55:50.229Z",
+        "eduPersonPrincipalName": "guest@example.nl",
+        "institutionIdentifier": "example.nl",
+        "schacHomeOrganization": "example.nl",
+        "givenName": "Mary",
+        "familyName": "Dahl"
       }
     ],
     "attributes": {},

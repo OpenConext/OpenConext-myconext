@@ -284,7 +284,7 @@ public class AccountLinkerControllerTest extends AbstractIntegrationTest {
         assertEquals(location, "http://localhost:3001/personal");
 
         User user = userRepository.findOneUserByEmail("jdoe@example.com");
-        assertEquals(2, user.getLinkedAccounts().size());
+        assertEquals(3, user.getLinkedAccounts().size());
     }
 
     private void stubForTokenUserInfo(Map<Object, Object> userInfo) throws JsonProcessingException {

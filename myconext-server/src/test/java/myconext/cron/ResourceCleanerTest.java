@@ -94,9 +94,10 @@ public class ResourceCleanerTest extends AbstractIntegrationTest {
     private void expireUserLinkedAccount() {
         User user = userRepository.findOneUserByEmail("jdoe@example.com");
 
-        LinkedAccount linkedAccount = user.getLinkedAccounts().get(0);
-        Date expiresIn = Date.from(LocalDateTime.now().minusYears(10L).atZone(ZoneId.systemDefault()).toInstant());
-        ReflectionTestUtils.setField(linkedAccount, "expiresAt", expiresIn);
+        user.getLinkedAccounts().forEach(linkedAccount -> {
+            Date expiresIn = Date.from(LocalDateTime.now().minusYears(10L).atZone(ZoneId.systemDefault()).toInstant());
+            ReflectionTestUtils.setField(linkedAccount, "expiresAt", expiresIn);
+        });
         userRepository.save(user);
     }
 }

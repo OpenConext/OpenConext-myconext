@@ -51,6 +51,9 @@ public class APIController {
                     Map<String, String> info = new HashMap<>();
                     info.put("eppn", linkedAccount.getEduPersonPrincipalName());
                     info.put("schac_home_organization", linkedAccount.getSchacHomeOrganization());
+                    if (linkedAccount.areNamesValidated()) {
+                        info.put("validated_name", String.format("%s %s", linkedAccount.getGivenName(), linkedAccount.getFamilyName()));
+                    }
                     return info;
                 })
                 .filter(info -> !StringUtils.hasText(schachome) || schachome.equals(info.get("schac_home_organization")))
