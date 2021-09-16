@@ -272,6 +272,7 @@ public class SecurityConfiguration {
                     .authorizeRequests(authz -> authz
                             .antMatchers("/myconext/api/eduid/eppn").hasAuthority("SCOPE_eduid.nl/eppn")
                             .antMatchers("/myconext/api/eduid/eduid").hasAuthority("SCOPE_eduid.nl/eduid")
+                            .antMatchers("/myconext/api/eduid/attributes").hasAuthority("SCOPE_eduid.nl/attributes")
                             .anyRequest().authenticated())
                     .oauth2ResourceServer(oauth2 -> oauth2.opaqueToken(token -> token
                             .introspectionUri(introspectionUri)

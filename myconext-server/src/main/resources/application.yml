@@ -20,12 +20,15 @@ cron:
   node-cron-job-responsible: True
   token-cleaner-expression: "0 0/15 * * * *"
   service-name-resolver-initial-delay-milliseconds: 1
-  service-name-resolver-fixed-rate-milliseconds: 360_0000
+  service-name-resolver-fixed-rate-milliseconds: 43_200_000
   metadata-resolver-initial-delay-milliseconds: 1
   metadata-resolver-fixed-rate-milliseconds: 86_400_000
   metadata-resolver-url: "classpath:/metadata/idps-metadata.xml"
 
-metadata_sp_url: "classpath:/metadata/sp-names.json"
+manage:
+  username: myconext
+  password: secret
+  base_url: https://manage.test2.surfconext.nl
 
 mongodb_db: surf_id_test
 base_domain: test2.surfconext.nl

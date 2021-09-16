@@ -171,7 +171,7 @@ public abstract class AbstractIntegrationTest {
                 .get("/saml/guest-idp/SSO");
     }
 
-    protected String readFile(String path) throws IOException {
+    public static String readFile(String path) throws IOException {
         return IOUtils.toString(new ClassPathResource(path).getInputStream(), Charset.defaultCharset());
     }
 

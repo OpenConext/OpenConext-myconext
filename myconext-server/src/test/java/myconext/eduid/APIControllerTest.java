@@ -30,12 +30,34 @@ public class APIControllerTest extends AbstractIntegrationTest {
                 .auth().oauth2(opaqueAccessToken(true, "eduid.nl/eppn"))
                 .get("/myconext/api/eduid/eppn")
                 .as(List.class);
+        String eppn = results.get(1).get("eppn");
+        assertEquals("1234567890@surfguest.nl", eppn);
+    }
+
+    @Test
+    public void eduid() throws Exception {
+        Map<String, String> results = given()
+                .when()
+                .accept(ContentType.JSON)
+                .auth().oauth2(opaqueAccessToken(true, "eduid.nl/eduid"))
+                .get("/myconext/api/eduid/eduid")
+                .as(Map.class);
+        assertEquals("fc75dcc7-6def-4054-b8ba-3c3cc504dd4b", results.get("eduid"));
+    }
+
+    @Test
+    public void attributes() throws Exception {
+        List<Map<String, String>> results = given()
+                .when()
+                .accept(ContentType.JSON)
+                .auth().oauth2(opaqueAccessToken(true, "eduid.nl/attributes"))
+                .get("/myconext/api/eduid/attributes")
+                .as(List.class);
         String validatedName = results.get(0).get("validated_name");
         assertEquals("Mary Dahl", validatedName);
 
         String eppn = results.get(1).get("eppn");
         assertEquals("1234567890@surfguest.nl", eppn);
-
     }
 
     @Test

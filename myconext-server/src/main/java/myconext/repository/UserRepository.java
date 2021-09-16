@@ -29,6 +29,8 @@ public interface UserRepository extends MongoRepository<User, String> {
 
     Optional<User> findByEduIDS_value(String value);
 
+    Optional<User> findByEduIDS_serviceProviderEntityId(String serviceProviderEntityId);
+
     List<User> findByNewUserTrueAndCreatedLessThan(long millis);
 
     Optional<User> findUserByWebAuthnIdentifier(String webAuthnIdentifier);
