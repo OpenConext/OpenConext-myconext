@@ -171,7 +171,7 @@ public class UserControllerTest extends AbstractIntegrationTest {
     @Test
     public void accountLinkingWithValidatedNames() throws IOException {
         User user = userRepository.findOneUserByEmail("jdoe@example.com");
-        LinkedAccount linkedAccount = user.linkedAccountsSorted().get(1);
+        LinkedAccount linkedAccount = user.linkedAccountsSorted().get(0);
 
         String authnContext = readFile("request_authn_context_validated_name.xml");
         Response response = samlAuthnRequestResponseWithLoa(null, "relay", authnContext);

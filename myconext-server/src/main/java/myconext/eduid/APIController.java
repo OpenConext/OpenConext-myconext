@@ -46,7 +46,7 @@ public class APIController {
             LOG.info("EPPN API call: finding user by uid: " + uid);
             user = userRepository.findUserByUid(uid).orElseThrow(() -> new UserNotFoundException(uid));
         }
-        return user.getLinkedAccounts().stream()
+        return user.linkedAccountsSorted().stream()
                 .map(linkedAccount -> {
                     Map<String, String> info = new HashMap<>();
                     info.put("eppn", linkedAccount.getEduPersonPrincipalName());
