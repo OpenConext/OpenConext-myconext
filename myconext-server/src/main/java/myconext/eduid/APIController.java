@@ -61,7 +61,6 @@ public class APIController {
     }
 
     @GetMapping("/attributes")
-    @SuppressWarnings("unchecked")
     public List<Map<String, String>> attributes(BearerTokenAuthentication authentication) {
         return getUser(authentication).linkedAccountsSorted().stream()
                 .map(linkedAccount -> {
@@ -76,6 +75,7 @@ public class APIController {
                 .collect(Collectors.toList());
     }
 
+    @SuppressWarnings("unchecked")
     private User getUser(BearerTokenAuthentication authentication) {
         List<String> uids = (ArrayList<String>) authentication.getTokenAttributes().get("uids");
         User user;

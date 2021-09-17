@@ -8,6 +8,7 @@
     import ConfirmStepup from "./routes/ConfirmStepup.svelte";
     import Migration from "./routes/Migration.svelte";
     import LinkExpired from "./routes/LinkExpired.svelte";
+    import MaxAttempts from "./routes/MaxAttempts.svelte";
     import NotFound from "./routes/NotFound.svelte";
     import WebAuthn from "./routes/WebAuthn.svelte";
     import WebAuthnTest from "./routes/WebAuthnTest.svelte";
@@ -128,6 +129,7 @@
                 <Route path="/migration" component={Migration}/>
                 <Route path="/success" component={Success}/>
                 <Route path="/expired" component={LinkExpired}/>
+                <Route path="/max-attempts" component={MaxAttempts}/>
                 <Route path="/webauthn" component={WebAuthn}/>
                 <Route path="/webauthnTest/:id" let:params>
                     <WebAuthnTest id="{params.id}"></WebAuthnTest>

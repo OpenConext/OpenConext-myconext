@@ -9,7 +9,7 @@
     import {status} from "../validation/loginStatus";
     import Button from "../components/Button.svelte";
     import {validVerificationCode} from "../validation/regexp";
-
+    import critical from "../icons/critical.svg";
     const gmail = "/img/get-started-icon-gmail@2x-e80b706.png";
     const outlook = "/img/get-started-icon-outlook-55f9ac5.png";
     const resendMailAllowedTimeOut = 15 * 1000;
@@ -18,15 +18,20 @@
     let serviceName;
     let modus;
     let verificationCode = "";
-    let loginStatus = status.NOT_LOGGED_IN;
+    let loginStatus = status.NOT_LOGGED_IN
     let counter = 0;
     let timeOutSeconds = 1;
     let timeOutReached = false;
     let allowedToResend = false;
     let mailHasBeenResend = false;
+    let verificationCodeError = false;
 
     onMount(() => {
         const urlParams = new URLSearchParams(window.location.search);
+        verificationCodeError = urlParams.get("mismatch") === "true";
+        if (verificationCodeError) {
+           loginStatus = status.LOGGED_IN_DIFFERENT_DEVICE;
+        }
         serviceName = urlParams.get("name");
         modus = urlParams.get("modus");
         setTimeout(isLoggedIn, timeOutSeconds * 1000);
@@ -51,7 +56,8 @@
     }
 
     const verify = () => {
-        window.location.href = `${$conf.continueAfterLoginUrl}?id=${id}&verificationCode=${verificationCode}`;
+        const location = window.location.href.replace(/&mismatch=true/g, "");
+        window.location.href = `${$conf.continueAfterLoginUrl}?id=${id}&verificationCode=${verificationCode}&currentUrl=${encodeURIComponent(location)}`;
     }
 
     const isLoggedIn = () => {
@@ -76,7 +82,11 @@
     }
 
     const updateVerificationCode = e => {
-        verificationCode = e.target.value.toUpperCase().trim();
+        let value = e.target.value.toUpperCase().trim();
+        if ((value.length > verificationCode.length && value.length === 3) || (value.length >= 4 && value.indexOf("-") === -1)) {
+            value = value.substring(0, 3) + "-" + value.substring(3);
+        }
+        verificationCode = value;
         e.target.value = verificationCode;
     }
 
@@ -185,6 +195,24 @@
         margin: 8px 0 35px 0;
     }
 
+    div.error {
+        display: flex;
+        align-items: center;
+        color: var(--color-primary-red);
+        margin-bottom: 25px;
+    }
+
+    div.error span.svg {
+        display: inline-block;
+        margin-right: 10px;
+    }
+
+    span.error {
+        display: inline-block;
+        margin: 0 auto 10px 0;
+        color: var(--color-primary-red);
+    }
+
 
 </style>
 {#if timeOutReached}
@@ -222,7 +250,8 @@
         <div class="resend-mail">
             {#if allowedToResend}
                 <span class="link" on:click={resendMail}>{I18n.t("magicLink.resend")}</span>
-                <a href="resend" on:click|preventDefault|stopPropagation={resendMail}>{I18n.t("magicLink.resendLink")}</a>
+                <a href="resend"
+                   on:click|preventDefault|stopPropagation={resendMail}>{I18n.t("magicLink.resendLink")}</a>
             {:else if mailHasBeenResend}
                 <span>{I18n.t("magicLink.mailResend")}</span>
             {/if}
@@ -239,14 +268,21 @@
     <div class="magic-link no-center ">
         <h2 class="header">{I18n.t("magicLink.loggedInDifferentDevice")}</h2>
         <p class="no-center">{@html I18n.t("magicLink.loggedInDifferentDeviceInInfo")}</p>
-        <p  class="no-center">{@html I18n.t("magicLink.loggedInDifferentDeviceInInfo2")}</p>
+        <p class="no-center">{@html I18n.t("magicLink.loggedInDifferentDeviceInInfo2")}</p>
         <input class="verification-code"
                type="text"
                use:init
                value={verificationCode}
                on:input={updateVerificationCode}>
+        {#if verificationCodeError}
+            <div class="error">
+                <span class="svg">{@html critical}</span>
+                <div>
+                    <span>{I18n.t("magicLink.verificationCodeError")}</span>
+                </div>
+            </div>
+        {/if}
         <Button label={I18n.t("magicLink.verify")} onClick={verify}
                 disabled={!validVerificationCode(verificationCode)}/>
     </div>
-
 {/if}

@@ -35,6 +35,7 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.nio.charset.Charset;
 import java.util.*;
@@ -312,11 +313,9 @@ public class GuestIdpAuthenticationRequestFilter extends IdpAuthenticationReques
         if (!optionalCookie.isPresent()) {
             samlAuthenticationRequest.setLoginStatus(LoginStatus.LOGGED_IN_DIFFERENT_DEVICE);
             samlAuthenticationRequest.setVerificationCode(VerificationCodeGenerator.generate());
-            int retryVerificationCode = samlAuthenticationRequest.getRetryVerificationCode();
-            samlAuthenticationRequest.setRetryVerificationCode(retryVerificationCode + 1);
-            authenticationRequestRepository.save(samlAuthenticationRequest);
-            if (retryVerificationCode > 2) {
-                throw new ForbiddenException();
+            if (incrementVerificationCodeRetry(samlAuthenticationRequest)) {
+                response.sendRedirect(this.redirectUrl + "/max-attempts");
+                return;
             }
             mailBox.sendVerificationCode(user, samlAuthenticationRequest.getVerificationCode());
             response.sendRedirect(this.redirectUrl + "/success");
@@ -330,6 +329,13 @@ public class GuestIdpAuthenticationRequestFilter extends IdpAuthenticationReques
 
         samlAuthenticationRequest.setLoginStatus(LoginStatus.LOGGED_IN_SAME_DEVICE);
         doSendAssertion(request, response, samlAuthenticationRequest, user);
+    }
+
+    private boolean incrementVerificationCodeRetry(SamlAuthenticationRequest samlAuthenticationRequest) {
+        int retryVerificationCode = samlAuthenticationRequest.getRetryVerificationCode();
+        samlAuthenticationRequest.setRetryVerificationCode(retryVerificationCode + 1);
+        authenticationRequestRepository.save(samlAuthenticationRequest);
+        return retryVerificationCode > 2;
     }
 
     private boolean checkStepUp(HttpServletResponse response, String hash, SamlAuthenticationRequest samlAuthenticationRequest, User user, String charSet, String explanation) throws IOException {
@@ -387,7 +393,12 @@ public class GuestIdpAuthenticationRequestFilter extends IdpAuthenticationReques
         SamlAuthenticationRequest samlAuthenticationRequest = optionalSamlAuthenticationRequest.get();
         String verificationCode = request.getParameter("verificationCode");
         if (!StringUtils.hasText(verificationCode) || !verificationCode.equals(samlAuthenticationRequest.getVerificationCode())) {
-            response.sendRedirect(this.redirectUrl + "/expired");
+            if (incrementVerificationCodeRetry(samlAuthenticationRequest)) {
+                response.sendRedirect(this.redirectUrl + "/max-attempts");
+                return;
+            }
+            String currentUrl = URLDecoder.decode(request.getParameter("currentUrl"), Charset.defaultCharset().name());
+            response.sendRedirect(currentUrl + "&mismatch=true");
             return;
         }
         if (samlAuthenticationRequest.getLoginStatus().equals(LoginStatus.NOT_LOGGED_IN)) {

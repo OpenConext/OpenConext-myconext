@@ -77,6 +77,7 @@ I18n.translations.nl = {
         loggedInDifferentDevice: "Verificatiecode vereist",
         loggedInDifferentDeviceInInfo: "Je hebt de magische link gebruikt in een andere browser dan van waaruit je de magische link hebt aangevraagd. Als extra veiligheidsmaatregel moet je een verificatiecode invoeren.",
         loggedInDifferentDeviceInInfo2: "We hebben je een extra e-mail gestuurd met de verificatiecode.",
+        verificationCodeError: "Verkeerde verificatiecode.",
         verify: "Verifïeer"
     },
     confirm: {
@@ -107,6 +108,10 @@ I18n.translations.nl = {
         title: "Verlopen magische link",
         info: "De magische link die je hebt gebruikt, is verlopen of al een keer gebruikt",
         back: "Ga naar eduid.nl"
+    },
+    maxAttempt:{
+        title: "Maximum aantal pogingen bereikt",
+        info: "Je hebt het maximale aantal verificatiepogingen bereikt.",
     },
     notFound: {
         title: "Oeps...",

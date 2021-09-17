@@ -77,6 +77,7 @@ I18n.translations.en = {
         loggedInDifferentDevice: "Verification code required",
         loggedInDifferentDeviceInInfo: "The magic link we sent you opened in a different browser than the one used to request the magic link. As an extra security measure you must enter a verification code.",
         loggedInDifferentDeviceInInfo2: "We sent you an extra email with the verification code.",
+        verificationCodeError: "Wrong verification code.",
         verify: "Verify"
     },
     confirm: {
@@ -107,6 +108,10 @@ I18n.translations.en = {
         title: "Expired magic link",
         info: "The magic link you used is either expired or has already been used.",
         back: "Go to eduid.nl"
+    },
+    maxAttempt:{
+        title: "Maximum attempts reached",
+        info: "You've reached the maximum verification attempts.",
     },
     notFound: {
         title: "Whoops...",
