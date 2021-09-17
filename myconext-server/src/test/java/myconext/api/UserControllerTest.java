@@ -592,10 +592,28 @@ public class UserControllerTest extends AbstractIntegrationTest {
                 .when()
                 .queryParam("id", samlAuthenticationRequest.getId())
                 .queryParam("verificationCode", "NOP-123")
+                .queryParam("currentUrl", "https://expected")
                 .get("/saml/guest-idp/continue")
                 .then()
                 .statusCode(302)
-                .header("Location", equalTo("http://localhost:3000/expired"));
+                .header("Location", equalTo("https://expected&mismatch=true"));
+    }
+
+    @Test
+    public void magicLinkRequiresSameBrowseWrongCodeMaxRetry() throws IOException {
+        SamlAuthenticationRequest samlAuthenticationRequest = doMagicLinkRequiredSameBrowser();
+        samlAuthenticationRequest.setRetryVerificationCode(3);
+        authenticationRequestRepository.save(samlAuthenticationRequest);
+
+        given().redirects().follow(false)
+                .when()
+                .queryParam("id", samlAuthenticationRequest.getId())
+                .queryParam("verificationCode", "NOP-123")
+                .queryParam("currentUrl", "https://expected")
+                .get("/saml/guest-idp/continue")
+                .then()
+                .statusCode(302)
+                .header("Location", equalTo("http://localhost:3000/max-attempts"));
     }
 
     @Test
