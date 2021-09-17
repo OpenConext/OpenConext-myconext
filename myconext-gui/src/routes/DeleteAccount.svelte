@@ -1,6 +1,5 @@
 <script>
     import {user} from "../stores/user";
-    import {formatCreateDate} from "../format/date";
     import I18n from "i18n-js";
     import {navigate} from "svelte-routing";
     import critical from "../icons/critical.svg";
@@ -62,6 +61,7 @@
         background-color: #eaa1a1;
         padding: 20px;
         border-radius: 8px;
+
         span:last-child {
             margin-left: 15px;
         }
@@ -105,7 +105,7 @@
                 onClick={() => navigate("/account")} className="cancel"/>
         <Button href="/delete" label={I18n.t("account.deleteAccount")}
                 large={true}
-                onClick={deleteUserAction(true)} />
+                onClick={deleteUserAction(true)}/>
     </div>
 </div>
 

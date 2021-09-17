@@ -207,13 +207,6 @@
         margin-right: 10px;
     }
 
-    span.error {
-        display: inline-block;
-        margin: 0 auto 10px 0;
-        color: var(--color-primary-red);
-    }
-
-
 </style>
 {#if timeOutReached}
     <div class="magic-link">
