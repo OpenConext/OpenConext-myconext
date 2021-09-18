@@ -3,6 +3,7 @@ package myconext.mongo;
 import com.github.cloudyrock.mongock.ChangeLog;
 import com.github.cloudyrock.mongock.ChangeSet;
 import com.github.cloudyrock.mongock.driver.mongodb.springdata.v3.decorator.impl.MongockTemplate;
+import io.changock.utils.StringUtils;
 import myconext.manage.ServiceProviderResolver;
 import myconext.model.EduID;
 import myconext.model.PublicKeyCredentials;
@@ -78,12 +79,14 @@ public class Migrations {
                 serviceProviderResolver.refresh();
                 Optional<ServiceProvider> optionalServiceProvider = serviceProviderResolver.resolve(eduID.getServiceProviderEntityId());
                 optionalServiceProvider.ifPresent(serviceProvider -> {
-                    eduID.updateServiceProvider(serviceProvider);
-                    mongoTemplate.save(user);
+                    if (StringUtils.hasText(serviceProvider.getInstitutionGuid())) {
+                        eduID.updateServiceProvider(serviceProvider);
+                        mongoTemplate.save(user);
+                        LOG.info("Added  institutionGuid to " + eduID.getServiceProviderEntityId());
+                    }
                 });
             });
         });
-
     }
 
     protected User mergeEduIDs(User user) {
