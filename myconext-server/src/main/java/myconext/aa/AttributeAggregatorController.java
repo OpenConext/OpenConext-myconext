@@ -2,13 +2,12 @@ package myconext.aa;
 
 import myconext.exceptions.UserNotFoundException;
 import myconext.manage.ServiceProviderResolver;
+import myconext.model.EduID;
 import myconext.model.User;
 import myconext.repository.UserRepository;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.data.mongodb.core.MongoTemplate;
-import org.springframework.data.mongodb.core.aggregation.*;
-import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.util.StringUtils;
@@ -17,13 +16,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-
-import static org.springframework.data.mongodb.core.aggregation.Aggregation.*;
+import java.util.*;
+import java.util.stream.Collectors;
 
 
 @RestController
@@ -82,5 +76,16 @@ public class AttributeAggregatorController {
         return ResponseEntity.ok(result);
     }
 
+    @GetMapping(value = "system/eduid-duplicates")
+    @PreAuthorize("hasRole('ROLE_system')")
+    public ResponseEntity<Map<String, List<EduID>>> eduIdDuplicates() {
+        Map<String, List<EduID>> eduIdValuesGroupedBy = userRepository.findAll().stream()
+                .map(User::getEduIDS).flatMap(Collection::stream)
+                .collect(Collectors.toList()).stream()
+                .filter(eduID -> StringUtils.hasText(eduID.getServiceInstutionGuid()))
+                .collect(Collectors.groupingBy(EduID::getServiceInstutionGuid));
+        eduIdValuesGroupedBy.values().removeIf(l -> l.size() < 2);
+        return ResponseEntity.ok(eduIdValuesGroupedBy);
+    }
 
 }

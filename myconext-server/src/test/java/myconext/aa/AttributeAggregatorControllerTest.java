@@ -96,12 +96,12 @@ public class AttributeAggregatorControllerTest extends AbstractIntegrationTest {
 
     @Test
     public void manipulateNewSP() {
-        doManipulate("http://new-sp", eduid, uid,null);
+        doManipulate("http://new-sp", eduid, uid, null);
     }
 
     @Test
     public void manipulateNotFound() {
-        Map<String, Object> res = doManipulate("http://new-sp", "nope","nope", null);
+        Map<String, Object> res = doManipulate("http://new-sp", "nope", "nope", null);
         assertEquals(404, res.get("status"));
     }
 
@@ -116,6 +116,20 @@ public class AttributeAggregatorControllerTest extends AbstractIntegrationTest {
                 .get("/myconext/api/attribute-manipulation")
                 .then()
                 .statusCode(400);
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void eduIdDuplicates() {
+        Map<String, List<Map<String, Object>>> results = given()
+                .when()
+                .auth().preemptive().basic(attributeAggregationUserName, attributeAggregationPassword)
+                .contentType(ContentType.JSON)
+                .get("/myconext/api/system/eduid-duplicates")
+                .as(Map.class);
+        assertEquals(1, results.size());
+        assertEquals("ad93daef-0911-e511-80d0-005056956c1a", results.keySet().iterator().next());
+        assertEquals(2, results.values().iterator().next().size());
     }
 
     private List<UserAttribute> doAggregate(String user, String password, String spEntityId, String edupersonPrincipalName) {

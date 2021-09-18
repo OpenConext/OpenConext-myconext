@@ -4,10 +4,7 @@ import myconext.exceptions.WeakPasswordException;
 import myconext.manage.MockServiceProviderResolver;
 import myconext.manage.ServiceProviderResolver;
 import org.junit.Test;
-import org.springframework.web.util.UriComponentsBuilder;
 
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.Date;

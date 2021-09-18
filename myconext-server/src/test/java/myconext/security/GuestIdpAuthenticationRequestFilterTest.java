@@ -1,16 +1,12 @@
 package myconext.security;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import myconext.AbstractIntegrationTest;
-import myconext.manage.ManageServiceProviderResolver;
 import myconext.manage.MockServiceProviderResolver;
-import myconext.manage.ServiceProviderResolver;
 import myconext.model.LinkedAccount;
 import myconext.model.User;
 import myconext.repository.UserRepository;
 import org.junit.Test;
 import org.mockito.Mockito;
-import org.springframework.core.io.ClassPathResource;
 import org.springframework.security.saml.saml2.attribute.Attribute;
 
 import java.time.Instant;

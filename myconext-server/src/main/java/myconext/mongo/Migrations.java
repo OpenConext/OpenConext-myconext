@@ -3,16 +3,15 @@ package myconext.mongo;
 import com.github.cloudyrock.mongock.ChangeLog;
 import com.github.cloudyrock.mongock.ChangeSet;
 import com.github.cloudyrock.mongock.driver.mongodb.springdata.v3.decorator.impl.MongockTemplate;
+import myconext.manage.ServiceProviderResolver;
 import myconext.model.EduID;
 import myconext.model.PublicKeyCredentials;
+import myconext.model.ServiceProvider;
 import myconext.model.User;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @ChangeLog(order = "001")
@@ -68,6 +67,23 @@ public class Migrations {
             this.mergeEduIDs(user);
             mongoTemplate.save(user);
         });
+    }
+
+    @SuppressWarnings("unchecked")
+    @ChangeSet(order = "004", id = "addServiceProviderInstitutionGuid", author = "okke.harsta@surf.nl")
+    public void addServiceProviderInstitutionGuid(MongockTemplate mongoTemplate, ServiceProviderResolver serviceProviderResolver) {
+        List<User> users = mongoTemplate.findAll(User.class, "users");
+        users.forEach(user -> {
+            user.getEduIDS().forEach(eduID -> {
+                serviceProviderResolver.refresh();
+                Optional<ServiceProvider> optionalServiceProvider = serviceProviderResolver.resolve(eduID.getServiceProviderEntityId());
+                optionalServiceProvider.ifPresent(serviceProvider -> {
+                    eduID.updateServiceProvider(serviceProvider);
+                    mongoTemplate.save(user);
+                });
+            });
+        });
+
     }
 
     protected User mergeEduIDs(User user) {

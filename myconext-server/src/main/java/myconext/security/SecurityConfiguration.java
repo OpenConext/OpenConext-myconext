@@ -219,7 +219,11 @@ public class SecurityConfiguration {
 
         @Override
         protected void configure(HttpSecurity http) throws Exception {
-            String[] antPatterns = {"/myconext/api/attribute-aggregation/**", "/myconext/api/attribute-manipulation/**"};
+            String[] antPatterns = {
+                    "/myconext/api/attribute-aggregation/**",
+                    "/myconext/api/attribute-manipulation/**",
+                    "/myconext/api/system/**"
+            };
             http.requestMatchers()
                     .antMatchers(antPatterns)
                     .and()
@@ -232,7 +236,6 @@ public class SecurityConfiguration {
                     .httpBasic()
                     .and()
                     .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
-            ;
         }
 
         @Override
@@ -241,7 +244,7 @@ public class SecurityConfiguration {
                     .inMemoryAuthentication()
                     .withUser(attributeAggregationUser)
                     .password("{noop}" + attributeAggregationPassword)
-                    .roles("attribute-aggregation")
+                    .roles("attribute-aggregation", "system")
                     .and()
                     .withUser(attributeManipulationUser)
                     .password("{noop}" + attributeManipulationPassword)

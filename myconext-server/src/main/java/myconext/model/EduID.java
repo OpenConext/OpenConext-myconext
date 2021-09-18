@@ -25,6 +25,7 @@ public class EduID {
     private String serviceNameNl;
     private String serviceLogoUrl;
     private String serviceHomeUrl;
+    private String serviceInstutionGuid;
     private Date createdAt;
 
     public EduID(String value, String serviceProviderEntityId, Optional<ServiceProvider> serviceProviderOptional) {
@@ -37,6 +38,7 @@ public class EduID {
             serviceNameNl = StringUtils.hasText(serviceProvider.getNameNl()) ? serviceProvider.getNameNl() : serviceName;
             serviceHomeUrl = serviceProvider.getHomeUrl();
             serviceLogoUrl = serviceProvider.getLogoUrl();
+            serviceInstutionGuid = serviceProvider.getInstitutionGuid();
         } else {
             serviceName = serviceProviderEntityId;
             serviceNameNl = serviceProviderEntityId;
@@ -68,6 +70,7 @@ public class EduID {
         serviceNameNl = StringUtils.hasText(serviceProvider.getNameNl()) ? serviceProvider.getNameNl() : serviceName;
         serviceHomeUrl = serviceProvider.getHomeUrl();
         serviceLogoUrl = serviceProvider.getLogoUrl();
+        serviceInstutionGuid = serviceProvider.getInstitutionGuid();
     }
 
     public void replaceAtWithDot() {

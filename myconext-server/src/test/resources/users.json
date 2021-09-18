@@ -41,12 +41,14 @@
         "serviceNameNl": "Mock SP NL",
         "serviceLogoUrl": "https://static.surfconext.nl/media/sp/eduid.png",
         "serviceHomeUrl": "https://eduid.nl/",
+        "serviceInstutionGuid" : "ad93daef-0911-e511-80d0-005056956c1a",
         "createdAt": "2020-11-12T13:55:50.229Z"
       },
       {
         "serviceProviderEntityId": "playground_client",
         "value": "fc75dcc7-6def-4054-b8ba-3c3cc504dd4b",
         "serviceName": "https://playground.client",
+        "serviceInstutionGuid" : "ad93daef-0911-e511-80d0-005056956c1a",
         "createdAt": "2020-11-12T13:55:50.229Z"
       }
     ],
