@@ -98,3 +98,7 @@ curl -u oidcng:secret "http://login.test2.eduid.nl/myconext/api/attribute-manipu
 ```
 curl -u aa:secret "https://login.test2.eduid.nl/myconext/api/attribute-aggregation?sp_entity_id=https://mijn.test2.eduid.nl/shibboleth&eduperson_principal_name=j.doe@example.com"
 ```
+Endpoint to detect duplicate eduID's for SP's that have the same institutionGuid
+```
+curl -u aa:secret 'https://login.test2.eduid.nl/myconext/api/system/eduid-duplicates' | jq .
+```

@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 
 @RestController
@@ -79,10 +80,14 @@ public class AttributeAggregatorController {
     @GetMapping(value = "system/eduid-duplicates")
     @PreAuthorize("hasRole('ROLE_system')")
     public ResponseEntity<Map<String, List<EduID>>> eduIdDuplicates() {
-        Map<String, List<EduID>> eduIdValuesGroupedBy = userRepository.findAll().stream()
+        List<EduID> eduIDs = userRepository.findAll().stream()
                 .map(User::getEduIDS).flatMap(Collection::stream)
                 .collect(Collectors.toList()).stream()
                 .filter(eduID -> StringUtils.hasText(eduID.getServiceInstutionGuid()))
+                .collect(Collectors.toList());
+        Set<EduID> uniqueSet = new TreeSet<>(Comparator.comparing(EduID::getServiceProviderEntityId));
+        uniqueSet.addAll(eduIDs);
+        Map<String, List<EduID>> eduIdValuesGroupedBy = uniqueSet.stream()
                 .collect(Collectors.groupingBy(EduID::getServiceInstutionGuid));
         eduIdValuesGroupedBy.values().removeIf(l -> l.size() < 2);
         return ResponseEntity.ok(eduIdValuesGroupedBy);
