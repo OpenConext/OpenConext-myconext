@@ -61,6 +61,8 @@ public class AccountLinkerController {
     private final String spRedirectUrl;
     private final long expiryNonValidatedDurationDays;
     private final long expiryValidatedDurationDays;
+    private final String  idpExternalValidationEntityId;
+    private final String  myConextSpEntityId;
 
     private final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
@@ -77,7 +79,9 @@ public class AccountLinkerController {
             @Value("${oidc.sp-flow-redirect-url}") String spFlowRedirectUri,
             @Value("${oidc.base-url}") String oidcBaseUrl,
             @Value("${oidc.expiry-duration-days-non-validated}") long expiryNonValidatedDurationDays,
-            @Value("${oidc.expiry-duration-days-validated}") long expiryValidatedDurationDays) {
+            @Value("${oidc.expiry-duration-days-validated}") long expiryValidatedDurationDays,
+            @Value("${account_linking.idp_external_validation_entity_id}") String idpExternalValidationEntityId,
+            @Value("${account_linking.myconext_sp_entity_id}") String myConextSpEntityId) {
         this.authenticationRequestRepository = authenticationRequestRepository;
         this.userRepository = userRepository;
         this.serviceProviderResolver = serviceProviderResolver;
@@ -91,13 +95,16 @@ public class AccountLinkerController {
         this.oidcBaseUrl = oidcBaseUrl;
         this.expiryNonValidatedDurationDays = expiryNonValidatedDurationDays;
         this.expiryValidatedDurationDays = expiryValidatedDurationDays;
+        this.idpExternalValidationEntityId = idpExternalValidationEntityId;
+        this.myConextSpEntityId =myConextSpEntityId;
 
         this.headers.set("Accept", "application/json");
     }
 
     @GetMapping("/idp/oidc/account/{id}")
     public ResponseEntity startIdPLinkAccountFlow(@PathVariable("id") String id,
-                                                  @RequestParam(value = "forceAuth", required = false, defaultValue = "false") boolean forceAuth) throws UnsupportedEncodingException {
+                                                  @RequestParam(value = "forceAuth", required = false, defaultValue = "false") boolean forceAuth,
+                                                  @RequestParam(value = "useExternalValidation", required = false, defaultValue = "false") boolean useExternalValidation) throws UnsupportedEncodingException {
         LOG.debug("Start IdP link account flow");
 
         Optional<SamlAuthenticationRequest> optionalSamlAuthenticationRequest = authenticationRequestRepository.findByIdAndNotExpired(id);
@@ -109,21 +116,22 @@ public class AccountLinkerController {
         User user = userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException(userId));
 
         String state = String.format("id=%s&user_uid=%s", id, passwordEncoder.encode(user.getUid()));
-        UriComponents uriComponents = doStartLinkAccountFlow(state, idpFlowRedirectUri, forceAuth);
+        UriComponents uriComponents = doStartLinkAccountFlow(state, idpFlowRedirectUri, forceAuth, useExternalValidation, samlAuthenticationRequest.getRequesterEntityId());
         return ResponseEntity.status(HttpStatus.FOUND).location(uriComponents.toUri()).build();
     }
 
     @GetMapping("/sp/oidc/link")
-    public ResponseEntity startSPLinkAccountFlow(Authentication authentication) throws UnsupportedEncodingException {
+    public ResponseEntity startSPLinkAccountFlow(Authentication authentication,
+                                                 @RequestParam(value = "useExternalValidation", required = false, defaultValue = "false") boolean useExternalValidation) throws UnsupportedEncodingException {
         LOG.debug("Start link account flow");
         User principal = (User) authentication.getPrincipal();
         String state = passwordEncoder.encode(principal.getUid());
 
-        UriComponents uriComponents = doStartLinkAccountFlow(state, spFlowRedirectUri, true);
+        UriComponents uriComponents = doStartLinkAccountFlow(state, spFlowRedirectUri, true, useExternalValidation, myConextSpEntityId);
         return ResponseEntity.ok(Collections.singletonMap("url", uriComponents.toUriString()));
     }
 
-    private UriComponents doStartLinkAccountFlow(String state, String redirectUri, boolean forceAuth) throws UnsupportedEncodingException {
+    private UriComponents doStartLinkAccountFlow(String state, String redirectUri, boolean forceAuth, boolean useExternalValidation, String requesterEntityId) throws UnsupportedEncodingException {
         Map<String, String> params = new HashMap<>();
 
         params.put("client_id", clientId);
@@ -133,6 +141,10 @@ public class AccountLinkerController {
         params.put("state", URLEncoder.encode(state, "UTF-8"));
         if (forceAuth) {
             params.put("prompt", "login");
+        }
+        if (useExternalValidation) {
+            params.put("login_hint", this.idpExternalValidationEntityId);
+            params.put("acr_values", requesterEntityId);
         }
 
         UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(oidcBaseUrl + "/oidc/authorize");
@@ -231,16 +243,16 @@ public class AccountLinkerController {
 
         HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<>(map, headers);
 
-        Map<String, Object> body = restTemplate.exchange(oidcBaseUrl + "/oidc/token", HttpMethod.POST, request, new ParameterizedTypeReference<Map<String, Object>>() {
-        }).getBody();
+        ParameterizedTypeReference<Map<String, Object>> parameterizedTypeReference = new ParameterizedTypeReference<Map<String, Object>>() {
+        };
+        Map<String, Object> body = restTemplate.exchange(oidcBaseUrl + "/oidc/token", HttpMethod.POST, request, parameterizedTypeReference).getBody();
 
         map = new LinkedMultiValueMap<>();
         map.add("access_token", (String) body.get("access_token"));
 
         request = new HttpEntity<>(map, headers);
 
-        body = restTemplate.exchange(oidcBaseUrl + "/oidc/userinfo", HttpMethod.POST, request, new ParameterizedTypeReference<Map<String, Object>>() {
-        }).getBody();
+        body = restTemplate.exchange(oidcBaseUrl + "/oidc/userinfo", HttpMethod.POST, request, parameterizedTypeReference).getBody();
 
         String eppn = (String) body.get("eduperson_principal_name");
         String surfCrmId = (String) body.get("surf-crm-id");

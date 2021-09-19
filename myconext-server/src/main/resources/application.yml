@@ -94,6 +94,10 @@ account_linking_context_class_ref:
   validate_names: https://eduid.nl/trust/validate-names
   affiliation_student: https://eduid.nl/trust/affiliation-student
 
+account_linking:
+  idp_external_validation_entity_id: http://mock-idp
+  myconext_sp_entity_id: https://mijn.test2.eduid.nl/shibboleth
+
 eduid_api:
 #  oidcng_introspection_uri: http://localhost:8098/introspect
   oidcng_introspection_uri: https://connect.test2.surfconext/nl/oidc/introspect

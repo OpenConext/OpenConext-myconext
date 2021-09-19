@@ -14,6 +14,9 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.util.MultiValueMap;
+import org.springframework.web.util.UriComponents;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import java.io.IOException;
 import java.util.Arrays;
@@ -62,6 +65,36 @@ public class AccountLinkerControllerTest extends AbstractIntegrationTest {
                 "response_type=code&" +
                 "redirect_uri=http://localhost:8081/myconext/api/idp/oidc/redirect&" +
                 "state="));
+    }
+
+    @Test
+    public void linkAccountRedirectWithExternalValidation() throws IOException {
+        Response response = samlAuthnRequestResponseWithLoa(null, null, "");
+        String authenticationRequestId = extractAuthenticationRequestIdFromAuthnResponse(response);
+        //This ensures the user is tied to the authnRequest
+        given().when()
+                .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+                .body(new MagicLinkRequest(authenticationRequestId, user("mdoe@example.com"), false, false))
+                .put("/myconext/api/idp/magic_link_request")
+                .then()
+                .statusCode(HttpStatus.CREATED.value());
+
+        String location = given().redirects().follow(false)
+                .when()
+                .contentType(ContentType.JSON)
+                .queryParam("useExternalValidation", true)
+                .get("/myconext/api/idp/oidc/account/" + authenticationRequestId)
+                .getHeader("Location");
+
+        assertTrue(location.startsWith("http://localhost:8099/oidc/authorize?"));
+
+        UriComponents uriComponent = UriComponentsBuilder.fromHttpUrl(location).build();
+        MultiValueMap<String, String> queryParams = uriComponent.getQueryParams();
+        assertEquals("openid", queryParams.getFirst("scope"));
+        assertEquals("code", queryParams.getFirst("response_type"));
+        assertEquals("http://localhost:8081/myconext/api/idp/oidc/redirect", queryParams.getFirst("redirect_uri"));
+        assertEquals("http://mock-idp", queryParams.getFirst("login_hint"));
+        assertEquals("https://manage.surfconext.nl/shibboleth", queryParams.getFirst("acr_values"));
     }
 
     @Test
@@ -251,6 +284,27 @@ public class AccountLinkerControllerTest extends AbstractIntegrationTest {
                 "scope=openid&" +
                 "response_type=code&" +
                 "redirect_uri=http://localhost:8081/myconext/api/sp/oidc/redirect"));
+    }
+
+    @Test
+    public void spOidcLinkWithExternalValidation() {
+        Map res = given()
+                .when()
+                .queryParam("useExternalValidation", true)
+                .get("/myconext/api/sp/oidc/link")
+                .as(Map.class);
+        String url = (String) res.get("url");
+        assertTrue(url.startsWith("http://localhost:8099/oidc/authorize?"));
+
+        UriComponents uriComponent = UriComponentsBuilder.fromHttpUrl(url).build();
+        MultiValueMap<String, String> queryParams = uriComponent.getQueryParams();
+        assertEquals("openid", queryParams.getFirst("scope"));
+        assertEquals("code", queryParams.getFirst("response_type"));
+        assertEquals("http://localhost:8081/myconext/api/sp/oidc/redirect", queryParams.getFirst("redirect_uri"));
+        assertEquals("http://mock-idp", queryParams.getFirst("login_hint"));
+        assertEquals("https://mijn.test2.eduid.nl/shibboleth", queryParams.getFirst("acr_values"));
+        assertEquals("login", queryParams.getFirst("prompt"));
+        assertEquals("myconext.rp.localhost", queryParams.getFirst("client_id"));
     }
 
     @Test
