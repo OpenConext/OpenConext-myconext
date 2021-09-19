@@ -37,7 +37,7 @@ import java.util.regex.Pattern;
 
 import static io.restassured.RestAssured.given;
 import static io.restassured.RestAssured.when;
-import static myconext.model.LinkedAccountTest.*;
+import static myconext.model.LinkedAccountTest.linkedAccount;
 import static myconext.security.GuestIdpAuthenticationRequestFilter.BROWSER_SESSION_COOKIE_NAME;
 import static myconext.security.GuestIdpAuthenticationRequestFilter.GUEST_IDP_REMEMBER_ME_COOKIE_NAME;
 import static org.hamcrest.Matchers.*;
@@ -663,6 +663,18 @@ public class UserControllerTest extends AbstractIntegrationTest {
 
         samlAuthenticationRequest = authenticationRequestRepository.findById(magicLinkResponse.authenticationRequestId).get();
         return samlAuthenticationRequest;
+    }
+
+    @Test
+    public void prefetch() throws IOException {
+        Response response = given().redirects().follow(false)
+                .when()
+                .queryParam("h", " ")
+                .cookie(BROWSER_SESSION_COOKIE_NAME, "true")
+                .get("/saml/guest-idp/magic");
+
+        String uri = response.getHeader("Location");
+        assertTrue(uri.contains("expired"));
     }
 
     @Test

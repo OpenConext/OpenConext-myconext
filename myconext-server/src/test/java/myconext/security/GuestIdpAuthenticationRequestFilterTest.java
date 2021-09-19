@@ -4,6 +4,7 @@ import myconext.AbstractIntegrationTest;
 import myconext.manage.MockServiceProviderResolver;
 import myconext.model.LinkedAccount;
 import myconext.model.User;
+import myconext.repository.UserLoginRepository;
 import myconext.repository.UserRepository;
 import org.junit.Test;
 import org.mockito.Mockito;
@@ -92,6 +93,7 @@ public class GuestIdpAuthenticationRequestFilterTest {
                         new MockServiceProviderResolver(),
                         null,
                         Mockito.mock(UserRepository.class),
+                        Mockito.mock(UserLoginRepository.class),
                         90,
                         false,
                         null,

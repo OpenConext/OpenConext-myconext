@@ -6,6 +6,7 @@ import myconext.mail.MailBox;
 import myconext.manage.ServiceProviderResolver;
 import myconext.model.*;
 import myconext.repository.AuthenticationRequestRepository;
+import myconext.repository.UserLoginRepository;
 import myconext.repository.UserRepository;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -39,6 +40,10 @@ import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.nio.charset.Charset;
 import java.util.*;
+import java.util.concurrent.Executor;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.stream.Collectors;
 
 import static java.util.function.Function.identity;
 import static java.util.stream.Collectors.toList;
@@ -53,6 +58,7 @@ import static org.springframework.util.StringUtils.hasText;
 public class GuestIdpAuthenticationRequestFilter extends IdpAuthenticationRequestFilter {
 
     public static final String GUEST_IDP_REMEMBER_ME_COOKIE_NAME = "guest-idp-remember-me";
+    public static final String TRACKING_DEVICE_COOKIE_NAME = "TRACKING_DEVICE";
     public static final String BROWSER_SESSION_COOKIE_NAME = "BROWSER_SESSION";
     public static final String REGISTER_MODUS_COOKIE_NAME = "REGISTER_MODUS";
 
@@ -64,6 +70,7 @@ public class GuestIdpAuthenticationRequestFilter extends IdpAuthenticationReques
     private final String redirectUrl;
     private final AuthenticationRequestRepository authenticationRequestRepository;
     private final UserRepository userRepository;
+    private final UserLoginRepository userLoginRepository;
     private final List<String> accountLinkingContextClassReferences;
 
     private final int rememberMeMaxAge;
@@ -71,6 +78,7 @@ public class GuestIdpAuthenticationRequestFilter extends IdpAuthenticationReques
     private final String magicLinkUrl;
     private final MailBox mailBox;
     private final ServiceProviderResolver serviceProviderResolver;
+    private final ExecutorService executor;
 
     public GuestIdpAuthenticationRequestFilter(SamlProviderProvisioning<IdentityProviderService> provisioning,
                                                SamlMessageStore<Assertion, HttpServletRequest> assertionStore,
@@ -78,6 +86,7 @@ public class GuestIdpAuthenticationRequestFilter extends IdpAuthenticationReques
                                                ServiceProviderResolver serviceProviderResolver,
                                                AuthenticationRequestRepository authenticationRequestRepository,
                                                UserRepository userRepository,
+                                               UserLoginRepository userLoginRepository,
                                                int rememberMeMaxAge,
                                                boolean secureCookie,
                                                String magicLinkUrl,
@@ -90,11 +99,13 @@ public class GuestIdpAuthenticationRequestFilter extends IdpAuthenticationReques
         this.serviceProviderResolver = serviceProviderResolver;
         this.authenticationRequestRepository = authenticationRequestRepository;
         this.userRepository = userRepository;
+        this.userLoginRepository = userLoginRepository;
         this.accountLinkingContextClassReferences = ACR.all();
         this.rememberMeMaxAge = rememberMeMaxAge;
         this.secureCookie = secureCookie;
         this.magicLinkUrl = magicLinkUrl;
         this.mailBox = mailBox;
+        this.executor = Executors.newSingleThreadExecutor();
     }
 
     @Override
@@ -461,6 +472,27 @@ public class GuestIdpAuthenticationRequestFilter extends IdpAuthenticationReques
         response.addCookie(cookie);
     }
 
+    private void addTrackingCookie(HttpServletRequest request, HttpServletResponse response, User user) {
+        Optional<Cookie> optionalCookie = cookieByName(request, TRACKING_DEVICE_COOKIE_NAME);
+        String trackingUuid = user.getTrackingUuid();
+        if (trackingUuid == null) {
+            user.setTrackingUuid(UUID.randomUUID().toString());
+            userRepository.save(user);
+        }
+        if (!optionalCookie.isPresent() || !user.getTrackingUuid().equalsIgnoreCase(optionalCookie.get().getValue())) {
+            Cookie cookie = new Cookie(TRACKING_DEVICE_COOKIE_NAME, user.getTrackingUuid());
+            cookie.setMaxAge(Integer.MAX_VALUE-1);
+            cookie.setSecure(secureCookie);
+            cookie.setHttpOnly(true);
+            response.addCookie(cookie);
+            //can not pass HttpServletRequest to different thread
+            Map<String, String> headers = Collections.list(request.getHeaderNames()).stream().collect(Collectors.toMap(s -> s, request::getHeader));
+            headers.put("ipAddress", request.getRemoteAddr());
+            //avoid delay due to InetAddress lookup
+            executor.submit(() -> userLoginRepository.save(new UserLogin(user, headers)));
+        }
+    }
+
     private void sendAssertion(HttpServletRequest request, HttpServletResponse response, SamlAuthenticationRequest samlAuthenticationRequest,
                                User user, IdentityProviderService provider, ServiceProviderMetadata serviceProviderMetadata,
                                AuthenticationRequest authenticationRequest) {
@@ -526,6 +558,8 @@ public class GuestIdpAuthenticationRequestFilter extends IdpAuthenticationReques
             cookie.setMaxAge(0);
             response.addCookie(cookie);
         });
+        //Tracking cookie for user new device discovery
+        this.addTrackingCookie(request, response, user);
         processHtml(request, response, getPostBindingTemplate(), model);
     }
 

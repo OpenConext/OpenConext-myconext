@@ -51,6 +51,8 @@ public class User implements Serializable, UserDetails {
 
     private long created;
     private long updatedAt = System.currentTimeMillis() / 1000L;
+    private String trackingUuid;
+
 
     public User(String uid, String email, String givenName, String familyName, String schacHomeOrganization, String preferredLanguage,
                 String serviceProviderEntityId, ServiceProviderResolver serviceProviderResolver) {
@@ -65,6 +67,7 @@ public class User implements Serializable, UserDetails {
         this.newUser = true;
         this.created = System.currentTimeMillis() / 1000L;
         this.updatedAt = created;
+        this.trackingUuid = UUID.randomUUID().toString();
     }
 
     public void validate() {
@@ -224,5 +227,9 @@ public class User implements Serializable, UserDetails {
 
     public void setForgottenPassword(boolean forgottenPassword) {
         this.forgottenPassword = forgottenPassword;
+    }
+
+    public void setTrackingUuid(String trackingUuid) {
+        this.trackingUuid = trackingUuid;
     }
 }

@@ -3,6 +3,7 @@ package myconext.config;
 import myconext.mail.MailBox;
 import myconext.manage.ServiceProviderResolver;
 import myconext.repository.AuthenticationRequestRepository;
+import myconext.repository.UserLoginRepository;
 import myconext.repository.UserRepository;
 import myconext.saml.ImmutableSamlConfigurationRepository;
 import myconext.security.ACR;
@@ -21,6 +22,7 @@ public class BeanConfig extends SamlIdentityProviderServerBeanConfiguration {
     private final String redirectUrl;
     private final AuthenticationRequestRepository authenticationRequestRepository;
     private final UserRepository userRepository;
+    private final UserLoginRepository userLoginRepository;
     private final int rememberMeMaxAge;
     private final boolean secureCookie;
     private final String magicLinkUrl;
@@ -37,6 +39,7 @@ public class BeanConfig extends SamlIdentityProviderServerBeanConfiguration {
                       @Value("${account_linking_context_class_ref.affiliation_student}") String affiliationStudent,
                       AuthenticationRequestRepository authenticationRequestRepository,
                       UserRepository userRepository,
+                      UserLoginRepository userLoginRepository,
                       MailBox mailBox,
                       ServiceProviderResolver serviceProviderResolver) {
         this.immutableSamlConfigurationRepository = new ImmutableSamlConfigurationRepository(samlMetadataBasePath);
@@ -45,6 +48,7 @@ public class BeanConfig extends SamlIdentityProviderServerBeanConfiguration {
         this.secureCookie = secureCookie;
         this.authenticationRequestRepository = authenticationRequestRepository;
         this.userRepository = userRepository;
+        this.userLoginRepository = userLoginRepository;
         this.magicLinkUrl = magicLinkUrl;
         this.mailBox = mailBox;
         this.serviceProviderResolver = serviceProviderResolver;
@@ -68,6 +72,7 @@ public class BeanConfig extends SamlIdentityProviderServerBeanConfiguration {
                 serviceProviderResolver,
                 authenticationRequestRepository,
                 userRepository,
+                userLoginRepository,
                 rememberMeMaxAge,
                 secureCookie,
                 magicLinkUrl,
