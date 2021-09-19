@@ -19,7 +19,7 @@ public class ManageServiceProviderResolverTest {
     public static WireMockRule wireMockRule = new WireMockRule(8999);
 
     private ServiceProviderResolver subject =
-            new ManageServiceProviderResolver("user", "secret", "http://localhost:8999", new ObjectMapper());
+            new ManageServiceProviderResolver("user", "secret", "http://localhost:8999");
 
     @Test
     public void resolveLocally() throws IOException {

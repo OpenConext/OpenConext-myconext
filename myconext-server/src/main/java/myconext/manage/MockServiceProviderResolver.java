@@ -27,6 +27,10 @@ public class MockServiceProviderResolver implements ServiceProviderResolver {
                 "https://static.surfconext.nl/media/sp/eduid.png",
                 "https://playground.client/",
                 "ad93daef-0911-e511-80d0-005056956c1a"));
+        serviceProviders.put("noInstitutionalGuid", new ServiceProvider(
+                "Nice SP",
+                "Nice SP NL",
+                null, null, null));
     }
 
     @Override

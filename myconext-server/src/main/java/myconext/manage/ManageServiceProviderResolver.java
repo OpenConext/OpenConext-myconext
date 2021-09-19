@@ -1,10 +1,8 @@
 package myconext.manage;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import myconext.model.ServiceProvider;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Profile;
 import org.springframework.core.ParameterizedTypeReference;
@@ -31,11 +29,12 @@ public class ManageServiceProviderResolver implements ServiceProviderResolver {
     private Map<String, ServiceProvider> serviceProviders = new HashMap<>();
     private final HttpHeaders headers = new HttpHeaders();
     private final Map<String, Object> body = new HashMap<>();
+    private final ParameterizedTypeReference<List<Map<String, Object>>> typeReference = new ParameterizedTypeReference<List<Map<String, Object>>>() {
+    };
 
     public ManageServiceProviderResolver(@Value("${manage.username}") String userName,
                                          @Value("${manage.password}") String password,
-                                         @Value("${manage.base_url}") String baseUrl,
-                                         @Qualifier("jsonMapper") ObjectMapper objectMapper) {
+                                         @Value("${manage.base_url}") String baseUrl) {
         restTemplate.getInterceptors().add(new BasicAuthenticationInterceptor(userName, password));
         this.manageBaseUrl = baseUrl;
         this.headers.add(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE);
@@ -51,23 +50,36 @@ public class ManageServiceProviderResolver implements ServiceProviderResolver {
     @Scheduled(initialDelayString = "${cron.service-name-resolver-initial-delay-milliseconds}",
             fixedRateString = "${cron.service-name-resolver-fixed-rate-milliseconds}")
     public void refresh() {
+        doRefresh(Optional.empty());
+    }
+
+    private void doRefresh(Optional<String> optionalEntityId) {
         long start = System.currentTimeMillis();
         try {
-            List<Map<String, Object>> body = restTemplate.exchange(manageBaseUrl + "/manage/api/internal/search/saml20_sp", HttpMethod.POST,
-                    new HttpEntity<>(this.body, this.headers),
-                    new ParameterizedTypeReference<List<Map<String, Object>>>() {
-                    }).getBody();
-            serviceProviders = body.stream().collect(Collectors.toMap(this::entityId, this::serviceProvider));
-            body = restTemplate.exchange(manageBaseUrl + "/manage/api/internal/search/oidc10_rp", HttpMethod.POST, new HttpEntity<>(this.body),
-                    new ParameterizedTypeReference<List<Map<String, Object>>>() {
-                    }).getBody();
-            Map<String, ServiceProvider> relyingParties = body.stream().collect(Collectors.toMap(this::entityId, this::serviceProvider));
-            serviceProviders.putAll(relyingParties);
-
-            LOG.info("Refreshed all " + serviceProviders.size() + " Service providers in " + (System.currentTimeMillis() - start) + " ms");
+            Map<String, Object> requestBody = this.body;
+            if (optionalEntityId.isPresent()) {
+                requestBody = new HashMap<>(this.body);
+                requestBody.put("entityid", optionalEntityId.get());
+            }
+            HttpEntity<Map<String, Object>> requestEntity = new HttpEntity<>(requestBody, this.headers);
+            Map<String, ServiceProvider> newServiceProviders = exchangeAndParse(requestEntity, "saml20_sp");
+            Map<String, ServiceProvider> relyingParties = exchangeAndParse(requestEntity, "oidc10_rp");
+            newServiceProviders.putAll(relyingParties);
+            if (optionalEntityId.isPresent()) {
+                serviceProviders.putAll(newServiceProviders);
+            } else {
+                serviceProviders = newServiceProviders;
+            }
+            LOG.info("Refreshed all " + serviceProviders.size() + " Service providers and  Relying parties in " + (System.currentTimeMillis() - start) + " ms");
         } catch (Throwable t) {
             LOG.error("Error in refreshing metadata from " + manageBaseUrl, t);
         }
+    }
+
+    private Map<String, ServiceProvider> exchangeAndParse(HttpEntity<Map<String, Object>> requestEntity, String entityType) {
+        return restTemplate.exchange(manageBaseUrl + "/manage/api/internal/search/" + entityType,
+                HttpMethod.POST, requestEntity, typeReference) .getBody()
+                .stream().collect(Collectors.toMap(this::entityId, this::serviceProvider));
     }
 
     @SuppressWarnings("unchecked")
@@ -95,6 +107,12 @@ public class ManageServiceProviderResolver implements ServiceProviderResolver {
         if (serviceProviders.isEmpty()) {
             refresh();
         }
-        return Optional.ofNullable(serviceProviders.get(entityId));
+        Optional<ServiceProvider> optionalServiceProvider = Optional.ofNullable(serviceProviders.get(entityId));
+        if (!optionalServiceProvider.isPresent()) {
+            //rare case, but it might be a entity thas was added after the last refresh
+            doRefresh(Optional.of(entityId));
+            return Optional.ofNullable(serviceProviders.get(entityId));
+        }
+        return optionalServiceProvider;
     }
 }

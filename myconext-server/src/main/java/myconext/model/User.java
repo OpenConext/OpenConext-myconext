@@ -15,6 +15,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.util.Assert;
+import org.springframework.util.StringUtils;
 
 import java.io.Serializable;
 import java.util.*;
@@ -89,10 +90,25 @@ public class User implements Serializable, UserDetails {
                 name));
     }
 
+    private boolean eduIDEquals(EduID eduID, Optional<ServiceProvider> optionalServiceProvider, String serviceProviderEntityId) {
+        if (eduID.getServiceProviderEntityId().equalsIgnoreCase(serviceProviderEntityId)) {
+            return true;
+        }
+        if (optionalServiceProvider.isPresent()) {
+            ServiceProvider serviceProvider = optionalServiceProvider.get();
+            if (StringUtils.hasText(serviceProvider.getInstitutionGuid())) {
+                return serviceProvider.getInstitutionGuid().equalsIgnoreCase(eduID.getServiceInstutionGuid());
+            }
+        }
+        return false;
+    }
+
     @Transient
     public String computeEduIdForServiceProviderIfAbsent(String serviceProviderEntityId, ServiceProviderResolver serviceProviderResolver) {
         Optional<ServiceProvider> optionalServiceProvider = serviceProviderResolver.resolve(serviceProviderEntityId);
-        Optional<EduID> optionalEduID = this.eduIDS.stream().filter(eduID -> eduID.getServiceProviderEntityId().equals(serviceProviderEntityId)).findFirst();
+        Optional<EduID> optionalEduID = this.eduIDS.stream()
+                .filter(eduID -> this.eduIDEquals(eduID, optionalServiceProvider, serviceProviderEntityId))
+                .findFirst();
         if (optionalEduID.isPresent()) {
             EduID eduID = optionalEduID.get();
             optionalServiceProvider.ifPresent(eduID::updateServiceProvider);

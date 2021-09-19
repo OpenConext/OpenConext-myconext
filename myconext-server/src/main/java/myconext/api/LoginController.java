@@ -76,18 +76,7 @@ public class LoginController {
     }
 
     @GetMapping("/config")
-    public Map<String, Object> config(HttpServletRequest request) {
-        try {
-            String header = request.getHeader("x-forwarded-for");
-            if (StringUtils.hasText(header)) {
-                String forwardedFor = header.split(",")[0].trim();
-                InetAddress addr = InetAddress.getByName(forwardedFor);
-                config.put("forwardedFor", forwardedFor);
-                config.put("forwardedForHostName", addr.getHostName());
-            }
-        } catch (Exception e) {
-            //is allowed here
-        }
+    public Map<String, Object> config() {
         return config;
     }
 
