@@ -3,7 +3,7 @@ package myconext.mongo;
 import com.github.cloudyrock.mongock.ChangeLog;
 import com.github.cloudyrock.mongock.ChangeSet;
 import com.github.cloudyrock.mongock.driver.mongodb.springdata.v3.decorator.impl.MongockTemplate;
-import io.changock.utils.StringUtils;
+
 import myconext.manage.ServiceProviderResolver;
 import myconext.model.EduID;
 import myconext.model.PublicKeyCredentials;
@@ -11,6 +11,7 @@ import myconext.model.ServiceProvider;
 import myconext.model.User;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.springframework.util.StringUtils;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -86,6 +87,18 @@ public class Migrations {
                     }
                 });
             });
+        });
+    }
+
+    @SuppressWarnings("unchecked")
+    @ChangeSet(order = "005", id = "addTrackingGuid", author = "okke.harsta@surf.nl")
+    public void addTrackingGuid(MongockTemplate mongoTemplate) {
+        List<User> users = mongoTemplate.findAll(User.class, "users");
+        users.forEach(user -> {
+            if (!StringUtils.hasText(user.getTrackingUuid())) {
+                user.setTrackingUuid(UUID.randomUUID().toString());
+                mongoTemplate.save(user);
+            }
         });
     }
 
