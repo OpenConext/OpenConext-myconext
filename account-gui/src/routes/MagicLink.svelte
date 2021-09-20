@@ -90,6 +90,13 @@
         e.target.value = verificationCode;
     }
 
+    const handleVerificationCodeEnter = e => {
+        if (e.key === "Enter" && validVerificationCode(e.target.value)) {
+            verify();
+        }
+
+    }
+
 </script>
 
 <style lang="scss">
@@ -266,7 +273,8 @@
                type="text"
                use:init
                value={verificationCode}
-               on:input={updateVerificationCode}>
+               on:input={updateVerificationCode}
+               on:keydown={handleVerificationCodeEnter}>
         {#if verificationCodeError}
             <div class="error">
                 <span class="svg">{@html critical}</span>
