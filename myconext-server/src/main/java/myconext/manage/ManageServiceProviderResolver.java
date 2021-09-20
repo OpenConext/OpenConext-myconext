@@ -64,13 +64,16 @@ public class ManageServiceProviderResolver implements ServiceProviderResolver {
             HttpEntity<Map<String, Object>> requestEntity = new HttpEntity<>(requestBody, this.headers);
             Map<String, ServiceProvider> newServiceProviders = exchangeAndParse(requestEntity, "saml20_sp");
             Map<String, ServiceProvider> relyingParties = exchangeAndParse(requestEntity, "oidc10_rp");
+            LOG.info(String.format("Refreshed %s Service providers and %s Relying parties in %s ms",
+                    newServiceProviders.size(),
+                    relyingParties.size(),
+                    System.currentTimeMillis() - start));
             newServiceProviders.putAll(relyingParties);
             if (optionalEntityId.isPresent()) {
                 serviceProviders.putAll(newServiceProviders);
             } else {
                 serviceProviders = newServiceProviders;
             }
-            LOG.info("Refreshed all " + serviceProviders.size() + " Service providers and  Relying parties in " + (System.currentTimeMillis() - start) + " ms");
         } catch (Throwable t) {
             LOG.error("Error in refreshing metadata from " + manageBaseUrl, t);
         }
