@@ -131,13 +131,12 @@ public class AccountLinkerController {
     }
 
     @GetMapping("/sp/oidc/link")
-    public ResponseEntity startSPLinkAccountFlow(Authentication authentication,
-                                                 @RequestParam(value = "useExternalValidation", required = false, defaultValue = "false") boolean useExternalValidation) throws UnsupportedEncodingException {
+    public ResponseEntity startSPLinkAccountFlow(Authentication authentication) throws UnsupportedEncodingException {
         LOG.debug("Start link account flow");
         User principal = (User) authentication.getPrincipal();
         String state = passwordEncoder.encode(principal.getUid());
 
-        UriComponents uriComponents = doStartLinkAccountFlow(state, spFlowRedirectUri, true, useExternalValidation, myConextSpEntityId);
+        UriComponents uriComponents = doStartLinkAccountFlow(state, spFlowRedirectUri, true, false, myConextSpEntityId);
         return ResponseEntity.ok(Collections.singletonMap("url", uriComponents.toUriString()));
     }
 

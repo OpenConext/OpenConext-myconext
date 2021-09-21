@@ -287,27 +287,6 @@ public class AccountLinkerControllerTest extends AbstractIntegrationTest {
     }
 
     @Test
-    public void spOidcLinkWithExternalValidation() {
-        Map res = given()
-                .when()
-                .queryParam("useExternalValidation", true)
-                .get("/myconext/api/sp/oidc/link")
-                .as(Map.class);
-        String url = (String) res.get("url");
-        assertTrue(url.startsWith("http://localhost:8099/oidc/authorize?"));
-
-        UriComponents uriComponent = UriComponentsBuilder.fromHttpUrl(url).build();
-        MultiValueMap<String, String> queryParams = uriComponent.getQueryParams();
-        assertEquals("openid", queryParams.getFirst("scope"));
-        assertEquals("code", queryParams.getFirst("response_type"));
-        assertEquals("http://localhost:8081/myconext/api/sp/oidc/redirect", queryParams.getFirst("redirect_uri"));
-        assertEquals("http://mock-idp", queryParams.getFirst("login_hint"));
-        assertEquals("https://mijn.test2.eduid.nl/shibboleth", queryParams.getFirst("acr_values"));
-        assertEquals("login", queryParams.getFirst("prompt"));
-        assertEquals("myconext.rp.localhost", queryParams.getFirst("client_id"));
-    }
-
-    @Test
     public void spFlowRedirectWrongUser() throws IOException {
         given().redirects().follow(false)
                 .when()
