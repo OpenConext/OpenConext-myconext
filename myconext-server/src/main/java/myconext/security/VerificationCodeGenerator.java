@@ -17,11 +17,7 @@ public class VerificationCodeGenerator {
         for (int i = 0; i < verifierBytes.length; i++) {
             chars[i] = DEFAULT_CODEC[random.nextInt(DEFAULT_CODEC.length)];
         }
-        StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append(chars,0,3);
-        stringBuilder.append("-");
-        stringBuilder.append(chars,3,3);
-        return stringBuilder.toString();
+        return String.valueOf(chars, 0, 3) + "-" + String.valueOf(chars, 3, 3);
     }
 
 }
