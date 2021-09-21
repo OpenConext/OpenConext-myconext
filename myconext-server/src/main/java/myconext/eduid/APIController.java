@@ -60,8 +60,8 @@ public class APIController {
         return ResponseEntity.ok(Collections.singletonMap("eduid", eduIDs.get(0)));
     }
 
-    @GetMapping("/attributes")
-    public List<Map<String, String>> attributes(BearerTokenAuthentication authentication) {
+    @GetMapping("/links")
+    public List<Map<String, String>> links(BearerTokenAuthentication authentication) {
         return getUser(authentication).linkedAccountsSorted().stream()
                 .map(linkedAccount -> {
                     Map<String, String> info = new HashMap<>();

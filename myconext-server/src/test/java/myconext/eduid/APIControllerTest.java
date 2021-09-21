@@ -46,12 +46,12 @@ public class APIControllerTest extends AbstractIntegrationTest {
     }
 
     @Test
-    public void attributes() throws Exception {
+    public void links() throws Exception {
         List<Map<String, String>> results = given()
                 .when()
                 .accept(ContentType.JSON)
-                .auth().oauth2(opaqueAccessToken(true, "eduid.nl/attributes"))
-                .get("/myconext/api/eduid/attributes")
+                .auth().oauth2(opaqueAccessToken(true, "eduid.nl/links"))
+                .get("/myconext/api/eduid/links")
                 .as(List.class);
         String validatedName = results.get(0).get("validated_name");
         assertEquals("Mary Dahl", validatedName);
