@@ -86,6 +86,12 @@
         if ((value.length > verificationCode.length && value.length === 3) || (value.length >= 4 && value.indexOf("-") === -1)) {
             value = value.substring(0, 3) + "-" + value.substring(3);
         }
+        if ((value.match(/-/g) || []).length > 1) {
+            value = value.replace("-", "");
+        }
+        if (value.length > 7) {
+            value = value.substring(0, 7);
+        }
         verificationCode = value;
         e.target.value = verificationCode;
     }
