@@ -1,6 +1,13 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [5.2.0]
+### New
+- Improve usability of the verification code
+- Sent the same eduID identifier to institutions belonging to the same organisation
+- Register trusted devices, so we can inform users of new logins later
+- Add an option to use a non-institution account for validating a name
+
 ## [5.1.7]
 ### Fixes
 - Update links to privacy and terms
