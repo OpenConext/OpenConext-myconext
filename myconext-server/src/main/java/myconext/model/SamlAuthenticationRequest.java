@@ -65,6 +65,8 @@ public class SamlAuthenticationRequest {
 
     private String serviceName;
 
+    private boolean useExternalValidation;
+
     public SamlAuthenticationRequest(boolean testInstance) {
         this.id = UUID.randomUUID().toString();
         this.testInstance = testInstance;
@@ -135,5 +137,9 @@ public class SamlAuthenticationRequest {
 
     public void setServiceName(String serviceName) {
         this.serviceName = serviceName;
+    }
+
+    public void setUseExternalValidation(boolean useExternalValidation) {
+        this.useExternalValidation = useExternalValidation;
     }
 }

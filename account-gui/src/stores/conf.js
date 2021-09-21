@@ -8,5 +8,6 @@ export const conf = writable({
     eduIDWebAuthnRedirectSpUrl: "",
     featureWebAuthn: false,
     featureAllowList: false,
-    featureWarningEducationalEmailDomain: false
+    featureWarningEducationalEmailDomain: false,
+    useExternalValidation: false
 });

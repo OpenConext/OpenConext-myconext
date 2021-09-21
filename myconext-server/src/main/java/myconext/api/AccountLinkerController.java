@@ -63,6 +63,7 @@ public class AccountLinkerController {
     private final long expiryValidatedDurationDays;
     private final String  idpExternalValidationEntityId;
     private final String  myConextSpEntityId;
+    private final boolean useExternalValidationFeature;
 
     private final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
@@ -81,7 +82,8 @@ public class AccountLinkerController {
             @Value("${oidc.expiry-duration-days-non-validated}") long expiryNonValidatedDurationDays,
             @Value("${oidc.expiry-duration-days-validated}") long expiryValidatedDurationDays,
             @Value("${account_linking.idp_external_validation_entity_id}") String idpExternalValidationEntityId,
-            @Value("${account_linking.myconext_sp_entity_id}") String myConextSpEntityId) {
+            @Value("${account_linking.myconext_sp_entity_id}") String myConextSpEntityId,
+            @Value("${feature.use_external_validation}") boolean useExternalValidationFeature) {
         this.authenticationRequestRepository = authenticationRequestRepository;
         this.userRepository = userRepository;
         this.serviceProviderResolver = serviceProviderResolver;
@@ -97,6 +99,7 @@ public class AccountLinkerController {
         this.expiryValidatedDurationDays = expiryValidatedDurationDays;
         this.idpExternalValidationEntityId = idpExternalValidationEntityId;
         this.myConextSpEntityId =myConextSpEntityId;
+        this.useExternalValidationFeature = useExternalValidationFeature;
 
         this.headers.set("Accept", "application/json");
     }
@@ -112,11 +115,18 @@ public class AccountLinkerController {
             return ResponseEntity.status(HttpStatus.FOUND).location(URI.create(this.idpErrorRedirectUrl + "/expired")).build();
         }
         SamlAuthenticationRequest samlAuthenticationRequest = optionalSamlAuthenticationRequest.get();
+
+        //when there are retries we remember the choice of the user (for now)
+        if (useExternalValidation && useExternalValidationFeature && !samlAuthenticationRequest.isUseExternalValidation()) {
+            samlAuthenticationRequest.setUseExternalValidation(true);
+            authenticationRequestRepository.save(samlAuthenticationRequest);
+        }
         String userId = samlAuthenticationRequest.getUserId();
         User user = userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException(userId));
 
         String state = String.format("id=%s&user_uid=%s", id, passwordEncoder.encode(user.getUid()));
-        UriComponents uriComponents = doStartLinkAccountFlow(state, idpFlowRedirectUri, forceAuth, useExternalValidation, samlAuthenticationRequest.getRequesterEntityId());
+        UriComponents uriComponents = doStartLinkAccountFlow(state, idpFlowRedirectUri, forceAuth,
+                samlAuthenticationRequest.isUseExternalValidation(), samlAuthenticationRequest.getRequesterEntityId());
         return ResponseEntity.status(HttpStatus.FOUND).location(uriComponents.toUri()).build();
     }
 

@@ -92,7 +92,8 @@ I18n.translations.en = {
     stepup: {
         header: "One more thing!",
         info: "To proceed to <strong> {{name}} </strong>, you must meet the following condition(s).",
-        link: "Verify this via SURFconext"
+        link: "Verify this via SURFconext",
+        linkExternalValidation: "Verify this via ReadID"
     },
     footer: {
         privacy: "Privacy policy",
@@ -162,7 +163,7 @@ I18n.translations.en = {
     stepUpVerification: {
         linked_institution: "Your eduID account is linked to a trusted party.",
         validate_names: "Your first name and last name are verified by a trusted party.",
-        affiliation_student: "You have proven that you are following education by linking your eduID account to a trusted party.."
+        affiliation_student: "You have proven that you are following education by linking your eduID account to a trusted party."
     }
 
 };

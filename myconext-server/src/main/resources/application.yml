@@ -52,6 +52,8 @@ feature:
   warning_educational_email_domain: True
   # Show / hide the connections page in the mijn GUI
   connections: True
+  # Do we allow the account linking to take place with the accounting IdP, e.g. add extra button in IdP link screen
+  use_external_validation: True
   # Do we allow for multiple linked (institutional) accounts? Not yet implemented
   # multiple_linked_account: False
   use_deny_allow_list:

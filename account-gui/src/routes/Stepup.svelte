@@ -5,6 +5,7 @@
     import Verification from "../components/Verification.svelte";
     import {fetchServiceName} from "../api";
     import Spinner from "../components/Spinner.svelte";
+    import {conf} from "../stores/conf";
 
     export let id;
     let explanation = null;
@@ -20,8 +21,9 @@
         });
     });
 
-    const proceed = () => {
-        window.location.href = `/myconext/api/idp/oidc/account/${id}`;
+    const proceed = useExternalValidation => {
+        const queryParams = ($conf.useExternalValidation && useExternalValidation) ? "?useExternalValidation=true" : ""
+        window.location.href = `/myconext/api/idp/oidc/account/${id}${queryParams}`;
     };
 </script>
 
@@ -47,8 +49,14 @@
         <h2>{I18n.t("stepup.header")}</h2>
         <p class="info">{@html I18n.t("stepup.info", {name: serviceName})}</p>
         <Verification explanation={explanation} verified={false}/>
-        <Button href="/proceed" onClick={proceed}
+        <Button href="/proceed" onClick={() => proceed(false)}
                 className="full"
                 label={I18n.t("stepup.link")}/>
+        {#if $conf.useExternalValidation}
+            <Button href="/proceed" onClick={() => proceed(true)}
+                    className="full"
+                    label={I18n.t("stepup.linkExternalValidation")}/>
+        {/if}
+
     </div>
 </div>
