@@ -112,7 +112,7 @@ public class ManageServiceProviderResolver implements ServiceProviderResolver {
         }
         Optional<ServiceProvider> optionalServiceProvider = Optional.ofNullable(serviceProviders.get(entityId));
         if (!optionalServiceProvider.isPresent()) {
-            //rare case, but it might be a entity thas was added after the last refresh
+            //rare case, but it might be a entity that was added after the last refresh
             doRefresh(Optional.of(entityId));
             return Optional.ofNullable(serviceProviders.get(entityId));
         }

@@ -75,9 +75,9 @@ public class Migrations {
     @ChangeSet(order = "004", id = "addServiceProviderInstitutionGuid", author = "okke.harsta@surf.nl")
     public void addServiceProviderInstitutionGuid(MongockTemplate mongoTemplate, ServiceProviderResolver serviceProviderResolver) {
         List<User> users = mongoTemplate.findAll(User.class, "users");
+        serviceProviderResolver.refresh();
         users.forEach(user -> {
             user.getEduIDS().forEach(eduID -> {
-                serviceProviderResolver.refresh();
                 Optional<ServiceProvider> optionalServiceProvider = serviceProviderResolver.resolve(eduID.getServiceProviderEntityId());
                 optionalServiceProvider.ifPresent(serviceProvider -> {
                     if (StringUtils.hasText(serviceProvider.getInstitutionGuid())) {
