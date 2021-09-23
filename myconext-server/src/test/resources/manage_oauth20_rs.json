@@ -1,0 +1,242 @@
+[
+  {
+    "_id": "3af5d577-ad2d-4ab4-a112-23adbc528fb4",
+    "version": 15,
+    "type": "oauth20_rs",
+    "data": {
+      "entityid": "resource-server-playground-client",
+      "state": "prodaccepted",
+      "metaDataFields": {
+        "name:en": "Resource Server for the Playground Client",
+        "OrganizationName:en": "Playground RS"
+      }
+    }
+  },
+  {
+    "_id": "43431912-e095-489e-b846-de8c9b852062",
+    "version": 18,
+    "type": "oauth20_rs",
+    "data": {
+      "entityid": "resourceservertest",
+      "state": "prodaccepted",
+      "metaDataFields": {
+        "name:en": "testbart2",
+        "OrganizationName:en": "SURF"
+      }
+    }
+  },
+  {
+    "_id": "668d574b-c873-4591-9505-eceba34ba506",
+    "version": 13,
+    "type": "oauth20_rs",
+    "data": {
+      "state": "prodaccepted",
+      "metaDataFields": {
+        "name:en": "Playground Client Local"
+      },
+      "entityid": "playground.local.testing"
+    }
+  },
+  {
+    "_id": "a7cf8aae-95ea-41eb-820a-e1ff9ef9fb3d",
+    "version": 5,
+    "type": "oauth20_rs",
+    "data": {
+      "state": "prodaccepted",
+      "metaDataFields": {
+        "name:en": "For localhost student mobility testing"
+      },
+      "entityid": "student.mobility.home.institution.mock.local"
+    }
+  },
+  {
+    "_id": "da5d1c6b-a329-4447-ab90-22e418b98483",
+    "version": 10,
+    "type": "oauth20_rs",
+    "data": {
+      "state": "prodaccepted",
+      "metaDataFields": {
+        "name:en": "EDUID demo"
+      },
+      "entityid": "eduid.demo.eduid.nl"
+    }
+  },
+  {
+    "_id": "e8895868-95a5-4531-9dee-d1f7a24fb92d",
+    "version": 6,
+    "type": "oauth20_rs",
+    "data": {
+      "entityid": "student.mobility.home.institution.mock",
+      "state": "prodaccepted",
+      "metaDataFields": {
+        "name:en": "student-mobility-home-institution-mock",
+        "OrganizationName:en": "student-mobility-home-institution-mock"
+      }
+    }
+  },
+  {
+    "_id": "ebeb1a4b-c7ca-4235-8ab3-66274dbd45f7",
+    "version": 5,
+    "type": "oauth20_rs",
+    "data": {
+      "state": "prodaccepted",
+      "metaDataFields": {
+        "name:en": "voot client",
+        "OrganizationName:en": "VOOT"
+      },
+      "entityid": "voot.test2.surfconext.nl"
+    }
+  },
+  {
+    "_id": "9850d93c-0770-4d6e-a020-1384d06417e9",
+    "version": 1,
+    "type": "oauth20_rs",
+    "data": {
+      "entityid": "test-resource-server",
+      "state": "testaccepted",
+      "metaDataFields": {
+        "name:en": "test-resource-server"
+      }
+    }
+  },
+  {
+    "_id": "3ff9ca8e-f679-4e68-890f-5902fd17a5c7",
+    "version": 3,
+    "type": "oauth20_rs",
+    "data": {
+      "entityid": "bart.test.nl",
+      "state": "prodaccepted",
+      "metaDataFields": {
+        "name:en": "testrs123",
+        "name:nl": "testrs12343",
+        "OrganizationName:en": "test123",
+        "OrganizationName:nl": "test123"
+      }
+    }
+  },
+  {
+    "_id": "1b49d19a-2993-4bbd-917b-35afbff489a7",
+    "version": 2,
+    "type": "oauth20_rs",
+    "data": {
+      "entityid": "1234.local2",
+      "state": "prodaccepted",
+      "metaDataFields": {
+        "name:en": "testoauthrs123",
+        "name:nl": "testoauthrs123",
+        "OrganizationName:en": "test123",
+        "OrganizationName:nl": "test123"
+      }
+    }
+  },
+  {
+    "_id": "c5d0bb05-2953-4e57-a85b-d1d99d23a0f8",
+    "version": 1,
+    "type": "oauth20_rs",
+    "data": {
+      "entityid": "1234.local3",
+      "state": "testaccepted",
+      "metaDataFields": {
+        "name:en": "testoauthrs123",
+        "name:nl": "testoauthrs123",
+        "OrganizationName:en": "test123",
+        "OrganizationName:nl": "test123"
+      }
+    }
+  },
+  {
+    "_id": "a39de40e-39f2-432b-9716-af79df7a0eb2",
+    "version": 3,
+    "type": "oauth20_rs",
+    "data": {
+      "entityid": "1234.local4",
+      "state": "prodaccepted",
+      "metaDataFields": {
+        "name:en": "testbart",
+        "name:nl": "testbart",
+        "OrganizationName:en": "SURF",
+        "OrganizationName:nl": "SURF"
+      }
+    }
+  },
+  {
+    "_id": "dfcdd915-3329-41e1-a6db-7efe06859376",
+    "version": 1,
+    "type": "oauth20_rs",
+    "data": {
+      "entityid": "1234.local5",
+      "state": "testaccepted",
+      "metaDataFields": {
+        "name:en": "testbart",
+        "name:nl": "testbart"
+      }
+    }
+  },
+  {
+    "_id": "65fe24e9-6acd-4978-8a65-84d0515c6edc",
+    "version": 8,
+    "type": "oauth20_rs",
+    "data": {
+      "entityid": "myconext.rs",
+      "state": "prodaccepted",
+      "metaDataFields": {
+        "name:en": "MyConext eduID Resource Server",
+        "OrganizationName:en": "eduID"
+      }
+    }
+  },
+  {
+    "_id": "146bf4d3-bc0f-490c-8147-4166a95ebfb5",
+    "version": 4,
+    "type": "oauth20_rs",
+    "data": {
+      "entityid": "test123",
+      "state": "prodaccepted",
+      "metaDataFields": {
+        "name:en": "test123"
+      }
+    }
+  },
+  {
+    "_id": "6bea010b-dc78-4fe9-a611-b852c112a931",
+    "version": 0,
+    "type": "oauth20_rs",
+    "data": {
+      "entityid": "test.okke.rs",
+      "state": "testaccepted",
+      "metaDataFields": {
+        "name:en": "Test Okke RS"
+      }
+    }
+  },
+  {
+    "_id": "2a1ad7a6-305b-4bdf-b356-ac8e9b29ef89",
+    "version": 0,
+    "type": "oauth20_rs",
+    "data": {
+      "entityid": "resource-server.foobar.example.com",
+      "state": "prodaccepted",
+      "metaDataFields": {
+        "name:en": "Foobar RS",
+        "name:nl": "Foobar RS",
+        "OrganizationName:en": "ibuildings",
+        "OrganizationName:nl": "ibuildings"
+      }
+    }
+  },
+  {
+    "_id": "efda6ad6-5b42-4900-81d0-935a3ca078c7",
+    "version": 4,
+    "type": "oauth20_rs",
+    "data": {
+      "entityid": "testrs1234",
+      "state": "prodaccepted",
+      "metaDataFields": {
+        "name:en": "testrs",
+        "name:nl": "testrs",
+        "OrganizationName:en": "testteun",
+        "OrganizationName:nl": "testteun"
+      }
+    }
+  }
+]

@@ -25,6 +25,7 @@ public class ManageServiceProviderResolverTest {
     public void resolveLocally() throws IOException {
         stubForTokens("oidc10_rp");
         stubForTokens("saml20_sp");
+        stubForTokens("oauth20_rs");
 
         ServiceProvider serviceProvider = subject.resolve("https://beta.surfnet.nl/SURFdropjesSP").get();
 
