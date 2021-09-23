@@ -60,7 +60,12 @@ public class AttributeAggregatorController {
     public ResponseEntity<Map> manipulate(@RequestParam("sp_entity_id") String spEntityId,
                                           @RequestParam("eduid") String eduid,
                                           @RequestParam(value = "sp_institution_guid", required = false) String spInstitutionGuid) {
-        User user = userRepository.findByEduIDS_value(eduid).orElseThrow(() -> new UserNotFoundException(eduid));
+        Optional<User> userOptional = userRepository.findByEduIDS_value(eduid);
+        if (!userOptional.isPresent()) {
+            LOG.warn(String.format("Attribute manipulation request for %s with an eduID %s that is not present", spEntityId, eduid));
+            return ResponseEntity.ok(new HashMap<>());
+        }
+        User user = userOptional.get();
         String eduId = user.computeEduIdForServiceProviderIfAbsent(spEntityId, serviceProviderResolver);
         userRepository.save(user);
         Map<String, String> result = new HashMap<>();

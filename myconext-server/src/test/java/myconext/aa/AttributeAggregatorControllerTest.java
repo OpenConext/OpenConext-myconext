@@ -102,7 +102,7 @@ public class AttributeAggregatorControllerTest extends AbstractIntegrationTest {
     @Test
     public void manipulateNotFound() {
         Map<String, Object> res = doManipulate("http://new-sp", "nope", "nope", null);
-        assertEquals(404, res.get("status"));
+        assertEquals(0, res.size());
     }
 
     @Test
