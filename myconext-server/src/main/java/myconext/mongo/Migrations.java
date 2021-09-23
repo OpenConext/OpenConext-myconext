@@ -79,13 +79,16 @@ public class Migrations {
         users.forEach(user -> {
             user.getEduIDS().forEach(eduID -> {
                 Optional<ServiceProvider> optionalServiceProvider = serviceProviderResolver.resolve(eduID.getServiceProviderEntityId());
-                optionalServiceProvider.ifPresent(serviceProvider -> {
+                if (optionalServiceProvider.isPresent()) {
+                    ServiceProvider serviceProvider = optionalServiceProvider.get();
                     if (StringUtils.hasText(serviceProvider.getInstitutionGuid())) {
                         eduID.updateServiceProvider(serviceProvider);
                         mongoTemplate.save(user);
-                        LOG.info("Added  institutionGuid to " + eduID.getServiceProviderEntityId());
+                        LOG.info("Added institutionGuid to " + eduID.getServiceProviderEntityId());
                     }
-                });
+                } else {
+                    LOG.info("Unknown serviceProvider: " + eduID.getServiceProviderEntityId());
+                }
             });
         });
     }

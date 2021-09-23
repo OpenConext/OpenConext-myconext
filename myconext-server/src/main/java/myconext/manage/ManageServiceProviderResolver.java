@@ -55,6 +55,7 @@ public class ManageServiceProviderResolver implements ServiceProviderResolver {
 
     private void doRefresh(Optional<String> optionalEntityId) {
         long start = System.currentTimeMillis();
+        LOG.info("Starting to refresh metadata for entityID: " + optionalEntityId);
         try {
             Map<String, Object> requestBody = this.body;
             if (optionalEntityId.isPresent()) {
@@ -81,7 +82,7 @@ public class ManageServiceProviderResolver implements ServiceProviderResolver {
 
     private Map<String, ServiceProvider> exchangeAndParse(HttpEntity<Map<String, Object>> requestEntity, String entityType) {
         return restTemplate.exchange(manageBaseUrl + "/manage/api/internal/search/" + entityType,
-                HttpMethod.POST, requestEntity, typeReference) .getBody()
+                HttpMethod.POST, requestEntity, typeReference).getBody()
                 .stream().collect(Collectors.toMap(this::entityId, this::serviceProvider));
     }
 
@@ -108,10 +109,12 @@ public class ManageServiceProviderResolver implements ServiceProviderResolver {
     public Optional<ServiceProvider> resolve(String entityId) {
         //For Testing purposes
         if (serviceProviders.isEmpty()) {
+            LOG.info("Refreshing metadata as the current collection is empty");
             refresh();
         }
         Optional<ServiceProvider> optionalServiceProvider = Optional.ofNullable(serviceProviders.get(entityId));
         if (!optionalServiceProvider.isPresent()) {
+            LOG.info("Refreshing metadata because entityID " + entityId + " not in present collection");
             //rare case, but it might be a entity that was added after the last refresh
             doRefresh(Optional.of(entityId));
             return Optional.ofNullable(serviceProviders.get(entityId));
