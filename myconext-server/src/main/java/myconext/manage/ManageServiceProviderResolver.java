@@ -55,13 +55,11 @@ public class ManageServiceProviderResolver implements ServiceProviderResolver {
 
     private void doRefresh(Optional<String> optionalEntityId) {
         long start = System.currentTimeMillis();
-        LOG.info("Starting to refresh metadata for entityID: " + optionalEntityId);
+        LOG.info("Starting to refresh metadata for entityID: " + optionalEntityId + " from "+ manageBaseUrl);
         try {
-            Map<String, Object> requestBody = this.body;
-            if (optionalEntityId.isPresent()) {
-                requestBody = new HashMap<>(this.body);
-                requestBody.put("entityid", optionalEntityId.get());
-            }
+            Map<String, Object> requestBody = new HashMap<>(body);
+            optionalEntityId.ifPresent(s -> requestBody.put("entityid", s));
+
             HttpEntity<Map<String, Object>> requestEntity = new HttpEntity<>(requestBody, this.headers);
             Map<String, ServiceProvider> newServiceProviders = exchangeAndParse(requestEntity, "saml20_sp");
             Map<String, ServiceProvider> relyingParties = exchangeAndParse(requestEntity, "oidc10_rp");
