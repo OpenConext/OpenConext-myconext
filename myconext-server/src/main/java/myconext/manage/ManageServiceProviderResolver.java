@@ -38,7 +38,6 @@ public class ManageServiceProviderResolver implements ServiceProviderResolver {
         restTemplate.getInterceptors().add(new BasicAuthenticationInterceptor(userName, password));
         this.manageBaseUrl = baseUrl;
         this.headers.add(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE);
-        this.body.put("state", "prodaccepted");
         this.body.put("REQUESTED_ATTRIBUTES", Arrays.asList(
                 "metaDataFields.coin:application_url",
                 "metaDataFields.logo:0:url",
