@@ -65,11 +65,15 @@ public class ManageServiceProviderResolver implements ServiceProviderResolver {
             HttpEntity<Map<String, Object>> requestEntity = new HttpEntity<>(requestBody, this.headers);
             Map<String, ServiceProvider> newServiceProviders = exchangeAndParse(requestEntity, "saml20_sp");
             Map<String, ServiceProvider> relyingParties = exchangeAndParse(requestEntity, "oidc10_rp");
-            LOG.info(String.format("Refreshed %s Service providers and %s Relying parties in %s ms",
+            Map<String, ServiceProvider> resourceServers = exchangeAndParse(requestEntity, "oauth20_rs");
+            LOG.info(String.format("Refreshed %s Service providers, %s Relying parties and %s Resource servers in %s ms",
                     newServiceProviders.size(),
                     relyingParties.size(),
+                    resourceServers.size(),
                     System.currentTimeMillis() - start));
             newServiceProviders.putAll(relyingParties);
+            newServiceProviders.putAll(resourceServers);
+
             if (optionalEntityId.isPresent()) {
                 serviceProviders.putAll(newServiceProviders);
             } else {
