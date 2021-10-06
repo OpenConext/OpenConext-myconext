@@ -273,9 +273,9 @@ public class AccountLinkerController {
         String institutionIdentifier = StringUtils.hasText(surfCrmId) ? surfCrmId : schacHomeOrganization;
 
         List<String> eduPersonAffiliations = (List<String>) body.getOrDefault("eduperson_affiliation", new ArrayList<>());
-        List<String> eduPersonScopedAffiliations = (List<String>) body.getOrDefault("eduperson_scoped_affiliation", eduPersonAffiliations);
-        List<String> affiliations = CollectionUtils.isEmpty(eduPersonScopedAffiliations)
-                ? Arrays.asList("affiliate") : eduPersonScopedAffiliations;
+        eduPersonAffiliations.addAll((List<String>) body.getOrDefault("eduperson_scoped_affiliation", new ArrayList<>())) ;
+        List<String> affiliations = CollectionUtils.isEmpty(eduPersonAffiliations)
+                ? Arrays.asList("affiliate") : eduPersonAffiliations;
 
         if (StringUtils.hasText(schacHomeOrganization)) {
             Date expiresAt = Date.from(new Date().toInstant()
