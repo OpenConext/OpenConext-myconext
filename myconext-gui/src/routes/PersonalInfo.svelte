@@ -25,7 +25,7 @@
 
         const sortedAccounts = ($user.linkedAccounts || []).sort((a, b) => b.createdAt - a.createdAt);
 
-        studentVerifiedAccount = sortedAccounts.find(account => (account.eduPersonAffiliations || []).some(aff => aff === "student")) || {};
+        studentVerifiedAccount = sortedAccounts.find(account => (account.eduPersonAffiliations || []).some(aff => aff && aff.startsWith("student"))) || {};
         studentVerified = studentVerifiedAccount !== undefined && Object.keys(studentVerifiedAccount).length > 0;
 
         eduIDLinked = sortedAccounts.length > 0;
