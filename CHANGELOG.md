@@ -1,7 +1,7 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
-## [5.2.0]
+## [5.2.2]
 ### New
 - Improve usability of the verification code
 - Sent the same eduID identifier to institutions belonging to the same organisation
