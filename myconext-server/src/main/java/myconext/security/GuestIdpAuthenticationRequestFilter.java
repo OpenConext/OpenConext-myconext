@@ -605,6 +605,11 @@ public class GuestIdpAuthenticationRequestFilter extends IdpAuthenticationReques
         scopedAffiliations.add("affiliate@eduid.nl");
         attributes.add(attribute("urn:mace:dir:attribute-def:eduPersonScopedAffiliation",
                 scopedAffiliations.toArray(new String[]{})));
+
+        List<String> affiliations = scopedAffiliations.stream().map(affiliation -> affiliation.substring(0, affiliation.indexOf("@")))
+                .distinct().collect(toList());
+        attributes.add(attribute("urn:mace:dir:attribute-def:eduPersonAffiliation",
+                affiliations.toArray(new String[]{})));
         return attributes;
     }
 
