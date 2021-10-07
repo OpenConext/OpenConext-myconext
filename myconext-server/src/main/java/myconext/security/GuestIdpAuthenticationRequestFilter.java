@@ -1,6 +1,5 @@
 package myconext.security;
 
-import myconext.exceptions.ForbiddenException;
 import myconext.exceptions.UserNotFoundException;
 import myconext.mail.MailBox;
 import myconext.manage.ServiceProviderResolver;
@@ -40,7 +39,6 @@ import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.nio.charset.Charset;
 import java.util.*;
-import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.stream.Collectors;
@@ -374,7 +372,7 @@ public class GuestIdpAuthenticationRequestFilter extends IdpAuthenticationReques
             }
             String url = this.redirectUrl + "/confirm?h=" + hash +
                     "&redirect=" + URLEncoder.encode(this.magicLinkUrl, charSet) +
-                    "&email=" + URLEncoder.encode(user.getEmail(), charSet) ;
+                    "&email=" + URLEncoder.encode(user.getEmail(), charSet);
             if (!StepUpStatus.NONE.equals(samlAuthenticationRequest.getSteppedUp())) {
                 url += "&explanation=" + explanation;
             }
@@ -481,7 +479,7 @@ public class GuestIdpAuthenticationRequestFilter extends IdpAuthenticationReques
         }
         if (!optionalCookie.isPresent() || !user.getTrackingUuid().equalsIgnoreCase(optionalCookie.get().getValue())) {
             Cookie cookie = new Cookie(TRACKING_DEVICE_COOKIE_NAME, user.getTrackingUuid());
-            cookie.setMaxAge(Integer.MAX_VALUE-1);
+            cookie.setMaxAge(Integer.MAX_VALUE - 1);
             cookie.setSecure(secureCookie);
             cookie.setHttpOnly(true);
             response.addCookie(cookie);
@@ -603,13 +601,10 @@ public class GuestIdpAuthenticationRequestFilter extends IdpAuthenticationReques
                         .map(affiliation -> affiliation.contains("@")
                                 ? affiliation : String.format("%s@%s", affiliation, linkedAccount.getSchacHomeOrganization()))
                         .collect(toList()))
-                .flatMap(Collection::stream)
-                .collect(toList());
-
-        if (!CollectionUtils.isEmpty(scopedAffiliations)) {
-            attributes.add(attribute("urn:mace:dir:attribute-def:eduPersonScopedAffiliation",
-                    scopedAffiliations.toArray(new String[]{})));
-        }
+                .flatMap(Collection::stream).distinct().collect(Collectors.toList());
+        scopedAffiliations.add("affiliate@eduid.nl");
+        attributes.add(attribute("urn:mace:dir:attribute-def:eduPersonScopedAffiliation",
+                scopedAffiliations.toArray(new String[]{})));
         return attributes;
     }
 
