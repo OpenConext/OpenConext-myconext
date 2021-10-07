@@ -613,7 +613,8 @@ public class GuestIdpAuthenticationRequestFilter extends IdpAuthenticationReques
         List<LinkedAccount> linkedAccountsEmptyAffiliations = linkedAccounts.stream()
                 .filter(linkedAccount -> CollectionUtils.isEmpty(linkedAccount.getEduPersonAffiliations()))
                 .collect(toList());
-        linkedAccountsEmptyAffiliations.forEach(linkedAccount -> linkedAccount.setEduPersonAffiliations(Arrays.asList("affiliation")));
+        linkedAccountsEmptyAffiliations.forEach(linkedAccount -> linkedAccount.setEduPersonAffiliations(
+                Collections.singletonList("affiliation@" + linkedAccount.getSchacHomeOrganization())));
         if (!linkedAccountsEmptyAffiliations.isEmpty()) {
             userRepository.save(user);
         }
