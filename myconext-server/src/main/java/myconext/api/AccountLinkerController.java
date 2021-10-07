@@ -35,6 +35,7 @@ import java.net.URLEncoder;
 import java.nio.charset.Charset;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static myconext.log.MDCContext.logWithContext;
 import static myconext.security.GuestIdpAuthenticationRequestFilter.hasRequiredStudentAffiliation;
@@ -61,8 +62,8 @@ public class AccountLinkerController {
     private final String spRedirectUrl;
     private final long expiryNonValidatedDurationDays;
     private final long expiryValidatedDurationDays;
-    private final String  idpExternalValidationEntityId;
-    private final String  myConextSpEntityId;
+    private final String idpExternalValidationEntityId;
+    private final String myConextSpEntityId;
     private final boolean useExternalValidationFeature;
 
     private final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
@@ -98,7 +99,7 @@ public class AccountLinkerController {
         this.expiryNonValidatedDurationDays = expiryNonValidatedDurationDays;
         this.expiryValidatedDurationDays = expiryValidatedDurationDays;
         this.idpExternalValidationEntityId = idpExternalValidationEntityId;
-        this.myConextSpEntityId =myConextSpEntityId;
+        this.myConextSpEntityId = myConextSpEntityId;
         this.useExternalValidationFeature = useExternalValidationFeature;
 
         this.headers.set("Accept", "application/json");
@@ -272,10 +273,7 @@ public class AccountLinkerController {
 
         String institutionIdentifier = StringUtils.hasText(surfCrmId) ? surfCrmId : schacHomeOrganization;
 
-        List<String> eduPersonAffiliations = (List<String>) body.getOrDefault("eduperson_affiliation", new ArrayList<>());
-        List<String> eduPersonScopedAffiliations = (List<String>) body.getOrDefault("eduperson_scoped_affiliation", eduPersonAffiliations);
-        List<String> affiliations = CollectionUtils.isEmpty(eduPersonScopedAffiliations)
-                ? Arrays.asList("affiliate") : eduPersonScopedAffiliations;
+        List<String> affiliations = parseAffiliations(body, schacHomeOrganization);
 
         if (StringUtils.hasText(schacHomeOrganization)) {
             Date expiresAt = Date.from(new Date().toInstant()
@@ -325,6 +323,18 @@ public class AccountLinkerController {
         }
 
         return ResponseEntity.status(HttpStatus.FOUND).location(URI.create(clientRedirectUri)).build();
+    }
+
+    protected static List<String> parseAffiliations(Map<String, Object> idpAttributes, String schacHomeOrganization) {
+        if (!StringUtils.hasText(schacHomeOrganization)) {
+            return new ArrayList<>();
+        }
+        List<String> eduPersonAffiliations = ((List<String>) idpAttributes.getOrDefault("eduperson_affiliation", new ArrayList<>()))
+                .stream().map(affiliation -> String.format("%s@%s", affiliation, schacHomeOrganization)).collect(Collectors.toList());
+        List<String> eduPersonScopedAffiliations = (List<String>) idpAttributes.getOrDefault("eduperson_scoped_affiliation", eduPersonAffiliations);
+        Set<String> uniqueAffiliations = new HashSet<>(eduPersonAffiliations);
+        uniqueAffiliations.addAll(eduPersonScopedAffiliations);
+        return CollectionUtils.isEmpty(uniqueAffiliations) ? Arrays.asList(String.format("affiliate@%s", schacHomeOrganization)) : new ArrayList<>(uniqueAffiliations);
     }
 
 }

@@ -933,7 +933,7 @@ public class UserControllerTest extends AbstractIntegrationTest {
 
         User user = userRepository.findOneUserByEmail("jdoe@example.com");
         List<LinkedAccount> linkedAccounts = user.getLinkedAccounts();
-        linkedAccounts.get(0).setEduPersonAffiliations(Arrays.asList("student"));
+        linkedAccounts.get(0).setEduPersonAffiliations(Arrays.asList("student@example.com"));
         user.setLinkedAccounts(linkedAccounts);
         userRepository.save(user);
 

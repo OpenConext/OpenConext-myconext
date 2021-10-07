@@ -62,7 +62,7 @@ public class GuestIdpAuthenticationRequestFilterTest {
     @Test
     public void isUserVerifiedByInstitutionStudent() {
         User user = AbstractIntegrationTest.user("s@s.com", "nl");
-        LinkedAccount linkedAccount = linkedAccount(new Date(), Arrays.asList("student"));
+        LinkedAccount linkedAccount = linkedAccount(new Date(), Arrays.asList("student@example.com"));
         user.getLinkedAccounts().add(linkedAccount);
         boolean userVerifiedByInstitution = userVerifiedByInstitution(user, ACR.AFFILIATION_STUDENT);
         assertTrue(userVerifiedByInstitution);

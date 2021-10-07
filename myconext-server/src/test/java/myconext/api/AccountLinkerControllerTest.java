@@ -23,9 +23,12 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.*;
 import static io.restassured.RestAssured.given;
+import static myconext.api.AccountLinkerController.parseAffiliations;
 import static org.junit.Assert.*;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
@@ -117,7 +120,7 @@ public class AccountLinkerControllerTest extends AbstractIntegrationTest {
         linkedAccount = user.getLinkedAccounts().get(0);
 
         assertEquals(linkedAccount.getInstitutionIdentifier(), "12345678");
-        assertEquals("affiliate", linkedAccount.getEduPersonAffiliations().get(0));
+        assertEquals("affiliate@mock.idp", linkedAccount.getEduPersonAffiliations().get(0));
     }
 
     @Test
@@ -205,7 +208,8 @@ public class AccountLinkerControllerTest extends AbstractIntegrationTest {
 
         User user = doRedirect(body);
         LinkedAccount linkedAccount = user.getLinkedAccounts().get(0);
-        assertEquals(Arrays.asList("student", "faculty"), linkedAccount.getEduPersonAffiliations());
+        assertEquals(Stream.of("student@mock.idp", "faculty@mock.idp").sorted().collect(Collectors.toList()),
+                linkedAccount.getEduPersonAffiliations().stream().sorted().collect(Collectors.toList()));
     }
 
     @Test
@@ -319,6 +323,26 @@ public class AccountLinkerControllerTest extends AbstractIntegrationTest {
         User user = userRepository.findOneUserByEmail("jdoe@example.com");
         assertEquals(3, user.getLinkedAccounts().size());
     }
+
+    @Test
+    public void parseUserAffiliations() {
+        //No schachome
+        assertEquals(0, parseAffiliations(new HashMap<>(), "").size());
+        //No affiliations
+        assertEquals(Collections.singletonList("affiliate@example.com"), parseAffiliations(new HashMap<>(), "example.com"));
+        //Duplicate affiliations
+        Map<String, Object> idpAttributes = new HashMap<>();
+        idpAttributes.put("eduperson_affiliation", Collections.singletonList("student"));
+        idpAttributes.put("eduperson_scoped_affiliation", Collections.singletonList("student@example.com"));
+        assertEquals(Collections.singletonList("student@example.com"), parseAffiliations(idpAttributes, "example.com"));
+        ///Added affiliations
+        idpAttributes = new HashMap<>();
+        idpAttributes.put("eduperson_affiliation", Arrays.asList("student", "some"));
+        idpAttributes.put("eduperson_scoped_affiliation", Collections.singletonList("value@example.com"));
+        assertEquals(Stream.of("some@example.com", "student@example.com", "value@example.com").sorted().collect(Collectors.toList()),
+                parseAffiliations(idpAttributes, "example.com").stream().sorted().collect(Collectors.toList()));
+    }
+
 
     private void stubForTokenUserInfo(Map<Object, Object> userInfo) throws JsonProcessingException {
         stubFor(post(urlPathMatching("/oidc/token")).willReturn(aResponse()

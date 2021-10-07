@@ -12,8 +12,7 @@
     <artifactId>account-gui</artifactId>
     <packaging>pom</packaging>
     <name>account-gui</name>
-    <version>5.2.4-SNAPSHOT</version>
-
+    <version>5.2.4</version>
     <build>
         <plugins>
             <plugin>

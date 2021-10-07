@@ -236,7 +236,7 @@ public class GuestIdpAuthenticationRequestFilter extends IdpAuthenticationReques
 
     public static boolean hasRequiredStudentAffiliation(List<String> affiliations) {
         return !CollectionUtils.isEmpty(affiliations) && affiliations.stream()
-                .anyMatch(affiliation -> affiliation.startsWith("student"));
+                .anyMatch(affiliation -> affiliation.startsWith("student@"));
     }
 
     private List<String> getAuthenticationContextClassReferenceValues(AuthenticationRequest authenticationRequest) {
