@@ -1,6 +1,7 @@
 package myconext.eduid;
 
 import myconext.exceptions.UserNotFoundException;
+import myconext.model.EduID;
 import myconext.model.User;
 import myconext.repository.UserRepository;
 import org.apache.commons.logging.Log;
@@ -34,7 +35,11 @@ public class APIController {
     @GetMapping("/eppn")
     @SuppressWarnings("unchecked")
     public List<Map<String, String>> eppn(BearerTokenAuthentication authentication, @RequestParam(value = "schachome", required = false) String schachome) {
-        return getUser(authentication).linkedAccountsSorted().stream()
+        String clientId = (String) authentication.getTokenAttributes().get("client_id");
+
+        LOG.info(String.format("Endpoint '/eppn/ called by authentication %s", clientId));
+
+        List<Map<String, String>> results = getUser(authentication).linkedAccountsSorted().stream()
                 .map(linkedAccount -> {
                     Map<String, String> info = new HashMap<>();
                     info.put("eppn", linkedAccount.getEduPersonPrincipalName());
@@ -43,12 +48,19 @@ public class APIController {
                 })
                 .filter(info -> !StringUtils.hasText(schachome) || schachome.equals(info.get("schac_home_organization")))
                 .collect(Collectors.toList());
+
+        LOG.info(String.format("Endpoint '/eppn/ results %s for authentication %s", results, clientId));
+
+        return results;
     }
 
     @GetMapping("/eduid")
     @SuppressWarnings("unchecked")
     public ResponseEntity<Map<String, String>> eduid(BearerTokenAuthentication authentication) {
         String clientId = (String) authentication.getTokenAttributes().get("client_id");
+
+        LOG.info(String.format("Endpoint '/eduid/ called by authentication %s", clientId));
+
         Optional<User> optionalUser = userRepository.findByEduIDS_serviceProviderEntityId(clientId);
         if (!optionalUser.isPresent()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
@@ -56,13 +68,21 @@ public class APIController {
         User user = optionalUser.get();
         List<String> eduIDs = user.getEduIDS().stream()
                 .filter(eduID -> eduID.getServiceProviderEntityId().equalsIgnoreCase(clientId))
-                .map(eduId -> eduId.getValue()).collect(Collectors.toList());
-        return ResponseEntity.ok(Collections.singletonMap("eduid", eduIDs.get(0)));
+                .map(EduID::getValue).collect(Collectors.toList());
+        Map<String, String> results = eduIDs.isEmpty() ? new HashMap<>() : Collections.singletonMap("eduid", eduIDs.get(0));
+
+        LOG.info(String.format("Endpoint '/eduid/ results %s for authentication %s", results, clientId));
+
+        return ResponseEntity.ok(results);
     }
 
     @GetMapping("/links")
     public List<Map<String, String>> links(BearerTokenAuthentication authentication) {
-        return getUser(authentication).linkedAccountsSorted().stream()
+        String clientId = (String) authentication.getTokenAttributes().get("client_id");
+
+        LOG.info(String.format("Endpoint '/links/ called by authentication %s", clientId));
+
+        List<Map<String, String>> results = getUser(authentication).linkedAccountsSorted().stream()
                 .map(linkedAccount -> {
                     Map<String, String> info = new HashMap<>();
                     info.put("eppn", linkedAccount.getEduPersonPrincipalName());
@@ -73,6 +93,10 @@ public class APIController {
                     return info;
                 })
                 .collect(Collectors.toList());
+
+        LOG.info(String.format("Endpoint '/links/ results %s for authentication %s", results, clientId));
+
+        return results;
     }
 
     @SuppressWarnings("unchecked")
