@@ -264,8 +264,18 @@ public class UserController {
     }
 
     @PutMapping("/sp/email")
-    public ResponseEntity updateEmail(Authentication authentication, @RequestBody User deltaUser) {
+    public ResponseEntity updateEmail(Authentication authentication, @RequestBody User deltaUser,
+                                      @RequestParam(value = "force", required = false, defaultValue = "false") boolean force) {
         User user = userFromAuthentication(authentication);
+        List<PasswordForgottenHash> passwordForgottenHashes = passwordForgottenHashRepository.findByUserId(user.getId());
+        if (!CollectionUtils.isEmpty(passwordForgottenHashes)) {
+            if (force) {
+                passwordForgottenHashRepository.deleteAll(passwordForgottenHashes);
+            } else {
+                return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE)
+                        .body(Collections.singletonMap("status", HttpStatus.NOT_ACCEPTABLE.value()));
+            }
+        }
         changeEmailHashRepository.deleteByUserId(user.getId());
 
         String hashValue = hash();
@@ -333,8 +343,19 @@ public class UserController {
     }
 
     @PutMapping("/sp/forgot-password")
-    public ResponseEntity<UserResponse> forgotPassword(Authentication authentication) {
+    public ResponseEntity forgotPassword(Authentication authentication,
+                                                       @RequestParam(value = "force", required = false, defaultValue = "false") boolean force) {
         User user = userFromAuthentication(authentication);
+        List<ChangeEmailHash> changeEmailHashes = changeEmailHashRepository.findByUserId(user.getId());
+        if (!CollectionUtils.isEmpty(changeEmailHashes)) {
+            if (force) {
+                changeEmailHashRepository.deleteAll(changeEmailHashes);
+            } else {
+                return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE)
+                        .body(Collections.singletonMap("status", HttpStatus.NOT_ACCEPTABLE.value()));
+            }
+        }
+
         passwordForgottenHashRepository.deleteByUserId(user.getId());
 
         user.setForgottenPassword(true);

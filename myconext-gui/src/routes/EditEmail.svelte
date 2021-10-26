@@ -8,9 +8,11 @@
     const {validEmail} = require("../validation/regexp");
     import Button from "../components/Button.svelte";
     import {onMount} from "svelte";
+    import Modal from "../components/Modal.svelte";
 
     let verifiedEmail = "";
     let duplicateEmail = false;
+    let outstandingPasswordForgotten = false;
     let back = "personal";
 
     onMount(() => {
@@ -18,15 +20,17 @@
         back = urlSearchParams.get("back") || back;
     })
 
-    const update = () => {
+    const update = (force = false) => {
         if (validEmail(verifiedEmail) && verifiedEmail.toLowerCase() !== $user.email.toLowerCase()) {
-            updateEmail({...$user, email: verifiedEmail})
+            updateEmail({...$user, email: verifiedEmail}, force)
                 .then(() => {
-                    navigate(`/${back}`);
+                    navigate(back);
                     flash.setValue(I18n.t("email.updated", {email: verifiedEmail}));
                 }).catch(e => {
                 if (e.status === 409) {
                     duplicateEmail = true;
+                } else if (e.status === 406) {
+                    outstandingPasswordForgotten = true;
                 }
             });
         }
@@ -41,64 +45,64 @@
 </script>
 
 <style lang="scss">
-    .email {
-        width: 100%;
-        display: flex;
-        flex-direction: column;
-        height: 100%;
+  .email {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+  }
+
+  h2 {
+    margin-top: 35px;
+    color: var(--color-primary-green);
+  }
+
+  p.info {
+    margin: 12px 0 32px 0;
+  }
+
+  label {
+    font-weight: bold;
+    margin: 33px 0 13px 0;
+    display: inline-block;
+  }
+
+  input {
+    border-radius: 8px;
+    border: solid 1px #676767;
+    padding: 14px;
+    font-size: 16px;
+
+    &.error {
+      border: solid 1px var(--color-primary-red);
+      background-color: #fff5f3;
+
+      &:focus {
+        outline: none;
+      }
     }
 
-    h2 {
-        margin-top: 35px;
-        color: var(--color-primary-green);
+  }
+
+  div.error {
+    display: flex;
+    align-items: center;
+    margin-top: 10px;
+
+    span.error {
+      color: var(--color-primary-red);
     }
 
-    p.info {
-        margin: 12px 0 32px 0;
+    span.svg {
+      display: inline-block;
+      margin-right: 10px;
     }
 
-    label {
-        font-weight: bold;
-        margin: 33px 0 13px 0;
-        display: inline-block;
-    }
+  }
 
-    input {
-        border-radius: 8px;
-        border: solid 1px #676767;
-        padding: 14px;
-        font-size: 16px;
-
-        &.error {
-            border: solid 1px var(--color-primary-red);
-            background-color: #fff5f3;
-
-            &:focus {
-                outline: none;
-            }
-        }
-
-    }
-
-    div.error {
-        display: flex;
-        align-items: center;
-        margin-top: 10px;
-
-        span.error {
-            color: var(--color-primary-red);
-        }
-
-        span.svg {
-            display: inline-block;
-            margin-right: 10px;
-        }
-
-    }
-
-    .options {
-        margin-top: 60px;
-    }
+  .options {
+    margin-top: 60px;
+  }
 
 </style>
 <div class="email">
@@ -124,3 +128,12 @@
                 disabled={!validEmail(verifiedEmail) || emailEquality}/>
     </div>
 </div>
+{#if outstandingPasswordForgotten}
+    <Modal submit={() => update(true)}
+           cancel={() => navigate(back)}
+           warning={true}
+           question={I18n.t("email.outstandingPasswordForgottenConfirmation")}
+           title={I18n.t("email.outstandingPasswordForgotten")}>
+    </Modal>
+{/if}
+

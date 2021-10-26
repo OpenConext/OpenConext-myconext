@@ -17,6 +17,7 @@
     let showModal = false;
     let hash;
     let userForgotPassword = false;
+    let outstandingEmailReset = false;
 
     const valid = () => {
         let existingPasswordValid = usePassword && (currentPassword || userForgotPassword) && validPassword(newPassword) && newPassword === confirmPassword;
@@ -63,14 +64,19 @@
         });
     }
 
-    const forgotPassword = showConfirmation => () => {
+    const forgotPassword = (showConfirmation, force=false) => () => {
         if (showConfirmation) {
             showModal = true;
         } else {
-            forgotPasswordLink().then(() => {
+            forgotPasswordLink(force).then(() => {
                 showModal = false;
                 navigate("/security");
                 flash.setValue(I18n.t("password.flash.passwordLink", {name: $user.email}));
+            }).catch(e => {
+                if (e.status === 406) {
+                    outstandingEmailReset = true;
+                    showModal = false;
+                }
             });
         }
     }
@@ -176,5 +182,13 @@
            warning={false}
            question={I18n.t("password.forgotPasswordConfirmation")}
            title={I18n.t("password.forgotPassword")}>
+    </Modal>
+{/if}
+{#if outstandingEmailReset}
+    <Modal submit={forgotPassword(false, true)}
+           cancel={() => navigate("/security")}
+           warning={true}
+           question={I18n.t("password.outstandingEmailResetConfirmation")}
+           title={I18n.t("password.outstandingEmailReset")}>
     </Modal>
 {/if}

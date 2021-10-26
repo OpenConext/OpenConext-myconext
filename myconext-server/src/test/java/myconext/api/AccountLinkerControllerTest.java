@@ -71,6 +71,16 @@ public class AccountLinkerControllerTest extends AbstractIntegrationTest {
     }
 
     @Test
+    public void linkAccountRedirectExpired() throws IOException {
+        String location = given().redirects().follow(false)
+                .when()
+                .contentType(ContentType.JSON)
+                .get("/myconext/api/idp/oidc/account/nope")
+                .getHeader("Location");
+        assertTrue(location.endsWith("expired"));
+    }
+
+    @Test
     public void linkAccountRedirectWithExternalValidation() throws IOException {
         Response response = samlAuthnRequestResponseWithLoa(null, null, "");
         String authenticationRequestId = extractAuthenticationRequestIdFromAuthnResponse(response);

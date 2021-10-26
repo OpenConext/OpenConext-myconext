@@ -7,6 +7,7 @@ import io.restassured.http.ContentType;
 import io.restassured.http.Cookie;
 import io.restassured.response.Response;
 import io.restassured.response.ValidatableResponse;
+import lombok.val;
 import myconext.AbstractIntegrationTest;
 import myconext.model.*;
 import myconext.repository.ChallengeRepository;
@@ -68,7 +69,7 @@ public class UserControllerTest extends AbstractIntegrationTest {
         when()
                 .get("/myconext/api/idp/resend_magic_link_request?id=" + magicLinkResponse.authenticationRequestId)
                 .then()
-                .statusCode(200);
+                .statusCode(HttpStatus.OK.value());
     }
 
     @Test
@@ -98,7 +99,7 @@ public class UserControllerTest extends AbstractIntegrationTest {
         when()
                 .get("/myconext/api/idp/resend_magic_link_request?id=" + magicLinkResponse.authenticationRequestId)
                 .then()
-                .statusCode(200);
+                .statusCode(HttpStatus.OK.value());
 
     }
 
@@ -256,7 +257,7 @@ public class UserControllerTest extends AbstractIntegrationTest {
                 .when()
                 .get("/myconext/api/idp/email/domain/institutional")
                 .then()
-                .statusCode(200)
+                .statusCode(HttpStatus.OK.value())
                 .body("size()", is(2));
     }
 
@@ -266,7 +267,7 @@ public class UserControllerTest extends AbstractIntegrationTest {
                 .when()
                 .get("/myconext/api/idp/email/domain/allowed")
                 .then()
-                .statusCode(200)
+                .statusCode(HttpStatus.OK.value())
                 .body("size()", is(0));
     }
 
@@ -277,7 +278,7 @@ public class UserControllerTest extends AbstractIntegrationTest {
                 .queryParams(Collections.emptyMap())
                 .get("/saml/guest-idp/SSO")
                 .then()
-                .statusCode(200);
+                .statusCode(HttpStatus.OK.value());
     }
 
     @Test
@@ -300,7 +301,7 @@ public class UserControllerTest extends AbstractIntegrationTest {
                 .body(user)
                 .put("/myconext/api/sp/update")
                 .then()
-                .statusCode(201);
+                .statusCode(HttpStatus.CREATED.value());
 
         User userFromDB = userRepository.findOneUserByEmail("jdoe@example.com");
 
@@ -320,7 +321,7 @@ public class UserControllerTest extends AbstractIntegrationTest {
                 .body(linkedAccount)
                 .put("/myconext/api/sp/institution")
                 .then()
-                .statusCode(200);
+                .statusCode(HttpStatus.OK.value());
 
         User userFromDB = userRepository.findOneUserByEmail("jdoe@example.com");
 
@@ -340,11 +341,25 @@ public class UserControllerTest extends AbstractIntegrationTest {
                 .body(body)
                 .post("/myconext/api/sp/credential")
                 .then()
-                .statusCode(200);
+                .statusCode(HttpStatus.OK.value());
 
         User userFromDB = userRepository.findOneUserByEmail("jdoe@example.com");
 
         assertEquals(body.get("name"), userFromDB.getPublicKeyCredentials().get(0).getName());
+    }
+
+    @Test
+    public void updatePublicKeyCredentialNotFound() {
+        Map<String, String> body = new HashMap<>();
+        body.put("identifier", "nope");
+        body.put("name", "Red ubi-key");
+        given()
+                .when()
+                .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+                .body(body)
+                .post("/myconext/api/sp/credential")
+                .then()
+                .statusCode(HttpStatus.NOT_FOUND.value());
     }
 
     @Test
@@ -358,7 +373,7 @@ public class UserControllerTest extends AbstractIntegrationTest {
                 .body(body)
                 .put("/myconext/api/sp/credential")
                 .then()
-                .statusCode(200);
+                .statusCode(HttpStatus.OK.value());
 
         User userFromDB = userRepository.findOneUserByEmail("jdoe@example.com");
 
@@ -376,7 +391,7 @@ public class UserControllerTest extends AbstractIntegrationTest {
                 .put("/myconext/api" +
                         "/sp/service")
                 .then()
-                .statusCode(200);
+                .statusCode(HttpStatus.OK.value());
 
         User userFromDB = userRepository.findOneUserByEmail("jdoe@example.com");
 
@@ -416,7 +431,7 @@ public class UserControllerTest extends AbstractIntegrationTest {
                 .body(updateUserSecurityRequest)
                 .put("/myconext/api/sp/security")
                 .then()
-                .statusCode(201);
+                .statusCode(HttpStatus.CREATED.value());
         user = userRepository.findOneUserByEmail("jdoe@example.com");
         assertTrue(passwordEncoder.matches(updateUserSecurityRequest.getNewPassword(), user.getPassword()));
     }
@@ -452,7 +467,7 @@ public class UserControllerTest extends AbstractIntegrationTest {
                 .body(securityRequest)
                 .put("/myconext/api/sp/security")
                 .then()
-                .statusCode(201);
+                .statusCode(HttpStatus.CREATED.value());
         user = userRepository.findOneUserByEmail("jdoe@example.com");
         assertTrue(passwordEncoder.matches(securityRequest.getNewPassword(), user.getPassword()));
     }
@@ -481,7 +496,7 @@ public class UserControllerTest extends AbstractIntegrationTest {
                 .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                 .delete("/myconext/api/sp/delete")
                 .then()
-                .statusCode(200)
+                .statusCode(HttpStatus.OK.value())
                 .cookie("SESSION", "");
 
         Optional<User> optionalUser = userRepository.findUserByEmail("jdoe@example.com");
@@ -495,6 +510,15 @@ public class UserControllerTest extends AbstractIntegrationTest {
                 .get("/myconext/api/sp/logout")
                 .as(Map.class);
         assertEquals("ok", res.get("status"));
+    }
+
+    @Test
+    public void personal() {
+        Map res = given()
+                .when()
+                .get("/myconext/api/sp/personal")
+                .as(Map.class);
+        assertEquals("jdoe@example.com", res.get("email"));
     }
 
     @Test
@@ -989,6 +1013,32 @@ public class UserControllerTest extends AbstractIntegrationTest {
     }
 
     @Test
+    public void testForgotPasswordWithExistingEmailChangeRequest() {
+        User user = userRepository.findOneUserByEmail("jdoe@example.com");
+        changeEmailHashRepository.save(new ChangeEmailHash(user, "new@example.com", "hash"));
+        given()
+                .when()
+                .accept(ContentType.JSON)
+                .put("/myconext/api/sp/forgot-password")
+                .then()
+                .statusCode(HttpStatus.NOT_ACCEPTABLE.value());
+    }
+
+    @Test
+    public void testForgotPasswordWithExistingEmailChangeRequestForce() {
+        User user = userRepository.findOneUserByEmail("jdoe@example.com");
+        changeEmailHashRepository.save(new ChangeEmailHash(user, "new@example.com", "hash"));
+        Map map = given()
+                .when()
+                .accept(ContentType.JSON)
+                .queryParam("force", "true")
+                .put("/myconext/api/sp/forgot-password")
+                .as(Map.class);
+        assertTrue((Boolean) map.get("forgottenPassword"));
+        assertEquals(0, changeEmailHashRepository.findByUserId(user.getId()).size());
+    }
+
+    @Test
     public void updateEmail() {
         given()
                 .when()
@@ -997,7 +1047,7 @@ public class UserControllerTest extends AbstractIntegrationTest {
                 .body(Collections.singletonMap("email", "changed@example.com"))
                 .put("/myconext/api/sp/email")
                 .then()
-                .statusCode(201);
+                .statusCode(HttpStatus.CREATED.value());
         ChangeEmailHash changeEmailHash = changeEmailHashRepository.findAll().get(0);
 
         Map map = given()
@@ -1009,6 +1059,51 @@ public class UserControllerTest extends AbstractIntegrationTest {
         assertEquals("changed@example.com", map.get("email"));
     }
 
+    @Test
+    public void updateEmailWithOutstandingPasswordResetRequest() {
+        User user = userRepository.findOneUserByEmail("jdoe@example.com");
+        passwordForgottenHashRepository.save(new PasswordForgottenHash(user, "hash"));
+
+        given()
+                .when()
+                .accept(ContentType.JSON)
+                .contentType(ContentType.JSON)
+                .body(Collections.singletonMap("email", "changed@example.com"))
+                .put("/myconext/api/sp/email")
+                .then()
+                .statusCode(HttpStatus.NOT_ACCEPTABLE.value());
+    }
+
+    @Test
+    public void updateEmailWithOutstandingPasswordResetRequestWithForce() {
+        User user = userRepository.findOneUserByEmail("jdoe@example.com");
+        passwordForgottenHashRepository.save(new PasswordForgottenHash(user, "hash"));
+
+        given()
+                .when()
+                .accept(ContentType.JSON)
+                .contentType(ContentType.JSON)
+                .body(Collections.singletonMap("email", "changed@example.com"))
+                .queryParam("force", "true")
+                .put("/myconext/api/sp/email")
+                .then()
+                .statusCode(HttpStatus.CREATED.value());
+        assertEquals(0, passwordForgottenHashRepository.findByUserId(user.getId()).size());
+    }
+
+    @Test
+    public void updateEmailWithExistingEmail() {
+        given()
+                .when()
+                .accept(ContentType.JSON)
+                .contentType(ContentType.JSON)
+                .body(Collections.singletonMap("email", "mdoe@example.com"))
+                .queryParam("force", "true")
+                .put("/myconext/api/sp/email")
+                .then()
+                .statusCode(HttpStatus.CONFLICT.value());
+    }
+
     private String samlResponse(MagicLinkResponse magicLinkResponse) throws IOException {
         Response response = magicResponse(magicLinkResponse);
 
@@ -1016,7 +1111,7 @@ public class UserControllerTest extends AbstractIntegrationTest {
     }
 
     private String samlAuthnResponse(Response response) throws IOException {
-        assertEquals(200, response.getStatusCode());
+        assertEquals(HttpStatus.OK.value(), response.getStatusCode());
         String html = IOUtils.toString(response.asInputStream(), Charset.defaultCharset());
 
         Matcher matcher = Pattern.compile("name=\"SAMLResponse\" value=\"(.*?)\"").matcher(html);

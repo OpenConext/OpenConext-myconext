@@ -86,7 +86,9 @@ I18n.translations.nl = {
         confirmed: "Je e-mail is gewijzigd naar {{email}}",
         back: "/personal",
         emailEquality: "Je nieuwe e-mailadres is gelijk aan je huidige e-mailadres",
-        duplicateEmail: "Dit e-mailadres is al in gebruik."
+        duplicateEmail: "Dit e-mailadres is al in gebruik.",
+        outstandingPasswordForgotten: "Uitstaand reset verzoek voor wachtwoord",
+        outstandingPasswordForgottenConfirmation: "Je hebt een openstaand wachtwoord vergeten link. Deze link is niet langer geldig als je deze e-mailwijziging bevestigt."
     },
     security: {
         title: "Beveiliging",
@@ -225,6 +227,8 @@ I18n.translations.nl = {
         forgotPassword: "Help! Ik ben mijn huidige wachtwoord vergeten",
         passwordResetSendAgain: "Stuur een e-mail om mijn wachtwoord opnieuw in te stellen.",
         forgotPasswordConfirmation: "Wachtwoord vergeten? Druk hieronder op 'Bevestigen' om direct een e-mail te ontvangen waarmee je je huidige wachtwoord opnieuw kunt instellen.",
+        outstandingEmailReset: "Openstaand wijzigingsverzoek voor e-mail",
+        outstandingEmailResetConfirmation: "Je hebt een openstaande bevestigingslink voor een nieuwe e-mail. Deze link is niet langer geldig als je dit verzoek voor een vergeten wachtwoord bevestigt.",
         flash: {
             passwordLink: "Een e-mail is verstuurd naar {{name}} om je wachtwoord opnieuw in te stellen."
         }

@@ -56,8 +56,9 @@ export function updateUser(user) {
     return postPutJson("/myconext/api/sp/update", user, "PUT");
 }
 
-export function updateEmail(user) {
-    return postPutJson("/myconext/api/sp/email", user, "PUT");
+export function updateEmail(user, force) {
+    const forceParam = force ? "?force=true" : "";
+    return postPutJson(`/myconext/api/sp/email${forceParam}`, user, "PUT");
 }
 
 export function confirmEmail(hash) {
@@ -70,8 +71,9 @@ export function updateSecurity(userId, currentPassword, newPassword, hash) {
     return postPutJson("/myconext/api/sp/security", body, "PUT");
 }
 
-export function forgotPasswordLink() {
-    return postPutJson("/myconext/api/sp/forgot-password", {}, "PUT");
+export function forgotPasswordLink(force = false) {
+    const forceParam = force ? "?force=true" : "";
+    return postPutJson(`/myconext/api/sp/forgot-password${forceParam}`, {}, "PUT");
 }
 
 export function startWebAuthFlow() {

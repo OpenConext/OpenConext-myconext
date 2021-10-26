@@ -86,7 +86,9 @@ I18n.translations.en = {
         confirmed: "Your email address has been changed to {{email}}",
         back: "/personal",
         emailEquality: "Your new email address is the same as your current email",
-        duplicateEmail: "This email address is already in use."
+        duplicateEmail: "This email address is already in use.",
+        outstandingPasswordForgotten: "Outstanding password forgotten request",
+        outstandingPasswordForgottenConfirmation: "You have requested a password forgotten link. This link will no longer be valid if you confirm your email change."
     },
     security: {
         title: "Security settings",
@@ -225,6 +227,8 @@ I18n.translations.en = {
         forgotPassword: "Help! I forgot my current password",
         passwordResetSendAgain: "Send an email to reset my password.",
         forgotPasswordConfirmation: "Forgot your password? Press 'Confirm' below to instantly receive an email with a link to reset your current password.",
+        outstandingEmailReset: "Outstanding email change request",
+        outstandingEmailResetConfirmation: "You have an outstanding new email confirmation link. This link will no longer be valid if you confirm your password forgotten request.",
         flash: {
             passwordLink: "An email has been sent to {{name}} with a link to reset your password"
         }

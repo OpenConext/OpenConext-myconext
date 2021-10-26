@@ -15,6 +15,8 @@ public interface PasswordForgottenHashRepository extends MongoRepository<Passwor
 
     Optional<PasswordForgottenHash> findByHashAndUserId(String hash, String userId);
 
+    List<PasswordForgottenHash> findByUserId(String userId);
+
     Long deleteByUserId(String userId);
 
     Long deleteByExpiresInBefore(Date expiryDate);
