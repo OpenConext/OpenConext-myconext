@@ -136,22 +136,22 @@ I18n.translations.nl = {
     },
     affiliationMissing: {
         header: "Account is gekoppeld, maar...",
-        info: "Je eduID is succesvol gekoppeld, maar de instelling die je hebt gekozen heeft niet de juiste attributen teruggegeven",
-        proceed: "Je kan het nogmaals met een andere instelling proberen of doorgaan naar {{name}}",
+        info: "Je eduID is succesvol gekoppeld, maar de instelling die je hebt gekozen heeft niet de juiste attributen teruggegeven.",
+        proceed: "Je kan het nogmaals met een andere instelling proberen of doorgaan naar {{name}}.",
         proceedLink: "Doorgaan",
         retryLink: "Opnieuw proberen"
     },
     eppnAlreadyLinked: {
         header: "Account niet gekoppeld!",
         info: "Je eduID kon niet worden gekoppeld. Het vertrouwde account waarmee je zojuist bent ingelogd, is al aan een ander eduID-account gekoppeld: {{email}}.",
-        proceed: "Je kan het nogmaals met een andere instelling proberen of doorgaan naar {{name}}",
+        proceed: "Je kan het nogmaals met een andere instelling proberen of doorgaan naar {{name}}.",
         proceedLink: "Doorgaan",
         retryLink: "Opnieuw proberen"
     },
     validNameMissing: {
         header: "Account is gekoppeld, maar...",
-        info: "Je eduID is succesvol gekoppeld, maar de instelling die je hebt gekozen heeft niet de juiste attributen teruggegeven",
-        proceed: "Je kan het nogmaals met een andere instelling proberen of doorgaan naar {{name}}",
+        info: "Je eduID is succesvol gekoppeld, maar de instelling die je hebt gekozen heeft niet de juiste attributen teruggegeven.",
+        proceed: "Je kan het nogmaals met een andere instelling proberen of doorgaan naar {{name}}.",
         proceedLink: "Doorgaan",
         retryLink: "Opnieuw proberen"
     },

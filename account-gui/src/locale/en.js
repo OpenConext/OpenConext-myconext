@@ -137,21 +137,21 @@ I18n.translations.en = {
     affiliationMissing: {
         header: "Account linked, but...",
         info: "Your eduID is successfully linked, however the institution you choose did not provide the correct affiliation.",
-        proceed: "You can try to link to another institution or proceed to {{name}}",
+        proceed: "You can try to link to another institution or proceed to {{name}}.",
         proceedLink: "Proceed",
         retryLink: "Retry"
     },
     eppnAlreadyLinked: {
         header: "Account not linked!",
         info: "Your eduID could not be linked. The trusted account with which you just logged in, is already linked to a different eduID account: {{email}}.",
-        proceed: "You can try to link to another institution or proceed to {{name}}",
+        proceed: "You can try to link to another institution or proceed to {{name}}.",
         proceedLink: "Proceed",
         retryLink: "Retry"
     },
     validNameMissing: {
         header: "Account linked, but...",
         info: "Your eduID is successfully linked, however the institution you choose did not provide a valid name.",
-        proceed: "You can try to link to another institution or proceed to {{name}}",
+        proceed: "You can try to link to another institution or proceed to {{name}}.",
         proceedLink: "Proceed",
         retryLink: "Retry"
     },
