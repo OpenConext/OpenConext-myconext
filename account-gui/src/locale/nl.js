@@ -91,7 +91,7 @@ I18n.translations.nl = {
     },
     stepup: {
         header: "Nog één ding!",
-        info: "Om door te gaan naar <strong> {{name}} </strong>, moet je nog aan de volgende voorwaarde(n) voldoen.",
+        info: "Om door te gaan naar <strong>{{name}}</strong>, moet je nog aan de volgende voorwaarde(n) voldoen.",
         link: "Verifieer dit via SURFconext",
         linkExternalValidation: "Verifieer dit via ReadID"
     },
