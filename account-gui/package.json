@@ -35,10 +35,9 @@
   "dependencies": {
     "@github/webauthn-json": "^0.5.7",
     "i18n-js": "^3.3.0",
-    "isomorphic-fetch": "^2.2.1",
     "js-cookie": "^2.2.1",
     "node-sass": "^5.0.0",
-    "postcss": "^8.2.10",
+    "postcss": "^8.4.5",
     "svelte-routing": "^1.4.2"
   }
 }

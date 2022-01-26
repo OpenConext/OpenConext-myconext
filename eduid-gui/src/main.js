@@ -1,6 +1,5 @@
 import "core-js/stable";
 import "regenerator-runtime/runtime";
-import "isomorphic-fetch";
 
 import App from "./App.svelte";
 
