@@ -18,7 +18,7 @@ jobs:
       uses: actions/setup-java@v1
       with:
         java-version: 11
-        server-id: openconext-releases
+        server-id: openconext-snapshots
         server-username: MAVEN_USERNAME
         server-password: MAVEN_PASSWORD
     - name: Set up cache
