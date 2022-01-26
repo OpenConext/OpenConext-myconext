@@ -4,11 +4,9 @@ on:
   push:
     tags:
       - "*"
-#on:
-#  create:
+
 jobs:
   deployment:
-#    if: ${{ startsWith(github.ref, 'refs/tags/v') }}
     environment: deploy
     runs-on: ubuntu-latest
 
