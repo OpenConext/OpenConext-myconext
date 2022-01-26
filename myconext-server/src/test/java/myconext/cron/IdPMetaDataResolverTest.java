@@ -5,7 +5,7 @@ import org.springframework.core.io.ClassPathResource;
 
 import java.util.Set;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 public class IdPMetaDataResolverTest {
 

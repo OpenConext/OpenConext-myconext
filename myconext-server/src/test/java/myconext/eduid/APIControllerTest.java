@@ -3,13 +3,12 @@ package myconext.eduid;
 import com.github.tomakehurst.wiremock.junit.WireMockRule;
 import io.restassured.http.ContentType;
 import myconext.AbstractIntegrationTest;
-import org.apache.commons.io.IOUtils;
+import org.apache.commons.io.IOUtil;
 import org.junit.ClassRule;
 import org.junit.Test;
 import org.springframework.core.io.ClassPathResource;
 
 import java.io.IOException;
-import java.nio.charset.Charset;
 import java.util.*;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.*;
@@ -134,7 +133,7 @@ public class APIControllerTest extends AbstractIntegrationTest {
         scopeList.add("openid");
 
         String file = String.format("oidc/%s.json", valid ? filePart : "introspect-invalid-token");
-        String introspectResult = IOUtils.toString(new ClassPathResource(file).getInputStream(), Charset.defaultCharset());
+        String introspectResult = IOUtil.toString(new ClassPathResource(file).getInputStream());
         String introspectResultWithScope = valid ? String.format(introspectResult, String.join(" ", scopeList)) : introspectResult;
         stubFor(post(urlPathMatching("/introspect")).willReturn(aResponse()
                 .withHeader("Content-Type", "application/json")

@@ -1,7 +1,6 @@
 package myconext.manage;
 
 import myconext.model.ServiceProvider;
-import org.springframework.scheduling.annotation.Scheduled;
 
 import java.util.Optional;
 

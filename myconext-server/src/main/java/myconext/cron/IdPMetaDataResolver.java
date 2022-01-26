@@ -44,7 +44,7 @@ public class IdPMetaDataResolver {
                     if ("Scope".equals(reader.getLocalName())) {
                         String elementText = reader.getElementText();
                         if (StringUtils.hasText(elementText)) {
-                            newDomainNames.add(elementText.trim().replaceAll("\\n\\t ","").toLowerCase());
+                            newDomainNames.add(elementText.trim().replaceAll("\\n\\t ", "").toLowerCase());
                         }
                     }
                 }

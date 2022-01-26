@@ -6,17 +6,15 @@ import lombok.SneakyThrows;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.util.StringUtils;
 
-import java.text.ParseException;
+import java.io.Serializable;
 import java.text.SimpleDateFormat;
-import java.time.ZonedDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.Map;
 import java.util.Optional;
 
 @NoArgsConstructor
 @Getter
-public class EduID {
+public class EduID implements Serializable {
 
     private String serviceProviderEntityId;
     @Indexed
@@ -46,7 +44,7 @@ public class EduID {
     }
 
     @SneakyThrows
-    public EduID(String serviceProviderEntityId, Map<String, Object> values)  {
+    public EduID(String serviceProviderEntityId, Map<String, Object> values) {
         this.serviceProviderEntityId = serviceProviderEntityId;
         this.value = (String) values.get("value");
         this.serviceName = (String) values.get("serviceName");

@@ -16,12 +16,11 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.convert.MappingMongoConverter;
 import org.springframework.data.mongodb.core.convert.MongoConverter;
 import org.springframework.data.mongodb.core.index.Index;
-import org.springframework.data.mongodb.core.index.IndexDefinition;
 import org.springframework.data.mongodb.core.index.IndexOperations;
 import org.springframework.data.mongodb.core.index.MongoPersistentEntityIndexResolver;
-import org.springframework.data.mongodb.core.mapping.BasicMongoPersistentEntity;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.MongoMappingContext;
+import org.springframework.data.mongodb.core.mapping.MongoPersistentEntity;
 import org.springframework.data.mongodb.core.query.Collation;
 
 import java.util.Locale;
@@ -63,7 +62,7 @@ public class MongoMapping {
         ((MappingMongoConverter) mongoConverter).setMapKeyDotReplacement("@");
         MongoMappingContext mappingContext = (MongoMappingContext) this.mongoConverter.getMappingContext();
 
-        for (BasicMongoPersistentEntity<?> persistentEntity : mappingContext.getPersistentEntities()) {
+        for (MongoPersistentEntity<?> persistentEntity : mappingContext.getPersistentEntities()) {
             Class clazz = persistentEntity.getType();
             if (clazz.isAnnotationPresent(Document.class)) {
                 MongoPersistentEntityIndexResolver resolver = new MongoPersistentEntityIndexResolver(mappingContext);

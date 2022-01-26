@@ -1,13 +1,9 @@
 package myconext.model;
 
 import myconext.validation.PasswordStrength;
-import net.bytebuddy.utility.RandomString;
 import org.junit.Test;
 
-import java.util.UUID;
-
 import static myconext.validation.PasswordStrength.strongEnough;
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 

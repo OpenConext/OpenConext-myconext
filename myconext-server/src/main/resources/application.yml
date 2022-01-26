@@ -6,6 +6,8 @@ logging:
     org.springframework.security: INFO
 server:
   port: 8081
+  error:
+    path: "/error"
 
 email:
   from: noreply@surfconext.nl

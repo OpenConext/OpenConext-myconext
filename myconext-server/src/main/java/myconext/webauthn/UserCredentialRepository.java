@@ -57,12 +57,12 @@ public class UserCredentialRepository implements CredentialRepository {
         String credentialKey = credentialId.getBase64Url();
         Optional<User> optionalUser = userRepository.findUserByUserHandle(userHandle.getBase64Url());
         return optionalUser.map(user ->
-                user.getPublicKeyCredentials()
-                        .stream()
-                        .filter(publicKeyCredential -> publicKeyCredential.getIdentifier().equals(credentialKey))
-                        .map(PublicKeyCredentials::getCredential)
-                        .filter(StringUtils::hasText)
-                        .findFirst())
+                        user.getPublicKeyCredentials()
+                                .stream()
+                                .filter(publicKeyCredential -> publicKeyCredential.getIdentifier().equals(credentialKey))
+                                .map(PublicKeyCredentials::getCredential)
+                                .filter(StringUtils::hasText)
+                                .findFirst())
                 .flatMap(Function.identity())
                 .map(publicKeyCose -> RegisteredCredential.builder()
                         .credentialId(credentialId)

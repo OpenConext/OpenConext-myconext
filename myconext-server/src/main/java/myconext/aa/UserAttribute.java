@@ -1,6 +1,5 @@
 package myconext.aa;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 

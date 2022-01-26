@@ -39,15 +39,12 @@ public class DefaultErrorController implements ErrorController {
         this.redirectUrl = redirectUrl;
     }
 
-    @Override
-    public String getErrorPath() {
-        return "/error";
-    }
-
     @RequestMapping("/error")
     public ResponseEntity error(HttpServletRequest request) throws URISyntaxException {
         WebRequest webRequest = new ServletWebRequest(request);
-        Map<String, Object> result = this.errorAttributes.getErrorAttributes(webRequest, ErrorAttributeOptions.defaults());
+        Map<String, Object> result = this.errorAttributes.getErrorAttributes(
+                webRequest,
+                ErrorAttributeOptions.of(ErrorAttributeOptions.Include.EXCEPTION, ErrorAttributeOptions.Include.MESSAGE));
 
         Throwable error = this.errorAttributes.getError(webRequest);
         HttpStatus statusCode;

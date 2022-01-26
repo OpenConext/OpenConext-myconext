@@ -6,6 +6,7 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.util.StringUtils;
 
+import java.io.Serializable;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.Map;
@@ -14,7 +15,7 @@ import java.util.UUID;
 @Document(collection = "user_logins")
 @Getter
 @NoArgsConstructor
-public class UserLogin {
+public class UserLogin implements Serializable {
     @Id
     private String id;
 

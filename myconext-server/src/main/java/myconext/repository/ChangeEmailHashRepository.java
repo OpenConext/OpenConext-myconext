@@ -2,7 +2,6 @@ package myconext.repository;
 
 
 import myconext.model.ChangeEmailHash;
-import myconext.model.PasswordForgottenHash;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.stereotype.Repository;
 

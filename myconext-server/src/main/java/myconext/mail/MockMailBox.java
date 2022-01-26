@@ -18,7 +18,7 @@ public class MockMailBox extends MailBox {
 
     MockMailBox(JavaMailSender mailSender, String emailFrom, String baseUrl, String mySURFconextURL, ObjectMapper objectMapper,
                 Resource mailTemplatesDirectory, Environment env) throws IOException {
-        super(mailSender, emailFrom, baseUrl, mySURFconextURL,  objectMapper, mailTemplatesDirectory);
+        super(mailSender, emailFrom, baseUrl, mySURFconextURL, objectMapper, mailTemplatesDirectory);
         this.env = env;
     }
 

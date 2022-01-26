@@ -9,7 +9,7 @@ import myconext.repository.UserRepository;
 import myconext.shibboleth.ShibbolethPreAuthenticatedProcessingFilter;
 import myconext.shibboleth.ShibbolethUserDetailService;
 import myconext.shibboleth.mock.MockShibbolethFilter;
-import org.apache.commons.io.IOUtils;
+import org.apache.commons.io.IOUtil;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,7 +37,6 @@ import org.springframework.security.web.authentication.preauth.AbstractPreAuthen
 import org.springframework.security.web.authentication.preauth.PreAuthenticatedAuthenticationProvider;
 
 import java.io.IOException;
-import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -135,7 +134,7 @@ public class SecurityConfiguration {
 
         private String read(Resource resource) throws IOException {
             LOG.info("Reading resource: " + resource.getFilename());
-            return IOUtils.toString(resource.getInputStream(), Charset.defaultCharset());
+            return IOUtil.toString(resource.getInputStream());
         }
     }
 

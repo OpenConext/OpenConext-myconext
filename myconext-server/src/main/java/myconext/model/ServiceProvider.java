@@ -1,11 +1,11 @@
 package myconext.model;
 
-import lombok.EqualsAndHashCode;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
+
+import java.io.Serializable;
 
 @Getter
-public class ServiceProvider {
+public class ServiceProvider implements Serializable {
 
     private String entityId;
     private String metaDataUrl;

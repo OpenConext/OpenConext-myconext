@@ -6,11 +6,13 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.util.StringUtils;
 
+import java.io.Serializable;
+
 @NoArgsConstructor
 @Getter
 @Setter
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
-public class AllowedDomain {
+public class AllowedDomain implements Serializable {
 
     @EqualsAndHashCode.Include
     private String emailDomain;

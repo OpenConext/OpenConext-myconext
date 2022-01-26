@@ -5,11 +5,12 @@ import com.yubico.webauthn.data.PublicKeyCredentialDescriptor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.io.Serializable;
 import java.util.Date;
 
 @Getter
 @NoArgsConstructor
-public class PublicKeyCredentials {
+public class PublicKeyCredentials implements Serializable {
 
     private String identifier;
     private String credential;

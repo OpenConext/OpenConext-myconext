@@ -21,12 +21,7 @@ public class DefaultErrorControllerTest {
 
     @Before
     public void before() {
-        subject = new DefaultErrorController(new DefaultErrorAttributes(true), "http://localhost:3001");
-    }
-
-    @Test
-    public void getErrorPath() {
-        assertEquals("/error", subject.getErrorPath());
+        subject = new DefaultErrorController(new DefaultErrorAttributes(), "http://localhost:3001");
     }
 
     @Test

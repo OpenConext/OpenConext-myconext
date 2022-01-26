@@ -15,12 +15,7 @@ import java.io.IOException;
 import java.io.StringWriter;
 import java.io.Writer;
 import java.math.BigInteger;
-import java.security.KeyPair;
-import java.security.KeyPairGenerator;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
-import java.security.NoSuchProviderException;
-import java.security.Security;
+import java.security.*;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
 import java.time.LocalDateTime;
@@ -36,7 +31,8 @@ public class KeyGenerator {
         Security.addProvider(bcProvider);
     }
 
-    private KeyGenerator() {}
+    private KeyGenerator() {
+    }
 
     public static String[] generateKeys() throws Exception {
         KeyPair kp = keyPairGenerator();

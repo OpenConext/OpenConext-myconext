@@ -1,6 +1,5 @@
 package myconext.aa;
 
-import myconext.exceptions.UserNotFoundException;
 import myconext.manage.ServiceProviderResolver;
 import myconext.model.EduID;
 import myconext.model.User;
@@ -18,7 +17,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.*;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 
 @RestController

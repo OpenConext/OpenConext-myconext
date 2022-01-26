@@ -54,7 +54,7 @@ public class ManageServiceProviderResolver implements ServiceProviderResolver {
 
     private void doRefresh(Optional<String> optionalEntityId) {
         long start = System.currentTimeMillis();
-        LOG.info("Starting to refresh metadata for entityID: " + optionalEntityId + " from "+ manageBaseUrl);
+        LOG.info("Starting to refresh metadata for entityID: " + optionalEntityId + " from " + manageBaseUrl);
         try {
             Map<String, Object> requestBody = new HashMap<>(body);
             optionalEntityId.ifPresent(s -> requestBody.put("entityid", s));
@@ -83,7 +83,7 @@ public class ManageServiceProviderResolver implements ServiceProviderResolver {
 
     private Map<String, ServiceProvider> exchangeAndParse(HttpEntity<Map<String, Object>> requestEntity, String entityType) {
         return restTemplate.exchange(manageBaseUrl + "/manage/api/internal/search/" + entityType,
-                HttpMethod.POST, requestEntity, typeReference).getBody()
+                        HttpMethod.POST, requestEntity, typeReference).getBody()
                 .stream().collect(Collectors.toMap(this::entityId, this::serviceProvider));
     }
 

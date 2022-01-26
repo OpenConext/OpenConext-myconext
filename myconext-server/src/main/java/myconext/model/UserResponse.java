@@ -1,16 +1,15 @@
 package myconext.model;
 
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
-import java.util.HashMap;
+import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
 
 @Getter
-public class UserResponse {
+public class UserResponse implements Serializable {
 
     private final String id;
     private final String email;

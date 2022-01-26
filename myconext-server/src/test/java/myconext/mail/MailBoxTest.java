@@ -15,7 +15,6 @@ import org.springframework.test.context.ActiveProfiles;
 import javax.mail.Message;
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
-import java.io.IOException;
 import java.util.UUID;
 
 import static com.icegreen.greenmail.util.GreenMailUtil.getBody;
@@ -108,7 +107,7 @@ public class MailBoxTest extends AbstractIntegrationTest {
     @Test
     public void sendForgotPassword() throws Exception {
         User user = user("jdoe@example.com");
-        mailBox.sendForgotPassword(user,"hash");
+        mailBox.sendForgotPassword(user, "hash");
 
         MimeMessage mimeMessage = mailMessage();
         MimeMessageParser parser = new MimeMessageParser(mimeMessage);

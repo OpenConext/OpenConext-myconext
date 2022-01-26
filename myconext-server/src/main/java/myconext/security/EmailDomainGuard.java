@@ -32,7 +32,7 @@ public class EmailDomainGuard {
                             @Qualifier("jsonMapper") ObjectMapper objectMapper) throws IOException {
         this.allowEnabled = allowEnabled;
         this.allowedDomains = allowEnabled ? objectMapper.readValue(allowLocationResource.getInputStream(), new TypeReference<List<AllowedDomain>>() {
-        }).stream()
+                }).stream()
                 .map(AllowedDomain::toLowerCase)
                 .collect(Collectors.toSet()) : new HashSet<>();
 
@@ -59,7 +59,7 @@ public class EmailDomainGuard {
 
         Optional<String> s = allowedDomains.stream().filter(allowedDomainPredicate(domainName))
                 .findFirst().map(AllowedDomain::getSchacHomeOrganization);
-        LOG.info(String.format("Returning schacHomeOrganization %s for email domain %s", s,  domainName));
+        LOG.info(String.format("Returning schacHomeOrganization %s for email domain %s", s, domainName));
 
         return s.orElse(schacHomeOrganization);
     }

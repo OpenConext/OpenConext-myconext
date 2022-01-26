@@ -344,7 +344,7 @@ public class UserController {
 
     @PutMapping("/sp/forgot-password")
     public ResponseEntity forgotPassword(Authentication authentication,
-                                                       @RequestParam(value = "force", required = false, defaultValue = "false") boolean force) {
+                                         @RequestParam(value = "force", required = false, defaultValue = "false") boolean force) {
         User user = userFromAuthentication(authentication);
         List<ChangeEmailHash> changeEmailHashes = changeEmailHashRepository.findByUserId(user.getId());
         if (!CollectionUtils.isEmpty(changeEmailHashes)) {

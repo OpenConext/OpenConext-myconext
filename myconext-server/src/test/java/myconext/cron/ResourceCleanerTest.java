@@ -1,7 +1,10 @@
 package myconext.cron;
 
 import myconext.AbstractIntegrationTest;
-import myconext.model.*;
+import myconext.model.ChangeEmailHash;
+import myconext.model.PasswordForgottenHash;
+import myconext.model.SamlAuthenticationRequest;
+import myconext.model.User;
 import org.junit.Test;
 import org.springframework.test.util.ReflectionTestUtils;
 
@@ -53,7 +56,7 @@ public class ResourceCleanerTest extends AbstractIntegrationTest {
         ResourceCleaner resourceCleaner =
                 new ResourceCleaner(authenticationRequestRepository, userRepository, passwordForgottenHashRepository, changeEmailHashRepository, true);
 
-        ChangeEmailHash changeEmailHash = new ChangeEmailHash(user("qwert@exp.com"), "new@email.com" ,"1234567890");
+        ChangeEmailHash changeEmailHash = new ChangeEmailHash(user("qwert@exp.com"), "new@email.com", "1234567890");
         Date twoHoursAgo = Date.from(LocalDateTime.now().minusHours(2).atZone(ZoneId.systemDefault()).toInstant());
 
         ReflectionTestUtils.setField(changeEmailHash, "expiresIn", twoHoursAgo);

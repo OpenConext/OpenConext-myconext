@@ -33,7 +33,7 @@ public class LoginControllerTest extends AbstractIntegrationTest {
                 .get("/register")
                 .then()
                 .statusCode(302)
-                .cookie(REGISTER_MODUS_COOKIE_NAME,"true")
+                .cookie(REGISTER_MODUS_COOKIE_NAME, "true")
                 .header("Location",
                         "https://my.test2.surfconext.nl/Shibboleth.sso/Login?entityID=https://localhost.surf.id&lang=en");
     }
@@ -47,7 +47,7 @@ public class LoginControllerTest extends AbstractIntegrationTest {
                 .queryParam("location", location)
                 .get("/register")
                 .then()
-                .cookie(REGISTER_MODUS_COOKIE_NAME,"true")
+                .cookie(REGISTER_MODUS_COOKIE_NAME, "true")
                 .statusCode(302)
                 .header("Location", location);
     }
@@ -60,7 +60,7 @@ public class LoginControllerTest extends AbstractIntegrationTest {
                 .get("/doLogin")
                 .then()
                 .statusCode(302)
-                .cookie(REGISTER_MODUS_COOKIE_NAME,"")
+                .cookie(REGISTER_MODUS_COOKIE_NAME, "")
                 .header("Location",
                         "https://my.test2.surfconext.nl/Shibboleth.sso/Login?entityID=https://localhost.surf.id&lang=en");
     }
@@ -74,7 +74,7 @@ public class LoginControllerTest extends AbstractIntegrationTest {
                 .queryParam("location", location)
                 .get("/doLogin")
                 .then()
-                .cookie(REGISTER_MODUS_COOKIE_NAME,"")
+                .cookie(REGISTER_MODUS_COOKIE_NAME, "")
                 .statusCode(302)
                 .header("Location", location);
     }

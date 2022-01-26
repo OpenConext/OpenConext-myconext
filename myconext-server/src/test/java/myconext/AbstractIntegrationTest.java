@@ -16,7 +16,7 @@ import myconext.repository.ChangeEmailHashRepository;
 import myconext.repository.PasswordForgottenHashRepository;
 import myconext.repository.UserRepository;
 import org.apache.commons.codec.binary.Base64;
-import org.apache.commons.io.IOUtils;
+import org.apache.commons.io.IOUtil;
 import org.junit.Before;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -172,7 +172,7 @@ public abstract class AbstractIntegrationTest {
     }
 
     public static String readFile(String path) throws IOException {
-        return IOUtils.toString(new ClassPathResource(path).getInputStream(), Charset.defaultCharset());
+        return IOUtil.toString(new ClassPathResource(path).getInputStream());
     }
 
     private String deflatedBase64encoded(String input) throws IOException {

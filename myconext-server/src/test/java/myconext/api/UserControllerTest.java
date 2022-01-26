@@ -7,12 +7,11 @@ import io.restassured.http.ContentType;
 import io.restassured.http.Cookie;
 import io.restassured.response.Response;
 import io.restassured.response.ValidatableResponse;
-import lombok.val;
 import myconext.AbstractIntegrationTest;
 import myconext.model.*;
 import myconext.repository.ChallengeRepository;
 import myconext.security.ACR;
-import org.apache.commons.io.IOUtils;
+import org.apache.commons.io.IOUtil;
 import org.apache.http.client.CookieStore;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -287,7 +286,7 @@ public class UserControllerTest extends AbstractIntegrationTest {
         String authenticationRequestId = samlAuthnRequest("Nice");
         MagicLinkResponse magicLinkResponse = magicLinkRequest(new MagicLinkRequest(authenticationRequestId, user, false, false), HttpMethod.POST);
         Response response = magicResponse(magicLinkResponse);
-        assertTrue(IOUtils.toString(response.asInputStream(), Charset.defaultCharset()).contains("Nice"));
+        assertTrue(IOUtil.toString(response.asInputStream()).contains("Nice"));
     }
 
     @Test
@@ -1112,7 +1111,7 @@ public class UserControllerTest extends AbstractIntegrationTest {
 
     private String samlAuthnResponse(Response response) throws IOException {
         assertEquals(HttpStatus.OK.value(), response.getStatusCode());
-        String html = IOUtils.toString(response.asInputStream(), Charset.defaultCharset());
+        String html = IOUtil.toString(response.asInputStream());
 
         Matcher matcher = Pattern.compile("name=\"SAMLResponse\" value=\"(.*?)\"").matcher(html);
         matcher.find();

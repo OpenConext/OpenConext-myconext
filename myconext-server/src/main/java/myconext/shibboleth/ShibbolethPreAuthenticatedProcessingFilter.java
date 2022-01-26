@@ -13,11 +13,9 @@ import org.springframework.util.StringUtils;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
-import java.io.UnsupportedEncodingException;
 import java.nio.charset.StandardCharsets;
 import java.util.Optional;
 import java.util.stream.Stream;
-
 
 import static myconext.log.MDCContext.logWithContext;
 import static myconext.security.CookieResolver.cookieByName;
@@ -94,7 +92,7 @@ public class ShibbolethPreAuthenticatedProcessingFilter extends AbstractPreAuthe
         user.setNewUser(false);
         user = userRepository.save(user);
 
-        logWithContext(user, "add", "user",LOG, String.format("Provisioned new user %s", user.getEmail()));
+        logWithContext(user, "add", "user", LOG, String.format("Provisioned new user %s", user.getEmail()));
 
         return user;
     }

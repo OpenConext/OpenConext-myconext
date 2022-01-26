@@ -5,10 +5,12 @@ import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.io.Serializable;
+
 @Document(collection = "challenges")
 @Getter
 @NoArgsConstructor
-public class Challenge {
+public class Challenge implements Serializable {
     @Id
     private String id;
 

@@ -1,6 +1,5 @@
 package myconext.manage;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.tomakehurst.wiremock.junit.WireMockRule;
 import myconext.model.ServiceProvider;
 import org.junit.ClassRule;
