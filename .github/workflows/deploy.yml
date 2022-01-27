@@ -9,6 +9,9 @@ jobs:
   deployment:
     environment: deploy
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
 
     steps:
     - uses: actions/checkout@v2
@@ -16,9 +19,9 @@ jobs:
       uses: actions/setup-java@v1
       with:
         java-version: 11
-        server-id: openconext-releases
-        server-username: MAVEN_USERNAME
-        server-password: MAVEN_PASSWORD
+#        server-id: openconext-releases
+#        server-username: MAVEN_USERNAME
+#        server-password: MAVEN_PASSWORD
     - name: Set up cache
       uses: actions/cache@v1
       with:
@@ -27,7 +30,10 @@ jobs:
         restore-keys: |
           ${{ runner.os }}-maven-
     - name: Deploy with Maven
-      run: mvn -B --no-transfer-progress deploy -DskipTests --file pom.xml
+#      run: mvn -B --no-transfer-progress deploy -DskipTests --file pom.xml
+      run: mvn --batch-mode deploy -DskipTests
+#      run: mvn -B --no-transfer-progress deploy -DskipTests --file pom.xml
       env:
-        MAVEN_USERNAME: ${{ secrets.BUILD_USERNAME }}
-        MAVEN_PASSWORD: ${{ secrets.BUILD_PASSWORD }}
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+#        MAVEN_USERNAME: ${{ secrets.BUILD_USERNAME }}
+#        MAVEN_PASSWORD: ${{ secrets.BUILD_PASSWORD }}

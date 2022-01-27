@@ -94,10 +94,15 @@
     </repositories>
 
     <distributionManagement>
+<!--        <repository>-->
+<!--            <id>openconext-releases</id>-->
+<!--            <name>OpenConext public releases repository</name>-->
+<!--            <url>dav:https://build.openconext.org/repository/public/releases</url>-->
+<!--        </repository>-->
         <repository>
-            <id>openconext-releases</id>
-            <name>OpenConext public releases repository</name>
-            <url>dav:https://build.openconext.org/repository/public/releases</url>
+            <id>github</id>
+            <name>GitHub Packages</name>
+            <url>https://maven.pkg.github.com/OpenConext/OpenConext-myconext</url>
         </repository>
         <snapshotRepository>
             <id>openconext-snapshots</id>
