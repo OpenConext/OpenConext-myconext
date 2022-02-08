@@ -17,7 +17,6 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <java.version>11</java.version>
-        <jackson.version>2.13.1</jackson.version>
     </properties>
     <dependencyManagement>
         <dependencies>
@@ -116,20 +115,13 @@
         <dependency>
             <groupId>com.fasterxml.jackson.datatype</groupId>
             <artifactId>jackson-datatype-jdk8</artifactId>
-            <version>${jackson.version}</version>
+            <version>2.13.1</version>
         </dependency>
         <dependency>
             <groupId>com.fasterxml.jackson.datatype</groupId>
             <artifactId>jackson-datatype-jsr310</artifactId>
-            <version>${jackson.version}</version>
+            <version>2.13.1</version>
         </dependency>
-        <!-- https://mvnrepository.com/artifact/org.bouncycastle/bcprov-jdk15on -->
-<!--        <dependency>-->
-<!--            <groupId>org.bouncycastle</groupId>-->
-<!--            <artifactId>bcprov-jdk15on</artifactId>-->
-<!--            <version>1.64</version>-->
-<!--        </dependency>-->
-        <!-- https://mvnrepository.com/artifact/com.yubico/webauthn-server-core -->
         <dependency>
             <groupId>com.yubico</groupId>
             <artifactId>webauthn-server-core</artifactId>

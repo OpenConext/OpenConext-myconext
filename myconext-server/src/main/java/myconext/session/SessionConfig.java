@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import myconext.model.EduID;
 import myconext.model.LinkedAccount;
 import myconext.model.PublicKeyCredentials;
@@ -35,6 +36,7 @@ public class SessionConfig extends AbstractHttpSessionApplicationInitializer {
                 .setSerializationInclusion(JsonInclude.Include.NON_ABSENT)
                 .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
                 .registerModule(new Jdk8Module())
+                .registerModule(new JavaTimeModule())
                 .addMixIn(Assertion.class, AssertionMixin.class)
                 .addMixIn(HashSet.class, HashSetMixin.class)
                 .addMixIn(User.class, UserMixin.class)
