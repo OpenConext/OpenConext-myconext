@@ -24,11 +24,11 @@ import static org.hamcrest.core.IsEqual.equalTo;
 public class SecurityConfigurationTest extends AbstractIntegrationTest {
 
     @Test
-    public void generateKeys() {
+    public void health() {
         given()
                 .when()
                 .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
-                .get("actuator/health")
+                .get("internal/health")
                 .then()
                 .body("status", equalTo("UP"));
 
