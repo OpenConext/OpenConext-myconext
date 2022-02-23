@@ -1,6 +1,9 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [6.0.0]
+- Migrated to JDK11
+
 ## [5.2.5]
 ### Fixes
 - Improve eduPersonAffiliation and eduPersonScopedAffiliation
