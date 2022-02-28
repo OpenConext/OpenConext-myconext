@@ -1,6 +1,10 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [6.0.2]
+- Move health and onfo endpoint to /internal
+- Update dependencies
+
 ## [6.0.0]
 - Migrated to JDK11
 
