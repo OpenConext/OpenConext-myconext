@@ -14,6 +14,7 @@ import org.springframework.core.io.Resource;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.util.StringUtils;
+import org.springframework.web.util.HtmlUtils;
 
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
@@ -111,7 +112,7 @@ public class MailBox {
     private Map<String, Object> variables(User user, String title) {
         Map<String, Object> variables = new HashMap<>();
         variables.put("title", title);
-        variables.put("name", user.getGivenName() + " " + user.getFamilyName());
+        variables.put("name", HtmlUtils.htmlEscape(user.getGivenName() + " " + user.getFamilyName()));
         return variables;
     }
 
