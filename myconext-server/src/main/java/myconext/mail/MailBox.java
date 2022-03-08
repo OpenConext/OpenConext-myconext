@@ -14,7 +14,6 @@ import org.springframework.core.io.Resource;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.util.StringUtils;
-import org.springframework.web.util.HtmlUtils;
 
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
@@ -25,12 +24,14 @@ import java.util.Map;
 public class MailBox {
 
     private static final Log LOG = LogFactory.getLog(MailBox.class);
+    private static final String SANITIZE_NAME = "[^\\p{L} '-]";
 
-    private JavaMailSender mailSender;
-    private String magicLinkUrl;
-    private String mySURFconextURL;
-    private String emailFrom;
-    private Map<String, Map<String, String>> subjects;
+
+    private final JavaMailSender mailSender;
+    private final String magicLinkUrl;
+    private final String mySURFconextURL;
+    private final String emailFrom;
+    private final Map<String, Map<String, String>> subjects;
 
     private final MustacheFactory mustacheFactory;
 
@@ -112,7 +113,9 @@ public class MailBox {
     private Map<String, Object> variables(User user, String title) {
         Map<String, Object> variables = new HashMap<>();
         variables.put("title", title);
-        variables.put("name", HtmlUtils.htmlEscape(user.getGivenName() + " " + user.getFamilyName()));
+        String fullName = user.getGivenName() + " " + user.getFamilyName();
+        String fullNameSanitized = fullName.replaceAll(SANITIZE_NAME, "");
+        variables.put("name", fullNameSanitized);
         return variables;
     }
 
