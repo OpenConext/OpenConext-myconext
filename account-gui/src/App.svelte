@@ -107,22 +107,22 @@
         <div class="content">
             <Router url="{url}">
                 <Route path="/login/:id" let:params>
-                    <Login id="{params.id}"></Login>
+                    <Login id="{params.id}"/>
                 </Route>
                 <Route path="/magic/:id" let:params>
-                    <MagicLink id="{params.id}"></MagicLink>
+                    <MagicLink id="{params.id}"/>
                 </Route>
                 <Route path="/stepup/:id" let:params>
-                    <Stepup id="{params.id}"></Stepup>
+                    <Stepup id="{params.id}"/>
                 </Route>
                 <Route path="/affiliation-missing/:id" let:params>
-                    <AffiliationMissing id="{params.id}"></AffiliationMissing>
+                    <AffiliationMissing id="{params.id}"/>
                 </Route>
                 <Route path="/valid-name-missing/:id" let:params>
-                    <ValidNameMissing id="{params.id}"></ValidNameMissing>
+                    <ValidNameMissing id="{params.id}"/>
                 </Route>
                 <Route path="/eppn-already-linked/:id" let:params>
-                    <EppnAlreadyLinked id="{params.id}"></EppnAlreadyLinked>
+                    <EppnAlreadyLinked id="{params.id}"/>
                 </Route>
                 <Route path="/confirm" component={Confirm}/>
                 <Route path="/confirm-stepup" component={ConfirmStepup}/>

@@ -273,6 +273,10 @@
         margin-bottom: 30px;
     }
 
+    div.info-top span {
+        margin-left: auto;
+    }
+
     :global(span.svg.attention svg) {
         width: 32px;
         height: 32px;
@@ -390,6 +394,15 @@
 {#if showSpinner}
     <Spinner/>
 {/if}
+<div class="info-top">
+    {#if $user.createAccount}
+        <span>{@html I18n.t("login.alreadyGuestAccount")} <a class="toggle-link" href="/login"
+                                                             on:click|preventDefault|stopPropagation={createAccount(false)}>{I18n.t("login.loginEduId")}</a></span>
+    {:else}
+        <span>{I18n.t("login.requestEduId")} <a class="toggle-link" href="/reguest"
+                                                on:click|preventDefault|stopPropagation={createAccount(true)}>{I18n.t("login.requestEduId2")}</a></span>
+    {/if}
+</div>
 {#if $user.createAccount}
     <h2 class="header">{I18n.t("login.header2")}</h2>
     <h2 class="top">{I18n.t("login.headerSubTitle")}<span>{serviceName}</span></h2>
@@ -505,19 +518,65 @@
                bind:this={passwordField}>
     </div>
 
-    <div class="info-top">
-        {#if $user.createAccount}
-        <span>{@html I18n.t("login.alreadyGuestAccount")} <a class="toggle-link" href="/login"
-                                                             on:click|preventDefault|stopPropagation={createAccount(false)}>{I18n.t("login.loginEduId")}</a></span>
-        {:else}
-        <span>{I18n.t("login.requestEduId")} <a class="toggle-link" href="/reguest"
-                                                on:click|preventDefault|stopPropagation={createAccount(true)}>{I18n.t("login.requestEduId2")}</a></span>
-        {/if}
-    </div>
+    <CheckBox value={$user.rememberMe}
+              label={I18n.t("login.rememberMe")}
+              onChange={val => $user.rememberMe = val}/>
 
-    <Button href="/magic"
-            disabled={showSpinner ||!allowedNext($user.email, $user.familyName, $user.givenName, $user.password, true) && !$user.usePassword}
-            label={I18n.t("login.next")}
-            className="full"
-            onClick={handleNext(false)}/>
+    <div class="options">
+        {#if $user.usePassword && !$user.useWebAuth}
+            <Button href={`/${$user.usePassword ?  I18n.t("login.login") : I18n.t("login.usePassword")}`}
+                    disabled={showSpinner ||!allowedNext($user.email, $user.familyName, $user.givenName, $user.password, true) && $user.usePassword}
+                    label={$user.usePassword ?  I18n.t("login.login") : I18n.t("login.usePassword")}
+                    className="full"
+                    onClick={handleNext(true)}/>
+            <LoginOptions/>
+            <div class="password-option">
+                {#if $conf.featureWebAuthn}
+                    <a href="/password"
+                       on:click|preventDefault|stopPropagation={handleNext(false)}>{I18n.t("login.useMagicLink")}</a>
+                    <span>{I18n.t("login.useOr")}</span>
+                    <a href="/webauthn"
+                       on:click|preventDefault|stopPropagation={switchWebAuthnPassword(true, false)}>{I18n.t("login.useWebAuth").toLowerCase()}</a>
+                {:else}
+                    <a href="/password"
+                       on:click|preventDefault|stopPropagation={handleNext(false)}>{I18n.t("login.useMagicLinkNoWebAuthn")}</a>
+                {/if}
+            </div>
+        {:else if !$user.usePassword && !$user.useWebAuth}
+            <Button href="/magic"
+                    disabled={showSpinner ||!allowedNext($user.email, $user.familyName, $user.givenName, $user.password, true) && !$user.usePassword}
+                    label={$user.usePassword ?  I18n.t("login.useMagicLink") : I18n.t("login.sendMagicLink")}
+                    className="full"
+                    onClick={handleNext(false)}/>
+            <LoginOptions/>
+            <div class="password-option">
+                {#if $conf.featureWebAuthn}
+                <a href="/webauthn"
+                   on:click|preventDefault|stopPropagation={switchWebAuthnPassword(true, false)}>{I18n.t("login.useWebAuth")}</a>
+                <span>{I18n.t("login.useOr")}</span>
+                <a href="/password"
+                   on:click|preventDefault|stopPropagation={switchWebAuthnPassword(false, true)}>{I18n.t("login.usePassword")}</a>
+                    {:else}
+                    <a href="/password"
+                       on:click|preventDefault|stopPropagation={switchWebAuthnPassword(false, true)}>{I18n.t("login.usePasswordNoWebAuthn")}</a>
+                    {/if}
+            </div>
+        {:else}
+            <Button href="/webauthn"
+                    disabled={showSpinner || (!validEmail($user.email) && !$user.usePassword)}
+                    label={I18n.t("login.loginWebAuthn")}
+                    className="full"
+                    onClick={() => webAuthnStart($user.email)}/>
+            <LoginOptions/>
+            <div class="password-option">
+                <a href="/magiclink"
+                   on:click|preventDefault|stopPropagation={switchWebAuthnPassword(false, false)}>{I18n.t("login.useMagicLink")}</a>
+                <span>{I18n.t("login.useOr")}</span>
+                <a href="/password"
+                   on:click|preventDefault|stopPropagation={switchWebAuthnPassword(false, true)}>{I18n.t("login.usePassword")}</a>
+            </div>
+
+        {/if}
+
+    </div>
 {/if}

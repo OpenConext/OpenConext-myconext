@@ -3,7 +3,7 @@ import I18n from "i18n-js";
 I18n.translations.nl = {
     login: {
         requestEduId: "Geen eduID?",
-        requestEduId2: "Vraag het aan!",
+        requestEduId2: "Maak het aan!",
         loginEduId: "Login",
         whatis: "Wat is eduID?",
         header: "Login met eduID",
@@ -58,7 +58,8 @@ I18n.translations.nl = {
         alreadyGuestAccount: "Heb je al een eduID?",
         usePasswordLink: "Gebruik toch een wachtwoord",
         useWebAuthnLink: "Of gebruik een beveiligingssleutel",
-        agreeWithTerms: "<span>Ik ga akkoord met <a tabindex='-1' href='https://eduid.nl/gebruiksvoorwaarden/' target='_blank'>de voorwaarden.</a> En ik begrijp <a tabindex='-1' href='https://eduid.nl/privacyverklaring/' target='_blank'>de privacyverklaring</a>.</span>"
+        agreeWithTerms: "<span>Ik ga akkoord met <a tabindex='-1' href='https://eduid.nl/gebruiksvoorwaarden/' target='_blank'>de voorwaarden.</a> En ik begrijp <a tabindex='-1' href='https://eduid.nl/privacyverklaring/' target='_blank'>de privacyverklaring</a>.</span>",
+        next: "Volgende"
     },
     magicLink: {
         header: "Open je mailbox!",
