@@ -15,14 +15,19 @@
     import Header from "./components/Header.svelte";
     import Footer from "./components/Footer.svelte";
     import {onMount} from "svelte";
-    import {configuration} from "./api";
+    import {allowedEmailDomains, configuration, institutionalEmailDomains} from "./api";
     import I18n from "i18n-js";
     import {conf} from "./stores/conf";
+    import {domains} from "./stores/domains";
     import Loader from "./components/Loader.svelte";
     import Stepup from "./routes/Stepup.svelte";
     import AffiliationMissing from "./routes/AffiliationMissing.svelte";
     import ValidNameMissing from "./routes/ValidNameMissing.svelte";
     import EppnAlreadyLinked from "./routes/EppnAlreadyLinked.svelte";
+    import Request from "./routes/Request.svelte";
+    import SubContent from "./components/SubContent.svelte";
+    import {user} from "./stores/user";
+    import {cookieNames} from "./validation/cookieNames";
 
     export let url = "";
 
@@ -46,14 +51,28 @@
             if (["nl", "en"].indexOf(I18n.locale) < 0) {
                 I18n.locale = "en";
             }
+            $user.knownUser = Cookies.get(cookieNames.USERNAME);
+            $user.preferredLogin = Cookies.get(cookieNames.LOGIN_PREFERENCE);
+
             loaded = true;
+
+            if ($conf.featureWarningEducationalEmailDomain) {
+                institutionalEmailDomains().then(json => {
+                    $domains.institutionDomainNames = json;
+                });
+            }
+            if ($conf.featureAllowList) {
+                allowedEmailDomains().then(json => {
+                    $domains.allowedDomainNames = json;
+                })
+            }
         }));
 
 </script>
 
 <style>
 
-    :global(:root){
+    :global(:root) {
         --color-primary-blue: #0062b0;
         --color-hover-blue: #003980;
         --color-primary-green: #008738;
@@ -75,24 +94,31 @@
         flex-direction: column;
         margin-bottom: 100px;
     }
-    .content {
+
+    .content, .sub-content {
         display: flex;
         flex-direction: column;
         position: relative;
-        padding: 24px 33px 40px;
+        padding: 30px 32px 32px;
         background-color: white;
         width: var(--width-app);
         margin: 0 auto;
         justify-content: center;
         border-radius: 4px;
-        box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.5);
+        box-shadow: 0 3px 0 2px #003980;
+    }
+
+    .sub-content {
+        margin: 16px auto 0 auto;
+        padding: 22px 32px;
     }
 
     @media (max-width: 800px) {
         .idp {
             margin: 0;
         }
-        .content {
+
+        .content, .sub-content {
             padding: 32px 28px;
             width: 100%;
             border-radius: 0;
@@ -108,6 +134,9 @@
             <Router url="{url}">
                 <Route path="/login/:id" let:params>
                     <Login id="{params.id}"/>
+                </Route>
+                <Route path="/request/:id" let:params>
+                    <Request id="{params.id}"/>
                 </Route>
                 <Route path="/magic/:id" let:params>
                     <MagicLink id="{params.id}"/>
@@ -135,6 +164,18 @@
                     <WebAuthnTest id="{params.id}"></WebAuthnTest>
                 </Route>
                 <Route component={NotFound}/>
+            </Router>
+        </div>
+        <div class="sub-content">
+            <Router url="{url}">
+                <Route path="/login/:id" let:params>
+                    <SubContent question={I18n.t("login.requestEduId")} linkText={I18n.t("login.requestEduId2")}
+                                route="/request/{params.id}"/>
+                </Route>
+                <Route path="/request/:id" let:params>
+                    <SubContent question={I18n.t("login.alreadyGuestAccount")} linkText={I18n.t("login.loginEduId")}
+                                route="/login/{params.id}"/>
+                </Route>
             </Router>
         </div>
         <Footer/>

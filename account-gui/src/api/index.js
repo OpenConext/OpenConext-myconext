@@ -63,13 +63,18 @@ export function allowedEmailDomains() {
     return fetchJson("/myconext/api/idp/email/domain/allowed")
 }
 
-export function configuration() {
-    return fetchJson("/config");
+export function configuration(eduIdPreferencesCookie) {
+    return fetchJson(`/config/${eduIdPreferencesCookie ? `/${eduIdPreferencesCookie}` : ""}`);
 }
 
 export function webAuthnRegistration(token) {
     return postPutJson("/myconext/api/idp/security/webauthn/registration", {token}, "POST");
 }
+
+export function knownAccount(email) {
+    return postPutJson("/myconext/api//idp/service/email", {email}, "POST");
+}
+
 
 export function webAuthnRegistrationResponse(token, name, credentials, request) {
     return postPutJson("/myconext/api/idp/security/webauthn/registration", {token, name, credentials, request}, "PUT");

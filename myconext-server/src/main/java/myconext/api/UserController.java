@@ -132,8 +132,17 @@ public class UserController {
 
     @GetMapping("/idp/service/name/{id}")
     public Map<String, String> serviceName(@PathVariable("id") String id) {
+        if ("42".equals(id)) {
+            return Collections.singletonMap("name", "This Beautiful Service");
+        }
         return Collections.singletonMap("name",
                 authenticationRequestRepository.findById(id).orElseThrow(ExpiredAuthenticationException::new).getServiceName());
+    }
+
+    @PostMapping("/idp/service/email")
+    public List<LoginOptions> knownAccount(@RequestBody Map<String, String> email) {
+        User user = userRepository.findOneUserByEmail(email.get("email"));
+        return user.loginOptions();
     }
 
     @GetMapping("/idp/service/hash/{hash}")

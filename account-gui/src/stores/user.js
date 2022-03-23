@@ -8,5 +8,7 @@ export const user = writable({
     rememberMe: false,
     usePassword: false,
     useWebAuth: false,
-    createAccount: false
+    createAccount: false,
+    preferredLogin: "app",
+    knownUser: null
 });

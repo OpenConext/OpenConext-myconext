@@ -15,6 +15,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.util.Assert;
+import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
 import java.io.Serializable;
@@ -44,6 +45,7 @@ public class User implements Serializable, UserDetails {
     private boolean forgottenPassword;
 
     private Map<String, List<String>> attributes = new HashMap<>();
+    private Map<String, String> surfSecureId = new HashMap<>();
 
     private List<PublicKeyCredentials> publicKeyCredentials = new ArrayList<>();
     private List<LinkedAccount> linkedAccounts = new ArrayList<>();
@@ -179,6 +181,24 @@ public class User implements Serializable, UserDetails {
     @JsonIgnore
     public List<String> allEduPersonAffiliations() {
         return linkedAccounts.stream().map(LinkedAccount::getEduPersonAffiliations).flatMap(Collection::stream).collect(Collectors.toList());
+    }
+
+    @Transient
+    @JsonIgnore
+    public List<LoginOptions> loginOptions() {
+        List<LoginOptions> result = new ArrayList<>();
+        //Order by priority
+        if (!CollectionUtils.isEmpty(this.surfSecureId)) {
+            result.add(LoginOptions.APP);
+        }
+        if (!CollectionUtils.isEmpty(this.publicKeyCredentials)) {
+            result.add(LoginOptions.FIDO);
+        }
+        if (StringUtils.hasText(this.password)) {
+            result.add(LoginOptions.PASSWORD);
+        }
+        result.add(LoginOptions.MAGIC);
+        return result;
     }
 
     public String getEduPersonPrincipalName() {

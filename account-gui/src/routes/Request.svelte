@@ -24,6 +24,7 @@
     import Button from "../components/Button.svelte";
     import LoginOptions from "../components/LoginOptions.svelte";
     import {allowedEmailDomains} from "../api";
+    import {domains} from "../stores/domains";
 
     export let id;
     let emailInUse = false;
@@ -37,12 +38,6 @@
     let passwordField;
     let agreedWithTerms = false;
 
-    let institutionDomainNames = [];
-    let institutionDomainNameWarning = false;
-
-    let allowedDomainNames = [];
-    let allowedDomainNamesError = false;
-
     const intervalId = setInterval(() => {
         const value = (passwordField || {}).value;
         if (value && !$user.usePassword) {
@@ -51,26 +46,10 @@
         }
     }, 750);
 
-    const fetchDomainsForValidation = callback => {
-        if (institutionDomainNames.length === 0 && conf && $conf.featureWarningEducationalEmailDomain) {
-            institutionalEmailDomains().then(json => {
-                institutionDomainNames = json;
-                callback && callback();
-            });
-        }
-        if (allowedDomainNames.length === 0 && $conf.featureAllowList) {
-            allowedEmailDomains().then(json => {
-                allowedDomainNames = json;
-                callback && callback();
-            })
-        }
-        callback && callback();
-    }
-
     onMount(() => {
-        if (!user) {
-            throw new Error();
-        }
+        $user.email = "";
+        $user.givenName = "";
+        $user.familyName = "";
         fetchServiceName(id).then(res => {
             serviceName = res.name;
             showSpinner = false;
@@ -78,14 +57,6 @@
         const value = Cookies.get("login_preference");
         $user.usePassword = value === "usePassword";
         $user.useWebAuth = value === "useWebAuth" && $conf.featureWebAuthn;
-        const urlParams = new URLSearchParams(window.location.search);
-
-        const modus = urlParams.get("modus");
-        const registerModus = Cookies.get("REGISTER_MODUS");
-        if ((modus && modus === "cr") || registerModus) {
-            $user.createAccount = true;
-            fetchDomainsForValidation();
-        }
     });
 
     const handleNext = passwordFlow => () => {
@@ -161,7 +132,7 @@
     const init = el => el.focus();
 
     const allowedNext = (email, familyName, givenName, password, agreedWithTerms) => {
-        return $user.createAccount ? validEmail(email) && familyName && givenName && agreedWithTerms && !allowedDomainNamesError :
+        return $user.createAccount ? validEmail(email) && familyName && givenName && agreedWithTerms && !$domains.allowedDomainNamesError :
             $user.usePassword ? validEmail(email) && password : validEmail(email);
     };
 
@@ -235,19 +206,19 @@
                 const domain = email.substring(email.lastIndexOf("@") + 1);
                 if (domain) {
                     const domainLower = domain.toLowerCase();
-                    if ($conf.featureAllowList && !allowedDomainNames.some(name => name === domainLower || domainLower.endsWith("." + name))) {
-                        allowedDomainNamesError = true;
+                    if ($conf.featureAllowList && !$domains.allowedDomainNames.some(name => name === domainLower || domainLower.endsWith("." + name))) {
+                        $domains.allowedDomainNamesError = true;
                         return;
                     }
-                    if ($conf.featureWarningEducationalEmailDomain && institutionDomainNames.some(name => name === domainLower || domainLower.endsWith("." + name))) {
-                        institutionDomainNameWarning = true;
+                    if ($conf.featureWarningEducationalEmailDomain && $domains.institutionDomainNames.some(name => name === domainLower || domainLower.endsWith("." + name))) {
+                        $domains.institutionDomainNameWarning = true;
                         return;
                     }
                 }
             }
         }
-        institutionDomainNameWarning = false;
-        allowedDomainNamesError = false;
+        $domains.institutionDomainNameWarning = false;
+        $domains.allowedDomainNamesError = false;
     }
 
     const handlePasswordEnter = e => e.key === "Enter" && handleNext(true)();
@@ -266,12 +237,6 @@
 </script>
 
 <style lang="scss">
-
-    div.info-top {
-        display: flex;
-        flex-direction: column;
-        margin-bottom: 30px;
-    }
 
     :global(span.svg.attention svg) {
         width: 32px;
@@ -301,7 +266,7 @@
         display: flex;
         flex-direction: column;
         width: 100%;
-        padding: 5px 0 30px 0;
+        padding-top: 5px;
     }
 
     div.error {
@@ -342,7 +307,7 @@
         color: var(--color-primary-red);
     }
 
-    input[type=email], input[type=text], input[type=password] {
+    input[type=email], input[type=text] {
         border: 1px solid #727272;
         border-radius: 6px;
         padding: 14px;
@@ -369,24 +334,13 @@
         font-weight: 600;
     }
 
-    div.password-option {
-        margin-top: 10px;
-    }
-
 </style>
 {#if showSpinner}
     <Spinner/>
 {/if}
-{#if $user.createAccount}
     <h2 class="header">{I18n.t("login.header2")}</h2>
     <h2 class="top">{I18n.t("login.headerSubTitle")}<span>{serviceName}</span></h2>
-{:else}
-    <h2 class="header">{I18n.t("login.header")}</h2>
-    <h2 class="top">{I18n.t("login.headerSubTitle")}<span>{serviceName}</span></h2>
-{/if}
-{#if $user.createAccount}
     <label for="email" class="pre-input-label">{I18n.t("login.email")}</label>
-{/if}
 <input type="email"
        autocomplete="username"
        id="email"
@@ -396,7 +350,7 @@
        bind:value={$user.email}
        on:blur={handleEmailBlur}
        on:keydown={handleEmailEnter}>
-{#if !$user.createAccount && emailNotFound}
+{#if emailNotFound}
     <div class="error">
         <span class="svg">{@html critical}</span>
         <div>
@@ -415,7 +369,7 @@
 {#if !initial && !validEmail($user.email)}
     <div class="error"><span class="svg">{@html critical}</span><span>{I18n.t("login.invalidEmail")}</span></div>
 {/if}
-{#if $user.createAccount && emailInUse}
+{#if emailInUse}
     <div class="error">
         <span class="svg">{@html critical}</span>
         <div>
@@ -426,7 +380,7 @@
         </div>
     </div>
 {/if}
-{#if $user.createAccount && institutionDomainNameWarning}
+{#if $domains.institutionDomainNameWarning}
     <div class="institution-warning">
         <span class="svg attention">{@html attention}</span>
         <div class="text">
@@ -438,7 +392,7 @@
 
 {/if}
 
-{#if $user.createAccount && allowedDomainNamesError}
+{#if $domains.allowedDomainNamesError}
     <div class="domain-not-allowed">
         <span class="svg error">{@html critical}</span>
         <div class="text">
@@ -451,7 +405,6 @@
 
 {/if}
 
-{#if $user.createAccount}
     <label for="given-name" class="pre-input-label">{I18n.t("login.givenName")}</label>
     <input type="text"
            id="given-name"
@@ -481,20 +434,3 @@
                 label={I18n.t("login.requestEduIdButton")}
                 onClick={handleNext(false)}/>
     </div>
-{:else}
-    <div id="password" class:hidden={!$user.usePassword || $user.useWebAuth}>
-        <input type="password"
-               autocomplete="current-password"
-               id="password-field"
-               placeholder={I18n.t("login.passwordPlaceholder")}
-               on:keydown={handlePasswordEnter}
-               bind:value={$user.password}
-               bind:this={passwordField}>
-    </div>
-
-    <Button href="/magic"
-            disabled={showSpinner ||!allowedNext($user.email, $user.familyName, $user.givenName, $user.password, true) && !$user.usePassword}
-            label={I18n.t("login.next")}
-            className="full"
-            onClick={handleNext(false)}/>
-{/if}

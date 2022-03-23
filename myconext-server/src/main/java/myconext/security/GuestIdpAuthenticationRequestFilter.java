@@ -188,11 +188,11 @@ public class GuestIdpAuthenticationRequestFilter extends IdpAuthenticationReques
 
             LOG.debug("Cookie REGISTER_MODUS_COOKIE_NAME is: " + optionalCookie.map(Cookie::getValue).orElse("Null"));
 
-            String modus = optionalCookie.map(c -> "&modus=cr").orElse("");
             String stepUp = accountLinkingRequired ? "&stepup=true" : "";
-            String separator = StringUtils.hasText(modus) || StringUtils.hasText(stepUp) ? "?n=1" : "";
-            response.sendRedirect(this.redirectUrl + "/login/" + samlAuthenticationRequest.getId() +
-                    separator + modus + stepUp);
+            String separator = StringUtils.hasText(stepUp) ? "?n=1" : "";
+            String path = optionalCookie.map(c -> "/request/").orElse("/login/");
+            response.sendRedirect(this.redirectUrl + path + samlAuthenticationRequest.getId() +
+                    separator + stepUp);
         }
     }
 
