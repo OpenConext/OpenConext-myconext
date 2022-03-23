@@ -19,11 +19,7 @@
     }
 
 </style>
-<div class="home">
-    <div class="card">
-        <h1>{I18n.t("expired.title")}</h1>
-        <p>{@html I18n.t("expired.info")}</p>
-        <Button label={I18n.t("expired.back")} href={`https://${$conf.domain}`}
-                onClick={() => window.location.href = `https://${$conf.domain}`}/>
-    </div>
-</div>
+<h1>{I18n.t("expired.title")}</h1>
+<p>{@html I18n.t("expired.info")}</p>
+<Button label={I18n.t("expired.back")} href={`https://${$conf.domain}`}
+        onClick={() => window.location.href = `https://${$conf.domain}`}/>

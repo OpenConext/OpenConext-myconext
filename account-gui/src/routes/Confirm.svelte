@@ -35,7 +35,6 @@
 
 <style>
 
-
     h2 {
         margin: 30px 0 40px 0;
         font-size: 32px;
@@ -51,15 +50,11 @@
     <Spinner/>
 {/if}
 
-<div class="home">
-    <div class="card">
-        <h2>{I18n.t("confirm.header")}</h2>
-        <p class="info">{I18n.t("confirm.thanks")}</p>
-        {#if explanation}
-            <Verification explanation={explanation} verified={true}/>
-        {/if}
-        <Button href="/proceed" onClick={proceed}
-                className="full"
-                label={I18n.t("confirmStepup.proceed", {name: serviceName})}/>
-    </div>
-</div>
+<h2>{I18n.t("confirm.header")}</h2>
+<p class="info">{I18n.t("confirm.thanks")}</p>
+{#if explanation}
+    <Verification explanation={explanation} verified={true}/>
+{/if}
+<Button href="/proceed" onClick={proceed}
+        className="full"
+        label={I18n.t("confirmStepup.proceed", {name: serviceName})}/>

@@ -56,19 +56,14 @@
     <Spinner/>
 {/if}
 
-<div class="home">
-    <div class="card">
-        <h2>{I18n.t("affiliationMissing.header")}</h2>
-        <p class="info">{I18n.t("affiliationMissing.info")}</p>
-        <p class="info">{I18n.t("affiliationMissing.proceed", {name: serviceName})}</p>
+<h2>{I18n.t("affiliationMissing.header")}</h2>
+<p class="info">{I18n.t("affiliationMissing.info")}</p>
+<p class="info">{I18n.t("affiliationMissing.proceed", {name: serviceName})}</p>
 
-        <Button href="/proceed" onClick={proceed}
-                className="cancel"
-                label={I18n.t("affiliationMissing.proceedLink")}/>
-        <div class="last">
-            <Button href="/retry" onClick={retry}
-                    label={I18n.t("affiliationMissing.retryLink")}/>
-        </div>
-
-    </div>
+<Button href="/proceed" onClick={proceed}
+        className="cancel"
+        label={I18n.t("affiliationMissing.proceedLink")}/>
+<div class="last">
+    <Button href="/retry" onClick={retry}
+            label={I18n.t("affiliationMissing.retryLink")}/>
 </div>

@@ -3,7 +3,6 @@
     import {onMount} from 'svelte';
     import {conf} from "../stores/conf";
     import Button from "../components/Button.svelte";
-    import oneMoreThing from "../icons/onemorething_filled.svg";
     import Verification from "../components/Verification.svelte";
     import {fetchServiceNameByHash} from "../api";
     import Spinner from "../components/Spinner.svelte";
@@ -37,24 +36,12 @@
 
 <style>
 
-
-    h2 {
-        margin: 30px 0;
-        font-size: 32px;
-        color: var(--color-primary-green);
-    }
-
 </style>
 {#if showSpinner}
     <Spinner/>
 {/if}
-<div class="home">
-    <div class="card">
-        <h2>{I18n.t("confirmStepup.header")}</h2>
-        <Verification explanation={explanation} verified={true}/>
-        <Button href="/proceed" onClick={proceed}
-                className="full"
-                label={I18n.t("confirmStepup.proceed", {name: serviceName})}/>
-
-    </div>
-</div>
+<h2 class="green">{I18n.t("confirmStepup.header")}</h2>
+<Verification explanation={explanation} verified={true}/>
+<Button href="/proceed" onClick={proceed}
+        className="full"
+        label={I18n.t("confirmStepup.proceed", {name: serviceName})}/>

@@ -1,7 +1,7 @@
 import {writable} from 'svelte/store';
 
 export const user = writable({
-    email: "",
+    email: "jdoe@example.com",
     givenName: "",
     familyName: "",
     password: "",
@@ -9,6 +9,6 @@ export const user = writable({
     usePassword: false,
     useWebAuth: false,
     createAccount: false,
-    preferredLogin: "app",
+    preferredLogin: null,
     knownUser: null
 });

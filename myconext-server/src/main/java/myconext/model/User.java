@@ -185,7 +185,7 @@ public class User implements Serializable, UserDetails {
 
     @Transient
     @JsonIgnore
-    public List<LoginOptions> loginOptions() {
+    public List<String> loginOptions() {
         List<LoginOptions> result = new ArrayList<>();
         //Order by priority
         if (!CollectionUtils.isEmpty(this.surfSecureId)) {
@@ -198,7 +198,7 @@ public class User implements Serializable, UserDetails {
             result.add(LoginOptions.PASSWORD);
         }
         result.add(LoginOptions.MAGIC);
-        return result;
+        return result.stream().map(LoginOptions::getValue).collect(Collectors.toList());
     }
 
     public String getEduPersonPrincipalName() {

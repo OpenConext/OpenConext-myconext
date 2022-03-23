@@ -6,9 +6,9 @@
     import Spinner from "../components/Spinner.svelte";
     import {resendMagicLinkMail, successfullyLoggedIn} from "../api";
     import {conf} from "../stores/conf";
-    import {status} from "../validation/loginStatus";
+    import {status} from "../constants/loginStatus";
     import Button from "../components/Button.svelte";
-    import {validVerificationCode} from "../validation/regexp";
+    import {validVerificationCode} from "../constants/regexp";
     import critical from "../icons/critical.svg";
     const gmail = "/img/get-started-icon-gmail@2x-e80b706.png";
     const outlook = "/img/get-started-icon-outlook-55f9ac5.png";

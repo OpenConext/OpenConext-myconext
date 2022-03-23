@@ -24,7 +24,6 @@
     import Button from "../components/Button.svelte";
     import LoginOptions from "../components/LoginOptions.svelte";
     import {allowedEmailDomains} from "../api";
-    import {domains} from "../stores/domains";
 
     export let id;
     let emailInUse = false;
@@ -38,18 +37,17 @@
     let passwordField;
     let agreedWithTerms = false;
 
-    const intervalId = setInterval(() => {
-        const value = (passwordField || {}).value;
-        if (value && !$user.usePassword) {
-            $user.usePassword = true;
-            clearInterval(intervalId);
-        }
-    }, 750);
+    let institutionDomainNames = [];
+    let institutionDomainNameWarning = false;
+
+    let allowedDomainNames = [];
+    let allowedDomainNamesError = false;
 
     onMount(() => {
-        $user.email = "";
-        $user.givenName = "";
-        $user.familyName = "";
+        debugger;
+        if (!user) {
+            throw new Error();
+        }
         fetchServiceName(id).then(res => {
             serviceName = res.name;
             showSpinner = false;
@@ -57,6 +55,14 @@
         const value = Cookies.get("login_preference");
         $user.usePassword = value === "usePassword";
         $user.useWebAuth = value === "useWebAuth" && $conf.featureWebAuthn;
+        const urlParams = new URLSearchParams(window.location.search);
+
+        const modus = urlParams.get("modus");
+        const registerModus = Cookies.get("REGISTER_MODUS");
+        if ((modus && modus === "cr") || registerModus) {
+            $user.createAccount = true;
+
+        }
     });
 
     const handleNext = passwordFlow => () => {
@@ -132,7 +138,7 @@
     const init = el => el.focus();
 
     const allowedNext = (email, familyName, givenName, password, agreedWithTerms) => {
-        return $user.createAccount ? validEmail(email) && familyName && givenName && agreedWithTerms && !$domains.allowedDomainNamesError :
+        return $user.createAccount ? validEmail(email) && familyName && givenName && agreedWithTerms && !allowedDomainNamesError :
             $user.usePassword ? validEmail(email) && password : validEmail(email);
     };
 
@@ -206,19 +212,19 @@
                 const domain = email.substring(email.lastIndexOf("@") + 1);
                 if (domain) {
                     const domainLower = domain.toLowerCase();
-                    if ($conf.featureAllowList && !$domains.allowedDomainNames.some(name => name === domainLower || domainLower.endsWith("." + name))) {
-                        $domains.allowedDomainNamesError = true;
+                    if ($conf.featureAllowList && !allowedDomainNames.some(name => name === domainLower || domainLower.endsWith("." + name))) {
+                        allowedDomainNamesError = true;
                         return;
                     }
-                    if ($conf.featureWarningEducationalEmailDomain && $domains.institutionDomainNames.some(name => name === domainLower || domainLower.endsWith("." + name))) {
-                        $domains.institutionDomainNameWarning = true;
+                    if ($conf.featureWarningEducationalEmailDomain && institutionDomainNames.some(name => name === domainLower || domainLower.endsWith("." + name))) {
+                        institutionDomainNameWarning = true;
                         return;
                     }
                 }
             }
         }
-        $domains.institutionDomainNameWarning = false;
-        $domains.allowedDomainNamesError = false;
+        institutionDomainNameWarning = false;
+        allowedDomainNamesError = false;
     }
 
     const handlePasswordEnter = e => e.key === "Enter" && handleNext(true)();
@@ -237,6 +243,12 @@
 </script>
 
 <style lang="scss">
+
+    div.info-top {
+        display: flex;
+        flex-direction: column;
+        margin-bottom: 30px;
+    }
 
     :global(span.svg.attention svg) {
         width: 32px;
@@ -266,7 +278,7 @@
         display: flex;
         flex-direction: column;
         width: 100%;
-        padding-top: 5px;
+        padding: 5px 0 30px 0;
     }
 
     div.error {
@@ -307,7 +319,7 @@
         color: var(--color-primary-red);
     }
 
-    input[type=email], input[type=text] {
+    input[type=email], input[type=text], input[type=password] {
         border: 1px solid #727272;
         border-radius: 6px;
         padding: 14px;
@@ -334,13 +346,24 @@
         font-weight: 600;
     }
 
+    div.password-option {
+        margin-top: 10px;
+    }
+
 </style>
 {#if showSpinner}
     <Spinner/>
 {/if}
+{#if $user.createAccount}
     <h2 class="header">{I18n.t("login.header2")}</h2>
     <h2 class="top">{I18n.t("login.headerSubTitle")}<span>{serviceName}</span></h2>
+{:else}
+    <h2 class="header">{I18n.t("login.header")}</h2>
+    <h2 class="top">{I18n.t("login.headerSubTitle")}<span>{serviceName}</span></h2>
+{/if}
+{#if $user.createAccount}
     <label for="email" class="pre-input-label">{I18n.t("login.email")}</label>
+{/if}
 <input type="email"
        autocomplete="username"
        id="email"
@@ -350,7 +373,7 @@
        bind:value={$user.email}
        on:blur={handleEmailBlur}
        on:keydown={handleEmailEnter}>
-{#if emailNotFound}
+{#if !$user.createAccount && emailNotFound}
     <div class="error">
         <span class="svg">{@html critical}</span>
         <div>
@@ -369,7 +392,7 @@
 {#if !initial && !validEmail($user.email)}
     <div class="error"><span class="svg">{@html critical}</span><span>{I18n.t("login.invalidEmail")}</span></div>
 {/if}
-{#if emailInUse}
+{#if $user.createAccount && emailInUse}
     <div class="error">
         <span class="svg">{@html critical}</span>
         <div>
@@ -380,7 +403,7 @@
         </div>
     </div>
 {/if}
-{#if $domains.institutionDomainNameWarning}
+{#if $user.createAccount && institutionDomainNameWarning}
     <div class="institution-warning">
         <span class="svg attention">{@html attention}</span>
         <div class="text">
@@ -392,7 +415,7 @@
 
 {/if}
 
-{#if $domains.allowedDomainNamesError}
+{#if $user.createAccount && allowedDomainNamesError}
     <div class="domain-not-allowed">
         <span class="svg error">{@html critical}</span>
         <div class="text">
@@ -405,6 +428,7 @@
 
 {/if}
 
+{#if $user.createAccount}
     <label for="given-name" class="pre-input-label">{I18n.t("login.givenName")}</label>
     <input type="text"
            id="given-name"
@@ -434,3 +458,20 @@
                 label={I18n.t("login.requestEduIdButton")}
                 onClick={handleNext(false)}/>
     </div>
+{:else}
+    <div id="password" class:hidden={!$user.usePassword || $user.useWebAuth}>
+        <input type="password"
+               autocomplete="current-password"
+               id="password-field"
+               placeholder={I18n.t("login.passwordPlaceholder")}
+               on:keydown={handlePasswordEnter}
+               bind:value={$user.password}
+               bind:this={passwordField}>
+    </div>
+
+    <Button href="/magic"
+            disabled={showSpinner ||!allowedNext($user.email, $user.familyName, $user.givenName, $user.password, true) && !$user.usePassword}
+            label={I18n.t("login.next")}
+            className="full"
+            onClick={handleNext(false)}/>
+{/if}

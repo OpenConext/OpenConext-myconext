@@ -27,7 +27,12 @@
     import Request from "./routes/Request.svelte";
     import SubContent from "./components/SubContent.svelte";
     import {user} from "./stores/user";
-    import {cookieNames} from "./validation/cookieNames";
+    import {cookieNames} from "./constants/cookieNames";
+    import UseApp from "./routes/UseApp.svelte";
+    import UseWebAuth from "./routes/UseWebAuth.svelte";
+    import UseLink from "./routes/UseLink.svelte";
+    import UsePassword from "./routes/UsePassword.svelte";
+    import Options from "./routes/Options.svelte";
 
     export let url = "";
 
@@ -95,7 +100,7 @@
         margin-bottom: 100px;
     }
 
-    .content, .sub-content {
+    .content {
         display: flex;
         flex-direction: column;
         position: relative;
@@ -108,17 +113,12 @@
         box-shadow: 0 3px 0 2px #003980;
     }
 
-    .sub-content {
-        margin: 16px auto 0 auto;
-        padding: 22px 32px;
-    }
-
     @media (max-width: 800px) {
         .idp {
             margin: 0;
         }
 
-        .content, .sub-content {
+        .content {
             padding: 32px 28px;
             width: 100%;
             border-radius: 0;
@@ -138,8 +138,23 @@
                 <Route path="/request/:id" let:params>
                     <Request id="{params.id}"/>
                 </Route>
+                <Route path="/useapp/:id" let:params>
+                    <UseApp id="{params.id}"/>
+                </Route>
+                <Route path="/usewebauthn/:id" let:params>
+                    <UseApp id="{params.id}"/>
+                </Route>
+                <Route path="/uselink/:id" let:params>
+                    <UseLink id="{params.id}"/>
+                </Route>
+                <Route path="/usepassword/:id" let:params>
+                    <UsePassword id="{params.id}"/>
+                </Route>
                 <Route path="/magic/:id" let:params>
                     <MagicLink id="{params.id}"/>
+                </Route>
+                <Route path="/options/:id" let:params>
+                    <Options id="{params.id}"/>
                 </Route>
                 <Route path="/stepup/:id" let:params>
                     <Stepup id="{params.id}"/>
@@ -166,18 +181,46 @@
                 <Route component={NotFound}/>
             </Router>
         </div>
-        <div class="sub-content">
-            <Router url="{url}">
-                <Route path="/login/:id" let:params>
-                    <SubContent question={I18n.t("login.requestEduId")} linkText={I18n.t("login.requestEduId2")}
-                                route="/request/{params.id}"/>
-                </Route>
-                <Route path="/request/:id" let:params>
-                    <SubContent question={I18n.t("login.alreadyGuestAccount")} linkText={I18n.t("login.loginEduId")}
-                                route="/login/{params.id}"/>
-                </Route>
-            </Router>
-        </div>
+        <Router url="{url}">
+            <Route path="/login/:id" let:params>
+                <SubContent question={I18n.t("login.requestEduId")} linkText={I18n.t("login.requestEduId2")}
+                            route="/request/{params.id}"/>
+            </Route>
+            <Route path="/request/:id" let:params>
+                <SubContent question={I18n.t("login.alreadyGuestAccount")}
+                            linkText={I18n.t("login.loginEduId")}
+                            route="/login/{params.id}"/>
+            </Route>
+            <Route path="/useapp/:id" let:params>
+                <SubContent question={I18n.t("login.noAppAccess")}
+                            preLink={I18n.t("login.useAnother")}
+                            linkText={I18n.t("login.optionsLink")}
+                            route="/options/{params.id}"/>
+            </Route>
+            <Route path="/usewebauthn/:id" let:params>
+                <SubContent question={I18n.t("login.useAnother")}
+                            linkText={I18n.t("login.optionsLink")}
+                            route="/options/{params.id}"/>
+            </Route>
+            <Route path="/uselink/:id" let:params>
+                <SubContent question={I18n.t("login.noMailAccess")}
+                            preLink={I18n.t("login.useAnother")}
+                            linkText={I18n.t("login.optionsLink")}
+                            route="/options/{params.id}"/>
+            </Route>
+            <Route path="/usepassword/:id" let:params>
+                <SubContent question={I18n.t("login.forgotPassword")}
+                            preLink={I18n.t("login.useAnother")}
+                            linkText={I18n.t("login.optionsLink")}
+                            route="/options/{params.id}"/>
+            </Route>
+            <Route path="/options/:id" let:params>
+                <SubContent question={I18n.t("options.noLogin")}
+                            preLink={I18n.t("options.learn")}
+                            linkText={I18n.t("options.learnLink")}
+                            route="/recovery/{params.id}"/>
+            </Route>
+        </Router>
         <Footer/>
     </div>
 {:else}
