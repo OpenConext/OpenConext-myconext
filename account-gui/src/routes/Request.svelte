@@ -10,7 +10,6 @@
 
     import {
         fetchServiceName,
-        institutionalEmailDomains,
         magicLinkExistingUser,
         magicLinkNewUser,
         webAuthnStartAuthentication,
@@ -22,8 +21,6 @@
     import {onMount} from "svelte";
     import Cookies from "js-cookie";
     import Button from "../components/Button.svelte";
-    import LoginOptions from "../components/LoginOptions.svelte";
-    import {allowedEmailDomains} from "../api";
     import {domains} from "../stores/domains";
 
     export let id;
@@ -338,9 +335,9 @@
 {#if showSpinner}
     <Spinner/>
 {/if}
-    <h2 class="header">{I18n.t("login.header2")}</h2>
-    <h2 class="top">{I18n.t("login.headerSubTitle")}<span>{serviceName}</span></h2>
-    <label for="email" class="pre-input-label">{I18n.t("login.email")}</label>
+<h2 class="header">{I18n.t("login.header2")}</h2>
+<h2 class="top">{I18n.t("login.headerSubTitle")}<span>{serviceName}</span></h2>
+<label for="email" class="pre-input-label">{I18n.t("login.email")}</label>
 <input type="email"
        autocomplete="username"
        id="email"
@@ -405,32 +402,32 @@
 
 {/if}
 
-    <label for="given-name" class="pre-input-label">{I18n.t("login.givenName")}</label>
-    <input type="text"
-           id="given-name"
-           placeholder={I18n.t("login.givenNamePlaceholder")}
-           bind:value={$user.givenName}
-           on:change={clearGivenName}>
-    {#if !initial && !$user.givenName}
-        <span class="error">{I18n.t("login.requiredAttribute", {attr: I18n.t("login.givenName")})}</span>
-    {/if}
-    <label for="family-name" class="pre-input-label">{I18n.t("login.familyName")}</label>
-    <input type="text"
-           id="family-name"
-           placeholder={I18n.t("login.familyNamePlaceholder")}
-           bind:value={$user.familyName}
-           on:change={clearFamilyName}>
-    {#if !initial && !$user.familyName}
-        <span class="error">{I18n.t("login.requiredAttribute", {attr: I18n.t("login.familyName")})}</span>
-    {/if}
-    <CheckBox value={agreedWithTerms}
-              className="light"
-              label={I18n.t("login.agreeWithTerms")}
-              onChange={val => agreedWithTerms = val}/>
-    <div class="options">
-        <Button disabled={showSpinner || !allowedNext($user.email, $user.familyName, $user.givenName, $user.password, agreedWithTerms)}
-                href="/magic"
-                className="full"
-                label={I18n.t("login.requestEduIdButton")}
-                onClick={handleNext(false)}/>
-    </div>
+<label for="given-name" class="pre-input-label">{I18n.t("login.givenName")}</label>
+<input type="text"
+       id="given-name"
+       placeholder={I18n.t("login.givenNamePlaceholder")}
+       bind:value={$user.givenName}
+       on:change={clearGivenName}>
+{#if !initial && !$user.givenName}
+    <span class="error">{I18n.t("login.requiredAttribute", {attr: I18n.t("login.givenName")})}</span>
+{/if}
+<label for="family-name" class="pre-input-label">{I18n.t("login.familyName")}</label>
+<input type="text"
+       id="family-name"
+       placeholder={I18n.t("login.familyNamePlaceholder")}
+       bind:value={$user.familyName}
+       on:change={clearFamilyName}>
+{#if !initial && !$user.familyName}
+    <span class="error">{I18n.t("login.requiredAttribute", {attr: I18n.t("login.familyName")})}</span>
+{/if}
+<CheckBox value={agreedWithTerms}
+          className="light"
+          label={I18n.t("login.agreeWithTerms")}
+          onChange={val => agreedWithTerms = val}/>
+<div class="options">
+    <Button disabled={showSpinner || !allowedNext($user.email, $user.familyName, $user.givenName, $user.password, agreedWithTerms)}
+            href="/magic"
+            className="full"
+            label={I18n.t("login.requestEduIdButton")}
+            onClick={handleNext(false)}/>
+</div>

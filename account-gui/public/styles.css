@@ -107,14 +107,37 @@ h2 {
     font-weight: 700;
 }
 
+h2.header {
+    font-size: 24px;
+}
+
 h2.green {
     margin: 30px 0;
     font-size: 32px;
     color: var(--color-primary-green);
 }
 
+h2.top {
+    margin: 0 0 15px 0;
+    word-break: break-word;
+    font-size: 16px;
+    font-weight: 600;
+}
+
+h2.top span {
+    color: var(--color-primary-green);
+    font-size: 16px;
+    font-family: Nunito, sans-serif;
+}
+
 h3 {
     font-size: 18px;
     line-height: 26px;
     font-weight: 700;
+}
+
+div.info-top {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 30px;
 }

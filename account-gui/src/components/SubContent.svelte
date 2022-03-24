@@ -43,15 +43,15 @@
         font-weight: normal;
     }
 
-    a:hover {
-        color: var(--color-hover-blue);
-        font-weight: bold;
-    }
-
     a {
         color: var(--color-primary-blue);
         text-decoration: underline;
         font-weight: normal;
+
+        &:hover {
+            color: var(--color-hover-blue);
+            font-weight: bold;
+        }
     }
 
 </style>
@@ -59,8 +59,7 @@
     <div class="sub-content-inner">
         <span class="question">{@html question}
             <span class="pre-link">{preLink}</span>
-            <a class="toggle-link"
-               href={route}
+            <a href={route}
                use:link>
                 {linkText}
             </a>

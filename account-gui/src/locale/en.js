@@ -138,7 +138,19 @@ I18n.translations.en = {
     webAuthn: {
         info: "Add security key",
         browserPrompt: "Click the button below to add a security key to your eduID account. Please follow the instructions given by your browser.",
-        start: "Start"
+        start: "Start",
+        header: "Sign in with a security key",
+        explanation: "Your device will open a security window. Follow the instructions there to sign in.",
+        next: "Log in with a security key",
+        error: "Currently you can not use your security key to login."
+    },
+    useLink: {
+        header: "Request a magic link",
+        next: "Email a magic link"
+    },
+    usePassword: {
+        header: "Enter your password",
+        passwordIncorrect: "Password is incorrect"
     },
     webAuthnTest: {
         info: "Test security key",

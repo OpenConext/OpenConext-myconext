@@ -141,7 +141,8 @@ public class UserController {
 
     @PostMapping("/idp/service/email")
     public List<String> knownAccount(@RequestBody Map<String, String> email) {
-        User user = userRepository.findUserByEmail(email.get("email")).orElseThrow(() -> new UserNotFoundException(""));
+        User user = userRepository.findUserByEmail(email.get("email"))
+                .orElseThrow(() -> new UserNotFoundException(String.format("User with email %s not found", email.get("email"))));
         return user.loginOptions();
     }
 

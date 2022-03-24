@@ -33,6 +33,7 @@
     import UseLink from "./routes/UseLink.svelte";
     import UsePassword from "./routes/UsePassword.svelte";
     import Options from "./routes/Options.svelte";
+    import UserLink from "./components/UserLink.svelte";
 
     export let url = "";
 
@@ -57,6 +58,7 @@
                 I18n.locale = "en";
             }
             $user.knownUser = Cookies.get(cookieNames.USERNAME);
+            $user.email = $user.knownUser || "";
             $user.preferredLogin = Cookies.get(cookieNames.LOGIN_PREFERENCE);
 
             loaded = true;
@@ -111,6 +113,7 @@
         justify-content: center;
         border-radius: 4px;
         box-shadow: 0 3px 0 2px #003980;
+        min-height: 100px;
     }
 
     @media (max-width: 800px) {
@@ -130,6 +133,7 @@
 {#if loaded}
     <div class="idp">
         <Header/>
+        <UserLink/>
         <div class="content">
             <Router url="{url}">
                 <Route path="/login/:id" let:params>
@@ -142,7 +146,7 @@
                     <UseApp id="{params.id}"/>
                 </Route>
                 <Route path="/usewebauthn/:id" let:params>
-                    <UseApp id="{params.id}"/>
+                    <UseWebAuth id="{params.id}"/>
                 </Route>
                 <Route path="/uselink/:id" let:params>
                     <UseLink id="{params.id}"/>

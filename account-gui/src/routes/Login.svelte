@@ -10,13 +10,12 @@
     import Cookies from "js-cookie";
     import Button from "../components/Button.svelte";
     import userIcon from "../icons/video-game-magic-wand.svg";
+    import {cookieNames} from "../constants/cookieNames";
 
     export let id;
     let emailNotFound = false;
-    let initial = true;
     let showSpinner = true;
     let serviceName = "";
-    let passwordField;
 
     onMount(() => {
         fetchServiceName(id).then(res => {
@@ -27,7 +26,7 @@
         const modus = urlParams.get("modus");
         const registerModus = Cookies.get("REGISTER_MODUS");
         if ((modus && modus === "cr") || registerModus) {
-            navigate("/request")
+            navigate("/request");
         }
     });
 
@@ -37,8 +36,14 @@
     const allowedNext = email => validEmail(email) || $user.knownUser;
 
     const nextStep = () => {
-        knownAccount($user.email)
+        knownAccount($user.knownUser || $user.email)
             .then(res => {
+                $user.knownUser = $user.email;
+                Cookies.set(cookieNames.USERNAME, $user.email, {
+                    expires: 365,
+                    secure: true,
+                    sameSite: "Lax"
+                });
                 if ($user.preferredLogin) {
                     navigate(`/${$user.preferredLogin.toLowerCase()}/${id}`);
                 } else {
@@ -54,6 +59,12 @@
         }
     };
 
+    const otherAccount = () => {
+        Cookies.remove(cookieNames.USERNAME);
+        $user.knownUser = null;
+        $user.email = "";
+    }
+
 </script>
 
 <style lang="scss">
@@ -62,31 +73,6 @@
         width: 32px;
         height: 32px;
         margin: 5px;
-    }
-
-    h2.header {
-        font-size: 24px;
-    }
-
-    h2.top {
-        margin: 0 0 15px 0;
-        word-break: break-word;
-        font-size: 16px;
-        font-weight: 600;
-
-        span {
-            color: var(--color-primary-green);
-            font-size: 16px;
-            font-family: Nunito, sans-serif;
-
-        }
-    }
-
-    .options {
-        display: flex;
-        flex-direction: column;
-        width: 100%;
-        padding: 5px 0 30px 0;
     }
 
     div.error {
@@ -143,15 +129,6 @@
         outline: none;
     }
 
-    .hidden {
-        display: none;
-    }
-
-    .pre-input-label {
-        color: var(--color-primary-black);
-        font-weight: 600;
-    }
-
 </style>
 {#if showSpinner}
     <Spinner/>
@@ -165,7 +142,7 @@
     </div>
     <a class="other-account"
        href="/account"
-       on:click|preventDefault|stopPropagation={() => $user.knownUser = null}>
+       on:click|preventDefault|stopPropagation={otherAccount}>
         {I18n.t("login.useOtherAccount")}
     </a>
 {:else}
@@ -190,19 +167,7 @@
     </div>
 {/if}
 
-{#if !initial && !validEmail($user.email)}
-    <div class="error"><span class="svg">{@html critical}</span><span>{I18n.t("login.invalidEmail")}</span></div>
-{/if}
-<div id="password" class:hidden={!$user.usePassword || $user.useWebAuth}>
-    <input type="password"
-           autocomplete="current-password"
-           id="password-field"
-           placeholder={I18n.t("login.passwordPlaceholder")}
-           bind:value={$user.password}
-           bind:this={passwordField}>
-</div>
-
-<Button href="/magic"
+<Button href="/next"
         disabled={showSpinner || !allowedNext($user.email)}
         label={I18n.t("login.next")}
         className="full"
