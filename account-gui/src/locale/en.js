@@ -195,6 +195,7 @@ I18n.translations.en = {
         affiliation_student: "You have proven that you are following education by linking your eduID account to a trusted party."
     },
     nudgeApp: {
+        new: "Your eduID account has been created!",
         header: "Want to sign in quicker and more secure next time?",
         info: "Get the <strong>eduID app</strong> and securely sign in without passwords or accessing your email. It will only take a minute.",
         no: "No thanks",
@@ -202,7 +203,7 @@ I18n.translations.en = {
     },
     sms: {
         header: "Check your phone",
-        info: "Enter the six-digit code we sent to your phone to continue"
+        info: "Enter the six-digit code we sent to your phone to continue",
     }
 
 };
