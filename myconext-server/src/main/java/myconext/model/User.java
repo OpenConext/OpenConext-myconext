@@ -54,6 +54,7 @@ public class User implements Serializable, UserDetails {
     private long created;
     private long updatedAt = System.currentTimeMillis() / 1000L;
     private String trackingUuid;
+    private long lastSeenAppNudge;
 
 
     public User(String uid, String email, String givenName, String familyName, String schacHomeOrganization, String preferredLanguage,
@@ -185,6 +186,12 @@ public class User implements Serializable, UserDetails {
 
     @Transient
     @JsonIgnore
+    public boolean nudgeToUseApp() {
+        return true;
+    }
+
+    @Transient
+    @JsonIgnore
     public List<String> loginOptions() {
         List<LoginOptions> result = new ArrayList<>();
         //Order by priority
@@ -251,5 +258,9 @@ public class User implements Serializable, UserDetails {
 
     public void setTrackingUuid(String trackingUuid) {
         this.trackingUuid = trackingUuid;
+    }
+
+    public void setLastSeenAppNudge(long lastSeenAppNudge) {
+        this.lastSeenAppNudge = lastSeenAppNudge;
     }
 }

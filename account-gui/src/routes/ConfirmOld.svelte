@@ -66,13 +66,11 @@
     <Spinner/>
 {/if}
 
-<h2>{I18n.t("nudgeApp.header")}</h2>
-<p class="info">{I18n.t("nudgeApp.info")}</p>
+<h2>{I18n.t("confirm.header")}</h2>
+<p class="info">{I18n.t("confirm.thanks")}</p>
 {#if explanation}
     <Verification explanation={explanation} verified={true}/>
 {/if}
-<div class="options">
-    <Button href="/eduid-app" onClick={proceed}
-            label={I18n.t("confirmStepup.proceed", {name: serviceName})}/>
-</div>
-
+<Button href="/proceed" onClick={proceed}
+        className="full"
+        label={I18n.t("confirmStepup.proceed", {name: serviceName})}/>

@@ -34,6 +34,7 @@
     import UsePassword from "./routes/UsePassword.svelte";
     import Options from "./routes/Options.svelte";
     import UserLink from "./components/UserLink.svelte";
+    import CodeVerifier from "./routes/CodeVerifier.svelte";
 
     export let url = "";
 
@@ -162,6 +163,9 @@
                 </Route>
                 <Route path="/stepup/:id" let:params>
                     <Stepup id="{params.id}"/>
+                </Route>
+                <Route path="/code-verification/:id" let:params>
+                    <CodeVerifier id="{params.id}"/>
                 </Route>
                 <Route path="/affiliation-missing/:id" let:params>
                     <AffiliationMissing id="{params.id}"/>

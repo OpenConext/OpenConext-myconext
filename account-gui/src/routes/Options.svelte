@@ -38,7 +38,12 @@
     onMount(() => {
         knownAccount($user.email).then(res => {
             res = ["useApp", "useWebAuthn", "useLink", "usePassword"];
-            options = possibleOptions.filter(option => res.includes(option.key));
+            // res = ["useWebAuthn", "useLink", "usePassword"];
+            const allOptions = possibleOptions.filter(option => res.includes(option.key));
+            if (!allOptions.some(option => option.preferred)) {
+                allOptions[0].preferred = true;
+            }
+            options = allOptions;
             showSpinner = false;
         });
     });
@@ -56,10 +61,11 @@
     <Spinner/>
 {:else}
     <h2 class="header">{I18n.t("options.header")}</h2>
-    {#each options as option}
+    {#each options as option, i}
         <LoginOption icon={option.icon}
                      translationKey={option.key}
                      preferred={option.preferred}
+                     index={i + 1}
                      route={`/${option.key.toLowerCase()}/${id}`}/>
     {/each}
 {/if}

@@ -193,6 +193,16 @@ I18n.translations.en = {
         linked_institution: "Your eduID account is linked to a trusted party.",
         validate_names: "Your first name and last name are verified by a trusted party.",
         affiliation_student: "You have proven that you are following education by linking your eduID account to a trusted party."
+    },
+    nudgeApp: {
+        header: "Want to sign in quicker and more secure next time?",
+        info: "Get the <strong>eduID app</strong> and securely sign in without passwords or accessing your email. It will only take a minute.",
+        no: "No thanks",
+        yes: "Get it now"
+    },
+    sms: {
+        header: "Check your phone",
+        info: "Enter the six-digit code we sent to your phone to continue"
     }
 
 };

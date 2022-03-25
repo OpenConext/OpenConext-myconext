@@ -1,5 +1,6 @@
 <script>
     import {user} from "../stores/user";
+    import {links} from "../stores/conf";
     import {validEmail} from "../constants/regexp";
     import I18n from "i18n-js";
     import critical from "../icons/critical.svg";
@@ -17,6 +18,8 @@
     let showSpinner = true;
     let serviceName = "";
 
+    $links.userLink = false;
+
     onMount(() => {
         fetchServiceName(id).then(res => {
             serviceName = res.name;
@@ -30,7 +33,6 @@
         }
     });
 
-
     const init = el => el.focus();
 
     const allowedNext = email => validEmail(email) || $user.knownUser;
@@ -39,6 +41,7 @@
         knownAccount($user.knownUser || $user.email)
             .then(res => {
                 $user.knownUser = $user.email;
+                $links.userLink = true;
                 Cookies.set(cookieNames.USERNAME, $user.email, {
                     expires: 365,
                     secure: true,

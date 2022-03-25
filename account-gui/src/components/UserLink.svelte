@@ -2,14 +2,18 @@
     import {user} from "../stores/user";
     import {onMount} from "svelte";
     import arrowLeft from "../icons/arrow_4.svg";
+    import {links} from "../stores/conf";
 
-    let displayUserLink = false;
+    $: displayUserLink = $user.knownUser &&
+        ($links.userLink || window.location.href.indexOf("login") === -1 );
+
+    let displayBackArrow = false;
 
     onMount(() => {
-        displayUserLink = $user.knownUser && window.location.href.indexOf("login") === -1;
         window.addEventListener("popstate", () => {
-            displayUserLink = $user.knownUser && document.location.href.indexOf("login") === -1;
+            displayUserLink = $user.knownUser && ($links.userLink || window.location.href.indexOf("login") === -1);
         });
+        displayBackArrow = window.history.length > 1;
     });
 
     const goBack = () => {
@@ -36,7 +40,9 @@
 </style>
 {#if displayUserLink}
     <div class="user-link">
-        <span class="icon" on:click={goBack}>{@html arrowLeft}</span>
+        {#if displayBackArrow}
+            <span class="icon" on:click={goBack}>{@html arrowLeft}</span>
+        {/if}
         <span class="user-name">{$user.knownUser}</span>
     </div>
 {/if}

@@ -5,7 +5,18 @@
     export let icon;
     export let translationKey;
     export let route;
+    export let index;
     export let preferred = false;
+
+    const init = el => preferred && el.focus();
+
+    const handleKeyDown = route => e => {
+        if (e.key === "Enter" || e.code === "Space") {
+            e.stopPropagation();
+            e.preventDefault();
+            navigate(route);
+        }
+    };
 
 </script>
 
@@ -24,12 +35,10 @@
             background-color: #fafafa;
         }
 
-        &.preferred {
-            color: var(--color-primary-blue);
-
-            &:hover {
-                color: var(--color-hover-blue);
-            }
+        &:focus {
+            box-shadow: 0 0 0 3px #94d6ff;
+            outline: none;
+            border: none;
         }
 
         span.icon {
@@ -38,7 +47,7 @@
     }
 </style>
 
-<div class="login-option" on:click={() => navigate(route)} class:preferred={preferred}>
+<div class="login-option" use:init on:click={() => navigate(route)} on:keydown={handleKeyDown(route)} tabindex={index}>
     <span class="icon">{@html icon}</span>
     <span class="option">{@html I18n.t(`options.${translationKey}`)}</span>
 </div>
