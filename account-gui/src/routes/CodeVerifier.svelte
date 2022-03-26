@@ -1,7 +1,7 @@
 <script>
 
     import I18n from "i18n-js";
-    import {onMount} from "svelte";
+    import {onMount, tick} from "svelte";
 
     export let id;
 
@@ -10,7 +10,6 @@
 
     onMount(() => {
         refs[0].focus();
-
     })
 
     const onKeyDownTotp = index => e => {
@@ -30,7 +29,7 @@
         newValue[index] = val;
         totp = newValue;
         if (index !== 5) {
-            setTimeout(() => refs[index + 1].focus(), 15);
+            tick().then(() => refs[index + 1].focus())
         } else {
             //  this.verify();
             setTimeout(() => alert("verify"), 15);
@@ -49,7 +48,6 @@
     div.totp-value-container {
         display: flex;
         margin-top: 15px;
-        width: 330px;
         justify-content: space-between;
 
         input.totp-value {
