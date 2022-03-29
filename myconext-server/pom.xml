@@ -113,6 +113,11 @@
             <version>20030203.000550</version>
         </dependency>
         <dependency>
+            <groupId>org.openconext</groupId>
+            <artifactId>tiqr-java-connector</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+        </dependency>
+        <dependency>
             <groupId>com.fasterxml.jackson.datatype</groupId>
             <artifactId>jackson-datatype-jdk8</artifactId>
             <version>2.13.1</version>

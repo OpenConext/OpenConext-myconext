@@ -1130,13 +1130,19 @@ public class UserControllerTest extends AbstractIntegrationTest {
             //new user confirmation screen
             String uri = response.getHeader("Location");
             MultiValueMap<String, String> parameters = UriComponentsBuilder.fromUriString(uri).build().getQueryParams();
-            String redirect = URLDecoder.decode(parameters.getFirst("redirect"), Charset.defaultCharset().name());
-            redirect = redirect.replace("8081", this.port + "");
+//            String redirect = URLDecoder.decode(parameters.getFirst("redirect"), Charset.defaultCharset().name());
+//            String redirectPath = redirect.replace("http://localhost:8081", "");
             String h = parameters.getFirst("h");
-            response = given().when()
+            response = given().redirects().follow(false)
+                    .when()
                     .queryParam("h", h)
                     .cookie(BROWSER_SESSION_COOKIE_NAME, "true")
-                    .get(redirect);
+                    .get("/saml/guest-idp/magic");
+//            response = given()
+//                    .when()
+//                    .queryParam("h", h)
+//                    .cookie(BROWSER_SESSION_COOKIE_NAME, "true")
+//                    .get(redirectPath);
         }
         return response;
     }

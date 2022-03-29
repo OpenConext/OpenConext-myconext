@@ -74,6 +74,9 @@ sms:
   url: "http://localhost:8081/sms"
   bearer: "secret"
 
+tiqr:
+  encryption_secret: "secret"
+
 attribute_aggregation:
   user: aa
   password: secret

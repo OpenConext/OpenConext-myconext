@@ -70,6 +70,22 @@
 
     <repositories>
         <repository>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+            <id>openconext-releases</id>
+            <name>OpenConext public releases repository</name>
+            <url>dav:https://build.openconext.org/repository/public/releases</url>
+        </repository>
+        <repository>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+            <id>openconext-snapshots</id>
+            <name>OpenConext public snapshot repository</name>
+            <url>dav:https://build.openconext.org/repository/public/releases</url>
+        </repository>
+        <repository>
             <snapshots>
                 <enabled>true</enabled>
             </snapshots>
