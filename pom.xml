@@ -73,23 +73,17 @@
             <releases>
                 <enabled>true</enabled>
             </releases>
-            <snapshots>
-                <enabled>true</enabled>
-            </snapshots>
             <id>openconext-releases</id>
             <name>OpenConext public releases repository</name>
             <url>dav:https://build.openconext.org/repository/public/releases</url>
         </repository>
         <repository>
-            <releases>
-                <enabled>true</enabled>
-            </releases>
             <snapshots>
                 <enabled>true</enabled>
             </snapshots>
             <id>openconext-snapshots</id>
             <name>OpenConext public snapshot repository</name>
-            <url>dav:https://build.openconext.org/repository/public/releases</url>
+            <url>dav:https://build.openconext.org/repository/public/snapshots</url>
         </repository>
         <repository>
             <snapshots>
@@ -101,17 +95,6 @@
             <id>spring-milestones</id>
             <name>spring-milestones</name>
             <url>https://repo.spring.io/milestone/</url>
-        </repository>
-        <repository>
-            <snapshots>
-                <enabled>true</enabled>
-            </snapshots>
-            <releases>
-                <enabled>true</enabled>
-            </releases>
-            <id>openconext</id>
-            <name>openconext</name>
-            <url>https://build.openconext.org/repository/public/releases/</url>
         </repository>
     </repositories>
 
