@@ -1,4 +1,4 @@
-import {validEmail} from "../../validation/regexp";
+import {validEmail} from "../../constants/regexp";
 
 test("Valid email", () => {
     expect(validEmail("nope")).toBe(false);

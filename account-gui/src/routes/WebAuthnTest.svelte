@@ -13,12 +13,12 @@
 
     export let id;
     let email;
-    let loading = true;
+    let showSpinner = true;
 
     onMount(() => {
         const urlSearchParams = new URLSearchParams(window.location.search);
         email = urlSearchParams.get("email")
-        loading = false;
+        showSpinner = false;
     });
 
     const webAuthnStart = () => {
@@ -56,7 +56,7 @@
 
 </style>
 <div class="web-authn-test">
-    {#if loading}
+    {#if showSpinner}
         <Spinner/>
     {:else}
         <h2>{I18n.t("webAuthnTest.info")}</h2>

@@ -15,14 +15,26 @@
     import Header from "./components/Header.svelte";
     import Footer from "./components/Footer.svelte";
     import {onMount} from "svelte";
-    import {configuration} from "./api";
+    import {allowedEmailDomains, configuration, institutionalEmailDomains} from "./api";
     import I18n from "i18n-js";
     import {conf} from "./stores/conf";
+    import {domains} from "./stores/domains";
     import Loader from "./components/Loader.svelte";
     import Stepup from "./routes/Stepup.svelte";
     import AffiliationMissing from "./routes/AffiliationMissing.svelte";
     import ValidNameMissing from "./routes/ValidNameMissing.svelte";
     import EppnAlreadyLinked from "./routes/EppnAlreadyLinked.svelte";
+    import Request from "./routes/Request.svelte";
+    import SubContent from "./components/SubContent.svelte";
+    import {user} from "./stores/user";
+    import {cookieNames} from "./constants/cookieNames";
+    import UseApp from "./routes/UseApp.svelte";
+    import UseWebAuth from "./routes/UseWebAuth.svelte";
+    import UseLink from "./routes/UseLink.svelte";
+    import UsePassword from "./routes/UsePassword.svelte";
+    import Options from "./routes/Options.svelte";
+    import UserLink from "./components/UserLink.svelte";
+    import CodeVerifier from "./routes/CodeVerifier.svelte";
 
     export let url = "";
 
@@ -46,14 +58,29 @@
             if (["nl", "en"].indexOf(I18n.locale) < 0) {
                 I18n.locale = "en";
             }
+            $user.knownUser = Cookies.get(cookieNames.USERNAME);
+            $user.email = $user.knownUser || "";
+            $user.preferredLogin = Cookies.get(cookieNames.LOGIN_PREFERENCE);
+
             loaded = true;
+
+            if ($conf.featureWarningEducationalEmailDomain) {
+                institutionalEmailDomains().then(json => {
+                    $domains.institutionDomainNames = json;
+                });
+            }
+            if ($conf.featureAllowList) {
+                allowedEmailDomains().then(json => {
+                    $domains.allowedDomainNames = json;
+                })
+            }
         }));
 
 </script>
 
 <style>
 
-    :global(:root){
+    :global(:root) {
         --color-primary-blue: #0062b0;
         --color-hover-blue: #003980;
         --color-primary-green: #008738;
@@ -75,23 +102,26 @@
         flex-direction: column;
         margin-bottom: 100px;
     }
+
     .content {
         display: flex;
         flex-direction: column;
         position: relative;
-        padding: 24px 33px 40px;
+        padding: 30px 32px 32px;
         background-color: white;
         width: var(--width-app);
         margin: 0 auto;
         justify-content: center;
         border-radius: 4px;
-        box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.5);
+        box-shadow: 0 3px 0 2px #003980;
+        min-height: 100px;
     }
 
     @media (max-width: 800px) {
         .idp {
             margin: 0;
         }
+
         .content {
             padding: 32px 28px;
             width: 100%;
@@ -104,25 +134,47 @@
 {#if loaded}
     <div class="idp">
         <Header/>
+        <UserLink/>
         <div class="content">
             <Router url="{url}">
                 <Route path="/login/:id" let:params>
-                    <Login id="{params.id}"></Login>
+                    <Login id="{params.id}"/>
+                </Route>
+                <Route path="/request/:id" let:params>
+                    <Request id="{params.id}"/>
+                </Route>
+                <Route path="/useapp/:id" let:params>
+                    <UseApp id="{params.id}"/>
+                </Route>
+                <Route path="/usewebauthn/:id" let:params>
+                    <UseWebAuth id="{params.id}"/>
+                </Route>
+                <Route path="/uselink/:id" let:params>
+                    <UseLink id="{params.id}"/>
+                </Route>
+                <Route path="/usepassword/:id" let:params>
+                    <UsePassword id="{params.id}"/>
                 </Route>
                 <Route path="/magic/:id" let:params>
-                    <MagicLink id="{params.id}"></MagicLink>
+                    <MagicLink id="{params.id}"/>
+                </Route>
+                <Route path="/options/:id" let:params>
+                    <Options id="{params.id}"/>
                 </Route>
                 <Route path="/stepup/:id" let:params>
-                    <Stepup id="{params.id}"></Stepup>
+                    <Stepup id="{params.id}"/>
+                </Route>
+                <Route path="/code-verification/:id" let:params>
+                    <CodeVerifier id="{params.id}"/>
                 </Route>
                 <Route path="/affiliation-missing/:id" let:params>
-                    <AffiliationMissing id="{params.id}"></AffiliationMissing>
+                    <AffiliationMissing id="{params.id}"/>
                 </Route>
                 <Route path="/valid-name-missing/:id" let:params>
-                    <ValidNameMissing id="{params.id}"></ValidNameMissing>
+                    <ValidNameMissing id="{params.id}"/>
                 </Route>
                 <Route path="/eppn-already-linked/:id" let:params>
-                    <EppnAlreadyLinked id="{params.id}"></EppnAlreadyLinked>
+                    <EppnAlreadyLinked id="{params.id}"/>
                 </Route>
                 <Route path="/confirm" component={Confirm}/>
                 <Route path="/confirm-stepup" component={ConfirmStepup}/>
@@ -137,6 +189,46 @@
                 <Route component={NotFound}/>
             </Router>
         </div>
+        <Router url="{url}">
+            <Route path="/login/:id" let:params>
+                <SubContent question={I18n.t("login.requestEduId")} linkText={I18n.t("login.requestEduId2")}
+                            route="/request/{params.id}"/>
+            </Route>
+            <Route path="/request/:id" let:params>
+                <SubContent question={I18n.t("login.alreadyGuestAccount")}
+                            linkText={I18n.t("login.loginEduId")}
+                            route="/login/{params.id}"/>
+            </Route>
+            <Route path="/useapp/:id" let:params>
+                <SubContent question={I18n.t("login.noAppAccess")}
+                            preLink={I18n.t("login.useAnother")}
+                            linkText={I18n.t("login.optionsLink")}
+                            route="/options/{params.id}"/>
+            </Route>
+            <Route path="/usewebauthn/:id" let:params>
+                <SubContent question={I18n.t("login.useAnother")}
+                            linkText={I18n.t("login.optionsLink")}
+                            route="/options/{params.id}"/>
+            </Route>
+            <Route path="/uselink/:id" let:params>
+                <SubContent question={I18n.t("login.noMailAccess")}
+                            preLink={I18n.t("login.useAnother")}
+                            linkText={I18n.t("login.optionsLink")}
+                            route="/options/{params.id}"/>
+            </Route>
+            <Route path="/usepassword/:id" let:params>
+                <SubContent question={I18n.t("login.forgotPassword")}
+                            preLink={I18n.t("login.useAnother")}
+                            linkText={I18n.t("login.optionsLink")}
+                            route="/options/{params.id}"/>
+            </Route>
+            <Route path="/options/:id" let:params>
+                <SubContent question={I18n.t("options.noLogin")}
+                            preLink={I18n.t("options.learn")}
+                            linkText={I18n.t("options.learnLink")}
+                            route="/recovery/{params.id}"/>
+            </Route>
+        </Router>
         <Footer/>
     </div>
 {:else}

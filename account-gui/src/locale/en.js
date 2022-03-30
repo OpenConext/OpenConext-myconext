@@ -3,7 +3,7 @@ import I18n from "i18n-js";
 I18n.translations.en = {
     login: {
         requestEduId: "No eduID?",
-        requestEduId2: "Request one!",
+        requestEduId2: "Create one!",
         loginEduId: "Login!",
         whatis: "What is eduID?",
         header: "Sign in with eduID",
@@ -58,7 +58,24 @@ I18n.translations.en = {
         alreadyGuestAccount: "Already have an eduID?",
         usePasswordLink: "Type a password anyway",
         useWebAuthnLink: "Or use a security key",
-        agreeWithTerms: "<span>I agree with <a tabindex='-1' href='https://eduid.nl/terms-of-use/' target='_blank'>the terms of service.</a> I also understand <a tabindex='-1' href='https://eduid.nl/privacy_policy/' target='_blank'>the privacy policy</a>.</span>"
+        agreeWithTerms: "<span>I agree with <a tabindex='-1' href='https://eduid.nl/terms-of-use/' target='_blank'>the terms of service.</a> I also understand <a tabindex='-1' href='https://eduid.nl/privacy_policy/' target='_blank'>the privacy policy</a>.</span>",
+        next: "Next",
+        useOtherAccount: "Use another account",
+        noAppAccess: "No access to your app?",
+        noMailAccess: "No access to your mail?",
+        forgotPassword: "Forgot your password?",
+        useAnother: "Use another",
+        optionsLink: "sign-in option.",
+    },
+    options: {
+        header: "How do you want to login?",
+        noLogin: "Still not able to login?",
+        learn: "Learn how to",
+        learnLink: "recover your acccount",
+        useApp: "Use the <strong>eduID app</strong> to sign in with your mobile device.",
+        useWebAuthn: "Use your <strong>security key</strong>.",
+        useLink: "Get a <strong>magic link</strong> sent to your inbox.",
+        usePassword: "Use <strong>a password</strong>.",
     },
     magicLink: {
         header: "Check your email!",
@@ -110,7 +127,7 @@ I18n.translations.en = {
         info: "The magic link you used is either expired or has already been used.",
         back: "Go to eduid.nl"
     },
-    maxAttempt:{
+    maxAttempt: {
         title: "Maximum attempts reached",
         info: "You've reached the maximum verification attempts.",
     },
@@ -121,7 +138,19 @@ I18n.translations.en = {
     webAuthn: {
         info: "Add security key",
         browserPrompt: "Click the button below to add a security key to your eduID account. Please follow the instructions given by your browser.",
-        start: "Start"
+        start: "Start",
+        header: "Sign in with a security key",
+        explanation: "Your device will open a security window. Follow the instructions there to sign in.",
+        next: "Log in with a security key",
+        error: "Currently you can not use your security key to login."
+    },
+    useLink: {
+        header: "Request a magic link",
+        next: "Email a magic link"
+    },
+    usePassword: {
+        header: "Enter your password",
+        passwordIncorrect: "Password is incorrect"
     },
     webAuthnTest: {
         info: "Test security key",
@@ -164,6 +193,16 @@ I18n.translations.en = {
         linked_institution: "Your eduID account is linked to a trusted party.",
         validate_names: "Your first name and last name are verified by a trusted party.",
         affiliation_student: "You have proven that you are following education by linking your eduID account to a trusted party."
+    },
+    nudgeApp: {
+        new: "Your eduID account has been created!",
+        header: "Want to sign in quicker and more secure next time?",
+        info: "Get the <strong>eduID app</strong> and securely sign in without passwords or accessing your email. It will only take a minute.",
+        no: "No thanks",
+        yes: "Get it now"
+    },
+    sms: {
+        header: "Check your phone",
+        info: "Enter the six-digit code we sent to your phone to continue",
     }
-
 };

@@ -1,0 +1,1 @@
+eduID: your verification code is %s. This code expires in 10 minutes.

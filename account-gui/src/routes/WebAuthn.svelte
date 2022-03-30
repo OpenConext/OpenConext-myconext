@@ -8,7 +8,7 @@
     import I18n from "i18n-js";
     import Button from "../components/Button.svelte";
 
-    let loading = true;
+    let showSpinner = true;
     let token;
     let name;
 
@@ -16,13 +16,14 @@
         const urlSearchParams = new URLSearchParams(window.location.search);
         token = urlSearchParams.get("token");
         name = decodeURIComponent(urlSearchParams.get("name"));
-        loading = false;
+        showSpinner = false;
     });
 
     const startWebAuthnRegistration = () => {
+        showSpinner = true;
         webAuthnRegistration(token)
             .then(request => {
-                loading = false;
+                showSpinner = false;
                 create({publicKey: request})
                     .then(credentials => {
                         //rawId is not supported server-side
@@ -53,7 +54,7 @@
 
 </style>
 <div class="web-authn">
-    {#if loading}
+    {#if showSpinner}
         <Spinner/>
     {:else}
         <h2>{I18n.t("webAuthn.info")}</h2>

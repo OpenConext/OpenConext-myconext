@@ -1,10 +1,10 @@
 package myconext.api;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.util.StringUtils;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -16,7 +16,9 @@ import static myconext.security.GuestIdpAuthenticationRequestFilter.REGISTER_MOD
 @RestController
 public class LoginController {
 
-    private boolean secureCookie;
+    private static final Log LOG = LogFactory.getLog(LoginController.class);
+
+    private final boolean secureCookie;
 
     private final Map<String, Object> config = new HashMap<>();
 
@@ -80,4 +82,9 @@ public class LoginController {
         return config;
     }
 
+
+    @PostMapping("/sms")
+    public void sms(@RequestBody Map<String, Object> body) {
+        LOG.info("Received SMS " + body.get("message"));
+    }
 }

@@ -15,6 +15,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.util.Assert;
+import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
 import java.io.Serializable;
@@ -44,6 +45,7 @@ public class User implements Serializable, UserDetails {
     private boolean forgottenPassword;
 
     private Map<String, List<String>> attributes = new HashMap<>();
+    private Map<String, String> surfSecureId = new HashMap<>();
 
     private List<PublicKeyCredentials> publicKeyCredentials = new ArrayList<>();
     private List<LinkedAccount> linkedAccounts = new ArrayList<>();
@@ -52,6 +54,7 @@ public class User implements Serializable, UserDetails {
     private long created;
     private long updatedAt = System.currentTimeMillis() / 1000L;
     private String trackingUuid;
+    private long lastSeenAppNudge;
 
 
     public User(String uid, String email, String givenName, String familyName, String schacHomeOrganization, String preferredLanguage,
@@ -181,6 +184,30 @@ public class User implements Serializable, UserDetails {
         return linkedAccounts.stream().map(LinkedAccount::getEduPersonAffiliations).flatMap(Collection::stream).collect(Collectors.toList());
     }
 
+    @Transient
+    @JsonIgnore
+    public boolean nudgeToUseApp() {
+        return lastSeenAppNudge < (System.currentTimeMillis() - 1000 * 60 * 60 * 24 * 7);
+    }
+
+    @Transient
+    @JsonIgnore
+    public List<String> loginOptions() {
+        List<LoginOptions> result = new ArrayList<>();
+        //Order by priority
+        if (!CollectionUtils.isEmpty(this.surfSecureId)) {
+            result.add(LoginOptions.APP);
+        }
+        if (!CollectionUtils.isEmpty(this.publicKeyCredentials)) {
+            result.add(LoginOptions.FIDO);
+        }
+        if (StringUtils.hasText(this.password)) {
+            result.add(LoginOptions.PASSWORD);
+        }
+        result.add(LoginOptions.MAGIC);
+        return result.stream().map(LoginOptions::getValue).collect(Collectors.toList());
+    }
+
     public String getEduPersonPrincipalName() {
         return uid + "@" + schacHomeOrganization;
     }
@@ -231,5 +258,9 @@ public class User implements Serializable, UserDetails {
 
     public void setTrackingUuid(String trackingUuid) {
         this.trackingUuid = trackingUuid;
+    }
+
+    public void setLastSeenAppNudge(long lastSeenAppNudge) {
+        this.lastSeenAppNudge = lastSeenAppNudge;
     }
 }

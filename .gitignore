@@ -13,4 +13,5 @@ bundle.*.js
 yarn-error.log
 .DS_Store
 MFA.md
+local.application.yml
 *~

@@ -8,8 +8,6 @@
     import {fetchServiceNameByHash} from "../api";
     import Cookies from "js-cookie";
     import {cookieNames} from "../constants/cookieNames";
-    import phone from "../icons/redesign/undraw_mobile_interface_re_1vv9.svg";
-    import ButtonContainer from "../components/ButtonContainer.svelte";
 
     let serviceName = null;
     let explanation = null;
@@ -21,13 +19,13 @@
     onMount(() => {
         const urlSearchParams = new URLSearchParams(window.location.search);
 
-        explanation = urlSearchParams.get("explanation");
+        explanation = "validate_names";//urlSearchParams.get("explanation");
         isNew = urlSearchParams.get("new") === "true"
 
         const hash = urlSearchParams.get('h');
-        const email = urlSearchParams.get('email');
+        const email = decodeURIComponent(urlSearchParams.get('email'));
         if (email) {
-            Cookies.set(cookieNames.USERNAME, decodeURIComponent(email), {
+            Cookies.set(cookieNames.USERNAME, email, {
                 expires: 365,
                 secure: true,
                 sameSite: "Lax"
@@ -53,24 +51,14 @@
 
 <style>
 
-    h2.new-account {
+    h2 {
+        margin: 30px 0 40px 0;
+        font-size: 32px;
         color: var(--color-primary-green);
     }
 
-    p.explanation {
-        margin: 15px 0;
-        font-size: 14px;
-    }
-
-    .image-container {
-        display: flex;
-        margin: 15px 0;
-    }
-
-    :global(.image-container svg) {
-        width: 162px;
-        height: auto;
-        margin: auto;
+    p.info {
+        margin-bottom: 25px;
     }
 
 </style>
@@ -78,21 +66,11 @@
     <Spinner/>
 {/if}
 
-{#if isNew && false}
-    <h2 class="header new-account">{I18n.t("nudgeApp.new")}</h2>
+<h2>{I18n.t("confirm.header")}</h2>
+<p class="info">{I18n.t("confirm.thanks")}</p>
+{#if explanation}
+    <Verification explanation={explanation} verified={true}/>
 {/if}
-{#if explanation && false}
-    <div class="verification-container">
-        <Verification explanation={explanation} verified={true}/>
-    </div>
-{/if}
-<h2 class="header">{I18n.t("nudgeApp.header")}</h2>
-<div class="image-container">{@html phone}</div>
-<p class="explanation">{@html I18n.t("nudgeApp.info")}</p>
-<ButtonContainer>
-    <Button className="cancel" href="/eduid-app" onClick={proceed}
-            label={I18n.t("nudgeApp.no")}/>
-    <Button href="/eduid-app" onClick={proceed}
-            label={I18n.t("nudgeApp.yes")}/>
-</ButtonContainer>
-
+<Button href="/proceed" onClick={proceed}
+        className="full"
+        label={I18n.t("confirmStepup.proceed", {name: serviceName})}/>

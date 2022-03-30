@@ -70,6 +70,13 @@ certificate_path: classpath:/myconext.crt
 remember_me_max_age_seconds: 15_768_000
 email_guessing_sleep_millis: 500
 
+sms:
+  url: "http://localhost:8081/sms"
+  bearer: "secret"
+
+tiqr:
+  encryption_secret: "secret"
+
 attribute_aggregation:
   user: aa
   password: secret

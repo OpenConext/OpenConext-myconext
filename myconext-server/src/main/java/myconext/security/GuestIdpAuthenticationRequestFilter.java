@@ -188,11 +188,11 @@ public class GuestIdpAuthenticationRequestFilter extends IdpAuthenticationReques
 
             LOG.debug("Cookie REGISTER_MODUS_COOKIE_NAME is: " + optionalCookie.map(Cookie::getValue).orElse("Null"));
 
-            String modus = optionalCookie.map(c -> "&modus=cr").orElse("");
             String stepUp = accountLinkingRequired ? "&stepup=true" : "";
-            String separator = StringUtils.hasText(modus) || StringUtils.hasText(stepUp) ? "?n=1" : "";
-            response.sendRedirect(this.redirectUrl + "/login/" + samlAuthenticationRequest.getId() +
-                    separator + modus + stepUp);
+            String separator = StringUtils.hasText(stepUp) ? "?n=1" : "";
+            String path = optionalCookie.map(c -> "/request/").orElse("/login/");
+            response.sendRedirect(this.redirectUrl + path + samlAuthenticationRequest.getId() +
+                    separator + stepUp);
         }
     }
 
@@ -372,7 +372,8 @@ public class GuestIdpAuthenticationRequestFilter extends IdpAuthenticationReques
             }
             String url = this.redirectUrl + "/confirm?h=" + hash +
                     "&redirect=" + URLEncoder.encode(this.magicLinkUrl, charSet) +
-                    "&email=" + URLEncoder.encode(user.getEmail(), charSet);
+                    "&email=" + URLEncoder.encode(user.getEmail(), charSet) +
+                    "&new=true";
             if (!StepUpStatus.NONE.equals(samlAuthenticationRequest.getSteppedUp())) {
                 url += "&explanation=" + explanation;
             }
@@ -387,6 +388,16 @@ public class GuestIdpAuthenticationRequestFilter extends IdpAuthenticationReques
             response.sendRedirect(this.redirectUrl + "/confirm-stepup?h=" + hash +
                     "&redirect=" + URLEncoder.encode(this.magicLinkUrl, charSet) +
                     "&explanation=" + explanation);
+            return false;
+        } else if (!samlAuthenticationRequest.isPasswordOrWebAuthnFlow() && user.nudgeToUseApp()) {
+            //Nudge user to use the app
+            user.setLastSeenAppNudge(System.currentTimeMillis());
+            userRepository.save(user);
+
+            String url = this.redirectUrl + "/confirm?h=" + hash +
+                    "&redirect=" + URLEncoder.encode(this.magicLinkUrl, charSet) +
+                    "&new=false";
+            response.sendRedirect(url);
             return false;
         }
         return true;

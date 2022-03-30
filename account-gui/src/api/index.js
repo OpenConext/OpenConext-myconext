@@ -1,6 +1,6 @@
 //Internal API
 import I18n from "i18n-js";
-import {status} from "../validation/loginStatus";
+import {status} from "../constants/loginStatus";
 
 let csrfToken = null;
 
@@ -41,13 +41,18 @@ function postPutJson(path, body, method) {
 }
 
 //Base
-export function magicLinkNewUser(email, givenName, familyName, rememberMe, authenticationRequestId) {
-    const body = {user: {email, givenName, familyName}, authenticationRequestId, rememberMe};
+export function magicLinkNewUser(email, givenName, familyName, authenticationRequestId) {
+    const body = {user: {email, givenName, familyName}, authenticationRequestId};
     return postPutJson("/myconext/api/idp/magic_link_request", body, "POST");
 }
 
-export function magicLinkExistingUser(email, password, rememberMe, usePassword, authenticationRequestId) {
-    const body = {user: {email, password}, authenticationRequestId, rememberMe, usePassword};
+export function magicLinkExistingUser(email, authenticationRequestId) {
+    const body = {user: {email}, authenticationRequestId};
+    return postPutJson("/myconext/api/idp/magic_link_request", body, "PUT");
+}
+
+export function passwordExistingUser(email, password, authenticationRequestId) {
+    const body = {user: {email, password}, authenticationRequestId, usePassword: true};
     return postPutJson("/myconext/api/idp/magic_link_request", body, "PUT");
 }
 
@@ -63,13 +68,18 @@ export function allowedEmailDomains() {
     return fetchJson("/myconext/api/idp/email/domain/allowed")
 }
 
-export function configuration() {
-    return fetchJson("/config");
+export function configuration(eduIdPreferencesCookie) {
+    return fetchJson(`/config/${eduIdPreferencesCookie ? `/${eduIdPreferencesCookie}` : ""}`);
 }
 
 export function webAuthnRegistration(token) {
     return postPutJson("/myconext/api/idp/security/webauthn/registration", {token}, "POST");
 }
+
+export function knownAccount(email) {
+    return postPutJson("/myconext/api//idp/service/email", {email}, "POST");
+}
+
 
 export function webAuthnRegistrationResponse(token, name, credentials, request) {
     return postPutJson("/myconext/api/idp/security/webauthn/registration", {token, name, credentials, request}, "PUT");
@@ -95,8 +105,20 @@ export function successfullyLoggedIn(id) {
     return fetchJson(`/myconext/api/idp/security/success?id=${id}`);
 }
 
+//We can safely cache this for the duration of the session
 export function fetchServiceName(id) {
-    return fetchJson(`/myconext/api/idp/service/name/${id}`).catch(() => Promise.resolve({name: "?"}));
+    const serviceName = sessionStorage.getItem("serviceName");
+    if (serviceName) {
+        return Promise.resolve({name: serviceName})
+    } else {
+        return fetchJson(`/myconext/api/idp/service/name/${id}`)
+            .then(json => {
+                sessionStorage.setItem("serviceName", json.name);
+                return Promise.resolve(json);
+            })
+            .catch(() => Promise.resolve({name: "?"}));
+    }
+
 }
 
 export function fetchServiceNameByHash(id) {

@@ -1,0 +1,71 @@
+<script>
+    import {user} from "../stores/user";
+    import I18n from "i18n-js";
+    import {knownAccount} from "../api/index";
+    import Spinner from "../components/Spinner.svelte";
+    import {onMount} from "svelte";
+    import appIcon from "../icons/onemorething_filled.svg";
+    import webAuthnIcon from "../icons/onemorething_filled.svg";
+    import passwordIcon from "../icons/onemorething_filled.svg";
+    import magicLinkIcon from "../icons/onemorething_filled.svg";
+    import LoginOption from "../components/LoginOption.svelte";
+
+    export let id;
+
+    const possibleOptions = [
+        {
+            key: "useApp",
+            icon: appIcon,
+            preferred: true
+        },
+        {
+            key: "useWebAuthn",
+            icon: webAuthnIcon
+        },
+        {
+            key: "useLink",
+            icon: passwordIcon
+        },
+        {
+            key: "usePassword",
+            icon: magicLinkIcon
+        }
+    ]
+
+    let options = [];
+    let showSpinner = true;
+
+    onMount(() => {
+        knownAccount($user.email).then(res => {
+            res = ["useApp", "useWebAuthn", "useLink", "usePassword"];
+            // res = ["useWebAuthn", "useLink", "usePassword"];
+            const allOptions = possibleOptions.filter(option => res.includes(option.key));
+            if (!allOptions.some(option => option.preferred)) {
+                allOptions[0].preferred = true;
+            }
+            options = allOptions;
+            showSpinner = false;
+        });
+    });
+</script>
+
+<style lang="scss">
+
+    h2.header {
+        font-size: 24px;
+        margin-bottom: 25px;
+    }
+
+</style>
+{#if showSpinner}
+    <Spinner/>
+{:else}
+    <h2 class="header">{I18n.t("options.header")}</h2>
+    {#each options as option, i}
+        <LoginOption icon={option.icon}
+                     translationKey={option.key}
+                     preferred={option.preferred}
+                     index={i + 1}
+                     route={`/${option.key.toLowerCase()}/${id}`}/>
+    {/each}
+{/if}

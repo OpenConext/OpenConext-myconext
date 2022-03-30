@@ -11,3 +11,7 @@ export const conf = writable({
     featureWarningEducationalEmailDomain: false,
     useExternalValidation: false
 });
+
+export const links = writable({
+    userLink: false
+});
