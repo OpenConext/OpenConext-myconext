@@ -11,15 +11,15 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/tigrenroll")
 public class TiqrController {
 
-    private TiqrService tiqrService = new TiqrService();
+   // private TiqrService tiqrService = new TiqrService();
 
-    @GetMapping("/metadata")
+    @GetMapping("/enrollment")
     void start(@Param("enrollment_key") String enrollmentKey) {
-        return tiqrService.startEnrollment()
+       // return tiqrService.startEnrollment();
     }
 
     @GetMapping("/metadata")
     MetaData metaData(@Param("enrollment_key") String enrollmentKey) {
-        return tiqrService.getMetaData(enrollmentKey);
+        return null;//tiqrService.getMetaData(enrollmentKey);
     }
 }

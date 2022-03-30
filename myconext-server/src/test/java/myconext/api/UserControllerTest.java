@@ -1110,6 +1110,9 @@ public class UserControllerTest extends AbstractIntegrationTest {
     }
 
     private String samlAuthnResponse(Response response) throws IOException {
+        if (response.statusCode() == 302) {
+            response = this.get302Response(response);
+        }
         assertEquals(HttpStatus.OK.value(), response.getStatusCode());
         String html = IOUtil.toString(response.asInputStream());
 
@@ -1126,24 +1129,22 @@ public class UserControllerTest extends AbstractIntegrationTest {
                 .cookie(BROWSER_SESSION_COOKIE_NAME, "true")
                 .get("/saml/guest-idp/magic");
 
-        if (response.getStatusCode() == 302) {
-            //new user confirmation screen
-            String uri = response.getHeader("Location");
-            MultiValueMap<String, String> parameters = UriComponentsBuilder.fromUriString(uri).build().getQueryParams();
-//            String redirect = URLDecoder.decode(parameters.getFirst("redirect"), Charset.defaultCharset().name());
-//            String redirectPath = redirect.replace("http://localhost:8081", "");
-            String h = parameters.getFirst("h");
-            response = given().redirects().follow(false)
-                    .when()
-                    .queryParam("h", h)
-                    .cookie(BROWSER_SESSION_COOKIE_NAME, "true")
-                    .get("/saml/guest-idp/magic");
-//            response = given()
-//                    .when()
-//                    .queryParam("h", h)
-//                    .cookie(BROWSER_SESSION_COOKIE_NAME, "true")
-//                    .get(redirectPath);
+        while (response.getStatusCode() == 302) {
+            response = get302Response(response);
         }
+        return response;
+    }
+
+    private Response get302Response(Response response) {
+        //new user confirmation screen
+        String uri = response.getHeader("Location");
+        MultiValueMap<String, String> parameters = UriComponentsBuilder.fromUriString(uri).build().getQueryParams();
+        String h = parameters.getFirst("h");
+        response = given().redirects().follow(false)
+                .when()
+                .queryParam("h", h)
+                .cookie(BROWSER_SESSION_COOKIE_NAME, "true")
+                .get("/saml/guest-idp/magic");
         return response;
     }
 

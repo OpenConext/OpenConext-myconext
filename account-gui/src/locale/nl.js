@@ -59,7 +59,23 @@ I18n.translations.nl = {
         usePasswordLink: "Gebruik toch een wachtwoord",
         useWebAuthnLink: "Of gebruik een beveiligingssleutel",
         agreeWithTerms: "<span>Ik ga akkoord met <a tabindex='-1' href='https://eduid.nl/gebruiksvoorwaarden/' target='_blank'>de voorwaarden.</a> En ik begrijp <a tabindex='-1' href='https://eduid.nl/privacyverklaring/' target='_blank'>de privacyverklaring</a>.</span>",
-        next: "Volgende"
+        next: "Volgende",
+        useOtherAccount: "Use another account",
+        noAppAccess: "No access to your app?",
+        noMailAccess: "No access to your mail?",
+        forgotPassword: "Forgot your password?",
+        useAnother: "Use another",
+        optionsLink: "sign-in option.",
+    },
+    options: {
+        header: "How do you want to login?",
+        noLogin: "Still not able to login?",
+        learn: "Learn how to",
+        learnLink: "recover your acccount",
+        useApp: "Use the <strong>eduID app</strong> to sign in with your mobile device.",
+        useWebAuthn: "Use your <strong>security key</strong>.",
+        useLink: "Get a <strong>magic link</strong> sent to your inbox.",
+        usePassword: "Use <strong>a password</strong>.",
     },
     magicLink: {
         header: "Open je mailbox!",
@@ -111,7 +127,7 @@ I18n.translations.nl = {
         info: "De magische link die je hebt gebruikt, is verlopen of al een keer gebruikt",
         back: "Ga naar eduid.nl"
     },
-    maxAttempt:{
+    maxAttempt: {
         title: "Maximum aantal pogingen bereikt",
         info: "Je hebt het maximale aantal verificatiepogingen bereikt.",
     },
@@ -122,7 +138,19 @@ I18n.translations.nl = {
     webAuthn: {
         info: "Voeg een beveligingssleutel toe",
         browserPrompt: "Klik op de onderstaande knop om een beveligingssleutel toe te voegen aan je eduID-account. Volg daarbij de instructies van je browser op.",
-        start: "Start"
+        start: "Start",
+        header: "Sign in with a security key",
+        explanation: "Your device will open a security window. Follow the instructions there to sign in.",
+        next: "Log in with a security key",
+        error: "Currently you can not use your security key to login."
+    },
+    useLink: {
+        header: "Request a magic link",
+        next: "Email a magic link"
+    },
+    usePassword: {
+        header: "Enter your password",
+        passwordIncorrect: "Password is incorrect"
     },
     webAuthnTest: {
         info: "Test een beveligingssleutel",
@@ -165,6 +193,16 @@ I18n.translations.nl = {
         linked_institution: "Je eduID-account is gekoppeld aan een vertrouwde instelling.",
         validate_names: "Je voornaam en achternaam zijn geverifieerd door een vertrouwde instelling.",
         affiliation_student: "Je hebt aangetoont dat je onderwijs volgt doordat je eduID-account is gekoppeld aan een vertrouwde instelling."
+    },
+    nudgeApp: {
+        new: "Your eduID account has been created!",
+        header: "Want to sign in quicker and more secure next time?",
+        info: "Get the <strong>eduID app</strong> and securely sign in without passwords or accessing your email. It will only take a minute.",
+        no: "No thanks",
+        yes: "Get it now"
+    },
+    sms: {
+        header: "Check your phone",
+        info: "Enter the six-digit code we sent to your phone to continue",
     }
-
 };

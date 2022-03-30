@@ -127,7 +127,7 @@ I18n.translations.en = {
         info: "The magic link you used is either expired or has already been used.",
         back: "Go to eduid.nl"
     },
-    maxAttempt:{
+    maxAttempt: {
         title: "Maximum attempts reached",
         info: "You've reached the maximum verification attempts.",
     },
@@ -205,5 +205,4 @@ I18n.translations.en = {
         header: "Check your phone",
         info: "Enter the six-digit code we sent to your phone to continue",
     }
-
 };
