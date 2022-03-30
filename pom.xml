@@ -73,11 +73,17 @@
             <releases>
                 <enabled>true</enabled>
             </releases>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
             <id>openconext-releases</id>
             <name>OpenConext public releases repository</name>
             <url>dav:https://build.openconext.org/repository/public/releases</url>
         </repository>
         <repository>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
             <snapshots>
                 <enabled>true</enabled>
             </snapshots>
