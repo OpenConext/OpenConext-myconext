@@ -10,8 +10,10 @@
     import {onMount} from "svelte";
     import Cookies from "js-cookie";
     import Button from "../components/Button.svelte";
-    import userIcon from "../icons/video-game-magic-wand.svg";
+    import userIcon from "../icons/redesign/single-neutral-id-card-1.svg";
+    import accountIcon from "../icons/redesign/single-neutral-actions-refresh.svg";
     import {cookieNames} from "../constants/cookieNames";
+    import LoginOption from "../components/LoginOption.svelte";
 
     export let id;
     let emailNotFound = false;
@@ -90,30 +92,6 @@
         margin-right: 10px;
     }
 
-    div.known-user {
-        display: flex;
-        align-items: center;
-        border-radius: 2px;
-        border: 1px solid #979797;
-        background-color: #f3f6f7;
-        margin-bottom: 8px;
-
-        span.icon {
-            background-color: #dee3e7;
-            border-right: 1px solid #979797;
-            padding: 4px;
-        }
-
-        span.user-name {
-            padding-left: 15px;
-        }
-
-    }
-
-    a.other-account {
-        margin-bottom: 15px;
-    }
-
     input[type=email] {
         border: 1px solid #727272;
         border-radius: 2px;
@@ -140,14 +118,11 @@
 <h2 class="top">{I18n.t("login.headerSubTitle")}<span>{serviceName}</span></h2>
 {#if $user.knownUser}
     <div class="known-user">
-        <span class="icon">{@html userIcon}</span>
-        <span class="user-name">{$user.knownUser}</span>
+        <LoginOption icon={userIcon} label={$user.knownUser} action={nextStep} index={1} preferred={true}/>
     </div>
-    <a class="other-account"
-       href="/account"
-       on:click|preventDefault|stopPropagation={otherAccount}>
-        {I18n.t("login.useOtherAccount")}
-    </a>
+    <div class="other-account">
+        <LoginOption icon={accountIcon} label={I18n.t("login.useOtherAccount")} action={otherAccount} index={2}/>
+    </div>
 {:else}
     <input type="email"
            autocomplete="username"

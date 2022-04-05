@@ -74,8 +74,7 @@ sms:
   url: "http://localhost:8081/sms"
   bearer: "secret"
 
-tiqr:
-  encryption_secret: "secret"
+tiqr_configuration: "classpath:/tiqr.configuration.yml"
 
 attribute_aggregation:
   user: aa

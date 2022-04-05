@@ -4,10 +4,10 @@
     import {knownAccount} from "../api/index";
     import Spinner from "../components/Spinner.svelte";
     import {onMount} from "svelte";
-    import appIcon from "../icons/onemorething_filled.svg";
-    import webAuthnIcon from "../icons/onemorething_filled.svg";
-    import passwordIcon from "../icons/onemorething_filled.svg";
-    import magicLinkIcon from "../icons/onemorething_filled.svg";
+    import appIcon from "../icons/redesign/phone-hand-hold-1.svg";
+    import webAuthnIcon from "../icons/redesign/video-game-key.svg";
+    import passwordIcon from "../icons/redesign/password-type.svg";
+    import magicLinkIcon from "../icons/redesign/video-game-magic-wand.svg";
     import LoginOption from "../components/LoginOption.svelte";
 
     export let id;

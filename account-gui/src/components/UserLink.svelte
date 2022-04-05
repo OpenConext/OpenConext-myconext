@@ -24,12 +24,12 @@
 <style lang="scss">
     div.user-link {
         display: flex;
-        width: var(--width-app);
-        margin: 0 auto 10px auto;
+        margin: 0 auto 6px auto;
         color: white;
+        width: var(--width-app);
 
         span.icon {
-            margin-right: 25px;
+            margin-right: 15px;
             cursor: pointer;
         }
 
@@ -37,6 +37,14 @@
             font-size: 14px;
         }
     }
+
+    @media (max-width: 800px) {
+        div.user-link {
+            margin: 0 auto 6px 10px;
+            width: 90%;
+        }
+    }
+
 </style>
 {#if displayUserLink}
     <div class="user-link">

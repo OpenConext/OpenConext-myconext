@@ -152,6 +152,18 @@ I18n.translations.en = {
         header: "Enter your password",
         passwordIncorrect: "Password is incorrect"
     },
+    useApp: {
+        header: "Check your eduID app",
+        info: "We have sent a push-notification to your app, to verify it's you trying to sign in.",
+        scan: "Scan this QR code with your eduID app",
+        noNotification: "No notification?",
+        qrCodeLink: "Create a QR-code",
+        qrCodePostfix: "and scan it",
+        offline: "When your device is offline, you must enter a",
+        offlineLink: "one time code.",
+        lost: "Lost your app?",
+        lostLink: "Learn <a href\"https://eduid.nl/help\" target=\"_blank\">how to register a new one</a>",
+    },
     webAuthnTest: {
         info: "Test security key",
         browserPrompt: "Click the button below to test a security key. Please follow the instructions given by your browser.",

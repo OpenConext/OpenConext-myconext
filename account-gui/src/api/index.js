@@ -121,6 +121,10 @@ export function fetchServiceName(id) {
 
 }
 
+export function fetchQrCode(url) {
+    return postPutJson("/tiqr/qrcode", {url}, "POST");
+}
+
 export function fetchServiceNameByHash(id) {
     return fetchJson(`/myconext/api/idp/service/hash/${id}`).catch(() => Promise.resolve({name: "?"}))
 }

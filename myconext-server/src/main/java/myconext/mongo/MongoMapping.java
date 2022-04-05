@@ -22,7 +22,11 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.MongoMappingContext;
 import org.springframework.data.mongodb.core.mapping.MongoPersistentEntity;
 import org.springframework.data.mongodb.core.query.Collation;
+import tiqr.org.model.Authentication;
+import tiqr.org.model.Enrollment;
+import tiqr.org.model.Registration;
 
+import java.util.Collection;
 import java.util.Locale;
 
 @Configuration
@@ -62,7 +66,8 @@ public class MongoMapping {
         ((MappingMongoConverter) mongoConverter).setMapKeyDotReplacement("@");
         MongoMappingContext mappingContext = (MongoMappingContext) this.mongoConverter.getMappingContext();
 
-        for (MongoPersistentEntity<?> persistentEntity : mappingContext.getPersistentEntities()) {
+        Collection<MongoPersistentEntity<?>> persistentEntities = mappingContext.getPersistentEntities();
+        for (MongoPersistentEntity<?> persistentEntity : persistentEntities) {
             Class clazz = persistentEntity.getType();
             if (clazz.isAnnotationPresent(Document.class)) {
                 MongoPersistentEntityIndexResolver resolver = new MongoPersistentEntityIndexResolver(mappingContext);
@@ -70,9 +75,18 @@ public class MongoMapping {
                 resolver.resolveIndexFor(clazz).forEach(indexOps::ensureIndex);
             }
         }
-
+        //user - email case insensitive
         mongoTemplate.indexOps(User.class).ensureIndex(
                 new Index("email", Sort.Direction.ASC).collation(Collation.of(Locale.ENGLISH).strength(2)));
+        //tiqr
+        mongoTemplate.indexOps(Enrollment.class).ensureIndex(
+                new Index("key", Sort.Direction.ASC));
+        mongoTemplate.indexOps(Enrollment.class).ensureIndex(
+                new Index("enrollmentSecret", Sort.Direction.ASC));
+        mongoTemplate.indexOps(Authentication.class).ensureIndex(
+                new Index("sessionKey", Sort.Direction.ASC));
+        mongoTemplate.indexOps(Registration.class).ensureIndex(
+                new Index("userId", Sort.Direction.ASC));
     }
 
 }

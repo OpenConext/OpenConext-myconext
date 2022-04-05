@@ -3,8 +3,10 @@
     import {navigate} from "svelte-routing";
 
     export let icon;
+    export let label;
     export let translationKey;
     export let route;
+    export let action;
     export let index;
     export let preferred = false;
 
@@ -14,7 +16,7 @@
         if (e.key === "Enter" || e.code === "Space") {
             e.stopPropagation();
             e.preventDefault();
-            navigate(route);
+            route ? navigate(route) : action();
         }
     };
 
@@ -25,29 +27,38 @@
         display: flex;
         align-items: center;
         border-radius: 6px;
-        border: 1px solid var(--color-primary-grey);
+
+        box-shadow: 0 1px 0 2px #5e6873;
         padding: 16px 22px;
         margin-bottom: 20px;
         cursor: pointer;
 
         &:hover {
             color: var(--color-primary-blue);
-            background-color: #fafafa;
+            background-color: #c1eafe;
         }
 
         &:focus {
-            box-shadow: 0 0 0 3px #94d6ff;
+            box-shadow: 0 0 0 3px #93d5fe;
             outline: none;
             border: none;
         }
 
-        span.icon {
-            margin-right: 22px;
+        span.login-icon {
+            margin-right: 20px;
+        }
+
+        :global(span.login-icon svg) {
+            width: 32px;
+            height: 32px;
         }
     }
 </style>
 
-<div class="login-option" use:init on:click={() => navigate(route)} on:keydown={handleKeyDown(route)} tabindex={index}>
-    <span class="icon">{@html icon}</span>
-    <span class="option">{@html I18n.t(`options.${translationKey}`)}</span>
+<div class="login-option" use:init
+     on:click={() => route ? navigate(route) : action()}
+     on:keydown={handleKeyDown(route)}
+     tabindex={index}>
+    <span class="login-icon">{@html icon}</span>
+    <span class="option">{@html translationKey ? I18n.t(`options.${translationKey}`): label}</span>
 </div>

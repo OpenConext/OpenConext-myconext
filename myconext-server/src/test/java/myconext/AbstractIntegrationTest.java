@@ -35,6 +35,9 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.util.StringUtils;
+import tiqr.org.model.Authentication;
+import tiqr.org.model.Enrollment;
+import tiqr.org.model.Registration;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -109,7 +112,8 @@ public abstract class AbstractIntegrationTest {
                         .remove(new Query())
                         .insert(readFromFile(clazz))
                         .execute());
-        Arrays.asList(PasswordForgottenHash.class, ChangeEmailHash.class, Challenge.class)
+        Arrays.asList(PasswordForgottenHash.class, ChangeEmailHash.class, Challenge.class,
+                        Registration.class, Authentication.class, Enrollment.class)
                 .forEach(clazz -> mongoTemplate.bulkOps(BulkOperations.BulkMode.ORDERED, clazz)
                         .remove(new Query())
                         .execute());

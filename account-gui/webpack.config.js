@@ -87,6 +87,7 @@ module.exports = {
         proxy: {
             '/myconext/api': 'http://localhost:8081',
             '/config': 'http://localhost:8081',
+            '/tiqr': 'http://localhost:8081',
             '/register': 'http://localhost:8081'
         },
         historyApiFallback: true
