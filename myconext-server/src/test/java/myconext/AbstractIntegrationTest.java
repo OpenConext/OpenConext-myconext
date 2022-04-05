@@ -11,10 +11,7 @@ import myconext.api.MagicLinkResponse;
 import myconext.manage.MockServiceProviderResolver;
 import myconext.manage.ServiceProviderResolver;
 import myconext.model.*;
-import myconext.repository.AuthenticationRequestRepository;
-import myconext.repository.ChangeEmailHashRepository;
-import myconext.repository.PasswordForgottenHashRepository;
-import myconext.repository.UserRepository;
+import myconext.repository.*;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.io.IOUtil;
 import org.junit.Before;
@@ -96,6 +93,9 @@ public abstract class AbstractIntegrationTest {
 
     @Autowired
     protected ChangeEmailHashRepository changeEmailHashRepository;
+
+    @Autowired
+    protected EnrollmentRepository enrollmentRepository;
 
     private final SimpleDateFormat issueFormat = new SimpleDateFormat("yyyy-MM-dd'T'H:mm:ss");
 

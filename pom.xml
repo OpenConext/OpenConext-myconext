@@ -5,7 +5,7 @@
 
     <groupId>org.openconext</groupId>
     <artifactId>myconext</artifactId>
-    <version>10.0.0</version>
+    <version>7.0.0-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <name>myconext</name>
@@ -14,7 +14,7 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>2.6.3</version>
+        <version>2.6.6</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
 
@@ -22,6 +22,7 @@
         <module>myconext-server</module>
         <module>account-gui</module>
         <module>myconext-gui</module>
+        <module>tiqr-mock</module>
     </modules>
 
     <build>

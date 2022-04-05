@@ -1,0 +1,31 @@
+server:
+  port: 8088
+
+environment: local
+mongodb_db: surf_id_test
+
+spring:
+  data:
+    mongodb:
+      uri: mongodb://127.0.0.1:27017/${mongodb_db}
+      auto-index-creation: false
+  mail:
+    host: localhost
+    port: 3025
+
+management:
+  health:
+    mail:
+      enabled: false
+  endpoints:
+    web:
+      exposure:
+        include: "health,info"
+      base-path: "/internal"
+  endpoint:
+    info:
+      enabled: true
+  info:
+    git:
+      mode: full
+

@@ -11,6 +11,7 @@ import java.io.Serializable;
 @Getter
 @NoArgsConstructor
 public class Challenge implements Serializable {
+
     @Id
     private String id;
 
