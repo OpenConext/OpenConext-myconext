@@ -9,7 +9,7 @@
     let showSpinner = true;
     let serviceName = "";
     let qrCode = "";
-    let url = "";
+    let url = "";//http://localhost:3000/useapp/cbd3ac9c-6fed-475c-bb6a-f15b69692908?url=https%3A%2F%2F27c6fc4d-459f-4b84-919c-31bde709490a%40eduid.nl%2Ftiqrauth%2F565d54f5f28419adf59d70eda191ade57965d8b68319813dfe33bf9c6787b2c4%2F3f69148ab4%2F14ff7abca25ff92859f7c4623438465ffee46f1ac4f292f5a5892de1cabae16bb8c6539012b84f0f5e4005ca4771a352e0ebd7e9cda147aee801c74e3425cc11%2F1
     let showQrCode = false;
     let showTOTPLink = false;
     let onMobile = "ontouchstart" in document.documentElement;
