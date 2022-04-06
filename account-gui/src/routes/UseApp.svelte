@@ -4,6 +4,7 @@
     import Spinner from "../components/Spinner.svelte";
     import {onMount} from "svelte";
     import pushIcon from "../icons/redesign/undraw_Push_notifications_re_t84m.svg";
+    import ImageContainer from "../components/ImageContainer.svelte";
 
     export let id;
     let showSpinner = true;
@@ -27,30 +28,21 @@
 
 <style lang="scss">
 
+    img.qr-code {
+        cursor: none;
+    }
+
     p.explanation {
         font-size: 14px;
-    }
-
-    .icon-container {
-        display: flex;
-        margin: 25px 0;
-
-        img {
-            width: 260px;
-            height: auto;
-            margin: auto;
-        }
-    }
-
-    :global(.icon-container svg) {
-        width: 260px;
-        height: auto;
-        margin: auto;
     }
 
     .info-row {
         display: flex;
         align-items: center;
+
+        &:not(:last-child) {
+            margin-bottom: 15px;
+        }
 
         span.note {
             font-weight: bold;
@@ -69,35 +61,38 @@
     <h2 class="header">{I18n.t("useApp.header")}</h2>
     <p class="explanation">{I18n.t("useApp.info")}</p>
 {/if}
-<div class="icon-container">
+<ImageContainer icon={showQrCode ? null : pushIcon} margin={!showQrCode}>
     {#if showQrCode}
         {#if onMobile}
-            <a href={url}><img src="{qrCode}" alt="qr-code"></a>
+            <a href={url}><img class="qr-code" src="{qrCode}" alt="qr-code"></a>
         {:else}
-            <img src="{qrCode}" alt="qr-code">
+            <img class="qr-code" src="{qrCode}" alt="qr-code">
         {/if}
-    {:else}
-        {@html pushIcon}
     {/if}
-</div>
+</ImageContainer>
 
-<div class="info-row">
-    {#if showQrCode}
+{#if showQrCode}
+    <div class="info-row">
         <span>{I18n.t("useApp.offline")}
             <a href="/qr"
                on:click|preventDefault|stopPropagation={() => showTOTPLink = !showTOTPLink}>{I18n.t("useApp.offlineLink")}</a>
         </span>
-
-    {:else}
+    </div>
+{:else}
+    <div class="info-row">
         <span>
             <span class="note">{I18n.t("useApp.noNotification")}</span>
             <a href="/qr"
                on:click|preventDefault|stopPropagation={() => showQrCode = !showQrCode}>{I18n.t("useApp.qrCodeLink")}</a>
             <span>{I18n.t("useApp.qrCodePostfix")}</span>
         </span>
-
-
-    {/if}
-</div>
+    </div>
+    <div class="info-row">
+        <span>
+            <span class="note">{I18n.t("useApp.lost")}</span>
+            {@html I18n.t("useApp.lostLink")}
+        </span>
+    </div>
+{/if}
 
 

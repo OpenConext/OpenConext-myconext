@@ -1,22 +1,21 @@
 server:
   port: 8088
+  error:
+    whitelabel:
+      enabled: false
 
 environment: local
 mongodb_db: surf_id_test
+eduid:
+  base_url: "http://localhost:8081"
 
 spring:
   data:
     mongodb:
       uri: mongodb://127.0.0.1:27017/${mongodb_db}
       auto-index-creation: false
-  mail:
-    host: localhost
-    port: 3025
 
 management:
-  health:
-    mail:
-      enabled: false
   endpoints:
     web:
       exposure:

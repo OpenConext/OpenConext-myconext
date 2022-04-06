@@ -86,7 +86,7 @@ public class MongoMapping {
         mongoTemplate.indexOps(Authentication.class).ensureIndex(
                 new Index("sessionKey", Sort.Direction.ASC));
         mongoTemplate.indexOps(Registration.class).ensureIndex(
-                new Index("userId", Sort.Direction.ASC));
+                new Index("userid", Sort.Direction.ASC));
     }
 
 }

@@ -35,6 +35,7 @@
     import Options from "./routes/Options.svelte";
     import UserLink from "./components/UserLink.svelte";
     import CodeVerifier from "./routes/CodeVerifier.svelte";
+    import GetApp from "./routes/GetApp.svelte";
 
     export let url = "";
 
@@ -152,6 +153,7 @@
                 <Route path="/uselink/:id" let:params>
                     <UseLink id="{params.id}"/>
                 </Route>
+                <Route path="/getapp" component={GetApp}/>
                 <Route path="/usepassword/:id" let:params>
                     <UsePassword id="{params.id}"/>
                 </Route>
@@ -184,7 +186,7 @@
                 <Route path="/max-attempts" component={MaxAttempts}/>
                 <Route path="/webauthn" component={WebAuthn}/>
                 <Route path="/webauthnTest/:id" let:params>
-                    <WebAuthnTest id="{params.id}"></WebAuthnTest>
+                    <WebAuthnTest id="{params.id}"/>
                 </Route>
                 <Route component={NotFound}/>
             </Router>

@@ -187,7 +187,8 @@ public class User implements Serializable, UserDetails {
     @Transient
     @JsonIgnore
     public boolean nudgeToUseApp() {
-        return lastSeenAppNudge < (System.currentTimeMillis() - 1000 * 60 * 60 * 24 * 7);
+        //TODO configuration?
+        return lastSeenAppNudge < (System.currentTimeMillis() - 1000 * 60 * 60 * 24 * 7) || true;
     }
 
     @Transient

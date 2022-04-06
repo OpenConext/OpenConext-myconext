@@ -10,11 +10,14 @@
     import {cookieNames} from "../constants/cookieNames";
     import phone from "../icons/redesign/undraw_mobile_interface_re_1vv9.svg";
     import ButtonContainer from "../components/ButtonContainer.svelte";
+    import ImageContainer from "../components/ImageContainer.svelte";
+    import {navigate} from "svelte-routing";
 
     let serviceName = null;
     let explanation = null;
     let showSpinner = true;
     let isNew = false;
+    let hash = null;
 
     $links.userLink = false;
 
@@ -24,8 +27,8 @@
         explanation = urlSearchParams.get("explanation");
         isNew = urlSearchParams.get("new") === "true"
 
-        const hash = urlSearchParams.get('h');
-        const email = urlSearchParams.get('email');
+        hash = urlSearchParams.get("h");
+        const email = urlSearchParams.get("email");
         if (email) {
             Cookies.set(cookieNames.USERNAME, decodeURIComponent(email), {
                 expires: 365,
@@ -44,7 +47,7 @@
         const redirect = decodeURIComponent(urlSearchParams.get("redirect"));
         //Ensure we are not attacked by an open redirect
         if (redirect.startsWith($conf.magicLinkUrl)) {
-            window.location.href = `${redirect}?h=${urlSearchParams.get('h')}`;
+            window.location.href = `${redirect}?h=${hash}`;
         } else {
             throw new Error("Invalid redirect: " + redirect);
         }
@@ -62,17 +65,6 @@
         font-size: 14px;
     }
 
-    .image-container {
-        display: flex;
-        margin: 15px 0;
-    }
-
-    :global(.image-container svg) {
-        width: 162px;
-        height: auto;
-        margin: auto;
-    }
-
 </style>
 {#if showSpinner}
     <Spinner/>
@@ -87,12 +79,12 @@
     </div>
 {/if}
 <h2 class="header">{I18n.t("nudgeApp.header")}</h2>
-<div class="image-container">{@html phone}</div>
+<ImageContainer icon={phone}/>
 <p class="explanation">{@html I18n.t("nudgeApp.info")}</p>
 <ButtonContainer>
-    <Button className="cancel" href="/eduid-app" onClick={proceed}
+    <Button className="cancel" href={I18n.t("nudgeApp.noLink")} onClick={proceed}
             label={I18n.t("nudgeApp.no")}/>
-    <Button href="/eduid-app" onClick={proceed}
+    <Button href={I18n.t("nudgeApp.yesLink")} onClick={() => navigate(`/getapp?h=${hash}`)}
             label={I18n.t("nudgeApp.yes")}/>
 </ButtonContainer>
 

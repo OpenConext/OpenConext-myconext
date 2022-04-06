@@ -158,11 +158,11 @@ I18n.translations.en = {
         scan: "Scan this QR code with your eduID app",
         noNotification: "No notification?",
         qrCodeLink: "Create a QR-code",
-        qrCodePostfix: "and scan it",
+        qrCodePostfix: "and scan it.",
         offline: "When your device is offline, you must enter a",
         offlineLink: "one time code.",
         lost: "Lost your app?",
-        lostLink: "Learn <a href\"https://eduid.nl/help\" target=\"_blank\">how to register a new one</a>",
+        lostLink: "Learn <a href=\"https://eduid.nl/help\" target=\"_blank\">how to register a new one</a>.",
     },
     webAuthnTest: {
         info: "Test security key",
@@ -211,7 +211,18 @@ I18n.translations.en = {
         header: "Want to sign in quicker and more secure next time?",
         info: "Get the <strong>eduID app</strong> and securely sign in without passwords or accessing your email. It will only take a minute.",
         no: "No thanks",
-        yes: "Get it now"
+        noLink: "/proceed",
+        yes: "Get it now",
+        yesLink: "/eduid-app"
+    },
+    getApp: {
+        header: "Download the eduID app",
+        info: "Download and install <a href=\"https://eduid.nl/help\" target=\"_blank\">the eduID app</a> (issued by SURF) on your mobile device.",
+        google: "https://play.google.com/store/apps/details?id=nl.eduvpn.app&hl=en&gl=US",
+        apple: "https://apps.apple.com/us/app/eduvpn-client/id1292557340",
+        after: "When you've downloaded the eduID app on your phone, come back here and click next",
+        back: "Back",
+        next: "Next"
     },
     sms: {
         header: "Check your phone",

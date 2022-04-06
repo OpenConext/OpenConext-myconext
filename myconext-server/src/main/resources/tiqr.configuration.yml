@@ -1,3 +1,9 @@
 encryptionSecret: "secret"
+baseUrl: "http://localhost:8081"
+identifier: "eduID local"
+displayName: "eduID local"
+version: "0.0.1"
+logoUrl: "https://static.surfconext.nl/media/idp/eduid.png"
+infoUrl: "https://eduid.nl/help"
 
 

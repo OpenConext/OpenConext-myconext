@@ -112,8 +112,8 @@ public abstract class AbstractIntegrationTest {
                         .remove(new Query())
                         .insert(readFromFile(clazz))
                         .execute());
-        Arrays.asList(PasswordForgottenHash.class, ChangeEmailHash.class, Challenge.class,
-                        Registration.class, Authentication.class, Enrollment.class)
+        //Registration.class, Authentication.class, Enrollment.class
+        Arrays.asList(PasswordForgottenHash.class, ChangeEmailHash.class, Challenge.class)
                 .forEach(clazz -> mongoTemplate.bulkOps(BulkOperations.BulkMode.ORDERED, clazz)
                         .remove(new Query())
                         .execute());
