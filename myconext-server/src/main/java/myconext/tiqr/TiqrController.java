@@ -101,25 +101,28 @@ public class TiqrController {
 
     @GetMapping("/poll-authentication")
     public ResponseEntity<AuthenticationStatus> authenticationStatus(@RequestParam("sessionKey") String sessionKey) {
+        //TODO if SUCCESS then add the URL to redirect to, picked up bu GuestIdpAuthenticationRequestFilter
         return ResponseEntity.ok(tiqrService.authenticationStatus(sessionKey));
     }
 
-    @InitBinder
-    public void initBinder(WebDataBinder dataBinder) {
-        String[] denylist = new String[]{"class.*", "Class.*", "*.class.*", "*.Class.*"};
-        dataBinder.setDisallowedFields(denylist);
-    }
-
     /*
-     * Endpoint called by the Tiqr app
+     * Endpoint called by the Tiqr app to enroll user
      */
     @PostMapping(value = "/enrollment", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
-    public void brokerRequest(@ModelAttribute Registration registration,
+    public void doEnrollment(@ModelAttribute Registration registration,
                               @RequestParam("enrollment_secret") String enrollmentSecret) {
         registration.setEnrollmentSecret(enrollmentSecret);
         //fingers crossed, in case of mismatch an exception is thrown
         tiqrService.enrollData(registration);
     }
 
+    /*
+     * Endpoint called by the Tiqr app to authenticate user
+     */
+    @PostMapping(value = "/authentication", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
+    public void doAuthentication(@ModelAttribute AuthenticationData authenticationData) {
+        //fingers crossed, in case of mismatch an exception is thrown
+        tiqrService.postAuthentication(authenticationData);
+    }
 
 }

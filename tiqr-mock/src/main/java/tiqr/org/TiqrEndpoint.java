@@ -9,7 +9,10 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
-import org.springframework.http.*;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.MediaType;
+import org.springframework.http.RequestEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
@@ -19,9 +22,10 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.View;
 import org.springframework.web.servlet.view.RedirectView;
+import tiqr.org.model.Authentication;
+import tiqr.org.model.AuthenticationStatus;
 import tiqr.org.model.Enrollment;
 import tiqr.org.model.EnrollmentStatus;
-import tiqr.org.model.MetaData;
 import tiqr.org.secure.Challenge;
 
 import java.net.URI;
@@ -57,9 +61,7 @@ public class TiqrEndpoint {
 
     @GetMapping("/enrollments")
     public ModelAndView enrollments() {
-        Query query = new Query(Criteria.where("status").is(EnrollmentStatus.INITIALIZED.name()));
-        Document document = AnnotationUtils.findAnnotation(Enrollment.class, Document.class);
-        List<Enrollment> enrollments = mongoTemplate.find(query, Enrollment.class, document.collection());
+        List<Enrollment> enrollments = findAll(Enrollment.class, "status", EnrollmentStatus.INITIALIZED.name());
         Map<String, Object> body = Map.of(
                 "enrollments", enrollments,
                 "environment", environment
@@ -71,12 +73,10 @@ public class TiqrEndpoint {
 
     @GetMapping("/enrollment/{key}")
     public ModelAndView enrollment(@PathVariable("key") String key) {
-        Query query = new Query(Criteria.where("key").is(key));
         String url = String.format("%s/tiqr/metadata?enrollment_key=%s", eduIDBaseUrl, key);
         Map metaData = restTemplate.getForEntity(url, Map.class).getBody();
 
-        Document document = AnnotationUtils.findAnnotation(Enrollment.class, Document.class);
-        Enrollment enrollment = mongoTemplate.findOne(query, Enrollment.class, document.collection());
+        Enrollment enrollment = findEnrollment(key);
 
         Map<String, Object> body = Map.of(
                 "enrollment", enrollment,
@@ -94,14 +94,58 @@ public class TiqrEndpoint {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
 
-        MultiValueMap<String, String> map= new LinkedMultiValueMap<>();
+        MultiValueMap<String, String> map = new LinkedMultiValueMap<>();
         map.add("userid", enrollment.getUserID());
         map.add("secret", Challenge.generateSessionKey());
         map.add("language", "en");
-        map.add("notificationType","APNS" );
+        map.add("notificationType", "APNS");
         map.add("notificationAddress", "1234567890");
-        map.add("version","2" );
-        map.add("operation","register" );
+        map.add("version", "2");
+        map.add("operation", "register");
+
+        RequestEntity<Void> request = new RequestEntity(map, headers, HttpMethod.POST, URI.create(url));
+
+        restTemplate.exchange(request, Void.class);
+
+        return new RedirectView("/enrollments");
+    }
+
+    @GetMapping("/authentications")
+    public ModelAndView authentications() {
+        List<Authentication> authentications = findAll(Authentication.class, "status", AuthenticationStatus.PENDING.name());
+        Map<String, Object> body = Map.of(
+                "authentications", authentications,
+                "environment", environment
+        );
+        return new ModelAndView("authentications", body);
+    }
+
+    @GetMapping("/authentication/{sessionKey}")
+    public ModelAndView authentication(@PathVariable("sessionKey") String sessionKey) {
+        Authentication authentication = findAuthentication(sessionKey);
+        Map<String, Object> body = Map.of(
+                "authentication", authentication,
+                "environment", environment
+        );
+        return new ModelAndView("authentication", body);
+    }
+
+    @GetMapping("/authenticated/{sessionKey}")
+    public View authenticated(@PathVariable("sessionKey") String sessionKey) {
+        Authentication authentication = findAuthentication(sessionKey);
+        String url = String.format("%s/tiqr/enrollment?enrollment_secret=%s", eduIDBaseUrl, enrollment.getEnrollmentSecret());
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+
+        MultiValueMap<String, String> map = new LinkedMultiValueMap<>();
+        map.add("userid", enrollment.getUserID());
+        map.add("secret", Challenge.generateSessionKey());
+        map.add("language", "en");
+        map.add("notificationType", "APNS");
+        map.add("notificationAddress", "1234567890");
+        map.add("version", "2");
+        map.add("operation", "register");
 
         RequestEntity<Void> request = new RequestEntity(map, headers, HttpMethod.POST, URI.create(url));
 
@@ -114,7 +158,18 @@ public class TiqrEndpoint {
         Query query = new Query(Criteria.where("key").is(key));
         Document document = AnnotationUtils.findAnnotation(Enrollment.class, Document.class);
         return mongoTemplate.findOne(query, Enrollment.class, document.collection());
+    }
 
+    private Authentication findAuthentication(String sessionKey) {
+        Query query = new Query(Criteria.where("sessionKey").is(sessionKey));
+        Document document = AnnotationUtils.findAnnotation(Authentication.class, Document.class);
+        return mongoTemplate.findOne(query, Authentication.class, document.collection());
+    }
+
+    private <T> List<T> findAll(Class<T> clazz, String attribute, String value) {
+        Query query = new Query(Criteria.where(attribute).is(value));
+        Document document = AnnotationUtils.findAnnotation(clazz, Document.class);
+        return mongoTemplate.find(query, clazz, document.collection());
     }
 
 }
