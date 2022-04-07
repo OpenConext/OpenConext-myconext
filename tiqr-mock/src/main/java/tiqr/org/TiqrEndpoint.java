@@ -22,11 +22,10 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.View;
 import org.springframework.web.servlet.view.RedirectView;
-import tiqr.org.model.Authentication;
-import tiqr.org.model.AuthenticationStatus;
-import tiqr.org.model.Enrollment;
-import tiqr.org.model.EnrollmentStatus;
+import tiqr.org.model.*;
 import tiqr.org.secure.Challenge;
+import tiqr.org.secure.OCRA;
+import tiqr.org.secure.SecretCipher;
 
 import java.net.URI;
 import java.util.List;
@@ -41,15 +40,19 @@ public class TiqrEndpoint {
     private final MongoTemplate mongoTemplate;
     private final String eduIDBaseUrl;
     private final RestTemplate restTemplate;
+    private final SecretCipher secretCipher;
 
     @Autowired
     public TiqrEndpoint(MongoTemplate mongoTemplate,
                         @Value("${eduid.base_url}") String eduIDBaseUrl,
-                        @Value("${environment}") String environment) {
+                        @Value("${environment}") String environment,
+                        @Value("${encryption_secret}") String encryptionSecret) {
         this.mongoTemplate = mongoTemplate;
         this.eduIDBaseUrl = eduIDBaseUrl;
         this.environment = environment;
         this.restTemplate = new RestTemplate();
+        this.secretCipher = new SecretCipher(encryptionSecret);
+
     }
 
     @GetMapping("/")
@@ -66,7 +69,7 @@ public class TiqrEndpoint {
                 "enrollments", enrollments,
                 "environment", environment
         );
-
+        LOG.info(String.format("Returning %s enrollments", enrollments.size()));
         return new ModelAndView("enrollments", body);
 
     }
@@ -83,6 +86,7 @@ public class TiqrEndpoint {
                 "metadata", metaData,
                 "environment", environment
         );
+        LOG.info(String.format("Returning enrollment for %s", enrollment.getUserDisplayName()));
         return new ModelAndView("enrollment", body);
     }
 
@@ -91,8 +95,7 @@ public class TiqrEndpoint {
         Enrollment enrollment = findEnrollment(key);
         String url = String.format("%s/tiqr/enrollment?enrollment_secret=%s", eduIDBaseUrl, enrollment.getEnrollmentSecret());
 
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+        HttpHeaders headers = getHttpHeaders();
 
         MultiValueMap<String, String> map = new LinkedMultiValueMap<>();
         map.add("userid", enrollment.getUserID());
@@ -106,6 +109,8 @@ public class TiqrEndpoint {
         RequestEntity<Void> request = new RequestEntity(map, headers, HttpMethod.POST, URI.create(url));
 
         restTemplate.exchange(request, Void.class);
+
+        LOG.info(String.format("Enrolled enrollment for %s", enrollment.getUserDisplayName()));
 
         return new RedirectView("/enrollments");
     }
@@ -127,25 +132,29 @@ public class TiqrEndpoint {
                 "authentication", authentication,
                 "environment", environment
         );
+        LOG.info(String.format("Returning authentication for %s", authentication.getUserID()));
         return new ModelAndView("authentication", body);
     }
 
     @GetMapping("/authenticated/{sessionKey}")
     public View authenticated(@PathVariable("sessionKey") String sessionKey) {
         Authentication authentication = findAuthentication(sessionKey);
-        String url = String.format("%s/tiqr/enrollment?enrollment_secret=%s", eduIDBaseUrl, enrollment.getEnrollmentSecret());
+        String url = String.format("%s/tiqr/authentication", eduIDBaseUrl);
 
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+        HttpHeaders headers = getHttpHeaders();
+
+        Registration registration = findRegistration(authentication.getUserID());
+        String decryptedSecret = secretCipher.decrypt(registration.getSecret());
+        String ocra = OCRA.generateOCRA(decryptedSecret, authentication.getChallenge(), sessionKey);
 
         MultiValueMap<String, String> map = new LinkedMultiValueMap<>();
-        map.add("userid", enrollment.getUserID());
-        map.add("secret", Challenge.generateSessionKey());
-        map.add("language", "en");
+        map.add("sessionKey", sessionKey);
+        map.add("userId", authentication.getUserID());
+        map.add("response", ocra);
+        map.add("language", "nl");
+        map.add("operation", "login");
         map.add("notificationType", "APNS");
         map.add("notificationAddress", "1234567890");
-        map.add("version", "2");
-        map.add("operation", "register");
 
         RequestEntity<Void> request = new RequestEntity(map, headers, HttpMethod.POST, URI.create(url));
 
@@ -154,16 +163,28 @@ public class TiqrEndpoint {
         return new RedirectView("/enrollments");
     }
 
+    private HttpHeaders getHttpHeaders() {
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+        return headers;
+    }
+
     private Enrollment findEnrollment(String key) {
-        Query query = new Query(Criteria.where("key").is(key));
-        Document document = AnnotationUtils.findAnnotation(Enrollment.class, Document.class);
-        return mongoTemplate.findOne(query, Enrollment.class, document.collection());
+        return findOne(Enrollment.class, "key", key);
     }
 
     private Authentication findAuthentication(String sessionKey) {
-        Query query = new Query(Criteria.where("sessionKey").is(sessionKey));
-        Document document = AnnotationUtils.findAnnotation(Authentication.class, Document.class);
-        return mongoTemplate.findOne(query, Authentication.class, document.collection());
+        return findOne(Authentication.class, "sessionKey", sessionKey);
+    }
+
+    private Registration findRegistration(String userId) {
+        return findOne(Registration.class, "userId", userId);
+    }
+
+    private <T> T findOne(Class<T> clazz, String attribute, String value) {
+        Query query = new Query(Criteria.where(attribute).is(value));
+        Document document = AnnotationUtils.findAnnotation(clazz, Document.class);
+        return mongoTemplate.findOne(query, clazz, document.collection());
     }
 
     private <T> List<T> findAll(Class<T> clazz, String attribute, String value) {

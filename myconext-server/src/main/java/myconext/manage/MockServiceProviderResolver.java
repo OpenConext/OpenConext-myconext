@@ -8,8 +8,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
-@Component
-@Profile("test")
 public class MockServiceProviderResolver implements ServiceProviderResolver {
 
     private final Map<String, ServiceProvider> serviceProviders = new HashMap<>();

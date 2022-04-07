@@ -3,8 +3,6 @@ package myconext.manage;
 import myconext.model.ServiceProvider;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Profile;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -12,14 +10,11 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.http.client.support.BasicAuthenticationInterceptor;
 import org.springframework.scheduling.annotation.Scheduled;
-import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.*;
 import java.util.stream.Collectors;
 
-@Component
-@Profile("!test")
 public class ManageServiceProviderResolver implements ServiceProviderResolver {
 
     private static final Log LOG = LogFactory.getLog(ManageServiceProviderResolver.class);
@@ -32,9 +27,9 @@ public class ManageServiceProviderResolver implements ServiceProviderResolver {
     private final ParameterizedTypeReference<List<Map<String, Object>>> typeReference = new ParameterizedTypeReference<List<Map<String, Object>>>() {
     };
 
-    public ManageServiceProviderResolver(@Value("${manage.username}") String userName,
-                                         @Value("${manage.password}") String password,
-                                         @Value("${manage.base_url}") String baseUrl) {
+    public ManageServiceProviderResolver(String userName,
+                                         String password,
+                                         String baseUrl) {
         restTemplate.getInterceptors().add(new BasicAuthenticationInterceptor(userName, password));
         this.manageBaseUrl = baseUrl;
         this.headers.add(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE);

@@ -164,6 +164,9 @@ I18n.translations.en = {
         lost: "Lost your app?",
         lostLink: "Learn <a href=\"https://eduid.nl/help\" target=\"_blank\">how to register a new one</a>.",
     },
+    enrollApp: {
+        header: "Finish setup in the eduID app"
+    },
     webAuthnTest: {
         info: "Test security key",
         browserPrompt: "Click the button below to test a security key. Please follow the instructions given by your browser.",
@@ -220,7 +223,7 @@ I18n.translations.en = {
         info: "Download and install <a href=\"https://eduid.nl/help\" target=\"_blank\">the eduID app</a> (issued by SURF) on your mobile device.",
         google: "https://play.google.com/store/apps/details?id=nl.eduvpn.app&hl=en&gl=US",
         apple: "https://apps.apple.com/us/app/eduvpn-client/id1292557340",
-        after: "When you've downloaded the eduID app on your phone, come back here and click next",
+        after: "When you've downloaded the eduID app on your phone, come back here and click next.",
         back: "Back",
         next: "Next"
     },

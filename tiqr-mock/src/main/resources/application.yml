@@ -6,6 +6,8 @@ server:
 
 environment: local
 mongodb_db: surf_id_test
+# This must be same secret used in the TiqrController
+encryption_secret: "secret"
 eduid:
   base_url: "http://localhost:8081"
 

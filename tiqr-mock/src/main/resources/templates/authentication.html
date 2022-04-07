@@ -21,7 +21,7 @@
     </div>
     <div class="content-container">
         <div class="content">
-            <p th:text="${'The enrollment for ' + enrollment.userDisplayName + ' with status ' + enrollment.status}"
+            <p th:text="${'The authentication for ' + authentication.userDisplayName + ' with status ' + enrollment.status}"
                class="info"/>
             <table>
                 <thead>
@@ -32,25 +32,25 @@
                 </thead>
                 <tbody>
                 <tr>
-                    <td>OCRA suite</td>
-                    <td th:text="${metadata.service.ocraSuite}"></td>
-                </tr>
-                <tr>
-                    <td>Display name</td>
-                    <td th:text="${metadata.service.displayName}"></td>
-                </tr>
-                <tr>
-                    <td>Identifier</td>
-                    <td th:text="${metadata.service.identifier}"></td>
-                </tr>
-                <tr>
                     <td>User ID</td>
-                    <td th:text="${metadata.identity.identifier}"></td>
+                    <td th:text="${authentication.userID}"></td>
+                </tr>
+                <tr>
+                    <td>Challenge challenge</td>
+                    <td th:text="${authentication.challenge}"></td>
+                </tr>
+                <tr>
+                    <td>Status</td>
+                    <td th:text="${authentication.status}"></td>
+                </tr>
+                <tr>
+                    <td>Created</td>
+                    <td th:text="${authentication.created}"></td>
                 </tr>
                 </tbody>
             </table>
             <div class="actions">
-                <a class="button" th:href="@{/enrolled/{id}(id=${enrollment.key})}">Finish enrollment</a>
+                <a class="button" th:href="@{/authenticated/{id}(id=${authentication.sessionKey})}">Finish authentication</a>
             </div>
         </div>
     </div>

@@ -59,6 +59,7 @@ public class GuestIdpAuthenticationRequestFilter extends IdpAuthenticationReques
     public static final String TRACKING_DEVICE_COOKIE_NAME = "TRACKING_DEVICE";
     public static final String BROWSER_SESSION_COOKIE_NAME = "BROWSER_SESSION";
     public static final String REGISTER_MODUS_COOKIE_NAME = "REGISTER_MODUS";
+    public static final String TIQR_COOKIE_NAME = "TIQR_COOKIE_NAME";
 
     private static final Log LOG = LogFactory.getLog(GuestIdpAuthenticationRequestFilter.class);
 

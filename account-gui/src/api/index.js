@@ -121,11 +121,19 @@ export function fetchServiceName(id) {
 
 }
 
-export function fetchQrCode(url) {
-    return postPutJson("/tiqr/qrcode", {url}, "POST");
-}
-
 export function fetchServiceNameByHash(id) {
     return fetchJson(`/myconext/api/idp/service/hash/${id}`).catch(() => Promise.resolve({name: "?"}))
 }
 
+//Tiqr
+export function startEnrollment(hash) {
+    return fetchJson(`/tiqr/start-enrollment?hash=${hash}`);
+}
+
+export function pollEnrollment(enrollmentKey) {
+    return fetchJson(`/tiqr/poll-enrollment?enrollmentKey=${enrollmentKey}`)
+}
+
+export function fetchQrCode(url) {
+    return postPutJson("/tiqr/qrcode", {url}, "POST");
+}

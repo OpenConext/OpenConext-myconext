@@ -22,15 +22,15 @@
     <div class="content-container">
         <div class="content">
             <a class="home" th:href="@{/}">Home</a>
-            <div th:if="${!enrollments.empty}">
-                <p class="info">Click to fetch the enrollment metadata</p>
+            <div th:if="${!authentications.empty}">
+                <p class="info">Click to see the authentication details</p>
             </div>
-            <div th:each="enrollment : ${enrollments}">
-                <a th:href="@{/enrollment/{id}(id=${enrollment.key})}"><span
+            <div th:each="authentication : ${authentications}">
+                <a th:href="@{/authentication/{id}(id=${authentication.sessionKey})}"><span
                         th:text="${enrollment.userDisplayName}"></span></a>
             </div>
-            <div th:if="${enrollments.empty}">
-                <p class="info">There are no open enrollments...</p>
+            <div th:if="${authentications.empty}">
+                <p class="info">There are no pending authentications...</p>
             </div>
         </div>
     </div>

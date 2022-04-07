@@ -36,6 +36,7 @@
     import UserLink from "./components/UserLink.svelte";
     import CodeVerifier from "./routes/CodeVerifier.svelte";
     import GetApp from "./routes/GetApp.svelte";
+    import EnrollApp from "./routes/EnrollApp.svelte";
 
     export let url = "";
 
@@ -154,6 +155,7 @@
                     <UseLink id="{params.id}"/>
                 </Route>
                 <Route path="/getapp" component={GetApp}/>
+                <Route path="/enrollapp" component={EnrollApp}/>
                 <Route path="/usepassword/:id" let:params>
                     <UsePassword id="{params.id}"/>
                 </Route>

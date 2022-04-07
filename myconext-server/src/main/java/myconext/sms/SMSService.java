@@ -15,6 +15,7 @@ import java.util.List;
 import java.util.Map;
 
 @Service
+@SuppressWarnings("unchecked")
 public class SMSService {
 
     private final String url;

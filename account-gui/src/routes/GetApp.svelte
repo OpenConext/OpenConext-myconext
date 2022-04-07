@@ -7,6 +7,7 @@
     import appStore from "../icons/redesign/Download_on_the_App_Store_Badge.svg";
     import googlePlay from "../icons/redesign/Google_Play-Badge-Logo.wine.svg";
     import ButtonContainer from "../components/ButtonContainer.svelte";
+    import {navigate} from "svelte-routing";
 
     let showSpinner = true;
     let hash = null;
@@ -20,9 +21,9 @@
     });
 
     const next = () => {
-        showSpinner = true;
-        alert("todo")
+        navigate(`/enrollapp?h=${hash}`)
     };
+
     const back = () => {
         window.history.back();
     };

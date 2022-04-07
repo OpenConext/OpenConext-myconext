@@ -14,5 +14,6 @@ public class TiqrConfiguration {
     private String version;
     private String logoUrl;
     private String infoUrl;
+    private boolean pushNotificationsEnabled;
 
 }

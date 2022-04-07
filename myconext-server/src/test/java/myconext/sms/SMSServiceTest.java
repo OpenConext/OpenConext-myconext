@@ -9,9 +9,9 @@ import static com.github.tomakehurst.wiremock.client.WireMock.*;
 class SMSServiceTest {
 
     @RegisterExtension
-    WireMockExtension mockServer = new WireMockExtension(8081);
+    WireMockExtension mockServer = new WireMockExtension(8381);
 
-    private SMSService smsService = new SMSService("http://localhost:8081/sms", "secret");
+    private SMSService smsService = new SMSService("http://localhost:8381/sms", "secret");
 
     @Test
     void send() {
