@@ -30,7 +30,7 @@ public class TiqrControllerTest extends AbstractIntegrationTest {
                 .queryParam("hash", samlAuthenticationRequest.getHash())
                 .when()
                 .contentType(ContentType.JSON)
-                .get("/tiqr/start")
+                .get("/tiqr/start-enrollment")
                 .body().as(new TypeRef<>() {
                 });
         String enrollmentKey = body.get("enrollmentKey");
