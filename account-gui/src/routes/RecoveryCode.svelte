@@ -5,10 +5,12 @@
     import {links} from "../stores/conf";
     import {generateBackupCode} from "../api";
     import Spinner from "../components/Spinner.svelte";
+    import {navigate} from "svelte-routing";
 
     let showSpinner = true;
     let hash = "";
     let recoveryCode;
+    let redirect;
     let copied = false;
 
     onMount(() => {
@@ -18,6 +20,7 @@
         hash = urlParams.get("h");
         generateBackupCode(hash).then(res => {
             recoveryCode = res.recoveryCode;
+            redirect = res.redirect;
             showSpinner = false;
         })
     });
@@ -29,7 +32,7 @@
     }
 
     const next = e => {
-
+        navigate(`/congrats?h=${hash}&redirect=${encodeURIComponent(redirect)}`)
     }
 
 </script>

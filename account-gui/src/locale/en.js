@@ -189,6 +189,11 @@ I18n.translations.en = {
         placeHolder: "0612345678",
         phoneIncorrect: "Phone number is incorrect"
     },
+    congrats: {
+        header: "Success",
+        info: "You can now use the eduID app to quickly login to services which require you to login with your eduID.",
+        next: "Onwards to {{name}}"
+    },
     webAuthnTest: {
         info: "Test security key",
         browserPrompt: "Click the button below to test a security key. Please follow the instructions given by your browser.",
@@ -252,5 +257,6 @@ I18n.translations.en = {
     sms: {
         header: "Check your phone",
         info: "Enter the six-digit code we sent to your phone to continue",
+        codeIncorrect: "The code is incorrect"
     }
 };

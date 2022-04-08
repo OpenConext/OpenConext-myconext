@@ -10,9 +10,9 @@
     import {navigate} from "svelte-routing";
 
     let showSpinner = true;
+    let initial = true;
     let hash = "";
     let phoneNumber = "";
-    let phoneNumberIncorrect = false;
 
     onMount(() => {
         $links.userLink = false;
@@ -23,7 +23,8 @@
     });
 
     const next = () => {
-        phoneNumberIncorrect = validPhoneNumber(phoneNumber);
+        initial = false;
+        phoneNumberIncorrect = !validPhoneNumber(phoneNumber);
         if (!phoneNumberIncorrect) {
             showSpinner = true;
             textPhoneNumber(hash, phoneNumber.replaceAll(" ","").replaceAll("-",""))
@@ -34,6 +35,7 @@
     const init = el => el.focus();
 
     $: allowedNext = validPhoneNumber(phoneNumber);
+    $: phoneNumberIncorrect = !initial && !validPhoneNumber(phoneNumber);
 
     const handleEnter = e => e.key === "Enter" && next();
 

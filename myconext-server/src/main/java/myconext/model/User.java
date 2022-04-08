@@ -45,7 +45,7 @@ public class User implements Serializable, UserDetails {
     private boolean forgottenPassword;
 
     private Map<String, List<String>> attributes = new HashMap<>();
-    private Map<String, String> surfSecureId = new HashMap<>();
+    private Map<String, Object> surfSecureId = new HashMap<>();
 
     private List<PublicKeyCredentials> publicKeyCredentials = new ArrayList<>();
     private List<LinkedAccount> linkedAccounts = new ArrayList<>();

@@ -145,3 +145,8 @@ export function generateBackupCode(hash) {
 export function textPhoneNumber(hash, phoneNumber) {
     return postPutJson(`/tiqr/send-phone-code?hash=${hash}`,{phoneNumber}, "POST")
 }
+
+export function validatePhoneCode(hash, phoneVerification) {
+    return postPutJson(`/tiqr/verify-phone-code?hash=${hash}`,{phoneVerification}, "POST")
+}
+

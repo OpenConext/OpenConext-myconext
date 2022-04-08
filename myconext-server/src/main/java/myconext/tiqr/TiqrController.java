@@ -26,6 +26,10 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.io.IOException;
+import java.net.URLEncoder;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -47,6 +51,7 @@ public class TiqrController {
     private final UserRepository userRepository;
     private final EnrollmentRepository enrollmentRepository;
     private final SMSService smsService;
+    private final String magicLinkUrl;
 
     @Autowired
     public TiqrController(@Value("${tiqr_configuration}") Resource resource,
@@ -55,7 +60,8 @@ public class TiqrController {
                           AuthenticationRepository authenticationRepository,
                           AuthenticationRequestRepository authenticationRequestRepository,
                           UserRepository userRepository,
-                          SMSService smsService) throws IOException {
+                          SMSService smsService,
+                          @Value("${email.magic-link-url}") String magicLinkUrl) throws IOException {
         this.tiqrConfiguration = new Yaml().loadAs(resource.getInputStream(), TiqrConfiguration.class);
         String baseUrl = tiqrConfiguration.getBaseUrl();
         if (baseUrl.endsWith("/")) {
@@ -74,6 +80,7 @@ public class TiqrController {
         this.authenticationRequestRepository = authenticationRequestRepository;
         this.userRepository = userRepository;
         this.smsService = smsService;
+        this.magicLinkUrl = magicLinkUrl;
     }
 
     @GetMapping("/start-enrollment")
@@ -133,16 +140,38 @@ public class TiqrController {
         String recoveryCode = VerificationCodeGenerator.generateBackupCode();
         user.getSurfSecureId().put("recovery-code", recoveryCode);
         userRepository.save(user);
-        return ResponseEntity.ok(Collections.singletonMap("recoveryCode", recoveryCode));
+        String redirect = URLEncoder.encode(this.magicLinkUrl, Charset.defaultCharset());
+        return ResponseEntity.ok(Map.of(
+                "redirect", redirect,
+                "recoveryCode", recoveryCode));
     }
 
     @PostMapping("/send-phone-code")
-    public ResponseEntity<Void> sendPhoneCode(@RequestParam("hash") String hash, @RequestBody Map<String, String> requestBody) {
+    public ResponseEntity<Map<String, String>> sendPhoneCode(@RequestParam("hash") String hash, @RequestBody Map<String, String> requestBody) {
         User user = getUserFromAuthenticationRequest(hash);
         String phoneVerification = VerificationCodeGenerator.generatePhoneVerification();
+        String phoneNumber = requestBody.get("phoneNumber");
+        smsService.send(phoneNumber, phoneVerification);
         user.getSurfSecureId().put("phone-verification", phoneVerification);
+        user.getSurfSecureId().put("phoneNumber", phoneNumber);
         userRepository.save(user);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok(Collections.singletonMap("status", "ok"));
+    }
+
+    @PostMapping("/verify-phone-code")
+    public ResponseEntity<Map<String, String>> verifyPhoneCode(@RequestParam("hash") String hash, @RequestBody Map<String, String> requestBody) {
+        User user = getUserFromAuthenticationRequest(hash);
+        String phoneVerification = requestBody.get("phoneVerification");
+        String phoneVerificationStored = (String) user.getSurfSecureId().get("phone-verification");
+        if (MessageDigest.isEqual(phoneVerification.getBytes(StandardCharsets.UTF_8), phoneVerificationStored.getBytes(StandardCharsets.UTF_8))) {
+            user.getSurfSecureId().remove("phone-verification");
+            user.getSurfSecureId().put("phone-verified", true);
+            userRepository.save(user);
+        } else {
+            throw new ForbiddenException();
+        }
+        String redirect = URLEncoder.encode(this.magicLinkUrl, Charset.defaultCharset());
+        return ResponseEntity.ok(Collections.singletonMap("redirect", redirect));
     }
 
     @PostMapping("/start-authentication")

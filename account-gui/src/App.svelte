@@ -40,6 +40,7 @@
     import Recovery from "./routes/Recovery.svelte";
     import RecoveryCode from "./routes/RecoveryCode.svelte";
     import PhoneVerification from "./routes/PhoneVerification.svelte";
+    import Congrats from "./routes/Congrats.svelte";
 
     export let url = "";
 
@@ -163,7 +164,7 @@
                 <Route path="/recovery-code" component={RecoveryCode}/>
                 <Route path="/phone-verification" component={PhoneVerification}/>
                 <Route path="/phone-confirmation" component={CodeVerifier}/>
-
+                <Route path="/congrats" component={Congrats}/>
                 <Route path="/usepassword/:id" let:params>
                     <UsePassword id="{params.id}"/>
                 </Route>

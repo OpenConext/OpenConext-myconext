@@ -1,12 +1,15 @@
 <script>
+    import critical from "../icons/critical.svg";
 
     import I18n from "i18n-js";
     import {onMount, tick} from "svelte";
     import {links} from "../stores/conf";
-    import {generateBackupCode} from "../api";
+    import {validatePhoneCode} from "../api";
+    import {navigate} from "svelte-routing";
 
     let showSpinner = true;
     let hash = "";
+    let wrongCode = false;
 
     onMount(() => {
         $links.userLink = false;
@@ -41,8 +44,15 @@
         if (index !== 5) {
             tick().then(() => refs[index + 1].focus())
         } else {
-            //  this.verify();
-            setTimeout(() => alert("verify"), 15);
+            validatePhoneCode(hash, totp.join(""))
+                .then(res => {
+                    navigate(`/congrats?h=${hash}&redirect=${encodeURIComponent(res.redirect)}`);
+                }).catch(() => {
+                totp = Array(6).fill("");
+                refs[0].focus();
+                wrongCode = true;
+            })
+
         }
     }
 
@@ -67,12 +77,27 @@
             font-size: 22px;
             border: 1px solid var(--color-primary-blue);
             border-radius: 2px;
+
             &[disabled] {
                 background-color: rgba(239, 239, 239, 0.3);
                 border: 1px solid rgba(118, 118, 118, 0.3);
             }
         }
     }
+
+    div.error {
+        display: flex;
+        align-items: center;
+        color: var(--color-primary-red);
+        margin: 25px 0;
+    }
+
+
+    div.error span.svg {
+        display: inline-block;
+        margin-right: 10px;
+    }
+
 
 </style>
 
@@ -92,4 +117,13 @@
                on:keydown={onKeyDownTotp(index)}
                bind:this={refs[index]}/>
     {/each}
+
+
 </div>
+
+{#if wrongCode}
+    <div class="error">
+        <span class="svg">{@html critical}</span>
+        <span>{I18n.t("sms.codeIncorrect")}</span>
+    </div>
+{/if}
