@@ -137,3 +137,11 @@ export function pollEnrollment(enrollmentKey) {
 export function fetchQrCode(url) {
     return postPutJson("/tiqr/qrcode", {url}, "POST");
 }
+
+export function generateBackupCode(hash) {
+    return fetchJson(`/tiqr/generate-backup-code?hash=${hash}`)
+}
+
+export function textPhoneNumber(hash, phoneNumber) {
+    return postPutJson(`/tiqr/send-phone-code?hash=${hash}`,{phoneNumber}, "POST")
+}

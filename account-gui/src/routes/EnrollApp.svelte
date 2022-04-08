@@ -33,9 +33,9 @@
                     }
                     return currentStatus === enrollmentStatus.PROCESSED
                 },
-                interval: 500,
-                maxAttempts: 2 * 60 * 15 // 15 minute timeout
-            }).then(() => navigate("/recovery"))
+                interval: 1000,
+                maxAttempts: 60 * 15 // 15 minute timeout
+            }).then(() => navigate(`/recovery?h=${hash}`))
                 .catch(err => {
                     debugger
                 });

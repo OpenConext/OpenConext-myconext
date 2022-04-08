@@ -4,6 +4,7 @@
 
     export let icon;
     export let label;
+    export let subLabel;
     export let translationKey;
     export let route;
     export let action;
@@ -25,10 +26,9 @@
 <style lang="scss">
     .login-option {
         display: flex;
-        align-items: center;
         border-radius: 6px;
-
         box-shadow: 0 1px 0 2px #5e6873;
+        align-items: center;
         padding: 16px 22px;
         margin-bottom: 20px;
         cursor: pointer;
@@ -42,6 +42,15 @@
             box-shadow: 0 0 0 3px #93d5fe;
             outline: none;
             border: none;
+        }
+
+        span.option-container {
+            display: flex;
+            flex-direction: column
+        }
+
+        span.has-sub-label {
+            font-weight: bold;
         }
 
         span.login-icon {
@@ -60,5 +69,10 @@
      on:keydown={handleKeyDown(route)}
      tabindex={index}>
     <span class="login-icon">{@html icon}</span>
-    <span class="option">{@html translationKey ? I18n.t(`options.${translationKey}`): label}</span>
+    <span class="option-container">
+        <span class:has-sub-label={subLabel}>{@html translationKey ? I18n.t(`options.${translationKey}`) : label}</span>
+        {#if subLabel}
+        <span class="sub-label">{subLabel}</span>
+    {/if}
+        </span>
 </div>

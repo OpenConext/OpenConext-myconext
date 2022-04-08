@@ -167,6 +167,28 @@ I18n.translations.en = {
     enrollApp: {
         header: "Finish setup in the eduID app"
     },
+    recovery: {
+        header: "Set up an APP recovery method",
+        info: "If you can't access eduID with the app or via email, you can use a recovery method to sign in to your eduID account.",
+        methods: "The following methods are available.",
+        phoneNumber: "Add a recovery phone number.",
+        phoneNumberInfo: "You'll receive a text message with a code.",
+        backupCode: "Request a backup code.",
+        backupCodeInfo: "The code can be used to sign in with.",
+        save: "Save the code somewhere safe.",
+        active: "This code is active now, but you can generate a new code within My-eduID anytime.",
+        copy: "Copy the code",
+        copied: "Copied",
+        continue: "My code is safe. Continue",
+    },
+    phoneVerification: {
+        header: "Add a recovery phone number",
+        info: "Your phone number will be used for security purposes, such as helping you get back into your account if you ever lose your app",
+        text: "We will text you a code to verify your number",
+        verify: "Verify this phone number",
+        placeHolder: "0612345678",
+        phoneIncorrect: "Phone number is incorrect"
+    },
     webAuthnTest: {
         info: "Test security key",
         browserPrompt: "Click the button below to test a security key. Please follow the instructions given by your browser.",

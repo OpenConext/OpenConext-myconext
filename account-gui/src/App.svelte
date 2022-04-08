@@ -37,6 +37,9 @@
     import CodeVerifier from "./routes/CodeVerifier.svelte";
     import GetApp from "./routes/GetApp.svelte";
     import EnrollApp from "./routes/EnrollApp.svelte";
+    import Recovery from "./routes/Recovery.svelte";
+    import RecoveryCode from "./routes/RecoveryCode.svelte";
+    import PhoneVerification from "./routes/PhoneVerification.svelte";
 
     export let url = "";
 
@@ -156,6 +159,11 @@
                 </Route>
                 <Route path="/getapp" component={GetApp}/>
                 <Route path="/enrollapp" component={EnrollApp}/>
+                <Route path="/recovery" component={Recovery}/>
+                <Route path="/recovery-code" component={RecoveryCode}/>
+                <Route path="/phone-verification" component={PhoneVerification}/>
+                <Route path="/phone-confirmation" component={CodeVerifier}/>
+
                 <Route path="/usepassword/:id" let:params>
                     <UsePassword id="{params.id}"/>
                 </Route>
@@ -167,9 +175,6 @@
                 </Route>
                 <Route path="/stepup/:id" let:params>
                     <Stepup id="{params.id}"/>
-                </Route>
-                <Route path="/code-verification/:id" let:params>
-                    <CodeVerifier id="{params.id}"/>
                 </Route>
                 <Route path="/affiliation-missing/:id" let:params>
                     <AffiliationMissing id="{params.id}"/>

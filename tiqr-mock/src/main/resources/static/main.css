@@ -145,7 +145,8 @@ table td {
 }
 
 table th.attribute {
-    width: 65%;
+    width: 35%;
+    font-weight: bold;
 }
 
 table th.value {

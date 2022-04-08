@@ -2,8 +2,18 @@
 
     import I18n from "i18n-js";
     import {onMount, tick} from "svelte";
+    import {links} from "../stores/conf";
+    import {generateBackupCode} from "../api";
 
-    export let id;
+    let showSpinner = true;
+    let hash = "";
+
+    onMount(() => {
+        $links.userLink = false;
+        const urlParams = new URLSearchParams(window.location.search);
+        hash = urlParams.get("h");
+        showSpinner = false;
+    });
 
     let refs = Array(6).fill("");
     let totp = Array(6).fill("");

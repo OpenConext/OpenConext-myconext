@@ -6,6 +6,8 @@ import myconext.exceptions.UserNotFoundException;
 import myconext.model.SamlAuthenticationRequest;
 import myconext.model.User;
 import myconext.repository.*;
+import myconext.security.VerificationCodeGenerator;
+import myconext.sms.SMSService;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,12 +22,17 @@ import tiqr.org.TiqrService;
 import tiqr.org.model.*;
 import tiqr.org.secure.QRCodeGenerator;
 
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.io.IOException;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
+
+import static myconext.security.CookieResolver.cookieByName;
+import static myconext.security.GuestIdpAuthenticationRequestFilter.TIQR_COOKIE_NAME;
 
 @RestController
 @RequestMapping("/tiqr")
@@ -39,6 +46,7 @@ public class TiqrController {
     private final AuthenticationRequestRepository authenticationRequestRepository;
     private final UserRepository userRepository;
     private final EnrollmentRepository enrollmentRepository;
+    private final SMSService smsService;
 
     @Autowired
     public TiqrController(@Value("${tiqr_configuration}") Resource resource,
@@ -46,7 +54,8 @@ public class TiqrController {
                           RegistrationRepository registrationRepository,
                           AuthenticationRepository authenticationRepository,
                           AuthenticationRequestRepository authenticationRequestRepository,
-                          UserRepository userRepository) throws IOException {
+                          UserRepository userRepository,
+                          SMSService smsService) throws IOException {
         this.tiqrConfiguration = new Yaml().loadAs(resource.getInputStream(), TiqrConfiguration.class);
         String baseUrl = tiqrConfiguration.getBaseUrl();
         if (baseUrl.endsWith("/")) {
@@ -64,6 +73,7 @@ public class TiqrController {
         this.enrollmentRepository = enrollmentRepository;
         this.authenticationRequestRepository = authenticationRequestRepository;
         this.userRepository = userRepository;
+        this.smsService = smsService;
     }
 
     @GetMapping("/start-enrollment")
@@ -71,12 +81,9 @@ public class TiqrController {
         if (!StringUtils.hasText(hash)) {
             throw new ForbiddenException("No hash parameter");
         }
-        SamlAuthenticationRequest samlAuthenticationRequest = authenticationRequestRepository.findByHash(hash)
-                .orElseThrow(() -> new ForbiddenException("Unknown hash"));
-        String userId = samlAuthenticationRequest.getUserId();
-        User user = userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException(userId));
+        User user = getUserFromAuthenticationRequest(hash);
 
-        Optional<Enrollment> enrollmentByUserID = enrollmentRepository.findEnrollmentByUserID(userId);
+        Optional<Enrollment> enrollmentByUserID = enrollmentRepository.findEnrollmentByUserID(user.getId());
         enrollmentByUserID.ifPresent(enrollmentRepository::delete);
 
         Enrollment enrollment = tiqrService.startEnrollment(user.getId(), String.format("%s %s", user.getGivenName(), user.getFamilyName()));
@@ -91,6 +98,14 @@ public class TiqrController {
         LOG.info(String.format("Started enrollment for %s", user.getEmail()));
 
         return ResponseEntity.ok(results);
+    }
+
+    private User getUserFromAuthenticationRequest(String hash) {
+        SamlAuthenticationRequest samlAuthenticationRequest = authenticationRequestRepository.findByHash(hash)
+                .orElseThrow(() -> new ForbiddenException("Unknown hash"));
+        String userId = samlAuthenticationRequest.getUserId();
+        User user = userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException(userId));
+        return user;
     }
 
     @GetMapping("/metadata")
@@ -112,13 +127,32 @@ public class TiqrController {
         return ResponseEntity.ok(enrollment.getStatus());
     }
 
+    @GetMapping("/generate-backup-code")
+    public ResponseEntity<Map<String, String>> generateBackupCode(@RequestParam("hash") String hash) {
+        User user = getUserFromAuthenticationRequest(hash);
+        String recoveryCode = VerificationCodeGenerator.generateBackupCode();
+        user.getSurfSecureId().put("recovery-code", recoveryCode);
+        userRepository.save(user);
+        return ResponseEntity.ok(Collections.singletonMap("recoveryCode", recoveryCode));
+    }
+
+    @PostMapping("/send-phone-code")
+    public ResponseEntity<Void> sendPhoneCode(@RequestParam("hash") String hash, @RequestBody Map<String, String> requestBody) {
+        User user = getUserFromAuthenticationRequest(hash);
+        String phoneVerification = VerificationCodeGenerator.generatePhoneVerification();
+        user.getSurfSecureId().put("phone-verification", phoneVerification);
+        userRepository.save(user);
+        return ResponseEntity.ok().build();
+    }
+
     @PostMapping("/start-authentication")
     public ResponseEntity<Map<String, String>> startAuthentication(HttpServletRequest request, @Valid @RequestBody TiqrRequest tiqrRequest) throws IOException, WriterException {
 
 //        Optional<User> optionalUser = userRepository.findUserByEmail(emailGuessingPreventor.sanitizeEmail(email));
 //
-//        Optional<Cookie> optionalTiqrCookie = cookieByName(request, TIQR_COOKIE_NAME);
-//        tiqrService.startAuthentication()
+        Optional<Cookie> optionalTiqrCookie = cookieByName(request, TIQR_COOKIE_NAME);
+        tiqrService.startAuthentication(null, null, optionalTiqrCookie.isPresent());
+        //if there is no cookie, then force QR code and do not
         return null;
     }
 
