@@ -163,6 +163,33 @@ public class TiqrEndpoint {
         return new RedirectView("/enrollments");
     }
 
+    @GetMapping("/registrations")
+    public ModelAndView registrations() {
+        List<Registration> registrations = mongoTemplate.find(new Query(), Registration.class, "registrations");
+        Map<String, Object> body = Map.of(
+                "registrations", registrations,
+                "environment", environment
+        );
+        return new ModelAndView("registrations", body);
+    }
+
+    @GetMapping("/registration/{userId}")
+    public ModelAndView registration(@PathVariable("userId") String userId) {
+        Registration registration = findRegistration(userId);
+        Map<String, Object> body = Map.of(
+                "registration", registration,
+                "environment", environment
+        );
+        return new ModelAndView("registration", body);
+    }
+
+    @GetMapping("/delete-registration/{userId}")
+    public View deleteRegistration(@PathVariable("userId") String userId) {
+        Registration registration = findRegistration(userId);
+        mongoTemplate.remove(registration);
+        return new RedirectView("/registrations");
+    }
+
     private HttpHeaders getHttpHeaders() {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);

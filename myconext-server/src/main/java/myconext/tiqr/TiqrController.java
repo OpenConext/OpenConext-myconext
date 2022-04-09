@@ -13,6 +13,7 @@ import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.StringUtils;
@@ -52,6 +53,7 @@ public class TiqrController {
     private final EnrollmentRepository enrollmentRepository;
     private final SMSService smsService;
     private final String magicLinkUrl;
+    private final boolean secureCookie;
 
     @Autowired
     public TiqrController(@Value("${tiqr_configuration}") Resource resource,
@@ -61,6 +63,7 @@ public class TiqrController {
                           AuthenticationRequestRepository authenticationRequestRepository,
                           UserRepository userRepository,
                           SMSService smsService,
+                          @Value("${secure_cookie}") boolean secureCookie,
                           @Value("${email.magic-link-url}") String magicLinkUrl) throws IOException {
         this.tiqrConfiguration = new Yaml().loadAs(resource.getInputStream(), TiqrConfiguration.class);
         String baseUrl = tiqrConfiguration.getBaseUrl();
@@ -80,6 +83,7 @@ public class TiqrController {
         this.authenticationRequestRepository = authenticationRequestRepository;
         this.userRepository = userRepository;
         this.smsService = smsService;
+        this.secureCookie = secureCookie;
         this.magicLinkUrl = magicLinkUrl;
     }
 
@@ -138,12 +142,16 @@ public class TiqrController {
     public ResponseEntity<Map<String, String>> generateBackupCode(@RequestParam("hash") String hash) {
         User user = getUserFromAuthenticationRequest(hash);
         String recoveryCode = VerificationCodeGenerator.generateBackupCode();
-        user.getSurfSecureId().put("recovery-code", recoveryCode);
+        user.getSurfSecureId().put(SURFSecureID.RECOVERY_CODE, recoveryCode);
         userRepository.save(user);
+
+        tiqrService.finishRegistration(user.getId());
+
         String redirect = URLEncoder.encode(this.magicLinkUrl, Charset.defaultCharset());
-        return ResponseEntity.ok(Map.of(
+        Map<String, String> body = Map.of(
                 "redirect", redirect,
-                "recoveryCode", recoveryCode));
+                "recoveryCode", recoveryCode);
+        return getSuccessResponseEntity(body);
     }
 
     @PostMapping("/send-phone-code")
@@ -151,10 +159,13 @@ public class TiqrController {
         User user = getUserFromAuthenticationRequest(hash);
         String phoneVerification = VerificationCodeGenerator.generatePhoneVerification();
         String phoneNumber = requestBody.get("phoneNumber");
+
         smsService.send(phoneNumber, phoneVerification);
-        user.getSurfSecureId().put("phone-verification", phoneVerification);
-        user.getSurfSecureId().put("phoneNumber", phoneNumber);
+
+        user.getSurfSecureId().put(SURFSecureID.PHONE_VERIFICATION_CODE, phoneVerification);
+        user.getSurfSecureId().put(SURFSecureID.PHONE_NUMBER, phoneNumber);
         userRepository.save(user);
+
         return ResponseEntity.ok(Collections.singletonMap("status", "ok"));
     }
 
@@ -162,16 +173,27 @@ public class TiqrController {
     public ResponseEntity<Map<String, String>> verifyPhoneCode(@RequestParam("hash") String hash, @RequestBody Map<String, String> requestBody) {
         User user = getUserFromAuthenticationRequest(hash);
         String phoneVerification = requestBody.get("phoneVerification");
-        String phoneVerificationStored = (String) user.getSurfSecureId().get("phone-verification");
+        String phoneVerificationStored = (String) user.getSurfSecureId().get(SURFSecureID.PHONE_VERIFICATION_CODE);
         if (MessageDigest.isEqual(phoneVerification.getBytes(StandardCharsets.UTF_8), phoneVerificationStored.getBytes(StandardCharsets.UTF_8))) {
-            user.getSurfSecureId().remove("phone-verification");
-            user.getSurfSecureId().put("phone-verified", true);
+            user.getSurfSecureId().remove(SURFSecureID.PHONE_VERIFICATION_CODE);
+            user.getSurfSecureId().put(SURFSecureID.PHONE_VERIFIED, true);
             userRepository.save(user);
+
+            tiqrService.finishRegistration(user.getId());
         } else {
             throw new ForbiddenException();
         }
         String redirect = URLEncoder.encode(this.magicLinkUrl, Charset.defaultCharset());
-        return ResponseEntity.ok(Collections.singletonMap("redirect", redirect));
+        return getSuccessResponseEntity(Collections.singletonMap("redirect", redirect));
+    }
+
+    private ResponseEntity<Map<String, String>> getSuccessResponseEntity(Map<String, String> body) {
+        String secure = secureCookie ? "; Secure" : "";
+        String cookieValue = String.format("%s=true; Max-Age=%s; %s", TIQR_COOKIE_NAME, 60 * 60 * 24 * 365, secure);
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .header("Set-Cookie",cookieValue)
+                .body(body);
     }
 
     @PostMapping("/start-authentication")

@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import myconext.exceptions.WeakPasswordException;
 import myconext.manage.ServiceProviderResolver;
+import myconext.tiqr.SURFSecureID;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.Transient;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -196,7 +197,10 @@ public class User implements Serializable, UserDetails {
     public List<String> loginOptions() {
         List<LoginOptions> result = new ArrayList<>();
         //Order by priority
-        if (!CollectionUtils.isEmpty(this.surfSecureId)) {
+        if (!CollectionUtils.isEmpty(this.surfSecureId) && (
+                this.surfSecureId.containsKey(SURFSecureID.PHONE_VERIFIED) ||
+                        this.surfSecureId.containsKey(SURFSecureID.RECOVERY_CODE)
+        )) {
             result.add(LoginOptions.APP);
         }
         if (!CollectionUtils.isEmpty(this.publicKeyCredentials)) {
