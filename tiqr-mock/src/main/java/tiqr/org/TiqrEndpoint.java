@@ -187,6 +187,13 @@ public class TiqrEndpoint {
     public View deleteRegistration(@PathVariable("userId") String userId) {
         Registration registration = findRegistration(userId);
         mongoTemplate.remove(registration);
+        //Reset the surf secure settings
+        Map user = mongoTemplate.findById(userId, Map.class, "users");
+        Map<String, Object> surfSecureId = (Map<String, Object>) user.get("surfSecureId");
+        surfSecureId.clear();
+        user.put("lastSeenAppNudge", 1L);
+        mongoTemplate.save(user, "users");
+
         return new RedirectView("/registrations");
     }
 

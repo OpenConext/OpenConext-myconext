@@ -189,7 +189,7 @@ public class TiqrController {
 
     private ResponseEntity<Map<String, String>> getSuccessResponseEntity(Map<String, String> body) {
         String secure = secureCookie ? "; Secure" : "";
-        String cookieValue = String.format("%s=true; Max-Age=%s; %s", TIQR_COOKIE_NAME, 60 * 60 * 24 * 365, secure);
+        String cookieValue = String.format("%s=true; Max-Age=%s; HttpOnly; %s", TIQR_COOKIE_NAME, 60 * 60 * 24 * 365, secure);
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .header("Set-Cookie",cookieValue)

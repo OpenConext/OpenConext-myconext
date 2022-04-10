@@ -20,7 +20,7 @@ public class SMSServiceMock implements SMSService{
     public void send(String mobile, String code) {
         try {
             byte[] bytes = String.format(template, code).getBytes(StandardCharsets.UTF_8);
-            File tempFile = File.createTempFile("javamail", ".html");
+            File tempFile = File.createTempFile("javasms", ".html");
             FileCopyUtils.copy(bytes, tempFile);
             Runtime.getRuntime().exec("open " + tempFile.getAbsolutePath());
         } catch (IOException e) {

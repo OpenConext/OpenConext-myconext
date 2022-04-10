@@ -5,6 +5,7 @@
     export let preLink = "";
     export let linkText = "";
     export let route;
+    export let href;
 
 </script>
 
@@ -59,10 +60,13 @@
     <div class="sub-content-inner">
         <span class="question">{@html question}
             <span class="pre-link">{preLink}</span>
-            <a href={route}
-               use:link>
-                {linkText}
-            </a>
+            {#if route}
+                <a href={route} use:link>
+                    {linkText}
+                </a>
+            {:else}
+                <a href={href} target="_blank">{linkText}</a>
+            {/if}
         </span>
     </div>
 </div>

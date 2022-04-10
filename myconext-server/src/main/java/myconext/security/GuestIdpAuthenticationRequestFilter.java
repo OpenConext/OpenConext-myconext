@@ -2,6 +2,7 @@ package myconext.security;
 
 import myconext.exceptions.UserNotFoundException;
 import myconext.mail.MailBox;
+import myconext.manage.ServiceProviderHolder;
 import myconext.manage.ServiceProviderResolver;
 import myconext.model.*;
 import myconext.repository.AuthenticationRequestRepository;
@@ -53,7 +54,7 @@ import static myconext.security.CookieResolver.cookieByName;
 import static org.springframework.util.StringUtils.hasText;
 
 @SuppressWarnings("unchecked")
-public class GuestIdpAuthenticationRequestFilter extends IdpAuthenticationRequestFilter {
+public class GuestIdpAuthenticationRequestFilter extends IdpAuthenticationRequestFilter implements ServiceProviderHolder {
 
     public static final String GUEST_IDP_REMEMBER_ME_COOKIE_NAME = "guest-idp-remember-me";
     public static final String TRACKING_DEVICE_COOKIE_NAME = "TRACKING_DEVICE";
@@ -195,14 +196,6 @@ public class GuestIdpAuthenticationRequestFilter extends IdpAuthenticationReques
             response.sendRedirect(this.redirectUrl + path + samlAuthenticationRequest.getId() +
                     separator + stepUp);
         }
-    }
-
-    private String getServiceName(HttpServletRequest request, SamlAuthenticationRequest samlAuthenticationRequest) {
-        String lang = cookieByName(request, "lang").map(cookie -> cookie.getValue()).orElse("en");
-        Optional<ServiceProvider> optionalServiceProvider = serviceProviderResolver.resolve(samlAuthenticationRequest.getRequesterEntityId());
-        String serviceName = optionalServiceProvider.map(serviceProvider -> lang.equals("en") ? serviceProvider.getName() : serviceProvider.getNameNl())
-                .orElse(samlAuthenticationRequest.getRequesterEntityId());
-        return serviceName;
     }
 
     public static boolean isUserVerifiedByInstitution(User user, List<String> authenticationContextClassReferenceValues) {
@@ -571,6 +564,10 @@ public class GuestIdpAuthenticationRequestFilter extends IdpAuthenticationReques
         //Tracking cookie for user new device discovery
         this.addTrackingCookie(request, response, user);
         processHtml(request, response, getPostBindingTemplate(), model);
+    }
+
+    public ServiceProviderResolver getServiceProviderResolver() {
+        return serviceProviderResolver;
     }
 
     protected List<Attribute> attributes(User user, String requesterEntityId, List<String> authenticationContextClassReferences) {

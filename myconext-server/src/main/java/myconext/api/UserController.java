@@ -12,6 +12,7 @@ import myconext.exceptions.ExpiredAuthenticationException;
 import myconext.exceptions.ForbiddenException;
 import myconext.exceptions.UserNotFoundException;
 import myconext.mail.MailBox;
+import myconext.manage.ServiceProviderHolder;
 import myconext.manage.ServiceProviderResolver;
 import myconext.model.*;
 import myconext.oidcng.OpenIDConnect;
@@ -53,7 +54,7 @@ import static myconext.security.CookieResolver.cookieByName;
 
 @RestController
 @RequestMapping("/myconext/api")
-public class UserController {
+public class UserController implements ServiceProviderHolder {
 
     private static final Log LOG = LogFactory.getLog(UserController.class);
 
@@ -227,14 +228,6 @@ public class UserController {
             mailBox.sendMagicLink(user, samlAuthenticationRequest.getHash(), serviceName);
         }
         return ResponseEntity.ok(true);
-    }
-
-    private String getServiceName(HttpServletRequest request, SamlAuthenticationRequest samlAuthenticationRequest) {
-        String lang = cookieByName(request, "lang").map(cookie -> cookie.getValue()).orElse("en");
-        Optional<ServiceProvider> optionalServiceProvider = serviceProviderResolver.resolve(samlAuthenticationRequest.getRequesterEntityId());
-        String serviceName = optionalServiceProvider.map(serviceProvider -> lang.equals("en") ? serviceProvider.getName() : serviceProvider.getNameNl())
-                .orElse(samlAuthenticationRequest.getRequesterEntityId());
-        return serviceName;
     }
 
     @GetMapping("/idp/security/success")
@@ -786,6 +779,10 @@ public class UserController {
 
     private ResponseEntity return404() {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Collections.singletonMap("status", HttpStatus.NOT_FOUND.value()));
+    }
+
+    public ServiceProviderResolver getServiceProviderResolver() {
+        return serviceProviderResolver;
     }
 
     public static String hash() {

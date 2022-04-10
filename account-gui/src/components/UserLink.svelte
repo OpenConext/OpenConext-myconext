@@ -10,7 +10,8 @@
     let displayBackArrow = false;
 
     onMount(() => {
-        window.addEventListener("popstate", () => {
+        window.addEventListener("popstate", e => {
+            console.log("popstate "+e+"  window.location.href");
             displayUserLink = $user.knownUser && ($links.userLink || window.location.href.indexOf("login") === -1);
         });
         displayBackArrow = window.history.length > 1;
