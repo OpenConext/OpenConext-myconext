@@ -24,12 +24,14 @@ import java.util.Map;
 public class MailBox {
 
     private static final Log LOG = LogFactory.getLog(MailBox.class);
+    private static final String SANITIZE_NAME = "[^\\p{L} '-]";
 
-    private JavaMailSender mailSender;
-    private String magicLinkUrl;
-    private String mySURFconextURL;
-    private String emailFrom;
-    private Map<String, Map<String, String>> subjects;
+
+    private final JavaMailSender mailSender;
+    private final String magicLinkUrl;
+    private final String mySURFconextURL;
+    private final String emailFrom;
+    private final Map<String, Map<String, String>> subjects;
 
     private final MustacheFactory mustacheFactory;
 
@@ -111,7 +113,9 @@ public class MailBox {
     private Map<String, Object> variables(User user, String title) {
         Map<String, Object> variables = new HashMap<>();
         variables.put("title", title);
-        variables.put("name", user.getGivenName() + " " + user.getFamilyName());
+        String fullName = user.getGivenName() + " " + user.getFamilyName();
+        String fullNameSanitized = fullName.replaceAll(SANITIZE_NAME, "");
+        variables.put("name", fullNameSanitized);
         return variables;
     }
 

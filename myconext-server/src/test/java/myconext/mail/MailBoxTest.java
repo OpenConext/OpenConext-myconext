@@ -16,6 +16,8 @@ import javax.mail.Message;
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
 import java.util.UUID;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import static com.icegreen.greenmail.util.GreenMailUtil.getBody;
 import static org.awaitility.Awaitility.await;
@@ -115,6 +117,33 @@ public class MailBoxTest extends AbstractIntegrationTest {
 
         String htmlContent = parser.getHtmlContent();
         assertTrue(htmlContent.contains("http://localhost:3001/forgot-password?h=hash"));
+    }
+
+    @Test
+    public void mustacheDefaultEncoding() throws Exception {
+        nameEscapeTest("<script>alert()", "</script>", "scriptalert script");
+    }
+
+    @Test
+    public void preventLink() throws Exception {
+        nameEscapeTest("https://föóäërg", "- jj'", "httpsföóäërg - jj&#39;");
+    }
+
+    private void nameEscapeTest(String givenName, String familyName, String expected) throws Exception {
+        User user = user("jdoe@example.com");
+        user.setGivenName(givenName);
+        user.setFamilyName(familyName);
+        mailBox.sendMagicLink(user, "hash", "requesterId");
+
+        MimeMessage mimeMessage = mailMessage();
+        MimeMessageParser parser = new MimeMessageParser(mimeMessage);
+        parser.parse();
+
+        String htmlContent = parser.getHtmlContent();
+        Matcher matcher = Pattern.compile("Hi <strong>(.+?)</strong>").matcher(htmlContent);
+        matcher.find();
+        String group = matcher.group(1);
+        assertEquals(expected, group);
     }
 
     private MimeMessage mailMessage() {
