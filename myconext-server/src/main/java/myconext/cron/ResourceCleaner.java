@@ -2,10 +2,7 @@ package myconext.cron;
 
 
 import myconext.model.*;
-import myconext.repository.AuthenticationRequestRepository;
-import myconext.repository.ChangeEmailHashRepository;
-import myconext.repository.PasswordForgottenHashRepository;
-import myconext.repository.UserRepository;
+import myconext.repository.*;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,17 +25,20 @@ public class ResourceCleaner {
     private final PasswordForgottenHashRepository passwordForgottenHashRepository;
     private final ChangeEmailHashRepository changeEmailHashRepository;
     private final boolean cronJobResponsible;
+    private final EmailsSendRepository emailsSendRepository;
 
     @Autowired
     public ResourceCleaner(AuthenticationRequestRepository authenticationRequestRepository,
                            UserRepository userRepository,
                            PasswordForgottenHashRepository passwordForgottenHashRepository,
                            ChangeEmailHashRepository changeEmailHashRepository,
+                           EmailsSendRepository emailsSendRepository,
                            @Value("${cron.node-cron-job-responsible}") boolean cronJobResponsible) {
         this.authenticationRequestRepository = authenticationRequestRepository;
         this.userRepository = userRepository;
         this.passwordForgottenHashRepository = passwordForgottenHashRepository;
         this.changeEmailHashRepository = changeEmailHashRepository;
+        this.emailsSendRepository = emailsSendRepository;
         this.cronJobResponsible = cronJobResponsible;
     }
 
@@ -51,6 +51,9 @@ public class ResourceCleaner {
         info(SamlAuthenticationRequest.class, authenticationRequestRepository.deleteByExpiresInBeforeAndRememberMe(now, false));
         info(PasswordForgottenHash.class, passwordForgottenHashRepository.deleteByExpiresInBefore(now));
         info(ChangeEmailHash.class, changeEmailHashRepository.deleteByExpiresInBefore(now));
+
+        Date seconds16Ago = Date.from(now.toInstant().minus(16, ChronoUnit.SECONDS));
+        info(EmailsSend.class, emailsSendRepository.deleteBySendAtBefore(seconds16Ago));
 
         List<User> users = userRepository.findByLinkedAccounts_ExpiresAtBefore(now);
         users.forEach(user -> {

@@ -12,7 +12,7 @@
     import critical from "../icons/critical.svg";
     const gmail = "/img/get-started-icon-gmail@2x-e80b706.png";
     const outlook = "/img/get-started-icon-outlook-55f9ac5.png";
-    const resendMailAllowedTimeOut = 15 * 1000;
+    const resendMailAllowedTimeOut = $conf.emailSpamThresholdSeconds * 1000;
 
     export let id;
     let serviceName;

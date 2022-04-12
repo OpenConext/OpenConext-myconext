@@ -11,10 +11,7 @@ import myconext.api.MagicLinkResponse;
 import myconext.manage.MockServiceProviderResolver;
 import myconext.manage.ServiceProviderResolver;
 import myconext.model.*;
-import myconext.repository.AuthenticationRequestRepository;
-import myconext.repository.ChangeEmailHashRepository;
-import myconext.repository.PasswordForgottenHashRepository;
-import myconext.repository.UserRepository;
+import myconext.repository.*;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.io.IOUtil;
 import org.junit.Before;
@@ -97,6 +94,9 @@ public abstract class AbstractIntegrationTest {
     @Autowired
     protected ChangeEmailHashRepository changeEmailHashRepository;
 
+    @Autowired
+    protected EmailsSendRepository emailsSendRepository;
+
     private final SimpleDateFormat issueFormat = new SimpleDateFormat("yyyy-MM-dd'T'H:mm:ss");
 
     protected final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
@@ -109,7 +109,7 @@ public abstract class AbstractIntegrationTest {
                         .remove(new Query())
                         .insert(readFromFile(clazz))
                         .execute());
-        Arrays.asList(PasswordForgottenHash.class, ChangeEmailHash.class, Challenge.class)
+        Arrays.asList(PasswordForgottenHash.class, ChangeEmailHash.class, Challenge.class, EmailsSend.class)
                 .forEach(clazz -> mongoTemplate.bulkOps(BulkOperations.BulkMode.ORDERED, clazz)
                         .remove(new Query())
                         .execute());

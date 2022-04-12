@@ -5,7 +5,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.mustachejava.DefaultMustacheFactory;
 import com.github.mustachejava.MustacheFactory;
 import lombok.SneakyThrows;
+import myconext.model.EmailsSend;
 import myconext.model.User;
+import myconext.repository.EmailsSendRepository;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.context.i18n.LocaleContextHolder;
@@ -18,8 +20,11 @@ import org.springframework.util.StringUtils;
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
 import java.io.*;
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 public class MailBox {
 
@@ -34,13 +39,23 @@ public class MailBox {
     private final Map<String, Map<String, String>> subjects;
 
     private final MustacheFactory mustacheFactory;
+    private final EmailsSendRepository emailsSendRepository;
+    private final long emailSpamThresholdSeconds;
 
-    public MailBox(JavaMailSender mailSender, String emailFrom, String magicLinkUrl, String mySURFconextURL,
-                   ObjectMapper objectMapper, Resource mailTemplatesDirectory) throws IOException {
+    public MailBox(JavaMailSender mailSender,
+                   String emailFrom,
+                   String magicLinkUrl,
+                   String mySURFconextURL,
+                   ObjectMapper objectMapper,
+                   Resource mailTemplatesDirectory,
+                   EmailsSendRepository emailsSendRepository,
+                   long emailSpamThresholdSeconds) throws IOException {
         this.mailSender = mailSender;
         this.emailFrom = emailFrom;
         this.magicLinkUrl = magicLinkUrl;
         this.mySURFconextURL = mySURFconextURL;
+        this.emailsSendRepository = emailsSendRepository;
+        this.emailSpamThresholdSeconds = emailSpamThresholdSeconds;
         if (mailTemplatesDirectory.isFile()) {
             LOG.info("Initializing mail templates from file system: " + mailTemplatesDirectory.getFile().getAbsolutePath());
             mustacheFactory = new DefaultMustacheFactory(mailTemplatesDirectory.getFile());
@@ -58,7 +73,7 @@ public class MailBox {
         variables.put("destination", requesterId);
         variables.put("hash", hash);
         variables.put("magicLinkUrl", magicLinkUrl);
-        sendMail("magic_link", title, variables, preferredLanguage(user), user.getEmail());
+        sendMail("magic_link", title, variables, preferredLanguage(user), user.getEmail(), true);
     }
 
     public void sendAccountVerification(User user, String hash) {
@@ -66,14 +81,14 @@ public class MailBox {
         Map<String, Object> variables = variables(user, title);
         variables.put("hash", hash);
         variables.put("magicLinkUrl", magicLinkUrl);
-        sendMail("account_verification", title, variables, preferredLanguage(user), user.getEmail());
+        sendMail("account_verification", title, variables, preferredLanguage(user), user.getEmail(), true);
     }
 
     public void sendAccountConfirmation(User user) {
         String title = this.getTitle("account_confirmation", user);
         Map<String, Object> variables = variables(user, title);
         variables.put("mySurfConextURL", mySURFconextURL);
-        sendMail("account_confirmation", title, variables, preferredLanguage(user), user.getEmail());
+        sendMail("account_confirmation", title, variables, preferredLanguage(user), user.getEmail(), false);
     }
 
     public void sendForgotPassword(User user, String hash) {
@@ -81,7 +96,7 @@ public class MailBox {
         Map<String, Object> variables = variables(user, title);
         variables.put("mySurfConextURL", mySURFconextURL);
         variables.put("hash", hash);
-        sendMail("forgot_password", title, variables, preferredLanguage(user), user.getEmail());
+        sendMail("forgot_password", title, variables, preferredLanguage(user), user.getEmail(), false);
     }
 
     public void sendUpdateEmail(User user, String newMail, String hash) {
@@ -89,7 +104,7 @@ public class MailBox {
         Map<String, Object> variables = variables(user, title);
         variables.put("mySurfConextURL", mySURFconextURL);
         variables.put("hash", hash);
-        sendMail("update_email", title, variables, preferredLanguage(user), newMail);
+        sendMail("update_email", title, variables, preferredLanguage(user), newMail, false);
     }
 
     public void sendUpdateConfirmationEmail(User user, String oldEmail, String newEmail) {
@@ -98,8 +113,8 @@ public class MailBox {
         variables.put("oldEmail", oldEmail);
         variables.put("newEmail", newEmail);
         variables.put("mySurfConextURL", mySURFconextURL);
-        sendMail("confirmation_update_email", title, variables, preferredLanguage(user), oldEmail);
-        sendMail("confirmation_update_email", title, variables, preferredLanguage(user), newEmail);
+        sendMail("confirmation_update_email", title, variables, preferredLanguage(user), oldEmail, false);
+        sendMail("confirmation_update_email", title, variables, preferredLanguage(user), newEmail, false);
     }
 
     public void sendVerificationCode(User user, String verificationCode) {
@@ -107,7 +122,7 @@ public class MailBox {
         Map<String, Object> variables = variables(user, title);
         variables.put("mySurfConextURL", mySURFconextURL);
         variables.put("verificationCode", verificationCode);
-        sendMail("verification_code", title, variables, preferredLanguage(user), user.getEmail());
+        sendMail("verification_code", title, variables, preferredLanguage(user), user.getEmail(), true);
     }
 
     private Map<String, Object> variables(User user, String title) {
@@ -120,7 +135,14 @@ public class MailBox {
     }
 
     @SneakyThrows
-    private void sendMail(String templateName, String subject, Map<String, Object> variables, String language, String to) {
+    private void sendMail(String templateName, String subject, Map<String, Object> variables, String language, String to, boolean checkSpam) {
+        if (checkSpam) {
+            Optional<EmailsSend> byEmail = emailsSendRepository.findByEmail(to);
+            if (byEmail.isPresent() && byEmail.get().getSendAt().toInstant().isAfter(Instant.now().minus(emailSpamThresholdSeconds, ChronoUnit.SECONDS))) {
+                throw new IllegalArgumentException(String.format("Not sending email to %s because email was alredy send at %s", to, byEmail.get().getSendAt()));
+            }
+        }
+
         String html = this.mailTemplate(String.format("%s_%s.html", templateName, language), variables);
         String text = this.mailTemplate(String.format("%s_%s.txt", templateName, language), variables);
 
