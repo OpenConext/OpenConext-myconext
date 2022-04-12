@@ -1,6 +1,10 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [6.0.3]
+- Prevent sending multiple emails to a single user in a short time 
+- Sanitize name in emails
+
 ## [6.0.2]
 - Move health and onfo endpoint to /internal
 - Update dependencies
