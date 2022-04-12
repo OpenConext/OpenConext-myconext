@@ -9,7 +9,8 @@ export const conf = writable({
     featureWebAuthn: false,
     featureAllowList: false,
     featureWarningEducationalEmailDomain: false,
-    useExternalValidation: false
+    useExternalValidation: false,
+    emailSpamThresholdSeconds: 5
 });
 
 export const links = writable({

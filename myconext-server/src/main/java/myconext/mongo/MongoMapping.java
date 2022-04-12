@@ -3,6 +3,7 @@ package myconext.mongo;
 import com.github.cloudyrock.mongock.driver.mongodb.springdata.v3.SpringDataMongo3Driver;
 import com.github.cloudyrock.spring.v5.MongockSpring5;
 import lombok.SneakyThrows;
+import myconext.model.EmailsSend;
 import myconext.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
@@ -87,6 +88,8 @@ public class MongoMapping {
                 new Index("sessionKey", Sort.Direction.ASC));
         mongoTemplate.indexOps(Registration.class).ensureIndex(
                 new Index("userid", Sort.Direction.ASC));
+        mongoTemplate.indexOps(EmailsSend.class).ensureIndex(
+                new Index("email", Sort.Direction.ASC).collation(Collation.of(Locale.ENGLISH).strength(2)));
     }
 
 }

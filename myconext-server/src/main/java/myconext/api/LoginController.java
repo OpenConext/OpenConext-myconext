@@ -38,7 +38,8 @@ public class LoginController {
                            @Value("${feature.warning_educational_email_domain}") boolean featureWarningEducationalEmailDomain,
                            @Value("${feature.use_deny_allow_list.allow_enabled}") boolean featureAllowList,
                            @Value("${feature.use_external_validation}") boolean useExternalValidation,
-                           @Value("${oidc-token-api.enabled}") boolean featureOidcTokenAPI) {
+                           @Value("${oidc-token-api.enabled}") boolean featureOidcTokenAPI,
+                           @Value("${email_spam_threshold_seconds}") long emailSpamThresholdSeconds) {
         this.config.put("loginUrl", basePath + "/login");
         this.config.put("continueAfterLoginUrl", continueAfterLoginUrl);
         this.config.put("baseDomain", baseDomain);
@@ -56,6 +57,7 @@ public class LoginController {
         this.config.put("featureOidcTokenAPI", featureOidcTokenAPI);
         this.config.put("featureConnections", featureConnections);
         this.config.put("useExternalValidation", useExternalValidation);
+        this.config.put("emailSpamThresholdSeconds", emailSpamThresholdSeconds);
         this.secureCookie = secureCookie;
     }
 

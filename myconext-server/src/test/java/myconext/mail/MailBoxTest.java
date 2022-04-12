@@ -3,6 +3,7 @@ package myconext.mail;
 import com.icegreen.greenmail.junit.GreenMailRule;
 import com.icegreen.greenmail.util.ServerSetupTest;
 import myconext.AbstractIntegrationTest;
+import myconext.model.EmailsSend;
 import myconext.model.User;
 import org.apache.commons.mail.util.MimeMessageParser;
 import org.junit.After;
@@ -11,10 +12,15 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.util.ReflectionTestUtils;
 
 import javax.mail.Message;
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.util.Date;
+import java.util.Locale;
 import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -53,6 +59,16 @@ public class MailBoxTest extends AbstractIntegrationTest {
     @Test
     public void sendMagicLinkNl() throws MessagingException {
         doSendMagicLink("Magische link om in te loggen", "nl");
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void preventSpam() {
+        String email = "jdoe@qwerty.com";
+        EmailsSend emailsSend = new EmailsSend(email);
+        emailsSendRepository.save(emailsSend);
+
+        String hash = UUID.randomUUID().toString();
+        mailBox.sendMagicLink(user(email.toUpperCase(), "en"), hash, "http://mock-sp");
     }
 
     private void doSendMagicLink(String expectedSubject, String lang) throws MessagingException {
