@@ -65,6 +65,8 @@ public class SamlAuthenticationRequest implements Serializable {
 
     private boolean useExternalValidation;
 
+    private boolean rememberMeQuestionAsked = false;
+
     public SamlAuthenticationRequest(boolean testInstance) {
         this.id = UUID.randomUUID().toString();
         this.testInstance = testInstance;
@@ -139,5 +141,9 @@ public class SamlAuthenticationRequest implements Serializable {
 
     public void setUseExternalValidation(boolean useExternalValidation) {
         this.useExternalValidation = useExternalValidation;
+    }
+
+    public void setRememberMeQuestionAsked(boolean rememberMeQuestionAsked) {
+        this.rememberMeQuestionAsked = rememberMeQuestionAsked;
     }
 }

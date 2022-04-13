@@ -150,3 +150,16 @@ export function validatePhoneCode(hash, phoneVerification) {
     return postPutJson(`/tiqr/verify-phone-code?hash=${hash}`,{phoneVerification}, "POST")
 }
 
+export function startTiqrAuthentication(email, authenticationRequestId) {
+    return postPutJson("/tiqr/start-authentication", {
+        email,
+        authenticationRequestId
+    }, "POST");
+}
+
+export function pollAuthentication(sessionKey, id) {
+    return fetchJson(`/tiqr/poll-authentication?sessionKey=${sessionKey}&id=${id}`)
+}
+
+
+

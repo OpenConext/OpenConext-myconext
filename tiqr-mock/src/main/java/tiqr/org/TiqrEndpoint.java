@@ -32,6 +32,7 @@ import java.util.List;
 import java.util.Map;
 
 @Controller
+@SuppressWarnings("unchecked")
 public class TiqrEndpoint {
 
     private static final Log LOG = LogFactory.getLog(TiqrEndpoint.class);

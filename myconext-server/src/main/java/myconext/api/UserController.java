@@ -48,6 +48,7 @@ import java.security.SecureRandom;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static myconext.crypto.HashGenerator.hash;
 import static myconext.log.MDCContext.logLoginWithContext;
 import static myconext.log.MDCContext.logWithContext;
 import static myconext.security.CookieResolver.cookieByName;
@@ -503,7 +504,7 @@ public class UserController implements ServiceProviderHolder {
         //We need to go from the SP to the IdP and best is too do everything server side, but we need a temporary identifier for the user
         User user = userFromAuthentication(authentication);
 
-        String webAuthnIdentifier = this.hash();
+        String webAuthnIdentifier = hash();
         user.setWebAuthnIdentifier(webAuthnIdentifier);
         userRepository.save(user);
 
@@ -520,7 +521,7 @@ public class UserController implements ServiceProviderHolder {
 
         User user = optionalUser.get();
         if (!StringUtils.hasText(user.getUserHandle())) {
-            user.setUserHandle(this.hash());
+            user.setUserHandle(hash());
             userRepository.save(user);
         }
         PublicKeyCredentialCreationOptions request = publicKeyCredentialCreationOptions(this.relyingParty, user);
@@ -785,9 +786,4 @@ public class UserController implements ServiceProviderHolder {
         return serviceProviderResolver;
     }
 
-    public static String hash() {
-        byte[] bytes = new byte[64];
-        random.nextBytes(bytes);
-        return Base64.getUrlEncoder().withoutPadding().encodeToString(bytes);
-    }
 }

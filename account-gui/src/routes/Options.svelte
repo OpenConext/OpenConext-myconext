@@ -37,9 +37,7 @@
 
     onMount(() => {
         knownAccount($user.email).then(res => {
-            //TODO do not use all, but user options
-            res = ["useApp", "useWebAuthn", "useLink", "usePassword"];
-            // res = ["useWebAuthn", "useLink", "usePassword"];
+            //res = ["useApp", "useWebAuthn", "useLink", "usePassword"];
             const allOptions = possibleOptions.filter(option => res.includes(option.key));
             if (!allOptions.some(option => option.preferred)) {
                 allOptions[0].preferred = true;

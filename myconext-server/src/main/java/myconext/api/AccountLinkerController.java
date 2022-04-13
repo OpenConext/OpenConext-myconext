@@ -3,7 +3,6 @@ package myconext.api;
 
 import myconext.exceptions.ForbiddenException;
 import myconext.exceptions.UserNotFoundException;
-import myconext.manage.ServiceProviderResolver;
 import myconext.model.LinkedAccount;
 import myconext.model.SamlAuthenticationRequest;
 import myconext.model.StepUpStatus;
@@ -43,6 +42,8 @@ import static myconext.security.GuestIdpAuthenticationRequestFilter.hasValidated
 
 @RestController
 @RequestMapping("/myconext/api")
+@SuppressWarnings("unchecked")
+
 public class AccountLinkerController {
 
     private static final Log LOG = LogFactory.getLog(AccountLinkerController.class);
@@ -53,9 +54,7 @@ public class AccountLinkerController {
     private final String idpFlowRedirectUri;
     private final String spFlowRedirectUri;
     private final RestTemplate restTemplate = new RestTemplate();
-    private final HttpHeaders headers = new HttpHeaders();
     private final AuthenticationRequestRepository authenticationRequestRepository;
-    private final ServiceProviderResolver serviceProviderResolver;
     private final UserRepository userRepository;
     private final String magicLinkUrl;
     private final String idpErrorRedirectUrl;
@@ -71,7 +70,6 @@ public class AccountLinkerController {
     public AccountLinkerController(
             AuthenticationRequestRepository authenticationRequestRepository,
             UserRepository userRepository,
-            ServiceProviderResolver serviceProviderResolver,
             @Value("${email.magic-link-url}") String magicLinkUrl,
             @Value("${idp_redirect_url}") String idpErrorRedirectUrl,
             @Value("${sp_redirect_url}") String spRedirectUrl,
@@ -87,7 +85,6 @@ public class AccountLinkerController {
             @Value("${feature.use_external_validation}") boolean useExternalValidationFeature) {
         this.authenticationRequestRepository = authenticationRequestRepository;
         this.userRepository = userRepository;
-        this.serviceProviderResolver = serviceProviderResolver;
         this.magicLinkUrl = magicLinkUrl;
         this.idpErrorRedirectUrl = idpErrorRedirectUrl;
         this.spRedirectUrl = spRedirectUrl;
@@ -101,8 +98,6 @@ public class AccountLinkerController {
         this.idpExternalValidationEntityId = idpExternalValidationEntityId;
         this.myConextSpEntityId = myConextSpEntityId;
         this.useExternalValidationFeature = useExternalValidationFeature;
-
-        this.headers.set("Accept", "application/json");
     }
 
     @GetMapping("/idp/oidc/account/{id}")

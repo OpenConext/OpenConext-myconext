@@ -27,7 +27,7 @@
             </div>
             <div th:each="authentication : ${authentications}">
                 <a th:href="@{/authentication/{id}(id=${authentication.sessionKey})}"><span
-                        th:text="${enrollment.userDisplayName}"></span></a>
+                        th:text="${authentication.userDisplayName}"></span></a>
             </div>
             <div th:if="${authentications.empty}">
                 <p class="info">There are no pending authentications...</p>

@@ -7,6 +7,7 @@
     import {fetchServiceNameByHash} from "../api";
     import Button from "../components/Button.svelte";
     import {conf} from "../stores/conf";
+    import {proceed} from "../utils/sso";
 
     let serviceName = null;
     let showSpinner = true;
@@ -21,18 +22,6 @@
         });
     });
 
-    const proceed = () => {
-        const urlSearchParams = new URLSearchParams(window.location.search);
-        const redirect = decodeURIComponent(urlSearchParams.get("redirect"));
-        //Ensure we are not attacked by an open redirect
-        if (redirect.startsWith($conf.magicLinkUrl)) {
-            window.location.href = `${redirect}?h=${hash}`;
-        } else {
-            throw new Error("Invalid redirect: " + redirect);
-        }
-    };
-
-
 </script>
 
 <style lang="scss">
@@ -45,5 +34,5 @@
 <h2 class="header">{I18n.t("congrats.header")}</h2>
 <p class="explanation">{I18n.t("congrats.info")}</p>
 <ImageContainer icon={icon} margin={true}/>
-<Button href={"/next"} onClick={proceed}
+<Button href={"/next"} onClick={() => proceed($conf.magicLinkUrl)}
         label={I18n.t("congrats.next", {name: serviceName})}/>

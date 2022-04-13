@@ -6,6 +6,7 @@
     import Verification from "../components/Verification.svelte";
     import {fetchServiceNameByHash} from "../api";
     import Spinner from "../components/Spinner.svelte";
+    import {proceed} from "../utils/sso";
 
     let serviceName = null;
     let explanation = null;
@@ -22,16 +23,6 @@
 
     });
 
-    const proceed = () => {
-        const urlSearchParams = new URLSearchParams(window.location.search);
-        const redirect = decodeURIComponent(urlSearchParams.get("redirect"));
-        //Ensure we are not attacked by an open redirect
-        if (redirect.startsWith($conf.magicLinkUrl)) {
-            window.location.href = `${redirect}?h=${urlSearchParams.get('h')}`;
-        } else {
-            throw new Error("Invalid redirect: " + redirect);
-        }
-    };
 </script>
 
 <style>
@@ -42,6 +33,6 @@
 {/if}
 <h2 class="green">{I18n.t("confirmStepup.header")}</h2>
 <Verification explanation={explanation} verified={true}/>
-<Button href="/proceed" onClick={proceed}
+<Button href="/proceed" onClick={() => proceed($conf.magicLinkUrl)}
         className="full"
         label={I18n.t("confirmStepup.proceed", {name: serviceName})}/>

@@ -15,5 +15,6 @@ public class TiqrConfiguration {
     private String logoUrl;
     private String infoUrl;
     private boolean pushNotificationsEnabled;
+    private String eduIdAppBaseUrl;
 
 }

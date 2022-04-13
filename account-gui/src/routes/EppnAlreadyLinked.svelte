@@ -5,6 +5,7 @@
     import Button from "../components/Button.svelte";
     import {fetchServiceName} from "../api";
     import Spinner from "../components/Spinner.svelte";
+    import {proceed} from "../utils/sso";
 
     export let id;
     let serviceName = null;
@@ -22,17 +23,6 @@
 
     const retry = () => {
         window.location.href = `/myconext/api/idp/oidc/account/${id}?forceAuth=true`;
-    };
-
-    const proceed = () => {
-        const urlSearchParams = new URLSearchParams(window.location.search);
-        const redirect = decodeURIComponent(urlSearchParams.get("redirect"));
-        //Ensure we are not attacked by an open redirect
-        if (redirect.startsWith($conf.magicLinkUrl)) {
-            window.location.href = `${redirect}?h=${urlSearchParams.get('h')}`;
-        } else {
-            throw new Error("Invalid redirect: " + redirect);
-        }
     };
 
 </script>
@@ -64,7 +54,7 @@
         <p class="info">{I18n.t("eppnAlreadyLinked.info", {email: email})}</p>
         <p class="info">{I18n.t("eppnAlreadyLinked.proceed", {name: serviceName})}</p>
 
-        <Button href="/proceed" onClick={proceed}
+        <Button href="/proceed" onClick={() => proceed($conf.magicLinkUrl)}
                 className="cancel"
                 label={I18n.t("eppnAlreadyLinked.proceedLink")}/>
         <div class="last">

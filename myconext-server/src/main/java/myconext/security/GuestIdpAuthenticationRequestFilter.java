@@ -47,7 +47,7 @@ import java.util.stream.Collectors;
 import static java.util.function.Function.identity;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toMap;
-import static myconext.api.UserController.hash;
+import static myconext.crypto.HashGenerator.hash;
 import static myconext.log.MDCContext.logLoginWithContext;
 import static myconext.log.MDCContext.logWithContext;
 import static myconext.security.CookieResolver.cookieByName;
@@ -391,6 +391,14 @@ public class GuestIdpAuthenticationRequestFilter extends IdpAuthenticationReques
             String url = this.redirectUrl + "/confirm?h=" + hash +
                     "&redirect=" + URLEncoder.encode(this.magicLinkUrl, charSet) +
                     "&new=false";
+            response.sendRedirect(url);
+            return false;
+        } else if (!samlAuthenticationRequest.isRememberMeQuestionAsked()) {
+            samlAuthenticationRequest.setRememberMeQuestionAsked(true);
+            authenticationRequestRepository.save(samlAuthenticationRequest);
+
+            String url = this.redirectUrl + "/remember?h=" + hash +
+                    "&redirect=" + URLEncoder.encode(this.magicLinkUrl, charSet);
             response.sendRedirect(url);
             return false;
         }

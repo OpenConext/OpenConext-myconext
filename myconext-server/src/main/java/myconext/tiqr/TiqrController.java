@@ -1,8 +1,10 @@
 package myconext.tiqr;
 
 import com.google.zxing.WriterException;
+import myconext.exceptions.ExpiredAuthenticationException;
 import myconext.exceptions.ForbiddenException;
 import myconext.exceptions.UserNotFoundException;
+import myconext.manage.ServiceProviderResolver;
 import myconext.model.SamlAuthenticationRequest;
 import myconext.model.User;
 import myconext.repository.*;
@@ -36,6 +38,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
+import static myconext.crypto.HashGenerator.hash;
+import static myconext.log.MDCContext.logWithContext;
 import static myconext.security.CookieResolver.cookieByName;
 import static myconext.security.GuestIdpAuthenticationRequestFilter.TIQR_COOKIE_NAME;
 
@@ -51,6 +55,7 @@ public class TiqrController {
     private final AuthenticationRequestRepository authenticationRequestRepository;
     private final UserRepository userRepository;
     private final EnrollmentRepository enrollmentRepository;
+    private final ServiceProviderResolver serviceProviderResolver;
     private final SMSService smsService;
     private final String magicLinkUrl;
     private final boolean secureCookie;
@@ -62,6 +67,7 @@ public class TiqrController {
                           AuthenticationRepository authenticationRepository,
                           AuthenticationRequestRepository authenticationRequestRepository,
                           UserRepository userRepository,
+                          ServiceProviderResolver serviceProviderResolver,
                           SMSService smsService,
                           @Value("${secure_cookie}") boolean secureCookie,
                           @Value("${email.magic-link-url}") String magicLinkUrl) throws IOException {
@@ -82,6 +88,7 @@ public class TiqrController {
         this.enrollmentRepository = enrollmentRepository;
         this.authenticationRequestRepository = authenticationRequestRepository;
         this.userRepository = userRepository;
+        this.serviceProviderResolver = serviceProviderResolver;
         this.smsService = smsService;
         this.secureCookie = secureCookie;
         this.magicLinkUrl = magicLinkUrl;
@@ -147,9 +154,8 @@ public class TiqrController {
 
         tiqrService.finishRegistration(user.getId());
 
-        String redirect = URLEncoder.encode(this.magicLinkUrl, Charset.defaultCharset());
         Map<String, String> body = Map.of(
-                "redirect", redirect,
+                "redirect", this.magicLinkUrl,
                 "recoveryCode", recoveryCode);
         return getSuccessResponseEntity(body);
     }
@@ -183,45 +189,76 @@ public class TiqrController {
         } else {
             throw new ForbiddenException();
         }
-        String redirect = URLEncoder.encode(this.magicLinkUrl, Charset.defaultCharset());
-        return getSuccessResponseEntity(Collections.singletonMap("redirect", redirect));
+        return getSuccessResponseEntity(Collections.singletonMap("redirect", this.magicLinkUrl));
     }
 
     private ResponseEntity<Map<String, String>> getSuccessResponseEntity(Map<String, String> body) {
-        String secure = secureCookie ? "; Secure" : "";
-        String cookieValue = String.format("%s=true; Max-Age=%s; HttpOnly; %s", TIQR_COOKIE_NAME, 60 * 60 * 24 * 365, secure);
-        return ResponseEntity
-                .status(HttpStatus.OK)
-                .header("Set-Cookie",cookieValue)
-                .body(body);
+        return ResponseEntity.ok(body);
     }
 
     @PostMapping("/start-authentication")
-    public ResponseEntity<Map<String, String>> startAuthentication(HttpServletRequest request, @Valid @RequestBody TiqrRequest tiqrRequest) throws IOException, WriterException {
+    public ResponseEntity<Map<String, Object>> startAuthentication(HttpServletRequest request, @Valid @RequestBody TiqrRequest tiqrRequest) throws IOException, WriterException {
+        SamlAuthenticationRequest samlAuthenticationRequest = authenticationRequestRepository.findByIdAndNotExpired(tiqrRequest.getAuthenticationRequestId())
+                .orElseThrow(ExpiredAuthenticationException::new);
+        String email = tiqrRequest.getEmail().trim();
+        User user = userRepository.findUserByEmail(email).orElseThrow(() -> new UserNotFoundException(String.format("User %s not found", email)));
 
-//        Optional<User> optionalUser = userRepository.findUserByEmail(emailGuessingPreventor.sanitizeEmail(email));
-//
+        String requesterEntityId = samlAuthenticationRequest.getRequesterEntityId();
+
+        logWithContext(user, "update", "user", LOG, "Updating user " + user.getEmail());
+        user.computeEduIdForServiceProviderIfAbsent(requesterEntityId, serviceProviderResolver);
+        userRepository.save(user);
+
         Optional<Cookie> optionalTiqrCookie = cookieByName(request, TIQR_COOKIE_NAME);
-        tiqrService.startAuthentication(null, null, optionalTiqrCookie.isPresent());
-        //if there is no cookie, then force QR code and do not
-        return null;
+        boolean tiqrCookiePresent = optionalTiqrCookie.isPresent();
+        Authentication authentication = tiqrService.startAuthentication(
+                user.getId(),
+                String.format("%s %s", user.getGivenName(), user.getFamilyName()),
+                tiqrCookiePresent);
+        String authenticationUrl = String.format("https://%s@%s/tiqrauth/%s/%s/%s/%s",
+                user.getId(),
+                this.tiqrConfiguration.getEduIdAppBaseUrl(),
+                authentication.getSessionKey(),
+                authentication.getChallenge(),
+                this.tiqrConfiguration.getIdentifier(),
+                this.tiqrConfiguration.getVersion());
+        String qrCode = QRCodeGenerator.generateQRCodeImage(authenticationUrl);
+        Map<String, Object> body = Map.of(
+                "sessionKey", authentication.getSessionKey(),
+                "url", authenticationUrl,
+                "qr", qrCode,
+                "tiqrCookiePresent", tiqrCookiePresent);
+        return ResponseEntity.ok(body);
     }
 
     @GetMapping("/poll-authentication")
-    public ResponseEntity<Map<String, String>> authenticationStatus(@RequestParam("sessionKey") String sessionKey) {
+    public ResponseEntity<Map<String, String>> authenticationStatus(@RequestParam("sessionKey") String sessionKey,
+                                                                    @RequestParam("id") String authenticationRequestId) {
         Authentication authentication = tiqrService.authenticationStatus(sessionKey);
         AuthenticationStatus status = authentication.getStatus();
 
         LOG.debug(String.format("Polling authentication for %s with status %s",
                 authentication.getUserDisplayName(), authentication.getStatus()));
 
-        Map<String, String> result = new HashMap<>();
-        result.put("status", status.name());
+        Map<String, String> body = new HashMap<>();
+        body.put("status", status.name());
         if (status.equals(AuthenticationStatus.SUCCESS)) {
-            //TODO Add the URL to redirect to, picked up by GuestIdpAuthenticationRequestFilter
-            result.put("url", "TODO");
+            SamlAuthenticationRequest samlAuthenticationRequest = authenticationRequestRepository.findById(authenticationRequestId).orElseThrow(ExpiredAuthenticationException::new);
+            samlAuthenticationRequest.setHash(hash());
+            samlAuthenticationRequest.setPasswordOrWebAuthnFlow(true);
+            samlAuthenticationRequest.setUserId(authentication.getUserID());
+            authenticationRequestRepository.save(samlAuthenticationRequest);
+
+            body.put("redirect", this.magicLinkUrl);
+            body.put("hash", samlAuthenticationRequest.getHash());
+            String secure = secureCookie ? "; Secure" : "";
+            String cookieValue = String.format("%s=true; Max-Age=%s; HttpOnly; %s", TIQR_COOKIE_NAME, 60 * 60 * 24 * 365, secure);
+            return ResponseEntity
+                    .status(HttpStatus.OK)
+                    .header("Set-Cookie",cookieValue)
+                    .body(body);
         }
-        return ResponseEntity.ok(result);
+        return ResponseEntity.ok(body);
     }
 
     /*

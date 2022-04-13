@@ -12,6 +12,7 @@
     import ButtonContainer from "../components/ButtonContainer.svelte";
     import ImageContainer from "../components/ImageContainer.svelte";
     import {navigate} from "svelte-routing";
+    import {proceed} from "../utils/sso";
 
     let serviceName = null;
     let explanation = null;
@@ -42,16 +43,6 @@
         });
     });
 
-    const proceed = () => {
-        const urlSearchParams = new URLSearchParams(window.location.search);
-        const redirect = decodeURIComponent(urlSearchParams.get("redirect"));
-        //Ensure we are not attacked by an open redirect
-        if (redirect.startsWith($conf.magicLinkUrl)) {
-            window.location.href = `${redirect}?h=${hash}`;
-        } else {
-            throw new Error("Invalid redirect: " + redirect);
-        }
-    };
 </script>
 
 <style>
@@ -82,7 +73,7 @@
 <ImageContainer icon={phone}/>
 <p class="explanation">{@html I18n.t("nudgeApp.info")}</p>
 <ButtonContainer>
-    <Button className="cancel" href={I18n.t("nudgeApp.noLink")} onClick={proceed}
+    <Button className="cancel" href={I18n.t("nudgeApp.noLink")} onClick={() => proceed($conf.magicLinkUrl)}
             label={I18n.t("nudgeApp.no")}/>
     <Button href={I18n.t("nudgeApp.yesLink")} onClick={() => navigate(`/getapp?h=${hash}`)}
             label={I18n.t("nudgeApp.yes")}/>
