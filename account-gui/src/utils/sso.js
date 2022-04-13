@@ -3,7 +3,8 @@ export const proceed = magicLinkUrlPrefix => {
     const redirect = decodeURIComponent(urlSearchParams.get("redirect"));
     //Ensure we are not attacked by an open redirect
     if (redirect.startsWith(magicLinkUrlPrefix)) {
-        window.location.href = `${redirect}?h=${urlSearchParams.get('h')}`;
+        const hash = urlSearchParams.get('h');
+        window.location.href = `${redirect}?h=${hash}`;
     } else {
         throw new Error("Invalid redirect: " + redirect);
     }

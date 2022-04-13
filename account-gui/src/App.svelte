@@ -41,6 +41,7 @@
     import RecoveryCode from "./routes/RecoveryCode.svelte";
     import PhoneVerification from "./routes/PhoneVerification.svelte";
     import Congrats from "./routes/Congrats.svelte";
+    import RememberMe from "./routes/RememberMe.svelte";
 
     export let url = "";
 
@@ -165,6 +166,7 @@
                 <Route path="/phone-verification" component={PhoneVerification}/>
                 <Route path="/phone-confirmation" component={CodeVerifier}/>
                 <Route path="/congrats" component={Congrats}/>
+                <Route path="/remember" component={RememberMe}/>
                 <Route path="/usepassword/:id" let:params>
                     <UsePassword id="{params.id}"/>
                 </Route>

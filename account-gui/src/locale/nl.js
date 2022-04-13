@@ -258,5 +258,12 @@ I18n.translations.nl = {
         header: "Check your phone",
         info: "Enter the six-digit code we sent to your phone to continue",
         codeIncorrect: "The code is incorrect"
+    },
+    rememberMe: {
+        yes: "Ja",
+        no: "Nee",
+        header: "Ingelogd blijven?",
+        info: "Blijf ingelogd op deze apparaay zodat je de volgende niet hoeft in te loggen."
     }
+
 };

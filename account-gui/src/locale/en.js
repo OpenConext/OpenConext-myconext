@@ -258,5 +258,11 @@ I18n.translations.en = {
         header: "Check your phone",
         info: "Enter the six-digit code we sent to your phone to continue",
         codeIncorrect: "The code is incorrect"
+    },
+    rememberMe: {
+        yes: "Yes",
+        no: "No",
+        header: "Stay signed in?",
+        info: "Stay signed in on this device so you don't have to sign in next time."
     }
 };

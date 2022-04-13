@@ -33,10 +33,7 @@ import java.net.URLEncoder;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 import static myconext.crypto.HashGenerator.hash;
 import static myconext.log.MDCContext.logWithContext;
@@ -279,6 +276,16 @@ public class TiqrController {
     public void doAuthentication(@ModelAttribute AuthenticationData authenticationData) {
         //fingers crossed, in case of mismatch an exception is thrown
         tiqrService.postAuthentication(authenticationData);
+    }
+
+    @PutMapping("remember-me")
+    public ResponseEntity<Map<String, String>> rememberMe(@RequestBody Map<String, String> body) {
+        String hash = body.get("hash");
+        SamlAuthenticationRequest samlAuthenticationRequest = authenticationRequestRepository.findByHash(hash).orElseThrow(ExpiredAuthenticationException::new);
+        samlAuthenticationRequest.setRememberMe(true);
+        samlAuthenticationRequest.setRememberMeValue(UUID.randomUUID().toString());
+        authenticationRequestRepository.save(samlAuthenticationRequest);
+        return ResponseEntity.ok(Collections.singletonMap("status", "ok"));
     }
 
 }

@@ -161,5 +161,8 @@ export function pollAuthentication(sessionKey, id) {
     return fetchJson(`/tiqr/poll-authentication?sessionKey=${sessionKey}&id=${id}`)
 }
 
+export function rememberMe(hash) {
+    return postPutJson("/tiqr/remember-me", {hash}, "PUT");
+}
 
 
