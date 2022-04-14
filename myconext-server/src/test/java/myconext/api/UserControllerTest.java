@@ -2,6 +2,7 @@ package myconext.api;
 
 import com.yubico.webauthn.data.*;
 import com.yubico.webauthn.data.exception.Base64UrlException;
+import io.restassured.common.mapper.TypeRef;
 import io.restassured.filter.Filter;
 import io.restassured.filter.cookie.CookieFilter;
 import io.restassured.http.ContentType;
@@ -27,6 +28,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.lang.reflect.Type;
 import java.security.SecureRandom;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
@@ -802,6 +804,20 @@ public class UserControllerTest extends AbstractIntegrationTest {
 
         user = userRepository.findOneUserByEmail("jdoe@example.com");
         assertEquals(2, user.getPublicKeyCredentials().size());
+    }
+
+    @Test
+    public void knownAccount() {
+        List<String> loginOptions = given()
+                .when()
+                .body(Map.of("email", "jdoe@example.com"))
+                .contentType(ContentType.JSON)
+                .accept(ContentType.JSON)
+                .post("/myconext/api/idp/service/email")
+                .as(new TypeRef<>() {
+
+                });
+        assertEquals(List.of(LoginOptions.FIDO.getValue(), LoginOptions.MAGIC.getValue()), loginOptions);
     }
 
     @Test
