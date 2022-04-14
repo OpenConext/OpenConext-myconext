@@ -47,6 +47,8 @@ public class SamlAuthenticationRequest implements Serializable {
 
     private boolean passwordOrWebAuthnFlow;
 
+    private boolean tiqrFlow;
+
     private boolean rememberMe;
 
     private String rememberMeValue;
@@ -145,5 +147,9 @@ public class SamlAuthenticationRequest implements Serializable {
 
     public void setRememberMeQuestionAsked(boolean rememberMeQuestionAsked) {
         this.rememberMeQuestionAsked = rememberMeQuestionAsked;
+    }
+
+    public void setTiqrFlow(boolean tiqrFlow) {
+        this.tiqrFlow = tiqrFlow;
     }
 }

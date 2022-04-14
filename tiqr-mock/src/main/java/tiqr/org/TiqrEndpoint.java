@@ -99,7 +99,7 @@ public class TiqrEndpoint {
         HttpHeaders headers = getHttpHeaders();
 
         MultiValueMap<String, String> map = new LinkedMultiValueMap<>();
-        map.add("userid", enrollment.getUserID());
+        map.add("userId", enrollment.getUserID());
         map.add("secret", Challenge.generateSessionKey());
         map.add("language", "en");
         map.add("notificationType", "APNS");

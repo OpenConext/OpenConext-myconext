@@ -102,6 +102,9 @@ public abstract class AbstractIntegrationTest {
     protected EnrollmentRepository enrollmentRepository;
 
     @Autowired
+    protected RegistrationRepository registrationRepository;
+
+    @Autowired
     protected EmailsSendRepository emailsSendRepository;
 
     private final SimpleDateFormat issueFormat = new SimpleDateFormat("yyyy-MM-dd'T'H:mm:ss");
@@ -118,8 +121,8 @@ public abstract class AbstractIntegrationTest {
                         .remove(new Query())
                         .insert(readFromFile(clazz))
                         .execute());
-        //Registration.class, Authentication.class, Enrollment.class
-        Arrays.asList(PasswordForgottenHash.class, ChangeEmailHash.class, Challenge.class, EmailsSend.class)
+        Arrays.asList(PasswordForgottenHash.class, ChangeEmailHash.class, Challenge.class, EmailsSend.class,
+                        Registration.class, Authentication.class, Enrollment.class)
                 .forEach(clazz -> mongoTemplate.bulkOps(BulkOperations.BulkMode.ORDERED, clazz)
                         .remove(new Query())
                         .execute());

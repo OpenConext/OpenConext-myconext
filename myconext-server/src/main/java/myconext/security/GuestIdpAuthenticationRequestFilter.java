@@ -383,7 +383,7 @@ public class GuestIdpAuthenticationRequestFilter extends IdpAuthenticationReques
                     "&redirect=" + URLEncoder.encode(this.magicLinkUrl, charSet) +
                     "&explanation=" + explanation);
             return false;
-        } else if (!samlAuthenticationRequest.isPasswordOrWebAuthnFlow() && user.nudgeToUseApp()) {
+        } else if (!samlAuthenticationRequest.isPasswordOrWebAuthnFlow() && !samlAuthenticationRequest.isTiqrFlow() && user.nudgeToUseApp()) {
             //Nudge user to use the app
             user.setLastSeenAppNudge(System.currentTimeMillis());
             userRepository.save(user);
@@ -465,6 +465,10 @@ public class GuestIdpAuthenticationRequestFilter extends IdpAuthenticationReques
             LOG.info(String.format("Remember me functionality activated for %s ", user.getUsername()));
             addRememberMeCookie(response, samlAuthenticationRequest);
         }
+        if (samlAuthenticationRequest.isTiqrFlow()) {
+            LOG.info(String.format("Tiqr flow authenticated for %s ", user.getUsername()));
+            addTiqrCookie(response, samlAuthenticationRequest);
+        }
         logLoginWithContext(user, "magiclink", true, LOG, "Successfully logged in with magiclink");
         sendAssertion(request, response, samlAuthenticationRequest, user, provider,
                 serviceProviderMetadata, authenticationRequest);
@@ -477,6 +481,14 @@ public class GuestIdpAuthenticationRequestFilter extends IdpAuthenticationReques
 
     private void addRememberMeCookie(HttpServletResponse response, SamlAuthenticationRequest samlAuthenticationRequest) {
         Cookie cookie = new Cookie(GUEST_IDP_REMEMBER_ME_COOKIE_NAME, samlAuthenticationRequest.getRememberMeValue());
+        cookie.setMaxAge(rememberMeMaxAge);
+        cookie.setSecure(secureCookie);
+        cookie.setHttpOnly(true);
+        response.addCookie(cookie);
+    }
+
+    private void addTiqrCookie(HttpServletResponse response, SamlAuthenticationRequest samlAuthenticationRequest) {
+        Cookie cookie = new Cookie(TIQR_COOKIE_NAME, Boolean.TRUE.toString());
         cookie.setMaxAge(rememberMeMaxAge);
         cookie.setSecure(secureCookie);
         cookie.setHttpOnly(true);

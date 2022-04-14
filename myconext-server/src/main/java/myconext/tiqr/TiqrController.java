@@ -55,7 +55,6 @@ public class TiqrController {
     private final ServiceProviderResolver serviceProviderResolver;
     private final SMSService smsService;
     private final String magicLinkUrl;
-    private final boolean secureCookie;
 
     @Autowired
     public TiqrController(@Value("${tiqr_configuration}") Resource resource,
@@ -66,7 +65,6 @@ public class TiqrController {
                           UserRepository userRepository,
                           ServiceProviderResolver serviceProviderResolver,
                           SMSService smsService,
-                          @Value("${secure_cookie}") boolean secureCookie,
                           @Value("${email.magic-link-url}") String magicLinkUrl) throws IOException {
         this.tiqrConfiguration = new Yaml().loadAs(resource.getInputStream(), TiqrConfiguration.class);
         String baseUrl = tiqrConfiguration.getBaseUrl();
@@ -87,7 +85,6 @@ public class TiqrController {
         this.userRepository = userRepository;
         this.serviceProviderResolver = serviceProviderResolver;
         this.smsService = smsService;
-        this.secureCookie = secureCookie;
         this.magicLinkUrl = magicLinkUrl;
     }
 
@@ -195,16 +192,10 @@ public class TiqrController {
 
     @PostMapping("/start-authentication")
     public ResponseEntity<Map<String, Object>> startAuthentication(HttpServletRequest request, @Valid @RequestBody TiqrRequest tiqrRequest) throws IOException, WriterException {
-        SamlAuthenticationRequest samlAuthenticationRequest = authenticationRequestRepository.findByIdAndNotExpired(tiqrRequest.getAuthenticationRequestId())
+        authenticationRequestRepository.findByIdAndNotExpired(tiqrRequest.getAuthenticationRequestId())
                 .orElseThrow(ExpiredAuthenticationException::new);
         String email = tiqrRequest.getEmail().trim();
         User user = userRepository.findUserByEmail(email).orElseThrow(() -> new UserNotFoundException(String.format("User %s not found", email)));
-
-        String requesterEntityId = samlAuthenticationRequest.getRequesterEntityId();
-
-        logWithContext(user, "update", "user", LOG, "Updating user " + user.getEmail());
-        user.computeEduIdForServiceProviderIfAbsent(requesterEntityId, serviceProviderResolver);
-        userRepository.save(user);
 
         Optional<Cookie> optionalTiqrCookie = cookieByName(request, TIQR_COOKIE_NAME);
         boolean tiqrCookiePresent = optionalTiqrCookie.isPresent();
@@ -241,19 +232,23 @@ public class TiqrController {
         body.put("status", status.name());
         if (status.equals(AuthenticationStatus.SUCCESS)) {
             SamlAuthenticationRequest samlAuthenticationRequest = authenticationRequestRepository.findById(authenticationRequestId).orElseThrow(ExpiredAuthenticationException::new);
+            String requesterEntityId = samlAuthenticationRequest.getRequesterEntityId();
+
+            String userID = authentication.getUserID();
+            User user = userRepository.findById(userID).orElseThrow(() -> new UserNotFoundException(String.format("User %s not found", authentication.getUserDisplayName())));
+
+            logWithContext(user, "update", "user", LOG, "Updating user " + user.getEmail());
+
+            user.computeEduIdForServiceProviderIfAbsent(requesterEntityId, serviceProviderResolver);
+            userRepository.save(user);
+
             samlAuthenticationRequest.setHash(hash());
-            samlAuthenticationRequest.setPasswordOrWebAuthnFlow(true);
-            samlAuthenticationRequest.setUserId(authentication.getUserID());
+            samlAuthenticationRequest.setTiqrFlow(true);
+            samlAuthenticationRequest.setUserId(userID);
             authenticationRequestRepository.save(samlAuthenticationRequest);
 
             body.put("redirect", this.magicLinkUrl);
             body.put("hash", samlAuthenticationRequest.getHash());
-            String secure = secureCookie ? "; Secure" : "";
-            String cookieValue = String.format("%s=true; Max-Age=%s; HttpOnly; %s", TIQR_COOKIE_NAME, 60 * 60 * 24 * 365, secure);
-            return ResponseEntity
-                    .status(HttpStatus.OK)
-                    .header("Set-Cookie",cookieValue)
-                    .body(body);
         }
         return ResponseEntity.ok(body);
     }
@@ -278,7 +273,7 @@ public class TiqrController {
         tiqrService.postAuthentication(authenticationData);
     }
 
-    @PutMapping("remember-me")
+    @PutMapping("/remember-me")
     public ResponseEntity<Map<String, String>> rememberMe(@RequestBody Map<String, String> body) {
         String hash = body.get("hash");
         SamlAuthenticationRequest samlAuthenticationRequest = authenticationRequestRepository.findByHash(hash).orElseThrow(ExpiredAuthenticationException::new);
