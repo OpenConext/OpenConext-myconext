@@ -52,7 +52,7 @@ public class SessionConfig extends AbstractHttpSessionApplicationInitializer {
     @Bean
     CookieSerializer cookieSerializer(@Value("${secure_cookie}") boolean secureCookie) {
         DefaultCookieSerializer defaultCookieSerializer = new DefaultCookieSerializer();
-        defaultCookieSerializer.setSameSite("None");
+        defaultCookieSerializer.setSameSite(secureCookie ? "None" : "Lax");
         defaultCookieSerializer.setUseSecureCookie(secureCookie);
         return defaultCookieSerializer;
     }

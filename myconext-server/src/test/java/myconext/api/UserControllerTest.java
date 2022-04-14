@@ -2,6 +2,7 @@ package myconext.api;
 
 import com.yubico.webauthn.data.*;
 import com.yubico.webauthn.data.exception.Base64UrlException;
+import io.restassured.filter.Filter;
 import io.restassured.filter.cookie.CookieFilter;
 import io.restassured.http.ContentType;
 import io.restassured.http.Cookie;
@@ -26,8 +27,6 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
-import java.net.URLDecoder;
-import java.nio.charset.Charset;
 import java.security.SecureRandom;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
@@ -129,7 +128,7 @@ public class UserControllerTest extends AbstractIntegrationTest {
 
         assertEquals(true, samlAuthenticationRequest.isRememberMe());
 
-        String saml = samlAuthnResponse(samlAuthnRequestResponse(new Cookie.Builder(GUEST_IDP_REMEMBER_ME_COOKIE_NAME, cookie).build(), null));
+        String saml = samlAuthnResponse(samlAuthnRequestResponse(new Cookie.Builder(GUEST_IDP_REMEMBER_ME_COOKIE_NAME, cookie).build(), null), Optional.empty());
         assertTrue(saml.contains("steve@example.com<"));
 
         user = userRepository.findOneUserByEmail("steve@example.com");
@@ -536,29 +535,30 @@ public class UserControllerTest extends AbstractIntegrationTest {
         String authenticationRequestId = samlAuthnRequest();
         MagicLinkRequest magicLinkRequest = new MagicLinkRequest(authenticationRequestId, user, false, true);
 
+        CookieFilter cookieFilter = new CookieFilter();
         Response response = given()
                 .when()
                 .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                 .body(magicLinkRequest)
+                .filter(cookieFilter)
                 .put("/myconext/api/idp/magic_link_request");
 
         String url = (String) response.body().as(Map.class).get("url");
         url = url.replace("8081", this.port + "");
 
-        CookieFilter cookieFilter = new CookieFilter();
         response = given()
                 .redirects().follow(false)
                 .cookie(BROWSER_SESSION_COOKIE_NAME, "true")
                 .filter(cookieFilter)
                 .get(url);
-        String html = samlAuthnResponse(response);
+        String html = samlAuthnResponse(response, Optional.of(cookieFilter));
         assertTrue(html.contains("mdoe@example.com"));
 
         //now that we are logged in we can use the JSESSION COOKIE to test SSO
         CookieStore cookieStore = (CookieStore) ReflectionTestUtils.getField(cookieFilter, "cookieStore");
         org.apache.http.cookie.Cookie cookie = cookieStore.getCookies().get(0);
         response = samlAuthnRequestResponse(new Cookie.Builder(cookie.getName(), cookie.getValue()).build(), "relay");
-        html = samlAuthnResponse(response);
+        html = samlAuthnResponse(response, Optional.empty());
         assertTrue(html.contains("mdoe@example.com"));
     }
 
@@ -603,7 +603,7 @@ public class UserControllerTest extends AbstractIntegrationTest {
                 .queryParam("id", samlAuthenticationRequest.getId())
                 .queryParam("verificationCode", samlAuthenticationRequest.getVerificationCode())
                 .get("/saml/guest-idp/continue");
-        String saml = samlAuthnResponse(response);
+        String saml = samlAuthnResponse(response, Optional.empty());
 
         assertTrue(saml.contains("jdoe@example.com"));
     }
@@ -875,7 +875,7 @@ public class UserControllerTest extends AbstractIntegrationTest {
                 .then();
 
         Response response = magicResponse(new MagicLinkResponse(authenticationRequestId, validatableResponse));
-        String saml = samlAuthnResponse(response);
+        String saml = samlAuthnResponse(response, Optional.empty());
 
         User user = userRepository.findOneUserByEmail("jdoe@example.com");
         assertTrue(saml.contains("Attribute Name=\"urn:mace:eduid.nl:1.1\""));
@@ -1106,12 +1106,12 @@ public class UserControllerTest extends AbstractIntegrationTest {
     private String samlResponse(MagicLinkResponse magicLinkResponse) throws IOException {
         Response response = magicResponse(magicLinkResponse);
 
-        return samlAuthnResponse(response);
+        return samlAuthnResponse(response, Optional.empty());
     }
 
-    private String samlAuthnResponse(Response response) throws IOException {
-        if (response.statusCode() == 302) {
-            response = this.get302Response(response);
+    private String samlAuthnResponse(Response response, Optional<Filter> optionalCookieFilter) throws IOException {
+        while (response.statusCode() == 302) {
+            response = this.get302Response(response, optionalCookieFilter);
         }
         assertEquals(HttpStatus.OK.value(), response.getStatusCode());
         String html = IOUtil.toString(response.asInputStream());
@@ -1130,12 +1130,12 @@ public class UserControllerTest extends AbstractIntegrationTest {
                 .get("/saml/guest-idp/magic");
 
         while (response.getStatusCode() == 302) {
-            response = get302Response(response);
+            response = get302Response(response, Optional.empty());
         }
         return response;
     }
 
-    private Response get302Response(Response response) {
+    private Response get302Response(Response response, Optional<Filter> optionalCookieFilter) {
         //new user confirmation screen
         String uri = response.getHeader("Location");
         MultiValueMap<String, String> parameters = UriComponentsBuilder.fromUriString(uri).build().getQueryParams();
@@ -1144,6 +1144,7 @@ public class UserControllerTest extends AbstractIntegrationTest {
                 .when()
                 .queryParam("h", h)
                 .cookie(BROWSER_SESSION_COOKIE_NAME, "true")
+                .filter(optionalCookieFilter.orElse(noopFilter))
                 .get("/saml/guest-idp/magic");
         return response;
     }

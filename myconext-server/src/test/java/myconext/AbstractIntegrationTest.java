@@ -4,6 +4,7 @@ package myconext;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.restassured.RestAssured;
+import io.restassured.filter.Filter;
 import io.restassured.http.Cookie;
 import io.restassured.response.Response;
 import io.restassured.specification.RequestSpecification;
@@ -106,6 +107,8 @@ public abstract class AbstractIntegrationTest {
     private final SimpleDateFormat issueFormat = new SimpleDateFormat("yyyy-MM-dd'T'H:mm:ss");
 
     protected final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+
+    protected final Filter noopFilter = new NoopFilter();
 
     @Before
     public void before() throws Exception {
