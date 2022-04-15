@@ -11,6 +11,7 @@
     import Button from "../components/Button.svelte";
     import {cookieNames} from "../constants/cookieNames";
     import {loginPreferences} from "../constants/loginPreferences";
+    import {links} from "../stores/conf";
 
     export let id;
     let showSpinner = true;
@@ -18,6 +19,8 @@
     let passwordIncorrect = false;
 
     onMount(() => {
+        $links.displayBackArrow = true;
+
         fetchServiceName(id).then(res => {
             serviceName = res.name;
             showSpinner = false;

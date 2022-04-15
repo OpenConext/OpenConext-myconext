@@ -7,6 +7,7 @@
     import {enrollmentStatus} from "../constants/enrollmentStatus";
     import {poll} from "../utils/poll";
     import {navigate} from "svelte-routing";
+    import {links} from "../stores/conf";
 
     let showSpinner = true;
     let hash = null;
@@ -17,6 +18,8 @@
     let status = "NOPE";
 
     onMount(() => {
+        $links.displayBackArrow = true;
+
         const urlSearchParams = new URLSearchParams(window.location.search);
         hash = urlSearchParams.get("h")
         startEnrollment(hash).then(res => {

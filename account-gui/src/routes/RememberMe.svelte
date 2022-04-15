@@ -15,7 +15,7 @@
     onMount(() => {
         const urlSearchParams = new URLSearchParams(window.location.search);
         hash = urlSearchParams.get("h");
-        $links.userLink = false;
+        $links.displayBackArrow = false;
     });
 
     const doRememberMe = () => {

@@ -1,5 +1,8 @@
 <script>
     import I18n from "i18n-js";
+    import {links} from "../stores/conf";
+
+    $links.displayBackArrow = false;
 
 </script>
 

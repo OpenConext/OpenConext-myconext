@@ -6,7 +6,7 @@
     import icon from "../icons/redesign/undraw_Order_confirmed_re_g0if.svg";
     import {fetchServiceNameByHash} from "../api";
     import Button from "../components/Button.svelte";
-    import {conf} from "../stores/conf";
+    import {conf, links} from "../stores/conf";
     import {proceed} from "../utils/sso";
 
     let serviceName = null;
@@ -14,6 +14,8 @@
     let hash = null;
 
     onMount(() => {
+        $links.displayBackArrow = false;
+
         const urlSearchParams = new URLSearchParams(window.location.search);
         hash = urlSearchParams.get("h")
         fetchServiceNameByHash(hash).then(res => {

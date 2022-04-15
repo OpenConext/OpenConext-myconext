@@ -14,5 +14,6 @@ export const conf = writable({
 });
 
 export const links = writable({
-    userLink: false
+    userLink: true,
+    displayBackArrow: true
 });

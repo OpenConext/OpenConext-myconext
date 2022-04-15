@@ -1,7 +1,10 @@
 <script>
     import I18n from "i18n-js";
     import Button from "../components/Button.svelte";
-    import {conf} from "../stores/conf";
+    import {conf, links} from "../stores/conf";
+
+    $links.displayBackArrow = false;
+
 </script>
 
 <style>

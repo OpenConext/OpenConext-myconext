@@ -4,17 +4,14 @@
     import arrowLeft from "../icons/arrow_4.svg";
     import {links} from "../stores/conf";
 
-    $: displayUserLink = $user.knownUser &&
-        ($links.userLink || window.location.href.indexOf("login") === -1 );
-
-    let displayBackArrow = false;
+    $: displayUserLink = $user.knownUser && $links.userLink;
+    $: displayBackArrow = $user.knownUser && $links.displayBackArrow && window.history.length > 1;
 
     onMount(() => {
         window.addEventListener("popstate", e => {
-            console.log("popstate "+e+"  window.location.href");
-            displayUserLink = $user.knownUser && ($links.userLink || window.location.href.indexOf("login") === -1);
+            displayUserLink = $user.knownUser && $links.userLink && window.location.href.indexOf("login") === -1;
+            displayBackArrow = $user.knownUser && $links.displayBackArrow && window.history.length > 1;
         });
-        displayBackArrow = window.history.length > 1;
     });
 
     const goBack = () => {

@@ -20,9 +20,9 @@
     let isNew = false;
     let hash = null;
 
-    $links.userLink = false;
-
     onMount(() => {
+        $links.displayBackArrow = false;
+
         const urlSearchParams = new URLSearchParams(window.location.search);
 
         explanation = urlSearchParams.get("explanation");

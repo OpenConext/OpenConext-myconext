@@ -10,12 +10,15 @@
     import Button from "../components/Button.svelte";
     import {loginPreferences} from "../constants/loginPreferences";
     import {cookieNames} from "../constants/cookieNames";
+    import {links} from "../stores/conf";
 
     export let id;
     let showSpinner = true;
     let serviceName = "";
 
     onMount(() => {
+        $links.displayBackArrow = true;
+
         fetchServiceName(id).then(res => {
             serviceName = res.name;
             showSpinner = false;

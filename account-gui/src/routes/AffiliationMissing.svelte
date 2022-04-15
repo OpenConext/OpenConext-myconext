@@ -1,7 +1,7 @@
 <script>
     import I18n from "i18n-js";
     import {onMount} from 'svelte';
-    import {conf} from "../stores/conf";
+    import {conf, links} from "../stores/conf";
     import Button from "../components/Button.svelte";
     import {fetchServiceName} from "../api";
     import Spinner from "../components/Spinner.svelte";
@@ -12,6 +12,8 @@
     let showSpinner = true;
 
     onMount(() => {
+        $links.displayBackArrow = false;
+
         fetchServiceName(id).then(res => {
             serviceName = res.name;
             showSpinner = false;

@@ -5,7 +5,7 @@
     import backArrow from "../icons/arrow-left.svg";
     import Spinner from "../components/Spinner.svelte";
     import {resendMagicLinkMail, successfullyLoggedIn} from "../api";
-    import {conf} from "../stores/conf";
+    import {conf, links} from "../stores/conf";
     import {status} from "../constants/loginStatus";
     import Button from "../components/Button.svelte";
     import {validVerificationCode} from "../constants/regexp";
@@ -27,6 +27,8 @@
     let verificationCodeError = false;
 
     onMount(() => {
+        $links.displayBackArrow = false;
+
         const urlParams = new URLSearchParams(window.location.search);
         verificationCodeError = urlParams.get("mismatch") === "true";
         if (verificationCodeError) {

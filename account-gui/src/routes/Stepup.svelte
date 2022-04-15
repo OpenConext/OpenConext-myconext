@@ -5,7 +5,7 @@
     import Verification from "../components/Verification.svelte";
     import {fetchServiceName} from "../api";
     import Spinner from "../components/Spinner.svelte";
-    import {conf} from "../stores/conf";
+    import {conf, links} from "../stores/conf";
 
     export let id;
     let explanation = null;
@@ -13,6 +13,8 @@
     let showSpinner = true;
 
     onMount(() => {
+        $links.displayBackArrow = false;
+
         const urlSearchParams = new URLSearchParams(window.location.search);
         explanation = decodeURIComponent(urlSearchParams.get("explanation"));
         fetchServiceName(id).then(res => {

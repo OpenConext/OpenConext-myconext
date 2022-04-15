@@ -12,9 +12,9 @@
     let showSpinner = true;
     let hash = null;
 
-    $links.userLink = false;
-
     onMount(() => {
+        $links.displayBackArrow = false;
+
         const urlSearchParams = new URLSearchParams(window.location.search);
         hash = urlSearchParams.get("h");
         showSpinner = false;

@@ -1,7 +1,7 @@
 <script>
     import I18n from "i18n-js";
     import {onMount} from 'svelte';
-    import {conf} from "../stores/conf";
+    import {conf, links} from "../stores/conf";
     import Button from "../components/Button.svelte";
     import Verification from "../components/Verification.svelte";
     import {fetchServiceNameByHash} from "../api";
@@ -13,6 +13,8 @@
     let showSpinner = true;
 
     onMount(() => {
+        $links.displayBackArrow = false;
+
         const urlSearchParams = new URLSearchParams(window.location.search);
         explanation = decodeURIComponent(urlSearchParams.get("explanation"));
         const hash = urlSearchParams.get('h')

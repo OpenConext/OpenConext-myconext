@@ -20,9 +20,9 @@
     let showSpinner = true;
     let serviceName = "";
 
-    $links.userLink = false;
-
     onMount(() => {
+        $links.userLink = false;
+        $links.displayBackArrow = false;
         fetchServiceName(id).then(res => {
             serviceName = res.name;
             showSpinner = false;

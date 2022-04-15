@@ -9,7 +9,7 @@
     import {poll} from "../utils/poll";
     import {authenticationStatus} from "../constants/authenticationStatus";
     import {proceed} from "../utils/sso";
-    import {conf} from "../stores/conf";
+    import {conf, links} from "../stores/conf";
     import Cookies from "js-cookie";
     import {cookieNames} from "../constants/cookieNames";
     import {loginPreferences} from "../constants/loginPreferences";
@@ -29,6 +29,8 @@
     let onMobile = "ontouchstart" in document.documentElement;
 
     onMount(() => {
+        $links.displayBackArrow = true;
+
         startTiqrAuthentication($user.email, id)
             .then(res => {
                 showSpinner = false;

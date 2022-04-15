@@ -14,7 +14,7 @@
     let copied = false;
 
     onMount(() => {
-        $links.userLink = false;
+        $links.displayBackArrow = false;
 
         const urlParams = new URLSearchParams(window.location.search);
         hash = urlParams.get("h");

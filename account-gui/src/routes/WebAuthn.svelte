@@ -1,6 +1,6 @@
 <script>
     import {create, get, supported} from "@github/webauthn-json";
-    import {conf} from "../stores/conf";
+    import {conf, links} from "../stores/conf";
     import {onMount} from "svelte";
     import {webAuthnRegistration, webAuthnRegistrationResponse} from "../api";
     import Spinner from "../components/Spinner.svelte";
@@ -13,6 +13,8 @@
     let name;
 
     onMount(() => {
+        $links.displayBackArrow = true;
+
         const urlSearchParams = new URLSearchParams(window.location.search);
         token = urlSearchParams.get("token");
         name = decodeURIComponent(urlSearchParams.get("name"));

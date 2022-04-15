@@ -1,6 +1,6 @@
 <script>
     import {user} from "../stores/user";
-    import {conf} from "../stores/conf";
+    import {conf, links} from "../stores/conf";
     import {link, navigate} from "svelte-routing";
     import {validEmail} from "../constants/regexp";
     import I18n from "i18n-js";
@@ -23,6 +23,8 @@
     let agreedWithTerms = false;
 
     onMount(() => {
+        $links.displayBackArrow = true;
+
         $user.email = "";
         $user.givenName = "";
         $user.familyName = "";

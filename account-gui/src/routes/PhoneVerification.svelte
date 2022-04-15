@@ -15,12 +15,15 @@
     let phoneNumber = "";
 
     onMount(() => {
-        $links.userLink = false;
+        $links.displayBackArrow = true;
 
         const urlParams = new URLSearchParams(window.location.search);
         hash = urlParams.get("h");
         showSpinner = false;
     });
+
+    $: allowedNext = validPhoneNumber(phoneNumber);
+    $: phoneNumberIncorrect = !initial && !validPhoneNumber(phoneNumber);
 
     const next = () => {
         initial = false;
@@ -34,8 +37,6 @@
 
     const init = el => el.focus();
 
-    $: allowedNext = validPhoneNumber(phoneNumber);
-    $: phoneNumberIncorrect = !initial && !validPhoneNumber(phoneNumber);
 
     const handleEnter = e => e.key === "Enter" && next();
 

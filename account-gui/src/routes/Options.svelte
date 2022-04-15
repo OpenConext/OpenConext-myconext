@@ -9,6 +9,7 @@
     import passwordIcon from "../icons/redesign/password-type.svg";
     import magicLinkIcon from "../icons/redesign/video-game-magic-wand.svg";
     import LoginOption from "../components/LoginOption.svelte";
+    import {links} from "../stores/conf";
 
     export let id;
 
@@ -36,6 +37,8 @@
     let showSpinner = true;
 
     onMount(() => {
+        $links.displayBackArrow = true;
+
         knownAccount($user.email).then(res => {
             //res = ["useApp", "useWebAuthn", "useLink", "usePassword"];
             const allOptions = possibleOptions.filter(option => res.includes(option.key));
