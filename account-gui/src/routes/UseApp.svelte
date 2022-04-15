@@ -35,7 +35,7 @@
                 qrCode = res.qr;
                 url = res.url;
                 sessionKey = res.sessionKey;
-                showQrCode = res.tiqrCookiePresent;
+                showQrCode = !res.tiqrCookiePresent;
                 status = authenticationStatus.PENDING;
                 poll({
                     fn: () => pollAuthentication(sessionKey, id),
