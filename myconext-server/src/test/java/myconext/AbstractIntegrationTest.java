@@ -19,6 +19,7 @@ import org.junit.Before;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.core.annotation.AnnotationUtils;
@@ -103,6 +104,9 @@ public abstract class AbstractIntegrationTest {
 
     @Autowired
     protected RegistrationRepository registrationRepository;
+
+    @Autowired
+    protected AuthenticationRepository authenticationRepository;
 
     @Autowired
     protected EmailsSendRepository emailsSendRepository;

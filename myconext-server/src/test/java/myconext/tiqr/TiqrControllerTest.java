@@ -2,23 +2,33 @@ package myconext.tiqr;
 
 import io.restassured.common.mapper.TypeRef;
 import io.restassured.http.ContentType;
+import io.restassured.http.Headers;
+import io.restassured.response.Response;
 import myconext.AbstractIntegrationTest;
 import myconext.model.MagicLinkRequest;
 import myconext.model.SamlAuthenticationRequest;
 import myconext.model.User;
+import org.apache.commons.io.IOUtil;
 import org.junit.Test;
 import org.springframework.http.HttpMethod;
 import org.springframework.web.util.UriComponents;
 import org.springframework.web.util.UriComponentsBuilder;
 import tiqr.org.model.*;
 import tiqr.org.secure.Challenge;
+import tiqr.org.secure.OCRA;
+import tiqr.org.secure.SecretCipher;
 
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.Base64;
+import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import static io.restassured.RestAssured.given;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static myconext.security.GuestIdpAuthenticationRequestFilter.BROWSER_SESSION_COOKIE_NAME;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class TiqrControllerTest extends AbstractIntegrationTest {
 
@@ -45,18 +55,18 @@ public class TiqrControllerTest extends AbstractIntegrationTest {
         //We now should have a initialized registration and can request a verification code
         given()
                 .queryParam("hash", samlAuthenticationRequest.getHash())
-                .body(Map.of("phoneNumber","0612345678"))
+                .body(Map.of("phoneNumber", "0612345678"))
                 .contentType(ContentType.JSON)
                 .post("/tiqr/send-phone-code")
                 .then()
-                        .statusCode(200);
+                .statusCode(200);
 
         User user = userRepository.findById(samlAuthenticationRequest.getUserId()).get();
         String phoneVerification = (String) user.getSurfSecureId().get(SURFSecureID.PHONE_VERIFICATION_CODE);
 
         given()
                 .queryParam("hash", samlAuthenticationRequest.getHash())
-                .body(Map.of("phoneVerification",phoneVerification))
+                .body(Map.of("phoneVerification", phoneVerification))
                 .contentType(ContentType.JSON)
                 .post("/tiqr/verify-phone-code")
                 .then()
@@ -64,6 +74,90 @@ public class TiqrControllerTest extends AbstractIntegrationTest {
 
         Registration registration = registrationRepository.findRegistrationByUserId(samlAuthenticationRequest.getUserId()).get();
         assertEquals(RegistrationStatus.FINALIZED, registration.getStatus());
+    }
+
+    @Test
+    public void startAuthentication() throws IOException {
+        SamlAuthenticationRequest samlAuthenticationRequest = doEnrollmment();
+        //Fake registration
+        Registration registration = registrationRepository.findRegistrationByUserId(samlAuthenticationRequest.getUserId()).get();
+        registration.setStatus(RegistrationStatus.FINALIZED);
+        registrationRepository.saveAll(Arrays.asList(registration));
+
+        Map<String, Object> results = given()
+                .body(new TiqrRequest(samlAuthenticationRequest.getId(), "jdoe@example.com"))
+                .contentType(ContentType.JSON)
+                .post("/tiqr/start-authentication")
+                .as(new TypeRef<>() {
+                });
+        assertNotNull(results.get("qr"));
+        assertFalse((Boolean) results.get("tiqrCookiePresent"));
+
+        String sessionKey = (String) results.get("sessionKey");
+        Map<String, String> status = given()
+                .queryParam("sessionKey", sessionKey)
+                .queryParam("id", samlAuthenticationRequest.getId())
+                .get("/tiqr/poll-authentication")
+                .as(new TypeRef<>() {
+                });
+        assertEquals(AuthenticationStatus.PENDING.name(), status.get("status"));
+
+        //mock the call from the device to the TiqrController
+        SecretCipher secretCipher = new SecretCipher("secret");
+        Authentication authentication = authenticationRepository.findAuthenticationBySessionKey(sessionKey).get();
+        registration = registrationRepository.findById(registration.getId()).get();
+        String decryptedSecret = secretCipher.decrypt(registration.getSecret());
+        String ocra = OCRA.generateOCRA(decryptedSecret, authentication.getChallenge(), sessionKey);
+
+        given()
+                .contentType(ContentType.URLENC)
+                .formParam("sessionKey", sessionKey)
+                .formParam("userId", samlAuthenticationRequest.getUserId())
+                .formParam("response", ocra)
+                .formParam("language", "en")
+                .formParam("operation", "login")
+                .formParam("notificationType", "APNS")
+                .formParam("notificationAddress", "1234567890")
+                .post("/tiqr/authentication");
+
+        Map<String, String> newStatus = given()
+                .queryParam("sessionKey", sessionKey)
+                .queryParam("id", samlAuthenticationRequest.getId())
+                .get("/tiqr/poll-authentication")
+                .as(new TypeRef<>() {
+                });
+        assertEquals(AuthenticationStatus.SUCCESS.name(), newStatus.get("status"));
+
+        String hash = newStatus.get("hash");
+        given()
+                .body(Map.of("hash", hash))
+                .contentType(ContentType.JSON)
+                .put("/tiqr/remember-me")
+                .then()
+                .statusCode(200);
+        //First one is the rememberme
+        given().redirects().follow(false)
+                .when()
+                .queryParam("h", hash)
+                .cookie(BROWSER_SESSION_COOKIE_NAME, "true")
+                .get("/saml/guest-idp/magic");
+        //second is the actual SAML
+        Response response = given().redirects().follow(false)
+                .when()
+                .queryParam("h", hash)
+                .cookie(BROWSER_SESSION_COOKIE_NAME, "true")
+                .get("/saml/guest-idp/magic");
+        Headers headers = response.getHeaders();
+        List<String> cookies = headers.getValues("Set-cookie");
+        List.of("TIQR_COOKIE=true", "BROWSER_SESSION=true", "TRACKING_DEVICE=", "SESSION=", "guest-idp-remember-me=")
+                .forEach(s -> assertTrue(cookies.stream().anyMatch(cookie -> cookie.startsWith(s))));
+
+        String html = IOUtil.toString(response.asInputStream());
+        Matcher matcher = Pattern.compile("name=\"SAMLResponse\" value=\"(.*?)\"").matcher(html);
+        matcher.find();
+
+        String saml = new String(Base64.getDecoder().decode(matcher.group(1)));
+        assertTrue(saml.contains("jdoe@example.com"));
     }
 
     private SamlAuthenticationRequest doEnrollmment() throws IOException {
