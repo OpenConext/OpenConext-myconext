@@ -77,6 +77,18 @@ public class TiqrControllerTest extends AbstractIntegrationTest {
     }
 
     @Test
+    public void enrollmentFlowForSp() {
+        Map<String, String> body = given()
+                .when()
+                .contentType(ContentType.JSON)
+                .get("/tiqr/sp/start-enrollment")
+                .body().as(new TypeRef<>() {
+                });
+        this.doFollowUpEnrollment(body);
+
+    }
+
+    @Test
     public void startAuthentication() throws IOException {
         SamlAuthenticationRequest samlAuthenticationRequest = doEnrollmment();
         //Fake registration
@@ -174,6 +186,11 @@ public class TiqrControllerTest extends AbstractIntegrationTest {
                 .get("/tiqr/start-enrollment")
                 .body().as(new TypeRef<>() {
                 });
+        doFollowUpEnrollment(body);
+        return samlAuthenticationRequest;
+    }
+
+    private void doFollowUpEnrollment(Map<String, String> body) {
         String enrollmentKey = body.get("enrollmentKey");
         String url = String.format("http://localhost:8081/tiqr/metadata?enrollment_key=%s)", enrollmentKey);
 
@@ -205,7 +222,7 @@ public class TiqrControllerTest extends AbstractIntegrationTest {
         given()
                 .queryParam("enrollment_secret", enrollmentSecret)
                 .contentType(ContentType.URLENC)
-                .formParam("userid", samlAuthenticationRequest.getUserId())
+                .formParam("userid", metaData.getIdentity().getIdentifier())
                 .formParam("secret", sessionKey)
                 .formParam("language", "en")
                 .formParam("notificationType", "APNS")
@@ -219,6 +236,5 @@ public class TiqrControllerTest extends AbstractIntegrationTest {
                 .get("/tiqr/poll-enrollment")
                 .as(String.class);
         assertEquals(EnrollmentStatus.PROCESSED.name(), enrollmentStatus);
-        return samlAuthenticationRequest;
     }
 }

@@ -174,7 +174,7 @@ public class SecurityConfiguration {
         protected void configure(HttpSecurity http) throws Exception {
             http
                     .requestMatchers()
-                    .antMatchers("/myconext/api/sp/**", "/startSSO")
+                    .antMatchers("/myconext/api/sp/**", "/startSSO", "/tiqr/sp/**")
                     .and()
                     .sessionManagement()
                     .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)

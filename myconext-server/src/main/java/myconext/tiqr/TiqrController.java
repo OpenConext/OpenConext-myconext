@@ -15,7 +15,6 @@ import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.StringUtils;
@@ -29,8 +28,6 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.io.IOException;
-import java.net.URLEncoder;
-import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.util.*;
@@ -88,6 +85,12 @@ public class TiqrController {
         this.magicLinkUrl = magicLinkUrl;
     }
 
+    @GetMapping("/sp/start-enrollment")
+    public ResponseEntity<Map<String, String>> startEnrollment(org.springframework.security.core.Authentication authentication) throws IOException, WriterException {
+        User user = userFromAuthentication(authentication);
+        return doStartEnrollmentForUser(user);
+    }
+
     @GetMapping("/start-enrollment")
     public ResponseEntity<Map<String, String>> startEnrollment(@RequestParam("hash") String hash) throws IOException, WriterException {
         if (!StringUtils.hasText(hash)) {
@@ -95,6 +98,10 @@ public class TiqrController {
         }
         User user = getUserFromAuthenticationRequest(hash);
 
+        return doStartEnrollmentForUser(user);
+    }
+
+    private ResponseEntity<Map<String, String>> doStartEnrollmentForUser(User user) throws WriterException, IOException {
         Optional<Enrollment> enrollmentByUserID = enrollmentRepository.findEnrollmentByUserID(user.getId());
         enrollmentByUserID.ifPresent(enrollmentRepository::delete);
 
@@ -110,14 +117,6 @@ public class TiqrController {
         LOG.info(String.format("Started enrollment for %s", user.getEmail()));
 
         return ResponseEntity.ok(results);
-    }
-
-    private User getUserFromAuthenticationRequest(String hash) {
-        SamlAuthenticationRequest samlAuthenticationRequest = authenticationRequestRepository.findByHash(hash)
-                .orElseThrow(() -> new ForbiddenException("Unknown hash"));
-        String userId = samlAuthenticationRequest.getUserId();
-        User user = userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException(userId));
-        return user;
     }
 
     @GetMapping("/metadata")
@@ -139,9 +138,19 @@ public class TiqrController {
         return ResponseEntity.ok(enrollment.getStatus());
     }
 
+    @GetMapping("/sp/generate-backup-code")
+    public ResponseEntity<Map<String, String>> generateBackupCodeForSp(org.springframework.security.core.Authentication authentication) {
+        User user = userFromAuthentication(authentication);
+        return doGenerateBackupCode(user);
+    }
+
     @GetMapping("/generate-backup-code")
     public ResponseEntity<Map<String, String>> generateBackupCode(@RequestParam("hash") String hash) {
         User user = getUserFromAuthenticationRequest(hash);
+        return doGenerateBackupCode(user);
+    }
+
+    private ResponseEntity<Map<String, String>> doGenerateBackupCode(User user) {
         String recoveryCode = VerificationCodeGenerator.generateBackupCode();
         user.getSurfSecureId().put(SURFSecureID.RECOVERY_CODE, recoveryCode);
         userRepository.save(user);
@@ -154,11 +163,21 @@ public class TiqrController {
         return getSuccessResponseEntity(body);
     }
 
+    @PostMapping("/sp/send-phone-code")
+    public ResponseEntity<Map<String, String>> sendPhoneCodeForSp(org.springframework.security.core.Authentication authentication, @RequestBody Map<String, String> requestBody) {
+        User user = userFromAuthentication(authentication);
+        return doSendPhoneCode(user, requestBody);
+    }
+
     @PostMapping("/send-phone-code")
     public ResponseEntity<Map<String, String>> sendPhoneCode(@RequestParam("hash") String hash, @RequestBody Map<String, String> requestBody) {
         User user = getUserFromAuthenticationRequest(hash);
-        String phoneVerification = VerificationCodeGenerator.generatePhoneVerification();
+        return doSendPhoneCode(user, requestBody);
+    }
+
+    private ResponseEntity<Map<String, String>> doSendPhoneCode(User user, Map<String, String> requestBody) {
         String phoneNumber = requestBody.get("phoneNumber");
+        String phoneVerification = VerificationCodeGenerator.generatePhoneVerification();
 
         smsService.send(phoneNumber, phoneVerification);
 
@@ -169,9 +188,19 @@ public class TiqrController {
         return ResponseEntity.ok(Collections.singletonMap("status", "ok"));
     }
 
+    @PostMapping("/sp/verify-phone-code")
+    public ResponseEntity<Map<String, String>> doVerifyPhoneCode(org.springframework.security.core.Authentication authentication, @RequestBody Map<String, String> requestBody) {
+        User user = userFromAuthentication(authentication);
+        return doVerifyPhoneCode(requestBody, user);
+    }
+
     @PostMapping("/verify-phone-code")
     public ResponseEntity<Map<String, String>> verifyPhoneCode(@RequestParam("hash") String hash, @RequestBody Map<String, String> requestBody) {
         User user = getUserFromAuthenticationRequest(hash);
+        return doVerifyPhoneCode(requestBody, user);
+    }
+
+    private ResponseEntity<Map<String, String>> doVerifyPhoneCode(Map<String, String> requestBody, User user) {
         String phoneVerification = requestBody.get("phoneVerification");
         String phoneVerificationStored = (String) user.getSurfSecureId().get(SURFSecureID.PHONE_VERIFICATION_CODE);
         if (MessageDigest.isEqual(phoneVerification.getBytes(StandardCharsets.UTF_8), phoneVerificationStored.getBytes(StandardCharsets.UTF_8))) {
@@ -186,8 +215,10 @@ public class TiqrController {
         return getSuccessResponseEntity(Collections.singletonMap("redirect", this.magicLinkUrl));
     }
 
-    private ResponseEntity<Map<String, String>> getSuccessResponseEntity(Map<String, String> body) {
-        return ResponseEntity.ok(body);
+    @PostMapping("/sp/start-authentication")
+    public ResponseEntity<Map<String, Object>> startAuthenticationForSP(HttpServletRequest request, org.springframework.security.core.Authentication authentication) throws IOException, WriterException {
+        User user = userFromAuthentication(authentication);
+        return doStartAuthentication(request, user);
     }
 
     @PostMapping("/start-authentication")
@@ -197,6 +228,10 @@ public class TiqrController {
         String email = tiqrRequest.getEmail().trim();
         User user = userRepository.findUserByEmail(email).orElseThrow(() -> new UserNotFoundException(String.format("User %s not found", email)));
 
+        return doStartAuthentication(request, user);
+    }
+
+    private ResponseEntity<Map<String, Object>> doStartAuthentication(HttpServletRequest request, User user) throws WriterException, IOException {
         Optional<Cookie> optionalTiqrCookie = cookieByName(request, TIQR_COOKIE_NAME);
         boolean tiqrCookiePresent = optionalTiqrCookie.isPresent();
         Authentication authentication = tiqrService.startAuthentication(
@@ -282,5 +317,23 @@ public class TiqrController {
         authenticationRequestRepository.save(samlAuthenticationRequest);
         return ResponseEntity.ok(Collections.singletonMap("status", "ok"));
     }
+
+    private User userFromAuthentication(org.springframework.security.core.Authentication authentication) {
+        String userId = ((User) authentication.getPrincipal()).getId();
+        return userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException(userId));
+    }
+
+    private ResponseEntity<Map<String, String>> getSuccessResponseEntity(Map<String, String> body) {
+        return ResponseEntity.ok(body);
+    }
+
+
+    private User getUserFromAuthenticationRequest(String hash) {
+        SamlAuthenticationRequest samlAuthenticationRequest = authenticationRequestRepository.findByHash(hash)
+                .orElseThrow(() -> new ForbiddenException("Unknown hash"));
+        String userId = samlAuthenticationRequest.getUserId();
+        return userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException(userId));
+    }
+
 
 }

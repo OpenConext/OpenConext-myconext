@@ -37,7 +37,6 @@
 
     const init = el => el.focus();
 
-
     const handleEnter = e => e.key === "Enter" && next();
 
 </script>
