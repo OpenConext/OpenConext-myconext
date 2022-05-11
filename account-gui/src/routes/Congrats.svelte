@@ -8,6 +8,9 @@
     import Button from "../components/Button.svelte";
     import {conf, links} from "../stores/conf";
     import {proceed} from "../utils/sso";
+    import Cookies from "js-cookie";
+    import {cookieNames} from "../constants/cookieNames";
+    import {loginPreferences} from "../constants/loginPreferences";
 
     let serviceName = null;
     let showSpinner = true;
@@ -24,6 +27,15 @@
         });
     });
 
+    const nextStep = () => {
+        Cookies.set(cookieNames.LOGIN_PREFERENCE, loginPreferences.APP, {
+            expires: 365,
+            secure: true,
+            sameSite: "Lax"
+        });
+        proceed($conf.magicLinkUrl);
+    }
+
 </script>
 
 <style lang="scss">
@@ -36,5 +48,5 @@
 <h2 class="header">{I18n.t("congrats.header")}</h2>
 <p class="explanation">{I18n.t("congrats.info")}</p>
 <ImageContainer icon={icon} margin={true}/>
-<Button href={"/next"} onClick={() => proceed($conf.magicLinkUrl)}
+<Button href={"/next"} onClick={nextStep}
         label={I18n.t("congrats.next", {name: serviceName})}/>

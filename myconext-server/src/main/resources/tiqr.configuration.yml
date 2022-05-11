@@ -6,6 +6,16 @@ version: "0.0.1"
 logoUrl: "https://static.surfconext.nl/media/idp/eduid.png"
 infoUrl: "https://eduid.nl/help"
 pushNotificationsEnabled: false
-eduIdAppBaseUrl: local.eduid.nl
+eduIdAppBaseUrl: "https://eduid.nl"
 
+apns:
+  serverHost: "localhost"
+  port: 8099
+  signingKey: "classpath:/token-auth-private-key.p8";
+  serverCertificateChain: "classpath:/ca.pem";
+  teamId: "apple-team-id"
+  keyId: "apple-key-id"
 
+gcm:
+  firebaseServiceAccount: "classpath:/test-firebase-adminsdk.json"
+  appName: "tiqr"

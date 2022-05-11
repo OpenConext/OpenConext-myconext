@@ -53,7 +53,6 @@
 
     p.explanation {
         margin: 15px 0;
-        font-size: 14px;
     }
 
 </style>

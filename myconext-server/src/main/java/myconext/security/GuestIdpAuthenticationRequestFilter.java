@@ -325,7 +325,7 @@ public class GuestIdpAuthenticationRequestFilter extends IdpAuthenticationReques
             return;
         }
 
-        boolean proceed = checkStepUp(response, hash, samlAuthenticationRequest, user, charSet, explanation);
+        boolean proceed = checkStepUp(response, request, hash, samlAuthenticationRequest, user, charSet, explanation);
         if (!proceed) {
             return;
         }
@@ -341,7 +341,7 @@ public class GuestIdpAuthenticationRequestFilter extends IdpAuthenticationReques
         return retryVerificationCode > 2;
     }
 
-    private boolean checkStepUp(HttpServletResponse response, String hash, SamlAuthenticationRequest samlAuthenticationRequest, User user, String charSet, String explanation) throws IOException {
+    private boolean checkStepUp(HttpServletResponse response, HttpServletRequest request, String hash, SamlAuthenticationRequest samlAuthenticationRequest, User user, String charSet, String explanation) throws IOException {
         boolean inStepUpFlow = StepUpStatus.IN_STEP_UP.equals(samlAuthenticationRequest.getSteppedUp());
 
         boolean hasStudentAffiliation = hasRequiredStudentAffiliation(user.allEduPersonAffiliations());
@@ -435,7 +435,7 @@ public class GuestIdpAuthenticationRequestFilter extends IdpAuthenticationReques
         List<String> authenticationContextClassReferences = samlAuthenticationRequest.getAuthenticationContextClassReferences();
         String explanation = ACR.explanationKeyWord(authenticationContextClassReferences, hasStudentAffiliation);
 
-        boolean proceed = this.checkStepUp(response, samlAuthenticationRequest.getHash(), samlAuthenticationRequest, user, charSet, explanation);
+        boolean proceed = this.checkStepUp(response, request, samlAuthenticationRequest.getHash(), samlAuthenticationRequest, user, charSet, explanation);
         if (!proceed) {
             return;
         }
@@ -467,7 +467,7 @@ public class GuestIdpAuthenticationRequestFilter extends IdpAuthenticationReques
         }
         if (samlAuthenticationRequest.isTiqrFlow()) {
             LOG.info(String.format("Tiqr flow authenticated for %s ", user.getUsername()));
-            addTiqrCookie(response, samlAuthenticationRequest);
+            addTiqrCookie(response);
         }
         logLoginWithContext(user, "magiclink", true, LOG, "Successfully logged in with magiclink");
         sendAssertion(request, response, samlAuthenticationRequest, user, provider,
@@ -487,11 +487,12 @@ public class GuestIdpAuthenticationRequestFilter extends IdpAuthenticationReques
         response.addCookie(cookie);
     }
 
-    private void addTiqrCookie(HttpServletResponse response, SamlAuthenticationRequest samlAuthenticationRequest) {
+    private void addTiqrCookie(HttpServletResponse response) {
         Cookie cookie = new Cookie(TIQR_COOKIE_NAME, Boolean.TRUE.toString());
         cookie.setMaxAge(rememberMeMaxAge);
         cookie.setSecure(secureCookie);
         cookie.setHttpOnly(true);
+        cookie.setPath("/");
         response.addCookie(cookie);
     }
 

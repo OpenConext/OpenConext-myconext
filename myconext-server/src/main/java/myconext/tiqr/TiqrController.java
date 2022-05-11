@@ -28,6 +28,8 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.io.IOException;
+import java.net.URLEncoder;
+import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.util.*;
@@ -76,7 +78,13 @@ public class TiqrController {
                 String.format("%s/tiqr/authentication", baseUrl),
                 this.tiqrConfiguration.isPushNotificationsEnabled(),
                 String.format("%s/tiqr/enrollment", baseUrl));
-        this.tiqrService = new TiqrService(enrollmentRepository, registrationRepository, authenticationRepository, service, tiqrConfiguration.getEncryptionSecret());
+        this.tiqrService = new TiqrService(enrollmentRepository,
+                registrationRepository,
+                authenticationRepository,
+                service,
+                tiqrConfiguration.getEncryptionSecret(),
+                tiqrConfiguration.getApns(),
+                tiqrConfiguration.getGcm());
         this.enrollmentRepository = enrollmentRepository;
         this.authenticationRequestRepository = authenticationRequestRepository;
         this.userRepository = userRepository;
@@ -107,7 +115,9 @@ public class TiqrController {
 
         Enrollment enrollment = tiqrService.startEnrollment(user.getId(), String.format("%s %s", user.getGivenName(), user.getFamilyName()));
         String enrollmentKey = enrollment.getKey();
-        String url = String.format("%s/tiqr/metadata?enrollment_key=%s)", tiqrConfiguration.getBaseUrl(), enrollmentKey);
+        String url = String.format("%s/tiqrenroll?key=%s)",
+                tiqrConfiguration.getEduIdAppBaseUrl(),
+                enrollmentKey);
         Map<String, String> results = Map.of(
                 "enrollmentKey", enrollmentKey,
                 "url", url,
@@ -234,17 +244,18 @@ public class TiqrController {
     private ResponseEntity<Map<String, Object>> doStartAuthentication(HttpServletRequest request, User user) throws WriterException, IOException {
         Optional<Cookie> optionalTiqrCookie = cookieByName(request, TIQR_COOKIE_NAME);
         boolean tiqrCookiePresent = optionalTiqrCookie.isPresent();
+        String authenticationUrl = String.format("https://%s/tiqrauth?u=%s&s=%s&q=%s&i=%s&v=%s",
+                this.tiqrConfiguration.getEduIdAppBaseUrl(),
+                encode(user.getId()),
+                encode(authentication.getSessionKey()),
+                encode(authentication.getChallenge()),
+                encode(this.tiqrConfiguration.getIdentifier()),
+                encode(this.tiqrConfiguration.getVersion()));
         Authentication authentication = tiqrService.startAuthentication(
                 user.getId(),
                 String.format("%s %s", user.getGivenName(), user.getFamilyName()),
-                tiqrCookiePresent);
-        String authenticationUrl = String.format("https://%s@%s/tiqrauth/%s/%s/%s/%s",
-                user.getId(),
-                this.tiqrConfiguration.getEduIdAppBaseUrl(),
-                authentication.getSessionKey(),
-                authentication.getChallenge(),
-                this.tiqrConfiguration.getIdentifier(),
-                this.tiqrConfiguration.getVersion());
+                tiqrCookiePresent,
+                authenticationUrl);
         String qrCode = QRCodeGenerator.generateQRCodeImage(authenticationUrl);
         Map<String, Object> body = Map.of(
                 "sessionKey", authentication.getSessionKey(),
@@ -333,6 +344,10 @@ public class TiqrController {
                 .orElseThrow(() -> new ForbiddenException("Unknown hash"));
         String userId = samlAuthenticationRequest.getUserId();
         return userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException(userId));
+    }
+
+    private String encode(String s) {
+        return URLEncoder.encode(s, Charset.defaultCharset());
     }
 
 

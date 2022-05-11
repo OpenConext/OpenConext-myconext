@@ -19,7 +19,6 @@
     }
 
     .wrapper {
-        font-size: 14px;
         color: #0062b0;
     }
 

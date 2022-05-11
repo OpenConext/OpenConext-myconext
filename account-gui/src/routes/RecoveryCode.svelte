@@ -37,7 +37,7 @@
 
 </script>
 
-<style>
+<style lang="scss">
     p.explanation {
         margin: 15px 0;
     }
@@ -46,12 +46,16 @@
         display: flex;
         width: 100%;
         padding: 20px 0;
-        margin: 10px 0 25px 0 ;
+        margin: 10px 0 25px 0;
         border-top: 1px solid #979797;
         border-bottom: 1px solid #979797;
-    }
-    span {
-        margin: auto;
+
+        span {
+            margin: auto;
+            font-size: 18px;
+            font-weight: bold;
+        }
+
     }
 
     div.options {

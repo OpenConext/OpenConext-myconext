@@ -74,10 +74,6 @@
         cursor: none;
     }
 
-    p.explanation {
-        font-size: 14px;
-    }
-
     .info-row {
         display: flex;
         align-items: center;
@@ -91,13 +87,21 @@
         }
 
     }
+    p.time-out {
+        margin-top: 20px;
+    }
 
 </style>
 
 {#if showSpinner}
     <Spinner/>
 {:else if timeOut}
-    <h2 class="header">TODO timeout</h2>
+    <h2 class="header">{I18n.t("useApp.timeOut")}</h2>
+    <p class="time-out">
+        <span>{I18n.t("useApp.timeOutInfoFirst")}</span>
+        <a href="/" on:click|preventDefault|stopPropagation={() => window.location.reload(true)}>{I18n.t("useApp.timeOutInfoLink")}</a>
+        <span>{I18n.t("useApp.timeOutInfoLast")}</span>
+    </p>
 {:else}
     {#if showQrCode}
         <h2 class="header">{I18n.t("useApp.scan")}</h2>
@@ -117,10 +121,10 @@
 
     {#if showQrCode}
         <div class="info-row">
-        <span>{I18n.t("useApp.offline")}
-            <a href="/qr"
-               on:click|preventDefault|stopPropagation={() => showTOTPLink = !showTOTPLink}>{I18n.t("useApp.offlineLink")}</a>
-        </span>
+            <span>{I18n.t("useApp.offline")}
+                <a href="/qr"
+                   on:click|preventDefault|stopPropagation={() => showTOTPLink = !showTOTPLink}>{I18n.t("useApp.offlineLink")}</a>
+            </span>
         </div>
     {:else}
         <div class="info-row">

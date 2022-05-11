@@ -2,6 +2,8 @@ package myconext.tiqr;
 
 import lombok.Getter;
 import lombok.Setter;
+import tiqr.org.push.APNSConfiguration;
+import tiqr.org.push.GCMConfiguration;
 
 @Getter
 @Setter
@@ -16,5 +18,8 @@ public class TiqrConfiguration {
     private String infoUrl;
     private boolean pushNotificationsEnabled;
     private String eduIdAppBaseUrl;
+
+    private APNSConfiguration apns;
+    private GCMConfiguration gcm;
 
 }

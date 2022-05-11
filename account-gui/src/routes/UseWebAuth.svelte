@@ -55,9 +55,6 @@
 
 <style lang="scss">
 
-    p.explanation {
-        font-size: 14px;
-    }
 
 </style>
 

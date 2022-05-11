@@ -31,9 +31,6 @@
             cursor: pointer;
         }
 
-        span.user-name {
-            font-size: 14px;
-        }
     }
 
     @media (max-width: 800px) {
