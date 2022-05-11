@@ -244,6 +244,7 @@ public class TiqrController {
     private ResponseEntity<Map<String, Object>> doStartAuthentication(HttpServletRequest request, User user) throws WriterException, IOException {
         Optional<Cookie> optionalTiqrCookie = cookieByName(request, TIQR_COOKIE_NAME);
         boolean tiqrCookiePresent = optionalTiqrCookie.isPresent();
+        //TODO create URL in tiqr library 
         String authenticationUrl = String.format("https://%s/tiqrauth?u=%s&s=%s&q=%s&i=%s&v=%s",
                 this.tiqrConfiguration.getEduIdAppBaseUrl(),
                 encode(user.getId()),
