@@ -77,7 +77,7 @@ export function webAuthnRegistration(token) {
 }
 
 export function knownAccount(email) {
-    return postPutJson("/myconext/api//idp/service/email", {email}, "POST");
+    return postPutJson("/myconext/api/idp/service/email", {email}, "POST");
 }
 
 

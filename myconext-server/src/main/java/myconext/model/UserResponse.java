@@ -25,6 +25,7 @@ public class UserResponse implements Serializable {
     private final boolean rememberMe;
     private final long created;
     private final Map<String, EduID> eduIdPerServiceProvider;
+    private final Map<String, Object> surfSecureId;
 
     public UserResponse(User user, Map<String, EduID> eduIdPerServiceProvider, boolean rememberMe) {
         this.id = user.getId();
@@ -41,5 +42,6 @@ public class UserResponse implements Serializable {
         this.rememberMe = rememberMe;
         this.created = user.getCreated();
         this.eduIdPerServiceProvider = eduIdPerServiceProvider;
+        this.surfSecureId = user.getSurfSecureId();
     }
 }
