@@ -192,8 +192,7 @@ public class TiqrControllerTest extends AbstractIntegrationTest {
 
     private void doFollowUpEnrollment(Map<String, String> body) {
         String enrollmentKey = body.get("enrollmentKey");
-        String url = String.format("http://localhost:8081/tiqr/metadata?enrollment_key=%s)", enrollmentKey);
-
+        String url = String.format("https://eduid.nl/tiqrenroll?key=%s", enrollmentKey);
         assertEquals(url, body.get("url"));
         assertTrue(body.get("qrcode").startsWith("data:image/png;base64,"));
 

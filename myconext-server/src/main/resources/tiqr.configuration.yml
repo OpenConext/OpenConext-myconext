@@ -11,11 +11,14 @@ eduIdAppBaseUrl: "https://eduid.nl"
 apns:
   serverHost: "localhost"
   port: 8099
-  signingKey: "classpath:/token-auth-private-key.p8";
-  serverCertificateChain: "classpath:/ca.pem";
+  # signingKey: "file:/opt/myconext-server/tiqr/token-auth-private-key.p8"
+  signingKey: "classpath:/tiqr/token-auth-private-key.p8"
+  # Leave empty for non-local development
+  serverCertificateChain: "classpath:/tiqr/ca.pem"
+  topic: "eduid.nl"
   teamId: "apple-team-id"
   keyId: "apple-key-id"
 
 gcm:
-  firebaseServiceAccount: "classpath:/test-firebase-adminsdk.json"
+  firebaseServiceAccount: "classpath:/tiqr/test-firebase-adminsdk.json"
   appName: "tiqr"

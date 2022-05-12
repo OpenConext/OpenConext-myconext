@@ -14,6 +14,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.env.Environment;
 import org.springframework.core.io.Resource;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -64,6 +65,7 @@ public class TiqrController {
                           UserRepository userRepository,
                           ServiceProviderResolver serviceProviderResolver,
                           SMSService smsService,
+                          Environment environment,
                           @Value("${email.magic-link-url}") String magicLinkUrl) throws IOException {
         this.tiqrConfiguration = new Yaml().loadAs(resource.getInputStream(), TiqrConfiguration.class);
         String baseUrl = tiqrConfiguration.getBaseUrl();
@@ -73,11 +75,16 @@ public class TiqrController {
         Service service = new Service(
                 tiqrConfiguration.getDisplayName(),
                 tiqrConfiguration.getIdentifier(),
+                tiqrConfiguration.getVersion(),
                 tiqrConfiguration.getLogoUrl(),
                 tiqrConfiguration.getInfoUrl(),
                 String.format("%s/tiqr/authentication", baseUrl),
                 this.tiqrConfiguration.isPushNotificationsEnabled(),
                 String.format("%s/tiqr/enrollment", baseUrl));
+        if (environment.getActiveProfiles().length > 0) {
+            //Prevent FirebaseApp name tiqr already exists!
+            tiqrConfiguration.getGcm().setAppName(UUID.randomUUID().toString());
+        }
         this.tiqrService = new TiqrService(enrollmentRepository,
                 registrationRepository,
                 authenticationRepository,
@@ -115,7 +122,7 @@ public class TiqrController {
 
         Enrollment enrollment = tiqrService.startEnrollment(user.getId(), String.format("%s %s", user.getGivenName(), user.getFamilyName()));
         String enrollmentKey = enrollment.getKey();
-        String url = String.format("%s/tiqrenroll?key=%s)",
+        String url = String.format("%s/tiqrenroll?key=%s",
                 tiqrConfiguration.getEduIdAppBaseUrl(),
                 enrollmentKey);
         Map<String, String> results = Map.of(
@@ -244,19 +251,12 @@ public class TiqrController {
     private ResponseEntity<Map<String, Object>> doStartAuthentication(HttpServletRequest request, User user) throws WriterException, IOException {
         Optional<Cookie> optionalTiqrCookie = cookieByName(request, TIQR_COOKIE_NAME);
         boolean tiqrCookiePresent = optionalTiqrCookie.isPresent();
-        //TODO create URL in tiqr library 
-        String authenticationUrl = String.format("https://%s/tiqrauth?u=%s&s=%s&q=%s&i=%s&v=%s",
-                this.tiqrConfiguration.getEduIdAppBaseUrl(),
-                encode(user.getId()),
-                encode(authentication.getSessionKey()),
-                encode(authentication.getChallenge()),
-                encode(this.tiqrConfiguration.getIdentifier()),
-                encode(this.tiqrConfiguration.getVersion()));
         Authentication authentication = tiqrService.startAuthentication(
                 user.getId(),
                 String.format("%s %s", user.getGivenName(), user.getFamilyName()),
-                tiqrCookiePresent,
-                authenticationUrl);
+                this.tiqrConfiguration.getEduIdAppBaseUrl(),
+                tiqrCookiePresent);
+        String authenticationUrl = authentication.getAuthenticationUrl();
         String qrCode = QRCodeGenerator.generateQRCodeImage(authenticationUrl);
         Map<String, Object> body = Map.of(
                 "sessionKey", authentication.getSessionKey(),
