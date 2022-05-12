@@ -166,7 +166,8 @@ I18n.translations.nl = {
         timeOut: "Sessie timeout",
         timeOutInfoFirst: "Je sessie is verlopen. Klik op deze ",
         timeOutInfoLast: " om het opnieuw te proberen.",
-        timeOutInfoLink: "link"
+        timeOutInfoLink: "link",
+        responseIncorrect: "De code is niet juist."
     },
     enrollApp: {
         header: "Finish setup in the eduID app"

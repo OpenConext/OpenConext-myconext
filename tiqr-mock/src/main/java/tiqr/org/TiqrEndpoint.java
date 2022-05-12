@@ -129,8 +129,12 @@ public class TiqrEndpoint {
     @GetMapping("/authentication/{sessionKey}")
     public ModelAndView authentication(@PathVariable("sessionKey") String sessionKey) {
         Authentication authentication = findAuthentication(sessionKey);
+        Registration registration = findRegistration(authentication.getUserID());
+        String decryptedSecret = secretCipher.decrypt(registration.getSecret());
+        String ocra = OCRA.generateOCRA(decryptedSecret, authentication.getChallenge(), sessionKey);
         Map<String, Object> body = Map.of(
                 "authentication", authentication,
+                "ocra", ocra,
                 "environment", environment
         );
         LOG.info(String.format("Returning authentication for %s", authentication.getUserID()));

@@ -21,6 +21,7 @@
     </div>
     <div class="content-container">
         <div class="content">
+            <a class="home" th:href="@{/}">Home</a>
             <p th:text="${'The enrollment for ' + enrollment.userDisplayName + ' with status ' + enrollment.status}"
                class="info"/>
             <table>

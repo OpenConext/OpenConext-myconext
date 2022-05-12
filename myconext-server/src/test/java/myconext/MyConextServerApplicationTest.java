@@ -6,6 +6,6 @@ public class MyConextServerApplicationTest {
 
     @Test
     public void main() {
-        MyConextServerApplication.main(new String[]{"--server.port=8088"});
+        MyConextServerApplication.main(new String[]{"--server.port=8085"});
     }
 }

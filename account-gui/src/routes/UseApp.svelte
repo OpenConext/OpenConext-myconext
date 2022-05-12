@@ -1,15 +1,16 @@
 <script>
     import I18n from "i18n-js";
-    import {pollAuthentication, startTiqrAuthentication} from "../api/index";
+
+    import {manualResponse, pollAuthentication, startTiqrAuthentication} from "../api/index";
     import Spinner from "../components/Spinner.svelte";
-    import {onMount} from "svelte";
+    import {onMount, tick} from "svelte";
     import pushIcon from "../icons/redesign/undraw_Push_notifications_re_t84m.svg";
     import ImageContainer from "../components/ImageContainer.svelte";
     import {user} from "../stores/user";
     import {poll} from "../utils/poll";
     import {authenticationStatus} from "../constants/authenticationStatus";
-    import {proceed} from "../utils/sso";
-    import {conf, links} from "../stores/conf";
+    import critical from "../icons/critical.svg";
+    import {links} from "../stores/conf";
     import Cookies from "js-cookie";
     import {cookieNames} from "../constants/cookieNames";
     import {loginPreferences} from "../constants/loginPreferences";
@@ -27,6 +28,55 @@
     let successResult = null;
     let sessionKey = "";
     let onMobile = "ontouchstart" in document.documentElement;
+
+    let refs = Array(6).fill("");
+    let totp = Array(6).fill("");
+    let wrongResponse = false;
+
+    const toggleShowTOTPLink = () => {
+        showTOTPLink = !showTOTPLink;
+        if (showTOTPLink) {
+            tick().then(() => refs[0].focus().focus());
+        }
+    }
+
+    const onKeyDownTotp = index => e => {
+        if ((e.key === "Delete" || e.key === "Backspace") && index > 0 && e.target.value === "") {
+            refs[index - 1].focus();
+        }
+        return true;
+    }
+
+    const onInputTotp = index => e => {
+        const val = e.target.value;
+        if (isNaN(val)) {
+            e.target.value = "";
+            return;
+        }
+        const newValue = [...totp];
+        newValue[index] = val;
+        totp = newValue;
+        if (index !== 5) {
+            tick().then(() => refs[index + 1].focus());
+        } else {
+            wrongResponse = false;
+            showSpinner = true;
+            manualResponse(sessionKey, totp.join(""))
+                .then(() => {
+                    //Do nothing the next poll will be successful - TODO update counter how many retries
+                    wrongResponse = false;
+                }).catch(() => {
+                    debugger;
+                totp = Array(6).fill("");
+                showSpinner = false;
+                wrongResponse = true;
+                tick().then(() => refs[0].focus().focus());
+
+            })
+
+        }
+    }
+
 
     onMount(() => {
         $links.displayBackArrow = true;
@@ -87,9 +137,44 @@
         }
 
     }
+
     p.time-out {
         margin-top: 20px;
     }
+
+    div.totp-value-container {
+        display: flex;
+        margin-top: 15px;
+        justify-content: space-between;
+
+        input.totp-value {
+            width: 40px;
+            padding-left: 14px;
+            height: 40px;
+            font-size: 22px;
+            border: 1px solid var(--color-primary-blue);
+            border-radius: 2px;
+
+            &[disabled] {
+                background-color: rgba(239, 239, 239, 0.3);
+                border: 1px solid rgba(118, 118, 118, 0.3);
+            }
+        }
+    }
+
+    div.error {
+        display: flex;
+        align-items: center;
+        color: var(--color-primary-red);
+        margin: 25px 0;
+    }
+
+
+    div.error span.svg {
+        display: inline-block;
+        margin-right: 10px;
+    }
+
 
 </style>
 
@@ -99,7 +184,8 @@
     <h2 class="header">{I18n.t("useApp.timeOut")}</h2>
     <p class="time-out">
         <span>{I18n.t("useApp.timeOutInfoFirst")}</span>
-        <a href="/" on:click|preventDefault|stopPropagation={() => window.location.reload(true)}>{I18n.t("useApp.timeOutInfoLink")}</a>
+        <a href="/"
+           on:click|preventDefault|stopPropagation={() => window.location.reload(true)}>{I18n.t("useApp.timeOutInfoLink")}</a>
         <span>{I18n.t("useApp.timeOutInfoLast")}</span>
     </p>
 {:else}
@@ -123,9 +209,32 @@
         <div class="info-row">
             <span>{I18n.t("useApp.offline")}
                 <a href="/qr"
-                   on:click|preventDefault|stopPropagation={() => showTOTPLink = !showTOTPLink}>{I18n.t("useApp.offlineLink")}</a>
+                   on:click|preventDefault|stopPropagation={toggleShowTOTPLink}>{I18n.t("useApp.offlineLink")}</a>
             </span>
         </div>
+        {#if showTOTPLink}
+            <div class="totp-value-container">
+
+                {#each Array(6).fill("") as val, index}
+                    <input type="text"
+                           class="totp-value"
+                           id={`number-${index}`}
+                           name={`number-${index}`}
+                           disabled={(totp[index] || "").length === 0 && ((index !== 0 && totp[index - 1] === ""))}
+                           maxlength={1}
+                           value={totp[index] || ""}
+                           on:input={onInputTotp(index)}
+                           on:keydown={onKeyDownTotp(index)}
+                           bind:this={refs[index]}/>
+                {/each}
+            </div>
+            {#if wrongResponse}
+                <div class="error">
+                    <span class="svg">{@html critical}</span>
+                    <span>{I18n.t("useApp.responseIncorrect")}</span>
+                </div>
+            {/if}
+        {/if}
     {:else}
         <div class="info-row">
         <span>

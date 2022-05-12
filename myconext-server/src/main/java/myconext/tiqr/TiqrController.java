@@ -166,7 +166,12 @@ public class TiqrController {
 
     @GetMapping("/generate-backup-code")
     public ResponseEntity<Map<String, String>> generateBackupCode(@RequestParam("hash") String hash) {
-        User user = getUserFromAuthenticationRequest(hash);
+        SamlAuthenticationRequest samlAuthenticationRequest = authenticationRequestRepository.findByHash(hash)
+                .orElseThrow(() -> new ForbiddenException("Unknown hash"));
+        String userId = samlAuthenticationRequest.getUserId();
+        User user = userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException(userId));
+        samlAuthenticationRequest.setTiqrFlow(true);
+        authenticationRequestRepository.save(samlAuthenticationRequest);
         return doGenerateBackupCode(user);
     }
 
@@ -216,8 +221,15 @@ public class TiqrController {
 
     @PostMapping("/verify-phone-code")
     public ResponseEntity<Map<String, String>> verifyPhoneCode(@RequestParam("hash") String hash, @RequestBody Map<String, String> requestBody) {
-        User user = getUserFromAuthenticationRequest(hash);
-        return doVerifyPhoneCode(requestBody, user);
+        SamlAuthenticationRequest samlAuthenticationRequest = authenticationRequestRepository.findByHash(hash)
+                .orElseThrow(() -> new ForbiddenException("Unknown hash"));
+        String userId = samlAuthenticationRequest.getUserId();
+        User user = userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException(userId));
+        ResponseEntity<Map<String, String>> results = doVerifyPhoneCode(requestBody, user);
+        //No exception
+        samlAuthenticationRequest.setTiqrFlow(true);
+        authenticationRequestRepository.save(samlAuthenticationRequest);
+        return results;
     }
 
     private ResponseEntity<Map<String, String>> doVerifyPhoneCode(Map<String, String> requestBody, User user) {
@@ -258,7 +270,7 @@ public class TiqrController {
                 user.getId(),
                 String.format("%s %s", user.getGivenName(), user.getFamilyName()),
                 this.tiqrConfiguration.getEduIdAppBaseUrl(),
-                tiqrCookiePresent);
+                tiqrCookiePresent && this.tiqrConfiguration.isPushNotificationsEnabled());
         String authenticationUrl = authentication.getAuthenticationUrl();
         String qrCode = QRCodeGenerator.generateQRCodeImage(authenticationUrl);
         Map<String, Object> body = Map.of(
@@ -301,6 +313,15 @@ public class TiqrController {
             body.put("hash", samlAuthenticationRequest.getHash());
         }
         return ResponseEntity.ok(body);
+    }
+
+    @PostMapping("/manual-response")
+    public ResponseEntity<Map<String, String>> manualResponse(@RequestBody Map<String, String> requestBody) {
+        String sessionKey = requestBody.get("sessionKey");
+        String response = requestBody.get("response");
+        //fingers crossed, in case of mismatch an exception is thrown
+        tiqrService.postAuthentication(new AuthenticationData(sessionKey, response));
+        return ResponseEntity.ok(Map.of("status", "ok"));
     }
 
     /*

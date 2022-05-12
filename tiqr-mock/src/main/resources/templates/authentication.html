@@ -21,6 +21,7 @@
     </div>
     <div class="content-container">
         <div class="content">
+            <a class="home" th:href="@{/}">Home</a>
             <p th:text="${'The authentication for ' + authentication.userDisplayName + ' with status ' + authentication.status}"
                class="info"/>
             <table>
@@ -42,6 +43,10 @@
                 <tr>
                     <td>Status</td>
                     <td th:text="${authentication.status}"></td>
+                </tr>
+                <tr>
+                    <td>Ocra</td>
+                    <td th:text="${ocra}"></td>
                 </tr>
                 <tr>
                     <td>Created</td>
