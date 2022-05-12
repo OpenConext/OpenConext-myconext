@@ -19,6 +19,8 @@ import tiqr.org.secure.OCRA;
 import tiqr.org.secure.SecretCipher;
 
 import java.io.IOException;
+import java.net.URLEncoder;
+import java.nio.charset.Charset;
 import java.util.Arrays;
 import java.util.Base64;
 import java.util.List;
@@ -192,7 +194,8 @@ public class TiqrControllerTest extends AbstractIntegrationTest {
 
     private void doFollowUpEnrollment(Map<String, String> body) {
         String enrollmentKey = body.get("enrollmentKey");
-        String url = String.format("https://eduid.nl/tiqrenroll?key=%s", enrollmentKey);
+        String metaDataUrl = String.format("http://localhost:8081/tiqr/metadata?enrollment_key=%s", enrollmentKey);
+        String url = String.format("https://eduid.nl/tiqrenroll?metadata=%s", URLEncoder.encode(metaDataUrl, Charset.defaultCharset()));
         assertEquals(url, body.get("url"));
         assertTrue(body.get("qrcode").startsWith("data:image/png;base64,"));
 

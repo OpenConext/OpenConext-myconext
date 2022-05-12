@@ -122,9 +122,12 @@ public class TiqrController {
 
         Enrollment enrollment = tiqrService.startEnrollment(user.getId(), String.format("%s %s", user.getGivenName(), user.getFamilyName()));
         String enrollmentKey = enrollment.getKey();
-        String url = String.format("%s/tiqrenroll?key=%s",
-                tiqrConfiguration.getEduIdAppBaseUrl(),
+        String metaDataUrl = String.format("%s/tiqr/metadata?enrollment_key=%s",
+                tiqrConfiguration.getBaseUrl(),
                 enrollmentKey);
+        String url = String.format("%s/tiqrenroll?metadata=%s",
+                tiqrConfiguration.getEduIdAppBaseUrl(),
+                encode(metaDataUrl));
         Map<String, String> results = Map.of(
                 "enrollmentKey", enrollmentKey,
                 "url", url,
