@@ -163,6 +163,10 @@ I18n.translations.nl = {
         offlineLink: "one time code.",
         lost: "Lost your app?",
         lostLink: "Learn <a href=\"https://eduid.nl/help\" target=\"_blank\">how to register a new one</a>.",
+        timeOut: "Sessie timeout",
+        timeOutInfoFirst: "Je sessie is verlopen. Klik op deze ",
+        timeOutInfoLast: " om het opnieuw te proberen.",
+        timeOutInfoLink: "link"
     },
     enrollApp: {
         header: "Finish setup in the eduID app"
