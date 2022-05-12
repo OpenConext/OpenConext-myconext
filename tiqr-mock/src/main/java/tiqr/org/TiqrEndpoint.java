@@ -28,6 +28,7 @@ import tiqr.org.secure.OCRA;
 import tiqr.org.secure.SecretCipher;
 
 import java.net.URI;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -134,7 +135,7 @@ public class TiqrEndpoint {
         String ocra = OCRA.generateOCRA(decryptedSecret, authentication.getChallenge(), sessionKey);
         Map<String, Object> body = Map.of(
                 "authentication", authentication,
-                "ocra", ocra,
+                "ocra", String.join(" ", Arrays.asList(ocra.split(""))),
                 "environment", environment
         );
         LOG.info(String.format("Returning authentication for %s", authentication.getUserID()));
