@@ -93,7 +93,7 @@ I18n.translations.nl = {
     security: {
         title: "Beveiliging",
         subTitle: "We bieden verschillende methoden om in te loggen met je eduID.",
-        secondSubTitle: "Loginmethoden",
+        secondSubTitle: "Andere loginmethoden",
         usePassword: "Wachtwoord",
         usePublicKey: "Beveiligingssleutel",
         notSet: "Niet ingesteld",
@@ -107,8 +107,20 @@ I18n.translations.nl = {
         settings: "Instellingen voor inloggen",
         rememberMeInfo: "<strong> Dit apparaat wordt momenteel onthouden. Je wordt automatisch ingelogd op eduD </strong>",
         noRememberMeInfo: "Als je inlogt met eduID kun je ervoor kiezen om <strong>ingelogd te blijven</strong>. Dan wordt jouw login op het apparaat dat je op dat moment gebruikt onthouden.",
-        forgetMe: "Vergeet dit apparaat"
+        forgetMe: "Vergeet dit apparaat",
+        tiqr: {
+            title: "Wilt u de volgende keer sneller en veiliger inloggen?",
+            info: "Download de <strong>eduID app</strong> en log veilig in zonder wachtwoord of toegang tot je e-mail.",
+            fetch: "Nu installeren",
+            deactivate: "Deactiveren",
+            app: "eduID app",
+            phoneId: "Telefoon ID",
+            appCode: "App code",
+            lastLogin: "Laatste login",
+            activated: "Geactiveerd op",
+            dateTimeOn: "om",
 
+        }
     },
     home: {
         home: "Home",
@@ -296,5 +308,50 @@ I18n.translations.nl = {
     },
     format: {
         creationDate: "{{date}} om {{hours}}:{{minutes}}"
-    }
+    },
+    getApp: {
+        header: "Download de eduID app",
+        info: "Download en installeer <a href=\"https://eduid.nl/help\" target=\"_blank\">dee eduID app</a> (uitgegeven door SURF) op je mobiele apparaat.",
+        google: "https://play.google.com/store/apps/details?id=nl.eduvpn.app&hl=en&gl=US",
+        apple: "https://apps.apple.com/us/app/eduvpn-client/id1292557340",
+        after: "Als je de eduID app op je telefoon hebt gedownload, kom dan hier terug en klik op volgende.",
+        back: "Terug",
+        next: "Volgend"
+    },
+    sms: {
+        header: "Controleer je telefoon",
+        info: "Voer de zescijferige code in die we naar je telefoon hebben gestuurd om door te gaan.",
+        codeIncorrect: "De code is onjuist"
+    },
+    enrollApp: {
+        header: "Voltooi de installatie in de eduID app",
+        scan: "Scan deze QR-code met je eduID app",
+    },
+    recovery: {
+        header: "Een APP-herstelmethode instellen",
+        info: "Als je geen toegang hebt tot eduID met de app of via e-mail, kun je een herstelmethode gebruiken om in te loggen op je eduID-account.",
+        methods: "De volgende methoden zijn beschikbaar.",
+        phoneNumber: "Voeg een hersteltelefoonnummer toe.",
+        phoneNumberInfo: "Je ontvangt een sms met een code.",
+        backupCode: "Vraag een back-upcode aan.",
+        backupCodeInfo: "De code kan worden gebruikt om in te loggen.",
+        save: "Bewaar de code ergens veilig.",
+        active: "Deze code is nu actief, maar je kan op elk moment een nieuwe code aanmaken binnen mijn eduID.",
+        copy: "Kopieer de code",
+        copied: "Gekopieerd",
+        continue: "Mijn code is veilig. Doorgaan",
+    },
+    phoneVerification: {
+        header: "Voeg een recovery telefoonnummer",
+        info: "Je telefoonnummer wordt gebruikt voor veiligheidsdoeleinden, zoals u helpen om weer toegang te krijgen tot uw account als u uw app ooit kwijtraakt.",
+        text: "We sturen je een code om je nummer te verifiëren.",
+        verify: "Verifieer dit telefoonnummer",
+        placeHolder: "0612345678",
+        phoneIncorrect: "Verificatie code is onjuist"
+    },
+    congrats: {
+        header: "Succes",
+        info: "Je kunt nu de eduID app gebruiken om snel in te loggen bij diensten waarvoor je moet inloggen met je eduID.",
+        next: "Afronden"
+    },
 };

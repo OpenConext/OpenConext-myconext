@@ -252,6 +252,27 @@
                     <Route path="/security">
                         <Home bookmark="security"/>
                     </Route>
+                    <Route path="/get-app">
+                        <Home bookmark="get-app"/>
+                    </Route>
+                    <Route path="/enroll-app">
+                        <Home bookmark="enroll-app"/>
+                    </Route>
+                    <Route path="/recovery">
+                        <Home bookmark="recovery"/>
+                    </Route>
+                    <Route path="/recovery-code">
+                        <Home bookmark="recovery-code"/>
+                    </Route>
+                    <Route path="/phone-verification">
+                        <Home bookmark="phone-verification"/>
+                    </Route>
+                    <Route path="/phone-confirmation">
+                        <Home bookmark="phone-confirmation"/>
+                    </Route>
+                    <Route path="/congrats">
+                        <Home bookmark="congrats"/>
+                    </Route>
                     <Route path="/services">
                         <Home bookmark="services"/>
                     </Route>

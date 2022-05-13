@@ -3,6 +3,8 @@
     import I18n from "i18n-js";
     import {navigate} from "svelte-routing";
     import writeSvg from "../icons/redesign/pencil-write.svg";
+    import getApp from "../icons/redesign/undraw_Mobile_app_re_catg 1.svg";
+    import hashApp from "../icons/redesign/undraw_Order_confirmed_re_g0if.svg";
     import rocketSvg from "../icons/redesign/space-rocket-flying.svg";
     import {supported} from "@github/webauthn-json"
     import Button from "../components/Button.svelte";
@@ -11,6 +13,7 @@
     import nonVerifiedSvg from "../icons/redesign/not-remembered.svg";
     import Modal from "../components/Modal.svelte";
     import {onMount} from "svelte";
+    import {dateFromEpoch} from "../utils/date";
 
     let password = $user.usePassword ? "************************" : I18n.t("security.notSet");
     let passwordStyle = $user.usePassword ? "value" : "value-alt";
@@ -92,6 +95,9 @@
         width: 100%;
         margin-bottom: 30px;
 
+        &.no-bottom-margin {
+            margin-bottom:0 ;
+        }
         tr.link {
             cursor: pointer;
 
@@ -219,11 +225,102 @@
         height: auto;
     }
 
+    .tiqr-app {
+        background-color: white;
+        display: flex;
+        padding: 15px;
+        border: 1px solid var(--color-secondary-grey);
+        margin-bottom: 30px;
+        border-radius: 8px;
+
+        .information {
+            display: flex;
+            flex-direction: column;
+
+            h4 {
+                margin-bottom: 25px;
+            }
+
+            p {
+                margin-bottom: 20px;
+            }
+        }
+
+        :global(.information a) {
+            margin-top: auto;
+        }
+
+        :global(.image svg) {
+            width: 210px;
+            margin-left: 20px;
+            height: auto;
+        }
+        .has-app-image {
+            display: flex;
+            flex-direction: column;
+        }
+        :global(.has-app-image svg) {
+            width: 210px;
+            margin: 20px;
+            height: auto;
+        }
+        :global(.has-app-image a) {
+            margin-top: auto;
+            margin-left: auto;
+        }
+    }
+
 </style>
 <div class="security">
     <div class="inner-container">
         <h2>{I18n.t("security.title")}</h2>
         <p class="info">{I18n.t("security.subTitle")}</p>
+        <div class="tiqr-app">
+            {#if $user.loginOptions.includes("useApp") }
+                <div class="information">
+                    <h4>{I18n.t("security.tiqr.app")}</h4>
+
+                    <table cellspacing="0" class="no-bottom-margin">
+                        <thead></thead>
+                        <tbody>
+                        <tr>
+                            <td class="attr">{I18n.t("security.tiqr.phoneId")}</td>
+                            <td class="value">
+                                {`${I18n.t(`security.tiqr.${$user.registration.notificationType}`)} ${$user.givenName} ${$user.familyName}`}
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="attr">{I18n.t("security.tiqr.appCode")}</td>
+                            <td class="value">{$user.registration.notificationAddress}</td>
+                        </tr>
+                        <tr>
+                            <td class="attr">{I18n.t("security.tiqr.lastLogin")}</td>
+                            <td class="value">{dateFromEpoch($user.registration.updated, true)}</td>
+                        </tr>
+                        <tr>
+                            <td class="attr last">{I18n.t("security.tiqr.activated")}</td>
+                            <td class="value last ">{dateFromEpoch($user.registration.updated, false)}</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="has-app-image">
+                    {@html hashApp}
+                    <Button label={I18n.t("security.tiqr.deactivate")}
+                            medium={true}
+                            onClick={() => navigate("/deactivate-app")}/>
+                </div>
+            {:else}
+                <div class="information">
+                    <h4>{I18n.t("security.tiqr.title")}</h4>
+                    <p>{@html I18n.t("security.tiqr.info")}</p>
+                    <Button label={I18n.t("security.tiqr.fetch")} large={true} onClick={() => navigate("/get-app")}/>
+                </div>
+                <div class="image">
+                    {@html getApp}
+                </div>
+            {/if}
+        </div>
         <h4 class="info2">{I18n.t("security.secondSubTitle")}</h4>
 
         <table cellspacing="0">

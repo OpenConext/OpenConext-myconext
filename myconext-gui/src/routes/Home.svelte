@@ -1,5 +1,4 @@
 <script>
-    import {user, config, flash} from "../stores/user";
     import I18n from "i18n-js";
     import securitySvg from "../icons/redesign/lock-1.svg";
     import services from "../icons/streamline-icon-cloud-storage-drive.svg";
@@ -26,6 +25,13 @@
     import DeleteAccount from "./DeleteAccount.svelte";
     import Password from "./Password.svelte";
     import Flash from "../components/Flash.svelte";
+    import GetApp from "./tiqr/GetApp.svelte";
+    import EnrollApp from "./tiqr/EnrollApp.svelte";
+    import Recovery from "./tiqr/Recovery.svelte";
+    import RecoveryCode from "./tiqr/RecoveryCode.svelte";
+    import PhoneVerification from "./tiqr/PhoneVerification.svelte";
+    import PhoneConfirmation from "./tiqr/PhoneConfirmation.svelte";
+    import Congrats from "./tiqr/Congrats.svelte";
 
     export let bookmark = "home";
 
@@ -45,6 +51,14 @@
         {name: "password", alias: "security", component: Password, ignore: true},
         {name: "forgot-password", alias: "security", component: Password, ignore: true},
         {name: "delete-account", alias: "account", component: DeleteAccount, ignore: true},
+
+        {name: "get-app", alias: "security", component: GetApp, ignore: true},
+        {name: "enroll-app", alias: "security", component: EnrollApp, ignore: true},
+        {name: "recovery", alias: "security", component: Recovery, ignore: true},
+        {name: "recovery-code", alias: "security", component: RecoveryCode, ignore: true},
+        {name: "phone-verification", alias: "security", component: PhoneVerification, ignore: true},
+        {name: "phone-confirmation", alias: "security", component: PhoneConfirmation, ignore: true},
+        {name: "congrats", alias: "security", component: Congrats, ignore: true},
 
     ];
 

@@ -35,6 +35,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
+import tiqr.org.model.Registration;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -81,6 +82,7 @@ public class UserController implements ServiceProviderHolder {
     private final IdPMetaDataResolver idPMetaDataResolver;
     private final String spBaseUrl;
     private final ObjectMapper objectMapper;
+    private final RegistrationRepository registrationRepository;
 
     public UserController(UserRepository userRepository,
                           UserCredentialRepository userCredentialRepository,
@@ -93,6 +95,7 @@ public class UserController implements ServiceProviderHolder {
                           OpenIDConnect openIDConnect,
                           IdPMetaDataResolver idPMetaDataResolver,
                           EmailDomainGuard emailDomainGuard,
+                          RegistrationRepository registrationRepository,
                           @Qualifier("jsonMapper") ObjectMapper objectMapper,
                           @Value("${email.magic-link-url}") String magicLinkUrl,
                           @Value("${schac_home_organization}") String schacHomeOrganization,
@@ -112,6 +115,7 @@ public class UserController implements ServiceProviderHolder {
         this.openIDConnect = openIDConnect;
         this.idPMetaDataResolver = idPMetaDataResolver;
         this.emailDomainGuard = emailDomainGuard;
+        this.registrationRepository = registrationRepository;
         this.objectMapper = objectMapper;
         this.magicLinkUrl = magicLinkUrl;
         this.schacHomeOrganization = schacHomeOrganization;
@@ -490,13 +494,15 @@ public class UserController implements ServiceProviderHolder {
     }
 
     private ResponseEntity<UserResponse> returnUserResponse(User user) {
-        return ResponseEntity.status(201).body(new UserResponse(user, convertEduIdPerServiceProvider(user), false));
+        Optional<Registration> optionalRegistration = registrationRepository.findRegistrationByUserId(user.getId());
+        return ResponseEntity.status(201).body(new UserResponse(user, convertEduIdPerServiceProvider(user),optionalRegistration, false));
     }
 
 
     private ResponseEntity<UserResponse> userResponseRememberMe(User user) {
         List<SamlAuthenticationRequest> samlAuthenticationRequests = authenticationRequestRepository.findByUserIdAndRememberMe(user.getId(), true);
-        return ResponseEntity.ok(new UserResponse(user, convertEduIdPerServiceProvider(user), !samlAuthenticationRequests.isEmpty()));
+        Optional<Registration> optionalRegistration = registrationRepository.findRegistrationByUserId(user.getId());
+        return ResponseEntity.ok(new UserResponse(user, convertEduIdPerServiceProvider(user), optionalRegistration, !samlAuthenticationRequests.isEmpty()));
     }
 
     @GetMapping("sp/security/webauthn")

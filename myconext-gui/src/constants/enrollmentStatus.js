@@ -1,0 +1,7 @@
+export const enrollmentStatus = {
+    INITIALIZED: "INITIALIZED",
+    RETRIEVED: "RETRIEVED",
+    PROCESSED: "PROCESSED",
+    FINALIZED: "FINALIZED",
+    VALIDATED: "VALIDATED"
+}

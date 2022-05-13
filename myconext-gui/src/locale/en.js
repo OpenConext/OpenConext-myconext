@@ -93,7 +93,7 @@ I18n.translations.en = {
     security: {
         title: "Security settings",
         subTitle: "We provide different methods to sign in to your eduID account.",
-        secondSubTitle: "Sign-in methods",
+        secondSubTitle: "Other sign-in methods",
         usePassword: "Password",
         usePublicKey: "WebAuthn",
         notSet: "Not set",
@@ -107,7 +107,21 @@ I18n.translations.en = {
         settings: "Sign-in settings",
         rememberMeInfo: "<strong>Your device is currently remembered. You will be automatically logged in to eduID.</strong>",
         noRememberMeInfo: "When logging in with your eduID, you can choose to <strong>stay logged in</strong>. This remembers your login on the device you use at that moment.",
-        forgetMe: "Forget me"
+        forgetMe: "Forget me",
+        tiqr: {
+            title: "Want to sign in quicker and more secure next time?",
+            info: "Get the <strong>eduID app</strong> and securely sign in without passwords or accessing your email.",
+            fetch: "Get it now",
+            deactivate: "Deactivate",
+            app: "eduID app",
+            phoneId: "Phone ID",
+            APNS: "IPhone",
+            GCM: "Android",
+            appCode: "Appcode",
+            lastLogin: "Last login",
+            activated: "Activated on",
+            dateTimeOn: "on",
+        }
     },
     home: {
         home: "Home",
@@ -295,5 +309,50 @@ I18n.translations.en = {
     },
     format: {
         creationDate: "{{date}} at {{hours}}:{{minutes}}"
-    }
+    },
+    getApp: {
+        header: "Download the eduID app",
+        info: "Download and install <a href=\"https://eduid.nl/help\" target=\"_blank\">the eduID app</a> (issued by SURF) on your mobile device.",
+        google: "https://play.google.com/store/apps/details?id=nl.eduvpn.app&hl=en&gl=US",
+        apple: "https://apps.apple.com/us/app/eduvpn-client/id1292557340",
+        after: "When you've downloaded the eduID app on your phone, come back here and click next.",
+        back: "Back",
+        next: "Next"
+    },
+    sms: {
+        header: "Check your phone",
+        info: "Enter the six-digit code we sent to your phone to continue",
+        codeIncorrect: "The code is incorrect"
+    },
+    enrollApp: {
+        header: "Finish setup in the eduID app",
+        scan: "Scan this QR code with your eduID app",
+    },
+    recovery: {
+        header: "Set up an APP recovery method",
+        info: "If you can't access eduID with the app or via email, you can use a recovery method to sign in to your eduID account.",
+        methods: "The following methods are available.",
+        phoneNumber: "Add a recovery phone number.",
+        phoneNumberInfo: "You'll receive a text message with a code.",
+        backupCode: "Request a backup code.",
+        backupCodeInfo: "The code can be used to sign in with.",
+        save: "Save the code somewhere safe.",
+        active: "This code is active now, but you can generate a new code within My-eduID anytime.",
+        copy: "Copy the code",
+        copied: "Copied",
+        continue: "My code is safe. Continue",
+    },
+    phoneVerification: {
+        header: "Add a recovery phone number",
+        info: "Your phone number will be used for security purposes, such as helping you get back into your account if you ever lose your app",
+        text: "We will text you a code to verify your number",
+        verify: "Verify this phone number",
+        placeHolder: "0612345678",
+        phoneIncorrect: "Phone number is incorrect"
+    },
+    congrats: {
+        header: "Success",
+        info: "You can now use the eduID app to quickly login to services which require you to login with your eduID.",
+        next: "Finish"
+    },
 };

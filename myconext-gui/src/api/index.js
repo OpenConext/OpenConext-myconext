@@ -139,3 +139,39 @@ export function proceedAfterMigration() {
 export function testWebAutnUrl() {
     return fetchJson("/myconext/api/sp/testWebAuthnUrl");
 }
+
+//Tiqr
+export function validatePhoneCode(phoneVerification) {
+    return postPutJson(`/tiqr/sp/verify-phone-code`,{phoneVerification}, "POST")
+}
+
+export function startEnrollment() {
+    return fetchJson(`/tiqr/sp/start-enrollment`);
+}
+
+export function pollEnrollment(enrollmentKey) {
+    return fetchJson(`/tiqr/poll-enrollment?enrollmentKey=${enrollmentKey}`)
+}
+
+export function generateBackupCode() {
+    return fetchJson(`/tiqr/sp/generate-backup-code`)
+}
+
+export function textPhoneNumber(phoneNumber) {
+    return postPutJson(`/tiqr/sp/send-phone-code`,{phoneNumber}, "POST")
+}
+
+
+
+export function startTiqrAuthentication(email, authenticationRequestId) {
+    return postPutJson("/tiqr/start-authentication", {
+        email,
+        authenticationRequestId
+    }, "POST");
+}
+
+export function pollAuthentication(sessionKey, id) {
+    return fetchJson(`/tiqr/poll-authentication?sessionKey=${sessionKey}&id=${id}`)
+}
+
+
