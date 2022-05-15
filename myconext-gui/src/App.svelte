@@ -273,6 +273,9 @@
                     <Route path="/congrats">
                         <Home bookmark="congrats"/>
                     </Route>
+                    <Route path="/deactivate-app">
+                        <Home bookmark="deactivate-app"/>
+                    </Route>
                     <Route path="/services">
                         <Home bookmark="services"/>
                     </Route>

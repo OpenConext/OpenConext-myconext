@@ -355,4 +355,14 @@ I18n.translations.en = {
         info: "You can now use the eduID app to quickly login to services which require you to login with your eduID.",
         next: "Finish"
     },
+    deactivate: {
+        titleDelete: "Deactivate your eduID app",
+        info: "You can deactivate your eduID app if you want to reinstall this app or if you have a new device.",
+        recoveryCode: "Backup recovery code",
+        verificationCode: "SMS verification code",
+        codeIncorrect: "Wrong backup recovery code",
+        next: "Next",
+        deactivateApp: "Deactivate",
+        sendSms: "Press next to send a verification code SMS to your registered phone number"
+    }
 };

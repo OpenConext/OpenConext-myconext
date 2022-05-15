@@ -53,6 +53,7 @@ public class UserResponse implements Serializable {
             registration.put("notificationType", reg.getNotificationType());
             registration.put("notificationAddress", reg.getNotificationAddress());
             registration.put("phoneVerified", user.getSurfSecureId().containsKey("phone-verified"));
+            registration.put("recoveryCode", user.getSurfSecureId().containsKey("recovery-code"));
             registration.put("updated", reg.getUpdated().toEpochMilli());
         });
     }

@@ -55,6 +55,7 @@ public class TiqrController {
     private final ServiceProviderResolver serviceProviderResolver;
     private final SMSService smsService;
     private final String magicLinkUrl;
+    private final RegistrationRepository registrationRepository;
 
     @Autowired
     public TiqrController(@Value("${tiqr_configuration}") Resource resource,
@@ -93,6 +94,7 @@ public class TiqrController {
                 tiqrConfiguration.getApns(),
                 tiqrConfiguration.getGcm());
         this.enrollmentRepository = enrollmentRepository;
+        this.registrationRepository = registrationRepository;
         this.authenticationRequestRepository = authenticationRequestRepository;
         this.userRepository = userRepository;
         this.serviceProviderResolver = serviceProviderResolver;
@@ -177,7 +179,7 @@ public class TiqrController {
 
     private ResponseEntity<Map<String, String>> doGenerateBackupCode(User user) {
         String recoveryCode = VerificationCodeGenerator.generateBackupCode();
-        user.getSurfSecureId().put(SURFSecureID.RECOVERY_CODE, recoveryCode);
+        user.getSurfSecureId().put(SURFSecureID.RECOVERY_CODE, recoveryCode.replaceAll(" ", ""));
         userRepository.save(user);
 
         tiqrService.finishRegistration(user.getId());
@@ -191,17 +193,18 @@ public class TiqrController {
     @PostMapping("/sp/send-phone-code")
     public ResponseEntity<Map<String, String>> sendPhoneCodeForSp(org.springframework.security.core.Authentication authentication, @RequestBody Map<String, String> requestBody) {
         User user = userFromAuthentication(authentication);
-        return doSendPhoneCode(user, requestBody);
+        String phoneNumber = requestBody.get("phoneNumber");
+        return doSendPhoneCode(user, phoneNumber);
     }
 
     @PostMapping("/send-phone-code")
     public ResponseEntity<Map<String, String>> sendPhoneCode(@RequestParam("hash") String hash, @RequestBody Map<String, String> requestBody) {
         User user = getUserFromAuthenticationRequest(hash);
-        return doSendPhoneCode(user, requestBody);
+        String phoneNumber = requestBody.get("phoneNumber");
+        return doSendPhoneCode(user, phoneNumber);
     }
 
-    private ResponseEntity<Map<String, String>> doSendPhoneCode(User user, Map<String, String> requestBody) {
-        String phoneNumber = requestBody.get("phoneNumber");
+    private ResponseEntity<Map<String, String>> doSendPhoneCode(User user, String phoneNumber) {
         String phoneVerification = VerificationCodeGenerator.generatePhoneVerification();
 
         smsService.send(phoneNumber, phoneVerification);
@@ -351,6 +354,38 @@ public class TiqrController {
         samlAuthenticationRequest.setRememberMe(true);
         samlAuthenticationRequest.setRememberMeValue(UUID.randomUUID().toString());
         authenticationRequestRepository.save(samlAuthenticationRequest);
+        return ResponseEntity.ok(Collections.singletonMap("status", "ok"));
+    }
+
+    @GetMapping("/sp/send-deactivation-phone-code")
+    public ResponseEntity<Map<String, String>> sendDeactivationPhoneCodeForSp(org.springframework.security.core.Authentication authentication) {
+        User user = userFromAuthentication(authentication);
+        String phoneNumber = (String) user.getSurfSecureId().get(SURFSecureID.PHONE_NUMBER);
+        if (!StringUtils.hasText(phoneNumber)) {
+            throw new ForbiddenException();
+        }
+        return doSendPhoneCode(user, phoneNumber);
+    }
+
+    @PostMapping("/sp/deactivate-app")
+    public ResponseEntity<Map<String, String>> deactivateApp(org.springframework.security.core.Authentication authentication,
+                                                             @RequestBody Map<String, String> requestBody) {
+        User user = userFromAuthentication(authentication);
+        Map<String, Object> surfSecureId = user.getSurfSecureId();
+        String verificationCodeKey = surfSecureId.containsKey(SURFSecureID.RECOVERY_CODE) ? SURFSecureID.RECOVERY_CODE : SURFSecureID.PHONE_VERIFICATION_CODE;
+        if (!StringUtils.hasText(verificationCodeKey)) {
+            throw new ForbiddenException();
+        }
+        byte[] verificationCode = ((String) surfSecureId.get(verificationCodeKey)).replaceAll(" ", "").getBytes(StandardCharsets.UTF_8);
+        byte[] userVerificationCode = requestBody.get("verificationCode").replaceAll(" ", "").getBytes(StandardCharsets.UTF_8);
+        if (MessageDigest.isEqual(userVerificationCode, verificationCode)) {
+            user.getSurfSecureId().clear();
+            userRepository.save(user);
+            Registration registration = registrationRepository.findRegistrationByUserId(user.getId()).orElseThrow(IllegalArgumentException::new);
+            registrationRepository.delete(registration);
+        } else {
+            throw new ForbiddenException();
+        }
         return ResponseEntity.ok(Collections.singletonMap("status", "ok"));
     }
 

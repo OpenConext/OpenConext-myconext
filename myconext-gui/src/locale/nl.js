@@ -356,4 +356,15 @@ I18n.translations.nl = {
         info: "Je kunt nu de eduID app gebruiken om snel in te loggen bij diensten waarvoor je moet inloggen met je eduID.",
         next: "Afronden"
     },
+    deactivate: {
+        titleDelete: "Deactiveer je eduID app",
+        info: "Je kunt je eduID app deactiveren als je deze app opnieuw wilt installeren of als je een nieuw apparaat hebt.",
+        recoveryCode: "Backup recovery code",
+        verificationCode: "SMS verificatie code",
+        codeIncorrect: "Verkeerde backup recovery code",
+        next: "Volgende",
+        deactivateApp: "Deactiveer",
+        sendSms: "Druk op volgende om een verificatiecode-sms naar je geregistreerde telefoonnummer te sturen."
+    }
+
 };

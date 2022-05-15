@@ -32,6 +32,7 @@
     import PhoneVerification from "./tiqr/PhoneVerification.svelte";
     import PhoneConfirmation from "./tiqr/PhoneConfirmation.svelte";
     import Congrats from "./tiqr/Congrats.svelte";
+    import DeactivateApp from "./tiqr/DeactivateApp.svelte";
 
     export let bookmark = "home";
 
@@ -59,6 +60,7 @@
         {name: "phone-verification", alias: "security", component: PhoneVerification, ignore: true},
         {name: "phone-confirmation", alias: "security", component: PhoneConfirmation, ignore: true},
         {name: "congrats", alias: "security", component: Congrats, ignore: true},
+        {name: "deactivate-app", alias: "security", component: DeactivateApp, ignore: true},
 
     ];
 

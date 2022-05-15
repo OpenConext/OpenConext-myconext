@@ -161,17 +161,10 @@ export function textPhoneNumber(phoneNumber) {
     return postPutJson(`/tiqr/sp/send-phone-code`,{phoneNumber}, "POST")
 }
 
-
-
-export function startTiqrAuthentication(email, authenticationRequestId) {
-    return postPutJson("/tiqr/start-authentication", {
-        email,
-        authenticationRequestId
-    }, "POST");
+export function deactivateApp(verificationCode) {
+    return postPutJson(`/tiqr/sp/deactivate-app`,{verificationCode}, "POST")
 }
 
-export function pollAuthentication(sessionKey, id) {
-    return fetchJson(`/tiqr/poll-authentication?sessionKey=${sessionKey}&id=${id}`)
+export function sendDeactivationPhoneCode() {
+    return fetchJson("tiqr/sp/send-deactivation-phone-code")
 }
-
-
