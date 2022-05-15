@@ -115,6 +115,8 @@ I18n.translations.nl = {
             deactivate: "Deactiveren",
             app: "eduID app",
             phoneId: "Telefoon ID",
+            APNS: "iPhone",
+            GCM: "Android",
             appCode: "App code",
             lastLogin: "Laatste login",
             activated: "Geactiveerd op",

@@ -115,7 +115,7 @@ I18n.translations.en = {
             deactivate: "Deactivate",
             app: "eduID app",
             phoneId: "Phone ID",
-            APNS: "IPhone",
+            APNS: "iPhone",
             GCM: "Android",
             appCode: "Appcode",
             lastLogin: "Last login",
