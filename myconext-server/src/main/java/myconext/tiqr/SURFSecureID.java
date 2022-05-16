@@ -10,4 +10,6 @@ public class SURFSecureID {
 
     public static final String PHONE_VERIFIED= "phone-verified";
 
+    public static final String RATE_LIMIT= "rate-limit";
+
 }

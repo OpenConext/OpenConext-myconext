@@ -126,7 +126,7 @@
         <p class="explanation">{I18n.t("deactivate.info")}</p>
         {#if !useRecoveryCode && step === 1}
             <p class="explanation">{I18n.t("deactivate.sendSms")}</p>
-            {:else}
+        {:else if useRecoveryCode}
             <p class="explanation">{@html I18n.t("deactivate.recoveryCodeInfo")}</p>
         {/if}
         {#if useRecoveryCode}

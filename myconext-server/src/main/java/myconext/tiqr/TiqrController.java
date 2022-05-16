@@ -3,6 +3,7 @@ package myconext.tiqr;
 import com.google.zxing.WriterException;
 import myconext.exceptions.ExpiredAuthenticationException;
 import myconext.exceptions.ForbiddenException;
+import myconext.exceptions.TooManyRequestsException;
 import myconext.exceptions.UserNotFoundException;
 import myconext.manage.ServiceProviderResolver;
 import myconext.model.SamlAuthenticationRequest;
@@ -56,6 +57,7 @@ public class TiqrController {
     private final SMSService smsService;
     private final String magicLinkUrl;
     private final RegistrationRepository registrationRepository;
+    private final RateLimitEnforcer rateLimitEnforcer;
 
     @Autowired
     public TiqrController(@Value("${tiqr_configuration}") Resource resource,
@@ -100,6 +102,7 @@ public class TiqrController {
         this.serviceProviderResolver = serviceProviderResolver;
         this.smsService = smsService;
         this.magicLinkUrl = magicLinkUrl;
+        this.rateLimitEnforcer = new RateLimitEnforcer(userRepository, tiqrConfiguration);
     }
 
     @GetMapping("/sp/start-enrollment")
@@ -238,6 +241,9 @@ public class TiqrController {
     private ResponseEntity<Map<String, String>> doVerifyPhoneCode(Map<String, String> requestBody, User user) {
         String phoneVerification = requestBody.get("phoneVerification");
         String phoneVerificationStored = (String) user.getSurfSecureId().get(SURFSecureID.PHONE_VERIFICATION_CODE);
+
+        rateLimitEnforcer.checkRateLimit(user);
+
         if (MessageDigest.isEqual(phoneVerification.getBytes(StandardCharsets.UTF_8), phoneVerificationStored.getBytes(StandardCharsets.UTF_8))) {
             user.getSurfSecureId().remove(SURFSecureID.PHONE_VERIFICATION_CODE);
             user.getSurfSecureId().put(SURFSecureID.PHONE_VERIFIED, true);
@@ -378,6 +384,9 @@ public class TiqrController {
         }
         byte[] verificationCode = ((String) surfSecureId.get(verificationCodeKey)).replaceAll(" ", "").getBytes(StandardCharsets.UTF_8);
         byte[] userVerificationCode = requestBody.get("verificationCode").replaceAll(" ", "").getBytes(StandardCharsets.UTF_8);
+
+        rateLimitEnforcer.checkRateLimit(user);
+
         if (MessageDigest.isEqual(userVerificationCode, verificationCode)) {
             user.getSurfSecureId().clear();
             userRepository.save(user);
