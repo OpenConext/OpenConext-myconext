@@ -360,6 +360,7 @@ I18n.translations.nl = {
         titleDelete: "Deactiveer je eduID app",
         info: "Je kunt je eduID app deactiveren als je deze app opnieuw wilt installeren of als je een nieuw apparaat hebt.",
         recoveryCode: "Backup recovery code",
+        recoveryCodeInfo: "Vul de <strong>backup recovery code</strong> in van de eduID app installatie.",
         verificationCode: "SMS verificatie code",
         codeIncorrect: "Verkeerde backup recovery code",
         next: "Volgende",

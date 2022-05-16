@@ -126,9 +126,10 @@
         <p class="explanation">{I18n.t("deactivate.info")}</p>
         {#if !useRecoveryCode && step === 1}
             <p class="explanation">{I18n.t("deactivate.sendSms")}</p>
+            {:else}
+            <p class="explanation">{@html I18n.t("deactivate.recoveryCodeInfo")}</p>
         {/if}
         {#if useRecoveryCode}
-            <label for="recoveryCode">{I18n.t("deactivate.recoveryCode")}</label>
             <input id="recoveryCode" type="text" bind:value={recoveryCode}/>
             {#if wrongCode}
                 <div class="error">

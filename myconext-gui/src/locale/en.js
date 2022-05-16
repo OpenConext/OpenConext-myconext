@@ -359,6 +359,7 @@ I18n.translations.en = {
         titleDelete: "Deactivate your eduID app",
         info: "You can deactivate your eduID app if you want to reinstall this app or if you have a new device.",
         recoveryCode: "Backup recovery code",
+        recoveryCodeInfo: "Enter the <strong>backup recovery code</strong> from the eduID app enrollment.",
         verificationCode: "SMS verification code",
         codeIncorrect: "Wrong backup recovery code",
         next: "Next",
