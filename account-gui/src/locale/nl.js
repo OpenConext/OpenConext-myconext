@@ -262,7 +262,12 @@ I18n.translations.nl = {
     sms: {
         header: "Controleer je telefoon",
         info: "Voer de zescijferige code in die we naar je telefoon hebben gestuurd om door te gaan.",
-        codeIncorrect: "De code is onjuist"
+        codeIncorrect: "De code is onjuist",
+        sendSMSAgain: "Nieuwe code",
+        maxAttemptsPre: "Maximum aantal pogingen bereikt. Klik",
+        maxAttemptsPost: "om een ander telefoonnummer te gebruiken of de verstuur een nieuwe code",
+        here: " hier "
+
     },
     rememberMe: {
         yes: "Ja",

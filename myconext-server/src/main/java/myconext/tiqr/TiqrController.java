@@ -22,6 +22,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import org.yaml.snakeyaml.Yaml;
+import tiqr.org.DefaultTiqrService;
 import tiqr.org.TiqrService;
 import tiqr.org.model.*;
 import tiqr.org.secure.QRCodeGenerator;
@@ -88,7 +89,7 @@ public class TiqrController {
             //Prevent FirebaseApp name tiqr already exists!
             tiqrConfiguration.getGcm().setAppName(UUID.randomUUID().toString());
         }
-        this.tiqrService = new TiqrService(enrollmentRepository,
+        this.tiqrService = new DefaultTiqrService(enrollmentRepository,
                 registrationRepository,
                 authenticationRepository,
                 service,
@@ -112,7 +113,7 @@ public class TiqrController {
     }
 
     @GetMapping("/start-enrollment")
-    public ResponseEntity<Map<String, String>> startEnrollment(@RequestParam("hash") String hash) throws IOException, WriterException {
+    public ResponseEntity<Map<String, String>> startEnrollment(@RequestParam(value = "hash", required = false) String hash) throws IOException, WriterException {
         if (!StringUtils.hasText(hash)) {
             throw new ForbiddenException("No hash parameter");
         }
@@ -212,8 +213,11 @@ public class TiqrController {
 
         smsService.send(phoneNumber, phoneVerification);
 
-        user.getSurfSecureId().put(SURFSecureID.PHONE_VERIFICATION_CODE, phoneVerification);
-        user.getSurfSecureId().put(SURFSecureID.PHONE_NUMBER, phoneNumber);
+        Map<String, Object> surfSecureId = user.getSurfSecureId();
+        surfSecureId.put(SURFSecureID.PHONE_VERIFICATION_CODE, phoneVerification);
+        surfSecureId.put(SURFSecureID.PHONE_NUMBER, phoneNumber);
+        surfSecureId.remove(SURFSecureID.RATE_LIMIT);
+
         userRepository.save(user);
 
         return ResponseEntity.ok(Collections.singletonMap("status", "ok"));
@@ -240,13 +244,15 @@ public class TiqrController {
 
     private ResponseEntity<Map<String, String>> doVerifyPhoneCode(Map<String, String> requestBody, User user) {
         String phoneVerification = requestBody.get("phoneVerification");
-        String phoneVerificationStored = (String) user.getSurfSecureId().get(SURFSecureID.PHONE_VERIFICATION_CODE);
+        Map<String, Object> surfSecureId = user.getSurfSecureId();
+        String phoneVerificationStored = (String) surfSecureId.get(SURFSecureID.PHONE_VERIFICATION_CODE);
 
         rateLimitEnforcer.checkRateLimit(user);
 
         if (MessageDigest.isEqual(phoneVerification.getBytes(StandardCharsets.UTF_8), phoneVerificationStored.getBytes(StandardCharsets.UTF_8))) {
-            user.getSurfSecureId().remove(SURFSecureID.PHONE_VERIFICATION_CODE);
-            user.getSurfSecureId().put(SURFSecureID.PHONE_VERIFIED, true);
+            surfSecureId.remove(SURFSecureID.PHONE_VERIFICATION_CODE);
+            surfSecureId.put(SURFSecureID.PHONE_VERIFIED, true);
+            surfSecureId.remove(SURFSecureID.RATE_LIMIT);
             userRepository.save(user);
 
             tiqrService.finishRegistration(user.getId());
@@ -379,9 +385,6 @@ public class TiqrController {
         User user = userFromAuthentication(authentication);
         Map<String, Object> surfSecureId = user.getSurfSecureId();
         String verificationCodeKey = surfSecureId.containsKey(SURFSecureID.RECOVERY_CODE) ? SURFSecureID.RECOVERY_CODE : SURFSecureID.PHONE_VERIFICATION_CODE;
-        if (!StringUtils.hasText(verificationCodeKey)) {
-            throw new ForbiddenException();
-        }
         byte[] verificationCode = ((String) surfSecureId.get(verificationCodeKey)).replaceAll(" ", "").getBytes(StandardCharsets.UTF_8);
         byte[] userVerificationCode = requestBody.get("verificationCode").replaceAll(" ", "").getBytes(StandardCharsets.UTF_8);
 

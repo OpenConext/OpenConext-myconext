@@ -262,7 +262,11 @@ I18n.translations.en = {
     sms: {
         header: "Check your phone",
         info: "Enter the six-digit code we sent to your phone to continue",
-        codeIncorrect: "The code is incorrect"
+        codeIncorrect: "The code is incorrect",
+        sendSMSAgain: "Resend code",
+        maxAttemptsPre: "Max attempts reached. Click",
+        maxAttemptsPost: "to use a different phone number or resend code to receive a new verification",
+        here: " here "
     },
     rememberMe: {
         yes: "Yes",

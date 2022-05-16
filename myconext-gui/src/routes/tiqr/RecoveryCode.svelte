@@ -22,7 +22,7 @@
     const copyToClipboard = () => {
         navigator.clipboard.writeText(recoveryCode);
         copied = true;
-        setTimeout(() => copied = false, 2250);
+        setTimeout(() => copied = false, 1150);
     }
 
     const next = () => {

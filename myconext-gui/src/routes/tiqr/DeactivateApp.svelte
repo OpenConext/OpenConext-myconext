@@ -16,6 +16,7 @@
     let step = 1;
     let wrongCode = false;
     let validTotp = false;
+    let maxAttempts = false;
 
     const onValid = () => {
         validTotp = true;
@@ -51,11 +52,14 @@
                     }
                     navigate("/security");
                 });
-            }).catch(() => {
+            }).catch(e => {
             recoveryCode = "";
             showSpinner = false;
             wrongCode = true;
             tick().then(() => recoveryCodeRef.focus());
+            if (e.status === 429) {
+                maxAttempts = true;
+            }
         });
     }
 
@@ -131,16 +135,23 @@
         {/if}
         {#if useRecoveryCode}
             <input id="recoveryCode" type="text" bind:value={recoveryCode}/>
-            {#if wrongCode}
+            {#if wrongCode && !maxAttempts}
                 <div class="error">
                     <span class="svg">{@html critical}</span>
                     <span>{I18n.t("deactivate.codeIncorrect")}</span>
+                </div>
+            {/if}
+            {#if maxAttempts}
+                <div class="error">
+                    <span class="svg">{@html critical}</span>
+                    <span>{@html I18n.t("deactivate.maxAttempts")}</span>
                 </div>
             {/if}
         {:else if step === 2 && !useRecoveryCode}
             <label for="recoveryCode">{I18n.t("deactivate.verificationCode")}</label>
             <CodeVerifier navigateTo="/security"
                           action={deactivateApp}
+                          reEnter={false}
                           onValid={onValid}/>
         {/if}
         <div class="options">
@@ -152,7 +163,7 @@
             <Button href="/deactivate"
                     label={I18n.t(`deactivate.${(step === 1 && !useRecoveryCode)? "next" : "deactivateApp" }`)}
                     medium={true}
-                    disabled={(recoveryCode === "" && useRecoveryCode) || (step === 2 && !validTotp)}
+                    disabled={(recoveryCode === "" && useRecoveryCode) || (step === 2 && !validTotp) || (maxAttempts)}
                     onClick={() => (step === 1 && !useRecoveryCode) ? nextStep() : deactivateUserAction()}/>
         </div>
     </div>

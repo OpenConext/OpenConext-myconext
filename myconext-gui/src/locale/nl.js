@@ -323,7 +323,12 @@ I18n.translations.nl = {
     sms: {
         header: "Controleer je telefoon",
         info: "Voer de zescijferige code in die we naar je telefoon hebben gestuurd om door te gaan.",
-        codeIncorrect: "De code is onjuist"
+        codeIncorrect: "De code is onjuist",
+        maxAttemptsPre: "Maximum aantal pogingen bereikt. Klik",
+        maxAttemptsPost: "om opnieuw je telefoonnummer in te voeren en een nieuwe code te ontvangen",
+        maxAttemptsPostNoReEnter: "om een nieuwe code aan te vragen",
+        here: " hier "
+
     },
     enrollApp: {
         header: "Voltooi de installatie in de eduID app",
@@ -365,7 +370,8 @@ I18n.translations.nl = {
         codeIncorrect: "Verkeerde backup recovery code",
         next: "Volgende",
         deactivateApp: "Deactiveer",
-        sendSms: "Druk op volgende om een verificatiecode-sms naar je geregistreerde telefoonnummer te sturen."
+        sendSms: "Druk op volgende om een verificatiecode-sms naar je geregistreerde telefoonnummer te sturen.",
+        maxAttempts: "Maximum aantal pogingen bereikt. Neem contact op met <a href=\"mailto:help@eduid.nl\">help@eduid.nl</a> voor hulp."
     }
 
 };

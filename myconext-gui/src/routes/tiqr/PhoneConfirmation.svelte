@@ -34,6 +34,8 @@
     <div class="inner-container">
         <h2 class="header">{I18n.t("sms.header")}</h2>
         <p class="explanation">{I18n.t("sms.info")}</p>
-        <CodeVerifier navigateTo="/congrats" action={validatePhoneCode}/>
+        <CodeVerifier navigateTo="/congrats"
+                      action={validatePhoneCode}
+                      phoneVerificationURL="/phone-verification"/>
     </div>
 </div>

@@ -8,6 +8,7 @@
     import {links} from "../stores/conf";
     import {textPhoneNumber} from "../api";
     import {navigate} from "svelte-routing";
+    import {user} from "../stores/user";
 
     let showSpinner = true;
     let initial = true;
@@ -31,7 +32,10 @@
         if (!phoneNumberIncorrect) {
             showSpinner = true;
             textPhoneNumber(hash, phoneNumber.replaceAll(" ","").replaceAll("-",""))
-                .then(() => navigate(`phone-confirmation?h=${hash}`));
+                .then(() => {
+                    $user.phoneNumber = phoneNumber;
+                    navigate(`phone-confirmation?h=${hash}`);
+                })
         }
     }
 

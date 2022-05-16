@@ -52,7 +52,6 @@ import java.util.stream.Collectors;
 import static myconext.crypto.HashGenerator.hash;
 import static myconext.log.MDCContext.logLoginWithContext;
 import static myconext.log.MDCContext.logWithContext;
-import static myconext.security.CookieResolver.cookieByName;
 
 @RestController
 @RequestMapping("/myconext/api")
@@ -227,12 +226,17 @@ public class UserController implements ServiceProviderHolder {
         String userId = samlAuthenticationRequest.getUserId();
         User user = userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException(userId));
         if (user.isNewUser()) {
-            mailBox.sendAccountVerification(user, samlAuthenticationRequest.getHash());
+            sendAccountVerificationMail(samlAuthenticationRequest, user);
         } else {
             String serviceName = getServiceName(request, samlAuthenticationRequest);
             mailBox.sendMagicLink(user, samlAuthenticationRequest.getHash(), serviceName);
         }
         return ResponseEntity.ok(true);
+    }
+
+    private void sendAccountVerificationMail(SamlAuthenticationRequest samlAuthenticationRequest, User user) {
+        LOG.debug(String.format("Sending account verification mail with magic link for new user %s", user.getUsername()));
+        mailBox.sendAccountVerification(user, samlAuthenticationRequest.getHash());
     }
 
     @GetMapping("/idp/security/success")
@@ -495,7 +499,7 @@ public class UserController implements ServiceProviderHolder {
 
     private ResponseEntity<UserResponse> returnUserResponse(User user) {
         Optional<Registration> optionalRegistration = registrationRepository.findRegistrationByUserId(user.getId());
-        return ResponseEntity.status(201).body(new UserResponse(user, convertEduIdPerServiceProvider(user),optionalRegistration, false));
+        return ResponseEntity.status(201).body(new UserResponse(user, convertEduIdPerServiceProvider(user), optionalRegistration, false));
     }
 
 
@@ -757,8 +761,7 @@ public class UserController implements ServiceProviderHolder {
         }
 
         if (user.isNewUser()) {
-            LOG.debug(String.format("Sending account verification mail with magic link for new user %s", user.getUsername()));
-            mailBox.sendAccountVerification(user, samlAuthenticationRequest.getHash());
+            sendAccountVerificationMail(samlAuthenticationRequest, user);
         } else {
             LOG.debug("Sending magic link email for existing user");
             mailBox.sendMagicLink(user, samlAuthenticationRequest.getHash(), serviceName);

@@ -4,15 +4,18 @@
     import I18n from "i18n-js";
     import {onMount, tick} from "svelte";
     import {navigate} from "svelte-routing";
-    import {me} from "../../api";
+    import {me, sendDeactivationPhoneCode} from "../../api";
     import {user} from "../../stores/user";
     import Spinner from "../../components/Spinner.svelte";
 
     export let action;
     export let navigateTo;
     export let onValid;
+    export let phoneVerificationURL;
+    export let reEnter = true;
 
     let wrongCode = false;
+    let maxAttempts = false;
     let showSpinner = false;
 
     let refs = Array(6).fill("");
@@ -21,6 +24,23 @@
     onMount(() => {
         refs[0].focus();
     })
+
+    const sendSMSAgain = () => {
+        if (phoneVerificationURL) {
+            navigate(phoneVerificationURL);
+        } else {
+            showSpinner = true;
+            sendDeactivationPhoneCode().then(() => {
+                totp = Array(6).fill("");
+                refs[0].focus();
+                wrongCode = false;
+                maxAttempts = false;
+                showSpinner = false;
+            });
+        }
+
+    }
+
 
     const onKeyDownTotp = index => e => {
         if ((e.key === "Delete" || e.key === "Backspace") && index > 0 && e.target.value === "") {
@@ -53,11 +73,14 @@
                         }
                         navigate(navigateTo);
                     });
-                }).catch(() => {
+                }).catch(e => {
                 totp = Array(6).fill("");
                 refs[0].focus();
                 wrongCode = true;
                 showSpinner = false;
+                if (e.status === 429) {
+                    maxAttempts = true;
+                }
             })
         }
     }
@@ -125,9 +148,25 @@
 
 </div>
 
-{#if wrongCode}
+{#if wrongCode && !maxAttempts}
     <div class="error">
         <span class="svg">{@html critical}</span>
         <span>{I18n.t("sms.codeIncorrect")}</span>
+    </div>
+{/if}
+
+{#if maxAttempts}
+    <div class="error">
+        <span class="svg">{@html critical}</span>
+        <div class="max-attempts">
+            <span>{I18n.t("sms.maxAttemptsPre")}</span>
+            <a href="/phone"
+               on:click|preventDefault|stopPropagation={sendSMSAgain}>{I18n.t("sms.here")}</a>
+            {#if reEnter}
+                <span>{I18n.t("sms.maxAttemptsPost")}</span>
+            {:else}
+                <span>{I18n.t("sms.maxAttemptsPostNoReEnter")}</span>
+            {/if}
+        </div>
     </div>
 {/if}

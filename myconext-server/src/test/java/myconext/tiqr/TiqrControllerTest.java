@@ -36,7 +36,7 @@ public class TiqrControllerTest extends AbstractIntegrationTest {
 
     @Test
     public void enrollmentFlowWithBackupCode() throws IOException {
-        SamlAuthenticationRequest samlAuthenticationRequest = doEnrollmment();
+        SamlAuthenticationRequest samlAuthenticationRequest = doEnrollmment(false);
 
         //We now should have a initialized registration and can request a backup code
         Map<String, String> results = given()
@@ -52,7 +52,7 @@ public class TiqrControllerTest extends AbstractIntegrationTest {
 
     @Test
     public void enrollmentFlowWithSMSVerification() throws IOException {
-        SamlAuthenticationRequest samlAuthenticationRequest = doEnrollmment();
+        SamlAuthenticationRequest samlAuthenticationRequest = doEnrollmment(false);
 
         //We now should have a initialized registration and can request a verification code
         given()
@@ -87,16 +87,191 @@ public class TiqrControllerTest extends AbstractIntegrationTest {
                 .body().as(new TypeRef<>() {
                 });
         this.doFollowUpEnrollment(body);
+    }
 
+    @Test
+    public void forbiddenEnrollment() {
+        given()
+                .when()
+                .contentType(ContentType.JSON)
+                .get("/tiqr/start-enrollment")
+                .then()
+                .statusCode(403);
+    }
+
+    @Test
+    public void spBackupCode() throws IOException {
+        doEnrollmment(false);
+        Map<String, String> body = given()
+                .when()
+                .contentType(ContentType.JSON)
+                .get("/tiqr/sp/generate-backup-code")
+                .body().as(new TypeRef<>() {
+                });
+        assertTrue(body.containsKey("recoveryCode"));
+    }
+
+    @Test
+    public void spSendPhoneCode() throws IOException {
+        doEnrollmment(true);
+
+        String phoneNumber = "0612345678";
+        given()
+                .when()
+                .contentType(ContentType.JSON)
+                .body(Map.of("phoneNumber", phoneNumber))
+                .post("/tiqr/sp/send-phone-code")
+                .body().as(new TypeRef<>() {
+                });
+        User user = userRepository.findUserByEmail("jdoe@example.com").get();
+        assertEquals(phoneNumber, user.getSurfSecureId().get(SURFSecureID.PHONE_NUMBER));
+    }
+
+    @Test
+    public void spVerifyPhoneCode() throws IOException {
+        doEnrollmment(true);
+
+        String phoneVerification = "0612345678";
+
+        User user = userRepository.findUserByEmail("jdoe@example.com").get();
+        user.getSurfSecureId().put(SURFSecureID.PHONE_VERIFICATION_CODE, phoneVerification);
+        userRepository.save(user);
+
+        given()
+                .when()
+                .contentType(ContentType.JSON)
+                .body(Map.of("phoneVerification", phoneVerification))
+                .post("/tiqr/sp/verify-phone-code")
+                .then()
+                .statusCode(200);
+        user = userRepository.findUserByEmail("jdoe@example.com").get();
+        assertTrue((Boolean) user.getSurfSecureId().get(SURFSecureID.PHONE_VERIFIED));
+    }
+
+    @Test
+    public void spVerifyPhoneCodeWrongCode() {
+        String phoneVerification = "0612345678";
+
+        User user = userRepository.findUserByEmail("jdoe@example.com").get();
+        user.getSurfSecureId().put(SURFSecureID.PHONE_VERIFICATION_CODE, phoneVerification);
+        userRepository.save(user);
+
+        given()
+                .when()
+                .contentType(ContentType.JSON)
+                .body(Map.of("phoneVerification", "nope"))
+                .post("/tiqr/sp/verify-phone-code")
+                .then()
+                .statusCode(403);
+    }
+
+    @Test
+    public void spStartAuthentication() throws IOException {
+        doEnrollmment(true);
+
+        Map<String, String> body = given()
+                .when()
+                .contentType(ContentType.JSON)
+                .post("/tiqr/sp/start-authentication")
+                .body().as(new TypeRef<>() {
+                });
+        assertTrue(body.containsKey("sessionKey"));
+    }
+
+    @Test
+    public void spDeactivationCode() {
+        User user = userRepository.findUserByEmail("jdoe@example.com").get();
+        user.getSurfSecureId().put(SURFSecureID.PHONE_NUMBER, "0612345678");
+        user.getSurfSecureId().put(SURFSecureID.RATE_LIMIT, 2);
+        userRepository.save(user);
+
+        given()
+                .when()
+                .contentType(ContentType.JSON)
+                .get("/tiqr/sp/send-deactivation-phone-code")
+                .then()
+                .statusCode(200);
+
+        user = userRepository.findUserByEmail("jdoe@example.com").get();
+        assertFalse(user.getSurfSecureId().containsKey(SURFSecureID.RATE_LIMIT));
+        assertTrue(user.getSurfSecureId().containsKey(SURFSecureID.PHONE_VERIFICATION_CODE));
+    }
+
+    @Test
+    public void spDeactivationCodeForbidden() {
+        given()
+                .when()
+                .contentType(ContentType.JSON)
+                .get("/tiqr/sp/send-deactivation-phone-code")
+                .then()
+                .statusCode(403);
+    }
+
+    @Test
+    public void spDeactivation() throws IOException {
+        doEnrollmment(false);
+
+        User user = userRepository.findUserByEmail("jdoe@example.com").get();
+        user.getSurfSecureId().put(SURFSecureID.RECOVERY_CODE, "123456");
+        user.getSurfSecureId().put(SURFSecureID.RATE_LIMIT, 2);
+        userRepository.save(user);
+
+        given()
+                .when()
+                .contentType(ContentType.JSON)
+                .body(Map.of("verificationCode", "123456"))
+                .post("/tiqr/sp/deactivate-app")
+                .then()
+                .statusCode(200);
+        user = userRepository.findUserByEmail("jdoe@example.com").get();
+        assertTrue(user.getSurfSecureId().isEmpty());
+    }
+
+    @Test
+    public void spDeactivationNoVerificationStep() throws IOException {
+        doEnrollmment(false);
+
+        given()
+                .when()
+                .contentType(ContentType.JSON)
+                .body(Map.of("verificationCode", "123456"))
+                .post("/tiqr/sp/deactivate-app")
+                .then()
+                .statusCode(400);
+    }
+
+    @Test
+    public void spDeactivationWrongCode() throws IOException {
+        doEnrollmment(false);
+
+        User user = userRepository.findUserByEmail("jdoe@example.com").get();
+        user.getSurfSecureId().put(SURFSecureID.RECOVERY_CODE, "123456");
+        userRepository.save(user);
+
+        given()
+                .when()
+                .contentType(ContentType.JSON)
+                .body(Map.of("verificationCode", "nope"))
+                .post("/tiqr/sp/deactivate-app")
+                .then()
+                .statusCode(403);
+    }
+
+    @Test
+    public void fetchRegistration() throws IOException {
+        doEnrollmment(true);
+        Map<String, Object> results = given()
+                .when()
+                .get("/myconext/api/sp/me")
+                .as(new TypeRef<>() {
+                });
+        Map<String, Object> registration = (Map<String, Object>) results.get("registration");
+        assertEquals(RegistrationStatus.FINALIZED.name(), registration.get("status"));
     }
 
     @Test
     public void startAuthentication() throws IOException {
-        SamlAuthenticationRequest samlAuthenticationRequest = doEnrollmment();
-        //Fake registration
-        Registration registration = registrationRepository.findRegistrationByUserId(samlAuthenticationRequest.getUserId()).get();
-        registration.setStatus(RegistrationStatus.FINALIZED);
-        registrationRepository.saveAll(Arrays.asList(registration));
+        SamlAuthenticationRequest samlAuthenticationRequest = doEnrollmment(true);
 
         Map<String, Object> results = given()
                 .body(new TiqrRequest(samlAuthenticationRequest.getId(), "jdoe@example.com"))
@@ -119,6 +294,8 @@ public class TiqrControllerTest extends AbstractIntegrationTest {
         //mock the call from the device to the TiqrController
         SecretCipher secretCipher = new SecretCipher("secret");
         Authentication authentication = authenticationRepository.findAuthenticationBySessionKey(sessionKey).get();
+
+        Registration registration = registrationRepository.findRegistrationByUserId(samlAuthenticationRequest.getUserId()).get();
         registration = registrationRepository.findById(registration.getId()).get();
         String decryptedSecret = secretCipher.decrypt(registration.getSecret());
         String ocra = OCRA.generateOCRA(decryptedSecret, authentication.getChallenge(), sessionKey);
@@ -174,7 +351,43 @@ public class TiqrControllerTest extends AbstractIntegrationTest {
         assertTrue(saml.contains("jdoe@example.com"));
     }
 
-    private SamlAuthenticationRequest doEnrollmment() throws IOException {
+    @Test
+    public void manualAuthentication() throws IOException {
+        SamlAuthenticationRequest samlAuthenticationRequest = doEnrollmment(true);
+
+        Map<String, Object> results = given()
+                .body(new TiqrRequest(samlAuthenticationRequest.getId(), "jdoe@example.com"))
+                .contentType(ContentType.JSON)
+                .post("/tiqr/start-authentication")
+                .as(new TypeRef<>() {
+                });
+        String sessionKey = (String) results.get("sessionKey");
+        //mock the call from the device to the TiqrController
+        SecretCipher secretCipher = new SecretCipher("secret");
+        Authentication authentication = authenticationRepository.findAuthenticationBySessionKey(sessionKey).get();
+
+        Registration registration = registrationRepository.findRegistrationByUserId(samlAuthenticationRequest.getUserId()).get();
+        registration = registrationRepository.findById(registration.getId()).get();
+        String decryptedSecret = secretCipher.decrypt(registration.getSecret());
+        String ocra = OCRA.generateOCRA(decryptedSecret, authentication.getChallenge(), sessionKey);
+
+        given()
+                .contentType(ContentType.JSON)
+                .body(Map.of("sessionKey", sessionKey, "response", ocra))
+                .post("/tiqr/manual-response")
+                .then()
+                .statusCode(200);
+
+        Map<String, String> newStatus = given()
+                .queryParam("sessionKey", sessionKey)
+                .queryParam("id", samlAuthenticationRequest.getId())
+                .get("/tiqr/poll-authentication")
+                .as(new TypeRef<>() {
+                });
+        assertEquals(AuthenticationStatus.SUCCESS.name(), newStatus.get("status"));
+    }
+
+    private SamlAuthenticationRequest doEnrollmment(boolean finishRegistration) throws IOException {
         String authenticationRequestId = samlAuthnRequest();
         User user = user("jdoe@example.com");
         MagicLinkRequest magicLinkRequest = new MagicLinkRequest(authenticationRequestId, user, false, false);
@@ -189,6 +402,12 @@ public class TiqrControllerTest extends AbstractIntegrationTest {
                 .body().as(new TypeRef<>() {
                 });
         doFollowUpEnrollment(body);
+        if (finishRegistration) {
+            //Fake registration
+            Registration registration = registrationRepository.findRegistrationByUserId(samlAuthenticationRequest.getUserId()).get();
+            registration.setStatus(RegistrationStatus.FINALIZED);
+            registrationRepository.saveAll(Arrays.asList(registration));
+        }
         return samlAuthenticationRequest;
     }
 

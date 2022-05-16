@@ -4,12 +4,18 @@
     import I18n from "i18n-js";
     import {onMount, tick} from "svelte";
     import {links} from "../stores/conf";
-    import {validatePhoneCode} from "../api";
+    import {textPhoneNumber, validatePhoneCode} from "../api";
     import {navigate} from "svelte-routing";
+    import {user} from "../stores/user";
+    import Button from "../components/Button.svelte";
 
     let showSpinner = true;
     let hash = "";
     let wrongCode = false;
+    let maxAttempts = false;
+
+    let refs = Array(6).fill("");
+    let totp = Array(6).fill("");
 
     onMount(() => {
         $links.displayBackArrow = false;
@@ -17,14 +23,20 @@
         const urlParams = new URLSearchParams(window.location.search);
         hash = urlParams.get("h");
         showSpinner = false;
+        refs[0].focus();
     });
 
-    let refs = Array(6).fill("");
-    let totp = Array(6).fill("");
-
-    onMount(() => {
-        refs[0].focus();
-    })
+    const sendSMSAgain = () => {
+        showSpinner = true;
+        textPhoneNumber(hash, $user.phoneNumber.replaceAll(" ","").replaceAll("-",""))
+            .then(() => {
+                showSpinner = false;
+                totp = Array(6).fill("");
+                refs[0].focus();
+                wrongCode = false;
+                maxAttempts = false;
+            });
+    }
 
     const onKeyDownTotp = index => e => {
         if ((e.key === "Delete" || e.key === "Backspace") && index > 0 && e.target.value === "") {
@@ -48,10 +60,13 @@
             validatePhoneCode(hash, totp.join(""))
                 .then(res => {
                     navigate(`/congrats?h=${hash}&redirect=${encodeURIComponent(res.redirect)}`);
-                }).catch(() => {
+                }).catch(e => {
                 totp = Array(6).fill("");
                 refs[0].focus();
                 wrongCode = true;
+                if (e.status === 429) {
+                    maxAttempts = true;
+                }
             })
 
         }
@@ -67,9 +82,12 @@
 
     div.totp-value-container {
         display: flex;
-        margin-top: 15px;
+        margin: 15px 0 35px 0;
         justify-content: space-between;
 
+        &.with-error {
+            margin: 15px 0 0 0;
+        }
         input.totp-value {
             width: 40px;
             padding-left: 14px;
@@ -89,7 +107,7 @@
         display: flex;
         align-items: center;
         color: var(--color-primary-red);
-        margin: 25px 0;
+        margin: 25px 0 35px 0;
     }
 
 
@@ -103,7 +121,7 @@
 
 <h2 class="header">{I18n.t("sms.header")}</h2>
 <p class="explanation">{I18n.t("sms.info")}</p>
-<div class="totp-value-container">
+<div class="totp-value-container" class:with-error={wrongCode || maxAttempts}>
 
     {#each Array(6).fill("") as val, index}
         <input type="text"
@@ -121,9 +139,24 @@
 
 </div>
 
-{#if wrongCode}
+{#if wrongCode && !maxAttempts}
     <div class="error">
         <span class="svg">{@html critical}</span>
         <span>{I18n.t("sms.codeIncorrect")}</span>
     </div>
 {/if}
+
+{#if maxAttempts}
+    <div class="error">
+        <span class="svg">{@html critical}</span>
+        <div class="max-attempts">
+            <span>{I18n.t("sms.maxAttemptsPre")}</span>
+            <a href="/phone" on:click|preventDefault|stopPropagation={() => navigate(`/phone-verification?h=${hash}`)}>{I18n.t("sms.here")}</a>
+            <span>{I18n.t("sms.maxAttemptsPost")}</span>
+        </div>
+    </div>
+{/if}
+
+<div class="options">
+    <Button className="cancel" href="/sms" label={I18n.t("sms.sendSMSAgain")} onClick={sendSMSAgain}/>
+</div>

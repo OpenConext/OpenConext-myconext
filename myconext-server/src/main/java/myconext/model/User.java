@@ -267,4 +267,5 @@ public class User implements Serializable, UserDetails {
     public void setLastSeenAppNudge(long lastSeenAppNudge) {
         this.lastSeenAppNudge = lastSeenAppNudge;
     }
+
 }

@@ -5,6 +5,7 @@ export const user = writable({
     givenName: "",
     familyName: "",
     password: "",
+    phoneNumber: "",
     rememberMe: false,
     usePassword: false,
     useWebAuth: false,

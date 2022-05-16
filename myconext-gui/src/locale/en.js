@@ -322,7 +322,11 @@ I18n.translations.en = {
     sms: {
         header: "Check your phone",
         info: "Enter the six-digit code we sent to your phone to continue",
-        codeIncorrect: "The code is incorrect"
+        codeIncorrect: "The code is incorrect",
+        maxAttemptsPre: "Max attempts reached. Click",
+        maxAttemptsPost: "to re-enter your phone number and receive a new verification",
+        maxAttemptsPostNoReEnter: "to request a new verification",
+        here: " here "
     },
     enrollApp: {
         header: "Finish setup in the eduID app",
@@ -364,6 +368,7 @@ I18n.translations.en = {
         codeIncorrect: "Wrong backup recovery code",
         next: "Next",
         deactivateApp: "Deactivate",
-        sendSms: "Press next to send a verification code SMS to your registered phone number"
+        sendSms: "Press next to send a verification code SMS to your registered phone number",
+        maxAttempts: "Max attempts used. Please contact <a href=\"mailto:help@eduid.nl\">help@eduid.nl</a> for support"
     }
 };
