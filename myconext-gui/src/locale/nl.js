@@ -333,6 +333,10 @@ I18n.translations.nl = {
     enrollApp: {
         header: "Voltooi de installatie in de eduID app",
         scan: "Scan deze QR-code met je eduID app",
+        timeOut: "Sessie timeout",
+        timeOutInfoFirst: "Je sessie is verlopen. Klik op deze ",
+        timeOutInfoLast: " om het opnieuw te proberen.",
+        timeOutInfoLink: "link",
     },
     recovery: {
         header: "Een APP-herstelmethode instellen",

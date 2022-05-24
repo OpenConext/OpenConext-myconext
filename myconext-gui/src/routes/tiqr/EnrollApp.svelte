@@ -32,7 +32,7 @@
                     return currentStatus === enrollmentStatus.PROCESSED
                 },
                 interval: 1000,
-                maxAttempts: 60 * 15 // 15 minute timeout
+                maxAttempts: 5//60 * 15 // 15 minute timeout
             }).then(() => navigate(`/recovery`))
                 .catch(() => {
                     timeOut = true;
@@ -82,8 +82,16 @@
 {/if}
 <div class="enroll-app">
     <div class="inner-container">
+        {#if timeOut}
+            <h2 class="header">{I18n.t("enrollApp.timeOut")}</h2>
+            <p class="time-out">
+                <span>{I18n.t("enrollApp.timeOutInfoFirst")}</span>
+                <a href="/"
+                   on:click|preventDefault|stopPropagation={() => window.location.reload(true)}>{I18n.t("enrollApp.timeOutInfoLink")}</a>
+                <span>{I18n.t("enrollApp.timeOutInfoLast")}</span>
+            </p>
 
-        {#if status === enrollmentStatus.INITIALIZED}
+        {:else if status === enrollmentStatus.INITIALIZED}
             <h2 class="header">{I18n.t("enrollApp.scan")}</h2>
             <ImageContainer>
                 {#if onMobile}

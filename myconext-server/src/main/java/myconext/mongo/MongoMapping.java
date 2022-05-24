@@ -86,8 +86,12 @@ public class MongoMapping {
                 new Index("enrollmentSecret", Sort.Direction.ASC));
         mongoTemplate.indexOps(Authentication.class).ensureIndex(
                 new Index("sessionKey", Sort.Direction.ASC));
-        mongoTemplate.indexOps(Registration.class).ensureIndex(
-                new Index("userid", Sort.Direction.ASC));
+        IndexOperations registrationsIndex = mongoTemplate.indexOps(Registration.class);
+        if (registrationsIndex.getIndexInfo().stream().anyMatch(indexInfo -> indexInfo.getName().equals("userid"))) {
+            registrationsIndex.dropIndex("userid");
+        }
+        registrationsIndex.ensureIndex(
+                new Index("userId", Sort.Direction.ASC));
         mongoTemplate.indexOps(EmailsSend.class).ensureIndex(
                 new Index("email", Sort.Direction.ASC).collation(Collation.of(Locale.ENGLISH).strength(2)));
     }

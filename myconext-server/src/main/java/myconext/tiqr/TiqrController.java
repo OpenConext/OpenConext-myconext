@@ -123,8 +123,7 @@ public class TiqrController {
     }
 
     private ResponseEntity<Map<String, String>> doStartEnrollmentForUser(User user) throws WriterException, IOException {
-        Optional<Enrollment> enrollmentByUserID = enrollmentRepository.findEnrollmentByUserID(user.getId());
-        enrollmentByUserID.ifPresent(enrollmentRepository::delete);
+        enrollmentRepository.deleteByUserID(user.getId());
 
         Enrollment enrollment = tiqrService.startEnrollment(user.getId(), String.format("%s %s", user.getGivenName(), user.getFamilyName()));
         String enrollmentKey = enrollment.getKey();

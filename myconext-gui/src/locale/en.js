@@ -331,6 +331,10 @@ I18n.translations.en = {
     enrollApp: {
         header: "Finish setup in the eduID app",
         scan: "Scan this QR code with your eduID app",
+        timeOut: "Session timeout",
+        timeOutInfoFirst: "Your session timed out. Click this ",
+        timeOutInfoLast: " to try again.",
+        timeOutInfoLink: "link",
     },
     recovery: {
         header: "Set up an APP recovery method",
