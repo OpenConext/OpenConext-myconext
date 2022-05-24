@@ -102,21 +102,28 @@
 {/if}
 <h2 class="header">{I18n.t("login.header")}</h2>
 <h2 class="top">{I18n.t("login.headerSubTitle")}<span>{serviceName}</span></h2>
-<input type="password"
-       class:error={passwordIncorrect}
-       autocomplete="current-password"
-       id="password-field"
-       placeholder={I18n.t("login.passwordPlaceholder")}
-       on:keydown={handlePasswordEnter}
-       use:init
-       bind:value={$user.password}>
-{#if passwordIncorrect}
-    <div class="error">
-        <span class="svg">{@html critical}</span>
-        <span>{I18n.t("usePassword.passwordIncorrect")}</span>
-    </div>
-{/if}
+<form>
+    <input type="email"
+           style="display: none"
+           autocomplete="username"
+           id="email"
+           value={$user.email}>
 
+    <input type="password"
+           class:error={passwordIncorrect}
+           autocomplete="current-password"
+           id="password-field"
+           placeholder={I18n.t("login.passwordPlaceholder")}
+           on:keydown={handlePasswordEnter}
+           use:init
+           bind:value={$user.password}>
+    {#if passwordIncorrect}
+        <div class="error">
+            <span class="svg">{@html critical}</span>
+            <span>{I18n.t("usePassword.passwordIncorrect")}</span>
+        </div>
+    {/if}
+</form>
 <Button href="/next"
         disabled={showSpinner || !allowedNext}
         label={I18n.t("login.login")}
