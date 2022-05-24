@@ -273,7 +273,7 @@ I18n.translations.nl = {
         yes: "Ja",
         no: "Nee",
         header: "Ingelogd blijven?",
-        info: "Blijf ingelogd op deze apparaay zodat je de volgende niet hoeft in te loggen."
+        info: "Blijf ingelogd op dit apparaat zodat je de volgende niet hoeft in te loggen."
     }
 
 };

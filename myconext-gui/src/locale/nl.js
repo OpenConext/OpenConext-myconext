@@ -109,7 +109,7 @@ I18n.translations.nl = {
         noRememberMeInfo: "Als je inlogt met eduID kun je ervoor kiezen om <strong>ingelogd te blijven</strong>. Dan wordt jouw login op het apparaat dat je op dat moment gebruikt onthouden.",
         forgetMe: "Vergeet dit apparaat",
         tiqr: {
-            title: "Wilt u de volgende keer sneller en veiliger inloggen?",
+            title: "Wil je de volgende keer sneller en veiliger inloggen?",
             info: "Download de <strong>eduID app</strong> en log veilig in zonder wachtwoord of toegang tot je e-mail.",
             fetch: "Nu installeren",
             deactivate: "Deactiveren",
@@ -313,12 +313,12 @@ I18n.translations.nl = {
     },
     getApp: {
         header: "Download de eduID app",
-        info: "Download en installeer <a href=\"https://eduid.nl/help\" target=\"_blank\">dee eduID app</a> (uitgegeven door SURF) op je mobiele apparaat.",
+        info: "Download en installeer <a href=\"https://eduid.nl/help\" target=\"_blank\">de eduID app</a> (uitgegeven door SURF) op je mobiele apparaat.",
         google: "https://play.google.com/store/apps/details?id=nl.eduvpn.app&hl=en&gl=US",
         apple: "https://apps.apple.com/us/app/eduvpn-client/id1292557340",
         after: "Als je de eduID app op je telefoon hebt gedownload, kom dan hier terug en klik op volgende.",
         back: "Terug",
-        next: "Volgend"
+        next: "Volgende"
     },
     sms: {
         header: "Controleer je telefoon",
