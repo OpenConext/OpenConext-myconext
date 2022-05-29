@@ -79,7 +79,7 @@ a.button {
 a.home {
     position: absolute;
     right: 26px;
-    top: 1px;
+    top: 8px;
 }
 
 button:hover {
