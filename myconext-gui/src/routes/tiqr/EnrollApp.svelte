@@ -32,7 +32,7 @@
                     return currentStatus === enrollmentStatus.PROCESSED
                 },
                 interval: 1000,
-                maxAttempts: 5//60 * 15 // 15 minute timeout
+                maxAttempts: 60 * 15 // 15 minute timeout
             }).then(() => navigate(`/recovery`))
                 .catch(() => {
                     timeOut = true;
