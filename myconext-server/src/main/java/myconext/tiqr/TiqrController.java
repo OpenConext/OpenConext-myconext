@@ -72,10 +72,7 @@ public class TiqrController {
                           Environment environment,
                           @Value("${email.magic-link-url}") String magicLinkUrl) throws IOException {
         this.tiqrConfiguration = new Yaml().loadAs(resource.getInputStream(), TiqrConfiguration.class);
-        String baseUrl = tiqrConfiguration.getBaseUrl();
-        if (baseUrl.endsWith("/")) {
-            baseUrl = baseUrl.substring(0, baseUrl.length() - 1);
-        }
+        String baseUrl = getEduIDServerBaseUrl();
         Service service = new Service(
                 tiqrConfiguration.getDisplayName(),
                 tiqrConfiguration.getIdentifier(),
@@ -106,6 +103,14 @@ public class TiqrController {
         this.rateLimitEnforcer = new RateLimitEnforcer(userRepository, tiqrConfiguration);
     }
 
+    private String getEduIDServerBaseUrl() {
+        String baseUrl = tiqrConfiguration.getBaseUrl();
+        if (baseUrl.endsWith("/")) {
+            baseUrl = baseUrl.substring(0, baseUrl.length() - 1);
+        }
+        return baseUrl;
+    }
+
     @GetMapping("/sp/start-enrollment")
     public ResponseEntity<Map<String, String>> startEnrollment(org.springframework.security.core.Authentication authentication) throws IOException, WriterException {
         User user = userFromAuthentication(authentication);
@@ -128,7 +133,7 @@ public class TiqrController {
         Enrollment enrollment = tiqrService.startEnrollment(user.getId(), String.format("%s %s", user.getGivenName(), user.getFamilyName()));
         String enrollmentKey = enrollment.getKey();
         String metaDataUrl = String.format("%s/tiqr/metadata?enrollment_key=%s",
-                tiqrConfiguration.getBaseUrl(),
+                getEduIDServerBaseUrl(),
                 enrollmentKey);
         String url = String.format("%s/tiqrenroll?metadata=%s",
                 tiqrConfiguration.getEduIdAppBaseUrl(),
