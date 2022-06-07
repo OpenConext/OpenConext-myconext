@@ -52,6 +52,6 @@ public class TiqrCleaner {
     }
 
     private void info(Class clazz, long count) {
-        LOG.info(String.format("Deleted %s instances of %s in cleanup", count, clazz));
+        LOG.info(String.format("Deleted Tiqr %s instances of %s in cleanup", count, clazz));
     }
 }
