@@ -294,10 +294,6 @@
                             </td>
                         </tr>
                         <tr>
-                            <td class="attr">{I18n.t("security.tiqr.appCode")}</td>
-                            <td class="value">{$user.registration.notificationAddress}</td>
-                        </tr>
-                        <tr>
                             <td class="attr">{I18n.t("security.tiqr.lastLogin")}</td>
                             <td class="value">{dateFromEpoch($user.registration.updated, true)}</td>
                         </tr>
