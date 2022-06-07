@@ -3,7 +3,6 @@ package myconext.tiqr;
 import com.google.zxing.WriterException;
 import myconext.exceptions.ExpiredAuthenticationException;
 import myconext.exceptions.ForbiddenException;
-import myconext.exceptions.TooManyRequestsException;
 import myconext.exceptions.UserNotFoundException;
 import myconext.manage.ServiceProviderResolver;
 import myconext.model.SamlAuthenticationRequest;
@@ -345,11 +344,19 @@ public class TiqrController {
      * Endpoint called by the Tiqr app to enroll user
      */
     @PostMapping(value = "/enrollment", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
-    public void doEnrollment(@ModelAttribute Registration registration,
-                             @RequestParam("enrollment_secret") String enrollmentSecret) {
+    public ResponseEntity<Map<String, Integer>> doEnrollment(@ModelAttribute Registration registration,
+                                                             @RequestParam("enrollment_secret") String enrollmentSecret) {
         registration.setEnrollmentSecret(enrollmentSecret);
-        //fingers crossed, in case of mismatch an exception is thrown
-        tiqrService.enrollData(registration);
+        try {
+            //fingers crossed, in case of mismatch an exception is thrown
+            Registration savedRegistration = tiqrService.enrollData(registration);
+            LOG.debug("Successful enrollment for user " + savedRegistration.getUserId());
+            return ResponseEntity.ok(Map.of("responseCode", 1));
+        } catch (RuntimeException e) {
+            LOG.error("Exception during enrollment for user: " + registration.getUserId(), e);
+            return ResponseEntity.ok(Map.of("responseCode", 201));
+        }
+
     }
 
     /*

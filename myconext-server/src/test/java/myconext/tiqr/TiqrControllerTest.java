@@ -30,6 +30,7 @@ import java.util.regex.Pattern;
 
 import static io.restassured.RestAssured.given;
 import static myconext.security.GuestIdpAuthenticationRequestFilter.BROWSER_SESSION_COOKIE_NAME;
+import static org.hamcrest.Matchers.equalTo;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class TiqrControllerTest extends AbstractIntegrationTest {
@@ -450,7 +451,9 @@ public class TiqrControllerTest extends AbstractIntegrationTest {
                 .formParam("notificationAddress", "1234567890")
                 .formParam("version", "2")
                 .formParam("operation", "register")
-                .post("/tiqr/enrollment");
+                .post("/tiqr/enrollment")
+                .then()
+                .body("responseCode", equalTo(1));
 
         enrollmentStatus = given()
                 .queryParam("enrollmentKey", enrollmentKey)
