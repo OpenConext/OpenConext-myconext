@@ -354,7 +354,7 @@ public class TiqrController {
             return ResponseEntity.ok(Map.of("responseCode", 1));
         } catch (RuntimeException e) {
             LOG.error("Exception during enrollment for user: " + registration.getUserId(), e);
-            return ResponseEntity.ok(Map.of("responseCode", 201));
+            return ResponseEntity.ok(Map.of("responseCode", 101));
         }
 
     }
