@@ -3,7 +3,6 @@
     import Button from "../../components/Button.svelte";
     import appStore from "../../icons/redesign/Download_on_the_App_Store_Badge.svg";
     import googlePlay from "../../icons/redesign/Google_Play-Badge-Logo.wine.svg";
-    import ButtonContainer from "../../components/ButtonContainer.svelte";
     import {navigate} from "svelte-routing";
 
     const next = () => {
@@ -12,7 +11,7 @@
 
 </script>
 
-<style>
+<style lang="scss">
     .get-app {
         width: 100%;
         height: 100%;
@@ -38,6 +37,10 @@
 
     .store-icons {
         display: flex;
+
+        @media (max-width: 820px) {
+            flex-direction: column;
+        }
     }
 
     :global(.store-icons a.apple svg) {

@@ -233,6 +233,10 @@
         margin-bottom: 30px;
         border-radius: 8px;
 
+        @media (max-width: 820px) {
+            flex-direction: column;
+        }
+
         .information {
             display: flex;
             flex-direction: column;
