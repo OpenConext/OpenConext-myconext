@@ -16,6 +16,7 @@ import myconext.repository.*;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.io.IOUtil;
 import org.junit.Before;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -118,6 +119,7 @@ public abstract class AbstractIntegrationTest {
     protected final Filter noopFilter = new NoopFilter();
 
     @Before
+    @BeforeEach
     public void before() throws Exception {
         RestAssured.port = port;
         Arrays.asList(SamlAuthenticationRequest.class, User.class)
