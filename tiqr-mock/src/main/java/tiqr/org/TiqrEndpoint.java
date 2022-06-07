@@ -9,10 +9,7 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.MediaType;
-import org.springframework.http.RequestEntity;
+import org.springframework.http.*;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
@@ -110,9 +107,9 @@ public class TiqrEndpoint {
 
         RequestEntity<Void> request = new RequestEntity(map, headers, HttpMethod.POST, URI.create(url));
 
-        restTemplate.exchange(request, Void.class);
+        ResponseEntity<Void> responseEntity = restTemplate.exchange(request, Void.class);
 
-        LOG.info(String.format("Enrolled enrollment for %s", enrollment.getUserDisplayName()));
+        LOG.info(String.format("Enrolled enrollment for %s with status %s", enrollment.getUserDisplayName(), responseEntity.getStatusCodeValue()));
 
         return new RedirectView("/enrollments");
     }

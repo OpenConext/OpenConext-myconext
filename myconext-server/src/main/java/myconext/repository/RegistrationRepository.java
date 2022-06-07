@@ -9,5 +9,4 @@ import tiqr.org.model.Registration;
 @Repository
 public interface RegistrationRepository extends MongoRepository<Registration, String>, tiqr.org.repo.RegistrationRepository {
 
-
 }

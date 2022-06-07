@@ -11,6 +11,4 @@ import java.util.Optional;
 @Repository
 public interface EnrollmentRepository extends MongoRepository<Enrollment, String>, tiqr.org.repo.EnrollmentRepository {
 
-    Long deleteByUserID(String userID);
-
 }
