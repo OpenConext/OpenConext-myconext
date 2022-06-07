@@ -242,22 +242,22 @@ I18n.translations.nl = {
         affiliation_student: "Je hebt aangetoont dat je onderwijs volgt doordat je eduID-account is gekoppeld aan een vertrouwde instelling."
     },
     nudgeApp: {
-        new: "Your eduID account has been created!",
-        header: "Want to sign in quicker and more secure next time?",
-        info: "Get the <strong>eduID app</strong> and securely sign in without passwords or accessing your email. It will only take a minute.",
-        no: "No thanks",
+        new: "J eduID is aangemaakt!",
+        header: "Wil je de volgende keer sneller en veiliger inloggen?",
+        info: "Installeer de <strong>eduID app</strong> en log veiliger in zonder wachtwoord of het openen van je email. Het kost je maar een minuut.",
+        no: "Nee bedankt",
         noLink: "/proceed",
-        yes: "Get it now",
+        yes: "Installeer nu",
         yesLink: "/eduid-app"
     },
     getApp: {
         header: "Download de eduID app",
-        info: "Download en installeer <a href=\"https://eduid.nl/help\" target=\"_blank\">dee eduID app</a> (uitgegeven door SURF) op je mobiele apparaat.",
-        google: "https://play.google.com/store/apps/details?id=nl.eduvpn.app&hl=en&gl=US",
-        apple: "https://apps.apple.com/us/app/eduvpn-client/id1292557340",
+        info: "Download en installeer <a href=\"https://eduid.nl/help\" target=\"_blank\">de eduID app</a> (uitgegeven door SURF) op je mobiele apparaat.",
+        google: "https://play.google.com/store/apps/details?id=nl.eduid&hl=en&gl=US",
+        apple: "https://apps.apple.com/us/app/eduid/id12345678",
         after: "Als je de eduID app op je telefoon hebt gedownload, kom dan hier terug en klik op volgende.",
         back: "Terug",
-        next: "Volgend"
+        next: "Volgende"
     },
     sms: {
         header: "Controleer je telefoon",
