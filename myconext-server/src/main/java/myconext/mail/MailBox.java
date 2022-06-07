@@ -139,7 +139,7 @@ public class MailBox {
         if (checkSpam) {
             Optional<EmailsSend> byEmail = emailsSendRepository.findByEmail(to);
             if (byEmail.isPresent() && byEmail.get().getSendAt().toInstant().isAfter(Instant.now().minus(emailSpamThresholdSeconds, ChronoUnit.SECONDS))) {
-                throw new IllegalArgumentException(String.format("Not sending email to %s because email was alredy send at %s", to, byEmail.get().getSendAt()));
+                throw new IllegalArgumentException(String.format("Not sending email to %s because email was already send at %s", to, byEmail.get().getSendAt()));
             }
         }
 
