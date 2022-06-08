@@ -187,12 +187,6 @@ public class User implements Serializable, UserDetails {
 
     @Transient
     @JsonIgnore
-    public boolean nudgeToUseApp() {
-        return lastSeenAppNudge < (System.currentTimeMillis() - 1000 * 60 * 60 * 24 * 7);
-    }
-
-    @Transient
-    @JsonIgnore
     public List<String> loginOptions() {
         List<LoginOptions> result = new ArrayList<>();
         //Order by priority

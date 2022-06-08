@@ -79,6 +79,7 @@ public class GuestIdpAuthenticationRequestFilter extends IdpAuthenticationReques
     private final MailBox mailBox;
     private final ServiceProviderResolver serviceProviderResolver;
     private final ExecutorService executor;
+    private final int nudgeAppDays;
 
     public GuestIdpAuthenticationRequestFilter(SamlProviderProvisioning<IdentityProviderService> provisioning,
                                                SamlMessageStore<Assertion, HttpServletRequest> assertionStore,
@@ -88,6 +89,7 @@ public class GuestIdpAuthenticationRequestFilter extends IdpAuthenticationReques
                                                UserRepository userRepository,
                                                UserLoginRepository userLoginRepository,
                                                int rememberMeMaxAge,
+                                               int nudgeAppDays,
                                                boolean secureCookie,
                                                String magicLinkUrl,
                                                MailBox mailBox) {
@@ -102,6 +104,7 @@ public class GuestIdpAuthenticationRequestFilter extends IdpAuthenticationReques
         this.userLoginRepository = userLoginRepository;
         this.accountLinkingContextClassReferences = ACR.all();
         this.rememberMeMaxAge = rememberMeMaxAge;
+        this.nudgeAppDays = nudgeAppDays;
         this.secureCookie = secureCookie;
         this.magicLinkUrl = magicLinkUrl;
         this.mailBox = mailBox;
@@ -353,6 +356,7 @@ public class GuestIdpAuthenticationRequestFilter extends IdpAuthenticationReques
 
         if (user.isNewUser()) {
             user.setNewUser(false);
+            user.setLastSeenAppNudge(System.currentTimeMillis());
             userRepository.save(user);
 
             logWithContext(user, "add", "account", LOG, "Saving user after new registration and magic link");
@@ -383,7 +387,8 @@ public class GuestIdpAuthenticationRequestFilter extends IdpAuthenticationReques
                     "&redirect=" + URLEncoder.encode(this.magicLinkUrl, charSet) +
                     "&explanation=" + explanation);
             return false;
-        } else if (!samlAuthenticationRequest.isPasswordOrWebAuthnFlow() && !samlAuthenticationRequest.isTiqrFlow() && user.nudgeToUseApp()) {
+        } else if (!samlAuthenticationRequest.isPasswordOrWebAuthnFlow() && !samlAuthenticationRequest.isTiqrFlow() &&
+                user.getLastSeenAppNudge() < (System.currentTimeMillis() - 1000 * 60 * 60 * 24 * nudgeAppDays)) {
             //Nudge user to use the app
             user.setLastSeenAppNudge(System.currentTimeMillis());
             userRepository.save(user);

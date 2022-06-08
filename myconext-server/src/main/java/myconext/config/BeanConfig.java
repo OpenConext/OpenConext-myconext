@@ -24,6 +24,7 @@ public class BeanConfig extends SamlIdentityProviderServerBeanConfiguration {
     private final UserRepository userRepository;
     private final UserLoginRepository userLoginRepository;
     private final int rememberMeMaxAge;
+    private final int nudgeAppDays;
     private final boolean secureCookie;
     private final String magicLinkUrl;
     private final MailBox mailBox;
@@ -32,6 +33,7 @@ public class BeanConfig extends SamlIdentityProviderServerBeanConfiguration {
     public BeanConfig(@Value("${saml_metadata_base_path}") String samlMetadataBasePath,
                       @Value("${idp_redirect_url}") String redirectUrl,
                       @Value("${remember_me_max_age_seconds}") int rememberMeMaxAge,
+                      @Value("${nudge_eduid_app_days}") int nudgeAppDays,
                       @Value("${secure_cookie}") boolean secureCookie,
                       @Value("${email.magic-link-url}") String magicLinkUrl,
                       @Value("${account_linking_context_class_ref.linked_institution}") String linkedInstitution,
@@ -45,6 +47,7 @@ public class BeanConfig extends SamlIdentityProviderServerBeanConfiguration {
         this.immutableSamlConfigurationRepository = new ImmutableSamlConfigurationRepository(samlMetadataBasePath);
         this.redirectUrl = redirectUrl;
         this.rememberMeMaxAge = rememberMeMaxAge;
+        this.nudgeAppDays = nudgeAppDays;
         this.secureCookie = secureCookie;
         this.authenticationRequestRepository = authenticationRequestRepository;
         this.userRepository = userRepository;
@@ -74,6 +77,7 @@ public class BeanConfig extends SamlIdentityProviderServerBeanConfiguration {
                 userRepository,
                 userLoginRepository,
                 rememberMeMaxAge,
+                nudgeAppDays,
                 secureCookie,
                 magicLinkUrl,
                 mailBox);
