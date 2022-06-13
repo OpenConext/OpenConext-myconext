@@ -558,7 +558,11 @@ public class UserControllerTest extends AbstractIntegrationTest {
 
         //now that we are logged in we can use the JSESSION COOKIE to test SSO
         CookieStore cookieStore = (CookieStore) ReflectionTestUtils.getField(cookieFilter, "cookieStore");
-        org.apache.http.cookie.Cookie cookie = cookieStore.getCookies().get(0);
+        org.apache.http.cookie.Cookie cookie = cookieStore.getCookies()
+                .stream()
+                .filter(c -> c.getName().equalsIgnoreCase("session"))
+                .findFirst()
+                .get();
         response = samlAuthnRequestResponse(new Cookie.Builder(cookie.getName(), cookie.getValue()).build(), "relay");
         html = samlAuthnResponse(response, Optional.empty());
         assertTrue(html.contains("mdoe@example.com"));
