@@ -61,6 +61,7 @@ public class GuestIdpAuthenticationRequestFilter extends IdpAuthenticationReques
     public static final String BROWSER_SESSION_COOKIE_NAME = "BROWSER_SESSION";
     public static final String REGISTER_MODUS_COOKIE_NAME = "REGISTER_MODUS";
     public static final String TIQR_COOKIE_NAME = "TIQR_COOKIE";
+    public static final String REMEMBER_ME_QUESTION_ASKED_COOKIE_NAME = "REMEMBER_ME_QUESTION_ASKED_COOKIE";
 
     private static final Log LOG = LogFactory.getLog(GuestIdpAuthenticationRequestFilter.class);
 
@@ -80,6 +81,7 @@ public class GuestIdpAuthenticationRequestFilter extends IdpAuthenticationReques
     private final ServiceProviderResolver serviceProviderResolver;
     private final ExecutorService executor;
     private final int nudgeAppDays;
+    private final int rememberMeQuestionAskedDays;
 
     public GuestIdpAuthenticationRequestFilter(SamlProviderProvisioning<IdentityProviderService> provisioning,
                                                SamlMessageStore<Assertion, HttpServletRequest> assertionStore,
@@ -90,6 +92,7 @@ public class GuestIdpAuthenticationRequestFilter extends IdpAuthenticationReques
                                                UserLoginRepository userLoginRepository,
                                                int rememberMeMaxAge,
                                                int nudgeAppDays,
+                                               int rememberMeQuestionAskedDays,
                                                boolean secureCookie,
                                                String magicLinkUrl,
                                                MailBox mailBox) {
@@ -105,6 +108,7 @@ public class GuestIdpAuthenticationRequestFilter extends IdpAuthenticationReques
         this.accountLinkingContextClassReferences = ACR.all();
         this.rememberMeMaxAge = rememberMeMaxAge;
         this.nudgeAppDays = nudgeAppDays;
+        this.rememberMeQuestionAskedDays = rememberMeQuestionAskedDays;
         this.secureCookie = secureCookie;
         this.magicLinkUrl = magicLinkUrl;
         this.mailBox = mailBox;
@@ -388,7 +392,7 @@ public class GuestIdpAuthenticationRequestFilter extends IdpAuthenticationReques
                     "&explanation=" + explanation);
             return false;
         } else if (!samlAuthenticationRequest.isPasswordOrWebAuthnFlow() && !samlAuthenticationRequest.isTiqrFlow() &&
-                user.getLastSeenAppNudge() < (System.currentTimeMillis() - 1000 * 60 * 60 * 24 * nudgeAppDays)) {
+                user.getLastSeenAppNudge() < (System.currentTimeMillis() - 1000L * 60 * 60 * 24 * nudgeAppDays)) {
             //Nudge user to use the app
             user.setLastSeenAppNudge(System.currentTimeMillis());
             userRepository.save(user);
@@ -401,7 +405,10 @@ public class GuestIdpAuthenticationRequestFilter extends IdpAuthenticationReques
         } else if (!samlAuthenticationRequest.isRememberMeQuestionAsked()) {
             samlAuthenticationRequest.setRememberMeQuestionAsked(true);
             authenticationRequestRepository.save(samlAuthenticationRequest);
-
+            if (cookieByName(request, REMEMBER_ME_QUESTION_ASKED_COOKIE_NAME).isPresent()) {
+                return true;
+            }
+            addRememberMeQuestionAskedCookie(response);
             String url = this.redirectUrl + "/remember?h=" + hash +
                     "&redirect=" + URLEncoder.encode(this.magicLinkUrl, charSet);
             response.sendRedirect(url);
@@ -495,6 +502,15 @@ public class GuestIdpAuthenticationRequestFilter extends IdpAuthenticationReques
     private void addTiqrCookie(HttpServletResponse response) {
         Cookie cookie = new Cookie(TIQR_COOKIE_NAME, Boolean.TRUE.toString());
         cookie.setMaxAge(rememberMeMaxAge);
+        cookie.setSecure(secureCookie);
+        cookie.setHttpOnly(true);
+        cookie.setPath("/");
+        response.addCookie(cookie);
+    }
+
+    private void addRememberMeQuestionAskedCookie(HttpServletResponse response) {
+        Cookie cookie = new Cookie(REMEMBER_ME_QUESTION_ASKED_COOKIE_NAME, Boolean.TRUE.toString());
+        cookie.setMaxAge(rememberMeQuestionAskedDays * 60 * 60 * 24);
         cookie.setSecure(secureCookie);
         cookie.setHttpOnly(true);
         cookie.setPath("/");

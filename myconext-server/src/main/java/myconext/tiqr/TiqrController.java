@@ -282,18 +282,19 @@ public class TiqrController {
     private ResponseEntity<Map<String, Object>> doStartAuthentication(HttpServletRequest request, User user) throws WriterException, IOException {
         Optional<Cookie> optionalTiqrCookie = cookieByName(request, TIQR_COOKIE_NAME);
         boolean tiqrCookiePresent = optionalTiqrCookie.isPresent();
+        boolean sendPushNotification = tiqrCookiePresent && this.tiqrConfiguration.isPushNotificationsEnabled();
         Authentication authentication = tiqrService.startAuthentication(
                 user.getId(),
                 String.format("%s %s", user.getGivenName(), user.getFamilyName()),
                 this.tiqrConfiguration.getEduIdAppBaseUrl(),
-                tiqrCookiePresent && this.tiqrConfiguration.isPushNotificationsEnabled());
+                sendPushNotification);
         String authenticationUrl = authentication.getAuthenticationUrl();
         String qrCode = QRCodeGenerator.generateQRCodeImage(authenticationUrl);
         Map<String, Object> body = Map.of(
                 "sessionKey", authentication.getSessionKey(),
                 "url", authenticationUrl,
                 "qr", qrCode,
-                "tiqrCookiePresent", tiqrCookiePresent);
+                "tiqrCookiePresent", sendPushNotification && authentication.isPushNotificationSend());
         return ResponseEntity.ok(body);
     }
 
