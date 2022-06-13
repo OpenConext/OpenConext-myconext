@@ -5,7 +5,7 @@ displayName: "eduID local"
 version: "0.0.1"
 logoUrl: "https://static.surfconext.nl/media/idp/eduid.png"
 infoUrl: "https://eduid.nl/help"
-pushNotificationsEnabled: true
+pushNotificationsEnabled: false
 eduIdAppBaseUrl: "https://eduid.nl"
 rateLimitThreshold: 5
 
