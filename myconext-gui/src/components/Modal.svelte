@@ -61,6 +61,7 @@
 
     div.options {
         padding: 18px;
+        display: flex;
         text-align: center;
     }
 </style>

@@ -114,10 +114,9 @@
         {/if}
 
         <Button href="/next"
-                large={true}
+                larger={true}
                 disabled={showSpinner || !allowedNext}
                 label={I18n.t("phoneVerification.verify")}
-                className="full"
                 onClick={next}/>
 
     </div>

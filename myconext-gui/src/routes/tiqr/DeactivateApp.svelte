@@ -115,6 +115,7 @@
 
     .options {
         margin-top: 40px;
+        display: flex;
     }
 
 

@@ -10,6 +10,7 @@
     export let onClick;
     export let medium = false;
     export let large = false;
+    export let larger = false;
     export let small = false;
     export let download = false;
     export let deletion = false;
@@ -24,7 +25,9 @@
         background-color: #0077c8;
         border-radius: 8px;
         padding: 8px 40px;
-        display: inline-block;
+        display: flex;
+        align-items: center;
+        justify-content: center;
         position: relative;
         color: white;
         text-decoration: none;
@@ -102,6 +105,13 @@
         padding: 8px 0;
     }
 
+    .button.larger {
+        min-width: 240px;
+        max-width: 240px;
+        width: 240px;
+        padding: 8px 0;
+    }
+
     .button.icon {
         padding: 10px 20px 10px 24px;
 
@@ -169,6 +179,7 @@
        download={download}
        class:medium={medium}
        class:large={large}
+       class:larger={larger}
        on:click={() => onClick && onClick()}
        class:disabled={disabled}>
         {label}
@@ -185,6 +196,7 @@
        class:inline={inline}
        class:medium={medium}
        class:large={large}
+       class:larger={larger}
        class:disabled={disabled}
        on:click|preventDefault|stopPropagation={() => !disabled && onClick()}
        on:keydown={handleLinkClick}>

@@ -64,7 +64,7 @@
         });
     }
 
-    const forgotPassword = (showConfirmation, force=false) => () => {
+    const forgotPassword = (showConfirmation, force = false) => () => {
         if (showConfirmation) {
             showModal = true;
         } else {
@@ -129,6 +129,7 @@
 
     .options {
         margin-top: 60px;
+        display: flex;
     }
 
 </style>

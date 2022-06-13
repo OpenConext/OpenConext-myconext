@@ -61,6 +61,7 @@
 
     .options {
         margin: 40px;
+        display: flex;
     }
 
     @media (max-width: 820px) {
@@ -73,6 +74,7 @@
         }
         .options {
             margin: 40px 10px;
+            display: flex;
         }
 
     }

@@ -59,6 +59,7 @@
 
     .options {
         margin-top: 60px;
+        display: flex;
     }
 
 </style>

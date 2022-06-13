@@ -1,14 +1,14 @@
 <script>
-    import {user, flash} from "../stores/user";
+    import {flash, user} from "../stores/user";
     import I18n from "i18n-js";
-    import {me, updateEmail, updateUser} from "../api";
+    import {updateEmail} from "../api";
     import {navigate} from "svelte-routing";
     import critical from "../icons/critical.svg";
-
-    const {validEmail} = require("../validation/regexp");
     import Button from "../components/Button.svelte";
     import {onMount} from "svelte";
     import Modal from "../components/Modal.svelte";
+
+    const {validEmail} = require("../validation/regexp");
 
     let verifiedEmail = "";
     let duplicateEmail = false;
@@ -45,64 +45,66 @@
 </script>
 
 <style lang="scss">
-  .email {
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    height: 100%;
-  }
-
-  h2 {
-    margin-top: 35px;
-    color: var(--color-primary-green);
-  }
-
-  p.info {
-    margin: 12px 0 32px 0;
-  }
-
-  label {
-    font-weight: bold;
-    margin: 33px 0 13px 0;
-    display: inline-block;
-  }
-
-  input {
-    border-radius: 8px;
-    border: solid 1px #676767;
-    padding: 14px;
-    font-size: 16px;
-
-    &.error {
-      border: solid 1px var(--color-primary-red);
-      background-color: #fff5f3;
-
-      &:focus {
-        outline: none;
-      }
+    .email {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        height: 100%;
     }
 
-  }
-
-  div.error {
-    display: flex;
-    align-items: center;
-    margin-top: 10px;
-
-    span.error {
-      color: var(--color-primary-red);
+    h2 {
+        margin-top: 35px;
+        color: var(--color-primary-green);
     }
 
-    span.svg {
-      display: inline-block;
-      margin-right: 10px;
+    p.info {
+        margin: 12px 0 32px 0;
     }
 
-  }
+    label {
+        font-weight: bold;
+        margin: 33px 0 13px 0;
+        display: inline-block;
+    }
 
-  .options {
-    margin-top: 60px;
-  }
+    input {
+        border-radius: 8px;
+        border: solid 1px #676767;
+        padding: 14px;
+        font-size: 16px;
+
+        &.error {
+            border: solid 1px var(--color-primary-red);
+            background-color: #fff5f3;
+
+            &:focus {
+                outline: none;
+            }
+        }
+
+    }
+
+    div.error {
+        display: flex;
+        align-items: center;
+        margin-top: 10px;
+
+        span.error {
+            color: var(--color-primary-red);
+        }
+
+        span.svg {
+            display: inline-block;
+            margin-right: 10px;
+        }
+
+    }
+
+    .options {
+        margin-top: 60px;
+        display: flex;
+
+    }
 
 </style>
 <div class="email">
