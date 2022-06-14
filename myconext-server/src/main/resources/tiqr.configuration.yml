@@ -8,6 +8,7 @@ infoUrl: "https://eduid.nl/help"
 pushNotificationsEnabled: false
 eduIdAppBaseUrl: "https://eduid.nl"
 rateLimitThreshold: 5
+rateLimitResetMinutes: 30
 
 apns:
   serverHost: "localhost"

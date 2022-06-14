@@ -19,6 +19,7 @@ public class TiqrConfiguration {
     private boolean pushNotificationsEnabled;
     private String eduIdAppBaseUrl;
     private int rateLimitThreshold = 5;
+    private int rateLimitResetMinutes = 30;
 
     private APNSConfiguration apns;
     private GCMConfiguration gcm;

@@ -12,4 +12,5 @@ public class SURFSecureID {
 
     public static final String RATE_LIMIT= "rate-limit";
 
+    public static final String RATE_LIMIT_UPDATED = "rate-limit-updated";
 }
