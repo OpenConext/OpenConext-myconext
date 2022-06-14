@@ -3,20 +3,11 @@
     import ImageContainer from "../../components/ImageContainer.svelte";
     import icon from "../../icons/redesign/undraw_Order_confirmed_re_g0if.svg";
     import Button from "../../components/Button.svelte";
-    import {navigate} from "svelte-routing";
-    import {me} from "../../api";
-    import {user} from "../../stores/user";
+    import {config, user} from "../../stores/user";
 
     const nextStep = () => {
-        me().then(json => {
-            for (var key in json) {
-                if (json.hasOwnProperty(key)) {
-                    $user[key] = json[key];
-                }
-            }
-            navigate("/security");
-        });
-
+        //need to set cookie in login domain
+        window.location.href = `${$config.idpBaseUrl}/register/${$user.id}`;
     }
 
 </script>

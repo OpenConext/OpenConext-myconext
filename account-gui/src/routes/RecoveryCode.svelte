@@ -59,7 +59,7 @@
     }
 
     div.options {
-
+        display: flex;
     }
 
 </style>

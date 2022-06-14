@@ -27,6 +27,7 @@ export const config = writable({
     eduIDWebAuthnUrl: "",
     magicLinkUrl: "",
     domain: "",
+    idpBaseUrl: "",
     featureWebAuthn: false,
     featureOidcTokenAPI: false,
     featureConnections: false

@@ -1,11 +1,14 @@
 package myconext.api;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import myconext.exceptions.UserNotFoundException;
+import myconext.model.User;
+import myconext.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.util.StringUtils;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RestController;
 
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.HashMap;
@@ -16,17 +19,16 @@ import static myconext.security.GuestIdpAuthenticationRequestFilter.REGISTER_MOD
 @RestController
 public class LoginController {
 
-    private static final Log LOG = LogFactory.getLog(LoginController.class);
-
     private final boolean secureCookie;
 
     private final Map<String, Object> config = new HashMap<>();
+    private final UserRepository userRepository;
 
-    public LoginController(@Value("${base_path}") String basePath,
+    public LoginController(UserRepository userRepository,
+                           @Value("${base_path}") String basePath,
                            @Value("${base_domain}") String baseDomain,
                            @Value("${my_conext_url}") String myConextUrl,
                            @Value("${onegini_entity_id}") String oneGiniEntityId,
-                           @Value("${guest_idp_entity_id}") String guestIdpEntityId,
                            @Value("${continue_after_login_url}") String continueAfterLoginUrl,
                            @Value("${email.magic-link-url}") String magicLinkUrl,
                            @Value("${domain}") String domain,
@@ -45,9 +47,8 @@ public class LoginController {
         this.config.put("baseDomain", baseDomain);
         this.config.put("migrationUrl", String.format("%s/Shibboleth.sso/Login?entityID=%s&target=/migration", myConextUrl, oneGiniEntityId));
         this.config.put("magicLinkUrl", magicLinkUrl);
-        this.config.put("eduIDLoginUrl", String.format("%s/Shibboleth.sso/Login?entityID=%s", myConextUrl, guestIdpEntityId));
-        this.config.put("eduIDRegisterUrl", String.format("%s/register", idpBaseUrl));
-        this.config.put("eduIDDoLoginUrl", String.format("%s/doLogin", idpBaseUrl));
+        this.config.put("idpBaseUrl", idpBaseUrl);
+        this.config.put("spBaseUrl", spBaseUrl);
         this.config.put("eduIDWebAuthnUrl", String.format("%s/webauthn", idpBaseUrl));
         this.config.put("eduIDWebAuthnRedirectSpUrl", String.format("%s/security", spBaseUrl));
         this.config.put("domain", domain);
@@ -59,24 +60,7 @@ public class LoginController {
         this.config.put("useExternalValidation", useExternalValidation);
         this.config.put("emailSpamThresholdSeconds", emailSpamThresholdSeconds);
         this.secureCookie = secureCookie;
-    }
-
-    @GetMapping("/register")
-    public void register(@RequestParam(value = "lang", required = false, defaultValue = "en") String lang,
-                         @RequestParam(value = "location", required = false) String location,
-                         HttpServletResponse response) throws IOException {
-        response.setHeader("Set-Cookie", REGISTER_MODUS_COOKIE_NAME + "=true; SameSite=None" + (secureCookie ? "; Secure" : ""));
-        String redirectLocation = StringUtils.hasText(location) ? location : this.config.get("eduIDLoginUrl") + "&lang=" + lang;
-        response.sendRedirect(redirectLocation);
-    }
-
-    @GetMapping("/doLogin")
-    public void doLogin(@RequestParam(value = "lang", required = false, defaultValue = "en") String lang,
-                        @RequestParam(value = "location", required = false) String location,
-                        HttpServletResponse response) throws IOException {
-        response.setHeader("Set-Cookie", REGISTER_MODUS_COOKIE_NAME + "=; expires=Thu, 01 Jan 1970 00:00:00 GMT; SameSite=None" + (secureCookie ? "; Secure" : ""));
-        String redirectLocation = StringUtils.hasText(location) ? location : this.config.get("eduIDLoginUrl") + "&lang=" + lang;
-        response.sendRedirect(redirectLocation);
+        this.userRepository = userRepository;
     }
 
     @GetMapping("/config")
@@ -84,9 +68,26 @@ public class LoginController {
         return config;
     }
 
+    @GetMapping("/register/{id}")
+    public void register(@PathVariable("id") String id,
+                         HttpServletResponse response) throws IOException {
+        User user = userRepository.findById(id).orElseThrow(() -> new UserNotFoundException("User not found"));
 
-    @PostMapping("/sms")
-    public void sms(@RequestBody Map<String, Object> body) {
-        LOG.info("Received SMS " + body.get("message"));
+        Cookie loginPreferenceCookie = new Cookie("login_preference", "useApp");
+        loginPreferenceCookie.setMaxAge(365 * 60 * 60 * 24);
+        loginPreferenceCookie.setSecure(secureCookie);
+        loginPreferenceCookie.setPath("/");
+
+        Cookie usernameCookie = new Cookie("username", user.getEmail());
+        usernameCookie.setMaxAge(365 * 60 * 60 * 24);
+        usernameCookie.setSecure(secureCookie);
+        usernameCookie.setPath("/");
+
+        response.addCookie(loginPreferenceCookie);
+        response.addCookie(usernameCookie);
+
+        String redirectLocation = this.config.get("spBaseUrl") + "/security";
+        response.sendRedirect(redirectLocation);
     }
+
 }

@@ -70,6 +70,10 @@
 
     }
 
+    div.options {
+        display: flex;
+    }
+
 
 </style>
 {#if showSpinner}
@@ -85,10 +89,10 @@
         <div class="options">
             <Button onClick={copyToClipboard}
                     href={"/copy"}
-                    large={true}
+                    larger={true}
                     label={copied ? I18n.t("recovery.copied") : I18n.t("recovery.copy")}/>
             <Button onClick={next}
-                    large={true}
+                    larger={true}
                     href={"/next"}
                     label={I18n.t("recovery.continue")}/>
         </div>
