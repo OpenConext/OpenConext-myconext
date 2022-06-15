@@ -122,7 +122,7 @@ public class TiqrController {
         String enrollmentVerificationKey = UUID.randomUUID().toString();
         user.setEnrollmentVerificationKey(enrollmentVerificationKey);
         userRepository.save(user);
-        return ResponseEntity.ok(Map.of("enrollmentVerificationKey", enrollmentVerificationKey, "timestamp", System.currentTimeMillis()));
+        return ResponseEntity.ok(Map.of("enrollmentVerificationKey", enrollmentVerificationKey));
     }
 
     @GetMapping("/start-enrollment")

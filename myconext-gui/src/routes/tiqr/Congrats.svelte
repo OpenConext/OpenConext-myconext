@@ -12,7 +12,7 @@
         loading = true;
         finishEnrollment().then(res => {
             //need to set secure cookie in login domain
-            window.location.href = `${$config.idpBaseUrl}/register/${res.enrollmentVerificationKey}/${res.timestamp}`;
+            window.location.href = `${$config.idpBaseUrl}/register/${res.enrollmentVerificationKey}`;
         })
     }
 

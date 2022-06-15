@@ -69,16 +69,12 @@ public class LoginController {
         return config;
     }
 
-    @GetMapping("/register/{enrollmentVerificationKey}/{timestamp}")
+    @GetMapping("/register/{enrollmentVerificationKey}")
     public void register(@PathVariable("enrollmentVerificationKey") String enrollmentVerificationKey,
-                         @PathVariable("timestamp") Long timestamp,
                          HttpServletResponse response) throws IOException {
 
         User user = userRepository.findUserByEnrollmentVerificationKey(enrollmentVerificationKey)
                 .orElseThrow(() -> new UserNotFoundException("User not found"));
-        if (System.currentTimeMillis() - timestamp > (60 * 1000L)) {
-            throw new ForbiddenException("EnrollmentVerificationKey has timed out");
-        }
         user.setEnrollmentVerificationKey(null);
         userRepository.save(user);
 
