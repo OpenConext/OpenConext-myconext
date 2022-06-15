@@ -1,5 +1,6 @@
 package myconext.api;
 
+import myconext.exceptions.ForbiddenException;
 import myconext.exceptions.UserNotFoundException;
 import myconext.model.User;
 import myconext.repository.UserRepository;
@@ -68,10 +69,18 @@ public class LoginController {
         return config;
     }
 
-    @GetMapping("/register/{id}")
-    public void register(@PathVariable("id") String id,
+    @GetMapping("/register/{enrollmentVerificationKey}/{timestamp}")
+    public void register(@PathVariable("enrollmentVerificationKey") String enrollmentVerificationKey,
+                         @PathVariable("timestamp") Long timestamp,
                          HttpServletResponse response) throws IOException {
-        User user = userRepository.findById(id).orElseThrow(() -> new UserNotFoundException("User not found"));
+
+        User user = userRepository.findUserByEnrollmentVerificationKey(enrollmentVerificationKey)
+                .orElseThrow(() -> new UserNotFoundException("User not found"));
+        if (System.currentTimeMillis() - timestamp > (60 * 1000L)) {
+            throw new ForbiddenException("EnrollmentVerificationKey has timed out");
+        }
+        user.setEnrollmentVerificationKey(null);
+        userRepository.save(user);
 
         Cookie loginPreferenceCookie = new Cookie("login_preference", "useApp");
         loginPreferenceCookie.setMaxAge(365 * 60 * 60 * 24);

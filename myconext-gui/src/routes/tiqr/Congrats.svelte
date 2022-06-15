@@ -3,11 +3,17 @@
     import ImageContainer from "../../components/ImageContainer.svelte";
     import icon from "../../icons/redesign/undraw_Order_confirmed_re_g0if.svg";
     import Button from "../../components/Button.svelte";
-    import {config, user} from "../../stores/user";
+    import {config} from "../../stores/user";
+    import {finishEnrollment} from "../../api";
+
+    let loading = false;
 
     const nextStep = () => {
-        //need to set cookie in login domain
-        window.location.href = `${$config.idpBaseUrl}/register/${$user.id}`;
+        loading = true;
+        finishEnrollment().then(res => {
+            //need to set secure cookie in login domain
+            window.location.href = `${$config.idpBaseUrl}/register/${res.enrollmentVerificationKey}/${res.timestamp}`;
+        })
     }
 
 </script>
@@ -34,11 +40,13 @@
 </style>
 <div class="congrats">
     <div class="inner-container">
-
         <h2 class="header">{I18n.t("congrats.header")}</h2>
         <p class="explanation">{I18n.t("congrats.info")}</p>
         <ImageContainer icon={icon} margin={true}/>
-        <Button href={"/next"} onClick={nextStep} medium={true}
+        <Button href={"/next"}
+                onClick={nextStep}
+                medium={true}
+                disabled={loading}
                 label={I18n.t("congrats.next")}/>
     </div>
 </div>

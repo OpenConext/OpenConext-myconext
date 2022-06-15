@@ -116,6 +116,15 @@ public class TiqrController {
         return doStartEnrollmentForUser(user);
     }
 
+    @GetMapping("/sp/finish-enrollment")
+    public ResponseEntity<Map<String, Object>> finishEnrollment(org.springframework.security.core.Authentication authentication) {
+        User user = userFromAuthentication(authentication);
+        String enrollmentVerificationKey = UUID.randomUUID().toString();
+        user.setEnrollmentVerificationKey(enrollmentVerificationKey);
+        userRepository.save(user);
+        return ResponseEntity.ok(Map.of("enrollmentVerificationKey", enrollmentVerificationKey, "timestamp", System.currentTimeMillis()));
+    }
+
     @GetMapping("/start-enrollment")
     public ResponseEntity<Map<String, String>> startEnrollment(@RequestParam(value = "hash", required = false) String hash) throws IOException, WriterException {
         if (!StringUtils.hasText(hash)) {

@@ -36,4 +36,6 @@ public interface UserRepository extends MongoRepository<User, String> {
     Optional<User> findUserByWebAuthnIdentifier(String webAuthnIdentifier);
 
     Optional<User> findUserByUserHandle(String userHandle);
+
+    Optional<User> findUserByEnrollmentVerificationKey(String enrollmentVerificationKey);
 }

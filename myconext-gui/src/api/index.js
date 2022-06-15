@@ -149,6 +149,10 @@ export function startEnrollment() {
     return fetchJson(`/tiqr/sp/start-enrollment`);
 }
 
+export function finishEnrollment() {
+    return fetchJson(`/tiqr/sp/finish-enrollment`);
+}
+
 export function pollEnrollment(enrollmentKey) {
     return fetchJson(`/tiqr/poll-enrollment?enrollmentKey=${enrollmentKey}`)
 }

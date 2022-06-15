@@ -44,6 +44,7 @@ public class User implements Serializable, UserDetails {
     private String webAuthnIdentifier;
     private String userHandle;
     private boolean forgottenPassword;
+    private String enrollmentVerificationKey;
 
     private Map<String, List<String>> attributes = new HashMap<>();
     private Map<String, Object> surfSecureId = new HashMap<>();
@@ -262,4 +263,7 @@ public class User implements Serializable, UserDetails {
         this.lastSeenAppNudge = lastSeenAppNudge;
     }
 
+    public void setEnrollmentVerificationKey(String enrollmentVerificationKey) {
+        this.enrollmentVerificationKey = enrollmentVerificationKey;
+    }
 }
