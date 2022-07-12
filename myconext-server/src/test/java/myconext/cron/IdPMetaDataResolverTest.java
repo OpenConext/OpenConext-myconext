@@ -21,7 +21,11 @@ public class IdPMetaDataResolverTest {
 
     @Test
     public void resolveIdpMetaDataNoException() {
-        new IdPMetaDataResolver(null);
+        new IdPMetaDataResolver(null).resolveIdpMetaData();
     }
 
+    @Test
+    public void resolveIdpMetaDataNoExceptionFileNotFound() {
+        new IdPMetaDataResolver(new ClassPathResource("metadata/nope")).resolveIdpMetaData();
+    }
 }
