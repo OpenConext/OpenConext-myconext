@@ -13,6 +13,7 @@ import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import java.io.IOException;
+import java.io.FileNotFoundException;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -52,6 +53,8 @@ public class IdPMetaDataResolver {
             this.domainNames = newDomainNames;
             LOG.info(String.format("Parsed %s institution domain names from %s in %s ms",
                     domainNames.size(), metaDataResource.getDescription(), System.currentTimeMillis() - start));
+        } catch (FileNotFoundException fe) {
+            LOG.warn(String.format("Could not read IdP Metadata from %s", "${cron.metadata-resolver-url}"));
         } catch (Exception e) {
             LOG.error("Error in resolveIdpMetaData", e);
         }
