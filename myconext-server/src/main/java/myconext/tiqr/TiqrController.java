@@ -354,14 +354,14 @@ public class TiqrController {
      * Endpoint called by the Tiqr app to enroll user
      */
     @PostMapping(value = "/enrollment", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
-    public ResponseEntity<Map<String, Integer>> doEnrollment(@ModelAttribute Registration registration,
+    public ResponseEntity<Object> doEnrollment(@ModelAttribute Registration registration,
                                                              @RequestParam("enrollment_secret") String enrollmentSecret) {
         registration.setEnrollmentSecret(enrollmentSecret);
         try {
             //fingers crossed, in case of mismatch an exception is thrown
             Registration savedRegistration = tiqrService.enrollData(registration);
             LOG.debug("Successful enrollment for user " + savedRegistration.getUserId());
-            return ResponseEntity.ok(Map.of("responseCode", 1));
+            return ResponseEntity.ok("OK");
         } catch (RuntimeException e) {
             LOG.error("Exception during enrollment for user: " + registration.getUserId(), e);
             return ResponseEntity.ok(Map.of("responseCode", 101));

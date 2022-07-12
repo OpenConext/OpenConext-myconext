@@ -455,7 +455,7 @@ public class TiqrControllerTest extends AbstractIntegrationTest {
                 .formParam("operation", "register")
                 .post("/tiqr/enrollment")
                 .then()
-                .body("responseCode", equalTo(1));
+                .statusCode(200);
 
         enrollmentStatus = given()
                 .queryParam("enrollmentKey", enrollmentKey)
