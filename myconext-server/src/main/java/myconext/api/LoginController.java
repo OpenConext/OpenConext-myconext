@@ -5,8 +5,10 @@ import myconext.exceptions.UserNotFoundException;
 import myconext.model.User;
 import myconext.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.Cookie;
@@ -30,6 +32,7 @@ public class LoginController {
                            @Value("${base_domain}") String baseDomain,
                            @Value("${my_conext_url}") String myConextUrl,
                            @Value("${onegini_entity_id}") String oneGiniEntityId,
+                           @Value("${guest_idp_entity_id}") String guestIdpEntityId,
                            @Value("${continue_after_login_url}") String continueAfterLoginUrl,
                            @Value("${email.magic-link-url}") String magicLinkUrl,
                            @Value("${domain}") String domain,
@@ -51,6 +54,7 @@ public class LoginController {
         this.config.put("idpBaseUrl", idpBaseUrl);
         this.config.put("spBaseUrl", spBaseUrl);
         this.config.put("eduIDWebAuthnUrl", String.format("%s/webauthn", idpBaseUrl));
+        this.config.put("eduIDLoginUrl", String.format("%s/Shibboleth.sso/Login?entityID=%s", myConextUrl, guestIdpEntityId));
         this.config.put("eduIDWebAuthnRedirectSpUrl", String.format("%s/security", spBaseUrl));
         this.config.put("domain", domain);
         this.config.put("featureWebAuthn", featureWebAuthn);
@@ -67,6 +71,15 @@ public class LoginController {
     @GetMapping("/config")
     public Map<String, Object> config() {
         return config;
+    }
+
+    @GetMapping("/register")
+    public void register(@RequestParam(value = "lang", required = false, defaultValue = "en") String lang,
+                         @RequestParam(value = "location", required = false) String location,
+                         HttpServletResponse response) throws IOException {
+        response.setHeader("Set-Cookie", REGISTER_MODUS_COOKIE_NAME + "=true; SameSite=None" + (secureCookie ? "; Secure" : ""));
+        String redirectLocation = StringUtils.hasText(location) ? location : this.config.get("eduIDLoginUrl") + "&lang=" + lang;
+        response.sendRedirect(redirectLocation);
     }
 
     @GetMapping("/register/{enrollmentVerificationKey}")
@@ -92,6 +105,15 @@ public class LoginController {
         response.addCookie(usernameCookie);
 
         String redirectLocation = this.config.get("spBaseUrl") + "/security";
+        response.sendRedirect(redirectLocation);
+    }
+
+    @GetMapping("/doLogin")
+    public void doLogin(@RequestParam(value = "lang", required = false, defaultValue = "en") String lang,
+                        @RequestParam(value = "location", required = false) String location,
+                        HttpServletResponse response) throws IOException {
+        response.setHeader("Set-Cookie", REGISTER_MODUS_COOKIE_NAME + "=; expires=Thu, 01 Jan 1970 00:00:00 GMT; SameSite=None" + (secureCookie ? "; Secure" : ""));
+        String redirectLocation = StringUtils.hasText(location) ? location : this.config.get("eduIDLoginUrl") + "&lang=" + lang;
         response.sendRedirect(redirectLocation);
     }
 

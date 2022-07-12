@@ -28,6 +28,26 @@ public class LoginControllerTest extends AbstractIntegrationTest {
 
     @Test
     public void register() {
+        given().redirects().follow(false)
+                .when()
+                .get("/register")
+                .then()
+                .statusCode(302)
+                .header("Location", "https://my.test2.surfconext.nl/Shibboleth.sso/Login?entityID=https://localhost.surf.id&lang=en");
+    }
+
+    @Test
+    public void doLogin() {
+        given().redirects().follow(false)
+                .when()
+                .get("/doLogin")
+                .then()
+                .statusCode(302)
+                .header("Location", "https://my.test2.surfconext.nl/Shibboleth.sso/Login?entityID=https://localhost.surf.id&lang=en");
+    }
+
+    @Test
+    public void registerWithEnrollmentVerificationKey() {
         User user = userRepository.findUserByEmail("jdoe@example.com").get();
         String enrollmentVerificationKey = UUID.randomUUID().toString();
         user.setEnrollmentVerificationKey(enrollmentVerificationKey);
