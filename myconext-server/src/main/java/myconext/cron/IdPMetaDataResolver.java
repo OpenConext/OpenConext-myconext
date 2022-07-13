@@ -54,7 +54,7 @@ public class IdPMetaDataResolver {
             LOG.info(String.format("Parsed %s institution domain names from %s in %s ms",
                     domainNames.size(), metaDataResource.getDescription(), System.currentTimeMillis() - start));
         } catch (FileNotFoundException fe) {
-            LOG.warn(String.format("Could not read IdP Metadata from %s", "${cron.metadata-resolver-url}"));
+            LOG.warn(String.format("Could not read IdP Metadata from %s", metaDataResource.getDescription()));
         } catch (Exception e) {
             LOG.error("Error in resolveIdpMetaData", e);
         }

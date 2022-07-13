@@ -1,6 +1,8 @@
 logging:
   config: classpath:logback.xml
   level:
+    myconext: DEBUG
+    tiqr.org: DEBUG
     org.springframework.data.mongodb: INFO
     org.springframework.data.convert: INFO
     org.springframework.security: INFO
