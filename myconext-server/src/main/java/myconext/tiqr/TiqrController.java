@@ -22,6 +22,7 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import org.yaml.snakeyaml.Yaml;
 import tiqr.org.DefaultTiqrService;
+import tiqr.org.TiqrException;
 import tiqr.org.TiqrService;
 import tiqr.org.model.*;
 import tiqr.org.secure.QRCodeGenerator;
@@ -156,7 +157,7 @@ public class TiqrController {
     }
 
     @GetMapping("/metadata")
-    public ResponseEntity<MetaData> metaData(@RequestParam("enrollment_key") String enrollmentKey) {
+    public ResponseEntity<MetaData> metaData(@RequestParam("enrollment_key") String enrollmentKey) throws TiqrException {
         MetaData metaData = tiqrService.getMetaData(enrollmentKey);
 
         LOG.info(String.format("Returning metaData for %s", metaData.getIdentity().getDisplayName()));
@@ -165,7 +166,7 @@ public class TiqrController {
     }
 
     @GetMapping("/poll-enrollment")
-    public ResponseEntity<EnrollmentStatus> enrollmentStatus(@RequestParam("enrollmentKey") String enrollmentKey) {
+    public ResponseEntity<EnrollmentStatus> enrollmentStatus(@RequestParam("enrollmentKey") String enrollmentKey) throws TiqrException {
         Enrollment enrollment = tiqrService.enrollmentStatus(enrollmentKey);
 
         LOG.debug(String.format("Polling enrollment for %s with status %s",
@@ -175,13 +176,13 @@ public class TiqrController {
     }
 
     @GetMapping("/sp/generate-backup-code")
-    public ResponseEntity<Map<String, String>> generateBackupCodeForSp(org.springframework.security.core.Authentication authentication) {
+    public ResponseEntity<Map<String, String>> generateBackupCodeForSp(org.springframework.security.core.Authentication authentication) throws TiqrException {
         User user = userFromAuthentication(authentication);
         return doGenerateBackupCode(user);
     }
 
     @GetMapping("/generate-backup-code")
-    public ResponseEntity<Map<String, String>> generateBackupCode(@RequestParam("hash") String hash) {
+    public ResponseEntity<Map<String, String>> generateBackupCode(@RequestParam("hash") String hash) throws TiqrException {
         SamlAuthenticationRequest samlAuthenticationRequest = authenticationRequestRepository.findByHash(hash)
                 .orElseThrow(() -> new ForbiddenException("Unknown hash"));
         String userId = samlAuthenticationRequest.getUserId();
@@ -191,7 +192,7 @@ public class TiqrController {
         return doGenerateBackupCode(user);
     }
 
-    private ResponseEntity<Map<String, String>> doGenerateBackupCode(User user) {
+    private ResponseEntity<Map<String, String>> doGenerateBackupCode(User user) throws TiqrException {
         String recoveryCode = VerificationCodeGenerator.generateBackupCode();
         user.getSurfSecureId().put(SURFSecureID.RECOVERY_CODE, recoveryCode.replaceAll(" ", ""));
         userRepository.save(user);
@@ -234,13 +235,13 @@ public class TiqrController {
     }
 
     @PostMapping("/sp/verify-phone-code")
-    public ResponseEntity<Map<String, String>> doVerifyPhoneCode(org.springframework.security.core.Authentication authentication, @RequestBody Map<String, String> requestBody) {
+    public ResponseEntity<Map<String, String>> doVerifyPhoneCode(org.springframework.security.core.Authentication authentication, @RequestBody Map<String, String> requestBody) throws TiqrException {
         User user = userFromAuthentication(authentication);
         return doVerifyPhoneCode(requestBody, user);
     }
 
     @PostMapping("/verify-phone-code")
-    public ResponseEntity<Map<String, String>> verifyPhoneCode(@RequestParam("hash") String hash, @RequestBody Map<String, String> requestBody) {
+    public ResponseEntity<Map<String, String>> verifyPhoneCode(@RequestParam("hash") String hash, @RequestBody Map<String, String> requestBody) throws TiqrException {
         SamlAuthenticationRequest samlAuthenticationRequest = authenticationRequestRepository.findByHash(hash)
                 .orElseThrow(() -> new ForbiddenException("Unknown hash"));
         String userId = samlAuthenticationRequest.getUserId();
@@ -252,7 +253,7 @@ public class TiqrController {
         return results;
     }
 
-    private ResponseEntity<Map<String, String>> doVerifyPhoneCode(Map<String, String> requestBody, User user) {
+    private ResponseEntity<Map<String, String>> doVerifyPhoneCode(Map<String, String> requestBody, User user) throws TiqrException {
         String phoneVerification = requestBody.get("phoneVerification");
         Map<String, Object> surfSecureId = user.getSurfSecureId();
         String phoneVerificationStored = (String) surfSecureId.get(SURFSecureID.PHONE_VERIFICATION_CODE);
@@ -273,13 +274,13 @@ public class TiqrController {
     }
 
     @PostMapping("/sp/start-authentication")
-    public ResponseEntity<Map<String, Object>> startAuthenticationForSP(HttpServletRequest request, org.springframework.security.core.Authentication authentication) throws IOException, WriterException {
+    public ResponseEntity<Map<String, Object>> startAuthenticationForSP(HttpServletRequest request, org.springframework.security.core.Authentication authentication) throws IOException, WriterException, TiqrException {
         User user = userFromAuthentication(authentication);
         return doStartAuthentication(request, user);
     }
 
     @PostMapping("/start-authentication")
-    public ResponseEntity<Map<String, Object>> startAuthentication(HttpServletRequest request, @Valid @RequestBody TiqrRequest tiqrRequest) throws IOException, WriterException {
+    public ResponseEntity<Map<String, Object>> startAuthentication(HttpServletRequest request, @Valid @RequestBody TiqrRequest tiqrRequest) throws IOException, WriterException, TiqrException {
         authenticationRequestRepository.findByIdAndNotExpired(tiqrRequest.getAuthenticationRequestId())
                 .orElseThrow(ExpiredAuthenticationException::new);
         String email = tiqrRequest.getEmail().trim();
@@ -288,7 +289,7 @@ public class TiqrController {
         return doStartAuthentication(request, user);
     }
 
-    private ResponseEntity<Map<String, Object>> doStartAuthentication(HttpServletRequest request, User user) throws WriterException, IOException {
+    private ResponseEntity<Map<String, Object>> doStartAuthentication(HttpServletRequest request, User user) throws WriterException, IOException, TiqrException {
         Optional<Cookie> optionalTiqrCookie = cookieByName(request, TIQR_COOKIE_NAME);
         boolean tiqrCookiePresent = optionalTiqrCookie.isPresent();
         boolean sendPushNotification = tiqrCookiePresent && this.tiqrConfiguration.isPushNotificationsEnabled();
@@ -309,7 +310,7 @@ public class TiqrController {
 
     @GetMapping("/poll-authentication")
     public ResponseEntity<Map<String, String>> authenticationStatus(@RequestParam("sessionKey") String sessionKey,
-                                                                    @RequestParam("id") String authenticationRequestId) {
+                                                                    @RequestParam("id") String authenticationRequestId) throws TiqrException {
         Authentication authentication = tiqrService.authenticationStatus(sessionKey);
         AuthenticationStatus status = authentication.getStatus();
 
@@ -342,7 +343,7 @@ public class TiqrController {
     }
 
     @PostMapping("/manual-response")
-    public ResponseEntity<Map<String, String>> manualResponse(@RequestBody Map<String, String> requestBody) {
+    public ResponseEntity<Map<String, String>> manualResponse(@RequestBody Map<String, String> requestBody) throws TiqrException {
         String sessionKey = requestBody.get("sessionKey");
         String response = requestBody.get("response");
         //fingers crossed, in case of mismatch an exception is thrown
@@ -362,7 +363,7 @@ public class TiqrController {
             Registration savedRegistration = tiqrService.enrollData(registration);
             LOG.debug("Successful enrollment for user " + savedRegistration.getUserId());
             return ResponseEntity.ok("OK");
-        } catch (RuntimeException e) {
+        } catch (TiqrException | RuntimeException e) {
             LOG.error("Exception during enrollment for user: " + registration.getUserId(), e);
             return ResponseEntity.ok(Map.of("responseCode", 101));
         }
@@ -378,7 +379,7 @@ public class TiqrController {
             tiqrService.postAuthentication(authenticationData);
             LOG.debug("Successful authentication for user " + authenticationData.getUserId());
             return ResponseEntity.ok(Map.of("responseCode", 1));
-        } catch (RuntimeException e) {
+        } catch (TiqrException | RuntimeException e) {
             LOG.error("Exception during authentication for user: " + authenticationData.getUserId(), e);
             return ResponseEntity.ok(Map.of("responseCode", 201));
         }

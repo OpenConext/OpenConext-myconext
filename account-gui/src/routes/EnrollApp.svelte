@@ -39,9 +39,6 @@
                 interval: 1000,
                 maxAttempts: 60 * 15 // 15 minute timeout
             }).then(() => navigate(`/recovery?h=${hash}`))
-                .catch(err => {
-                    debugger
-                });
         });
     });
 

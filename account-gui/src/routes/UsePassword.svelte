@@ -43,7 +43,6 @@
                 }
             })
             .catch(e => {
-                debugger;
                 showSpinner = false;
                 if (e.status === 403) {
                     passwordIncorrect = true;

@@ -66,7 +66,6 @@
                     //Do nothing the next poll will be successful - TODO update counter how many retries
                     wrongResponse = false;
                 }).catch(() => {
-                    debugger;
                 totp = Array(6).fill("");
                 showSpinner = false;
                 wrongResponse = true;

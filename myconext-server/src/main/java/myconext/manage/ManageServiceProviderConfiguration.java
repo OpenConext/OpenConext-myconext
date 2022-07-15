@@ -16,11 +16,6 @@ public class ManageServiceProviderConfiguration {
                                                            @Value("${manage.base_url}") String baseUrl,
                                                            Environment environment) {
         String[] activeProfiles = environment.getActiveProfiles();
-        if (activeProfiles.length == 0) {
-            Arrays.stream(Thread.currentThread().getStackTrace()).forEach(
-                    System.out::println
-            );
-        }
         return activeProfiles.length > 0 ? new MockServiceProviderResolver() :
                 new ManageServiceProviderResolver(userName, password, baseUrl);
     }

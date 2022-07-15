@@ -49,10 +49,11 @@
                     secure: true,
                     sameSite: "Lax"
                 });
-                if ($user.preferredLogin) {
+                //If the server does not confirm the preferredLogin, we won't use it
+                if ($user.preferredLogin && res.includes($user.preferredLogin)) {
                     navigate(`/${$user.preferredLogin.toLowerCase()}/${id}`);
                 } else {
-                    navigate(`/${res[0].toLowerCase()}/${id}`)
+                    navigate(`/${res[0].toLowerCase()}/${id}`);
                 }
             }).catch(() => emailNotFound = true);
 

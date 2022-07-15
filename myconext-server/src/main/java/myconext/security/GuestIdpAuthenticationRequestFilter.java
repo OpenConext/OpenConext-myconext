@@ -8,6 +8,7 @@ import myconext.model.*;
 import myconext.repository.AuthenticationRequestRepository;
 import myconext.repository.UserLoginRepository;
 import myconext.repository.UserRepository;
+import myconext.tiqr.SURFSecureID;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.http.HttpMethod;
@@ -392,6 +393,7 @@ public class GuestIdpAuthenticationRequestFilter extends IdpAuthenticationReques
                     "&explanation=" + explanation);
             return false;
         } else if (!samlAuthenticationRequest.isPasswordOrWebAuthnFlow() && !samlAuthenticationRequest.isTiqrFlow() &&
+                !user.loginOptions().contains(LoginOptions.APP.getValue()) &&
                 user.getLastSeenAppNudge() < (System.currentTimeMillis() - 1000L * 60 * 60 * 24 * nudgeAppDays)) {
             //Nudge user to use the app
             user.setLastSeenAppNudge(System.currentTimeMillis());
@@ -481,7 +483,8 @@ public class GuestIdpAuthenticationRequestFilter extends IdpAuthenticationReques
             LOG.info(String.format("Tiqr flow authenticated for %s ", user.getUsername()));
             addTiqrCookie(response);
         }
-        logLoginWithContext(user, "magiclink", true, LOG, "Successfully logged in with magiclink");
+        String loginMethod = samlAuthenticationRequest.isTiqrFlow() ? "tiqr" : "magiclink";
+        logLoginWithContext(user, loginMethod, true, LOG, "Successfully logged in with " + loginMethod);
         sendAssertion(request, response, samlAuthenticationRequest, user, provider,
                 serviceProviderMetadata, authenticationRequest);
     }

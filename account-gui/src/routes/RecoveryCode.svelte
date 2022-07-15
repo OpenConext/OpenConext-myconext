@@ -60,6 +60,10 @@
 
     div.options {
         display: flex;
+
+        :global(a:not(:first-child)) {
+            margin-left: 25px;
+        }
     }
 
 </style>
