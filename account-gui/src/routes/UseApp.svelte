@@ -3,7 +3,7 @@
 
     import {manualResponse, pollAuthentication, startTiqrAuthentication} from "../api/index";
     import Spinner from "../components/Spinner.svelte";
-    import {onMount, tick} from "svelte";
+    import {onDestroy, onMount, tick} from "svelte";
     import pushIcon from "../icons/redesign/undraw_Push_notifications_re_t84m.svg";
     import ImageContainer from "../components/ImageContainer.svelte";
     import {user} from "../stores/user";
@@ -64,7 +64,7 @@
             showSpinner = true;
             manualResponse(sessionKey, totp.join(""))
                 .then(() => {
-                    //Do nothing the next poll will be successful - TODO update counter how many retries
+                    //Do nothing the next poll will be successful
                     wrongResponse = false;
                 }).catch(() => {
                 totp = Array(6).fill("");
@@ -77,6 +77,7 @@
         }
     }
 
+    onDestroy(() => timeOut = true);
 
     onMount(() => {
         $links.displayBackArrow = true;
@@ -96,7 +97,7 @@
                         if (success) {
                             successResult = res;
                         }
-                        return success;
+                        return success || timeOut;
                     },
                     interval: 1000,
                     maxAttempts: 60 * 15 // 15 minute timeout

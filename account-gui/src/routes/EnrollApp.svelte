@@ -2,7 +2,7 @@
     import I18n from "i18n-js";
     import {pollEnrollment, startEnrollment} from "../api/index";
     import Spinner from "../components/Spinner.svelte";
-    import {onMount} from "svelte";
+    import {onDestroy, onMount} from "svelte";
     import ImageContainer from "../components/ImageContainer.svelte";
     import {enrollmentStatus} from "../constants/enrollmentStatus";
     import {poll} from "../utils/poll";
@@ -16,6 +16,9 @@
     let enrollmentKey = "";
     let onMobile = "ontouchstart" in document.documentElement;
     let status = "NOPE";
+    let timeOut = false;
+
+    onDestroy(() => timeOut = true);
 
     onMount(() => {
         $links.displayBackArrow = true;
@@ -34,11 +37,13 @@
                     if (currentStatus === enrollmentStatus.RETRIEVED) {
                         status = currentStatus;
                     }
-                    return currentStatus === enrollmentStatus.PROCESSED
+                    return currentStatus === enrollmentStatus.PROCESSED || timeOut;
                 },
                 interval: 1000,
                 maxAttempts: 60 * 15 // 15 minute timeout
-            }).then(() => navigate(`/recovery?h=${hash}`))
+            })
+                .then(() => !timeOut && navigate(`/recovery?h=${hash}`))
+                .catch(() => timeOut = true)
         });
     });
 
@@ -64,7 +69,15 @@
 {#if showSpinner}
     <Spinner/>
 {/if}
-{#if status === enrollmentStatus.INITIALIZED}
+{#if timeOut}
+    <h2 class="header">{I18n.t("useApp.timeOut")}</h2>
+    <p class="time-out">
+        <span>{I18n.t("useApp.timeOutInfoFirst")}</span>
+        <a href="/"
+           on:click|preventDefault|stopPropagation={() => window.location.reload(true)}>{I18n.t("useApp.timeOutInfoLink")}</a>
+        <span>{I18n.t("useApp.timeOutInfoLast")}</span>
+    </p>
+{:else if status === enrollmentStatus.INITIALIZED}
     <h2 class="header">{I18n.t("useApp.scan")}</h2>
     <ImageContainer>
         {#if onMobile}

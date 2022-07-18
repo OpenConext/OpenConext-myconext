@@ -7,7 +7,7 @@
     import {navigate} from "svelte-routing";
 
     let showSpinner = true;
-    let recoveryCode;
+    let recoveryCode = "";
     let redirect;
     let copied = false;
 

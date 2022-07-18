@@ -2,7 +2,7 @@
     import I18n from "i18n-js";
     import {pollEnrollment, startEnrollment} from "../../api/index";
     import Spinner from "../../components/Spinner.svelte";
-    import {onMount} from "svelte";
+    import {onDestroy, onMount} from "svelte";
     import ImageContainer from "../../components/ImageContainer.svelte";
     import {enrollmentStatus} from "../../constants/enrollmentStatus";
     import {poll} from "../../utils/poll";
@@ -15,6 +15,8 @@
     let status = "NOPE";
     let showSpinner = true;
     let timeOut = false;
+
+    onDestroy(() => timeOut = true);
 
     onMount(() => {
         startEnrollment().then(res => {
@@ -29,11 +31,12 @@
                     if (currentStatus === enrollmentStatus.RETRIEVED) {
                         status = currentStatus;
                     }
-                    return currentStatus === enrollmentStatus.PROCESSED
+                    return currentStatus === enrollmentStatus.PROCESSED || timeOut;
                 },
                 interval: 1000,
                 maxAttempts: 60 * 15 // 15 minute timeout
-            }).then(() => navigate(`/recovery`))
+            })
+                .then(() => !timeOut && navigate(`/recovery`))
                 .catch(() => {
                     timeOut = true;
                 });
