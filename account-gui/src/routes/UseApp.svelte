@@ -14,6 +14,7 @@
     import Cookies from "js-cookie";
     import {cookieNames} from "../constants/cookieNames";
     import {loginPreferences} from "../constants/loginPreferences";
+    import {navigate} from "svelte-routing";
 
     export let id;
 
@@ -111,8 +112,7 @@
                 }).catch(() => {
                     timeOut = true;
                 });
-
-            })
+            }).catch(() => navigate(`/options/${id}`))
     });
 
 </script>

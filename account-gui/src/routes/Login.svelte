@@ -29,9 +29,8 @@
         });
         const urlParams = new URLSearchParams(window.location.search);
         const modus = urlParams.get("modus");
-        const registerModus = Cookies.get("REGISTER_MODUS");
-        if ((modus && modus === "cr") || registerModus) {
-            navigate("/request");
+        if (modus && modus === "cr") {
+            navigate(`/request/${id}`);
         }
     });
 
