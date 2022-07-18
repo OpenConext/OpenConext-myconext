@@ -17,34 +17,30 @@ public class VerificationCodeGenerator {
     }
 
     public static String generate() {
-        byte[] verifierBytes = new byte[6];
-        random.nextBytes(verifierBytes);
-        char[] chars = new char[verifierBytes.length];
-        for (int i = 0; i < verifierBytes.length; i++) {
-            chars[i] = DEFAULT_CODEC[random.nextInt(DEFAULT_CODEC.length)];
-        }
+        char[] chars = getChars(6, DEFAULT_CODEC);
         return String.valueOf(chars, 0, 3) + "-" + String.valueOf(chars, 3, 3);
     }
 
     public static String generateBackupCode() {
-        byte[] verifierBytes = new byte[8];
-        random.nextBytes(verifierBytes);
-        char[] chars = new char[verifierBytes.length];
-        for (int i = 0; i < verifierBytes.length; i++) {
-            chars[i] = NUMBERS[random.nextInt(NUMBERS.length)];
-        }
+        char[] chars = getChars(8, NUMBERS);
         return String.valueOf(chars, 0, 4) + " " + String.valueOf(chars, 4, 4);
 
     }
 
     public static String generatePhoneVerification() {
-        byte[] verifierBytes = new byte[6];
+        return String.valueOf(getChars(6, NUMBERS));
+
+    }
+
+    private static char[] getChars(int nbrBytes, char[] charArray) {
+        byte[] verifierBytes = new byte[nbrBytes];
         random.nextBytes(verifierBytes);
         char[] chars = new char[verifierBytes.length];
         for (int i = 0; i < verifierBytes.length; i++) {
-            chars[i] = NUMBERS[random.nextInt(NUMBERS.length)];
+            chars[i] = charArray[random.nextInt(charArray.length)];
         }
-        return String.valueOf(chars);
-
+        return chars;
     }
+
+
 }

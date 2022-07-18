@@ -13,6 +13,8 @@ public class VerificationCodeGeneratorTest {
 
     private final Pattern patternBackupCode = Pattern.compile("^[0-9]{4} [0-9]{4}$");
 
+    private final Pattern patternPhoneVerification = Pattern.compile("^[0-9]{6}$");
+
     @Test
     public void generate() {
         String code = VerificationCodeGenerator.generate();
@@ -23,5 +25,11 @@ public class VerificationCodeGeneratorTest {
     public void generateBackupCode() {
         String backupCode = VerificationCodeGenerator.generateBackupCode();
         assertTrue(patternBackupCode.matcher(backupCode).matches());
+    }
+
+    @Test
+    public void generatePhoneVerification() {
+        String phoneVerification = VerificationCodeGenerator.generatePhoneVerification();
+        assertTrue(patternPhoneVerification.matcher(phoneVerification).matches());
     }
 }
