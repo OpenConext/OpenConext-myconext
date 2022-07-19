@@ -460,7 +460,7 @@ public class GuestIdpAuthenticationRequestFilter extends IdpAuthenticationReques
         //ensure the magic link can't be used twice
         samlAuthenticationRequest.setHash(null);
 
-        LOG.debug(String.format("Disabling magic link after use by %s ", user.getUsername()));
+        LOG.debug(String.format("Disabling SAML authentication request after login by %s ", user.getUsername()));
 
         authenticationRequestRepository.save(samlAuthenticationRequest);
 

@@ -1,10 +1,7 @@
 <script>
     import I18n from "i18n-js";
-    import Spinner from "../components/Spinner.svelte";
     import {onMount} from "svelte";
-    import ImageContainer from "../components/ImageContainer.svelte";
-    import icon from "../icons/redesign/undraw_Order_confirmed_re_g0if.svg";
-    import {fetchServiceNameByHash, rememberMe} from "../api";
+    import {rememberMe} from "../api";
     import Button from "../components/Button.svelte";
     import {conf, links} from "../stores/conf";
     import {proceed} from "../utils/sso";
