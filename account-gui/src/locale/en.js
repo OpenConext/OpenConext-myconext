@@ -191,7 +191,7 @@ I18n.translations.en = {
         info: "Your phone number will be used for security purposes, such as helping you get back into your account if you ever lose your app",
         text: "We will text you a code to verify your number",
         verify: "Verify this phone number",
-        placeHolder: "0612345678",
+        placeHolder: "+31 612345678",
         phoneIncorrect: "Phone number is incorrect"
     },
     congrats: {
