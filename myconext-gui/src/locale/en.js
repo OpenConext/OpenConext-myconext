@@ -317,7 +317,7 @@ I18n.translations.en = {
         header: "Download the eduID app",
         info: "Download and install <a href=\"https://eduid.nl/help\" target=\"_blank\">the eduID app</a> (issued by SURF) on your mobile device.",
         google: "https://play.google.com/store/apps/details?id=nl.eduvpn.app&hl=en&gl=US",
-        apple: "https://apps.apple.com/us/app/eduvpn-client/id1292557340",
+        apple: "https://testflight.apple.com/join/Ogk1TxKu",
         after: "When you've downloaded the eduID app on your phone, come back here and click next.",
         back: "Back",
         next: "Next"
