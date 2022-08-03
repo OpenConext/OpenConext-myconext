@@ -142,7 +142,7 @@ public class TiqrController {
         String metaDataUrl = String.format("%s/tiqr/metadata?enrollment_key=%s",
                 getEduIDServerBaseUrl(),
                 enrollmentKey);
-        String url = String.format("%s/tiqrenroll?metadata=%s",
+        String url = String.format("%s/tiqrenroll/?metadata=%s",
                 tiqrConfiguration.getEduIdAppBaseUrl(),
                 encode(metaDataUrl));
         Map<String, String> results = Map.of(
