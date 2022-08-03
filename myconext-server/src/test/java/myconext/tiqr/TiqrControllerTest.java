@@ -312,7 +312,7 @@ public class TiqrControllerTest extends AbstractIntegrationTest {
                 .formParam("notificationAddress", "1234567890")
                 .post("/tiqr/authentication")
                 .then()
-                .body("responseCode", equalTo(1));
+                .statusCode(200);
 
         Map<String, String> newStatus = given()
                 .queryParam("sessionKey", sessionKey)

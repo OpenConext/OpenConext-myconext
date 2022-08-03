@@ -365,7 +365,7 @@ public class TiqrController {
             return ResponseEntity.ok("OK");
         } catch (TiqrException | RuntimeException e) {
             LOG.error("Exception during enrollment for user: " + registration.getUserId(), e);
-            return ResponseEntity.ok(Map.of("responseCode", 101));
+            return ResponseEntity.ok("ERROR");
         }
     }
 
@@ -373,15 +373,15 @@ public class TiqrController {
      * Endpoint called by the Tiqr app to authenticate user
      */
     @PostMapping(value = "/authentication", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
-    public ResponseEntity<Map<String, Integer>> doAuthentication(@ModelAttribute AuthenticationData authenticationData) {
+    public ResponseEntity<Object> doAuthentication(@ModelAttribute AuthenticationData authenticationData) {
         try {
             //fingers crossed, in case of mismatch an exception is thrown
             tiqrService.postAuthentication(authenticationData);
             LOG.debug("Successful authentication for user " + authenticationData.getUserId());
-            return ResponseEntity.ok(Map.of("responseCode", 1));
+            return ResponseEntity.ok("OK");
         } catch (TiqrException | RuntimeException e) {
             LOG.error("Exception during authentication for user: " + authenticationData.getUserId(), e);
-            return ResponseEntity.ok(Map.of("responseCode", 201));
+            return ResponseEntity.ok("ERROR");
         }
     }
 
