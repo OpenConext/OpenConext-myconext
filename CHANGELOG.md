@@ -1,8 +1,11 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [7.0.0]
+- Add support for authenticating with a [tiqr](https://tiqr.org) app.
+
 ## [6.0.2]
-- Move health and onfo endpoint to /internal
+- Move health and info endpoint to /internal
 - Update dependencies
 
 ## [6.0.0]
