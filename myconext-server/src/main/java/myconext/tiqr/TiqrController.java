@@ -145,6 +145,7 @@ public class TiqrController {
         String url = String.format("%s/tiqrenroll/?metadata=%s",
                 tiqrConfiguration.getEduIdAppBaseUrl(),
                 encode(metaDataUrl));
+        LOG.debug(String.format("Enrollment url :  %s", url));
         Map<String, String> results = Map.of(
                 "enrollmentKey", enrollmentKey,
                 "url", url,
