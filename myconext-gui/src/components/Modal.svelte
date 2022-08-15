@@ -1,6 +1,7 @@
 <script>
     import I18n from "i18n-js";
     import Button from "./Button.svelte";
+    import DOMPurify from "dompurify";
 
     export let submit;
     export let cancel;
@@ -76,7 +77,7 @@
 
         <div class="modal-body">
             {#if question}
-                <p>{@html question}</p>
+                <p>{@html DOMPurify.sanitize(question)}</p>
             {/if}
             <slot></slot>
         </div>

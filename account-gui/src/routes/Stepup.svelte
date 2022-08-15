@@ -6,6 +6,7 @@
     import {fetchServiceName} from "../api";
     import Spinner from "../components/Spinner.svelte";
     import {conf, links} from "../stores/conf";
+    import DOMPurify from "dompurify";
 
     export let id;
     let explanation = null;
@@ -49,7 +50,7 @@
 <div class="home">
     <div class="card">
         <h2>{I18n.t("stepup.header")}</h2>
-        <p class="info">{@html I18n.t("stepup.info", {name: serviceName})}</p>
+        <p class="info">{@html I18n.t("stepup.info", {name: DOMPurify.sanitize(serviceName)})}</p>
         <Verification explanation={explanation} verified={false}/>
         <Button href="/proceed" onClick={() => proceed(false)}
                 className="full"
