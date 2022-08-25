@@ -146,6 +146,7 @@ public class UserController implements ServiceProviderHolder {
 
     @PostMapping("/idp/service/email")
     public List<String> knownAccount(@RequestBody Map<String, String> email) {
+        emailGuessingPreventor.potentialUserEmailGuess();
         User user = userRepository.findUserByEmail(email.get("email"))
                 .orElseThrow(() -> new UserNotFoundException(String.format("User with email %s not found", email.get("email"))));
         return user.loginOptions();
