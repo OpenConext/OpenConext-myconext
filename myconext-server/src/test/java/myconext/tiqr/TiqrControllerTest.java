@@ -16,11 +16,14 @@ import org.springframework.web.util.UriComponentsBuilder;
 import tiqr.org.model.*;
 import tiqr.org.secure.Challenge;
 import tiqr.org.secure.OCRA;
-import tiqr.org.secure.SecretCipher;
 
+import javax.crypto.Cipher;
+import javax.crypto.spec.GCMParameterSpec;
+import javax.crypto.spec.SecretKeySpec;
 import java.io.IOException;
 import java.net.URLEncoder;
 import java.nio.charset.Charset;
+import java.security.MessageDigest;
 import java.util.Arrays;
 import java.util.Base64;
 import java.util.List;
@@ -29,8 +32,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import static io.restassured.RestAssured.given;
+import static java.nio.charset.StandardCharsets.UTF_8;
 import static myconext.security.GuestIdpAuthenticationRequestFilter.BROWSER_SESSION_COOKIE_NAME;
-import static org.hamcrest.Matchers.equalTo;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class TiqrControllerTest extends AbstractIntegrationTest {
@@ -271,7 +274,7 @@ public class TiqrControllerTest extends AbstractIntegrationTest {
     }
 
     @Test
-    public void startAuthentication() throws IOException {
+    public void startAuthentication() throws Exception {
         SamlAuthenticationRequest samlAuthenticationRequest = doEnrollmment(true);
 
         Map<String, Object> results = given()
@@ -293,12 +296,11 @@ public class TiqrControllerTest extends AbstractIntegrationTest {
         assertEquals(AuthenticationStatus.PENDING.name(), status.get("status"));
 
         //mock the call from the device to the TiqrController
-        SecretCipher secretCipher = new SecretCipher("secret");
         Authentication authentication = authenticationRepository.findAuthenticationBySessionKey(sessionKey).get();
 
         Registration registration = registrationRepository.findRegistrationByUserId(samlAuthenticationRequest.getUserId()).get();
         registration = registrationRepository.findById(registration.getId()).get();
-        String decryptedSecret = secretCipher.decrypt(registration.getSecret());
+        String decryptedSecret = this.decryptRegistrationSecret(registration.getSecret());
         String ocra = OCRA.generateOCRA(decryptedSecret, authentication.getChallenge(), sessionKey);
 
         given()
@@ -355,7 +357,7 @@ public class TiqrControllerTest extends AbstractIntegrationTest {
     }
 
     @Test
-    public void manualAuthentication() throws IOException {
+    public void manualAuthentication() throws Exception {
         SamlAuthenticationRequest samlAuthenticationRequest = doEnrollmment(true);
 
         Map<String, Object> results = given()
@@ -366,12 +368,11 @@ public class TiqrControllerTest extends AbstractIntegrationTest {
                 });
         String sessionKey = (String) results.get("sessionKey");
         //mock the call from the device to the TiqrController
-        SecretCipher secretCipher = new SecretCipher("secret");
         Authentication authentication = authenticationRepository.findAuthenticationBySessionKey(sessionKey).get();
 
         Registration registration = registrationRepository.findRegistrationByUserId(samlAuthenticationRequest.getUserId()).get();
         registration = registrationRepository.findById(registration.getId()).get();
-        String decryptedSecret = secretCipher.decrypt(registration.getSecret());
+        String decryptedSecret = this.decryptRegistrationSecret(registration.getSecret());
         String ocra = OCRA.generateOCRA(decryptedSecret, authentication.getChallenge(), sessionKey);
 
         given()
@@ -463,4 +464,16 @@ public class TiqrControllerTest extends AbstractIntegrationTest {
                 .as(String.class);
         assertEquals(EnrollmentStatus.PROCESSED.name(), enrollmentStatus);
     }
+
+    private String decryptRegistrationSecret(String encryptedSecret) throws Exception {
+        MessageDigest sha = MessageDigest.getInstance("SHA-256");
+        String secret = "secret";
+        byte[] digest = sha.digest(secret.getBytes(UTF_8));
+        SecretKeySpec secretKey = new SecretKeySpec(Arrays.copyOf(digest, 32), "AES");
+        GCMParameterSpec parameterSpec = new GCMParameterSpec(128, secret.getBytes(UTF_8));
+        Cipher cipher = Cipher.getInstance("AES/GCM/NoPadding");
+        cipher.init(Cipher.DECRYPT_MODE, secretKey, parameterSpec);
+        return new String(cipher.doFinal(Base64.getDecoder().decode(encryptedSecret)));
+    }
+
 }

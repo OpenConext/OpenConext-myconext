@@ -53,7 +53,6 @@ public class TiqrController {
 
     private final AuthenticationRequestRepository authenticationRequestRepository;
     private final UserRepository userRepository;
-    private final EnrollmentRepository enrollmentRepository;
     private final ServiceProviderResolver serviceProviderResolver;
     private final SMSService smsService;
     private final String magicLinkUrl;
@@ -93,7 +92,6 @@ public class TiqrController {
                 tiqrConfiguration.getEncryptionSecret(),
                 tiqrConfiguration.getApns(),
                 tiqrConfiguration.getGcm());
-        this.enrollmentRepository = enrollmentRepository;
         this.registrationRepository = registrationRepository;
         this.authenticationRequestRepository = authenticationRequestRepository;
         this.userRepository = userRepository;
