@@ -1,6 +1,7 @@
 <script>
     import I18n from "i18n-js";
     import {navigate} from "svelte-routing";
+    import DOMPurify from "dompurify";
 
     export let icon;
     export let label;
@@ -70,7 +71,7 @@
      tabindex={index}>
     <span class="login-icon">{@html icon}</span>
     <span class="option-container">
-        <span class:has-sub-label={subLabel}>{@html translationKey ? I18n.t(`options.${translationKey}`) : label}</span>
+        <span class:has-sub-label={subLabel}>{@html DOMPurify.sanitize(translationKey ? I18n.t(`options.${translationKey}`) : label)}</span>
         {#if subLabel}
         <span class="sub-label">{subLabel}</span>
     {/if}
