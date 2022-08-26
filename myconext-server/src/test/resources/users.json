@@ -2,6 +2,7 @@
   {
     "uid": "1234567890",
     "email": "jdoe@example.com",
+    "password": "$2a$10$S5DMhg8WJyFGqwj22nuKze7tDNEO7FFqZFr8BI.idLpkn4b4vmPIm",
     "givenName": "John",
     "familyName": "Doe",
     "schacHomeOrganization": "surfguest.nl",

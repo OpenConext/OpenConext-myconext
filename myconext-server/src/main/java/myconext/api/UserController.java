@@ -2,6 +2,7 @@ package myconext.api;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.ObjectWriter;
 import com.yubico.webauthn.*;
 import com.yubico.webauthn.data.*;
 import com.yubico.webauthn.data.exception.Base64UrlException;
@@ -699,8 +700,12 @@ public class UserController implements ServiceProviderHolder {
     @GetMapping("sp/personal")
     public ResponseEntity personal(Authentication authentication) throws JsonProcessingException {
         User user = this.userFromAuthentication(authentication);
+        ObjectWriter objectWriter = objectMapper.writerWithDefaultPrettyPrinter();
+        String userString = objectMapper.writeValueAsString(user);
+        Map map = objectMapper.readValue(userString, Map.class);
+        map.remove("password");
         return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON)
-                .body(objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(user));
+                .body(objectWriter.writeValueAsString(map));
     }
 
 

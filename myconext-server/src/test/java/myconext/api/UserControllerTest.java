@@ -21,6 +21,8 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.util.MultiValueMap;
 import org.springframework.util.StringUtils;
@@ -415,7 +417,7 @@ public class UserControllerTest extends AbstractIntegrationTest {
         given()
                 .when()
                 .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
-                .body(new UpdateUserSecurityRequest(user.getId(), null, "secret", null))
+                .body(new UpdateUserSecurityRequest(user.getId(), "secret", "nope", null))
                 .put("/myconext/api/sp/security")
                 .then()
                 .statusCode(422);
@@ -423,8 +425,12 @@ public class UserControllerTest extends AbstractIntegrationTest {
 
     @Test
     public void updateUserSecurity() {
+        SecureRandom random = new SecureRandom();
+        PasswordEncoder passwordEncoder = new BCryptPasswordEncoder(-1, random);
+        System.out.println(passwordEncoder.encode("secret"));
+
         User user = userRepository.findOneUserByEmail("jdoe@example.com");
-        UpdateUserSecurityRequest updateUserSecurityRequest = new UpdateUserSecurityRequest(user.getId(), null, "correctSecret001", null);
+        UpdateUserSecurityRequest updateUserSecurityRequest = new UpdateUserSecurityRequest(user.getId(), "secret", "correctSecret001", null);
         given()
                 .when()
                 .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
@@ -519,6 +525,7 @@ public class UserControllerTest extends AbstractIntegrationTest {
                 .get("/myconext/api/sp/personal")
                 .as(Map.class);
         assertEquals("jdoe@example.com", res.get("email"));
+        assertFalse(res.containsKey("password"));
     }
 
     @Test
@@ -821,7 +828,7 @@ public class UserControllerTest extends AbstractIntegrationTest {
                 .as(new TypeRef<>() {
 
                 });
-        assertEquals(List.of(LoginOptions.FIDO.getValue(), LoginOptions.MAGIC.getValue()), loginOptions);
+        assertEquals(List.of(LoginOptions.FIDO.getValue(), LoginOptions.PASSWORD.getValue(), LoginOptions.MAGIC.getValue()), loginOptions);
     }
 
     @Test
