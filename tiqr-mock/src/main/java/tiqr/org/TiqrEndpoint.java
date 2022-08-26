@@ -22,7 +22,7 @@ import org.springframework.web.servlet.view.RedirectView;
 import tiqr.org.model.*;
 import tiqr.org.secure.Challenge;
 import tiqr.org.secure.OCRA;
-import tiqr.org.secure.SecretCipher;
+import tiqr.org.SecretCipher;
 
 import java.net.URI;
 import java.util.Arrays;
