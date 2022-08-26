@@ -5,7 +5,6 @@
     import {navigate} from "svelte-routing";
     import critical from "../icons/critical.svg";
     import Button from "../components/Button.svelte";
-    import {onMount} from "svelte";
     import Modal from "../components/Modal.svelte";
 
     const {validEmail} = require("../validation/regexp");
@@ -13,18 +12,12 @@
     let verifiedEmail = "";
     let duplicateEmail = false;
     let outstandingPasswordForgotten = false;
-    let back = "personal";
-
-    onMount(() => {
-        const urlSearchParams = new URLSearchParams(window.location.search);
-        back = urlSearchParams.get("back") || back;
-    })
 
     const update = (force = false) => {
         if (validEmail(verifiedEmail) && verifiedEmail.toLowerCase() !== $user.email.toLowerCase()) {
             updateEmail({...$user, email: verifiedEmail}, force)
                 .then(() => {
-                    navigate(back);
+                    history.back();
                     flash.setValue(I18n.t("email.updated", {email: verifiedEmail}));
                 }).catch(e => {
                 if (e.status === 409) {
@@ -37,7 +30,7 @@
     };
 
     const cancel = () => {
-        navigate(`/${back}`);
+        history.back();
     }
 
     $: emailEquality = verifiedEmail.toLowerCase() === $user.email.toLowerCase();
@@ -132,7 +125,7 @@
 </div>
 {#if outstandingPasswordForgotten}
     <Modal submit={() => update(true)}
-           cancel={() => navigate(back)}
+           cancel={() => history.back()}
            warning={true}
            question={I18n.t("email.outstandingPasswordForgottenConfirmation")}
            title={I18n.t("email.outstandingPasswordForgotten")}>

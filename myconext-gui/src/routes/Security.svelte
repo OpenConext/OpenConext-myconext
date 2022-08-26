@@ -326,13 +326,13 @@
         <table cellspacing="0">
             <thead></thead>
             <tbody>
-            <tr class="link" on:click={() => navigate("/edit-email?back=security")}>
+            <tr class="link" on:click={() => navigate("/edit-email")}>
                 <td class="attr">{I18n.t("security.useMagicLink")}</td>
                 <td class="value">
                     <div class="value-container">
                         <span>{$user.email}</span>
                         <a class="right-link" href="/edit-email"
-                           on:click|preventDefault|stopPropagation={() => navigate("/edit-email?back=security")}>{@html writeSvg}</a>
+                           on:click|preventDefault|stopPropagation={() => navigate("/edit-email")}>{@html writeSvg}</a>
                     </div>
                 </td>
             </tr>
