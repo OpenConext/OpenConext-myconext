@@ -10,6 +10,8 @@
     import Button from "../components/Button.svelte";
     import {validVerificationCode} from "../constants/regexp";
     import critical from "../icons/critical.svg";
+    import DOMPurify from "dompurify";
+
     const gmail = "/img/get-started-icon-gmail@2x-e80b706.png";
     const outlook = "/img/get-started-icon-outlook-55f9ac5.png";
     const resendMailAllowedTimeOut = $conf.emailSpamThresholdSeconds * 1000;
@@ -236,7 +238,7 @@
 
     <div class="magic-link">
         <h2 class="header">{I18n.t("magicLink.header")}</h2>
-        <p>{@html I18n.t("magicLink.info", {email: $user.email})}</p>
+        <p>{@html I18n.t("magicLink.info", {email: DOMPurify.sanitize($user.email)})}</p>
         <div class="spinner-container">
             <Spinner relative={true}/>
             <p>{I18n.t("magicLink.awaiting")}</p>
