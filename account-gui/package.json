@@ -16,19 +16,19 @@
     "mini-css-extract-plugin": "^0.8.0",
     "regenerator-runtime": "^0.13.5",
     "serialize-javascript": "^4.0.0",
-    "serve": "^11.2.0",
+    "serve": "^13",
     "style-loader": "^1.0.0",
     "svelte": "^3.49.0",
     "svelte-loader": "2.13.6",
     "svelte-preprocess": "^3.6.0",
     "svg-inline-loader": "^0.8.0",
-    "webpack": "^4.41.2",
-    "webpack-cli": "^3.3.9",
-    "webpack-dev-server": "^3.9.0"
+    "webpack": "^4",
+    "webpack-cli": "^4.10.0",
+    "webpack-dev-server": "^4.9"
   },
   "scripts": {
     "build": "cross-env NODE_ENV=production webpack",
-    "dev": "webpack-dev-server --open --content-base public --disable-host-check",
+    "dev": "webpack-dev-server --open public",
     "test": "jest src",
     "test:watch": "npm run test -- --watch"
   },
@@ -37,8 +37,8 @@
     "dompurify": "^2.3.10",
     "i18n-js": "^3.3.0",
     "js-cookie": "^2.2.1",
-    "node-sass": "^7.0.0",
     "postcss": "^8.4.5",
+    "sass": "^1",
     "svelte-routing": "^1.4.2"
   }
 }
