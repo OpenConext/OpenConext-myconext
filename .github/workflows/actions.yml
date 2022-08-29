@@ -22,9 +22,12 @@ jobs:
     - uses: actions/setup-node@v3
       with:
         node-version: 12
-    - name: Yarn Audit
+    - name: Yarn Audit myconext
       run: yarn audit --level high --groups dependencies optionalDependencies
       working-directory: myconext-gui
+    - name: Yarn Audit account
+      run: yarn audit --level high --groups dependencies optionalDependencies
+      working-directory: account-gui
     - name: Start MongoDB
       uses: supercharge/mongodb-github-action@1.3.0
       with:
