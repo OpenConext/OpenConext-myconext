@@ -6,6 +6,7 @@
   "devDependencies": {
     "@babel/core": "^7.7.2",
     "@babel/preset-env": "^7.7.1",
+    "@webpack-cli/serve": "^1.7.0",
     "babel-jest": "^24.9.0",
     "babel-loader": "^8.1.0",
     "core-js": "^3.6.4",
@@ -23,12 +24,12 @@
     "svelte-preprocess": "^3.6.0",
     "svg-inline-loader": "^0.8.0",
     "webpack": "^4",
-    "webpack-cli": "^3.3.9",
+    "webpack-cli": "^4.10.0",
     "webpack-dev-server": "^4.9"
   },
   "scripts": {
     "build": "cross-env NODE_ENV=production webpack",
-    "dev": "webpack-dev-server --open --content-base public --disable-host-check",
+    "dev": "webpack-dev-server --open public",
     "test": "jest src",
     "test:watch": "npm run test -- --watch"
   },
