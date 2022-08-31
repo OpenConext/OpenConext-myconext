@@ -101,6 +101,7 @@ oidc:
   idp-flow-redirect-url: http://localhost:8081/myconext/api/idp/oidc/redirect
   sp-flow-redirect-url: http://localhost:8081/myconext/api/sp/oidc/redirect
   base-url: https://connect.test2.surfconext.nl
+linked_accounts:
   # The duration that non validated linked accounts are valid - note that they are not removed and will be used for EPPN Pseudonymisation
   expiry-duration-days-non-validated: 180
   # The duration after which non validated linked accounts are removed

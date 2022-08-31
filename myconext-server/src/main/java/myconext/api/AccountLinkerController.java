@@ -78,8 +78,8 @@ public class AccountLinkerController {
             @Value("${oidc.idp-flow-redirect-url}") String idpFlowRedirectUri,
             @Value("${oidc.sp-flow-redirect-url}") String spFlowRedirectUri,
             @Value("${oidc.base-url}") String oidcBaseUrl,
-            @Value("${oidc.removal-duration-days-non-validated}") long removalNonValidatedDurationDays,
-            @Value("${oidc.removal-duration-days-validated}") long removalValidatedDurationDays,
+            @Value("${linked_accounts.removal-duration-days-non-validated}") long removalNonValidatedDurationDays,
+            @Value("${linked_accounts.removal-duration-days-validated}") long removalValidatedDurationDays,
             @Value("${account_linking.idp_external_validation_entity_id}") String idpExternalValidationEntityId,
             @Value("${account_linking.myconext_sp_entity_id}") String myConextSpEntityId,
             @Value("${feature.use_external_validation}") boolean useExternalValidationFeature) {
