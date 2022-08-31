@@ -59,8 +59,8 @@ public class AccountLinkerController {
     private final String magicLinkUrl;
     private final String idpErrorRedirectUrl;
     private final String spRedirectUrl;
-    private final long expiryNonValidatedDurationDays;
-    private final long expiryValidatedDurationDays;
+    private final long removalNonValidatedDurationDays;
+    private final long removalValidatedDurationDays;
     private final String idpExternalValidationEntityId;
     private final String myConextSpEntityId;
     private final boolean useExternalValidationFeature;
@@ -78,8 +78,8 @@ public class AccountLinkerController {
             @Value("${oidc.idp-flow-redirect-url}") String idpFlowRedirectUri,
             @Value("${oidc.sp-flow-redirect-url}") String spFlowRedirectUri,
             @Value("${oidc.base-url}") String oidcBaseUrl,
-            @Value("${oidc.expiry-duration-days-non-validated}") long expiryNonValidatedDurationDays,
-            @Value("${oidc.expiry-duration-days-validated}") long expiryValidatedDurationDays,
+            @Value("${oidc.removal-duration-days-non-validated}") long removalNonValidatedDurationDays,
+            @Value("${oidc.removal-duration-days-validated}") long removalValidatedDurationDays,
             @Value("${account_linking.idp_external_validation_entity_id}") String idpExternalValidationEntityId,
             @Value("${account_linking.myconext_sp_entity_id}") String myConextSpEntityId,
             @Value("${feature.use_external_validation}") boolean useExternalValidationFeature) {
@@ -93,8 +93,8 @@ public class AccountLinkerController {
         this.idpFlowRedirectUri = idpFlowRedirectUri;
         this.spFlowRedirectUri = spFlowRedirectUri;
         this.oidcBaseUrl = oidcBaseUrl;
-        this.expiryNonValidatedDurationDays = expiryNonValidatedDurationDays;
-        this.expiryValidatedDurationDays = expiryValidatedDurationDays;
+        this.removalNonValidatedDurationDays = removalNonValidatedDurationDays;
+        this.removalValidatedDurationDays = removalValidatedDurationDays;
         this.idpExternalValidationEntityId = idpExternalValidationEntityId;
         this.myConextSpEntityId = myConextSpEntityId;
         this.useExternalValidationFeature = useExternalValidationFeature;
@@ -272,7 +272,7 @@ public class AccountLinkerController {
 
         if (StringUtils.hasText(schacHomeOrganization)) {
             Date expiresAt = Date.from(new Date().toInstant()
-                    .plus(validateNames ? this.expiryValidatedDurationDays : this.expiryNonValidatedDurationDays, ChronoUnit.DAYS));
+                    .plus(validateNames ? this.removalValidatedDurationDays : this.removalNonValidatedDurationDays, ChronoUnit.DAYS));
             List<LinkedAccount> linkedAccounts = user.getLinkedAccounts();
             Optional<LinkedAccount> optionalLinkedAccount = linkedAccounts.stream()
                     .filter(linkedAccount -> linkedAccount.getSchacHomeOrganization().equals(schacHomeOrganization))

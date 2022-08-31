@@ -26,6 +26,8 @@ public class BeanConfig extends SamlIdentityProviderServerBeanConfiguration {
     private final int rememberMeMaxAge;
     private final int nudgeAppDays;
     private final int rememberMeQuestionAskedDays;
+    private final long expiryNonValidatedDurationDays;
+    private final long removalNonValidatedDurationDays;
     private final boolean secureCookie;
     private final String magicLinkUrl;
     private final MailBox mailBox;
@@ -41,6 +43,8 @@ public class BeanConfig extends SamlIdentityProviderServerBeanConfiguration {
                       @Value("${account_linking_context_class_ref.linked_institution}") String linkedInstitution,
                       @Value("${account_linking_context_class_ref.validate_names}") String validateNames,
                       @Value("${account_linking_context_class_ref.affiliation_student}") String affiliationStudent,
+                      @Value("${oidc.expiry-duration-days-non-validated}") long expiryNonValidatedDurationDays,
+                      @Value("${oidc.removal-duration-days-non-validated}") long removalNonValidatedDurationDays,
                       AuthenticationRequestRepository authenticationRequestRepository,
                       UserRepository userRepository,
                       UserLoginRepository userLoginRepository,
@@ -52,6 +56,8 @@ public class BeanConfig extends SamlIdentityProviderServerBeanConfiguration {
         this.nudgeAppDays = nudgeAppDays;
         this.rememberMeQuestionAskedDays = rememberMeQuestionAskedDays;
         this.secureCookie = secureCookie;
+        this.expiryNonValidatedDurationDays = expiryNonValidatedDurationDays;
+        this.removalNonValidatedDurationDays = removalNonValidatedDurationDays;
         this.authenticationRequestRepository = authenticationRequestRepository;
         this.userRepository = userRepository;
         this.userLoginRepository = userLoginRepository;
@@ -84,7 +90,9 @@ public class BeanConfig extends SamlIdentityProviderServerBeanConfiguration {
                 rememberMeQuestionAskedDays,
                 secureCookie,
                 magicLinkUrl,
-                mailBox);
+                mailBox,
+                expiryNonValidatedDurationDays,
+                removalNonValidatedDurationDays);
     }
 
     public Filter samlConfigurationFilter(SamlServerConfiguration serverConfig) {

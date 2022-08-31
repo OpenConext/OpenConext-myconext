@@ -18,22 +18,41 @@ import java.util.Date;
 import java.util.List;
 
 import static myconext.model.LinkedAccountTest.linkedAccount;
-import static myconext.security.GuestIdpAuthenticationRequestFilter.isUserVerifiedByInstitution;
 import static org.junit.Assert.*;
 
 public class GuestIdpAuthenticationRequestFilterTest {
 
+    private final int expiryNonValidatedDurationDays = 180;
+    private final int removalNonValidatedDurationDays = 360;
+
+    private final GuestIdpAuthenticationRequestFilter subject = new GuestIdpAuthenticationRequestFilter(null,
+            null,
+            null,
+            new MockServiceProviderResolver(),
+            null,
+            Mockito.mock(UserRepository.class),
+            Mockito.mock(UserLoginRepository.class),
+            90,
+            1,
+            1,
+            false,
+            null,
+            null,
+            expiryNonValidatedDurationDays,
+            removalNonValidatedDurationDays);
+
     @Test
     public void isUserVerifiedByInstitutionNoLinkedAccounts() {
         User user = AbstractIntegrationTest.user("s@s.com", "nl");
-        boolean userVerifiedByInstitution = isUserVerifiedByInstitution(user, null);
+        boolean userVerifiedByInstitution = subject.isUserVerifiedByInstitution(user, null);
         assertFalse(userVerifiedByInstitution);
     }
 
     @Test
     public void isUserVerifiedByInstitutionTrue() {
         User user = AbstractIntegrationTest.user("s@s.com", "nl");
-        LinkedAccount linkedAccount = linkedAccount(new Date(), Arrays.asList("student@mobi.com"));
+        Date createdAt = Date.from(new Date().toInstant().plus(removalNonValidatedDurationDays, ChronoUnit.DAYS)) ;
+        LinkedAccount linkedAccount = linkedAccount(createdAt, Arrays.asList("student@mobi.com"));
         user.getLinkedAccounts().add(linkedAccount);
         boolean userVerifiedByInstitution = userVerifiedByInstitution(user, ACR.LINKED_INSTITUTION);
         assertTrue(userVerifiedByInstitution);
@@ -42,7 +61,7 @@ public class GuestIdpAuthenticationRequestFilterTest {
     @Test
     public void isUserVerifiedByInstitutionExpired() {
         User user = AbstractIntegrationTest.user("s@s.com", "nl");
-        LinkedAccount linkedAccount = linkedAccount(Date.from(Instant.now().minus(365, ChronoUnit.DAYS)), Arrays.asList("affiliation"));
+        LinkedAccount linkedAccount = linkedAccount(Date.from(Instant.now().plus(10, ChronoUnit.DAYS)), Arrays.asList("affiliation"));
         user.getLinkedAccounts().add(linkedAccount);
         boolean userVerifiedByInstitution = userVerifiedByInstitution(user, ACR.VALIDATE_NAMES);
         assertFalse(userVerifiedByInstitution);
@@ -60,14 +79,15 @@ public class GuestIdpAuthenticationRequestFilterTest {
     @Test
     public void isUserVerifiedByInstitutionStudent() {
         User user = AbstractIntegrationTest.user("s@s.com", "nl");
-        LinkedAccount linkedAccount = linkedAccount(new Date(), Arrays.asList("student@example.com"));
+        Date createdAt = Date.from(new Date().toInstant().plus(removalNonValidatedDurationDays, ChronoUnit.DAYS)) ;
+        LinkedAccount linkedAccount = linkedAccount(createdAt, Arrays.asList("student@example.com"));
         user.getLinkedAccounts().add(linkedAccount);
         boolean userVerifiedByInstitution = userVerifiedByInstitution(user, ACR.AFFILIATION_STUDENT);
         assertTrue(userVerifiedByInstitution);
     }
 
     @Test
-    public void isUserVerifiedByInstitutionNoValidNames() {
+    public void isUserVerifiedByInstitutionValidNames() {
         User user = AbstractIntegrationTest.user("s@s.com", "nl");
         user.getLinkedAccounts().add(linkedAccount("John", "Doe", new Date()));
         boolean userVerifiedByInstitution = userVerifiedByInstitution(user, ACR.VALIDATE_NAMES);
@@ -75,7 +95,7 @@ public class GuestIdpAuthenticationRequestFilterTest {
     }
 
     @Test
-    public void isUserVerifiedByInstitutionValidNames() {
+    public void isUserVerifiedByInstitutionNoValidNames() {
         User user = AbstractIntegrationTest.user("s@s.com", "nl");
         user.getLinkedAccounts().add(linkedAccount("", "", new Date()));
         boolean userVerifiedByInstitution = userVerifiedByInstitution(user, ACR.VALIDATE_NAMES);
@@ -83,21 +103,17 @@ public class GuestIdpAuthenticationRequestFilterTest {
     }
 
     @Test
+    public void isUserVerifiedByInstitutionNoValidNamesAndExpired() {
+        User user = AbstractIntegrationTest.user("s@s.com", "nl");
+        Date createdAt = Date.from(Instant.now().plus(10, ChronoUnit.DAYS));
+        LinkedAccount linkedAccount = linkedAccount(createdAt, Arrays.asList("affiliation"));
+        user.getLinkedAccounts().add(linkedAccount);
+        boolean userVerifiedByInstitution = subject.isUserVerifiedByInstitution(user, Collections.emptyList());
+        assertFalse(userVerifiedByInstitution);
+    }
+
+    @Test
     public void attributes() {
-        GuestIdpAuthenticationRequestFilter subject =
-                new GuestIdpAuthenticationRequestFilter(null,
-                        null,
-                        null,
-                        new MockServiceProviderResolver(),
-                        null,
-                        Mockito.mock(UserRepository.class),
-                        Mockito.mock(UserLoginRepository.class),
-                        90,
-                        1,
-                        1,
-                        false,
-                        null,
-                        null);
         User user = new User();
         List<LinkedAccount> linkedAccounts = Arrays.asList(
                 linkedAccount("John", "Doe", createdAt(15)),
@@ -119,7 +135,7 @@ public class GuestIdpAuthenticationRequestFilterTest {
 
 
     private boolean userVerifiedByInstitution(User user, String acr) {
-        return GuestIdpAuthenticationRequestFilter.isUserVerifiedByInstitution(user, Collections.singletonList(acr));
+        return subject.isUserVerifiedByInstitution(user, Collections.singletonList(acr));
     }
 
 

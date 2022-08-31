@@ -8,7 +8,6 @@ import myconext.model.*;
 import myconext.repository.AuthenticationRequestRepository;
 import myconext.repository.UserLoginRepository;
 import myconext.repository.UserRepository;
-import myconext.tiqr.SURFSecureID;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.http.HttpMethod;
@@ -40,6 +39,8 @@ import java.io.IOException;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.nio.charset.Charset;
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -83,6 +84,8 @@ public class GuestIdpAuthenticationRequestFilter extends IdpAuthenticationReques
     private final ExecutorService executor;
     private final int nudgeAppDays;
     private final int rememberMeQuestionAskedDays;
+    private final long removalNonValidatedDurationDays;
+    private final long expiryNonValidatedDurationDays;
 
     public GuestIdpAuthenticationRequestFilter(SamlProviderProvisioning<IdentityProviderService> provisioning,
                                                SamlMessageStore<Assertion, HttpServletRequest> assertionStore,
@@ -96,7 +99,9 @@ public class GuestIdpAuthenticationRequestFilter extends IdpAuthenticationReques
                                                int rememberMeQuestionAskedDays,
                                                boolean secureCookie,
                                                String magicLinkUrl,
-                                               MailBox mailBox) {
+                                               MailBox mailBox,
+                                               long expiryNonValidatedDurationDays,
+                                               long removalNonValidatedDurationDays) {
         super(provisioning, assertionStore);
         this.ssoSamlRequestMatcher = new SamlRequestMatcher(provisioning, "SSO");
         this.magicSamlRequestMatcher = new SamlRequestMatcher(provisioning, "magic");
@@ -113,6 +118,8 @@ public class GuestIdpAuthenticationRequestFilter extends IdpAuthenticationReques
         this.secureCookie = secureCookie;
         this.magicLinkUrl = magicLinkUrl;
         this.mailBox = mailBox;
+        this.expiryNonValidatedDurationDays = expiryNonValidatedDurationDays;
+        this.removalNonValidatedDurationDays = removalNonValidatedDurationDays;
         this.executor = Executors.newSingleThreadExecutor();
     }
 
@@ -206,32 +213,36 @@ public class GuestIdpAuthenticationRequestFilter extends IdpAuthenticationReques
         }
     }
 
-    public static boolean isUserVerifiedByInstitution(User user, List<String> authenticationContextClassReferenceValues) {
-        Date now = new Date();
+    public boolean isUserVerifiedByInstitution(User user, List<String> authenticationContextClassReferenceValues) {
         List<LinkedAccount> linkedAccounts = user.getLinkedAccounts();
         if (CollectionUtils.isEmpty(linkedAccounts)) {
             return false;
         }
         authenticationContextClassReferenceValues = authenticationContextClassReferenceValues == null ?
                 Collections.emptyList() : authenticationContextClassReferenceValues;
+        boolean validatedName = hasValidatedName(user);
+        Instant now = new Date().toInstant();
         List<LinkedAccount> nonExpiredLinkedAccounts = linkedAccounts.stream()
-                .filter(linkedAccount -> now.toInstant().isBefore(linkedAccount.getExpiresAt().toInstant()))
-                .collect(toList());
+                .filter(linkedAccount -> {
+                    Instant expiresAt = linkedAccount.getExpiresAt().toInstant();
+                    if (!validatedName) {
+                        //We distinguish between removal-duration and expiry-duration if the name has not been validated
+                        expiresAt = expiresAt.minus(removalNonValidatedDurationDays, ChronoUnit.DAYS)
+                                .plus(expiryNonValidatedDurationDays, ChronoUnit.DAYS);
+                    }
+                    return now.isBefore(expiresAt);
+                }).collect(toList());
         boolean atLeastOneNotExpired = !CollectionUtils.isEmpty(nonExpiredLinkedAccounts);
         boolean hasRequiredStudentAffiliation = !authenticationContextClassReferenceValues.contains(ACR.AFFILIATION_STUDENT) ||
                 nonExpiredLinkedAccounts.stream()
                         .anyMatch(linkedAccount -> hasRequiredStudentAffiliation(linkedAccount.getEduPersonAffiliations()));
         boolean hasValidatedNames = !authenticationContextClassReferenceValues.contains(ACR.VALIDATE_NAMES) ||
-                hasValidatedName(user);
+                validatedName;
         return atLeastOneNotExpired && hasRequiredStudentAffiliation && hasValidatedNames;
     }
 
     public static boolean hasValidatedName(User user) {
-        return hasValidatedName(user.getLinkedAccounts());
-    }
-
-    private static boolean hasValidatedName(List<LinkedAccount> linkedAccounts) {
-        return linkedAccounts.stream().anyMatch(LinkedAccount::areNamesValidated);
+        return user.getLinkedAccounts().stream().anyMatch(LinkedAccount::areNamesValidated);
     }
 
     public static boolean hasRequiredStudentAffiliation(List<String> affiliations) {
@@ -305,7 +316,7 @@ public class GuestIdpAuthenticationRequestFilter extends IdpAuthenticationReques
 
         List<String> authenticationContextClassReferences = samlAuthenticationRequest.getAuthenticationContextClassReferences();
         boolean accountLinkingRequired = samlAuthenticationRequest.isAccountLinkingRequired() &&
-                !GuestIdpAuthenticationRequestFilter.isUserVerifiedByInstitution(user,
+                !this.isUserVerifiedByInstitution(user,
                         authenticationContextClassReferences);
 
         String charSet = Charset.defaultCharset().name();
