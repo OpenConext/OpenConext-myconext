@@ -287,29 +287,6 @@ I18n.translations.en = {
         cancel: "Cancel",
         confirm: "Confirm"
     },
-    migration: {
-        header: "Your eduID has been created!",
-        info: "Your Onegini account is succesfully migrated.",
-        info2: "From now on you must use your eduID guest account to logon to services where you previously used Onegini.",
-        info3: "Tip! Your eduID account by default doesn’t need a password (we will send a magic link to your email to sign you in), but if you want to, you can set one right now under the",
-        securityLink: " Security tab.",
-        link: "Show my account details"
-    },
-    migrationError: {
-        header: "Warning: email address already used for eduID",
-        info: "You already have an {{email}} eduID with the same email address as your Onegini account. You must therefore choose how you wish to proceed:",
-        sub1: "Continue with migrating your existing Onegini account to a new eduID. This means:",
-        sub1Inner1: "Existing SURFconext Teams memberships and authorisations within services belonging to your current Onegini account will be transferred to your new eduID.",
-        sub1Inner2: "Team memberships and authorisations linked to your current eduID will be lost.",
-        sub2: "Abort migration and continue with your existing eduID. This means:",
-        sub2Inner1: "You will continue to use your current eduID.",
-        sub2Inner2: "You can no longer use your existing Onegini account per 1 July 2020. Existing SURFconext Teams memberships and authorisations within services belonging to your current Onegini account will be lost.",
-        abortMigration: "Abort migration",
-        continueMigration: "Continue migration",
-        abort: "abort",
-        continue: "continue",
-        help: "Need help? Send an email to <a href=\"mailto:support@surfconext.nl\">support@surfconext.nl</a>."
-    },
     format: {
         creationDate: "{{date}} at {{hours}}:{{minutes}}"
     },

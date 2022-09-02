@@ -1,7 +1,6 @@
 package myconext.api;
 
 import myconext.exceptions.DuplicateUserEmailException;
-import myconext.exceptions.MigrationDuplicateUserEmailException;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.boot.web.servlet.error.DefaultErrorAttributes;
@@ -61,30 +60,6 @@ public class DefaultErrorControllerTest {
         Map<String, Object> body = (Map<String, Object>) responseEntity.getBody();
         assertEquals(400, body.get("status"));
         assertEquals("Conflict", body.get("error"));
-    }
-
-    @Test
-    public void errorMigration() throws URISyntaxException {
-        ResponseEntity responseEntity = doErrorMigration("/startSSO");
-
-        assertEquals(HttpStatus.FOUND, responseEntity.getStatusCode());
-        assertEquals("http://localhost:3001/migration-error", responseEntity.getHeaders().getLocation().toString());
-    }
-
-    @Test
-    public void errorMigrationApi() throws URISyntaxException {
-        ResponseEntity responseEntity = doErrorMigration("/myconext/api/sp/me");
-
-        assertEquals(HttpStatus.CONFLICT, responseEntity.getStatusCode());
-        assertEquals("jdoe@example.com", ((Map) responseEntity.getBody()).get("email"));
-    }
-
-    private ResponseEntity doErrorMigration(String requestUrl) throws URISyntaxException {
-        MockHttpServletRequest request = new MockHttpServletRequest();
-        request.setAttribute("org.springframework.boot.web.servlet.error.DefaultErrorAttributes.ERROR",
-                new MigrationDuplicateUserEmailException("jdoe@example.com", requestUrl));
-
-        return subject.error(request);
     }
 
 }

@@ -6,7 +6,6 @@
     import MagicLink from "./routes/MagicLink.svelte";
     import Confirm from "./routes/Confirm.svelte";
     import ConfirmStepup from "./routes/ConfirmStepup.svelte";
-    import Migration from "./routes/Migration.svelte";
     import LinkExpired from "./routes/LinkExpired.svelte";
     import MaxAttempts from "./routes/MaxAttempts.svelte";
     import NotFound from "./routes/NotFound.svelte";
@@ -190,7 +189,6 @@
                 </Route>
                 <Route path="/confirm" component={Confirm}/>
                 <Route path="/confirm-stepup" component={ConfirmStepup}/>
-                <Route path="/migration" component={Migration}/>
                 <Route path="/success" component={Success}/>
                 <Route path="/expired" component={LinkExpired}/>
                 <Route path="/max-attempts" component={MaxAttempts}/>

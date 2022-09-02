@@ -6,7 +6,6 @@
     import Landing from "./routes/Landing.svelte";
     import NotFound from "./routes/NotFound.svelte";
     import ConfirmUpdateEmail from "./routes/ConfirmUpdateEmail.svelte";
-    import MigrationError from "./routes/MigrationError.svelte";
     import Home from "./routes/Home.svelte";
     import Header from "./components/Header.svelte";
     import {me, configuration, oidcTokens} from "./api";
@@ -61,12 +60,7 @@
                         const urlSearchParams = new URLSearchParams(window.location.search);
                         const logout = urlSearchParams.get("logout");
                         const afterDelete = urlSearchParams.get("delete");
-                        if (e.status === 409) {
-                            e.json().then(res => {
-                                $duplicatedEmail = res.email;
-                                navigate("/migration-error");
-                            });
-                        } else if (logout) {
+                        if (logout) {
                             navigate("/landing?logout=true");
                         } else if (afterDelete) {
                             navigate("/landing?delete=true");
@@ -298,9 +292,6 @@
                     <Route path="/webauthn">
                         <Home bookmark="webauthn"/>
                     </Route>
-                    <Route path="/migration">
-                        <Home bookmark="migration"/>
-                    </Route>
                     <Route path="/forgot-password">
                         <Home bookmark="forgot-password"/>
                     </Route>
@@ -322,7 +313,6 @@
                 <Router url="{url}">
                     <Route path="/" component={Home}/>
                     <Route path="/landing" component={Landing}/>
-                    <Route path="/migration-error" component={MigrationError}/>
                     <Route component={NotFound}/>
                 </Router>
             </div>

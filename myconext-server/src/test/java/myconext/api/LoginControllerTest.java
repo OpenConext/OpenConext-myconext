@@ -21,9 +21,7 @@ public class LoginControllerTest extends AbstractIntegrationTest {
                 .get("/config")
                 .then()
                 .body("baseDomain", equalTo("test2.surfconext.nl"))
-                .body("loginUrl", equalTo("http://localhost:8081/login"))
-                .body("migrationUrl", equalTo(
-                        "https://my.test2.surfconext.nl/Shibboleth.sso/Login?entityID=http://mock-idp&target=/migration"));
+                .body("loginUrl", equalTo("http://localhost:8081/login"));
     }
 
     @Test

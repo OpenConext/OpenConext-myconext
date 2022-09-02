@@ -73,46 +73,6 @@ public class ShibbolethPreAuthenticatedProcessingFilterTest extends AbstractInte
                 .statusCode(403);
     }
 
-    @Test
-    public void migrationConflict() {
-        Headers headers = headers(UUID.randomUUID().toString(), "jdoe@example.com", oneGiniEntityId);
-        given()
-                .headers(headers)
-                .when()
-                .get("/myconext/api/sp/me")
-                .then()
-                .statusCode(HttpStatus.CONFLICT.value())
-                .body("email", equalTo("jdoe@example.com"));
-    }
-
-    @Test
-    public void migrationConflictMerged() {
-        String uid = UUID.randomUUID().toString();
-        Headers headers = headers(uid, "jdoe@example.com", oneGiniEntityId);
-        given()
-                .headers(headers)
-                .when()
-                .get("/myconext/api/sp/migrate/merge")
-                .then()
-                .statusCode(HttpStatus.OK.value())
-                .body("email", equalTo("jdoe@example.com"));
-        assertEquals("jdoe@example.com", userRepository.findUserByUid(uid).get().getEmail());
-    }
-
-    @Test
-    public void migrationConflictProceed() {
-        String uid = UUID.randomUUID().toString();
-        Headers headers = headers(uid, "jdoe@example.com", oneGiniEntityId);
-        given()
-                .headers(headers)
-                .when()
-                .get("/myconext/api/sp/migrate/proceed")
-                .then()
-                .statusCode(HttpStatus.OK.value())
-                .body("email", equalTo("jdoe@example.com"));
-        assertEquals(false, userRepository.findUserByUid(uid).isPresent());
-    }
-
     private Headers headers(String uid, String email, String authenticatingAuthority) {
         return new Headers(
                 new Header(SHIB_UID, uid),

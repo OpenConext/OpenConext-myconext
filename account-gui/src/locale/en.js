@@ -204,12 +204,6 @@ I18n.translations.en = {
         browserPrompt: "Click the button below to test a security key. Please follow the instructions given by your browser.",
         start: "Test"
     },
-    migration: {
-        header: "Migrate to an <br/>eduID guest account",
-        info1: "SURF will phase out the use of Onegini. To retain access, you must migrate your Onegini account to an eduID account.",
-        info2: "You only need to click the button and log in with your existing Onegini account once. We will then migrate your account to eduID and send you an email after completion.",
-        link: "Start migration"
-    },
     affiliationMissing: {
         header: "Account linked, but...",
         info: "Your eduID is successfully linked, however the institution you choose did not provide the correct affiliation.",

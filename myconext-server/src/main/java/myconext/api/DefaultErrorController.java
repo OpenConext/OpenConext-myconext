@@ -1,6 +1,6 @@
 package myconext.api;
 
-import myconext.exceptions.MigrationDuplicateUserEmailException;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -58,16 +58,6 @@ public class DefaultErrorController implements ErrorController {
             //https://github.com/spring-projects/spring-boot/issues/3057
             ResponseStatus annotation = AnnotationUtils.getAnnotation(error.getClass(), ResponseStatus.class);
             statusCode = annotation != null ? annotation.value() : BAD_REQUEST;
-            if (error instanceof MigrationDuplicateUserEmailException) {
-                MigrationDuplicateUserEmailException duplicateUserEmailException = (MigrationDuplicateUserEmailException) error;
-                if (duplicateUserEmailException.getRequestUrl().endsWith("startSSO")) {
-                    // We only want to redirect for non api calls
-                    return ResponseEntity.status(302)
-                            .location(new URI(this.redirectUrl + "/migration-error"))
-                            .build();
-                }
-                result.put("email", duplicateUserEmailException.getEmail());
-            }
         }
         result.remove("message");
         result.put("status", statusCode.value());

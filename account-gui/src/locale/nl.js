@@ -204,12 +204,6 @@ I18n.translations.nl = {
         browserPrompt: "Klik op de onderstaande knop om een beveligingssleutel te testen. Volg daarbij de instructies van je browser op.",
         start: "Test"
     },
-    migration: {
-        header: "Migreer naar <br/>eduID",
-        info1: "SURF zal het gebruik van Onegini geleidelijk uitfaseren. Om toegang te behouden, moet je je Onegini-account migreren naar eduID.",
-        info2: "Je hoeft slechts op de knop te klikken en je één keer aan te melden met je bestaande Onegini account. We maken vervolgens een nieuw eduID aan en sturen je na voltooiing een e-mail.",
-        link: "Start migratie"
-    },
     affiliationMissing: {
         header: "Account is gekoppeld, maar...",
         info: "Je eduID is succesvol gekoppeld, maar de instelling die je hebt gekozen heeft niet de juiste attributen teruggegeven.",

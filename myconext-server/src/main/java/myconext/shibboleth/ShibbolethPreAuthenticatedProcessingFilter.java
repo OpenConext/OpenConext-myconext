@@ -1,7 +1,6 @@
 package myconext.shibboleth;
 
 
-import myconext.exceptions.MigrationDuplicateUserEmailException;
 import myconext.manage.ServiceProviderResolver;
 import myconext.model.User;
 import myconext.repository.UserRepository;
@@ -61,26 +60,6 @@ public class ShibbolethPreAuthenticatedProcessingFilter extends AbstractPreAuthe
             return null;
         }
         Optional<User> optionalUser = userRepository.findUserByUid(uid);
-        if (!optionalUser.isPresent()) {
-            Optional<User> optionalUserByEmail = userRepository.findUserByEmail(email.trim());
-            if (optionalUserByEmail.isPresent()) {
-                User existingUser = optionalUserByEmail.get();
-                //If we would provision this email we would introduce a duplicate email
-                String requestURI = request.getRequestURI();
-                if (requestURI.endsWith("sp/migrate/merge")) {
-                    //We will provision a new user, so we delete the current one
-                    LOG.info("Migrate oneGini account to eduID account");
-                    userRepository.delete(existingUser);
-                } else if (requestURI.endsWith("sp/migrate/proceed")) {
-                    //Now discard everything from the IdP and use the current account
-                    LOG.info("Not migrating oneGini account to eduID account");
-                    optionalUser = optionalUserByEmail;
-                } else {
-                    //need to be picked up by the client
-                    throw new MigrationDuplicateUserEmailException(email, request.getRequestURI());
-                }
-            }
-        }
         String preferredLanguage = cookieByName(request, "lang").map(Cookie::getValue).orElse("en");
         return optionalUser.orElseGet(() ->
                 provisionUser(uid, schacHomeOrganization, givenName, familyName, email, preferredLanguage));

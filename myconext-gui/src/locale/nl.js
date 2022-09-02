@@ -288,29 +288,6 @@ I18n.translations.nl = {
         cancel: "Annuleren",
         confirm: "Bevestigen"
     },
-    migration: {
-        header: "Je eduID is aangemaakt!",
-        info: "Je Onegini-account is succesvol gemigreerd.",
-        info2: "Vanaf nu moet je eduID gebruiken om in te loggen bij diensten waar je voorheen Onegini gebruikte.",
-        info3: "Tip! je eduID heeft standaard geen wachtwoord nodig (we sturen een magische link naar je e-mail om in te loggen), maar als je wilt, kan je toch een wachtwoord instellen op het ",
-        securityLink: " tabblad Beveiliging.",
-        link: "Naar mijn account gegevens"
-    },
-    migrationError: {
-        header: "Let op: eduID met zelfde e-mailadres bestaat al",
-        info: "Je hebt al een eduID met hetzelfde e-mailadres als je Onegini-account. Je hebt daarom nu twee keuzes:",
-        sub1: "Doorgaan met migreren van je bestaande Onegini-account naar een nieuw eduID. Dit betekent:",
-        sub1Inner1: "Teamlidmaatschappen in SURFconext Teams en autorisaties binnen diensten van je bestaande Onegini-account gaan mee naar je nieuwe eduID.",
-        sub1Inner2: "Teamlidmaatschappen en autorisaties voor diensten van je bestaande eduID gaan verloren.",
-        sub2: "Migratie afbreken en doorgaan met je bestaande eduID. Dit betekent:",
-        sub2Inner1: "Je blijft je bestaande eduID gebruiken.",
-        sub2Inner2: "Je bestaande Onegini-account kun je per 1 juli 2020 niet meer gebruiken. Teamlidmaatschappen in SURFconext Teams en autorisaties binnen diensten van dit Onegini-account gaan verloren.",
-        abortMigration: "Migratie afbreken ",
-        continueMigration: "Doorgaan met migreren",
-        abort: "afbreken",
-        continue: "doorgaan",
-        help: "Hulp nodig? Stuur een e-mail naar <a href=\"mailto:support@surfconext.nl\">support@surfconext.nl</a>."
-    },
     format: {
         creationDate: "{{date}} om {{hours}}:{{minutes}}"
     },

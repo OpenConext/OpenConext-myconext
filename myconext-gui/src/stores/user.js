@@ -22,7 +22,6 @@ export const user = writable({
 export const config = writable({
     loginUrl: "",
     baseDomain: "",
-    migrationLandingPageUrl: "",
     myConextUrlGuestIdp: "",
     eduIDWebAuthnUrl: "",
     magicLinkUrl: "",
