@@ -35,6 +35,7 @@ import java.net.URLEncoder;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
+import java.time.Instant;
 import java.util.*;
 
 import static myconext.crypto.HashGenerator.hash;
@@ -292,6 +293,8 @@ public class TiqrController {
         Optional<Cookie> optionalTiqrCookie = cookieByName(request, TIQR_COOKIE_NAME);
         boolean tiqrCookiePresent = optionalTiqrCookie.isPresent();
         boolean sendPushNotification = tiqrCookiePresent && this.tiqrConfiguration.isPushNotificationsEnabled();
+        // Reset any outstanding suspensions
+        rateLimitEnforcer.unsuspendUserAfterTiqrSuccess(user);
         Authentication authentication = tiqrService.startAuthentication(
                 user.getId(),
                 String.format("%s %s", user.getGivenName(), user.getFamilyName()),
@@ -308,7 +311,7 @@ public class TiqrController {
     }
 
     @GetMapping("/poll-authentication")
-    public ResponseEntity<Map<String, String>> authenticationStatus(@RequestParam("sessionKey") String sessionKey,
+    public ResponseEntity<Map<String, Object>> authenticationStatus(@RequestParam("sessionKey") String sessionKey,
                                                                     @RequestParam("id") String authenticationRequestId) throws TiqrException {
         Authentication authentication = tiqrService.authenticationStatus(sessionKey);
         AuthenticationStatus status = authentication.getStatus();
@@ -316,7 +319,7 @@ public class TiqrController {
         LOG.debug(String.format("Polling authentication for %s with status %s",
                 authentication.getUserDisplayName(), authentication.getStatus()));
 
-        Map<String, String> body = new HashMap<>();
+        Map<String, Object> body = new HashMap<>();
         body.put("status", status.name());
         if (status.equals(AuthenticationStatus.SUCCESS)) {
             SamlAuthenticationRequest samlAuthenticationRequest = authenticationRequestRepository.findById(authenticationRequestId).orElseThrow(ExpiredAuthenticationException::new);
@@ -337,6 +340,17 @@ public class TiqrController {
 
             body.put("redirect", this.magicLinkUrl);
             body.put("hash", samlAuthenticationRequest.getHash());
+        } else if (status.equals(AuthenticationStatus.SUSPENDED)) {
+            String userID = authentication.getUserID();
+            User user = userRepository.findById(userID).orElseThrow(() -> new UserNotFoundException(String.format("User %s not found", authentication.getUserDisplayName())));
+            Object suspendedUntil = user.getSurfSecureId().get(SURFSecureID.SUSPENDED_UNTIL);
+            // Can happen, because of race condition between unsuspending and Tiqr authentication
+            if (suspendedUntil != null) {
+                long time = suspendedUntil instanceof Date ? ((Date)suspendedUntil).getTime() : ((Instant)suspendedUntil).getEpochSecond();
+                body.put(SURFSecureID.SUSPENDED_UNTIL, time);
+            } else {
+                body.put(SURFSecureID.SUSPENDED_UNTIL, Instant.now().getEpochSecond());
+            }
         }
         return ResponseEntity.ok(body);
     }
@@ -355,10 +369,9 @@ public class TiqrController {
      */
     @PostMapping(value = "/enrollment", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
     public ResponseEntity<Object> doEnrollment(@ModelAttribute Registration registration,
-                                                             @RequestParam("enrollment_secret") String enrollmentSecret) {
+                                               @RequestParam("enrollment_secret") String enrollmentSecret) {
         registration.setEnrollmentSecret(enrollmentSecret);
         try {
-            //fingers crossed, in case of mismatch an exception is thrown
             Registration savedRegistration = tiqrService.enrollData(registration);
             LOG.debug("Successful enrollment for user " + savedRegistration.getUserId());
             return ResponseEntity.ok("OK");
@@ -373,13 +386,27 @@ public class TiqrController {
      */
     @PostMapping(value = "/authentication", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
     public ResponseEntity<Object> doAuthentication(@ModelAttribute AuthenticationData authenticationData) {
+        String userId = authenticationData.getUserId();
+        User user = userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException(userId));
+        if (!rateLimitEnforcer.isUserAllowedTiqrVerification(user)) {
+            return ResponseEntity.ok("ERROR");
+        }
         try {
-            //fingers crossed, in case of mismatch an exception is thrown
             tiqrService.postAuthentication(authenticationData);
-            LOG.debug("Successful authentication for user " + authenticationData.getUserId());
+            LOG.debug("Successful authentication for user " + userId);
+            rateLimitEnforcer.unsuspendUserAfterTiqrSuccess(user);
             return ResponseEntity.ok("OK");
         } catch (TiqrException | RuntimeException e) {
-            LOG.error("Exception during authentication for user: " + authenticationData.getUserId(), e);
+            //Do not show stacktrace
+            LOG.error(String.format("Exception during authentication for user %s, message %s",
+                    userId,
+                    e.getMessage()));
+            rateLimitEnforcer.suspendUserAfterTiqrFailure(user);
+            try {
+                tiqrService.suspendAuthentication(authenticationData.getSessionKey());
+            } catch (TiqrException ex) {
+                //Normally bad practice, but nothing can be done about it
+            }
             return ResponseEntity.ok("ERROR");
         }
     }

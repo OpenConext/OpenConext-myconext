@@ -7,7 +7,7 @@
     import pushIcon from "../icons/redesign/undraw_Push_notifications_re_t84m.svg";
     import ImageContainer from "../components/ImageContainer.svelte";
     import {user} from "../stores/user";
-    import {poll} from "../utils/poll";
+    import {poll, suspensionMinutes} from "../utils/poll";
     import {authenticationStatus} from "../constants/authenticationStatus";
     import critical from "../icons/critical.svg";
     import {links} from "../stores/conf";
@@ -27,12 +27,15 @@
     let showTOTPLink = false;
     let status;
     let successResult = null;
+    let suspendedResult = null;
     let sessionKey = "";
     let onMobile = "ontouchstart" in document.documentElement;
 
     let refs = Array(6).fill("");
     let totp = Array(6).fill("");
     let wrongResponse = false;
+
+    $: minutes = suspendedResult ? suspensionMinutes(suspendedResult["suspended-until"]) : null;
 
     const toggleShowTOTPLink = () => {
         showTOTPLink = !showTOTPLink;
@@ -97,6 +100,7 @@
                         if (success) {
                             successResult = res;
                         }
+                        suspendedResult = res.status === authenticationStatus.SUSPENDED ? res : null;
                         return success || timeOut;
                     },
                     interval: 1000,
@@ -167,6 +171,12 @@
         align-items: center;
         color: var(--color-primary-red);
         margin: 25px 0;
+
+    }
+
+    div.suspended {
+        display: flex;
+        flex-direction: column;
     }
 
 
@@ -205,7 +215,7 @@
         {/if}
     </ImageContainer>
 
-    {#if showQrCode}
+    {#if showQrCode }
         <div class="info-row">
             <span>{I18n.t("useApp.offline")}
                 <a href="/qr"
@@ -251,7 +261,25 @@
         </span>
         </div>
     {/if}
-
+    {#if suspendedResult}
+        <div class="error">
+            <span class="svg">{@html critical}</span>
+            <div class="suspended">
+                <span>{I18n.t("useApp.suspendedResult")}</span>
+                {#if minutes > 0}
+                    <span>{I18n.t("useApp.accountSuspended",
+                        {
+                            minutes: minutes,
+                            plural: I18n.t(`useApp.${minutes === 1 ? "minute" : "minutes"}`)
+                        }
+                    )}
+                    </span>
+                {:else}
+                    <span>{I18n.t("useApp.accountNotSuspended")}</span>
+                {/if}
+            </div>
+        </div>
+    {/if}
 {/if}
 
 

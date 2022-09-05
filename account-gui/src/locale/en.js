@@ -167,7 +167,12 @@ I18n.translations.en = {
         timeOutInfoFirst: "Your session timed out. Click this ",
         timeOutInfoLast: " to try again.",
         timeOutInfoLink: "link",
-        responseIncorrect: "The response is invalid."
+        responseIncorrect: "The response is invalid.",
+        suspendedResult: "The verification from your eduID app failed. ",
+        accountNotSuspended: "You can try again.",
+        accountSuspended: "You'll have to wait {{minutes}} {{plural}} before you can try again.",
+        minutes: "minutes",
+        minute: "minute"
     },
     enrollApp: {
         header: "Finish setup in the eduID app"

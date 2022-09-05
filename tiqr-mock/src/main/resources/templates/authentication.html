@@ -52,9 +52,14 @@
                     <td>Created</td>
                     <td th:text="${authentication.created}"></td>
                 </tr>
+                <tr>
+                    <td>Updated</td>
+                    <td th:text="${authentication.updated}"></td>
+                </tr>
                 </tbody>
             </table>
             <div class="actions">
+                <a class="button fail" th:href="@{/authenticated/{id}(id=${authentication.sessionKey},fail=true)}">Fail authentication</a>
                 <a class="button" th:href="@{/authenticated/{id}(id=${authentication.sessionKey})}">Finish authentication</a>
             </div>
         </div>

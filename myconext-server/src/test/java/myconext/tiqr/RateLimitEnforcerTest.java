@@ -6,9 +6,11 @@ import myconext.repository.UserRepository;
 import org.junit.Test;
 import org.mockito.Mockito;
 
-import static myconext.tiqr.SURFSecureID.RATE_LIMIT;
-import static myconext.tiqr.SURFSecureID.RATE_LIMIT_UPDATED;
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import java.time.Instant;
+import java.util.Map;
+
+import static myconext.tiqr.SURFSecureID.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class RateLimitEnforcerTest {
 
@@ -43,6 +45,26 @@ public class RateLimitEnforcerTest {
         user.getSurfSecureId().put(RATE_LIMIT_UPDATED, System.currentTimeMillis() - 1000 * 60 * 45);
         rateLimitEnforcer.checkRateLimit(user);
         assertEquals(0, user.getSurfSecureId().get(RATE_LIMIT));
+    }
+
+    @Test
+    public void suspendUserAfterTiqrFailure() {
+        User user = new User();
+        Map<String, Object> surfSecureId = user.getSurfSecureId();
+
+        rateLimitEnforcer.suspendUserAfterTiqrFailure(user);
+        assertEquals(1, (int) surfSecureId.get(SUSPENDED_ATTEMPTS));
+
+        rateLimitEnforcer.suspendUserAfterTiqrFailure(user);
+        assertEquals(2, (int) surfSecureId.get(SUSPENDED_ATTEMPTS));
+
+        Instant suspendedUntil = (Instant) surfSecureId.get(SUSPENDED_UNTIL);
+        assertTrue(suspendedUntil.isAfter(Instant.now()));
+
+        assertFalse(rateLimitEnforcer.isUserAllowedTiqrVerification(user));
+
+        rateLimitEnforcer.unsuspendUserAfterTiqrSuccess(user);
+        assertTrue(rateLimitEnforcer.isUserAllowedTiqrVerification(user));
     }
 
 }

@@ -391,6 +391,75 @@ public class TiqrControllerTest extends AbstractIntegrationTest {
         assertEquals(AuthenticationStatus.SUCCESS.name(), newStatus.get("status"));
     }
 
+    @Test
+    public void errorAuthentication() throws Exception {
+        SamlAuthenticationRequest samlAuthenticationRequest = doEnrollmment(true);
+
+        Map<String, Object> results = given()
+                .body(new TiqrRequest(samlAuthenticationRequest.getId(), "jdoe@example.com"))
+                .contentType(ContentType.JSON)
+                .post("/tiqr/start-authentication")
+                .as(new TypeRef<>() {
+                });
+        assertNotNull(results.get("qr"));
+        assertFalse((Boolean) results.get("tiqrCookiePresent"));
+
+        String sessionKey = (String) results.get("sessionKey");
+        Map<String, String> status = given()
+                .queryParam("sessionKey", sessionKey)
+                .queryParam("id", samlAuthenticationRequest.getId())
+                .get("/tiqr/poll-authentication")
+                .as(new TypeRef<>() {
+                });
+        assertEquals(AuthenticationStatus.PENDING.name(), status.get("status"));
+
+        String s = given()
+                .contentType(ContentType.URLENC)
+                .formParam("sessionKey", sessionKey)
+                .formParam("userId", samlAuthenticationRequest.getUserId())
+                .formParam("response", "nope")
+                .formParam("language", "en")
+                .formParam("operation", "login")
+                .formParam("notificationType", "APNS")
+                .formParam("notificationAddress", "1234567890")
+                .post("/tiqr/authentication")
+                .asString();
+        assertEquals("ERROR", s);
+
+        Map<String, String> newStatus = given()
+                .queryParam("sessionKey", sessionKey)
+                .queryParam("id", samlAuthenticationRequest.getId())
+                .get("/tiqr/poll-authentication")
+                .as(new TypeRef<>() {
+                });
+        assertEquals(AuthenticationStatus.SUSPENDED.name(), newStatus.get("status"));
+        long suspendedUntil = Long.parseLong(newStatus.get(SURFSecureID.SUSPENDED_UNTIL));
+
+        s = given()
+                .contentType(ContentType.URLENC)
+                .formParam("sessionKey", sessionKey)
+                .formParam("userId", samlAuthenticationRequest.getUserId())
+                .formParam("response", "nope")
+                .formParam("language", "en")
+                .formParam("operation", "login")
+                .formParam("notificationType", "APNS")
+                .formParam("notificationAddress", "1234567890")
+                .post("/tiqr/authentication")
+                .asString();
+        assertEquals("ERROR", s);
+
+        newStatus = given()
+                .queryParam("sessionKey", sessionKey)
+                .queryParam("id", samlAuthenticationRequest.getId())
+                .get("/tiqr/poll-authentication")
+                .as(new TypeRef<>() {
+                });
+        assertEquals(AuthenticationStatus.SUSPENDED.name(), newStatus.get("status"));
+        long suspendedUntilNext = Long.parseLong(newStatus.get(SURFSecureID.SUSPENDED_UNTIL));
+        assertTrue(suspendedUntilNext > suspendedUntil);
+
+    }
+
     private SamlAuthenticationRequest doEnrollmment(boolean finishRegistration) throws IOException {
         String authenticationRequestId = samlAuthnRequest();
         User user = user("jdoe@example.com");

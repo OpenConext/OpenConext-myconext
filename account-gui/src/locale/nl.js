@@ -167,7 +167,12 @@ I18n.translations.nl = {
         timeOutInfoFirst: "Je sessie is verlopen. Klik op deze ",
         timeOutInfoLast: " om het opnieuw te proberen.",
         timeOutInfoLink: "link",
-        responseIncorrect: "De code is niet juist."
+        responseIncorrect: "De code is niet juist.",
+        suspendedResult: "De verficatie van je eduID app is mislukt. ",
+        accountNotSuspended: "Je kan het opnieuw proberen.",
+        accountSuspended: "Je zal {{minutes}} {{plural}} moeten wachten totdat je het opnieuw kan proberen.",
+        minutes: "minuten",
+        minute: "minuut"
     },
     enrollApp: {
         header: "Voltooi de installatie in de eduID app"

@@ -15,6 +15,7 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.View;
@@ -22,7 +23,6 @@ import org.springframework.web.servlet.view.RedirectView;
 import tiqr.org.model.*;
 import tiqr.org.secure.Challenge;
 import tiqr.org.secure.OCRA;
-import tiqr.org.SecretCipher;
 
 import java.net.URI;
 import java.util.Arrays;
@@ -117,6 +117,7 @@ public class TiqrEndpoint {
     @GetMapping("/authentications")
     public ModelAndView authentications() {
         List<Authentication> authentications = findAll(Authentication.class, "status", AuthenticationStatus.PENDING.name());
+        authentications.addAll(findAll(Authentication.class, "status", AuthenticationStatus.SUSPENDED.name()));
         Map<String, Object> body = Map.of(
                 "authentications", authentications,
                 "environment", environment
@@ -140,7 +141,8 @@ public class TiqrEndpoint {
     }
 
     @GetMapping("/authenticated/{sessionKey}")
-    public View authenticated(@PathVariable("sessionKey") String sessionKey) {
+    public View authenticated(@PathVariable("sessionKey") String sessionKey,
+                              @RequestParam(name = "fail", required = false, defaultValue = "false") boolean fail) {
         Authentication authentication = findAuthentication(sessionKey);
         String url = String.format("%s/tiqr/authentication", eduIDBaseUrl);
 
@@ -153,7 +155,7 @@ public class TiqrEndpoint {
         MultiValueMap<String, String> map = new LinkedMultiValueMap<>();
         map.add("sessionKey", sessionKey);
         map.add("userId", authentication.getUserID());
-        map.add("response", ocra);
+        map.add("response", fail ? "nope" : ocra);
         map.add("language", "nl");
         map.add("operation", "login");
         map.add("notificationType", "APNS");
@@ -163,7 +165,7 @@ public class TiqrEndpoint {
 
         restTemplate.exchange(request, Void.class);
 
-        return new RedirectView("/enrollments");
+        return new RedirectView(fail ? "/authentication/" + sessionKey : "/enrollments");
     }
 
     @GetMapping("/registrations")

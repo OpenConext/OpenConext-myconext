@@ -16,3 +16,10 @@ export const poll = async ({ fn, validate, interval, maxAttempts }) => {
 
     return new Promise(executePoll);
 };
+
+export const suspensionMinutes = suspendUntilEpochMilliseconds => {
+    const epochNow = new Date().getTime();
+    const milliDiff = suspendUntilEpochMilliseconds - epochNow;
+    const minuteDiff = Math.round(milliDiff / 1000 / 60);
+    return minuteDiff < 1 ? 0 : minuteDiff;
+}

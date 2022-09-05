@@ -4,11 +4,12 @@ import myconext.exceptions.TooManyRequestsException;
 import myconext.model.User;
 import myconext.repository.UserRepository;
 
-import java.time.Clock;
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
+import java.util.Date;
 import java.util.Map;
 
-import static myconext.tiqr.SURFSecureID.RATE_LIMIT;
-import static myconext.tiqr.SURFSecureID.RATE_LIMIT_UPDATED;
+import static myconext.tiqr.SURFSecureID.*;
 
 public class RateLimitEnforcer {
 
@@ -34,5 +35,31 @@ public class RateLimitEnforcer {
         }
         surfSecureId.put(RATE_LIMIT_UPDATED, System.currentTimeMillis());
         userRepository.save(user);
+    }
+
+    public void suspendUserAfterTiqrFailure(User user) {
+        Map<String, Object> surfSecureId = user.getSurfSecureId();
+        int attempts = (int) surfSecureId.merge(SUSPENDED_ATTEMPTS, 1, (i, j) -> (int) i + 1);
+        surfSecureId.put(SUSPENDED_UNTIL, Instant.now().plus((int) Math.pow(attempts - 1, 2), ChronoUnit.MINUTES));
+        userRepository.save(user);
+    }
+
+    public void unsuspendUserAfterTiqrSuccess(User user) {
+        Map<String, Object> surfSecureId = user.getSurfSecureId();
+        if (surfSecureId.containsKey(SUSPENDED_UNTIL)) {
+            surfSecureId.remove(SUSPENDED_ATTEMPTS);
+            surfSecureId.remove(SUSPENDED_UNTIL);
+            userRepository.save(user);
+        }
+    }
+
+    public boolean isUserAllowedTiqrVerification(User user) {
+        Map<String, Object> surfSecureId = user.getSurfSecureId();
+        if (surfSecureId.containsKey(SUSPENDED_UNTIL)) {
+            Object suspendedUntil = surfSecureId.get(SUSPENDED_UNTIL);
+            Instant suspendedUntilInstant = suspendedUntil instanceof Date ? ((Date) suspendedUntil).toInstant() : (Instant) suspendedUntil;
+            return Instant.now().isAfter(suspendedUntilInstant);
+        }
+        return true;
     }
 }

@@ -76,6 +76,11 @@ a.button {
     margin-bottom: 0;
 }
 
+a.fail {
+    background-color: #fff;
+    color: #0077c8;
+}
+
 a.home {
     position: absolute;
     right: 26px;
