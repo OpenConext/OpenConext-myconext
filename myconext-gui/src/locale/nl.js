@@ -327,7 +327,7 @@ I18n.translations.nl = {
         backupCode: "Vraag een back-upcode aan.",
         backupCodeInfo: "De code kan worden gebruikt om in te loggen.",
         save: "Bewaar de code ergens veilig.",
-        active: "Deze code is nu actief, maar je kan op elk moment een nieuwe code aanmaken binnen mijn eduID.",
+        active: "Deze code is nu actief en je eduID app is klaar om te gebruiken.",
         copy: "Kopieer de code",
         copied: "Gekopieerd",
         continue: "Mijn code is veilig. Doorgaan",
@@ -344,7 +344,7 @@ I18n.translations.nl = {
     congrats: {
         header: "Succes",
         info: "Je kunt nu de eduID app gebruiken om snel in te loggen bij diensten waarvoor je moet inloggen met je eduID.",
-        next: "Afronden"
+        next: "Terug naar instellingen"
     },
     deactivate: {
         titleDelete: "Deactiveer je eduID app",

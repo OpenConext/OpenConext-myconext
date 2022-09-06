@@ -45,7 +45,7 @@
         <ImageContainer icon={icon} margin={true}/>
         <Button href={"/next"}
                 onClick={nextStep}
-                medium={true}
+                large={true}
                 disabled={loading}
                 label={I18n.t("congrats.next")}/>
     </div>

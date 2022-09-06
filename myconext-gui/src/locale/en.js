@@ -325,7 +325,7 @@ I18n.translations.en = {
         backupCode: "Request a backup code.",
         backupCodeInfo: "The code can be used to sign in with.",
         save: "Save the code somewhere safe.",
-        active: "This code is active now, but you can generate a new code within My-eduID anytime.",
+        active: "This code is active now and your eduID app is ready to be used.",
         copy: "Copy the code",
         copied: "Copied",
         continue: "My code is safe. Continue",
@@ -342,7 +342,7 @@ I18n.translations.en = {
     congrats: {
         header: "Success",
         info: "You can now use the eduID app to quickly login to services which require you to login with your eduID.",
-        next: "Finish"
+        next: "Back to settings"
     },
     deactivate: {
         titleDelete: "Deactivate your eduID app",
