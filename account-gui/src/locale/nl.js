@@ -190,6 +190,7 @@ I18n.translations.nl = {
         copy: "Kopieer de code",
         copied: "Gekopieerd",
         continue: "Mijn code is veilig. Doorgaan",
+        leaveConfirmation: "Weet je zeker dat je de pagina wilt verlaten? De registratie wordt afgebroken."
     },
     phoneVerification: {
         header: "Voeg een herstel telefoonnummer toe",

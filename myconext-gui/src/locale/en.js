@@ -329,6 +329,7 @@ I18n.translations.en = {
         copy: "Copy the code",
         copied: "Copied",
         continue: "My code is safe. Continue",
+        leaveConfirmation: "Are you sure you want to leave the page? Changes will not be saved."
     },
     phoneVerification: {
         header: "Add a recovery phone number",

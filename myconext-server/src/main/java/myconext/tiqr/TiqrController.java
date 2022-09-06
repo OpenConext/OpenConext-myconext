@@ -193,8 +193,13 @@ public class TiqrController {
     }
 
     private ResponseEntity<Map<String, String>> doGenerateBackupCode(User user) throws TiqrException {
-        String recoveryCode = VerificationCodeGenerator.generateBackupCode();
-        user.getSurfSecureId().put(SURFSecureID.RECOVERY_CODE, recoveryCode.replaceAll(" ", ""));
+        Registration registration = registrationRepository.findRegistrationByUserId(user.getId()).orElseThrow(IllegalArgumentException::new);
+        if (!registration.getStatus().equals(RegistrationStatus.INITIALIZED)) {
+            throw new ForbiddenException();
+        }
+        Map<String, Object> surfSecureId = user.getSurfSecureId();
+        String recoveryCode = (String) surfSecureId
+                .computeIfAbsent(SURFSecureID.RECOVERY_CODE, k -> VerificationCodeGenerator.generateBackupCode().replaceAll(" ", ""));
         userRepository.save(user);
 
         tiqrService.finishRegistration(user.getId());

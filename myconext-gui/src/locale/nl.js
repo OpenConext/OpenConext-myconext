@@ -331,6 +331,7 @@ I18n.translations.nl = {
         copy: "Kopieer de code",
         copied: "Gekopieerd",
         continue: "Mijn code is veilig. Doorgaan",
+        leaveConfirmation: "Are you sure you want to leave the page? Changes will not be saved."
     },
     phoneVerification: {
         header: "Voeg een recovery telefoonnummer",

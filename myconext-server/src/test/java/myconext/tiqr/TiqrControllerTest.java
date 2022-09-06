@@ -48,7 +48,7 @@ public class TiqrControllerTest extends AbstractIntegrationTest {
                 .get("/tiqr/generate-backup-code")
                 .as(new TypeRef<>() {
                 });
-        assertEquals(9, results.get("recoveryCode").length());
+        assertEquals(8, results.get("recoveryCode").length());
 
         Registration registration = registrationRepository.findRegistrationByUserId(samlAuthenticationRequest.getUserId()).get();
         assertEquals(RegistrationStatus.FINALIZED, registration.getStatus());

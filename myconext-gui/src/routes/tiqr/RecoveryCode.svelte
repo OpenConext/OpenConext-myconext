@@ -9,13 +9,27 @@
     let showSpinner = true;
     let recoveryCode = "";
     let redirect;
+    let error;
     let copied = false;
 
+    const onConfirmRefresh = e => {
+        e.preventDefault();
+        window.removeEventListener("beforeunload", onConfirmRefresh, {capture: true});
+        return e.returnValue = I18n.t("recovery.leaveConfirmation");
+    }
+
     onMount(() => {
-        generateBackupCode().then(res => {
-            recoveryCode = res.recoveryCode;
-            redirect = res.redirect;
+        generateBackupCode()
+            .then(res => {
+                const recoveryCodeRaw = res.recoveryCode;
+                recoveryCode = recoveryCodeRaw.substring(0, 4) + " " + recoveryCodeRaw.substring(4);
+                redirect = res.redirect;
+                showSpinner = false;
+                window.addEventListener("beforeunload", onConfirmRefresh, {capture: true});
+            }).catch(() => {
             showSpinner = false;
+            recoveryCode = "";
+            error = true;
         })
     });
 
@@ -26,6 +40,7 @@
     }
 
     const next = () => {
+        window.removeEventListener("beforeunload", onConfirmRefresh, {capture: true});
         navigate(`/congrats`)
     }
 
@@ -93,6 +108,7 @@
                     label={copied ? I18n.t("recovery.copied") : I18n.t("recovery.copy")}/>
             <Button onClick={next}
                     larger={true}
+                    disabled={error}
                     href={"/next"}
                     label={I18n.t("recovery.continue")}/>
         </div>
