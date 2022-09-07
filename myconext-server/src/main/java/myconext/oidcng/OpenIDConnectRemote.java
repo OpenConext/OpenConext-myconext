@@ -47,7 +47,7 @@ public class OpenIDConnectRemote implements OpenIDConnect {
         }
         String unspecifiedID = String.format("urn:collab:person:%s:%s", user.getSchacHomeOrganization(), user.getUid());
 
-        LOG.info(String.format("Start fetching tokens from oidc-ng for %s", user.getEmail()));
+        LOG.info(String.format("Fetching tokens from oidc-ng for %s", user.getEmail()));
 
         HttpEntity<?> requestEntity = new HttpEntity<>(headers);
         String uriString = UriComponentsBuilder.fromUri(oidcngUri)
@@ -57,7 +57,7 @@ public class OpenIDConnectRemote implements OpenIDConnect {
                 restTemplate.exchange(uriString, HttpMethod.GET, requestEntity, new ParameterizedTypeReference<List<Map<String, Object>>>() {
                 });
         List<Map<String, Object>> body = responseEntity.getBody();
-        LOG.info(String.format("Tokens result from oidc-ng %s", body));
+        LOG.debug(String.format("Tokens result from oidc-ng %s", body));
         return body;
     }
 
