@@ -1,6 +1,8 @@
 package myconext.sms;
 
+import java.util.Locale;
+
 public interface SMSService {
 
-    void send(String mobile, String code);
+    String send(String mobile, String code, Locale locale);
 }

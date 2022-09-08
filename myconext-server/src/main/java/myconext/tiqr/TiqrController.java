@@ -211,23 +211,23 @@ public class TiqrController {
     }
 
     @PostMapping("/sp/send-phone-code")
-    public ResponseEntity<Map<String, String>> sendPhoneCodeForSp(org.springframework.security.core.Authentication authentication, @RequestBody Map<String, String> requestBody) {
+    public ResponseEntity<Map<String, String>> sendPhoneCodeForSp(HttpServletRequest request, org.springframework.security.core.Authentication authentication, @RequestBody Map<String, String> requestBody) {
         User user = userFromAuthentication(authentication);
         String phoneNumber = requestBody.get("phoneNumber");
-        return doSendPhoneCode(user, phoneNumber);
+        return doSendPhoneCode(user, phoneNumber, request);
     }
 
     @PostMapping("/send-phone-code")
-    public ResponseEntity<Map<String, String>> sendPhoneCode(@RequestParam("hash") String hash, @RequestBody Map<String, String> requestBody) {
+    public ResponseEntity<Map<String, String>> sendPhoneCode(HttpServletRequest request, @RequestParam("hash") String hash, @RequestBody Map<String, String> requestBody) {
         User user = getUserFromAuthenticationRequest(hash);
         String phoneNumber = requestBody.get("phoneNumber");
-        return doSendPhoneCode(user, phoneNumber);
+        return doSendPhoneCode(user, phoneNumber, request);
     }
 
-    private ResponseEntity<Map<String, String>> doSendPhoneCode(User user, String phoneNumber) {
+    private ResponseEntity<Map<String, String>> doSendPhoneCode(User user, String phoneNumber, HttpServletRequest request) {
         String phoneVerification = VerificationCodeGenerator.generatePhoneVerification();
 
-        smsService.send(phoneNumber, phoneVerification);
+        smsService.send(phoneNumber, phoneVerification, request.getLocale());
 
         Map<String, Object> surfSecureId = user.getSurfSecureId();
         surfSecureId.put(SURFSecureID.PHONE_VERIFICATION_CODE, phoneVerification);
@@ -351,7 +351,7 @@ public class TiqrController {
             Object suspendedUntil = user.getSurfSecureId().get(SURFSecureID.SUSPENDED_UNTIL);
             // Can happen, because of race condition between unsuspending and Tiqr authentication
             if (suspendedUntil != null) {
-                long time = suspendedUntil instanceof Date ? ((Date)suspendedUntil).getTime() : ((Instant)suspendedUntil).getEpochSecond();
+                long time = suspendedUntil instanceof Date ? ((Date) suspendedUntil).getTime() : ((Instant) suspendedUntil).getEpochSecond();
                 body.put(SURFSecureID.SUSPENDED_UNTIL, time);
             } else {
                 body.put(SURFSecureID.SUSPENDED_UNTIL, Instant.now().getEpochSecond());
@@ -427,13 +427,13 @@ public class TiqrController {
     }
 
     @GetMapping("/sp/send-deactivation-phone-code")
-    public ResponseEntity<Map<String, String>> sendDeactivationPhoneCodeForSp(org.springframework.security.core.Authentication authentication) {
+    public ResponseEntity<Map<String, String>> sendDeactivationPhoneCodeForSp(HttpServletRequest request, org.springframework.security.core.Authentication authentication) {
         User user = userFromAuthentication(authentication);
         String phoneNumber = (String) user.getSurfSecureId().get(SURFSecureID.PHONE_NUMBER);
         if (!StringUtils.hasText(phoneNumber)) {
             throw new ForbiddenException();
         }
-        return doSendPhoneCode(user, phoneNumber);
+        return doSendPhoneCode(user, phoneNumber, request);
     }
 
     @PostMapping("/sp/deactivate-app")

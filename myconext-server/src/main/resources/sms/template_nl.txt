@@ -1,0 +1,1 @@
+eduID: je verificatiecode is %s. Deze code verloopt over 10 minuten.
