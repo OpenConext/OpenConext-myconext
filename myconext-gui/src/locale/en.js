@@ -367,7 +367,7 @@ I18n.translations.en = {
         title: "Recovery method",
         info: "After you installed the eduID app you choose a recovery method. If you want to change your recovery method you'll first have to authenticate with the eduID app.",
         phoneNumber: "Phone number",
-        startTiqrAuthentication: "Start authentication",
+        startTiqrAuthentication: "Change",
         code: "Code"
     },
     useApp: {

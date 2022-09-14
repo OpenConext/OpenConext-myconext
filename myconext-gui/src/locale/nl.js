@@ -368,7 +368,7 @@ I18n.translations.nl = {
         title: "Backup methode",
         info: "Je hebt de eduID app geïnstalleerd en je account bevestigd. Om je back-up methode te wijzigen, moet je je eerst authenticeren met de eduID-app.",
         phoneNumber: "Mobiel nummer",
-        startTiqrAuthentication: "Start authenticatie",
+        startTiqrAuthentication: "Wijzig",
         code: "Code"
     },
     useApp: {
