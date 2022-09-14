@@ -1,7 +1,10 @@
 <script>
     import I18n from "i18n-js";
-    import {validatePhoneCode} from "../../api";
+    import {reValidatePhoneCode, validatePhoneCode} from "../../api";
     import CodeVerifier from "./CodeVerifier.svelte";
+
+    export let change = false;
+
 </script>
 
 <style lang="scss">
@@ -34,8 +37,8 @@
     <div class="inner-container">
         <h2 class="header">{I18n.t("sms.header")}</h2>
         <p class="explanation">{I18n.t("sms.info")}</p>
-        <CodeVerifier navigateTo="/congrats"
-                      action={validatePhoneCode}
-                      phoneVerificationURL="/phone-verification"/>
+        <CodeVerifier navigateTo={change ? `/change-congrats` : `/congrats`}
+                      action={change ? reValidatePhoneCode : validatePhoneCode}
+                      phoneVerificationURL={`/${change ? "change-" : ""}phone-verification`}/>
     </div>
 </div>

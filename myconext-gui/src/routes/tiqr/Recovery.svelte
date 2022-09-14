@@ -5,12 +5,14 @@
     import LoginOption from "../../components/LoginOption.svelte";
     import {navigate} from "svelte-routing";
 
+    export let change = false;
+
     const phoneNumber = () => {
-        navigate(`/phone-verification`);
+        navigate(`/${change ? "change-" : ""}phone-verification`);
     }
 
     const backUpCode = () => {
-        navigate(`/recovery-code`);
+        navigate(`/${change ? "change-" : ""}recovery-code`);
     }
 
 </script>
@@ -45,8 +47,8 @@
 <div class="recovery">
     <div class="inner-container">
 
-        <h2 class="header">{I18n.t("recovery.header")}</h2>
-        <p class="explanation">{I18n.t("recovery.info")}</p>
+        <h2 class="header">{I18n.t(`recovery.${change ? "changeHeader" : "header"}`)}</h2>
+        <p class="explanation">{I18n.t(`recovery.${change ? "changeInfo" : "info"}`)}</p>
         <p class="methods">{I18n.t("recovery.methods")}</p>
         <div class="phone-number">
             <LoginOption icon={phoneIcon}

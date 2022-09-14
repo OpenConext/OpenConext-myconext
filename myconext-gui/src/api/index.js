@@ -164,3 +164,28 @@ export function deactivateApp(verificationCode) {
 export function sendDeactivationPhoneCode() {
     return fetchJson("tiqr/sp/send-deactivation-phone-code")
 }
+// change recovery method endpoints
+export function startTiqrAuthentication() {
+    return postPutJson("/tiqr/sp/start-authentication", {}, "POST");
+}
+
+export function pollAuthentication(sessionKey) {
+    return fetchJson(`/tiqr/sp/poll-authentication?sessionKey=${sessionKey}`)
+}
+
+export function manualResponse(sessionKey, response) {
+    return postPutJson("/tiqr/sp/manual-response",{sessionKey, response}, "POST")
+}
+
+export function regenerateBackupCode() {
+    return fetchJson(`/tiqr/sp/re-generate-backup-code`)
+}
+
+export function reTextPhoneNumber(phoneNumber) {
+    return postPutJson(`/tiqr/sp/re-send-phone-code`,{phoneNumber}, "POST")
+}
+
+export function reValidatePhoneCode(phoneVerification) {
+    return postPutJson(`/tiqr/sp/re-verify-phone-code`,{phoneVerification}, "POST")
+}
+

@@ -96,8 +96,9 @@
         margin-bottom: 30px;
 
         &.no-bottom-margin {
-            margin-bottom:0 ;
+            margin-bottom: 0;
         }
+
         tr.link {
             cursor: pointer;
 
@@ -121,12 +122,12 @@
         }
 
         td.attr {
-            width: 40%;
-            padding: 20px;
+            width: 43%;
+            padding: 20px 25px 20px 10px;
         }
 
         td.value {
-            width: 60%;
+            width: 57%;
             font-weight: bold;
         }
 
@@ -259,18 +260,25 @@
             margin-left: 20px;
             height: auto;
         }
+
         .has-app-image {
             display: flex;
             flex-direction: column;
         }
+
         :global(.has-app-image svg) {
             width: 210px;
             margin: 20px;
             height: auto;
         }
+
         :global(.has-app-image a) {
             margin-top: auto;
             margin-left: auto;
+        }
+
+        :global(.has-app-image a.down) {
+            margin-top: 20px;
         }
     }
 
@@ -294,6 +302,10 @@
                             </td>
                         </tr>
                         <tr>
+                            <td class="attr">{I18n.t("security.tiqr.backupMethod")}</td>
+                            <td class="value">{I18n.t(`security.tiqr.${$user.registration.recoveryCode ? "code" : "sms"}`)}</td>
+                        </tr>
+                        <tr>
                             <td class="attr">{I18n.t("security.tiqr.lastLogin")}</td>
                             <td class="value">{dateFromEpoch($user.registration.updated, true)}</td>
                         </tr>
@@ -307,8 +319,12 @@
                 <div class="has-app-image">
                     {@html hashApp}
                     <Button label={I18n.t("security.tiqr.deactivate")}
-                            medium={true}
+                            large={true}
                             onClick={() => navigate("/deactivate-app")}/>
+                    <Button label={I18n.t("security.tiqr.backupCodes")}
+                            large={true}
+                            className="down"
+                            onClick={() => navigate("/backup-codes")}/>
                 </div>
             {:else}
                 <div class="information">

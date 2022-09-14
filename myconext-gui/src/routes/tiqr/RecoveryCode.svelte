@@ -2,9 +2,11 @@
     import I18n from "i18n-js";
     import Button from "../../components/Button.svelte";
     import {onMount} from "svelte";
-    import {generateBackupCode} from "../../api";
+    import {generateBackupCode, regenerateBackupCode} from "../../api";
     import Spinner from "../../components/Spinner.svelte";
     import {navigate} from "svelte-routing";
+
+    export let change = false;
 
     let showSpinner = true;
     let recoveryCode = "";
@@ -19,7 +21,8 @@
     }
 
     onMount(() => {
-        generateBackupCode()
+        const promise = change ? regenerateBackupCode : generateBackupCode;
+        promise()
             .then(res => {
                 const recoveryCodeRaw = res.recoveryCode;
                 recoveryCode = recoveryCodeRaw.substring(0, 4) + " " + recoveryCodeRaw.substring(4);
@@ -41,7 +44,7 @@
 
     const next = () => {
         window.removeEventListener("beforeunload", onConfirmRefresh, {capture: true});
-        navigate(`/congrats`)
+        navigate(change ? `/change-congrats` : `/congrats`);
     }
 
 </script>

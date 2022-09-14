@@ -4,8 +4,10 @@
     import critical from "../../icons/critical.svg";
     import Spinner from "../../components/Spinner.svelte";
     import Button from "../../components/Button.svelte";
-    import {textPhoneNumber} from "../../api";
+    import {reTextPhoneNumber, textPhoneNumber} from "../../api";
     import {navigate} from "svelte-routing";
+
+    export let change = false;
 
     let initial = true;
     let phoneNumber = "";
@@ -19,8 +21,9 @@
         phoneNumberIncorrect = !validPhoneNumber(phoneNumber);
         if (!phoneNumberIncorrect) {
             showSpinner = true;
-            textPhoneNumber(phoneNumber.replaceAll(" ", "").replaceAll("-", ""))
-                .then(() => navigate(`phone-confirmation`));
+            const promise = change ? reTextPhoneNumber : textPhoneNumber;
+            promise(phoneNumber.replaceAll(" ", "").replaceAll("-", ""))
+                .then(() => navigate(`${change ? "change-" : ""}phone-confirmation`));
         }
     }
 

@@ -33,6 +33,9 @@
     import PhoneConfirmation from "./tiqr/PhoneConfirmation.svelte";
     import Congrats from "./tiqr/Congrats.svelte";
     import DeactivateApp from "./tiqr/DeactivateApp.svelte";
+    import BackupCodes from "./BackupCodes.svelte";
+    import UseApp from "./tiqr/UseApp.svelte";
+    import ChangeCongrats from "./tiqr/ChangeCongrats.svelte";
 
     export let bookmark = "home";
 
@@ -56,10 +59,17 @@
         {name: "get-app", alias: "security", component: GetApp, ignore: true},
         {name: "enroll-app", alias: "security", component: EnrollApp, ignore: true},
         {name: "recovery", alias: "security", component: Recovery, ignore: true},
+        {name: "change-recovery", alias: "security", component: Recovery, ignore: true, props: {change: true} },
         {name: "recovery-code", alias: "security", component: RecoveryCode, ignore: true},
+        {name: "change-recovery-code", alias: "security", component: RecoveryCode, ignore: true, props: {change: true} },
+        {name: "backup-codes", alias: "security", component: BackupCodes, ignore: true},
+        {name: "use-app", alias: "security", component: UseApp, ignore: true},
         {name: "phone-verification", alias: "security", component: PhoneVerification, ignore: true},
         {name: "phone-confirmation", alias: "security", component: PhoneConfirmation, ignore: true},
+        {name: "change-phone-verification", alias: "security", component: PhoneVerification, ignore: true, props: {change: true} },
+        {name: "change-phone-confirmation", alias: "security", component: PhoneConfirmation, ignore: true, props: {change: true} },
         {name: "congrats", alias: "security", component: Congrats, ignore: true},
+        {name: "change-congrats", alias: "security", component: ChangeCongrats, ignore: true },
         {name: "deactivate-app", alias: "security", component: DeactivateApp, ignore: true},
 
     ];
@@ -227,7 +237,7 @@
     </nav>
     <div class="component-container">
         <Flash/>
-        <svelte:component this={currentTab.component}/>
+        <svelte:component this={currentTab.component} {...currentTab.props}/>
     </div>
 
 </div>

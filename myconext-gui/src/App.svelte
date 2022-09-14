@@ -255,20 +255,41 @@
                     <Route path="/recovery">
                         <Home bookmark="recovery"/>
                     </Route>
+                    <Route path="/change-recovery">
+                        <Home bookmark="change-recovery"/>
+                    </Route>
                     <Route path="/recovery-code">
                         <Home bookmark="recovery-code"/>
+                    </Route>
+                    <Route path="/change-recovery-code">
+                        <Home bookmark="change-recovery-code"/>
                     </Route>
                     <Route path="/phone-verification">
                         <Home bookmark="phone-verification"/>
                     </Route>
+                    <Route path="/change-phone-verification">
+                        <Home bookmark="change-phone-verification"/>
+                    </Route>
                     <Route path="/phone-confirmation">
                         <Home bookmark="phone-confirmation"/>
+                    </Route>
+                    <Route path="/change-phone-confirmation">
+                        <Home bookmark="change-phone-confirmation"/>
                     </Route>
                     <Route path="/congrats">
                         <Home bookmark="congrats"/>
                     </Route>
+                    <Route path="/change-congrats">
+                        <Home bookmark="change-congrats"/>
+                    </Route>
                     <Route path="/deactivate-app">
                         <Home bookmark="deactivate-app"/>
+                    </Route>
+                    <Route path="/backup-codes">
+                        <Home bookmark="backup-codes"/>
+                    </Route>
+                    <Route path="/use-app">
+                        <Home bookmark="use-app"/>
                     </Route>
                     <Route path="/services">
                         <Home bookmark="services"/>

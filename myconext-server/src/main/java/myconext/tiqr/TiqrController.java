@@ -42,12 +42,14 @@ import static myconext.crypto.HashGenerator.hash;
 import static myconext.log.MDCContext.logWithContext;
 import static myconext.security.CookieResolver.cookieByName;
 import static myconext.security.GuestIdpAuthenticationRequestFilter.TIQR_COOKIE_NAME;
+import static myconext.tiqr.SURFSecureID.*;
 
 @RestController
 @RequestMapping("/tiqr")
 public class TiqrController {
 
     private static final Log LOG = LogFactory.getLog(TiqrController.class);
+    private static final String SESSION_KEY = "sessionKey";
 
     private final TiqrService tiqrService;
     private final TiqrConfiguration tiqrConfiguration;
@@ -178,7 +180,19 @@ public class TiqrController {
     @GetMapping("/sp/generate-backup-code")
     public ResponseEntity<Map<String, String>> generateBackupCodeForSp(org.springframework.security.core.Authentication authentication) throws TiqrException {
         User user = userFromAuthentication(authentication);
-        return doGenerateBackupCode(user);
+        return doGenerateBackupCode(user, false);
+    }
+
+    @GetMapping("/sp/re-generate-backup-code")
+    public ResponseEntity<Map<String, String>> regenerateBackupCodeForSp(HttpServletRequest request,
+                                                                         org.springframework.security.core.Authentication secAuthentication) throws TiqrException {
+        User user = userFromAuthentication(secAuthentication);
+        String sessionKey = (String) request.getSession().getAttribute(SESSION_KEY);
+        Authentication authentication = tiqrService.authenticationStatus(sessionKey);
+        if (!authentication.getStatus().equals(AuthenticationStatus.SUCCESS)) {
+            throw new ForbiddenException();
+        }
+        return doGenerateBackupCode(user, true);
     }
 
     @GetMapping("/generate-backup-code")
@@ -189,20 +203,28 @@ public class TiqrController {
         User user = userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException(userId));
         samlAuthenticationRequest.setTiqrFlow(true);
         authenticationRequestRepository.save(samlAuthenticationRequest);
-        return doGenerateBackupCode(user);
+        return doGenerateBackupCode(user, false);
     }
 
-    private ResponseEntity<Map<String, String>> doGenerateBackupCode(User user) throws TiqrException {
-        Registration registration = registrationRepository.findRegistrationByUserId(user.getId()).orElseThrow(IllegalArgumentException::new);
-        if (!registration.getStatus().equals(RegistrationStatus.INITIALIZED)) {
-            throw new ForbiddenException();
+    private ResponseEntity<Map<String, String>> doGenerateBackupCode(User user, boolean regenerateSpFlow) throws TiqrException {
+        if (!regenerateSpFlow) {
+            Registration registration = registrationRepository.findRegistrationByUserId(user.getId()).orElseThrow(IllegalArgumentException::new);
+            if (!registration.getStatus().equals(RegistrationStatus.INITIALIZED)) {
+                throw new ForbiddenException();
+            }
         }
         Map<String, Object> surfSecureId = user.getSurfSecureId();
+        if (regenerateSpFlow) {
+            List.of(RECOVERY_CODE, PHONE_VERIFICATION_CODE, PHONE_VERIFIED, PHONE_NUMBER)
+                    .forEach(surfSecureId::remove);
+        }
         String recoveryCode = (String) surfSecureId
-                .computeIfAbsent(SURFSecureID.RECOVERY_CODE, k -> VerificationCodeGenerator.generateBackupCode().replaceAll(" ", ""));
+                .computeIfAbsent(RECOVERY_CODE, k -> VerificationCodeGenerator.generateBackupCode().replaceAll(" ", ""));
         userRepository.save(user);
 
-        tiqrService.finishRegistration(user.getId());
+        if (!regenerateSpFlow) {
+            tiqrService.finishRegistration(user.getId());
+        }
 
         Map<String, String> body = Map.of(
                 "redirect", this.magicLinkUrl,
@@ -214,25 +236,44 @@ public class TiqrController {
     public ResponseEntity<Map<String, String>> sendPhoneCodeForSp(HttpServletRequest request, org.springframework.security.core.Authentication authentication, @RequestBody Map<String, String> requestBody) {
         User user = userFromAuthentication(authentication);
         String phoneNumber = requestBody.get("phoneNumber");
-        return doSendPhoneCode(user, phoneNumber, request);
+        return doSendPhoneCode(user, phoneNumber, false, request);
+    }
+
+    @PostMapping("/sp/re-send-phone-code")
+    public ResponseEntity<Map<String, String>> resendPhoneCodeForSp(HttpServletRequest request,
+                                                                    org.springframework.security.core.Authentication secAuthentication,
+                                                                    @RequestBody Map<String, String> requestBody) throws TiqrException {
+        String sessionKey = (String) request.getSession().getAttribute(SESSION_KEY);
+        Authentication authentication = tiqrService.authenticationStatus(sessionKey);
+        if (!authentication.getStatus().equals(AuthenticationStatus.SUCCESS)) {
+            throw new ForbiddenException();
+        }
+        User user = userFromAuthentication(secAuthentication);
+        String phoneNumber = requestBody.get("phoneNumber");
+        return doSendPhoneCode(user, phoneNumber, true, request);
     }
 
     @PostMapping("/send-phone-code")
     public ResponseEntity<Map<String, String>> sendPhoneCode(HttpServletRequest request, @RequestParam("hash") String hash, @RequestBody Map<String, String> requestBody) {
         User user = getUserFromAuthenticationRequest(hash);
         String phoneNumber = requestBody.get("phoneNumber");
-        return doSendPhoneCode(user, phoneNumber, request);
+        return doSendPhoneCode(user, phoneNumber, false, request);
     }
 
-    private ResponseEntity<Map<String, String>> doSendPhoneCode(User user, String phoneNumber, HttpServletRequest request) {
+    private ResponseEntity<Map<String, String>> doSendPhoneCode(User user, String phoneNumber, boolean regenerateSpFlow, HttpServletRequest request) {
         String phoneVerification = VerificationCodeGenerator.generatePhoneVerification();
 
         smsService.send(phoneNumber, phoneVerification, request.getLocale());
 
         Map<String, Object> surfSecureId = user.getSurfSecureId();
-        surfSecureId.put(SURFSecureID.PHONE_VERIFICATION_CODE, phoneVerification);
-        surfSecureId.put(SURFSecureID.PHONE_NUMBER, phoneNumber);
-        surfSecureId.remove(SURFSecureID.RATE_LIMIT);
+        surfSecureId.put(PHONE_VERIFICATION_CODE, phoneVerification);
+        surfSecureId.remove(RATE_LIMIT);
+
+        if (regenerateSpFlow) {
+            surfSecureId.put(NEW_UNVERIFIED_PHONE_NUMBER, phoneNumber);
+        } else {
+            surfSecureId.put(PHONE_NUMBER, phoneNumber);
+        }
 
         userRepository.save(user);
 
@@ -240,9 +281,23 @@ public class TiqrController {
     }
 
     @PostMapping("/sp/verify-phone-code")
-    public ResponseEntity<Map<String, String>> doVerifyPhoneCode(org.springframework.security.core.Authentication authentication, @RequestBody Map<String, String> requestBody) throws TiqrException {
+    public ResponseEntity<Map<String, String>> spVerifyPhoneCode(org.springframework.security.core.Authentication authentication,
+                                                                 @RequestBody Map<String, String> requestBody) throws TiqrException {
         User user = userFromAuthentication(authentication);
-        return doVerifyPhoneCode(requestBody, user);
+        return doVerifyPhoneCode(requestBody, user, false);
+    }
+
+    @PostMapping("/sp/re-verify-phone-code")
+    public ResponseEntity<Map<String, String>> spReverifyPhoneCode(HttpServletRequest request,
+                                                                   org.springframework.security.core.Authentication secAuthentication,
+                                                                   @RequestBody Map<String, String> requestBody) throws TiqrException {
+        User user = userFromAuthentication(secAuthentication);
+        String sessionKey = (String) request.getSession().getAttribute(SESSION_KEY);
+        Authentication authentication = tiqrService.authenticationStatus(sessionKey);
+        if (!authentication.getStatus().equals(AuthenticationStatus.SUCCESS)) {
+            throw new ForbiddenException();
+        }
+        return doVerifyPhoneCode(requestBody, user, true);
     }
 
     @PostMapping("/verify-phone-code")
@@ -251,27 +306,35 @@ public class TiqrController {
                 .orElseThrow(() -> new ForbiddenException("Unknown hash"));
         String userId = samlAuthenticationRequest.getUserId();
         User user = userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException(userId));
-        ResponseEntity<Map<String, String>> results = doVerifyPhoneCode(requestBody, user);
+        ResponseEntity<Map<String, String>> results = doVerifyPhoneCode(requestBody, user, false);
         //No exception
         samlAuthenticationRequest.setTiqrFlow(true);
         authenticationRequestRepository.save(samlAuthenticationRequest);
         return results;
     }
 
-    private ResponseEntity<Map<String, String>> doVerifyPhoneCode(Map<String, String> requestBody, User user) throws TiqrException {
+    private ResponseEntity<Map<String, String>> doVerifyPhoneCode(Map<String, String> requestBody,
+                                                                  User user,
+                                                                  boolean regenerateSpFlow) throws TiqrException {
         String phoneVerification = requestBody.get("phoneVerification");
         Map<String, Object> surfSecureId = user.getSurfSecureId();
-        String phoneVerificationStored = (String) surfSecureId.get(SURFSecureID.PHONE_VERIFICATION_CODE);
+        String phoneVerificationStored = (String) surfSecureId.get(PHONE_VERIFICATION_CODE);
 
         rateLimitEnforcer.checkRateLimit(user);
 
         if (MessageDigest.isEqual(phoneVerification.getBytes(StandardCharsets.UTF_8), phoneVerificationStored.getBytes(StandardCharsets.UTF_8))) {
-            surfSecureId.remove(SURFSecureID.PHONE_VERIFICATION_CODE);
-            surfSecureId.put(SURFSecureID.PHONE_VERIFIED, true);
-            surfSecureId.remove(SURFSecureID.RATE_LIMIT);
+            surfSecureId.remove(PHONE_VERIFICATION_CODE);
+            surfSecureId.put(PHONE_VERIFIED, true);
+            surfSecureId.remove(RATE_LIMIT);
+            if (regenerateSpFlow) {
+                String unverifiedPhoneNumber = (String) surfSecureId.get(NEW_UNVERIFIED_PHONE_NUMBER);
+                surfSecureId.put(PHONE_NUMBER, unverifiedPhoneNumber);
+                surfSecureId.remove(NEW_UNVERIFIED_PHONE_NUMBER);
+                surfSecureId.remove(RECOVERY_CODE);
+            } else {
+                tiqrService.finishRegistration(user.getId());
+            }
             userRepository.save(user);
-
-            tiqrService.finishRegistration(user.getId());
         } else {
             throw new ForbiddenException();
         }
@@ -279,9 +342,13 @@ public class TiqrController {
     }
 
     @PostMapping("/sp/start-authentication")
-    public ResponseEntity<Map<String, Object>> startAuthenticationForSP(HttpServletRequest request, org.springframework.security.core.Authentication authentication) throws IOException, WriterException, TiqrException {
+    public ResponseEntity<Map<String, Object>> startAuthenticationForSP(HttpServletRequest request,
+                                                                        org.springframework.security.core.Authentication authentication) throws IOException, WriterException, TiqrException {
         User user = userFromAuthentication(authentication);
-        return doStartAuthentication(request, user);
+        ResponseEntity<Map<String, Object>> mapResponseEntity = doStartAuthentication(request, user);
+        String sessionKey = (String) mapResponseEntity.getBody().get(SESSION_KEY);
+        request.getSession().setAttribute(SESSION_KEY, sessionKey);
+        return mapResponseEntity;
     }
 
     @PostMapping("/start-authentication")
@@ -308,16 +375,28 @@ public class TiqrController {
         String authenticationUrl = authentication.getAuthenticationUrl();
         String qrCode = QRCodeGenerator.generateQRCodeImage(authenticationUrl);
         Map<String, Object> body = Map.of(
-                "sessionKey", authentication.getSessionKey(),
+                SESSION_KEY, authentication.getSessionKey(),
                 "url", authenticationUrl,
                 "qr", qrCode,
                 "tiqrCookiePresent", sendPushNotification && authentication.isPushNotificationSend());
         return ResponseEntity.ok(body);
     }
 
+    @GetMapping("/sp/poll-authentication")
+    public ResponseEntity<Map<String, Object>> spAuthenticationStatus(org.springframework.security.core.Authentication authentication,
+                                                                      @RequestParam(SESSION_KEY) String sessionKey) throws TiqrException {
+        // Strictly speaking not necessary
+        userFromAuthentication(authentication);
+        return doPollAuthentication(sessionKey, Optional.empty());
+    }
+
     @GetMapping("/poll-authentication")
-    public ResponseEntity<Map<String, Object>> authenticationStatus(@RequestParam("sessionKey") String sessionKey,
+    public ResponseEntity<Map<String, Object>> authenticationStatus(@RequestParam(SESSION_KEY) String sessionKey,
                                                                     @RequestParam("id") String authenticationRequestId) throws TiqrException {
+        return doPollAuthentication(sessionKey, Optional.of(authenticationRequestId));
+    }
+
+    private ResponseEntity<Map<String, Object>> doPollAuthentication(String sessionKey, Optional<String> authenticationRequestIdOptional) throws TiqrException {
         Authentication authentication = tiqrService.authenticationStatus(sessionKey);
         AuthenticationStatus status = authentication.getStatus();
 
@@ -327,24 +406,26 @@ public class TiqrController {
         Map<String, Object> body = new HashMap<>();
         body.put("status", status.name());
         if (status.equals(AuthenticationStatus.SUCCESS)) {
-            SamlAuthenticationRequest samlAuthenticationRequest = authenticationRequestRepository.findById(authenticationRequestId).orElseThrow(ExpiredAuthenticationException::new);
-            String requesterEntityId = samlAuthenticationRequest.getRequesterEntityId();
+            authenticationRequestIdOptional.ifPresent(authenticationRequestId -> {
+                SamlAuthenticationRequest samlAuthenticationRequest = authenticationRequestRepository.findById(authenticationRequestId).orElseThrow(ExpiredAuthenticationException::new);
+                String requesterEntityId = samlAuthenticationRequest.getRequesterEntityId();
 
-            String userID = authentication.getUserID();
-            User user = userRepository.findById(userID).orElseThrow(() -> new UserNotFoundException(String.format("User %s not found", authentication.getUserDisplayName())));
+                String userID = authentication.getUserID();
+                User user = userRepository.findById(userID).orElseThrow(() -> new UserNotFoundException(String.format("User %s not found", authentication.getUserDisplayName())));
 
-            logWithContext(user, "update", "user", LOG, "Updating user " + user.getEmail());
+                logWithContext(user, "update", "user", LOG, "Updating user " + user.getEmail());
 
-            user.computeEduIdForServiceProviderIfAbsent(requesterEntityId, serviceProviderResolver);
-            userRepository.save(user);
+                user.computeEduIdForServiceProviderIfAbsent(requesterEntityId, serviceProviderResolver);
+                userRepository.save(user);
 
-            samlAuthenticationRequest.setHash(hash());
-            samlAuthenticationRequest.setTiqrFlow(true);
-            samlAuthenticationRequest.setUserId(userID);
-            authenticationRequestRepository.save(samlAuthenticationRequest);
+                samlAuthenticationRequest.setHash(hash());
+                samlAuthenticationRequest.setTiqrFlow(true);
+                samlAuthenticationRequest.setUserId(userID);
+                authenticationRequestRepository.save(samlAuthenticationRequest);
 
-            body.put("redirect", this.magicLinkUrl);
-            body.put("hash", samlAuthenticationRequest.getHash());
+                body.put("redirect", this.magicLinkUrl);
+                body.put("hash", samlAuthenticationRequest.getHash());
+            });
         } else if (status.equals(AuthenticationStatus.SUSPENDED)) {
             String userID = authentication.getUserID();
             User user = userRepository.findById(userID).orElseThrow(() -> new UserNotFoundException(String.format("User %s not found", authentication.getUserDisplayName())));
@@ -360,9 +441,21 @@ public class TiqrController {
         return ResponseEntity.ok(body);
     }
 
+    @PostMapping("/sp/manual-response")
+    public ResponseEntity<Map<String, String>> spManualResponse(org.springframework.security.core.Authentication authentication,
+                                                                @RequestBody Map<String, String> requestBody) throws TiqrException {
+        // Strictly speaking not necessary
+        userFromAuthentication(authentication);
+        return doManualResponse(requestBody);
+    }
+
     @PostMapping("/manual-response")
     public ResponseEntity<Map<String, String>> manualResponse(@RequestBody Map<String, String> requestBody) throws TiqrException {
-        String sessionKey = requestBody.get("sessionKey");
+        return doManualResponse(requestBody);
+    }
+
+    private ResponseEntity<Map<String, String>> doManualResponse(Map<String, String> requestBody) throws TiqrException {
+        String sessionKey = requestBody.get(SESSION_KEY);
         String response = requestBody.get("response");
         //fingers crossed, in case of mismatch an exception is thrown
         tiqrService.postAuthentication(new AuthenticationData(sessionKey, response));
@@ -398,7 +491,9 @@ public class TiqrController {
         }
         try {
             tiqrService.postAuthentication(authenticationData);
+
             LOG.debug("Successful authentication for user " + userId);
+
             rateLimitEnforcer.unsuspendUserAfterTiqrSuccess(user);
             return ResponseEntity.ok("OK");
         } catch (TiqrException | RuntimeException e) {
@@ -429,11 +524,11 @@ public class TiqrController {
     @GetMapping("/sp/send-deactivation-phone-code")
     public ResponseEntity<Map<String, String>> sendDeactivationPhoneCodeForSp(HttpServletRequest request, org.springframework.security.core.Authentication authentication) {
         User user = userFromAuthentication(authentication);
-        String phoneNumber = (String) user.getSurfSecureId().get(SURFSecureID.PHONE_NUMBER);
+        String phoneNumber = (String) user.getSurfSecureId().get(PHONE_NUMBER);
         if (!StringUtils.hasText(phoneNumber)) {
             throw new ForbiddenException();
         }
-        return doSendPhoneCode(user, phoneNumber, request);
+        return doSendPhoneCode(user, phoneNumber, false, request);
     }
 
     @PostMapping("/sp/deactivate-app")
@@ -441,7 +536,7 @@ public class TiqrController {
                                                              @RequestBody Map<String, String> requestBody) {
         User user = userFromAuthentication(authentication);
         Map<String, Object> surfSecureId = user.getSurfSecureId();
-        String verificationCodeKey = surfSecureId.containsKey(SURFSecureID.RECOVERY_CODE) ? SURFSecureID.RECOVERY_CODE : SURFSecureID.PHONE_VERIFICATION_CODE;
+        String verificationCodeKey = surfSecureId.containsKey(RECOVERY_CODE) ? RECOVERY_CODE : PHONE_VERIFICATION_CODE;
         byte[] verificationCode = ((String) surfSecureId.get(verificationCodeKey)).replaceAll(" ", "").getBytes(StandardCharsets.UTF_8);
         byte[] userVerificationCode = requestBody.get("verificationCode").replaceAll(" ", "").getBytes(StandardCharsets.UTF_8);
 

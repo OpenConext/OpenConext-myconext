@@ -113,6 +113,7 @@ I18n.translations.en = {
             info: "Get the <strong>eduID app</strong> and securely sign in without passwords or accessing your email.",
             fetch: "Get it now",
             deactivate: "Deactivate",
+            backupCodes: "Recovery method",
             app: "eduID app",
             phoneId: "Phone ID",
             APNS: "iPhone",
@@ -124,6 +125,9 @@ I18n.translations.en = {
             lastLogin: "Last login",
             activated: "Activated on",
             dateTimeOn: "on",
+            backupMethod: "Recovery method",
+            sms: "SMS",
+            code: "Backup code"
         }
     },
     home: {
@@ -318,7 +322,9 @@ I18n.translations.en = {
     },
     recovery: {
         header: "Set up an APP recovery method",
+        changeHeader: "Change your APP recovery method",
         info: "If you can't access eduID with the app or via email, you can use a recovery method to sign in to your eduID account.",
+        changeInfo: "You have successfully authenticated with the eduID app. You can now change your recovery method.",
         methods: "The following methods are available.",
         phoneNumber: "Add a recovery phone number.",
         phoneNumberInfo: "You'll receive a text message with a code.",
@@ -342,6 +348,7 @@ I18n.translations.en = {
     congrats: {
         header: "Success",
         info: "You can now use the eduID app to quickly login to services which require you to login with your eduID.",
+        changeInfo: "You have changed your recovery method.",
         next: "Back to settings"
     },
     deactivate: {
@@ -355,5 +362,34 @@ I18n.translations.en = {
         deactivateApp: "Deactivate",
         sendSms: "Press next to send a verification code SMS to your registered phone number",
         maxAttempts: "Max attempts used. Please contact <a href=\"mailto:help@eduid.nl\">help@eduid.nl</a> for support"
-    }
+    },
+    backupCodes: {
+        title: "Recovery method",
+        info: "After you installed the eduID app you choose a recovery method. If you want to change your recovery method you'll first have to authenticate with the eduID app.",
+        phoneNumber: "Phone number",
+        startTiqrAuthentication: "Start authentication",
+        code: "Code"
+    },
+    useApp: {
+        header: "Check your eduID app",
+        info: "We have sent a push-notification to your app, to verify it's you trying to sign in.",
+        scan: "Scan this QR code with your eduID app",
+        noNotification: "No notification?",
+        qrCodeLink: "Create a QR-code",
+        qrCodePostfix: "and scan it.",
+        offline: "When your device is offline, you must enter a",
+        offlineLink: "one time code.",
+        lost: "Lost your app?",
+        lostLink: "Learn <a href=\"https://eduid.nl/help\" target=\"_blank\">how to register a new one</a>.",
+        timeOut: "Session timeout",
+        timeOutInfoFirst: "Your session timed out. Click this ",
+        timeOutInfoLast: " to try again.",
+        timeOutInfoLink: "link",
+        responseIncorrect: "The response is invalid.",
+        suspendedResult: "The verification from your eduID app failed. ",
+        accountNotSuspended: "You can try again.",
+        accountSuspended: "You'll have to wait {{minutes}} {{plural}} before you can try again.",
+        minutes: "minutes",
+        minute: "minute"
+    },
 };

@@ -114,6 +114,7 @@ I18n.translations.nl = {
             fetch: "Nu installeren",
             deactivate: "Deactiveren",
             app: "eduID app",
+            backupCodes: "Herstelmethode",
             phoneId: "Telefoon ID",
             APNS: "iPhone",
             APNS_DIRECT: "iPhone",
@@ -124,7 +125,9 @@ I18n.translations.nl = {
             lastLogin: "Laatste login",
             activated: "Geactiveerd op",
             dateTimeOn: "om",
-
+            backupMethod: "Herstelmethode",
+            sms: "SMS",
+            code: "Backup code"
         }
     },
     home: {
@@ -320,7 +323,9 @@ I18n.translations.nl = {
     },
     recovery: {
         header: "Een APP-herstelmethode instellen",
+        changeHeader: "Verander je APP-herstelmethode",
         info: "Als je geen toegang hebt tot eduID met de app of via e-mail, kun je een herstelmethode gebruiken om in te loggen op je eduID-account.",
+        changeInfo: "Je bent succesvol geauthenticeerd met je eduID app. Je kan nu je APP-herstelmethode veranderen.",
         methods: "De volgende methoden zijn beschikbaar.",
         phoneNumber: "Voeg een hersteltelefoonnummer toe.",
         phoneNumberInfo: "Je ontvangt een sms met een code.",
@@ -344,6 +349,7 @@ I18n.translations.nl = {
     congrats: {
         header: "Succes",
         info: "Je kunt nu de eduID app gebruiken om snel in te loggen bij diensten waarvoor je moet inloggen met je eduID.",
+        changeInfo: "Je hebt je herstelmethode veranderd.",
         next: "Terug naar instellingen"
     },
     deactivate: {
@@ -357,6 +363,36 @@ I18n.translations.nl = {
         deactivateApp: "Deactiveer",
         sendSms: "Druk op volgende om een verificatiecode-sms naar je geregistreerde telefoonnummer te sturen.",
         maxAttempts: "Maximum aantal pogingen bereikt. Neem contact op met <a href=\"mailto:help@eduid.nl\">help@eduid.nl</a> voor hulp."
-    }
+    },
+    backupCodes: {
+        title: "Backup methode",
+        info: "Je hebt de eduID app geïnstalleerd en je account bevestigd. Om je back-up methode te wijzigen, moet je je eerst authenticeren met de eduID-app.",
+        phoneNumber: "Mobiel nummer",
+        startTiqrAuthentication: "Start authenticatie",
+        code: "Code"
+    },
+    useApp: {
+        header: "Controleer je eduID-app",
+        info: "We hebben een pushmelding naar je app gestuurd om te verifiëren dat jij het bent die probeert in te loggen.",
+        scan: "Scan deze QR-code met je eduID app",
+        noNotification: "Geen melding?",
+        qrCodeLink: "Maak een QR-code",
+        qrCodePostfix: "en scan deze.",
+        offline: "Wanneer je apparaat offline is, moet je een ",
+        offlineLink: "eenmalige code invoeren.",
+        lost: "Je app verloren?",
+        lostLink: "Lees op <a href=\"https://eduid.nl/help\" target=\"_blank\">hoe je een nieuwe moet registreren</a>.",
+        timeOut: "Sessie timeout",
+        timeOutInfoFirst: "Je sessie is verlopen. Klik op deze ",
+        timeOutInfoLast: " om het opnieuw te proberen.",
+        timeOutInfoLink: "link",
+        responseIncorrect: "De code is niet juist.",
+        suspendedResult: "De verficatie van je eduID app is mislukt. ",
+        accountNotSuspended: "Je kan het opnieuw proberen.",
+        accountSuspended: "Je zal {{minutes}} {{plural}} moeten wachten totdat je het opnieuw kan proberen.",
+        minutes: "minuten",
+        minute: "minuut"
+    },
+
 
 };

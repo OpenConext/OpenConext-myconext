@@ -1,6 +1,7 @@
 package myconext.tiqr;
 
 import io.restassured.common.mapper.TypeRef;
+import io.restassured.filter.cookie.CookieFilter;
 import io.restassured.http.ContentType;
 import io.restassured.http.Headers;
 import io.restassured.response.Response;
@@ -457,8 +458,97 @@ public class TiqrControllerTest extends AbstractIntegrationTest {
         assertEquals(AuthenticationStatus.SUSPENDED.name(), newStatus.get("status"));
         long suspendedUntilNext = Long.parseLong(newStatus.get(SURFSecureID.SUSPENDED_UNTIL));
         assertTrue(suspendedUntilNext > suspendedUntil);
-
     }
+
+    @Test
+    public void finishEnrollment() {
+        Map<String, String> body = given()
+                .when()
+                .contentType(ContentType.JSON)
+                .get("/tiqr/sp/finish-enrollment")
+                .body().as(new TypeRef<>() {
+                });
+        assertTrue(body.containsKey("enrollmentVerificationKey"));
+        User user = userRepository.findUserByEmail("jdoe@example.com").get();
+        assertEquals(body.get("enrollmentVerificationKey"), user.getEnrollmentVerificationKey());
+    }
+
+    @Test
+    public void startAuthenticationForSP() throws IOException {
+        Map<String, String> body = spStartAuthentication(new CookieFilter(), false);
+        assertTrue(body.get("qr").startsWith("data:image/png"));
+        assertTrue(body.containsKey("sessionKey"));
+    }
+
+    @Test
+    public void pollAuthenticationStatusForSP() throws IOException {
+        Map<String, String> body = spStartAuthentication(new CookieFilter(), false);
+        String sessionKey = body.get("sessionKey");
+        Map<String, String> status = given()
+                .queryParam("sessionKey", sessionKey)
+                .get("/tiqr/sp/poll-authentication")
+                .as(new TypeRef<>() {
+                });
+        assertEquals(AuthenticationStatus.PENDING.name(), status.get("status"));
+    }
+
+    @Test
+    public void startAuthenticationForSPWithoutRegistration() throws IOException {
+        given()
+                .when()
+                .contentType(ContentType.JSON)
+                .post("/tiqr/sp/start-authentication")
+                .then()
+                .statusCode(400);
+    }
+
+    @Test
+    public void resendPhoneCodeForSp() throws IOException {
+        CookieFilter cookieFilter = new CookieFilter();
+        spStartAuthentication(cookieFilter, true);
+        String phoneNumber = "0612345678";
+        given()
+                .when()
+                .contentType(ContentType.JSON)
+                .filter(cookieFilter)
+                .body(Map.of("phoneNumber", phoneNumber))
+                .post("/tiqr/sp/re-send-phone-code")
+                .then()
+                .statusCode(200);
+        User user = userRepository.findUserByEmail("jdoe@example.com").get();
+        assertEquals(phoneNumber, user.getSurfSecureId().get(SURFSecureID.NEW_UNVERIFIED_PHONE_NUMBER));
+        assertNull(user.getSurfSecureId().get(SURFSecureID.PHONE_NUMBER));
+    }
+
+    @Test
+    public void verifyPhoneCodeForSp() throws IOException {
+        CookieFilter cookieFilter = new CookieFilter();
+        spStartAuthentication(cookieFilter, true);
+        String phoneNumber = "0612345678";
+        given()
+                .when()
+                .contentType(ContentType.JSON)
+                .filter(cookieFilter)
+                .body(Map.of("phoneNumber", phoneNumber))
+                .post("/tiqr/sp/re-send-phone-code")
+                .then()
+                .statusCode(200);
+        User user = userRepository.findUserByEmail("jdoe@example.com").get();
+        String phoneVerification = (String) user.getSurfSecureId().get(SURFSecureID.PHONE_VERIFICATION_CODE);
+
+        given()
+                .body(Map.of("phoneVerification", phoneVerification))
+                .contentType(ContentType.JSON)
+                .filter(cookieFilter)
+                .post("/tiqr/sp/re-verify-phone-code")
+                .then()
+                .statusCode(200);
+
+        user = userRepository.findUserByEmail("jdoe@example.com").get();
+        assertEquals(phoneNumber, user.getSurfSecureId().get(SURFSecureID.PHONE_NUMBER));
+        assertNull(user.getSurfSecureId().get(SURFSecureID.RECOVERY_CODE));
+    }
+
 
     private SamlAuthenticationRequest doEnrollmment(boolean finishRegistration) throws IOException {
         String authenticationRequestId = samlAuthnRequest();
@@ -543,6 +633,26 @@ public class TiqrControllerTest extends AbstractIntegrationTest {
         Cipher cipher = Cipher.getInstance("AES/GCM/NoPadding");
         cipher.init(Cipher.DECRYPT_MODE, secretKey, parameterSpec);
         return new String(cipher.doFinal(Base64.getDecoder().decode(encryptedSecret)));
+    }
+
+    private Map<String, String> spStartAuthentication(CookieFilter cookieFilter, boolean finishAuthentication) throws IOException {
+        doEnrollmment(true);
+        //To start an authentication, we need a valid registration
+        Map<String, String> body = given()
+                .when()
+                .contentType(ContentType.JSON)
+                .filter(cookieFilter)
+                .post("/tiqr/sp/start-authentication")
+                .body()
+                .as(new TypeRef<>() {
+                });
+
+        if (finishAuthentication) {
+            Authentication authentication = authenticationRepository.findAuthenticationBySessionKey(body.get("sessionKey")).get();
+            authentication.update(AuthenticationStatus.SUCCESS);
+            authenticationRepository.saveAll(List.of(authentication));
+        }
+        return body;
     }
 
 }

@@ -1,6 +1,7 @@
 package myconext.model;
 
 import lombok.Getter;
+import myconext.tiqr.SURFSecureID;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 import tiqr.org.model.Registration;
@@ -48,12 +49,19 @@ public class UserResponse implements Serializable {
         this.eduIdPerServiceProvider = eduIdPerServiceProvider;
         this.loginOptions = user.loginOptions();
         optionalRegistration.ifPresent(reg -> {
+            Map<String, Object> surfSecureId = user.getSurfSecureId();
+            boolean phoneVerified = surfSecureId.containsKey(SURFSecureID.PHONE_VERIFIED);
+
             registration.put("created", reg.getCreated().toEpochMilli());
             registration.put("status", reg.getStatus());
             registration.put("notificationType", reg.getNotificationType());
             registration.put("notificationAddress", reg.getNotificationAddress());
-            registration.put("phoneVerified", user.getSurfSecureId().containsKey("phone-verified"));
-            registration.put("recoveryCode", user.getSurfSecureId().containsKey("recovery-code"));
+            registration.put("phoneVerified", phoneVerified);
+            registration.put("recoveryCode", surfSecureId.containsKey(SURFSecureID.RECOVERY_CODE));
+            if (phoneVerified) {
+                String phoneNumber = (String) surfSecureId.get(SURFSecureID.PHONE_NUMBER);
+                registration.put("phoneNumber", phoneNumber.substring(phoneNumber.length() - 3));
+            }
             registration.put("updated", reg.getUpdated().toEpochMilli());
         });
     }
