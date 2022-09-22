@@ -201,7 +201,8 @@
         </div>
         <Router url="{url}">
             <Route path="/login/:id" let:params>
-                <SubContent question={I18n.t("login.requestEduId")} linkText={I18n.t("login.requestEduId2")}
+                <SubContent question={I18n.t("login.requestEduId")}
+                            linkText={I18n.t("login.requestEduId2")}
                             route="/request/{params.id}"/>
             </Route>
             <Route path="/request/:id" let:params>

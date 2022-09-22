@@ -24,8 +24,6 @@
 
     onMount(() => {
         $links.displayBackArrow = true;
-
-        $user.email = "";
         $user.givenName = "";
         $user.familyName = "";
         fetchServiceName(id).then(res => {
