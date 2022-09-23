@@ -135,7 +135,7 @@
             <p class="explanation">{@html I18n.t("deactivate.recoveryCodeInfo")}</p>
         {/if}
         {#if useRecoveryCode}
-            <input id="recoveryCode" type="text" bind:value={recoveryCode}/>
+            <input id="recoveryCode" type="text" spellcheck="false" bind:value={recoveryCode}/>
             {#if wrongCode && !maxAttempts}
                 <div class="error">
                     <span class="svg">{@html critical}</span>

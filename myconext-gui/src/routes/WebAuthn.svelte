@@ -68,7 +68,9 @@
         <h2>{I18n.t("webauthn.updateTitle")}</h2>
         <p class="info">{I18n.t("webauthn.info")}</p>
         <label for="credentialName">{I18n.t("webauthn.credentialName")}</label>
-        <input id="credentialName" type="text" placeholder={I18n.t("webauthn.credentialNamePlaceholder")}
+        <input id="credentialName"
+               type="text"
+               placeholder={I18n.t("webauthn.credentialNamePlaceholder")}
                bind:value={credentialName} use:init>
 
         <div class="options">

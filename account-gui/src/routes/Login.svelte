@@ -131,7 +131,8 @@
            placeholder={I18n.t("login.emailPlaceholder")}
            use:init
            bind:value={$user.email}
-           on:keydown={handleEmailEnter}>
+           on:keydown={handleEmailEnter}
+           spellcheck="false">
 {/if}
 {#if emailNotFound}
     <div class="error">

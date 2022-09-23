@@ -104,7 +104,11 @@
     <h2>{I18n.t("email.title")}</h2>
     <p class="info">{I18n.t("email.info")}</p>
     <label for="verifiedEmail">{I18n.t("email.email")}</label>
-    <input id="verifiedEmail" class:error={emailEquality || duplicateEmail} type="text" bind:value={verifiedEmail}/>
+    <input id="verifiedEmail"
+           class:error={emailEquality || duplicateEmail}
+           type="text"
+           spellcheck="false"
+           bind:value={verifiedEmail}/>
     {#if emailEquality}
         <div class="error">
             <span class="svg">{@html critical}</span>

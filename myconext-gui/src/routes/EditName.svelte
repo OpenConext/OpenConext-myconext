@@ -67,9 +67,9 @@
     <h2>{I18n.t("edit.title")}</h2>
     <p class="info">{I18n.t("edit.info")}</p>
     <label for="givenName">{I18n.t("edit.givenName")}</label>
-    <input id="givenName" type="text" bind:value={$user.givenName}/>
+    <input id="givenName" type="text" spellcheck="false" bind:value={$user.givenName}/>
     <label for="familyName">{I18n.t("edit.familyName")}</label>
-    <input id="familyName" type="text" bind:value={$user.familyName}/>
+    <input id="familyName" type="text" spellcheck="false" bind:value={$user.familyName}/>
 
     <div class="options">
         <Button className="cancel" label={I18n.t("edit.cancel")} onClick={cancel}/>

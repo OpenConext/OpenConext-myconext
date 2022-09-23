@@ -281,6 +281,7 @@
         <p class="no-center">{@html I18n.t("magicLink.loggedInDifferentDeviceInInfo2")}</p>
         <input class="verification-code"
                type="text"
+               spellcheck="false"
                use:init
                value={verificationCode}
                on:input={updateVerificationCode}

@@ -133,7 +133,8 @@
                value={totp[index] || ""}
                on:input={onInputTotp(index)}
                on:keydown={onKeyDownTotp(index)}
-               bind:this={refs[index]}/>
+               bind:this={refs[index]}
+               spellcheck="false"/>
     {/each}
 
 

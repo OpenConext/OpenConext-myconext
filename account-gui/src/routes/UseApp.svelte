@@ -228,6 +228,7 @@
                 {#each Array(6).fill("") as val, index}
                     <input type="text"
                            class="totp-value"
+                           spellcheck="false"
                            id={`number-${index}`}
                            name={`number-${index}`}
                            disabled={(totp[index] || "").length === 0 && ((index !== 0 && totp[index - 1] === ""))}

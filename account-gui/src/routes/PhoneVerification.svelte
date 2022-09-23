@@ -97,6 +97,7 @@
 <input class:error={phoneNumberIncorrect}
        autocomplete="current-password"
        id="password-field"
+       spellcheck="false"
        on:keydown={handleEnter}
        placeholder={I18n.t("phoneVerification.placeHolder")}
        use:init

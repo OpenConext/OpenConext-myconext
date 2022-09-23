@@ -105,6 +105,7 @@
     <input type="email"
            style="display: none"
            autocomplete="username"
+           spellcheck="false"
            id="email"
            value={$user.email}>
 
@@ -112,6 +113,7 @@
            class:error={passwordIncorrect}
            autocomplete="current-password"
            id="password-field"
+           spellcheck="false"
            placeholder={I18n.t("login.passwordPlaceholder")}
            on:keydown={handlePasswordEnter}
            use:init

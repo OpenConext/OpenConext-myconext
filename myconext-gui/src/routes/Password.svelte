@@ -138,7 +138,7 @@
     <p class="info">{I18n.t("password.passwordDisclaimer")}</p>
     {#if usePassword && !userForgotPassword}
         <label for="currentPassword">{I18n.t("password.currentPassword")}</label>
-        <input id="currentPassword" autocomplete="current-password" type="password" bind:value={currentPassword}/>
+        <input id="currentPassword" autocomplete="current-password" spellcheck="false" type="password" bind:value={currentPassword}/>
 
     {/if}
     <div class="error-container">
@@ -163,10 +163,10 @@
     <input id="username" autocomplete="username email" type="hidden" name="username" value={$user.email}>
 
     <label for="newPassword">{I18n.t("password.newPassword")}</label>
-    <input id="newPassword" type="password" autocomplete="new-password" bind:value={newPassword}>
+    <input id="newPassword" type="password" autocomplete="new-password" spellcheck="false" bind:value={newPassword}>
 
     <label for="confirmPassword">{I18n.t("password.confirmPassword")}</label>
-    <input id="confirmPassword" type="password" autocomplete="new-password" bind:value={confirmPassword}>
+    <input id="confirmPassword" type="password" spellcheck="false" autocomplete="new-password" bind:value={confirmPassword}>
 
     <div class="options">
         <Button className="cancel" label={I18n.t("password.cancel")} onClick={cancel}/>

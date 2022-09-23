@@ -137,6 +137,7 @@
                class="totp-value"
                id={`number-${index}`}
                name={`number-${index}`}
+               spellcheck="false"
                disabled={(totp[index] || "").length === 0 && ((index !== 0 && totp[index - 1] === ""))}
                maxlength={1}
                value={totp[index] || ""}

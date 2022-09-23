@@ -173,6 +173,7 @@
 <input type="email"
        autocomplete="username"
        id="email"
+       spellcheck="false"
        class:error={emailInUse}
        placeholder={I18n.t("login.emailPlaceholder")}
        use:init
@@ -222,6 +223,7 @@
 <input type="text"
        id="given-name"
        placeholder={I18n.t("login.givenNamePlaceholder")}
+       spellcheck="false"
        on:input={updateGivenName}>
 {#if !initial && !$user.givenName}
     <span class="error">{I18n.t("login.requiredAttribute", {attr: I18n.t("login.givenName")})}</span>
@@ -229,6 +231,7 @@
 <label for="family-name" class="pre-input-label">{I18n.t("login.familyName")}</label>
 <input type="text"
        id="family-name"
+       spellcheck="false"
        placeholder={I18n.t("login.familyNamePlaceholder")}
        on:input={updateFamilyName}>
 {#if !initial && !$user.familyName}
