@@ -330,7 +330,7 @@ I18n.translations.nl = {
         phoneNumber: "Voeg een hersteltelefoonnummer toe.",
         phoneNumberInfo: "Je ontvangt een SMS met een verificatiecode.",
         backupCode: "Vraag een herstelcode aan.",
-        backupCodeInfo: "De code kan worden gebruikt om in te loggen.",
+        backupCodeInfo: "Bewaar deze code op een veilige plek.",
         save: "Bewaar de code ergens veilig.",
         active: "Deze code is nu actief en je eduID app is klaar om te gebruiken.",
         copy: "Kopieer de code",
