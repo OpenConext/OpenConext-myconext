@@ -339,7 +339,7 @@ I18n.translations.nl = {
         leaveConfirmation: "Weet je zeker dat je deze pagina wilt verlaten? Wijzigingen worden niet opgeslagen."
     },
     phoneVerification: {
-        header: "Voeg een hersteltelefoonnummer",
+        header: "Voeg een hersteltelefoonnummer toe",
         info: "Je telefoonnummer wordt gebruikt voor veiligheidsdoeleinden, zodat je bij verlies de eduID app weer opnieuw kunt registreren.",
         text: "We sturen je een code om je nummer te verifiëren.",
         verify: "Verifieer dit telefoonnummer",
@@ -356,7 +356,7 @@ I18n.translations.nl = {
         titleDelete: "Deactiveer je eduID app",
         info: "Je kunt je eduID app deactiveren als je de app opnieuw wilt installeren of als je een nieuw apparaat hebt.",
         recoveryCode: "Herstelcode",
-        recoveryCodeInfo: "Vul de <strong>herstelcode</strong> die je tijdens de eduID app registratie hebt bewaard.",
+        recoveryCodeInfo: "Vul de <strong>herstelcode</strong> in die je tijdens de eduID app registratie hebt bewaard.",
         verificationCode: "SMS verificatiecode",
         codeIncorrect: "Verkeerde verificatiecode",
         next: "Volgende",

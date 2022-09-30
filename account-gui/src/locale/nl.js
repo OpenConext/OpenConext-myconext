@@ -193,8 +193,8 @@ I18n.translations.nl = {
         leaveConfirmation: "Weet je zeker dat je de pagina wilt verlaten? De registratie wordt afgebroken."
     },
     phoneVerification: {
-        header: "Voeg een herstel telefoonnummer toe",
-        info: "Je telefoonnummer wordt gebruikt voor veiligheidsdoeleinden, zoals u helpen om weer toegang te krijgen tot uw account als u uw app ooit kwijtraakt.",
+        header: "Voeg een hersteltelefoonnummer toe",
+        info: "Je telefoonnummer wordt gebruikt voor veiligheidsdoeleinden, zoals het weer toegang te krijgen tot je account als je je app ooit kwijtraakt.",
         text: "We sturen je een code om je nummer te verifiëren.",
         verify: "Verifieer dit telefoonnummer",
         placeHolder: "+31 612345678",
