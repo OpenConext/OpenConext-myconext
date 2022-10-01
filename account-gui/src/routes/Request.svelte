@@ -16,6 +16,7 @@
 
     export let id;
     let emailInUse = false;
+    let emailForbidden = false;
     let initial = true;
     let showSpinner = true;
     let serviceName = "";
@@ -45,7 +46,9 @@
                     showSpinner = false;
                     if (e.status === 409) {
                         emailInUse = true;
-                    } else {
+                    } else if (e.status === 412) {
+                        emailForbidden = true;
+                    }else {
                         navigate("/expired", {replace: true});
                     }
                 });
@@ -174,7 +177,7 @@
        autocomplete="username"
        id="email"
        spellcheck="false"
-       class:error={emailInUse}
+       class:error={emailInUse || emailForbidden}
        placeholder={I18n.t("login.emailPlaceholder")}
        use:init
        bind:value={$user.email}
@@ -191,6 +194,14 @@
             <a use:link
                href={`/login/${id}`}
             >{I18n.t("login.emailInUse3")}</a>
+        </div>
+    </div>
+{/if}
+{#if emailForbidden}
+    <div class="error">
+        <span class="svg">{@html critical}</span>
+        <div>
+            <span>{@html I18n.t("login.emailForbidden")}</span>
         </div>
     </div>
 {/if}

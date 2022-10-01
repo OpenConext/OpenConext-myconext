@@ -46,6 +46,7 @@ I18n.translations.nl = {
         emailInUse1: "Dit e-mailadres is al in gebruik.",
         emailInUse2: "Probeer een andere, of ",
         emailInUse3: " login met dit eduID account.",
+        emailForbidden: "Het aanmaken van een eduID-account met deze email is niet toegestaan, neem contact op met <a href=\"mailto:help@eduid.nl\">help@eduid.nl</a> als je denkt dat het e-maildomein geldig is.",
         emailNotFound1: "We konden geen eduID vinden met deze mail.",
         emailNotFound2: "Probeer een andere, of ",
         emailNotFound3: "maak een nieuw eduID account aan.",

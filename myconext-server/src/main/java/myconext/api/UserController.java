@@ -8,6 +8,7 @@ import com.yubico.webauthn.data.*;
 import com.yubico.webauthn.data.exception.Base64UrlException;
 import com.yubico.webauthn.exception.AssertionFailedException;
 import com.yubico.webauthn.exception.RegistrationFailedException;
+import myconext.cron.DisposableEmailProviders;
 import myconext.cron.IdPMetaDataResolver;
 import myconext.exceptions.ExpiredAuthenticationException;
 import myconext.exceptions.ForbiddenException;
@@ -79,6 +80,7 @@ public class UserController implements ServiceProviderHolder {
     private final PasswordEncoder passwordEncoder = new BCryptPasswordEncoder(-1, random);
     private final EmailGuessingPrevention emailGuessingPreventor;
     private final EmailDomainGuard emailDomainGuard;
+    private final DisposableEmailProviders disposableEmailProviders;
     private final IdPMetaDataResolver idPMetaDataResolver;
     private final String spBaseUrl;
     private final ObjectMapper objectMapper;
@@ -95,6 +97,7 @@ public class UserController implements ServiceProviderHolder {
                           OpenIDConnect openIDConnect,
                           IdPMetaDataResolver idPMetaDataResolver,
                           EmailDomainGuard emailDomainGuard,
+                          DisposableEmailProviders disposableEmailProviders,
                           RegistrationRepository registrationRepository,
                           @Qualifier("jsonMapper") ObjectMapper objectMapper,
                           @Value("${email.magic-link-url}") String magicLinkUrl,
@@ -115,6 +118,7 @@ public class UserController implements ServiceProviderHolder {
         this.openIDConnect = openIDConnect;
         this.idPMetaDataResolver = idPMetaDataResolver;
         this.emailDomainGuard = emailDomainGuard;
+        this.disposableEmailProviders = disposableEmailProviders;
         this.registrationRepository = registrationRepository;
         this.objectMapper = objectMapper;
         this.magicLinkUrl = magicLinkUrl;
@@ -167,8 +171,9 @@ public class UserController implements ServiceProviderHolder {
         User user = magicLinkRequest.getUser();
 
         String email = user.getEmail();
-        emailDomainGuard.enforceIsAllowed(email);
-        emailGuessingPreventor.potentialUserEmailGuess();
+        this.emailDomainGuard.enforceIsAllowed(email);
+        this.emailGuessingPreventor.potentialUserEmailGuess();
+        this.disposableEmailProviders.verifyDisposableEmailProviders(email);
 
         Optional<User> optionalUser = userRepository.findUserByEmail(emailGuessingPreventor.sanitizeEmail(email));
         if (optionalUser.isPresent()) {
@@ -195,8 +200,9 @@ public class UserController implements ServiceProviderHolder {
         User providedUser = magicLinkRequest.getUser();
 
         String email = providedUser.getEmail();
-        emailDomainGuard.enforceIsAllowed(email);
-        emailGuessingPreventor.potentialUserEmailGuess();
+        this.emailDomainGuard.enforceIsAllowed(email);
+        this.disposableEmailProviders.verifyDisposableEmailProviders(email);
+        this.emailGuessingPreventor.potentialUserEmailGuess();
 
         Optional<User> optionalUser = findUserStoreLanguage(email);
         if (!optionalUser.isPresent()) {
@@ -597,8 +603,9 @@ public class UserController implements ServiceProviderHolder {
     @PostMapping("idp/security/webauthn/authentication")
     public ResponseEntity idpWebAuthnStartAuthentication(@RequestBody Map<String, String> body) {
         String email = body.get("email");
-        emailDomainGuard.enforceIsAllowed(email);
-        emailGuessingPreventor.potentialUserEmailGuess();
+        this.emailDomainGuard.enforceIsAllowed(email);
+        this.emailGuessingPreventor.potentialUserEmailGuess();
+        this.disposableEmailProviders.verifyDisposableEmailProviders(email);
 
         Optional<User> optionalUser = userRepository.findUserByEmail(emailGuessingPreventor.sanitizeEmail(email));
         if (!optionalUser.isPresent()) {
