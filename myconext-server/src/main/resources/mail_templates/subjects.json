@@ -27,6 +27,10 @@
   "verification_code": {
     "en": "eduID verification code",
     "nl": "eduID verificatie code"
+  },
+  "new_device": {
+    "en": "New eduID device sign-in",
+    "nl": "Nieuwe eduID apparaat"
   }
 
 }

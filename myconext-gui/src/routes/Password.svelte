@@ -2,7 +2,7 @@
     import {flash, user} from "../stores/user";
     import I18n from "i18n-js";
     import {validPassword} from "../validation/regexp";
-    import {forgotPasswordLink, me, updateSecurity} from "../api";
+    import {deletePassword, forgotPasswordLink, me, updateSecurity} from "../api";
     import {navigate} from "svelte-routing";
     import Button from "../components/Button.svelte";
     import Modal from "../components/Modal.svelte";
@@ -15,6 +15,7 @@
     let passwordResetHashExpired = false;
     let usePassword = $user.usePassword;
     let showModal = false;
+    let showModalDeletePassword = false;
     let hash;
     let userForgotPassword = false;
     let outstandingEmailReset = false;
@@ -55,13 +56,36 @@
 
     const cancel = () => {
         me().then(json => {
-            for (var key in json) {
+            for (let key in json) {
                 if (json.hasOwnProperty(key)) {
                     $user[key] = json[key];
                 }
             }
             navigate("/security");
         });
+    }
+
+    const deletePasswordOption = showConfirmation => () => {
+        if (showConfirmation) {
+            showModalDeletePassword = true;
+        } else {
+            deletePassword($user.id, currentPassword, hash).then(json => {
+                for (let key in json) {
+                    if (json.hasOwnProperty(key)) {
+                        $user[key] = json[key];
+                    }
+                }
+                navigate("/security");
+                flash.setValue(I18n.t("password.deleted"));
+            }).catch(() => {
+                showModalDeletePassword = false;
+                if (userForgotPassword) {
+                    passwordResetHashExpired = true;
+                } else {
+                    currentPasswordInvalid = true;
+                }
+            });
+        }
     }
 
     const forgotPassword = (showConfirmation, force = false) => () => {
@@ -128,8 +152,13 @@
     }
 
     .options {
-        margin-top: 60px;
+        margin: 60px 0 20px 0;
         display: flex;
+
+        span.first {
+            margin-right: auto;
+        }
+
     }
 
 </style>
@@ -138,7 +167,8 @@
     <p class="info">{I18n.t("password.passwordDisclaimer")}</p>
     {#if usePassword && !userForgotPassword}
         <label for="currentPassword">{I18n.t("password.currentPassword")}</label>
-        <input id="currentPassword" autocomplete="current-password" spellcheck="false" type="password" bind:value={currentPassword}/>
+        <input id="currentPassword" autocomplete="current-password" spellcheck="false" type="password"
+               bind:value={currentPassword}/>
 
     {/if}
     <div class="error-container">
@@ -166,9 +196,15 @@
     <input id="newPassword" type="password" autocomplete="new-password" spellcheck="false" bind:value={newPassword}>
 
     <label for="confirmPassword">{I18n.t("password.confirmPassword")}</label>
-    <input id="confirmPassword" type="password" spellcheck="false" autocomplete="new-password" bind:value={confirmPassword}>
+    <input id="confirmPassword" type="password" spellcheck="false" autocomplete="new-password"
+           bind:value={confirmPassword}>
 
     <div class="options">
+        {#if usePassword && !userForgotPassword}
+        <span class="first">
+            <Button deletion={true} onClick={deletePasswordOption(true)}/>
+        </span>
+        {/if}
         <Button className="cancel" label={I18n.t("password.cancel")} onClick={cancel}/>
 
         <Button label={usePassword ? I18n.t("password.updateUpdate") : I18n.t("password.setUpdate")}
@@ -183,6 +219,14 @@
            warning={false}
            question={I18n.t("password.forgotPasswordConfirmation")}
            title={I18n.t("password.forgotPassword")}>
+    </Modal>
+{/if}
+{#if showModalDeletePassword}
+    <Modal submit={deletePasswordOption(false)}
+           cancel={() => showModalDeletePassword = false}
+           warning={false}
+           question={I18n.t("password.deletePasswordConfirmation")}
+           title={I18n.t("password.deletePassword")}>
     </Modal>
 {/if}
 {#if outstandingEmailReset}

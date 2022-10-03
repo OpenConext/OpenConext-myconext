@@ -427,7 +427,6 @@ public class UserControllerTest extends AbstractIntegrationTest {
     public void updateUserSecurity() {
         SecureRandom random = new SecureRandom();
         PasswordEncoder passwordEncoder = new BCryptPasswordEncoder(-1, random);
-        System.out.println(passwordEncoder.encode("secret"));
 
         User user = userRepository.findOneUserByEmail("jdoe@example.com");
         UpdateUserSecurityRequest updateUserSecurityRequest = new UpdateUserSecurityRequest(user.getId(), "secret", "correctSecret001", null);
@@ -493,6 +492,21 @@ public class UserControllerTest extends AbstractIntegrationTest {
                 .put("/myconext/api/sp/security")
                 .then()
                 .statusCode(403);
+    }
+
+    @Test
+    public void deleteUserPassword() {
+        User user = userRepository.findOneUserByEmail("jdoe@example.com");
+        UpdateUserSecurityRequest updateUserSecurityRequest = new UpdateUserSecurityRequest(user.getId(), "secret", null, null);
+        given()
+                .when()
+                .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+                .body(updateUserSecurityRequest)
+                .put("/myconext/api/sp/delete-password")
+                .then()
+                .statusCode(HttpStatus.CREATED.value());
+        user = userRepository.findOneUserByEmail("jdoe@example.com");
+        assertNull(user.getPassword());
     }
 
     @Test

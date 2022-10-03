@@ -1,5 +1,6 @@
 package myconext.config;
 
+import myconext.geo.GeoLocation;
 import myconext.mail.MailBox;
 import myconext.manage.ServiceProviderResolver;
 import myconext.repository.AuthenticationRequestRepository;
@@ -32,6 +33,7 @@ public class BeanConfig extends SamlIdentityProviderServerBeanConfiguration {
     private final String magicLinkUrl;
     private final MailBox mailBox;
     private final ServiceProviderResolver serviceProviderResolver;
+    private final GeoLocation geoLocation;
 
     public BeanConfig(@Value("${saml_metadata_base_path}") String samlMetadataBasePath,
                       @Value("${idp_redirect_url}") String redirectUrl,
@@ -48,6 +50,7 @@ public class BeanConfig extends SamlIdentityProviderServerBeanConfiguration {
                       AuthenticationRequestRepository authenticationRequestRepository,
                       UserRepository userRepository,
                       UserLoginRepository userLoginRepository,
+                      GeoLocation geoLocation,
                       MailBox mailBox,
                       ServiceProviderResolver serviceProviderResolver) {
         this.immutableSamlConfigurationRepository = new ImmutableSamlConfigurationRepository(samlMetadataBasePath);
@@ -61,6 +64,7 @@ public class BeanConfig extends SamlIdentityProviderServerBeanConfiguration {
         this.authenticationRequestRepository = authenticationRequestRepository;
         this.userRepository = userRepository;
         this.userLoginRepository = userLoginRepository;
+        this.geoLocation = geoLocation;
         this.magicLinkUrl = magicLinkUrl;
         this.mailBox = mailBox;
         this.serviceProviderResolver = serviceProviderResolver;
@@ -85,6 +89,7 @@ public class BeanConfig extends SamlIdentityProviderServerBeanConfiguration {
                 authenticationRequestRepository,
                 userRepository,
                 userLoginRepository,
+                geoLocation,
                 rememberMeMaxAge,
                 nudgeAppDays,
                 rememberMeQuestionAskedDays,

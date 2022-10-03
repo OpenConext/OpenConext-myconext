@@ -1,6 +1,7 @@
 package myconext.security;
 
 import myconext.exceptions.UserNotFoundException;
+import myconext.geo.GeoLocation;
 import myconext.mail.MailBox;
 import myconext.manage.ServiceProviderHolder;
 import myconext.manage.ServiceProviderResolver;
@@ -75,6 +76,7 @@ public class GuestIdpAuthenticationRequestFilter extends IdpAuthenticationReques
     private final UserRepository userRepository;
     private final UserLoginRepository userLoginRepository;
     private final List<String> accountLinkingContextClassReferences;
+    private final GeoLocation geoLocation;
 
     private final int rememberMeMaxAge;
     private final boolean secureCookie;
@@ -94,6 +96,7 @@ public class GuestIdpAuthenticationRequestFilter extends IdpAuthenticationReques
                                                AuthenticationRequestRepository authenticationRequestRepository,
                                                UserRepository userRepository,
                                                UserLoginRepository userLoginRepository,
+                                               GeoLocation geoLocation,
                                                int rememberMeMaxAge,
                                                int nudgeAppDays,
                                                int rememberMeQuestionAskedDays,
@@ -111,6 +114,7 @@ public class GuestIdpAuthenticationRequestFilter extends IdpAuthenticationReques
         this.authenticationRequestRepository = authenticationRequestRepository;
         this.userRepository = userRepository;
         this.userLoginRepository = userLoginRepository;
+        this.geoLocation = geoLocation;
         this.accountLinkingContextClassReferences = ACR.all();
         this.rememberMeMaxAge = rememberMeMaxAge;
         this.nudgeAppDays = nudgeAppDays;
@@ -533,8 +537,8 @@ public class GuestIdpAuthenticationRequestFilter extends IdpAuthenticationReques
 
     private void addTrackingCookie(HttpServletRequest request, HttpServletResponse response, User user) {
         Optional<Cookie> optionalCookie = cookieByName(request, TRACKING_DEVICE_COOKIE_NAME);
-        String trackingUuid = user.getTrackingUuid();
-        if (trackingUuid == null) {
+        boolean existingUser = StringUtils.hasText(user.getTrackingUuid());
+        if (!existingUser) {
             user.setTrackingUuid(UUID.randomUUID().toString());
             userRepository.save(user);
         }
@@ -548,7 +552,16 @@ public class GuestIdpAuthenticationRequestFilter extends IdpAuthenticationReques
             Map<String, String> headers = Collections.list(request.getHeaderNames()).stream().collect(Collectors.toMap(s -> s, request::getHeader));
             headers.put("ipAddress", request.getRemoteAddr());
             //avoid delay due to InetAddress lookup
-            executor.submit(() -> userLoginRepository.save(new UserLogin(user, headers)));
+            executor.submit(() -> {
+                UserLogin userLogin = new UserLogin(user, headers);
+                String lookupAddress = userLogin.getLookupAddress();
+                Optional<String> optionalLocation = geoLocation.findLocation(lookupAddress);
+                optionalLocation.ifPresent(location -> userLogin.setIpLocation(location));
+                userLoginRepository.save(userLogin);
+                if (existingUser) {
+                    mailBox.sendNewDevice(user, userLogin);
+                }
+            });
         }
     }
 

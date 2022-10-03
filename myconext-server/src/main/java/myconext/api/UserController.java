@@ -330,6 +330,17 @@ public class UserController implements ServiceProviderHolder {
 
     @PutMapping("/sp/security")
     public ResponseEntity updateUserSecurity(Authentication authentication, @RequestBody UpdateUserSecurityRequest updateUserRequest) {
+        return doUpdateSecurity(authentication, updateUserRequest, true);
+    }
+
+    @PutMapping("/sp/delete-password")
+    public ResponseEntity deletePassword(Authentication authentication, @RequestBody UpdateUserSecurityRequest updateUserRequest) {
+        return doUpdateSecurity(authentication, updateUserRequest, false);
+    }
+
+    private ResponseEntity<UserResponse> doUpdateSecurity(Authentication authentication,
+                                                          UpdateUserSecurityRequest updateUserRequest,
+                                                          boolean update) {
         String userId = updateUserRequest.getUserId();
         User deltaUser = userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException(userId));
         User user = verifyAndFetchUser(authentication, deltaUser);
@@ -350,13 +361,18 @@ public class UserController implements ServiceProviderHolder {
                     .findByHashAndUserId(updateUserRequest.getHash(), user.getId())
                     .orElseThrow(() -> new ForbiddenException("wrong_hash"));
         }
-        user.encryptPassword(updateUserRequest.getNewPassword(), passwordEncoder);
+        if (update) {
+            user.encryptPassword(updateUserRequest.getNewPassword(), passwordEncoder);
+        } else {
+            user.deletePassword();
+        }
+
         user.setForgottenPassword(false);
 
         userRepository.save(user);
         passwordForgottenHashRepository.deleteByUserId(user.getId());
 
-        String action = existingPassword ? "update" : "add";
+        String action = update ? (existingPassword ? "update" : "add") : "delete";
         logWithContext(user, action, "password", LOG, action + " password");
         authenticationRequestRepository.deleteByUserId(user.getId());
         return returnUserResponse(user);

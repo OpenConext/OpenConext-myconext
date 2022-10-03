@@ -88,6 +88,10 @@ public class User implements Serializable, UserDetails {
         this.password = encoder.encode(password);
     }
 
+    public void deletePassword() {
+        this.password = null;
+    }
+
     @Transient
     public void addPublicKeyCredential(PublicKeyCredentialDescriptor publicKeyCredentialDescriptor,
                                        ByteArray publicKeyCredential,

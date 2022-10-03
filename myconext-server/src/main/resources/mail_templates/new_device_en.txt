@@ -1,0 +1,7 @@
+Hi {{name}},
+
+It looks like someone tried to log into your eduID account from a new location. If this isn't you, we suggest changing your password as soon as possible.
+
+{{mySurfConextURL}}/security
+
+{{> footer_en.txt}}

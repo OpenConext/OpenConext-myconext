@@ -7,6 +7,7 @@ import com.github.mustachejava.MustacheFactory;
 import lombok.SneakyThrows;
 import myconext.model.EmailsSend;
 import myconext.model.User;
+import myconext.model.UserLogin;
 import myconext.repository.EmailsSendRepository;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -97,6 +98,15 @@ public class MailBox {
         variables.put("mySurfConextURL", mySURFconextURL);
         variables.put("hash", hash);
         sendMail("forgot_password", title, variables, preferredLanguage(user), user.getEmail(), false);
+    }
+
+    public void sendNewDevice(User user, UserLogin userLogin) {
+        String title = this.getTitle("new_device", user);
+        Map<String, Object> variables = variables(user, title);
+        variables.put("mySurfConextURL", mySURFconextURL);
+        variables.put("ipAddress", userLogin.getLookupAddress());
+        variables.put("ipLocation", userLogin.getIpLocation());
+        sendMail("new_device", title, variables, preferredLanguage(user), user.getEmail(), false);
     }
 
     public void sendUpdateEmail(User user, String newMail, String hash) {

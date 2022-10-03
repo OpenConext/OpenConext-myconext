@@ -1,0 +1,7 @@
+Hi {{name}},
+
+Het lijkt erop dat iemand heeft geprobeerd in te loggen op je eduID-account vanaf een nieuwe locatie. Als jij dit niet bent, raden we je aan om je wachtwoord zo snel mogelijk te wijzigen.
+
+{{mySurfConextURL}}/security
+
+{{> footer_nl.txt}}

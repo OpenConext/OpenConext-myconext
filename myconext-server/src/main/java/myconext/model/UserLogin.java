@@ -29,6 +29,8 @@ public class UserLogin implements Serializable {
 
     private String ipAddress;
 
+    private String ipLocation;
+
     public UserLogin(User user, Map<String, String> headers) {
         this.userId = user.getId();
         this.uuid = UUID.randomUUID().toString();
@@ -45,5 +47,13 @@ public class UserLogin implements Serializable {
         } else {
             this.ipAddress = headers.get("ipAddress");
         }
+    }
+
+    public void setIpLocation(String ipLocation) {
+        this.ipLocation = ipLocation;
+    }
+
+    public String getLookupAddress() {
+        return StringUtils.hasText(forwardedFor) ? forwardedFor : ipAddress;
     }
 }

@@ -10,6 +10,7 @@ import myconext.model.ServiceProvider;
 import myconext.model.User;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.util.StringUtils;
 
 import java.util.*;
@@ -102,6 +103,12 @@ public class Migrations {
                 mongoTemplate.save(user);
             }
         });
+    }
+
+    @SuppressWarnings("unchecked")
+    @ChangeSet(order = "006", id = "deleteSession", author = "okke.harsta@surf.nl")
+    public void deleteSession(MongockTemplate mongoTemplate) {
+        mongoTemplate.remove(new Query(), "sessions");
     }
 
     protected User mergeEduIDs(User user) {

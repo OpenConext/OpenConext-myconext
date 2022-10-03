@@ -135,7 +135,7 @@
             color: #800101;
         }
 
-        &:disabled {
+        &.disabled {
             color: var(--color-primary-grey);
         }
 

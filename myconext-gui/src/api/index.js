@@ -71,6 +71,11 @@ export function updateSecurity(userId, currentPassword, newPassword, hash) {
     return postPutJson("/myconext/api/sp/security", body, "PUT");
 }
 
+export function deletePassword(userId, currentPassword, hash) {
+    const body = {userId, currentPassword, hash};
+    return postPutJson("/myconext/api/sp/delete-password", body, "PUT");
+}
+
 export function forgotPasswordLink(force = false) {
     const forceParam = force ? "?force=true" : "";
     return postPutJson(`/myconext/api/sp/forgot-password${forceParam}`, {}, "PUT");
