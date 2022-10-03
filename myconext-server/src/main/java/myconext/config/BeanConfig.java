@@ -1,6 +1,6 @@
 package myconext.config;
 
-import myconext.geo.GeoLocation;
+import myconext.geo.WhoIsGeoLocation;
 import myconext.mail.MailBox;
 import myconext.manage.ServiceProviderResolver;
 import myconext.repository.AuthenticationRequestRepository;
@@ -33,7 +33,7 @@ public class BeanConfig extends SamlIdentityProviderServerBeanConfiguration {
     private final String magicLinkUrl;
     private final MailBox mailBox;
     private final ServiceProviderResolver serviceProviderResolver;
-    private final GeoLocation geoLocation;
+    private final WhoIsGeoLocation geoLocation;
 
     public BeanConfig(@Value("${saml_metadata_base_path}") String samlMetadataBasePath,
                       @Value("${idp_redirect_url}") String redirectUrl,
@@ -50,7 +50,7 @@ public class BeanConfig extends SamlIdentityProviderServerBeanConfiguration {
                       AuthenticationRequestRepository authenticationRequestRepository,
                       UserRepository userRepository,
                       UserLoginRepository userLoginRepository,
-                      GeoLocation geoLocation,
+                      WhoIsGeoLocation geoLocation,
                       MailBox mailBox,
                       ServiceProviderResolver serviceProviderResolver) {
         this.immutableSamlConfigurationRepository = new ImmutableSamlConfigurationRepository(samlMetadataBasePath);

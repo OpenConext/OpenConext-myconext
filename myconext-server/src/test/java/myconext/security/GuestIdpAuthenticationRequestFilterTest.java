@@ -1,7 +1,7 @@
 package myconext.security;
 
 import myconext.AbstractIntegrationTest;
-import myconext.geo.GeoLocation;
+import myconext.geo.WhoIsGeoLocation;
 import myconext.manage.MockServiceProviderResolver;
 import myconext.model.LinkedAccount;
 import myconext.model.User;
@@ -33,7 +33,7 @@ public class GuestIdpAuthenticationRequestFilterTest {
             null,
             Mockito.mock(UserRepository.class),
             Mockito.mock(UserLoginRepository.class),
-            Mockito.mock(GeoLocation.class),
+            Mockito.mock(WhoIsGeoLocation.class),
             90,
             1,
             1,

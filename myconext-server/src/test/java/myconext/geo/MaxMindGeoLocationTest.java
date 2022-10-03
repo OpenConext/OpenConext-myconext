@@ -1,14 +1,13 @@
 package myconext.geo;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-class GeoLocationTest {
+class MaxMindGeoLocationTest {
 
-    private final GeoLocation geoLocation = new GeoLocation(new ObjectMapper());
+    private final GeoLocation geoLocation = new MaxMindGeoLocation();
 
     @Test
     void findLocation() {

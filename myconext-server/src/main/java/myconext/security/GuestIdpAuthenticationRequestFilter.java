@@ -1,7 +1,7 @@
 package myconext.security;
 
 import myconext.exceptions.UserNotFoundException;
-import myconext.geo.GeoLocation;
+import myconext.geo.WhoIsGeoLocation;
 import myconext.mail.MailBox;
 import myconext.manage.ServiceProviderHolder;
 import myconext.manage.ServiceProviderResolver;
@@ -76,7 +76,7 @@ public class GuestIdpAuthenticationRequestFilter extends IdpAuthenticationReques
     private final UserRepository userRepository;
     private final UserLoginRepository userLoginRepository;
     private final List<String> accountLinkingContextClassReferences;
-    private final GeoLocation geoLocation;
+    private final WhoIsGeoLocation geoLocation;
 
     private final int rememberMeMaxAge;
     private final boolean secureCookie;
@@ -96,7 +96,7 @@ public class GuestIdpAuthenticationRequestFilter extends IdpAuthenticationReques
                                                AuthenticationRequestRepository authenticationRequestRepository,
                                                UserRepository userRepository,
                                                UserLoginRepository userLoginRepository,
-                                               GeoLocation geoLocation,
+                                               WhoIsGeoLocation geoLocation,
                                                int rememberMeMaxAge,
                                                int nudgeAppDays,
                                                int rememberMeQuestionAskedDays,
