@@ -6,6 +6,7 @@ import myconext.exceptions.DisposableEmailProviderException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
@@ -22,18 +23,24 @@ public class DisposableEmailProviders {
 
     private final ObjectMapper objectMapper;
     private Set<String> disposableEmailProviders = new HashSet<>();
+    private final boolean denyDisposableEmailProviders;
     private final TypeReference<Map<String, Object>> mapTypeReference = new TypeReference<>() {
     };
 
     @Autowired
-    public DisposableEmailProviders(ObjectMapper objectMapper) {
+    public DisposableEmailProviders(ObjectMapper objectMapper,
+                                    @Value("${feature.deny_disposable_email_providers}") boolean denyDisposableEmailProviders) {
         this.objectMapper = objectMapper;
+        this.denyDisposableEmailProviders = denyDisposableEmailProviders;
     }
 
     //We don't want this running during integration tests
     @Scheduled(initialDelay = 1L, fixedRate = 24L, timeUnit = TimeUnit.HOURS)
     @SuppressWarnings("unchecked")
     public void resolveIDisposableEmailProviders() {
+        if (!denyDisposableEmailProviders) {
+            return;
+        }
         long start = System.currentTimeMillis();
         try {
             String location = "https://raw.githubusercontent.com/7c/fakefilter/main/json/data.json";
@@ -47,6 +54,9 @@ public class DisposableEmailProviders {
     }
 
     public void verifyDisposableEmailProviders(String email) {
+        if (!denyDisposableEmailProviders) {
+            return;
+        }
         if (disposableEmailProviders.isEmpty()) {
             resolveIDisposableEmailProviders();
         }

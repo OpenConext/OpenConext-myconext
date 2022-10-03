@@ -58,6 +58,8 @@ feature:
   connections: True
   # Do we allow the account linking to take place with the accounting IdP, e.g. add extra button in IdP link screen
   use_external_validation: True
+  # Do we deny emails that are known Disposable Email Providers
+  deny_disposable_email_providers: True
   # Do we allow for multiple linked (institutional) accounts? Not yet implemented
   # multiple_linked_account: False
   use_deny_allow_list:
