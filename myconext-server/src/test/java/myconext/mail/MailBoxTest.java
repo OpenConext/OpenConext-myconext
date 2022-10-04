@@ -123,16 +123,29 @@ public class MailBoxTest extends AbstractIntegrationTest {
     }
 
     @Test
-    public void sendForgotPassword() throws Exception {
+    public void sendResetPassword() throws Exception {
         User user = user("jdoe@example.com");
-        mailBox.sendForgotPassword(user, "hash");
+        mailBox.sendResetPassword(user, "hash");
 
         MimeMessage mimeMessage = mailMessage();
         MimeMessageParser parser = new MimeMessageParser(mimeMessage);
         parser.parse();
 
         String htmlContent = parser.getHtmlContent();
-        assertTrue(htmlContent.contains("http://localhost:3001/forgot-password?h=hash"));
+        assertTrue(htmlContent.contains("http://localhost:3001/reset-password?h=hash"));
+    }
+
+    @Test
+    public void sendAddPassword() throws Exception {
+        User user = user("jdoe@example.com");
+        mailBox.sendAddPassword(user, "hash");
+
+        MimeMessage mimeMessage = mailMessage();
+        MimeMessageParser parser = new MimeMessageParser(mimeMessage);
+        parser.parse();
+
+        String htmlContent = parser.getHtmlContent();
+        assertTrue(htmlContent.contains("http://localhost:3001/add-password?h=hash"));
     }
 
     @Test

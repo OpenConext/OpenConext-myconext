@@ -352,13 +352,13 @@
                     </div>
                 </td>
             </tr>
-            <tr class="link" on:click={() => navigate("/password")}>
+            <tr class="link" on:click={() => navigate("/reset-password-link")}>
                 <td class="attr">{I18n.t("security.usePassword")}</td>
                 <td class="{passwordStyle}">
                     <div class="value-container">
                         <span>{password}</span>
-                        <a class="right-link" href="/password"
-                           on:click|preventDefault|stopPropagation={() => navigate("/password")}>{@html writeSvg}</a>
+                        <a class="right-link" href="/reset-password-link"
+                           on:click|preventDefault|stopPropagation={() => navigate("/reset-password-link")}>{@html writeSvg}</a>
                     </div>
                 </td>
             </tr>

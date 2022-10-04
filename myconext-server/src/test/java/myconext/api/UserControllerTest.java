@@ -30,7 +30,6 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
-import java.lang.reflect.Type;
 import java.security.SecureRandom;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
@@ -414,27 +413,29 @@ public class UserControllerTest extends AbstractIntegrationTest {
     @Test
     public void updateUserWeakPassword() {
         User user = userRepository.findOneUserByEmail("jdoe@example.com");
+        passwordResetHashRepository.save(new PasswordResetHash(user, "hash"));
         given()
                 .when()
                 .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
-                .body(new UpdateUserSecurityRequest(user.getId(), "secret", "nope", null))
-                .put("/myconext/api/sp/security")
+                .body(new UpdateUserSecurityRequest(user.getId(), "nope", "hash"))
+                .put("/myconext/api/sp/update-password")
                 .then()
                 .statusCode(422);
     }
 
     @Test
-    public void updateUserSecurity() {
+    public void updateUserPassword() {
         SecureRandom random = new SecureRandom();
         PasswordEncoder passwordEncoder = new BCryptPasswordEncoder(-1, random);
 
         User user = userRepository.findOneUserByEmail("jdoe@example.com");
-        UpdateUserSecurityRequest updateUserSecurityRequest = new UpdateUserSecurityRequest(user.getId(), "secret", "correctSecret001", null);
+        passwordResetHashRepository.save(new PasswordResetHash(user, "hash"));
+        UpdateUserSecurityRequest updateUserSecurityRequest = new UpdateUserSecurityRequest(user.getId(), "correctSecret001", "hash");
         given()
                 .when()
                 .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                 .body(updateUserSecurityRequest)
-                .put("/myconext/api/sp/security")
+                .put("/myconext/api/sp/update-password")
                 .then()
                 .statusCode(HttpStatus.CREATED.value());
         user = userRepository.findOneUserByEmail("jdoe@example.com");
@@ -442,18 +443,16 @@ public class UserControllerTest extends AbstractIntegrationTest {
     }
 
     @Test
-    public void updateUserWrongPassword() {
+    public void updateUserPasswordWrongHash() {
         User user = userRepository.findOneUserByEmail("jdoe@example.com");
-        ReflectionTestUtils.setField(user, "password", "abcdefghijklmnop");
-        userRepository.save(user);
-
+        UpdateUserSecurityRequest updateUserSecurityRequest = new UpdateUserSecurityRequest(user.getId(), "correctSecret001", null);
         given()
                 .when()
                 .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
-                .body(new UpdateUserSecurityRequest(user.getId(), "nope", "nope", null))
-                .put("/myconext/api/sp/security")
+                .body(updateUserSecurityRequest)
+                .put("/myconext/api/sp/update-password")
                 .then()
-                .statusCode(403);
+                .statusCode(HttpStatus.FORBIDDEN.value());
     }
 
     @Test
@@ -463,14 +462,14 @@ public class UserControllerTest extends AbstractIntegrationTest {
         ReflectionTestUtils.setField(user, "password", "abcdefghijklmnop");
         userRepository.save(user);
 
-        passwordForgottenHashRepository.save(new PasswordForgottenHash(user, "hash"));
+        passwordResetHashRepository.save(new PasswordResetHash(user, "hash"));
 
-        UpdateUserSecurityRequest securityRequest = new UpdateUserSecurityRequest(user.getId(), null, "abcdefghujklmnop", "hash");
+        UpdateUserSecurityRequest securityRequest = new UpdateUserSecurityRequest(user.getId(), "abcdefghujklmnop", "hash");
         given()
                 .when()
                 .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                 .body(securityRequest)
-                .put("/myconext/api/sp/security")
+                .put("/myconext/api/sp/update-password")
                 .then()
                 .statusCode(HttpStatus.CREATED.value());
         user = userRepository.findOneUserByEmail("jdoe@example.com");
@@ -484,12 +483,12 @@ public class UserControllerTest extends AbstractIntegrationTest {
         ReflectionTestUtils.setField(user, "password", "abcdefghijklmnop");
         userRepository.save(user);
 
-        UpdateUserSecurityRequest securityRequest = new UpdateUserSecurityRequest(user.getId(), null, "abcdefghujklmnop", "hash");
+        UpdateUserSecurityRequest securityRequest = new UpdateUserSecurityRequest(user.getId(), "abcdefghujklmnop", "hash");
         given()
                 .when()
                 .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                 .body(securityRequest)
-                .put("/myconext/api/sp/security")
+                .put("/myconext/api/sp/update-password")
                 .then()
                 .statusCode(403);
     }
@@ -497,12 +496,13 @@ public class UserControllerTest extends AbstractIntegrationTest {
     @Test
     public void deleteUserPassword() {
         User user = userRepository.findOneUserByEmail("jdoe@example.com");
-        UpdateUserSecurityRequest updateUserSecurityRequest = new UpdateUserSecurityRequest(user.getId(), "secret", null, null);
+        passwordResetHashRepository.save(new PasswordResetHash(user, "hash"));
+        UpdateUserSecurityRequest updateUserSecurityRequest = new UpdateUserSecurityRequest(user.getId(), null, "hash");
         given()
                 .when()
                 .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                 .body(updateUserSecurityRequest)
-                .put("/myconext/api/sp/delete-password")
+                .put("/myconext/api/sp/update-password")
                 .then()
                 .statusCode(HttpStatus.CREATED.value());
         user = userRepository.findOneUserByEmail("jdoe@example.com");
@@ -1043,39 +1043,29 @@ public class UserControllerTest extends AbstractIntegrationTest {
     }
 
     @Test
-    public void testForgotPassword() {
-        Map map = given()
-                .when()
-                .accept(ContentType.JSON)
-                .put("/myconext/api/sp/forgot-password")
-                .as(Map.class);
-        assertTrue((Boolean) map.get("forgottenPassword"));
-    }
-
-    @Test
-    public void testForgotPasswordWithExistingEmailChangeRequest() {
+    public void testResetPasswordLinkWithExistingEmailChangeRequest() {
         User user = userRepository.findOneUserByEmail("jdoe@example.com");
         changeEmailHashRepository.save(new ChangeEmailHash(user, "new@example.com", "hash"));
         given()
                 .when()
                 .accept(ContentType.JSON)
-                .put("/myconext/api/sp/forgot-password")
-                .then()
-                .statusCode(HttpStatus.NOT_ACCEPTABLE.value());
+                .put("/myconext/api/sp/reset-password-link")
+                .as(Map.class);
+        assertEquals(0, changeEmailHashRepository.findByUserId(user.getId()).size());
     }
 
     @Test
-    public void testForgotPasswordWithExistingEmailChangeRequestForce() {
+    public void testResetPasswordLink() {
         User user = userRepository.findOneUserByEmail("jdoe@example.com");
-        changeEmailHashRepository.save(new ChangeEmailHash(user, "new@example.com", "hash"));
-        Map map = given()
+        user.deletePassword();
+        userRepository.save(user);
+
+        given()
                 .when()
                 .accept(ContentType.JSON)
-                .queryParam("force", "true")
-                .put("/myconext/api/sp/forgot-password")
+                .put("/myconext/api/sp/reset-password-link")
                 .as(Map.class);
-        assertTrue((Boolean) map.get("forgottenPassword"));
-        assertEquals(0, changeEmailHashRepository.findByUserId(user.getId()).size());
+        assertEquals(1, passwordResetHashRepository.findByUserId(user.getId()).size());
     }
 
     @Test
@@ -1100,9 +1090,23 @@ public class UserControllerTest extends AbstractIntegrationTest {
     }
 
     @Test
+    public void outstandingEmailLinks() {
+        User user = userRepository.findOneUserByEmail("jdoe@example.com");
+        changeEmailHashRepository.save(new ChangeEmailHash(user, "jdoe@new.com","hash"));
+
+        given()
+                .when()
+                .accept(ContentType.JSON)
+                .contentType(ContentType.JSON)
+                .get("/myconext/api/sp/outstanding-email-links")
+                .then()
+                .body(equalTo("true"));
+    }
+
+    @Test
     public void updateEmailWithOutstandingPasswordResetRequest() {
         User user = userRepository.findOneUserByEmail("jdoe@example.com");
-        passwordForgottenHashRepository.save(new PasswordForgottenHash(user, "hash"));
+        passwordResetHashRepository.save(new PasswordResetHash(user, "hash"));
 
         given()
                 .when()
@@ -1117,7 +1121,7 @@ public class UserControllerTest extends AbstractIntegrationTest {
     @Test
     public void updateEmailWithOutstandingPasswordResetRequestWithForce() {
         User user = userRepository.findOneUserByEmail("jdoe@example.com");
-        passwordForgottenHashRepository.save(new PasswordForgottenHash(user, "hash"));
+        passwordResetHashRepository.save(new PasswordResetHash(user, "hash"));
 
         given()
                 .when()
@@ -1128,7 +1132,7 @@ public class UserControllerTest extends AbstractIntegrationTest {
                 .put("/myconext/api/sp/email")
                 .then()
                 .statusCode(HttpStatus.CREATED.value());
-        assertEquals(0, passwordForgottenHashRepository.findByUserId(user.getId()).size());
+        assertEquals(0, passwordResetHashRepository.findByUserId(user.getId()).size());
     }
 
     @Test

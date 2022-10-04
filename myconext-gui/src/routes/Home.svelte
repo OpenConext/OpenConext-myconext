@@ -36,6 +36,7 @@
     import BackupCodes from "./BackupCodes.svelte";
     import UseApp from "./tiqr/UseApp.svelte";
     import ChangeCongrats from "./tiqr/ChangeCongrats.svelte";
+    import PasswordLink from "./PasswordLink.svelte";
 
     export let bookmark = "home";
 
@@ -52,8 +53,8 @@
         {name: "service", alias: "services", component: Service, ignore: true},
         {name: "credential", alias: "security", component: Credential, ignore: true},
         {name: "webauthn", alias: "security", component: WebAuthn, ignore: true},
-        {name: "password", alias: "security", component: Password, ignore: true},
-        {name: "forgot-password", alias: "security", component: Password, ignore: true},
+        {name: "reset-password", alias: "security", component: Password, ignore: true},
+        {name: "reset-password-link", alias: "security", component: PasswordLink, ignore: true},
         {name: "delete-account", alias: "account", component: DeleteAccount, ignore: true},
 
         {name: "get-app", alias: "security", component: GetApp, ignore: true},

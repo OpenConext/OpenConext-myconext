@@ -33,17 +33,17 @@ public class ResourceCleanerTest extends AbstractIntegrationTest {
     public void cleanPassForgottenHash() {
         ResourceCleaner resourceCleaner = getResourceCleaner(true);
 
-        PasswordForgottenHash passwordForgottenHash = new PasswordForgottenHash(user("qwert@exp.com"), "1234567890");
+        PasswordResetHash passwordResetHash = new PasswordResetHash(user("qwert@exp.com"), "1234567890");
         Date twoHoursAgo = Date.from(LocalDateTime.now().minusHours(2).atZone(ZoneId.systemDefault()).toInstant());
 
-        ReflectionTestUtils.setField(passwordForgottenHash, "expiresIn", twoHoursAgo);
-        passwordForgottenHashRepository.save(passwordForgottenHash);
+        ReflectionTestUtils.setField(passwordResetHash, "expiresIn", twoHoursAgo);
+        passwordResetHashRepository.save(passwordResetHash);
 
-        long prev = passwordForgottenHashRepository.count();
+        long prev = passwordResetHashRepository.count();
 
         resourceCleaner.clean();
 
-        assertEquals(prev - 1, passwordForgottenHashRepository.count());
+        assertEquals(prev - 1, passwordResetHashRepository.count());
     }
 
     @Test
@@ -117,7 +117,7 @@ public class ResourceCleanerTest extends AbstractIntegrationTest {
     }
 
     private ResourceCleaner getResourceCleaner(boolean cronJobResponsible) {
-        return new ResourceCleaner(authenticationRequestRepository, userRepository, passwordForgottenHashRepository, changeEmailHashRepository, emailsSendRepository, cronJobResponsible);
+        return new ResourceCleaner(authenticationRequestRepository, userRepository, passwordResetHashRepository, changeEmailHashRepository, emailsSendRepository, cronJobResponsible);
     }
 
 }

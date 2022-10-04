@@ -229,10 +229,11 @@ I18n.translations.en = {
         deleteCredentialConfirmation: "Are you sure you want to delete your security key {{name}}? The secuirity key will be deleted from your eduID account, but will not be removed from your browser and / or Yubikey device."
     },
     password: {
-        setTitle: "Set password",
+        addTitle: "Add password",
         updateTitle: "Change password",
-        resetTitle: "Reset forgotten password",
-        currentPassword: "Current password",
+        addInfo: "If you want to add a password to your eduID account, press <strong>Confirm</strong> below to instantly receive an email with a link to add a password.",
+        updateInfo: "If you want to reset or delete your password from your eduID account, press <strong>Confirm</strong> below to instantly receive an email with a link to change or delete your current password.",
+        resetTitle: "Reset your password",
         newPassword: "New password",
         confirmPassword: "Confirm new password",
         setUpdate: "Set password",

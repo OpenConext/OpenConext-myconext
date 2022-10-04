@@ -12,8 +12,8 @@ import java.util.Date;
 
 @NoArgsConstructor
 @Getter
-@Document(collection = "password_forgotten_hashes")
-public class PasswordForgottenHash implements Serializable {
+@Document(collection = "password_reset_hashes")
+public class PasswordResetHash implements Serializable {
 
     @Id
     private String id;
@@ -24,7 +24,7 @@ public class PasswordForgottenHash implements Serializable {
 
     private String userId;
 
-    public PasswordForgottenHash(User user, String hash) {
+    public PasswordResetHash(User user, String hash) {
         this.userId = user.getId();
         this.hash = hash;
         this.expiresIn = Date.from(LocalDateTime.now().plusHours(1).atZone(ZoneId.systemDefault()).toInstant());

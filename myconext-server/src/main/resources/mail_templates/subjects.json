@@ -11,9 +11,13 @@
     "en": "Magic Link to login",
     "nl": "Magische link om in te loggen"
   },
-  "forgot_password": {
+  "reset_password": {
     "en": "Reset your eduID password",
     "nl": "Reset je eduID wachtwoord"
+  },
+  "add_password": {
+    "en": "Add an eduID password",
+    "nl": "Toevoegen eduID wachtwoord"
   },
   "update_email": {
     "en": "Update your eduID email",

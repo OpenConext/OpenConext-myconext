@@ -2,39 +2,30 @@
     import {flash, user} from "../stores/user";
     import I18n from "i18n-js";
     import {validPassword} from "../validation/regexp";
-    import {deletePassword, forgotPasswordLink, me, updateSecurity} from "../api";
+    import {resetPasswordLink, updatePassword} from "../api";
     import {navigate} from "svelte-routing";
     import Button from "../components/Button.svelte";
     import Modal from "../components/Modal.svelte";
     import {onMount} from "svelte";
 
-    let currentPassword = "";
     let newPassword = "";
     let confirmPassword = "";
-    let currentPasswordInvalid = false;
     let passwordResetHashExpired = false;
     let usePassword = $user.usePassword;
-    let showModal = false;
     let showModalDeletePassword = false;
     let hash;
-    let userForgotPassword = false;
-    let outstandingEmailReset = false;
+    let allowedNext = false;
 
-    const valid = () => {
-        let existingPasswordValid = usePassword && (currentPassword || userForgotPassword) && validPassword(newPassword) && newPassword === confirmPassword;
-        let newPasswordValid = !usePassword && validPassword(newPassword) && newPassword === confirmPassword;
-        return (existingPasswordValid || newPasswordValid);
-    };
+    $: allowedNext = validPassword(newPassword) && newPassword === confirmPassword;
 
     onMount(() => {
         const urlSearchParams = new URLSearchParams(window.location.search);
         hash = urlSearchParams.get("h");
-        userForgotPassword = (hash !== undefined && hash !== null);
     });
 
-    const update = () => {
-        if (valid()) {
-            updateSecurity($user.id, currentPassword, newPassword, hash)
+    const update = (overrideWarning = false) => {
+        if (allowedNext) {
+            updatePassword($user.id, newPassword, hash)
                 .then(json => {
                     for (var key in json) {
                         if (json.hasOwnProperty(key)) {
@@ -42,34 +33,24 @@
                         }
                     }
                     navigate("/security");
-                    flash.setValue(userForgotPassword ? I18n.t("password.reset") : usePassword ? I18n.t("password.updated") : I18n.t("password.set"));
+                    flash.setValue(usePassword ? I18n.t("password.updated") : I18n.t("password.set"));
                 })
                 .catch(() => {
-                    if (userForgotPassword) {
-                        passwordResetHashExpired = true;
-                    } else {
-                        currentPasswordInvalid = true;
-                    }
+                    passwordResetHashExpired = true;
                 });
+
         }
     };
 
     const cancel = () => {
-        me().then(json => {
-            for (let key in json) {
-                if (json.hasOwnProperty(key)) {
-                    $user[key] = json[key];
-                }
-            }
-            navigate("/security");
-        });
+        navigate("/security");
     }
 
     const deletePasswordOption = showConfirmation => () => {
         if (showConfirmation) {
             showModalDeletePassword = true;
         } else {
-            deletePassword($user.id, currentPassword, hash).then(json => {
+            updatePassword($user.id, null, hash).then(json => {
                 for (let key in json) {
                     if (json.hasOwnProperty(key)) {
                         $user[key] = json[key];
@@ -79,30 +60,17 @@
                 flash.setValue(I18n.t("password.deleted"));
             }).catch(() => {
                 showModalDeletePassword = false;
-                if (userForgotPassword) {
-                    passwordResetHashExpired = true;
-                } else {
-                    currentPasswordInvalid = true;
-                }
+                passwordResetHashExpired = true;
             });
         }
     }
 
-    const forgotPassword = (showConfirmation, force = false) => () => {
-        if (showConfirmation) {
-            showModal = true;
-        } else {
-            forgotPasswordLink(force).then(() => {
-                showModal = false;
-                navigate("/security");
-                flash.setValue(I18n.t("password.flash.passwordLink", {name: $user.email}));
-            }).catch(e => {
-                if (e.status === 406) {
-                    outstandingEmailReset = true;
-                    showModal = false;
-                }
-            });
-        }
+    const resetPasswordLinkAgain = () => {
+        resetPasswordLink().then(() => {
+            navigate("/security");
+            flash.setValue(I18n.t("password.flash.passwordLink", {name: $user.email}));
+        })
+
     }
 
 </script>
@@ -163,30 +131,15 @@
 
 </style>
 <div class="password">
-    <h2>{userForgotPassword ? I18n.t("password.resetTitle") : usePassword ? I18n.t("password.updateTitle") : I18n.t("password.setTitle")}</h2>
+    <h2>{usePassword ? I18n.t("password.updateTitle") : I18n.t("password.addTitle")}</h2>
     <p class="info">{I18n.t("password.passwordDisclaimer")}</p>
-    {#if usePassword && !userForgotPassword}
-        <label for="currentPassword">{I18n.t("password.currentPassword")}</label>
-        <input id="currentPassword" autocomplete="current-password" spellcheck="false" type="password"
-               bind:value={currentPassword}/>
-
-    {/if}
     <div class="error-container">
-        {#if currentPasswordInvalid}
-            <span class="error">{I18n.t("password.invalidCurrentPassword")}</span>
-        {/if}
         {#if passwordResetHashExpired}
             <span class="error">{I18n.t("password.passwordResetHashExpired")}
-                <a href="/forgot" on:click|preventDefault|stopPropagation={forgotPassword(true)}>
+                <a href="/reset-link" on:click|preventDefault|stopPropagation={resetPasswordLinkAgain}>
                     {I18n.t("password.passwordResetSendAgain")}
                 </a>
             </span>
-        {/if}
-        {#if usePassword && !passwordResetHashExpired && !userForgotPassword}
-            <a class="forgot-password" href="/forgot"
-               on:click|preventDefault|stopPropagation={forgotPassword(true)}>
-                {I18n.t("password.forgotPassword")}
-            </a>
         {/if}
     </div>
 
@@ -200,40 +153,22 @@
            bind:value={confirmPassword}>
 
     <div class="options">
-        {#if usePassword && !userForgotPassword}
+        {#if usePassword}
         <span class="first">
             <Button deletion={true} onClick={deletePasswordOption(true)}/>
         </span>
         {/if}
         <Button className="cancel" label={I18n.t("password.cancel")} onClick={cancel}/>
-
         <Button label={usePassword ? I18n.t("password.updateUpdate") : I18n.t("password.setUpdate")}
                 onClick={update}
-                disabled={!((usePassword && (currentPassword || userForgotPassword) && validPassword(newPassword) && newPassword === confirmPassword) ||
-                (!usePassword && validPassword(newPassword) && newPassword === confirmPassword))}/>
+                disabled={!allowedNext}/>
     </div>
 </div>
-{#if showModal}
-    <Modal submit={forgotPassword(false)}
-           cancel={() => showModal = false}
-           warning={false}
-           question={I18n.t("password.forgotPasswordConfirmation")}
-           title={I18n.t("password.forgotPassword")}>
-    </Modal>
-{/if}
 {#if showModalDeletePassword}
     <Modal submit={deletePasswordOption(false)}
            cancel={() => showModalDeletePassword = false}
            warning={false}
            question={I18n.t("password.deletePasswordConfirmation")}
            title={I18n.t("password.deletePassword")}>
-    </Modal>
-{/if}
-{#if outstandingEmailReset}
-    <Modal submit={forgotPassword(false, true)}
-           cancel={() => navigate("/security")}
-           warning={true}
-           question={I18n.t("password.outstandingEmailResetConfirmation")}
-           title={I18n.t("password.outstandingEmailReset")}>
     </Modal>
 {/if}

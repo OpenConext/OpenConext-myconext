@@ -22,7 +22,7 @@ public class ResourceCleaner {
 
     private final AuthenticationRequestRepository authenticationRequestRepository;
     private final UserRepository userRepository;
-    private final PasswordForgottenHashRepository passwordForgottenHashRepository;
+    private final PasswordResetHashRepository passwordResetHashRepository;
     private final ChangeEmailHashRepository changeEmailHashRepository;
     private final boolean cronJobResponsible;
     private final EmailsSendRepository emailsSendRepository;
@@ -30,13 +30,13 @@ public class ResourceCleaner {
     @Autowired
     public ResourceCleaner(AuthenticationRequestRepository authenticationRequestRepository,
                            UserRepository userRepository,
-                           PasswordForgottenHashRepository passwordForgottenHashRepository,
+                           PasswordResetHashRepository passwordResetHashRepository,
                            ChangeEmailHashRepository changeEmailHashRepository,
                            EmailsSendRepository emailsSendRepository,
                            @Value("${cron.node-cron-job-responsible}") boolean cronJobResponsible) {
         this.authenticationRequestRepository = authenticationRequestRepository;
         this.userRepository = userRepository;
-        this.passwordForgottenHashRepository = passwordForgottenHashRepository;
+        this.passwordResetHashRepository = passwordResetHashRepository;
         this.changeEmailHashRepository = changeEmailHashRepository;
         this.emailsSendRepository = emailsSendRepository;
         this.cronJobResponsible = cronJobResponsible;
@@ -49,7 +49,7 @@ public class ResourceCleaner {
         }
         Date now = new Date();
         info(SamlAuthenticationRequest.class, authenticationRequestRepository.deleteByExpiresInBeforeAndRememberMe(now, false));
-        info(PasswordForgottenHash.class, passwordForgottenHashRepository.deleteByExpiresInBefore(now));
+        info(PasswordResetHash.class, passwordResetHashRepository.deleteByExpiresInBefore(now));
         info(ChangeEmailHash.class, changeEmailHashRepository.deleteByExpiresInBefore(now));
 
         Date seconds16Ago = Date.from(now.toInstant().minus(16, ChronoUnit.SECONDS));

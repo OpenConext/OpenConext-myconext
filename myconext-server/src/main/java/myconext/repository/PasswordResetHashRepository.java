@@ -1,7 +1,7 @@
 package myconext.repository;
 
 
-import myconext.model.PasswordForgottenHash;
+import myconext.model.PasswordResetHash;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.stereotype.Repository;
 
@@ -10,11 +10,11 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-public interface PasswordForgottenHashRepository extends MongoRepository<PasswordForgottenHash, String> {
+public interface PasswordResetHashRepository extends MongoRepository<PasswordResetHash, String> {
 
-    Optional<PasswordForgottenHash> findByHashAndUserId(String hash, String userId);
+    Optional<PasswordResetHash> findByHashAndUserId(String hash, String userId);
 
-    List<PasswordForgottenHash> findByUserId(String userId);
+    List<PasswordResetHash> findByUserId(String userId);
 
     Long deleteByUserId(String userId);
 

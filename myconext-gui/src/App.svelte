@@ -313,11 +313,14 @@
                     <Route path="/webauthn">
                         <Home bookmark="webauthn"/>
                     </Route>
-                    <Route path="/forgot-password">
-                        <Home bookmark="forgot-password"/>
+                    <Route path="/reset-password-link">
+                        <Home bookmark="reset-password-link"/>
                     </Route>
-                    <Route path="/password">
-                        <Home bookmark="password"/>
+                    <Route path="/reset-password">
+                        <Home bookmark="reset-password"/>
+                    </Route>
+                    <Route path="/add-password">
+                        <Home bookmark="reset-password"/>
                     </Route>
                     <Route path="/update-email" component={ConfirmUpdateEmail}/>
                     <Route component={NotFound}/>

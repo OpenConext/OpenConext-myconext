@@ -228,10 +228,11 @@ I18n.translations.nl = {
         deleteCredentialConfirmation: "Weet je zeker dat je de beveiligingssleutel {{name}} wilt verwijderen? De beveiligingssleutel wordt verwijderd uit je eduID account, maar wordt niet verwijderd uit je browser en / of van je YubiKey-apparaat."
     },
     password: {
-        setTitle: "Wachtwoord instellen",
+        addTitle: "Toevoegen wachtwoord",
         updateTitle: "Wijzig wachtwoord",
+        addInfo: "Als je een wachtwoord aan je eduID-account wilt toevoegen, klik dan hieronder op <strong>Bevestigen</strong> om direct een e-mail te ontvangen met een link om een wachtwoord toe te voegen.",
+        updateInfo: "Als je het wachtwoord van je eduID-account wilt resetten of verwijderen, druk hieronder op <strong>Bevestigen</strong> om direct een e-mail te ontvangen met een link om je huidige wachtwoord opnieuw in te stellen of te verwijderen.\n",
         resetTitle: "Stel je wachtwoord opnieuw in",
-        currentPassword: "Huidig wachtwoord",
         newPassword: "Nieuw wachtwoord",
         confirmPassword: "Bevestig nieuw wachtwoord",
         setUpdate: "Wachtwoord instellen",

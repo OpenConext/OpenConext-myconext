@@ -73,7 +73,7 @@ public class UserController implements ServiceProviderHolder {
     private final RelyingParty relyingParty;
     private final UserCredentialRepository userCredentialRepository;
     private final ChallengeRepository challengeRepository;
-    private final PasswordForgottenHashRepository passwordForgottenHashRepository;
+    private final PasswordResetHashRepository passwordResetHashRepository;
     private final ChangeEmailHashRepository changeEmailHashRepository;
 
     private final static SecureRandom random = new SecureRandom();
@@ -89,7 +89,7 @@ public class UserController implements ServiceProviderHolder {
     public UserController(UserRepository userRepository,
                           UserCredentialRepository userCredentialRepository,
                           ChallengeRepository challengeRepository,
-                          PasswordForgottenHashRepository passwordForgottenHashRepository,
+                          PasswordResetHashRepository passwordResetHashRepository,
                           ChangeEmailHashRepository changeEmailHashRepository,
                           AuthenticationRequestRepository authenticationRequestRepository,
                           MailBox mailBox,
@@ -110,7 +110,7 @@ public class UserController implements ServiceProviderHolder {
         this.userRepository = userRepository;
         this.userCredentialRepository = userCredentialRepository;
         this.challengeRepository = challengeRepository;
-        this.passwordForgottenHashRepository = passwordForgottenHashRepository;
+        this.passwordResetHashRepository = passwordResetHashRepository;
         this.changeEmailHashRepository = changeEmailHashRepository;
         this.authenticationRequestRepository = authenticationRequestRepository;
         this.mailBox = mailBox;
@@ -287,10 +287,10 @@ public class UserController implements ServiceProviderHolder {
     public ResponseEntity updateEmail(Authentication authentication, @RequestBody User deltaUser,
                                       @RequestParam(value = "force", required = false, defaultValue = "false") boolean force) {
         User user = userFromAuthentication(authentication);
-        List<PasswordForgottenHash> passwordForgottenHashes = passwordForgottenHashRepository.findByUserId(user.getId());
-        if (!CollectionUtils.isEmpty(passwordForgottenHashes)) {
+        List<PasswordResetHash> passwordResetHashes = passwordResetHashRepository.findByUserId(user.getId());
+        if (!CollectionUtils.isEmpty(passwordResetHashes)) {
             if (force) {
-                passwordForgottenHashRepository.deleteAll(passwordForgottenHashes);
+                passwordResetHashRepository.deleteAll(passwordResetHashes);
             } else {
                 return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE)
                         .body(Collections.singletonMap("status", HttpStatus.NOT_ACCEPTABLE.value()));
@@ -328,81 +328,65 @@ public class UserController implements ServiceProviderHolder {
         return returnUserResponse(user);
     }
 
-    @PutMapping("/sp/security")
-    public ResponseEntity updateUserSecurity(Authentication authentication, @RequestBody UpdateUserSecurityRequest updateUserRequest) {
-        return doUpdateSecurity(authentication, updateUserRequest, true);
+    @GetMapping("/sp/outstanding-email-links")
+    public ResponseEntity<Boolean> outstandingEmailLinks(Authentication authentication) {
+        User user = userFromAuthentication(authentication);
+        List<ChangeEmailHash> emailHashes = changeEmailHashRepository.findByUserId(user.getId());
+
+        return ResponseEntity.ok(!emailHashes.isEmpty());
     }
 
-    @PutMapping("/sp/delete-password")
-    public ResponseEntity deletePassword(Authentication authentication, @RequestBody UpdateUserSecurityRequest updateUserRequest) {
-        return doUpdateSecurity(authentication, updateUserRequest, false);
-    }
-
-    private ResponseEntity<UserResponse> doUpdateSecurity(Authentication authentication,
-                                                          UpdateUserSecurityRequest updateUserRequest,
-                                                          boolean update) {
+    @PutMapping("/sp/update-password")
+    public ResponseEntity updateUserPassword(Authentication authentication, @RequestBody UpdateUserSecurityRequest updateUserRequest) {
         String userId = updateUserRequest.getUserId();
         User deltaUser = userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException(userId));
         User user = verifyAndFetchUser(authentication, deltaUser);
 
-        String password = user.getPassword();
+        boolean existingPassword = StringUtils.hasText(user.getPassword());
+        String newPassword = updateUserRequest.getNewPassword();
+        boolean deletePassword = !StringUtils.hasText(newPassword);
 
-        boolean existingPassword = StringUtils.hasText(password);
-        String currentPasswordFromUser = updateUserRequest.getCurrentPassword();
-        boolean passwordMatches = currentPasswordFromUser != null && passwordEncoder.matches(currentPasswordFromUser, password);
-        boolean forgottenPassword = user.isForgottenPassword();
-
-        if (existingPassword && !passwordMatches && !forgottenPassword) {
-            throw new ForbiddenException("no_match");
-        }
-
-        if (forgottenPassword && !passwordMatches) {
-            passwordForgottenHashRepository
+        passwordResetHashRepository
                     .findByHashAndUserId(updateUserRequest.getHash(), user.getId())
                     .orElseThrow(() -> new ForbiddenException("wrong_hash"));
-        }
-        if (update) {
-            user.encryptPassword(updateUserRequest.getNewPassword(), passwordEncoder);
-        } else {
+        if (deletePassword) {
             user.deletePassword();
+        } else {
+            user.encryptPassword(newPassword, passwordEncoder);
         }
 
         user.setForgottenPassword(false);
 
         userRepository.save(user);
-        passwordForgottenHashRepository.deleteByUserId(user.getId());
+        passwordResetHashRepository.deleteByUserId(user.getId());
 
-        String action = update ? (existingPassword ? "update" : "add") : "delete";
+        String action = deletePassword ? "delete" : (existingPassword ? "update" : "add");
         logWithContext(user, action, "password", LOG, action + " password");
         authenticationRequestRepository.deleteByUserId(user.getId());
+
         return returnUserResponse(user);
     }
 
-    @PutMapping("/sp/forgot-password")
-    public ResponseEntity forgotPassword(Authentication authentication,
-                                         @RequestParam(value = "force", required = false, defaultValue = "false") boolean force) {
+    @PutMapping("/sp/reset-password-link")
+    public ResponseEntity resetPasswordLink(Authentication authentication) {
         User user = userFromAuthentication(authentication);
         List<ChangeEmailHash> changeEmailHashes = changeEmailHashRepository.findByUserId(user.getId());
-        if (!CollectionUtils.isEmpty(changeEmailHashes)) {
-            if (force) {
-                changeEmailHashRepository.deleteAll(changeEmailHashes);
-            } else {
-                return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE)
-                        .body(Collections.singletonMap("status", HttpStatus.NOT_ACCEPTABLE.value()));
-            }
-        }
-
-        passwordForgottenHashRepository.deleteByUserId(user.getId());
+        changeEmailHashRepository.deleteAll(changeEmailHashes);
+        passwordResetHashRepository.deleteByUserId(user.getId());
 
         user.setForgottenPassword(true);
         userRepository.save(user);
 
         String hashValue = hash();
-        passwordForgottenHashRepository.save(new PasswordForgottenHash(user, hashValue));
+        passwordResetHashRepository.save(new PasswordResetHash(user, hashValue));
 
-        logWithContext(user, "update", "forgot-password", LOG, "Send password forgotten mail");
+        logWithContext(user, "update", "reset-password", LOG, "Send password reset mail");
+        if (StringUtils.hasText(user.getPassword())) {
+            mailBox.sendResetPassword(user, hashValue);
+        } else {
+            mailBox.sendAddPassword(user, hashValue);
+        }
 
-        mailBox.sendForgotPassword(user, hashValue);
         authenticationRequestRepository.deleteByUserId(user.getId());
         return returnUserResponse(user);
     }

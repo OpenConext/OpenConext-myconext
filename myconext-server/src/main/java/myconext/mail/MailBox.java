@@ -92,12 +92,20 @@ public class MailBox {
         sendMail("account_confirmation", title, variables, preferredLanguage(user), user.getEmail(), false);
     }
 
-    public void sendForgotPassword(User user, String hash) {
-        String title = this.getTitle("forgot_password", user);
+    public void sendResetPassword(User user, String hash) {
+        String title = this.getTitle("reset_password", user);
         Map<String, Object> variables = variables(user, title);
         variables.put("mySurfConextURL", mySURFconextURL);
         variables.put("hash", hash);
-        sendMail("forgot_password", title, variables, preferredLanguage(user), user.getEmail(), false);
+        sendMail("reset_password", title, variables, preferredLanguage(user), user.getEmail(), false);
+    }
+
+    public void sendAddPassword(User user, String hash) {
+        String title = this.getTitle("add_password", user);
+        Map<String, Object> variables = variables(user, title);
+        variables.put("mySurfConextURL", mySURFconextURL);
+        variables.put("hash", hash);
+        sendMail("add_password", title, variables, preferredLanguage(user), user.getEmail(), false);
     }
 
     public void sendNewDevice(User user, UserLogin userLogin) {

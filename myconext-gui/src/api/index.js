@@ -65,20 +65,17 @@ export function confirmEmail(hash) {
     return fetchJson(`/myconext/api/sp/confirm-email?h=${hash}`);
 }
 
-
-export function updateSecurity(userId, currentPassword, newPassword, hash) {
-    const body = {userId, currentPassword, newPassword, hash};
-    return postPutJson("/myconext/api/sp/security", body, "PUT");
+export function outstandingEmailLinks() {
+    return fetchJson("/myconext/api/sp/outstanding-email-links");
 }
 
-export function deletePassword(userId, currentPassword, hash) {
-    const body = {userId, currentPassword, hash};
-    return postPutJson("/myconext/api/sp/delete-password", body, "PUT");
+export function updatePassword(userId, newPassword, hash) {
+    const body = {userId, newPassword, hash};
+    return postPutJson("/myconext/api/sp/update-password", body, "PUT");
 }
 
-export function forgotPasswordLink(force = false) {
-    const forceParam = force ? "?force=true" : "";
-    return postPutJson(`/myconext/api/sp/forgot-password${forceParam}`, {}, "PUT");
+export function resetPasswordLink() {
+    return postPutJson("/myconext/api/sp/reset-password-link", {}, "PUT");
 }
 
 export function startWebAuthFlow() {

@@ -12,7 +12,6 @@ import java.io.Serializable;
 public class UpdateUserSecurityRequest implements Serializable {
 
     private String userId;
-    private String currentPassword;
     private String newPassword;
     private String hash;
 }

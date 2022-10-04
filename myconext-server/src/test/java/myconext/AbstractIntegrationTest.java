@@ -20,7 +20,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.core.annotation.AnnotationUtils;
@@ -95,7 +94,7 @@ public abstract class AbstractIntegrationTest {
     protected AuthenticationRequestRepository authenticationRequestRepository;
 
     @Autowired
-    protected PasswordForgottenHashRepository passwordForgottenHashRepository;
+    protected PasswordResetHashRepository passwordResetHashRepository;
 
     @Autowired
     protected ChangeEmailHashRepository changeEmailHashRepository;
@@ -127,7 +126,7 @@ public abstract class AbstractIntegrationTest {
                         .remove(new Query())
                         .insert(readFromFile(clazz))
                         .execute());
-        Arrays.asList(PasswordForgottenHash.class, ChangeEmailHash.class, Challenge.class, EmailsSend.class,
+        Arrays.asList(PasswordResetHash.class, ChangeEmailHash.class, Challenge.class, EmailsSend.class,
                         Registration.class, Authentication.class, Enrollment.class)
                 .forEach(clazz -> mongoTemplate.bulkOps(BulkOperations.BulkMode.ORDERED, clazz)
                         .remove(new Query())
