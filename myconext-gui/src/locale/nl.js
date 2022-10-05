@@ -19,8 +19,10 @@ I18n.translations.nl = {
     landing: {
         logoutTitle: "Je bent uitgelogd",
         logoutStatus: "Om het uitlogproces te voltooien, moet je de browser nu afsluiten.",
+        loginAgain: "Opnieuw inloggen",
         deleteTitle: "Jouw eduID is verwijderd",
-        deleteStatus: "Om het verwijderen van je eduID te voltooien, moet je jouw browser nu afsluiten."
+        deleteStatus: "Om het verwijderen van je eduID te voltooien, moet je jouw browser nu afsluiten.",
+        registerAgain: "Opnieuw registreren"
     },
     notFound: {
         title: "Oeps...",

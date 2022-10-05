@@ -4,7 +4,7 @@
     import eduidLogo from "../img/logo_eduID.svg";
     import {navigate} from "svelte-routing";
     import {logout} from "../api";
-    import {user} from "../stores/user";
+    import {config, user} from "../stores/user";
     import Button from "./Button.svelte";
 
     const logoutUser = () => {
@@ -17,7 +17,7 @@
                 guest: true,
                 usePassword: false
             };
-            navigate("/landing?logout=true");
+            window.location.href = `${$config.idpBaseUrl}/doLogout?param=${encodeURIComponent("logout=true")}`;
         });
     }
 

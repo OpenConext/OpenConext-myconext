@@ -36,11 +36,7 @@
 
     h3 {
         color: var(--color-primary-green);
-        margin-bottom: 20px;
-    }
-
-    p {
-        color: var(--color-primary-black);
+        margin-bottom: 40px;
     }
 
 </style>
@@ -50,11 +46,20 @@
     <div class="inner">
         {#if isLogoutRedirect}
             <h3>{I18n.t("landing.logoutTitle")}</h3>
-            <p>{I18n.t("landing.logoutStatus")}</p>
+            <div >
+                <Button label={I18n.t("landing.loginAgain")}
+                        large={true}
+                        onClick={() => window.location.href = "/"}/>
+            </div>
+
         {/if}
         {#if isAccountDeletionRedirect}
             <h3>{I18n.t("landing.deleteTitle")}</h3>
-            <p>{I18n.t("landing.deleteStatus")}</p>
+            <div >
+                <Button label={I18n.t("landing.registerAgain")}
+                        large={true}
+                        onClick={() => window.location.href = "/"}/>
+            </div>
         {/if}
     </div>
 </div>

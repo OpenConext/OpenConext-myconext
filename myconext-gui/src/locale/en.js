@@ -19,8 +19,10 @@ I18n.translations.en = {
     landing: {
         logoutTitle: "You have been logged out",
         logoutStatus: "To finalise the logout process you must now close this browser.",
+        loginAgain: "Login again",
         deleteTitle: "Your eduID account has been deleted",
-        deleteStatus: "To finalise the removal process you must now close this browser."
+        deleteStatus: "To finalise the removal process you must now close this browser.",
+        registerAgain: "Register again"
     },
     notFound: {
         title: "Whoops...",

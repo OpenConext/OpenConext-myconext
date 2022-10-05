@@ -5,6 +5,7 @@ import myconext.model.User;
 import org.junit.Test;
 import org.springframework.test.context.ActiveProfiles;
 
+import java.util.Map;
 import java.util.UUID;
 
 import static io.restassured.RestAssured.given;
@@ -42,6 +43,32 @@ public class LoginControllerTest extends AbstractIntegrationTest {
                 .then()
                 .statusCode(302)
                 .header("Location", "https://my.test2.surfconext.nl/Shibboleth.sso/Login?entityID=https://localhost.surf.id&lang=en");
+    }
+
+    @Test
+    public void doLogout() {
+        String param = "logout=true";
+        given().redirects().follow(false)
+                .when()
+                .queryParam("param", param)
+                .get("/doLogout")
+                .then()
+                .statusCode(302)
+                .header("Location", "http://localhost:3001/landing?logout=true");
+    }
+
+    @Test
+    public void doLogoutAfterDelete() {
+        String param = "delete=true";
+        given().redirects().follow(false)
+                .when()
+                .queryParam("param", param)
+                .cookie("TEST", "value")
+                .get("/doLogout")
+                .then()
+                .statusCode(302)
+                .header("Location", "http://localhost:3001/landing?delete=true")
+                .cookie("TEST", equalTo(""));
     }
 
     @Test

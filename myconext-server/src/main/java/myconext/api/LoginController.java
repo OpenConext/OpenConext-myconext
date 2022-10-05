@@ -1,10 +1,10 @@
 package myconext.api;
 
-import myconext.exceptions.ForbiddenException;
 import myconext.exceptions.UserNotFoundException;
 import myconext.model.User;
 import myconext.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -12,8 +12,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -115,4 +117,24 @@ public class LoginController {
         response.sendRedirect(redirectLocation);
     }
 
+    @GetMapping("/doLogout")
+    public void doLogout(HttpServletRequest request,
+                         HttpServletResponse response,
+                         @RequestParam(value = "param") String param) throws IOException {
+        if (param.contains("delete")) {
+            Cookie[] cookies = request.getCookies();
+            if (cookies != null) {
+                Arrays.asList(cookies).forEach(cookie -> {
+                    cookie.setMaxAge(0);
+                    cookie.setSecure(true);
+                    cookie.setValue("");
+                    response.addCookie(cookie);
+                });
+            }
+        }
+        request.getSession().invalidate();
+        SecurityContextHolder.clearContext();
+        String redirectLocation = String.format("%s/landing?%s", this.config.get("spBaseUrl"), param);
+        response.sendRedirect(redirectLocation);
+    }
 }

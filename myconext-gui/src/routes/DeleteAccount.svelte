@@ -1,5 +1,5 @@
 <script>
-    import {user} from "../stores/user";
+    import {config, user} from "../stores/user";
     import I18n from "i18n-js";
     import {navigate} from "svelte-routing";
     import critical from "../icons/critical.svg";
@@ -25,7 +25,7 @@
                     guest: true,
                     usePassword: false
                 };
-                navigate("/landing?delete=true");
+                window.location.href = `${$config.idpBaseUrl}/doLogout?param=${encodeURIComponent("delete=true")}`;
             });
         }
     }
