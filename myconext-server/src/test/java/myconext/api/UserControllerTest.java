@@ -66,6 +66,7 @@ public class UserControllerTest extends AbstractIntegrationTest {
                 .statusCode(HttpStatus.CREATED.value());
         String samlResponse = samlResponse(magicLinkResponse);
         assertTrue(samlResponse.contains("jdoe@example.com"));
+        assertTrue(samlResponse.contains("urn:oasis:names:tc:SAML:attribute:subject-id"));
 
         when()
                 .get("/myconext/api/idp/resend_magic_link_request?id=" + magicLinkResponse.authenticationRequestId)

@@ -54,10 +54,12 @@ public class OpenIDConnectRemote implements OpenIDConnect {
                 .queryParam("unspecifiedID", unspecifiedID)
                 .toUriString();
         ResponseEntity<List<Map<String, Object>>> responseEntity =
-                restTemplate.exchange(uriString, HttpMethod.GET, requestEntity, new ParameterizedTypeReference<List<Map<String, Object>>>() {
+                restTemplate.exchange(uriString, HttpMethod.GET, requestEntity, new ParameterizedTypeReference<>() {
                 });
         List<Map<String, Object>> body = responseEntity.getBody();
+
         LOG.debug(String.format("Tokens result from oidc-ng %s", body));
+
         return body;
     }
 

@@ -656,10 +656,12 @@ public class GuestIdpAuthenticationRequestFilter extends IdpAuthenticationReques
         }
 
         String displayName = String.format("%s %s", givenName, familyName);
+        String eppn = user.getEduPersonPrincipalName();
         List<Attribute> attributes = new ArrayList(Arrays.asList(
                 attribute("urn:mace:dir:attribute-def:cn", displayName),
                 attribute("urn:mace:dir:attribute-def:displayName", displayName),
-                attribute("urn:mace:dir:attribute-def:eduPersonPrincipalName", user.getEduPersonPrincipalName()),
+                attribute("urn:mace:dir:attribute-def:eduPersonPrincipalName", eppn),
+                attribute("urn:oasis:names:tc:SAML:attribute:subject-id", eppn),
                 attribute("urn:mace:dir:attribute-def:givenName", givenName),
                 attribute("urn:mace:dir:attribute-def:mail", user.getEmail()),
                 attribute("urn:mace:dir:attribute-def:sn", familyName),
