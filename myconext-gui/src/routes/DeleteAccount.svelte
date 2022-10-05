@@ -22,7 +22,6 @@
                     email: "",
                     givenName: "",
                     familyName: "",
-                    guest: true,
                     usePassword: false
                 };
                 window.location.href = `${$config.idpBaseUrl}/doLogout?param=${encodeURIComponent("delete=true")}`;

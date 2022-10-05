@@ -2,7 +2,6 @@
 
     import I18n from "i18n-js";
     import eduidLogo from "../img/logo_eduID.svg";
-    import {navigate} from "svelte-routing";
     import {logout} from "../api";
     import {config, user} from "../stores/user";
     import Button from "./Button.svelte";
@@ -14,7 +13,6 @@
                 email: "",
                 givenName: "",
                 familyName: "",
-                guest: true,
                 usePassword: false
             };
             window.location.href = `${$config.idpBaseUrl}/doLogout?param=${encodeURIComponent("logout=true")}`;
