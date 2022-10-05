@@ -36,7 +36,7 @@ public class AuthenticationRequestRepositoryTest extends AbstractIntegrationTest
     private SamlAuthenticationRequest samlAuthenticationRequest() {
         return new SamlAuthenticationRequest(
                 "requestId", "issuer", "consumerAssertionServiceURL",
-                "relayState", "http://mock-sp", false, Collections.singletonList(ACR.LINKED_INSTITUTION));
+                "relayState", "http://mock-sp", false, false, Collections.singletonList(ACR.LINKED_INSTITUTION));
     }
 
     @Test

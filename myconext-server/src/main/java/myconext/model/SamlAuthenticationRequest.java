@@ -43,6 +43,8 @@ public class SamlAuthenticationRequest implements Serializable {
 
     private boolean accountLinkingRequired;
 
+    private boolean mfaProfileRequired;
+
     private List<String> authenticationContextClassReferences;
 
     private boolean passwordOrWebAuthnFlow;
@@ -78,9 +80,13 @@ public class SamlAuthenticationRequest implements Serializable {
 
     }
 
-    public SamlAuthenticationRequest(String requestId, String issuer, String consumerAssertionServiceURL,
-                                     String relayState, String requesterEntityId,
+    public SamlAuthenticationRequest(String requestId,
+                                     String issuer,
+                                     String consumerAssertionServiceURL,
+                                     String relayState,
+                                     String requesterEntityId,
                                      boolean accountLinkingRequired,
+                                     boolean mfaProfileRequired,
                                      List<String> authenticationContextClassReferences) {
         this.id = UUID.randomUUID().toString();
         this.requestId = requestId;
@@ -90,14 +96,16 @@ public class SamlAuthenticationRequest implements Serializable {
         this.expiresIn = Date.from(LocalDateTime.now().plusHours(1).atZone(ZoneId.systemDefault()).toInstant());
         this.requesterEntityId = requesterEntityId;
         this.accountLinkingRequired = accountLinkingRequired;
+        this.mfaProfileRequired = mfaProfileRequired;
         this.authenticationContextClassReferences = authenticationContextClassReferences;
         invariant();
     }
 
     @Transient
     private void invariant() {
-        if (this.isAccountLinkingRequired() && CollectionUtils.isEmpty(this.authenticationContextClassReferences)) {
-            throw new IllegalArgumentException("authenticationContextClassReference is required when account linking is required");
+        if ((this.isAccountLinkingRequired() || this.isMfaProfileRequired()) &&
+                CollectionUtils.isEmpty(this.authenticationContextClassReferences)) {
+            throw new IllegalArgumentException("authenticationContextClassReference is required when account linking or mfa profiles is required");
         }
     }
 

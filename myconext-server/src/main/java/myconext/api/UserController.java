@@ -163,6 +163,12 @@ public class UserController implements ServiceProviderHolder {
                 authenticationRequestRepository.findByHash(hash).orElseThrow(ExpiredAuthenticationException::new).getServiceName());
     }
 
+    @GetMapping("/idp/service/id/{id}")
+    public Map<String, String> serviceNameById(@PathVariable("id") String id) {
+        return Collections.singletonMap("name",
+                authenticationRequestRepository.findById(id).orElseThrow(ExpiredAuthenticationException::new).getServiceName());
+    }
+
     @PostMapping("/idp/magic_link_request")
     public ResponseEntity newMagicLinkRequest(HttpServletRequest request, @Valid @RequestBody MagicLinkRequest magicLinkRequest) {
         SamlAuthenticationRequest samlAuthenticationRequest = authenticationRequestRepository.findByIdAndNotExpired(magicLinkRequest.getAuthenticationRequestId())

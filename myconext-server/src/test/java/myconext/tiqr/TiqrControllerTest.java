@@ -37,6 +37,7 @@ import static java.nio.charset.StandardCharsets.UTF_8;
 import static myconext.security.GuestIdpAuthenticationRequestFilter.BROWSER_SESSION_COOKIE_NAME;
 import static org.junit.jupiter.api.Assertions.*;
 
+@SuppressWarnings("unchecked")
 public class TiqrControllerTest extends AbstractIntegrationTest {
 
     @Test

@@ -121,8 +121,12 @@ export function fetchServiceName(id) {
 
 }
 
-export function fetchServiceNameByHash(id) {
-    return fetchJson(`/myconext/api/idp/service/hash/${id}`).catch(() => Promise.resolve({name: "?"}))
+export function fetchServiceNameByHash(hash) {
+    return fetchJson(`/myconext/api/idp/service/hash/${hash}`).catch(() => Promise.resolve({name: "?"}))
+}
+
+export function fetchServiceNameById(id) {
+    return fetchJson(`/myconext/api/idp/service/id/${id}`).catch(() => Promise.resolve({name: "?"}))
 }
 
 //Tiqr

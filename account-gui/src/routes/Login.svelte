@@ -14,8 +14,10 @@
     import accountIcon from "../icons/redesign/single-neutral-actions-refresh.svg";
     import {cookieNames} from "../constants/cookieNames";
     import LoginOption from "../components/LoginOption.svelte";
+    import {loginPreferences} from "../constants/loginPreferences";
 
     export let id;
+    let mfaRequired = false;
     let emailNotFound = false;
     let showSpinner = true;
     let serviceName = "";
@@ -29,6 +31,7 @@
         });
         const urlParams = new URLSearchParams(window.location.search);
         const modus = urlParams.get("modus");
+        mfaRequired = urlParams.has("mfa");
         if (modus && modus === "cr") {
             navigate(`/request/${id}`);
         }
@@ -48,10 +51,16 @@
                     secure: true,
                     sameSite: "Lax"
                 });
+                if (mfaRequired && res.includes(loginPreferences.APP)) {
+                    navigate(`/${loginPreferences.APP}/${id}?mfa=true`);
+                } else if (mfaRequired && !res.includes(loginPreferences.APP)) {
+                    navigate(`/app-required/${id}`);
+                }
                 //If the server does not confirm the preferredLogin, we won't use it
-                if ($user.preferredLogin && res.includes($user.preferredLogin)) {
+                else if ($user.preferredLogin && res.includes($user.preferredLogin)) {
                     navigate(`/${$user.preferredLogin.toLowerCase()}/${id}`);
                 } else {
+                    //By contract the list ordered from more secure to less secure
                     navigate(`/${res[0].toLowerCase()}/${id}`);
                 }
             }).catch(() => emailNotFound = true);

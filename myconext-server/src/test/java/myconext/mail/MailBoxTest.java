@@ -31,6 +31,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 @ActiveProfiles(value = "prod", inheritProfiles = false)
+@SuppressWarnings("deprecation")
 public class MailBoxTest extends AbstractIntegrationTest {
 
     @Autowired

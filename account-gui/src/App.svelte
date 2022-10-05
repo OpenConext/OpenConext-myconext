@@ -41,6 +41,7 @@
     import PhoneVerification from "./routes/PhoneVerification.svelte";
     import Congrats from "./routes/Congrats.svelte";
     import RememberMe from "./routes/RememberMe.svelte";
+    import AppRequired from "./routes/AppRequired.svelte";
 
     export let url = "";
 
@@ -157,6 +158,9 @@
                 </Route>
                 <Route path="/uselink/:id" let:params>
                     <UseLink id="{params.id}"/>
+                </Route>
+                <Route path="/app-required/:id" let:params>
+                    <AppRequired id="{params.id}"/>
                 </Route>
                 <Route path="/getapp" component={GetApp}/>
                 <Route path="/enrollapp" component={EnrollApp}/>

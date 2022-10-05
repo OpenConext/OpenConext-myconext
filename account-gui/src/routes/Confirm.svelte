@@ -47,7 +47,7 @@
 
 <style>
 
-    h2.new-account {
+    h2 {
         color: var(--color-primary-green);
     }
 
@@ -60,14 +60,6 @@
     <Spinner/>
 {/if}
 
-{#if isNew && false}
-    <h2 class="header new-account">{I18n.t("nudgeApp.new")}</h2>
-{/if}
-{#if explanation && false}
-    <div class="verification-container">
-        <Verification explanation={explanation} verified={true}/>
-    </div>
-{/if}
 <h2 class="header">{I18n.t("nudgeApp.header")}</h2>
 <ImageContainer icon={phone}/>
 <p class="explanation">{@html I18n.t("nudgeApp.info")}</p>

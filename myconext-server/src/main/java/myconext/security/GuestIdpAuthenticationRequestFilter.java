@@ -115,7 +115,7 @@ public class GuestIdpAuthenticationRequestFilter extends IdpAuthenticationReques
         this.userRepository = userRepository;
         this.userLoginRepository = userLoginRepository;
         this.geoLocation = geoLocation;
-        this.accountLinkingContextClassReferences = ACR.all();
+        this.accountLinkingContextClassReferences = ACR.allAccountLinkingContextClassReferences();
         this.rememberMeMaxAge = rememberMeMaxAge;
         this.nudgeAppDays = nudgeAppDays;
         this.rememberMeQuestionAskedDays = rememberMeQuestionAskedDays;
@@ -164,6 +164,7 @@ public class GuestIdpAuthenticationRequestFilter extends IdpAuthenticationReques
         List<String> authenticationContextClassReferenceValues = getAuthenticationContextClassReferenceValues(authenticationRequest);
         boolean accountLinkingRequired =
                 this.accountLinkingContextClassReferences.stream().anyMatch(authenticationContextClassReferenceValues::contains);
+        boolean mfaProfileRequired = authenticationContextClassReferenceValues.contains(ACR.PROFILE_MFA);
 
         SamlAuthenticationRequest samlAuthenticationRequest = new SamlAuthenticationRequest(
                 authenticationRequest.getId(),
@@ -172,6 +173,7 @@ public class GuestIdpAuthenticationRequestFilter extends IdpAuthenticationReques
                 relayState,
                 StringUtils.hasText(requesterEntityId) ? requesterEntityId : "",
                 accountLinkingRequired,
+                mfaProfileRequired,
                 authenticationContextClassReferenceValues
         );
 
@@ -189,7 +191,7 @@ public class GuestIdpAuthenticationRequestFilter extends IdpAuthenticationReques
         samlAuthenticationRequest = authenticationRequestRepository.save(samlAuthenticationRequest);
 
         if (previousAuthenticatedUser != null && !authenticationRequest.isForceAuth()) {
-            if (accountLinkingRequired && !isUserVerifiedByInstitution(previousAuthenticatedUser,
+            if ((accountLinkingRequired || mfaProfileRequired) && !isUserVerifiedByInstitution(previousAuthenticatedUser,
                     authenticationContextClassReferenceValues)) {
                 boolean hasStudentAffiliation = hasRequiredStudentAffiliation((previousAuthenticatedUser.allEduPersonAffiliations()));
                 String explanation = ACR.explanationKeyWord(authenticationContextClassReferenceValues, hasStudentAffiliation);
@@ -197,7 +199,18 @@ public class GuestIdpAuthenticationRequestFilter extends IdpAuthenticationReques
                 samlAuthenticationRequest.setHash(hash());
                 authenticationRequestRepository.save(samlAuthenticationRequest);
                 addBrowserIdentificationCookie(response);
-                response.sendRedirect(this.redirectUrl + "/stepup/" + samlAuthenticationRequest.getId() + "?explanation=" + explanation);
+                String redirect = "/stepup/";
+                String mfa = "";
+                if (mfaProfileRequired) {
+                    if (previousAuthenticatedUser.loginOptions().contains(LoginOptions.APP.getValue())) {
+                        redirect = "/" + LoginOptions.APP.getValue() + "/";
+                        mfa = "&mfa=true";
+                    } else {
+                        redirect = "/app-required/";
+                    }
+                }
+                response.sendRedirect(this.redirectUrl + redirect + samlAuthenticationRequest.getId()
+                        + "?explanation=" + explanation + mfa);
             } else {
                 ServiceProviderMetadata serviceProviderMetadata = provider.getRemoteProvider(samlAuthenticationRequest.getIssuer());
                 sendAssertion(request, response, samlAuthenticationRequest, previousAuthenticatedUser,
@@ -210,10 +223,11 @@ public class GuestIdpAuthenticationRequestFilter extends IdpAuthenticationReques
             LOG.debug("Cookie REGISTER_MODUS_COOKIE_NAME is: " + optionalCookie.map(Cookie::getValue).orElse("Null"));
 
             String stepUp = accountLinkingRequired ? "&stepup=true" : "";
-            String separator = StringUtils.hasText(stepUp) ? "?n=1" : "";
+            String mfa = mfaProfileRequired ? "&mfa=true" : "";
+            String separator = (accountLinkingRequired || mfaProfileRequired) ? "?n=1" : "";
             String path = optionalCookie.map(c -> "/request/").orElse("/login/");
             response.sendRedirect(this.redirectUrl + path + samlAuthenticationRequest.getId() +
-                    separator + stepUp);
+                    separator + stepUp + mfa);
         }
     }
 

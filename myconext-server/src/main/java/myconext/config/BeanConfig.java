@@ -45,6 +45,7 @@ public class BeanConfig extends SamlIdentityProviderServerBeanConfiguration {
                       @Value("${account_linking_context_class_ref.linked_institution}") String linkedInstitution,
                       @Value("${account_linking_context_class_ref.validate_names}") String validateNames,
                       @Value("${account_linking_context_class_ref.affiliation_student}") String affiliationStudent,
+                      @Value("${account_linking_context_class_ref.profile_mfa}") String profileMfa,
                       @Value("${linked_accounts.expiry-duration-days-non-validated}") long expiryNonValidatedDurationDays,
                       @Value("${linked_accounts.removal-duration-days-non-validated}") long removalNonValidatedDurationDays,
                       AuthenticationRequestRepository authenticationRequestRepository,
@@ -69,10 +70,10 @@ public class BeanConfig extends SamlIdentityProviderServerBeanConfiguration {
         this.mailBox = mailBox;
         this.serviceProviderResolver = serviceProviderResolver;
 
-        ACR.initialize(linkedInstitution, validateNames, affiliationStudent);
+        ACR.initialize(linkedInstitution, validateNames, affiliationStudent, profileMfa);
     }
 
-    private ImmutableSamlConfigurationRepository immutableSamlConfigurationRepository;
+    private final ImmutableSamlConfigurationRepository immutableSamlConfigurationRepository;
 
     @Override
     protected SamlServerConfiguration getDefaultHostSamlServerConfiguration() {
