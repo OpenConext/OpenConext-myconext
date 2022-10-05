@@ -17,6 +17,10 @@
         }
     });
 
+    const loginAgain = () => {
+        window.location.href = `${$config.idpBaseUrl}/doLogin`;
+    }
+
 </script>
 
 <style>
@@ -49,7 +53,7 @@
             <div >
                 <Button label={I18n.t("landing.loginAgain")}
                         large={true}
-                        onClick={() => window.location.href = "/"}/>
+                        onClick={loginAgain}/>
             </div>
 
         {/if}
@@ -58,7 +62,7 @@
             <div >
                 <Button label={I18n.t("landing.registerAgain")}
                         large={true}
-                        onClick={() => window.location.href = "/"}/>
+                        onClick={loginAgain}/>
             </div>
         {/if}
     </div>
