@@ -72,7 +72,6 @@ public class User implements Serializable, UserDetails {
         this.newUser = true;
         this.created = System.currentTimeMillis() / 1000L;
         this.updatedAt = created;
-        this.trackingUuid = UUID.randomUUID().toString();
     }
 
     public void validate() {
