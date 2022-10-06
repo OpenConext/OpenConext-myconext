@@ -287,7 +287,7 @@ I18n.translations.en = {
         no: "I refuse",
         yesLink: "/proceed",
         yes: "Proceed",
-        warning: "Login without the eduApp is not recommended. The service {{service}} will not receive your attributes.",
+        warning: "Login without the eduApp is strongly discouraged. The service {{service}} will not receive your attributes.",
         warningTitle: "Get the eduApp",
         confirmLabel: "Get the eduApp",
         cancelLabel: "I still refuse"

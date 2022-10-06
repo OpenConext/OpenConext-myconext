@@ -275,6 +275,24 @@ I18n.translations.nl = {
         no: "Nee",
         header: "Ingelogd blijven?",
         info: "Blijf ingelogd op dit apparaat zodat je de volgende keer niet hoeft in te loggen."
+    },
+    modal: {
+        cancel: "Annuleer",
+        confirm: "Bevestig",
+    },
+    appRequired: {
+        header: "Login met de eduID app",
+        info: "Dienst <strong>{{service}}</strong> heeft een login verzocht met de eduID app om je identiteit te bevestigen.",
+        info2: "Download de <strong>eduID-app</strong> en log veilig in zonder wachtwoord of toegang tot uw e-mail. Het duurt maar een minuut. Klik op <strong>Doorgaan</strong> voor de volgende stap.",
+        cancel: "/cancel",
+        no: "Ik weiger",
+        yesLink: "/proceed",
+        yes: "Doorgaan",
+        warning: "Het wordt sterk afgeraden om zonder de eduID-app in te loggen. De dienst {{service}} zal niet je attributen ontvangen.",
+        warningTitle: "Download eduID-app",
+        confirmLabel: "Download eduID-app",
+        cancelLabel: "Ik weiger echt"
     }
+
 
 };
