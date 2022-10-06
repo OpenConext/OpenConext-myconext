@@ -5,7 +5,7 @@
     import I18n from "i18n-js";
     import critical from "../icons/critical.svg";
     import {link, navigate} from "svelte-routing";
-    import {fetchServiceName, knownAccount} from "../api/index";
+    import {fetchServiceName, knownAccount, preEnrollmentMfa} from "../api/index";
     import Spinner from "../components/Spinner.svelte";
     import {onMount} from "svelte";
     import Cookies from "js-cookie";
@@ -51,10 +51,15 @@
                     secure: true,
                     sameSite: "Lax"
                 });
-                if (mfaRequired && res.includes(loginPreferences.APP)) {
-                    navigate(`/${loginPreferences.APP}/${id}?mfa=true`);
-                } else if (mfaRequired && !res.includes(loginPreferences.APP)) {
-                    navigate(`/app-required/${id}`);
+                if (mfaRequired) {
+                    showSpinner = true;
+                    preEnrollmentMfa(id, $user.email).then(() => {
+                        if (res.includes(loginPreferences.APP)) {
+                            navigate(`/${loginPreferences.APP.toLowerCase()}/${id}?mfa=true`);
+                        } else {
+                            navigate(`/app-required/${id}`);
+                        }
+                    });
                 }
                 //If the server does not confirm the preferredLogin, we won't use it
                 else if ($user.preferredLogin && res.includes($user.preferredLogin)) {

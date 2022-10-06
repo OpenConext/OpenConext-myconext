@@ -11,17 +11,20 @@
 
     let showSpinner = true;
     let hash = null;
+    let id = null;
 
     onMount(() => {
         $links.displayBackArrow = false;
 
         const urlSearchParams = new URLSearchParams(window.location.search);
         hash = urlSearchParams.get("h");
+        id = urlSearchParams.get("id");
         showSpinner = false;
     });
 
     const next = () => {
-        navigate(`/enrollapp?h=${hash}`)
+        const query = hash ? `h=${hash}` : `id=${id}`
+        navigate(`/enrollapp?${query}`);
     };
 
     const back = () => {

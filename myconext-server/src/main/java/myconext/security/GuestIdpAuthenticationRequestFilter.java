@@ -513,7 +513,9 @@ public class GuestIdpAuthenticationRequestFilter extends IdpAuthenticationReques
             addTiqrCookie(response);
         }
         String loginMethod = samlAuthenticationRequest.isTiqrFlow() ? "tiqr" : "magiclink";
+
         logLoginWithContext(user, loginMethod, true, LOG, "Successfully logged in with " + loginMethod);
+
         sendAssertion(request, response, samlAuthenticationRequest, user, provider,
                 serviceProviderMetadata, authenticationRequest);
     }
@@ -618,6 +620,19 @@ public class GuestIdpAuthenticationRequestFilter extends IdpAuthenticationReques
                         .getAuthenticationContext()
                         .setClassReference(AuthenticationContextClassReference
                                 .fromUrn(ACR.selectACR(authenticationContextClassReferences, hasStudentAffiliation)));
+            }
+        } else if (samlAuthenticationRequest.isMfaProfileRequired()) {
+            if (samlAuthenticationRequest.isTiqrFlow()) {
+                samlResponse.getAssertions().get(0).getAuthenticationStatements().get(0)
+                        .getAuthenticationContext()
+                        .setClassReference(AuthenticationContextClassReference
+                                .fromUrn(ACR.selectACR(authenticationContextClassReferences, false)));
+            } else {
+                String msg = "The requesting service has indicated that a login with the eduID app is required to login.";
+                samlResponse.setStatus(new Status()
+                        .setCode(StatusCode.NO_AUTH_CONTEXT)
+                        .setMessage(msg)
+                        .setDetail(msg));
             }
         } else if (!CollectionUtils.isEmpty(authenticationContextClassReferences)) {
             String msg = String.format("The specified authentication context requirements '%s' cannot be met by the responder.",

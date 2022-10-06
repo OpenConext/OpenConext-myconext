@@ -134,6 +134,15 @@ export function startEnrollment(hash) {
     return fetchJson(`/tiqr/start-enrollment?hash=${hash}`);
 }
 
+export function preEnrollmentMfa(id, email) {
+    return postPutJson("/tiqr/pre-enrollment-mfa", {id, email}, "POST");
+}
+
+
+export function startEnrollmentWithId(id) {
+    return fetchJson(`/tiqr/start-enrollment-with-id?id=${id}`);
+}
+
 export function pollEnrollment(enrollmentKey) {
     return fetchJson(`/tiqr/poll-enrollment?enrollmentKey=${enrollmentKey}`)
 }
@@ -146,8 +155,16 @@ export function generateBackupCode(hash) {
     return fetchJson(`/tiqr/generate-backup-code?hash=${hash}`)
 }
 
+export function generateBackupCodeWithId(id) {
+    return fetchJson(`/tiqr/generate-backup-code-with-id?id=${id}`)
+}
+
 export function textPhoneNumber(hash, phoneNumber) {
     return postPutJson(`/tiqr/send-phone-code?hash=${hash}`,{phoneNumber}, "POST")
+}
+
+export function textPhoneNumberWithId(id, phoneNumber) {
+    return postPutJson(`/tiqr/send-phone-code-with-id?id=${id}`,{phoneNumber}, "POST")
 }
 
 export function manualResponse(sessionKey, response) {
@@ -156,6 +173,10 @@ export function manualResponse(sessionKey, response) {
 
 export function validatePhoneCode(hash, phoneVerification) {
     return postPutJson(`/tiqr/verify-phone-code?hash=${hash}`,{phoneVerification}, "POST")
+}
+
+export function validatePhoneCodeWithId(id, phoneVerification) {
+    return postPutJson(`/tiqr/verify-phone-code-with-id?id=${id}`,{phoneVerification}, "POST")
 }
 
 export function startTiqrAuthentication(email, authenticationRequestId) {

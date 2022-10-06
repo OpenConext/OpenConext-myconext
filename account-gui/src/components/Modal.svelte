@@ -8,7 +8,8 @@
     export let title;
     export let question;
     export let warning = false;
-    export let confirmTitle = I18n.t("modal.confirm");
+    export let confirmLabel = I18n.t("modal.confirm");
+    export let cancelLabel = I18n.t("modal.cancel");
     export let disableSubmit = false;
     export let download = undefined;
     export let href = undefined;
@@ -21,7 +22,7 @@
 
 </script>
 
-<style>
+<style lang="scss">
     .modal {
         position: fixed;
         top: 0;
@@ -34,9 +35,9 @@
     }
 
     .modal-content {
-        margin: auto;
+        margin: 10em auto auto auto;
         width: calc(100vw - 4em);
-        max-width: 32em;
+        max-width: 420px;
         max-height: calc(100vh - 4em);
         border-radius: 8px;
         background: white;
@@ -58,11 +59,17 @@
         padding: 18px 32px;
     }
 
-    div.options {
+    div.modal-options {
         padding: 18px;
         display: flex;
         text-align: center;
     }
+
+    :global(.modal-options a:last-child) {
+        margin-left: 40px;
+    }
+
+
 </style>
 
 <svelte:window on:keydown={handle_keydown}/>
@@ -80,16 +87,17 @@
             <slot></slot>
         </div>
 
-        <div class="options">
-            <Button className="cancel" onClick={cancel}
-                    label={I18n.t("modal.cancel")}/>
+        <div class="modal-options">
+            <Button className="cancel"
+                    onClick={cancel}
+                    label={cancelLabel}/>
 
             <Button onClick={submit}
                     warning={warning}
                     href={href}
                     download={download}
                     disabled={disableSubmit}
-                    label={confirmTitle}/>
+                    label={confirmLabel}/>
         </div>
     </div>
 </div>

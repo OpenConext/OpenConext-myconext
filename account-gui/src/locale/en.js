@@ -275,14 +275,21 @@ I18n.translations.en = {
         header: "Stay signed in?",
         info: "Stay signed in on this device so you don't have to sign in next time."
     },
+    modal: {
+        cancel: "Cancel",
+        confirm: "Confirm",
+    },
     appRequired: {
-        header: "Service {{service}} requested a login with the eduID app",
-        info: "Get the <strong>eduID app</strong> and securely sign in without passwords or accessing your email. It will only take a minute. Please click <strong>Proceed</strong> to proceed",
+        header: "Login with the eduID app",
+        info: "Service <strong>{{service}}</strong> requested a login with the eduID app to  ensure your identity.",
+        info2: "Get the <strong>eduID app</strong> and securely sign in without passwords or accessing your email. It will only take a minute. Please click <strong>Proceed</strong> for the next step.",
         cancel: "/cancel",
-        no: "I don't want to",
+        no: "I refuse",
         yesLink: "/proceed",
         yes: "Proceed",
         warning: "Login without the eduApp is not recommended. The service {{service}} will not receive your attributes.",
-        warningTitle: "Login without the eduApp"
+        warningTitle: "Get the eduApp",
+        confirmLabel: "Get the eduApp",
+        cancelLabel: "I still refuse"
     }
 };

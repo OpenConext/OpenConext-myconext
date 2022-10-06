@@ -16,43 +16,43 @@ public class ACR {
     public static String PROFILE_MFA = "https://refeds.org/profile/mfa";
 
     public static List<String> allAccountLinkingContextClassReferences() {
-        return Arrays.asList(ACR.VALIDATE_NAMES, ACR.LINKED_INSTITUTION, ACR.AFFILIATION_STUDENT);
+        return Arrays.asList(VALIDATE_NAMES, LINKED_INSTITUTION, AFFILIATION_STUDENT);
     }
 
     public static void initialize(String linkedInstitution,
                                   String validateNames,
                                   String affiliationStudent,
                                   String profileMfa) {
-        ACR.LINKED_INSTITUTION = linkedInstitution;
-        ACR.VALIDATE_NAMES = validateNames;
-        ACR.AFFILIATION_STUDENT = affiliationStudent;
-        ACR.PROFILE_MFA = profileMfa;
+        LINKED_INSTITUTION = linkedInstitution;
+        VALIDATE_NAMES = validateNames;
+        AFFILIATION_STUDENT = affiliationStudent;
+        PROFILE_MFA = profileMfa;
     }
 
     public static String selectACR(List<String> acrValues, boolean studentAffiliationPresent) {
-        if (acrValues.contains(ACR.PROFILE_MFA)) {
+        if (acrValues.contains(PROFILE_MFA)) {
             return PROFILE_MFA;
         }
-        if (acrValues.contains(ACR.VALIDATE_NAMES)) {
+        if (acrValues.contains(VALIDATE_NAMES)) {
             return VALIDATE_NAMES;
         }
-        if (acrValues.contains(ACR.AFFILIATION_STUDENT) && studentAffiliationPresent) {
-            return ACR.AFFILIATION_STUDENT;
+        if (acrValues.contains(AFFILIATION_STUDENT) && studentAffiliationPresent) {
+            return AFFILIATION_STUDENT;
         }
-        return ACR.LINKED_INSTITUTION;
+        return LINKED_INSTITUTION;
     }
 
     public static String explanationKeyWord(List<String> acrValues, boolean studentAffiliationPresent) {
-        if (acrValues.contains(ACR.PROFILE_MFA)) {
+        if (acrValues.contains(PROFILE_MFA)) {
             return "profile_mfa";
         }
         if (CollectionUtils.isEmpty(acrValues)) {
             return "linked_institution";
         }
-        if (acrValues.contains(ACR.VALIDATE_NAMES)) {
+        if (acrValues.contains(VALIDATE_NAMES)) {
             return "validate_names";
         }
-        if (acrValues.contains(ACR.AFFILIATION_STUDENT) && studentAffiliationPresent) {
+        if (acrValues.contains(AFFILIATION_STUDENT) && studentAffiliationPresent) {
             return "affiliation_student";
         }
         return "linked_institution";

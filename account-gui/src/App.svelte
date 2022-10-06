@@ -33,7 +33,7 @@
     import UsePassword from "./routes/UsePassword.svelte";
     import Options from "./routes/Options.svelte";
     import UserLink from "./components/UserLink.svelte";
-    import CodeVerifier from "./routes/CodeVerifier.svelte";
+    import PhoneConfirmation from "./routes/PhoneConfirmation.svelte";
     import GetApp from "./routes/GetApp.svelte";
     import EnrollApp from "./routes/EnrollApp.svelte";
     import Recovery from "./routes/Recovery.svelte";
@@ -167,7 +167,7 @@
                 <Route path="/recovery" component={Recovery}/>
                 <Route path="/recovery-code" component={RecoveryCode}/>
                 <Route path="/phone-verification" component={PhoneVerification}/>
-                <Route path="/phone-confirmation" component={CodeVerifier}/>
+                <Route path="/phone-confirmation" component={PhoneConfirmation}/>
                 <Route path="/congrats" component={Congrats}/>
                 <Route path="/remember" component={RememberMe}/>
                 <Route path="/usepassword/:id" let:params>

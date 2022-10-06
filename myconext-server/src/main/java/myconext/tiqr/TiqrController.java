@@ -137,6 +137,16 @@ public class TiqrController {
         return doStartEnrollmentForUser(user);
     }
 
+    @GetMapping("/start-enrollment-with-id")
+    public ResponseEntity<Map<String, String>> startEnrollmentWithId(@RequestParam(value = "id", required = false) String id) throws IOException, WriterException {
+        if (!StringUtils.hasText(id)) {
+            throw new ForbiddenException("No id parameter");
+        }
+        User user = getUserFromAuthenticationRequestId(id);
+
+        return doStartEnrollmentForUser(user);
+    }
+
     private ResponseEntity<Map<String, String>> doStartEnrollmentForUser(User user) throws WriterException, IOException {
         Enrollment enrollment = tiqrService.startEnrollment(user.getId(), String.format("%s %s", user.getGivenName(), user.getFamilyName()));
         String enrollmentKey = enrollment.getKey();
@@ -165,6 +175,16 @@ public class TiqrController {
         LOG.info(String.format("Returning metaData for %s", metaData.getIdentity().getDisplayName()));
 
         return ResponseEntity.ok(metaData);
+    }
+
+    @PostMapping("/pre-enrollment-mfa")
+    public ResponseEntity<Map<String, String>> preEnrollmentMfa(@RequestBody Map<String, String> requestBody) {
+        SamlAuthenticationRequest authenticationRequest = this.authenticationRequestRepository.findById(requestBody.get("id"))
+                .orElseThrow(() -> new ForbiddenException("Unknown id"));
+        User user = userRepository.findOneUserByEmail(requestBody.get("email"));
+        authenticationRequest.setUserId(user.getId());
+        authenticationRequestRepository.save(authenticationRequest);
+        return getSuccessResponseEntity(Collections.singletonMap("status", "ok"));
     }
 
     @GetMapping("/poll-enrollment")
@@ -199,11 +219,25 @@ public class TiqrController {
     public ResponseEntity<Map<String, String>> generateBackupCode(@RequestParam("hash") String hash) throws TiqrException {
         SamlAuthenticationRequest samlAuthenticationRequest = authenticationRequestRepository.findByHash(hash)
                 .orElseThrow(() -> new ForbiddenException("Unknown hash"));
+        return idpGenerateBackUpCode(samlAuthenticationRequest);
+    }
+
+    @GetMapping("/generate-backup-code-with-id")
+    public ResponseEntity<Map<String, String>> generateBackupCodeWithId(@RequestParam("id") String id) throws TiqrException {
+        SamlAuthenticationRequest samlAuthenticationRequest = authenticationRequestRepository.findById(id)
+                .orElseThrow(() -> new ForbiddenException("Unknown id"));
+        samlAuthenticationRequest.setHash(hash());
+        return idpGenerateBackUpCode(samlAuthenticationRequest);
+    }
+
+    private ResponseEntity<Map<String, String>> idpGenerateBackUpCode(SamlAuthenticationRequest samlAuthenticationRequest) throws TiqrException {
         String userId = samlAuthenticationRequest.getUserId();
         User user = userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException(userId));
         samlAuthenticationRequest.setTiqrFlow(true);
         authenticationRequestRepository.save(samlAuthenticationRequest);
-        return doGenerateBackupCode(user, false);
+        ResponseEntity<Map<String, String>> mapResponseEntity = doGenerateBackupCode(user, false);
+        mapResponseEntity.getBody().put("hash", samlAuthenticationRequest.getHash());
+        return mapResponseEntity;
     }
 
     private ResponseEntity<Map<String, String>> doGenerateBackupCode(User user, boolean regenerateSpFlow) throws TiqrException {
@@ -226,9 +260,9 @@ public class TiqrController {
             tiqrService.finishRegistration(user.getId());
         }
 
-        Map<String, String> body = Map.of(
-                "redirect", this.magicLinkUrl,
-                "recoveryCode", recoveryCode);
+        Map<String, String> body = new HashMap<>();
+        body.put("redirect", this.magicLinkUrl);
+        body.put("recoveryCode", recoveryCode);
         return getSuccessResponseEntity(body);
     }
 
@@ -256,6 +290,13 @@ public class TiqrController {
     @PostMapping("/send-phone-code")
     public ResponseEntity<Map<String, String>> sendPhoneCode(HttpServletRequest request, @RequestParam("hash") String hash, @RequestBody Map<String, String> requestBody) {
         User user = getUserFromAuthenticationRequest(hash);
+        String phoneNumber = requestBody.get("phoneNumber");
+        return doSendPhoneCode(user, phoneNumber, false, request);
+    }
+
+    @PostMapping("/send-phone-code-with-id")
+    public ResponseEntity<Map<String, String>> sendPhoneCodeWithId(HttpServletRequest request, @RequestParam("id") String id, @RequestBody Map<String, String> requestBody) {
+        User user = getUserFromAuthenticationRequestId(id);
         String phoneNumber = requestBody.get("phoneNumber");
         return doSendPhoneCode(user, phoneNumber, false, request);
     }
@@ -300,15 +341,33 @@ public class TiqrController {
         return doVerifyPhoneCode(requestBody, user, true);
     }
 
+
     @PostMapping("/verify-phone-code")
     public ResponseEntity<Map<String, String>> verifyPhoneCode(@RequestParam("hash") String hash, @RequestBody Map<String, String> requestBody) throws TiqrException {
         SamlAuthenticationRequest samlAuthenticationRequest = authenticationRequestRepository.findByHash(hash)
                 .orElseThrow(() -> new ForbiddenException("Unknown hash"));
+        return idpVerifyPhoneCode(requestBody, samlAuthenticationRequest, false);
+    }
+
+    @PostMapping("/verify-phone-code-with-id")
+    public ResponseEntity<Map<String, String>> verifyPhoneCodeWithId(@RequestParam("id") String id, @RequestBody Map<String, String> requestBody) throws TiqrException {
+        SamlAuthenticationRequest samlAuthenticationRequest = authenticationRequestRepository.findById(id)
+                .orElseThrow(() -> new ForbiddenException("Unknown hash"));
+        return idpVerifyPhoneCode(requestBody, samlAuthenticationRequest, true);
+    }
+
+    private ResponseEntity<Map<String, String>> idpVerifyPhoneCode(@RequestBody Map<String, String> requestBody,
+                                                                   SamlAuthenticationRequest samlAuthenticationRequest,
+                                                                   boolean onSuccessGenerateHash) throws TiqrException {
         String userId = samlAuthenticationRequest.getUserId();
         User user = userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException(userId));
         ResponseEntity<Map<String, String>> results = doVerifyPhoneCode(requestBody, user, false);
         //No exception
         samlAuthenticationRequest.setTiqrFlow(true);
+        if (onSuccessGenerateHash) {
+            samlAuthenticationRequest.setHash(hash());
+            results.getBody().put("hash", samlAuthenticationRequest.getHash());
+        }
         authenticationRequestRepository.save(samlAuthenticationRequest);
         return results;
     }
@@ -338,7 +397,9 @@ public class TiqrController {
         } else {
             throw new ForbiddenException();
         }
-        return getSuccessResponseEntity(Collections.singletonMap("redirect", this.magicLinkUrl));
+        Map<String, String> results = new HashMap<>();
+        results.put("redirect", this.magicLinkUrl);
+        return getSuccessResponseEntity(results);
     }
 
     @PostMapping("/sp/start-authentication")
@@ -566,6 +627,13 @@ public class TiqrController {
     private User getUserFromAuthenticationRequest(String hash) {
         SamlAuthenticationRequest samlAuthenticationRequest = authenticationRequestRepository.findByHash(hash)
                 .orElseThrow(() -> new ForbiddenException("Unknown hash"));
+        String userId = samlAuthenticationRequest.getUserId();
+        return userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException(userId));
+    }
+
+    private User getUserFromAuthenticationRequestId(String id) {
+        SamlAuthenticationRequest samlAuthenticationRequest = authenticationRequestRepository.findById(id)
+                .orElseThrow(() -> new ForbiddenException("Unknown id"));
         String userId = samlAuthenticationRequest.getUserId();
         return userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException(userId));
     }

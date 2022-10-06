@@ -4,13 +4,14 @@
     import I18n from "i18n-js";
     import {onMount, tick} from "svelte";
     import {links} from "../stores/conf";
-    import {textPhoneNumber, validatePhoneCode} from "../api";
+    import {textPhoneNumber, textPhoneNumberWithId, validatePhoneCode, validatePhoneCodeWithId} from "../api";
     import {navigate} from "svelte-routing";
     import {user} from "../stores/user";
     import Button from "../components/Button.svelte";
 
     let showSpinner = true;
-    let hash = "";
+    let hash = null;
+    let id = null;
     let wrongCode = false;
     let maxAttempts = false;
 
@@ -22,13 +23,15 @@
 
         const urlParams = new URLSearchParams(window.location.search);
         hash = urlParams.get("h");
+        id = urlParams.get("id");
         showSpinner = false;
         refs[0].focus();
     });
 
     const sendSMSAgain = () => {
         showSpinner = true;
-        textPhoneNumber(hash, $user.phoneNumber.replaceAll(" ","").replaceAll("-",""))
+        const trimmedPhoneNumber = $user.phoneNumber.replaceAll(" ","").replaceAll("-","");
+        const promise = hash ? textPhoneNumber(hash, trimmedPhoneNumber) : textPhoneNumberWithId(id, trimmedPhoneNumber)
             .then(() => {
                 showSpinner = false;
                 totp = Array(6).fill("");
@@ -57,8 +60,9 @@
         if (index !== 5) {
             tick().then(() => refs[index + 1].focus())
         } else {
-            validatePhoneCode(hash, totp.join(""))
-                .then(res => {
+            const promise = hash ? validatePhoneCode(hash, totp.join("")) : validatePhoneCodeWithId(id, totp.join(""))
+            promise.then(res => {
+                    hash = res.hash || hash;
                     navigate(`/congrats?h=${hash}&redirect=${encodeURIComponent(res.redirect)}`);
                 }).catch(e => {
                 totp = Array(6).fill("");

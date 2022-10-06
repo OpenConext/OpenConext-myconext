@@ -84,7 +84,6 @@
 
     onMount(() => {
         $links.displayBackArrow = true;
-
         startTiqrAuthentication($user.email, id)
             .then(res => {
                 showSpinner = false;
