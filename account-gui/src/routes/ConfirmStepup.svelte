@@ -28,6 +28,11 @@
 </script>
 
 <style>
+    h2 {
+        margin: 0 0 30px  0;
+        font-size: 32px;
+        color: var(--color-primary-green);
+    }
 
 </style>
 {#if showSpinner}

@@ -4,6 +4,7 @@
     import oneMoreThingFilled from "../icons/onemorething_filled.svg";
 
     export let explanation;
+    export let explanationText;
     export let verified = false;
 </script>
 <style>
@@ -16,7 +17,7 @@
         align-items: center;
         padding: 15px;
         border: 2px solid var(--color-primary-grey);;
-        margin-bottom: 15px;
+        margin-bottom: 25px;
         border-radius: 8px;
     }
 
@@ -33,7 +34,7 @@
     <p class="info">{I18n.t("confirmStepup.conditionMet")}</p>
 {/if}
 <div class="conditions-container">
-    <p class="conditions">{verified ? I18n.t(`stepUpVerification.${explanation}`) : I18n.t(`stepUpExplanation.${explanation}`)}</p>
+    <p class="conditions">{verified ? I18n.t(`stepUpVerification.${explanation}`) : (explanationText || I18n.t(`stepUpExplanation.${explanation}`))}</p>
     <span class="icon">{@html verified ? oneMoreThingFilled : oneMoreThingEmpty}</span>
 
 </div>

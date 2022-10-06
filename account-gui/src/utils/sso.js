@@ -4,7 +4,7 @@ export const proceed = magicLinkUrlPrefix => {
     //Ensure we are not attacked by an open redirect
     if (redirect.startsWith(magicLinkUrlPrefix)) {
         const hash = urlSearchParams.get('h');
-        window.location.href = `${redirect}?h=${hash}`;
+        window.location.href = `${redirect}?h=${hash}&force=true`;
     } else {
         throw new Error("Invalid redirect: " + redirect);
     }

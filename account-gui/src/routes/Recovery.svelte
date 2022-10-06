@@ -8,7 +8,6 @@
     import {navigate} from "svelte-routing";
 
     let hash = null;
-    let id = null;
     let showSpinner = true;
 
 
@@ -17,17 +16,14 @@
 
         const urlParams = new URLSearchParams(window.location.search);
         hash = urlParams.get("h");
-        id = urlParams.get("id");
     });
 
     const phoneNumber = () => {
-        const query = hash ? `h=${hash}` : `id=${id}`;
-        navigate(`/phone-verification?${query}`);
+        navigate(`/phone-verification?h=${hash}`);
     }
 
     const backUpCode = () => {
-        const query = hash ? `h=${hash}` : `id=${id}`;
-        navigate(`/recovery-code?${query}`);
+        navigate(`/recovery-code?h=${hash}`);
     }
 
 </script>

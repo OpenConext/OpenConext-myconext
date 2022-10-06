@@ -159,9 +159,7 @@
                 <Route path="/uselink/:id" let:params>
                     <UseLink id="{params.id}"/>
                 </Route>
-                <Route path="/app-required/:id" let:params>
-                    <AppRequired id="{params.id}"/>
-                </Route>
+                <Route path="/app-required" component={AppRequired}/>
                 <Route path="/getapp" component={GetApp}/>
                 <Route path="/enrollapp" component={EnrollApp}/>
                 <Route path="/recovery" component={Recovery}/>

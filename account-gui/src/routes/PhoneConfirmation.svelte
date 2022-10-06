@@ -4,14 +4,13 @@
     import I18n from "i18n-js";
     import {onMount, tick} from "svelte";
     import {links} from "../stores/conf";
-    import {textPhoneNumber, textPhoneNumberWithId, validatePhoneCode, validatePhoneCodeWithId} from "../api";
+    import {textPhoneNumber, validatePhoneCode} from "../api";
     import {navigate} from "svelte-routing";
     import {user} from "../stores/user";
     import Button from "../components/Button.svelte";
 
     let showSpinner = true;
     let hash = null;
-    let id = null;
     let wrongCode = false;
     let maxAttempts = false;
 
@@ -23,22 +22,20 @@
 
         const urlParams = new URLSearchParams(window.location.search);
         hash = urlParams.get("h");
-        id = urlParams.get("id");
         showSpinner = false;
         refs[0].focus();
     });
 
     const sendSMSAgain = () => {
         showSpinner = true;
-        const trimmedPhoneNumber = $user.phoneNumber.replaceAll(" ","").replaceAll("-","");
-        const promise = hash ? textPhoneNumber(hash, trimmedPhoneNumber) : textPhoneNumberWithId(id, trimmedPhoneNumber)
-            .then(() => {
-                showSpinner = false;
-                totp = Array(6).fill("");
-                refs[0].focus();
-                wrongCode = false;
-                maxAttempts = false;
-            });
+        const trimmedPhoneNumber = $user.phoneNumber.replaceAll(" ", "").replaceAll("-", "");
+        textPhoneNumber(hash, trimmedPhoneNumber).then(() => {
+            showSpinner = false;
+            totp = Array(6).fill("");
+            refs[0].focus();
+            wrongCode = false;
+            maxAttempts = false;
+        });
     }
 
     const onKeyDownTotp = index => e => {
@@ -60,11 +57,9 @@
         if (index !== 5) {
             tick().then(() => refs[index + 1].focus())
         } else {
-            const promise = hash ? validatePhoneCode(hash, totp.join("")) : validatePhoneCodeWithId(id, totp.join(""))
-            promise.then(res => {
-                    hash = res.hash || hash;
-                    navigate(`/congrats?h=${hash}&redirect=${encodeURIComponent(res.redirect)}`);
-                }).catch(e => {
+            validatePhoneCode(hash, totp.join("")).then(res => {
+                navigate(`/congrats?h=${hash}&redirect=${encodeURIComponent(res.redirect)}`);
+            }).catch(e => {
                 totp = Array(6).fill("");
                 refs[0].focus();
                 wrongCode = true;
@@ -92,6 +87,7 @@
         &.with-error {
             margin: 15px 0 0 0;
         }
+
         input.totp-value {
             width: 40px;
             padding-left: 14px;
@@ -156,7 +152,8 @@
         <span class="svg">{@html critical}</span>
         <div class="max-attempts">
             <span>{I18n.t("sms.maxAttemptsPre")}</span>
-            <a href="/phone" on:click|preventDefault|stopPropagation={() => navigate(`/phone-verification?h=${hash}`)}>{I18n.t("sms.here")}</a>
+            <a href="/phone"
+               on:click|preventDefault|stopPropagation={() => navigate(`/phone-verification?h=${hash}`)}>{I18n.t("sms.here")}</a>
             <span>{I18n.t("sms.maxAttemptsPost")}</span>
         </div>
     </div>

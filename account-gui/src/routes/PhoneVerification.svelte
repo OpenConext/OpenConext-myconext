@@ -6,14 +6,13 @@
     import {onMount} from "svelte";
     import Button from "../components/Button.svelte";
     import {links} from "../stores/conf";
-    import {textPhoneNumber, textPhoneNumberWithId} from "../api";
+    import {textPhoneNumber} from "../api";
     import {navigate} from "svelte-routing";
     import {user} from "../stores/user";
 
     let showSpinner = true;
     let initial = true;
     let hash = null;
-    let id = null;
     let phoneNumber = "";
 
     onMount(() => {
@@ -21,7 +20,6 @@
 
         const urlParams = new URLSearchParams(window.location.search);
         hash = urlParams.get("h");
-        id = urlParams.get("id");
         showSpinner = false;
     });
 
@@ -33,13 +31,11 @@
         phoneNumberIncorrect = !validPhoneNumber(phoneNumber);
         if (!phoneNumberIncorrect) {
             showSpinner = true;
-            const trimmedPhoneNumber = phoneNumber.replaceAll(" ","").replaceAll("-","");
-            const promise = hash ? textPhoneNumber(hash, trimmedPhoneNumber) : textPhoneNumberWithId(id, trimmedPhoneNumber)
-            promise.then(() => {
-                    $user.phoneNumber = phoneNumber;
-                    const query = hash ? `h=${hash}` : `id=${id}`;
-                    navigate(`phone-confirmation?${query}`);
-                })
+            const trimmedPhoneNumber = phoneNumber.replaceAll(" ", "").replaceAll("-", "");
+            textPhoneNumber(hash, trimmedPhoneNumber).then(() => {
+                $user.phoneNumber = phoneNumber;
+                navigate(`phone-confirmation?h=${hash}`);
+            })
         }
     }
 

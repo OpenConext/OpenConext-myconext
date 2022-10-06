@@ -31,16 +31,14 @@
 </script>
 
 <style>
-
-
     h2 {
-        margin: 30px 0;
+        margin: 0 0 30px  0;
         font-size: 32px;
         color: var(--color-primary-green);
     }
 
     p.info {
-        margin-bottom: 25px;
+        margin-bottom: 30px;
     }
 
 </style>

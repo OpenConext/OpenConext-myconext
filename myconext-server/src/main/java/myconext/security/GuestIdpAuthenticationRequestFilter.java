@@ -191,8 +191,8 @@ public class GuestIdpAuthenticationRequestFilter extends IdpAuthenticationReques
         samlAuthenticationRequest = authenticationRequestRepository.save(samlAuthenticationRequest);
 
         if (previousAuthenticatedUser != null && !authenticationRequest.isForceAuth()) {
-            if ((accountLinkingRequired || mfaProfileRequired) && !isUserVerifiedByInstitution(previousAuthenticatedUser,
-                    authenticationContextClassReferenceValues)) {
+            if (mfaProfileRequired || (accountLinkingRequired && !isUserVerifiedByInstitution(previousAuthenticatedUser,
+                    authenticationContextClassReferenceValues))) {
                 boolean hasStudentAffiliation = hasRequiredStudentAffiliation((previousAuthenticatedUser.allEduPersonAffiliations()));
                 String explanation = ACR.explanationKeyWord(authenticationContextClassReferenceValues, hasStudentAffiliation);
                 samlAuthenticationRequest.setUserId(previousAuthenticatedUser.getId());
@@ -202,11 +202,12 @@ public class GuestIdpAuthenticationRequestFilter extends IdpAuthenticationReques
                 String redirect = "/stepup/";
                 String mfa = "";
                 if (mfaProfileRequired) {
-                    if (previousAuthenticatedUser.loginOptions().contains(LoginOptions.APP.getValue())) {
+                    List<String> loginOptions = previousAuthenticatedUser.loginOptions();
+                    if (loginOptions.contains(LoginOptions.APP.getValue())) {
                         redirect = "/" + LoginOptions.APP.getValue() + "/";
                         mfa = "&mfa=true";
                     } else {
-                        redirect = "/app-required/";
+                        redirect = "/" + loginOptions.get(0).toLowerCase() + "/";
                     }
                 }
                 response.sendRedirect(this.redirectUrl + redirect + samlAuthenticationRequest.getId()
@@ -347,7 +348,12 @@ public class GuestIdpAuthenticationRequestFilter extends IdpAuthenticationReques
                     + "?explanation=" + explanation);
             return;
         }
-
+        String force = request.getParameter("force");
+        if (samlAuthenticationRequest.isMfaProfileRequired() && !samlAuthenticationRequest.isTiqrFlow() && !StringUtils.hasText(force)) {
+            response.sendRedirect(this.redirectUrl + "/app-required?h=" + hash +
+                    "&redirect=" + URLEncoder.encode(this.magicLinkUrl, charSet));
+            return;
+        }
 
         Optional<Cookie> optionalCookie = cookieByName(request, BROWSER_SESSION_COOKIE_NAME);
         if (!optionalCookie.isPresent()) {
@@ -400,6 +406,9 @@ public class GuestIdpAuthenticationRequestFilter extends IdpAuthenticationReques
             }
             if (missingStudentAffiliation || missingValidName) {
                 //When we send the assertion EB stops the flow but this will be fixed upstream
+                return true;
+            }
+            if (samlAuthenticationRequest.isTiqrFlow()) {
                 return true;
             }
             String url = this.redirectUrl + "/confirm?h=" + hash +

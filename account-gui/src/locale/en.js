@@ -281,7 +281,7 @@ I18n.translations.en = {
     },
     appRequired: {
         header: "Login with the eduID app",
-        info: "Service <strong>{{service}}</strong> requested a login with the eduID app to  ensure your identity.",
+        info: "Login with the eduID app to ensure your identity.",
         info2: "Get the <strong>eduID app</strong> and securely sign in without passwords or accessing your email. It will only take a minute. Please click <strong>Proceed</strong> for the next step.",
         cancel: "/cancel",
         no: "I refuse",

@@ -1017,6 +1017,10 @@ public class UserControllerTest extends AbstractIntegrationTest {
                 .get("/myconext/api/idp/service/hash/" + samlAuthenticationRequest.getHash())
                 .then()
                 .body("name", equalTo("https://manage.surfconext.nl/shibboleth"));
+        when()
+                .get("/myconext/api/idp/service/id/" + samlAuthenticationRequest.getId())
+                .then()
+                .body("name", equalTo("https://manage.surfconext.nl/shibboleth"));
 
     }
 

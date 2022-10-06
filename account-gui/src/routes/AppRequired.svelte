@@ -1,17 +1,18 @@
 <script>
     import I18n from "i18n-js";
     import {onMount} from 'svelte';
-    import {links} from "../stores/conf";
+    import {conf, links} from "../stores/conf";
     import Button from "../components/Button.svelte";
     import Spinner from "../components/Spinner.svelte";
-    import {fetchServiceNameById, knownAccount} from "../api";
+    import {fetchServiceNameByHash} from "../api";
     import ButtonContainer from "../components/ButtonContainer.svelte";
     import {navigate} from "svelte-routing";
-    import {user} from "../stores/user";
     import Modal from "../components/Modal.svelte";
     import DOMPurify from "dompurify";
+    import Verification from "../components/Verification.svelte";
+    import {proceed} from "../utils/sso";
 
-    export let id;
+    let hash;
     let serviceName = null;
     let showSpinner = true;
     let showModal = false;
@@ -19,14 +20,17 @@
     onMount(() => {
         $links.displayBackArrow = false;
 
-        fetchServiceNameById(id).then(res => {
+        const urlSearchParams = new URLSearchParams(window.location.search);
+        hash = urlSearchParams.get("h");
+
+        fetchServiceNameByHash(hash).then(res => {
             serviceName = res.name;
             showSpinner = false;
         });
     });
 
     const submit = () => {
-        navigate(`/getapp?id=${id}`);
+        navigate(`/getapp?h=${hash}`);
     }
 
     const cancel = showWarning => {
@@ -35,14 +39,7 @@
         } else {
             showSpinner = true;
             showModal = false;
-            knownAccount($user.knownUser || $user.email).then(res => {
-                if ($user.preferredLogin && res.includes($user.preferredLogin)) {
-                    navigate(`/${$user.preferredLogin.toLowerCase()}/${id}`);
-                } else {
-                    //By contract the list ordered from more secure to less secure
-                    navigate(`/${res[0].toLowerCase()}/${id}`);
-                }
-            });
+            proceed($conf.magicLinkUrl);
         }
     }
 
@@ -51,12 +48,13 @@
 <style lang="scss">
 
     h2 {
+        margin: 10px 0 30px 0;
+        font-size: 32px;
         color: var(--color-primary-green);
-        margin-bottom: 10px;
     }
 
     p.explanation {
-        margin: 15px 0;
+        margin-bottom: 25px;
 
         &.last {
             margin-bottom: 40px;
@@ -68,8 +66,9 @@
     <Spinner/>
 {/if}
 
-<h2 class="header">{@html DOMPurify.sanitize(I18n.t("appRequired.header"))} </h2>
-<p class="explanation">{@html I18n.t("appRequired.info", {service: serviceName})}</p>
+<h2>{I18n.t("stepup.header")}</h2>
+<p class="explanation">{@html I18n.t("stepup.info", {name: DOMPurify.sanitize(serviceName)})}</p>
+<Verification explanationText={I18n.t("appRequired.info")} verified={false}/>
 <p class="explanation last">{@html I18n.t("appRequired.info2")}</p>
 <ButtonContainer>
     <Button className="cancel"

@@ -1,6 +1,6 @@
 <script>
     import I18n from "i18n-js";
-    import {pollEnrollment, startEnrollment, startEnrollmentWithId} from "../api/index";
+    import {pollEnrollment, startEnrollment} from "../api/index";
     import Spinner from "../components/Spinner.svelte";
     import {onDestroy, onMount} from "svelte";
     import ImageContainer from "../components/ImageContainer.svelte";
@@ -11,7 +11,6 @@
 
     let showSpinner = true;
     let hash = null;
-    let id = null;
     let qrcode = "";
     let url = "";
     let enrollmentKey = "";
@@ -26,9 +25,7 @@
 
         const urlSearchParams = new URLSearchParams(window.location.search);
         hash = urlSearchParams.get("h");
-        id = urlSearchParams.get("id");
-        const promise = hash ? startEnrollment(hash) : startEnrollmentWithId(id);
-        promise.then(res => {
+        startEnrollment(hash).then(res => {
             qrcode = res.qrcode;
             url = res.url;
             enrollmentKey = res.enrollmentKey;
@@ -46,8 +43,7 @@
                 maxAttempts: 60 * 15 // 15 minute timeout
             })
                 .then(() => {
-                    const query = hash ? `h=${hash}` : `id=${id}`
-                    !timeOut && navigate(`/recovery?${query}`);
+                    !timeOut && navigate(`/recovery?h=${hash}`);
                 })
                 .catch(() => timeOut = true)
         });

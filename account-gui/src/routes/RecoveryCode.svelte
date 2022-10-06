@@ -3,13 +3,12 @@
     import Button from "../components/Button.svelte";
     import {onMount} from "svelte";
     import {links} from "../stores/conf";
-    import {generateBackupCode, generateBackupCodeWithId} from "../api";
+    import {generateBackupCode} from "../api";
     import Spinner from "../components/Spinner.svelte";
     import {navigate} from "svelte-routing";
 
     let showSpinner = true;
     let hash = null;
-    let id = null;
     let recoveryCode;
     let redirect;
     let error;
@@ -26,15 +25,12 @@
 
         const urlParams = new URLSearchParams(window.location.search);
         hash = urlParams.get("h");
-        id = urlParams.get("id");
-        const promise = hash ? generateBackupCode(hash) : generateBackupCodeWithId(id) ;
-        promise.then(res => {
+        generateBackupCode(hash).then(res => {
             const recoveryCodeRaw = res.recoveryCode;
-            hash = res.hash || hash;
             recoveryCode = recoveryCodeRaw.substring(0, 4) + " " + recoveryCodeRaw.substring(4);
             redirect = res.redirect;
             showSpinner = false;
-            window.addEventListener("beforeunload", onConfirmRefresh, { capture: true });
+            window.addEventListener("beforeunload", onConfirmRefresh, {capture: true});
         }).catch(() => {
             showSpinner = false;
             recoveryCode = "";
