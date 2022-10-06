@@ -291,5 +291,11 @@ I18n.translations.en = {
         warningTitle: "Get the eduApp",
         confirmLabel: "Get the eduApp",
         cancelLabel: "I still refuse"
+    },
+    subContent: {
+        warningTitle: "Please reconsider",
+        warning: "The service your logging into has explicitly requested you login using your eduID app. If you login with a different method, this service will not receive your attributes.",
+        confirmLabel: "Change login option anyway",
+        cancelLabel: "Did not know that"
     }
 };

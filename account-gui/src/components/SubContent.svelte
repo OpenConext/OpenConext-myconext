@@ -1,11 +1,30 @@
 <script>
-    import {link} from "svelte-routing";
+    import {link, navigate} from "svelte-routing";
+    import {onMount} from "svelte";
+    import I18n from "i18n-js";
+    import Modal from "../components/Modal.svelte";
 
-    export let question = "";
-    export let preLink = "";
-    export let linkText = "";
-    export let route;
-    export let href;
+    export let question = null;
+    export let preLink = null;
+    export let linkText = null;
+    export let route = null;
+    export let href = null;
+
+    let isMfa = false;
+    let showModal = false;
+
+    onMount(()=>{
+        const urlSearchParams = new URLSearchParams(window.location.search);
+        isMfa = urlSearchParams.has("mfa");
+    })
+
+    const mfaWarning = confirmation => {
+        if (confirmation) {
+            showModal = true;
+        } else {
+            navigate(route);
+        }
+    }
 
 </script>
 
@@ -60,7 +79,9 @@
     <div class="sub-content-inner">
         <span class="question">{@html question}
             <span class="pre-link">{preLink}</span>
-            {#if route}
+            {#if isMfa}
+                <a href={route} on:click|preventDefault|stopPropagation={() => mfaWarning(true)}>{linkText}</a>
+            {:else if route}
                 <a href={route} use:link>
                     {linkText}
                 </a>
@@ -70,3 +91,13 @@
         </span>
     </div>
 </div>
+{#if showModal}
+    <Modal submit={() => mfaWarning(false)}
+           cancel={() => showModal = false}
+           question={I18n.t("subContent.warning", {service: "test"})}
+           title={I18n.t("subContent.warningTitle")}
+           cancelLabel={I18n.t("subContent.cancelLabel")}
+           confirmLabel={I18n.t("subContent.confirmLabel")}>
+    </Modal>
+{/if}
+

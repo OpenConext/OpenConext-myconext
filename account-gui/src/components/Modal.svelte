@@ -62,11 +62,12 @@
     div.modal-options {
         padding: 18px;
         display: flex;
+        flex-direction: column;
         text-align: center;
     }
 
     :global(.modal-options a:last-child) {
-        margin-left: 40px;
+        margin-top: 15px;
     }
 
 

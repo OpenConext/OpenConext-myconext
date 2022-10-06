@@ -292,6 +292,12 @@ I18n.translations.nl = {
         warningTitle: "Download eduID-app",
         confirmLabel: "Download eduID-app",
         cancelLabel: "Ik weiger echt"
+    },
+    subContent: {
+        warningTitle: "Weet je het zeker?",
+        warning: "De dienst waarop je inlogt heeft expliciet gevraagd om in te loggen met je eduID app. Als je met een andere methode inlogt, ontvangt deze service je attributen niet.",
+        confirmLabel: "Verander login optie",
+        cancelLabel: "Dat wist ik niet"
     }
 
 
