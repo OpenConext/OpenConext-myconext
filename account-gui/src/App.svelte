@@ -215,6 +215,7 @@
             <Route path="/useapp/:id" let:params>
                 <SubContent question={I18n.t("login.noAppAccess")}
                             preLink={I18n.t("login.useAnother")}
+                            isMfa={true}
                             linkText={I18n.t("login.optionsLink")}
                             route="/options/{params.id}"/>
             </Route>

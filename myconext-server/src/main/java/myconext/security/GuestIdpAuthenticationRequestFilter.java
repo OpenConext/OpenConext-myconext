@@ -204,7 +204,7 @@ public class GuestIdpAuthenticationRequestFilter extends IdpAuthenticationReques
                 if (mfaProfileRequired) {
                     List<String> loginOptions = previousAuthenticatedUser.loginOptions();
                     if (loginOptions.contains(LoginOptions.APP.getValue())) {
-                        redirect = "/" + LoginOptions.APP.getValue() + "/";
+                        redirect = "/" + LoginOptions.APP.getValue().toLowerCase() + "/";
                         mfa = "&mfa=true";
                     } else {
                         redirect = "/" + loginOptions.get(0).toLowerCase() + "/";

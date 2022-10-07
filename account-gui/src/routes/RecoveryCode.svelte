@@ -1,7 +1,7 @@
 <script>
     import I18n from "i18n-js";
     import Button from "../components/Button.svelte";
-    import {onMount} from "svelte";
+    import {onDestroy, onMount} from "svelte";
     import {links} from "../stores/conf";
     import {generateBackupCode} from "../api";
     import Spinner from "../components/Spinner.svelte";
@@ -37,6 +37,8 @@
             error = true;
         })
     });
+
+    onDestroy(() => window.removeEventListener("beforeunload", onConfirmRefresh, {capture: true}));
 
     const copyToClipboard = () => {
         navigator.clipboard.writeText(recoveryCode);

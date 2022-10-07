@@ -6,6 +6,7 @@
     export let explanation;
     export let explanationText;
     export let verified = false;
+
 </script>
 <style>
     p.info {

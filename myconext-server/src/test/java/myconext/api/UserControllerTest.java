@@ -13,6 +13,7 @@ import myconext.AbstractIntegrationTest;
 import myconext.model.*;
 import myconext.repository.ChallengeRepository;
 import myconext.security.ACR;
+import myconext.tiqr.SURFSecureID;
 import org.apache.commons.io.IOUtil;
 import org.apache.http.client.CookieStore;
 import org.junit.Test;
@@ -29,7 +30,6 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.security.SecureRandom;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
@@ -152,6 +152,38 @@ public class UserControllerTest extends AbstractIntegrationTest {
         response = samlAuthnRequestResponseWithLoa(
                 new Cookie.Builder(GUEST_IDP_REMEMBER_ME_COOKIE_NAME, cookie).build(), null, authnContext);
         response.then().header("Location", startsWith("http://localhost:3000/stepup/"));
+    }
+
+    @Test
+    public void rememberMeButMFARegistrationRequired() throws IOException {
+        String authenticationRequestId = samlAuthnRequest();
+        User user = user("steve@example.com", "Steve", "Doe", "en");
+        MagicLinkResponse magicLinkResponse = magicLinkRequest(new MagicLinkRequest(authenticationRequestId, user, true, false), HttpMethod.POST);
+        Response response = magicResponse(magicLinkResponse);
+
+        String cookie = response.cookie(GUEST_IDP_REMEMBER_ME_COOKIE_NAME);
+        String authnContext = readFile("request_authn_context_mfa.xml");
+        response = samlAuthnRequestResponseWithLoa(
+                new Cookie.Builder(GUEST_IDP_REMEMBER_ME_COOKIE_NAME, cookie).build(), null, authnContext);
+        response.then().header("Location", startsWith("http://localhost:3000/uselink/"));
+    }
+
+    @Test
+    public void rememberMeButMFALoginRequired() throws IOException {
+        String authenticationRequestId = samlAuthnRequest();
+        User user = user("steve@example.com", "Steve", "Doe", "en");
+        user.getSurfSecureId().put(SURFSecureID.RECOVERY_CODE, "12345678");
+        user.setNewUser(false);
+        userRepository.save(user);
+
+        MagicLinkResponse magicLinkResponse = magicLinkRequest(new MagicLinkRequest(authenticationRequestId, user, true, false), HttpMethod.PUT);
+        Response response = magicResponse(magicLinkResponse);
+
+        String cookie = response.cookie(GUEST_IDP_REMEMBER_ME_COOKIE_NAME);
+        String authnContext = readFile("request_authn_context_mfa.xml");
+        response = samlAuthnRequestResponseWithLoa(
+                new Cookie.Builder(GUEST_IDP_REMEMBER_ME_COOKIE_NAME, cookie).build(), null, authnContext);
+        response.then().header("Location", startsWith("http://localhost:3000/useapp/"));
     }
 
     @Test
@@ -767,6 +799,72 @@ public class UserControllerTest extends AbstractIntegrationTest {
     }
 
     @Test
+    public void mfa() throws IOException {
+        String authnContext = readFile("request_authn_context_mfa.xml");
+        Response response = samlAuthnRequestResponseWithLoa(null, null, authnContext);
+        assertEquals(302, response.getStatusCode());
+
+        String location = response.getHeader("Location");
+        assertTrue(location.startsWith("http://localhost:3000/login/"));
+
+        String authenticationRequestId = location.substring(location.lastIndexOf("/") + 1, location.lastIndexOf("?"));
+        User user = user("jdoe@example.com");
+        MagicLinkResponse magicLinkResponse = magicLinkRequest(new MagicLinkRequest(authenticationRequestId, user, false, StringUtils.hasText(user.getPassword())), HttpMethod.PUT);
+
+        SamlAuthenticationRequest samlAuthenticationRequest = authenticationRequestRepository.findById(magicLinkResponse.authenticationRequestId).get();
+        response = given().redirects().follow(false)
+                .when()
+                .queryParam("h", samlAuthenticationRequest.getHash())
+                .cookie(BROWSER_SESSION_COOKIE_NAME, "true")
+                .get("/saml/guest-idp/magic");
+
+        //stepup screen
+        String uri = response.getHeader("Location");
+        assertTrue(uri.contains("app-required"));
+    }
+
+    @Test
+    public void mfaNoTiqrAuthentication() throws IOException {
+        User user = userRepository.findOneUserByEmail("jdoe@example.com");
+        String authnContext = readFile("request_authn_context_mfa.xml");
+        Response response = samlAuthnRequestResponseWithLoa(null, "relay", authnContext);
+        String authenticationRequestId = extractAuthenticationRequestIdFromAuthnResponse(response);
+        MagicLinkResponse magicLinkResponse = magicLinkRequest(new MagicLinkRequest(authenticationRequestId, user, false, false), HttpMethod.PUT);
+        SamlAuthenticationRequest samlAuthenticationRequest = authenticationRequestRepository.findById(magicLinkResponse.authenticationRequestId).get();
+
+        Response magicResponse = given().redirects().follow(false)
+                .when()
+                .queryParam("h", samlAuthenticationRequest.getHash())
+                .cookie(BROWSER_SESSION_COOKIE_NAME, "true")
+                .get("/saml/guest-idp/magic");
+        while (magicResponse.statusCode() == 302) {
+            String location = magicResponse.getHeader("Location");
+            assertNotNull(location);
+            magicResponse = this.get302Response(magicResponse, Optional.empty(), "?force=true");
+        }
+        String samlResponse = samlAuthnResponse(magicResponse, Optional.empty());
+
+        assertTrue(samlResponse.contains("urn:oasis:names:tc:SAML:2.0:status:NoAuthnContext"));
+        assertTrue(samlResponse.contains("The requesting service has indicated that a login with the eduID app is required to login"));
+    }
+
+    @Test
+    public void mfaTiqrAuthenticated() throws IOException {
+        User user = userRepository.findOneUserByEmail("jdoe@example.com");
+        String authnContext = readFile("request_authn_context_mfa.xml");
+        Response response = samlAuthnRequestResponseWithLoa(null, "relay", authnContext);
+        String authenticationRequestId = extractAuthenticationRequestIdFromAuthnResponse(response);
+
+        MagicLinkResponse magicLinkResponse = magicLinkRequest(new MagicLinkRequest(authenticationRequestId, user, false, false), HttpMethod.PUT);
+        SamlAuthenticationRequest samlAuthenticationRequest = authenticationRequestRepository.findById(magicLinkResponse.authenticationRequestId).get();
+        samlAuthenticationRequest.setTiqrFlow(true);
+        authenticationRequestRepository.save(samlAuthenticationRequest);
+
+        String samlResponse = samlResponse(magicLinkResponse);
+        assertTrue(samlResponse.contains(ACR.PROFILE_MFA));
+    }
+
+    @Test
     public void stepUpValidateName() throws IOException {
         User jdoe = userRepository.findOneUserByEmail("jdoe@example.com");
         jdoe.getLinkedAccounts().clear();
@@ -1097,7 +1195,7 @@ public class UserControllerTest extends AbstractIntegrationTest {
     @Test
     public void outstandingEmailLinks() {
         User user = userRepository.findOneUserByEmail("jdoe@example.com");
-        changeEmailHashRepository.save(new ChangeEmailHash(user, "jdoe@new.com","hash"));
+        changeEmailHashRepository.save(new ChangeEmailHash(user, "jdoe@new.com", "hash"));
 
         given()
                 .when()
@@ -1171,7 +1269,7 @@ public class UserControllerTest extends AbstractIntegrationTest {
         return new String(Base64.getDecoder().decode(matcher.group(1)));
     }
 
-    private Response magicResponse(MagicLinkResponse magicLinkResponse) throws UnsupportedEncodingException {
+    private Response magicResponse(MagicLinkResponse magicLinkResponse) {
         SamlAuthenticationRequest samlAuthenticationRequest = authenticationRequestRepository.findById(magicLinkResponse.authenticationRequestId).get();
         Response response = given().redirects().follow(false)
                 .when()
@@ -1186,6 +1284,10 @@ public class UserControllerTest extends AbstractIntegrationTest {
     }
 
     private Response get302Response(Response response, Optional<Filter> optionalCookieFilter) {
+        return get302Response(response, optionalCookieFilter, "");
+    }
+
+    private Response get302Response(Response response, Optional<Filter> optionalCookieFilter, String queryParams) {
         //new user confirmation screen
         String uri = response.getHeader("Location");
         MultiValueMap<String, String> parameters = UriComponentsBuilder.fromUriString(uri).build().getQueryParams();
@@ -1195,7 +1297,7 @@ public class UserControllerTest extends AbstractIntegrationTest {
                 .queryParam("h", h)
                 .cookie(BROWSER_SESSION_COOKIE_NAME, "true")
                 .filter(optionalCookieFilter.orElse(noopFilter))
-                .get("/saml/guest-idp/magic");
+                .get("/saml/guest-idp/magic" + queryParams);
         return response;
     }
 

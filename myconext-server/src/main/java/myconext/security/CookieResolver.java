@@ -7,6 +7,9 @@ import java.util.stream.Stream;
 
 public class CookieResolver {
 
+    private CookieResolver() {
+    }
+
     public static Optional<Cookie> cookieByName(HttpServletRequest request, String cookieName) {
         Cookie[] cookies = request.getCookies();
         if (cookies != null) {

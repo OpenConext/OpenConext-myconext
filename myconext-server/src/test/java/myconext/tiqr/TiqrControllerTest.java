@@ -116,6 +116,19 @@ public class TiqrControllerTest extends AbstractIntegrationTest {
                 });
         assertTrue(body.containsKey("recoveryCode"));
     }
+    @Test
+    public void spRegenerateBackupCode() throws IOException {
+        CookieFilter cookieFilter = new CookieFilter();
+        spStartAuthentication(cookieFilter, true);
+        Map<String, String> body = given()
+                .when()
+                .filter(cookieFilter)
+                .contentType(ContentType.JSON)
+                .get("/tiqr/sp/re-generate-backup-code")
+                .body().as(new TypeRef<>() {
+                });
+        assertTrue(body.containsKey("recoveryCode"));
+    }
 
     @Test
     public void spSendPhoneCode() throws IOException {

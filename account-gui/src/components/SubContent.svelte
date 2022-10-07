@@ -9,13 +9,14 @@
     export let linkText = null;
     export let route = null;
     export let href = null;
+    export let isMfa = false;
+    export let isMfaParameter = false;
 
-    let isMfa = false;
     let showModal = false;
 
     onMount(()=>{
         const urlSearchParams = new URLSearchParams(window.location.search);
-        isMfa = urlSearchParams.has("mfa");
+        isMfaParameter = urlSearchParams.has("mfa");
     })
 
     const mfaWarning = confirmation => {
@@ -79,7 +80,7 @@
     <div class="sub-content-inner">
         <span class="question">{@html question}
             <span class="pre-link">{preLink}</span>
-            {#if isMfa}
+            {#if isMfa && isMfaParameter}
                 <a href={route} on:click|preventDefault|stopPropagation={() => mfaWarning(true)}>{linkText}</a>
             {:else if route}
                 <a href={route} use:link>

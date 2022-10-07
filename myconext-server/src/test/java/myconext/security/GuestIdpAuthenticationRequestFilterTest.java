@@ -18,6 +18,7 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
+import static myconext.AbstractIntegrationTest.user;
 import static myconext.model.LinkedAccountTest.linkedAccount;
 import static org.junit.Assert.*;
 
@@ -45,14 +46,14 @@ public class GuestIdpAuthenticationRequestFilterTest {
 
     @Test
     public void isUserVerifiedByInstitutionNoLinkedAccounts() {
-        User user = AbstractIntegrationTest.user("s@s.com", "nl");
+        User user = user("s@s.com", "nl");
         boolean userVerifiedByInstitution = subject.isUserVerifiedByInstitution(user, null);
         assertFalse(userVerifiedByInstitution);
     }
 
     @Test
     public void isUserVerifiedByInstitutionTrue() {
-        User user = AbstractIntegrationTest.user("s@s.com", "nl");
+        User user = user("s@s.com", "nl");
         Date createdAt = Date.from(new Date().toInstant().plus(removalNonValidatedDurationDays, ChronoUnit.DAYS)) ;
         LinkedAccount linkedAccount = linkedAccount(createdAt, Arrays.asList("student@mobi.com"));
         user.getLinkedAccounts().add(linkedAccount);
@@ -62,7 +63,7 @@ public class GuestIdpAuthenticationRequestFilterTest {
 
     @Test
     public void isUserVerifiedByInstitutionExpired() {
-        User user = AbstractIntegrationTest.user("s@s.com", "nl");
+        User user = user("s@s.com", "nl");
         LinkedAccount linkedAccount = linkedAccount(Date.from(Instant.now().plus(10, ChronoUnit.DAYS)), Arrays.asList("affiliation"));
         user.getLinkedAccounts().add(linkedAccount);
         boolean userVerifiedByInstitution = userVerifiedByInstitution(user, ACR.VALIDATE_NAMES);
@@ -71,7 +72,7 @@ public class GuestIdpAuthenticationRequestFilterTest {
 
     @Test
     public void isUserVerifiedByInstitutionNoStudent() {
-        User user = AbstractIntegrationTest.user("s@s.com", "nl");
+        User user = user("s@s.com", "nl");
         LinkedAccount linkedAccount = linkedAccount(new Date(), Arrays.asList("affiliation"));
         user.getLinkedAccounts().add(linkedAccount);
         boolean userVerifiedByInstitution = userVerifiedByInstitution(user, ACR.AFFILIATION_STUDENT);
@@ -80,7 +81,7 @@ public class GuestIdpAuthenticationRequestFilterTest {
 
     @Test
     public void isUserVerifiedByInstitutionStudent() {
-        User user = AbstractIntegrationTest.user("s@s.com", "nl");
+        User user = user("s@s.com", "nl");
         Date createdAt = Date.from(new Date().toInstant().plus(removalNonValidatedDurationDays, ChronoUnit.DAYS)) ;
         LinkedAccount linkedAccount = linkedAccount(createdAt, Arrays.asList("student@example.com"));
         user.getLinkedAccounts().add(linkedAccount);
@@ -90,7 +91,7 @@ public class GuestIdpAuthenticationRequestFilterTest {
 
     @Test
     public void isUserVerifiedByInstitutionValidNames() {
-        User user = AbstractIntegrationTest.user("s@s.com", "nl");
+        User user = user("s@s.com", "nl");
         user.getLinkedAccounts().add(linkedAccount("John", "Doe", new Date()));
         boolean userVerifiedByInstitution = userVerifiedByInstitution(user, ACR.VALIDATE_NAMES);
         assertTrue(userVerifiedByInstitution);
@@ -98,7 +99,7 @@ public class GuestIdpAuthenticationRequestFilterTest {
 
     @Test
     public void isUserVerifiedByInstitutionNoValidNames() {
-        User user = AbstractIntegrationTest.user("s@s.com", "nl");
+        User user = user("s@s.com", "nl");
         user.getLinkedAccounts().add(linkedAccount("", "", new Date()));
         boolean userVerifiedByInstitution = userVerifiedByInstitution(user, ACR.VALIDATE_NAMES);
         assertFalse(userVerifiedByInstitution);
@@ -106,7 +107,7 @@ public class GuestIdpAuthenticationRequestFilterTest {
 
     @Test
     public void isUserVerifiedByInstitutionNoValidNamesAndExpired() {
-        User user = AbstractIntegrationTest.user("s@s.com", "nl");
+        User user = user("s@s.com", "nl");
         Date createdAt = Date.from(Instant.now().plus(10, ChronoUnit.DAYS));
         LinkedAccount linkedAccount = linkedAccount(createdAt, Arrays.asList("affiliation"));
         user.getLinkedAccounts().add(linkedAccount);

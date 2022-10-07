@@ -570,17 +570,9 @@ public class TiqrController {
         return ResponseEntity.ok(body);
     }
 
-
     private User getUserFromAuthenticationRequest(String hash) {
         SamlAuthenticationRequest samlAuthenticationRequest = authenticationRequestRepository.findByHash(hash)
                 .orElseThrow(() -> new ForbiddenException("Unknown hash"));
-        String userId = samlAuthenticationRequest.getUserId();
-        return userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException(userId));
-    }
-
-    private User getUserFromAuthenticationRequestId(String id) {
-        SamlAuthenticationRequest samlAuthenticationRequest = authenticationRequestRepository.findById(id)
-                .orElseThrow(() -> new ForbiddenException("Unknown id"));
         String userId = samlAuthenticationRequest.getUserId();
         return userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException(userId));
     }
