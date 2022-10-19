@@ -64,6 +64,7 @@
         padding: 18px;
         display: flex;
         text-align: center;
+        justify-content: flex-end;
     }
 </style>
 

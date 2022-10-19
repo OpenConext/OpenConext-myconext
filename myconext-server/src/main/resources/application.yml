@@ -28,6 +28,7 @@ cron:
   metadata-resolver-initial-delay-milliseconds: 1
   metadata-resolver-fixed-rate-milliseconds: 86_400_000
   metadata-resolver-url: "classpath:/metadata/idps-metadata.xml"
+  geo-location-refresh: "0 1 1 * * ?"
 
 manage:
   username: myconext
@@ -127,6 +128,10 @@ eduid_api:
   oidcng_client_id: myconext.local.rs
   oidcng_secret: secret
 
+geo_location:
+  license_key: lb53kEx9iVCuBcnV
+  external_url: "https://download.maxmind.com/app/geoip_download?edition_id=GeoLite2-City&license_key={license_key}&suffix=tar.gz"
+  download_directory: "/var/tmp/geo2lite"
 
 spring:
   data:

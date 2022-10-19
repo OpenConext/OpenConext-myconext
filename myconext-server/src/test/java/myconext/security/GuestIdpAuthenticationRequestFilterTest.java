@@ -1,7 +1,6 @@
 package myconext.security;
 
-import myconext.AbstractIntegrationTest;
-import myconext.geo.WhoIsGeoLocation;
+import myconext.geo.GeoLocation;
 import myconext.manage.MockServiceProviderResolver;
 import myconext.model.LinkedAccount;
 import myconext.model.User;
@@ -34,7 +33,7 @@ public class GuestIdpAuthenticationRequestFilterTest {
             null,
             Mockito.mock(UserRepository.class),
             Mockito.mock(UserLoginRepository.class),
-            Mockito.mock(WhoIsGeoLocation.class),
+            Mockito.mock(GeoLocation.class),
             90,
             1,
             1,
@@ -54,7 +53,7 @@ public class GuestIdpAuthenticationRequestFilterTest {
     @Test
     public void isUserVerifiedByInstitutionTrue() {
         User user = user("s@s.com", "nl");
-        Date createdAt = Date.from(new Date().toInstant().plus(removalNonValidatedDurationDays, ChronoUnit.DAYS)) ;
+        Date createdAt = Date.from(new Date().toInstant().plus(removalNonValidatedDurationDays, ChronoUnit.DAYS));
         LinkedAccount linkedAccount = linkedAccount(createdAt, Arrays.asList("student@mobi.com"));
         user.getLinkedAccounts().add(linkedAccount);
         boolean userVerifiedByInstitution = userVerifiedByInstitution(user, ACR.LINKED_INSTITUTION);
@@ -82,7 +81,7 @@ public class GuestIdpAuthenticationRequestFilterTest {
     @Test
     public void isUserVerifiedByInstitutionStudent() {
         User user = user("s@s.com", "nl");
-        Date createdAt = Date.from(new Date().toInstant().plus(removalNonValidatedDurationDays, ChronoUnit.DAYS)) ;
+        Date createdAt = Date.from(new Date().toInstant().plus(removalNonValidatedDurationDays, ChronoUnit.DAYS));
         LinkedAccount linkedAccount = linkedAccount(createdAt, Arrays.asList("student@example.com"));
         user.getLinkedAccounts().add(linkedAccount);
         boolean userVerifiedByInstitution = userVerifiedByInstitution(user, ACR.AFFILIATION_STUDENT);
