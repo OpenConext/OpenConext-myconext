@@ -22,6 +22,7 @@ import java.net.URL;
 import java.nio.file.Files;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 
 @Component
 public class MaxMindGeoLocation implements GeoLocation {
@@ -90,7 +91,7 @@ public class MaxMindGeoLocation implements GeoLocation {
         }
     }
 
-    @Scheduled(cron = "${cron.geo-location-refresh}", initialDelay = 3600 * 1000)
+    @Scheduled(fixedRate = 1L, timeUnit = TimeUnit.DAYS, initialDelay = 1L)
     public void refresh() {
         LOG.info("Starting to refresh geo-lite2 database from " + urlTemplate);
         long start = System.currentTimeMillis();
