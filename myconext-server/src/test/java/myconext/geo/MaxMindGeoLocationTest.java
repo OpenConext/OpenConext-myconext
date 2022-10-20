@@ -3,7 +3,9 @@ package myconext.geo;
 import myconext.WireMockExtension;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtil;
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.RegisterExtension;
 import org.springframework.core.io.ClassPathResource;
 
@@ -29,7 +31,7 @@ class MaxMindGeoLocationTest {
                         .withStatus(200)
                         .withBody(body)));
         String s = System.getProperty("java.io.tmpdir");
-        geoLocation = new MaxMindGeoLocation("lb53kEx9iVCuBcnV", "http://localhost:8382/maxmind", s + "/geo");
+        geoLocation = new MaxMindGeoLocation("nope", "http://localhost:8382/maxmind", s + "/geo");
     }
 
     @AfterEach
@@ -42,10 +44,21 @@ class MaxMindGeoLocationTest {
     void findLocation() {
         String actual = geoLocation.findLocation("145.90.230.172").get();
         assertEquals("Netherlands, Brielle", actual);
+
+        //Test that when there is a valid database that no refresh is done
+        stubFor(get(urlPathMatching("/maxmind"))
+                .willReturn(aResponse()
+                        .withStatus(500)));
+        String s = System.getProperty("java.io.tmpdir");
+        geoLocation = new MaxMindGeoLocation("nope", "http://localhost:8382/maxmind", s + "/geo");
+
+        actual = geoLocation.findLocation("145.90.230.172").get();
+        assertEquals("Netherlands, Brielle", actual);
     }
 
     @Test
     void findLocationReservedRange() {
         assertTrue(geoLocation.findLocation("127.0.0.1").isEmpty());
     }
+
 }
