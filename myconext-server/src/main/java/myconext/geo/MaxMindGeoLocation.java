@@ -55,7 +55,7 @@ public class MaxMindGeoLocation implements GeoLocation {
         this.databaseReader = new DatabaseReader.Builder(inputStream).withCache(new CHMCache()).build();
     }
 
-    private File latestDownloadBinary(boolean refresh) {
+    private File latestDownloadBinary(boolean refresh) throws IOException {
         long start = System.currentTimeMillis();
         LOG.info("Locating latest download binary geo2lite database");
 
@@ -73,7 +73,11 @@ public class MaxMindGeoLocation implements GeoLocation {
         LOG.info(String.format("Located latest download binary geo2lite database %s in %s ms",
                 databaseBinary[0].getAbsolutePath(),
                 System.currentTimeMillis() - start));
-
+        if (modificationOrder.size() > 3) {
+            File first = modificationOrder.first();
+            LOG.info("Deleting old downloaded binary geo2lite database: " + first.getAbsolutePath());
+            FileUtils.deleteDirectory(first);
+        }
         return databaseBinary[0];
     }
 
