@@ -70,7 +70,7 @@ public class MaxMindGeoLocation implements GeoLocation {
         if (checkFilePresence(refresh, databaseBinary)) {
             return this.latestDownloadBinary(false);
         }
-        LOG.info(String.format("Located latest download binary geo2lite database %s in %s",
+        LOG.info(String.format("Located latest download binary geo2lite database %s in %s ms",
                 databaseBinary[0].getAbsolutePath(),
                 System.currentTimeMillis() - start));
 
