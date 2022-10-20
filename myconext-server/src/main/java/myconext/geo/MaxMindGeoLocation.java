@@ -34,6 +34,7 @@ public class MaxMindGeoLocation implements GeoLocation {
     private final String licenseKey;
     private final String downloadDirectory;
     private final String urlTemplate;
+    private final String urlTemplateForLogging;
 
     // Can't be final as we need to swap references to read new databases
     private DatabaseReader databaseReader;
@@ -43,6 +44,7 @@ public class MaxMindGeoLocation implements GeoLocation {
                               @Value("${geo_location.external_url}") String externalUrl,
                               @Value("${geo_location.download_directory}") String downloadDirectory) {
         this.licenseKey = licenseKey;
+        this.urlTemplateForLogging = externalUrl;
         this.urlTemplate = externalUrl.replaceFirst("\\{license_key\\}", licenseKey);
         this.downloadDirectory = downloadDirectory;
         File downloadDir = new File(downloadDirectory);
@@ -54,6 +56,9 @@ public class MaxMindGeoLocation implements GeoLocation {
     }
 
     private File latestDownloadBinary(boolean refresh) {
+        long start = System.currentTimeMillis();
+        LOG.info("Locating latest download binary geo2lite database");
+
         SortedSet<File> modificationOrder = new TreeSet<>((a, b) -> (int) (a.lastModified() - b.lastModified()));
         File[] files = new File(this.downloadDirectory).listFiles((dir, name) -> dir.isDirectory() && name.startsWith(GEO_LITE_2_CITY));
         if (checkFilePresence(refresh, files)) {
@@ -65,6 +70,10 @@ public class MaxMindGeoLocation implements GeoLocation {
         if (checkFilePresence(refresh, databaseBinary)) {
             return this.latestDownloadBinary(false);
         }
+        LOG.info(String.format("Located latest download binary geo2lite database %s in %s",
+                databaseBinary[0].getAbsolutePath(),
+                System.currentTimeMillis() - start));
+
         return databaseBinary[0];
     }
 
@@ -93,7 +102,7 @@ public class MaxMindGeoLocation implements GeoLocation {
 
     @Scheduled(fixedRate = 1L, timeUnit = TimeUnit.DAYS, initialDelay = 1L)
     public void refresh() {
-        LOG.info("Starting to refresh geo-lite2 database from " + urlTemplate);
+        LOG.info("Starting to refresh geo-lite2 database from " + this.urlTemplateForLogging);
         long start = System.currentTimeMillis();
         try {
             String today = new SimpleDateFormat("yyyyMMdd").format(new Date());
@@ -126,7 +135,9 @@ public class MaxMindGeoLocation implements GeoLocation {
                 throw new IllegalArgumentException("Could not find mmdb file in " + file);
             }
             this.databaseReader = new DatabaseReader.Builder(binaryData).withCache(new CHMCache()).build();
-            LOG.info(String.format("Finished refreshing geo-lite2 database from %s in %s ms", urlTemplate, System.currentTimeMillis() - start));
+            LOG.info(String.format("Finished refreshing geo-lite2 database from %s in %s ms",
+                    this.urlTemplateForLogging,
+                    System.currentTimeMillis() - start));
         } catch (Exception e) {
             //we don't want to stop the scheduling
             LOG.error("Error in refreshing the max-mind database", e);
