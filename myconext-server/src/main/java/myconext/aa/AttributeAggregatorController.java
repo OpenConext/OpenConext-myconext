@@ -72,7 +72,13 @@ public class AttributeAggregatorController {
             user.getLinkedAccounts().stream()
                     .filter(linkedAccount -> linkedAccount.getInstitutionIdentifier().equals(spInstitutionGuid))
                     .findFirst()
-                    .ifPresent(linkedAccount -> result.put("eduperson_principal_name", linkedAccount.getEduPersonPrincipalName()));
+                    .ifPresent(linkedAccount -> {
+                        result.put("eduperson_principal_name", linkedAccount.getEduPersonPrincipalName());
+                        if (StringUtils.hasText(linkedAccount.getSubjectId())) {
+                            result.put("subject_id", linkedAccount.getSubjectId());
+                        }
+
+                    });
         }
 
         LOG.debug(String.format("Attribute manipulation response %s", result));

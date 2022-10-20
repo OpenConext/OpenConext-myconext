@@ -29,10 +29,10 @@ public class AttributeAggregatorControllerTest extends AbstractIntegrationTest {
     @Value("${attribute_manipulation.password}")
     private String attributeManipulationPassword;
 
-    private String eppn = "1234567890@surfguest.nl";
+    private final String eppn = "1234567890@surfguest.nl";
 
-    private String uid = "1234567890";
-    private String eduid = "fc75dcc7-6def-4054-b8ba-3c3cc504dd4b";
+    private final String uid = "1234567890";
+    private final String eduid = "fc75dcc7-6def-4054-b8ba-3c3cc504dd4b";
 
     @Test
     public void aggregate() {
@@ -92,6 +92,7 @@ public class AttributeAggregatorControllerTest extends AbstractIntegrationTest {
 
         Map<String, Object> res = doManipulate(spEntityId, value, uid, linkedAccount.getInstitutionIdentifier());
         assertEquals(linkedAccount.getEduPersonPrincipalName(), res.get("eduperson_principal_name"));
+        assertEquals(linkedAccount.getSubjectId(), res.get("subject_id"));
     }
 
     @Test

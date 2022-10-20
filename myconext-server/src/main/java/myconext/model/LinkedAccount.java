@@ -22,6 +22,7 @@ public class LinkedAccount implements Serializable {
     private String schacHomeOrganization;
     @Indexed
     private String eduPersonPrincipalName;
+    private String subjectId;
     private String givenName;
     private String familyName;
     private List<String> eduPersonAffiliations = new ArrayList<>();
@@ -30,9 +31,10 @@ public class LinkedAccount implements Serializable {
 
     @Transient
     @JsonIgnore
-    public boolean updateExpiresIn(String institutionIdentifier, String eppn, String givenName, String familyName, List<String> eduPersonAffiliations, Date expiresAt) {
+    public boolean updateExpiresIn(String institutionIdentifier, String eppn, String subjectId, String givenName, String familyName, List<String> eduPersonAffiliations, Date expiresAt) {
         this.institutionIdentifier = institutionIdentifier;
         this.eduPersonPrincipalName = eppn;
+        this.subjectId = subjectId;
         this.givenName = givenName;
         this.familyName = familyName;
         this.eduPersonAffiliations = eduPersonAffiliations;

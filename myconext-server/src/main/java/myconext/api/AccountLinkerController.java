@@ -260,6 +260,7 @@ public class AccountLinkerController {
         body = restTemplate.exchange(oidcBaseUrl + "/oidc/userinfo", HttpMethod.POST, request, parameterizedTypeReference).getBody();
 
         String eppn = (String) body.get("eduperson_principal_name");
+        String subjectId = (String) body.get("subject_id");
         String surfCrmId = (String) body.get("surf-crm-id");
         String schacHomeOrganization = (String) body.get("schac_home_organization");
 
@@ -278,7 +279,7 @@ public class AccountLinkerController {
                     .filter(linkedAccount -> linkedAccount.getSchacHomeOrganization().equals(schacHomeOrganization))
                     .findFirst();
             if (optionalLinkedAccount.isPresent()) {
-                optionalLinkedAccount.get().updateExpiresIn(institutionIdentifier, eppn, givenName, familyName, affiliations, expiresAt);
+                optionalLinkedAccount.get().updateExpiresIn(institutionIdentifier, eppn, subjectId, givenName, familyName, affiliations, expiresAt);
             } else {
                 //Ensure that an institution account is only be linked to 1 eduID, but only when an eppn is provided for the linked account
                 if (StringUtils.hasText(eppn)) {
@@ -291,7 +292,7 @@ public class AccountLinkerController {
                     }
                 }
                 linkedAccounts.add(
-                        new LinkedAccount(institutionIdentifier, schacHomeOrganization, eppn, givenName, familyName, affiliations,
+                        new LinkedAccount(institutionIdentifier, schacHomeOrganization, eppn, subjectId, givenName, familyName, affiliations,
                                 new Date(), expiresAt));
             }
             String action = optionalLinkedAccount.isPresent() ? "updated" : "add";
