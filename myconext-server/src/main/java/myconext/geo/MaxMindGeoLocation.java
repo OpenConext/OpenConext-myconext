@@ -61,13 +61,13 @@ public class MaxMindGeoLocation implements GeoLocation {
 
         SortedSet<File> modificationOrder = new TreeSet<>((a, b) -> (int) (a.lastModified() - b.lastModified()));
         File[] files = new File(this.downloadDirectory).listFiles((dir, name) -> dir.isDirectory() && name.startsWith(GEO_LITE_2_CITY));
-        if (checkFilePresence(refresh, files)) {
+        if (needToRefreshGeoData(refresh, files)) {
             return this.latestDownloadBinary(false);
         }
         modificationOrder.addAll(Arrays.asList(files));
         File last = modificationOrder.last();
         File[] databaseBinary = last.listFiles((dir, name) -> name.equals(GEO_LITE_2_CITY_MMDB));
-        if (checkFilePresence(refresh, databaseBinary)) {
+        if (needToRefreshGeoData(refresh, databaseBinary)) {
             return this.latestDownloadBinary(false);
         }
         LOG.info(String.format("Located latest download binary geo2lite database %s in %s ms",
@@ -81,7 +81,7 @@ public class MaxMindGeoLocation implements GeoLocation {
         return databaseBinary[0];
     }
 
-    private boolean checkFilePresence(boolean refresh, File[] files) {
+    private boolean needToRefreshGeoData(boolean refresh, File[] files) {
         if (files == null || files.length == 0) {
             if (refresh) {
                 this.refresh();
