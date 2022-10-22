@@ -54,10 +54,6 @@ class MaxMindGeoLocationTest {
 
         actual = geoLocation.findLocation("145.90.230.172").get();
         assertEquals("Netherlands, Brielle", actual);
-    }
-
-    @Test
-    void findLocationReservedRange() {
         assertTrue(geoLocation.findLocation("127.0.0.1").isEmpty());
     }
 

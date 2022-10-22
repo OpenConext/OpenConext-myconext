@@ -73,11 +73,6 @@ public class MaxMindGeoLocation implements GeoLocation {
         LOG.info(String.format("Located latest download binary geo2lite database %s in %s ms",
                 databaseBinary[0].getAbsolutePath(),
                 System.currentTimeMillis() - start));
-        if (modificationOrder.size() > 3) {
-            File first = modificationOrder.first();
-            LOG.info("Deleting old downloaded binary geo2lite database: " + first.getAbsolutePath());
-            FileUtils.deleteDirectory(first);
-        }
         return databaseBinary[0];
     }
 
@@ -139,9 +134,20 @@ public class MaxMindGeoLocation implements GeoLocation {
                 throw new IllegalArgumentException("Could not find mmdb file in " + file);
             }
             this.databaseReader = new DatabaseReader.Builder(binaryData).withCache(new CHMCache()).build();
+
             LOG.info(String.format("Finished refreshing geo-lite2 database from %s in %s ms",
                     this.urlTemplateForLogging,
                     System.currentTimeMillis() - start));
+
+            SortedSet<File> modificationOrder = new TreeSet<>((a, b) -> (int) (a.lastModified() - b.lastModified()));
+            File[] files = new File(this.downloadDirectory).listFiles((subDir, dirName) -> subDir.isDirectory() && dirName.startsWith(GEO_LITE_2_CITY));
+            modificationOrder.addAll(Arrays.asList(files));
+            for (File next : modificationOrder) {
+                if (!next.getName().equals(dir.getName())) {
+                    LOG.info("Deleting old downloaded binary geo2lite database: " + next.getAbsolutePath());
+                    FileUtils.deleteDirectory(next);
+                }
+            }
         } catch (Exception e) {
             //we don't want to stop the scheduling
             LOG.error("Error in refreshing the max-mind database", e);
