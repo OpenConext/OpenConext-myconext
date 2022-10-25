@@ -117,7 +117,14 @@ public class ResourceCleanerTest extends AbstractIntegrationTest {
     }
 
     private ResourceCleaner getResourceCleaner(boolean cronJobResponsible) {
-        return new ResourceCleaner(authenticationRequestRepository, userRepository, passwordResetHashRepository, changeEmailHashRepository, emailsSendRepository, cronJobResponsible);
+        return new ResourceCleaner(
+                authenticationRequestRepository,
+                userRepository,
+                passwordResetHashRepository,
+                changeEmailHashRepository,
+                emailsSendRepository,
+                requestInstitutionEduIDRepository,
+                cronJobResponsible);
     }
 
 }

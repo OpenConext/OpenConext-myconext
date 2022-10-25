@@ -399,6 +399,13 @@ I18n.translations.nl = {
         minutes: "minuten",
         minute: "minuut"
     },
+    createFromInstitution: {
+        title: "Maak een eduID van je instelling",
+        header: "Je staat op het punt een eduID-account aan te maken dat wordt gekoppeld aan je instellingsaccount.",
+        alreadyHaveAnEduID: "Heb je al een eduID-account? <a href=\"{{location}}\">Login!</a>",
+        info: "Als je verder gaat, wordt je gevraagd om in te loggen bij de instelling die je aan je eduID wilt koppelen. Na een succesvolle login kom je hier terug." ,
+        startFlow: "Start registratie"
+    }
 
 
 };

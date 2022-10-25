@@ -22,12 +22,12 @@ function validFetch(path, options) {
     options = options || {};
     options.credentials = "same-origin";
     options.redirect = "manual";
-    options. headers = {
+    options.headers = {
         Accept: "application/json",
         "Content-Type": "application/json",
         "Accept-Language": I18n.locale,
         "X-CSRF-TOKEN": csrfToken
-    }   ;
+    };
     return fetch(path, options).then(res => validateResponse(res));
 }
 
@@ -136,7 +136,7 @@ export function testWebAutnUrl() {
 
 //Tiqr
 export function validatePhoneCode(phoneVerification) {
-    return postPutJson(`/tiqr/sp/verify-phone-code`,{phoneVerification}, "POST")
+    return postPutJson(`/tiqr/sp/verify-phone-code`, {phoneVerification}, "POST")
 }
 
 export function startEnrollment() {
@@ -156,16 +156,36 @@ export function generateBackupCode() {
 }
 
 export function textPhoneNumber(phoneNumber) {
-    return postPutJson(`/tiqr/sp/send-phone-code`,{phoneNumber}, "POST")
+    return postPutJson(`/tiqr/sp/send-phone-code`, {phoneNumber}, "POST")
 }
 
 export function deactivateApp(verificationCode) {
-    return postPutJson(`/tiqr/sp/deactivate-app`,{verificationCode}, "POST")
+    return postPutJson(`/tiqr/sp/deactivate-app`, {verificationCode}, "POST")
 }
 
 export function sendDeactivationPhoneCode() {
-    return fetchJson("tiqr/sp/send-deactivation-phone-code")
+    return fetchJson("/tiqr/sp/send-deactivation-phone-code")
 }
+
+// Create from institution
+export function startCreateFromInstitutionFlow() {
+    return fetchJson("/myconext/api/sp/oidc/create-from-institution")
+}
+
+export function createInstitutionEduID(email, givenName, familyName, hash) {
+    const body = {email, givenName, familyName, hash}
+    return postPutJson("/myconext/api/sp/create-from-institution/email", body, "POST");
+}
+
+export function institutionalEmailDomains() {
+    return fetchJson("/myconext/api/sp/create-from-institution/domain/institutional")
+}
+
+export function allowedEmailDomains() {
+    return fetchJson("/myconext/api/sp/create-from-institution/domain/allowed")
+}
+
+
 // change recovery method endpoints
 export function startTiqrAuthentication() {
     return postPutJson("/tiqr/sp/start-authentication", {}, "POST");
@@ -176,7 +196,7 @@ export function pollAuthentication(sessionKey) {
 }
 
 export function manualResponse(sessionKey, response) {
-    return postPutJson("/tiqr/sp/manual-response",{sessionKey, response}, "POST")
+    return postPutJson("/tiqr/sp/manual-response", {sessionKey, response}, "POST")
 }
 
 export function regenerateBackupCode() {
@@ -184,10 +204,10 @@ export function regenerateBackupCode() {
 }
 
 export function reTextPhoneNumber(phoneNumber) {
-    return postPutJson(`/tiqr/sp/re-send-phone-code`,{phoneNumber}, "POST")
+    return postPutJson(`/tiqr/sp/re-send-phone-code`, {phoneNumber}, "POST")
 }
 
 export function reValidatePhoneCode(phoneVerification) {
-    return postPutJson(`/tiqr/sp/re-verify-phone-code`,{phoneVerification}, "POST")
+    return postPutJson(`/tiqr/sp/re-verify-phone-code`, {phoneVerification}, "POST")
 }
 

@@ -23,13 +23,17 @@ export const config = writable({
     loginUrl: "",
     baseDomain: "",
     myConextUrlGuestIdp: "",
+    spBaseUrl: "",
+    createEduIDInstitutionLanding: false,
     eduIDWebAuthnUrl: "",
     magicLinkUrl: "",
     domain: "",
     idpBaseUrl: "",
     featureWebAuthn: false,
     featureOidcTokenAPI: false,
-    featureConnections: false
+    featureConnections: false,
+    featureAllowList: false,
+    featureWarningEducationalEmailDomain: false
 });
 
 export const redirectPath = writable("");

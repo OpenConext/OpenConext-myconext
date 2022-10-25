@@ -1,21 +1,25 @@
 package myconext.api;
 
 
+import myconext.cron.DisposableEmailProviders;
 import myconext.exceptions.ForbiddenException;
 import myconext.exceptions.UserNotFoundException;
-import myconext.model.LinkedAccount;
-import myconext.model.SamlAuthenticationRequest;
-import myconext.model.StepUpStatus;
-import myconext.model.User;
+import myconext.mail.MailBox;
+import myconext.manage.ServiceProviderResolver;
+import myconext.model.*;
 import myconext.repository.AuthenticationRequestRepository;
+import myconext.repository.RequestInstitutionEduIDRepository;
 import myconext.repository.UserRepository;
 import myconext.security.ACR;
+import myconext.security.EmailGuessingPrevention;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.*;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.LinkedMultiValueMap;
@@ -26,17 +30,23 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponents;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
 import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static myconext.crypto.HashGenerator.hash;
 import static myconext.log.MDCContext.logWithContext;
+import static myconext.security.CookieResolver.cookieByName;
 import static myconext.security.GuestIdpAuthenticationRequestFilter.hasRequiredStudentAffiliation;
 import static myconext.security.GuestIdpAuthenticationRequestFilter.hasValidatedName;
 
@@ -53,9 +63,12 @@ public class AccountLinkerController {
     private final String clientSecret;
     private final String idpFlowRedirectUri;
     private final String spFlowRedirectUri;
+    private final String spCreateFromInstitutionRedirectUri;
     private final RestTemplate restTemplate = new RestTemplate();
     private final AuthenticationRequestRepository authenticationRequestRepository;
+    private final RequestInstitutionEduIDRepository requestInstitutionEduIDRepository;
     private final UserRepository userRepository;
+    private final MailBox mailBox;
     private final String magicLinkUrl;
     private final String idpErrorRedirectUrl;
     private final String spRedirectUrl;
@@ -64,12 +77,23 @@ public class AccountLinkerController {
     private final String idpExternalValidationEntityId;
     private final String myConextSpEntityId;
     private final boolean useExternalValidationFeature;
+    private final ServiceProviderResolver serviceProviderResolver;
+    private final String mijnEduIDEntityId;
+    private final String schacHomeOrganization;
 
     private final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+    private final EmailGuessingPrevention emailGuessingPreventor;
+    private final DisposableEmailProviders disposableEmailProviders;
 
     public AccountLinkerController(
             AuthenticationRequestRepository authenticationRequestRepository,
             UserRepository userRepository,
+            RequestInstitutionEduIDRepository requestInstitutionEduIDRepository,
+            MailBox mailBox,
+            ServiceProviderResolver serviceProviderResolver,
+            DisposableEmailProviders disposableEmailProviders,
+            @Value("${mijn_eduid_entity_id}") String mijnEduIDEntityId,
+            @Value("${schac_home_organization}") String schacHomeOrganization,
             @Value("${email.magic-link-url}") String magicLinkUrl,
             @Value("${idp_redirect_url}") String idpErrorRedirectUrl,
             @Value("${sp_redirect_url}") String spRedirectUrl,
@@ -77,14 +101,22 @@ public class AccountLinkerController {
             @Value("${oidc.secret}") String clientSecret,
             @Value("${oidc.idp-flow-redirect-url}") String idpFlowRedirectUri,
             @Value("${oidc.sp-flow-redirect-url}") String spFlowRedirectUri,
+            @Value("${oidc.sp-create-from-institution-redirect-url}") String spCreateFromInstitutionRedirectUri,
             @Value("${oidc.base-url}") String oidcBaseUrl,
             @Value("${linked_accounts.removal-duration-days-non-validated}") long removalNonValidatedDurationDays,
             @Value("${linked_accounts.removal-duration-days-validated}") long removalValidatedDurationDays,
             @Value("${account_linking.idp_external_validation_entity_id}") String idpExternalValidationEntityId,
             @Value("${account_linking.myconext_sp_entity_id}") String myConextSpEntityId,
-            @Value("${feature.use_external_validation}") boolean useExternalValidationFeature) {
+            @Value("${feature.use_external_validation}") boolean useExternalValidationFeature,
+            @Value("${email_guessing_sleep_millis}") int emailGuessingSleepMillis) {
         this.authenticationRequestRepository = authenticationRequestRepository;
         this.userRepository = userRepository;
+        this.requestInstitutionEduIDRepository = requestInstitutionEduIDRepository;
+        this.mailBox = mailBox;
+        this.serviceProviderResolver = serviceProviderResolver;
+        this.disposableEmailProviders = disposableEmailProviders;
+        this.schacHomeOrganization = schacHomeOrganization;
+        this.mijnEduIDEntityId = mijnEduIDEntityId;
         this.magicLinkUrl = magicLinkUrl;
         this.idpErrorRedirectUrl = idpErrorRedirectUrl;
         this.spRedirectUrl = spRedirectUrl;
@@ -92,12 +124,14 @@ public class AccountLinkerController {
         this.clientSecret = clientSecret;
         this.idpFlowRedirectUri = idpFlowRedirectUri;
         this.spFlowRedirectUri = spFlowRedirectUri;
+        this.spCreateFromInstitutionRedirectUri = spCreateFromInstitutionRedirectUri;
         this.oidcBaseUrl = oidcBaseUrl;
         this.removalNonValidatedDurationDays = removalNonValidatedDurationDays;
         this.removalValidatedDurationDays = removalValidatedDurationDays;
         this.idpExternalValidationEntityId = idpExternalValidationEntityId;
         this.myConextSpEntityId = myConextSpEntityId;
         this.useExternalValidationFeature = useExternalValidationFeature;
+        this.emailGuessingPreventor = new EmailGuessingPrevention(emailGuessingSleepMillis);
     }
 
     @GetMapping("/idp/oidc/account/{id}")
@@ -124,6 +158,92 @@ public class AccountLinkerController {
         UriComponents uriComponents = doStartLinkAccountFlow(state, idpFlowRedirectUri, forceAuth,
                 samlAuthenticationRequest.isUseExternalValidation(), samlAuthenticationRequest.getRequesterEntityId());
         return ResponseEntity.status(HttpStatus.FOUND).location(uriComponents.toUri()).build();
+    }
+
+    //Step 1 in the create-from-institution flow - will be called by the accessible CreateFromInstitution.svelte pag
+    @GetMapping("/sp/oidc/create-from-institution")
+    public ResponseEntity<Map<String, String>> createFromInstitution(HttpServletRequest request) throws UnsupportedEncodingException {
+        LOG.debug("Start create from institution");
+        String state = request.getSession(true).getId();
+        UriComponents uriComponents = doStartLinkAccountFlow(state, spCreateFromInstitutionRedirectUri, false, false, myConextSpEntityId);
+        return ResponseEntity.ok(Collections.singletonMap("url", uriComponents.toUriString()));
+    }
+
+    //Step 2 in the create-from-institution flow - will be called by the OpenIDConnect in the authorization flow
+    @GetMapping("/sp/oidc/create-from-institution-redirect")
+    public ResponseEntity spCreateFromInstitutionRedirect(HttpServletRequest request, @RequestParam("code") String code, @RequestParam("state") String state) throws UnsupportedEncodingException {
+        String storedState = request.getSession(true).getId();
+
+        if (MessageDigest.isEqual(
+                storedState.getBytes(StandardCharsets.UTF_8),
+                URLDecoder.decode(state, StandardCharsets.UTF_8).getBytes(StandardCharsets.UTF_8))) {
+            throw new ForbiddenException("Non matching user");
+        }
+        Map<String, Object> userInfo = requestUserInfo(code, this.spCreateFromInstitutionRedirectUri);
+        String eppn = (String) userInfo.get("eduperson_principal_name");
+        //Check if the eppn is taken, before proceeding
+        String eppnAlreadyLinkedRequiredUri = this.spRedirectUrl + "/eppn-already-linked?fromInstitution=true";
+        Optional<ResponseEntity<Object>> eppnAlreadyLinkedOptional = checkEppnAlreadyLinked(eppnAlreadyLinkedRequiredUri, eppn);
+        if (eppnAlreadyLinkedOptional.isPresent()) {
+            return eppnAlreadyLinkedOptional.get();
+        }
+        //We want this also to work when mail is opened in different browser
+        RequestInstitutionEduID requestInstitutionEduID = new RequestInstitutionEduID(hash(), userInfo);
+        requestInstitutionEduIDRepository.save(requestInstitutionEduID);
+        //Now the user needs to enter email, firstName and lastMail to finish up the registration
+        String returnUri = this.spRedirectUrl + "/link-from-institution/" + requestInstitutionEduID.getHash();
+        return ResponseEntity.status(HttpStatus.FOUND).location(URI.create(returnUri)).build();
+    }
+
+    @PostMapping("/sp/create-from-institution/email")
+    public void linkFromInstitution(@Valid @RequestBody CreateInstitutionEduID createInstitutionEduID) {
+        RequestInstitutionEduID requestInstitutionEduID = requestInstitutionEduIDRepository.findByHash(createInstitutionEduID.getHash())
+                .orElseThrow(() -> new ForbiddenException("Wrong hash"));
+        String email = createInstitutionEduID.getEmail();
+        this.disposableEmailProviders.verifyDisposableEmailProviders(email);
+        this.emailGuessingPreventor.potentialUserEmailGuess();
+
+        userRepository.findUserByEmail(email)
+                .orElseThrow(() -> new UserNotFoundException(String.format("User with email %s not found", email)));
+        requestInstitutionEduID.setCreateInstitutionEduID(createInstitutionEduID);
+        requestInstitutionEduIDRepository.save(requestInstitutionEduID);
+
+        String uri = spRedirectUrl + "/sp/create-from-institution/finish";
+        mailBox.sendAccountVerificationCreateFromInstitution(new User(createInstitutionEduID), requestInstitutionEduID.getHash(), uri);
+    }
+
+    @GetMapping("/sp/create-from-institution/finish")
+    public ResponseEntity createFromInstitutionFinish(HttpServletRequest request, @RequestParam("hash") String hash) throws UnsupportedEncodingException {
+        RequestInstitutionEduID requestInstitutionEduID = requestInstitutionEduIDRepository.findByHash(hash)
+                .orElseThrow(() -> new ForbiddenException("Wrong hash"));
+        CreateInstitutionEduID createInstitutionEduID = requestInstitutionEduID.getCreateInstitutionEduID();
+        if (createInstitutionEduID == null) {
+            throw new ForbiddenException("Wrong hash");
+        }
+        //Now we can create the User and populate the SecurityContext
+        String preferredLanguage = cookieByName(request, "lang").map(Cookie::getValue).orElse("en");
+        User user = new User(
+                UUID.randomUUID().toString(),
+                createInstitutionEduID.getEmail(),
+                createInstitutionEduID.getGivenName(),
+                createInstitutionEduID.getFamilyName(),
+                schacHomeOrganization,
+                preferredLanguage,
+                mijnEduIDEntityId,
+                serviceProviderResolver);
+        ResponseEntity<Object> responseEntity = saveOrUpdateLinkedAccountToUser(
+                user,
+                this.spRedirectUrl + "/personal",
+                false,
+                false,
+                null,
+                null,
+                null,
+                requestInstitutionEduID.getUserInfo());
+        UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(user, null,
+                user.getAuthorities());
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+        return responseEntity;
     }
 
     @GetMapping("/sp/oidc/link")
@@ -230,35 +350,28 @@ public class AccountLinkerController {
     }
 
     @SuppressWarnings("unchecked")
-    private ResponseEntity doRedirect(@RequestParam("code") String code, User user, String oidcRedirectUri,
-                                      String clientRedirectUri, boolean validateNames, boolean studentAffiliationRequired,
-                                      String idpStudentAffiliationRequiredUri, String idpValidNamesRequiredUri,
+    private ResponseEntity doRedirect(@RequestParam("code") String code,
+                                      User user,
+                                      String oidcRedirectUri,
+                                      String clientRedirectUri,
+                                      boolean validateNames,
+                                      boolean studentAffiliationRequired,
+                                      String idpStudentAffiliationRequiredUri,
+                                      String idpValidNamesRequiredUri,
                                       String eppnAlreadyLinkedRequiredUri) throws UnsupportedEncodingException {
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
-        headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
+        Map<String, Object> body = requestUserInfo(code, oidcRedirectUri);
 
-        MultiValueMap<String, String> map = new LinkedMultiValueMap<>();
-        map.add("client_id", clientId);
-        map.add("client_secret", clientSecret);
-        map.add("code", code);
-        map.add("grant_type", "authorization_code");
-        map.add("redirect_uri", oidcRedirectUri);
-        map.add("scope", "openid");
+        return saveOrUpdateLinkedAccountToUser(user, clientRedirectUri, validateNames, studentAffiliationRequired, idpStudentAffiliationRequiredUri, idpValidNamesRequiredUri, eppnAlreadyLinkedRequiredUri, body);
+    }
 
-        HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<>(map, headers);
-
-        ParameterizedTypeReference<Map<String, Object>> parameterizedTypeReference = new ParameterizedTypeReference<Map<String, Object>>() {
-        };
-        Map<String, Object> body = restTemplate.exchange(oidcBaseUrl + "/oidc/token", HttpMethod.POST, request, parameterizedTypeReference).getBody();
-
-        map = new LinkedMultiValueMap<>();
-        map.add("access_token", (String) body.get("access_token"));
-
-        request = new HttpEntity<>(map, headers);
-
-        body = restTemplate.exchange(oidcBaseUrl + "/oidc/userinfo", HttpMethod.POST, request, parameterizedTypeReference).getBody();
-
+    private ResponseEntity<Object> saveOrUpdateLinkedAccountToUser(User user,
+                                                                   String clientRedirectUri,
+                                                                   boolean validateNames,
+                                                                   boolean studentAffiliationRequired,
+                                                                   String idpStudentAffiliationRequiredUri,
+                                                                   String idpValidNamesRequiredUri,
+                                                                   String eppnAlreadyLinkedRequiredUri,
+                                                                   Map<String, Object> body) throws UnsupportedEncodingException {
         String eppn = (String) body.get("eduperson_principal_name");
         String subjectId = (String) body.get("subject_id");
         String surfCrmId = (String) body.get("surf-crm-id");
@@ -281,15 +394,9 @@ public class AccountLinkerController {
             if (optionalLinkedAccount.isPresent()) {
                 optionalLinkedAccount.get().updateExpiresIn(institutionIdentifier, eppn, subjectId, givenName, familyName, affiliations, expiresAt);
             } else {
-                //Ensure that an institution account is only be linked to 1 eduID, but only when an eppn is provided for the linked account
-                if (StringUtils.hasText(eppn)) {
-                    List<User> optionalUsers = userRepository.findByLinkedAccounts_EduPersonPrincipalName(eppn);
-                    if (optionalUsers.size() > 0) {
-                        String charSet = Charset.defaultCharset().name();
-                        eppnAlreadyLinkedRequiredUri += eppnAlreadyLinkedRequiredUri.contains("?") ? "&" : "?";
-                        eppnAlreadyLinkedRequiredUri += "email=" + URLEncoder.encode(optionalUsers.get(0).getEmail(), charSet);
-                        return ResponseEntity.status(HttpStatus.FOUND).location(URI.create(eppnAlreadyLinkedRequiredUri)).build();
-                    }
+                Optional<ResponseEntity<Object>> eppnAlreadyLinkedOptional = checkEppnAlreadyLinked(eppnAlreadyLinkedRequiredUri, eppn);
+                if (eppnAlreadyLinkedOptional.isPresent()) {
+                    return eppnAlreadyLinkedOptional.get();
                 }
                 linkedAccounts.add(
                         new LinkedAccount(institutionIdentifier, schacHomeOrganization, eppn, subjectId, givenName, familyName, affiliations,
@@ -319,6 +426,48 @@ public class AccountLinkerController {
         }
 
         return ResponseEntity.status(HttpStatus.FOUND).location(URI.create(clientRedirectUri)).build();
+    }
+
+    private Optional<ResponseEntity<Object>> checkEppnAlreadyLinked(String eppnAlreadyLinkedRequiredUri, String eppn) throws UnsupportedEncodingException {
+        //Ensure that an institution account is only be linked to 1 eduID, but only when an eppn is provided for the linked account
+        if (StringUtils.hasText(eppn)) {
+            List<User> optionalUsers = userRepository.findByLinkedAccounts_EduPersonPrincipalName(eppn);
+            if (optionalUsers.size() > 0) {
+                String charSet = Charset.defaultCharset().name();
+                eppnAlreadyLinkedRequiredUri += eppnAlreadyLinkedRequiredUri.contains("?") ? "&" : "?";
+                eppnAlreadyLinkedRequiredUri += "email=" + URLEncoder.encode(optionalUsers.get(0).getEmail(), charSet);
+                return Optional.of(ResponseEntity.status(HttpStatus.FOUND).location(URI.create(eppnAlreadyLinkedRequiredUri)).build());
+            }
+        }
+        return Optional.empty();
+    }
+
+    private Map<String, Object> requestUserInfo(String code, String oidcRedirectUri) {
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+        headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
+
+        MultiValueMap<String, String> map = new LinkedMultiValueMap<>();
+        map.add("client_id", clientId);
+        map.add("client_secret", clientSecret);
+        map.add("code", code);
+        map.add("grant_type", "authorization_code");
+        map.add("redirect_uri", oidcRedirectUri);
+        map.add("scope", "openid");
+
+        HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<>(map, headers);
+
+        ParameterizedTypeReference<Map<String, Object>> parameterizedTypeReference = new ParameterizedTypeReference<>() {
+        };
+        Map<String, Object> body = restTemplate.exchange(oidcBaseUrl + "/oidc/token", HttpMethod.POST, request, parameterizedTypeReference).getBody();
+
+        map = new LinkedMultiValueMap<>();
+        map.add("access_token", (String) body.get("access_token"));
+
+        request = new HttpEntity<>(map, headers);
+
+        body = restTemplate.exchange(oidcBaseUrl + "/oidc/userinfo", HttpMethod.POST, request, parameterizedTypeReference).getBody();
+        return body;
     }
 
     protected static List<String> parseAffiliations(Map<String, Object> idpAttributes, String schacHomeOrganization) {

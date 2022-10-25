@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.mustachejava.DefaultMustacheFactory;
 import com.github.mustachejava.MustacheFactory;
 import lombok.SneakyThrows;
+import myconext.model.CreateInstitutionEduID;
 import myconext.model.EmailsSend;
 import myconext.model.User;
 import myconext.model.UserLogin;
@@ -78,13 +79,21 @@ public class MailBox {
     }
 
     public void sendAccountVerification(User user, String hash) {
+        doSendAccountVerification(user, hash, magicLinkUrl);
+    }
+
+    public void sendAccountVerificationCreateFromInstitution(User user, String hash, String linkUrl) {
+        doSendAccountVerification(user, hash, linkUrl);
+    }
+
+    private void doSendAccountVerification(User user, String hash, String linkUrl) {
         String title = this.getTitle("account_verification", user);
         Map<String, Object> variables = variables(user, title);
         variables.put("hash", hash);
-        variables.put("magicLinkUrl", magicLinkUrl);
+        variables.put("magicLinkUrl", linkUrl);
         sendMail("account_verification", title, variables, preferredLanguage(user), user.getEmail(), true);
-    }
 
+    }
     public void sendAccountConfirmation(User user) {
         String title = this.getTitle("account_confirmation", user);
         Map<String, Object> variables = variables(user, title);

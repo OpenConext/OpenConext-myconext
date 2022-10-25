@@ -130,12 +130,12 @@ public class UserController implements ServiceProviderHolder {
         this.emailGuessingPreventor = new EmailGuessingPrevention(emailGuessingSleepMillis);
     }
 
-    @GetMapping("/idp/email/domain/institutional")
+    @GetMapping({"/idp/email/domain/institutional", "/sp/create-from-institution/domain/institutional"})
     public Set<String> institutionalDomains() {
         return this.idPMetaDataResolver.getDomainNames();
     }
 
-    @GetMapping("/idp/email/domain/allowed")
+    @GetMapping({"/idp/email/domain/allowed", "/sp/create-from-institution/domain/allowed"})
     public Set<String> allowedDomains() {
         return this.emailDomainGuard.getAllowedDomains();
     }

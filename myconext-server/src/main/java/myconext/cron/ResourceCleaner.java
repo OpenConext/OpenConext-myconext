@@ -26,6 +26,7 @@ public class ResourceCleaner {
     private final ChangeEmailHashRepository changeEmailHashRepository;
     private final boolean cronJobResponsible;
     private final EmailsSendRepository emailsSendRepository;
+    private final RequestInstitutionEduIDRepository requestInstitutionEduIDRepository;
 
     @Autowired
     public ResourceCleaner(AuthenticationRequestRepository authenticationRequestRepository,
@@ -33,12 +34,14 @@ public class ResourceCleaner {
                            PasswordResetHashRepository passwordResetHashRepository,
                            ChangeEmailHashRepository changeEmailHashRepository,
                            EmailsSendRepository emailsSendRepository,
+                           RequestInstitutionEduIDRepository requestInstitutionEduIDRepository,
                            @Value("${cron.node-cron-job-responsible}") boolean cronJobResponsible) {
         this.authenticationRequestRepository = authenticationRequestRepository;
         this.userRepository = userRepository;
         this.passwordResetHashRepository = passwordResetHashRepository;
         this.changeEmailHashRepository = changeEmailHashRepository;
         this.emailsSendRepository = emailsSendRepository;
+        this.requestInstitutionEduIDRepository = requestInstitutionEduIDRepository;
         this.cronJobResponsible = cronJobResponsible;
     }
 
@@ -51,6 +54,7 @@ public class ResourceCleaner {
         info(SamlAuthenticationRequest.class, authenticationRequestRepository.deleteByExpiresInBeforeAndRememberMe(now, false));
         info(PasswordResetHash.class, passwordResetHashRepository.deleteByExpiresInBefore(now));
         info(ChangeEmailHash.class, changeEmailHashRepository.deleteByExpiresInBefore(now));
+        info(RequestInstitutionEduID.class, requestInstitutionEduIDRepository.deleteByExpiresInBefore(now));
 
         Date seconds16Ago = Date.from(now.toInstant().minus(16, ChronoUnit.SECONDS));
         info(EmailsSend.class, emailsSendRepository.deleteBySendAtBefore(seconds16Ago));

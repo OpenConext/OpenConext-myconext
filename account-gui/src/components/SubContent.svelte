@@ -14,7 +14,7 @@
 
     let showModal = false;
 
-    onMount(()=>{
+    onMount(() => {
         const urlSearchParams = new URLSearchParams(window.location.search);
         isMfaParameter = urlSearchParams.has("mfa");
     })
@@ -79,7 +79,9 @@
 <div class="sub-content">
     <div class="sub-content-inner">
         <span class="question">{@html question}
-            <span class="pre-link">{preLink}</span>
+            {#if preLink}
+                <span class="pre-link">{preLink}</span>
+            {/if}
             {#if isMfa && isMfaParameter}
                 <a href={route} on:click|preventDefault|stopPropagation={() => mfaWarning(true)}>{linkText}</a>
             {:else if route}

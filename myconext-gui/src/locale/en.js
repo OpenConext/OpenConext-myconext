@@ -398,4 +398,11 @@ I18n.translations.en = {
         minutes: "minutes",
         minute: "minute"
     },
+    createFromInstitution: {
+        title: "Create an eduID from your institution",
+        header: "You are about to create an eduID account that will be linked to your institution account.",
+        alreadyHaveAnEduID: "Already have an eduID account? <a href=\"{{location}}\">Login!</a>",
+        info: "When you proceed you will be asked to login at the institution you want to link to your eduID. After a successful login you will come back here." ,
+        startFlow: "Start registration"
+    }
 };

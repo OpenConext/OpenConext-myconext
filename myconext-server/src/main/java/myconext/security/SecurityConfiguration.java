@@ -167,7 +167,13 @@ public class SecurityConfiguration {
 
         @Override
         public void configure(WebSecurity web) {
-            web.ignoring().antMatchers("/internal/**", "/myconext/api/idp/**");
+            web.ignoring().antMatchers(
+                    "/internal/**",
+                    "/myconext/api/idp/**",
+                    "/myconext/api/sp/oidc/create-from-institution-redirect",
+                    "/myconext/api/sp/oidc/create-from-institution",
+                    "/myconext/api/sp/create-from-institution/**"
+            );
         }
 
         @Override

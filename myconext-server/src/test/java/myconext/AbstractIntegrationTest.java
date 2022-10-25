@@ -111,6 +111,9 @@ public abstract class AbstractIntegrationTest {
     @Autowired
     protected EmailsSendRepository emailsSendRepository;
 
+    @Autowired
+    protected RequestInstitutionEduIDRepository requestInstitutionEduIDRepository;
+
     private final SimpleDateFormat issueFormat = new SimpleDateFormat("yyyy-MM-dd'T'H:mm:ss");
 
     protected final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();

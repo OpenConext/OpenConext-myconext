@@ -1,6 +1,6 @@
 <script>
     import Footer from "./components/Footer.svelte";
-    import {Route, Router, navigate} from "svelte-routing";
+    import {navigate, Route, Router} from "svelte-routing";
     import {onMount} from "svelte";
     import Cookies from "js-cookie";
     import Landing from "./routes/Landing.svelte";
@@ -8,9 +8,13 @@
     import ConfirmUpdateEmail from "./routes/ConfirmUpdateEmail.svelte";
     import Home from "./routes/Home.svelte";
     import Header from "./components/Header.svelte";
-    import {me, configuration, oidcTokens} from "./api";
-    import {user, config, redirectPath, duplicatedEmail} from "./stores/user";
+    import {configuration, me, oidcTokens} from "./api";
+    import {config, redirectPath, user} from "./stores/user";
     import I18n from "i18n-js";
+    import CreateFromInstitution from "./routes/CreateFromInstitution.svelte";
+    import Expired from "./routes/Expired.svelte";
+    import EppnAlreadyLinked from "../../account-gui/src/routes/EppnAlreadyLinked.svelte";
+    import LinkFromInstitution from "./routes/LinkFromInstitution.svelte";
 
     export let url = "";
     let loaded = false;
@@ -33,7 +37,7 @@
             if (["nl", "en"].indexOf(I18n.locale) < 0) {
                 I18n.locale = "en";
             }
-            if (window.location.pathname.indexOf("landing") > -1) {
+            if (window.location.pathname.indexOf("landing") > -1 || window.location.pathname.indexOf("create-from-institution") > -1) {
                 loaded = true;
             } else {
                 me()
@@ -323,6 +327,7 @@
                         <Home bookmark="reset-password"/>
                     </Route>
                     <Route path="/update-email" component={ConfirmUpdateEmail}/>
+                    <Route path="/create-from-institution" component={CreateFromInstitution}/>
                     <Route component={NotFound}/>
                 </Router>
             </div>
@@ -336,8 +341,15 @@
             <div class="content">
                 <Router url="{url}">
                     <Route path="/" component={Home}/>
+                    <Route path="/eppn-already-linked" component={EppnAlreadyLinked}/>
+                    <Route path="/expired" component={Expired}/>
+                    <Route path="/create-from-institution" component={CreateFromInstitution}/>
+                    <Route path="/link-from-institution/:hash" let:params>
+                        <LinkFromInstitution hash="{params.hash}"/>
+                    </Route>
                     <Route path="/landing" component={Landing}/>
                     <Route component={NotFound}/>
+
                 </Router>
             </div>
         </div>

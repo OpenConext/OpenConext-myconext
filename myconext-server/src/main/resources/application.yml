@@ -66,6 +66,8 @@ feature:
   use_deny_allow_list:
     allow_enabled: False
     allow_location: "classpath:/deny-allow/allowed.json"
+  # Do we show the landing page for the create-from-institution flow
+  create_eduid_institution_landing: True
 
 secure_cookie: false
 idp_entity_id: https://localhost.surf.id
@@ -103,7 +105,9 @@ oidc:
   secret: secret
   idp-flow-redirect-url: http://localhost:8081/myconext/api/idp/oidc/redirect
   sp-flow-redirect-url: http://localhost:8081/myconext/api/sp/oidc/redirect
+  sp-create-from-institution-redirect-url: http://localhost:8081/myconext/api/sp/oidc/create-from-institution-redirect
   base-url: https://connect.test2.surfconext.nl
+
 linked_accounts:
   # The duration that non validated linked accounts are valid - note that they are not removed and will be used for EPPN Pseudonymisation
   expiry-duration-days-non-validated: 180
