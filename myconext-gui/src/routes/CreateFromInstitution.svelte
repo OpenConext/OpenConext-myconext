@@ -68,7 +68,7 @@
 
 
 <div class="create-from-institution">
-    {#if $config.createEduIDInstitutionLanding}
+    {#if !$config.createEduIDInstitutionLanding}
         <Spinner />
     {:else}
         <div class="inner">

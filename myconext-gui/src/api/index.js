@@ -169,12 +169,16 @@ export function sendDeactivationPhoneCode() {
 
 // Create from institution
 export function startCreateFromInstitutionFlow() {
-    return fetchJson("/myconext/api/sp/oidc/create-from-institution")
+    return fetchJson("/myconext/api/sp/create-from-institution")
 }
 
-export function createInstitutionEduID(email, givenName, familyName, hash) {
-    const body = {email, givenName, familyName, hash}
+export function createInstitutionEduID(email, hash) {
+    const body = {email, hash}
     return postPutJson("/myconext/api/sp/create-from-institution/email", body, "POST");
+}
+
+export function fetchInstitutionEduID(hash) {
+    return fetchJson("/myconext/api/sp/create-from-institution/info?hash="+hash);
 }
 
 export function institutionalEmailDomains() {
@@ -185,6 +189,13 @@ export function allowedEmailDomains() {
     return fetchJson("/myconext/api/sp/create-from-institution/domain/allowed")
 }
 
+export function createFromInstitutionPoll(hash) {
+    return fetchJson("/myconext/api/sp/create-from-institution/poll?hash="+hash)
+}
+
+export function resendCreateFromInstitutionMail(hash) {
+    return fetchJson("/myconext/api/sp/create-from-institution/resendMail?hash="+hash)
+}
 
 // change recovery method endpoints
 export function startTiqrAuthentication() {

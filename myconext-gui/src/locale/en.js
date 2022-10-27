@@ -402,7 +402,24 @@ I18n.translations.en = {
         title: "Create an eduID from your institution",
         header: "You are about to create an eduID account that will be linked to your institution account.",
         alreadyHaveAnEduID: "Already have an eduID account? <a href=\"{{location}}\">Login!</a>",
-        info: "When you proceed you will be asked to login at the institution you want to link to your eduID. After a successful login you will come back here." ,
-        startFlow: "Start registration"
+        info: "When you proceed you will be asked to login at the institution you want to link to your eduID. After a successful login you will come back here.",
+        startFlow: "Start registration",
+    },
+    linkFromInstitution: {
+        header: "Hi {{name}}",
+        info: "You have successfully logged in at your institution. Please enter your personal email which will be your eduID email.",
+        email: "Your email address",
+        emailPlaceholder: "e.g. user@gmail.com",
+        emailForbidden: "The creation of an eduID account for this email-domain is denied, please contact <a href=\"mailto:help@eduid.nl\">help@eduid.nl</a> if you think this email-domain is valid.",
+        emailInUse1: "This email is already in use.",
+        emailInUse2: "Try another, or ",
+        emailInUse3: " login with this eduID account.",
+        invalidEmail: "Invalid email",
+        institutionDomainNameWarning: "It looks like you entered an institutional email address. Please note that when you no longer study at or work for that institution, you can no longer use that email address.",
+        institutionDomainNameWarning2: "We recommend using your personal email address for eduID.",
+        allowedDomainNamesError: "Domain name {{domain}} not allowed.",
+        allowedDomainNamesError2: "eduID is restricted to be used only for allowed domains.",
+        agreeWithTerms: "<span>I agree with <a tabindex='-1' href='https://eduid.nl/terms-of-use/' target='_blank'>the terms of service.</a> I also understand <a tabindex='-1' href='https://eduid.nl/privacy_policy/' target='_blank'>the privacy policy</a>.</span>",
+        requestEduIdButton: "Request your eduID",
     }
 };

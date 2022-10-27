@@ -104,7 +104,6 @@
         if (e.key === "Enter" && validVerificationCode(e.target.value)) {
             verify();
         }
-
     }
 
 </script>

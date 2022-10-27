@@ -1,9 +1,8 @@
 <script>
     import I18n from "i18n-js";
     import Button from "../components/Button.svelte";
-    import {conf, links} from "../stores/conf";
+    import {config} from "../stores/user";
 
-    $links.displayBackArrow = false;
 
 </script>
 
@@ -24,5 +23,5 @@
 </style>
 <h1>{I18n.t("expired.title")}</h1>
 <p>{@html I18n.t("expired.info")}</p>
-<Button label={I18n.t("expired.back")} href={`https://${$conf.domain}`}
-        onClick={() => window.location.href = `https://${$conf.domain}`}/>
+<Button label={I18n.t("expired.back")} href={`/create-from-institution`}
+        onClick={() => window.location.href = `/create-from-institution`}/>

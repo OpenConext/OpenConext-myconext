@@ -2,6 +2,7 @@ package myconext.api;
 
 
 import myconext.cron.DisposableEmailProviders;
+import myconext.exceptions.DuplicateUserEmailException;
 import myconext.exceptions.ForbiddenException;
 import myconext.exceptions.UserNotFoundException;
 import myconext.mail.MailBox;
@@ -32,6 +33,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 import java.io.UnsupportedEncodingException;
 import java.net.URI;
@@ -160,8 +162,7 @@ public class AccountLinkerController {
         return ResponseEntity.status(HttpStatus.FOUND).location(uriComponents.toUri()).build();
     }
 
-    //Step 1 in the create-from-institution flow - will be called by the accessible CreateFromInstitution.svelte pag
-    @GetMapping("/sp/oidc/create-from-institution")
+    @GetMapping("/sp/create-from-institution")
     public ResponseEntity<Map<String, String>> createFromInstitution(HttpServletRequest request) throws UnsupportedEncodingException {
         LOG.debug("Start create from institution");
         String state = request.getSession(true).getId();
@@ -169,20 +170,23 @@ public class AccountLinkerController {
         return ResponseEntity.ok(Collections.singletonMap("url", uriComponents.toUriString()));
     }
 
-    //Step 2 in the create-from-institution flow - will be called by the OpenIDConnect in the authorization flow
-    @GetMapping("/sp/oidc/create-from-institution-redirect")
+    @GetMapping("/sp/create-from-institution/oidc-redirect")
     public ResponseEntity spCreateFromInstitutionRedirect(HttpServletRequest request, @RequestParam("code") String code, @RequestParam("state") String state) throws UnsupportedEncodingException {
-        String storedState = request.getSession(true).getId();
+        HttpSession session = request.getSession(false);
+        if (session == null) {
+            throw new ForbiddenException("No session enabled");
+        }
+        String storedState = session.getId();
 
-        if (MessageDigest.isEqual(
+        if (!MessageDigest.isEqual(
                 storedState.getBytes(StandardCharsets.UTF_8),
                 URLDecoder.decode(state, StandardCharsets.UTF_8).getBytes(StandardCharsets.UTF_8))) {
-            throw new ForbiddenException("Non matching user");
+            throw new ForbiddenException("No session enabled");
         }
         Map<String, Object> userInfo = requestUserInfo(code, this.spCreateFromInstitutionRedirectUri);
         String eppn = (String) userInfo.get("eduperson_principal_name");
         //Check if the eppn is taken, before proceeding
-        String eppnAlreadyLinkedRequiredUri = this.spRedirectUrl + "/eppn-already-linked?fromInstitution=true";
+        String eppnAlreadyLinkedRequiredUri = this.spRedirectUrl + "/create-from-institution/eppn-already-linked?fromInstitution=true";
         Optional<ResponseEntity<Object>> eppnAlreadyLinkedOptional = checkEppnAlreadyLinked(eppnAlreadyLinkedRequiredUri, eppn);
         if (eppnAlreadyLinkedOptional.isPresent()) {
             return eppnAlreadyLinkedOptional.get();
@@ -190,9 +194,16 @@ public class AccountLinkerController {
         //We want this also to work when mail is opened in different browser
         RequestInstitutionEduID requestInstitutionEduID = new RequestInstitutionEduID(hash(), userInfo);
         requestInstitutionEduIDRepository.save(requestInstitutionEduID);
-        //Now the user needs to enter email, firstName and lastMail to finish up the registration
-        String returnUri = this.spRedirectUrl + "/link-from-institution/" + requestInstitutionEduID.getHash();
+        //Now the user needs to enter email and validate this email to finish up the registration
+        String returnUri = this.spRedirectUrl + "/create-from-institution/link/" + requestInstitutionEduID.getHash();
         return ResponseEntity.status(HttpStatus.FOUND).location(URI.create(returnUri)).build();
+    }
+
+    @GetMapping("/sp/create-from-institution/info")
+    public Map<String, Object> createFromInstitutionInfo(@RequestParam("hash") String hash) {
+        RequestInstitutionEduID requestInstitutionEduID = requestInstitutionEduIDRepository.findByHash(hash)
+                .orElseThrow(() -> new ForbiddenException("Wrong hash"));
+        return requestInstitutionEduID.getUserInfo();
     }
 
     @PostMapping("/sp/create-from-institution/email")
@@ -203,13 +214,34 @@ public class AccountLinkerController {
         this.disposableEmailProviders.verifyDisposableEmailProviders(email);
         this.emailGuessingPreventor.potentialUserEmailGuess();
 
-        userRepository.findUserByEmail(email)
-                .orElseThrow(() -> new UserNotFoundException(String.format("User with email %s not found", email)));
+        userRepository.findUserByEmail(email).ifPresent(user -> {
+            throw new DuplicateUserEmailException();
+        });
         requestInstitutionEduID.setCreateInstitutionEduID(createInstitutionEduID);
         requestInstitutionEduIDRepository.save(requestInstitutionEduID);
 
         String uri = spRedirectUrl + "/sp/create-from-institution/finish";
-        mailBox.sendAccountVerificationCreateFromInstitution(new User(createInstitutionEduID), requestInstitutionEduID.getHash(), uri);
+        mailBox.sendAccountVerificationCreateFromInstitution(new User(createInstitutionEduID, requestInstitutionEduID.getUserInfo()), requestInstitutionEduID.getHash(), uri);
+    }
+
+    @GetMapping("/sp/create-from-institution/poll")
+    public LoginStatus pollCreateFromInstitution(@RequestParam("hash") String hash) {
+        RequestInstitutionEduID requestInstitutionEduID = requestInstitutionEduIDRepository.findByHash(hash)
+                .orElseThrow(() -> new ForbiddenException("Wrong hash"));
+        return requestInstitutionEduID.getLoginStatus();
+    }
+
+    @GetMapping("/sp/create-from-institution/resendMail")
+    public void resendMailCreateFromInstitution(@RequestParam("hash") String hash) {
+        RequestInstitutionEduID requestInstitutionEduID = requestInstitutionEduIDRepository.findByHash(hash)
+                .orElseThrow(() -> new ForbiddenException("Wrong hash"));
+        if (!requestInstitutionEduID.getLoginStatus().equals(LoginStatus.NOT_LOGGED_IN)) {
+            throw new ForbiddenException("User status is not NOT_LOGGIN_IN, but " + requestInstitutionEduID.getLoginStatus());
+        }
+        String uri = spRedirectUrl + "/sp/create-from-institution/finish";
+        User user = new User(requestInstitutionEduID.getCreateInstitutionEduID(), requestInstitutionEduID.getUserInfo());
+        mailBox.sendAccountVerificationCreateFromInstitution(user, requestInstitutionEduID.getHash(), uri);
+
     }
 
     @GetMapping("/sp/create-from-institution/finish")
@@ -217,6 +249,7 @@ public class AccountLinkerController {
         RequestInstitutionEduID requestInstitutionEduID = requestInstitutionEduIDRepository.findByHash(hash)
                 .orElseThrow(() -> new ForbiddenException("Wrong hash"));
         CreateInstitutionEduID createInstitutionEduID = requestInstitutionEduID.getCreateInstitutionEduID();
+        Map<String, Object> userInfo = requestInstitutionEduID.getUserInfo();
         if (createInstitutionEduID == null) {
             throw new ForbiddenException("Wrong hash");
         }
@@ -225,8 +258,8 @@ public class AccountLinkerController {
         User user = new User(
                 UUID.randomUUID().toString(),
                 createInstitutionEduID.getEmail(),
-                createInstitutionEduID.getGivenName(),
-                createInstitutionEduID.getFamilyName(),
+                (String) userInfo.get("givenName"),
+                (String) userInfo.get("familyName"),
                 schacHomeOrganization,
                 preferredLanguage,
                 mijnEduIDEntityId,
@@ -239,7 +272,7 @@ public class AccountLinkerController {
                 null,
                 null,
                 null,
-                requestInstitutionEduID.getUserInfo());
+                userInfo);
         UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(user, null,
                 user.getAuthorities());
         SecurityContextHolder.getContext().setAuthentication(authentication);
@@ -263,7 +296,7 @@ public class AccountLinkerController {
         params.put("response_type", "code");
         params.put("scope", "openid");
         params.put("redirect_uri", redirectUri);
-        params.put("state", URLEncoder.encode(state, "UTF-8"));
+        params.put("state", URLEncoder.encode(state, StandardCharsets.UTF_8));
         if (forceAuth) {
             params.put("prompt", "login");
         }
@@ -284,7 +317,7 @@ public class AccountLinkerController {
         Optional<User> userOptional = userRepository.findUserByUid(uid);
         User user = userOptional.orElseThrow(() -> new UserNotFoundException(uid));
 
-        if (!passwordEncoder.matches(user.getUid(), URLDecoder.decode(state, "UTF-8"))) {
+        if (!passwordEncoder.matches(user.getUid(), URLDecoder.decode(state, StandardCharsets.UTF_8))) {
             throw new ForbiddenException("Non matching user");
         }
 
@@ -297,7 +330,7 @@ public class AccountLinkerController {
 
     @GetMapping("/idp/oidc/redirect")
     public ResponseEntity idpFlowRedirect(HttpServletRequest request, @RequestParam("code") String code, @RequestParam("state") String state) throws UnsupportedEncodingException {
-        String decodedState = URLDecoder.decode(state, "UTF-8");
+        String decodedState = URLDecoder.decode(state, StandardCharsets.UTF_8);
         MultiValueMap<String, String> params = UriComponentsBuilder.fromHttpUrl("http://localhost?" + decodedState).build().getQueryParams();
         String id = params.getFirst("id");
         String encodedUserUid = params.getFirst("user_uid");

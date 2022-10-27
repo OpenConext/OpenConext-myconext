@@ -170,8 +170,7 @@ public class SecurityConfiguration {
             web.ignoring().antMatchers(
                     "/internal/**",
                     "/myconext/api/idp/**",
-                    "/myconext/api/sp/oidc/create-from-institution-redirect",
-                    "/myconext/api/sp/oidc/create-from-institution",
+                    "/myconext/api/sp/create-from-institution",
                     "/myconext/api/sp/create-from-institution/**"
             );
         }

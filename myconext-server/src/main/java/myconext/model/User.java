@@ -58,10 +58,10 @@ public class User implements Serializable, UserDetails {
     private String trackingUuid;
     private long lastSeenAppNudge;
 
-    public User(CreateInstitutionEduID createInstitutionEduID) {
+    public User(CreateInstitutionEduID createInstitutionEduID, Map<String, Object> userInfo) {
         this.email = createInstitutionEduID.getEmail();
-        this.givenName = createInstitutionEduID.getGivenName();
-        this.familyName = createInstitutionEduID.getFamilyName();
+        this.givenName = (String) userInfo.get("givenName");
+        this.familyName = (String) userInfo.get("familyName");
     }
 
     public User(String uid, String email, String givenName, String familyName, String schacHomeOrganization, String preferredLanguage,

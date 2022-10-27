@@ -3,35 +3,48 @@
     import {user} from "../stores/user";
     import {onMount} from "svelte";
     import Spinner from "../components/Spinner.svelte";
-    import {resendMagicLinkMail, successfullyLoggedIn} from "../api";
+    import {resendCreateFromInstitutionMail, createFromInstitutionPoll} from "../api";
     import {config} from "../stores/user";
     import {status} from "../constants/loginStatus";
     import Button from "../components/Button.svelte";
     import critical from "../icons/critical.svg";
     import DOMPurify from "dompurify";
+    import backArrow from "../icons/arrow-left.svg";
+    import {validVerificationCode} from "../validation/regexp";
 
     const gmail = "/img/get-started-icon-gmail@2x-e80b706.png";
     const outlook = "/img/get-started-icon-outlook-55f9ac5.png";
     const resendMailAllowedTimeOut = $config.emailSpamThresholdSeconds * 1000;
 
     export let hash;
+
     let loginStatus = status.NOT_LOGGED_IN
     let counter = 0;
     let timeOutSeconds = 1;
     let timeOutReached = false;
     let allowedToResend = false;
     let mailHasBeenResend = false;
+    let verificationCodeError = false;
+    let verificationCode = "";
+
 
     onMount(() => {
-        setTimeout(isLoggedIn, timeOutSeconds * 1000);
+        setTimeout(createFromInstitutionPoll, timeOutSeconds * 1000);
         setTimeout(() => allowedToResend = true, resendMailAllowedTimeOut);
+
+        const urlParams = new URLSearchParams(window.location.search);
+        verificationCodeError = urlParams.get("mismatch") === "true";
+        if (verificationCodeError) {
+            loginStatus = status.LOGGED_IN_DIFFERENT_DEVICE;
+        }
+
     });
 
     const init = el => el.focus();
 
     const resendMail = () => {
         allowedToResend = false;
-        resendCreateConfirmationMail(id).then(() => {
+        resendCreateFromInstitutionMail(hash).then(() => {
             mailHasBeenResend = true;
             //reset timeout
             counter = 1;
@@ -44,8 +57,34 @@
         });
     }
 
+    const verify = () => {
+        const location = window.location.href.replace(/&mismatch=true/g, "");
+        window.location.href = `${$config.continueAfterLoginUrl}?id=${id}&verificationCode=${verificationCode}&currentUrl=${encodeURIComponent(location)}`;
+    }
+
+    const updateVerificationCode = e => {
+        let value = e.target.value.toUpperCase().trim();
+        if ((value.length > verificationCode.length && value.length === 3) || (value.length >= 4 && value.indexOf("-") === -1)) {
+            value = value.substring(0, 3) + "-" + value.substring(3);
+        }
+        if ((value.match(/-/g) || []).length > 1) {
+            value = value.replace("-", "");
+        }
+        if (value.length > 7) {
+            value = value.substring(0, 7);
+        }
+        verificationCode = value;
+        e.target.value = verificationCode;
+    }
+
+    const handleVerificationCodeEnter = e => {
+        if (e.key === "Enter" && validVerificationCode(e.target.value)) {
+            verify();
+        }
+    }
+
     const isLoggedIn = () => {
-        successfullyLoggedIn(hash).then(res => {
+        createFromInstitutionPoll(hash).then(res => {
             loginStatus = res;
             if (loginStatus === status.NOT_LOGGED_IN) {
                 ++counter;
@@ -189,7 +228,7 @@
 
 {:else if loginStatus === status.NOT_LOGGED_IN}
     <div class="back-container">
-        <a href={`/login/${id}?name=${serviceName}&modus=${modus}`}>{@html backArrow}</a>
+        <a href={`/link-from-institution/${hash}`}>{@html backArrow}</a>
     </div>
 
     <div class="magic-link">

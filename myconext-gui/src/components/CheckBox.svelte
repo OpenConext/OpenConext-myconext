@@ -3,11 +3,12 @@
 
     export let value;
     export let onChange;
+    export let terms = false;
     export let label;
     export let readOnly = false;
 
 </script>
-<style>
+<style lang="scss">
     label.checkbox {
         display: block;
         margin-top: 10px;
@@ -16,6 +17,10 @@
         cursor: pointer;
         user-select: none;
         font-weight: 600;
+
+        &.terms {
+            font-weight: normal;
+        }
     }
 
     .checkbox input {
@@ -58,8 +63,8 @@
     }
 
 </style>
-<label class="checkbox">
-    <span>{label}</span>
+<label class="checkbox" class:terms>
+    <span>{@html label}</span>
     <input type="checkbox" checked={value} on:change={e => onChange(e.target.checked)} disabled="{readOnly}">
     <span class="checkmark">
         {@html check}

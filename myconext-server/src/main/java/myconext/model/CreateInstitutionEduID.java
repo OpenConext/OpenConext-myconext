@@ -18,9 +18,4 @@ public class CreateInstitutionEduID implements Serializable {
     @NotNull
     private String email;
 
-    @NotNull
-    private String givenName;
-
-    @NotNull
-    private String familyName;
 }

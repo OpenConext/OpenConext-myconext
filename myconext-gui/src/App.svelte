@@ -13,8 +13,14 @@
     import I18n from "i18n-js";
     import CreateFromInstitution from "./routes/CreateFromInstitution.svelte";
     import Expired from "./routes/Expired.svelte";
-    import EppnAlreadyLinked from "../../account-gui/src/routes/EppnAlreadyLinked.svelte";
+    import EppnAlreadyLinked from "./routes/EppnAlreadyLinked.svelte";
     import LinkFromInstitution from "./routes/LinkFromInstitution.svelte";
+    import AwaitLinkFromInstitutionMail from "./routes/AwaitLinkFromInstitutionMail.svelte";
+
+    const unprotectedRoutes = [
+        "/create-from-institution",
+        "/landing"
+    ];
 
     export let url = "";
     let loaded = false;
@@ -37,7 +43,7 @@
             if (["nl", "en"].indexOf(I18n.locale) < 0) {
                 I18n.locale = "en";
             }
-            if (window.location.pathname.indexOf("landing") > -1 || window.location.pathname.indexOf("create-from-institution") > -1) {
+            if (unprotectedRoutes.some(route => window.location.pathname.indexOf(route) > -1)) {
                 loaded = true;
             } else {
                 me()
@@ -340,11 +346,13 @@
             <Header/>
             <div class="content">
                 <Router url="{url}">
-                    <Route path="/" component={Home}/>
-                    <Route path="/eppn-already-linked" component={EppnAlreadyLinked}/>
-                    <Route path="/expired" component={Expired}/>
                     <Route path="/create-from-institution" component={CreateFromInstitution}/>
-                    <Route path="/link-from-institution/:hash" let:params>
+                    <Route path="/create-from-institution/eppn-already-linked" component={EppnAlreadyLinked}/>
+                    <Route path="/create-from-institution/expired" component={Expired}/>
+                    <Route path="/create-from-institution/poll/:hash" let:params>
+                        <AwaitLinkFromInstitutionMail hash="{params.hash}"/>
+                    </Route>
+                    <Route path="/create-from-institution/link/:hash" let:params>
                         <LinkFromInstitution hash="{params.hash}"/>
                     </Route>
                     <Route path="/landing" component={Landing}/>

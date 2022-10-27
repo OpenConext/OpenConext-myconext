@@ -27,13 +27,20 @@ public class RequestInstitutionEduID implements Serializable {
 
     private CreateInstitutionEduID createInstitutionEduID;
 
+    private LoginStatus loginStatus;
+
     public RequestInstitutionEduID(String hash, Map<String, Object> userInfo) {
         this.expiresIn = Date.from(LocalDateTime.now().plusHours(1).atZone(ZoneId.systemDefault()).toInstant());
         this.hash = hash;
         this.userInfo = userInfo;
+        this.loginStatus = LoginStatus.NOT_LOGGED_IN;
     }
 
     public void setCreateInstitutionEduID(CreateInstitutionEduID createInstitutionEduID) {
         this.createInstitutionEduID = createInstitutionEduID;
+    }
+
+    public void setLoginStatus(LoginStatus loginStatus) {
+        this.loginStatus = loginStatus;
     }
 }
