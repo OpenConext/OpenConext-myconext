@@ -22,7 +22,7 @@
     let mailHasBeenResend = false;
 
     onMount(() => {
-        setTimeout(() => createFromInstitutionPoll(hash), timeOutSeconds * 1000);
+        setTimeout(() => isLoggedIn(), timeOutSeconds * 1000);
         setTimeout(() => allowedToResend = true, resendMailAllowedTimeOut);
     });
 
@@ -65,14 +65,14 @@
 <style lang="scss">
     .poll-from-institution {
         display: flex;
-        flex-direction: row;
+        flex-direction: column;
         background-color: white;
         height: auto;
         min-height: 500px;
     }
 
     div.inner {
-        margin: 25px auto auto 0;
+        margin: 25px auto auto 200px;
         max-width: 600px;
 
         @media (max-width: 800px) {
@@ -83,16 +83,6 @@
     h3 {
         color: var(--color-primary-green);
         margin-bottom: 40px;
-    }
-
-
-    .back-container {
-        cursor: pointer;
-        margin: 30px 15px 0 160px;
-        @media (max-width: 800px) {
-            margin: 30px 15px 0 5px;
-        }
-
     }
 
     div.mail-clients {
@@ -141,11 +131,6 @@
 
 </style>
 <div class="poll-from-institution">
-    {#if loginStatus === status.NOT_LOGGED_IN}
-        <div class="back-container">
-            <a href={`/link-from-institution/${hash}`}>{@html backArrow}</a>
-        </div>
-    {/if}
     <div class="inner">
         {#if timeOutReached}
             <h2 class="header">{I18n.t("pollFromInstitution.timeOutReached")}</h2>

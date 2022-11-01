@@ -476,14 +476,14 @@ public class AccountLinkerControllerTest extends AbstractIntegrationTest {
         Map<Object, Object> userInfo = userInfoMap("new-user@qwerty.com");
         String hash = getHashFromCreateInstitutionFlow(userInfo);
 
-        LoginStatus loginStatus = given()
+        Integer loginStatus = given()
                 .when()
                 .contentType(ContentType.JSON)
                 .queryParam("hash", hash)
                 .get("/myconext/api/sp/create-from-institution/poll")
                 .as(new TypeRef<>() {
                 });
-        assertEquals(LoginStatus.NOT_LOGGED_IN, loginStatus);
+        assertEquals(LoginStatus.NOT_LOGGED_IN, Arrays.asList(LoginStatus.values()).get(loginStatus));
     }
 
     @Test

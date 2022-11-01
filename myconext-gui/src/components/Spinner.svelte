@@ -14,7 +14,7 @@
 
         &.account {
             top: 225px;
-            margin-left: -10px;
+            margin-left: -50px;
          }
     }
 

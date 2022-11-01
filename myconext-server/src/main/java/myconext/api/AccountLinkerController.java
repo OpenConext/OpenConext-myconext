@@ -251,12 +251,12 @@ public class AccountLinkerController {
     }
 
     @GetMapping("/sp/create-from-institution/poll")
-    public LoginStatus pollCreateFromInstitution(@RequestParam("hash") String hash) {
+    public int pollCreateFromInstitution(@RequestParam("hash") String hash) {
         LOG.debug("Poll login status for create-institution-flow");
 
         RequestInstitutionEduID requestInstitutionEduID = requestInstitutionEduIDRepository.findByHash(hash)
                 .orElseThrow(() -> new ForbiddenException("Wrong hash"));
-        return requestInstitutionEduID.getLoginStatus();
+        return requestInstitutionEduID.getLoginStatus().ordinal();
     }
 
     @GetMapping("/sp/create-from-institution/resendMail")
