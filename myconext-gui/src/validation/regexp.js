@@ -6,7 +6,5 @@ export const validEmail = email => mailRegExp.test(email);
 
 export const validPassword = password => passwordRegExp.test(password);
 
-export const validVerificationCode = verificationCode => verificationCodeRegExp.test(verificationCode);
-
 export const validPhoneNumber = phoneNumber => phoneNumber &&
     phoneRegExp.test(phoneNumber.replaceAll(" ","").replaceAll("-",""));

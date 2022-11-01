@@ -1,16 +1,12 @@
 <script>
     import I18n from "i18n-js";
-    import {user} from "../stores/user";
+    import {config, user} from "../stores/user";
     import {onMount} from "svelte";
     import Spinner from "../components/Spinner.svelte";
-    import {resendCreateFromInstitutionMail, createFromInstitutionPoll} from "../api";
-    import {config} from "../stores/user";
+    import {createFromInstitutionPoll, resendCreateFromInstitutionMail} from "../api";
     import {status} from "../constants/loginStatus";
-    import Button from "../components/Button.svelte";
-    import critical from "../icons/critical.svg";
     import DOMPurify from "dompurify";
     import backArrow from "../icons/arrow-left.svg";
-    import {validVerificationCode} from "../validation/regexp";
 
     const gmail = "/img/get-started-icon-gmail@2x-e80b706.png";
     const outlook = "/img/get-started-icon-outlook-55f9ac5.png";
@@ -24,23 +20,11 @@
     let timeOutReached = false;
     let allowedToResend = false;
     let mailHasBeenResend = false;
-    let verificationCodeError = false;
-    let verificationCode = "";
-
 
     onMount(() => {
-        setTimeout(createFromInstitutionPoll, timeOutSeconds * 1000);
+        setTimeout(() => createFromInstitutionPoll(hash), timeOutSeconds * 1000);
         setTimeout(() => allowedToResend = true, resendMailAllowedTimeOut);
-
-        const urlParams = new URLSearchParams(window.location.search);
-        verificationCodeError = urlParams.get("mismatch") === "true";
-        if (verificationCodeError) {
-            loginStatus = status.LOGGED_IN_DIFFERENT_DEVICE;
-        }
-
     });
-
-    const init = el => el.focus();
 
     const resendMail = () => {
         allowedToResend = false;
@@ -55,32 +39,6 @@
             }, resendMailAllowedTimeOut);
 
         });
-    }
-
-    const verify = () => {
-        const location = window.location.href.replace(/&mismatch=true/g, "");
-        window.location.href = `${$config.continueAfterLoginUrl}?id=${id}&verificationCode=${verificationCode}&currentUrl=${encodeURIComponent(location)}`;
-    }
-
-    const updateVerificationCode = e => {
-        let value = e.target.value.toUpperCase().trim();
-        if ((value.length > verificationCode.length && value.length === 3) || (value.length >= 4 && value.indexOf("-") === -1)) {
-            value = value.substring(0, 3) + "-" + value.substring(3);
-        }
-        if ((value.match(/-/g) || []).length > 1) {
-            value = value.replace("-", "");
-        }
-        if (value.length > 7) {
-            value = value.substring(0, 7);
-        }
-        verificationCode = value;
-        e.target.value = verificationCode;
-    }
-
-    const handleVerificationCodeEnter = e => {
-        if (e.key === "Enter" && validVerificationCode(e.target.value)) {
-            verify();
-        }
     }
 
     const isLoggedIn = () => {
@@ -105,67 +63,51 @@
 </script>
 
 <style lang="scss">
+    .poll-from-institution {
+        display: flex;
+        flex-direction: row;
+        background-color: white;
+        height: auto;
+        min-height: 500px;
+    }
+
+    div.inner {
+        margin: 25px auto auto 0;
+        max-width: 600px;
+
+        @media (max-width: 800px) {
+            margin: 25px auto;
+        }
+    }
+
+    h3 {
+        color: var(--color-primary-green);
+        margin-bottom: 40px;
+    }
+
 
     .back-container {
-        position: absolute;
-        left: 15px;
-        top: 15px;
         cursor: pointer;
-    }
-
-    div.magic-link {
-        margin-top: 40px;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        align-content: center;
-
-        &.no-center {
-            align-items: normal;
-            align-content: normal;
+        margin: 30px 15px 0 160px;
+        @media (max-width: 800px) {
+            margin: 30px 15px 0 5px;
         }
-    }
 
-    p {
-        text-align: center;
-
-        &.no-center {
-            text-align: left;
-            margin-bottom: 15px;
-        }
-    }
-
-    h2.header {
-        margin: 6px 0 30px 0;
-        color: var(--color-primary-green);
-        font-size: 28px;
     }
 
     div.mail-clients {
         width: 100%;
         display: flex;
-        margin-top: 45px;
+        padding: 25px;
+        margin: 20px 0;
         align-items: center;
         align-content: center;
-    }
-
-    div.spinner-container {
-        margin-top: 35px;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        align-content: center;
-    }
-
-    div.spinner-container p {
-        margin-top: 15px;
     }
 
     div.mail-client {
         display: flex;
         align-items: center;
         align-content: center;
-        font-size: 15px;
     }
 
     div.mail-client img {
@@ -179,7 +121,7 @@
     }
 
     div.mail-client.outlook {
-        margin-left: auto;
+        margin-left: 60px;
     }
 
     div.mail-clients a {
@@ -192,104 +134,57 @@
         color: var(--color-primary-blue);
     }
 
-    div.spam, div.resend-mail {
-        margin-top: 30px;
-        font-size: 15px;
-        text-align: center;
+    div.resend-mail {
+        margin-top: 40px;
     }
 
-    input[type=text] {
-        border: 1px solid #727272;
-        border-radius: 6px;
-        padding: 14px;
-        font-size: 16px;
-        width: 100%;
-        margin: 8px 0 35px 0;
-    }
-
-    div.error {
-        display: flex;
-        align-items: center;
-        color: var(--color-primary-red);
-        margin-bottom: 25px;
-    }
-
-    div.error span.svg {
-        display: inline-block;
-        margin-right: 10px;
-    }
 
 </style>
-{#if timeOutReached}
-    <div class="magic-link">
-        <h2 class="header">{I18n.t("magicLink.timeOutReached")}</h2>
-        <p>{@html I18n.t("magicLink.timeOutReachedInfo")}</p>
-    </div>
-
-{:else if loginStatus === status.NOT_LOGGED_IN}
-    <div class="back-container">
-        <a href={`/link-from-institution/${hash}`}>{@html backArrow}</a>
-    </div>
-
-    <div class="magic-link">
-        <h2 class="header">{I18n.t("magicLink.header")}</h2>
-        <p>{@html I18n.t("magicLink.info", {email: DOMPurify.sanitize($user.email)})}</p>
-        <div class="spinner-container">
-            <Spinner relative={true}/>
-            <p>{I18n.t("magicLink.awaiting")}</p>
+<div class="poll-from-institution">
+    {#if loginStatus === status.NOT_LOGGED_IN}
+        <div class="back-container">
+            <a href={`/link-from-institution/${hash}`}>{@html backArrow}</a>
         </div>
-        <div class="mail-clients">
-            <div class="mail-client gmail">
-                <img src={gmail} alt="gmail" width="26px"
-                     on:click={() => window.location.href="https://www.gmail.com"}/>
-                <a href="https://www.gmail.com">{I18n.t("magicLink.openGMail")}</a>
-            </div>
-            <div class="mail-client outlook">
-                <img src={outlook} alt="outlook" on:click={() => window.location.href="https://outlook.live.com/owa/"}/>
-                <a href="https://outlook.live.com/owa/">{I18n.t("magicLink.openOutlook")}</a>
-            </div>
-        </div>
-        <div class="spam">
-            <span>{I18n.t("magicLink.spam")}</span>
-        </div>
-        <div class="resend-mail">
-            {#if allowedToResend}
-                <span class="link" on:click={resendMail}>{I18n.t("magicLink.resend")}</span>
-                <a href="resend"
-                   on:click|preventDefault|stopPropagation={resendMail}>{I18n.t("magicLink.resendLink")}</a>
-            {:else if mailHasBeenResend}
-                <span>{I18n.t("magicLink.mailResend")}</span>
-            {/if}
-
-        </div>
-
-    </div>
-{:else if loginStatus === status.LOGGED_IN_SAME_DEVICE}
-    <div class="magic-link">
-        <h2 class="header">{I18n.t("magicLink.loggedIn")}</h2>
-        <p>{@html I18n.t("magicLink.loggedInInfo")}</p>
-    </div>
-{:else if loginStatus === status.LOGGED_IN_DIFFERENT_DEVICE}
-    <div class="magic-link no-center ">
-        <h2 class="header">{I18n.t("magicLink.loggedInDifferentDevice")}</h2>
-        <p class="no-center">{@html I18n.t("magicLink.loggedInDifferentDeviceInInfo")}</p>
-        <p class="no-center">{@html I18n.t("magicLink.loggedInDifferentDeviceInInfo2")}</p>
-        <input class="verification-code"
-               type="text"
-               spellcheck="false"
-               use:init
-               value={verificationCode}
-               on:input={updateVerificationCode}
-               on:keydown={handleVerificationCodeEnter}>
-        {#if verificationCodeError}
-            <div class="error">
-                <span class="svg">{@html critical}</span>
-                <div>
-                    <span>{I18n.t("magicLink.verificationCodeError")}</span>
+    {/if}
+    <div class="inner">
+        {#if timeOutReached}
+            <h2 class="header">{I18n.t("pollFromInstitution.timeOutReached")}</h2>
+            <p>{@html I18n.t("pollFromInstitution.timeOutReachedInfo")}</p>
+        {:else if loginStatus === status.NOT_LOGGED_IN}
+            <Spinner relative={true} account={true}/>
+            <h3 class="header">{I18n.t("pollFromInstitution.header")}</h3>
+            <p>
+                <span>{@html I18n.t("pollFromInstitution.info", {email: DOMPurify.sanitize($user.email)})}</span>
+                <span>{I18n.t("pollFromInstitution.awaiting")}</span>
+            </p>
+            <div class="mail-clients">
+                <div class="mail-client gmail">
+                    <img src={gmail} alt="gmail" width="26px"
+                         on:click={() => window.location.href="https://www.gmail.com"}/>
+                    <a href="https://www.gmail.com">{I18n.t("pollFromInstitution.openGMail")}</a>
+                </div>
+                <div class="mail-client outlook">
+                    <img src={outlook} alt="outlook"
+                         on:click={() => window.location.href="https://outlook.live.com/owa/"}/>
+                    <a href="https://outlook.live.com/owa/">{I18n.t("pollFromInstitution.openOutlook")}</a>
                 </div>
             </div>
+            <div>
+                <span>{I18n.t("pollFromInstitution.spam")}</span>
+            </div>
+            <div class="resend-mail">
+                {#if allowedToResend}
+                    <span class="link" on:click={resendMail}>{I18n.t("pollFromInstitution.resend")}</span>
+                    <a href="resend"
+                       on:click|preventDefault|stopPropagation={resendMail}>{I18n.t("pollFromInstitution.resendLink")}</a>
+                {:else if mailHasBeenResend}
+                    <span>{I18n.t("pollFromInstitution.mailResend")}</span>
+                {/if}
+
+            </div>
+        {:else if loginStatus === status.LOGGED_IN_SAME_DEVICE}
+            <h3 class="header">{I18n.t("pollFromInstitution.loggedIn")}</h3>
+            <p>{@html I18n.t("pollFromInstitution.loggedInInfo")}</p>
         {/if}
-        <Button label={I18n.t("magicLink.verify")} onClick={verify}
-                disabled={!validVerificationCode(verificationCode)}/>
     </div>
-{/if}
+</div>

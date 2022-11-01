@@ -15,7 +15,7 @@ import java.io.IOException;
 
 public class MockMailBox extends MailBox {
 
-    private Environment env;
+    private final Environment env;
 
     MockMailBox(JavaMailSender mailSender, String emailFrom, String baseUrl, String mySURFconextURL, ObjectMapper objectMapper,
                 Resource mailTemplatesDirectory, EmailsSendRepository emailsSendRepository, Environment env) throws IOException {

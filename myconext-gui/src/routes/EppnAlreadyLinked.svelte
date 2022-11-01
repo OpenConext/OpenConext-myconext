@@ -16,8 +16,8 @@
 
     const retry = () => {
         busy = true;
-        const promise = fromInstitution ? startCreateFromInstitutionFlow : startLinkAccountFlow;
-        promise().then(json => {
+        const promise = fromInstitution ? startCreateFromInstitutionFlow(true) : startLinkAccountFlow();
+        promise.then(json => {
             window.location.href = json.url;
         });
     };
@@ -40,8 +40,12 @@
         }
 
         div.inner {
-            margin: 25px auto;
+            margin: 25px auto auto 200px;
             max-width: 600px;
+
+            @media (max-width: 800px) {
+                margin: 25px auto;
+            }
         }
 
         h1 {
@@ -66,9 +70,10 @@
 <div class="eppn-already-linked" class:create-from-institution={fromInstitution}>
     <div class:inner={fromInstitution}>
         <h1>{I18n.t("eppnAlreadyLinked.header")}</h1>
-        <p class="last">{I18n.t("eppnAlreadyLinked.info", {email: email})}</p>
+        <p class="last">{I18n.t(`eppnAlreadyLinked.info${fromInstitution ? "New" : ""}`, {email: email})}</p>
         <Button href={`/link`}
                 didisabled={busy}
+                large={true}
                 label={I18n.t("eppnAlreadyLinked.retryLink")}
                 onClick={retry}/>
     </div>

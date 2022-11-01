@@ -36,8 +36,12 @@
     }
 
     div.inner {
-        margin: 25px auto;
+        margin: 25px auto auto 200px;
         max-width: 600px;
+
+        @media (max-width: 800px) {
+            margin: 25px auto;
+        }
     }
 
     h3 {

@@ -1,4 +1,8 @@
-<style>
+<script>
+    export let account = false;
+
+</script>
+<style lang="scss">
     .lds-roller {
         display: inline-block;
         position: absolute;
@@ -7,6 +11,11 @@
         top: 118px;
         left: 50%;
         margin-left: -40px;
+
+        &.account {
+            top: 225px;
+            margin-left: -10px;
+         }
     }
 
     .lds-roller div {
@@ -107,7 +116,7 @@
     }
 
 </style>
-<div class="lds-roller">
+<div class="lds-roller" class:account>
     <div></div>
     <div></div>
     <div></div>

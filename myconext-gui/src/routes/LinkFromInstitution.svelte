@@ -55,12 +55,12 @@
         }
     });
 
-    const handleNext = () => {
+    const handleNext = (newUser = true) => {
         if (allowedNext($user.email, agreedWithTerms)) {
             showSpinner = true;
-            createInstitutionEduID($user.email, hash)
+            createInstitutionEduID($user.email, hash, newUser)
                 .then(res => {
-                    const url = `link-from-institution/${hash}`;
+                    const url = `/create-from-institution/poll/${hash}`;
                     navigate(url, {replace: true})
                 })
                 .catch(e => {
@@ -120,8 +120,12 @@
     }
 
     div.inner {
-        margin: 25px auto;
+        margin: 25px auto auto 200px;
         max-width: 600px;
+
+        @media (max-width: 800px) {
+            margin: 25px auto;
+        }
     }
 
     h3 {
@@ -226,9 +230,10 @@
                 <div>
                     <span>{I18n.t("linkFromInstitution.emailInUse1")}</span>
                     <span>{I18n.t("linkFromInstitution.emailInUse2")}</span>
-                    <a use:link
-                       href={`/personal`}
-                    >{I18n.t("linkFromInstitution.emailInUse3")}</a>
+                    <a href="/next"
+                       on:click|preventDefault|stopPropagation={() => handleNext(false)}>
+                        {I18n.t("linkFromInstitution.emailInUse3")}
+                    </a>
                 </div>
             </div>
         {/if}

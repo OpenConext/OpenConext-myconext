@@ -168,17 +168,17 @@ export function sendDeactivationPhoneCode() {
 }
 
 // Create from institution
-export function startCreateFromInstitutionFlow() {
-    return fetchJson("/myconext/api/sp/create-from-institution")
+export function startCreateFromInstitutionFlow(forceAuth = false) {
+    return fetchJson("/myconext/api/sp/create-from-institution?forceAuth=" + forceAuth);
 }
 
-export function createInstitutionEduID(email, hash) {
-    const body = {email, hash}
+export function createInstitutionEduID(email, hash, newUser) {
+    const body = {email, hash, newUser}
     return postPutJson("/myconext/api/sp/create-from-institution/email", body, "POST");
 }
 
 export function fetchInstitutionEduID(hash) {
-    return fetchJson("/myconext/api/sp/create-from-institution/info?hash="+hash);
+    return fetchJson("/myconext/api/sp/create-from-institution/info?hash=" + hash);
 }
 
 export function institutionalEmailDomains() {
@@ -190,11 +190,11 @@ export function allowedEmailDomains() {
 }
 
 export function createFromInstitutionPoll(hash) {
-    return fetchJson("/myconext/api/sp/create-from-institution/poll?hash="+hash)
+    return fetchJson("/myconext/api/sp/create-from-institution/poll?hash=" + hash)
 }
 
 export function resendCreateFromInstitutionMail(hash) {
-    return fetchJson("/myconext/api/sp/create-from-institution/resendMail?hash="+hash)
+    return fetchJson("/myconext/api/sp/create-from-institution/resendMail?hash=" + hash)
 }
 
 // change recovery method endpoints

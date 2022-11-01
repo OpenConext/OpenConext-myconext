@@ -66,6 +66,7 @@ I18n.translations.nl = {
     eppnAlreadyLinked: {
         header: "Koppeling niet gemaakt!",
         info: "Je eduID kon niet worden gekoppeld. Het vertrouwde account waarmee je zojuist bent ingelogd, is al aan een ander eduID-account gekoppeld: {{email}}.",
+        infoNew: "Je kan geen eduID account aanvragen met het vertrouwde account waarmee je zojuist bent ingelogd. Dit instellings-account is al gekoppeld met aan een ander eduID account: {{email}}.",
         retryLink: "Opnieuw proberen"
     },
     edit: {
@@ -404,8 +405,40 @@ I18n.translations.nl = {
         header: "Je staat op het punt een eduID-account aan te maken dat wordt gekoppeld aan je instellingsaccount.",
         alreadyHaveAnEduID: "Heb je al een eduID-account? <a href=\"{{location}}\">Login!</a>",
         info: "Als je verder gaat, wordt je gevraagd om in te loggen bij de instelling die je aan je eduID wilt koppelen. Na een succesvolle login kom je hier terug." ,
-        startFlow: "Start registratie"
+        startFlow: "Start registratie",
+        welcome: "Je eduID account is aangemaakt",
+        welcomeExisting: "Je eduID account is gekoppeld aan de vertrouwde instellingsaccount"
+    },
+    linkFromInstitution: {
+        header: "Hi {{name}}",
+        info: "Je bent succesvol ingelogd bij je instelling. Voer nu je persoonlijke email in, dit wordt je eduID email.",
+        email: "Je e-mail",
+        emailPlaceholder: "e.g. user@gmail.com",
+        emailForbidden: "Het aanmaken van een eduID-account met deze email is niet toegestaan, neem contact op met <a href=\"mailto:help@eduid.nl\">help@eduid.nl</a> als je denkt dat het e-maildomein geldig is.",
+        emailInUse1: "Dit e-mailadres is al in gebruik.",
+        emailInUse2: "Probeer een andere, of ",
+        emailInUse3: " koppel met dit eduID account.",
+        invalidEmail: "Ongeldig e-mailadres",
+        institutionDomainNameWarning: "Het lijkt erop dat je een instellings e-mailadres hebt ingevoerd. Houd er rekening mee dat wanneer je niet meer studeert of werkt bij die instelling, je geen toegang meer hebt tot dat e-mail adres.",
+        institutionDomainNameWarning2: "We raden je aan om je persoonlijke e-mailadres te gebruiken voor eduID.",
+        allowedDomainNamesError: "Domeinnaam {{domain}} niet toegestaan.",
+        allowedDomainNamesError2: "eduID is beperkt om alleen te worden gebruikt door toegestane domeinen.",
+        agreeWithTerms: "<span>Ik ga akkoord met <a tabindex='-1' href='https://eduid.nl/gebruiksvoorwaarden/' target='_blank'>de voorwaarden.</a> En ik begrijp <a tabindex='-1' href='https://eduid.nl/privacyverklaring/' target='_blank'>de privacyverklaring</a>.</span>",
+        requestEduIdButton: "Vraag je eduID aab",
+    },
+    pollFromInstitution: {
+        header: "Open je mailbox!",
+        info: "Om in te loggen, klik op de link in de e-mail die we hebben verstuurd naar <strong>{{email}}</strong>.",
+        awaiting: "Wachten tot je op de link klikt...",
+        openGMail: "Open Gmail.com",
+        openOutlook: "Open Outlook.com",
+        spam: "Kan je de e-mail niet vinden? Kijk in je spam.",
+        loggedIn: "Inloggen geslaagd!",
+        loggedInInfo: "Je kan dit tabblad / venster sluiten.",
+        timeOutReached: "Timeout!",
+        timeOutReachedInfo: "Je magische link is verlopen. Ga terug naar de dienst waar je heen wou en probeer het opnieuw.",
+        resend: "E-mail nog steeds niet gevonden?",
+        resendLink: " Stuur de e-mail opnieuw.",
+        mailResend: "Check je inbox. We hebben je de e-mail met de magische link opnieuw verzonden.",
     }
-
-
 };

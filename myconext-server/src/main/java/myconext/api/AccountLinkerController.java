@@ -20,6 +20,7 @@ import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.*;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.util.CollectionUtils;
@@ -51,6 +52,7 @@ import static myconext.log.MDCContext.logWithContext;
 import static myconext.security.CookieResolver.cookieByName;
 import static myconext.security.GuestIdpAuthenticationRequestFilter.hasRequiredStudentAffiliation;
 import static myconext.security.GuestIdpAuthenticationRequestFilter.hasValidatedName;
+import static org.springframework.security.web.context.HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY;
 
 @RestController
 @RequestMapping("/myconext/api")
@@ -74,6 +76,7 @@ public class AccountLinkerController {
     private final String magicLinkUrl;
     private final String idpErrorRedirectUrl;
     private final String spRedirectUrl;
+    private final String basePath;
     private final long removalNonValidatedDurationDays;
     private final long removalValidatedDurationDays;
     private final String idpExternalValidationEntityId;
@@ -105,6 +108,7 @@ public class AccountLinkerController {
             @Value("${oidc.sp-flow-redirect-url}") String spFlowRedirectUri,
             @Value("${oidc.sp-create-from-institution-redirect-url}") String spCreateFromInstitutionRedirectUri,
             @Value("${oidc.base-url}") String oidcBaseUrl,
+            @Value("${base_path}") String basePath,
             @Value("${linked_accounts.removal-duration-days-non-validated}") long removalNonValidatedDurationDays,
             @Value("${linked_accounts.removal-duration-days-validated}") long removalValidatedDurationDays,
             @Value("${account_linking.idp_external_validation_entity_id}") String idpExternalValidationEntityId,
@@ -127,6 +131,7 @@ public class AccountLinkerController {
         this.idpFlowRedirectUri = idpFlowRedirectUri;
         this.spFlowRedirectUri = spFlowRedirectUri;
         this.spCreateFromInstitutionRedirectUri = spCreateFromInstitutionRedirectUri;
+        this.basePath = basePath;
         this.oidcBaseUrl = oidcBaseUrl;
         this.removalNonValidatedDurationDays = removalNonValidatedDurationDays;
         this.removalValidatedDurationDays = removalValidatedDurationDays;
@@ -163,15 +168,18 @@ public class AccountLinkerController {
     }
 
     @GetMapping("/sp/create-from-institution")
-    public ResponseEntity<Map<String, String>> createFromInstitution(HttpServletRequest request) throws UnsupportedEncodingException {
+    public ResponseEntity<Map<String, String>> createFromInstitution(HttpServletRequest request,
+                                                                     @RequestParam(value = "forceAuth", required = false, defaultValue = "false") boolean forceAuth) throws UnsupportedEncodingException {
         LOG.debug("Start create from institution");
         String state = request.getSession(true).getId();
-        UriComponents uriComponents = doStartLinkAccountFlow(state, spCreateFromInstitutionRedirectUri, false, false, myConextSpEntityId);
+        UriComponents uriComponents = doStartLinkAccountFlow(state, spCreateFromInstitutionRedirectUri, forceAuth, false, myConextSpEntityId);
         return ResponseEntity.ok(Collections.singletonMap("url", uriComponents.toUriString()));
     }
 
     @GetMapping("/sp/create-from-institution/oidc-redirect")
     public ResponseEntity spCreateFromInstitutionRedirect(HttpServletRequest request, @RequestParam("code") String code, @RequestParam("state") String state) throws UnsupportedEncodingException {
+        LOG.debug("In redirect for create-institution-flow");
+
         HttpSession session = request.getSession(false);
         if (session == null) {
             throw new ForbiddenException("No session enabled");
@@ -189,6 +197,7 @@ public class AccountLinkerController {
         String eppnAlreadyLinkedRequiredUri = this.spRedirectUrl + "/create-from-institution/eppn-already-linked?fromInstitution=true";
         Optional<ResponseEntity<Object>> eppnAlreadyLinkedOptional = checkEppnAlreadyLinked(eppnAlreadyLinkedRequiredUri, eppn);
         if (eppnAlreadyLinkedOptional.isPresent()) {
+            LOG.debug("EPPN already linked in create-institution-flow for " + eppn);
             return eppnAlreadyLinkedOptional.get();
         }
         //We want this also to work when mail is opened in different browser
@@ -203,29 +212,48 @@ public class AccountLinkerController {
     public Map<String, Object> createFromInstitutionInfo(@RequestParam("hash") String hash) {
         RequestInstitutionEduID requestInstitutionEduID = requestInstitutionEduIDRepository.findByHash(hash)
                 .orElseThrow(() -> new ForbiddenException("Wrong hash"));
+
+        LOG.debug("Info details for create-institution-flow");
+
         return requestInstitutionEduID.getUserInfo();
     }
 
     @PostMapping("/sp/create-from-institution/email")
-    public void linkFromInstitution(@Valid @RequestBody CreateInstitutionEduID createInstitutionEduID) {
+    public ResponseEntity<Map<String, String>> linkFromInstitution(@Valid @RequestBody CreateInstitutionEduID createInstitutionEduID) {
+        LOG.debug("Post details for account verification in create-institution-flow");
+
         RequestInstitutionEduID requestInstitutionEduID = requestInstitutionEduIDRepository.findByHash(createInstitutionEduID.getHash())
                 .orElseThrow(() -> new ForbiddenException("Wrong hash"));
         String email = createInstitutionEduID.getEmail();
         this.disposableEmailProviders.verifyDisposableEmailProviders(email);
         this.emailGuessingPreventor.potentialUserEmailGuess();
 
-        userRepository.findUserByEmail(email).ifPresent(user -> {
+        Optional<User> userByEmail = userRepository.findUserByEmail(email);
+        boolean newUser = createInstitutionEduID.isNewUser();
+        if (newUser && userByEmail.isPresent()) {
             throw new DuplicateUserEmailException();
-        });
+        }
+        if (!newUser && userByEmail.isEmpty()) {
+            throw new UserNotFoundException("User not found: " + email);
+        }
+        User user = userByEmail.orElse(new User(createInstitutionEduID, requestInstitutionEduID.getUserInfo()));
+        requestInstitutionEduID.setUserId(user.getId());
+
         requestInstitutionEduID.setCreateInstitutionEduID(createInstitutionEduID);
+        //We need a new Hash for email verification, one that is not exposed to the browser
+        requestInstitutionEduID.setEmailHash(hash());
         requestInstitutionEduIDRepository.save(requestInstitutionEduID);
 
-        String uri = spRedirectUrl + "/sp/create-from-institution/finish";
-        mailBox.sendAccountVerificationCreateFromInstitution(new User(createInstitutionEduID, requestInstitutionEduID.getUserInfo()), requestInstitutionEduID.getHash(), uri);
+        String uri = basePath + "/myconext/api/sp/create-from-institution/finish";
+        mailBox.sendAccountVerificationCreateFromInstitution(user, requestInstitutionEduID.getEmailHash(), uri);
+
+        return ResponseEntity.ok(Map.of("status", "ok"));
     }
 
     @GetMapping("/sp/create-from-institution/poll")
     public LoginStatus pollCreateFromInstitution(@RequestParam("hash") String hash) {
+        LOG.debug("Poll login status for create-institution-flow");
+
         RequestInstitutionEduID requestInstitutionEduID = requestInstitutionEduIDRepository.findByHash(hash)
                 .orElseThrow(() -> new ForbiddenException("Wrong hash"));
         return requestInstitutionEduID.getLoginStatus();
@@ -233,55 +261,74 @@ public class AccountLinkerController {
 
     @GetMapping("/sp/create-from-institution/resendMail")
     public void resendMailCreateFromInstitution(@RequestParam("hash") String hash) {
+        LOG.debug("Resend mail for create-institution-flow");
+
         RequestInstitutionEduID requestInstitutionEduID = requestInstitutionEduIDRepository.findByHash(hash)
                 .orElseThrow(() -> new ForbiddenException("Wrong hash"));
         if (!requestInstitutionEduID.getLoginStatus().equals(LoginStatus.NOT_LOGGED_IN)) {
-            throw new ForbiddenException("User status is not NOT_LOGGIN_IN, but " + requestInstitutionEduID.getLoginStatus());
+            throw new ForbiddenException("User status is not NOT_LOGGED_IN, but " + requestInstitutionEduID.getLoginStatus());
         }
-        String uri = spRedirectUrl + "/sp/create-from-institution/finish";
+        String uri = basePath + "/myconext/api/sp/create-from-institution/finish";
         User user = new User(requestInstitutionEduID.getCreateInstitutionEduID(), requestInstitutionEduID.getUserInfo());
-        mailBox.sendAccountVerificationCreateFromInstitution(user, requestInstitutionEduID.getHash(), uri);
+        mailBox.sendAccountVerificationCreateFromInstitution(user, requestInstitutionEduID.getEmailHash(), uri);
 
     }
 
     @GetMapping("/sp/create-from-institution/finish")
-    public ResponseEntity createFromInstitutionFinish(HttpServletRequest request, @RequestParam("hash") String hash) throws UnsupportedEncodingException {
-        RequestInstitutionEduID requestInstitutionEduID = requestInstitutionEduIDRepository.findByHash(hash)
-                .orElseThrow(() -> new ForbiddenException("Wrong hash"));
+    public ResponseEntity createFromInstitutionFinish(HttpServletRequest request, @RequestParam("h") String emailHash) throws UnsupportedEncodingException {
+        LOG.debug("Finish create-institution-flow flow and create account");
+
+        RequestInstitutionEduID requestInstitutionEduID = requestInstitutionEduIDRepository.findByEmailHashAndLoginStatus(emailHash, LoginStatus.NOT_LOGGED_IN)
+                .orElseThrow(() -> new ForbiddenException("Wrong emailHash"));
         CreateInstitutionEduID createInstitutionEduID = requestInstitutionEduID.getCreateInstitutionEduID();
-        Map<String, Object> userInfo = requestInstitutionEduID.getUserInfo();
         if (createInstitutionEduID == null) {
-            throw new ForbiddenException("Wrong hash");
+            throw new ForbiddenException("Tampering");
         }
+        Map<String, Object> userInfo = requestInstitutionEduID.getUserInfo();
         //Now we can create the User and populate the SecurityContext
         String preferredLanguage = cookieByName(request, "lang").map(Cookie::getValue).orElse("en");
-        User user = new User(
-                UUID.randomUUID().toString(),
-                createInstitutionEduID.getEmail(),
-                (String) userInfo.get("givenName"),
-                (String) userInfo.get("familyName"),
-                schacHomeOrganization,
-                preferredLanguage,
-                mijnEduIDEntityId,
-                serviceProviderResolver);
+        User user;
+        boolean existingUser = !createInstitutionEduID.isNewUser() && StringUtils.hasText(requestInstitutionEduID.getUserId());
+        if (existingUser) {
+            user = userRepository.findById(requestInstitutionEduID.getUserId()).orElseThrow(() -> new UserNotFoundException("User not found"));
+        } else {
+            user = new User(
+                    UUID.randomUUID().toString(),
+                    createInstitutionEduID.getEmail(),
+                    (String) userInfo.get("given_name"),
+                    (String) userInfo.get("family_name"),
+                    schacHomeOrganization,
+                    preferredLanguage,
+                    mijnEduIDEntityId,
+                    serviceProviderResolver);
+            user.setNewUser(false);
+        }
         ResponseEntity<Object> responseEntity = saveOrUpdateLinkedAccountToUser(
                 user,
-                this.spRedirectUrl + "/personal",
+                this.spRedirectUrl + "/security?new=" + (existingUser ? "false" : "true"),
                 false,
                 false,
                 null,
                 null,
                 null,
                 userInfo);
+        requestInstitutionEduID.setLoginStatus(LoginStatus.LOGGED_IN_SAME_DEVICE);
+        requestInstitutionEduIDRepository.save(requestInstitutionEduID);
+
         UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(user, null,
                 user.getAuthorities());
-        SecurityContextHolder.getContext().setAuthentication(authentication);
+        SecurityContext context = SecurityContextHolder.getContext();
+        context.setAuthentication(authentication);
+        HttpSession session = request.getSession();
+        session.setAttribute(SPRING_SECURITY_CONTEXT_KEY, context);
+
         return responseEntity;
     }
 
     @GetMapping("/sp/oidc/link")
     public ResponseEntity startSPLinkAccountFlow(Authentication authentication) throws UnsupportedEncodingException {
         LOG.debug("Start link account flow");
+
         User principal = (User) authentication.getPrincipal();
         String state = passwordEncoder.encode(principal.getUid());
 
@@ -312,6 +359,8 @@ public class AccountLinkerController {
 
     @GetMapping("/sp/oidc/redirect")
     public ResponseEntity spFlowRedirect(Authentication authentication, @RequestParam("code") String code, @RequestParam("state") String state) throws UnsupportedEncodingException {
+        LOG.debug("In SP redirect link account");
+
         User principal = (User) authentication.getPrincipal();
         String uid = principal.getUid();
         Optional<User> userOptional = userRepository.findUserByUid(uid);
@@ -320,8 +369,6 @@ public class AccountLinkerController {
         if (!passwordEncoder.matches(user.getUid(), URLDecoder.decode(state, StandardCharsets.UTF_8))) {
             throw new ForbiddenException("Non matching user");
         }
-
-        LOG.debug("In SP redirect link account");
 
         return doRedirect(code, user, this.spFlowRedirectUri, this.spRedirectUrl + "/personal",
                 false, false, null, null,

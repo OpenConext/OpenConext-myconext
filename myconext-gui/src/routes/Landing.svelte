@@ -1,5 +1,5 @@
 <script>
-    import {user, config, redirectPath} from "../stores/user";
+    import {config} from "../stores/user";
     import {onMount} from "svelte";
     import I18n from "i18n-js";
     import {navigate} from "svelte-routing";
@@ -23,7 +23,7 @@
 
 </script>
 
-<style>
+<style lang="scss">
     .landing {
         display: flex;
         flex-direction: column;
@@ -35,7 +35,12 @@
     }
 
     div.inner {
-        margin: 25px auto;
+        margin: 25px auto auto 200px;
+        max-width: 600px;
+
+        @media (max-width: 800px) {
+            margin: 25px auto;
+        }
     }
 
     h3 {
@@ -50,7 +55,7 @@
     <div class="inner">
         {#if isLogoutRedirect}
             <h3>{I18n.t("landing.logoutTitle")}</h3>
-            <div >
+            <div>
                 <Button label={I18n.t("landing.loginAgain")}
                         large={true}
                         onClick={loginAgain}/>
@@ -59,7 +64,7 @@
         {/if}
         {#if isAccountDeletionRedirect}
             <h3>{I18n.t("landing.deleteTitle")}</h3>
-            <div >
+            <div>
                 <Button label={I18n.t("landing.registerAgain")}
                         large={true}
                         onClick={loginAgain}/>

@@ -60,8 +60,8 @@ public class User implements Serializable, UserDetails {
 
     public User(CreateInstitutionEduID createInstitutionEduID, Map<String, Object> userInfo) {
         this.email = createInstitutionEduID.getEmail();
-        this.givenName = (String) userInfo.get("givenName");
-        this.familyName = (String) userInfo.get("familyName");
+        this.givenName = (String) userInfo.get("given_name");
+        this.familyName = (String) userInfo.get("family_name");
     }
 
     public User(String uid, String email, String givenName, String familyName, String schacHomeOrganization, String preferredLanguage,

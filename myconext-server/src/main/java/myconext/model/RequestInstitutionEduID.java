@@ -21,6 +21,8 @@ public class RequestInstitutionEduID implements Serializable {
 
     private String hash;
 
+    private String emailHash;
+
     private Date expiresIn;
 
     private Map<String, Object> userInfo;
@@ -28,6 +30,8 @@ public class RequestInstitutionEduID implements Serializable {
     private CreateInstitutionEduID createInstitutionEduID;
 
     private LoginStatus loginStatus;
+
+    private String userId;
 
     public RequestInstitutionEduID(String hash, Map<String, Object> userInfo) {
         this.expiresIn = Date.from(LocalDateTime.now().plusHours(1).atZone(ZoneId.systemDefault()).toInstant());
@@ -42,5 +46,13 @@ public class RequestInstitutionEduID implements Serializable {
 
     public void setLoginStatus(LoginStatus loginStatus) {
         this.loginStatus = loginStatus;
+    }
+
+    public void setUserId(String userId) {
+        this.userId = userId;
+    }
+
+    public void setEmailHash(String emailHash) {
+        this.emailHash = emailHash;
     }
 }

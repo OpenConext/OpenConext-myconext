@@ -30,9 +30,14 @@
     onMount(() => {
         const urlSearchParams = new URLSearchParams(window.location.search);
         const testWebAuthn = urlSearchParams.get("success");
+        const newUser = urlSearchParams.get("new");
         if (testWebAuthn) {
             flash.setValue(I18n.t("webauthn.testFlash"), 3750);
         }
+        if (newUser) {
+            flash.setValue(I18n.t(`createFromInstitution.welcome${newUser === "false" ? "Existing" : ""}`), 3750);
+        }
+
     });
 
     const doForgetMe = showConfirmation => () => {

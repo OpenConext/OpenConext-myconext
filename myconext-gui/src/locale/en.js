@@ -66,6 +66,7 @@ I18n.translations.en = {
     eppnAlreadyLinked: {
         header: "Connection not added!",
         info: "Your eduID could not be linked. The trusted account with which you just logged in, is already linked to a different eduID account: {{email}}.",
+        infoNew: "You can't request an eduID account with the trusted account with which you just logged in. This institutional account is already linked to a different eduID account: {{email}}.",
         retryLink: "Retry"
     },
     edit: {
@@ -404,6 +405,8 @@ I18n.translations.en = {
         alreadyHaveAnEduID: "Already have an eduID account? <a href=\"{{location}}\">Login!</a>",
         info: "When you proceed you will be asked to login at the institution you want to link to your eduID. After a successful login you will come back here.",
         startFlow: "Start registration",
+        welcome: "Your eduID account has been created",
+        welcomeExisting: "Your eduID account has been linked to your insitutional account"
     },
     linkFromInstitution: {
         header: "Hi {{name}}",
@@ -413,7 +416,7 @@ I18n.translations.en = {
         emailForbidden: "The creation of an eduID account for this email-domain is denied, please contact <a href=\"mailto:help@eduid.nl\">help@eduid.nl</a> if you think this email-domain is valid.",
         emailInUse1: "This email is already in use.",
         emailInUse2: "Try another, or ",
-        emailInUse3: " login with this eduID account.",
+        emailInUse3: " link with this eduID account.",
         invalidEmail: "Invalid email",
         institutionDomainNameWarning: "It looks like you entered an institutional email address. Please note that when you no longer study at or work for that institution, you can no longer use that email address.",
         institutionDomainNameWarning2: "We recommend using your personal email address for eduID.",
@@ -421,5 +424,20 @@ I18n.translations.en = {
         allowedDomainNamesError2: "eduID is restricted to be used only for allowed domains.",
         agreeWithTerms: "<span>I agree with <a tabindex='-1' href='https://eduid.nl/terms-of-use/' target='_blank'>the terms of service.</a> I also understand <a tabindex='-1' href='https://eduid.nl/privacy_policy/' target='_blank'>the privacy policy</a>.</span>",
         requestEduIdButton: "Request your eduID",
+    },
+    pollFromInstitution: {
+        header: "Check your email!",
+        info: "To sign in, click the link in the email we sent to <strong>{{email}}</strong>.",
+        awaiting: "Waiting for you to click the link...",
+        openGMail: "Open Gmail.com",
+        openOutlook: "Open Outlook.com",
+        spam: "Can't find the email? Check your spam folder.",
+        loggedIn: "Login succeeded!",
+        loggedInInfo: "You can close this tab / window.",
+        timeOutReached: "Timeout!",
+        timeOutReachedInfo: "Your link has expired. Please go back to the service you where heading to and try again.",
+        resend: "Still can't find the email?",
+        resendLink: "Send the email again.",
+        mailResend: "Check your inbox again. We've sent another email with a validation link.",
     }
 };
