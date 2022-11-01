@@ -1,6 +1,14 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [7.0.7]
+- Allow replacement of recovery tokens
+- Send an email when logging in from a new location, including geo-location
+- Prevent the usage of known disposable email providers
+- Allow removing the password
+- Fix logging out of account-gui
+- Require MFA (app) login by sending an AuthnContextClassref
+
 ## [7.0.0]
 - Add support for authenticating with a [tiqr](https://tiqr.org) app.
 
