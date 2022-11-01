@@ -129,7 +129,7 @@ public class AccountLinkerControllerTest extends AbstractIntegrationTest {
         user = doRedirect(body);
         linkedAccount = user.getLinkedAccounts().get(0);
 
-        assertEquals(linkedAccount.getInstitutionIdentifier(), "12345678");
+        assertEquals("12345678", linkedAccount.getInstitutionIdentifier());
         assertEquals("affiliate@mock.idp", linkedAccount.getEduPersonAffiliations().get(0));
     }
 
@@ -328,7 +328,7 @@ public class AccountLinkerControllerTest extends AbstractIntegrationTest {
                 .contentType(ContentType.JSON)
                 .get("/myconext/api/sp/oidc/redirect")
                 .getHeader("Location");
-        assertEquals(location, "http://localhost:3001/personal");
+        assertEquals("http://localhost:3001/personal", location);
 
         User user = userRepository.findOneUserByEmail("jdoe@example.com");
         assertEquals(3, user.getLinkedAccounts().size());
@@ -483,7 +483,7 @@ public class AccountLinkerControllerTest extends AbstractIntegrationTest {
                 .get("/myconext/api/sp/create-from-institution/poll")
                 .as(new TypeRef<>() {
                 });
-        assertEquals(loginStatus, LoginStatus.NOT_LOGGED_IN);
+        assertEquals(LoginStatus.NOT_LOGGED_IN, loginStatus);
     }
 
     @Test
@@ -605,7 +605,7 @@ public class AccountLinkerControllerTest extends AbstractIntegrationTest {
     public void spCreateFromInstitutionLinkFromInstitutionWrongHash() throws JsonProcessingException {
         Map<Object, Object> userInfo = userInfoMap("new-user@qwerty.com");
         String hash = getHashFromCreateInstitutionFlow(userInfo);
-        CreateInstitutionEduID createInstitutionEduID = new CreateInstitutionEduID(hash+"bogus", "jdoe@example.com", false);
+        CreateInstitutionEduID createInstitutionEduID = new CreateInstitutionEduID(hash + "bogus", "jdoe@example.com", false);
         given()
                 .when()
                 .contentType(ContentType.JSON)
@@ -636,7 +636,8 @@ public class AccountLinkerControllerTest extends AbstractIntegrationTest {
                 .queryParam("h", emailHash)
                 .get("/myconext/api/sp/create-from-institution/finish")
                 .getHeader("Location");
-        assertEquals(location, "http://localhost:3001/security?new=true");
+        User user = userRepository.findUserByEmail("new@example.com").get();
+        assertEquals("http://localhost:3000/create-from-institution-login?key=" + user.getCreateFromInstitutionKey(), location);
     }
 
     @Test
@@ -660,7 +661,8 @@ public class AccountLinkerControllerTest extends AbstractIntegrationTest {
                 .queryParam("h", emailHash)
                 .get("/myconext/api/sp/create-from-institution/finish")
                 .getHeader("Location");
-        assertEquals(location, "http://localhost:3001/security?new=false");
+        User user = userRepository.findUserByEmail("jdoe@example.com").get();
+        assertEquals("http://localhost:3000/create-from-institution-login?key=" + user.getCreateFromInstitutionKey(), location);
     }
 
     @Test
@@ -686,7 +688,7 @@ public class AccountLinkerControllerTest extends AbstractIntegrationTest {
                 .queryParam("h", emailHash)
                 .get("/myconext/api/sp/create-from-institution/finish")
                 .then()
-                        .statusCode(404);
+                .statusCode(404);
     }
 
     private Map<Object, Object> userInfoMap(String eppn) {

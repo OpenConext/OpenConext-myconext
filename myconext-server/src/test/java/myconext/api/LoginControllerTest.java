@@ -94,4 +94,45 @@ public class LoginControllerTest extends AbstractIntegrationTest {
         assertNull(user.getEnrollmentVerificationKey());
     }
 
+    @Test
+    public void testCreateFromInstitutionLogin() {
+        User user = userRepository.findUserByEmail("jdoe@example.com").get();
+        user.setNewUser(false);
+        String createFromInstitutionKey = UUID.randomUUID().toString();
+        user.setCreateFromInstitutionKey(createFromInstitutionKey);
+        userRepository.save(user);
+        given()
+                .redirects().follow(false)
+                .when()
+                .queryParam("key", createFromInstitutionKey)
+                .get("/create-from-institution-login")
+                .then()
+                .statusCode(302)
+                .cookie("username", user.getEmail())
+                .header("Location",
+                        "http://localhost:3001/security?new=false");
+
+        user = userRepository.findUserByEmail("jdoe@example.com").get();
+        assertNull(user.getCreateFromInstitutionKey());
+    }
+
+    @Test
+    public void testCreateFromInstitutionLoginNewUser() {
+        User user = userRepository.findUserByEmail("jdoe@example.com").get();
+        String createFromInstitutionKey = UUID.randomUUID().toString();
+        user.setCreateFromInstitutionKey(createFromInstitutionKey);
+        user.setNewUser(true);
+        userRepository.save(user);
+        given()
+                .redirects().follow(false)
+                .when()
+                .queryParam("key", createFromInstitutionKey)
+                .get("/create-from-institution-login")
+                .then()
+                .statusCode(302)
+                .cookie("username", user.getEmail())
+                .header("Location",
+                        "http://localhost:3001/security?new=true");
+    }
+
 }

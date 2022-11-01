@@ -45,6 +45,7 @@ public class User implements Serializable, UserDetails {
     private String userHandle;
     private boolean forgottenPassword;
     private String enrollmentVerificationKey;
+    private String createFromInstitutionKey;
 
     private Map<String, List<String>> attributes = new HashMap<>();
     private Map<String, Object> surfSecureId = new HashMap<>();
@@ -273,5 +274,9 @@ public class User implements Serializable, UserDetails {
 
     public void setEnrollmentVerificationKey(String enrollmentVerificationKey) {
         this.enrollmentVerificationKey = enrollmentVerificationKey;
+    }
+
+    public void setCreateFromInstitutionKey(String createFromInstitutionKey) {
+        this.createFromInstitutionKey = createFromInstitutionKey;
     }
 }

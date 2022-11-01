@@ -4,6 +4,9 @@ import myconext.exceptions.UserNotFoundException;
 import myconext.model.User;
 import myconext.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -14,12 +17,14 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
 import static myconext.security.GuestIdpAuthenticationRequestFilter.REGISTER_MODUS_COOKIE_NAME;
+import static org.springframework.security.web.context.HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY;
 
 @RestController
 public class LoginController {
@@ -137,6 +142,34 @@ public class LoginController {
         request.getSession().invalidate();
         SecurityContextHolder.clearContext();
         String redirectLocation = String.format("%s/landing?%s", this.config.get("spBaseUrl"), param);
+        response.sendRedirect(redirectLocation);
+    }
+
+    @GetMapping("create-from-institution-login")
+    public void createFromInstitutionLogin(HttpServletRequest request,
+                                           HttpServletResponse response,
+                                           @RequestParam(value = "key") String key) throws IOException {
+        User user = userRepository.findUserByCreateFromInstitutionKey(key)
+                .orElseThrow(() -> new UserNotFoundException("User by createFromInstitutionKey not found"));
+        boolean newUser = user.isNewUser();
+        user.setNewUser(false);
+        user.setCreateFromInstitutionKey(null);
+        userRepository.save(user);
+
+        Cookie usernameCookie = new Cookie("username", user.getEmail());
+        usernameCookie.setMaxAge(365 * 60 * 60 * 24);
+        usernameCookie.setSecure(secureCookie);
+        usernameCookie.setPath("/");
+        response.addCookie(usernameCookie);
+
+        UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(user, null,
+                user.getAuthorities());
+        SecurityContext context = SecurityContextHolder.getContext();
+        context.setAuthentication(authentication);
+        HttpSession session = request.getSession();
+        session.setAttribute(SPRING_SECURITY_CONTEXT_KEY, context);
+
+        String redirectLocation = String.format("%s/security?new=%s", this.config.get("spBaseUrl"), newUser ? "true" : "false");
         response.sendRedirect(redirectLocation);
     }
 }

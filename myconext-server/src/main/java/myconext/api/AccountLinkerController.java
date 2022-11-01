@@ -74,7 +74,7 @@ public class AccountLinkerController {
     private final UserRepository userRepository;
     private final MailBox mailBox;
     private final String magicLinkUrl;
-    private final String idpErrorRedirectUrl;
+    private final String idpBaseRedirectUrl;
     private final String spRedirectUrl;
     private final String basePath;
     private final long removalNonValidatedDurationDays;
@@ -100,7 +100,7 @@ public class AccountLinkerController {
             @Value("${mijn_eduid_entity_id}") String mijnEduIDEntityId,
             @Value("${schac_home_organization}") String schacHomeOrganization,
             @Value("${email.magic-link-url}") String magicLinkUrl,
-            @Value("${idp_redirect_url}") String idpErrorRedirectUrl,
+            @Value("${idp_redirect_url}") String idpBaseRedirectUrl,
             @Value("${sp_redirect_url}") String spRedirectUrl,
             @Value("${oidc.client-id}") String clientId,
             @Value("${oidc.secret}") String clientSecret,
@@ -124,7 +124,7 @@ public class AccountLinkerController {
         this.schacHomeOrganization = schacHomeOrganization;
         this.mijnEduIDEntityId = mijnEduIDEntityId;
         this.magicLinkUrl = magicLinkUrl;
-        this.idpErrorRedirectUrl = idpErrorRedirectUrl;
+        this.idpBaseRedirectUrl = idpBaseRedirectUrl;
         this.spRedirectUrl = spRedirectUrl;
         this.clientId = clientId;
         this.clientSecret = clientSecret;
@@ -149,7 +149,7 @@ public class AccountLinkerController {
 
         Optional<SamlAuthenticationRequest> optionalSamlAuthenticationRequest = authenticationRequestRepository.findByIdAndNotExpired(id);
         if (!optionalSamlAuthenticationRequest.isPresent()) {
-            return ResponseEntity.status(HttpStatus.FOUND).location(URI.create(this.idpErrorRedirectUrl + "/expired")).build();
+            return ResponseEntity.status(HttpStatus.FOUND).location(URI.create(this.idpBaseRedirectUrl + "/expired")).build();
         }
         SamlAuthenticationRequest samlAuthenticationRequest = optionalSamlAuthenticationRequest.get();
 
@@ -301,11 +301,11 @@ public class AccountLinkerController {
                     preferredLanguage,
                     mijnEduIDEntityId,
                     serviceProviderResolver);
-            user.setNewUser(false);
         }
+        user.setCreateFromInstitutionKey(hash());
         ResponseEntity<Object> responseEntity = saveOrUpdateLinkedAccountToUser(
                 user,
-                this.spRedirectUrl + "/security?new=" + (existingUser ? "false" : "true"),
+                this.idpBaseRedirectUrl + "/create-from-institution-login?key=" + user.getCreateFromInstitutionKey(),
                 false,
                 false,
                 null,
@@ -315,6 +315,7 @@ public class AccountLinkerController {
         requestInstitutionEduID.setLoginStatus(LoginStatus.LOGGED_IN_SAME_DEVICE);
         requestInstitutionEduIDRepository.save(requestInstitutionEduID);
 
+        //This is primarily for localhost development, in real environments the login will be done by Shibboleth filter
         UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(user, null,
                 user.getAuthorities());
         SecurityContext context = SecurityContextHolder.getContext();
@@ -384,7 +385,7 @@ public class AccountLinkerController {
 
         Optional<SamlAuthenticationRequest> optionalSamlAuthenticationRequest = authenticationRequestRepository.findByIdAndNotExpired(id);
         if (!optionalSamlAuthenticationRequest.isPresent()) {
-            return ResponseEntity.status(HttpStatus.FOUND).location(URI.create(this.idpErrorRedirectUrl + "/expired")).build();
+            return ResponseEntity.status(HttpStatus.FOUND).location(URI.create(this.idpBaseRedirectUrl + "/expired")).build();
         }
         SamlAuthenticationRequest samlAuthenticationRequest = optionalSamlAuthenticationRequest.get();
         String userId = samlAuthenticationRequest.getUserId();
@@ -403,17 +404,17 @@ public class AccountLinkerController {
 
         String charSet = Charset.defaultCharset().name();
 
-        String idpStudentAffiliationRequiredUri = this.idpErrorRedirectUrl + "/affiliation-missing/" +
+        String idpStudentAffiliationRequiredUri = this.idpBaseRedirectUrl + "/affiliation-missing/" +
                 samlAuthenticationRequest.getId() +
                 "?h=" + samlAuthenticationRequest.getHash() +
                 "&redirect=" + URLEncoder.encode(this.magicLinkUrl, charSet);
 
-        String idpValidNamesRequiredUri = this.idpErrorRedirectUrl + "/valid-name-missing/" +
+        String idpValidNamesRequiredUri = this.idpBaseRedirectUrl + "/valid-name-missing/" +
                 samlAuthenticationRequest.getId() +
                 "?h=" + samlAuthenticationRequest.getHash() +
                 "&redirect=" + URLEncoder.encode(this.magicLinkUrl, charSet);
 
-        String eppnAlreadyLinkedRequiredUri = this.idpErrorRedirectUrl + "/eppn-already-linked/" +
+        String eppnAlreadyLinkedRequiredUri = this.idpBaseRedirectUrl + "/eppn-already-linked/" +
                 samlAuthenticationRequest.getId() +
                 "?h=" + samlAuthenticationRequest.getHash() +
                 "&redirect=" + URLEncoder.encode(this.magicLinkUrl, charSet);

@@ -38,4 +38,7 @@ public interface UserRepository extends MongoRepository<User, String> {
     Optional<User> findUserByUserHandle(String userHandle);
 
     Optional<User> findUserByEnrollmentVerificationKey(String enrollmentVerificationKey);
+
+    Optional<User> findUserByCreateFromInstitutionKey(String createFromInstitutionKey);
+
 }
