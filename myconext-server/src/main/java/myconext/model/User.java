@@ -10,6 +10,7 @@ import myconext.manage.ServiceProviderResolver;
 import myconext.tiqr.SURFSecureID;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.Transient;
+import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -36,6 +37,7 @@ public class User implements Serializable, UserDetails {
     private String email;
     private String givenName;
     private String familyName;
+    @Indexed
     private String uid;
     private String schacHomeOrganization;
     private String password;
@@ -44,9 +46,11 @@ public class User implements Serializable, UserDetails {
     private String webAuthnIdentifier;
     private String userHandle;
     private boolean forgottenPassword;
+    @Indexed
     private String enrollmentVerificationKey;
+    @Indexed
     private String createFromInstitutionKey;
-
+    //Attributes and surfSecureId can't be final because of Jackson serialization (despite what your IDE tells tou)
     private Map<String, List<String>> attributes = new HashMap<>();
     private Map<String, Object> surfSecureId = new HashMap<>();
 
