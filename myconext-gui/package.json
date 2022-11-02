@@ -27,6 +27,10 @@
     "webpack-cli": "^4.10.0",
     "webpack-dev-server": "^4.9"
   },
+  "resolutions": {
+    "glob-parent": "5.1.2",
+    "minimatch": "^5.1.0"
+  },
   "scripts": {
     "build": "cross-env NODE_ENV=production webpack",
     "dev": "webpack-dev-server --open public",
@@ -41,8 +45,5 @@
     "postcss": "^8.4.5",
     "sass": "^1",
     "svelte-routing": "^1.4.2"
-  },
-  "resolutions": {
-    "glob-parent": "5.1.2"
   }
 }

@@ -33,7 +33,7 @@ public class User implements Serializable, UserDetails {
 
     @Id
     private String id;
-
+    //Do not index the email here, this is already done in MongoMapping with a custom strength (case-insensitive)
     private String email;
     private String givenName;
     private String familyName;
