@@ -573,6 +573,7 @@ public class UserControllerTest extends AbstractIntegrationTest {
                 .as(Map.class);
         assertEquals("jdoe@example.com", res.get("email"));
         assertFalse(res.containsKey("password"));
+        assertFalse(res.containsKey("surfSecureId"));
     }
 
     @Test

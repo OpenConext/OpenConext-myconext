@@ -710,13 +710,14 @@ public class UserController implements ServiceProviderHolder {
         challengeField.set(challengeContainer, challenge);
     }
 
-    @GetMapping("sp/personal")
+    @GetMapping("/sp/personal")
     public ResponseEntity personal(Authentication authentication) throws JsonProcessingException {
         User user = this.userFromAuthentication(authentication);
         ObjectWriter objectWriter = objectMapper.writerWithDefaultPrettyPrinter();
         String userString = objectMapper.writeValueAsString(user);
         Map map = objectMapper.readValue(userString, Map.class);
         map.remove("password");
+        map.remove("surfSecureId");
         return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON)
                 .body(objectWriter.writeValueAsString(map));
     }
