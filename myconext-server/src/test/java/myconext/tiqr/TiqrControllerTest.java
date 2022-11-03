@@ -248,6 +248,10 @@ public class TiqrControllerTest extends AbstractIntegrationTest {
 
     @Test
     public void spDeactivationNoVerificationStep() throws IOException {
+        User user = userRepository.findOneUserByEmail("jdoe@example.com");
+        user.getSurfSecureId().clear();
+        userRepository.save(user);
+
         doEnrollmment(false);
 
         given()

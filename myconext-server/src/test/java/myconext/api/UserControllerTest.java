@@ -942,7 +942,11 @@ public class UserControllerTest extends AbstractIntegrationTest {
                 .as(new TypeRef<>() {
 
                 });
-        assertEquals(List.of(LoginOptions.FIDO.getValue(), LoginOptions.PASSWORD.getValue(), LoginOptions.MAGIC.getValue()), loginOptions);
+        assertEquals(List.of(
+                LoginOptions.APP.getValue(),
+                LoginOptions.FIDO.getValue(),
+                LoginOptions.PASSWORD.getValue(),
+                LoginOptions.MAGIC.getValue()), loginOptions);
     }
 
     @Test
