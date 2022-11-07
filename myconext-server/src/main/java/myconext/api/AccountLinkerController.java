@@ -85,6 +85,7 @@ public class AccountLinkerController {
     private final ServiceProviderResolver serviceProviderResolver;
     private final String mijnEduIDEntityId;
     private final String schacHomeOrganization;
+    private final boolean createEduIDInstitutionEnabled;
 
     private final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
     private final EmailGuessingPrevention emailGuessingPreventor;
@@ -114,6 +115,7 @@ public class AccountLinkerController {
             @Value("${account_linking.idp_external_validation_entity_id}") String idpExternalValidationEntityId,
             @Value("${account_linking.myconext_sp_entity_id}") String myConextSpEntityId,
             @Value("${feature.use_external_validation}") boolean useExternalValidationFeature,
+            @Value("${feature.create_eduid_institution_enabled}") boolean createEduIDInstitutionEnabled,
             @Value("${email_guessing_sleep_millis}") int emailGuessingSleepMillis) {
         this.authenticationRequestRepository = authenticationRequestRepository;
         this.userRepository = userRepository;
@@ -138,6 +140,7 @@ public class AccountLinkerController {
         this.idpExternalValidationEntityId = idpExternalValidationEntityId;
         this.myConextSpEntityId = myConextSpEntityId;
         this.useExternalValidationFeature = useExternalValidationFeature;
+        this.createEduIDInstitutionEnabled = createEduIDInstitutionEnabled;
         this.emailGuessingPreventor = new EmailGuessingPrevention(emailGuessingSleepMillis);
     }
 
@@ -181,7 +184,7 @@ public class AccountLinkerController {
         LOG.debug("In redirect for create-institution-flow");
 
         HttpSession session = request.getSession(false);
-        if (session == null) {
+        if (session == null || !createEduIDInstitutionEnabled) {
             throw new ForbiddenException("No session enabled");
         }
         String storedState = session.getId();

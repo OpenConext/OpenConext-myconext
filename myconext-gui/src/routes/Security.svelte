@@ -293,7 +293,7 @@
         <h2>{I18n.t("security.title")}</h2>
         <p class="info">{I18n.t("security.subTitle")}</p>
         <div class="tiqr-app">
-            {#if $user.loginOptions.includes("useApp") }
+            {#if $user.loginOptions.includes("useApp") && $user.registration &&  $user.registration.notificationType}
                 <div class="information">
                     <h4>{I18n.t("security.tiqr.app")}</h4>
 

@@ -346,18 +346,19 @@
             <Header/>
             <div class="content">
                 <Router url="{url}">
-                    <Route path="/create-from-institution" component={CreateFromInstitution}/>
-                    <Route path="/create-from-institution/eppn-already-linked" component={EppnAlreadyLinked}/>
-                    <Route path="/create-from-institution/expired" component={Expired}/>
-                    <Route path="/create-from-institution/poll/:hash" let:params>
-                        <AwaitLinkFromInstitutionMail hash="{params.hash}"/>
-                    </Route>
-                    <Route path="/create-from-institution/link/:hash" let:params>
-                        <LinkFromInstitution hash="{params.hash}"/>
-                    </Route>
+                    {#if $config.createEduIDInstitutionEnabled}
+                        <Route path="/create-from-institution" component={CreateFromInstitution}/>
+                        <Route path="/create-from-institution/eppn-already-linked" component={EppnAlreadyLinked}/>
+                        <Route path="/create-from-institution/expired" component={Expired}/>
+                        <Route path="/create-from-institution/poll/:hash" let:params>
+                            <AwaitLinkFromInstitutionMail hash="{params.hash}"/>
+                        </Route>
+                        <Route path="/create-from-institution/link/:hash" let:params>
+                            <LinkFromInstitution hash="{params.hash}"/>
+                        </Route>
+                    {/if}
                     <Route path="/landing" component={Landing}/>
                     <Route component={NotFound}/>
-
                 </Router>
             </div>
         </div>

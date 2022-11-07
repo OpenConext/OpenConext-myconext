@@ -326,6 +326,7 @@ I18n.translations.en = {
         timeOutInfoFirst: "Your session timed out. Click this ",
         timeOutInfoLast: " to try again.",
         timeOutInfoLink: "link",
+        openEduIDApp: "Open the app on this device"
     },
     recovery: {
         header: "Set up a recovery method",

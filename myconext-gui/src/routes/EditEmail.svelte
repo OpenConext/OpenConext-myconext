@@ -106,7 +106,7 @@
     <label for="verifiedEmail">{I18n.t("email.email")}</label>
     <input id="verifiedEmail"
            class:error={emailEquality || duplicateEmail}
-           type="text"
+           type="email"
            spellcheck="false"
            bind:value={verifiedEmail}/>
     {#if emailEquality}

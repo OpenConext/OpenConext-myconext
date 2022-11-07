@@ -51,6 +51,7 @@ public class LoginController {
                            @Value("${feature.use_deny_allow_list.allow_enabled}") boolean featureAllowList,
                            @Value("${feature.use_external_validation}") boolean useExternalValidation,
                            @Value("${oidc-token-api.enabled}") boolean featureOidcTokenAPI,
+                           @Value("${feature.create_eduid_institution_enabled}") boolean createEduIDInstitutionEnabled,
                            @Value("${feature.create_eduid_institution_landing}") boolean createEduIDInstitutionLanding,
                            @Value("${email_spam_threshold_seconds}") long emailSpamThresholdSeconds) {
         this.config.put("loginUrl", basePath + "/login");
@@ -70,6 +71,7 @@ public class LoginController {
         this.config.put("featureConnections", featureConnections);
         this.config.put("useExternalValidation", useExternalValidation);
         this.config.put("emailSpamThresholdSeconds", emailSpamThresholdSeconds);
+        this.config.put("createEduIDInstitutionEnabled", createEduIDInstitutionEnabled);
         this.config.put("createEduIDInstitutionLanding", createEduIDInstitutionLanding);
         this.secureCookie = secureCookie;
         this.userRepository = userRepository;

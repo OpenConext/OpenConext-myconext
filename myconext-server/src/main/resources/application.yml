@@ -66,6 +66,8 @@ feature:
   use_deny_allow_list:
     allow_enabled: False
     allow_location: "classpath:/deny-allow/allowed.json"
+  # Do we allow the create-from-institution flow
+  create_eduid_institution_enabled: True
   # Do we show the landing page for the create-from-institution flow
   create_eduid_institution_landing: True
 

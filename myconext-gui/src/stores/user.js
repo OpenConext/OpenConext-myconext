@@ -33,7 +33,8 @@ export const config = writable({
     featureOidcTokenAPI: false,
     featureConnections: false,
     featureAllowList: false,
-    featureWarningEducationalEmailDomain: false
+    featureWarningEducationalEmailDomain: false,
+    createEduIDInstitutionEnabled: false
 });
 
 export const redirectPath = writable("");

@@ -103,7 +103,7 @@
         <p class="methods">{I18n.t("phoneVerification.text")}</p>
 
         <input class:error={phoneNumberIncorrect}
-               autocomplete="current-password"
+               type="tel"
                id="password-field"
                spellcheck="false"
                on:keydown={handleEnter}

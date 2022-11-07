@@ -11,7 +11,7 @@
         display: flex;
 
         &.margin {
-            margin: 25px 0;
+            margin: 25px auto;
         }
 
     }

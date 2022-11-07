@@ -327,6 +327,7 @@ I18n.translations.nl = {
         timeOutInfoFirst: "Je sessie is verlopen. Klik op deze ",
         timeOutInfoLast: " om het opnieuw te proberen.",
         timeOutInfoLink: "link",
+        openEduIDApp: "Open de app op dit apparaat"
     },
     recovery: {
         header: "Een herstelmethode instellen",
