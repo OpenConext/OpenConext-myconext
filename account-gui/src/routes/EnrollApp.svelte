@@ -8,6 +8,7 @@
     import {poll} from "../utils/poll";
     import {navigate} from "svelte-routing";
     import {links} from "../stores/conf";
+    import Button from "../components/Button.svelte";
 
     let showSpinner = true;
     let hash = null;
@@ -53,6 +54,15 @@
 
 <style lang="scss">
 
+    .mobile-qr-code {
+        display: flex;
+        flex-direction: column;
+
+        .button-link-container {
+            margin: auto;
+        }
+    }
+
     img.qr-code {
         cursor: none;
     }
@@ -83,7 +93,16 @@
     <h2 class="header">{I18n.t("useApp.scan")}</h2>
     <ImageContainer>
         {#if onMobile}
-            <a href={url}><img class="qr-code" src="{qrcode}" alt="qr-code"></a>
+            <div class="mobile-qr-code">
+                <a class="qr-code-link" href={url}>
+                    <img class="qr-code" src="{qrcode}" alt="qr-code">
+                </a>
+                <div class="button-link-container">
+                    <Button href={url}
+                            onClick={() => window.location.href = url}
+                            label={I18n.t("useApp.openEduIDApp")}/>
+                </div>
+            </div>
         {:else}
             <img class="qr-code" src="{qrcode}" alt="qr-code">
         {/if}

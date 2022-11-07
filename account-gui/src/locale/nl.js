@@ -162,6 +162,7 @@ I18n.translations.nl = {
         qrCodePostfix: "en scan deze.",
         offline: "Wanneer je apparaat offline is, moet je een ",
         offlineLink: "eenmalige code invoeren.",
+        openEduIDApp: "Open de app op dit apparaat",
         lost: "Je app verloren?",
         lostLink: "Lees op <a href=\"https://eduid.nl/help\" target=\"_blank\">hoe je een nieuwe moet registreren</a>.",
         timeOut: "Sessie timeout",

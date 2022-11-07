@@ -9,9 +9,10 @@
 
     .image-container {
         display: flex;
+        margin: 0 auto;
 
         &.margin {
-            margin: 25px 0;
+            margin: 25px auto;
         }
 
     }

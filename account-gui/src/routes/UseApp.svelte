@@ -15,6 +15,7 @@
     import {cookieNames} from "../constants/cookieNames";
     import {loginPreferences} from "../constants/loginPreferences";
     import {navigate} from "svelte-routing";
+    import Button from "../components/Button.svelte";
 
     export let id;
 
@@ -123,8 +124,21 @@
 
 <style lang="scss">
 
+    .mobile-qr-code {
+        display: flex;
+        flex-direction: column;
+
+        .button-link-container {
+            margin: auto;
+        }
+    }
+
     img.qr-code {
         cursor: none;
+    }
+
+    .on-mobile {
+        margin-top: 15px;
     }
 
     .info-row {
@@ -207,7 +221,16 @@
     <ImageContainer icon={showQrCode ? null : pushIcon} margin={!showQrCode}>
         {#if showQrCode}
             {#if onMobile}
-                <a href={url}><img class="qr-code" src="{qrCode}" alt="qr-code"></a>
+                <div class="mobile-qr-code">
+                    <a class="qr-code-link" href={url}>
+                        <img class="qr-code" src="{qrCode}" alt="qr-code">
+                    </a>
+                    <div class="button-link-container">
+                        <Button href={url}
+                                onClick={() => window.location.href = url}
+                                label={I18n.t("useApp.openEduIDApp")}/>
+                    </div>
+                </div>
             {:else}
                 <img class="qr-code" src="{qrCode}" alt="qr-code">
             {/if}
@@ -216,7 +239,7 @@
 
     {#if showQrCode }
         <div class="info-row">
-            <span>{I18n.t("useApp.offline")}
+            <span class:on-mobile={onMobile}>{I18n.t("useApp.offline")}
                 <a href="/qr"
                    on:click|preventDefault|stopPropagation={toggleShowTOTPLink}>{I18n.t("useApp.offlineLink")}</a>
             </span>

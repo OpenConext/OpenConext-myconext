@@ -10,6 +10,7 @@
     import {authenticationStatus} from "../../constants/authenticationStatus";
     import critical from "../../icons/critical.svg";
     import {navigate} from "svelte-routing";
+    import Button from "../../components/Button.svelte";
 
     let showSpinner = true;
     let timeOut = false;
@@ -123,8 +124,21 @@
         color: var(--color-primary-green);
     }
 
+    .mobile-qr-code {
+        display: flex;
+        flex-direction: column;
+
+        .button-link-container {
+            margin: auto;
+        }
+    }
+
     img.qr-code {
         cursor: none;
+    }
+
+    .on-mobile {
+        margin-top: 15px;
     }
 
     .info-row {
@@ -187,86 +201,96 @@
 
 </style>
 <div class="use-app">
-        {#if showSpinner}
-            <Spinner/>
-        {:else if timeOut}
-            <h2 class="header">{I18n.t("useApp.timeOut")}</h2>
-            <p class="time-out">
-                <span>{I18n.t("useApp.timeOutInfoFirst")}</span>
-                <a href="/"
-                   on:click|preventDefault|stopPropagation={() => window.location.reload(true)}>{I18n.t("useApp.timeOutInfoLink")}</a>
-                <span>{I18n.t("useApp.timeOutInfoLast")}</span>
-            </p>
+    {#if showSpinner}
+        <Spinner/>
+    {:else if timeOut}
+        <h2 class="header">{I18n.t("useApp.timeOut")}</h2>
+        <p class="time-out">
+            <span>{I18n.t("useApp.timeOutInfoFirst")}</span>
+            <a href="/"
+               on:click|preventDefault|stopPropagation={() => window.location.reload(true)}>{I18n.t("useApp.timeOutInfoLink")}</a>
+            <span>{I18n.t("useApp.timeOutInfoLast")}</span>
+        </p>
+    {:else}
+        {#if showQrCode}
+            <h2 class="header">{I18n.t("useApp.scan")}</h2>
         {:else}
+            <h2 class="header">{I18n.t("useApp.header")}</h2>
+            <p class="explanation">{I18n.t("useApp.info")}</p>
+        {/if}
+        <ImageContainer icon={showQrCode ? null : pushIcon} margin={!showQrCode}>
             {#if showQrCode}
-                <h2 class="header">{I18n.t("useApp.scan")}</h2>
-            {:else}
-                <h2 class="header">{I18n.t("useApp.header")}</h2>
-                <p class="explanation">{I18n.t("useApp.info")}</p>
-            {/if}
-            <ImageContainer icon={showQrCode ? null : pushIcon} margin={!showQrCode}>
-                {#if showQrCode}
-                    {#if onMobile}
-                        <a href={url}><img class="qr-code" src="{qrCode}" alt="qr-code"></a>
-                    {:else}
-                        <img class="qr-code" src="{qrCode}" alt="qr-code">
-                    {/if}
+                {#if onMobile}
+                    <div class="mobile-qr-code">
+                        <a class="qr-code-link" href={url}>
+                            <img class="qr-code" src="{qrCode}" alt="qr-code">
+                        </a>
+                        <div class="button-link-container">
+                            <Button href={url}
+                                    onClick={() => window.location.href = url}
+                                    larger={true}
+                                    label={I18n.t("enrollApp.openEduIDApp")}/>
+                        </div>
+                    </div>
+                {:else}
+                    <img class="qr-code" src="{qrCode}" alt="qr-code">
                 {/if}
-            </ImageContainer>
+            {/if}
+        </ImageContainer>
 
-            {#if showQrCode }
-                <div class="info-row">
-            <span>{I18n.t("useApp.offline")}
+        {#if showQrCode }
+            <div class="info-row">
+            <span class:on-mobile={onMobile}>{I18n.t("useApp.offline")}
                 <a href="/qr"
                    on:click|preventDefault|stopPropagation={toggleShowTOTPLink}>{I18n.t("useApp.offlineLink")}</a>
             </span>
-                </div>
-                {#if showTOTPLink}
-                    <div class="totp-value-container">
+            </div>
+            {#if showTOTPLink}
+                <div class="totp-value-container">
 
-                        {#each Array(6).fill("") as val, index}
-                            <input type="text"
-                                   class="totp-value"
-                                   spellcheck="false"
-                                   id={`number-${index}`}
-                                   name={`number-${index}`}
-                                   disabled={(totp[index] || "").length === 0 && ((index !== 0 && totp[index - 1] === ""))}
-                                   maxlength={1}
-                                   value={totp[index] || ""}
-                                   on:input={onInputTotp(index)}
-                                   on:keydown={onKeyDownTotp(index)}
-                                   bind:this={refs[index]}/>
-                        {/each}
+                    {#each Array(6).fill("") as val, index}
+                        <input type="text"
+                               class="totp-value"
+                               spellcheck="false"
+                               id={`number-${index}`}
+                               name={`number-${index}`}
+                               disabled={(totp[index] || "").length === 0 && ((index !== 0 && totp[index - 1] === ""))}
+                               maxlength={1}
+                               value={totp[index] || ""}
+                               on:input={onInputTotp(index)}
+                               on:keydown={onKeyDownTotp(index)}
+                               bind:this={refs[index]}/>
+                    {/each}
+                </div>
+                {#if wrongResponse}
+                    <div class="error">
+                        <span class="svg">{@html critical}</span>
+                        <span>{I18n.t("useApp.responseIncorrect")}</span>
                     </div>
-                    {#if wrongResponse}
-                        <div class="error">
-                            <span class="svg">{@html critical}</span>
-                            <span>{I18n.t("useApp.responseIncorrect")}</span>
-                        </div>
-                    {/if}
                 {/if}
-            {:else}
-                <div class="info-row">
+            {/if}
+        {:else}
+            <div class="info-row">
         <span>
             <span class="note">{I18n.t("useApp.noNotification")}</span>
             <a href="/qr"
                on:click|preventDefault|stopPropagation={() => showQrCode = !showQrCode}>{I18n.t("useApp.qrCodeLink")}</a>
             <span>{I18n.t("useApp.qrCodePostfix")}</span>
         </span>
-                </div>
-                <div class="info-row">
+            </div>
+            <div class="info-row">
         <span>
             <span class="note">{I18n.t("useApp.lost")}</span>
             {@html I18n.t("useApp.lostLink")}
         </span>
-                </div>
-            {/if}
-            {#if suspendedResult}
-                <div class="error">
-                    <span class="svg">{@html critical}</span>
-                    <div class="suspended">
-                        <span>{I18n.t("useApp.suspendedResult")}</span>
-                        {#if minutes > 0}
+            </div>
+        {/if}
+        {#if suspendedResult}
+            <div class="error">
+                <span class="svg">{@html critical}</span>
+                <div class="suspended">
+                    <span>{I18n.t("useApp.suspendedResult")}</span>
+                    {#if minutes > 0}
                     <span>{I18n.t("useApp.accountSuspended",
                         {
                             minutes: minutes,
@@ -274,12 +298,12 @@
                         }
                     )}
                     </span>
-                        {:else}
-                            <span>{I18n.t("useApp.accountNotSuspended")}</span>
-                        {/if}
-                    </div>
+                    {:else}
+                        <span>{I18n.t("useApp.accountNotSuspended")}</span>
+                    {/if}
                 </div>
-            {/if}
+            </div>
         {/if}
+    {/if}
 </div>
 
