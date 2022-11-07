@@ -74,7 +74,7 @@ I18n.translations.nl = {
         learn: "Zie hoe je jouw",
         learnLink: "account kunt herstellen",
         useApp: "Gebruik de <strong>eduID app</strong> om in te loggen met je mobiel.",
-        useWebAuthn: "Gebruik je <strong>beveiligingssleuten</strong>.",
+        useWebAuthn: "Gebruik je <strong>beveiligingssleutel</strong>.",
         useLink: "Ontvang een <strong>magische link</strong> in je inbox.",
         usePassword: "Gebruik <strong>een wachtwoord</strong>.",
     },
