@@ -130,7 +130,7 @@ I18n.translations.nl = {
             dateTimeOn: "om",
             backupMethod: "Herstelmethode",
             sms: "SMS",
-            code: "Backup code"
+            code: "Herstelcode"
         }
     },
     home: {
