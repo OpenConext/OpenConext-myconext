@@ -5,7 +5,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.mustachejava.DefaultMustacheFactory;
 import com.github.mustachejava.MustacheFactory;
 import lombok.SneakyThrows;
-import myconext.model.CreateInstitutionEduID;
 import myconext.model.EmailsSend;
 import myconext.model.User;
 import myconext.model.UserLogin;
@@ -24,15 +23,13 @@ import javax.mail.internet.MimeMessage;
 import java.io.*;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 public class MailBox {
 
     private static final Log LOG = LogFactory.getLog(MailBox.class);
     private static final String SANITIZE_NAME = "[^\\p{L} '-]";
-
+    private static final List<String> supportedLanguages = List.of("en", "nl");
 
     private final JavaMailSender mailSender;
     private final String magicLinkUrl;
@@ -94,6 +91,7 @@ public class MailBox {
         sendMail("account_verification", title, variables, preferredLanguage(user), user.getEmail(), true);
 
     }
+
     public void sendAccountConfirmation(User user) {
         String title = this.getTitle("account_confirmation", user);
         Map<String, Object> variables = variables(user, title);
@@ -205,7 +203,8 @@ public class MailBox {
 
     private String preferredLanguage(User user) {
         String preferredLanguage = user.getPreferredLanguage();
-        return StringUtils.hasText(preferredLanguage) ? preferredLanguage : LocaleContextHolder.getLocale().getLanguage();
+        String localeLanguage = StringUtils.hasText(preferredLanguage) ? preferredLanguage.toLowerCase(Locale.ROOT) : LocaleContextHolder.getLocale().getLanguage();
+        return (StringUtils.hasText(localeLanguage) && supportedLanguages.contains(localeLanguage)) ? localeLanguage.toLowerCase(Locale.ROOT) : "en";
     }
 
     @SneakyThrows

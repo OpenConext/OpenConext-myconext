@@ -12,15 +12,10 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.util.ReflectionTestUtils;
 
 import javax.mail.Message;
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.util.Date;
-import java.util.Locale;
 import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -157,6 +152,20 @@ public class MailBoxTest extends AbstractIntegrationTest {
     @Test
     public void preventLink() throws Exception {
         nameEscapeTest("https://föóäërg", "- jj'", "httpsföóäërg - jj&#39;");
+    }
+
+    @Test
+    public void defaultLocale() throws Exception {
+        User user = user("jdoe@example.com");
+        user.setPreferredLanguage("pl");
+        mailBox.sendAddPassword(user, "hash");
+
+        MimeMessage mimeMessage = mailMessage();
+        MimeMessageParser parser = new MimeMessageParser(mimeMessage);
+        parser.parse();
+
+        String htmlContent = parser.getHtmlContent();
+        assertTrue(htmlContent.contains("Someone just requested"));
     }
 
     private void nameEscapeTest(String givenName, String familyName, String expected) throws Exception {
