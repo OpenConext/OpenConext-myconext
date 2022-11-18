@@ -68,7 +68,7 @@
 
 <h2>{I18n.t("stepup.header")}</h2>
 <p class="explanation">{@html I18n.t("stepup.info", {name: DOMPurify.sanitize(serviceName)})}</p>
-<Verification explanationText={I18n.t("appRequired.info")} verified={false}/>
+<Verification explanationText={I18n.t("appRequired.info", {service: DOMPurify.sanitize(serviceName)})} verified={false}/>
 <p class="explanation last">{@html I18n.t("appRequired.info2")}</p>
 <ButtonContainer>
     <Button className="cancel"

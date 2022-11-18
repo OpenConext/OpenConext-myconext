@@ -2,6 +2,7 @@
     import I18n from "i18n-js";
     import oneMoreThingEmpty from "../icons/onemorething_empty.svg";
     import oneMoreThingFilled from "../icons/onemorething_filled.svg";
+    import DOMPurify from "dompurify";
 
     export let explanation;
     export let explanationText;
@@ -35,7 +36,7 @@
     <p class="info">{I18n.t("confirmStepup.conditionMet")}</p>
 {/if}
 <div class="conditions-container">
-    <p class="conditions">{verified ? I18n.t(`stepUpVerification.${explanation}`) : (explanationText || I18n.t(`stepUpExplanation.${explanation}`))}</p>
+    <p class="conditions">{@html verified ? I18n.t(`stepUpVerification.${explanation}`) : (DOMPurify.sanitize(explanationText) || I18n.t(`stepUpExplanation.${explanation}`))}</p>
     <span class="icon">{@html verified ? oneMoreThingFilled : oneMoreThingEmpty}</span>
 
 </div>
