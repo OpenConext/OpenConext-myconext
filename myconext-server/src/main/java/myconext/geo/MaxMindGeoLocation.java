@@ -55,7 +55,7 @@ public class MaxMindGeoLocation implements GeoLocation {
         this.databaseReader = new DatabaseReader.Builder(inputStream).withCache(new CHMCache()).build();
     }
 
-    private File latestDownloadBinary(boolean refresh) throws IOException {
+    private File latestDownloadBinary(boolean refresh) {
         long start = System.currentTimeMillis();
         LOG.info("Locating latest download binary geo2lite database");
 
