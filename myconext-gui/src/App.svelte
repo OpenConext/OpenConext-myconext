@@ -158,6 +158,9 @@
         background-color: white;
     }
 
+    :global(body.modal-open) {
+        overflow: hidden;
+    }
 
     @media (max-width: 800px) {
         .myconext {

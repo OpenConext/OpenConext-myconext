@@ -2,6 +2,7 @@
     import I18n from "i18n-js";
     import Button from "./Button.svelte";
     import DOMPurify from "dompurify";
+    import {onDestroy, onMount} from "svelte";
 
     export let submit;
     export let cancel;
@@ -20,6 +21,14 @@
             cancel();
         }
     };
+
+    onMount(() => {
+        document.body.classList.add("modal-open");
+    })
+
+    onDestroy(()=> {
+        document.body.classList.remove("modal-open");
+    })
 
 </script>
 
@@ -42,6 +51,7 @@
         max-height: calc(100vh - 4em);
         border-radius: 8px;
         background: white;
+        overflow: scroll;
     }
 
     .modal-header {
