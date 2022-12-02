@@ -4,7 +4,7 @@
     import arrowLeft from "../icons/arrow_4.svg";
     import {links} from "../stores/conf";
 
-    $: displayUserLink = $user.knownUser && $links.userLink;
+    $: displayUserLink = $user.knownUser && $user.knownUser.length > 0 && $links.userLink;
     $: displayBackArrow = $user.knownUser && $links.displayBackArrow && window.history.length > 1;
 
     onMount(() => {

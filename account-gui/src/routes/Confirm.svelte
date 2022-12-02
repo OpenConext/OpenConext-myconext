@@ -13,7 +13,8 @@
     import ImageContainer from "../components/ImageContainer.svelte";
     import {navigate} from "svelte-routing";
     import {proceed} from "../utils/sso";
-
+    import {user} from "../stores/user";
+    import DOMPurify from "dompurify";
     let serviceName = null;
     let explanation = null;
     let showSpinner = true;
@@ -31,7 +32,9 @@
         hash = urlSearchParams.get("h");
         const email = urlSearchParams.get("email");
         if (email) {
-            Cookies.set(cookieNames.USERNAME, decodeURIComponent(email), {
+            const decodedEmail = DOMPurify.sanitize(decodeURIComponent(email));
+            $user.knownUser = decodedEmail;
+            Cookies.set(cookieNames.USERNAME, decodedEmail, {
                 expires: 365,
                 secure: true,
                 sameSite: "Lax"

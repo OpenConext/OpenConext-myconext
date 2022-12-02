@@ -13,6 +13,8 @@
     import {onMount} from "svelte";
     import Button from "../components/Button.svelte";
     import {domains} from "../stores/domains";
+    import Cookies from "js-cookie";
+    import {cookieNames} from "../constants/cookieNames";
 
     export let id;
     let emailInUse = false;
@@ -27,6 +29,8 @@
         $links.displayBackArrow = true;
         $user.givenName = "";
         $user.familyName = "";
+        $user.knowUser = null;
+        Cookies.remove(cookieNames.USERNAME);
         fetchServiceName(id).then(res => {
             serviceName = res.name;
             showSpinner = false;
