@@ -5,7 +5,7 @@ import java.util.Random;
 
 public class VerificationCodeGenerator {
 
-    private static final char[] DEFAULT_CODEC = "123456789ABCDEFGHIJKLMNPQRSTUVWXYZ"
+    private static final char[] DEFAULT_CODEC = "346789ABCDEFGHJKMNPQRTUVWXY"
             .toCharArray();
 
     private static final char[] NUMBERS = "1234567890"
