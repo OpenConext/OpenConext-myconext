@@ -180,12 +180,12 @@ I18n.translations.en = {
         header: "Finish setup in the eduID app"
     },
     recovery: {
-        header: "Set up an APP recovery method",
+        header: "Set up a recovery method",
         info: "If you can't access eduID with the app or via email, you can use a recovery method to sign in to your eduID account.",
         methods: "The following methods are available.",
         phoneNumber: "Add a recovery phone number.",
         phoneNumberInfo: "You'll receive a text message with a code.",
-        backupCode: "Request a backup code.",
+        backupCode: "Request a recovery code.",
         backupCodeInfo: "The code can be used to sign in with.",
         save: "Save the code somewhere safe.",
         active: "This code is active now, but you can generate a new code within My-eduID anytime.",

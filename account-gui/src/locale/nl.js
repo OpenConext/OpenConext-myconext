@@ -180,12 +180,12 @@ I18n.translations.nl = {
         header: "Voltooi de installatie in de eduID app"
     },
     recovery: {
-        header: "Een APP-herstelmethode instellen",
+        header: "Een herstelmethode instellen",
         info: "Als je geen toegang hebt tot eduID met de app of via e-mail, kun je een herstelmethode gebruiken om in te loggen op je eduID-account.",
         methods: "De volgende methoden zijn beschikbaar.",
         phoneNumber: "Voeg een hersteltelefoonnummer toe.",
         phoneNumberInfo: "Je ontvangt een sms met een code.",
-        backupCode: "Vraag een back-upcode aan.",
+        backupCode: "Vraag een herstelcode aan.",
         backupCodeInfo: "De code kan worden gebruikt om in te loggen.",
         save: "Bewaar de code ergens veilig.",
         active: "Deze code is nu actief, maar je kan op elk moment een nieuwe code aanmaken binnen mijn eduID.",
