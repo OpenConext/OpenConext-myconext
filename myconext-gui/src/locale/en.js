@@ -332,7 +332,7 @@ I18n.translations.en = {
         header: "Set up a recovery method",
         changeHeader: "Change your recovery method",
         info: "If you can no longer use the eduID app, for example if your mobile phone is lost, you can register the eduID app again using the recovery method.",
-        changeInfo: "You have successfully authenticated with the eduID app. You can now change your recovery method.",
+        changeInfo: "You have successfully authenticated with the eduID app. You can now change your recovery method. ATTENTION: your current recovery method will be deactivated.",
         methods: "The following methods are available.",
         phoneNumber: "Add a recovery phone number.",
         phoneNumberInfo: "You'll receive a text message with a code.",
