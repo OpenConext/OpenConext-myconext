@@ -196,7 +196,7 @@ I18n.translations.nl = {
     },
     phoneVerification: {
         header: "Voeg een hersteltelefoonnummer toe",
-        info: "Je telefoonnummer wordt gebruikt voor veiligheidsdoeleinden, zoals het weer toegang te krijgen tot je account als je je app ooit kwijtraakt.",
+        info: "Je telefoonnummer wordt gebruikt om weer toegang te krijgen tot je account als je de app ooit kwijtraakt.",
         text: "We sturen je een code om je nummer te verifiëren.",
         verify: "Verifieer dit telefoonnummer",
         placeHolder: "+31 612345678",
