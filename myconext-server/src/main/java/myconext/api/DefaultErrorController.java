@@ -1,6 +1,7 @@
 package myconext.api;
 
 
+import myconext.exceptions.UserNotFoundException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,12 +32,10 @@ public class DefaultErrorController implements ErrorController {
     private static final Log LOG = LogFactory.getLog(DefaultErrorController.class);
 
     private final ErrorAttributes errorAttributes;
-    private final String redirectUrl;
 
     @Autowired
-    public DefaultErrorController(ErrorAttributes errorAttributes, @Value("${sp_redirect_url}") String redirectUrl) {
+    public DefaultErrorController(ErrorAttributes errorAttributes) {
         this.errorAttributes = errorAttributes;
-        this.redirectUrl = redirectUrl;
     }
 
     @RequestMapping("/error")
@@ -53,8 +52,11 @@ public class DefaultErrorController implements ErrorController {
             statusCode = result.containsKey("status") && (int) result.get("status") != 999 ?
                     HttpStatus.valueOf((int) result.get("status")) : INTERNAL_SERVER_ERROR;
         } else {
-            LOG.error("Error occurred", error);
-
+            if (error instanceof UserNotFoundException) {
+                LOG.error(error.getMessage());
+            } else {
+                LOG.error("Error occurred", error);
+            }
             //https://github.com/spring-projects/spring-boot/issues/3057
             ResponseStatus annotation = AnnotationUtils.getAnnotation(error.getClass(), ResponseStatus.class);
             statusCode = annotation != null ? annotation.value() : BAD_REQUEST;

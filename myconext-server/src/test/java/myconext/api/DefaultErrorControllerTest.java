@@ -20,7 +20,7 @@ public class DefaultErrorControllerTest {
 
     @Before
     public void before() {
-        subject = new DefaultErrorController(new DefaultErrorAttributes(), "http://localhost:3001");
+        subject = new DefaultErrorController(new DefaultErrorAttributes());
     }
 
     @Test
