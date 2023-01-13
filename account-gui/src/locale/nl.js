@@ -284,7 +284,7 @@ I18n.translations.nl = {
     appRequired: {
         header: "Login met de eduID app",
         info: "Dienst <strong>{{service}}</strong> heeft een login verzocht met de eduID app om je identiteit te bevestigen.",
-        info2: "Download de <strong>eduID-app</strong> en log veilig in zonder wachtwoord of toegang tot uw e-mail. Het duurt maar een minuut. Klik op <strong>Doorgaan</strong> voor de volgende stap.",
+        info2: "Download de <strong>eduID-app</strong> en log veilig in zonder wachtwoord of toegang tot je e-mail. Het duurt maar een minuut. Klik op <strong>Doorgaan</strong> voor de volgende stap.",
         cancel: "/cancel",
         no: "Ik weiger",
         yesLink: "/proceed",
