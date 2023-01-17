@@ -4,7 +4,6 @@ import myconext.exceptions.UserNotFoundException;
 import myconext.model.User;
 import myconext.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -53,7 +52,9 @@ public class LoginController {
                            @Value("${oidc-token-api.enabled}") boolean featureOidcTokenAPI,
                            @Value("${feature.create_eduid_institution_enabled}") boolean createEduIDInstitutionEnabled,
                            @Value("${feature.create_eduid_institution_landing}") boolean createEduIDInstitutionLanding,
-                           @Value("${email_spam_threshold_seconds}") long emailSpamThresholdSeconds) {
+                           @Value("${email_spam_threshold_seconds}") long emailSpamThresholdSeconds,
+                           @Value("${linked_accounts.removal-duration-days-non-validated}") long removalNonValidatedDurationDays,
+                           @Value("${linked_accounts.expiry-duration-days-non-validated}") long expirationValidatedDurationDays) {
         this.config.put("loginUrl", basePath + "/login");
         this.config.put("continueAfterLoginUrl", continueAfterLoginUrl);
         this.config.put("baseDomain", baseDomain);
@@ -73,6 +74,8 @@ public class LoginController {
         this.config.put("emailSpamThresholdSeconds", emailSpamThresholdSeconds);
         this.config.put("createEduIDInstitutionEnabled", createEduIDInstitutionEnabled);
         this.config.put("createEduIDInstitutionLanding", createEduIDInstitutionLanding);
+        this.config.put("expirationValidatedDurationDays", expirationValidatedDurationDays);
+        this.config.put("removalNonValidatedDurationDays", removalNonValidatedDurationDays);
         this.secureCookie = secureCookie;
         this.userRepository = userRepository;
     }

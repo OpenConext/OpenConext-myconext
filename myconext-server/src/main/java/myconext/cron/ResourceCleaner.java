@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
+import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.Date;
 import java.util.List;
@@ -51,25 +52,27 @@ public class ResourceCleaner {
             return;
         }
         Date now = new Date();
+        Instant nowInstant = now.toInstant();
+
         info(SamlAuthenticationRequest.class, authenticationRequestRepository.deleteByExpiresInBeforeAndRememberMe(now, false));
         info(PasswordResetHash.class, passwordResetHashRepository.deleteByExpiresInBefore(now));
         info(ChangeEmailHash.class, changeEmailHashRepository.deleteByExpiresInBefore(now));
         info(RequestInstitutionEduID.class, requestInstitutionEduIDRepository.deleteByExpiresInBefore(now));
 
-        Date seconds16Ago = Date.from(now.toInstant().minus(16, ChronoUnit.SECONDS));
+        Date seconds16Ago = Date.from(nowInstant.minus(16, ChronoUnit.SECONDS));
         info(EmailsSend.class, emailsSendRepository.deleteBySendAtBefore(seconds16Ago));
 
         List<User> users = userRepository.findByLinkedAccounts_ExpiresAtBefore(now);
         users.forEach(user -> {
             List<LinkedAccount> linkedAccounts = user.getLinkedAccounts().stream()
-                    .filter(linkedAccount -> linkedAccount.getExpiresAt().toInstant().isAfter(now.toInstant()))
+                    .filter(linkedAccount -> linkedAccount.getExpiresAt().toInstant().isAfter(nowInstant))
                     .collect(Collectors.toList());
             user.setLinkedAccounts(linkedAccounts);
             LOG.info(String.format("Removed expired linked account for user %s", user.getEmail()));
             userRepository.save(user);
         });
 
-        long dayAgo = now.toInstant().minus(1, ChronoUnit.DAYS).toEpochMilli() / 1000L;
+        long dayAgo = nowInstant.minus(1, ChronoUnit.DAYS).toEpochMilli() / 1000L;
         List<User> newUsersExpired = userRepository.findByNewUserTrueAndCreatedLessThan(dayAgo);
         if (newUsersExpired.isEmpty()) {
             LOG.info("No users found that have not finished registration last 24 hours");
