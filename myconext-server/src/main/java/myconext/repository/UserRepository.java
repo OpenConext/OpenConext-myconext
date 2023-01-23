@@ -41,4 +41,6 @@ public interface UserRepository extends MongoRepository<User, String> {
 
     Optional<User> findUserByCreateFromInstitutionKey(String createFromInstitutionKey);
 
+    @Query(value = "{ linkedAccounts: { $exists: true, $type: 'array', $ne: [] } }")
+    List<User> findByLinkedAccountsIsNotEmpty();
 }

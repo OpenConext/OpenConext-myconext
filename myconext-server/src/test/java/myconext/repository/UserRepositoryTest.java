@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -46,6 +47,24 @@ public class UserRepositoryTest extends AbstractIntegrationTest {
         long dayAgo = new Date().toInstant().minus(1, ChronoUnit.DAYS).toEpochMilli() / 1000L;
 
         List<User> users = userRepository.findByNewUserTrueAndCreatedLessThan(dayAgo);
+        assertEquals(1, users.size());
+    }
+
+    @Test
+    public void findByLinkedAccounts_eduPersonPrincipalNameIsNotNull() {
+        List<User> users = userRepository.findByLinkedAccountsIsNotEmpty();
+        assertEquals(1, users.size());
+
+        User user = userRepository.findUserByEmail("mdoe@example.com").get();
+        user.setLinkedAccounts(new ArrayList<>());
+        userRepository.save(user);
+        users = userRepository.findByLinkedAccountsIsNotEmpty();
+        assertEquals(1, users.size());
+
+        user = userRepository.findUserByEmail("mdoe@example.com").get();
+        user.setLinkedAccounts(null);
+        userRepository.save(user);
+        users = userRepository.findByLinkedAccountsIsNotEmpty();
         assertEquals(1, users.size());
     }
 }
