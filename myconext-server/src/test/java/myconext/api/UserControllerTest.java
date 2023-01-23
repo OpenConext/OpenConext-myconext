@@ -457,6 +457,30 @@ public class UserControllerTest extends AbstractIntegrationTest {
     }
 
     @Test
+    public void resetPasswordHashValid() {
+        User user = userRepository.findOneUserByEmail("jdoe@example.com");
+        passwordResetHashRepository.save(new PasswordResetHash(user, "hash"));
+        Boolean valid = given()
+                .when()
+                .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+                .param("hash", "hash")
+                .get("/myconext/api/sp/password-reset-hash-valid")
+                .as(Boolean.class);
+        assertTrue(valid);
+    }
+
+    @Test
+    public void resetPasswordHashInvalid() {
+        Boolean valid = given()
+                .when()
+                .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+                .param("hash", "hash")
+                .get("/myconext/api/sp/password-reset-hash-valid")
+                .as(Boolean.class);
+        assertFalse(valid);
+    }
+
+    @Test
     public void updateUserPassword() {
         SecureRandom random = new SecureRandom();
         PasswordEncoder passwordEncoder = new BCryptPasswordEncoder(-1, random);

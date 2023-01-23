@@ -78,6 +78,10 @@ export function resetPasswordLink() {
     return postPutJson("/myconext/api/sp/reset-password-link", {}, "PUT");
 }
 
+export function resetPasswordHashValid(hash) {
+    return fetchJson(`/myconext/api/sp/password-reset-hash-valid?hash=${hash}`);
+}
+
 export function startWebAuthFlow() {
     return fetchJson("/myconext/api/sp/security/webauthn");
 }

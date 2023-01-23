@@ -342,8 +342,16 @@ public class UserController implements ServiceProviderHolder {
         return ResponseEntity.ok(!emailHashes.isEmpty());
     }
 
+    @GetMapping("/sp/password-reset-hash-valid")
+    public ResponseEntity<Boolean> resetPasswordHashValid(Authentication authentication, @RequestParam("hash") String hash) {
+        User user = userFromAuthentication(authentication);
+        Optional<PasswordResetHash> optionalPasswordResetHash = passwordResetHashRepository.findByHashAndUserId(hash, user.getId());
+        boolean expired = optionalPasswordResetHash.isEmpty() || optionalPasswordResetHash.get().isExpired();
+        return ResponseEntity.ok(!expired);
+    }
+
     @PutMapping("/sp/update-password")
-    public ResponseEntity updateUserPassword(Authentication authentication, @RequestBody UpdateUserSecurityRequest updateUserRequest) {
+    public ResponseEntity<UserResponse> updateUserPassword(Authentication authentication, @RequestBody UpdateUserSecurityRequest updateUserRequest) {
         String userId = updateUserRequest.getUserId();
         User deltaUser = userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException(userId));
         User user = verifyAndFetchUser(authentication, deltaUser);
@@ -352,9 +360,12 @@ public class UserController implements ServiceProviderHolder {
         String newPassword = updateUserRequest.getNewPassword();
         boolean deletePassword = !StringUtils.hasText(newPassword);
 
-        passwordResetHashRepository
-                    .findByHashAndUserId(updateUserRequest.getHash(), user.getId())
-                    .orElseThrow(() -> new ForbiddenException("wrong_hash"));
+        PasswordResetHash passwordResetHash = passwordResetHashRepository
+                .findByHashAndUserId(updateUserRequest.getHash(), user.getId())
+                .orElseThrow(() -> new ForbiddenException("wrong_hash"));
+        if (passwordResetHash.isExpired()) {
+            throw new ForbiddenException("wrong_hash");
+        }
         if (deletePassword) {
             user.deletePassword();
         } else {
@@ -378,7 +389,6 @@ public class UserController implements ServiceProviderHolder {
         User user = userFromAuthentication(authentication);
         List<ChangeEmailHash> changeEmailHashes = changeEmailHashRepository.findByUserId(user.getId());
         changeEmailHashRepository.deleteAll(changeEmailHashes);
-        passwordResetHashRepository.deleteByUserId(user.getId());
 
         user.setForgottenPassword(true);
         userRepository.save(user);
