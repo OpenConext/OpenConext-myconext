@@ -316,7 +316,7 @@
                         </tr>
                         <tr>
                             <td class="attr last">{I18n.t("security.tiqr.activated")}</td>
-                            <td class="value last ">{dateFromEpoch($user.registration.updated, false)}</td>
+                            <td class="value last ">{dateFromEpoch($user.registration.created, false)}</td>
                         </tr>
                         </tbody>
                     </table>
