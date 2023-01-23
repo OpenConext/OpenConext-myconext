@@ -445,7 +445,8 @@ public class AccountLinkerController {
                                       String eppnAlreadyLinkedRequiredUri) throws UnsupportedEncodingException {
         Map<String, Object> body = requestUserInfo(code, oidcRedirectUri);
 
-        return saveOrUpdateLinkedAccountToUser(user, clientRedirectUri, validateNames, studentAffiliationRequired, idpStudentAffiliationRequiredUri, idpValidNamesRequiredUri, eppnAlreadyLinkedRequiredUri, body);
+        return saveOrUpdateLinkedAccountToUser(user, clientRedirectUri, validateNames, studentAffiliationRequired,
+                idpStudentAffiliationRequiredUri, idpValidNamesRequiredUri, eppnAlreadyLinkedRequiredUri, body);
     }
 
     private ResponseEntity<Object> saveOrUpdateLinkedAccountToUser(User user,

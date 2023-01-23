@@ -11,7 +11,9 @@
     onMount(() => {
         const urlParams = new URLSearchParams(window.location.search);
         email = decodeURIComponent(urlParams.get("email"));
-        fromInstitution = decodeURIComponent(urlParams.get("fromInstitution"));
+        const fromInstitutionParameter = urlParams.get("fromInstitution");
+        // decodeURIComponent(null) produces "null" which is defined
+        fromInstitution = fromInstitutionParameter ? decodeURIComponent(fromInstitutionParameter) : null;
     });
 
     const retry = () => {
