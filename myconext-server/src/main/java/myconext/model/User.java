@@ -196,7 +196,10 @@ public class User implements Serializable, UserDetails {
     @Transient
     @JsonIgnore
     public List<String> allEduPersonAffiliations() {
-        return linkedAccounts.stream().map(LinkedAccount::getEduPersonAffiliations).flatMap(Collection::stream).collect(Collectors.toList());
+        return linkedAccounts.stream()
+                .map(LinkedAccount::getEduPersonAffiliations)
+                .flatMap(Collection::stream)
+                .collect(Collectors.toList());
     }
 
     @Transient

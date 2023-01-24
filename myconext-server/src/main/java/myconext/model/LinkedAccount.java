@@ -51,4 +51,12 @@ public class LinkedAccount implements Serializable {
     public void setEduPersonAffiliations(List<String> eduPersonAffiliations) {
         this.eduPersonAffiliations = eduPersonAffiliations;
     }
+
+    public void setCreatedAt(Date createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public void setExpiresAt(Date expiresAt) {
+        this.expiresAt = expiresAt;
+    }
 }

@@ -53,7 +53,6 @@ public class LoginController {
                            @Value("${feature.create_eduid_institution_enabled}") boolean createEduIDInstitutionEnabled,
                            @Value("${feature.create_eduid_institution_landing}") boolean createEduIDInstitutionLanding,
                            @Value("${email_spam_threshold_seconds}") long emailSpamThresholdSeconds,
-                           @Value("${linked_accounts.removal-duration-days-non-validated}") long removalNonValidatedDurationDays,
                            @Value("${linked_accounts.expiry-duration-days-non-validated}") long expirationValidatedDurationDays) {
         this.config.put("loginUrl", basePath + "/login");
         this.config.put("continueAfterLoginUrl", continueAfterLoginUrl);
@@ -75,7 +74,6 @@ public class LoginController {
         this.config.put("createEduIDInstitutionEnabled", createEduIDInstitutionEnabled);
         this.config.put("createEduIDInstitutionLanding", createEduIDInstitutionLanding);
         this.config.put("expirationValidatedDurationDays", expirationValidatedDurationDays);
-        this.config.put("removalNonValidatedDurationDays", removalNonValidatedDurationDays);
         this.secureCookie = secureCookie;
         this.userRepository = userRepository;
     }

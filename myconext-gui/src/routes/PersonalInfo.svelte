@@ -1,5 +1,5 @@
 <script>
-    import {user} from "../stores/user";
+    import {user, config} from "../stores/user";
     import I18n from "i18n-js";
     import {navigate} from "svelte-routing";
     import writeSvg from "../icons/redesign/pencil-write.svg";
@@ -18,22 +18,29 @@
     let showStudentDetails = false;
     let showEduIDDetails = false;
 
+    const hasExpired = account => {
+        const createdAt = new Date(account.createdAt);
+        createdAt.setDate(createdAt.getDate() + parseInt($config.expirationValidatedDurationDays, 10));
+        account.expiresAtNonValidated = createdAt.getTime();
+        return new Date() > createdAt;
+    }
+
     const refresh = () => {
         showNameDetails = false;
         showStudentDetails = false;
         showEduIDDetails = false;
-
         const sortedAccounts = ($user.linkedAccounts || []).sort((a, b) => b.createdAt - a.createdAt);
-
-        studentVerifiedAccount = sortedAccounts.find(account => (account.eduPersonAffiliations || []).some(aff => aff && aff.startsWith("student"))) || {};
+        //Student verified and eduIDLinked expiry after
+        const expiredLinkedAccounts = sortedAccounts.filter(account => !hasExpired(account));
+        studentVerifiedAccount = expiredLinkedAccounts.find(account => (account.eduPersonAffiliations || [])
+            .some(aff => aff && aff.startsWith("student"))) || {};
         studentVerified = studentVerifiedAccount !== undefined && Object.keys(studentVerifiedAccount).length > 0;
 
-        eduIDLinked = sortedAccounts.length > 0;
-        eduIDLinkedAccount = eduIDLinked ? sortedAccounts[0] : {};
+        eduIDLinked = expiredLinkedAccounts.length > 0;
+        eduIDLinkedAccount = eduIDLinked ? expiredLinkedAccounts[0] : {};
 
         nameVerifiedAccount = sortedAccounts.find(account => account.givenName && account.familyName) || {};
         nameVerified = nameVerifiedAccount !== undefined && Object.keys(nameVerifiedAccount).length > 0;
-
     }
 
     refresh();
@@ -186,6 +193,7 @@
                     verifiedValue={`${nameVerifiedAccount.givenName} ${nameVerifiedAccount.familyName}`}
                     info={I18n.t("profile.firstAndLastNameInfo")}
                     buttonTxt={I18n.t("profile.verify")}
+                    expiresAtAttributeName="expiresAt"
                     refresh={refresh}/>
             <VerifiedUserRow
                     bind:showDetails={showStudentDetails}

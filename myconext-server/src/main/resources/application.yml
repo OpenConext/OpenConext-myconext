@@ -111,11 +111,9 @@ oidc:
   base-url: https://connect.test2.surfconext.nl
 
 linked_accounts:
-  # The duration that non validated linked accounts are valid - note that they are not removed and will be used for EPPN Pseudonymisation
+  # The duration that not name-validated linked accounts are valid - note that they are not removed and will be used for EPPN Pseudonymisation
   expiry-duration-days-non-validated: 180
-  # The duration after which non validated linked accounts are removed
-  removal-duration-days-non-validated: 540
-  # The duration after which validated linked accounts are removed
+  # The duration after which linked accounts are removed
   removal-duration-days-validated: 2190
 
 account_linking_context_class_ref:

@@ -86,7 +86,6 @@ public class GuestIdpAuthenticationRequestFilter extends IdpAuthenticationReques
     private final ExecutorService executor;
     private final int nudgeAppDays;
     private final int rememberMeQuestionAskedDays;
-    private final long removalNonValidatedDurationDays;
     private final long expiryNonValidatedDurationDays;
 
     public GuestIdpAuthenticationRequestFilter(SamlProviderProvisioning<IdentityProviderService> provisioning,
@@ -103,8 +102,7 @@ public class GuestIdpAuthenticationRequestFilter extends IdpAuthenticationReques
                                                boolean secureCookie,
                                                String magicLinkUrl,
                                                MailBox mailBox,
-                                               long expiryNonValidatedDurationDays,
-                                               long removalNonValidatedDurationDays) {
+                                               long expiryNonValidatedDurationDays) {
         super(provisioning, assertionStore);
         this.ssoSamlRequestMatcher = new SamlRequestMatcher(provisioning, "SSO");
         this.magicSamlRequestMatcher = new SamlRequestMatcher(provisioning, "magic");
@@ -123,7 +121,6 @@ public class GuestIdpAuthenticationRequestFilter extends IdpAuthenticationReques
         this.magicLinkUrl = magicLinkUrl;
         this.mailBox = mailBox;
         this.expiryNonValidatedDurationDays = expiryNonValidatedDurationDays;
-        this.removalNonValidatedDurationDays = removalNonValidatedDurationDays;
         this.executor = Executors.newSingleThreadExecutor();
     }
 
@@ -240,14 +237,14 @@ public class GuestIdpAuthenticationRequestFilter extends IdpAuthenticationReques
         authenticationContextClassReferenceValues = authenticationContextClassReferenceValues == null ?
                 Collections.emptyList() : authenticationContextClassReferenceValues;
         boolean validatedName = hasValidatedName(user);
+        boolean validatedNameACR = authenticationContextClassReferenceValues.contains(ACR.VALIDATE_NAMES);
         Instant now = new Date().toInstant();
         List<LinkedAccount> nonExpiredLinkedAccounts = linkedAccounts.stream()
                 .filter(linkedAccount -> {
                     Instant expiresAt = linkedAccount.getExpiresAt().toInstant();
-                    if (!validatedName) {
-                        //We distinguish between removal-duration and expiry-duration if the name has not been validated
-                        expiresAt = expiresAt.minus(removalNonValidatedDurationDays, ChronoUnit.DAYS)
-                                .plus(expiryNonValidatedDurationDays, ChronoUnit.DAYS);
+                    //Non-validated name ARC's expire much sooner than ACR.VALIDATE_NAMES
+                    if (!validatedNameACR) {
+                        expiresAt = linkedAccount.getCreatedAt().toInstant().plus(expiryNonValidatedDurationDays, ChronoUnit.DAYS);
                     }
                     return now.isBefore(expiresAt);
                 }).collect(toList());

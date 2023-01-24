@@ -35,8 +35,7 @@ export const config = writable({
     featureAllowList: false,
     featureWarningEducationalEmailDomain: false,
     createEduIDInstitutionEnabled: false,
-    expirationValidatedDurationDays: 0,
-    removalNonValidatedDurationDays: 0
+    expirationValidatedDurationDays: 0
 });
 
 export const redirectPath = writable("");

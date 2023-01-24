@@ -10,9 +10,12 @@ import myconext.model.ServiceProvider;
 import myconext.model.User;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.data.mongodb.core.schema.JsonSchemaObject;
 import org.springframework.util.StringUtils;
 
+import java.time.temporal.ChronoUnit;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -109,6 +112,26 @@ public class Migrations {
     @ChangeSet(order = "006", id = "deleteSession", author = "okke.harsta@surf.nl")
     public void deleteSession(MongockTemplate mongoTemplate) {
         mongoTemplate.remove(new Query(), "sessions");
+    }
+
+    @SuppressWarnings("unchecked")
+    @ChangeSet(order = "007", id = "expiresAtLinkedAccounts", author = "okke.harsta@surf.nl")
+    public void expiresAtLinkedAccounts(MongockTemplate mongoTemplate) {
+        Criteria criteria = Criteria.where("linkedAccounts").exists(true).type(JsonSchemaObject.Type.ARRAY).ne(new ArrayList<>());
+        List<User> users = mongoTemplate.find(new Query(criteria), User.class, "users");
+        users.forEach(user -> {
+            user.getLinkedAccounts().forEach(linkedAccount -> {
+                Date createdAt = linkedAccount.getCreatedAt();
+                //Should not happen, but just to be safe
+                if (createdAt == null) {
+                    createdAt = new Date();
+                    linkedAccount.setCreatedAt(createdAt);
+                }
+                Date expiresAt = Date.from(createdAt.toInstant().plus(2190, ChronoUnit.DAYS));
+                linkedAccount.setExpiresAt(expiresAt);
+            });
+            mongoTemplate.save(user);
+        });
     }
 
     protected User mergeEduIDs(User user) {

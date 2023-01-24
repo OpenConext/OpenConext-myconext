@@ -24,7 +24,6 @@ import static org.junit.Assert.*;
 public class GuestIdpAuthenticationRequestFilterTest {
 
     private final int expiryNonValidatedDurationDays = 180;
-    private final int removalNonValidatedDurationDays = 360;
 
     private final GuestIdpAuthenticationRequestFilter subject = new GuestIdpAuthenticationRequestFilter(null,
             null,
@@ -40,8 +39,7 @@ public class GuestIdpAuthenticationRequestFilterTest {
             false,
             null,
             null,
-            expiryNonValidatedDurationDays,
-            removalNonValidatedDurationDays);
+            expiryNonValidatedDurationDays);
 
     @Test
     public void isUserVerifiedByInstitutionNoLinkedAccounts() {
@@ -53,7 +51,7 @@ public class GuestIdpAuthenticationRequestFilterTest {
     @Test
     public void isUserVerifiedByInstitutionTrue() {
         User user = user("s@s.com", "nl");
-        Date createdAt = Date.from(new Date().toInstant().plus(removalNonValidatedDurationDays, ChronoUnit.DAYS));
+        Date createdAt = Date.from(new Date().toInstant().plus(40, ChronoUnit.DAYS));
         LinkedAccount linkedAccount = linkedAccount(createdAt, Arrays.asList("student@mobi.com"));
         user.getLinkedAccounts().add(linkedAccount);
         boolean userVerifiedByInstitution = userVerifiedByInstitution(user, ACR.LINKED_INSTITUTION);
@@ -81,7 +79,7 @@ public class GuestIdpAuthenticationRequestFilterTest {
     @Test
     public void isUserVerifiedByInstitutionStudent() {
         User user = user("s@s.com", "nl");
-        Date createdAt = Date.from(new Date().toInstant().plus(removalNonValidatedDurationDays, ChronoUnit.DAYS));
+        Date createdAt = Date.from(new Date().toInstant().plus(40, ChronoUnit.DAYS));
         LinkedAccount linkedAccount = linkedAccount(createdAt, Arrays.asList("student@example.com"));
         user.getLinkedAccounts().add(linkedAccount);
         boolean userVerifiedByInstitution = userVerifiedByInstitution(user, ACR.AFFILIATION_STUDENT);

@@ -77,7 +77,6 @@ public class AccountLinkerController {
     private final String idpBaseRedirectUrl;
     private final String spRedirectUrl;
     private final String basePath;
-    private final long removalNonValidatedDurationDays;
     private final long removalValidatedDurationDays;
     private final String idpExternalValidationEntityId;
     private final String myConextSpEntityId;
@@ -110,7 +109,6 @@ public class AccountLinkerController {
             @Value("${oidc.sp-create-from-institution-redirect-url}") String spCreateFromInstitutionRedirectUri,
             @Value("${oidc.base-url}") String oidcBaseUrl,
             @Value("${base_path}") String basePath,
-            @Value("${linked_accounts.removal-duration-days-non-validated}") long removalNonValidatedDurationDays,
             @Value("${linked_accounts.removal-duration-days-validated}") long removalValidatedDurationDays,
             @Value("${account_linking.idp_external_validation_entity_id}") String idpExternalValidationEntityId,
             @Value("${account_linking.myconext_sp_entity_id}") String myConextSpEntityId,
@@ -135,7 +133,6 @@ public class AccountLinkerController {
         this.spCreateFromInstitutionRedirectUri = spCreateFromInstitutionRedirectUri;
         this.basePath = basePath;
         this.oidcBaseUrl = oidcBaseUrl;
-        this.removalNonValidatedDurationDays = removalNonValidatedDurationDays;
         this.removalValidatedDurationDays = removalValidatedDurationDays;
         this.idpExternalValidationEntityId = idpExternalValidationEntityId;
         this.myConextSpEntityId = myConextSpEntityId;
@@ -470,8 +467,7 @@ public class AccountLinkerController {
         List<String> affiliations = parseAffiliations(body, schacHomeOrganization);
 
         if (StringUtils.hasText(schacHomeOrganization)) {
-            Date expiresAt = Date.from(new Date().toInstant()
-                    .plus(validateNames ? this.removalValidatedDurationDays : this.removalNonValidatedDurationDays, ChronoUnit.DAYS));
+            Date expiresAt = Date.from(new Date().toInstant().plus(this.removalValidatedDurationDays, ChronoUnit.DAYS));
             List<LinkedAccount> linkedAccounts = user.getLinkedAccounts();
             Optional<LinkedAccount> optionalLinkedAccount = linkedAccounts.stream()
                     .filter(linkedAccount -> linkedAccount.getSchacHomeOrganization().equals(schacHomeOrganization))
