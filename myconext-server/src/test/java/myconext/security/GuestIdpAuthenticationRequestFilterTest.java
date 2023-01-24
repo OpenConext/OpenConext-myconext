@@ -105,7 +105,7 @@ public class GuestIdpAuthenticationRequestFilterTest {
     @Test
     public void isUserVerifiedByInstitutionNoValidNamesAndExpired() {
         User user = user("s@s.com", "nl");
-        Date createdAt = Date.from(Instant.now().plus(10, ChronoUnit.DAYS));
+        Date createdAt = Date.from(Instant.now().minus(250, ChronoUnit.DAYS));
         LinkedAccount linkedAccount = linkedAccount(createdAt, Arrays.asList("affiliation"));
         user.getLinkedAccounts().add(linkedAccount);
         boolean userVerifiedByInstitution = subject.isUserVerifiedByInstitution(user, Collections.emptyList());
