@@ -425,7 +425,7 @@ I18n.translations.nl = {
         allowedDomainNamesError: "Domeinnaam {{domain}} niet toegestaan.",
         allowedDomainNamesError2: "eduID is beperkt om alleen te worden gebruikt door toegestane domeinen.",
         agreeWithTerms: "<span>Ik ga akkoord met <a tabindex='-1' href='https://eduid.nl/gebruiksvoorwaarden/' target='_blank'>de voorwaarden.</a> En ik begrijp <a tabindex='-1' href='https://eduid.nl/privacyverklaring/' target='_blank'>de privacyverklaring</a>.</span>",
-        requestEduIdButton: "Vraag je eduID aab",
+        requestEduIdButton: "Vraag je eduID aan",
     },
     pollFromInstitution: {
         header: "Open je mailbox!",
