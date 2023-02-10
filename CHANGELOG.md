@@ -1,6 +1,9 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [7.0.10]
+- Bugfix for Attribute Aggregation not storing new eduID identifiers.
+
 ## [7.0.9]
 - Create an eduID based upon a institution login https://my.domain/myconext/create-from-institution
 - Repair account-link expiration timing
