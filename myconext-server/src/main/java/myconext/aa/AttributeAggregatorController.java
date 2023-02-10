@@ -44,6 +44,7 @@ public class AttributeAggregatorController {
         List<UserAttribute> userAttributes = new ArrayList<>();
         userOptional.ifPresent(user -> {
             String eduID = user.computeEduIdForServiceProviderIfAbsent(spEntityId, serviceProviderResolver);
+            userRepository.save(user);
             userAttributes.add(new UserAttribute("urn:mace:eduid.nl:1.1", eduID));
         });
 
