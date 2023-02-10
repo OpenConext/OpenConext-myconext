@@ -1,5 +1,6 @@
 package myconext.api;
 
+import io.swagger.v3.oas.annotations.Hidden;
 import myconext.exceptions.UserNotFoundException;
 import myconext.model.User;
 import myconext.repository.UserRepository;
@@ -149,6 +150,7 @@ public class LoginController {
     }
 
     @GetMapping("create-from-institution-login")
+    @Hidden
     public void createFromInstitutionLogin(HttpServletRequest request,
                                            HttpServletResponse response,
                                            @RequestParam(value = "key") String key) throws IOException {

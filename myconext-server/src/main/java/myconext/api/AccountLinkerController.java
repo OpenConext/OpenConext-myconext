@@ -1,6 +1,7 @@
 package myconext.api;
 
 
+import io.swagger.v3.oas.annotations.Hidden;
 import myconext.cron.DisposableEmailProviders;
 import myconext.exceptions.DuplicateUserEmailException;
 import myconext.exceptions.ForbiddenException;
@@ -56,8 +57,8 @@ import static org.springframework.security.web.context.HttpSessionSecurityContex
 
 @RestController
 @RequestMapping("/myconext/api")
+@Hidden
 @SuppressWarnings("unchecked")
-
 public class AccountLinkerController {
 
     private static final Log LOG = LogFactory.getLog(AccountLinkerController.class);

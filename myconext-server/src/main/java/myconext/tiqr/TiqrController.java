@@ -1,6 +1,7 @@
 package myconext.tiqr;
 
 import com.google.zxing.WriterException;
+import io.swagger.v3.oas.annotations.Hidden;
 import myconext.exceptions.ExpiredAuthenticationException;
 import myconext.exceptions.ForbiddenException;
 import myconext.exceptions.UserNotFoundException;
@@ -46,6 +47,7 @@ import static myconext.tiqr.SURFSecureID.*;
 
 @RestController
 @RequestMapping("/tiqr")
+@Hidden
 public class TiqrController {
 
     private static final Log LOG = LogFactory.getLog(TiqrController.class);

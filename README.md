@@ -102,3 +102,9 @@ Endpoint to detect duplicate eduID's for SP's that have the same institutionGuid
 ```
 curl -u aa:secret 'https://login.test2.eduid.nl/myconext/api/system/eduid-duplicates' | jq .
 ```
+
+### OpenAPI Documentation
+
+http://localhost:8081/swagger-ui/index.html
+http://localhost:8081/v3/api-docs.yaml
+
