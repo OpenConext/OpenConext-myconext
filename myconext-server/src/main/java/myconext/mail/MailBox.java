@@ -59,7 +59,7 @@ public class MailBox {
             LOG.info("Initializing mail templates from file system: " + mailTemplatesDirectory.getFile().getAbsolutePath());
             mustacheFactory = new DefaultMustacheFactory(mailTemplatesDirectory.getFile());
         } else {
-            LOG.info("Initializing mail templates from JAR resoruce: " + mailTemplatesDirectory.getFilename());
+            LOG.info("Initializing mail templates from JAR resource: " + mailTemplatesDirectory.getFilename());
             mustacheFactory = new DefaultMustacheFactory(mailTemplatesDirectory.getFilename());
         }
         this.subjects = objectMapper.readValue(inputStream("subjects.json", mailTemplatesDirectory), new TypeReference<Map<String, Map<String, String>>>() {
