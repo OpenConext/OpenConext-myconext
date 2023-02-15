@@ -50,16 +50,16 @@ import static org.springframework.security.saml.saml2.signature.DigestMethod.SHA
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class SecurityConfiguration {
 
-    private static Log LOG = LogFactory.getLog(SecurityConfiguration.class);
+    private static final Log LOG = LogFactory.getLog(SecurityConfiguration.class);
 
     @Configuration
     @Order(1)
     public static class SamlSecurity extends SamlIdentityProviderSecurityConfiguration {
-        private Resource privateKeyPath;
-        private Resource certificatePath;
-        private List<ServiceProvider> serviceProviders = new ArrayList<>();
-        private String idpEntityId;
-        private BeanConfig beanConfig;
+        private final Resource privateKeyPath;
+        private final Resource certificatePath;
+        private final List<ServiceProvider> serviceProviders = new ArrayList<>();
+        private final String idpEntityId;
+        private final BeanConfig beanConfig;
 
         public SamlSecurity(BeanConfig beanConfig,
                             @Value("${private_key_path}") Resource privateKeyPath,

@@ -1,6 +1,7 @@
 package myconext.api;
 
 
+import io.swagger.v3.oas.annotations.Hidden;
 import myconext.exceptions.UserNotFoundException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -27,6 +28,7 @@ import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
 
 @RestController
+@Hidden
 public class DefaultErrorController implements ErrorController {
 
     private static final Log LOG = LogFactory.getLog(DefaultErrorController.class);

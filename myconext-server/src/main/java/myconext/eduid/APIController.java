@@ -1,5 +1,6 @@
 package myconext.eduid;
 
+import io.swagger.v3.oas.annotations.Hidden;
 import myconext.exceptions.UserNotFoundException;
 import myconext.model.EduID;
 import myconext.model.User;
@@ -22,6 +23,7 @@ import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping(value = "/myconext/api/eduid", produces = MediaType.APPLICATION_JSON_VALUE)
+@Hidden
 public class APIController {
 
     private static final Log LOG = LogFactory.getLog(APIController.class);

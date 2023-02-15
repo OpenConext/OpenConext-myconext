@@ -11,6 +11,13 @@ server:
   error:
     path: "/error"
 
+springdoc:
+  api-docs:
+    path: "/myconext/api/mobile/api-docs"
+  swagger-ui:
+    path: "/myconext/api/mobile/api-ui.html"
+    operationsSorter: method
+
 email:
   from: noreply@surfconext.nl
   magic-link-url: http://localhost:8081/saml/guest-idp/magic
