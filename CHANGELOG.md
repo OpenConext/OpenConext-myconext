@@ -1,6 +1,9 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [next]
+- Update image on app-nudge screen
+
 ## [7.0.10]
 - Bugfix for Attribute Aggregation not storing new eduID identifiers.
 
