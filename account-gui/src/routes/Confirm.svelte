@@ -8,7 +8,7 @@
     import {fetchServiceNameByHash} from "../api";
     import Cookies from "js-cookie";
     import {cookieNames} from "../constants/cookieNames";
-    import phone from "../icons/redesign/undraw_mobile_interface_re_1vv9.svg";
+    import phone from "../icons/redesign/eduIDapp.svg";
     import ButtonContainer from "../components/ButtonContainer.svelte";
     import ImageContainer from "../components/ImageContainer.svelte";
     import {navigate} from "svelte-routing";
@@ -72,4 +72,3 @@
     <Button href={I18n.t("nudgeApp.yesLink")} onClick={() => navigate(`/getapp?h=${hash}`)}
             label={I18n.t("nudgeApp.yes")}/>
 </ButtonContainer>
-
