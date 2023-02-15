@@ -64,7 +64,7 @@
 {/if}
 
 <h2 class="header">{I18n.t("nudgeApp.header")}</h2>
-<ImageContainer icon={phone}/>
+<ImageContainer icon={phone} margin={false}/>
 <p class="explanation">{@html I18n.t("nudgeApp.info")}</p>
 <ButtonContainer>
     <Button className="cancel" href={I18n.t("nudgeApp.noLink")} onClick={() => proceed($conf.magicLinkUrl)}
