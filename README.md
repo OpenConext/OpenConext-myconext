@@ -1,5 +1,5 @@
 # MyConext
-[![Build Status](https://travis-ci.org/OpenConext/OpenConext-myconext.svg)](https://travis-ci.org/OpenConext/OpenConext-myconext)
+[![JAVA CI](https://github.com/OpenConext/OpenConext-myconext/actions/workflows/actions.yml/badge.svg)](https://github.com/OpenConext/OpenConext-myconext/actions/workflows/actions.yml)
 [![codecov.io](https://codecov.io/github/OpenConext/OpenConext-myconext/coverage.svg)](https://codecov.io/github/OpenConext/OpenConext-myconext)
 
 An IdP for OpenConext. A user can create and manage his own identity. Authentication uses a magic-link by default, and FIDO2 or a password can be added later.
@@ -107,4 +107,3 @@ curl -u aa:secret 'https://login.test2.eduid.nl/myconext/api/system/eduid-duplic
 
 http://localhost:8081/swagger-ui/index.html
 http://localhost:8081/v3/api-docs.yaml
-
