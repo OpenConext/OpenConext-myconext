@@ -66,7 +66,7 @@ import static myconext.log.MDCContext.logWithContext;
 
 @RestController
 @RequestMapping(value = {"/myconext/api", "/mobile/api"})
-@SecurityRequirement(name = OPEN_ID_SCHEME_NAME)
+@SecurityRequirement(name = OPEN_ID_SCHEME_NAME, scopes = {"eduid.nl/mobile"})
 public class UserController implements ServiceProviderHolder, UserAuthentication {
 
     private static final Log LOG = LogFactory.getLog(UserController.class);

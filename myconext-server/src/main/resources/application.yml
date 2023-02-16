@@ -6,13 +6,21 @@ logging:
     org.springframework.data.mongodb: WARN
     org.springframework.data.convert: WARN
     org.springframework.security: WARN
+
 server:
   port: 8081
   error:
     path: "/error"
+  forward-headers-strategy: framework
+
 
 springdoc:
   pathsToMatch: "/mobile/**"
+#  api-docs:
+#    path: "http://localhost:8081/myconext/api/mobile/api-docs"
+#  swagger-ui:
+#    path: "http://localhost:8081/myconext/api/mobile/swagger-ui/index.html"
+#    operationsSorter: method
   api-docs:
     path: "/myconext/api/mobile/api-docs"
   swagger-ui:
@@ -136,10 +144,11 @@ account_linking:
 
 eduid_api:
 #  oidcng_introspection_uri: http://localhost:8098/introspect
-  oidcng_introspection_uri: https://connect.test2.surfconext/nl/oidc/introspect
-  oidcng_discovery_url: https://connect.test2.surfconext.nl/oidc/.well-known/openid-configuration
+  oidcng_introspection_uri: "https://connect.test2.surfconext/nl/oidc/introspect"
+  oidcng_discovery_url: "https://connect.test2.surfconext.nl/oidc/.well-known/openid-configuration"
   oidcng_client_id: myconext.local.rs
   oidcng_secret: secret
+  base_url: http://localhost:8081
 
 geo_location:
   license_key: lb53kEx9iVCuBcnV
