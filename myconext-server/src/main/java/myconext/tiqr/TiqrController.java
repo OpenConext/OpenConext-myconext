@@ -9,6 +9,7 @@ import myconext.manage.ServiceProviderResolver;
 import myconext.model.SamlAuthenticationRequest;
 import myconext.model.User;
 import myconext.repository.*;
+import myconext.security.UserAuthentication;
 import myconext.security.VerificationCodeGenerator;
 import myconext.sms.SMSService;
 import org.apache.commons.logging.Log;
@@ -46,9 +47,9 @@ import static myconext.security.GuestIdpAuthenticationRequestFilter.TIQR_COOKIE_
 import static myconext.tiqr.SURFSecureID.*;
 
 @RestController
-@RequestMapping("/tiqr")
+@RequestMapping(value = {"/tiqr", "/mobile/tiqr"})
 @Hidden
-public class TiqrController {
+public class TiqrController implements UserAuthentication {
 
     private static final Log LOG = LogFactory.getLog(TiqrController.class);
     private static final String SESSION_KEY = "sessionKey";
@@ -130,6 +131,7 @@ public class TiqrController {
     }
 
     @GetMapping("/start-enrollment")
+    @Hidden
     public ResponseEntity<Map<String, String>> startEnrollment(@RequestParam(value = "hash", required = false) String hash) throws IOException, WriterException {
         if (!StringUtils.hasText(hash)) {
             throw new ForbiddenException("No hash parameter");
@@ -161,6 +163,7 @@ public class TiqrController {
     }
 
     @GetMapping("/metadata")
+    @Hidden
     public ResponseEntity<MetaData> metaData(@RequestParam("enrollment_key") String enrollmentKey) throws TiqrException {
         MetaData metaData = tiqrService.getMetaData(enrollmentKey);
 
@@ -170,6 +173,7 @@ public class TiqrController {
     }
 
     @GetMapping("/poll-enrollment")
+    @Hidden
     public ResponseEntity<EnrollmentStatus> enrollmentStatus(@RequestParam("enrollmentKey") String enrollmentKey) throws TiqrException {
         Enrollment enrollment = tiqrService.enrollmentStatus(enrollmentKey);
 
@@ -198,6 +202,7 @@ public class TiqrController {
     }
 
     @GetMapping("/generate-backup-code")
+    @Hidden
     public ResponseEntity<Map<String, String>> generateBackupCode(@RequestParam("hash") String hash) throws TiqrException {
         SamlAuthenticationRequest samlAuthenticationRequest = authenticationRequestRepository.findByHash(hash)
                 .orElseThrow(() -> new ForbiddenException("Unknown hash"));
@@ -256,6 +261,7 @@ public class TiqrController {
     }
 
     @PostMapping("/send-phone-code")
+    @Hidden
     public ResponseEntity<Map<String, String>> sendPhoneCode(HttpServletRequest request, @RequestParam("hash") String hash, @RequestBody Map<String, String> requestBody) {
         User user = getUserFromAuthenticationRequest(hash);
         String phoneNumber = requestBody.get("phoneNumber");
@@ -304,6 +310,7 @@ public class TiqrController {
 
 
     @PostMapping("/verify-phone-code")
+    @Hidden
     public ResponseEntity<Map<String, String>> verifyPhoneCode(@RequestParam("hash") String hash, @RequestBody Map<String, String> requestBody) throws TiqrException {
         SamlAuthenticationRequest samlAuthenticationRequest = authenticationRequestRepository.findByHash(hash)
                 .orElseThrow(() -> new ForbiddenException("Unknown hash"));
@@ -362,6 +369,7 @@ public class TiqrController {
     }
 
     @PostMapping("/start-authentication")
+    @Hidden
     public ResponseEntity<Map<String, Object>> startAuthentication(HttpServletRequest request, @Valid @RequestBody TiqrRequest tiqrRequest) throws IOException, WriterException, TiqrException {
         authenticationRequestRepository.findByIdAndNotExpired(tiqrRequest.getAuthenticationRequestId())
                 .orElseThrow(ExpiredAuthenticationException::new);
@@ -401,6 +409,7 @@ public class TiqrController {
     }
 
     @GetMapping("/poll-authentication")
+    @Hidden
     public ResponseEntity<Map<String, Object>> authenticationStatus(@RequestParam(SESSION_KEY) String sessionKey,
                                                                     @RequestParam("id") String authenticationRequestId) throws TiqrException {
         return doPollAuthentication(sessionKey, Optional.of(authenticationRequestId));
@@ -460,6 +469,7 @@ public class TiqrController {
     }
 
     @PostMapping("/manual-response")
+    @Hidden
     public ResponseEntity<Map<String, String>> manualResponse(@RequestBody Map<String, String> requestBody) throws TiqrException {
         return doManualResponse(requestBody);
     }
@@ -476,6 +486,7 @@ public class TiqrController {
      * Endpoint called by the Tiqr app to enroll user
      */
     @PostMapping(value = "/enrollment", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
+    @Hidden
     public ResponseEntity<Object> doEnrollment(@ModelAttribute Registration registration,
                                                @RequestParam("enrollment_secret") String enrollmentSecret) {
         registration.setEnrollmentSecret(enrollmentSecret);
@@ -493,6 +504,7 @@ public class TiqrController {
      * Endpoint called by the Tiqr app to authenticate user
      */
     @PostMapping(value = "/authentication", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
+    @Hidden
     public ResponseEntity<Object> doAuthentication(@ModelAttribute AuthenticationData authenticationData) {
         String userId = authenticationData.getUserId();
         User user = userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException(userId));
@@ -522,6 +534,7 @@ public class TiqrController {
     }
 
     @PutMapping("/remember-me")
+    @Hidden
     public ResponseEntity<Map<String, String>> rememberMe(@RequestBody Map<String, String> body) {
         String hash = body.get("hash");
         SamlAuthenticationRequest samlAuthenticationRequest = authenticationRequestRepository.findByHash(hash).orElseThrow(ExpiredAuthenticationException::new);
@@ -563,11 +576,6 @@ public class TiqrController {
         return ResponseEntity.ok(Collections.singletonMap("status", "ok"));
     }
 
-    private User userFromAuthentication(org.springframework.security.core.Authentication authentication) {
-        String userId = ((User) authentication.getPrincipal()).getId();
-        return userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException(userId));
-    }
-
     private ResponseEntity<Map<String, String>> getSuccessResponseEntity(Map<String, String> body) {
         return ResponseEntity.ok(body);
     }
@@ -583,5 +591,7 @@ public class TiqrController {
         return URLEncoder.encode(s, Charset.defaultCharset());
     }
 
-
+    public UserRepository getUserRepository() {
+        return userRepository;
+    }
 }

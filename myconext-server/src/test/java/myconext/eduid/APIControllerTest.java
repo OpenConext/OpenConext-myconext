@@ -128,25 +128,4 @@ public class APIControllerTest extends AbstractIntegrationTest {
         assertEquals(0, results.size());
     }
 
-    private String doOpaqueAccessToken(boolean valid, String[] scopes, String filePart) throws IOException {
-        List<String> scopeList = new ArrayList<>(Arrays.asList(scopes));
-        scopeList.add("openid");
-
-        String file = String.format("oidc/%s.json", valid ? filePart : "introspect-invalid-token");
-        String introspectResult = IOUtil.toString(new ClassPathResource(file).getInputStream());
-        String introspectResultWithScope = valid ? String.format(introspectResult, String.join(" ", scopeList)) : introspectResult;
-        stubFor(post(urlPathMatching("/introspect")).willReturn(aResponse()
-                .withHeader("Content-Type", "application/json")
-                .withBody(introspectResultWithScope)));
-        return UUID.randomUUID().toString();
-    }
-
-    private String opaqueAccessTokenWithNoLinkedAccount(String... scopes) throws IOException {
-        return doOpaqueAccessToken(true, scopes, "introspect_no_linked_accounts");
-    }
-
-    private String opaqueAccessToken(boolean valid, String... scopes) throws IOException {
-        return doOpaqueAccessToken(valid, scopes, "introspect");
-    }
-
 }

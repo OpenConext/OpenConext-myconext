@@ -440,7 +440,7 @@ public class UserControllerTest extends AbstractIntegrationTest {
                 .body(new User())
                 .put("/myconext/api/sp/update")
                 .then()
-                .statusCode(403);
+                .statusCode(400);
     }
 
     @Test
@@ -450,7 +450,7 @@ public class UserControllerTest extends AbstractIntegrationTest {
         given()
                 .when()
                 .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
-                .body(new UpdateUserSecurityRequest(user.getId(), "nope", "hash"))
+                .body(new UpdateUserSecurityRequest("nope", "hash"))
                 .put("/myconext/api/sp/update-password")
                 .then()
                 .statusCode(422);
@@ -487,7 +487,7 @@ public class UserControllerTest extends AbstractIntegrationTest {
 
         User user = userRepository.findOneUserByEmail("jdoe@example.com");
         passwordResetHashRepository.save(new PasswordResetHash(user, "hash"));
-        UpdateUserSecurityRequest updateUserSecurityRequest = new UpdateUserSecurityRequest(user.getId(), "correctSecret001", "hash");
+        UpdateUserSecurityRequest updateUserSecurityRequest = new UpdateUserSecurityRequest("correctSecret001", "hash");
         given()
                 .when()
                 .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
@@ -502,7 +502,7 @@ public class UserControllerTest extends AbstractIntegrationTest {
     @Test
     public void updateUserPasswordWrongHash() {
         User user = userRepository.findOneUserByEmail("jdoe@example.com");
-        UpdateUserSecurityRequest updateUserSecurityRequest = new UpdateUserSecurityRequest(user.getId(), "correctSecret001", null);
+        UpdateUserSecurityRequest updateUserSecurityRequest = new UpdateUserSecurityRequest("correctSecret001", null);
         given()
                 .when()
                 .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
@@ -521,7 +521,7 @@ public class UserControllerTest extends AbstractIntegrationTest {
 
         passwordResetHashRepository.save(new PasswordResetHash(user, "hash"));
 
-        UpdateUserSecurityRequest securityRequest = new UpdateUserSecurityRequest(user.getId(), "abcdefghujklmnop", "hash");
+        UpdateUserSecurityRequest securityRequest = new UpdateUserSecurityRequest("abcdefghujklmnop", "hash");
         given()
                 .when()
                 .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
@@ -540,7 +540,7 @@ public class UserControllerTest extends AbstractIntegrationTest {
         ReflectionTestUtils.setField(user, "password", "abcdefghijklmnop");
         userRepository.save(user);
 
-        UpdateUserSecurityRequest securityRequest = new UpdateUserSecurityRequest(user.getId(), "abcdefghujklmnop", "hash");
+        UpdateUserSecurityRequest securityRequest = new UpdateUserSecurityRequest("abcdefghujklmnop", "hash");
         given()
                 .when()
                 .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
@@ -554,7 +554,7 @@ public class UserControllerTest extends AbstractIntegrationTest {
     public void deleteUserPassword() {
         User user = userRepository.findOneUserByEmail("jdoe@example.com");
         passwordResetHashRepository.save(new PasswordResetHash(user, "hash"));
-        UpdateUserSecurityRequest updateUserSecurityRequest = new UpdateUserSecurityRequest(user.getId(), null, "hash");
+        UpdateUserSecurityRequest updateUserSecurityRequest = new UpdateUserSecurityRequest(null, "hash");
         given()
                 .when()
                 .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)

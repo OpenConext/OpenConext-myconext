@@ -51,6 +51,8 @@ import java.util.*;
 import java.util.zip.Deflater;
 import java.util.zip.DeflaterOutputStream;
 
+import static com.github.tomakehurst.wiremock.client.WireMock.*;
+import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
 import static io.restassured.RestAssured.given;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -238,4 +240,27 @@ public abstract class AbstractIntegrationTest {
     protected void userSetPassword(User user, String plainTextPassword) {
         ReflectionTestUtils.setField(user, "password", plainTextPassword);
     }
+
+    protected String doOpaqueAccessToken(boolean valid, String[] scopes, String filePart) throws IOException {
+        List<String> scopeList = new ArrayList<>(Arrays.asList(scopes));
+        scopeList.add("openid");
+
+        String file = String.format("oidc/%s.json", valid ? filePart : "introspect-invalid-token");
+        String introspectResult = IOUtil.toString(new ClassPathResource(file).getInputStream());
+        String introspectResultWithScope = valid ? String.format(introspectResult, String.join(" ", scopeList)) : introspectResult;
+        stubFor(post(urlPathMatching("/introspect")).willReturn(aResponse()
+                .withHeader("Content-Type", "application/json")
+                .withBody(introspectResultWithScope)));
+        return UUID.randomUUID().toString();
+    }
+
+    protected String opaqueAccessTokenWithNoLinkedAccount(String... scopes) throws IOException {
+        return doOpaqueAccessToken(true, scopes, "introspect_no_linked_accounts");
+    }
+
+    protected String opaqueAccessToken(boolean valid, String... scopes) throws IOException {
+        return doOpaqueAccessToken(valid, scopes, "introspect");
+    }
+
+
 }

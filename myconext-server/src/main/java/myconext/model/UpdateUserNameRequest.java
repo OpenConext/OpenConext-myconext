@@ -10,9 +10,11 @@ import java.io.Serializable;
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
-public class UpdateUserSecurityRequest implements Serializable {
+public class UpdateUserNameRequest implements Serializable {
 
     @NotBlank
-    private String newPassword;
-    private String hash;
+    private String givenName;
+
+    @NotBlank
+    private String familyName;
 }

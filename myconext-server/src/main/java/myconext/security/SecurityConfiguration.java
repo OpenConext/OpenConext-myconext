@@ -271,7 +271,7 @@ public class SecurityConfiguration {
 
         @Override
         protected void configure(HttpSecurity http) throws Exception {
-            String[] antPatterns = {"/myconext/api/eduid/**"};
+            String[] antPatterns = {"/myconext/api/eduid/**", "/mobile/**"};
             http
                     .requestMatchers()
                     .antMatchers(antPatterns)
@@ -280,6 +280,7 @@ public class SecurityConfiguration {
                             .antMatchers("/myconext/api/eduid/eppn").hasAuthority("SCOPE_eduid.nl/eppn")
                             .antMatchers("/myconext/api/eduid/eduid").hasAuthority("SCOPE_eduid.nl/eduid")
                             .antMatchers("/myconext/api/eduid/links").hasAuthority("SCOPE_eduid.nl/links")
+                            .antMatchers("/mobile/**").hasAuthority("SCOPE_eduid.nl/mobile")
                             .anyRequest().authenticated())
                     .oauth2ResourceServer(oauth2 -> oauth2.opaqueToken(token -> token
                             .introspectionUri(introspectionUri)

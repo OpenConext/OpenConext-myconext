@@ -8,6 +8,13 @@ import com.yubico.webauthn.data.*;
 import com.yubico.webauthn.data.exception.Base64UrlException;
 import com.yubico.webauthn.exception.AssertionFailedException;
 import com.yubico.webauthn.exception.RegistrationFailedException;
+import io.swagger.v3.oas.annotations.Hidden;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import myconext.cron.DisposableEmailProviders;
 import myconext.cron.IdPMetaDataResolver;
 import myconext.exceptions.ExpiredAuthenticationException;
@@ -21,6 +28,7 @@ import myconext.oidcng.OpenIDConnect;
 import myconext.repository.*;
 import myconext.security.EmailDomainGuard;
 import myconext.security.EmailGuessingPrevention;
+import myconext.security.UserAuthentication;
 import myconext.webauthn.UserCredentialRepository;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -51,13 +59,15 @@ import java.security.SecureRandom;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static myconext.SwaggerOpenIdConfig.OPEN_ID_SCHEME_NAME;
 import static myconext.crypto.HashGenerator.hash;
 import static myconext.log.MDCContext.logLoginWithContext;
 import static myconext.log.MDCContext.logWithContext;
 
 @RestController
-@RequestMapping("/myconext/api")
-public class UserController implements ServiceProviderHolder {
+@RequestMapping(value = {"/myconext/api", "/mobile/api"})
+@SecurityRequirement(name = OPEN_ID_SCHEME_NAME)
+public class UserController implements ServiceProviderHolder, UserAuthentication {
 
     private static final Log LOG = LogFactory.getLog(UserController.class);
 
@@ -130,16 +140,19 @@ public class UserController implements ServiceProviderHolder {
         this.emailGuessingPreventor = new EmailGuessingPrevention(emailGuessingSleepMillis);
     }
 
+    @Hidden
     @GetMapping({"/idp/email/domain/institutional", "/sp/create-from-institution/domain/institutional"})
     public Set<String> institutionalDomains() {
         return this.idPMetaDataResolver.getDomainNames();
     }
 
+    @Hidden
     @GetMapping({"/idp/email/domain/allowed", "/sp/create-from-institution/domain/allowed"})
     public Set<String> allowedDomains() {
         return this.emailDomainGuard.getAllowedDomains();
     }
 
+    @Hidden
     @GetMapping("/idp/service/name/{id}")
     public Map<String, String> serviceName(@PathVariable("id") String id) {
         if ("42".equals(id)) {
@@ -149,6 +162,7 @@ public class UserController implements ServiceProviderHolder {
                 authenticationRequestRepository.findById(id).orElseThrow(ExpiredAuthenticationException::new).getServiceName());
     }
 
+    @Hidden
     @PostMapping("/idp/service/email")
     public List<String> knownAccount(@RequestBody Map<String, String> email) {
         emailGuessingPreventor.potentialUserEmailGuess();
@@ -157,18 +171,21 @@ public class UserController implements ServiceProviderHolder {
         return user.loginOptions();
     }
 
+    @Hidden
     @GetMapping("/idp/service/hash/{hash}")
     public Map<String, String> serviceNameByHash(@PathVariable("hash") String hash) {
         return Collections.singletonMap("name",
                 authenticationRequestRepository.findByHash(hash).orElseThrow(ExpiredAuthenticationException::new).getServiceName());
     }
 
+    @Hidden
     @GetMapping("/idp/service/id/{id}")
     public Map<String, String> serviceNameById(@PathVariable("id") String id) {
         return Collections.singletonMap("name",
                 authenticationRequestRepository.findById(id).orElseThrow(ExpiredAuthenticationException::new).getServiceName());
     }
 
+    @Hidden
     @PostMapping("/idp/magic_link_request")
     public ResponseEntity newMagicLinkRequest(HttpServletRequest request, @Valid @RequestBody MagicLinkRequest magicLinkRequest) {
         SamlAuthenticationRequest samlAuthenticationRequest = authenticationRequestRepository.findByIdAndNotExpired(magicLinkRequest.getAuthenticationRequestId())
@@ -198,6 +215,7 @@ public class UserController implements ServiceProviderHolder {
         return this.doMagicLink(userToSave, samlAuthenticationRequest, magicLinkRequest.isRememberMe(), false, request);
     }
 
+    @Hidden
     @PutMapping("/idp/magic_link_request")
     public ResponseEntity magicLinkRequest(HttpServletRequest request, @Valid @RequestBody MagicLinkRequest magicLinkRequest) {
         SamlAuthenticationRequest samlAuthenticationRequest = authenticationRequestRepository.findByIdAndNotExpired(magicLinkRequest.getAuthenticationRequestId())
@@ -233,6 +251,7 @@ public class UserController implements ServiceProviderHolder {
         return doMagicLink(user, samlAuthenticationRequest, magicLinkRequest.isRememberMe(), magicLinkRequest.isUsePassword(), request);
     }
 
+    @Hidden
     @GetMapping("/idp/resend_magic_link_request")
     public ResponseEntity resendMagicLinkRequest(HttpServletRequest request, @RequestParam("id") String authenticationRequestId) {
         SamlAuthenticationRequest samlAuthenticationRequest = authenticationRequestRepository.findByIdAndNotExpired(authenticationRequestId)
@@ -253,31 +272,33 @@ public class UserController implements ServiceProviderHolder {
         mailBox.sendAccountVerification(user, samlAuthenticationRequest.getHash());
     }
 
+    @Hidden
     @GetMapping("/idp/security/success")
     public int successfullyLoggedIn(@RequestParam("id") String id) {
         Optional<SamlAuthenticationRequest> optionalSamlAuthenticationRequest = authenticationRequestRepository.findById(id);
         return optionalSamlAuthenticationRequest.map(samlAuthenticationRequest -> samlAuthenticationRequest.getLoginStatus().ordinal()).orElse(LoginStatus.NOT_LOGGED_IN.ordinal());
     }
 
-    @GetMapping(value = {"/sp/me", "sp/migrate/merge", "sp/migrate/proceed"})
+    @Operation(summary = "User details", description = "Retrieve the attributes of the current user")
+    @GetMapping("/sp/me")
     public ResponseEntity<UserResponse> me(Authentication authentication) {
-        String userId = ((User) authentication.getPrincipal()).getId();
-        User user = userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException(userId));
+        User user = userFromAuthentication(authentication);
         return userResponseRememberMe(user);
     }
 
     @DeleteMapping("/sp/forget")
+    @Hidden
     public ResponseEntity<Long> forgetMe(Authentication authentication) {
-        User user = (User) authentication.getPrincipal();
-        String userId = user.getId();
-        Long count = authenticationRequestRepository.deleteByUserId(userId);
+        User user = userFromAuthentication(authentication);
+        Long count = authenticationRequestRepository.deleteByUserId(user.getId());
         logWithContext(user, "delete", "rememberme", LOG, "Do not remember user anymore");
         return ResponseEntity.ok(count);
     }
 
+    @Operation(summary = "Change names", description = "Update the givenName and / or familyName of the User")
     @PutMapping("/sp/update")
-    public ResponseEntity<UserResponse> updateUserProfile(Authentication authentication, @RequestBody User deltaUser) {
-        User user = verifyAndFetchUser(authentication, deltaUser);
+    public ResponseEntity<UserResponse> updateUserProfile(Authentication authentication, @RequestBody UpdateUserNameRequest deltaUser) {
+        User user = userFromAuthentication(authentication);
 
         user.setFamilyName(deltaUser.getFamilyName());
         user.setGivenName(deltaUser.getGivenName());
@@ -289,8 +310,9 @@ public class UserController implements ServiceProviderHolder {
         return returnUserResponse(user);
     }
 
+    @Operation(summary = "Change email", description = "Request to change the email of the user. A validation email will be send containing an URL with an unique 'h' query param")
     @PutMapping("/sp/email")
-    public ResponseEntity updateEmail(Authentication authentication, @RequestBody User deltaUser,
+    public ResponseEntity updateEmail(Authentication authentication, @RequestBody UpdateEmailRequest updateEmailRequest,
                                       @RequestParam(value = "force", required = false, defaultValue = "false") boolean force) {
         User user = userFromAuthentication(authentication);
         List<PasswordResetHash> passwordResetHashes = passwordResetHashRepository.findByUserId(user.getId());
@@ -305,7 +327,7 @@ public class UserController implements ServiceProviderHolder {
         changeEmailHashRepository.deleteByUserId(user.getId());
 
         String hashValue = hash();
-        String newEmail = deltaUser.getEmail();
+        String newEmail = updateEmailRequest.getEmail();
         Optional<User> optionalUser = userRepository.findUserByEmail(emailGuessingPreventor.sanitizeEmail(newEmail));
         if (optionalUser.isPresent()) {
             return ResponseEntity.status(HttpStatus.CONFLICT)
@@ -320,8 +342,11 @@ public class UserController implements ServiceProviderHolder {
         return returnUserResponse(user);
     }
 
+    @Operation(summary = "Confirm email change", description = "Confirm the user has clicked on the link in the email sent after requesting to change the users email")
     @GetMapping("/sp/confirm-email")
-    public ResponseEntity<UserResponse> confirmUpdateEmail(Authentication authentication, @RequestParam(value = "h") String hash) {
+    public ResponseEntity<UserResponse> confirmUpdateEmail(Authentication authentication,
+                                                           @Parameter(description = "The hash obtained from the query parameter 'h' in the URL sent to the user in the update-email")
+                                                           @RequestParam(value = "h") String hash) {
         User user = userFromAuthentication(authentication);
         String oldEmail = user.getEmail();
         ChangeEmailHash changeEmailHash = changeEmailHashRepository.findByHashAndUserId(hash, user.getId())
@@ -335,6 +360,7 @@ public class UserController implements ServiceProviderHolder {
     }
 
     @GetMapping("/sp/outstanding-email-links")
+    @Hidden
     public ResponseEntity<Boolean> outstandingEmailLinks(Authentication authentication) {
         User user = userFromAuthentication(authentication);
         List<ChangeEmailHash> emailHashes = changeEmailHashRepository.findByUserId(user.getId());
@@ -343,6 +369,7 @@ public class UserController implements ServiceProviderHolder {
     }
 
     @GetMapping("/sp/password-reset-hash-valid")
+    @Hidden
     public ResponseEntity<Boolean> resetPasswordHashValid(Authentication authentication, @RequestParam("hash") String hash) {
         User user = userFromAuthentication(authentication);
         Optional<PasswordResetHash> optionalPasswordResetHash = passwordResetHashRepository.findByHashAndUserId(hash, user.getId());
@@ -351,10 +378,9 @@ public class UserController implements ServiceProviderHolder {
     }
 
     @PutMapping("/sp/update-password")
+    @Hidden
     public ResponseEntity<UserResponse> updateUserPassword(Authentication authentication, @RequestBody UpdateUserSecurityRequest updateUserRequest) {
-        String userId = updateUserRequest.getUserId();
-        User deltaUser = userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException(userId));
-        User user = verifyAndFetchUser(authentication, deltaUser);
+        User user = userFromAuthentication(authentication);
 
         boolean existingPassword = StringUtils.hasText(user.getPassword());
         String newPassword = updateUserRequest.getNewPassword();
@@ -385,6 +411,7 @@ public class UserController implements ServiceProviderHolder {
     }
 
     @PutMapping("/sp/reset-password-link")
+    @Hidden
     public ResponseEntity resetPasswordLink(Authentication authentication) {
         User user = userFromAuthentication(authentication);
         List<ChangeEmailHash> changeEmailHashes = changeEmailHashRepository.findByUserId(user.getId());
@@ -409,6 +436,7 @@ public class UserController implements ServiceProviderHolder {
 
 
     @PutMapping("/sp/institution")
+    @Hidden
     public ResponseEntity<UserResponse> removeUserLinkedAccounts(Authentication authentication, @RequestBody LinkedAccount linkedAccount) {
         User user = userFromAuthentication(authentication);
 
@@ -424,6 +452,7 @@ public class UserController implements ServiceProviderHolder {
     }
 
     @PostMapping("/sp/credential")
+    @Hidden
     public ResponseEntity updatePublicKeyCredential(Authentication authentication,
                                                     @RequestBody Map<String, String> credential) {
         User user = userFromAuthentication(authentication);
@@ -445,6 +474,7 @@ public class UserController implements ServiceProviderHolder {
     }
 
     @PutMapping("/sp/credential")
+    @Hidden
     public ResponseEntity removePublicKeyCredential(Authentication authentication,
                                                     @RequestBody Map<String, String> credential) {
         User user = userFromAuthentication(authentication);
@@ -462,6 +492,7 @@ public class UserController implements ServiceProviderHolder {
     }
 
     @PutMapping("/sp/service")
+    @Hidden
     public ResponseEntity<UserResponse> removeUserService(Authentication authentication,
                                                           @RequestBody DeleteServiceTokens serviceAndTokens) {
         User user = userFromAuthentication(authentication);
@@ -479,6 +510,7 @@ public class UserController implements ServiceProviderHolder {
     }
 
     @PutMapping("/sp/tokens")
+    @Hidden
     public ResponseEntity<UserResponse> removeTokens(Authentication authentication,
                                                      @RequestBody DeleteServiceTokens serviceAndTokens) {
         User user = userFromAuthentication(authentication);
@@ -490,6 +522,7 @@ public class UserController implements ServiceProviderHolder {
     }
 
     @GetMapping("/sp/testWebAuthnUrl")
+    @Hidden
     public ResponseEntity<Map<String, String>> testWebAuthnUrl(Authentication authentication) throws UnsupportedEncodingException {
         User user = this.userFromAuthentication(authentication);
         SamlAuthenticationRequest samlAuthenticationRequest = new SamlAuthenticationRequest(true);
@@ -510,15 +543,11 @@ public class UserController implements ServiceProviderHolder {
     }
 
     @GetMapping("/sp/tokens")
+    @Hidden
     public ResponseEntity<List<Map<String, Object>>> tokens(Authentication authentication) {
         User user = userFromAuthentication(authentication);
         List<Map<String, Object>> tokens = this.openIDConnect.tokens(user);
         return ResponseEntity.ok(tokens);
-    }
-
-    private User userFromAuthentication(Authentication authentication) {
-        String userId = ((User) authentication.getPrincipal()).getId();
-        return userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException(userId));
     }
 
     private ResponseEntity<UserResponse> returnUserResponse(User user) {
@@ -534,6 +563,7 @@ public class UserController implements ServiceProviderHolder {
     }
 
     @GetMapping("sp/security/webauthn")
+    @Hidden
     public ResponseEntity spStartWebAuthFlow(Authentication authentication) {
         //We need to go from the SP to the IdP and best is too do everything server side, but we need a temporary identifier for the user
         User user = userFromAuthentication(authentication);
@@ -546,6 +576,7 @@ public class UserController implements ServiceProviderHolder {
     }
 
     @PostMapping("idp/security/webauthn/registration")
+    @Hidden
     public ResponseEntity idpWebAuthnRegistration(@RequestBody Map<String, String> body) throws Base64UrlException {
         String token = body.get("token");
         Optional<User> optionalUser = userRepository.findUserByWebAuthnIdentifier(token);
@@ -569,6 +600,7 @@ public class UserController implements ServiceProviderHolder {
      * See https://github.com/Yubico/java-webauthn-server
      */
     @PutMapping("idp/security/webauthn/registration")
+    @Hidden
     public ResponseEntity idpWebAuthn(@RequestBody Map<String, Object> body) {
         try {
             return doIdpWebAuthn(body);
@@ -617,6 +649,7 @@ public class UserController implements ServiceProviderHolder {
 
 
     @PostMapping("idp/security/webauthn/authentication")
+    @Hidden
     public ResponseEntity idpWebAuthnStartAuthentication(@RequestBody Map<String, String> body) {
         String email = body.get("email");
         this.emailDomainGuard.enforceIsAllowed(email);
@@ -644,6 +677,7 @@ public class UserController implements ServiceProviderHolder {
     }
 
     @PutMapping("idp/security/webauthn/authentication")
+    @Hidden
     public ResponseEntity idpWebAuthnTryAuthentication(HttpServletRequest request, @RequestBody Map<String, Object> body) throws Base64UrlException, IOException, AssertionFailedException, NoSuchFieldException, IllegalAccessException {
         String authenticationRequestId = (String) body.get("authenticationRequestId");
         SamlAuthenticationRequest samlAuthenticationRequest = authenticationRequestRepository.findByIdAndNotExpired(authenticationRequestId)
@@ -721,6 +755,7 @@ public class UserController implements ServiceProviderHolder {
     }
 
     @GetMapping("/sp/personal")
+    @Hidden
     public ResponseEntity personal(Authentication authentication) throws JsonProcessingException {
         User user = this.userFromAuthentication(authentication);
         ObjectWriter objectWriter = objectMapper.writerWithDefaultPrettyPrinter();
@@ -734,6 +769,7 @@ public class UserController implements ServiceProviderHolder {
 
 
     @GetMapping("/sp/logout")
+    @Hidden
     public ResponseEntity logout(HttpServletRequest request, Authentication authentication) {
         User user = this.userFromAuthentication(authentication);
         logWithContext(user, "logout", "user", LOG, "Logout");
@@ -742,6 +778,7 @@ public class UserController implements ServiceProviderHolder {
     }
 
     @DeleteMapping("/sp/delete")
+    @Hidden
     public ResponseEntity deleteUser(Authentication authentication, HttpServletRequest request) {
         User user = userFromAuthentication(authentication);
         userRepository.delete(user);
@@ -757,20 +794,6 @@ public class UserController implements ServiceProviderHolder {
         SecurityContextHolder.getContext().setAuthentication(null);
         SecurityContextHolder.clearContext();
         return ResponseEntity.ok(Collections.singletonMap("status", "ok"));
-    }
-
-    private User verifyAndFetchUser(Authentication authentication, User deltaUser) {
-        return verifyAndFetchUser(authentication, deltaUser.getId());
-    }
-
-    private User verifyAndFetchUser(Authentication authentication, String id) {
-        User principal = (User) authentication.getPrincipal();
-        if (!principal.getId().equals(id)) {
-            throw new ForbiddenException();
-        }
-        //Strictly not necessary, but mid-air collisions can occur in theory
-        String uid = principal.getUid();
-        return userRepository.findUserByUid(uid).orElseThrow(() -> new UserNotFoundException(uid));
     }
 
     private ResponseEntity doMagicLink(User user, SamlAuthenticationRequest samlAuthenticationRequest, boolean rememberMe,
@@ -825,4 +848,7 @@ public class UserController implements ServiceProviderHolder {
         return serviceProviderResolver;
     }
 
+    public UserRepository getUserRepository() {
+        return userRepository;
+    }
 }
