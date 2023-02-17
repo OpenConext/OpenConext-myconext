@@ -57,7 +57,7 @@ public class DefaultErrorController implements ErrorController {
             if (error instanceof UserNotFoundException) {
                 LOG.warn(error.getMessage());
             } else {
-                LOG.error("Error occurred", error);
+                LOG.error(String.format("Error occurred; %s", error), error);
             }
             //https://github.com/spring-projects/spring-boot/issues/3057
             ResponseStatus annotation = AnnotationUtils.getAnnotation(error.getClass(), ResponseStatus.class);
