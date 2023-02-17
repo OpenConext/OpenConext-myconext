@@ -2,6 +2,9 @@ package myconext.tiqr;
 
 public class SURFSecureID {
 
+    private SURFSecureID() {
+    }
+
     public static final String RECOVERY_CODE= "recovery-code";
 
     public static final String PHONE_VERIFICATION_CODE= "phone-verification-code";
