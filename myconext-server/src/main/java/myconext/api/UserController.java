@@ -286,8 +286,8 @@ public class UserController implements ServiceProviderHolder, UserAuthentication
         return userResponseRememberMe(user);
     }
 
+    @Operation(summary = "Forget me", description = "Delete the long remember-me login for the current user")
     @DeleteMapping("/sp/forget")
-    @Hidden
     public ResponseEntity<Long> forgetMe(Authentication authentication) {
         User user = userFromAuthentication(authentication);
         Long count = authenticationRequestRepository.deleteByUserId(user.getId());
