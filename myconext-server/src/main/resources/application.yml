@@ -16,11 +16,6 @@ server:
 
 springdoc:
   pathsToMatch: "/mobile/**"
-#  api-docs:
-#    path: "http://localhost:8081/myconext/api/mobile/api-docs"
-#  swagger-ui:
-#    path: "http://localhost:8081/myconext/api/mobile/swagger-ui/index.html"
-#    operationsSorter: method
   api-docs:
     path: "/myconext/api/mobile/api-docs"
   swagger-ui:
