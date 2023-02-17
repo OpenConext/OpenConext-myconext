@@ -55,7 +55,7 @@ public class DefaultErrorController implements ErrorController {
                     HttpStatus.valueOf((int) result.get("status")) : INTERNAL_SERVER_ERROR;
         } else {
             if (error instanceof UserNotFoundException) {
-                LOG.error(error.getMessage());
+                LOG.warn(error.getMessage());
             } else {
                 LOG.error("Error occurred", error);
             }
