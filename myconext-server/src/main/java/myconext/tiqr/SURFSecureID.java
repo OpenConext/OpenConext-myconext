@@ -16,8 +16,8 @@ public class SURFSecureID {
 
     public static final String RATE_LIMIT_UPDATED = "rate-limit-updated";
 
-    public static final String SUSPENDED_UNTIL = "suspended-until";
+    public static final String SUSPENDED_UNTIL = "suspendedUntil";
 
-    public static final String SUSPENDED_ATTEMPTS = "suspended-attempts";
+    public static final String SUSPENDED_ATTEMPTS = "suspendedAttempts";
 
 }

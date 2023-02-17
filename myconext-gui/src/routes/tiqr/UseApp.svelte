@@ -28,7 +28,7 @@
     let totp = Array(6).fill("");
     let wrongResponse = false;
 
-    $: minutes = suspendedResult ? suspensionMinutes(suspendedResult["suspended-until"]) : null;
+    $: minutes = suspendedResult ? suspensionMinutes(suspendedResult["suspendedUntil"]) : null;
 
     onMount(() => {
         startTiqrAuthentication()
