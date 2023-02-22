@@ -11,9 +11,6 @@ import com.yubico.webauthn.exception.RegistrationFailedException;
 import io.swagger.v3.oas.annotations.Hidden;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import myconext.cron.DisposableEmailProviders;
 import myconext.cron.IdPMetaDataResolver;
@@ -369,8 +366,9 @@ public class UserController implements ServiceProviderHolder, UserAuthentication
         return ResponseEntity.ok(!emailHashes.isEmpty());
     }
 
+    @Operation(summary = "Validate password hash",
+            description = "Check if a password change hash is valid and not expired")
     @GetMapping("/sp/password-reset-hash-valid")
-    @Hidden
     public ResponseEntity<Boolean> resetPasswordHashValid(Authentication authentication, @RequestParam("hash") String hash) {
         User user = userFromAuthentication(authentication);
         Optional<PasswordResetHash> optionalPasswordResetHash = passwordResetHashRepository.findByHashAndUserId(hash, user.getId());
@@ -378,8 +376,10 @@ public class UserController implements ServiceProviderHolder, UserAuthentication
         return ResponseEntity.ok(!expired);
     }
 
+    @Operation(summary = "Update password",
+            description = "Update or delete the user's password using the hash from the 'h' query param in the validation email. " +
+                    "If 'newPassword' is null / empty than the password is removed.")
     @PutMapping("/sp/update-password")
-    @Hidden
     public ResponseEntity<UserResponse> updateUserPassword(Authentication authentication, @RequestBody UpdateUserSecurityRequest updateUserRequest) {
         User user = userFromAuthentication(authentication);
 
@@ -414,7 +414,7 @@ public class UserController implements ServiceProviderHolder, UserAuthentication
     @PutMapping("/sp/reset-password-link")
     @Operation(summary = "Reset password link", description = "Sent the user a mail with a link for the user to change his  / hers password. " +
             "Link is send to <a href=\"\">https://mijn.{environment}.eduid.nl/reset-password?h=={{hash}}</a>")
-    public ResponseEntity<UserResponse>  resetPasswordLink(Authentication authentication) {
+    public ResponseEntity<UserResponse> resetPasswordLink(Authentication authentication) {
         User user = userFromAuthentication(authentication);
         List<ChangeEmailHash> changeEmailHashes = changeEmailHashRepository.findByUserId(user.getId());
         changeEmailHashRepository.deleteAll(changeEmailHashes);
