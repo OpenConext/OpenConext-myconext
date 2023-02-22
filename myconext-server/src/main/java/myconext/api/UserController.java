@@ -140,7 +140,8 @@ public class UserController implements ServiceProviderHolder, UserAuthentication
         this.emailGuessingPreventor = new EmailGuessingPrevention(emailGuessingSleepMillis);
     }
 
-    @Hidden
+    @Operation(summary = "All institutional domains",
+            description = "All institutional domains which will generate a warning if a user enters an email at this domain")
     @GetMapping({"/idp/email/domain/institutional", "/sp/create-from-institution/domain/institutional"})
     public Set<String> institutionalDomains() {
         return this.idPMetaDataResolver.getDomainNames();
@@ -411,8 +412,9 @@ public class UserController implements ServiceProviderHolder, UserAuthentication
     }
 
     @PutMapping("/sp/reset-password-link")
-    @Hidden
-    public ResponseEntity resetPasswordLink(Authentication authentication) {
+    @Operation(summary = "Reset password link", description = "Sent the user a mail with a link for the user to change his  / hers password. " +
+            "Link is send to <a href=\"\">https://mijn.{environment}.eduid.nl/reset-password?h=={{hash}}</a>")
+    public ResponseEntity<UserResponse>  resetPasswordLink(Authentication authentication) {
         User user = userFromAuthentication(authentication);
         List<ChangeEmailHash> changeEmailHashes = changeEmailHashRepository.findByUserId(user.getId());
         changeEmailHashRepository.deleteAll(changeEmailHashes);
