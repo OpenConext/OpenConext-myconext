@@ -44,7 +44,7 @@ public class KeyGenerator {
     }
 
     private static String privateKey(KeyPair kp) throws IOException {
-        //PrivateKey is PKCS8 format and we need to end up in PEM format
+        //PrivateKey is PKCS8 format, and we need to end up in PEM format
         Writer writer = new StringWriter();
         JcaPEMWriter pemWriter = new JcaPEMWriter(writer);
         pemWriter.writeObject(kp.getPrivate());
