@@ -11,6 +11,8 @@ import com.yubico.webauthn.exception.RegistrationFailedException;
 import io.swagger.v3.oas.annotations.Hidden;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import myconext.cron.DisposableEmailProviders;
@@ -292,12 +294,15 @@ public class UserController implements ServiceProviderHolder, UserAuthentication
 
     @Operation(summary = "Create eduID account",
             description = "Create an eduID account and sent a verification mail to the user to confirm the ownership of the email. " +
-                    "<br/>Link in the validation email is <a href=\"\">https://login.{environment}.eduid.nl/mobile/api/create-from-mobile-api?h=={{hash}}</a>"+
+                    "<br/>Link in the validation email is <a href=\"\">https://login.{environment}.eduid.nl/mobile/api/create-from-mobile-api?h=={{hash}}</a>" +
                     "<br/>After the account is validated the user is logged in and the server redirects to <a href=\"\">https://login.{environment}.eduid.nl/client/mobile/created</a>",
             responses = {
-                    @ApiResponse(responseCode = "201", description = "Created. Mail is sent to the user"),
-                    @ApiResponse(responseCode = "412", description = "Forbidden email domain"),
-                    @ApiResponse(responseCode = "409", description = "Email is in use")})
+                    @ApiResponse(responseCode = "201", description = "Created. Mail is sent to the user",
+                            content = {@Content(examples = {@ExampleObject(value = "{\"status\":\"201\"}")})}),
+                    @ApiResponse(responseCode = "412", description = "Forbidden email domain",
+                            content = {@Content(examples = {@ExampleObject(value = "{\"status\":\"412\"}")})}),
+                    @ApiResponse(responseCode = "409", description = "Email is in use",
+                            content = {@Content(examples = {@ExampleObject(value = "{\"status\":\"409\"}")})})})
     @PostMapping("/idp/create")
     public ResponseEntity<Map<String, Integer>> createEduIDAccount(@RequestBody CreateAccount createAccount) {
 
