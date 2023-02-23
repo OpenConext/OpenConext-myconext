@@ -358,7 +358,8 @@ public class UserController implements ServiceProviderHolder, UserAuthentication
     }
 
     @GetMapping("/sp/outstanding-email-links")
-    @Hidden
+    @Operation(summary = "Get all outstanding change-emails-requests",
+            description = "Get all outstanding change-emails-requests for the logged in user")
     public ResponseEntity<Boolean> outstandingEmailLinks(Authentication authentication) {
         User user = userFromAuthentication(authentication);
         List<ChangeEmailHash> emailHashes = changeEmailHashRepository.findByUserId(user.getId());
@@ -438,7 +439,8 @@ public class UserController implements ServiceProviderHolder, UserAuthentication
 
 
     @PutMapping("/sp/institution")
-    @Hidden
+    @Operation(summary = "Remove linked account",
+            description = "Remove linked account for a logged in user")
     public ResponseEntity<UserResponse> removeUserLinkedAccounts(Authentication authentication, @RequestBody LinkedAccount linkedAccount) {
         User user = userFromAuthentication(authentication);
 
@@ -493,8 +495,9 @@ public class UserController implements ServiceProviderHolder, UserAuthentication
         return userResponseRememberMe(user);
     }
 
+    @Operation(summary = "Remove user service",
+            description = "Remove user service")
     @PutMapping("/sp/service")
-    @Hidden
     public ResponseEntity<UserResponse> removeUserService(Authentication authentication,
                                                           @RequestBody DeleteServiceTokens serviceAndTokens) {
         User user = userFromAuthentication(authentication);
@@ -512,7 +515,8 @@ public class UserController implements ServiceProviderHolder, UserAuthentication
     }
 
     @PutMapping("/sp/tokens")
-    @Hidden
+    @Operation(summary = "Remove user tokens",
+            description = "Remove user token for a service")
     public ResponseEntity<UserResponse> removeTokens(Authentication authentication,
                                                      @RequestBody DeleteServiceTokens serviceAndTokens) {
         User user = userFromAuthentication(authentication);
@@ -545,7 +549,8 @@ public class UserController implements ServiceProviderHolder, UserAuthentication
     }
 
     @GetMapping("/sp/tokens")
-    @Hidden
+    @Operation(summary = "Get all OpenID Connect tokens",
+            description = "Get all OpenID Connect tokens for the logged in user")
     public ResponseEntity<List<Map<String, Object>>> tokens(Authentication authentication) {
         User user = userFromAuthentication(authentication);
         List<Map<String, Object>> tokens = this.openIDConnect.tokens(user);
@@ -757,7 +762,8 @@ public class UserController implements ServiceProviderHolder, UserAuthentication
     }
 
     @GetMapping("/sp/personal")
-    @Hidden
+    @Operation(summary = "Get personal data",
+            description = "Get personal data for download")
     public ResponseEntity personal(Authentication authentication) throws JsonProcessingException {
         User user = this.userFromAuthentication(authentication);
         ObjectWriter objectWriter = objectMapper.writerWithDefaultPrettyPrinter();
@@ -771,7 +777,8 @@ public class UserController implements ServiceProviderHolder, UserAuthentication
 
 
     @GetMapping("/sp/logout")
-    @Hidden
+    @Operation(summary = "Logout",
+            description = "Logout the current logged in user")
     public ResponseEntity logout(HttpServletRequest request, Authentication authentication) {
         User user = this.userFromAuthentication(authentication);
         logWithContext(user, "logout", "user", LOG, "Logout");
@@ -780,7 +787,8 @@ public class UserController implements ServiceProviderHolder, UserAuthentication
     }
 
     @DeleteMapping("/sp/delete")
-    @Hidden
+    @Operation(summary = "Delete",
+            description = "Delete the current logged in user")
     public ResponseEntity deleteUser(Authentication authentication, HttpServletRequest request) {
         User user = userFromAuthentication(authentication);
         userRepository.delete(user);

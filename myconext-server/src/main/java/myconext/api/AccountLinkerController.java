@@ -2,6 +2,7 @@ package myconext.api;
 
 
 import io.swagger.v3.oas.annotations.Hidden;
+import io.swagger.v3.oas.annotations.Operation;
 import myconext.cron.DisposableEmailProviders;
 import myconext.exceptions.DuplicateUserEmailException;
 import myconext.exceptions.ForbiddenException;
@@ -14,6 +15,7 @@ import myconext.repository.RequestInstitutionEduIDRepository;
 import myconext.repository.UserRepository;
 import myconext.security.ACR;
 import myconext.security.EmailGuessingPrevention;
+import myconext.security.UserAuthentication;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -56,10 +58,9 @@ import static myconext.security.GuestIdpAuthenticationRequestFilter.hasValidated
 import static org.springframework.security.web.context.HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY;
 
 @RestController
-@RequestMapping("/myconext/api")
-@Hidden
+@RequestMapping(value = {"/myconext/api", "/mobile/api"})
 @SuppressWarnings("unchecked")
-public class AccountLinkerController {
+public class AccountLinkerController implements UserAuthentication {
 
     private static final Log LOG = LogFactory.getLog(AccountLinkerController.class);
 
@@ -143,6 +144,7 @@ public class AccountLinkerController {
     }
 
     @GetMapping("/idp/oidc/account/{id}")
+    @Hidden
     public ResponseEntity startIdPLinkAccountFlow(@PathVariable("id") String id,
                                                   @RequestParam(value = "forceAuth", required = false, defaultValue = "false") boolean forceAuth,
                                                   @RequestParam(value = "useExternalValidation", required = false, defaultValue = "false") boolean useExternalValidation) throws UnsupportedEncodingException {
@@ -169,6 +171,7 @@ public class AccountLinkerController {
     }
 
     @GetMapping("/sp/create-from-institution")
+    @Hidden
     public ResponseEntity<Map<String, String>> createFromInstitution(HttpServletRequest request,
                                                                      @RequestParam(value = "forceAuth", required = false, defaultValue = "false") boolean forceAuth) throws UnsupportedEncodingException {
         LOG.debug("Start create from institution");
@@ -178,6 +181,7 @@ public class AccountLinkerController {
     }
 
     @GetMapping("/sp/create-from-institution/oidc-redirect")
+    @Hidden
     public ResponseEntity spCreateFromInstitutionRedirect(HttpServletRequest request, @RequestParam("code") String code, @RequestParam("state") String state) throws UnsupportedEncodingException {
         LOG.debug("In redirect for create-institution-flow");
 
@@ -210,6 +214,7 @@ public class AccountLinkerController {
     }
 
     @GetMapping("/sp/create-from-institution/info")
+    @Hidden
     public Map<String, Object> createFromInstitutionInfo(@RequestParam("hash") String hash) {
         RequestInstitutionEduID requestInstitutionEduID = requestInstitutionEduIDRepository.findByHash(hash)
                 .orElseThrow(() -> new ForbiddenException("Wrong hash"));
@@ -220,6 +225,7 @@ public class AccountLinkerController {
     }
 
     @PostMapping("/sp/create-from-institution/email")
+    @Hidden
     public ResponseEntity<Map<String, String>> linkFromInstitution(@Valid @RequestBody CreateInstitutionEduID createInstitutionEduID) {
         LOG.debug("Post details for account verification in create-institution-flow");
 
@@ -252,6 +258,7 @@ public class AccountLinkerController {
     }
 
     @GetMapping("/sp/create-from-institution/poll")
+    @Hidden
     public int pollCreateFromInstitution(@RequestParam("hash") String hash) {
         LOG.debug("Poll login status for create-institution-flow");
 
@@ -261,6 +268,7 @@ public class AccountLinkerController {
     }
 
     @GetMapping("/sp/create-from-institution/resendMail")
+    @Hidden
     public void resendMailCreateFromInstitution(@RequestParam("hash") String hash) {
         LOG.debug("Resend mail for create-institution-flow");
 
@@ -272,10 +280,10 @@ public class AccountLinkerController {
         String uri = basePath + "/myconext/api/sp/create-from-institution/finish";
         User user = new User(requestInstitutionEduID.getCreateInstitutionEduID(), requestInstitutionEduID.getUserInfo());
         mailBox.sendAccountVerificationCreateFromInstitution(user, requestInstitutionEduID.getEmailHash(), uri);
-
     }
 
     @GetMapping("/sp/create-from-institution/finish")
+    @Hidden
     public ResponseEntity createFromInstitutionFinish(HttpServletRequest request, @RequestParam("h") String emailHash) throws UnsupportedEncodingException {
         LOG.debug("Finish create-institution-flow flow and create account");
 
@@ -328,11 +336,13 @@ public class AccountLinkerController {
     }
 
     @GetMapping("/sp/oidc/link")
+    @Operation(summary = "Start link account flow",
+            description = "Start the link account flow for the current user")
     public ResponseEntity startSPLinkAccountFlow(Authentication authentication) throws UnsupportedEncodingException {
         LOG.debug("Start link account flow");
 
-        User principal = (User) authentication.getPrincipal();
-        String state = passwordEncoder.encode(principal.getUid());
+        User user = userFromAuthentication(authentication);
+        String state = passwordEncoder.encode(user.getUid());
 
         UriComponents uriComponents = doStartLinkAccountFlow(state, spFlowRedirectUri, true, false, myConextSpEntityId);
         return ResponseEntity.ok(Collections.singletonMap("url", uriComponents.toUriString()));
@@ -360,10 +370,11 @@ public class AccountLinkerController {
     }
 
     @GetMapping("/sp/oidc/redirect")
+    @Hidden
     public ResponseEntity spFlowRedirect(Authentication authentication, @RequestParam("code") String code, @RequestParam("state") String state) throws UnsupportedEncodingException {
         LOG.debug("In SP redirect link account");
 
-        User principal = (User) authentication.getPrincipal();
+        User principal = userFromAuthentication(authentication);
         String uid = principal.getUid();
         Optional<User> userOptional = userRepository.findUserByUid(uid);
         User user = userOptional.orElseThrow(() -> new UserNotFoundException(uid));
@@ -378,6 +389,7 @@ public class AccountLinkerController {
     }
 
     @GetMapping("/idp/oidc/redirect")
+    @Hidden
     public ResponseEntity idpFlowRedirect(HttpServletRequest request, @RequestParam("code") String code, @RequestParam("state") String state) throws UnsupportedEncodingException {
         String decodedState = URLDecoder.decode(state, StandardCharsets.UTF_8);
         MultiValueMap<String, String> params = UriComponentsBuilder.fromHttpUrl("http://localhost?" + decodedState).build().getQueryParams();
@@ -564,4 +576,8 @@ public class AccountLinkerController {
         return CollectionUtils.isEmpty(uniqueAffiliations) ? Arrays.asList(String.format("affiliate@%s", schacHomeOrganization)) : new ArrayList<>(uniqueAffiliations);
     }
 
+    @Override
+    public UserRepository getUserRepository() {
+        return userRepository;
+    }
 }
