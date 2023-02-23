@@ -298,11 +298,11 @@ public class UserController implements ServiceProviderHolder, UserAuthentication
                     "<br/>After the account is validated the user is logged in and the server redirects to <a href=\"\">https://login.{environment}.eduid.nl/client/mobile/created</a>",
             responses = {
                     @ApiResponse(responseCode = "201", description = "Created. Mail is sent to the user",
-                            content = {@Content(examples = {@ExampleObject(value = "{\"status\":\"201\"}")})}),
+                            content = {@Content(examples = {@ExampleObject(value = "{\"status\":201}")})}),
                     @ApiResponse(responseCode = "412", description = "Forbidden email domain",
-                            content = {@Content(examples = {@ExampleObject(value = "{\"status\":\"412\"}")})}),
+                            content = {@Content(examples = {@ExampleObject(value = "{\"status\":412}")})}),
                     @ApiResponse(responseCode = "409", description = "Email is in use",
-                            content = {@Content(examples = {@ExampleObject(value = "{\"status\":\"409\"}")})})})
+                            content = {@Content(examples = {@ExampleObject(value = "{\"status\":409}")})})})
     @PostMapping("/idp/create")
     public ResponseEntity<Map<String, Integer>> createEduIDAccount(@RequestBody CreateAccount createAccount) {
 
