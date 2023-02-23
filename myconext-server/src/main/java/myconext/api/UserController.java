@@ -11,6 +11,7 @@ import com.yubico.webauthn.exception.RegistrationFailedException;
 import io.swagger.v3.oas.annotations.Hidden;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import myconext.cron.DisposableEmailProviders;
 import myconext.cron.IdPMetaDataResolver;
@@ -192,9 +193,7 @@ public class UserController implements ServiceProviderHolder, UserAuthentication
         User user = magicLinkRequest.getUser();
 
         String email = user.getEmail();
-        this.emailDomainGuard.enforceIsAllowed(email);
-        this.emailGuessingPreventor.potentialUserEmailGuess();
-        this.disposableEmailProviders.verifyDisposableEmailProviders(email);
+        verifyEmails(email);
 
         Optional<User> optionalUser = userRepository.findUserByEmail(emailGuessingPreventor.sanitizeEmail(email));
         if (optionalUser.isPresent()) {
@@ -222,9 +221,7 @@ public class UserController implements ServiceProviderHolder, UserAuthentication
         User providedUser = magicLinkRequest.getUser();
 
         String email = providedUser.getEmail();
-        this.emailDomainGuard.enforceIsAllowed(email);
-        this.disposableEmailProviders.verifyDisposableEmailProviders(email);
-        this.emailGuessingPreventor.potentialUserEmailGuess();
+        this.verifyEmails(email);
 
         Optional<User> optionalUser = findUserStoreLanguage(email);
         if (!optionalUser.isPresent()) {
@@ -291,6 +288,44 @@ public class UserController implements ServiceProviderHolder, UserAuthentication
         Long count = authenticationRequestRepository.deleteByUserId(user.getId());
         logWithContext(user, "delete", "rememberme", LOG, "Do not remember user anymore");
         return ResponseEntity.ok(count);
+    }
+
+    @Operation(summary = "Create eduID account",
+            description = "Create an eduID account and sent a verification mail to the user to confirm the ownership of the email. " +
+                    "<br/>Link in the validation email is <a href=\"\">https://idp.{environment}.eduid.nl/mobile/api/create-from-mobile-api?h=={{hash}}</a>"+
+                    "<br/>After the account is validated the user is logged in and the server redirects to <a href=\"\">https://idp.{environment}.eduid.nl/client/mobile/created</a>",
+            responses = {
+                    @ApiResponse(responseCode = "201", description = "Created. Mail is sent to the user"),
+                    @ApiResponse(responseCode = "412", description = "Forbidden email domain"),
+                    @ApiResponse(responseCode = "409", description = "Email is in use")})
+    @PostMapping("/idp/create")
+    public ResponseEntity<Map<String, Integer>> createEduIDAccount(@RequestBody CreateAccount createAccount) {
+
+        String email = createAccount.getEmail();
+        verifyEmails(email);
+
+        Optional<User> optionalUser = userRepository.findUserByEmail(emailGuessingPreventor.sanitizeEmail(email));
+        if (optionalUser.isPresent()) {
+            return ResponseEntity.status(HttpStatus.CONFLICT)
+                    .body(Map.of("status", HttpStatus.CONFLICT.value()));
+        }
+        CreateInstitutionEduID institution = new CreateInstitutionEduID(hash(),
+                email, true);
+        User user = new User(institution,
+                Map.of("family_name", createAccount.getFamilyName(), "given_name", createAccount.getGivenName()));
+        user.setNewUser(true);
+        user.setCreateFromInstitutionKey(institution.getHash());
+        user.validate();
+        user.setPreferredLanguage("en");
+
+        userRepository.save(user);
+
+        String linkUrl = String.format("%s/mobile/api/create-from-mobile-api", this.idpBaseUrl);
+        mailBox.sendAccountVerificationMobileAPI(user, institution.getHash(), linkUrl);
+
+        logWithContext(user, "create", "user", LOG, "Create user in mobile API");
+
+        return ResponseEntity.status(HttpStatus.CREATED).body(Map.of("status", HttpStatus.CREATED.value()));
     }
 
     @Operation(summary = "Change names", description = "Update the givenName and / or familyName of the User")
@@ -413,8 +448,8 @@ public class UserController implements ServiceProviderHolder, UserAuthentication
     }
 
     @PutMapping("/sp/reset-password-link")
-    @Operation(summary = "Reset password link", description = "Sent the user a mail with a link for the user to change his  / hers password. " +
-            "Link is send to <a href=\"\">https://mijn.{environment}.eduid.nl/reset-password?h=={{hash}}</a>")
+    @Operation(summary = "Reset password link", description = "Sent the user a mail with a link for the user to change his / hers password. " +
+            "<br/>Link in the validation email is <a href=\"\">https://mijn.{environment}.eduid.nl/reset-password?h=={{hash}}</a>")
     public ResponseEntity<UserResponse> resetPasswordLink(Authentication authentication) {
         User user = userFromAuthentication(authentication);
         List<ChangeEmailHash> changeEmailHashes = changeEmailHashRepository.findByUserId(user.getId());
@@ -562,7 +597,6 @@ public class UserController implements ServiceProviderHolder, UserAuthentication
         return ResponseEntity.status(201).body(new UserResponse(user, convertEduIdPerServiceProvider(user), optionalRegistration, false));
     }
 
-
     private ResponseEntity<UserResponse> userResponseRememberMe(User user) {
         List<SamlAuthenticationRequest> samlAuthenticationRequests = authenticationRequestRepository.findByUserIdAndRememberMe(user.getId(), true);
         Optional<Registration> optionalRegistration = registrationRepository.findRegistrationByUserId(user.getId());
@@ -659,9 +693,7 @@ public class UserController implements ServiceProviderHolder, UserAuthentication
     @Hidden
     public ResponseEntity idpWebAuthnStartAuthentication(@RequestBody Map<String, String> body) {
         String email = body.get("email");
-        this.emailDomainGuard.enforceIsAllowed(email);
-        this.emailGuessingPreventor.potentialUserEmailGuess();
-        this.disposableEmailProviders.verifyDisposableEmailProviders(email);
+        verifyEmails(email);
 
         Optional<User> optionalUser = userRepository.findUserByEmail(emailGuessingPreventor.sanitizeEmail(email));
         if (!optionalUser.isPresent()) {
@@ -848,6 +880,12 @@ public class UserController implements ServiceProviderHolder, UserAuthentication
             }
         });
         return optionalUser;
+    }
+
+    private void verifyEmails(String email) {
+        this.emailDomainGuard.enforceIsAllowed(email);
+        this.emailGuessingPreventor.potentialUserEmailGuess();
+        this.disposableEmailProviders.verifyDisposableEmailProviders(email);
     }
 
     private ResponseEntity return404() {

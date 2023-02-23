@@ -2,7 +2,7 @@ package myconext.security;
 
 public class EmailGuessingPrevention {
 
-    private int millis;
+    private final int millis;
 
     public EmailGuessingPrevention(int millis) {
         this.millis = millis;
@@ -17,6 +17,6 @@ public class EmailGuessingPrevention {
     }
 
     public String sanitizeEmail(String email) {
-        return email != null ? email.trim() : email;
+        return email != null ? email.trim() : null;
     }
 }

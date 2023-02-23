@@ -83,6 +83,10 @@ public class MailBox {
         doSendAccountVerification(user, hash, linkUrl);
     }
 
+    public void sendAccountVerificationMobileAPI(User user, String hash, String linkUrl) {
+        doSendAccountVerification(user, hash, linkUrl);
+    }
+
     private void doSendAccountVerification(User user, String hash, String linkUrl) {
         String title = this.getTitle("account_verification", user);
         Map<String, Object> variables = variables(user, title);

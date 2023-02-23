@@ -270,6 +270,14 @@ public class SecurityConfiguration {
         private String secret;
 
         @Override
+        public void configure(WebSecurity web) {
+            web.ignoring().antMatchers(
+                    "/mobile/api/idp/create",
+                    "/mobile/api/create-from-mobile-api"
+            );
+        }
+
+        @Override
         protected void configure(HttpSecurity http) throws Exception {
             String[] antPatterns = {"/myconext/api/eduid/**", "/mobile/**"};
             http
@@ -285,6 +293,7 @@ public class SecurityConfiguration {
                     .oauth2ResourceServer(oauth2 -> oauth2.opaqueToken(token -> token
                             .introspectionUri(introspectionUri)
                             .introspectionClientCredentials(clientId, secret)));
+
         }
     }
 }

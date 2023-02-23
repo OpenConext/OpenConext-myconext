@@ -27,6 +27,7 @@ import static myconext.security.GuestIdpAuthenticationRequestFilter.REGISTER_MOD
 import static org.springframework.security.web.context.HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY;
 
 @RestController
+@Hidden
 public class LoginController {
 
     private final boolean secureCookie;
@@ -150,10 +151,25 @@ public class LoginController {
     }
 
     @GetMapping("create-from-institution-login")
-    @Hidden
     public void createFromInstitutionLogin(HttpServletRequest request,
                                            HttpServletResponse response,
                                            @RequestParam(value = "key") String key) throws IOException {
+        String redirectUrl = String.format("%s/security", this.config.get("spBaseUrl"));
+        doCreateUserFromInstitutionKey(request, response, key, redirectUrl);
+    }
+
+    @GetMapping("/mobile/api/create-from-mobile-api")
+    public void createFromMobileApi(HttpServletRequest request,
+                                    HttpServletResponse response,
+                                    @RequestParam(value = "h") String hash) throws IOException {
+        String redirectUrl = String.format("%s/client/mobile/created", this.config.get("idpBaseUrl"));
+        doCreateUserFromInstitutionKey(request, response, hash, redirectUrl);
+    }
+
+    private void doCreateUserFromInstitutionKey(HttpServletRequest request,
+                                                HttpServletResponse response,
+                                                String key,
+                                                String redirectUrl) throws IOException {
         User user = userRepository.findUserByCreateFromInstitutionKey(key)
                 .orElseThrow(() -> new UserNotFoundException("User by createFromInstitutionKey not found"));
         boolean newUser = user.isNewUser();
@@ -174,7 +190,7 @@ public class LoginController {
         HttpSession session = request.getSession();
         session.setAttribute(SPRING_SECURITY_CONTEXT_KEY, context);
 
-        String redirectLocation = String.format("%s/security?new=%s", this.config.get("spBaseUrl"), newUser ? "true" : "false");
+        String redirectLocation = redirectUrl + String.format("?new=%s", newUser ? "true" : "false");
         response.sendRedirect(redirectLocation);
     }
 }

@@ -3,6 +3,7 @@ package myconext.api;
 import com.github.tomakehurst.wiremock.junit.WireMockRule;
 import io.restassured.http.ContentType;
 import myconext.AbstractIntegrationTest;
+import myconext.model.CreateAccount;
 import myconext.model.UpdateUserNameRequest;
 import myconext.model.User;
 import org.junit.ClassRule;
@@ -47,6 +48,30 @@ public class UserMobileControllerTest extends AbstractIntegrationTest {
 
         assertEquals(userNameRequest.getGivenName(), user.getGivenName());
         assertEquals(userNameRequest.getFamilyName(), user.getFamilyName());
+    }
+
+    @Test
+    public void createEduID() {
+        CreateAccount createAccount = new CreateAccount("kasd.doe@unit.org", "Kasd", "Doe");
+        given()
+                .when()
+                .accept(ContentType.JSON)
+                .contentType(ContentType.JSON)
+                .body(createAccount)
+                .post("/mobile/api/idp/create")
+                .then()
+                .statusCode(201);
+        User user = userRepository.findUserByEmail(createAccount.getEmail()).get();
+        given().redirects().follow(false)
+                .when()
+                .accept(ContentType.JSON)
+                .contentType(ContentType.JSON)
+                .queryParam("h", user.getCreateFromInstitutionKey())
+                .get("/mobile/api/create-from-mobile-api")
+                .then()
+                .statusCode(302)
+                .header("Location", "http://localhost:3000/client/mobile/created?new=true");
+
 
     }
 }
