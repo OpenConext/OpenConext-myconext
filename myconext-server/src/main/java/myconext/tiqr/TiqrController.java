@@ -128,7 +128,8 @@ public class TiqrController {
     }
 
     @GetMapping("/start-enrollment")
-    public ResponseEntity<Map<String, String>> startEnrollment(@RequestParam(value = "hash", required = false) String hash) throws IOException, WriterException {
+    public ResponseEntity<Map<String, String>> startEnrollment(@RequestParam(value = "hash", required = false) String hash)
+            throws IOException, WriterException {
         if (!StringUtils.hasText(hash)) {
             throw new ForbiddenException("No hash parameter");
         }
@@ -138,7 +139,12 @@ public class TiqrController {
     }
 
     private ResponseEntity<Map<String, String>> doStartEnrollmentForUser(User user) throws WriterException, IOException {
-        Enrollment enrollment = tiqrService.startEnrollment(user.getId(), String.format("%s %s", user.getGivenName(), user.getFamilyName()));
+        Enrollment enrollment;
+        try {
+            enrollment = tiqrService.startEnrollment(user.getId(), String.format("%s %s", user.getGivenName(), user.getFamilyName()));
+        } catch (TiqrException e) {
+            throw new ForbiddenException("Can not start enrollment when there is an existing Registration");
+        }
         String enrollmentKey = enrollment.getKey();
         String metaDataUrl = String.format("%s/tiqr/metadata?enrollment_key=%s",
                 getEduIDServerBaseUrl(),
