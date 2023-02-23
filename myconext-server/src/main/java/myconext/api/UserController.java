@@ -556,7 +556,8 @@ public class UserController implements ServiceProviderHolder, UserAuthentication
 
     @PutMapping("/sp/tokens")
     @Operation(summary = "Remove user tokens",
-            description = "Remove user token for a service")
+            description = "Remove user token for a service"
+    )
     public ResponseEntity<UserResponse> removeTokens(Authentication authentication,
                                                      @RequestBody DeleteServiceTokens serviceAndTokens) {
         User user = userFromAuthentication(authentication);
@@ -590,7 +591,18 @@ public class UserController implements ServiceProviderHolder, UserAuthentication
 
     @GetMapping("/sp/tokens")
     @Operation(summary = "Get all OpenID Connect tokens",
-            description = "Get all OpenID Connect tokens for the logged in user")
+            description = "Get all OpenID Connect tokens for the logged in user",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "User tokens",
+                            content = {@Content(examples =
+                                    {@ExampleObject(value =
+                                            "[{\"expiresIn\":\"2023-03-08T08:59:17.458+00:00\"," +
+                                            "\"createdAt\":\"2022-12-08T08:59:17.458+00:00\"," +
+                                            "\"clientId\":\"student.mobility.rp.localhost\",\"clientName\":\"Student Mobility RP localhost\",\"audiences\":[\"student-mobility-home-institution-mock\",\"For localhost student mobility testing\",\"Resource Server for the Playground Client Test2\"]," +
+                                                    "\"id\":\"6391a7651f7c1b41403f066f\"," +
+                                                    "\"scopes\":[{\"name\":\"https://utrecht/api\"," +
+                                                    "\"titles\":{},\"descriptions\":{\"en\":\"Retrieve personal information at Utrecht University \",\"nl\":\"Ophalen persoonsinformatie bij Utrecht Universiteit\"}}]")})})}
+    )
     public ResponseEntity<List<Map<String, Object>>> tokens(Authentication authentication) {
         User user = userFromAuthentication(authentication);
         List<Map<String, Object>> tokens = this.openIDConnect.tokens(user);
