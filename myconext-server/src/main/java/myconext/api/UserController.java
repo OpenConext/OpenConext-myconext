@@ -292,8 +292,8 @@ public class UserController implements ServiceProviderHolder, UserAuthentication
 
     @Operation(summary = "Create eduID account",
             description = "Create an eduID account and sent a verification mail to the user to confirm the ownership of the email. " +
-                    "<br/>Link in the validation email is <a href=\"\">https://idp.{environment}.eduid.nl/mobile/api/create-from-mobile-api?h=={{hash}}</a>"+
-                    "<br/>After the account is validated the user is logged in and the server redirects to <a href=\"\">https://idp.{environment}.eduid.nl/client/mobile/created</a>",
+                    "<br/>Link in the validation email is <a href=\"\">https://login.{environment}.eduid.nl/mobile/api/create-from-mobile-api?h=={{hash}}</a>"+
+                    "<br/>After the account is validated the user is logged in and the server redirects to <a href=\"\">https://login.{environment}.eduid.nl/client/mobile/created</a>",
             responses = {
                     @ApiResponse(responseCode = "201", description = "Created. Mail is sent to the user"),
                     @ApiResponse(responseCode = "412", description = "Forbidden email domain"),
