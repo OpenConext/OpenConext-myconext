@@ -1,5 +1,6 @@
 package myconext.model;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.SneakyThrows;
@@ -24,6 +25,7 @@ public class EduID implements Serializable {
     private String serviceLogoUrl;
     private String serviceHomeUrl;
     private String serviceInstutionGuid;
+    @Schema(type = "integer", format = "int64", example = "1634813554997")
     private Date createdAt;
 
     public EduID(String value, String serviceProviderEntityId, Optional<ServiceProvider> serviceProviderOptional) {

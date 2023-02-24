@@ -2,6 +2,7 @@ package myconext.model;
 
 import com.yubico.webauthn.data.ByteArray;
 import com.yubico.webauthn.data.PublicKeyCredentialDescriptor;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -15,6 +16,7 @@ public class PublicKeyCredentials implements Serializable {
     private String identifier;
     private String credential;
     private String name;
+    @Schema(type = "integer", format = "int64", example = "1634813554997")
     private Date createdAt;
 
     public PublicKeyCredentials(PublicKeyCredentialDescriptor publicKeyCredentialDescriptor, ByteArray publicKeyCredential, String name) {

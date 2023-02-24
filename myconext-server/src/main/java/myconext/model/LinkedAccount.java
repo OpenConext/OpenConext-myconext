@@ -1,6 +1,7 @@
 package myconext.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -26,7 +27,9 @@ public class LinkedAccount implements Serializable {
     private String givenName;
     private String familyName;
     private List<String> eduPersonAffiliations = new ArrayList<>();
+    @Schema(type = "integer", format = "int64", example = "1634813554997")
     private Date createdAt;
+    @Schema(type = "integer", format = "int64", example = "1634813554997")
     private Date expiresAt;
 
     @Transient
