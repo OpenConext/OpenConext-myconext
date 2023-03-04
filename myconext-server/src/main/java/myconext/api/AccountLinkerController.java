@@ -560,8 +560,7 @@ public class AccountLinkerController implements UserAuthentication {
 
         request = new HttpEntity<>(map, headers);
 
-        body = restTemplate.exchange(oidcBaseUrl + "/oidc/userinfo", HttpMethod.POST, request, parameterizedTypeReference).getBody();
-        return body;
+        return restTemplate.exchange(oidcBaseUrl + "/oidc/userinfo", HttpMethod.POST, request, parameterizedTypeReference).getBody();
     }
 
     protected static List<String> parseAffiliations(Map<String, Object> idpAttributes, String schacHomeOrganization) {

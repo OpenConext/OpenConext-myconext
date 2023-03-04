@@ -51,6 +51,21 @@ public class UserMobileControllerTest extends AbstractIntegrationTest {
     }
 
     @Test
+    public void institutionNames() throws IOException {
+        Map names = given()
+                .when()
+                .accept(ContentType.JSON)
+                .contentType(ContentType.JSON)
+                .auth().oauth2(opaqueAccessToken(true, "eduid.nl/mobile"))
+                .queryParam("schac_home", "rug.nl")
+                .get("/mobile/api/sp/institution/names")
+                .as(Map.class);
+
+        assertEquals("University of Groningen", names.get("displayNameEn"));
+        assertEquals("Rijksuniversiteit Groningen", names.get("displayNameNl"));
+    }
+
+    @Test
     public void createEduID() {
         CreateAccount createAccount = new CreateAccount("kasd.doe@unit.org", "Kasd", "Doe");
         given()

@@ -17,6 +17,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import myconext.cron.DisposableEmailProviders;
 import myconext.cron.IdPMetaDataResolver;
+import myconext.cron.IdentityProvider;
 import myconext.exceptions.ExpiredAuthenticationException;
 import myconext.exceptions.ForbiddenException;
 import myconext.exceptions.UserNotFoundException;
@@ -274,6 +275,13 @@ public class UserController implements ServiceProviderHolder, UserAuthentication
     public int successfullyLoggedIn(@RequestParam("id") String id) {
         Optional<SamlAuthenticationRequest> optionalSamlAuthenticationRequest = authenticationRequestRepository.findById(id);
         return optionalSamlAuthenticationRequest.map(samlAuthenticationRequest -> samlAuthenticationRequest.getLoginStatus().ordinal()).orElse(LoginStatus.NOT_LOGGED_IN.ordinal());
+    }
+
+    @Operation(summary = "Institution displaynames",
+            description = "Retrieve the displayNames of the Institution by the schac_home value")
+    @GetMapping("/sp/institution/names")
+    public ResponseEntity<Optional<IdentityProvider>> institutionNames(@RequestParam(value = "schac_home") String schacHome) {
+        return ResponseEntity.ok(idPMetaDataResolver.getIdentityProvider(schacHome));
     }
 
     @Operation(summary = "User details", description = "Retrieve the attributes of the current user")
@@ -597,8 +605,8 @@ public class UserController implements ServiceProviderHolder, UserAuthentication
                             content = {@Content(examples =
                                     {@ExampleObject(value =
                                             "[{\"expiresIn\":\"2023-03-08T08:59:17.458+00:00\"," +
-                                            "\"createdAt\":\"2022-12-08T08:59:17.458+00:00\"," +
-                                            "\"clientId\":\"student.mobility.rp.localhost\",\"clientName\":\"Student Mobility RP localhost\",\"audiences\":[\"student-mobility-home-institution-mock\",\"For localhost student mobility testing\",\"Resource Server for the Playground Client Test2\"]," +
+                                                    "\"createdAt\":\"2022-12-08T08:59:17.458+00:00\"," +
+                                                    "\"clientId\":\"student.mobility.rp.localhost\",\"clientName\":\"Student Mobility RP localhost\",\"audiences\":[\"student-mobility-home-institution-mock\",\"For localhost student mobility testing\",\"Resource Server for the Playground Client Test2\"]," +
                                                     "\"id\":\"6391a7651f7c1b41403f066f\"," +
                                                     "\"scopes\":[{\"name\":\"https://utrecht/api\"," +
                                                     "\"titles\":{},\"descriptions\":{\"en\":\"Retrieve personal information at Utrecht University \",\"nl\":\"Ophalen persoonsinformatie bij Utrecht Universiteit\"}}]")})})}
