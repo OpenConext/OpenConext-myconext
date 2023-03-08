@@ -52,6 +52,8 @@ public class IdPMetaDataResolver {
                         switch (localName) {
                             case "IDPSSODescriptor":
                                 domainNames.clear();
+                                displayNameEn = null;
+                                displayNameNl = null;
                                 break;
                             case "Scope":
                                 String scopeText = reader.getElementText();
@@ -75,8 +77,9 @@ public class IdPMetaDataResolver {
                     case END_ELEMENT:
                         localName = reader.getLocalName();
                         if (localName.equals("IDPSSODescriptor")) {
+                            IdentityProvider identityProvider = new IdentityProvider(displayNameEn, displayNameNl);
                             for (String domainName : domainNames) {
-                                newIdentityProviderMap.put(domainName, new IdentityProvider(displayNameEn, displayNameNl));
+                                newIdentityProviderMap.put(domainName, identityProvider);
                             }
                         }
                 }
@@ -104,17 +107,19 @@ public class IdPMetaDataResolver {
 
 
     public Set<String> getDomainNames() {
-        if (this.identityProviderMap.isEmpty()) {
-            resolveIdpMetaData();
-        }
+        lazyLoadCheck();
         return this.identityProviderMap.keySet();
     }
 
     public Optional<IdentityProvider> getIdentityProvider(String domainName) {
+        lazyLoadCheck();
+        return Optional.ofNullable(this.identityProviderMap.get(domainName));
+    }
+
+    private void lazyLoadCheck() {
         if (this.identityProviderMap.isEmpty()) {
             resolveIdpMetaData();
         }
-        return Optional.ofNullable(this.identityProviderMap.get(domainName));
     }
 
     private XMLStreamReader getXMLStreamReader(Resource xml) throws IOException, XMLStreamException {
