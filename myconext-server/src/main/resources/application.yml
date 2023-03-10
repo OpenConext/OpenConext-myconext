@@ -62,6 +62,7 @@ guest_idp_entity_id: https://localhost.surf.id
 my_conext_url: https://my.test2.surfconext.nl
 domain: eduid.nl
 mijn_eduid_entity_id: http://mijn.localhost/shibboleth
+mobile_app_redirect: eduid:///client/mobile/created
 
 feature:
   webauthn: True

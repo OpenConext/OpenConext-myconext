@@ -123,6 +123,11 @@ I18n.translations.en = {
         title: "Login almost done!",
         info: "Please go back to the screen where you requested the magic link and follow the instructions there.<br/><br/>You can close this tab / window."
     },
+    redirectMobileApp: {
+        title: "Account created!",
+        info: "Your account has been created, click the button below to open your new account in the eduID app.",
+        proceedLink: "Go to eduID app"
+    },
     expired: {
         title: "Expired magic link",
         info: "The magic link you used is either expired or has already been used.",

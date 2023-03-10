@@ -123,6 +123,11 @@ I18n.translations.nl = {
         title: "Inloggen bijna geslaagd!",
         info: "Ga terug naar het scherm waar je de magische link hebt aangevraagd en volg de instructies daar op.<br/><br/>Je kunt dit tabblad / venster sluiten."
     },
+    redirectMobileApp: {
+        title: "Account aangemaakt!",
+        info: "Je account is gemaakt, klik op de knop hier onderen om je nieuwe account te openen in de eduID app.",
+        proceedLink: "Open de eduID app"
+    },
     expired: {
         title: "Verlopen magische link",
         info: "De magische link die je hebt gebruikt, is verlopen of al een keer gebruikt",

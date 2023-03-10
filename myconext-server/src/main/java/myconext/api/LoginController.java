@@ -55,7 +55,8 @@ public class LoginController {
                            @Value("${feature.create_eduid_institution_enabled}") boolean createEduIDInstitutionEnabled,
                            @Value("${feature.create_eduid_institution_landing}") boolean createEduIDInstitutionLanding,
                            @Value("${email_spam_threshold_seconds}") long emailSpamThresholdSeconds,
-                           @Value("${linked_accounts.expiry-duration-days-non-validated}") long expirationValidatedDurationDays) {
+                           @Value("${linked_accounts.expiry-duration-days-non-validated}") long expirationValidatedDurationDays,
+                           @Value("${mobile_app_redirect}") String mobileAppRedirect) {
         this.config.put("loginUrl", basePath + "/login");
         this.config.put("continueAfterLoginUrl", continueAfterLoginUrl);
         this.config.put("baseDomain", baseDomain);
@@ -76,6 +77,7 @@ public class LoginController {
         this.config.put("createEduIDInstitutionEnabled", createEduIDInstitutionEnabled);
         this.config.put("createEduIDInstitutionLanding", createEduIDInstitutionLanding);
         this.config.put("expirationValidatedDurationDays", expirationValidatedDurationDays);
+        this.config.put("mobileAppRedirect", mobileAppRedirect);
         this.secureCookie = secureCookie;
         this.userRepository = userRepository;
     }

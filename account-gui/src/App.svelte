@@ -42,6 +42,7 @@
     import Congrats from "./routes/Congrats.svelte";
     import RememberMe from "./routes/RememberMe.svelte";
     import AppRequired from "./routes/AppRequired.svelte";
+    import RedirectMobileApp from "./routes/RedirectMobileApp.svelte";
 
     export let url = "";
 
@@ -198,6 +199,7 @@
                 <Route path="/webauthnTest/:id" let:params>
                     <WebAuthnTest id="{params.id}"/>
                 </Route>
+                <Route path="/client/mobile/*action" component={RedirectMobileApp}/>
                 <Route component={NotFound}/>
             </Router>
         </div>
