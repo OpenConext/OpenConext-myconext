@@ -21,5 +21,7 @@ public class CreateAccount implements Serializable {
     private String givenName;
     @NotNull
     private String familyName;
+    @NotNull
+    private String relyingPartClientId;
 
 }

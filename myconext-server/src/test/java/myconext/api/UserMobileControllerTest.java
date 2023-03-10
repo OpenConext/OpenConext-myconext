@@ -14,6 +14,7 @@ import java.util.Map;
 
 import static io.restassured.RestAssured.given;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 public class UserMobileControllerTest extends AbstractIntegrationTest {
 
@@ -67,7 +68,7 @@ public class UserMobileControllerTest extends AbstractIntegrationTest {
 
     @Test
     public void createEduID() {
-        CreateAccount createAccount = new CreateAccount("kasd.doe@unit.org", "Kasd", "Doe");
+        CreateAccount createAccount = new CreateAccount("kasd.doe@unit.org", "Kasd", "Doe", "mobile.api.client_id");
         given()
                 .when()
                 .accept(ContentType.JSON)
@@ -77,6 +78,10 @@ public class UserMobileControllerTest extends AbstractIntegrationTest {
                 .then()
                 .statusCode(201);
         User user = userRepository.findUserByEmail(createAccount.getEmail()).get();
+
+        assertEquals(createAccount.getRelyingPartClientId(), user.getEduIDS().get(0).getServiceProviderEntityId());
+        assertNotNull(user.getEduPersonPrincipalName());
+
         given().redirects().follow(false)
                 .when()
                 .accept(ContentType.JSON)

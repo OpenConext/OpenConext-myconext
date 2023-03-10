@@ -324,12 +324,17 @@ public class UserController implements ServiceProviderHolder, UserAuthentication
         }
         CreateInstitutionEduID institution = new CreateInstitutionEduID(hash(),
                 email, true);
-        User user = new User(institution,
-                Map.of("family_name", createAccount.getFamilyName(), "given_name", createAccount.getGivenName()));
-        user.setNewUser(true);
+        User user = new User(
+                UUID.randomUUID().toString(),
+                institution.getEmail(),
+                createAccount.getGivenName(),
+                createAccount.getFamilyName(),
+                this.schacHomeOrganization,
+                "en",
+                createAccount.getRelyingPartClientId(),
+                serviceProviderResolver);
         user.setCreateFromInstitutionKey(institution.getHash());
         user.validate();
-        user.setPreferredLanguage("en");
 
         userRepository.save(user);
 
