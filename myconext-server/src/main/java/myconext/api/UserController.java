@@ -43,6 +43,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.oauth2.server.resource.authentication.BearerTokenAuthentication;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
@@ -361,7 +362,8 @@ public class UserController implements ServiceProviderHolder, UserAuthentication
         return returnUserResponse(user);
     }
 
-    @Operation(summary = "Change email", description = "Request to change the email of the user. A validation email will be send containing an URL with an unique 'h' query param")
+    @Operation(summary = "Change email", description =
+            "Request to change the email of the user. A validation email will be send containing an URL with an unique 'h' query param")
     @PutMapping("/sp/email")
     public ResponseEntity updateEmail(Authentication authentication, @RequestBody UpdateEmailRequest updateEmailRequest,
                                       @RequestParam(value = "force", required = false, defaultValue = "false") boolean force) {
@@ -388,7 +390,8 @@ public class UserController implements ServiceProviderHolder, UserAuthentication
         changeEmailHashRepository.save(new ChangeEmailHash(user, newEmail, hashValue));
         logWithContext(user, "update", "update-email", LOG, "Send update email mail");
 
-        mailBox.sendUpdateEmail(user, newEmail, hashValue);
+        mailBox.sendUpdateEmail(user, newEmail, hashValue, isMobileRequest(authentication));
+
         authenticationRequestRepository.deleteByUserId(user.getId());
         return returnUserResponse(user);
     }

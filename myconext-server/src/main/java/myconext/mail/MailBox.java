@@ -128,10 +128,11 @@ public class MailBox {
         sendMail("new_device", title, variables, preferredLanguage(user), user.getEmail(), false);
     }
 
-    public void sendUpdateEmail(User user, String newMail, String hash) {
+    public void sendUpdateEmail(User user, String newMail, String hash, boolean mobileRequest) {
         String title = this.getTitle("update_email", user);
         Map<String, Object> variables = variables(user, title);
         variables.put("mySurfConextURL", mySURFconextURL);
+        variables.put("mobileContext", mobileRequest ? "client/mobile/" : "");
         variables.put("hash", hash);
         sendMail("update_email", title, variables, preferredLanguage(user), newMail, false);
     }

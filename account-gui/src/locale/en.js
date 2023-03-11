@@ -124,8 +124,14 @@ I18n.translations.en = {
         info: "Please go back to the screen where you requested the magic link and follow the instructions there.<br/><br/>You can close this tab / window."
     },
     redirectMobileApp: {
-        title: "Account created!",
-        info: "Your account has been created, click the button below to open your new account in the eduID app.",
+        created: {
+            title: "Account created!",
+            info: "Your account has been created, click the button below to open your new account in the eduID app.",
+        },
+        "update-email": {
+            title: "New email confirmed!",
+            info: "To finalize your email update, click the button below to open eduID app.",
+        },
         proceedLink: "Go to eduID app"
     },
     expired: {

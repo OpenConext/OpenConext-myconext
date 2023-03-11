@@ -124,8 +124,14 @@ I18n.translations.nl = {
         info: "Ga terug naar het scherm waar je de magische link hebt aangevraagd en volg de instructies daar op.<br/><br/>Je kunt dit tabblad / venster sluiten."
     },
     redirectMobileApp: {
-        title: "Account aangemaakt!",
-        info: "Je account is gemaakt, klik op de knop hier onderen om je nieuwe account te openen in de eduID app.",
+        created: {
+            title: "Account aangemaakt!",
+            info: "Je account is gemaakt, klik op de knop hier onder om je nieuwe account te openen in de eduID app.",
+        },
+        "update-email": {
+            title: "Nieuwe e-mail bevestigd!",
+            info: "Om je e-mail te wijzigen, klik op de knop hier onder om de eduID app te openen.",
+        },
         proceedLink: "Open de eduID app"
     },
     expired: {

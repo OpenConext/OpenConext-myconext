@@ -27,5 +27,9 @@ public interface UserAuthentication {
         return user;
     }
 
+    default boolean isMobileRequest(Authentication authentication) {
+        return authentication instanceof BearerTokenAuthentication;
+    }
+
 
 }

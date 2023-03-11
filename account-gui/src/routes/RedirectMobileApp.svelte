@@ -1,10 +1,20 @@
 <script>
     import I18n from "i18n-js";
-    import {links, conf} from "../stores/conf";
+    import {conf, links} from "../stores/conf";
     import Button from "../components/Button.svelte";
+    import {onMount} from "svelte";
 
-    $links.displayBackArrow = false;
     export let action;
+    let redirectAppUrl = null;
+
+    onMount(() => {
+        $links.displayBackArrow = false;
+
+        const urlSearchParams = new URLSearchParams(window.location.search);
+        const hash = urlSearchParams.get("h")
+        const queryPart = hash ? `?h=${hash}` : "";
+        redirectAppUrl = `${$conf.mobileAppRedirect}/${action}${queryPart}`
+    });
 
 </script>
 
@@ -15,9 +25,11 @@
         font-size: 32px;
         font-weight: bold;
     }
+
     p.info {
         margin-bottom: 25px;
     }
+
     p.hidden {
         display: none;
     }
@@ -25,10 +37,11 @@
 </style>
 <div class="home">
     <div class="card">
-        <h1>{I18n.t("redirectMobileApp.title")}</h1>
-        <p class="info">{@html I18n.t("redirectMobileApp.info")}</p>
-        <p class="hidden">{action}</p>
-        <Button href="/eduid" onClick={() => window.location.href = $conf.mobileAppRedirect}
+        <h1>{I18n.t(`redirectMobileApp.${action}.title`)}</h1>
+        <p class="info">{@html I18n.t(`redirectMobileApp.${action}.info`)}</p>
+        <p class="hidden">{redirectAppUrl}</p>
+        <Button href="/eduid"
+                onClick={() => window.location.href = redirectAppUrl}
                 label={I18n.t("redirectMobileApp.proceedLink")}/>
     </div>
 </div>
