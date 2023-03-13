@@ -121,7 +121,7 @@ public class MailBoxTest extends AbstractIntegrationTest {
     @Test
     public void sendResetPassword() throws Exception {
         User user = user("jdoe@example.com");
-        mailBox.sendResetPassword(user, "hash");
+        mailBox.sendResetPassword(user, "hash", false);
 
         MimeMessage mimeMessage = mailMessage();
         MimeMessageParser parser = new MimeMessageParser(mimeMessage);
@@ -132,9 +132,48 @@ public class MailBoxTest extends AbstractIntegrationTest {
     }
 
     @Test
+    public void sendResetPasswordMobile() throws Exception {
+        User user = user("jdoe@example.com");
+        mailBox.sendResetPassword(user, "hash", true);
+
+        MimeMessage mimeMessage = mailMessage();
+        MimeMessageParser parser = new MimeMessageParser(mimeMessage);
+        parser.parse();
+
+        String htmlContent = parser.getHtmlContent();
+        assertTrue(htmlContent.contains("http://localhost:3000/client/mobile/reset-password?h=hash"));
+    }
+
+    @Test
+    public void sendUpdateEmail() throws Exception {
+        User user = user("jdoe@example.com");
+        mailBox.sendUpdateEmail(user, "new@example.com", "hash", false);
+
+        MimeMessage mimeMessage = mailMessage();
+        MimeMessageParser parser = new MimeMessageParser(mimeMessage);
+        parser.parse();
+
+        String htmlContent = parser.getHtmlContent();
+        assertTrue(htmlContent.contains("http://localhost:3001/update-email?h=hash"));
+    }
+
+    @Test
+    public void sendUpdateEmailMobile() throws Exception {
+        User user = user("jdoe@example.com");
+        mailBox.sendUpdateEmail(user, "new@example.com", "hash", true);
+
+        MimeMessage mimeMessage = mailMessage();
+        MimeMessageParser parser = new MimeMessageParser(mimeMessage);
+        parser.parse();
+
+        String htmlContent = parser.getHtmlContent();
+        assertTrue(htmlContent.contains("http://localhost:3000/client/mobile/update-email?h=hash"));
+    }
+
+    @Test
     public void sendAddPassword() throws Exception {
         User user = user("jdoe@example.com");
-        mailBox.sendAddPassword(user, "hash");
+        mailBox.sendAddPassword(user, "hash", false);
 
         MimeMessage mimeMessage = mailMessage();
         MimeMessageParser parser = new MimeMessageParser(mimeMessage);
@@ -142,6 +181,45 @@ public class MailBoxTest extends AbstractIntegrationTest {
 
         String htmlContent = parser.getHtmlContent();
         assertTrue(htmlContent.contains("http://localhost:3001/add-password?h=hash"));
+    }
+
+    @Test
+    public void sendAddPasswordMobile() throws Exception {
+        User user = user("jdoe@example.com");
+        mailBox.sendAddPassword(user, "hash", true);
+
+        MimeMessage mimeMessage = mailMessage();
+        MimeMessageParser parser = new MimeMessageParser(mimeMessage);
+        parser.parse();
+
+        String htmlContent = parser.getHtmlContent();
+        assertTrue(htmlContent.contains("http://localhost:3000/client/mobile/add-password?h=hash"));
+    }
+
+    @Test
+    public void sendUpdateConfirmationEmail() throws Exception {
+        User user = user("jdoe@example.com");
+        mailBox.sendUpdateConfirmationEmail(user, "old@example.com", "new@example.com", false);
+
+        MimeMessage mimeMessage = mailMessage();
+        MimeMessageParser parser = new MimeMessageParser(mimeMessage);
+        parser.parse();
+
+        String htmlContent = parser.getHtmlContent();
+        assertTrue(htmlContent.contains("http://localhost:3001/security"));
+    }
+
+    @Test
+    public void sendUpdateConfirmationEmailMobile() throws Exception {
+        User user = user("jdoe@example.com");
+        mailBox.sendUpdateConfirmationEmail(user, "old@example.com", "new@example.com", true);
+
+        MimeMessage mimeMessage = mailMessage();
+        MimeMessageParser parser = new MimeMessageParser(mimeMessage);
+        parser.parse();
+
+        String htmlContent = parser.getHtmlContent();
+        assertTrue(htmlContent.contains("http://localhost:3000/client/mobile/security"));
     }
 
     @Test
@@ -158,7 +236,7 @@ public class MailBoxTest extends AbstractIntegrationTest {
     public void defaultLocale() throws Exception {
         User user = user("jdoe@example.com");
         user.setPreferredLanguage("pl");
-        mailBox.sendAddPassword(user, "hash");
+        mailBox.sendAddPassword(user, "hash", false);
 
         MimeMessage mimeMessage = mailMessage();
         MimeMessageParser parser = new MimeMessageParser(mimeMessage);

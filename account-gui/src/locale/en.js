@@ -124,9 +124,25 @@ I18n.translations.en = {
         info: "Please go back to the screen where you requested the magic link and follow the instructions there.<br/><br/>You can close this tab / window."
     },
     redirectMobileApp: {
+        "add-password": {
+            title: "New password requested!",
+            info: "To add your new password, click the button below to open eduID app.",
+        },
         created: {
             title: "Account created!",
             info: "Your account has been created, click the button below to open your new account in the eduID app.",
+        },
+        fallback: {
+            title: "eduID app!",
+            info: "You have opened a link to the eduID app in the browser, click the button below to open eduID app."
+        },
+        "reset-password": {
+            title: "Reset password requested!",
+            info: "To reset your password, click the button below to open eduID app.",
+        },
+        "security": {
+            title: "Security!",
+            info: "To view and update your security settings, click the button below to open eduID app.",
         },
         "update-email": {
             title: "New email confirmed!",

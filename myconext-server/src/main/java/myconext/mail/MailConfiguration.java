@@ -29,6 +29,9 @@ public class MailConfiguration {
     @Value("${email.my-surfconext-url}")
     private String mySURFconextURL;
 
+    @Value("${email.idp-surfconext-url}")
+    private String loginSURFconextURL;
+
     @Value("${email.mail-templates-directory}")
     private Resource mailTemplatesDirectory;
 
@@ -47,7 +50,7 @@ public class MailConfiguration {
     @Bean
     @Profile({"!dev"})
     public MailBox mailSenderProd() throws IOException {
-        return new MailBox(mailSender, emailFrom, magicLinkUrl, mySURFconextURL, objectMapper, mailTemplatesDirectory,
+        return new MailBox(mailSender, emailFrom, magicLinkUrl, mySURFconextURL, loginSURFconextURL, objectMapper, mailTemplatesDirectory,
                 emailsSendRepository, emailSpamThresholdSeconds);
     }
 
@@ -55,7 +58,7 @@ public class MailConfiguration {
     @Profile({"dev", "test", "shib"})
     @Primary
     public MailBox mailSenderDev(Environment environment) throws IOException {
-        return new MockMailBox(mailSender, emailFrom, magicLinkUrl, mySURFconextURL, objectMapper, mailTemplatesDirectory, emailsSendRepository, environment);
+        return new MockMailBox(mailSender, emailFrom, magicLinkUrl, mySURFconextURL, loginSURFconextURL, objectMapper, mailTemplatesDirectory, emailsSendRepository, environment);
     }
 
 

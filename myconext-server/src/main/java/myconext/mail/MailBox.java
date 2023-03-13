@@ -34,6 +34,7 @@ public class MailBox {
     private final JavaMailSender mailSender;
     private final String magicLinkUrl;
     private final String mySURFconextURL;
+    private final String loginSURFconextURL;
     private final String emailFrom;
     private final Map<String, Map<String, String>> subjects;
 
@@ -45,6 +46,7 @@ public class MailBox {
                    String emailFrom,
                    String magicLinkUrl,
                    String mySURFconextURL,
+                   String loginSURFconextURL,
                    ObjectMapper objectMapper,
                    Resource mailTemplatesDirectory,
                    EmailsSendRepository emailsSendRepository,
@@ -53,6 +55,7 @@ public class MailBox {
         this.emailFrom = emailFrom;
         this.magicLinkUrl = magicLinkUrl;
         this.mySURFconextURL = mySURFconextURL;
+        this.loginSURFconextURL = loginSURFconextURL;
         this.emailsSendRepository = emailsSendRepository;
         this.emailSpamThresholdSeconds = emailSpamThresholdSeconds;
         if (mailTemplatesDirectory.isFile()) {
@@ -103,18 +106,20 @@ public class MailBox {
         sendMail("account_confirmation", title, variables, preferredLanguage(user), user.getEmail(), false);
     }
 
-    public void sendResetPassword(User user, String hash) {
+    public void sendResetPassword(User user, String hash, boolean mobileRequest) {
         String title = this.getTitle("reset_password", user);
         Map<String, Object> variables = variables(user, title);
-        variables.put("mySurfConextURL", mySURFconextURL);
+        variables.put("mySurfConextURL", mobileRequest ? loginSURFconextURL : mySURFconextURL);
+        variables.put("mobileContext", mobileRequest ? "client/mobile/" : "");
         variables.put("hash", hash);
         sendMail("reset_password", title, variables, preferredLanguage(user), user.getEmail(), false);
     }
 
-    public void sendAddPassword(User user, String hash) {
+    public void sendAddPassword(User user, String hash, boolean mobileRequest) {
         String title = this.getTitle("add_password", user);
         Map<String, Object> variables = variables(user, title);
-        variables.put("mySurfConextURL", mySURFconextURL);
+        variables.put("mySurfConextURL", mobileRequest ? loginSURFconextURL : mySURFconextURL);
+        variables.put("mobileContext", mobileRequest ? "client/mobile/" : "");
         variables.put("hash", hash);
         sendMail("add_password", title, variables, preferredLanguage(user), user.getEmail(), false);
     }
@@ -131,18 +136,19 @@ public class MailBox {
     public void sendUpdateEmail(User user, String newMail, String hash, boolean mobileRequest) {
         String title = this.getTitle("update_email", user);
         Map<String, Object> variables = variables(user, title);
-        variables.put("mySurfConextURL", mySURFconextURL);
+        variables.put("mySurfConextURL", mobileRequest ? loginSURFconextURL : mySURFconextURL);
         variables.put("mobileContext", mobileRequest ? "client/mobile/" : "");
         variables.put("hash", hash);
         sendMail("update_email", title, variables, preferredLanguage(user), newMail, false);
     }
 
-    public void sendUpdateConfirmationEmail(User user, String oldEmail, String newEmail) {
+    public void sendUpdateConfirmationEmail(User user, String oldEmail, String newEmail, boolean mobileRequest) {
         String title = this.getTitle("confirmation_update_email", user);
         Map<String, Object> variables = variables(user, title);
         variables.put("oldEmail", oldEmail);
         variables.put("newEmail", newEmail);
-        variables.put("mySurfConextURL", mySURFconextURL);
+        variables.put("mySurfConextURL", mobileRequest ? loginSURFconextURL : mySURFconextURL);
+        variables.put("mobileContext", mobileRequest ? "client/mobile/" : "");
         sendMail("confirmation_update_email", title, variables, preferredLanguage(user), oldEmail, false);
         sendMail("confirmation_update_email", title, variables, preferredLanguage(user), newEmail, false);
     }

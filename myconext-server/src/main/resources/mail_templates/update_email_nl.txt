@@ -3,7 +3,7 @@ Update email
 Volg de onderstaande link om je eduID email te wijzigen.
 Deze link verloopt over een uur en kan maar één keer worden gebruikt.
 
-{{mySurfConextURL}}/update-email?h={{hash}}
+{{mySurfConextURL}}/{{mobileContext}}update-email?h={{hash}}
 
 Verander je eduID email
 

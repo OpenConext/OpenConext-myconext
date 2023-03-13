@@ -26,6 +26,7 @@ email:
   from: noreply@surfconext.nl
   magic-link-url: http://localhost:8081/saml/guest-idp/magic
   my-surfconext-url: http://localhost:3001
+  idp-surfconext-url: http://localhost:3000
 #  mail-templates-directory: file://opt/build/main/resources/mail_templates
   mail-templates-directory: classpath:mail_templates
 

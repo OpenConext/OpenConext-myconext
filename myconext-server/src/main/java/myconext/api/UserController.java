@@ -303,8 +303,10 @@ public class UserController implements ServiceProviderHolder, UserAuthentication
 
     @Operation(summary = "Create eduID account",
             description = "Create an eduID account and sent a verification mail to the user to confirm the ownership of the email. " +
-                    "<br/>Link in the validation email is <a href=\"\">https://login.{environment}.eduid.nl/mobile/api/create-from-mobile-api?h=={{hash}}</a>" +
-                    "<br/>After the account is validated the user is logged in and the server redirects to <a href=\"\">https://login.{environment}.eduid.nl/client/mobile/created</a>",
+                    "<br/>Link in the validation email is <a href=\"\">https://login.{environment}.eduid.nl/mobile/api/create-from-mobile-api?h=={{hash}}</a> which" +
+                    "must NOT be captured by the eduID app." +
+                    "<br/>After the account is finalized server-side the user is logged in and the server redirects to " +
+                    "<a href=\"\">https://login.{environment}.eduid.nl/client/mobile/created</a>",
             responses = {
                     @ApiResponse(responseCode = "201", description = "Created. Mail is sent to the user",
                             content = {@Content(examples = {@ExampleObject(value = "{\"status\":201}")})}),
@@ -363,7 +365,9 @@ public class UserController implements ServiceProviderHolder, UserAuthentication
     }
 
     @Operation(summary = "Change email", description =
-            "Request to change the email of the user. A validation email will be send containing an URL with an unique 'h' query param")
+            "Request to change the email of the user. The link in the validation email is " +
+                    "<a href=\"\">https://mijn.{environment}.eduid.nl/client/mobile/update-email?h=={{hash}}</a>" +
+                    "with an unique 'h' query param which must be used in 'mobile/api/sp/confirm-email' to confirm the update.")
     @PutMapping("/sp/email")
     public ResponseEntity updateEmail(Authentication authentication, @RequestBody UpdateEmailRequest updateEmailRequest,
                                       @RequestParam(value = "force", required = false, defaultValue = "false") boolean force) {
@@ -396,7 +400,8 @@ public class UserController implements ServiceProviderHolder, UserAuthentication
         return returnUserResponse(user);
     }
 
-    @Operation(summary = "Confirm email change", description = "Confirm the user has clicked on the link in the email sent after requesting to change the users email")
+    @Operation(summary = "Confirm email change",
+            description = "Confirm the user has clicked on the link in the email sent after requesting to change the users email")
     @GetMapping("/sp/confirm-email")
     public ResponseEntity<UserResponse> confirmUpdateEmail(Authentication authentication,
                                                            @Parameter(description = "The hash obtained from the query parameter 'h' in the URL sent to the user in the update-email")
@@ -409,7 +414,7 @@ public class UserController implements ServiceProviderHolder, UserAuthentication
         user.setEmail(changeEmailHash.getNewEmail());
         userRepository.save(user);
         authenticationRequestRepository.deleteByUserId(user.getId());
-        mailBox.sendUpdateConfirmationEmail(user, oldEmail, user.getEmail());
+        mailBox.sendUpdateConfirmationEmail(user, oldEmail, user.getEmail(), isMobileRequest(authentication));
         return returnUserResponse(user);
     }
 
@@ -470,7 +475,9 @@ public class UserController implements ServiceProviderHolder, UserAuthentication
 
     @PutMapping("/sp/reset-password-link")
     @Operation(summary = "Reset password link", description = "Sent the user a mail with a link for the user to change his / hers password. " +
-            "<br/>Link in the validation email is <a href=\"\">https://mijn.{environment}.eduid.nl/reset-password?h=={{hash}}</a>")
+            "<br/>Link in the validation email is <a href=\"\">https://mijn.{environment}.eduid.nl/client/mobile/reset-password?h=={{hash}}</a> if" +
+            " the user already had a password, otherwise " +
+            "<a href=\"\">https://mijn.{environment}.eduid.nl/client/mobile/add-password?h=={{hash}}</a>")
     public ResponseEntity<UserResponse> resetPasswordLink(Authentication authentication) {
         User user = userFromAuthentication(authentication);
         List<ChangeEmailHash> changeEmailHashes = changeEmailHashRepository.findByUserId(user.getId());
@@ -484,9 +491,9 @@ public class UserController implements ServiceProviderHolder, UserAuthentication
 
         logWithContext(user, "update", "reset-password", LOG, "Send password reset mail");
         if (StringUtils.hasText(user.getPassword())) {
-            mailBox.sendResetPassword(user, hashValue);
+            mailBox.sendResetPassword(user, hashValue, isMobileRequest(authentication));
         } else {
-            mailBox.sendAddPassword(user, hashValue);
+            mailBox.sendAddPassword(user, hashValue, isMobileRequest(authentication));
         }
 
         authenticationRequestRepository.deleteByUserId(user.getId());

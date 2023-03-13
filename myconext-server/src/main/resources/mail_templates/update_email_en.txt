@@ -3,7 +3,7 @@ Update email
 Follow the link below to change your eduID email.
 This link will expire in an hour and can only be used once.
 
-{{mySurfConextURL}} / update-email? h = {{hash}}
+{{mySurfConextURL}}/{{mobileContext}}update-email?h={{hash}}
 
 Change your eduID email
 

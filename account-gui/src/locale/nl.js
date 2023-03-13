@@ -124,13 +124,29 @@ I18n.translations.nl = {
         info: "Ga terug naar het scherm waar je de magische link hebt aangevraagd en volg de instructies daar op.<br/><br/>Je kunt dit tabblad / venster sluiten."
     },
     redirectMobileApp: {
+        "add-password": {
+            title: "Nieuw wachtwoord!",
+            info: "Om een nieuw wachtwoord te kiezen, klik op de knop hier onder om de eduID app te openen.",
+        },
         created: {
             title: "Account aangemaakt!",
             info: "Je account is gemaakt, klik op de knop hier onder om je nieuwe account te openen in de eduID app.",
         },
+        "reset-password": {
+            title: "Wijzig wachtwoord!",
+            info: "Om je wachtwoord te wijzigen, klik op de knop hier onder om de eduID app te openen.",
+        },
+        "security": {
+            title: "Beveiliging!",
+            info: "Om je beveiliging instellingen te bekijken, klik op de knop hier onder om de eduID app te openen.",
+        },
         "update-email": {
             title: "Nieuwe e-mail bevestigd!",
             info: "Om je e-mail te wijzigen, klik op de knop hier onder om de eduID app te openen.",
+        },
+        fallback: {
+            title: "eduID app!",
+            info: "Je hebt een link naar de eduID app geopend in de browser, klik op de knop hier onder om de eduID app te openen.",
         },
         proceedLink: "Open de eduID app"
     },

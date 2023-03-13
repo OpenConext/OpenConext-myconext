@@ -6,14 +6,13 @@
 
     export let action;
     let redirectAppUrl = null;
+    let actionTranslateKey = null;
 
     onMount(() => {
         $links.displayBackArrow = false;
-
-        const urlSearchParams = new URLSearchParams(window.location.search);
-        const hash = urlSearchParams.get("h")
-        const queryPart = hash ? `?h=${hash}` : "";
-        redirectAppUrl = `${$conf.mobileAppRedirect}/${action}${queryPart}`
+        redirectAppUrl = `${$conf.mobileAppRedirect}/${action}${window.location.search}`;
+        const translation = I18n.translations[I18n.locale];
+        actionTranslateKey = translation.redirectMobileApp[action] ? action : "fallback";
     });
 
 </script>
@@ -37,8 +36,8 @@
 </style>
 <div class="home">
     <div class="card">
-        <h1>{I18n.t(`redirectMobileApp.${action}.title`)}</h1>
-        <p class="info">{@html I18n.t(`redirectMobileApp.${action}.info`)}</p>
+        <h1>{I18n.t(`redirectMobileApp.${actionTranslateKey}.title`)}</h1>
+        <p class="info">{@html I18n.t(`redirectMobileApp.${actionTranslateKey}.info`)}</p>
         <p class="hidden">{redirectAppUrl}</p>
         <Button href="/eduid"
                 onClick={() => window.location.href = redirectAppUrl}
