@@ -5,6 +5,7 @@ import io.swagger.v3.oas.annotations.Hidden;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
+import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import myconext.cron.DisposableEmailProviders;
 import myconext.exceptions.DuplicateUserEmailException;
@@ -342,10 +343,10 @@ public class AccountLinkerController implements UserAuthentication {
     @Operation(summary = "Start link account flow",
             description = "Start the link account flow for the current user",
             responses = {
-            @ApiResponse(responseCode = "200", description = "Url for authentication",
-                    content = {@Content(examples =
-                            {@ExampleObject(value =
-                                    "{\"url\":\"https://connect.test2.surfconext.nl/oidc/authorize?scope=openid&response_type=code&redirect_uri=https://mijn.test2.eduid.nl/myconext/api/sp/oidc/redirect&state=%242a%2410%249cyC3mjeJW0ljb%2FmPAGj0O4DVXz9LPw5U%2Fthl110BVYWFpMhjwKyK&prompt=login&client_id=myconext.ala.eduid\"}")})})}
+                    @ApiResponse(responseCode = "200", description = "Url for authentication", useReturnTypeSchema = true,
+                            content = {@Content(schema = @Schema(implementation = AuthorizationURL.class), examples =
+                                    {@ExampleObject(value =
+                                            "{\"url\":\"https://connect.test2.surfconext.nl/oidc/authorize?scope=openid&response_type=code&redirect_uri=https://mijn.test2.eduid.nl/myconext/api/sp/oidc/redirect&state=%242a%2410%249cyC3mjeJW0ljb%2FmPAGj0O4DVXz9LPw5U%2Fthl110BVYWFpMhjwKyK&prompt=login&client_id=myconext.ala.eduid\"}")})})}
     )
     public ResponseEntity<AuthorizationURL> startSPLinkAccountFlow(Authentication authentication) throws UnsupportedEncodingException {
         LOG.debug("Start link account flow");

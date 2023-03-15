@@ -11,8 +11,10 @@ import com.yubico.webauthn.exception.RegistrationFailedException;
 import io.swagger.v3.oas.annotations.Hidden;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
+import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import myconext.cron.DisposableEmailProviders;
@@ -41,7 +43,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.oauth2.server.resource.authentication.BearerTokenAuthentication;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
@@ -309,11 +310,14 @@ public class UserController implements ServiceProviderHolder, UserAuthentication
                     "<a href=\"\">eduid://client/mobile/created?new=true</a>",
             responses = {
                     @ApiResponse(responseCode = "201", description = "Created. Mail is sent to the user",
-                            content = {@Content(examples = {@ExampleObject(value = "{\"status\":201}")})}),
+                            content = {@Content(schema = @Schema(implementation = StatusResponse.class),
+                                    examples = {@ExampleObject(value = "{\"status\":201}")})}),
                     @ApiResponse(responseCode = "412", description = "Forbidden email domain",
-                            content = {@Content(examples = {@ExampleObject(value = "{\"status\":412}")})}),
+                            content = {@Content(schema = @Schema(implementation = StatusResponse.class),
+                                    examples = {@ExampleObject(value = "{\"status\":412}")})}),
                     @ApiResponse(responseCode = "409", description = "Email is in use",
-                            content = {@Content(examples = {@ExampleObject(value = "{\"status\":409}")})})})
+                            content = {@Content(schema = @Schema(implementation = StatusResponse.class),
+                                    examples = {@ExampleObject(value = "{\"status\":409}")})})})
     @PostMapping("/idp/create")
     public ResponseEntity<StatusResponse> createEduIDAccount(@RequestBody CreateAccount createAccount) {
 
@@ -372,7 +376,7 @@ public class UserController implements ServiceProviderHolder, UserAuthentication
                     "<a href=\"\">eduid://client/mobile/confirm-email?h={{hash}}</a>")
     @PutMapping("/sp/email")
     public ResponseEntity<UserResponse> updateEmail(Authentication authentication, @RequestBody UpdateEmailRequest updateEmailRequest,
-                                      @RequestParam(value = "force", required = false, defaultValue = "false") boolean force) {
+                                                    @RequestParam(value = "force", required = false, defaultValue = "false") boolean force) {
         User user = userFromAuthentication(authentication);
         List<PasswordResetHash> passwordResetHashes = passwordResetHashRepository.findByUserId(user.getId());
         if (!CollectionUtils.isEmpty(passwordResetHashes)) {
@@ -401,7 +405,7 @@ public class UserController implements ServiceProviderHolder, UserAuthentication
     }
 
     @Operation(summary = "Confirm email change",
-            description = "Confirm the user has clicked on the link in the email sent after requesting to change the users email"+
+            description = "Confirm the user has clicked on the link in the email sent after requesting to change the users email" +
                     "<br/>A confirmation email is sent to notify the user of the security change with a link to the " +
                     "security settings <a href=\"\">https://login.{environment}.eduid.nl/client/mobile/security</a>. " +
                     "<br/>If this URL is not properly intercepted by the eduID app, then the browser app redirects to " +
@@ -482,7 +486,7 @@ public class UserController implements ServiceProviderHolder, UserAuthentication
             "<br/>Link in the validation email is <a href=\"\">https://login.{environment}.eduid.nl/client/mobile/reset-password?h=={{hash}}</a> if" +
             " the user already had a password, otherwise " +
             "<a href=\"\">https://login.{environment}.eduid.nl/client/mobile/add-password?h=={{hash}}</a>" +
-    "<br/>If the URL is not properly intercepted by the eduID app, then the browser app redirects to " +
+            "<br/>If the URL is not properly intercepted by the eduID app, then the browser app redirects to " +
             "<a href=\"\">eduid://client/mobile/reset-password?h={{hash}}</a>")
     public ResponseEntity<UserResponse> resetPasswordLink(Authentication authentication) {
         User user = userFromAuthentication(authentication);
@@ -623,7 +627,8 @@ public class UserController implements ServiceProviderHolder, UserAuthentication
             description = "Get all OpenID Connect tokens for the logged in user",
             responses = {
                     @ApiResponse(responseCode = "200", description = "User tokens",
-                            content = {@Content(examples =
+                            content = {@Content(array = @ArraySchema(schema = @Schema(implementation = Token.class)),
+                                    examples =
                                     {@ExampleObject(value =
                                             "[{\"expiresIn\":\"2023-03-08T08:59:17.458+00:00\"," +
                                                     "\"createdAt\":\"2022-12-08T08:59:17.458+00:00\"," +
@@ -841,7 +846,11 @@ public class UserController implements ServiceProviderHolder, UserAuthentication
 
     @GetMapping("/sp/personal")
     @Operation(summary = "Get personal data",
-            description = "Get personal data for download")
+            description = "Get personal data for download",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "User tokens",
+                            content = {@Content(schema = @Schema(implementation = User.class))})}
+    )
     public ResponseEntity<String> personal(Authentication authentication) throws JsonProcessingException {
         User user = this.userFromAuthentication(authentication);
         ObjectWriter objectWriter = objectMapper.writerWithDefaultPrettyPrinter();
