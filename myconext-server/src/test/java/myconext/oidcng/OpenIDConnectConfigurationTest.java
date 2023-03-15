@@ -1,6 +1,7 @@
 package myconext.oidcng;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import myconext.model.Token;
 import myconext.model.TokenRepresentation;
 import myconext.model.TokenType;
 import myconext.model.User;
@@ -20,13 +21,12 @@ public class OpenIDConnectConfigurationTest {
     @Test
     public void openIDConnectMock() throws IOException {
         OpenIDConnect openIDConnect = new OpenIDConnectConfiguration().openIDConnectMock(new ObjectMapper());
-        List<Map<String, Object>> tokens = openIDConnect.tokens(new User());
+        List<Token> tokens = openIDConnect.tokens(new User());
 
         assertEquals(4, tokens.size());
         assertEquals(HttpStatus.NO_CONTENT, openIDConnect.deleteTokens(Collections.emptyList(), new User()));
-        assertEquals(4, tokens.size());
 
-        openIDConnect.deleteTokens(Arrays.asList(new TokenRepresentation((String) tokens.get(0).get("id"), TokenType.ACCESS)), new User());
+        openIDConnect.deleteTokens(Arrays.asList(new TokenRepresentation((String) tokens.get(0).getId(), TokenType.ACCESS)), new User());
 
         tokens = openIDConnect.tokens(new User());
         assertEquals(3, tokens.size());

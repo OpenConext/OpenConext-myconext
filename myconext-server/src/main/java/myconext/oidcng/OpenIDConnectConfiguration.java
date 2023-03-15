@@ -2,6 +2,7 @@ package myconext.oidcng;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import myconext.model.Token;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -21,7 +22,7 @@ public class OpenIDConnectConfiguration {
     @Profile({"dev"})
     @Primary
     public OpenIDConnect openIDConnectMock(ObjectMapper objectMapper) throws IOException {
-        List<Map<String, Object>> tokens = objectMapper.readValue(new ClassPathResource("oidcng/tokens.json").getInputStream(), new TypeReference<List<Map<String, Object>>>() {
+        List<Token>tokens = objectMapper.readValue(new ClassPathResource("oidcng/tokens.json").getInputStream(), new TypeReference<>() {
         });
         return new OpenIDConnectMock(tokens);
     }

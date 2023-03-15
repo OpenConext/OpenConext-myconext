@@ -586,7 +586,7 @@ public class UserControllerTest extends AbstractIntegrationTest {
                 .when()
                 .get("/myconext/api/sp/logout")
                 .as(Map.class);
-        assertEquals("ok", res.get("status"));
+        assertEquals(200, res.get("status"));
     }
 
     @Test

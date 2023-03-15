@@ -18,9 +18,7 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import myconext.cron.DisposableEmailProviders;
 import myconext.cron.IdPMetaDataResolver;
 import myconext.cron.IdentityProvider;
-import myconext.exceptions.ExpiredAuthenticationException;
-import myconext.exceptions.ForbiddenException;
-import myconext.exceptions.UserNotFoundException;
+import myconext.exceptions.*;
 import myconext.mail.MailBox;
 import myconext.manage.ServiceProviderHolder;
 import myconext.manage.ServiceProviderResolver;
@@ -317,7 +315,7 @@ public class UserController implements ServiceProviderHolder, UserAuthentication
                     @ApiResponse(responseCode = "409", description = "Email is in use",
                             content = {@Content(examples = {@ExampleObject(value = "{\"status\":409}")})})})
     @PostMapping("/idp/create")
-    public ResponseEntity<Map<String, Integer>> createEduIDAccount(@RequestBody CreateAccount createAccount) {
+    public ResponseEntity<StatusResponse> createEduIDAccount(@RequestBody CreateAccount createAccount) {
 
         String email = createAccount.getEmail();
         verifyEmails(email);
@@ -325,7 +323,7 @@ public class UserController implements ServiceProviderHolder, UserAuthentication
         Optional<User> optionalUser = userRepository.findUserByEmail(emailGuessingPreventor.sanitizeEmail(email));
         if (optionalUser.isPresent()) {
             return ResponseEntity.status(HttpStatus.CONFLICT)
-                    .body(Map.of("status", HttpStatus.CONFLICT.value()));
+                    .body(new StatusResponse(HttpStatus.CONFLICT.value()));
         }
         CreateInstitutionEduID institution = new CreateInstitutionEduID(hash(),
                 email, true);
@@ -348,7 +346,7 @@ public class UserController implements ServiceProviderHolder, UserAuthentication
 
         logWithContext(user, "create", "user", LOG, "Create user in mobile API");
 
-        return ResponseEntity.status(HttpStatus.CREATED).body(Map.of("status", HttpStatus.CREATED.value()));
+        return ResponseEntity.status(HttpStatus.CREATED).body(new StatusResponse(HttpStatus.CREATED.value()));
     }
 
     @Operation(summary = "Change names", description = "Update the givenName and / or familyName of the User")
@@ -373,7 +371,7 @@ public class UserController implements ServiceProviderHolder, UserAuthentication
                     "<br/>If the URL is not properly intercepted by the eduID app, then the browser app redirects to " +
                     "<a href=\"\">eduid://client/mobile/confirm-email?h={{hash}}</a>")
     @PutMapping("/sp/email")
-    public ResponseEntity updateEmail(Authentication authentication, @RequestBody UpdateEmailRequest updateEmailRequest,
+    public ResponseEntity<UserResponse> updateEmail(Authentication authentication, @RequestBody UpdateEmailRequest updateEmailRequest,
                                       @RequestParam(value = "force", required = false, defaultValue = "false") boolean force) {
         User user = userFromAuthentication(authentication);
         List<PasswordResetHash> passwordResetHashes = passwordResetHashRepository.findByUserId(user.getId());
@@ -381,8 +379,7 @@ public class UserController implements ServiceProviderHolder, UserAuthentication
             if (force) {
                 passwordResetHashRepository.deleteAll(passwordResetHashes);
             } else {
-                return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE)
-                        .body(Collections.singletonMap("status", HttpStatus.NOT_ACCEPTABLE.value()));
+                throw new NotAcceptableException();
             }
         }
         changeEmailHashRepository.deleteByUserId(user.getId());
@@ -391,8 +388,7 @@ public class UserController implements ServiceProviderHolder, UserAuthentication
         String newEmail = updateEmailRequest.getEmail();
         Optional<User> optionalUser = userRepository.findUserByEmail(emailGuessingPreventor.sanitizeEmail(newEmail));
         if (optionalUser.isPresent()) {
-            return ResponseEntity.status(HttpStatus.CONFLICT)
-                    .body(Collections.singletonMap("status", HttpStatus.CONFLICT.value()));
+            throw new DuplicateUserEmailException();
         }
 
         changeEmailHashRepository.save(new ChangeEmailHash(user, newEmail, hashValue));
@@ -636,9 +632,9 @@ public class UserController implements ServiceProviderHolder, UserAuthentication
                                                     "\"scopes\":[{\"name\":\"https://utrecht/api\"," +
                                                     "\"titles\":{},\"descriptions\":{\"en\":\"Retrieve personal information at Utrecht University \",\"nl\":\"Ophalen persoonsinformatie bij Utrecht Universiteit\"}}]")})})}
     )
-    public ResponseEntity<List<Map<String, Object>>> tokens(Authentication authentication) {
+    public ResponseEntity<List<Token>> tokens(Authentication authentication) {
         User user = userFromAuthentication(authentication);
-        List<Map<String, Object>> tokens = this.openIDConnect.tokens(user);
+        List<Token> tokens = this.openIDConnect.tokens(user);
         return ResponseEntity.ok(tokens);
     }
 
@@ -846,7 +842,7 @@ public class UserController implements ServiceProviderHolder, UserAuthentication
     @GetMapping("/sp/personal")
     @Operation(summary = "Get personal data",
             description = "Get personal data for download")
-    public ResponseEntity personal(Authentication authentication) throws JsonProcessingException {
+    public ResponseEntity<String> personal(Authentication authentication) throws JsonProcessingException {
         User user = this.userFromAuthentication(authentication);
         ObjectWriter objectWriter = objectMapper.writerWithDefaultPrettyPrinter();
         String userString = objectMapper.writeValueAsString(user);
@@ -861,7 +857,7 @@ public class UserController implements ServiceProviderHolder, UserAuthentication
     @GetMapping("/sp/logout")
     @Operation(summary = "Logout",
             description = "Logout the current logged in user")
-    public ResponseEntity logout(HttpServletRequest request, Authentication authentication) {
+    public ResponseEntity<StatusResponse> logout(HttpServletRequest request, Authentication authentication) {
         User user = this.userFromAuthentication(authentication);
         logWithContext(user, "logout", "user", LOG, "Logout");
 
@@ -871,7 +867,7 @@ public class UserController implements ServiceProviderHolder, UserAuthentication
     @DeleteMapping("/sp/delete")
     @Operation(summary = "Delete",
             description = "Delete the current logged in user")
-    public ResponseEntity deleteUser(Authentication authentication, HttpServletRequest request) {
+    public ResponseEntity<StatusResponse> deleteUser(Authentication authentication, HttpServletRequest request) {
         User user = userFromAuthentication(authentication);
         userRepository.delete(user);
 
@@ -880,12 +876,12 @@ public class UserController implements ServiceProviderHolder, UserAuthentication
         return doLogout(request);
     }
 
-    private ResponseEntity doLogout(HttpServletRequest request) {
+    private ResponseEntity<StatusResponse> doLogout(HttpServletRequest request) {
         HttpSession session = request.getSession();
         session.invalidate();
         SecurityContextHolder.getContext().setAuthentication(null);
         SecurityContextHolder.clearContext();
-        return ResponseEntity.ok(Collections.singletonMap("status", "ok"));
+        return ResponseEntity.ok(new StatusResponse(HttpStatus.OK.value()));
     }
 
     private ResponseEntity doMagicLink(User user, SamlAuthenticationRequest samlAuthenticationRequest, boolean rememberMe,

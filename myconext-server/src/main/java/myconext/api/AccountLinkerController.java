@@ -347,14 +347,14 @@ public class AccountLinkerController implements UserAuthentication {
                             {@ExampleObject(value =
                                     "{\"url\":\"https://connect.test2.surfconext.nl/oidc/authorize?scope=openid&response_type=code&redirect_uri=https://mijn.test2.eduid.nl/myconext/api/sp/oidc/redirect&state=%242a%2410%249cyC3mjeJW0ljb%2FmPAGj0O4DVXz9LPw5U%2Fthl110BVYWFpMhjwKyK&prompt=login&client_id=myconext.ala.eduid\"}")})})}
     )
-    public ResponseEntity<Map<String, String>> startSPLinkAccountFlow(Authentication authentication) throws UnsupportedEncodingException {
+    public ResponseEntity<AuthorizationURL> startSPLinkAccountFlow(Authentication authentication) throws UnsupportedEncodingException {
         LOG.debug("Start link account flow");
 
         User user = userFromAuthentication(authentication);
         String state = passwordEncoder.encode(user.getUid());
 
         UriComponents uriComponents = doStartLinkAccountFlow(state, spFlowRedirectUri, true, false, myConextSpEntityId);
-        return ResponseEntity.ok(Collections.singletonMap("url", uriComponents.toUriString()));
+        return ResponseEntity.ok(new AuthorizationURL(uriComponents.toUriString()));
     }
 
     private UriComponents doStartLinkAccountFlow(String state, String redirectUri, boolean forceAuth, boolean useExternalValidation, String requesterEntityId) throws UnsupportedEncodingException {

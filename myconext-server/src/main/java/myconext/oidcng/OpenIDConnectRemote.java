@@ -1,5 +1,6 @@
 package myconext.oidcng;
 
+import myconext.model.Token;
 import myconext.model.TokenRepresentation;
 import myconext.model.User;
 import org.apache.commons.logging.Log;
@@ -41,7 +42,7 @@ public class OpenIDConnectRemote implements OpenIDConnect {
     }
 
     @Override
-    public List<Map<String, Object>> tokens(User user) {
+    public List<Token> tokens(User user) {
         if (!featureOidcTokenAPI) {
             return Collections.emptyList();
         }
@@ -53,10 +54,10 @@ public class OpenIDConnectRemote implements OpenIDConnect {
         String uriString = UriComponentsBuilder.fromUri(oidcngUri)
                 .queryParam("unspecifiedID", unspecifiedID)
                 .toUriString();
-        ResponseEntity<List<Map<String, Object>>> responseEntity =
+        ResponseEntity<List<Token>> responseEntity =
                 restTemplate.exchange(uriString, HttpMethod.GET, requestEntity, new ParameterizedTypeReference<>() {
                 });
-        List<Map<String, Object>> body = responseEntity.getBody();
+        List<Token> body = responseEntity.getBody();
 
         LOG.debug(String.format("Tokens result from oidc-ng %s", body));
 
