@@ -433,8 +433,11 @@ public class AccountLinkerController implements UserAuthentication {
             return ResponseEntity.status(HttpStatus.FOUND).location(URI.create(this.idpBaseRedirectUrl + "/client/mobile/expired")).build();
         }
 
-        String userId = optionalMobileLinkAccountRequest.get().getUserId();
+        MobileLinkAccountRequest mobileLinkAccountRequest = optionalMobileLinkAccountRequest.get();
+        String userId = mobileLinkAccountRequest.getUserId();
         User user = userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException(userId));
+
+        this.mobileLinkAccountRequestRepository.delete(mobileLinkAccountRequest);
 
         return doRedirect(code, user, this.mobileFlowRedirectUri, this.idpBaseRedirectUrl + "/client/mobile/account-linked",
                 false, false, null, null,

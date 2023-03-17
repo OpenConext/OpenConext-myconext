@@ -82,6 +82,8 @@ public class AccountLinkerMobileControllerTest extends AbstractIntegrationTest {
                 .contentType(ContentType.JSON)
                 .get("/myconext/api/mobile/oidc/redirect")
                 .getHeader("Location");
+
+        assertEquals(0, mobileLinkAccountRequestRepository.count());
         assertEquals(location, "http://localhost:3000/client/mobile/eppn-already-linked?email=jdoe%40example.com");
     }
 
