@@ -354,9 +354,9 @@ public class AccountLinkerController implements UserAuthentication {
             description = "Start the link account flow for the current user." +
                     "<br/>After the account has been linked the user is redirect to one the following URL's:" +
                     "<ul>" +
-                    "<li>Success: <a href=\"\">https://login.{environment}.eduid.nl/mobile/api/account-linked</a></li>" +
-                    "<li>Failure, EPPN already linked: <a href=\"\">https://login.{environment}.eduid.nl/mobile/api/eppn-already-linked</a></li>" +
-                    "<li>Failure, session expired: <a href=\"\">https://login.{environment}.eduid.nl/mobile/api/expired</a></li>" +
+                    "<li>Success: <a href=\"\">https://login.{environment}.eduid.nl/client/mobile/account-linked</a></li>" +
+                    "<li>Failure, EPPN already linked: <a href=\"\">https://login.{environment}.eduid.nl/client/mobile/eppn-already-linked</a></li>" +
+                    "<li>Failure, session expired: <a href=\"\">https://login.{environment}.eduid.nl/client/mobile/expired</a></li>" +
                     "</ul>" +
 
                     "If the",
