@@ -817,7 +817,7 @@ public class UserControllerTest extends AbstractIntegrationTest {
                 .when()
                 .get("/myconext/api/idp/oidc/account/" + samlAuthenticationRequest.getId());
         location = response.getHeader("Location");
-        assertTrue(location.startsWith("https://connect.test2.surfconext.nl/oidc/authorize?" +
+        assertTrue(location.startsWith("http://localhost:8098/oidc/authorize?" +
                 "scope=openid&response_type=code&" +
                 "redirect_uri=http://localhost:8081/myconext/api/idp/oidc/redirect&" +
                 "state="));

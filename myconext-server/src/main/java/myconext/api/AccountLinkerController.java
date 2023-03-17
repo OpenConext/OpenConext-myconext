@@ -15,6 +15,7 @@ import myconext.mail.MailBox;
 import myconext.manage.ServiceProviderResolver;
 import myconext.model.*;
 import myconext.repository.AuthenticationRequestRepository;
+import myconext.repository.MobileLinkAccountRequestRepository;
 import myconext.repository.RequestInstitutionEduIDRepository;
 import myconext.repository.UserRepository;
 import myconext.security.ACR;
@@ -73,15 +74,18 @@ public class AccountLinkerController implements UserAuthentication {
     private final String clientSecret;
     private final String idpFlowRedirectUri;
     private final String spFlowRedirectUri;
+    private final String mobileFlowRedirectUri;
     private final String spCreateFromInstitutionRedirectUri;
     private final RestTemplate restTemplate = new RestTemplate();
     private final AuthenticationRequestRepository authenticationRequestRepository;
     private final RequestInstitutionEduIDRepository requestInstitutionEduIDRepository;
+    private final MobileLinkAccountRequestRepository mobileLinkAccountRequestRepository;
     private final UserRepository userRepository;
     private final MailBox mailBox;
     private final String magicLinkUrl;
     private final String idpBaseRedirectUrl;
     private final String spRedirectUrl;
+    private final String loginSURFconextURL;
     private final String basePath;
     private final long removalValidatedDurationDays;
     private final String idpExternalValidationEntityId;
@@ -100,6 +104,7 @@ public class AccountLinkerController implements UserAuthentication {
             AuthenticationRequestRepository authenticationRequestRepository,
             UserRepository userRepository,
             RequestInstitutionEduIDRepository requestInstitutionEduIDRepository,
+            MobileLinkAccountRequestRepository mobileLinkAccountRequestRepository,
             MailBox mailBox,
             ServiceProviderResolver serviceProviderResolver,
             DisposableEmailProviders disposableEmailProviders,
@@ -108,10 +113,12 @@ public class AccountLinkerController implements UserAuthentication {
             @Value("${email.magic-link-url}") String magicLinkUrl,
             @Value("${idp_redirect_url}") String idpBaseRedirectUrl,
             @Value("${sp_redirect_url}") String spRedirectUrl,
+            @Value("${email.idp-surfconext-url}") String loginSURFconextURL,
             @Value("${oidc.client-id}") String clientId,
             @Value("${oidc.secret}") String clientSecret,
             @Value("${oidc.idp-flow-redirect-url}") String idpFlowRedirectUri,
             @Value("${oidc.sp-flow-redirect-url}") String spFlowRedirectUri,
+            @Value("${oidc.mobile-flow-redirect-url}") String mobileFlowRedirectUri,
             @Value("${oidc.sp-create-from-institution-redirect-url}") String spCreateFromInstitutionRedirectUri,
             @Value("${oidc.base-url}") String oidcBaseUrl,
             @Value("${base_path}") String basePath,
@@ -124,6 +131,7 @@ public class AccountLinkerController implements UserAuthentication {
         this.authenticationRequestRepository = authenticationRequestRepository;
         this.userRepository = userRepository;
         this.requestInstitutionEduIDRepository = requestInstitutionEduIDRepository;
+        this.mobileLinkAccountRequestRepository = mobileLinkAccountRequestRepository;
         this.mailBox = mailBox;
         this.serviceProviderResolver = serviceProviderResolver;
         this.disposableEmailProviders = disposableEmailProviders;
@@ -132,10 +140,12 @@ public class AccountLinkerController implements UserAuthentication {
         this.magicLinkUrl = magicLinkUrl;
         this.idpBaseRedirectUrl = idpBaseRedirectUrl;
         this.spRedirectUrl = spRedirectUrl;
+        this.loginSURFconextURL = loginSURFconextURL;
         this.clientId = clientId;
         this.clientSecret = clientSecret;
         this.idpFlowRedirectUri = idpFlowRedirectUri;
         this.spFlowRedirectUri = spFlowRedirectUri;
+        this.mobileFlowRedirectUri = mobileFlowRedirectUri;
         this.spCreateFromInstitutionRedirectUri = spCreateFromInstitutionRedirectUri;
         this.basePath = basePath;
         this.oidcBaseUrl = oidcBaseUrl;
@@ -341,7 +351,15 @@ public class AccountLinkerController implements UserAuthentication {
 
     @GetMapping("/sp/oidc/link")
     @Operation(summary = "Start link account flow",
-            description = "Start the link account flow for the current user",
+            description = "Start the link account flow for the current user." +
+                    "<br/>After the account has been linked the user is redirect to one the following URL's:" +
+                    "<ul>" +
+                    "<li>Success: <a href=\"\">https://login.{environment}.eduid.nl/mobile/api/account-linked</a></li>" +
+                    "<li>Failure, EPPN already linked: <a href=\"\">https://login.{environment}.eduid.nl/mobile/api/eppn-already-linked</a></li>" +
+                    "<li>Failure, session expired: <a href=\"\">https://login.{environment}.eduid.nl/mobile/api/expired</a></li>" +
+                    "</ul>" +
+
+                    "If the",
             responses = {
                     @ApiResponse(responseCode = "200", description = "Url for authentication", useReturnTypeSchema = true,
                             content = {@Content(schema = @Schema(implementation = AuthorizationURL.class), examples =
@@ -352,9 +370,17 @@ public class AccountLinkerController implements UserAuthentication {
         LOG.debug("Start link account flow");
 
         User user = userFromAuthentication(authentication);
-        String state = passwordEncoder.encode(user.getUid());
-
-        UriComponents uriComponents = doStartLinkAccountFlow(state, spFlowRedirectUri, true, false, myConextSpEntityId);
+        String state;
+        String redirectUri;
+        if (isMobileRequest(authentication)) {
+            MobileLinkAccountRequest mobileLinkAccountRequest = this.mobileLinkAccountRequestRepository.save(new MobileLinkAccountRequest(hash(), user.getId()));
+            state = mobileLinkAccountRequest.getHash();
+            redirectUri = this.mobileFlowRedirectUri;
+        } else {
+            state = passwordEncoder.encode(user.getUid());
+            redirectUri = this.spFlowRedirectUri;
+        }
+        UriComponents uriComponents = doStartLinkAccountFlow(state, redirectUri, true, false, myConextSpEntityId);
         return ResponseEntity.ok(new AuthorizationURL(uriComponents.toUriString()));
     }
 
@@ -398,9 +424,28 @@ public class AccountLinkerController implements UserAuthentication {
                 this.spRedirectUrl + "/eppn-already-linked");
     }
 
+    @GetMapping("/mobile/oidc/redirect")
+    @Hidden
+    public ResponseEntity mobileFlowRedirect(@RequestParam("code") String code, @RequestParam("state") String state) throws UnsupportedEncodingException {
+        LOG.debug("In Mobile redirect link account");
+
+        String decodedState = URLDecoder.decode(state, StandardCharsets.UTF_8);
+        Optional<MobileLinkAccountRequest> optionalMobileLinkAccountRequest = this.mobileLinkAccountRequestRepository.findByHash(decodedState);
+        if (!optionalMobileLinkAccountRequest.isPresent()) {
+            return ResponseEntity.status(HttpStatus.FOUND).location(URI.create(this.idpBaseRedirectUrl + "/client/mobile/expired")).build();
+        }
+
+        String userId = optionalMobileLinkAccountRequest.get().getUserId();
+        User user = userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException(userId));
+
+        return doRedirect(code, user, this.mobileFlowRedirectUri, this.idpBaseRedirectUrl + "/client/mobile/account-linked",
+                false, false, null, null,
+                this.idpBaseRedirectUrl + "/client/mobile/eppn-already-linked");
+    }
+
     @GetMapping("/idp/oidc/redirect")
     @Hidden
-    public ResponseEntity idpFlowRedirect(HttpServletRequest request, @RequestParam("code") String code, @RequestParam("state") String state) throws UnsupportedEncodingException {
+    public ResponseEntity idpFlowRedirect(@RequestParam("code") String code, @RequestParam("state") String state) throws UnsupportedEncodingException {
         String decodedState = URLDecoder.decode(state, StandardCharsets.UTF_8);
         MultiValueMap<String, String> params = UriComponentsBuilder.fromHttpUrl("http://localhost?" + decodedState).build().getQueryParams();
         String id = params.getFirst("id");

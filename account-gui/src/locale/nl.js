@@ -124,6 +124,10 @@ I18n.translations.nl = {
         info: "Ga terug naar het scherm waar je de magische link hebt aangevraagd en volg de instructies daar op.<br/><br/>Je kunt dit tabblad / venster sluiten."
     },
     redirectMobileApp: {
+        "account-linked": {
+            title: "Account gekoppeld!",
+            info: "Je instellingsaccount is gekoppeld, klik op de knop hier onder om je nieuwe account te openen in de eduID app.",
+        },
         "add-password": {
             title: "Nieuw wachtwoord!",
             info: "Om een nieuw wachtwoord te kiezen, klik op de knop hier onder om de eduID app te openen.",
@@ -131,6 +135,14 @@ I18n.translations.nl = {
         created: {
             title: "Account aangemaakt!",
             info: "Je account is gemaakt, klik op de knop hier onder om je nieuwe account te openen in de eduID app.",
+        },
+        "eppn-already-linked": {
+            title: "EPPN is al gekoppeld!",
+            info: "Je account is niet gekoppeld, klik op de knop hier onder om de eduID app te openen.",
+        },
+        expired: {
+            title: "Sessie verlopen!",
+            info: "Je account is niet gekoppeld, klik op de knop hier onder om de eduID app te openen.",
         },
         "reset-password": {
             title: "Wijzig wachtwoord!",

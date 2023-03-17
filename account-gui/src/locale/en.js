@@ -124,6 +124,10 @@ I18n.translations.en = {
         info: "Please go back to the screen where you requested the magic link and follow the instructions there.<br/><br/>You can close this tab / window."
     },
     redirectMobileApp: {
+        "account-linked": {
+            title: "Account linked!",
+            info: "Your institutional account has been linked, click the button below to open your new account in the eduID app.",
+        },
         "add-password": {
             title: "New password requested!",
             info: "To add your new password, click the button below to open eduID app.",
@@ -131,6 +135,14 @@ I18n.translations.en = {
         created: {
             title: "Account created!",
             info: "Your account has been created, click the button below to open your new account in the eduID app.",
+        },
+        "eppn-already-linked": {
+            title: "EPPN already linked!",
+            info: "Your account has not been linked, click the button below to open the eduID app.",
+        },
+        expired: {
+            title: "Session expired!",
+            info: "Your account has not been linked, click the button below to open the eduID app.",
         },
         fallback: {
             title: "eduID app!",

@@ -1,6 +1,7 @@
 package myconext;
 
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.restassured.RestAssured;
@@ -71,7 +72,8 @@ import static org.junit.Assert.assertTrue;
                 "sp_entity_metadata_url=https://engine.test.surfconext.nl/authentication/sp/metadata",
                 "spring.main.lazy-initialization=true",
                 "eduid_api.oidcng_introspection_uri=http://localhost:8098/introspect",
-                "cron.service-name-resolver-initial-delay-milliseconds=60000"
+                "cron.service-name-resolver-initial-delay-milliseconds=60000",
+                "oidc.base-url=http://localhost:8098/",
         })
 @ActiveProfiles({"test"})
 @SuppressWarnings("unchecked")
@@ -97,6 +99,9 @@ public abstract class AbstractIntegrationTest {
 
     @Autowired
     protected PasswordResetHashRepository passwordResetHashRepository;
+
+    @Autowired
+    protected MobileLinkAccountRequestRepository mobileLinkAccountRequestRepository;
 
     @Autowired
     protected ChangeEmailHashRepository changeEmailHashRepository;
@@ -132,7 +137,7 @@ public abstract class AbstractIntegrationTest {
                         .insert(readFromFile(clazz))
                         .execute());
         Arrays.asList(PasswordResetHash.class, ChangeEmailHash.class, Challenge.class, EmailsSend.class,
-                        Registration.class, Authentication.class, Enrollment.class)
+                        Registration.class, Authentication.class, Enrollment.class, MobileLinkAccountRequest.class)
                 .forEach(clazz -> mongoTemplate.bulkOps(BulkOperations.BulkMode.ORDERED, clazz)
                         .remove(new Query())
                         .execute());
@@ -261,6 +266,16 @@ public abstract class AbstractIntegrationTest {
     protected String opaqueAccessToken(boolean valid, String... scopes) throws IOException {
         return doOpaqueAccessToken(valid, scopes, "introspect");
     }
+
+    protected void stubForTokenUserInfo(Map<Object, Object> userInfo) throws JsonProcessingException {
+        stubFor(post(urlPathMatching("/oidc/token")).willReturn(aResponse()
+                .withHeader("Content-Type", "application/json")
+                .withBody(objectMapper.writeValueAsString(Collections.singletonMap("access_token", "123456")))));
+        stubFor(post(urlPathMatching("/oidc/userinfo")).willReturn(aResponse()
+                .withHeader("Content-Type", "application/json")
+                .withBody(objectMapper.writeValueAsString(userInfo))));
+    }
+
 
 
 }

@@ -31,20 +31,10 @@ import static io.restassured.RestAssured.given;
 import static myconext.api.AccountLinkerController.parseAffiliations;
 import static org.junit.Assert.*;
 
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
-        properties = {
-                "mongodb_db=surf_id_test",
-                "cron.node-cron-job-responsible=false",
-                "email_guessing_sleep_millis=1",
-                "sp_entity_id=https://engine.test.surfconext.nl/authentication/sp/metadata",
-                "sp_entity_metadata_url=https://engine.test.surfconext.nl/authentication/sp/metadata",
-                "spring.main.lazy-initialization=true",
-                "oidc.base-url=http://localhost:8099/",
-        })
 public class AccountLinkerControllerTest extends AbstractIntegrationTest {
 
     @Rule
-    public WireMockRule wireMockRule = new WireMockRule(8099);
+    public WireMockRule wireMockRule = new WireMockRule(8098);
 
     @Test
     public void linkAccountRedirect() throws IOException {
@@ -63,7 +53,7 @@ public class AccountLinkerControllerTest extends AbstractIntegrationTest {
                 .contentType(ContentType.JSON)
                 .get("/myconext/api/idp/oidc/account/" + authenticationRequestId)
                 .getHeader("Location");
-        assertTrue(location.startsWith("http://localhost:8099/oidc/authorize?" +
+        assertTrue(location.startsWith("http://localhost:8098/oidc/authorize?" +
                 "scope=openid&" +
                 "response_type=code&" +
                 "redirect_uri=http://localhost:8081/myconext/api/idp/oidc/redirect&" +
@@ -99,7 +89,7 @@ public class AccountLinkerControllerTest extends AbstractIntegrationTest {
                 .get("/myconext/api/idp/oidc/account/" + authenticationRequestId)
                 .getHeader("Location");
 
-        assertTrue(location.startsWith("http://localhost:8099/oidc/authorize?"));
+        assertTrue(location.startsWith("http://localhost:8098/oidc/authorize?"));
 
         UriComponents uriComponent = UriComponentsBuilder.fromHttpUrl(location).build();
         MultiValueMap<String, String> queryParams = uriComponent.getQueryParams();
@@ -294,7 +284,7 @@ public class AccountLinkerControllerTest extends AbstractIntegrationTest {
                 .when()
                 .get("/myconext/api/sp/oidc/link")
                 .as(Map.class);
-        assertTrue(((String) res.get("url")).startsWith("http://localhost:8099/oidc/authorize?" +
+        assertTrue(((String) res.get("url")).startsWith("http://localhost:8098/oidc/authorize?" +
                 "scope=openid&" +
                 "response_type=code&" +
                 "redirect_uri=http://localhost:8081/myconext/api/sp/oidc/redirect"));
@@ -362,7 +352,10 @@ public class AccountLinkerControllerTest extends AbstractIntegrationTest {
                 .as(new TypeRef<>() {
                 });
 
-        assertTrue(results.get("url").startsWith("http://localhost:8099/oidc/authorize?scope=openid&response_type=code&redirect_uri=http://localhost:8081/myconext/api/sp/create-from-institution/oidc-redirect&state="));
+        assertTrue(results.get("url").startsWith("http://localhost:8098/oidc/authorize?" +
+                "scope=openid&" +
+                "response_type=code&" +
+                "redirect_uri=http://localhost:8081/myconext/api/sp/create-from-institution/oidc-redirect&state="));
     }
 
     @Test
@@ -730,15 +723,6 @@ public class AccountLinkerControllerTest extends AbstractIntegrationTest {
         RequestInstitutionEduID requestInstitutionEduID = requestInstitutionEduIDRepository.findByHash(hash).get();
         requestInstitutionEduID.setLoginStatus(newStatus);
         requestInstitutionEduIDRepository.save(requestInstitutionEduID);
-    }
-
-    private void stubForTokenUserInfo(Map<Object, Object> userInfo) throws JsonProcessingException {
-        stubFor(post(urlPathMatching("/oidc/token")).willReturn(aResponse()
-                .withHeader("Content-Type", "application/json")
-                .withBody(objectMapper.writeValueAsString(Collections.singletonMap("access_token", "123456")))));
-        stubFor(post(urlPathMatching("/oidc/userinfo")).willReturn(aResponse()
-                .withHeader("Content-Type", "application/json")
-                .withBody(objectMapper.writeValueAsString(userInfo))));
     }
 
     private String stateParameterSp() {

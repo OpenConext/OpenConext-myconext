@@ -28,6 +28,7 @@ public class ResourceCleaner {
     private final boolean cronJobResponsible;
     private final EmailsSendRepository emailsSendRepository;
     private final RequestInstitutionEduIDRepository requestInstitutionEduIDRepository;
+    private final MobileLinkAccountRequestRepository mobileLinkAccountRequestRepository;
 
     @Autowired
     public ResourceCleaner(AuthenticationRequestRepository authenticationRequestRepository,
@@ -36,6 +37,7 @@ public class ResourceCleaner {
                            ChangeEmailHashRepository changeEmailHashRepository,
                            EmailsSendRepository emailsSendRepository,
                            RequestInstitutionEduIDRepository requestInstitutionEduIDRepository,
+                           MobileLinkAccountRequestRepository mobileLinkAccountRequestRepository,
                            @Value("${cron.node-cron-job-responsible}") boolean cronJobResponsible) {
         this.authenticationRequestRepository = authenticationRequestRepository;
         this.userRepository = userRepository;
@@ -43,6 +45,7 @@ public class ResourceCleaner {
         this.changeEmailHashRepository = changeEmailHashRepository;
         this.emailsSendRepository = emailsSendRepository;
         this.requestInstitutionEduIDRepository = requestInstitutionEduIDRepository;
+        this.mobileLinkAccountRequestRepository = mobileLinkAccountRequestRepository;
         this.cronJobResponsible = cronJobResponsible;
     }
 
@@ -58,6 +61,7 @@ public class ResourceCleaner {
         info(PasswordResetHash.class, passwordResetHashRepository.deleteByExpiresInBefore(now));
         info(ChangeEmailHash.class, changeEmailHashRepository.deleteByExpiresInBefore(now));
         info(RequestInstitutionEduID.class, requestInstitutionEduIDRepository.deleteByExpiresInBefore(now));
+        info(MobileLinkAccountRequest.class, mobileLinkAccountRequestRepository.deleteByExpiresInBefore(now));
 
         Date seconds16Ago = Date.from(nowInstant.minus(16, ChronoUnit.SECONDS));
         info(EmailsSend.class, emailsSendRepository.deleteBySendAtBefore(seconds16Ago));

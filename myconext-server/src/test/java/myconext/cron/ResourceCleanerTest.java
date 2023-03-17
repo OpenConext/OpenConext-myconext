@@ -82,6 +82,22 @@ public class ResourceCleanerTest extends AbstractIntegrationTest {
     }
 
     @Test
+    public void cleanMobileLinkAccountRequests() {
+        ResourceCleaner resourceCleaner = getResourceCleaner(true);
+
+        MobileLinkAccountRequest request = new MobileLinkAccountRequest("hash", "userId");
+        Date hourAgo = Date.from(LocalDateTime.now().minusHours(1).atZone(ZoneId.systemDefault()).toInstant());
+        ReflectionTestUtils.setField(request, "expiresIn", hourAgo);
+        mobileLinkAccountRequestRepository.save(request);
+
+        long prev = mobileLinkAccountRequestRepository.count();
+
+        resourceCleaner.clean();
+
+        assertEquals(prev - 1, mobileLinkAccountRequestRepository.count());
+    }
+
+    @Test
     public void clean() {
         doTest(true, 0);
     }
@@ -124,6 +140,7 @@ public class ResourceCleanerTest extends AbstractIntegrationTest {
                 changeEmailHashRepository,
                 emailsSendRepository,
                 requestInstitutionEduIDRepository,
+                mobileLinkAccountRequestRepository,
                 cronJobResponsible);
     }
 
