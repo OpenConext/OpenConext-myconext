@@ -355,11 +355,9 @@ public class AccountLinkerController implements UserAuthentication {
                     "<br/>After the account has been linked the user is redirect to one the following URL's:" +
                     "<ul>" +
                     "<li>Success: <a href=\"\">https://login.{environment}.eduid.nl/client/mobile/account-linked</a></li>" +
-                    "<li>Failure, EPPN already linked: <a href=\"\">https://login.{environment}.eduid.nl/client/mobile/eppn-already-linked</a></li>" +
+                    "<li>Failure, EPPN already linked: <a href=\"\">https://login.{environment}.eduid.nl/client/mobile/eppn-already-linked?email=jdoe%40example.com</a></li>" +
                     "<li>Failure, session expired: <a href=\"\">https://login.{environment}.eduid.nl/client/mobile/expired</a></li>" +
-                    "</ul>" +
-
-                    "If the",
+                    "</ul>",
             responses = {
                     @ApiResponse(responseCode = "200", description = "Url for authentication", useReturnTypeSchema = true,
                             content = {@Content(schema = @Schema(implementation = AuthorizationURL.class), examples =
