@@ -11,6 +11,7 @@
       <outputDirectory>.</outputDirectory>
       <includes>
         <include>**/*.*</include>
+        <include>.well-known/apple-app-site-association</include>
       </includes>
     </fileSet>
   </fileSets>
