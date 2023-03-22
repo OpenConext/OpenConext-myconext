@@ -1,0 +1,32 @@
+{
+  "applinks": {
+    "details": [
+      {
+        "appID": "ZYJ4TZX4UU.nl.eduid",
+        "paths": [
+          "/tiqrenroll/",
+          "/tiqrauth/",
+          "/tiqrenroll",
+          "/tiqrauth"
+        ]
+      },
+      {
+        "appID": "ZYJ4TZX4UU.nl.eduid.testing",
+        "components": [
+          {
+            "/": "/tiqrenroll/*",
+            "comment": "enroll"
+          },
+          {
+            "/": "/tiqrauth/*",
+            "comment": "authenticate"
+          },
+          {
+            "/": "/client/mobile/*",
+            "comment": "mobile"
+          }
+        ]
+      }
+    ]
+  }
+}
