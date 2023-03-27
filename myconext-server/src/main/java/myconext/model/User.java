@@ -209,8 +209,7 @@ public class User implements Serializable, UserDetails {
         //Order by priority
         if (!CollectionUtils.isEmpty(this.surfSecureId) && (
                 this.surfSecureId.containsKey(SURFSecureID.PHONE_VERIFIED) ||
-                        this.surfSecureId.containsKey(SURFSecureID.RECOVERY_CODE)
-        )) {
+                        this.surfSecureId.containsKey(SURFSecureID.RECOVERY_CODE))) {
             result.add(LoginOptions.APP);
         }
         if (!CollectionUtils.isEmpty(this.publicKeyCredentials)) {

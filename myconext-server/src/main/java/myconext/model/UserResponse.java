@@ -5,6 +5,7 @@ import myconext.tiqr.SURFSecureID;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 import tiqr.org.model.Registration;
+import tiqr.org.model.RegistrationStatus;
 
 import java.io.Serializable;
 import java.util.HashMap;
@@ -49,6 +50,10 @@ public class UserResponse implements Serializable {
         this.eduIdPerServiceProvider = eduIdPerServiceProvider;
         this.loginOptions = user.loginOptions();
         optionalRegistration.ifPresent(reg -> {
+            if (!RegistrationStatus.FINALIZED.equals(reg.getStatus())) {
+                //Only finalized registrations are returned
+                return;
+            }
             Map<String, Object> surfSecureId = user.getSurfSecureId();
             boolean phoneVerified = surfSecureId.containsKey(SURFSecureID.PHONE_VERIFIED);
 

@@ -12,4 +12,6 @@ import java.time.Instant;
 public interface RegistrationRepository extends MongoRepository<Registration, String>, tiqr.org.repo.RegistrationRepository {
 
     Long deleteByUpdatedBeforeAndStatus(Instant instant, RegistrationStatus status);
+
+    void delete(Registration registration);
 }
