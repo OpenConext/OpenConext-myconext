@@ -85,7 +85,6 @@ public class AccountLinkerController implements UserAuthentication {
     private final String magicLinkUrl;
     private final String idpBaseRedirectUrl;
     private final String spRedirectUrl;
-    private final String loginSURFconextURL;
     private final String basePath;
     private final long removalValidatedDurationDays;
     private final String idpExternalValidationEntityId;
@@ -140,7 +139,6 @@ public class AccountLinkerController implements UserAuthentication {
         this.magicLinkUrl = magicLinkUrl;
         this.idpBaseRedirectUrl = idpBaseRedirectUrl;
         this.spRedirectUrl = spRedirectUrl;
-        this.loginSURFconextURL = loginSURFconextURL;
         this.clientId = clientId;
         this.clientSecret = clientSecret;
         this.idpFlowRedirectUri = idpFlowRedirectUri;
