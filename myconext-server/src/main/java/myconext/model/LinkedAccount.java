@@ -39,6 +39,7 @@ public class LinkedAccount implements Serializable {
         this.familyName = familyName;
         this.eduPersonAffiliations = eduPersonAffiliations;
         this.expiresAt = expiresAt;
+        this.createdAt = new Date();
         return true;
     }
 
