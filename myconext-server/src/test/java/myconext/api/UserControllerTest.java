@@ -421,7 +421,7 @@ public class UserControllerTest extends AbstractIntegrationTest {
         given()
                 .when()
                 .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
-                .body(new DeleteServiceTokens(eduID.getValue(), new ArrayList<>()))
+                .body(new DeleteService(eduID.getServiceProviderEntityId(), new ArrayList<>()))
                 .put("/myconext/api" +
                         "/sp/service")
                 .then()

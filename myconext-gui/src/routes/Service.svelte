@@ -47,7 +47,7 @@
         } else {
             loading = true;
             showModal = false;
-            deleteServiceAndTokens(service.eduId, service.allTokens)
+            deleteServiceAndTokens(service.data.serviceProviderEntityId, service.allTokens)
                 .then(res => {
                     doRefresh(res, "dataActivity.deleted");
                 });

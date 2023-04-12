@@ -3,6 +3,7 @@ package myconext.oidcng;
 import com.github.tomakehurst.wiremock.junit.WireMockRule;
 import io.restassured.http.ContentType;
 import myconext.AbstractIntegrationTest;
+import myconext.model.DeleteService;
 import myconext.model.DeleteServiceTokens;
 import myconext.model.TokenRepresentation;
 import myconext.model.TokenType;
@@ -74,14 +75,14 @@ public class OpenIDConnectTest extends AbstractIntegrationTest {
         given()
                 .when()
                 .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
-                .body(new DeleteServiceTokens("eduid", Arrays.asList(new TokenRepresentation("id", TokenType.ACCESS))))
+                .body(new DeleteService("http://mock-sp", Arrays.asList(new TokenRepresentation("id", TokenType.ACCESS))))
                 .put("/myconext/api/sp/service")
                 .then()
                 .statusCode(200);
         given()
                 .when()
                 .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
-                .body(new DeleteServiceTokens(null, Arrays.asList(new TokenRepresentation("id", TokenType.ACCESS))))
+                .body(new DeleteServiceTokens(Arrays.asList(new TokenRepresentation("id", TokenType.ACCESS))))
                 .put("/myconext/api/sp/tokens")
                 .then()
                 .statusCode(200);

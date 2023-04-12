@@ -106,8 +106,8 @@ export function updatePublicKeyCredential(credential) {
     return postPutJson("/myconext/api/sp/credential", credential, "POST");
 }
 
-export function deleteServiceAndTokens(eduId, tokens) {
-    return postPutJson("/myconext/api/sp/service", {eduId, tokens}, "PUT");
+export function deleteServiceAndTokens(serviceProviderEntityId, tokens) {
+    return postPutJson("/myconext/api/sp/service", {serviceProviderEntityId, tokens}, "PUT");
 }
 
 export function deleteTokens(tokens) {

@@ -569,22 +569,22 @@ public class UserController implements ServiceProviderHolder, UserAuthentication
     }
 
     @Operation(summary = "Remove user service",
-            description = "Remove user service")
+            description = "Remove user service by the eduID value")
     @PutMapping("/sp/service")
     public ResponseEntity<UserResponse> removeUserService(Authentication authentication,
-                                                          @RequestBody DeleteServiceTokens serviceAndTokens) {
+                                                          @RequestBody DeleteService deleteService) {
         User user = userFromAuthentication(authentication);
 
-        String eduIdValue = serviceAndTokens.getEduId();
+        String serviceProviderEntityId = deleteService.getServiceProviderEntityId();
         List<EduID> newEduIDs = user.getEduIDS().stream()
-                .filter(eduID -> !eduID.getValue().equals(eduIdValue))
+                .filter(eduID -> !eduID.getServiceProviderEntityId().equals(serviceProviderEntityId))
                 .collect(Collectors.toList());
         user.setEduIDS(newEduIDs);
         userRepository.save(user);
 
-        logWithContext(user, "delete", "eppn", LOG, "Deleted eduID " + eduIdValue);
+        logWithContext(user, "delete", "eppn", LOG, "Deleted eduID " + serviceProviderEntityId);
 
-        return doRemoveTokens(serviceAndTokens, user);
+        return doRemoveTokens(deleteService.getTokens(), user);
     }
 
     @PutMapping("/sp/tokens")
@@ -595,10 +595,9 @@ public class UserController implements ServiceProviderHolder, UserAuthentication
                                                      @RequestBody DeleteServiceTokens serviceAndTokens) {
         User user = userFromAuthentication(authentication);
 
-        String eduIdValue = serviceAndTokens.getEduId();
-        logWithContext(user, "delete", "tokens", LOG, "Deleted tokens " + eduIdValue);
+        logWithContext(user, "delete", "tokens", LOG, "Deleted tokens " + serviceAndTokens.getTokens());
 
-        return doRemoveTokens(serviceAndTokens, user);
+        return doRemoveTokens(serviceAndTokens.getTokens(), user);
     }
 
     @GetMapping("/sp/testWebAuthnUrl")
@@ -614,8 +613,7 @@ public class UserController implements ServiceProviderHolder, UserAuthentication
         return ResponseEntity.status(200).body(Collections.singletonMap("url", loginUrl));
     }
 
-    private ResponseEntity<UserResponse> doRemoveTokens(@RequestBody DeleteServiceTokens serviceAndTokens, User user) {
-        List<TokenRepresentation> tokens = serviceAndTokens.getTokens();
+    private ResponseEntity<UserResponse> doRemoveTokens(List<TokenRepresentation> tokens, User user) {
         if (!CollectionUtils.isEmpty(tokens)) {
             openIDConnect.deleteTokens(tokens, user);
         }
