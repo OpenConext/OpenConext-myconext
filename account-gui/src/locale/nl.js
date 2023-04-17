@@ -180,7 +180,7 @@ I18n.translations.nl = {
         browserPrompt: "Klik op de onderstaande knop om een beveligingssleutel toe te voegen aan je eduID-account. Volg daarbij de instructies van je browser op.",
         start: "Start",
         header: "Log in met een beveiligingssleutel",
-        explanation: "Er wordt een nieuw venster geopend. Volg de instricties om in te loggen.",
+        explanation: "Er wordt een nieuw venster geopend. Volg de instructies om in te loggen.",
         next: "Log in met een beveiligingssleutel",
         error: "De beveligingssleutel kan niet gebruikt worden."
     },
