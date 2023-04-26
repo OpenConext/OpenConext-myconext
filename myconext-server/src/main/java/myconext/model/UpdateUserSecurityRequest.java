@@ -14,5 +14,6 @@ public class UpdateUserSecurityRequest implements Serializable {
 
     @NotBlank
     private String newPassword;
+    @NotBlank
     private String hash;
 }

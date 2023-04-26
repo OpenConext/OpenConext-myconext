@@ -25,10 +25,7 @@ import java.io.IOException;
 import java.net.URLEncoder;
 import java.nio.charset.Charset;
 import java.security.MessageDigest;
-import java.util.Arrays;
-import java.util.Base64;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -116,6 +113,7 @@ public class TiqrControllerTest extends AbstractIntegrationTest {
                 });
         assertTrue(body.containsKey("recoveryCode"));
     }
+
     @Test
     public void spRegenerateBackupCode() throws IOException {
         CookieFilter cookieFilter = new CookieFilter();
@@ -244,6 +242,24 @@ public class TiqrControllerTest extends AbstractIntegrationTest {
                 .statusCode(200);
         user = userRepository.findUserByEmail("jdoe@example.com").get();
         assertTrue(user.getSurfSecureId().isEmpty());
+    }
+
+    @Test
+    public void spDeactivationValidateBody() throws IOException {
+        doEnrollmment(false);
+
+        User user = userRepository.findUserByEmail("jdoe@example.com").get();
+        user.getSurfSecureId().put(SURFSecureID.RECOVERY_CODE, "123456");
+        user.getSurfSecureId().put(SURFSecureID.RATE_LIMIT, 2);
+        userRepository.save(user);
+
+        given()
+                .when()
+                .contentType(ContentType.JSON)
+                .body(Collections.emptyMap())
+                .post("/tiqr/sp/deactivate-app")
+                .then()
+                .statusCode(400);
     }
 
     @Test

@@ -319,8 +319,7 @@ public class UserController implements ServiceProviderHolder, UserAuthentication
                             content = {@Content(schema = @Schema(implementation = StatusResponse.class),
                                     examples = {@ExampleObject(value = "{\"status\":409}")})})})
     @PostMapping("/idp/create")
-    public ResponseEntity<StatusResponse> createEduIDAccount(@RequestBody CreateAccount createAccount) {
-
+    public ResponseEntity<StatusResponse> createEduIDAccount(@Valid @RequestBody CreateAccount createAccount) {
         String email = createAccount.getEmail();
         verifyEmails(email);
 
@@ -355,7 +354,7 @@ public class UserController implements ServiceProviderHolder, UserAuthentication
 
     @Operation(summary = "Change names", description = "Update the givenName and / or familyName of the User")
     @PutMapping("/sp/update")
-    public ResponseEntity<UserResponse> updateUserProfile(Authentication authentication, @RequestBody UpdateUserNameRequest deltaUser) {
+    public ResponseEntity<UserResponse> updateUserProfile(Authentication authentication, @Valid @RequestBody UpdateUserNameRequest deltaUser) {
         User user = userFromAuthentication(authentication);
 
         user.setFamilyName(deltaUser.getFamilyName());
@@ -375,7 +374,7 @@ public class UserController implements ServiceProviderHolder, UserAuthentication
                     "<br/>If the URL is not properly intercepted by the eduID app, then the browser app redirects to " +
                     "<a href=\"\">eduid://client/mobile/confirm-email?h={{hash}}</a>")
     @PutMapping("/sp/email")
-    public ResponseEntity<UserResponse> updateEmail(Authentication authentication, @RequestBody UpdateEmailRequest updateEmailRequest,
+    public ResponseEntity<UserResponse> updateEmail(Authentication authentication, @Valid @RequestBody UpdateEmailRequest updateEmailRequest,
                                                     @RequestParam(value = "force", required = false, defaultValue = "false") boolean force) {
         User user = userFromAuthentication(authentication);
         List<PasswordResetHash> passwordResetHashes = passwordResetHashRepository.findByUserId(user.getId());
@@ -572,7 +571,7 @@ public class UserController implements ServiceProviderHolder, UserAuthentication
             description = "Remove user service by the eduID value")
     @PutMapping("/sp/service")
     public ResponseEntity<UserResponse> removeUserService(Authentication authentication,
-                                                          @RequestBody DeleteService deleteService) {
+                                                          @Valid @RequestBody DeleteService deleteService) {
         User user = userFromAuthentication(authentication);
 
         String serviceProviderEntityId = deleteService.getServiceProviderEntityId();

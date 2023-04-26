@@ -6,7 +6,6 @@ import myconext.exceptions.UserNotFoundException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.error.ErrorAttributeOptions;
 import org.springframework.boot.web.servlet.error.ErrorAttributes;
 import org.springframework.boot.web.servlet.error.ErrorController;
@@ -20,7 +19,6 @@ import org.springframework.web.context.request.ServletWebRequest;
 import org.springframework.web.context.request.WebRequest;
 
 import javax.servlet.http.HttpServletRequest;
-import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Map;
 
@@ -45,7 +43,11 @@ public class DefaultErrorController implements ErrorController {
         WebRequest webRequest = new ServletWebRequest(request);
         Map<String, Object> result = this.errorAttributes.getErrorAttributes(
                 webRequest,
-                ErrorAttributeOptions.of(ErrorAttributeOptions.Include.EXCEPTION, ErrorAttributeOptions.Include.MESSAGE));
+                ErrorAttributeOptions.of(
+                        ErrorAttributeOptions.Include.EXCEPTION,
+                        ErrorAttributeOptions.Include.MESSAGE,
+                        ErrorAttributeOptions.Include.BINDING_ERRORS)
+        );
 
         Throwable error = this.errorAttributes.getError(webRequest);
         HttpStatus statusCode;

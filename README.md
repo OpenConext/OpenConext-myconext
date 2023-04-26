@@ -89,12 +89,12 @@ cloc --read-lang-def=cloc_definitions.txt --vcs=git
 
 It's possible to migrate from an existing IdP to this IdP. A new identity will be created, and the eppn wil be copied.
 
-### [Attribute Manipulation](#attribue-manipulation)
+### [Attribute Manipulation](#attribute-manipulation)
 ```
 curl -u oidcng:secret "http://login.test2.eduid.nl/myconext/api/attribute-manipulation?sp_entity_id=https://test.okke&uid=0eaa7fb2-4f94-476f-b3f6-c8dfc4115a87&sp_institution_guid=null"
 ```
 
-### [Attribute Aggregation](#attribue-aggregation)
+### [Attribute Aggregation](#attribute-aggregation)
 ```
 curl -u aa:secret "https://login.test2.eduid.nl/myconext/api/attribute-aggregation?sp_entity_id=https://mijn.test2.eduid.nl/shibboleth&eduperson_principal_name=j.doe@example.com"
 ```
@@ -107,3 +107,6 @@ curl -u aa:secret 'https://login.test2.eduid.nl/myconext/api/system/eduid-duplic
 
 http://localhost:8081/swagger-ui/index.html
 http://localhost:8081/v3/api-docs.yaml
+
+https://login.test2.eduid.nl/myconext/api/mobile/swagger-ui/index.html
+https://login.test2.eduid.nl/myconext/api/mobile/api-docs

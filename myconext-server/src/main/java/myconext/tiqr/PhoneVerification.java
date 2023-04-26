@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 
 @NoArgsConstructor
@@ -11,6 +12,7 @@ import java.io.Serializable;
 @Getter
 public class PhoneVerification implements Serializable {
 
+    @NotNull
     private String phoneVerification;
 
 }
