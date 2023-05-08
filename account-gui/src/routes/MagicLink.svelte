@@ -27,6 +27,7 @@
     let allowedToResend = false;
     let mailHasBeenResend = false;
     let verificationCodeError = false;
+    let onMobile = "ontouchstart" in document.documentElement;
 
     onMount(() => {
         $links.displayBackArrow = false;
@@ -242,17 +243,19 @@
             <Spinner relative={true}/>
             <p>{I18n.t("magicLink.awaiting")}</p>
         </div>
-        <div class="mail-clients">
-            <div class="mail-client gmail">
-                <img src={gmail} alt="gmail" width="26px"
-                     on:click={() => window.location.href="https://www.gmail.com"}/>
-                <a href="https://www.gmail.com">{I18n.t("magicLink.openGMail")}</a>
+        {#if !onMobile}
+            <div class="mail-clients">
+                <div class="mail-client gmail">
+                    <img src={gmail} alt="gmail" width="26px"
+                         on:click={() => window.location.href="https://www.gmail.com"}/>
+                    <a href="https://www.gmail.com">{I18n.t("magicLink.openGMail")}</a>
+                </div>
+                <div class="mail-client outlook">
+                    <img src={outlook} alt="outlook" on:click={() => window.location.href="https://outlook.live.com/owa/"}/>
+                    <a href="https://outlook.live.com/owa/">{I18n.t("magicLink.openOutlook")}</a>
+                </div>
             </div>
-            <div class="mail-client outlook">
-                <img src={outlook} alt="outlook" on:click={() => window.location.href="https://outlook.live.com/owa/"}/>
-                <a href="https://outlook.live.com/owa/">{I18n.t("magicLink.openOutlook")}</a>
-            </div>
-        </div>
+        {/if}
         <div class="spam">
             <span>{I18n.t("magicLink.spam")}</span>
         </div>

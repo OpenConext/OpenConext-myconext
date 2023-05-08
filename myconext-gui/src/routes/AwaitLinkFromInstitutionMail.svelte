@@ -6,7 +6,6 @@
     import {createFromInstitutionPoll, resendCreateFromInstitutionMail} from "../api";
     import {status} from "../constants/loginStatus";
     import DOMPurify from "dompurify";
-    import backArrow from "../icons/arrow-left.svg";
 
     const gmail = "/img/get-started-icon-gmail@2x-e80b706.png";
     const outlook = "/img/get-started-icon-outlook-55f9ac5.png";
@@ -20,6 +19,7 @@
     let timeOutReached = false;
     let allowedToResend = false;
     let mailHasBeenResend = false;
+    let onMobile = "ontouchstart" in document.documentElement;
 
     onMount(() => {
         setTimeout(() => isLoggedIn(), timeOutSeconds * 1000);
@@ -142,18 +142,20 @@
                 <span>{@html I18n.t("pollFromInstitution.info", {email: DOMPurify.sanitize($user.email)})}</span>
                 <span>{I18n.t("pollFromInstitution.awaiting")}</span>
             </p>
-            <div class="mail-clients">
-                <div class="mail-client gmail">
-                    <img src={gmail} alt="gmail" width="26px"
-                         on:click={() => window.location.href="https://www.gmail.com"}/>
-                    <a href="https://www.gmail.com">{I18n.t("pollFromInstitution.openGMail")}</a>
+            {#if !onMobile}
+                <div class="mail-clients">
+                    <div class="mail-client gmail">
+                        <img src={gmail} alt="gmail" width="26px"
+                             on:click={() => window.location.href="https://www.gmail.com"}/>
+                        <a href="https://www.gmail.com">{I18n.t("pollFromInstitution.openGMail")}</a>
+                    </div>
+                    <div class="mail-client outlook">
+                        <img src={outlook} alt="outlook"
+                             on:click={() => window.location.href="https://outlook.live.com/owa/"}/>
+                        <a href="https://outlook.live.com/owa/">{I18n.t("pollFromInstitution.openOutlook")}</a>
+                    </div>
                 </div>
-                <div class="mail-client outlook">
-                    <img src={outlook} alt="outlook"
-                         on:click={() => window.location.href="https://outlook.live.com/owa/"}/>
-                    <a href="https://outlook.live.com/owa/">{I18n.t("pollFromInstitution.openOutlook")}</a>
-                </div>
-            </div>
+            {/if}
             <div>
                 <span>{I18n.t("pollFromInstitution.spam")}</span>
             </div>
