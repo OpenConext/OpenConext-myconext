@@ -30,7 +30,7 @@ Don't forget to set the active profile to dev.
 
 ### [The account-gui](#myconext-gui)
 
-The myconext client is build with Svetle and to get initially started:
+The myconext client is build with Svelte and to get initially started:
 
 ```
 cd account-gui
