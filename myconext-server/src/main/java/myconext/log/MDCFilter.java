@@ -38,7 +38,12 @@ public class MDCFilter extends OncePerRequestFilter {
                 mdcAdapter.put(USER_ID, user.getEmail());
             }
         }
-        chain.doFilter(request, response);
+        try {
+            chain.doFilter(request, response);
+        } finally {
+            mdcAdapter.clear();
+        }
+
 
     }
 }
