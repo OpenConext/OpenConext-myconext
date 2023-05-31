@@ -1,51 +1,22 @@
 package myconext.api;
 
-import com.yubico.webauthn.data.*;
-import com.yubico.webauthn.data.exception.Base64UrlException;
-import io.restassured.common.mapper.TypeRef;
-import io.restassured.filter.Filter;
-import io.restassured.filter.cookie.CookieFilter;
-import io.restassured.http.ContentType;
-import io.restassured.http.Cookie;
 import io.restassured.response.Response;
-import io.restassured.response.ValidatableResponse;
 import myconext.AbstractIntegrationTest;
-import myconext.model.*;
-import myconext.repository.ChallengeRepository;
-import myconext.security.ACR;
-import myconext.tiqr.SURFSecureID;
-import org.apache.commons.io.IOUtil;
-import org.apache.http.client.CookieStore;
+import myconext.model.MagicLinkRequest;
+import myconext.model.SamlAuthenticationRequest;
+import myconext.model.User;
 import org.junit.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.util.ReflectionTestUtils;
-import org.springframework.util.MultiValueMap;
-import org.springframework.util.StringUtils;
-import org.springframework.web.util.UriComponentsBuilder;
 
 import java.io.IOException;
-import java.security.SecureRandom;
-import java.time.Instant;
-import java.time.temporal.ChronoUnit;
-import java.util.*;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import java.util.Optional;
 
 import static io.restassured.RestAssured.given;
-import static io.restassured.RestAssured.when;
-import static myconext.model.LinkedAccountTest.linkedAccount;
 import static myconext.security.GuestIdpAuthenticationRequestFilter.BROWSER_SESSION_COOKIE_NAME;
-import static myconext.security.GuestIdpAuthenticationRequestFilter.GUEST_IDP_REMEMBER_ME_COOKIE_NAME;
-import static org.hamcrest.Matchers.*;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
         properties = {
@@ -59,7 +30,7 @@ import static org.junit.Assert.*;
                 "cron.service-name-resolver-initial-delay-milliseconds=60000",
                 "sso_mfa_duration_seconds=3600"
         })
-@ActiveProfiles(value = {"test"},inheritProfiles = false)
+@ActiveProfiles(value = {"test"}, inheritProfiles = false)
 @SuppressWarnings("unchecked")
 public class UserControllerSSOMfaTest extends AbstractIntegrationTest {
 
