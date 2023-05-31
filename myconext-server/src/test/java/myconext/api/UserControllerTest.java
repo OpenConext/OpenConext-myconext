@@ -1280,57 +1280,6 @@ public class UserControllerTest extends AbstractIntegrationTest {
                 .statusCode(HttpStatus.CONFLICT.value());
     }
 
-    private String samlResponse(MagicLinkResponse magicLinkResponse) throws IOException {
-        Response response = magicResponse(magicLinkResponse);
-
-        return samlAuthnResponse(response, Optional.empty());
-    }
-
-    private String samlAuthnResponse(Response response, Optional<Filter> optionalCookieFilter) throws IOException {
-        while (response.statusCode() == 302) {
-            response = this.get302Response(response, optionalCookieFilter);
-        }
-        assertEquals(HttpStatus.OK.value(), response.getStatusCode());
-        String html = IOUtil.toString(response.asInputStream());
-
-        Matcher matcher = Pattern.compile("name=\"SAMLResponse\" value=\"(.*?)\"").matcher(html);
-        matcher.find();
-        return new String(Base64.getDecoder().decode(matcher.group(1)));
-    }
-
-    private Response magicResponse(MagicLinkResponse magicLinkResponse) {
-        SamlAuthenticationRequest samlAuthenticationRequest = authenticationRequestRepository.findById(magicLinkResponse.authenticationRequestId).get();
-        Response response = given().redirects().follow(false)
-                .when()
-                .queryParam("h", samlAuthenticationRequest.getHash())
-                .cookie(BROWSER_SESSION_COOKIE_NAME, "true")
-                .get("/saml/guest-idp/magic");
-
-        while (response.getStatusCode() == 302) {
-            response = get302Response(response, Optional.empty());
-        }
-        return response;
-    }
-
-    private Response get302Response(Response response, Optional<Filter> optionalCookieFilter) {
-        return get302Response(response, optionalCookieFilter, "");
-    }
-
-    private Response get302Response(Response response, Optional<Filter> optionalCookieFilter, String queryParams) {
-        //new user confirmation screen
-        String uri = response.getHeader("Location");
-        MultiValueMap<String, String> parameters = UriComponentsBuilder.fromUriString(uri).build().getQueryParams();
-        String h = parameters.getFirst("h");
-        response = given().redirects().follow(false)
-                .when()
-                .queryParam("h", h)
-                .cookie(BROWSER_SESSION_COOKIE_NAME, "true")
-                .filter(optionalCookieFilter.orElse(noopFilter))
-                .get("/saml/guest-idp/magic" + queryParams);
-        return response;
-    }
-
-
     private String hash() {
         byte[] bytes = new byte[64];
         random.nextBytes(bytes);
