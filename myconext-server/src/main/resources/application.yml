@@ -90,6 +90,7 @@ private_key_path: classpath:/myconext.pem
 certificate_path: classpath:/myconext.crt
 
 remember_me_max_age_seconds: 15_768_000
+sso_mfa_duration_seconds: 900
 nudge_eduid_app_days: 7
 remember_me_question_asked_days: 30
 email_guessing_sleep_millis: 500

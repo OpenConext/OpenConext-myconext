@@ -32,12 +32,15 @@ import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.util.ReflectionTestUtils;
+import org.springframework.util.MultiValueMap;
 import org.springframework.util.StringUtils;
+import org.springframework.web.util.UriComponentsBuilder;
 import tiqr.org.model.Authentication;
 import tiqr.org.model.Enrollment;
 import tiqr.org.model.Registration;
@@ -49,12 +52,15 @@ import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.zip.Deflater;
 import java.util.zip.DeflaterOutputStream;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.*;
 import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
 import static io.restassured.RestAssured.given;
+import static myconext.security.GuestIdpAuthenticationRequestFilter.BROWSER_SESSION_COOKIE_NAME;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
@@ -74,6 +80,7 @@ import static org.junit.Assert.assertTrue;
                 "eduid_api.oidcng_introspection_uri=http://localhost:8098/introspect",
                 "cron.service-name-resolver-initial-delay-milliseconds=60000",
                 "oidc.base-url=http://localhost:8098/",
+                "sso_mfa_duration_seconds=-1000"
         })
 @ActiveProfiles({"test"})
 @SuppressWarnings("unchecked")
@@ -276,6 +283,55 @@ public abstract class AbstractIntegrationTest {
                 .withBody(objectMapper.writeValueAsString(userInfo))));
     }
 
+    protected Response get302Response(Response response, Optional<Filter> optionalCookieFilter, String queryParams) {
+        //new user confirmation screen
+        String uri = response.getHeader("Location");
+        MultiValueMap<String, String> parameters = UriComponentsBuilder.fromUriString(uri).build().getQueryParams();
+        String h = parameters.getFirst("h");
+        response = given().redirects().follow(false)
+                .when()
+                .queryParam("h", h)
+                .cookie(BROWSER_SESSION_COOKIE_NAME, "true")
+                .filter(optionalCookieFilter.orElse(noopFilter))
+                .get("/saml/guest-idp/magic" + queryParams);
+        return response;
+    }
 
+    protected Response get302Response(Response response, Optional<Filter> optionalCookieFilter) {
+        return get302Response(response, optionalCookieFilter, "");
+    }
+
+    protected String samlAuthnResponse(Response response, Optional<Filter> optionalCookieFilter) throws IOException {
+        while (response.statusCode() == 302) {
+            response = this.get302Response(response, optionalCookieFilter);
+        }
+        assertEquals(HttpStatus.OK.value(), response.getStatusCode());
+        String html = IOUtil.toString(response.asInputStream());
+
+        Matcher matcher = Pattern.compile("name=\"SAMLResponse\" value=\"(.*?)\"").matcher(html);
+        matcher.find();
+        return new String(java.util.Base64.getDecoder().decode(matcher.group(1)));
+    }
+
+    protected Response magicResponse(MagicLinkResponse magicLinkResponse) {
+        SamlAuthenticationRequest samlAuthenticationRequest = authenticationRequestRepository.findById(magicLinkResponse.authenticationRequestId).get();
+        Response response = given().redirects().follow(false)
+                .when()
+                .queryParam("h", samlAuthenticationRequest.getHash())
+                .cookie(BROWSER_SESSION_COOKIE_NAME, "true")
+                .get("/saml/guest-idp/magic");
+
+        while (response.getStatusCode() == 302) {
+            response = get302Response(response, Optional.empty());
+        }
+        return response;
+    }
+
+
+    protected String samlResponse(MagicLinkResponse magicLinkResponse) throws IOException {
+        Response response = magicResponse(magicLinkResponse);
+
+        return samlAuthnResponse(response, Optional.empty());
+    }
 
 }

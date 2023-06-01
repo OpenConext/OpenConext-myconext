@@ -14,6 +14,8 @@ import org.apache.commons.logging.LogFactory;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.saml.SamlMessageStore;
 import org.springframework.security.saml.SamlRequestMatcher;
@@ -67,6 +69,7 @@ public class GuestIdpAuthenticationRequestFilter extends IdpAuthenticationReques
     public static final String REMEMBER_ME_QUESTION_ASKED_COOKIE_NAME = "REMEMBER_ME_QUESTION_ASKED_COOKIE";
 
     private static final Log LOG = LogFactory.getLog(GuestIdpAuthenticationRequestFilter.class);
+    public static final String ROLE_MFA = "ROLE_MFA";
 
     private final SamlRequestMatcher ssoSamlRequestMatcher;
     private final SamlRequestMatcher magicSamlRequestMatcher;
@@ -87,6 +90,7 @@ public class GuestIdpAuthenticationRequestFilter extends IdpAuthenticationReques
     private final int nudgeAppDays;
     private final int rememberMeQuestionAskedDays;
     private final long expiryNonValidatedDurationDays;
+    private final long ssoMFADurationSeconds;
 
     public GuestIdpAuthenticationRequestFilter(SamlProviderProvisioning<IdentityProviderService> provisioning,
                                                SamlMessageStore<Assertion, HttpServletRequest> assertionStore,
@@ -102,7 +106,8 @@ public class GuestIdpAuthenticationRequestFilter extends IdpAuthenticationReques
                                                boolean secureCookie,
                                                String magicLinkUrl,
                                                MailBox mailBox,
-                                               long expiryNonValidatedDurationDays) {
+                                               long expiryNonValidatedDurationDays,
+                                               long ssoMFADurationSeconds) {
         super(provisioning, assertionStore);
         this.ssoSamlRequestMatcher = new SamlRequestMatcher(provisioning, "SSO");
         this.magicSamlRequestMatcher = new SamlRequestMatcher(provisioning, "magic");
@@ -121,6 +126,7 @@ public class GuestIdpAuthenticationRequestFilter extends IdpAuthenticationReques
         this.magicLinkUrl = magicLinkUrl;
         this.mailBox = mailBox;
         this.expiryNonValidatedDurationDays = expiryNonValidatedDurationDays;
+        this.ssoMFADurationSeconds = ssoMFADurationSeconds;
         this.executor = Executors.newSingleThreadExecutor();
     }
 
@@ -188,7 +194,8 @@ public class GuestIdpAuthenticationRequestFilter extends IdpAuthenticationReques
         samlAuthenticationRequest = authenticationRequestRepository.save(samlAuthenticationRequest);
 
         if (previousAuthenticatedUser != null && !authenticationRequest.isForceAuth()) {
-            if (mfaProfileRequired || (accountLinkingRequired && !isUserVerifiedByInstitution(previousAuthenticatedUser,
+            boolean applySsoMfa = isApplySsoMfa();
+            if ((!applySsoMfa && mfaProfileRequired) || (accountLinkingRequired && !isUserVerifiedByInstitution(previousAuthenticatedUser,
                     authenticationContextClassReferenceValues))) {
                 boolean hasStudentAffiliation = hasRequiredStudentAffiliation((previousAuthenticatedUser.allEduPersonAffiliations()));
                 String explanation = ACR.explanationKeyWord(authenticationContextClassReferenceValues, hasStudentAffiliation);
@@ -227,6 +234,17 @@ public class GuestIdpAuthenticationRequestFilter extends IdpAuthenticationReques
             response.sendRedirect(this.redirectUrl + path + samlAuthenticationRequest.getId() +
                     separator + stepUp + mfa);
         }
+    }
+
+    private boolean isApplySsoMfa() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication instanceof UserAuthenticationToken) {
+            UserAuthenticationToken userAuthenticationToken = (UserAuthenticationToken) authentication;
+            long createdAt = userAuthenticationToken.getCreatedAt();
+            boolean mfaRole = userAuthenticationToken.getAuthorities().stream().anyMatch(auth -> auth.getAuthority().equals(ROLE_MFA));
+            return mfaRole && (System.currentTimeMillis() - createdAt) < (ssoMFADurationSeconds * 1000);
+        }
+        return false;
     }
 
     public boolean isUserVerifiedByInstitution(User user, List<String> authenticationContextClassReferenceValues) {
@@ -506,8 +524,14 @@ public class GuestIdpAuthenticationRequestFilter extends IdpAuthenticationReques
         authenticationRequest.setId(samlAuthenticationRequest.getRequestId());
         authenticationRequest.setAssertionConsumerService(new Endpoint().setLocation(samlAuthenticationRequest.getConsumerAssertionServiceURL()));
 
-        UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(user, null,
-                user.getAuthorities());
+        //We support SSO for MFA, we must mark the authentication with a timestamp and an extra role
+        boolean mfaProfileRequired = samlAuthenticationRequest.isMfaProfileRequired();
+        Collection<? extends GrantedAuthority> authorities = user.getAuthorities();
+        if (mfaProfileRequired) {
+            authorities = List.of(new SimpleGrantedAuthority(ROLE_MFA), authorities.iterator().next());
+        }
+        UserAuthenticationToken authentication = new UserAuthenticationToken(user, null,
+                authorities);
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
         if (samlAuthenticationRequest.isRememberMe()) {
@@ -599,7 +623,7 @@ public class GuestIdpAuthenticationRequestFilter extends IdpAuthenticationReques
         attributes(user, requesterEntityId, authenticationContextClassReferences).forEach(assertion::addAttribute);
 
         Response samlResponse = provider.response(authenticationRequest, assertion, serviceProviderMetadata);
-
+        boolean applySsoMfa = this.isApplySsoMfa();
         if (samlAuthenticationRequest.isAccountLinkingRequired()) {
             boolean hasStudentAffiliation = hasRequiredStudentAffiliation(user.allEduPersonAffiliations());
 
@@ -628,7 +652,7 @@ public class GuestIdpAuthenticationRequestFilter extends IdpAuthenticationReques
                                 .fromUrn(ACR.selectACR(authenticationContextClassReferences, hasStudentAffiliation)));
             }
         } else if (samlAuthenticationRequest.isMfaProfileRequired()) {
-            if (samlAuthenticationRequest.isTiqrFlow()) {
+            if (samlAuthenticationRequest.isTiqrFlow() || applySsoMfa) {
                 samlResponse.getAssertions().get(0).getAuthenticationStatements().get(0)
                         .getAuthenticationContext()
                         .setClassReference(AuthenticationContextClassReference
@@ -640,7 +664,7 @@ public class GuestIdpAuthenticationRequestFilter extends IdpAuthenticationReques
                         .setMessage(msg)
                         .setDetail(msg));
             }
-        } else if (!CollectionUtils.isEmpty(authenticationContextClassReferences)) {
+        } else if (!applySsoMfa && !CollectionUtils.isEmpty(authenticationContextClassReferences)) {
             String msg = String.format("The specified authentication context requirements '%s' cannot be met by the responder.",
                     String.join(", ", authenticationContextClassReferences));
             samlResponse.setStatus(new Status()

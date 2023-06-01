@@ -6,7 +6,7 @@ import lombok.AllArgsConstructor;
 @AllArgsConstructor
 public class MagicLinkResponse {
 
-    String authenticationRequestId;
-    ValidatableResponse response;
+    public String authenticationRequestId;
+    public ValidatableResponse response;
 
 }

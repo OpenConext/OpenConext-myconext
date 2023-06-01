@@ -39,7 +39,8 @@ public class GuestIdpAuthenticationRequestFilterTest {
             false,
             null,
             null,
-            expiryNonValidatedDurationDays);
+            expiryNonValidatedDurationDays,
+            60 * 15);
 
     @Test
     public void isUserVerifiedByInstitutionNoLinkedAccounts() {
