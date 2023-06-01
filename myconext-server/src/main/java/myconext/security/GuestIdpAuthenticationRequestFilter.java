@@ -651,8 +651,8 @@ public class GuestIdpAuthenticationRequestFilter extends IdpAuthenticationReques
                         .setClassReference(AuthenticationContextClassReference
                                 .fromUrn(ACR.selectACR(authenticationContextClassReferences, hasStudentAffiliation)));
             }
-        } else if (!applySsoMfa && samlAuthenticationRequest.isMfaProfileRequired()) {
-            if (samlAuthenticationRequest.isTiqrFlow()) {
+        } else if (samlAuthenticationRequest.isMfaProfileRequired()) {
+            if (samlAuthenticationRequest.isTiqrFlow() || applySsoMfa) {
                 samlResponse.getAssertions().get(0).getAuthenticationStatements().get(0)
                         .getAuthenticationContext()
                         .setClassReference(AuthenticationContextClassReference

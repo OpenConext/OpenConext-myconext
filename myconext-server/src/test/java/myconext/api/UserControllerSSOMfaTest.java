@@ -42,6 +42,8 @@ public class UserControllerSSOMfaTest extends AbstractIntegrationTest {
         String authenticationRequestId = extractAuthenticationRequestIdFromAuthnResponse(response);
         MagicLinkResponse magicLinkResponse = magicLinkRequest(new MagicLinkRequest(authenticationRequestId, user, false, false), HttpMethod.PUT);
         SamlAuthenticationRequest samlAuthenticationRequest = authenticationRequestRepository.findById(magicLinkResponse.authenticationRequestId).get();
+        samlAuthenticationRequest.setTiqrFlow(true);
+        authenticationRequestRepository.save(samlAuthenticationRequest);
 
         Response magicResponse = given().redirects().follow(false)
                 .when()
@@ -56,6 +58,7 @@ public class UserControllerSSOMfaTest extends AbstractIntegrationTest {
         String samlResponse = samlAuthnResponse(magicResponse, Optional.empty());
 
         assertTrue(samlResponse.contains("<saml2p:StatusCode Value=\"urn:oasis:names:tc:SAML:2.0:status:Success\"/>"));
+        assertTrue(samlResponse.contains("https://refeds.org/profile/mfa"));
     }
 
     @Test
@@ -72,6 +75,7 @@ public class UserControllerSSOMfaTest extends AbstractIntegrationTest {
 
         String samlResponse = samlResponse(magicLinkResponse);
         assertTrue(samlResponse.contains("<saml2p:StatusCode Value=\"urn:oasis:names:tc:SAML:2.0:status:Success\"/>"));
+        assertTrue(samlResponse.contains("https://refeds.org/profile/mfa"));
     }
 
 }
