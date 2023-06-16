@@ -327,7 +327,7 @@ I18n.translations.en = {
         no: "I refuse",
         yesLink: "/proceed",
         yes: "Proceed",
-        warning: "Login without the eduID app is strongly discouraged. You will not be able to log in to {{service}}.",
+        warning: "Login without the eduID app is not allowed. You will not be able to log in to {{service}}.",
         warningTitle: "Get the eduID app",
         confirmLabel: "Get the eduID app",
         cancelLabel: "I still refuse"
