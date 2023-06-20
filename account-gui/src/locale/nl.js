@@ -328,7 +328,7 @@ I18n.translations.nl = {
         no: "Ik weiger",
         yesLink: "/proceed",
         yes: "Doorgaan",
-        warning: "Het wordt sterk afgeraden om zonder de eduID-app in te loggen. De dienst {{service}} zal niet je attributen ontvangen.",
+        warning: "Doorgaan zonder de eduID-app is niet toegestaan. Je kunt dan niet inloggen op {{service}}.",
         warningTitle: "Download eduID-app",
         confirmLabel: "Download eduID-app",
         cancelLabel: "Ik weiger echt"
