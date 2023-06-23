@@ -29,6 +29,16 @@ jobs:
         key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
         restore-keys: |
           ${{ runner.os }}-maven-
+
+    - name: Extract Maven project version
+      run: echo ::set-output name=version::$(mvn -q -Dexec.executable=echo -Dexec.args='${project.version}' --non-recursive exec:exec)
+      id: project
+    - name: Check if git tag matches project version
+      run: |
+        echo "Project version ${{ steps.project.outputs.version }} does not match git tag ${{ github.ref }}"
+        exit 1
+      if: ${{ steps.project.outputs.version }} != ${{ github.ref }}
+    
     - name: Deploy with Maven
       run: mvn --batch-mode deploy -DskipTests
       env:
