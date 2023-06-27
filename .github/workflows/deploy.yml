@@ -12,6 +12,8 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
+      with:
+        fetch-depth: 0
     - uses: actions/setup-node@v3
       with:
         node-version: 16
@@ -50,6 +52,8 @@ jobs:
     - name: Build Changelog
       id: changelog
       uses: ardalanamini/auto-changelog@v3
+      with:
+        default-commit-type: New Features
 
     - name: Create release
       uses: actions/create-release@v1
