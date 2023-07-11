@@ -10,7 +10,7 @@
     export let route = null;
     export let href = null;
     export let isMfa = false;
-    export let isMfaParameter = false;
+    let isMfaParameter = false;
 
     let showModal = false;
 
@@ -76,8 +76,9 @@
     }
 
 </style>
-<div class="sub-content">
-    <div class="sub-content-inner">
+{#if !isMfaParameter}
+    <div class="sub-content">
+        <div class="sub-content-inner">
         <span class="question">{@html question}
             {#if preLink}
                 <span class="pre-link">{preLink}</span>
@@ -92,8 +93,9 @@
                 <a href={href} target="_blank">{linkText}</a>
             {/if}
         </span>
+        </div>
     </div>
-</div>
+{/if}
 {#if showModal}
     <Modal submit={() => mfaWarning(false)}
            cancel={() => showModal = false}

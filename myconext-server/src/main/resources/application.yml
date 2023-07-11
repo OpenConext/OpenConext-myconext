@@ -63,7 +63,7 @@ my_conext_url: https://my.test2.surfconext.nl
 domain: eduid.nl
 mijn_eduid_entity_id: http://mijn.localhost/shibboleth
 mobile_app_redirect: eduid:///client/mobile
-mobile_app_rp_entity_id: playground_client
+mobile_app_rp_entity_id: mobile_app_rp_entity_id
 
 feature:
   webauthn: True
