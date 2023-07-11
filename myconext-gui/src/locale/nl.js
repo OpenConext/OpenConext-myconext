@@ -327,7 +327,11 @@ I18n.translations.nl = {
         timeOutInfoFirst: "Je sessie is verlopen. Klik op deze ",
         timeOutInfoLast: " om het opnieuw te proberen.",
         timeOutInfoLink: "link",
-        openEduIDApp: "Open de app op dit apparaat"
+        openEduIDApp: "Open de app op dit apparaat",
+        existingRegistration: "Bestaande registrate",
+        existingRegistrationInfoFirst: "Je kan geen nieuwe registratie starten, omdat je al een registratie hebt. Klik op ",
+        existingRegistrationInfoLast: " om de instellingen van je beveiliging opnieuw te laden.",
+        existingRegistrationInfoLink: "link",
     },
     recovery: {
         header: "Een herstelmethode instellen",

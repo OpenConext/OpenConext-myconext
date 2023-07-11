@@ -326,7 +326,11 @@ I18n.translations.en = {
         timeOutInfoFirst: "Your session timed out. Click this ",
         timeOutInfoLast: " to try again.",
         timeOutInfoLink: "link",
-        openEduIDApp: "Open the app on this device"
+        openEduIDApp: "Open the app on this device",
+        existingRegistration: "Existing registration",
+        existingRegistrationInfoFirst: "You can't start a new registration as you already have a registration. Click this ",
+        existingRegistrationInfoLast: " to reload your security settings.",
+        existingRegistrationInfoLink: "link",
     },
     recovery: {
         header: "Set up a recovery method",

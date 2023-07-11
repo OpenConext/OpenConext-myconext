@@ -18,6 +18,7 @@
     let onMobile = "ontouchstart" in document.documentElement;
     let status = "NOPE";
     let timeOut = false;
+    let existingRegistration = false;
 
     onDestroy(() => timeOut = true);
 
@@ -47,7 +48,11 @@
                     !timeOut && navigate(`/recovery?h=${hash}`);
                 })
                 .catch(() => timeOut = true)
+        }).catch(() => {
+            existingRegistration = true;
+            showSpinner = false;
         });
+
     });
 
 </script>
@@ -81,7 +86,16 @@
 {#if showSpinner}
     <Spinner/>
 {/if}
-{#if timeOut}
+{#if existingRegistration}
+    <h2 class="header">{I18n.t("useApp.existingRegistration")}</h2>
+    <p class="time-out">
+        <span>{I18n.t("useApp.existingRegistrationInfoFirst")}</span>
+        <a href={`/login/${hash}`}>
+            {I18n.t("useApp.existingRegistrationInfoLink")}
+        </a>
+        <span>{I18n.t("useApp.existingRegistrationInfoLast")}</span>
+    </p>
+{:else if timeOut}
     <h2 class="header">{I18n.t("useApp.timeOut")}</h2>
     <p class="time-out">
         <span>{I18n.t("useApp.timeOutInfoFirst")}</span>

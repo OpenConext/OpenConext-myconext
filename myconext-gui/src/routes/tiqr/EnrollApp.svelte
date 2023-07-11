@@ -16,32 +16,38 @@
     let status = "NOPE";
     let showSpinner = true;
     let timeOut = false;
+    let existingRegistration = false;
 
     onDestroy(() => timeOut = true);
 
     onMount(() => {
-        startEnrollment().then(res => {
-            qrcode = res.qrcode;
-            url = res.url;
-            enrollmentKey = res.enrollmentKey;
-            showSpinner = false;
-            status = enrollmentStatus.INITIALIZED;
-            poll({
-                fn: () => pollEnrollment(enrollmentKey),
-                validate: currentStatus => {
-                    if (currentStatus === enrollmentStatus.RETRIEVED) {
-                        status = currentStatus;
-                    }
-                    return currentStatus === enrollmentStatus.PROCESSED || timeOut;
-                },
-                interval: 1000,
-                maxAttempts: 60 * 15 // 15 minute timeout
+        startEnrollment()
+            .then(res => {
+                qrcode = res.qrcode;
+                url = res.url;
+                enrollmentKey = res.enrollmentKey;
+                showSpinner = false;
+                status = enrollmentStatus.INITIALIZED;
+                poll({
+                    fn: () => pollEnrollment(enrollmentKey),
+                    validate: currentStatus => {
+                        if (currentStatus === enrollmentStatus.RETRIEVED) {
+                            status = currentStatus;
+                        }
+                        return currentStatus === enrollmentStatus.PROCESSED || timeOut;
+                    },
+                    interval: 1000,
+                    maxAttempts: 60 * 15 // 15 minute timeout
+                })
+                    .then(() => !timeOut && navigate(`/recovery`))
+                    .catch(() => {
+                        timeOut = true;
+                    });
             })
-                .then(() => !timeOut && navigate(`/recovery`))
-                .catch(() => {
-                    timeOut = true;
-                });
-        });
+            .catch(() => {
+                existingRegistration = true;
+                showSpinner = false;
+            });
     });
 
 </script>
@@ -69,6 +75,7 @@
     .mobile-qr-code {
         display: flex;
         flex-direction: column;
+
         .button-link-container {
             margin: auto;
         }
@@ -94,12 +101,23 @@
 {/if}
 <div class="enroll-app">
     <div class="inner-container">
-        {#if timeOut}
+        {#if existingRegistration}
+            <h2 class="header">{I18n.t("enrollApp.existingRegistration")}</h2>
+            <p class="time-out">
+                <span>{I18n.t("enrollApp.existingRegistrationInfoFirst")}</span>
+                <a href="/security">
+                    {I18n.t("enrollApp.existingRegistrationInfoLink")}
+                </a>
+                <span>{I18n.t("enrollApp.existingRegistrationInfoLast")}</span>
+            </p>
+        {:else if timeOut}
             <h2 class="header">{I18n.t("enrollApp.timeOut")}</h2>
             <p class="time-out">
                 <span>{I18n.t("enrollApp.timeOutInfoFirst")}</span>
                 <a href="/"
-                   on:click|preventDefault|stopPropagation={() => window.location.reload(true)}>{I18n.t("enrollApp.timeOutInfoLink")}</a>
+                   on:click|preventDefault|stopPropagation={() => window.location.reload(true)}>
+                    {I18n.t("enrollApp.timeOutInfoLink")}
+                </a>
                 <span>{I18n.t("enrollApp.timeOutInfoLast")}</span>
             </p>
 
