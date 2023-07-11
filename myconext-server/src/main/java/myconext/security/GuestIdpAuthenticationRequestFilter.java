@@ -527,7 +527,7 @@ public class GuestIdpAuthenticationRequestFilter extends IdpAuthenticationReques
         //We support SSO for MFA, we must mark the authentication with a timestamp and an extra role
         boolean mfaProfileRequired = samlAuthenticationRequest.isMfaProfileRequired();
         Collection<? extends GrantedAuthority> authorities = user.getAuthorities();
-        if (mfaProfileRequired) {
+        if (mfaProfileRequired && samlAuthenticationRequest.isTiqrFlow()) {
             authorities = List.of(new SimpleGrantedAuthority(ROLE_MFA), authorities.iterator().next());
         }
         UserAuthenticationToken authentication = new UserAuthenticationToken(user, null,
