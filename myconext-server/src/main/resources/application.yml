@@ -58,12 +58,12 @@ rp_origin: http://localhost:3000
 sp_redirect_url: http://localhost:3001
 sp_entity_id: https://engine.test2.surfconext.nl/authentication/sp/metadata, https://engine.test.surfconext.nl/authentication/sp/metadata
 sp_entity_metadata_url: https://engine.test2.surfconext.nl/authentication/sp/metadata, https://engine.test.surfconext.nl/authentication/sp/metadata
-onegini_entity_id: http://mock-idp
 guest_idp_entity_id: https://localhost.surf.id
 my_conext_url: https://my.test2.surfconext.nl
 domain: eduid.nl
 mijn_eduid_entity_id: http://mijn.localhost/shibboleth
 mobile_app_redirect: eduid:///client/mobile
+mobile_app_rp_entity_id: playground_client
 
 feature:
   webauthn: True

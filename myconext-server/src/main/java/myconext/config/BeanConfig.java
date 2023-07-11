@@ -29,6 +29,7 @@ public class BeanConfig extends SamlIdentityProviderServerBeanConfiguration {
     private final int rememberMeQuestionAskedDays;
     private final long expiryNonValidatedDurationDays;
     private final long ssoMFADurationSeconds;
+    private final String mobileAppROEntityId;
     private final boolean secureCookie;
     private final String magicLinkUrl;
     private final MailBox mailBox;
@@ -48,6 +49,7 @@ public class BeanConfig extends SamlIdentityProviderServerBeanConfiguration {
                       @Value("${account_linking_context_class_ref.profile_mfa}") String profileMfa,
                       @Value("${linked_accounts.expiry-duration-days-non-validated}") long expiryNonValidatedDurationDays,
                       @Value("${sso_mfa_duration_seconds}") long ssoMFADurationSeconds,
+                      @Value("${mobile_app_rp_entity_id}") String mobileAppROEntityId,
                       AuthenticationRequestRepository authenticationRequestRepository,
                       UserRepository userRepository,
                       UserLoginRepository userLoginRepository,
@@ -62,6 +64,7 @@ public class BeanConfig extends SamlIdentityProviderServerBeanConfiguration {
         this.secureCookie = secureCookie;
         this.expiryNonValidatedDurationDays = expiryNonValidatedDurationDays;
         this.ssoMFADurationSeconds = ssoMFADurationSeconds;
+        this.mobileAppROEntityId = mobileAppROEntityId;
         this.authenticationRequestRepository = authenticationRequestRepository;
         this.userRepository = userRepository;
         this.userLoginRepository = userLoginRepository;
@@ -98,7 +101,8 @@ public class BeanConfig extends SamlIdentityProviderServerBeanConfiguration {
                 magicLinkUrl,
                 mailBox,
                 expiryNonValidatedDurationDays,
-                ssoMFADurationSeconds);
+                ssoMFADurationSeconds,
+                mobileAppROEntityId);
     }
 
     public Filter samlConfigurationFilter(SamlServerConfiguration serverConfig) {

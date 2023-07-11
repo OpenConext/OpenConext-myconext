@@ -18,6 +18,7 @@
 
     export let id;
     let mfaRequired = false;
+    let magicLink = false;
     let emailNotFound = false;
     let showSpinner = true;
     let serviceName = "";
@@ -32,6 +33,7 @@
         const urlParams = new URLSearchParams(window.location.search);
         const modus = urlParams.get("modus");
         mfaRequired = urlParams.has("mfa");
+        magicLink = urlParams.has("magicLink")
         if (modus && modus === "cr") {
             navigate(`/request/${id}`);
         }
@@ -51,7 +53,10 @@
                     secure: true,
                     sameSite: "Lax"
                 });
-                if (mfaRequired && res.includes(loginPreferences.APP)) {
+                if (magicLink) {
+                    navigate(`/${loginPreferences.MAGIC.toLowerCase()}/${id}?magicLink=true`)
+                }
+                else if (mfaRequired && res.includes(loginPreferences.APP)) {
                     navigate(`/${loginPreferences.APP.toLowerCase()}/${id}?mfa=true`);
                 }
                 //If the server does not confirm the preferredLogin, we won't use it

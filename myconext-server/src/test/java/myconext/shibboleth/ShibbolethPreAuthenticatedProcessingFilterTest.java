@@ -22,12 +22,9 @@ import static org.junit.Assert.assertEquals;
 @ActiveProfiles(value = "shib", inheritProfiles = false)
 public class ShibbolethPreAuthenticatedProcessingFilterTest extends AbstractIntegrationTest {
 
-    @Value("${onegini_entity_id}")
-    private String oneGiniEntityId;
-
     @Test
     public void getPreAuthenticatedPrincipal() {
-        Headers headers = headers(UUID.randomUUID().toString(), "steven.doe@example.org", oneGiniEntityId);
+        Headers headers = headers(UUID.randomUUID().toString(), "steven.doe@example.org");
         given()
                 .headers(headers)
                 .when()
@@ -47,7 +44,7 @@ public class ShibbolethPreAuthenticatedProcessingFilterTest extends AbstractInte
 
     @Test
     public void getPreAuthenticatedPrincipalUnknownAuthenticatingAuthority() {
-        Headers headers = headers(UUID.randomUUID().toString(), "bob.doe@example.org", "unknown");
+        Headers headers = headers(UUID.randomUUID().toString(), "bob.doe@example.org");
         given()
                 .headers(headers)
                 .when()
@@ -61,7 +58,7 @@ public class ShibbolethPreAuthenticatedProcessingFilterTest extends AbstractInte
 
     @Test
     public void getPreAuthenticatedPrincipalMissingAttributes() {
-        Headers headers = headers(UUID.randomUUID().toString(), "steven.doe@example.org", oneGiniEntityId);
+        Headers headers = headers(UUID.randomUUID().toString(), "steven.doe@example.org");
         List<Header> headersAsList = new ArrayList<>(headers.asList());
         headersAsList.removeIf(header -> header.getName().equals(SHIB_EMAIL));
         headers = new Headers(headersAsList);
@@ -73,7 +70,7 @@ public class ShibbolethPreAuthenticatedProcessingFilterTest extends AbstractInte
                 .statusCode(403);
     }
 
-    private Headers headers(String uid, String email, String authenticatingAuthority) {
+    private Headers headers(String uid, String email) {
         return new Headers(
                 new Header(SHIB_UID, uid),
                 new Header(SHIB_SCHAC_HOME_ORGANIZATION, "surfguest.nl"),

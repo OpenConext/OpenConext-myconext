@@ -40,7 +40,8 @@ public class GuestIdpAuthenticationRequestFilterTest {
             null,
             null,
             expiryNonValidatedDurationDays,
-            60 * 15);
+            60 * 15,
+            "mobile_app_rp_entity_id");
 
     @Test
     public void isUserVerifiedByInstitutionNoLinkedAccounts() {

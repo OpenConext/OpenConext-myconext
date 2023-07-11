@@ -91,6 +91,7 @@ public class GuestIdpAuthenticationRequestFilter extends IdpAuthenticationReques
     private final int rememberMeQuestionAskedDays;
     private final long expiryNonValidatedDurationDays;
     private final long ssoMFADurationSeconds;
+    private final String mobileAppROEntityId;
 
     public GuestIdpAuthenticationRequestFilter(SamlProviderProvisioning<IdentityProviderService> provisioning,
                                                SamlMessageStore<Assertion, HttpServletRequest> assertionStore,
@@ -107,7 +108,8 @@ public class GuestIdpAuthenticationRequestFilter extends IdpAuthenticationReques
                                                String magicLinkUrl,
                                                MailBox mailBox,
                                                long expiryNonValidatedDurationDays,
-                                               long ssoMFADurationSeconds) {
+                                               long ssoMFADurationSeconds,
+                                               String mobileAppROEntityId) {
         super(provisioning, assertionStore);
         this.ssoSamlRequestMatcher = new SamlRequestMatcher(provisioning, "SSO");
         this.magicSamlRequestMatcher = new SamlRequestMatcher(provisioning, "magic");
@@ -127,6 +129,7 @@ public class GuestIdpAuthenticationRequestFilter extends IdpAuthenticationReques
         this.mailBox = mailBox;
         this.expiryNonValidatedDurationDays = expiryNonValidatedDurationDays;
         this.ssoMFADurationSeconds = ssoMFADurationSeconds;
+        this.mobileAppROEntityId = mobileAppROEntityId;
         this.executor = Executors.newSingleThreadExecutor();
     }
 
@@ -214,8 +217,9 @@ public class GuestIdpAuthenticationRequestFilter extends IdpAuthenticationReques
                         redirect = "/" + loginOptions.get(0).toLowerCase() + "/";
                     }
                 }
-                response.sendRedirect(this.redirectUrl + redirect + samlAuthenticationRequest.getId()
-                        + "?explanation=" + explanation + mfa);
+                String location = this.redirectUrl + redirect + samlAuthenticationRequest.getId()
+                        + "?explanation=" + explanation + mfa;
+                response.sendRedirect(location);
             } else {
                 ServiceProviderMetadata serviceProviderMetadata = provider.getRemoteProvider(samlAuthenticationRequest.getIssuer());
                 sendAssertion(request, response, samlAuthenticationRequest, previousAuthenticatedUser,
@@ -229,10 +233,12 @@ public class GuestIdpAuthenticationRequestFilter extends IdpAuthenticationReques
 
             String stepUp = accountLinkingRequired ? "&stepup=true" : "";
             String mfa = mfaProfileRequired ? "&mfa=true" : "";
-            String separator = (accountLinkingRequired || mfaProfileRequired) ? "?n=1" : "";
+            String preferMagicLink = this.nudgeMagicLink(authenticationRequest) ? "&magicLink=true" : "";
+            String separator = (accountLinkingRequired || mfaProfileRequired || StringUtils.hasText(preferMagicLink)) ? "?n=1" : "";
             String path = optionalCookie.map(c -> "/request/").orElse("/login/");
-            response.sendRedirect(this.redirectUrl + path + samlAuthenticationRequest.getId() +
-                    separator + stepUp + mfa);
+            String location = this.redirectUrl + path + samlAuthenticationRequest.getId() +
+                    separator + stepUp + mfa + preferMagicLink;
+            response.sendRedirect(location);
         }
     }
 
@@ -326,6 +332,13 @@ public class GuestIdpAuthenticationRequestFilter extends IdpAuthenticationReques
         Scoping scoping = authenticationRequest.getScoping();
         List<String> requesterIds = scoping != null ? scoping.getRequesterIds() : null;
         return CollectionUtils.isEmpty(requesterIds) ? issuerValue : requesterIds.get(0);
+    }
+
+    private boolean nudgeMagicLink(AuthenticationRequest authenticationRequest) {
+        Scoping scoping = authenticationRequest.getScoping();
+        List<String> requesterIds = scoping != null ? scoping.getRequesterIds() : null;
+        return !CollectionUtils.isEmpty(requesterIds) && requesterIds.stream()
+                .anyMatch(this.mobileAppROEntityId::equalsIgnoreCase)  ;
     }
 
     private void magic(HttpServletRequest request, HttpServletResponse response) throws IOException {

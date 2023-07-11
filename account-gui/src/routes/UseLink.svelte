@@ -15,8 +15,12 @@
     export let id;
     let showSpinner = true;
     let serviceName = "";
+    let magicLink = false;
 
     onMount(() => {
+        const urlParams = new URLSearchParams(window.location.search);
+        magicLink = urlParams.has("magicLink")
+
         $links.displayBackArrow = true;
 
         fetchServiceName(id).then(res => {
@@ -29,11 +33,13 @@
         showSpinner = true;
         magicLinkExistingUser($user.email, id)
             .then(json => {
-                Cookies.set(cookieNames.LOGIN_PREFERENCE, loginPreferences.MAGIC, {
-                    expires: 365,
-                    secure: true,
-                    sameSite: "Lax"
-                });
+                if (!magicLink) {
+                    Cookies.set(cookieNames.LOGIN_PREFERENCE, loginPreferences.MAGIC, {
+                        expires: 365,
+                        secure: true,
+                        sameSite: "Lax"
+                    });
+                }
                 if (json.stepup) {
                     navigate(`/stepup/${id}?name=${encodeURIComponent(serviceName)}&explanation=${json.explanation}`, {replace: true})
                 } else {
