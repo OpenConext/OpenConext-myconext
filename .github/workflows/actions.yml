@@ -25,7 +25,6 @@ jobs:
     - uses: actions/setup-node@v3
       with:
         node-version: 16
-        cache: 'npm'
     - name: Yarn Audit myconext
       run: yarn audit --level high --groups dependencies optionalDependencies
       working-directory: myconext-gui
