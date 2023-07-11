@@ -96,6 +96,7 @@ public class UserController implements ServiceProviderHolder, UserAuthentication
     private final String spBaseUrl;
     private final ObjectMapper objectMapper;
     private final RegistrationRepository registrationRepository;
+    private final boolean featureDefaultRememberMe;
 
     public UserController(UserRepository userRepository,
                           UserCredentialRepository userCredentialRepository,
@@ -117,7 +118,8 @@ public class UserController implements ServiceProviderHolder, UserAuthentication
                           @Value("${sp_redirect_url}") String spBaseUrl,
                           @Value("${idp_redirect_url}") String idpBaseUrl,
                           @Value("${rp_origin}") String rpOrigin,
-                          @Value("${rp_id}") String rpId) {
+                          @Value("${rp_id}") String rpId,
+                          @Value("${feature.default_remember_me}") boolean featureDefaultRememberMe) {
         this.userRepository = userRepository;
         this.userCredentialRepository = userCredentialRepository;
         this.challengeRepository = challengeRepository;
@@ -139,6 +141,7 @@ public class UserController implements ServiceProviderHolder, UserAuthentication
         this.webAuthnSpRedirectUrl = String.format("%s/security", spBaseUrl);
         this.relyingParty = relyingParty(rpId, rpOrigin);
         this.emailGuessingPreventor = new EmailGuessingPrevention(emailGuessingSleepMillis);
+        this.featureDefaultRememberMe = featureDefaultRememberMe;
     }
 
     @Operation(summary = "All institutional domains",
@@ -212,7 +215,7 @@ public class UserController implements ServiceProviderHolder, UserAuthentication
                 user.getFamilyName(), schacHomeOrganization, preferredLanguage, requesterEntityId, serviceProviderResolver);
         userToSave = userRepository.save(userToSave);
 
-        return this.doMagicLink(userToSave, samlAuthenticationRequest, magicLinkRequest.isRememberMe(), false, request);
+        return this.doMagicLink(userToSave, samlAuthenticationRequest, false, request);
     }
 
     @Hidden
@@ -246,7 +249,7 @@ public class UserController implements ServiceProviderHolder, UserAuthentication
             logLoginWithContext(user, "password", true, LOG, "Successfully logged in with password");
             LOG.info("Successfully logged in with password");
         }
-        return doMagicLink(user, samlAuthenticationRequest, magicLinkRequest.isRememberMe(), magicLinkRequest.isUsePassword(), request);
+        return doMagicLink(user, samlAuthenticationRequest,  magicLinkRequest.isUsePassword(), request);
     }
 
     @Hidden
@@ -770,8 +773,6 @@ public class UserController implements ServiceProviderHolder, UserAuthentication
         SamlAuthenticationRequest samlAuthenticationRequest = authenticationRequestRepository.findByIdAndNotExpired(authenticationRequestId)
                 .orElseThrow(ExpiredAuthenticationException::new);
 
-        boolean rememberMe = (boolean) body.get("rememberMe");
-
         PublicKeyCredential<AuthenticatorAssertionResponse, ClientAssertionExtensionOutputs> pkc =
                 PublicKeyCredential.parseAssertionResponseJson((String) body.get("credentials"));
 
@@ -810,7 +811,7 @@ public class UserController implements ServiceProviderHolder, UserAuthentication
             return ResponseEntity.status(201).body(Collections.singletonMap("url", url));
         }
 
-        return doMagicLink(user, samlAuthenticationRequest, rememberMe, true, request);
+        return doMagicLink(user, samlAuthenticationRequest,  true, request);
     }
 
     private PublicKeyCredentialCreationOptions publicKeyCredentialCreationOptions(RelyingParty relyingParty, User user) throws Base64UrlException {
@@ -890,13 +891,15 @@ public class UserController implements ServiceProviderHolder, UserAuthentication
         return ResponseEntity.ok(new StatusResponse(HttpStatus.OK.value()));
     }
 
-    private ResponseEntity doMagicLink(User user, SamlAuthenticationRequest samlAuthenticationRequest, boolean rememberMe,
-                                       boolean passwordOrWebAuthnFlow, HttpServletRequest request) {
+    private ResponseEntity doMagicLink(User user,
+                                       SamlAuthenticationRequest samlAuthenticationRequest,
+                                       boolean passwordOrWebAuthnFlow,
+                                       HttpServletRequest request) {
         samlAuthenticationRequest.setHash(hash());
         samlAuthenticationRequest.setUserId(user.getId());
         samlAuthenticationRequest.setPasswordOrWebAuthnFlow(passwordOrWebAuthnFlow);
-        samlAuthenticationRequest.setRememberMe(rememberMe);
-        if (rememberMe) {
+        if (this.featureDefaultRememberMe) {
+            samlAuthenticationRequest.setRememberMe(true);
             samlAuthenticationRequest.setRememberMeValue(UUID.randomUUID().toString());
         }
         authenticationRequestRepository.save(samlAuthenticationRequest);

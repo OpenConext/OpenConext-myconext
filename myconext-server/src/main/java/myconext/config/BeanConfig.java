@@ -35,6 +35,7 @@ public class BeanConfig extends SamlIdentityProviderServerBeanConfiguration {
     private final MailBox mailBox;
     private final ServiceProviderResolver serviceProviderResolver;
     private final GeoLocation geoLocation;
+    private final boolean featureDefaultRememberMe;
 
     public BeanConfig(@Value("${saml_metadata_base_path}") String samlMetadataBasePath,
                       @Value("${idp_redirect_url}") String redirectUrl,
@@ -50,6 +51,7 @@ public class BeanConfig extends SamlIdentityProviderServerBeanConfiguration {
                       @Value("${linked_accounts.expiry-duration-days-non-validated}") long expiryNonValidatedDurationDays,
                       @Value("${sso_mfa_duration_seconds}") long ssoMFADurationSeconds,
                       @Value("${mobile_app_rp_entity_id}") String mobileAppROEntityId,
+                      @Value("${feature.default_remember_me}") boolean featureDefaultRememberMe,
                       AuthenticationRequestRepository authenticationRequestRepository,
                       UserRepository userRepository,
                       UserLoginRepository userLoginRepository,
@@ -65,6 +67,7 @@ public class BeanConfig extends SamlIdentityProviderServerBeanConfiguration {
         this.expiryNonValidatedDurationDays = expiryNonValidatedDurationDays;
         this.ssoMFADurationSeconds = ssoMFADurationSeconds;
         this.mobileAppROEntityId = mobileAppROEntityId;
+        this.featureDefaultRememberMe= featureDefaultRememberMe;
         this.authenticationRequestRepository = authenticationRequestRepository;
         this.userRepository = userRepository;
         this.userLoginRepository = userLoginRepository;
@@ -102,7 +105,8 @@ public class BeanConfig extends SamlIdentityProviderServerBeanConfiguration {
                 mailBox,
                 expiryNonValidatedDurationDays,
                 ssoMFADurationSeconds,
-                mobileAppROEntityId);
+                mobileAppROEntityId,
+                featureDefaultRememberMe);
     }
 
     public Filter samlConfigurationFilter(SamlServerConfiguration serverConfig) {

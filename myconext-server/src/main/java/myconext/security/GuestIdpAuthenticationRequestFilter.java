@@ -11,6 +11,7 @@ import myconext.repository.UserLoginRepository;
 import myconext.repository.UserRepository;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -92,6 +93,7 @@ public class GuestIdpAuthenticationRequestFilter extends IdpAuthenticationReques
     private final long expiryNonValidatedDurationDays;
     private final long ssoMFADurationSeconds;
     private final String mobileAppROEntityId;
+    private final boolean featureDefaultRememberMe;
 
     public GuestIdpAuthenticationRequestFilter(SamlProviderProvisioning<IdentityProviderService> provisioning,
                                                SamlMessageStore<Assertion, HttpServletRequest> assertionStore,
@@ -109,7 +111,8 @@ public class GuestIdpAuthenticationRequestFilter extends IdpAuthenticationReques
                                                MailBox mailBox,
                                                long expiryNonValidatedDurationDays,
                                                long ssoMFADurationSeconds,
-                                               String mobileAppROEntityId) {
+                                               String mobileAppROEntityId,
+                                               boolean featureDefaultRememberMe) {
         super(provisioning, assertionStore);
         this.ssoSamlRequestMatcher = new SamlRequestMatcher(provisioning, "SSO");
         this.magicSamlRequestMatcher = new SamlRequestMatcher(provisioning, "magic");
@@ -130,6 +133,7 @@ public class GuestIdpAuthenticationRequestFilter extends IdpAuthenticationReques
         this.expiryNonValidatedDurationDays = expiryNonValidatedDurationDays;
         this.ssoMFADurationSeconds = ssoMFADurationSeconds;
         this.mobileAppROEntityId = mobileAppROEntityId;
+        this.featureDefaultRememberMe = featureDefaultRememberMe;
         this.executor = Executors.newSingleThreadExecutor();
     }
 
@@ -338,7 +342,7 @@ public class GuestIdpAuthenticationRequestFilter extends IdpAuthenticationReques
         Scoping scoping = authenticationRequest.getScoping();
         List<String> requesterIds = scoping != null ? scoping.getRequesterIds() : null;
         return !CollectionUtils.isEmpty(requesterIds) && requesterIds.stream()
-                .anyMatch(this.mobileAppROEntityId::equalsIgnoreCase)  ;
+                .anyMatch(this.mobileAppROEntityId::equalsIgnoreCase);
     }
 
     private void magic(HttpServletRequest request, HttpServletResponse response) throws IOException {
@@ -470,7 +474,7 @@ public class GuestIdpAuthenticationRequestFilter extends IdpAuthenticationReques
                     "&new=false";
             response.sendRedirect(url);
             return false;
-        } else if (!samlAuthenticationRequest.isRememberMeQuestionAsked()) {
+        } else if (!this.featureDefaultRememberMe && !samlAuthenticationRequest.isRememberMeQuestionAsked()) {
             samlAuthenticationRequest.setRememberMeQuestionAsked(true);
             authenticationRequestRepository.save(samlAuthenticationRequest);
             if (cookieByName(request, REMEMBER_ME_QUESTION_ASKED_COOKIE_NAME).isPresent()) {
@@ -547,7 +551,7 @@ public class GuestIdpAuthenticationRequestFilter extends IdpAuthenticationReques
                 authorities);
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
-        if (samlAuthenticationRequest.isRememberMe()) {
+        if (this.featureDefaultRememberMe) {
             LOG.info(String.format("Remember me functionality activated for %s ", user.getUsername()));
             addRememberMeCookie(response, samlAuthenticationRequest);
         }

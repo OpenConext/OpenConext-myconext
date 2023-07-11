@@ -50,6 +50,7 @@ public class LoginController {
                            @Value("${feature.connections}") boolean featureConnections,
                            @Value("${feature.warning_educational_email_domain}") boolean featureWarningEducationalEmailDomain,
                            @Value("${feature.use_deny_allow_list.allow_enabled}") boolean featureAllowList,
+                           @Value("${feature.default_remember_me}") boolean featureDefaultRememberMe,
                            @Value("${feature.use_external_validation}") boolean useExternalValidation,
                            @Value("${oidc-token-api.enabled}") boolean featureOidcTokenAPI,
                            @Value("${feature.create_eduid_institution_enabled}") boolean createEduIDInstitutionEnabled,
@@ -72,6 +73,7 @@ public class LoginController {
         this.config.put("featureAllowList", featureAllowList);
         this.config.put("featureOidcTokenAPI", featureOidcTokenAPI);
         this.config.put("featureConnections", featureConnections);
+        this.config.put("featureDefaultRememberMe", featureDefaultRememberMe);
         this.config.put("useExternalValidation", useExternalValidation);
         this.config.put("emailSpamThresholdSeconds", emailSpamThresholdSeconds);
         this.config.put("createEduIDInstitutionEnabled", createEduIDInstitutionEnabled);

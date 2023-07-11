@@ -18,8 +18,6 @@ public class MagicLinkRequest implements Serializable {
     @NotNull
     private User user;
 
-    private boolean rememberMe;
-
     private boolean usePassword;
 
 }

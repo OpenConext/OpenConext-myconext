@@ -380,7 +380,7 @@ public class TiqrControllerTest extends AbstractIntegrationTest {
                 .get("/saml/guest-idp/magic");
         Headers headers = response.getHeaders();
         List<String> cookies = headers.getValues("Set-cookie");
-        List.of("TIQR_COOKIE=true", "BROWSER_SESSION=true", "TRACKING_DEVICE=", "SESSION=", "guest-idp-remember-me=")
+        List.of("TIQR_COOKIE=true", "BROWSER_SESSION=true", "TRACKING_DEVICE=", "SESSION=")
                 .forEach(s -> assertTrue(cookies.stream().anyMatch(cookie -> cookie.startsWith(s))));
 
         String html = IOUtil.toString(response.asInputStream());
@@ -587,7 +587,7 @@ public class TiqrControllerTest extends AbstractIntegrationTest {
     private SamlAuthenticationRequest doEnrollmment(boolean finishRegistration) throws IOException {
         String authenticationRequestId = samlAuthnRequest();
         User user = user("jdoe@example.com");
-        MagicLinkRequest magicLinkRequest = new MagicLinkRequest(authenticationRequestId, user, false, false);
+        MagicLinkRequest magicLinkRequest = new MagicLinkRequest(authenticationRequestId, user, false);
         magicLinkRequest(magicLinkRequest, HttpMethod.PUT);
 
         SamlAuthenticationRequest samlAuthenticationRequest = authenticationRequestRepository.findById(authenticationRequestId).get();

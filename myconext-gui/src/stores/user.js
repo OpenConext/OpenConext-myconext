@@ -33,6 +33,7 @@ export const config = writable({
     featureOidcTokenAPI: false,
     featureConnections: false,
     featureAllowList: false,
+    featureDefaultRememberMe: false,
     featureWarningEducationalEmailDomain: false,
     createEduIDInstitutionEnabled: false,
     expirationValidatedDurationDays: 0
