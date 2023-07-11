@@ -25,6 +25,7 @@ jobs:
     - uses: actions/setup-node@v3
       with:
         node-version: 16
+        cache: 'npm'
     - name: Yarn Audit myconext
       run: yarn audit --level high --groups dependencies optionalDependencies
       working-directory: myconext-gui
@@ -39,6 +40,7 @@ jobs:
       uses: actions/setup-java@v1
       with:
         java-version: 11
+        cache: 'maven'
     - name: Set up cache
       uses: actions/cache@v1
       with:
