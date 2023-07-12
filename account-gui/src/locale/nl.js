@@ -186,7 +186,7 @@ I18n.translations.nl = {
     },
     useLink: {
         header: "Vraag een magische link aan",
-        next: "Email een magische link"
+        next: "E-mail een magische link"
     },
     usePassword: {
         header: "Voer je wachtwoord in",
