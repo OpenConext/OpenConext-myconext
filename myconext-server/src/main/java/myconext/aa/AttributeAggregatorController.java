@@ -31,7 +31,6 @@ public class AttributeAggregatorController {
     private final ServiceProviderResolver serviceProviderResolver;
 
     public AttributeAggregatorController(UserRepository userRepository,
-                                         MongoTemplate mongoTemplate,
                                          ServiceProviderResolver serviceProviderResolver) {
         this.userRepository = userRepository;
         this.serviceProviderResolver = serviceProviderResolver;
