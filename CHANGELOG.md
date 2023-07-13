@@ -2,6 +2,24 @@
 All notable changes to this project will be documented in this file.
 
 ## [next]
+
+## [7.1.2]
+- Enable mobile API
+- Hide email buttons in mobile view
+- Default to magic link for app-authentications
+- Remove stay signed in question
+
+## [7.0.14]
+- Bugfix for MFA op SSO
+
+## [7.0.13]
+- Enable SingleSignOn for MFA authentications
+
+## [7.0.12]
+- Bugfix for account-linking update
+
+## [7.0.11]
+- Bugfix for removing MFA registrations
 - Update image on app-nudge screen
 
 ## [7.0.10]
