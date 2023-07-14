@@ -2,7 +2,6 @@ package myconext.security;
 
 import myconext.config.BeanConfig;
 import myconext.crypto.KeyGenerator;
-import myconext.log.MDCFilter;
 import myconext.manage.ServiceProviderResolver;
 import myconext.model.ServiceProvider;
 import myconext.repository.UserRepository;
@@ -32,7 +31,6 @@ import org.springframework.security.saml.provider.identity.config.ExternalServic
 import org.springframework.security.saml.provider.identity.config.SamlIdentityProviderSecurityConfiguration;
 import org.springframework.security.saml.provider.identity.config.SamlIdentityProviderSecurityDsl;
 import org.springframework.security.saml.saml2.metadata.NameId;
-import org.springframework.security.web.access.intercept.FilterSecurityInterceptor;
 import org.springframework.security.web.authentication.preauth.AbstractPreAuthenticatedProcessingFilter;
 import org.springframework.security.web.authentication.preauth.PreAuthenticatedAuthenticationProvider;
 
@@ -184,7 +182,6 @@ public class SecurityConfiguration {
                     .sessionManagement()
                     .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
                     .and()
-                    .addFilterAfter(new MDCFilter(), FilterSecurityInterceptor.class)
                     .csrf()
                     .disable()
                     .addFilterBefore(
