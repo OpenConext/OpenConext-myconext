@@ -2,6 +2,7 @@
 All notable changes to this project will be documented in this file.
 
 ## [next]
+-  MDC bugfix for logging
 
 ## [7.1.2]
 - Enable mobile API
