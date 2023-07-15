@@ -105,8 +105,8 @@ curl -u aa:secret 'https://login.test2.eduid.nl/myconext/api/system/eduid-duplic
 
 ### OpenAPI Documentation
 
-http://localhost:8081/swagger-ui/index.html
-http://localhost:8081/v3/api-docs.yaml
+http://localhost:8081/myconext/api/mobile/swagger-ui/index.html
+http://localhost:8081/myconext/api/mobile/api-docs
 
 https://login.test2.eduid.nl/myconext/api/mobile/swagger-ui/index.html
 https://login.test2.eduid.nl/myconext/api/mobile/api-docs
