@@ -71,7 +71,7 @@ jobs:
           files: "pom.xml"
       - name: Setup java if needed
         if: steps.check_maven.outputs.files_exists == 'true'
-        uses: actions/setup-java@v1
+        uses: actions/setup-java@v3
         with:
           java-version: 11
           distribution: 'temurin'
