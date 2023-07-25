@@ -12,6 +12,8 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
+      with:
+        fetch-depth: 0
     - uses: actions/setup-node@v3
       with:
         node-version: 16
@@ -31,8 +33,85 @@ jobs:
         key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
         restore-keys: |
           ${{ runner.os }}-maven-
+
+    - name: Extract Maven project version
+      run: echo ::set-output name=version::$(mvn -q -Dexec.executable=echo -Dexec.args='${project.version}' --non-recursive exec:exec)
+      id: project
+    - name: Check if git tag matches project version
+      run: |
+        echo "Project version ${{ steps.project.outputs.version }} does not match git tag ${{ github.ref_name }}"
+        exit 1
+      if: ${{ steps.project.outputs.version != github.ref_name }}
+
     - name: Deploy with Maven
       run: mvn --batch-mode deploy -DskipTests
       env:
         MAVEN_USERNAME: ${{ secrets.BUILD_USERNAME }}
         MAVEN_PASSWORD: ${{ secrets.BUILD_PASSWORD }}
+
+    - name: Build Changelog
+      id: changelog
+      uses: ardalanamini/auto-changelog@v3
+      with:
+        default-commit-type: New Features
+
+    - name: Create release
+      uses: actions/create-release@v1
+      id: create_release
+      with:
+        draft: false
+        prerelease: true
+        release_name: Release ${{ github.ref_name }}
+        tag_name: ${{ github.ref_name }}
+        body: |
+          ${{ steps.changelog.outputs.changelog }}
+      env:
+        GITHUB_TOKEN: ${{ github.token }}
+
+    - name: Check account-gui zip existence
+      id: check_file_account_gui
+      uses: andstor/file-existence-action@v1
+      with:
+        files: "/home/runner/work/OpenConext-myconext/OpenConext-myconext/account-gui/target/account-gui-${{ github.ref_name }}.zip"
+    - name: Upload account-gui zip to github release
+      if: steps.check_file_account_gui.outputs.files_exists == 'true'
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ github.token }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: "/home/runner/work/OpenConext-myconext/OpenConext-myconext/account-gui/target/account-gui-${{ github.ref_name }}.zip"
+        asset_name: account-gui-${{ github.ref_name }}.zip
+        asset_content_type: application/zip
+
+    - name: Check myconext-gui zip existence
+      id: check_file_myconext_gui
+      uses: andstor/file-existence-action@v1
+      with:
+        files: "/home/runner/work/OpenConext-myconext/OpenConext-myconext/myconext-gui/target/myconext-gui-${{ github.ref_name }}.zip"
+    - name: Upload myconext-gui zip to github release
+      if: steps.check_file_myconext_gui.outputs.files_exists == 'true'
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ github.token }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: /home/runner/work/OpenConext-myconext/OpenConext-myconext/myconext-gui/target/myconext-gui-${{ github.ref_name }}.zip
+        asset_name: myconext-gui-${{ github.ref_name }}.zip
+        asset_content_type: application/zip
+
+    - name: Check myconext-server jar existence
+      id: check_file_myconext_server
+      uses: andstor/file-existence-action@v1
+      with:
+        files: "/home/runner/work/OpenConext-myconext/OpenConext-myconext/myconext-server/target/myconext-server-${{ github.ref_name }}.jar"
+    - name: Upload myconext-server jar to github release
+      if: steps.check_file_myconext_server.outputs.files_exists == 'true'
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ github.token }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: /home/runner/work/OpenConext-myconext/OpenConext-myconext/myconext-server/target/myconext-server-${{ github.ref_name }}.jar
+        asset_name: myconext-server-${{ github.ref_name }}.jar
+        asset_content_type: application/zip
