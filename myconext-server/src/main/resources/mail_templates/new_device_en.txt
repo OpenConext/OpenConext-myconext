@@ -1,6 +1,6 @@
 Hi {{name}},
 
-It looks like someone tried to log into your eduID account from a new location. If this isn't you, we suggest checking your security settings as soon as possible.
+Someone logged into your eduID account from a new device. If this isn't you, we suggest checking your security settings as soon as possible.
 
 {{mySurfConextURL}}/security
 

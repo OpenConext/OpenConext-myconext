@@ -1,6 +1,6 @@
 Hi {{name}},
 
-Het lijkt erop dat iemand heeft geprobeerd in te loggen op je eduID-account vanaf een nieuwe locatie. Als jij dit niet bent, raden we je aan om je beveiligingsinstellingen zo snel mogelijk te controleren.
+Iemand heeft ingelogd op je eduID-account vanaf een nieuw apparaat. Als jij dit niet was, raden we je aan om je beveiligingsinstellingen zo snel mogelijk te controleren.
 
 {{mySurfConextURL}}/security
 
