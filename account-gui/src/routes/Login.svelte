@@ -127,7 +127,9 @@
     <Spinner/>
 {/if}
 <h2 class="header">{I18n.t("login.header")}</h2>
-<h2 class="top">{I18n.t("login.headerSubTitle")}<span>{serviceName}</span></h2>
+{#if serviceName}
+    <h2 class="top">{I18n.t("login.headerSubTitle")}<span>{serviceName}</span></h2>
+{/if}
 {#if $user.knownUser}
     <div class="known-user">
         <LoginOption icon={userIcon} label={$user.knownUser} action={nextStep} index={1} preferred={true}/>

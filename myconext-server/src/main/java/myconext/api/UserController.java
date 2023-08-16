@@ -163,8 +163,10 @@ public class UserController implements ServiceProviderHolder, UserAuthentication
         if ("42".equals(id)) {
             return Collections.singletonMap("name", "This Beautiful Service");
         }
+        SamlAuthenticationRequest samlAuthenticationRequest = authenticationRequestRepository.findById(id)
+                .orElseThrow(ExpiredAuthenticationException::new);
         return Collections.singletonMap("name",
-                authenticationRequestRepository.findById(id).orElseThrow(ExpiredAuthenticationException::new).getServiceName());
+                samlAuthenticationRequest.getServiceName());
     }
 
     @Hidden

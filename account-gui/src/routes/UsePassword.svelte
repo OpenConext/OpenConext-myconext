@@ -100,7 +100,9 @@
     <Spinner/>
 {/if}
 <h2 class="header">{I18n.t("login.header")}</h2>
-<h2 class="top">{I18n.t("login.headerSubTitle")}<span>{serviceName}</span></h2>
+{#if serviceName}
+    <h2 class="top">{I18n.t("login.headerSubTitle")}<span>{serviceName}</span></h2>
+{/if}
 <form>
     <input type="email"
            style="display: none"

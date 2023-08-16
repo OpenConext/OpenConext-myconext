@@ -43,11 +43,11 @@ public class ACR {
     }
 
     public static String explanationKeyWord(List<String> acrValues, boolean studentAffiliationPresent) {
-        if (acrValues.contains(PROFILE_MFA)) {
-            return "profile_mfa";
-        }
         if (CollectionUtils.isEmpty(acrValues)) {
             return "linked_institution";
+        }
+        if (acrValues.contains(PROFILE_MFA)) {
+            return "profile_mfa";
         }
         if (acrValues.contains(VALIDATE_NAMES)) {
             return "validate_names";

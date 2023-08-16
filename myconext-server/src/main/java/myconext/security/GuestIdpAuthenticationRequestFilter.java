@@ -421,9 +421,9 @@ public class GuestIdpAuthenticationRequestFilter extends IdpAuthenticationReques
 
         boolean hasStudentAffiliation = hasRequiredStudentAffiliation(user.allEduPersonAffiliations());
         List<String> authenticationContextClassReferences = samlAuthenticationRequest.getAuthenticationContextClassReferences();
-        boolean missingStudentAffiliation = authenticationContextClassReferences.contains(ACR.AFFILIATION_STUDENT) &&
+        boolean missingStudentAffiliation = !CollectionUtils.isEmpty(authenticationContextClassReferences) && authenticationContextClassReferences.contains(ACR.AFFILIATION_STUDENT) &&
                 !hasStudentAffiliation;
-        boolean missingValidName = authenticationContextClassReferences.contains(ACR.VALIDATE_NAMES) &&
+        boolean missingValidName = !CollectionUtils.isEmpty(authenticationContextClassReferences) && authenticationContextClassReferences.contains(ACR.VALIDATE_NAMES) &&
                 !hasValidatedName(user);
 
         if (user.isNewUser()) {

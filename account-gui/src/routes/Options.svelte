@@ -10,6 +10,8 @@
     import magicLinkIcon from "../icons/redesign/video-game-magic-wand.svg";
     import LoginOption from "../components/LoginOption.svelte";
     import {links} from "../stores/conf";
+    import {navigate} from "svelte-routing";
+
 
     export let id;
 
@@ -38,16 +40,25 @@
 
     onMount(() => {
         $links.displayBackArrow = true;
+        if (!$user.email) {
+            navigate(`/login/${id}`);
+        } else {
+            knownAccount($user.email)
+                .then(res => {
+                    //res = ["useApp", "useWebAuthn", "useLink", "usePassword"];
+                    const allOptions = possibleOptions.filter(option => res.includes(option.key));
+                    if (!allOptions.some(option => option.preferred)) {
+                        allOptions[0].preferred = true;
+                    }
+                    options = allOptions;
+                    showSpinner = false;
+                }).catch(() => {
+                $user.knownUser = null;
+                $user.email = null;
+                navigate(`/login/${id}`);
+            });
 
-        knownAccount($user.email).then(res => {
-            //res = ["useApp", "useWebAuthn", "useLink", "usePassword"];
-            const allOptions = possibleOptions.filter(option => res.includes(option.key));
-            if (!allOptions.some(option => option.preferred)) {
-                allOptions[0].preferred = true;
-            }
-            options = allOptions;
-            showSpinner = false;
-        });
+        }
     });
 </script>
 

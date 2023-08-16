@@ -113,7 +113,9 @@ export function fetchServiceName(id) {
     } else {
         return fetchJson(`/myconext/api/idp/service/name/${id}`)
             .then(json => {
-                sessionStorage.setItem("serviceName", json.name);
+                if (json.name) {
+                    sessionStorage.setItem("serviceName", json.name);
+                }
                 return Promise.resolve(json);
             })
             .catch(() => Promise.resolve({name: "?"}));

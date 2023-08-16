@@ -62,7 +62,9 @@
     <Spinner/>
 {/if}
 <h2 class="header">{I18n.t("webAuthn.header")}</h2>
-<h2 class="top">{I18n.t("login.headerSubTitle")}<span>{serviceName}</span></h2>
+{#if serviceName}
+    <h2 class="top">{I18n.t("login.headerSubTitle")}<span>{serviceName}</span></h2>
+{/if}
 <p class="explanation">{I18n.t("webAuthn.explanation")}</p>
 <Button href="/start"
         disabled={showSpinner}
