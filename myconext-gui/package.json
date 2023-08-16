@@ -31,7 +31,7 @@
     "glob-parent": "5.1.2",
     "minimatch": "^5.1.0",
     "semver": "7.5.4",
-    "word-wrap": "1.2.3"
+    "word-wrap": "^1.2.5"
   },
   "scripts": {
     "build": "cross-env NODE_ENV=production webpack",
