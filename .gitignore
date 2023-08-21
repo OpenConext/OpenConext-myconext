@@ -20,3 +20,4 @@ local.application.yml
 .classpath
 log
 NOTES.md
+dep.tree
