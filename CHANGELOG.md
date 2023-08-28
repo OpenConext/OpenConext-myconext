@@ -1,8 +1,9 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
-## [next]
+## [7.1.3]
 -  MDC bugfix for logging
+- Update depencencies
 
 ## [7.1.2]
 - Enable mobile API
