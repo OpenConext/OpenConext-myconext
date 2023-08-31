@@ -152,7 +152,7 @@
         {:else}
             <p class="info">{I18n.t("password.passwordDisclaimer")}</p>
 
-            <input id="username" autocomplete="username email" type="hidden" name="username" value={$user.email}>
+            <input id="username" autocomplete="email" type="hidden" name="username" value={$user.email}>
 
             <label for="newPassword">{I18n.t("password.newPassword")}</label>
             <input id="newPassword" type="password" autocomplete="new-password" spellcheck="false"

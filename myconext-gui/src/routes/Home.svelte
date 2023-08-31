@@ -6,8 +6,8 @@
     import personalInfoSvg from "../icons/redesign/single-neutral-id-card-double.svg";
     import accountSvg from "../icons/redesign/cog.svg";
     import dataActivitySvg from "../icons/redesign/presentation-analytics.svg";
-    import chevron_left from "../icons/chevron-left.svg";
-    import chevron_right from "../icons/chevron-right.svg";
+    import ChevronLeft from "../icons/chevron-left.svg";
+    import ChevronRight from "../icons/chevron-right.svg";
     import {navigate} from "svelte-routing";
     import {onMount} from "svelte";
 
@@ -77,7 +77,7 @@
 
     let currentTab = tabs[0];
     let displayMenu = false;
-    let menuIcon = chevron_right;
+    let menuIcon = ChevronRight;
 
     onMount(() => currentTab = bookmark ? currentTab = tabs.find(tab => tab.name === bookmark) : tabs[0]);
 
@@ -85,7 +85,7 @@
 
     const showMenu = () => {
         displayMenu = !displayMenu;
-        menuIcon = displayMenu ? chevron_left : chevron_right;
+        // menuIcon = displayMenu ? ChevronLeft : ChevronRight;
     }
 
 </script>

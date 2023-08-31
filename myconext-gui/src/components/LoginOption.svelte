@@ -65,7 +65,7 @@
     }
 </style>
 
-<div class="login-option" use:init
+<button class="login-option" use:init
      on:click={() => route ? navigate(route) : action()}
      on:keydown={handleKeyDown(route)}
      tabindex={index}>
@@ -76,4 +76,4 @@
         <span class="sub-label">{subLabel}</span>
     {/if}
         </span>
-</div>
+</button>
