@@ -28,9 +28,7 @@
   },
   "resolutions": {
     "glob-parent": "5.1.2",
-    "minimatch": "^5.1.0",
-    "semver": "^7.5.4",
-    "word-wrap": "^1.2.5"
+    "minimatch": "^5.1.0"
   },
   "scripts": {
     "build": "cross-env NODE_ENV=production webpack",
@@ -43,7 +41,6 @@
     "dompurify": "^2.3.10",
     "i18n-js": "^3.3.0",
     "js-cookie": "^2.2.1",
-    "minimatch": "^5.1.0",
     "postcss": "^8.4.5",
     "sass": "^1",
     "svelte-routing": "^1.4.2"

@@ -45,7 +45,14 @@ module.exports = {
                             }),
                             emitCss: true,
                             accessors: true,
-                            dev: true
+                            dev: true,
+                            onwarn: (warning, handler) => {
+                                if (warning.code.toLowerCase().startsWith('a11y')) {
+                                    return
+                                }
+                                // Handle all other warnings normally
+                                handler(warning)
+                            },
                         },
                     }
                 ],
