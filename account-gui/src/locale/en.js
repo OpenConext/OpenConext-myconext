@@ -338,7 +338,7 @@ I18n.translations.en = {
     },
     subContent: {
         warningTitle: "Please reconsider",
-        warning: "The service your logging into has explicitly requested you login using your eduID app. If you login with a different method, this service will not receive your attributes.",
+        warning: "The service you're logging into has explicitly requested you login using your eduID app. If you login with a different method, this service will not receive your attributes.",
         confirmLabel: "Change login option anyway",
         cancelLabel: "Did not know that"
     }
