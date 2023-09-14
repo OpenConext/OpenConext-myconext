@@ -152,6 +152,17 @@
         }
     }
 
+    .button.ghost {
+        color: black;
+        border: 1px solid black;
+        background-color: var(--color-secondary-blue);
+
+        &:hover {
+            background-color: var(--color-primary-blue);
+            color: white;
+        }
+    }
+
     :global(a.button span.trash svg) {
         position: absolute;
         width: 20px;

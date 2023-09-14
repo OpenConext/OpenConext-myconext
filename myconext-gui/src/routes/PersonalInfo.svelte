@@ -1,10 +1,12 @@
 <script>
-    import {user, config} from "../stores/user";
+    import {config, user} from "../stores/user";
     import I18n from "i18n-js";
     import {navigate} from "svelte-routing";
     import writeSvg from "../icons/redesign/pencil-write.svg";
     import verifiedSvg from "../icons/redesign/shield-full.svg";
     import VerifiedUserRow from "../components/VerifiedUserRow.svelte";
+    import Button from "../components/Button.svelte";
+    import {startLinkAccountFlow} from "../api";
 
     let nameVerified = false;
     let studentVerified = false;
@@ -51,14 +53,18 @@
     .profile {
         width: 100%;
         height: 100%;
+        @media (max-width: 820px) {
+            padding: 0 5px;
+        }
     }
 
     .inner-container {
-        height: 100%;
-        margin: 0 auto;
-        padding: 15px 30px 15px 0;
+        padding: 15px 80px 15px 50px;
         display: flex;
         flex-direction: column;
+        &.second {
+            padding: 0 80px 15px 50px;
+        }
     }
 
     h2 {
@@ -80,6 +86,17 @@
     p {
         line-height: 1.33;
         letter-spacing: normal;
+    }
+
+    div.banner {
+        display: flex;
+        align-items: center;
+        background-color: var(--color-secondary-blue);
+        padding: 10px;
+
+        p {
+            margin: 0 5px 0 10px;
+        }
     }
 
     table {
@@ -152,6 +169,18 @@
     <div class="inner-container">
         <h2>{I18n.t("profile.title")}</h2>
         <p class="info">{I18n.t("profile.info")}</p>
+    </div>
+
+{#if !eduIDLinked}
+    <div class="banner">
+        <span class="verified-badge">{@html verifiedSvg}</span>
+        <p>{I18n.t("profile.banner")}</p>
+        <Button label={I18n.t("profile.verifyNow")}
+                className="ghost"
+                onClick={() => startLinkAccountFlow()}/>
+    </div>
+{/if}
+    <div class="inner-container second">
         <p class="info2">{I18n.t("profile.basic")}</p>
         <table cellspacing="0">
             <thead></thead>

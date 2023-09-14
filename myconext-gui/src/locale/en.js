@@ -29,9 +29,11 @@ I18n.translations.en = {
         title2: "Something went wrong (404)."
     },
     profile: {
-        title: "Personal information",
-        info: "When you use eduID to login to other websites, some of your personal information will be shared. Some websites require that your personal information is validated by a third party.",
-        basic: "Basic information",
+        title: "Personal sharable information",
+        info: "When you use eduID to login to other websites, some of your personal information will be shared.",
+        banner: "Some services require that your personal information is validated by a trusted party.",
+        verifyNow: "Verify your identity now",
+        basic: "Your identity",
         email: "Email address",
         name: "Name",
         validated: "Validated information",
@@ -76,6 +78,7 @@ I18n.translations.en = {
         familyName: "Your last name",
         update: "Update",
         cancel: "Cancel",
+        save: "Save your changes",
         updated: "Your profile has been updated",
         back: "/personal"
     },

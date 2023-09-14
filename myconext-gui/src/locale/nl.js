@@ -30,7 +30,9 @@ I18n.translations.nl = {
     },
     profile: {
         title: "Persoonlijke informatie",
-        info: "Wanneer je eduID gebruikt om in te loggen op andere websites, kan jouw persoonlijke informatie worden gedeeld. Sommige websites vereisen dat je persoonlijke gegevens worden gevalideerd door een derde partij.",
+        info: "Wanneer je eduID gebruikt om in te loggen op andere websites, kan jouw persoonlijke informatie worden gedeeld.",
+        banner: "Sommige diensten vereisen dat je persoonlijke gegevens worden gevalideerd door een vertrouwde partij.",
+        verifyNow: "Verifïeer je identiteit nu",
         basic: "Basis informatie",
         email: "E-mail",
         name: "Naam",
@@ -76,6 +78,7 @@ I18n.translations.nl = {
         familyName: "Je achternaam",
         update: "Opslaan",
         cancel: "Annuleren",
+        save: "Bewaar je veranderingen",
         updated: "Je profiel is bijgewerkt.",
         back: "/profile"
     },

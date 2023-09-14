@@ -60,17 +60,29 @@
         {name: "get-app", alias: "security", component: GetApp, ignore: true},
         {name: "enroll-app", alias: "security", component: EnrollApp, ignore: true},
         {name: "recovery", alias: "security", component: Recovery, ignore: true},
-        {name: "change-recovery", alias: "security", component: Recovery, ignore: true, props: {change: true} },
+        {name: "change-recovery", alias: "security", component: Recovery, ignore: true, props: {change: true}},
         {name: "recovery-code", alias: "security", component: RecoveryCode, ignore: true},
-        {name: "change-recovery-code", alias: "security", component: RecoveryCode, ignore: true, props: {change: true} },
+        {name: "change-recovery-code", alias: "security", component: RecoveryCode, ignore: true, props: {change: true}},
         {name: "backup-codes", alias: "security", component: BackupCodes, ignore: true},
         {name: "use-app", alias: "security", component: UseApp, ignore: true},
         {name: "phone-verification", alias: "security", component: PhoneVerification, ignore: true},
         {name: "phone-confirmation", alias: "security", component: PhoneConfirmation, ignore: true},
-        {name: "change-phone-verification", alias: "security", component: PhoneVerification, ignore: true, props: {change: true} },
-        {name: "change-phone-confirmation", alias: "security", component: PhoneConfirmation, ignore: true, props: {change: true} },
+        {
+            name: "change-phone-verification",
+            alias: "security",
+            component: PhoneVerification,
+            ignore: true,
+            props: {change: true}
+        },
+        {
+            name: "change-phone-confirmation",
+            alias: "security",
+            component: PhoneConfirmation,
+            ignore: true,
+            props: {change: true}
+        },
         {name: "congrats", alias: "security", component: Congrats, ignore: true},
-        {name: "change-congrats", alias: "security", component: ChangeCongrats, ignore: true },
+        {name: "change-congrats", alias: "security", component: ChangeCongrats, ignore: true},
         {name: "deactivate-app", alias: "security", component: DeactivateApp, ignore: true},
 
     ];
@@ -208,6 +220,10 @@
     div.component-container {
         padding: 0 50px;
         width: 100%;
+
+        &.includes-banner {
+            padding: 0;
+        }
     }
 
     @media (max-width: 820px) {
@@ -236,7 +252,7 @@
             {/each}
         </ul>
     </nav>
-    <div class="component-container">
+    <div class:includes-banner={currentTab.name === "personal"} class="component-container">
         <Flash/>
         <svelte:component this={currentTab.component} {...currentTab.props}/>
     </div>
