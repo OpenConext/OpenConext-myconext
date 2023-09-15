@@ -1,16 +1,23 @@
 <script>
-    import {config, user} from "../stores/user";
+    import {config, flash, user} from "../stores/user";
     import I18n from "i18n-js";
     import {navigate} from "svelte-routing";
     import writeSvg from "../icons/redesign/pencil-write.svg";
     import verifiedSvg from "../icons/redesign/shield-full.svg";
     import VerifiedUserRow from "../components/VerifiedUserRow.svelte";
     import Button from "../components/Button.svelte";
-    import {startLinkAccountFlow} from "../api";
+    import {startLinkAccountFlow, updateEmail} from "../api";
+    import Modal from "../components/Modal.svelte";
+    import EditField from "../components/EditField.svelte";
+    import {validEmail} from "../validation/regexp";
+    import critical from "../icons/critical.svg";
 
     let nameVerified = false;
     let studentVerified = false;
     let eduIDLinked = false;
+
+    let duplicateEmail = false;
+    let outstandingPasswordForgotten = false;
 
     let nameVerifiedAccount = {};
     let studentVerifiedAccount = {};
@@ -19,6 +26,18 @@
     let showNameDetails = false;
     let showStudentDetails = false;
     let showEduIDDetails = false;
+
+    let showModal = false;
+
+    const addInstitution = showConfirmation => () => {
+        if (showConfirmation) {
+            showModal = true
+        } else {
+            startLinkAccountFlow().then(json => {
+                window.location.href = json.url;
+            });
+        }
+    }
 
     const hasExpired = account => {
         const createdAt = new Date(account.createdAt);
@@ -45,6 +64,23 @@
         nameVerified = nameVerifiedAccount !== undefined && Object.keys(nameVerifiedAccount).length > 0;
     }
 
+    const updateEmailValue = (value, force = false) => {
+        if (validEmail(value) && value.toLowerCase() !== $user.email.toLowerCase()) {
+            updateEmail({...$user, email: value}, force)
+                .then(() => {
+                    $user.email = value;
+                    flash.setValue(I18n.t("email.updated", {email: value}));
+                }).catch(e => {
+                if (e.status === 409) {
+                    duplicateEmail = true;
+                } else if (e.status === 406) {
+                    $user.email = value;
+                    outstandingPasswordForgotten = true;
+                }
+            });
+        }
+    };
+
     refresh();
 
 </script>
@@ -62,6 +98,7 @@
         padding: 15px 80px 15px 50px;
         display: flex;
         flex-direction: column;
+
         &.second {
             padding: 0 80px 15px 50px;
         }
@@ -78,8 +115,6 @@
 
     p.info2 {
         font-size: 22px;
-        margin-top: 28px;
-        margin-bottom: 24px;
         font-family: Nunito, sans-serif;
     }
 
@@ -94,8 +129,30 @@
         background-color: var(--color-secondary-blue);
         padding: 10px;
 
+        span.verified-badge {
+            margin-left: 5px;
+        }
+
         p {
-            margin: 0 5px 0 10px;
+            margin: 0 5px 0 15px;
+        }
+    }
+
+    .verified-container {
+        display: flex;
+        margin-top: 28px;
+        margin-bottom: 24px;
+        align-items: center;
+
+        span {
+            margin: 0 auto 0 auto;
+            background-color: var(--color-primary-grey);
+            padding: 0.75rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5em;
+            border-radius: 1.125rem;
+            border: 0.0625rem solid var(--color-tertiare-grey);
         }
     }
 
@@ -171,17 +228,35 @@
         <p class="info">{I18n.t("profile.info")}</p>
     </div>
 
-{#if !eduIDLinked}
-    <div class="banner">
-        <span class="verified-badge">{@html verifiedSvg}</span>
-        <p>{I18n.t("profile.banner")}</p>
-        <Button label={I18n.t("profile.verifyNow")}
-                className="ghost"
-                onClick={() => startLinkAccountFlow()}/>
-    </div>
-{/if}
+    {#if !eduIDLinked}
+        <div class="banner">
+            <span class="verified-badge">{@html verifiedSvg}</span>
+            <p>{I18n.t("profile.banner")}</p>
+            <Button label={I18n.t("profile.verifyNow")}
+                    className="ghost"
+                    onClick={addInstitution(true)}/>
+        </div>
+    {/if}
     <div class="inner-container second">
-        <p class="info2">{I18n.t("profile.basic")}</p>
+        <div class="verified-container">
+            <p class="info2">{I18n.t("profile.basic")}</p>
+            {#if !eduIDLinked}
+                <span>{I18n.t("profile.notVerified")}</span>
+            {/if}
+        </div>
+        <EditField label={I18n.t("profile.email")}
+                   initialValue={$user.email}
+                   editableByUser={true}
+                   onSave={value => updateEmailValue(value)}/>
+
+        {#if duplicateEmail}
+            <div class="error">
+                <span class="svg">{@html critical}</span>
+                <span class="error">{I18n.t("email.duplicateEmail")}</span>
+            </div>
+        {/if}
+
+
         <table cellspacing="0">
             <thead></thead>
             <tbody>
@@ -209,7 +284,9 @@
             </tr>
             </tbody>
         </table>
-        <p class="info2">{I18n.t("profile.validated")}</p>
+        <div class="verified-container">
+            <p class="info2">{I18n.t("profile.validated")}</p>
+        </div>
         <table cellspacing="0">
             <thead></thead>
             <tbody>
@@ -249,3 +326,21 @@
     </div>
 
 </div>
+{#if outstandingPasswordForgotten}
+    <Modal submit={() => updateEmailValue($user.email, true)}
+           cancel={() => history.back()}
+           warning={true}
+           question={I18n.t("email.outstandingPasswordForgottenConfirmation")}
+           title={I18n.t("email.outstandingPasswordForgotten")}>
+    </Modal>
+{/if}
+
+{#if showModal}
+    <Modal submit={addInstitution(false)}
+           cancel={() => showModal = false}
+           question={I18n.t(`profile.verifyFirstAndLastName.addInstitutionConfirmation`)}
+           title={I18n.t(`profile.verifyFirstAndLastName.addInstitution`)}
+           confirmTitle={I18n.t("profile.proceed")}>
+    </Modal>
+{/if}
+

@@ -23,24 +23,22 @@
 
 </style>
 <div class="edit-field">
-    <label for={`input-${name}`}>{label}</label>
+    <label for={`input-${label}`}>{label}</label>
     {#if editMode}
         <div class="edit-mode">
-            <input type="text" id={`input-${name}`} bind:value={value}>
+            <input type="text" id={`input-${label}`} bind:value={value}>
             <div class="actions">
                 <Button className="cancel" label={I18n.t("edit.cancel")} onClick={() => cancel()}/>
-                <Button label={I18n.t("edit.save")} onClick={() => onSave()}/>
+                <Button label={I18n.t("edit.save")} onClick={() => onSave(value)}/>
             </div>
         </div>
     {:else}
         <div class="view-mode">
             <span>{value}</span>
             <span class="editable-by">{editableByUser ? "nice" : "nice2"}</span>
-            {@html editIcon}
+            {#if !readOnly}
+                {@html editIcon}
+            {/if}
         </div>
     {/if}
 </div>
-
-
-</span>
-</label>

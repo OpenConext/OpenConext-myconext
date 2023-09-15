@@ -107,6 +107,10 @@
         height: 100%;
         display: flex;
         position: relative;
+        @media (max-width: 820px) {
+            padding-right: 15px;
+        }
+
     }
 
     nav {
@@ -129,7 +133,7 @@
 
     @media (max-width: 820px) {
         nav {
-            margin-right: 20px;
+            margin-right: 15px;
             z-index: 99;
             min-width: 50px;
 

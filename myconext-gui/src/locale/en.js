@@ -10,7 +10,17 @@ I18n.translations.en = {
     },
     start: {
         hi: "Hi {{name}}!",
-        manage: "Manage your personal info, your privacy, and the security of your eduID account."
+        manage: "Manage your personal info, your privacy, and the security of your eduID account.",
+        app: {
+            title: "Are you studying in NL? Connect your institution!",
+            infoBold: "When you study in the Netherlands ",
+            infoPart: "and you want to use eduID to login to educational services, we need to be sure it's you and not someone impersonating you.",
+            requirements: "You must therefore add the following information to your eduID",
+            validatedName: "Validation of your full name by a third party",
+            proofStudent: "Proof of being a student",
+            institution: "Your current institution",
+            connect: "Connect your school institution"
+        }
     },
     header: {
         title: "eduID",
@@ -52,6 +62,7 @@ I18n.translations.en = {
         expiresValue: "{{date}}",
         verifiedAt: "Verified by <strong>{{name}}</strong> on {{date}}",
         proceed: "Proceed",
+        notVerified: "Not verified",
         verifyFirstAndLastName: {
             addInstitution: "Verify name",
             addInstitutionConfirmation: "When you proceed you will be asked to login at the institution you want to link to your eduID. First, select which institution you want to connect; then, login at that institution.<br/><br/>After a successful login you will come back here.",

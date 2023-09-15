@@ -11,6 +11,7 @@
     export let medium = false;
     export let large = false;
     export let larger = false;
+    export let xxl = false;
     export let small = false;
     export let download = false;
     export let deletion = false;
@@ -105,6 +106,12 @@
         padding: 8px 0;
     }
 
+    .button.xxl {
+        max-width: initial;
+        width: initial;
+        padding: 8px 0;
+    }
+
     .button.larger {
         min-width: 240px;
         max-width: 240px;
@@ -191,6 +198,7 @@
        class:medium={medium}
        class:large={large}
        class:larger={larger}
+       class:xxl={xxl}
        on:click={() => onClick && onClick()}
        class:disabled={disabled}>
         {label}
