@@ -16,9 +16,6 @@
     let studentVerified = false;
     let eduIDLinked = false;
 
-    let duplicateEmail = false;
-    let outstandingPasswordForgotten = false;
-
     let nameVerifiedAccount = {};
     let studentVerifiedAccount = {};
     let eduIDLinkedAccount = {};
@@ -26,6 +23,11 @@
     let showNameDetails = false;
     let showStudentDetails = false;
     let showEduIDDetails = false;
+
+    let outstandingPasswordForgotten = false;
+    let tempEmailValue;
+    let emailError ;
+    let emailErrorMessage;
 
     let showModal = false;
 
@@ -70,11 +72,15 @@
                 .then(() => {
                     $user.email = value;
                     flash.setValue(I18n.t("email.updated", {email: value}));
+                    tempEmailValue = null;
+                    emailError = false;
+                    emailErrorMessage = null;
                 }).catch(e => {
                 if (e.status === 409) {
-                    duplicateEmail = true;
+                    emailError = true;
+                    emailErrorMessage = I18n.t("email.duplicateEmail");
                 } else if (e.status === 406) {
-                    $user.email = value;
+                    tempEmailValue = value;
                     outstandingPasswordForgotten = true;
                 }
             });
@@ -247,15 +253,10 @@
         <EditField label={I18n.t("profile.email")}
                    initialValue={$user.email}
                    editableByUser={true}
+                   error={emailError}
+                   saveLabel={I18n.t("email.update")}
+                   errorMessage={emailErrorMessage}
                    onSave={value => updateEmailValue(value)}/>
-
-        {#if duplicateEmail}
-            <div class="error">
-                <span class="svg">{@html critical}</span>
-                <span class="error">{I18n.t("email.duplicateEmail")}</span>
-            </div>
-        {/if}
-
 
         <table cellspacing="0">
             <thead></thead>
@@ -343,4 +344,13 @@
            confirmTitle={I18n.t("profile.proceed")}>
     </Modal>
 {/if}
+
+{#if outstandingPasswordForgotten}
+    <Modal submit={() => updateEmailValue(true)}
+           warning={true}
+           question={I18n.t("email.outstandingPasswordForgottenConfirmation")}
+           title={I18n.t("email.outstandingPasswordForgotten")}>
+    </Modal>
+{/if}
+
 

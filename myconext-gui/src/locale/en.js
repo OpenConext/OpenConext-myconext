@@ -63,6 +63,7 @@ I18n.translations.en = {
         verifiedAt: "Verified by <strong>{{name}}</strong> on {{date}}",
         proceed: "Proceed",
         notVerified: "Not verified",
+        editable: "Editable by you",
         verifyFirstAndLastName: {
             addInstitution: "Verify name",
             addInstitutionConfirmation: "When you proceed you will be asked to login at the institution you want to link to your eduID. First, select which institution you want to connect; then, login at that institution.<br/><br/>After a successful login you will come back here.",
@@ -89,7 +90,7 @@ I18n.translations.en = {
         familyName: "Your last name",
         update: "Update",
         cancel: "Cancel",
-        save: "Save your changes",
+        save: "Save",// your changes",
         updated: "Your profile has been updated",
         back: "/personal"
     },
