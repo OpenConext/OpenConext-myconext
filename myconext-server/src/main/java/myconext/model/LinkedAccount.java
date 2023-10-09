@@ -27,6 +27,7 @@ public class LinkedAccount implements Serializable {
     private String givenName;
     private String familyName;
     private List<String> eduPersonAffiliations = new ArrayList<>();
+    private boolean preferred;
     @Schema(type = "integer", format = "int64", example = "1634813554997")
     private Date createdAt;
     @Schema(type = "integer", format = "int64", example = "1634813554997")
@@ -62,5 +63,9 @@ public class LinkedAccount implements Serializable {
 
     public void setExpiresAt(Date expiresAt) {
         this.expiresAt = expiresAt;
+    }
+
+    public void setPreferred(boolean preferred) {
+        this.preferred = preferred;
     }
 }

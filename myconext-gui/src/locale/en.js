@@ -49,6 +49,9 @@ I18n.translations.en = {
         callName: "Call name",
         givenName: "Given name",
         familyName: "Family name",
+        linkedAccounts: "Your role(s)",
+        addInstitution: "Add a role & institution",
+        proceedConext: "Proceed to add this via SURFconext",
         validated: "Validated information",
         firstAndLastName: "First and last name",
         firstAndLastNameInfo: "Your first and lastname are not yet verified by a third party",
@@ -68,18 +71,14 @@ I18n.translations.en = {
         verified: "Verified",
         notVerified: "Not verified",
         editable: "Editable by you",
+        nonEditable: "Verified by {{name}}",
+        verifiedBy: "<strong>Verified by {{name}}</strong> on {{date}}",
+        validUntil: "Valid until",
         verifyFirstAndLastName: {
             addInstitution: "Verify name",
             addInstitutionConfirmation: "When you proceed you will be asked to login at the institution you want to link to your eduID. First, select which institution you want to connect; then, login at that institution.<br/><br/>After a successful login you will come back here.",
         },
-        verifyStudent: {
-            addInstitution: "Prove student",
-            addInstitutionConfirmation: "When you proceed you will be asked to login at the institution you want to link to your eduID. First, select which institution you want to connect; then, login at that institution.<br/><br/>After a successful login you will come back here.",
-        },
-        verifyParty: {
-            addInstitution: "Link party",
-            addInstitutionConfirmation: "When you proceed you will be asked to login at the institution you want to link to your eduID. First, select which institution you want to connect; then, login at that institution.<br/><br/>After a successful login you will come back here.",
-        }
+
     },
     eppnAlreadyLinked: {
         header: "Connection not added!",

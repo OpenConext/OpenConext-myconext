@@ -251,7 +251,7 @@ public class UserController implements ServiceProviderHolder, UserAuthentication
             logLoginWithContext(user, "password", true, LOG, "Successfully logged in with password");
             LOG.info("Successfully logged in with password");
         }
-        return doMagicLink(user, samlAuthenticationRequest,  magicLinkRequest.isUsePassword(), request);
+        return doMagicLink(user, samlAuthenticationRequest, magicLinkRequest.isUsePassword(), request);
     }
 
     @Hidden
@@ -371,6 +371,25 @@ public class UserController implements ServiceProviderHolder, UserAuthentication
         userRepository.save(user);
         logWithContext(user, "update", "name", LOG, "Update user profile");
         authenticationRequestRepository.deleteByUserId(user.getId());
+        return returnUserResponse(user);
+    }
+
+    @Operation(summary = "Mark linkedAccount as preferred", description = "Mark linkedAccount as preferred")
+    @PutMapping("/sp/prefer-linked-account")
+    public ResponseEntity<UserResponse> updateLinkedAccount(Authentication authentication, @Valid @RequestBody UpdateLinkedAccountRequest updateLinkedAccountRequest) {
+        User user = userFromAuthentication(authentication);
+        Optional<LinkedAccount> optionalLinkedAccount = user.getLinkedAccounts().stream()
+                .filter(linkedAccount -> updateLinkedAccountRequest.getSchacHomeOrganization().equalsIgnoreCase(linkedAccount.getSchacHomeOrganization()))
+                .findFirst();
+        optionalLinkedAccount.ifPresent(linkedAccount -> {
+            if (linkedAccount.areNamesValidated()) {
+                user.getLinkedAccounts().forEach(otherLinkedAccount -> otherLinkedAccount.setPreferred(false));
+                linkedAccount.setPreferred(true);
+                userRepository.save(user);
+            }
+        });
+        logWithContext(user, "update", "name", LOG, "Update user linked account");
+
         return returnUserResponse(user);
     }
 
@@ -633,13 +652,13 @@ public class UserController implements ServiceProviderHolder, UserAuthentication
                     @ApiResponse(responseCode = "200", description = "User tokens",
                             content = {@Content(array = @ArraySchema(schema = @Schema(implementation = Token.class)),
                                     examples =
-                                    {@ExampleObject(value =
-                                            "[{\"expiresIn\":\"2023-03-08T08:59:17.458+00:00\"," +
-                                                    "\"createdAt\":\"2022-12-08T08:59:17.458+00:00\"," +
-                                                    "\"clientId\":\"student.mobility.rp.localhost\",\"clientName\":\"Student Mobility RP localhost\",\"audiences\":[\"student-mobility-home-institution-mock\",\"For localhost student mobility testing\",\"Resource Server for the Playground Client Test2\"]," +
-                                                    "\"id\":\"6391a7651f7c1b41403f066f\"," +
-                                                    "\"scopes\":[{\"name\":\"https://utrecht/api\"," +
-                                                    "\"titles\":{},\"descriptions\":{\"en\":\"Retrieve personal information at Utrecht University \",\"nl\":\"Ophalen persoonsinformatie bij Utrecht Universiteit\"}}]")})})}
+                                            {@ExampleObject(value =
+                                                    "[{\"expiresIn\":\"2023-03-08T08:59:17.458+00:00\"," +
+                                                            "\"createdAt\":\"2022-12-08T08:59:17.458+00:00\"," +
+                                                            "\"clientId\":\"student.mobility.rp.localhost\",\"clientName\":\"Student Mobility RP localhost\",\"audiences\":[\"student-mobility-home-institution-mock\",\"For localhost student mobility testing\",\"Resource Server for the Playground Client Test2\"]," +
+                                                            "\"id\":\"6391a7651f7c1b41403f066f\"," +
+                                                            "\"scopes\":[{\"name\":\"https://utrecht/api\"," +
+                                                            "\"titles\":{},\"descriptions\":{\"en\":\"Retrieve personal information at Utrecht University \",\"nl\":\"Ophalen persoonsinformatie bij Utrecht Universiteit\"}}]")})})}
     )
     public ResponseEntity<List<Token>> tokens(Authentication authentication) {
         User user = userFromAuthentication(authentication);
@@ -815,7 +834,7 @@ public class UserController implements ServiceProviderHolder, UserAuthentication
             return ResponseEntity.status(201).body(Collections.singletonMap("url", url));
         }
 
-        return doMagicLink(user, samlAuthenticationRequest,  true, request);
+        return doMagicLink(user, samlAuthenticationRequest, true, request);
     }
 
     private PublicKeyCredentialCreationOptions publicKeyCredentialCreationOptions(RelyingParty relyingParty, User user) throws Base64UrlException {

@@ -39,6 +39,9 @@ I18n.translations.nl = {
         callName: "Roepnaam",
         givenName: "Voornaam",
         familyName: "Achternaam",
+        linkedAccounts: "Je rollen",
+        addInstitution: "Add a role & institution",
+        proceedConext: "Proceed to add this via SURFconext",
         validated: "Gevalideerde informatie",
         firstAndLastName: "Voor- en achternaam",
         firstAndLastNameInfo: "Jouw voor- en achternaam zijn nog niet geverifieerd door een derde partij.",
@@ -55,18 +58,17 @@ I18n.translations.nl = {
         expiresValue: "{{date}}",
         verifiedAt: "Geverifieerd door <strong>{{name}}</strong> op {{date}}",
         proceed: "Doorgaan",
+        verified: "Geveriëerd",
+        notVerified: "Niet geveriëerd",
+        editable: "Aanpasbaar door jij",
+        nonEditable: "Geveriëerd door {{name}}",
+        verifiedBy: "<strong>Verified by {{name}}</strong> on {{date}}",
+        validUntil: "Valid until",
         verifyFirstAndLastName: {
             addInstitution: "Verifieer naam",
             addInstitutionConfirmation: "Als je doorgaat word je gevraagd in te loggen via de onderwijsinstelling die je wilt koppelen. Selecteer eerst welke instelling je wilt koppelen en log daarna in.<br/> <br/>Nadat je succesvol bent ingelogd kom je hier weer terug.",
         },
-        verifyStudent: {
-            addInstitution: "Bewijs student",
-            addInstitutionConfirmation: "Als je doorgaat word je gevraagd in te loggen via de onderwijsinstelling die je wilt koppelen. Selecteer eerst welke instelling je wilt koppelen en log daarna in.<br/> <br/>Nadat je succesvol bent ingelogd kom je hier weer terug.",
-        },
-        verifyParty: {
-            addInstitution: "Koppel instelling",
-            addInstitutionConfirmation: "Als je doorgaat word je gevraagd in te loggen via de onderwijsinstelling die je wilt koppelen. Selecteer eerst welke instelling je wilt koppelen en log daarna in.<br/> <br/>Nadat je succesvol bent ingelogd kom je hier weer terug.",
-        }
+
     },
     eppnAlreadyLinked: {
         header: "Koppeling niet gemaakt!",

@@ -1,8 +1,11 @@
 <script>
     import editIcon from "../icons/edit.svg";
+    import shieldIcon from "../icons/redesign/shield-full.svg";
+    import chevronUpIcon from "../icons/chevron-up.svg";
     import Button from "./Button.svelte";
     import I18n from "i18n-js";
     import critical from "../icons/critical.svg";
+    import {dateFromEpoch} from "../utils/date";
 
     const cancel = () => {
         value = firstValue;
@@ -21,20 +24,20 @@
     export let onEdit;
     export let label;
     export let editableByUser = true;
-    export let readOnly = false;
     export let error = false;
     export let errorMessage;
     export let nameField = true;
     export let saveLabel = I18n.t("edit.save");
+    export let addInstitution;
 
     let value = firstValue;
-
+    let showDropDown = false;
 
 </script>
 <style lang="scss">
 
     .edit-field {
-        margin-bottom: 20px;
+        margin-bottom: 15px;
 
         &:not(.name-field) {
             margin-top: 40px;
@@ -87,10 +90,23 @@
 
     }
 
-    .view-mode {
+    .view-mode-container {
         padding: 15px;
         border: 2px solid var(--color-primary-blue);
         border-radius: 8px;
+        display: flex;
+        flex-direction: column;
+
+        table {
+            margin-top: 25px;
+        }
+
+        .button-container {
+            margin-top: 25px;
+        }
+    }
+
+    .view-mode {
         display: flex;
         align-items: center;
 
@@ -102,6 +118,17 @@
                 color: var(--color-primary-blue);
                 font-weight: 600;
                 font-size: 18px;
+                display: flex;
+                align-items: center;
+
+                span.shield {
+                    margin-right: 8px;
+
+                    :global(svg) {
+                        width: 16px;
+                        height: auto;
+                    }
+                }
             }
 
             span.editable-by {
@@ -114,7 +141,15 @@
             margin-left: auto;
             padding: 10px;
             color: var(--color-primary-blue);
+            fill: var(--color-primary-blue);
             cursor: pointer;
+
+            &.show-drop-down {
+                :global( svg) {
+                    transform: rotate(180deg);
+                }
+
+            }
         }
     }
 
@@ -137,15 +172,59 @@
                     onClick={() => onSave(value)}/>
         </div>
     {:else}
-        <div class="view-mode">
-            <div class="inner-view-mode">
-                <span class="value">{firstValue}</span>
-                <span class="editable-by">{editableByUser ? I18n.t("profile.editable") :
-                    I18n.t("profile.nonEditable", {institution: linkedAccount.schacHomeOrganization}) }</span>
+        <div class="view-mode-container">
+            <div class="view-mode">
+                <div class="inner-view-mode">
+                <span class="value">
+                    {#if !editableByUser}
+                    <span class="shield">{@html shieldIcon}</span>
+                {/if}
+                    {firstValue}</span>
+                    <span class="editable-by">{editableByUser ? I18n.t("profile.editable") :
+                        I18n.t("profile.nonEditable", {name: linkedAccount.schacHomeOrganization}) }</span>
+                </div>
+                {#if editableByUser}
+                    <span class="icon" on:click={() => onEdit()}>{@html editIcon}</span>
+                {:else}
+                <span class="icon" class:show-drop-down={!showDropDown}
+                      on:click={() => showDropDown = !showDropDown}>{@html chevronUpIcon}</span>
+                {/if}
             </div>
-            {#if !readOnly}
-                <span class="icon" on:click={() => onEdit()}>{@html editIcon}</span>
+            {#if showDropDown}
+                <table>
+                    <thead/>
+                    <tbody>
+                    <tr>
+                        <td colspan="2">
+                            {@html I18n.t("profile.verifiedBy", {
+                                name: linkedAccount.schacHomeOrganization,
+                                date: dateFromEpoch(linkedAccount.createdAt)
+                            })}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            {I18n.t("profile.institution")}
+                        </td>
+                        <td>{linkedAccount.schacHomeOrganization}</td>
+                    </tr>
+                    <tr>
+                        <td>
+                            {I18n.t("profile.validUntil")}
+                        </td>
+                        <td>{dateFromEpoch(linkedAccount.expiresAtNonValidated || linkedAccount.expiresAt)}</td>
+                    </tr>
+                    </tbody>
+                </table>
+                <div class="button-container">
+                    <Button label={I18n.t("edit.update")}
+                            inline={true}
+                            small={true}
+                            onClick={() => addInstitution(true)}/>
+                </div>
+
             {/if}
+
         </div>
     {/if}
     {#if error}

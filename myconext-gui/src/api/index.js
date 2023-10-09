@@ -56,6 +56,10 @@ export function updateUser(user) {
     return postPutJson("/myconext/api/sp/update", user, "PUT");
 }
 
+export function preferLinkedAccount(linkedAccount) {
+    return postPutJson("/myconext/api/sp/prefer-linked-account", {schacHomeOrganization: linkedAccount.schacHomeOrganization}, "PUT");
+}
+
 export function updateEmail(user, force) {
     const forceParam = force ? "?force=true" : "";
     return postPutJson(`/myconext/api/sp/email${forceParam}`, user, "PUT");

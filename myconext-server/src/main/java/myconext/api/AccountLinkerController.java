@@ -548,7 +548,7 @@ public class AccountLinkerController implements UserAuthentication {
                     return eppnAlreadyLinkedOptional.get();
                 }
                 linkedAccounts.add(
-                        new LinkedAccount(institutionIdentifier, schacHomeOrganization, eppn, subjectId, givenName, familyName, affiliations,
+                        new LinkedAccount(institutionIdentifier, schacHomeOrganization, eppn, subjectId, givenName, familyName, affiliations, linkedAccounts.isEmpty(),
                                 new Date(), expiresAt));
             }
             String action = optionalLinkedAccount.isPresent() ? "updated" : "add";

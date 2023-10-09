@@ -11,17 +11,9 @@
     import {onMount} from "svelte";
     import {isEmpty} from "../utils/utils";
 
-    let nameVerified = false;
-    let studentVerified = false;
     let eduIDLinked = false;
 
-    let nameVerifiedAccount = {};
-    let studentVerifiedAccount = {};
-    let eduIDLinkedAccount = {};
-
-    let showNameDetails = false;
-    let showStudentDetails = false;
-    let showEduIDDetails = false;
+    let preferredAccount = null;
 
     let outstandingPasswordForgotten = false;
 
@@ -35,7 +27,7 @@
 
     let showModal = false;
 
-    const addInstitution = showConfirmation => () => {
+    const addInstitution = showConfirmation => {
         if (showConfirmation) {
             showModal = true
         } else {
@@ -49,6 +41,7 @@
         const createdAt = new Date(account.createdAt);
         if (isEmpty(account.givenName) || isEmpty(account.familyName)) {
             createdAt.setDate(createdAt.getDate() + parseInt($config.expirationNonValidatedDurationDays, 10));
+            account.expiresAtNonValidated = createdAt.getTime();
             return new Date() > createdAt;
         } else {
             return new Date() > new Date(account.expiresAt);
@@ -56,20 +49,15 @@
     }
 
     const refresh = () => {
-        showNameDetails = false;
-        showStudentDetails = false;
-        showEduIDDetails = false;
         const sortedAccounts = ($user.linkedAccounts || []).sort((a, b) => b.createdAt - a.createdAt);
-        //Student verified and eduIDLinked expiry after
-        const expiredLinkedAccounts = sortedAccounts.filter(account => !hasExpired(account));
-        studentVerifiedAccount = expiredLinkedAccounts.find(account => (account.eduPersonAffiliations || [])
-            .some(aff => aff && aff.startsWith("student"))) || {};
-        studentVerified = studentVerifiedAccount !== undefined && Object.keys(studentVerifiedAccount).length > 0;
-
-        eduIDLinked = expiredLinkedAccounts.length > 0;
-        eduIDLinkedAccount = eduIDLinked ? expiredLinkedAccounts[0] : {};
-        nameVerifiedAccount = sortedAccounts.find(account => account.givenName && account.familyName) || {};
-        nameVerified = nameVerifiedAccount !== undefined && Object.keys(nameVerifiedAccount).length > 0;
+        const validLinkedAccounts = sortedAccounts.filter(account => !hasExpired(account));
+        const linkedAccount = validLinkedAccounts.find(account => account.preferred) || sortedAccounts[0];
+        if (isEmpty(linkedAccount) || isEmpty(linkedAccount.givenName) || isEmpty(linkedAccount.familyName)) {
+            preferredAccount = null;
+        } else {
+            preferredAccount = linkedAccount;
+        }
+        eduIDLinked = validLinkedAccounts.length > 0;
     }
 
     const updateCallName = callName => {
@@ -203,7 +191,7 @@
         align-items: center;
 
         span {
-            margin: 0 auto 0 auto;
+            margin-left: auto;
             padding: 6px;
             display: inline-flex;
             align-items: center;
@@ -223,6 +211,35 @@
             }
         }
     }
+    p.label {
+        margin-top: 40px;
+        font-weight: 600;
+        margin-bottom: 10px;
+    }
+
+    .add-institution {
+        padding: 15px;
+        border: 2px solid var(--color-primary-grey);
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        cursor: pointer;
+
+        p {
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+        em {
+            font-size: 14.5px;
+        }
+        span.add {
+            font-size: 78px;
+            margin-left: auto;
+            color: var(--color-tertiare-grey);
+        }
+
+    }
+
 </style>
 <div class="profile">
     <div class="inner-container">
@@ -236,16 +253,16 @@
             <p>{I18n.t("profile.banner")}</p>
             <Button label={I18n.t("profile.verifyNow")}
                     className="ghost"
-                    onClick={addInstitution(true)}/>
+                    onClick={() => addInstitution(true)}/>
         </div>
     {/if}
     <div class="inner-container second">
         <div class="verified-container">
             <p class="info2">{I18n.t("profile.basic")}</p>
-            {#if !eduIDLinked}
-                <span class="not-verified">{I18n.t("profile.notVerified")}</span>
-            {:else}
+            {#if eduIDLinked}
                 <span class="verified">{@html check} {I18n.t("profile.verified")}</span>
+            {:else}
+                <span class="not-verified">{I18n.t("profile.notVerified")}</span>
             {/if}
         </div>
         <EditField label={I18n.t("profile.callName")}
@@ -259,7 +276,9 @@
         />
         <EditField label={I18n.t("profile.givenName")}
                    firstValue={$user.givenName}
-                   editableByUser={!eduIDLinked}
+                   editableByUser={!preferredAccount}
+                   addInstitution={addInstitution}
+                   linkedAccount={preferredAccount}
                    saveLabel={I18n.t("edit.save")}
                    editMode={givenNameEditMode}
                    onEdit={() => givenNameEditMode = true}
@@ -268,7 +287,9 @@
         />
         <EditField label={I18n.t("profile.familyName")}
                    firstValue={$user.familyName}
-                   editableByUser={!eduIDLinked}
+                   editableByUser={!preferredAccount}
+                   addInstitution={addInstitution}
+                   linkedAccount={preferredAccount}
                    saveLabel={I18n.t("edit.save")}
                    editMode={familyNameEditMode}
                    onEdit={() => familyNameEditMode = true}
@@ -287,6 +308,21 @@
                    onSave={value => updateEmailValue(value)}
                    onCancel={() => cancelEmailEditMode()}
         />
+        <p class="label">{I18n.t("profile.linkedAccounts")}</p>
+        <div class="add-institution" on:click={() => addInstitution(true)}>
+            <div class="info">
+                <p>{I18n.t("profile.addInstitution")}</p>
+                <em class="info">{I18n.t("profile.proceedConext")}</em>
+            </div>
+            <span class="add">+</span>
+        </div>
+
+        {#if eduIDLinked}
+            <section class="linked-accounts">
+            </section>
+        {/if}
+
+
     </div>
 </div>
 {#if outstandingPasswordForgotten}
@@ -299,7 +335,7 @@
 {/if}
 
 {#if showModal}
-    <Modal submit={addInstitution(false)}
+    <Modal submit={() => addInstitution(false)}
            cancel={() => showModal = false}
            question={I18n.t(`profile.verifyFirstAndLastName.addInstitutionConfirmation`)}
            title={I18n.t(`profile.verifyFirstAndLastName.addInstitution`)}
