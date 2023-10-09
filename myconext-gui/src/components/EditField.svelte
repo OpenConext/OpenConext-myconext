@@ -99,6 +99,21 @@
 
         table {
             margin-top: 25px;
+            border-collapse: collapse;
+
+            tr {
+                border-bottom: 1px solid var(--color-primary-grey);
+
+                td {
+                    padding: 12px 5px;
+                    width: 35%;
+
+                    &.value {
+                        font-weight: 600;
+                        width: 65%;
+                    }
+                }
+            }
         }
 
         .button-container {
@@ -206,13 +221,13 @@
                         <td>
                             {I18n.t("profile.institution")}
                         </td>
-                        <td>{linkedAccount.schacHomeOrganization}</td>
+                        <td class="value">{linkedAccount.schacHomeOrganization}</td>
                     </tr>
                     <tr>
                         <td>
                             {I18n.t("profile.validUntil")}
                         </td>
-                        <td>{dateFromEpoch(linkedAccount.expiresAtNonValidated || linkedAccount.expiresAt)}</td>
+                        <td class="value">{dateFromEpoch(linkedAccount.expiresAtNonValidated || linkedAccount.expiresAt)}</td>
                     </tr>
                     </tbody>
                 </table>
