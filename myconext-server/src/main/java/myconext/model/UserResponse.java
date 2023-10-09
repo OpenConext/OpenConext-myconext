@@ -18,6 +18,7 @@ public class UserResponse implements Serializable {
 
     private final String id;
     private final String email;
+    private final String callName;
     private final String givenName;
     private final String familyName;
     private final boolean usePassword;
@@ -36,6 +37,7 @@ public class UserResponse implements Serializable {
     public UserResponse(User user, Map<String, EduID> eduIdPerServiceProvider, Optional<Registration> optionalRegistration, boolean rememberMe) {
         this.id = user.getId();
         this.email = user.getEmail();
+        this.callName = user.getCallName();
         this.givenName = user.getGivenName();
         this.familyName = user.getFamilyName();
         this.schacHomeOrganization = user.getSchacHomeOrganization();

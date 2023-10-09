@@ -317,6 +317,7 @@ public class AccountLinkerController implements UserAuthentication {
                     UUID.randomUUID().toString(),
                     createInstitutionEduID.getEmail(),
                     (String) userInfo.get("given_name"),
+                    (String) userInfo.get("given_name"),
                     (String) userInfo.get("family_name"),
                     schacHomeOrganization,
                     preferredLanguage,

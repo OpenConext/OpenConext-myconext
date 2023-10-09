@@ -18,7 +18,7 @@
     export let info = "";
     export let verifyType = "";
     export let buttonTxt = "";
-    export let expiresAtAttributeName = "expiresAtNonValidated";
+
     export let refresh = () => true;
 
     let showModal = false;
@@ -224,7 +224,7 @@
                 <tr>
                     <td class="attr inner-value">{I18n.t("profile.expires")}</td>
                     <td class="value inner-value">
-                        {I18n.t("profile.expiresValue", formatCreateDate(account[expiresAtAttributeName]))}
+                        {I18n.t("profile.expiresValue", formatCreateDate(account.expiresAt))}
                     </td>
                 </tr>
                 <tr>

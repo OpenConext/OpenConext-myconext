@@ -134,6 +134,12 @@ public class Migrations {
         });
     }
 
+    @SuppressWarnings("unchecked")
+    @ChangeSet(order = "006", id = "deleteSessionAfterUserUpdate", author = "okke.harsta@surf.nl")
+    public void deleteSessionAfterUserUpdate(MongockTemplate mongoTemplate) {
+        mongoTemplate.remove(new Query(), "sessions");
+    }
+
     protected User mergeEduIDs(User user) {
         List<EduID> eduIDS = user.getEduIDS();
         //Make a copy to search in

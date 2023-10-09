@@ -213,7 +213,7 @@ public class UserController implements ServiceProviderHolder, UserAuthentication
         String requesterEntityId = samlAuthenticationRequest.getRequesterEntityId();
         String schacHomeOrganization = this.emailDomainGuard.schacHomeOrganizationByDomain(this.schacHomeOrganization, email);
 
-        User userToSave = new User(UUID.randomUUID().toString(), email, user.getGivenName(),
+        User userToSave = new User(UUID.randomUUID().toString(), email, user.getGivenName(), user.getGivenName(),
                 user.getFamilyName(), schacHomeOrganization, preferredLanguage, requesterEntityId, serviceProviderResolver);
         userToSave = userRepository.save(userToSave);
 
@@ -339,6 +339,7 @@ public class UserController implements ServiceProviderHolder, UserAuthentication
                 UUID.randomUUID().toString(),
                 institution.getEmail(),
                 createAccount.getGivenName(),
+                createAccount.getGivenName(),
                 createAccount.getFamilyName(),
                 this.schacHomeOrganization,
                 "en",
@@ -362,8 +363,9 @@ public class UserController implements ServiceProviderHolder, UserAuthentication
     public ResponseEntity<UserResponse> updateUserProfile(Authentication authentication, @Valid @RequestBody UpdateUserNameRequest deltaUser) {
         User user = userFromAuthentication(authentication);
 
-        user.setFamilyName(deltaUser.getFamilyName());
+        user.setCallName(deltaUser.getCallName());
         user.setGivenName(deltaUser.getGivenName());
+        user.setFamilyName(deltaUser.getFamilyName());
         user.validate();
 
         userRepository.save(user);

@@ -245,7 +245,7 @@ public abstract class AbstractIntegrationTest {
     }
 
     public static User user(String email, String givenName, String familyName, String lang) {
-        return new User(UUID.randomUUID().toString(), email, givenName, familyName, "surfguest.nl", lang,
+        return new User(UUID.randomUUID().toString(), email, givenName, givenName, familyName, "surfguest.nl", lang,
                 "http://mock-sp", serviceProviderResolver);
     }
 

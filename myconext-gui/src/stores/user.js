@@ -3,6 +3,7 @@ import {writable} from 'svelte/store';
 export const user = writable({
     id: "",
     email: "",
+    callName: "",
     givenName: "",
     familyName: "",
     guest: true,
@@ -36,12 +37,10 @@ export const config = writable({
     featureDefaultRememberMe: false,
     featureWarningEducationalEmailDomain: false,
     createEduIDInstitutionEnabled: false,
-    expirationValidatedDurationDays: 0
+    expirationNonValidatedDurationDays: 0
 });
 
 export const redirectPath = writable("");
-
-export const duplicatedEmail = writable("");
 
 const createFlash = () => {
     const {subscribe, set} = writable("");

@@ -4,29 +4,41 @@
     import I18n from "i18n-js";
     import critical from "../icons/critical.svg";
 
-    export let initialValue;
+    const cancel = () => {
+        value = firstValue;
+        if (onCancel) {
+            onCancel();
+        } else {
+            editMode = false;
+        }
+    }
+
+    export let firstValue;
     export let linkedAccount;
     export let onSave;
+    export let onCancel;
+    export let editMode = false;
+    export let onEdit;
     export let label;
     export let editableByUser = true;
     export let readOnly = false;
     export let error = false;
     export let errorMessage;
+    export let nameField = true;
     export let saveLabel = I18n.t("edit.save");
 
-    let editMode = false;
-    let value = initialValue;
+    let value = firstValue;
 
-    const cancel = () => {
-        editMode = false;
-        value = initialValue;
-    }
 
 </script>
 <style lang="scss">
 
     .edit-field {
         margin-bottom: 20px;
+
+        &:not(.name-field) {
+            margin-top: 40px;
+        }
     }
 
     label {
@@ -107,33 +119,39 @@
     }
 
 </style>
-<div class="edit-field">
+<div class="edit-field" class:name-field={nameField}>
     <label for={`input-${label}`}>{label}</label>
-    {#if editMode}
+    {#if editMode || error}
         <div class="edit-mode">
             <input type="text"
                    class:error={error}
                    id={`input-${label}`}
                    bind:value={value}>
-            <Button small={true} className="cancel" label={I18n.t("edit.cancel")} onClick={() => cancel()}/>
-            <Button small={true} label={saveLabel} onClick={() => onSave(value)}/>
+            <Button small={true}
+                    className="cancel"
+                    label={I18n.t("edit.cancel")}
+                    onClick={() => cancel()}/>
+            <Button small={true}
+                    label={saveLabel}
+                    disabled={!value || !value.trim()}
+                    onClick={() => onSave(value)}/>
         </div>
-        {#if error}
-            <div class="error">
-                <span class="svg">{@html critical}</span>
-                <span class="error">{errorMessage}</span>
-            </div>
-        {/if}
     {:else}
         <div class="view-mode">
             <div class="inner-view-mode">
-                <span class="value">{value}</span>
+                <span class="value">{firstValue}</span>
                 <span class="editable-by">{editableByUser ? I18n.t("profile.editable") :
                     I18n.t("profile.nonEditable", {institution: linkedAccount.schacHomeOrganization}) }</span>
             </div>
             {#if !readOnly}
-                <span class="icon" on:click={() => editMode = true}>{@html editIcon}</span>
+                <span class="icon" on:click={() => onEdit()}>{@html editIcon}</span>
             {/if}
+        </div>
+    {/if}
+    {#if error}
+        <div class="error">
+            <span class="svg">{@html critical}</span>
+            <span class="error">{errorMessage}</span>
         </div>
     {/if}
 </div>

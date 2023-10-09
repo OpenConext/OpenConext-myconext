@@ -73,7 +73,7 @@ public class UserTest {
     }
 
     private User user(String serviceProviderEntityId) {
-        return new User("uid", "email", "John", "Doe", "schac", "en",
+        return new User("uid", "email", "John", "John", "Doe", "schac", "en",
                 serviceProviderEntityId, new MockServiceProviderResolver());
     }
 

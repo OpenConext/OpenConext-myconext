@@ -13,6 +13,9 @@ import java.io.Serializable;
 public class UpdateUserNameRequest implements Serializable {
 
     @NotBlank
+    private String callName;
+
+    @NotBlank
     private String givenName;
 
     @NotBlank

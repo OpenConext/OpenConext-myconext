@@ -67,7 +67,7 @@ public class ShibbolethPreAuthenticatedProcessingFilter extends AbstractPreAuthe
 
     private User provisionUser(String uid, String schacHomeOrganization, String givenName, String familyName,
                                String email, String preferredLanguage) {
-        User user = new User(uid, email, givenName, familyName, schacHomeOrganization, preferredLanguage, mijnEduIDEntityId, serviceProviderResolver);
+        User user = new User(uid, email, givenName, givenName, familyName, schacHomeOrganization, preferredLanguage, mijnEduIDEntityId, serviceProviderResolver);
         user.setNewUser(false);
         user = userRepository.save(user);
 

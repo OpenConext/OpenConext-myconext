@@ -46,6 +46,9 @@ I18n.translations.en = {
         basic: "Your identity",
         email: "Email address",
         name: "Name",
+        callName: "Call name",
+        givenName: "Given name",
+        familyName: "Family name",
         validated: "Validated information",
         firstAndLastName: "First and last name",
         firstAndLastNameInfo: "Your first and lastname are not yet verified by a third party",
@@ -62,6 +65,7 @@ I18n.translations.en = {
         expiresValue: "{{date}}",
         verifiedAt: "Verified by <strong>{{name}}</strong> on {{date}}",
         proceed: "Proceed",
+        verified: "Verified",
         notVerified: "Not verified",
         editable: "Editable by you",
         verifyFirstAndLastName: {
