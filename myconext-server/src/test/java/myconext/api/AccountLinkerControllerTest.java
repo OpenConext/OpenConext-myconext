@@ -318,7 +318,7 @@ public class AccountLinkerControllerTest extends AbstractIntegrationTest {
                 .contentType(ContentType.JSON)
                 .get("/myconext/api/sp/oidc/redirect")
                 .getHeader("Location");
-        assertEquals("http://localhost:3001/personal", location);
+        assertEquals("http://localhost:3001/personal?institution=mock.idp", location);
 
         User user = userRepository.findOneUserByEmail("jdoe@example.com");
         assertEquals(3, user.getLinkedAccounts().size());

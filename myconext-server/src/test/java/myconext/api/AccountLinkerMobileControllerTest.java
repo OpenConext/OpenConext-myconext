@@ -54,7 +54,7 @@ public class AccountLinkerMobileControllerTest extends AbstractIntegrationTest {
                 .contentType(ContentType.JSON)
                 .get("/myconext/api/mobile/oidc/redirect")
                 .getHeader("Location");
-        assertEquals(location, "http://localhost:3000/client/mobile/account-linked");
+        assertEquals("http://localhost:3000/client/mobile/account-linked?institution=mock.idp", location);
     }
 
     @Test
