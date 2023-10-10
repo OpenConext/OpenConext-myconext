@@ -1152,6 +1152,20 @@ public class UserControllerTest extends AbstractIntegrationTest {
     }
 
     @Test
+    public void institutionNames() throws IOException {
+        Map names = given()
+                .when()
+                .accept(ContentType.JSON)
+                .contentType(ContentType.JSON)
+                .queryParam("schac_home", "example.com")
+                .get("/myconext/api/sp/institution/names")
+                .as(Map.class);
+
+        assertEquals("Mujina EN", names.get("displayNameEn"));
+        assertEquals("Mujina NL", names.get("displayNameNl"));
+    }
+
+    @Test
     public void outstandingEmailLinks() {
         User user = userRepository.findOneUserByEmail("jdoe@example.com");
         changeEmailHashRepository.save(new ChangeEmailHash(user, "jdoe@new.com", "hash"));

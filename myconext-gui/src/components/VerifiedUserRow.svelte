@@ -9,6 +9,7 @@
     import {formatCreateDate} from "../format/date";
     import I18n from "i18n-js";
     import {flash, user} from "../stores/user";
+    import {institutionName} from "../utils/services";
 
     export let showDetails = false;
     export let attr = "";
@@ -46,7 +47,7 @@
                     }
                 }
                 refresh();
-                flash.setValue(I18n.t("institution.deleted", {name: account.schacHomeOrganization}));
+                flash.setValue(I18n.t("institution.deleted", {name: institutionName(account)}));
             });
         }
     }
@@ -209,13 +210,13 @@
                     <td colspan="2" class="verified-at">
                         {@html I18n.t("profile.verifiedAt", {
                             ...formatCreateDate(account.createdAt),
-                            name: account.schacHomeOrganization
+                            name: institutionName(account)
                         })}
                     </td>
                 </tr>
                 <tr>
                     <td class="attr inner-value">{I18n.t("profile.institution")}</td>
-                    <td class="value inner-value">{account.schacHomeOrganization}</td>
+                    <td class="value inner-value">{institutionName(account)}</td>
                 </tr>
                 <tr>
                     <td class="attr inner-value">{I18n.t("profile.affiliations")}</td>

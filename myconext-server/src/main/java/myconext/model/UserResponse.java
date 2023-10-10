@@ -1,6 +1,8 @@
 package myconext.model;
 
 import lombok.Getter;
+import myconext.cron.IdPMetaDataResolver;
+import myconext.cron.IdentityProvider;
 import myconext.tiqr.SURFSecureID;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
@@ -34,10 +36,14 @@ public class UserResponse implements Serializable {
     private final List<String> loginOptions;
     private final Map<String, Object> registration = new HashMap<>();
 
-    public UserResponse(User user, Map<String, EduID> eduIdPerServiceProvider, Optional<Registration> optionalRegistration, boolean rememberMe) {
+    public UserResponse(User user,
+                        Map<String, EduID> eduIdPerServiceProvider,
+                        Optional<Registration> optionalRegistration,
+                        boolean rememberMe,
+                        IdPMetaDataResolver idPMetaDataResolver) {
         this.id = user.getId();
         this.email = user.getEmail();
-        this.callName = user.getCallName();
+        this.callName = user.getChosenName();
         this.givenName = user.getGivenName();
         this.familyName = user.getFamilyName();
         this.schacHomeOrganization = user.getSchacHomeOrganization();
@@ -45,6 +51,16 @@ public class UserResponse implements Serializable {
         this.usePassword = StringUtils.hasText(user.getPassword());
         this.publicKeyCredentials = user.getPublicKeyCredentials();
         this.linkedAccounts = user.getLinkedAccounts();
+        if (!CollectionUtils.isEmpty(this.linkedAccounts)) {
+            linkedAccounts.forEach(linkedAccount -> {
+                Optional<IdentityProvider> optionalIdentityProvider = idPMetaDataResolver.getIdentityProvider(linkedAccount.getSchacHomeOrganization());
+                optionalIdentityProvider.ifPresent(identityProvider -> {
+                    linkedAccount.setDisplayNameEn(identityProvider.getDisplayNameEn());
+                    linkedAccount.setDisplayNameNl(identityProvider.getDisplayNameNl());
+                    linkedAccount.setLogoUrl(identityProvider.getLogoUrl());
+                });
+            });
+        }
         this.usePublicKey = !CollectionUtils.isEmpty(this.publicKeyCredentials);
         this.forgottenPassword = user.isForgottenPassword();
         this.rememberMe = rememberMe;

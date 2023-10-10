@@ -330,6 +330,7 @@ public class AccountLinkerController implements UserAuthentication {
                 this.idpBaseRedirectUrl + "/create-from-institution-login?key=" + user.getCreateFromInstitutionKey(),
                 false,
                 false,
+                false,
                 null,
                 null,
                 null,
@@ -417,7 +418,7 @@ public class AccountLinkerController implements UserAuthentication {
         }
 
         return doRedirect(code, user, this.spFlowRedirectUri, this.spRedirectUrl + "/personal",
-                false, false, null, null,
+                false, false, true, null, null,
                 this.spRedirectUrl + "/eppn-already-linked");
     }
 
@@ -439,7 +440,7 @@ public class AccountLinkerController implements UserAuthentication {
         this.mobileLinkAccountRequestRepository.delete(mobileLinkAccountRequest);
 
         return doRedirect(code, user, this.mobileFlowRedirectUri, this.idpBaseRedirectUrl + "/client/mobile/account-linked",
-                false, false, null, null,
+                false, false, true, null, null,
                 this.idpBaseRedirectUrl + "/client/mobile/eppn-already-linked");
     }
 
@@ -487,7 +488,7 @@ public class AccountLinkerController implements UserAuthentication {
                 "?h=" + samlAuthenticationRequest.getHash() +
                 "&redirect=" + URLEncoder.encode(this.magicLinkUrl, charSet);
 
-        ResponseEntity redirect = doRedirect(code, user, this.idpFlowRedirectUri, location, validateNames, studentAffiliationRequired,
+        ResponseEntity redirect = doRedirect(code, user, this.idpFlowRedirectUri, location, validateNames, studentAffiliationRequired, false,
                 idpStudentAffiliationRequiredUri, idpValidNamesRequiredUri, eppnAlreadyLinkedRequiredUri);
 
         StepUpStatus stepUpStatus = redirect.getHeaders().getLocation()
@@ -505,19 +506,21 @@ public class AccountLinkerController implements UserAuthentication {
                                       String clientRedirectUri,
                                       boolean validateNames,
                                       boolean studentAffiliationRequired,
+                                      boolean appendSchacHomeQueryParam,
                                       String idpStudentAffiliationRequiredUri,
                                       String idpValidNamesRequiredUri,
                                       String eppnAlreadyLinkedRequiredUri) throws UnsupportedEncodingException {
         Map<String, Object> body = requestUserInfo(code, oidcRedirectUri);
 
         return saveOrUpdateLinkedAccountToUser(user, clientRedirectUri, validateNames, studentAffiliationRequired,
-                idpStudentAffiliationRequiredUri, idpValidNamesRequiredUri, eppnAlreadyLinkedRequiredUri, body);
+                appendSchacHomeQueryParam, idpStudentAffiliationRequiredUri, idpValidNamesRequiredUri, eppnAlreadyLinkedRequiredUri, body);
     }
 
     private ResponseEntity<Object> saveOrUpdateLinkedAccountToUser(User user,
                                                                    String clientRedirectUri,
                                                                    boolean validateNames,
                                                                    boolean studentAffiliationRequired,
+                                                                   boolean appendSchacHomeQueryParam,
                                                                    String idpStudentAffiliationRequiredUri,
                                                                    String idpValidNamesRequiredUri,
                                                                    String eppnAlreadyLinkedRequiredUri,
@@ -551,6 +554,14 @@ public class AccountLinkerController implements UserAuthentication {
                         new LinkedAccount(institutionIdentifier, schacHomeOrganization, eppn, subjectId, givenName, familyName, affiliations, linkedAccounts.isEmpty(),
                                 new Date(), expiresAt));
             }
+            if (linkedAccounts.size() == 1) {
+                if (StringUtils.hasText(givenName)) {
+                    user.setGivenName(givenName);
+                }
+                if (StringUtils.hasText(familyName)) {
+                    user.setGivenName(familyName);
+                }
+            }
             String action = optionalLinkedAccount.isPresent() ? "updated" : "add";
             String eppnValue = StringUtils.hasText(eppn) ? String.format("eppn %s", eppn) : "NO eppn";
 
@@ -574,6 +585,10 @@ public class AccountLinkerController implements UserAuthentication {
             return ResponseEntity.status(HttpStatus.FOUND).location(URI.create(idpValidNamesRequiredUri)).build();
         }
 
+        if (appendSchacHomeQueryParam) {
+            String appender = clientRedirectUri.contains("?") ? "&" : "?";
+            clientRedirectUri += appender + "institution=" + URLEncoder.encode(schacHomeOrganization, Charset.defaultCharset());
+        }
         return ResponseEntity.status(HttpStatus.FOUND).location(URI.create(clientRedirectUri)).build();
     }
 

@@ -3,17 +3,21 @@
     import I18n from "i18n-js";
     import verifiedSvg from "../icons/redesign/shield-full.svg";
     import Button from "../components/Button.svelte";
-    import {startLinkAccountFlow, updateEmail, updateUser} from "../api";
+    import {deleteLinkedAccount,  startLinkAccountFlow, updateEmail, updateUser, preferLinkedAccount} from "../api";
     import Modal from "../components/Modal.svelte";
     import EditField from "../components/EditField.svelte";
     import {validEmail} from "../validation/regexp";
     import check from "../icons/redesign/check.svg";
     import {onMount} from "svelte";
     import {isEmpty} from "../utils/utils";
+    import InstitutionRole from "../components/InstitutionRole.svelte";
+    import {institutionName} from "../utils/services";
 
     let eduIDLinked = false;
 
+    let sortedAccounts = [];
     let preferredAccount = null;
+    let preferredInstitution = null;
 
     let outstandingPasswordForgotten = false;
 
@@ -21,11 +25,32 @@
     let emailError = false;
     let emailErrorMessage = "";
     let emailEditMode = false;
-    let callNameEditMode = false;
+    let chosenNameEditMode = false;
     let givenNameEditMode = false;
     let familyNameEditMode = false;
 
     let showModal = false;
+    let showDeleteInstitutionModal = false;
+    let showPreferredInstitutionModal = false;
+    let selectedInstitution;
+
+    const preferInstitution = (showConfirmation, linkedAccount) => {
+        preferredInstitution = linkedAccount;
+        if (showConfirmation) {
+            showPreferredInstitutionModal = true;
+        } else {
+            preferLinkedAccount(preferredInstitution).then(json => {
+                for (let key in json) {
+                    if (json.hasOwnProperty(key)) {
+                        $user[key] = json[key];
+                        refresh();
+                    }
+                }
+                showPreferredInstitutionModal = false;
+                flash.setValue(I18n.t("profile.preferred", {name: institutionName(linkedAccount)}));
+            });
+        }
+    }
 
     const addInstitution = showConfirmation => {
         if (showConfirmation) {
@@ -37,19 +62,39 @@
         }
     }
 
-    const hasExpired = account => {
-        const createdAt = new Date(account.createdAt);
-        if (isEmpty(account.givenName) || isEmpty(account.familyName)) {
-            createdAt.setDate(createdAt.getDate() + parseInt($config.expirationNonValidatedDurationDays, 10));
-            account.expiresAtNonValidated = createdAt.getTime();
-            return new Date() > createdAt;
+    const deleteInstitution = (showConfirmation, linkedAccount) => {
+        selectedInstitution = linkedAccount;
+        if (showConfirmation) {
+            showDeleteInstitutionModal = true;
         } else {
-            return new Date() > new Date(account.expiresAt);
+            deleteLinkedAccount(linkedAccount).then(json => {
+                showDeleteInstitutionModal = false;
+                for (let key in json) {
+                    if (json.hasOwnProperty(key)) {
+                        $user[key] = json[key];
+                        refresh();
+                    }
+                }
+                flash.setValue(I18n.t("institution.deleted", {name: institutionName(linkedAccount)}));
+            });
+        }
+    }
+
+    const hasExpired = account => {
+        const expiresAt = new Date(account.createdAt);
+        if (isEmpty(account.givenName) || isEmpty(account.familyName)) {
+            expiresAt.setDate(expiresAt.getDate() + parseInt($config.expirationNonValidatedDurationDays, 10));
+            account.expiresAtNonValidated = expiresAt.getTime();
+            account.expired = new Date() > expiresAt;
+            return account.expired;
+        } else {
+            account.expired = new Date() > new Date(account.expiresAt);
+            return account.expired;
         }
     }
 
     const refresh = () => {
-        const sortedAccounts = ($user.linkedAccounts || []).sort((a, b) => b.createdAt - a.createdAt);
+        sortedAccounts = ($user.linkedAccounts || []).sort((a, b) => b.createdAt - a.createdAt);
         const validLinkedAccounts = sortedAccounts.filter(account => !hasExpired(account));
         const linkedAccount = validLinkedAccounts.find(account => account.preferred) || sortedAccounts[0];
         if (isEmpty(linkedAccount) || isEmpty(linkedAccount.givenName) || isEmpty(linkedAccount.familyName)) {
@@ -60,9 +105,9 @@
         eduIDLinked = validLinkedAccounts.length > 0;
     }
 
-    const updateCallName = callName => {
-        $user.callName = callName;
-        callNameEditMode = false;
+    const updateChosenName = chosenName => {
+        $user.chosenName = chosenName;
+        chosenNameEditMode = false;
         doUpdateName();
     }
 
@@ -79,7 +124,7 @@
     }
 
     const doUpdateName = () => {
-        if ($user.callName && $user.familyName && $user.givenName) {
+        if ($user.chosenName && $user.familyName && $user.givenName) {
             updateUser($user).then(() => {
                 flash.setValue(I18n.t("edit.updated"));
             });
@@ -113,7 +158,17 @@
         emailEditMode = false;
     }
 
-    onMount(() => refresh());
+    onMount(() => {
+        refresh();
+        if (($user.linkedAccounts || []).length > 1){
+            const urlSearchParams= new URLSearchParams(window.location.search);
+            const schacHomeOrganization = urlSearchParams.get("institution");
+            const institution = $user.linkedAccounts.find(ins => ins.schacHomeOrganization === schacHomeOrganization);
+            if (institution && !isEmpty(institution.givenName) && !isEmpty(institution.familyName)) {
+                preferInstitution(true, institution);
+            }
+        }
+    });
 
 </script>
 
@@ -211,6 +266,7 @@
             }
         }
     }
+
     p.label {
         margin-top: 40px;
         font-weight: 600;
@@ -229,9 +285,11 @@
             font-weight: 600;
             margin-bottom: 10px;
         }
+
         em {
             font-size: 14.5px;
         }
+
         span.add {
             font-size: 78px;
             margin-left: auto;
@@ -265,14 +323,14 @@
                 <span class="not-verified">{I18n.t("profile.notVerified")}</span>
             {/if}
         </div>
-        <EditField label={I18n.t("profile.callName")}
-                   firstValue={$user.callName || $user.givenName}
+        <EditField label={I18n.t("profile.chosenName")}
+                   firstValue={$user.chosenName || $user.givenName}
                    editableByUser={true}
                    saveLabel={I18n.t("edit.save")}
-                   editMode={callNameEditMode}
-                   onEdit={() => callNameEditMode = true}
-                   onSave={value => updateCallName(value)}
-                   onCancel={() => callNameEditMode = false}
+                   editMode={chosenNameEditMode}
+                   onEdit={() => chosenNameEditMode = true}
+                   onSave={value => updateChosenName(value)}
+                   onCancel={() => chosenNameEditMode = false}
         />
         <EditField label={I18n.t("profile.givenName")}
                    firstValue={$user.givenName}
@@ -301,6 +359,7 @@
                    editableByUser={true}
                    nameField={false}
                    error={emailError}
+                   editHint={I18n.t("email.info")}
                    saveLabel={I18n.t("email.update")}
                    errorMessage={emailErrorMessage}
                    editMode={emailEditMode}
@@ -309,6 +368,13 @@
                    onCancel={() => cancelEmailEditMode()}
         />
         <p class="label">{I18n.t("profile.linkedAccounts")}</p>
+        <section class="linked-accounts">
+            {#each sortedAccounts as account}
+                <InstitutionRole addInstitution={addInstitution}
+                                 removeInstitution={deleteInstitution}
+                                 linkedAccount={account}/>
+            {/each}
+        </section>
         <div class="add-institution" on:click={() => addInstitution(true)}>
             <div class="info">
                 <p>{I18n.t("profile.addInstitution")}</p>
@@ -316,11 +382,6 @@
             </div>
             <span class="add">+</span>
         </div>
-
-        {#if eduIDLinked}
-            <section class="linked-accounts">
-            </section>
-        {/if}
 
 
     </div>
@@ -342,3 +403,21 @@
            confirmTitle={I18n.t("profile.proceed")}>
     </Modal>
 {/if}
+
+{#if showDeleteInstitutionModal}
+    <Modal submit={() => deleteInstitution(false, selectedInstitution)}
+           cancel={() => showDeleteInstitutionModal = false}
+           warning={true}
+           question={I18n.t("institution.deleteInstitutionConfirmation")}
+           title={I18n.t("institution.deleteInstitution")}>
+    </Modal>
+{/if}
+
+{#if showPreferredInstitutionModal}
+    <Modal submit={() => preferInstitution(false, preferredInstitution)}
+           cancel={() => showPreferredInstitutionModal = false}
+           question={I18n.t("profile.preferredInstitutionConfirmation", {name: institutionName(preferredInstitution)})}
+           title={I18n.t("profile.preferInstitution")}>
+    </Modal>
+{/if}
+

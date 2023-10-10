@@ -21,6 +21,9 @@ public class LinkedAccount implements Serializable {
 
     private String institutionIdentifier;
     private String schacHomeOrganization;
+    private String displayNameEn;
+    private String displayNameNl;
+    private String logoUrl;
     @Indexed
     private String eduPersonPrincipalName;
     private String subjectId;
@@ -32,6 +35,28 @@ public class LinkedAccount implements Serializable {
     private Date createdAt;
     @Schema(type = "integer", format = "int64", example = "1634813554997")
     private Date expiresAt;
+
+    public LinkedAccount(String institutionIdentifier,
+                         String schacHomeOrganization,
+                         String eduPersonPrincipalName,
+                         String subjectId,
+                         String givenName,
+                         String familyName,
+                         List<String> eduPersonAffiliations,
+                         boolean preferred,
+                         Date createdAt,
+                         Date expiresAt) {
+        this.institutionIdentifier = institutionIdentifier;
+        this.schacHomeOrganization = schacHomeOrganization;
+        this.eduPersonPrincipalName = eduPersonPrincipalName;
+        this.subjectId = subjectId;
+        this.givenName = givenName;
+        this.familyName = familyName;
+        this.eduPersonAffiliations = eduPersonAffiliations;
+        this.preferred = preferred;
+        this.createdAt = createdAt;
+        this.expiresAt = expiresAt;
+    }
 
     @Transient
     @JsonIgnore
@@ -67,5 +92,17 @@ public class LinkedAccount implements Serializable {
 
     public void setPreferred(boolean preferred) {
         this.preferred = preferred;
+    }
+
+    public void setDisplayNameEn(String displayNameEn) {
+        this.displayNameEn = displayNameEn;
+    }
+
+    public void setDisplayNameNl(String displayNameNl) {
+        this.displayNameNl = displayNameNl;
+    }
+
+    public void setLogoUrl(String logoUrl) {
+        this.logoUrl = logoUrl;
     }
 }

@@ -3,7 +3,7 @@ import {writable} from 'svelte/store';
 export const user = writable({
     id: "",
     email: "",
-    callName: "",
+    chosenName: "",
     givenName: "",
     familyName: "",
     guest: true,

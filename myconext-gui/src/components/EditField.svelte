@@ -5,7 +5,8 @@
     import Button from "./Button.svelte";
     import I18n from "i18n-js";
     import critical from "../icons/critical.svg";
-    import {dateFromEpoch} from "../utils/date";
+    import LinkedInstitution from "./LinkedInstitution.svelte";
+    import {institutionName} from "../utils/services";
 
     const cancel = () => {
         value = firstValue;
@@ -29,6 +30,7 @@
     export let nameField = true;
     export let saveLabel = I18n.t("edit.save");
     export let addInstitution;
+    export let editHint;
 
     let value = firstValue;
     let showDropDown = false;
@@ -74,6 +76,10 @@
 
     }
 
+    .edit-hint {
+        margin-top: 8px;
+    }
+
     div.error {
         display: flex;
         align-items: center;
@@ -96,29 +102,6 @@
         border-radius: 8px;
         display: flex;
         flex-direction: column;
-
-        table {
-            margin-top: 25px;
-            border-collapse: collapse;
-
-            tr {
-                border-bottom: 1px solid var(--color-primary-grey);
-
-                td {
-                    padding: 12px 5px;
-                    width: 35%;
-
-                    &.value {
-                        font-weight: 600;
-                        width: 65%;
-                    }
-                }
-            }
-        }
-
-        .button-container {
-            margin-top: 25px;
-        }
     }
 
     .view-mode {
@@ -186,6 +169,9 @@
                     disabled={!value || !value.trim()}
                     onClick={() => onSave(value)}/>
         </div>
+        {#if editHint}
+            <p class="edit-hint">{editHint}</p>
+        {/if}
     {:else}
         <div class="view-mode-container">
             <div class="view-mode">
@@ -196,7 +182,7 @@
                 {/if}
                     {firstValue}</span>
                     <span class="editable-by">{editableByUser ? I18n.t("profile.editable") :
-                        I18n.t("profile.nonEditable", {name: linkedAccount.schacHomeOrganization}) }</span>
+                        I18n.t("profile.nonEditable", {name: institutionName(linkedAccount)}) }</span>
                 </div>
                 {#if editableByUser}
                     <span class="icon" on:click={() => onEdit()}>{@html editIcon}</span>
@@ -206,38 +192,9 @@
                 {/if}
             </div>
             {#if showDropDown}
-                <table>
-                    <thead/>
-                    <tbody>
-                    <tr>
-                        <td colspan="2">
-                            {@html I18n.t("profile.verifiedBy", {
-                                name: linkedAccount.schacHomeOrganization,
-                                date: dateFromEpoch(linkedAccount.createdAt)
-                            })}
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            {I18n.t("profile.institution")}
-                        </td>
-                        <td class="value">{linkedAccount.schacHomeOrganization}</td>
-                    </tr>
-                    <tr>
-                        <td>
-                            {I18n.t("profile.validUntil")}
-                        </td>
-                        <td class="value">{dateFromEpoch(linkedAccount.expiresAtNonValidated || linkedAccount.expiresAt)}</td>
-                    </tr>
-                    </tbody>
-                </table>
-                <div class="button-container">
-                    <Button label={I18n.t("edit.update")}
-                            inline={true}
-                            small={true}
-                            onClick={() => addInstitution(true)}/>
-                </div>
-
+                <LinkedInstitution linkedAccount={linkedAccount}
+                                   includeAffiliations={false}
+                                   addInstitution={addInstitution}/>
             {/if}
 
         </div>

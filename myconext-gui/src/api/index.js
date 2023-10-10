@@ -56,6 +56,10 @@ export function updateUser(user) {
     return postPutJson("/myconext/api/sp/update", user, "PUT");
 }
 
+export function linkedAccountDisplayNames(linkedAccount) {
+    return fetchJson(`/myconext/api/sp/institution/names?schac_home=${encodeURIComponent(linkedAccount.schacHomeOrganization)}`);
+}
+
 export function preferLinkedAccount(linkedAccount) {
     return postPutJson("/myconext/api/sp/prefer-linked-account", {schacHomeOrganization: linkedAccount.schacHomeOrganization}, "PUT");
 }

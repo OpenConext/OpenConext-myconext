@@ -285,8 +285,9 @@ public class UserController implements ServiceProviderHolder, UserAuthentication
     @Operation(summary = "Institution displaynames",
             description = "Retrieve the displayNames of the Institution by the schac_home value")
     @GetMapping("/sp/institution/names")
-    public ResponseEntity<Optional<IdentityProvider>> institutionNames(@RequestParam(value = "schac_home") String schacHome) {
-        return ResponseEntity.ok(idPMetaDataResolver.getIdentityProvider(schacHome));
+    public ResponseEntity<IdentityProvider> institutionNames(@RequestParam(value = "schac_home") String schacHome) {
+        return ResponseEntity.ok(idPMetaDataResolver.getIdentityProvider(schacHome)
+                .orElse(new IdentityProvider(schacHome, schacHome, null)));
     }
 
     @Operation(summary = "User details", description = "Retrieve the attributes of the current user")
@@ -363,7 +364,7 @@ public class UserController implements ServiceProviderHolder, UserAuthentication
     public ResponseEntity<UserResponse> updateUserProfile(Authentication authentication, @Valid @RequestBody UpdateUserNameRequest deltaUser) {
         User user = userFromAuthentication(authentication);
 
-        user.setCallName(deltaUser.getCallName());
+        user.setChosenName(deltaUser.getChosenName());
         user.setGivenName(deltaUser.getGivenName());
         user.setFamilyName(deltaUser.getFamilyName());
         user.validate();
@@ -385,6 +386,8 @@ public class UserController implements ServiceProviderHolder, UserAuthentication
             if (linkedAccount.areNamesValidated()) {
                 user.getLinkedAccounts().forEach(otherLinkedAccount -> otherLinkedAccount.setPreferred(false));
                 linkedAccount.setPreferred(true);
+                user.setGivenName(linkedAccount.getGivenName());
+                user.setFamilyName(linkedAccount.getFamilyName());
                 userRepository.save(user);
             }
         });
@@ -668,19 +671,21 @@ public class UserController implements ServiceProviderHolder, UserAuthentication
 
     private ResponseEntity<UserResponse> returnUserResponse(User user) {
         Optional<Registration> optionalRegistration = registrationRepository.findRegistrationByUserId(user.getId());
-        return ResponseEntity.status(201).body(new UserResponse(user, convertEduIdPerServiceProvider(user), optionalRegistration, false));
+        UserResponse userResponse = new UserResponse(user, convertEduIdPerServiceProvider(user), optionalRegistration, false, idPMetaDataResolver);
+        return ResponseEntity.status(201).body(userResponse);
     }
 
     private ResponseEntity<UserResponse> userResponseRememberMe(User user) {
         List<SamlAuthenticationRequest> samlAuthenticationRequests = authenticationRequestRepository.findByUserIdAndRememberMe(user.getId(), true);
         Optional<Registration> optionalRegistration = registrationRepository.findRegistrationByUserId(user.getId());
-        return ResponseEntity.ok(new UserResponse(user, convertEduIdPerServiceProvider(user), optionalRegistration, !samlAuthenticationRequests.isEmpty()));
+        UserResponse userResponse = new UserResponse(user, convertEduIdPerServiceProvider(user), optionalRegistration, !samlAuthenticationRequests.isEmpty(), idPMetaDataResolver);
+        return ResponseEntity.ok(userResponse);
     }
 
     @GetMapping("sp/security/webauthn")
     @Hidden
     public ResponseEntity spStartWebAuthFlow(Authentication authentication) {
-        //We need to go from the SP to the IdP and best is too do everything server side, but we need a temporary identifier for the user
+        //We need to go from the SP to the IdP and best is to do everything server side, but we need a temporary identifier for the user
         User user = userFromAuthentication(authentication);
 
         String webAuthnIdentifier = hash();

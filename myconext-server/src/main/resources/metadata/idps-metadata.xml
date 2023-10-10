@@ -57,4 +57,21 @@
             <md:EmailAddress>mailto:cert@surfnet.nl</md:EmailAddress>
         </md:ContactPerson>
     </md:EntityDescriptor>
+    <md:EntityDescriptor entityID="https://mujina-idp">
+        <md:IDPSSODescriptor protocolSupportEnumeration="urn:oasis:names:tc:SAML:2.0:protocol">
+            <md:Extensions>
+                <shibmd:Scope xmlns:shibmd="urn:mace:shibboleth:metadata:1.0" regexp="false">example.com
+                </shibmd:Scope>
+                <shibmd:Scope xmlns:shibmd="urn:mace:shibboleth:metadata:1.0" regexp="false">groningen.nl
+                </shibmd:Scope>
+                <shibmd:Scope xmlns:shibmd="urn:mace:shibboleth:metadata:1.0" regexp="false">example.nl
+                </shibmd:Scope>
+                <mdui:UIInfo xmlns:mdui="urn:oasis:names:tc:SAML:metadata:ui">
+                    <mdui:DisplayName xml:lang="nl">Mujina NL</mdui:DisplayName>
+                    <mdui:DisplayName xml:lang="en">Mujina EN</mdui:DisplayName>
+                    <mdui:Logo height="160" width="200">https://static.surfconext.nl/logos/idp/rug.png</mdui:Logo>
+                </mdui:UIInfo>
+            </md:Extensions>
+        </md:IDPSSODescriptor>
+    </md:EntityDescriptor>
 </md:EntitiesDescriptor>

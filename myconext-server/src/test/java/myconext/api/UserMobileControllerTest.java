@@ -35,7 +35,7 @@ public class UserMobileControllerTest extends AbstractIntegrationTest {
 
     @Test
     public void updateUserProfile() throws IOException {
-        UpdateUserNameRequest userNameRequest = new UpdateUserNameRequest("Mary", "Winters");
+        UpdateUserNameRequest userNameRequest = new UpdateUserNameRequest("CallName", "Mary", "Winters");
         given()
                 .when()
                 .accept(ContentType.JSON)
@@ -47,6 +47,7 @@ public class UserMobileControllerTest extends AbstractIntegrationTest {
                 .statusCode(201);
         User user = userRepository.findUserByEmail("jdoe@example.com").get();
 
+        assertEquals(userNameRequest.getChosenName(), user.getChosenName());
         assertEquals(userNameRequest.getGivenName(), user.getGivenName());
         assertEquals(userNameRequest.getFamilyName(), user.getFamilyName());
     }

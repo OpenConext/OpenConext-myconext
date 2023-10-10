@@ -124,7 +124,7 @@ public class GuestIdpAuthenticationRequestFilterTest {
                 linkedAccount("Mark", "Lee", createdAt(25))
         );
         user.setLinkedAccounts(linkedAccounts);
-        List<Attribute> attributes = subject.attributes(user, "requesterEntityID", Collections.singletonList(ACR.VALIDATE_NAMES));
+        List<Attribute> attributes = subject.attributes(user, "requesterEntityID");
         String givenName = (String) attributes.stream().filter(attr -> attr.getName().equals("urn:mace:dir:attribute-def:givenName")).findFirst().get().getValues().get(0);
         String familyName = (String) attributes.stream().filter(attr -> attr.getName().equals("urn:mace:dir:attribute-def:sn")).findFirst().get().getValues().get(0);
 

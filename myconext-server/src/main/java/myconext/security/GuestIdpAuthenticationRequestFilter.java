@@ -637,7 +637,7 @@ public class GuestIdpAuthenticationRequestFilter extends IdpAuthenticationReques
                 serviceProviderMetadata, authenticationRequest, user.getUid(), NameId.PERSISTENT);
 
         List<String> authenticationContextClassReferences = samlAuthenticationRequest.getAuthenticationContextClassReferences();
-        attributes(user, requesterEntityId, authenticationContextClassReferences).forEach(assertion::addAttribute);
+        attributes(user, requesterEntityId).forEach(assertion::addAttribute);
 
         Response samlResponse = provider.response(authenticationRequest, assertion, serviceProviderMetadata);
         boolean applySsoMfa = this.isApplySsoMfa();
@@ -715,14 +715,16 @@ public class GuestIdpAuthenticationRequestFilter extends IdpAuthenticationReques
         return serviceProviderResolver;
     }
 
-    protected List<Attribute> attributes(User user, String requesterEntityId, List<String> authenticationContextClassReferences) {
+    protected List<Attribute> attributes(User user, String requesterEntityId) {
         List<LinkedAccount> linkedAccounts = safeSortedAffiliations(user);
         String givenName = user.getGivenName();
         String familyName = user.getFamilyName();
 
-        if (authenticationContextClassReferences.contains(ACR.VALIDATE_NAMES) && !CollectionUtils.isEmpty(linkedAccounts)) {
+        //If one of the linkedAccounts is preferred then the validated names are already set on the user (backward compatibility)
+        if (!CollectionUtils.isEmpty(linkedAccounts) && linkedAccounts.stream().noneMatch(LinkedAccount::isPreferred)) {
             Optional<LinkedAccount> first = linkedAccounts.stream()
-                    .filter(LinkedAccount::areNamesValidated).findFirst();
+                    .filter(LinkedAccount::areNamesValidated)
+                    .findFirst();
             //Can't use non-final variables in lambda
             if (first.isPresent()) {
                 LinkedAccount linkedAccount = first.get();
@@ -731,11 +733,13 @@ public class GuestIdpAuthenticationRequestFilter extends IdpAuthenticationReques
             }
         }
 
-        String displayName = String.format("%s %s", givenName, familyName);
+        String displayName = String.format("%s %s", user.getChosenName(), familyName);
+        String commonName = String.format("%s %s", givenName, familyName);
         String eppn = user.getEduPersonPrincipalName();
         List<Attribute> attributes = new ArrayList(Arrays.asList(
                 attribute("urn:mace:dir:attribute-def:cn", displayName),
                 attribute("urn:mace:dir:attribute-def:displayName", displayName),
+                attribute("urn:mace:dir:attribute-def:commonName", commonName),
                 attribute("urn:mace:dir:attribute-def:eduPersonPrincipalName", eppn),
                 attribute("urn:oasis:names:tc:SAML:attribute:subject-id", eppn),
                 attribute("urn:mace:dir:attribute-def:givenName", givenName),

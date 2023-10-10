@@ -18,7 +18,7 @@ public class IdPMetaDataResolverTest {
         metaDataResolver.resolveIdpMetaData();
         Set<String> domainNames = metaDataResolver.getDomainNames();
 
-        assertEquals(2, domainNames.size());
+        assertEquals(5, domainNames.size());
         assertEquals("rug.nl", domainNames.iterator().next());
     }
 
@@ -41,6 +41,7 @@ public class IdPMetaDataResolverTest {
 
             assertEquals("Amsterdam University of the Arts", identityProvider.getDisplayNameEn());
             assertEquals("Amsterdamse Hogeschool voor de Kunsten", identityProvider.getDisplayNameNl());
+            assertEquals("https://static.surfconext.nl/media/idp/ahk-logo.png", identityProvider.getLogoUrl());
         });
 
     }

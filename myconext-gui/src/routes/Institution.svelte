@@ -8,6 +8,7 @@
     import {onMount} from "svelte";
     import {formatCreateDate} from "../format/date";
     import Modal from "../components/Modal.svelte";
+    import {institutionName} from "../utils/services";
 
     let linkedAccount = {eduPersonAffiliations: []};
     let showModal = false;
@@ -101,7 +102,7 @@
             <td class="attr">{I18n.t("institution.name")}</td>
             <td class="value">
                 <div class="value-container">
-                    <span>{`${linkedAccount.schacHomeOrganization}`}</span>
+                    <span>{institutionName(linkedAccount)}</span>
                 </div>
             </td>
         </tr>

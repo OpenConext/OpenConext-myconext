@@ -10,7 +10,17 @@ I18n.translations.nl = {
     },
     start: {
         hi: "Hi {{name}}!",
-        manage: "Beheer jouw persoonlijke informatie, jouw privacy, en de beveiliging van jouw eduID account."
+        manage: "Beheer jouw persoonlijke informatie, jouw privacy, en de beveiliging van jouw eduID account.",
+        app: {
+            title: "Are you studying in NL? Connect your institution!",
+            infoBold: "When you study in the Netherlands ",
+            infoPart: "and you want to use eduID to login to educational services, we need to be sure it's you and not someone impersonating you.",
+            requirements: "You must therefore add the following information to your eduID",
+            validatedName: "Validation of your full name by a third party",
+            proofStudent: "Proof of being a student",
+            institution: "Your current institution",
+            connect: "Connect your school institution"
+        }
     },
     header: {
         title: "eduID",
@@ -36,7 +46,7 @@ I18n.translations.nl = {
         basic: "Basis informatie",
         email: "E-mail",
         name: "Naam",
-        callName: "Roepnaam",
+        chosenName: "Roepnaam",
         givenName: "Voornaam",
         familyName: "Achternaam",
         linkedAccounts: "Je rollen",
@@ -60,7 +70,7 @@ I18n.translations.nl = {
         proceed: "Doorgaan",
         verified: "Geveriëerd",
         notVerified: "Niet geveriëerd",
-        editable: "Aanpasbaar door jij",
+        editable: "Bewerkbaar door jou",
         nonEditable: "Geveriëerd door {{name}}",
         verifiedBy: "<strong>Verified by {{name}}</strong> on {{date}}",
         validUntil: "Valid until",
@@ -68,7 +78,13 @@ I18n.translations.nl = {
             addInstitution: "Verifieer naam",
             addInstitutionConfirmation: "Als je doorgaat word je gevraagd in te loggen via de onderwijsinstelling die je wilt koppelen. Selecteer eerst welke instelling je wilt koppelen en log daarna in.<br/> <br/>Nadat je succesvol bent ingelogd kom je hier weer terug.",
         },
-
+        remove: "Verwijder",
+        atInstitution: "Bij {{name}}",
+        studentRole: "Student",
+        preferInstitution: "Prefer institution",
+        preferredInstitutionConfirmation: "Do you want to use the information received from {{name}} to be the default information to share with services?",
+        preferred: "{{name}] is now your preferred source of information",
+        expired: "Verlopen"
     },
     eppnAlreadyLinked: {
         header: "Koppeling niet gemaakt!",
@@ -85,7 +101,8 @@ I18n.translations.nl = {
         cancel: "Annuleren",
         save: "Bewaar je veranderingen",
         updated: "Je profiel is bijgewerkt.",
-        back: "/profile"
+        back: "/profile",
+        and: " en "
     },
     email: {
         title: "E-mail",

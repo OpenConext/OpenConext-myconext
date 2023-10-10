@@ -35,7 +35,7 @@ public class User implements Serializable, UserDetails {
     private String id;
     //Do not index the email here, this is already done in MongoMapping with a custom strength (case-insensitive)
     private String email;
-    private String callName;
+    private String chosenName;
     private String givenName;
     private String familyName;
     @Indexed
@@ -66,16 +66,16 @@ public class User implements Serializable, UserDetails {
 
     public User(CreateInstitutionEduID createInstitutionEduID, Map<String, Object> userInfo) {
         this.email = createInstitutionEduID.getEmail();
-        this.callName = (String) userInfo.get("given_name");
+        this.chosenName = (String) userInfo.get("given_name");
         this.givenName = (String) userInfo.get("given_name");
         this.familyName = (String) userInfo.get("family_name");
     }
 
-    public User(String uid, String email, String callName, String givenName, String familyName, String schacHomeOrganization, String preferredLanguage,
+    public User(String uid, String email, String chosenName, String givenName, String familyName, String schacHomeOrganization, String preferredLanguage,
                 String serviceProviderEntityId, ServiceProviderResolver serviceProviderResolver) {
         this.uid = uid;
         this.email = email;
-        this.callName = callName;
+        this.chosenName = chosenName;
         this.givenName = givenName;
         this.familyName = familyName;
         this.schacHomeOrganization = schacHomeOrganization;
@@ -233,8 +233,8 @@ public class User implements Serializable, UserDetails {
         this.newUser = newUser;
     }
 
-    public void setCallName(String callName) {
-        this.callName = callName;
+    public void setChosenName(String chosenName) {
+        this.chosenName = chosenName;
     }
 
     public void setGivenName(String givenName) {

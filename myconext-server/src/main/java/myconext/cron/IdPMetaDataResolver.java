@@ -41,6 +41,7 @@ public class IdPMetaDataResolver {
         Map<String, IdentityProvider> newIdentityProviderMap = new HashMap<>();
         String displayNameEn = null;
         String displayNameNl = null;
+        String logoUrl = null;
         List<String> domainNames = new ArrayList<>();
         try {
             XMLStreamReader reader = getXMLStreamReader(metaDataResource);
@@ -54,6 +55,7 @@ public class IdPMetaDataResolver {
                                 domainNames.clear();
                                 displayNameEn = null;
                                 displayNameNl = null;
+                                logoUrl = null;
                                 break;
                             case "Scope":
                                 String scopeText = reader.getElementText();
@@ -72,16 +74,21 @@ public class IdPMetaDataResolver {
                                         displayNameNl = displayName;
                                     }
                                 }
+                                break;
+                            case "Logo":
+                                logoUrl = reader.getElementText();
+                                break;
                         }
                         break;
                     case END_ELEMENT:
                         localName = reader.getLocalName();
                         if (localName.equals("IDPSSODescriptor")) {
-                            IdentityProvider identityProvider = new IdentityProvider(displayNameEn, displayNameNl);
+                            IdentityProvider identityProvider = new IdentityProvider(displayNameEn, displayNameNl, logoUrl);
                             for (String domainName : domainNames) {
                                 newIdentityProviderMap.put(domainName, identityProvider);
                             }
                         }
+                        break;
                 }
             }
             this.identityProviderMap = newIdentityProviderMap;

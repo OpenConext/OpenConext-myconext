@@ -23,12 +23,12 @@ public class LinkedAccountTest {
 
     public static LinkedAccount linkedAccount(String givenName, String familyName, Date createdAt) {
         return new LinkedAccount("id", "schac", "eppn", "subjectId",
-                givenName, familyName, Arrays.asList("student"), createdAt, expired(createdAt));
+                givenName, familyName, Arrays.asList("student"), false, createdAt, expired(createdAt));
     }
 
     public static LinkedAccount linkedAccount(Date createdAt, List<String> affiliations) {
         return new LinkedAccount("id", "schac", "eppn", "subjectId",
-                null, null, affiliations, createdAt, expired(createdAt));
+                null, null, affiliations, false, createdAt, expired(createdAt));
     }
 
     private static Date expired(Date createdAt) {

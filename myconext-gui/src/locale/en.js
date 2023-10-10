@@ -46,7 +46,7 @@ I18n.translations.en = {
         basic: "Your identity",
         email: "Email address",
         name: "Name",
-        callName: "Call name",
+        chosenName: "Call name",
         givenName: "Given name",
         familyName: "Family name",
         linkedAccounts: "Your role(s)",
@@ -78,7 +78,13 @@ I18n.translations.en = {
             addInstitution: "Verify name",
             addInstitutionConfirmation: "When you proceed you will be asked to login at the institution you want to link to your eduID. First, select which institution you want to connect; then, login at that institution.<br/><br/>After a successful login you will come back here.",
         },
-
+        remove: "Remove",
+        atInstitution: "At {{name}}",
+        studentRole: "Student",
+        preferInstitution: "Prefer institution",
+        preferredInstitutionConfirmation: "Do you want to use the information received from {{name}} to be the default information to share with services?",
+        preferred: "{{name}] is now your preferred source of information",
+        expired: "Expired"
     },
     eppnAlreadyLinked: {
         header: "Connection not added!",
@@ -93,13 +99,14 @@ I18n.translations.en = {
         familyName: "Your last name",
         update: "Update",
         cancel: "Cancel",
-        save: "Save",// your changes",
+        save: "Save",
         updated: "Your profile has been updated",
-        back: "/personal"
+        back: "/personal",
+        and: " and "
     },
     email: {
         title: "Email",
-        info: "Please enter your new email address. A verification mail will be sent to this address.",
+        info: "A verification mail will be sent to your new email.",
         email: "Your new email",
         update: "Request",
         cancel: "Cancel",

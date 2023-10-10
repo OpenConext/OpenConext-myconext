@@ -15,4 +15,5 @@ public class IdentityProvider implements Serializable {
 
     private String displayNameEn;
     private String displayNameNl;
+    private String logoUrl;
 }

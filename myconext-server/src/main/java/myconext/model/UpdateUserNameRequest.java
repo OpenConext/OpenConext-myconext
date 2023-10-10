@@ -13,7 +13,7 @@ import java.io.Serializable;
 public class UpdateUserNameRequest implements Serializable {
 
     @NotBlank
-    private String callName;
+    private String chosenName;
 
     @NotBlank
     private String givenName;
