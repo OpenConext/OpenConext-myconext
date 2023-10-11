@@ -136,7 +136,6 @@ public class UserControllerTest extends AbstractIntegrationTest {
     @Test
     public void accountLinkingWithValidatedNames() throws IOException {
         User user = userRepository.findOneUserByEmail("jdoe@example.com");
-        LinkedAccount linkedAccount = user.linkedAccountsSorted().get(0);
 
         String authnContext = readFile("request_authn_context_validated_name.xml");
         Response response = samlAuthnRequestResponseWithLoa(null, "relay", authnContext);
@@ -146,8 +145,8 @@ public class UserControllerTest extends AbstractIntegrationTest {
         String samlResponse = samlResponse(magicLinkResponse);
 
         assertTrue(samlResponse.contains(ACR.VALIDATE_NAMES));
-        assertTrue(samlResponse.contains(linkedAccount.getFamilyName()));
-        assertTrue(samlResponse.contains(linkedAccount.getGivenName()));
+        assertTrue(samlResponse.contains(user.getFamilyName()));
+        assertTrue(samlResponse.contains(user.getGivenName()));
     }
 
     @Test

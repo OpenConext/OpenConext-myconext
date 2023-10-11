@@ -10,16 +10,16 @@ I18n.translations.nl = {
     },
     start: {
         hi: "Hi {{name}}!",
-        manage: "Beheer jouw persoonlijke informatie, jouw privacy, en de beveiliging van jouw eduID account.",
+        manage: "Beheer je persoonlijke informatie, je privacy, en de beveiliging van je eduID account.",
         app: {
-            title: "Are you studying in NL? Connect your institution!",
-            infoBold: "When you study in the Netherlands ",
-            infoPart: "and you want to use eduID to login to educational services, we need to be sure it's you and not someone impersonating you.",
-            requirements: "You must therefore add the following information to your eduID",
-            validatedName: "Validation of your full name by a third party",
-            proofStudent: "Proof of being a student",
-            institution: "Your current institution",
-            connect: "Connect your school institution"
+            title: "Studeer je in NL? Koppel je instelling!",
+            infoBold: "Als je studeert in Nederland ",
+            infoPart: "en je wilt eduID gebruiken om in te loogen op onderwijsdiensten, dan willen we zekerheid over je identiteit.",
+            requirements: "Daarvoor kan je de volgende informatie toevoegen aan de eduID account",
+            validatedName: "Validatie van je volledige naam bij een instelling",
+            proofStudent: "Bewijs dat je een student bent",
+            institution: "Je huidige instelling",
+            connect: "Koppel je onderwijsinstelling"
         }
     },
     header: {
@@ -81,9 +81,9 @@ I18n.translations.nl = {
         remove: "Verwijder",
         atInstitution: "Bij {{name}}",
         studentRole: "Student",
-        preferInstitution: "Prefer institution",
-        preferredInstitutionConfirmation: "Do you want to use the information received from {{name}} to be the default information to share with services?",
-        preferred: "{{name}] is now your preferred source of information",
+        preferInstitution: "Voorkeursinstelling",
+        preferredInstitutionConfirmation: "Wil je de informatie die we van {{name}} ontvangen, gebruiken als standaardinformatie om met diensten te delen?",
+        preferred: "{{name}] is nu de bron van je persoonsinformatie",
         expired: "Verlopen"
     },
     eppnAlreadyLinked: {

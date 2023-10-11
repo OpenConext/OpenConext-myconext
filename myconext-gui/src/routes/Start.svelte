@@ -8,6 +8,7 @@
     import settingsSvg from "../icons/redesign/settings.svg";
     import getApp from "../icons/redesign/undraw_Mobile_app_re_catg 1.svg";
     import Button from "../components/Button.svelte";
+    import {isEmpty} from "../utils/utils";
 </script>
 
 <style lang="scss">
@@ -140,7 +141,7 @@
     <h2>{I18n.t("start.hi", {name: $user.givenName})}</h2>
     <p class="manage">{I18n.t("start.manage")}</p>
     <div class="card-container">
-        {#if !$user.loginOptions.includes("useApp") && (!$user.registration || !$user.registration.notificationType)}
+        {#if isEmpty($user.linkedAccounts)}
             <div class="info-container">
                 <h4>{I18n.t("start.app.title")}</h4>
                 <div class="content-section">

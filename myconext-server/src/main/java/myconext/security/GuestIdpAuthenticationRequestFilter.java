@@ -719,21 +719,9 @@ public class GuestIdpAuthenticationRequestFilter extends IdpAuthenticationReques
         List<LinkedAccount> linkedAccounts = safeSortedAffiliations(user);
         String givenName = user.getGivenName();
         String familyName = user.getFamilyName();
+        String chosenName = user.getChosenName();
 
-        //If one of the linkedAccounts is preferred then the validated names are already set on the user (backward compatibility)
-        if (!CollectionUtils.isEmpty(linkedAccounts) && linkedAccounts.stream().noneMatch(LinkedAccount::isPreferred)) {
-            Optional<LinkedAccount> first = linkedAccounts.stream()
-                    .filter(LinkedAccount::areNamesValidated)
-                    .findFirst();
-            //Can't use non-final variables in lambda
-            if (first.isPresent()) {
-                LinkedAccount linkedAccount = first.get();
-                givenName = linkedAccount.getGivenName();
-                familyName = linkedAccount.getFamilyName();
-            }
-        }
-
-        String displayName = String.format("%s %s", user.getChosenName(), familyName);
+        String displayName = String.format("%s %s", chosenName, familyName);
         String commonName = String.format("%s %s", givenName, familyName);
         String eppn = user.getEduPersonPrincipalName();
         List<Attribute> attributes = new ArrayList(Arrays.asList(

@@ -4,10 +4,7 @@ import com.github.cloudyrock.mongock.ChangeLog;
 import com.github.cloudyrock.mongock.ChangeSet;
 import com.github.cloudyrock.mongock.driver.mongodb.springdata.v3.decorator.impl.MongockTemplate;
 import myconext.manage.ServiceProviderResolver;
-import myconext.model.EduID;
-import myconext.model.PublicKeyCredentials;
-import myconext.model.ServiceProvider;
-import myconext.model.User;
+import myconext.model.*;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.data.mongodb.core.query.Criteria;
@@ -137,6 +134,29 @@ public class Migrations {
     @SuppressWarnings("unchecked")
     @ChangeSet(order = "006", id = "deleteSessionAfterUserUpdate", author = "okke.harsta@surf.nl")
     public void deleteSessionAfterUserUpdate(MongockTemplate mongoTemplate) {
+        mongoTemplate.remove(new Query(), "sessions");
+    }
+
+    @SuppressWarnings("unchecked")
+    @ChangeSet(order = "007", id = "migrateUsers", author = "okke.harsta@surf.nl")
+    public void migrateUsers(MongockTemplate mongoTemplate) {
+        Criteria criteria = Criteria.where("linkedAccounts").exists(true).type(JsonSchemaObject.Type.ARRAY).ne(new ArrayList<>());
+        List<User> users = mongoTemplate.find(new Query(criteria), User.class, "users");
+        users.forEach(user -> user.linkedAccountsSorted().stream()
+                .filter(LinkedAccount::areNamesValidated)
+                .findFirst()
+                .ifPresent(linkedAccount -> {
+                    user.setGivenName(linkedAccount.getGivenName());
+                    user.setFamilyName(linkedAccount.getFamilyName());
+                    user.setChosenName(user.getGivenName());
+                    linkedAccount.setPreferred(true);
+                    mongoTemplate.save(user);
+                }));
+    }
+
+    @SuppressWarnings("unchecked")
+    @ChangeSet(order = "008", id = "deleteSessionAgain", author = "okke.harsta@surf.nl")
+    public void deleteSessionAgain(MongockTemplate mongoTemplate) {
         mongoTemplate.remove(new Query(), "sessions");
     }
 

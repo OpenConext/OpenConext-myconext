@@ -118,6 +118,9 @@ public class GuestIdpAuthenticationRequestFilterTest {
     @Test
     public void attributes() {
         User user = new User();
+        user.setGivenName("Mary");
+        user.setChosenName("Marrrry");
+        user.setFamilyName("Poppins");
         List<LinkedAccount> linkedAccounts = Arrays.asList(
                 linkedAccount("John", "Doe", createdAt(15)),
                 linkedAccount("Mary", "Poppins", createdAt(10)),
@@ -127,9 +130,13 @@ public class GuestIdpAuthenticationRequestFilterTest {
         List<Attribute> attributes = subject.attributes(user, "requesterEntityID");
         String givenName = (String) attributes.stream().filter(attr -> attr.getName().equals("urn:mace:dir:attribute-def:givenName")).findFirst().get().getValues().get(0);
         String familyName = (String) attributes.stream().filter(attr -> attr.getName().equals("urn:mace:dir:attribute-def:sn")).findFirst().get().getValues().get(0);
+        String displayName = (String) attributes.stream().filter(attr -> attr.getName().equals("urn:mace:dir:attribute-def:displayName")).findFirst().get().getValues().get(0);
+        String commonName = (String) attributes.stream().filter(attr -> attr.getName().equals("urn:mace:dir:attribute-def:commonName")).findFirst().get().getValues().get(0);
 
         assertEquals("Mary", givenName);
         assertEquals("Poppins", familyName);
+        assertEquals("Marrrry Poppins", displayName);
+        assertEquals("Mary Poppins", commonName);
     }
 
     private Date createdAt(int numberOfDaysInThePast) {

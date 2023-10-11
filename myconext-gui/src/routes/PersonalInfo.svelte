@@ -96,7 +96,7 @@
     const refresh = () => {
         sortedAccounts = ($user.linkedAccounts || []).sort((a, b) => b.createdAt - a.createdAt);
         const validLinkedAccounts = sortedAccounts.filter(account => !hasExpired(account));
-        const linkedAccount = validLinkedAccounts.find(account => account.preferred) || sortedAccounts[0];
+        const linkedAccount = validLinkedAccounts.find(account => account.preferred) || validLinkedAccounts[0];
         if (isEmpty(linkedAccount) || isEmpty(linkedAccount.givenName) || isEmpty(linkedAccount.familyName)) {
             preferredAccount = null;
         } else {
