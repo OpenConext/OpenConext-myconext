@@ -46,6 +46,9 @@ manage:
   username: myconext
   password: secret
   base_url: https://manage.test2.surfconext.nl
+  enabled: False
+  # Can also be a https url
+  fallback_url: "classpath:metadata/sp-names.json"
 
 mongodb_db: surf_id_test
 base_domain: test2.surfconext.nl
