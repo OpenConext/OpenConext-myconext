@@ -37,7 +37,7 @@
         flex-direction: column;
 
         &.expired {
-            background-color: var(--color-background);
+            background-color: #f6f6f6;
             border: 2px solid var(--color-primary-grey);
         }
 

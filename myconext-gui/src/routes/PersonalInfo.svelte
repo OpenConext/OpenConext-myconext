@@ -2,8 +2,9 @@
     import {config, flash, user} from "../stores/user";
     import I18n from "i18n-js";
     import verifiedSvg from "../icons/redesign/shield-full.svg";
+    import alertSvg from "../icons/alert-circle.svg";
     import Button from "../components/Button.svelte";
-    import {deleteLinkedAccount,  startLinkAccountFlow, updateEmail, updateUser, preferLinkedAccount} from "../api";
+    import {deleteLinkedAccount, preferLinkedAccount, startLinkAccountFlow, updateEmail, updateUser} from "../api";
     import Modal from "../components/Modal.svelte";
     import EditField from "../components/EditField.svelte";
     import {validEmail} from "../validation/regexp";
@@ -160,8 +161,8 @@
 
     onMount(() => {
         refresh();
-        if (($user.linkedAccounts || []).length > 1){
-            const urlSearchParams= new URLSearchParams(window.location.search);
+        if (($user.linkedAccounts || []).length > 1) {
+            const urlSearchParams = new URLSearchParams(window.location.search);
             const schacHomeOrganization = urlSearchParams.get("institution");
             const institution = $user.linkedAccounts.find(ins => ins.schacHomeOrganization === schacHomeOrganization);
             if (institution && !isEmpty(institution.givenName) && !isEmpty(institution.familyName)) {
@@ -225,6 +226,15 @@
         background-color: var(--color-secondary-blue);
         padding: 10px;
 
+        :global(a.button.ghost) {
+            max-width: 90px;
+            margin-left: auto;
+        }
+
+        &.expired {
+            background-color: #fef8d3;
+        }
+
         @media (max-width: 820px) {
             flex-direction: column;
             margin-top: 20px;
@@ -232,6 +242,11 @@
 
         span.verified-badge {
             margin-left: 5px;
+
+            :global(svg) {
+                height: 28px;
+                width: auto;
+            }
         }
 
         p {
@@ -305,12 +320,21 @@
         <p class="info">{I18n.t("profile.info")}</p>
     </div>
 
-    {#if !eduIDLinked}
+    {#if !eduIDLinked && $user.linkedAccounts.length === 0}
         <div class="banner">
             <span class="verified-badge">{@html verifiedSvg}</span>
             <p>{I18n.t("profile.banner")}</p>
             <Button label={I18n.t("profile.verifyNow")}
-                    className="ghost"
+                    className="ghost transparent"
+                    onClick={() => addInstitution(true)}/>
+        </div>
+    {/if}
+    {#if !eduIDLinked && $user.linkedAccounts.length > 0}
+        <div class="banner expired">
+            <span class="verified-badge">{@html alertSvg}</span>
+            <p>{I18n.t("profile.expiredBanner")}</p>
+            <Button label={I18n.t("profile.verifyNow")}
+                    className="ghost transparent"
                     onClick={() => addInstitution(true)}/>
         </div>
     {/if}

@@ -42,6 +42,7 @@ I18n.translations.nl = {
         title: "Persoonlijke informatie",
         info: "Wanneer je eduID gebruikt om in te loggen op andere websites, kan jouw persoonlijke informatie worden gedeeld.",
         banner: "Sommige diensten vereisen dat je persoonlijke gegevens worden gevalideerd door een vertrouwde partij.",
+        expiredBanner: "De verificatie van je identiteit is verlopen, verifïeer deze opnieuw.",
         verifyNow: "Verifïeer je identiteit nu",
         basic: "Basis informatie",
         email: "E-mail",

@@ -42,6 +42,7 @@ I18n.translations.en = {
         title: "Personal sharable information",
         info: "When you use eduID to login to other websites, some of your personal information will be shared.",
         banner: "Some services require that your personal information is validated by a trusted party.",
+        expiredBanner: "The verification of your identity has expired, please verify it again.",
         verifyNow: "Verify your identity now",
         basic: "Your identity",
         email: "Email address",

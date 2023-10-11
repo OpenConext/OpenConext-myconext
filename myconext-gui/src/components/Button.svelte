@@ -164,6 +164,9 @@
         border: 1px solid black;
         background-color: var(--color-secondary-blue);
 
+        &.transparent {
+            background-color: transparent;
+        }
         &:hover {
             background-color: var(--color-primary-blue);
             color: white;
