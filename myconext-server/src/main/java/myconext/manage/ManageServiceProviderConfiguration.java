@@ -17,7 +17,7 @@ public class ManageServiceProviderConfiguration {
                                                            @Value("${manage.password}") String password,
                                                            @Value("${manage.base_url}") String baseUrl,
                                                            @Value("${manage.enabled}") boolean enabled,
-                                                           @Value("${manage.enabled}")  Resource resource,
+                                                           @Value("${manage.fallback_url}")  Resource resource,
                                                            ObjectMapper objectMapper,
                                                            Environment environment) {
         String[] activeProfiles = environment.getActiveProfiles();
