@@ -54,6 +54,8 @@ jobs:
       uses: ardalanamini/auto-changelog@v3
       with:
         default-commit-type: New Features
+        semver: false
+
 
     - name: Create release
       uses: actions/create-release@v1
