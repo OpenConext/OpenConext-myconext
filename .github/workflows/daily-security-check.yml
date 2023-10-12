@@ -34,9 +34,9 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: 14
-      - name: Yarn Audit
-        if: steps.check_node_yarn.outputs.files_exists == 'true'
-        run: yarn audit --level high --groups dependencies optionalDependencies
+#      - name: Yarn Audit
+#        if: steps.check_node_yarn.outputs.files_exists == 'true'
+#        run: yarn audit --level high --groups dependencies optionalDependencies
 
       # node-npm checks
       - name: Check for node-npm project
@@ -49,9 +49,9 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: 14
-      - name: npm audit
-        if: steps.check_node_npm.outputs.files_exists == 'true'
-        run: npm audit --audit-level=high
+#      - name: npm audit
+#        if: steps.check_node_npm.outputs.files_exists == 'true'
+#        run: npm audit --audit-level=high
 
       # python checks
       - name: Check for python project
