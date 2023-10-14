@@ -26,7 +26,7 @@
         document.body.classList.add("modal-open");
     })
 
-    onDestroy(()=> {
+    onDestroy(() => {
         document.body.classList.remove("modal-open");
     })
 
@@ -94,9 +94,10 @@
         </div>
 
         <div class="options">
-            <Button className="cancel" onClick={cancel}
-                    label={I18n.t("modal.cancel")}/>
-
+            {#if cancel}
+                <Button className="cancel" onClick={cancel}
+                        label={I18n.t("modal.cancel")}/>
+            {/if}
             <Button onClick={submit}
                     warning={warning}
                     href={href}

@@ -13,6 +13,7 @@
     import {isEmpty} from "../utils/utils";
     import InstitutionRole from "../components/InstitutionRole.svelte";
     import {institutionName} from "../utils/services";
+    import ValidatedData from "../components/ValidatedData.svelte";
 
     let eduIDLinked = false;
 
@@ -32,8 +33,10 @@
 
     let showModal = false;
     let showDeleteInstitutionModal = false;
+    let showNewInstitutionModal = false;
     let showPreferredInstitutionModal = false;
     let selectedInstitution;
+    let newInstitution = {};
 
     const preferInstitution = (showConfirmation, linkedAccount) => {
         preferredInstitution = linkedAccount;
@@ -161,12 +164,17 @@
 
     onMount(() => {
         refresh();
-        if (($user.linkedAccounts || []).length > 1) {
+        if (($user.linkedAccounts || []).length > 0) {
             const urlSearchParams = new URLSearchParams(window.location.search);
             const schacHomeOrganization = urlSearchParams.get("institution");
             const institution = $user.linkedAccounts.find(ins => ins.schacHomeOrganization === schacHomeOrganization);
             if (institution && !isEmpty(institution.givenName) && !isEmpty(institution.familyName)) {
-                preferInstitution(true, institution);
+                newInstitution = institution;
+                if (($user.linkedAccounts || []).length === 1) {
+                    showNewInstitutionModal = true;
+                } else {
+                    preferInstitution(true, institution);
+                }
             }
         }
     });
@@ -348,7 +356,7 @@
             {/if}
         </div>
         <EditField label={I18n.t("profile.chosenName")}
-                   firstValue={$user.chosenName || $user.givenName}
+                   firstValue={$user.chosenName}
                    editableByUser={true}
                    saveLabel={I18n.t("edit.save")}
                    editMode={chosenNameEditMode}
@@ -442,6 +450,15 @@
            cancel={() => showPreferredInstitutionModal = false}
            question={I18n.t("profile.preferredInstitutionConfirmation", {name: institutionName(preferredInstitution)})}
            title={I18n.t("profile.preferInstitution")}>
+        <ValidatedData institution={newInstitution}/>
     </Modal>
 {/if}
 
+{#if showNewInstitutionModal}
+    <Modal submit={() => showNewInstitutionModal = false}
+           question={I18n.t("profile.newInstitutionInfo")}
+           confirmTitle={I18n.t("profile.ok")}
+           title={I18n.t("profile.newInstitution")}>
+        <ValidatedData institution={newInstitution}/>
+    </Modal>
+{/if}

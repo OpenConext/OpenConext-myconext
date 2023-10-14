@@ -20,7 +20,7 @@ public class UserResponse implements Serializable {
 
     private final String id;
     private final String email;
-    private final String callName;
+    private final String chosenName;
     private final String givenName;
     private final String familyName;
     private final boolean usePassword;
@@ -43,7 +43,7 @@ public class UserResponse implements Serializable {
                         IdPMetaDataResolver idPMetaDataResolver) {
         this.id = user.getId();
         this.email = user.getEmail();
-        this.callName = user.getChosenName();
+        this.chosenName = user.getChosenName();
         this.givenName = user.getGivenName();
         this.familyName = user.getFamilyName();
         this.schacHomeOrganization = user.getSchacHomeOrganization();

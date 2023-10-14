@@ -85,7 +85,10 @@ I18n.translations.en = {
         preferInstitution: "Prefer institution",
         preferredInstitutionConfirmation: "Do you want to use the information received from {{name}} to be the default information to share with services?",
         preferred: "{{name}] is now your preferred source of information",
-        expired: "Expired"
+        expired: "Expired",
+        newInstitution: "Your identity has been verified",
+        newInstitutionInfo: "We have replaced the following information with the verified data from your institution:",
+        ok: "Continue"
     },
     eppnAlreadyLinked: {
         header: "Connection not added!",
