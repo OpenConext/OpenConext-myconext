@@ -303,6 +303,7 @@
         display: flex;
         align-items: center;
         cursor: pointer;
+        margin-bottom: 20px;
 
         p {
             font-weight: 600;
