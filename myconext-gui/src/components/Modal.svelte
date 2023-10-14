@@ -10,6 +10,7 @@
     export let question;
     export let warning = false;
     export let confirmTitle = I18n.t("modal.confirm");
+    export let cancelTitle = I18n.t("modal.cancel");
     export let disableSubmit = false;
     export let download = undefined;
     export let href = undefined;
@@ -96,7 +97,7 @@
         <div class="options">
             {#if cancel}
                 <Button className="cancel" onClick={cancel}
-                        label={I18n.t("modal.cancel")}/>
+                        label={cancelTitle}/>
             {/if}
             <Button onClick={submit}
                     warning={warning}

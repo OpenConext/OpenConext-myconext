@@ -88,7 +88,10 @@ I18n.translations.en = {
         expired: "Expired",
         newInstitution: "Your identity has been verified",
         newInstitutionInfo: "We have replaced the following information with the verified data from your institution:",
-        ok: "Continue"
+        ok: "Continue",
+        yes: "Yes, please",
+        no: "No, thanks"
+
     },
     eppnAlreadyLinked: {
         header: "Connection not added!",

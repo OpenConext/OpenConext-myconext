@@ -449,6 +449,8 @@
     <Modal submit={() => preferInstitution(false, preferredInstitution)}
            cancel={() => showPreferredInstitutionModal = false}
            question={I18n.t("profile.preferredInstitutionConfirmation", {name: institutionName(preferredInstitution)})}
+           confirmTitle={I18n.t("profile.yes")}
+           cancelTitle={I18n.t("profile.no")}
            title={I18n.t("profile.preferInstitution")}>
         <ValidatedData institution={newInstitution}/>
     </Modal>

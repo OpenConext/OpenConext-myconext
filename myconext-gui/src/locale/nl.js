@@ -88,7 +88,9 @@ I18n.translations.nl = {
         expired: "Verlopen",
         newInstitution: "Je identiteit is geverifïeerd",
         newInstitutionInfo: "We hebben de volgende informatie overschreven met de geverifïeerde gegevens:",
-        ok: "Ga door"
+        ok: "Ga door",
+        yes: "Ja, graag",
+        no: "Nee, bedankt"
     },
     eppnAlreadyLinked: {
         header: "Koppeling niet gemaakt!",
