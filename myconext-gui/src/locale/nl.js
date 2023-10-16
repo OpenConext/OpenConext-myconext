@@ -103,9 +103,9 @@ I18n.translations.nl = {
         info: "Voer je volledige naam in.",
         givenName: "Je voornaam",
         familyName: "Je achternaam",
-        update: "Opslaan",
+        update: "Bijwerken",
         cancel: "Annuleren",
-        save: "Bewaar je veranderingen",
+        save: "Bewaar",
         updated: "Je profiel is bijgewerkt.",
         back: "/profile",
         and: " en "
