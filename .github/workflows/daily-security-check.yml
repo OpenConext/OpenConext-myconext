@@ -24,34 +24,28 @@ jobs:
         uses: symfonycorp/security-checker-action@v4
 
       # node-yarn checks
-      - name: Check for node-yarn project
-        id: check_node_yarn
-        uses: andstor/file-existence-action@v2
-        with:
-          files: "yarn.lock"
       - name: Setup node
-        if: steps.check_node_yarn.outputs.files_exists == 'true'
         uses: actions/setup-node@v3
         with:
           node-version: 14
-#      - name: Yarn Audit
-#        if: steps.check_node_yarn.outputs.files_exists == 'true'
-#        run: yarn audit --level high --groups dependencies optionalDependencies
+      - name: Yarn Audit myconext
+        run: yarn audit --level high --groups dependencies optionalDependencies
+        working-directory: myconext-gui
+      - name: Yarn Audit account
+        run: yarn audit --level high --groups dependencies optionalDependencies
+        working-directory: account-gui
 
       # node-npm checks
-      - name: Check for node-npm project
-        id: check_node_npm
-        uses: andstor/file-existence-action@v2
-        with:
-          files: "package.lock"
       - name: Setup node
-        if: steps.check_node_npm.outputs.files_exists == 'true'
         uses: actions/setup-node@v3
         with:
           node-version: 14
-#      - name: npm audit
-#        if: steps.check_node_npm.outputs.files_exists == 'true'
-#        run: npm audit --audit-level=high
+      - name: npm audit myconext
+        if: steps.check_node_npm.outputs.files_exists == 'true'
+        run: cd myconext-gui && npm i && npm audit --only=prod --audit-level=high
+      - name: npm audit account
+        if: steps.check_node_npm.outputs.files_exists == 'true'
+        run: cd account-gui && npm i && npm audit --only=prod --audit-level=high
 
       # python checks
       - name: Check for python project
