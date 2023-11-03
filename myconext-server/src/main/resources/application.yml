@@ -18,9 +18,11 @@ springdoc:
   pathsToMatch: "/mobile/**"
   api-docs:
     path: "/myconext/api/mobile/api-docs"
+    enabled: true
   swagger-ui:
     path: "/myconext/api/mobile/api-ui.html"
     operationsSorter: method
+    enabled: true
 
 email:
   from: noreply@surfconext.nl
@@ -175,10 +177,12 @@ management:
   endpoints:
     web:
       exposure:
-        include: "health,info"
+        include: "health,info,mappings"
       base-path: "/internal"
   endpoint:
     info:
+      enabled: true
+    mappings:
       enabled: true
   info:
     git:

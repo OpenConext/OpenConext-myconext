@@ -66,7 +66,7 @@ deploy the application in an environment where the certificate needs to be regis
 then you can generate a key pair with the following commands:
 ```
 cd myconext/myconext-server/src/main/resources
-openssl genrsa  -out myconext.pem 2048
+openssl genrsa -traditional -out myconext.pem 2048
 openssl req -subj '/O=Organization, CN=OIDC/' -key myconext.pem -new -x509 -days 365 -out myconext.crt
 ```
 Add the key pair to the [application.yml](myconext-server/src/main/resources/application.yml) file:
