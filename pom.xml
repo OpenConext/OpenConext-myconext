@@ -107,6 +107,17 @@
             <releases>
                 <enabled>true</enabled>
             </releases>
+            <id>shibboleth</id>
+            <name>shibboleth</name>
+            <url>https://build.shibboleth.net/maven/releases/</url>
+        </repository>
+        <repository>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
             <id>spring-milestones</id>
             <name>spring-milestones</name>
             <url>https://repo.spring.io/milestone/</url>
