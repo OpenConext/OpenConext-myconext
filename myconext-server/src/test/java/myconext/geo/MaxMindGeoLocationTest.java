@@ -2,13 +2,14 @@ package myconext.geo;
 
 import myconext.WireMockExtension;
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.IOUtil;
+import org.apache.commons.io.IOUtils;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.RegisterExtension;
 import org.springframework.core.io.ClassPathResource;
 
+import java.io.File;
 import java.io.IOException;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.*;
@@ -25,7 +26,7 @@ class MaxMindGeoLocationTest {
     @BeforeEach
     void before() throws IOException {
         String path = "/geo/GeoLite2-City_20220101.tar.gz";
-        byte[] body = IOUtil.toByteArray(new ClassPathResource(path).getInputStream());
+        byte[] body = IOUtils.toByteArray(new ClassPathResource(path).getInputStream());
         stubFor(get(urlPathMatching("/maxmind"))
                 .willReturn(aResponse()
                         .withStatus(200)
@@ -36,8 +37,8 @@ class MaxMindGeoLocationTest {
 
     @AfterEach
     void after() throws IOException {
-        String s = System.getProperty("java.io.tmpdir");
-        FileUtils.forceDelete(s + "/geo");
+        File file = new File(System.getProperty("java.io.tmpdir") + "/geo");
+        FileUtils.forceDelete(file);
     }
 
     @Test

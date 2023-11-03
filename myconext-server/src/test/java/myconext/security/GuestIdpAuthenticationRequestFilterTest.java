@@ -1,14 +1,13 @@
 package myconext.security;
 
-import myconext.geo.GeoLocation;
 import myconext.manage.MockServiceProviderResolver;
 import myconext.model.LinkedAccount;
 import myconext.model.User;
-import myconext.repository.UserLoginRepository;
 import myconext.repository.UserRepository;
 import org.junit.Test;
+import org.junit.Before;
 import org.mockito.Mockito;
-import org.springframework.security.saml.saml2.attribute.Attribute;
+import saml.model.SAMLAttribute;
 
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
@@ -23,26 +22,14 @@ import static org.junit.Assert.*;
 
 public class GuestIdpAuthenticationRequestFilterTest {
 
-    private final int expiryNonValidatedDurationDays = 180;
+    private final GuestIdpAuthenticationRequestFilter subject =
+            new GuestIdpAuthenticationRequestFilter();
 
-    private final GuestIdpAuthenticationRequestFilter subject = new GuestIdpAuthenticationRequestFilter(null,
-            null,
-            null,
-            new MockServiceProviderResolver(),
-            null,
-            Mockito.mock(UserRepository.class),
-            Mockito.mock(UserLoginRepository.class),
-            Mockito.mock(GeoLocation.class),
-            90,
-            1,
-            1,
-            false,
-            null,
-            null,
-            expiryNonValidatedDurationDays,
-            60 * 15,
-            "mobile_app_rp_entity_id",
-            false);
+    @Before
+    public void beforeEach() {
+        subject.setServiceProviderResolver(new MockServiceProviderResolver());
+        subject.setUserRepository(Mockito.mock(UserRepository.class));
+    }
 
     @Test
     public void isUserVerifiedByInstitutionNoLinkedAccounts() {
@@ -127,11 +114,11 @@ public class GuestIdpAuthenticationRequestFilterTest {
                 linkedAccount("Mark", "Lee", createdAt(25))
         );
         user.setLinkedAccounts(linkedAccounts);
-        List<Attribute> attributes = subject.attributes(user, "requesterEntityID");
-        String givenName = (String) attributes.stream().filter(attr -> attr.getName().equals("urn:mace:dir:attribute-def:givenName")).findFirst().get().getValues().get(0);
-        String familyName = (String) attributes.stream().filter(attr -> attr.getName().equals("urn:mace:dir:attribute-def:sn")).findFirst().get().getValues().get(0);
-        String displayName = (String) attributes.stream().filter(attr -> attr.getName().equals("urn:mace:dir:attribute-def:displayName")).findFirst().get().getValues().get(0);
-        String commonName = (String) attributes.stream().filter(attr -> attr.getName().equals("urn:mace:dir:attribute-def:commonName")).findFirst().get().getValues().get(0);
+        List<SAMLAttribute> attributes = subject.attributes(user, "requesterEntityID");
+        String givenName = attributes.stream().filter(attr -> attr.getName().equals("urn:mace:dir:attribute-def:givenName")).findFirst().get().getValue();
+        String familyName = attributes.stream().filter(attr -> attr.getName().equals("urn:mace:dir:attribute-def:sn")).findFirst().get().getValue();
+        String displayName = attributes.stream().filter(attr -> attr.getName().equals("urn:mace:dir:attribute-def:displayName")).findFirst().get().getValue();
+        String commonName = attributes.stream().filter(attr -> attr.getName().equals("urn:mace:dir:attribute-def:commonName")).findFirst().get().getValue();
 
         assertEquals("Mary", givenName);
         assertEquals("Poppins", familyName);

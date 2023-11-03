@@ -13,7 +13,7 @@ import myconext.model.*;
 import myconext.repository.ChallengeRepository;
 import myconext.security.ACR;
 import myconext.tiqr.SURFSecureID;
-import org.apache.commons.io.IOUtil;
+import org.apache.commons.io.IOUtils;
 import org.apache.http.client.CookieStore;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,6 +27,7 @@ import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.util.StringUtils;
 
 import java.io.IOException;
+import java.nio.charset.Charset;
 import java.security.SecureRandom;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
@@ -250,7 +251,7 @@ public class UserControllerTest extends AbstractIntegrationTest {
         String authenticationRequestId = samlAuthnRequest("Nice");
         MagicLinkResponse magicLinkResponse = magicLinkRequest(new MagicLinkRequest(authenticationRequestId, user, false), HttpMethod.POST);
         Response response = magicResponse(magicLinkResponse);
-        assertTrue(IOUtil.toString(response.asInputStream()).contains("Nice"));
+        assertTrue(IOUtils.toString(response.asInputStream(), Charset.defaultCharset()).contains("Nice"));
     }
 
     @Test

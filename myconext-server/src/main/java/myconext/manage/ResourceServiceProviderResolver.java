@@ -4,9 +4,10 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.SneakyThrows;
 import myconext.model.ServiceProvider;
-import org.apache.commons.io.IOUtil;
+import org.apache.commons.io.IOUtils;
 import org.springframework.core.io.Resource;
 
+import java.nio.charset.Charset;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -17,8 +18,9 @@ public class ResourceServiceProviderResolver implements ServiceProviderResolver 
 
     @SneakyThrows
     public ResourceServiceProviderResolver(Resource resource, ObjectMapper objectMapper) {
-        spNames = objectMapper.readValue(IOUtil.toString(resource.getInputStream()), new TypeReference<>() {
-        });
+        spNames = objectMapper.readValue(IOUtils.toString(resource.getInputStream(), Charset.defaultCharset()),
+                new TypeReference<>() {
+                });
     }
 
     @Override

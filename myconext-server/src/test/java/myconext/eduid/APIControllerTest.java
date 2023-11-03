@@ -3,15 +3,12 @@ package myconext.eduid;
 import com.github.tomakehurst.wiremock.junit.WireMockRule;
 import io.restassured.http.ContentType;
 import myconext.AbstractIntegrationTest;
-import org.apache.commons.io.IOUtil;
 import org.junit.ClassRule;
 import org.junit.Test;
-import org.springframework.core.io.ClassPathResource;
 
-import java.io.IOException;
-import java.util.*;
+import java.util.List;
+import java.util.Map;
 
-import static com.github.tomakehurst.wiremock.client.WireMock.*;
 import static io.restassured.RestAssured.given;
 import static org.junit.Assert.assertEquals;
 
