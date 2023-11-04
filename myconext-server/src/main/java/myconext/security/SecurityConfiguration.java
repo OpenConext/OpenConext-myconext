@@ -85,6 +85,8 @@ public class SecurityConfiguration {
         @Override
         protected void configure(HttpSecurity http) throws Exception {
             //TODO add GuestIdpAuthenticationRequestFilter before AbstractPreAuthenticatedProcessingFilter
+
+
             super.configure(http);
 
             String prefix = getPrefix();

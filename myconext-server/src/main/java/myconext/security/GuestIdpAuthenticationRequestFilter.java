@@ -114,6 +114,11 @@ public class GuestIdpAuthenticationRequestFilter extends IdpAuthenticationReques
                                                String mobileAppROEntityId,
                                                boolean featureDefaultRememberMe) {
         super(provisioning, assertionStore);
+        /*
+        /saml/guest-idp/SSO/**
+/saml/guest-idp/magic
+
+         */
         this.ssoSamlRequestMatcher = new SamlRequestMatcher(provisioning, "SSO");
         this.magicSamlRequestMatcher = new SamlRequestMatcher(provisioning, "magic");
         this.continueAfterloginSamlRequestMatcher = new SamlRequestMatcher(provisioning, "continue");
