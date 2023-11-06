@@ -126,11 +126,6 @@
             <version>0.9.10</version>
         </dependency>
         <dependency>
-            <groupId>commons-io</groupId>
-            <artifactId>commons-io</artifactId>
-            <version>20030203.000550</version>
-        </dependency>
-        <dependency>
             <groupId>org.openconext</groupId>
             <artifactId>tiqr-java-connector</artifactId>
             <version>1.1.0</version>
