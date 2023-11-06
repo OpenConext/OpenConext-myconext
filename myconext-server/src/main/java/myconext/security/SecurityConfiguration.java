@@ -92,7 +92,7 @@ public class SecurityConfiguration {
             SAMLConfiguration configuration = new SAMLConfiguration(
                     new SAMLIdentityProvider(keys[0], keys[1], idpEntityId),
                     serviceProviders,
-                    true
+                    false
             );
             this.guestIdpAuthenticationRequestFilter = new GuestIdpAuthenticationRequestFilter(
                     redirectUrl,

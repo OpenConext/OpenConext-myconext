@@ -286,7 +286,11 @@ public class GuestIdpAuthenticationRequestFilter extends OncePerRequestFilter im
     }
 
     private List<String> getAuthenticationContextClassReferenceValues(AuthnRequest authenticationRequest) {
-        List<AuthnContextClassRef> authnContextClassRefs = authenticationRequest.getRequestedAuthnContext().getAuthnContextClassRefs();
+        RequestedAuthnContext requestedAuthnContext = authenticationRequest.getRequestedAuthnContext();
+        if (requestedAuthnContext == null) {
+            return Collections.emptyList();
+        }
+        List<AuthnContextClassRef> authnContextClassRefs = requestedAuthnContext.getAuthnContextClassRefs();
         if (authnContextClassRefs == null) {
             return Collections.emptyList();
         }
