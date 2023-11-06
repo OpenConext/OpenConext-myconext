@@ -18,7 +18,7 @@ import org.springframework.security.saml.provider.identity.config.SamlIdentityPr
 import javax.servlet.Filter;
 
 @Configuration
-public class BeanConfig extends SamlIdentityProviderServerBeanConfiguration {
+public class BeanConfig {
 
     private final String redirectUrl;
     private final AuthenticationRequestRepository authenticationRequestRepository;

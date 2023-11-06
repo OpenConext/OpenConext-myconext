@@ -2,8 +2,12 @@ package myconext.security;
 
 import myconext.config.BeanConfig;
 import myconext.crypto.KeyGenerator;
+import myconext.geo.GeoLocation;
+import myconext.mail.MailBox;
 import myconext.manage.ServiceProviderResolver;
 import myconext.model.ServiceProvider;
+import myconext.repository.AuthenticationRequestRepository;
+import myconext.repository.UserLoginRepository;
 import myconext.repository.UserRepository;
 import myconext.shibboleth.ShibbolethPreAuthenticatedProcessingFilter;
 import myconext.shibboleth.ShibbolethUserDetailService;
@@ -52,21 +56,33 @@ public class SecurityConfiguration {
 
     @Configuration
     @Order(1)
-    public static class SamlSecurity extends SamlIdentityProviderSecurityConfiguration {
+    public static class SamlSecurity  {
         private final Resource privateKeyPath;
         private final Resource certificatePath;
         private final List<ServiceProvider> serviceProviders = new ArrayList<>();
+        private final String redirectUrl;
+        private final AuthenticationRequestRepository authenticationRequestRepository;
+        private final UserRepository userRepository;
+        private final UserLoginRepository userLoginRepository;
+        private final int rememberMeMaxAge;
+        private final int nudgeAppDays;
+        private final int rememberMeQuestionAskedDays;
+        private final long expiryNonValidatedDurationDays;
+        private final long ssoMFADurationSeconds;
+        private final String mobileAppROEntityId;
+        private final boolean secureCookie;
+        private final String magicLinkUrl;
+        private final MailBox mailBox;
+        private final ServiceProviderResolver serviceProviderResolver;
+        private final GeoLocation geoLocation;
+        private final boolean featureDefaultRememberMe;
         private final String idpEntityId;
-        private final BeanConfig beanConfig;
 
-        public SamlSecurity(BeanConfig beanConfig,
-                            @Value("${private_key_path}") Resource privateKeyPath,
+        public SamlSecurity(@Value("${private_key_path}") Resource privateKeyPath,
                             @Value("${certificate_path}") Resource certificatePath,
                             @Value("${idp_entity_id}") String idpEntityId,
                             @Value("${sp_entity_id}") String spEntityId,
                             @Value("${sp_entity_metadata_url}") String spMetaDataUrl) {
-            super("/saml/guest-idp/", beanConfig);
-            this.beanConfig = beanConfig;
             this.privateKeyPath = privateKeyPath;
             this.certificatePath = certificatePath;
             this.idpEntityId = idpEntityId;
