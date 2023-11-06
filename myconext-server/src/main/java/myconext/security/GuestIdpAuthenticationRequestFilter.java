@@ -1,8 +1,11 @@
 package myconext.security;
 
+import lombok.NoArgsConstructor;
 import myconext.exceptions.UserNotFoundException;
 import myconext.geo.GeoLocation;
 import myconext.mail.MailBox;
+import myconext.manage.MockServiceProviderResolver;
+import myconext.manage.ServiceProviderHolder;
 import myconext.manage.ServiceProviderResolver;
 import myconext.model.*;
 import myconext.repository.AuthenticationRequestRepository;
@@ -10,32 +13,22 @@ import myconext.repository.UserLoginRepository;
 import myconext.repository.UserRepository;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.opensaml.saml.saml2.core.AuthnRequest;
+import org.opensaml.core.xml.schema.XSURI;
+import org.opensaml.saml.saml2.core.*;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.saml.SamlMessageStore;
-import org.springframework.security.saml.SamlRequestMatcher;
-import org.springframework.security.saml.provider.identity.IdentityProviderService;
-import org.springframework.security.saml.provider.identity.IdpAuthenticationRequestFilter;
-import org.springframework.security.saml.provider.provisioning.SamlProviderProvisioning;
-import org.springframework.security.saml.saml2.attribute.Attribute;
-import org.springframework.security.saml.saml2.attribute.AttributeNameFormat;
-import org.springframework.security.saml.saml2.authentication.*;
-import org.springframework.security.saml.saml2.metadata.Binding;
-import org.springframework.security.saml.saml2.metadata.Endpoint;
-import org.springframework.security.saml.saml2.metadata.NameId;
-import org.springframework.security.saml.saml2.metadata.ServiceProviderMetadata;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
-import org.springframework.web.util.HtmlUtils;
 import saml.DefaultSAMLIdPService;
+import saml.model.SAMLAttribute;
 import saml.model.SAMLConfiguration;
+import saml.model.SAMLStatus;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
@@ -60,10 +53,10 @@ import static myconext.crypto.HashGenerator.hash;
 import static myconext.log.MDCContext.logLoginWithContext;
 import static myconext.log.MDCContext.logWithContext;
 import static myconext.security.CookieResolver.cookieByName;
-import static org.springframework.util.StringUtils.hasText;
 
 @SuppressWarnings("unchecked")
-public class GuestIdpAuthenticationRequestFilter extends OncePerRequestFilter {
+@NoArgsConstructor(force = true)
+public class GuestIdpAuthenticationRequestFilter extends OncePerRequestFilter implements ServiceProviderHolder {
 
     public static final String GUEST_IDP_REMEMBER_ME_COOKIE_NAME = "guest-idp-remember-me";
     public static final String TRACKING_DEVICE_COOKIE_NAME = "TRACKING_DEVICE";
@@ -80,7 +73,7 @@ public class GuestIdpAuthenticationRequestFilter extends OncePerRequestFilter {
     private final AntPathRequestMatcher continueAfterloginSamlRequestMatcher;
     private final String redirectUrl;
     private final AuthenticationRequestRepository authenticationRequestRepository;
-    private final UserRepository userRepository;
+    private  UserRepository userRepository;
     private final UserLoginRepository userLoginRepository;
     private final List<String> accountLinkingContextClassReferences;
     private final GeoLocation geoLocation;
@@ -89,7 +82,7 @@ public class GuestIdpAuthenticationRequestFilter extends OncePerRequestFilter {
     private final boolean secureCookie;
     private final String magicLinkUrl;
     private final MailBox mailBox;
-    private final ServiceProviderResolver serviceProviderResolver;
+    private  ServiceProviderResolver serviceProviderResolver;
     private final ExecutorService executor;
     private final int nudgeAppDays;
     private final int rememberMeQuestionAskedDays;
@@ -167,22 +160,19 @@ public class GuestIdpAuthenticationRequestFilter extends OncePerRequestFilter {
             return;
         }
         AuthnRequest authnRequest = this.samlIdpService.parseAuthnRequest(samlRequest, true, isDeflated(request));
-        AuthenticationRequest authenticationRequest =
-                provider.fromXml(samlRequest, true, isDeflated(request), AuthenticationRequest.class);
-        provider.validate(authenticationRequest);
 
-        String requesterEntityId = requesterId(authenticationRequest);
-        String issuer = authenticationRequest.getIssuer().getValue();
+        String requesterEntityId = requesterId(authnRequest);
+        String issuer = authnRequest.getIssuer().getValue();
 
-        List<String> authenticationContextClassReferenceValues = getAuthenticationContextClassReferenceValues(authenticationRequest);
+        List<String> authenticationContextClassReferenceValues = getAuthenticationContextClassReferenceValues(authnRequest);
         boolean accountLinkingRequired =
                 this.accountLinkingContextClassReferences.stream().anyMatch(authenticationContextClassReferenceValues::contains);
         boolean mfaProfileRequired = authenticationContextClassReferenceValues.contains(ACR.PROFILE_MFA);
 
         SamlAuthenticationRequest samlAuthenticationRequest = new SamlAuthenticationRequest(
-                authenticationRequest.getId(),
+                authnRequest.getID(),
                 issuer,
-                authenticationRequest.getAssertionConsumerService().getLocation(),
+                authnRequest.getAssertionConsumerServiceURL(),
                 relayState,
                 StringUtils.hasText(requesterEntityId) ? requesterEntityId : "",
                 accountLinkingRequired,
@@ -203,7 +193,7 @@ public class GuestIdpAuthenticationRequestFilter extends OncePerRequestFilter {
         samlAuthenticationRequest.setServiceName(serviceName);
         samlAuthenticationRequest = authenticationRequestRepository.save(samlAuthenticationRequest);
 
-        if (previousAuthenticatedUser != null && !authenticationRequest.isForceAuth()) {
+        if (previousAuthenticatedUser != null && !authnRequest.isForceAuthn()) {
             boolean applySsoMfa = isApplySsoMfa();
             if ((!applySsoMfa && mfaProfileRequired) || (accountLinkingRequired && !isUserVerifiedByInstitution(previousAuthenticatedUser,
                     authenticationContextClassReferenceValues))) {
@@ -228,9 +218,7 @@ public class GuestIdpAuthenticationRequestFilter extends OncePerRequestFilter {
                         + "?explanation=" + explanation + mfa;
                 response.sendRedirect(location);
             } else {
-                ServiceProviderMetadata serviceProviderMetadata = provider.getRemoteProvider(samlAuthenticationRequest.getIssuer());
-                sendAssertion(request, response, samlAuthenticationRequest, previousAuthenticatedUser,
-                        provider, serviceProviderMetadata, authenticationRequest);
+                sendAssertion(request, response, samlAuthenticationRequest, previousAuthenticatedUser);
             }
         } else {
             addBrowserIdentificationCookie(response);
@@ -240,7 +228,7 @@ public class GuestIdpAuthenticationRequestFilter extends OncePerRequestFilter {
 
             String stepUp = accountLinkingRequired ? "&stepup=true" : "";
             String mfa = mfaProfileRequired ? "&mfa=true" : "";
-            String preferMagicLink = this.nudgeMagicLink(authenticationRequest) ? "&magicLink=true" : "";
+            String preferMagicLink = this.nudgeMagicLink(authnRequest) ? "&magicLink=true" : "";
             String separator = (accountLinkingRequired || mfaProfileRequired || StringUtils.hasText(preferMagicLink)) ? "?n=1" : "";
             String path = optionalCookie.map(c -> "/request/").orElse("/login/");
             String location = this.redirectUrl + path + samlAuthenticationRequest.getId() +
@@ -297,13 +285,13 @@ public class GuestIdpAuthenticationRequestFilter extends OncePerRequestFilter {
                 .anyMatch(affiliation -> affiliation.startsWith("student@"));
     }
 
-    private List<String> getAuthenticationContextClassReferenceValues(AuthenticationRequest authenticationRequest) {
-        List<AuthenticationContextClassReference> authenticationContextClassReferences = authenticationRequest.getAuthenticationContextClassReferences();
-        if (authenticationContextClassReferences == null) {
+    private List<String> getAuthenticationContextClassReferenceValues(AuthnRequest authenticationRequest) {
+        List<AuthnContextClassRef> authnContextClassRefs = authenticationRequest.getRequestedAuthnContext().getAuthnContextClassRefs();
+        if (authnContextClassRefs == null) {
             return Collections.emptyList();
         }
-        return authenticationContextClassReferences.stream()
-                .map(AuthenticationContextClassReference::getValue)
+        return authnContextClassRefs.stream()
+                .map(XSURI::getURI)
                 .collect(toList());
     }
 
@@ -333,19 +321,19 @@ public class GuestIdpAuthenticationRequestFilter extends OncePerRequestFilter {
         return HttpMethod.GET.name().equalsIgnoreCase(request.getMethod());
     }
 
-    private String requesterId(AuthenticationRequest authenticationRequest) {
+    private String requesterId(AuthnRequest authenticationRequest) {
         Issuer issuer = authenticationRequest.getIssuer();
         String issuerValue = issuer != null ? issuer.getValue() : "";
         Scoping scoping = authenticationRequest.getScoping();
-        List<String> requesterIds = scoping != null ? scoping.getRequesterIds() : null;
-        return CollectionUtils.isEmpty(requesterIds) ? issuerValue : requesterIds.get(0);
+        List<RequesterID> requesterIDS = scoping != null ? scoping.getRequesterIDs() : null;
+        return CollectionUtils.isEmpty(requesterIDS) ? issuerValue : requesterIDS.get(0).getURI();
     }
 
-    private boolean nudgeMagicLink(AuthenticationRequest authenticationRequest) {
+    private boolean nudgeMagicLink(AuthnRequest authenticationRequest) {
         Scoping scoping = authenticationRequest.getScoping();
-        List<String> requesterIds = scoping != null ? scoping.getRequesterIds() : null;
-        return !CollectionUtils.isEmpty(requesterIds) && requesterIds.stream()
-                .anyMatch(this.mobileAppROEntityId::equalsIgnoreCase);
+        List<RequesterID> requesterIDS = scoping != null ? scoping.getRequesterIDs() : null;
+        return !CollectionUtils.isEmpty(requesterIDS) && requesterIDS.stream()
+                .anyMatch(requesterID -> this.mobileAppROEntityId.equalsIgnoreCase(requesterID.getURI()));
     }
 
     private void magic(HttpServletRequest request, HttpServletResponse response) throws IOException {
@@ -529,20 +517,16 @@ public class GuestIdpAuthenticationRequestFilter extends OncePerRequestFilter {
         doSendAssertion(request, response, samlAuthenticationRequest, user);
     }
 
-    private void doSendAssertion(HttpServletRequest request, HttpServletResponse response, SamlAuthenticationRequest samlAuthenticationRequest, User user) {
+    private void doSendAssertion(HttpServletRequest request,
+                                 HttpServletResponse response,
+                                 SamlAuthenticationRequest samlAuthenticationRequest,
+                                 User user) {
         //ensure the magic link can't be used twice
         samlAuthenticationRequest.setHash(null);
 
         LOG.debug(String.format("Disabling SAML authentication request after login by %s ", user.getUsername()));
 
         authenticationRequestRepository.save(samlAuthenticationRequest);
-
-        IdentityProviderService provider = getProvisioning().getHostedProvider();
-        ServiceProviderMetadata serviceProviderMetadata = provider.getRemoteProvider(samlAuthenticationRequest.getIssuer());
-
-        AuthenticationRequest authenticationRequest = new AuthenticationRequest();
-        authenticationRequest.setId(samlAuthenticationRequest.getRequestId());
-        authenticationRequest.setAssertionConsumerService(new Endpoint().setLocation(samlAuthenticationRequest.getConsumerAssertionServiceURL()));
 
         //We support SSO for MFA, we must mark the authentication with a timestamp and an extra role
         boolean mfaProfileRequired = samlAuthenticationRequest.isMfaProfileRequired();
@@ -566,8 +550,7 @@ public class GuestIdpAuthenticationRequestFilter extends OncePerRequestFilter {
 
         logLoginWithContext(user, loginMethod, true, LOG, "Successfully logged in with " + loginMethod);
 
-        sendAssertion(request, response, samlAuthenticationRequest, user, provider,
-                serviceProviderMetadata, authenticationRequest);
+        sendAssertion(request, response, samlAuthenticationRequest, user);
     }
 
     private void finishStepUp(SamlAuthenticationRequest samlAuthenticationRequest) {
@@ -631,19 +614,20 @@ public class GuestIdpAuthenticationRequestFilter extends OncePerRequestFilter {
         }
     }
 
-    private void sendAssertion(HttpServletRequest request, HttpServletResponse response, SamlAuthenticationRequest samlAuthenticationRequest,
-                               User user, IdentityProviderService provider, ServiceProviderMetadata serviceProviderMetadata,
-                               AuthenticationRequest authenticationRequest) {
+    private void sendAssertion(HttpServletRequest request,
+                               HttpServletResponse response,
+                               SamlAuthenticationRequest samlAuthenticationRequest,
+                               User user) {
         String relayState = samlAuthenticationRequest.getRelayState();
         String requesterEntityId = samlAuthenticationRequest.getRequesterEntityId();
-        Assertion assertion = provider.assertion(
-                serviceProviderMetadata, authenticationRequest, user.getUid(), NameId.PERSISTENT);
 
         List<String> authenticationContextClassReferences = samlAuthenticationRequest.getAuthenticationContextClassReferences();
-        attributes(user, requesterEntityId).forEach(assertion::addAttribute);
+        List<SAMLAttribute> attributes = attributes(user, requesterEntityId);
 
-        Response samlResponse = provider.response(authenticationRequest, assertion, serviceProviderMetadata);
         boolean applySsoMfa = this.isApplySsoMfa();
+        SAMLStatus samlStatus = SAMLStatus.SUCCESS;
+        String optionalMessage = null;
+        String authnContextClassRefValue = DefaultSAMLIdPService.authnContextClassRefPassword;
         if (samlAuthenticationRequest.isAccountLinkingRequired()) {
             boolean hasStudentAffiliation = hasRequiredStudentAffiliation(user.allEduPersonAffiliations());
 
@@ -653,57 +637,30 @@ public class GuestIdpAuthenticationRequestFilter extends OncePerRequestFilter {
             boolean missingValidName = authenticationContextClassReferences.contains(ACR.VALIDATE_NAMES) &&
                     !hasValidatedName(user);
             if (missingStudentAffiliation || missingValidName) {
-                String msg;
                 if (missingValidName) {
-                    msg = "The requesting service has indicated that the authenticated user is required to have a first_name and last_name." +
+                    optionalMessage = "The requesting service has indicated that the authenticated user is required to have a first_name and last_name." +
                             " Your institution has not provided those attributes.";
                 } else {
-                    msg = "The requesting service has indicated that the authenticated user is required to have an affiliation Student." +
+                    optionalMessage = "The requesting service has indicated that the authenticated user is required to have an affiliation Student." +
                             " Your institution has not provided this affiliation.";
                 }
-                samlResponse.setStatus(new Status()
-                        .setCode(StatusCode.NO_AUTH_CONTEXT)
-                        .setMessage(msg)
-                        .setDetail(msg));
+                samlStatus = SAMLStatus.NO_AUTHN_CONTEXT;
             } else {
-                samlResponse.getAssertions().get(0).getAuthenticationStatements().get(0)
-                        .getAuthenticationContext()
-                        .setClassReference(AuthenticationContextClassReference
-                                .fromUrn(ACR.selectACR(authenticationContextClassReferences, hasStudentAffiliation)));
+                authnContextClassRefValue = ACR.selectACR(authenticationContextClassReferences, hasStudentAffiliation);
             }
         } else if (samlAuthenticationRequest.isMfaProfileRequired()) {
             if (samlAuthenticationRequest.isTiqrFlow() || applySsoMfa) {
-                samlResponse.getAssertions().get(0).getAuthenticationStatements().get(0)
-                        .getAuthenticationContext()
-                        .setClassReference(AuthenticationContextClassReference
-                                .fromUrn(ACR.selectACR(authenticationContextClassReferences, false)));
+                authnContextClassRefValue = ACR.selectACR(authenticationContextClassReferences, false);
             } else {
-                String msg = "The requesting service has indicated that a login with the eduID app is required to login.";
-                samlResponse.setStatus(new Status()
-                        .setCode(StatusCode.NO_AUTH_CONTEXT)
-                        .setMessage(msg)
-                        .setDetail(msg));
+                optionalMessage = "The requesting service has indicated that a login with the eduID app is required to login.";
+                samlStatus = SAMLStatus.NO_AUTHN_CONTEXT;
             }
         } else if (!applySsoMfa && !CollectionUtils.isEmpty(authenticationContextClassReferences)) {
-            String msg = String.format("The specified authentication context requirements '%s' cannot be met by the responder.",
+            optionalMessage = String.format("The specified authentication context requirements '%s' cannot be met by the responder.",
                     String.join(", ", authenticationContextClassReferences));
-            samlResponse.setStatus(new Status()
-                    .setCode(StatusCode.NO_AUTH_CONTEXT)
-                    .setMessage(msg)
-                    .setDetail(msg));
+            samlStatus = SAMLStatus.NO_AUTHN_CONTEXT;
         }
-        Endpoint acsUrl = provider.getPreferredEndpoint(
-                serviceProviderMetadata.getServiceProvider().getAssertionConsumerService(),
-                Binding.POST,
-                -1
-        );
-        String encoded = provider.toEncodedXml(samlResponse, false);
-        Map<String, Object> model = new HashMap<>();
-        model.put("action", acsUrl.getLocation());
-        model.put("SAMLResponse", encoded);
-        if (hasText(relayState)) {
-            model.put("RelayState", HtmlUtils.htmlEscape(relayState));
-        }
+
         Optional<Cookie> optionalCookie = cookieByName(request, BROWSER_SESSION_COOKIE_NAME);
         optionalCookie.ifPresent(cookie -> {
             cookie.setMaxAge(0);
@@ -711,14 +668,32 @@ public class GuestIdpAuthenticationRequestFilter extends OncePerRequestFilter {
         });
         //Tracking cookie for user new device discovery
         this.addTrackingCookie(request, response, user);
-        processHtml(request, response, getPostBindingTemplate(), model);
+        this.samlIdpService.sendResponse(
+                samlAuthenticationRequest.getRequesterEntityId(),
+                samlAuthenticationRequest.getRequestId(),
+                user.getUid(),
+                samlStatus,
+                relayState,
+                optionalMessage,
+                authnContextClassRefValue,
+                attributes,
+                response
+        );
     }
 
     public ServiceProviderResolver getServiceProviderResolver() {
         return serviceProviderResolver;
     }
 
-    protected List<Attribute> attributes(User user, String requesterEntityId) {
+    public void setServiceProviderResolver(ServiceProviderResolver serviceProviderResolver) {
+        this.serviceProviderResolver = serviceProviderResolver;
+    }
+
+    public void setUserRepository(UserRepository userRepository) {
+        this.userRepository = userRepository;
+    }
+
+    protected List<SAMLAttribute> attributes(User user, String requesterEntityId) {
         List<LinkedAccount> linkedAccounts = safeSortedAffiliations(user);
         String givenName = user.getGivenName();
         String familyName = user.getFamilyName();
@@ -727,7 +702,7 @@ public class GuestIdpAuthenticationRequestFilter extends OncePerRequestFilter {
         String displayName = String.format("%s %s", chosenName, familyName);
         String commonName = String.format("%s %s", givenName, familyName);
         String eppn = user.getEduPersonPrincipalName();
-        List<Attribute> attributes = new ArrayList(Arrays.asList(
+        List<SAMLAttribute> attributes = new ArrayList(Arrays.asList(
                 attribute("urn:mace:dir:attribute-def:cn", displayName),
                 attribute("urn:mace:dir:attribute-def:displayName", displayName),
                 attribute("urn:mace:dir:attribute-def:commonName", commonName),
@@ -745,7 +720,9 @@ public class GuestIdpAuthenticationRequestFilter extends OncePerRequestFilter {
         attributes.add(attribute("urn:mace:eduid.nl:1.1", eduIDValue));
 
         user.getAttributes()
-                .forEach((key, value) -> attributes.add(attribute(key, value.toArray(new String[]{}))));
+                .forEach((key, values) ->
+                        values.forEach(value -> attributes.add(attribute(key, value))));
+
 
         List<String> scopedAffiliations = linkedAccounts.stream()
                 .map(linkedAccount -> linkedAccount.getEduPersonAffiliations().stream()
@@ -754,13 +731,11 @@ public class GuestIdpAuthenticationRequestFilter extends OncePerRequestFilter {
                         .collect(toList()))
                 .flatMap(Collection::stream).distinct().collect(Collectors.toList());
         scopedAffiliations.add("affiliate@eduid.nl");
-        attributes.add(attribute("urn:mace:dir:attribute-def:eduPersonScopedAffiliation",
-                scopedAffiliations.toArray(new String[]{})));
+        scopedAffiliations.forEach(aff -> attributes.add(attribute("urn:mace:dir:attribute-def:eduPersonScopedAffiliation", aff)));
 
         List<String> affiliations = scopedAffiliations.stream().map(affiliation -> affiliation.substring(0, affiliation.indexOf("@")))
                 .distinct().collect(toList());
-        attributes.add(attribute("urn:mace:dir:attribute-def:eduPersonAffiliation",
-                affiliations.toArray(new String[]{})));
+        scopedAffiliations.forEach(aff -> attributes.add(attribute("urn:mace:dir:attribute-def:eduPersonAffiliation", aff)));
         return attributes;
     }
 
@@ -777,8 +752,8 @@ public class GuestIdpAuthenticationRequestFilter extends OncePerRequestFilter {
         return user.linkedAccountsSorted();
     }
 
-    private Attribute attribute(String name, String... value) {
-        return new Attribute().setName(name).setNameFormat(AttributeNameFormat.URI).addValues((Object[]) value);
+    private SAMLAttribute attribute(String name, String value) {
+        return new SAMLAttribute(name, value);
     }
 
 }
