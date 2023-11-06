@@ -3,7 +3,6 @@ package myconext.security;
 import myconext.exceptions.UserNotFoundException;
 import myconext.geo.GeoLocation;
 import myconext.mail.MailBox;
-import myconext.manage.ServiceProviderHolder;
 import myconext.manage.ServiceProviderResolver;
 import myconext.model.*;
 import myconext.repository.AuthenticationRequestRepository;
@@ -11,7 +10,7 @@ import myconext.repository.UserLoginRepository;
 import myconext.repository.UserRepository;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.springframework.beans.factory.annotation.Value;
+import org.opensaml.saml.saml2.core.AuthnRequest;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -30,9 +29,13 @@ import org.springframework.security.saml.saml2.metadata.Binding;
 import org.springframework.security.saml.saml2.metadata.Endpoint;
 import org.springframework.security.saml.saml2.metadata.NameId;
 import org.springframework.security.saml.saml2.metadata.ServiceProviderMetadata;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
+import org.springframework.web.filter.OncePerRequestFilter;
 import org.springframework.web.util.HtmlUtils;
+import saml.DefaultSAMLIdPService;
+import saml.model.SAMLConfiguration;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
@@ -60,7 +63,7 @@ import static myconext.security.CookieResolver.cookieByName;
 import static org.springframework.util.StringUtils.hasText;
 
 @SuppressWarnings("unchecked")
-public class GuestIdpAuthenticationRequestFilter extends IdpAuthenticationRequestFilter implements ServiceProviderHolder {
+public class GuestIdpAuthenticationRequestFilter extends OncePerRequestFilter {
 
     public static final String GUEST_IDP_REMEMBER_ME_COOKIE_NAME = "guest-idp-remember-me";
     public static final String TRACKING_DEVICE_COOKIE_NAME = "TRACKING_DEVICE";
@@ -72,9 +75,9 @@ public class GuestIdpAuthenticationRequestFilter extends IdpAuthenticationReques
     private static final Log LOG = LogFactory.getLog(GuestIdpAuthenticationRequestFilter.class);
     public static final String ROLE_MFA = "ROLE_MFA";
 
-    private final SamlRequestMatcher ssoSamlRequestMatcher;
-    private final SamlRequestMatcher magicSamlRequestMatcher;
-    private final SamlRequestMatcher continueAfterloginSamlRequestMatcher;
+    private final AntPathRequestMatcher ssoSamlRequestMatcher;
+    private final AntPathRequestMatcher magicSamlRequestMatcher;
+    private final AntPathRequestMatcher continueAfterloginSamlRequestMatcher;
     private final String redirectUrl;
     private final AuthenticationRequestRepository authenticationRequestRepository;
     private final UserRepository userRepository;
@@ -94,10 +97,9 @@ public class GuestIdpAuthenticationRequestFilter extends IdpAuthenticationReques
     private final long ssoMFADurationSeconds;
     private final String mobileAppROEntityId;
     private final boolean featureDefaultRememberMe;
+    private final DefaultSAMLIdPService samlIdpService;
 
-    public GuestIdpAuthenticationRequestFilter(SamlProviderProvisioning<IdentityProviderService> provisioning,
-                                               SamlMessageStore<Assertion, HttpServletRequest> assertionStore,
-                                               String redirectUrl,
+    public GuestIdpAuthenticationRequestFilter(String redirectUrl,
                                                ServiceProviderResolver serviceProviderResolver,
                                                AuthenticationRequestRepository authenticationRequestRepository,
                                                UserRepository userRepository,
@@ -112,16 +114,11 @@ public class GuestIdpAuthenticationRequestFilter extends IdpAuthenticationReques
                                                long expiryNonValidatedDurationDays,
                                                long ssoMFADurationSeconds,
                                                String mobileAppROEntityId,
-                                               boolean featureDefaultRememberMe) {
-        super(provisioning, assertionStore);
-        /*
-        /saml/guest-idp/SSO/**
-/saml/guest-idp/magic
-
-         */
-        this.ssoSamlRequestMatcher = new SamlRequestMatcher(provisioning, "SSO");
-        this.magicSamlRequestMatcher = new SamlRequestMatcher(provisioning, "magic");
-        this.continueAfterloginSamlRequestMatcher = new SamlRequestMatcher(provisioning, "continue");
+                                               boolean featureDefaultRememberMe,
+                                               SAMLConfiguration configuration) {
+        this.ssoSamlRequestMatcher = new AntPathRequestMatcher("/saml/guest-idp/SSO/**");
+        this.magicSamlRequestMatcher = new AntPathRequestMatcher("/saml/guest-idp/magic/**");
+        this.continueAfterloginSamlRequestMatcher = new AntPathRequestMatcher("/saml/guest-idp/continue/**");
         this.redirectUrl = redirectUrl;
         this.serviceProviderResolver = serviceProviderResolver;
         this.authenticationRequestRepository = authenticationRequestRepository;
@@ -139,6 +136,7 @@ public class GuestIdpAuthenticationRequestFilter extends IdpAuthenticationReques
         this.ssoMFADurationSeconds = ssoMFADurationSeconds;
         this.mobileAppROEntityId = mobileAppROEntityId;
         this.featureDefaultRememberMe = featureDefaultRememberMe;
+        this.samlIdpService = new DefaultSAMLIdPService(configuration);
         this.executor = Executors.newSingleThreadExecutor();
     }
 
@@ -157,11 +155,10 @@ public class GuestIdpAuthenticationRequestFilter extends IdpAuthenticationReques
             this.continueAfterLogin(request, response);
             return;
         }
-        super.doFilterInternal(request, response, filterChain);
+        filterChain.doFilter(request, response);
     }
 
     private void sso(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        IdentityProviderService provider = getProvisioning().getHostedProvider();
         String samlRequest = request.getParameter("SAMLRequest");
         String relayState = request.getParameter("RelayState");
 
@@ -169,6 +166,7 @@ public class GuestIdpAuthenticationRequestFilter extends IdpAuthenticationReques
             //prevent null-pointer and drop dead
             return;
         }
+        AuthnRequest authnRequest = this.samlIdpService.parseAuthnRequest(samlRequest, true, isDeflated(request));
         AuthenticationRequest authenticationRequest =
                 provider.fromXml(samlRequest, true, isDeflated(request), AuthenticationRequest.class);
         provider.validate(authenticationRequest);

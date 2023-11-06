@@ -57,32 +57,39 @@ public class SecurityConfiguration {
     @Configuration
     @Order(1)
     public static class SamlSecurity  {
+
         private final Resource privateKeyPath;
         private final Resource certificatePath;
-        private final List<ServiceProvider> serviceProviders = new ArrayList<>();
-        private final String redirectUrl;
-        private final AuthenticationRequestRepository authenticationRequestRepository;
-        private final UserRepository userRepository;
-        private final UserLoginRepository userLoginRepository;
-        private final int rememberMeMaxAge;
-        private final int nudgeAppDays;
-        private final int rememberMeQuestionAskedDays;
-        private final long expiryNonValidatedDurationDays;
-        private final long ssoMFADurationSeconds;
-        private final String mobileAppROEntityId;
-        private final boolean secureCookie;
-        private final String magicLinkUrl;
-        private final MailBox mailBox;
-        private final ServiceProviderResolver serviceProviderResolver;
-        private final GeoLocation geoLocation;
-        private final boolean featureDefaultRememberMe;
         private final String idpEntityId;
 
         public SamlSecurity(@Value("${private_key_path}") Resource privateKeyPath,
                             @Value("${certificate_path}") Resource certificatePath,
                             @Value("${idp_entity_id}") String idpEntityId,
                             @Value("${sp_entity_id}") String spEntityId,
-                            @Value("${sp_entity_metadata_url}") String spMetaDataUrl) {
+                            @Value("${sp_entity_metadata_url}") String spMetaDataUrl,
+                            @Value("${saml_metadata_base_path}") String samlMetadataBasePath,
+                            @Value("${idp_redirect_url}") String redirectUrl,
+                            @Value("${remember_me_max_age_seconds}") int rememberMeMaxAge,
+                            @Value("${nudge_eduid_app_days}") int nudgeAppDays,
+                            @Value("${remember_me_question_asked_days}") int rememberMeQuestionAskedDays,
+                            @Value("${secure_cookie}") boolean secureCookie,
+                            @Value("${email.magic-link-url}") String magicLinkUrl,
+                            @Value("${account_linking_context_class_ref.linked_institution}") String linkedInstitution,
+                            @Value("${account_linking_context_class_ref.validate_names}") String validateNames,
+                            @Value("${account_linking_context_class_ref.affiliation_student}") String affiliationStudent,
+                            @Value("${account_linking_context_class_ref.profile_mfa}") String profileMfa,
+                            @Value("${linked_accounts.expiry-duration-days-non-validated}") long expiryNonValidatedDurationDays,
+                            @Value("${sso_mfa_duration_seconds}") long ssoMFADurationSeconds,
+                            @Value("${mobile_app_rp_entity_id}") String mobileAppROEntityId,
+                            @Value("${feature.default_remember_me}") boolean featureDefaultRememberMe,
+                            AuthenticationRequestRepository authenticationRequestRepository,
+                            UserRepository userRepository,
+                            UserLoginRepository userLoginRepository,
+                            GeoLocation geoLocation,
+                            MailBox mailBox,
+                            ServiceProviderResolver serviceProviderResolver) {
+            List<ServiceProvider> serviceProviders = new ArrayList<>();
+
             this.privateKeyPath = privateKeyPath;
             this.certificatePath = certificatePath;
             this.idpEntityId = idpEntityId;
@@ -100,6 +107,18 @@ public class SecurityConfiguration {
 
         @Override
         protected void configure(HttpSecurity http) throws Exception {
+            http
+                    .requestMatchers()
+                    .antMatchers("/saml/guest-idp/**")
+                    .and()
+                    .csrf()
+                    .disable()
+                    .addFilterBefore(this.guestIdpAuthenticationRequestFilter,
+                            AbstractPreAuthenticatedProcessingFilter.class
+                    )
+                    .authorizeRequests()
+                    .antMatchers("/**").hasRole("GUEST");
+
             //TODO add GuestIdpAuthenticationRequestFilter before AbstractPreAuthenticatedProcessingFilter
 
 
