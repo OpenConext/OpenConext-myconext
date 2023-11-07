@@ -61,8 +61,8 @@ idp_redirect_url: http://localhost:3000
 rp_id: localhost
 rp_origin: http://localhost:3000
 sp_redirect_url: http://localhost:3001
-sp_entity_id: https://engine.test2.surfconext.nl/authentication/sp/metadata, https://engine.test.surfconext.nl/authentication/sp/metadata
-sp_entity_metadata_url: https://engine.test2.surfconext.nl/authentication/sp/metadata, https://engine.test.surfconext.nl/authentication/sp/metadata
+sp_entity_id: https://engine.test.surfconext.nl/authentication/sp/metadata
+sp_entity_metadata_url: https://engine.test.surfconext.nl/authentication/sp/metadata
 guest_idp_entity_id: https://localhost.surf.id
 my_conext_url: https://my.test2.surfconext.nl
 domain: eduid.nl
@@ -90,6 +90,8 @@ feature:
   create_eduid_institution_landing: True
   # Do we default remember the user for a longer period
   default_remember_me: False
+  # Does the SAMLIdpService expects authn requests to be signed
+  requires_signed_authn_request: True
 
 secure_cookie: false
 idp_entity_id: https://localhost.surf.id

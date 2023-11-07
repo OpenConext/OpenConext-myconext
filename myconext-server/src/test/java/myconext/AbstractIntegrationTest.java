@@ -80,7 +80,8 @@ import static org.junit.Assert.assertTrue;
                 "eduid_api.oidcng_introspection_uri=http://localhost:8098/introspect",
                 "cron.service-name-resolver-initial-delay-milliseconds=60000",
                 "oidc.base-url=http://localhost:8098/",
-                "sso_mfa_duration_seconds=-1000"
+                "sso_mfa_duration_seconds=-1000",
+                "feature.requires_signed_authn_request=false"
         })
 @ActiveProfiles({"test"})
 @SuppressWarnings("unchecked")

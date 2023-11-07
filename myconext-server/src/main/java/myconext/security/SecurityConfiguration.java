@@ -74,6 +74,7 @@ public class SecurityConfiguration {
                             @Value("${sso_mfa_duration_seconds}") long ssoMFADurationSeconds,
                             @Value("${mobile_app_rp_entity_id}") String mobileAppROEntityId,
                             @Value("${feature.default_remember_me}") boolean featureDefaultRememberMe,
+                            @Value("${feature.requires_signed_authn_request}") boolean requiresSignedAuthnRequest,
                             AuthenticationRequestRepository authenticationRequestRepository,
                             UserRepository userRepository,
                             UserLoginRepository userLoginRepository,

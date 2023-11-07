@@ -37,7 +37,7 @@ class MaxMindGeoLocationTest {
 
     @AfterEach
     void after() throws IOException {
-        File file = new File(System.getProperty("java.io.tmpdir"+ "/geo"));
+        File file = new File(System.getProperty("java.io.tmpdir") + "/geo");
         FileUtils.forceDelete(file);
     }
 

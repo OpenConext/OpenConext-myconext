@@ -664,7 +664,9 @@ public class GuestIdpAuthenticationRequestFilter extends OncePerRequestFilter im
                     String.join(", ", authenticationContextClassReferences));
             samlStatus = SAMLStatus.NO_AUTHN_CONTEXT;
         }
-
+        if (!samlStatus.equals(SAMLStatus.SUCCESS)) {
+            authnContextClassRefValue = DefaultSAMLIdPService.authnContextClassRefUnspecified;
+        }
         Optional<Cookie> optionalCookie = cookieByName(request, BROWSER_SESSION_COOKIE_NAME);
         optionalCookie.ifPresent(cookie -> {
             cookie.setMaxAge(0);
@@ -673,7 +675,7 @@ public class GuestIdpAuthenticationRequestFilter extends OncePerRequestFilter im
         //Tracking cookie for user new device discovery
         this.addTrackingCookie(request, response, user);
         this.samlIdpService.sendResponse(
-                samlAuthenticationRequest.getRequesterEntityId(),
+                samlAuthenticationRequest.getIssuer(),
                 samlAuthenticationRequest.getRequestId(),
                 user.getUid(),
                 samlStatus,
