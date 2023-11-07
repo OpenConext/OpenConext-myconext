@@ -4,7 +4,6 @@ import lombok.NoArgsConstructor;
 import myconext.exceptions.UserNotFoundException;
 import myconext.geo.GeoLocation;
 import myconext.mail.MailBox;
-import myconext.manage.MockServiceProviderResolver;
 import myconext.manage.ServiceProviderHolder;
 import myconext.manage.ServiceProviderResolver;
 import myconext.model.*;
@@ -73,7 +72,7 @@ public class GuestIdpAuthenticationRequestFilter extends OncePerRequestFilter im
     private final AntPathRequestMatcher continueAfterloginSamlRequestMatcher;
     private final String redirectUrl;
     private final AuthenticationRequestRepository authenticationRequestRepository;
-    private  UserRepository userRepository;
+    private UserRepository userRepository;
     private final UserLoginRepository userLoginRepository;
     private final List<String> accountLinkingContextClassReferences;
     private final GeoLocation geoLocation;
@@ -82,7 +81,7 @@ public class GuestIdpAuthenticationRequestFilter extends OncePerRequestFilter im
     private final boolean secureCookie;
     private final String magicLinkUrl;
     private final MailBox mailBox;
-    private  ServiceProviderResolver serviceProviderResolver;
+    private ServiceProviderResolver serviceProviderResolver;
     private final ExecutorService executor;
     private final int nudgeAppDays;
     private final int rememberMeQuestionAskedDays;
