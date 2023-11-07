@@ -49,7 +49,7 @@ public class AttributeAggregatorController {
             userAttributes.add(new UserAttribute("urn:mace:eduid.nl:1.1", eduID));
         });
 
-        LOG.debug(String.format("Attribute aggregation response %s", userAttributes));
+        LOG.debug(String.format("Attribute aggregation response %s", userAttributes.stream().map(Object::toString).collect(Collectors.joining(", "))));
 
         return ResponseEntity.ok(userAttributes);
     }
