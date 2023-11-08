@@ -45,6 +45,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.stream.Collectors;
 
+import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.util.function.Function.identity;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toMap;
@@ -69,9 +70,11 @@ public class GuestIdpAuthenticationRequestFilter extends OncePerRequestFilter im
 
     private final AntPathRequestMatcher ssoSamlRequestMatcher;
     private final AntPathRequestMatcher magicSamlRequestMatcher;
-    private final AntPathRequestMatcher continueAfterloginSamlRequestMatcher;
+    private final AntPathRequestMatcher continueAfterLoginSamlRequestMatcher;
+    private final AntPathRequestMatcher metaDataSamlRequestMatcher;
     private final String redirectUrl;
     private final AuthenticationRequestRepository authenticationRequestRepository;
+    private final IdentityProviderMetaData identityProviderMetaData;
     private UserRepository userRepository;
     private final UserLoginRepository userLoginRepository;
     private final List<String> accountLinkingContextClassReferences;
@@ -107,10 +110,12 @@ public class GuestIdpAuthenticationRequestFilter extends OncePerRequestFilter im
                                                long ssoMFADurationSeconds,
                                                String mobileAppROEntityId,
                                                boolean featureDefaultRememberMe,
-                                               SAMLConfiguration configuration) {
+                                               SAMLConfiguration configuration,
+                                               IdentityProviderMetaData identityProviderMetaData) {
         this.ssoSamlRequestMatcher = new AntPathRequestMatcher("/saml/guest-idp/SSO/**");
         this.magicSamlRequestMatcher = new AntPathRequestMatcher("/saml/guest-idp/magic/**");
-        this.continueAfterloginSamlRequestMatcher = new AntPathRequestMatcher("/saml/guest-idp/continue/**");
+        this.continueAfterLoginSamlRequestMatcher = new AntPathRequestMatcher("/saml/guest-idp/continue/**");
+        this.metaDataSamlRequestMatcher = new AntPathRequestMatcher("/saml/guest-idp/metadata/**");
         this.redirectUrl = redirectUrl;
         this.serviceProviderResolver = serviceProviderResolver;
         this.authenticationRequestRepository = authenticationRequestRepository;
@@ -130,6 +135,7 @@ public class GuestIdpAuthenticationRequestFilter extends OncePerRequestFilter im
         this.featureDefaultRememberMe = featureDefaultRememberMe;
         this.samlIdpService = new DefaultSAMLIdPService(configuration);
         this.executor = Executors.newSingleThreadExecutor();
+        this.identityProviderMetaData = identityProviderMetaData;
     }
 
     @Override
@@ -142,9 +148,13 @@ public class GuestIdpAuthenticationRequestFilter extends OncePerRequestFilter im
             LOG.debug("Starting magic filter");
             this.magic(request, response);
             return;
-        } else if (this.continueAfterloginSamlRequestMatcher.matches(request)) {
+        } else if (this.continueAfterLoginSamlRequestMatcher.matches(request)) {
             LOG.debug("Starting continue after login filter");
             this.continueAfterLogin(request, response);
+            return;
+        } else if (this.metaDataSamlRequestMatcher.matches(request)) {
+            LOG.debug("Starting metadata filter");
+            this.metaData(response);
             return;
         }
         filterChain.doFilter(request, response);
@@ -760,5 +770,20 @@ public class GuestIdpAuthenticationRequestFilter extends OncePerRequestFilter im
     private SAMLAttribute attribute(String name, String value) {
         return new SAMLAttribute(name, value);
     }
+
+    private void metaData(HttpServletResponse servletResponse) throws IOException {
+        servletResponse.setContentType("text/xml");
+        servletResponse.setCharacterEncoding(UTF_8.name());
+
+        servletResponse.setHeader("Cache-Control", "private");
+        String metaData = this.samlIdpService.metaData(
+                this.identityProviderMetaData.getSingleSignOnServiceURI(),
+                this.identityProviderMetaData.getName(),
+                this.identityProviderMetaData.getDescription(),
+                this.identityProviderMetaData.getLogoURI()
+        );
+        servletResponse.getWriter().write(metaData);
+    }
+
 
 }

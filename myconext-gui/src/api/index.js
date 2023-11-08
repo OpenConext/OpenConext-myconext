@@ -135,7 +135,9 @@ export function logout() {
         credentials: "same-origin",
         redirect: "manual"
     };
-    return fetchJson("/myconext/api/sp/logout").then(() => fetch("/Shibboleth.sso/Logout", fetchOptions));
+    return forgetMe().then(() =>
+        fetchJson("/myconext/api/sp/logout").then(() => fetch("/Shibboleth.sso/Logout", fetchOptions))
+    );
 }
 
 export function forgetMe() {

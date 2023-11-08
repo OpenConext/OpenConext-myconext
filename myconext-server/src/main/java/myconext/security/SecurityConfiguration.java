@@ -16,6 +16,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
 import org.springframework.core.env.Environment;
@@ -50,6 +51,7 @@ public class SecurityConfiguration {
 
     @Configuration
     @Order(1)
+    @EnableConfigurationProperties(IdentityProviderMetaData.class)
     public static class SamlSecurity extends WebSecurityConfigurerAdapter  {
 
         private final GuestIdpAuthenticationRequestFilter guestIdpAuthenticationRequestFilter;
@@ -80,7 +82,8 @@ public class SecurityConfiguration {
                             UserLoginRepository userLoginRepository,
                             GeoLocation geoLocation,
                             MailBox mailBox,
-                            ServiceProviderResolver serviceProviderResolver) {
+                            ServiceProviderResolver serviceProviderResolver,
+                            IdentityProviderMetaData identityProviderMetaData) {
             String[] keys = this.getKeys(certificatePath, privateKeyPath);
             final List<SAMLServiceProvider> serviceProviders = new ArrayList<>();
 
@@ -112,7 +115,8 @@ public class SecurityConfiguration {
                     ssoMFADurationSeconds,
                     mobileAppROEntityId,
                     featureDefaultRememberMe,
-                    configuration
+                    configuration,
+                    identityProviderMetaData
             );
 
         }

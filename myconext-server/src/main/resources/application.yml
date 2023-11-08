@@ -32,6 +32,12 @@ email:
 #  mail-templates-directory: file://opt/build/main/resources/mail_templates
   mail-templates-directory: classpath:mail_templates
 
+identity-provider-meta-data:
+  single_sign_on_service_uri: "https://login.test.eduid.nl/saml/guest-idp/SSO"
+  name: "eduID IdP"
+  description: "eduID IdP"
+  logo_uri: "https://static.surfconext.nl/media/idp/eduid.png"
+
 schac_home_organization: eduid.nl
 
 cron:
