@@ -684,7 +684,7 @@ public class GuestIdpAuthenticationRequestFilter extends OncePerRequestFilter im
         //Tracking cookie for user new device discovery
         this.addTrackingCookie(request, response, user);
         this.samlIdpService.sendResponse(
-                samlAuthenticationRequest.getIssuer(),
+                samlAuthenticationRequest.getRequesterEntityId(),
                 samlAuthenticationRequest.getRequestId(),
                 user.getUid(),
                 samlStatus,
