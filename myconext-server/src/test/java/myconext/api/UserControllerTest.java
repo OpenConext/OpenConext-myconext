@@ -12,7 +12,6 @@ import myconext.AbstractIntegrationTest;
 import myconext.model.*;
 import myconext.repository.ChallengeRepository;
 import myconext.security.ACR;
-import myconext.tiqr.SURFSecureID;
 import org.apache.commons.io.IOUtils;
 import org.apache.http.client.CookieStore;
 import org.junit.Test;
@@ -39,8 +38,8 @@ import static io.restassured.RestAssured.given;
 import static io.restassured.RestAssured.when;
 import static myconext.model.LinkedAccountTest.linkedAccount;
 import static myconext.security.GuestIdpAuthenticationRequestFilter.BROWSER_SESSION_COOKIE_NAME;
-import static myconext.security.GuestIdpAuthenticationRequestFilter.GUEST_IDP_REMEMBER_ME_COOKIE_NAME;
-import static org.hamcrest.Matchers.*;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.*;
 
 @SuppressWarnings("unchecked")
@@ -171,8 +170,9 @@ public class UserControllerTest extends AbstractIntegrationTest {
         String samlResponse = this.samlResponse(magicLinkResponse);
 
         assertTrue(samlResponse.contains("Your institution has not provided this affiliation"));
+        assertTrue(samlResponse.contains("urn:oasis:names:tc:SAML:2.0:status:Responder"));
         assertTrue(samlResponse.contains("urn:oasis:names:tc:SAML:2.0:status:NoAuthnContext"));
-        assertTrue(samlResponse.contains("<saml2:AuthnContextClassRef>urn:oasis:names:tc:SAML:2.0:ac:classes:unspecified</saml2:AuthnContextClassRef>"));
+        assertFalse(samlResponse.contains("Assertion"));
         assertFalse(samlResponse.contains(ACR.AFFILIATION_STUDENT));
     }
 
