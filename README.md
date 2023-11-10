@@ -8,7 +8,7 @@ An IdP for OpenConext. A user can create and manage his own identity. Authentica
 
 ### [System Requirements](#system-requirements)
 
-- Java 8
+- Java 11
 - Maven 3
 - MongoDB 3.4.x
 - Yarn 1.x
