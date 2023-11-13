@@ -24,7 +24,7 @@ import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
-import saml.DefaultSAMLIdPService;
+import saml.DefaultSAMLService;
 import saml.model.SAMLAttribute;
 import saml.model.SAMLConfiguration;
 import saml.model.SAMLStatus;
@@ -92,7 +92,7 @@ public class GuestIdpAuthenticationRequestFilter extends OncePerRequestFilter im
     private final long ssoMFADurationSeconds;
     private final String mobileAppROEntityId;
     private final boolean featureDefaultRememberMe;
-    private final DefaultSAMLIdPService samlIdpService;
+    private final DefaultSAMLService samlService;
 
     public GuestIdpAuthenticationRequestFilter(String redirectUrl,
                                                ServiceProviderResolver serviceProviderResolver,
@@ -133,7 +133,7 @@ public class GuestIdpAuthenticationRequestFilter extends OncePerRequestFilter im
         this.ssoMFADurationSeconds = ssoMFADurationSeconds;
         this.mobileAppROEntityId = mobileAppROEntityId;
         this.featureDefaultRememberMe = featureDefaultRememberMe;
-        this.samlIdpService = new DefaultSAMLIdPService(configuration);
+        this.samlService = new DefaultSAMLService(configuration);
         this.executor = Executors.newSingleThreadExecutor();
         this.identityProviderMetaData = identityProviderMetaData;
     }
@@ -168,7 +168,7 @@ public class GuestIdpAuthenticationRequestFilter extends OncePerRequestFilter im
             //prevent null-pointer and drop dead
             return;
         }
-        AuthnRequest authnRequest = this.samlIdpService.parseAuthnRequest(samlRequest, true, isDeflated(request));
+        AuthnRequest authnRequest = this.samlService.parseAuthnRequest(samlRequest, true, isDeflated(request));
 
         String requesterEntityId = requesterId(authnRequest);
         String issuer = authnRequest.getIssuer().getValue();
@@ -640,7 +640,7 @@ public class GuestIdpAuthenticationRequestFilter extends OncePerRequestFilter im
         boolean applySsoMfa = this.isApplySsoMfa();
         SAMLStatus samlStatus = SAMLStatus.SUCCESS;
         String optionalMessage = null;
-        String authnContextClassRefValue = DefaultSAMLIdPService.authnContextClassRefPassword;
+        String authnContextClassRefValue = DefaultSAMLService.authnContextClassRefPassword;
         if (samlAuthenticationRequest.isAccountLinkingRequired()) {
             boolean hasStudentAffiliation = hasRequiredStudentAffiliation(user.allEduPersonAffiliations());
 
@@ -674,7 +674,7 @@ public class GuestIdpAuthenticationRequestFilter extends OncePerRequestFilter im
             samlStatus = SAMLStatus.NO_AUTHN_CONTEXT;
         }
         if (!samlStatus.equals(SAMLStatus.SUCCESS)) {
-            authnContextClassRefValue = DefaultSAMLIdPService.authnContextClassRefUnspecified;
+            authnContextClassRefValue = DefaultSAMLService.authnContextClassRefUnspecified;
         }
         Optional<Cookie> optionalCookie = cookieByName(request, BROWSER_SESSION_COOKIE_NAME);
         optionalCookie.ifPresent(cookie -> {
@@ -683,7 +683,7 @@ public class GuestIdpAuthenticationRequestFilter extends OncePerRequestFilter im
         });
         //Tracking cookie for user new device discovery
         this.addTrackingCookie(request, response, user);
-        this.samlIdpService.sendResponse(
+        this.samlService.sendResponse(
                 samlAuthenticationRequest.getIssuer(),
                 samlAuthenticationRequest.getRequestId(),
                 user.getUid(),
@@ -776,7 +776,7 @@ public class GuestIdpAuthenticationRequestFilter extends OncePerRequestFilter im
         servletResponse.setCharacterEncoding(UTF_8.name());
 
         servletResponse.setHeader("Cache-Control", "private");
-        String metaData = this.samlIdpService.metaData(
+        String metaData = this.samlService.metaData(
                 this.identityProviderMetaData.getSingleSignOnServiceURI(),
                 this.identityProviderMetaData.getName(),
                 this.identityProviderMetaData.getDescription(),
