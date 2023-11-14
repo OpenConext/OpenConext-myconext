@@ -147,3 +147,13 @@ jobs:
           push: true
           tags: |
             ghcr.io/openconext/openconext-myconext/myconext-gui:${{ github.ref_name }}
+
+      - name: Build and push the server image
+        uses: docker/build-push-action@v4
+        with:
+          context: myconext-server
+          file: myconext-server/docker/Dockerfile
+          platforms: linux/amd64
+          push: true
+          tags: |
+            ghcr.io/openconext/openconext-myconext/myconext-server:${{ github.ref_name }}
