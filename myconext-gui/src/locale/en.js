@@ -84,7 +84,7 @@ I18n.translations.en = {
         studentRole: "Student",
         preferInstitution: "Prefer institution",
         preferredInstitutionConfirmation: "Do you want to use the information received from {{name}} to be the default information to share with services?",
-        preferred: "{{name}] is now your preferred source of information",
+        preferred: "{{name}} is now your preferred source of information",
         expired: "Expired",
         newInstitution: "Your identity has been verified",
         newInstitutionInfo: "We have replaced the following information with the verified data from your institution:",

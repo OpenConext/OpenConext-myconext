@@ -84,7 +84,7 @@ I18n.translations.nl = {
         studentRole: "Student",
         preferInstitution: "Voorkeursinstelling",
         preferredInstitutionConfirmation: "Wil je de informatie die we van {{name}} ontvangen, gebruiken als standaardinformatie om met diensten te delen?",
-        preferred: "{{name}] is nu de bron van je persoonsinformatie",
+        preferred: "{{name}} is nu de bron van je persoonsinformatie",
         expired: "Verlopen",
         newInstitution: "Je identiteit is geverifïeerd",
         newInstitutionInfo: "We hebben de volgende informatie overschreven met de geverifïeerde gegevens:",
