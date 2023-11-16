@@ -129,7 +129,7 @@ public abstract class AbstractIntegrationTest {
     @Autowired
     protected RequestInstitutionEduIDRepository requestInstitutionEduIDRepository;
 
-    private final SimpleDateFormat issueFormat = new SimpleDateFormat("yyyy-MM-dd'T'H:mm:ss");
+    private final SimpleDateFormat issueFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
 
     protected final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
