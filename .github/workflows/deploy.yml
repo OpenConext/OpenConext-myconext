@@ -118,42 +118,42 @@ jobs:
         asset_name: myconext-server-${{ github.ref_name }}.jar
         asset_content_type: application/zip
 
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v2
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v2
 
-      - name: Login to GitHub Container Registry
-        uses: docker/login-action@v2
-        with:
-          registry: ghcr.io
-          username: ${{ github.repository_owner }}
-          password: ${{ secrets.GITHUB_TOKEN }}
+    - name: Login to GitHub Container Registry
+      uses: docker/login-action@v2
+      with:
+        registry: ghcr.io
+        username: ${{ github.repository_owner }}
+        password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Build and push the account gui image
-        uses: docker/build-push-action@v4
-        with:
-          context: account-gui
-          file: account-gui/docker/Dockerfile
-          platforms: linux/amd64
-          push: true
-          tags: |
-            ghcr.io/openconext/openconext-myconext/account-gui:${{ github.ref_name }}
+    - name: Build and push the account gui image
+      uses: docker/build-push-action@v4
+      with:
+        context: account-gui
+        file: account-gui/docker/Dockerfile
+        platforms: linux/amd64
+        push: true
+        tags: |
+          ghcr.io/openconext/openconext-myconext/account-gui:${{ github.ref_name }}
 
-      - name: Build and push the myconext gui image
-        uses: docker/build-push-action@v4
-        with:
-          context: myconext-gui
-          file: myconext-gui/docker/Dockerfile
-          platforms: linux/amd64
-          push: true
-          tags: |
-            ghcr.io/openconext/openconext-myconext/myconext-gui:${{ github.ref_name }}
+    - name: Build and push the myconext gui image
+      uses: docker/build-push-action@v4
+      with:
+        context: myconext-gui
+        file: myconext-gui/docker/Dockerfile
+        platforms: linux/amd64
+        push: true
+        tags: |
+          ghcr.io/openconext/openconext-myconext/myconext-gui:${{ github.ref_name }}
 
-      - name: Build and push the server image
-        uses: docker/build-push-action@v4
-        with:
-          context: myconext-server
-          file: myconext-server/docker/Dockerfile
-          platforms: linux/amd64
-          push: true
-          tags: |
-            ghcr.io/openconext/openconext-myconext/myconext-server:${{ github.ref_name }}
+    - name: Build and push the server image
+      uses: docker/build-push-action@v4
+      with:
+        context: myconext-server
+        file: myconext-server/docker/Dockerfile
+        platforms: linux/amd64
+        push: true
+        tags: |
+          ghcr.io/openconext/openconext-myconext/myconext-server:${{ github.ref_name }}
