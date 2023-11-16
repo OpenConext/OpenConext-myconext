@@ -9,7 +9,7 @@ import myconext.AbstractIntegrationTest;
 import myconext.model.MagicLinkRequest;
 import myconext.model.SamlAuthenticationRequest;
 import myconext.model.User;
-import org.apache.commons.io.IOUtil;
+import org.apache.commons.io.IOUtils;
 import org.junit.Test;
 import org.springframework.http.HttpMethod;
 import org.springframework.web.util.UriComponents;
@@ -383,7 +383,7 @@ public class TiqrControllerTest extends AbstractIntegrationTest {
         List.of("TIQR_COOKIE=true", "BROWSER_SESSION=true", "TRACKING_DEVICE=", "SESSION=")
                 .forEach(s -> assertTrue(cookies.stream().anyMatch(cookie -> cookie.startsWith(s))));
 
-        String html = IOUtil.toString(response.asInputStream());
+        String html = IOUtils.toString(response.asInputStream(), Charset.defaultCharset());
         Matcher matcher = Pattern.compile("name=\"SAMLResponse\" value=\"(.*?)\"").matcher(html);
         matcher.find();
 

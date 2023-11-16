@@ -9,7 +9,7 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
-import org.springframework.context.annotation.Profile;
+import org.springframework.core.env.Profiles;
 import org.springframework.core.env.Environment;
 import org.springframework.core.io.Resource;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -47,19 +47,15 @@ public class MailConfiguration {
     @Autowired
     private EmailsSendRepository emailsSendRepository;
 
+    @Autowired
+    private Environment environment;
+
     @Bean
-    @Profile({"!dev"})
     public MailBox mailSenderProd() throws IOException {
+        if (environment.acceptsProfiles(Profiles.of("dev", "test", "shib"))) {
+            return new MockMailBox(mailSender, emailFrom, magicLinkUrl, mySURFconextURL, loginSURFconextURL, objectMapper, mailTemplatesDirectory, emailsSendRepository, environment);
+        }
         return new MailBox(mailSender, emailFrom, magicLinkUrl, mySURFconextURL, loginSURFconextURL, objectMapper, mailTemplatesDirectory,
                 emailsSendRepository, emailSpamThresholdSeconds);
     }
-
-    @Bean
-    @Profile({"dev", "test", "shib"})
-    @Primary
-    public MailBox mailSenderDev(Environment environment) throws IOException {
-        return new MockMailBox(mailSender, emailFrom, magicLinkUrl, mySURFconextURL, loginSURFconextURL, objectMapper, mailTemplatesDirectory, emailsSendRepository, environment);
-    }
-
-
 }

@@ -18,9 +18,11 @@ springdoc:
   pathsToMatch: "/mobile/**"
   api-docs:
     path: "/myconext/api/mobile/api-docs"
+    enabled: true
   swagger-ui:
     path: "/myconext/api/mobile/api-ui.html"
     operationsSorter: method
+    enabled: true
 
 email:
   from: noreply@surfconext.nl
@@ -29,6 +31,12 @@ email:
   idp-surfconext-url: http://localhost:3000
 #  mail-templates-directory: file://opt/build/main/resources/mail_templates
   mail-templates-directory: classpath:mail_templates
+
+identity-provider-meta-data:
+  single_sign_on_service_uri: "https://login.test.eduid.nl/saml/guest-idp/SSO"
+  name: "eduID IdP"
+  description: "eduID IdP"
+  logo_uri: "https://static.surfconext.nl/media/idp/eduid.png"
 
 schac_home_organization: eduid.nl
 
@@ -59,8 +67,8 @@ idp_redirect_url: http://localhost:3000
 rp_id: localhost
 rp_origin: http://localhost:3000
 sp_redirect_url: http://localhost:3001
-sp_entity_id: https://engine.test2.surfconext.nl/authentication/sp/metadata, https://engine.test.surfconext.nl/authentication/sp/metadata
-sp_entity_metadata_url: https://engine.test2.surfconext.nl/authentication/sp/metadata, https://engine.test.surfconext.nl/authentication/sp/metadata
+sp_entity_id: https://engine.test.surfconext.nl/authentication/sp/metadata
+sp_entity_metadata_url: https://engine.test.surfconext.nl/authentication/sp/metadata
 guest_idp_entity_id: https://localhost.surf.id
 my_conext_url: https://my.test2.surfconext.nl
 domain: eduid.nl
@@ -88,6 +96,8 @@ feature:
   create_eduid_institution_landing: True
   # Do we default remember the user for a longer period
   default_remember_me: False
+  # Does the SAMLIdpService expects authn requests to be signed
+  requires_signed_authn_request: False
 
 secure_cookie: false
 idp_entity_id: https://localhost.surf.id
@@ -175,10 +185,12 @@ management:
   endpoints:
     web:
       exposure:
-        include: "health,info"
+        include: "health,info,mappings"
       base-path: "/internal"
   endpoint:
     info:
+      enabled: true
+    mappings:
       enabled: true
   info:
     git:

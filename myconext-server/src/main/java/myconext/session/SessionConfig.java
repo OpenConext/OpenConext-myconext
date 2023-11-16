@@ -14,7 +14,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
-import org.springframework.security.saml.saml2.authentication.Assertion;
 import org.springframework.session.data.mongo.config.annotation.web.http.EnableMongoHttpSession;
 import org.springframework.session.web.context.AbstractHttpSessionApplicationInitializer;
 import org.springframework.session.web.http.CookieSerializer;
@@ -37,7 +36,6 @@ public class SessionConfig extends AbstractHttpSessionApplicationInitializer {
                 .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
                 .registerModule(new Jdk8Module())
                 .registerModule(new JavaTimeModule())
-                .addMixIn(Assertion.class, AssertionMixin.class)
                 .addMixIn(HashSet.class, HashSetMixin.class)
                 .addMixIn(User.class, UserMixin.class)
                 .addMixIn(LinkedAccount.class, LinkedAccountMixin.class)
@@ -55,9 +53,6 @@ public class SessionConfig extends AbstractHttpSessionApplicationInitializer {
         defaultCookieSerializer.setSameSite(secureCookie ? "None" : "Lax");
         defaultCookieSerializer.setUseSecureCookie(secureCookie);
         return defaultCookieSerializer;
-    }
-
-    private static class AssertionMixin {
     }
 
     private static class HashSetMixin {

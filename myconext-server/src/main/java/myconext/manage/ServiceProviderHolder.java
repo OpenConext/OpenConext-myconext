@@ -3,6 +3,7 @@ package myconext.manage;
 import myconext.model.SamlAuthenticationRequest;
 import myconext.model.ServiceProvider;
 
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import java.util.Optional;
 
@@ -13,11 +14,11 @@ public interface ServiceProviderHolder {
     ServiceProviderResolver getServiceProviderResolver() ;
 
     default String getServiceName(HttpServletRequest request, SamlAuthenticationRequest samlAuthenticationRequest) {
-        String lang = cookieByName(request, "lang").map(cookie -> cookie.getValue()).orElse("en");
-        Optional<ServiceProvider> optionalServiceProvider = getServiceProviderResolver().resolve(samlAuthenticationRequest.getRequesterEntityId());
-        String serviceName = optionalServiceProvider.map(serviceProvider -> lang.equals("en") ? serviceProvider.getName() : serviceProvider.getNameNl())
-                .orElse(samlAuthenticationRequest.getRequesterEntityId());
-        return serviceName;
+        String lang = cookieByName(request, "lang").map(Cookie::getValue).orElse("en");
+        String requesterEntityId = samlAuthenticationRequest.getRequesterEntityId();
+        Optional<ServiceProvider> optionalServiceProvider = getServiceProviderResolver().resolve(requesterEntityId);
+        return optionalServiceProvider.map(serviceProvider -> lang.equals("en") ? serviceProvider.getName() : serviceProvider.getNameNl())
+                .orElse(requesterEntityId);
     }
 
 

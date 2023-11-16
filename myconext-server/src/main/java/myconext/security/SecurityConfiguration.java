@@ -1,18 +1,22 @@
 package myconext.security;
 
-import myconext.config.BeanConfig;
+import lombok.SneakyThrows;
 import myconext.crypto.KeyGenerator;
+import myconext.geo.GeoLocation;
+import myconext.mail.MailBox;
 import myconext.manage.ServiceProviderResolver;
-import myconext.model.ServiceProvider;
+import myconext.repository.AuthenticationRequestRepository;
+import myconext.repository.UserLoginRepository;
 import myconext.repository.UserRepository;
 import myconext.shibboleth.ShibbolethPreAuthenticatedProcessingFilter;
 import myconext.shibboleth.ShibbolethUserDetailService;
 import myconext.shibboleth.mock.MockShibbolethFilter;
-import org.apache.commons.io.IOUtil;
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
 import org.springframework.core.env.Environment;
@@ -25,24 +29,19 @@ import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.saml.key.SimpleKey;
-import org.springframework.security.saml.provider.config.RotatingKeys;
-import org.springframework.security.saml.provider.identity.config.ExternalServiceProviderConfiguration;
-import org.springframework.security.saml.provider.identity.config.SamlIdentityProviderSecurityConfiguration;
-import org.springframework.security.saml.provider.identity.config.SamlIdentityProviderSecurityDsl;
-import org.springframework.security.saml.saml2.metadata.NameId;
 import org.springframework.security.web.authentication.preauth.AbstractPreAuthenticatedProcessingFilter;
 import org.springframework.security.web.authentication.preauth.PreAuthenticatedAuthenticationProvider;
+import saml.model.SAMLConfiguration;
+import saml.model.SAMLIdentityProvider;
+import saml.model.SAMLServiceProvider;
 
 import java.io.IOException;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import static java.util.Arrays.asList;
 import static java.util.stream.Collectors.toList;
-import static org.springframework.security.saml.saml2.signature.AlgorithmMethod.RSA_SHA512;
-import static org.springframework.security.saml.saml2.signature.DigestMethod.SHA512;
 
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true)
@@ -52,30 +51,74 @@ public class SecurityConfiguration {
 
     @Configuration
     @Order(1)
-    public static class SamlSecurity extends SamlIdentityProviderSecurityConfiguration {
-        private final Resource privateKeyPath;
-        private final Resource certificatePath;
-        private final List<ServiceProvider> serviceProviders = new ArrayList<>();
-        private final String idpEntityId;
-        private final BeanConfig beanConfig;
+    @EnableConfigurationProperties(IdentityProviderMetaData.class)
+    public static class SamlSecurity extends WebSecurityConfigurerAdapter  {
 
-        public SamlSecurity(BeanConfig beanConfig,
-                            @Value("${private_key_path}") Resource privateKeyPath,
+        private final GuestIdpAuthenticationRequestFilter guestIdpAuthenticationRequestFilter;
+
+        public SamlSecurity(@Value("${private_key_path}") Resource privateKeyPath,
                             @Value("${certificate_path}") Resource certificatePath,
                             @Value("${idp_entity_id}") String idpEntityId,
                             @Value("${sp_entity_id}") String spEntityId,
-                            @Value("${sp_entity_metadata_url}") String spMetaDataUrl) {
-            super("/saml/guest-idp/", beanConfig);
-            this.beanConfig = beanConfig;
-            this.privateKeyPath = privateKeyPath;
-            this.certificatePath = certificatePath;
-            this.idpEntityId = idpEntityId;
+                            @Value("${sp_entity_metadata_url}") String spMetaDataUrl,
+                            @Value("${saml_metadata_base_path}") String samlMetadataBasePath,
+                            @Value("${idp_redirect_url}") String redirectUrl,
+                            @Value("${remember_me_max_age_seconds}") int rememberMeMaxAge,
+                            @Value("${nudge_eduid_app_days}") int nudgeAppDays,
+                            @Value("${remember_me_question_asked_days}") int rememberMeQuestionAskedDays,
+                            @Value("${secure_cookie}") boolean secureCookie,
+                            @Value("${email.magic-link-url}") String magicLinkUrl,
+                            @Value("${account_linking_context_class_ref.linked_institution}") String linkedInstitution,
+                            @Value("${account_linking_context_class_ref.validate_names}") String validateNames,
+                            @Value("${account_linking_context_class_ref.affiliation_student}") String affiliationStudent,
+                            @Value("${account_linking_context_class_ref.profile_mfa}") String profileMfa,
+                            @Value("${linked_accounts.expiry-duration-days-non-validated}") long expiryNonValidatedDurationDays,
+                            @Value("${sso_mfa_duration_seconds}") long ssoMFADurationSeconds,
+                            @Value("${mobile_app_rp_entity_id}") String mobileAppROEntityId,
+                            @Value("${feature.default_remember_me}") boolean featureDefaultRememberMe,
+                            @Value("${feature.requires_signed_authn_request}") boolean requiresSignedAuthnRequest,
+                            AuthenticationRequestRepository authenticationRequestRepository,
+                            UserRepository userRepository,
+                            UserLoginRepository userLoginRepository,
+                            GeoLocation geoLocation,
+                            MailBox mailBox,
+                            ServiceProviderResolver serviceProviderResolver,
+                            IdentityProviderMetaData identityProviderMetaData) {
+            String[] keys = this.getKeys(certificatePath, privateKeyPath);
+            final List<SAMLServiceProvider> serviceProviders = new ArrayList<>();
 
             List<String> spEntityIdentifiers = commaSeparatedToList(spEntityId);
             List<String> spMetaDataUrls = commaSeparatedToList(spMetaDataUrl);
             for (int i = 0; i < spEntityIdentifiers.size(); i++) {
-                serviceProviders.add(new ServiceProvider(spEntityIdentifiers.get(i), spMetaDataUrls.get(i)));
+                serviceProviders.add(new SAMLServiceProvider(spEntityIdentifiers.get(i), spMetaDataUrls.get(i)));
             }
+
+            SAMLConfiguration configuration = new SAMLConfiguration(
+                    new SAMLIdentityProvider(keys[0], keys[1], idpEntityId),
+                    serviceProviders,
+                    requiresSignedAuthnRequest
+            );
+            this.guestIdpAuthenticationRequestFilter = new GuestIdpAuthenticationRequestFilter(
+                    redirectUrl,
+                    serviceProviderResolver,
+                    authenticationRequestRepository,
+                    userRepository,
+                    userLoginRepository,
+                    geoLocation,
+                    rememberMeMaxAge,
+                    nudgeAppDays,
+                    rememberMeQuestionAskedDays,
+                    secureCookie,
+                    magicLinkUrl,
+                    mailBox,
+                    expiryNonValidatedDurationDays,
+                    ssoMFADurationSeconds,
+                    mobileAppROEntityId,
+                    featureDefaultRememberMe,
+                    configuration,
+                    identityProviderMetaData
+            );
+
         }
 
         private List<String> commaSeparatedToList(String spEntityId) {
@@ -84,55 +127,37 @@ public class SecurityConfiguration {
 
         @Override
         protected void configure(HttpSecurity http) throws Exception {
-            super.configure(http);
-
-            String prefix = getPrefix();
-            SamlIdentityProviderSecurityDsl configurer = new GuestIdentityProviderDsl(beanConfig);
-
-            SamlIdentityProviderSecurityDsl samlIdentityProviderSecurityDsl = http.apply(configurer)
-                    .prefix(prefix)
-                    .useStandardFilters(false)
-                    .entityId(idpEntityId)
-                    .alias("guest-idp")
-                    .singleLogout(false)
-                    .signMetadata(true)
-                    .signatureAlgorithms(RSA_SHA512, SHA512)
-                    .nameIds(asList(NameId.PERSISTENT))
-                    .rotatingKeys(getKeys());
-            serviceProviders.forEach(sp -> samlIdentityProviderSecurityDsl.serviceProvider(
-                    new ExternalServiceProviderConfiguration()
-                            .setAlias(sp.getEntityId())
-                            .setMetadata(sp.getMetaDataUrl())
-                            .setSkipSslValidation(false)
-
-            ));
+            http
+                    .requestMatchers()
+                    .antMatchers("/saml/guest-idp/**")
+                    .and()
+                    .csrf()
+                    .disable()
+                    .addFilterBefore(this.guestIdpAuthenticationRequestFilter,
+                            AbstractPreAuthenticatedProcessingFilter.class
+                    )
+                    .authorizeRequests()
+                    .antMatchers("/**").hasRole("GUEST");
         }
 
-        private RotatingKeys getKeys() throws Exception {
+        @SneakyThrows
+        private String[] getKeys(Resource certificatePath, Resource privateKeyPath) {
             String privateKey;
             String certificate;
-            if (this.privateKeyPath.exists() && this.certificatePath.exists()) {
-                privateKey = read(this.privateKeyPath);
-                certificate = read(this.certificatePath);
+            if (privateKeyPath.exists() && certificatePath.exists()) {
+                privateKey = read(privateKeyPath);
+                certificate = read(certificatePath);
             } else {
                 String[] keys = KeyGenerator.generateKeys();
                 privateKey = keys[0];
                 certificate = keys[1];
             }
-            return new RotatingKeys()
-                    .setActive(
-                            new SimpleKey()
-                                    .setName("idp-signing-key")
-                                    .setPrivateKey(privateKey)
-                                    //to prevent null-pointer in SamlKeyStoreProvider
-                                    .setPassphrase("")
-                                    .setCertificate(certificate)
-                    );
+            return new String[]{certificate, privateKey};
         }
 
         private String read(Resource resource) throws IOException {
             LOG.info("Reading resource: " + resource.getFilename());
-            return IOUtil.toString(resource.getInputStream());
+            return IOUtils.toString(resource.getInputStream(), Charset.defaultCharset());
         }
     }
 

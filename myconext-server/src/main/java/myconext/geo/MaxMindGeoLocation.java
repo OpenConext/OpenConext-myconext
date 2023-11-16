@@ -9,7 +9,7 @@ import org.apache.commons.compress.archivers.ArchiveEntry;
 import org.apache.commons.compress.archivers.tar.TarArchiveInputStream;
 import org.apache.commons.compress.compressors.gzip.GzipCompressorInputStream;
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.IOUtil;
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -19,6 +19,7 @@ import org.springframework.stereotype.Component;
 import java.io.*;
 import java.net.InetAddress;
 import java.net.URL;
+import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -116,7 +117,7 @@ public class MaxMindGeoLocation implements GeoLocation {
             FileOutputStream fileOutputStream = new FileOutputStream(file);
 
             InputStream inputStream = new URL(String.format(urlTemplate, licenseKey)).openStream();
-            IOUtil.copy(inputStream, fileOutputStream);
+            IOUtils.copy(inputStream, fileOutputStream);
 
             TarArchiveInputStream fin = new TarArchiveInputStream(new GzipCompressorInputStream(new FileInputStream(file)));
             ArchiveEntry entry;
@@ -125,7 +126,7 @@ public class MaxMindGeoLocation implements GeoLocation {
                 if (entry.getName().endsWith("mmdb")) {
                     binaryData = new File(String.format("%s/%s/%s", this.downloadDirectory, name, GEO_LITE_2_CITY_MMDB));
                     try (OutputStream o = Files.newOutputStream(binaryData.toPath())) {
-                        IOUtil.copy(fin, o);
+                        IOUtils.copy(fin, o);
                     }
                     break;
                 }

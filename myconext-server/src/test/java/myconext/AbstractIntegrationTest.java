@@ -15,7 +15,7 @@ import myconext.manage.ServiceProviderResolver;
 import myconext.model.*;
 import myconext.repository.*;
 import org.apache.commons.codec.binary.Base64;
-import org.apache.commons.io.IOUtil;
+import org.apache.commons.io.IOUtils;
 import org.junit.Before;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.runner.RunWith;
@@ -80,7 +80,8 @@ import static org.junit.Assert.assertTrue;
                 "eduid_api.oidcng_introspection_uri=http://localhost:8098/introspect",
                 "cron.service-name-resolver-initial-delay-milliseconds=60000",
                 "oidc.base-url=http://localhost:8098/",
-                "sso_mfa_duration_seconds=-1000"
+                "sso_mfa_duration_seconds=-1000",
+                "feature.requires_signed_authn_request=false"
         })
 @ActiveProfiles({"test"})
 @SuppressWarnings("unchecked")
@@ -207,7 +208,7 @@ public abstract class AbstractIntegrationTest {
     }
 
     public static String readFile(String path) throws IOException {
-        return IOUtil.toString(new ClassPathResource(path).getInputStream());
+        return IOUtils.toString(new ClassPathResource(path).getInputStream(), Charset.defaultCharset());
     }
 
     private String deflatedBase64encoded(String input) throws IOException {
@@ -258,7 +259,7 @@ public abstract class AbstractIntegrationTest {
         scopeList.add("openid");
 
         String file = String.format("oidc/%s.json", valid ? filePart : "introspect-invalid-token");
-        String introspectResult = IOUtil.toString(new ClassPathResource(file).getInputStream());
+        String introspectResult = IOUtils.toString(new ClassPathResource(file).getInputStream(), Charset.defaultCharset());
         String introspectResultWithScope = valid ? String.format(introspectResult, String.join(" ", scopeList)) : introspectResult;
         stubFor(post(urlPathMatching("/introspect")).willReturn(aResponse()
                 .withHeader("Content-Type", "application/json")
@@ -306,7 +307,7 @@ public abstract class AbstractIntegrationTest {
             response = this.get302Response(response, optionalCookieFilter);
         }
         assertEquals(HttpStatus.OK.value(), response.getStatusCode());
-        String html = IOUtil.toString(response.asInputStream());
+        String html = IOUtils.toString(response.asInputStream(), Charset.defaultCharset());
 
         Matcher matcher = Pattern.compile("name=\"SAMLResponse\" value=\"(.*?)\"").matcher(html);
         matcher.find();
