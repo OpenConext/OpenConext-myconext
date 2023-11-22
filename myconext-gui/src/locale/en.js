@@ -76,7 +76,7 @@ I18n.translations.en = {
         verifiedBy: "<strong>Verified by {{name}}</strong> on {{date}}",
         validUntil: "Valid until",
         verifyFirstAndLastName: {
-            addInstitution: "Verify name",
+            addInstitution: "Add institution",
             addInstitutionConfirmation: "When you proceed you will be asked to login at the institution you want to link to your eduID. First, select which institution you want to connect; then, login at that institution.<br/><br/>After a successful login you will come back here.",
         },
         remove: "Remove",

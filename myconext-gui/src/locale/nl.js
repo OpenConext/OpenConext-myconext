@@ -76,7 +76,7 @@ I18n.translations.nl = {
         verifiedBy: "<strong>Verified by {{name}}</strong> on {{date}}",
         validUntil: "Valid until",
         verifyFirstAndLastName: {
-            addInstitution: "Verifieer naam",
+            addInstitution: "Instelling toevoegen",
             addInstitutionConfirmation: "Als je doorgaat word je gevraagd in te loggen via de onderwijsinstelling die je wilt koppelen. Selecteer eerst welke instelling je wilt koppelen en log daarna in.<br/> <br/>Nadat je succesvol bent ingelogd kom je hier weer terug.",
         },
         remove: "Verwijder",
