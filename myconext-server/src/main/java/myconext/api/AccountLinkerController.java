@@ -559,7 +559,7 @@ public class AccountLinkerController implements UserAuthentication {
                     user.setGivenName(givenName);
                 }
                 if (StringUtils.hasText(familyName)) {
-                    user.setGivenName(familyName);
+                    user.setFamilyName(familyName);
                 }
             }
             String action = optionalLinkedAccount.isPresent() ? "updated" : "add";
