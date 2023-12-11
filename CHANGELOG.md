@@ -1,6 +1,10 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [7.2.0]
+- Replace Spring-SAML with openconext-saml-java
+- New flow and screens for account linking
+
 ## [7.1.3]
 -  MDC bugfix for logging
 - Update depencencies
