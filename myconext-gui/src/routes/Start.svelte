@@ -9,6 +9,22 @@
     import getApp from "../icons/redesign/undraw_Mobile_app_re_catg 1.svg";
     import Button from "../components/Button.svelte";
     import {isEmpty} from "../utils/utils";
+    import {startLinkAccountFlow} from "../api";
+    import Modal from "../components/Modal.svelte";
+
+    let showModal = false;
+
+    const addInstitution = showConfirmation => {
+        if (showConfirmation) {
+            showModal = true
+        } else {
+            startLinkAccountFlow().then(json => {
+                window.location.href = json.url;
+            });
+        }
+    }
+
+
 </script>
 
 <style lang="scss">
@@ -69,7 +85,7 @@
             }
         }
 
-        .info-section, {
+        .info-section {
             @media (max-width: 820px) {
                 width: 100%;
             }
@@ -162,7 +178,7 @@
                         <div class="action">
                             <Button label={I18n.t("start.app.connect")}
                                     xxl={true}
-                                    onClick={() => navigate("/get-app")}/>
+                                    onClick={() => addInstitution(true)}/>
                         </div>
                     </div>
                 </div>
@@ -190,3 +206,11 @@
     </div>
 
 </div>
+{#if showModal}
+    <Modal submit={() => addInstitution(false)}
+           cancel={() => showModal = false}
+           question={I18n.t(`profile.verifyFirstAndLastName.addInstitutionConfirmation`)}
+           title={I18n.t(`profile.verifyFirstAndLastName.addInstitution`)}
+           confirmTitle={I18n.t("profile.proceed")}>
+    </Modal>
+{/if}
