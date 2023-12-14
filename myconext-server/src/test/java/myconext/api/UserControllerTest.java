@@ -575,6 +575,7 @@ public class UserControllerTest extends AbstractIntegrationTest {
         response = samlAuthnRequestResponse(new Cookie.Builder(cookie.getName(), cookie.getValue()).build(), "relay");
         html = samlAuthnResponse(response, Optional.empty());
         assertTrue(html.contains("mdoe@example.com"));
+        assertFalse(html.contains("null"));
     }
 
     @Test

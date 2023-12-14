@@ -64,7 +64,6 @@
   {
     "uid": "mdoe",
     "email": "mdoe@example.com",
-    "chosenName": "Mary",
     "givenName": "Mary",
     "familyName": "Doe",
     "password": "$2a$10$kUSu/Or0IX.E1WRaJtpUk.NWd83yV0mnt8CRnkbcQhvz6Qe3ntcAK",
