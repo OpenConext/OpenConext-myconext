@@ -713,7 +713,11 @@ public class GuestIdpAuthenticationRequestFilter extends OncePerRequestFilter im
         String givenName = user.getGivenName();
         String familyName = user.getFamilyName();
         String chosenName = user.getChosenName();
-
+        if (!StringUtils.hasText(chosenName)) {
+            chosenName = givenName;
+            //Migrate at JIT as only users with linked-accounts were migrated in myconext.mongo.Migrations#migrateUsers
+            user.setChosenName(chosenName);
+        }
         String displayName = String.format("%s %s", chosenName, familyName);
         String commonName = String.format("%s %s", givenName, familyName);
         String eppn = user.getEduPersonPrincipalName();
