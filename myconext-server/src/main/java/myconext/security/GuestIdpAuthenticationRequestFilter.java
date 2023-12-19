@@ -168,7 +168,10 @@ public class GuestIdpAuthenticationRequestFilter extends OncePerRequestFilter im
             //prevent null-pointer and drop dead
             return;
         }
-        AuthnRequest authnRequest = this.samlService.parseAuthnRequest(samlRequest, true, isDeflated(request));
+        if (!HttpMethod.GET.name().equalsIgnoreCase(request.getMethod())) {
+            throw new IllegalArgumentException("Only GET redirect are support. Not: "+request.getMethod());
+        }
+        AuthnRequest authnRequest = this.samlService.parseAuthnRequest(samlRequest, true, true);
 
         String requesterEntityId = requesterId(authnRequest);
         String issuer = authnRequest.getIssuer().getValue();
@@ -328,10 +331,6 @@ public class GuestIdpAuthenticationRequestFilter extends OncePerRequestFilter im
 
     private void addBrowserIdentificationCookie(HttpServletResponse response) {
         response.setHeader("Set-Cookie", BROWSER_SESSION_COOKIE_NAME + "=true; SameSite=Lax" + (secureCookie ? "; Secure" : ""));
-    }
-
-    private boolean isDeflated(HttpServletRequest request) {
-        return HttpMethod.GET.name().equalsIgnoreCase(request.getMethod());
     }
 
     private String requesterId(AuthnRequest authenticationRequest) {
