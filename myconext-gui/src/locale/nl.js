@@ -14,7 +14,7 @@ I18n.translations.nl = {
         app: {
             title: "Studeer je in NL? Koppel je instelling!",
             infoBold: "Als je studeert in Nederland ",
-            infoPart: "en je wilt eduID gebruiken om in te loogen op onderwijsdiensten, dan willen we zekerheid over je identiteit.",
+            infoPart: "en je wilt eduID gebruiken om in te loggen op onderwijsdiensten, dan willen we zekerheid over je identiteit.",
             requirements: "Daarvoor kan je de volgende informatie toevoegen aan de eduID account",
             validatedName: "Validatie van je volledige naam bij een instelling",
             proofStudent: "Bewijs dat je een student bent",

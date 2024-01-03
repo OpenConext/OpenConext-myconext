@@ -55,7 +55,7 @@ I18n.translations.en = {
         proceedConext: "Proceed to add this via SURFconext",
         validated: "Validated information",
         firstAndLastName: "First and last name",
-        firstAndLastNameInfo: "Your first and lastname are not yet verified by a third party",
+        firstAndLastNameInfo: "Your first and last name are not yet verified by a third party",
         verify: "Verify",
         student: "Proof of student",
         studentInfo: "You have not yet proven that you are a student in the Netherlands.",
@@ -261,7 +261,7 @@ I18n.translations.en = {
         updated: "Your security key {{name}} has been updated",
         back: "/weauthn",
         deleteCredential: "Delete security key",
-        deleteCredentialConfirmation: "Are you sure you want to delete your security key {{name}}? The secuirity key will be deleted from your eduID account, but will not be removed from your browser and / or Yubikey device."
+        deleteCredentialConfirmation: "Are you sure you want to delete your security key {{name}}? The security key will be deleted from your eduID account, but will not be removed from your browser and/or Yubikey device."
     },
     password: {
         addTitle: "Add password",
@@ -419,7 +419,7 @@ I18n.translations.en = {
         info: "We have sent a push-notification to your app, to verify it's you trying to sign in.",
         scan: "Scan this QR code with your eduID app",
         noNotification: "No notification?",
-        qrCodeLink: "Create a QR-code",
+        qrCodeLink: "Create a QR code",
         qrCodePostfix: "and scan it.",
         offline: "When your device is offline, you must enter a",
         offlineLink: "one time code.",
