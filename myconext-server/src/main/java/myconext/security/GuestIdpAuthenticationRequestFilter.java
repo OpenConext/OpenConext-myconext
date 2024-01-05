@@ -1,6 +1,8 @@
 package myconext.security;
 
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import myconext.exceptions.UserNotFoundException;
 import myconext.geo.GeoLocation;
 import myconext.mail.MailBox;
@@ -75,6 +77,7 @@ public class GuestIdpAuthenticationRequestFilter extends OncePerRequestFilter im
     private final String redirectUrl;
     private final AuthenticationRequestRepository authenticationRequestRepository;
     private final IdentityProviderMetaData identityProviderMetaData;
+    @Setter
     private UserRepository userRepository;
     private final UserLoginRepository userLoginRepository;
     private final List<String> accountLinkingContextClassReferences;
@@ -84,6 +87,8 @@ public class GuestIdpAuthenticationRequestFilter extends OncePerRequestFilter im
     private final boolean secureCookie;
     private final String magicLinkUrl;
     private final MailBox mailBox;
+    @Setter
+    @Getter
     private ServiceProviderResolver serviceProviderResolver;
     private final ExecutorService executor;
     private final int nudgeAppDays;
@@ -695,18 +700,6 @@ public class GuestIdpAuthenticationRequestFilter extends OncePerRequestFilter im
         );
     }
 
-    public ServiceProviderResolver getServiceProviderResolver() {
-        return serviceProviderResolver;
-    }
-
-    public void setServiceProviderResolver(ServiceProviderResolver serviceProviderResolver) {
-        this.serviceProviderResolver = serviceProviderResolver;
-    }
-
-    public void setUserRepository(UserRepository userRepository) {
-        this.userRepository = userRepository;
-    }
-
     protected List<SAMLAttribute> attributes(User user, String requesterEntityId) {
         List<LinkedAccount> linkedAccounts = safeSortedAffiliations(user);
         String givenName = user.getGivenName();
@@ -753,7 +746,7 @@ public class GuestIdpAuthenticationRequestFilter extends OncePerRequestFilter im
 
         List<String> affiliations = scopedAffiliations.stream().map(affiliation -> affiliation.substring(0, affiliation.indexOf("@")))
                 .distinct().collect(toList());
-        scopedAffiliations.forEach(aff -> attributes.add(attribute("urn:mace:dir:attribute-def:eduPersonAffiliation", aff)));
+        affiliations.forEach(aff -> attributes.add(attribute("urn:mace:dir:attribute-def:eduPersonAffiliation", aff)));
         return attributes;
     }
 
