@@ -1,6 +1,11 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [7.2.2]
+- Update typo's, image and translations
+- Do not allow for POST binding with SSO
+- Short time-to-life for registration cookie
+
 ## [7.2.1]
 - Bugfix for nudge-screen
 - Bugfix for chosen name migration
