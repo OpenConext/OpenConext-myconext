@@ -70,7 +70,7 @@ jobs:
 
     - name: Check account-gui zip existence
       id: check_file_account_gui
-      uses: andstor/file-existence-action@v1
+      uses: andstor/file-existence-action@v2
       with:
         files: "/home/runner/work/OpenConext-myconext/OpenConext-myconext/account-gui/target/account-gui-${{ github.ref_name }}.zip"
     - name: Upload account-gui zip to github release
