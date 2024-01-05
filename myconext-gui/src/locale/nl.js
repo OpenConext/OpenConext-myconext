@@ -73,8 +73,8 @@ I18n.translations.nl = {
         notVerified: "Niet geveriëerd",
         editable: "Bewerkbaar door jou",
         nonEditable: "Geveriëerd door {{name}}",
-        verifiedBy: "<strong>Verified by {{name}}</strong> on {{date}}",
-        validUntil: "Valid until",
+        verifiedBy: "<strong>Geveriëerd door {{name}}</strong> on {{date}}",
+        validUntil: "Geldig tot",
         verifyFirstAndLastName: {
             addInstitution: "Instelling toevoegen",
             addInstitutionConfirmation: "Als je doorgaat word je gevraagd in te loggen via de onderwijsinstelling die je wilt koppelen. Selecteer eerst welke instelling je wilt koppelen en log daarna in.<br/> <br/>Nadat je succesvol bent ingelogd kom je hier weer terug.",
@@ -258,7 +258,7 @@ I18n.translations.nl = {
         deleted: "Je key {{name}} is verwijderd",
         updated: "Je key {{name}} is bewaard",
         back: "/weauthn",
-        deleteCredential: "Verwijder key",
+        deleteCredential: "Verwijder sleutel",
         deleteCredentialConfirmation: "Weet je zeker dat je de beveiligingssleutel {{name}} wilt verwijderen? De beveiligingssleutel wordt verwijderd uit je eduID account, maar wordt niet verwijderd uit je browser en / of van je YubiKey-apparaat."
     },
     password: {
