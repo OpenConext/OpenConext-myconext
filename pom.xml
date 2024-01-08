@@ -1,30 +1,25 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-
     <groupId>org.openconext</groupId>
     <artifactId>myconext</artifactId>
-    <version>7.2.3</version>
+    <version>7.2.4-SNAPSHOT</version>
     <packaging>pom</packaging>
-
     <name>myconext</name>
     <description>My OpenConext</description>
-
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
         <version>2.7.17</version>
-        <relativePath/> <!-- lookup parent from repository -->
+        <relativePath/>
+        <!-- lookup parent from repository -->
     </parent>
-
     <modules>
         <module>myconext-server</module>
         <module>account-gui</module>
         <module>myconext-gui</module>
         <module>tiqr-mock</module>
     </modules>
-
     <build>
         <plugins>
             <plugin>
@@ -58,21 +53,21 @@
                     </execution>
                 </executions>
             </plugin>
-<!--            <plugin>-->
-<!--                <groupId>org.owasp</groupId>-->
-<!--                <artifactId>dependency-check-maven</artifactId>-->
-<!--                <version>7.4.3</version>-->
-<!--                <configuration>-->
-<!--                    <failBuildOnCVSS>11</failBuildOnCVSS>-->
-<!--                </configuration>-->
-<!--                <executions>-->
-<!--                    <execution>-->
-<!--                        <goals>-->
-<!--                            <goal>check</goal>-->
-<!--                        </goals>-->
-<!--                    </execution>-->
-<!--                </executions>-->
-<!--            </plugin>-->
+            <!--            <plugin>-->
+            <!--                <groupId>org.owasp</groupId>-->
+            <!--                <artifactId>dependency-check-maven</artifactId>-->
+            <!--                <version>7.4.3</version>-->
+            <!--                <configuration>-->
+            <!--                    <failBuildOnCVSS>11</failBuildOnCVSS>-->
+            <!--                </configuration>-->
+            <!--                <executions>-->
+            <!--                    <execution>-->
+            <!--                        <goals>-->
+            <!--                            <goal>check</goal>-->
+            <!--                        </goals>-->
+            <!--                    </execution>-->
+            <!--                </executions>-->
+            <!--            </plugin>-->
         </plugins>
         <extensions>
             <extension>
@@ -82,7 +77,6 @@
             </extension>
         </extensions>
     </build>
-
     <repositories>
         <repository>
             <releases>
@@ -123,7 +117,6 @@
             <url>https://repo.spring.io/milestone/</url>
         </repository>
     </repositories>
-
     <distributionManagement>
         <repository>
             <id>openconext-releases</id>
