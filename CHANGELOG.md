@@ -1,6 +1,9 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [7.2.3]
+- Bugfix for adding affiliations
+
 ## [7.2.2]
 - Update typo's, image and translations
 - Do not allow for POST binding with SSO
