@@ -120,6 +120,7 @@ public class AccountLinkerControllerTest extends AbstractIntegrationTest {
         assertEquals("12345678", linkedAccount.getInstitutionIdentifier());
         assertEquals("affiliate@mock.idp", linkedAccount.getEduPersonAffiliations().get(0));
 
+        //this time the redirect is not allowed as of eppn-already-linked (see test/resources/users.json)
         body.put("eduperson_principal_name", "1234567890@surfguest.nl");
         String authenticationRequestId = samlAuthnRequest();
         doRedirectResult(body, authenticationRequestId,
