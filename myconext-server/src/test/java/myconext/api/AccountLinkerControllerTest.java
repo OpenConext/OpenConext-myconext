@@ -10,7 +10,6 @@ import myconext.AbstractIntegrationTest;
 import myconext.model.*;
 import org.junit.Rule;
 import org.junit.Test;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -26,7 +25,6 @@ import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static com.github.tomakehurst.wiremock.client.WireMock.*;
 import static io.restassured.RestAssured.given;
 import static myconext.api.AccountLinkerController.parseAffiliations;
 import static org.junit.Assert.*;
@@ -114,8 +112,15 @@ public class AccountLinkerControllerTest extends AbstractIntegrationTest {
         assertEquals(eppn, linkedAccount.getEduPersonPrincipalName());
         assertEquals(eppn, linkedAccount.getInstitutionIdentifier(), "mock.idp");
 
-        //second time the redirect is not allowed as of eppn-already-linked
+        //second time the institution identifier is updated from the surf-crm-id
         body.put("surf-crm-id", "12345678");
+        user = doRedirect(body);
+        linkedAccount = user.getLinkedAccounts().get(0);
+
+        assertEquals("12345678", linkedAccount.getInstitutionIdentifier());
+        assertEquals("affiliate@mock.idp", linkedAccount.getEduPersonAffiliations().get(0));
+
+        body.put("eduperson_principal_name", "1234567890@surfguest.nl");
         String authenticationRequestId = samlAuthnRequest();
         doRedirectResult(body, authenticationRequestId,
                 "http://localhost:3000/eppn-already-linked/");

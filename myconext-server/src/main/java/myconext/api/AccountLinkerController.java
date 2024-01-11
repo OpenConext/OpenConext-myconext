@@ -540,13 +540,20 @@ public class AccountLinkerController implements UserAuthentication {
         if (StringUtils.hasText(schacHomeOrganization)) {
             Date expiresAt = Date.from(new Date().toInstant().plus(this.removalValidatedDurationDays, ChronoUnit.DAYS));
             List<LinkedAccount> linkedAccounts = user.getLinkedAccounts();
-            Optional<ResponseEntity<Object>> eppnAlreadyLinkedOptional = checkEppnAlreadyLinked(eppnAlreadyLinkedRequiredUri, eppn);
-            if (eppnAlreadyLinkedOptional.isPresent()) {
-                return eppnAlreadyLinkedOptional.get();
+            Optional<LinkedAccount> optionalLinkedAccount = linkedAccounts.stream()
+                    .filter(linkedAccount -> linkedAccount.getEduPersonPrincipalName().equalsIgnoreCase(eppn))
+                    .findFirst();
+            if (optionalLinkedAccount.isPresent()) {
+                optionalLinkedAccount.get().updateExpiresIn(institutionIdentifier, eppn, subjectId, givenName, familyName, affiliations, expiresAt);
+            } else {
+                Optional<ResponseEntity<Object>> eppnAlreadyLinkedOptional = checkEppnAlreadyLinked(eppnAlreadyLinkedRequiredUri, eppn);
+                if (eppnAlreadyLinkedOptional.isPresent()) {
+                    return eppnAlreadyLinkedOptional.get();
+                }
+                linkedAccounts.add(
+                        new LinkedAccount(institutionIdentifier, schacHomeOrganization, eppn, subjectId, givenName, familyName, affiliations, linkedAccounts.isEmpty(),
+                                new Date(), expiresAt));
             }
-            linkedAccounts.add(
-                    new LinkedAccount(institutionIdentifier, schacHomeOrganization, eppn, subjectId, givenName, familyName, affiliations, linkedAccounts.isEmpty(),
-                            new Date(), expiresAt));
             if (linkedAccounts.size() == 1) {
                 if (StringUtils.hasText(givenName)) {
                     user.setGivenName(givenName);
@@ -588,7 +595,7 @@ public class AccountLinkerController implements UserAuthentication {
         //Ensure that an institution account is only be linked to 1 eduID, but only when an eppn is provided for the linked account
         if (StringUtils.hasText(eppn)) {
             List<User> optionalUsers = userRepository.findByLinkedAccounts_EduPersonPrincipalName(eppn);
-            if (optionalUsers.size() > 0) {
+            if (!optionalUsers.isEmpty()) {
                 String charSet = Charset.defaultCharset().name();
                 eppnAlreadyLinkedRequiredUri += eppnAlreadyLinkedRequiredUri.contains("?") ? "&" : "?";
                 eppnAlreadyLinkedRequiredUri += "email=" + URLEncoder.encode(optionalUsers.get(0).getEmail(), charSet);

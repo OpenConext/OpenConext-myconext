@@ -546,7 +546,7 @@ public class UserController implements ServiceProviderHolder, UserAuthentication
         User user = userFromAuthentication(authentication);
 
         List<LinkedAccount> linkedAccounts = user.getLinkedAccounts().stream()
-                .filter(la -> !la.getSchacHomeOrganization().equals(linkedAccount.getSchacHomeOrganization()))
+                .filter(la -> !la.getEduPersonPrincipalName().equals(linkedAccount.getEduPersonPrincipalName()))
                 .collect(Collectors.toList());
         user.setLinkedAccounts(linkedAccounts);
         userRepository.save(user);

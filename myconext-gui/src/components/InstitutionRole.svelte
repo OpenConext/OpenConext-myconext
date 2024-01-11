@@ -93,7 +93,7 @@
     }
 
 </style>
-<div class="institution-role" class:expired={linkedAccount.expired}>
+<div class="institution-role" class:expired={linkedAccount.expiredRole}>
     <div class="affiliation">
         <span class="student">
         {#if linkedAccount.logoUrl}
@@ -104,7 +104,7 @@
         </span>
         <div class="role">
             <p>{affiliations || I18n.t("profile.studentRole")}
-                {#if linkedAccount.expired}
+                {#if linkedAccount.expiredRole}
                     <span class="expired">{` (${I18n.t("profile.expired")})`}</span>
                 {/if}
             </p>
@@ -117,6 +117,7 @@
     {#if showDropDown}
         <LinkedInstitution linkedAccount={linkedAccount}
                            includeAffiliations={true}
+                           roleContext={true}
                            removeInstitution={removeInstitution}
                            addInstitution={addInstitution}/>
     {/if}

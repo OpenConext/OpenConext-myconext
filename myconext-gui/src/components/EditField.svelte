@@ -194,6 +194,7 @@
             {#if showDropDown}
                 <LinkedInstitution linkedAccount={linkedAccount}
                                    includeAffiliations={false}
+                                   roleContext={false}
                                    addInstitution={addInstitution}/>
             {/if}
 

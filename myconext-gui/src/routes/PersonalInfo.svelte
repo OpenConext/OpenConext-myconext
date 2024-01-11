@@ -84,22 +84,23 @@
         }
     }
 
-    const hasExpired = account => {
-        const expiresAt = new Date(account.createdAt);
+    const markExpired = account => {
+        const expiredAt = new Date(account.createdAt);
+        expiredAt.setDate(expiredAt.getDate() + parseInt($config.expirationNonValidatedDurationDays, 10));
+        account.expiresAtRole = expiredAt;
+        account.expiredRole = new Date() > account.expiresAtRole;
         if (isEmpty(account.givenName) || isEmpty(account.familyName)) {
-            expiresAt.setDate(expiresAt.getDate() + parseInt($config.expirationNonValidatedDurationDays, 10));
-            account.expiresAtNonValidated = expiresAt.getTime();
-            account.expired = new Date() > expiresAt;
-            return account.expired;
+            account.expired = account.expiredRole;
+            account.expiresAtNonValidated = account.expiresAtRole.getTime();
         } else {
             account.expired = new Date() > new Date(account.expiresAt);
-            return account.expired;
         }
     }
 
     const refresh = () => {
+        ($user.linkedAccounts || []).forEach(account => markExpired(account));
         sortedAccounts = ($user.linkedAccounts || []).sort((a, b) => b.createdAt - a.createdAt);
-        const validLinkedAccounts = sortedAccounts.filter(account => !hasExpired(account));
+        const validLinkedAccounts = sortedAccounts.filter(account => !account.expired);
         const linkedAccount = validLinkedAccounts.find(account => account.preferred) || validLinkedAccounts[0];
         if (isEmpty(linkedAccount) || isEmpty(linkedAccount.givenName) || isEmpty(linkedAccount.familyName)) {
             preferredAccount = null;

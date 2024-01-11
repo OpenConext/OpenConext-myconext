@@ -9,6 +9,7 @@
     export let linkedAccount;
     export let addInstitution;
     export let removeInstitution;
+    export let roleContext;
     export let includeAffiliations = false;
 
     let affiliations;
@@ -106,7 +107,11 @@
             <td>
                 {I18n.t("profile.validUntil")}
             </td>
-            <td class="value">{dateFromEpoch(linkedAccount.expiresAtNonValidated || linkedAccount.expiresAt)}</td>
+            {#if roleContext}
+                <td class="value">{dateFromEpoch(linkedAccount.expiresAtRole)}</td>
+            {:else}
+                <td class="value">{dateFromEpoch(linkedAccount.expiresAtNonValidated || linkedAccount.expiresAt)}</td>
+            {/if}
         </tr>
         </tbody>
     </table>
