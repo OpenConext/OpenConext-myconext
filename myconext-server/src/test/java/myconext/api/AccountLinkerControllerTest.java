@@ -114,13 +114,11 @@ public class AccountLinkerControllerTest extends AbstractIntegrationTest {
         assertEquals(eppn, linkedAccount.getEduPersonPrincipalName());
         assertEquals(eppn, linkedAccount.getInstitutionIdentifier(), "mock.idp");
 
-        //second time the institution identifier is updated from the surf-crm-id
+        //second time the redirect is not allowed as of eppn-already-linked
         body.put("surf-crm-id", "12345678");
-        user = doRedirect(body);
-        linkedAccount = user.getLinkedAccounts().get(0);
-
-        assertEquals("12345678", linkedAccount.getInstitutionIdentifier());
-        assertEquals("affiliate@mock.idp", linkedAccount.getEduPersonAffiliations().get(0));
+        String authenticationRequestId = samlAuthnRequest();
+        doRedirectResult(body, authenticationRequestId,
+                "http://localhost:3000/eppn-already-linked/");
     }
 
     @Test
@@ -318,7 +316,7 @@ public class AccountLinkerControllerTest extends AbstractIntegrationTest {
                 .contentType(ContentType.JSON)
                 .get("/myconext/api/sp/oidc/redirect")
                 .getHeader("Location");
-        assertEquals("http://localhost:3001/personal?institution=mock.idp", location);
+        assertEquals("http://localhost:3001/personal?institution=some%40institute.nl", location);
 
         User user = userRepository.findOneUserByEmail("jdoe@example.com");
         assertEquals(3, user.getLinkedAccounts().size());
