@@ -61,7 +61,7 @@ export function linkedAccountDisplayNames(linkedAccount) {
 }
 
 export function preferLinkedAccount(linkedAccount) {
-    return postPutJson("/myconext/api/sp/prefer-linked-account", {schacHomeOrganization: linkedAccount.schacHomeOrganization}, "PUT");
+    return postPutJson("/myconext/api/sp/prefer-linked-account", {eduPersonPrincipalName: linkedAccount.eduPersonPrincipalName}, "PUT");
 }
 
 export function updateEmail(user, force) {

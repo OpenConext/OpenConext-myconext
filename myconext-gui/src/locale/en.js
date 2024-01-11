@@ -90,7 +90,9 @@ I18n.translations.en = {
         newInstitutionInfo: "We have replaced the following information with the verified data from your institution:",
         ok: "Continue",
         yes: "Yes, please",
-        no: "No, thanks"
+        no: "No, thanks",
+        eppn: "EPPN",
+        subjectId: "Subject ID"
 
     },
     eppnAlreadyLinked: {

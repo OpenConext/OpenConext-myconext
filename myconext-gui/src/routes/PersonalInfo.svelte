@@ -166,8 +166,8 @@
         refresh();
         if (($user.linkedAccounts || []).length > 0) {
             const urlSearchParams = new URLSearchParams(window.location.search);
-            const schacHomeOrganization = urlSearchParams.get("institution");
-            const institution = $user.linkedAccounts.find(ins => ins.schacHomeOrganization === schacHomeOrganization);
+            const eduPersonPrincipalName = urlSearchParams.get("institution");
+            const institution = $user.linkedAccounts.find(ins => ins.eduPersonPrincipalName === eduPersonPrincipalName);
             if (institution && !isEmpty(institution.givenName) && !isEmpty(institution.familyName)) {
                 newInstitution = institution;
                 if (($user.linkedAccounts || []).length === 1) {

@@ -13,6 +13,6 @@ import java.io.Serializable;
 public class UpdateLinkedAccountRequest implements Serializable {
 
     @NotBlank
-    private String schacHomeOrganization;
+    private String eduPersonPrincipalName;
 
 }

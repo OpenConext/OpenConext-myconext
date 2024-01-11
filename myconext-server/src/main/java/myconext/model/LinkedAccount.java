@@ -60,20 +60,6 @@ public class LinkedAccount implements Serializable {
 
     @Transient
     @JsonIgnore
-    public boolean updateExpiresIn(String institutionIdentifier, String eppn, String subjectId, String givenName, String familyName, List<String> eduPersonAffiliations, Date expiresAt) {
-        this.institutionIdentifier = institutionIdentifier;
-        this.eduPersonPrincipalName = eppn;
-        this.subjectId = subjectId;
-        this.givenName = givenName;
-        this.familyName = familyName;
-        this.eduPersonAffiliations = eduPersonAffiliations;
-        this.expiresAt = expiresAt;
-        this.createdAt = new Date();
-        return true;
-    }
-
-    @Transient
-    @JsonIgnore
     public boolean areNamesValidated() {
         return StringUtils.hasText(givenName) && StringUtils.hasText(familyName);
     }

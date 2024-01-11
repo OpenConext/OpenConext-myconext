@@ -380,7 +380,7 @@ public class UserController implements ServiceProviderHolder, UserAuthentication
     public ResponseEntity<UserResponse> updateLinkedAccount(Authentication authentication, @Valid @RequestBody UpdateLinkedAccountRequest updateLinkedAccountRequest) {
         User user = userFromAuthentication(authentication);
         Optional<LinkedAccount> optionalLinkedAccount = user.getLinkedAccounts().stream()
-                .filter(linkedAccount -> updateLinkedAccountRequest.getSchacHomeOrganization().equalsIgnoreCase(linkedAccount.getSchacHomeOrganization()))
+                .filter(linkedAccount -> updateLinkedAccountRequest.getEduPersonPrincipalName().equalsIgnoreCase(linkedAccount.getEduPersonPrincipalName()))
                 .findFirst();
         optionalLinkedAccount.ifPresent(linkedAccount -> {
             if (linkedAccount.areNamesValidated()) {

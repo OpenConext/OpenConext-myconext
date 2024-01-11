@@ -90,7 +90,9 @@ I18n.translations.nl = {
         newInstitutionInfo: "We hebben de volgende informatie overschreven met de geverifïeerde gegevens:",
         ok: "Ga door",
         yes: "Ja, graag",
-        no: "Nee, bedankt"
+        no: "Nee, bedankt",
+        eppn: "EPPN",
+        subjectId: "Subject ID"
     },
     eppnAlreadyLinked: {
         header: "Koppeling niet gemaakt!",

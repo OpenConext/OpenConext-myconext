@@ -81,6 +81,27 @@
                 </td>
             </tr>
         {/if}
+        {#if linkedAccount.subjectId || linkedAccount.eduPersonPrincipalName}
+            {#if linkedAccount.subjectId}
+                <tr>
+                    <td>
+                        {I18n.t("profile.subjectId")}
+                    </td>
+                    <td class="value">
+                        {linkedAccount.subjectId}
+                    </td>
+                </tr>
+            {:else}
+                <tr>
+                    <td>
+                        {I18n.t("profile.eppn")}
+                    </td>
+                    <td class="value">
+                        {linkedAccount.eduPersonPrincipalName}
+                    </td>
+                </tr>
+            {/if}
+        {/if}
         <tr>
             <td>
                 {I18n.t("profile.validUntil")}

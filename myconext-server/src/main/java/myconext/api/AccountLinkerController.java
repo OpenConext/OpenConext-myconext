@@ -506,21 +506,21 @@ public class AccountLinkerController implements UserAuthentication {
                                       String clientRedirectUri,
                                       boolean validateNames,
                                       boolean studentAffiliationRequired,
-                                      boolean appendSchacHomeQueryParam,
+                                      boolean appendEPPNQueryParam,
                                       String idpStudentAffiliationRequiredUri,
                                       String idpValidNamesRequiredUri,
                                       String eppnAlreadyLinkedRequiredUri) throws UnsupportedEncodingException {
         Map<String, Object> body = requestUserInfo(code, oidcRedirectUri);
 
         return saveOrUpdateLinkedAccountToUser(user, clientRedirectUri, validateNames, studentAffiliationRequired,
-                appendSchacHomeQueryParam, idpStudentAffiliationRequiredUri, idpValidNamesRequiredUri, eppnAlreadyLinkedRequiredUri, body);
+                appendEPPNQueryParam, idpStudentAffiliationRequiredUri, idpValidNamesRequiredUri, eppnAlreadyLinkedRequiredUri, body);
     }
 
     private ResponseEntity<Object> saveOrUpdateLinkedAccountToUser(User user,
                                                                    String clientRedirectUri,
                                                                    boolean validateNames,
                                                                    boolean studentAffiliationRequired,
-                                                                   boolean appendSchacHomeQueryParam,
+                                                                   boolean appendEPPNQueryParam,
                                                                    String idpStudentAffiliationRequiredUri,
                                                                    String idpValidNamesRequiredUri,
                                                                    String eppnAlreadyLinkedRequiredUri,
@@ -540,20 +540,13 @@ public class AccountLinkerController implements UserAuthentication {
         if (StringUtils.hasText(schacHomeOrganization)) {
             Date expiresAt = Date.from(new Date().toInstant().plus(this.removalValidatedDurationDays, ChronoUnit.DAYS));
             List<LinkedAccount> linkedAccounts = user.getLinkedAccounts();
-            Optional<LinkedAccount> optionalLinkedAccount = linkedAccounts.stream()
-                    .filter(linkedAccount -> linkedAccount.getSchacHomeOrganization().equals(schacHomeOrganization))
-                    .findFirst();
-            if (optionalLinkedAccount.isPresent()) {
-                optionalLinkedAccount.get().updateExpiresIn(institutionIdentifier, eppn, subjectId, givenName, familyName, affiliations, expiresAt);
-            } else {
-                Optional<ResponseEntity<Object>> eppnAlreadyLinkedOptional = checkEppnAlreadyLinked(eppnAlreadyLinkedRequiredUri, eppn);
-                if (eppnAlreadyLinkedOptional.isPresent()) {
-                    return eppnAlreadyLinkedOptional.get();
-                }
-                linkedAccounts.add(
-                        new LinkedAccount(institutionIdentifier, schacHomeOrganization, eppn, subjectId, givenName, familyName, affiliations, linkedAccounts.isEmpty(),
-                                new Date(), expiresAt));
+            Optional<ResponseEntity<Object>> eppnAlreadyLinkedOptional = checkEppnAlreadyLinked(eppnAlreadyLinkedRequiredUri, eppn);
+            if (eppnAlreadyLinkedOptional.isPresent()) {
+                return eppnAlreadyLinkedOptional.get();
             }
+            linkedAccounts.add(
+                    new LinkedAccount(institutionIdentifier, schacHomeOrganization, eppn, subjectId, givenName, familyName, affiliations, linkedAccounts.isEmpty(),
+                            new Date(), expiresAt));
             if (linkedAccounts.size() == 1) {
                 if (StringUtils.hasText(givenName)) {
                     user.setGivenName(givenName);
@@ -562,10 +555,9 @@ public class AccountLinkerController implements UserAuthentication {
                     user.setFamilyName(familyName);
                 }
             }
-            String action = optionalLinkedAccount.isPresent() ? "updated" : "add";
             String eppnValue = StringUtils.hasText(eppn) ? String.format("eppn %s", eppn) : "NO eppn";
 
-            logWithContext(user, action, "linked_accounts", LOG, String.format("Account link with EPPN %s for institution %s with the affiliations %s",
+            logWithContext(user, "add", "linked_accounts", LOG, String.format("Account link with EPPN %s for institution %s with the affiliations %s",
                     eppnValue, institutionIdentifier, affiliations));
 
             userRepository.save(user);
@@ -585,9 +577,9 @@ public class AccountLinkerController implements UserAuthentication {
             return ResponseEntity.status(HttpStatus.FOUND).location(URI.create(idpValidNamesRequiredUri)).build();
         }
 
-        if (appendSchacHomeQueryParam) {
+        if (appendEPPNQueryParam) {
             String appender = clientRedirectUri.contains("?") ? "&" : "?";
-            clientRedirectUri += appender + "institution=" + URLEncoder.encode(schacHomeOrganization, Charset.defaultCharset());
+            clientRedirectUri += appender + "institution=" + URLEncoder.encode(eppn, Charset.defaultCharset());
         }
         return ResponseEntity.status(HttpStatus.FOUND).location(URI.create(clientRedirectUri)).build();
     }
