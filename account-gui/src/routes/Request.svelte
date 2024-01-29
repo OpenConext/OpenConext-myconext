@@ -52,7 +52,7 @@
                         emailInUse = true;
                     } else if (e.status === 412) {
                         emailForbidden = true;
-                    }else {
+                    } else {
                         navigate("/expired", {replace: true});
                     }
                 });
@@ -62,6 +62,12 @@
     };
 
     const init = el => el.focus();
+
+    const handleInput = e => {
+        const email = (e.target.value || "").replace(/[<>]/g, "");
+        e.target.value = email;
+        $user.email = email;
+    }
 
     const allowedNext = (email, familyName, givenName, agreedWithTerms) => {
         return validEmail(email) && familyName && givenName && agreedWithTerms && !$domains.allowedDomainNamesError
@@ -186,7 +192,8 @@
        class:error={emailInUse || emailForbidden}
        placeholder={I18n.t("login.emailPlaceholder")}
        use:init
-       bind:value={$user.email}
+       on:input={handleInput}
+       value={$user.email}
        on:blur={handleEmailBlur}>
 {#if !initial && !validEmail($user.email)}
     <div class="error"><span class="svg">{@html critical}</span><span>{I18n.t("login.invalidEmail")}</span></div>

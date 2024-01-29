@@ -41,6 +41,12 @@
 
     const init = el => el.focus();
 
+    const handleInput = e => {
+        const email = (e.target.value || "").replace(/[<>]/g, "");
+        e.target.value = email;
+        $user.email = email;
+    }
+
     const allowedNext = email => validEmail(email) || $user.knownUser;
 
     const nextStep = () => {
@@ -144,7 +150,8 @@
            class={`${emailNotFound ? 'error' : ''}`}
            placeholder={I18n.t("login.emailPlaceholder")}
            use:init
-           bind:value={$user.email}
+           on:input={handleInput}
+           value={$user.email}
            on:keydown={handleEmailEnter}
            spellcheck="false">
 {/if}
