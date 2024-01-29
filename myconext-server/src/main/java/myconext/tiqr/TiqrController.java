@@ -22,6 +22,7 @@ import org.springframework.core.env.Environment;
 import org.springframework.core.io.Resource;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import org.yaml.snakeyaml.Yaml;
@@ -41,6 +42,7 @@ import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.time.Instant;
 import java.util.*;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import static myconext.crypto.HashGenerator.hash;
 import static myconext.log.MDCContext.logWithContext;
@@ -65,6 +67,7 @@ public class TiqrController implements UserAuthentication {
     private final String magicLinkUrl;
     private final RegistrationRepository registrationRepository;
     private final RateLimitEnforcer rateLimitEnforcer;
+    private final BCryptPasswordEncoder encoder = new BCryptPasswordEncoder(4);
 
     @Autowired
     public TiqrController(@Value("${tiqr_configuration}") Resource resource,
@@ -394,8 +397,9 @@ public class TiqrController implements UserAuthentication {
 
     private ResponseEntity<StartAuthentication> doStartAuthentication(HttpServletRequest request, User user) throws WriterException, IOException, TiqrException {
         Optional<Cookie> optionalTiqrCookie = cookieByName(request, TIQR_COOKIE_NAME);
-        boolean tiqrCookiePresent = optionalTiqrCookie.isPresent();
-        boolean sendPushNotification = tiqrCookiePresent && this.tiqrConfiguration.isPushNotificationsEnabled();
+        AtomicBoolean tiqrCookiePresent = new AtomicBoolean(false);
+        optionalTiqrCookie.ifPresent(tiqrCookie -> tiqrCookiePresent.set(this.encoder.matches(user.getUsername(), tiqrCookie.getValue())));
+        boolean sendPushNotification = tiqrCookiePresent.get() && this.tiqrConfiguration.isPushNotificationsEnabled();
         // Reset any outstanding suspensions
         rateLimitEnforcer.unsuspendUserAfterTiqrSuccess(user);
         Authentication authentication = tiqrService.startAuthentication(

@@ -22,6 +22,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
@@ -98,6 +99,7 @@ public class GuestIdpAuthenticationRequestFilter extends OncePerRequestFilter im
     private final String mobileAppROEntityId;
     private final boolean featureDefaultRememberMe;
     private final DefaultSAMLService samlService;
+    private final BCryptPasswordEncoder encoder = new BCryptPasswordEncoder(4);
 
     public GuestIdpAuthenticationRequestFilter(String redirectUrl,
                                                ServiceProviderResolver serviceProviderResolver,
@@ -561,7 +563,7 @@ public class GuestIdpAuthenticationRequestFilter extends OncePerRequestFilter im
         }
         if (samlAuthenticationRequest.isTiqrFlow()) {
             LOG.info(String.format("Tiqr flow authenticated for %s ", user.getUsername()));
-            addTiqrCookie(response);
+            addTiqrCookie(response, user);
         }
         String loginMethod = samlAuthenticationRequest.isTiqrFlow() ? "tiqr" : "magiclink";
 
@@ -583,8 +585,8 @@ public class GuestIdpAuthenticationRequestFilter extends OncePerRequestFilter im
         response.addCookie(cookie);
     }
 
-    private void addTiqrCookie(HttpServletResponse response) {
-        Cookie cookie = new Cookie(TIQR_COOKIE_NAME, Boolean.TRUE.toString());
+    private void addTiqrCookie(HttpServletResponse response, User user) {
+        Cookie cookie = new Cookie(TIQR_COOKIE_NAME, this.encoder.encode(user.getUsername()));
         cookie.setMaxAge(rememberMeMaxAge);
         cookie.setSecure(secureCookie);
         cookie.setHttpOnly(true);

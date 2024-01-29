@@ -380,7 +380,7 @@ public class TiqrControllerTest extends AbstractIntegrationTest {
                 .get("/saml/guest-idp/magic");
         Headers headers = response.getHeaders();
         List<String> cookies = headers.getValues("Set-cookie");
-        List.of("TIQR_COOKIE=true", "BROWSER_SESSION=true", "TRACKING_DEVICE=", "SESSION=")
+        List.of("TIQR_COOKIE=", "BROWSER_SESSION=true", "TRACKING_DEVICE=", "SESSION=")
                 .forEach(s -> assertTrue(cookies.stream().anyMatch(cookie -> cookie.startsWith(s))));
 
         String html = IOUtils.toString(response.asInputStream(), Charset.defaultCharset());
