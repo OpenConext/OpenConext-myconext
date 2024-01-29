@@ -80,7 +80,7 @@ I18n.translations.en = {
     },
     magicLink: {
         header: "Check your email!",
-        info: "To sign in, click the link in the email we sent to <strong>{{email}}</strong>.",
+        info: "To sign in, click the link in the email we sent to ",
         awaiting: "Waiting for you to click the link...",
         openGMail: "Open Gmail.com",
         openOutlook: "Open Outlook.com",

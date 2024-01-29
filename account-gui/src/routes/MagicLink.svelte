@@ -223,6 +223,9 @@
         display: inline-block;
         margin-right: 10px;
     }
+    span.email {
+        font-weight: bold;
+    }
 
 </style>
 {#if timeOutReached}
@@ -238,7 +241,7 @@
 
     <div class="magic-link">
         <h2 class="header">{I18n.t("magicLink.header")}</h2>
-        <p>{@html I18n.t("magicLink.info", {email: DOMPurify.sanitize($user.email)})}</p>
+        <p>{I18n.t("magicLink.info")}<span class="email">{$user.email}.</span></p>
         <div class="spinner-container">
             <Spinner relative={true}/>
             <p>{I18n.t("magicLink.awaiting")}</p>
