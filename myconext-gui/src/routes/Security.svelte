@@ -8,10 +8,7 @@
     import rocketSvg from "../icons/redesign/space-rocket-flying.svg";
     import {supported} from "@github/webauthn-json"
     import Button from "../components/Button.svelte";
-    import {forgetMe, testWebAutnUrl} from "../api";
-    import verifiedSvg from "../icons/redesign/remembered.svg";
-    import nonVerifiedSvg from "../icons/redesign/not-remembered.svg";
-    import Modal from "../components/Modal.svelte";
+    import {testWebAutnUrl} from "../api";
     import {onMount} from "svelte";
     import {dateFromEpoch} from "../utils/date";
 
@@ -25,8 +22,6 @@
     let publicKeyStyle = $user.usePublicKey ? "value" : "value-alt";
     let usePublicKey = $user.usePublicKey;
 
-    let showModal = false;
-
     onMount(() => {
         const urlSearchParams = new URLSearchParams(window.location.search);
         const testWebAuthn = urlSearchParams.get("success");
@@ -39,18 +34,6 @@
         }
 
     });
-
-    const doForgetMe = showConfirmation => () => {
-        if (showConfirmation) {
-            showModal = true
-        } else {
-            forgetMe().then(() => {
-                $user.rememberMe = false;
-                showModal = false;
-                flash.setValue(I18n.t("rememberMe.updated"));
-            });
-        }
-    };
 
     const credentialsDetails = credential => () =>
         navigate(`/credential?id=${encodeURIComponent(credential.identifier)}`);
@@ -190,39 +173,6 @@
             padding: 0;
         }
 
-    }
-
-    h4.last {
-        margin-top: 25px;
-    }
-
-    table.security-settings {
-        td {
-            border-bottom: none;
-
-            &.attr {
-                width: 28%;
-            }
-
-            &.icon {
-                width: 70px;
-                text-align: center;
-            }
-
-            &.info {
-                width: 80%;
-
-                &.verified {
-                    width: 56%;
-                }
-            }
-
-            &.forget-me {
-                width: 122px;
-                text-align: right;
-            }
-
-        }
     }
 
     :global(div.value-container a.right-link svg) {
@@ -401,34 +351,5 @@
             {/if}
             </tbody>
         </table>
-        <h4 class="info2 last">{I18n.t("security.settings")}</h4>
-        <table class="security-settings" cellspacing="0">
-            <thead></thead>
-            <tbody>
-            <tr>
-                <td class="attr">{I18n.t("security.rememberMe")}</td>
-                <td class="icon">{@html $user.rememberMe ? verifiedSvg : nonVerifiedSvg}</td>
-                <td class="info" class:verified={$user.rememberMe}>
-                    <span>{@html $user.rememberMe ? I18n.t("security.rememberMeInfo") : I18n.t("security.noRememberMeInfo")}</span>
-                </td>
-                {#if $user.rememberMe}
-                    <td class="forget-me">
-                        <Button label={I18n.t("rememberMe.update")}
-                                onClick={doForgetMe(true)}/>
-                    </td>
-                {/if}
-            </tr>
-            </tbody>
-        </table>
     </div>
-
 </div>
-
-{#if showModal}
-    <Modal submit={doForgetMe(false)}
-           cancel={() => showModal = false}
-           question={I18n.t("rememberMe.forgetMeConfirmation")}
-           title={I18n.t("rememberMe.forgetMe")}>
-
-    </Modal>
-{/if}
