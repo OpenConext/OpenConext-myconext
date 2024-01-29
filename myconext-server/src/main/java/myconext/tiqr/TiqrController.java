@@ -11,6 +11,7 @@ import myconext.manage.ServiceProviderResolver;
 import myconext.model.SamlAuthenticationRequest;
 import myconext.model.User;
 import myconext.repository.*;
+import myconext.security.CookieValueEncoder;
 import myconext.security.UserAuthentication;
 import myconext.security.VerificationCodeGenerator;
 import myconext.sms.SMSService;
@@ -67,7 +68,7 @@ public class TiqrController implements UserAuthentication {
     private final String magicLinkUrl;
     private final RegistrationRepository registrationRepository;
     private final RateLimitEnforcer rateLimitEnforcer;
-    private final BCryptPasswordEncoder encoder = new BCryptPasswordEncoder(4);
+    private final CookieValueEncoder cookieValueEncoder;
 
     @Autowired
     public TiqrController(@Value("${tiqr_configuration}") Resource resource,
@@ -79,8 +80,10 @@ public class TiqrController implements UserAuthentication {
                           ServiceProviderResolver serviceProviderResolver,
                           SMSService smsService,
                           Environment environment,
-                          @Value("${email.magic-link-url}") String magicLinkUrl) throws IOException {
+                          @Value("${email.magic-link-url}") String magicLinkUrl,
+                          CookieValueEncoder cookieValueEncoder) throws IOException {
         this.tiqrConfiguration = new Yaml().loadAs(resource.getInputStream(), TiqrConfiguration.class);
+        this.cookieValueEncoder = cookieValueEncoder;
         String baseUrl = getEduIDServerBaseUrl();
         Service service = new Service(
                 tiqrConfiguration.getDisplayName(),
@@ -398,7 +401,7 @@ public class TiqrController implements UserAuthentication {
     private ResponseEntity<StartAuthentication> doStartAuthentication(HttpServletRequest request, User user) throws WriterException, IOException, TiqrException {
         Optional<Cookie> optionalTiqrCookie = cookieByName(request, TIQR_COOKIE_NAME);
         AtomicBoolean tiqrCookiePresent = new AtomicBoolean(false);
-        optionalTiqrCookie.ifPresent(tiqrCookie -> tiqrCookiePresent.set(this.encoder.matches(user.getUsername(), tiqrCookie.getValue())));
+        optionalTiqrCookie.ifPresent(tiqrCookie -> tiqrCookiePresent.set(this.cookieValueEncoder.matches(user.getUsername(), tiqrCookie.getValue())));
         boolean sendPushNotification = tiqrCookiePresent.get() && this.tiqrConfiguration.isPushNotificationsEnabled();
         // Reset any outstanding suspensions
         rateLimitEnforcer.unsuspendUserAfterTiqrSuccess(user);

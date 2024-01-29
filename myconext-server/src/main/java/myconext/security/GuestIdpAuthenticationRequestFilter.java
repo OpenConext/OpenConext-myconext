@@ -22,7 +22,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
@@ -99,7 +98,7 @@ public class GuestIdpAuthenticationRequestFilter extends OncePerRequestFilter im
     private final String mobileAppROEntityId;
     private final boolean featureDefaultRememberMe;
     private final DefaultSAMLService samlService;
-    private final BCryptPasswordEncoder encoder = new BCryptPasswordEncoder(4);
+    private final CookieValueEncoder cookieValueEncoder;
 
     public GuestIdpAuthenticationRequestFilter(String redirectUrl,
                                                ServiceProviderResolver serviceProviderResolver,
@@ -118,7 +117,9 @@ public class GuestIdpAuthenticationRequestFilter extends OncePerRequestFilter im
                                                String mobileAppROEntityId,
                                                boolean featureDefaultRememberMe,
                                                SAMLConfiguration configuration,
-                                               IdentityProviderMetaData identityProviderMetaData) {
+                                               IdentityProviderMetaData identityProviderMetaData,
+                                               CookieValueEncoder cookieValueEncoder) {
+        this.cookieValueEncoder = cookieValueEncoder;
         this.ssoSamlRequestMatcher = new AntPathRequestMatcher("/saml/guest-idp/SSO/**");
         this.magicSamlRequestMatcher = new AntPathRequestMatcher("/saml/guest-idp/magic/**");
         this.continueAfterLoginSamlRequestMatcher = new AntPathRequestMatcher("/saml/guest-idp/continue/**");
@@ -586,7 +587,7 @@ public class GuestIdpAuthenticationRequestFilter extends OncePerRequestFilter im
     }
 
     private void addTiqrCookie(HttpServletResponse response, User user) {
-        Cookie cookie = new Cookie(TIQR_COOKIE_NAME, this.encoder.encode(user.getUsername()));
+        Cookie cookie = new Cookie(TIQR_COOKIE_NAME, this.cookieValueEncoder.encode(user.getUsername()));
         cookie.setMaxAge(rememberMeMaxAge);
         cookie.setSecure(secureCookie);
         cookie.setHttpOnly(true);

@@ -40,6 +40,7 @@ import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.UUID;
 
 import static java.util.stream.Collectors.toList;
 
@@ -116,7 +117,8 @@ public class SecurityConfiguration {
                     mobileAppROEntityId,
                     featureDefaultRememberMe,
                     configuration,
-                    identityProviderMetaData
+                    identityProviderMetaData,
+                    new CookieValueEncoder(UUID.randomUUID().toString())
             );
 
         }

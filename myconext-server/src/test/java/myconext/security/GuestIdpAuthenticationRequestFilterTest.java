@@ -7,14 +7,13 @@ import myconext.repository.UserRepository;
 import org.junit.Test;
 import org.junit.Before;
 import org.mockito.Mockito;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.StandardPasswordEncoder;
 import saml.model.SAMLAttribute;
 
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 import static myconext.AbstractIntegrationTest.user;
 import static myconext.model.LinkedAccountTest.linkedAccount;
@@ -134,6 +133,5 @@ public class GuestIdpAuthenticationRequestFilterTest {
     private boolean userVerifiedByInstitution(User user, String acr) {
         return subject.isUserVerifiedByInstitution(user, Collections.singletonList(acr));
     }
-
 
 }

@@ -13,7 +13,6 @@ server:
     path: "/error"
   forward-headers-strategy: framework
 
-
 springdoc:
   pathsToMatch: "/mobile/**"
   api-docs:
@@ -103,6 +102,7 @@ secure_cookie: false
 idp_entity_id: https://localhost.surf.id
 private_key_path: classpath:/myconext.pem
 certificate_path: classpath:/myconext.crt
+tiqr_hash_secret: 43234502-2AAC-4E53-AA32-C7B909F71442
 
 remember_me_max_age_seconds: 15_768_000
 sso_mfa_duration_seconds: 900
