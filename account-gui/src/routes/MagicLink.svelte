@@ -111,13 +111,6 @@
 
 <style lang="scss">
 
-    .back-container {
-        position: absolute;
-        left: 15px;
-        top: 15px;
-        cursor: pointer;
-    }
-
     div.magic-link {
         margin-top: 40px;
         display: flex;
@@ -235,13 +228,9 @@
     </div>
 
 {:else if loginStatus === status.NOT_LOGGED_IN}
-    <div class="back-container">
-        <a href={`/login/${id}?name=${serviceName}&modus=${modus}`}>{@html backArrow}</a>
-    </div>
-
     <div class="magic-link">
         <h2 class="header">{I18n.t("magicLink.header")}</h2>
-        <p>{I18n.t("magicLink.info")}<span class="email">{$user.email}.</span></p>
+            <p>{I18n.t("magicLink.info")}<span class="email">{$user.email}.</span></p>
         <div class="spinner-container">
             <Spinner relative={true}/>
             <p>{I18n.t("magicLink.awaiting")}</p>

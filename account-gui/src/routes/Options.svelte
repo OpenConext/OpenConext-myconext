@@ -11,6 +11,7 @@
     import LoginOption from "../components/LoginOption.svelte";
     import {links} from "../stores/conf";
     import {navigate} from "svelte-routing";
+    import {mrcc} from "../utils/constants";
 
 
     export let id;
@@ -79,6 +80,6 @@
                      translationKey={option.key}
                      preferred={option.preferred}
                      index={i + 1}
-                     route={`/${option.key.toLowerCase()}/${id}`}/>
+                     route={`/${option.key.toLowerCase()}/${id}?${mrcc}=true`}/>
     {/each}
 {/if}

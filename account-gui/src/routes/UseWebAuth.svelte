@@ -11,18 +11,27 @@
     import {cookieNames} from "../constants/cookieNames";
     import {loginPreferences} from "../constants/loginPreferences";
     import {links} from "../stores/conf";
+    import {mrcc} from "../utils/constants";
 
     export let id;
     let showSpinner = true;
     let serviceName = "";
+    let mrccValue = null;
 
     onMount(() => {
-        $links.displayBackArrow = true;
-
-        fetchServiceName(id).then(res => {
-            serviceName = res.name;
+        const urlParams = new URLSearchParams(window.location.search);
+        mrccValue = urlParams.get(mrcc);
+        if (mrccValue) {
             showSpinner = false;
-        });
+            webAuthnStart();
+        } else {
+            $links.displayBackArrow = true;
+
+            fetchServiceName(id).then(res => {
+                serviceName = res.name;
+                showSpinner = false;
+            });
+        }
     });
 
     const webAuthnStart = (test = false) => {
@@ -61,15 +70,16 @@
 {#if showSpinner}
     <Spinner/>
 {/if}
-<h2 class="header">{I18n.t("webAuthn.header")}</h2>
-{#if serviceName}
-    <h2 class="top">{I18n.t("login.headerSubTitle")}<span>{serviceName}</span></h2>
-{/if}
-<p class="explanation">{I18n.t("webAuthn.explanation")}</p>
-<Button href="/start"
-        disabled={showSpinner}
-        label={I18n.t("webAuthn.next")}
-        className="full"
-        onClick={webAuthnStart}/>
+
+    <h2 class="header">{I18n.t("webAuthn.header")}</h2>
+    {#if serviceName}
+        <h2 class="top">{I18n.t("login.headerSubTitle")}<span>{serviceName}</span></h2>
+    {/if}
+    <p class="explanation">{I18n.t("webAuthn.explanation")}</p>
+    <Button href="/start"
+            disabled={showSpinner}
+            label={I18n.t("webAuthn.next")}
+            className="full"
+            onClick={webAuthnStart}/>
 
 
