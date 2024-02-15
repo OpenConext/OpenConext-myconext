@@ -16,17 +16,15 @@
     export let id;
     let showSpinner = true;
     let serviceName = "";
-    let mrccValue = null;
+    let isMrcc = null;
 
     onMount(() => {
         const urlParams = new URLSearchParams(window.location.search);
-        mrccValue = urlParams.get(mrcc);
-        if (mrccValue) {
-            showSpinner = false;
+        isMrcc = urlParams.has(mrcc);
+        if (isMrcc) {
             webAuthnStart();
         } else {
             $links.displayBackArrow = true;
-
             fetchServiceName(id).then(res => {
                 serviceName = res.name;
                 showSpinner = false;
@@ -37,6 +35,8 @@
     const webAuthnStart = (test = false) => {
         webAuthnStartAuthentication($user.email, id, test)
             .then(request => {
+                showSpinner = false;
+                isMrcc = false;
                 get({publicKey: request.publicKeyCredentialRequestOptions})
                     .then(credentials => {
                         //rawId is not supported server-side
@@ -70,7 +70,7 @@
 {#if showSpinner}
     <Spinner/>
 {/if}
-
+{#if !isMrcc}
     <h2 class="header">{I18n.t("webAuthn.header")}</h2>
     {#if serviceName}
         <h2 class="top">{I18n.t("login.headerSubTitle")}<span>{serviceName}</span></h2>
@@ -82,4 +82,4 @@
             className="full"
             onClick={webAuthnStart}/>
 
-
+{/if}

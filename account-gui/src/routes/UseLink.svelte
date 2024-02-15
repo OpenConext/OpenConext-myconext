@@ -55,8 +55,23 @@
     };
 
 </script>
+<style lang="scss">
+    div.spinner-container {
+        display: flex;
+        flex-direction: column;
+
+        p {
+            margin: 75px auto 0 auto;
+        }
+    }
+</style>
 {#if showSpinner}
+    <div class="spinner-container">
     <Spinner/>
+        {#if mrccValue}
+            <p>{I18n.t("login.sendingEmail")}</p>
+        {/if}
+    </div>
 {/if}
 {#if !showSpinner && !mrccValue}
     <h2 class="header">{I18n.t("useLink.header")}</h2>

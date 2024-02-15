@@ -67,6 +67,7 @@ I18n.translations.en = {
         forgotPassword: "Forgot your password?",
         useAnother: "Use another",
         optionsLink: "sign-in option.",
+        sendingEmail: "Sending email..."
     },
     options: {
         header: "How do you want to login?",

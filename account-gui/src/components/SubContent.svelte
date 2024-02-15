@@ -10,8 +10,8 @@
     export let route = null;
     export let href = null;
     export let isMfa = false;
-    let isMfaParameter = false;
 
+    let isMfaParameter = false;
     let showModal = false;
 
     onMount(() => {

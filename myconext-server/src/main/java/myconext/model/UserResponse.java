@@ -23,6 +23,7 @@ public class UserResponse implements Serializable {
     private final String chosenName;
     private final String givenName;
     private final String familyName;
+    private final String displayName;
     private final boolean usePassword;
     private final boolean usePublicKey;
     private final boolean forgottenPassword;
@@ -46,6 +47,7 @@ public class UserResponse implements Serializable {
         this.chosenName = user.getChosenName();
         this.givenName = user.getGivenName();
         this.familyName = user.getFamilyName();
+        this.displayName = this.givenName + " " + this.familyName;
         this.schacHomeOrganization = user.getSchacHomeOrganization();
         this.uid = user.getUid();
         this.usePassword = StringUtils.hasText(user.getPassword());
