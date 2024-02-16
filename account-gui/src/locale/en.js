@@ -170,7 +170,7 @@ I18n.translations.en = {
     },
     maxAttempt: {
         title: "Maximum attempts reached",
-        info: "You've reached the maximum verification attempts.",
+        info: "You've reached the maximum verification attempts. Please return to the application you want to log in to and try again.",
     },
     notFound: {
         title: "Whoops...",

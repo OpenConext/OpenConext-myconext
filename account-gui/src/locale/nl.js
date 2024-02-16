@@ -170,7 +170,7 @@ I18n.translations.nl = {
     },
     maxAttempt: {
         title: "Maximum aantal pogingen bereikt",
-        info: "Je hebt het maximale aantal verificatiepogingen bereikt.",
+        info: "Je hebt het maximale aantal verificatiepogingen bereikt. Ga terug naar de applicatie waarop je wilde inloggen en probeer het opnieuw.",
     },
     notFound: {
         title: "Oeps...",
