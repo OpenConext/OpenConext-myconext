@@ -1,6 +1,17 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [7.2.6]
+- Improve Tiqr-cookie security
+- escape html in email
+- Remove 'Stay signed in'
+- Login screen consistency
+
+## [7.2.5]
+- Allow multiple accountlinkt for one instituition
+- Update translations and app-links
+- Update dependencies
+
 ## [7.2.3]
 - Bugfix for adding affiliations
 
