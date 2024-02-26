@@ -402,12 +402,13 @@ public class TiqrController implements UserAuthentication {
         Optional<Cookie> optionalTiqrCookie = cookieByName(request, TIQR_COOKIE_NAME);
         AtomicBoolean tiqrCookieValid = new AtomicBoolean(false);
         optionalTiqrCookie.ifPresent(tiqrCookie -> tiqrCookieValid.set(this.cookieValueEncoder.matches(user.getUsername(), tiqrCookie.getValue())));
-        boolean sendPushNotification = tiqrCookieValid.get() && this.tiqrConfiguration.isPushNotificationsEnabled();
-        if (optionalTiqrCookie.isPresent() && this.tiqrConfiguration.isPushNotificationsEnabled() && !sendPushNotification) {
-            LOG.info(String.format("Tiqr cookie present for user %s and push notifications are enabled, but not sending push notification. Encoded cookie value does not match username", user.getEmail()));
+        if (optionalTiqrCookie.isPresent() && this.tiqrConfiguration.isPushNotificationsEnabled() && !tiqrCookieValid.get()) {
+            LOG.info(String.format("Tiqr cookie present for user %s and push notifications are enabled, but not sending push notification. Encoded cookie value does not match username",
+                    user.getEmail()));
         }
         // Reset any outstanding suspensions
         rateLimitEnforcer.unsuspendUserAfterTiqrSuccess(user);
+        boolean sendPushNotification = tiqrCookieValid.get() && this.tiqrConfiguration.isPushNotificationsEnabled();
         Authentication authentication = tiqrService.startAuthentication(
                 user.getId(),
                 String.format("%s %s", user.getGivenName(), user.getFamilyName()),
