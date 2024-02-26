@@ -1,6 +1,9 @@
 package myconext.security;
 
 import lombok.SneakyThrows;
+import myconext.tiqr.TiqrController;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -11,6 +14,8 @@ import java.security.MessageDigest;
 public class CookieValueEncoder {
 
     private final String salt;
+    private static final Log LOG = LogFactory.getLog(TiqrController.class);
+
 
     @SneakyThrows
     public CookieValueEncoder(@Value("${tiqr_hash_secret}") String salt) {
@@ -28,6 +33,10 @@ public class CookieValueEncoder {
     }
 
     public boolean matches(String rawValue, String encoded) {
-        return encode(rawValue).equals(encoded);
+        if (encode(rawValue).equals(encoded)) {
+            return true;
+        }
+        LOG.warn(String.format("Expected tiqr cookie for user %s containing value %s, got %s", rawValue, encode(rawValue), encoded));
+        return false;
     }
 }

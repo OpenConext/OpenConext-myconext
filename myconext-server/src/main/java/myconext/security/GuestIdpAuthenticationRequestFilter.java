@@ -593,6 +593,7 @@ public class GuestIdpAuthenticationRequestFilter extends OncePerRequestFilter im
         cookie.setHttpOnly(true);
         cookie.setPath("/");
         response.addCookie(cookie);
+        LOG.debug(String.format("Write tiqr cookie for %s, value %s",user.getUsername(),cookie.getValue()));
     }
 
     private void addRememberMeQuestionAskedCookie(HttpServletResponse response) {
