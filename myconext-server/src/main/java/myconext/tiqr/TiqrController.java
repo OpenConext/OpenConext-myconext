@@ -400,11 +400,11 @@ public class TiqrController implements UserAuthentication {
 
     private ResponseEntity<StartAuthentication> doStartAuthentication(HttpServletRequest request, User user) throws WriterException, IOException, TiqrException {
         Optional<Cookie> optionalTiqrCookie = cookieByName(request, TIQR_COOKIE_NAME);
-        AtomicBoolean tiqrCookiePresent = new AtomicBoolean(false);
-        optionalTiqrCookie.ifPresent(tiqrCookie -> tiqrCookiePresent.set(this.cookieValueEncoder.matches(user.getUsername(), tiqrCookie.getValue())));
-        boolean sendPushNotification = tiqrCookiePresent.get() && this.tiqrConfiguration.isPushNotificationsEnabled();
-        if (optionalTiqrCookie.isPresent() && !sendPushNotification) {
-            LOG.info(String.format("Tiqr cookie present for user %s, but not sending push notification because push notifications are disabled.", user.getEmail()));
+        AtomicBoolean tiqrCookieValid = new AtomicBoolean(false);
+        optionalTiqrCookie.ifPresent(tiqrCookie -> tiqrCookieValid.set(this.cookieValueEncoder.matches(user.getUsername(), tiqrCookie.getValue())));
+        boolean sendPushNotification = tiqrCookieValid.get() && this.tiqrConfiguration.isPushNotificationsEnabled();
+        if (optionalTiqrCookie.isPresent() && this.tiqrConfiguration.isPushNotificationsEnabled() && !sendPushNotification) {
+            LOG.info(String.format("Tiqr cookie present for user %s and push notifications are enabled, but not sending push notification. Encoded cookie value does not match username", user.getEmail()));
         }
         // Reset any outstanding suspensions
         rateLimitEnforcer.unsuspendUserAfterTiqrSuccess(user);
