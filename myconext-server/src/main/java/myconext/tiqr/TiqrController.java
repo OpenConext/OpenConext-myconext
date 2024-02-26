@@ -403,7 +403,9 @@ public class TiqrController implements UserAuthentication {
         AtomicBoolean tiqrCookiePresent = new AtomicBoolean(false);
         optionalTiqrCookie.ifPresent(tiqrCookie -> tiqrCookiePresent.set(this.cookieValueEncoder.matches(user.getUsername(), tiqrCookie.getValue())));
         boolean sendPushNotification = tiqrCookiePresent.get() && this.tiqrConfiguration.isPushNotificationsEnabled();
-        if (optionalTiqrCookie.isPresent() && !sendPushNotification) LOG.info("Tiqr cookie present, but not sending push notification.");
+        if (optionalTiqrCookie.isPresent() && !sendPushNotification) {
+            LOG.info(String.format("Tiqr cookie present for user %s, but not sending push notification because push notifications are disabled.", user.getEmail()));
+        }
         // Reset any outstanding suspensions
         rateLimitEnforcer.unsuspendUserAfterTiqrSuccess(user);
         Authentication authentication = tiqrService.startAuthentication(
