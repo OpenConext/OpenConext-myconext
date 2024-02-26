@@ -93,7 +93,7 @@ public class LoginController {
     public void register(@RequestParam(value = "lang", required = false, defaultValue = "en") String lang,
                          @RequestParam(value = "location", required = false) String location,
                          HttpServletResponse response) throws IOException {
-        doRedirect(lang, location, response);
+        doRedirect(lang, location, response, true);
     }
 
     @GetMapping("/register/{enrollmentVerificationKey}")
@@ -125,13 +125,16 @@ public class LoginController {
     @GetMapping("/doLogin")
     public void doLogin(@RequestParam(value = "lang", required = false, defaultValue = "en") String lang,
                         @RequestParam(value = "location", required = false) String location,
+                        @RequestParam(value = "register", required = false, defaultValue = "true") String register,
                         HttpServletResponse response) throws IOException {
-        doRedirect(lang, location, response);
+        doRedirect(lang, location, response, Boolean.valueOf(register));
     }
 
-    private void doRedirect(String lang, String location, HttpServletResponse response) throws IOException {
-        String cookieValue = String.format("%s=true; Max-Age=%s; SameSite=None%s", REGISTER_MODUS_COOKIE_NAME, 60 * 10, secureCookie ? "; Secure" : "");
-        response.setHeader("Set-Cookie", cookieValue);
+    private void doRedirect(String lang, String location, HttpServletResponse response, boolean register) throws IOException {
+        if (register) {
+            String cookieValue = String.format("%s=true; Max-Age=%s; SameSite=None%s", REGISTER_MODUS_COOKIE_NAME, 60 * 10, secureCookie ? "; Secure" : "");
+            response.setHeader("Set-Cookie", cookieValue);
+        }
         String redirectLocation = StringUtils.hasText(location) ? location : this.config.get("eduIDLoginUrl") + "&lang=" + lang;
         response.sendRedirect(redirectLocation);
     }
