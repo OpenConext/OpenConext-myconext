@@ -84,7 +84,8 @@ public class SecurityConfiguration {
                             GeoLocation geoLocation,
                             MailBox mailBox,
                             ServiceProviderResolver serviceProviderResolver,
-                            IdentityProviderMetaData identityProviderMetaData) {
+                            IdentityProviderMetaData identityProviderMetaData,
+                            CookieValueEncoder cookieValueEncoder) {
             String[] keys = this.getKeys(certificatePath, privateKeyPath);
             final List<SAMLServiceProvider> serviceProviders = new ArrayList<>();
 
@@ -118,7 +119,7 @@ public class SecurityConfiguration {
                     featureDefaultRememberMe,
                     configuration,
                     identityProviderMetaData,
-                    new CookieValueEncoder(UUID.randomUUID().toString())
+                    cookieValueEncoder
             );
 
         }
