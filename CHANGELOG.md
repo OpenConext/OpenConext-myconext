@@ -1,6 +1,10 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [7.2.8]
+- Fix Tiqr-cookie
+- Fix redirect after logout
+
 ## [7.2.6]
 - Improve Tiqr-cookie security
 - escape html in email
