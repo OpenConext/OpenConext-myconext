@@ -4,7 +4,14 @@
     import verifiedSvg from "../icons/redesign/shield-full.svg";
     import alertSvg from "../icons/alert-circle.svg";
     import Button from "../components/Button.svelte";
-    import {deleteLinkedAccount, preferLinkedAccount, startLinkAccountFlow, updateEmail, updateUser} from "../api";
+    import {
+        deleteLinkedAccount,
+        preferLinkedAccount,
+        startLinkAccountFlow,
+        startVerifyAccountFlow,
+        updateEmail,
+        updateUser
+    } from "../api";
     import Modal from "../components/Modal.svelte";
     import EditField from "../components/EditField.svelte";
     import {validEmail} from "../validation/regexp";
@@ -60,9 +67,12 @@
         if (showConfirmation) {
             showModal = true
         } else {
-            startLinkAccountFlow().then(json => {
+            startVerifyAccountFlow().then(json => {
                 window.location.href = json.url;
             });
+            // startLinkAccountFlow().then(json => {
+            //     window.location.href = json.url;
+            // });
         }
     }
 
@@ -202,13 +212,23 @@
         }
 
         &.second {
-            padding: 0 80px 15px 50px;
+            padding: 0 10px 18px 50px;
 
-            @media (max-width: 820px) {
-                padding: 0 0 0 0;
+            @media (max-width: 1080px) {
+                padding: 0 20px 20px 20px;
             }
         }
     }
+
+    .margin-right {
+        margin-right: 20%;
+
+        @media (max-width: 1020px) {
+            margin-right: 0;
+        }
+    }
+
+
 
     h2 {
         margin: 20px 0 10px 0;
@@ -219,9 +239,13 @@
         font-weight: 300;
     }
 
-    p.info2 {
+    p.info-section {
         font-size: 22px;
         font-family: Nunito, sans-serif;
+        color: var(--color-primary-green);
+        &.second {
+          margin: 25px 0 15px 0;
+        }
     }
 
     p {
@@ -291,12 +315,6 @@
         }
     }
 
-    p.label {
-        margin-top: 40px;
-        font-weight: 600;
-        margin-bottom: 10px;
-    }
-
     .add-institution {
         padding: 15px;
         border: 2px solid var(--color-primary-grey);
@@ -305,6 +323,10 @@
         align-items: center;
         cursor: pointer;
         margin-bottom: 20px;
+
+        &:hover {
+            background-color: var(--color-background);
+        }
 
         p {
             font-weight: 600;
@@ -350,25 +372,25 @@
     {/if}
     <div class="inner-container second">
         <div class="verified-container">
-            <p class="info2">{I18n.t("profile.basic")}</p>
+            <p class="info-section">{I18n.t("profile.basic")}</p>
             {#if eduIDLinked}
                 <span class="verified">{@html check} {I18n.t("profile.verified")}</span>
             {:else}
                 <span class="not-verified">{I18n.t("profile.notVerified")}</span>
             {/if}
         </div>
-        <EditField label={I18n.t("profile.chosenName")}
-                   firstValue={$user.chosenName}
+        <EditField firstValue={$user.chosenName}
                    editableByUser={true}
+                   editLabel={I18n.t("profile.chosenName")}
                    saveLabel={I18n.t("edit.save")}
                    editMode={chosenNameEditMode}
                    onEdit={() => chosenNameEditMode = true}
                    onSave={value => updateChosenName(value)}
                    onCancel={() => chosenNameEditMode = false}
         />
-        <EditField label={I18n.t("profile.givenName")}
-                   firstValue={$user.givenName}
+        <EditField firstValue={$user.givenName}
                    editableByUser={!preferredAccount}
+                   editLabel={I18n.t("profile.givenName")}
                    addInstitution={addInstitution}
                    linkedAccount={preferredAccount}
                    saveLabel={I18n.t("edit.save")}
@@ -377,22 +399,23 @@
                    onSave={value => updateGivenName(value)}
                    onCancel={() => givenNameEditMode = false}
         />
-        <EditField label={I18n.t("profile.familyName")}
-                   firstValue={$user.familyName}
+        <EditField firstValue={$user.familyName}
                    editableByUser={!preferredAccount}
                    addInstitution={addInstitution}
                    linkedAccount={preferredAccount}
                    saveLabel={I18n.t("edit.save")}
                    editMode={familyNameEditMode}
+                   editLabel={I18n.t("profile.familyName")}
                    onEdit={() => familyNameEditMode = true}
                    onSave={value => updateFamilyName(value)}
                    onCancel={() => familyNameEditMode = false}
         />
-        <EditField label={I18n.t("profile.email")}
-                   firstValue={$user.email}
+        <p class="info-section second">{I18n.t("profile.contact")}</p>
+        <EditField firstValue={$user.email}
                    editableByUser={true}
-                   nameField={false}
+                   nameField={true}
                    error={emailError}
+                   editLabel={I18n.t("profile.email")}
                    editHint={I18n.t("email.info")}
                    saveLabel={I18n.t("email.update")}
                    errorMessage={emailErrorMessage}
@@ -401,15 +424,15 @@
                    onSave={value => updateEmailValue(value)}
                    onCancel={() => cancelEmailEditMode()}
         />
-        <p class="label">{I18n.t("profile.linkedAccounts")}</p>
-        <section class="linked-accounts">
+            <p class="info-section second">{I18n.t("profile.role")}</p>
+        <section class="linked-accounts margin-right">
             {#each sortedAccounts as account}
                 <InstitutionRole addInstitution={addInstitution}
                                  removeInstitution={deleteInstitution}
                                  linkedAccount={account}/>
             {/each}
         </section>
-        <div class="add-institution" on:click={() => addInstitution(true)}>
+        <div class="add-institution margin-right" on:click={() => addInstitution(true)}>
             <div class="info">
                 <p>{I18n.t("profile.addInstitution")}</p>
                 <em class="info">{I18n.t("profile.proceedConext")}</em>

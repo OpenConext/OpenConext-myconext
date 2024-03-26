@@ -97,6 +97,8 @@ feature:
   default_remember_me: False
   # Does the SAMLIdpService expects authn requests to be signed
   requires_signed_authn_request: False
+  # Do we support ID verify
+  id_verify: True
 
 secure_cookie: false
 idp_entity_id: https://localhost.surf.id
@@ -168,6 +170,14 @@ geo_location:
   license_key: lb53kEx9iVCuBcnV
   external_url: "https://download.maxmind.com/app/geoip_download?edition_id=GeoLite2-City&license_key={license_key}&suffix=tar.gz"
   download_directory: "/var/tmp/geo2lite"
+
+verify:
+  client_id: client
+  secret: secret
+  base_uri: "http://localhost:8282"
+  sp_verify_redirect_url: http://localhost:8081/myconext/api/sp/verify/redirect
+  mobile_verify_redirect_url: http://localhost:8081/myconext/api/mobile/verify/redirect
+  idp_verify_redirect_url: http://localhost:8081/myconext/api/idp/verify/redirect
 
 spring:
   data:

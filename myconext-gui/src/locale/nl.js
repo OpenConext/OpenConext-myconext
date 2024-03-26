@@ -43,8 +43,10 @@ I18n.translations.nl = {
         info: "Wanneer je eduID gebruikt om in te loggen op andere websites, kan jouw persoonlijke informatie worden gedeeld.",
         banner: "Sommige diensten vereisen dat je persoonlijke gegevens worden gevalideerd door een vertrouwde partij.",
         expiredBanner: "De verificatie van je identiteit is verlopen, verifïeer deze opnieuw.",
-        verifyNow: "Verifïeer je identiteit nu",
+        verifyNow: "Start verificatie",
         basic: "Basis informatie",
+        contact: "Contact informatie",
+        role: "Rol & instelling",
         email: "E-mail",
         name: "Naam",
         chosenName: "Roepnaam",
@@ -478,5 +480,15 @@ I18n.translations.nl = {
         resend: "E-mail nog steeds niet gevonden?",
         resendLink: " Stuur de e-mail opnieuw.",
         mailResend: "Check je inbox. We hebben je de e-mail met de magische link opnieuw verzonden.",
+    },
+    weekDays: {
+        0: "Zondag",
+        1: "Maandag",
+        2: "Dinsdag",
+        3: "Woensdag",
+        4: "Donderdag",
+        5: "Vrijdag",
+        6: "Zaterdag"
     }
+
 };

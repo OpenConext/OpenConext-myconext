@@ -110,3 +110,10 @@ http://localhost:8081/myconext/api/mobile/api-docs
 
 https://login.test2.eduid.nl/myconext/api/mobile/swagger-ui/index.html
 https://login.test2.eduid.nl/myconext/api/mobile/api-docs
+
+### IDIN & e-Herkenning
+
+The redirect URI's for local development have to start with https. You can use the reverse proxy of ngrok for this:
+```
+ngrok http --domain okke.harsta.eu.ngrok.io 8081
+```

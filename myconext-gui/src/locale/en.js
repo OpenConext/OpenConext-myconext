@@ -43,8 +43,10 @@ I18n.translations.en = {
         info: "When you use eduID to login to other websites, some of your personal information will be shared.",
         banner: "Some services require that your personal information is validated by a trusted party.",
         expiredBanner: "The verification of your identity has expired, please verify it again.",
-        verifyNow: "Verify your identity now",
+        verifyNow: "Start verification",
         basic: "Your identity",
+        contact: "Contact data",
+        role: "Role & institution",
         email: "Email address",
         name: "Name",
         chosenName: "Call name",
@@ -478,5 +480,14 @@ I18n.translations.en = {
         resend: "Still can't find the email?",
         resendLink: "Send the email again.",
         mailResend: "Check your inbox again. We've sent another email with a validation link.",
+    },
+    weekDays: {
+        0: "Sunday",
+        1: "Monday",
+        2: "Tuesday",
+        3: "Wednesday",
+        4: "Thursday",
+        5: "Friday",
+        6: "Saturday"
     }
 };

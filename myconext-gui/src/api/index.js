@@ -130,6 +130,10 @@ export function startLinkAccountFlow() {
     return fetchJson("/myconext/api/sp/oidc/link");
 }
 
+export function startVerifyAccountFlow() {
+    return fetchJson("/myconext/api/sp/verify/link");
+}
+
 export function logout() {
     const fetchOptions = {
         credentials: "same-origin",

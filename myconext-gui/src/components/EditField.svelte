@@ -24,6 +24,7 @@
     export let editMode = false;
     export let onEdit;
     export let label;
+    export let editLabel;
     export let editableByUser = true;
     export let error = false;
     export let errorMessage;
@@ -35,15 +36,38 @@
     let value = firstValue;
     let showDropDown = false;
 
+    const toggle = () => {
+        if (editableByUser) {
+            onEdit();
+        } else {
+            showDropDown = !showDropDown
+        }
+
+    }
+
 </script>
 <style lang="scss">
 
     .edit-field {
-        margin-bottom: 15px;
+        margin: 0 20% 15px 0;
+        cursor: pointer;
 
-        &:not(.name-field) {
-            margin-top: 40px;
+        &:hover:not(.show-edit-mode) {
+            background-color: #f0f8ff;
         }
+
+        &.show-drop-down {
+            background-color: #f0f8ff;
+        }
+
+        &.show-edit-mode {
+            margin: 0 0 15px 0;
+        }
+
+        @media (max-width: 1020px) {
+            margin: 0 0 15px 0;
+        }
+
     }
 
     label {
@@ -132,6 +156,7 @@
             span.editable-by {
                 margin-top: 10px;
                 color: var(--color-secondary-grey);
+                font-size: 15px;
             }
         }
 
@@ -152,8 +177,14 @@
     }
 
 </style>
-<div class="edit-field" class:name-field={nameField}>
-    <label for={`input-${label}`}>{label}</label>
+<div class="edit-field"
+     class:name-field={nameField}
+     class:show-drop-down={showDropDown}
+     class:show-edit-mode={editMode}
+     on:click={toggle}>
+    {#if label}
+        <label for={`input-${label}`}>{label}</label>
+    {/if}
     {#if editMode || error}
         <div class="edit-mode">
             <input type="text"
@@ -178,17 +209,22 @@
                 <div class="inner-view-mode">
                 <span class="value">
                     {#if !editableByUser}
-                    <span class="shield">{@html shieldIcon}</span>
-                {/if}
+                        <span class="shield">{@html shieldIcon}</span>
+                    {/if}
                     {firstValue}</span>
-                    <span class="editable-by">{editableByUser ? I18n.t("profile.editable") :
+                    {#if editLabel}
+                        <span class="editable-by">{editLabel}</span>
+                    {:else}
+                        <span class="editable-by">{editableByUser ? I18n.t("profile.editable") :
                         I18n.t("profile.nonEditable", {name: institutionName(linkedAccount)}) }</span>
+                    {/if}
                 </div>
                 {#if editableByUser}
                     <span class="icon" on:click={() => onEdit()}>{@html editIcon}</span>
                 {:else}
-                <span class="icon" class:show-drop-down={!showDropDown}
-                      on:click={() => showDropDown = !showDropDown}>{@html chevronUpIcon}</span>
+                <span class="icon" class:show-drop-down={!showDropDown}>
+                    {@html chevronUpIcon}
+                </span>
                 {/if}
             </div>
             {#if showDropDown}

@@ -98,6 +98,12 @@ public class AccountLinkerController implements UserAuthentication {
     private final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
     private final EmailGuessingPrevention emailGuessingPreventor;
     private final DisposableEmailProviders disposableEmailProviders;
+    private final String verifySecret;
+    private final String verifyClientId;
+    private final String verifyBaseUri;
+    private final String spVerifyRedirectUri;
+    private final String mobileVerifyRedirectUri;
+    private final String idpVerifyRedirectUri;
 
     public AccountLinkerController(
             AuthenticationRequestRepository authenticationRequestRepository,
@@ -126,7 +132,13 @@ public class AccountLinkerController implements UserAuthentication {
             @Value("${account_linking.myconext_sp_entity_id}") String myConextSpEntityId,
             @Value("${feature.use_external_validation}") boolean useExternalValidationFeature,
             @Value("${feature.create_eduid_institution_enabled}") boolean createEduIDInstitutionEnabled,
-            @Value("${email_guessing_sleep_millis}") int emailGuessingSleepMillis) {
+            @Value("${email_guessing_sleep_millis}") int emailGuessingSleepMillis,
+            @Value("${verify.client_id}") String verifyClientId,
+            @Value("${verify.secret}") String verifySecret,
+            @Value("${verify.sp_validate_redirect_url}") String spVerifyRedirectUri,
+            @Value("${verify.idp_validate_redirect_url}") String idpVerifyRedirectUri,
+            @Value("${verify.mobile_validate_redirect_url}") String mobileVerifyRedirectUri,
+            @Value("${verify.base_uri}") String verifyBaseUri) {
         this.authenticationRequestRepository = authenticationRequestRepository;
         this.userRepository = userRepository;
         this.requestInstitutionEduIDRepository = requestInstitutionEduIDRepository;
@@ -153,6 +165,12 @@ public class AccountLinkerController implements UserAuthentication {
         this.useExternalValidationFeature = useExternalValidationFeature;
         this.createEduIDInstitutionEnabled = createEduIDInstitutionEnabled;
         this.emailGuessingPreventor = new EmailGuessingPrevention(emailGuessingSleepMillis);
+        this.verifyClientId = verifyClientId;
+        this.verifySecret = verifySecret;
+        this.verifyBaseUri = verifyBaseUri;
+        this.mobileVerifyRedirectUri = mobileVerifyRedirectUri;
+        this.spVerifyRedirectUri = spVerifyRedirectUri;
+        this.idpVerifyRedirectUri = idpVerifyRedirectUri;
     }
 
     @GetMapping("/idp/oidc/account/{id}")
@@ -382,6 +400,50 @@ public class AccountLinkerController implements UserAuthentication {
         return ResponseEntity.ok(new AuthorizationURL(uriComponents.toUriString()));
     }
 
+    @GetMapping("/sp/verify/link")
+    @Operation(summary = "Start link account flow for signicat",
+            description = "Start the link account flow for the current user." +
+                    "<br/>After the account has been linked the user is redirect to one the following URL's:" +
+                    "<ul>" +
+                    "<li>Success: <a href=\"\">https://login.{environment}.eduid.nl/client/mobile/verify-account-linked</a></li>" +
+                    "<li>Failure, something went wrong: <a href=\"\">https://login.{environment}.eduid.nl/client/mobile/verify-error</a></li>" +
+                    "</ul>",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Url for authentication", useReturnTypeSchema = true,
+                            content = {@Content(schema = @Schema(implementation = AuthorizationURL.class), examples =
+                                    {@ExampleObject(value =
+                                            "{\"url\":\"https://validate.test.eduid.nl/broker/sp/oidc/authenticate?scope=openid&response_type=code&redirect_uri=https://mijn.test2.eduid.nl/myconext/api/sp/verify/redirect&state=%242a%2410%249cyC3mjeJW0ljb%2FmPAGj0O4DVXz9LPw5U%2Fthl110BVYWFpMhjwKyK&prompt=login&client_id=myconext.ala.eduid\"}")})})}
+    )
+    public ResponseEntity<AuthorizationURL> startVerifyLinkAccountFlow(Authentication authentication) throws UnsupportedEncodingException {
+        LOG.debug("Start verify account flow");
+
+        User user = userFromAuthentication(authentication);
+        String state;
+        String redirectUri;
+        if (isMobileRequest(authentication)) {
+            MobileLinkAccountRequest mobileLinkAccountRequest = this.mobileLinkAccountRequestRepository.save(new MobileLinkAccountRequest(hash(), user.getId()));
+            state = mobileLinkAccountRequest.getHash();
+            redirectUri = this.mobileVerifyRedirectUri;
+        } else {
+            state = passwordEncoder.encode(user.getUid());
+            redirectUri = this.spVerifyRedirectUri;
+        }
+
+        Map<String, String> params = new HashMap<>();
+
+        params.put("client_id", verifyClientId);
+        params.put("response_type", "code");
+//        params.put("scope", "openid dateofbirth name");
+        //Based on client parameter: idp_scoping:eherkenning idp_scoping:idin
+        params.put("scope", "openid dateofbirth name");
+        params.put("redirect_uri", redirectUri);
+        params.put("state", URLEncoder.encode(state, StandardCharsets.UTF_8));
+        UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(this.verifyBaseUri + "/broker/sp/oidc/authenticate");
+        params.forEach(builder::queryParam);
+        UriComponents uriComponents = builder.build();
+        return ResponseEntity.ok(new AuthorizationURL(uriComponents.toUriString()));
+    }
+
     private UriComponents doStartLinkAccountFlow(String state, String redirectUri, boolean forceAuth, boolean useExternalValidation, String requesterEntityId) throws UnsupportedEncodingException {
         Map<String, String> params = new HashMap<>();
 
@@ -401,6 +463,56 @@ public class AccountLinkerController implements UserAuthentication {
         UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(oidcBaseUrl + "/oidc/authorize");
         params.forEach(builder::queryParam);
         return builder.build();
+    }
+
+    @GetMapping({"/sp/verify/redirect", "/idp/verify/redirect"})
+    @Hidden
+    public ResponseEntity spValidateRedirect(Authentication authentication,
+                                             @RequestParam("code") String code,
+                                             @RequestParam("state") String state) throws UnsupportedEncodingException {
+        LOG.debug("In SP validate redirect link account");
+
+        User principal = userFromAuthentication(authentication);
+        String uid = principal.getUid();
+        Optional<User> userOptional = userRepository.findUserByUid(uid);
+        User user = userOptional.orElseThrow(() -> new UserNotFoundException(uid));
+
+        if (!passwordEncoder.matches(user.getUid(), URLDecoder.decode(state, StandardCharsets.UTF_8))) {
+            throw new ForbiddenException("Non matching user");
+        }
+        HttpHeaders headers = getHttpHeaders();
+
+        MultiValueMap<String, String> map = new LinkedMultiValueMap<>();
+        map.add("client_id", verifyClientId);
+        map.add("client_secret", verifySecret);
+        map.add("code", code);
+        map.add("grant_type", "authorization_code");
+        map.add("redirect_uri", spVerifyRedirectUri);
+        map.add("scope", "openid");
+
+        HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<>(map, headers);
+
+        ParameterizedTypeReference<Map<String, Object>> parameterizedTypeReference = new ParameterizedTypeReference<>() {
+        };
+        Map<String, Object> body = restTemplate.exchange(verifyBaseUri + "/broker/sp/oidc/token",
+                HttpMethod.POST, request, parameterizedTypeReference).getBody();
+
+        MultiValueMap<String, String>  tokenMap = new LinkedMultiValueMap<>();
+        tokenMap.add("access_token", (String) body.get("access_token"));
+
+        request = new HttpEntity<>(tokenMap, headers);
+
+        body = restTemplate.exchange(verifyBaseUri + "/broker/sp/oidc/userinfo", HttpMethod.POST, request, parameterizedTypeReference).getBody();
+        return doRedirect(code, user, this.spFlowRedirectUri, this.spRedirectUrl + "/personal",
+                false, false, true, null, null,
+                this.spRedirectUrl + "/eppn-already-linked");
+    }
+
+    private HttpHeaders getHttpHeaders() {
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+        headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
+        return headers;
     }
 
     @GetMapping("/sp/oidc/redirect")

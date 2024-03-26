@@ -35,6 +35,15 @@
         border-radius: 8px;
         display: flex;
         flex-direction: column;
+        cursor: pointer;
+
+        &:hover:not(.show-edit-mode) {
+            background-color: #f0f8ff;
+        }
+
+        &.show-drop-down {
+            background-color: #f0f8ff;
+        }
 
         &.expired {
             background-color: #f6f6f6;
@@ -93,7 +102,10 @@
     }
 
 </style>
-<div class="institution-role" class:expired={linkedAccount.expiredRole}>
+<div class="institution-role"
+     class:show-drop-down={showDropDown}
+     on:click={() => showDropDown = !showDropDown}
+     class:expired={linkedAccount.expiredRole}>
     <div class="affiliation">
         <span class="student">
         {#if linkedAccount.logoUrl}
@@ -111,8 +123,9 @@
             <span>{I18n.t("profile.atInstitution", {name: institutionName(linkedAccount)})}</span>
         </div>
 
-        <span class="icon" class:show-drop-down={!showDropDown}
-              on:click={() => showDropDown = !showDropDown}>{@html chevronUpIcon}</span>
+        <span class="icon" class:show-drop-down={!showDropDown}>
+            {@html chevronUpIcon}
+        </span>
     </div>
     {#if showDropDown}
         <LinkedInstitution linkedAccount={linkedAccount}
