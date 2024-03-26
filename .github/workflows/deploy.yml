@@ -7,6 +7,8 @@ on:
 
 jobs:
   deployment:
+    permissions:
+      packages: write
     environment: deploy
     runs-on: ubuntu-latest
 
@@ -34,14 +36,21 @@ jobs:
         restore-keys: |
           ${{ runner.os }}-maven-
 
-    - name: Extract Maven project version
+    - name: Determine the version
       run: echo ::set-output name=version::$(mvn -q -Dexec.executable=echo -Dexec.args='${project.version}' --non-recursive exec:exec)
-      id: project
-    - name: Check if git tag matches project version
+      id: versioncheck
+
+    - name: Exit when workflow_dispatch is triggered, and the version does not contain SNAPSHOT in it's name
       run: |
-        echo "Project version ${{ steps.project.outputs.version }} does not match git tag ${{ github.ref_name }}"
+        echo "Only SNAPSHOT releases can be triggered with the workflow_dispatch"
         exit 1
-      if: ${{ steps.project.outputs.version != github.ref_name }}
+      if: github.event_name == 'workflow_dispatch' && ( !endsWith(steps.versioncheck.outputs.version, '-SNAPSHOT'))
+
+    - name: Exit when a production build is triggered, and the github tag is not the same as the version in pom.xml
+      run: |
+        echo "Project version ${{ steps.versioncheck.outputs.version }} does not match git tag ${{ github.ref_name }}"
+        exit 1
+      if: github.event_name != 'workflow_dispatch' && steps.versioncheck.outputs.version != github.ref_name
 
     - name: Deploy with Maven
       run: mvn --batch-mode deploy -DskipTests
@@ -115,3 +124,43 @@ jobs:
         asset_path: /home/runner/work/OpenConext-myconext/OpenConext-myconext/myconext-server/target/myconext-server-${{ github.ref_name }}.jar
         asset_name: myconext-server-${{ github.ref_name }}.jar
         asset_content_type: application/zip
+
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v2
+
+    - name: Login to GitHub Container Registry
+      uses: docker/login-action@v2
+      with:
+        registry: ghcr.io
+        username: ${{ github.repository_owner }}
+        password: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Build and push the account gui image
+      uses: docker/build-push-action@v4
+      with:
+        context: account-gui
+        file: account-gui/docker/Dockerfile
+        platforms: linux/amd64
+        push: true
+        tags: |
+          ghcr.io/openconext/openconext-myconext/account-gui:${{ steps.versioncheck.outputs.version }}
+
+    - name: Build and push the myconext gui image
+      uses: docker/build-push-action@v4
+      with:
+        context: myconext-gui
+        file: myconext-gui/docker/Dockerfile
+        platforms: linux/amd64
+        push: true
+        tags: |
+          ghcr.io/openconext/openconext-myconext/myconext-gui:${{ steps.versioncheck.outputs.version }}
+
+    - name: Build and push the server image
+      uses: docker/build-push-action@v4
+      with:
+        context: myconext-server
+        file: myconext-server/docker/Dockerfile
+        platforms: linux/amd64
+        push: true
+        tags: |
+          ghcr.io/openconext/openconext-myconext/myconext-server:${{ steps.versioncheck.outputs.version }}
