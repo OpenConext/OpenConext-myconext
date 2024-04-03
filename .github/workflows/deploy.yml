@@ -4,6 +4,7 @@ on:
   push:
     tags:
       - "*"
+  workflow_dispatch:
 
 jobs:
   deployment:
@@ -13,14 +14,14 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
       with:
         fetch-depth: 0
-    - uses: actions/setup-node@v3
+    - uses: actions/setup-node@v4
       with:
         node-version: 16
     - name: Set up JDK 11
-      uses: actions/setup-java@v3
+      uses: actions/setup-java@v4
       with:
         java-version: 11
         distribution: 'temurin'
@@ -29,7 +30,7 @@ jobs:
         server-username: MAVEN_USERNAME
         server-password: MAVEN_PASSWORD
     - name: Set up cache
-      uses: actions/cache@v3
+      uses: actions/cache@v4
       with:
         path: ~/.m2/repository
         key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
@@ -37,7 +38,7 @@ jobs:
           ${{ runner.os }}-maven-
 
     - name: Determine the version
-      run: echo ::set-output name=version::$(mvn -q -Dexec.executable=echo -Dexec.args='${project.version}' --non-recursive exec:exec)
+      run: echo "version=$(mvn -q -Dexec.executable=echo -Dexec.args='${project.version}' --non-recursive exec:exec)" >> $GITHUB_OUTPUT
       id: versioncheck
 
     - name: Exit when workflow_dispatch is triggered, and the version does not contain SNAPSHOT in it's name
@@ -126,41 +127,84 @@ jobs:
         asset_content_type: application/zip
 
     - name: Set up Docker Buildx
-      uses: docker/setup-buildx-action@v2
+      uses: docker/setup-buildx-action@v3
 
     - name: Login to GitHub Container Registry
-      uses: docker/login-action@v2
+      uses: docker/login-action@v3
       with:
         registry: ghcr.io
         username: ${{ github.repository_owner }}
         password: ${{ secrets.GITHUB_TOKEN }}
 
+    - name: Extract metadata (tags, labels) for MyConext GUI Docker
+      id: meta_account_gui
+      uses: docker/metadata-action@v5
+      with:
+        images: ghcr.io/openconext/openconext-myconext/myconext-gui
+        flavor: |
+          latest=false
+        tags: |
+          type=ref,event=tag
+          type=raw,event=tag,value=latest
+          type=raw,event=workflow_dispatch,value=snapshot
+          type=semver,pattern={{version}},value=${{ steps.versioncheck.outputs.version }}
+          type=sha
+
+    - name: Extract metadata (tags, labels) for acount GUI Docker
+      id: meta_server_gui
+      uses: docker/metadata-action@v5
+      with:
+        images: ghcr.io/openconext/openconext-myconext/account-gui
+        flavor: |
+          latest=false
+        tags: |
+          type=ref,event=tag
+          type=raw,event=tag,value=latest
+          type=raw,event=workflow_dispatch,value=snapshot
+          type=semver,pattern={{version}},value=${{ steps.versioncheck.outputs.version }}
+          type=sha
+
+    - name: Extract metadata (tags, labels) for Server Docker
+      id: meta_server
+      uses: docker/metadata-action@v5
+      with:
+        images: ghcr.io/openconext/openconext-myconext/myconext-server
+        flavor: |
+          latest=false
+        tags: |
+          type=ref,event=tag
+          type=raw,event=tag,value=latest
+          type=raw,event=workflow_dispatch,value=snapshot
+          type=semver,pattern={{version}},value=${{ steps.versioncheck.outputs.version }}
+          type=sha
+
+
     - name: Build and push the account gui image
-      uses: docker/build-push-action@v4
+      uses: docker/build-push-action@v5
       with:
         context: account-gui
         file: account-gui/docker/Dockerfile
         platforms: linux/amd64
         push: true
-        tags: |
-          ghcr.io/openconext/openconext-myconext/account-gui:${{ steps.versioncheck.outputs.version }}
+        tags: ${{ steps.meta_account_gui.outputs.tags }}
+        labels: ${{ steps.meta_account_gui.outputs.labels }}
 
     - name: Build and push the myconext gui image
-      uses: docker/build-push-action@v4
+      uses: docker/build-push-action@v5
       with:
         context: myconext-gui
         file: myconext-gui/docker/Dockerfile
         platforms: linux/amd64
         push: true
-        tags: |
-          ghcr.io/openconext/openconext-myconext/myconext-gui:${{ steps.versioncheck.outputs.version }}
+        tags: ${{ steps.meta_server_gui.outputs.tags }}
+        labels: ${{ steps.meta_server_gui.outputs.labels }}
 
     - name: Build and push the server image
-      uses: docker/build-push-action@v4
+      uses: docker/build-push-action@v5
       with:
         context: myconext-server
         file: myconext-server/docker/Dockerfile
         platforms: linux/amd64
         push: true
-        tags: |
-          ghcr.io/openconext/openconext-myconext/myconext-server:${{ steps.versioncheck.outputs.version }}
+        tags: ${{ steps.meta_server.outputs.tags }}
+        labels: ${{ steps.meta_server.outputs.labels }}
