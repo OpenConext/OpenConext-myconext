@@ -99,6 +99,7 @@ jobs:
           ${{ steps.changelog.outputs.changelog }}
       env:
         GITHUB_TOKEN: ${{ github.token }}
+      if: github.event_name != 'workflow_dispatch'
 
     - name: Check account-gui zip existence
       id: check_file_account_gui
