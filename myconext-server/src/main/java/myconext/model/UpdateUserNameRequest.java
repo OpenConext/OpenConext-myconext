@@ -12,7 +12,6 @@ import java.io.Serializable;
 @Getter
 public class UpdateUserNameRequest implements Serializable {
 
-    @NotBlank
     private String chosenName;
 
     @NotBlank
