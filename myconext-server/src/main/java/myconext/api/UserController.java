@@ -359,12 +359,13 @@ public class UserController implements ServiceProviderHolder, UserAuthentication
         return ResponseEntity.status(HttpStatus.CREATED).body(new StatusResponse(HttpStatus.CREATED.value()));
     }
 
-    @Operation(summary = "Change names", description = "Update the givenName and / or familyName of the User")
+    @Operation(summary = "Change names", description = "Update the givenName, chosenName and / or the familyName of the User")
     @PutMapping("/sp/update")
     public ResponseEntity<UserResponse> updateUserProfile(Authentication authentication, @Valid @RequestBody UpdateUserNameRequest deltaUser) {
         User user = userFromAuthentication(authentication);
-
-        user.setChosenName(deltaUser.getChosenName());
+        if (StringUtils.hasText(deltaUser.getChosenName())) {
+            user.setChosenName(deltaUser.getChosenName());
+        }
         user.setGivenName(deltaUser.getGivenName());
         user.setFamilyName(deltaUser.getFamilyName());
         user.validate();
