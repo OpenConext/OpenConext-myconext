@@ -363,16 +363,27 @@ public class UserController implements ServiceProviderHolder, UserAuthentication
     @PutMapping("/sp/update")
     public ResponseEntity<UserResponse> updateUserProfile(Authentication authentication, @Valid @RequestBody UpdateUserNameRequest deltaUser) {
         User user = userFromAuthentication(authentication);
+        if (StringUtils.hasText(deltaUser.getGivenName())) {
+            user.setChosenName(deltaUser.getGivenName());
+        }
         if (StringUtils.hasText(deltaUser.getChosenName())) {
             user.setChosenName(deltaUser.getChosenName());
         }
-        user.setGivenName(deltaUser.getGivenName());
-        user.setFamilyName(deltaUser.getFamilyName());
+        if (CollectionUtils.isEmpty(user.getLinkedAccounts())) {
+            if (StringUtils.hasText(deltaUser.getGivenName())) {
+                user.setGivenName(deltaUser.getGivenName());
+            }
+            if (StringUtils.hasText(deltaUser.getFamilyName())) {
+                user.setFamilyName(deltaUser.getFamilyName());
+            }
+        }
         user.validate();
 
         userRepository.save(user);
         logWithContext(user, "update", "name", LOG, "Update user profile");
+
         authenticationRequestRepository.deleteByUserId(user.getId());
+
         return returnUserResponse(user);
     }
 

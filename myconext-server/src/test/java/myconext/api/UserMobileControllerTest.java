@@ -13,8 +13,7 @@ import java.io.IOException;
 import java.util.Map;
 
 import static io.restassured.RestAssured.given;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.*;
 
 public class UserMobileControllerTest extends AbstractIntegrationTest {
 
@@ -46,7 +45,26 @@ public class UserMobileControllerTest extends AbstractIntegrationTest {
                 .then()
                 .statusCode(201);
         User user = userRepository.findUserByEmail("jdoe@example.com").get();
+        //There are linked-accounts, so only the chosen name is updated
+        assertEquals(userNameRequest.getChosenName(), user.getChosenName());
+        assertNotEquals(userNameRequest.getGivenName(), user.getGivenName());
+        assertNotEquals(userNameRequest.getFamilyName(), user.getFamilyName());
+    }
 
+    @Test
+    public void updateUserProfileNonValidatedAccount() throws IOException {
+        UpdateUserNameRequest userNameRequest = new UpdateUserNameRequest("Annie", "Anna", "Winters");
+        given()
+                .when()
+                .accept(ContentType.JSON)
+                .contentType(ContentType.JSON)
+                .auth().oauth2(doOpaqueAccessToken(true, new String[]{"eduid.nl/mobile"}, "introspect_no_linked_accounts"))
+                .body(userNameRequest)
+                .put("/mobile/api/sp/update")
+                .then()
+                .statusCode(201);
+        User user = userRepository.findUserByEmail("mdoe@example.com").get();
+        //There are no linked-accounts, everything is updated
         assertEquals(userNameRequest.getChosenName(), user.getChosenName());
         assertEquals(userNameRequest.getGivenName(), user.getGivenName());
         assertEquals(userNameRequest.getFamilyName(), user.getFamilyName());
