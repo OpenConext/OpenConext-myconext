@@ -1,6 +1,9 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [7.2.9]
+- Make chosenname optional in mobile API
+
 ## [7.2.8]
 - Fix Tiqr-cookie
 - Fix redirect after logout
