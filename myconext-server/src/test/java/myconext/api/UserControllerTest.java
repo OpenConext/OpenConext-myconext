@@ -256,21 +256,20 @@ public class UserControllerTest extends AbstractIntegrationTest {
 
     @Test
     public void updateUser() {
-        User user = userRepository.findOneUserByEmail("jdoe@example.com");
-        user.setGivenName("Mary");
-        user.setFamilyName("Poppins");
+        UpdateUserNameRequest updateUserNameRequest = new UpdateUserNameRequest("chosenName", "Mary", "Poppins");
         given()
                 .when()
                 .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
-                .body(user)
+                .body(updateUserNameRequest)
                 .put("/myconext/api/sp/update")
                 .then()
                 .statusCode(HttpStatus.CREATED.value());
 
         User userFromDB = userRepository.findOneUserByEmail("jdoe@example.com");
-
-        assertEquals(user.getGivenName(), userFromDB.getGivenName());
-        assertEquals(user.getFamilyName(), userFromDB.getFamilyName());
+        //Has linked accounts, so no update
+        assertEquals(userFromDB.getGivenName(), "John");
+        assertEquals(userFromDB.getFamilyName(), "Doe");
+        assertEquals(userFromDB.getChosenName(), updateUserNameRequest.getChosenName());
     }
 
     @Test
@@ -360,17 +359,6 @@ public class UserControllerTest extends AbstractIntegrationTest {
         User userFromDB = userRepository.findOneUserByEmail("jdoe@example.com");
 
         assertFalse(userFromDB.getEduIDS().stream().anyMatch(val -> val.getServiceProviderEntityId().equals(("http://mock-sp"))));
-    }
-
-    @Test
-    public void updateUser403() {
-        given()
-                .when()
-                .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
-                .body(new User())
-                .put("/myconext/api/sp/update")
-                .then()
-                .statusCode(400);
     }
 
     @Test

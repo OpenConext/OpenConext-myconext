@@ -1,6 +1,14 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [7.2.10]
+- If the app sends only a givenname to /mobile/api/sp/update (old app) update the self-asserted chosenname field
+- If the app sends only the chosen name (new app) update the self-asserted chosenname field.
+- Is the app sends both the givenname as the chosenname field, produce an error the formal-givenname can't be updated this way
+
+## [7.2.9]
+- Make chosenname optional in mobile API
+
 ## [7.2.8]
 - Fix Tiqr-cookie
 - Fix redirect after logout

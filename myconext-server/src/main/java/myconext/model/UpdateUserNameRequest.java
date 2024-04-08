@@ -14,9 +14,7 @@ public class UpdateUserNameRequest implements Serializable {
 
     private String chosenName;
 
-    @NotBlank
     private String givenName;
 
-    @NotBlank
     private String familyName;
 }
