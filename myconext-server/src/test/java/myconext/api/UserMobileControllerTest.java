@@ -35,21 +35,38 @@ public class UserMobileControllerTest extends AbstractIntegrationTest {
 
     @Test
     public void updateUserProfile() throws IOException {
-        UpdateUserNameRequest userNameRequest = new UpdateUserNameRequest("CallName", "Mary", "Winters");
+        UpdateUserNameRequest userNameRequest = new UpdateUserNameRequest("Annie", "Anna", "Winters");
         given()
                 .when()
                 .accept(ContentType.JSON)
                 .contentType(ContentType.JSON)
-                .auth().oauth2(opaqueAccessToken(true, "eduid.nl/mobile"))
+                .auth().oauth2(doOpaqueAccessToken(true, new String[] {"eduid.nl/mobile"}, "introspect_no_linked_accounts"))
                 .body(userNameRequest)
                 .put("/mobile/api/sp/update")
                 .then()
                 .statusCode(201);
-        User user = userRepository.findUserByEmail("jdoe@example.com").get();
+        User user = userRepository.findUserByEmail("mdoe@example.com").get();
 
         assertEquals(userNameRequest.getChosenName(), user.getChosenName());
         assertEquals(userNameRequest.getGivenName(), user.getGivenName());
         assertEquals(userNameRequest.getFamilyName(), user.getFamilyName());
+    }
+
+    @Test
+    public void updateUserProfileOldAPI() throws IOException {
+        UpdateUserNameRequest userNameRequest = new UpdateUserNameRequest(null, "Anna", null);
+        given()
+                .when()
+                .accept(ContentType.JSON)
+                .contentType(ContentType.JSON)
+                .auth().oauth2(doOpaqueAccessToken(true, new String[] {"eduid.nl/mobile"}, "introspect_no_linked_accounts"))
+                .body(userNameRequest)
+                .put("/mobile/api/sp/update")
+                .then()
+                .statusCode(201);
+        User user = userRepository.findUserByEmail("mdoe@example.com").get();
+
+        assertEquals(userNameRequest.getGivenName(), user.getChosenName());
     }
 
     @Test
