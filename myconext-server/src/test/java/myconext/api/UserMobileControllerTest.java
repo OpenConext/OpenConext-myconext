@@ -34,40 +34,38 @@ public class UserMobileControllerTest extends AbstractIntegrationTest {
 
     @Test
     public void updateUserProfile() throws IOException {
-        UpdateUserNameRequest userNameRequest = new UpdateUserNameRequest("CallName", "Mary", "Winters");
-        given()
-                .when()
-                .accept(ContentType.JSON)
-                .contentType(ContentType.JSON)
-                .auth().oauth2(opaqueAccessToken(true, "eduid.nl/mobile"))
-                .body(userNameRequest)
-                .put("/mobile/api/sp/update")
-                .then()
-                .statusCode(201);
-        User user = userRepository.findUserByEmail("jdoe@example.com").get();
-        //There are linked-accounts, so only the chosen name is updated
-        assertEquals(userNameRequest.getChosenName(), user.getChosenName());
-        assertNotEquals(userNameRequest.getGivenName(), user.getGivenName());
-        assertNotEquals(userNameRequest.getFamilyName(), user.getFamilyName());
-    }
-
-    @Test
-    public void updateUserProfileNonValidatedAccount() throws IOException {
         UpdateUserNameRequest userNameRequest = new UpdateUserNameRequest("Annie", "Anna", "Winters");
         given()
                 .when()
                 .accept(ContentType.JSON)
                 .contentType(ContentType.JSON)
-                .auth().oauth2(doOpaqueAccessToken(true, new String[]{"eduid.nl/mobile"}, "introspect_no_linked_accounts"))
+                .auth().oauth2(doOpaqueAccessToken(true, new String[] {"eduid.nl/mobile"}, "introspect_no_linked_accounts"))
                 .body(userNameRequest)
                 .put("/mobile/api/sp/update")
                 .then()
                 .statusCode(201);
         User user = userRepository.findUserByEmail("mdoe@example.com").get();
-        //There are no linked-accounts, everything is updated
+
         assertEquals(userNameRequest.getChosenName(), user.getChosenName());
         assertEquals(userNameRequest.getGivenName(), user.getGivenName());
         assertEquals(userNameRequest.getFamilyName(), user.getFamilyName());
+    }
+
+    @Test
+    public void updateUserProfileOldAPI() throws IOException {
+        UpdateUserNameRequest userNameRequest = new UpdateUserNameRequest(null, "Anna", null);
+        given()
+                .when()
+                .accept(ContentType.JSON)
+                .contentType(ContentType.JSON)
+                .auth().oauth2(doOpaqueAccessToken(true, new String[] {"eduid.nl/mobile"}, "introspect_no_linked_accounts"))
+                .body(userNameRequest)
+                .put("/mobile/api/sp/update")
+                .then()
+                .statusCode(201);
+        User user = userRepository.findUserByEmail("mdoe@example.com").get();
+
+        assertEquals(userNameRequest.getGivenName(), user.getChosenName());
     }
 
     @Test

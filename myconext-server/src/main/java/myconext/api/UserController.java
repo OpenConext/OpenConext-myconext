@@ -366,9 +366,11 @@ public class UserController implements ServiceProviderHolder, UserAuthentication
         if (StringUtils.hasText(deltaUser.getGivenName())) {
             user.setChosenName(deltaUser.getGivenName());
         }
+        //New API allows for update chosen name, override previous update
         if (StringUtils.hasText(deltaUser.getChosenName())) {
             user.setChosenName(deltaUser.getChosenName());
         }
+        //Only if there is not validated name, we allow for updates
         if (CollectionUtils.isEmpty(user.getLinkedAccounts())) {
             if (StringUtils.hasText(deltaUser.getGivenName())) {
                 user.setGivenName(deltaUser.getGivenName());
