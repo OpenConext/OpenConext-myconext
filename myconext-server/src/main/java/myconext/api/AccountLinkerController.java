@@ -135,9 +135,9 @@ public class AccountLinkerController implements UserAuthentication {
             @Value("${email_guessing_sleep_millis}") int emailGuessingSleepMillis,
             @Value("${verify.client_id}") String verifyClientId,
             @Value("${verify.secret}") String verifySecret,
-            @Value("${verify.sp_validate_redirect_url}") String spVerifyRedirectUri,
-            @Value("${verify.idp_validate_redirect_url}") String idpVerifyRedirectUri,
-            @Value("${verify.mobile_validate_redirect_url}") String mobileVerifyRedirectUri,
+            @Value("${verify.sp_verify_redirect_url}") String spVerifyRedirectUri,
+            @Value("${verify.idp_verify_redirect_url}") String idpVerifyRedirectUri,
+            @Value("${verify.mobile_verify_redirect_url}") String mobileVerifyRedirectUri,
             @Value("${verify.base_uri}") String verifyBaseUri) {
         this.authenticationRequestRepository = authenticationRequestRepository;
         this.userRepository = userRepository;
