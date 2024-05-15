@@ -472,7 +472,7 @@
 {#if showModal && $config.idVerify}
     <Modal title={I18n.t("verify.modal.header")}
            close={() => showModal = false}>
-
+        TODO - separate component, with binds
     </Modal>
 {/if}
 
