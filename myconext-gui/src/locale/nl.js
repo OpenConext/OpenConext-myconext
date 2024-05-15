@@ -43,7 +43,7 @@ I18n.translations.nl = {
         info: "Wanneer je eduID gebruikt om in te loggen op andere websites, kan jouw persoonlijke informatie worden gedeeld.",
         banner: "Sommige diensten vereisen dat je persoonlijke gegevens worden gevalideerd door een vertrouwde partij.",
         expiredBanner: "De verificatie van je identiteit is verlopen, verifïeer deze opnieuw.",
-        verifyNow: "Start verificatie",
+        verifyNow: "Verifïeer nu",
         basic: "Basis informatie",
         contact: "Contact informatie",
         role: "Rol & instelling",
@@ -444,7 +444,7 @@ I18n.translations.nl = {
         title: "Maak een eduID van je instelling",
         header: "Je staat op het punt een eduID-account aan te maken dat wordt gekoppeld aan je instellingsaccount.",
         alreadyHaveAnEduID: "Heb je al een eduID-account? <a href=\"{{location}}\">Login!</a>",
-        info: "Als je verder gaat, wordt je gevraagd om in te loggen bij de instelling die je aan je eduID wilt koppelen. Na een succesvolle login kom je hier terug." ,
+        info: "Als je verder gaat, wordt je gevraagd om in te loggen bij de instelling die je aan je eduID wilt koppelen. Na een succesvolle login kom je hier terug.",
         startFlow: "Start registratie",
         welcome: "Je eduID account is aangemaakt",
         welcomeExisting: "Je eduID account is gekoppeld aan de vertrouwde instellingsaccount"
@@ -489,6 +489,24 @@ I18n.translations.nl = {
         4: "Donderdag",
         5: "Vrijdag",
         6: "Zaterdag"
+    },
+    verify: {
+        modal: {
+            header: "Identity",
+            info: {
+                verify: "Verify your identity",
+                quick: "Quick and easy",
+                please: "Please verify that you are who you you are.",
+                educationalInstitution: "Verify via d Dutch educational institution",
+                selectInstitution: "Select your institution",
+                other: "Other options...",
+                verifyBank: "Verify with a Dutch bank app",
+                selectBank: "Select your bank",
+                verifyEuropeanId: "Verify with a European ID",
+                supportEuropean: "We support the majority of National digital ID's",
+                useEuropean: "use an European ID",
+                help: "If you can't use any of the these methods, please visit our <a href='https://eduid.nl/help' target='_blank' rel='noreferrer'>support pages</a>"
+            }
+        }
     }
-
 };

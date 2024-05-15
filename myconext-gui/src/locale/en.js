@@ -43,7 +43,7 @@ I18n.translations.en = {
         info: "When you use eduID to login to other websites, some of your personal information will be shared.",
         banner: "Some services require that your personal information is validated by a trusted party.",
         expiredBanner: "The verification of your identity has expired, please verify it again.",
-        verifyNow: "Start verification",
+        verifyNow: "Verify now",
         basic: "Your identity",
         contact: "Contact data",
         role: "Role & institution",
@@ -489,5 +489,25 @@ I18n.translations.en = {
         4: "Thursday",
         5: "Friday",
         6: "Saturday"
+    },
+    verify: {
+        modal: {
+            header: "Identity",
+            info: {
+                verify: "Verify your identity",
+                quick: "Quick and easy",
+                please: "Please verify that you are who you you are.",
+                educationalInstitution: "Verify via d Dutch educational institution",
+                selectInstitution: "Select your institution",
+                other: "Other options...",
+                verifyBank: "Verify with a Dutch bank app",
+                selectBank: "Select your bank",
+                verifyEuropeanId: "Verify with a European ID",
+                supportEuropean: "We support the majority of National digital ID's",
+                useEuropean: "use an European ID",
+                help: "If you can't use any of the these methods, please visit our <a href='https://eduid.nl/help' target='_blank' rel='noreferrer'>support pages</a>"
+            }
+        }
+
     }
 };

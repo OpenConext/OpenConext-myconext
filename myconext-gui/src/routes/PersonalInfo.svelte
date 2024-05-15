@@ -4,14 +4,7 @@
     import verifiedSvg from "../icons/redesign/shield-full.svg";
     import alertSvg from "../icons/alert-circle.svg";
     import Button from "../components/Button.svelte";
-    import {
-        deleteLinkedAccount,
-        preferLinkedAccount,
-        startLinkAccountFlow,
-        startVerifyAccountFlow,
-        updateEmail,
-        updateUser
-    } from "../api";
+    import {deleteLinkedAccount, preferLinkedAccount, startVerifyAccountFlow, startLinkAccountFlow, updateEmail, updateUser} from "../api";
     import Modal from "../components/Modal.svelte";
     import EditField from "../components/EditField.svelte";
     import {validEmail} from "../validation/regexp";
@@ -67,12 +60,12 @@
         if (showConfirmation) {
             showModal = true
         } else {
-            startVerifyAccountFlow().then(json => {
-                window.location.href = json.url;
-            });
-            // startLinkAccountFlow().then(json => {
+            // startVerifyAccountFlow().then(json => {
             //     window.location.href = json.url;
             // });
+            startLinkAccountFlow().then(json => {
+                window.location.href = json.url;
+            });
         }
     }
 
@@ -193,10 +186,13 @@
 </script>
 
 <style lang="scss">
+    $max-width-mobile: 1080px;
+    $max-width-not-edit: 480px;
+
     .profile {
         width: 100%;
         height: 100%;
-        @media (max-width: 820px) {
+        @media (max-width: $max-width-mobile) {
             padding: 0 5px;
         }
     }
@@ -207,6 +203,10 @@
         flex-direction: column;
         margin: 0 auto;
 
+        @media (max-width: $max-width-mobile) {
+            padding: 0 0 0 15px;
+        }
+
         @media (max-width: 820px) {
             padding: 0 0 0 0;
         }
@@ -214,20 +214,15 @@
         &.second {
             padding: 0 10px 18px 50px;
 
-            @media (max-width: 1080px) {
+            @media (max-width: $max-width-mobile) {
                 padding: 0 20px 20px 20px;
             }
         }
     }
 
-    .margin-right {
-        margin-right: 20%;
-
-        @media (max-width: 1020px) {
-            margin-right: 0;
-        }
+    .linked-accounts, .add-institution {
+        max-width: $max-width-not-edit;
     }
-
 
 
     h2 {
@@ -257,41 +252,54 @@
         display: flex;
         align-items: center;
         background-color: var(--color-secondary-blue);
-        padding: 10px;
+        padding: 10px 10px 10px 42px;
+
+        @media (max-width: $max-width-mobile) {
+            flex-direction: column;
+            gap: 15px;
+            align-items: flex-start;
+            margin-top: 20px;
+            padding: 10px;
+        }
 
         :global(a.button.ghost) {
             max-width: 90px;
             margin-left: auto;
+
+            @media (max-width: $max-width-mobile) {
+                margin-left: 0;
+            }
         }
 
         &.expired {
             background-color: #fef8d3;
         }
 
-        @media (max-width: 820px) {
-            flex-direction: column;
-            margin-top: 20px;
-        }
-
         span.verified-badge {
             margin-left: 5px;
-
+            @media (max-width: $max-width-mobile) {
+                margin-left: 0;
+            }
             :global(svg) {
                 height: 28px;
                 width: auto;
             }
         }
 
-        p {
-            margin: 0 5px 0 15px;
+        p.banner-info {
+            margin: 0 20px;
+            @media (max-width: $max-width-mobile) {
+                margin: 0;
+            }
         }
     }
 
     .verified-container {
         display: flex;
-        margin-top: 28px;
-        margin-bottom: 24px;
+        margin: 20px 0;
+        max-width: $max-width-not-edit;
         align-items: center;
+
 
         span {
             margin-left: auto;
@@ -355,7 +363,7 @@
     {#if !eduIDLinked && $user.linkedAccounts.length === 0}
         <div class="banner">
             <span class="verified-badge">{@html verifiedSvg}</span>
-            <p>{I18n.t("profile.banner")}</p>
+            <p class="banner-info">{I18n.t("profile.banner")}</p>
             <Button label={I18n.t("profile.verifyNow")}
                     className="ghost transparent"
                     onClick={() => addInstitution(true)}/>
@@ -364,7 +372,7 @@
     {#if !eduIDLinked && $user.linkedAccounts.length > 0}
         <div class="banner expired">
             <span class="verified-badge">{@html alertSvg}</span>
-            <p>{I18n.t("profile.expiredBanner")}</p>
+            <p class="banner-info">{I18n.t("profile.expiredBanner")}</p>
             <Button label={I18n.t("profile.verifyNow")}
                     className="ghost transparent"
                     onClick={() => addInstitution(true)}/>
@@ -425,14 +433,14 @@
                    onCancel={() => cancelEmailEditMode()}
         />
             <p class="info-section second">{I18n.t("profile.role")}</p>
-        <section class="linked-accounts margin-right">
+        <section class="linked-accounts">
             {#each sortedAccounts as account}
                 <InstitutionRole addInstitution={addInstitution}
                                  removeInstitution={deleteInstitution}
                                  linkedAccount={account}/>
             {/each}
         </section>
-        <div class="add-institution margin-right" on:click={() => addInstitution(true)}>
+        <div class="add-institution" on:click={() => addInstitution(true)}>
             <div class="info">
                 <p>{I18n.t("profile.addInstitution")}</p>
                 <em class="info">{I18n.t("profile.proceedConext")}</em>
@@ -452,12 +460,19 @@
     </Modal>
 {/if}
 
-{#if showModal}
+{#if showModal && !$config.idVerify}
     <Modal submit={() => addInstitution(false)}
            cancel={() => showModal = false}
            question={I18n.t(`profile.verifyFirstAndLastName.addInstitutionConfirmation`)}
            title={I18n.t(`profile.verifyFirstAndLastName.addInstitution`)}
            confirmTitle={I18n.t("profile.proceed")}>
+    </Modal>
+{/if}
+
+{#if showModal && $config.idVerify}
+    <Modal title={I18n.t("verify.modal.header")}
+           close={() => showModal = false}>
+
     </Modal>
 {/if}
 

@@ -47,10 +47,13 @@
 
 </script>
 <style lang="scss">
+    $max-width-not-edit: 480px;
+    $max-width-mobile: 1080px;
 
     .edit-field {
-        margin: 0 20% 15px 0;
+        margin-bottom: 15px;
         cursor: pointer;
+        max-width: $max-width-not-edit;
 
         &:hover:not(.show-edit-mode) {
             background-color: #f0f8ff;
@@ -61,10 +64,11 @@
         }
 
         &.show-edit-mode {
-            margin: 0 0 15px 0;
+            max-width: 100%;
+
         }
 
-        @media (max-width: 1020px) {
+        @media (max-width: $max-width-mobile) {
             margin: 0 0 15px 0;
         }
 
@@ -80,13 +84,19 @@
         display: flex;
         gap: 25px;
 
+        @media (max-width: $max-width-mobile) {
+            flex-direction: column;
+        }
+
         input {
-            flex-grow: 2;
+            width: $max-width-not-edit;
             border-radius: 8px;
             border: solid 1px #676767;
             padding: 14px;
             font-size: 16px;
-
+            @media (max-width: $max-width-mobile) {
+                width: 100%;
+            }
             &.error {
                 border: solid 1px var(--color-primary-red);
                 background-color: #fff5f3;

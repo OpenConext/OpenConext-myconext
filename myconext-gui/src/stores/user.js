@@ -31,6 +31,7 @@ export const config = writable({
     domain: "",
     idpBaseUrl: "",
     featureWebAuthn: false,
+    idVerify: false,
     featureOidcTokenAPI: false,
     featureConnections: false,
     featureAllowList: false,

@@ -3,9 +3,11 @@
     import Button from "./Button.svelte";
     import DOMPurify from "dompurify";
     import {onDestroy, onMount} from "svelte";
+    import closeIcon from "../icons/close_smll.svg";
 
     export let submit;
     export let cancel;
+    export let close;
     export let title;
     export let question;
     export let warning = false;
@@ -17,9 +19,14 @@
 
     let modal;
 
-    const handle_keydown = e => {
+    const handleKeydown = e => {
         if (e.key === "Escape") {
-            cancel();
+            if (cancel) {
+                cancel();
+            }
+            if (close) {
+                close();
+            }
         }
     };
 
@@ -33,14 +40,14 @@
 
 </script>
 
-<style>
+<style lang="scss">
     .modal {
         position: fixed;
         top: 0;
         left: 0;
         width: 100%;
         height: 100%;
-        background: rgba(0, 57, 128, 0.8);
+        background: rgba(146, 151, 158, 0.7);
         z-index: 999;
         display: flex;
     }
@@ -57,9 +64,23 @@
 
     .modal-header {
         padding: 18px 32px;
-        background-color: #dfe3e8;
+        background-color: var(--color-primary-blue);
+        color: white;
         border-top-left-radius: 8px;
         border-top-right-radius: 8px;
+        position: relative;
+
+        span {
+            position: absolute;
+            right: 0;
+            top: 0;
+            padding: 12px;
+            cursor: pointer;
+
+            :global(svg) {
+                fill: white
+            }
+        }
     }
 
     .modal-header.warning {
@@ -79,12 +100,15 @@
     }
 </style>
 
-<svelte:window on:keydown={handle_keydown}/>
+<svelte:window on:keydown={handleKeydown}/>
 
 <div class="modal">
     <div class="modal-content">
         <div class="modal-header" class:warning>
             <h3>{title}</h3>
+            <span on:click={() => handleKeydown({key:"Escape"})}>
+                {@html closeIcon}
+            </span>
         </div>
 
         <div class="modal-body">
@@ -96,15 +120,20 @@
 
         <div class="options">
             {#if cancel}
-                <Button className="cancel" onClick={cancel}
+                <Button className="cancel"
+                        onClick={cancel}
+                        small={true}
                         label={cancelTitle}/>
             {/if}
+            {#if submit}
             <Button onClick={submit}
                     warning={warning}
                     href={href}
+                    small={true}
                     download={download}
                     disabled={disableSubmit}
                     label={confirmTitle}/>
+            {/if}
         </div>
     </div>
 </div>
