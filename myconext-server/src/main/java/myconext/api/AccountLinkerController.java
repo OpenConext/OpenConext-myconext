@@ -414,7 +414,9 @@ public class AccountLinkerController implements UserAuthentication {
                                     {@ExampleObject(value =
                                             "{\"url\":\"https://validate.test.eduid.nl/broker/sp/oidc/authenticate?scope=openid&response_type=code&redirect_uri=https://mijn.test2.eduid.nl/myconext/api/sp/verify/redirect&state=%242a%2410%249cyC3mjeJW0ljb%2FmPAGj0O4DVXz9LPw5U%2Fthl110BVYWFpMhjwKyK&prompt=login&client_id=myconext.ala.eduid\"}")})})}
     )
-    public ResponseEntity<AuthorizationURL> startVerifyLinkAccountFlow(Authentication authentication) throws UnsupportedEncodingException {
+    public ResponseEntity<AuthorizationURL> startVerifyLinkAccountFlow(Authentication authentication,
+                                                                       @RequestParam("idpScoping") IdpScoping idpScoping,
+                                                                       @RequestParam(value = "bankId", required = false) String bankId) {
         LOG.debug("Start verify account flow");
 
         User user = userFromAuthentication(authentication);
@@ -433,9 +435,10 @@ public class AccountLinkerController implements UserAuthentication {
 
         params.put("client_id", verifyClientId);
         params.put("response_type", "code");
-//        params.put("scope", "openid dateofbirth name");
-        //Based on client parameter: idp_scoping:eherkenning idp_scoping:idin
-        params.put("scope", "openid dateofbirth name");
+        params.put("scope", String.format("openid dateofbirth name idp_scoping:%s", idpScoping.name()));
+        if (StringUtils.hasText(bankId)) {
+            params.put("idp_hint", bankId);
+        }
         params.put("redirect_uri", redirectUri);
         params.put("state", URLEncoder.encode(state, StandardCharsets.UTF_8));
         UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(this.verifyBaseUri + "/broker/sp/oidc/authenticate");

@@ -104,13 +104,14 @@
 
 <div class="modal">
     <div class="modal-content">
+        {#if title}
         <div class="modal-header" class:warning>
             <h3>{title}</h3>
             <span on:click={() => handleKeydown({key:"Escape"})}>
                 {@html closeIcon}
             </span>
         </div>
-
+        {/if}
         <div class="modal-body">
             {#if question}
                 <p>{@html DOMPurify.sanitize(question)}</p>

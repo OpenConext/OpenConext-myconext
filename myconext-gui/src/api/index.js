@@ -1,5 +1,6 @@
 //Internal API
 import I18n from "i18n-js";
+import {isEmpty} from "../utils/utils";
 
 let csrfToken = null;
 
@@ -130,8 +131,13 @@ export function startLinkAccountFlow() {
     return fetchJson("/myconext/api/sp/oidc/link");
 }
 
-export function startVerifyAccountFlow() {
-    return fetchJson("/myconext/api/sp/verify/link");
+export function startVerifyAccountFlow(idpScoping, bankId ) {
+    const bankIdParam = isEmpty(bankId) ? "" : `&bankId=${bankId}`;
+    return fetchJson(`/myconext/api/sp/verify/link?idpScoping=${idpScoping}${bankIdParam}`);
+}
+
+export function iDINIssuers() {
+    return fetchJson("/myconext/api/sp/idin/issuers");
 }
 
 export function logout() {
@@ -239,4 +245,5 @@ export function reTextPhoneNumber(phoneNumber) {
 export function reValidatePhoneCode(phoneVerification) {
     return postPutJson(`/tiqr/sp/re-verify-phone-code`, {phoneVerification}, "POST")
 }
+
 

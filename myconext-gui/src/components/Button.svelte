@@ -16,6 +16,7 @@
     export let download = false;
     export let deletion = false;
     export let icon = undefined;
+    export let custom = false;
     export let inline = undefined;
 
     const handleLinkClick = e => e.key === " " && e.target.click();
@@ -191,6 +192,13 @@
         left: 6px;
         top: 8px;
     }
+    :global(a.button span.icon.custom svg) {
+        position: absolute;
+        width: 26px;
+        height: auto;
+        left: 6px;
+        top: 8px;
+    }
 
 </style>
 
@@ -223,7 +231,7 @@
        on:click|preventDefault|stopPropagation={() => !disabled && onClick()}
        on:keydown={handleLinkClick}>
         {#if icon}
-            <span class="icon">{@html icon}</span>
+            <span class="icon" class:custom={custom}>{@html icon}</span>
         {/if}
         {#if deletion}
             <span class="trash">{@html trash}</span>

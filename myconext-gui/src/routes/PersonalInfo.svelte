@@ -4,7 +4,14 @@
     import verifiedSvg from "../icons/redesign/shield-full.svg";
     import alertSvg from "../icons/alert-circle.svg";
     import Button from "../components/Button.svelte";
-    import {deleteLinkedAccount, preferLinkedAccount, startVerifyAccountFlow, startLinkAccountFlow, updateEmail, updateUser} from "../api";
+    import {
+        deleteLinkedAccount, iDINIssuers,
+        preferLinkedAccount,
+        startLinkAccountFlow,
+        startVerifyAccountFlow,
+        updateEmail,
+        updateUser
+    } from "../api";
     import Modal from "../components/Modal.svelte";
     import EditField from "../components/EditField.svelte";
     import {validEmail} from "../validation/regexp";
@@ -14,6 +21,7 @@
     import InstitutionRole from "../components/InstitutionRole.svelte";
     import {institutionName} from "../utils/services";
     import ValidatedData from "../components/ValidatedData.svelte";
+    import VerifyChoice from "../verify/VerifyChoice.svelte";
 
     let eduIDLinked = false;
 
@@ -37,6 +45,7 @@
     let showPreferredInstitutionModal = false;
     let selectedInstitution;
     let newInstitution = {};
+    let issuers;
 
     const preferInstitution = (showConfirmation, linkedAccount) => {
         preferredInstitution = linkedAccount;
@@ -56,17 +65,24 @@
         }
     }
 
-    const addInstitution = showConfirmation => {
-        if (showConfirmation) {
-            showModal = true
-        } else {
-            // startVerifyAccountFlow().then(json => {
-            //     window.location.href = json.url;
-            // });
-            startLinkAccountFlow().then(json => {
-                window.location.href = json.url;
-            });
-        }
+    const addInstitution = () => {
+        startLinkAccountFlow().then(json => {
+            window.location.href = json.url;
+        });
+    }
+    const addBank = bankId => {
+        startVerifyAccountFlow("idin", bankId).then(json => {
+            window.location.href = json.url;
+        });
+    }
+    const addEuropean = () => {
+        startVerifyAccountFlow("eherkenning").then(json => {
+            window.location.href = json.url;
+        });
+    }
+
+    const addIdentity = () => {
+        showModal = true
     }
 
     const deleteInstitution = (showConfirmation, linkedAccount) => {
@@ -180,6 +196,9 @@
                     preferInstitution(true, institution);
                 }
             }
+        }
+        if ($config && isEmpty(issuers)) {
+            iDINIssuers().then(res => issuers = res);
         }
     });
 
@@ -366,7 +385,7 @@
             <p class="banner-info">{I18n.t("profile.banner")}</p>
             <Button label={I18n.t("profile.verifyNow")}
                     className="ghost transparent"
-                    onClick={() => addInstitution(true)}/>
+                    onClick={() => addIdentity(true)}/>
         </div>
     {/if}
     {#if !eduIDLinked && $user.linkedAccounts.length > 0}
@@ -375,7 +394,7 @@
             <p class="banner-info">{I18n.t("profile.expiredBanner")}</p>
             <Button label={I18n.t("profile.verifyNow")}
                     className="ghost transparent"
-                    onClick={() => addInstitution(true)}/>
+                    onClick={() => addIdentity(true)}/>
         </div>
     {/if}
     <div class="inner-container second">
@@ -399,7 +418,7 @@
         <EditField firstValue={$user.givenName}
                    editableByUser={!preferredAccount}
                    editLabel={I18n.t("profile.givenName")}
-                   addInstitution={addInstitution}
+                   addInstitution={addIdentity}
                    linkedAccount={preferredAccount}
                    saveLabel={I18n.t("edit.save")}
                    editMode={givenNameEditMode}
@@ -409,7 +428,7 @@
         />
         <EditField firstValue={$user.familyName}
                    editableByUser={!preferredAccount}
-                   addInstitution={addInstitution}
+                   addInstitution={addIdentity}
                    linkedAccount={preferredAccount}
                    saveLabel={I18n.t("edit.save")}
                    editMode={familyNameEditMode}
@@ -440,10 +459,10 @@
                                  linkedAccount={account}/>
             {/each}
         </section>
-        <div class="add-institution" on:click={() => addInstitution(true)}>
+        <div class="add-institution" on:click={() => addIdentity(true)}>
             <div class="info">
-                <p>{I18n.t("profile.addInstitution")}</p>
-                <em class="info">{I18n.t("profile.proceedConext")}</em>
+                <p>{I18n.t("profile.addIdentity")}</p>
+                <em class="info">{I18n.t(`profile.${$config.idVerify ? "proceedVerify" : "proceedConext"}`)}</em>
             </div>
             <span class="add">+</span>
         </div>
@@ -460,19 +479,22 @@
     </Modal>
 {/if}
 
-{#if showModal && !$config.idVerify}
-    <Modal submit={() => addInstitution(false)}
-           cancel={() => showModal = false}
-           question={I18n.t(`profile.verifyFirstAndLastName.addInstitutionConfirmation`)}
-           title={I18n.t(`profile.verifyFirstAndLastName.addInstitution`)}
-           confirmTitle={I18n.t("profile.proceed")}>
-    </Modal>
-{/if}
+<!--{#if showModal && !$config.idVerify}-->
+<!--    <Modal submit={() => addIdentity(false)}-->
+<!--           cancel={() => showModal = false}-->
+<!--           question={I18n.t(`profile.verifyFirstAndLastName.addInstitutionConfirmation`)}-->
+<!--           title={I18n.t(`profile.verifyFirstAndLastName.addInstitution`)}-->
+<!--           confirmTitle={I18n.t("profile.proceed")}>-->
+<!--    </Modal>-->
+<!--{/if}-->
 
-{#if showModal && $config.idVerify}
-    <Modal title={I18n.t("verify.modal.header")}
-           close={() => showModal = false}>
-        TODO - separate component, with binds
+{#if showModal}
+    <Modal close={() => showModal = false}>
+        <VerifyChoice addInstitution={addInstitution}
+                      addBank={addBank}
+                      addEuropean={addEuropean}
+                      issuers={issuers}
+                      cancel={() => showModal = false}/>
     </Modal>
 {/if}
 

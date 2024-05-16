@@ -54,7 +54,9 @@ I18n.translations.en = {
         familyName: "Family name",
         linkedAccounts: "Your role(s)",
         addInstitution: "Add a role & institution",
+        addIdentity: "Add an identity",
         proceedConext: "Proceed to add this via SURFconext",
+        proceedVerify: "Proceed to add this via SURFconext or another Identity Provider",
         validated: "Validated information",
         firstAndLastName: "First and last name",
         firstAndLastNameInfo: "Your first and last name are not yet verified by a third party",
@@ -496,16 +498,21 @@ I18n.translations.en = {
             info: {
                 verify: "Verify your identity",
                 quick: "Quick and easy",
-                please: "Please verify that you are who you you are.",
-                educationalInstitution: "Verify via d Dutch educational institution",
+                please: "Please verify that you are who you say you are.",
+                educationalInstitution: "Verify via a Dutch educational institution",
                 selectInstitution: "Select your institution",
                 other: "Other options...",
                 verifyBank: "Verify with a Dutch bank app",
                 selectBank: "Select your bank",
                 verifyEuropeanId: "Verify with a European ID",
                 supportEuropean: "We support the majority of National digital ID's",
-                useEuropean: "use an European ID",
+                useEuropean: "Use an European ID",
                 help: "If you can't use any of the these methods, please visit our <a href='https://eduid.nl/help' target='_blank' rel='noreferrer'>support pages</a>"
+            },
+            bank: {
+                select: "Select your bank",
+                disclaimer: "With iDIN we control through your bank your personal information, to assure who you are. " +
+                    "<strong>You will make no payment</strong>. <a href='https://www.idin.nl/' target='_blank' rel='noreferrer'>More about IdIN.</a>"
             }
         }
 

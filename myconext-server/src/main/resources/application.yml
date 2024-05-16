@@ -178,6 +178,7 @@ verify:
   sp_verify_redirect_url: http://localhost:8081/myconext/api/sp/verify/redirect
   mobile_verify_redirect_url: http://localhost:8081/myconext/api/mobile/verify/redirect
   idp_verify_redirect_url: http://localhost:8081/myconext/api/idp/verify/redirect
+  issuers_path: "classpath:idin/issuers.json"
 
 spring:
   data:

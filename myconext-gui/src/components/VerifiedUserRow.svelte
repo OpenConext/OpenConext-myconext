@@ -25,7 +25,7 @@
     let showModal = false;
     let showDeleteModal = false;
 
-    const addInstitution = showConfirmation => () => {
+    const addIdentity = showConfirmation => () => {
         if (showConfirmation) {
             showModal = true
         } else {
@@ -247,7 +247,7 @@
     <Modal submit={addInstitution(false)}
            cancel={() => showModal = false}
            question={I18n.t(`profile.${verifyType}.addInstitutionConfirmation`)}
-           title={I18n.t(`profile.${verifyType}.addInstitution`)}
+           title={I18n.t(`profile.${verifyType}.addIdentity`)}
            confirmTitle={I18n.t("profile.proceed")}>
     </Modal>
 {/if}

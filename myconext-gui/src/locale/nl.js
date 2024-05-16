@@ -54,7 +54,9 @@ I18n.translations.nl = {
         familyName: "Achternaam",
         linkedAccounts: "Je rollen",
         addInstitution: "Voeg een rol toe",
+        addIdentity: "Voeg een identiteit toe",
         proceedConext: "Voeg dit toe via SURFconext",
+        proceedVerify: "Voeg dit toe via SURFconext of een andere Identity Provider",
         validated: "Gevalideerde informatie",
         firstAndLastName: "Voor- en achternaam",
         firstAndLastNameInfo: "Jouw voor- en achternaam zijn nog niet geverifieerd door een derde partij.",
@@ -496,7 +498,7 @@ I18n.translations.nl = {
             info: {
                 verify: "Verify your identity",
                 quick: "Quick and easy",
-                please: "Please verify that you are who you you are.",
+                please: "Please verify that you are who you say you are.",
                 educationalInstitution: "Verify via d Dutch educational institution",
                 selectInstitution: "Select your institution",
                 other: "Other options...",

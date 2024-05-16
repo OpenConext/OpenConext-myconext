@@ -1,0 +1,15 @@
+[
+  {
+    "country": "Nederland",
+    "issuers": [
+      {
+        "name": "Currence Issuer",
+        "id": "CURRNL2A"
+      },
+      {
+        "name": "Rabobank iDIN issuer simulatie",
+        "id": "RABONL2U"
+      }
+    ]
+  }
+]
