@@ -23,7 +23,15 @@ class VerifyControllerTest extends AbstractIntegrationTest {
                 .get("/myconext/api/sp/idin/issuers")
                 .as(new TypeRef<>() {
                 });
-        assertEquals(1, issuers.size());
-        assertEquals(List.of("RABONL2U"), issuers.stream().map(Issuer::getId).sorted().collect(Collectors.toList()));
+        assertEquals(7, issuers.size());
+        assertEquals(List.of(
+                "ABNANL2A",
+                "ASNBNL21",
+                "BUNQNL2A",
+                "INGBNL2A",
+                "RABONL2U",
+                "RBRBNL21",
+                "SNSBNL2A"
+        ), issuers.stream().map(Issuer::getId).sorted().collect(Collectors.toList()));
     }
 }

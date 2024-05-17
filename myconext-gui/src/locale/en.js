@@ -512,7 +512,9 @@ I18n.translations.en = {
             bank: {
                 select: "Select your bank",
                 disclaimer: "With iDIN we control through your bank your personal information, to assure who you are. " +
-                    "<strong>You will make no payment</strong>. <a href='https://www.idin.nl/' target='_blank' rel='noreferrer'>More about IdIN.</a>"
+                    "<strong>You will make no payment</strong>. <a href='https://www.idin.nl/' target='_blank' rel='noreferrer'>More about IdIN.</a>",
+                anotherMethodPrefix: "If your bank of choice is not in the list, please select ",
+                anotherMethodPostfix: "another method"
             }
         }
 

@@ -489,7 +489,9 @@
 <!--{/if}-->
 
 {#if showModal}
-    <Modal close={() => showModal = false}>
+    <Modal close={() => showModal = false}
+           controlBody={true}
+           showOptions={false}>
         <VerifyChoice addInstitution={addInstitution}
                       addBank={addBank}
                       addEuropean={addEuropean}

@@ -11,6 +11,8 @@
     export let title;
     export let question;
     export let warning = false;
+    export let showOptions = true;
+    export let controlBody = false;
     export let confirmTitle = I18n.t("modal.confirm");
     export let cancelTitle = I18n.t("modal.cancel");
     export let disableSubmit = false;
@@ -90,6 +92,10 @@
 
     .modal-body {
         padding: 18px 32px;
+
+        &.control-body {
+            padding: 0;
+        }
     }
 
     div.options {
@@ -112,29 +118,30 @@
             </span>
         </div>
         {/if}
-        <div class="modal-body">
+        <div class="modal-body" class:control-body={controlBody}>
             {#if question}
                 <p>{@html DOMPurify.sanitize(question)}</p>
             {/if}
             <slot></slot>
         </div>
-
-        <div class="options">
-            {#if cancel}
-                <Button className="cancel"
-                        onClick={cancel}
-                        small={true}
-                        label={cancelTitle}/>
-            {/if}
-            {#if submit}
-            <Button onClick={submit}
-                    warning={warning}
-                    href={href}
-                    small={true}
-                    download={download}
-                    disabled={disableSubmit}
-                    label={confirmTitle}/>
-            {/if}
-        </div>
+        {#if showOptions}
+            <div class="options">
+                {#if cancel}
+                    <Button className="cancel"
+                            onClick={cancel}
+                            small={true}
+                            label={cancelTitle}/>
+                {/if}
+                {#if submit}
+                    <Button onClick={submit}
+                            warning={warning}
+                            href={href}
+                            small={true}
+                            download={download}
+                            disabled={disableSubmit}
+                            label={confirmTitle}/>
+                {/if}
+            </div>
+        {/if}
     </div>
 </div>

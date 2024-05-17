@@ -506,6 +506,7 @@ public class AccountLinkerController implements UserAuthentication {
         request = new HttpEntity<>(tokenMap, headers);
 
         body = restTemplate.exchange(verifyBaseUri + "/broker/sp/oidc/userinfo", HttpMethod.POST, request, parameterizedTypeReference).getBody();
+        //TODO save the information in the user under external linked account
         return doRedirect(code, user, this.spFlowRedirectUri, this.spRedirectUrl + "/personal",
                 false, false, true, null, null,
                 this.spRedirectUrl + "/eppn-already-linked");

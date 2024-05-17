@@ -10,7 +10,7 @@
     import closeIcon from "../icons/close_smll.svg";
     import arrowLeftIcon from "../icons/verify/arrow-left.svg";
     import {logo} from "./banks";
-
+    import alertSvg from "../icons/alert-circle.svg";
 
     export let addInstitution;
     export let addBank;
@@ -24,8 +24,9 @@
 </script>
 
 <style lang="scss">
-    $max-width-mobile: 1080px;
-    $max-width-not-edit: 480px;
+    div.account-link-mod {
+        padding: 18px 32px;
+    }
     div.info-container {
         display: flex;
         flex-direction: column;
@@ -54,6 +55,10 @@
 
         span {
             margin-right: 25px;
+        }
+
+        .back {
+            cursor: pointer;
         }
     }
 
@@ -91,7 +96,7 @@
         }
 
         :global(a.button) {
-            margin: 25px 0 0 auto;
+            margin: 25px auto 0 0;
         }
     }
 
@@ -101,26 +106,30 @@
         padding: 15px;
         cursor: pointer;
 
+        &:hover {
+            background-color: var(--color-background);
+        }
         p {
             margin: auto;
         }
     }
 
     .bank-choice {
+        display: flex;
+        align-items: center;
+        margin-bottom: 20px;
+        padding: 0;
         border: 2px solid var(--color-primary-blue);
         border-radius: 6px;
-        padding: 5px 0 5px 10px;
-        display: flex;
         cursor: pointer;
-        align-items: center;
 
         &:hover {
             background-color: var(--color-background);
         }
 
         :global(svg) {
-            margin-right: 25px;
-            width: 60px;
+            margin-right: 16px;
+            width: 48px;
             height: auto;
         }
 
@@ -130,11 +139,22 @@
         }
     }
 
+    .alert {
+        display: flex;
+        align-content: center;
+        background-color: #fdf8d3;
+        padding: 15px;
+
+        :global(svg.alert-circle) {
+            width: 22px;
+            height: auto;
+            margin-right: 20px;
+        }
+    }
 </style>
 
 <div class="account-link-mod">
     {#if !showBankOptions}
-
         <div class="info-container">
             <h3 class="header">{I18n.t("verify.modal.info.verify")}</h3>
             <h4 class="info">{I18n.t("verify.modal.info.quick")}</h4>
@@ -209,7 +229,6 @@
         </div>
         <div class="bank-choices-container">
             {#each issuers as issuer}
-
                 <div class="bank-choice" on:click={() => addBank(issuer.id)}>
                     {@html logo(issuer.id)}
                     <span>{issuer.name}</span>
@@ -218,3 +237,14 @@
         </div>
     {/if}
 </div>
+{#if showBankOptions}
+    <div class="alert">
+        {@html alertSvg}
+        <span>{I18n.t("verify.modal.bank.anotherMethodPrefix")}
+            <a href="/#" on:click|preventDefault|stopPropagation={() => showBankOptions = !showBankOptions}>
+                {I18n.t("verify.modal.bank.anotherMethodPostfix")}
+            </a>
+        </span>
+
+    </div>
+{/if}

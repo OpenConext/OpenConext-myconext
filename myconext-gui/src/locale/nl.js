@@ -508,6 +508,13 @@ I18n.translations.nl = {
                 supportEuropean: "We support the majority of National digital ID's",
                 useEuropean: "use an European ID",
                 help: "If you can't use any of the these methods, please visit our <a href='https://eduid.nl/help' target='_blank' rel='noreferrer'>support pages</a>"
+            },
+            bank: {
+                select: "Selecteer je bank",
+                disclaimer: "With iDIN we control through your bank your personal information, to assure who you are. " +
+                    "<strong>You will make no payment</strong>. <a href='https://www.idin.nl/' target='_blank' rel='noreferrer'>More about IdIN.</a>",
+                anotherMethodPrefix: "If your bank of choice is not in the list, please select ",
+                anotherMethodPostfix: "another method"
             }
         }
     }
