@@ -719,7 +719,7 @@ public class GuestIdpAuthenticationRequestFilter extends OncePerRequestFilter im
         List<SAMLAttribute> attributes = new ArrayList(Arrays.asList(
                 attribute("urn:mace:dir:attribute-def:cn", displayName),
                 attribute("urn:mace:dir:attribute-def:displayName", displayName),
-                attribute("urn:mace:dir:attribute-def:commonName", commonName),
+                attribute("urn:mace:dir:attribute-def:cn", commonName),
                 attribute("urn:mace:dir:attribute-def:eduPersonPrincipalName", eppn),
                 attribute("urn:oasis:names:tc:SAML:attribute:subject-id", eppn),
                 attribute("urn:mace:dir:attribute-def:givenName", givenName),
