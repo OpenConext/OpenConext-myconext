@@ -16,6 +16,7 @@ export const user = writable({
     created: 0,
     publicKeyCredentials: [],
     linkedAccounts: [],
+    externalLinkedAccounts: [],
     eduIdPerServiceProvider: {},
     oidcTokens: []
 });
@@ -31,12 +32,12 @@ export const config = writable({
     domain: "",
     idpBaseUrl: "",
     featureWebAuthn: false,
-    idVerify: false,
     featureOidcTokenAPI: false,
     featureConnections: false,
     featureAllowList: false,
     featureDefaultRememberMe: false,
     featureWarningEducationalEmailDomain: false,
+    featureIdVerify: false,
     createEduIDInstitutionEnabled: false,
     expirationNonValidatedDurationDays: 0
 });

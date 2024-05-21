@@ -5,7 +5,8 @@
     import alertSvg from "../icons/alert-circle.svg";
     import Button from "../components/Button.svelte";
     import {
-        deleteLinkedAccount, iDINIssuers,
+        deleteLinkedAccount,
+        iDINIssuers,
         preferLinkedAccount,
         startLinkAccountFlow,
         startVerifyAccountFlow,
@@ -117,6 +118,7 @@
     }
 
     const refresh = () => {
+        //TODO also take into account user#externalLinkedAccounts
         ($user.linkedAccounts || []).forEach(account => markExpired(account));
         sortedAccounts = ($user.linkedAccounts || []).sort((a, b) => b.createdAt - a.createdAt);
         const validLinkedAccounts = sortedAccounts.filter(account => !account.expired);
@@ -417,7 +419,7 @@
         />
         <EditField firstValue={$user.givenName}
                    editableByUser={!preferredAccount}
-                   editLabel={I18n.t("profile.givenName")}
+                   editLabel={I18n.t(`profile.${preferredAccount ? "validatedGivenName":"givenName"}`)}
                    addInstitution={addIdentity}
                    linkedAccount={preferredAccount}
                    saveLabel={I18n.t("edit.save")}
@@ -428,11 +430,11 @@
         />
         <EditField firstValue={$user.familyName}
                    editableByUser={!preferredAccount}
+                   editLabel={I18n.t(`profile.${preferredAccount ? "validatedFamilyName":"familyName"}`)}
                    addInstitution={addIdentity}
                    linkedAccount={preferredAccount}
                    saveLabel={I18n.t("edit.save")}
                    editMode={familyNameEditMode}
-                   editLabel={I18n.t("profile.familyName")}
                    onEdit={() => familyNameEditMode = true}
                    onSave={value => updateFamilyName(value)}
                    onCancel={() => familyNameEditMode = false}
@@ -462,7 +464,7 @@
         <div class="add-institution" on:click={() => addIdentity(true)}>
             <div class="info">
                 <p>{I18n.t("profile.addIdentity")}</p>
-                <em class="info">{I18n.t(`profile.${$config.idVerify ? "proceedVerify" : "proceedConext"}`)}</em>
+                <em class="info">{I18n.t(`profile.${$config.featureIdVerify ? "proceedVerify" : "proceedConext"}`)}</em>
             </div>
             <span class="add">+</span>
         </div>

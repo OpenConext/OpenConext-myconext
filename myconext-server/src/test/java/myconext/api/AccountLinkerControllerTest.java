@@ -18,16 +18,16 @@ import org.springframework.web.util.UriComponents;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import static com.github.tomakehurst.wiremock.client.WireMock.*;
+import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
 import static io.restassured.RestAssured.given;
 import static myconext.api.AccountLinkerController.parseAffiliations;
 import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class AccountLinkerControllerTest extends AbstractIntegrationTest {
 
@@ -686,6 +686,65 @@ public class AccountLinkerControllerTest extends AbstractIntegrationTest {
                 .get("/myconext/api/sp/create-from-institution/finish")
                 .then()
                 .statusCode(404);
+    }
+
+    @Test
+    public void issuers() {
+        List<VerifyIssuer> issuers = given()
+                .when()
+                .contentType(ContentType.JSON)
+                .get("/myconext/api/sp/idin/issuers")
+                .as(new TypeRef<>() {
+                });
+        assertEquals(7, issuers.size());
+        assertEquals(List.of(
+                "ABNANL2A",
+                "ASNBNL21",
+                "BUNQNL2A",
+                "INGBNL2A",
+                "RABONL2U",
+                "RBRBNL21",
+                "SNSBNL2A"
+        ), issuers.stream().map(VerifyIssuer::getId).sorted().collect(Collectors.toList()));
+    }
+
+    @Test
+    public void spVerifyIDFlow() throws IOException {
+        AuthorizationURL authorizationURL = given().redirects().follow(false)
+                .when()
+                .queryParam("idpScoping", IdpScoping.idin)
+                .queryParam("bankId", "RABONL2U")
+                .contentType(ContentType.JSON)
+                .get("/myconext/api/sp/verify/link")
+                .as(AuthorizationURL.class);
+        String url = authorizationURL.getUrl();
+        assertTrue(url.startsWith("http://localhost:8098/broker/sp/oidc/authenticate"));
+
+        MultiValueMap<String, String> queryParams = UriComponentsBuilder.fromUriString(url).build().getQueryParams();
+        assertEquals("openid dateofbirth name idp_scoping:idin signicat:param:idin_idp:RABONL2U", queryParams.getFirst("scope"));
+
+        String state = queryParams.getFirst("state");
+        //Now call the redirect URI for the redirect by iDIN or eHerkenning
+        stubFor(post(urlPathMatching("/broker/sp/oidc/token")).willReturn(aResponse()
+                .withHeader("Content-Type", "application/json")
+                .withBody(objectMapper.writeValueAsString(Collections.singletonMap("access_token", "123456")))));
+        String userInfo = readFile("verify/idin.json");
+        stubFor(post(urlPathMatching("/broker/sp/oidc/userinfo")).willReturn(aResponse()
+                .withHeader("Content-Type", "application/json")
+                .withBody(userInfo)));
+
+        String location = given().redirects().follow(false)
+                .when()
+                .queryParam("code", "123456")
+                .queryParam("state", state)
+                .contentType(ContentType.JSON)
+                .get("/myconext/api/sp/verify/redirect")
+                .getHeader("Location");
+
+        assertTrue(location.startsWith("http://localhost:3001/personal?verify="));
+
+        User user = userRepository.findOneUserByEmail("jdoe@example.com");
+        assertEquals(1, user.getExternalLinkedAccounts().size());
     }
 
     private Map<Object, Object> userInfoMap(String eppn) {

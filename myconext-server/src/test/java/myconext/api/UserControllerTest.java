@@ -401,7 +401,7 @@ public class UserControllerTest extends AbstractIntegrationTest {
     @Test
     public void updateUserPassword() {
         SecureRandom random = new SecureRandom();
-        PasswordEncoder passwordEncoder = new BCryptPasswordEncoder(-1, random);
+        PasswordEncoder passwordEncoder = new BCryptPasswordEncoder(4);
 
         User user = userRepository.findOneUserByEmail("jdoe@example.com");
         passwordResetHashRepository.save(new PasswordResetHash(user, "hash"));

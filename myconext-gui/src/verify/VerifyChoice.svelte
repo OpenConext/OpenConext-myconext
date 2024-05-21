@@ -174,7 +174,7 @@
                         onClick={addInstitution}/>
             </div>
         </div>
-        {#if !showOtherOptions && $config.idVerify}
+        {#if !showOtherOptions && $config.featureIdVerify}
             <div class="choice-container other-options" on:click={() => showOtherOptions = !showOtherOptions}>
                 <p>{I18n.t("verify.modal.info.other")}</p>
             </div>

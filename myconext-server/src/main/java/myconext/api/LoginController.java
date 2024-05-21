@@ -82,7 +82,7 @@ public class LoginController {
         this.config.put("createEduIDInstitutionLanding", createEduIDInstitutionLanding);
         this.config.put("expirationNonValidatedDurationDays", expirationNonValidatedDurationDays);
         this.config.put("mobileAppRedirect", mobileAppRedirect);
-        this.config.put("idVerify", idVerify);
+        this.config.put("featureIdVerify", idVerify);
         this.secureCookie = secureCookie;
         this.userRepository = userRepository;
     }

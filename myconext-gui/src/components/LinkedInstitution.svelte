@@ -20,9 +20,12 @@
 
 </script>
 <style lang="scss">
-
+    .linked-institution {
+        margin-top: 15px;
+        border-top: 2px solid var(--color-primary-blue);
+        padding-top: 15px;
+    }
     table {
-        margin-top: 25px;
         border-collapse: collapse;
 
         tr {

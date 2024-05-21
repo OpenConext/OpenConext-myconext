@@ -87,8 +87,7 @@ public class UserController implements ServiceProviderHolder, UserAuthentication
     private final PasswordResetHashRepository passwordResetHashRepository;
     private final ChangeEmailHashRepository changeEmailHashRepository;
 
-    private final static SecureRandom random = new SecureRandom();
-    private final PasswordEncoder passwordEncoder = new BCryptPasswordEncoder(-1, random);
+    private final PasswordEncoder passwordEncoder = new BCryptPasswordEncoder(4, new SecureRandom());
     private final EmailGuessingPrevention emailGuessingPreventor;
     private final EmailDomainGuard emailDomainGuard;
     private final DisposableEmailProviders disposableEmailProviders;

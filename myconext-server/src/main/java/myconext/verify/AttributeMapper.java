@@ -29,6 +29,8 @@ import java.util.zip.GZIPOutputStream;
 @SuppressWarnings("unchecked")
 public class AttributeMapper {
 
+    private static final int DEFAULT_EXPIRATION_YEARS = 6;
+
     private static final Map<Pattern, DateTimeFormatter> datePatterns = Map.of(
             Pattern.compile("^\\d{8}$"), DateTimeFormatter.ofPattern("yyyyMMdd"), //19750725
             Pattern.compile("^\\d{4}-\\d{2}-\\d{2}$"), DateTimeFormatter.ofPattern("yyyy-MM-dd") //1963-02-05
@@ -81,7 +83,7 @@ public class AttributeMapper {
                         //Date createdAt
                         new Date(),
                         //Date expiresAt
-                        Date.from(Instant.now().plus(10 * 365, ChronoUnit.DAYS))
+                        Date.from(Instant.now().plus(DEFAULT_EXPIRATION_YEARS * 365, ChronoUnit.DAYS))
                 );
             }
             case eherkenning: {
@@ -119,7 +121,7 @@ public class AttributeMapper {
                         //Date createdAt
                         new Date(),
                         //Date expiresAt
-                        Date.from(Instant.now().plus(10 * 365, ChronoUnit.DAYS))
+                        Date.from(Instant.now().plus(DEFAULT_EXPIRATION_YEARS * 365, ChronoUnit.DAYS))
                 );
             }
         }
@@ -159,7 +161,7 @@ public class AttributeMapper {
 
         Map<String, String> map = objectMapper.readValue(gin, Map.class);
         VerifyIssuer verifyIssuer = null;
-        if (map.containsKey("vi")) {
+        if (map.containsKey("vi") && map.containsKey("vn")) {
             verifyIssuer = new VerifyIssuer(map.get("vi"), map.get("vn"));
         }
         return new VerifyState(

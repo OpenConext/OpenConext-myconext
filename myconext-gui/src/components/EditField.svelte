@@ -52,7 +52,6 @@
 
     .edit-field {
         margin-bottom: 15px;
-        cursor: pointer;
         max-width: $max-width-not-edit;
 
         &:hover:not(.show-edit-mode) {
@@ -131,7 +130,7 @@
     }
 
     .view-mode-container {
-        padding: 15px;
+        padding: 10px;
         border: 2px solid var(--color-primary-blue);
         border-radius: 8px;
         display: flex;
@@ -141,32 +140,38 @@
     .view-mode {
         display: flex;
         align-items: center;
+        cursor: pointer;
 
         .inner-view-mode {
             display: flex;
             flex-direction: column;
 
-            span.value {
+            div.value {
                 color: var(--color-primary-blue);
                 font-weight: 600;
                 font-size: 18px;
                 display: flex;
                 align-items: center;
 
+                .values {
+                    display: flex;
+                    flex-direction: column;
+                }
                 span.shield {
-                    margin-right: 8px;
+                    margin-right: 12px;
 
                     :global(svg) {
-                        width: 16px;
+                        width: 28px;
                         height: auto;
                     }
                 }
             }
 
             span.editable-by {
-                margin-top: 10px;
+                margin-top: 2px;
                 color: var(--color-secondary-grey);
                 font-size: 15px;
+                font-weight: 100;
             }
         }
 
@@ -190,8 +195,7 @@
 <div class="edit-field"
      class:name-field={nameField}
      class:show-drop-down={showDropDown}
-     class:show-edit-mode={editMode}
-     on:click={toggle}>
+     class:show-edit-mode={editMode}>
     {#if label}
         <label for={`input-${label}`}>{label}</label>
     {/if}
@@ -215,19 +219,22 @@
         {/if}
     {:else}
         <div class="view-mode-container">
-            <div class="view-mode">
+            <div class="view-mode" on:click={toggle}>
                 <div class="inner-view-mode">
-                <span class="value">
+                    <div class="value">
                     {#if !editableByUser}
                         <span class="shield">{@html shieldIcon}</span>
                     {/if}
-                    {firstValue}</span>
+                        <div class="values">
+                            <span>{firstValue}</span>
                     {#if editLabel}
                         <span class="editable-by">{editLabel}</span>
                     {:else}
                         <span class="editable-by">{editableByUser ? I18n.t("profile.editable") :
                         I18n.t("profile.nonEditable", {name: institutionName(linkedAccount)}) }</span>
                     {/if}
+                        </div>
+                    </div>
                 </div>
                 {#if editableByUser}
                     <span class="icon" on:click={() => onEdit()}>{@html editIcon}</span>

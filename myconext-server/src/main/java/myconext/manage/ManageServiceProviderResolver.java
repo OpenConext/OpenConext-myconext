@@ -24,7 +24,7 @@ public class ManageServiceProviderResolver implements ServiceProviderResolver {
     private Map<String, ServiceProvider> serviceProviders = new HashMap<>();
     private final HttpHeaders headers = new HttpHeaders();
     private final Map<String, Object> body = new HashMap<>();
-    private final ParameterizedTypeReference<List<Map<String, Object>>> typeReference = new ParameterizedTypeReference<List<Map<String, Object>>>() {
+    private final ParameterizedTypeReference<List<Map<String, Object>>> typeReference = new ParameterizedTypeReference<>() {
     };
 
     public ManageServiceProviderResolver(String userName,

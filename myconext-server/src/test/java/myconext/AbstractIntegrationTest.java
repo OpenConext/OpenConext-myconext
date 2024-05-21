@@ -48,6 +48,7 @@ import tiqr.org.model.Registration;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.nio.charset.Charset;
+import java.security.SecureRandom;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -81,7 +82,8 @@ import static org.junit.Assert.assertTrue;
                 "cron.service-name-resolver-initial-delay-milliseconds=60000",
                 "oidc.base-url=http://localhost:8098/",
                 "sso_mfa_duration_seconds=-1000",
-                "feature.requires_signed_authn_request=false"
+                "feature.requires_signed_authn_request=false",
+                "verify.base_uri=http://localhost:8098"
         })
 @ActiveProfiles({"test"})
 @SuppressWarnings("unchecked")
@@ -131,7 +133,7 @@ public abstract class AbstractIntegrationTest {
 
     private final SimpleDateFormat issueFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
 
-    protected final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+    protected final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder(4, new SecureRandom());
 
     protected final Filter noopFilter = new NoopFilter();
 

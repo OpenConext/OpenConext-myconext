@@ -29,6 +29,7 @@ public class UserResponse implements Serializable {
     private final boolean forgottenPassword;
     private final List<PublicKeyCredentials> publicKeyCredentials;
     private final List<LinkedAccount> linkedAccounts;
+    private final List<ExternalLinkedAccount> externalLinkedAccounts;
     private final String schacHomeOrganization;
     private final String uid;
     private final boolean rememberMe;
@@ -63,6 +64,7 @@ public class UserResponse implements Serializable {
                 });
             });
         }
+        this.externalLinkedAccounts = user.getExternalLinkedAccounts();
         this.usePublicKey = !CollectionUtils.isEmpty(this.publicKeyCredentials);
         this.forgottenPassword = user.isForgottenPassword();
         this.rememberMe = rememberMe;
