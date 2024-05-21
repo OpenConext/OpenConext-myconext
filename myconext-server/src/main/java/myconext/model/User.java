@@ -57,6 +57,7 @@ public class User implements Serializable, UserDetails {
 
     private List<PublicKeyCredentials> publicKeyCredentials = new ArrayList<>();
     private List<LinkedAccount> linkedAccounts = new ArrayList<>();
+    private List<ExternalLinkedAccount> externalLinkedAccounts = new ArrayList<>();
     private List<EduID> eduIDS = new ArrayList<>();
 
     private long created;

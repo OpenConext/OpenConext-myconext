@@ -3,7 +3,7 @@ package myconext.api;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import myconext.model.IdinIssuers;
-import myconext.model.Issuer;
+import myconext.model.VerifyIssuer;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,7 +24,7 @@ public class VerifyController {
 
     private static final Log LOG = LogFactory.getLog(VerifyController.class);
 
-    private final List<Issuer> issuers;
+    private final List<VerifyIssuer> issuers;
 
     //For now, hardcode the not known issuers from test
     private final List<String> unknownIssuers = List.of("CURRNL2A");
@@ -39,7 +39,7 @@ public class VerifyController {
     }
 
     @GetMapping("/sp/idin/issuers")
-    public ResponseEntity<List<Issuer>> issuers() {
+    public ResponseEntity<List<VerifyIssuer>> issuers() {
         LOG.debug("Retrieve IDIN issuers");
         return ResponseEntity.ok(issuers);
     }

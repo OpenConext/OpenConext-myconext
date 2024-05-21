@@ -10,5 +10,5 @@ import java.util.List;
 public class IdinIssuers {
 
     private String country;
-    private List<Issuer> issuers;
+    private List<VerifyIssuer> issuers;
 }

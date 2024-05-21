@@ -40,7 +40,6 @@ import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.UUID;
 
 import static java.util.stream.Collectors.toList;
 
@@ -71,6 +70,7 @@ public class SecurityConfiguration {
                             @Value("${email.magic-link-url}") String magicLinkUrl,
                             @Value("${account_linking_context_class_ref.linked_institution}") String linkedInstitution,
                             @Value("${account_linking_context_class_ref.validate_names}") String validateNames,
+                            @Value("${account_linking_context_class_ref.validate_names_external}") String validateNamesExternal,
                             @Value("${account_linking_context_class_ref.affiliation_student}") String affiliationStudent,
                             @Value("${account_linking_context_class_ref.profile_mfa}") String profileMfa,
                             @Value("${linked_accounts.expiry-duration-days-non-validated}") long expiryNonValidatedDurationDays,
@@ -86,6 +86,13 @@ public class SecurityConfiguration {
                             ServiceProviderResolver serviceProviderResolver,
                             IdentityProviderMetaData identityProviderMetaData,
                             CookieValueEncoder cookieValueEncoder) {
+            ACR.initialize(
+                    linkedInstitution,
+                    validateNames,
+                    validateNamesExternal,
+                    affiliationStudent,
+                    profileMfa
+            );
             String[] keys = this.getKeys(certificatePath, privateKeyPath);
             final List<SAMLServiceProvider> serviceProviders = new ArrayList<>();
 

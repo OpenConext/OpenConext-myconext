@@ -1213,6 +1213,21 @@ public class UserControllerTest extends AbstractIntegrationTest {
                 .statusCode(HttpStatus.CONFLICT.value());
     }
 
+    @Test
+    public void updateLinkedAccount() {
+        UpdateLinkedAccountRequest updateLinkedAccountRequest = new UpdateLinkedAccountRequest("guest@example.nl");
+        given()
+                .when()
+                .accept(ContentType.JSON)
+                .contentType(ContentType.JSON)
+                .body(updateLinkedAccountRequest)
+                .put("/myconext/api/sp/prefer-linked-account")
+                .as(Map.class);
+        User user = userRepository.findOneUserByEmail("jdoe@example.com");
+        Optional<LinkedAccount> optionalLinkedAccount = user.getLinkedAccounts().stream().filter(LinkedAccount::isPreferred).findFirst();
+        assertTrue(optionalLinkedAccount.isPresent());
+    }
+
     private String hash() {
         byte[] bytes = new byte[64];
         random.nextBytes(bytes);

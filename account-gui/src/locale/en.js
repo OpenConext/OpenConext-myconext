@@ -280,11 +280,13 @@ I18n.translations.en = {
     stepUpExplanation: {
         linked_institution: "Your eduID account must be linked to a trusted party.",
         validate_names: "Your first name and last name must be verified by a trusted party.",
+        validate_names_external: "Your first name and last name must be verified by a trusted external party.",
         affiliation_student: "You must prove that you are following education by linking your eduID account to a trusted party."
     },
     stepUpVerification: {
         linked_institution: "Your eduID account is linked to a trusted party.",
         validate_names: "Your first name and last name are verified by a trusted party.",
+        validate_names_external: "Your first name and last name must be verified by a trusted external party.",
         affiliation_student: "You have proven that you are following education by linking your eduID account to a trusted party."
     },
     nudgeApp: {
