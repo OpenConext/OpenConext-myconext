@@ -161,7 +161,7 @@ jobs:
         password: ${{ secrets.GITHUB_TOKEN }}
 
     - name: Extract metadata (tags, labels) for MyConext GUI Docker
-      id: meta_account_gui
+      id: meta_myconext_gui
       uses: docker/metadata-action@v5
       with:
         images: ghcr.io/openconext/openconext-myconext/myconext-gui
@@ -175,7 +175,7 @@ jobs:
           type=sha
 
     - name: Extract metadata (tags, labels) for acount GUI Docker
-      id: meta_server_gui
+      id: meta_account_gui
       uses: docker/metadata-action@v5
       with:
         images: ghcr.io/openconext/openconext-myconext/account-gui
@@ -202,7 +202,6 @@ jobs:
           type=semver,pattern={{version}},value=${{ steps.versioncheck.outputs.version }}
           type=sha
 
-
     - name: Build and push the account gui image
       uses: docker/build-push-action@v5
       with:
@@ -220,8 +219,8 @@ jobs:
         file: myconext-gui/docker/Dockerfile
         platforms: linux/amd64
         push: true
-        tags: ${{ steps.meta_server_gui.outputs.tags }}
-        labels: ${{ steps.meta_server_gui.outputs.labels }}
+        tags: ${{ steps.meta_myconext_gui.outputs.tags }}
+        labels: ${{ steps.meta_myconext_gui.outputs.labels }}
 
     - name: Build and push the server image
       uses: docker/build-push-action@v5
