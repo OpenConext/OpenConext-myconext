@@ -301,7 +301,7 @@ public class UserControllerTest extends AbstractIntegrationTest {
         userRepository.save(user);
 
         UpdateLinkedAccountRequest updateLinkedAccountRequest = new UpdateLinkedAccountRequest(
-                null, externalLinkedAccount.getSubjectId(), false);
+                null, externalLinkedAccount.getSubjectId(), true);
         given()
                 .when()
                 .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)

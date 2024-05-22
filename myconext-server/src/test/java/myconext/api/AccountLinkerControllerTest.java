@@ -100,6 +100,9 @@ public class AccountLinkerControllerTest extends AbstractIntegrationTest {
 
     @Test
     public void redirect() throws IOException {
+        User userPre = userRepository.findOneUserByEmail("mdoe@example.com");
+        assertEquals(0, userPre.getLinkedAccounts().size());
+
         String eppn = "some@institute.nl";
 
         Map<Object, Object> body = new HashMap<>();
@@ -110,7 +113,7 @@ public class AccountLinkerControllerTest extends AbstractIntegrationTest {
         LinkedAccount linkedAccount = user.getLinkedAccounts().get(0);
 
         assertEquals(eppn, linkedAccount.getEduPersonPrincipalName());
-        assertEquals(eppn, linkedAccount.getInstitutionIdentifier(), "mock.idp");
+        assertEquals("mock.idp", linkedAccount.getInstitutionIdentifier() );
 
         //second time the institution identifier is updated from the surf-crm-id
         body.put("surf-crm-id", "12345678");

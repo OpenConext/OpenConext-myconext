@@ -83,6 +83,7 @@ import static org.junit.Assert.assertTrue;
                 "oidc.base-url=http://localhost:8098/",
                 "sso_mfa_duration_seconds=-1000",
                 "feature.requires_signed_authn_request=false",
+                "feature.deny_disposable_email_providers=false",
                 "verify.base_uri=http://localhost:8098"
         })
 @ActiveProfiles({"test"})
