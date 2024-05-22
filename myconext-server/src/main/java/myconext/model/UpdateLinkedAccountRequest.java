@@ -12,7 +12,10 @@ import java.io.Serializable;
 @Getter
 public class UpdateLinkedAccountRequest implements Serializable {
 
-    @NotBlank
     private String eduPersonPrincipalName;
+    private String subjectId;
+    private boolean external;
+
+
 
 }

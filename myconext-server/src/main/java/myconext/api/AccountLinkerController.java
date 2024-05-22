@@ -460,7 +460,8 @@ public class AccountLinkerController implements UserAuthentication {
             redirectUri = this.spVerifyRedirectUri;
         }
         VerifyIssuer verifyIssuer = idpScoping.equals(IdpScoping.idin) ? this.issuers.stream()
-                .filter(issuer -> issuer.getId().equals(bankId)).findFirst().orElseThrow(() -> new IllegalArgumentException("Unknown verify issuer: " + bankId)) : null;
+                .filter(issuer -> issuer.getId().equals(bankId)).findFirst().orElseThrow(() -> new IllegalArgumentException("Unknown verify issuer: " + bankId)) :
+                new VerifyIssuer(IdpScoping.eherkenning.name(), IdpScoping.eherkenning.name());
         VerifyState verifyState = new VerifyState(stateIdentifier, idpScoping, verifyIssuer);
         String state = attributeMapper.serializeToBase64(verifyState);
 
@@ -521,6 +522,16 @@ public class AccountLinkerController implements UserAuthentication {
         //We only allow one ExternalLinkedAccount - for now
         externalLinkedAccounts.clear();
         externalLinkedAccounts.add(externalLinkedAccount);
+
+        if (StringUtils.hasText(externalLinkedAccount.getFirstName()) && IdpScoping.eherkenning.equals(externalLinkedAccount.getIdpScoping()) ) {
+            user.setGivenName(externalLinkedAccount.getFirstName());
+        }
+        if (StringUtils.hasText(externalLinkedAccount.getPreferredLastName())) {
+            user.setFamilyName(externalLinkedAccount.getPreferredLastName());
+        }
+        if (externalLinkedAccount.getDateOfBirth() != null) {
+            user.setDateOfBirth(externalLinkedAccount.getDateOfBirth());
+        }
         userRepository.save(user);
 
         return ResponseEntity.status(HttpStatus.FOUND).location(URI.create(spRedirectUrl + "/personal?verify=" + externalLinkedAccount.getIdpScoping())).build();

@@ -18,6 +18,7 @@
     export let disableSubmit = false;
     export let download = undefined;
     export let href = undefined;
+    export let largeConfirmation = false;
 
     let modal;
 
@@ -136,7 +137,8 @@
                     <Button onClick={submit}
                             warning={warning}
                             href={href}
-                            small={true}
+                            small={!largeConfirmation}
+                            large={largeConfirmation}
                             download={download}
                             disabled={disableSubmit}
                             label={confirmTitle}/>

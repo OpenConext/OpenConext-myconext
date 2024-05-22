@@ -41,6 +41,13 @@ I18n.translations.en = {
     profile: {
         title: "Personal sharable information",
         info: "When you use eduID to login to other websites, some of your personal information will be shared.",
+        verifiedInformation: "Your verified information",
+        verifiedInformationInfo: "This is an overview of the verified information we have received from trusted sources.",
+        defaultPreferred: "This icon indicates the information is used on 'your personal info' as default.",
+        receivedOn: "on <strong>{{date}}</strong>",
+        validUntilDate: "valid until <strong>{{date}}</strong>",
+        removeLinkPrefix: "Remove this information",
+        removeLinkPostfix: " from your eduID",
         banner: "Some services require that your personal information is validated by a trusted party.",
         expiredBanner: "The verification of your identity has expired, please verify it again.",
         verifyNow: "Verify now",
@@ -80,7 +87,7 @@ I18n.translations.en = {
         notVerified: "Not verified",
         editable: "Editable by you",
         nonEditable: "Verified by {{name}}",
-        verifiedBy: "<strong>Verified by {{name}}</strong> on {{date}}",
+        verifiedBy: "Verified by {{name}}",
         validUntil: "Valid until",
         verifyFirstAndLastName: {
             addInstitution: "Add institution",
@@ -90,17 +97,17 @@ I18n.translations.en = {
         atInstitution: "At {{name}}",
         studentRole: "Student",
         preferInstitution: "Prefer institution",
-        preferredInstitutionConfirmation: "Do you want to use the information received from {{name}} to be the default information to share with services?",
+        preferredInstitutionInfo: "Do you want to use the following information to be the default information shared with services?",
         preferred: "{{name}} is now your preferred source of information",
         expired: "Expired",
-        newInstitution: "Your identity has been verified",
-        newInstitutionInfo: "We have replaced the following information with the verified data from your institution:",
+        newInstitutionTitle: "was contacted successfully",
+        newInstitutionInfo: "The following information has been added to your eduID and can now be shared.",
         ok: "Continue",
         yes: "Yes, please",
         no: "No, thanks",
         eppn: "EPPN",
-        subjectId: "Subject ID"
-
+        subjectId: "Subject ID",
+        manageInformation: "Manage your verified information",
     },
     eppnAlreadyLinked: {
         header: "Connection not added!",
@@ -497,10 +504,10 @@ I18n.translations.en = {
     },
     verify: {
         modal: {
-            header: "Identity",
+            header: "Verification",
             info: {
-                verify: "Verify your identity",
-                quick: "Quick and easy",
+                title: "Verification",
+                verify: "Verify your identity, quick and easy",
                 please: "Please verify that you are who you say you are.",
                 educationalInstitution: "Verify via a Dutch educational institution",
                 selectInstitution: "Select your institution",

@@ -41,6 +41,13 @@ I18n.translations.nl = {
     profile: {
         title: "Persoonlijke informatie",
         info: "Wanneer je eduID gebruikt om in te loggen op andere websites, kan jouw persoonlijke informatie worden gedeeld.",
+        verifiedInformation: "Je geverifïeerde informatie",
+        verifiedInformationInfo: "Dit is een overzicht van de geverifïeerde informatie die we hebben ontvangen van betrouwbare bronnen.",
+        defaultPreferred: "Dit icon geeft aan dat deze informatie default wordt gebruikt voor 'je persoonlijke informatie'.",
+        receivedOn: "Ontvangen op {{date}}",
+        validUntilDate: "Geldig tot {{date}}",
+        removeLinkPrefix: "Verwijder deze informatie",
+        removeLinkPostfix: " uit je eduID",
         banner: "Sommige diensten vereisen dat je persoonlijke gegevens worden gevalideerd door een vertrouwde partij.",
         expiredBanner: "De verificatie van je identiteit is verlopen, verifïeer deze opnieuw.",
         verifyNow: "Verifïeer nu",
@@ -80,7 +87,7 @@ I18n.translations.nl = {
         notVerified: "Niet geverifiëerd",
         editable: "Bewerkbaar door jou",
         nonEditable: "Geverifiëerd door {{name}}",
-        verifiedBy: "<strong>Geverifiëerd door {{name}}</strong> on {{date}}",
+        verifiedBy: "Geverifiëerd door {{name}}",
         validUntil: "Geldig tot",
         verifyFirstAndLastName: {
             addInstitution: "Instelling toevoegen",
@@ -90,16 +97,17 @@ I18n.translations.nl = {
         atInstitution: "Bij {{name}}",
         studentRole: "Student",
         preferInstitution: "Voorkeursinstelling",
-        preferredInstitutionConfirmation: "Wil je de informatie die we van {{name}} ontvangen, gebruiken als standaardinformatie om met diensten te delen?",
+        preferredInstitutionInfo: "Wil je de volgende informatie, gebruiken als standaardinformatie om met diensten te delen?",
         preferred: "{{name}} is nu de bron van je persoonsinformatie",
         expired: "Verlopen",
-        newInstitution: "Je identiteit is geverifïeerd",
-        newInstitutionInfo: "We hebben de volgende informatie overschreven met de geverifïeerde gegevens:",
+        newInstitutionTitle: "is met succes gekoppeld",
+        newInstitutionInfo: "De volgende informatie is toegevoegd aan je eduID account en kan nu worden gedeeld.",
         ok: "Ga door",
         yes: "Ja, graag",
         no: "Nee, bedankt",
         eppn: "EPPN",
-        subjectId: "Subject ID"
+        subjectId: "Subject ID",
+        manageInformation: "Manage je geverifïeerde informatie",
     },
     eppnAlreadyLinked: {
         header: "Koppeling niet gemaakt!",
@@ -497,27 +505,27 @@ I18n.translations.nl = {
     },
     verify: {
         modal: {
-            header: "Identity",
+            header: "Verificatie",
             info: {
-                verify: "Verify your identity",
-                quick: "Quick and easy",
-                please: "Please verify that you are who you say you are.",
-                educationalInstitution: "Verify via d Dutch educational institution",
-                selectInstitution: "Select your institution",
-                other: "Other options...",
-                verifyBank: "Verify with a Dutch bank app",
-                selectBank: "Select your bank",
-                verifyEuropeanId: "Verify with a European ID",
-                supportEuropean: "We support the majority of National digital ID's",
-                useEuropean: "use an European ID",
-                help: "If you can't use any of the these methods, please visit our <a href='https://eduid.nl/help' target='_blank' rel='noreferrer'>support pages</a>"
+                title: "Verificatie",
+                verify: "Verifïeer je identiteit, snel en gemakkelijk",
+                please: "Verifïeer a.u.b dat je bent wie je zegt dat je bent.",
+                educationalInstitution: "Verifïeer met een Nederlandse onderwijsinstelling",
+                selectInstitution: "Selecteer je instelling",
+                other: "Andere opties...",
+                verifyBank: "Verifïeer met een Nederlandse ban app",
+                selectBank: "Selecteer je bank",
+                verifyEuropeanId: "Verifïeer met een Europses ID",
+                supportEuropean: "We ondersteunen de meederhead van de de nationalie digitale ID's",
+                useEuropean: "gebruik een Europese ID",
+                help: "Als je geen van deze opties kan gebruiken, bezoek dan onze <a href='https://eduid.nl/help' target='_blank' rel='noreferrer'>support pagina's</a>"
             },
             bank: {
                 select: "Selecteer je bank",
-                disclaimer: "With iDIN we control through your bank your personal information, to assure who you are. " +
-                    "<strong>You will make no payment</strong>. <a href='https://www.idin.nl/' target='_blank' rel='noreferrer'>More about IdIN.</a>",
-                anotherMethodPrefix: "If your bank of choice is not in the list, please select ",
-                anotherMethodPostfix: "another method"
+                disclaimer: "Met iDIN controleren we via de bank de persoonlijke informatie, om ervan zeker te zijn wie je bent. " +
+                    "<strong>Je maakt geen geld over</strong>. <a href='https://www.idin.nl/' target='_blank' rel='noreferrer'>Meer over iDIN.</a>",
+                anotherMethodPrefix: "Als je eigen bank niet in de lijst staat, selecteer dan ",
+                anotherMethodPostfix: "een andere methode"
             }
         }
     }

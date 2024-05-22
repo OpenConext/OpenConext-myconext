@@ -38,6 +38,7 @@ public class User implements Serializable, UserDetails {
     private String chosenName;
     private String givenName;
     private String familyName;
+    private Date dateOfBirth;
     @Indexed
     private String uid;
     private String schacHomeOrganization;
@@ -244,6 +245,10 @@ public class User implements Serializable, UserDetails {
 
     public void setFamilyName(String familyName) {
         this.familyName = familyName;
+    }
+
+    public void setDateOfBirth(Date dateOfBirth) {
+        this.dateOfBirth = dateOfBirth;
     }
 
     public void setPreferredLanguage(String preferredLanguage) {

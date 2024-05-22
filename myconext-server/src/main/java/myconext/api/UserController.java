@@ -555,16 +555,21 @@ public class UserController implements ServiceProviderHolder, UserAuthentication
     @PutMapping("/sp/institution")
     @Operation(summary = "Remove linked account",
             description = "Remove linked account for a logged in user")
-    public ResponseEntity<UserResponse> removeUserLinkedAccounts(Authentication authentication, @RequestBody LinkedAccount linkedAccount) {
+    public ResponseEntity<UserResponse> removeUserLinkedAccounts(Authentication authentication, @RequestBody UpdateLinkedAccountRequest linkedAccount) {
         User user = userFromAuthentication(authentication);
+        if (linkedAccount.isExternal()) {
+            user.getExternalLinkedAccounts().clear();
+            user.setDateOfBirth(null);
+        } else {
+            List<LinkedAccount> linkedAccounts = user.getLinkedAccounts().stream()
+                    .filter(la -> !la.getEduPersonPrincipalName().equals(linkedAccount.getEduPersonPrincipalName()))
+                    .collect(Collectors.toList());
+            user.setLinkedAccounts(linkedAccounts);
 
-        List<LinkedAccount> linkedAccounts = user.getLinkedAccounts().stream()
-                .filter(la -> !la.getEduPersonPrincipalName().equals(linkedAccount.getEduPersonPrincipalName()))
-                .collect(Collectors.toList());
-        user.setLinkedAccounts(linkedAccounts);
+        }
         userRepository.save(user);
 
-        logWithContext(user, "delete", "linked_account", LOG, "Deleted linked account " + linkedAccount.getSchacHomeOrganization());
+        logWithContext(user, "delete", "linked_account", LOG, "Deleted linked account " + linkedAccount.getEduPersonPrincipalName());
 
         return userResponseRememberMe(user);
     }

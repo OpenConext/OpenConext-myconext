@@ -104,7 +104,12 @@ export function deleteUser() {
 }
 
 export function deleteLinkedAccount(linkedAccount) {
-    return postPutJson("/myconext/api/sp/institution", linkedAccount, "PUT");
+    const updateLinkedAccountRequest = {
+        eduPersonPrincipalName: linkedAccount.eduPersonPrincipalName,
+        subjectId: linkedAccount.subjectId,
+        external: linkedAccount.external
+    }
+    return postPutJson("/myconext/api/sp/institution", updateLinkedAccountRequest, "PUT");
 }
 
 export function deletePublicKeyCredential(credential) {

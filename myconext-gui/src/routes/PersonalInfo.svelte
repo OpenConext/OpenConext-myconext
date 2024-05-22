@@ -2,6 +2,8 @@
     import {config, flash, user} from "../stores/user";
     import I18n from "i18n-js";
     import verifiedSvg from "../icons/redesign/shield-full.svg";
+    import personalInfo from "../icons/verify/personalInfo.svg";
+    import arrowLeft from "../icons/verify/arrow-left.svg";
     import alertSvg from "../icons/alert-circle.svg";
     import Button from "../components/Button.svelte";
     import {
@@ -23,6 +25,7 @@
     import {institutionName} from "../utils/services";
     import ValidatedData from "../components/ValidatedData.svelte";
     import VerifyChoice from "../verify/VerifyChoice.svelte";
+    import {dateFromEpoch} from "../utils/date";
 
     let eduIDLinked = false;
 
@@ -39,14 +42,22 @@
     let chosenNameEditMode = false;
     let givenNameEditMode = false;
     let familyNameEditMode = false;
+    let dayOfBirthEditMode = false;
 
+    let showManageVerifiedInformation = false;
     let showModal = false;
+    let showIdinOptions = false;
     let showDeleteInstitutionModal = false;
     let showNewInstitutionModal = false;
     let showPreferredInstitutionModal = false;
+    let showPostVerificationModal = false;
     let selectedInstitution;
     let newInstitution = {};
     let issuers;
+
+    const manageVerifiedInformation = () => {
+        showManageVerifiedInformation = !showManageVerifiedInformation;
+    }
 
     const preferInstitution = (showConfirmation, linkedAccount) => {
         preferredInstitution = linkedAccount;
@@ -82,7 +93,8 @@
         });
     }
 
-    const addIdentity = () => {
+    const addIdentity = showIdin => {
+        showIdinOptions = showIdin;
         showModal = true
     }
 
@@ -104,31 +116,43 @@
         }
     }
 
-    const markExpired = account => {
-        const expiredAt = new Date(account.createdAt);
+    const markExternalLinkedAccountExpired = externalLinkedAccount => {
+        externalLinkedAccount.expired = new Date() > new Date(externalLinkedAccount.expiresAt);
+    }
+
+    const markExpired = linkedAccount => {
+        const expiredAt = new Date(linkedAccount.createdAt);
         expiredAt.setDate(expiredAt.getDate() + parseInt($config.expirationNonValidatedDurationDays, 10));
-        account.expiresAtRole = expiredAt;
-        account.expiredRole = new Date() > account.expiresAtRole;
-        if (isEmpty(account.givenName) || isEmpty(account.familyName)) {
-            account.expired = account.expiredRole;
-            account.expiresAtNonValidated = account.expiresAtRole.getTime();
+        linkedAccount.expiresAtRole = expiredAt;
+        linkedAccount.expiredRole = new Date() > linkedAccount.expiresAtRole;
+        if (isEmpty(linkedAccount.givenName) || isEmpty(linkedAccount.familyName)) {
+            linkedAccount.expired = account.expiredRole;
+            linkedAccount.expiresAtNonValidated = linkedAccount.expiresAtRole.getTime();
         } else {
-            account.expired = new Date() > new Date(account.expiresAt);
+            linkedAccount.expired = new Date() > new Date(linkedAccount.expiresAt);
         }
     }
 
     const refresh = () => {
-        //TODO also take into account user#externalLinkedAccounts
         ($user.linkedAccounts || []).forEach(account => markExpired(account));
+        ($user.externalLinkedAccounts || []).forEach(account => markExternalLinkedAccountExpired(account));
         sortedAccounts = ($user.linkedAccounts || []).sort((a, b) => b.createdAt - a.createdAt);
         const validLinkedAccounts = sortedAccounts.filter(account => !account.expired);
+        const validExternalLinkedAccount = !isEmpty($user.externalLinkedAccounts) && !$user.externalLinkedAccounts[0].expired;
         const linkedAccount = validLinkedAccounts.find(account => account.preferred) || validLinkedAccounts[0];
         if (isEmpty(linkedAccount) || isEmpty(linkedAccount.givenName) || isEmpty(linkedAccount.familyName)) {
             preferredAccount = null;
         } else {
             preferredAccount = linkedAccount;
         }
-        eduIDLinked = validLinkedAccounts.length > 0;
+        if (!isEmpty($user.externalLinkedAccounts)) {
+            if (isEmpty(preferredAccount) || preferredAccount.createdAt < $user.externalLinkedAccounts[0].createdAt) {
+                preferredAccount = $user.externalLinkedAccounts[0];
+                preferredAccount.external = true;
+            }
+
+        }
+        eduIDLinked = validLinkedAccounts.length > 0 || validExternalLinkedAccount;
     }
 
     const updateChosenName = chosenName => {
@@ -186,20 +210,26 @@
 
     onMount(() => {
         refresh();
-        if (($user.linkedAccounts || []).length > 0) {
-            const urlSearchParams = new URLSearchParams(window.location.search);
+        const urlSearchParams = new URLSearchParams(window.location.search);
+        if (!isEmpty($user.linkedAccounts)) {
             const eduPersonPrincipalName = urlSearchParams.get("institution");
-            const institution = $user.linkedAccounts.find(ins => ins.eduPersonPrincipalName === eduPersonPrincipalName);
-            if (institution && !isEmpty(institution.givenName) && !isEmpty(institution.familyName)) {
-                newInstitution = institution;
-                if (($user.linkedAccounts || []).length === 1) {
-                    showNewInstitutionModal = true;
-                } else {
-                    preferInstitution(true, institution);
+            if (!isEmpty(eduPersonPrincipalName)) {
+                const institution = $user.linkedAccounts.find(ins => ins.eduPersonPrincipalName === eduPersonPrincipalName);
+                if (institution && !isEmpty(institution.givenName) && !isEmpty(institution.familyName)) {
+                    newInstitution = institution;
+                    if (($user.linkedAccounts || []).length === 1) {
+                        showNewInstitutionModal = true;
+                    } else {
+                        preferInstitution(true, institution);
+                    }
                 }
             }
         }
-        if ($config && isEmpty(issuers)) {
+        const verify = urlSearchParams.get("verify");
+        if (!isEmpty(verify) && !isEmpty($user.externalLinkedAccounts)) {
+            showPostVerificationModal = true;
+        }
+        if ($config.featureIdVerify && isEmpty(issuers)) {
             iDINIssuers().then(res => issuers = res);
         }
     });
@@ -219,17 +249,17 @@
     }
 
     .inner-container {
-        padding: 15px 80px 15px 50px;
+        padding: 35px 80px 15px 50px;
         display: flex;
         flex-direction: column;
         margin: 0 auto;
 
         @media (max-width: $max-width-mobile) {
-            padding: 0 0 0 15px;
+            padding: 20px 0 15px 15px;
         }
 
         @media (max-width: 820px) {
-            padding: 0 0 0 0;
+            padding: 15px 0 10px 0;
         }
 
         &.second {
@@ -241,13 +271,21 @@
         }
     }
 
+    .with-icon {
+        display: flex;
+        align-items: center;
+        margin-bottom: 10px;
+
+        span.back {
+            margin-right: 25px;
+            cursor: pointer;
+        }
+    }
     .linked-accounts, .add-institution {
         max-width: $max-width-not-edit;
     }
 
-
     h2 {
-        margin: 20px 0 10px 0;
         color: var(--color-primary-green);
     }
 
@@ -376,101 +414,133 @@
 
 </style>
 <div class="profile">
-    <div class="inner-container">
-        <h2>{I18n.t("profile.title")}</h2>
-        <p class="info">{I18n.t("profile.info")}</p>
-    </div>
-
-    {#if !eduIDLinked && $user.linkedAccounts.length === 0}
-        <div class="banner">
-            <span class="verified-badge">{@html verifiedSvg}</span>
-            <p class="banner-info">{I18n.t("profile.banner")}</p>
-            <Button label={I18n.t("profile.verifyNow")}
-                    className="ghost transparent"
-                    onClick={() => addIdentity(true)}/>
-        </div>
-    {/if}
-    {#if !eduIDLinked && $user.linkedAccounts.length > 0}
-        <div class="banner expired">
-            <span class="verified-badge">{@html alertSvg}</span>
-            <p class="banner-info">{I18n.t("profile.expiredBanner")}</p>
-            <Button label={I18n.t("profile.verifyNow")}
-                    className="ghost transparent"
-                    onClick={() => addIdentity(true)}/>
-        </div>
-    {/if}
-    <div class="inner-container second">
-        <div class="verified-container">
-            <p class="info-section">{I18n.t("profile.basic")}</p>
-            {#if eduIDLinked}
-                <span class="verified">{@html check} {I18n.t("profile.verified")}</span>
-            {:else}
-                <span class="not-verified">{I18n.t("profile.notVerified")}</span>
-            {/if}
-        </div>
-        <EditField firstValue={$user.chosenName}
-                   editableByUser={true}
-                   editLabel={I18n.t("profile.chosenName")}
-                   saveLabel={I18n.t("edit.save")}
-                   editMode={chosenNameEditMode}
-                   onEdit={() => chosenNameEditMode = true}
-                   onSave={value => updateChosenName(value)}
-                   onCancel={() => chosenNameEditMode = false}
-        />
-        <EditField firstValue={$user.givenName}
-                   editableByUser={!preferredAccount}
-                   editLabel={I18n.t(`profile.${preferredAccount ? "validatedGivenName":"givenName"}`)}
-                   addInstitution={addIdentity}
-                   linkedAccount={preferredAccount}
-                   saveLabel={I18n.t("edit.save")}
-                   editMode={givenNameEditMode}
-                   onEdit={() => givenNameEditMode = true}
-                   onSave={value => updateGivenName(value)}
-                   onCancel={() => givenNameEditMode = false}
-        />
-        <EditField firstValue={$user.familyName}
-                   editableByUser={!preferredAccount}
-                   editLabel={I18n.t(`profile.${preferredAccount ? "validatedFamilyName":"familyName"}`)}
-                   addInstitution={addIdentity}
-                   linkedAccount={preferredAccount}
-                   saveLabel={I18n.t("edit.save")}
-                   editMode={familyNameEditMode}
-                   onEdit={() => familyNameEditMode = true}
-                   onSave={value => updateFamilyName(value)}
-                   onCancel={() => familyNameEditMode = false}
-        />
-        <p class="info-section second">{I18n.t("profile.contact")}</p>
-        <EditField firstValue={$user.email}
-                   editableByUser={true}
-                   nameField={true}
-                   error={emailError}
-                   editLabel={I18n.t("profile.email")}
-                   editHint={I18n.t("email.info")}
-                   saveLabel={I18n.t("email.update")}
-                   errorMessage={emailErrorMessage}
-                   editMode={emailEditMode}
-                   onEdit={() => emailEditMode = true}
-                   onSave={value => updateEmailValue(value)}
-                   onCancel={() => cancelEmailEditMode()}
-        />
-            <p class="info-section second">{I18n.t("profile.role")}</p>
-        <section class="linked-accounts">
-            {#each sortedAccounts as account}
-                <InstitutionRole addInstitution={addInstitution}
-                                 removeInstitution={deleteInstitution}
-                                 linkedAccount={account}/>
-            {/each}
-        </section>
-        <div class="add-institution" on:click={() => addIdentity(true)}>
-            <div class="info">
-                <p>{I18n.t("profile.addIdentity")}</p>
-                <em class="info">{I18n.t(`profile.${$config.featureIdVerify ? "proceedVerify" : "proceedConext"}`)}</em>
+    {#if showManageVerifiedInformation}
+        <div class="inner-container">
+            <div class="with-icon">
+                <span class="back" on:click={manageVerifiedInformation}>
+                    {@html arrowLeft}
+                </span>
+                <h2>{I18n.t("profile.verifiedInformation")}</h2></div>
+            <p class="info">{I18n.t("profile.verifiedInformationInfo")}</p>
+            <div class="with-icon">
+                {@html personalInfo}
+                <p class="info">{I18n.t("profile.defaultPreferred")}</p>
             </div>
-            <span class="add">+</span>
         </div>
 
+    {:else}
+        <div class="inner-container">
+            <div class="with-icon">
+                <h2>{I18n.t("profile.title")}</h2>
+            </div>
+            <p class="info">{I18n.t("profile.info")}</p>
+        </div>
 
-    </div>
+        {#if !eduIDLinked && isEmpty($user.linkedAccounts) && isEmpty($user.externalLinkedAccounts)}
+            <div class="banner">
+                <span class="verified-badge">{@html verifiedSvg}</span>
+                <p class="banner-info">{I18n.t("profile.banner")}</p>
+                <Button label={I18n.t("profile.verifyNow")}
+                        className="ghost transparent"
+                        onClick={() => addIdentity(true)}/>
+            </div>
+        {/if}
+        {#if !eduIDLinked && (!isEmpty($user.linkedAccounts) || !isEmpty($user.externalLinkedAccounts))}
+            <div class="banner expired">
+                <span class="verified-badge">{@html alertSvg}</span>
+                <p class="banner-info">{I18n.t("profile.expiredBanner")}</p>
+                <Button label={I18n.t("profile.verifyNow")}
+                        className="ghost transparent"
+                        onClick={() => addIdentity(true)}/>
+            </div>
+        {/if}
+        <div class="inner-container second">
+            <div class="verified-container">
+                <p class="info-section">{I18n.t("profile.basic")}</p>
+                {#if eduIDLinked}
+                    <span class="verified">{@html check} {I18n.t("profile.verified")}</span>
+                {:else}
+                    <span class="not-verified">{I18n.t("profile.notVerified")}</span>
+                {/if}
+            </div>
+            <EditField firstValue={$user.chosenName}
+                       editableByUser={true}
+                       editLabel={I18n.t("profile.chosenName")}
+                       saveLabel={I18n.t("edit.save")}
+                       editMode={chosenNameEditMode}
+                       onEdit={() => chosenNameEditMode = true}
+                       onSave={value => updateChosenName(value)}
+                       onCancel={() => chosenNameEditMode = false}
+            />
+            <EditField firstValue={$user.givenName}
+                       editableByUser={!preferredAccount && !$user.givenNameVerified}
+                       editLabel={I18n.t(`profile.${preferredAccount && $user.givenNameVerified ? "validatedGivenName":"givenName"}`)}
+                       manageVerifiedInformation={manageVerifiedInformation}
+                       linkedAccount={preferredAccount}
+                       saveLabel={I18n.t("edit.save")}
+                       editMode={givenNameEditMode}
+                       onEdit={() => givenNameEditMode = true}
+                       onSave={value => updateGivenName(value)}
+                       onCancel={() => givenNameEditMode = false}
+            />
+            <EditField firstValue={$user.familyName}
+                       editableByUser={!preferredAccount}
+                       editLabel={I18n.t(`profile.${preferredAccount ? "validatedFamilyName":"familyName"}`)}
+                       manageVerifiedInformation={manageVerifiedInformation}
+                       linkedAccount={preferredAccount}
+                       saveLabel={I18n.t("edit.save")}
+                       editMode={familyNameEditMode}
+                       onEdit={() => familyNameEditMode = true}
+                       onSave={value => updateFamilyName(value)}
+                       onCancel={() => familyNameEditMode = false}
+            />
+            {#if !isEmpty($user.externalLinkedAccounts) && !isEmpty($user.dateOfBirth)}
+                <EditField firstValue={dateFromEpoch($user.dateOfBirth)}
+                           editableByUser={false}
+                           editLabel={I18n.t(`profile.validatedDayOfBirth`)}
+                           manageVerifiedInformation={manageVerifiedInformation}
+                           linkedAccount={$user.externalLinkedAccounts[0]}
+                           saveLabel={I18n.t("edit.save")}
+                           editMode={dayOfBirthEditMode}
+                           onEdit={() => dayOfBirthEditMode = true}
+                           onSave={value => value}
+                           onCancel={() => dayOfBirthEditMode = false}
+                />
+            {/if}
+            <p class="info-section second">{I18n.t("profile.contact")}</p>
+            <EditField firstValue={$user.email}
+                       editableByUser={true}
+                       nameField={true}
+                       error={emailError}
+                       editLabel={I18n.t("profile.email")}
+                       editHint={I18n.t("email.info")}
+                       saveLabel={I18n.t("email.update")}
+                       errorMessage={emailErrorMessage}
+                       editMode={emailEditMode}
+                       onEdit={() => emailEditMode = true}
+                       onSave={value => updateEmailValue(value)}
+                       onCancel={() => cancelEmailEditMode()}
+            />
+            <p class="info-section second">{I18n.t("profile.role")}</p>
+            <section class="linked-accounts">
+                {#each sortedAccounts as account}
+                    <InstitutionRole manageVerifiedInformation={manageVerifiedInformation}
+                                     linkedAccount={account}/>
+                {/each}
+            </section>
+            <div class="add-institution"
+                 on:click={() => addIdentity($config.featureIdVerify && isEmpty($user.externalLinkedAccounts))}>
+                <div class="info">
+                    <p>{I18n.t("profile.addIdentity")}</p>
+                    <em class="info">{I18n.t(`profile.${($config.featureIdVerify && isEmpty($user.externalLinkedAccounts)) ? "proceedVerify" : "proceedConext"}`)}</em>
+                </div>
+                <span class="add">+</span>
+            </div>
+
+
+        </div>
+
+    {/if}
 </div>
 {#if outstandingPasswordForgotten}
     <Modal submit={() => updateEmailValue($user.email, true)}
@@ -481,23 +551,15 @@
     </Modal>
 {/if}
 
-<!--{#if showModal && !$config.idVerify}-->
-<!--    <Modal submit={() => addIdentity(false)}-->
-<!--           cancel={() => showModal = false}-->
-<!--           question={I18n.t(`profile.verifyFirstAndLastName.addInstitutionConfirmation`)}-->
-<!--           title={I18n.t(`profile.verifyFirstAndLastName.addInstitution`)}-->
-<!--           confirmTitle={I18n.t("profile.proceed")}>-->
-<!--    </Modal>-->
-<!--{/if}-->
-
 {#if showModal}
     <Modal close={() => showModal = false}
-           controlBody={true}
+           title={I18n.t("verify.modal.header")}
            showOptions={false}>
         <VerifyChoice addInstitution={addInstitution}
                       addBank={addBank}
                       addEuropean={addEuropean}
                       issuers={issuers}
+                      showIdinOptions={showIdinOptions}
                       cancel={() => showModal = false}/>
     </Modal>
 {/if}
@@ -514,19 +576,29 @@
 {#if showPreferredInstitutionModal}
     <Modal submit={() => preferInstitution(false, preferredInstitution)}
            cancel={() => showPreferredInstitutionModal = false}
-           question={I18n.t("profile.preferredInstitutionConfirmation", {name: institutionName(preferredInstitution)})}
            confirmTitle={I18n.t("profile.yes")}
            cancelTitle={I18n.t("profile.no")}
            title={I18n.t("profile.preferInstitution")}>
-        <ValidatedData institution={newInstitution}/>
+        <ValidatedData institution={newInstitution}
+                       replacement={true}/>
     </Modal>
+{/if}
+
+{#if showPostVerificationModal}
+    <Modal submit={() => showPostVerificationModal = false}
+           confirmTitle={I18n.t("profile.ok")}
+           largeConfirmation={true}
+           title={I18n.t("verify.modal.header")}>
+        <ValidatedData institution={$user.externalLinkedAccounts[0]}/>
+    </Modal>
+
 {/if}
 
 {#if showNewInstitutionModal}
     <Modal submit={() => showNewInstitutionModal = false}
-           question={I18n.t("profile.newInstitutionInfo")}
            confirmTitle={I18n.t("profile.ok")}
-           title={I18n.t("profile.newInstitution")}>
+           largeConfirmation={true}
+           title={I18n.t("verify.modal.header")}>
         <ValidatedData institution={newInstitution}/>
     </Modal>
 {/if}

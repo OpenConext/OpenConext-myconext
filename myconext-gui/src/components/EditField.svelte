@@ -30,7 +30,7 @@
     export let errorMessage;
     export let nameField = true;
     export let saveLabel = I18n.t("edit.save");
-    export let addInstitution;
+    export let manageVerifiedInformation;
     export let editHint;
 
     let value = firstValue;
@@ -130,7 +130,7 @@
     }
 
     .view-mode-container {
-        padding: 10px;
+        padding: 14px;
         border: 2px solid var(--color-primary-blue);
         border-radius: 8px;
         display: flex;
@@ -170,7 +170,7 @@
             span.editable-by {
                 margin-top: 2px;
                 color: var(--color-secondary-grey);
-                font-size: 15px;
+                font-size: 14px;
                 font-weight: 100;
             }
         }
@@ -248,7 +248,7 @@
                 <LinkedInstitution linkedAccount={linkedAccount}
                                    includeAffiliations={false}
                                    roleContext={false}
-                                   addInstitution={addInstitution}/>
+                                   manageVerifiedInformation={manageVerifiedInformation}/>
             {/if}
 
         </div>

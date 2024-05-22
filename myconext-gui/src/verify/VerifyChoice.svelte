@@ -11,29 +11,34 @@
     import arrowLeftIcon from "../icons/verify/arrow-left.svg";
     import {logo} from "./banks";
     import alertSvg from "../icons/alert-circle.svg";
+    import Spinner from "../components/Spinner.svelte";
 
     export let addInstitution;
     export let addBank;
     export let addEuropean;
     export let cancel;
     export let issuers;
+    export let showIdinOptions;
 
     let showOtherOptions = false;
     let showBankOptions = false;
+    let busyProcessing = false;
+
+    const proceed = action => {
+        busyProcessing = true;
+        action();
+    }
 
 </script>
 
 <style lang="scss">
-    div.account-link-mod {
-        padding: 18px 32px;
-    }
     div.info-container {
         display: flex;
         flex-direction: column;
         position: relative;
 
         p {
-            margin: 25px 0;
+            margin: 10px 0 20px 0;
         }
 
         span.cancel {
@@ -52,14 +57,6 @@
 
     div.header-container {
         display: flex;
-
-        span {
-            margin-right: 25px;
-        }
-
-        .back {
-            cursor: pointer;
-        }
     }
 
     h3 {
@@ -87,6 +84,7 @@
 
             :global(svg) {
                 margin-left: auto;
+                color: var(--color-primary-blue);
             }
 
         }
@@ -153,15 +151,14 @@
     }
 </style>
 
+{#if busyProcessing}
+    <Spinner/>
+{/if}
 <div class="account-link-mod">
-    {#if !showBankOptions}
+    {#if !showBankOptions || busyProcessing}
         <div class="info-container">
             <h3 class="header">{I18n.t("verify.modal.info.verify")}</h3>
-            <h4 class="info">{I18n.t("verify.modal.info.quick")}</h4>
             <p>{I18n.t("verify.modal.info.please")}</p>
-            <span class="cancel" on:click={() => cancel()}>
-                {@html closeIcon}
-            </span>
         </div>
         <div class="choice-container">
             <div class="choice">
@@ -171,10 +168,11 @@
             <div class="button-container">
                 <Button label={I18n.t("verify.modal.info.selectInstitution")}
                         large={true}
-                        onClick={addInstitution}/>
+                        disabled={busyProcessing}
+                        onClick={() => proceed(addInstitution)}/>
             </div>
         </div>
-        {#if !showOtherOptions && $config.featureIdVerify}
+        {#if !showOtherOptions && $config.featureIdVerify && showIdinOptions}
             <div class="choice-container other-options" on:click={() => showOtherOptions = !showOtherOptions}>
                 <p>{I18n.t("verify.modal.info.other")}</p>
             </div>
@@ -189,8 +187,10 @@
                     <Button label={I18n.t("verify.modal.info.selectBank")}
                             icon={idinIcon}
                             custom={true}
+                            disabled={busyProcessing}
                             large={true}
                             onClick={() => showBankOptions = !showBankOptions}/>
+
                 </div>
             </div>
             <div class="choice-container">
@@ -205,8 +205,9 @@
                     <Button label={I18n.t("verify.modal.info.useEuropean")}
                             icon={eIDASIcon}
                             custom={true}
+                            disabled={busyProcessing}
                             large={true}
-                            onClick={addEuropean}/>
+                            onClick={() => proceed(addEuropean)}/>
                 </div>
             </div>
             <div class="disclaimer">
@@ -214,7 +215,7 @@
             </div>
         {/if}
     {/if}
-    {#if showBankOptions}
+    {#if showBankOptions && !busyProcessing}
         <div class="info-container">
             <div class="header-container">
             <span class="back" on:click={() => showBankOptions = !showBankOptions}>
@@ -229,7 +230,7 @@
         </div>
         <div class="bank-choices-container">
             {#each issuers as issuer}
-                <div class="bank-choice" on:click={() => addBank(issuer.id)}>
+                <div class="bank-choice" on:click={() => proceed(() => addBank(issuer.id))}>
                     {@html logo(issuer.id)}
                     <span>{issuer.name}</span>
                 </div>
@@ -237,7 +238,7 @@
         </div>
     {/if}
 </div>
-{#if showBankOptions}
+{#if showBankOptions && !busyProcessing}
     <div class="alert">
         {@html alertSvg}
         <span>{I18n.t("verify.modal.bank.anotherMethodPrefix")}
@@ -245,6 +246,5 @@
                 {I18n.t("verify.modal.bank.anotherMethodPostfix")}
             </a>
         </span>
-
     </div>
 {/if}

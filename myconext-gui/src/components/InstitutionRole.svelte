@@ -8,8 +8,7 @@
     import {institutionName} from "../utils/services";
 
     export let linkedAccount;
-    export let addInstitution;
-    export let removeInstitution;
+    export let manageVerifiedInformation;
 
     let affiliations;
     let showDropDown = false;
@@ -35,7 +34,7 @@
         border-radius: 8px;
         display: flex;
         flex-direction: column;
-        cursor: pointer;
+
 
         &:hover:not(.show-edit-mode) {
             background-color: #f0f8ff;
@@ -58,6 +57,7 @@
     .affiliation {
         display: flex;
         align-items: center;
+        cursor: pointer;
 
         span.student {
             margin-right: 12px;
@@ -104,9 +104,8 @@
 </style>
 <div class="institution-role"
      class:show-drop-down={showDropDown}
-     on:click={() => showDropDown = !showDropDown}
      class:expired={linkedAccount.expiredRole}>
-    <div class="affiliation">
+    <div class="affiliation" on:click={() => showDropDown = !showDropDown}>
         <span class="student">
         {#if linkedAccount.logoUrl}
             <img src={linkedAccount.logoUrl} alt="logo">
@@ -131,8 +130,7 @@
         <LinkedInstitution linkedAccount={linkedAccount}
                            includeAffiliations={true}
                            roleContext={true}
-                           removeInstitution={removeInstitution}
-                           addInstitution={addInstitution}/>
+                           manageVerifiedInformation={manageVerifiedInformation}/>
     {/if}
 
 </div>

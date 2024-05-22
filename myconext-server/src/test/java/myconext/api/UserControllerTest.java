@@ -276,12 +276,12 @@ public class UserControllerTest extends AbstractIntegrationTest {
     public void removeUserLinkedAccounts() {
         User user = userRepository.findOneUserByEmail("jdoe@example.com");
         assertEquals(2, user.getLinkedAccounts().size());
-
         LinkedAccount linkedAccount = user.getLinkedAccounts().get(0);
+        UpdateLinkedAccountRequest updateLinkedAccountRequest = new UpdateLinkedAccountRequest(linkedAccount.getEduPersonPrincipalName(), null, false);
         given()
                 .when()
                 .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
-                .body(linkedAccount)
+                .body(updateLinkedAccountRequest)
                 .put("/myconext/api/sp/institution")
                 .then()
                 .statusCode(HttpStatus.OK.value());
@@ -289,6 +289,30 @@ public class UserControllerTest extends AbstractIntegrationTest {
         User userFromDB = userRepository.findOneUserByEmail("jdoe@example.com");
 
         assertEquals(1, userFromDB.getLinkedAccounts().size());
+    }
+
+    @Test
+    public void removeUserExternalLinkedAccount() {
+        User user = userRepository.findOneUserByEmail("jdoe@example.com");
+        ExternalLinkedAccount externalLinkedAccount = new ExternalLinkedAccount(
+                "subjectID", IdpScoping.idin, true
+        );
+        user.getExternalLinkedAccounts().add(externalLinkedAccount);
+        userRepository.save(user);
+
+        UpdateLinkedAccountRequest updateLinkedAccountRequest = new UpdateLinkedAccountRequest(
+                null, externalLinkedAccount.getSubjectId(), false);
+        given()
+                .when()
+                .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+                .body(updateLinkedAccountRequest)
+                .put("/myconext/api/sp/institution")
+                .then()
+                .statusCode(HttpStatus.OK.value());
+
+        User userFromDB = userRepository.findOneUserByEmail("jdoe@example.com");
+
+        assertEquals(0, userFromDB.getExternalLinkedAccounts().size());
     }
 
     @Test
@@ -1215,7 +1239,7 @@ public class UserControllerTest extends AbstractIntegrationTest {
 
     @Test
     public void updateLinkedAccount() {
-        UpdateLinkedAccountRequest updateLinkedAccountRequest = new UpdateLinkedAccountRequest("guest@example.nl");
+        UpdateLinkedAccountRequest updateLinkedAccountRequest = new UpdateLinkedAccountRequest("guest@example.nl", null ,false);
         given()
                 .when()
                 .accept(ContentType.JSON)

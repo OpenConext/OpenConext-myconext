@@ -34,5 +34,11 @@ public class ExternalLinkedAccount implements Serializable {
     private Date createdAt;
     @Schema(type = "integer", format = "int64", example = "1634813554997")
     private Date expiresAt;
+    private boolean external = true;
 
+    public ExternalLinkedAccount(String subjectId, IdpScoping idpScoping, boolean external) {
+        this.subjectId = subjectId;
+        this.idpScoping = idpScoping;
+        this.external = external;
+    }
 }

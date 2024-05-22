@@ -83,7 +83,9 @@ public class AttributeMapper {
                         //Date createdAt
                         new Date(),
                         //Date expiresAt
-                        Date.from(Instant.now().plus(DEFAULT_EXPIRATION_YEARS * 365, ChronoUnit.DAYS))
+                        Date.from(Instant.now().plus(DEFAULT_EXPIRATION_YEARS * 365, ChronoUnit.DAYS)),
+                        //boolean external
+                        true
                 );
             }
             case eherkenning: {
@@ -121,7 +123,9 @@ public class AttributeMapper {
                         //Date createdAt
                         new Date(),
                         //Date expiresAt
-                        Date.from(Instant.now().plus(DEFAULT_EXPIRATION_YEARS * 365, ChronoUnit.DAYS))
+                        Date.from(Instant.now().plus(DEFAULT_EXPIRATION_YEARS * 365, ChronoUnit.DAYS)),
+                        //boolean external
+                        true
                 );
             }
         }
