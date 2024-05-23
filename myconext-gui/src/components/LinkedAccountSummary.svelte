@@ -1,0 +1,131 @@
+<script>
+    import I18n from "i18n-js";
+    import {dateFromEpoch} from "../utils/date";
+    import {onMount} from "svelte";
+    import {institutionName, isStudent, linkedAccountFamilyName, linkedAccountGivenName} from "../utils/services";
+
+    import trash from "../icons/verify/bin.svg"
+    import studentIcon from "../icons/student.svg";
+    import personalInfo from "../icons/verify/personalInfo.svg";
+    import {isEmpty} from "../utils/utils";
+    import ValidatedField from "../verify/ValidatedField.svelte";
+
+    export let linkedAccount;
+    export let preferredAccount = false;
+    export let deleteLinkedAccount;
+
+    let expiresAt = 0;
+
+    onMount(() => {
+        if (linkedAccount.external) {
+            expiresAt = linkedAccount.expiresAt;
+        } else {
+            expiresAt = linkedAccount.expiresAtRole ? linkedAccount.expiresAtRole : (linkedAccount.expiresAtNonValidated || linkedAccount.expiresAt);
+        }
+    })
+
+</script>
+<style lang="scss">
+    .linked-account-container {
+        .linked-account {
+            display: flex;
+
+            div.info {
+                display: flex;
+                flex-direction: column;
+                gap: 6px;
+                margin-bottom: 15px;
+
+                h4 {
+                    color: var(--color-primary-green);
+                }
+
+                span {
+                    color: var(--color-tertiare-grey);
+                    font-size: 14px;
+                }
+            }
+
+
+        }
+
+        .button-container {
+            display: flex;
+            align-items: center;
+
+            a {
+                text-decoration: underline;
+            }
+
+            :global(svg) {
+                width: 18px;
+                height: auto;
+                margin-right: 15px;
+            }
+        }
+        .no-valid-information {
+            font-style: italic;
+            margin: 10px 0 25px 0;
+        }
+    }
+</style>
+<div class="linked-account-container">
+    <div class="linked-account">
+        <div class="info">
+            <h4>{I18n.t("profile.from", {name: institutionName(linkedAccount)})}</h4>
+            <span>{@html I18n.t("profile.receivedOnInfo", {date: dateFromEpoch(linkedAccount.createdAt)})}</span>
+            <span>{@html I18n.t("profile.validUntilDateInfo", {date: dateFromEpoch(expiresAt)})}</span>
+        </div>
+        <!--{#if linkedAccount.logoUrl}-->
+        <!--    <img src={linkedAccount.logoUrl} alt="logo">-->
+        <!--{:else if linkedAccount.external}-->
+        <!--    {@html logo(linkedAccount.issuer.id)}-->
+        <!--{:else}-->
+        <!--    {@html notFound}-->
+        <!--{/if}-->
+    </div>
+    <div class="">
+        {#if linkedAccount.idpScoping !== "idin" && !isEmpty(linkedAccountGivenName(linkedAccount))}
+            <ValidatedField label={I18n.t("profile.validatedGivenName")}
+                            icon={preferredAccount ? personalInfo : null}
+                            value={linkedAccountGivenName(linkedAccount)}/>
+        {/if}
+
+        {#if !isEmpty(linkedAccountFamilyName(linkedAccount))}
+            <ValidatedField label={I18n.t("profile.validatedFamilyName")}
+                            icon={preferredAccount ? personalInfo : null}
+                            value={linkedAccountFamilyName(linkedAccount)}/>
+        {/if}
+
+        {#if !isEmpty(linkedAccount.dateOfBirth)}
+            <ValidatedField label={I18n.t("profile.validatedDayOfBirth")}
+                            icon={preferredAccount ? personalInfo : null}
+                            value={dateFromEpoch(linkedAccount.dateOfBirth)}/>
+        {/if}
+
+        {#if isStudent(linkedAccount)}
+            <ValidatedField label={I18n.t("profile.atInstitution", {name: institutionName(linkedAccount)})}
+                            icon={preferredAccount ? personalInfo : null}
+                            overrideShieldIcon={studentIcon}
+                            value={I18n.t("profile.studentRole")}/>
+        {/if}
+
+        {#if (linkedAccount.idpScoping === "idin" || isEmpty(linkedAccountGivenName(linkedAccount))) &&
+        isEmpty(linkedAccount.dateOfBirth) && isEmpty(linkedAccountFamilyName(linkedAccount)) &&
+        !isStudent(linkedAccount)}
+            <div class="no-valid-information">{I18n.t("profile.noValidInformation", {name: institutionName(linkedAccount)})}</div>
+        {/if}
+
+    </div>
+    <div class="button-container">
+        {@html trash}
+        <div class="remove">
+            <a href="/#"
+               on:click|preventDefault|stopPropagation={deleteLinkedAccount}>
+                {I18n.t("profile.removeLinkPrefix")}
+            </a>
+            <span>{I18n.t("profile.removeLinkPostfix")}</span>
+        </div>
+    </div>
+</div>
+

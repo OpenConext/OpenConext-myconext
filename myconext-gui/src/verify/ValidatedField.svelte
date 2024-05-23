@@ -3,6 +3,8 @@
 
     export let label;
     export let value;
+    export let icon;
+    export let overrideShieldIcon;
 
 </script>
 <style lang="scss">
@@ -35,6 +37,7 @@
         .inner-view-mode {
             display: flex;
             flex-direction: column;
+            width: 100%;
 
             div.value {
                 color: var(--color-primary-blue);
@@ -56,6 +59,17 @@
                         height: auto;
                     }
                 }
+
+                span.preferred {
+                    margin: 0 12px 0 auto;
+
+                    :global(svg) {
+                        width: 28px;
+                        height: auto;
+                        color: var(--color-primary-green);
+                    }
+
+                }
             }
 
         }
@@ -75,11 +89,19 @@
         <div class="view-mode">
             <div class="inner-view-mode">
                 <div class="value">
-                    <span class="shield">{@html shieldIcon}</span>
+                    {#if overrideShieldIcon}
+                        <span class="shield">{@html overrideShieldIcon}</span>
+                    {:else}
+                        <span class="shield">{@html shieldIcon}</span>
+                    {/if}
+
                     <div class="values">
                         <span>{value}</span>
                         <span class="editable-by">{label}</span>
                     </div>
+                    {#if icon}
+                        <span class="preferred">{@html icon}</span>
+                    {/if}
                 </div>
             </div>
         </div>

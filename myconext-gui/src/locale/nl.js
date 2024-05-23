@@ -44,8 +44,10 @@ I18n.translations.nl = {
         verifiedInformation: "Je geverifïeerde informatie",
         verifiedInformationInfo: "Dit is een overzicht van de geverifïeerde informatie die we hebben ontvangen van betrouwbare bronnen.",
         defaultPreferred: "Dit icon geeft aan dat deze informatie default wordt gebruikt voor 'je persoonlijke informatie'.",
-        receivedOn: "Ontvangen op {{date}}",
-        validUntilDate: "Geldig tot {{date}}",
+        receivedOn: "op <strong>{{date}}</strong>",
+        receivedOnInfo: "Ontvangen op <strong>{{date}}</strong>",
+        validUntilDate: "Geldig tot <strong>{{date}}</strong>",
+        validUntilDateInfo: "Geldig tot <strong>{{date}}</strong>",
         removeLinkPrefix: "Verwijder deze informatie",
         removeLinkPostfix: " uit je eduID",
         banner: "Sommige diensten vereisen dat je persoonlijke gegevens worden gevalideerd door een vertrouwde partij.",
@@ -89,6 +91,7 @@ I18n.translations.nl = {
         nonEditable: "Geverifiëerd door {{name}}",
         verifiedBy: "Geverifiëerd door {{name}}",
         validUntil: "Geldig tot",
+        from: "Van {{name}}",
         verifyFirstAndLastName: {
             addInstitution: "Instelling toevoegen",
             addInstitutionConfirmation: "Als je doorgaat word je gevraagd in te loggen via de onderwijsinstelling die je wilt koppelen. Selecteer eerst welke instelling je wilt koppelen en log daarna in.<br/> <br/>Nadat je succesvol bent ingelogd kom je hier weer terug.",
@@ -108,6 +111,7 @@ I18n.translations.nl = {
         eppn: "EPPN",
         subjectId: "Subject ID",
         manageInformation: "Manage je geverifïeerde informatie",
+        noValidInformation: "{{name}} heeft geen valide informatie opgeleverd"
     },
     eppnAlreadyLinked: {
         header: "Koppeling niet gemaakt!",
@@ -263,8 +267,8 @@ I18n.translations.nl = {
         cancel: "Annuleren",
         deleted: "De koppeling met instelling {{name}} is verwijderd",
         back: "/instellingen",
-        deleteInstitution: "Verwijder koppeling",
-        deleteInstitutionConfirmation: "Weet je zeker dat je de koppeling met deze instelling wilt verwijderen?<br/> <br/>Sommige diensten vereisen dat je een koppeling hebt met een onderwijsinstelling. Je wordt mogelijk gevraagd een instelling te koppelen als je één van die diensten gebruikt."
+        deleteInstitution: "Verwijder deze informatie",
+        deleteInstitutionConfirmation: "Voor sommige applicaties waarop je wilt inloggen met eduID zijn gevalideerde gegevens nodig. Als je deze gegevens verwijdert, kan je je niet meer aanmelden bij deze toepassingen.<br/><br/>Mogelijk wordt je gevraagd om je gegevens opnieuw te valideren als je er inlogt."
     },
     credential: {
         title: "Bewerk beveiligingssleutel",

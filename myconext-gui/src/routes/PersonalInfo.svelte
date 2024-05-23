@@ -26,10 +26,12 @@
     import ValidatedData from "../components/ValidatedData.svelte";
     import VerifyChoice from "../verify/VerifyChoice.svelte";
     import {dateFromEpoch} from "../utils/date";
+    import LinkedAccountSummary from "../components/LinkedAccountSummary.svelte";
 
     let eduIDLinked = false;
 
     let sortedAccounts = [];
+    let sortedExternalAccounts = [];
     let preferredAccount = null;
     let preferredInstitution = null;
 
@@ -126,7 +128,7 @@
         linkedAccount.expiresAtRole = expiredAt;
         linkedAccount.expiredRole = new Date() > linkedAccount.expiresAtRole;
         if (isEmpty(linkedAccount.givenName) || isEmpty(linkedAccount.familyName)) {
-            linkedAccount.expired = account.expiredRole;
+            linkedAccount.expired = linkedAccount.expiredRole;
             linkedAccount.expiresAtNonValidated = linkedAccount.expiresAtRole.getTime();
         } else {
             linkedAccount.expired = new Date() > new Date(linkedAccount.expiresAt);
@@ -137,6 +139,7 @@
         ($user.linkedAccounts || []).forEach(account => markExpired(account));
         ($user.externalLinkedAccounts || []).forEach(account => markExternalLinkedAccountExpired(account));
         sortedAccounts = ($user.linkedAccounts || []).sort((a, b) => b.createdAt - a.createdAt);
+        sortedExternalAccounts = ($user.externalLinkedAccounts || []).sort((a, b) => b.createdAt - a.createdAt);
         const validLinkedAccounts = sortedAccounts.filter(account => !account.expired);
         const validExternalLinkedAccount = !isEmpty($user.externalLinkedAccounts) && !$user.externalLinkedAccounts[0].expired;
         const linkedAccount = validLinkedAccounts.find(account => account.preferred) || validLinkedAccounts[0];
@@ -144,15 +147,21 @@
             preferredAccount = null;
         } else {
             preferredAccount = linkedAccount;
+            linkedAccount.preferred = true;
         }
         if (!isEmpty($user.externalLinkedAccounts)) {
             if (isEmpty(preferredAccount) || preferredAccount.createdAt < $user.externalLinkedAccounts[0].createdAt) {
                 preferredAccount = $user.externalLinkedAccounts[0];
+                $user.externalLinkedAccounts[0].preferred = true;
+                validLinkedAccounts.forEach(acc => acc.preferred = false);
                 preferredAccount.external = true;
             }
 
         }
         eduIDLinked = validLinkedAccounts.length > 0 || validExternalLinkedAccount;
+        if (isEmpty($user.linkedAccounts) && isEmpty($user.externalLinkedAccounts)) {
+            showManageVerifiedInformation = false;
+        }
     }
 
     const updateChosenName = chosenName => {
@@ -281,6 +290,38 @@
             cursor: pointer;
         }
     }
+
+    .verified-information {
+        max-width: $max-width-not-edit;
+
+        p.info {
+            margin: 25px 0;
+        }
+
+        div.preferred-info {
+            display: flex;
+
+
+            :global(svg) {
+                color: var(--color-primary-green);
+                width: 20px;
+                height: auto;
+                margin: 0 10px auto 0;
+            }
+        }
+
+        div.verified-account {
+            border-top: 1px solid var(--color-primary-grey);
+            margin-top: 25px;
+            padding-top: 25px;
+
+            &:last-child {
+                margin-bottom: 40px;
+            }
+        }
+    }
+
+
     .linked-accounts, .add-institution {
         max-width: $max-width-not-edit;
     }
@@ -416,15 +457,32 @@
 <div class="profile">
     {#if showManageVerifiedInformation}
         <div class="inner-container">
+            <div class="verified-information">
             <div class="with-icon">
                 <span class="back" on:click={manageVerifiedInformation}>
                     {@html arrowLeft}
                 </span>
-                <h2>{I18n.t("profile.verifiedInformation")}</h2></div>
-            <p class="info">{I18n.t("profile.verifiedInformationInfo")}</p>
-            <div class="with-icon">
-                {@html personalInfo}
-                <p class="info">{I18n.t("profile.defaultPreferred")}</p>
+                <h2>{I18n.t("profile.verifiedInformation")}</h2>
+            </div>
+                <p class="info">{I18n.t("profile.verifiedInformationInfo")}</p>
+                <div class="preferred-info">
+                    {@html personalInfo}
+                    <p>{I18n.t("profile.defaultPreferred")}</p>
+                </div>
+                {#each sortedExternalAccounts as linkedAccount}
+                    <div class="verified-account">
+                        <LinkedAccountSummary deleteLinkedAccount={() => deleteInstitution(true, linkedAccount)}
+                                              linkedAccount={linkedAccount}
+                                              preferredAccount={linkedAccount.preferred}/>
+                    </div>
+                {/each}
+                {#each sortedAccounts as linkedAccount}
+                    <div class="verified-account">
+                        <LinkedAccountSummary deleteLinkedAccount={() => deleteInstitution(true, linkedAccount)}
+                                              linkedAccount={linkedAccount}
+                                              preferredAccount={linkedAccount.preferred}/>
+                    </div>
+                {/each}
             </div>
         </div>
 

@@ -5,9 +5,11 @@
     import {user} from "../stores/user";
     import {isEmpty} from "../utils/utils";
     import {dateFromEpoch} from "../utils/date";
+    import personalInfo from "../icons/verify/personalInfo.svg";
 
     export let institution = {};
     export let replacement = false;
+    export let preferredAccount = false;
 
 </script>
 <style lang="scss">
@@ -47,14 +49,17 @@
 
     {#if institution.idpScoping !== "idin"}
         <ValidatedField label={I18n.t("profile.validatedGivenName")}
+                        icon={preferredAccount ? personalInfo : null}
                         value={linkedAccountGivenName(institution)}/>
     {/if}
 
     <ValidatedField label={I18n.t("profile.validatedFamilyName")}
+                    icon={preferredAccount ? personalInfo : null}
                     value={linkedAccountFamilyName(institution)}/>
 
     {#if !isEmpty(institution.dateOfBirth)}
         <ValidatedField label={I18n.t("profile.validatedDayOfBirth")}
+                        icon={preferredAccount ? personalInfo : null}
                         value={dateFromEpoch(institution.dateOfBirth)}/>
     {/if}
 </div>

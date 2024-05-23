@@ -24,3 +24,7 @@ export const linkedAccountGivenName = linkedAccount => {
 export const linkedAccountFamilyName = linkedAccount => {
   return linkedAccount.external ? linkedAccount.preferredLastName : linkedAccount.familyName;
 }
+
+export const isStudent = linkedAccount => {
+  return (linkedAccount.eduPersonAffiliations || []).some(aff => aff.toLowerCase().indexOf("student") > -1);
+}

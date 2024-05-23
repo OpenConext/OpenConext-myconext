@@ -45,7 +45,9 @@ I18n.translations.en = {
         verifiedInformationInfo: "This is an overview of the verified information we have received from trusted sources.",
         defaultPreferred: "This icon indicates the information is used on 'your personal info' as default.",
         receivedOn: "on <strong>{{date}}</strong>",
+        receivedOnInfo: "Received on <strong>{{date}}</strong>",
         validUntilDate: "valid until <strong>{{date}}</strong>",
+        validUntilDateInfo: "Valid until <strong>{{date}}</strong>",
         removeLinkPrefix: "Remove this information",
         removeLinkPostfix: " from your eduID",
         banner: "Some services require that your personal information is validated by a trusted party.",
@@ -89,6 +91,7 @@ I18n.translations.en = {
         nonEditable: "Verified by {{name}}",
         verifiedBy: "Verified by {{name}}",
         validUntil: "Valid until",
+        from: "From {{name}}",
         verifyFirstAndLastName: {
             addInstitution: "Add institution",
             addInstitutionConfirmation: "When you proceed you will be asked to login at the institution you want to link to your eduID. First, select which institution you want to connect; then, login at that institution.<br/><br/>After a successful login you will come back here.",
@@ -108,6 +111,7 @@ I18n.translations.en = {
         eppn: "EPPN",
         subjectId: "Subject ID",
         manageInformation: "Manage your verified information",
+        noValidInformation: "{{name}} has not provided any valid information"
     },
     eppnAlreadyLinked: {
         header: "Connection not added!",
@@ -264,8 +268,8 @@ I18n.translations.en = {
         cancel: "Cancel",
         deleted: "The connection with your institution {{name}} has been removed",
         back: "/institutions",
-        deleteInstitution: "Delete institution",
-        deleteInstitutionConfirmation: "Are you sure you want to delete the connection with this institution?<br/><br/>Some services require that you your eduID is connected to an institution. You might be prompted to connect an institution if you access one of those services."
+        deleteInstitution: "Delete this information?",
+        deleteInstitutionConfirmation: "Some applications you want to login to with eduID require validated information. By deleting this information you will not be able to login to those applications.<br/><br/>You might be prompted to validate your information again if you want to access them."
     },
     credential: {
         title: "Edit security key",

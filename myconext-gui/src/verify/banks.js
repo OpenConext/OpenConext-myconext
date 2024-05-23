@@ -5,6 +5,7 @@ import INGBNL2A from "../icons/verify/banks/ing.svg";
 import RABONL2U from "../icons/verify/banks/rabo.svg";
 import RBRBNL21 from "../icons/verify/banks/regiobank.svg";
 import SNSBNL2A from "../icons/verify/banks/sns.svg";
+import EHERKENNING from "../icons/verify/eIDAS_color.svg";
 
 
 export function logo(id) {
@@ -16,5 +17,6 @@ export function logo(id) {
         case "RABONL2U": return RABONL2U;
         case "RBRBNL21": return RBRBNL21;
         case "SNSBNL2A": return SNSBNL2A;
+        case "eherkenning": return EHERKENNING;
     }
 }
