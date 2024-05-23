@@ -197,8 +197,7 @@ public class AccountLinkerController implements UserAuthentication {
     @GetMapping("/idp/oidc/account/{id}")
     @Hidden
     public ResponseEntity startIdPLinkAccountFlow(@PathVariable("id") String id,
-                                                  @RequestParam(value = "forceAuth", required = false, defaultValue = "false") boolean forceAuth,
-                                                  @RequestParam(value = "useExternalValidation", required = false, defaultValue = "false") boolean useExternalValidation) throws UnsupportedEncodingException {
+                                                  @RequestParam(value = "forceAuth", required = false, defaultValue = "false") boolean forceAuth) throws UnsupportedEncodingException {
         LOG.debug("Start IdP link account flow");
 
         Optional<SamlAuthenticationRequest> optionalSamlAuthenticationRequest = authenticationRequestRepository.findByIdAndNotExpired(id);
@@ -207,17 +206,11 @@ public class AccountLinkerController implements UserAuthentication {
         }
         SamlAuthenticationRequest samlAuthenticationRequest = optionalSamlAuthenticationRequest.get();
 
-        //when there are retries we remember the choice of the user (for now)
-        if (useExternalValidation && useExternalValidationFeature && !samlAuthenticationRequest.isUseExternalValidation()) {
-            samlAuthenticationRequest.setUseExternalValidation(true);
-            authenticationRequestRepository.save(samlAuthenticationRequest);
-        }
         String userId = samlAuthenticationRequest.getUserId();
         User user = userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException(userId));
 
         String state = String.format("id=%s&user_uid=%s", id, passwordEncoder.encode(user.getUid()));
-        UriComponents uriComponents = doStartLinkAccountFlow(state, idpFlowRedirectUri, forceAuth,
-                samlAuthenticationRequest.isUseExternalValidation(), samlAuthenticationRequest.getRequesterEntityId());
+        UriComponents uriComponents = doStartLinkAccountFlow(state, idpFlowRedirectUri, forceAuth, samlAuthenticationRequest.getRequesterEntityId());
         return ResponseEntity.status(HttpStatus.FOUND).location(uriComponents.toUri()).build();
     }
 
@@ -227,7 +220,7 @@ public class AccountLinkerController implements UserAuthentication {
                                                                      @RequestParam(value = "forceAuth", required = false, defaultValue = "false") boolean forceAuth) throws UnsupportedEncodingException {
         LOG.debug("Start create from institution");
         String state = request.getSession(true).getId();
-        UriComponents uriComponents = doStartLinkAccountFlow(state, spCreateFromInstitutionRedirectUri, forceAuth, false, myConextSpEntityId);
+        UriComponents uriComponents = doStartLinkAccountFlow(state, spCreateFromInstitutionRedirectUri, forceAuth, myConextSpEntityId);
         return ResponseEntity.ok(Collections.singletonMap("url", uriComponents.toUriString()));
     }
 
@@ -417,7 +410,7 @@ public class AccountLinkerController implements UserAuthentication {
             state = passwordEncoder.encode(user.getUid());
             redirectUri = this.spFlowRedirectUri;
         }
-        UriComponents uriComponents = doStartLinkAccountFlow(state, redirectUri, true, false, myConextSpEntityId);
+        UriComponents uriComponents = doStartLinkAccountFlow(state, redirectUri, true, myConextSpEntityId);
         return ResponseEntity.ok(new AuthorizationURL(uriComponents.toUriString()));
     }
 
@@ -572,7 +565,7 @@ public class AccountLinkerController implements UserAuthentication {
         return ResponseEntity.status(HttpStatus.FOUND).location(URI.create("TODO")).build();
     }
 
-    private UriComponents doStartLinkAccountFlow(String state, String redirectUri, boolean forceAuth, boolean useExternalValidation, String requesterEntityId) throws UnsupportedEncodingException {
+    private UriComponents doStartLinkAccountFlow(String state, String redirectUri, boolean forceAuth, String requesterEntityId) {
         Map<String, String> params = new HashMap<>();
 
         params.put("client_id", clientId);
@@ -583,11 +576,6 @@ public class AccountLinkerController implements UserAuthentication {
         if (forceAuth) {
             params.put("prompt", "login");
         }
-        if (useExternalValidation) {
-            params.put("login_hint", this.idpExternalValidationEntityId);
-            params.put("acr_values", requesterEntityId);
-        }
-
         UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(oidcBaseUrl + "/oidc/authorize");
         params.forEach(builder::queryParam);
         return builder.build();

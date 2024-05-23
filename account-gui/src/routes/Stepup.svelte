@@ -24,9 +24,8 @@
         });
     });
 
-    const proceed = useExternalValidation => {
-        const queryParams = ($conf.useExternalValidation && useExternalValidation) ? "?useExternalValidation=true" : ""
-        window.location.href = `/myconext/api/idp/oidc/account/${id}${queryParams}`;
+    const proceed = () => {
+        window.location.href = `/myconext/api/idp/oidc/account/${id}`;
     };
 </script>
 
@@ -53,11 +52,5 @@
         <Button href="/proceed" onClick={() => proceed(false)}
                 className="full"
                 label={I18n.t("stepup.link")}/>
-        {#if $conf.useExternalValidation}
-            <Button href="/proceed" onClick={() => proceed(true)}
-                    className="full"
-                    label={I18n.t("stepup.linkExternalValidation")}/>
-        {/if}
-
     </div>
 </div>

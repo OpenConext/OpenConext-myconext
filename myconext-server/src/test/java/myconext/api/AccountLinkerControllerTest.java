@@ -83,7 +83,6 @@ public class AccountLinkerControllerTest extends AbstractIntegrationTest {
         String location = given().redirects().follow(false)
                 .when()
                 .contentType(ContentType.JSON)
-                .queryParam("useExternalValidation", true)
                 .get("/myconext/api/idp/oidc/account/" + authenticationRequestId)
                 .getHeader("Location");
 

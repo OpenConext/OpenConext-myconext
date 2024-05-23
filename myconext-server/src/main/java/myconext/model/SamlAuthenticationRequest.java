@@ -67,8 +67,6 @@ public class SamlAuthenticationRequest implements Serializable {
 
     private String serviceName;
 
-    private boolean useExternalValidation;
-
     private boolean rememberMeQuestionAsked = false;
 
     public SamlAuthenticationRequest(boolean testInstance) {
@@ -147,10 +145,6 @@ public class SamlAuthenticationRequest implements Serializable {
 
     public void setServiceName(String serviceName) {
         this.serviceName = serviceName;
-    }
-
-    public void setUseExternalValidation(boolean useExternalValidation) {
-        this.useExternalValidation = useExternalValidation;
     }
 
     public void setRememberMeQuestionAsked(boolean rememberMeQuestionAsked) {
