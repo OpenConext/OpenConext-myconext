@@ -9,3 +9,4 @@ jobs:
   call-workflow-passing-data:
     name: Daily security check (Reusable Workflow)
     uses: openconext/openconext-githubactions/.github/workflows/daily-security-check.yml@main
+    secrets: inherit
