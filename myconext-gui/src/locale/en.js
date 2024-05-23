@@ -266,7 +266,7 @@ I18n.translations.en = {
         expiresValue: "{{date}}",
         delete: "Remove connection",
         cancel: "Cancel",
-        deleted: "The connection with your institution {{name}} has been removed",
+        deleted: "The information received from {{name}} has been removed",
         back: "/institutions",
         deleteInstitution: "Delete this information?",
         deleteInstitutionConfirmation: "Some applications you want to login to with eduID require validated information. By deleting this information you will not be able to login to those applications.<br/><br/>You might be prompted to validate your information again if you want to access them."

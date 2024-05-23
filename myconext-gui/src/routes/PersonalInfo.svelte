@@ -123,13 +123,11 @@
     }
 
     const markExpired = linkedAccount => {
-        const expiredAt = new Date(linkedAccount.createdAt);
-        expiredAt.setDate(expiredAt.getDate() + parseInt($config.expirationNonValidatedDurationDays, 10));
-        linkedAccount.expiresAtRole = expiredAt;
-        linkedAccount.expiredRole = new Date() > linkedAccount.expiresAtRole;
         if (isEmpty(linkedAccount.givenName) || isEmpty(linkedAccount.familyName)) {
-            linkedAccount.expired = linkedAccount.expiredRole;
-            linkedAccount.expiresAtNonValidated = linkedAccount.expiresAtRole.getTime();
+            const expiresAt = new Date(linkedAccount.createdAt);
+            expiresAt.setDate(expiresAt.getDate() + parseInt($config.expirationNonValidatedDurationDays, 10));
+            linkedAccount.expiresAt = expiresAt.getTime();
+            linkedAccount.expired = new Date() > expiresAt;
         } else {
             linkedAccount.expired = new Date() > new Date(linkedAccount.expiresAt);
         }

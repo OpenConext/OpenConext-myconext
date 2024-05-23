@@ -47,14 +47,8 @@ public class MailConfiguration {
     @Autowired
     private EmailsSendRepository emailsSendRepository;
 
-    @Autowired
-    private Environment environment;
-
     @Bean
     public MailBox mailSenderProd() throws IOException {
-        if (environment.acceptsProfiles(Profiles.of("dev", "test", "shib"))) {
-            return new MockMailBox(mailSender, emailFrom, magicLinkUrl, mySURFconextURL, loginSURFconextURL, objectMapper, mailTemplatesDirectory, emailsSendRepository, environment);
-        }
         return new MailBox(mailSender, emailFrom, magicLinkUrl, mySURFconextURL, loginSURFconextURL, objectMapper, mailTemplatesDirectory,
                 emailsSendRepository, emailSpamThresholdSeconds);
     }

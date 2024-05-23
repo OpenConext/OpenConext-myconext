@@ -188,12 +188,12 @@ spring:
       auto-index-creation: false
   mail:
     host: localhost
-    port: 3025
+    port: 1025
 
 management:
   health:
     mail:
-      enabled: false
+      enabled: true
   endpoints:
     web:
       exposure:
@@ -202,6 +202,9 @@ management:
   endpoint:
     info:
       enabled: true
+    health:
+      enabled: true
+      show-details: always
     mappings:
       enabled: true
     metrics:

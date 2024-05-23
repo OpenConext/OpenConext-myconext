@@ -302,7 +302,7 @@ public class GuestIdpAuthenticationRequestFilter extends OncePerRequestFilter im
 
     public static boolean hasRequiredStudentAffiliation(List<String> affiliations) {
         return !CollectionUtils.isEmpty(affiliations) && affiliations.stream()
-                .anyMatch(affiliation -> affiliation.startsWith("student@"));
+                .anyMatch(affiliation -> affiliation.toLowerCase().contains("student"));
     }
 
     private List<String> getAuthenticationContextClassReferenceValues(AuthnRequest authenticationRequest) {

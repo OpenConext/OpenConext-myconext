@@ -265,7 +265,7 @@ I18n.translations.nl = {
         expiresValue: "{{date}}",
         delete: "Verwijder koppeling",
         cancel: "Annuleren",
-        deleted: "De koppeling met instelling {{name}} is verwijderd",
+        deleted: "De informatie ontvangen van {{name}} is verwijderd",
         back: "/instellingen",
         deleteInstitution: "Verwijder deze informatie",
         deleteInstitutionConfirmation: "Voor sommige applicaties waarop je wilt inloggen met eduID zijn gevalideerde gegevens nodig. Als je deze gegevens verwijdert, kan je je niet meer aanmelden bij deze toepassingen.<br/><br/>Mogelijk wordt je gevraagd om je gegevens opnieuw te valideren als je er inlogt."

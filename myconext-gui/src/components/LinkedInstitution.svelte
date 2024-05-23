@@ -15,11 +15,7 @@
 
     onMount(() => {
         affiliations = Array.from(new Set(linkedAccount.eduPersonAffiliations));
-        if (linkedAccount.external) {
-            expiresAt = linkedAccount.expiresAt;
-        } else {
-            expiresAt = roleContext ? linkedAccount.expiresAtRole : (linkedAccount.expiresAtNonValidated || linkedAccount.expiresAt);
-        }
+        expiresAt = linkedAccount.expiresAt;
     })
 
 </script>

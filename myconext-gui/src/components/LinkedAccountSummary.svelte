@@ -17,11 +17,7 @@
     let expiresAt = 0;
 
     onMount(() => {
-        if (linkedAccount.external) {
-            expiresAt = linkedAccount.expiresAt;
-        } else {
-            expiresAt = linkedAccount.expiresAtRole ? linkedAccount.expiresAtRole : (linkedAccount.expiresAtNonValidated || linkedAccount.expiresAt);
-        }
+        expiresAt = linkedAccount.expiresAt;
     })
 
 </script>
@@ -41,8 +37,11 @@
                 }
 
                 span {
-                    color: var(--color-tertiare-grey);
+                    color: var(--color-secondary-grey);
                     font-size: 14px;
+                    &.expired {
+                        color: var(--color-warning-red);
+                    }
                 }
             }
 
@@ -74,7 +73,11 @@
         <div class="info">
             <h4>{I18n.t("profile.from", {name: institutionName(linkedAccount)})}</h4>
             <span>{@html I18n.t("profile.receivedOnInfo", {date: dateFromEpoch(linkedAccount.createdAt)})}</span>
-            <span>{@html I18n.t("profile.validUntilDateInfo", {date: dateFromEpoch(expiresAt)})}</span>
+            <span>{@html I18n.t("profile.validUntilDateInfo", {date: dateFromEpoch(expiresAt)})}
+                {#if linkedAccount.expired}
+                    <span class="expired"> ({I18n.t("profile.expired")})</span>
+                {/if}
+            </span>
         </div>
         <!--{#if linkedAccount.logoUrl}-->
         <!--    <img src={linkedAccount.logoUrl} alt="logo">-->

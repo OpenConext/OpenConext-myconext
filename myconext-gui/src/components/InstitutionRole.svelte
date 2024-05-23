@@ -104,7 +104,7 @@
 </style>
 <div class="institution-role"
      class:show-drop-down={showDropDown}
-     class:expired={linkedAccount.expiredRole}>
+     class:expired={linkedAccount.expired}>
     <div class="affiliation" on:click={() => showDropDown = !showDropDown}>
         <span class="student">
         {#if linkedAccount.logoUrl}
@@ -115,7 +115,7 @@
         </span>
         <div class="role">
             <p>{affiliations || I18n.t("profile.studentRole")}
-                {#if linkedAccount.expiredRole}
+                {#if linkedAccount.expired}
                     <span class="expired">{` (${I18n.t("profile.expired")})`}</span>
                 {/if}
             </p>
