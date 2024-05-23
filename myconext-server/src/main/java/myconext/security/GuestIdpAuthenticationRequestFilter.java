@@ -177,7 +177,7 @@ public class GuestIdpAuthenticationRequestFilter extends OncePerRequestFilter im
             return;
         }
         if (!HttpMethod.GET.name().equalsIgnoreCase(request.getMethod())) {
-            throw new IllegalArgumentException("Only GET redirect are support. Not: "+request.getMethod());
+            throw new IllegalArgumentException("Only GET redirect are support. Not: " + request.getMethod());
         }
         AuthnRequest authnRequest = this.samlService.parseAuthnRequest(samlRequest, true, true);
 

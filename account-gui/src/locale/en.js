@@ -111,8 +111,7 @@ I18n.translations.en = {
     stepup: {
         header: "One more thing!",
         info: "To proceed to <strong>{{name}}</strong>, you must meet the following condition(s).",
-        link: "Verify this via SURFconext",
-        linkExternalValidation: "Verify this via ReadID"
+        link: "Verify now"
     },
     footer: {
         privacy: "Privacy policy",

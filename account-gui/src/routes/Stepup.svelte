@@ -15,7 +15,6 @@
 
     onMount(() => {
         $links.displayBackArrow = false;
-
         const urlSearchParams = new URLSearchParams(window.location.search);
         explanation = decodeURIComponent(urlSearchParams.get("explanation"));
         fetchServiceName(id).then(res => {
