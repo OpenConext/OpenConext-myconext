@@ -50,7 +50,7 @@ yarn install
 yarn start
 ```
 
-There is no home page, you'll need to visit a SP and choose eduID to login.
+There is no home page, you'll need to visit an SP and choose eduID to login.
 
 ### [Build](#build)
 
@@ -58,6 +58,14 @@ To deploy production bundles
 ```bash
 mvn deploy
 ```
+### [Mail](#mail)
+
+The default mail configuration sends mails to port 1025. Install https://mailpit.axllent.org/ and capture all emails send. 
+You can see all mails delivered at http://0.0.0.0:8025/ when mailpit is installed.
+```bash
+brew install mailpit
+```
+
 ### [Crypto](#crypto)
 
 The myconext application uses a private RSA key and corresponding certificate to sign the SAML requests. We don't want
