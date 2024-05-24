@@ -6,8 +6,6 @@
     import idinIcon from "../icons/verify/idin-logo.svg";
     import eIDASIcon from "../icons/verify/eIDAS.svg";
     import europeanSvg from "../icons/verify/european.svg";
-    import {config} from "../stores/user";
-    import closeIcon from "../icons/verify/close_smll.svg";
     import arrowLeftIcon from "../icons/verify/arrow-left.svg";
     import {logo} from "./banks";
     import alertSvg from "../icons/alert-circle.svg";
@@ -16,10 +14,8 @@
     export let addInstitution;
     export let addBank;
     export let addEuropean;
-    export let cancel;
     export let issuers = [];
     export let showInstitutionOption = true;
-    export let showIdinOptions = false;
 
     let showOtherOptions = false;
     let showBankOptions = false;
@@ -37,33 +33,26 @@
         display: flex;
         flex-direction: column;
         position: relative;
-
-        p {
-            margin: 10px 0 20px 0;
-        }
-
-        span.cancel {
-            position: absolute;
-            right: -6px;
-            top: -6px;
-            cursor: pointer;
-
-            :global(svg) {
-                fill: var(--color-secondary-grey);
-                width: 30px;
-                height: auto;
-            }
-        }
+        margin-bottom: 20px;
     }
 
     div.header-container {
         display: flex;
-    }
+        align-items: center;
+        margin-bottom: 20px;
 
-    h3 {
-        &.header {
+        span.back {
+            margin-right: 25px;
+            cursor: pointer;
+
+            :global(svg) {
+                width: 24px;
+                height: auto;
+            }
+        }
+
+        h2.header {
             color: var(--color-primary-green);
-            margin-bottom: 10px;
         }
 
     }
@@ -82,14 +71,26 @@
         .choice {
             display: flex;
             gap: 20px;
+            align-items: center;
 
             :global(svg) {
                 margin-left: auto;
                 color: var(--color-primary-blue);
             }
 
+            :global(svg.student-icon) {
+                width: 52px;
+                height: auto;
+            }
+
+
         }
 
+        p.support {
+            margin-top: 12px;
+            font-size: 15px;
+            color: #4e4e4e;
+        }
         .button-container {
             display: flex;
         }
@@ -145,9 +146,9 @@
         padding: 15px;
 
         :global(svg.alert-circle) {
-            width: 22px;
+            width: 48px;
             height: auto;
-            margin-right: 20px;
+            margin-right: 16px;
         }
     }
 </style>
@@ -156,11 +157,11 @@
     <Spinner/>
 {/if}
 <div class="account-link-mod">
-    {#if (!showBankOptions || busyProcessing) && !showInstitutionOption}
+    {#if (!showBankOptions || busyProcessing)}
         <div class="info-container">
-            <h3 class="header">{I18n.t("verify.modal.info.verify")}</h3>
-            <p>{I18n.t("verify.modal.info.please")}</p>
+            <h2 class="header">{I18n.t("verify.modal.info.verify")}</h2>
         </div>
+        {#if showInstitutionOption}
         <div class="choice-container">
             <div class="choice">
                 <h4>{I18n.t("verify.modal.info.educationalInstitution")}</h4>
@@ -173,12 +174,13 @@
                         onClick={() => proceed(addInstitution)}/>
             </div>
         </div>
-        {#if !showOtherOptions && $config.featureIdVerify && showIdinOptions}
+        {/if}
+        {#if !showOtherOptions && showInstitutionOption}
             <div class="choice-container other-options" on:click={() => showOtherOptions = !showOtherOptions}>
                 <p>{I18n.t("verify.modal.info.other")}</p>
             </div>
         {/if}
-        {#if showOtherOptions}
+        {#if showOtherOptions || !showInstitutionOption}
             <div class="choice-container">
                 <div class="choice">
                     <h4>{I18n.t("verify.modal.info.verifyBank")}</h4>
@@ -222,12 +224,9 @@
             <span class="back" on:click={() => showBankOptions = !showBankOptions}>
                 {@html arrowLeftIcon}
             </span>
-                <h3 class="header">{I18n.t("verify.modal.bank.select")}</h3>
+                <h2 class="header">{I18n.t("verify.modal.bank.select")}</h2>
             </div>
             <p>{@html I18n.t("verify.modal.bank.disclaimer")}</p>
-            <span class="cancel" on:click={() => cancel()}>
-                {@html closeIcon}
-            </span>
         </div>
         <div class="bank-choices-container">
             {#each issuers as issuer}

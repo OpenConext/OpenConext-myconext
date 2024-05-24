@@ -72,6 +72,14 @@ public class UserControllerTest extends AbstractIntegrationTest {
     }
 
     @Test
+    public void serviceNameDummy() throws IOException {
+        when()
+                .get("/myconext/api/idp/service/name/42")
+                .then()
+                .body("name", equalTo("This Beautiful Service"));
+    }
+
+    @Test
     public void newUserNotFound() throws IOException {
         magicLinkRequest(user("new@example.com"), HttpMethod.PUT)
                 .response
@@ -1087,6 +1095,11 @@ public class UserControllerTest extends AbstractIntegrationTest {
                 .get("/myconext/api/idp/service/hash/" + samlAuthenticationRequest.getHash())
                 .then()
                 .body("name", equalTo("https://manage.surfconext.nl/shibboleth"));
+        Map<String, Object> userMap = when()
+                .get("/myconext/api/idp/me/" + samlAuthenticationRequest.getHash())
+                .as(new TypeRef<>() {
+                });
+        assertEquals("jdoe@example.com", userMap.get("email"));
         when()
                 .get("/myconext/api/idp/service/id/" + samlAuthenticationRequest.getId())
                 .then()

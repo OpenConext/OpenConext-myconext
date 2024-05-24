@@ -43,6 +43,7 @@
     import RememberMe from "./routes/RememberMe.svelte";
     import AppRequired from "./routes/AppRequired.svelte";
     import RedirectMobileApp from "./routes/RedirectMobileApp.svelte";
+    import ConfirmExternalStepup from "./routes/ConfirmExternalStepup.svelte";
 
     export let url = "";
 
@@ -95,7 +96,9 @@
         --color-primary-black: #202020;
         --color-primary-red: #ff0000;
         --color-primary-grey: #d0d0d0;
-
+        --color-secondary-grey: #707070;
+        --color-tertiare-grey: #989898;
+        --color-background: #eaeaea;
         --width-app: 400px;
 
     }
@@ -192,6 +195,7 @@
                 </Route>
                 <Route path="/confirm" component={Confirm}/>
                 <Route path="/confirm-stepup" component={ConfirmStepup}/>
+                <Route path="/confirm-external-stepup" component={ConfirmExternalStepup}/>
                 <Route path="/success" component={Success}/>
                 <Route path="/expired" component={LinkExpired}/>
                 <Route path="/max-attempts" component={MaxAttempts}/>

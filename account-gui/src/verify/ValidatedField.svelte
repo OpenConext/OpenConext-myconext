@@ -32,7 +32,6 @@
     .view-mode {
         display: flex;
         align-items: center;
-        cursor: pointer;
 
         .inner-view-mode {
             display: flex;

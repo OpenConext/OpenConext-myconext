@@ -36,11 +36,11 @@ public class ACR {
         if (acrValues.contains(PROFILE_MFA)) {
             return PROFILE_MFA;
         }
-        if (acrValues.contains(VALIDATE_NAMES)) {
-            return VALIDATE_NAMES;
-        }
         if (acrValues.contains(VALIDATE_NAMES_EXTERNAL)) {
             return VALIDATE_NAMES_EXTERNAL;
+        }
+        if (acrValues.contains(VALIDATE_NAMES)) {
+            return VALIDATE_NAMES;
         }
         if (acrValues.contains(AFFILIATION_STUDENT) && studentAffiliationPresent) {
             return AFFILIATION_STUDENT;
@@ -55,11 +55,11 @@ public class ACR {
         if (acrValues.contains(PROFILE_MFA)) {
             return "profile_mfa";
         }
-        if (acrValues.contains(VALIDATE_NAMES)) {
-            return "validate_names";
-        }
         if (acrValues.contains(VALIDATE_NAMES_EXTERNAL)) {
             return "validate_names_external";
+        }
+        if (acrValues.contains(VALIDATE_NAMES)) {
+            return "validate_names";
         }
         if (acrValues.contains(AFFILIATION_STUDENT) && studentAffiliationPresent) {
             return "affiliation_student";

@@ -11,6 +11,7 @@ import myconext.model.*;
 import org.junit.Rule;
 import org.junit.Test;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.util.MultiValueMap;
@@ -18,6 +19,8 @@ import org.springframework.web.util.UriComponents;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.io.IOException;
+import java.net.URLDecoder;
+import java.nio.charset.Charset;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -26,6 +29,7 @@ import static com.github.tomakehurst.wiremock.client.WireMock.*;
 import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
 import static io.restassured.RestAssured.given;
 import static myconext.api.AccountLinkerController.parseAffiliations;
+import static myconext.security.GuestIdpAuthenticationRequestFilter.BROWSER_SESSION_COOKIE_NAME;
 import static org.junit.Assert.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -718,6 +722,59 @@ public class AccountLinkerControllerTest extends AbstractIntegrationTest {
 
         User user = userRepository.findOneUserByEmail("jdoe@example.com");
         assertEquals(1, user.getExternalLinkedAccounts().size());
+    }
+
+    @Test
+    public void idpVerifyIDFlow() throws IOException {
+        MagicLinkResponse magicLinkResponse = magicLinkRequest(user("jdoe@example.com"), HttpMethod.PUT);
+
+        String authorizationURL = given().redirects().follow(false)
+                .when()
+                .queryParam("idpScoping", IdpScoping.eherkenning)
+                .contentType(ContentType.JSON)
+                .pathParam("id", magicLinkResponse.authenticationRequestId)
+                .get("/myconext/api/idp/verify/link/{id}")
+                .header("Location");
+
+        assertTrue(authorizationURL.startsWith("http://localhost:8098/broker/sp/oidc/authenticate"));
+
+        MultiValueMap<String, String> queryParams = UriComponentsBuilder
+                .fromUriString(authorizationURL)
+                .build().getQueryParams();
+        String scope = URLDecoder.decode( queryParams.getFirst("scope"), Charset.defaultCharset());
+        assertEquals("openid dateofbirth name idp_scoping:eherkenning", scope);
+
+        String state = queryParams.getFirst("state");
+        //Now call the redirect URI for the redirect by iDIN or eHerkenning
+        stubFor(post(urlPathMatching("/broker/sp/oidc/token")).willReturn(aResponse()
+                .withHeader("Content-Type", "application/json")
+                .withBody(objectMapper.writeValueAsString(Collections.singletonMap("access_token", "123456")))));
+        String userInfo = readFile("verify/eherkenning.json");
+        stubFor(post(urlPathMatching("/broker/sp/oidc/userinfo")).willReturn(aResponse()
+                .withHeader("Content-Type", "application/json")
+                .withBody(userInfo)));
+
+        String location = given().redirects().follow(false)
+                .when()
+                .queryParam("code", "123456")
+                .queryParam("state", state)
+                .contentType(ContentType.JSON)
+                .get("/myconext/api/idp/verify/redirect")
+                .getHeader("Location");
+
+        assertTrue(location.startsWith("http://localhost:8081/saml/guest-idp/magic?h="));
+
+        User user = userRepository.findOneUserByEmail("jdoe@example.com");
+        assertEquals(1, user.getExternalLinkedAccounts().size());
+
+        SamlAuthenticationRequest samlAuthenticationRequest = authenticationRequestRepository.findById(magicLinkResponse.authenticationRequestId).get();
+        location = given().redirects().follow(false)
+                .when()
+                .queryParam("h", samlAuthenticationRequest.getHash())
+                .cookie(BROWSER_SESSION_COOKIE_NAME, "true")
+                .get("/saml/guest-idp/magic")
+                .header("Location");
+        assertTrue(location.startsWith("http://localhost:3000/confirm-stepup?h="));
     }
 
     private Map<Object, Object> userInfoMap(String eppn) {

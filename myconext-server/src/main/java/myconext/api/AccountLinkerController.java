@@ -137,9 +137,7 @@ public class AccountLinkerController implements UserAuthentication {
             @Value("${oidc.base-url}") String oidcBaseUrl,
             @Value("${base_path}") String basePath,
             @Value("${linked_accounts.removal-duration-days-validated}") long removalValidatedDurationDays,
-            @Value("${account_linking.idp_external_validation_entity_id}") String idpExternalValidationEntityId,
             @Value("${account_linking.myconext_sp_entity_id}") String myConextSpEntityId,
-            @Value("${feature.use_external_validation}") boolean useExternalValidationFeature,
             @Value("${feature.create_eduid_institution_enabled}") boolean createEduIDInstitutionEnabled,
             @Value("${email_guessing_sleep_millis}") int emailGuessingSleepMillis,
             @Value("${verify.client_id}") String verifyClientId,
@@ -431,7 +429,7 @@ public class AccountLinkerController implements UserAuthentication {
                                     {@ExampleObject(value =
                                             "{\"url\":\"https://validate.test.eduid.nl/broker/sp/oidc/authenticate?scope=openid&response_type=code&redirect_uri=https://mijn.test2.eduid.nl/myconext/api/sp/verify/redirect&state=%242a%2410%249cyC3mjeJW0ljb%2FmPAGj0O4DVXz9LPw5U%2Fthl110BVYWFpMhjwKyK&prompt=login&client_id=myconext.ala.eduid\"}")})})}
     )
-    public ResponseEntity<AuthorizationURL> startVerifyIDLinkAccountFlow(Authentication authentication,
+    public ResponseEntity<AuthorizationURL> startSPVerifyIDLinkAccountFlow(Authentication authentication,
                                                                        @RequestParam("idpScoping") IdpScoping idpScoping,
                                                                        @RequestParam(value = "bankId", required = false) String bankId) {
         LOG.debug("Start verify account flow");
@@ -472,7 +470,7 @@ public class AccountLinkerController implements UserAuthentication {
     @Hidden
     public ResponseEntity spVerifyIDRedirect(Authentication authentication,
                                              @RequestParam("code") String code,
-                                             @RequestParam("state") String state) throws UnsupportedEncodingException {
+                                             @RequestParam("state") String state) {
         LOG.debug("In SP verify ID redirect link account");
 
         User user = userFromAuthentication(authentication);
@@ -525,14 +523,53 @@ public class AccountLinkerController implements UserAuthentication {
         return ResponseEntity.status(HttpStatus.FOUND).location(URI.create(spRedirectUrl + "/personal?verify=" + externalLinkedAccount.getIdpScoping())).build();
     }
 
+    @GetMapping("/idp/verify/link/{id}")
+    @Hidden
+    public ResponseEntity<AuthorizationURL> startIdPVerifyIDLinkAccountFlow(@PathVariable("id") String id,
+                                                                            @RequestParam("idpScoping") IdpScoping idpScoping,
+                                                                            @RequestParam(value = "bankId", required = false) String bankId) {
+        LOG.debug("Start Idp verify account flow");
+        Optional<SamlAuthenticationRequest> optionalSamlAuthenticationRequest = authenticationRequestRepository.findByIdAndNotExpired(id);
+        if (!optionalSamlAuthenticationRequest.isPresent()) {
+            return ResponseEntity.status(HttpStatus.FOUND).location(URI.create(this.idpBaseRedirectUrl + "/expired")).build();
+        }
+        SamlAuthenticationRequest samlAuthenticationRequest = optionalSamlAuthenticationRequest.get();
+
+        String userId = samlAuthenticationRequest.getUserId();
+        User user = userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException(userId));
+
+        VerifyIssuer verifyIssuer = idpScoping.equals(IdpScoping.idin) ? this.issuers.stream()
+                .filter(issuer -> issuer.getId().equals(bankId)).findFirst().orElseThrow(() -> new IllegalArgumentException("Unknown verify issuer: " + bankId)) :
+                new VerifyIssuer(IdpScoping.eherkenning.name(), IdpScoping.eherkenning.name());
+        String stateIdentifier = String.format("id=%s&user_uid=%s", id, passwordEncoder.encode(user.getUid()));
+        VerifyState verifyState = new VerifyState(stateIdentifier, idpScoping, verifyIssuer);
+        String state = attributeMapper.serializeToBase64(verifyState);
+
+        Map<String, String> params = new HashMap<>();
+
+        params.put("client_id", verifyClientId);
+        params.put("response_type", "code");
+        params.put("scope", String.format("openid dateofbirth name idp_scoping:%s%s",
+                idpScoping.name(),
+                StringUtils.hasText(bankId) ? " signicat:param:idin_idp:" + bankId : ""));
+        params.put("redirect_uri", this.idpVerifyRedirectUri);
+        params.put("state", state);
+        UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(this.verifyBaseUri + "/broker/sp/oidc/authenticate");
+        params.forEach(builder::queryParam);
+        UriComponents uriComponents = builder.build();
+        return ResponseEntity.status(HttpStatus.FOUND).location(uriComponents.toUri()).build();
+    }
+
     @GetMapping({"/idp/verify/redirect"})
     @Hidden
-    public ResponseEntity idpVerifyIDRedirect(Authentication authentication,
-                                              @RequestParam("code") String code,
-                                              @RequestParam("state") String state) throws UnsupportedEncodingException {
+    public ResponseEntity idpVerifyIDRedirect(@RequestParam("code") String code,
+                                              @RequestParam("state") String state) {
         LOG.debug("In IDP verify ID redirect link account");
-        String decodedState = URLDecoder.decode(state, StandardCharsets.UTF_8);
-        MultiValueMap<String, String> params = UriComponentsBuilder.fromHttpUrl("http://localhost?" + decodedState).build().getQueryParams();
+
+        VerifyState verifyState = attributeMapper.serializeFromBase64(state);
+
+        String httpUrl = "http://localhost?" + verifyState.getStateIdentifier();
+        MultiValueMap<String, String> params = UriComponentsBuilder.fromHttpUrl(httpUrl).build().getQueryParams();
         String id = params.getFirst("id");
         String encodedUserUid = params.getFirst("user_uid");
 
@@ -547,17 +584,52 @@ public class AccountLinkerController implements UserAuthentication {
         if (!passwordEncoder.matches(user.getUid(), encodedUserUid)) {
             throw new ForbiddenException("Non matching user");
         }
+        HttpHeaders headers = getHttpHeaders();
 
-        boolean validateNames = samlAuthenticationRequest.getAuthenticationContextClassReferences().contains(ACR.VALIDATE_NAMES_EXTERNAL);
+        MultiValueMap<String, String> map = new LinkedMultiValueMap<>();
+        map.add("client_id", verifyClientId);
+        map.add("client_secret", verifySecret);
+        map.add("code", code);
+        map.add("grant_type", "authorization_code");
+        map.add("redirect_uri", spVerifyRedirectUri);
+        map.add("scope", "openid");
 
-        LOG.debug("In IdP redirect verify ID account");
+        HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<>(map, headers);
+
+        ParameterizedTypeReference<Map<String, Object>> parameterizedTypeReference = new ParameterizedTypeReference<>() {
+        };
+        Map<String, Object> body = restTemplate.exchange(verifyBaseUri + "/broker/sp/oidc/token",
+                HttpMethod.POST, request, parameterizedTypeReference).getBody();
+
+        MultiValueMap<String, String> tokenMap = new LinkedMultiValueMap<>();
+        tokenMap.add("access_token", (String) body.get("access_token"));
+
+        request = new HttpEntity<>(tokenMap, headers);
+        Map<String, Object> attributes = restTemplate.exchange(verifyBaseUri + "/broker/sp/oidc/userinfo", HttpMethod.POST, request, parameterizedTypeReference).getBody();
+
+        ExternalLinkedAccount externalLinkedAccount = attributeMapper.externalLinkedAccountFromAttributes(attributes, verifyState);
+        List<ExternalLinkedAccount> externalLinkedAccounts = user.getExternalLinkedAccounts();
+        //We only allow one ExternalLinkedAccount - for now
+        externalLinkedAccounts.clear();
+        externalLinkedAccounts.add(externalLinkedAccount);
+
+        if (StringUtils.hasText(externalLinkedAccount.getFirstName()) && IdpScoping.eherkenning.equals(externalLinkedAccount.getIdpScoping())) {
+            user.setGivenName(externalLinkedAccount.getFirstName());
+        }
+        if (StringUtils.hasText(externalLinkedAccount.getPreferredLastName())) {
+            user.setFamilyName(externalLinkedAccount.getPreferredLastName());
+        }
+        if (externalLinkedAccount.getDateOfBirth() != null) {
+            user.setDateOfBirth(externalLinkedAccount.getDateOfBirth());
+        }
+        userRepository.save(user);
 
         String location = this.magicLinkUrl + "?h=" + samlAuthenticationRequest.getHash();
 
         samlAuthenticationRequest.setSteppedUp(StepUpStatus.IN_STEP_UP);
         authenticationRequestRepository.save(samlAuthenticationRequest);
 
-        return ResponseEntity.status(HttpStatus.FOUND).location(URI.create("TODO")).build();
+        return ResponseEntity.status(HttpStatus.FOUND).location(URI.create(location)).build();
     }
 
     private UriComponents doStartLinkAccountFlow(String state, String redirectUri, boolean forceAuth, String requesterEntityId) {

@@ -169,6 +169,16 @@ public class UserController implements ServiceProviderHolder, UserAuthentication
     }
 
     @Hidden
+    @GetMapping("/idp/me/{hash}")
+    public UserResponse userInfo(@PathVariable("hash") String hash) {
+        SamlAuthenticationRequest samlAuthenticationRequest = authenticationRequestRepository.findByHash(hash)
+                .orElseThrow(ExpiredAuthenticationException::new);
+        User user = userRepository.findById(samlAuthenticationRequest.getUserId())
+                .orElseThrow(ExpiredAuthenticationException::new);
+        return new UserResponse(user, null, Optional.empty(), false, idPMetaDataResolver);
+    }
+
+    @Hidden
     @PostMapping("/idp/service/email")
     public List<String> knownAccount(@RequestBody Map<String, String> email) {
         emailGuessingPreventor.potentialUserEmailGuess();

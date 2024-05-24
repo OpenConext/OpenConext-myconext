@@ -63,6 +63,7 @@ public class User implements Serializable, UserDetails {
 
     private long created;
     private long updatedAt = System.currentTimeMillis() / 1000L;
+    @Indexed
     private String trackingUuid;
     private long lastSeenAppNudge;
 

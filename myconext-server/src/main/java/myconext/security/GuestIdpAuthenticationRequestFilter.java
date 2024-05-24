@@ -269,15 +269,21 @@ public class GuestIdpAuthenticationRequestFilter extends OncePerRequestFilter im
     }
 
     public boolean isUserVerifiedByInstitution(User user, List<String> authenticationContextClassReferenceValues) {
-        List<LinkedAccount> linkedAccounts = user.getLinkedAccounts();
-        if (CollectionUtils.isEmpty(linkedAccounts)) {
-            return false;
-        }
         authenticationContextClassReferenceValues = authenticationContextClassReferenceValues == null ?
                 Collections.emptyList() : authenticationContextClassReferenceValues;
+        List<LinkedAccount> linkedAccounts = user.getLinkedAccounts();
+        List<ExternalLinkedAccount> externalLinkedAccounts = user.getExternalLinkedAccounts();
+        if (CollectionUtils.isEmpty(linkedAccounts) && CollectionUtils.isEmpty(externalLinkedAccounts)) {
+            return false;
+        }
+        Instant now = new Date().toInstant();
+        if (authenticationContextClassReferenceValues.contains(ACR.VALIDATE_NAMES_EXTERNAL)) {
+            //We don't support multiple ACR's being enforced all, we pick the most rigid one
+            return externalLinkedAccounts.stream()
+                    .anyMatch(externalLinkedAccount -> externalLinkedAccount.getExpiresAt().toInstant().isBefore(now));
+        }
         boolean validatedName = hasValidatedName(user);
         boolean validatedNameACR = authenticationContextClassReferenceValues.contains(ACR.VALIDATE_NAMES);
-        Instant now = new Date().toInstant();
         List<LinkedAccount> nonExpiredLinkedAccounts = linkedAccounts.stream()
                 .filter(linkedAccount -> {
                     Instant expiresAt = linkedAccount.getExpiresAt().toInstant();
@@ -378,8 +384,7 @@ public class GuestIdpAuthenticationRequestFilter extends OncePerRequestFilter im
 
         List<String> authenticationContextClassReferences = samlAuthenticationRequest.getAuthenticationContextClassReferences();
         boolean accountLinkingRequired = samlAuthenticationRequest.isAccountLinkingRequired() &&
-                !this.isUserVerifiedByInstitution(user,
-                        authenticationContextClassReferences);
+                !this.isUserVerifiedByInstitution(user, authenticationContextClassReferences);
 
         String charSet = Charset.defaultCharset().name();
 
@@ -427,7 +432,9 @@ public class GuestIdpAuthenticationRequestFilter extends OncePerRequestFilter im
         return retryVerificationCode > 2;
     }
 
-    private boolean checkStepUp(HttpServletResponse response, HttpServletRequest request, String hash, SamlAuthenticationRequest samlAuthenticationRequest, User user, String charSet, String explanation) throws IOException {
+    private boolean checkStepUp(HttpServletResponse response, HttpServletRequest request, String hash,
+                                SamlAuthenticationRequest samlAuthenticationRequest, User user, String charSet,
+                                String explanation) throws IOException {
         boolean inStepUpFlow = StepUpStatus.IN_STEP_UP.equals(samlAuthenticationRequest.getSteppedUp());
 
         boolean hasStudentAffiliation = hasRequiredStudentAffiliation(user.allEduPersonAffiliations());
@@ -469,9 +476,13 @@ public class GuestIdpAuthenticationRequestFilter extends OncePerRequestFilter im
                 //When we send the assertion EB stops the flow but this will be fixed upstream
                 return true;
             }
-            response.sendRedirect(this.redirectUrl + "/confirm-stepup?h=" + hash +
+            boolean externalNameValidation = !CollectionUtils.isEmpty(authenticationContextClassReferences)
+                    && authenticationContextClassReferences.contains(ACR.VALIDATE_NAMES_EXTERNAL);
+            String path = externalNameValidation ? "confirm-external-stepup" : "confirm-stepup";
+            response.sendRedirect(this.redirectUrl + "/" + path + "?h=" + hash +
                     "&redirect=" + URLEncoder.encode(this.magicLinkUrl, charSet) +
-                    "&explanation=" + explanation);
+                    "&explanation=" + explanation +
+                    "&ref=" + user.getId());
             return false;
         } else if (!samlAuthenticationRequest.isPasswordOrWebAuthnFlow() && !samlAuthenticationRequest.isTiqrFlow() &&
                 !user.loginOptions().contains(LoginOptions.APP.getValue()) &&

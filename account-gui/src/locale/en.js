@@ -279,13 +279,13 @@ I18n.translations.en = {
     stepUpExplanation: {
         linked_institution: "Your eduID account must be linked to a trusted party.",
         validate_names: "Your first name and last name must be verified by a trusted party.",
-        validate_names_external: "Your first name and last name must be verified by a trusted external party.",
+        validate_names_external: "Your identity must be verified by an trusted party.",
         affiliation_student: "You must prove that you are following education by linking your eduID account to a trusted party."
     },
     stepUpVerification: {
         linked_institution: "Your eduID account is linked to a trusted party.",
         validate_names: "Your first name and last name are verified by a trusted party.",
-        validate_names_external: "Your first name and last name must be verified by a trusted external party.",
+        validate_names_external: "Your identity is verified by an trusted party.",
         affiliation_student: "You have proven that you are following education by linking your eduID account to a trusted party."
     },
     nudgeApp: {
@@ -343,5 +343,40 @@ I18n.translations.en = {
         warning: "The service you're logging into has explicitly requested you login using your eduID app. If you login with a different method, this service will not receive your attributes.",
         confirmLabel: "Change login option anyway",
         cancelLabel: "Did not know that"
+    },
+    verify: {
+        modal: {
+            header: "Verification",
+            info: {
+                title: "Verification",
+                verify: "Verify your identity, quick and easy",
+                please: "Please verify that you are who you say you are.",
+                educationalInstitution: "Verify via a Dutch educational institution",
+                selectInstitution: "Select your institution",
+                other: "Other options...",
+                verifyBank: "Verify with a Dutch bank app",
+                selectBank: "Select your bank",
+                verifyEuropeanId: "Verify with a European ID",
+                supportEuropean: "We support the majority of National digital ID's",
+                useEuropean: "Use an European ID",
+                help: "If you can't use any of the these methods, please visit our <a href='https://eduid.nl/help' target='_blank' rel='noreferrer'>support pages</a>"
+            },
+            bank: {
+                select: "Select your bank",
+                disclaimer: "With iDIN we control through your bank your personal information, to assure who you are. " +
+                    "<strong>You will make no payment</strong>. <a href='https://www.idin.nl/' target='_blank' rel='noreferrer'>More about IdIN.</a>",
+                anotherMethodPrefix: "If your bank of choice is not in the list, please select ",
+                anotherMethodPostfix: "another method"
+            }
+        },
+        feedback: {
+            newInstitutionTitle: "was contacted successfully",
+            newInstitutionInfo: "The following information has been added to your eduID and can now be shared.",
+            validatedGivenName: "Verified given name",
+            validatedFamilyName: "Verified family name",
+            validatedDayOfBirth: "Verified date of birth"
+
+        }
     }
+
 };

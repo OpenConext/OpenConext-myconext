@@ -26,11 +26,12 @@ public interface AuthenticationRequestRepository extends MongoRepository<SamlAut
 
     default Optional<SamlAuthenticationRequest> findByIdAndNotExpired(String id) {
         Optional<SamlAuthenticationRequest> authenticationRequestOptional = findById(id);
-        authenticationRequestOptional.ifPresent(req -> {
+        if (authenticationRequestOptional.isPresent()) {
+            SamlAuthenticationRequest req = authenticationRequestOptional.get();
             if (new Date().after(req.getExpiresIn()) && !req.isRememberMe()) {
-                throw new ExpiredAuthenticationException();
+                return Optional.empty();
             }
-        });
+        }
         return authenticationRequestOptional;
     }
 }

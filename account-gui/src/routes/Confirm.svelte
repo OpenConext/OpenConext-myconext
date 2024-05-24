@@ -23,7 +23,6 @@
 
     onMount(() => {
         $links.displayBackArrow = false;
-
         const urlSearchParams = new URLSearchParams(window.location.search);
 
         explanation = urlSearchParams.get("explanation");
