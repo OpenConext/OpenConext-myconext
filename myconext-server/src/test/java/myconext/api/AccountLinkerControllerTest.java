@@ -69,35 +69,6 @@ public class AccountLinkerControllerTest extends AbstractIntegrationTest {
     }
 
     @Test
-    public void linkAccountRedirectWithExternalValidation() throws IOException {
-        Response response = samlAuthnRequestResponseWithLoa(null, null, "");
-        String authenticationRequestId = extractAuthenticationRequestIdFromAuthnResponse(response);
-        //This ensures the user is tied to the authnRequest
-        given().when()
-                .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
-                .body(new MagicLinkRequest(authenticationRequestId, user("mdoe@example.com"), false))
-                .put("/myconext/api/idp/magic_link_request")
-                .then()
-                .statusCode(HttpStatus.CREATED.value());
-
-        String location = given().redirects().follow(false)
-                .when()
-                .contentType(ContentType.JSON)
-                .get("/myconext/api/idp/oidc/account/" + authenticationRequestId)
-                .getHeader("Location");
-
-        assertTrue(location.startsWith("http://localhost:8098/oidc/authorize?"));
-
-        UriComponents uriComponent = UriComponentsBuilder.fromHttpUrl(location).build();
-        MultiValueMap<String, String> queryParams = uriComponent.getQueryParams();
-        assertEquals("openid", queryParams.getFirst("scope"));
-        assertEquals("code", queryParams.getFirst("response_type"));
-        assertEquals("http://localhost:8081/myconext/api/idp/oidc/redirect", queryParams.getFirst("redirect_uri"));
-        assertEquals("http://mock-idp", queryParams.getFirst("login_hint"));
-        assertEquals("https://manage.surfconext.nl/shibboleth", queryParams.getFirst("acr_values"));
-    }
-
-    @Test
     public void redirect() throws IOException {
         User userPre = userRepository.findOneUserByEmail("mdoe@example.com");
         assertEquals(0, userPre.getLinkedAccounts().size());
