@@ -29,6 +29,9 @@ public class AttributeAggregatorControllerTest extends AbstractIntegrationTest {
     @Value("${attribute_manipulation.password}")
     private String attributeManipulationPassword;
 
+    @Value("${schac_home_organization}")
+    private String schacHomeOrganization;
+
     private final String eppn = "1234567890@surfguest.nl";
 
     private final String uid = "1234567890";
@@ -38,12 +41,26 @@ public class AttributeAggregatorControllerTest extends AbstractIntegrationTest {
     public void aggregate() {
         List<UserAttribute> userAttributes = doAggregate(attributeAggregationUserName, attributeAggregationPassword, "http://mock-sp", eppn);
         assertEquals(1, userAttributes.size());
+        assertEquals("urn:mace:eduid.nl:1.1", userAttributes.get(0).getName());
     }
 
     @Test
     public void aggregateUserNotFound() {
         List<UserAttribute> userAttributes = doAggregate(attributeAggregationUserName, attributeAggregationPassword, "http://mock-sp", "nope");
         assertEquals(0, userAttributes.size());
+    }
+
+    @Test
+    public void aggregateWithEduIDIdP() {
+        String eduIDEppn = String .format("mdoe@%s", this.schacHomeOrganization);
+        List<UserAttribute> userAttributes = doAggregate(
+                attributeAggregationUserName, attributeAggregationPassword, "http://brand-new-sp", eduIDEppn);
+        assertEquals(1, userAttributes.size());
+        assertEquals("urn:mace:eduid.nl:1.1", userAttributes.get(0).getName());
+
+        User user = userRepository.findUserByUid("mdoe").get();
+        assertEquals(1, user.getEduIDS().size());
+        assertEquals(user.getEduIDS().get(0).getValue(), userAttributes.get(0).getValues().get(0));
     }
 
     @Test

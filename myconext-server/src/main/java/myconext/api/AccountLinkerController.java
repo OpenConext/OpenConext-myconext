@@ -94,9 +94,7 @@ public class AccountLinkerController implements UserAuthentication {
     private final String spRedirectUrl;
     private final String basePath;
     private final long removalValidatedDurationDays;
-    private final String idpExternalValidationEntityId;
     private final String myConextSpEntityId;
-    private final boolean useExternalValidationFeature;
     private final ServiceProviderResolver serviceProviderResolver;
     private final String mijnEduIDEntityId;
     private final String schacHomeOrganization;
@@ -130,7 +128,6 @@ public class AccountLinkerController implements UserAuthentication {
             @Value("${email.magic-link-url}") String magicLinkUrl,
             @Value("${idp_redirect_url}") String idpBaseRedirectUrl,
             @Value("${sp_redirect_url}") String spRedirectUrl,
-            @Value("${email.idp-surfconext-url}") String loginSURFconextURL,
             @Value("${oidc.client-id}") String clientId,
             @Value("${oidc.secret}") String clientSecret,
             @Value("${oidc.idp-flow-redirect-url}") String idpFlowRedirectUri,
@@ -175,9 +172,7 @@ public class AccountLinkerController implements UserAuthentication {
         this.basePath = basePath;
         this.oidcBaseUrl = oidcBaseUrl;
         this.removalValidatedDurationDays = removalValidatedDurationDays;
-        this.idpExternalValidationEntityId = idpExternalValidationEntityId;
         this.myConextSpEntityId = myConextSpEntityId;
-        this.useExternalValidationFeature = useExternalValidationFeature;
         this.createEduIDInstitutionEnabled = createEduIDInstitutionEnabled;
         this.emailGuessingPreventor = new EmailGuessingPrevention(emailGuessingSleepMillis);
         this.verifyClientId = verifyClientId;
