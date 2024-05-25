@@ -7,6 +7,7 @@ import myconext.model.User;
 import myconext.repository.UserRepository;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -29,19 +30,32 @@ public class AttributeAggregatorController {
 
     private final UserRepository userRepository;
     private final ServiceProviderResolver serviceProviderResolver;
+    private final String schacHomeOrganization;
 
     public AttributeAggregatorController(UserRepository userRepository,
-                                         ServiceProviderResolver serviceProviderResolver) {
+                                         ServiceProviderResolver serviceProviderResolver,
+                                         @Value("${schac_home_organization}") String schacHomeOrganization) {
         this.userRepository = userRepository;
         this.serviceProviderResolver = serviceProviderResolver;
+        this.schacHomeOrganization = schacHomeOrganization;
     }
 
     @GetMapping(value = {"attribute-aggregation"})
     @PreAuthorize("hasRole('ROLE_attribute-aggregation')")
     public ResponseEntity<List<UserAttribute>> aggregate(@RequestParam("sp_entity_id") String spEntityId,
                                                          @RequestParam("eduperson_principal_name") String eduPersonPrincipalName) {
-        Optional<User> userOptional = userRepository
-                .findUserByLinkedAccounts_eduPersonPrincipalName(eduPersonPrincipalName);
+        LOG.debug(String.format("Attribute aggregation request %s %s", spEntityId, eduPersonPrincipalName));
+        Optional<User> userOptional = Optional.empty();
+        //it might be that the eppn if from the eduID IdP, and then we can look up the user based on that
+        int indexOfAt = eduPersonPrincipalName.indexOf("@");
+        String schacHome = eduPersonPrincipalName.substring(indexOfAt + 1);
+        if (this.schacHomeOrganization.equals(schacHome)) {
+            String uid = eduPersonPrincipalName.substring(0, indexOfAt);
+            userOptional = userRepository.findUserByUid(uid);
+        } else {
+            userOptional = userRepository
+                    .findUserByLinkedAccounts_eduPersonPrincipalName(eduPersonPrincipalName);
+        }
         List<UserAttribute> userAttributes = new ArrayList<>();
         userOptional.ifPresent(user -> {
             String eduID = user.computeEduIdForServiceProviderIfAbsent(spEntityId, serviceProviderResolver);

@@ -1,7 +1,7 @@
 package myconext.mail;
 
 import com.icegreen.greenmail.junit.GreenMailRule;
-import com.icegreen.greenmail.util.ServerSetupTest;
+import com.icegreen.greenmail.util.ServerSetup;
 import myconext.AbstractIntegrationTest;
 import myconext.model.EmailsSend;
 import myconext.model.User;
@@ -33,7 +33,8 @@ public class MailBoxTest extends AbstractIntegrationTest {
     private MailBox mailBox;
 
     @Rule
-    public final GreenMailRule greenMail = new GreenMailRule(ServerSetupTest.SMTP);
+    public final GreenMailRule greenMail =
+            new GreenMailRule(new ServerSetup(1025, null, ServerSetup.PROTOCOL_SMTP));
 
     @Before
     public void before() throws Exception {

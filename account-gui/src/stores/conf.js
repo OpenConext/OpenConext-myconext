@@ -8,7 +8,7 @@ export const conf = writable({
     featureWebAuthn: false,
     featureAllowList: false,
     featureWarningEducationalEmailDomain: false,
-    useExternalValidation: false,
+    featureIdVerify: false,
     emailSpamThresholdSeconds: 5,
     mobileAppRedirect: ""
 });

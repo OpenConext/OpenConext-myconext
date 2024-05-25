@@ -8,8 +8,7 @@
     import {institutionName} from "../utils/services";
 
     export let linkedAccount;
-    export let addInstitution;
-    export let removeInstitution;
+    export let manageVerifiedInformation;
 
     let affiliations;
     let showDropDown = false;
@@ -36,6 +35,15 @@
         display: flex;
         flex-direction: column;
 
+
+        &:hover:not(.show-edit-mode) {
+            background-color: #f0f8ff;
+        }
+
+        &.show-drop-down {
+            background-color: #f0f8ff;
+        }
+
         &.expired {
             background-color: #f6f6f6;
             border: 2px solid var(--color-primary-grey);
@@ -49,6 +57,7 @@
     .affiliation {
         display: flex;
         align-items: center;
+        cursor: pointer;
 
         span.student {
             margin-right: 12px;
@@ -93,8 +102,10 @@
     }
 
 </style>
-<div class="institution-role" class:expired={linkedAccount.expiredRole}>
-    <div class="affiliation">
+<div class="institution-role"
+     class:show-drop-down={showDropDown}
+     class:expired={linkedAccount.expired}>
+    <div class="affiliation" on:click={() => showDropDown = !showDropDown}>
         <span class="student">
         {#if linkedAccount.logoUrl}
             <img src={linkedAccount.logoUrl} alt="logo">
@@ -104,22 +115,22 @@
         </span>
         <div class="role">
             <p>{affiliations || I18n.t("profile.studentRole")}
-                {#if linkedAccount.expiredRole}
+                {#if linkedAccount.expired}
                     <span class="expired">{` (${I18n.t("profile.expired")})`}</span>
                 {/if}
             </p>
             <span>{I18n.t("profile.atInstitution", {name: institutionName(linkedAccount)})}</span>
         </div>
 
-        <span class="icon" class:show-drop-down={!showDropDown}
-              on:click={() => showDropDown = !showDropDown}>{@html chevronUpIcon}</span>
+        <span class="icon" class:show-drop-down={!showDropDown}>
+            {@html chevronUpIcon}
+        </span>
     </div>
     {#if showDropDown}
         <LinkedInstitution linkedAccount={linkedAccount}
                            includeAffiliations={true}
                            roleContext={true}
-                           removeInstitution={removeInstitution}
-                           addInstitution={addInstitution}/>
+                           manageVerifiedInformation={manageVerifiedInformation}/>
     {/if}
 
 </div>

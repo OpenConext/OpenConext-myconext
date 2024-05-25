@@ -35,6 +35,7 @@ public class LinkedAccount implements Serializable {
     private Date createdAt;
     @Schema(type = "integer", format = "int64", example = "1634813554997")
     private Date expiresAt;
+    private boolean external = false;
 
     public LinkedAccount(String institutionIdentifier,
                          String schacHomeOrganization,

@@ -91,7 +91,7 @@ p {
     line-height: 22px;
 }
 
-h1, h2, h3 {
+h1, h2, h3, h4 {
     font-family: Nunito, sans-serif;
 }
 
@@ -130,6 +130,12 @@ h3 {
     font-size: 18px;
     line-height: 26px;
     font-weight: 700;
+}
+
+h4 {
+    font-size: 22px;
+    line-height: 26px;
+    font-weight: 600;
 }
 
 div.info-top {

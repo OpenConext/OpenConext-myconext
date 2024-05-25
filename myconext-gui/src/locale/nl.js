@@ -41,18 +41,34 @@ I18n.translations.nl = {
     profile: {
         title: "Persoonlijke informatie",
         info: "Wanneer je eduID gebruikt om in te loggen op andere websites, kan jouw persoonlijke informatie worden gedeeld.",
+        verifiedInformation: "Je geverifïeerde informatie",
+        verifiedInformationInfo: "Dit is een overzicht van de geverifïeerde informatie die we hebben ontvangen van betrouwbare bronnen.",
+        defaultPreferred: "Dit icon geeft aan dat deze informatie default wordt gebruikt voor 'je persoonlijke informatie'.",
+        receivedOn: "op <strong>{{date}}</strong>",
+        receivedOnInfo: "Ontvangen op <strong>{{date}}</strong>",
+        validUntilDate: "Geldig tot <strong>{{date}}</strong>",
+        validUntilDateInfo: "Geldig tot <strong>{{date}}</strong>",
+        removeLinkPrefix: "Verwijder deze informatie",
+        removeLinkPostfix: " uit je eduID",
         banner: "Sommige diensten vereisen dat je persoonlijke gegevens worden gevalideerd door een vertrouwde partij.",
         expiredBanner: "De verificatie van je identiteit is verlopen, verifïeer deze opnieuw.",
-        verifyNow: "Verifïeer je identiteit nu",
+        verifyNow: "Verifïeer nu",
         basic: "Basis informatie",
+        contact: "Contact informatie",
+        role: "Rol & instelling",
         email: "E-mail",
         name: "Naam",
         chosenName: "Roepnaam",
         givenName: "Voornaam",
+        validatedGivenName: "Geverifïeerde voornaam",
         familyName: "Achternaam",
+        validatedFamilyName: "Geverifïeerde achternaam",
+        validatedDayOfBirth: "Geverifïeerde geboortedatum",
         linkedAccounts: "Je rollen",
         addInstitution: "Voeg een rol toe",
+        addIdentity: "Voeg een identiteit toe",
         proceedConext: "Voeg dit toe via SURFconext",
+        proceedVerify: "Voeg dit toe via SURFconext of een andere Identity Provider",
         validated: "Gevalideerde informatie",
         firstAndLastName: "Voor- en achternaam",
         firstAndLastNameInfo: "Jouw voor- en achternaam zijn nog niet geverifieerd door een derde partij.",
@@ -73,8 +89,9 @@ I18n.translations.nl = {
         notVerified: "Niet geverifiëerd",
         editable: "Bewerkbaar door jou",
         nonEditable: "Geverifiëerd door {{name}}",
-        verifiedBy: "<strong>Geverifiëerd door {{name}}</strong> on {{date}}",
+        verifiedBy: "Geverifiëerd door {{name}}",
         validUntil: "Geldig tot",
+        from: "Van {{name}}",
         verifyFirstAndLastName: {
             addInstitution: "Instelling toevoegen",
             addInstitutionConfirmation: "Als je doorgaat word je gevraagd in te loggen via de onderwijsinstelling die je wilt koppelen. Selecteer eerst welke instelling je wilt koppelen en log daarna in.<br/> <br/>Nadat je succesvol bent ingelogd kom je hier weer terug.",
@@ -83,16 +100,18 @@ I18n.translations.nl = {
         atInstitution: "Bij {{name}}",
         studentRole: "Student",
         preferInstitution: "Voorkeursinstelling",
-        preferredInstitutionConfirmation: "Wil je de informatie die we van {{name}} ontvangen, gebruiken als standaardinformatie om met diensten te delen?",
+        preferredInstitutionInfo: "Wil je de volgende informatie, gebruiken als standaardinformatie om met diensten te delen?",
         preferred: "{{name}} is nu de bron van je persoonsinformatie",
         expired: "Verlopen",
-        newInstitution: "Je identiteit is geverifïeerd",
-        newInstitutionInfo: "We hebben de volgende informatie overschreven met de geverifïeerde gegevens:",
+        newInstitutionTitle: "is met succes gekoppeld",
+        newInstitutionInfo: "De volgende informatie is toegevoegd aan je eduID account en kan nu worden gedeeld.",
         ok: "Ga door",
         yes: "Ja, graag",
         no: "Nee, bedankt",
         eppn: "EPPN",
-        subjectId: "Subject ID"
+        subjectId: "Subject ID",
+        manageInformation: "Manage je geverifïeerde informatie",
+        noValidInformation: "{{name}} heeft geen valide informatie opgeleverd"
     },
     eppnAlreadyLinked: {
         header: "Koppeling niet gemaakt!",
@@ -246,10 +265,10 @@ I18n.translations.nl = {
         expiresValue: "{{date}}",
         delete: "Verwijder koppeling",
         cancel: "Annuleren",
-        deleted: "De koppeling met instelling {{name}} is verwijderd",
+        deleted: "De informatie ontvangen van {{name}} is verwijderd",
         back: "/instellingen",
-        deleteInstitution: "Verwijder koppeling",
-        deleteInstitutionConfirmation: "Weet je zeker dat je de koppeling met deze instelling wilt verwijderen?<br/> <br/>Sommige diensten vereisen dat je een koppeling hebt met een onderwijsinstelling. Je wordt mogelijk gevraagd een instelling te koppelen als je één van die diensten gebruikt."
+        deleteInstitution: "Verwijder deze informatie",
+        deleteInstitutionConfirmation: "Voor sommige applicaties waarop je wilt inloggen met eduID zijn gevalideerde gegevens nodig. Als je deze gegevens verwijdert, kan je je niet meer aanmelden bij deze toepassingen.<br/><br/>Mogelijk wordt je gevraagd om je gegevens opnieuw te valideren als je er inlogt."
     },
     credential: {
         title: "Bewerk beveiligingssleutel",
@@ -442,7 +461,7 @@ I18n.translations.nl = {
         title: "Maak een eduID van je instelling",
         header: "Je staat op het punt een eduID-account aan te maken dat wordt gekoppeld aan je instellingsaccount.",
         alreadyHaveAnEduID: "Heb je al een eduID-account? <a href=\"{{location}}\">Login!</a>",
-        info: "Als je verder gaat, wordt je gevraagd om in te loggen bij de instelling die je aan je eduID wilt koppelen. Na een succesvolle login kom je hier terug." ,
+        info: "Als je verder gaat, wordt je gevraagd om in te loggen bij de instelling die je aan je eduID wilt koppelen. Na een succesvolle login kom je hier terug.",
         startFlow: "Start registratie",
         welcome: "Je eduID account is aangemaakt",
         welcomeExisting: "Je eduID account is gekoppeld aan de vertrouwde instellingsaccount"
@@ -478,5 +497,40 @@ I18n.translations.nl = {
         resend: "E-mail nog steeds niet gevonden?",
         resendLink: " Stuur de e-mail opnieuw.",
         mailResend: "Check je inbox. We hebben je de e-mail met de magische link opnieuw verzonden.",
+    },
+    weekDays: {
+        0: "Zondag",
+        1: "Maandag",
+        2: "Dinsdag",
+        3: "Woensdag",
+        4: "Donderdag",
+        5: "Vrijdag",
+        6: "Zaterdag"
+    },
+    verify: {
+        modal: {
+            header: "Verificatie",
+            info: {
+                title: "Verificatie",
+                verify: "Verifïeer je identiteit, snel en gemakkelijk",
+                please: "Verifïeer a.u.b dat je bent wie je zegt dat je bent.",
+                educationalInstitution: "Verifïeer met een Nederlandse onderwijsinstelling",
+                selectInstitution: "Selecteer je instelling",
+                other: "Andere opties...",
+                verifyBank: "Verifïeer met een Nederlandse ban app",
+                selectBank: "Selecteer je bank",
+                verifyEuropeanId: "Verifïeer met een Europses ID",
+                supportEuropean: "We ondersteunen de meederhead van de de nationalie digitale ID's",
+                useEuropean: "gebruik een Europese ID",
+                help: "Als je geen van deze opties kan gebruiken, bezoek dan onze <a href='https://eduid.nl/help' target='_blank' rel='noreferrer'>support pagina's</a>"
+            },
+            bank: {
+                select: "Selecteer je bank",
+                disclaimer: "Met iDIN controleren we via de bank de persoonlijke informatie, om ervan zeker te zijn wie je bent. " +
+                    "<strong>Je maakt geen geld over</strong>. <a href='https://www.idin.nl/' target='_blank' rel='noreferrer'>Meer over iDIN.</a>",
+                anotherMethodPrefix: "Als je eigen bank niet in de lijst staat, selecteer dan ",
+                anotherMethodPostfix: "een andere methode"
+            }
+        }
     }
 };

@@ -111,8 +111,7 @@ I18n.translations.nl = {
     stepup: {
         header: "Nog één ding!",
         info: "Om door te gaan naar <strong>{{name}}</strong>, moet je nog aan de volgende voorwaarde(n) voldoen.",
-        link: "Verifieer dit via SURFconext",
-        linkExternalValidation: "Verifieer dit via ReadID"
+        link: "Verifïeer nu"
     },
     footer: {
         privacy: "Privacy",
@@ -280,11 +279,13 @@ I18n.translations.nl = {
     stepUpExplanation: {
         linked_institution: "Je eduID-account moet gekoppeld zijn aan een vertrouwde instelling.",
         validate_names: "Je voornaam en achternaam moeten worden geverifieerd door een vertrouwde instelling.",
+        validate_names_external: "Je voornaam en achternaam moeten worden geverifieerd door een externe vertrouwde instelling.",
         affiliation_student: "Je moet aantonen dat je onderwijs volgt door je eduID-account te koppelen aan een vertrouwde instelling."
     },
     stepUpVerification: {
         linked_institution: "Je eduID-account is gekoppeld aan een vertrouwde instelling.",
         validate_names: "Je voornaam en achternaam zijn geverifieerd door een vertrouwde instelling.",
+        validate_names_external: "Je voornaam en achternaam moeten worden geverifieerd door een externe vertrouwde instelling.",
         affiliation_student: "Je hebt aangetoont dat je onderwijs volgt doordat je eduID-account is gekoppeld aan een vertrouwde instelling."
     },
     nudgeApp: {
@@ -343,7 +344,39 @@ I18n.translations.nl = {
         warning: "De dienst waarop je inlogt heeft expliciet gevraagd om in te loggen met je eduID app. Als je met een andere methode inlogt, ontvangt deze service je attributen niet.",
         confirmLabel: "Verander login optie",
         cancelLabel: "Dat wist ik niet"
+    },
+    verify: {
+        modal: {
+            header: "Verificatie",
+            info: {
+                title: "Verificatie",
+                verify: "Verifïeer je identiteit, snel en gemakkelijk",
+                please: "Verifïeer a.u.b dat je bent wie je zegt dat je bent.",
+                educationalInstitution: "Verifïeer met een Nederlandse onderwijsinstelling",
+                selectInstitution: "Selecteer je instelling",
+                other: "Andere opties...",
+                verifyBank: "Verifïeer met een Nederlandse ban app",
+                selectBank: "Selecteer je bank",
+                verifyEuropeanId: "Verifïeer met een Europses ID",
+                supportEuropean: "We ondersteunen de meederhead van de de nationalie digitale ID's",
+                useEuropean: "gebruik een Europese ID",
+                help: "Als je geen van deze opties kan gebruiken, bezoek dan onze <a href='https://eduid.nl/help' target='_blank' rel='noreferrer'>support pagina's</a>"
+            },
+            bank: {
+                select: "Selecteer je bank",
+                disclaimer: "Met iDIN controleren we via de bank de persoonlijke informatie, om ervan zeker te zijn wie je bent. " +
+                    "<strong>Je maakt geen geld over</strong>. <a href='https://www.idin.nl/' target='_blank' rel='noreferrer'>Meer over iDIN.</a>",
+                anotherMethodPrefix: "Als je eigen bank niet in de lijst staat, selecteer dan ",
+                anotherMethodPostfix: "een andere methode"
+            }
+        },
+        feedback: {
+            newInstitutionTitle: "is met succes gekoppeld",
+            newInstitutionInfo: "De volgende informatie is toegevoegd aan je eduID account en kan nu worden gedeeld.",
+            validatedGivenName: "Geverifïeerde voornaam",
+            validatedFamilyName: "Geverifïeerde achternaam",
+            validatedDayOfBirth: "Geverifïeerde geboortedatum"
+        }
     }
-
 
 };

@@ -1,0 +1,16 @@
+{
+  "urn:nl:bvn:bankid:1.0:consumer.initials": "VJ",
+  "sub": "FANTASYBANK1234567890",
+  "urn:nl:bvn:bankid:1.0:consumer.partnerlastnameprefix": "van",
+  "urn:nl:bvn:bankid:1.0:consumer.legallastnameprefix": "de",
+  "amr": [
+    "idin"
+  ],
+  "urn:nl:bvn:bankid:1.0:consumer.legallastname": "Vries",
+  "urn:nl:bvn:bankid:1.0:bankid.deliveredserviceid": "",
+  "urn:nl:bvn:bankid:1.0:consumer.preferredlastname": "Vries-Jansen",
+  "urn:nl:bvn:bankid:1.0:consumer.partnerlastname": "Jansen",
+  "subject_issuer": "idin",
+  "urn:nl:bvn:bankid:1.0:consumer.dateofbirth": "19750725",
+  "urn:nl:bvn:bankid:1.0:consumer.preferredlastnameprefix": "de"
+}

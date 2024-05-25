@@ -87,8 +87,7 @@ public class UserController implements ServiceProviderHolder, UserAuthentication
     private final PasswordResetHashRepository passwordResetHashRepository;
     private final ChangeEmailHashRepository changeEmailHashRepository;
 
-    private final static SecureRandom random = new SecureRandom();
-    private final PasswordEncoder passwordEncoder = new BCryptPasswordEncoder(-1, random);
+    private final PasswordEncoder passwordEncoder = new BCryptPasswordEncoder(4, new SecureRandom());
     private final EmailGuessingPrevention emailGuessingPreventor;
     private final EmailDomainGuard emailDomainGuard;
     private final DisposableEmailProviders disposableEmailProviders;
@@ -167,6 +166,16 @@ public class UserController implements ServiceProviderHolder, UserAuthentication
                 .orElseThrow(ExpiredAuthenticationException::new);
         return Collections.singletonMap("name",
                 samlAuthenticationRequest.getServiceName());
+    }
+
+    @Hidden
+    @GetMapping("/idp/me/{hash}")
+    public UserResponse userInfo(@PathVariable("hash") String hash) {
+        SamlAuthenticationRequest samlAuthenticationRequest = authenticationRequestRepository.findByHash(hash)
+                .orElseThrow(ExpiredAuthenticationException::new);
+        User user = userRepository.findById(samlAuthenticationRequest.getUserId())
+                .orElseThrow(ExpiredAuthenticationException::new);
+        return new UserResponse(user, null, Optional.empty(), false, idPMetaDataResolver);
     }
 
     @Hidden
@@ -556,16 +565,21 @@ public class UserController implements ServiceProviderHolder, UserAuthentication
     @PutMapping("/sp/institution")
     @Operation(summary = "Remove linked account",
             description = "Remove linked account for a logged in user")
-    public ResponseEntity<UserResponse> removeUserLinkedAccounts(Authentication authentication, @RequestBody LinkedAccount linkedAccount) {
+    public ResponseEntity<UserResponse> removeUserLinkedAccounts(Authentication authentication, @RequestBody UpdateLinkedAccountRequest linkedAccount) {
         User user = userFromAuthentication(authentication);
+        if (linkedAccount.isExternal()) {
+            user.getExternalLinkedAccounts().clear();
+            user.setDateOfBirth(null);
+        } else {
+            List<LinkedAccount> linkedAccounts = user.getLinkedAccounts().stream()
+                    .filter(la -> !la.getEduPersonPrincipalName().equals(linkedAccount.getEduPersonPrincipalName()))
+                    .collect(Collectors.toList());
+            user.setLinkedAccounts(linkedAccounts);
 
-        List<LinkedAccount> linkedAccounts = user.getLinkedAccounts().stream()
-                .filter(la -> !la.getEduPersonPrincipalName().equals(linkedAccount.getEduPersonPrincipalName()))
-                .collect(Collectors.toList());
-        user.setLinkedAccounts(linkedAccounts);
+        }
         userRepository.save(user);
 
-        logWithContext(user, "delete", "linked_account", LOG, "Deleted linked account " + linkedAccount.getSchacHomeOrganization());
+        logWithContext(user, "delete", "linked_account", LOG, "Deleted linked account " + linkedAccount.getEduPersonPrincipalName());
 
         return userResponseRememberMe(user);
     }

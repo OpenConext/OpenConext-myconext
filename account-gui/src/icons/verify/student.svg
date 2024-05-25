@@ -1,0 +1,11 @@
+<svg width="40" height="40" class="student-icon" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <g clip-path="url(#clip0_619_12719)">
+        <path d="M10 38.752H30M31.25 12.502V16.252M31.25 12.502L20 17.502L8.75 12.502L20 7.50195L31.25 12.502ZM26.25 14.7253V21.252C24.546 22.8197 22.3268 23.709 20.0117 23.752C17.6904 23.7053 15.4651 22.8169 13.75 21.252V14.7253M3.75 1.25195H36.25C37.6307 1.25195 38.75 2.37124 38.75 3.75195V28.752C38.75 30.1327 37.6307 31.252 36.25 31.252H3.75C2.36929 31.252 1.25 30.1327 1.25 28.752V3.75195C1.25 2.37124 2.36929 1.25195 3.75 1.25195ZM26.25 38.752H13.75L15 31.252H25L26.25 38.752Z"
+              stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+    </g>
+    <defs>
+        <clipPath id="clip0_619_12719">
+            <rect width="40" height="40" fill="white"/>
+        </clipPath>
+    </defs>
+</svg>

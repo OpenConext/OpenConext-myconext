@@ -1,5 +1,6 @@
 //Internal API
 import I18n from "i18n-js";
+import {isEmpty} from "../utils/utils";
 
 let csrfToken = null;
 
@@ -103,7 +104,12 @@ export function deleteUser() {
 }
 
 export function deleteLinkedAccount(linkedAccount) {
-    return postPutJson("/myconext/api/sp/institution", linkedAccount, "PUT");
+    const updateLinkedAccountRequest = {
+        eduPersonPrincipalName: linkedAccount.eduPersonPrincipalName,
+        subjectId: linkedAccount.subjectId,
+        external: linkedAccount.external
+    }
+    return postPutJson("/myconext/api/sp/institution", updateLinkedAccountRequest, "PUT");
 }
 
 export function deletePublicKeyCredential(credential) {
@@ -128,6 +134,15 @@ export function oidcTokens() {
 
 export function startLinkAccountFlow() {
     return fetchJson("/myconext/api/sp/oidc/link");
+}
+
+export function startVerifyAccountFlow(idpScoping, bankId ) {
+    const bankIdParam = isEmpty(bankId) ? "" : `&bankId=${bankId}`;
+    return fetchJson(`/myconext/api/sp/verify/link?idpScoping=${idpScoping}${bankIdParam}`);
+}
+
+export function iDINIssuers() {
+    return fetchJson("/myconext/api/sp/idin/issuers");
 }
 
 export function logout() {
@@ -235,4 +250,5 @@ export function reTextPhoneNumber(phoneNumber) {
 export function reValidatePhoneCode(phoneVerification) {
     return postPutJson(`/tiqr/sp/re-verify-phone-code`, {phoneVerification}, "POST")
 }
+
 

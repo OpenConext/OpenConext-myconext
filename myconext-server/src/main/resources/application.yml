@@ -97,6 +97,8 @@ feature:
   default_remember_me: False
   # Does the SAMLIdpService expects authn requests to be signed
   requires_signed_authn_request: False
+  # Do we support ID verify
+  id_verify: True
 
 secure_cookie: false
 idp_entity_id: https://localhost.surf.id
@@ -149,11 +151,11 @@ linked_accounts:
 account_linking_context_class_ref:
   linked_institution: https://eduid.nl/trust/linked-institution
   validate_names: https://eduid.nl/trust/validate-names
+  validate_names_external: https://eduid.nl/trust/validate-names-external
   affiliation_student: https://eduid.nl/trust/affiliation-student
   profile_mfa: https://refeds.org/profile/mfa
 
 account_linking:
-  idp_external_validation_entity_id: http://mock-idp
   myconext_sp_entity_id: https://mijn.test2.eduid.nl/shibboleth
 
 eduid_api:
@@ -169,6 +171,15 @@ geo_location:
   external_url: "https://download.maxmind.com/app/geoip_download?edition_id=GeoLite2-City&license_key={license_key}&suffix=tar.gz"
   download_directory: "/var/tmp/geo2lite"
 
+verify:
+  client_id: client
+  secret: secret
+  base_uri: "http://localhost:8282"
+  sp_verify_redirect_url: http://localhost:8081/myconext/api/sp/verify/redirect
+  mobile_verify_redirect_url: http://localhost:8081/myconext/api/mobile/verify/redirect
+  idp_verify_redirect_url: http://localhost:8081/myconext/api/idp/verify/redirect
+  issuers_path: "classpath:idin/issuers.json"
+
 spring:
   data:
     mongodb:
@@ -176,12 +187,12 @@ spring:
       auto-index-creation: false
   mail:
     host: localhost
-    port: 3025
+    port: 1025
 
 management:
   health:
     mail:
-      enabled: false
+      enabled: true
   endpoints:
     web:
       exposure:
@@ -190,6 +201,9 @@ management:
   endpoint:
     info:
       enabled: true
+    health:
+      enabled: true
+      show-details: always
     mappings:
       enabled: true
     metrics:

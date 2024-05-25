@@ -10,10 +10,7 @@ import tiqr.org.model.Registration;
 import tiqr.org.model.RegistrationStatus;
 
 import java.io.Serializable;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 @Getter
 public class UserResponse implements Serializable {
@@ -21,14 +18,17 @@ public class UserResponse implements Serializable {
     private final String id;
     private final String email;
     private final String chosenName;
-    private final String givenName;
     private final String familyName;
+    private final String givenName;
+    private final Date dateOfBirth;
+    private final boolean givenNameVerified;
     private final String displayName;
     private final boolean usePassword;
     private final boolean usePublicKey;
     private final boolean forgottenPassword;
     private final List<PublicKeyCredentials> publicKeyCredentials;
     private final List<LinkedAccount> linkedAccounts;
+    private final List<ExternalLinkedAccount> externalLinkedAccounts;
     private final String schacHomeOrganization;
     private final String uid;
     private final boolean rememberMe;
@@ -47,6 +47,7 @@ public class UserResponse implements Serializable {
         this.chosenName = user.getChosenName();
         this.givenName = user.getGivenName();
         this.familyName = user.getFamilyName();
+        this.dateOfBirth = user.getDateOfBirth();
         this.displayName = this.givenName + " " + this.familyName;
         this.schacHomeOrganization = user.getSchacHomeOrganization();
         this.uid = user.getUid();
@@ -63,6 +64,9 @@ public class UserResponse implements Serializable {
                 });
             });
         }
+        this.externalLinkedAccounts = user.getExternalLinkedAccounts();
+        this.givenNameVerified = (!user.getLinkedAccounts().isEmpty()) ||
+                (!this.externalLinkedAccounts.isEmpty() && IdpScoping.eherkenning.equals(this.externalLinkedAccounts.get(0).getIdpScoping()));
         this.usePublicKey = !CollectionUtils.isEmpty(this.publicKeyCredentials);
         this.forgottenPassword = user.isForgottenPassword();
         this.rememberMe = rememberMe;

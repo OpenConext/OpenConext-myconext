@@ -1,0 +1,35 @@
+[
+  {
+    "country": "Nederland",
+    "issuers": [
+      {
+        "name": "ABN AMRO",
+        "id": "ABNANL2A"
+      },
+      {
+        "name": "ASN Bank",
+        "id": "ASNBNL21"
+      },
+      {
+        "name": "bunq",
+        "id": "BUNQNL2A"
+      },
+      {
+        "name": "ING",
+        "id": "INGBNL2A"
+      },
+      {
+        "name": "Rabobank",
+        "id": "RABONL2U"
+      },
+      {
+        "name": "RegioBank",
+        "id": "RBRBNL21"
+      },
+      {
+        "name": "SNS",
+        "id": "SNSBNL2A"
+      }
+    ]
+  }
+]

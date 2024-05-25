@@ -41,18 +41,34 @@ I18n.translations.en = {
     profile: {
         title: "Personal sharable information",
         info: "When you use eduID to login to other websites, some of your personal information will be shared.",
+        verifiedInformation: "Your verified information",
+        verifiedInformationInfo: "This is an overview of the verified information we have received from trusted sources.",
+        defaultPreferred: "This icon indicates the information is used on 'your personal info' as default.",
+        receivedOn: "on <strong>{{date}}</strong>",
+        receivedOnInfo: "Received on <strong>{{date}}</strong>",
+        validUntilDate: "valid until <strong>{{date}}</strong>",
+        validUntilDateInfo: "Valid until <strong>{{date}}</strong>",
+        removeLinkPrefix: "Remove this information",
+        removeLinkPostfix: " from your eduID",
         banner: "Some services require that your personal information is validated by a trusted party.",
         expiredBanner: "The verification of your identity has expired, please verify it again.",
-        verifyNow: "Verify your identity now",
+        verifyNow: "Verify now",
         basic: "Your identity",
+        contact: "Contact data",
+        role: "Role & institution",
         email: "Email address",
         name: "Name",
         chosenName: "Call name",
         givenName: "Given name",
+        validatedGivenName: "Verified given name",
         familyName: "Family name",
+        validatedFamilyName: "Verified family name",
+        validatedDayOfBirth: "Verified date of birth",
         linkedAccounts: "Your role(s)",
         addInstitution: "Add a role & institution",
+        addIdentity: "Add an identity",
         proceedConext: "Proceed to add this via SURFconext",
+        proceedVerify: "Proceed to add this via SURFconext or another Identity Provider",
         validated: "Validated information",
         firstAndLastName: "First and last name",
         firstAndLastNameInfo: "Your first and last name are not yet verified by a third party",
@@ -73,8 +89,9 @@ I18n.translations.en = {
         notVerified: "Not verified",
         editable: "Editable by you",
         nonEditable: "Verified by {{name}}",
-        verifiedBy: "<strong>Verified by {{name}}</strong> on {{date}}",
+        verifiedBy: "Verified by {{name}}",
         validUntil: "Valid until",
+        from: "From {{name}}",
         verifyFirstAndLastName: {
             addInstitution: "Add institution",
             addInstitutionConfirmation: "When you proceed you will be asked to login at the institution you want to link to your eduID. First, select which institution you want to connect; then, login at that institution.<br/><br/>After a successful login you will come back here.",
@@ -83,17 +100,18 @@ I18n.translations.en = {
         atInstitution: "At {{name}}",
         studentRole: "Student",
         preferInstitution: "Prefer institution",
-        preferredInstitutionConfirmation: "Do you want to use the information received from {{name}} to be the default information to share with services?",
+        preferredInstitutionInfo: "Do you want to use the following information to be the default information shared with services?",
         preferred: "{{name}} is now your preferred source of information",
         expired: "Expired",
-        newInstitution: "Your identity has been verified",
-        newInstitutionInfo: "We have replaced the following information with the verified data from your institution:",
+        newInstitutionTitle: "was contacted successfully",
+        newInstitutionInfo: "The following information has been added to your eduID and can now be shared.",
         ok: "Continue",
         yes: "Yes, please",
         no: "No, thanks",
         eppn: "EPPN",
-        subjectId: "Subject ID"
-
+        subjectId: "Subject ID",
+        manageInformation: "Manage your verified information",
+        noValidInformation: "{{name}} has not provided any valid information"
     },
     eppnAlreadyLinked: {
         header: "Connection not added!",
@@ -248,10 +266,10 @@ I18n.translations.en = {
         expiresValue: "{{date}}",
         delete: "Remove connection",
         cancel: "Cancel",
-        deleted: "The connection with your institution {{name}} has been removed",
+        deleted: "The information received from {{name}} has been removed",
         back: "/institutions",
-        deleteInstitution: "Delete institution",
-        deleteInstitutionConfirmation: "Are you sure you want to delete the connection with this institution?<br/><br/>Some services require that you your eduID is connected to an institution. You might be prompted to connect an institution if you access one of those services."
+        deleteInstitution: "Delete this information?",
+        deleteInstitutionConfirmation: "Some applications you want to login to with eduID require validated information. By deleting this information you will not be able to login to those applications.<br/><br/>You might be prompted to validate your information again if you want to access them."
     },
     credential: {
         title: "Edit security key",
@@ -478,5 +496,41 @@ I18n.translations.en = {
         resend: "Still can't find the email?",
         resendLink: "Send the email again.",
         mailResend: "Check your inbox again. We've sent another email with a validation link.",
+    },
+    weekDays: {
+        0: "Sunday",
+        1: "Monday",
+        2: "Tuesday",
+        3: "Wednesday",
+        4: "Thursday",
+        5: "Friday",
+        6: "Saturday"
+    },
+    verify: {
+        modal: {
+            header: "Verification",
+            info: {
+                title: "Verification",
+                verify: "Verify your identity, quick and easy",
+                please: "Please verify that you are who you say you are.",
+                educationalInstitution: "Verify via a Dutch educational institution",
+                selectInstitution: "Select your institution",
+                other: "Other options...",
+                verifyBank: "Verify with a Dutch bank app",
+                selectBank: "Select your bank",
+                verifyEuropeanId: "Verify with a European ID",
+                supportEuropean: "We support the majority of National digital ID's",
+                useEuropean: "Use an European ID",
+                help: "If you can't use any of the these methods, please visit our <a href='https://eduid.nl/help' target='_blank' rel='noreferrer'>support pages</a>"
+            },
+            bank: {
+                select: "Select your bank",
+                disclaimer: "With iDIN we control through your bank your personal information, to assure who you are. " +
+                    "<strong>You will make no payment</strong>. <a href='https://www.idin.nl/' target='_blank' rel='noreferrer'>More about IdIN.</a>",
+                anotherMethodPrefix: "If your bank of choice is not in the list, please select ",
+                anotherMethodPostfix: "another method"
+            }
+        }
+
     }
 };

@@ -38,6 +38,7 @@ public class User implements Serializable, UserDetails {
     private String chosenName;
     private String givenName;
     private String familyName;
+    private Date dateOfBirth;
     @Indexed
     private String uid;
     private String schacHomeOrganization;
@@ -57,10 +58,12 @@ public class User implements Serializable, UserDetails {
 
     private List<PublicKeyCredentials> publicKeyCredentials = new ArrayList<>();
     private List<LinkedAccount> linkedAccounts = new ArrayList<>();
+    private List<ExternalLinkedAccount> externalLinkedAccounts = new ArrayList<>();
     private List<EduID> eduIDS = new ArrayList<>();
 
     private long created;
     private long updatedAt = System.currentTimeMillis() / 1000L;
+    @Indexed
     private String trackingUuid;
     private long lastSeenAppNudge;
 
@@ -243,6 +246,10 @@ public class User implements Serializable, UserDetails {
 
     public void setFamilyName(String familyName) {
         this.familyName = familyName;
+    }
+
+    public void setDateOfBirth(Date dateOfBirth) {
+        this.dateOfBirth = dateOfBirth;
     }
 
     public void setPreferredLanguage(String preferredLanguage) {

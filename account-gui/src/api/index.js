@@ -64,6 +64,10 @@ export function institutionalEmailDomains() {
     return fetchJson("/myconext/api/idp/email/domain/institutional")
 }
 
+export function userInfo(hash) {
+    return fetchJson(`/myconext/api/idp/me/${hash}`);
+}
+
 export function allowedEmailDomains() {
     return fetchJson("/myconext/api/idp/email/domain/allowed")
 }
@@ -171,4 +175,6 @@ export function rememberMe(hash) {
     return postPutJson("/tiqr/remember-me", {hash}, "PUT");
 }
 
-
+export function iDINIssuers() {
+    return fetchJson("/myconext/api/sp/idin/issuers");
+}

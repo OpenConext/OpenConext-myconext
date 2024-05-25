@@ -51,13 +51,14 @@ public class LoginController {
                            @Value("${feature.warning_educational_email_domain}") boolean featureWarningEducationalEmailDomain,
                            @Value("${feature.use_deny_allow_list.allow_enabled}") boolean featureAllowList,
                            @Value("${feature.default_remember_me}") boolean featureDefaultRememberMe,
-                           @Value("${feature.use_external_validation}") boolean useExternalValidation,
                            @Value("${oidc-token-api.enabled}") boolean featureOidcTokenAPI,
                            @Value("${feature.create_eduid_institution_enabled}") boolean createEduIDInstitutionEnabled,
                            @Value("${feature.create_eduid_institution_landing}") boolean createEduIDInstitutionLanding,
                            @Value("${email_spam_threshold_seconds}") long emailSpamThresholdSeconds,
                            @Value("${linked_accounts.expiry-duration-days-non-validated}") long expirationNonValidatedDurationDays,
-                           @Value("${mobile_app_redirect}") String mobileAppRedirect) {
+                           @Value("${mobile_app_redirect}") String mobileAppRedirect,
+                           @Value("${feature.id_verify}") boolean idVerify
+                           ) {
         this.config.put("loginUrl", basePath + "/login");
         this.config.put("continueAfterLoginUrl", continueAfterLoginUrl);
         this.config.put("baseDomain", baseDomain);
@@ -74,12 +75,12 @@ public class LoginController {
         this.config.put("featureOidcTokenAPI", featureOidcTokenAPI);
         this.config.put("featureConnections", featureConnections);
         this.config.put("featureDefaultRememberMe", featureDefaultRememberMe);
-        this.config.put("useExternalValidation", useExternalValidation);
         this.config.put("emailSpamThresholdSeconds", emailSpamThresholdSeconds);
         this.config.put("createEduIDInstitutionEnabled", createEduIDInstitutionEnabled);
         this.config.put("createEduIDInstitutionLanding", createEduIDInstitutionLanding);
         this.config.put("expirationNonValidatedDurationDays", expirationNonValidatedDurationDays);
         this.config.put("mobileAppRedirect", mobileAppRedirect);
+        this.config.put("featureIdVerify", idVerify);
         this.secureCookie = secureCookie;
         this.userRepository = userRepository;
     }

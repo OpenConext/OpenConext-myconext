@@ -72,6 +72,14 @@ public class UserControllerTest extends AbstractIntegrationTest {
     }
 
     @Test
+    public void serviceNameDummy() throws IOException {
+        when()
+                .get("/myconext/api/idp/service/name/42")
+                .then()
+                .body("name", equalTo("This Beautiful Service"));
+    }
+
+    @Test
     public void newUserNotFound() throws IOException {
         magicLinkRequest(user("new@example.com"), HttpMethod.PUT)
                 .response
@@ -276,12 +284,12 @@ public class UserControllerTest extends AbstractIntegrationTest {
     public void removeUserLinkedAccounts() {
         User user = userRepository.findOneUserByEmail("jdoe@example.com");
         assertEquals(2, user.getLinkedAccounts().size());
-
         LinkedAccount linkedAccount = user.getLinkedAccounts().get(0);
+        UpdateLinkedAccountRequest updateLinkedAccountRequest = new UpdateLinkedAccountRequest(linkedAccount.getEduPersonPrincipalName(), null, false);
         given()
                 .when()
                 .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
-                .body(linkedAccount)
+                .body(updateLinkedAccountRequest)
                 .put("/myconext/api/sp/institution")
                 .then()
                 .statusCode(HttpStatus.OK.value());
@@ -289,6 +297,30 @@ public class UserControllerTest extends AbstractIntegrationTest {
         User userFromDB = userRepository.findOneUserByEmail("jdoe@example.com");
 
         assertEquals(1, userFromDB.getLinkedAccounts().size());
+    }
+
+    @Test
+    public void removeUserExternalLinkedAccount() {
+        User user = userRepository.findOneUserByEmail("jdoe@example.com");
+        ExternalLinkedAccount externalLinkedAccount = new ExternalLinkedAccount(
+                "subjectID", IdpScoping.idin, true
+        );
+        user.getExternalLinkedAccounts().add(externalLinkedAccount);
+        userRepository.save(user);
+
+        UpdateLinkedAccountRequest updateLinkedAccountRequest = new UpdateLinkedAccountRequest(
+                null, externalLinkedAccount.getSubjectId(), true);
+        given()
+                .when()
+                .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+                .body(updateLinkedAccountRequest)
+                .put("/myconext/api/sp/institution")
+                .then()
+                .statusCode(HttpStatus.OK.value());
+
+        User userFromDB = userRepository.findOneUserByEmail("jdoe@example.com");
+
+        assertEquals(0, userFromDB.getExternalLinkedAccounts().size());
     }
 
     @Test
@@ -401,7 +433,7 @@ public class UserControllerTest extends AbstractIntegrationTest {
     @Test
     public void updateUserPassword() {
         SecureRandom random = new SecureRandom();
-        PasswordEncoder passwordEncoder = new BCryptPasswordEncoder(-1, random);
+        PasswordEncoder passwordEncoder = new BCryptPasswordEncoder(4);
 
         User user = userRepository.findOneUserByEmail("jdoe@example.com");
         passwordResetHashRepository.save(new PasswordResetHash(user, "hash"));
@@ -1063,6 +1095,11 @@ public class UserControllerTest extends AbstractIntegrationTest {
                 .get("/myconext/api/idp/service/hash/" + samlAuthenticationRequest.getHash())
                 .then()
                 .body("name", equalTo("https://manage.surfconext.nl/shibboleth"));
+        Map<String, Object> userMap = when()
+                .get("/myconext/api/idp/me/" + samlAuthenticationRequest.getHash())
+                .as(new TypeRef<>() {
+                });
+        assertEquals("jdoe@example.com", userMap.get("email"));
         when()
                 .get("/myconext/api/idp/service/id/" + samlAuthenticationRequest.getId())
                 .then()
@@ -1211,6 +1248,21 @@ public class UserControllerTest extends AbstractIntegrationTest {
                 .put("/myconext/api/sp/email")
                 .then()
                 .statusCode(HttpStatus.CONFLICT.value());
+    }
+
+    @Test
+    public void updateLinkedAccount() {
+        UpdateLinkedAccountRequest updateLinkedAccountRequest = new UpdateLinkedAccountRequest("guest@example.nl", null ,false);
+        given()
+                .when()
+                .accept(ContentType.JSON)
+                .contentType(ContentType.JSON)
+                .body(updateLinkedAccountRequest)
+                .put("/myconext/api/sp/prefer-linked-account")
+                .as(Map.class);
+        User user = userRepository.findOneUserByEmail("jdoe@example.com");
+        Optional<LinkedAccount> optionalLinkedAccount = user.getLinkedAccounts().stream().filter(LinkedAccount::isPreferred).findFirst();
+        assertTrue(optionalLinkedAccount.isPresent());
     }
 
     private String hash() {
