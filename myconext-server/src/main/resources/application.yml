@@ -2,7 +2,7 @@ logging:
   level:
     org.springframework: WARN
     org.springframework.web: WARN
-    org.springframework.security: WARN
+    org.springframework.security: TRACE
     com.zaxxer.hikari: ERROR
     myconext: DEBUG
     tiqr.org: DEBUG
@@ -118,6 +118,28 @@ sms:
   bearer: "secret"
 
 tiqr_configuration: "classpath:/tiqr.configuration.yml"
+
+# We don't encode in-memory passwords, so we need to prefix them with {noop}
+external-api-configuration:
+  remote-users:
+    -
+      scopes:
+        - attribute-aggregation
+        - system
+      username: aa
+      password: "{noop}secret"
+    -
+      scopes:
+        - attribute-manipulation
+      username: oidcng
+      password: "{noop}secret"
+    -
+      scopes:
+        - remote-creation
+      username: studielink
+      password: "{noop}secret"
+      rp_client_id: rp.studielink.nl
+      schac_home: studielink.nl
 
 attribute_aggregation:
   user: aa

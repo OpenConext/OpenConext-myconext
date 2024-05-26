@@ -8,9 +8,9 @@ import myconext.repository.UserRepository;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -42,7 +42,8 @@ public class AttributeAggregatorController {
 
     @GetMapping(value = {"attribute-aggregation"})
     @PreAuthorize("hasRole('ROLE_attribute-aggregation')")
-    public ResponseEntity<List<UserAttribute>> aggregate(@RequestParam("sp_entity_id") String spEntityId,
+    public ResponseEntity<List<UserAttribute>> aggregate(Authentication authentication,
+                                                         @RequestParam("sp_entity_id") String spEntityId,
                                                          @RequestParam("eduperson_principal_name") String eduPersonPrincipalName) {
         LOG.debug(String.format("Attribute aggregation request %s %s", spEntityId, eduPersonPrincipalName));
         Optional<User> userOptional = Optional.empty();

@@ -17,6 +17,7 @@ import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
 import org.springframework.core.env.Environment;
@@ -29,6 +30,7 @@ import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.web.authentication.preauth.AbstractPreAuthenticatedProcessingFilter;
 import org.springframework.security.web.authentication.preauth.PreAuthenticatedAuthenticationProvider;
 import saml.model.SAMLConfiguration;
@@ -45,6 +47,7 @@ import static java.util.stream.Collectors.toList;
 
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true)
+@Configuration
 public class SecurityConfiguration {
 
     private static final Log LOG = LogFactory.getLog(SecurityConfiguration.class);
@@ -239,19 +242,14 @@ public class SecurityConfiguration {
 
     @Configuration
     @Order(2)
+    @EnableConfigurationProperties({ExternalApiConfiguration.class})
     public static class AppSecurity extends WebSecurityConfigurerAdapter {
 
-        @Value("${attribute_aggregation.user}")
-        private String attributeAggregationUser;
+        private final ExternalApiConfiguration remoteUsers;
 
-        @Value("${attribute_aggregation.password}")
-        private String attributeAggregationPassword;
-
-        @Value("${attribute_manipulation.user}")
-        private String attributeManipulationUser;
-
-        @Value("${attribute_manipulation.password}")
-        private String attributeManipulationPassword;
+        public AppSecurity(ExternalApiConfiguration remoteUsers) {
+            this.remoteUsers = remoteUsers;
+        }
 
         @Override
         protected void configure(HttpSecurity http) throws Exception {
@@ -276,15 +274,12 @@ public class SecurityConfiguration {
 
         @Override
         protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-            auth
-                    .inMemoryAuthentication()
-                    .withUser(attributeAggregationUser)
-                    .password("{noop}" + attributeAggregationPassword)
-                    .roles("attribute-aggregation", "system")
-                    .and()
-                    .withUser(attributeManipulationUser)
-                    .password("{noop}" + attributeManipulationPassword)
-                    .roles("attribute-manipulation");
+            auth.userDetailsService(userDetailsService());
+        }
+
+        @Bean
+        public UserDetailsService userDetailsService() {
+            return new ExtendedInMemoryUserDetailsManager(remoteUsers.getRemoteUsers());
         }
     }
 
