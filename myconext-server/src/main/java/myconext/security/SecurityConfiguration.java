@@ -256,7 +256,8 @@ public class SecurityConfiguration {
             String[] antPatterns = {
                     "/myconext/api/attribute-aggregation/**",
                     "/myconext/api/attribute-manipulation/**",
-                    "/myconext/api/system/**"
+                    "/myconext/api/system/**",
+                    "/remote-creation/**"
             };
             http.requestMatchers()
                     .antMatchers(antPatterns)

@@ -14,12 +14,16 @@ server:
   forward-headers-strategy: framework
 
 springdoc:
-  pathsToMatch: "/mobile/**"
+  pathsToMatch:
+    - "/remote-creation/**"
+    - "/mobile/**"
   api-docs:
-    path: "/myconext/api/mobile/api-docs"
+    path: "/myconext/api/api-docs"
     enabled: true
   swagger-ui:
-    path: "/myconext/api/mobile/api-ui.html"
+#    path: "/myconext/api/api-ui.html"
+#    http://localhost:8081/myconext/api/swagger-ui/index:html:
+    path: "/myconext/api"
     operationsSorter: method
     enabled: true
 
