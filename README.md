@@ -113,11 +113,11 @@ curl -u aa:secret 'https://login.test2.eduid.nl/myconext/api/system/eduid-duplic
 
 ### OpenAPI Documentation
 
-http://localhost:8081/myconext/api/mobile/swagger-ui/index.html
-http://localhost:8081/myconext/api/mobile/api-docs
+http://localhost:8081/myconext/swagger-ui/index.html
+http://localhost:8081/myconext/api/api-docs
 
-https://login.test2.eduid.nl/myconext/api/mobile/swagger-ui/index.html
-https://login.test2.eduid.nl/myconext/api/mobile/api-docs
+https://login.test2.eduid.nl/myconext/swagger-ui/index.html
+https://login.test2.eduid.nl/myconext/api/api-docs
 
 ### IDIN & e-Herkenning
 

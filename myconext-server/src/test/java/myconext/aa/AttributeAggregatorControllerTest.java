@@ -5,8 +5,11 @@ import myconext.AbstractIntegrationTest;
 import myconext.manage.MockServiceProviderResolver;
 import myconext.model.LinkedAccount;
 import myconext.model.User;
+import myconext.security.ExternalApiConfiguration;
 import org.junit.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 
 import java.util.List;
 import java.util.Map;
@@ -17,36 +20,23 @@ import static org.junit.Assert.assertEquals;
 
 public class AttributeAggregatorControllerTest extends AbstractIntegrationTest {
 
-    @Value("${attribute_aggregation.user}")
-    private String attributeAggregationUserName;
-
-    @Value("${attribute_aggregation.password}")
-    private String attributeAggregationPassword;
-
-    @Value("${attribute_manipulation.user}")
-    private String attributeManipulationUserName;
-
-    @Value("${attribute_manipulation.password}")
-    private String attributeManipulationPassword;
-
     @Value("${schac_home_organization}")
     private String schacHomeOrganization;
 
     private final String eppn = "1234567890@surfguest.nl";
 
     private final String uid = "1234567890";
-    private final String eduid = "fc75dcc7-6def-4054-b8ba-3c3cc504dd4b";
 
     @Test
     public void aggregate() {
-        List<UserAttribute> userAttributes = doAggregate(attributeAggregationUserName, attributeAggregationPassword, "http://mock-sp", eppn);
+        List<UserAttribute> userAttributes = doAggregate("aa", "secret", "http://mock-sp", eppn);
         assertEquals(1, userAttributes.size());
         assertEquals("urn:mace:eduid.nl:1.1", userAttributes.get(0).getName());
     }
 
     @Test
     public void aggregateUserNotFound() {
-        List<UserAttribute> userAttributes = doAggregate(attributeAggregationUserName, attributeAggregationPassword, "http://mock-sp", "nope");
+        List<UserAttribute> userAttributes = doAggregate("aa", "secret", "http://mock-sp", "nope");
         assertEquals(0, userAttributes.size());
     }
 
@@ -54,7 +44,7 @@ public class AttributeAggregatorControllerTest extends AbstractIntegrationTest {
     public void aggregateWithEduIDIdP() {
         String eduIDEppn = String .format("mdoe@%s", this.schacHomeOrganization);
         List<UserAttribute> userAttributes = doAggregate(
-                attributeAggregationUserName, attributeAggregationPassword, "http://brand-new-sp", eduIDEppn);
+                "aa", "secret", "http://brand-new-sp", eduIDEppn);
         assertEquals(1, userAttributes.size());
         assertEquals("urn:mace:eduid.nl:1.1", userAttributes.get(0).getName());
 
@@ -69,7 +59,7 @@ public class AttributeAggregatorControllerTest extends AbstractIntegrationTest {
         String spEntityId = "http://mock-sp";
         String eduId = user.computeEduIdForServiceProviderIfAbsent(spEntityId, new MockServiceProviderResolver());
         userRepository.save(user);
-        List<UserAttribute> userAttributes = doAggregate(attributeAggregationUserName, attributeAggregationPassword, spEntityId, eppn);
+        List<UserAttribute> userAttributes = doAggregate("aa", "secret", spEntityId, eppn);
 
         assertEquals(1, userAttributes.size());
         assertEquals(eduId, userAttributes.get(0).getValues().get(0));
@@ -91,7 +81,7 @@ public class AttributeAggregatorControllerTest extends AbstractIntegrationTest {
     public void aggregate400WrongUser() {
         given()
                 .when()
-                .auth().preemptive().basic(attributeManipulationUserName, attributeManipulationPassword)
+                .auth().preemptive().basic("oidcng", "secret")
                 .queryParam("sp_entity_id", "n/a")
                 .queryParam("eduperson_principal_name", "n/a")
                 .contentType(ContentType.JSON)
@@ -114,6 +104,7 @@ public class AttributeAggregatorControllerTest extends AbstractIntegrationTest {
 
     @Test
     public void manipulateNewSP() {
+        String eduid = "fc75dcc7-6def-4054-b8ba-3c3cc504dd4b";
         doManipulate("http://new-sp", eduid, uid, null);
     }
 
@@ -127,7 +118,7 @@ public class AttributeAggregatorControllerTest extends AbstractIntegrationTest {
     public void manipulate400WrongUser() {
         given()
                 .when()
-                .auth().preemptive().basic(attributeAggregationUserName, attributeAggregationPassword)
+                .auth().preemptive().basic("aa", "secret")
                 .queryParam("sp_entity_id", "n/a")
                 .queryParam("eduid", "n/a")
                 .contentType(ContentType.JSON)
@@ -141,7 +132,7 @@ public class AttributeAggregatorControllerTest extends AbstractIntegrationTest {
     public void eduIdDuplicates() {
         Map<String, List<Map<String, Object>>> results = given()
                 .when()
-                .auth().preemptive().basic(attributeAggregationUserName, attributeAggregationPassword)
+                .auth().preemptive().basic("aa", "secret")
                 .contentType(ContentType.JSON)
                 .get("/myconext/api/system/eduid-duplicates")
                 .as(Map.class);
@@ -166,7 +157,7 @@ public class AttributeAggregatorControllerTest extends AbstractIntegrationTest {
     private Map<String, Object> doManipulate(String spEntityId, String eduid, String uid, String spInstitutionIdentifier) {
         Map<String, Object> res = given()
                 .when()
-                .auth().preemptive().basic(attributeManipulationUserName, attributeManipulationPassword)
+                .auth().preemptive().basic("oidcng", "secret")
                 .queryParam("sp_entity_id", spEntityId)
                 .queryParam("eduid", eduid)
                 .queryParam("sp_institution_guid", spInstitutionIdentifier)

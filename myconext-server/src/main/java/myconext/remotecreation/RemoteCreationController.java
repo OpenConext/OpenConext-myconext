@@ -20,7 +20,6 @@ import static myconext.SwaggerOpenIdConfig.OPEN_ID_SCHEME_NAME;
 
 @RestController
 @RequestMapping(value = {"/remote-creation"})
-//@RequestMapping(value = {"/remote-creation/api", "/mobile/api"})
 @SecurityRequirement(name = BASIC_AUTHENTICATION_SCHEME_NAME)
 public class RemoteCreationController {
 

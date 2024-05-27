@@ -21,8 +21,7 @@ springdoc:
     path: "/myconext/api/api-docs"
     enabled: true
   swagger-ui:
-#    path: "/myconext/api/api-ui.html"
-#    http://localhost:8081/myconext/api/swagger-ui/index:html:
+    # http://localhost:8081/myconext/swagger-ui/index.html
     path: "/myconext/api"
     operationsSorter: method
     enabled: true
@@ -127,31 +126,23 @@ tiqr_configuration: "classpath:/tiqr.configuration.yml"
 external-api-configuration:
   remote-users:
     -
+      username: aa
+      password: "{noop}secret"
       scopes:
         - attribute-aggregation
         - system
-      username: aa
-      password: "{noop}secret"
     -
-      scopes:
-        - attribute-manipulation
       username: oidcng
       password: "{noop}secret"
-    -
       scopes:
-        - remote-creation
+        - attribute-manipulation
+    -
       username: studielink
       password: "{noop}secret"
+      scopes:
+        - remote-creation
       rp_client_id: rp.studielink.nl
       schac_home: studielink.nl
-
-attribute_aggregation:
-  user: aa
-  password: secret
-
-attribute_manipulation:
-  user: oidcng
-  password: secret
 
 oidc-token-api:
   token-url: https://connect.test2.surfconext.nl/tokens
