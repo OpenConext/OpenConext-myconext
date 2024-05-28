@@ -42,8 +42,7 @@ public class AttributeAggregatorController {
 
     @GetMapping(value = {"attribute-aggregation"})
     @PreAuthorize("hasRole('ROLE_attribute-aggregation')")
-    public ResponseEntity<List<UserAttribute>> aggregate(Authentication authentication,
-                                                         @RequestParam("sp_entity_id") String spEntityId,
+    public ResponseEntity<List<UserAttribute>> aggregate(@RequestParam("sp_entity_id") String spEntityId,
                                                          @RequestParam("eduperson_principal_name") String eduPersonPrincipalName) {
         LOG.debug(String.format("Attribute aggregation request %s %s", spEntityId, eduPersonPrincipalName));
         Optional<User> userOptional = Optional.empty();
