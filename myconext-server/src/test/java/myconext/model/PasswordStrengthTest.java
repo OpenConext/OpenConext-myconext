@@ -22,11 +22,4 @@ public class PasswordStrengthTest {
         assertTrue(strongEnough("#!@$%$A1"));
     }
 
-    @Test
-    @SuppressWarnings("static-access")
-    public void constructor() {
-        PasswordStrength passwordStrength = new PasswordStrength();
-        assertTrue(passwordStrength.strongEnough("#!@$%$A1"));
-    }
-
 }
