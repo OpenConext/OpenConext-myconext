@@ -34,7 +34,9 @@ public class RemoteCreationController {
             description = "Does the eduID exists")
     public ResponseEntity<Map<String, Object>> remoteCreation(Authentication authentication) {
         RemoteUser remoteUser = (RemoteUser) authentication.getPrincipal();
+
         LOG.debug(String.format("Remote creation for %s", remoteUser.getRpClientId()));
+
         return ResponseEntity.ok(Map.of("status", "todo"));
     }
 
