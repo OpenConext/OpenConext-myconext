@@ -257,7 +257,7 @@ public class SecurityConfiguration {
                     "/myconext/api/attribute-aggregation/**",
                     "/myconext/api/attribute-manipulation/**",
                     "/myconext/api/system/**",
-                    "/remote-creation/**"
+                    "/api/remote-creation/**"
             };
             http.requestMatchers()
                     .antMatchers(antPatterns)
