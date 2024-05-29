@@ -88,7 +88,7 @@
         <!--{/if}-->
     </div>
     <div class="">
-        {#if linkedAccount.idpScoping !== "idin" && !isEmpty(linkedAccountGivenName(linkedAccount))}
+        {#if !isEmpty(linkedAccountGivenName(linkedAccount))}
             <ValidatedField label={I18n.t("profile.validatedGivenName")}
                             icon={preferredAccount ? personalInfo : null}
                             readOnly={true}
