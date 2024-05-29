@@ -22,7 +22,7 @@ springdoc:
     enabled: true
   swagger-ui:
     # http://localhost:8081/myconext/swagger-ui/index.html
-    path: "/myconext/api"
+    path: "/myconext/api/"
     operationsSorter: method
     enabled: true
 
