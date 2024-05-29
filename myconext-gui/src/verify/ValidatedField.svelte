@@ -5,6 +5,7 @@
     export let value;
     export let icon;
     export let overrideShieldIcon;
+    export let readOnly = false;
 
 </script>
 <style lang="scss">
@@ -33,6 +34,10 @@
         display: flex;
         align-items: center;
         cursor: pointer;
+
+        &.read-only {
+            cursor: default;
+        }
 
         .inner-view-mode {
             display: flex;
@@ -86,7 +91,7 @@
 </style>
 <div class="validated-field">
     <div class="view-mode-container">
-        <div class="view-mode">
+        <div class="view-mode" class:read-only={readOnly}>
             <div class="inner-view-mode">
                 <div class="value">
                     {#if overrideShieldIcon}

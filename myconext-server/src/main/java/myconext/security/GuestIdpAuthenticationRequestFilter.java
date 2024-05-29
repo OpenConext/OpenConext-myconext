@@ -41,6 +41,8 @@ import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.nio.charset.Charset;
 import java.time.Instant;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
 import java.util.concurrent.ExecutorService;
@@ -303,8 +305,14 @@ public class GuestIdpAuthenticationRequestFilter extends OncePerRequestFilter im
     }
 
     public static boolean hasValidatedName(User user) {
-        return user.getLinkedAccounts().stream().anyMatch(LinkedAccount::areNamesValidated);
+        return user.getLinkedAccounts().stream().anyMatch(LinkedAccount::areNamesValidated) ||
+                user.getExternalLinkedAccounts().stream().anyMatch(ExternalLinkedAccount::areNamesValidated);
     }
+
+    public static boolean hasValidatedExternalName(User user) {
+        return user.getExternalLinkedAccounts().stream().anyMatch(ExternalLinkedAccount::areNamesValidated);
+    }
+
 
     public static boolean hasRequiredStudentAffiliation(List<String> affiliations) {
         return !CollectionUtils.isEmpty(affiliations) && affiliations.stream()
@@ -667,10 +675,15 @@ public class GuestIdpAuthenticationRequestFilter extends OncePerRequestFilter im
                     !hasStudentAffiliation;
             boolean missingValidName = authenticationContextClassReferences.contains(ACR.VALIDATE_NAMES) &&
                     !hasValidatedName(user);
-            if (missingStudentAffiliation || missingValidName) {
+            boolean missingExternalName = authenticationContextClassReferences.contains(ACR.VALIDATE_NAMES_EXTERNAL) &&
+                    !hasValidatedExternalName(user);
+            if (missingStudentAffiliation || missingValidName || missingExternalName) {
                 if (missingValidName) {
                     optionalMessage = "The requesting service has indicated that the authenticated user is required to have a first_name and last_name." +
                             " Your institution has not provided those attributes.";
+                } else if (missingExternalName) {
+                    optionalMessage = "The requesting service has indicated that the authenticated user has verified their first_name and last_name." +
+                            " Your identity is not verified by an external trusted party.";
                 } else {
                     optionalMessage = "The requesting service has indicated that the authenticated user is required to have an affiliation Student." +
                             " Your institution has not provided this affiliation.";
@@ -724,13 +737,15 @@ public class GuestIdpAuthenticationRequestFilter extends OncePerRequestFilter im
             //Migrate at JIT as only users with linked-accounts were migrated in myconext.mongo.Migrations#migrateUsers
             user.setChosenName(chosenName);
         }
+        //Corner-case, but can happen
+        if (!StringUtils.hasText(givenName)) {
+            givenName = chosenName;
+        }
         String displayName = String.format("%s %s", chosenName, familyName);
-        String commonName = String.format("%s %s", givenName, familyName);
         String eppn = user.getEduPersonPrincipalName();
         List<SAMLAttribute> attributes = new ArrayList(Arrays.asList(
                 attribute("urn:mace:dir:attribute-def:cn", displayName),
                 attribute("urn:mace:dir:attribute-def:displayName", displayName),
-                attribute("urn:mace:dir:attribute-def:commonName", commonName),
                 attribute("urn:mace:dir:attribute-def:eduPersonPrincipalName", eppn),
                 attribute("urn:oasis:names:tc:SAML:attribute:subject-id", eppn),
                 attribute("urn:mace:dir:attribute-def:givenName", givenName),
@@ -743,6 +758,14 @@ public class GuestIdpAuthenticationRequestFilter extends OncePerRequestFilter im
         userRepository.save(user);
 
         attributes.add(attribute("urn:mace:eduid.nl:1.1", eduIDValue));
+        if (user.getDateOfBirth() != null) {
+            // https://wiki.refeds.org/display/STAN/SCHAC+Releases
+            String dateOfBirth = DateTimeFormatter
+                    .ofPattern("yyyyMMdd")
+                    .withZone(ZoneId.systemDefault())
+                    .format(user.getDateOfBirth().toInstant());
+            attributes.add(attribute("urn:schac:attribute-def:schacDateOfBirth", dateOfBirth));
+        }
 
         user.getAttributes()
                 .forEach((key, values) ->

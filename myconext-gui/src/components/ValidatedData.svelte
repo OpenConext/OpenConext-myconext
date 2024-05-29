@@ -9,6 +9,7 @@
     export let institution = {};
     export let replacement = false;
     export let preferredAccount = false;
+    export let readOnly = false;
 
 </script>
 <style lang="scss">
@@ -46,18 +47,19 @@
     </div>
     <p class="info">{I18n.t(`profile.${replacement ? "preferredInstitutionInfo" : "newInstitutionInfo"}`)}</p>
 
-    {#if institution.idpScoping !== "idin"}
-        <ValidatedField label={I18n.t("profile.validatedGivenName")}
-                        icon={preferredAccount ? personalInfo : null}
-                        value={linkedAccountGivenName(institution)}/>
-    {/if}
+    <ValidatedField label={I18n.t("profile.validatedGivenName")}
+                    icon={preferredAccount ? personalInfo : null}
+                    readOnly={readOnly}
+                    value={linkedAccountGivenName(institution)}/>
 
     <ValidatedField label={I18n.t("profile.validatedFamilyName")}
                     icon={preferredAccount ? personalInfo : null}
+                    readOnly={readOnly}
                     value={linkedAccountFamilyName(institution)}/>
 
     {#if !isEmpty(institution.dateOfBirth)}
         <ValidatedField label={I18n.t("profile.validatedDayOfBirth")}
+                        readOnly={readOnly}
                         icon={preferredAccount ? personalInfo : null}
                         value={dateFromEpoch(institution.dateOfBirth)}/>
     {/if}

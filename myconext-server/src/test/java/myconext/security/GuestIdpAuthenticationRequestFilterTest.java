@@ -107,6 +107,7 @@ public class GuestIdpAuthenticationRequestFilterTest {
         user.setGivenName("Mary");
         user.setChosenName("Marrrry");
         user.setFamilyName("Poppins");
+        user.setDateOfBirth(new Date());
         List<LinkedAccount> linkedAccounts = Arrays.asList(
                 linkedAccount("John", "Doe", createdAt(15)),
                 linkedAccount("Mary", "Poppins", createdAt(10)),
@@ -117,12 +118,13 @@ public class GuestIdpAuthenticationRequestFilterTest {
         String givenName = attributes.stream().filter(attr -> attr.getName().equals("urn:mace:dir:attribute-def:givenName")).findFirst().get().getValue();
         String familyName = attributes.stream().filter(attr -> attr.getName().equals("urn:mace:dir:attribute-def:sn")).findFirst().get().getValue();
         String displayName = attributes.stream().filter(attr -> attr.getName().equals("urn:mace:dir:attribute-def:displayName")).findFirst().get().getValue();
-        String commonName = attributes.stream().filter(attr -> attr.getName().equals("urn:mace:dir:attribute-def:commonName")).findFirst().get().getValue();
+        String dateOfBirth = attributes.stream().filter(attr -> attr.getName().equals("urn:schac:attribute-def:schacDateOfBirth")).findFirst().get().getValue();
 
         assertEquals("Mary", givenName);
         assertEquals("Poppins", familyName);
         assertEquals("Marrrry Poppins", displayName);
-        assertEquals("Mary Poppins", commonName);
+        //We are good to go for the next 6 years
+        assertTrue(dateOfBirth.startsWith("202"));
     }
 
     private Date createdAt(int numberOfDaysInThePast) {

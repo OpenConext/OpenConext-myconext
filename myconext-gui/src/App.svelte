@@ -314,6 +314,9 @@
                     <Route path="/edit-email">
                         <Home bookmark="edit-email"/>
                     </Route>
+                    <Route path="/manage">
+                        <Home bookmark="manage"/>
+                    </Route>
                     <Route path="/institution">
                         <Home bookmark="institution"/>
                     </Route>

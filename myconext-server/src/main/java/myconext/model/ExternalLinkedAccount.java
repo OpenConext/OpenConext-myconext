@@ -4,6 +4,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.springframework.util.StringUtils;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -41,4 +42,16 @@ public class ExternalLinkedAccount implements Serializable {
         this.idpScoping = idpScoping;
         this.external = external;
     }
+
+    public boolean areNamesValidated() {
+        switch (this.idpScoping) {
+            case idin:
+                return StringUtils.hasText(initials) && StringUtils.hasText(preferredLastName);
+            case eherkenning:
+                return StringUtils.hasText(firstName) && StringUtils.hasText(preferredLastName);
+            default:
+                throw new IllegalArgumentException("Won't happen");
+        }
+    }
+
 }

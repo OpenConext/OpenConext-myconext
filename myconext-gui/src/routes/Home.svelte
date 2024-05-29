@@ -48,6 +48,7 @@
         {name: "account", component: Account, icon: accountSvg},
 
         {name: "edit-name", alias: "personal", component: EditName, ignore: true},
+        {name: "manage", alias: "personal", component: PersonalInfo, ignore: true},
         {name: "edit-email", alias: "personal", component: EditEmail, ignore: true},
         {name: "eppn-already-linked", alias: "personal", component: EppnAlreadyLinked, ignore: true},
         {name: "service", alias: "services", component: Service, ignore: true},
@@ -93,7 +94,9 @@
 
     onMount(() => currentTab = bookmark ? currentTab = tabs.find(tab => tab.name === bookmark) : tabs[0]);
 
-    const switchTab = name => () => navigate(`/${name}`);
+    const switchTab = name => () => {
+        navigate(`/${name}`);
+    }
 
     const showMenu = () => {
         displayMenu = !displayMenu;
@@ -256,7 +259,7 @@
             {/each}
         </ul>
     </nav>
-    <div class:includes-banner={currentTab.name === "personal"} class="component-container">
+    <div class:includes-banner={currentTab.name === "personal" || currentTab.name === "manage"} class="component-container">
         <Flash/>
         <svelte:component this={currentTab.component} {...currentTab.props}/>
     </div>

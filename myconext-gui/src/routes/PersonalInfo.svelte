@@ -19,6 +19,7 @@
     import EditField from "../components/EditField.svelte";
     import {validEmail} from "../validation/regexp";
     import check from "../icons/redesign/check.svg";
+    import {navigate} from "svelte-routing";
     import {onMount} from "svelte";
     import {isEmpty} from "../utils/utils";
     import InstitutionRole from "../components/InstitutionRole.svelte";
@@ -57,8 +58,8 @@
     let newInstitution = {};
     let issuers;
 
-    const manageVerifiedInformation = () => {
-        showManageVerifiedInformation = !showManageVerifiedInformation;
+    const manageVerifiedInformation = path => {
+        navigate(`/${path}`, {replace:true});
     }
 
     const preferInstitution = (showConfirmation, linkedAccount) => {
@@ -73,7 +74,7 @@
                         refresh();
                     }
                 }
-                showPreferredInstitutionModal = false;
+                resetModalsAndQueryParams();
                 flash.setValue(I18n.t("profile.preferred", {name: institutionName(linkedAccount)}));
             });
         }
@@ -158,7 +159,7 @@
         }
         eduIDLinked = validLinkedAccounts.length > 0 || validExternalLinkedAccount;
         if (isEmpty($user.linkedAccounts) && isEmpty($user.externalLinkedAccounts)) {
-            showManageVerifiedInformation = false;
+            manageVerifiedInformation("personal");
         }
     }
 
@@ -215,7 +216,22 @@
         emailEditMode = false;
     }
 
+    const resetModalsAndQueryParams = () => {
+        showNewInstitutionModal = false;
+        showManageVerifiedInformation = false;
+        showModal = false;
+        showIdinOptions = false;
+        showDeleteInstitutionModal = false;
+        showNewInstitutionModal = false;
+        showPreferredInstitutionModal = false;
+        showPostVerificationModal = false;
+        const url = new URL(window.location.href);
+        url.search = "";
+        history.pushState({}, "", url.toString());
+    }
+
     onMount(() => {
+        showManageVerifiedInformation = window.location.pathname.indexOf("manage") > -1;
         refresh();
         const urlSearchParams = new URLSearchParams(window.location.search);
         if (!isEmpty($user.linkedAccounts)) {
@@ -457,7 +473,7 @@
         <div class="inner-container">
             <div class="verified-information">
             <div class="with-icon">
-                <span class="back" on:click={manageVerifiedInformation}>
+                <span class="back" on:click={() => manageVerifiedInformation("personal")}>
                     {@html arrowLeft}
                 </span>
                 <h2>{I18n.t("profile.verifiedInformation")}</h2>
@@ -531,7 +547,7 @@
             <EditField firstValue={$user.givenName}
                        editableByUser={!preferredAccount && !$user.givenNameVerified}
                        editLabel={I18n.t(`profile.${preferredAccount && $user.givenNameVerified ? "validatedGivenName":"givenName"}`)}
-                       manageVerifiedInformation={manageVerifiedInformation}
+                       manageVerifiedInformation={() => manageVerifiedInformation("manage")}
                        linkedAccount={preferredAccount}
                        saveLabel={I18n.t("edit.save")}
                        editMode={givenNameEditMode}
@@ -542,7 +558,7 @@
             <EditField firstValue={$user.familyName}
                        editableByUser={!preferredAccount}
                        editLabel={I18n.t(`profile.${preferredAccount ? "validatedFamilyName":"familyName"}`)}
-                       manageVerifiedInformation={manageVerifiedInformation}
+                       manageVerifiedInformation={() => manageVerifiedInformation("manage")}
                        linkedAccount={preferredAccount}
                        saveLabel={I18n.t("edit.save")}
                        editMode={familyNameEditMode}
@@ -554,7 +570,7 @@
                 <EditField firstValue={dateFromEpoch($user.dateOfBirth)}
                            editableByUser={false}
                            editLabel={I18n.t(`profile.validatedDayOfBirth`)}
-                           manageVerifiedInformation={manageVerifiedInformation}
+                           manageVerifiedInformation={() => manageVerifiedInformation("manage")}
                            linkedAccount={$user.externalLinkedAccounts[0]}
                            saveLabel={I18n.t("edit.save")}
                            editMode={dayOfBirthEditMode}
@@ -580,7 +596,7 @@
             <p class="info-section second">{I18n.t("profile.role")}</p>
             <section class="linked-accounts">
                 {#each sortedAccounts as account}
-                    <InstitutionRole manageVerifiedInformation={manageVerifiedInformation}
+                    <InstitutionRole manageVerifiedInformation={() => manageVerifiedInformation("manage")}
                                      linkedAccount={account}/>
                 {/each}
             </section>
@@ -608,7 +624,7 @@
 {/if}
 
 {#if showModal}
-    <Modal close={() => showModal = false}
+    <Modal close={() => resetModalsAndQueryParams()}
            title={I18n.t("verify.modal.header")}
            showOptions={false}>
         <VerifyChoice addInstitution={addInstitution}
@@ -616,7 +632,7 @@
                       addEuropean={addEuropean}
                       issuers={issuers}
                       showIdinOptions={showIdinOptions}
-                      cancel={() => showModal = false}/>
+                      cancel={() => resetModalsAndQueryParams()}/>
     </Modal>
 {/if}
 
@@ -631,7 +647,7 @@
 
 {#if showPreferredInstitutionModal}
     <Modal submit={() => preferInstitution(false, preferredInstitution)}
-           cancel={() => showPreferredInstitutionModal = false}
+           cancel={() => resetModalsAndQueryParams()}
            confirmTitle={I18n.t("profile.yes")}
            cancelTitle={I18n.t("profile.no")}
            title={I18n.t("profile.preferInstitution")}>
@@ -641,7 +657,7 @@
 {/if}
 
 {#if showPostVerificationModal}
-    <Modal submit={() => showPostVerificationModal = false}
+    <Modal submit={() => resetModalsAndQueryParams()}
            confirmTitle={I18n.t("profile.ok")}
            largeConfirmation={true}
            title={I18n.t("verify.modal.header")}>
@@ -651,10 +667,12 @@
 {/if}
 
 {#if showNewInstitutionModal}
-    <Modal submit={() => showNewInstitutionModal = false}
+    <Modal submit={() => resetModalsAndQueryParams()}
            confirmTitle={I18n.t("profile.ok")}
            largeConfirmation={true}
            title={I18n.t("verify.modal.header")}>
-        <ValidatedData institution={newInstitution}/>
+        <ValidatedData institution={newInstitution}
+                       readOnly={true}
+        />
     </Modal>
 {/if}

@@ -91,18 +91,21 @@
         {#if linkedAccount.idpScoping !== "idin" && !isEmpty(linkedAccountGivenName(linkedAccount))}
             <ValidatedField label={I18n.t("profile.validatedGivenName")}
                             icon={preferredAccount ? personalInfo : null}
+                            readOnly={true}
                             value={linkedAccountGivenName(linkedAccount)}/>
         {/if}
 
         {#if !isEmpty(linkedAccountFamilyName(linkedAccount))}
             <ValidatedField label={I18n.t("profile.validatedFamilyName")}
                             icon={preferredAccount ? personalInfo : null}
+                            readOnly={true}
                             value={linkedAccountFamilyName(linkedAccount)}/>
         {/if}
 
         {#if !isEmpty(linkedAccount.dateOfBirth)}
             <ValidatedField label={I18n.t("profile.validatedDayOfBirth")}
                             icon={preferredAccount ? personalInfo : null}
+                            readOnly={true}
                             value={dateFromEpoch(linkedAccount.dateOfBirth)}/>
         {/if}
 
@@ -110,6 +113,7 @@
             <ValidatedField label={I18n.t("profile.atInstitution", {name: institutionName(linkedAccount)})}
                             icon={preferredAccount ? personalInfo : null}
                             overrideShieldIcon={studentIcon}
+                            readOnly={true}
                             value={I18n.t("profile.studentRole")}/>
         {/if}
 

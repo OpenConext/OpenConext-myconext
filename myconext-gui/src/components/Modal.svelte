@@ -62,7 +62,7 @@
         max-height: calc(100vh - 4em);
         border-radius: 8px;
         background: white;
-        overflow: scroll;
+        overflow: auto;
     }
 
     .modal-header {
@@ -130,14 +130,12 @@
                 {#if cancel}
                     <Button className="cancel"
                             onClick={cancel}
-                            small={true}
                             label={cancelTitle}/>
                 {/if}
                 {#if submit}
                     <Button onClick={submit}
                             warning={warning}
                             href={href}
-                            small={!largeConfirmation}
                             large={largeConfirmation}
                             download={download}
                             disabled={disableSubmit}
