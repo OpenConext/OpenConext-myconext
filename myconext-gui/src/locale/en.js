@@ -39,8 +39,8 @@ I18n.translations.en = {
         title2: "Something went wrong (404)."
     },
     profile: {
-        title: "Personal sharable information",
-        info: "When you use eduID to login to other websites, some of your personal information will be shared.",
+        title: "Your personal info",
+        info: "When you use eduID to logon to other websites, the following information can be shared.",
         verifiedInformation: "Your verified information",
         verifiedInformationInfo: "This is an overview of the verified information we have received from trusted sources.",
         defaultPreferred: "This icon indicates the information is used on 'your personal info' as default.",
@@ -50,24 +50,24 @@ I18n.translations.en = {
         validUntilDateInfo: "Valid until <strong>{{date}}</strong>",
         removeLinkPrefix: "Remove this information",
         removeLinkPostfix: " from your eduID",
-        banner: "Some services require that your personal information is validated by a trusted party.",
+        banner: "Some services require that your identity is verified by a trusted party.",
         expiredBanner: "The verification of your identity has expired, please verify it again.",
         verifyNow: "Verify now",
         basic: "Your identity",
-        contact: "Contact data",
-        role: "Role & institution",
+        contact: "Contact details",
+        role: "Organisations",
         email: "Email address",
         name: "Name",
-        chosenName: "Call name",
+        chosenName: "First name",
         givenName: "Given name",
         validatedGivenName: "Verified given name",
-        familyName: "Family name",
+        familyName: "Last name",
         validatedFamilyName: "Verified family name",
         validatedDayOfBirth: "Verified date of birth",
         linkedAccounts: "Your role(s)",
-        addInstitution: "Add a role & institution",
-        addIdentity: "Add an identity",
-        proceedConext: "Proceed to add this via SURFconext",
+        addInstitution: "Add an organisation",
+        addIdentity: "Add an identity", Okke Kan deze regel (69) vervallen?
+        proceedConext: "Proceed to add this via SURFconext", 
         proceedVerify: "Proceed to add this via SURFconext or another Identity Provider",
         validated: "Validated information",
         firstAndLastName: "First and last name",
@@ -348,7 +348,7 @@ I18n.translations.en = {
     },
     modal: {
         cancel: "Cancel",
-        confirm: "Confirm"
+        confirm: "Confirm" Okke, confirm in delete this information moet deze knop 'Yes, delete' heten.
     },
     format: {
         creationDate: "{{date}} at {{hours}}:{{minutes}}"
@@ -511,7 +511,7 @@ I18n.translations.en = {
             header: "Verification",
             info: {
                 title: "Verification",
-                verify: "Verify your identity, quick and easy",
+                verify: "Verify your identity, quick and easy", Okke deze regel mag weg, is dubbelop
                 please: "Please verify that you are who you say you are.",
                 educationalInstitution: "Verify via a Dutch educational institution",
                 selectInstitution: "Select your institution",
@@ -519,15 +519,15 @@ I18n.translations.en = {
                 verifyBank: "Verify with a Dutch bank app",
                 selectBank: "Select your bank",
                 verifyEuropeanId: "Verify with a European ID",
-                supportEuropean: "We support the majority of National digital ID's",
-                useEuropean: "Use an European ID",
+                supportEuropean: "We support the following national ID's of Belgium, Denmark, Germany, Estonia,  Italy, Croatia, Lithuania, Latvia, Luxembourg, Malta, Portugal, Slovakia,  Spain, Czech Republic and Sweden.",
+                useEuropean: "Use a European ID",
                 help: "If you can't use any of the these methods, please visit our <a href='https://eduid.nl/help' target='_blank' rel='noreferrer'>support pages</a>"
             },
             bank: {
                 select: "Select your bank",
-                disclaimer: "With iDIN we control through your bank your personal information, to assure who you are. " +
-                    "<strong>You will make no payment</strong>. <a href='https://www.idin.nl/' target='_blank' rel='noreferrer'>More about IdIN.</a>",
-                anotherMethodPrefix: "If your bank of choice is not in the list, please select ",
+                disclaimer: "With iDIN, we receive your name and date of birth from your bank. This way, we can be sure it is you. " +
+                    "<strong>You are not making a payment</strong>. <a href='https://www.idin.nl/' target='_blank' rel='noreferrer'>More about iDIN.</a>",
+                anotherMethodPrefix: "If your bank is not shown in the list, please select ",
                 anotherMethodPostfix: "another method"
             }
         }
