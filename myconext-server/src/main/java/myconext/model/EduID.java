@@ -9,9 +9,7 @@ import org.springframework.util.StringUtils;
 
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 @NoArgsConstructor
 @Getter
@@ -25,6 +23,7 @@ public class EduID implements Serializable {
     private String serviceLogoUrl;
     private String serviceHomeUrl;
     private String serviceInstutionGuid;
+    private List<ServiceProvider> services = new ArrayList<>();
     @Schema(type = "integer", format = "int64", example = "1634813554997")
     private Date createdAt;
 

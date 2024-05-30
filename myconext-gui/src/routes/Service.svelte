@@ -240,6 +240,7 @@
     <Modal submit={modalOptions.submit}
            cancel={() => showModal = false}
            warning={true}
+           confirmTitle={I18n.t("modal.delete")}
            question={modalOptions.question}
            title={modalOptions.title}>
     </Modal>

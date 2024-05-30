@@ -39,6 +39,7 @@
 
         p {
             margin: 10px 0 20px 0;
+            font-size: larger;
         }
 
         span.cancel {
@@ -73,9 +74,8 @@
         padding: 15px;
         margin-bottom: 25px;
 
-        h4 {
-            font-size: 20px;
-            line-height: 24px;
+        p.question {
+            font-size: 18px;
         }
 
         .choice {
@@ -157,12 +157,11 @@
 <div class="account-link-mod">
     {#if !showBankOptions || busyProcessing}
         <div class="info-container">
-            <h3 class="header">{I18n.t("verify.modal.info.verify")}</h3>
             <p>{I18n.t("verify.modal.info.please")}</p>
         </div>
         <div class="choice-container">
             <div class="choice">
-                <h4>{I18n.t("verify.modal.info.educationalInstitution")}</h4>
+                <p class="question">{I18n.t("verify.modal.info.educationalInstitution")}</p>
                 {@html studentIcon}
             </div>
             <div class="button-container">
@@ -180,8 +179,8 @@
         {#if showOtherOptions}
             <div class="choice-container">
                 <div class="choice">
-                    <h4>{I18n.t("verify.modal.info.verifyBank")}</h4>
-                    {@html bankIcon}
+                    <p class="question">{I18n.t("verify.modal.info.verifyBank")}</p>
+                        {@html bankIcon}
                 </div>
                 <div class="button-container">
                     <Button label={I18n.t("verify.modal.info.selectBank")}
@@ -195,7 +194,7 @@
             </div>
             <div class="choice-container">
                 <div class="choice">
-                    <h4>{I18n.t("verify.modal.info.verifyEuropeanId")}</h4>
+                    <p class="question">{I18n.t("verify.modal.info.verifyEuropeanId")}</p>
                     {@html europeanSvg}
                 </div>
                 <p class="support">

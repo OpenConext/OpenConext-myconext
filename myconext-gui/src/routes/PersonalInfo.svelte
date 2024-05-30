@@ -603,7 +603,7 @@
             <div class="add-institution"
                  on:click={() => addIdentity($config.featureIdVerify && isEmpty($user.externalLinkedAccounts))}>
                 <div class="info">
-                    <p>{I18n.t("profile.addIdentity")}</p>
+                    <p>{I18n.t("profile.addInstitution")}</p>
                     <em class="info">{I18n.t(`profile.${($config.featureIdVerify && isEmpty($user.externalLinkedAccounts)) ? "proceedVerify" : "proceedConext"}`)}</em>
                 </div>
                 <span class="add">+</span>
@@ -640,6 +640,7 @@
     <Modal submit={() => deleteInstitution(false, selectedInstitution)}
            cancel={() => showDeleteInstitutionModal = false}
            warning={true}
+           confirmTitle={I18n.t("modal.delete")}
            question={I18n.t("institution.deleteInstitutionConfirmation")}
            title={I18n.t("institution.deleteInstitution")}>
     </Modal>

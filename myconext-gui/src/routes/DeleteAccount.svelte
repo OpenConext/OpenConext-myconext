@@ -112,6 +112,7 @@
     <Modal submit={deleteUserAction(false)}
            cancel={() => showModal = false}
            warning={true}
+           confirmTitle={I18n.t("modal.delete")}
            disableSubmit={name !== `${$user.givenName} ${$user.familyName}`}
            title={I18n.t("account.deleteAccountSure")}>
         <div class="slot">

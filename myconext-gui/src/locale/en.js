@@ -66,8 +66,7 @@ I18n.translations.en = {
         validatedDayOfBirth: "Verified date of birth",
         linkedAccounts: "Your role(s)",
         addInstitution: "Add an organisation",
-        addIdentity: "Add an identity", Okke Kan deze regel (69) vervallen?
-        proceedConext: "Proceed to add this via SURFconext", 
+        proceedConext: "Proceed to add this via SURFconext",
         proceedVerify: "Proceed to add this via SURFconext or another Identity Provider",
         validated: "Validated information",
         firstAndLastName: "First and last name",
@@ -348,7 +347,8 @@ I18n.translations.en = {
     },
     modal: {
         cancel: "Cancel",
-        confirm: "Confirm" Okke, confirm in delete this information moet deze knop 'Yes, delete' heten.
+        confirm: "Confirm",
+        delete: "Yes, delete"
     },
     format: {
         creationDate: "{{date}} at {{hours}}:{{minutes}}"
@@ -511,7 +511,6 @@ I18n.translations.en = {
             header: "Verification",
             info: {
                 title: "Verification",
-                verify: "Verify your identity, quick and easy", Okke deze regel mag weg, is dubbelop
                 please: "Please verify that you are who you say you are.",
                 educationalInstitution: "Verify via a Dutch educational institution",
                 selectInstitution: "Select your institution",

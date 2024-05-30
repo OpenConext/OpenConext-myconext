@@ -180,6 +180,7 @@
     <Modal submit={deletePasswordOption(false)}
            cancel={() => showModalDeletePassword = false}
            warning={false}
+           confirmTitle={I18n.t("modal.delete")}
            question={I18n.t("password.deletePasswordConfirmation")}
            title={I18n.t("password.deletePassword")}>
     </Modal>

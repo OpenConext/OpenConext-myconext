@@ -65,8 +65,7 @@ I18n.translations.nl = {
         validatedFamilyName: "Geverifïeerde achternaam",
         validatedDayOfBirth: "Geverifïeerde geboortedatum",
         linkedAccounts: "Je rollen",
-        addInstitution: "Voeg een rol toe",
-        addIdentity: "Voeg een identiteit toe",
+        addInstitution: "Voeg een organisatie toe",
         proceedConext: "Voeg dit toe via SURFconext",
         proceedVerify: "Voeg dit toe via SURFconext of een andere Identity Provider",
         validated: "Gevalideerde informatie",
@@ -348,7 +347,8 @@ I18n.translations.nl = {
     },
     modal: {
         cancel: "Annuleren",
-        confirm: "Bevestigen"
+        confirm: "Bevestigen",
+        delete: "Ja, verwijder"
     },
     format: {
         creationDate: "{{date}} om {{hours}}:{{minutes}}"
@@ -512,7 +512,6 @@ I18n.translations.nl = {
             header: "Verificatie",
             info: {
                 title: "Verificatie",
-                verify: "Verifïeer je identiteit, snel en gemakkelijk",
                 please: "Verifïeer a.u.b dat je bent wie je zegt dat je bent.",
                 educationalInstitution: "Verifïeer met een Nederlandse onderwijsinstelling",
                 selectInstitution: "Selecteer je instelling",
