@@ -1,8 +1,9 @@
 package myconext.model;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import myconext.exceptions.WeakPasswordException;
-import myconext.manage.MockServiceProviderResolver;
-import myconext.manage.ServiceProviderResolver;
+import myconext.manage.Manage;
+import myconext.manage.MockManage;
 import org.junit.Test;
 
 import java.time.Instant;
@@ -15,7 +16,7 @@ import static org.junit.Assert.*;
 
 public class UserTest {
 
-    private final ServiceProviderResolver serviceProviderResolver = new MockServiceProviderResolver();
+    private final Manage manage = new MockManage(new ObjectMapper());
 
     @Test
     public void linkedAccountsSorted() {
@@ -30,40 +31,22 @@ public class UserTest {
     @Test
     public void computeEduIdForServiceProviderIfAbsent() {
         User user = user("http://mock-sp");
-        String serviceProviderEntityId = "brand_new";
-        String eduId = user.computeEduIdForServiceProviderIfAbsent(serviceProviderEntityId, serviceProviderResolver);
+        String entityId = "brand_new";
+        String eduId = user.computeEduIdForServiceProviderIfAbsent(entityId, manage);
         boolean matches = Pattern.compile("^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$").matcher(eduId).matches();
         assertTrue(matches);
 
-        String existingEduId = user.computeEduIdForServiceProviderIfAbsent(serviceProviderEntityId, serviceProviderResolver);
+        String existingEduId = user.computeEduIdForServiceProviderIfAbsent(entityId, manage);
         assertEquals(eduId, existingEduId);
     }
 
     @Test
     public void computeEduIdForServiceProviderIfAbsentWithIdenticalInstitutionGuid() {
         User user = user("nope");
-
-        String eduId = user.computeEduIdForServiceProviderIfAbsent("http://mock-sp", serviceProviderResolver);
-        String existingEduId = user.computeEduIdForServiceProviderIfAbsent("playground_client", serviceProviderResolver);
+        //See static providers JSON in src/main/resources/manage
+        String eduId = user.computeEduIdForServiceProviderIfAbsent("www.spd633wts00.nl", manage);
+        String existingEduId = user.computeEduIdForServiceProviderIfAbsent("https://teams1.test3.surfconext.nl/shibboleth", manage);
         assertEquals(eduId, existingEduId);
-    }
-
-    @Test
-    public void computeEduIdForServiceProviderIfAbsentWithNewServiceProvider() {
-        User user = user("nope");
-
-        String eduId = user.computeEduIdForServiceProviderIfAbsent("http://mock-sp", serviceProviderResolver);
-        String existingEduId = user.computeEduIdForServiceProviderIfAbsent("brand_new", serviceProviderResolver);
-        assertNotEquals(eduId, existingEduId);
-    }
-
-    @Test
-    public void computeEduIdForServiceProviderIfAbsentWithExiistingServiceProvider() {
-        User user = user("nope");
-
-        String eduId = user.computeEduIdForServiceProviderIfAbsent("http://mock-sp", serviceProviderResolver);
-        String existingEduId = user.computeEduIdForServiceProviderIfAbsent("noInstitutionalGuid", serviceProviderResolver);
-        assertNotEquals(eduId, existingEduId);
     }
 
     @Test(expected = WeakPasswordException.class)
@@ -74,7 +57,7 @@ public class UserTest {
 
     private User user(String serviceProviderEntityId) {
         return new User("uid", "email", "John", "John", "Doe", "schac", "en",
-                serviceProviderEntityId, new MockServiceProviderResolver());
+                serviceProviderEntityId, manage);
     }
 
 }

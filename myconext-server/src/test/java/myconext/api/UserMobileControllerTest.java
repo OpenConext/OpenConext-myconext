@@ -13,7 +13,8 @@ import java.io.IOException;
 import java.util.Map;
 
 import static io.restassured.RestAssured.given;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 public class UserMobileControllerTest extends AbstractIntegrationTest {
 
@@ -75,12 +76,12 @@ public class UserMobileControllerTest extends AbstractIntegrationTest {
                 .accept(ContentType.JSON)
                 .contentType(ContentType.JSON)
                 .auth().oauth2(opaqueAccessToken(true, "eduid.nl/mobile"))
-                .queryParam("schac_home", "rug.nl")
+                .queryParam("schac_home", "rocmn.nl")
                 .get("/mobile/api/sp/institution/names")
                 .as(Map.class);
 
-        assertEquals("University of Groningen", names.get("displayNameEn"));
-        assertEquals("Rijksuniversiteit Groningen", names.get("displayNameNl"));
+        assertEquals("ROC Midden Nederland", names.get("displayNameEn"));
+        assertEquals("ROC Midden Nederland", names.get("displayNameNl"));
     }
 
     @Test
@@ -96,7 +97,7 @@ public class UserMobileControllerTest extends AbstractIntegrationTest {
                 .statusCode(201);
         User user = userRepository.findUserByEmail(createAccount.getEmail()).get();
 
-        assertEquals(createAccount.getRelyingPartClientId(), user.getEduIDS().get(0).getServiceProviderEntityId());
+        assertEquals(createAccount.getRelyingPartClientId(), user.getEduIDS().get(0).getServices().get(0).getEntityId());
         assertNotNull(user.getEduPersonPrincipalName());
 
         given().redirects().follow(false)

@@ -1,7 +1,7 @@
 package myconext.shibboleth;
 
 
-import myconext.manage.ServiceProviderResolver;
+import myconext.manage.Manage;
 import myconext.model.User;
 import myconext.repository.UserRepository;
 import org.apache.commons.logging.Log;
@@ -30,12 +30,12 @@ public class ShibbolethPreAuthenticatedProcessingFilter extends AbstractPreAuthe
     public static final String SHIB_SCHAC_HOME_ORGANIZATION = "schacHomeOrganization";
 
     private final UserRepository userRepository;
-    private final ServiceProviderResolver serviceProviderResolver;
+    private final Manage serviceProviderResolver;
     private final String mijnEduIDEntityId;
 
     public ShibbolethPreAuthenticatedProcessingFilter(AuthenticationManager authenticationManager,
                                                       UserRepository userRepository,
-                                                      ServiceProviderResolver serviceProviderResolver,
+                                                      Manage serviceProviderResolver,
                                                       String mijnEduIDEntityId) {
         super();
         super.setAuthenticationManager(authenticationManager);

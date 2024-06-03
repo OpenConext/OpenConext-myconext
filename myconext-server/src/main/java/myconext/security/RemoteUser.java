@@ -20,14 +20,14 @@ public class RemoteUser implements UserDetails, CredentialsContainer {
 
     private String username;
     private String password;
-    private String rpClientId;
+    private String institutionGUID;
     private String schacHome;
     private List<String> scopes;
 
     public RemoteUser(RemoteUser remoteUser) {
         this.username = remoteUser.username;
         this.password = remoteUser.password;
-        this.rpClientId = remoteUser.rpClientId;
+        this.institutionGUID = remoteUser.institutionGUID;
         this.schacHome = remoteUser.schacHome;
         this.scopes = remoteUser.scopes;
     }

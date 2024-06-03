@@ -33,9 +33,15 @@ public class RemoteCreationController {
     @Operation(summary = "Does the eduID exists",
             description = "Does the eduID exists")
     public ResponseEntity<Map<String, Object>> remoteCreation(@Parameter(hidden = true) @AuthenticationPrincipal RemoteUser remoteUser) {
-        LOG.debug(String.format("Remote creation for %s", remoteUser.getRpClientId()));
+        LOG.debug(String.format("Remote creation for %s", remoteUser.getInstitutionGUID()));
 
         return ResponseEntity.ok(Map.of("status", "todo"));
     }
+
+    //TODO
+    /*
+    curl -H 'Content-Type: application/json' -u pdp:secret  -X POST -d
+    '{"metaDataFields.coin:institution_guid":"ad93daef-0911-e511-80d0-005056956c1a","REQUESTED_ATTRIBUTES":["metaDataFields.coin:institution_brin"]}' 'https://manage.test2.surfconext.nl/manage/api/internal/search/saml20_idp'
+     */
 
 }

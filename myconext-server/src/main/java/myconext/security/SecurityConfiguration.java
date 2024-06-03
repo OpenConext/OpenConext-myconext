@@ -4,7 +4,7 @@ import lombok.SneakyThrows;
 import myconext.crypto.KeyGenerator;
 import myconext.geo.GeoLocation;
 import myconext.mail.MailBox;
-import myconext.manage.ServiceProviderResolver;
+import myconext.manage.Manage;
 import myconext.repository.AuthenticationRequestRepository;
 import myconext.repository.UserLoginRepository;
 import myconext.repository.UserRepository;
@@ -86,7 +86,7 @@ public class SecurityConfiguration {
                             UserLoginRepository userLoginRepository,
                             GeoLocation geoLocation,
                             MailBox mailBox,
-                            ServiceProviderResolver serviceProviderResolver,
+                            Manage serviceProviderResolver,
                             IdentityProviderMetaData identityProviderMetaData,
                             CookieValueEncoder cookieValueEncoder) {
             ACR.initialize(
@@ -188,12 +188,12 @@ public class SecurityConfiguration {
 
         private final Environment environment;
         private final UserRepository userRepository;
-        private final ServiceProviderResolver serviceProviderResolver;
+        private final Manage serviceProviderResolver;
         private final String mijnEduIDEntityId;
 
         public InternalSecurityConfigurationAdapter(Environment environment,
                                                     UserRepository userRepository,
-                                                    ServiceProviderResolver serviceProviderResolver,
+                                                    Manage serviceProviderResolver,
                                                     @Value("${mijn_eduid_entity_id}") String mijnEduIDEntityId) {
             this.environment = environment;
             this.userRepository = userRepository;

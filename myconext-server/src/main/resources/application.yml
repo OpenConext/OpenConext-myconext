@@ -2,7 +2,7 @@ logging:
   level:
     org.springframework: WARN
     org.springframework.web: WARN
-    org.springframework.security: TRACE
+    org.springframework.security: WARN
     com.zaxxer.hikari: ERROR
     myconext: DEBUG
     tiqr.org: DEBUG
@@ -45,20 +45,14 @@ schac_home_organization: eduid.nl
 cron:
   node-cron-job-responsible: True
   token-cleaner-expression: "0 0/15 * * * *"
-  service-name-resolver-initial-delay-milliseconds: 15000
-  service-name-resolver-fixed-rate-milliseconds: 43_200_000
-  metadata-resolver-initial-delay-milliseconds: 1
-  metadata-resolver-fixed-rate-milliseconds: 86_400_000
-  metadata-resolver-url: "classpath:/metadata/idps-metadata.xml"
-  geo-location-refresh: "0 1 1 * * ?"
+  manage-initial-delay-milliseconds: 15000
+  manage-fixed-rate-milliseconds: 43_200_000
 
 manage:
   username: myconext
   password: secret
   base_url: https://manage.test2.surfconext.nl
   enabled: False
-  # Can also be a https url
-  fallback_url: "classpath:metadata/sp-names.json"
 
 mongodb_db: surf_id_test
 base_domain: test2.surfconext.nl
@@ -141,7 +135,7 @@ external-api-configuration:
       password: "{noop}secret"
       scopes:
         - remote-creation
-      rp_client_id: rp.studielink.nl
+      institutionGUID: rp.studielink.nl
       schac_home: studielink.nl
 
 oidc-token-api:

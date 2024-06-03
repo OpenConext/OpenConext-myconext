@@ -1,8 +1,7 @@
 package myconext.model;
 
 import lombok.Getter;
-import myconext.cron.IdPMetaDataResolver;
-import myconext.cron.IdentityProvider;
+import myconext.manage.Manage;
 import myconext.tiqr.SURFSecureID;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
@@ -41,7 +40,7 @@ public class UserResponse implements Serializable {
                         Map<String, EduID> eduIdPerServiceProvider,
                         Optional<Registration> optionalRegistration,
                         boolean rememberMe,
-                        IdPMetaDataResolver idPMetaDataResolver) {
+                        Manage manage) {
         this.id = user.getId();
         this.email = user.getEmail();
         this.chosenName = user.getChosenName();
@@ -56,7 +55,7 @@ public class UserResponse implements Serializable {
         this.linkedAccounts = user.getLinkedAccounts();
         if (!CollectionUtils.isEmpty(this.linkedAccounts)) {
             linkedAccounts.forEach(linkedAccount -> {
-                Optional<IdentityProvider> optionalIdentityProvider = idPMetaDataResolver.getIdentityProvider(linkedAccount.getSchacHomeOrganization());
+                Optional<IdentityProvider> optionalIdentityProvider = manage.findIdentityProviderByDomainName(linkedAccount.getSchacHomeOrganization());
                 optionalIdentityProvider.ifPresent(identityProvider -> {
                     linkedAccount.setDisplayNameEn(identityProvider.getDisplayNameEn());
                     linkedAccount.setDisplayNameNl(identityProvider.getDisplayNameNl());

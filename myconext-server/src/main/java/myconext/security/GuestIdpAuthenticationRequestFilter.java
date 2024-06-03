@@ -6,8 +6,7 @@ import lombok.Setter;
 import myconext.exceptions.UserNotFoundException;
 import myconext.geo.GeoLocation;
 import myconext.mail.MailBox;
-import myconext.manage.ServiceProviderHolder;
-import myconext.manage.ServiceProviderResolver;
+import myconext.manage.Manage;
 import myconext.model.*;
 import myconext.repository.AuthenticationRequestRepository;
 import myconext.repository.UserLoginRepository;
@@ -60,7 +59,7 @@ import static myconext.security.CookieResolver.cookieByName;
 
 @SuppressWarnings("unchecked")
 @NoArgsConstructor(force = true)
-public class GuestIdpAuthenticationRequestFilter extends OncePerRequestFilter implements ServiceProviderHolder {
+public class GuestIdpAuthenticationRequestFilter extends OncePerRequestFilter {
 
     public static final String GUEST_IDP_REMEMBER_ME_COOKIE_NAME = "guest-idp-remember-me";
     public static final String TRACKING_DEVICE_COOKIE_NAME = "TRACKING_DEVICE";
@@ -91,7 +90,7 @@ public class GuestIdpAuthenticationRequestFilter extends OncePerRequestFilter im
     private final MailBox mailBox;
     @Setter
     @Getter
-    private ServiceProviderResolver serviceProviderResolver;
+    private Manage manage;
     private final ExecutorService executor;
     private final int nudgeAppDays;
     private final int rememberMeQuestionAskedDays;
@@ -103,7 +102,7 @@ public class GuestIdpAuthenticationRequestFilter extends OncePerRequestFilter im
     private final CookieValueEncoder cookieValueEncoder;
 
     public GuestIdpAuthenticationRequestFilter(String redirectUrl,
-                                               ServiceProviderResolver serviceProviderResolver,
+                                               Manage manage,
                                                AuthenticationRequestRepository authenticationRequestRepository,
                                                UserRepository userRepository,
                                                UserLoginRepository userLoginRepository,
@@ -127,7 +126,7 @@ public class GuestIdpAuthenticationRequestFilter extends OncePerRequestFilter im
         this.continueAfterLoginSamlRequestMatcher = new AntPathRequestMatcher("/saml/guest-idp/continue/**");
         this.metaDataSamlRequestMatcher = new AntPathRequestMatcher("/saml/guest-idp/metadata/**");
         this.redirectUrl = redirectUrl;
-        this.serviceProviderResolver = serviceProviderResolver;
+        this.manage = manage;
         this.authenticationRequestRepository = authenticationRequestRepository;
         this.userRepository = userRepository;
         this.userLoginRepository = userLoginRepository;
@@ -209,7 +208,7 @@ public class GuestIdpAuthenticationRequestFilter extends OncePerRequestFilter im
 
         User previousAuthenticatedUser = userRememberedOptional.orElse(userFromAuthentication.orElse(null));
 
-        String serviceName = this.getServiceName(request, samlAuthenticationRequest);
+        String serviceName = this.manage.getServiceName(request, samlAuthenticationRequest);
 
         // Use the returned instance for further operations as the save operation has added the _id
         samlAuthenticationRequest.setServiceName(serviceName);
@@ -754,7 +753,7 @@ public class GuestIdpAuthenticationRequestFilter extends OncePerRequestFilter im
                 attribute("urn:mace:dir:attribute-def:uid", user.getUid()),
                 attribute("urn:mace:terena.org:attribute-def:schacHomeOrganization", user.getSchacHomeOrganization())
         ));
-        String eduIDValue = user.computeEduIdForServiceProviderIfAbsent(requesterEntityId, serviceProviderResolver);
+        String eduIDValue = user.computeEduIdForServiceProviderIfAbsent(requesterEntityId, manage);
         userRepository.save(user);
 
         attributes.add(attribute("urn:mace:eduid.nl:1.1", eduIDValue));

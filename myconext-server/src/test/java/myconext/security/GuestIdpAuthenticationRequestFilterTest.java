@@ -1,19 +1,21 @@
 package myconext.security;
 
-import myconext.manage.MockServiceProviderResolver;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import myconext.manage.MockManage;
 import myconext.model.LinkedAccount;
 import myconext.model.User;
 import myconext.repository.UserRepository;
-import org.junit.Test;
 import org.junit.Before;
+import org.junit.Test;
 import org.mockito.Mockito;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.StandardPasswordEncoder;
 import saml.model.SAMLAttribute;
 
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Date;
+import java.util.List;
 
 import static myconext.AbstractIntegrationTest.user;
 import static myconext.model.LinkedAccountTest.linkedAccount;
@@ -23,10 +25,11 @@ public class GuestIdpAuthenticationRequestFilterTest {
 
     private final GuestIdpAuthenticationRequestFilter subject =
             new GuestIdpAuthenticationRequestFilter();
+    private final ObjectMapper objectMapper = new ObjectMapper();
 
     @Before
     public void beforeEach() {
-        subject.setServiceProviderResolver(new MockServiceProviderResolver());
+        subject.setManage(new MockManage(objectMapper));
         subject.setUserRepository(Mockito.mock(UserRepository.class));
     }
 

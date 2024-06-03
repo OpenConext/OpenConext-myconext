@@ -3,7 +3,8 @@ package myconext.mongo;
 import com.github.cloudyrock.mongock.ChangeLog;
 import com.github.cloudyrock.mongock.ChangeSet;
 import com.github.cloudyrock.mongock.driver.mongodb.springdata.v3.decorator.impl.MongockTemplate;
-import myconext.manage.ServiceProviderResolver;
+import myconext.manage.Manage;
+import myconext.manage.RemoteManage;
 import myconext.model.*;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -46,19 +47,7 @@ public class Migrations {
     @SuppressWarnings("unchecked")
     @ChangeSet(order = "002", id = "transformEduIdPerServiceProvider", author = "okke.harsta@surf.nl")
     public void transformEduIdPerServiceProvider(MongockTemplate mongoTemplate) {
-        List<Map> usersAsMaps = mongoTemplate.findAll(Map.class, "users");
-        usersAsMaps.forEach(userAsMap -> {
-            if (userAsMap.containsKey("eduIdPerServiceProvider")) {
-                Map<String, Map<String, Object>> eduIdPerServiceProvider = (Map<String, Map<String, Object>>) userAsMap.get("eduIdPerServiceProvider");
-                List<EduID> eduIDS = new ArrayList<>();
-                eduIdPerServiceProvider.forEach((serviceProviderEntityId, values) -> {
-                    eduIDS.add(new EduID(serviceProviderEntityId, values));
-                });
-                userAsMap.put("eduIDS", eduIDS);
-                userAsMap.remove("eduIdPerServiceProvider");
-                mongoTemplate.save(userAsMap, "users");
-            }
-        });
+        //Depended on removed code, we pass this will-never-run-again migration
     }
 
     @SuppressWarnings("unchecked")
@@ -73,24 +62,8 @@ public class Migrations {
 
     @SuppressWarnings("unchecked")
     @ChangeSet(order = "004", id = "addServiceProviderInstitutionGuid", author = "okke.harsta@surf.nl")
-    public void addServiceProviderInstitutionGuid(MongockTemplate mongoTemplate, ServiceProviderResolver serviceProviderResolver) {
-        List<User> users = mongoTemplate.findAll(User.class, "users");
-        serviceProviderResolver.refresh();
-        users.forEach(user -> {
-            user.getEduIDS().forEach(eduID -> {
-                Optional<ServiceProvider> optionalServiceProvider = serviceProviderResolver.resolve(eduID.getServiceProviderEntityId());
-                if (optionalServiceProvider.isPresent()) {
-                    ServiceProvider serviceProvider = optionalServiceProvider.get();
-                    if (StringUtils.hasText(serviceProvider.getInstitutionGuid())) {
-                        eduID.updateServiceProvider(serviceProvider);
-                        mongoTemplate.save(user);
-                        LOG.info("Added institutionGuid to " + eduID.getServiceProviderEntityId());
-                    }
-                } else {
-                    LOG.info("Unknown serviceProvider: " + eduID.getServiceProviderEntityId());
-                }
-            });
-        });
+    public void addServiceProviderInstitutionGuid(MongockTemplate mongoTemplate, Manage serviceProviderResolver) {
+        //Depended on removed code, we pass this will-never-run-again migration
     }
 
     @SuppressWarnings("unchecked")
@@ -164,7 +137,7 @@ public class Migrations {
         List<EduID> eduIDS = user.getEduIDS();
         //Make a copy to search in
         List<EduID> copiedEduIDs = new ArrayList<>(eduIDS);
-        //First remove all the ones containing a "." and where the is an entry with the old format
+        //First remove all the ones containing a "." and where there is an entry with the old format
         List<EduID> eduIDSFiltered = eduIDS.stream()
                 .filter(eduID -> {
                     String entityId = eduID.getServiceProviderEntityId();

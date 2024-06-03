@@ -6,7 +6,7 @@ import com.yubico.webauthn.data.PublicKeyCredentialDescriptor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import myconext.exceptions.WeakPasswordException;
-import myconext.manage.ServiceProviderResolver;
+import myconext.manage.Manage;
 import myconext.tiqr.SURFSecureID;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.Transient;
@@ -75,7 +75,7 @@ public class User implements Serializable, UserDetails {
     }
 
     public User(String uid, String email, String chosenName, String givenName, String familyName, String schacHomeOrganization, String preferredLanguage,
-                String serviceProviderEntityId, ServiceProviderResolver serviceProviderResolver) {
+                String serviceProviderEntityId, Manage serviceProviderResolver) {
         this.uid = uid;
         this.email = email;
         this.chosenName = chosenName;
@@ -117,34 +117,42 @@ public class User implements Serializable, UserDetails {
                 name));
     }
 
-    private boolean eduIDEquals(EduID eduID, Optional<ServiceProvider> optionalServiceProvider, String serviceProviderEntityId) {
-        if (eduID.getServiceProviderEntityId().equalsIgnoreCase(serviceProviderEntityId)) {
-            return true;
-        }
-        if (optionalServiceProvider.isPresent()) {
-            ServiceProvider serviceProvider = optionalServiceProvider.get();
-            if (StringUtils.hasText(serviceProvider.getInstitutionGuid())) {
-                return serviceProvider.getInstitutionGuid().equalsIgnoreCase(eduID.getServiceInstutionGuid());
-            }
-        }
-        return false;
-    }
-
+    /**
+     * Generate a new eduID for this Service Provider (based on the entityID and institutionGuid if present).
+     * An eduID can be the same for multiple services if the institutionGuid's are identical (meaning the services are
+     * coupled to one Identity Provider). If a Service Provider does not have an institutionGuid then there
+     * is one unique eduID generated or existing eduID returned.
+     *
+     * @param entityId unique entityID of the Service Provider
+     * @param manage   responsible for retrieving the Service Provider metadata information
+     * @return the newly generated eduID or existing eduID
+     */
     @Transient
-    public String computeEduIdForServiceProviderIfAbsent(String serviceProviderEntityId, ServiceProviderResolver serviceProviderResolver) {
-        Optional<ServiceProvider> optionalServiceProvider = serviceProviderResolver.resolve(serviceProviderEntityId);
-        Optional<EduID> optionalEduID = this.eduIDS.stream()
-                .filter(eduID -> this.eduIDEquals(eduID, optionalServiceProvider, serviceProviderEntityId))
-                .findFirst();
-        if (optionalEduID.isPresent()) {
-            EduID eduID = optionalEduID.get();
-            optionalServiceProvider.ifPresent(eduID::updateServiceProvider);
-            return eduID.getValue();
-        } else {
-            EduID eduID = new EduID(UUID.randomUUID().toString(), serviceProviderEntityId, optionalServiceProvider);
+    public String computeEduIdForServiceProviderIfAbsent(String entityId, Manage manage) {
+        //Not likely and not desirable, but we don't interrupt the login flow for missing services
+        ServiceProvider serviceProvider = manage.findServiceProviderByEntityId(entityId)
+                .orElse(new ServiceProvider(entityId, entityId, entityId, null, null, null));
+        String institutionGuid = serviceProvider.getInstitutionGuid();
+        //We need to be backward compatible, so we need to check both obsolete properties and the services
+        Optional<EduID> optionalExistingEduID = this.eduIDS.stream()
+                .filter(eduID -> {
+                    //Ensure we don't match institutionGUID's that are both null
+                    boolean matchByInstitutionGUID = StringUtils.hasText(institutionGuid) &&
+                            (institutionGuid.equals(eduID.getServiceInstutionGuid()) ||
+                                eduID.getServices().stream().anyMatch(sp -> institutionGuid.equals(sp.getInstitutionGuid())));
+                    //Prevent nullPointers to compare with non-nullable entityId against nullable entityId of the SP
+                    boolean matchByEntityId = entityId.equals(eduID.getServiceProviderEntityId()) ||
+                            eduID.getServices().stream().anyMatch(sp -> entityId.equals(sp.getEntityId()));
+                    return matchByInstitutionGUID || matchByEntityId;
+                }).findFirst();
+        //If there is an existing eduID then we add or update the service for this eduID, otherwise add new one
+        return optionalExistingEduID.map(
+                eduId -> eduId.updateServiceProvider(serviceProvider).getValue()
+        ).orElseGet(() -> {
+            EduID eduID = new EduID(UUID.randomUUID().toString(), serviceProvider);
             this.eduIDS.add(eduID);
             return eduID.getValue();
-        }
+        });
     }
 
     @Override

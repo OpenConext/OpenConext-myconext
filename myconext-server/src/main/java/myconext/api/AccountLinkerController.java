@@ -14,7 +14,7 @@ import myconext.exceptions.DuplicateUserEmailException;
 import myconext.exceptions.ForbiddenException;
 import myconext.exceptions.UserNotFoundException;
 import myconext.mail.MailBox;
-import myconext.manage.ServiceProviderResolver;
+import myconext.manage.Manage;
 import myconext.model.*;
 import myconext.repository.AuthenticationRequestRepository;
 import myconext.repository.MobileLinkAccountRequestRepository;
@@ -95,7 +95,7 @@ public class AccountLinkerController implements UserAuthentication {
     private final String basePath;
     private final long removalValidatedDurationDays;
     private final String myConextSpEntityId;
-    private final ServiceProviderResolver serviceProviderResolver;
+    private final Manage serviceProviderResolver;
     private final String mijnEduIDEntityId;
     private final String schacHomeOrganization;
     private final boolean createEduIDInstitutionEnabled;
@@ -121,7 +121,7 @@ public class AccountLinkerController implements UserAuthentication {
             MobileLinkAccountRequestRepository mobileLinkAccountRequestRepository,
             MailBox mailBox,
             AttributeMapper attributeMapper,
-            ServiceProviderResolver serviceProviderResolver,
+            Manage serviceProviderResolver,
             DisposableEmailProviders disposableEmailProviders,
             @Value("${mijn_eduid_entity_id}") String mijnEduIDEntityId,
             @Value("${schac_home_organization}") String schacHomeOrganization,

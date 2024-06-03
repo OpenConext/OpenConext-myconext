@@ -10,8 +10,8 @@ import io.restassured.http.Cookie;
 import io.restassured.response.Response;
 import io.restassured.specification.RequestSpecification;
 import myconext.api.MagicLinkResponse;
-import myconext.manage.MockServiceProviderResolver;
-import myconext.manage.ServiceProviderResolver;
+import myconext.manage.Manage;
+import myconext.manage.MockManage;
 import myconext.model.*;
 import myconext.repository.*;
 import org.apache.commons.codec.binary.Base64;
@@ -22,7 +22,7 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.web.server.LocalServerPort;
+import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.data.mongodb.core.BulkOperations;
@@ -59,7 +59,6 @@ import java.util.zip.Deflater;
 import java.util.zip.DeflaterOutputStream;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.*;
-import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
 import static io.restassured.RestAssured.given;
 import static myconext.security.GuestIdpAuthenticationRequestFilter.BROWSER_SESSION_COOKIE_NAME;
 import static org.junit.Assert.assertEquals;
@@ -90,7 +89,7 @@ import static org.junit.Assert.assertTrue;
 @SuppressWarnings("unchecked")
 public abstract class AbstractIntegrationTest {
 
-    private static final ServiceProviderResolver serviceProviderResolver = new MockServiceProviderResolver();
+    protected static final Manage manage = new MockManage(new ObjectMapper());
 
     @LocalServerPort
     protected int port;
@@ -250,7 +249,7 @@ public abstract class AbstractIntegrationTest {
 
     public static User user(String email, String givenName, String familyName, String lang) {
         return new User(UUID.randomUUID().toString(), email, givenName, givenName, familyName, "surfguest.nl", lang,
-                "http://mock-sp", serviceProviderResolver);
+                "http://mock-sp", manage);
     }
 
     protected void userSetPassword(User user, String plainTextPassword) {

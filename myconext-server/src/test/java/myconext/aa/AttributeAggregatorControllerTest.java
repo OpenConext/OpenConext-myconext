@@ -2,14 +2,10 @@ package myconext.aa;
 
 import io.restassured.http.ContentType;
 import myconext.AbstractIntegrationTest;
-import myconext.manage.MockServiceProviderResolver;
 import myconext.model.LinkedAccount;
 import myconext.model.User;
-import myconext.security.ExternalApiConfiguration;
 import org.junit.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.context.properties.EnableConfigurationProperties;
 
 import java.util.List;
 import java.util.Map;
@@ -57,7 +53,7 @@ public class AttributeAggregatorControllerTest extends AbstractIntegrationTest {
     public void aggregateExistingEduID() {
         User user = userRepository.findOneUserByEmail("jdoe@example.com");
         String spEntityId = "http://mock-sp";
-        String eduId = user.computeEduIdForServiceProviderIfAbsent(spEntityId, new MockServiceProviderResolver());
+        String eduId = user.computeEduIdForServiceProviderIfAbsent(spEntityId, manage);
         userRepository.save(user);
         List<UserAttribute> userAttributes = doAggregate("aa", "secret", spEntityId, eppn);
 
@@ -167,7 +163,7 @@ public class AttributeAggregatorControllerTest extends AbstractIntegrationTest {
         Optional<User> optionalUser = userRepository.findUserByUid(uid);
         optionalUser.ifPresent(user -> {
             assertEquals(res.get("eduid"),
-                    user.computeEduIdForServiceProviderIfAbsent(spEntityId, new MockServiceProviderResolver()));
+                    user.computeEduIdForServiceProviderIfAbsent(spEntityId, manage));
         });
         return res;
     }

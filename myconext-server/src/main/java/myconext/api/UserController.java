@@ -18,12 +18,9 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import myconext.cron.DisposableEmailProviders;
-import myconext.cron.IdPMetaDataResolver;
-import myconext.cron.IdentityProvider;
 import myconext.exceptions.*;
 import myconext.mail.MailBox;
-import myconext.manage.ServiceProviderHolder;
-import myconext.manage.ServiceProviderResolver;
+import myconext.manage.Manage;
 import myconext.model.*;
 import myconext.oidcng.OpenIDConnect;
 import myconext.repository.*;
@@ -68,14 +65,14 @@ import static myconext.log.MDCContext.logWithContext;
 @RestController
 @RequestMapping(value = {"/myconext/api", "/mobile/api"})
 @SecurityRequirement(name = OPEN_ID_SCHEME_NAME, scopes = {"eduid.nl/mobile"})
-public class UserController implements ServiceProviderHolder, UserAuthentication {
+public class UserController implements UserAuthentication {
 
     private static final Log LOG = LogFactory.getLog(UserController.class);
 
     private final UserRepository userRepository;
     private final AuthenticationRequestRepository authenticationRequestRepository;
     private final MailBox mailBox;
-    private final ServiceProviderResolver serviceProviderResolver;
+    private final Manage manage;
     private final OpenIDConnect openIDConnect;
     private final String magicLinkUrl;
     private final String schacHomeOrganization;
@@ -91,7 +88,6 @@ public class UserController implements ServiceProviderHolder, UserAuthentication
     private final EmailGuessingPrevention emailGuessingPreventor;
     private final EmailDomainGuard emailDomainGuard;
     private final DisposableEmailProviders disposableEmailProviders;
-    private final IdPMetaDataResolver idPMetaDataResolver;
     private final String spBaseUrl;
     private final ObjectMapper objectMapper;
     private final RegistrationRepository registrationRepository;
@@ -104,9 +100,8 @@ public class UserController implements ServiceProviderHolder, UserAuthentication
                           ChangeEmailHashRepository changeEmailHashRepository,
                           AuthenticationRequestRepository authenticationRequestRepository,
                           MailBox mailBox,
-                          ServiceProviderResolver serviceProviderResolver,
+                          Manage manage,
                           OpenIDConnect openIDConnect,
-                          IdPMetaDataResolver idPMetaDataResolver,
                           EmailDomainGuard emailDomainGuard,
                           DisposableEmailProviders disposableEmailProviders,
                           RegistrationRepository registrationRepository,
@@ -126,9 +121,8 @@ public class UserController implements ServiceProviderHolder, UserAuthentication
         this.changeEmailHashRepository = changeEmailHashRepository;
         this.authenticationRequestRepository = authenticationRequestRepository;
         this.mailBox = mailBox;
-        this.serviceProviderResolver = serviceProviderResolver;
+        this.manage = manage;
         this.openIDConnect = openIDConnect;
-        this.idPMetaDataResolver = idPMetaDataResolver;
         this.emailDomainGuard = emailDomainGuard;
         this.disposableEmailProviders = disposableEmailProviders;
         this.registrationRepository = registrationRepository;
@@ -147,7 +141,7 @@ public class UserController implements ServiceProviderHolder, UserAuthentication
             description = "All institutional domains which will generate a warning if a user enters an email at this domain")
     @GetMapping({"/idp/email/domain/institutional", "/sp/create-from-institution/domain/institutional"})
     public Set<String> institutionalDomains() {
-        return this.idPMetaDataResolver.getDomainNames();
+        return this.manage.getDomainNames();
     }
 
     @Hidden
@@ -175,7 +169,7 @@ public class UserController implements ServiceProviderHolder, UserAuthentication
                 .orElseThrow(ExpiredAuthenticationException::new);
         User user = userRepository.findById(samlAuthenticationRequest.getUserId())
                 .orElseThrow(ExpiredAuthenticationException::new);
-        return new UserResponse(user, null, Optional.empty(), false, idPMetaDataResolver);
+        return new UserResponse(user, null, Optional.empty(), false, manage);
     }
 
     @Hidden
@@ -223,7 +217,7 @@ public class UserController implements ServiceProviderHolder, UserAuthentication
         String schacHomeOrganization = this.emailDomainGuard.schacHomeOrganizationByDomain(this.schacHomeOrganization, email);
 
         User userToSave = new User(UUID.randomUUID().toString(), email, user.getGivenName(), user.getGivenName(),
-                user.getFamilyName(), schacHomeOrganization, preferredLanguage, requesterEntityId, serviceProviderResolver);
+                user.getFamilyName(), schacHomeOrganization, preferredLanguage, requesterEntityId, manage);
         userToSave = userRepository.save(userToSave);
 
         return this.doMagicLink(userToSave, samlAuthenticationRequest, false, request);
@@ -248,7 +242,7 @@ public class UserController implements ServiceProviderHolder, UserAuthentication
         String requesterEntityId = samlAuthenticationRequest.getRequesterEntityId();
 
         logWithContext(user, "update", "user", LOG, "Updating user " + user.getEmail());
-        user.computeEduIdForServiceProviderIfAbsent(requesterEntityId, serviceProviderResolver);
+        user.computeEduIdForServiceProviderIfAbsent(requesterEntityId, manage);
         userRepository.save(user);
 
         if (magicLinkRequest.isUsePassword()) {
@@ -273,7 +267,7 @@ public class UserController implements ServiceProviderHolder, UserAuthentication
         if (user.isNewUser()) {
             sendAccountVerificationMail(samlAuthenticationRequest, user);
         } else {
-            String serviceName = getServiceName(request, samlAuthenticationRequest);
+            String serviceName = this.manage.getServiceName(request, samlAuthenticationRequest);
             mailBox.sendMagicLink(user, samlAuthenticationRequest.getHash(), serviceName);
         }
         return ResponseEntity.ok(true);
@@ -295,8 +289,8 @@ public class UserController implements ServiceProviderHolder, UserAuthentication
             description = "Retrieve the displayNames of the Institution by the schac_home value")
     @GetMapping("/sp/institution/names")
     public ResponseEntity<IdentityProvider> institutionNames(@RequestParam(value = "schac_home") String schacHome) {
-        return ResponseEntity.ok(idPMetaDataResolver.getIdentityProvider(schacHome)
-                .orElse(new IdentityProvider(schacHome, schacHome, null)));
+        return ResponseEntity.ok(manage.findIdentityProviderByDomainName(schacHome)
+                .orElse(new IdentityProvider(schacHome, schacHome)));
     }
 
     @Operation(summary = "User details", description = "Retrieve the attributes of the current user")
@@ -354,7 +348,7 @@ public class UserController implements ServiceProviderHolder, UserAuthentication
                 this.schacHomeOrganization,
                 "en",
                 createAccount.getRelyingPartClientId(),
-                serviceProviderResolver);
+                manage);
         user.setCreateFromInstitutionKey(institution.getHash());
         user.validate();
 
@@ -631,14 +625,17 @@ public class UserController implements ServiceProviderHolder, UserAuthentication
                                                           @Valid @RequestBody DeleteService deleteService) {
         User user = userFromAuthentication(authentication);
 
-        String serviceProviderEntityId = deleteService.getServiceProviderEntityId();
+        String entityId = deleteService.getServiceProviderEntityId();
+        //backward compatibility
+        user.getEduIDS().forEach(eduID -> eduID.getServices().removeIf(service -> service.getEntityId().equals(entityId)));
         List<EduID> newEduIDs = user.getEduIDS().stream()
-                .filter(eduID -> !eduID.getServiceProviderEntityId().equals(serviceProviderEntityId))
+                .filter(eduID -> StringUtils.hasText(eduID.getServiceProviderEntityId()) && !entityId.equals(eduID.getServiceProviderEntityId()))
+                .filter(eduID -> !StringUtils.hasText(eduID.getServiceProviderEntityId()) && eduID.getServices().isEmpty())
                 .collect(Collectors.toList());
         user.setEduIDS(newEduIDs);
         userRepository.save(user);
 
-        logWithContext(user, "delete", "eppn", LOG, "Deleted eduID " + serviceProviderEntityId);
+        logWithContext(user, "delete", "eppn", LOG, "Deleted eduID " + entityId);
 
         return doRemoveTokens(deleteService.getTokens(), user);
     }
@@ -699,14 +696,14 @@ public class UserController implements ServiceProviderHolder, UserAuthentication
 
     private ResponseEntity<UserResponse> returnUserResponse(User user) {
         Optional<Registration> optionalRegistration = registrationRepository.findRegistrationByUserId(user.getId());
-        UserResponse userResponse = new UserResponse(user, convertEduIdPerServiceProvider(user), optionalRegistration, false, idPMetaDataResolver);
+        UserResponse userResponse = new UserResponse(user, convertEduIdPerServiceProvider(user), optionalRegistration, false, manage);
         return ResponseEntity.status(201).body(userResponse);
     }
 
     private ResponseEntity<UserResponse> userResponseRememberMe(User user) {
         List<SamlAuthenticationRequest> samlAuthenticationRequests = authenticationRequestRepository.findByUserIdAndRememberMe(user.getId(), true);
         Optional<Registration> optionalRegistration = registrationRepository.findRegistrationByUserId(user.getId());
-        UserResponse userResponse = new UserResponse(user, convertEduIdPerServiceProvider(user), optionalRegistration, !samlAuthenticationRequests.isEmpty(), idPMetaDataResolver);
+        UserResponse userResponse = new UserResponse(user, convertEduIdPerServiceProvider(user), optionalRegistration, !samlAuthenticationRequests.isEmpty(), manage);
         return ResponseEntity.ok(userResponse);
     }
 
@@ -959,7 +956,7 @@ public class UserController implements ServiceProviderHolder, UserAuthentication
             samlAuthenticationRequest.setRememberMeValue(UUID.randomUUID().toString());
         }
         authenticationRequestRepository.save(samlAuthenticationRequest);
-        String serviceName = getServiceName(request, samlAuthenticationRequest);
+        String serviceName = this.manage.getServiceName(request, samlAuthenticationRequest);
 
         if (passwordOrWebAuthnFlow) {
             LOG.debug(String.format("Returning passwordOrWebAuthnFlow magic link for existing user %s", user.getUsername()));
@@ -976,7 +973,16 @@ public class UserController implements ServiceProviderHolder, UserAuthentication
     }
 
     private Map<String, EduID> convertEduIdPerServiceProvider(User user) {
-        return user.getEduIDS().stream().collect(Collectors.toMap(EduID::getServiceProviderEntityId, eduID -> eduID));
+        //We need to be backward compatible, but also deal with new many services refactor. Key of map may not be null
+        Map<String, EduID> result = new HashMap<>();
+        user.getEduIDS().forEach(eduID -> {
+            if (CollectionUtils.isEmpty(eduID.getServices())) {
+                result.put(eduID.getServiceProviderEntityId(), eduID);
+            } else {
+                eduID.getServices().forEach(service -> result.put(service.getEntityId(), eduID));
+            }
+        });
+        return result;
     }
 
     private Optional<User> findUserStoreLanguage(String email) {
@@ -1003,8 +1009,8 @@ public class UserController implements ServiceProviderHolder, UserAuthentication
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Collections.singletonMap("status", HttpStatus.NOT_FOUND.value()));
     }
 
-    public ServiceProviderResolver getServiceProviderResolver() {
-        return serviceProviderResolver;
+    public Manage getManage() {
+        return manage;
     }
 
     public UserRepository getUserRepository() {

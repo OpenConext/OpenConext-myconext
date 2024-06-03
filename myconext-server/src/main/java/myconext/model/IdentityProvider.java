@@ -1,4 +1,4 @@
-package myconext.cron;
+package myconext.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -13,7 +13,14 @@ import java.io.Serializable;
 @Setter
 public class IdentityProvider implements Serializable {
 
+    private String institutionBrin;
+    private String institutionGuid;
     private String displayNameEn;
     private String displayNameNl;
     private String logoUrl;
+
+    public IdentityProvider(String displayNameEn, String displayNameNl) {
+        this.displayNameEn = displayNameEn;
+        this.displayNameNl = displayNameNl;
+    }
 }

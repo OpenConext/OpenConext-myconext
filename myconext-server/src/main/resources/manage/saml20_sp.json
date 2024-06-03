@@ -1,0 +1,1409 @@
+[
+  {
+    "_id": "002231f8-40c3-4fa0-9b8a-fbda1a4ae65c",
+    "version": 102,
+    "type": "saml20_sp",
+    "data": {
+      "entityid": "https://profile.test2.surfconext.nl/authentication/metadata",
+      "state": "prodaccepted",
+      "notes": null,
+      "metaDataFields": {
+        "logo:0:url": "https://static.test2.surfconext.nl/media/conext_logo.png",
+        "name:en": "OpenConext Profile EN",
+        "name:nl": "OpenConext Profile NL",
+        "OrganizationName:en": "SURF bv EN",
+        "OrganizationName:nl": "SURF bv NL"
+      }
+    }
+  },
+  {
+    "_id": "02888ea6-33be-49ec-b084-0c49e7ecbd5c",
+    "version": 28,
+    "type": "saml20_sp",
+    "data": {
+      "entityid": "https://ra.dev.surfconext.nl/authentication/metadata",
+      "state": "prodaccepted",
+      "notes": null,
+      "metaDataFields": {
+        "logo:0:url": "https://.png",
+        "name:en": "Stepup-RA ra.dev.surfconext.nl",
+        "name:nl": "Stepup-RA ra.dev.surfconext.nl"
+      }
+    }
+  },
+  {
+    "_id": "0bd9fdce-5b94-4aa7-ae3b-d341ca077ea2",
+    "version": 29,
+    "type": "saml20_sp",
+    "data": {
+      "entityid": "https://org.openconext.oidc.ng",
+      "state": "prodaccepted",
+      "metaDataFields": {
+        "name:en": "Local Spring SP",
+        "OrganizationName:en": "Local SP"
+      }
+    }
+  },
+  {
+    "_id": "0dcc4e7b-3700-415b-b378-d35292cf3b97",
+    "version": 10,
+    "type": "saml20_sp",
+    "data": {
+      "entityid": "google.com/a/rug.nl",
+      "state": "prodaccepted",
+      "metaDataFields": {
+        "name:en": "Google RUG",
+        "name:nl": "Google Groningen",
+        "OrganizationName:en": "GOOGLE"
+      }
+    }
+  },
+  {
+    "_id": "20296618-dd1a-4d3b-b214-9e65796b6b84",
+    "version": 41,
+    "type": "saml20_sp",
+    "data": {
+      "entityid": "https://oidc.localhost.surfconext.nl",
+      "state": "prodaccepted",
+      "notes": "Some notes for testing. Does include\nlinebreaks\nand some more",
+      "metaDataFields": {
+        "name:nl": "OIDC Local",
+        "logo:0:url": "https://.png",
+        "name:en": "OIDC Local",
+        "OrganizationName:en": "Test"
+      }
+    }
+  },
+  {
+    "_id": "204c1c27-98dd-4572-8954-91291cf9b7dd",
+    "version": 91,
+    "type": "saml20_sp",
+    "data": {
+      "entityid": "https://imogen.surfnet.nl/testsp/module.php/saml/sp/metadata.php/default-sp",
+      "state": "prodaccepted",
+      "notes": null,
+      "metaDataFields": {
+        "name:nl": "Bas Test SP Imogen",
+        "logo:0:url": "https://.png",
+        "name:en": "Bas Test SP Imogen",
+        "OrganizationName:en": "Bas Service",
+        "OrganizationName:nl": "Bas Dienst"
+      }
+    }
+  },
+  {
+    "_id": "27ffd9c8-cd43-41cb-8a00-755df3990a37",
+    "version": 93,
+    "type": "saml20_sp",
+    "data": {
+      "entityid": "urn:thki:sid:ee1",
+      "state": "prodaccepted",
+      "metaDataFields": {
+        "name:en": "Imagine Academy",
+        "OrganizationName:en": "thkisid",
+        "name:nl": "Imagine Academie"
+      }
+    }
+  },
+  {
+    "_id": "2c53c524-97d2-48b3-a58e-39b9025aa058",
+    "version": 11,
+    "type": "saml20_sp",
+    "data": {
+      "state": "prodaccepted",
+      "entityid": "https://mujina-sp.test2.surfconext.nl/shibboleth",
+      "metaDataFields": {
+        "name:en": "SURFconext TEST2 Mujina SP",
+        "OrganizationName:en": "Mujina SP"
+      }
+    }
+  },
+  {
+    "_id": "2d101bbd-680b-46ef-aac8-e714bc40e04c",
+    "version": 20,
+    "type": "saml20_sp",
+    "data": {
+      "entityid": "https://sa.test2.surfconext.nl/authentication/metadata",
+      "state": "prodaccepted",
+      "metaDataFields": {
+        "name:en": "SURFsecureID SelfService TEST2",
+        "OrganizationName:en": "SURF"
+      }
+    }
+  },
+  {
+    "_id": "34d7326f-d222-4ca6-966d-8c71a2bbe9f0",
+    "version": 30,
+    "type": "saml20_sp",
+    "data": {
+      "entityid": "https://engine.surfconext.nl/authentication/sp/metadata",
+      "metaDataFields": {
+        "name:en": "SURFconext",
+        "name:nl": "SURFconext",
+        "OrganizationName:en": "SURFnet BV",
+        "OrganizationName:nl": "SURFnet BV",
+        "logo:0:url": "https://static.surfconext.nl/media/idp/surfnet.png"
+      },
+      "state": "testaccepted"
+    }
+  },
+  {
+    "_id": "36738f1c-c9bc-401c-9c43-0bb2095585b9",
+    "version": 1,
+    "type": "saml20_sp",
+    "data": {
+      "entityid": "https://hva.mapiq.net",
+      "state": "prodaccepted",
+      "metaDataFields": {
+        "name:en": "Mapiq - HvA",
+        "OrganizationName:en": "Mapiq",
+        "OrganizationName:nl": "Mapiq",
+        "logo:0:url": "https://static.surfconext.nl/media/sp/Mapiq.png",
+        "name:nl": "Mapiq - HvA",
+        "coin:application_url": "https://hva.mapiq.net"
+      }
+    }
+  },
+  {
+    "_id": "399b96e4-b7df-4783-9899-60d2e421c231",
+    "version": 3,
+    "type": "saml20_sp",
+    "data": {
+      "entityid": "https://surfdrive-tst.surf.nl/",
+      "state": "prodaccepted",
+      "notes": null,
+      "metaDataFields": {
+        "logo:0:url": "https://static.test2.surfconext.nl/media/conext_logo.png",
+        "name:en": "SURFdrive test",
+        "name:nl": "SURFdrive test",
+        "OrganizationName:en": "test4",
+        "OrganizationName:nl": "test5"
+      }
+    }
+  },
+  {
+    "_id": "3e566106-3dd2-493d-a0b6-f2ba3ae7f833",
+    "version": 20,
+    "type": "saml20_sp",
+    "data": {
+      "state": "prodaccepted",
+      "metaDataFields": {
+        "logo:0:url": "https://static.test2.surfconext.nl/media/conext_logo.png",
+        "name:en": "OpenConext Mujina SP",
+        "name:nl": "OpenConext Mujina SP",
+        "OrganizationName:en": "SURF"
+      },
+      "entityid": "mock-sp",
+      "notes": "tst"
+    }
+  },
+  {
+    "_id": "446bfda3-a1af-4853-aa83-c094eeb1be13",
+    "version": 23,
+    "type": "saml20_sp",
+    "data": {
+      "state": "prodaccepted",
+      "metaDataFields": {
+        "name:en": "Service Provider LMS - EduID demo",
+        "name:nl": "Service Provider LMS - EduID demo"
+      },
+      "entityid": "https://splms.demo.eduid.nl"
+    }
+  },
+  {
+    "_id": "471fa5ee-f998-41cb-bda4-f682850a3fe5",
+    "version": 29,
+    "type": "saml20_sp",
+    "data": {
+      "entityid": "https://link.test2.surfconext.nl/shibboleth",
+      "state": "prodaccepted",
+      "metaDataFields": {
+        "name:en": "SURFconext Linking Service",
+        "name:nl": "SURFconext Linking Service",
+        "OrganizationName:en": "SURF"
+      }
+    }
+  },
+  {
+    "_id": "4907f74d-b6c4-4caa-b501-f90f200bf645",
+    "version": 18,
+    "type": "saml20_sp",
+    "data": {
+      "state": "prodaccepted",
+      "metaDataFields": {
+        "name:en": "Local Spring SP",
+        "OrganizationName:en": "Localhost OIDCNG"
+      },
+      "entityid": "https://org.openconext.local.oidc.ng"
+    }
+  },
+  {
+    "_id": "490c1d11-2344-4966-bbc7-4942b79ca83f",
+    "version": 29,
+    "type": "saml20_sp",
+    "data": {
+      "entityid": "https://sa.dev.surfconext.nl/authentication/metadata",
+      "state": "prodaccepted",
+      "notes": null,
+      "metaDataFields": {
+        "logo:0:url": "https://.png",
+        "name:en": "Stepup-Selfservice sa.dev.surfconext.nl",
+        "name:nl": "Stepup-Selfservice sa.dev.surfconext.nl"
+      }
+    }
+  },
+  {
+    "_id": "4b0e422d-d0d0-4b9e-a521-fdd1ee5d2bad",
+    "version": 23,
+    "type": "saml20_sp",
+    "data": {
+      "entityid": "https://spdashboard.test2.surfconext.nl/saml/metadata",
+      "state": "prodaccepted",
+      "metaDataFields": {
+        "name:en": "SURFconext SPDashboard",
+        "name:nl": "SURFconext SPDashboard",
+        "OrganizationName:en": "SURFconext"
+      }
+    }
+  },
+  {
+    "_id": "4e59bd6b-5a55-423d-87a8-995369628047",
+    "version": 3,
+    "type": "saml20_sp",
+    "data": {
+      "entityid": "https://shibsp.suaas.utr.surfcloud.nl/shibboleth",
+      "state": "prodaccepted",
+      "metaDataFields": {
+        "name:en": "Example SURFsecureID Service that uses dynamic level of assurance",
+        "OrganizationName:en": "SURFnet",
+        "OrganizationName:nl": "SURFnet",
+        "logo:0:url": "https://shibsp.suaas.utr.surfcloud.nl/icons/ubuntu-logo.png",
+        "name:nl": "Voorbeeld SURFsecureID dienst met gebruik van dynamisch betrouwbaarheidsnivo"
+      }
+    }
+  },
+  {
+    "_id": "57fabc01-c16b-4372-be7d-a5f434b4bdcd",
+    "version": 25,
+    "type": "saml20_sp",
+    "data": {
+      "entityid": "https://pieter.aai.surfnet.nl/simplesamlphp/module.php/saml/sp/metadata.php/fourth-sp",
+      "state": "prodaccepted",
+      "metaDataFields": {
+        "name:en": "pieter.aai.surfnet.nl fouth-sp"
+      }
+    }
+  },
+  {
+    "_id": "5f9db946-b97f-4fd8-baef-adfd82afdd58",
+    "version": 1,
+    "type": "saml20_sp",
+    "data": {
+      "entityid": "https://wayf.nikhef.nl/wayf/sp",
+      "state": "testaccepted",
+      "metaDataFields": {
+        "name:en": "Nikhef Service Proxy",
+        "OrganizationName:en": "Nikhef - Dutch National Institute for Subatomic Physics",
+        "OrganizationName:nl": "Nikhef - Nationaal instituut voor subatomaire fysica",
+        "name:nl": "Nikhef schakelpunt voor diensten"
+      }
+    }
+  },
+  {
+    "_id": "66bb904e-a94a-41da-b5bf-24c7445cf7ef",
+    "version": 40,
+    "type": "saml20_sp",
+    "data": {
+      "entityid": "https://pdp.test2.surfconext.nl/shibboleth",
+      "state": "prodaccepted",
+      "notes": null,
+      "metaDataFields": {
+        "name:nl": "ÔpenCönext PDP Servér",
+        "logo:0:url": "https://.png",
+        "name:en": "ÔpenCönext PDP Servér",
+        "OrganizationName:en": "orgname en"
+      }
+    }
+  },
+  {
+    "_id": "6c2b8196-43d6-43f8-ae5f-2f2fedf38635",
+    "version": 24,
+    "type": "saml20_sp",
+    "data": {
+      "entityid": "https://pieter.aai.surfnet.nl/simplesamlphp/module.php/saml/sp/metadata.php/default-sp",
+      "state": "prodaccepted",
+      "notes": null,
+      "metaDataFields": {
+        "logo:0:url": "https://.png",
+        "name:en": "pieter.aai.surfnet.nl default-sp",
+        "OrganizationName:en": "SURF"
+      }
+    }
+  },
+  {
+    "_id": "74ff2a7c-3f10-494c-a7be-3d76f6d8d2cf",
+    "version": 36,
+    "type": "saml20_sp",
+    "data": {
+      "entityid": "urn:ee:thki:3-Impacter | IDfuse<feff>",
+      "state": "prodaccepted",
+      "metaDataFields": {
+        "name:en": "thki test acs",
+        "OrganizationName:en": "TST"
+      }
+    }
+  },
+  {
+    "_id": "7922d42b-8ea4-4877-81a5-0dc3c3fa62ae",
+    "version": 8,
+    "type": "saml20_sp",
+    "data": {
+      "entityid": "https://codimd.lab.surf.nl:3000",
+      "state": "prodaccepted",
+      "metaDataFields": {
+        "name:en": "CodiMD MaKr",
+        "name:nl": "CodiMD MaKr",
+        "OrganizationName:en": "MaartenKremers",
+        "OrganizationName:nl": "MaartenKremers"
+      }
+    }
+  },
+  {
+    "_id": "7f303f1e-ee25-4f2e-a27a-663f515e421b",
+    "version": 15,
+    "type": "saml20_sp",
+    "data": {
+      "entityid": "https://sa-gw.test2.surfconext.nl/authentication/metadata",
+      "state": "prodaccepted",
+      "metaDataFields": {
+        "name:en": "SURFsecureID Gateway TEST2",
+        "logo:0:url": "https://static.surfconext.nl/media/sp/surfsecureid.png",
+        "OrganizationName:en": "SLURF"
+      }
+    }
+  },
+  {
+    "_id": "8a642356-cc35-4893-b81f-6d35f039cd3d",
+    "version": 18,
+    "type": "saml20_sp",
+    "data": {
+      "state": "prodaccepted",
+      "metaDataFields": {
+        "name:en": "OIDC Next Generation",
+        "OrganizationName:en": "SURF"
+      },
+      "entityid": "https://connect.test2.surfconext.nl"
+    }
+  },
+  {
+    "_id": "8c4cb816-346b-4da1-bbe8-7092f0c68e56",
+    "version": 19,
+    "type": "saml20_sp",
+    "data": {
+      "entityid": "https://manage.test2.surfconext.nl/shibboleth",
+      "state": "prodaccepted",
+      "notes": null,
+      "metaDataFields": {
+        "logo:0:url": "https://.png",
+        "name:en": "Manage",
+        "OrganizationName:en": "SURF"
+      }
+    }
+  },
+  {
+    "_id": "93b913eb-f193-4cdb-a0dc-1f3cc6003fca",
+    "version": 3,
+    "type": "saml20_sp",
+    "data": {
+      "entityid": "https://repository.clarin.is/shibboleth",
+      "state": "prodaccepted",
+      "metaDataFields": {
+        "name:en": "CLARIN-IS Repository",
+        "OrganizationName:en": "Arni Magnusson Institute for Iclandic Studies",
+        "logo:0:url": "https://repository.clarin.is/repository/xmlui/themes/UFAL/images/clarin-logo-is.png"
+      },
+      "notes": "kijmijfggg"
+    }
+  },
+  {
+    "_id": "9b22365f-2a50-4b45-8713-a108075801c1",
+    "version": 24,
+    "type": "saml20_sp",
+    "data": {
+      "state": "prodaccepted",
+      "metaDataFields": {
+        "logo:0:url": "https://.png",
+        "name:en": "Dashboard Test2",
+        "OrganizationName:en": "EN"
+      },
+      "entityid": "https://dashboard.test2.surfconext.nl/shibboleth"
+    }
+  },
+  {
+    "_id": "9bd213c5-3cae-44fc-8971-1552b29d1d7d",
+    "version": 25,
+    "type": "saml20_sp",
+    "data": {
+      "entityid": "https://attribute-mapper.test2.surfconext.nl",
+      "state": "prodaccepted",
+      "notes": null,
+      "metaDataFields": {
+        "name:nl": "OpenConext Attribute Mapper",
+        "logo:0:url": "https://.png",
+        "name:en": "OpenConext Attribute Mapper"
+      }
+    }
+  },
+  {
+    "_id": "a1b95f6b-fdf7-4b72-b7e5-54d946395e1c",
+    "version": 15,
+    "type": "saml20_sp",
+    "data": {
+      "state": "prodaccepted",
+      "metaDataFields": {
+        "logo:0:url": "https://static.surfconext.nl/media/sp/eduid.png",
+        "name:en": "My eduID Test2",
+        "name:nl": "Mijn eduID Test2",
+        "OrganizationName:en": "SURF"
+      },
+      "entityid": "https://mijn.test2.eduid.nl/shibboleth"
+    }
+  },
+  {
+    "_id": "a342c8e2-479e-475d-a6c1-edce2a995c11",
+    "version": 5,
+    "type": "saml20_sp",
+    "data": {
+      "entityid": "https://pieter.aai.surfnet.nl/simplesamlphp/module.php/saml/sp/metadata.php/second-sp",
+      "state": "testaccepted",
+      "notes": null,
+      "metaDataFields": {
+        "logo:0:url": "https://.png",
+        "name:nl": "pieter.aai.surfnet.nl second-sp",
+        "name:en": "pieter.aai.surfnet.nl second-sp"
+      }
+    }
+  },
+  {
+    "_id": "abf99f71-3f2e-43bc-9877-96a342d9340e",
+    "version": 2,
+    "type": "saml20_sp",
+    "data": {
+      "entityid": "https://sp.ota.ox.ac.uk/shibboleth",
+      "state": "prodaccepted",
+      "metaDataFields": {
+        "name:en": "Oxford Text Archive",
+        "OrganizationName:en": "Oxford Text Archive, Bodleian Libraries, University of Oxford",
+        "logo:0:url": "https://www.bodleian.ox.ac.uk/__data/assets/image/0005/117176/logo.jpg"
+      }
+    }
+  },
+  {
+    "_id": "ad9b20a3-c6bd-4c4e-a6a3-55d2a4f3d33e",
+    "version": 24,
+    "type": "saml20_sp",
+    "data": {
+      "state": "prodaccepted",
+      "metaDataFields": {
+        "logo:0:url": "https://.png",
+        "name:en": "eduID",
+        "name:nl": "eduID",
+        "OrganizationName:en": "Fietsenwinkel",
+        "coin:application_url": "https://www.dienst.nl"
+      },
+      "entityid": "https://account.local.surfconext.nl"
+    }
+  },
+  {
+    "_id": "b174e6db-a58a-441d-9ed4-f5110f58af87",
+    "version": 25,
+    "type": "saml20_sp",
+    "data": {
+      "entityid": "https://gateway.vetting-poc.surfconext.nl/authentication/metadata",
+      "state": "prodaccepted",
+      "metaDataFields": {
+        "name:en": "Remote Vetting PoC Gateway"
+      },
+      "notes": "Gateway voor de Remote Vetting PoC"
+    }
+  },
+  {
+    "_id": "b7c266e4-2d7b-403e-9972-47cd65233e65",
+    "version": 5,
+    "type": "saml20_sp",
+    "data": {
+      "entityid": "https://auth.aattendance.nl/saml",
+      "state": "testaccepted",
+      "metaDataFields": {
+        "name:en": "fdasd",
+        "name:nl": "fasdf",
+        "OrganizationName:en": "Your Next Concepts B.V.",
+        "logo:0:url": "https://inzichtsociaaldomein.nl/images/logo.png"
+      }
+    }
+  },
+  {
+    "_id": "b9902439-dd33-4806-8759-88eec85dd5f6",
+    "version": 27,
+    "type": "saml20_sp",
+    "data": {
+      "entityid": "https://selfservice.vetting-poc.surfconext.nl/authentication/metadata",
+      "state": "prodaccepted",
+      "metaDataFields": {
+        "name:en": "Remote Vetting PoC selfservice interface"
+      },
+      "notes": "Selfservice interface voor Remote Vetting PoC"
+    }
+  },
+  {
+    "_id": "cdda9c75-ea8d-405c-821e-1deac8570c98",
+    "version": 50,
+    "type": "saml20_sp",
+    "data": {
+      "entityid": "https://beta.surfnet.nl/SURFdropjesSP",
+      "state": "prodaccepted",
+      "metaDataFields": {
+        "name:en": "SURFdrópjés test SP",
+        "OrganizationName:nl": "SURFdropjes [DN.nl]",
+        "OrganizationName:en": "SURFdropjes [DN.en]",
+        "coin:application_url": "https://beta.surfnet.nl/simplesaml/module.php/core/authenticate.php?as=surfconextACC",
+        "logo:0:url": "https://beta.surfnet.nl/coin/SURFdropsBeta.jpg",
+        "coin:institution_guid": "5ede9c9b-3bbc-ea11-90fe-0050569571ea",
+        "name:nl": "SURFdrópjés test SP"
+      }
+    }
+  },
+  {
+    "_id": "cecc2974-e6fc-4fb7-a7a0-a0708d6cfa9a",
+    "version": 26,
+    "type": "saml20_sp",
+    "data": {
+      "entityid": "https://engine.test2_andre.surfconext.nl/authentication/sp/metadata",
+      "state": "prodaccepted",
+      "metaDataFields": {
+        "name:en": "OpenConext Engine",
+        "name:nl": "OpenConext Engine",
+        "logo:0:url": "https://static.test2.surfconext.nl/media/conext_logo.png"
+      }
+    }
+  },
+  {
+    "_id": "d3fe29c8-767c-462f-8565-5ee98c2d04b4",
+    "version": 23,
+    "type": "saml20_sp",
+    "data": {
+      "state": "prodaccepted",
+      "entityid": "https://pdp.test2.surfconext.nl/shibboleth2",
+      "metaDataFields": {
+        "name:en": "SURFconext TEST2 IdP Dashboard"
+      }
+    }
+  },
+  {
+    "_id": "d8e19cca-b4e2-4e5c-ad24-ae8638cc6aa1",
+    "version": 5,
+    "type": "saml20_sp",
+    "data": {
+      "entityid": "https://sandbox.orcid.org/saml2/sp/12122",
+      "state": "prodaccepted",
+      "metaDataFields": {
+        "name:en": "ORCID Sandbox (test) SP",
+        "OrganizationName:en": "ORCID, Inc"
+      }
+    }
+  },
+  {
+    "_id": "da64d8aa-a5cd-4854-8b33-e3c98bc6f178",
+    "version": 42,
+    "type": "saml20_sp",
+    "data": {
+      "entityid": "https://aa.test2.surfconext.nl/shibboleth",
+      "state": "prodaccepted",
+      "notes": null,
+      "metaDataFields": {
+        "name:nl": "OpenConext AA",
+        "logo:0:url": "https://.png",
+        "name:en": "OpenConext AA",
+        "OrganizationName:en": "SURFconext",
+        "OrganizationName:nl": "SURFconext"
+      }
+    }
+  },
+  {
+    "_id": "e3ba520f-17ae-4c14-ac4d-40aabab27810",
+    "version": 20,
+    "type": "saml20_sp",
+    "data": {
+      "entityid": "https://teams.test2.surfconext.nl/shibboleth",
+      "state": "prodaccepted",
+      "metaDataFields": {
+        "name:en": "OpenConext Teams",
+        "OrganizationName:nl": "SURFnet bv",
+        "OrganizationName:en": "SURFnet bv",
+        "logo:0:url": "https://static.test2.surfconext.nl/media/conext_logo.png",
+        "name:nl": "OpenConext Teams"
+      }
+    }
+  },
+  {
+    "_id": "ed48a743-b926-4dff-86b5-0917723b45f5",
+    "version": 2,
+    "type": "saml20_sp",
+    "data": {
+      "entityid": "https://sandbox.orcid.org/saml2/sp/2",
+      "state": "testaccepted",
+      "metaDataFields": {
+        "name:en": "ORCID Sandbox (test) SP",
+        "OrganizationName:en": "ORCID, Inc"
+      }
+    }
+  },
+  {
+    "_id": "fb456e4b-be85-46e1-b496-8f4645ca3f56",
+    "version": 2,
+    "type": "saml20_sp",
+    "data": {
+      "entityid": "test_import_oid_namespace_attributes_in_arp",
+      "state": "testaccepted",
+      "metaDataFields": {
+        "name:en": "OpenConext Engine",
+        "logo:0:url": "http://niuchan.org/tg/src/139664251797.jpg",
+        "name:nl": "OpenConext Engine"
+      }
+    }
+  },
+  {
+    "_id": "fb8f3b96-877d-4531-b0f0-f46f62380f2b",
+    "version": 28,
+    "type": "saml20_sp",
+    "data": {
+      "entityid": "https://sa-gw.dev.surfconext.nl/authentication/metadata",
+      "state": "prodaccepted",
+      "notes": null,
+      "metaDataFields": {
+        "name:nl": "Stepup-Gateway sa.gw.dev.surfconext.nl",
+        "logo:0:url": "https://.png",
+        "name:en": "Stepup-Gateway sa.gw.dev.surfconext.nl"
+      }
+    }
+  },
+  {
+    "_id": "fcbea388-163b-4fee-aaf2-e9e7fe75184f",
+    "version": 27,
+    "type": "saml20_sp",
+    "data": {
+      "entityid": "https://ra.test2.surfconext.nl/authentication/metadata",
+      "state": "prodaccepted",
+      "metaDataFields": {
+        "name:en": "SURFsecureID RA Portal TEST2",
+        "OrganizationName:en": "SLURF"
+      }
+    }
+  },
+  {
+    "_id": "fe07cd27-c683-4d1b-91c5-acf4f4e9bafd",
+    "version": 40,
+    "type": "saml20_sp",
+    "data": {
+      "entityid": "https://eduproxy.test2.surfconext.nl",
+      "state": "prodaccepted",
+      "notes": null,
+      "metaDataFields": {
+        "name:nl": "OpenConext eduProxy",
+        "logo:0:url": "https://.png",
+        "name:en": "OpenConext eduProxy",
+        "OrganizationName:en": "SURF"
+      }
+    }
+  },
+  {
+    "_id": "6b82e17f-640e-4e82-9b49-5bc8906f4f93",
+    "version": 25,
+    "type": "saml20_sp",
+    "data": {
+      "entityid": "https://teamsdfdfdfdfdf.surfconext.nl/shibboleth",
+      "state": "prodaccepted",
+      "metaDataFields": {
+        "name:en": "sdfsdf",
+        "name:nl": "sdf",
+        "coin:institution_guid": "d4cf5815-6615-4513-9345-94b960d1f3c0",
+        "logo:0:url": "https://static.surfconext.nl/media/sp/qualtrics.png",
+        "OrganizationName:en": "f"
+      },
+      "notes": "fff"
+    }
+  },
+  {
+    "_id": "ef18aa97-69f2-410e-8cc8-f0baabfce0ba",
+    "version": 1,
+    "type": "saml20_sp",
+    "data": {
+      "entityid": "https://teamssurf2.surfconext.nl/shibboleth",
+      "state": "prodaccepted",
+      "metaDataFields": {
+        "name:en": "testteunidpdashboardname",
+        "name:nl": "testteunidpdashboardname",
+        "OrganizationName:en": "testteunidpdashboardorg",
+        "OrganizationName:nl": "testteunidpdashboardorg",
+        "coin:institution_guid": "3752aafd-146e-e711-80e8-005056956c1a",
+        "logo:0:url": "https://static.surfconext.nl/logos/sp/surfmailfilter.png"
+      }
+    }
+  },
+  {
+    "_id": "c8f9a7bc-7ebd-4f9d-b228-aa811631d207",
+    "version": 22,
+    "type": "saml20_sp",
+    "data": {
+      "entityid": "https://teamss111urf1.surfconext.nl/shibboleth",
+      "state": "prodaccepted",
+      "metaDataFields": {
+        "name:en": "testcc",
+        "name:nl": "testsaml",
+        "OrganizationName:en": "test123",
+        "OrganizationName:nl": "test123",
+        "coin:institution_guid": "3752aafd-146e-e711-80e8-005056956c1a",
+        "logo:0:url": "https://static.surfconext.nl/logos/sp/surfmailfilter.png"
+      }
+    }
+  },
+  {
+    "_id": "30c9dad2-47d1-47da-9c42-06ff5c5434cf",
+    "version": 1,
+    "type": "saml20_sp",
+    "data": {
+      "entityid": "https://teams.testjajajajaeesurfconext.nl/shibboleth",
+      "state": "prodaccepted",
+      "metaDataFields": {
+        "name:en": "tedwe",
+        "name:nl": "testerdetest",
+        "OrganizationName:en": "teun",
+        "OrganizationName:nl": "teun",
+        "coin:application_url": "https://example.com",
+        "coin:institution_guid": "b85abd18-734d-43b1-b352-a9dae1447b0a",
+        "logo:0:url": "https://static.surfconext.nl/logos/sp/surfmailfilter.png"
+      }
+    }
+  },
+  {
+    "_id": "593b4d29-cda0-4e03-b0d9-23dd68505b88",
+    "version": 14,
+    "type": "saml20_sp",
+    "data": {
+      "entityid": "urn:mace:surfnet.nl:thki:sp:meloen",
+      "state": "prodaccepted",
+      "metaDataFields": {
+        "name:en": "THKI Meloen",
+        "OrganizationName:en": "THKI Meloen"
+      }
+    }
+  },
+  {
+    "_id": "af91dc97-f4dd-4a61-aded-dcd656d8f518",
+    "version": 15,
+    "type": "saml20_sp",
+    "data": {
+      "entityid": "https://teams.surfconext.nl/shibboleth",
+      "state": "prodaccepted",
+      "metaDataFields": {
+        "name:en": "TestDemo",
+        "name:nl": "TestDemo",
+        "OrganizationName:en": "TestBartEN",
+        "OrganizationName:nl": "TestBartNL",
+        "coin:institution_guid": "3F4FC287-0911-E511-80D0-005056956C1A",
+        "logo:0:url": "https://static.surfconext.nl/logos/sp/surfmailfilter.png"
+      }
+    }
+  },
+  {
+    "_id": "9fffe8cf-d52c-4583-9339-04d958fb045b",
+    "version": 2,
+    "type": "saml20_sp",
+    "data": {
+      "entityid": "https://teams2septemberidpdashboard.surfconext.nl/shibboleth",
+      "state": "prodaccepted",
+      "metaDataFields": {
+        "name:en": "teamstestidpdashboard",
+        "name:nl": "teamstestidpdashboard",
+        "OrganizationName:en": "SURF",
+        "OrganizationName:nl": "SURF",
+        "coin:application_url": "https://www.idpdashboard.com",
+        "coin:institution_guid": "82583b80-be49-11e7-8f1a-0800200c9a66",
+        "logo:0:url": "https://static.surfconext.nl/logos/sp/surfmailfilter.png"
+      }
+    }
+  },
+  {
+    "_id": "85f4bd2a-e698-4e1c-bcfa-f5430fcb7a13",
+    "version": 2,
+    "type": "saml20_sp",
+    "data": {
+      "entityid": "https://www.hbo-stagemarkt.nl/",
+      "state": "prodaccepted",
+      "metaDataFields": {
+        "name:en": "HBO-stagemarkt.nl",
+        "OrganizationName:en": "Stichting ELBHO",
+        "OrganizationName:nl": "Stichting ELBHO",
+        "coin:application_url": "https://www.hbo-stagemarkt.nl/",
+        "logo:0:url": "https://static.surfconext.nl/media/sp/hbo-stagemarkt.png",
+        "coin:institution_guid": "fe430edd-30ff-ea11-9101-0050569571ea",
+        "name:nl": "HBO-stagemarkt.nl"
+      }
+    }
+  },
+  {
+    "_id": "3c663e49-abec-4f99-9ec7-938badd228b6",
+    "version": 8,
+    "type": "saml20_sp",
+    "data": {
+      "entityid": "https://toetsafname.test2.loa1.10voordeleraar.nl/Shibboleth",
+      "state": "prodaccepted",
+      "metaDataFields": {
+        "name:en": "10voordeleraar-loa1",
+        "OrganizationName:en": "10voordeleraar-loa1",
+        "OrganizationName:nl": "10voordeleraar-loa1",
+        "coin:application_url": "https://toetsafname.10voordeleraar.nl",
+        "logo:0:url": "https://static.surfconext.nl/media/sp/10vdl.png",
+        "name:nl": "10voordeleraar-loa1"
+      }
+    }
+  },
+  {
+    "_id": "49ef23d9-ad03-4bc3-b15a-57e25c7f85a6",
+    "version": 14,
+    "type": "saml20_sp",
+    "data": {
+      "entityid": "https://toetsafname.test2.loa2.10voordeleraar.nl/Shibboleth",
+      "state": "prodaccepted",
+      "metaDataFields": {
+        "name:en": "10voordeleraar-loa2",
+        "OrganizationName:en": "10voordeleraar-loa2",
+        "OrganizationName:nl": "10voordeleraar-loa2",
+        "coin:application_url": "https://toetsafname.10voordeleraar.nl",
+        "logo:0:url": "https://static.surfconext.nl/media/sp/10vdl.png",
+        "name:nl": "10voordeleraar-loa2"
+      }
+    }
+  },
+  {
+    "_id": "7e33607a-5f6e-4235-8fbf-05dd1d93a9f3",
+    "version": 12,
+    "type": "saml20_sp",
+    "data": {
+      "entityid": "https://toetsafname.test2.loa3.10voordeleraar.nl/Shibboleth",
+      "state": "prodaccepted",
+      "metaDataFields": {
+        "name:en": "10voordeleraar-loa3",
+        "OrganizationName:en": "10voordeleraar-loa3",
+        "OrganizationName:nl": "10voordeleraar-loa3",
+        "coin:application_url": "https://toetsafname.10voordeleraar.nl",
+        "logo:0:url": "https://static.surfconext.nl/media/sp/10vdl.png",
+        "name:nl": "10voordeleraar-loa3"
+      }
+    }
+  },
+  {
+    "_id": "7aadc7ed-9312-4f57-80fb-b2badbe37ee0",
+    "version": 8,
+    "type": "saml20_sp",
+    "data": {
+      "entityid": "https://toetsafname.test2.without-interaction.10voordeleraar.nl/Shibboleth",
+      "state": "prodaccepted",
+      "metaDataFields": {
+        "name:en": "10voordeleraar-loa2-without-interaction-with-mail",
+        "OrganizationName:en": "10voordeleraar-loa2-without-interaction-with-mail",
+        "OrganizationName:nl": "10voordeleraar-loa2-without-interaction-with-mail",
+        "coin:application_url": "https://toetsafname.10voordeleraar.nl",
+        "logo:0:url": "https://static.surfconext.nl/media/sp/10vdl.png",
+        "name:nl": "10voordeleraar-loa2-without-interaction-with-mail"
+      }
+    }
+  },
+  {
+    "_id": "902c1fe6-7a08-4e5d-8804-ae8e0bb3dcfd",
+    "version": 3,
+    "type": "saml20_sp",
+    "data": {
+      "state": "prodaccepted",
+      "metaDataFields": {
+        "name:en": "SURFdropjes test SP (Alpha) [test2]",
+        "OrganizationName:nl": "SURFdropjes [DN.nl]",
+        "OrganizationName:en": "SURFdropjes [DN.en]",
+        "coin:application_url": "https://beta.surfnet.nl/simplesaml/module.php/core/authenticate.php",
+        "logo:0:url": "https://static.surfconext.nl/media/sp/SURFdropsAlpha.png",
+        "coin:institution_guid": "8017e83f-bca7-e911-90f2-0050569571ea",
+        "name:nl": "SURFdropjes test SP (Alpha) [test2]"
+      },
+      "entityid": "https://alpha.surfnet.nl/SURFdropjesSP"
+    }
+  },
+  {
+    "_id": "cac9d0cb-af77-4d9b-b2ac-5055816c9e6c",
+    "version": 3,
+    "type": "saml20_sp",
+    "data": {
+      "entityid": "https://teams.tessds2.surfconext.nl/shibboleth",
+      "state": "prodaccepted",
+      "metaDataFields": {
+        "name:en": "TestBart SPD JIRA TEST",
+        "name:nl": "test",
+        "OrganizationName:en": "testteun",
+        "OrganizationName:nl": "testteun",
+        "coin:institution_guid": "ea79e800-fcfe-11e7-8f1a-0800200c9a66",
+        "logo:0:url": "https://static.surfconext.nl/logos/idp/eduid.png"
+      }
+    }
+  },
+  {
+    "_id": "06622114-d71e-44d4-a00c-f0ba686d6ac3",
+    "version": 1,
+    "type": "saml20_sp",
+    "data": {
+      "entityid": "https://testsomething.nl/metadata/backend.xml",
+      "state": "prodaccepted",
+      "metaDataFields": {
+        "name:en": "SURF Research Access Management",
+        "name:nl": "JIRA TEST",
+        "OrganizationName:en": "SURF",
+        "OrganizationName:nl": "SURF",
+        "coin:application_url": "https://www.surf.nl/en/surf-research-access-management-collaborating-easily-and-securely-in-research-services",
+        "coin:institution_guid": "32766b77-06b0-449e-bc7e-ce934ff29085",
+        "logo:0:url": "https://static.surfconext.nl/logos/idp/surf.png"
+      }
+    }
+  },
+  {
+    "_id": "2efdc03d-8a03-471e-8181-1299ff8a3bb5",
+    "version": 9,
+    "type": "saml20_sp",
+    "data": {
+      "entityid": "https://imogentest13oktober.surfnet.nl/testsp2maart/module.php/saml/sp/metadata.php/default-sp",
+      "state": "prodaccepted",
+      "metaDataFields": {
+        "name:en": "teunwarezentityeee",
+        "name:nl": "teunwarezentity",
+        "OrganizationName:en": "Teunwarez",
+        "OrganizationName:nl": "Teunwarez",
+        "coin:application_url": "https://www.utrecht.nl",
+        "coin:institution_guid": "76b25567-9851-4cb6-a512-fd1c137246f2",
+        "logo:0:url": "https://static.surfconext.nl/media/idp/surfnet.png"
+      }
+    }
+  },
+  {
+    "_id": "6a8f1bbd-bbc8-4642-89ea-eec2acf878ab",
+    "version": 3,
+    "type": "saml20_sp",
+    "data": {
+      "entityid": "https://profile.test.andre.nl",
+      "state": "prodaccepted",
+      "metaDataFields": {
+        "name:en": "SURFconext Profile Page",
+        "name:nl": "SURFconext Profielpagina",
+        "OrganizationName:en": "test123",
+        "OrganizationName:nl": "test123",
+        "coin:institution_guid": "3752aafd-146e-e711-80e8-005056956c1a",
+        "logo:0:url": "https://static.surfconext.nl/media/sp/SURFconext_logo.black.png"
+      }
+    }
+  },
+  {
+    "_id": "cf68bce0-753b-47c2-b851-0daae0aa4cd7",
+    "version": 0,
+    "type": "saml20_sp",
+    "data": {
+      "entityid": "urn:test:request",
+      "state": "prodaccepted",
+      "metaDataFields": {
+        "name:en": "test request",
+        "OrganizationName:en": "TEST"
+      }
+    }
+  },
+  {
+    "_id": "79aec42d-7941-4652-b67a-c41642a4c81d",
+    "version": 0,
+    "type": "saml20_sp",
+    "data": {
+      "entityid": "https://teams.surfconext.nl/shibboleth86",
+      "state": "prodaccepted",
+      "metaDataFields": {
+        "name:en": "test bart",
+        "name:nl": "TEST bart",
+        "OrganizationName:en": "SURF",
+        "OrganizationName:nl": "SURF",
+        "coin:institution_guid": "72583b80-be49-11e7-8f1a-0800200c9a68",
+        "logo:0:url": "https://static.surfconext.nl/media/sp/surf.png"
+      }
+    }
+  },
+  {
+    "_id": "75e07f29-beca-405c-9977-7bf8ebe26148",
+    "version": 3,
+    "type": "saml20_sp",
+    "data": {
+      "entityid": "https://spd50.SUrfconext.nl/shibboleth",
+      "state": "prodaccepted",
+      "metaDataFields": {
+        "name:en": "TestBart SPD 5.0",
+        "name:nl": "TestBart SPD 5.04",
+        "OrganizationName:en": "SURFconext gaat door#",
+        "OrganizationName:nl": "SURFconext gaat door!",
+        "coin:application_url": "https://social.edu.nl",
+        "coin:institution_guid": "5ede9c9b-3bbc-ea11-90fe-0050569571ea",
+        "logo:0:url": "https://static.surfconext.nl/media/sp/surf.png"
+      }
+    }
+  },
+  {
+    "_id": "c11217ec-bd82-45f0-b5f6-4d6fd112c45d",
+    "version": 0,
+    "type": "saml20_sp",
+    "data": {
+      "entityid": "https://profilse.test.andre.nl",
+      "state": "prodaccepted",
+      "metaDataFields": {
+        "name:en": "SURFconext Profile Page",
+        "name:nl": "SURFconext Profielpagina",
+        "OrganizationName:en": "test123",
+        "OrganizationName:nl": "test123",
+        "coin:institution_guid": "3752aafd-146e-e711-80e8-005056956c1a",
+        "logo:0:url": "https://static.surfconext.nl/media/sp/SURFconext_logo.black.png"
+      }
+    }
+  },
+  {
+    "_id": "a6220900-603a-4e0a-a62a-0a52856627d0",
+    "version": 0,
+    "type": "saml20_sp",
+    "data": {
+      "entityid": "https://pieter.aai.surfnet.nl/simplesamlphp/module.php/saml/sp/metadata.php/third-sp",
+      "state": "prodaccepted",
+      "metaDataFields": {
+        "name:en": "pieter.aai third-SP",
+        "OrganizationName:en": "pieter.aai"
+      }
+    }
+  },
+  {
+    "_id": "0af25f6d-9d22-4cb6-8e4d-51f01df627b6",
+    "version": 3,
+    "type": "saml20_sp",
+    "data": {
+      "entityid": "https://teamsvoor5.1.surfconext.nl/shibboleth",
+      "state": "prodaccepted",
+      "metaDataFields": {
+        "name:en": "17 aug testing",
+        "name:nl": "17 aug test",
+        "OrganizationName:en": "Teunservice",
+        "OrganizationName:nl": "Teunservice",
+        "coin:application_url": "https://www.idpdffashboard.com",
+        "coin:institution_guid": "6ef11e60-0bb5-4855-9041-538bde493ab5",
+        "logo:0:url": "https://static.surfconext.nl/logos/sp/surfmailfilter.png"
+      }
+    }
+  },
+  {
+    "_id": "65cd284d-1b46-4809-bcba-747e8b98237f",
+    "version": 1,
+    "type": "saml20_sp",
+    "data": {
+      "entityid": "http://mock-sp-test",
+      "state": "testaccepted",
+      "metaDataFields": {
+        "name:en": "OpenConext Mujina SP <p>",
+        "OrganizationName:en": "SURF",
+        "logo:0:url": "https://static.test2.surfconext.nl/media/conext_logo.png",
+        "name:nl": "OpenConext Mujina SP <script>alert(1)</script>"
+      }
+    }
+  },
+  {
+    "_id": "55fc7931-be6a-40fc-8bd5-9d69b8fec9ec",
+    "version": 1,
+    "type": "saml20_sp",
+    "data": {
+      "entityid": "https://amadeus.cytric.net/saml2",
+      "state": "prodaccepted",
+      "metaDataFields": {
+        "name:en": "VCK Travel",
+        "OrganizationName:en": "VCK Travel",
+        "OrganizationName:nl": "VCK Travel",
+        "coin:application_url": "https://amadeus.cytric.net/svc/SAML2/cWS/pre/AUTH?clientId=SAMLVCKTRAVEL",
+        "name:nl": "VCK Travel",
+        "logo:0:url": "https://static.surfconext.nl/media/sp/vcktravel.png"
+      }
+    }
+  },
+  {
+    "_id": "b58d5806-86cf-4268-b07c-af6e40926e73",
+    "version": 0,
+    "type": "saml20_sp",
+    "data": {
+      "entityid": "https://login.microsoftonline.com/079742f4-b5bf-4371-b19a-af97315604d3/",
+      "state": "prodaccepted",
+      "metaDataFields": {
+        "name:en": "Hartingcollege Microsoft 365",
+        "OrganizationName:en": "Hartingcollege Microsoft 365",
+        "OrganizationName:nl": "Hartingcollege Microsoft 365",
+        "logo:0:url": "https://static.surfconext.nl/media/sp//Windows_Azure_logo.png",
+        "coin:institution_guid": "5ede9c9b-3bbc-ea11-90fe-0050569571ea",
+        "name:nl": "Hartingcollege Microsoft 365"
+      }
+    }
+  },
+  {
+    "_id": "c7b27610-0083-4c50-83f1-364023f0d708",
+    "version": 1,
+    "type": "saml20_sp",
+    "data": {
+      "entityid": "https://spdhnj50.SUrfconext.nl/shibboleth",
+      "state": "prodaccepted",
+      "metaDataFields": {
+        "name:en": "TestBart SPD 5.0",
+        "name:nl": "TestBart SPD 5.04",
+        "OrganizationName:en": "SURFconext gaat door#",
+        "OrganizationName:nl": "SURFconext gaat door!",
+        "coin:application_url": "https://social.edu.nl",
+        "coin:institution_guid": "5ede9c9b-3bbc-ea11-90fe-0050569571ea",
+        "logo:0:url": "https://static.surfconext.nl/media/sp/surf.png"
+      }
+    }
+  },
+  {
+    "_id": "bac11c23-bcf1-4fd3-abbb-f5d58aac0fc9",
+    "version": 0,
+    "type": "saml20_sp",
+    "data": {
+      "entityid": "https://spd60.SUrfconext.nl/shibboleth",
+      "state": "prodaccepted",
+      "metaDataFields": {
+        "name:en": "TestBart SPD 5.0",
+        "name:nl": "TestBart SPD 5.04",
+        "OrganizationName:en": "SURFconext gaat door#",
+        "OrganizationName:nl": "SURFconext gaat door!",
+        "coin:application_url": "https://social.edu.nl",
+        "coin:institution_guid": "5ede9c9b-3bbc-ea11-90fe-0050569571ea",
+        "logo:0:url": "https://static.surfconext.nl/media/sp/surf.png"
+      }
+    }
+  },
+  {
+    "_id": "5986c642-96d3-441e-9d1f-97f084bf8892",
+    "version": 0,
+    "type": "saml20_sp",
+    "data": {
+      "entityid": "https://new.edu.nl",
+      "state": "testaccepted",
+      "metaDataFields": {
+        "name:en": "new.edu.nl",
+        "OrganizationName:en": "SURF bv",
+        "coin:application_url": "https://new.edu.nl/",
+        "name:nl": "new.edu.nl"
+      }
+    }
+  },
+  {
+    "_id": "14fcbf96-3f97-4fb9-bcfe-9eae63828cfb",
+    "version": 1,
+    "type": "saml20_sp",
+    "data": {
+      "entityid": "aapnoot10",
+      "state": "prodaccepted",
+      "metaDataFields": {
+        "name:en": "Thijs test 10",
+        "OrganizationName:en": "ORG Name",
+        "name:nl": "Thijs test 10"
+      }
+    }
+  },
+  {
+    "_id": "b3520485-b988-40da-8554-c210ac4edb09",
+    "version": 0,
+    "type": "saml20_sp",
+    "data": {
+      "entityid": "https://teams.test6.0.surfconext.nl/shibboleth",
+      "state": "prodaccepted",
+      "metaDataFields": {
+        "name:en": "test 1 feb.",
+        "name:nl": "test1 feb",
+        "OrganizationName:en": "Teunservice",
+        "OrganizationName:nl": "Teunservice",
+        "coin:application_url": "https://www.testvanspdashboard6.0.com",
+        "coin:institution_guid": "6ef11e60-0bb5-4855-9041-538bde493ab5",
+        "logo:0:url": "https://static.surfconext.nl/logos/sp/surfmailfilter.png"
+      }
+    }
+  },
+  {
+    "_id": "bcd02732-bffe-43c7-b394-b8fb3532e73e",
+    "version": 0,
+    "type": "saml20_sp",
+    "data": {
+      "entityid": "https://teams.test6.07maart.surfconext.nl/shibboleth",
+      "state": "prodaccepted",
+      "metaDataFields": {
+        "name:en": "test7 maart",
+        "name:nl": "test7 maart",
+        "OrganizationName:en": "Teunservice",
+        "OrganizationName:nl": "Teunservice",
+        "coin:application_url": "https://www.testvanspdashboard6.0.com",
+        "coin:institution_guid": "6ef11e60-0bb5-4855-9041-538bde493ab5",
+        "logo:0:url": "https://static.surfconext.nl/logos/sp/surfmailfilter.png"
+      }
+    }
+  },
+  {
+    "_id": "5611b666-2648-4968-880b-9910ac73c12f",
+    "version": 0,
+    "type": "saml20_sp",
+    "data": {
+      "entityid": "https://teams.test6.07maartnu.surfconext.nl/shibboleth",
+      "state": "prodaccepted",
+      "metaDataFields": {
+        "name:en": "test7 maart",
+        "name:nl": "test7 maart",
+        "OrganizationName:en": "Teunservice",
+        "OrganizationName:nl": "Teunservice",
+        "coin:application_url": "https://www.testvanspdashboard6.0.com",
+        "coin:institution_guid": "6ef11e60-0bb5-4855-9041-538bde493ab5",
+        "logo:0:url": "https://static.surfconext.nl/logos/sp/surfmailfilter.png"
+      }
+    }
+  },
+  {
+    "_id": "8c3514f9-f759-4eff-876b-f98be783f3dd",
+    "version": 0,
+    "type": "saml20_sp",
+    "data": {
+      "entityid": "https://teams.test6.07maartnudantoch.surfconext.nl/shibboleth",
+      "state": "prodaccepted",
+      "metaDataFields": {
+        "name:en": "test7 maart",
+        "name:nl": "test7 maart",
+        "OrganizationName:en": "Teunservice",
+        "OrganizationName:nl": "Teunservice",
+        "coin:application_url": "https://www.testvanspdashboard6.0.com",
+        "coin:institution_guid": "6ef11e60-0bb5-4855-9041-538bde493ab5",
+        "logo:0:url": "https://static.surfconext.nl/logos/sp/surfmailfilter.png"
+      }
+    }
+  },
+  {
+    "_id": "e4de92ad-b1ce-4692-aa74-3a0e44e28deb",
+    "version": 1,
+    "type": "saml20_sp",
+    "data": {
+      "entityid": "aaap",
+      "state": "testaccepted",
+      "metaDataFields": {
+        "name:en": "naam",
+        "OrganizationName:en": "aaa"
+      }
+    }
+  },
+  {
+    "_id": "369fcd4b-7d7c-47b1-85bf-9ca551cd1b51",
+    "version": 1,
+    "type": "saml20_sp",
+    "data": {
+      "entityid": "create 1",
+      "state": "testaccepted",
+      "metaDataFields": {
+        "name:en": "aap",
+        "OrganizationName:en": "aap"
+      },
+      "notes": "wihj"
+    }
+  },
+  {
+    "_id": "f1921f54-0a5e-435a-bbe0-7948fdca10d3",
+    "version": 0,
+    "type": "saml20_sp",
+    "data": {
+      "entityid": "https://teams1.test2.surfconext.nl/shibboleth",
+      "state": "prodaccepted",
+      "metaDataFields": {
+        "name:en": "Bart TEst spd 6.00",
+        "name:nl": "Bart TEst spd 6.00ss",
+        "OrganizationName:en": "Baert test $RDs",
+        "OrganizationName:nl": "Baert test $RDs",
+        "coin:application_url": "https://www.123.nl",
+        "coin:institution_guid": "EC82B820-0A11-E511-80D0-005056956C1A",
+        "logo:0:url": "https://static.surfconext.nl/media/idp/surfconext.png"
+      }
+    }
+  },
+  {
+    "_id": "8d651afe-3763-4032-9f4c-644bb6aa0583",
+    "version": 10,
+    "type": "saml20_sp",
+    "data": {
+      "entityid": "https://teams2.test2.surfconext.nl/shibboleth",
+      "state": "prodaccepted",
+      "metaDataFields": {
+        "name:en": "Bart TEst spd 6.00",
+        "name:nl": "Bart TEst spd 6.00ss",
+        "OrganizationName:en": "Baert test $RDs",
+        "OrganizationName:nl": "Baert test $RDs",
+        "coin:application_url": "https://www.123.nl",
+        "coin:institution_guid": "EC82B820-0A11-E511-80D0-005056956C1A",
+        "logo:0:url": "https://static.surfconext.nl/media/idp/surfconext.png"
+      }
+    }
+  },
+  {
+    "_id": "12f856a7-ff36-439d-a682-a74d7448eea2",
+    "version": 0,
+    "type": "saml20_sp",
+    "data": {
+      "entityid": "https://teamsvoor5.1.1.surfconext.nl/shibboleth",
+      "state": "prodaccepted",
+      "metaDataFields": {
+        "name:en": "17 aug testing",
+        "name:nl": "17 aug test",
+        "OrganizationName:en": "Teunservice",
+        "OrganizationName:nl": "Teunservice",
+        "coin:application_url": "https://www.idpdffashboard.com",
+        "coin:institution_guid": "6ef11e60-0bb5-4855-9041-538bde493ab5",
+        "logo:0:url": "https://static.surfconext.nl/logos/sp/surfmailfilter.png"
+      }
+    }
+  },
+  {
+    "_id": "b5c64880-f973-40a0-b345-8d9a1b9b589a",
+    "version": 1,
+    "type": "saml20_sp",
+    "data": {
+      "entityid": "https://teams1.test3.surfconext.nl/shibboleth",
+      "state": "prodaccepted",
+      "metaDataFields": {
+        "name:en": "Bart TEst spd 6.00",
+        "name:nl": "Bart TEst spd 6.00ss",
+        "OrganizationName:en": "Baert test $RDs",
+        "OrganizationName:nl": "Baert test $RDs",
+        "coin:application_url": "https://www.123.nl",
+        "coin:institution_guid": "EC82B820-0A11-E511-80D0-005056956C1A",
+        "logo:0:url": "https://static.surfconext.nl/media/idp/surfconext.png"
+      }
+    }
+  },
+  {
+    "_id": "dfc35eb6-ccec-4d9f-8694-ccd5828a6ff5",
+    "version": 1,
+    "type": "saml20_sp",
+    "data": {
+      "entityid": "https://teams.surfconext.fadsnl/shibboleth",
+      "state": "prodaccepted",
+      "metaDataFields": {
+        "name:en": "test7 maart",
+        "name:nl": "test7 maart",
+        "OrganizationName:en": "Teunservice",
+        "OrganizationName:nl": "Teunservice",
+        "coin:application_url": "https://www.testvanspdashboard6.0.com",
+        "coin:institution_guid": "6ef11e60-0bb5-4855-9041-538bde493ab5",
+        "logo:0:url": "https://static.surfconext.nl/logos/sp/surfmailfilter.png"
+      }
+    }
+  }
+]

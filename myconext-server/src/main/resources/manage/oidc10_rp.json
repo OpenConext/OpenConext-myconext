@@ -1,0 +1,743 @@
+[
+  {
+    "_id": "0aa4c5cf-d036-459a-b051-648f3c354e22",
+    "version": 27,
+    "type": "oidc10_rp",
+    "data": {
+      "state": "prodaccepted",
+      "metaDataFields": {
+        "name:en": "Groningen RP Demo Student Mobiliteit",
+        "name:nl": "Groningen RP Demo Student Mobiliteit - NL",
+        "OrganizationName:en": "Groningen",
+        "OrganizationName:nl": "Groningen"
+      },
+      "entityid": "groningen.demo.student.mobiliteit"
+    }
+  },
+  {
+    "_id": "0b407596-af30-49d8-b599-2757b964f1c3",
+    "version": 39,
+    "type": "oidc10_rp",
+    "data": {
+      "state": "prodaccepted",
+      "metaDataFields": {
+        "name:en": "eduID RP localhost",
+        "OrganizationName:en": "ALA localhost"
+      },
+      "entityid": "myconext.rp.localhost"
+    }
+  },
+  {
+    "_id": "0d112868-c1b6-48ce-8870-303bb39c6bd4",
+    "version": 16,
+    "type": "oidc10_rp",
+    "data": {
+      "state": "prodaccepted",
+      "metaDataFields": {
+        "name:en": "student-mobility-home-institution-mock",
+        "coin:institution_guid": "ad93daef-0911-e511-80d0-005056956c1a",
+        "OrganizationName:en": "SURF",
+        "logo:0:url": "https://static.surfconext.nl/media/sp/eduid.png"
+      },
+      "entityid": "student.mobility.inteken.ontvanger.generiek"
+    }
+  },
+  {
+    "_id": "4c58bd1e-86e2-431b-aebf-ec13915167be",
+    "version": 32,
+    "type": "oidc10_rp",
+    "data": {
+      "state": "prodaccepted",
+      "metaDataFields": {
+        "name:en": "Student Mobility RP localhost",
+        "OrganizationName:en": "Localhost",
+        "logo:0:url": "https://static.surfconext.nl/media/sp/eduid.png"
+      },
+      "entityid": "student.mobility.rp.localhost"
+    }
+  },
+  {
+    "_id": "4c868abc-f2d4-4ba1-b597-d48042c679c9",
+    "version": 7,
+    "type": "oidc10_rp",
+    "data": {
+      "entityid": "help.test.nl",
+      "state": "prodaccepted",
+      "metaDataFields": {
+        "name:en": "aapnoot RS",
+        "OrganizationName:en": "test"
+      }
+    }
+  },
+  {
+    "_id": "5b00de42-018c-4768-b39e-790f5715cdca",
+    "version": 38,
+    "type": "oidc10_rp",
+    "data": {
+      "state": "prodaccepted",
+      "metaDataFields": {
+        "name:en": "edubadges localhost"
+      },
+      "entityid": "edubadges"
+    }
+  },
+  {
+    "_id": "851ab88a-4b97-4698-bfa5-2986cb31fed1",
+    "version": 20,
+    "type": "oidc10_rp",
+    "data": {
+      "entityid": "super-sp.com",
+      "state": "prodaccepted",
+      "metaDataFields": {
+        "name:en": "Super SP",
+        "name:nl": "Super SP",
+        "coin:application_url": "https://super-sp.com",
+        "logo:0:url": "https://spdashboard.test2.surfconext.nl/images/surfconext-logo.png",
+        "coin:institution_guid": "55d8cc3f-b3cd-46bf-8f7f-1310edfa9509",
+        "OrganizationName:en": "ibuildings",
+        "OrganizationName:nl": "ibuildings"
+      }
+    }
+  },
+  {
+    "_id": "8fdd01a9-57e3-4f4d-ba66-f3f55700685a",
+    "version": 196,
+    "type": "oidc10_rp",
+    "data": {
+      "entityid": "playground_client",
+      "state": "prodaccepted",
+      "metaDataFields": {
+        "name:en": "OIDC Playground Client",
+        "name:nl": "OIDC Speeltuintje Klant",
+        "logo:0:url": "https://static.surfconext.nl/logos/idp/surfconext.png",
+        "coin:institution_guid": "ad93daef-0911-e511-80d0-005056956c1a",
+        "OrganizationName:en": "SURF"
+      }
+    }
+  },
+  {
+    "_id": "9319b35c-7b46-47a0-be3d-fb7102b0a24b",
+    "version": 97,
+    "type": "oidc10_rp",
+    "data": {
+      "entityid": "httpstestbart",
+      "state": "prodaccepted",
+      "metaDataFields": {
+        "name:en": "barttest",
+        "OrganizationName:en": "Test"
+      }
+    }
+  },
+  {
+    "_id": "953e4696-12ee-48f4-ab44-3f7d57fcd419",
+    "version": 30,
+    "type": "oidc10_rp",
+    "data": {
+      "entityid": "mailer.pt-75.utr.surfcloud.nl",
+      "state": "prodaccepted",
+      "metaDataFields": {
+        "name:en": "Bart test RP",
+        "name:nl": "Bart test RP",
+        "OrganizationName:en": "BARTJUH"
+      }
+    }
+  },
+  {
+    "_id": "bfeb955e-3a61-4224-ba34-7a27f8456b2a",
+    "version": 22,
+    "type": "oidc10_rp",
+    "data": {
+      "state": "prodaccepted",
+      "metaDataFields": {
+        "name:en": "SURF Mobility RP local testing - do not edit please",
+        "OrganizationName:en": "SURF"
+      },
+      "entityid": "student.mobility.broker.local"
+    }
+  },
+  {
+    "_id": "e2b50ef3-c96a-46d3-ba87-e8cfc0920c01",
+    "version": 13,
+    "type": "oidc10_rp",
+    "data": {
+      "state": "prodaccepted",
+      "entityid": "teams.test2.surfconext.nl",
+      "metaDataFields": {
+        "name:en": "Teams client credentials client for VOOT access",
+        "OrganizationName:en": "SURF"
+      }
+    }
+  },
+  {
+    "_id": "f15f0e12-d404-47e7-9b7c-acc489e074e8",
+    "version": 12,
+    "type": "oidc10_rp",
+    "data": {
+      "state": "prodaccepted",
+      "entityid": "aa.test2.surfconext.nl",
+      "metaDataFields": {
+        "name:en": "AA client credentials client for VOOT access",
+        "OrganizationName:en": "SURF"
+      }
+    }
+  },
+  {
+    "_id": "d4816ca8-be41-466c-9737-5b6447c81316",
+    "version": 17,
+    "type": "oidc10_rp",
+    "data": {
+      "entityid": "myconext.ala.eduid",
+      "state": "prodaccepted",
+      "metaDataFields": {
+        "name:en": "eduID ALA RP",
+        "OrganizationName:en": "SURFconext eduID ALA"
+      }
+    }
+  },
+  {
+    "_id": "68410daf-d4b2-474d-8e71-9c987ea0c0a6",
+    "version": 4,
+    "type": "oidc10_rp",
+    "data": {
+      "entityid": "testccbart.nl",
+      "state": "prodaccepted",
+      "metaDataFields": {
+        "name:en": "testcc",
+        "name:nl": "testcc",
+        "OrganizationName:en": "test123",
+        "OrganizationName:nl": "test123",
+        "coin:institution_guid": "d4cf5815-6615-4513-9345-94b960d1f3c0",
+        "logo:0:url": "https://static.surfconext.nl/media/sp/qualtrics.png"
+      }
+    }
+  },
+  {
+    "_id": "f74e4eea-1313-4484-b23d-7a9f549edb92",
+    "version": 0,
+    "type": "oidc10_rp",
+    "data": {
+      "state": "prodaccepted",
+      "entityid": "pdp.test2.surfconext.nl",
+      "metaDataFields": {
+        "OrganizationName:en": "SURFconext TEST2",
+        "name:en": "PDP client credentials client for VOOT access"
+      }
+    }
+  },
+  {
+    "_id": "62f4e3e5-5ce3-4676-a7da-dfd4c27d971b",
+    "version": 6,
+    "type": "oidc10_rp",
+    "data": {
+      "entityid": "stats.test2.surfconext.nl",
+      "state": "prodaccepted",
+      "metaDataFields": {
+        "name:en": "SURFconext stats test2",
+        "OrganizationName:en": "SURF BV"
+      }
+    }
+  },
+  {
+    "_id": "f8490648-fba8-4cd9-ae84-419f9f40ddb8",
+    "version": 1,
+    "type": "oidc10_rp",
+    "data": {
+      "entityid": "testcccbart6.nl",
+      "state": "prodaccepted",
+      "metaDataFields": {
+        "name:en": "testcc",
+        "name:nl": "testcc",
+        "OrganizationName:en": "TestBartEN",
+        "OrganizationName:nl": "TestBartNL",
+        "coin:institution_guid": "3F4FC287-0911-E511-80D0-005056956C1A",
+        "logo:0:url": "https://static.surfconext.nl/logos/sp/surf_network-automation.png"
+      }
+    }
+  },
+  {
+    "_id": "5a84a4b1-c4c9-4e38-9000-4008ff01d129",
+    "version": 2,
+    "type": "oidc10_rp",
+    "data": {
+      "entityid": "testclientresetbart4.nl",
+      "state": "prodaccepted",
+      "metaDataFields": {
+        "name:en": "TestBart",
+        "name:nl": "TestBart1",
+        "OrganizationName:en": "testteun",
+        "OrganizationName:nl": "testteun",
+        "coin:institution_guid": "ea79e800-fcfe-11e7-8f1a-0800200c9a66",
+        "logo:0:url": "https://static.surfconext.nl/logos/sp/surfmailfilter.png"
+      }
+    }
+  },
+  {
+    "_id": "93a4c22c-e027-4574-aec3-bed6af21a6f6",
+    "version": 1,
+    "type": "oidc10_rp",
+    "data": {
+      "entityid": "testcccbart7.nl",
+      "state": "prodaccepted",
+      "metaDataFields": {
+        "name:en": "TestBart",
+        "name:nl": "spdtest saml",
+        "OrganizationName:en": "teun",
+        "OrganizationName:nl": "teun",
+        "coin:institution_guid": "b85abd18-734d-43b1-b352-a9dae1447b0a",
+        "logo:0:url": "https://static.surfconext.nl/logos/sp/surf_network-automation.png"
+      }
+    }
+  },
+  {
+    "_id": "3d815eec-6a75-487e-bd32-8f3e2c132a1c",
+    "version": 3,
+    "type": "oidc10_rp",
+    "data": {
+      "entityid": "testclientresetbart4.nl/REDIRECT",
+      "state": "prodaccepted",
+      "metaDataFields": {
+        "name:en": "TestBart",
+        "name:nl": "TestBart1",
+        "OrganizationName:en": "testteun",
+        "OrganizationName:nl": "testteun",
+        "coin:institution_guid": "ea79e800-fcfe-11e7-8f1a-0800200c9a66",
+        "logo:0:url": "https://static.surfconext.nl/logos/sp/surfmailfilter.png"
+      }
+    }
+  },
+  {
+    "_id": "7bb1e600-b96f-4ee7-a2b8-e00cad7904ee",
+    "version": 7,
+    "type": "oidc10_rp",
+    "data": {
+      "entityid": "rp.guests.localhost",
+      "state": "prodaccepted",
+      "metaDataFields": {
+        "name:en": "RS Guests Local",
+        "OrganizationName:en": "RS Guests Local"
+      }
+    }
+  },
+  {
+    "_id": "c6f0e7c1-96e2-4109-acd0-98d5aeef3dba",
+    "version": 2,
+    "type": "oidc10_rp",
+    "data": {
+      "entityid": "testbart",
+      "state": "prodaccepted",
+      "metaDataFields": {
+        "name:en": "testbart",
+        "OrganizationName:en": "surfconext"
+      }
+    }
+  },
+  {
+    "_id": "cd5e2418-65b0-430c-87f4-e73743a90021",
+    "version": 0,
+    "type": "oidc10_rp",
+    "data": {
+      "entityid": "delllelele",
+      "state": "testaccepted",
+      "metaDataFields": {
+        "name:en": "delllelele",
+        "OrganizationName:en": "delllelele"
+      }
+    }
+  },
+  {
+    "_id": "f3b15689-c421-483f-990c-c38a2085023b",
+    "version": 1,
+    "type": "oidc10_rp",
+    "data": {
+      "entityid": "testbart4punt0.nl2/123",
+      "state": "prodaccepted",
+      "metaDataFields": {
+        "name:en": "TestBart SPD JIRA TEST",
+        "name:nl": "test",
+        "OrganizationName:en": "SURF",
+        "OrganizationName:nl": "SURF",
+        "coin:institution_guid": "82583b80-be49-11e7-8f1a-0800200c9a69",
+        "logo:0:url": "https://static.surfconext.nl/logos/idp/eduid.png"
+      }
+    }
+  },
+  {
+    "_id": "d5e27fab-6f99-4566-a249-08a7ebdcc31f",
+    "version": 0,
+    "type": "oidc10_rp",
+    "data": {
+      "entityid": "testbart4punt0.nl2123",
+      "state": "prodaccepted",
+      "metaDataFields": {
+        "name:en": "TestBart SPD JIRA TEST",
+        "name:nl": "test",
+        "OrganizationName:en": "SURF",
+        "OrganizationName:nl": "SURF",
+        "coin:institution_guid": "82583b80-be49-11e7-8f1a-0800200c9a69",
+        "logo:0:url": "https://static.surfconext.nl/logos/idp/eduid.png"
+      }
+    }
+  },
+  {
+    "_id": "5fa51ee5-97d4-4fe8-a46d-671d5c50d000",
+    "version": 16,
+    "type": "oidc10_rp",
+    "data": {
+      "entityid": "monitoring.test2.surfconext.nl",
+      "state": "prodaccepted",
+      "metaDataFields": {
+        "name:en": "Percona PMM Test2",
+        "name:nl": "Percona PMM Test2",
+        "OrganizationName:en": "SURF",
+        "OrganizationName:nl": "SURF",
+        "coin:institution_guid": "82583b80-be49-11e7-8f1a-0800200c9a69",
+        "logo:0:url": "https://static.surfconext.nl/logos/idp/eduid.png"
+      }
+    }
+  },
+  {
+    "_id": "49f7dcff-6be5-4097-91b9-d1e98d94cf4b",
+    "version": 2,
+    "type": "oidc10_rp",
+    "data": {
+      "entityid": "oidcngtestop7november13122.nl",
+      "state": "prodaccepted",
+      "metaDataFields": {
+        "name:en": "oidctest13jan",
+        "name:nl": "oidcdest13jan",
+        "OrganizationName:en": "Teunwarez",
+        "OrganizationName:nl": "Teunwarez",
+        "coin:application_url": "https://dienst.nl/dienst",
+        "coin:institution_guid": "76b25567-9851-4cb6-a512-fd1c137246f2",
+        "logo:0:url": "https://static.surfconext.nl/logos/sp/surf_network-automation.png"
+      }
+    }
+  },
+  {
+    "_id": "d75b206f-8d72-4b5a-8b62-b165ff424da8",
+    "version": 5,
+    "type": "oidc10_rp",
+    "data": {
+      "entityid": "eduidtest.havekes.eu",
+      "state": "prodaccepted",
+      "metaDataFields": {
+        "name:en": "Peter H test client",
+        "OrganizationName:en": "SURF",
+        "logo:0:url": "https://www.gravatar.com/avatar/f9d712bfff330284177d110b129bdbf3"
+      }
+    }
+  },
+  {
+    "_id": "cedd9317-6265-4182-a1ed-8b2d897cee75",
+    "version": 15,
+    "type": "oidc10_rp",
+    "data": {
+      "entityid": "dev.egeniq.nl",
+      "state": "prodaccepted",
+      "metaDataFields": {
+        "name:en": "Egeniq",
+        "OrganizationName:en": "SURF",
+        "logo:0:url": "https://engine.test2.surfconext.nl/images/logo.png"
+      }
+    }
+  },
+  {
+    "_id": "972fd053-c4da-4102-8ef6-146aaf8ca316",
+    "version": 7,
+    "type": "oidc10_rp",
+    "data": {
+      "entityid": "spd50.nl",
+      "state": "prodaccepted",
+      "metaDataFields": {
+        "name:en": "TestBart SPD 5.0 oidc",
+        "name:nl": "TestBart SPD 5.0 oidc2",
+        "OrganizationName:en": "SURFconext gaat door#",
+        "OrganizationName:nl": "SURFconext gaat door!",
+        "coin:application_url": "https://test.social.edu.nl",
+        "coin:institution_guid": "5ede9c9b-3bbc-ea11-90fe-0050569571ea",
+        "logo:0:url": "https://static.surfconext.nl/media/sp/surf.png"
+      }
+    }
+  },
+  {
+    "_id": "77a273cf-6f0a-480a-991e-ada8e89e1d74",
+    "version": 3,
+    "type": "oidc10_rp",
+    "data": {
+      "entityid": "testspd50.nl",
+      "state": "prodaccepted",
+      "metaDataFields": {
+        "name:en": "RP50testop4april",
+        "name:nl": "RP50testop4april",
+        "OrganizationName:en": "Teunservice",
+        "OrganizationName:nl": "Teunservice",
+        "coin:application_url": "https://www.idpdffashboard.com",
+        "coin:institution_guid": "6ef11e60-0bb5-4855-9041-538bde493ab5",
+        "logo:0:url": "https://static.surfconext.nl/logos/sp/surfmailfilter.png"
+      }
+    }
+  },
+  {
+    "_id": "b6288601-5985-4ed9-b184-926849316e1c",
+    "version": 4,
+    "type": "oidc10_rp",
+    "data": {
+      "entityid": "testspd50nogeentje.nl",
+      "state": "prodaccepted",
+      "metaDataFields": {
+        "name:en": "RP50testop4aprilnogeentje",
+        "name:nl": "RP50testop4aprilnogeentje",
+        "OrganizationName:en": "Teunservice",
+        "OrganizationName:nl": "Teunservice",
+        "coin:application_url": "https://www.idpdffashboard.com",
+        "coin:institution_guid": "6ef11e60-0bb5-4855-9041-538bde493ab5",
+        "logo:0:url": "https://static.surfconext.nl/logos/sp/surfmailfilter.png"
+      }
+    }
+  },
+  {
+    "_id": "8d51b3b3-8d53-46a1-a8b3-61f662cb71ee",
+    "version": 1,
+    "type": "oidc10_rp",
+    "data": {
+      "entityid": "spd5201.nl",
+      "state": "prodaccepted",
+      "metaDataFields": {
+        "name:en": "TestBart SPD 5.0 oidc",
+        "name:nl": "TestBart SPD 5.0 oidc2",
+        "OrganizationName:en": "SURFconext gaat door#",
+        "OrganizationName:nl": "SURFconext gaat door!",
+        "coin:application_url": "https://test.social.edu.nl",
+        "coin:institution_guid": "5ede9c9b-3bbc-ea11-90fe-0050569571ea",
+        "logo:0:url": "https://static.surfconext.nl/media/sp/surf.png"
+      }
+    }
+  },
+  {
+    "_id": "75bef632-d9ff-4bd2-b050-4aea817d0733",
+    "version": 1,
+    "type": "oidc10_rp",
+    "data": {
+      "entityid": "test123.nl",
+      "state": "prodaccepted",
+      "metaDataFields": {
+        "name:en": "ccctest",
+        "name:nl": "ccftest2",
+        "OrganizationName:en": "testteun",
+        "OrganizationName:nl": "testteun",
+        "coin:institution_guid": "ea79e800-fcfe-11e7-8f1a-0800200c9a66",
+        "logo:0:url": "https://static.surfconext.nl/media/sp/surf.png"
+      }
+    }
+  },
+  {
+    "_id": "b3010399-9e48-472e-b0f1-89d8da2bf6d5",
+    "version": 0,
+    "type": "oidc10_rp",
+    "data": {
+      "entityid": "cctest1.nl",
+      "state": "prodaccepted",
+      "metaDataFields": {
+        "name:en": "cctest1",
+        "name:nl": "cctest1",
+        "OrganizationName:en": "testteun",
+        "OrganizationName:nl": "testteun",
+        "coin:institution_guid": "ea79e800-fcfe-11e7-8f1a-0800200c9a66",
+        "logo:0:url": "https://static.surfconext.nl/logos/sp/surf_network-automation.png"
+      }
+    }
+  },
+  {
+    "_id": "8dd8658d-83a0-4ce8-8d04-d5a8297d80dd",
+    "version": 16,
+    "type": "oidc10_rp",
+    "data": {
+      "state": "prodaccepted",
+      "entityid": "invite.test2.surfconext.nl",
+      "metaDataFields": {
+        "name:en": "SURFconext TEST2 Invite",
+        "name:nl": "SURFconext TEST2 Invite",
+        "OrganizationName:en": "SURFconext TEST2"
+      }
+    }
+  },
+  {
+    "_id": "e84faf00-5dfd-4678-8388-a97d536587f7",
+    "version": 0,
+    "type": "oidc10_rp",
+    "data": {
+      "entityid": "test",
+      "state": "testaccepted",
+      "metaDataFields": {
+        "name:en": "test",
+        "OrganizationName:en": "test"
+      }
+    }
+  },
+  {
+    "_id": "b5ed8828-a0f0-46ed-9838-f4b73aacb370",
+    "version": 0,
+    "type": "oidc10_rp",
+    "data": {
+      "entityid": "client01.eur.nl.rio-mapper.surfeduhub.nl",
+      "state": "testaccepted",
+      "metaDataFields": {
+        "name:en": "RIO PROD Erasmus Universiteit Rotterdam",
+        "name:nl": "RIO PROD Erasmus Universiteit Rotterdam",
+        "OrganizationName:en": "SURF",
+        "OrganizationName:nl": "SURF",
+        "coin:institution_guid": "5ede9c9b-3bbc-ea11-90fe-0050569571ea",
+        "logo:0:url": "https://static.surfconext.nl/media/idp/surf.svg"
+      }
+    }
+  },
+  {
+    "_id": "c090abe7-8859-4136-b714-b92a41179f9c",
+    "version": 0,
+    "type": "oidc10_rp",
+    "data": {
+      "entityid": "client01.aeres.nl.rio-mapper.surfeduhub.nl",
+      "state": "testaccepted",
+      "metaDataFields": {
+        "name:en": "RIO PROD Aeres Hogeschool",
+        "name:nl": "RIO PROD Aeres Hogeschool",
+        "OrganizationName:en": "SURF",
+        "OrganizationName:nl": "SURF",
+        "coin:institution_guid": "5ede9c9b-3bbc-ea11-90fe-0050569571ea",
+        "logo:0:url": "https://static.surfconext.nl/media/idp/surf.svg"
+      }
+    }
+  },
+  {
+    "_id": "59468fba-756f-4ef9-854e-73072ac34a9c",
+    "version": 0,
+    "type": "oidc10_rp",
+    "data": {
+      "entityid": "client01.aeres.nl.rio-mapper.test.surfeduhub.nl",
+      "state": "prodaccepted",
+      "metaDataFields": {
+        "name:en": "RIO TEST Aeres Hogeschool",
+        "name:nl": "RIO TEST Aeres Hogeschool",
+        "OrganizationName:en": "SURF",
+        "OrganizationName:nl": "SURF",
+        "coin:institution_guid": "5ede9c9b-3bbc-ea11-90fe-0050569571ea",
+        "logo:0:url": "https://static.surfconext.nl/media/idp/surf.svg"
+      }
+    }
+  },
+  {
+    "_id": "7a511e3e-e775-490f-aec0-65b5764a9fe1",
+    "version": 2,
+    "type": "oidc10_rp",
+    "data": {
+      "entityid": "testteunvoor5.2.nl",
+      "state": "prodaccepted",
+      "metaDataFields": {
+        "name:en": "oidctest28august",
+        "name:nl": "oidctest28augustus",
+        "OrganizationName:en": "Teunservice",
+        "OrganizationName:nl": "Teunservice",
+        "coin:application_url": "https://www.idpdffashboard.com",
+        "coin:institution_guid": "6ef11e60-0bb5-4855-9041-538bde493ab5",
+        "logo:0:url": "https://static.surfconext.nl/logos/sp/surfmailfilter.png"
+      }
+    }
+  },
+  {
+    "_id": "aca85bfb-8a98-4036-91a5-d39cc7030db9",
+    "version": 0,
+    "type": "oidc10_rp",
+    "data": {
+      "entityid": "spd520s1.nl",
+      "state": "prodaccepted",
+      "metaDataFields": {
+        "name:en": "TestBart SPD 5.0 oidc",
+        "name:nl": "TestBart SPD 5.0 oidc2",
+        "OrganizationName:en": "SURFconext gaat door#",
+        "OrganizationName:nl": "SURFconext gaat door!",
+        "coin:application_url": "https://test.social.edu.nl",
+        "coin:institution_guid": "5ede9c9b-3bbc-ea11-90fe-0050569571ea",
+        "logo:0:url": "https://static.surfconext.nl/media/sp/surf.png"
+      }
+    }
+  },
+  {
+    "_id": "c93890ed-c869-47ea-be5a-ac8d71cb2c4b",
+    "version": 0,
+    "type": "oidc10_rp",
+    "data": {
+      "entityid": "spd52.nl",
+      "state": "prodaccepted",
+      "metaDataFields": {
+        "name:en": "novtest5.2 naamnlgewijzigd",
+        "name:nl": "8novtest5.2 naamnlgewijzigd",
+        "OrganizationName:en": "Teunservice",
+        "OrganizationName:nl": "Teunservice",
+        "coin:application_url": "https://www.idpdffashboardfffff.com",
+        "coin:institution_guid": "6ef11e60-0bb5-4855-9041-538bde493ab5",
+        "logo:0:url": "https://static.surfconext.nl/logos/sp/surfmailfilter.png"
+      }
+    }
+  },
+  {
+    "_id": "e6c851f3-8ee8-4c25-9830-8d4f32d506c1",
+    "version": 2,
+    "type": "oidc10_rp",
+    "data": {
+      "entityid": "sbs.test2.sram.surf.nl",
+      "state": "prodaccepted",
+      "metaDataFields": {
+        "name:en": "SBS TEST2",
+        "OrganizationName:en": "SRAM TEST2"
+      }
+    }
+  },
+  {
+    "_id": "64fff4a7-5e48-41ad-8ba0-2939465477f5",
+    "version": 1,
+    "type": "oidc10_rp",
+    "data": {
+      "entityid": "www.spd661d03.nl",
+      "state": "prodaccepted",
+      "metaDataFields": {
+        "name:en": "TestBart SPD 6.0 oidc23",
+        "name:nl": "TestBart SPD 6.0 oidc23",
+        "OrganizationName:en": "Baert test $RDs",
+        "OrganizationName:nl": "Baert test $RDs",
+        "coin:institution_guid": "419bb1f1-c733-4a69-a3bb-7e99b4c4acd9",
+        "logo:0:url": "https://static.surfconext.nl/media/idp/surfconext.png"
+      }
+    }
+  },
+  {
+    "_id": "8adebc68-2ad0-43be-9baf-90fbc7e06ca5",
+    "version": 0,
+    "type": "oidc10_rp",
+    "data": {
+      "entityid": "kibana.test2.surfconext.nl",
+      "state": "prodaccepted",
+      "metaDataFields": {
+        "name:en": "Copa Kibana test23",
+        "name:nl": "Copa Kibana test2",
+        "OrganizationName:en": "SURFconext"
+      }
+    }
+  },
+  {
+    "_id": "fb9e834b-39bf-4b94-a63a-cda3ce672ef8",
+    "version": 0,
+    "type": "oidc10_rp",
+    "data": {
+      "entityid": "www.spd633wts00.nl",
+      "state": "prodaccepted",
+      "metaDataFields": {
+        "name:en": "test",
+        "name:nl": "test",
+        "OrganizationName:en": "Baert test $RDs",
+        "OrganizationName:nl": "Baert test $RDs",
+        "coin:institution_guid": "EC82B820-0A11-E511-80D0-005056956C1A",
+        "logo:0:url": "https://gitlab.com/uploads/-/system/group/avatar/3327297/pleio_copy.png"
+      }
+    }
+  }
+]

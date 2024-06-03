@@ -14,62 +14,51 @@ import java.util.*;
 @NoArgsConstructor
 @Getter
 public class EduID implements Serializable {
-
-    private String serviceProviderEntityId;
     @Indexed
     private String value;
+
+    //All following properties are obsolete and will be replaced - on the fly - with the List of ServiceProvider
+    private String serviceProviderEntityId;
     private String serviceName;
     private String serviceNameNl;
     private String serviceLogoUrl;
     private String serviceHomeUrl;
     private String serviceInstutionGuid;
+
+    //The new situation where services share the eduID value because of equals institution identifiers
     private List<ServiceProvider> services = new ArrayList<>();
+
     @Schema(type = "integer", format = "int64", example = "1634813554997")
     private Date createdAt;
 
-    public EduID(String value, String serviceProviderEntityId, Optional<ServiceProvider> serviceProviderOptional) {
+    public EduID(String value, ServiceProvider serviceProvider) {
         this.value = value;
-        this.serviceProviderEntityId = serviceProviderEntityId;
+        services.add(serviceProvider);
         this.createdAt = new Date();
-        if (serviceProviderOptional.isPresent()) {
-            ServiceProvider serviceProvider = serviceProviderOptional.get();
-            serviceName = serviceProvider.getName();
-            serviceNameNl = StringUtils.hasText(serviceProvider.getNameNl()) ? serviceProvider.getNameNl() : serviceName;
-            serviceHomeUrl = serviceProvider.getHomeUrl();
-            serviceLogoUrl = serviceProvider.getLogoUrl();
-            serviceInstutionGuid = serviceProvider.getInstitutionGuid();
-        } else {
-            serviceName = serviceProviderEntityId;
-            serviceNameNl = serviceProviderEntityId;
-        }
     }
 
-    @SneakyThrows
-    public EduID(String serviceProviderEntityId, Map<String, Object> values) {
-        this.serviceProviderEntityId = serviceProviderEntityId;
-        this.value = (String) values.get("value");
-        this.serviceName = (String) values.get("serviceName");
-        this.serviceNameNl = (String) values.get("serviceNameNl");
-        this.serviceLogoUrl = (String) values.get("serviceLogoUrl");
-        this.serviceHomeUrl = (String) values.get("serviceHomeUrl");
-        Object createdAt = values.get("createdAt");
-        if (createdAt instanceof Date) {
-            this.createdAt = (Date) createdAt;
-        } else if (createdAt instanceof String) {
-            SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
-            this.createdAt = formatter.parse((String) createdAt);
-        } else {
-            this.createdAt = new Date();
-        }
+    public EduID updateServiceProvider(ServiceProvider serviceProvider) {
+        //We migrate to the situation that en eduID only has a unique value and multiple services
+        this.serviceProviderEntityId = null;
+        this.serviceName = null;
+        this.serviceNameNl = null;
+        this.serviceLogoUrl = null;
+        this.serviceHomeUrl = null;
+        this.serviceInstutionGuid = null;
 
-    }
-
-    public void updateServiceProvider(ServiceProvider serviceProvider) {
-        serviceName = serviceProvider.getName();
-        serviceNameNl = StringUtils.hasText(serviceProvider.getNameNl()) ? serviceProvider.getNameNl() : serviceName;
-        serviceHomeUrl = serviceProvider.getHomeUrl();
-        serviceLogoUrl = serviceProvider.getLogoUrl();
-        serviceInstutionGuid = serviceProvider.getInstitutionGuid();
+        Optional<ServiceProvider> optionalServiceProvider = this.services.stream()
+                .filter(sp -> sp.getEntityId().equals(serviceProvider.getEntityId()))
+                .findFirst();
+        optionalServiceProvider.ifPresentOrElse(sp -> {
+            sp.setName(serviceProvider.getName());
+            sp.setNameNl(serviceProvider.getNameNl());
+            sp.setHomeUrl(serviceProvider.getHomeUrl());
+            sp.setLogoUrl(serviceProvider.getLogoUrl());
+            sp.setInstitutionGuid(serviceProvider.getInstitutionGuid());
+        }, () -> {
+            this.services.add(serviceProvider);
+        });
+        return this;
     }
 
     public void replaceAtWithDot() {

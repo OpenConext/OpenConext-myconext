@@ -1,7 +1,7 @@
 package myconext.aa;
 
 import io.swagger.v3.oas.annotations.Hidden;
-import myconext.manage.ServiceProviderResolver;
+import myconext.manage.Manage;
 import myconext.model.EduID;
 import myconext.model.User;
 import myconext.repository.UserRepository;
@@ -10,7 +10,6 @@ import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.Authentication;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -29,11 +28,11 @@ public class AttributeAggregatorController {
     private static final Log LOG = LogFactory.getLog(AttributeAggregatorController.class);
 
     private final UserRepository userRepository;
-    private final ServiceProviderResolver serviceProviderResolver;
+    private final Manage serviceProviderResolver;
     private final String schacHomeOrganization;
 
     public AttributeAggregatorController(UserRepository userRepository,
-                                         ServiceProviderResolver serviceProviderResolver,
+                                         Manage serviceProviderResolver,
                                          @Value("${schac_home_organization}") String schacHomeOrganization) {
         this.userRepository = userRepository;
         this.serviceProviderResolver = serviceProviderResolver;

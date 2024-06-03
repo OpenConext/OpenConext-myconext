@@ -7,7 +7,7 @@ import io.swagger.v3.oas.annotations.Parameter;
 import myconext.exceptions.ExpiredAuthenticationException;
 import myconext.exceptions.ForbiddenException;
 import myconext.exceptions.UserNotFoundException;
-import myconext.manage.ServiceProviderResolver;
+import myconext.manage.Manage;
 import myconext.model.SamlAuthenticationRequest;
 import myconext.model.User;
 import myconext.repository.*;
@@ -23,7 +23,6 @@ import org.springframework.core.env.Environment;
 import org.springframework.core.io.Resource;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import org.yaml.snakeyaml.Yaml;
@@ -63,7 +62,7 @@ public class TiqrController implements UserAuthentication {
 
     private final AuthenticationRequestRepository authenticationRequestRepository;
     private final UserRepository userRepository;
-    private final ServiceProviderResolver serviceProviderResolver;
+    private final Manage serviceProviderResolver;
     private final SMSService smsService;
     private final String magicLinkUrl;
     private final RegistrationRepository registrationRepository;
@@ -77,7 +76,7 @@ public class TiqrController implements UserAuthentication {
                           AuthenticationRepository authenticationRepository,
                           AuthenticationRequestRepository authenticationRequestRepository,
                           UserRepository userRepository,
-                          ServiceProviderResolver serviceProviderResolver,
+                          Manage serviceProviderResolver,
                           SMSService smsService,
                           Environment environment,
                           @Value("${email.magic-link-url}") String magicLinkUrl,

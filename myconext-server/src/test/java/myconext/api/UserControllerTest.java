@@ -230,7 +230,7 @@ public class UserControllerTest extends AbstractIntegrationTest {
                 .get("/myconext/api/idp/email/domain/institutional")
                 .then()
                 .statusCode(HttpStatus.OK.value())
-                .body("size()", is(5));
+                .body("size()", is(15));
     }
 
     @Test
@@ -1183,12 +1183,12 @@ public class UserControllerTest extends AbstractIntegrationTest {
                 .when()
                 .accept(ContentType.JSON)
                 .contentType(ContentType.JSON)
-                .queryParam("schac_home", "example.com")
+                .queryParam("schac_home", "sub6.aap.nl")
                 .get("/myconext/api/sp/institution/names")
                 .as(Map.class);
 
-        assertEquals("Mujina EN", names.get("displayNameEn"));
-        assertEquals("Mujina NL", names.get("displayNameNl"));
+        assertEquals("thkidp EN", names.get("displayNameEn"));
+        assertEquals("thkidp NL", names.get("displayNameNl"));
     }
 
     @Test
