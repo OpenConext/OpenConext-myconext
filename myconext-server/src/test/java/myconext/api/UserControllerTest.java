@@ -1000,9 +1000,11 @@ public class UserControllerTest extends AbstractIntegrationTest {
         User user = userRepository.findOneUserByEmail("jdoe@example.com");
         assertTrue(saml.contains("Attribute Name=\"urn:mace:eduid.nl:1.1\""));
 
+        //EntityId of the new eduID is based on the scoping in src/test/resources/authn_request.xml
         String eduId = user.getEduIDS().stream()
-                .filter(eduID -> eduID.getServiceProviderEntityId().equals("https://manage.surfconext.nl/shibboleth"))
-                .findFirst().get().getValue();
+                .filter(eduID -> eduID.getServices().stream().anyMatch(s -> s.getEntityId().equals("https://manage.surfconext.nl/shibboleth")))
+                .findFirst().get()
+                .getValue();
         assertTrue(saml.contains(eduId));
     }
 
