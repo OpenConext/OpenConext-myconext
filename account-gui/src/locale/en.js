@@ -279,13 +279,13 @@ I18n.translations.en = {
     stepUpExplanation: {
         linked_institution: "Your eduID account must be linked to a trusted party.",
         validate_names: "Your first name and last name must be verified by a trusted party.",
-        validate_names_external: "Your identity must be verified by an trusted party.",
+        validate_names_external: "Your identity must be verified by a trusted party.",
         affiliation_student: "You must prove that you are following education by linking your eduID account to a trusted party."
     },
     stepUpVerification: {
         linked_institution: "Your eduID account is linked to a trusted party.",
         validate_names: "Your first name and last name are verified by a trusted party.",
-        validate_names_external: "Your identity is verified by an trusted party.",
+        validate_names_external: "Your identity is verified by a trusted party.",
         affiliation_student: "You have proven that you are following education by linking your eduID account to a trusted party."
     },
     nudgeApp: {
@@ -357,8 +357,8 @@ I18n.translations.en = {
                 verifyBank: "Verify with a Dutch bank app",
                 selectBank: "Select your bank",
                 verifyEuropeanId: "Verify with a European ID",
-                supportEuropean: "We support the majority of National digital ID's",
-                useEuropean: "Use an European ID",
+                supportEuropean: "We support the majority of National digital IDs",
+                useEuropean: "Use a European ID",
                 help: "If you can't use any of the these methods, please visit our <a href='https://eduid.nl/help' target='_blank' rel='noreferrer'>support pages</a>"
             },
             bank: {
