@@ -519,7 +519,7 @@ I18n.translations.en = {
                 selectBank: "Select your bank",
                 verifyEuropeanId: "Verify with a European ID",
                 supportEuropean: "We support the following national ID's of Belgium, Denmark, Germany, Estonia,  Italy, Croatia, Lithuania, Latvia, Luxembourg, Malta, Portugal, Slovakia,  Spain, Czech Republic and Sweden.",
-                useEuropean: "Use a European ID",
+                useEuropean: "Select a European ID",
                 help: "If you can't use any of the these methods, please visit our <a href='https://eduid.nl/help' target='_blank' rel='noreferrer'>support pages</a>"
             },
             bank: {
