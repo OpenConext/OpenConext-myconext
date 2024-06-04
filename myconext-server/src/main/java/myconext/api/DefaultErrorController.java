@@ -65,7 +65,6 @@ public class DefaultErrorController implements ErrorController {
             ResponseStatus annotation = AnnotationUtils.getAnnotation(error.getClass(), ResponseStatus.class);
             statusCode = annotation != null ? annotation.value() : BAD_REQUEST;
         }
-        result.remove("message");
         result.put("status", statusCode.value());
         return ResponseEntity.status(statusCode).body(result);
     }

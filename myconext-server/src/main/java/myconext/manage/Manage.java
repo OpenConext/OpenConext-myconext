@@ -74,6 +74,7 @@ public interface Manage {
         String nameEn = metaDataFields.get("name:en");
         String nameNl = metaDataFields.get("name:nl");
         IdentityProvider identityProvider = new IdentityProvider(
+                entityId,
                 metaDataFields.get("coin:institution_brin"),
                 metaDataFields.get("coin:institution_guid"),
                 StringUtils.hasText(nameEn) ? nameEn : StringUtils.hasText(nameNl) ? nameNl : entityId,

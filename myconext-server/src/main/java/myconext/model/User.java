@@ -132,7 +132,25 @@ public class User implements Serializable, UserDetails {
         //Not likely and not desirable, but we don't interrupt the login flow for missing services
         ServiceProvider serviceProvider = manage.findServiceProviderByEntityId(entityId)
                 .orElse(new ServiceProvider(entityId, entityId, entityId, null, null, null));
+        return doComputeEduIDIfAbsent(serviceProvider, manage);
+    }
+
+    @Transient
+    public String computeEduIdForIdentityProviderProviderIfAbsent(IdentityProvider identityProvider, Manage manage) {
+        ServiceProvider serviceProvider = new ServiceProvider(
+                identityProvider.getEntityId(),
+                identityProvider.getDisplayNameEn(),
+                identityProvider.getDisplayNameNl(),
+                identityProvider.getLogoUrl(),
+                null,
+                identityProvider.getInstitutionGuid()
+        );
+        return doComputeEduIDIfAbsent(serviceProvider, manage);
+    }
+
+    private String doComputeEduIDIfAbsent(ServiceProvider serviceProvider, Manage manage) {
         String institutionGuid = serviceProvider.getInstitutionGuid();
+        String entityId = serviceProvider.getEntityId();
         //We need to be backward compatible, so we need to check both obsolete properties and the services
         Optional<EduID> optionalExistingEduID = this.eduIDS.stream()
                 .filter(eduID -> {

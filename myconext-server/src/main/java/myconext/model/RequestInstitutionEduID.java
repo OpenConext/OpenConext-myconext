@@ -1,5 +1,6 @@
 package myconext.model;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
@@ -12,8 +13,8 @@ import java.util.Date;
 import java.util.Map;
 
 @NoArgsConstructor
+@AllArgsConstructor
 @Getter
-@Document(collection = "request_institution_eduid")
 public class RequestInstitutionEduID implements Serializable {
 
     @Id

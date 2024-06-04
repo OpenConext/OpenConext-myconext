@@ -77,8 +77,6 @@ feature:
   warning_educational_email_domain: True
   # Show / hide the connections page in the mijn GUI
   connections: True
-  # Do we allow the account linking to take place with the accounting IdP, e.g. add extra button in IdP link screen
-  use_external_validation: True
   # Do we deny emails that are known Disposable Email Providers
   deny_disposable_email_providers: True
   # Do we allow for multiple linked (institutional) accounts? Not yet implemented
@@ -96,6 +94,8 @@ feature:
   requires_signed_authn_request: False
   # Do we support ID verify
   id_verify: True
+  # Do we support the remote creation API (e.g. for studielink)
+  remote_creation_api: True
 
 secure_cookie: false
 idp_entity_id: https://localhost.surf.id

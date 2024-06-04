@@ -13,6 +13,7 @@ import java.io.Serializable;
 @Setter
 public class IdentityProvider implements Serializable {
 
+    private String entityId;
     private String institutionBrin;
     private String institutionGuid;
     private String displayNameEn;
