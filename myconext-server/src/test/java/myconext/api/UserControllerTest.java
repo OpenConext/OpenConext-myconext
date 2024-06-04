@@ -57,7 +57,7 @@ public class UserControllerTest extends AbstractIntegrationTest {
         when()
                 .get("/myconext/api/idp/service/name/" + magicLinkResponse.authenticationRequestId)
                 .then()
-                .body("name", equalTo("https://manage.surfconext.nl/shibboleth"));
+                .body("name", equalTo("Bart TEst spd 6.00"));
 
         magicLinkResponse.response
                 .statusCode(HttpStatus.CREATED.value());
@@ -1005,6 +1005,13 @@ public class UserControllerTest extends AbstractIntegrationTest {
                 .filter(eduID -> eduID.getServices().stream().anyMatch(s -> s.getEntityId().equals("https://manage.surfconext.nl/shibboleth")))
                 .findFirst().get()
                 .getValue();
+        //Ensure the other eduID's have been migrated to the new multiple Services data model
+        assertEquals(3, user.getEduIDS().size());
+        user.getEduIDS().forEach(otherEduID -> {
+            assertNull(otherEduID.getServiceProviderEntityId());
+            assertEquals(1, otherEduID.getServices().size());
+            assertNotNull(otherEduID.getServices().get(0).getEntityId());
+        });
         assertTrue(saml.contains(eduId));
     }
 
@@ -1096,7 +1103,7 @@ public class UserControllerTest extends AbstractIntegrationTest {
         when()
                 .get("/myconext/api/idp/service/hash/" + samlAuthenticationRequest.getHash())
                 .then()
-                .body("name", equalTo("https://manage.surfconext.nl/shibboleth"));
+                .body("name", equalTo("Bart TEst spd 6.00"));
         Map<String, Object> userMap = when()
                 .get("/myconext/api/idp/me/" + samlAuthenticationRequest.getHash())
                 .as(new TypeRef<>() {
@@ -1105,7 +1112,7 @@ public class UserControllerTest extends AbstractIntegrationTest {
         when()
                 .get("/myconext/api/idp/service/id/" + samlAuthenticationRequest.getId())
                 .then()
-                .body("name", equalTo("https://manage.surfconext.nl/shibboleth"));
+                .body("name", equalTo("Bart TEst spd 6.00"));
 
     }
 

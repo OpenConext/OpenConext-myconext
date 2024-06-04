@@ -44,8 +44,9 @@ public class UserTest {
     public void computeEduIdForServiceProviderIfAbsentWithIdenticalInstitutionGuid() {
         User user = user("nope");
         //See static providers JSON in src/main/resources/manage
+        //"coin:institution_guid": "EC82B820-0A11-E511-80D0-005056956C1A",
         String eduId = user.computeEduIdForServiceProviderIfAbsent("www.spd633wts00.nl", manage);
-        String existingEduId = user.computeEduIdForServiceProviderIfAbsent("https://teams1.test3.surfconext.nl/shibboleth", manage);
+        String existingEduId = user.computeEduIdForServiceProviderIfAbsent("https://manage.surfconext.nl/shibboleth", manage);
         assertEquals(eduId, existingEduId);
     }
 

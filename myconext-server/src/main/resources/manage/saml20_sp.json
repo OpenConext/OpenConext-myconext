@@ -1375,7 +1375,7 @@
     "version": 1,
     "type": "saml20_sp",
     "data": {
-      "entityid": "https://teams1.test3.surfconext.nl/shibboleth",
+      "entityid": "https://manage.surfconext.nl/shibboleth",
       "state": "prodaccepted",
       "metaDataFields": {
         "name:en": "Bart TEst spd 6.00",

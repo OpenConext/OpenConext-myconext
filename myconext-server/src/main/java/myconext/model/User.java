@@ -146,13 +146,26 @@ public class User implements Serializable, UserDetails {
                     return matchByInstitutionGUID || matchByEntityId;
                 }).findFirst();
         //If there is an existing eduID then we add or update the service for this eduID, otherwise add new one
-        return optionalExistingEduID.map(
+        String eduIDValue = optionalExistingEduID.map(
                 eduId -> eduId.updateServiceProvider(serviceProvider).getValue()
         ).orElseGet(() -> {
             EduID eduID = new EduID(UUID.randomUUID().toString(), serviceProvider);
             this.eduIDS.add(eduID);
             return eduID.getValue();
         });
+        //Let's be proactive and migrate the other eduID as well
+        List<EduID> otherEduIDs = this.eduIDS.stream()
+                .filter(eduID -> !eduID.getValue().equals(eduIDValue))
+                //Only migrate old eduID's that have not been migrated already
+                .filter(eduID -> eduID.getServices().isEmpty() && eduID.getServiceProviderEntityId() != null)
+                .collect(Collectors.toList());
+        otherEduIDs.forEach(eduID -> {
+            String otherEntityId = eduID.getServiceProviderEntityId();
+            ServiceProvider serviceProviderFromManage = manage.findServiceProviderByEntityId(otherEntityId)
+                    .orElse(new ServiceProvider(otherEntityId, otherEntityId, otherEntityId, null, null, null));
+            eduID.updateServiceProvider(serviceProviderFromManage);
+        });
+        return eduIDValue;
     }
 
     @Override
