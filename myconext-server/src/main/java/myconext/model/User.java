@@ -5,8 +5,10 @@ import com.yubico.webauthn.data.ByteArray;
 import com.yubico.webauthn.data.PublicKeyCredentialDescriptor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import myconext.exceptions.WeakPasswordException;
 import myconext.manage.Manage;
+import myconext.remotecreation.StudieLinkEduID;
 import myconext.tiqr.SURFSecureID;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.Transient;
@@ -34,37 +36,54 @@ public class User implements Serializable, UserDetails {
     @Id
     private String id;
     //Do not index the email here, this is already done in MongoMapping with a custom strength (case-insensitive)
+    @Setter
     private String email;
+    @Setter
     private String chosenName;
+    @Setter
     private String givenName;
+    @Setter
     private String familyName;
+    @Setter
     private Date dateOfBirth;
     @Indexed
     private String uid;
     private String schacHomeOrganization;
     private String password;
+    @Setter
     private boolean newUser;
+    @Setter
     private String preferredLanguage;
+    @Setter
     private String webAuthnIdentifier;
+    @Setter
     private String userHandle;
+    @Setter
     private boolean forgottenPassword;
+    @Setter
     @Indexed
     private String enrollmentVerificationKey;
+    @Setter
     @Indexed
     private String createFromInstitutionKey;
     //Attributes and surfSecureId can't be final because of Jackson serialization (despite what your IDE tells tou)
     private Map<String, List<String>> attributes = new HashMap<>();
     private Map<String, Object> surfSecureId = new HashMap<>();
 
+    @Setter
     private List<PublicKeyCredentials> publicKeyCredentials = new ArrayList<>();
+    @Setter
     private List<LinkedAccount> linkedAccounts = new ArrayList<>();
     private List<ExternalLinkedAccount> externalLinkedAccounts = new ArrayList<>();
+    @Setter
     private List<EduID> eduIDS = new ArrayList<>();
 
     private long created;
     private long updatedAt = System.currentTimeMillis() / 1000L;
+    @Setter
     @Indexed
     private String trackingUuid;
+    @Setter
     private long lastSeenAppNudge;
 
     public User(CreateInstitutionEduID createInstitutionEduID, Map<String, Object> userInfo) {
@@ -75,7 +94,7 @@ public class User implements Serializable, UserDetails {
     }
 
     public User(String uid, String email, String chosenName, String givenName, String familyName, String schacHomeOrganization, String preferredLanguage,
-                String serviceProviderEntityId, Manage serviceProviderResolver) {
+                String serviceProviderEntityId, Manage manage) {
         this.uid = uid;
         this.email = email;
         this.chosenName = chosenName;
@@ -84,7 +103,23 @@ public class User implements Serializable, UserDetails {
         this.schacHomeOrganization = schacHomeOrganization;
         this.preferredLanguage = preferredLanguage;
 
-        this.computeEduIdForServiceProviderIfAbsent(serviceProviderEntityId, serviceProviderResolver);
+        this.computeEduIdForServiceProviderIfAbsent(serviceProviderEntityId, manage);
+        this.newUser = true;
+        this.created = System.currentTimeMillis() / 1000L;
+        this.updatedAt = created;
+    }
+
+    public User(String uid, String email, String chosenName, String givenName, String familyName, String schacHomeOrganization, String preferredLanguage,
+                IdentityProvider identityProvider, Manage manage) {
+        this.uid = uid;
+        this.email = email;
+        this.chosenName = chosenName;
+        this.givenName = givenName;
+        this.familyName = familyName;
+        this.schacHomeOrganization = schacHomeOrganization;
+        this.preferredLanguage = preferredLanguage;
+
+        this.computeEduIdForIdentityProviderProviderIfAbsent(identityProvider, manage);
         this.newUser = true;
         this.created = System.currentTimeMillis() / 1000L;
         this.updatedAt = created;
@@ -138,7 +173,7 @@ public class User implements Serializable, UserDetails {
     @Transient
     public String computeEduIdForIdentityProviderProviderIfAbsent(IdentityProvider identityProvider, Manage manage) {
         ServiceProvider serviceProvider = new ServiceProvider(
-                identityProvider.getEntityId(),
+                null, //We want to create an eduID based on the institutionGUID
                 identityProvider.getDisplayNameEn(),
                 identityProvider.getDisplayNameNl(),
                 identityProvider.getLogoUrl(),
@@ -158,9 +193,10 @@ public class User implements Serializable, UserDetails {
                     boolean matchByInstitutionGUID = StringUtils.hasText(institutionGuid) &&
                             (institutionGuid.equals(eduID.getServiceInstutionGuid()) ||
                                 eduID.getServices().stream().anyMatch(sp -> institutionGuid.equals(sp.getInstitutionGuid())));
-                    //Prevent nullPointers to compare with non-nullable entityId against nullable entityId of the SP
-                    boolean matchByEntityId = entityId.equals(eduID.getServiceProviderEntityId()) ||
-                            eduID.getServices().stream().anyMatch(sp -> entityId.equals(sp.getEntityId()));
+                    //Ensure we don't match entityId's that are both null
+                    boolean matchByEntityId = StringUtils.hasText(entityId) &&
+                            (entityId.equals(eduID.getServiceProviderEntityId()) ||
+                            eduID.getServices().stream().anyMatch(sp -> entityId.equals(sp.getEntityId())));
                     return matchByInstitutionGUID || matchByEntityId;
                 }).findFirst();
         //If there is an existing eduID then we add or update the service for this eduID, otherwise add new one
@@ -271,71 +307,4 @@ public class User implements Serializable, UserDetails {
         return uid + "@" + schacHomeOrganization;
     }
 
-    public void setNewUser(boolean newUser) {
-        this.newUser = newUser;
-    }
-
-    public void setChosenName(String chosenName) {
-        this.chosenName = chosenName;
-    }
-
-    public void setGivenName(String givenName) {
-        this.givenName = givenName;
-    }
-
-    public void setFamilyName(String familyName) {
-        this.familyName = familyName;
-    }
-
-    public void setDateOfBirth(Date dateOfBirth) {
-        this.dateOfBirth = dateOfBirth;
-    }
-
-    public void setPreferredLanguage(String preferredLanguage) {
-        this.preferredLanguage = preferredLanguage;
-    }
-
-    public void setWebAuthnIdentifier(String webAuthnIdentifier) {
-        this.webAuthnIdentifier = webAuthnIdentifier;
-    }
-
-    public void setUserHandle(String userHandle) {
-        this.userHandle = userHandle;
-    }
-
-    public void setLinkedAccounts(List<LinkedAccount> linkedAccounts) {
-        this.linkedAccounts = linkedAccounts;
-    }
-
-    public void setEduIDS(List<EduID> eduIDS) {
-        this.eduIDS = eduIDS;
-    }
-
-    public void setPublicKeyCredentials(List<PublicKeyCredentials> publicKeyCredentials) {
-        this.publicKeyCredentials = publicKeyCredentials;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public void setForgottenPassword(boolean forgottenPassword) {
-        this.forgottenPassword = forgottenPassword;
-    }
-
-    public void setTrackingUuid(String trackingUuid) {
-        this.trackingUuid = trackingUuid;
-    }
-
-    public void setLastSeenAppNudge(long lastSeenAppNudge) {
-        this.lastSeenAppNudge = lastSeenAppNudge;
-    }
-
-    public void setEnrollmentVerificationKey(String enrollmentVerificationKey) {
-        this.enrollmentVerificationKey = enrollmentVerificationKey;
-    }
-
-    public void setCreateFromInstitutionKey(String createFromInstitutionKey) {
-        this.createFromInstitutionKey = createFromInstitutionKey;
-    }
 }

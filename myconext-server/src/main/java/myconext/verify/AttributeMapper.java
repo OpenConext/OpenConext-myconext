@@ -5,6 +5,7 @@ import lombok.SneakyThrows;
 import myconext.model.ExternalLinkedAccount;
 import myconext.model.IdpScoping;
 import myconext.model.VerifyIssuer;
+import myconext.remotecreation.StudieLinkEduID;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
@@ -56,14 +57,20 @@ public class AttributeMapper {
                         verifyState.getIdpScoping(),
                         //VerifyIssuer issuer
                         verifyState.getVerifyIssuer(),
+                        //Verification
+                        null,
                         //String serviceUUID
                         getAttribute(attributes, "urn:nl:bvn:bankid:1.0:bankid.deliveredserviceid"),
                         //String serviceID
                         getAttribute(attributes, "urn:nl:bvn:bankid:1.0:bankid.deliveredserviceid"),
                         //String subjectIssuer
                         getAttribute(attributes, "subject_issuer"),
+                        //String brinCode
+                        null,
                         //String initials
                         getAttribute(attributes, "urn:nl:bvn:bankid:1.0:consumer.initials"),
+                        //String chosenName
+                        null,
                         //String firstName
                         getAttribute(attributes, "urn:nl:bvn:bankid:1.0:consumer.initials"),
                         //String preferredLastName
@@ -96,14 +103,20 @@ public class AttributeMapper {
                         verifyState.getIdpScoping(),
                         //VerifyIssuer issuer
                         verifyState.getVerifyIssuer(),
+                        //Verification
+                        null,
                         //String serviceUUID
                         getAttribute(attributes, "urn:etoegang:core:ServiceUUID"),
                         //String serviceID
                         getAttribute(attributes, "urn:etoegang:DV:00000003411824080000:services:9001"),
                         //String subjectIssuer
                         getAttribute(attributes, "subject_issuer"),
+                        //String brinCode
+                        null,
                         //String initials
                         getAttribute(attributes, "urn:etoegang:1.9:attribute:Initials"),
+                        //String chosenName
+                        null,
                         //String firstName
                         getAttribute(attributes, "urn:etoegang:1.9:attribute:FirstName"),
                         //String preferredLastName
@@ -130,6 +143,55 @@ public class AttributeMapper {
             }
         }
         throw new IllegalArgumentException();
+    }
+
+    public ExternalLinkedAccount externalLinkedAccountFromStudieLink(StudieLinkEduID eduID) {
+        return new ExternalLinkedAccount(
+                //String subjectId
+                eduID.getIdentifier(),
+                //IdpScoping idpScoping
+                IdpScoping.studielink,
+                //VerifyIssuer issuer
+                new VerifyIssuer(IdpScoping.studielink.name(), IdpScoping.studielink.name()),
+                //Verification
+                eduID.getVerification(),
+                //String serviceUUID
+                null,
+                //String serviceID
+                null,
+                //String subjectIssuer
+                IdpScoping.studielink.name(),
+                //String brinCode
+                eduID.getBrinCode(),
+                //String initials
+                null,
+                //String chosenName
+                eduID.getChosenName(),
+                //String firstName
+                eduID.getFirstName(),
+                //String preferredLastName
+                eduID.getLastName(),
+                //String legalLastName;
+                eduID.getLastName(),
+                //String partnerLastNamePrefix
+                null,
+                //String legalLastNamePrefix
+                eduID.getLastNamePrefix(),
+                //String preferredLastNamePrefix
+                eduID.getLastNamePrefix(),
+                //String partnerLastName
+                null,
+                //Date dateOfBirth
+                parseDate(eduID.getDateOfBirth()),
+                //Date createdAt
+                new Date(),
+                //Date expiresAt
+                Date.from(Instant.now().plus(DEFAULT_EXPIRATION_YEARS * 365, ChronoUnit.DAYS)),
+                //boolean external
+                true
+
+        );
+
     }
 
     @SneakyThrows
