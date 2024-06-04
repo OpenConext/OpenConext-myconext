@@ -7,18 +7,19 @@ import myconext.model.ServiceProvider;
 import org.junit.ClassRule;
 import org.junit.Test;
 
+import java.util.Optional;
+import java.util.Set;
+
 import static com.github.tomakehurst.wiremock.client.WireMock.*;
 import static myconext.AbstractIntegrationTest.readFile;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.*;
 
 public class RemoteManageTest {
 
     @ClassRule
     public static WireMockRule wireMockRule = new WireMockRule(8999);
 
-    private final Manage manage =
-            new RemoteManage("user", "secret", "http://localhost:8999");
+    private final Manage manage = new ManageConfiguration().manage("user", "secret", "http://localhost:8999", true, null);
 
     @Test
     public void findServiceProviderByEntityIdLocally() {
@@ -36,10 +37,40 @@ public class RemoteManageTest {
     }
 
     @Test
+    public void refresh() {
+        stubForTokens("oidc10_rp");
+        stubForTokens("saml20_sp");
+        stubForTokens("saml20_idp");
+
+        ((RemoteManage) this.manage).refresh();
+    }
+
+    @Test
+    public void refreshWithoutErrors() {
+        ((RemoteManage) this.manage).refresh();
+    }
+
+    @Test
+    public void getDomainNames() {
+        stubForTokens("saml20_idp");
+
+        Set<String> domainNames = manage.getDomainNames();
+        assertEquals(15, domainNames.size());
+    }
+
+    @Test
+    public void findIdentityProviderByDomainName() {
+        stubForTokens("saml20_idp");
+
+        Optional<IdentityProvider> optionalIdentityProvider = manage.findIdentityProviderByDomainName("sub7.aap.nl");
+        assertTrue(optionalIdentityProvider.isPresent());
+    }
+
+    @Test
     public void findIdentityProviderByBrinCode() {
         stubForTokens("saml20_idp");
 
-        IdentityProvider identityProvider = manage.findIdentityProviderByBrinCode("QW12").get();
+        IdentityProvider identityProvider = manage.findIdentityProviderByBrinCode("ST42").get();
 
         assertEquals("thkidp EN", identityProvider.getDisplayNameEn());
 
