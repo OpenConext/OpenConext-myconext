@@ -14,7 +14,7 @@ import java.io.Serializable;
 @AllArgsConstructor
 @Getter
 @Setter
-public class StudieLinkEduID implements Serializable {
+public class ExternalEduID implements Serializable {
 
     @NotNull
     private String email;

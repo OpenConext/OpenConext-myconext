@@ -131,36 +131,37 @@ public class RemoteCreationController {
             description = "Create an eduID",
             responses = {
                     @ApiResponse(responseCode = "201", description = "Created",
-                            content = {@Content(schema = @Schema(implementation = StudieLinkEduID.class))}),
+                            content = {@Content(schema = @Schema(implementation = ExternalEduID.class))}),
                     @ApiResponse(responseCode = "400", description = "BadRequest",
                             content = {@Content(schema = @Schema(implementation = StatusResponse.class),
                                     examples = {@ExampleObject(value = "{\"status\":400}")})}),
                     @ApiResponse(responseCode = "409", description = "Conflict - email already exists",
                             content = {@Content(schema = @Schema(implementation = StatusResponse.class),
                                     examples = {@ExampleObject(value = "{\"status\":409}")})})})
-    public ResponseEntity<StudieLinkEduID> createEduID(@Parameter(hidden = true) @AuthenticationPrincipal RemoteUser remoteUser,
-                                                       @RequestBody @Validated StudieLinkEduID studieLinkEduID) {
-        String email = studieLinkEduID.getEmail();
+    public ResponseEntity<ExternalEduID> createEduID(@Parameter(hidden = true) @AuthenticationPrincipal RemoteUser remoteUser,
+                                                     @RequestBody @Validated ExternalEduID externalEduID) {
+        String email = externalEduID.getEmail();
         LOG.debug(String.format("eduid-create by %s for %s", remoteUser.getUsername(), email));
 
         userRepository.findUserByEmail(email).ifPresent(u -> {
             throw new DuplicateUserEmailException();
         });
-        IdentityProvider identityProvider = new IdentityProvider(null, studieLinkEduID.getBrinCode(), remoteUser.getInstitutionGUID(),
-                IdpScoping.studielink.name(), IdpScoping.studielink.name(),
+        String apiUserName = remoteUser.getUsername();
+        IdentityProvider identityProvider = new IdentityProvider(null, externalEduID.getBrinCode(), remoteUser.getInstitutionGUID(),
+                apiUserName, apiUserName,
                 String.format("https://static.surfconext.nl/logos/org/%s.png", remoteUser.getInstitutionGUID()));
-        User user = new User(UUID.randomUUID().toString(), studieLinkEduID.getEmail(), studieLinkEduID.getChosenName(),
-                studieLinkEduID.getFirstName(), studieLinkEduID.getLastName(), remoteUser.getSchacHome(), LocaleContextHolder.getLocale().getLanguage(),
+        User user = new User(UUID.randomUUID().toString(), externalEduID.getEmail(), externalEduID.getChosenName(),
+                externalEduID.getFirstName(), externalEduID.getLastName(), remoteUser.getSchacHome(), LocaleContextHolder.getLocale().getLanguage(),
                 identityProvider, manage);
 
         String eduIDValue = user.getEduIDS().get(0).getValue();
-        studieLinkEduID.setEduIDValue(eduIDValue);
-        ExternalLinkedAccount externalLinkedAccount = attributeMapper.externalLinkedAccountFromStudieLink(studieLinkEduID);
+        externalEduID.setEduIDValue(eduIDValue);
+        ExternalLinkedAccount externalLinkedAccount = attributeMapper.createExternalLinkedAccount(externalEduID, IdpScoping.valueOf(apiUserName));
         user.getExternalLinkedAccounts().add(externalLinkedAccount);
 
         userRepository.save(user);
 
-        return ResponseEntity.ok(studieLinkEduID);
+        return ResponseEntity.ok(externalEduID);
     }
 
     @PutMapping(value = {"/eduid-update"})
@@ -169,30 +170,30 @@ public class RemoteCreationController {
             description = "Update an eduID",
             responses = {
                     @ApiResponse(responseCode = "201", description = "Created",
-                            content = {@Content(schema = @Schema(implementation = StudieLinkEduID.class))}),
+                            content = {@Content(schema = @Schema(implementation = ExternalEduID.class))}),
                     @ApiResponse(responseCode = "400", description = "BadRequest",
                             content = {@Content(schema = @Schema(implementation = StatusResponse.class),
                                     examples = {@ExampleObject(value = "{\"status\":400}")})})})
-    public ResponseEntity<StudieLinkEduID> updateEduID(@Parameter(hidden = true) @AuthenticationPrincipal RemoteUser remoteUser,
-                                                       @RequestBody @Validated StudieLinkEduID studieLinkEduID) {
-        LOG.debug(String.format("eduid-update by %s for %s", remoteUser.getUsername(), studieLinkEduID.getEmail()));
+    public ResponseEntity<ExternalEduID> updateEduID(@Parameter(hidden = true) @AuthenticationPrincipal RemoteUser remoteUser,
+                                                     @RequestBody @Validated ExternalEduID externalEduID) {
+        LOG.debug(String.format("eduid-update by %s for %s", remoteUser.getUsername(), externalEduID.getEmail()));
 
-        String eduIDValue = studieLinkEduID.getEduIDValue();
+        String eduIDValue = externalEduID.getEduIDValue();
         User user = userRepository.findByEduIDS_value(eduIDValue)
                 .orElseThrow(() -> new UserNotFoundException(String.format("User not found by eduID %s", eduIDValue)));
         //Not all attributes can be changed
-        user.setGivenName(studieLinkEduID.getFirstName());
-        user.setFamilyName(studieLinkEduID.getLastName());
+        user.setGivenName(externalEduID.getFirstName());
+        user.setFamilyName(externalEduID.getLastName());
         ExternalLinkedAccount externalLinkedAccount = user.getExternalLinkedAccounts().stream()
-                .filter(account -> IdpScoping.studielink.equals(account.getIdpScoping()))
+                .filter(account -> IdpScoping.valueOf(remoteUser.getUsername()).equals(account.getIdpScoping()))
                 .findAny()
                 .orElseThrow(() -> new ResourceGoneException(String.format("User %s has removed the studie link link", user.getEmail())));
         //Not all external attributes can be changed
-        externalLinkedAccount.setVerification(studieLinkEduID.getVerification());
-        externalLinkedAccount.setBrinCode(studieLinkEduID.getBrinCode());
+        externalLinkedAccount.setVerification(externalEduID.getVerification());
+        externalLinkedAccount.setBrinCode(externalEduID.getBrinCode());
 
         userRepository.save(user);
 
-        return ResponseEntity.ok(studieLinkEduID);
+        return ResponseEntity.ok(externalEduID);
     }
 }

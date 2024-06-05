@@ -133,7 +133,7 @@ class RemoteCreationControllerTest extends AbstractIntegrationTest {
 
     @Test
     void createEduIDHappyFlow() {
-        StudieLinkEduID studieLinkEduID = new StudieLinkEduID(
+        ExternalEduID externalEduID = new ExternalEduID(
                 "new@user.com",
                 null,
                 "Mary",
@@ -145,15 +145,15 @@ class RemoteCreationControllerTest extends AbstractIntegrationTest {
                 Verification.Decentraal,
                 null
         );
-        StudieLinkEduID studieLinkEduIdResult = given()
+        ExternalEduID externalEduIDResult = given()
                 .when()
                 .auth().preemptive().basic(userName, password)
                 .contentType(ContentType.JSON)
-                .body(studieLinkEduID)
+                .body(externalEduID)
                 .post("/api/remote-creation/eduid-create")
                 .as(new TypeRef<>() {
                 });
-        String eduIDValue = studieLinkEduIdResult.getEduIDValue();
+        String eduIDValue = externalEduIDResult.getEduIDValue();
         User user = userRepository.findByEduIDS_value(eduIDValue).get();
         EduID newEduID = user.getEduIDS().stream()
                 .filter(anEduID -> anEduID.getValue().equals(eduIDValue))
@@ -169,7 +169,7 @@ class RemoteCreationControllerTest extends AbstractIntegrationTest {
 
     @Test
     void createEduIDConflict() {
-        StudieLinkEduID studieLinkEduID = new StudieLinkEduID(
+        ExternalEduID externalEduID = new ExternalEduID(
                 email,
                 null,
                 "Mary",
@@ -185,7 +185,7 @@ class RemoteCreationControllerTest extends AbstractIntegrationTest {
                 .when()
                 .auth().preemptive().basic(userName, password)
                 .contentType(ContentType.JSON)
-                .body(studieLinkEduID)
+                .body(externalEduID)
                 .post("/api/remote-creation/eduid-create")
                 .then()
                 .statusCode(HttpStatus.CONFLICT.value());
@@ -193,7 +193,7 @@ class RemoteCreationControllerTest extends AbstractIntegrationTest {
 
     @Test
     void createEduIDBadRequest() {
-        StudieLinkEduID studieLinkEduID = new StudieLinkEduID(
+        ExternalEduID externalEduID = new ExternalEduID(
                 null,
                 null,
                 "Mary",
@@ -209,7 +209,7 @@ class RemoteCreationControllerTest extends AbstractIntegrationTest {
                 .when()
                 .auth().preemptive().basic(userName, password)
                 .contentType(ContentType.JSON)
-                .body(studieLinkEduID)
+                .body(externalEduID)
                 .post("/api/remote-creation/eduid-create")
                 .then()
                 .statusCode(HttpStatus.BAD_REQUEST.value());
@@ -217,7 +217,7 @@ class RemoteCreationControllerTest extends AbstractIntegrationTest {
 
     @Test
     void updateEduIDHappyFlow() {
-        StudieLinkEduID studieLinkEduID = new StudieLinkEduID(
+        ExternalEduID externalEduID = new ExternalEduID(
                 "new@user.com",
                 null,
                 "Mary",
@@ -229,33 +229,33 @@ class RemoteCreationControllerTest extends AbstractIntegrationTest {
                 Verification.Decentraal,
                 null
         );
-        StudieLinkEduID studieLinkEduIdResult = given()
+        ExternalEduID externaalEduIDResult = given()
                 .when()
                 .auth().preemptive().basic(userName, password)
                 .contentType(ContentType.JSON)
-                .body(studieLinkEduID)
+                .body(externalEduID)
                 .post("/api/remote-creation/eduid-create")
                 .as(new TypeRef<>() {
                 });
-        studieLinkEduIdResult.setBrinCode("QWER");
+        externaalEduIDResult.setBrinCode("QWER");
         given()
                 .when()
                 .auth().preemptive().basic(userName, password)
                 .contentType(ContentType.JSON)
-                .body(studieLinkEduIdResult)
+                .body(externaalEduIDResult)
                 .put("/api/remote-creation/eduid-update")
                 .as(new TypeRef<>() {
                 });
-        String eduIDValue = studieLinkEduIdResult.getEduIDValue();
+        String eduIDValue = externaalEduIDResult.getEduIDValue();
         User user = userRepository.findByEduIDS_value(eduIDValue).get();
 
         assertEquals(1, user.getExternalLinkedAccounts().size());
-        assertEquals(studieLinkEduIdResult.getBrinCode(), user.getExternalLinkedAccounts().get(0).getBrinCode());
+        assertEquals(externaalEduIDResult.getBrinCode(), user.getExternalLinkedAccounts().get(0).getBrinCode());
     }
 
     @Test
     void updateEduIDNotFound() {
-        StudieLinkEduID studieLinkEduID = new StudieLinkEduID(
+        ExternalEduID externalEduID = new ExternalEduID(
                 "new@user.com",
                 null,
                 "Mary",
@@ -267,20 +267,20 @@ class RemoteCreationControllerTest extends AbstractIntegrationTest {
                 Verification.Decentraal,
                 null
         );
-        StudieLinkEduID studieLinkEduIdResult = given()
+        ExternalEduID externalEduIDResult = given()
                 .when()
                 .auth().preemptive().basic(userName, password)
                 .contentType(ContentType.JSON)
-                .body(studieLinkEduID)
+                .body(externalEduID)
                 .post("/api/remote-creation/eduid-create")
                 .as(new TypeRef<>() {
                 });
-        studieLinkEduIdResult.setEduIDValue(UUID.randomUUID().toString());
+        externalEduIDResult.setEduIDValue(UUID.randomUUID().toString());
         given()
                 .when()
                 .auth().preemptive().basic(userName, password)
                 .contentType(ContentType.JSON)
-                .body(studieLinkEduIdResult)
+                .body(externalEduIDResult)
                 .put("/api/remote-creation/eduid-update")
                 .then()
                 .statusCode(HttpStatus.NOT_FOUND.value());
@@ -288,7 +288,7 @@ class RemoteCreationControllerTest extends AbstractIntegrationTest {
 
     @Test
     void updateEduIDExternalAccountGone() {
-        StudieLinkEduID studieLinkEduID = new StudieLinkEduID(
+        ExternalEduID externalEduID = new ExternalEduID(
                 "new@user.com",
                 null,
                 "Mary",
@@ -300,16 +300,16 @@ class RemoteCreationControllerTest extends AbstractIntegrationTest {
                 Verification.Decentraal,
                 null
         );
-        StudieLinkEduID studieLinkEduIdResult = given()
+        ExternalEduID externalEduIDResult = given()
                 .when()
                 .auth().preemptive().basic(userName, password)
                 .contentType(ContentType.JSON)
-                .body(studieLinkEduID)
+                .body(externalEduID)
                 .post("/api/remote-creation/eduid-create")
                 .as(new TypeRef<>() {
                 });
         //Now delete the externalAccount
-        String eduIDValue = studieLinkEduIdResult.getEduIDValue();
+        String eduIDValue = externalEduIDResult.getEduIDValue();
         User user = userRepository.findByEduIDS_value(eduIDValue).get();
         user.getExternalLinkedAccounts().clear();
         userRepository.save(user);
@@ -318,7 +318,7 @@ class RemoteCreationControllerTest extends AbstractIntegrationTest {
                 .when()
                 .auth().preemptive().basic(userName, password)
                 .contentType(ContentType.JSON)
-                .body(studieLinkEduIdResult)
+                .body(externalEduIDResult)
                 .put("/api/remote-creation/eduid-update")
                 .then()
                 .statusCode(HttpStatus.GONE.value());
