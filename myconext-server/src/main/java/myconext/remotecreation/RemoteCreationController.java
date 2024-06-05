@@ -67,7 +67,7 @@ public class RemoteCreationController implements HasUserRepository {
                     @ApiResponse(responseCode = "404", description = "Not found - email not found",
                             content = {@Content(schema = @Schema(implementation = StatusResponse.class),
                                     examples = {@ExampleObject(value = "{\"status\":404}")})})})
-    public ResponseEntity<StatusResponse> emailEduIDExists(@Parameter(hidden = true) @AuthenticationPrincipal RemoteUser remoteUser,
+    public ResponseEntity<StatusResponse> emailEduIDExists(@Parameter(hidden = true) @AuthenticationPrincipal(errorOnInvalidType = true) RemoteUser remoteUser,
                                                            @RequestParam(value = "email") String email) {
         LOG.debug(String.format("GET email-eduid-exists by %s for %s", remoteUser.getUsername(), email));
 
@@ -90,7 +90,7 @@ public class RemoteCreationController implements HasUserRepository {
                     @ApiResponse(responseCode = "404", description = "Not found - eduID not found",
                             content = {@Content(schema = @Schema(implementation = StatusResponse.class),
                                     examples = {@ExampleObject(value = "{\"status\":404}")})})})
-    public ResponseEntity<StatusResponse> remoteCreation(@Parameter(hidden = true) @AuthenticationPrincipal RemoteUser remoteUser,
+    public ResponseEntity<StatusResponse> remoteCreation(@Parameter(hidden = true) @AuthenticationPrincipal(errorOnInvalidType = true) RemoteUser remoteUser,
                                                          @RequestParam(value = "eduID") String eduID) {
         LOG.debug(String.format("GET eduid-exists by %s for %s", remoteUser.getUsername(), eduID));
         this.findUserByEduIDValue(eduID)
@@ -112,7 +112,7 @@ public class RemoteCreationController implements HasUserRepository {
                     @ApiResponse(responseCode = "404", description = "Not found - eduID or BRIN code not found",
                             content = {@Content(schema = @Schema(implementation = StatusResponse.class),
                                     examples = {@ExampleObject(value = "{\"status\":404}")})})})
-    public ResponseEntity<EduIDValue> eduIDForInstitution(@Parameter(hidden = true) @AuthenticationPrincipal RemoteUser remoteUser,
+    public ResponseEntity<EduIDValue> eduIDForInstitution(@Parameter(hidden = true) @AuthenticationPrincipal(errorOnInvalidType = true) RemoteUser remoteUser,
                                                           @RequestBody @Validated EduIDInstitutionPseudonym eduIDInstitutionPseudonym) {
         LOG.debug(String.format("eduid-institution-pseudonym by %s for %s", remoteUser.getUsername(), eduIDInstitutionPseudonym));
 
@@ -140,7 +140,7 @@ public class RemoteCreationController implements HasUserRepository {
                     @ApiResponse(responseCode = "409", description = "Conflict - email already exists",
                             content = {@Content(schema = @Schema(implementation = StatusResponse.class),
                                     examples = {@ExampleObject(value = "{\"status\":409}")})})})
-    public ResponseEntity<ExternalEduID> createEduID(@Parameter(hidden = true) @AuthenticationPrincipal RemoteUser remoteUser,
+    public ResponseEntity<ExternalEduID> createEduID(@Parameter(hidden = true) @AuthenticationPrincipal(errorOnInvalidType = true) RemoteUser remoteUser,
                                                      @RequestBody @Validated ExternalEduID externalEduID) {
         String email = externalEduID.getEmail();
         String apiUserName = remoteUser.getUsername();
@@ -179,12 +179,13 @@ public class RemoteCreationController implements HasUserRepository {
                     @ApiResponse(responseCode = "400", description = "BadRequest",
                             content = {@Content(schema = @Schema(implementation = StatusResponse.class),
                                     examples = {@ExampleObject(value = "{\"status\":400}")})})})
-    public ResponseEntity<ExternalEduID> updateEduID(@Parameter(hidden = true) @AuthenticationPrincipal RemoteUser remoteUser,
+    public ResponseEntity<ExternalEduID> updateEduID(@Parameter(hidden = true) @AuthenticationPrincipal(errorOnInvalidType = true) RemoteUser remoteUser,
                                                      @RequestBody @Validated ExternalEduID externalEduID) {
+        String remoteUserName = remoteUser.getUsername();
         String email = externalEduID.getEmail();
         String eduIDValue = externalEduID.getEduIDValue();
 
-        LOG.debug(String.format("PUT eduid-update by %s for %s or %s", remoteUser.getUsername(), email, eduIDValue));
+        LOG.debug(String.format("PUT eduid-update by %s for %s or %s", remoteUserName, email, eduIDValue));
 
         /*
          * Either there is an existing User for the eduIDValue in case the account was created earlier with the POST eduid-create,
@@ -199,7 +200,7 @@ public class RemoteCreationController implements HasUserRepository {
             user.setGivenName(externalEduID.getFirstName());
             user.setFamilyName(externalEduID.getLastName());
             ExternalLinkedAccount externalLinkedAccount = user.getExternalLinkedAccounts().stream()
-                    .filter(account -> IdpScoping.valueOf(remoteUser.getUsername()).equals(account.getIdpScoping()))
+                    .filter(account -> IdpScoping.valueOf(remoteUserName).equals(account.getIdpScoping()))
                     .findAny()
                     .orElseThrow(() -> new ResourceGoneException(String.format("User %s has removed the studie link link", user.getEmail())));
             //Not all external attributes can be changed
@@ -207,16 +208,15 @@ public class RemoteCreationController implements HasUserRepository {
             externalLinkedAccount.setBrinCode(externalEduID.getBrinCode());
         } else {
             //Ensure there is an external account for this remoteAPI user
-            String apiUserName = remoteUser.getUsername();
             IdentityProvider identityProvider = new IdentityProvider(null, externalEduID.getBrinCode(), remoteUser.getInstitutionGUID(),
-                    apiUserName, apiUserName,
+                    remoteUserName, remoteUserName,
                     String.format("https://static.surfconext.nl/logos/org/%s.png", remoteUser.getInstitutionGUID()));
             String provisionedEduIDValue = user.computeEduIdForIdentityProviderProviderIfAbsent(identityProvider, manage);
             externalEduID.setEduIDValue(provisionedEduIDValue);
             boolean externalLinkedAccountMissing = user.getExternalLinkedAccounts().stream()
-                    .noneMatch(account -> IdpScoping.valueOf(remoteUser.getUsername()).equals(account.getIdpScoping()));
+                    .noneMatch(account -> IdpScoping.valueOf(remoteUserName).equals(account.getIdpScoping()));
             if (externalLinkedAccountMissing) {
-                ExternalLinkedAccount externalLinkedAccount = attributeMapper.createExternalLinkedAccount(externalEduID, IdpScoping.valueOf(apiUserName));
+                ExternalLinkedAccount externalLinkedAccount = attributeMapper.createExternalLinkedAccount(externalEduID, IdpScoping.valueOf(remoteUserName));
                 user.getExternalLinkedAccounts().add(externalLinkedAccount);
             }
         }
