@@ -5,7 +5,7 @@ import lombok.SneakyThrows;
 import myconext.model.ExternalLinkedAccount;
 import myconext.model.IdpScoping;
 import myconext.model.VerifyIssuer;
-import myconext.remotecreation.StudieLinkEduID;
+import myconext.remotecreation.ExternalEduID;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
@@ -145,14 +145,14 @@ public class AttributeMapper {
         throw new IllegalArgumentException();
     }
 
-    public ExternalLinkedAccount externalLinkedAccountFromStudieLink(StudieLinkEduID eduID) {
+    public ExternalLinkedAccount createExternalLinkedAccount(ExternalEduID eduID, IdpScoping idpScoping) {
         return new ExternalLinkedAccount(
                 //String subjectId
                 eduID.getIdentifier(),
                 //IdpScoping idpScoping
-                IdpScoping.studielink,
+                idpScoping,
                 //VerifyIssuer issuer
-                new VerifyIssuer(IdpScoping.studielink.name(), IdpScoping.studielink.name()),
+                new VerifyIssuer(idpScoping.name(), idpScoping.name()),
                 //Verification
                 eduID.getVerification(),
                 //String serviceUUID

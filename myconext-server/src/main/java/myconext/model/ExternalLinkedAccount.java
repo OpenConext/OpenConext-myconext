@@ -56,7 +56,7 @@ public class ExternalLinkedAccount implements Serializable {
             case eherkenning:
                 return StringUtils.hasText(firstName) && StringUtils.hasText(preferredLastName);
             case studielink:
-                return StringUtils.hasText(firstName) && StringUtils.hasText(legalLastName) && !Verification.O.equals(verification);
+                return StringUtils.hasText(firstName) && StringUtils.hasText(legalLastName) && !Verification.Ongeverifieerd.equals(verification);
             default:
                 throw new IllegalArgumentException("Won't happen");
         }

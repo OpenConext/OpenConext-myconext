@@ -106,7 +106,7 @@ public class AttributeAggregatorControllerTest extends AbstractIntegrationTest {
 
     @Test
     public void manipulateNotFound() {
-        Map<String, Object> res = doManipulate("http://new-sp", "nope", "nope", null);
+        Map<String, Object> res = doManipulate("http://new-sp", "noppes", "noppes", null);
         assertEquals(0, res.size());
     }
 

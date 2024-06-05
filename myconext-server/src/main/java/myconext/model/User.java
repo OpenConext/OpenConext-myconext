@@ -8,7 +8,6 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import myconext.exceptions.WeakPasswordException;
 import myconext.manage.Manage;
-import myconext.remotecreation.StudieLinkEduID;
 import myconext.tiqr.SURFSecureID;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.Transient;

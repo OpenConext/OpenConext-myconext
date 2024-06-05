@@ -1,6 +1,8 @@
 package myconext.eduid;
 
 import io.swagger.v3.oas.annotations.Hidden;
+import lombok.Getter;
+import myconext.api.HasUserRepository;
 import myconext.exceptions.UserNotFoundException;
 import myconext.model.EduID;
 import myconext.model.User;
@@ -24,10 +26,10 @@ import java.util.stream.Collectors;
 @RestController
 @RequestMapping(value = "/myconext/api/eduid", produces = MediaType.APPLICATION_JSON_VALUE)
 @Hidden
-public class APIController {
+public class APIController implements HasUserRepository {
 
     private static final Log LOG = LogFactory.getLog(APIController.class);
-
+    @Getter
     private final UserRepository userRepository;
 
     public APIController(UserRepository userRepository) {
@@ -108,7 +110,8 @@ public class APIController {
         if (CollectionUtils.isEmpty(uids)) {
             String eduid = (String) authentication.getTokenAttributes().get("eduid");
             LOG.info("EPPN API call: finding user by eduid: " + eduid);
-            user = userRepository.findByEduIDS_value(eduid).orElseThrow(() -> new UserNotFoundException(eduid));
+            Optional<User> optionalUser = this.findUserByEduIDValue(eduid);
+            user =  optionalUser.orElseThrow(() -> new UserNotFoundException(eduid));
         } else {
             String uid = uids.get(0);
             LOG.info("EPPN API call: finding user by uid: " + uid);
