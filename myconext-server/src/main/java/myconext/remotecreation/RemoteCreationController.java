@@ -69,7 +69,7 @@ public class RemoteCreationController implements HasUserRepository {
                                     examples = {@ExampleObject(value = "{\"status\":404}")})})})
     public ResponseEntity<StatusResponse> emailEduIDExists(@Parameter(hidden = true) @AuthenticationPrincipal RemoteUser remoteUser,
                                                            @RequestParam(value = "email") String email) {
-        LOG.debug(String.format("email-eduid-exists by %s for %s", remoteUser.getUsername(), email));
+        LOG.debug(String.format("GET email-eduid-exists by %s for %s", remoteUser.getUsername(), email));
 
         userRepository.findUserByEmail(email)
                 .orElseThrow(() -> new UserNotFoundException(String.format("User not found by email %s", email)));
@@ -92,7 +92,7 @@ public class RemoteCreationController implements HasUserRepository {
                                     examples = {@ExampleObject(value = "{\"status\":404}")})})})
     public ResponseEntity<StatusResponse> remoteCreation(@Parameter(hidden = true) @AuthenticationPrincipal RemoteUser remoteUser,
                                                          @RequestParam(value = "eduID") String eduID) {
-        LOG.debug(String.format("eduid-exists by %s for %s", remoteUser.getUsername(), eduID));
+        LOG.debug(String.format("GET eduid-exists by %s for %s", remoteUser.getUsername(), eduID));
         this.findUserByEduIDValue(eduID)
                 .orElseThrow(() -> new UserNotFoundException(String.format("User not found by eduID %s", eduID)));
         return ResponseEntity.ok(new StatusResponse(HttpStatus.OK.value()));
@@ -143,14 +143,15 @@ public class RemoteCreationController implements HasUserRepository {
     public ResponseEntity<ExternalEduID> createEduID(@Parameter(hidden = true) @AuthenticationPrincipal RemoteUser remoteUser,
                                                      @RequestBody @Validated ExternalEduID externalEduID) {
         String email = externalEduID.getEmail();
-        LOG.debug(String.format("eduid-create by %s for %s", remoteUser.getUsername(), email));
+        String apiUserName = remoteUser.getUsername();
+
+        LOG.debug(String.format("POST eduid-create by %s for %s", apiUserName, email));
 
         externalEduID.validate();
 
         userRepository.findUserByEmail(email).ifPresent(u -> {
             throw new DuplicateUserEmailException();
         });
-        String apiUserName = remoteUser.getUsername();
         IdentityProvider identityProvider = new IdentityProvider(null, externalEduID.getBrinCode(), remoteUser.getInstitutionGUID(),
                 apiUserName, apiUserName,
                 String.format("https://static.surfconext.nl/logos/org/%s.png", remoteUser.getInstitutionGUID()));
@@ -183,7 +184,7 @@ public class RemoteCreationController implements HasUserRepository {
         String email = externalEduID.getEmail();
         String eduIDValue = externalEduID.getEduIDValue();
 
-        LOG.debug(String.format("eduid-update by %s for %s or %s", remoteUser.getUsername(), email, eduIDValue));
+        LOG.debug(String.format("PUT eduid-update by %s for %s or %s", remoteUser.getUsername(), email, eduIDValue));
 
         /*
          * Either there is an existing User for the eduIDValue in case the account was created earlier with the POST eduid-create,
