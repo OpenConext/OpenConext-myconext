@@ -82,7 +82,6 @@ public class AccountLinkerController implements UserAuthentication {
     private final String spFlowRedirectUri;
     private final String mobileFlowRedirectUri;
     private final String spCreateFromInstitutionRedirectUri;
-    private final RestTemplate restTemplate = new RestTemplate();
     private final AuthenticationRequestRepository authenticationRequestRepository;
     private final RequestInstitutionEduIDRepository requestInstitutionEduIDRepository;
     private final MobileLinkAccountRequestRepository mobileLinkAccountRequestRepository;
@@ -101,6 +100,7 @@ public class AccountLinkerController implements UserAuthentication {
     private final boolean createEduIDInstitutionEnabled;
 
     private final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder(4);
+    private final RestTemplate restTemplate = new RestTemplate();
     private final EmailGuessingPrevention emailGuessingPreventor;
     private final DisposableEmailProviders disposableEmailProviders;
     private final String verifySecret;
