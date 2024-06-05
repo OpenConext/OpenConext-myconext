@@ -3,10 +3,7 @@ package myconext.remotecreation;
 import io.restassured.common.mapper.TypeRef;
 import io.restassured.http.ContentType;
 import myconext.AbstractIntegrationTest;
-import myconext.model.EduID;
-import myconext.model.IdpScoping;
-import myconext.model.User;
-import myconext.model.Verification;
+import myconext.model.*;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 
@@ -86,6 +83,7 @@ class RemoteCreationControllerTest extends AbstractIntegrationTest {
                 .when()
                 .auth().preemptive().basic(userName, password)
                 .contentType(ContentType.JSON)
+                //See src/test/resources/users.json eduIDs#value
                 .body(new EduIDInstitutionPseudonym("ST42", "fc75dcc7-6def-4054-b8ba-3c3cc504dd4b"))
                 .post("/api/remote-creation/eduid-institution-pseudonym")
                 .as(new TypeRef<>() {
@@ -238,6 +236,7 @@ class RemoteCreationControllerTest extends AbstractIntegrationTest {
                 .as(new TypeRef<>() {
                 });
         externaalEduIDResult.setBrinCode("QWER");
+        externaalEduIDResult.setVerification(Verification.Geverifieerd);
         given()
                 .when()
                 .auth().preemptive().basic(userName, password)
@@ -250,7 +249,9 @@ class RemoteCreationControllerTest extends AbstractIntegrationTest {
         User user = userRepository.findByEduIDS_value(eduIDValue).get();
 
         assertEquals(1, user.getExternalLinkedAccounts().size());
-        assertEquals(externaalEduIDResult.getBrinCode(), user.getExternalLinkedAccounts().get(0).getBrinCode());
+        ExternalLinkedAccount externalLinkedAccount = user.getExternalLinkedAccounts().get(0);
+        assertEquals(externaalEduIDResult.getBrinCode(), externalLinkedAccount.getBrinCode());
+        assertEquals(Verification.Geverifieerd, externalLinkedAccount.getVerification());
     }
 
     @Test

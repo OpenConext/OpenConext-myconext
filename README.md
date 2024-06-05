@@ -117,7 +117,8 @@ http://localhost:8081/myconext/api/swagger-ui/index.html
 
 http://localhost:8081/myconext/api/api-docs
 
-https://login.test2.eduid.nl/myconext/swagger-ui/index.html
+https://login.test2.eduid.nl/myconext/api/swagger-ui/index.html
+
 
 https://login.test2.eduid.nl/myconext/api/api-docs
 
