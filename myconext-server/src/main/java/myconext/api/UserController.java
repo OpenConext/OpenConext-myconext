@@ -973,13 +973,17 @@ public class UserController implements UserAuthentication {
     }
 
     private Map<String, EduID> convertEduIdPerServiceProvider(User user) {
-        //We need to be backward compatible, but also deal with new many services refactor. Key of map may not be null
+        //We need to be BACKWARD compatible, but also deal with new many services refactor. Key of map may not be null
         Map<String, EduID> result = new HashMap<>();
         user.getEduIDS().forEach(eduID -> {
-            if (CollectionUtils.isEmpty(eduID.getServices())) {
+            if (CollectionUtils.isEmpty(eduID.getServices()) && StringUtils.hasText(eduID.getServiceProviderEntityId())) {
                 result.put(eduID.getServiceProviderEntityId(), eduID);
             } else {
-                eduID.getServices().forEach(service -> result.put(service.getEntityId(), eduID));
+                eduID.getServices().forEach(service -> {
+                    String entityId = service.getEntityId();
+                    String key = StringUtils.hasText(entityId) ? entityId : service.getInstitutionGuid();
+                    result.put(key, eduID);
+                });
             }
         });
         return result;

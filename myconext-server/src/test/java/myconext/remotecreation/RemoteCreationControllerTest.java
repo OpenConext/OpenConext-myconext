@@ -9,7 +9,6 @@ import org.springframework.http.HttpStatus;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -18,6 +17,7 @@ import static io.restassured.RestAssured.given;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 
+@SuppressWarnings("unchecked")
 class RemoteCreationControllerTest extends AbstractIntegrationTest {
 
     private final String email = "jdoe@example.com";
@@ -195,7 +195,6 @@ class RemoteCreationControllerTest extends AbstractIntegrationTest {
     }
 
     @Test
-    @SuppressWarnings("unchecked")
     void createEduIDBadRequest() {
         ExternalEduID externalEduID = new ExternalEduID(
                 null,
@@ -225,7 +224,6 @@ class RemoteCreationControllerTest extends AbstractIntegrationTest {
     }
 
     @Test
-    @SuppressWarnings("unchecked")
     void createEduIDValidationException() {
         ExternalEduID externalEduID = new ExternalEduID(
                 "new@eduid.com",
@@ -324,6 +322,18 @@ class RemoteCreationControllerTest extends AbstractIntegrationTest {
         ExternalLinkedAccount externalLinkedAccount = user.getExternalLinkedAccounts().get(0);
         assertEquals(externalLinkedAccount.getFirstName(), externalEduID.getFirstName());
         assertEquals(externalLinkedAccount.getIdpScoping(), IdpScoping.studielink);
+
+        //Now check if the /sp/me endpoint still works, because we have an eduID without an entityID (e.g. only institutionGUID)
+        Map<String, Object> me = given()
+                .when()
+                .accept(ContentType.JSON)
+                .get("/myconext/api/sp/me")
+                .as(new TypeRef<>() {
+                });
+        //See src/main/resources/application.yml#external-api-configuration
+        String institutionGUID = "ec9d6d75-0d11-e511-80d0-005056956c1a";
+        Map<String, Object> eduIDMap = ((Map<String, Map<String, Object>>) me.get("eduIdPerServiceProvider")).get(institutionGUID);
+        assertEquals(eduIDValue, eduIDMap.get("value"));
     }
 
     @Test
