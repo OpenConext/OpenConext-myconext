@@ -214,4 +214,116 @@ class RemoteCreationControllerTest extends AbstractIntegrationTest {
                 .then()
                 .statusCode(HttpStatus.BAD_REQUEST.value());
     }
+
+    @Test
+    void updateEduIDHappyFlow() {
+        StudieLinkEduID studieLinkEduID = new StudieLinkEduID(
+                "new@user.com",
+                null,
+                "Mary",
+                "Mary",
+                "von",
+                "Munich",
+                "19880327",
+                UUID.randomUUID().toString(),
+                Verification.Decentraal,
+                null
+        );
+        StudieLinkEduID studieLinkEduIdResult = given()
+                .when()
+                .auth().preemptive().basic(userName, password)
+                .contentType(ContentType.JSON)
+                .body(studieLinkEduID)
+                .post("/api/remote-creation/eduid-create")
+                .as(new TypeRef<>() {
+                });
+        studieLinkEduIdResult.setBrinCode("QWER");
+        given()
+                .when()
+                .auth().preemptive().basic(userName, password)
+                .contentType(ContentType.JSON)
+                .body(studieLinkEduIdResult)
+                .put("/api/remote-creation/eduid-update")
+                .as(new TypeRef<>() {
+                });
+        String eduIDValue = studieLinkEduIdResult.getEduIDValue();
+        User user = userRepository.findByEduIDS_value(eduIDValue).get();
+
+        assertEquals(1, user.getExternalLinkedAccounts().size());
+        assertEquals(studieLinkEduIdResult.getBrinCode(), user.getExternalLinkedAccounts().get(0).getBrinCode());
+    }
+
+    @Test
+    void updateEduIDNotFound() {
+        StudieLinkEduID studieLinkEduID = new StudieLinkEduID(
+                "new@user.com",
+                null,
+                "Mary",
+                "Mary",
+                "von",
+                "Munich",
+                "19880327",
+                UUID.randomUUID().toString(),
+                Verification.Decentraal,
+                null
+        );
+        StudieLinkEduID studieLinkEduIdResult = given()
+                .when()
+                .auth().preemptive().basic(userName, password)
+                .contentType(ContentType.JSON)
+                .body(studieLinkEduID)
+                .post("/api/remote-creation/eduid-create")
+                .as(new TypeRef<>() {
+                });
+        studieLinkEduIdResult.setEduIDValue(UUID.randomUUID().toString());
+        given()
+                .when()
+                .auth().preemptive().basic(userName, password)
+                .contentType(ContentType.JSON)
+                .body(studieLinkEduIdResult)
+                .put("/api/remote-creation/eduid-update")
+                .then()
+                .statusCode(HttpStatus.NOT_FOUND.value());
+    }
+
+    @Test
+    void updateEduIDExternalAccountGone() {
+        StudieLinkEduID studieLinkEduID = new StudieLinkEduID(
+                "new@user.com",
+                null,
+                "Mary",
+                "Mary",
+                "von",
+                "Munich",
+                "19880327",
+                UUID.randomUUID().toString(),
+                Verification.Decentraal,
+                null
+        );
+        StudieLinkEduID studieLinkEduIdResult = given()
+                .when()
+                .auth().preemptive().basic(userName, password)
+                .contentType(ContentType.JSON)
+                .body(studieLinkEduID)
+                .post("/api/remote-creation/eduid-create")
+                .as(new TypeRef<>() {
+                });
+        //Now delete the externalAccount
+        String eduIDValue = studieLinkEduIdResult.getEduIDValue();
+        User user = userRepository.findByEduIDS_value(eduIDValue).get();
+        user.getExternalLinkedAccounts().clear();
+        userRepository.save(user);
+
+        given()
+                .when()
+                .auth().preemptive().basic(userName, password)
+                .contentType(ContentType.JSON)
+                .body(studieLinkEduIdResult)
+                .put("/api/remote-creation/eduid-update")
+                .then()
+                .statusCode(HttpStatus.GONE.value());
+    }
+
+
+
 }
