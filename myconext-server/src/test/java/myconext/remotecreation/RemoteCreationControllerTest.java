@@ -4,7 +4,9 @@ import io.restassured.common.mapper.TypeRef;
 import io.restassured.http.ContentType;
 import myconext.AbstractIntegrationTest;
 import myconext.model.EduID;
+import myconext.model.IdpScoping;
 import myconext.model.User;
+import myconext.model.Verification;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 
@@ -127,5 +129,89 @@ class RemoteCreationControllerTest extends AbstractIntegrationTest {
                 .as(new TypeRef<>() {
                 });
         assertEquals(404, result.get("status"));
+    }
+
+    @Test
+    void createEduIDHappyFlow() {
+        StudieLinkEduID studieLinkEduID = new StudieLinkEduID(
+                "new@user.com",
+                null,
+                "Mary",
+                "Mary",
+                "von",
+                "Munich",
+                "19880327",
+                UUID.randomUUID().toString(),
+                Verification.Decentraal,
+                null
+        );
+        StudieLinkEduID studieLinkEduIdResult = given()
+                .when()
+                .auth().preemptive().basic(userName, password)
+                .contentType(ContentType.JSON)
+                .body(studieLinkEduID)
+                .post("/api/remote-creation/eduid-create")
+                .as(new TypeRef<>() {
+                });
+        String eduIDValue = studieLinkEduIdResult.getEduIDValue();
+        User user = userRepository.findByEduIDS_value(eduIDValue).get();
+        EduID newEduID = user.getEduIDS().stream()
+                .filter(anEduID -> anEduID.getValue().equals(eduIDValue))
+                .findFirst().get();
+        assertEquals(1, newEduID.getServices().size());
+        //See src/main/resources/application.yml#external-api-configuration
+        String institutionGUID = "ec9d6d75-0d11-e511-80d0-005056956c1a";
+        assertEquals(institutionGUID, newEduID.getServices().get(0).getInstitutionGuid());
+
+        assertEquals(1, user.getExternalLinkedAccounts().size());
+        assertEquals(IdpScoping.studielink, user.getExternalLinkedAccounts().get(0).getIdpScoping());
+    }
+
+    @Test
+    void createEduIDConflict() {
+        StudieLinkEduID studieLinkEduID = new StudieLinkEduID(
+                email,
+                null,
+                "Mary",
+                "Mary",
+                "von",
+                "Munich",
+                "19880327",
+                UUID.randomUUID().toString(),
+                Verification.Decentraal,
+                null
+        );
+        given()
+                .when()
+                .auth().preemptive().basic(userName, password)
+                .contentType(ContentType.JSON)
+                .body(studieLinkEduID)
+                .post("/api/remote-creation/eduid-create")
+                .then()
+                .statusCode(HttpStatus.CONFLICT.value());
+    }
+
+    @Test
+    void createEduIDBadRequest() {
+        StudieLinkEduID studieLinkEduID = new StudieLinkEduID(
+                null,
+                null,
+                "Mary",
+                "Mary",
+                "von",
+                "Munich",
+                "19880327",
+                UUID.randomUUID().toString(),
+                Verification.Decentraal,
+                null
+        );
+        given()
+                .when()
+                .auth().preemptive().basic(userName, password)
+                .contentType(ContentType.JSON)
+                .body(studieLinkEduID)
+                .post("/api/remote-creation/eduid-create")
+                .then()
+                .statusCode(HttpStatus.BAD_REQUEST.value());
     }
 }

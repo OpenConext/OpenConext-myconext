@@ -24,6 +24,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.UUID;
@@ -57,6 +58,9 @@ public class RemoteCreationController {
                     @ApiResponse(responseCode = "200", description = "Found",
                             content = {@Content(schema = @Schema(implementation = StatusResponse.class),
                                     examples = {@ExampleObject(value = "{\"status\":200}")})}),
+                    @ApiResponse(responseCode = "400", description = "BadRequest",
+                            content = {@Content(schema = @Schema(implementation = StatusResponse.class),
+                                    examples = {@ExampleObject(value = "{\"status\":400}")})}),
                     @ApiResponse(responseCode = "404", description = "Not found - email not found",
                             content = {@Content(schema = @Schema(implementation = StatusResponse.class),
                                     examples = {@ExampleObject(value = "{\"status\":404}")})})})
@@ -77,6 +81,9 @@ public class RemoteCreationController {
                     @ApiResponse(responseCode = "200", description = "Found",
                             content = {@Content(schema = @Schema(implementation = StatusResponse.class),
                                     examples = {@ExampleObject(value = "{\"status\":200}")})}),
+                    @ApiResponse(responseCode = "400", description = "BadRequest",
+                            content = {@Content(schema = @Schema(implementation = StatusResponse.class),
+                                    examples = {@ExampleObject(value = "{\"status\":400}")})}),
                     @ApiResponse(responseCode = "404", description = "Not found - eduID not found",
                             content = {@Content(schema = @Schema(implementation = StatusResponse.class),
                                     examples = {@ExampleObject(value = "{\"status\":404}")})})})
@@ -97,11 +104,14 @@ public class RemoteCreationController {
                     @ApiResponse(responseCode = "201", description = "Created",
                             content = {@Content(schema = @Schema(implementation = EduIDValue.class),
                                     examples = {@ExampleObject(value = "{\"value\":fc75dcc7-6def-4054-b8ba-3c3cc504dd4b}")})}),
+                    @ApiResponse(responseCode = "400", description = "BadRequest",
+                            content = {@Content(schema = @Schema(implementation = StatusResponse.class),
+                                    examples = {@ExampleObject(value = "{\"status\":400}")})}),
                     @ApiResponse(responseCode = "404", description = "Not found - eduID or BRIN code not found",
                             content = {@Content(schema = @Schema(implementation = StatusResponse.class),
                                     examples = {@ExampleObject(value = "{\"status\":404}")})})})
     public ResponseEntity<EduIDValue> eduIDForInstitution(@Parameter(hidden = true) @AuthenticationPrincipal RemoteUser remoteUser,
-                                                          @RequestBody EduIDInstitutionPseudonym eduIDInstitutionPseudonym) {
+                                                          @RequestBody @Validated EduIDInstitutionPseudonym eduIDInstitutionPseudonym) {
         LOG.debug(String.format("eduid-institution-pseudonym by %s for %s", remoteUser.getUsername(), eduIDInstitutionPseudonym));
 
         User user = userRepository.findByEduIDS_value(eduIDInstitutionPseudonym.getEduID())
@@ -129,7 +139,7 @@ public class RemoteCreationController {
                             content = {@Content(schema = @Schema(implementation = StatusResponse.class),
                                     examples = {@ExampleObject(value = "{\"status\":409}")})})})
     public ResponseEntity<StudieLinkEduID> createEduID(@Parameter(hidden = true) @AuthenticationPrincipal RemoteUser remoteUser,
-                                                       @RequestBody StudieLinkEduID studieLinkEduID) {
+                                                       @RequestBody @Validated StudieLinkEduID studieLinkEduID) {
         String email = studieLinkEduID.getEmail();
         LOG.debug(String.format("eduid-create by %s for %s", remoteUser.getUsername(), email));
 
@@ -153,7 +163,7 @@ public class RemoteCreationController {
         return ResponseEntity.ok(studieLinkEduID);
     }
 
-    @PostMapping(value = {"/eduid-update"})
+    @PutMapping(value = {"/eduid-update"})
     @PreAuthorize("hasRole('ROLE_remote-creation')")
     @Operation(summary = "Update an eduID",
             description = "Update an eduID",
@@ -164,7 +174,7 @@ public class RemoteCreationController {
                             content = {@Content(schema = @Schema(implementation = StatusResponse.class),
                                     examples = {@ExampleObject(value = "{\"status\":400}")})})})
     public ResponseEntity<StudieLinkEduID> updateEduID(@Parameter(hidden = true) @AuthenticationPrincipal RemoteUser remoteUser,
-                                                       @RequestBody StudieLinkEduID studieLinkEduID) {
+                                                       @RequestBody @Validated StudieLinkEduID studieLinkEduID) {
         LOG.debug(String.format("eduid-update by %s for %s", remoteUser.getUsername(), studieLinkEduID.getEmail()));
 
         String eduIDValue = studieLinkEduID.getEduIDValue();
