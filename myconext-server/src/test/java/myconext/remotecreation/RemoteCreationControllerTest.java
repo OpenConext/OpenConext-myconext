@@ -7,11 +7,16 @@ import myconext.model.*;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 
+import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static io.restassured.RestAssured.given;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 
 class RemoteCreationControllerTest extends AbstractIntegrationTest {
 
@@ -88,7 +93,7 @@ class RemoteCreationControllerTest extends AbstractIntegrationTest {
                 .post("/api/remote-creation/eduid-institution-pseudonym")
                 .as(new TypeRef<>() {
                 });
-        User user = userRepository.findByEduIDS_value(eduID.getValue()).get();
+        User user = this.findUserByEduIDValue(eduID.getValue()).get();
         //See src/main/resources/manage/saml20_idp.json read by MockManage
         String institutionGUID = "880c1c27-9f3b-4f95-8a21-6b4f4118322b";
         EduID newEduID = user.getEduIDS().stream()
@@ -152,7 +157,7 @@ class RemoteCreationControllerTest extends AbstractIntegrationTest {
                 .as(new TypeRef<>() {
                 });
         String eduIDValue = externalEduIDResult.getEduIDValue();
-        User user = userRepository.findByEduIDS_value(eduIDValue).get();
+        User user = this.findUserByEduIDValue(eduIDValue).get();
         EduID newEduID = user.getEduIDS().stream()
                 .filter(anEduID -> anEduID.getValue().equals(eduIDValue))
                 .findFirst().get();
@@ -190,31 +195,66 @@ class RemoteCreationControllerTest extends AbstractIntegrationTest {
     }
 
     @Test
+    @SuppressWarnings("unchecked")
     void createEduIDBadRequest() {
         ExternalEduID externalEduID = new ExternalEduID(
                 null,
                 null,
-                "Mary",
+                "",
                 "Mary",
                 "von",
-                "Munich",
+                "",
                 "19880327",
-                UUID.randomUUID().toString(),
-                Verification.Decentraal,
+                "",
+                null,
                 null
         );
-        given()
+        Map<String, Object> errorResult = given()
                 .when()
                 .auth().preemptive().basic(userName, password)
                 .contentType(ContentType.JSON)
                 .body(externalEduID)
                 .post("/api/remote-creation/eduid-create")
                 .then()
-                .statusCode(HttpStatus.BAD_REQUEST.value());
+                .statusCode(HttpStatus.BAD_REQUEST.value())
+                .extract()
+                .as(new TypeRef<>() {
+                });
+        assertEquals(Stream.of("chosenName", "email", "identifier", "lastName", "verification").sorted().collect(Collectors.toList()),
+                ((List<Map<String, Object>>) errorResult.get("errors")).stream().map(m -> m.get("field")).sorted().collect(Collectors.toList()));
     }
 
     @Test
-    void updateEduIDHappyFlow() {
+    @SuppressWarnings("unchecked")
+    void createEduIDValidationException() {
+        ExternalEduID externalEduID = new ExternalEduID(
+                "new@eduid.com",
+                null,
+                "Peter",
+                "",
+                null,
+                "Pip",
+                "",
+                UUID.randomUUID().toString(),
+                Verification.Geverifieerd,
+                null
+        );
+        Map<String, Object> errorResult = given()
+                .when()
+                .auth().preemptive().basic(userName, password)
+                .contentType(ContentType.JSON)
+                .body(externalEduID)
+                .post("/api/remote-creation/eduid-create")
+                .then()
+                .statusCode(HttpStatus.BAD_REQUEST.value())
+                .extract()
+                .as(new TypeRef<>() {
+                });
+        assertEquals("Required attributes 'dateOfBirth, firstName' missing for verification Geverifieerd", errorResult.get("message"));
+    }
+
+    @Test
+    void updateEduIDHappyFlowWithNewUser() {
         ExternalEduID externalEduID = new ExternalEduID(
                 "new@user.com",
                 null,
@@ -227,7 +267,7 @@ class RemoteCreationControllerTest extends AbstractIntegrationTest {
                 Verification.Decentraal,
                 null
         );
-        ExternalEduID externaalEduIDResult = given()
+        ExternalEduID externalEduIDResult = given()
                 .when()
                 .auth().preemptive().basic(userName, password)
                 .contentType(ContentType.JSON)
@@ -235,23 +275,55 @@ class RemoteCreationControllerTest extends AbstractIntegrationTest {
                 .post("/api/remote-creation/eduid-create")
                 .as(new TypeRef<>() {
                 });
-        externaalEduIDResult.setBrinCode("QWER");
-        externaalEduIDResult.setVerification(Verification.Geverifieerd);
+        externalEduIDResult.setBrinCode("QWER");
+        externalEduIDResult.setVerification(Verification.Geverifieerd);
         given()
                 .when()
                 .auth().preemptive().basic(userName, password)
                 .contentType(ContentType.JSON)
-                .body(externaalEduIDResult)
+                .body(externalEduIDResult)
                 .put("/api/remote-creation/eduid-update")
                 .as(new TypeRef<>() {
                 });
-        String eduIDValue = externaalEduIDResult.getEduIDValue();
-        User user = userRepository.findByEduIDS_value(eduIDValue).get();
+        String eduIDValue = externalEduIDResult.getEduIDValue();
+        User user = this.findUserByEduIDValue(eduIDValue).get();
 
         assertEquals(1, user.getExternalLinkedAccounts().size());
         ExternalLinkedAccount externalLinkedAccount = user.getExternalLinkedAccounts().get(0);
-        assertEquals(externaalEduIDResult.getBrinCode(), externalLinkedAccount.getBrinCode());
+        assertEquals(externalEduIDResult.getBrinCode(), externalLinkedAccount.getBrinCode());
         assertEquals(Verification.Geverifieerd, externalLinkedAccount.getVerification());
+    }
+
+    @Test
+    void updateEduIDHappyFlowWithExistingUser() {
+        ExternalEduID externalEduID = new ExternalEduID(
+                email,
+                null,
+                "Mary",
+                "Mary",
+                "von",
+                "Munich",
+                "19880327",
+                UUID.randomUUID().toString(),
+                Verification.Decentraal,
+                null
+        );
+        ExternalEduID updatedExternalEduID = given()
+                .when()
+                .auth().preemptive().basic(userName, password)
+                .contentType(ContentType.JSON)
+                .body(externalEduID)
+                .put("/api/remote-creation/eduid-update")
+                .as(new TypeRef<>() {
+                });
+        String eduIDValue = updatedExternalEduID.getEduIDValue();
+        User user =this.findUserByEduIDValue(eduIDValue).get();
+        assertEquals(email, user.getEmail());
+        assertEquals(1, user.getExternalLinkedAccounts().size());
+
+        ExternalLinkedAccount externalLinkedAccount = user.getExternalLinkedAccounts().get(0);
+        assertEquals(externalLinkedAccount.getFirstName(), externalEduID.getFirstName());
+        assertEquals(externalLinkedAccount.getIdpScoping(), IdpScoping.studielink);
     }
 
     @Test
@@ -277,6 +349,7 @@ class RemoteCreationControllerTest extends AbstractIntegrationTest {
                 .as(new TypeRef<>() {
                 });
         externalEduIDResult.setEduIDValue(UUID.randomUUID().toString());
+        externalEduIDResult.setEmail("not@existe.here");
         given()
                 .when()
                 .auth().preemptive().basic(userName, password)
@@ -311,7 +384,7 @@ class RemoteCreationControllerTest extends AbstractIntegrationTest {
                 });
         //Now delete the externalAccount
         String eduIDValue = externalEduIDResult.getEduIDValue();
-        User user = userRepository.findByEduIDS_value(eduIDValue).get();
+        User user = this.findUserByEduIDValue(eduIDValue).get();
         user.getExternalLinkedAccounts().clear();
         userRepository.save(user);
 
@@ -325,6 +398,49 @@ class RemoteCreationControllerTest extends AbstractIntegrationTest {
                 .statusCode(HttpStatus.GONE.value());
     }
 
+    @Test
+    void updateEduIDExternalAccountUpdateIdemPotent() {
+        ExternalEduID externalEduID = new ExternalEduID(
+                "new@user.com",
+                null,
+                "Mary",
+                "Mary",
+                "von",
+                "Munich",
+                "19880327",
+                UUID.randomUUID().toString(),
+                Verification.Decentraal,
+                null
+        );
+        ExternalEduID externalEduIDResult = given()
+                .when()
+                .auth().preemptive().basic(userName, password)
+                .contentType(ContentType.JSON)
+                .body(externalEduID)
+                .post("/api/remote-creation/eduid-create")
+                .as(new TypeRef<>() {
+                });
+        String eduIDValue = externalEduIDResult.getEduIDValue();
+        //Now remove the eduIDValue and verify no second external account is created
+        externalEduIDResult.setEduIDValue(null);
+        ExternalEduID updatedExternalEduIDResult =given()
+                .when()
+                .auth().preemptive().basic(userName, password)
+                .contentType(ContentType.JSON)
+                .body(externalEduIDResult)
+                .put("/api/remote-creation/eduid-update")
+                .as(new TypeRef<>() {
+                });
+        String newEduIDValue = updatedExternalEduIDResult.getEduIDValue();
+        assertEquals(eduIDValue, newEduIDValue);
 
+        User user = super.findUserByEduIDValue(newEduIDValue).get();
+        assertEquals(1, user.getExternalLinkedAccounts().size());
+    }
+
+    @Test
+    void findUserByEduIDValueWithNullCheck() {
+        assertFalse(super.findUserByEduIDValue(null).isPresent());
+    }
 
 }

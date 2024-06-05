@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
 @NoArgsConstructor
@@ -13,10 +14,12 @@ import javax.validation.constraints.NotNull;
 @Getter
 @ToString
 public class EduIDInstitutionPseudonym {
-    @NotNull
+
+    @NotBlank
     @Schema(description = "Must be pre-provisioned in Manage for a valid IdP")
     private String brinCode;
-    @NotNull
+
+    @NotBlank
     @Schema(description = "Previous assigned eduID scoped on external remote API user")
     private String eduID;
 }

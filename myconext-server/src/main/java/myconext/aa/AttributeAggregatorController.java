@@ -1,6 +1,8 @@
 package myconext.aa;
 
 import io.swagger.v3.oas.annotations.Hidden;
+import lombok.Getter;
+import myconext.api.HasUserRepository;
 import myconext.manage.Manage;
 import myconext.model.EduID;
 import myconext.model.User;
@@ -23,10 +25,11 @@ import java.util.stream.Collectors;
 @RestController
 @RequestMapping("/myconext/api")
 @Hidden
-public class AttributeAggregatorController {
+public class AttributeAggregatorController implements HasUserRepository {
 
     private static final Log LOG = LogFactory.getLog(AttributeAggregatorController.class);
 
+    @Getter
     private final UserRepository userRepository;
     private final Manage serviceProviderResolver;
     private final String schacHomeOrganization;
@@ -51,7 +54,7 @@ public class AttributeAggregatorController {
         if (this.schacHomeOrganization.equals(schacHome)) {
             String uid = eduPersonPrincipalName.substring(0, indexOfAt);
             userOptional = userRepository.findUserByUid(uid);
-        } else {
+        } else if (StringUtils.hasText(eduPersonPrincipalName)) {
             userOptional = userRepository
                     .findUserByLinkedAccounts_eduPersonPrincipalName(eduPersonPrincipalName);
         }
@@ -73,7 +76,7 @@ public class AttributeAggregatorController {
     public ResponseEntity<Map> manipulate(@RequestParam("sp_entity_id") String spEntityId,
                                           @RequestParam("eduid") String eduid,
                                           @RequestParam(value = "sp_institution_guid", required = false) String spInstitutionGuid) {
-        Optional<User> userOptional = userRepository.findByEduIDS_value(eduid);
+        Optional<User> userOptional = this.findUserByEduIDValue(eduid);
         if (!userOptional.isPresent()) {
             LOG.warn(String.format("Attribute manipulation request for %s with an eduID %s that is not present", spEntityId, eduid));
             return ResponseEntity.ok(new HashMap<>());

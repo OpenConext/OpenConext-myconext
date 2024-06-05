@@ -9,6 +9,8 @@ import io.restassured.filter.Filter;
 import io.restassured.http.Cookie;
 import io.restassured.response.Response;
 import io.restassured.specification.RequestSpecification;
+import lombok.Getter;
+import myconext.api.HasUserRepository;
 import myconext.api.MagicLinkResponse;
 import myconext.manage.Manage;
 import myconext.manage.MockManage;
@@ -87,7 +89,7 @@ import static org.junit.Assert.assertTrue;
         })
 @ActiveProfiles({"test"})
 @SuppressWarnings("unchecked")
-public abstract class AbstractIntegrationTest {
+public abstract class AbstractIntegrationTest implements HasUserRepository {
 
     protected static final Manage manage = new MockManage(new ObjectMapper());
 
@@ -102,6 +104,7 @@ public abstract class AbstractIntegrationTest {
     protected ObjectMapper objectMapper;
 
     @Autowired
+    @Getter
     protected UserRepository userRepository;
 
     @Autowired
