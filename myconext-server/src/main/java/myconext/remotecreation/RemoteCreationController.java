@@ -197,6 +197,7 @@ public class RemoteCreationController implements HasUserRepository {
         user.getExternalLinkedAccounts().add(externalLinkedAccount);
 
         userRepository.save(user);
+        mailBox.sendAccountConfirmation(user);
 
         return ResponseEntity.ok(externalEduID);
     }
