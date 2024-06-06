@@ -7,6 +7,9 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.env.Environment;
+import org.springframework.core.env.Profiles;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
@@ -22,6 +25,7 @@ public class DisposableEmailProviders {
     private static final Log LOG = LogFactory.getLog(DisposableEmailProviders.class);
 
     private final ObjectMapper objectMapper;
+    private final boolean testEnvironment;
     private Set<String> disposableEmailProviders = new HashSet<>();
     private final boolean denyDisposableEmailProviders;
     private final TypeReference<Map<String, Object>> mapTypeReference = new TypeReference<>() {
@@ -29,8 +33,10 @@ public class DisposableEmailProviders {
 
     @Autowired
     public DisposableEmailProviders(ObjectMapper objectMapper,
+                                    Environment environment,
                                     @Value("${feature.deny_disposable_email_providers}") boolean denyDisposableEmailProviders) {
         this.objectMapper = objectMapper;
+        this.testEnvironment = environment.acceptsProfiles(Profiles.of("test"));
         this.denyDisposableEmailProviders = denyDisposableEmailProviders;
     }
 
@@ -43,11 +49,15 @@ public class DisposableEmailProviders {
         }
         long start = System.currentTimeMillis();
         try {
-            String location = "https://raw.githubusercontent.com/7c/fakefilter/main/json/data.json";
-            Map<String, Object> emailProviders = objectMapper.readValue(new URL(location), mapTypeReference);
+            String remoteLocation = "https://raw.githubusercontent.com/7c/fakefilter/main/json/data.json";
+            String localLocation = "email/fake_filter.json";
+            Map<String, Object> emailProviders = this.testEnvironment ?
+                    objectMapper.readValue(new ClassPathResource(localLocation).getInputStream(), mapTypeReference) :
+                    objectMapper.readValue(new URL(remoteLocation), mapTypeReference);
+
             disposableEmailProviders = ((Map<String, Object>) emailProviders.get("domains")).keySet();
             LOG.info(String.format("Resolved %s disposable email providers %s in %s ms",
-                    disposableEmailProviders.size(), location, System.currentTimeMillis() - start));
+                    disposableEmailProviders.size(), this.testEnvironment ? localLocation : remoteLocation, System.currentTimeMillis() - start));
         } catch (Exception e) {
             LOG.error("Error in resolveIDisposableEmailProviders", e);
         }

@@ -37,7 +37,7 @@ public class DefaultErrorControllerTest {
     public void errorAnnotated() throws URISyntaxException {
         MockHttpServletRequest request = new MockHttpServletRequest();
         request.setAttribute("org.springframework.boot.web.servlet.error.DefaultErrorAttributes.ERROR",
-                new DuplicateUserEmailException());
+            new  DuplicateUserEmailException("There already exists a user with email test@test.com");
 
         ResponseEntity responseEntity = subject.error(request);
         assertEquals(HttpStatus.CONFLICT, responseEntity.getStatusCode());

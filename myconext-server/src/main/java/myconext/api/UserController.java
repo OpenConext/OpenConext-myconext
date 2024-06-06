@@ -437,7 +437,7 @@ public class UserController implements UserAuthentication {
         String newEmail = updateEmailRequest.getEmail();
         Optional<User> optionalUser = userRepository.findUserByEmail(emailGuessingPreventor.sanitizeEmail(newEmail));
         if (optionalUser.isPresent()) {
-            throw new DuplicateUserEmailException();
+            throw new DuplicateUserEmailException("There already exists a user with email " + newEmail;
         }
 
         changeEmailHashRepository.save(new ChangeEmailHash(user, newEmail, hashValue));

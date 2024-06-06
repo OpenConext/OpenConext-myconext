@@ -275,7 +275,7 @@ public class AccountLinkerController implements UserAuthentication {
         Optional<User> userByEmail = userRepository.findUserByEmail(email);
         boolean newUser = createInstitutionEduID.isNewUser();
         if (newUser && userByEmail.isPresent()) {
-            throw new DuplicateUserEmailException();
+            throw new DuplicateUserEmailException("There already exists a user with email " + email);
         }
         if (!newUser && userByEmail.isEmpty()) {
             throw new UserNotFoundException("User not found: " + email);

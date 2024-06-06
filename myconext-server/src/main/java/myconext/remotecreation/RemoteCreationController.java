@@ -10,6 +10,7 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.Getter;
 import myconext.api.HasUserRepository;
 import myconext.exceptions.DuplicateUserEmailException;
+import myconext.exceptions.IdentityProviderNotFoundException;
 import myconext.exceptions.ResourceGoneException;
 import myconext.exceptions.UserNotFoundException;
 import myconext.manage.Manage;
@@ -140,7 +141,7 @@ public class RemoteCreationController implements HasUserRepository {
         User user = this.findUserByEduIDValue(eduIDInstitutionPseudonym.getEduID())
                 .orElseThrow(() -> new UserNotFoundException(String.format("User with eduID %s not found", eduIDInstitutionPseudonym.getEduID())));
         IdentityProvider identityProvider = manage.findIdentityProviderByBrinCode(eduIDInstitutionPseudonym.getBrinCode())
-                .orElseThrow(() -> new UserNotFoundException(String.format("IdentityProvider with BRIN code %s not found", eduIDInstitutionPseudonym.getBrinCode())));
+                .orElseThrow(() -> new IdentityProviderNotFoundException(String.format("IdentityProvider with BRIN code %s not found", eduIDInstitutionPseudonym.getBrinCode())));
 
         String eduIDValue = user.computeEduIdForIdentityProviderProviderIfAbsent(identityProvider, manage);
         userRepository.save(user);
@@ -178,7 +179,7 @@ public class RemoteCreationController implements HasUserRepository {
         externalEduID.validate();
 
         userRepository.findUserByEmail(email).ifPresent(u -> {
-            throw new DuplicateUserEmailException();
+            throw new DuplicateUserEmailException("There already exists a user with email " + email);
         });
         IdentityProvider identityProvider = new IdentityProvider(null, externalEduID.getBrinCode(), remoteUser.getInstitutionGUID(),
                 apiUserName, apiUserName,
