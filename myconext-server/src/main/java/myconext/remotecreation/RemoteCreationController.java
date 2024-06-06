@@ -66,10 +66,17 @@ public class RemoteCreationController implements HasUserRepository {
                                     examples = {@ExampleObject(value = "{\"status\":400}")})}),
                     @ApiResponse(responseCode = "404", description = "Not found - email not found",
                             content = {@Content(schema = @Schema(implementation = StatusResponse.class),
-                                    examples = {@ExampleObject(value = "{\"status\":404}")})})})
+                                    examples = {@ExampleObject(value = "{\n" +
+                                            "  \"timestamp\": 1717671062532,\n" +
+                                            "  \"status\": 404,\n" +
+                                            "  \"error\": \"Not Found\",\n" +
+                                            "  \"exception\": \"myconext.exceptions.UserNotFoundException\",\n" +
+                                            "  \"message\": \"User not found by email unknown@example.com\",\n" +
+                                            "  \"path\": \"/api/remote-creation/email-eduid-exists\"\n" +
+                                            "}")})})})
     public ResponseEntity<StatusResponse> emailEduIDExists(@Parameter(hidden = true) @AuthenticationPrincipal(errorOnInvalidType = true) RemoteUser remoteUser,
                                                            @RequestParam(value = "email") String email) {
-        LOG.debug(String.format("GET email-eduid-exists by %s for %s", remoteUser.getUsername(), email));
+        LOG.info(String.format("GET email-eduid-exists by %s for %s", remoteUser.getUsername(), email));
 
         userRepository.findUserByEmail(email)
                 .orElseThrow(() -> new UserNotFoundException(String.format("User not found by email %s", email)));
@@ -79,7 +86,7 @@ public class RemoteCreationController implements HasUserRepository {
     @GetMapping(value = {"/eduid-exists"})
     @PreAuthorize("hasRole('ROLE_remote-creation')")
     @Operation(summary = "Does an eduID exists",
-            description = "Does an eduID exists with the eduID value",
+            description = "Does an eduID account exists with the eduID identifier",
             responses = {
                     @ApiResponse(responseCode = "200", description = "Found",
                             content = {@Content(schema = @Schema(implementation = StatusResponse.class),
@@ -89,10 +96,17 @@ public class RemoteCreationController implements HasUserRepository {
                                     examples = {@ExampleObject(value = "{\"status\":400}")})}),
                     @ApiResponse(responseCode = "404", description = "Not found - eduID not found",
                             content = {@Content(schema = @Schema(implementation = StatusResponse.class),
-                                    examples = {@ExampleObject(value = "{\"status\":404}")})})})
+                                    examples = {@ExampleObject(value = "{\n" +
+                                            "  \"timestamp\": 1717671189426,\n" +
+                                            "  \"status\": 404,\n" +
+                                            "  \"error\": \"Not Found\",\n" +
+                                            "  \"exception\": \"myconext.exceptions.UserNotFoundException\",\n" +
+                                            "  \"message\": \"User not found by eduID 12345\",\n" +
+                                            "  \"path\": \"/api/remote-creation/eduid-exists\"\n" +
+                                            "}")})})})
     public ResponseEntity<StatusResponse> remoteCreation(@Parameter(hidden = true) @AuthenticationPrincipal(errorOnInvalidType = true) RemoteUser remoteUser,
                                                          @RequestParam(value = "eduID") String eduID) {
-        LOG.debug(String.format("GET eduid-exists by %s for %s", remoteUser.getUsername(), eduID));
+        LOG.info(String.format("GET eduid-exists by %s for %s", remoteUser.getUsername(), eduID));
         this.findUserByEduIDValue(eduID)
                 .orElseThrow(() -> new UserNotFoundException(String.format("User not found by eduID %s", eduID)));
         return ResponseEntity.ok(new StatusResponse(HttpStatus.OK.value()));
@@ -111,10 +125,17 @@ public class RemoteCreationController implements HasUserRepository {
                                     examples = {@ExampleObject(value = "{\"status\":400}")})}),
                     @ApiResponse(responseCode = "404", description = "Not found - eduID or BRIN code not found",
                             content = {@Content(schema = @Schema(implementation = StatusResponse.class),
-                                    examples = {@ExampleObject(value = "{\"status\":404}")})})})
+                                    examples = {@ExampleObject(value = "{\n" +
+                                            "  \"timestamp\": 1717671525908,\n" +
+                                            "  \"status\": 404,\n" +
+                                            "  \"error\": \"Not Found\",\n" +
+                                            "  \"exception\": \"myconext.exceptions.UserNotFoundException\",\n" +
+                                            "  \"message\": \"IdentityProvider with BRIN code AB!@ not found\",\n" +
+                                            "  \"path\": \"/api/remote-creation/eduid-institution-pseudonym\"\n" +
+                                            "}")})})})
     public ResponseEntity<EduIDValue> eduIDForInstitution(@Parameter(hidden = true) @AuthenticationPrincipal(errorOnInvalidType = true) RemoteUser remoteUser,
                                                           @RequestBody @Validated EduIDInstitutionPseudonym eduIDInstitutionPseudonym) {
-        LOG.debug(String.format("eduid-institution-pseudonym by %s for %s", remoteUser.getUsername(), eduIDInstitutionPseudonym));
+        LOG.info(String.format("eduid-institution-pseudonym by %s for %s", remoteUser.getUsername(), eduIDInstitutionPseudonym));
 
         User user = this.findUserByEduIDValue(eduIDInstitutionPseudonym.getEduID())
                 .orElseThrow(() -> new UserNotFoundException(String.format("User with eduID %s not found", eduIDInstitutionPseudonym.getEduID())));
@@ -139,13 +160,20 @@ public class RemoteCreationController implements HasUserRepository {
                                     examples = {@ExampleObject(value = "{\"status\":400}")})}),
                     @ApiResponse(responseCode = "409", description = "Conflict - email already exists",
                             content = {@Content(schema = @Schema(implementation = StatusResponse.class),
-                                    examples = {@ExampleObject(value = "{\"status\":409}")})})})
+                                    examples = {@ExampleObject(value = "{\n" +
+                                            "  \"timestamp\": 1717672263253,\n" +
+                                            "  \"status\": 409,\n" +
+                                            "  \"error\": \"Conflict\",\n" +
+                                            "  \"exception\": \"myconext.exceptions.DuplicateUserEmailException\",\n" +
+                                            "  \"message\": \"Email already in use\",\n" +
+                                            "  \"path\": \"/api/remote-creation/eduid-create\"\n" +
+                                            "}")})})})
     public ResponseEntity<ExternalEduID> createEduID(@Parameter(hidden = true) @AuthenticationPrincipal(errorOnInvalidType = true) RemoteUser remoteUser,
                                                      @RequestBody @Validated ExternalEduID externalEduID) {
         String email = externalEduID.getEmail();
         String apiUserName = remoteUser.getUsername();
 
-        LOG.debug(String.format("POST eduid-create by %s for %s", apiUserName, email));
+        LOG.info(String.format("POST eduid-create by %s for %s", apiUserName, email));
 
         externalEduID.validate();
 
@@ -178,14 +206,24 @@ public class RemoteCreationController implements HasUserRepository {
                             content = {@Content(schema = @Schema(implementation = ExternalEduID.class))}),
                     @ApiResponse(responseCode = "400", description = "BadRequest",
                             content = {@Content(schema = @Schema(implementation = StatusResponse.class),
-                                    examples = {@ExampleObject(value = "{\"status\":400}")})})})
+                                    examples = {@ExampleObject(value = "{\"status\":400}")})}),
+                    @ApiResponse(responseCode = "409", description = "Conflict - email already exists",
+                            content = {@Content(schema = @Schema(implementation = StatusResponse.class),
+                                    examples = {@ExampleObject(value = "{\n" +
+                                            "  \"timestamp\": 1717672653898,\n" +
+                                            "  \"status\": 404,\n" +
+                                            "  \"error\": \"Not Found\",\n" +
+                                            "  \"exception\": \"myconext.exceptions.UserNotFoundException\",\n" +
+                                            "  \"message\": \"User not found by eduID 12345 or email unknown@example.com\",\n" +
+                                            "  \"path\": \"/api/remote-creation/eduid-update\"\n" +
+                                            "}")})})})
     public ResponseEntity<ExternalEduID> updateEduID(@Parameter(hidden = true) @AuthenticationPrincipal(errorOnInvalidType = true) RemoteUser remoteUser,
                                                      @RequestBody @Validated ExternalEduID externalEduID) {
         String remoteUserName = remoteUser.getUsername();
         String email = externalEduID.getEmail();
         String eduIDValue = externalEduID.getEduIDValue();
 
-        LOG.debug(String.format("PUT eduid-update by %s for %s or %s", remoteUserName, email, eduIDValue));
+        LOG.info(String.format("PUT eduid-update by %s for %s or %s", remoteUserName, email, eduIDValue));
 
         /*
          * Either there is an existing User for the eduIDValue in case the account was created earlier with the POST eduid-create,
