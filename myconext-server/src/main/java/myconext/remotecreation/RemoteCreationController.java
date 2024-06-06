@@ -13,6 +13,7 @@ import myconext.exceptions.DuplicateUserEmailException;
 import myconext.exceptions.IdentityProviderNotFoundException;
 import myconext.exceptions.ResourceGoneException;
 import myconext.exceptions.UserNotFoundException;
+import myconext.mail.MailBox;
 import myconext.manage.Manage;
 import myconext.model.*;
 import myconext.repository.UserRepository;
@@ -46,11 +47,13 @@ public class RemoteCreationController implements HasUserRepository {
     @Getter
     private final UserRepository userRepository;
     private final Manage manage;
+    private final MailBox mailBox;
     private final AttributeMapper attributeMapper;
 
-    public RemoteCreationController(UserRepository userRepository, Manage manage, AttributeMapper attributeMapper) {
+    public RemoteCreationController(UserRepository userRepository, Manage manage, MailBox mailBox, AttributeMapper attributeMapper) {
         this.userRepository = userRepository;
         this.manage = manage;
+        this.mailBox = mailBox;
         this.attributeMapper = attributeMapper;
     }
 
