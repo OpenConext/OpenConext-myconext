@@ -94,7 +94,7 @@ public class AccountLinkerController implements UserAuthentication {
     private final String basePath;
     private final long removalValidatedDurationDays;
     private final String myConextSpEntityId;
-    private final Manage serviceProviderResolver;
+    private final Manage manage;
     private final String mijnEduIDEntityId;
     private final String schacHomeOrganization;
     private final boolean createEduIDInstitutionEnabled;
@@ -121,7 +121,7 @@ public class AccountLinkerController implements UserAuthentication {
             MobileLinkAccountRequestRepository mobileLinkAccountRequestRepository,
             MailBox mailBox,
             AttributeMapper attributeMapper,
-            Manage serviceProviderResolver,
+            Manage manage,
             DisposableEmailProviders disposableEmailProviders,
             @Value("${mijn_eduid_entity_id}") String mijnEduIDEntityId,
             @Value("${schac_home_organization}") String schacHomeOrganization,
@@ -154,7 +154,7 @@ public class AccountLinkerController implements UserAuthentication {
         this.mobileLinkAccountRequestRepository = mobileLinkAccountRequestRepository;
         this.mailBox = mailBox;
         this.attributeMapper = attributeMapper;
-        this.serviceProviderResolver = serviceProviderResolver;
+        this.manage = manage;
         this.disposableEmailProviders = disposableEmailProviders;
         this.schacHomeOrganization = schacHomeOrganization;
         this.mijnEduIDEntityId = mijnEduIDEntityId;
@@ -347,7 +347,7 @@ public class AccountLinkerController implements UserAuthentication {
                     schacHomeOrganization,
                     preferredLanguage,
                     mijnEduIDEntityId,
-                    serviceProviderResolver);
+                    manage);
         }
         user.setCreateFromInstitutionKey(hash());
         ResponseEntity<Object> responseEntity = saveOrUpdateLinkedAccountToUser(
@@ -802,6 +802,7 @@ public class AccountLinkerController implements UserAuthentication {
                 if (eppnAlreadyLinkedOptional.isPresent()) {
                     return eppnAlreadyLinkedOptional.get();
                 }
+//                manage.findIdentityProviderByDomainName()
                 linkedAccounts.add(
                         new LinkedAccount(institutionIdentifier, schacHomeOrganization, eppn, subjectId, givenName, familyName, affiliations, linkedAccounts.isEmpty(),
                                 new Date(), expiresAt));

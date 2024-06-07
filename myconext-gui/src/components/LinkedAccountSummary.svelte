@@ -124,15 +124,17 @@
         {/if}
 
     </div>
-    <div class="button-container">
-        {@html trash}
-        <div class="remove">
-            <a href="/#"
-               on:click|preventDefault|stopPropagation={deleteLinkedAccount}>
-                {I18n.t("profile.removeLinkPrefix")}
-            </a>
-            <span>{I18n.t("profile.removeLinkPostfix")}</span>
+    {#if linkedAccount.idpScoping !== "studielink"}
+        <div class="button-container">
+            {@html trash}
+            <div class="remove">
+                <a href="/#"
+                   on:click|preventDefault|stopPropagation={deleteLinkedAccount}>
+                    {I18n.t("profile.removeLinkPrefix")}
+                </a>
+                <span>{I18n.t("profile.removeLinkPostfix")}</span>
+            </div>
         </div>
-    </div>
+    {/if}
 </div>
 

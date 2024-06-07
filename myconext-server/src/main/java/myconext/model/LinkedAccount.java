@@ -5,6 +5,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.util.StringUtils;
 
@@ -21,21 +22,30 @@ public class LinkedAccount implements Serializable {
 
     private String institutionIdentifier;
     private String schacHomeOrganization;
+    @Setter
     private String displayNameEn;
+    @Setter
     private String displayNameNl;
+    @Setter
     private String logoUrl;
     @Indexed
     private String eduPersonPrincipalName;
     private String subjectId;
     private String givenName;
     private String familyName;
+    @Setter
     private List<String> eduPersonAffiliations = new ArrayList<>();
+    @Setter
     private boolean preferred;
+    @Setter
     @Schema(type = "integer", format = "int64", example = "1634813554997")
     private Date createdAt;
+    @Setter
     @Schema(type = "integer", format = "int64", example = "1634813554997")
     private Date expiresAt;
     private boolean external = false;
+    @Setter
+    private String institutionGuid;
 
     public LinkedAccount(String institutionIdentifier,
                          String schacHomeOrganization,
@@ -79,31 +89,4 @@ public class LinkedAccount implements Serializable {
         return StringUtils.hasText(givenName) && StringUtils.hasText(familyName);
     }
 
-    public void setEduPersonAffiliations(List<String> eduPersonAffiliations) {
-        this.eduPersonAffiliations = eduPersonAffiliations;
-    }
-
-    public void setCreatedAt(Date createdAt) {
-        this.createdAt = createdAt;
-    }
-
-    public void setExpiresAt(Date expiresAt) {
-        this.expiresAt = expiresAt;
-    }
-
-    public void setPreferred(boolean preferred) {
-        this.preferred = preferred;
-    }
-
-    public void setDisplayNameEn(String displayNameEn) {
-        this.displayNameEn = displayNameEn;
-    }
-
-    public void setDisplayNameNl(String displayNameNl) {
-        this.displayNameNl = displayNameNl;
-    }
-
-    public void setLogoUrl(String logoUrl) {
-        this.logoUrl = logoUrl;
-    }
 }

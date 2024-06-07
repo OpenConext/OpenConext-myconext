@@ -15,6 +15,7 @@ public class UpdateLinkedAccountRequest implements Serializable {
     private String eduPersonPrincipalName;
     private String subjectId;
     private boolean external;
+    private String idpScoping;
 
 
 

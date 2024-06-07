@@ -17,7 +17,7 @@
         "shibmd:scope:2:allowed": "sub1.aap.nl",
         "shibmd:scope:3:allowed": "sub2.aap.nl",
         "shibmd:scope:4:allowed": "sub3.aap.nl",
-        "shibmd:scope:5:allowed": "sub4.aap.nl",
+        "shibmd:scope:5:allowed": "example.nl",
         "shibmd:scope:6:allowed": "sub5.aap.nl",
         "shibmd:scope:7:allowed": "sub6.aap.nl",
         "shibmd:scope:8:allowed": "sub7.aap.nl",
@@ -72,10 +72,11 @@
         "OrganizationName:nl": "SURFdropjes Beta",
         "shibmd:scope:0:allowed": "braindrops.nl",
         "logo:0:url": "https://static.surfconext.nl/media/sp/SURFdropsBeta.png",
-        "shibmd:scope:1:allowed": "braindrops.org",
+        "shibmd:scope:1:allowed": "groningen.nl",
         "shibmd:scope:2:allowed": "surfnet.nl",
+        "shibmd:scope:3:allowed": "dropjes.surfnet.nl",
         "name:nl": "SURFdrops Beta IdP",
-        "shibmd:scope:3:allowed": "dropjes.surfnet.nl"
+        "coin:institution_guid": "409542a0-0d11-e511-80d0-005056956c1a"
       }
     }
   }

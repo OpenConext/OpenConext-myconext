@@ -103,7 +103,8 @@ export function deleteLinkedAccount(linkedAccount) {
     const updateLinkedAccountRequest = {
         eduPersonPrincipalName: linkedAccount.eduPersonPrincipalName,
         subjectId: linkedAccount.subjectId,
-        external: linkedAccount.external
+        external: linkedAccount.external,
+        idpScoping: linkedAccount.idpScoping
     }
     return postPutJson("/myconext/api/sp/institution", updateLinkedAccountRequest, "PUT");
 }

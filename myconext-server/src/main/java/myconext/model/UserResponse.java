@@ -59,6 +59,7 @@ public class UserResponse implements Serializable {
                 optionalIdentityProvider.ifPresent(identityProvider -> {
                     linkedAccount.setDisplayNameEn(identityProvider.getDisplayNameEn());
                     linkedAccount.setDisplayNameNl(identityProvider.getDisplayNameNl());
+                    linkedAccount.setInstitutionGuid(identityProvider.getInstitutionGuid());
                     linkedAccount.setLogoUrl(identityProvider.getLogoUrl());
                 });
             });

@@ -158,6 +158,8 @@ class RemoteCreationControllerTest extends AbstractIntegrationTest {
                 });
         String eduIDValue = externalEduIDResult.getEduIDValue();
         User user = this.findUserByEduIDValue(eduIDValue).get();
+        assertFalse(user.isNewUser());
+
         EduID newEduID = user.getEduIDS().stream()
                 .filter(anEduID -> anEduID.getValue().equals(eduIDValue))
                 .findFirst().get();

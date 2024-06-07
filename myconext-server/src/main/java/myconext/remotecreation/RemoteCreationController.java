@@ -190,6 +190,8 @@ public class RemoteCreationController implements HasUserRepository {
         User user = new User(UUID.randomUUID().toString(), externalEduID.getEmail(), externalEduID.getChosenName(),
                 externalEduID.getFirstName(), externalEduID.getLastName(), remoteUser.getSchacHome(), LocaleContextHolder.getLocale().getLanguage(),
                 identityProvider, manage);
+        //Otherwise another email is sent out when the user logs in
+        user.setNewUser(false);
 
         String eduIDValue = user.getEduIDS().get(0).getValue();
         externalEduID.setEduIDValue(eduIDValue);
@@ -249,6 +251,7 @@ public class RemoteCreationController implements HasUserRepository {
             //Not all external attributes can be changed
             externalLinkedAccount.setVerification(externalEduID.getVerification());
             externalLinkedAccount.setBrinCode(externalEduID.getBrinCode());
+            externalLinkedAccount.setDateOfBirth(attributeMapper.parseDate(externalEduID.getDateOfBirth()));
         } else {
             //Ensure there is an external account for this remoteAPI user
             IdentityProvider identityProvider = new IdentityProvider(null, externalEduID.getBrinCode(), remoteUser.getInstitutionGUID(),

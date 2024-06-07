@@ -35,6 +35,7 @@ public class ExternalLinkedAccount implements Serializable {
     private String legalLastNamePrefix;
     private String preferredLastNamePrefix;
     private String partnerLastName;
+    @Setter
     @Schema(type = "integer", format = "int64", example = "1634813554997")
     private Date dateOfBirth;
     @Schema(type = "integer", format = "int64", example = "1634813554997")
