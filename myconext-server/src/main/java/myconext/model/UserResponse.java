@@ -10,6 +10,7 @@ import tiqr.org.model.RegistrationStatus;
 
 import java.io.Serializable;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Getter
 public class UserResponse implements Serializable {
@@ -64,7 +65,10 @@ public class UserResponse implements Serializable {
                 });
             });
         }
-        this.externalLinkedAccounts = user.getExternalLinkedAccounts();
+        this.externalLinkedAccounts = user.getExternalLinkedAccounts().stream()
+                .filter(externalLinkedAccount -> !externalLinkedAccount.getIdpScoping().equals(IdpScoping.studielink) ||
+                        !Verification.Ongeverifieerd.equals(externalLinkedAccount.getVerification()))
+                .collect(Collectors.toList());
         this.givenNameVerified = (!user.getLinkedAccounts().isEmpty()) ||
                 (!this.externalLinkedAccounts.isEmpty() && IdpScoping.eherkenning.equals(this.externalLinkedAccounts.get(0).getIdpScoping()));
         this.usePublicKey = !CollectionUtils.isEmpty(this.publicKeyCredentials);
