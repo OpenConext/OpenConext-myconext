@@ -207,7 +207,8 @@ public class SecurityConfiguration {
                     "/internal/**",
                     "/myconext/api/idp/**",
                     "/myconext/api/sp/create-from-institution",
-                    "/myconext/api/sp/create-from-institution/**"
+                    "/myconext/api/sp/create-from-institution/**",
+                    "/myconext/api/sp/idin/issuers"
             );
         }
 
