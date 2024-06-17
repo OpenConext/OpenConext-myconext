@@ -201,7 +201,7 @@ public class RemoteCreationController implements HasUserRepository {
         userRepository.save(user);
         mailBox.sendAccountConfirmation(user);
 
-        return ResponseEntity.ok(externalEduID);
+        return ResponseEntity.status(HttpStatus.CREATED).body(externalEduID);
     }
 
     @PutMapping(value = {"/eduid-update"})
@@ -269,7 +269,7 @@ public class RemoteCreationController implements HasUserRepository {
 
         userRepository.save(user);
 
-        return ResponseEntity.ok(externalEduID);
+        return ResponseEntity.status(HttpStatus.CREATED).body(externalEduID);
     }
 
 }

@@ -221,7 +221,7 @@ class RemoteCreationControllerTest extends AbstractIntegrationTest {
                 .extract()
                 .as(new TypeRef<>() {
                 });
-        assertEquals(Stream.of("chosenName", "email", "identifier", "lastName", "verification").sorted().collect(Collectors.toList()),
+        assertEquals(Stream.of("chosenName", "identifier", "lastName", "verification").sorted().collect(Collectors.toList()),
                 ((List<Map<String, Object>>) errorResult.get("errors")).stream().map(m -> m.get("field")).sorted().collect(Collectors.toList()));
     }
 
@@ -273,6 +273,9 @@ class RemoteCreationControllerTest extends AbstractIntegrationTest {
                 .contentType(ContentType.JSON)
                 .body(externalEduID)
                 .post("/api/remote-creation/eduid-create")
+                .then()
+                .statusCode(201)
+                .extract()
                 .as(new TypeRef<>() {
                 });
         externalEduIDResult.setBrinCode("QWER");
@@ -283,6 +286,9 @@ class RemoteCreationControllerTest extends AbstractIntegrationTest {
                 .contentType(ContentType.JSON)
                 .body(externalEduIDResult)
                 .put("/api/remote-creation/eduid-update")
+                .then()
+                .statusCode(HttpStatus.CREATED.value())
+                .extract()
                 .as(new TypeRef<>() {
                 });
         String eduIDValue = externalEduIDResult.getEduIDValue();
@@ -314,6 +320,9 @@ class RemoteCreationControllerTest extends AbstractIntegrationTest {
                 .contentType(ContentType.JSON)
                 .body(externalEduID)
                 .put("/api/remote-creation/eduid-update")
+                .then()
+                .statusCode(HttpStatus.CREATED.value())
+                .extract()
                 .as(new TypeRef<>() {
                 });
         String eduIDValue = updatedExternalEduID.getEduIDValue();
@@ -358,6 +367,9 @@ class RemoteCreationControllerTest extends AbstractIntegrationTest {
                 .contentType(ContentType.JSON)
                 .body(externalEduID)
                 .post("/api/remote-creation/eduid-create")
+                .then()
+                .statusCode(HttpStatus.CREATED.value())
+                .extract()
                 .as(new TypeRef<>() {
                 });
         externalEduIDResult.setEduIDValue(UUID.randomUUID().toString());
@@ -392,6 +404,9 @@ class RemoteCreationControllerTest extends AbstractIntegrationTest {
                 .contentType(ContentType.JSON)
                 .body(externalEduID)
                 .post("/api/remote-creation/eduid-create")
+                .then()
+                .statusCode(HttpStatus.CREATED.value())
+                .extract()
                 .as(new TypeRef<>() {
                 });
         //Now delete the externalAccount
@@ -430,6 +445,9 @@ class RemoteCreationControllerTest extends AbstractIntegrationTest {
                 .contentType(ContentType.JSON)
                 .body(externalEduID)
                 .post("/api/remote-creation/eduid-create")
+                .then()
+                .statusCode(HttpStatus.CREATED.value())
+                .extract()
                 .as(new TypeRef<>() {
                 });
         String eduIDValue = externalEduIDResult.getEduIDValue();
