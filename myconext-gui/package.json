@@ -29,7 +29,8 @@
   },
   "resolutions": {
     "glob-parent": "5.1.2",
-    "minimatch": "^5.1.0"
+    "minimatch": "^5.1.0",
+    "braces": "^3.0.3"
   },
   "scripts": {
     "build": "cross-env NODE_ENV=production webpack",
