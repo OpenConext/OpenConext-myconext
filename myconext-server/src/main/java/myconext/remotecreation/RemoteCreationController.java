@@ -32,6 +32,7 @@ import org.springframework.util.StringUtils;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Date;
 import java.util.UUID;
 
 import static myconext.SwaggerOpenIdConfig.BASIC_AUTHENTICATION_SCHEME_NAME;
@@ -187,8 +188,10 @@ public class RemoteCreationController implements HasUserRepository {
         IdentityProvider identityProvider = new IdentityProvider(null, externalEduID.getBrinCode(), remoteUser.getInstitutionGUID(),
                 apiUserName, apiUserName,
                 String.format("https://static.surfconext.nl/logos/org/%s.png", remoteUser.getInstitutionGUID()));
+        String lastNamePrefix = externalEduID.getLastNamePrefix();
+        String lastName = StringUtils.hasText(lastNamePrefix) ? String.format("%s %s", lastNamePrefix, externalEduID.getLastName()) : externalEduID.getLastName();
         User user = new User(UUID.randomUUID().toString(), externalEduID.getEmail(), externalEduID.getChosenName(),
-                externalEduID.getFirstName(), externalEduID.getLastName(), remoteUser.getSchacHome(), LocaleContextHolder.getLocale().getLanguage(),
+                externalEduID.getFirstName(), lastName, remoteUser.getSchacHome(), LocaleContextHolder.getLocale().getLanguage(),
                 identityProvider, manage);
         //Otherwise another email is sent out when the user logs in
         user.setNewUser(false);
@@ -240,10 +243,9 @@ public class RemoteCreationController implements HasUserRepository {
         User user = this.findUserByEduIDValue(eduIDValue)
                 .or(() -> userRepository.findUserByEmail(email))
                 .orElseThrow(() -> new UserNotFoundException(String.format("User not found by eduID %s or email %s", eduIDValue, email)));
+        user.updateWithExternalEduID(externalEduID);
         if (StringUtils.hasText(eduIDValue)) {
             //Not all attributes can be changed with an update
-            user.setGivenName(externalEduID.getFirstName());
-            user.setFamilyName(externalEduID.getLastName());
             ExternalLinkedAccount externalLinkedAccount = user.getExternalLinkedAccounts().stream()
                     .filter(account -> IdpScoping.valueOf(remoteUserName).equals(account.getIdpScoping()))
                     .findAny()
@@ -251,7 +253,7 @@ public class RemoteCreationController implements HasUserRepository {
             //Not all external attributes can be changed
             externalLinkedAccount.setVerification(externalEduID.getVerification());
             externalLinkedAccount.setBrinCode(externalEduID.getBrinCode());
-            externalLinkedAccount.setDateOfBirth(attributeMapper.parseDate(externalEduID.getDateOfBirth()));
+            externalLinkedAccount.setDateOfBirth(AttributeMapper.parseDate(externalEduID.getDateOfBirth()));
         } else {
             //Ensure there is an external account for this remoteAPI user
             IdentityProvider identityProvider = new IdentityProvider(null, externalEduID.getBrinCode(), remoteUser.getInstitutionGUID(),

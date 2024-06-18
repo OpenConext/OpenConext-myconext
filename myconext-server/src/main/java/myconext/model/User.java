@@ -8,7 +8,9 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import myconext.exceptions.WeakPasswordException;
 import myconext.manage.Manage;
+import myconext.remotecreation.ExternalEduID;
 import myconext.tiqr.SURFSecureID;
+import myconext.verify.AttributeMapper;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.Transient;
 import org.springframework.data.mongodb.core.index.Indexed;
@@ -301,6 +303,20 @@ public class User implements Serializable, UserDetails {
         result.add(LoginOptions.MAGIC);
         return result.stream().map(LoginOptions::getValue).collect(Collectors.toList());
     }
+
+    @Transient
+    @JsonIgnore
+    public void updateWithExternalEduID(ExternalEduID externalEduID) {
+        //Only update this when there is no validated account
+        if (CollectionUtils.isEmpty(this.externalLinkedAccounts) && CollectionUtils.isEmpty(this.linkedAccounts)) {
+            this.givenName = externalEduID.getFirstName();
+            String lastNamePrefix = externalEduID.getLastNamePrefix();
+            this.familyName = StringUtils.hasText(lastNamePrefix) ? String.format("%s %s", lastNamePrefix, externalEduID.getLastName()) : externalEduID.getLastName();
+            this.dateOfBirth = AttributeMapper.parseDate(externalEduID.getDateOfBirth());
+        }
+    }
+
+
 
     public String getEduPersonPrincipalName() {
         return uid + "@" + schacHomeOrganization;

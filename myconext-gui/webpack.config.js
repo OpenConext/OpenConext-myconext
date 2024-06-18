@@ -74,7 +74,13 @@ module.exports = {
                 options: {
                     removeSVGTagAttrs: false
                 }
-            }
+            },
+            {
+                test: /\.(png|jpg|gif)$/,
+                use:  [
+                    'file-loader',
+                ],
+            },
         ]
     },
     mode,

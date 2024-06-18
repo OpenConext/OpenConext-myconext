@@ -237,7 +237,7 @@ public class AttributeMapper {
         );
     }
 
-    public Date parseDate(String dateString) {
+    public static Date parseDate(String dateString) {
         if (StringUtils.hasText(dateString)) {
             DateTimeFormatter dateTimeFormatter = datePatterns.entrySet().stream()
                     .filter(e -> e.getKey().matcher(dateString).matches())

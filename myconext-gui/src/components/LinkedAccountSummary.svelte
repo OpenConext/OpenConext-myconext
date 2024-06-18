@@ -3,12 +3,13 @@
     import {dateFromEpoch} from "../utils/date";
     import {onMount} from "svelte";
     import {institutionName, isStudent, linkedAccountFamilyName, linkedAccountGivenName} from "../utils/services";
-
     import trash from "../icons/verify/bin.svg"
     import studentIcon from "../icons/student.svg";
     import personalInfo from "../icons/verify/personalInfo.svg";
     import {isEmpty} from "../utils/utils";
     import ValidatedField from "../verify/ValidatedField.svelte";
+    import {logo} from "../verify/banks";
+    import studieLinkLogo from "../icons/remotecreation/studielink.png";
 
     export let linkedAccount;
     export let preferredAccount = false;
@@ -20,17 +21,43 @@
         expiresAt = linkedAccount.expiresAt;
     })
 
+    const hideImage = e => {
+        e.target.style.display = "none";
+    }
+
 </script>
 <style lang="scss">
     .linked-account-container {
         .linked-account {
             display: flex;
+            position: relative;
+
+            .image-container {
+                position: absolute;
+                right: 0;
+
+                img {
+                    width: 88px;
+                    height: auto;
+
+                    &.studielink {
+                        width: 144px;
+                    }
+                }
+
+                :global(svg) {
+                    width: 88px;
+                    height: auto;
+                }
+
+            }
 
             div.info {
                 display: flex;
                 flex-direction: column;
                 gap: 6px;
                 margin-bottom: 15px;
+
 
                 h4 {
                     color: var(--color-primary-green);
@@ -79,13 +106,17 @@
                 {/if}
             </span>
         </div>
-        <!--{#if linkedAccount.logoUrl}-->
-        <!--    <img src={linkedAccount.logoUrl} alt="logo">-->
-        <!--{:else if linkedAccount.external}-->
-        <!--    {@html logo(linkedAccount.issuer.id)}-->
-        <!--{:else}-->
-        <!--    {@html notFound}-->
-        <!--{/if}-->
+        <div class="image-container">
+            {#if !linkedAccount.external && linkedAccount.institutionGuid}
+                <img src={`https://static.surfconext.nl/logos/org/${linkedAccount.institutionGuid}.png`}
+                     alt="logo"
+                     on:error={e => hideImage(e)}>
+            {:else if linkedAccount.external && linkedAccount.idpScoping !== "studielink"}
+                {@html logo(linkedAccount.issuer.id)}
+            {:else if linkedAccount.idpScoping === "studielink"}
+                <img class="studielink" src={studieLinkLogo} alt="studielink"/>
+            {/if}
+        </div>
     </div>
     <div class="">
         {#if !isEmpty(linkedAccountGivenName(linkedAccount))}

@@ -8,6 +8,7 @@ import SNSBNL2A from "../icons/verify/banks/sns.svg";
 import EHERKENNING from "../icons/verify/eIDAS_color.svg";
 
 
+
 export function logo(id) {
     switch(id) {
         case "ABNANL2A": return ABNANL2A;

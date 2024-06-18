@@ -21,9 +21,9 @@
         "shibmd:scope:6:allowed": "sub5.aap.nl",
         "shibmd:scope:7:allowed": "sub6.aap.nl",
         "shibmd:scope:8:allowed": "sub7.aap.nl",
-        "shibmd:scope:9:allowed": "sub7.aap.nl",
+        "shibmd:scope:9:allowed": "example.com",
         "coin:institution_brin": "ST42",
-        "coin:institution_guid": "880c1c27-9f3b-4f95-8a21-6b4f4118322b"
+        "coin:institution_guid": "8017e83f-bca7-e911-90f2-0050569571ea"
       }
     }
   },
@@ -55,7 +55,9 @@
       "metaDataFields": {
         "name:nl": "EncAssertion Shib IdP",
         "name:en": "EncAssertion Shib IdP",
-        "shibmd:scope:0:allowed": "surfcloud.nl"
+        "shibmd:scope:0:allowed": "surfcloud.nl",
+        "shibmd:scope:1:allowed": "nope.mope",
+        "coin:institution_guid": "noppy"
       }
     }
   },
