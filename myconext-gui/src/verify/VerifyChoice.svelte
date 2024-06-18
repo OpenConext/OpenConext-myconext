@@ -16,7 +16,6 @@
     export let addInstitution;
     export let addBank;
     export let addEuropean;
-    export let cancel;
     export let issuers;
     export let showIdinOptions;
 
@@ -39,25 +38,17 @@
 
         p {
             margin: 10px 0 20px 0;
-            font-size: larger;
+            font-size: 16px;
         }
 
-        span.cancel {
-            position: absolute;
-            right: -6px;
-            top: -6px;
-            cursor: pointer;
-
-            :global(svg) {
-                fill: var(--color-secondary-grey);
-                width: 30px;
-                height: auto;
-            }
-        }
     }
 
     div.header-container {
         display: flex;
+
+        .back {
+            margin-right: 25px;
+        }
     }
 
     h3 {
@@ -223,9 +214,6 @@
                 <h3 class="header">{I18n.t("verify.modal.bank.select")}</h3>
             </div>
             <p>{@html I18n.t("verify.modal.bank.disclaimer")}</p>
-            <span class="cancel" on:click={() => cancel()}>
-                {@html closeIcon}
-            </span>
         </div>
         <div class="bank-choices-container">
             {#each issuers as issuer}
