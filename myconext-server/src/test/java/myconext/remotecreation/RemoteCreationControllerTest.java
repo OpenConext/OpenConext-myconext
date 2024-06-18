@@ -95,7 +95,7 @@ class RemoteCreationControllerTest extends AbstractIntegrationTest {
                 });
         User user = this.findUserByEduIDValue(eduID.getValue()).get();
         //See src/main/resources/manage/saml20_idp.json read by MockManage
-        String institutionGUID = "880c1c27-9f3b-4f95-8a21-6b4f4118322b";
+        String institutionGUID = "8017e83f-bca7-e911-90f2-0050569571ea";
         EduID newEduID = user.getEduIDS().stream()
                 .filter(anEduID -> anEduID.getServices().stream().anyMatch(service -> institutionGUID.equals(service.getInstitutionGuid())))
                 .findFirst().get();

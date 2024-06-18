@@ -55,7 +55,7 @@ public class RemoteManageTest {
         stubForTokens("saml20_idp");
 
         Set<String> domainNames = manage.getDomainNames();
-        assertEquals(15, domainNames.size());
+        assertEquals(17, domainNames.size());
     }
 
     @Test
