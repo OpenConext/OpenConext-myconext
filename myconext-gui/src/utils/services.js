@@ -1,10 +1,11 @@
 import I18n from "i18n-js";
 
 export const serviceName = service => {
+  //backward compatibility with eduID has multiple services
   if (I18n.locale === "en") {
-    return service.serviceName;
+    return service.serviceName || service.name;
   }
-  return service.serviceNameNl || service.serviceName;
+  return service.serviceNameNl || service.serviceName || service.nameNl || service.name;
 }
 
 export const institutionName = linkedAccount => {

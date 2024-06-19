@@ -8,6 +8,7 @@
     import informationalSvg from "../icons/informational.svg";
     import {formatOptions} from "../format/date";
     import Service from "./Service.svelte";
+    import {isEmpty} from "../utils/utils";
 
     const serviceDetails = service => () => {
         showDetails = {...showDetails, [service.eduId]: !showDetails[service.eduId]};
@@ -17,7 +18,7 @@
     let showDetails = {};
 
     const refresh = () => {
-        services = Object.keys($user.eduIdPerServiceProvider).map(k => {
+        services = Object.keys($user.eduIdPerServiceProvider).reduce((acc, k) => {
             const service = $user.eduIdPerServiceProvider[k];
             const allTokens = $user.oidcTokens
                 .filter(token => token.clientId === k);
@@ -36,24 +37,41 @@
                 return acc;
             }, []);
             const locale = I18n.locale === "en" ? "en-US" : "nl-NL";
-            return {
-                name: serviceName(service),
-                eduId: service.value,
-                createdAt: new Date(service.createdAt).toLocaleDateString(locale, formatOptions),
-                expiresIn: new Date(service.expiresIn).toLocaleDateString(locale, formatOptions),
-                data: $user.eduIdPerServiceProvider[k],
-                token: token,
-                tokens: tokens,
-                allTokens: allTokens,
-                scopes: scopes
+            //backward compatibility with eduID has multiple services and not yet migrated eduID accounts
+            if (isEmpty(service.services)) {
+                acc.push({
+                    name: serviceName(service),
+                    eduId: service.value,
+                    createdAt: new Date(service.createdAt).toLocaleDateString(locale, formatOptions),
+                    expiresIn: new Date(service.expiresIn).toLocaleDateString(locale, formatOptions),
+                    data: $user.eduIdPerServiceProvider[k],
+                    token: token,
+                    tokens: tokens,
+                    allTokens: allTokens,
+                    scopes: scopes
+                });
+            } else {
+                service.services.forEach(s => {
+                    acc.push({
+                        name: serviceName(s),
+                        eduId: service.value,
+                        createdAt: new Date(service.createdAt).toLocaleDateString(locale, formatOptions),
+                        expiresIn: new Date(service.expiresIn).toLocaleDateString(locale, formatOptions),
+                        data: {serviceLogoUrl: s.logoUrl, serviceProviderEntityId: k, serviceHomeUrl: s.homeUrl, value: service.value},
+                        token: token,
+                        tokens: tokens,
+                        allTokens: allTokens,
+                        scopes: scopes
+                    });
+                })
             }
-        });
+            return acc;
+        },[]);
         showDetails = Object.keys($user.eduIdPerServiceProvider).reduce((acc, key) => {
             const service = $user.eduIdPerServiceProvider[key];
             acc[service.eduId] = false;
             return acc
         }, {});
-
     }
 
     onMount(() => refresh());
