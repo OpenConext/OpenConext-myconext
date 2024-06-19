@@ -378,11 +378,15 @@ public class UserControllerTest extends AbstractIntegrationTest {
     @Test
     public void removeUserService() {
         User user = userRepository.findOneUserByEmail("jdoe@example.com");
-        EduID eduID = user.getEduIDS().stream().filter(val -> val.getServiceProviderEntityId().equals(("http://mock-sp"))).findFirst().get();
+        String entityID = "http://mock-sp";
+
+        assertTrue(user.getEduIDS().stream()
+                .anyMatch(val -> val.getServices().stream().anyMatch(service -> entityID.equals(service.getEntityId()))));
+
         given()
                 .when()
                 .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
-                .body(new DeleteService(eduID.getServiceProviderEntityId(), new ArrayList<>()))
+                .body(new DeleteService(entityID, new ArrayList<>()))
                 .put("/myconext/api" +
                         "/sp/service")
                 .then()
@@ -390,7 +394,8 @@ public class UserControllerTest extends AbstractIntegrationTest {
 
         User userFromDB = userRepository.findOneUserByEmail("jdoe@example.com");
 
-        assertFalse(userFromDB.getEduIDS().stream().anyMatch(val -> val.getServiceProviderEntityId().equals(("http://mock-sp"))));
+        assertFalse(userFromDB.getEduIDS().stream()
+                .anyMatch(val -> val.getServices().stream().anyMatch(service -> entityID.equals(service.getEntityId()))));
     }
 
     @Test

@@ -108,8 +108,8 @@ public class AttributeAggregatorController implements HasUserRepository {
     @PreAuthorize("hasRole('ROLE_system')")
     public ResponseEntity<Map<String, List<EduID>>> eduIdDuplicates() {
         List<EduID> eduIDs = userRepository.findAll().stream()
-                .map(User::getEduIDS).flatMap(Collection::stream)
-                .collect(Collectors.toList()).stream()
+                .map(User::getEduIDS)
+                .flatMap(Collection::stream)
                 .filter(eduID -> StringUtils.hasText(eduID.getServiceInstutionGuid()))
                 .collect(Collectors.toList());
         Set<EduID> uniqueSet = new TreeSet<>(Comparator.comparing(EduID::getServiceProviderEntityId));

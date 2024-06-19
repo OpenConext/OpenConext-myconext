@@ -33,6 +33,8 @@ public interface UserRepository extends MongoRepository<User, String> {
 
     Optional<User> findByEduIDS_serviceProviderEntityId(String serviceProviderEntityId);
 
+    Optional<User> findByEduIDS_Services_EntityId(String serviceProviderEntityId);
+
     List<User> findByNewUserTrueAndCreatedLessThan(long millis);
 
     Optional<User> findUserByWebAuthnIdentifier(String webAuthnIdentifier);

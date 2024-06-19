@@ -65,13 +65,17 @@ public class APIController implements HasUserRepository {
 
         LOG.info(String.format("Endpoint '/eduid/ called by authentication %s", clientId));
 
-        Optional<User> optionalUser = userRepository.findByEduIDS_serviceProviderEntityId(clientId);
-        if (!optionalUser.isPresent()) {
+        //Need to be backward compatible
+        Optional<User> optionalUser = userRepository
+                .findByEduIDS_serviceProviderEntityId(clientId)
+                .or(() -> userRepository.findByEduIDS_Services_EntityId(clientId));
+        if (optionalUser.isEmpty()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
         User user = optionalUser.get();
         List<String> eduIDs = user.getEduIDS().stream()
-                .filter(eduID -> eduID.getServiceProviderEntityId().equalsIgnoreCase(clientId))
+                .filter(eduID -> clientId.equals(eduID.getServiceProviderEntityId()) ||
+                        eduID.getServices().stream().anyMatch(service -> clientId.equals(service.getEntityId())))
                 .map(EduID::getValue).collect(Collectors.toList());
         Map<String, String> results = eduIDs.isEmpty() ? new HashMap<>() : Collections.singletonMap("eduid", eduIDs.get(0));
 

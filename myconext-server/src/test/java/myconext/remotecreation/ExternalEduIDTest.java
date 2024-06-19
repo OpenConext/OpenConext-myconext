@@ -14,9 +14,8 @@ class ExternalEduIDTest extends AbstractIntegrationTest {
     @Test
     void validate() {
         assertThrows(ValidationException.class, () ->
-                new ExternalEduID(
+                new NewExternalEduID(
                         "john@example.com",
-                        null,
                         "chosenName",
                         null,
                         null,
@@ -30,9 +29,8 @@ class ExternalEduIDTest extends AbstractIntegrationTest {
 
     @Test
     void validateOngeverifieerd() {
-        new ExternalEduID(
+        new NewExternalEduID(
                 "john@example.com",
-                null,
                 "chosenName",
                 null,
                 null,

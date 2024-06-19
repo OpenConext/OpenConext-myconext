@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import myconext.exceptions.WeakPasswordException;
 import myconext.manage.Manage;
-import myconext.remotecreation.ExternalEduID;
+import myconext.remotecreation.NewExternalEduID;
 import myconext.tiqr.SURFSecureID;
 import myconext.verify.AttributeMapper;
 import org.springframework.data.annotation.Id;
@@ -302,7 +302,7 @@ public class User implements Serializable, UserDetails {
 
     @Transient
     @JsonIgnore
-    public void updateWithExternalEduID(ExternalEduID externalEduID) {
+    public void updateWithExternalEduID(NewExternalEduID externalEduID) {
         //Only update this when there is no validated account
         if (CollectionUtils.isEmpty(this.externalLinkedAccounts) && CollectionUtils.isEmpty(this.linkedAccounts)) {
             this.givenName = externalEduID.getFirstName();

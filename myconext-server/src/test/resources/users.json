@@ -42,21 +42,30 @@
     "userHandle": "ILWqa-yfidIbr-tmLbegkl_q9GYY53s5h-WPxDGJ36rzvDfR-lZqMlqARdUlPDRH_KH95owGCoEqMuigryV_qA",
     "eduIDS": [
       {
-        "serviceProviderEntityId": "http://mock-sp",
         "value": "3060b9ce-9cf2-4e5b-8164-bf0a2b706720",
-        "serviceName": "Mock SP",
-        "serviceNameNl": "Mock SP NL",
-        "serviceLogoUrl": "https://static.surfconext.nl/media/sp/eduid.png",
-        "serviceHomeUrl": "https://eduid.nl/",
-        "serviceInstutionGuid" : "ad93daef-0911-e511-80d0-005056956c1a",
-        "createdAt": "2020-11-12T13:55:50.229Z"
+        "createdAt": "2020-11-12T13:55:50.229Z",
+        "services": [
+          {
+            "entityId": "http://mock-sp",
+            "name": "Mock SP",
+            "nameNl": "Mock SP NL",
+            "logoUrl": "https://static.surfconext.nl/media/sp/eduid.png",
+            "homeUrl": "https://eduid.nl/",
+            "institutionGuid": "ad93daef-0911-e511-80d0-005056956c1a"
+          }
+        ]
+
       },
       {
-        "serviceProviderEntityId": "playground_client",
         "value": "fc75dcc7-6def-4054-b8ba-3c3cc504dd4b",
-        "serviceName": "https://playground.client",
-        "serviceInstutionGuid" : "ad93daef-0911-e511-80d0-005056956c1a",
-        "createdAt": "2020-11-12T13:55:50.229Z"
+        "createdAt": "2020-11-12T13:55:50.229Z",
+        "services": [
+          {
+            "entityId": "playground_client",
+            "name": "https://playground.client",
+            "institutionGuid": "ad93daef-0911-e511-80d0-005056956c1a"
+          }
+        ]
       }
     ],
     "created": 1583337392

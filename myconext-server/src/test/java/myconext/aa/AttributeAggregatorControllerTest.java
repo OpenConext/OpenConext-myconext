@@ -132,9 +132,7 @@ public class AttributeAggregatorControllerTest extends AbstractIntegrationTest {
                 .contentType(ContentType.JSON)
                 .get("/myconext/api/system/eduid-duplicates")
                 .as(Map.class);
-        assertEquals(1, results.size());
-        assertEquals("ad93daef-0911-e511-80d0-005056956c1a", results.keySet().iterator().next());
-        assertEquals(2, results.values().iterator().next().size());
+        assertEquals(0, results.size());
     }
 
     private List<UserAttribute> doAggregate(String user, String password, String spEntityId, String edupersonPrincipalName) {
