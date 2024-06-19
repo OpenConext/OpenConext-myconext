@@ -158,7 +158,7 @@ public class RemoteCreationController implements HasUserRepository {
             description = "Create an eduID",
             responses = {
                     @ApiResponse(responseCode = "201", description = "Created",
-                            content = {@Content(schema = @Schema(implementation = NewExternalEduID.class))}),
+                            content = {@Content(schema = @Schema(implementation = UpdateExternalEduID.class))}),
                     @ApiResponse(responseCode = "400", description = "BadRequest",
                             content = {@Content(schema = @Schema(implementation = StatusResponse.class),
                                     examples = {@ExampleObject(value = "{\"status\":400}")})}),
@@ -211,11 +211,11 @@ public class RemoteCreationController implements HasUserRepository {
             description = "Update an eduID",
             responses = {
                     @ApiResponse(responseCode = "201", description = "Created",
-                            content = {@Content(schema = @Schema(implementation = NewExternalEduID.class))}),
+                            content = {@Content(schema = @Schema(implementation = UpdateExternalEduID.class))}),
                     @ApiResponse(responseCode = "400", description = "BadRequest",
                             content = {@Content(schema = @Schema(implementation = StatusResponse.class),
                                     examples = {@ExampleObject(value = "{\"status\":400}")})}),
-                    @ApiResponse(responseCode = "409", description = "Conflict - email already exists",
+                    @ApiResponse(responseCode = "404", description = "User not found",
                             content = {@Content(schema = @Schema(implementation = StatusResponse.class),
                                     examples = {@ExampleObject(value = "{\n" +
                                             "  \"timestamp\": 1717672653898,\n" +
