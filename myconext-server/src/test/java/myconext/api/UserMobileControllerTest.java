@@ -4,6 +4,7 @@ import com.github.tomakehurst.wiremock.junit.WireMockRule;
 import io.restassured.http.ContentType;
 import myconext.AbstractIntegrationTest;
 import myconext.model.CreateAccount;
+import myconext.model.IdentityProvider;
 import myconext.model.UpdateUserNameRequest;
 import myconext.model.User;
 import org.junit.ClassRule;
@@ -71,17 +72,17 @@ public class UserMobileControllerTest extends AbstractIntegrationTest {
 
     @Test
     public void institutionNames() throws IOException {
-        Map names = given()
+        IdentityProvider identityProvider = given()
                 .when()
                 .accept(ContentType.JSON)
                 .contentType(ContentType.JSON)
                 .auth().oauth2(opaqueAccessToken(true, "eduid.nl/mobile"))
                 .queryParam("schac_home", "rocmn.nl")
                 .get("/mobile/api/sp/institution/names")
-                .as(Map.class);
+                .as(IdentityProvider.class);
 
-        assertEquals("ROC Midden Nederland", names.get("displayNameEn"));
-        assertEquals("ROC Midden Nederland", names.get("displayNameNl"));
+        assertEquals("ROC Midden Nederland", identityProvider.getName());
+        assertEquals("ROC Midden Nederland",  identityProvider.getNameNl());
     }
 
     @Test

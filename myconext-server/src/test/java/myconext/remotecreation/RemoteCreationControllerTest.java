@@ -326,7 +326,7 @@ class RemoteCreationControllerTest extends AbstractIntegrationTest {
                 .as(new TypeRef<>() {
                 });
         String eduIDValue = updatedExternalEduID.getEduIDValue();
-        User user =this.findUserByEduIDValue(eduIDValue).get();
+        User user = this.findUserByEduIDValue(eduIDValue).get();
         assertEquals(email, user.getEmail());
         assertEquals(1, user.getExternalLinkedAccounts().size());
 

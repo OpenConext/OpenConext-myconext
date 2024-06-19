@@ -1188,16 +1188,16 @@ public class UserControllerTest extends AbstractIntegrationTest {
 
     @Test
     public void institutionNames() throws IOException {
-        Map names = given()
+        IdentityProvider identityProvider = given()
                 .when()
                 .accept(ContentType.JSON)
                 .contentType(ContentType.JSON)
                 .queryParam("schac_home", "sub6.aap.nl")
                 .get("/myconext/api/sp/institution/names")
-                .as(Map.class);
+                .as(IdentityProvider.class);
 
-        assertEquals("thkidp EN", names.get("displayNameEn"));
-        assertEquals("thkidp NL", names.get("displayNameNl"));
+        assertEquals("thkidp EN", identityProvider.getName());
+        assertEquals("thkidp NL", identityProvider.getNameNl());
     }
 
     @Test
