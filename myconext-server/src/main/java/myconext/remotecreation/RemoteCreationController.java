@@ -32,7 +32,6 @@ import org.springframework.util.StringUtils;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Date;
 import java.util.UUID;
 
 import static myconext.SwaggerOpenIdConfig.BASIC_AUTHENTICATION_SCHEME_NAME;
@@ -185,9 +184,7 @@ public class RemoteCreationController implements HasUserRepository {
         userRepository.findUserByEmail(email).ifPresent(u -> {
             throw new DuplicateUserEmailException("There already exists a user with email " + email);
         });
-        IdentityProvider identityProvider = new IdentityProvider(null, externalEduID.getBrinCode(), remoteUser.getInstitutionGUID(),
-                apiUserName, apiUserName,
-                String.format("https://static.surfconext.nl/logos/org/%s.png", remoteUser.getInstitutionGUID()));
+        IdentityProvider identityProvider = getIdentityProvider(remoteUser, externalEduID, apiUserName);
         String lastNamePrefix = externalEduID.getLastNamePrefix();
         String lastName = StringUtils.hasText(lastNamePrefix) ? String.format("%s %s", lastNamePrefix, externalEduID.getLastName()) : externalEduID.getLastName();
         User user = new User(UUID.randomUUID().toString(), externalEduID.getEmail(), externalEduID.getChosenName(),
@@ -256,9 +253,7 @@ public class RemoteCreationController implements HasUserRepository {
             externalLinkedAccount.setDateOfBirth(AttributeMapper.parseDate(externalEduID.getDateOfBirth()));
         } else {
             //Ensure there is an external account for this remoteAPI user
-            IdentityProvider identityProvider = new IdentityProvider(null, externalEduID.getBrinCode(), remoteUser.getInstitutionGUID(),
-                    remoteUserName, remoteUserName,
-                    String.format("https://static.surfconext.nl/logos/org/%s.png", remoteUser.getInstitutionGUID()));
+            IdentityProvider identityProvider = getIdentityProvider(remoteUser, externalEduID, remoteUserName);
             String provisionedEduIDValue = user.computeEduIdForIdentityProviderProviderIfAbsent(identityProvider, manage);
             externalEduID.setEduIDValue(provisionedEduIDValue);
             boolean externalLinkedAccountMissing = user.getExternalLinkedAccounts().stream()
@@ -272,6 +267,18 @@ public class RemoteCreationController implements HasUserRepository {
         userRepository.save(user);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(externalEduID);
+    }
+
+    private static IdentityProvider getIdentityProvider(RemoteUser remoteUser, ExternalEduID externalEduID, String remoteUserName) {
+        RemoteProvider remoteProvider = new RemoteProvider(
+                null,
+                remoteUserName,
+                remoteUserName,
+                remoteUser.getInstitutionGUID(),
+                String.format("https://static.surfconext.nl/logos/org/%s.png", remoteUser.getInstitutionGUID()));
+
+        IdentityProvider identityProvider = new IdentityProvider(remoteProvider, externalEduID.getBrinCode());
+        return identityProvider;
     }
 
 }

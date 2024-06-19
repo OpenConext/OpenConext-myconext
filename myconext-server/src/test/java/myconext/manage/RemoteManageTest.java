@@ -67,13 +67,24 @@ public class RemoteManageTest {
     }
 
     @Test
+    @SneakyThrows
     public void findIdentityProviderByBrinCode() {
-        stubForTokens("saml20_idp");
-
+        stubFor(post(urlPathMatching("/manage/api/internal/search/saml20_idp"))
+                .willReturn(aResponse()
+                        .withHeader("Content-Type", "application/json")
+                        .withBody(readFile("manage/idp_brin_code.json"))));
         IdentityProvider identityProvider = manage.findIdentityProviderByBrinCode("ST42").get();
 
-        assertEquals("thkidp EN", identityProvider.getDisplayNameEn());
+        assertEquals("Hartingcollege ADFS IDP EN", identityProvider.getName());
+    }
 
+    @Test
+    @SneakyThrows
+    public void findIdentityProviderByUnknownBrinCode() {
+        stubFor(post(urlPathMatching("/manage/api/internal/search/saml20_idp"))
+                .willReturn(aResponse()
+                        .withHeader("Content-Type", "application/json")
+                        .withBody("[]")));
         assertFalse(manage.findIdentityProviderByBrinCode("nope").isPresent());
     }
 

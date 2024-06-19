@@ -167,19 +167,15 @@ public class User implements Serializable, UserDetails {
     public String computeEduIdForServiceProviderIfAbsent(String entityId, Manage manage) {
         //Not likely and not desirable, but we don't interrupt the login flow for missing services
         ServiceProvider serviceProvider = manage.findServiceProviderByEntityId(entityId)
-                .orElse(new ServiceProvider(entityId, entityId, entityId, null, null, null));
+                .orElse(new ServiceProvider(new RemoteProvider(entityId, entityId, entityId, null, null), null));
         return doComputeEduIDIfAbsent(serviceProvider, manage);
     }
 
     @Transient
     public String computeEduIdForIdentityProviderProviderIfAbsent(IdentityProvider identityProvider, Manage manage) {
         ServiceProvider serviceProvider = new ServiceProvider(
-                null, //We want to create an eduID based on the institutionGUID
-                identityProvider.getDisplayNameEn(),
-                identityProvider.getDisplayNameNl(),
-                identityProvider.getLogoUrl(),
-                null,
-                identityProvider.getInstitutionGuid()
+                new RemoteProvider(null, identityProvider.getName(), identityProvider.getNameNl(), identityProvider.getInstitutionGuid(), identityProvider.getLogoUrl()),
+                null
         );
         return doComputeEduIDIfAbsent(serviceProvider, manage);
     }
@@ -217,7 +213,7 @@ public class User implements Serializable, UserDetails {
         otherEduIDs.forEach(eduID -> {
             String otherEntityId = eduID.getServiceProviderEntityId();
             ServiceProvider serviceProviderFromManage = manage.findServiceProviderByEntityId(otherEntityId)
-                    .orElse(new ServiceProvider(otherEntityId, otherEntityId, otherEntityId, null, null, null));
+                    .orElse(new ServiceProvider(new RemoteProvider(otherEntityId, otherEntityId, otherEntityId, null, null), null));
             eduID.updateServiceProvider(serviceProviderFromManage);
         });
         return eduIDValue;

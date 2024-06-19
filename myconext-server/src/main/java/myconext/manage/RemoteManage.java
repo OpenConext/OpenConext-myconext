@@ -1,6 +1,7 @@
 package myconext.manage;
 
 import myconext.model.IdentityProvider;
+import myconext.model.RemoteProvider;
 import myconext.model.ServiceProvider;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -151,12 +152,17 @@ public class RemoteManage implements Manage {
 
     @Override
     public Optional<IdentityProvider> findIdentityProviderByBrinCode(String brinCode) {
-        if (identityProviders.isEmpty()) {
-            LOG.info("Refreshing metadata as the current collection is empty");
-            doRefreshIdentityProviders();
-        }
-        return this.identityProviders.values().stream()
-                .filter(identityProvider -> brinCode.equals(identityProvider.getInstitutionBrin()))
+        Map<String, Object> requestBody = Map.of("metaDataFields.coin:institution_brin", brinCode,
+                "REQUESTED_ATTRIBUTES", Arrays.asList(
+                        "metaDataFields.coin:institution_brin",
+                        "metaDataFields.logo:0:url",
+                        "metaDataFields.coin:institution_guid"));
+        HttpEntity<Map<String, Object>> requestEntity = new HttpEntity<>(requestBody, this.headers);
+        return restTemplate.exchange(manageBaseUrl + "/manage/api/internal/search/saml20_idp",
+                HttpMethod.POST, requestEntity, typeReference)
+                .getBody()
+                .stream()
+                .map(m -> new IdentityProvider(remoteProvider(m), metaDataFields(m).get("coin:institution_brin")))
                 .findFirst();
     }
 

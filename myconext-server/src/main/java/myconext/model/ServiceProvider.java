@@ -1,23 +1,16 @@
 package myconext.model;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.io.Serializable;
-
-@Getter
 @Setter
-@NoArgsConstructor
-@AllArgsConstructor
-public class ServiceProvider implements Serializable {
+@Getter
+public class ServiceProvider extends RemoteProvider {
 
-    private String entityId;
-    private String name;
-    private String nameNl;
-    private String logoUrl;
     private String homeUrl;
-    private String institutionGuid;
 
+    public ServiceProvider(RemoteProvider remoteProvider, String homeUrl) {
+        super(remoteProvider.getEntityId(), remoteProvider.getName(), remoteProvider.getNameNl(), remoteProvider.getInstitutionGuid(), remoteProvider.getLogoUrl());
+        this.homeUrl = homeUrl;
+    }
 }

@@ -58,8 +58,8 @@ public class UserResponse implements Serializable {
             linkedAccounts.forEach(linkedAccount -> {
                 Optional<IdentityProvider> optionalIdentityProvider = manage.findIdentityProviderByDomainName(linkedAccount.getSchacHomeOrganization());
                 optionalIdentityProvider.ifPresent(identityProvider -> {
-                    linkedAccount.setDisplayNameEn(identityProvider.getDisplayNameEn());
-                    linkedAccount.setDisplayNameNl(identityProvider.getDisplayNameNl());
+                    linkedAccount.setDisplayNameEn(identityProvider.getName());
+                    linkedAccount.setDisplayNameNl(identityProvider.getNameNl());
                     linkedAccount.setInstitutionGuid(identityProvider.getInstitutionGuid());
                     linkedAccount.setLogoUrl(identityProvider.getLogoUrl());
                 });

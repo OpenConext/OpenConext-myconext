@@ -1,0 +1,19 @@
+[
+  {
+    "_id": "61ae3afe-c935-41ff-8e86-ec79c1ddcef3",
+    "version": 47,
+    "type": "saml20_idp",
+    "data": {
+      "entityid": "http://adfs.hartingcollege.nl/adfs/services/trust",
+      "state": "prodaccepted",
+      "metaDataFields": {
+        "name:en": "Hartingcollege ADFS IDP EN",
+        "name:nl": "Hartingcollege ADFS IDP NL",
+        "logo:0:url": "https://social.technet.microsoft.com/wiki/cfs-filesystemfile.ashx/__key/communityserver-wikis-components-files/00-00-00-00-05/1108.architecture-scenarios.png",
+        "OrganizationName:en": "Hartingcollege",
+        "coin:institution_brin": "ABCD",
+        "coin:institution_guid": "fea6015e-20e2-4064-8174-6b7ade8d307f"
+      }
+    }
+  }
+]

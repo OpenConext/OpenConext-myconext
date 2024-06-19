@@ -48,6 +48,8 @@ import static java.util.stream.Collectors.toList;
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 @Configuration
+//TODO replace WebSecurityConfigurerAdapter with SecurityFilterChain
+@SuppressWarnings("deprecation")
 public class SecurityConfiguration {
 
     private static final Log LOG = LogFactory.getLog(SecurityConfiguration.class);

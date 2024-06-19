@@ -1,6 +1,7 @@
 package myconext.manage;
 
 import myconext.model.IdentityProvider;
+import myconext.model.RemoteProvider;
 import myconext.model.SamlAuthenticationRequest;
 import myconext.model.ServiceProvider;
 import org.springframework.util.StringUtils;
@@ -49,37 +50,42 @@ public interface Manage {
     }
 
     default ServiceProvider serviceProvider(Map<String, Object> map) {
+        RemoteProvider remoteProvider = remoteProvider(map);
+        return new ServiceProvider(remoteProvider,
+                metaDataFields(map).get("coin:application_url"));
+    }
+
+    @SuppressWarnings("unchecked")
+    default Map<String, String> metaDataFields(Map<String, Object> map) {
+        Map<String, Object> data = (Map<String, Object>) map.get("data");
+        return (Map<String, String>) data.get("metaDataFields");
+    }
+
+    @SuppressWarnings("unchecked")
+    default RemoteProvider remoteProvider(Map<String, Object> map) {
         Map<String, Object> data = (Map<String, Object>) map.get("data");
         String entityId = (String) data.get("entityid");
 
         Map<String, String> metaDataFields = (Map<String, String>) data.get("metaDataFields");
         String nameEn = metaDataFields.get("name:en");
         String nameNl = metaDataFields.get("name:nl");
-        return new ServiceProvider(
+        return new RemoteProvider(
                 entityId,
                 StringUtils.hasText(nameEn) ? nameEn : StringUtils.hasText(nameNl) ? nameNl : entityId,
                 StringUtils.hasText(nameNl) ? nameNl : StringUtils.hasText(nameEn) ? nameEn : entityId,
-                metaDataFields.get("logo:0:url"),
-                metaDataFields.get("coin:application_url"),
-                metaDataFields.get("coin:institution_guid")
+                metaDataFields.get("coin:institution_guid"),
+                metaDataFields.get("logo:0:url")
         );
+
     }
 
     @SuppressWarnings("unchecked")
     default Map<String, IdentityProvider> identityProvider(Map<String, Object> map) {
-        Map<String, Object> data = (Map<String, Object>) map.get("data");
-        String entityId = (String) data.get("entityid");
-
-        Map<String, String> metaDataFields = (Map<String, String>) data.get("metaDataFields");
-        String nameEn = metaDataFields.get("name:en");
-        String nameNl = metaDataFields.get("name:nl");
+        RemoteProvider remoteProvider = remoteProvider(map);
+        Map<String, String> metaDataFields = metaDataFields(map);
         IdentityProvider identityProvider = new IdentityProvider(
-                entityId,
-                metaDataFields.get("coin:institution_brin"),
-                metaDataFields.get("coin:institution_guid"),
-                StringUtils.hasText(nameEn) ? nameEn : StringUtils.hasText(nameNl) ? nameNl : entityId,
-                StringUtils.hasText(nameNl) ? nameNl : StringUtils.hasText(nameEn) ? nameEn : entityId,
-                metaDataFields.get("logo:0:url")
+                remoteProvider,
+                metaDataFields.get("coin:institution_brin")
         );
         Map<String, IdentityProvider> results = new HashMap<>();
 
@@ -89,6 +95,9 @@ public interface Manage {
                 results.put(scope, identityProvider);
             }
         });
+        if (results.isEmpty()) {
+
+        }
         return results;
     }
 }
