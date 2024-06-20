@@ -47,7 +47,7 @@ public class GuestIdpAuthenticationRequestFilterTest {
         assertTrue(subject.isUserVerifiedByInstitution(user, List.of(ACR.VALIDATE_NAMES_EXTERNAL)));
 
         externalLinkedAccount.setVerification(Verification.Ongeverifieerd);
-        assertFalse(subject.isUserVerifiedByInstitution(user, null));
+        assertFalse(subject.isUserVerifiedByInstitution(user, List.of(ACR.VALIDATE_NAMES_EXTERNAL)));
     }
 
     @Test
