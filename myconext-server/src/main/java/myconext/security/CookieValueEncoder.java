@@ -12,7 +12,6 @@ public class CookieValueEncoder {
 
     private final String salt;
 
-    @SneakyThrows
     public CookieValueEncoder(@Value("${tiqr_hash_secret}") String salt) {
         this.salt = salt;
 

@@ -6,6 +6,7 @@ import io.restassured.common.mapper.TypeRef;
 import io.restassured.filter.cookie.CookieFilter;
 import io.restassured.http.ContentType;
 import io.restassured.http.Cookie;
+import io.restassured.path.xml.XmlPath;
 import io.restassured.response.Response;
 import io.restassured.response.ValidatableResponse;
 import myconext.AbstractIntegrationTest;
@@ -205,6 +206,25 @@ public class UserControllerTest extends AbstractIntegrationTest {
         String samlResponse = this.samlResponse(magicLinkResponse);
 
         assertTrue(samlResponse.contains("Your institution has not provided those attributes"));
+        assertTrue(samlResponse.contains("urn:oasis:names:tc:SAML:2.0:status:NoAuthnContext"));
+    }
+
+    @Test
+    public void accountLinkingWithoutValidExternalNames() throws IOException {
+        String authnContext = readFile("request_authn_context_validated_external_name.xml");
+        Response response = samlAuthnRequestResponseWithLoa(null, "relay", authnContext);
+
+        String authenticationRequestId = extractAuthenticationRequestIdFromAuthnResponse(response);
+        SamlAuthenticationRequest samlAuthenticationRequest = authenticationRequestRepository.findById(authenticationRequestId).get();
+        //fake that we want to proceed
+        samlAuthenticationRequest.setSteppedUp(StepUpStatus.FINISHED_STEP_UP);
+        authenticationRequestRepository.save(samlAuthenticationRequest);
+
+        User user = userRepository.findOneUserByEmail("jdoe@example.com");
+        MagicLinkResponse magicLinkResponse = magicLinkRequest(new MagicLinkRequest(authenticationRequestId, user, false), HttpMethod.PUT);
+        String samlResponse = this.samlResponse(magicLinkResponse);
+
+        assertTrue(samlResponse.contains("Your identity is not verified by an external trusted party"));
         assertTrue(samlResponse.contains("urn:oasis:names:tc:SAML:2.0:status:NoAuthnContext"));
     }
 
@@ -1277,6 +1297,19 @@ public class UserControllerTest extends AbstractIntegrationTest {
         User user = userRepository.findOneUserByEmail("jdoe@example.com");
         Optional<LinkedAccount> optionalLinkedAccount = user.getLinkedAccounts().stream().filter(LinkedAccount::isPreferred).findFirst();
         assertTrue(optionalLinkedAccount.isPresent());
+    }
+
+    @Test
+    public void metaData() {
+        String xml = given().redirects().follow(false)
+                .when()
+                .get("/saml/guest-idp/metadata")
+                .then()
+                .statusCode(HttpStatus.OK.value())
+                .extract()
+                .response()
+                .asString();
+        assertTrue(xml.contains("eduID IdP"));
     }
 
     private String hash() {

@@ -4,8 +4,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.UUID;
 
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 class CookieValueEncoderTest {
 
@@ -21,4 +20,8 @@ class CookieValueEncoderTest {
         assertFalse(new CookieValueEncoder(UUID.randomUUID().toString()).matches(value, encoded));
     }
 
+    @Test
+    void encodeWithException() {
+        assertThrows(NullPointerException.class, () -> cookieValueEncoder.encode(null));
+    }
 }

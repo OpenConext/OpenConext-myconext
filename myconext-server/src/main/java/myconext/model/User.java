@@ -303,7 +303,7 @@ public class User implements Serializable, UserDetails {
     @Transient
     @JsonIgnore
     public void updateWithExternalEduID(NewExternalEduID externalEduID) {
-        //Only update this when there is no validated account
+        //Only update attributes when there is no validated account
         if (CollectionUtils.isEmpty(this.externalLinkedAccounts) && CollectionUtils.isEmpty(this.linkedAccounts)) {
             this.givenName = externalEduID.getFirstName();
             String lastNamePrefix = externalEduID.getLastNamePrefix();

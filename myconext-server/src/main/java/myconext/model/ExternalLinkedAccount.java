@@ -8,6 +8,8 @@ import lombok.Setter;
 import org.springframework.util.StringUtils;
 
 import java.io.Serializable;
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.Date;
 
 @NoArgsConstructor
@@ -48,6 +50,7 @@ public class ExternalLinkedAccount implements Serializable {
         this.subjectId = subjectId;
         this.idpScoping = idpScoping;
         this.external = external;
+        this.expiresAt = Date.from(Instant.now().plus(5 * 365, ChronoUnit.DAYS));
     }
 
     public boolean areNamesValidated() {

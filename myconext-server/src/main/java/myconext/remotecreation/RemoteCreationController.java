@@ -248,9 +248,8 @@ public class RemoteCreationController implements HasUserRepository {
          * we create new eduID value for the remote API institutionGUID
          */
         User user = this.findUserByEduIDValue(eduIDValue)
-                .orElseThrow(() -> new UserNotFoundException(String.format("User not found by eduID %s", eduIDValue, email)));
+                .orElseThrow(() -> new UserNotFoundException(String.format("User not found by eduID %s", eduIDValue)));
         user.updateWithExternalEduID(externalEduID);
-            //Not all attributes can be changed with an update
         Optional<ExternalLinkedAccount> optionalExternalLinkedAccount = user.getExternalLinkedAccounts().stream()
                 .filter(account -> IdpScoping.valueOf(remoteUserName).equals(account.getIdpScoping()))
                 .findAny();
@@ -260,16 +259,12 @@ public class RemoteCreationController implements HasUserRepository {
             externalLinkedAccount.setBrinCode(externalEduID.getBrinCode());
             externalLinkedAccount.setDateOfBirth(AttributeMapper.parseDate(externalEduID.getDateOfBirth()));
         }, () -> {
-            //Ensure there is an external account for this remoteAPI user
+            //Create external account for this remoteAPI user
             IdentityProvider identityProvider = getIdentityProvider(remoteUser, externalEduID, remoteUserName);
             String provisionedEduIDValue = user.computeEduIdForIdentityProviderProviderIfAbsent(identityProvider, manage);
             externalEduID.setEduIDValue(provisionedEduIDValue);
-            boolean externalLinkedAccountMissing = user.getExternalLinkedAccounts().stream()
-                    .noneMatch(account -> IdpScoping.valueOf(remoteUserName).equals(account.getIdpScoping()));
-            if (externalLinkedAccountMissing) {
-                ExternalLinkedAccount externalLinkedAccount = attributeMapper.createExternalLinkedAccount(externalEduID, IdpScoping.valueOf(remoteUserName));
-                user.getExternalLinkedAccounts().add(externalLinkedAccount);
-            }
+            ExternalLinkedAccount externalLinkedAccount = attributeMapper.createExternalLinkedAccount(externalEduID, IdpScoping.valueOf(remoteUserName));
+            user.getExternalLinkedAccounts().add(externalLinkedAccount);
         });
 
         userRepository.save(user);
@@ -284,8 +279,8 @@ public class RemoteCreationController implements HasUserRepository {
                 remoteUser.getInstitutionGUID(),
                 String.format("https://static.surfconext.nl/logos/org/%s.png", remoteUser.getInstitutionGUID()));
 
-        IdentityProvider identityProvider = new IdentityProvider(remoteProvider, externalEduID.getBrinCode());
-        return identityProvider;
+
+        return new IdentityProvider(remoteProvider, externalEduID.getBrinCode());
     }
 
 }

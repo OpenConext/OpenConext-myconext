@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.SneakyThrows;
 import myconext.model.ExternalLinkedAccount;
 import myconext.model.IdpScoping;
+import myconext.model.Verification;
 import myconext.model.VerifyIssuer;
 import myconext.remotecreation.NewExternalEduID;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -58,7 +59,7 @@ public class AttributeMapper {
                         //VerifyIssuer issuer
                         verifyState.getVerifyIssuer(),
                         //Verification
-                        null,
+                        Verification.Decentraal,
                         //String serviceUUID
                         getAttribute(attributes, "urn:nl:bvn:bankid:1.0:bankid.deliveredserviceid"),
                         //String serviceID
@@ -104,7 +105,7 @@ public class AttributeMapper {
                         //VerifyIssuer issuer
                         verifyState.getVerifyIssuer(),
                         //Verification
-                        null,
+                        Verification.Decentraal,
                         //String serviceUUID
                         getAttribute(attributes, "urn:etoegang:core:ServiceUUID"),
                         //String serviceID

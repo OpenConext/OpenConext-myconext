@@ -14,7 +14,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static io.restassured.RestAssured.given;
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 
 @SuppressWarnings("unchecked")
@@ -158,6 +158,7 @@ class RemoteCreationControllerTest extends AbstractIntegrationTest {
         String eduIDValue = externalEduIDResult.getEduIDValue();
         User user = this.findUserByEduIDValue(eduIDValue).get();
         assertFalse(user.isNewUser());
+        assertEquals("von Munich", user.getFamilyName());
 
         EduID newEduID = user.getEduIDS().stream()
                 .filter(anEduID -> anEduID.getValue().equals(eduIDValue))
@@ -169,6 +170,33 @@ class RemoteCreationControllerTest extends AbstractIntegrationTest {
 
         assertEquals(1, user.getExternalLinkedAccounts().size());
         assertEquals(IdpScoping.studielink, user.getExternalLinkedAccounts().get(0).getIdpScoping());
+    }
+
+    @Test
+    void createEduIDHappyFlowNoLastNamePrefix() {
+        NewExternalEduID externalEduID = new NewExternalEduID(
+                "new@user.com",
+                "Mary",
+                "Mary",
+                null,
+                "Munich",
+                "nope",
+                UUID.randomUUID().toString(),
+                Verification.Decentraal,
+                null
+        );
+        UpdateExternalEduID externalEduIDResult = given()
+                .when()
+                .auth().preemptive().basic(userName, password)
+                .contentType(ContentType.JSON)
+                .body(externalEduID)
+                .post("/api/remote-creation/eduid-create")
+                .as(new TypeRef<>() {
+                });
+        String eduIDValue = externalEduIDResult.getEduIDValue();
+        User user = this.findUserByEduIDValue(eduIDValue).get();
+        assertEquals("Munich", user.getFamilyName());
+        assertNull(user.getDateOfBirth());
     }
 
     @Test

@@ -2,8 +2,7 @@ package myconext.security;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import myconext.manage.MockManage;
-import myconext.model.LinkedAccount;
-import myconext.model.User;
+import myconext.model.*;
 import myconext.repository.UserRepository;
 import org.junit.Before;
 import org.junit.Test;
@@ -38,6 +37,17 @@ public class GuestIdpAuthenticationRequestFilterTest {
         User user = user("s@s.com", "nl");
         boolean userVerifiedByInstitution = subject.isUserVerifiedByInstitution(user, null);
         assertFalse(userVerifiedByInstitution);
+    }
+
+    @Test
+    public void isUserVerifiedByInstitutionNoLinkedAccountsNotVerified() {
+        User user = user("s@s.com", "nl");
+        ExternalLinkedAccount externalLinkedAccount = new ExternalLinkedAccount("subjct-id", IdpScoping.studielink, true);
+        user.getExternalLinkedAccounts().add(externalLinkedAccount);
+        assertTrue(subject.isUserVerifiedByInstitution(user, List.of(ACR.VALIDATE_NAMES_EXTERNAL)));
+
+        externalLinkedAccount.setVerification(Verification.Ongeverifieerd);
+        assertFalse(subject.isUserVerifiedByInstitution(user, null));
     }
 
     @Test
