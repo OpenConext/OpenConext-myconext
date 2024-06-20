@@ -6,7 +6,6 @@ import io.restassured.common.mapper.TypeRef;
 import io.restassured.filter.cookie.CookieFilter;
 import io.restassured.http.ContentType;
 import io.restassured.http.Cookie;
-import io.restassured.path.xml.XmlPath;
 import io.restassured.response.Response;
 import io.restassured.response.ValidatableResponse;
 import myconext.AbstractIntegrationTest;
@@ -226,6 +225,48 @@ public class UserControllerTest extends AbstractIntegrationTest {
 
         assertTrue(samlResponse.contains("Your identity is not verified by an external trusted party"));
         assertTrue(samlResponse.contains("urn:oasis:names:tc:SAML:2.0:status:NoAuthnContext"));
+    }
+
+    @Test
+    public void accountLinkingWithValidatedNamesByExternalLinkedAccount() throws IOException {
+        User user = userRepository.findOneUserByEmail("jdoe@example.com");
+        user.getLinkedAccounts().clear();
+        ExternalLinkedAccount externalLinkedAccount = new ExternalLinkedAccount(
+                UUID.randomUUID().toString(),
+                IdpScoping.studielink,
+                new VerifyIssuer(IdpScoping.studielink.name(), IdpScoping.studielink.name()),
+                Verification.Geverifieerd,
+                UUID.randomUUID().toString(),
+                IdpScoping.studielink.name(),
+                IdpScoping.studielink.name(),
+                null,
+                null,
+                "Johny",
+                "John",
+                "Doe",
+                "Doe",
+                null,
+                null,
+                null,
+                null,
+                new Date(),
+                new Date(),
+                Date.from(Instant.now().plus(365 * 5, ChronoUnit.DAYS)),
+                true
+        );
+        user.getExternalLinkedAccounts().add(externalLinkedAccount);
+        userRepository.save(user);
+
+        String authnContext = readFile("request_authn_context_validated_name.xml");
+        Response response = samlAuthnRequestResponseWithLoa(null, "relay", authnContext);
+        String authenticationRequestId = extractAuthenticationRequestIdFromAuthnResponse(response);
+
+        MagicLinkResponse magicLinkResponse = magicLinkRequest(new MagicLinkRequest(authenticationRequestId, user, false), HttpMethod.PUT);
+        String samlResponse = samlResponse(magicLinkResponse);
+
+        assertTrue(samlResponse.contains(ACR.VALIDATE_NAMES));
+        assertTrue(samlResponse.contains(user.getFamilyName()));
+        assertTrue(samlResponse.contains(user.getGivenName()));
     }
 
     @Test

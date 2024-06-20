@@ -295,7 +295,12 @@ public class GuestIdpAuthenticationRequestFilter extends OncePerRequestFilter {
                     }
                     return now.isBefore(expiresAt);
                 }).collect(toList());
-        boolean atLeastOneNotExpired = !CollectionUtils.isEmpty(nonExpiredLinkedAccounts);
+        List<ExternalLinkedAccount> nonExpiredExternalLinkedAccounts = externalLinkedAccounts.stream()
+                .filter(externalLinkedAccount -> {
+                    Instant expiresAt = externalLinkedAccount.getExpiresAt().toInstant();
+                    return now.isBefore(expiresAt);
+                }).collect(toList());
+        boolean atLeastOneNotExpired = !CollectionUtils.isEmpty(nonExpiredLinkedAccounts) || !CollectionUtils.isEmpty(nonExpiredExternalLinkedAccounts);
         boolean hasRequiredStudentAffiliation = !authenticationContextClassReferenceValues.contains(ACR.AFFILIATION_STUDENT) ||
                 nonExpiredLinkedAccounts.stream()
                         .anyMatch(linkedAccount -> hasRequiredStudentAffiliation(linkedAccount.getEduPersonAffiliations()));
