@@ -121,12 +121,21 @@ public class RemoteCreationController implements HasUserRepository {
     @Operation(summary = "Return a eduID pseudonym for an institution",
             description = "Return a eduID pseudonym for an institution identified by the BRIN code",
             responses = {
-                    @ApiResponse(responseCode = "201", description = "Created",
+                    @ApiResponse(responseCode = "200", description = "OK",
                             content = {@Content(schema = @Schema(implementation = EduIDValue.class),
-                                    examples = {@ExampleObject(value = "{\"value\":fc75dcc7-6def-4054-b8ba-3c3cc504dd4b}")})}),
+                                    examples = {@ExampleObject(value = "{\n" +
+                                            "  \"value\": \"46ab5162-e098-4c24-9f28-cdf4d9b5fbb0\"\n" +
+                                            "}")})}),
                     @ApiResponse(responseCode = "400", description = "BadRequest",
                             content = {@Content(schema = @Schema(implementation = StatusResponse.class),
-                                    examples = {@ExampleObject(value = "{\"status\":400}")})}),
+                                    examples = {@ExampleObject(value = "{\n" +
+                                            "  \"timestamp\": 1718865813679,\n" +
+                                            "  \"status\": 400,\n" +
+                                            "  \"error\": \"Bad Request\",\n" +
+                                            "  \"exception\": \"org.springframework.web.bind.MethodArgumentNotValidException\",\n" +
+                                            "  \"message\": \"Validation failed for object='eduIDInstitutionPseudonym'. Error count: 1\",\n" +
+                                             "  \"path\": \"/api/remote-creation/eduid-institution-pseudonym\"\n" +
+                                            "}")})}),
                     @ApiResponse(responseCode = "404", description = "Not found - eduID or BRIN code not found",
                             content = {@Content(schema = @Schema(implementation = StatusResponse.class),
                                     examples = {@ExampleObject(value = "{\n" +
