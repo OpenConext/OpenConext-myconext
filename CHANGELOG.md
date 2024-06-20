@@ -1,5 +1,9 @@
 # Changelog
 All notable changes to this project will be documented in this file.
+## [7.3.0]
+- Add support for ID validation using Signicat services
+- Extend API for remote creation
+- Update the wau eduID identifiers for services are stored
 
 ## [7.2.10]
 - If the app sends only a givenname to /mobile/api/sp/update (old app) update the self-asserted chosenname field
