@@ -154,7 +154,7 @@
 
 </style>
 <div class="start">
-    <h2>{I18n.t("start.hi", {name: $user.givenName})}</h2>
+    <h2>{I18n.t("start.hi", {name: $user.chosenName})}</h2>
     <p class="manage">{I18n.t("start.manage")}</p>
     <div class="card-container">
         {#if isEmpty($user.linkedAccounts)}
