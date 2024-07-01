@@ -92,6 +92,7 @@ jobs:
         token: ${{ secrets.GITHUB_TOKEN }}
         fail_on_unmatched_files: true
         generate_release_notes: true
+      if: ${{!( endsWith(steps.versioncheck.outputs.version, '-SNAPSHOT')) }}
 
     - name: Set up Docker Buildx
       uses: docker/setup-buildx-action@v3
