@@ -1,5 +1,9 @@
 # Changelog
 All notable changes to this project will be documented in this file.
+
+## [7.3.1]
+- Fixed a small issue with the ID validation using Signicat services
+
 ## [7.3.0]
 - Add support for ID validation using Signicat services
 - Extend API for remote creation
