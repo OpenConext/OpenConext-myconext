@@ -23,7 +23,7 @@ export const linkedAccountGivenName = linkedAccount => {
 }
 
 export const linkedAccountFamilyName = linkedAccount => {
-  return linkedAccount.external ? linkedAccount.preferredLastName : linkedAccount.familyName;
+  return linkedAccount.external ? linkedAccount.legalLastName : linkedAccount.familyName;
 }
 
 export const isStudent = linkedAccount => {

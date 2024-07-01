@@ -56,7 +56,7 @@ public class ExternalLinkedAccount implements Serializable {
     public boolean areNamesValidated() {
         switch (this.idpScoping) {
             case idin:
-                return StringUtils.hasText(initials) && StringUtils.hasText(preferredLastName);
+                return StringUtils.hasText(initials) && StringUtils.hasText(legalLastName);
             case eherkenning:
                 return StringUtils.hasText(firstName) && StringUtils.hasText(preferredLastName);
             case studielink:

@@ -515,8 +515,8 @@ public class AccountLinkerController implements UserAuthentication {
         if (StringUtils.hasText(externalLinkedAccount.getInitials()) && IdpScoping.idin.equals(externalLinkedAccount.getIdpScoping()) ) {
             user.setGivenName(externalLinkedAccount.getInitials());
         }
-        if (StringUtils.hasText(externalLinkedAccount.getPreferredLastName())) {
-            user.setFamilyName(externalLinkedAccount.getPreferredLastName());
+        if (StringUtils.hasText(externalLinkedAccount.getLegalLastName())) {
+            user.setFamilyName(externalLinkedAccount.getLegalLastName());
         }
         if (externalLinkedAccount.getDateOfBirth() != null) {
             user.setDateOfBirth(externalLinkedAccount.getDateOfBirth());
@@ -619,8 +619,8 @@ public class AccountLinkerController implements UserAuthentication {
         if (StringUtils.hasText(externalLinkedAccount.getFirstName()) && IdpScoping.eherkenning.equals(externalLinkedAccount.getIdpScoping())) {
             user.setGivenName(externalLinkedAccount.getFirstName());
         }
-        if (StringUtils.hasText(externalLinkedAccount.getPreferredLastName())) {
-            user.setFamilyName(externalLinkedAccount.getPreferredLastName());
+        if (StringUtils.hasText(externalLinkedAccount.getLegalLastName())) {
+            user.setFamilyName(externalLinkedAccount.getLegalLastName());
         }
         if (externalLinkedAccount.getDateOfBirth() != null) {
             user.setDateOfBirth(externalLinkedAccount.getDateOfBirth());
