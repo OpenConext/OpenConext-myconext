@@ -1,7 +1,7 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
-## [7.3.1]
+## [7.3.2]
 - Fixed a small issue with the ID validation using Signicat services
 
 ## [7.3.0]
