@@ -504,6 +504,13 @@ public class AccountLinkerController implements UserAuthentication {
         Map<String, Object> attributes = restTemplate.exchange(verifyBaseUri + "/broker/sp/oidc/userinfo", HttpMethod.POST, request, parameterizedTypeReference).getBody();
 
         ExternalLinkedAccount externalLinkedAccount = attributeMapper.externalLinkedAccountFromAttributes(attributes, verifyState);
+        Optional<User> optionalUser = userRepository.findByExternalLinkedAccounts_SubjectId(externalLinkedAccount.getSubjectId());
+        if (optionalUser.isPresent() && !user.getId().equals(optionalUser.get().getId())) {
+            //Not allowed to link an external linked account which identity is already linked to another user
+            return ResponseEntity.status(HttpStatus.FOUND)
+                    .location(URI.create(spRedirectUrl + "/subject-already-linked?idp_scoping"))
+                    .build();
+        }
         List<ExternalLinkedAccount> externalLinkedAccounts = user.getExternalLinkedAccounts();
         //We only allow one ExternalLinkedAccount - for now
         externalLinkedAccounts.clear();
@@ -611,6 +618,15 @@ public class AccountLinkerController implements UserAuthentication {
         Map<String, Object> attributes = restTemplate.exchange(verifyBaseUri + "/broker/sp/oidc/userinfo", HttpMethod.POST, request, parameterizedTypeReference).getBody();
 
         ExternalLinkedAccount externalLinkedAccount = attributeMapper.externalLinkedAccountFromAttributes(attributes, verifyState);
+        Optional<User> optionalUser = userRepository.findByExternalLinkedAccounts_SubjectId(externalLinkedAccount.getSubjectId());
+        if (optionalUser.isPresent() && !user.getId().equals(optionalUser.get().getId())) {
+            //Not allowed to link an external linked account which identity is already linked to another user
+            String subjectAlreadyLinkedRequiredUri = this.idpBaseRedirectUrl + "/subject-already-linked/" +
+                    samlAuthenticationRequest.getId() +
+                    "?h=" + samlAuthenticationRequest.getHash() +
+                    "&redirect=" + URLEncoder.encode(this.magicLinkUrl, Charset.defaultCharset());
+            return ResponseEntity.status(HttpStatus.FOUND).location(URI.create(subjectAlreadyLinkedRequiredUri)).build();
+        }
         List<ExternalLinkedAccount> externalLinkedAccounts = user.getExternalLinkedAccounts();
         //We only allow one ExternalLinkedAccount - for now
         externalLinkedAccounts.clear();
@@ -802,7 +818,6 @@ public class AccountLinkerController implements UserAuthentication {
                 if (eppnAlreadyLinkedOptional.isPresent()) {
                     return eppnAlreadyLinkedOptional.get();
                 }
-//                manage.findIdentityProviderByDomainName()
                 linkedAccounts.add(
                         new LinkedAccount(institutionIdentifier, schacHomeOrganization, eppn, subjectId, givenName, familyName, affiliations, linkedAccounts.isEmpty(),
                                 new Date(), expiresAt));

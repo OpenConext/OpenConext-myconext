@@ -246,7 +246,9 @@
                     <Route path="/eppn-already-linked">
                         <Home bookmark="eppn-already-linked"/>
                     </Route>
-
+                    <Route path="/subject-already-linked">
+                        <Home bookmark="subject-already-linked"/>
+                    </Route>
                     <Route path="/data-activity">
                         <Home bookmark="data-activity"/>
                     </Route>

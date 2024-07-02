@@ -140,6 +140,10 @@ I18n.translations.nl = {
             title: "EPPN is al gekoppeld!",
             info: "Je account is niet gekoppeld, klik op de knop hier onder om de eduID app te openen.",
         },
+        "subject-already-linked": {
+            title: "Subject is al gekoppeld!",
+            info: "Je account is niet geverifïeerd, klik op de knop hier onder om de eduID app te openen.",
+        },
         expired: {
             title: "Sessie verlopen!",
             info: "Je account is niet gekoppeld, klik op de knop hier onder om de eduID app te openen.",
@@ -266,6 +270,13 @@ I18n.translations.nl = {
         header: "Account niet gekoppeld!",
         info: "Je eduID kon niet worden gekoppeld. Het vertrouwde account waarmee je zojuist bent ingelogd, is al aan een ander eduID-account gekoppeld: {{email}}.",
         proceed: "Je kan het nogmaals met een andere instelling proberen of doorgaan naar {{name}}.",
+        proceedLink: "Doorgaan",
+        retryLink: "Opnieuw proberen"
+    },
+    subjectAlreadyLinked: {
+        header: "Account niet geverifïeerd!",
+        info: "Je eduID kon niet worden geverifïeerd. Het externe account waarmee je zojuist bent ingelogd, is al aan een ander eduID-account gekoppeld.",
+        proceed: "Je kan nogmaaal proberen je account te verifieren of doorgaan naar {{name}}.",
         proceedLink: "Doorgaan",
         retryLink: "Opnieuw proberen"
     },

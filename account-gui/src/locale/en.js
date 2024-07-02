@@ -140,6 +140,10 @@ I18n.translations.en = {
             title: "EPPN already linked!",
             info: "Your account has not been linked, click the button below to open the eduID app.",
         },
+        "subject-already-linked": {
+            title: "Subject already linked!",
+            info: "Your account has not been verified, click the button below to open the eduID app.",
+        },
         expired: {
             title: "Session expired!",
             info: "Your account has not been linked, click the button below to open the eduID app.",
@@ -266,6 +270,13 @@ I18n.translations.en = {
         header: "Account not linked!",
         info: "Your eduID could not be linked. The trusted account with which you just logged in, is already linked to a different eduID account: {{email}}.",
         proceed: "You can try to link to another institution or proceed to {{name}}.",
+        proceedLink: "Proceed",
+        retryLink: "Retry"
+    },
+    subjectAlreadyLinked: {
+        header: "Account not verified!",
+        info: "Your eduID could not be verified. The external account with which you just logged in, is already linked to a different eduID account.",
+        proceed: "You can try to verify your account again or proceed to {{name}}.",
         proceedLink: "Proceed",
         retryLink: "Retry"
     },

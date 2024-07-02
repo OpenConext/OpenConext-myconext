@@ -98,7 +98,7 @@
 
     const addIdentity = showIdin => {
         showIdinOptions = showIdin;
-        showModal = true
+        showModal = true;
     }
 
     const deleteInstitution = (showConfirmation, linkedAccount) => {
@@ -134,7 +134,7 @@
         }
     }
 
-    const refresh = () => {
+    const refresh = (retry=false) => {
         ($user.linkedAccounts || []).forEach(account => markExpired(account));
         ($user.externalLinkedAccounts || []).forEach(account => markExternalLinkedAccountExpired(account));
         sortedAccounts = ($user.linkedAccounts || []).sort((a, b) => b.createdAt - a.createdAt);
@@ -158,7 +158,7 @@
 
         }
         eduIDLinked = validLinkedAccounts.length > 0 || validExternalLinkedAccount;
-        if (isEmpty($user.linkedAccounts) && isEmpty($user.externalLinkedAccounts)) {
+        if (isEmpty($user.linkedAccounts) && isEmpty($user.externalLinkedAccounts) && !retry) {
             manageVerifiedInformation("personal");
         }
     }
@@ -231,11 +231,14 @@
     }
 
     onMount(() => {
-        showManageVerifiedInformation = window.location.pathname.indexOf("manage") > -1;
-        refresh();
         const urlSearchParams = new URLSearchParams(window.location.search);
+        const retry = urlSearchParams.get("retry");
+        const verify = urlSearchParams.get("verify");
+        const eduPersonPrincipalName = urlSearchParams.get("institution");
+
+        showManageVerifiedInformation = window.location.pathname.indexOf("manage") > -1;
+        refresh(retry);
         if (!isEmpty($user.linkedAccounts)) {
-            const eduPersonPrincipalName = urlSearchParams.get("institution");
             if (!isEmpty(eduPersonPrincipalName)) {
                 const institution = $user.linkedAccounts.find(ins => ins.eduPersonPrincipalName === eduPersonPrincipalName);
                 if (institution && !isEmpty(institution.givenName) && !isEmpty(institution.familyName)) {
@@ -248,9 +251,12 @@
                 }
             }
         }
-        const verify = urlSearchParams.get("verify");
         if (!isEmpty(verify) && !isEmpty($user.externalLinkedAccounts)) {
             showPostVerificationModal = true;
+        }
+        if (!isEmpty(retry)) {
+            addIdentity(true);
+            window.history.replaceState({}, document.title, "/personal");
         }
         if ($config.featureIdVerify && isEmpty(issuers)) {
             iDINIssuers().then(res => issuers = res);

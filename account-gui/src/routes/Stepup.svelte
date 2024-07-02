@@ -23,6 +23,12 @@
         const urlSearchParams = new URLSearchParams(window.location.search);
         explanation = decodeURIComponent(urlSearchParams.get("explanation"));
         isExternalNameValidation = explanation === "validate_names_external";
+
+        const retry = urlSearchParams.get("retry");
+        if (retry) {
+            isExternalNameValidation = true;
+            showChooseOptions = true;
+        }
         fetchServiceName(id).then(res => {
             serviceName = res.name;
             showSpinner = false;

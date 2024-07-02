@@ -118,6 +118,11 @@ I18n.translations.en = {
         infoNew: "You can't request an eduID account with the trusted account with which you just logged in. This institutional account is already linked to a different eduID account: {{email}}.",
         retryLink: "Retry"
     },
+    subjectAlreadyLinked: {
+        header: "Verification failed!",
+        info: "Your eduID could not be verified. The external account with which you just logged in, is already linked to a different eduID account.",
+        retryLink: "Retry"
+    },
     edit: {
         title: "Name",
         info: "Please provide your full name",

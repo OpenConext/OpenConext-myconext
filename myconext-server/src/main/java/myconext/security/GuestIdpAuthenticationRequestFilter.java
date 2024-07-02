@@ -404,12 +404,12 @@ public class GuestIdpAuthenticationRequestFilter extends OncePerRequestFilter {
         boolean hasStudentAffiliation = hasRequiredStudentAffiliation(user.allEduPersonAffiliations());
         String explanation = ACR.explanationKeyWord(authenticationContextClassReferences, hasStudentAffiliation);
 
-        if (accountLinkingRequired && StepUpStatus.NONE.equals(samlAuthenticationRequest.getSteppedUp())) {
+        String force = request.getParameter("force");
+        if (accountLinkingRequired && StepUpStatus.NONE.equals(samlAuthenticationRequest.getSteppedUp()) && !StringUtils.hasText(force)) {
             response.sendRedirect(this.redirectUrl + "/stepup/" + samlAuthenticationRequest.getId()
                     + "?explanation=" + explanation);
             return;
         }
-        String force = request.getParameter("force");
         if (samlAuthenticationRequest.isMfaProfileRequired() && !samlAuthenticationRequest.isTiqrFlow() && !StringUtils.hasText(force)) {
             response.sendRedirect(this.redirectUrl + "/app-required?h=" + hash +
                     "&redirect=" + URLEncoder.encode(this.magicLinkUrl, charSet));

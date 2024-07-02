@@ -67,7 +67,7 @@ I18n.translations.nl = {
         linkedAccounts: "Je rollen",
         addInstitution: "Voeg een organisatie toe",
         proceedConext: "Voeg dit toe via SURFconext",
-        proceedVerify: "Voeg dit toe via SURFconext of een andere Identity Provider", 
+        proceedVerify: "Voeg dit toe via SURFconext of een andere Identity Provider",
         validated: "Gevalideerde informatie",
         firstAndLastName: "Voor- en achternaam",
         firstAndLastNameInfo: "Jouw voor- en achternaam zijn nog niet geverifieerd door een derde partij.",
@@ -118,6 +118,12 @@ I18n.translations.nl = {
         infoNew: "Je kan geen eduID account aanvragen met het vertrouwde account waarmee je zojuist bent ingelogd. Dit instellings-account is al gekoppeld met aan een ander eduID account: {{email}}.",
         retryLink: "Opnieuw proberen"
     },
+    subjectAlreadyLinked: {
+        header: "Verificatie mislukt niet gemaakt!",
+        info: "Je eduID kon niet worden geverifïeerd. Het externe account waarmee je zojuist bent ingelogd, is al aan een ander eduID-account gekoppeld.",
+        retryLink: "Opnieuw proberen"
+    },
+
     edit: {
         title: "Aanpassen profielgegevens",
         info: "Voer je volledige naam in.",
