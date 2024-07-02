@@ -1,7 +1,6 @@
 package myconext.model;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -13,7 +12,6 @@ import java.time.temporal.ChronoUnit;
 import java.util.Date;
 
 @NoArgsConstructor
-@AllArgsConstructor
 @Getter
 public class ExternalLinkedAccount implements Serializable {
 
@@ -51,6 +49,61 @@ public class ExternalLinkedAccount implements Serializable {
         this.idpScoping = idpScoping;
         this.external = external;
         this.expiresAt = Date.from(Instant.now().plus(5 * 365, ChronoUnit.DAYS));
+    }
+
+    public ExternalLinkedAccount(String subjectId,
+                                 IdpScoping idpScoping,
+                                 VerifyIssuer issuer,
+                                 Verification verification,
+                                 String serviceUUID,
+                                 String serviceID,
+                                 String subjectIssuer,
+                                 String brinCode,
+                                 String initials,
+                                 String chosenName,
+                                 String firstName,
+                                 String preferredLastName,
+                                 String legalLastName,
+                                 String partnerLastNamePrefix,
+                                 String legalLastNamePrefix,
+                                 String preferredLastNamePrefix,
+                                 String partnerLastName,
+                                 Date dateOfBirth,
+                                 Date createdAt,
+                                 Date expiresAt,
+                                 boolean external) {
+        this.subjectId = subjectId;
+        this.idpScoping = idpScoping;
+        this.issuer = issuer;
+        this.verification = verification;
+        this.serviceUUID = serviceUUID;
+        this.serviceID = serviceID;
+        this.subjectIssuer = subjectIssuer;
+        this.brinCode = brinCode;
+        this.initials = initials;
+        this.chosenName = chosenName;
+        this.firstName = firstName;
+        this.preferredLastName = preferredLastName;
+        this.legalLastName = legalLastName;
+        this.partnerLastNamePrefix = partnerLastNamePrefix;
+        this.legalLastNamePrefix = legalLastNamePrefix;
+        this.preferredLastNamePrefix = preferredLastNamePrefix;
+        this.partnerLastName = partnerLastName;
+        this.dateOfBirth = dateOfBirth;
+        this.createdAt = createdAt;
+        this.expiresAt = expiresAt;
+        this.external = external;
+
+        this.nameInvariant();
+    }
+
+    private void nameInvariant() {
+        if (StringUtils.hasText(this.preferredLastName) && StringUtils.hasText(this.preferredLastNamePrefix)) {
+            this.preferredLastName = String.format("%s %s", this.preferredLastNamePrefix, this.preferredLastName);
+        }
+        if (StringUtils.hasText(this.legalLastName) && StringUtils.hasText(this.legalLastNamePrefix)) {
+            this.legalLastName = String.format("%s %s", this.legalLastNamePrefix, this.legalLastName);
+        }
     }
 
     public boolean areNamesValidated() {

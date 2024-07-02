@@ -41,12 +41,12 @@ class AttributeMapperTest {
         assertEquals("idin", externalLinkedAccount.getSubjectIssuer());
         assertEquals("VJ", externalLinkedAccount.getInitials());
         assertEquals("VJ", externalLinkedAccount.getFirstName());
-        assertEquals("Vries-Jansen", externalLinkedAccount.getPreferredLastName());
-        assertEquals("Vries", externalLinkedAccount.getLegalLastName());
+        assertEquals("de Vries-Jansen", externalLinkedAccount.getPreferredLastName());
+        assertEquals("de Vries", externalLinkedAccount.getLegalLastName());
         assertEquals("van", externalLinkedAccount.getPartnerLastNamePrefix());
         assertEquals("de", externalLinkedAccount.getLegalLastNamePrefix());
         assertEquals("Jansen", externalLinkedAccount.getPartnerLastName());
-        assertEquals(attributeMapper.parseDate("19750725"), externalLinkedAccount.getDateOfBirth());
+        assertEquals(AttributeMapper.parseDate("19750725"), externalLinkedAccount.getDateOfBirth());
         assertNotNull(externalLinkedAccount.getCreatedAt());
         assertNotNull(externalLinkedAccount.getExpiresAt());
     }
