@@ -45,6 +45,7 @@
     import RedirectMobileApp from "./routes/RedirectMobileApp.svelte";
     import ConfirmExternalStepup from "./routes/ConfirmExternalStepup.svelte";
     import SubjectAlreadyLinked from "./routes/SubjectAlreadyLinked.svelte";
+    import ExternalAccountLinkedError from "./routes/ExternalAccountLinkedError.svelte";
 
     export let url = "";
 
@@ -197,6 +198,7 @@
                 <Route path="/subject-already-linked/:id" let:params>
                     <SubjectAlreadyLinked id="{params.id}"/>
                 </Route>
+                <Route path="/external-account-linked-error" component={ExternalAccountLinkedError}/>
                 <Route path="/confirm" component={Confirm}/>
                 <Route path="/confirm-stepup" component={ConfirmStepup}/>
                 <Route path="/confirm-external-stepup" component={ConfirmExternalStepup}/>

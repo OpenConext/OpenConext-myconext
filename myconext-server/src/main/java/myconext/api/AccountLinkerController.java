@@ -469,11 +469,23 @@ public class AccountLinkerController implements UserAuthentication {
     @GetMapping({"/sp/verify/redirect"})
     @Hidden
     public ResponseEntity spVerifyIDRedirect(Authentication authentication,
-                                             @RequestParam("code") String code,
-                                             @RequestParam("state") String state) {
+                                             @RequestParam(value = "code", required = false) String code,
+                                             @RequestParam(value = "state", required = false) String state,
+                                             @RequestParam(value = "error", required = false) String error,
+                                             @RequestParam(value = "error_description", required = false) String errorDescription) {
         LOG.debug("In SP verify ID redirect link account");
 
         User user = userFromAuthentication(authentication);
+
+        if (!StringUtils.hasText(code) || !StringUtils.hasText(state)) {
+            URI location = URI.create(String.format("%s/external-account-linked-error?error=%s&error_description=%s",
+                            spRedirectUrl,
+                            StringUtils.hasText(error) ? URLEncoder.encode(error, Charset.defaultCharset()) : "",
+                            StringUtils.hasText(errorDescription) ? URLEncoder.encode(errorDescription, Charset.defaultCharset()) : "Unexpected+error+occurred"
+                    )
+            );
+            return ResponseEntity.status(HttpStatus.FOUND).location(location).build();
+        }
 
         VerifyState verifyState = attributeMapper.serializeFromBase64(state);
 
@@ -530,7 +542,8 @@ public class AccountLinkerController implements UserAuthentication {
         }
         userRepository.save(user);
 
-        return ResponseEntity.status(HttpStatus.FOUND).location(URI.create(spRedirectUrl + "/personal?verify=" + externalLinkedAccount.getIdpScoping())).build();
+        URI location = URI.create(spRedirectUrl + "/personal?verify=" + externalLinkedAccount.getIdpScoping());
+        return ResponseEntity.status(HttpStatus.FOUND).location(location).build();
     }
 
     @GetMapping("/idp/verify/link/{id}")
@@ -572,9 +585,21 @@ public class AccountLinkerController implements UserAuthentication {
 
     @GetMapping({"/idp/verify/redirect"})
     @Hidden
-    public ResponseEntity idpVerifyIDRedirect(@RequestParam("code") String code,
-                                              @RequestParam("state") String state) {
+    public ResponseEntity idpVerifyIDRedirect(@RequestParam(value = "code", required = false) String code,
+                                              @RequestParam(value = "state", required = false) String state,
+                                              @RequestParam(value = "error", required = false) String error,
+                                              @RequestParam(value = "error_description", required = false) String errorDescription) {
         LOG.debug("In IDP verify ID redirect link account");
+
+        if (!StringUtils.hasText(code) || !StringUtils.hasText(state)) {
+            URI location = URI.create(String.format("%s/external-account-linked-error?error=%s&error_description=%s",
+                            this.idpBaseRedirectUrl,
+                            StringUtils.hasText(error) ? URLEncoder.encode(error, Charset.defaultCharset()) : "",
+                            StringUtils.hasText(errorDescription) ? URLEncoder.encode(errorDescription, Charset.defaultCharset()) : "Unexpected+error+occurred"
+                    )
+            );
+            return ResponseEntity.status(HttpStatus.FOUND).location(location).build();
+        }
 
         VerifyState verifyState = attributeMapper.serializeFromBase64(state);
 
@@ -588,6 +613,7 @@ public class AccountLinkerController implements UserAuthentication {
             return ResponseEntity.status(HttpStatus.FOUND).location(URI.create(this.idpBaseRedirectUrl + "/expired")).build();
         }
         SamlAuthenticationRequest samlAuthenticationRequest = optionalSamlAuthenticationRequest.get();
+
         String userId = samlAuthenticationRequest.getUserId();
         User user = userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException(userId));
 

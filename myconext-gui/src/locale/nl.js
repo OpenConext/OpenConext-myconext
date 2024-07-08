@@ -123,7 +123,11 @@ I18n.translations.nl = {
         info: "Je eduID kon niet worden geverifïeerd. Het externe account waarmee je zojuist bent ingelogd, is al aan een ander eduID-account gekoppeld.",
         retryLink: "Opnieuw proberen"
     },
-
+    externalAccountLinkedError: {
+        header: "Verificatie mislukt niet gemaakt!",
+        info: "Je eduID kon niet worden geverifïeerd. De vertrouwde partij die je hebt gekozen heeft een fout teruggemeld.",
+        retryLink: "Opnieuw proberen"
+    },
     edit: {
         title: "Aanpassen profielgegevens",
         info: "Voer je volledige naam in.",

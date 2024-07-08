@@ -280,6 +280,10 @@ I18n.translations.en = {
         proceedLink: "Proceed",
         retryLink: "Retry"
     },
+    externalAccountLinkedError: {
+        header: "Account not verified!",
+        info: "Your eduID could not be verified. The trusted party you selected returned an error."
+    },
     validNameMissing: {
         header: "Account linked, but...",
         info: "Your eduID is successfully linked, however the institution you choose did not provide a valid name.",

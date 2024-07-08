@@ -123,6 +123,11 @@ I18n.translations.en = {
         info: "Your eduID could not be verified. The external account with which you just logged in, is already linked to a different eduID account.",
         retryLink: "Retry"
     },
+    externalAccountLinkedError: {
+        header: "Verification failed!",
+        info: "Your eduID could not be verified. The trusted party you selected returned an error.",
+        retryLink: "Retry"
+    },
     edit: {
         title: "Name",
         info: "Please provide your full name",

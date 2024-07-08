@@ -249,6 +249,9 @@
                     <Route path="/subject-already-linked">
                         <Home bookmark="subject-already-linked"/>
                     </Route>
+                    <Route path="/external-account-linked-error">
+                        <Home bookmark="external-account-linked-error"/>
+                    </Route>
                     <Route path="/data-activity">
                         <Home bookmark="data-activity"/>
                     </Route>

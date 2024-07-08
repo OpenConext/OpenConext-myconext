@@ -280,6 +280,10 @@ I18n.translations.nl = {
         proceedLink: "Doorgaan",
         retryLink: "Opnieuw proberen"
     },
+    externalAccountLinkedError: {
+        header: "Account niet geverifïeerd!",
+        info: "Je eduID kon niet worden geverifïeerd. De vertrouwde partij die je hebt gekozen heeft een fout teruggemeld.",
+    },
     validNameMissing: {
         header: "Account is gekoppeld, maar...",
         info: "Je eduID is succesvol gekoppeld, maar de instelling die je hebt gekozen heeft niet de juiste attributen teruggegeven.",

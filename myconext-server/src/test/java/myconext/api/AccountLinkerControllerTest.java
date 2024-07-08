@@ -15,7 +15,6 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.util.MultiValueMap;
-import org.springframework.web.util.UriComponents;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.io.IOException;
@@ -26,11 +25,11 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.*;
-import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
 import static io.restassured.RestAssured.given;
 import static myconext.api.AccountLinkerController.parseAffiliations;
 import static myconext.security.GuestIdpAuthenticationRequestFilter.BROWSER_SESSION_COOKIE_NAME;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class AccountLinkerControllerTest extends AbstractIntegrationTest {
@@ -725,6 +724,37 @@ public class AccountLinkerControllerTest extends AbstractIntegrationTest {
     }
 
     @Test
+    public void spVerifyIDErrorFlow() throws IOException {
+        AuthorizationURL authorizationURL = given().redirects().follow(false)
+                .when()
+                .queryParam("idpScoping", IdpScoping.idin)
+                .queryParam("bankId", "RABONL2U")
+                .contentType(ContentType.JSON)
+                .get("/myconext/api/sp/verify/link")
+                .as(AuthorizationURL.class);
+        String url = authorizationURL.getUrl();
+        MultiValueMap<String, String> queryParams = UriComponentsBuilder.fromUriString(url).build().getQueryParams();
+
+        //Now call the redirect URI for the redirect by iDIN or eHerkenning
+        stubFor(post(urlPathMatching("/broker/sp/oidc/token")).willReturn(aResponse()
+                .withHeader("Content-Type", "application/json")
+                .withBody(objectMapper.writeValueAsString(Collections.singletonMap("access_token", "123456")))));
+        String userInfo = readFile("verify/idin.json");
+        stubFor(post(urlPathMatching("/broker/sp/oidc/userinfo")).willReturn(aResponse()
+                .withHeader("Content-Type", "application/json")
+                .withBody(userInfo)));
+
+        String location = given().redirects().follow(false)
+                .when()
+                .queryParam("error_description", "User cancelled state")
+                .contentType(ContentType.JSON)
+                .get("/myconext/api/sp/verify/redirect")
+                .getHeader("Location");
+
+        assertTrue(location.startsWith("http://localhost:3001/external-account-linked-error"));
+    }
+
+    @Test
     public void idpVerifyIDFlow() throws IOException {
         MagicLinkResponse magicLinkResponse = magicLinkRequest(user("jdoe@example.com"), HttpMethod.PUT);
 
@@ -775,6 +805,40 @@ public class AccountLinkerControllerTest extends AbstractIntegrationTest {
                 .get("/saml/guest-idp/magic")
                 .header("Location");
         assertTrue(location.startsWith("http://localhost:3000/confirm-stepup?h="));
+    }
+
+    @Test
+    public void idpVerifyIDErrorFlow() throws IOException {
+        MagicLinkResponse magicLinkResponse = magicLinkRequest(user("jdoe@example.com"), HttpMethod.PUT);
+
+        String authorizationURL = given().redirects().follow(false)
+                .when()
+                .queryParam("idpScoping", IdpScoping.eherkenning)
+                .contentType(ContentType.JSON)
+                .pathParam("id", magicLinkResponse.authenticationRequestId)
+                .get("/myconext/api/idp/verify/link/{id}")
+                .header("Location");
+        MultiValueMap<String, String> queryParams = UriComponentsBuilder
+                .fromUriString(authorizationURL)
+                .build().getQueryParams();
+        String state = queryParams.getFirst("state");
+        //Now call the redirect URI for the redirect by iDIN or eHerkenning
+        stubFor(post(urlPathMatching("/broker/sp/oidc/token")).willReturn(aResponse()
+                .withHeader("Content-Type", "application/json")
+                .withBody(objectMapper.writeValueAsString(Collections.singletonMap("access_token", "123456")))));
+        String userInfo = readFile("verify/eherkenning.json");
+        stubFor(post(urlPathMatching("/broker/sp/oidc/userinfo")).willReturn(aResponse()
+                .withHeader("Content-Type", "application/json")
+                .withBody(userInfo)));
+
+        String location = given().redirects().follow(false)
+                .when()
+                .queryParam("error_description", "Error")
+                .contentType(ContentType.JSON)
+                .get("/myconext/api/idp/verify/redirect")
+                .getHeader("Location");
+
+        assertTrue(location.startsWith("http://localhost:3000/external-account-linked-error?"));
     }
 
     private Map<Object, Object> userInfoMap(String eppn) {

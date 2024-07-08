@@ -38,6 +38,7 @@
     import ChangeCongrats from "./tiqr/ChangeCongrats.svelte";
     import PasswordLink from "./PasswordLink.svelte";
     import SubjectAlreadyLinked from "./SubjectAlreadyLinked.svelte";
+    import ExternalAccountLinkedError from "./ExternalAccountLinkedError.svelte";
 
     export let bookmark = "home";
 
@@ -53,6 +54,7 @@
         {name: "edit-email", alias: "personal", component: EditEmail, ignore: true},
         {name: "eppn-already-linked", alias: "personal", component: EppnAlreadyLinked, ignore: true},
         {name: "subject-already-linked", alias: "personal", component: SubjectAlreadyLinked, ignore: true},
+        {name: "external-account-linked-error", alias: "personal", component: ExternalAccountLinkedError, ignore: true},
         {name: "service", alias: "services", component: Service, ignore: true},
         {name: "credential", alias: "security", component: Credential, ignore: true},
         {name: "webauthn", alias: "security", component: WebAuthn, ignore: true},
