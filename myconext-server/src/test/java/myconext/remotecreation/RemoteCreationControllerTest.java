@@ -35,6 +35,14 @@ class RemoteCreationControllerTest extends AbstractIntegrationTest {
                 .as(new TypeRef<>() {
                 });
         assertEquals(200, result.get("status"));
+
+        String eduIDValue = (String) result.get("eduIDValue");
+        User user = userRepository.findOneUserByEmail(email);
+        EduID provisionedEduID = user.getEduIDS().stream()
+                .filter(eduID -> eduID.getValue().equals(eduIDValue))
+                .findFirst()
+                .orElseThrow();
+        assertEquals(1, provisionedEduID.getServices().size());
     }
 
     @Test

@@ -63,12 +63,12 @@ public class RemoteCreationController implements HasUserRepository {
             description = "Does an eduID exists with the email",
             responses = {
                     @ApiResponse(responseCode = "200", description = "Found",
-                            content = {@Content(schema = @Schema(implementation = StatusResponse.class),
-                                    examples = {@ExampleObject(value = "{\"status\":200}")})}),
+                            content = {@Content(schema = @Schema(implementation = EmailExistsResponse.class),
+                                    examples = {@ExampleObject(value = "{\"status\":200,\"eduIDValue\":\"8048ADA1-8C30-4CDA-8C88-36B865CD16FA\" }")})}),
                     @ApiResponse(responseCode = "400", description = "BadRequest",
                             content = {@Content(schema = @Schema(implementation = StatusResponse.class),
                                     examples = {@ExampleObject(value = "{\"status\":400}")})}),
-                    @ApiResponse(responseCode = "404", description = "Not found - email not found",
+                    @ApiResponse(responseCode = "404", description = "User not found by email unknown@example.com",
                             content = {@Content(schema = @Schema(implementation = StatusResponse.class),
                                     examples = {@ExampleObject(value = "{\n" +
                                             "  \"timestamp\": 1717671062532,\n" +
@@ -78,13 +78,18 @@ public class RemoteCreationController implements HasUserRepository {
                                             "  \"message\": \"User not found by email unknown@example.com\",\n" +
                                             "  \"path\": \"/api/remote-creation/email-eduid-exists\"\n" +
                                             "}")})})})
-    public ResponseEntity<StatusResponse> emailEduIDExists(@Parameter(hidden = true) @AuthenticationPrincipal(errorOnInvalidType = true) RemoteUser remoteUser,
+    public ResponseEntity<EmailExistsResponse> emailEduIDExists(@Parameter(hidden = true) @AuthenticationPrincipal(errorOnInvalidType = true) RemoteUser remoteUser,
                                                            @RequestParam(value = "email") String email) {
         LOG.info(String.format("GET email-eduid-exists by %s for %s", remoteUser.getUsername(), email));
 
-        userRepository.findUserByEmail(email)
+        String remoteUserName = remoteUser.getUsername();
+        User user = userRepository.findUserByEmail(email)
                 .orElseThrow(() -> new UserNotFoundException(String.format("User not found by email %s", email)));
-        return ResponseEntity.ok(new StatusResponse(HttpStatus.OK.value()));
+        IdentityProvider identityProvider = getIdentityProvider(remoteUser, new NewExternalEduID(), remoteUserName);
+        String eduIDValue = user.computeEduIdForIdentityProviderProviderIfAbsent(identityProvider, manage);
+        userRepository.save(user);
+
+        return ResponseEntity.ok(new EmailExistsResponse(HttpStatus.OK.value(), eduIDValue));
     }
 
     @GetMapping(value = {"/eduid-exists"})
