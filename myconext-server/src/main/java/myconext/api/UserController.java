@@ -986,6 +986,15 @@ public class UserController implements UserAuthentication {
                 });
             }
         });
+        //The mobile API expects the old format. For all keys we fill the obsolete attributes of an eduID
+        if (user.isMobileAuthentication()) {
+            result.forEach((entityId, eduID)-> {
+                if (!CollectionUtils.isEmpty(eduID.getServices())) {
+                    ServiceProvider serviceProvider = eduID.getServices().get(0);
+                    eduID.backwardCompatibleTransformation(serviceProvider);
+                }
+            });
+        }
         return result;
     }
 

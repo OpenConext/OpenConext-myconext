@@ -86,6 +86,10 @@ public class User implements Serializable, UserDetails {
     private String trackingUuid;
     @Setter
     private long lastSeenAppNudge;
+    @Transient
+    @JsonIgnore
+    @Setter
+    private boolean mobileAuthentication;
 
     public User(CreateInstitutionEduID createInstitutionEduID, Map<String, Object> userInfo) {
         this.email = createInstitutionEduID.getEmail();

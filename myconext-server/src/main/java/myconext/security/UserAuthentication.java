@@ -17,7 +17,8 @@ public interface UserAuthentication {
     @SuppressWarnings("unchecked")
     default User userFromAuthentication(Authentication authentication) {
         User user;
-        if (authentication instanceof BearerTokenAuthentication) {
+        boolean mobileAuthentication = authentication instanceof BearerTokenAuthentication;
+        if (mobileAuthentication) {
             Map<String, Object> tokenAttributes = ((BearerTokenAuthentication) authentication).getTokenAttributes();
             String uid = ((List<String>) tokenAttributes.get("uids")).get(0);
             user = getUserRepository().findUserByUid(uid).orElseThrow(() -> new UserNotFoundException(uid));
@@ -25,6 +26,7 @@ public interface UserAuthentication {
             String userId = ((User) authentication.getPrincipal()).getId();
             user = getUserRepository().findById(userId).orElseThrow(() -> new UserNotFoundException(userId));
         }
+        user.setMobileAuthentication(mobileAuthentication);
         return user;
     }
 

@@ -69,6 +69,15 @@ public class EduID implements Serializable {
         }
     }
 
+    public void backwardCompatibleTransformation(ServiceProvider serviceProvider) {
+        this.serviceProviderEntityId = serviceProvider.getEntityId();
+        this.serviceName = serviceProvider.getName();
+        this.serviceNameNl = serviceProvider.getNameNl();
+        this.serviceLogoUrl = serviceProvider.getLogoUrl();
+        this.serviceHomeUrl = serviceProvider.getHomeUrl();
+        this.serviceInstutionGuid = serviceProvider.getInstitutionGuid();
+    }
+
     @Override
     public String toString() {
         return "EduID{" +
