@@ -191,7 +191,6 @@ public class AccountLinkerController implements UserAuthentication {
     @Hidden
     public ResponseEntity startIdPLinkAccountFlow(@PathVariable("id") String id,
                                                   @RequestParam(value = "forceAuth", required = false, defaultValue = "false") boolean forceAuth) throws UnsupportedEncodingException {
-        LOG.debug("Start IdP link account flow");
 
         Optional<SamlAuthenticationRequest> optionalSamlAuthenticationRequest = authenticationRequestRepository.findByIdAndNotExpired(id);
         if (!optionalSamlAuthenticationRequest.isPresent()) {
@@ -202,6 +201,8 @@ public class AccountLinkerController implements UserAuthentication {
         String userId = samlAuthenticationRequest.getUserId();
         User user = userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException(userId));
 
+        LOG.info(String.format("Start IdP link account flow for user %s", user.getEmail()));
+
         String state = String.format("id=%s&user_uid=%s", id, passwordEncoder.encode(user.getUid()));
         UriComponents uriComponents = doStartLinkAccountFlow(state, idpFlowRedirectUri, forceAuth, samlAuthenticationRequest.getRequesterEntityId());
         return ResponseEntity.status(HttpStatus.FOUND).location(uriComponents.toUri()).build();
@@ -211,7 +212,7 @@ public class AccountLinkerController implements UserAuthentication {
     @Hidden
     public ResponseEntity<Map<String, String>> createFromInstitution(HttpServletRequest request,
                                                                      @RequestParam(value = "forceAuth", required = false, defaultValue = "false") boolean forceAuth) throws UnsupportedEncodingException {
-        LOG.debug("Start create from institution");
+        LOG.info("Start create from institution");
         String state = request.getSession(true).getId();
         UriComponents uriComponents = doStartLinkAccountFlow(state, spCreateFromInstitutionRedirectUri, forceAuth, myConextSpEntityId);
         return ResponseEntity.ok(Collections.singletonMap("url", uriComponents.toUriString()));
@@ -220,7 +221,7 @@ public class AccountLinkerController implements UserAuthentication {
     @GetMapping("/sp/create-from-institution/oidc-redirect")
     @Hidden
     public ResponseEntity spCreateFromInstitutionRedirect(HttpServletRequest request, @RequestParam("code") String code, @RequestParam("state") String state) throws UnsupportedEncodingException {
-        LOG.debug("In redirect for create-institution-flow");
+        LOG.info("In redirect for create-institution-flow");
 
         HttpSession session = request.getSession(false);
         if (session == null || !createEduIDInstitutionEnabled) {
@@ -256,7 +257,7 @@ public class AccountLinkerController implements UserAuthentication {
         RequestInstitutionEduID requestInstitutionEduID = requestInstitutionEduIDRepository.findByHash(hash)
                 .orElseThrow(() -> new ForbiddenException("Wrong hash"));
 
-        LOG.debug("Info details for create-institution-flow");
+        LOG.info(String.format("Info details for create-institution-flow %s", requestInstitutionEduID));
 
         return requestInstitutionEduID.getUserInfo();
     }
@@ -264,7 +265,8 @@ public class AccountLinkerController implements UserAuthentication {
     @PostMapping("/sp/create-from-institution/email")
     @Hidden
     public ResponseEntity<Map<String, String>> linkFromInstitution(@Valid @RequestBody CreateInstitutionEduID createInstitutionEduID) {
-        LOG.debug("Post details for account verification in create-institution-flow");
+
+        LOG.info(String.format("Post details for account verification in create-institution-flow %s", createInstitutionEduID.getEmail()));
 
         RequestInstitutionEduID requestInstitutionEduID = requestInstitutionEduIDRepository.findByHash(createInstitutionEduID.getHash())
                 .orElseThrow(() -> new ForbiddenException("Wrong hash"));
@@ -390,9 +392,10 @@ public class AccountLinkerController implements UserAuthentication {
                                             "{\"url\":\"https://connect.test2.surfconext.nl/oidc/authorize?scope=openid&response_type=code&redirect_uri=https://mijn.test2.eduid.nl/myconext/api/sp/oidc/redirect&state=%242a%2410%249cyC3mjeJW0ljb%2FmPAGj0O4DVXz9LPw5U%2Fthl110BVYWFpMhjwKyK&prompt=login&client_id=myconext.ala.eduid\"}")})})}
     )
     public ResponseEntity<AuthorizationURL> startSPLinkAccountFlow(Authentication authentication) throws UnsupportedEncodingException {
-        LOG.debug("Start link account flow");
-
         User user = userFromAuthentication(authentication);
+
+        LOG.info(String.format("Start link account flow for user %s", user.getEmail()));
+
         String state;
         String redirectUri;
         if (isMobileRequest(authentication)) {
@@ -432,9 +435,10 @@ public class AccountLinkerController implements UserAuthentication {
     public ResponseEntity<AuthorizationURL> startSPVerifyIDLinkAccountFlow(Authentication authentication,
                                                                        @RequestParam("idpScoping") IdpScoping idpScoping,
                                                                        @RequestParam(value = "bankId", required = false) String bankId) {
-        LOG.debug("Start verify account flow");
-
         User user = userFromAuthentication(authentication);
+
+        LOG.info(String.format("Start verify account flow for user %s for flow %s", user.getEmail(), idpScoping));
+
         String stateIdentifier;
         String redirectUri;
         if (isMobileRequest(authentication)) {
@@ -473,8 +477,6 @@ public class AccountLinkerController implements UserAuthentication {
                                              @RequestParam(value = "state", required = false) String state,
                                              @RequestParam(value = "error", required = false) String error,
                                              @RequestParam(value = "error_description", required = false) String errorDescription) {
-        LOG.debug("In SP verify ID redirect link account");
-
         User user = userFromAuthentication(authentication);
 
         if (!StringUtils.hasText(code) || !StringUtils.hasText(state)) {
@@ -488,6 +490,8 @@ public class AccountLinkerController implements UserAuthentication {
         }
 
         VerifyState verifyState = attributeMapper.serializeFromBase64(state);
+
+        LOG.info(String.format("In SP verify ID redirect link account for user %s and party %s", user.getEmail(), verifyState.getIdpScoping()));
 
         if (!passwordEncoder.matches(user.getUid(), verifyState.getStateIdentifier())) {
             throw new ForbiddenException("Non matching user");
@@ -519,6 +523,10 @@ public class AccountLinkerController implements UserAuthentication {
         Optional<User> optionalUser = userRepository.findByExternalLinkedAccounts_SubjectId(externalLinkedAccount.getSubjectId());
         if (optionalUser.isPresent() && !user.getId().equals(optionalUser.get().getId())) {
             //Not allowed to link an external linked account which identity is already linked to another user
+            LOG.warn(String.format("SP redirect for external account linking: subject %s already linked to %s for party %s",
+                    externalLinkedAccount.getSubjectId(),
+                    user.getEmail(),
+                    verifyState.getIdpScoping()));
             return ResponseEntity.status(HttpStatus.FOUND)
                     .location(URI.create(spRedirectUrl + "/subject-already-linked?idp_scoping"))
                     .build();
@@ -551,7 +559,6 @@ public class AccountLinkerController implements UserAuthentication {
     public ResponseEntity<AuthorizationURL> startIdPVerifyIDLinkAccountFlow(@PathVariable("id") String id,
                                                                             @RequestParam("idpScoping") IdpScoping idpScoping,
                                                                             @RequestParam(value = "bankId", required = false) String bankId) {
-        LOG.debug("Start Idp verify account flow");
         Optional<SamlAuthenticationRequest> optionalSamlAuthenticationRequest = authenticationRequestRepository.findByIdAndNotExpired(id);
         if (!optionalSamlAuthenticationRequest.isPresent()) {
             return ResponseEntity.status(HttpStatus.FOUND).location(URI.create(this.idpBaseRedirectUrl + "/expired")).build();
@@ -560,6 +567,8 @@ public class AccountLinkerController implements UserAuthentication {
 
         String userId = samlAuthenticationRequest.getUserId();
         User user = userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException(userId));
+
+        LOG.info(String.format("Start Idp verify account flow for user %s and party %s", user.getEmail(), idpScoping));
 
         VerifyIssuer verifyIssuer = idpScoping.equals(IdpScoping.idin) ? this.issuers.stream()
                 .filter(issuer -> issuer.getId().equals(bankId)).findFirst().orElseThrow(() -> new IllegalArgumentException("Unknown verify issuer: " + bankId)) :
@@ -598,6 +607,7 @@ public class AccountLinkerController implements UserAuthentication {
                             StringUtils.hasText(errorDescription) ? URLEncoder.encode(errorDescription, Charset.defaultCharset()) : "Unexpected+error+occurred"
                     )
             );
+            LOG.warn("Error response from trusted party for external account linking");
             return ResponseEntity.status(HttpStatus.FOUND).location(location).build();
         }
 
@@ -616,6 +626,8 @@ public class AccountLinkerController implements UserAuthentication {
 
         String userId = samlAuthenticationRequest.getUserId();
         User user = userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException(userId));
+
+        LOG.info(String.format("In IDP verify ID redirect link account for user %s and party %s", user.getEmail(), verifyState.getIdpScoping()));
 
         if (!passwordEncoder.matches(user.getUid(), encodedUserUid)) {
             throw new ForbiddenException("Non matching user");
@@ -647,6 +659,8 @@ public class AccountLinkerController implements UserAuthentication {
         Optional<User> optionalUser = userRepository.findByExternalLinkedAccounts_SubjectId(externalLinkedAccount.getSubjectId());
         if (optionalUser.isPresent() && !user.getId().equals(optionalUser.get().getId())) {
             //Not allowed to link an external linked account which identity is already linked to another user
+            LOG.warn(String.format("Subject %s already linked to user %s", externalLinkedAccount.getSubjectId(), user.getEmail()));
+
             String subjectAlreadyLinkedRequiredUri = this.idpBaseRedirectUrl + "/subject-already-linked/" +
                     samlAuthenticationRequest.getId() +
                     "?h=" + samlAuthenticationRequest.getHash() +
@@ -657,6 +671,8 @@ public class AccountLinkerController implements UserAuthentication {
         //We only allow one ExternalLinkedAccount - for now
         externalLinkedAccounts.clear();
         externalLinkedAccounts.add(externalLinkedAccount);
+
+        LOG.info(String.format("New external linked account %s for user %s", externalLinkedAccount, user.getEmail()));
 
         if (StringUtils.hasText(externalLinkedAccount.getFirstName()) && IdpScoping.eherkenning.equals(externalLinkedAccount.getIdpScoping())) {
             user.setGivenName(externalLinkedAccount.getFirstName());
@@ -703,9 +719,11 @@ public class AccountLinkerController implements UserAuthentication {
     @GetMapping("/sp/oidc/redirect")
     @Hidden
     public ResponseEntity spFlowRedirect(Authentication authentication, @RequestParam("code") String code, @RequestParam("state") String state) throws UnsupportedEncodingException {
-        LOG.debug("In SP redirect link account");
+        LOG.debug("");
 
         User user = userFromAuthentication(authentication);
+
+        LOG.info(String.format("In SP redirect link account for user %s", user.getEmail()));
 
         if (!passwordEncoder.matches(user.getUid(), URLDecoder.decode(state, StandardCharsets.UTF_8))) {
             throw new ForbiddenException("Non matching user");
@@ -719,7 +737,6 @@ public class AccountLinkerController implements UserAuthentication {
     @GetMapping("/mobile/oidc/redirect")
     @Hidden
     public ResponseEntity mobileFlowRedirect(@RequestParam("code") String code, @RequestParam("state") String state) throws UnsupportedEncodingException {
-        LOG.debug("In Mobile redirect link account");
 
         String decodedState = URLDecoder.decode(state, StandardCharsets.UTF_8);
         Optional<MobileLinkAccountRequest> optionalMobileLinkAccountRequest = this.mobileLinkAccountRequestRepository.findByHash(decodedState);
@@ -730,6 +747,8 @@ public class AccountLinkerController implements UserAuthentication {
         MobileLinkAccountRequest mobileLinkAccountRequest = optionalMobileLinkAccountRequest.get();
         String userId = mobileLinkAccountRequest.getUserId();
         User user = userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException(userId));
+
+        LOG.info(String.format("In Mobile redirect link account for user %s", user.getEmail()));
 
         this.mobileLinkAccountRequestRepository.delete(mobileLinkAccountRequest);
 
@@ -754,14 +773,14 @@ public class AccountLinkerController implements UserAuthentication {
         String userId = samlAuthenticationRequest.getUserId();
         User user = userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException(userId));
 
+        LOG.info(String.format("In IdP oidc redirect link account for user %s", user.getEmail()));
+
         if (!passwordEncoder.matches(user.getUid(), encodedUserUid)) {
             throw new ForbiddenException("Non matching user");
         }
 
         boolean validateNames = samlAuthenticationRequest.getAuthenticationContextClassReferences().contains(ACR.VALIDATE_NAMES);
         boolean studentAffiliationRequired = samlAuthenticationRequest.getAuthenticationContextClassReferences().contains(ACR.AFFILIATION_STUDENT);
-
-        LOG.debug("In IdP redirect link account");
 
         String location = this.magicLinkUrl + "?h=" + samlAuthenticationRequest.getHash();
 
@@ -805,6 +824,8 @@ public class AccountLinkerController implements UserAuthentication {
                                       String idpValidNamesRequiredUri,
                                       String eppnAlreadyLinkedRequiredUri) throws UnsupportedEncodingException {
         Map<String, Object> body = requestUserInfo(code, oidcRedirectUri);
+
+        LOG.info(String.format("In redirect link account for user %s with user info %s", user.getEmail(), body));
 
         return saveOrUpdateLinkedAccountToUser(user, clientRedirectUri, validateNames, studentAffiliationRequired,
                 appendEPPNQueryParam, idpStudentAffiliationRequiredUri, idpValidNamesRequiredUri, eppnAlreadyLinkedRequiredUri, body);

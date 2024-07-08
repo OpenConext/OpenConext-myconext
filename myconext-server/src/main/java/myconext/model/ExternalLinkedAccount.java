@@ -4,6 +4,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 import org.springframework.util.StringUtils;
 
 import java.io.Serializable;
@@ -13,6 +14,7 @@ import java.util.Date;
 
 @NoArgsConstructor
 @Getter
+@ToString
 public class ExternalLinkedAccount implements Serializable {
 
     private String subjectId;
