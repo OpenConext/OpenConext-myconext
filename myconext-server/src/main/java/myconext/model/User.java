@@ -208,7 +208,7 @@ public class User implements Serializable, UserDetails {
             this.eduIDS.add(eduID);
             return eduID.getValue();
         });
-        //Let's be proactive and migrate the other eduID as well
+        //Let's be proactive and migrate the other eduID values as well
         List<EduID> otherEduIDs = this.eduIDS.stream()
                 .filter(eduID -> !eduID.getValue().equals(eduIDValue))
                 //Only migrate old eduID's that have not been migrated already
