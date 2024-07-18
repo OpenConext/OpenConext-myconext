@@ -366,8 +366,8 @@ I18n.translations.en = {
     getApp: {
         header: "Download the eduID app",
         info: "Download and install <a href=\"https://eduid.nl/help\" target=\"_blank\">the eduID app</a> (issued by SURF) on your mobile device.",
-        google: "https://play.google.com/apps/testing/nl.eduid",
-        apple: "https://testflight.apple.com/join/Ogk1TxKu",
+        google: "https://play.google.com/store/apps/details?id=nl.eduid",
+        apple: "https://apps.apple.com/nl/app/eduid/id1600756434?l=en-GB",
         after: "When you've downloaded the eduID app on your phone, come back here and click next.",
         back: "Back",
         next: "Next"
