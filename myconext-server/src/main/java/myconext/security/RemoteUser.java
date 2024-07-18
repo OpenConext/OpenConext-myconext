@@ -16,6 +16,7 @@ import java.util.stream.Collectors;
 @Getter
 @Setter
 @NoArgsConstructor
+@AllArgsConstructor
 public class RemoteUser implements UserDetails, CredentialsContainer {
 
     private String username;
@@ -63,4 +64,5 @@ public class RemoteUser implements UserDetails, CredentialsContainer {
     public void eraseCredentials() {
         this.password = null;
     }
+
 }

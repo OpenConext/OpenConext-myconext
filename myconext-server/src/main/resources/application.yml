@@ -116,23 +116,23 @@ sms:
 
 tiqr_configuration: "classpath:/tiqr.configuration.yml"
 
-# We don't encode in-memory passwords, so we need to prefix them with {noop}
+# We don't encode in-memory passwords, but we can't prefix them with {noop} as they are injected from Ansible for both sender and receiver
 external-api-configuration:
   remote-users:
     -
       username: aa
-      password: "{noop}secret"
+      password: "secret"
       scopes:
         - attribute-aggregation
         - system
     -
       username: oidcng
-      password: "{noop}secret"
+      password: "secret"
       scopes:
         - attribute-manipulation
     -
       username: studielink
-      password: "{noop}secret"
+      password: "secret"
       scopes:
         - remote-creation
       institutionGUID: ec9d6d75-0d11-e511-80d0-005056956c1a
