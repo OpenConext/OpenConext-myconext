@@ -13,11 +13,12 @@ import static java.util.stream.Collectors.toList;
 
 public class ExtendedInMemoryUserDetailsManager implements UserDetailsService {
 
+    private final String NOOP_PREFIX = "{noop}";
     private final Map<String, RemoteUser> users;
 
     public ExtendedInMemoryUserDetailsManager(List<RemoteUser> users) {
         List<RemoteUser> wrongConfiguredRemoteUsers = users.stream()
-                .filter(remoteUser -> remoteUser.getPassword().contains("{noop}"))
+                .filter(remoteUser -> remoteUser.getPassword().contains(NOOP_PREFIX))
                 .collect(toList());
         if (!wrongConfiguredRemoteUsers.isEmpty()) {
             throw new IllegalArgumentException(
@@ -36,7 +37,7 @@ public class ExtendedInMemoryUserDetailsManager implements UserDetailsService {
             return null;
         }
         RemoteUser remoteUserClone = new RemoteUser(remoteUser);
-        remoteUserClone.setPassword("{noop}".concat(remoteUserClone.getPassword()));
+        remoteUserClone.setPassword(NOOP_PREFIX.concat(remoteUserClone.getPassword()));
         return remoteUserClone;
     }
 }

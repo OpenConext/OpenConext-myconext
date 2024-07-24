@@ -8,10 +8,9 @@
     import informationalSvg from "../icons/informational.svg";
     import {formatOptions} from "../format/date";
     import Service from "./Service.svelte";
-    import {isEmpty} from "../utils/utils";
 
     const serviceDetails = service => () => {
-        showDetails = {...showDetails, [service.eduId]: !showDetails[service.eduId]};
+        showDetails = {...showDetails, [service.entityId]: !showDetails[service.entityId]};
     }
 
     let services = [];
@@ -37,39 +36,31 @@
                 return acc;
             }, []);
             const locale = I18n.locale === "en" ? "en-US" : "nl-NL";
-            //backward compatibility with eduID has multiple services and not yet migrated eduID accounts
-            if (isEmpty(service.services)) {
+            //We don't need backward compatibility as every eduID which comes from the server is migrated
+            service.services.forEach(s => {
                 acc.push({
-                    name: serviceName(service),
+                    name: serviceName(s),
                     eduId: service.value,
+                    entityId: k,
                     createdAt: new Date(service.createdAt).toLocaleDateString(locale, formatOptions),
                     expiresIn: new Date(service.expiresIn).toLocaleDateString(locale, formatOptions),
-                    data: $user.eduIdPerServiceProvider[k],
+                    data: {
+                        serviceLogoUrl: s.logoUrl,
+                        serviceProviderEntityId: k,
+                        serviceHomeUrl: s.homeUrl,
+                        value: service.value
+                    },
                     token: token,
                     tokens: tokens,
                     allTokens: allTokens,
                     scopes: scopes
                 });
-            } else {
-                service.services.forEach(s => {
-                    acc.push({
-                        name: serviceName(s),
-                        eduId: service.value,
-                        createdAt: new Date(service.createdAt).toLocaleDateString(locale, formatOptions),
-                        expiresIn: new Date(service.expiresIn).toLocaleDateString(locale, formatOptions),
-                        data: {serviceLogoUrl: s.logoUrl, serviceProviderEntityId: k, serviceHomeUrl: s.homeUrl, value: service.value},
-                        token: token,
-                        tokens: tokens,
-                        allTokens: allTokens,
-                        scopes: scopes
-                    });
-                })
-            }
+            })
             return acc;
         },[]);
         showDetails = Object.keys($user.eduIdPerServiceProvider).reduce((acc, key) => {
             const service = $user.eduIdPerServiceProvider[key];
-            acc[service.eduId] = false;
+            acc[service.entityId] = false;
             return acc
         }, {});
     }
@@ -244,16 +235,16 @@
                 <tbody>
                 {#each services as service, i}
                     <tr class="name"
-                        class:full={showDetails[service.eduId]}
+                        class:full={showDetails[service.entityId]}
                         on:click={serviceDetails(service)}>
                         <td class="logo" class:first={i === 0}
-                            class:last={i === services.length - 1 || showDetails[service.eduId]}>
+                            class:last={i === services.length - 1 || showDetails[service.entityId]}>
                             {#if service.data.serviceLogoUrl}
                                 <span><img src={service.data.serviceLogoUrl} alt=""></span>
                             {/if}
                         </td>
                         <td class="value" class:first={i === 0}
-                            class:last={i === services.length - 1 || showDetails[service.eduId]}>
+                            class:last={i === services.length - 1 || showDetails[service.entityId]}>
                             <div class="value-container">
                                 <span>{`${service.name}`}</span>
                                 <div class="value-container-inner">
@@ -265,13 +256,13 @@
                                     {/if}
                                     <a class="toggle-link" href="/edit"
                                        on:click|preventDefault|stopPropagation={serviceDetails(service)}>
-                                        {@html showDetails[service.eduId] ? chevronUpSvg : chevronDownSvg}
+                                        {@html showDetails[service.entityId] ? chevronUpSvg : chevronDownSvg}
                                     </a>
                                 </div>
                             </div>
                         </td>
                     </tr>
-                    {#if showDetails[service.eduId]}
+                    {#if showDetails[service.entityId]}
                         <Service service={service} refresh={refresh}/>
                     {/if}
                 {/each}

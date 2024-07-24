@@ -1,8 +1,10 @@
 package myconext.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.springframework.data.annotation.Transient;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.util.StringUtils;
 
@@ -11,6 +13,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @NoArgsConstructor
 @Getter
@@ -46,10 +49,11 @@ public class EduID implements Serializable {
         this.serviceLogoUrl = null;
         this.serviceHomeUrl = null;
         this.serviceInstutionGuid = null;
-
+        //We only consider an SP as the same SP, if the entityId's equal OR the institutionGUID's are equal and the entityId's are null
         Optional<ServiceProvider> optionalServiceProvider = this.services.stream()
                 .filter(sp -> (StringUtils.hasText(sp.getEntityId()) && sp.getEntityId().equals(serviceProvider.getEntityId())) ||
-                        (StringUtils.hasText(sp.getInstitutionGuid()) && sp.getInstitutionGuid().equals(serviceProvider.getInstitutionGuid())))
+                        (!StringUtils.hasText(sp.getEntityId()) && !StringUtils.hasText(serviceProvider.getEntityId())
+                                && StringUtils.hasText(sp.getInstitutionGuid()) && sp.getInstitutionGuid().equals(serviceProvider.getInstitutionGuid())))
                 .findFirst();
         optionalServiceProvider.ifPresentOrElse(sp -> {
             sp.setName(serviceProvider.getName());
@@ -85,5 +89,24 @@ public class EduID implements Serializable {
                 ", value='" + value + '\'' +
                 ", createdAt=" + createdAt +
                 '}';
+    }
+
+    @Transient
+    @JsonIgnore
+    public EduID copy(String entityId) {
+        EduID eduID = new EduID();
+        eduID.value = this.value;
+        eduID.serviceProviderEntityId = this.serviceProviderEntityId;
+        eduID.serviceName = this.serviceName;
+        eduID.serviceNameNl = this.serviceNameNl;
+        eduID.serviceLogoUrl = this.serviceLogoUrl;
+        eduID.serviceHomeUrl = this.serviceHomeUrl;
+        eduID.serviceInstutionGuid = this.serviceInstutionGuid;
+        eduID.createdAt = this.createdAt;
+        eduID.services = this.services.stream()
+                .filter(service -> (StringUtils.hasText(service.getEntityId()) && entityId.equals(service.getEntityId())) ||
+                        entityId.equals(service.getInstitutionGuid()))
+                .collect(Collectors.toList());
+        return eduID;
     }
 }
