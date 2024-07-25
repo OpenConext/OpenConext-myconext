@@ -626,11 +626,9 @@ public class UserController implements UserAuthentication {
         User user = userFromAuthentication(authentication);
 
         String entityId = deleteService.getServiceProviderEntityId();
-        //backward compatibility
         user.getEduIDS().forEach(eduID -> eduID.getServices().removeIf(service -> service.getEntityId().equals(entityId)));
         List<EduID> newEduIDs = user.getEduIDS().stream()
-                .filter(eduID -> StringUtils.hasText(eduID.getServiceProviderEntityId()) && !entityId.equals(eduID.getServiceProviderEntityId()))
-                .filter(eduID -> !StringUtils.hasText(eduID.getServiceProviderEntityId()) && eduID.getServices().isEmpty())
+                .filter(eduID -> !eduID.getServices().isEmpty())
                 .collect(Collectors.toList());
         user.setEduIDS(newEduIDs);
         userRepository.save(user);
@@ -696,14 +694,14 @@ public class UserController implements UserAuthentication {
 
     private ResponseEntity<UserResponse> returnUserResponse(User user) {
         Optional<Registration> optionalRegistration = registrationRepository.findRegistrationByUserId(user.getId());
-        UserResponse userResponse = new UserResponse(user, convertEduIdPerServiceProvider(user), optionalRegistration, false, manage);
+        UserResponse userResponse = new UserResponse(user, user.convertEduIdPerServiceProvider(), optionalRegistration, false, manage);
         return ResponseEntity.status(201).body(userResponse);
     }
 
     private ResponseEntity<UserResponse> userResponseRememberMe(User user) {
         List<SamlAuthenticationRequest> samlAuthenticationRequests = authenticationRequestRepository.findByUserIdAndRememberMe(user.getId(), true);
         Optional<Registration> optionalRegistration = registrationRepository.findRegistrationByUserId(user.getId());
-        UserResponse userResponse = new UserResponse(user, convertEduIdPerServiceProvider(user), optionalRegistration, !samlAuthenticationRequests.isEmpty(), manage);
+        UserResponse userResponse = new UserResponse(user, user.convertEduIdPerServiceProvider(), optionalRegistration, !samlAuthenticationRequests.isEmpty(), manage);
         return ResponseEntity.ok(userResponse);
     }
 
@@ -970,32 +968,6 @@ public class UserController implements UserAuthentication {
             mailBox.sendMagicLink(user, samlAuthenticationRequest.getHash(), serviceName);
         }
         return ResponseEntity.status(201).body(Collections.singletonMap("result", "ok"));
-    }
-
-    private Map<String, EduID> convertEduIdPerServiceProvider(User user) {
-        //We need to be backward compatible, but also deal with new many services refactor. Key of map may not be null
-        Map<String, EduID> result = new HashMap<>();
-        user.getEduIDS().forEach(eduID -> {
-            if (CollectionUtils.isEmpty(eduID.getServices()) && StringUtils.hasText(eduID.getServiceProviderEntityId())) {
-                result.put(eduID.getServiceProviderEntityId(), eduID);
-            } else {
-                eduID.getServices().forEach(service -> {
-                    String entityId = service.getEntityId();
-                    String key = StringUtils.hasText(entityId) ? entityId : service.getInstitutionGuid();
-                    result.put(key, eduID);
-                });
-            }
-        });
-        //The mobile API expects the old format. For all keys we fill the obsolete attributes of an eduID
-        if (user.isMobileAuthentication()) {
-            result.forEach((entityId, eduID)-> {
-                if (!CollectionUtils.isEmpty(eduID.getServices())) {
-                    ServiceProvider serviceProvider = eduID.getServices().get(0);
-                    eduID.backwardCompatibleTransformation(serviceProvider);
-                }
-            });
-        }
-        return result;
     }
 
     private Optional<User> findUserStoreLanguage(String email) {

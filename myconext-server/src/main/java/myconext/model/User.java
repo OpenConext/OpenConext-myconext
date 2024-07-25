@@ -306,6 +306,37 @@ public class User implements Serializable, UserDetails {
 
     @Transient
     @JsonIgnore
+    public Map<String, EduID> convertEduIdPerServiceProvider() {
+        //We need to be backward compatible, but also deal with new many services refactor. Key of map may not be null
+        Map<String, EduID> result = new HashMap<>();
+        this.getEduIDS().forEach(eduID -> {
+            if (CollectionUtils.isEmpty(eduID.getServices()) && StringUtils.hasText(eduID.getServiceProviderEntityId())) {
+                result.put(eduID.getServiceProviderEntityId(), eduID);
+            } else {
+                eduID.getServices().forEach(service -> {
+                    String entityId = service.getEntityId();
+                    String key = StringUtils.hasText(entityId) ? entityId : service.getInstitutionGuid();
+                    //need to make copy otherwise the reference is the same and for mobile authentication we override the properties
+                    result.put(key, eduID.copy(key));
+                });
+            }
+        });
+        //The mobile API expects the old format. For all keys we fill the obsolete attributes of an eduID
+        if (this.isMobileAuthentication()) {
+            result.forEach((entityId, eduID)-> {
+                if (!CollectionUtils.isEmpty(eduID.getServices())) {
+                    ServiceProvider serviceProvider = eduID.getServices().stream()
+                            .filter(sp -> entityId.equals(sp.getEntityId())).findFirst()
+                            .orElse(eduID.getServices().get(0));
+                    eduID.backwardCompatibleTransformation(serviceProvider);
+                }
+            });
+        }
+        return result;
+    }
+
+    @Transient
+    @JsonIgnore
     public void updateWithExternalEduID(NewExternalEduID externalEduID) {
         //Only update attributes when there is no validated account
         if (CollectionUtils.isEmpty(this.externalLinkedAccounts) && CollectionUtils.isEmpty(this.linkedAccounts)) {
@@ -315,8 +346,6 @@ public class User implements Serializable, UserDetails {
             this.dateOfBirth = AttributeMapper.parseDate(externalEduID.getDateOfBirth());
         }
     }
-
-
 
     public String getEduPersonPrincipalName() {
         return uid + "@" + schacHomeOrganization;
