@@ -98,7 +98,7 @@ public class UserTest {
             assertEquals(1, eduID.getServices().size());
             assertEquals(entityIdValue, eduID.getServices().get(0).getEntityId());
         });
-
+        //The mobile version of the UserResponse is backward compatible with a single eduID value and ServiceProvider
         user.setMobileAuthentication(true);
         Map<String, EduID> eduIDMapMobile = user.convertEduIdPerServiceProvider();
 

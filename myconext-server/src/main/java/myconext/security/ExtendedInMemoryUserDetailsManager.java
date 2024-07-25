@@ -34,7 +34,7 @@ public class ExtendedInMemoryUserDetailsManager implements UserDetailsService {
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         RemoteUser remoteUser = users.get(username);
         if (remoteUser == null) {
-            return null;
+            throw new UsernameNotFoundException("User not found: " + username);
         }
         RemoteUser remoteUserClone = new RemoteUser(remoteUser);
         remoteUserClone.setPassword(NOOP_PREFIX.concat(remoteUserClone.getPassword()));

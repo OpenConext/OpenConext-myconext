@@ -93,7 +93,8 @@ public class EduID implements Serializable {
 
     @Transient
     @JsonIgnore
-    public EduID copy(String entityId) {
+    //Key is the entityId if not null, otherwise the institutionGUID
+    public EduID copy(String key) {
         EduID eduID = new EduID();
         eduID.value = this.value;
         eduID.serviceProviderEntityId = this.serviceProviderEntityId;
@@ -104,8 +105,8 @@ public class EduID implements Serializable {
         eduID.serviceInstutionGuid = this.serviceInstutionGuid;
         eduID.createdAt = this.createdAt;
         eduID.services = this.services.stream()
-                .filter(service -> (StringUtils.hasText(service.getEntityId()) && entityId.equals(service.getEntityId())) ||
-                        entityId.equals(service.getInstitutionGuid()))
+                .filter(service -> (StringUtils.hasText(service.getEntityId()) && key.equals(service.getEntityId())) ||
+                        key.equals(service.getInstitutionGuid()))
                 .collect(Collectors.toList());
         return eduID;
     }

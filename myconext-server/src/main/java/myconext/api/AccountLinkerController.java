@@ -520,8 +520,8 @@ public class AccountLinkerController implements UserAuthentication {
         Map<String, Object> attributes = restTemplate.exchange(verifyBaseUri + "/broker/sp/oidc/userinfo", HttpMethod.POST, request, parameterizedTypeReference).getBody();
 
         ExternalLinkedAccount externalLinkedAccount = attributeMapper.externalLinkedAccountFromAttributes(attributes, verifyState);
-        Optional<User> optionalUser = userRepository.findByExternalLinkedAccounts_SubjectId(externalLinkedAccount.getSubjectId());
-        if (optionalUser.isPresent() && !user.getId().equals(optionalUser.get().getId())) {
+        List<User> optionalUsers = userRepository.findByExternalLinkedAccounts_SubjectId(externalLinkedAccount.getSubjectId());
+        if (!optionalUsers.isEmpty() && optionalUsers.stream().anyMatch(existingUser -> !user.getId().equals(existingUser.getId()))) {
             //Not allowed to link an external linked account which identity is already linked to another user
             LOG.warn(String.format("SP redirect for external account linking: subject %s already linked to %s for party %s",
                     externalLinkedAccount.getSubjectId(),
@@ -656,8 +656,8 @@ public class AccountLinkerController implements UserAuthentication {
         Map<String, Object> attributes = restTemplate.exchange(verifyBaseUri + "/broker/sp/oidc/userinfo", HttpMethod.POST, request, parameterizedTypeReference).getBody();
 
         ExternalLinkedAccount externalLinkedAccount = attributeMapper.externalLinkedAccountFromAttributes(attributes, verifyState);
-        Optional<User> optionalUser = userRepository.findByExternalLinkedAccounts_SubjectId(externalLinkedAccount.getSubjectId());
-        if (optionalUser.isPresent() && !user.getId().equals(optionalUser.get().getId())) {
+        List<User> optionalUsers = userRepository.findByExternalLinkedAccounts_SubjectId(externalLinkedAccount.getSubjectId());
+        if (!optionalUsers.isEmpty() && optionalUsers.stream().anyMatch(existingUser -> !user.getId().equals(existingUser.getId()))) {
             //Not allowed to link an external linked account which identity is already linked to another user
             LOG.warn(String.format("Subject %s already linked to user %s", externalLinkedAccount.getSubjectId(), user.getEmail()));
 

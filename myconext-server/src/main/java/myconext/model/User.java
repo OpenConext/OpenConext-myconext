@@ -317,7 +317,7 @@ public class User implements Serializable, UserDetails {
                     String entityId = service.getEntityId();
                     String key = StringUtils.hasText(entityId) ? entityId : service.getInstitutionGuid();
                     //need to make copy otherwise the reference is the same and for mobile authentication we override the properties
-                    result.put(key, eduID.copy(entityId));
+                    result.put(key, eduID.copy(key));
                 });
             }
         });
