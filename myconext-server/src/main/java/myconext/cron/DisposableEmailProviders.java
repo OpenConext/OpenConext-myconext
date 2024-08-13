@@ -71,7 +71,8 @@ public class DisposableEmailProviders {
             resolveIDisposableEmailProviders();
         }
         int beginIndex = email.indexOf("@") + 1;
-        boolean disposableEmail = disposableEmailProviders.contains(email.substring(beginIndex).toLowerCase());
+        String domainLowerCase = email.substring(beginIndex).toLowerCase();
+        boolean disposableEmail = disposableEmailProviders.contains(domainLowerCase);
         if (disposableEmail) {
             throw new DisposableEmailProviderException();
         }
