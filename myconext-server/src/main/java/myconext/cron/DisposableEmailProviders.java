@@ -3,6 +3,7 @@ package myconext.cron;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import myconext.exceptions.DisposableEmailProviderException;
+import myconext.model.IdentityProvider;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +15,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import java.net.URL;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
@@ -55,12 +57,26 @@ public class DisposableEmailProviders {
                     objectMapper.readValue(new ClassPathResource(localLocation).getInputStream(), mapTypeReference) :
                     objectMapper.readValue(new URL(remoteLocation), mapTypeReference);
 
-            disposableEmailProviders = ((Map<String, Object>) emailProviders.get("domains")).keySet();
+            Map<String, Object> domains = (Map<String, Object>) emailProviders.get("domains");
+            disposableEmailProviders = parseDisposableEmailProviders(domains);
             LOG.info(String.format("Resolved %s disposable email providers %s in %s ms",
                     disposableEmailProviders.size(), this.testEnvironment ? localLocation : remoteLocation, System.currentTimeMillis() - start));
         } catch (Exception e) {
             LOG.error("Error in resolveIDisposableEmailProviders", e);
         }
+    }
+
+    @SuppressWarnings("unchecked")
+    private HashSet<String> parseDisposableEmailProviders(Map<String, Object> domains) {
+        Set<Map.Entry<String, Object>> entries = domains.entrySet();
+        HashSet<String> newDisposableEmailProviders = new HashSet<>();
+        entries.forEach(entry -> {
+                    String domain = entry.getKey();
+                    Map<String, Object> provider = (Map<String, Object>) entry.getValue();
+                    newDisposableEmailProviders.add(domain.toLowerCase());
+                    newDisposableEmailProviders.add(((String) provider.get("provider")).toLowerCase());
+                });
+        return newDisposableEmailProviders;
     }
 
     public void verifyDisposableEmailProviders(String email) {

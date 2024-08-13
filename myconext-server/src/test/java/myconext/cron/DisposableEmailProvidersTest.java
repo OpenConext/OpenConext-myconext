@@ -17,6 +17,7 @@ class DisposableEmailProvidersTest {
         Environment environment = new MockEnvironment();
         DisposableEmailProviders subject = new DisposableEmailProviders(objectMapper, environment, true);
         assertThrows(DisposableEmailProviderException.class, () -> subject.verifyDisposableEmailProviders("jdoe@TRASHMAIL.WS"));
+        assertThrows(DisposableEmailProviderException.class, () -> subject.verifyDisposableEmailProviders("jdoe@fakermail.COM"));
         subject.verifyDisposableEmailProviders("jdoe@gmail.com");
 
         DisposableEmailProviders subjectFeatureOff = new DisposableEmailProviders(objectMapper, environment, false);
@@ -29,5 +30,6 @@ class DisposableEmailProvidersTest {
         environment.addActiveProfile("test");
         DisposableEmailProviders subject = new DisposableEmailProviders(objectMapper, environment, true);
         assertThrows(DisposableEmailProviderException.class, () -> subject.verifyDisposableEmailProviders("jdoe@UJIXLAXPROS.tech"));
+        assertThrows(DisposableEmailProviderException.class, () -> subject.verifyDisposableEmailProviders("jdoe@kopeechka.STORE"));
     }
 }
