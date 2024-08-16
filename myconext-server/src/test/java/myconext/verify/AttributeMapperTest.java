@@ -72,15 +72,15 @@ class AttributeMapperTest {
         assertEquals(null, externalLinkedAccount.getPartnerLastNamePrefix());
         assertEquals(null, externalLinkedAccount.getLegalLastNamePrefix());
         assertEquals(null, externalLinkedAccount.getPartnerLastName());
-        assertEquals(attributeMapper.parseDate("1963-02-05"), externalLinkedAccount.getDateOfBirth());
+        assertEquals(AttributeMapper.parseDate("1963-02-05"), externalLinkedAccount.getDateOfBirth());
         assertNotNull(externalLinkedAccount.getCreatedAt());
         assertNotNull(externalLinkedAccount.getExpiresAt());
     }
 
     @Test
     void parseDate() {
-        Date eherkenningDate = attributeMapper.parseDate("1963-02-21");
-        Date idinDate = attributeMapper.parseDate("19630221");
+        Date eherkenningDate = AttributeMapper.parseDate("1963-02-21");
+        Date idinDate = AttributeMapper.parseDate("19630221");
         assertEquals(eherkenningDate, idinDate);
     }
 
@@ -115,7 +115,6 @@ class AttributeMapperTest {
     void serializeFromBase64GZipBomb() {
         String s = Base64.getEncoder().encodeToString(new byte[42 * 1024]);
         assertThrows(IllegalArgumentException.class, () -> attributeMapper.serializeFromBase64(s));
-
     }
 
     private Map<String, Object> attributesFromFile(String path) throws IOException {
