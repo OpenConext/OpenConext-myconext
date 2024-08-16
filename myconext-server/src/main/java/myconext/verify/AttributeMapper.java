@@ -13,12 +13,10 @@ import org.springframework.util.StringUtils;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.time.DateTimeException;
-import java.time.Instant;
-import java.time.LocalDate;
-import java.time.ZoneId;
+import java.time.*;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
+import java.time.temporal.TemporalAccessor;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -247,7 +245,7 @@ public class AttributeMapper {
                     .orElse(DateTimeFormatter.ISO_LOCAL_DATE);
             try {
                 LocalDate localDate = LocalDate.parse(dateString, dateTimeFormatter);
-                return Date.from(localDate.atStartOfDay(ZoneId.systemDefault()).toInstant());
+                return Date.from(localDate.atStartOfDay(ZoneOffset.UTC).toInstant());
             } catch (DateTimeException e) {
                 //Business decision, don't rethrow but return null, as we don't want to break external account linking
             }

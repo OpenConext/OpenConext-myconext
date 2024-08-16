@@ -81,7 +81,10 @@ class AttributeMapperTest {
     void parseDate() {
         Date eherkenningDate = AttributeMapper.parseDate("1963-02-21");
         Date idinDate = AttributeMapper.parseDate("19630221");
+        assertNotNull(eherkenningDate);
         assertEquals(eherkenningDate, idinDate);
+        Date dateOfBirth = AttributeMapper.parseDate("1991-12-19");
+        assertTrue(dateOfBirth.toString().startsWith("Thu Dec 19"));
     }
 
     @Test
