@@ -1,7 +1,5 @@
 package myconext.verify;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonNode;
 import myconext.AbstractIntegrationTest;
 import myconext.model.ExternalLinkedAccount;
 import myconext.model.User;
@@ -10,6 +8,7 @@ import org.junit.jupiter.api.Test;
 import java.util.Date;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class AttributeMapperIntegrationTest extends AbstractIntegrationTest {
 
@@ -24,7 +23,8 @@ class AttributeMapperIntegrationTest extends AbstractIntegrationTest {
 
         User userFromDB = userRepository.findOneUserByEmail("jdoe@example.com");
         assertEquals(dateOfBirth, userFromDB.getExternalLinkedAccounts().get(0).getDateOfBirth());
-        assertEquals("Thu Dec 19 00:00:00 CET 1991", dateOfBirth.toString());
+        //CI has UTC, local is CET
+        assertTrue(dateOfBirth.toString().startsWith("Thu Dec 19 00:00:00"));
         assertEquals(693097200000L, dateOfBirth.getTime());
     }
 
