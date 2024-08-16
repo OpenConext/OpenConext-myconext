@@ -529,7 +529,7 @@ I18n.translations.nl = {
                 verifyBank: "Verifieer met een Nederlandse bank app",
                 selectBank: "Selecteer je bank",
                 verifyEuropeanId: "Verifieer met een Europees ID",
-                supportEuropean: "Dit kan met de inlogmiddelen van België, Denemarken, Duitsland, Estland, Italië, Kroatië, Litouwen, Letland, Luxemburg, Malta, Portugal, Slowakije, Spanje, Tsjechië en Zweden",
+                supportEuropean: "Dit kan met de inlogmiddelen van België, Denemarken, Duitsland, Estland, Italië, Kroatië, Litouwen, Letland, Liechtenstein, Luxemburg, Malta, Oostenrijk, Polen, Portugal, Slowakije, Slovenië, Spanje, Tsjechië en Zweden",
                 useEuropean: "Selecteer een Europees ID",
                 help: "Kun je deze opties niet gebruiken, bezoek dan onze <a href='https://eduid.nl/help' target='_blank' rel='noreferrer'>support pagina's</a>"
             },
