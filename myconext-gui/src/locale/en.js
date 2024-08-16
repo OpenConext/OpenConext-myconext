@@ -528,7 +528,7 @@ I18n.translations.en = {
                 verifyBank: "Verify with a Dutch bank app",
                 selectBank: "Select your bank",
                 verifyEuropeanId: "Verify with a European ID",
-                supportEuropean: "We accept the ID's of Belgium, Denmark, Germany, Estonia,  Italy, Croatia, Lithuania, Latvia, Luxembourg, Malta, Portugal, Slovakia,  Spain, Czech Republic and Sweden.",
+                supportEuropean: "We accept the ID's of Austria, Belgium, Croatia, Czech Republic, Denmark, Estonia, Germany, Italy, Latvia, Liechtenstein, Lithuania, Luxembourg, Malta, Poland, Portugal, Slovakia, Slovenia, Spain and Sweden.",
                 useEuropean: "Use a European ID",
                 help: "If you can't use any of the these methods, please visit our <a href='https://eduid.nl/help' target='_blank' rel='noreferrer'>support pages</a>"
             },
