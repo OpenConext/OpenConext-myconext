@@ -7,14 +7,15 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.*;
+import org.springframework.web.client.ResponseErrorHandler;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.net.URI;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 
+import static java.util.Collections.emptyList;
 import static myconext.log.MDCContext.logWithContext;
 
 
@@ -31,9 +32,12 @@ public class OpenIDConnectRemote implements OpenIDConnect {
                                String user,
                                String password,
                                boolean featureOidcTokenAPI) {
-        this.restTemplate = new RestTemplate();
         this.oidcngUri = oidcngUri;
         this.featureOidcTokenAPI = featureOidcTokenAPI;
+        this.restTemplate = new RestTemplate();
+
+        ResponseErrorHandler resilientErrorHandler = new ResilientErrorHandler();
+        restTemplate.setErrorHandler(resilientErrorHandler);
 
         this.headers = new HttpHeaders();
         this.headers.setContentType(MediaType.APPLICATION_JSON);
@@ -44,7 +48,7 @@ public class OpenIDConnectRemote implements OpenIDConnect {
     @Override
     public List<Token> tokens(User user) {
         if (!featureOidcTokenAPI) {
-            return Collections.emptyList();
+            return emptyList();
         }
         String unspecifiedID = String.format("urn:collab:person:%s:%s", user.getSchacHomeOrganization(), user.getUid());
 
@@ -61,7 +65,7 @@ public class OpenIDConnectRemote implements OpenIDConnect {
 
         LOG.debug(String.format("Tokens result from oidc-ng %s", body));
 
-        return body;
+        return body == null ? emptyList() : body;
     }
 
     @Override
