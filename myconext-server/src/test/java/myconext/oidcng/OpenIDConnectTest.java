@@ -7,6 +7,7 @@ import myconext.model.DeleteService;
 import myconext.model.DeleteServiceTokens;
 import myconext.model.TokenRepresentation;
 import myconext.model.TokenType;
+import org.hamcrest.Matchers;
 import org.junit.ClassRule;
 import org.junit.Test;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -62,7 +63,8 @@ public class OpenIDConnectTest extends AbstractIntegrationTest {
                 .accept(ContentType.JSON)
                 .get("/myconext/api/sp/tokens")
                 .then()
-                .statusCode(400);
+                .statusCode(200)
+                .body("", Matchers.hasSize(0));
     }
 
     @Test
