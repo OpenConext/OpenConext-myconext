@@ -148,11 +148,11 @@
 <div class="account-link-mod">
     {#if !showBankOptions || busyProcessing}
         <div class="info-container">
-            <p>{I18n.t("verify.modal.info.please")}</p>
+            <p>{showIdinOptions ? I18n.t("verify.modal.info.please") : I18n.t("profile.addInstitutionInfo")}</p>
         </div>
         <div class="choice-container">
             <div class="choice">
-                <p class="question">{I18n.t("verify.modal.info.educationalInstitution")}</p>
+                <p class="question">{showIdinOptions ? I18n.t("verify.modal.info.educationalInstitution") : I18n.t("profile.addInstitutionAction")}</p>
                 {@html studentIcon}
             </div>
             <div class="button-container">

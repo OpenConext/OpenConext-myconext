@@ -66,6 +66,8 @@ I18n.translations.en = {
         validatedDayOfBirth: "Verified date of birth",
         linkedAccounts: "Your role(s)",
         addInstitution: "Add an organisation",
+        addInstitutionInfo: "By adding an organisation to your eduID, you prove that you are a student or employee of that organisation. This also verifies your eduID.",
+        addInstitutionAction: "Add your organisation by logging in",
         proceedConext: "Proceed to add this via SURFconext",
         proceedVerify: "Proceed to add this via SURFconext or another Identity Provider",
         validated: "Validated information",

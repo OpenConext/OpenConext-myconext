@@ -66,6 +66,8 @@ I18n.translations.nl = {
         validatedDayOfBirth: "Geverifieerde geboortedatum",
         linkedAccounts: "Je rollen",
         addInstitution: "Voeg een organisatie toe",
+        addInstitutionInfo: "Door een organisatie toe te voegen, bewijs je dat je een student of medewerker bent van die organisatie. Dit verifïeert ook je eduID.",
+        addInstitutionAction: "Voeg je organisatie toe door in te loggen",
         proceedConext: "Voeg dit toe via SURFconext",
         proceedVerify: "Voeg dit toe via SURFconext of een andere Identity Provider",
         validated: "Gevalideerde informatie",

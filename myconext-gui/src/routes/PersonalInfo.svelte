@@ -607,7 +607,7 @@
                 {/each}
             </section>
             <div class="add-institution"
-                 on:click={() => addIdentity($config.featureIdVerify && isEmpty($user.externalLinkedAccounts))}>
+                 on:click={() => addIdentity(false)}>
                 <div class="info">
                     <p>{I18n.t("profile.addInstitution")}</p>
                     <em class="info">{I18n.t(`profile.${($config.featureIdVerify && isEmpty($user.externalLinkedAccounts)) ? "proceedVerify" : "proceedConext"}`)}</em>
@@ -631,7 +631,7 @@
 
 {#if showModal}
     <Modal close={() => resetModalsAndQueryParams()}
-           title={I18n.t("verify.modal.header")}
+           title={showIdinOptions ? I18n.t("verify.modal.header") : I18n.t("profile.addInstitution")}
            showOptions={false}>
         <VerifyChoice addInstitution={addInstitution}
                       addBank={addBank}
