@@ -17,6 +17,7 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.convert.MappingMongoConverter;
 import org.springframework.data.mongodb.core.convert.MongoConverter;
 import org.springframework.data.mongodb.core.index.Index;
+import org.springframework.data.mongodb.core.index.IndexInfo;
 import org.springframework.data.mongodb.core.index.IndexOperations;
 import org.springframework.data.mongodb.core.index.MongoPersistentEntityIndexResolver;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -28,7 +29,9 @@ import tiqr.org.model.Enrollment;
 import tiqr.org.model.Registration;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.Locale;
+import java.util.stream.Collectors;
 
 @Configuration
 public class MongoMapping {
@@ -76,9 +79,26 @@ public class MongoMapping {
                 resolver.resolveIndexFor(clazz).forEach(indexOps::ensureIndex);
             }
         }
-        //user - email case insensitive
-        mongoTemplate.indexOps(User.class).ensureIndex(
-                new Index("email", Sort.Direction.ASC).collation(Collation.of(Locale.ENGLISH).strength(2)));
+        //Avoid command failed with error 86 (IndexKeySpecsConflict): An existing index has the same name as the requested index.
+        List<String> userIndexes = mongoTemplate.indexOps(User.class)
+                .getIndexInfo().stream()
+                .map(IndexInfo::getName)
+                .filter(name -> name.contains("email"))
+                .collect(Collectors.toList());
+        String userEmailUniqueIndexName = "user_email_unique";
+        //Drop existing indexes on email, but not the new one
+        userIndexes.stream()
+                .filter(name -> !name.equals(userEmailUniqueIndexName))
+                .forEach(name -> mongoTemplate.indexOps(User.class).dropIndex(name));
+        //Create - if not already exists - an email case-insensitive unique index
+        if (!userIndexes.contains(userEmailUniqueIndexName)) {
+            mongoTemplate.indexOps(User.class).ensureIndex(
+                    new Index("email", Sort.Direction.ASC)
+                            .named(userEmailUniqueIndexName)
+                            .collation(Collation.of(Locale.ENGLISH).strength(2))
+                            .unique());
+        }
+
         //tiqr
         mongoTemplate.indexOps(Enrollment.class).ensureIndex(
                 new Index("key", Sort.Direction.ASC));
