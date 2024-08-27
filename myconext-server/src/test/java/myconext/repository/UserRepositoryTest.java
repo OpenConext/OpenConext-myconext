@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 public class UserRepositoryTest extends AbstractIntegrationTest {
 
@@ -33,6 +34,25 @@ public class UserRepositoryTest extends AbstractIntegrationTest {
         User user = new User();
         user.setEmail("JDOE@EXAMPLE.COM");
         userRepository.save(user);
+    }
+
+    @Test
+    public void testTrimNames() {
+        final User user = new User();
+        user.setChosenName(" chosenName ");
+        user.setGivenName(" givenName ");
+        user.setFamilyName(" familyName ");
+        final User savedUser = userRepository.save(user);
+
+        assertNotNull(savedUser.getId());
+        assertEquals("chosenName", savedUser.getChosenName());
+        assertEquals("givenName", savedUser.getGivenName());
+        assertEquals("familyName", savedUser.getFamilyName());
+        //Also check the implicit update
+        savedUser.setFamilyName(" familyName ");
+        final User existingUser = userRepository.save(savedUser);
+        assertEquals(savedUser.getId(), existingUser.getId());
+        assertEquals("familyName", existingUser.getFamilyName());
     }
 
     @Test
