@@ -28,6 +28,13 @@ public class UserRepositoryTest extends AbstractIntegrationTest {
         assertEquals("John", user.get().getGivenName());
     }
 
+    @Test(expected = org.springframework.dao.DuplicateKeyException.class)
+    public void testCaseInsensitiveUniqueIndex() {
+        User user = new User();
+        user.setEmail("JDOE@EXAMPLE.COM");
+        userRepository.save(user);
+    }
+
     @Test
     public void testFindOneUserByEmail() {
         User user = userRepository.findOneUserByEmail("jdoe@example.com");
