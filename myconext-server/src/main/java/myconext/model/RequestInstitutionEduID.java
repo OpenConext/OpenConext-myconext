@@ -1,9 +1,6 @@
 package myconext.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
+import lombok.*;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -13,6 +10,7 @@ import java.time.ZoneId;
 import java.util.Date;
 import java.util.Map;
 
+@Document(collection = "request_institution_eduid")
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
@@ -24,16 +22,20 @@ public class RequestInstitutionEduID implements Serializable {
 
     private String hash;
 
+    @Setter
     private String emailHash;
 
     private Date expiresIn;
 
     private Map<String, Object> userInfo;
 
+    @Setter
     private CreateInstitutionEduID createInstitutionEduID;
 
+    @Setter
     private LoginStatus loginStatus;
 
+    @Setter
     private String userId;
 
     public RequestInstitutionEduID(String hash, Map<String, Object> userInfo) {
@@ -43,19 +45,4 @@ public class RequestInstitutionEduID implements Serializable {
         this.loginStatus = LoginStatus.NOT_LOGGED_IN;
     }
 
-    public void setCreateInstitutionEduID(CreateInstitutionEduID createInstitutionEduID) {
-        this.createInstitutionEduID = createInstitutionEduID;
-    }
-
-    public void setLoginStatus(LoginStatus loginStatus) {
-        this.loginStatus = loginStatus;
-    }
-
-    public void setUserId(String userId) {
-        this.userId = userId;
-    }
-
-    public void setEmailHash(String emailHash) {
-        this.emailHash = emailHash;
-    }
 }
