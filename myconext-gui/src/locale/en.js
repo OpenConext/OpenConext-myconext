@@ -233,9 +233,11 @@ I18n.translations.en = {
         deleteAccountConfirmation: "Are you sure you want to delete your eduID account?",
         deleteAccountSure: "Delete your account for all eternity?",
         deleteAccountWarning: "There is no way to undo this action.",
-        proceed: "If you wish to proceed, please type in your full name for confirmation.",
+        proceed: "If you wish to proceed, please type in the word 'Delete' for confirmation.",
         name: "Full name",
-        namePlaceholder: "Your full name as used on your profile"
+        namePlaceholder: "Your full name as used on your profile",
+        confirmation: "Confirmation",
+        confirmationPlaceholder: "Delete",
     },
     dataActivity: {
         title: "Data & Activity",

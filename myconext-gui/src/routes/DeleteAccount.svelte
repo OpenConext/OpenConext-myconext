@@ -7,10 +7,16 @@
     import Modal from '../components/Modal.svelte';
     import {deleteUser} from "../api";
     import Button from "../components/Button.svelte";
+    import {isEmpty} from "../utils/utils";
 
     let showModal = false;
 
     let name = "";
+
+    const disableDeleteButton = input => {
+        const inputSanitized = isEmpty(input) ? "" : input.toLowerCase().replace(/["']/g, "");
+        return inputSanitized !== "delete" && inputSanitized !== "verwijder";
+    }
 
     const deleteUserAction = showConfirmation => () => {
         if (showConfirmation) {
@@ -113,7 +119,7 @@
            cancel={() => showModal = false}
            warning={true}
            confirmTitle={I18n.t("modal.delete")}
-           disableSubmit={name !== `${$user.givenName} ${$user.familyName}`}
+           disableSubmit={disableDeleteButton(name)}
            title={I18n.t("account.deleteAccountSure")}>
         <div class="slot">
             <div class="warning-box">
@@ -121,9 +127,9 @@
                 <span>{I18n.t("account.deleteAccountWarning")}</span>
             </div>
             <p>{I18n.t("account.proceed")}</p>
-            <label for="name">{I18n.t("account.name")}</label>
+            <label for="name">{I18n.t("account.confirmation")}</label>
             <input id="name"
-                   placeholder={I18n.t("account.namePlaceholder")}
+                   placeholder={I18n.t("account.confirmationPlaceholder")}
                    type="text"
                    spellcheck="false"
                    bind:value={name}/>

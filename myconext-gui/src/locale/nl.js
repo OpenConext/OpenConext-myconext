@@ -233,9 +233,11 @@ I18n.translations.nl = {
         deleteAccountConfirmation: "Weet je zeker dat je je eduID wilt verwijderen?",
         deleteAccountSure: "Je account voor alle eeuwigheid verwijderen?",
         deleteAccountWarning: "Er is geen manier om deze actie ongedaan te maken.",
-        proceed: "Als je wilt doorgaan, typ dan je volledige naam zoals bekend in je eduID account ter bevestiging.",
+        proceed: "Als je wilt doorgaan, typ dan het woord 'Verwijder' ter bevestiging.",
         name: "Volledige naam",
-        namePlaceholder: "Je volledige naam zoals gebruikt in je profiel"
+        namePlaceholder: "Je volledige naam zoals gebruikt in je profiel",
+        confirmation: "Bevestiging",
+        confirmationPlaceholder: "Verwijder",
     },
     dataActivity: {
         title: "Gebruikte diensten",
