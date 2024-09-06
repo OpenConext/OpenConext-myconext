@@ -151,7 +151,7 @@ public class AttributeMapper {
                 //IdpScoping idpScoping
                 idpScoping,
                 //VerifyIssuer issuer
-                new VerifyIssuer(idpScoping.name(), idpScoping.name()),
+                new VerifyIssuer(idpScoping.name(), idpScoping.name(), null),
                 //Verification
                 eduID.getVerification(),
                 //String serviceUUID
@@ -227,7 +227,7 @@ public class AttributeMapper {
         Map<String, String> map = objectMapper.readValue(gin, Map.class);
         VerifyIssuer verifyIssuer = null;
         if (map.containsKey("vi") && map.containsKey("vn")) {
-            verifyIssuer = new VerifyIssuer(map.get("vi"), map.get("vn"));
+            verifyIssuer = new VerifyIssuer(map.get("vi"), map.get("vn"), null);
         }
         return new VerifyState(
                 map.get("i"),

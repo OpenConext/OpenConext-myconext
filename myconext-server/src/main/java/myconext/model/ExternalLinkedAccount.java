@@ -1,16 +1,19 @@
 package myconext.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
+import org.springframework.data.annotation.Transient;
 import org.springframework.util.StringUtils;
 
 import java.io.Serializable;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.Date;
+import java.util.List;
 
 @NoArgsConstructor
 @Getter
@@ -19,6 +22,7 @@ public class ExternalLinkedAccount implements Serializable {
 
     private String subjectId;
     private IdpScoping idpScoping;
+    @Setter
     private VerifyIssuer issuer;
     @Setter
     private Verification verification;
@@ -37,6 +41,7 @@ public class ExternalLinkedAccount implements Serializable {
     private String legalLastNamePrefix;
     private String preferredLastNamePrefix;
     private String partnerLastName;
+
     @Setter
     @Schema(type = "integer", format = "int64", example = "1634813554997")
     private Date dateOfBirth;
@@ -119,6 +124,18 @@ public class ExternalLinkedAccount implements Serializable {
             default:
                 throw new IllegalArgumentException("Won't happen");
         }
+    }
+
+    @JsonIgnore
+    @Transient
+    public ExternalLinkedAccount logoReference(List<VerifyIssuer> issuers) {
+        if (this.issuer != null) {
+            issuers.stream()
+                    .filter(issuer -> issuer.getId().equals(this.issuer.getId()))
+                    .findFirst()
+                    .ifPresent(verifyIssuer -> this.issuer.setLogo(verifyIssuer.getLogo()));
+        }
+        return this;
     }
 
 }

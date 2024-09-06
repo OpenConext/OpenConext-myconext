@@ -112,7 +112,7 @@
                      alt="logo"
                      on:error={e => hideImage(e)}>
             {:else if linkedAccount.external && linkedAccount.idpScoping !== "studielink"}
-                {@html logo(linkedAccount.issuer.id)}
+                {@html logo(linkedAccount.issuer)}
             {:else if linkedAccount.idpScoping === "studielink"}
                 <img class="studielink" src={studieLinkLogo} alt="studielink"/>
             {/if}

@@ -234,7 +234,7 @@ public class UserControllerTest extends AbstractIntegrationTest {
         ExternalLinkedAccount externalLinkedAccount = new ExternalLinkedAccount(
                 UUID.randomUUID().toString(),
                 IdpScoping.studielink,
-                new VerifyIssuer(IdpScoping.studielink.name(), IdpScoping.studielink.name()),
+                new VerifyIssuer(IdpScoping.studielink.name(), IdpScoping.studielink.name(), null),
                 Verification.Geverifieerd,
                 UUID.randomUUID().toString(),
                 IdpScoping.studielink.name(),

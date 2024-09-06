@@ -41,7 +41,8 @@ public class UserResponse implements Serializable {
                         Map<String, EduID> eduIdPerServiceProvider,
                         Optional<Registration> optionalRegistration,
                         boolean rememberMe,
-                        Manage manage) {
+                        Manage manage,
+                        List<VerifyIssuer> issuers) {
         this.id = user.getId();
         this.email = user.getEmail();
         this.chosenName = user.getChosenName();
@@ -68,6 +69,7 @@ public class UserResponse implements Serializable {
         this.externalLinkedAccounts = user.getExternalLinkedAccounts().stream()
                 .filter(externalLinkedAccount -> !externalLinkedAccount.getIdpScoping().equals(IdpScoping.studielink) ||
                         !Verification.Ongeverifieerd.equals(externalLinkedAccount.getVerification()))
+                .map(externalLinkedAccount -> externalLinkedAccount.logoReference(issuers))
                 .collect(Collectors.toList());
         this.givenNameVerified = (!user.getLinkedAccounts().isEmpty()) ||
                 (!this.externalLinkedAccounts.isEmpty() && IdpScoping.eherkenning.equals(this.externalLinkedAccounts.get(0).getIdpScoping()));

@@ -1,6 +1,7 @@
 package myconext.api;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
 import com.yubico.webauthn.*;
@@ -33,6 +34,7 @@ import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.i18n.LocaleContextHolder;
+import org.springframework.core.io.Resource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -93,6 +95,10 @@ public class UserController implements UserAuthentication {
     private final RegistrationRepository registrationRepository;
     private final boolean featureDefaultRememberMe;
 
+    private final List<VerifyIssuer> issuers;
+    //For now, hardcode the not known issuers from test
+    private final List<String> unknownIssuers = List.of("CURRNL2A");
+
     public UserController(UserRepository userRepository,
                           UserCredentialRepository userCredentialRepository,
                           ChallengeRepository challengeRepository,
@@ -113,7 +119,8 @@ public class UserController implements UserAuthentication {
                           @Value("${idp_redirect_url}") String idpBaseUrl,
                           @Value("${rp_origin}") String rpOrigin,
                           @Value("${rp_id}") String rpId,
-                          @Value("${feature.default_remember_me}") boolean featureDefaultRememberMe) {
+                          @Value("${feature.default_remember_me}") boolean featureDefaultRememberMe,
+                          @Value("${verify.issuers_path}") Resource issuersResource) throws IOException {
         this.userRepository = userRepository;
         this.userCredentialRepository = userCredentialRepository;
         this.challengeRepository = challengeRepository;
@@ -135,6 +142,12 @@ public class UserController implements UserAuthentication {
         this.relyingParty = relyingParty(rpId, rpOrigin);
         this.emailGuessingPreventor = new EmailGuessingPrevention(emailGuessingSleepMillis);
         this.featureDefaultRememberMe = featureDefaultRememberMe;
+
+        List<IdinIssuers> idinIssuers = objectMapper.readValue(issuersResource.getInputStream(), new TypeReference<>() {
+        });
+        //For now, we only support "Nederland"
+        this.issuers = idinIssuers.get(0).getIssuers().stream().filter(issuer -> !unknownIssuers.contains(issuer.getId())).collect(Collectors.toList());
+
     }
 
     @Operation(summary = "All institutional domains",
@@ -169,7 +182,7 @@ public class UserController implements UserAuthentication {
                 .orElseThrow(ExpiredAuthenticationException::new);
         User user = userRepository.findById(samlAuthenticationRequest.getUserId())
                 .orElseThrow(ExpiredAuthenticationException::new);
-        return new UserResponse(user, null, Optional.empty(), false, manage);
+        return new UserResponse(user, null, Optional.empty(), false, manage, issuers);
     }
 
     @Hidden
@@ -694,14 +707,14 @@ public class UserController implements UserAuthentication {
 
     private ResponseEntity<UserResponse> returnUserResponse(User user) {
         Optional<Registration> optionalRegistration = registrationRepository.findRegistrationByUserId(user.getId());
-        UserResponse userResponse = new UserResponse(user, user.convertEduIdPerServiceProvider(), optionalRegistration, false, manage);
+        UserResponse userResponse = new UserResponse(user, user.convertEduIdPerServiceProvider(), optionalRegistration, false, manage, issuers);
         return ResponseEntity.status(201).body(userResponse);
     }
 
     private ResponseEntity<UserResponse> userResponseRememberMe(User user) {
         List<SamlAuthenticationRequest> samlAuthenticationRequests = authenticationRequestRepository.findByUserIdAndRememberMe(user.getId(), true);
         Optional<Registration> optionalRegistration = registrationRepository.findRegistrationByUserId(user.getId());
-        UserResponse userResponse = new UserResponse(user, user.convertEduIdPerServiceProvider(), optionalRegistration, !samlAuthenticationRequests.isEmpty(), manage);
+        UserResponse userResponse = new UserResponse(user, user.convertEduIdPerServiceProvider(), optionalRegistration, !samlAuthenticationRequests.isEmpty(), manage, issuers);
         return ResponseEntity.ok(userResponse);
     }
 

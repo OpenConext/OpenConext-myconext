@@ -29,7 +29,7 @@ class AttributeMapperTest {
     void externalLinkedAccountFromAttributesIdin() {
         Map<String, Object> attributes = attributesFromFile("verify/idin.json");
         String stateIdentifier = UUID.randomUUID().toString();
-        VerifyIssuer verifyIssuer = new VerifyIssuer("RABONL2U", "Rabobank NL");
+        VerifyIssuer verifyIssuer = new VerifyIssuer("RABONL2U", "Rabobank NL", null);
         VerifyState verifyState = new VerifyState(stateIdentifier, IdpScoping.idin, verifyIssuer);
         ExternalLinkedAccount externalLinkedAccount = attributeMapper.externalLinkedAccountFromAttributes(attributes, verifyState);
         //Verify entire mapping
@@ -90,7 +90,7 @@ class AttributeMapperTest {
     @Test
     void serializeToBase64() {
         String stateIdentifier = UUID.randomUUID().toString();
-        VerifyState verifyState = new VerifyState(stateIdentifier, IdpScoping.idin, new VerifyIssuer("RABONL2U", "Rabobank NL"));
+        VerifyState verifyState = new VerifyState(stateIdentifier, IdpScoping.idin, new VerifyIssuer("RABONL2U", "Rabobank NL", null));
         String serialized = attributeMapper.serializeToBase64(verifyState);
 
         VerifyState verifyStateParsed = attributeMapper.serializeFromBase64(serialized);

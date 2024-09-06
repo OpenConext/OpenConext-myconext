@@ -231,7 +231,7 @@
         <div class="bank-choices-container">
             {#each issuers as issuer}
                 <div class="bank-choice" on:click={() => proceed(() => addBank(issuer.id))}>
-                    {@html logo(issuer.id)}
+                    {@html logo(issuer)}
                     <span>{issuer.name}</span>
                 </div>
             {/each}

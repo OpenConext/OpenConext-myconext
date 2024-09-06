@@ -7,7 +7,6 @@
     import eIDASIcon from "../icons/verify/eIDAS.svg";
     import europeanSvg from "../icons/verify/european.svg";
     import {config} from "../stores/user";
-    import closeIcon from "../icons/close_smll.svg";
     import arrowLeftIcon from "../icons/verify/arrow-left.svg";
     import {logo} from "./banks";
     import alertSvg from "../icons/alert-circle.svg";
@@ -218,7 +217,7 @@
         <div class="bank-choices-container">
             {#each issuers as issuer}
                 <div class="bank-choice" on:click={() => proceed(() => addBank(issuer.id))}>
-                    {@html logo(issuer.id)}
+                    {@html logo(issuer)}
                     <span>{issuer.name}</span>
                 </div>
             {/each}

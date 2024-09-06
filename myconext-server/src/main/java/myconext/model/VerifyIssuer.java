@@ -14,5 +14,6 @@ public class VerifyIssuer implements Serializable {
 
     private String id;
     private String name;
+    private String logo;
 
 }

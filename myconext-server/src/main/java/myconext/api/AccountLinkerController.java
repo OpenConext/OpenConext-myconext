@@ -451,7 +451,7 @@ public class AccountLinkerController implements UserAuthentication {
         }
         VerifyIssuer verifyIssuer = idpScoping.equals(IdpScoping.idin) ? this.issuers.stream()
                 .filter(issuer -> issuer.getId().equals(bankId)).findFirst().orElseThrow(() -> new IllegalArgumentException("Unknown verify issuer: " + bankId)) :
-                new VerifyIssuer(IdpScoping.eherkenning.name(), IdpScoping.eherkenning.name());
+                new VerifyIssuer(IdpScoping.eherkenning.name(), IdpScoping.eherkenning.name(), null);
         VerifyState verifyState = new VerifyState(stateIdentifier, idpScoping, verifyIssuer);
         String state = attributeMapper.serializeToBase64(verifyState);
 
@@ -572,7 +572,7 @@ public class AccountLinkerController implements UserAuthentication {
 
         VerifyIssuer verifyIssuer = idpScoping.equals(IdpScoping.idin) ? this.issuers.stream()
                 .filter(issuer -> issuer.getId().equals(bankId)).findFirst().orElseThrow(() -> new IllegalArgumentException("Unknown verify issuer: " + bankId)) :
-                new VerifyIssuer(IdpScoping.eherkenning.name(), IdpScoping.eherkenning.name());
+                new VerifyIssuer(IdpScoping.eherkenning.name(), IdpScoping.eherkenning.name(), null);
         String stateIdentifier = String.format("id=%s&user_uid=%s", id, passwordEncoder.encode(user.getUid()));
         VerifyState verifyState = new VerifyState(stateIdentifier, idpScoping, verifyIssuer);
         String state = attributeMapper.serializeToBase64(verifyState);
