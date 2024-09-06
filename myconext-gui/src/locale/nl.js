@@ -158,22 +158,34 @@ I18n.translations.nl = {
     },
     security: {
         title: "Beveiliging",
-        subTitle: "We bieden verschillende methoden om in te loggen met je eduID.",
-        secondSubTitle: "Andere loginmethoden",
+        subTitle: "Instellingen en aanbevelingen om je te helpen je eduID-account veilig te houden.",
+        banner: "Blijf veilig. Voeg meer veiligheid toe aan je eduID-account. Kies één van de aanbevolen beveiligingsmethoden.",
+        otherMethods: "Andere methoden",
+        recommendedOptions: "Aanbevolen methods",
+        currentSignInOptions: "Hoe je nu kunt inloggen met eduID",
         usePassword: "Wachtwoord",
         usePublicKey: "Beveiligingssleutel",
         notSet: "Niet ingesteld",
         notSupported: "Niet ondersteund",
+        magicLinkOption: "Magic link mail",
         useMagicLink: "Stuur magische link naar",
         rememberMe: "Ingelogd blijven",
-        securityKey: "Beveiligingssleutel {{nbr}}",
+        securityKey: "Passkey {{nbr}}",
         test: "Test",
-        addSecurityKey: "Beveiligingssleutel toevoegen",
-        addSecurityKeyInfo: "Je kunt een beveiligingssleutel toevoegen aan je eduID account waarmee je kunt inloggen. Dit kan bijv. de ingebouwde sensor van je apparaat zijn (TouchID, FaceID) of een los hardwaretoken (YubiKey).",
+        securityKeys: "Je passkeys",
+        addSecurityKey: "Passkey toevoegen",
+        addSecurityKeyInfo: "Je kunt een passkey toevoegen aan je eduID account waarmee je kunt inloggen. Dit kan bijv. de ingebouwde sensor van je apparaat zijn (TouchID, FaceID) of een los hardwaretoken (YubiKey).",
         settings: "Instellingen voor inloggen",
         rememberMeInfo: "<strong> Dit apparaat wordt momenteel onthouden. Je wordt automatisch ingelogd op eduD </strong>",
         noRememberMeInfo: "Als je inlogt met eduID kun je ervoor kiezen om <strong>ingelogd te blijven</strong>. Dan wordt jouw login op het apparaat dat je op dat moment gebruikt onthouden.",
         forgetMe: "Vergeet dit apparaat",
+        options: {
+            password: "Password",
+            passwordAdd: "Voeg een wachtwoord toe",
+            passkey: "Passkey",
+            passkeyAdd: "Voeg een passkey toe"
+        },
+
         tiqr: {
             title: "Wil je de volgende keer sneller en veiliger inloggen?",
             info: "Download de <strong>eduID app</strong> en log veilig in zonder wachtwoord of toegang tot je e-mail.",
@@ -284,16 +296,16 @@ I18n.translations.nl = {
         deleteInstitutionConfirmation: "Voor sommige applicaties waarop je wilt inloggen met eduID zijn gevalideerde gegevens nodig. Als je deze gegevens verwijdert, kan je je niet meer aanmelden bij deze toepassingen.<br/><br/>Mogelijk wordt je gevraagd om je gegevens opnieuw te valideren als je er inlogt."
     },
     credential: {
-        title: "Bewerk beveiligingssleutel",
-        info: "Je hebt deze key toegevoegd op {{date}} om {{hours}}: {{minutes}}",
+        title: "Bewerk passkey",
+        info: "Je hebt deze passkey toegevoegd op {{date}} om {{hours}}: {{minutes}}",
         name: "Naam",
         cancel: "Annuleren",
         update: "Bewaar",
-        deleted: "Je key {{name}} is verwijderd",
-        updated: "Je key {{name}} is bewaard",
+        deleted: "Je passkey {{name}} is verwijderd",
+        updated: "Je passkey {{name}} is bewaard",
         back: "/weauthn",
-        deleteCredential: "Verwijder sleutel",
-        deleteCredentialConfirmation: "Weet je zeker dat je de beveiligingssleutel {{name}} wilt verwijderen? De beveiligingssleutel wordt verwijderd uit je eduID account, maar wordt niet verwijderd uit je browser en / of van je YubiKey-apparaat."
+        deleteCredential: "Verwijder passkey",
+        deleteCredentialConfirmation: "Weet je zeker dat je de passkey {{name}} wilt verwijderen? De passkey wordt verwijderd uit je eduID account, maar wordt niet verwijderd uit je browser en / of van je YubiKey-apparaat."
     },
     password: {
         addTitle: "Toevoegen wachtwoord",

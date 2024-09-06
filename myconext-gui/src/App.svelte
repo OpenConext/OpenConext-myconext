@@ -91,6 +91,7 @@
     :global(:root) {
         --color-primary-blue: #0062b0;
         --color-secondary-blue: #ddf2fd;
+        --color-tertiare-blue: #0077c8;
         --color-primary-green: #008738;
         --color-primary-black: #202020;
         --color-primary-red: #ff0000;
@@ -162,7 +163,7 @@
         overflow: hidden;
     }
 
-    @media (max-width: 800px) {
+    @media (max-width: 1080px) {
         .myconext {
             margin: 0;
         }
@@ -174,12 +175,13 @@
         :global(.options) {
             display: flex;
             flex-direction: column;
-            align-items: center;
+            align-items: flex-start;
         }
 
         :global(.options a:not(:first-child)) {
             margin-top: 15px;
             margin-left: 0;
+
         }
 
         :global(.inner) {

@@ -2,33 +2,27 @@
     import {config, flash, user} from "../stores/user";
     import I18n from "i18n-js";
     import {navigate} from "svelte-routing";
-    import writeSvg from "../icons/redesign/pencil-write.svg";
     import getApp from "../icons/redesign/undraw_Mobile_app_re_catg 1.svg";
+    import hasApp from "../icons/redesign/undraw_Mobile_app_small.svg";
     import hashApp from "../icons/redesign/undraw_Order_confirmed_re_g0if.svg";
-    import rocketSvg from "../icons/redesign/space-rocket-flying.svg";
-    import {supported} from "@github/webauthn-json"
     import Button from "../components/Button.svelte";
     import {testWebAutnUrl} from "../api";
     import {onMount} from "svelte";
     import {dateFromEpoch} from "../utils/date";
+    import verifiedSvg from "../icons/redesign/shield-full.svg";
+    import webAuthnIcon from "../icons/redesign/video-game-key.svg";
+    import passwordIcon from "../icons/redesign/password-type.svg";
 
-    let password = $user.usePassword ? "************************" : I18n.t("security.notSet");
-    let passwordStyle = $user.usePassword ? "value" : "value-alt";
+    import magicLinkIcon from "../icons/redesign/video-game-magic-wand.svg";
+    import SecurityOption from "../components/SecurityOption.svelte";
+    import rocketSvg from "../icons/redesign/space-rocket-flying.svg";
+    import writeSvg from "../icons/redesign/pencil-write.svg";
 
-    const supportsWebAuthn = supported();
-    let publicKey = $user.usePublicKey ? "************************" :
-        supportsWebAuthn ? I18n.t("security.notSet") : I18n.t("security.notSupported");
-
-    let publicKeyStyle = $user.usePublicKey ? "value" : "value-alt";
     let usePublicKey = $user.usePublicKey;
 
     onMount(() => {
         const urlSearchParams = new URLSearchParams(window.location.search);
-        const testWebAuthn = urlSearchParams.get("success");
         const newUser = urlSearchParams.get("new");
-        if (testWebAuthn) {
-            flash.setValue(I18n.t("webauthn.testFlash"), 3750);
-        }
         if (newUser) {
             flash.setValue(I18n.t(`createFromInstitution.welcome${newUser === "false" ? "Existing" : ""}`), 3750);
         }
@@ -47,6 +41,10 @@
 </script>
 
 <style lang="scss">
+
+    $max-width-mobile: 1080px;
+    $max-width-not-edit: 480px;
+
     .security {
         width: 100%;
         height: 100%;
@@ -72,6 +70,10 @@
 
     h4 {
         margin-bottom: 2px;
+
+        &.info {
+            margin-bottom: 20px;
+        }
     }
 
     p {
@@ -87,24 +89,11 @@
             margin-bottom: 0;
         }
 
-        tr.link {
-            cursor: pointer;
-
-            &:hover {
-                background-color: var(--color-background);
-            }
-
-        }
-
         td {
             border-bottom: 1px solid var(--color-primary-grey);
 
             &.last {
                 border-bottom: none;
-            }
-
-            &.space {
-                padding: 5px 0;
             }
 
         }
@@ -119,66 +108,43 @@
             font-weight: bold;
         }
 
-        div.value-container {
-            display: flex;
-            align-items: center;
-
-            span {
-                word-break: break-word;
-            }
-
-            a.right-link {
-                margin-left: auto;
-            }
-
-            div.actions {
-                display: flex;
-                margin-left: auto;
-                align-items: center;
-
-                a.right-link {
-                    margin-left: 20px;
-                }
-
-            }
-        }
-
-        @media (max-width: 820px) {
-            div.value-container {
-                flex-direction: column;
-                align-items: flex-start;
-
-                div.actions {
-                    margin-left: 0;
-                    width: 100%;
-
-                    a.right-link {
-                        margin-left: auto;
-                    }
-
-                }
-            }
-        }
-
-        td.value-alt {
-            width: 65%;
-            font-style: italic;
-            color: #797979;
-
-        }
-
-        td.link {
-            width: 10%;
-            text-align: right;
-            padding: 0;
-        }
 
     }
 
-    :global(div.value-container a.right-link svg) {
-        color: var(--color-secondary-grey);
-        width: 22px;
-        height: auto;
+    div.banner {
+        display: flex;
+        align-items: center;
+        background-color: var(--color-secondary-blue);
+        padding: 10px;
+        margin: 14px 0 40px 0;
+
+        @media (max-width: $max-width-mobile) {
+            flex-direction: column;
+            gap: 15px;
+            align-items: flex-start;
+            margin-top: 20px;
+            padding: 10px;
+        }
+
+        span.verified-badge {
+            margin-left: 5px;
+            @media (max-width: $max-width-mobile) {
+                margin-left: 0;
+            }
+
+            :global(svg) {
+                height: 28px;
+                width: auto;
+            }
+        }
+
+        p.banner-info {
+            margin: 0 20px;
+            font-weight: 600;
+            @media (max-width: $max-width-mobile) {
+                margin: 0;
+            }
+        }
     }
 
     .tiqr-app {
@@ -188,6 +154,7 @@
         border: 1px solid var(--color-secondary-grey);
         margin-bottom: 30px;
         border-radius: 8px;
+        color: var(--color-secondary-grey);
 
         @media (max-width: 820px) {
             flex-direction: column;
@@ -242,8 +209,17 @@
     <div class="inner-container">
         <h2>{I18n.t("security.title")}</h2>
         <p class="info">{I18n.t("security.subTitle")}</p>
-        <div class="tiqr-app">
-            {#if $user.loginOptions.includes("useApp") && $user.registration &&  $user.registration.notificationType}
+        {#if !$user.loginOptions.includes("useApp")}
+            <div class="banner">
+                <span class="verified-badge">{@html verifiedSvg}</span>
+                <p class="banner-info">{I18n.t("security.banner")}</p>
+            </div>
+        {/if}
+
+        <h4 class="info">{I18n.t("security.currentSignInOptions")}</h4>
+
+        {#if $user.loginOptions.includes("useApp") && $user.registration && $user.registration.notificationType}
+            <div class="tiqr-app">
                 <div class="information">
                     <h4>{I18n.t("security.tiqr.app")}</h4>
 
@@ -281,75 +257,61 @@
                             className="down"
                             onClick={() => navigate("/backup-codes")}/>
                 </div>
-            {:else}
+            </div>
+
+        {/if}
+        <SecurityOption action={() => navigate("/edit-email")}
+                        icon={magicLinkIcon}
+                        label={I18n.t("security.magicLinkOption")}
+                        subLabel={$user.email}
+                        active={true}/>
+
+        {#if $user.usePassword}
+            <SecurityOption action={() => navigate("/reset-password-link")}
+                            icon={passwordIcon}
+                            label={I18n.t("security.options.password")}
+                            subLabel="*****************"
+                            active={true}/>
+        {/if}
+
+        {#if $config.featureWebAuthn && usePublicKey}
+            {#each $user.publicKeyCredentials as credential, i}
+                <SecurityOption action={credentialsDetails(credential)}
+                                icon={webAuthnIcon}
+                                label={I18n.t("security.options.passkey")}
+                                subLabel={credential.name}
+                                active={true}/>
+            {/each}
+        {/if}
+
+        {#if !$user.loginOptions.includes("useApp")}
+            <h4 class="info">{I18n.t("security.recommendedOptions")}</h4>
+            <div class="tiqr-app">
                 <div class="information">
-                    <h4>{I18n.t("security.tiqr.title")}</h4>
+                    <h4 class="grey">{I18n.t("security.tiqr.title")}</h4>
                     <p>{@html I18n.t("security.tiqr.info")}</p>
                     <Button label={I18n.t("security.tiqr.fetch")} large={true} onClick={() => navigate("/get-app")}/>
                 </div>
                 <div class="image">
                     {@html getApp}
                 </div>
+            </div>
             {/if}
-        </div>
-        <h4 class="info2">{I18n.t("security.secondSubTitle")}</h4>
 
-        <table cellspacing="0">
-            <thead></thead>
-            <tbody>
-            <tr class="link" on:click={() => navigate("/edit-email")}>
-                <td class="attr">{I18n.t("security.useMagicLink")}</td>
-                <td class="value">
-                    <div class="value-container">
-                        <span>{$user.email}</span>
-                        <a class="right-link" href="/edit-email"
-                           on:click|preventDefault|stopPropagation={() => navigate("/edit-email")}>{@html writeSvg}</a>
-                    </div>
-                </td>
-            </tr>
-            <tr class="link" on:click={() => navigate("/reset-password-link")}>
-                <td class="attr">{I18n.t("security.usePassword")}</td>
-                <td class="{passwordStyle}">
-                    <div class="value-container">
-                        <span>{password}</span>
-                        <a class="right-link" href="/reset-password-link"
-                           on:click|preventDefault|stopPropagation={() => navigate("/reset-password-link")}>{@html writeSvg}</a>
-                    </div>
-                </td>
-            </tr>
-            {#if $config.featureWebAuthn && usePublicKey}
-                {#each $user.publicKeyCredentials as credential, i}
-                    <tr class="link" on:click={credentialsDetails(credential)}>
-                        <td class="attr">{I18n.t("security.securityKey", {nbr: i + 1})}</td>
-                        <td class="value">
-                            <div class="value-container">
-                                <span>{`${credential.name}`}</span>
-                                <div class="actions">
-                                    <Button small={true}
-                                            inline={true}
-                                            label={I18n.t("security.test")}
-                                            icon={rocketSvg}
-                                            onClick={startTestFlow}/>
-                                    <a class="right-link" href="/edit"
-                                       on:click|preventDefault|stopPropagation={credentialsDetails(credential)}>
-                                        {@html writeSvg}
-                                    </a>
-                                </div>
-                            </div>
-                        </td>
-                    </tr>
-                {/each}
-            {/if}
+        <h4 class="info">{I18n.t("security.otherMethods")}</h4>
+        {#if !$user.usePassword}
+            <SecurityOption action={() => navigate("/reset-password-link")}
+                            icon={passwordIcon}
+                            label={I18n.t("security.options.passwordAdd")}
+                            active={false}/>
+        {/if}
             {#if $config.featureWebAuthn }
-                <tr>
-                    <td class="attr last">
-                        <Button label={I18n.t("security.addSecurityKey")}
-                                onClick={() => navigate("/webauthn")}/>
-                    </td>
-                    <td class="last space">{I18n.t("security.addSecurityKeyInfo")}</td>
-                </tr>
+                <SecurityOption action={() => navigate("/webauthn")}
+                                icon={webAuthnIcon}
+                                label={I18n.t("security.options.passkeyAdd")}
+                                active={false}/>
             {/if}
-            </tbody>
-        </table>
+
+
     </div>
 </div>

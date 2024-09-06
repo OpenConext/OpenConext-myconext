@@ -1,12 +1,10 @@
 <script>
-    import {user, flash} from "../stores/user";
+    import {flash, user} from "../stores/user";
     import I18n from "i18n-js";
-    import {deletePublicKeyCredential, updatePublicKeyCredential} from "../api";
+    import {deletePublicKeyCredential, testWebAutnUrl, updatePublicKeyCredential} from "../api";
     import {navigate} from "svelte-routing";
-    import chevron_left from "../icons/chevron-left.svg";
     import Button from "../components/Button.svelte";
     import {onMount} from "svelte";
-    import {formatCreateDate} from "../format/date";
     import Modal from "../components/Modal.svelte";
 
     let credential = {};
@@ -18,7 +16,17 @@
         const id = urlSearchParams.get("id");
         credential = $user.publicKeyCredentials.find(cred => cred.identifier === id);
         name = credential.name;
+        const testWebAuthn = urlSearchParams.get("success");
+        if (testWebAuthn) {
+            flash.setValue(I18n.t("webauthn.testFlash"), 3750);
+        }
     });
+
+    const startTestFlow = () => {
+        testWebAutnUrl().then(res => {
+            window.location.href = res.url;
+        });
+    }
 
     const updateCredential = () => {
         updatePublicKeyCredential({...credential, name: name})
@@ -87,6 +95,9 @@
             margin-right: auto;
         }
 
+        @media (max-width: 1080px) {
+            align-items: normal;
+        }
     }
 
 </style>
@@ -96,8 +107,15 @@
     <input id="credentialName" type="text" bind:value={name}>
 
     <div class="options">
-        <span class="first"><Button deletion={true} onClick={deleteCredential(true)}/></span>
-        <Button className="cancel" label={I18n.t("credential.cancel")} onClick={cancel}/>
+        <span class="first">
+            <Button deletion={true}
+                    onClick={deleteCredential(true)}/></span>
+        <Button className="cancel"
+                label={I18n.t("credential.cancel")}
+                onClick={cancel}/>
+        <Button label={I18n.t("security.test")}
+                className="ghost"
+                onClick={startTestFlow}/>
         <Button label={I18n.t("credential.update")}
                 disabled={!name || name.trim().length === 0}
                 onClick={updateCredential}/>
