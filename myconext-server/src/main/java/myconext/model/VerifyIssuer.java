@@ -7,7 +7,7 @@ import java.io.Serializable;
 @Getter
 @Setter
 @EqualsAndHashCode
-@ToString
+@ToString(exclude = {"logo"})
 @AllArgsConstructor
 @NoArgsConstructor
 public class VerifyIssuer implements Serializable {
