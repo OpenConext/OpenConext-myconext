@@ -100,6 +100,7 @@
         --color-secondary-grey: #707070;
         --color-tertiare-grey: #989898;
         --color-background: #f9f9f9;
+        --color-secondary-background: #f3f6f8;
         --width-app: 1024px;
     }
 

@@ -1,7 +1,7 @@
 <script>
     import chevronRight from "../icons/chevron-right.svg";
-    import chevronUp from "../icons/chevron-up.svg";
     import chevronDown from "../icons/chevron-down.svg";
+    import chevronUp from "../icons/chevron-up.svg";
 
     export let icon;
     export let label;
@@ -9,6 +9,7 @@
     export let action;
     export let active = false;
     export let hasSubContent = false;
+    export let showSubContent = false;
 
 
 </script>
@@ -17,14 +18,16 @@
     .security-option {
         display: flex;
         border-radius: 6px;
+        flex-direction: column;
         border: 2px solid var(--color-secondary-grey);
-        align-items: center;
         padding: 16px 22px;
         margin-bottom: 20px;
         cursor: pointer;
+        background-color: white;
 
         &.active {
             border: 2px solid var(--color-tertiare-blue);
+            padding: 16px 12px 16px 22px;
         }
 
         &:hover {
@@ -38,13 +41,18 @@
             border: none;
         }
 
+        div.security-main {
+            display: flex;
+            align-items: center;
+        }
+
         span.login-icon {
             margin-right: 20px;
         }
 
         :global(span.login-icon svg) {
-            width: 32px;
-            height: 32px;
+            width: 36px;
+            height: auto;
         }
 
         .login-info p {
@@ -92,6 +100,7 @@
 </style>
 
 <div class="security-option" class:active={active} on:click={action}>
+    <div class="security-main">
     <span class="login-icon" class:active={active}>{@html icon}</span>
     <div class="login-info">
         <p class:active={active}>{label}</p>
@@ -103,12 +112,17 @@
           class:active={active}>
         {#if active && !hasSubContent}
             {@html chevronRight}
-            {:else if active && hasSubContent}
-            {@html chevronRight}
+            {:else if hasSubContent && !showSubContent}
+            {@html chevronDown}
+            {:else if hasSubContent && showSubContent}
+            {@html chevronUp}
         {:else}
             <span class="add">+</span>
         {/if}
     </span>
-
+    </div>
+    {#if hasSubContent && showSubContent}
+        <slot></slot>
+    {/if}
 </div>
 

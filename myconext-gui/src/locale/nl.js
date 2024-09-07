@@ -180,6 +180,7 @@ I18n.translations.nl = {
         noRememberMeInfo: "Als je inlogt met eduID kun je ervoor kiezen om <strong>ingelogd te blijven</strong>. Dan wordt jouw login op het apparaat dat je op dat moment gebruikt onthouden.",
         forgetMe: "Vergeet dit apparaat",
         options: {
+            app: "eduID mobile app",
             password: "Password",
             passwordAdd: "Voeg een wachtwoord toe",
             passkey: "Passkey",
@@ -190,9 +191,9 @@ I18n.translations.nl = {
             title: "Wil je de volgende keer sneller en veiliger inloggen?",
             info: "Download de <strong>eduID app</strong> en log veilig in zonder wachtwoord of toegang tot je e-mail.",
             fetch: "Nu installeren",
-            deactivate: "Deactiveren",
+            deactivate: "Deactiveer je eduID mobiele app",
             app: "eduID app",
-            backupCodes: "Herstelmethode",
+            backupCodes: "Herstelopties",
             phoneId: "Telefoon ID",
             APNS: "iPhone",
             APNS_DIRECT: "iPhone",
@@ -200,12 +201,18 @@ I18n.translations.nl = {
             GCM: "Android",
             FCM_DIRECT: "Android",
             appCode: "App code",
-            lastLogin: "Laatste login",
-            activated: "Geactiveerd op",
+            lastLogin: "Laatste login op {{date}}",
+            activated: "Geactiveerd op {{date}}",
             dateTimeOn: "om",
             backupMethod: "Herstelmethode",
-            sms: "SMS",
-            code: "Herstelcode"
+            sms: "SMS/Text message",
+            smsInfo: "Je ontvant eenmalige codes op: {{phone}}",
+            getSmsInfo: "Ontvang eenmalige codes op je mobiel",
+            code: "Backup code",
+            getCode: "Vraag een code aan",
+            codeInfo: "Hopelijk bewaard op een veilige plek",
+            getCodeInfo: "En bewaar het op een veilige plek",
+
         }
     },
     home: {

@@ -4,21 +4,22 @@
     import {navigate} from "svelte-routing";
     import getApp from "../icons/redesign/undraw_Mobile_app_re_catg 1.svg";
     import hasApp from "../icons/redesign/undraw_Mobile_app_small.svg";
-    import hashApp from "../icons/redesign/undraw_Order_confirmed_re_g0if.svg";
     import Button from "../components/Button.svelte";
     import {testWebAutnUrl} from "../api";
     import {onMount} from "svelte";
     import {dateFromEpoch} from "../utils/date";
+    import binIcon from "../icons/redesign/trash.svg";
     import verifiedSvg from "../icons/redesign/shield-full.svg";
     import webAuthnIcon from "../icons/redesign/video-game-key.svg";
     import passwordIcon from "../icons/redesign/password-type.svg";
+    import mobilePhoneIcon from "../icons/redesign/mobile-phone.svg";
+    import backupIcon from "../icons/redesign/backup-code.svg";
 
     import magicLinkIcon from "../icons/redesign/video-game-magic-wand.svg";
     import SecurityOption from "../components/SecurityOption.svelte";
-    import rocketSvg from "../icons/redesign/space-rocket-flying.svg";
-    import writeSvg from "../icons/redesign/pencil-write.svg";
 
     let usePublicKey = $user.usePublicKey;
+    let showAppDetails = false;
 
     onMount(() => {
         const urlSearchParams = new URLSearchParams(window.location.search);
@@ -81,36 +82,6 @@
         letter-spacing: normal;
     }
 
-    table {
-        width: 100%;
-        margin-bottom: 30px;
-
-        &.no-bottom-margin {
-            margin-bottom: 0;
-        }
-
-        td {
-            border-bottom: 1px solid var(--color-primary-grey);
-
-            &.last {
-                border-bottom: none;
-            }
-
-        }
-
-        td.attr {
-            width: 43%;
-            padding: 20px 25px 20px 10px;
-        }
-
-        td.value {
-            width: 57%;
-            font-weight: bold;
-        }
-
-
-    }
-
     div.banner {
         display: flex;
         align-items: center;
@@ -147,63 +118,47 @@
         }
     }
 
-    .tiqr-app {
-        background-color: white;
+    .app-details {
         display: flex;
-        padding: 15px;
-        border: 1px solid var(--color-secondary-grey);
-        margin-bottom: 30px;
-        border-radius: 8px;
-        color: var(--color-secondary-grey);
+        flex-direction: column;
+        gap: 15px;
+        margin-top: 20px;
+        padding: 20px 0 10px 56px;
+        border-top: 1px solid var(--color-tertiare-blue);
 
-        @media (max-width: 820px) {
-            flex-direction: column;
+        .me {
+            font-weight: 600;
         }
 
-        .information {
+        .last-login {
+            color: var(--color-secondary-grey);
+        }
+
+        span.de-activate {
             display: flex;
-            flex-direction: column;
+            gap: 10px;
+            align-items: center;
 
-            h4 {
-                margin-bottom: 25px;
-            }
-
-            p {
-                margin-bottom: 20px;
+            a {
+                text-decoration: underline;
             }
         }
 
-        :global(.information a) {
-            margin-top: auto;
-        }
-
-        :global(.image svg) {
-            width: 210px;
-            margin-left: 20px;
+        :global(span.de-activate svg) {
+            color: var(--color-secondary-grey);
+            width: 16px;
             height: auto;
         }
 
-        .has-app-image {
-            display: flex;
-            flex-direction: column;
-        }
-
-        :global(.has-app-image svg) {
-            width: 210px;
-            margin: 20px;
-            height: auto;
-        }
-
-        :global(.has-app-image a) {
-            margin-top: auto;
-            margin-left: auto;
-        }
-
-        :global(.has-app-image a.down) {
-            margin-top: 20px;
-        }
     }
 
+    .recovery-options {
+        padding: 25px 20px;
+        background-color: var(--color-secondary-background);
+        border-radius: 8px;
+        display: flex;
+        flex-direction: column;
+    }
 </style>
 <div class="security">
     <div class="inner-container">
@@ -219,47 +174,30 @@
         <h4 class="info">{I18n.t("security.currentSignInOptions")}</h4>
 
         {#if $user.loginOptions.includes("useApp") && $user.registration && $user.registration.notificationType}
-            <div class="tiqr-app">
-                <div class="information">
-                    <h4>{I18n.t("security.tiqr.app")}</h4>
-
-                    <table cellspacing="0" class="no-bottom-margin">
-                        <thead></thead>
-                        <tbody>
-                        <tr>
-                            <td class="attr">{I18n.t("security.tiqr.phoneId")}</td>
-                            <td class="value">
-                                {`${I18n.t(`security.tiqr.${$user.registration.notificationType}`)} ${$user.givenName} ${$user.familyName}`}
-                            </td>
-                        </tr>
-                        <tr>
-                            <td class="attr">{I18n.t("security.tiqr.backupMethod")}</td>
-                            <td class="value">{I18n.t(`security.tiqr.${$user.registration.recoveryCode ? "code" : "sms"}`)}</td>
-                        </tr>
-                        <tr>
-                            <td class="attr">{I18n.t("security.tiqr.lastLogin")}</td>
-                            <td class="value">{dateFromEpoch($user.registration.updated, true)}</td>
-                        </tr>
-                        <tr>
-                            <td class="attr last">{I18n.t("security.tiqr.activated")}</td>
-                            <td class="value last ">{dateFromEpoch($user.registration.created, false)}</td>
-                        </tr>
-                        </tbody>
-                    </table>
+            <SecurityOption action={() => showAppDetails = !showAppDetails}
+                            icon={hasApp}
+                            label={I18n.t("security.options.app")}
+                            subLabel={I18n.t("security.tiqr.activated", {
+                                date: dateFromEpoch($user.registration.created, false)
+                            })}
+                            hasSubContent={true}
+                            showSubContent={showAppDetails}
+                            active={true}>
+                <div class="app-details">
+                    <span class="me">{`${I18n.t(`security.tiqr.${$user.registration.notificationType}`)} ${$user.givenName} ${$user.familyName}`}</span>
+                    <span class="last-login">{I18n.t("security.tiqr.lastLogin",
+                        {date: dateFromEpoch($user.registration.updated, true)})}</span>
+                    <span class="de-activate" on:click={() => navigate("/deactivate-app")}>
+                        <span class="icon">{@html binIcon}</span>
+                        <a href="/#"
+                           on:click|preventDefault|stopPropagation={() => navigate("/deactivate-app")}>
+                            {I18n.t("security.tiqr.deactivate")}
+                        </a>
+                    </span>
                 </div>
-                <div class="has-app-image">
-                    {@html hashApp}
-                    <Button label={I18n.t("security.tiqr.deactivate")}
-                            large={true}
-                            onClick={() => navigate("/deactivate-app")}/>
-                    <Button label={I18n.t("security.tiqr.backupCodes")}
-                            large={true}
-                            className="down"
-                            onClick={() => navigate("/backup-codes")}/>
-                </div>
-            </div>
-
+            </SecurityOption>
         {/if}
+
         <SecurityOption action={() => navigate("/edit-email")}
                         icon={magicLinkIcon}
                         label={I18n.t("security.magicLinkOption")}
@@ -311,7 +249,22 @@
                                 label={I18n.t("security.options.passkeyAdd")}
                                 active={false}/>
             {/if}
+        {#if $user.loginOptions.includes("useApp") && $user.registration && $user.registration.notificationType}
+            <h4 class="info">{I18n.t("security.tiqr.backupCodes")}</h4>
+            <div class="recovery-options">
+                <SecurityOption action={() => navigate("/backup-codes")}
+                                icon={mobilePhoneIcon}
+                                label={I18n.t("security.tiqr.sms")}
+                                subLabel={I18n.t(`security.tiqr.${$user.registration.recoveryCode ? "getSmsInfo" : "smsInfo"}`
+                                , {phone: `** ** *** ${$user.registration.phoneNumber}`})}
+                                active={!$user.registration.recoveryCode}/>
 
-
+                <SecurityOption action={() => navigate("/backup-codes")}
+                                icon={backupIcon}
+                                label={I18n.t(`security.tiqr.${$user.registration.recoveryCode ? "code" : "getCode"}`)}
+                                subLabel={I18n.t(`security.tiqr.${$user.registration.recoveryCode ? "codeInfo" : "getCodeInfo"}`)}
+                                active={$user.registration.recoveryCode}/>
+            </div>
+        {/if}
     </div>
 </div>
