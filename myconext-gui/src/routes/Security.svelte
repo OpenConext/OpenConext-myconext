@@ -151,6 +151,43 @@
         }
 
     }
+    .tiqr-app {
+        background-color: white;
+        display: flex;
+        padding: 15px;
+        border: 1px solid var(--color-secondary-grey);
+        margin-bottom: 30px;
+        border-radius: 8px;
+        color: var(--color-secondary-grey);
+
+        @media (max-width: 820px) {
+            flex-direction: column;
+        }
+
+        .information {
+            display: flex;
+            flex-direction: column;
+
+            h4 {
+                margin-bottom: 25px;
+            }
+
+            p {
+                margin-bottom: 20px;
+            }
+        }
+
+        :global(.information a) {
+            margin-top: auto;
+        }
+
+        :global(.image svg) {
+            width: 210px;
+            margin-left: 20px;
+            height: auto;
+        }
+
+    }
 
     .recovery-options {
         padding: 25px 20px;
