@@ -18,6 +18,7 @@ import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import lombok.SneakyThrows;
 import myconext.cron.DisposableEmailProviders;
 import myconext.exceptions.*;
 import myconext.mail.MailBox;
@@ -854,7 +855,8 @@ public class UserController implements UserAuthentication {
         if (!result.isSuccess()) {
             if (samlAuthenticationRequest.isTestInstance()) {
                 //back to SP
-                String url = String.format("%s/security?success=false", spBaseUrl);
+                String credentialId = credentialId(body);
+                String url = String.format("%s/credential?id=%s&success=false", spBaseUrl, credentialId);
                 return ResponseEntity.status(201).body(Collections.singletonMap("url", url));
             }
             throw new ForbiddenException();
@@ -871,11 +873,19 @@ public class UserController implements UserAuthentication {
 
         if (samlAuthenticationRequest.isTestInstance()) {
             //back to SP
-            String url = String.format("%s/security?success=true", spBaseUrl);
+            String credentialId = credentialId(body);
+            String url = String.format("%s/credential?id=%s&success=true", spBaseUrl, credentialId);
             return ResponseEntity.status(201).body(Collections.singletonMap("url", url));
         }
 
         return doMagicLink(user, samlAuthenticationRequest, true, request);
+    }
+
+    @SneakyThrows
+    private String credentialId(Map<String, Object> body) {
+        Map<String, Object> credential = objectMapper.readValue((String) body.get("credentials"), new TypeReference<>() {
+        });
+        return (String) credential.get("id");
     }
 
     private PublicKeyCredentialCreationOptions publicKeyCredentialCreationOptions(RelyingParty relyingParty, User user) throws Base64UrlException {

@@ -1,7 +1,7 @@
 <script>
     import I18n from "i18n-js";
     import phoneIcon from "../../icons/redesign/mobile-phone.svg";
-    import backupIcon from "../../icons/redesign/printer.svg";
+    import backupIcon from "../../icons/redesign/backup-code.svg";
     import LoginOption from "../../components/LoginOption.svelte";
     import {navigate} from "svelte-routing";
 
