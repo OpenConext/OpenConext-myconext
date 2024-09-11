@@ -1,5 +1,6 @@
 package myconext.model;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import myconext.manage.MockManage;
@@ -7,14 +8,18 @@ import org.junit.jupiter.api.Test;
 import org.springframework.core.io.ClassPathResource;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
+import static java.util.Collections.emptyList;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 class UserResponseTest {
 
+    private final ObjectMapper objectMapper = new ObjectMapper();
     private final List<VerifyIssuer> issuers;
 
     {
@@ -64,5 +69,16 @@ class UserResponseTest {
                 new MockManage(new ObjectMapper()),
                 issuers);
         assertEquals(0, userResponse.getExternalLinkedAccounts().size());
+    }
+
+    @Test
+    void nullMapKey() throws JsonProcessingException {
+        Map<String, EduID> eduidServiceProvider =
+                new HashMap<>();
+        eduidServiceProvider.put(null, null);
+        UserResponse userResponse = new UserResponse(new User(),eduidServiceProvider,Optional.empty(),false,
+                new MockManage(objectMapper),emptyList());
+        String json = objectMapper.writeValueAsString(userResponse);
+        System.out.println(json);
     }
 }

@@ -169,9 +169,14 @@ public class User implements Serializable, UserDetails {
      */
     @Transient
     public String computeEduIdForServiceProviderIfAbsent(String entityId, Manage manage) {
-        //Not likely and not desirable, but we don't interrupt the login flow for missing services
-        ServiceProvider serviceProvider = manage.findServiceProviderByEntityId(entityId)
-                .orElse(new ServiceProvider(new RemoteProvider(entityId, entityId, entityId, null, null), null));
+        //Not likely and not desirable, but we don't interrupt the login flow for missing services or when manage is down
+        ServiceProvider serviceProvider;
+        try {
+            serviceProvider = manage.findServiceProviderByEntityId(entityId)
+                    .orElse(new ServiceProvider(new RemoteProvider(entityId, entityId, entityId, null, null), null));
+        } catch (RuntimeException e) {
+            serviceProvider = new ServiceProvider(new RemoteProvider(entityId, entityId, entityId, null, null), null);
+        }
         return doComputeEduIDIfAbsent(serviceProvider, manage);
     }
 
@@ -216,9 +221,12 @@ public class User implements Serializable, UserDetails {
                 .collect(Collectors.toList());
         otherEduIDs.forEach(eduID -> {
             String otherEntityId = eduID.getServiceProviderEntityId();
-            ServiceProvider serviceProviderFromManage = manage.findServiceProviderByEntityId(otherEntityId)
-                    .orElse(new ServiceProvider(new RemoteProvider(otherEntityId, otherEntityId, otherEntityId, null, null), null));
-            eduID.updateServiceProvider(serviceProviderFromManage);
+            try {
+                manage.findServiceProviderByEntityId(otherEntityId)
+                        .ifPresent(eduID::updateServiceProvider);
+            } catch (RuntimeException e) {
+                // not to be helped
+            }
         });
         return eduIDValue;
     }
