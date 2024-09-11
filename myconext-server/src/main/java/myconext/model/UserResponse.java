@@ -10,10 +10,7 @@ import tiqr.org.model.Registration;
 import tiqr.org.model.RegistrationStatus;
 
 import java.io.Serializable;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 @Getter
 public class UserResponse implements Serializable {
@@ -67,6 +64,11 @@ public class UserResponse implements Serializable {
         this.forgottenPassword = user.isForgottenPassword();
         this.rememberMe = rememberMe;
         this.created = user.getCreated();
+        if (!CollectionUtils.isEmpty(eduIdPerServiceProvider)) {
+            //Prevent HttpMessageNotWritableException: Could not write JSON: Null key for a Map not allowed in JSON
+            eduIdPerServiceProvider.keySet().removeIf(Objects::isNull);
+            eduIdPerServiceProvider.values().removeIf(Objects::isNull);
+        }
         this.eduIdPerServiceProvider = eduIdPerServiceProvider;
         this.loginOptions = user.loginOptions();
         optionalRegistration.ifPresent(reg -> {
