@@ -88,7 +88,7 @@ public class DisposableEmailProviders {
         String domainLowerCase = email.substring(beginIndex).toLowerCase();
         boolean disposableEmail = disposableEmailProviders.contains(domainLowerCase);
         if (disposableEmail) {
-            throw new DisposableEmailProviderException();
+            throw new DisposableEmailProviderException("Disposable email: " + email);
         }
     }
 

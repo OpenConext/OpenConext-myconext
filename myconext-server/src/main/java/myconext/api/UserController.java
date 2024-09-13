@@ -171,7 +171,7 @@ public class UserController implements UserAuthentication {
             return Collections.singletonMap("name", "This Beautiful Service");
         }
         SamlAuthenticationRequest samlAuthenticationRequest = authenticationRequestRepository.findById(id)
-                .orElseThrow(ExpiredAuthenticationException::new);
+                .orElseThrow(() -> new ExpiredAuthenticationException("Expired samlAuthenticationRequest: " + id));
         return Collections.singletonMap("name",
                 samlAuthenticationRequest.getServiceName());
     }
@@ -180,9 +180,9 @@ public class UserController implements UserAuthentication {
     @GetMapping("/idp/me/{hash}")
     public UserResponse userInfo(@PathVariable("hash") String hash) {
         SamlAuthenticationRequest samlAuthenticationRequest = authenticationRequestRepository.findByHash(hash)
-                .orElseThrow(ExpiredAuthenticationException::new);
+                .orElseThrow(() -> new ExpiredAuthenticationException("Expired authentication request"));
         User user = userRepository.findById(samlAuthenticationRequest.getUserId())
-                .orElseThrow(ExpiredAuthenticationException::new);
+                .orElseThrow(() -> new ExpiredAuthenticationException("Expired authentication request"));
         return new UserResponse(user, null, Optional.empty(), false, manage, issuers);
     }
 
@@ -199,21 +199,23 @@ public class UserController implements UserAuthentication {
     @GetMapping("/idp/service/hash/{hash}")
     public Map<String, String> serviceNameByHash(@PathVariable("hash") String hash) {
         return Collections.singletonMap("name",
-                authenticationRequestRepository.findByHash(hash).orElseThrow(ExpiredAuthenticationException::new).getServiceName());
+                authenticationRequestRepository.findByHash(hash)
+                        .orElseThrow(() -> new ExpiredAuthenticationException("Expired authentication request")).getServiceName());
     }
 
     @Hidden
     @GetMapping("/idp/service/id/{id}")
     public Map<String, String> serviceNameById(@PathVariable("id") String id) {
         return Collections.singletonMap("name",
-                authenticationRequestRepository.findById(id).orElseThrow(ExpiredAuthenticationException::new).getServiceName());
+                authenticationRequestRepository.findById(id)
+                        .orElseThrow(() -> new ExpiredAuthenticationException("Expired authentication request")).getServiceName());
     }
 
     @Hidden
     @PostMapping("/idp/magic_link_request")
     public ResponseEntity newMagicLinkRequest(HttpServletRequest request, @Valid @RequestBody MagicLinkRequest magicLinkRequest) {
         SamlAuthenticationRequest samlAuthenticationRequest = authenticationRequestRepository.findByIdAndNotExpired(magicLinkRequest.getAuthenticationRequestId())
-                .orElseThrow(ExpiredAuthenticationException::new);
+                .orElseThrow(() -> new ExpiredAuthenticationException("Expired authentication request"));
 
         User user = magicLinkRequest.getUser();
 
@@ -241,7 +243,7 @@ public class UserController implements UserAuthentication {
     @PutMapping("/idp/magic_link_request")
     public ResponseEntity magicLinkRequest(HttpServletRequest request, @Valid @RequestBody MagicLinkRequest magicLinkRequest) {
         SamlAuthenticationRequest samlAuthenticationRequest = authenticationRequestRepository.findByIdAndNotExpired(magicLinkRequest.getAuthenticationRequestId())
-                .orElseThrow(ExpiredAuthenticationException::new);
+                .orElseThrow(() -> new ExpiredAuthenticationException("Expired samlAuthenticationRequest: " + magicLinkRequest.getAuthenticationRequestId()));
 
         User providedUser = magicLinkRequest.getUser();
 
@@ -275,7 +277,7 @@ public class UserController implements UserAuthentication {
     @GetMapping("/idp/resend_magic_link_request")
     public ResponseEntity resendMagicLinkRequest(HttpServletRequest request, @RequestParam("id") String authenticationRequestId) {
         SamlAuthenticationRequest samlAuthenticationRequest = authenticationRequestRepository.findByIdAndNotExpired(authenticationRequestId)
-                .orElseThrow(ExpiredAuthenticationException::new);
+                .orElseThrow(() -> new ExpiredAuthenticationException("Expired samlAuthenticationRequest: " + authenticationRequestId));
         String userId = samlAuthenticationRequest.getUserId();
         User user = userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException(userId));
         if (user.isNewUser()) {
@@ -442,7 +444,7 @@ public class UserController implements UserAuthentication {
             if (force) {
                 passwordResetHashRepository.deleteAll(passwordResetHashes);
             } else {
-                throw new NotAcceptableException();
+                throw new NotAcceptableException("Update email not allowed. Outstanding password reset for: " + user.getEmail());
             }
         }
         changeEmailHashRepository.deleteByUserId(user.getId());
@@ -785,7 +787,8 @@ public class UserController implements UserAuthentication {
 
         PublicKeyCredentialCreationOptions request = this.publicKeyCredentialCreationOptions(this.relyingParty, user);
         //Needed to succeed the validation
-        Challenge challenge = challengeRepository.findByToken(token).orElseThrow(ForbiddenException::new);
+        Challenge challenge = challengeRepository.findByToken(token)
+                .orElseThrow(() -> new ForbiddenException("Invalid token: " + token));
         this.restoreChallenge(request, ByteArray.fromBase64Url(challenge.getChallenge()));
         challengeRepository.delete(challenge);
 
@@ -836,12 +839,13 @@ public class UserController implements UserAuthentication {
     public ResponseEntity idpWebAuthnTryAuthentication(HttpServletRequest request, @RequestBody Map<String, Object> body) throws Base64UrlException, IOException, AssertionFailedException, NoSuchFieldException, IllegalAccessException {
         String authenticationRequestId = (String) body.get("authenticationRequestId");
         SamlAuthenticationRequest samlAuthenticationRequest = authenticationRequestRepository.findByIdAndNotExpired(authenticationRequestId)
-                .orElseThrow(ExpiredAuthenticationException::new);
+                .orElseThrow(() -> new ExpiredAuthenticationException("Expired SamlAuthenticationRequest"));
 
         PublicKeyCredential<AuthenticatorAssertionResponse, ClientAssertionExtensionOutputs> pkc =
                 PublicKeyCredential.parseAssertionResponseJson((String) body.get("credentials"));
 
-        Challenge challenge = challengeRepository.findByToken(authenticationRequestId).orElseThrow(ForbiddenException::new);
+        Challenge challenge = challengeRepository.findByToken(authenticationRequestId)
+                .orElseThrow(() -> new ForbiddenException("Challenge not found"));
         AssertionRequest assertionRequest = this.relyingParty.startAssertion(StartAssertionOptions.builder()
                 .username(Optional.of(challenge.getEmail()))
                 .build());
@@ -859,7 +863,7 @@ public class UserController implements UserAuthentication {
                 String url = String.format("%s/credential?id=%s&success=false", spBaseUrl, credentialId);
                 return ResponseEntity.status(201).body(Collections.singletonMap("url", url));
             }
-            throw new ForbiddenException();
+            throw new ForbiddenException("Unsuccessfull SAML authentication ");
         }
         challengeRepository.delete(challenge);
 

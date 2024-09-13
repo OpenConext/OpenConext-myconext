@@ -45,7 +45,7 @@ public class EmailDomainGuard {
             String domainName = domainName(email);
             boolean allowed = allowedDomains.stream().anyMatch(allowedDomainPredicate(domainName));
             if (!allowed) {
-                throw new ForbiddenException();
+                throw new ForbiddenException("Not allowed email: " + email);
             }
         }
     }

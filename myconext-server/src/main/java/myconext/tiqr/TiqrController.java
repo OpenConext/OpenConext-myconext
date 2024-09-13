@@ -209,7 +209,7 @@ public class TiqrController implements UserAuthentication {
         String sessionKey = (String) request.getSession().getAttribute(SESSION_KEY);
         Authentication authentication = tiqrService.authenticationStatus(sessionKey);
         if (!authentication.getStatus().equals(AuthenticationStatus.SUCCESS)) {
-            throw new ForbiddenException();
+            throw new ForbiddenException("Forbidden backup code, wrong status: " + authentication.getStatus());
         }
         return doGenerateBackupCode(user, true);
     }
@@ -231,7 +231,7 @@ public class TiqrController implements UserAuthentication {
         if (!regenerateSpFlow) {
             Registration registration = registrationRepository.findRegistrationByUserId(user.getId()).orElseThrow(IllegalArgumentException::new);
             if (!registration.getStatus().equals(RegistrationStatus.INITIALIZED)) {
-                throw new ForbiddenException();
+                throw new ForbiddenException("Forbidden backup code, wrong status: " + registration.getStatus());
             }
         }
         Map<String, Object> surfSecureId = user.getSurfSecureId();
@@ -267,7 +267,7 @@ public class TiqrController implements UserAuthentication {
         String sessionKey = (String) request.getSession().getAttribute(SESSION_KEY);
         Authentication authentication = tiqrService.authenticationStatus(sessionKey);
         if (!authentication.getStatus().equals(AuthenticationStatus.SUCCESS)) {
-            throw new ForbiddenException();
+            throw new ForbiddenException("Forbidden phone code, wrong status: " + authentication.getStatus());
         }
         User user = userFromAuthentication(secAuthentication);
         String phoneNumber = phoneCode.getPhoneNumber();
@@ -320,7 +320,7 @@ public class TiqrController implements UserAuthentication {
         String sessionKey = (String) request.getSession().getAttribute(SESSION_KEY);
         Authentication authentication = tiqrService.authenticationStatus(sessionKey);
         if (!authentication.getStatus().equals(AuthenticationStatus.SUCCESS)) {
-            throw new ForbiddenException();
+            throw new ForbiddenException("Forbidden phone code, wrong status: " + authentication.getStatus());
         }
         return doVerifyPhoneCode(phoneVerification, user, true);
     }
@@ -369,7 +369,7 @@ public class TiqrController implements UserAuthentication {
             }
             userRepository.save(user);
         } else {
-            throw new ForbiddenException();
+            throw new ForbiddenException("Forbidden phone code, wrong code: " + code);
         }
         return ResponseEntity.ok(new VerifyPhoneCode(this.magicLinkUrl));
     }
@@ -390,7 +390,7 @@ public class TiqrController implements UserAuthentication {
     public ResponseEntity<StartAuthentication> startAuthentication(HttpServletRequest request,
                                                                    @Valid @RequestBody TiqrRequest tiqrRequest) throws IOException, WriterException, TiqrException {
         authenticationRequestRepository.findByIdAndNotExpired(tiqrRequest.getAuthenticationRequestId())
-                .orElseThrow(ExpiredAuthenticationException::new);
+                .orElseThrow(() -> new ExpiredAuthenticationException("Expired tiqrRequest:" + tiqrRequest.getEmail()));
         String email = tiqrRequest.getEmail().trim();
         User user = userRepository.findUserByEmail(email).orElseThrow(() -> new UserNotFoundException(String.format("User %s not found", email)));
 
@@ -446,7 +446,8 @@ public class TiqrController implements UserAuthentication {
         pollAuthenticationResult.setStatus(status.name());
         if (status.equals(AuthenticationStatus.SUCCESS)) {
             authenticationRequestIdOptional.ifPresent(authenticationRequestId -> {
-                SamlAuthenticationRequest samlAuthenticationRequest = authenticationRequestRepository.findById(authenticationRequestId).orElseThrow(ExpiredAuthenticationException::new);
+                SamlAuthenticationRequest samlAuthenticationRequest = authenticationRequestRepository.findById(authenticationRequestId)
+                        .orElseThrow(() -> new ExpiredAuthenticationException("Expired samlAuthenticationRequest:" + authenticationRequestId));
                 String requesterEntityId = samlAuthenticationRequest.getRequesterEntityId();
 
                 String userID = authentication.getUserID();
@@ -558,7 +559,8 @@ public class TiqrController implements UserAuthentication {
     @Hidden
     public ResponseEntity<FinishEnrollment> rememberMe(@RequestBody Map<String, String> body) {
         String hash = body.get("hash");
-        SamlAuthenticationRequest samlAuthenticationRequest = authenticationRequestRepository.findByHash(hash).orElseThrow(ExpiredAuthenticationException::new);
+        SamlAuthenticationRequest samlAuthenticationRequest = authenticationRequestRepository.findByHash(hash)
+                .orElseThrow(() -> new ExpiredAuthenticationException("Expired samlAuthenticationRequest: " + hash));
         samlAuthenticationRequest.setRememberMe(true);
         samlAuthenticationRequest.setRememberMeValue(UUID.randomUUID().toString());
         authenticationRequestRepository.save(samlAuthenticationRequest);
@@ -571,7 +573,7 @@ public class TiqrController implements UserAuthentication {
         User user = userFromAuthentication(authentication);
         String phoneNumber = (String) user.getSurfSecureId().get(PHONE_NUMBER);
         if (!StringUtils.hasText(phoneNumber)) {
-            throw new ForbiddenException();
+            throw new ForbiddenException("Forbidden empty phone number");
         }
         return doSendPhoneCode(user, phoneNumber, false, request);
     }
@@ -594,7 +596,7 @@ public class TiqrController implements UserAuthentication {
             Registration registration = registrationRepository.findRegistrationByUserId(user.getId()).orElseThrow(IllegalArgumentException::new);
             registrationRepository.delete(registration);
         } else {
-            throw new ForbiddenException();
+            throw new ForbiddenException("Forbidden userVerificationCode: " + userVerificationCode);
         }
         return ResponseEntity.ok(new FinishEnrollment("ok"));
     }

@@ -30,7 +30,7 @@ public class RateLimitEnforcer {
             if (resetRateLimit) {
                 surfSecureId.put(RATE_LIMIT, 0);
             } else {
-                throw new TooManyRequestsException();
+                throw new TooManyRequestsException("Too many requests by user: " + user.getEmail());
             }
         }
         surfSecureId.put(RATE_LIMIT_UPDATED, System.currentTimeMillis());

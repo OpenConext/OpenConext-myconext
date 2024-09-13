@@ -138,7 +138,7 @@ public class User implements Serializable, UserDetails {
 
     public void encryptPassword(String password, PasswordEncoder encoder) {
         if (!strongEnough(password)) {
-            throw new WeakPasswordException();
+            throw new WeakPasswordException("Weak password: " + password);
         }
         this.password = encoder.encode(password);
     }
