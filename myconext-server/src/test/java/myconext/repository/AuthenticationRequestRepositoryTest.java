@@ -56,7 +56,8 @@ public class AuthenticationRequestRepositoryTest extends AbstractIntegrationTest
     @Test(expected = ExpiredAuthenticationException.class)
     public void testFindByIdAndNotExpired() {
         doExpireWithFindProperty(SamlAuthenticationRequest.class, "requestId", "requestId");
-        authenticationRequestRepository.findByIdAndNotExpired(request.getId()).orElseThrow(ExpiredAuthenticationException::new);
+        authenticationRequestRepository.findByIdAndNotExpired(request.getId())
+                .orElseThrow(() -> new ExpiredAuthenticationException("Expired"));
     }
 
     @Test
