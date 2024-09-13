@@ -14,8 +14,7 @@ import java.util.Map;
 import java.util.Optional;
 
 import static java.util.Collections.emptyList;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 
 class UserResponseTest {
 
@@ -26,7 +25,6 @@ class UserResponseTest {
         try {
             List<IdinIssuers> idinIssuers = new ObjectMapper().readValue(new ClassPathResource("/idin/issuers.json")
                     .getInputStream(), new TypeReference<>() {
-
             });
             this.issuers = idinIssuers.get(0).getIssuers();
         } catch (IOException e) {
@@ -75,10 +73,13 @@ class UserResponseTest {
     void nullMapKey() throws JsonProcessingException {
         Map<String, EduID> eduidServiceProvider =
                 new HashMap<>();
-        eduidServiceProvider.put(null, null);
+        eduidServiceProvider.put(null, new EduID());
+        eduidServiceProvider.put("key", null);
         UserResponse userResponse = new UserResponse(new User(),eduidServiceProvider,Optional.empty(),false,
                 new MockManage(objectMapper),emptyList());
-        String json = objectMapper.writeValueAsString(userResponse);
-        System.out.println(json);
+        Map<String, Object> parsedJson = objectMapper.readValue(objectMapper.writeValueAsString(userResponse), new TypeReference<>() {
+        }) ;
+        Map<String, EduID> eduIdPerServiceProvider = (Map<String, EduID>) parsedJson.get("eduIdPerServiceProvider");
+        assertTrue(eduIdPerServiceProvider.isEmpty());
     }
 }

@@ -77,7 +77,7 @@ public class UserResponse implements Serializable {
         this.forgottenPassword = user.isForgottenPassword();
         this.rememberMe = rememberMe;
         this.created = user.getCreated();
-        if (false && !CollectionUtils.isEmpty(eduIdPerServiceProvider)) {
+        if (!CollectionUtils.isEmpty(eduIdPerServiceProvider)) {
             //Prevent HttpMessageNotWritableException: Could not write JSON: Null key for a Map not allowed in JSON
             eduIdPerServiceProvider.keySet().removeIf(Objects::isNull);
             eduIdPerServiceProvider.values().removeIf(Objects::isNull);
