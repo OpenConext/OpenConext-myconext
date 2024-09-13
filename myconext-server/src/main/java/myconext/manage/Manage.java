@@ -24,6 +24,8 @@ public interface Manage {
 
     Optional<IdentityProvider> findIdentityProviderByBrinCode(String brinCode);
 
+    Optional<IdentityProvider> findIdentityProviderByInstitutionGUID(String institutionGUID);
+
     default String getServiceName(HttpServletRequest request, SamlAuthenticationRequest samlAuthenticationRequest) {
         String lang = cookieByName(request, "lang").map(Cookie::getValue).orElse("en");
         String requesterEntityId = samlAuthenticationRequest.getRequesterEntityId();

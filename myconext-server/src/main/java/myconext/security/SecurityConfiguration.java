@@ -260,6 +260,7 @@ public class SecurityConfiguration {
                     "/myconext/api/attribute-aggregation/**",
                     "/myconext/api/attribute-manipulation/**",
                     "/myconext/api/system/**",
+                    "/myconext/api/invite/**",
                     "/api/remote-creation/**"
             };
             http.requestMatchers()

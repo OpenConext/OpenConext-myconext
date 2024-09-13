@@ -61,9 +61,7 @@ public class EduID implements Serializable {
             sp.setHomeUrl(serviceProvider.getHomeUrl());
             sp.setLogoUrl(serviceProvider.getLogoUrl());
             sp.setInstitutionGuid(serviceProvider.getInstitutionGuid());
-        }, () -> {
-            this.services.add(serviceProvider);
-        });
+        }, () -> this.services.add(serviceProvider));
         return this;
     }
 

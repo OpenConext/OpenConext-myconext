@@ -152,14 +152,23 @@ public class RemoteManage implements Manage {
 
     @Override
     public Optional<IdentityProvider> findIdentityProviderByBrinCode(String brinCode) {
-        Map<String, Object> requestBody = Map.of("metaDataFields.coin:institution_brin", brinCode,
+        return searchIdentityProvider("metaDataFields.coin:institution_brin", brinCode);
+    }
+
+    @Override
+    public Optional<IdentityProvider> findIdentityProviderByInstitutionGUID(String institutionGUID) {
+        return searchIdentityProvider("metaDataFields.coin:institution_guid", institutionGUID);
+    }
+
+    private Optional<IdentityProvider> searchIdentityProvider(String metaDataField, String metaDataValue) {
+        Map<String, Object> requestBody = Map.of(metaDataField, metaDataValue,
                 "REQUESTED_ATTRIBUTES", Arrays.asList(
                         "metaDataFields.coin:institution_brin",
                         "metaDataFields.logo:0:url",
                         "metaDataFields.coin:institution_guid"));
         HttpEntity<Map<String, Object>> requestEntity = new HttpEntity<>(requestBody, this.headers);
         return restTemplate.exchange(manageBaseUrl + "/manage/api/internal/search/saml20_idp",
-                HttpMethod.POST, requestEntity, typeReference)
+                        HttpMethod.POST, requestEntity, typeReference)
                 .getBody()
                 .stream()
                 .map(m -> new IdentityProvider(remoteProvider(m), metaDataFields(m).get("coin:institution_brin")))

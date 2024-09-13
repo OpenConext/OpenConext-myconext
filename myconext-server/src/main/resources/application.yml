@@ -137,6 +137,11 @@ external-api-configuration:
         - remote-creation
       institutionGUID: ec9d6d75-0d11-e511-80d0-005056956c1a
       schac_home: studielink.nl
+    -
+      username: invite
+      password: "secret"
+      scopes:
+        - invite
 
 oidc-token-api:
   token-url: https://connect.test2.surfconext.nl/tokens
