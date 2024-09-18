@@ -42,13 +42,8 @@ public class EduID implements Serializable {
     }
 
     public EduID updateServiceProvider(ServiceProvider serviceProvider) {
-        //We migrate to the situation that en eduID only has a unique value and multiple services
-        this.serviceProviderEntityId = null;
-        this.serviceName = null;
-        this.serviceNameNl = null;
-        this.serviceLogoUrl = null;
-        this.serviceHomeUrl = null;
-        this.serviceInstutionGuid = null;
+        //We migrate to the situation that an eduID only has a unique value and multiple services
+        //but the version for the migration also needs to work with this situation
         //We only consider an SP as the same SP, if the entityId's equal OR the institutionGUID's are equal and the entityId's are null
         Optional<ServiceProvider> optionalServiceProvider = this.services.stream()
                 .filter(sp -> (StringUtils.hasText(sp.getEntityId()) && sp.getEntityId().equals(serviceProvider.getEntityId())) ||
