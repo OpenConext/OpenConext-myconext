@@ -4,17 +4,18 @@ import com.github.cloudyrock.mongock.ChangeLog;
 import com.github.cloudyrock.mongock.ChangeSet;
 import com.github.cloudyrock.mongock.driver.mongodb.springdata.v3.decorator.impl.MongockTemplate;
 import myconext.manage.Manage;
-import myconext.manage.RemoteManage;
 import myconext.model.*;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.schema.JsonSchemaObject;
+import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
 import java.time.temporal.ChronoUnit;
 import java.util.*;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
 
 @ChangeLog(order = "001")
@@ -137,6 +138,26 @@ public class Migrations {
     @ChangeSet(order = "009", id = "deleteSessionOneMore", author = "okke.harsta@surf.nl")
     public void deleteSessionOneMore(MongockTemplate mongoTemplate) {
         mongoTemplate.remove(new Query(), "sessions");
+    }
+
+    @SuppressWarnings("unchecked")
+    @ChangeSet(order = "010", id = "bugfixForFaultyMigration", author = "okke.harsta@surf.nl")
+    public void bugfixForFaultyMigration(MongockTemplate mongoTemplate) {
+        List<User> users = mongoTemplate.findAll(User.class, "users");
+        users.forEach(user -> {
+            if (!CollectionUtils.isEmpty(user.getEduIDS())) {
+                AtomicBoolean userNeedsUpdate = new AtomicBoolean(false);
+                user.getEduIDS().forEach(eduID -> {
+                    if (!StringUtils.hasText(eduID.getServiceProviderEntityId()) && !CollectionUtils.isEmpty(eduID.getServices()) ) {
+                        eduID.backwardCompatibleTransformation(eduID.getServices().get(0));
+                        userNeedsUpdate.set(true);
+                    }
+                });
+                if (userNeedsUpdate.get()) {
+                    mongoTemplate.save(user);
+                }
+            }
+        });
     }
 
     protected User mergeEduIDs(User user) {
