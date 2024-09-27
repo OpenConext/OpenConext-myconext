@@ -89,7 +89,7 @@ I18n.translations.nl = {
         loggedIn: "Inloggen geslaagd!",
         loggedInInfo: "Je kan dit tabblad / venster sluiten.",
         timeOutReached: "Timeout!",
-        timeOutReachedInfo: "Je magische link is verlopen. Ga terug naar de dienst waar je heen wou en probeer het opnieuw.",
+        timeOutReachedInfo: "Je magische link is verlopen. Ga terug naar de applicatie waar je heen wil en probeer het opnieuw.",
         resend: "E-mail nog steeds niet gevonden?",
         resendLink: " Stuur de e-mail opnieuw.",
         mailResend: "Check je inbox. We hebben je de e-mail met de magische link opnieuw verzonden.",
@@ -251,7 +251,7 @@ I18n.translations.nl = {
     },
     congrats: {
         header: "Succes",
-        info: "Je kunt nu de eduID app gebruiken om snel in te loggen bij diensten waarvoor je moet inloggen met je eduID.",
+        info: "Je kunt nu de eduID app gebruiken om snel in te loggen bij applicaties waarvoor je moet inloggen met je eduID.",
         next: "Verder naar {{name}}"
     },
     webAuthnTest: {
@@ -261,7 +261,7 @@ I18n.translations.nl = {
     },
     affiliationMissing: {
         header: "Account is gekoppeld, maar...",
-        info: "Je eduID is succesvol gekoppeld, maar de instelling die je hebt gekozen heeft niet de juiste attributen teruggegeven.",
+        info: "Je eduID is succesvol gekoppeld, maar de instelling die je hebt gekozen heeft niet de juiste persoonsgegevens teruggegeven.",
         proceed: "Je kan het nogmaals met een andere instelling proberen of doorgaan naar {{name}}.",
         proceedLink: "Doorgaan",
         retryLink: "Opnieuw proberen"
@@ -286,7 +286,7 @@ I18n.translations.nl = {
     },
     validNameMissing: {
         header: "Account is gekoppeld, maar...",
-        info: "Je eduID is succesvol gekoppeld, maar de instelling die je hebt gekozen heeft niet de juiste attributen teruggegeven.",
+        info: "Je eduID is succesvol gekoppeld, maar de instelling die je hebt gekozen heeft niet de juiste persoonsgegevens teruggegeven.",
         proceed: "Je kan het nogmaals met een andere instelling proberen of doorgaan naar {{name}}.",
         proceedLink: "Doorgaan",
         retryLink: "Opnieuw proberen"
@@ -343,7 +343,7 @@ I18n.translations.nl = {
     },
     appRequired: {
         header: "Login met de eduID app",
-        info: "Dienst <strong>{{service}}</strong> heeft een login verzocht met de eduID app om je identiteit te bevestigen.",
+        info: "Applicatie <strong>{{service}}</strong> heeft een login verzocht met de eduID app om je identiteit te bevestigen.",
         info2: "Download de <strong>eduID-app</strong> en log veilig in zonder wachtwoord of toegang tot je e-mail. Het duurt maar een minuut. Klik op <strong>Doorgaan</strong> voor de volgende stap.",
         cancel: "/cancel",
         no: "Ik weiger",
@@ -356,7 +356,7 @@ I18n.translations.nl = {
     },
     subContent: {
         warningTitle: "Weet je het zeker?",
-        warning: "De dienst waarop je inlogt heeft expliciet gevraagd om in te loggen met je eduID app. Als je met een andere methode inlogt, ontvangt deze service je attributen niet.",
+        warning: "De applicatie waarop je inlogt heeft expliciet gevraagd om in te loggen met je eduID app. Als je met een andere methode inlogt, ontvangt deze applicatie je persoonsgegevens niet.",
         confirmLabel: "Verander login optie",
         cancelLabel: "Dat wist ik niet"
     },
