@@ -581,6 +581,7 @@ public class UserController implements UserAuthentication {
             user.getExternalLinkedAccounts().clear();
             user.setDateOfBirth(null);
         } else {
+            //TODO potential NPE, refactor to use unique schacHome of the institution
             List<LinkedAccount> linkedAccounts = user.getLinkedAccounts().stream()
                     .filter(la -> !la.getEduPersonPrincipalName().equals(linkedAccount.getEduPersonPrincipalName()))
                     .collect(Collectors.toList());

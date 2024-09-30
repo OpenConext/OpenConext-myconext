@@ -848,6 +848,7 @@ public class AccountLinkerController implements UserAuthentication {
         String givenName = (String) body.get("given_name");
         String familyName = (String) body.get("family_name");
 
+        //TODO do we lower case the institutionIdentifier?
         String institutionIdentifier = StringUtils.hasText(surfCrmId) ? surfCrmId : schacHomeOrganization;
 
         List<String> affiliations = parseAffiliations(body, schacHomeOrganization);
@@ -856,7 +857,7 @@ public class AccountLinkerController implements UserAuthentication {
             Date expiresAt = Date.from(new Date().toInstant().plus(this.removalValidatedDurationDays, ChronoUnit.DAYS));
             List<LinkedAccount> linkedAccounts = user.getLinkedAccounts();
             Optional<LinkedAccount> optionalLinkedAccount = linkedAccounts.stream()
-                    .filter(linkedAccount -> linkedAccount.getEduPersonPrincipalName().equalsIgnoreCase(eppn))
+                    .filter(linkedAccount -> StringUtils.hasText(linkedAccount.getEduPersonPrincipalName()) && linkedAccount.getEduPersonPrincipalName().equalsIgnoreCase(eppn))
                     .findFirst();
             if (optionalLinkedAccount.isPresent()) {
                 optionalLinkedAccount.get().updateExpiresIn(institutionIdentifier, eppn, subjectId, givenName, familyName, affiliations, expiresAt);
