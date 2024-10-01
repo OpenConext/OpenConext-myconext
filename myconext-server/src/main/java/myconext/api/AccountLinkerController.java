@@ -847,13 +847,10 @@ public class AccountLinkerController implements UserAuthentication {
 
         String givenName = (String) body.get("given_name");
         String familyName = (String) body.get("family_name");
+        if (StringUtils.hasText(schacHomeOrganization) && StringUtils.hasText(eppn)) {
+            String institutionIdentifier = (StringUtils.hasText(surfCrmId) ? surfCrmId : schacHomeOrganization).toLowerCase();
 
-        //TODO do we lower case the institutionIdentifier?
-        String institutionIdentifier = StringUtils.hasText(surfCrmId) ? surfCrmId : schacHomeOrganization;
-
-        List<String> affiliations = parseAffiliations(body, schacHomeOrganization);
-
-        if (StringUtils.hasText(schacHomeOrganization)) {
+            List<String> affiliations = parseAffiliations(body, schacHomeOrganization);
             Date expiresAt = Date.from(new Date().toInstant().plus(this.removalValidatedDurationDays, ChronoUnit.DAYS));
             List<LinkedAccount> linkedAccounts = user.getLinkedAccounts();
             Optional<LinkedAccount> optionalLinkedAccount = linkedAccounts.stream()
@@ -885,7 +882,8 @@ public class AccountLinkerController implements UserAuthentication {
 
             userRepository.save(user);
         } else {
-            LOG.error("Account linking requested, but no schacHomeOrganization provided by the IdP");
+            LOG.error(String.format("Account linking requested, but no schacHomeOrganization (%s) or eppn (%s) is provided by the IdP",
+                    schacHomeOrganization, eppn));
         }
         boolean hasStudentAffiliation = user.getLinkedAccounts().stream()
                 .anyMatch(linkedAccount -> hasRequiredStudentAffiliation(linkedAccount.getEduPersonAffiliations()));
