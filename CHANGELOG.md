@@ -1,6 +1,14 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [7.3.5]
+- UX improvements on the inlog screen, the security screen and the delete your eduID screen
+- Extend iDIN api with logos of banks
+- General improvements, update dependencies
+
+## [7.3.4]
+- Bug fix for backwards compatibility
+
 ## [7.3.3]
 - Bug fixes and improvements 
 
