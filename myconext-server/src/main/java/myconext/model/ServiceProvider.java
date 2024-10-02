@@ -1,5 +1,6 @@
 package myconext.model;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -12,6 +13,7 @@ import java.util.Date;
 public class ServiceProvider extends RemoteProvider {
 
     private String homeUrl;
+    @Schema(type = "integer", format = "int64", example = "1634813554997")
     private Date createdAt = new Date();
 
     public ServiceProvider(RemoteProvider remoteProvider, String homeUrl) {
