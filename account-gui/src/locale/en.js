@@ -164,6 +164,14 @@ I18n.translations.en = {
             title: "New email confirmed!",
             info: "To finalize your email update, click the button below to open eduID app.",
         },
+        "external-account-linked": {
+            title: "External Account linked!",
+            info: "Your external account has been linked, click the button below to open your new account in the eduID app.",
+        },
+        "external-account-linked-error": {
+            title: "External account error!",
+            info: "Your external account has not been verified, click the button below to open the eduID app.",
+        },
         proceedLink: "Go to eduID app"
     },
     expired: {

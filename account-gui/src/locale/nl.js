@@ -164,6 +164,14 @@ I18n.translations.nl = {
             title: "eduID app!",
             info: "Je hebt een link naar de eduID app geopend in de browser, klik op de knop hier onder om de eduID app te openen.",
         },
+        "external-account-linked": {
+            title: "Externe Account gekoppeld!",
+            info: "Je externe account is gekoppeld, klik op de knop hier onder om de eduID app te openen.",
+        },
+        "external-account-linked-error": {
+            title: "Externe account error!",
+            info: "Je externe account kon niet worden gekoppeld, klik op de knop hier onder om de eduID app te openen.",
+        },
         proceedLink: "Open de eduID app"
     },
     expired: {

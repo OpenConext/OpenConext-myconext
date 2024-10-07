@@ -305,7 +305,8 @@ public class SecurityConfiguration {
         public void configure(WebSecurity web) {
             web.ignoring().antMatchers(
                     "/mobile/api/idp/create",
-                    "/mobile/api/mobile/oidc/redirect",
+                    "/myconext/api/mobile/oidc/redirect",
+                    "/myconext/api/mobile/verify/redirect",
                     "/mobile/api/create-from-mobile-api"
             );
         }

@@ -91,19 +91,18 @@ public class AccountLinkerMobileControllerTest extends AbstractIntegrationTest {
                 .withHeader("Content-Type", "application/json")
                 .withBody(userInfo)));
 
-        given().redirects().follow(false)
+        String location = given().redirects().follow(false)
                 .when()
                 .queryParam("code", "123456")
                 .queryParam("state", state)
                 .contentType(ContentType.JSON)
                 .get("/myconext/api/mobile/verify/redirect")
-                .then()
-                .statusCode(404);
+                .getHeader("Location");
 
-//        assertTrue(location.startsWith("http://localhost:3001/personal?verify="));
-//
-//        User user = userRepository.findOneUserByEmail("jdoe@example.com");
-//        Assertions.assertEquals(1, user.getExternalLinkedAccounts().size());
+        assertEquals("http://localhost:3000/client/mobile/external-account-linked", location);
+
+        User user = userRepository.findOneUserByEmail("jdoe@example.com");
+        Assertions.assertEquals(1, user.getExternalLinkedAccounts().size());
     }
 
     @Test

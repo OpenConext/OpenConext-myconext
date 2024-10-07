@@ -479,9 +479,38 @@ public class AccountLinkerController implements UserAuthentication {
                                              @RequestParam(value = "error_description", required = false) String errorDescription) {
         User user = userFromAuthentication(authentication);
 
+        return doVerifyIDRedirect(code, state, error, errorDescription, false, user);
+    }
+
+    @GetMapping({"/mobile/verify/redirect"})
+    @Hidden
+    public ResponseEntity mobileVerifyIDRedirect(@RequestParam(value = "code", required = false) String code,
+                                                 @RequestParam(value = "state", required = false) String state,
+                                                 @RequestParam(value = "error", required = false) String error,
+                                                 @RequestParam(value = "error_description", required = false) String errorDescription) {
+        VerifyState verifyState = attributeMapper.serializeFromBase64(state);
+        Optional<MobileLinkAccountRequest> optionalMobileLinkAccountRequest = this.mobileLinkAccountRequestRepository.findByHash(verifyState.getStateIdentifier());
+        if (!optionalMobileLinkAccountRequest.isPresent()) {
+            return ResponseEntity.status(HttpStatus.FOUND).location(URI.create(this.idpBaseRedirectUrl + "/client/mobile/expired")).build();
+        }
+        MobileLinkAccountRequest mobileLinkAccountRequest = optionalMobileLinkAccountRequest.get();
+        String userId = mobileLinkAccountRequest.getUserId();
+        User user = userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException(userId));
+
+        return doVerifyIDRedirect(code, state, error, errorDescription, true, user);
+    }
+
+    private ResponseEntity<Object> doVerifyIDRedirect(String code,
+                                                      String state,
+                                                      String error,
+                                                      String errorDescription,
+                                                      boolean isMobileFlow,
+                                                      User user) {
         if (!StringUtils.hasText(code) || !StringUtils.hasText(state)) {
+
+            String clientRedirectUrl = isMobileFlow ? idpBaseRedirectUrl + "/client/mobile/external-account-linked-error" : spRedirectUrl;
             URI location = URI.create(String.format("%s/external-account-linked-error?error=%s&error_description=%s",
-                            spRedirectUrl,
+                    clientRedirectUrl,
                             StringUtils.hasText(error) ? URLEncoder.encode(error, Charset.defaultCharset()) : "",
                             StringUtils.hasText(errorDescription) ? URLEncoder.encode(errorDescription, Charset.defaultCharset()) : "Unexpected+error+occurred"
                     )
@@ -491,9 +520,12 @@ public class AccountLinkerController implements UserAuthentication {
 
         VerifyState verifyState = attributeMapper.serializeFromBase64(state);
 
-        LOG.info(String.format("In SP verify ID redirect link account for user %s and party %s", user.getEmail(), verifyState.getIdpScoping()));
+        LOG.info(String.format("In %s verify ID redirect link account for user %s and party %s",
+                isMobileFlow ? "mobile" : "SP",
+                user.getEmail(),
+                verifyState.getIdpScoping()));
 
-        if (!passwordEncoder.matches(user.getUid(), verifyState.getStateIdentifier())) {
+        if (!isMobileFlow && !passwordEncoder.matches(user.getUid(), verifyState.getStateIdentifier())) {
             throw new ForbiddenException("Non matching user");
         }
         HttpHeaders headers = getHttpHeaders();
@@ -523,12 +555,14 @@ public class AccountLinkerController implements UserAuthentication {
         List<User> optionalUsers = userRepository.findByExternalLinkedAccounts_SubjectId(externalLinkedAccount.getSubjectId());
         if (!optionalUsers.isEmpty() && optionalUsers.stream().anyMatch(existingUser -> !user.getId().equals(existingUser.getId()))) {
             //Not allowed to link an external linked account which identity is already linked to another user
-            LOG.warn(String.format("SP redirect for external account linking: subject %s already linked to %s for party %s",
+            LOG.warn(String.format("%s redirect for external account linking: subject %s already linked to %s for party %s",
+                    isMobileFlow ? "Mobile" : "SP",
                     externalLinkedAccount.getSubjectId(),
                     user.getEmail(),
                     verifyState.getIdpScoping()));
+            String clientRedirectUrl = isMobileFlow ? idpBaseRedirectUrl + "/client/mobile/external-account-linked-error" : spRedirectUrl + "/subject-already-linked?idp_scoping";
             return ResponseEntity.status(HttpStatus.FOUND)
-                    .location(URI.create(spRedirectUrl + "/subject-already-linked?idp_scoping"))
+                    .location(URI.create(clientRedirectUrl))
                     .build();
         }
         List<ExternalLinkedAccount> externalLinkedAccounts = user.getExternalLinkedAccounts();
@@ -550,7 +584,8 @@ public class AccountLinkerController implements UserAuthentication {
         }
         userRepository.save(user);
 
-        URI location = URI.create(spRedirectUrl + "/personal?verify=" + externalLinkedAccount.getIdpScoping());
+        String clientRedirectUrl = isMobileFlow ? idpBaseRedirectUrl + "/client/mobile/external-account-linked" : spRedirectUrl + "/personal?verify=" + externalLinkedAccount.getIdpScoping();
+        URI location = URI.create(clientRedirectUrl);
         return ResponseEntity.status(HttpStatus.FOUND).location(location).build();
     }
 
