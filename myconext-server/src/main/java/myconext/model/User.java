@@ -3,6 +3,7 @@ package myconext.model;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.yubico.webauthn.data.ByteArray;
 import com.yubico.webauthn.data.PublicKeyCredentialDescriptor;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -46,6 +47,7 @@ public class User implements Serializable, UserDetails {
     @Setter
     private String familyName;
     @Setter
+    @Schema(type = "integer", format = "int64", example = "1634813554997")
     private Date dateOfBirth;
     @Indexed
     private String uid;
