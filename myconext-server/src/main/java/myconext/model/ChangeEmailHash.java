@@ -1,5 +1,6 @@
 package myconext.model;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
@@ -20,6 +21,7 @@ public class ChangeEmailHash implements Serializable {
 
     private String hash;
 
+    @Schema(type = "integer", format = "int64", example = "1634813554997")
     private Date expiresIn;
 
     private String userId;

@@ -1,5 +1,6 @@
 package myconext.model;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 import myconext.manage.Manage;
 import myconext.tiqr.SURFSecureID;
@@ -20,6 +21,7 @@ public class UserResponse implements Serializable {
     private final String chosenName;
     private final String familyName;
     private final String givenName;
+    @Schema(type = "integer", format = "int64", example = "1634813554997")
     private final Date dateOfBirth;
     private final boolean givenNameVerified;
     private final String displayName;

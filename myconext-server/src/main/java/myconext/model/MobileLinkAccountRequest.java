@@ -1,5 +1,6 @@
 package myconext.model;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
@@ -9,7 +10,6 @@ import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Date;
-import java.util.Map;
 
 @NoArgsConstructor
 @Getter
@@ -23,6 +23,7 @@ public class MobileLinkAccountRequest implements Serializable {
 
     private String userId;
 
+    @Schema(type = "integer", format = "int64", example = "1634813554997")
     private Date expiresIn;
 
     public MobileLinkAccountRequest(String hash, String userId) {
