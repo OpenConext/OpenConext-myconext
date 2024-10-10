@@ -89,7 +89,7 @@ I18n.translations.en = {
         loggedIn: "Login succeeded!",
         loggedInInfo: "You can close this tab / window.",
         timeOutReached: "Timeout!",
-        timeOutReachedInfo: "Your link has expired. Please go back to the service you where heading to and try again.",
+        timeOutReachedInfo: "Your link has expired. Please go back to the application you where heading to and try again.",
         resend: "Still can't find the email?",
         resendLink: "Send the email again.",
         mailResend: "Check your inbox again. We've sent another email with a magic link.",
@@ -259,7 +259,7 @@ I18n.translations.en = {
     },
     congrats: {
         header: "Success",
-        info: "You can now use the eduID app to quickly login to services which require you to login with your eduID.",
+        info: "You can now use the eduID app to quickly login to applications which require you to login with your eduID.",
         next: "Onwards to {{name}}"
     },
     webAuthnTest: {
@@ -269,7 +269,7 @@ I18n.translations.en = {
     },
     affiliationMissing: {
         header: "Account linked, but...",
-        info: "Your eduID is successfully linked, however the institution you choose did not provide the correct affiliation.",
+        info: "Your eduID is successfully linked, however the institution you choose did not provide an affiliation.",
         proceed: "You can try to link to another institution or proceed to {{name}}.",
         proceedLink: "Proceed",
         retryLink: "Retry"
@@ -363,7 +363,7 @@ I18n.translations.en = {
     },
     subContent: {
         warningTitle: "Please reconsider",
-        warning: "The service you're logging into has explicitly requested you login using your eduID app. If you login with a different method, this service will not receive your attributes.",
+        warning: "The application has requested you login using your eduID app. If you login with a different method, this application will not receive your personal data.",
         confirmLabel: "Change login option anyway",
         cancelLabel: "Did not know that"
     },
