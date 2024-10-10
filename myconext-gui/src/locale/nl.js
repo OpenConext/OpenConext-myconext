@@ -245,7 +245,7 @@ I18n.translations.nl = {
         personalInfo: "Klik op de onderstaande knop om al je persoonlijke gegevens uit je eduID account te downloaden.",
         deleteTitle: "Je eduID account verwijderen",
         info1: "Je kunt je eduID account verwijderen wanneer je maar wilt.",
-        info2: "Let op, je verliest de unieke eduID nummers die aan je e-mailadres zijn gekoppeld. Wanneer je je opnieuw registreert voor eduID met hetzelfde e-mailadres, krijg je een nieuwe eduID nummers. Sommige applicaties gebruiken deze nummers om je uniek te identificeren, dus voor die applicaties word je dan gezien als een nieuwe gebruiker. ",
+        info2: "Let op, je verliest de unieke eduID nummers die aan je e-mailadres zijn gekoppeld. Wanneer je je opnieuw registreert voor eduID met hetzelfde e-mailadres, krijg je nieuwe eduID nummers. Sommige applicaties gebruiken deze nummers om je te herkennen, dus voor die applicaties word je dan gezien als een nieuwe gebruiker. ",
         info3: "Houd er rekening mee dat het verwijderen van je eduID niet betekent dat alle applicaties die je met je eduID hebt gebruikt, ook je gegevens zullen verwijderen.",
         info4: "Om het verwijderen van je eduID volledig te voltooien, moet je nadat je account is verwijderd je browser afsluiten.",
         deleteAccount: "Verwijder mijn eduID",
@@ -260,7 +260,7 @@ I18n.translations.nl = {
     },
     dataActivity: {
         title: "Gebruikte applicaties",
-        info: "Elke applicatie waarvoor je eduID gebruikt ontvangt persoonsgegevens vanuit jouw eduID account. Denk hierbij aan je naam, e-mailadres of aan een pseudoniem waarmee de applicatie jou uniek kan identificeren.",
+        info: "Elke applicatie waarvoor je eduID gebruikt ontvangt persoonsgegevens vanuit jouw eduID account. Denk hierbij aan je naam, e-mailadres of aan een uniek eduID nummer waarmee de applicatie jou kan herkennen.",
         explanation: "Applicaties waarop je bent ingelogd via eduID.",
         noServices: "Je bent nog niet ingelogd geweest op een applicatie via eduID.",
         name: "Naam",
@@ -280,8 +280,8 @@ I18n.translations.nl = {
             revoke: "Intrekken"
         },
         deleteService: "Verwijder applicatie",
-        deleteServiceConfirmation: "Weet je zeker dat je het unieke gepseudonimiseerde eduID voor {{name}} wilt verwijderen? <br/> <br/> Deze applicatie herkent je wellicht niet meer de volgende keer dat je inlogt en je persoonlijke gegevens bij deze applicatie zijn daardoor mogelijk niet meer toegankelijk.",
-        deleteTokenConfirmation: "Weet je zeker dat de API access beveiligingssleutel voor {{name}} wilt intrekken?",
+        deleteServiceConfirmation: "Weet je zeker dat je de applicatie {{name}} wilt verwijderen? <br/> <br/> Deze applicatie herkent je wellicht niet meer de volgende keer dat je inlogt en je persoonlijke gegevens bij deze applicatie zijn daardoor mogelijk niet meer toegankelijk.",
+        deleteTokenConfirmation: "Weet je zeker dat de toegang voor {{name}} wilt intrekken?",
         deleteToken: "Beveiligingssleutel intrekken",
         deleted: "eduID verwijderd",
         tokenDeleted: "Beveiligingssleutels verwijderd"
