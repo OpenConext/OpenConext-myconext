@@ -261,7 +261,7 @@ I18n.translations.nl = {
     },
     affiliationMissing: {
         header: "Account is gekoppeld, maar...",
-        info: "Je eduID is succesvol gekoppeld, maar de instelling die je hebt gekozen heeft niet de juiste persoonsgegevens teruggegeven.",
+        info: "Je eduID is succesvol gekoppeld, maar de instelling die je hebt gekozen heeft niet de vereiste persoonsgegevens teruggegeven.",
         proceed: "Je kan het nogmaals met een andere instelling proberen of doorgaan naar {{name}}.",
         proceedLink: "Doorgaan",
         retryLink: "Opnieuw proberen"
@@ -286,7 +286,7 @@ I18n.translations.nl = {
     },
     validNameMissing: {
         header: "Account is gekoppeld, maar...",
-        info: "Je eduID is succesvol gekoppeld, maar de instelling die je hebt gekozen heeft niet de juiste persoonsgegevens teruggegeven.",
+        info: "Je eduID is succesvol gekoppeld, maar de instelling die je hebt gekozen heeft niet de vereiste persoonsgegevens teruggegeven.",
         proceed: "Je kan het nogmaals met een andere instelling proberen of doorgaan naar {{name}}.",
         proceedLink: "Doorgaan",
         retryLink: "Opnieuw proberen"
@@ -356,7 +356,7 @@ I18n.translations.nl = {
     },
     subContent: {
         warningTitle: "Weet je het zeker?",
-        warning: "De applicatie waarop je inlogt heeft expliciet gevraagd om in te loggen met je eduID app. Als je met een andere methode inlogt, ontvangt deze applicatie je persoonsgegevens niet.",
+        warning: "De applicatie vraagt om in te loggen met je eduID app. Als je met een andere methode inlogt, ontvangt deze applicatie je persoonsgegevens niet.",
         confirmLabel: "Verander login optie",
         cancelLabel: "Dat wist ik niet"
     },
