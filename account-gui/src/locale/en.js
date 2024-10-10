@@ -261,7 +261,7 @@ I18n.translations.en = {
     },
     affiliationMissing: {
         header: "Account linked, but...",
-        info: "Your eduID is successfully linked, however the institution you choose did not provide the correct affiliation.",
+        info: "Your eduID is successfully linked, however the institution you choose did not provide an affiliation.",
         proceed: "You can try to link to another institution or proceed to {{name}}.",
         proceedLink: "Proceed",
         retryLink: "Retry"
@@ -355,7 +355,7 @@ I18n.translations.en = {
     },
     subContent: {
         warningTitle: "Please reconsider",
-        warning: "The application you're logging into has explicitly requested you login using your eduID app. If you login with a different method, this application will not receive your personal data.",
+        warning: "The application has requested that you login using your eduID app. If you login with a different method, this application will not receive your personal data.",
         confirmLabel: "Change login option anyway",
         cancelLabel: "Did not know that"
     },
