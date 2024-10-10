@@ -258,7 +258,7 @@ I18n.translations.en = {
     },
     dataActivity: {
         title: "Data & Activity",
-        info: "Each application you accessed through eduID receives certain personal data from your eduID account. For example, your name, your email address or a pseudonym which the application can use to uniquely identify you.",
+        info: "Each application you accessed through eduID receives certain personal data from your eduID account. For example, your name, your email address or a unique eduID number which the application can use to identify you.",
         explanation: "Apps you logged in to using eduID.",
         noServices: "You did not yet use eduID to login to any application.",
         name: "Name",
@@ -278,8 +278,8 @@ I18n.translations.en = {
             revoke: "Revoke access"
         },
         deleteService: "Delete application",
-        deleteServiceConfirmation: "Are you sure you want to delete your unique pseudonymised eduID for {{name}} and revoke access to your linked accounts?<br/><br/>This application might not recognize you the next time you login and all your personal data within this application might be lost.",
-        deleteTokenConfirmation: "Are you sure you want to revoke the API access token for {{name}}?",
+        deleteServiceConfirmation: "Are you sure you want to delete the application {{name}}?<br/><br/>This application might not recognize you the next time you login and all your personal data within this application might be lost.",
+        deleteTokenConfirmation: "Are you sure you want to revoke access for {{name}}?",
         deleteToken: "Revoke access token",
         deleted: "eduID removed",
         tokenDeleted: "Tokens removed"
