@@ -355,7 +355,7 @@ I18n.translations.en = {
     },
     subContent: {
         warningTitle: "Please reconsider",
-        warning: "The application has requested that you login using your eduID app. If you login with a different method, this application will not receive your personal data.",
+        warning: "The application has requested you login using your eduID app. If you login with a different method, this application will not receive your personal data.",
         confirmLabel: "Change login option anyway",
         cancelLabel: "Did not know that"
     },
