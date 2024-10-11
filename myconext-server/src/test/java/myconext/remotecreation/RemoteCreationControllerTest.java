@@ -501,6 +501,35 @@ class RemoteCreationControllerTest extends AbstractIntegrationTest {
     }
 
     @Test
+    void deleteEduID() {
+        User user = userRepository.findUserByEmail(email).get();
+        assertEquals(2, user.getEduIDS().size());
+        given()
+                .when()
+                .auth().preemptive().basic(userName, password)
+                .contentType(ContentType.JSON)
+                .pathParam("eduid", user.getEduIDS().get(0).getValue())
+                .delete("/api/remote-creation/eduid-delete/{eduid}")
+                .then()
+                .statusCode(204);
+
+        User updatedUser = userRepository.findUserByEmail(email).get();
+        assertEquals(1, updatedUser.getEduIDS().size());
+    }
+
+    @Test
+    void deleteEduIDNotFound() {
+        given()
+                .when()
+                .auth().preemptive().basic(userName, password)
+                .contentType(ContentType.JSON)
+                .pathParam("eduid", "nope")
+                .delete("/api/remote-creation/eduid-delete/{eduid}")
+                .then()
+                .statusCode(404);
+    }
+
+    @Test
     void findUserByEduIDValueWithNullCheck() {
         assertFalse(super.findUserByEduIDValue(null).isPresent());
     }

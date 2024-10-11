@@ -276,6 +276,35 @@ public class RemoteCreationController implements HasUserRepository {
         return ResponseEntity.status(HttpStatus.CREATED).body(externalEduID);
     }
 
+    @DeleteMapping(value = {"/eduid-delete/{eduid}"})
+    @PreAuthorize("hasRole('ROLE_remote-creation')")
+    @Operation(summary = "Delete an eduID",
+            description = "Delete an eduID",
+            responses = {
+                    @ApiResponse(responseCode = "204", description = "No content",
+                            content = {@Content(schema = @Schema(implementation = UpdateExternalEduID.class))}),
+                    @ApiResponse(responseCode = "400", description = "BadRequest",
+                            content = {@Content(schema = @Schema(implementation = StatusResponse.class),
+                                    examples = {@ExampleObject(value = "{\"status\":400}")})}),
+                    @ApiResponse(responseCode = "404", description = "No eduID found",
+                            content = {@Content(schema = @Schema(implementation = StatusResponse.class),
+                                    examples = {@ExampleObject(value = "{\n" +
+                                            "  \"timestamp\": 1717672263253,\n" +
+                                            "  \"status\": 404,\n" +
+                                            "  \"error\": \"Not found\",\n" +
+                                            "  \"exception\": \"myconext.exceptions.UserNotFoundException\",\n" +
+                                            "  \"message\": \"User not found\",\n" +
+                                            "  \"path\": \"/api/remote-creation/eduid-delete\"\n" +
+                                            "}")})})})
+    public ResponseEntity<Void> deleteEduID(@Parameter(hidden = true) @AuthenticationPrincipal(errorOnInvalidType = true) RemoteUser remoteUser,
+                                            @PathVariable("eduid") String eduIDValue) {
+        LOG.info(String.format("DELETE eduid-delete by %s for %s", remoteUser.getUsername(), eduIDValue));
+        User user = userRepository.findByEduIDS_value(eduIDValue).orElseThrow(() -> new UserNotFoundException("User not found"));
+        user.getEduIDS().removeIf(eduID -> eduID.getValue().equals(eduIDValue));
+        userRepository.save(user);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+    }
+
     private static IdentityProvider getIdentityProvider(RemoteUser remoteUser, NewExternalEduID externalEduID, String remoteUserName) {
         RemoteProvider remoteProvider = new RemoteProvider(
                 null,
