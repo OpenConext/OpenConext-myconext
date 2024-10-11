@@ -584,7 +584,8 @@ public class AccountLinkerController implements UserAuthentication {
         }
         userRepository.save(user);
 
-        String clientRedirectUrl = isMobileFlow ? idpBaseRedirectUrl + "/client/mobile/external-account-linked" : spRedirectUrl + "/personal?verify=" + externalLinkedAccount.getIdpScoping();
+        String clientRedirectUrl = isMobileFlow ? idpBaseRedirectUrl + "/client/mobile/external-account-linked" :
+                spRedirectUrl + "/personal?verify=" + externalLinkedAccount.getIdpScoping();
         URI location = URI.create(clientRedirectUrl);
         return ResponseEntity.status(HttpStatus.FOUND).location(location).build();
     }
