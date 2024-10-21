@@ -120,6 +120,12 @@ I18n.translations.en = {
         infoNew: "You can't request an eduID account with the trusted account with which you just logged in. This institutional account is already linked to a different eduID account: {{email}}.",
         retryLink: "Retry"
     },
+    attributeMissing: {
+        header: "Connection not added!",
+        info: "Your eduID could not be linked. The trusted account with which you just logged in, did not provide an EPPN.",
+        infoNew: "You can't request an eduID account with the trusted account with which you just logged in. The account did not provide an EPPN.",
+        retryLink: "Retry"
+    },
     subjectAlreadyLinked: {
         header: "Verification failed!",
         info: "Your eduID could not be verified. The external account with which you just logged in, is already linked to a different eduID account.",

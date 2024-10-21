@@ -46,6 +46,7 @@
     import ConfirmExternalStepup from "./routes/ConfirmExternalStepup.svelte";
     import SubjectAlreadyLinked from "./routes/SubjectAlreadyLinked.svelte";
     import ExternalAccountLinkedError from "./routes/ExternalAccountLinkedError.svelte";
+    import AttributeMissing from "./routes/AttributeMissing.svelte";
 
     export let url = "";
 
@@ -194,6 +195,9 @@
                 </Route>
                 <Route path="/eppn-already-linked/:id" let:params>
                     <EppnAlreadyLinked id="{params.id}"/>
+                </Route>
+                <Route path="/attribute-missing/:id" let:params>
+                    <AttributeMissing id="{params.id}"/>
                 </Route>
                 <Route path="/subject-already-linked/:id" let:params>
                     <SubjectAlreadyLinked id="{params.id}"/>

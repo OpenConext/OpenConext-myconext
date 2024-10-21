@@ -120,6 +120,12 @@ I18n.translations.nl = {
         infoNew: "Je kan geen eduID account aanvragen met het vertrouwde account waarmee je zojuist bent ingelogd. Dit instellings-account is al gekoppeld met aan een ander eduID account: {{email}}.",
         retryLink: "Opnieuw proberen"
     },
+    attributeMissing: {
+        header: "Koppeling niet gemaakt!",
+        info: "Je eduID kon niet worden gekoppeld. Het vertrouwde account waarmee je zojuist bent ingelogd, heeft geen EPPN vrijgegeven.",
+        infoNew: "Je kan geen eduID account aanvragen met het vertrouwde account waarmee je zojuist bent ingelogd. Dit instellings-account heeft geen EPPN vrijgegeven.",
+        retryLink: "Opnieuw proberen"
+    },
     subjectAlreadyLinked: {
         header: "Verificatie mislukt niet gemaakt!",
         info: "Je eduID kon niet worden geverifïeerd. Het externe account waarmee je zojuist bent ingelogd, is al aan een ander eduID-account gekoppeld.",

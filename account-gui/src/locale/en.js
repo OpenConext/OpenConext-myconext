@@ -281,6 +281,13 @@ I18n.translations.en = {
         proceedLink: "Proceed",
         retryLink: "Retry"
     },
+    attributeMissing: {
+        header: "Account not linked!",
+        info: "Your eduID could not be linked. The trusted account with which you just logged in, did not provide and EPPN.",
+        proceed: "You can try to link to another institution or proceed to {{name}}.",
+        proceedLink: "Proceed",
+        retryLink: "Retry"
+    },
     subjectAlreadyLinked: {
         header: "Account not verified!",
         info: "Your eduID could not be verified. The external account with which you just logged in, is already linked to a different eduID account.",

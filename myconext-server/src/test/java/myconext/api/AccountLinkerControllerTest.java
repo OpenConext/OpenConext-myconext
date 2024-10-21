@@ -104,6 +104,21 @@ public class AccountLinkerControllerTest extends AbstractIntegrationTest {
     }
 
     @Test
+    public void redirectAttributeMissing() throws IOException {
+        User userPre = userRepository.findOneUserByEmail("mdoe@example.com");
+        assertEquals(0, userPre.getLinkedAccounts().size());
+
+        Map<Object, Object> body = new HashMap<>();
+        body.put("schac_home_organization", "mock.idp");
+
+        String authenticationRequestId = samlAuthnRequest();
+        User user = doRedirectResult(body, authenticationRequestId,
+                "http://localhost:3000/attribute-missing/");
+        assertTrue(user.getLinkedAccounts().isEmpty());
+
+    }
+
+    @Test
     public void redirectWrongUser() throws IOException {
         String authenticationRequestId = samlAuthnRequest();
         given().when()
@@ -138,21 +153,6 @@ public class AccountLinkerControllerTest extends AbstractIntegrationTest {
 
         assertEquals("Roger", linkedAccount.getGivenName());
         assertEquals("Johnson", linkedAccount.getFamilyName());
-    }
-
-    @Test
-    public void redirectWithNoEppn() throws IOException {
-        Map<Object, Object> body = new HashMap<>();
-        body.put("schac_home_organization", "mock.idp");
-        body.put("given_name", "Roger");
-        body.put("family_name", "Johnson");
-
-        String authnContext = readFile("request_authn_context_validated_name.xml");
-
-        User user = doRedirect(body, authnContext, "http://localhost:8081/saml/guest-idp/magic?h");
-        LinkedAccount linkedAccount = user.getLinkedAccounts().get(0);
-
-        assertNull(linkedAccount.getEduPersonPrincipalName());
     }
 
     @Test
@@ -204,12 +204,6 @@ public class AccountLinkerControllerTest extends AbstractIntegrationTest {
         String authenticationRequestId = samlAuthnRequest();
         User user = doRedirectResult(userInfo, authenticationRequestId,
                 "http://localhost:3000/eppn-already-linked/");
-        assertEquals(0, user.getLinkedAccounts().size());
-    }
-
-    @Test
-    public void redirectWithEmptyEppn() throws IOException {
-        User user = doRedirect(Collections.emptyMap());
         assertEquals(0, user.getLinkedAccounts().size());
     }
 

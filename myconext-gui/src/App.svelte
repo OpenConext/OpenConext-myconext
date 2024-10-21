@@ -16,6 +16,7 @@
     import EppnAlreadyLinked from "./routes/EppnAlreadyLinked.svelte";
     import LinkFromInstitution from "./routes/LinkFromInstitution.svelte";
     import AwaitLinkFromInstitutionMail from "./routes/AwaitLinkFromInstitutionMail.svelte";
+    import AttributeMissing from "./routes/AttributeMissing.svelte";
 
     const unprotectedRoutes = [
         "/create-from-institution",
@@ -249,6 +250,9 @@
                     <Route path="/eppn-already-linked">
                         <Home bookmark="eppn-already-linked"/>
                     </Route>
+                    <Route path="/attribute-missing">
+                        <Home bookmark="attribute-missing"/>
+                    </Route>
                     <Route path="/subject-already-linked">
                         <Home bookmark="subject-already-linked"/>
                     </Route>
@@ -363,6 +367,7 @@
                     {#if $config.createEduIDInstitutionEnabled}
                         <Route path="/create-from-institution" component={CreateFromInstitution}/>
                         <Route path="/create-from-institution/eppn-already-linked" component={EppnAlreadyLinked}/>
+                        <Route path="/create-from-institution/attribute-missing" component={AttributeMissing}/>
                         <Route path="/create-from-institution/expired" component={Expired}/>
                         <Route path="/create-from-institution/poll/:hash" let:params>
                             <AwaitLinkFromInstitutionMail hash="{params.hash}"/>

@@ -137,6 +137,35 @@ public class AccountLinkerMobileControllerTest extends AbstractIntegrationTest {
 
     @Test
     @SuppressWarnings("unchecked")
+    public void spOidcLinkMobileEppnMissing() throws IOException {
+        //Need to call this, otherwise no MobileLinkAccountRequest is created
+        given()
+                .when()
+                .contentType(ContentType.JSON)
+                .auth().oauth2(opaqueAccessToken(true, "eduid.nl/mobile"))
+                .get("/mobile/api/sp/oidc/link")
+                .as(Map.class);
+
+        String hash = mobileLinkAccountRequestRepository.findAll().get(0).getHash();
+
+        Map<Object, Object> userInfo = new HashMap<>();
+        userInfo.put("schac_home_organization", "mock.idp");
+
+        stubForTokenUserInfo(userInfo);
+        String location = given().redirects().follow(false)
+                .when()
+                .queryParam("code", "123456")
+                .queryParam("state", hash)
+                .contentType(ContentType.JSON)
+                .get("/myconext/api/mobile/oidc/redirect")
+                .getHeader("Location");
+
+        assertEquals(0, mobileLinkAccountRequestRepository.count());
+        assertEquals(location, "http://localhost:3000/client/mobile/attribute-missing");
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
     public void spOidcLinkMobileExpired() {
         String location = given().redirects().follow(false)
                 .when()

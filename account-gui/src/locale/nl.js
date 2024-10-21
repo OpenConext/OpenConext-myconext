@@ -281,6 +281,13 @@ I18n.translations.nl = {
         proceedLink: "Doorgaan",
         retryLink: "Opnieuw proberen"
     },
+    attributeMissing: {
+        header: "Account niet gekoppeld!",
+        info: "Je eduID kon niet worden gekoppeld. Het vertrouwde account waarmee je zojuist bent ingelogd, heeft geen EPPN vrijgegeven.",
+        proceed: "Je kan het nogmaals met een andere instelling proberen of doorgaan naar {{name}}.",
+        proceedLink: "Doorgaan",
+        retryLink: "Opnieuw proberen"
+    },
     subjectAlreadyLinked: {
         header: "Account niet geverifïeerd!",
         info: "Je eduID kon niet worden geverifïeerd. Het externe account waarmee je zojuist bent ingelogd, is al aan een ander eduID-account gekoppeld.",

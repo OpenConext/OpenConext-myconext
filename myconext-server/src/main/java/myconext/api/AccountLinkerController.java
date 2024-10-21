@@ -236,6 +236,9 @@ public class AccountLinkerController implements UserAuthentication {
         }
         Map<String, Object> userInfo = requestUserInfo(code, this.spCreateFromInstitutionRedirectUri);
         String eppn = (String) userInfo.get("eduperson_principal_name");
+        if (!StringUtils.hasText(eppn)) {
+            return ResponseEntity.status(HttpStatus.FOUND).location(URI.create("/create-from-institution/attribute-missing?fromInstitution=true")).build();
+        }
         //Check if the eppn is taken, before proceeding
         String eppnAlreadyLinkedRequiredUri = this.spRedirectUrl + "/create-from-institution/eppn-already-linked?fromInstitution=true";
         Optional<ResponseEntity<Object>> eppnAlreadyLinkedOptional = checkEppnAlreadyLinked(eppnAlreadyLinkedRequiredUri, eppn);
@@ -358,6 +361,7 @@ public class AccountLinkerController implements UserAuthentication {
                 false,
                 false,
                 false,
+                null,
                 null,
                 null,
                 null,
@@ -767,7 +771,7 @@ public class AccountLinkerController implements UserAuthentication {
 
         return doRedirect(code, user, this.spFlowRedirectUri, this.spRedirectUrl + "/personal",
                 false, false, true, null, null,
-                this.spRedirectUrl + "/eppn-already-linked");
+                this.spRedirectUrl + "/eppn-already-linked", this.spRedirectUrl + "/attribute-missing");
     }
 
     @GetMapping("/mobile/oidc/redirect")
@@ -790,7 +794,7 @@ public class AccountLinkerController implements UserAuthentication {
 
         return doRedirect(code, user, this.mobileFlowRedirectUri, this.idpBaseRedirectUrl + "/client/mobile/account-linked",
                 false, false, true, null, null,
-                this.idpBaseRedirectUrl + "/client/mobile/eppn-already-linked");
+                this.idpBaseRedirectUrl + "/client/mobile/eppn-already-linked", this.idpBaseRedirectUrl + "/client/mobile/attribute-missing");
     }
 
     @GetMapping("/idp/oidc/redirect")
@@ -837,8 +841,13 @@ public class AccountLinkerController implements UserAuthentication {
                 "?h=" + samlAuthenticationRequest.getHash() +
                 "&redirect=" + URLEncoder.encode(this.magicLinkUrl, charSet);
 
+        String attributeMissingUri = this.idpBaseRedirectUrl + "/attribute-missing/" +
+                samlAuthenticationRequest.getId() +
+                "?h=" + samlAuthenticationRequest.getHash() +
+                "&redirect=" + URLEncoder.encode(this.magicLinkUrl, charSet);
+
         ResponseEntity redirect = doRedirect(code, user, this.idpFlowRedirectUri, location, validateNames, studentAffiliationRequired, false,
-                idpStudentAffiliationRequiredUri, idpValidNamesRequiredUri, eppnAlreadyLinkedRequiredUri);
+                idpStudentAffiliationRequiredUri, idpValidNamesRequiredUri, eppnAlreadyLinkedRequiredUri, attributeMissingUri);
 
         StepUpStatus stepUpStatus = redirect.getHeaders().getLocation()
                 .toString().contains("affiliation-missing") ? StepUpStatus.MISSING_AFFILIATION : StepUpStatus.IN_STEP_UP;
@@ -858,13 +867,14 @@ public class AccountLinkerController implements UserAuthentication {
                                       boolean appendEPPNQueryParam,
                                       String idpStudentAffiliationRequiredUri,
                                       String idpValidNamesRequiredUri,
-                                      String eppnAlreadyLinkedRequiredUri) throws UnsupportedEncodingException {
+                                      String eppnAlreadyLinkedRequiredUri,
+                                      String attributeMissingUri) throws UnsupportedEncodingException {
         Map<String, Object> body = requestUserInfo(code, oidcRedirectUri);
 
         LOG.info(String.format("In redirect link account for user %s with user info %s", user.getEmail(), body));
 
         return saveOrUpdateLinkedAccountToUser(user, clientRedirectUri, validateNames, studentAffiliationRequired,
-                appendEPPNQueryParam, idpStudentAffiliationRequiredUri, idpValidNamesRequiredUri, eppnAlreadyLinkedRequiredUri, body);
+                appendEPPNQueryParam, idpStudentAffiliationRequiredUri, idpValidNamesRequiredUri, eppnAlreadyLinkedRequiredUri, attributeMissingUri, body);
     }
 
     private ResponseEntity<Object> saveOrUpdateLinkedAccountToUser(User user,
@@ -875,6 +885,7 @@ public class AccountLinkerController implements UserAuthentication {
                                                                    String idpStudentAffiliationRequiredUri,
                                                                    String idpValidNamesRequiredUri,
                                                                    String eppnAlreadyLinkedRequiredUri,
+                                                                   String attributeMissingUri,
                                                                    Map<String, Object> body) throws UnsupportedEncodingException {
         String eppn = (String) body.get("eduperson_principal_name");
         String subjectId = (String) body.get("subject_id");
@@ -884,12 +895,12 @@ public class AccountLinkerController implements UserAuthentication {
         String givenName = (String) body.get("given_name");
         String familyName = (String) body.get("family_name");
 
-        //TODO do we lower case the institutionIdentifier?
         String institutionIdentifier = StringUtils.hasText(surfCrmId) ? surfCrmId : schacHomeOrganization;
 
         List<String> affiliations = parseAffiliations(body, schacHomeOrganization);
 
-        if (StringUtils.hasText(schacHomeOrganization)) {
+        if (StringUtils.hasText(schacHomeOrganization) && StringUtils.hasText(eppn)) {
+            schacHomeOrganization = schacHomeOrganization.toLowerCase();
             Date expiresAt = Date.from(new Date().toInstant().plus(this.removalValidatedDurationDays, ChronoUnit.DAYS));
             List<LinkedAccount> linkedAccounts = user.getLinkedAccounts();
             Optional<LinkedAccount> optionalLinkedAccount = linkedAccounts.stream()
@@ -914,14 +925,15 @@ public class AccountLinkerController implements UserAuthentication {
                     user.setFamilyName(familyName);
                 }
             }
-            String eppnValue = StringUtils.hasText(eppn) ? String.format("eppn %s", eppn) : "NO eppn";
+            String eppnValue = String.format("eppn %s", eppn);
 
             logWithContext(user, "add", "linked_accounts", LOG, String.format("Account link with EPPN %s for institution %s with the affiliations %s",
                     eppnValue, institutionIdentifier, affiliations));
 
             userRepository.save(user);
         } else {
-            LOG.error("Account linking requested, but no schacHomeOrganization provided by the IdP");
+            LOG.error("Account linking requested, but no schacHomeOrganization or eppn provided by the IdP");
+            return ResponseEntity.status(HttpStatus.FOUND).location(URI.create(attributeMissingUri)).build();
         }
         boolean hasStudentAffiliation = user.getLinkedAccounts().stream()
                 .anyMatch(linkedAccount -> hasRequiredStudentAffiliation(linkedAccount.getEduPersonAffiliations()));
