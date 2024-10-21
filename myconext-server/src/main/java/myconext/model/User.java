@@ -107,7 +107,7 @@ public class User implements Serializable, UserDetails {
         this.chosenName = chosenName;
         this.givenName = givenName;
         this.familyName = familyName;
-        this.schacHomeOrganization = schacHomeOrganization;
+        this.schacHomeOrganization = StringUtils.hasText(schacHomeOrganization) ? schacHomeOrganization.toLowerCase() : schacHomeOrganization ;
         this.preferredLanguage = preferredLanguage;
 
         this.computeEduIdForServiceProviderIfAbsent(serviceProviderEntityId, manage);
@@ -123,7 +123,7 @@ public class User implements Serializable, UserDetails {
         this.chosenName = chosenName;
         this.givenName = givenName;
         this.familyName = familyName;
-        this.schacHomeOrganization = schacHomeOrganization;
+        this.schacHomeOrganization = StringUtils.hasText(schacHomeOrganization) ? schacHomeOrganization.toLowerCase() : schacHomeOrganization ;
         this.preferredLanguage = preferredLanguage;
 
         this.computeEduIdForIdentityProviderProviderIfAbsent(identityProvider, manage);

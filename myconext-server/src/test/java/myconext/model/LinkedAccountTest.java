@@ -7,8 +7,7 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 public class LinkedAccountTest {
 
@@ -19,6 +18,13 @@ public class LinkedAccountTest {
 
         linkedAccount = linkedAccount("John", "Doe", new Date());
         assertTrue(linkedAccount.areNamesValidated());
+    }
+
+    @Test
+    public void schacHomeCaseInsensitive() {
+        LinkedAccount linkedAccount = new LinkedAccount("id", "SCHAC", "eppn", "subjectId",
+                "givenName", "familyName", Arrays.asList("student"), false, new Date(), new Date());
+        assertEquals("schac", linkedAccount.getSchacHomeOrganization());
     }
 
     public static LinkedAccount linkedAccount(String givenName, String familyName, Date createdAt) {
