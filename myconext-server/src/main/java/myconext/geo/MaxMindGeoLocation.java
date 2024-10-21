@@ -19,7 +19,6 @@ import org.springframework.stereotype.Component;
 import java.io.*;
 import java.net.InetAddress;
 import java.net.URL;
-import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -52,6 +51,7 @@ public class MaxMindGeoLocation implements GeoLocation {
         if (!downloadDir.exists()) {
             downloadDir.mkdirs();
         }
+
         InputStream inputStream = new FileInputStream(this.latestDownloadBinary(true));
         this.databaseReader = new DatabaseReader.Builder(inputStream).withCache(new CHMCache()).build();
     }
@@ -114,27 +114,34 @@ public class MaxMindGeoLocation implements GeoLocation {
                 FileUtils.forceMkdir(dir);
             }
             File file = new File(String.format("%s/%s/%s.tar.gz", this.downloadDirectory, name, GEO_LITE_2_CITY));
-            FileOutputStream fileOutputStream = new FileOutputStream(file);
+            try (FileOutputStream fileOutputStream = new FileOutputStream(file);
+                 InputStream inputStream = new URL(String.format(urlTemplate, licenseKey)).openStream();
 
-            InputStream inputStream = new URL(String.format(urlTemplate, licenseKey)).openStream();
-            IOUtils.copy(inputStream, fileOutputStream);
+            ) {
+                IOUtils.copy(inputStream, fileOutputStream);
 
-            TarArchiveInputStream fin = new TarArchiveInputStream(new GzipCompressorInputStream(new FileInputStream(file)));
-            ArchiveEntry entry;
-            File binaryData = null;
-            while ((entry = fin.getNextEntry()) != null) {
-                if (entry.getName().endsWith("mmdb")) {
-                    binaryData = new File(String.format("%s/%s/%s", this.downloadDirectory, name, GEO_LITE_2_CITY_MMDB));
-                    try (OutputStream o = Files.newOutputStream(binaryData.toPath())) {
-                        IOUtils.copy(fin, o);
+
+                try (TarArchiveInputStream fin = new TarArchiveInputStream(new GzipCompressorInputStream(new FileInputStream(file)))) {
+                    ArchiveEntry entry;
+                    File binaryData = null;
+                    while ((entry = fin.getNextEntry()) != null) {
+                        if (entry.getName().endsWith("mmdb")) {
+                            binaryData = new File(String.format("%s/%s/%s", this.downloadDirectory, name, GEO_LITE_2_CITY_MMDB));
+                            try (OutputStream o = Files.newOutputStream(binaryData.toPath())) {
+                                IOUtils.copy(fin, o);
+                            }
+                            break;
+                        }
                     }
-                    break;
+                    if (binaryData == null) {
+                        throw new IllegalArgumentException("Could not find mmdb file in " + file);
+                    }
+                    if (this.databaseReader != null) {
+                        this.databaseReader.close();
+                    }
+                    this.databaseReader = new DatabaseReader.Builder(binaryData).withCache(new CHMCache()).build();
                 }
             }
-            if (binaryData == null) {
-                throw new IllegalArgumentException("Could not find mmdb file in " + file);
-            }
-            this.databaseReader = new DatabaseReader.Builder(binaryData).withCache(new CHMCache()).build();
 
             LOG.info(String.format("Finished refreshing geo-lite2 database from %s in %s ms",
                     this.urlTemplateForLogging,
