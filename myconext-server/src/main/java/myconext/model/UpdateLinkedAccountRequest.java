@@ -16,6 +16,7 @@ public class UpdateLinkedAccountRequest implements Serializable {
     private String subjectId;
     private boolean external;
     private String idpScoping;
+    private String schacHomeOrganization;
 
 
 

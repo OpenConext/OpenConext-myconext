@@ -89,4 +89,19 @@ public class LinkedAccount implements Serializable {
         return StringUtils.hasText(givenName) && StringUtils.hasText(familyName);
     }
 
+    @Transient
+    @JsonIgnore
+    public boolean isMatch(UpdateLinkedAccountRequest linkedAccount) {
+        if (StringUtils.hasText(this.subjectId) && StringUtils.hasText(linkedAccount.getSubjectId())) {
+            return this.subjectId.equals(linkedAccount.getSubjectId());
+        }
+        if (StringUtils.hasText(this.eduPersonPrincipalName) && StringUtils.hasText(linkedAccount.getEduPersonPrincipalName())) {
+            return this.eduPersonPrincipalName.equals(linkedAccount.getEduPersonPrincipalName());
+        }
+        //Fallback which should not be necessary, but just to be safe for legacy linked accounts
+        if (StringUtils.hasText(this.schacHomeOrganization) && StringUtils.hasText(linkedAccount.getSchacHomeOrganization())) {
+            return this.schacHomeOrganization.equals(linkedAccount.getSchacHomeOrganization());
+        }
+        return false;
+    }
 }

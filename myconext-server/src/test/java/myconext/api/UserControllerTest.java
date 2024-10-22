@@ -346,7 +346,7 @@ public class UserControllerTest extends AbstractIntegrationTest {
         User user = userRepository.findOneUserByEmail("jdoe@example.com");
         assertEquals(2, user.getLinkedAccounts().size());
         LinkedAccount linkedAccount = user.getLinkedAccounts().get(0);
-        UpdateLinkedAccountRequest updateLinkedAccountRequest = new UpdateLinkedAccountRequest(linkedAccount.getEduPersonPrincipalName(), null, false, null);
+        UpdateLinkedAccountRequest updateLinkedAccountRequest = new UpdateLinkedAccountRequest(linkedAccount.getEduPersonPrincipalName(), null, false, null, "nope");
         given()
                 .when()
                 .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
@@ -370,7 +370,7 @@ public class UserControllerTest extends AbstractIntegrationTest {
         userRepository.save(user);
 
         UpdateLinkedAccountRequest updateLinkedAccountRequest = new UpdateLinkedAccountRequest(
-                null, externalLinkedAccount.getSubjectId(), true, IdpScoping.idin.name());
+                null, externalLinkedAccount.getSubjectId(), true, IdpScoping.idin.name(), null);
         given()
                 .when()
                 .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
@@ -1328,7 +1328,7 @@ public class UserControllerTest extends AbstractIntegrationTest {
 
     @Test
     public void updateLinkedAccount() {
-        UpdateLinkedAccountRequest updateLinkedAccountRequest = new UpdateLinkedAccountRequest("guest@example.nl", null ,false, null);
+        UpdateLinkedAccountRequest updateLinkedAccountRequest = new UpdateLinkedAccountRequest("guest@example.nl", null ,false, null, "schac");
         given()
                 .when()
                 .accept(ContentType.JSON)

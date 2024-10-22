@@ -236,12 +236,14 @@ public class AccountLinkerController implements UserAuthentication {
         }
         Map<String, Object> userInfo = requestUserInfo(code, this.spCreateFromInstitutionRedirectUri);
         String eppn = (String) userInfo.get("eduperson_principal_name");
-        if (!StringUtils.hasText(eppn)) {
-            return ResponseEntity.status(HttpStatus.FOUND).location(URI.create("/create-from-institution/attribute-missing?fromInstitution=true")).build();
+        String subjectId = (String) userInfo.get("subject_id");
+        if (!StringUtils.hasText(eppn) && !StringUtils.hasText(subjectId)) {
+            String uri = this.spRedirectUrl + "/create-from-institution/attribute-missing?fromInstitution=true";
+            return ResponseEntity.status(HttpStatus.FOUND).location(URI.create(uri)).build();
         }
         //Check if the eppn is taken, before proceeding
         String eppnAlreadyLinkedRequiredUri = this.spRedirectUrl + "/create-from-institution/eppn-already-linked?fromInstitution=true";
-        Optional<ResponseEntity<Object>> eppnAlreadyLinkedOptional = checkEppnAlreadyLinked(eppnAlreadyLinkedRequiredUri, eppn);
+        Optional<ResponseEntity<Object>> eppnAlreadyLinkedOptional = checkEppnAlreadyLinked(eppnAlreadyLinkedRequiredUri, eppn, subjectId);
         if (eppnAlreadyLinkedOptional.isPresent()) {
             LOG.debug("EPPN already linked in create-institution-flow for " + eppn);
             return eppnAlreadyLinkedOptional.get();
@@ -899,17 +901,20 @@ public class AccountLinkerController implements UserAuthentication {
 
         List<String> affiliations = parseAffiliations(body, schacHomeOrganization);
 
-        if (StringUtils.hasText(schacHomeOrganization) && StringUtils.hasText(eppn)) {
+        if (StringUtils.hasText(schacHomeOrganization) && (StringUtils.hasText(eppn) || StringUtils.hasText(subjectId))) {
             schacHomeOrganization = schacHomeOrganization.toLowerCase();
             Date expiresAt = Date.from(new Date().toInstant().plus(this.removalValidatedDurationDays, ChronoUnit.DAYS));
             List<LinkedAccount> linkedAccounts = user.getLinkedAccounts();
+            UpdateLinkedAccountRequest updateLinkedAccountRequest = new UpdateLinkedAccountRequest(
+                    eppn, subjectId, false, null, schacHomeOrganization
+            );
             Optional<LinkedAccount> optionalLinkedAccount = linkedAccounts.stream()
-                    .filter(linkedAccount -> StringUtils.hasText(linkedAccount.getEduPersonPrincipalName()) && linkedAccount.getEduPersonPrincipalName().equalsIgnoreCase(eppn))
+                    .filter(linkedAccount -> linkedAccount.isMatch(updateLinkedAccountRequest))
                     .findFirst();
             if (optionalLinkedAccount.isPresent()) {
                 optionalLinkedAccount.get().updateExpiresIn(institutionIdentifier, eppn, subjectId, givenName, familyName, affiliations, expiresAt);
             } else {
-                Optional<ResponseEntity<Object>> eppnAlreadyLinkedOptional = checkEppnAlreadyLinked(eppnAlreadyLinkedRequiredUri, eppn);
+                Optional<ResponseEntity<Object>> eppnAlreadyLinkedOptional = checkEppnAlreadyLinked(eppnAlreadyLinkedRequiredUri, eppn, subjectId);
                 if (eppnAlreadyLinkedOptional.isPresent()) {
                     return eppnAlreadyLinkedOptional.get();
                 }
@@ -932,7 +937,7 @@ public class AccountLinkerController implements UserAuthentication {
 
             userRepository.save(user);
         } else {
-            LOG.error("Account linking requested, but no schacHomeOrganization or eppn provided by the IdP");
+            LOG.error("Account linking requested, but no subjectId or eppn provided by the IdP");
             return ResponseEntity.status(HttpStatus.FOUND).location(URI.create(attributeMissingUri)).build();
         }
         boolean hasStudentAffiliation = user.getLinkedAccounts().stream()
@@ -955,16 +960,19 @@ public class AccountLinkerController implements UserAuthentication {
         return ResponseEntity.status(HttpStatus.FOUND).location(URI.create(clientRedirectUri)).build();
     }
 
-    private Optional<ResponseEntity<Object>> checkEppnAlreadyLinked(String eppnAlreadyLinkedRequiredUri, String eppn) throws UnsupportedEncodingException {
-        //Ensure that an institution account is only be linked to 1 eduID, but only when an eppn is provided for the linked account
-        if (StringUtils.hasText(eppn)) {
-            List<User> optionalUsers = userRepository.findByLinkedAccounts_EduPersonPrincipalName(eppn);
-            if (!optionalUsers.isEmpty()) {
-                String charSet = Charset.defaultCharset().name();
-                eppnAlreadyLinkedRequiredUri += eppnAlreadyLinkedRequiredUri.contains("?") ? "&" : "?";
-                eppnAlreadyLinkedRequiredUri += "email=" + URLEncoder.encode(optionalUsers.get(0).getEmail(), charSet);
-                return Optional.of(ResponseEntity.status(HttpStatus.FOUND).location(URI.create(eppnAlreadyLinkedRequiredUri)).build());
-            }
+    private Optional<ResponseEntity<Object>> checkEppnAlreadyLinked(String eppnAlreadyLinkedRequiredUri, String eppn, String subjectId) throws UnsupportedEncodingException {
+        //Ensure that an institution account is only be linked to 1 eduID, but only when an eppn / subjectId is provided for the linked account
+        List<User> optionalUsers = new ArrayList<>();
+        if (StringUtils.hasText(subjectId)) {
+            optionalUsers = userRepository.findByLinkedAccounts_SubjectId(subjectId);
+        } else if (StringUtils.hasText(eppn)) {
+            optionalUsers = userRepository.findByLinkedAccounts_EduPersonPrincipalName(eppn);
+        }
+        if (!optionalUsers.isEmpty()) {
+            String charSet = Charset.defaultCharset().name();
+            eppnAlreadyLinkedRequiredUri += eppnAlreadyLinkedRequiredUri.contains("?") ? "&" : "?";
+            eppnAlreadyLinkedRequiredUri += "email=" + URLEncoder.encode(optionalUsers.get(0).getEmail(), charSet);
+            return Optional.of(ResponseEntity.status(HttpStatus.FOUND).location(URI.create(eppnAlreadyLinkedRequiredUri)).build());
         }
         return Optional.empty();
     }

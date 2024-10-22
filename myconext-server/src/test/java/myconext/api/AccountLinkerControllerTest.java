@@ -207,6 +207,21 @@ public class AccountLinkerControllerTest extends AbstractIntegrationTest {
         assertEquals(0, user.getLinkedAccounts().size());
     }
 
+    @Test
+    public void redirectWithExistingSubjectId() throws IOException {
+        User jdoe = userRepository.findOneUserByEmail("jdoe@example.com");
+        String subjectId = jdoe.getLinkedAccounts().get(0).getSubjectId();
+
+        Map<Object, Object> userInfo = new HashMap<>();
+        userInfo.put("subject_id", subjectId);
+        userInfo.put("schac_home_organization", "mock.idp");
+
+        String authenticationRequestId = samlAuthnRequest();
+        User user = doRedirectResult(userInfo, authenticationRequestId,
+                "http://localhost:3000/eppn-already-linked/");
+        assertEquals(0, user.getLinkedAccounts().size());
+    }
+
     private User doRedirect(Map<Object, Object> userInfo) throws IOException {
         String authenticationRequestId = samlAuthnRequest();
         return doRedirectResult(userInfo, authenticationRequestId,
@@ -393,6 +408,32 @@ public class AccountLinkerControllerTest extends AbstractIntegrationTest {
                 .getHeader("Location");
         assertEquals("http://localhost:3001/create-from-institution/eppn-already-linked?fromInstitution=true&email=jdoe%40example.com",
                 location);
+    }
+
+    @Test
+    public void spCreateFromInstitutionRedirectMissingAttributes() throws JsonProcessingException {
+        CookieFilter cookieFilter = new CookieFilter();
+        Map<String, String> results = given()
+                .filter(cookieFilter)
+                .when()
+                .contentType(ContentType.JSON)
+                .get("/myconext/api/sp/create-from-institution")
+                .as(new TypeRef<>() {
+                });
+        String state = UriComponentsBuilder.fromUriString(results.get("url")).build().getQueryParams().getFirst("state");
+
+        Map<Object, Object> userInfo = Map.of();
+        stubForTokenUserInfo(userInfo);
+
+        String location = given().redirects().follow(false)
+                .filter(cookieFilter)
+                .when()
+                .queryParam("code", "123456")
+                .queryParam("state", state)
+                .contentType(ContentType.JSON)
+                .get("/myconext/api/sp/create-from-institution/oidc-redirect")
+                .getHeader("Location");
+        assertTrue(location.startsWith("http://localhost:3001/create-from-institution/attribute-missing"));
     }
 
     @Test

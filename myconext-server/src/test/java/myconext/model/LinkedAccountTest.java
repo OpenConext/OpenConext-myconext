@@ -1,5 +1,6 @@
 package myconext.model;
 
+import io.perfmark.Link;
 import org.junit.Test;
 
 import java.time.temporal.ChronoUnit;
@@ -25,6 +26,25 @@ public class LinkedAccountTest {
         LinkedAccount linkedAccount = new LinkedAccount("id", "SCHAC", "eppn", "subjectId",
                 "givenName", "familyName", Arrays.asList("student"), false, new Date(), new Date());
         assertEquals("schac", linkedAccount.getSchacHomeOrganization());
+    }
+
+    @Test
+    public void isMatch() {
+        LinkedAccount linkedAccount = linkedAccount("John", "Doe", new Date());
+        UpdateLinkedAccountRequest request = new UpdateLinkedAccountRequest();
+        assertFalse(linkedAccount.isMatch(request));
+
+        request = new UpdateLinkedAccountRequest("nope", "nope", false, "nope", "nope");
+        assertFalse(linkedAccount.isMatch(request));
+
+        request = new UpdateLinkedAccountRequest(null, null, false, "nope", linkedAccount.getSchacHomeOrganization());
+        assertTrue(linkedAccount.isMatch(request));
+
+        request = new UpdateLinkedAccountRequest(linkedAccount.getEduPersonPrincipalName(), null, false, "nope", null);
+        assertTrue(linkedAccount.isMatch(request));
+
+        request = new UpdateLinkedAccountRequest(null, linkedAccount.getSubjectId(), false, "nope", "nope");
+        assertTrue(linkedAccount.isMatch(request));
     }
 
     public static LinkedAccount linkedAccount(String givenName, String familyName, Date createdAt) {
