@@ -18,7 +18,7 @@ import java.util.List;
 @NoArgsConstructor
 @Getter
 @ToString
-public class ExternalLinkedAccount implements Serializable {
+public class ExternalLinkedAccount implements Serializable, ProvisionedLinkedAccount {
 
     private String subjectId;
     private IdpScoping idpScoping;
@@ -50,6 +50,8 @@ public class ExternalLinkedAccount implements Serializable {
     @Schema(type = "integer", format = "int64", example = "1634813554997")
     private Date expiresAt;
     private boolean external = true;
+    @Setter
+    private boolean preferred;
 
     public ExternalLinkedAccount(String subjectId, IdpScoping idpScoping, boolean external) {
         this.subjectId = subjectId;
@@ -138,4 +140,20 @@ public class ExternalLinkedAccount implements Serializable {
         return this;
     }
 
+    @Override
+    public String getGivenName() {
+        //idin only returns initial
+        if (StringUtils.hasText(firstName) && IdpScoping.eherkenning.equals(idpScoping)) {
+            return firstName;
+        }
+        return null;
+    }
+
+    @Override
+    public String getFamilyName() {
+        if (StringUtils.hasText(legalLastName)) {
+            return legalLastName;
+        }
+        return null;
+    }
 }

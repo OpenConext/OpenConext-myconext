@@ -18,7 +18,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
-public class LinkedAccount implements Serializable {
+public class LinkedAccount implements Serializable, ProvisionedLinkedAccount {
 
     private String institutionIdentifier;
     private String schacHomeOrganization;

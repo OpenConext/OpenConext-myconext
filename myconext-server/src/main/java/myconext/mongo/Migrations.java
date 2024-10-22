@@ -4,7 +4,10 @@ import com.github.cloudyrock.mongock.ChangeLog;
 import com.github.cloudyrock.mongock.ChangeSet;
 import com.github.cloudyrock.mongock.driver.mongodb.springdata.v3.decorator.impl.MongockTemplate;
 import myconext.manage.Manage;
-import myconext.model.*;
+import myconext.model.EduID;
+import myconext.model.LinkedAccount;
+import myconext.model.PublicKeyCredentials;
+import myconext.model.User;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.data.mongodb.core.query.Criteria;
@@ -158,6 +161,12 @@ public class Migrations {
                 }
             }
         });
+    }
+
+    @SuppressWarnings("unchecked")
+    @ChangeSet(order = "011", id = "deleteSessionAfterUserChange", author = "okke.harsta@surf.nl")
+    public void deleteSessionAfterUserChange(MongockTemplate mongoTemplate) {
+        mongoTemplate.remove(new Query(), "sessions");
     }
 
     protected User mergeEduIDs(User user) {

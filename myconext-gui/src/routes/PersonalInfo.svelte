@@ -53,7 +53,6 @@
     let showDeleteInstitutionModal = false;
     let showNewInstitutionModal = false;
     let showPreferredInstitutionModal = false;
-    let showPostVerificationModal = false;
     let selectedInstitution;
     let newInstitution = {};
     let issuers;
@@ -195,6 +194,7 @@
                 .then(() => {
                     flash.setValue(I18n.t("email.updated", {email: value}), 6500);
                     tempEmailValue = null;
+                    outstandingPasswordForgotten = false;
                     emailError = false;
                     emailErrorMessage = null;
                     emailEditMode = false;
@@ -217,14 +217,12 @@
     }
 
     const resetModalsAndQueryParams = () => {
-        showNewInstitutionModal = false;
+        showDeleteInstitutionModal = false;
+        showIdinOptions = false;
         showManageVerifiedInformation = false;
         showModal = false;
-        showIdinOptions = false;
-        showDeleteInstitutionModal = false;
         showNewInstitutionModal = false;
         showPreferredInstitutionModal = false;
-        showPostVerificationModal = false;
         const url = new URL(window.location.href);
         url.search = "";
         history.pushState({}, "", url.toString());
@@ -234,25 +232,30 @@
         const urlSearchParams = new URLSearchParams(window.location.search);
         const retry = urlSearchParams.get("retry");
         const verify = urlSearchParams.get("verify");
-        const eduPersonPrincipalName = urlSearchParams.get("institution");
+        const linkedAccountIdentifier = urlSearchParams.get("institution");
 
         showManageVerifiedInformation = window.location.pathname.indexOf("manage") > -1;
-        refresh(retry);
-        if (!isEmpty($user.linkedAccounts)) {
-            if (!isEmpty(eduPersonPrincipalName)) {
-                const institution = $user.linkedAccounts.find(ins => ins.eduPersonPrincipalName === eduPersonPrincipalName);
-                if (institution && !isEmpty(institution.givenName) && !isEmpty(institution.familyName)) {
-                    newInstitution = institution;
-                    if (($user.linkedAccounts || []).length === 1) {
+
+        refresh(!isEmpty(retry));
+
+        const newAccountLinked = !isEmpty($user.linkedAccounts) && !isEmpty(linkedAccountIdentifier);
+        const newExternalAccountLinked = !isEmpty(verify) && !isEmpty($user.externalLinkedAccounts);
+
+        if (newAccountLinked || newExternalAccountLinked) {
+                //Determine if the new account is external or not
+                const newAccount = newExternalAccountLinked ?
+                    $user.externalLinkedAccounts[0] :
+                    ($user.linkedAccounts || [])
+                        .find(la => la.eduPersonPrincipalName === linkedAccountIdentifier || la.subjectId === linkedAccountIdentifier);
+
+                if (newAccount && (newExternalAccountLinked || !isEmpty(newAccount.givenName) || !isEmpty(newAccount.familyName))) {
+                    newInstitution = newAccount;
+                    if ((($user.linkedAccounts || []).length + ($user.externalLinkedAccounts || []).length) === 1) {
                         showNewInstitutionModal = true;
                     } else {
-                        preferInstitution(true, institution);
+                        preferInstitution(true, newAccount);
                     }
                 }
-            }
-        }
-        if (!isEmpty(verify) && !isEmpty($user.externalLinkedAccounts)) {
-            showPostVerificationModal = true;
         }
         if (!isEmpty(retry)) {
             addIdentity(true);
@@ -621,7 +624,7 @@
     {/if}
 </div>
 {#if outstandingPasswordForgotten}
-    <Modal submit={() => updateEmailValue($user.email, true)}
+    <Modal submit={() => updateEmailValue(tempEmailValue, true)}
            cancel={() => history.back()}
            warning={true}
            question={I18n.t("email.outstandingPasswordForgottenConfirmation")}
@@ -661,16 +664,6 @@
         <ValidatedData institution={newInstitution}
                        replacement={true}/>
     </Modal>
-{/if}
-
-{#if showPostVerificationModal}
-    <Modal submit={() => resetModalsAndQueryParams()}
-           confirmTitle={I18n.t("profile.ok")}
-           largeConfirmation={true}
-           title={I18n.t("verify.modal.header")}>
-        <ValidatedData institution={$user.externalLinkedAccounts[0]}/>
-    </Modal>
-
 {/if}
 
 {#if showNewInstitutionModal}

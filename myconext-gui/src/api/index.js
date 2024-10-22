@@ -58,7 +58,14 @@ export function updateUser(user) {
 }
 
 export function preferLinkedAccount(linkedAccount) {
-    return postPutJson("/myconext/api/sp/prefer-linked-account", {eduPersonPrincipalName: linkedAccount.eduPersonPrincipalName}, "PUT");
+    const updateLinkedAccountRequest = {
+        eduPersonPrincipalName: linkedAccount.eduPersonPrincipalName,
+        subjectId: linkedAccount.subjectId,
+        external: linkedAccount.external,
+        idpScoping: linkedAccount.idpScoping,
+        schacHomeOrganization: linkedAccount.schacHomeOrganization
+    }
+    return postPutJson("/myconext/api/sp/prefer-linked-account", updateLinkedAccountRequest, "PUT");
 }
 
 export function updateEmail(user, force) {

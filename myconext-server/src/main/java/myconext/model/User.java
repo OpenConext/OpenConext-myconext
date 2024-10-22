@@ -361,4 +361,27 @@ public class User implements Serializable, UserDetails {
         return uid + "@" + schacHomeOrganization;
     }
 
+
+    @Transient
+    @JsonIgnore
+    public void reconcileLinkedAccounts() {
+        List<ProvisionedLinkedAccount> provisionedLinkedAccounts = new ArrayList<>();
+        provisionedLinkedAccounts.addAll(this.linkedAccounts);
+        provisionedLinkedAccounts.addAll(this.externalLinkedAccounts);
+        boolean preferredInstitution = provisionedLinkedAccounts.stream().anyMatch(ProvisionedLinkedAccount::isPreferred);
+        if (!preferredInstitution) {
+            Optional<ProvisionedLinkedAccount> first = provisionedLinkedAccounts.stream()
+                    .max(Comparator.comparing(ProvisionedLinkedAccount::getCreatedAt));
+            first.ifPresent(provisionedLinkedAccount -> {
+                String provisionedFamilyName = provisionedLinkedAccount.getFamilyName();
+                if (StringUtils.hasText(provisionedFamilyName)) {
+                    this.familyName = provisionedFamilyName;
+                }
+                String provisionedGivenName = provisionedLinkedAccount.getGivenName();
+                if (StringUtils.hasText(provisionedGivenName)) {
+                    this.givenName = provisionedGivenName;
+                }
+            });
+        }
+    }
 }

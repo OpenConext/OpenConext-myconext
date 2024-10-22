@@ -1342,6 +1342,52 @@ public class UserControllerTest extends AbstractIntegrationTest {
     }
 
     @Test
+    public void updateExternalLinkedAccount() {
+        Date today = new Date();
+        ExternalLinkedAccount externalLinkedAccount = new ExternalLinkedAccount(
+                "subjectId",
+                IdpScoping.eherkenning,
+                new VerifyIssuer("id", "name", "logo"),
+                Verification.Geverifieerd,
+                "serviceUUID",
+                "serviceID",
+                "subjectIssuer",
+                "brinCode",
+                "initials",
+                "chosenName",
+                "firstName",
+                "preferredLastName",
+                "legalLastName",
+                "partnerLastNamePrefix",
+                "legalLastNamePrefix",
+                "preferredLastNamePrefix",
+                "partnerLastName",
+                today,
+                today,
+                Date.from(today.toInstant().plus(30, ChronoUnit.DAYS)),
+                true
+        );
+        User user = userRepository.findOneUserByEmail("jdoe@example.com");
+        user.getExternalLinkedAccounts().add(externalLinkedAccount);
+        userRepository.save(user);
+
+        UpdateLinkedAccountRequest updateLinkedAccountRequest = new UpdateLinkedAccountRequest(null, null, true, IdpScoping.eherkenning.name(), null);
+        given()
+                .when()
+                .accept(ContentType.JSON)
+                .contentType(ContentType.JSON)
+                .body(updateLinkedAccountRequest)
+                .put("/myconext/api/sp/prefer-linked-account")
+                .as(Map.class);
+
+        User userFromDB = userRepository.findOneUserByEmail("jdoe@example.com");
+        assertTrue(userFromDB.getLinkedAccounts().stream().noneMatch(LinkedAccount::isPreferred));
+        assertTrue(userFromDB.getExternalLinkedAccounts().stream().allMatch(ExternalLinkedAccount::isPreferred));
+        assertEquals("firstName", userFromDB.getGivenName());
+        assertEquals("legalLastNamePrefix legalLastName", userFromDB.getFamilyName());
+    }
+
+    @Test
     public void metaData() {
         String xml = given().redirects().follow(false)
                 .when()

@@ -410,20 +410,42 @@ public class UserController implements UserAuthentication {
 
     @Operation(summary = "Mark linkedAccount as preferred", description = "Mark linkedAccount as preferred")
     @PutMapping("/sp/prefer-linked-account")
-    public ResponseEntity<UserResponse> updateLinkedAccount(Authentication authentication, @Valid @RequestBody UpdateLinkedAccountRequest updateLinkedAccountRequest) {
+    public ResponseEntity<UserResponse> updateLinkedAccount(Authentication authentication,
+                                                            @Valid @RequestBody UpdateLinkedAccountRequest updateLinkedAccountRequest) {
         User user = userFromAuthentication(authentication);
-        Optional<LinkedAccount> optionalLinkedAccount = user.getLinkedAccounts().stream()
-                .filter(linkedAccount -> updateLinkedAccountRequest.getEduPersonPrincipalName().equalsIgnoreCase(linkedAccount.getEduPersonPrincipalName()))
-                .findFirst();
-        optionalLinkedAccount.ifPresent(linkedAccount -> {
-            if (linkedAccount.areNamesValidated()) {
-                user.getLinkedAccounts().forEach(otherLinkedAccount -> otherLinkedAccount.setPreferred(false));
-                linkedAccount.setPreferred(true);
-                user.setGivenName(linkedAccount.getGivenName());
-                user.setFamilyName(linkedAccount.getFamilyName());
-                userRepository.save(user);
-            }
-        });
+        if (updateLinkedAccountRequest.isExternal()) {
+            user.getExternalLinkedAccounts().stream()
+                    .filter(externalLinkedAccount -> externalLinkedAccount.getIdpScoping().name().equals(updateLinkedAccountRequest.getIdpScoping()))
+                    .findFirst()
+                    .ifPresent(externalLinkedAccount -> {
+                        if (StringUtils.hasText(externalLinkedAccount.getFirstName()) && IdpScoping.eherkenning.equals(externalLinkedAccount.getIdpScoping())) {
+                            user.setGivenName(externalLinkedAccount.getFirstName());
+                        }
+                        if (StringUtils.hasText(externalLinkedAccount.getInitials()) && IdpScoping.idin.equals(externalLinkedAccount.getIdpScoping())) {
+                            user.setGivenName(externalLinkedAccount.getInitials());
+                        }
+                        if (StringUtils.hasText(externalLinkedAccount.getLegalLastName())) {
+                            user.setFamilyName(externalLinkedAccount.getLegalLastName());
+                        }
+                        externalLinkedAccount.setPreferred(true);
+                        user.getLinkedAccounts().forEach(linkedAccount -> linkedAccount.setPreferred(false));
+                    });
+        } else {
+            user.getLinkedAccounts().stream()
+                    .filter(linkedAccount -> linkedAccount.isMatch(updateLinkedAccountRequest))
+                    .findFirst()
+                    .ifPresent(linkedAccount -> {
+                        if (linkedAccount.areNamesValidated()) {
+                            user.getLinkedAccounts().forEach(otherLinkedAccount -> otherLinkedAccount.setPreferred(false));
+                            linkedAccount.setPreferred(true);
+                            user.setGivenName(linkedAccount.getGivenName());
+                            user.setFamilyName(linkedAccount.getFamilyName());
+                            user.getExternalLinkedAccounts().forEach(account -> account.setPreferred(false));
+                        }
+                    });
+        }
+        userRepository.save(user);
+
         logWithContext(user, "update", "name", LOG, "Update user linked account");
 
         return returnUserResponse(user);
@@ -575,21 +597,22 @@ public class UserController implements UserAuthentication {
     @PutMapping("/sp/institution")
     @Operation(summary = "Remove linked account",
             description = "Remove linked account for a logged in user")
-    public ResponseEntity<UserResponse> removeUserLinkedAccounts(Authentication authentication, @RequestBody UpdateLinkedAccountRequest linkedAccount) {
+    public ResponseEntity<UserResponse> removeUserLinkedAccounts(Authentication authentication,
+                                                                 @RequestBody UpdateLinkedAccountRequest updateLinkedAccountRequest) {
         User user = userFromAuthentication(authentication);
-        if (linkedAccount.isExternal()) {
+        if (updateLinkedAccountRequest.isExternal()) {
+            //Only one external linked account is allowed
             user.getExternalLinkedAccounts().clear();
             user.setDateOfBirth(null);
         } else {
-            List<LinkedAccount> linkedAccounts = user.getLinkedAccounts().stream()
-                    .filter(la -> !la.isMatch(linkedAccount))
-                    .collect(Collectors.toList());
-            user.setLinkedAccounts(linkedAccounts);
-
+            user.getLinkedAccounts().removeIf(linkedAccount -> linkedAccount.isMatch(updateLinkedAccountRequest));
         }
+        // Now we need to reconcile the new situation as the names of the User might not be correct anymore
+        user.reconcileLinkedAccounts();
+
         userRepository.save(user);
 
-        logWithContext(user, "delete", "linked_account", LOG, "Deleted linked account " + linkedAccount.getEduPersonPrincipalName());
+        logWithContext(user, "delete", "linked_account", LOG, "Deleted linked account " + updateLinkedAccountRequest.getEduPersonPrincipalName());
 
         return userResponseRememberMe(user);
     }

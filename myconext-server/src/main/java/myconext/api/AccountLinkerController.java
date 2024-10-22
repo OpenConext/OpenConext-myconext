@@ -575,23 +575,29 @@ public class AccountLinkerController implements UserAuthentication {
         //We only allow one ExternalLinkedAccount - for now
         externalLinkedAccounts.clear();
         externalLinkedAccounts.add(externalLinkedAccount);
-
-        if (StringUtils.hasText(externalLinkedAccount.getFirstName()) && IdpScoping.eherkenning.equals(externalLinkedAccount.getIdpScoping()) ) {
+        boolean noLinkedAccounts = user.getLinkedAccounts().isEmpty();
+        //When there is already a linked account, then we don't override without user consent
+        if (noLinkedAccounts && StringUtils.hasText(externalLinkedAccount.getFirstName()) && IdpScoping.eherkenning.equals(externalLinkedAccount.getIdpScoping())) {
             user.setGivenName(externalLinkedAccount.getFirstName());
         }
-        if (StringUtils.hasText(externalLinkedAccount.getInitials()) && IdpScoping.idin.equals(externalLinkedAccount.getIdpScoping()) ) {
+        if (noLinkedAccounts && StringUtils.hasText(externalLinkedAccount.getInitials()) && IdpScoping.idin.equals(externalLinkedAccount.getIdpScoping())) {
             user.setGivenName(externalLinkedAccount.getInitials());
         }
-        if (StringUtils.hasText(externalLinkedAccount.getLegalLastName())) {
+        if (noLinkedAccounts && StringUtils.hasText(externalLinkedAccount.getLegalLastName())) {
             user.setFamilyName(externalLinkedAccount.getLegalLastName());
         }
         if (externalLinkedAccount.getDateOfBirth() != null) {
             user.setDateOfBirth(externalLinkedAccount.getDateOfBirth());
         }
+        if (noLinkedAccounts) {
+            externalLinkedAccount.setPreferred(true);
+        }
         userRepository.save(user);
 
-        String clientRedirectUrl = isMobileFlow ? idpBaseRedirectUrl + "/client/mobile/external-account-linked" :
-                spRedirectUrl + "/personal?verify=" + externalLinkedAccount.getIdpScoping();
+        String queryParam = "?verify=" + externalLinkedAccount.getIdpScoping();
+        String clientRedirectUrl = isMobileFlow ?
+                idpBaseRedirectUrl + "/client/mobile/external-account-linked" + queryParam :
+                spRedirectUrl + "/personal" + queryParam;
         URI location = URI.create(clientRedirectUrl);
         return ResponseEntity.status(HttpStatus.FOUND).location(location).build();
     }
@@ -919,10 +925,12 @@ public class AccountLinkerController implements UserAuthentication {
                     return eppnAlreadyLinkedOptional.get();
                 }
                 linkedAccounts.add(
-                        new LinkedAccount(institutionIdentifier, schacHomeOrganization, eppn, subjectId, givenName, familyName, affiliations, linkedAccounts.isEmpty(),
-                                new Date(), expiresAt));
+                        new LinkedAccount(institutionIdentifier, schacHomeOrganization, eppn, subjectId, givenName,
+                                familyName, affiliations, false, new Date(), expiresAt));
             }
-            if (linkedAccounts.size() == 1) {
+            //We don't want to override by default, only if this is the only linked account
+            if (linkedAccounts.size() == 1 && user.getExternalLinkedAccounts().isEmpty()) {
+                linkedAccounts.get(0).setPreferred(true);
                 if (StringUtils.hasText(givenName)) {
                     user.setGivenName(givenName);
                 }
@@ -955,7 +963,8 @@ public class AccountLinkerController implements UserAuthentication {
 
         if (appendEPPNQueryParam) {
             String appender = clientRedirectUri.contains("?") ? "&" : "?";
-            clientRedirectUri += appender + "institution=" + URLEncoder.encode(eppn, Charset.defaultCharset());
+            String identifier = StringUtils.hasText(subjectId) ? subjectId : eppn;
+            clientRedirectUri += appender + "institution=" + URLEncoder.encode(identifier, Charset.defaultCharset());
         }
         return ResponseEntity.status(HttpStatus.FOUND).location(URI.create(clientRedirectUri)).build();
     }

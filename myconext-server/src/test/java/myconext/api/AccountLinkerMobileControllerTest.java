@@ -99,7 +99,7 @@ public class AccountLinkerMobileControllerTest extends AbstractIntegrationTest {
                 .get("/myconext/api/mobile/verify/redirect")
                 .getHeader("Location");
 
-        assertEquals("http://localhost:3000/client/mobile/external-account-linked", location);
+        assertEquals("http://localhost:3000/client/mobile/external-account-linked?verify=idin", location);
 
         User user = userRepository.findOneUserByEmail("jdoe@example.com");
         Assertions.assertEquals(1, user.getExternalLinkedAccounts().size());
