@@ -33,7 +33,8 @@ class InviteControllerTest extends AbstractIntegrationTest {
                 .as(new TypeRef<>() {
                 });
         User user = userRepository.findOneUserByEmail("jdoe@example.com");
-        EduID newEduID = user.getEduIDS().stream().filter(eduID -> eduID.getValue().equals(newEduIDProvision.getEduIDValue()))
+        EduID newEduID = user.getEduIDS().stream()
+                .filter(eduID -> eduID.getValue().equals(newEduIDProvision.getEduIDValue()))
                 .findFirst()
                 .orElseThrow(IllegalArgumentException::new);
         List<ServiceProvider> services = newEduID.getServices();

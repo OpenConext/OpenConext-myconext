@@ -1352,7 +1352,7 @@ public class UserControllerTest extends AbstractIntegrationTest {
                 "serviceUUID",
                 "serviceID",
                 "subjectIssuer",
-                "brinCode",
+                List.of("brinCode"),
                 "initials",
                 "chosenName",
                 "firstName",

@@ -100,7 +100,8 @@ public class User implements Serializable, UserDetails {
         this.familyName = (String) userInfo.get("family_name");
     }
 
-    public User(String uid, String email, String chosenName, String givenName, String familyName, String schacHomeOrganization, String preferredLanguage,
+    public User(String uid, String email, String chosenName, String givenName, String familyName,
+                String schacHomeOrganization, String preferredLanguage,
                 String serviceProviderEntityId, Manage manage) {
         this.uid = uid;
         this.email = email;
@@ -109,27 +110,20 @@ public class User implements Serializable, UserDetails {
         this.familyName = familyName;
         this.schacHomeOrganization = StringUtils.hasText(schacHomeOrganization) ? schacHomeOrganization.toLowerCase() : schacHomeOrganization ;
         this.preferredLanguage = preferredLanguage;
-
-        this.computeEduIdForServiceProviderIfAbsent(serviceProviderEntityId, manage);
+        if (StringUtils.hasText(serviceProviderEntityId)) {
+            this.computeEduIdForServiceProviderIfAbsent(serviceProviderEntityId, manage);
+        }
         this.newUser = true;
         this.created = System.currentTimeMillis() / 1000L;
         this.updatedAt = created;
     }
 
-    public User(String uid, String email, String chosenName, String givenName, String familyName, String schacHomeOrganization, String preferredLanguage,
-                IdentityProvider identityProvider, Manage manage) {
-        this.uid = uid;
-        this.email = email;
-        this.chosenName = chosenName;
-        this.givenName = givenName;
-        this.familyName = familyName;
-        this.schacHomeOrganization = StringUtils.hasText(schacHomeOrganization) ? schacHomeOrganization.toLowerCase() : schacHomeOrganization ;
-        this.preferredLanguage = preferredLanguage;
-
-        this.computeEduIdForIdentityProviderProviderIfAbsent(identityProvider, manage);
-        this.newUser = true;
-        this.created = System.currentTimeMillis() / 1000L;
-        this.updatedAt = created;
+    public User(String uid, String email, String chosenName, String givenName, String familyName,
+                String schacHomeOrganization, String preferredLanguage,
+                RemoteProvider remoteProvider, Manage manage) {
+        this(uid, email, chosenName, givenName, familyName, schacHomeOrganization, preferredLanguage, (String) null,
+                manage);
+        this.computeEduIdForIdentityProviderProviderIfAbsent(remoteProvider, manage);
     }
 
     public void validate() {
@@ -183,11 +177,10 @@ public class User implements Serializable, UserDetails {
     }
 
     @Transient
-    public String computeEduIdForIdentityProviderProviderIfAbsent(IdentityProvider identityProvider, Manage manage) {
-        ServiceProvider serviceProvider = new ServiceProvider(
-                new RemoteProvider(null, identityProvider.getName(), identityProvider.getNameNl(), identityProvider.getInstitutionGuid(), identityProvider.getLogoUrl()),
-                null
-        );
+    public String computeEduIdForIdentityProviderProviderIfAbsent(RemoteProvider remoteProvider, Manage manage) {
+        //we want to pre-provision the eduID based on the institutional GUID, not the entityID
+        remoteProvider.setEntityId(null);
+        ServiceProvider serviceProvider = new ServiceProvider(remoteProvider, null);
         return doComputeEduIDIfAbsent(serviceProvider, manage);
     }
 

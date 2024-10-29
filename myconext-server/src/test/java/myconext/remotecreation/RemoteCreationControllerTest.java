@@ -310,7 +310,7 @@ class RemoteCreationControllerTest extends AbstractIntegrationTest {
                 .extract()
                 .as(new TypeRef<>() {
                 });
-        externalEduIDResult.setBrinCode("QWER");
+        externalEduIDResult.setBrinCodes(List.of("QWER"));
         externalEduIDResult.setVerification(Verification.Geverifieerd);
         given()
                 .when()
@@ -328,7 +328,7 @@ class RemoteCreationControllerTest extends AbstractIntegrationTest {
 
         assertEquals(1, user.getExternalLinkedAccounts().size());
         ExternalLinkedAccount externalLinkedAccount = user.getExternalLinkedAccounts().get(0);
-        assertEquals(externalEduIDResult.getBrinCode(), externalLinkedAccount.getBrinCode());
+        assertEquals(externalEduIDResult.getBrinCodes(), externalLinkedAccount.getBrinCodes());
         assertEquals(Verification.Geverifieerd, externalLinkedAccount.getVerification());
     }
 

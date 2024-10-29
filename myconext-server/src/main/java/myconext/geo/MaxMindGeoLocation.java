@@ -18,6 +18,7 @@ import org.springframework.stereotype.Component;
 
 import java.io.*;
 import java.net.InetAddress;
+import java.net.URI;
 import java.net.URL;
 import java.nio.file.Files;
 import java.text.SimpleDateFormat;
@@ -115,7 +116,7 @@ public class MaxMindGeoLocation implements GeoLocation {
             }
             File file = new File(String.format("%s/%s/%s.tar.gz", this.downloadDirectory, name, GEO_LITE_2_CITY));
             try (FileOutputStream fileOutputStream = new FileOutputStream(file);
-                 InputStream inputStream = new URL(String.format(urlTemplate, licenseKey)).openStream();
+                 InputStream inputStream = new URI(String.format(urlTemplate, licenseKey)).toURL().openStream();
 
             ) {
                 IOUtils.copy(inputStream, fileOutputStream);

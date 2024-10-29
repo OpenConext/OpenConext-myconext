@@ -161,7 +161,7 @@ public class AttributeMapper {
                 //String subjectIssuer
                 IdpScoping.studielink.name(),
                 //String brinCode
-                eduID.getBrinCode(),
+                eduID.getBrinCodes(),
                 //String initials
                 null,
                 //String chosenName

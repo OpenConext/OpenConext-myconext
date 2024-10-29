@@ -64,20 +64,24 @@ public class RemoteCreationController implements HasUserRepository {
             responses = {
                     @ApiResponse(responseCode = "200", description = "Found",
                             content = {@Content(schema = @Schema(implementation = EmailExistsResponse.class),
-                                    examples = {@ExampleObject(value = "{\"status\":200,\"eduIDValue\":\"8048ADA1-8C30-4CDA-8C88-36B865CD16FA\" }")})}),
+                                    examples = {@ExampleObject(value = """
+                                            {"status":200,"eduIDValue":"8048ADA1-8C30-4CDA-8C88-36B865CD16FA" }
+                                            """)})}),
                     @ApiResponse(responseCode = "400", description = "BadRequest",
                             content = {@Content(schema = @Schema(implementation = StatusResponse.class),
                                     examples = {@ExampleObject(value = "{\"status\":400}")})}),
                     @ApiResponse(responseCode = "404", description = "User not found by email unknown@example.com",
                             content = {@Content(schema = @Schema(implementation = StatusResponse.class),
-                                    examples = {@ExampleObject(value = "{\n" +
-                                            "  \"timestamp\": 1717671062532,\n" +
-                                            "  \"status\": 404,\n" +
-                                            "  \"error\": \"Not Found\",\n" +
-                                            "  \"exception\": \"myconext.exceptions.UserNotFoundException\",\n" +
-                                            "  \"message\": \"User not found by email unknown@example.com\",\n" +
-                                            "  \"path\": \"/api/remote-creation/email-eduid-exists\"\n" +
-                                            "}")})})})
+                                    examples = {@ExampleObject(value = """
+                                            {
+                                             "timestamp": 1717671062532,
+                                             "status": 404,
+                                             "error": "Not Found",
+                                             "exception": "myconext.exceptions.UserNotFoundException",
+                                             "message": "User not found by email unknown@example.com",
+                                             "path": "/api/remote-creation/email-eduid-exists"
+                                            }
+                                            """)})})})
     public ResponseEntity<EmailExistsResponse> emailEduIDExists(@Parameter(hidden = true) @AuthenticationPrincipal(errorOnInvalidType = true) RemoteUser remoteUser,
                                                            @RequestParam(value = "email") String email) {
         LOG.info(String.format("GET email-eduid-exists by %s for %s", remoteUser.getUsername(), email));
@@ -85,8 +89,8 @@ public class RemoteCreationController implements HasUserRepository {
         String remoteUserName = remoteUser.getUsername();
         User user = userRepository.findUserByEmail(email)
                 .orElseThrow(() -> new UserNotFoundException(String.format("User not found by email %s", email)));
-        IdentityProvider identityProvider = getIdentityProvider(remoteUser, new NewExternalEduID(), remoteUserName);
-        String eduIDValue = user.computeEduIdForIdentityProviderProviderIfAbsent(identityProvider, manage);
+        RemoteProvider remoteProvider = getRemoteProvider(remoteUser, remoteUserName);
+        String eduIDValue = user.computeEduIdForIdentityProviderProviderIfAbsent(remoteProvider, manage);
         userRepository.save(user);
 
         return ResponseEntity.ok(new EmailExistsResponse(HttpStatus.OK.value(), eduIDValue));
@@ -186,7 +190,8 @@ public class RemoteCreationController implements HasUserRepository {
                                             "  \"message\": \"Email already in use\",\n" +
                                             "  \"path\": \"/api/remote-creation/eduid-create\"\n" +
                                             "}")})})})
-    public ResponseEntity<UpdateExternalEduID> createEduID(@Parameter(hidden = true) @AuthenticationPrincipal(errorOnInvalidType = true) RemoteUser remoteUser,
+    public ResponseEntity<UpdateExternalEduID> createEduID(@Parameter(hidden = true)
+                                                           @AuthenticationPrincipal(errorOnInvalidType = true) RemoteUser remoteUser,
                                                            @RequestBody @Validated NewExternalEduID externalEduID) {
         String email = externalEduID.getEmail();
         String apiUserName = remoteUser.getUsername();
@@ -198,12 +203,12 @@ public class RemoteCreationController implements HasUserRepository {
         userRepository.findUserByEmail(email).ifPresent(u -> {
             throw new DuplicateUserEmailException("There already exists a user with email " + email);
         });
-        IdentityProvider identityProvider = getIdentityProvider(remoteUser, externalEduID, apiUserName);
+        RemoteProvider remoteProvider = getRemoteProvider(remoteUser, apiUserName);
         String lastNamePrefix = externalEduID.getLastNamePrefix();
         String lastName = StringUtils.hasText(lastNamePrefix) ? String.format("%s %s", lastNamePrefix, externalEduID.getLastName()) : externalEduID.getLastName();
         User user = new User(UUID.randomUUID().toString(), externalEduID.getEmail(), externalEduID.getChosenName(),
-                externalEduID.getFirstName(), lastName, remoteUser.getSchacHome(), LocaleContextHolder.getLocale().getLanguage(),
-                identityProvider, manage);
+                externalEduID.getFirstName(), lastName, remoteUser.getSchacHome(), LocaleContextHolder.getLocale().getLanguage(), remoteProvider
+                , manage);
         //Otherwise another email is sent out when the user logs in
         user.setNewUser(false);
 
@@ -261,12 +266,12 @@ public class RemoteCreationController implements HasUserRepository {
         optionalExternalLinkedAccount.ifPresentOrElse(externalLinkedAccount -> {
             //Not all external attributes can be changed
             externalLinkedAccount.setVerification(externalEduID.getVerification());
-            externalLinkedAccount.setBrinCode(externalEduID.getBrinCode());
+            externalLinkedAccount.setBrinCodes(externalEduID.getBrinCodes());
             externalLinkedAccount.setDateOfBirth(AttributeMapper.parseDate(externalEduID.getDateOfBirth()));
         }, () -> {
             //Create external account for this remoteAPI user
-            IdentityProvider identityProvider = getIdentityProvider(remoteUser, externalEduID, remoteUserName);
-            String provisionedEduIDValue = user.computeEduIdForIdentityProviderProviderIfAbsent(identityProvider, manage);
+            RemoteProvider remoteProvider = getRemoteProvider(remoteUser, remoteUserName);
+            String provisionedEduIDValue = user.computeEduIdForIdentityProviderProviderIfAbsent(remoteProvider, manage);
             externalEduID.setEduIDValue(provisionedEduIDValue);
             ExternalLinkedAccount externalLinkedAccount = attributeMapper.createExternalLinkedAccount(externalEduID, IdpScoping.valueOf(remoteUserName));
             user.getExternalLinkedAccounts().add(externalLinkedAccount);
@@ -305,16 +310,13 @@ public class RemoteCreationController implements HasUserRepository {
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
-    private static IdentityProvider getIdentityProvider(RemoteUser remoteUser, NewExternalEduID externalEduID, String remoteUserName) {
-        RemoteProvider remoteProvider = new RemoteProvider(
+    private static RemoteProvider getRemoteProvider(RemoteUser remoteUser, String remoteUserName) {
+        return new RemoteProvider(
                 null,
                 remoteUserName,
                 remoteUserName,
                 remoteUser.getInstitutionGUID(),
                 String.format("https://static.surfconext.nl/logos/org/%s.png", remoteUser.getInstitutionGUID()));
-
-
-        return new IdentityProvider(remoteProvider, externalEduID.getBrinCode());
     }
 
 }

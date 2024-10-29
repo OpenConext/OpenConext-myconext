@@ -30,7 +30,7 @@ public class ExternalLinkedAccount implements Serializable, ProvisionedLinkedAcc
     private String serviceID;
     private String subjectIssuer;
     @Setter
-    private String brinCode;
+    private List<String> brinCodes;
 
     private String initials;
     private String chosenName;
@@ -45,6 +45,7 @@ public class ExternalLinkedAccount implements Serializable, ProvisionedLinkedAcc
     @Setter
     @Schema(type = "integer", format = "int64", example = "1634813554997")
     private Date dateOfBirth;
+    @Setter
     @Schema(type = "integer", format = "int64", example = "1634813554997")
     private Date createdAt;
     @Schema(type = "integer", format = "int64", example = "1634813554997")
@@ -67,7 +68,7 @@ public class ExternalLinkedAccount implements Serializable, ProvisionedLinkedAcc
                                  String serviceUUID,
                                  String serviceID,
                                  String subjectIssuer,
-                                 String brinCode,
+                                 List<String> brinCodes,
                                  String initials,
                                  String chosenName,
                                  String firstName,
@@ -88,7 +89,7 @@ public class ExternalLinkedAccount implements Serializable, ProvisionedLinkedAcc
         this.serviceUUID = serviceUUID;
         this.serviceID = serviceID;
         this.subjectIssuer = subjectIssuer;
-        this.brinCode = brinCode;
+        this.brinCodes = brinCodes;
         this.initials = initials;
         this.chosenName = chosenName;
         this.firstName = firstName;

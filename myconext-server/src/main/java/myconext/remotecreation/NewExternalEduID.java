@@ -44,7 +44,7 @@ public class NewExternalEduID implements Serializable {
     private Verification verification;
 
     @Schema(description = "Can be initial NULL")
-    private String brinCode;
+    private List<String> brinCodes;
 
     public void validate() {
         List<String> requiredAttributes = new ArrayList<>();

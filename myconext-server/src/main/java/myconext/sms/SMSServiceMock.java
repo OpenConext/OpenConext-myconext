@@ -26,7 +26,7 @@ public class SMSServiceMock extends SMSServiceImpl {
             byte[] bytes = format.getBytes(StandardCharsets.UTF_8);
             File tempFile = File.createTempFile("javasms", ".html");
             FileCopyUtils.copy(bytes, tempFile);
-            Runtime.getRuntime().exec("open " + tempFile.getAbsolutePath());
+            Runtime.getRuntime().exec(new String[]{"open",tempFile.getAbsolutePath()});
         }
         return format;
     }

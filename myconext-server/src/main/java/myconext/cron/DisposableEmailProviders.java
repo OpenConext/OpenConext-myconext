@@ -13,6 +13,7 @@ import org.springframework.core.io.ClassPathResource;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
+import java.net.URI;
 import java.net.URL;
 import java.util.HashSet;
 import java.util.Map;
@@ -53,7 +54,7 @@ public class DisposableEmailProviders {
             String localLocation = "email/fake_filter.json";
             Map<String, Object> emailProviders = this.testEnvironment ?
                     objectMapper.readValue(new ClassPathResource(localLocation).getInputStream(), mapTypeReference) :
-                    objectMapper.readValue(new URL(remoteLocation), mapTypeReference);
+                    objectMapper.readValue(new URI(remoteLocation).toURL(), mapTypeReference);
 
             Map<String, Object> domains = (Map<String, Object>) emailProviders.get("domains");
             disposableEmailProviders = parseDisposableEmailProviders(domains);

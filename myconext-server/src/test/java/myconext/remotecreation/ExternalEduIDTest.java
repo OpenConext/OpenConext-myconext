@@ -5,6 +5,7 @@ import myconext.model.Verification;
 import org.junit.jupiter.api.Test;
 
 import javax.validation.ValidationException;
+import java.util.List;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -23,7 +24,7 @@ class ExternalEduIDTest extends AbstractIntegrationTest {
                         null,
                         UUID.randomUUID().toString(),
                         Verification.Geverifieerd,
-                        "brinCode"
+                        List.of("brinCode")
                 ).validate());
     }
 
@@ -38,7 +39,7 @@ class ExternalEduIDTest extends AbstractIntegrationTest {
                 null,
                 UUID.randomUUID().toString(),
                 Verification.Ongeverifieerd,
-                "brinCode"
+                List.of("brinCode")
         ).validate();
     }
 

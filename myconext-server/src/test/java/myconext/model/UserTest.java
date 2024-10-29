@@ -6,14 +6,14 @@ import myconext.manage.Manage;
 import myconext.manage.MockManage;
 import org.junit.Test;
 import org.mockito.Mockito;
+import org.springframework.test.util.ReflectionTestUtils;
 
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
 import java.util.regex.Pattern;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 public class UserTest {
 
@@ -109,6 +109,34 @@ public class UserTest {
             assertEquals(entityIdValue.concat("Name"), eduID.getServiceName());
             assertEquals(entityIdValue.concat("NameNl"), eduID.getServiceNameNl());
         });
+    }
+
+    @Test
+    public void reconcileLinkedAccounts() {
+        User user = user("sp_entity_id");
+        LinkedAccount linkedAccount = new LinkedAccount();
+        linkedAccount.setCreatedAt(Date.from(Instant.ofEpochMilli(423439200000L)));
+
+        LinkedAccount otherLinkedAccount = new LinkedAccount();
+        otherLinkedAccount.setCreatedAt(Date.from(Instant.ofEpochMilli(1307052000000L)));
+        ReflectionTestUtils.setField(otherLinkedAccount, "givenName", "Pol");
+        ReflectionTestUtils.setField(otherLinkedAccount, "familyName", "Kropto");
+
+        user.getLinkedAccounts().add(linkedAccount);
+        user.getLinkedAccounts().add(otherLinkedAccount);
+
+        ExternalLinkedAccount externalLinkedAccount = new ExternalLinkedAccount();
+        externalLinkedAccount.setCreatedAt(Date.from(Instant.ofEpochMilli(807052000000L)));
+        user.getExternalLinkedAccounts().add(externalLinkedAccount);
+
+        assertTrue(user.reconcileLinkedAccounts());
+        assertTrue(otherLinkedAccount.isPreferred());
+        assertEquals("Pol", user.getGivenName());
+        assertEquals("Kropto", user.getFamilyName());
+
+
+        //Idempotency
+        assertFalse(user.reconcileLinkedAccounts());
     }
 
     private User user(String serviceProviderEntityId) {
