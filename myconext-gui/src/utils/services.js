@@ -1,4 +1,7 @@
 import I18n from "i18n-js";
+import {logo} from "../verify/banks";
+import {isEmpty} from "./utils";
+import notFound from "../icons/school-building.svg";
 
 export const serviceName = service => {
   //backward compatibility with eduID has multiple services
@@ -6,6 +9,17 @@ export const serviceName = service => {
     return service.serviceName || service.name;
   }
   return service.serviceNameNl || service.serviceName || service.nameNl || service.name;
+}
+
+export const institutionLogo = institution => {
+  if (institution.external) {
+    return logo(institution.issuer)
+  }
+  if (!isEmpty(institution.LogoUrl)) {
+    return institution.LogoUrl;
+  }
+  return notFound;
+
 }
 
 export const institutionName = linkedAccount => {
@@ -16,6 +30,13 @@ export const institutionName = linkedAccount => {
     return linkedAccount.displayNameEn || linkedAccount.displayNameNl || linkedAccount.schacHomeOrganization;
   }
   return linkedAccount.displayNameNl || linkedAccount.displayNameEn || linkedAccount.schacHomeOrganization;
+}
+
+export const affiliation = linkedAccount => {
+  if (linkedAccount.external) {
+    return null;
+  }
+  return (linkedAccount.eduPersonAffiliations || [])[0];
 }
 
 export const linkedAccountGivenName = linkedAccount => {

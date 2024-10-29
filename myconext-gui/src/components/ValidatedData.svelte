@@ -1,6 +1,12 @@
 <script>
     import I18n from "i18n-js";
-    import {institutionName, linkedAccountFamilyName, linkedAccountGivenName} from "../utils/services";
+    import {
+        affiliation,
+        institutionLogo,
+        institutionName,
+        linkedAccountFamilyName,
+        linkedAccountGivenName
+    } from "../utils/services";
     import ValidatedField from "../verify/ValidatedField.svelte";
     import {isEmpty} from "../utils/utils";
     import {dateFromEpoch} from "../utils/date";
@@ -20,8 +26,12 @@
 
         div.title {
             display: flex;
-            gap: 4px;
+            gap: 6px;
             margin: 5px 0 15px 0;
+            align-items: center;
+            span.icon {
+                font-size: 20px;
+            }
         }
 
         h4 {
@@ -32,6 +42,11 @@
 
         p.info {
             margin-bottom: 25px;
+
+            &.border {
+                padding-top: 20px;
+                border-top: 1px solid var(--color-primary-grey);
+            }
         }
 
         :global(.validated-field) {
@@ -42,10 +57,16 @@
 </style>
 <div class="validated-data">
     <div class="title">
-        <h4 class="green">{institutionName(institution)}</h4>
-        <h4>{I18n.t("profile.newInstitutionTitle")}</h4>
+        <h4 class="green">{I18n.t("profile.personalInfo")}</h4>
+        <span class="icon">🎉</span>
     </div>
-    <p class="info">{I18n.t(`profile.${replacement ? "preferredInstitutionInfo" : "newInstitutionInfo"}`)}</p>
+    <p class="info">{I18n.t("profile.newInstitutionInfo")}</p>
+    <ValidatedField label={affiliation(institution)}
+                    overrideShieldIcon={institutionLogo(institution)}
+                    readOnly={true}
+                    isExternal={institution.external}
+                    value={institutionName(institution)}/>
+    <p class="info border">{I18n.t(`profile.${replacement ? "preferredInstitutionInfo" : "newInstitutionInfoAttributes"}`)}</p>
 
     <ValidatedField label={I18n.t("profile.validatedGivenName")}
                     icon={preferredAccount ? personalInfo : null}

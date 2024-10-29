@@ -23,7 +23,6 @@ public class UserResponse implements Serializable {
     private final String givenName;
     @Schema(type = "integer", format = "int64", example = "1634813554997")
     private final Date dateOfBirth;
-    private final boolean givenNameVerified;
     private final String displayName;
     private final boolean usePassword;
     private final boolean usePublicKey;
@@ -73,8 +72,6 @@ public class UserResponse implements Serializable {
                         !Verification.Ongeverifieerd.equals(externalLinkedAccount.getVerification()))
                 .map(externalLinkedAccount -> externalLinkedAccount.logoReference(issuers))
                 .collect(Collectors.toList());
-        this.givenNameVerified = (!user.getLinkedAccounts().isEmpty()) ||
-                (!this.externalLinkedAccounts.isEmpty() && IdpScoping.eherkenning.equals(this.externalLinkedAccounts.get(0).getIdpScoping()));
         this.usePublicKey = !CollectionUtils.isEmpty(this.publicKeyCredentials);
         this.forgottenPassword = user.isForgottenPassword();
         this.rememberMe = rememberMe;

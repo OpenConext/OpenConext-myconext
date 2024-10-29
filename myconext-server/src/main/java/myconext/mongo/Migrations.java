@@ -109,13 +109,13 @@ public class Migrations {
     }
 
     @SuppressWarnings("unchecked")
-    @ChangeSet(order = "006", id = "deleteSessionAfterUserUpdate", author = "okke.harsta@surf.nl")
+    @ChangeSet(order = "008", id = "deleteSessionAfterUserUpdate", author = "okke.harsta@surf.nl")
     public void deleteSessionAfterUserUpdate(MongockTemplate mongoTemplate) {
         mongoTemplate.remove(new Query(), "sessions");
     }
 
     @SuppressWarnings("unchecked")
-    @ChangeSet(order = "007", id = "migrateUsers", author = "okke.harsta@surf.nl")
+    @ChangeSet(order = "009", id = "migrateUsers", author = "okke.harsta@surf.nl")
     public void migrateUsers(MongockTemplate mongoTemplate) {
         Criteria criteria = Criteria.where("linkedAccounts").exists(true).type(JsonSchemaObject.Type.ARRAY).ne(new ArrayList<>());
         List<User> users = mongoTemplate.find(new Query(criteria), User.class, "users");
@@ -132,19 +132,19 @@ public class Migrations {
     }
 
     @SuppressWarnings("unchecked")
-    @ChangeSet(order = "008", id = "deleteSessionAgain", author = "okke.harsta@surf.nl")
+    @ChangeSet(order = "010", id = "deleteSessionAgain", author = "okke.harsta@surf.nl")
     public void deleteSessionAgain(MongockTemplate mongoTemplate) {
         mongoTemplate.remove(new Query(), "sessions");
     }
 
     @SuppressWarnings("unchecked")
-    @ChangeSet(order = "009", id = "deleteSessionOneMore", author = "okke.harsta@surf.nl")
+    @ChangeSet(order = "011", id = "deleteSessionOneMore", author = "okke.harsta@surf.nl")
     public void deleteSessionOneMore(MongockTemplate mongoTemplate) {
         mongoTemplate.remove(new Query(), "sessions");
     }
 
     @SuppressWarnings("unchecked")
-    @ChangeSet(order = "010", id = "bugfixForFaultyMigration", author = "okke.harsta@surf.nl")
+    @ChangeSet(order = "012", id = "bugfixForFaultyMigration", author = "okke.harsta@surf.nl")
     public void bugfixForFaultyMigration(MongockTemplate mongoTemplate) {
         List<User> users = mongoTemplate.findAll(User.class, "users");
         users.forEach(user -> {
@@ -164,8 +164,26 @@ public class Migrations {
     }
 
     @SuppressWarnings("unchecked")
-    @ChangeSet(order = "011", id = "deleteSessionAfterUserChange", author = "okke.harsta@surf.nl")
+    @ChangeSet(order = "013", id = "deleteSessionAfterUserChange", author = "okke.harsta@surf.nl")
     public void deleteSessionAfterUserChange(MongockTemplate mongoTemplate) {
+        mongoTemplate.remove(new Query(), "sessions");
+    }
+
+    @SuppressWarnings("unchecked")
+    @ChangeSet(order = "014", id = "markLinkedAccountsPreferred", author = "okke.harsta@surf.nl")
+    public void markLinkedAccountsPreferred(MongockTemplate mongoTemplate) {
+        List<User> users = mongoTemplate.findAll(User.class, "users");
+        users.forEach(user -> {
+            if (user.reconcileLinkedAccounts()) {
+                mongoTemplate.save(user);
+            }
+        });
+
+    }
+
+    @SuppressWarnings("unchecked")
+    @ChangeSet(order = "015", id = "deleteSessionAfterUserChangeAgain", author = "okke.harsta@surf.nl")
+    public void deleteSessionAfterUserChangeAgain(MongockTemplate mongoTemplate) {
         mongoTemplate.remove(new Query(), "sessions");
     }
 

@@ -2,7 +2,7 @@
     import chevronUpIcon from "../icons/chevron-up.svg";
     import I18n from "i18n-js";
     import LinkedInstitution from "./LinkedInstitution.svelte";
-    import notFound from "../icons/image-not-found.svg"
+    import notFound from "../icons/school-building.svg";
     import {onMount} from "svelte";
     import {splitListSemantically} from "../utils/utils";
     import {institutionName} from "../utils/services";

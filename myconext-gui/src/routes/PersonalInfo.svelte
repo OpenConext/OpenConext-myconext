@@ -541,8 +541,8 @@
                        onCancel={() => chosenNameEditMode = false}
             />
             <EditField firstValue={$user.givenName}
-                       editableByUser={!preferredAccount && !$user.givenNameVerified}
-                       editLabel={I18n.t(`profile.${preferredAccount && $user.givenNameVerified ? "validatedGivenName":"givenName"}`)}
+                       editableByUser={!preferredAccount}
+                       editLabel={I18n.t(`profile.${preferredAccount ? "validatedGivenName":"givenName"}`)}
                        manageVerifiedInformation={() => manageVerifiedInformation("manage")}
                        linkedAccount={preferredAccount}
                        saveLabel={I18n.t("edit.save")}

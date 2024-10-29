@@ -1,11 +1,13 @@
 <script>
     import shieldIcon from "../icons/redesign/shield-full.svg";
+    import {isEmpty} from "../utils/utils";
 
     export let label;
     export let value;
     export let icon;
     export let overrideShieldIcon;
     export let readOnly = false;
+    export let isExternal = false;
 
 </script>
 <style lang="scss">
@@ -62,6 +64,16 @@
                     :global(svg) {
                         width: 28px;
                         height: auto;
+                        color: var(--color-primary-blue);
+                        fill: currentColor;
+                    }
+                }
+
+                span.shield.is-external {
+
+                    :global(svg) {
+                        width: 36px;
+                        height: auto;
                     }
                 }
 
@@ -95,14 +107,16 @@
             <div class="inner-view-mode">
                 <div class="value">
                     {#if overrideShieldIcon}
-                        <span class="shield">{@html overrideShieldIcon}</span>
+                        <span class="shield" class:is-external={isExternal}>{@html overrideShieldIcon}</span>
                     {:else}
                         <span class="shield">{@html shieldIcon}</span>
                     {/if}
 
                     <div class="values">
                         <span>{value}</span>
-                        <span class="editable-by">{label}</span>
+                        {#if !isEmpty(label)}
+                            <span class="editable-by">{label}</span>
+                        {/if}
                     </div>
                     {#if icon}
                         <span class="preferred">{@html icon}</span>

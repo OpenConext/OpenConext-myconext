@@ -20,7 +20,7 @@ public interface UserAuthentication {
         boolean mobileAuthentication = authentication instanceof BearerTokenAuthentication;
         if (mobileAuthentication) {
             Map<String, Object> tokenAttributes = ((BearerTokenAuthentication) authentication).getTokenAttributes();
-            String uid = ((List<String>) tokenAttributes.get("uids")).get(0);
+            String uid = ((List<String>) tokenAttributes.get("uids")).getFirst();
             user = getUserRepository().findUserByUid(uid).orElseThrow(() -> new UserNotFoundException(uid));
         } else {
             String userId = ((User) authentication.getPrincipal()).getId();

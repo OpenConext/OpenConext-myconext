@@ -364,7 +364,7 @@ public class User implements Serializable, UserDetails {
 
     @Transient
     @JsonIgnore
-    public void reconcileLinkedAccounts() {
+    public boolean reconcileLinkedAccounts() {
         List<ProvisionedLinkedAccount> provisionedLinkedAccounts = new ArrayList<>();
         provisionedLinkedAccounts.addAll(this.linkedAccounts);
         provisionedLinkedAccounts.addAll(this.externalLinkedAccounts);
@@ -383,6 +383,8 @@ public class User implements Serializable, UserDetails {
                 }
                 provisionedLinkedAccount.setPreferred(true);
             });
+            return first.isPresent();
         }
+        return false;
     }
 }
