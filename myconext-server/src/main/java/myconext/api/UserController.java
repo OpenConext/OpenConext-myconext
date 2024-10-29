@@ -665,7 +665,8 @@ public class UserController implements UserAuthentication {
         User user = userFromAuthentication(authentication);
 
         String entityId = deleteService.getServiceProviderEntityId();
-        user.getEduIDS().forEach(eduID -> eduID.getServices().removeIf(service -> service.getEntityId().equals(entityId)));
+        user.getEduIDS().forEach(eduID -> eduID.getServices().removeIf(service ->
+                        entityId.equals(service.getEntityId()) || entityId.equals(service.getInstitutionGuid())));
         List<EduID> newEduIDs = user.getEduIDS().stream()
                 .filter(eduID -> !eduID.getServices().isEmpty())
                 .collect(Collectors.toList());

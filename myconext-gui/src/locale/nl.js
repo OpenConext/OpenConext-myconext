@@ -279,6 +279,7 @@ I18n.translations.nl = {
             login: "Logingegevens",
             delete: "Verwijder logingegevens",
             first: "Eerste login",
+            last: "Last login",
             eduID: "Uniek eduID nummer",
             homePage: "Home pagina",
             deleteDisclaimer: "Als je deze logingegevens verwijdert, verwijdert eduID deze informatie uit je eduID account. Je hebt nog een account bij de applicatie zelf. Als je dat wilt laten verwijderen, doe dat dan rechtstreeks bij de applicatie.",

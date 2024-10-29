@@ -1,5 +1,5 @@
 <script>
-    import {user, flash} from "../stores/user";
+    import {flash, user} from "../stores/user";
     import I18n from "i18n-js";
     import {deleteServiceAndTokens, deleteTokens, oidcTokens} from "../api";
     import Button from "../components/Button.svelte";
@@ -173,6 +173,12 @@
                 <td class="attr">{I18n.t("dataActivity.details.first")}</td>
                 <td class="value">{service.createdAt}</td>
             </tr>
+            {#if service.lastLogin }
+                <tr>
+                    <td class="attr">{I18n.t("dataActivity.details.last")}</td>
+                    <td class="value">{service.lastLogin}</td>
+                </tr>
+            {/if}
             <tr>
                 <td class="attr" class:last={!service.data.serviceHomeUrl}>{I18n.t("dataActivity.details.eduID")}</td>
                 <td class="value" class:last={!service.data.serviceHomeUrl}>{service.data.value}</td>

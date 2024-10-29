@@ -56,6 +56,7 @@ public class EduID implements Serializable {
             sp.setHomeUrl(serviceProvider.getHomeUrl());
             sp.setLogoUrl(serviceProvider.getLogoUrl());
             sp.setInstitutionGuid(serviceProvider.getInstitutionGuid());
+            sp.setLastLogin(serviceProvider.getLastLogin());
         }, () -> this.services.add(serviceProvider));
         return this;
     }
@@ -98,7 +99,7 @@ public class EduID implements Serializable {
         eduID.serviceInstutionGuid = this.serviceInstutionGuid;
         eduID.createdAt = this.createdAt;
         eduID.services = this.services.stream()
-                .filter(service -> (StringUtils.hasText(service.getEntityId()) && key.equals(service.getEntityId())) ||
+                .filter(service -> key.equals(service.getEntityId()) ||
                         key.equals(service.getInstitutionGuid()))
                 .collect(Collectors.toList());
         return eduID;

@@ -185,6 +185,7 @@ public class User implements Serializable, UserDetails {
     }
 
     private String doComputeEduIDIfAbsent(ServiceProvider serviceProvider, Manage manage) {
+        serviceProvider.setLastLogin(new Date());
         String institutionGuid = serviceProvider.getInstitutionGuid();
         String entityId = serviceProvider.getEntityId();
         //We need to be backward compatible, so we need to check both obsolete properties and the services
@@ -213,7 +214,7 @@ public class User implements Serializable, UserDetails {
                 .filter(eduID -> !eduID.getValue().equals(eduIDValue))
                 //Only migrate old eduID's that have not been migrated already
                 .filter(eduID -> eduID.getServices().isEmpty() && eduID.getServiceProviderEntityId() != null)
-                .collect(Collectors.toList());
+                .toList();
         otherEduIDs.forEach(eduID -> {
             String otherEntityId = eduID.getServiceProviderEntityId();
             try {
@@ -320,7 +321,7 @@ public class User implements Serializable, UserDetails {
                     String entityId = service.getEntityId();
                     String key = StringUtils.hasText(entityId) ? entityId : service.getInstitutionGuid();
                     //need to make copy otherwise the reference is the same and for mobile authentication we override the properties
-                    result.put(key, eduID.copy(key));
+                    result.put(key, eduID.copy(key ));
                 });
             }
         });

@@ -42,6 +42,23 @@ public class UserTest {
     }
 
     @Test
+    public void computeEduIdForServiceProviderLastLoginDate() throws InterruptedException {
+        User user = user("http://mock-sp");
+        assertEquals(1, user.getEduIDS().size());
+        List<ServiceProvider> serviceProviders = user.getEduIDS().getFirst().getServices();
+        assertEquals(1, serviceProviders.size());
+        Date lastLogin = serviceProviders.getFirst().getLastLogin();
+        assertNotNull(lastLogin);
+        Thread.sleep(2);
+        user.computeEduIdForServiceProviderIfAbsent("http://mock-sp", manage);
+
+        serviceProviders = user.getEduIDS().getFirst().getServices();
+        assertEquals(1, serviceProviders.size());
+        Date newLastLogin = serviceProviders.getFirst().getLastLogin();
+        assertTrue(newLastLogin.after(lastLogin));
+    }
+
+    @Test
     public void computeEduIdForServiceProviderIfAbsentWithIdenticalInstitutionGuid() {
         User user = user("nope");
         //See static providers JSON in src/main/resources/manage

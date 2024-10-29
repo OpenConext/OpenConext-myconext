@@ -42,7 +42,8 @@
                     name: serviceName(s),
                     eduId: service.value,
                     entityId: k,
-                    createdAt: new Date(service.createdAt).toLocaleDateString(locale, formatOptions),
+                    createdAt: new Date(s.createdAt).toLocaleDateString(locale, formatOptions),
+                    lastLogin: s.lastLogin ? new Date(s.lastLogin).toLocaleDateString(locale, formatOptions) : null,
                     expiresIn: new Date(service.expiresIn).toLocaleDateString(locale, formatOptions),
                     data: {
                         serviceLogoUrl: s.logoUrl,
@@ -55,7 +56,7 @@
                     allTokens: allTokens,
                     scopes: scopes
                 });
-            })
+            });
             return acc;
         },[]);
         showDetails = Object.keys($user.eduIdPerServiceProvider).reduce((acc, key) => {

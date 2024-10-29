@@ -277,6 +277,7 @@ I18n.translations.en = {
             login: "Login details",
             delete: "Delete login details",
             first: "First login",
+            last: "Last login",
             eduID: "Unique eduID",
             homePage: "Homepage",
             deleteDisclaimer: "Deleting these login details means eduID removes this information from your eduID account. You still have an account at the application itself. If you want that removed, please do so at the application.",

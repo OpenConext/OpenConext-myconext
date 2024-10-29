@@ -15,6 +15,8 @@ public class ServiceProvider extends RemoteProvider {
     private String homeUrl;
     @Schema(type = "integer", format = "int64", example = "1634813554997")
     private Date createdAt = new Date();
+    @Schema(type = "integer", format = "int64", example = "1634813554997")
+    private Date lastLogin;
 
     public ServiceProvider(RemoteProvider remoteProvider, String homeUrl) {
         super(remoteProvider.getEntityId(),
