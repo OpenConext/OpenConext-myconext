@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import myconext.exceptions.WeakPasswordException;
 import myconext.manage.Manage;
 import myconext.manage.MockManage;
+import myconext.security.ServicesConfiguration;
 import org.junit.Test;
 import org.mockito.Mockito;
 import org.springframework.test.util.ReflectionTestUtils;
@@ -107,7 +108,7 @@ public class UserTest {
         assertEquals(1, user.getEduIDS().size());
         assertEquals(2, user.getEduIDS().get(0).getServices().size());
 
-        Map<String, EduID> eduIDMap = user.convertEduIdPerServiceProvider();
+        Map<String, EduID> eduIDMap = user.convertEduIdPerServiceProvider(new ServicesConfiguration());
 
         assertEquals(2, eduIDMap.size());
         List.of(entityId, otherEntityId).forEach(entityIdValue -> {
@@ -117,7 +118,7 @@ public class UserTest {
         });
         //The mobile version of the UserResponse is backward compatible with a single eduID value and ServiceProvider
         user.setMobileAuthentication(true);
-        Map<String, EduID> eduIDMapMobile = user.convertEduIdPerServiceProvider();
+        Map<String, EduID> eduIDMapMobile = user.convertEduIdPerServiceProvider(new ServicesConfiguration());
 
         assertEquals(2, eduIDMapMobile.size());
         List.of(entityId, otherEntityId).forEach(entityIdValue -> {
@@ -150,10 +151,26 @@ public class UserTest {
         assertTrue(otherLinkedAccount.isPreferred());
         assertEquals("Pol", user.getGivenName());
         assertEquals("Kropto", user.getFamilyName());
-
-
         //Idempotency
         assertFalse(user.reconcileLinkedAccounts());
+    }
+
+    @Test
+    public void hideServicesInEduID() {
+        User user = new User();
+        Manage mockManage = Mockito.mock(Manage.class);
+        String entityId = "https://sp_one";
+        ServiceProvider serviceProvider = new ServiceProvider(new RemoteProvider(
+                entityId, entityId.concat("Name"), entityId.concat("NameNl"), null, "logoURL"), "homeURL");
+        Mockito.when(mockManage.findServiceProviderByEntityId(entityId))
+                .thenReturn(Optional.of(serviceProvider));
+
+        user.computeEduIdForServiceProviderIfAbsent(entityId, mockManage);
+        Map<String, EduID> eduIdPerServiceProvider = user.convertEduIdPerServiceProvider(new ServicesConfiguration());
+        assertEquals(1, eduIdPerServiceProvider.size());
+
+        Map<String, EduID> eduIdPerServiceProviderFiltered = user.convertEduIdPerServiceProvider(new ServicesConfiguration(List.of(entityId)));
+        assertEquals(0, eduIdPerServiceProviderFiltered.size());
     }
 
     private User user(String serviceProviderEntityId) {

@@ -10,6 +10,7 @@ import lombok.Setter;
 import myconext.exceptions.WeakPasswordException;
 import myconext.manage.Manage;
 import myconext.remotecreation.NewExternalEduID;
+import myconext.security.ServicesConfiguration;
 import myconext.tiqr.SURFSecureID;
 import myconext.verify.AttributeMapper;
 import org.springframework.data.annotation.Id;
@@ -310,14 +311,17 @@ public class User implements Serializable, UserDetails {
 
     @Transient
     @JsonIgnore
-    public Map<String, EduID> convertEduIdPerServiceProvider() {
+    public Map<String, EduID> convertEduIdPerServiceProvider(ServicesConfiguration servicesConfiguration) {
         //We need to be backward compatible, but also deal with new many services refactor. Key of map may not be null
         Map<String, EduID> result = new HashMap<>();
+        List<String> hideInOverview = servicesConfiguration.getHideInOverview();
         this.getEduIDS().forEach(eduID -> {
-            if (CollectionUtils.isEmpty(eduID.getServices()) && StringUtils.hasText(eduID.getServiceProviderEntityId())) {
+            if (CollectionUtils.isEmpty(eduID.getServices()) && StringUtils.hasText(eduID.getServiceProviderEntityId())
+                    && !hideInOverview.contains(eduID.getServiceProviderEntityId())) {
                 result.put(eduID.getServiceProviderEntityId(), eduID);
             } else {
-                eduID.getServices().forEach(service -> {
+                eduID.getServices().stream().filter(service -> !hideInOverview.contains(service.getEntityId()))
+                        .forEach(service -> {
                     String entityId = service.getEntityId();
                     String key = StringUtils.hasText(entityId) ? entityId : service.getInstitutionGuid();
                     //need to make copy otherwise the reference is the same and for mobile authentication we override the properties

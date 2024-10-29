@@ -26,14 +26,13 @@ import myconext.manage.Manage;
 import myconext.model.*;
 import myconext.oidcng.OpenIDConnect;
 import myconext.repository.*;
-import myconext.security.EmailDomainGuard;
-import myconext.security.EmailGuessingPrevention;
-import myconext.security.UserAuthentication;
+import myconext.security.*;
 import myconext.webauthn.UserCredentialRepository;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpStatus;
@@ -68,6 +67,7 @@ import static myconext.log.MDCContext.logWithContext;
 @RestController
 @RequestMapping(value = {"/myconext/api", "/mobile/api"})
 @SecurityRequirement(name = OPEN_ID_SCHEME_NAME, scopes = {"eduid.nl/mobile"})
+@EnableConfigurationProperties({ServicesConfiguration.class})
 public class UserController implements UserAuthentication {
 
     private static final Log LOG = LogFactory.getLog(UserController.class);
@@ -95,6 +95,7 @@ public class UserController implements UserAuthentication {
     private final ObjectMapper objectMapper;
     private final RegistrationRepository registrationRepository;
     private final boolean featureDefaultRememberMe;
+    private final ServicesConfiguration servicesConfiguration;
 
     private final List<VerifyIssuer> issuers;
     //For now, hardcode the not known issuers from test
@@ -121,7 +122,8 @@ public class UserController implements UserAuthentication {
                           @Value("${rp_origin}") String rpOrigin,
                           @Value("${rp_id}") String rpId,
                           @Value("${feature.default_remember_me}") boolean featureDefaultRememberMe,
-                          @Value("${verify.issuers_path}") Resource issuersResource) throws IOException {
+                          @Value("${verify.issuers_path}") Resource issuersResource,
+                          ServicesConfiguration servicesConfiguration) throws IOException {
         this.userRepository = userRepository;
         this.userCredentialRepository = userCredentialRepository;
         this.challengeRepository = challengeRepository;
@@ -140,6 +142,7 @@ public class UserController implements UserAuthentication {
         this.idpBaseUrl = idpBaseUrl;
         this.spBaseUrl = spBaseUrl;
         this.webAuthnSpRedirectUrl = String.format("%s/security", spBaseUrl);
+        this.servicesConfiguration = servicesConfiguration;
         this.relyingParty = relyingParty(rpId, rpOrigin);
         this.emailGuessingPreventor = new EmailGuessingPrevention(emailGuessingSleepMillis);
         this.featureDefaultRememberMe = featureDefaultRememberMe;
@@ -734,14 +737,14 @@ public class UserController implements UserAuthentication {
 
     private ResponseEntity<UserResponse> returnUserResponse(User user) {
         Optional<Registration> optionalRegistration = registrationRepository.findRegistrationByUserId(user.getId());
-        UserResponse userResponse = new UserResponse(user, user.convertEduIdPerServiceProvider(), optionalRegistration, false, manage, issuers);
+        UserResponse userResponse = new UserResponse(user, user.convertEduIdPerServiceProvider(this.servicesConfiguration), optionalRegistration, false, manage, issuers);
         return ResponseEntity.status(201).body(userResponse);
     }
 
     private ResponseEntity<UserResponse> userResponseRememberMe(User user) {
         List<SamlAuthenticationRequest> samlAuthenticationRequests = authenticationRequestRepository.findByUserIdAndRememberMe(user.getId(), true);
         Optional<Registration> optionalRegistration = registrationRepository.findRegistrationByUserId(user.getId());
-        UserResponse userResponse = new UserResponse(user, user.convertEduIdPerServiceProvider(), optionalRegistration, !samlAuthenticationRequests.isEmpty(), manage, issuers);
+        UserResponse userResponse = new UserResponse(user, user.convertEduIdPerServiceProvider(this.servicesConfiguration), optionalRegistration, !samlAuthenticationRequests.isEmpty(), manage, issuers);
         return ResponseEntity.ok(userResponse);
     }
 

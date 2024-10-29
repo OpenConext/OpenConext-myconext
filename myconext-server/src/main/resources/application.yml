@@ -159,6 +159,10 @@ oidc:
   sp-create-from-institution-redirect-url: http://localhost:8081/myconext/api/sp/create-from-institution/oidc-redirect
   base-url: https://connect.test2.surfconext.nl
 
+services-configuration:
+  hide_in_overview:
+    - some_client
+
 linked_accounts:
   # The duration that not name-validated linked accounts are valid - note that they are not removed and will be used for EPPN Pseudonymisation
   expiry-duration-days-non-validated: 180
