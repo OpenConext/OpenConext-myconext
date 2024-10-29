@@ -64,6 +64,7 @@ I18n.translations.en = {
         familyName: "Last name",
         validatedFamilyName: "Verified family name",
         validatedDayOfBirth: "Verified date of birth",
+        validatedAffiliations: "Verified affiliations",
         linkedAccounts: "Your role(s)",
         addInstitution: "Add an organisation",
         addInstitutionInfo: "By adding an organisation to your eduID, you prove that you are a student or employee of that organisation. This also verifies your eduID.",

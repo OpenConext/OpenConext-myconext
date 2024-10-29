@@ -64,6 +64,7 @@ I18n.translations.nl = {
         familyName: "Achternaam",
         validatedFamilyName: "Geverifieerde achternaam",
         validatedDayOfBirth: "Geverifieerde geboortedatum",
+        validatedAffiliations: "Geverifieerde affiliations",
         linkedAccounts: "Je rollen",
         addInstitution: "Voeg een organisatie toe",
         addInstitutionInfo: "Door een organisatie toe te voegen, bewijs je dat je een student of medewerker bent van die organisatie. Dit verifïeert ook je eduID.",

@@ -33,10 +33,11 @@ export const institutionName = linkedAccount => {
 }
 
 export const affiliation = linkedAccount => {
-  if (linkedAccount.external) {
+  if (linkedAccount.external || isEmpty(linkedAccount.eduPersonAffiliations)) {
     return null;
   }
-  return (linkedAccount.eduPersonAffiliations || [])[0];
+  const eduPersonAffiliation = linkedAccount.eduPersonAffiliations[0];
+  return eduPersonAffiliation.substring(0, eduPersonAffiliation.indexOf("@"))
 }
 
 export const linkedAccountGivenName = linkedAccount => {

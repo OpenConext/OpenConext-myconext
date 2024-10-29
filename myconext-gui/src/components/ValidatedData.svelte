@@ -84,4 +84,11 @@
                         icon={preferredAccount ? personalInfo : null}
                         value={dateFromEpoch(institution.dateOfBirth)}/>
     {/if}
+
+    <!--{#if !institution.external && !isEmpty(institution.eduPersonAffiliations)}-->
+    <!--    <ValidatedField label={I18n.t("profile.validatedAffiliations")}-->
+    <!--                    readOnly={true}-->
+    <!--                    icon={preferredAccount ? personalInfo : null}-->
+    <!--                    value={institution.eduPersonAffiliations.join(", ")}/>-->
+    <!--{/if}-->
 </div>

@@ -1019,7 +1019,7 @@ public class AccountLinkerController implements UserAuthentication {
         List<String> eduPersonScopedAffiliations = (List<String>) idpAttributes.getOrDefault("eduperson_scoped_affiliation", eduPersonAffiliations);
         Set<String> uniqueAffiliations = new HashSet<>(eduPersonAffiliations);
         uniqueAffiliations.addAll(eduPersonScopedAffiliations);
-        return CollectionUtils.isEmpty(uniqueAffiliations) ? Arrays.asList(String.format("affiliate@%s", schacHomeOrganization)) : new ArrayList<>(uniqueAffiliations);
+        return CollectionUtils.isEmpty(uniqueAffiliations) ? List.of(String.format("affiliate@%s", schacHomeOrganization)) : new ArrayList<>(uniqueAffiliations);
     }
 
     @Override
