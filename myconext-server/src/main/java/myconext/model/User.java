@@ -381,6 +381,7 @@ public class User implements Serializable, UserDetails {
                 if (StringUtils.hasText(provisionedGivenName)) {
                     this.givenName = provisionedGivenName;
                 }
+                provisionedLinkedAccount.setPreferred(true);
             });
         }
     }

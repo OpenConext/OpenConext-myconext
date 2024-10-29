@@ -139,24 +139,11 @@
         sortedAccounts = ($user.linkedAccounts || []).sort((a, b) => b.createdAt - a.createdAt);
         sortedExternalAccounts = ($user.externalLinkedAccounts || []).sort((a, b) => b.createdAt - a.createdAt);
         const validLinkedAccounts = sortedAccounts.filter(account => !account.expired);
-        const validExternalLinkedAccount = !isEmpty($user.externalLinkedAccounts) && !$user.externalLinkedAccounts[0].expired;
-        const linkedAccount = validLinkedAccounts.find(account => account.preferred) || validLinkedAccounts[0];
-        if (isEmpty(linkedAccount) || isEmpty(linkedAccount.givenName) || isEmpty(linkedAccount.familyName)) {
-            preferredAccount = null;
-        } else {
-            preferredAccount = linkedAccount;
-            linkedAccount.preferred = true;
-        }
-        if (!isEmpty($user.externalLinkedAccounts)) {
-            if (isEmpty(preferredAccount) || preferredAccount.createdAt < $user.externalLinkedAccounts[0].createdAt) {
-                preferredAccount = $user.externalLinkedAccounts[0];
-                $user.externalLinkedAccounts[0].preferred = true;
-                validLinkedAccounts.forEach(acc => acc.preferred = false);
-                preferredAccount.external = true;
-            }
-
-        }
-        eduIDLinked = validLinkedAccounts.length > 0 || validExternalLinkedAccount;
+        const validExternalLinkedAccounts = sortedExternalAccounts.filter(account => !account.expired);
+        const preferredLinkedAccount = validLinkedAccounts.find(account => account.preferred && !isEmpty(account.givenName) && !isEmpty(account.familyName));
+        const preferredExternalLinkedAccount = validExternalLinkedAccounts.find(account => account.preferred);
+        preferredAccount = preferredLinkedAccount || preferredExternalLinkedAccount;
+        eduIDLinked = validLinkedAccounts.length > 0 || validExternalLinkedAccounts.length > 0;
         if (isEmpty($user.linkedAccounts) && isEmpty($user.externalLinkedAccounts) && !retry) {
             manageVerifiedInformation("personal");
         }

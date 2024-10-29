@@ -15,4 +15,6 @@ public interface ProvisionedLinkedAccount {
     boolean isExternal();
 
     boolean isPreferred();
+
+    void setPreferred(boolean preferred);
 }
