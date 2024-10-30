@@ -100,6 +100,7 @@ public class UserController implements UserAuthentication {
     private final List<VerifyIssuer> issuers;
     //For now, hardcode the not known issuers from test
     private final List<String> unknownIssuers = List.of("CURRNL2A");
+    private final int nudgeAppDays;
 
     public UserController(UserRepository userRepository,
                           UserCredentialRepository userCredentialRepository,
@@ -123,6 +124,7 @@ public class UserController implements UserAuthentication {
                           @Value("${rp_id}") String rpId,
                           @Value("${feature.default_remember_me}") boolean featureDefaultRememberMe,
                           @Value("${verify.issuers_path}") Resource issuersResource,
+                          @Value("${nudge_eduid_app_days}") int nudgeAppDays,
                           ServicesConfiguration servicesConfiguration) throws IOException {
         this.userRepository = userRepository;
         this.userCredentialRepository = userCredentialRepository;
@@ -146,6 +148,7 @@ public class UserController implements UserAuthentication {
         this.relyingParty = relyingParty(rpId, rpOrigin);
         this.emailGuessingPreventor = new EmailGuessingPrevention(emailGuessingSleepMillis);
         this.featureDefaultRememberMe = featureDefaultRememberMe;
+        this.nudgeAppDays = nudgeAppDays;
 
         List<IdinIssuers> idinIssuers = objectMapper.readValue(issuersResource.getInputStream(), new TypeReference<>() {
         });
@@ -369,6 +372,9 @@ public class UserController implements UserAuthentication {
                 createAccount.getRelyingPartClientId(),
                 manage);
         user.setCreateFromInstitutionKey(institution.getHash());
+        //Don't bother with the nudge app the next 24 hours
+        long nudgeAppMillis = System.currentTimeMillis() - (1000L * 60 * 60 * 24 * (nudgeAppDays - 1));
+        user.setLastSeenAppNudge(nudgeAppMillis);
         user.validate();
 
         userRepository.save(user);

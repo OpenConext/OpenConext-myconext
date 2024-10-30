@@ -456,10 +456,12 @@ public class GuestIdpAuthenticationRequestFilter extends OncePerRequestFilter {
                 !hasStudentAffiliation;
         boolean missingValidName = !CollectionUtils.isEmpty(authenticationContextClassReferences) && authenticationContextClassReferences.contains(ACR.VALIDATE_NAMES) &&
                 !hasValidatedName(user);
-
+        //TODO move this to the last if/ else clause as there is no direct redirect to the aap nudge page
         if (user.isNewUser()) {
             user.setNewUser(false);
-            user.setLastSeenAppNudge(System.currentTimeMillis());
+            //ensure the user is the coming 24 hours is not nudged to the app
+            long nudgeAppMillis = System.currentTimeMillis() - (1000L * 60 * 60 * 24 * (nudgeAppDays - 1));
+            user.setLastSeenAppNudge(nudgeAppMillis);
             userRepository.save(user);
 
             logWithContext(user, "add", "account", LOG, "Saving user after new registration and magic link");
@@ -474,15 +476,8 @@ public class GuestIdpAuthenticationRequestFilter extends OncePerRequestFilter {
             if (samlAuthenticationRequest.isTiqrFlow()) {
                 return true;
             }
-            String url = this.redirectUrl + "/confirm?h=" + hash +
-                    "&redirect=" + URLEncoder.encode(this.magicLinkUrl, charSet) +
-                    "&email=" + URLEncoder.encode(user.getEmail(), charSet) +
-                    "&new=true";
-            if (!StepUpStatus.NONE.equals(samlAuthenticationRequest.getSteppedUp())) {
-                url += "&explanation=" + explanation;
-            }
-            response.sendRedirect(url);
-            return false;
+            //we don't redirect the user to the nudge app page anymore
+            return true;
         } else if (inStepUpFlow) {
             finishStepUp(samlAuthenticationRequest);
             if (missingStudentAffiliation || missingValidName) {
@@ -499,7 +494,7 @@ public class GuestIdpAuthenticationRequestFilter extends OncePerRequestFilter {
             return false;
         } else if (!samlAuthenticationRequest.isPasswordOrWebAuthnFlow() && !samlAuthenticationRequest.isTiqrFlow() &&
                 !user.loginOptions().contains(LoginOptions.APP.getValue()) &&
-                user.getLastSeenAppNudge() < (System.currentTimeMillis() - 1000L * 60 * 60 * 24 * nudgeAppDays)) {
+                user.getLastSeenAppNudge() < (System.currentTimeMillis() - (1000L * 60 * 60 * 24 * nudgeAppDays))) {
             //Nudge user to use the app
             user.setLastSeenAppNudge(System.currentTimeMillis());
             userRepository.save(user);
