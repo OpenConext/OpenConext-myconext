@@ -129,3 +129,8 @@ The redirect URI's for local development have to start with https. You can use t
 ```
 ngrok http --domain okke.harsta.eu.ngrok.io 8081
 ```
+
+### Running the IdP and testing localhost
+
+The [idp_metadata.xml](idp_metadata.xml) file contains the IdP metadata for localhost development. Import an IdP in Manage and
+whitelist this for the SP's you want to test with. The OIDC-Playground is capable of testing the different ACR options.

@@ -1,0 +1,32 @@
+<?xml version="1.0"?>
+<md:EntityDescriptor xmlns:md="urn:oasis:names:tc:SAML:2.0:metadata" xmlns:ds="http://www.w3.org/2000/09/xmldsig#"
+                     entityID="https://localhost.surf.id" validUntil="2025-10-31T07:08:35.719209603Z" cacheDuration="PT86400S">
+    <md:IDPSSODescriptor protocolSupportEnumeration="urn:oasis:names:tc:SAML:2.0:protocol"
+                         WantAuthnRequestsSigned="true">
+        <md:KeyDescriptor use="signing">
+            <ds:KeyInfo xmlns:ds="http://www.w3.org/2000/09/xmldsig#">
+                <ds:X509Data>
+                    <ds:X509Certificate>MIICvDCCAaQCCQCOtlEewzza9zANBgkqhkiG9w0BAQsFADAgMR4wHAYDVQQKDBVPcmdhbml6YXRpb24sIENOPU9JREMwHhcNMjIwMTI3MTA0OTQ2WhcNMjMwMTI3MTA0OTQ2WjAgMR4wHAYDVQQKDBVPcmdhbml6YXRpb24sIENOPU9JREMwggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQDMf3M9YNm1B+Db2W+04fvY9nOOM4UU8A1mQkY3m6JGwyq2Hul3LGqEJQgXwtpJhA/TOnlMQ4je9h0/vDfyT7v0exEWhykOqOPcuZ4OVmSACtUiao3VE2HiZz7kjSsSvix0+UeaouqxDcGpi4+qIrPFHFqQ8rNdl+2S4ZEzGQxqgK6n92a9Ng+mnSx21FEIu3o8rNqlTrN9mhtfoTSiVUDIWEM/1fAwt7NOzpw7GMbnV8nbSFUtEnn0oNm8H0Qqy8BAhMUHL8AZXO5Uwm+cVmVh9JQtWANfzhPD7l+DD8h7W5fi1VeLiAgo0Go0EF6z1Jk2aGTKWBQzODClF01j5NizAgMBAAEwDQYJKoZIhvcNAQELBQADggEBAA8ttJeHPAMHduvwmvzkMjw2p0w7AptQXcqTlgBP3MAZKncn81SkO0jd0gvBTmUzt4oMiRJYnTm1ghUXNW5qK+2fjXwt5HXXz5OJGrN6A0MybOd/OXK/3Q5PHWvfLE/+zLWT67c34n0q6KDBBZheoF2SKw10s/mDJ1eHRHZIlsFmF6Z3Ll6h3fkL/0MsBOkmQ3CEtpTFpNk9lma3cnGQJ7p7t4T9iVNDSL1/fqDZPoaVzUJx39sXjb/ouCIDrXN3+ayElehQa+aXpE4KdG22j4Dm+k83OO3hujjugEAze+CeHDyy7X9c6c79bCXBU4HQK0ff0PiSxv0xpjsP3tMMr1U&#61;</ds:X509Certificate>
+                </ds:X509Data>
+            </ds:KeyInfo>
+        </md:KeyDescriptor>
+        <md:NameIDFormat>urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified</md:NameIDFormat>
+        <md:SingleSignOnService Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect"
+                                Location="http://localhost:8081/saml/guest-idp/SSO"/>
+    </md:IDPSSODescriptor>
+    <md:ContactPerson contactType="support">
+        <md:GivenName>Support</md:GivenName>
+        <md:SurName>OpenConext</md:SurName>
+        <md:EmailAddress>mailto:support@openconext.org</md:EmailAddress>
+    </md:ContactPerson>
+    <md:ContactPerson contactType="technical">
+        <md:GivenName>Support</md:GivenName>
+        <md:SurName>OpenConext</md:SurName>
+        <md:EmailAddress>mailto:technical@openconext.org</md:EmailAddress>
+    </md:ContactPerson>
+    <md:ContactPerson contactType="administrative">
+        <md:GivenName>Support</md:GivenName>
+        <md:SurName>OpenConext</md:SurName>
+        <md:EmailAddress>mailto:administrative@openconext.org</md:EmailAddress>
+    </md:ContactPerson>
+</md:EntityDescriptor>

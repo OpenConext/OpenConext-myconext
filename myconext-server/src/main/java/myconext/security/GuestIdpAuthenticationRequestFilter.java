@@ -456,7 +456,6 @@ public class GuestIdpAuthenticationRequestFilter extends OncePerRequestFilter {
                 !hasStudentAffiliation;
         boolean missingValidName = !CollectionUtils.isEmpty(authenticationContextClassReferences) && authenticationContextClassReferences.contains(ACR.VALIDATE_NAMES) &&
                 !hasValidatedName(user);
-        //TODO move this to the last if/ else clause as there is no direct redirect to the aap nudge page
         if (user.isNewUser()) {
             user.setNewUser(false);
             //ensure the user is the coming 24 hours is not nudged to the app
@@ -477,7 +476,9 @@ public class GuestIdpAuthenticationRequestFilter extends OncePerRequestFilter {
                 return true;
             }
             //we don't redirect the user to the nudge app page anymore
-            return true;
+            String url = String.format("%s?h=%s&force=true", this.magicLinkUrl, hash);
+            response.sendRedirect(url);
+            return false;
         } else if (inStepUpFlow) {
             finishStepUp(samlAuthenticationRequest);
             if (missingStudentAffiliation || missingValidName) {
