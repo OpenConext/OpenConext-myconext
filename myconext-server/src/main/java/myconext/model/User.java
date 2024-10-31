@@ -83,7 +83,7 @@ public class User implements Serializable, UserDetails {
     private List<EduID> eduIDS = new ArrayList<>();
 
     private long created;
-    private long updatedAt = System.currentTimeMillis() / 1000L;
+    private long updatedAt;
     @Setter
     @Indexed
     private String trackingUuid;
@@ -116,7 +116,6 @@ public class User implements Serializable, UserDetails {
         }
         this.newUser = true;
         this.created = System.currentTimeMillis() / 1000L;
-        this.updatedAt = created;
     }
 
     public User(String uid, String email, String chosenName, String givenName, String familyName,
@@ -186,6 +185,7 @@ public class User implements Serializable, UserDetails {
     }
 
     private String doComputeEduIDIfAbsent(ServiceProvider serviceProvider, Manage manage) {
+        this.updatedAt = System.currentTimeMillis();
         serviceProvider.setLastLogin(new Date());
         String institutionGuid = serviceProvider.getInstitutionGuid();
         String entityId = serviceProvider.getEntityId();

@@ -456,10 +456,11 @@ public class GuestIdpAuthenticationRequestFilter extends OncePerRequestFilter {
                 !hasStudentAffiliation;
         boolean missingValidName = !CollectionUtils.isEmpty(authenticationContextClassReferences) && authenticationContextClassReferences.contains(ACR.VALIDATE_NAMES) &&
                 !hasValidatedName(user);
-
         if (user.isNewUser()) {
             user.setNewUser(false);
-            user.setLastSeenAppNudge(System.currentTimeMillis());
+            //ensure the user is the coming 24 hours is not nudged to the app
+            long nudgeAppMillis = System.currentTimeMillis() - (1000L * 60 * 60 * 24 * (nudgeAppDays - 1));
+            user.setLastSeenAppNudge(nudgeAppMillis);
             userRepository.save(user);
 
             logWithContext(user, "add", "account", LOG, "Saving user after new registration and magic link");
@@ -474,13 +475,8 @@ public class GuestIdpAuthenticationRequestFilter extends OncePerRequestFilter {
             if (samlAuthenticationRequest.isTiqrFlow()) {
                 return true;
             }
-            String url = this.redirectUrl + "/confirm?h=" + hash +
-                    "&redirect=" + URLEncoder.encode(this.magicLinkUrl, charSet) +
-                    "&email=" + URLEncoder.encode(user.getEmail(), charSet) +
-                    "&new=true";
-            if (!StepUpStatus.NONE.equals(samlAuthenticationRequest.getSteppedUp())) {
-                url += "&explanation=" + explanation;
-            }
+            //we don't redirect the user to the nudge app page anymore
+            String url = String.format("%s?h=%s&force=true", this.magicLinkUrl, hash);
             response.sendRedirect(url);
             return false;
         } else if (inStepUpFlow) {
@@ -499,7 +495,7 @@ public class GuestIdpAuthenticationRequestFilter extends OncePerRequestFilter {
             return false;
         } else if (!samlAuthenticationRequest.isPasswordOrWebAuthnFlow() && !samlAuthenticationRequest.isTiqrFlow() &&
                 !user.loginOptions().contains(LoginOptions.APP.getValue()) &&
-                user.getLastSeenAppNudge() < (System.currentTimeMillis() - 1000L * 60 * 60 * 24 * nudgeAppDays)) {
+                user.getLastSeenAppNudge() < (System.currentTimeMillis() - (1000L * 60 * 60 * 24 * nudgeAppDays))) {
             //Nudge user to use the app
             user.setLastSeenAppNudge(System.currentTimeMillis());
             userRepository.save(user);
