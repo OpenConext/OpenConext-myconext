@@ -26,6 +26,7 @@ import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
 import java.io.Serializable;
+import java.time.Clock;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -83,11 +84,10 @@ public class User implements Serializable, UserDetails {
     private List<EduID> eduIDS = new ArrayList<>();
 
     private long created;
-    private long updatedAt;
+    private long lastLogin;
     @Setter
     @Indexed
     private String trackingUuid;
-    @Setter
     private long lastSeenAppNudge;
     @Transient
     @JsonIgnore
@@ -109,7 +109,7 @@ public class User implements Serializable, UserDetails {
         this.chosenName = chosenName;
         this.givenName = givenName;
         this.familyName = familyName;
-        this.schacHomeOrganization = StringUtils.hasText(schacHomeOrganization) ? schacHomeOrganization.toLowerCase() : schacHomeOrganization ;
+        this.schacHomeOrganization = StringUtils.hasText(schacHomeOrganization) ? schacHomeOrganization.toLowerCase() : schacHomeOrganization;
         this.preferredLanguage = preferredLanguage;
         if (StringUtils.hasText(serviceProviderEntityId)) {
             this.computeEduIdForServiceProviderIfAbsent(serviceProviderEntityId, manage);
@@ -185,7 +185,7 @@ public class User implements Serializable, UserDetails {
     }
 
     private String doComputeEduIDIfAbsent(ServiceProvider serviceProvider, Manage manage) {
-        this.updatedAt = System.currentTimeMillis();
+        this.lastLogin = System.currentTimeMillis();
         serviceProvider.setLastLogin(new Date());
         String institutionGuid = serviceProvider.getInstitutionGuid();
         String entityId = serviceProvider.getEntityId();
@@ -195,11 +195,11 @@ public class User implements Serializable, UserDetails {
                     //Ensure we don't match institutionGUID's that are both null
                     boolean matchByInstitutionGUID = StringUtils.hasText(institutionGuid) &&
                             (institutionGuid.equals(eduID.getServiceInstutionGuid()) ||
-                                eduID.getServices().stream().anyMatch(sp -> institutionGuid.equals(sp.getInstitutionGuid())));
+                                    eduID.getServices().stream().anyMatch(sp -> institutionGuid.equals(sp.getInstitutionGuid())));
                     //Ensure we don't match entityId's that are both null
                     boolean matchByEntityId = StringUtils.hasText(entityId) &&
                             (entityId.equals(eduID.getServiceProviderEntityId()) ||
-                            eduID.getServices().stream().anyMatch(sp -> entityId.equals(sp.getEntityId())));
+                                    eduID.getServices().stream().anyMatch(sp -> entityId.equals(sp.getEntityId())));
                     return matchByInstitutionGUID || matchByEntityId;
                 }).findFirst();
         //If there is an existing eduID then we add or update the service for this eduID, otherwise add new one
@@ -322,16 +322,16 @@ public class User implements Serializable, UserDetails {
             } else {
                 eduID.getServices().stream().filter(service -> !hideInOverview.contains(service.getEntityId()))
                         .forEach(service -> {
-                    String entityId = service.getEntityId();
-                    String key = StringUtils.hasText(entityId) ? entityId : service.getInstitutionGuid();
-                    //need to make copy otherwise the reference is the same and for mobile authentication we override the properties
-                    result.put(key, eduID.copy(key ));
-                });
+                            String entityId = service.getEntityId();
+                            String key = StringUtils.hasText(entityId) ? entityId : service.getInstitutionGuid();
+                            //need to make copy otherwise the reference is the same and for mobile authentication we override the properties
+                            result.put(key, eduID.copy(key));
+                        });
             }
         });
         //The mobile API expects the old format. For all keys we fill the obsolete attributes of an eduID
         if (this.isMobileAuthentication()) {
-            result.forEach((entityId, eduID)-> {
+            result.forEach((entityId, eduID) -> {
                 if (!CollectionUtils.isEmpty(eduID.getServices())) {
                     ServiceProvider serviceProvider = eduID.getServices().stream()
                             .filter(sp -> entityId.equals(sp.getEntityId())).findFirst()
@@ -384,5 +384,39 @@ public class User implements Serializable, UserDetails {
             return first.isPresent();
         }
         return false;
+    }
+
+    //Prevent @Getter lombok generation as we don't want any logic on this value anywhere else but here
+    private long getLastSeenAppNudge() {
+        return this.lastSeenAppNudge;
+    }
+
+    @Transient
+    @JsonIgnore
+    public boolean nudgeToApp(int nudgeAppDays, int nudgeAppDelayDays) {
+        int oneDayMillis = 1000 * 60 * 60 * 24;
+        long nowMillis = System.currentTimeMillis();
+        //this.created are seconds and not millis, will not change this for backward compatibility in Mobile GUI
+        long createdMillis = this.created * 1000;
+        long nudgeAppMillis = (long) nudgeAppDays * oneDayMillis;
+
+        // First 24 hours we don't show the app nudge
+        boolean createdMoreThenOneDayAgo = createdMillis < (nowMillis - oneDayMillis);
+        // First subsequent login is before nudgeAppDays
+        boolean secondLoginBeforeNudgeAppDays = this.lastSeenAppNudge == 0L &&
+                (nowMillis - createdMillis) < nudgeAppMillis;
+        // Nudge app delay time has reached
+        boolean delayReached = this.lastSeenAppNudge != 0L &&
+                (nowMillis - this.lastSeenAppNudge) > ((long) oneDayMillis * nudgeAppDelayDays);
+
+        // Corner case, user has postponed the second login for long time, but is now an active user
+        boolean cornerCase = createdMoreThenOneDayAgo && this.lastSeenAppNudge == 0L
+                && (nowMillis - this.lastLogin) < nudgeAppMillis;
+
+        boolean decision = createdMoreThenOneDayAgo && (secondLoginBeforeNudgeAppDays || delayReached || cornerCase);
+        if (decision) {
+            this.lastSeenAppNudge = nowMillis;
+        }
+        return decision;
     }
 }

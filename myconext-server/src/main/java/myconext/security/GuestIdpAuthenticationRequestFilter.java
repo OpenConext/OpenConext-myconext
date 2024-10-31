@@ -93,6 +93,7 @@ public class GuestIdpAuthenticationRequestFilter extends OncePerRequestFilter {
     private Manage manage;
     private final ExecutorService executor;
     private final int nudgeAppDays;
+    private final int nudgeAppDelayDays;
     private final int rememberMeQuestionAskedDays;
     private final long expiryNonValidatedDurationDays;
     private final long ssoMFADurationSeconds;
@@ -109,6 +110,7 @@ public class GuestIdpAuthenticationRequestFilter extends OncePerRequestFilter {
                                                GeoLocation geoLocation,
                                                int rememberMeMaxAge,
                                                int nudgeAppDays,
+                                               int nudgeAppDelayDays,
                                                int rememberMeQuestionAskedDays,
                                                boolean secureCookie,
                                                String magicLinkUrl,
@@ -134,6 +136,7 @@ public class GuestIdpAuthenticationRequestFilter extends OncePerRequestFilter {
         this.accountLinkingContextClassReferences = ACR.allAccountLinkingContextClassReferences();
         this.rememberMeMaxAge = rememberMeMaxAge;
         this.nudgeAppDays = nudgeAppDays;
+        this.nudgeAppDelayDays = nudgeAppDelayDays;
         this.rememberMeQuestionAskedDays = rememberMeQuestionAskedDays;
         this.secureCookie = secureCookie;
         this.magicLinkUrl = magicLinkUrl;
@@ -458,9 +461,6 @@ public class GuestIdpAuthenticationRequestFilter extends OncePerRequestFilter {
                 !hasValidatedName(user);
         if (user.isNewUser()) {
             user.setNewUser(false);
-            //ensure the user is the coming 24 hours is not nudged to the app
-            long nudgeAppMillis = System.currentTimeMillis() - (1000L * 60 * 60 * 24 * (nudgeAppDays - 1));
-            user.setLastSeenAppNudge(nudgeAppMillis);
             userRepository.save(user);
 
             logWithContext(user, "add", "account", LOG, "Saving user after new registration and magic link");
@@ -495,11 +495,10 @@ public class GuestIdpAuthenticationRequestFilter extends OncePerRequestFilter {
             return false;
         } else if (!samlAuthenticationRequest.isPasswordOrWebAuthnFlow() && !samlAuthenticationRequest.isTiqrFlow() &&
                 !user.loginOptions().contains(LoginOptions.APP.getValue()) &&
-                user.getLastSeenAppNudge() < (System.currentTimeMillis() - (1000L * 60 * 60 * 24 * nudgeAppDays))) {
-            //Nudge user to use the app
-            user.setLastSeenAppNudge(System.currentTimeMillis());
+                user.nudgeToApp(nudgeAppDays, nudgeAppDelayDays)) {
             userRepository.save(user);
 
+            //Nudge user to use the app
             String url = this.redirectUrl + "/confirm?h=" + hash +
                     "&redirect=" + URLEncoder.encode(this.magicLinkUrl, charSet) +
                     "&new=false";

@@ -106,7 +106,8 @@ tiqr_hash_secret: 43234502-2AAC-4E53-AA32-C7B909F71442
 
 remember_me_max_age_seconds: 15_768_000
 sso_mfa_duration_seconds: 900
-nudge_eduid_app_days: 7
+nudge_eduid_app_login_days: 5
+nudge_eduid_app_pause_days: 7
 remember_me_question_asked_days: 30
 email_guessing_sleep_millis: 500
 email_spam_threshold_seconds: 15

@@ -1,6 +1,7 @@
 package myconext.model;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.SneakyThrows;
 import myconext.exceptions.WeakPasswordException;
 import myconext.manage.Manage;
 import myconext.manage.MockManage;
@@ -15,6 +16,7 @@ import java.util.*;
 import java.util.regex.Pattern;
 
 import static org.junit.Assert.*;
+import static org.mockito.Mockito.mock;
 
 public class UserTest {
 
@@ -87,7 +89,7 @@ public class UserTest {
     @Test
     public void bugFixForUpdateExistingEduIDAndNotAddNewService() {
         User user = new User();
-        Manage mockManage = Mockito.mock(Manage.class);
+        Manage mockManage = mock(Manage.class);
         String entityId = "https://sp_one";
         String institutionGuid = UUID.randomUUID().toString();
         ServiceProvider serviceProvider = new ServiceProvider(new RemoteProvider(
@@ -134,17 +136,20 @@ public class UserTest {
         User user = user("sp_entity_id");
         LinkedAccount linkedAccount = new LinkedAccount();
         linkedAccount.setCreatedAt(Date.from(Instant.ofEpochMilli(423439200000L)));
+        assertFalse(linkedAccount.isPreferred());
 
         LinkedAccount otherLinkedAccount = new LinkedAccount();
         otherLinkedAccount.setCreatedAt(Date.from(Instant.ofEpochMilli(1307052000000L)));
         ReflectionTestUtils.setField(otherLinkedAccount, "givenName", "Pol");
         ReflectionTestUtils.setField(otherLinkedAccount, "familyName", "Kropto");
+        assertFalse(otherLinkedAccount.isPreferred());
 
         user.getLinkedAccounts().add(linkedAccount);
         user.getLinkedAccounts().add(otherLinkedAccount);
 
         ExternalLinkedAccount externalLinkedAccount = new ExternalLinkedAccount();
         externalLinkedAccount.setCreatedAt(Date.from(Instant.ofEpochMilli(807052000000L)));
+        assertFalse(externalLinkedAccount.isPreferred());
         user.getExternalLinkedAccounts().add(externalLinkedAccount);
 
         assertTrue(user.reconcileLinkedAccounts());
@@ -158,7 +163,7 @@ public class UserTest {
     @Test
     public void hideServicesInEduID() {
         User user = new User();
-        Manage mockManage = Mockito.mock(Manage.class);
+        Manage mockManage = mock(Manage.class);
         String entityId = "https://sp_one";
         ServiceProvider serviceProvider = new ServiceProvider(new RemoteProvider(
                 entityId, entityId.concat("Name"), entityId.concat("NameNl"), null, "logoURL"), "homeURL");
@@ -171,6 +176,63 @@ public class UserTest {
 
         Map<String, EduID> eduIdPerServiceProviderFiltered = user.convertEduIdPerServiceProvider(new ServicesConfiguration(List.of(entityId)));
         assertEquals(0, eduIdPerServiceProviderFiltered.size());
+    }
+
+    @SneakyThrows
+    @Test
+    public void nudgeToAppActiveUser() {
+        int nudgeAppDays = 4;
+        int nudgeAppDelayDays = 7;
+        long nowMillis = System.currentTimeMillis();
+        User user = user("SP");
+        //User has logged in within 24 hours of creation, do not nudge to app
+        assertFalse(user.nudgeToApp(nudgeAppDays, nudgeAppDelayDays));
+        assertEquals(0L, ReflectionTestUtils.getField(user, "lastSeenAppNudge"));
+
+        //User has logged in after 24 hours of creation and before nudgeAppDays
+        ReflectionTestUtils.setField(user, "created", Instant.now().minus(3, ChronoUnit.DAYS).toEpochMilli() / 1000);
+        assertTrue(user.nudgeToApp(nudgeAppDays, nudgeAppDelayDays));
+        //lastSeenAppNudge is set to now
+        long lastSeenAppNudge = (long) ReflectionTestUtils.getField(user, "lastSeenAppNudge");
+        assertTrue(lastSeenAppNudge >= nowMillis);
+
+        //User was nudged to app, on login again user is not nudged again
+        assertFalse(user.nudgeToApp(nudgeAppDays, nudgeAppDelayDays));
+        long lastSeenAppNudgeIdempotent = (long) ReflectionTestUtils.getField(user, "lastSeenAppNudge");
+        assertEquals(lastSeenAppNudge, lastSeenAppNudgeIdempotent);
+
+        //User logs in again after long period of inactivity and is nudged again to app
+        ReflectionTestUtils.setField(user, "lastSeenAppNudge", Instant.now().minus(10, ChronoUnit.DAYS).toEpochMilli() / 1000);
+        //Need to sleep despite the new lastSeenAppNudge, can occur in same millisecond
+        Thread.sleep(3);
+        assertTrue(user.nudgeToApp(nudgeAppDays, nudgeAppDelayDays));
+        long newAppNudgeIdempotent = (long) ReflectionTestUtils.getField(user, "lastSeenAppNudge");
+        assertTrue(newAppNudgeIdempotent > lastSeenAppNudge);
+
+        assertFalse(user.nudgeToApp(nudgeAppDays, nudgeAppDelayDays));
+    }
+
+    @Test
+    public void nudgeToAppLongInactivity() {
+        int nudgeAppDays = 4;
+        int nudgeAppDelayDays = 7;
+        long nowMillis = System.currentTimeMillis();
+        User user = user("SP");
+
+        //User has logged after nudge to app
+        long sixDaysAgoMillis = Instant.now().minus(6, ChronoUnit.DAYS).toEpochMilli() / 1000;
+        ReflectionTestUtils.setField(user, "created", sixDaysAgoMillis);
+        ReflectionTestUtils.setField(user, "lastLogin", sixDaysAgoMillis);
+        assertFalse(user.nudgeToApp(nudgeAppDays, nudgeAppDelayDays));
+        assertEquals(0L, ReflectionTestUtils.getField(user, "lastSeenAppNudge"));
+
+        //User logs in again very shortly after the second login
+        user.computeEduIdForServiceProviderIfAbsent("SP", mock(Manage.class));
+        assertTrue(user.nudgeToApp(nudgeAppDays, nudgeAppDelayDays));
+        assertTrue((long) ReflectionTestUtils.getField(user, "lastSeenAppNudge") >= nowMillis);
+
+        //But the user is not spammed with nudges after login now
+        assertFalse(user.nudgeToApp(nudgeAppDays, nudgeAppDelayDays));
     }
 
     private User user(String serviceProviderEntityId) {

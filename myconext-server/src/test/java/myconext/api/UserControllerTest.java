@@ -99,16 +99,14 @@ public class UserControllerTest extends AbstractIntegrationTest {
 
         MagicLinkResponse magicLinkResponse = magicLinkRequest(user, HttpMethod.POST);
         User userFromDB = userRepository.findUserByEmail(user.getEmail()).get();
-        assertEquals(0L, userFromDB.getLastSeenAppNudge());
+        assertEquals(0L, ReflectionTestUtils.getField(userFromDB, "lastSeenAppNudge"));
         assertEquals(user.getGivenName(), userFromDB.getGivenName());
 
         String samlResponse = samlResponse(magicLinkResponse);
         assertTrue(samlResponse.contains("new@example.com"));
 
         User userFromAfter = userRepository.findUserByEmail(user.getEmail()).get();
-        long appNudgeDiff = System.currentTimeMillis() - userFromAfter.getLastSeenAppNudge();
-        int days = (int) Math.floor((double) appNudgeDiff / (1000 * 60 * 60 * 24));
-        assertEquals(6, days);
+        assertEquals(0L, ReflectionTestUtils.getField(userFromAfter, "lastSeenAppNudge"));
 
         when()
                 .get("/myconext/api/idp/resend_magic_link_request?id=" + magicLinkResponse.authenticationRequestId)
