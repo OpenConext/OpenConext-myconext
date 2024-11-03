@@ -7,7 +7,6 @@ myconext.pem
 myconext.crt
 node_modules
 target
-index.html
 bundle.*.css
 bundle.*.js
 yarn-error.log
@@ -23,3 +22,6 @@ NOTES.md
 dep.tree
 application-test2.yml
 api-docs.json
+dist
+account-gui/public/index.html
+myconext-gui/public/index.html
