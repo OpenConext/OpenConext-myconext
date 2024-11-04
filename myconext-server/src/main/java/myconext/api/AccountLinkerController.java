@@ -718,6 +718,7 @@ public class AccountLinkerController implements UserAuthentication {
         List<ExternalLinkedAccount> externalLinkedAccounts = user.getExternalLinkedAccounts();
         //We only allow one ExternalLinkedAccount - for now
         externalLinkedAccounts.clear();
+        externalLinkedAccount.setPreferred(true);
         externalLinkedAccounts.add(externalLinkedAccount);
 
         LOG.info(String.format("New external linked account %s for user %s", externalLinkedAccount, user.getEmail()));
