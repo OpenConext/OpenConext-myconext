@@ -4,6 +4,8 @@ All notable changes to this project will be documented in this file.
 ## [7.3.5]
 - UX improvements on the inlog screen, the security screen and the delete your eduID screen
 - Extend iDIN api with logos of banks
+- Prevent (accidential) spaces at the end of a name
+- Prevent creating multiple accounts with the same e-mail address, due to cApITaL LeTTEr use. 
 - General improvements, update dependencies
 
 ## [7.3.4]
