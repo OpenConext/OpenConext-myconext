@@ -3,14 +3,19 @@ package myconext.eduid;
 import com.github.tomakehurst.wiremock.junit.WireMockRule;
 import io.restassured.http.ContentType;
 import myconext.AbstractIntegrationTest;
+import myconext.model.*;
 import org.junit.ClassRule;
 import org.junit.Test;
 
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import static io.restassured.RestAssured.given;
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 
 @SuppressWarnings("unchecked")
 public class APIControllerTest extends AbstractIntegrationTest {
@@ -54,6 +59,51 @@ public class APIControllerTest extends AbstractIntegrationTest {
 
         String eppn = results.get(1).get("eppn");
         assertEquals("1234567890@surfguest.nl", eppn);
+    }
+
+    @Test
+    public void linksExternalAccount() throws Exception {
+        User user = userRepository.findUserByEmail("jdoe@example.com").get();
+        ExternalLinkedAccount externalLinkedAccount = new ExternalLinkedAccount(
+                UUID.randomUUID().toString(),
+                IdpScoping.eherkenning,
+                new VerifyIssuer(IdpScoping.eherkenning.name(), IdpScoping.eherkenning.name(), null),
+                Verification.Geverifieerd,
+                UUID.randomUUID().toString(),
+                IdpScoping.studielink.name(),
+                IdpScoping.studielink.name(),
+                null,
+                null,
+                "Johny",
+                "Harry",
+                "Toe",
+                "Toe",
+                null,
+                null,
+                null,
+                null,
+                new Date(),
+                new Date(),
+                Date.from(Instant.now().plus(365 * 5, ChronoUnit.DAYS)),
+                true
+        );
+        user.getExternalLinkedAccounts().add(externalLinkedAccount);
+        userRepository.save(user);
+
+        List<Map<String, String>> results = given()
+                .when()
+                .accept(ContentType.JSON)
+                .auth().oauth2(opaqueAccessToken(true, "eduid.nl/links"))
+                .get("/myconext/api/eduid/links")
+                .as(List.class);
+
+        Map<String, String> info = results.get(2);
+        assertFalse(info.containsKey("eppn"));
+        assertFalse(info.containsKey("schac_home_organization"));
+
+        String validatedName = info.get("validated_name");
+        assertEquals("Harry Toe", validatedName);
+
     }
 
     @Test

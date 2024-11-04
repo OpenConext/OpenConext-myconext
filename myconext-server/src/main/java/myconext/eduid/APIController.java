@@ -5,6 +5,7 @@ import lombok.Getter;
 import myconext.api.HasUserRepository;
 import myconext.exceptions.UserNotFoundException;
 import myconext.model.EduID;
+import myconext.model.ExternalLinkedAccount;
 import myconext.model.User;
 import myconext.repository.UserRepository;
 import org.apache.commons.logging.Log;
@@ -90,7 +91,8 @@ public class APIController implements HasUserRepository {
 
         LOG.info(String.format("Endpoint '/links/ called by authentication %s", clientId));
 
-        List<Map<String, String>> results = getUser(authentication).linkedAccountsSorted().stream()
+        User user = getUser(authentication);
+        List<Map<String, String>> results = new ArrayList<>(user.linkedAccountsSorted().stream()
                 .map(linkedAccount -> {
                     Map<String, String> info = new HashMap<>();
                     info.put("eppn", linkedAccount.getEduPersonPrincipalName());
@@ -100,7 +102,14 @@ public class APIController implements HasUserRepository {
                     }
                     return info;
                 })
-                .collect(Collectors.toList());
+                .toList());
+
+        List<Map<String, String>> externalValidatedNames = user.getExternalLinkedAccounts().stream()
+                .filter(ExternalLinkedAccount::areNamesValidated)
+                .map(externalLinkedAccount -> Map.of("validated_name",
+                        String.format("%s %s", externalLinkedAccount.getGivenName(), externalLinkedAccount.getFamilyName())))
+                .toList();
+        results.addAll(externalValidatedNames);
 
         LOG.info(String.format("Endpoint '/links/ results %s for authentication %s", results, clientId));
 
