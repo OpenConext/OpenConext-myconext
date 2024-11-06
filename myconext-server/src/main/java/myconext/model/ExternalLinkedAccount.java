@@ -147,6 +147,9 @@ public class ExternalLinkedAccount implements Serializable, ProvisionedLinkedAcc
         if (StringUtils.hasText(firstName) && IdpScoping.eherkenning.equals(idpScoping)) {
             return firstName;
         }
+        if (StringUtils.hasText(initials) && IdpScoping.idin.equals(idpScoping)) {
+            return initials;
+        }
         return null;
     }
 
@@ -154,6 +157,9 @@ public class ExternalLinkedAccount implements Serializable, ProvisionedLinkedAcc
     public String getFamilyName() {
         if (StringUtils.hasText(legalLastName)) {
             return legalLastName;
+        }
+        if (StringUtils.hasText(preferredLastName)) {
+            return preferredLastName;
         }
         return null;
     }
