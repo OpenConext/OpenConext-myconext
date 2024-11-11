@@ -392,14 +392,11 @@ public class UserController implements UserAuthentication {
         if (StringUtils.hasText(deltaUser.getChosenName())) {
             user.setChosenName(deltaUser.getChosenName());
         }
-        //Only if there is not validated name, we allow for updates
-        if (CollectionUtils.isEmpty(user.getLinkedAccounts())) {
-            if (StringUtils.hasText(deltaUser.getGivenName())) {
-                user.setGivenName(deltaUser.getGivenName());
-            }
-            if (StringUtils.hasText(deltaUser.getFamilyName())) {
-                user.setFamilyName(deltaUser.getFamilyName());
-            }
+        if (StringUtils.hasText(deltaUser.getGivenName())) {
+            user.setGivenName(deltaUser.getGivenName());
+        }
+        if (StringUtils.hasText(deltaUser.getFamilyName())) {
+            user.setFamilyName(deltaUser.getFamilyName());
         }
         user.validate();
 
@@ -421,15 +418,6 @@ public class UserController implements UserAuthentication {
                     .filter(externalLinkedAccount -> externalLinkedAccount.getIdpScoping().name().equals(updateLinkedAccountRequest.getIdpScoping()))
                     .findFirst()
                     .ifPresent(externalLinkedAccount -> {
-                        if (StringUtils.hasText(externalLinkedAccount.getFirstName()) && IdpScoping.eherkenning.equals(externalLinkedAccount.getIdpScoping())) {
-                            user.setGivenName(externalLinkedAccount.getFirstName());
-                        }
-                        if (StringUtils.hasText(externalLinkedAccount.getInitials()) && IdpScoping.idin.equals(externalLinkedAccount.getIdpScoping())) {
-                            user.setGivenName(externalLinkedAccount.getInitials());
-                        }
-                        if (StringUtils.hasText(externalLinkedAccount.getLegalLastName())) {
-                            user.setFamilyName(externalLinkedAccount.getLegalLastName());
-                        }
                         externalLinkedAccount.setPreferred(true);
                         user.getLinkedAccounts().forEach(linkedAccount -> linkedAccount.setPreferred(false));
                     });
@@ -441,8 +429,6 @@ public class UserController implements UserAuthentication {
                         if (linkedAccount.areNamesValidated()) {
                             user.getLinkedAccounts().forEach(otherLinkedAccount -> otherLinkedAccount.setPreferred(false));
                             linkedAccount.setPreferred(true);
-                            user.setGivenName(linkedAccount.getGivenName());
-                            user.setFamilyName(linkedAccount.getFamilyName());
                             user.getExternalLinkedAccounts().forEach(account -> account.setPreferred(false));
                         }
                     });

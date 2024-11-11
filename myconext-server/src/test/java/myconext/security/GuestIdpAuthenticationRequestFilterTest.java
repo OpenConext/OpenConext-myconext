@@ -11,10 +11,7 @@ import saml.model.SAMLAttribute;
 
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 import static myconext.AbstractIntegrationTest.user;
 import static myconext.model.LinkedAccountTest.linkedAccount;
@@ -131,11 +128,52 @@ public class GuestIdpAuthenticationRequestFilterTest {
         String givenName = attributes.stream().filter(attr -> attr.getName().equals("urn:mace:dir:attribute-def:givenName")).findFirst().get().getValue();
         String familyName = attributes.stream().filter(attr -> attr.getName().equals("urn:mace:dir:attribute-def:sn")).findFirst().get().getValue();
         String displayName = attributes.stream().filter(attr -> attr.getName().equals("urn:mace:dir:attribute-def:displayName")).findFirst().get().getValue();
-        String dateOfBirth = attributes.stream().filter(attr -> attr.getName().equals("urn:schac:attribute-def:schacDateOfBirth")).findFirst().get().getValue();
+        boolean dateOfBirthPresent = attributes.stream().filter(attr -> attr.getName().equals("urn:schac:attribute-def:schacDateOfBirth")).findFirst().isPresent();
 
         assertEquals("Mary", givenName);
         assertEquals("Poppins", familyName);
         assertEquals("Marrrry Poppins", displayName);
+        assertFalse(dateOfBirthPresent);
+    }
+
+    @Test
+    public void attributesExternalLinkedAccount() {
+        User user = new User();
+        user.setChosenName("Chosen");
+        ExternalLinkedAccount externalLinkedAccount = new ExternalLinkedAccount(
+                UUID.randomUUID().toString(),
+                IdpScoping.studielink,
+                new VerifyIssuer(IdpScoping.studielink.name(), IdpScoping.studielink.name(), null),
+                Verification.Geverifieerd,
+                UUID.randomUUID().toString(),
+                IdpScoping.studielink.name(),
+                IdpScoping.studielink.name(),
+                null,
+                null,
+                "Johny",
+                "John",
+                "Doe",
+                "Doe",
+                null,
+                null,
+                null,
+                null,
+                new Date(),
+                new Date(),
+                Date.from(Instant.now().plus(365 * 5, ChronoUnit.DAYS)),
+                true
+        );
+        externalLinkedAccount.setPreferred(true);
+        user.getExternalLinkedAccounts().add(externalLinkedAccount);
+        List<SAMLAttribute> attributes = subject.attributes(user, "requesterEntityID");
+        String givenName = attributes.stream().filter(attr -> attr.getName().equals("urn:mace:dir:attribute-def:givenName")).findFirst().get().getValue();
+        String familyName = attributes.stream().filter(attr -> attr.getName().equals("urn:mace:dir:attribute-def:sn")).findFirst().get().getValue();
+        String displayName = attributes.stream().filter(attr -> attr.getName().equals("urn:mace:dir:attribute-def:displayName")).findFirst().get().getValue();
+        String dateOfBirth = attributes.stream().filter(attr -> attr.getName().equals("urn:schac:attribute-def:schacDateOfBirth")).findFirst().get().getValue();
+
+        assertEquals("John", givenName);
+        assertEquals("Doe", familyName);
+        assertEquals("Chosen Doe", displayName);
         //We are good to go for the next 6 years
         assertTrue(dateOfBirth.startsWith("202"));
     }

@@ -97,7 +97,7 @@ public class APIController implements HasUserRepository {
                     Map<String, String> info = new HashMap<>();
                     info.put("eppn", linkedAccount.getEduPersonPrincipalName());
                     info.put("schac_home_organization", linkedAccount.getSchacHomeOrganization());
-                    if (linkedAccount.areNamesValidated() && linkedAccount.isPreferred()) {
+                    if (linkedAccount.areNamesValidated()) {
                         info.put("validated_name", String.format("%s %s", linkedAccount.getGivenName(), linkedAccount.getFamilyName()));
                     }
                     return info;

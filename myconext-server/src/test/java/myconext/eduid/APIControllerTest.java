@@ -87,6 +87,7 @@ public class APIControllerTest extends AbstractIntegrationTest {
                 Date.from(Instant.now().plus(365 * 5, ChronoUnit.DAYS)),
                 true
         );
+        externalLinkedAccount.setPreferred(true);
         user.getExternalLinkedAccounts().add(externalLinkedAccount);
         userRepository.save(user);
 

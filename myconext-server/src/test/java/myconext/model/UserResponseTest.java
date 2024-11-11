@@ -8,10 +8,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.core.io.ClassPathResource;
 
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 import static java.util.Collections.emptyList;
 import static org.junit.jupiter.api.Assertions.*;
@@ -37,6 +34,7 @@ class UserResponseTest {
     void getExternalLinkedAccounts() {
         User user = new User();
         ExternalLinkedAccount externalLinkedAccount = new ExternalLinkedAccount("subject-id", IdpScoping.studielink, true);
+        externalLinkedAccount.setCreatedAt(new Date());
         ExternalLinkedAccount abnAmroLinkedAccount = new ExternalLinkedAccount("subject-id", IdpScoping.idin, true);
         abnAmroLinkedAccount.setIssuer(new VerifyIssuer("ABNANL2A", "ABN AMRO", null));
         user.getExternalLinkedAccounts().add(externalLinkedAccount);

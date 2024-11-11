@@ -154,8 +154,8 @@ public class UserTest {
 
         assertTrue(user.reconcileLinkedAccounts());
         assertTrue(otherLinkedAccount.isPreferred());
-        assertEquals("Pol", user.getGivenName());
-        assertEquals("Kropto", user.getFamilyName());
+        assertEquals("John", user.getGivenName());
+        assertEquals("Doe", user.getFamilyName());
         //Idempotency
         assertFalse(user.reconcileLinkedAccounts());
     }

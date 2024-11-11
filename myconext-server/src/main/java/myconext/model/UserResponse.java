@@ -47,9 +47,9 @@ public class UserResponse implements Serializable {
         this.id = user.getId();
         this.email = user.getEmail();
         this.chosenName = user.getChosenName();
-        this.givenName = user.getGivenName();
-        this.familyName = user.getFamilyName();
-        this.dateOfBirth = user.getDateOfBirth();
+        this.givenName = user.getDerivedGivenName();
+        this.familyName = user.getDerivedFamilyName();
+        this.dateOfBirth = user.getDerivedDateOfBirth();
         this.displayName = this.givenName + " " + this.familyName;
         this.schacHomeOrganization = user.getSchacHomeOrganization();
         this.uid = user.getUid();

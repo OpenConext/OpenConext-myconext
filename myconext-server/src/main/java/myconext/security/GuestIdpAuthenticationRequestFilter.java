@@ -729,8 +729,8 @@ public class GuestIdpAuthenticationRequestFilter extends OncePerRequestFilter {
 
     protected List<SAMLAttribute> attributes(User user, String requesterEntityId) {
         List<LinkedAccount> linkedAccounts = safeSortedAffiliations(user);
-        String givenName = user.getGivenName();
-        String familyName = user.getFamilyName();
+        String givenName = user.getDerivedGivenName();
+        String familyName = user.getDerivedFamilyName();
         String chosenName = user.getChosenName();
         if (!StringUtils.hasText(chosenName)) {
             chosenName = givenName;
@@ -758,12 +758,12 @@ public class GuestIdpAuthenticationRequestFilter extends OncePerRequestFilter {
         userRepository.save(user);
 
         attributes.add(attribute("urn:mace:eduid.nl:1.1", eduIDValue));
-        if (user.getDateOfBirth() != null) {
+        if (user.getDerivedDateOfBirth() != null) {
             // https://wiki.refeds.org/display/STAN/SCHAC+Releases
             String dateOfBirth = DateTimeFormatter
                     .ofPattern("yyyyMMdd")
                     .withZone(ZoneId.systemDefault())
-                    .format(user.getDateOfBirth().toInstant());
+                    .format(user.getDerivedDateOfBirth().toInstant());
             attributes.add(attribute("urn:schac:attribute-def:schacDateOfBirth", dateOfBirth));
         }
 

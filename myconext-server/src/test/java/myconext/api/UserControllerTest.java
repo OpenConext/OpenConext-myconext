@@ -158,8 +158,8 @@ public class UserControllerTest extends AbstractIntegrationTest {
         String samlResponse = samlResponse(magicLinkResponse);
 
         assertTrue(samlResponse.contains(ACR.VALIDATE_NAMES));
-        assertTrue(samlResponse.contains(user.getFamilyName()));
-        assertTrue(samlResponse.contains(user.getGivenName()));
+        assertTrue(samlResponse.contains(user.getDerivedGivenName()));
+        assertTrue(samlResponse.contains(user.getDerivedFamilyName()));
     }
 
     @Test
@@ -341,8 +341,8 @@ public class UserControllerTest extends AbstractIntegrationTest {
 
         User userFromDB = userRepository.findOneUserByEmail("jdoe@example.com");
         //Has linked accounts, so no update
-        assertEquals(userFromDB.getGivenName(), "John");
-        assertEquals(userFromDB.getFamilyName(), "Doe");
+        assertEquals(userFromDB.getGivenName(), "Mary");
+        assertEquals(userFromDB.getFamilyName(), "Poppins");
         assertEquals(userFromDB.getChosenName(), updateUserNameRequest.getChosenName());
     }
 
@@ -1388,8 +1388,8 @@ public class UserControllerTest extends AbstractIntegrationTest {
         User userFromDB = userRepository.findOneUserByEmail("jdoe@example.com");
         assertTrue(userFromDB.getLinkedAccounts().stream().noneMatch(LinkedAccount::isPreferred));
         assertTrue(userFromDB.getExternalLinkedAccounts().stream().allMatch(ExternalLinkedAccount::isPreferred));
-        assertEquals("firstName", userFromDB.getGivenName());
-        assertEquals("legalLastNamePrefix legalLastName", userFromDB.getFamilyName());
+        assertEquals("firstName", userFromDB.getDerivedGivenName());
+        assertEquals("legalLastNamePrefix legalLastName", userFromDB.getDerivedFamilyName());
     }
 
     @Test

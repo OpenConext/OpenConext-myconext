@@ -575,21 +575,7 @@ public class AccountLinkerController implements UserAuthentication {
         //We only allow one ExternalLinkedAccount - for now
         externalLinkedAccounts.clear();
         externalLinkedAccounts.add(externalLinkedAccount);
-        boolean noLinkedAccounts = user.getLinkedAccounts().isEmpty();
-        //When there is already a linked account, then we don't override without user consent
-        if (noLinkedAccounts && StringUtils.hasText(externalLinkedAccount.getFirstName()) && IdpScoping.eherkenning.equals(externalLinkedAccount.getIdpScoping())) {
-            user.setGivenName(externalLinkedAccount.getFirstName());
-        }
-        if (noLinkedAccounts && StringUtils.hasText(externalLinkedAccount.getInitials()) && IdpScoping.idin.equals(externalLinkedAccount.getIdpScoping())) {
-            user.setGivenName(externalLinkedAccount.getInitials());
-        }
-        if (noLinkedAccounts && StringUtils.hasText(externalLinkedAccount.getLegalLastName())) {
-            user.setFamilyName(externalLinkedAccount.getLegalLastName());
-        }
-        if (externalLinkedAccount.getDateOfBirth() != null) {
-            user.setDateOfBirth(externalLinkedAccount.getDateOfBirth());
-        }
-        if (noLinkedAccounts) {
+        if (user.getLinkedAccounts().isEmpty()) {
             externalLinkedAccount.setPreferred(true);
         }
         userRepository.save(user);
@@ -723,15 +709,6 @@ public class AccountLinkerController implements UserAuthentication {
 
         LOG.info(String.format("New external linked account %s for user %s", externalLinkedAccount, user.getEmail()));
 
-        if (StringUtils.hasText(externalLinkedAccount.getFirstName()) && IdpScoping.eherkenning.equals(externalLinkedAccount.getIdpScoping())) {
-            user.setGivenName(externalLinkedAccount.getFirstName());
-        }
-        if (StringUtils.hasText(externalLinkedAccount.getLegalLastName())) {
-            user.setFamilyName(externalLinkedAccount.getLegalLastName());
-        }
-        if (externalLinkedAccount.getDateOfBirth() != null) {
-            user.setDateOfBirth(externalLinkedAccount.getDateOfBirth());
-        }
         userRepository.save(user);
 
         String location = this.magicLinkUrl + "?h=" + samlAuthenticationRequest.getHash();
@@ -932,12 +909,6 @@ public class AccountLinkerController implements UserAuthentication {
             //We don't want to override by default, only if this is the only linked account
             if (linkedAccounts.size() == 1 && user.getExternalLinkedAccounts().isEmpty()) {
                 linkedAccounts.get(0).setPreferred(true);
-                if (StringUtils.hasText(givenName)) {
-                    user.setGivenName(givenName);
-                }
-                if (StringUtils.hasText(familyName)) {
-                    user.setFamilyName(familyName);
-                }
             }
             String eppnValue = String.format("eppn %s", eppn);
 

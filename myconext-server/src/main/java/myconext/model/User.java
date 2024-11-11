@@ -26,7 +26,6 @@ import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
 import java.io.Serializable;
-import java.time.Clock;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -371,14 +370,6 @@ public class User implements Serializable, UserDetails {
             Optional<ProvisionedLinkedAccount> first = provisionedLinkedAccounts.stream()
                     .max(Comparator.comparing(ProvisionedLinkedAccount::getCreatedAt));
             first.ifPresent(provisionedLinkedAccount -> {
-                String provisionedFamilyName = provisionedLinkedAccount.getFamilyName();
-                if (StringUtils.hasText(provisionedFamilyName)) {
-                    this.familyName = provisionedFamilyName;
-                }
-                String provisionedGivenName = provisionedLinkedAccount.getGivenName();
-                if (StringUtils.hasText(provisionedGivenName)) {
-                    this.givenName = provisionedGivenName;
-                }
                 provisionedLinkedAccount.setPreferred(true);
             });
             return first.isPresent();
@@ -419,4 +410,41 @@ public class User implements Serializable, UserDetails {
         }
         return decision;
     }
+
+    public Date getDerivedDateOfBirth() {
+        return CollectionUtils.isEmpty(this.externalLinkedAccounts) ? null : this.externalLinkedAccounts.get(0).getDateOfBirth();
+    }
+
+    public String getDerivedGivenName() {
+        return this.getDerivedName(this.givenName, ProvisionedLinkedAccount::getGivenName);
+    }
+
+    public String getDerivedFamilyName() {
+        return this.getDerivedName(this.familyName, ProvisionedLinkedAccount::getFamilyName);
+    }
+
+    private String getDerivedName(String fallback, ProvisionedNameProvider provisionedNameProvider) {
+        if (CollectionUtils.isEmpty(this.linkedAccounts) && CollectionUtils.isEmpty(this.externalLinkedAccounts)) {
+            return fallback;
+        }
+        List<ProvisionedLinkedAccount> provisionedLinkedAccounts = new ArrayList<>();
+        provisionedLinkedAccounts.addAll(this.linkedAccounts);
+        provisionedLinkedAccounts.addAll(this.externalLinkedAccounts);
+        return provisionedLinkedAccounts.stream()
+                .filter(ProvisionedLinkedAccount::isPreferred)
+                .findFirst()
+                .map(provisionedNameProvider::derivedName)
+                .or(() -> provisionedLinkedAccounts.stream()
+                        .filter(provisionedLinkedAccount -> provisionedLinkedAccount.getCreatedAt() != null)
+                        .max(Comparator.comparing(ProvisionedLinkedAccount::getCreatedAt))
+                        .stream().findFirst().map(provisionedNameProvider::derivedName))
+                .orElse(fallback);
+    }
+
+    private interface ProvisionedNameProvider {
+
+        String derivedName(ProvisionedLinkedAccount provisionedLinkedAccount);
+
+    }
+
 }

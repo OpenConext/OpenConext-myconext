@@ -24,7 +24,8 @@
         "institutionIdentifier": "example.nl",
         "schacHomeOrganization": "example.nl",
         "givenName": "Mary",
-        "familyName": "Dahl"
+        "familyName": "Dahl",
+        "preferred": true
       }
     ],
     "attributes": {},
