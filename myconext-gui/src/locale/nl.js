@@ -552,8 +552,9 @@ I18n.translations.nl = {
     },
     verify: {
         modal: {
-            header: "Verificatie",
+            header: "Verifieer je identiteit",
             info: {
+                subheader: "Verifieer je identiteit, snel en gemakkelijk",
                 title: "Verificatie",
                 please: "Verifieer dat je bent wie je zegt dat je bent.",
                 educationalInstitution: "Verifieer via een Nederlandse onderwijsinstelling",

@@ -117,16 +117,12 @@ public class ExternalLinkedAccount implements Serializable, ProvisionedLinkedAcc
     }
 
     public boolean areNamesValidated() {
-        switch (this.idpScoping) {
-            case idin:
-                return StringUtils.hasText(initials) && StringUtils.hasText(legalLastName);
-            case eherkenning:
-                return StringUtils.hasText(firstName) && StringUtils.hasText(preferredLastName);
-            case studielink:
-                return StringUtils.hasText(firstName) && StringUtils.hasText(legalLastName) && !Verification.Ongeverifieerd.equals(verification);
-            default:
-                throw new IllegalArgumentException("Won't happen");
-        }
+        return switch (this.idpScoping) {
+            case idin -> StringUtils.hasText(initials) && StringUtils.hasText(legalLastName);
+            case eherkenning -> StringUtils.hasText(firstName) && StringUtils.hasText(preferredLastName);
+            case studielink ->
+                    StringUtils.hasText(firstName) && StringUtils.hasText(legalLastName) && !Verification.Ongeverifieerd.equals(verification);
+        };
     }
 
     @JsonIgnore
@@ -143,14 +139,8 @@ public class ExternalLinkedAccount implements Serializable, ProvisionedLinkedAcc
 
     @Override
     public String getGivenName() {
-        //idin only returns initial
-        if (StringUtils.hasText(firstName) && IdpScoping.eherkenning.equals(idpScoping)) {
-            return firstName;
-        }
-        if (StringUtils.hasText(initials) && IdpScoping.idin.equals(idpScoping)) {
-            return initials;
-        }
-        return null;
+        //idin only returns initials
+        return IdpScoping.idin.equals(idpScoping) ? initials : firstName;
     }
 
     @Override

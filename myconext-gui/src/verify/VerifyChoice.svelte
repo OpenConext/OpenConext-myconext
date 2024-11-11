@@ -66,6 +66,7 @@
 
         p.question {
             font-size: 18px;
+            font-weight: 600;
         }
 
         .choice {
@@ -145,8 +146,11 @@
     <Spinner/>
 {/if}
 <div class="account-link-mod">
+
+
     {#if !showBankOptions || busyProcessing}
         <div class="info-container">
+            <h3 class="header">{I18n.t("verify.modal.info.subheader")}</h3>
             <p>{showIdinOptions ? I18n.t("verify.modal.info.please") : I18n.t("profile.addInstitutionInfo")}</p>
         </div>
         <div class="choice-container">
@@ -156,7 +160,8 @@
             </div>
             <div class="button-container">
                 <Button label={I18n.t("verify.modal.info.selectInstitution")}
-                        large={true}
+                        larger={true}
+                        custom={true}
                         disabled={busyProcessing}
                         onClick={() => proceed(addInstitution)}/>
             </div>
@@ -177,7 +182,7 @@
                             icon={idinIcon}
                             custom={true}
                             disabled={busyProcessing}
-                            large={true}
+                            larger={true}
                             onClick={() => showBankOptions = !showBankOptions}/>
 
                 </div>
@@ -195,7 +200,7 @@
                             icon={eIDASIcon}
                             custom={true}
                             disabled={busyProcessing}
-                            large={true}
+                            larger={true}
                             onClick={() => proceed(addEuropean)}/>
                 </div>
             </div>

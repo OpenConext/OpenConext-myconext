@@ -549,8 +549,9 @@ I18n.translations.en = {
     },
     verify: {
         modal: {
-            header: "Verification",
+            header: "Verify your identity",
             info: {
+                subheader: "Verify your identity, quick and easy",
                 title: "Verification",
                 please: "Please verify that you are who you say you are.",
                 educationalInstitution: "Verify via a Dutch educational institution",

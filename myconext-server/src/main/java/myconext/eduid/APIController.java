@@ -97,7 +97,7 @@ public class APIController implements HasUserRepository {
                     Map<String, String> info = new HashMap<>();
                     info.put("eppn", linkedAccount.getEduPersonPrincipalName());
                     info.put("schac_home_organization", linkedAccount.getSchacHomeOrganization());
-                    if (linkedAccount.areNamesValidated()) {
+                    if (linkedAccount.areNamesValidated() && linkedAccount.isPreferred()) {
                         info.put("validated_name", String.format("%s %s", linkedAccount.getGivenName(), linkedAccount.getFamilyName()));
                     }
                     return info;
@@ -105,7 +105,7 @@ public class APIController implements HasUserRepository {
                 .toList());
 
         List<Map<String, String>> externalValidatedNames = user.getExternalLinkedAccounts().stream()
-                .filter(ExternalLinkedAccount::areNamesValidated)
+                .filter(acc -> acc.areNamesValidated() && acc.isPreferred())
                 .map(externalLinkedAccount -> Map.of("validated_name",
                         String.format("%s %s", externalLinkedAccount.getGivenName(), externalLinkedAccount.getFamilyName())))
                 .toList();

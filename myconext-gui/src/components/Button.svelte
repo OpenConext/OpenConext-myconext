@@ -35,7 +35,7 @@
         text-decoration: none;
         cursor: pointer;
         text-align: center;
-        font-weight: bold;
+        font-weight: 600;
         min-width: 180px;
 
         &:focus {
@@ -122,10 +122,15 @@
 
     .button.icon {
         padding: 10px 20px 10px 24px;
-
+        justify-content: normal;
         &.small {
             padding: 6px 6px 6px 22px;
         }
+    }
+
+    .button.custom {
+        padding-left: 42px;
+        justify-content: normal;
     }
 
     .button.deletion {
@@ -225,6 +230,7 @@
        class:deletion={deletion}
        class:inline={inline}
        class:medium={medium}
+       class:custom={custom}
        class:large={large}
        class:larger={larger}
        class:disabled={disabled}
