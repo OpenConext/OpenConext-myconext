@@ -406,7 +406,11 @@ I18n.translations.nl = {
             validatedGivenName: "Geverifïeerde voornaam",
             validatedFamilyName: "Geverifïeerde achternaam",
             validatedDayOfBirth: "Geverifïeerde geboortedatum"
+        },
+        issuers: {
+            eherkenning: "eIDAS",
+            idin: "Idin",
+            studielink: "Studielink"
         }
     }
-
 };

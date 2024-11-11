@@ -571,7 +571,11 @@ I18n.translations.en = {
                 anotherMethodPrefix: "If your bank is not shown in the list, please select ",
                 anotherMethodPostfix: "another method"
             }
+        },
+        issuers: {
+            eherkenning: "eIDAS",
+            idin: "Idin",
+            studielink: "Studielink"
         }
-
     }
 };

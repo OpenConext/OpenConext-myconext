@@ -574,6 +574,11 @@ I18n.translations.nl = {
                 anotherMethodPrefix: "Staat jouw bank niet in deze lijst, selecteer dan ",
                 anotherMethodPostfix: "een andere methode"
             }
+        },
+        issuers: {
+            eherkenning: "eIDAS",
+            idin: "Idin",
+            studielink: "Studielink"
         }
     }
 };

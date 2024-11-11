@@ -406,7 +406,11 @@ I18n.translations.en = {
             validatedFamilyName: "Verified family name",
             validatedDayOfBirth: "Verified date of birth"
 
+        },
+        issuers: {
+            eherkenning: "eIDAS",
+            idin: "Idin",
+            studielink: "Studielink"
         }
     }
-
 };
