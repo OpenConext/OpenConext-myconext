@@ -10,10 +10,7 @@ module.exports = {
         bundle: ['./src/main.js']
     },
     resolve: {
-        alias: {
-            svelte: path.resolve('node_modules', 'svelte')
-        },
-        extensions: ['.mjs', '.js', '.svelte'],
+        extensions: ['.mjs', '.js', '.svelte', '.tsx', '.ts'],
         mainFields: ['svelte', 'browser', 'module', 'main']
     },
     output: {
@@ -24,6 +21,11 @@ module.exports = {
     },
     module: {
         rules: [
+            {
+                test: /\.tsx?$/,
+                use: 'ts-loader',
+                exclude: /node_modules/,
+            },
             {
                 test: /\.m?js$/,
                 use: {
@@ -91,12 +93,25 @@ module.exports = {
     devtool: prod ? false : 'source-map',
     devServer: {
         port: 3000,
-        proxy: {
-            '/myconext/api': 'http://localhost:8081',
-            '/config': 'http://localhost:8081',
-            '/tiqr': 'http://localhost:8081',
-            '/register': 'http://localhost:8081'
-        },
+        proxy:
+            [
+                {
+                    context: ['/myconext/api'],
+                    target: 'http://localhost:8081',
+                },
+                {
+                    context: ['/config'],
+                    target: 'http://localhost:8081',
+                },
+                {
+                    context: ['/register'],
+                    target: 'http://localhost:8081',
+                },
+                {
+                    context: ['/tiqr'],
+                    target: 'http://localhost:8081',
+                }
+            ],
         historyApiFallback: true
     }
 };
