@@ -92,12 +92,10 @@ cat myconext.crt |ghead -n -1 |tail -n +2 | tr -d '\n'; echo
 The github actions will generate new translations of the source is changed.
 
 ```
-cd account-gui
-yarn localicious render ../myconext-server/src/main/resources/localizations.yaml ./src/locale/ --languages en,nl --outputTypes js -c SHARED
-rm -fr ./src/locale/js/Localizable.ts
-cd myconext-gui
-yarn localicious render ../myconext-server/src/main/resources/localizations.yaml ./src/locale/ --languages en,nl --outputTypes js -c SHARED
-rm -fr ./src/locale/js/Localizable.ts
+yarn localicious render ./localizations.yaml ./account-gui/src/locale/ --languages en,nl --outputTypes js -c SHARED
+rm -fr ./account-gui/src/locale/js/Localizable.ts
+yarn localicious render ./localizations.yaml ./myconext-gui/src/locale/ --languages en,nl --outputTypes js -c SHARED
+rm -fr ./myconext-gui/src/locale/js/Localizable.ts
 ```
 
 ### [Miscellaneous](#miscellaneous)
