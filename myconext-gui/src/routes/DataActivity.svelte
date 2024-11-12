@@ -1,6 +1,6 @@
 <script>
     import {user} from "../stores/user";
-    import I18n from "i18n-js";
+    import I18n from "../locale/I18n";
     import {onMount} from "svelte";
     import {serviceName} from "../utils/services";
     import chevronDownSvg from "../icons/chevron-down.svg";
@@ -23,7 +23,7 @@
                 .filter(token => token.clientId === k);
             const tokens = allTokens
                 .filter(token => token.scopes && token.scopes.find(scope => scope.name !== "openid" && (
-                    scope.descriptions[I18n.locale] || scope.descriptions["en"])));
+                    scope.descriptions[I18n.currentLocale()] || scope.descriptions["en"])));
             const token = tokens.length === 0 ? null : (tokens.find(t => t.type === "REFRESH") || tokens[0]);
             const seen = new Set();
             const scopes = allTokens.reduce((acc, token) => {
@@ -35,7 +35,7 @@
                 })
                 return acc;
             }, []);
-            const locale = I18n.locale === "en" ? "en-US" : "nl-NL";
+            const locale = I18n.currentLocale() === "en" ? "en-US" : "nl-NL";
             //We don't need backward compatibility as every eduID which comes from the server is migrated
             service.services.forEach(s => {
                 acc.push({

@@ -3,7 +3,7 @@
     import shieldIcon from "../icons/redesign/shield-full.svg";
     import chevronUpIcon from "../icons/chevron-up.svg";
     import Button from "./Button.svelte";
-    import I18n from "i18n-js";
+    import I18n from "../locale/I18n";
     import critical from "../icons/critical.svg";
     import LinkedInstitution from "./LinkedInstitution.svelte";
     import {institutionName} from "../utils/services";

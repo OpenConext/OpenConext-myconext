@@ -1,6 +1,6 @@
 <script>
 
-    import I18n from "i18n-js";
+    import I18n from "../locale/I18n";
     import eduidLogo from "../img/logo_eduID.svg";
     import {logout} from "../api";
     import {config, user} from "../stores/user";

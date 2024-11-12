@@ -42,11 +42,13 @@
   },
   "dependencies": {
     "@github/webauthn-json": "^0.4.1",
+    "@picnicsupermarket/localicious": "^1.0.1",
     "dompurify": "^2.5.4",
     "i18n-js": "^3.3.0",
     "js-cookie": "^2.2.1",
     "postcss": "^8.4.31",
     "sass": "^1",
+    "save-dev": "^0.0.1-security",
     "svelte-routing": "^1.4.2"
   }
 }

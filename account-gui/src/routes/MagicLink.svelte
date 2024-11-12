@@ -1,5 +1,5 @@
 <script>
-    import I18n from "i18n-js";
+    import I18n from "../locale/I18n";
     import {user} from "../stores/user";
     import {onMount} from "svelte";
     import backArrow from "../icons/arrow-left.svg";

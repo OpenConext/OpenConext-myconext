@@ -29,6 +29,7 @@ springdoc:
 
 email:
   from: noreply@surfconext.nl
+  error_mail: info@surfconext.nl
   magic-link-url: http://localhost:8081/saml/guest-idp/magic
   my-surfconext-url: http://localhost:3001
   idp-surfconext-url: http://localhost:3000
@@ -97,6 +98,8 @@ feature:
   id_verify: True
   # Do we support the remote creation API (e.g. for studielink)
   remote_creation_api: True
+  # Do we send error mails for reported errors by the JS UI
+  send_js_exceptions: True
 
 secure_cookie: false
 idp_entity_id: https://localhost.surf.id

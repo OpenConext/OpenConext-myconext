@@ -1,5 +1,5 @@
 <script>
-    import I18n from "i18n-js";
+    import I18n from "../locale/I18n";
     import {reValidatePhoneCode, validatePhoneCode} from "../../api";
     import CodeVerifier from "./CodeVerifier.svelte";
 

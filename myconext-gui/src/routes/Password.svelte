@@ -1,6 +1,6 @@
 <script>
     import {flash, user} from "../stores/user";
-    import I18n from "i18n-js";
+    import I18n from "../locale/I18n";
     import {validPassword} from "../validation/regexp";
     import {resetPasswordHashValid, resetPasswordLink, updatePassword} from "../api";
     import {navigate} from "svelte-routing";

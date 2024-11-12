@@ -87,6 +87,17 @@ If you need to register the public key in EB then issue this command and copy & 
 ```
 cat myconext.crt |ghead -n -1 |tail -n +2 | tr -d '\n'; echo
 ```
+### [Translations](translations)
+
+```
+cd account-gui
+yarn localicious render ../myconext-server/src/main/resources/localizations.yaml ./src/locale/ --languages en,nl --outputTypes js -c SHARED
+rm -fr ./src/locale/js/Localizable.ts
+cd myconext-gui
+yarn localicious render ../myconext-server/src/main/resources/localizations.yaml ./src/locale/ --languages en,nl --outputTypes js -c SHARED
+rm -fr ./src/locale/js/Localizable.ts
+```
+
 ### [Miscellaneous](#miscellaneous)
 
 To get an overview of the git source file's:

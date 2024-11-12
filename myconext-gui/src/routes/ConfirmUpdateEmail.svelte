@@ -4,7 +4,7 @@
     import {confirmEmail} from "../api";
     import {navigate} from "svelte-routing";
     import Spinner from "../components/Spinner.svelte";
-    import I18n from "i18n-js";
+    import I18n from "../locale/I18n";
 
     onMount(() => {
         const urlSearchParams = new URLSearchParams(window.location.search);

@@ -2,7 +2,7 @@
     import {config, user} from "../stores/user";
     import {link, navigate} from "svelte-routing";
     import {validEmail} from "../validation/regexp";
-    import I18n from "i18n-js";
+    import I18n from "../locale/I18n";
     import critical from "../icons/critical.svg";
     import attention from "../icons/alert-circle.svg";
 

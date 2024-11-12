@@ -2,6 +2,7 @@ package myconext.mail;
 
 import com.icegreen.greenmail.junit.GreenMailRule;
 import com.icegreen.greenmail.util.ServerSetup;
+import lombok.SneakyThrows;
 import myconext.AbstractIntegrationTest;
 import myconext.model.EmailsSend;
 import myconext.model.User;
@@ -16,6 +17,7 @@ import org.springframework.test.context.ActiveProfiles;
 import javax.mail.Message;
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
+import java.util.Map;
 import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -66,6 +68,18 @@ public class MailBoxTest extends AbstractIntegrationTest {
 
         String hash = UUID.randomUUID().toString();
         mailBox.sendMagicLink(user(email.toUpperCase(), "en"), hash, "http://mock-sp");
+    }
+
+    @SneakyThrows
+    @Test
+    public void errorMail() {
+        mailBox.sendErrorMail(Map.of("error","unexpected"),user("jdoe@examplee.com", "en"));
+        MimeMessage mimeMessage = mailMessage();
+        assertEquals("info@surfconext.nl", mimeMessage.getRecipients(Message.RecipientType.TO)[0].toString());
+
+        String body = getBody(mimeMessage);
+        assertTrue(body.contains("Unexpected error occurred"));
+        assertTrue(body.contains("user John Doe"));
     }
 
     private void doSendMagicLink(String expectedSubject, String lang) throws MessagingException {

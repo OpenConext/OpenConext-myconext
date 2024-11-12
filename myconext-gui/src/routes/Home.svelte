@@ -1,5 +1,5 @@
 <script>
-    import I18n from "i18n-js";
+    import I18n from "../locale/I18n";
     import securitySvg from "../icons/redesign/lock-1.svg";
     import services from "../icons/streamline-icon-cloud-storage-drive.svg";
     import home_icon from "../icons/redesign/house.svg";

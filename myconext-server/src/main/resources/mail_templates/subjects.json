@@ -35,6 +35,10 @@
   "new_device": {
     "en": "New eduID device sign-in",
     "nl": "Nieuw apparaat ingelogd op eduID"
+  },
+  "error_email": {
+    "en": "Unexpected error occurred",
+    "nl": "Onverwachte fout opgetreden"
   }
 
 }

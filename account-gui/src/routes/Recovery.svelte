@@ -1,6 +1,6 @@
 <script>
     import {links} from "../stores/conf";
-    import I18n from "i18n-js";
+    import I18n from "../locale/I18n";
     import {onMount} from "svelte";
     import phoneIcon from "../icons/redesign/mobile-phone.svg";
     import backupIcon from "../icons/redesign/printer.svg";

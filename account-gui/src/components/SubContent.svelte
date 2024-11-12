@@ -1,7 +1,7 @@
 <script>
     import {link, navigate} from "svelte-routing";
     import {onMount} from "svelte";
-    import I18n from "i18n-js";
+    import I18n from "../locale/I18n";
     import Modal from "../components/Modal.svelte";
 
     export let question = null;
