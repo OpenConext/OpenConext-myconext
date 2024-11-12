@@ -1,5 +1,5 @@
 <script>
-    import I18n from "../locale/I18n";
+    import I18n from "../../locale/I18n";
     import ImageContainer from "../../components/ImageContainer.svelte";
     import icon from "../../icons/redesign/undraw_Order_confirmed_re_g0if.svg";
     import Button from "../../components/Button.svelte";

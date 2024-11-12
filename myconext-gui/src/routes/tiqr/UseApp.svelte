@@ -1,5 +1,5 @@
 <script>
-    import I18n from "../locale/I18n";
+    import I18n from "../../locale/I18n";
 
     import {manualResponse, pollAuthentication, startTiqrAuthentication} from "../../api/index";
     import Spinner from "../../components/Spinner.svelte";

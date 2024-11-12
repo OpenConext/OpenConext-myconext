@@ -1,7 +1,7 @@
 <script>
     import critical from "../../icons/critical.svg";
 
-    import I18n from "../locale/I18n";
+    import I18n from "../../locale/I18n";
     import {onMount, tick} from "svelte";
     import {navigate} from "svelte-routing";
     import {me, sendDeactivationPhoneCode} from "../../api";

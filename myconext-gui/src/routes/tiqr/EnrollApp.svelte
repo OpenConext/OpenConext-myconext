@@ -1,5 +1,5 @@
 <script>
-    import I18n from "../locale/I18n";
+    import I18n from "../../locale/I18n";
     import {pollEnrollment, startEnrollment} from "../../api/index";
     import Spinner from "../../components/Spinner.svelte";
     import {onDestroy, onMount} from "svelte";

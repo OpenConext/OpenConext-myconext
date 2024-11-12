@@ -1,6 +1,6 @@
 <script>
     import {validPhoneNumber} from "../../validation/regexp";
-    import I18n from "../locale/I18n";
+    import I18n from "../../locale/I18n";
     import critical from "../../icons/critical.svg";
     import Spinner from "../../components/Spinner.svelte";
     import Button from "../../components/Button.svelte";

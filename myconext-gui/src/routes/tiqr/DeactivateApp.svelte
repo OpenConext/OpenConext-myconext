@@ -1,6 +1,6 @@
 <script>
     import {user} from "../../stores/user";
-    import I18n from "../locale/I18n";
+    import I18n from "../../locale/I18n";
     import {navigate} from "svelte-routing";
     import Button from "../../components/Button.svelte";
     import {onMount, tick} from "svelte";
