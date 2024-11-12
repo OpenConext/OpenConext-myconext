@@ -2,7 +2,7 @@
     import {user} from "../stores/user";
     import {validPassword} from "../constants/regexp";
     import I18n from "i18n-js";
-    import critical from "../icons/critical.svg";
+    import critical from "../icons/critical.svg?raw";
     import {fetchServiceName, passwordExistingUser} from "../api/index";
     import Spinner from "../components/Spinner.svelte";
     import {navigate} from "svelte-routing";

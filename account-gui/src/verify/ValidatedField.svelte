@@ -1,5 +1,5 @@
 <script>
-    import shieldIcon from "../icons/verify/shield-full.svg";
+    import shieldIcon from "../icons/verify/shield-full.svg?raw";
 
     export let label;
     export let value;

@@ -1,7 +1,7 @@
 <script>
     import {user} from "../stores/user";
     import {onMount} from "svelte";
-    import arrowLeft from "../icons/arrow_4.svg";
+    import arrowLeft from "../icons/arrow_4.svg?raw";
     import {links} from "../stores/conf";
 
     $: displayUserLink = $user.knownUser && $user.knownUser.length > 0 && $links.userLink;

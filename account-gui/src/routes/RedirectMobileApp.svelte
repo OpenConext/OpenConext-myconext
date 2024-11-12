@@ -22,7 +22,7 @@
         margin: 16px 0;
         color: var(--color-primary-green);
         font-size: 32px;
-        font-weight: bold;
+        font-weight: 600;
     }
 
     p.info {
