@@ -1,0 +1,8 @@
+Tiqr/eduid-app-android:
+  - source: localizations.yaml
+    dest: localizations.yaml
+
+Tiqr/eduid-app-ios:
+  - source: localizations.yaml
+    dest: EduID/localizations.yaml
+
