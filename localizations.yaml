@@ -1,0 +1,4017 @@
+ANDROID:
+  Button:
+    OK:
+      COPY:
+        en: OK
+        nl: OK
+    Cancel:
+      COPY:
+        en: Cancel
+        nl: Annuleren
+    Retry:
+      COPY:
+        en: Retry
+        nl: Nogmaals
+  QR:
+    UnknownErrorTitle:
+      COPY:
+        en: "Unknown QR code"
+        nl: "Onbekende QR-code"
+    UnknownError:
+      COPY:
+        en: "This QR code cannot be processed."
+        nl: "Deze QR-code kan niet worden verwerkt."
+  Deeplink:
+    Processing:
+      COPY:
+        en: "Checking request…"
+        nl: "Verzoek aan het bewerken…"
+  Biometrics:
+    UnknownError:
+      COPY:
+        en: "Biometrics failed for unknown reason."
+        nl: "Biometrie mislukt om onbekende reden."
+  MagicLink:
+    OpenEmailClient:
+      COPY:
+        en: "Open email client"
+        nl: "Open de email app"
+  Permission:
+    Scan:
+      COPY:
+        en: Please grant access to the camera.
+        nl: Geef toestemming voor het gebruik van de camera.
+    OAuth:
+      Title:
+        COPY:
+          en: Authorize app
+          nl: Autoriseer de app
+      Description:
+        COPY:
+          en: Allow the mobile application to access your data.
+          nl: Geef de mobiele app toegang tot jouw gegevens.
+  Profile:
+    You:
+      COPY:
+        en: you
+        nl: Zelf
+  ManageAccount:
+    CreatedAt:
+      COPY:
+        en: "EEEE, dd MMMM yyyy 'at' HH:MM"
+        nl: "EEEE, dd MMMM yyyy 'om' HH:MM"
+  AppData:
+    InitializationError:
+      Generic:
+        COPY:
+          en: Failed to initialize AppData. Please retry.
+          nl: AppData kan niet worden geïnitialiseerd. Probeer het opnieuw.
+      WithException:
+        COPY:
+          en: "Failed to initialize AppData. Reason: %1{{s}}"
+          nl: "AppData kan niet worden geïnitialiseerd. Reden: %1{{s}}"
+SHARED:
+  About:
+    Info:
+      COPY:
+        en: App information
+        nl: App-informatie
+  Sidebar:
+    Home:
+      COPY:
+        en: Home
+        nl: Home
+    PersonalInfo:
+      COPY:
+        en: Personal info
+        nl: Persoonlijke info
+    DataActivity:
+      COPY:
+        en: Data & activity
+        nl: Data & activiteit
+    Security:
+      COPY:
+        en: Security
+        nl: Beveiliging
+    Account:
+      COPY:
+        en: Account
+        nl: Account
+  Start:
+    Hi:
+      COPY:
+        en: Hi %1{{s}}!
+        nl: Hi %1{{s}}!
+    Manage:
+      COPY:
+        en: >-
+          Manage your personal info, your privacy, and the security of your
+          eduID account.
+        nl: >-
+          Beheer jouw persoonlijke informatie, jouw privacy, en de beveiliging
+          van jouw eduID account.
+  EnvironmentSwitcher:
+    Button:
+      COPY:
+        en: "Environment"
+        nl: "Omgeving"
+    Title:
+      COPY:
+        en: Switch environment
+        nl: Wisselen van omgeving
+    Subtitle:
+      COPY:
+        en: Click on one of the environments to use it in the app for communicating
+        nl: Klik op een van de omgevingen om die te gebruiken voor de communicatie
+  FeatureFlags:
+    Title:
+      COPY:
+        en: Feature flags
+        nl: Feature flags
+    IdentityVerification:
+      COPY:
+        en: Identity verification
+        nl: Identiteits verification
+  PromptForOAuth:
+    Title:
+      COPY:
+        en: Please log in
+        nl: Inloggen
+    Description:
+      COPY:
+        en: To retrieve the information you must be logged in.
+        nl: Om informatie op te halen moet je ingelogd zijn.
+  HomeView:
+    MainText:
+      FirstPart:
+        COPY:
+          en: Your eduID app
+          nl: Jouw eduID app
+      SecondPart:
+        COPY:
+          en: is ready for use
+          nl: is klaar voor gebruik
+    SecurityButton:
+      COPY:
+        en: Security
+        nl: Beveiliging
+    PersonalInfoButton:
+      COPY:
+        en: Personal info
+        nl: Gegevens
+    ActivityButton:
+      COPY:
+        en: Activity
+        nl: Activiteit
+    ScanQRButton:
+      COPY:
+        en: Scan QR
+        nl: Scan QR
+  ScanView:
+    Title:
+      COPY:
+        en: Scan the QR-code
+        nl: Scan de QR-code
+    MainText:
+      COPY:
+        en: |
+          <b>Don't see a QR code?</b><br/>
+          Go to <a href="https://eduid.nl/security" target="_blank">eduid.nl/security</a><br/>
+          Create your personal QR code<br/>
+          Scan it here
+        nl: |
+          <b>Zie je geen QR-code?</b><br/>
+          Ga naar <a href="https://eduid.nl/security" target="_blank">eduid.nl/security</a><br/>
+          Maak je persoonlijke QR-code aan<br/>
+          Scan het hier
+    MainTextBoldPart:
+      COPY:
+        en: Don't see a QR code?
+        nl: Zie je geen QR-code?
+    Flashlight:
+      NotAvailable:
+        COPY:
+          en: Torch isn't available
+          nl: Zaklamp is niet beschikbaar
+      TurnOn:
+        COPY:
+          en: Turn on flashlight
+          nl: Zet zaklamp aan
+    Error:
+      COPY:
+        en: Error
+        nl: Fout
+  Header:
+    Title:
+      COPY:
+        en: eduID
+        nl: eduID
+    Logout:
+      COPY:
+        en: Logout
+        nl: Uitloggen
+    LogOff:
+      COPY:
+        en: Log Off
+        nl: Afmelden
+  Landing:
+    LogoutTitle:
+      COPY:
+        en: You have been logged out
+        nl: Je bent uitgelogd
+  RegistrationCheck:
+    MainText:
+      COPY:
+        en: |
+          Checking for
+          existing registration
+        nl: |
+          Controleren op
+          bestaande inschrijving
+    HighLight:
+      COPY:
+        en: existing registration
+        nl: bestaande inschrijving
+    LogoutStatus:
+      COPY:
+        en: To finalise the logout process you must now close this browser.
+        nl: Om het uitlogproces te voltooien, moet je de browser nu afsluiten.
+    LoginAgain:
+      COPY:
+        en: Login again
+        nl: Opnieuw inloggen
+    DeleteTitle:
+      COPY:
+        en: Your eduID account has been deleted
+        nl: Jouw eduID is verwijderd
+    DeleteStatus:
+      COPY:
+        en: To finalise the removal process you must now close this browser.
+        nl: >-
+          Om het verwijderen van je eduID te voltooien, moet je deze browser nu
+          afsluiten.
+    RegisterAgain:
+      COPY:
+        en: Register again
+        nl: Opnieuw registreren
+  NotFound:
+    Title:
+      COPY:
+        en: Whoops…
+        nl: Oeps…
+    Title2:
+      COPY:
+        en: Something went wrong (404)
+        nl: Er is iets fout gegaan (404).
+  YourVerifiedInformation:
+    Title:
+      COPY:
+        en: "Your verified information"
+        nl: "Jouw geverifieerde gegevens"
+    Subtitle:
+      COPY:
+        en: "This is an overview of the verified information we have received from trusted sources."
+        nl: "Dit is een overzicht van je geverifieerde gegevens die wij van de vertrouwde instellingen hebben gekregen."
+    ExplainIcon:
+      COPY:
+        en: "This icon indicates the information is used on ‘your personal info’ as default."
+        nl: "Dit pictogram geeft aan dat de informatie standaard wordt gebruikt voor ‘jouw persoonlijke informatie’"
+    FromInstitution:
+      COPY:
+        en: "From %1{{s}}"
+        nl: "Van %1{{s}}"
+    AtInstitution:
+      COPY:
+        en: "At %1{{s}}"
+        nl: "Bij %1{{s}}"
+    ReceivedOn:
+      COPY:
+        en: "Received on "
+        nl: "Gekregen op "
+    ValidUntil:
+      COPY:
+        en: "Valid until "
+        nl: "Geldig tot "
+    RemoveThisInformation:
+      COPY:
+        en: "Remove this information"
+        nl: "Verwijder deze informatie"
+    FromYourEduID:
+      COPY:
+        en: " from you eduID"
+        nl: " van jouw eduID"
+    ConfirmRemoval:
+      Title:
+        COPY:
+          en: Delete this information?
+          nl: Verwijder deze informatie?
+      Description:
+        COPY:
+          en: >-
+            Some applications you want to login to with eduID require validated information. By deleting this information you will not be able to login to those applications.
+ 
+             You might be prompted to validate your information again if you want to access them again.
+          nl: >-
+            Voor sommige applicaties waarop je wilt inloggen met eduID zijn gevalideerde gegevens nodig. Als je deze gegevens verwijdert, kan je je niet meer aanmelden bij deze toepassingen.
+ 
+            Mogelijk wordt je gevraagd om je gegevens opnieuw te valideren als je er inlogt.
+      Button:
+        Cancel:
+          COPY:
+            en: Cancel
+            nl: Annuleren
+        YesDelete:
+          COPY:
+            en: "Yes, delete"
+            nl: "Ja, verwijderen"
+  Profile:
+    YouAreLoggedIn:
+      COPY:
+        en: You are logged in
+        nl: Je bent ingelogd
+    ManageYourAccount:
+      COPY:
+        en: Manage your account
+        nl: Beheer jouw gegevens
+    AccountLinkError:
+      Title:
+        COPY:
+          en: "Could not retrieve URL for linking your current account."
+          nl: "De URL kon niet worden opgehaald voor het koppelen van uw huidige account."
+    AddAnOrganisation:
+      COPY:
+        en: "Add an organisation"
+        nl: "Voeg een organisatie toe"
+    OrganisationsHeader:
+      COPY:
+        en: "Organisations"
+        nl: "Organisaties"
+    Me:
+      COPY:
+        en: me
+        nl: mij
+    ShareableInformation:
+      COPY:
+        en: "Shareable information"
+        nl: "Deelbare informatie"
+    RemoveServicePrompt:
+      Title:
+        COPY:
+          nl: Weet je het zeker?
+          en: Are you sure?
+      Description:
+        COPY:
+          nl: Deze dienst zal permanent verwijderd worden.
+          en: The service will be permanently be removed.
+      Delete:
+        COPY:
+          nl: Verwijder
+          en: Delete
+      Cancel:
+        COPY:
+          nl: Annuleer
+          en: Cancel
+    ProvidedBy:
+      COPY:
+        en: provided by
+        nl: aangeboden door
+    ProvidedByYou:
+      COPY:
+        en: Provided by you
+        nl: Zelf ingesteld
+    Title:
+      COPY:
+        en: Your personal info
+        nl: Jouw persoonlijke informatie
+    Info:
+      COPY:
+        en: >-
+          When you use eduID to logon to other websites, the following information can be shared.
+        nl: >-
+          Wanneer je eduID gebruikt om in te loggen op andere websites, kan jouw
+          persoonlijke informatie worden gedeeld.
+    YourIdentity:
+      COPY:
+        en: Your identity
+        nl: Jouw identiteit
+    Verified:
+      COPY:
+        nl: geverifieerd
+        en: verified
+    NotVerified:
+      COPY:
+        nl: niet geverifieerd
+        en: not verified
+    VerifiedGivenName:
+      COPY:
+        nl: Geverifieerde voornaam
+        en: Verified given name
+    VerifiedFamilyName:
+      COPY:
+        nl: Geverifieerde achternaam
+        en: Verified family name
+    VerifiedDateOfBirth:
+      COPY:
+        nl: Geverifieerde geboortedatum
+        en: Verified date of birth
+    LinkedAccountCreatedAt:
+      COPY:
+        nl: "• op "
+        en: "• on "
+    LinkedAccountValidUntil:
+      COPY:
+        nl: "• geldig tot "
+        en: "• valid until "
+    ManageYourVerifiedInformation:
+      COPY:
+        nl: "Beheer jouw geverifieerde gegevens"
+        en: "Manage your verified information"
+    VerifyNow:
+      Title:
+        COPY:
+          en: Some services require your identity to be verified by a trusted party.
+          nl: Sommige diensten eisen dat jouw identiteit geverifieerd is door een vertrouwde instelling.
+      Button:
+        COPY:
+          en: Verify now
+          nl: Start verificatie
+    FirstName:
+      COPY:
+        en: First name
+        nl: Voornaam
+    LastName:
+      COPY:
+        en: Last name
+        nl: Achternaam
+    ContactDetails:
+      COPY:
+        en: Contact details
+        nl: Contactgegevens
+    Basic:
+      COPY:
+        en: Basic information
+        nl: Basis informatie
+    Email:
+      COPY:
+        en: Email address
+        nl: E-mail
+    VerifyEmail:
+      COPY:
+        en: Verify email address
+        nl: Bevestig e-mailadres
+    Name:
+      COPY:
+        en: Name
+        nl: Naam
+    Validated:
+      COPY:
+        en: Validated information
+        nl: Gevalideerde informatie
+    FirstAndLastName:
+      COPY:
+        en: First and last name
+        nl: Voor- en achternaam
+    FirstAndLastNameInfo:
+      COPY:
+        en: Your first and last name are not yet verified by a third party
+        nl: >-
+          Jouw voor- en achternaam zijn nog niet geverifieerd door een derde
+          partij.
+    Verify:
+      COPY:
+        en: Verify
+        nl: Verifïeer
+    Student:
+      COPY:
+        en: Proof of student
+        nl: Bewijs van studeren
+    StudentInfo:
+      COPY:
+        en: You have not yet proven that you are a student in the Netherlands.
+        nl: Je hebt nog niet bewezen dat je in Nederland een studie volgt.
+    Prove:
+      COPY:
+        en: Prove
+        nl: Bewijs
+    Trusted:
+      COPY:
+        en: Link with third party
+        nl: Koppeling met vertrouwde partij
+    TrustedInfo:
+      COPY:
+        en: You eduID account is not yet linked to a third party
+        nl: Je eduID account is nog niet gekoppeld aan een vertrouwde partij.
+    Link:
+      COPY:
+        en: Link
+        nl: Koppel
+    Institution:
+      COPY:
+        en: Institution
+        nl: Instelling
+    InstitutionAt:
+      COPY:
+        en: "At "
+        nl: "Door "
+    Employee:
+      COPY:
+        en: Employee
+        nl: Medewerker
+    Affiliations:
+      COPY:
+        en: Affiliation(s)
+        nl: Betrekking(en)
+    Expires:
+      COPY:
+        en: Link expires
+        nl: Koppeling verloopt
+    ExpiresValue:
+      COPY:
+        en: '%1{{s}}'
+        nl: '%1{{s}}'
+    VerifiedBy:
+      COPY:
+        en: "Verified by %1{{s}} "
+        nl: "Geverifieerd door %1{{s}} "
+    VerifiedOn:
+      COPY:
+        en: "on %1{{s}}"
+        nl: "op %1{{s}}"
+    Proceed:
+      COPY:
+        en: Proceed
+        nl: Doorgaan
+    VerifyFirstAndLastName:
+      AddInstitution:
+        COPY:
+          en: Verify name
+          nl: Verifieer naam
+      AddInstitutionConfirmation:
+        COPY:
+          en: >-
+            When you proceed you will be asked to login at the institution you
+            want to link to your eduID. First, select which institution you want
+            to connect; then, login at that institution.<br/><br/>After a
+            successful login you will come back here.
+          nl: >-
+            Als je doorgaat word je gevraagd in te loggen via de
+            onderwijsinstelling die je wilt koppelen. Selecteer eerst de
+            instelling die je wilt koppelen en log daarna in.<br/> <br/>Nadat je
+            succesvol bent ingelogd kom je hier weer terug.
+    VerifyStudent:
+      AddInstitution:
+        COPY:
+          en: Prove student
+          nl: Bewijs student
+      AddInstitutionConfirmation:
+        COPY:
+          en: >-
+            When you proceed you will be asked to login at the institution you
+            want to link to your eduID. First, select which institution you want
+            to connect; then, login at that institution.<br/><br/>After a
+            successful login you will come back here.
+          nl: >-
+            Als je doorgaat word je gevraagd in te loggen via de
+            onderwijsinstelling die je wilt koppelen. Selecteer eerst de
+            instelling die je wilt koppelen en log daarna in.<br/> <br/>Nadat je
+            succesvol bent ingelogd kom je hier weer terug.
+    VerifyParty:
+      AddInstitution:
+        COPY:
+          en: Link party
+          nl: Koppel instelling
+      AddInstitutionConfirmation:
+        COPY:
+          en: >-
+            When you proceed you will be asked to login at the institution you
+            want to link to your eduID. First, select which institution you want
+            to connect; then, login at that institution.<br/><br/>After a
+            successful login you will come back here.
+          nl: >-
+            Als je doorgaat word je gevraagd in te loggen via de
+            onderwijsinstelling die je wilt koppelen. Selecteer eerst de
+            instelling die je wilt koppelen en log daarna in.<br/> <br/>Nadat je
+            succesvol bent ingelogd kom je hier weer terug.
+  EppnAlreadyLinked:
+    Title:
+      COPY:
+        en: Account not linked!
+        nl: Koppeling niet gemaakt!
+    Info:
+      COPY:
+        en: >-
+          Your eduID could not be linked. The trusted account with which you
+          just logged in, is already linked to a different eduID account:
+          %1{{s}}.
+        nl: >-
+          Je eduID kon niet worden gekoppeld. Het vertrouwde account waarmee je
+          zojuist bent ingelogd, is al aan een ander eduID-account gekoppeld:
+          %1{{s}}.
+    RetryButton:
+      COPY:
+        en: Retry
+        nl: Opnieuw proberen
+  Edit:
+    Title:
+      COPY:
+        en: Name
+        nl: Aanpassen profielgegevens
+    Info:
+      COPY:
+        en: Please provide your full name
+        nl: Voer je volledige naam in.
+    GivenName:
+      COPY:
+        en: Your first name
+        nl: Je voornaam
+    FamilyName:
+      COPY:
+        en: Your last name
+        nl: Je achternaam
+    Update:
+      COPY:
+        en: Update
+        nl: Opslaan
+    Cancel:
+      COPY:
+        en: Cancel
+        nl: Annuleren
+    Updated:
+      COPY:
+        en: Your profile has been updated
+        nl: Je profiel is bijgewerkt.
+    Back:
+      COPY:
+        en: /personal
+        nl: /profile
+  Email:
+    OpenLinkToConfirm:
+      COPY:
+        en: To confirm your change, click the link in the email we sent to %1{{s}}.
+        nl: Om je wijziging te bevestigen, klik op de link in de email die verstuurd is aan %1{{s}}.
+    UpdateError:
+      COPY:
+        en: "Could not confirm changing to your new email address: %1{{s}}."
+        nl: "Kan de wijziging naar uw nieuwe e-mailadres niet bevestigen: %1{{s}}."
+    Title:
+      Edit:
+        COPY:
+          en: Edit
+          nl: Bewerk
+      EmailAddress:
+        COPY:
+          en: Email address
+          nl: E-mailadres
+    Info:
+      COPY:
+        en: >-
+          Please enter your new email address. A verification mail will be sent
+          to this address.
+        nl: >-
+          Voer je nieuwe e-mailadres in. Er wordt een verificatiemail naar dit
+          adres gestuurd.
+    NewEmail:
+      COPY:
+        en: Your new email address
+        nl: Je nieuwe e-mailadres
+
+    Placeholder:
+      COPY:
+        en: "eg tim@bernerslee.com"
+        nl: "bijv tim@bernerslee.com"
+    Update:
+      COPY:
+        en: Request
+        nl: Verstuur
+    Cancel:
+      COPY:
+        en: Cancel
+        nl: Annuleer
+    Save:
+      COPY:
+        en: Save
+        nl: Opslaan
+    Updated:
+      COPY:
+        en: A verification email has been sent to %1{{s}}
+        nl: Een verificatiemail is verzonden naar %1{{s}}
+    Confirmed:
+      COPY:
+        en: Your email address has been changed to %1{{s}}
+        nl: Je e-mail is gewijzigd naar %1{{s}}
+    Back:
+      COPY:
+        en: /personal
+        nl: /personal
+    EmailEquality:
+      COPY:
+        en: Your new email address is the same as your current email
+        nl: Je nieuwe e-mailadres is gelijk aan je huidige e-mailadres
+    DuplicateEmail:
+      COPY:
+        en: This email address is already in use.
+        nl: Dit e-mailadres is al in gebruik.
+    OutstandingPasswordForgotten:
+      COPY:
+        en: Outstanding password forgotten request
+        nl: Uitstaand reset verzoek voor wachtwoord
+    OutstandingPasswordForgottenConfirmation:
+      COPY:
+        en: >-
+          You have requested a password forgotten link. This link will no longer
+          be valid if you confirm your email change.
+        nl: >-
+          Je hebt een openstaand wachtwoord vergeten link. Deze link is niet
+          langer geldig als je deze e-mailwijziging bevestigt.
+  NameUpdated:
+    Title:
+      YourSchool:
+        COPY:
+          en: Your school/uni
+          nl: Je school/instelling
+      ContactedSuccessfully:
+        COPY:
+          en: was contacted successfully
+          nl: is nu gekoppeld
+      ContactedError:
+        COPY:
+          en: could not be contacted
+          nl: is niet gekoppeld
+      FailReason:
+        AlreadyLinked:
+          COPY:
+            en: "Reason: The account is already linked: %1{{s}}"
+            nl: "Reden: Het account is al gekoppeld: %1{{s}}"
+        SessionExpired:
+          COPY:
+            en: "Reason: Your session expired."
+            nl: "Reden: Je sessie is verlopen."
+    Description:
+      COPY:
+        en: The following information has been added to your eduID and can now be shared.
+        nl: De volgende gegevens zijn toegevoegd aan je eduID en kan gedeeld worden.
+    FullName:
+      COPY:
+        en: Full name
+        nl: Volledige naam
+    Continue:
+      COPY:
+        en: Continue
+        nl: Doorgaan
+  EditName:
+    Title:
+      Edit:
+        COPY:
+          en: Edit
+          nl: Bewerk
+      YourName:
+        COPY:
+          en: Your name
+          nl: Jouw naam
+    FirstName:
+      COPY:
+        en: First name
+        nl: Voornaam
+    LastName:
+      COPY:
+        en: Last name
+        nl: Achternaam
+    Button:
+      Save:
+        COPY:
+          en: Save
+          nl: Opslaan
+      Cancel:
+        COPY:
+          en: Cancel
+          nl: Annuleer
+  DeleteAccount:
+    Title:
+      COPY:
+        en: Delete your account
+        nl: Verwijder je eduID account
+    Disclaimer:
+      COPY:
+        en: Proceed with care, as you will lose the unique eduID number currently associated with your email address.
+        nl: Ga voorzichtig te werk, want je verliest de unieke eduID ID's die momenteel aan je e-mailadres zijn gekoppeld.
+    LongDescription:
+      COPY:
+        en: >-
+          You can delete your eduID whenever you want.
+
+          When you re-register for a new eduID with that same email address, you will receive a new eduID number. Some services use this unique number to identify you, so for those services you will be treated as a new user.
+          Please note that deleting your eduID account does not mean all services you accessed with that eduID account will also have your data removed.
+        nl: >-
+          Je kunt je eduID account verwijderen wanneer je maar wilt.
+
+          Let op, je verliest de unieke eduID nummers die aan je e-mailadres zijn gekoppeld. Wanneer je je opnieuw registreert voor eduID met hetzelfde e-mailadres, krijg je een nieuw eduID nummer. Sommige diensten gebruiken deze nummers om je uniek te identificeren, dus voor die diensten word je dan gezien als een nieuwe gebruiker.
+          Houd er rekening mee dat het verwijderen van je eduID niet betekent dat alle diensten die je met je eduID hebt gebruikt, ook je gegevens zullen verwijderen.
+    DeleteAccountButton:
+      COPY:
+        en: Delete your account
+        nl: Verwijder je account
+  OneTimePassword:
+    GenerateError:
+      Title:
+        COPY:
+          en: Cannot generate OTP
+          nl: Kan OTP niet genereren
+      Description:
+        COPY:
+          en: Something went wrong when generating your one time password.
+          nl: Er is iets misgegaan bij het genereren van je eenmalige wachtwoord.
+    Title:
+      COPY:
+        en: You appear to be offline
+        nl: Je lijkt offline te zijn
+    Description:
+      COPY:
+        en: >-
+          Don't worry! Click the QR code on the website. You will be asked to enter the following one-time credentials:
+        nl: >-
+          Geen paniek! Klik op de QR code op de website. Je zult gevraagd worden om de volgende eenmalige gegevens in te geven:
+    YourId:
+      COPY:
+        en: >-
+          Your ID is:
+        nl: >-
+          Je gebruikers ID is:
+    OneTimePassword:
+      COPY:
+        en: >-
+          One-time password:
+        nl: >-
+          Eénmalig wachtwoord:
+    PinNotVerified:
+      Title:
+        COPY:
+          en: >-
+            Note: your PIN has not been verified yet.
+          nl: >-
+            Opmerking: Je PIN is nog niet geverifieerd
+      Description:
+        COPY:
+          en: >-
+            If you can't login with the credentials above, scan again and enter the correct PIN code.
+          nl: >-
+            Als je niet kunt inloggen met bovenstaande gegevens, scan dan opnieuw en geef de correcte PIN code in.
+    CloseButton:
+      COPY:
+        en: Close
+        nl: Sluiten
+  ConfirmDelete:
+    Title:
+      COPY:
+        en: Delete your account for all eternity?
+        nl: Je account voor alle eeuwigheid verwijderen?
+    Disclaimer:
+      COPY:
+        en: There is no way to undo this action.
+        nl: Er is geen manier om deze actie ongedaan te maken.
+    TypeNameToConfirm:
+      COPY:
+        en: If you wish to proceed, please type in your full name for confirmation.
+        nl: Als je wilt doorgaan, typ dan je volledige naam zoals bekend in je eduID account ter bevestiging.
+    YourFullNameLabel:
+      COPY:
+        en: Your full name
+        nl: Je volledige naam
+    Placeholder:
+      COPY:
+        en: Your full name as used on your profile
+        nl: Jouw naam zoals opgeslagen in jouw eduID profiel
+    Button:
+      Cancel:
+        COPY:
+          en: Cancel
+          nl: Annuleer
+      Confirm:
+        COPY:
+          en: Confirm
+          nl: Bevestigen
+    NameDoesNotMatchError:
+      Title:
+        COPY:
+          en: Name mismatch
+          nl: Verkeerde naam
+      Description:
+        COPY:
+          en: 'The name you have typed does not match the name in your profile. We were expecting: "%1{{s}}"'
+          nl: 'De naam die je getypt had komt niet overeen met de naam in je profiel. Wij verwachten: "%1{{s}}"'
+    DeleteError:
+      Title:
+        COPY:
+          en: Could not delete account
+          nl: Account kan niet verwijderd worden
+  MyAccount:
+    Title:
+      COPY:
+        en: Your account
+        nl: Je eduID account
+    AccountCreatedOn:
+      COPY:
+        en: Your account was created on
+        nl: Jouw account is gemaakt op
+    AccountCreatedAt:
+      COPY:
+        en: at
+        nl: om
+    PersonalDataDisclaimer:
+      COPY:
+        en: All of your personal data from your eduID is yours and can be either downloaded or deleted. This data also contains technical keys and references.
+        nl: Alle informatie in jouw eduID account is van jou en kan worden gedownload of verwijderd. De download van je persoonlijke gegevens van je eduID-account bevat alle informatie die we over je hebben. Het bevat ook technische sleutels en referenties.
+    DownloadDataButton:
+      COPY:
+        en: Download my data
+        nl: Download mijn data
+    DeleteAccountButton:
+      COPY:
+        en: Delete your account
+        nl: Verwijder je account
+    DownloadSuccess:
+      COPY:
+        en: Your data was downloaded in your downloads folder.
+        nl: De informatie is opgeslagen in de downloads folder.
+    DownloadError:
+      COPY:
+        en: Failed to download your data
+        nl: Downloaden mislukt
+  Security:
+    Title:
+      COPY:
+        en: Security settings
+        nl: Beveiliging
+    SubTitle:
+      COPY:
+        en: How you sign in with eduID
+        nl: Hoe je inlogt met eduID
+    OtherMethods:
+      COPY:
+        en: Other methods
+        nl: Andere methoden
+    AddPassword:
+      COPY:
+        en: Add a password
+        nl: Wachtwoord toevoegen
+    PasswordPlaceholder:
+      COPY:
+        en: "• • • • • • • • • •"
+        nl: "• • • • • • • • • •"
+    ChangePassword:
+      COPY:
+        en: Password
+        nl: Wachtwoord
+    TwoFAKey:
+      COPY:
+        en: Login with app
+        nl: Inloggen met app
+    ProvidedBy:
+      COPY:
+        en: Provided by
+        nl: Geleverd door
+    NotAddedYet:
+      COPY:
+        en: Not added to your eduID yet
+        nl: Nog niet toegevoegd aan je eduID
+    NotSupported:
+      COPY:
+        en: Not supported
+        nl: Niet ondersteund
+    UseMagicLink:
+      COPY:
+        en: Magic link email
+        nl: Magische link e-mail
+    AddSecurityKeyInfo:
+      COPY:
+        en: >-
+          You can add a passkey to your eduID account which can be used to
+          login. You can use, for example, the built-in sensor of your device
+          (TouchID, FaceID) or a separate hardware key (YubiKey).
+        nl: >-
+          Je kunt een passkey toevoegen aan je eduID account waarmee
+          je kunt inloggen. Dit kan bijv. de ingebouwde sensor van je apparaat
+          zijn (TouchID, FaceID) of een los hardwaretoken (YubiKey).
+    RememberMeInfo:
+      COPY:
+        en: >-
+          <strong>Your device is currently remembered. You will be automatically
+          logged in to eduID.</strong>
+        nl: >-
+          <strong> Dit apparaat wordt momenteel onthouden. Je wordt automatisch
+          ingelogd op eduD </strong>
+    NoRememberMeInfo:
+      COPY:
+        en: >-
+          When logging in with your eduID, you can choose to <strong>stay logged
+          in</strong>. This remembers your login on the device you use at that
+          moment.
+        nl: >-
+          Als je inlogt met eduID kun je ervoor kiezen om <strong>ingelogd te
+          blijven</strong>. Dan wordt jouw login op het apparaat dat je op dat
+          moment gebruikt onthouden.
+    ForgetMe:
+      COPY:
+        en: Forget me
+        nl: Vergeet dit apparaat
+    Tiqr:
+      Title:
+        COPY:
+          en: Want to sign in quicker and more secure next time?
+          nl: Wil je de volgende keer sneller en veiliger inloggen?
+      Info:
+        COPY:
+          en: >-
+            Get the <strong>eduID app</strong> and securely sign in without
+            passwords or accessing your email.
+          nl: >-
+            Download de <strong>eduID app</strong> en log veilig in zonder
+            wachtwoord of toegang tot je e-mail.
+      Fetch:
+        COPY:
+          en: Get it now
+          nl: Nu installeren
+      Deactivate:
+        COPY:
+          en: Deactivate
+          nl: Deactiveren
+      BackupCodes:
+        COPY:
+          en: Recovery method
+          nl: Herstelmethode
+      App:
+        COPY:
+          en: eduID app
+          nl: eduID app
+      PhoneId:
+        COPY:
+          en: Phone ID
+          nl: Telefoon ID
+      APNS:
+        COPY:
+          en: iPhone
+          nl: iPhone
+      APNS_DIRECT:
+        COPY:
+          en: iPhone
+          nl: iPhone
+      FCM:
+        COPY:
+          en: Android
+          nl: Android
+      GCM:
+        COPY:
+          en: Android
+          nl: Android
+      FCM_DIRECT:
+        COPY:
+          en: Android
+          nl: Android
+      AppCode:
+        COPY:
+          en: Appcode
+          nl: App code
+      LastLogin:
+        COPY:
+          en: Last login
+          nl: Laatste login
+      Activated:
+        COPY:
+          en: Activated on
+          nl: Geactiveerd op
+      DateTimeOn:
+        COPY:
+          en: 'on'
+          nl: om
+      BackupMethod:
+        COPY:
+          en: Recovery method
+          nl: Herstelmethode
+      Sms:
+        COPY:
+          en: SMS
+          nl: SMS
+      Code:
+        COPY:
+          en: Backup code
+          nl: Herstelcode
+      EnrollmentCompleted:
+        Title:
+          COPY:
+            en: Already enrolled!
+            nl: Al toegevoegd!
+        Description:
+          COPY:
+            en: Enrollment was already completed.
+            nl: Toevoegen is al voltooid.
+      MissingAccountDetails:
+        Title:
+          COPY:
+            en: Missing account details
+            nl: Missende account gegevens
+        Description:
+          COPY:
+            en: Could not retrieve the account details.
+            nl: Kon de benodigde gegevens niet ophalen.
+      EnrollmentIncomplete:
+        Title:
+          COPY:
+            en: Enrollment incomplete
+            nl: Toevoegen incompleet
+        Description:
+          COPY:
+            en: Enrollment is incomplete, either recovery was not complete or access was revoked
+            nl: Toevoegen is incompleet, recovery was niet compleet of toegang is uitgeschakeld
+      AlreadyEnrolled:
+        Title:
+          COPY:
+            en: Already enrolled on a different device
+            nl: Al toegevoegd aan een ander toestel
+        Description:
+          COPY:
+            en: |
+              This account already has a eduid app registration
+              Would you like to deactivate the existing app registration and add this device?
+            nl: |
+              Voor dit account is al een eduID app geregistreerd.
+              Wil je de bestaande eduID app registratie verwijderen en hier toevoegen?
+  PasswordResetLink:
+    Title:
+      AddPassword:
+        COPY:
+          en: Add password
+          nl: Voeg een wachtwoord toe
+      ChangePassword:
+        COPY:
+          en: Change or delete password
+          nl: Wachtwoord wijzigen of verwijderen
+    Description:
+      AddPassword:
+        COPY:
+          en: We will send you an email instantly with a link to add a password.
+          nl: We sturen je een e-mail om een wachtwoord in te stellen.
+      ChangePassword:
+        COPY:
+          en: We will send you an email instantly with a link to change or delete your current password.
+          nl: We sturen je een e-mail om je huidige wachtwoord opnieuw in te stellen of te verwijderen.
+    Button:
+      Cancel:
+        COPY:
+          en: Cancel
+          nl: Annuleer
+      SendEmail:
+        COPY:
+          en: Send email
+          nl: Stuur email
+  ChangePassword:
+    Title:
+      AddPassword:
+        COPY:
+          en: Add password
+          nl: Voeg een wachtwoord toe
+      ChangePassword:
+        COPY:
+          en: Change password
+          nl: Wachtwoord wijzigen
+    Description:
+      NewPassword:
+        COPY:
+          en: Make sure your new password is at least 15 characters OR at least 8 characters including a number and a uppercase letter.
+          nl: Kies een wachtwoord van tenminste 8 karakters lang met minimaal een hoofdletter en een cijfer. Een langer wachtwoord van minimaal 15 karakters mag ook.
+      BoldPart:
+        COPY:
+          en: Make sure your new password
+          nl: Kies een wachtwoord
+    MissingHashError:
+      COPY:
+        nl: Benodigde gegevens voor het veranderen van je wachtwoord zijn niet beschikbaar.
+        en: Could not find the required info to change your password.
+    Label:
+      NewPassword:
+        COPY:
+          nl: Jouw wachtwoord
+          en: Your password
+      RepeatPassword:
+        COPY:
+          nl: Herhaal wachtwoord
+          en: Repeat password
+      MismatchError:
+        COPY:
+          en: "The two passwords don't match!"
+          nl: "De twee wachtwoorden komen niet overeen!"
+      Placeholder:
+        COPY:
+          nl: "••••••••••"
+          en: "••••••••••"
+    DeleteHeader:
+      Title:
+        COPY:
+          en: Want to delete your password entirely?
+          nl: Wil je je wachtwoord helemaal verwijderen?
+      Description:
+        COPY:
+          en: When you prefer other methods than a password, you can delete your current one.
+          nl: Als je liever op een andere manier inlogt, kun je het huidige wachtwoord verwijderen.
+    Button:
+      Reset:
+        COPY:
+          en: Reset your password
+          nl: Reset wachtwoord
+      Add:
+        COPY:
+          en: Add password
+          nl: Wachtwoord toevoegen
+      Delete:
+        COPY:
+          en: Delete my password
+          nl: Verwijder mijn wachtwoord
+  TwoFactorKeys:
+    Title:
+      COPY:
+        nl: "2FA key(s)"
+        en: "2FA sleutel(s)"
+    Description:
+      COPY:
+        en: Keys to securely sign in without passwords or accessing your email.
+        nl: Sleutels om veilig in te loggen zonder wachtwoord of link.
+    YourKeys:
+      COPY:
+        en: Your key(s)
+        nl: Jouw sleutel(s)
+    NoKeys:
+      COPY:
+        en: You have no local keys.
+        nl: Geen sleutels.
+    Label:
+      Account:
+        COPY:
+          en: Account
+          nl: Account
+      UniqueKeyId:
+        COPY:
+          en: Unique KeyID
+          nl: Uniek SleutelID
+      UseBiometrics:
+        COPY:
+          en: Use biometrics
+          nl: Gebruik biometrie
+    DeleteKey:
+      COPY:
+        en: Delete key
+        nl: Sleutel verwijderen
+  ConfirmDeleteKey:
+    Title:
+      COPY:
+        en: Delete key
+        nl: Verwijder sleutel
+    Subtitle:
+      COPY:
+        en: There is no way to undo this action
+        nl: Dit kan niet ongedaan worden gemaakt
+    Description:
+      COPY:
+        en: Are you sure you want to delete your key?
+        nl: Weet je zeker dat je deze sleutel wil verwijderen?
+    Button:
+      Confirm:
+        COPY:
+          en: Confirm
+          nl: Bevestigen
+      Cancel:
+        COPY:
+          en: Cancel
+          nl: Annuleren
+  Home:
+    Home:
+      COPY:
+        en: Home
+        nl: Home
+    Welcome:
+      COPY:
+        en: Welcome %1{{s}}
+        nl: Welkom %1{{s}}
+    DataAndActivity:
+      COPY:
+        en: Data & activity
+        nl: Data & activiteit
+    Personal:
+      COPY:
+        en: Personal info
+        nl: Persoonlijke info
+    Security:
+      COPY:
+        en: Security
+        nl: Beveiliging
+    Account:
+      COPY:
+        en: Account
+        nl: Account
+    Institutions:
+      COPY:
+        en: Connections
+        nl: Koppelingen
+    Services:
+      COPY:
+        en: Services
+        nl: Diensten
+    Favorites:
+      COPY:
+        en: Favorites
+        nl: Favorieten
+    Settings:
+      COPY:
+        en: Settings
+        nl: Instellingen
+    Links:
+      Teams:
+        COPY:
+          en: Teams
+          nl: Teams
+      TeamsHref:
+        COPY:
+          en: https://teams.%1{{s}}
+          nl: https://teams.%1{{s}}
+  Account:
+    Title:
+      COPY:
+        en: Your account
+        nl: Je eduID account
+    TitleDelete:
+      COPY:
+        en: Delete your eduID account
+        nl: Verwijder je eduID account
+    Info:
+      COPY:
+        en: On this page you can manage your account.
+        nl: Op deze pagina kun je je account beheren.
+    Created:
+      COPY:
+        en: Created on
+        nl: Aangemaakt op
+    Delete:
+      COPY:
+        en: Delete my account
+        nl: Verwijder mijn account
+    Cancel:
+      COPY:
+        en: Cancel
+        nl: Annuleer
+    DeleteInfo:
+      COPY:
+        en: >-
+          Proceed with care, as you will lose the unique eduID identifiers
+          currently associated wth your email address.
+        nl: >-
+          Ga voorzichtig te werk, want je verliest de unieke eduID ID's die
+          momenteel aan je e-mailadres zijn gekoppeld.
+    Data:
+      COPY:
+        en: Download your data
+        nl: Download je data
+    PersonalInfo:
+      COPY:
+        en: >-
+          Click the button left to download all your personal data from your
+          eduID account.
+        nl: >-
+          Klik op de onderstaande knop om al je persoonlijke gegevens uit je
+          eduID account te downloaden.
+    DownloadData:
+      COPY:
+        en: Download
+        nl: Download
+    DownloadDataConfirmation:
+      COPY:
+        en: >-
+          The download of your personal data from your eduID account contains
+          all the information we have about you. It also contains technical keys
+          and references.
+        nl: >-
+          De download van je persoonlijke gegevens van je eduID-account bevat
+          alle informatie die we over je  hebben. Het bevat ook technische
+          sleutels en referenties.
+    DeleteTitle:
+      COPY:
+        en: Deleting your eduID account
+        nl: Je eduID account verwijderen
+    Info1:
+      COPY:
+        en: You can delete your eduID whenever you want.
+        nl: Je kunt je eduID account verwijderen wanneer je maar wilt.
+    Info2:
+      COPY:
+        en: >-
+          Proceed with care, as you will lose the unique eduID number currently
+          associated with your email address. When you re-register for a new
+          eduID with that same email address, you will receive a new eduID
+          number. Some services use this unique number to identify you, so for
+          those services you will be treated as a new user.
+        nl: >-
+          Let op, je verliest de unieke eduID nummers die aan je e-mailadres
+          zijn gekoppeld. Wanneer je je opnieuw registreert voor eduID met
+          hetzelfde e-mailadres, krijg je een nieuwe eduID nummers. Sommige
+          diensten gebruiken deze nummers om je uniek te identificeren, dus voor
+          die diensten word je dan gezien als een nieuwe gebruiker.
+    Info3:
+      COPY:
+        en: >-
+          Please note that deleting your eduID account does not mean all
+          services you accessed with that eduID account will also have your data
+          removed.
+        nl: >-
+          Houd er rekening mee dat het verwijderen van je eduID niet betekent
+          dat alle diensten die je met je eduID hebt gebruikt, ook je gegevens
+          zullen verwijderen.
+    Info4:
+      COPY:
+        en: >-
+          To fully complete the process of deleting your eduID account you must
+          close your browser after your account has been removed.
+        nl: >-
+          Om het verwijderen van je eduID volledig te voltooien, moet je nadat
+          je account is verwijderd je browser afsluiten.
+    DeleteAccount:
+      COPY:
+        en: Delete my account
+        nl: Verwijder mijn eduID
+    DeleteAccountConfirmation:
+      COPY:
+        en: Are you sure you want to delete your eduID account?
+        nl: Weet je zeker dat je je eduID wilt verwijderen?
+    DeleteAccountSure:
+      COPY:
+        en: Delete your account for all eternity?
+        nl: Je account voor alle eeuwigheid verwijderen?
+    DeleteAccountWarning:
+      COPY:
+        en: There is no way to undo this action.
+        nl: Er is geen manier om deze actie ongedaan te maken.
+    Proceed:
+      COPY:
+        en: >-
+          If you wish to proceed, please type in your full name for
+          confirmation.
+        nl: >-
+          Als je wilt doorgaan, typ dan je volledige naam zoals bekend in je
+          eduID account ter bevestiging.
+    Name:
+      COPY:
+        en: Full name
+        nl: Volledige naam
+    NamePlaceholder:
+      COPY:
+        en: Your full name as used on your profile
+        nl: Je volledige naam zoals gebruikt in je profiel
+  DataActivity:
+    Title:
+      COPY:
+        en: Data & Activity
+        nl: Data & Activiteit
+    Info:
+      COPY:
+        en: >-
+          When you use eduID to logon to other websites, the following information can be shared.
+        nl: >-
+          Wanneer je eduID gebruikt om aan te melden bij andere diensten, de volgende gegevens kunnen worden gedeeld.
+    ExplainIcon:
+      COPY:
+        en: "This icon indicates the service has access to your data."
+        nl: "Dit pictogram geeft aan dat de dienst toegang heeft tot je gegevens."
+
+    AppsHeader:
+      COPY:
+        en: Apps you logged into using eduID.
+        nl: Diensten waarop je bent ingelogd via eduID
+    NoServices:
+      COPY:
+        en: You did not yet use eduID to login to any service.
+        nl: Je bent nog niet ingelogd geweest op een dienst via eduID.
+    Name:
+      COPY:
+        en: Name
+        nl: Naam
+    Add:
+      COPY:
+        en: Connect new institution
+        nl: Nieuwe instelling koppelen
+    Access:
+      COPY:
+        en: Can access your data
+        nl: Heeft toegang tot je gegevens
+    Details:
+      On:
+        COPY:
+          en: on
+          nl: op
+      Login:
+        COPY:
+          en: Login details
+          nl: Logingegevens
+      Delete:
+        COPY:
+          en: Delete these login details
+          nl: Verwijder deze logingegevens
+      FirstLogin:
+        COPY:
+          en: "First login: "
+          nl: "Eerste login: "
+      UniqueEduID:
+        COPY:
+          en: "eduID#: "
+          nl: "eduID#: "
+      HomePage:
+        COPY:
+          en: Homepage
+          nl: Home pagina
+      DeleteDisclaimer:
+        COPY:
+          en: >-
+            * Deleting these login details means eduID removes this information
+            from your eduID account. You still have an account at the service
+            itself. If you want that removed, please do so at the service.
+          nl: >-
+            * Als je deze logingegevens verwijdert, verwijdert eduID deze
+            informatie uit je eduID account. Je hebt nog een account bij de
+            dienst zelf. Als je dat wilt laten verwijderen, doe dat dan
+            rechtstreeks bij de dienst.
+      Access:
+        COPY:
+          en: Granted access rights
+          nl: Toegangsrechten
+      Details:
+        COPY:
+          en: Access details
+          nl: Accountgegevens
+      Consent:
+        COPY:
+          en: "Consent given on: "
+          nl: "Toestemming gegeven op: "
+      Expires:
+        COPY:
+          en: "Access expires on: "
+          nl: "Toegang vervalt op: "
+      Revoke:
+        COPY:
+          en: Revoke these access right
+          nl: Deze toegangsrechten intrekken
+  DeleteService:
+    Title:
+      COPY:
+        en: "Delete login details of "
+        nl: "Verwijder logingegevens van "
+    Description:
+      COPY:
+        en: >-
+          Deleting these login details means eduID removes this information from your eduID account. You still have an account at the service itself. If you want that removed, please do so at the service.
+        nl: >-
+          Het verwijderen van deze logingegevens betekent dat eduID deze informatie verwijderd van jouw eduID account. Je hebt nog steeds een account bij de dienst zelf. Als je die ook wil verwijderen, doe je dat bij de dienst.
+    Button:
+      Confirm:
+        COPY:
+          en: Yes, delete
+          nl: Ja, verwijder
+      Cancel:
+        COPY:
+          en: Cancel
+          nl: Annuleer
+    Error:
+      COPY:
+        en: Cannot remove service
+        nl: Fout bij verwijderen dienst
+  RevokeAccessToken:
+    Title:
+      COPY:
+        en: Revoke access
+        nl: Toegang intrekken
+    Description:
+      COPY:
+        en: >-
+          Are you sure you want to revoke the API access for %1{{s}}?
+        nl: >-
+          Weet je zeker dat de API access voor %1{{s}} wilt intrekken?
+    Button:
+      Confirm:
+        COPY:
+          en: Confirm
+          nl: Bevestigen
+      Cancel:
+        COPY:
+          en: Cancel
+          nl: Annuleer
+    Error:
+      COPY:
+        en: Cannot remove access
+        nl: Fout bij verwijderen van toegang
+  Institution:
+    Title:
+      COPY:
+        en: Connected institution
+        nl: Gekoppelde instelling
+    Info:
+      COPY:
+        en: >-
+          This institution was connected to your eduID account on %1{{s}} at
+          %2{{s}}:%3{{s}}
+        nl: >-
+          Deze instelling is op %1{{s}} om %2{{s}}: %3{{s}} gekoppeld aan jouw
+          eduID.
+    Name:
+      COPY:
+        en: Institution name
+        nl: Naam van de instelling
+    Eppn:
+      COPY:
+        en: Identifier at institution
+        nl: Identifier bij de instelling
+    DisplayName:
+      COPY:
+        en: Display name
+        nl: Weergavenaam
+    Affiliations:
+      COPY:
+        en: Affiliation(s) at institution
+        nl: Betrekking(en) bij de instelling
+    Expires:
+      COPY:
+        en: This connection expires at
+        nl: Koppeling verloopt op
+    ExpiresValue:
+      COPY:
+        en: '%1{{s}}'
+        nl: '%1{{s}}'
+    Delete:
+      COPY:
+        en: Remove connection
+        nl: Verwijder koppeling
+    Cancel:
+      COPY:
+        en: Cancel
+        nl: Annuleren
+    Deleted:
+      COPY:
+        en: The connection with your institution %1{{s}} has been removed
+        nl: De koppeling met instelling %1{{s}} is verwijderd
+    Back:
+      COPY:
+        en: /institutions
+        nl: /instellingen
+    DeleteInstitution:
+      COPY:
+        en: Delete institution
+        nl: Verwijder koppeling
+    DeleteInstitutionConfirmation:
+      COPY:
+        en: >-
+          Are you sure you want to delete the connection with this
+          institution?<br/><br/>Some services require that you your eduID is
+          connected to an institution. You might be prompted to connect an
+          institution if you access one of those services.
+        nl: >-
+          Weet je zeker dat je de koppeling met deze instelling wilt
+          verwijderen?<br/> <br/>Sommige diensten vereisen dat je een koppeling
+          hebt met een onderwijsinstelling. Je wordt mogelijk gevraagd een
+          instelling te koppelen als je één van die diensten gebruikt.
+  Credential:
+    Title:
+      COPY:
+        en: Edit passkey
+        nl: Bewerk passkey
+    Info:
+      COPY:
+        en: You added this passkey on %1{{s}} at %2{{s}}:%3{{s}}
+        nl: 'Je hebt deze passkey toegevoegd op %1{{s}} om %2{{s}}: %3{{s}}'
+    Name:
+      COPY:
+        en: Passkey name
+        nl: Passkey naam
+    Cancel:
+      COPY:
+        en: Cancel
+        nl: Annuleren
+    Update:
+      COPY:
+        en: Update
+        nl: Bewaar
+    Deleted:
+      COPY:
+        en: Your passkey %1{{s}} has been deleted
+        nl: Je passkey %1{{s}} is verwijderd
+    Updated:
+      COPY:
+        en: Your passkey %1{{s}} has been updated
+        nl: Je passkey %1{{s}} is bewaard
+    Back:
+      COPY:
+        en: /weauthn
+        nl: /weauthn
+    DeleteCredential:
+      COPY:
+        en: Delete passkey
+        nl: Verwijder passkey
+    DeleteCredentialConfirmation:
+      COPY:
+        en: >-
+          Are you sure you want to delete your passkey %1{{s}}? The
+          passkey will be deleted from your eduID account, but will not be
+          removed from your browser and / or Yubikey device.
+        nl: >-
+          Weet je zeker dat je de passkey %1{{s}} wilt verwijderen?
+          De passkey wordt verwijderd uit je eduID account, maar
+          wordt niet verwijderd uit je browser en / of van je YubiKey-apparaat.
+  Password:
+    AddTitle:
+      COPY:
+        en: Add password
+        nl: Toevoegen wachtwoord
+    UpdateTitle:
+      COPY:
+        en: Change password
+        nl: Wijzig wachtwoord
+    AddInfo:
+      COPY:
+        en: >-
+          If you want to add a password to your eduID account, press
+          <strong>Confirm</strong> below to instantly receive an email with a
+          link to add a password.
+        nl: >-
+          Als je een wachtwoord aan je eduID-account wilt toevoegen, klik dan
+          hieronder op <strong>Bevestigen</strong> om direct een e-mail te
+          ontvangen met een link om een wachtwoord toe te voegen.
+    UpdateInfo:
+      COPY:
+        en: >-
+          If you want to reset or delete your password from your eduID account,
+          press <strong>Confirm</strong> below to instantly receive an email
+          with a link to change or delete your current password.
+        nl: >
+          Als je het wachtwoord van je eduID-account wilt resetten of
+          verwijderen, druk hieronder op <strong>Bevestigen</strong> om direct
+          een e-mail te ontvangen met een link om je huidige wachtwoord opnieuw
+          in te stellen of te verwijderen.
+    ResetTitle:
+      COPY:
+        en: Reset your password
+        nl: Stel je wachtwoord opnieuw in
+    NewPassword:
+      COPY:
+        en: New password
+        nl: Nieuw wachtwoord
+    ConfirmPassword:
+      COPY:
+        en: Confirm new password
+        nl: Bevestig nieuw wachtwoord
+    SetUpdate:
+      COPY:
+        en: Set password
+        nl: Wachtwoord instellen
+    UpdateUpdate:
+      COPY:
+        en: Update password
+        nl: Opslaan
+    Cancel:
+      COPY:
+        en: Cancel
+        nl: Annuleren
+    Set:
+      COPY:
+        en: Your password has been set
+        nl: Je wachtwoord is ingesteld
+    Reset:
+      COPY:
+        en: Your password has been reset to a new password
+        nl: Je wachtwoord is opnieuw ingesteld
+    Updated:
+      COPY:
+        en: Your password has been updated
+        nl: Je wachtwoord is aangepast
+    Deleted:
+      COPY:
+        en: Your password has been deleted
+        nl: Je wachtwoord is verwijderd
+    DeletePassword:
+      COPY:
+        en: Delete password
+        nl: Verwijder wachtwoord
+    DeletePasswordConfirmation:
+      COPY:
+        en: >-
+          Are you sure that you want to delete your password? Login with a
+          password will be no longer possible.
+        nl: >-
+          Weet je zeker dat je je wachtwoord wilt verwijderen? Het is hierna
+          niet meer mogelijk om in te loggen met dit wachtwoord.
+    Back:
+      COPY:
+        en: /security
+        nl: /security
+    PasswordDisclaimer:
+      COPY:
+        en: >-
+          Make sure it's at least 15 characters OR at least 8 characters
+          including a number and an uppercase letter.
+        nl: >-
+          Kies een wachtwoord van tenminste 8 karakters lang met minimaal een
+          hoofdletter en een cijfer. Een langer wachtwoord van minimaal 15
+          karakters mag ook.
+    InvalidCurrentPassword:
+      COPY:
+        en: Your current password is invalid.
+        nl: Je huidige wachtwoord is niet correct.
+    PasswordResetHashExpired:
+      COPY:
+        en: 'Your password reset link has expired. '
+        nl: 'De link om je wachtwoord opnieuw in te stellen is verlopen. '
+    ForgotPassword:
+      COPY:
+        en: Help! I forgot my current password
+        nl: Help! Ik ben mijn huidige wachtwoord vergeten
+    PasswordResetSendAgain:
+      COPY:
+        en: Send an email to reset my password.
+        nl: Stuur een e-mail om mijn wachtwoord opnieuw in te stellen.
+    ForgotPasswordConfirmation:
+      COPY:
+        en: >-
+          Forgot your password? Press 'Confirm' below to instantly receive an
+          email with a link to reset your current password.
+        nl: >-
+          Wachtwoord vergeten? Druk hieronder op 'Bevestigen' om direct een
+          e-mail te ontvangen waarmee je je huidige wachtwoord opnieuw kunt
+          instellen.
+    OutstandingEmailReset:
+      COPY:
+        en: Outstanding email change request
+        nl: Openstaand wijzigingsverzoek voor e-mail
+    OutstandingEmailResetConfirmation:
+      COPY:
+        en: >-
+          You have an outstanding new email confirmation link. This link will no
+          longer be valid if you confirm your password forgotten request.
+        nl: >-
+          Je hebt een openstaande bevestigingslink voor een nieuwe e-mail. Deze
+          link is niet langer geldig als je dit verzoek voor een vergeten
+          wachtwoord bevestigt.
+    Flash:
+      PasswordLink:
+        COPY:
+          en: An email has been sent to %1{{s}} with a link to reset your password
+          nl: >-
+            Een e-mail is verstuurd naar %1{{s}} om je wachtwoord opnieuw in te
+            stellen.
+  Webauthn:
+    SetTitle:
+      COPY:
+        en: Add passkey
+        nl: Passkey toevoegen
+    UpdateTitle:
+      COPY:
+        en: Add passkey
+        nl: Passkey toevoegen
+    PublicKeys:
+      COPY:
+        en: Your public tokens
+        nl: Je publieke keys
+    NoPublicKeys:
+      COPY:
+        en: 'You have not added any passkey. '
+        nl: Je hebt nog geen passkey toegevoegd.
+    NameRequired:
+      COPY:
+        en: Before you can add a new passkey you must give it a name.
+        nl: >-
+          Voordat je een passkey kan toevoegen, moet je deze eerst
+          een naam geven.
+    Revoke:
+      COPY:
+        en: Revoke
+        nl: Intrekken
+    AddDevice:
+      COPY:
+        en: Add device
+        nl: Voeg dit apparaat toe
+    Info:
+      COPY:
+        en: >-
+          You can choose to use a Bluetooth security key, USB security key or
+          the security key built into your device.
+        nl: >-
+          Een passkey is een los of ingebouwd apparaat dat strikt
+          persoonlijk van jou is, waarmee je kunt bewijzen dat jij de
+          rechtmatige gebruiker van je eduID-account bent. Nadat je een
+          passkey hebt toegevoegd aan je eduID-account kun je deze
+          gebruiken om mee in te loggen, naast een magische link of wachtwoord.
+    Back:
+      COPY:
+        en: /security
+        nl: /security
+    SetUpdate:
+      COPY:
+        en: Start
+        nl: Start
+    UpdateUpdate:
+      COPY:
+        en: Add passkey
+        nl: Voeg deze passkey toe
+    CredentialName:
+      COPY:
+        en: Passkey name
+        nl: Naam van passkey
+    CredentialNamePlaceholder:
+      COPY:
+        en: e.g. my red Yubikey
+        nl: bijv. mijn gele Yubikey
+    Test:
+      COPY:
+        en: Test
+        nl: Test
+    TestInfo:
+      COPY:
+        en: >-
+          Click the <strong>test</strong> button to test one of your passkeys.
+           You will be redirected to the eduID login screen.
+        nl: >-
+          Druk op de <strong>test</strong>knop om een 1 van je
+          passkeys te testen. Je wordt doorgestuurd naar het eduID
+          loginscherm.
+    TestFlash:
+      COPY:
+        en: You successfully tested your security key to authenticate.
+        nl: Je hebt met succes de beveligingssleutel getest voor inloggen.
+  RememberMe:
+    'Yes':
+      COPY:
+        en: 'Yes'
+        nl: Ja
+    'No':
+      COPY:
+        en: 'No'
+        nl: Nee
+    Header:
+      COPY:
+        en: Stay signed in?
+        nl: Ingelogd blijven?
+    Info:
+      COPY:
+        en: Stay signed in on this device so you don't have to sign in next time.
+        nl: >-
+          Blijf ingelogd op dit apparaat zodat je de volgende keer niet hoeft in
+          te loggen.
+  Footer:
+    Privacy:
+      COPY:
+        en: Privacy policy
+        nl: Privacy
+    Terms:
+      COPY:
+        en: Terms of Use
+        nl: Voorwaarden
+    Help:
+      COPY:
+        en: Help
+        nl: Help
+    PoweredBy:
+      COPY:
+        en: Powered by
+        nl: Powered by
+  Modal:
+    Cancel:
+      COPY:
+        en: Cancel
+        nl: Annuleer
+    Confirm:
+      COPY:
+        en: Confirm
+        nl: Bevestig
+  Format:
+    CreationDate:
+      COPY:
+        en: '%1{{s}} at %2{{s}}:%3{{s}}'
+        nl: '%1{{s}} om %2{{s}}:%3{{s}}'
+  GetApp:
+    Header:
+      COPY:
+        en: Download the eduID app
+        nl: Download de eduID app
+    Info:
+      COPY:
+        en: >-
+          Download and install <a href="https://eduid.nl/help"
+          target="_blank">the eduID app</a> (issued by SURF) on your mobile
+          device.
+        nl: >-
+          Download en installeer <a href="https://eduid.nl/help"
+          target="_blank">de eduID app</a> (uitgegeven door SURF) op je mobiele
+          apparaat.
+    Google:
+      COPY:
+        en: https://play.google.com/store/apps/details?id=nl.eduid
+        nl: https://play.google.com/store/apps/details?id=nl.eduid
+    Apple:
+      COPY:
+        en: https://apps.apple.com/
+        nl: https://apps.apple.com/
+    After:
+      COPY:
+        en: >-
+          When you've downloaded the eduID app on your phone, come back here and
+          click next.
+        nl: >-
+          Als je de eduID app op je telefoon hebt gedownload, kom dan hier terug
+          en klik op volgende.
+    Back:
+      COPY:
+        en: Back
+        nl: Terug
+    Next:
+      COPY:
+        en: Next
+        nl: Volgende
+  Sms:
+    Header:
+      COPY:
+        en: Check your phone
+        nl: Controleer je telefoon
+    Info:
+      COPY:
+        en: Enter the six-digit code we sent to your phone to continue
+        nl: >-
+          Voer de zescijferige code in die we naar je telefoon hebben gestuurd
+          om door te gaan.
+    CodeIncorrect:
+      COPY:
+        en: The code is incorrect
+        nl: De code is onjuist
+    SendSMSAgain:
+      COPY:
+        en: Resend code
+        nl: Nieuwe code
+    MaxAttemptsPre:
+      COPY:
+        en: Max attempts reached. Click
+        nl: Maximum aantal pogingen bereikt. Klik
+    MaxAttemptsPost:
+      COPY:
+        en: >-
+          to use a different phone number or resend code to receive a new
+          verification
+        nl: >-
+          om een ander telefoonnummer te gebruiken of de verstuur een nieuwe
+          code
+    Here:
+      COPY:
+        en: ' here '
+        nl: ' hier '
+  EnrollApp:
+    Header:
+      COPY:
+        en: Finish setup in the eduID app
+        nl: Voltooi de installatie in de eduID app
+  Recovery:
+    Header:
+      COPY:
+        en: Set up a recovery method
+        nl: Een herstelmethode instellen
+    Info:
+      COPY:
+        en: >-
+          If you can't access eduID with the app or via email, you can use a
+          recovery method to sign in to your eduID account.
+        nl: >-
+          Als je geen toegang hebt tot eduID met de app of via e-mail, kun je
+          een herstelmethode gebruiken om in te loggen op je eduID-account.
+    Methods:
+      COPY:
+        en: The following methods are available.
+        nl: De volgende methoden zijn beschikbaar.
+    PhoneNumber:
+      COPY:
+        en: Add a recovery phone number.
+        nl: Voeg een hersteltelefoonnummer toe.
+    PhoneNumberInfo:
+      COPY:
+        en: You'll receive a text message with a code.
+        nl: Je ontvangt een sms met een code.
+    BackupCode:
+      COPY:
+        en: Request a recovery code.
+        nl: Vraag een herstelcode aan.
+    BackupCodeInfo:
+      COPY:
+        en: The code can be used to sign in with.
+        nl: De code kan worden gebruikt om in te loggen.
+    Save:
+      COPY:
+        en: Save the code somewhere safe.
+        nl: Bewaar de code ergens veilig.
+    Active:
+      COPY:
+        en: >-
+          This code is active now, but you can generate a new code within
+          My-eduID anytime.
+        nl: >-
+          Deze code is nu actief, maar je kan op elk moment een nieuwe code
+          aanmaken binnen Mijn eduID.
+    Copy:
+      COPY:
+        en: Copy the code
+        nl: Kopieer de code
+    Copied:
+      COPY:
+        en: Copied
+        nl: Gekopieerd
+    Continue:
+      COPY:
+        en: My code is safe. Continue
+        nl: Mijn code is veilig. Doorgaan
+    LeaveConfirmation:
+      COPY:
+        en: Are you sure you want to leave the page? Changes will not be saved.
+        nl: >-
+          Weet je zeker dat je de pagina wilt verlaten? De registratie wordt
+          afgebroken.
+  PhoneVerification:
+    Header:
+      COPY:
+        en: Add a recovery phone number
+        nl: Voeg een hersteltelefoonnummer toe
+    Info:
+      COPY:
+        en: >-
+          Your phone number will be used for security purposes, such as helping
+          you get back into your account if you ever lose your app
+        nl: >-
+          Je telefoonnummer wordt gebruikt om weer toegang te krijgen tot je
+          account als je de app ooit kwijtraakt.
+    Text:
+      COPY:
+        en: We will text you a code to verify your number
+        nl: We sturen je een code om je nummer te verifiëren.
+    Verify:
+      COPY:
+        en: Verify this phone number
+        nl: Verifieer dit telefoonnummer
+    PlaceHolder:
+      COPY:
+        en: +31 612345678
+        nl: +31 612345678
+    PhoneIncorrect:
+      COPY:
+        en: Phone number is incorrect
+        nl: Telefoonnummer is onjuist
+  Congrats:
+    Header:
+      COPY:
+        en: Success
+        nl: Succes
+    Info:
+      COPY:
+        en: >-
+          You can now use the eduID app to quickly login to services which
+          require you to login with your eduID.
+        nl: >-
+          Je kunt nu de eduID app gebruiken om snel in te loggen bij diensten
+          waarvoor je moet inloggen met je eduID.
+    Next:
+      COPY:
+        en: Onwards to %1{{s}}
+        nl: Verder naar %1{{s}}
+  Deactivate:
+    TitleDelete:
+      COPY:
+        en: Deactivate your eduID app
+        nl: Deactiveer je eduID app
+    Info:
+      COPY:
+        en: >-
+          You can deactivate your eduID app if you want to reinstall this app or
+          if you have a new device.
+        nl: >-
+          Je kunt je eduID app deactiveren als je de app opnieuw wilt
+          installeren of als je een nieuw apparaat hebt.
+    RecoveryCode:
+      COPY:
+        en: Recovery code
+        nl: Herstelcode
+    RecoveryCodeInfo:
+      COPY:
+        en: >-
+          Enter the <strong>recovery code</strong> you've saved during the eduID
+          app registration.
+        nl: >-
+          Vul de <strong>herstelcode</strong> in die je tijdens de eduID app
+          registratie hebt bewaard.
+    VerificationCode:
+      COPY:
+        en: Text message verification code
+        nl: SMS verificatiecode
+    CodeIncorrect:
+      COPY:
+        en: Wrong recovery code
+        nl: Verkeerde herstelcode
+    Next:
+      COPY:
+        en: Next
+        nl: Volgende
+    DeactivateApp:
+      COPY:
+        en: Deactivate
+        nl: Deactiveer
+    SendSms:
+      COPY:
+        en: >-
+          Press next to send a verification code text message to your registered
+          phone number
+        nl: >-
+          Druk op volgende om een SMS met een verificatiecode naar je
+          geregistreerde telefoonnummer te sturen.
+    MaxAttempts:
+      COPY:
+        en: >-
+          Max attempts used. Please contact <a
+          href="mailto:help@eduid.nl">help@eduid.nl</a> for support
+        nl: >-
+          Maximum aantal pogingen bereikt. Neem contact op met <a
+          href="mailto:help@eduid.nl">help@eduid.nl</a> voor hulp.
+  BackupCodes:
+    Title:
+      COPY:
+        en: Recovery method
+        nl: Herstelmethode
+    Info:
+      COPY:
+        en: >-
+          You have installed and registered the eduID app. To change your
+          recovery method, you must first authenticate with the eduID app.
+        nl: >-
+          Je hebt de eduID app geïnstalleerd en geregistreerd. Om je
+          herstelmethode te wijzigen, moet je je eerst authenticeren met de
+          eduID app.
+    PhoneNumber:
+      COPY:
+        en: Phone number
+        nl: Mobiel nummer
+    StartTiqrAuthentication:
+      COPY:
+        en: Change
+        nl: Wijzig
+    Code:
+      COPY:
+        en: Code
+        nl: Code
+  UseApp:
+    Header:
+      COPY:
+        en: Check your eduID app
+        nl: Controleer je eduID app
+    Info:
+      COPY:
+        en: >-
+          We have sent a push-notification to your app, to verify it's you
+          trying to sign in.
+        nl: >-
+          We hebben een pushmelding naar je app gestuurd om te verifiëren dat
+          jij het bent die probeert in te loggen.
+    Scan:
+      COPY:
+        en: Scan this QR code with your eduID app
+        nl: Scan deze QR-code met je eduID app
+    NoNotification:
+      COPY:
+        en: No notification?
+        nl: Geen melding?
+    QrCodeLink:
+      COPY:
+        en: Create a QR-code
+        nl: Maak een QR-code
+    QrCodePostfix:
+      COPY:
+        en: and scan it.
+        nl: en scan deze.
+    Offline:
+      COPY:
+        en: When your device is offline, you must enter a
+        nl: 'Wanneer je apparaat offline is, moet je een '
+    OfflineLink:
+      COPY:
+        en: one time code.
+        nl: eenmalige code invoeren.
+    OpenEduIDApp:
+      COPY:
+        en: Open the app on this device
+        nl: Open de app op dit apparaat
+    Lost:
+      COPY:
+        en: Lost your app?
+        nl: Je app verloren?
+    LostLink:
+      COPY:
+        en: >-
+          Learn <a href="https://eduid.nl/help" target="_blank">how to register
+          a new one</a>.
+        nl: >-
+          Lees op <a href="https://eduid.nl/help" target="_blank">hoe je een
+          nieuwe moet registreren</a>.
+    TimeOut:
+      COPY:
+        en: Session timeout
+        nl: Sessie timeout
+    TimeOutInfoFirst:
+      COPY:
+        en: 'Your session timed out. Click this '
+        nl: 'Je sessie is verlopen. Klik op deze '
+    TimeOutInfoLast:
+      COPY:
+        en: ' to try again.'
+        nl: ' om het opnieuw te proberen.'
+    TimeOutInfoLink:
+      COPY:
+        en: link
+        nl: link
+    ResponseIncorrect:
+      COPY:
+        en: The response is invalid.
+        nl: De code is niet juist.
+    SuspendedResult:
+      COPY:
+        en: 'The verification from your eduID app failed. '
+        nl: 'De verficatie van je eduID app is mislukt. '
+    AccountNotSuspended:
+      COPY:
+        en: You can try again.
+        nl: Je kan het opnieuw proberen.
+    AccountSuspended:
+      COPY:
+        en: You'll have to wait %1{{s}} %2{{s}} before you can try again.
+        nl: >-
+          Je zal %1{{s}} %2{{s}} moeten wachten voordat je het opnieuw kan
+          proberen.
+    Minutes:
+      COPY:
+        en: minutes
+        nl: minuten
+    Minute:
+      COPY:
+        en: minute
+        nl: minuut
+  CreateFromInstitution:
+    Title:
+      COPY:
+        en: Create an eduID from your institution
+        nl: Maak een eduID van je instelling
+    Header:
+      COPY:
+        en: >-
+          You are about to create an eduID account that will be linked to your
+          institution account.
+        nl: >-
+          Je staat op het punt een eduID-account aan te maken dat wordt
+          gekoppeld aan je instellingsaccount.
+    AlreadyHaveAnEduID:
+      COPY:
+        en: Already have an eduID account? <a href="%1{{s}}">Login!</a>
+        nl: Heb je al een eduID-account? <a href="%1{{s}}">Login!</a>
+    Info:
+      COPY:
+        en: >-
+          When you proceed you will be asked to login at the institution you
+          want to link to your eduID. After a successful login you will come
+          back here.
+        nl: >-
+          Als je verder gaat, wordt je gevraagd om in te loggen bij de
+          instelling die je aan je eduID wilt koppelen. Na een succesvolle login
+          kom je hier terug.
+    StartFlow:
+      COPY:
+        en: Start registration
+        nl: Start registratie
+    Welcome:
+      COPY:
+        en: Your eduID account has been created
+        nl: Je eduID account is aangemaakt
+    WelcomeExisting:
+      COPY:
+        en: Your eduID account has been linked to your insitutional account
+        nl: Je eduID account is gekoppeld aan je instellingsaccount
+  LinkFromInstitution:
+    Header:
+      COPY:
+        en: Hi %1{{s}}
+        nl: Hi %1{{s}}
+    Info:
+      COPY:
+        en: >-
+          You have successfully logged in at your institution. Please enter your
+          personal email which will be your eduID email.
+        nl: >-
+          Je bent succesvol ingelogd bij je instelling. Voer nu je persoonlijke
+          e-mail in, dit wordt je eduID e-mail.
+    Email:
+      COPY:
+        en: Your email address
+        nl: Je e-mail
+    EmailPlaceholder:
+      COPY:
+        en: e.g. user@gmail.com
+        nl: e.g. user@gmail.com
+    EmailForbidden:
+      COPY:
+        en: >-
+          The creation of an eduID account for this email-domain is denied,
+          please contact <a href="mailto:help@eduid.nl">help@eduid.nl</a> if you
+          think this email-domain is valid.
+        nl: >-
+          Het aanmaken van een eduID-account met deze e-mail is niet toegestaan,
+          neem contact op met <a href="mailto:help@eduid.nl">help@eduid.nl</a>
+          als je denkt dat het e-maildomein geldig is.
+    EmailInUse1:
+      COPY:
+        en: This email is already in use.
+        nl: Dit e-mailadres is al in gebruik.
+    EmailInUse2:
+      COPY:
+        en: 'Try another, or '
+        nl: 'Probeer een andere, of '
+    EmailInUse3:
+      COPY:
+        en: ' link with this eduID account.'
+        nl: ' koppel met dit eduID account.'
+    InvalidEmail:
+      COPY:
+        en: Invalid email
+        nl: Ongeldig e-mailadres
+    InstitutionDomainNameWarning:
+      COPY:
+        en: >-
+          It looks like you entered an institutional email address. Please note
+          that when you no longer study at or work for that institution, you can
+          no longer use that email address.
+        nl: >-
+          Het lijkt erop dat je een instellings e-mailadres hebt ingevoerd. Houd
+          er rekening mee dat wanneer je niet meer studeert of werkt bij die
+          instelling, je geen toegang meer hebt tot dat e-mailadres.
+    InstitutionDomainNameWarning2:
+      COPY:
+        en: We recommend using your personal email address for eduID.
+        nl: >-
+          We raden je aan om je persoonlijke e-mailadres te gebruiken voor
+          eduID.
+    AllowedDomainNamesError:
+      COPY:
+        en: Domain name %1{{s}} not allowed.
+        nl: Domeinnaam %1{{s}} niet toegestaan.
+    AllowedDomainNamesError2:
+      COPY:
+        en: eduID is restricted to be used only for allowed domains.
+        nl: >-
+          eduID is beperkt om alleen te worden gebruikt voor toegestane
+          domeinen.
+    AgreeWithTerms:
+      COPY:
+        en: >-
+          <span>I agree with <a tabindex='-1'
+          href='https://eduid.nl/terms-of-use/' target='_blank'>the terms of
+          service.</a> I also understand <a tabindex='-1'
+          href='https://eduid.nl/privacy_policy/' target='_blank'>the privacy
+          policy</a>.</span>
+        nl: >-
+          <span>Ik ga akkoord met <a tabindex='-1'
+          href='https://eduid.nl/gebruiksvoorwaarden/' target='_blank'>de
+          voorwaarden.</a> En ik begrijp <a tabindex='-1'
+          href='https://eduid.nl/privacy/' target='_blank'>de
+          privacyverklaring</a>.</span>
+    RequestEduIdButton:
+      COPY:
+        en: Request your eduID
+        nl: Vraag je eduID aan
+  PollFromInstitution:
+    Header:
+      COPY:
+        en: Check your email!
+        nl: Open je mailbox!
+    Awaiting:
+      COPY:
+        en: Waiting for you to click the link…
+        nl: Wachten tot je op de link klikt…
+    OpenGMail:
+      COPY:
+        en: Open Gmail.com
+        nl: Open Gmail.com
+    OpenOutlook:
+      COPY:
+        en: Open Outlook.com
+        nl: Open Outlook.com
+    Spam:
+      COPY:
+        en: Can't find the email? Check your spam folder.
+        nl: Kan je de e-mail niet vinden? Kijk in je spam.
+    LoggedIn:
+      COPY:
+        en: Login succeeded!
+        nl: Inloggen geslaagd!
+    LoggedInInfo:
+      COPY:
+        en: You can close this tab / window.
+        nl: Je kan dit tabblad / venster sluiten.
+    TimeOutReached:
+      COPY:
+        en: Timeout!
+        nl: Timeout!
+    TimeOutReachedInfo:
+      COPY:
+        en: >-
+          Your link has expired. Please go back to the service you where heading
+          to and try again.
+        nl: >-
+          Je magische link is verlopen. Ga terug naar de dienst waar je heen wilt
+          en probeer het opnieuw.
+    Resend:
+      COPY:
+        en: Still can't find the email?
+        nl: E-mail nog steeds niet gevonden?
+    ResendLink:
+      COPY:
+        en: Send the email again.
+        nl: ' Stuur de e-mail opnieuw.'
+    MailResend:
+      COPY:
+        en: >-
+          Check your inbox again. We've sent another email with a validation
+          link.
+        nl: >-
+          Check je inbox. We hebben je de e-mail met de magische link opnieuw
+          verzonden.
+  Login:
+    RequestEduId:
+      COPY:
+        en: No eduID?
+        nl: Geen eduID?
+    RequestEduId2:
+      COPY:
+        en: Create one!
+        nl: Maak het aan!
+    LoginEduId:
+      COPY:
+        en: Login!
+        nl: Login
+    Whatis:
+      COPY:
+        en: What is eduID?
+        nl: Wat is eduID?
+    Header:
+      COPY:
+        en: Sign in with eduID
+        nl: Login met eduID
+    HeaderSubTitle:
+      COPY:
+        en: 'to continue to '
+        nl: 'om door te gaan naar '
+    Header2:
+      COPY:
+        en: Request your eduID
+        nl: Vraag een eduID aan
+    Trust:
+      COPY:
+        en: Trust this computer
+        nl: Vertrouw deze computer
+    LoginOptions:
+      COPY:
+        en: Other sign-in options
+        nl: Andere inlogmanieren
+    LoginOptionsToolTip:
+      COPY:
+        en: >-
+          We offer 3 ways to sign-in:</br><ol><li>You can receive a magic link
+          sent to your email address.</li><li>You can use a password. You must
+          first set this up in My eduID.</li><li>You can use a passkey. You
+          must first set this up in My eduID.</li></ol>
+        nl: >-
+          We bieden drie manieren om in te loggen:</br><ol><li>Je kunt een
+          magische link ontvangen op je e-mailadres.</li><li>Je kunt een
+          wachtwoord gebruiken. Dit dien je eerst in Mijn eduID in te
+          stellen.</li><li>Je kunt een passkey gebruiken. Dit dien
+          je eerst in Mijn eduID in te stellen.</li></ol>
+    Email:
+      COPY:
+        en: Your email address
+        nl: Je e-mailadres
+    EmailPlaceholder:
+      COPY:
+        en: e.g. user@gmail.com
+        nl: bijv. naam@gmail.com
+    PasswordPlaceholder:
+      COPY:
+        en: Password
+        nl: Wachtwoord
+    FamilyName:
+      COPY:
+        en: Last name
+        nl: Achternaam
+    GivenName:
+      COPY:
+        en: First name
+        nl: Voornaam
+    FamilyNamePlaceholder:
+      COPY:
+        en: e.g. Berners-Lee
+        nl: bijv. Berners-Lee
+    GivenNamePlaceholder:
+      COPY:
+        en: e.g. Tim
+        nl: bijv. Tim
+    SendMagicLink:
+      COPY:
+        en: Email a magic link
+        nl: Mail een magische link
+    LoginWebAuthn:
+      COPY:
+        en: Login with passkey
+        nl: Login in met een passkey
+    UsePassword:
+      COPY:
+        en: type a password.
+        nl: typ een wachtwoord
+    UsePasswordNoWebAuthn:
+      COPY:
+        en: Type a password.
+        nl: Typ een wachtwoord
+    UseMagicLink:
+      COPY:
+        en: Email a magic link
+        nl: Gebruik magische link
+    UseMagicLinkNoWebAuthn:
+      COPY:
+        en: Email a magic link.
+        nl: Gebruik magische link.
+    UseWebAuth:
+      COPY:
+        en: Sign in with a security key
+        nl: Login in met een beveligingssleutel
+    UseOr:
+      COPY:
+        en: or
+        nl: ' of '
+    RequestEduIdButton:
+      COPY:
+        en: Request your eduID
+        nl: Vraag een eduID aan
+    RememberMe:
+      COPY:
+        en: Stay logged in
+        nl: Ingelogd blijven
+    Password:
+      COPY:
+        en: Your password
+        nl: Je wachtwoord
+    PasswordForgotten:
+      COPY:
+        en: 'Forgot your password or prefer a magic link? '
+        nl: 'Wachtwoord vergeten of liever een magische link? '
+    PasswordForgottenLink:
+      COPY:
+        en: Receive an email to sign in instantly.
+        nl: Ontvang een e-mail om direct in te loggen.
+    Login:
+      COPY:
+        en: Login
+        nl: Login
+    Create:
+      COPY:
+        en: Create
+        nl: Aanmaken
+    NewTo:
+      COPY:
+        en: New to eduID?
+        nl: Voor het eerst bij eduID?
+    CreateAccount:
+      COPY:
+        en: ' Create an account.'
+        nl: Maak een account aan.
+    UseExistingAccount:
+      COPY:
+        en: Use existing account
+        nl: Gebruik een bestaand account
+    InvalidEmail:
+      COPY:
+        en: Invalid email
+        nl: Ongeldig e-mailadres
+    RequiredAttribute:
+      COPY:
+        en: '%1{{s}} is required'
+        nl: '%1{{s}} is verplicht'
+    EmailInUse1:
+      COPY:
+        en: This email is already in use.
+        nl: Dit e-mailadres is al in gebruik.
+    EmailInUse2:
+      COPY:
+        en: 'Try another, or '
+        nl: 'Probeer een andere, of '
+    EmailInUse3:
+      COPY:
+        en: ' login with this eduID account.'
+        nl: ' log in met dit eduID account.'
+    EmailForbidden:
+      COPY:
+        en: >-
+          The creation of an eduID account for this email-domain is denied,
+          please contact <a href="mailto:help@eduid.nl">help@eduid.nl</a> if you
+          think this email-domain is valid.
+        nl: >-
+          Het aanmaken van een eduID-account met deze email is niet toegestaan,
+          neem contact op met <a href="mailto:help@eduid.nl">help@eduid.nl</a>
+          als je denkt dat het e-maildomein geldig is.
+    EmailNotFound1:
+      COPY:
+        en: We could not find an eduID with that email.
+        nl: We konden geen eduID vinden met deze mail.
+    EmailNotFound2:
+      COPY:
+        en: 'Try another, or '
+        nl: 'Probeer een andere, of '
+    EmailNotFound3:
+      COPY:
+        en: create a new eduID account.
+        nl: maak een nieuw eduID account aan.
+    EmailOrPasswordIncorrect:
+      COPY:
+        en: Email or password are incorrect
+        nl: E-mailadres of wachtwoord is niet juist
+    InstitutionDomainNameWarning:
+      COPY:
+        en: >-
+          It looks like you entered an institutional email address. Please note
+          that when you no longer study at or work for that institution, you can
+          no longer use that email address.
+        nl: >-
+          Het lijkt erop dat je een instellings e-mailadres hebt ingevoerd. Houd
+          er rekening mee dat wanneer je niet meer studeert of werkt bij die
+          instelling, je geen toegang meer hebt tot dat e-mailadres.
+    InstitutionDomainNameWarning2:
+      COPY:
+        en: We recommend using your personal email address for eduID.
+        nl: >-
+          We raden je aan om je persoonlijke e-mailadres te gebruiken voor
+          eduID.
+    AllowedDomainNamesError:
+      COPY:
+        en: Domain name %1{{s}} not allowed.
+        nl: Domeinnaam %1{{s}} niet toegestaan.
+    AllowedDomainNamesError2:
+      COPY:
+        en: eduID is restricted to be used only for allowed domains.
+        nl: >-
+          eduID is beperkt om alleen te worden gebruikt door toegestane
+          domeinen.
+    PasswordDisclaimer:
+      COPY:
+        en: >-
+          Make sure it's at least 15 characters long OR at least 8 characters
+          when including a number and an UpperCase letter.
+        nl: >-
+          Je wachtwoord moet minimaal 15 karakters lang zijn, of minimaal 8 als
+          het een hoofdletter en een getal bevat.
+    AlreadyGuestAccount:
+      COPY:
+        en: Already have an eduID?
+        nl: Heb je al een eduID?
+    UsePasswordLink:
+      COPY:
+        en: Type a password anyway
+        nl: Gebruik toch een wachtwoord
+    UseWebAuthnLink:
+      COPY:
+        en: Or use a passkey
+        nl: Of gebruik een passkey
+    AgreeWithTerms:
+      COPY:
+        en: >-
+          <span>I agree with <a tabindex='-1'
+          href='https://eduid.nl/terms-of-use/' target='_blank'>the terms of
+          service.</a> I also understand <a tabindex='-1'
+          href='https://eduid.nl/privacy_policy/' target='_blank'>the privacy
+          policy</a>.</span>
+        nl: >-
+          <span>Ik ga akkoord met <a tabindex='-1'
+          href='https://eduid.nl/gebruiksvoorwaarden/' target='_blank'>de
+          voorwaarden.</a> En ik begrijp <a tabindex='-1'
+          href='https://eduid.nl/privacyverklaring/' target='_blank'>de
+          privacyverklaring</a>.</span>
+    Next:
+      COPY:
+        en: Next
+        nl: Volgende
+    UseOtherAccount:
+      COPY:
+        en: Use another account
+        nl: Gebruik een andere login
+    NoAppAccess:
+      COPY:
+        en: No access to your app?
+        nl: Heb je de app niet bij de hand?
+    NoMailAccess:
+      COPY:
+        en: No access to your mail?
+        nl: Kun je niet bij je e-mail?
+    ForgotPassword:
+      COPY:
+        en: Forgot your password?
+        nl: Wachtwoord vergeten?
+    UseAnother:
+      COPY:
+        en: Use another
+        nl: Gebruik een andere
+    OptionsLink:
+      COPY:
+        en: sign-in option.
+        nl: inlogmethode.
+  Options:
+    Header:
+      COPY:
+        en: How do you want to login?
+        nl: Hoe wil je inloggen?
+    NoLogin:
+      COPY:
+        en: Still not able to login?
+        nl: Kun je nog niet inloggen?
+    Learn:
+      COPY:
+        en: Learn how to
+        nl: Zie hoe je jouw
+    LearnLink:
+      COPY:
+        en: recover your acccount
+        nl: account kunt herstellen
+    UseApp:
+      COPY:
+        en: Use the <strong>eduID app</strong> to sign in with your mobile device.
+        nl: Gebruik de <strong>eduID app</strong> om in te loggen met je mobiel.
+    UseWebAuthn:
+      COPY:
+        en: Use your <strong>passkey</strong>.
+        nl: Gebruik je <strong>passkey</strong>.
+    UseLink:
+      COPY:
+        en: Get a <strong>magic link</strong> sent to your inbox.
+        nl: Ontvang een <strong>magische link</strong> in je inbox.
+    UsePassword:
+      COPY:
+        en: Use <strong>a password</strong>.
+        nl: Gebruik <strong>een wachtwoord</strong>.
+  MagicLink:
+    OpenMailTitle:
+      COPY:
+        en: Open the mail app
+        nl: Open de mail app
+    OpenMailDisclaimer:
+      COPY:
+        en: If you can't find the email? Also check the spam folder
+        nl: Kun je de mail niet vinden? Kijk ook in de spam folder
+    Header:
+      COPY:
+        en: Check your email
+        nl: Controleer je e-mail
+    Info:
+      COPY:
+        en: To sign in, click the link in the email we sent to %1{{s}}.
+        nl: Om in te loggen, klik op de link in de e-mail die verstuurd is aan %1{{s}}.
+    Awaiting:
+      COPY:
+        en: Waiting for you to click the link…
+        nl: Wachten tot je op de link klikt…
+    OpenGMail:
+      COPY:
+        en: Open Gmail.com
+        nl: Open Gmail.com
+    OpenOutlook:
+      COPY:
+        en: Open Outlook.com
+        nl: Open Outlook.com
+    Spam:
+      COPY:
+        en: "Can't find it? Check your spam folder."
+        nl: Kun je de mail niet vinden? Kijk ook in de spam folder.
+    LoggedIn:
+      COPY:
+        en: Login succeeded!
+        nl: Inloggen geslaagd!
+    LoggedInInfo:
+      COPY:
+        en: You can close this tab / window.
+        nl: Je kan dit tabblad / venster sluiten.
+    TimeOutReached:
+      COPY:
+        en: Timeout!
+        nl: Timeout!
+    TimeOutReachedInfo:
+      COPY:
+        en: >-
+          Your link has expired. Please go back to the service you where heading
+          to and try again.
+        nl: >-
+          Je magische link is verlopen. Ga terug naar de dienst waar je heen wilt
+          en probeer het opnieuw.
+    Resend:
+      COPY:
+        en: Still can't find the email?
+        nl: E-mail nog steeds niet gevonden?
+    ResendLink:
+      COPY:
+        en: Send the email again.
+        nl: ' Stuur de e-mail opnieuw.'
+    MailResend:
+      COPY:
+        en: Check your inbox again. We've sent another email with a magic link.
+        nl: >-
+          Check je inbox. We hebben je de e-mail met de magische link opnieuw
+          verzonden.
+    LoggedInDifferentDevice:
+      COPY:
+        en: Verification code required
+        nl: Verificatiecode vereist
+    LoggedInDifferentDeviceInInfo:
+      COPY:
+        en: >-
+          The magic link we sent you opened in a different browser than the one
+          used to request the magic link. As an extra security measure you must
+          enter a verification code.
+        nl: >-
+          Je hebt de magische link gebruikt in een andere browser dan van
+          waaruit je de magische link hebt aangevraagd. Als extra
+          veiligheidsmaatregel moet je een verificatiecode invoeren.
+    LoggedInDifferentDeviceInInfo2:
+      COPY:
+        en: We sent you an extra email with the verification code.
+        nl: We hebben je een extra e-mail gestuurd met de verificatiecode.
+    VerificationCodeError:
+      COPY:
+        en: Wrong verification code.
+        nl: Verkeerde verificatiecode.
+    Verify:
+      COPY:
+        en: Verify
+        nl: Verifïeer
+  Confirm:
+    Header:
+      COPY:
+        en: Success!
+        nl: Gelukt!
+    Thanks:
+      COPY:
+        en: Your eduID account has been created. Proceed to your destination.
+        nl: Je eduID is geactiveerd. Ga door naar je bestemming.
+  ConfirmStepup:
+    Header:
+      COPY:
+        en: Thanks!
+        nl: Gelukt!
+    Proceed:
+      COPY:
+        en: Go to %1{{s}}
+        nl: Ga naar %1{{s}}
+    ConditionMet:
+      COPY:
+        en: All conditions are met.
+        nl: Je hebt aan alle voorwaarden voldaan.
+  Stepup:
+    Header:
+      COPY:
+        en: One more thing!
+        nl: Nog één ding!
+    Info:
+      COPY:
+        en: >-
+          To proceed to <strong>%1{{s}}</strong>, you must meet the following
+          condition(s).
+        nl: >-
+          Om door te gaan naar <strong>%1{{s}}</strong>, moet je nog aan de
+          volgende voorwaarde(n) voldoen.
+    Link:
+      COPY:
+        en: Verify this via SURFconext
+        nl: Verifieer dit via SURFconext
+    LinkExternalValidation:
+      COPY:
+        en: Verify this via ReadID
+        nl: Verifieer dit via ReadID
+  Success:
+    Title:
+      COPY:
+        en: Login almost done!
+        nl: Inloggen bijna geslaagd!
+    Info:
+      COPY:
+        en: >-
+          Please go back to the screen where you requested the magic link and
+          follow the instructions there.<br/><br/>You can close this tab /
+          window.
+        nl: >-
+          Ga terug naar het scherm waar je de magische link hebt aangevraagd en
+          volg de instructies daar op.<br/><br/>Je kunt dit tabblad / venster
+          sluiten.
+  Expired:
+    Title:
+      COPY:
+        en: Expired magic link
+        nl: Verlopen magische link
+    Info:
+      COPY:
+        en: The magic link you used is either expired or has already been used.
+        nl: >-
+          De magische link die je hebt gebruikt, is verlopen of al een keer
+          gebruikt
+    Back:
+      COPY:
+        en: Go to eduid.nl
+        nl: Ga naar eduid.nl
+  MaxAttempt:
+    Title:
+      COPY:
+        en: Maximum attempts reached
+        nl: Maximum aantal pogingen bereikt
+    Info:
+      COPY:
+        en: You've reached the maximum verification attempts.
+        nl: Je hebt het maximale aantal verificatiepogingen bereikt.
+  WebAuthn:
+    Info:
+      COPY:
+        en: Add security key
+        nl: Voeg een beveligingssleutel toe
+    BrowserPrompt:
+      COPY:
+        en: >-
+          Click the button below to add a security key to your eduID account.
+          Please follow the instructions given by your browser.
+        nl: >-
+          Klik op de onderstaande knop om een beveligingssleutel toe te voegen
+          aan je eduID-account. Volg daarbij de instructies van je browser op.
+    Start:
+      COPY:
+        en: Start
+        nl: Start
+    Header:
+      COPY:
+        en: Sign in with a passkey
+        nl: Log in met een passkey
+    Explanation:
+      COPY:
+        en: >-
+          Your device will open a security window. Follow the instructions there
+          to sign in.
+        nl: >-
+          Er wordt een nieuw venster geopend. Volg de instructies om in te
+          loggen.
+    Next:
+      COPY:
+        en: Log in with a passkey
+        nl: Log in met een passkey
+    Error:
+      COPY:
+        en: Currently you can not use your passkey to login.
+        nl: De passkey kan niet gebruikt worden.
+  UseLink:
+    Header:
+      COPY:
+        en: Request a magic link
+        nl: Vraag een magische link aan
+    Next:
+      COPY:
+        en: Email a magic link
+        nl: Email een magische link
+  UsePassword:
+    Header:
+      COPY:
+        en: Enter your password
+        nl: Voer je wachtwoord in
+    PasswordIncorrect:
+      COPY:
+        en: Password is incorrect
+        nl: Wachtwoord is onjuist
+  WebAuthnTest:
+    Info:
+      COPY:
+        en: Test security key
+        nl: Test een beveligingssleutel
+    BrowserPrompt:
+      COPY:
+        en: >-
+          Click the button below to test a security key. Please follow the
+          instructions given by your browser.
+        nl: >-
+          Klik op de onderstaande knop om een beveligingssleutel te testen. Volg
+          daarbij de instructies van je browser op.
+    Start:
+      COPY:
+        en: Test
+        nl: Test
+  AffiliationMissing:
+    Header:
+      COPY:
+        en: Account linked, but…
+        nl: Account is gekoppeld, maar…
+    Info:
+      COPY:
+        en: >-
+          Your eduID is successfully linked, however the institution you choose
+          did not provide the correct affiliation.
+        nl: >-
+          Je eduID is succesvol gekoppeld, maar de instelling die je hebt
+          gekozen heeft niet de juiste attributen teruggegeven.
+    Proceed:
+      COPY:
+        en: You can try to link to another institution or proceed to %1{{s}}.
+        nl: >-
+          Je kan het nogmaals met een andere instelling proberen of doorgaan
+          naar %1{{s}}.
+    ProceedLink:
+      COPY:
+        en: Proceed
+        nl: Doorgaan
+    RetryLink:
+      COPY:
+        en: Retry
+        nl: Opnieuw proberen
+  ValidNameMissing:
+    Header:
+      COPY:
+        en: Account linked, but…
+        nl: Account is gekoppeld, maar…
+    Info:
+      COPY:
+        en: >-
+          Your eduID is successfully linked, however the institution you choose
+          did not provide a valid name.
+        nl: >-
+          Je eduID is succesvol gekoppeld, maar de instelling die je hebt
+          gekozen heeft niet de juiste attributen teruggegeven.
+    Proceed:
+      COPY:
+        en: You can try to link to another institution or proceed to %1{{s}}.
+        nl: >-
+          Je kan het nogmaals met een andere instelling proberen of doorgaan
+          naar %1{{s}}.
+    ProceedLink:
+      COPY:
+        en: Proceed
+        nl: Doorgaan
+    RetryLink:
+      COPY:
+        en: Retry
+        nl: Opnieuw proberen
+  StepUpExplanation:
+    Linked_institution:
+      COPY:
+        en: Your eduID account must be linked to a trusted party.
+        nl: Je eduID-account moet gekoppeld zijn aan een vertrouwde instelling.
+    Validate_names:
+      COPY:
+        en: Your first name and last name must be verified by a trusted party.
+        nl: >-
+          Je voornaam en achternaam moeten worden geverifieerd door een
+          vertrouwde instelling.
+    Affiliation_student:
+      COPY:
+        en: >-
+          You must prove that you are following education by linking your eduID
+          account to a trusted party.
+        nl: >-
+          Je moet aantonen dat je onderwijs volgt door je eduID-account te
+          koppelen aan een vertrouwde instelling.
+  StepUpVerification:
+    Linked_institution:
+      COPY:
+        en: Your eduID account is linked to a trusted party.
+        nl: Je eduID-account is gekoppeld aan een vertrouwde instelling.
+    Validate_names:
+      COPY:
+        en: Your first name and last name are verified by a trusted party.
+        nl: >-
+          Je voornaam en achternaam zijn geverifieerd door een vertrouwde
+          instelling.
+    Affiliation_student:
+      COPY:
+        en: >-
+          You have proven that you are following education by linking your eduID
+          account to a trusted party.
+        nl: >-
+          Je hebt aangetoont dat je onderwijs volgt doordat je eduID-account is
+          gekoppeld aan een vertrouwde instelling.
+  NudgeApp:
+    New:
+      COPY:
+        en: Your eduID account has been created!
+        nl: Je eduID is aangemaakt!
+    Header:
+      COPY:
+        en: Want to sign in quicker and more secure next time?
+        nl: Wil je de volgende keer sneller en veiliger inloggen?
+    Info:
+      COPY:
+        en: >-
+          Get the <strong>eduID app</strong> and securely sign in without
+          passwords or accessing your email. It will only take a minute.
+        nl: >-
+          Installeer de <strong>eduID app</strong> en log veiliger in zonder
+          wachtwoord of het openen van je email. Het kost je maar een minuut.
+    'No':
+      COPY:
+        en: No thanks
+        nl: Nee bedankt
+    NoLink:
+      COPY:
+        en: /proceed
+        nl: /proceed
+    'Yes':
+      COPY:
+        en: Get it now
+        nl: Installeer nu
+    YesLink:
+      COPY:
+        en: /eduid-app
+        nl: /eduid-app
+  AppRequired:
+    Header:
+      COPY:
+        en: Login with the eduID app
+        nl: Log in met de eduID app
+    Info:
+      COPY:
+        en: Login with the eduID app to ensure your identity.
+        nl: >-
+          Dienst <strong>%1{{s}}</strong> heeft een login verzocht met de eduID
+          app om je identiteit te bevestigen.
+    Info2:
+      COPY:
+        en: >-
+          Get the <strong>eduID app</strong> and securely sign in without
+          passwords or accessing your email. It will only take a minute. Please
+          click <strong>Proceed</strong> for the next step.
+        nl: >-
+          Download de <strong>eduID-app</strong> en log veilig in zonder
+          wachtwoord of toegang tot je e-mail. Het duurt maar een minuut. Klik
+          op <strong>Doorgaan</strong> voor de volgende stap.
+    Cancel:
+      COPY:
+        en: /cancel
+        nl: /cancel
+    'No':
+      COPY:
+        en: I refuse
+        nl: Ik weiger
+    YesLink:
+      COPY:
+        en: /proceed
+        nl: /proceed
+    'Yes':
+      COPY:
+        en: Proceed
+        nl: Doorgaan
+    Warning:
+      COPY:
+        en: >-
+          Login without the eduApp is strongly discouraged. The service %1{{s}}
+          will not receive your attributes.
+        nl: >-
+          Het wordt sterk afgeraden om zonder de eduID-app in te loggen. De
+          dienst %1{{s}} zal niet je attributen ontvangen.
+    WarningTitle:
+      COPY:
+        en: Get the eduApp
+        nl: Download eduID-app
+    ConfirmLabel:
+      COPY:
+        en: Get the eduApp
+        nl: Download eduID-app
+    CancelLabel:
+      COPY:
+        en: I still refuse
+        nl: Ik weiger echt
+  SubContent:
+    WarningTitle:
+      COPY:
+        en: Please reconsider
+        nl: Weet je het zeker?
+    Warning:
+      COPY:
+        en: >-
+          The service your logging into has explicitly requested you login using
+          your eduID app. If you login with a different method, this service
+          will not receive your attributes.
+        nl: >-
+          De dienst waarop je inlogt heeft expliciet gevraagd om in te loggen
+          met je eduID app. Als je met een andere methode inlogt, ontvangt deze
+          service je attributen niet.
+    ConfirmLabel:
+      COPY:
+        en: Change login option anyway
+        nl: Verander login optie
+    CancelLabel:
+      COPY:
+        en: Did not know that
+        nl: Dat wist ik niet
+  PinAndBioMetrics:
+    SetupBiometrics:
+      COPY:
+        en: Set up biometric access
+        nl: Stel biometrische toegang in
+    Skip:
+      COPY:
+        en: Skip this
+        nl: Overslaan
+    BiometricsApproval:
+      COPY:
+        en: Biometric approval
+        nl: Biometrische goedkeuring
+    BiometricsExplain:
+      COPY:
+        en: Do you want to use your biometrics to access the eduID app more easily?
+        nl: Wil je met je biometrie makkelijker toegang krijgen tot de eduID app?
+    BiometricsExplainBoldPart:
+      COPY:
+        en: biometrics
+        nl: biometrie
+    BiometricsPrompt:
+      COPY:
+        en: Using Biometrics to login
+        nl: Gebruik Biometrics om in te loggen
+    SkipAlertTitle:
+      COPY:
+        en: Proceed without using biometric access?
+        nl: Doorgaan zonder gebruik te maken van biometrische toegang?
+    SkipAlertText:
+      COPY:
+        en: This permanently disables this feature
+        nl: Hierdoor wordt deze functie permanent uitgeschakeld
+    FirstPinScreenSelectTitle:
+      COPY:
+        en: Select a PIN code
+        nl: Kies een PIN
+    PinScreenEnterTitle:
+      COPY:
+        en: Enter your eduID PIN
+        nl: PIN invoeren
+    FirstPinScreenText:
+      COPY:
+        en: To use the eduID app you need a PIN code
+        nl: Om de eduID te kunnen gebruiken heeft u een PIN nodig
+    SecondPinScreenSelectTitle:
+      COPY:
+        en: Repeat selected PIN
+        nl: Herhaal uw PIN
+    SecondPinScreenText:
+      COPY:
+        en: Please enter your PIN code again
+        nl: Herhaal uw PIN nogmaals AUB
+    VerifyPinScreenText:
+      COPY:
+        en: Enter the PIN and press OK
+        nl: Voer uw PIN in en druk op OK
+    SignIn:
+      COPY:
+        en: Log in
+        nl: Inloggen
+    OKButton:
+      COPY:
+        en: OK
+        nl: OK
+    LoginRequest:
+      COPY:
+        en: Request to log on
+        nl: Verzoek om in te loggen
+    DoYouWantToLogInTo:
+      COPY:
+        en: Do you want to log in to
+        nl: Wil je inloggen bij
+    EnteredPinNotEqual:
+      COPY:
+        en: The entered PIN codes were not equal
+        nl: De ingevoerde pincodes waren niet gelijk
+    RetryPin:
+      COPY:
+        en: Oops, let's try again
+        nl: Oeps, laten we het opnieuw proberen
+    VerifyPin:
+      COPY:
+        en: Verify this pin code
+        nl: Controleer pincode
+    Button:
+      Retry:
+        COPY:
+          en: Try again
+          nl: Probeer opnieuw
+      Back:
+        COPY:
+          en: Back
+          nl: Terug
+    CheckMessages:
+      COPY:
+        en: Check your messages
+        nl: Controleer je berichten
+    EnterSixDigitCode:
+      COPY:
+        en: Enter the six-digit code we sent to your phone to continue
+        nl: Voer de zescijferige code in die we naar je telefoon hebben gestuurd om door te gaan
+    SixDigitCode:
+      COPY:
+        en: six-digit
+        nl: zescijferige
+    Authenticate:
+      COPY:
+        en: Authenticate
+        nl: Authenticeren
+    AuthenticateForUseTitle:
+      COPY:
+        en: To use the eduID for authentication you need to enter your PIN code
+        nl: Om de eduID te gebruiken voor authenticatie moet je jouw pincode invoeren
+  Generic:
+    RequestError:
+      Title:
+        COPY:
+          en: "Cannot complete request"
+          nl: "Het verzoek kan niet worden voltooid"
+      Description:
+        COPY:
+          en: "Unexpected error: %1{{s}}, please retry."
+          nl: "Onverwachte fout: %1{{s}}, probeer het opnieuw."
+      CloseButton:
+        COPY:
+          en: "Close"
+          nl: "Sluiten"
+  WelcomeToApp:
+    Title:
+      COPY:
+        en: Welcome! Use this app to
+        nl: Welkom! Gebruik deze app om
+    Quickly:
+      Text:
+        COPY:
+          en: to educational services
+          nl: op educatieve diensten
+      Highlight:
+        COPY:
+          en: Quickly login
+          nl: In te loggen
+    ViewWhat:
+      Text:
+        COPY:
+          en: what details of your eduID get shared with those services
+          nl: welke gegevens van je eduID worden gedeeld met die diensten
+      Highlight:
+        COPY:
+          en: View
+          nl: Te bekijken
+    VerifyYour:
+      Text:
+        COPY:
+          en: so you can access more secure services
+          nl: zodat je toegang krijgt tot beter beveiligde services
+      Highlight:
+        COPY:
+          en: Verify your identity
+          nl: Je identiteit te verifiëren
+    GotItButton:
+      COPY:
+        en: OK, got it!
+        nl: Ok, begrepen!
+    ReturnBrowserTitle:
+      COPY:
+        en: Return to your web browser
+        nl: Keer terug naar je webbrowser
+    ReturnBrowserText:
+      COPY:
+        en: Continue in your browser to finish the connection of this app to your eduID account
+        nl: Ga verder in je browser om de verbinding van deze app met jouw eduID account te voltooien
+  CreateEduID:
+    ErrorCreateFailed:
+      Title:
+        COPY:
+          en: Could not create your eduID account!
+          nl: Je eduID aanmaken is niet gelukt!
+      Message:
+        COPY:
+          en: The account creation has failed. Please try again.
+          nl: Het account aanmaken is mislukt. Probeer het nogmaals.
+    LandingPage:
+      MainText:
+        COPY:
+          en: Your account for Education and Research
+          nl: Jouw account voor Onderwijs en Onderzoek
+      SignInButton:
+        COPY:
+          en: Sign in
+          nl: Inloggen
+      ScanQrButton:
+        COPY:
+          en: Scan
+          nl: Scan
+      NoEduIdButton:
+        COPY:
+          en: I don't have an eduID
+          nl: Ik heb nog geen eduID
+    FirstTimeDialog:
+      ConnectButtonTitle:
+        COPY:
+          en: Connect your school/institution
+          nl: Sluit je school/instelling aan
+      MainTextTitle:
+        FirstPart:
+          COPY:
+            en: Are you studying in NL?
+            nl: Studeer je in Nederland?
+        SecondPart:
+          COPY:
+            en: Connect your institution!
+            nl: Sluit dan je instelling aan!
+      MainText:
+        COPY:
+          en: >-
+            When you study in the Netherlands and you want to use eduID to logon to an educational services,
+            we need to be sure it is you and not someone impersonating you.
+
+
+            You must therefore add the following information to your eduID:
+          nl: >-
+            Wanneer je in Nederland studeert en je wilt met eduID inloggen bij een onderwijsdienst,
+            moeten we er zeker van zijn dat jij het bent en niet iemand die zich voordoet als jij.
+
+
+            Daarom moet je de volgende gegevens toevoegen aan jouw eduID:
+      MainTextPoint1:
+        COPY:
+          en: Validation of your full name by a third party
+          nl: Validatie van je volledige naam door een derde partij
+      MainTextPoint2:
+        COPY:
+          en: Proof of being a student
+          nl: Bewijs dat je student bent
+      MainTextPoint3:
+        COPY:
+          en: Your current institution
+          nl: Je huidige instelling
+
+      MainTextFirstBoldPart:
+        COPY:
+          en: When you study in the Netherlands
+          nl: Wanneer je in Nederland studeert
+      MainTextSecondBoldPart:
+        COPY:
+          en: >-
+            You must therefore add the following information to your eduID:
+          nl: >-
+            Daarom moet je de volgende gegevens toevoegen aan jouw eduID:
+      AddInformationText:
+        COPY:
+          en: Add this information by connecting your school/institution via SURFconext
+          nl: Voeg deze informatie toe door je school/instelling aan te sluiten via SURFconext
+      AddInformationBoldPart:
+        COPY:
+          en: Add this information
+          nl: Voeg deze informatie toe
+      SkipButtonTitle:
+        COPY:
+          en: Skip this
+          nl: Sla dit over
+    Explanation:
+      MainTitleLabel:
+        COPY:
+          en: Don't have an eduID yet?
+          nl: Heb je nog geen eduID?
+      MainExplanationText:
+        COPY:
+          en: |
+            eduID is a central account for users associated with Dutch education and research. It is yours and exists independent of an educational institution.
+
+            • Use it to login to several services connected to SURFconext.
+            • Users without an institution account can also request an eduID.
+            • eduID is a lifelong account. It stays valid after you graduate.
+          nl: |
+            eduID is een centraal account voor gebruikers verbonden aan het Nederlandse onderwijs en onderzoek. Het is van jou en bestaat onafhankelijk van een onderwijsinstelling.
+
+            • Hiermee log je in op verschillende diensten die zijn aangesloten op SURFconext.
+            • Gebruikers zonder instellingsaccount kunnen ook een eduID aanvragen.
+            • eduID is een levenslang account. Het blijft geldig nadat je bent afgestudeerd.
+      CreateEduidButton:
+        COPY:
+          en: Create a new eduID
+          nl: Maak een nieuw eduID aan
+    Create:
+      MainTitleLabel:
+        COPY:
+          en: Create a new eduID
+          nl: Maak een nieuw eduID aan
+    Created:
+      MainTitleLabel:
+        COPY:
+          en: Your eduID has been created
+          nl: Je eduID is aangemaakt
+      MainText:
+        COPY:
+          en: >-
+            To safely use this app, we need you to set a pincode and provide a phonenumber in case you might forget it
+          nl: >-
+            Om deze app veilig te kunnen gebruiken, hebben we een pincode nodig en een telefoonnummer voor het geval je het vergeet
+    EnterPersonalInfo:
+      EmailFieldTitle:
+        COPY:
+          en: Your email address
+          nl: Je e-mailadres
+      EmailFieldPlaceHolder:
+        COPY:
+          en: e.g. timbernerslee@gmail.com
+          nl: e.g. timbernerslee@gmail.com
+      Agreement:
+        COPY:
+          en: I agree with the terms of service. I also understand the privacy policy
+          nl: Ik ga akkoord met de servicevoorwaarden. Ik begrijp ook het privacybeleid
+    EnterPhoneNumber:
+      PhoneFieldTitle:
+        COPY:
+          en: Enter your phone number
+          nl: Vul je telefoonnummer in
+      PhoneFieldPlaceholder:
+        COPY:
+          en: 0612345678
+          nl: 0612345678
+      MainText:
+        COPY:
+          en: |
+            Let's add a recovery phonenumber. If you can't access eduID with the app or via email, you can use this to sign in to your eduID Account.
+
+            We will text you a code to verify your number.
+          nl: |
+            Laten we een hersteltelefoonnummer toevoegen. Als je met de app of via e-mail geen toegang hebt tot eduID, kun je hiermee inloggen op je eduID Account.
+
+            We sturen je een code om je nummer te verifiëren.
+      BoldRange:
+        COPY:
+          en: "32"
+          nl: "34"
+      VerifyPhoneNumber:
+        COPY:
+          en: Verify this phone number
+          nl: Bevestig dit telefoonnummer
+    AddInstitution:
+      MainTitle:
+        COPY:
+          en: >-
+            Your school/uni
+            was contacted successfully
+          nl: >-
+            Je school/uni
+            werd met succes toegevoegd
+      MainTitleBoldPart:
+        COPY:
+          en: Your school/uni
+          nl: Je school/uni
+      MainText:
+        COPY:
+          en: The following information has been added to your eduID and can now be shared
+          nl: De volgende gegevens zijn toegevoegd aan je eduID en kunnen nu gedeeld worden
+  RegEXError:
+    Name:
+      COPY:
+        en: Invalid name format, please revise your input
+        nl: Ongeldig naamformaat, pas je invoer aan
+    Email:
+      COPY:
+        en: Invalid email format, please revise your input
+        nl: Ongeldig e-mailformaat, pas je invoer aan
+    Phone:
+      COPY:
+        en: Invalid phone format, please revise your input
+        nl: Ongeldig telefoonnummer, pas je invoer aan
+    Password:
+      COPY:
+        en: Password is too weak
+        nl: Wachtwoord niet sterk genoeg
+  ResponseErrors:
+    GeneralRequestError:
+      COPY:
+        en: Request cannot be completed at this moment. Please retry later.
+        nl: Verzoek kan op dit moment niet worden voltooid. Probeer het later opnieuw.
+    AuthenticationFailedTitle:
+      COPY:
+        en: Authentication failed
+        nl: Inloggen mislukt
+    AuthenticationFailedMessage:
+      COPY:
+        en: Try again in a moment.
+        nl: Probeer het over een ogenblik opnieuw.
+    UnauthorizedTitle:
+      COPY:
+        en: Cannot load data
+        nl: Gegevens kunnen niet laden
+    UnauthorizedText:
+      COPY:
+        en: Cannot complete request, please sign in and grant access.
+        nl: Verzoek kan niet worden voltooid, log in en geef toegang
+    RequestSMSError:
+      COPY:
+        en: Could not request SMS code, please retry.
+        nl: Kan geen sms-code aanvragen, probeer het opnieuw.
+    PasswordUpdateError:
+      COPY:
+        en: Cannot update password
+        nl: Wachtwoord kan niet worden bijgewerkt
+    InvalidPasswordError:
+      COPY:
+        en: Chosen password is invalid
+        nl: Het gekozen wachtwoord is ongeldig
+    PasswordMismatchError:
+      COPY:
+        en: Passwords do not match
+        nl: Wachtwoorden zijn niet hetzelfde
+    InvalidPasswordHash:
+      COPY:
+        en: Invalid password hash, please resend email link
+        nl: Ongeldige wachtwoord-hash, stuur de e-maillink opnieuw
+    MissingPasswordHash:
+      COPY:
+        en: Missing password hash, please resend email link
+        nl: Ontbrekende wachtwoord-hash, stuur de e-maillink opnieuw
+    DeleteKeyLostError:
+      COPY:
+        en: Cannot find key for deletion
+        nl: De sleutel die u wilt verwijderen, is niet gevonden
+    ModifyKeyLostError:
+      COPY:
+        en: Cannot find key for modification
+        nl: De sleutel die u wilt wijzigen, is niet gevonden
+    RequestResetLinkError:
+      COPY:
+        en: Could not request reset password link.
+        nl: Kan de link voor het opnieuw instellen van het wachtwoord niet aanvragen.
+    ConfirmSMSError:
+      COPY:
+        en: SMS code not confirmed, please retry
+        nl: SMS-code niet bevestigd, probeer het opnieuw.
+    InvalidChallenge:
+      Title:
+        COPY:
+          en: Enrollment challenge is invalid
+          nl: Inschrijvingsuitdaging is ongeldig
+      Description:
+        COPY:
+          en: Cannot parse enrollment challenge, challenge is invalid.
+          nl: Kan de inschrijvingsuitdaging niet parseren, de uitdaging is ongeldig.
+    DeactivationError:
+      Title:
+        COPY:
+          en: Failed to request deactivation code
+          nl: Kan deactiveringscode niet aanvragen
+      Description:
+        COPY:
+          en: "Could not request deactivation code for known phone number: %1{{s}}."
+          nl: "Kon geen deactiveringscode aanvragen voor bekend telefoonnummer: %1{{s}}."
+    EmailInUse:
+      Title:
+        COPY:
+          en: E-mail already in use
+          nl: E-mail al in gebruik
+      Description:
+        COPY:
+          en: There is already an eduID associated with this e-mail
+          nl: Er is al een eduID gekoppeld aan deze e-mail
+    ForbiddenDomainTitle:
+      COPY:
+        en: Forbidden domain
+        nl: Verboden domein
+    ForbiddenDomainText:
+      COPY:
+        en: The e-mail domain you specified may not be used
+        nl: Het door jou opgegeven e-maildomein mag niet worden gebruikt
+    NoInternetAccessTitle:
+      COPY:
+        en: Something went wrong
+        nl: Er is iets fout gegaan
+    NoInternetAccessText:
+      COPY:
+        en: Could not retrieve the account details
+        nl: Kon de benodigde gegevens niet ophalen
+    SMSErrorTitle:
+      COPY:
+        en: Wrong verification
+        nl: Verkeerde verificatie
+    SMSErrorText:
+      COPY:
+        en: You have entered a wrong verification combination
+        nl: Je hebt een verkeerde verificatiecombinatie ingevoerd
+    UnknownErrorTitle:
+      COPY:
+        en: Uknown error
+        nl: Onbekende fout
+    UnknownErrorText:
+      COPY:
+        en: An unknown error occurred with the following status code
+        nl: Er is een onbekende fout opgetreden met de volgende statuscode
+    ExistingUserAndDeviceTitle:
+      COPY:
+        en: Already associated
+        nl: Reeds gekoppeld
+    ExistingUserAndDeviceText:
+      COPY:
+        en: This account is already associated with a different device. Remove your other device first from your account before registering a new device.
+        nl: Dit account is al gekoppeld aan een ander apparaat. Verwijder eerst jouw andere apparaat uit je account voordat je een nieuw apparaat registreert.
+    PersonalDetailsRetrieveError:
+      COPY:
+        en: Could not retrieve personal details
+        nl: Ophalen van persoonlijke informatie mislukt
+    ActivityHistoryRetrieveError:
+      COPY:
+        en: Could not retrieve activity details
+        nl: Ophalen van account activiteit mislukt
+    DeleteError:
+      Title:
+        COPY:
+          en: Cannot delete
+          nl: Kan niet verwijderen
+      Description:
+        COPY:
+          en: Could not delete account
+          nl: Account kan niet verwijderd worden
+      NameMismatchDescription:
+        COPY:
+          en: Typed name does not match known name
+          nl: De getypte naam is niet dezelfde als de bestaande naam
+    AccountCreateError:
+      COPY:
+        en: "Could not create eduid account for email %1{{s}}."
+        nl: "Kan geen eduid-account maken voor e-mail %1{{s}}."
+    EmailDomainForbidden:
+      Title:
+        COPY:
+          en: Email domain is forbidden
+          nl: E-maildomein is verboden
+      Description:
+        COPY:
+          en: "The email domain used in %1{{s}} is not allowed."
+          nl: "Het e-maildomein gebruikt in %1{{s}} is niet toegestaan."
+    Auth:
+      Invalid:
+        Title:
+          COPY:
+            en: Authorization invalid
+            nl: Autorisatie ongeldig
+        Description:
+          COPY:
+            en: Did not receive valid authentication.
+            nl: Ontvangen verificatie is ongeldig.
+      Failed:
+        Title:
+          COPY:
+            en: Authorization failed
+            nl: Autorisatie mislukt
+        Description:
+          COPY:
+            en: No authorization state retained - reauthorization required.
+            nl: Er zijn geen autorisatiegegevens opgeslaan - herautorisatie is nodig.
+        TokenFailedDescription:
+          Generic:
+            COPY:
+              en: Authorization token code exchange failed.
+              nl: Autorisatiecode-uitwisseling mislukt
+          WithException:
+            COPY:
+              en: "Authorization code exchange failed: %1{{s}}."
+              nl: "Autorisatiecode-uitwisseling mislukt: %1{{s}}."
+  VerifyIdentity:
+    TitleHasInternalLink:
+      COPY:
+        en: Add an organisation
+        nl: Voeg een organisatie toe
+    SubtitleHasInternalLink:
+      COPY:
+        en: By adding an organisation to your eduID, you prove that you are a student or employee of that organisation. This also verifies your eduID.
+        nl: Door een organisatie toe te voegen, bewijs je dat je een student of medewerker bent van die organisatie. Dit verifïeert ook je eduID.
+    Title:
+      FirstLine:
+        COPY:
+          en: Verify your identity
+          nl: Verifieer jouw identiteit
+      SecondLine:
+        COPY:
+          en: Quick and easy
+          nl: Snel en eenvoudig
+    Subtitle:
+      COPY:
+        en: Your first and lastname and optionally your date of birth will be added to your eduID.
+        nl: Verifieer dat je bent wie je zegt dat je bent.
+    VerifyViaDutchInstitution:
+      Title:
+        COPY:
+          en: Verify via a Dutch educational institution
+          nl: Verifieer via een Nederlandse onderwijsinstelling
+      TitleHasInternalLink:
+        COPY:
+          en: Add your organisation by logging in
+          nl: Voeg je organisatie toe door in te loggen
+      Button:
+        COPY:
+          en: Select your institution
+          nl: Selecteer je instelling
+    VerifyWithBankApp:
+      Title:
+        COPY:
+          en: Verify with a Dutch bank app
+          nl: Verifieer met een Nederlandse bank app
+      Button:
+        COPY:
+          en: Select your bank
+          nl: Selecteer je bank
+    VerifyWithAEuropianId:
+      Title:
+        COPY:
+          en: Verify with a European ID
+          nl: Verifieer met een Europees ID
+      Button:
+        COPY:
+          en: Use a European ID
+          nl: Selecteer een Europees ID
+    OtherOptions:
+      COPY:
+        en: Other options…
+        nl: Meer opties…
+    VisitSupport:
+      Full:
+        COPY:
+          en: If you can’t use any of these methods, please visit our support pages
+          nl: "Kun je deze opties niet gebruiken, bezoek dan onze support pagina's"
+      HighlightedPart:
+        COPY:
+          en: "support pages"
+          nl: "support pagina's"
+      Link:
+        COPY:
+          en: "https://eduid.nl/help-en/"
+          nl: "https://eduid.nl/help/"
+  SelectYourBank:
+    Title:
+      COPY:
+        en: Select your bank
+        nl: Selecteer je bank
+    Subtitle:
+      Full:
+        COPY:
+          en: With iDIN, we receive your name and date of birth from your bank. This way, we can be sure it is you. You are not making a payment
+          nl: Met iDIN controleren we via jouw bank je persoons- en adresgegevens. Zo weten we zeker dat jij het bent. Je doet geen betaling
+      HighlightedPart:
+        COPY:
+          en: You are not making a payment
+          nl: Je doet geen betaling
+    MoreAboutIdin:
+      COPY:
+        en: More about iDIN
+        nl: Meer over iDIN
+    IdinkLink:
+      COPY:
+        en: "https://www.idin.nl/en/"
+        nl: "https://www.idin.nl/"
+    BankNotInList:
+      Full:
+        COPY:
+          en: If your bank is not shown in the list, please select another method
+          nl: Staat jouw bank niet in deze lijst, selecteer dan een andere methode
+      HighlightedPart:
+        COPY:
+          en: another method
+          nl: andere methode
+  LinkingSuccess:
+    Title:
+      COPY:
+        en: "Your personal info 🎉"
+        nl: "Jouw persoonlijke info 🎉"
+    Subtitle:
+      COPY:
+        en: "The following information has been added to your eduID and can now be shared."
+        nl: "De volgende informatie is toegevoegd aan jouw eduID account en kan nu worden gedeeld."
+    SubtitlePreferInstitution:
+      COPY:
+       en: "We also received new information. Do you want to use this for your eduID?"
+       nl: "We hebben ook nieuwe informatie gekregen. Wil je deze gebruiken voor je eduID?"
+    Button:
+      Continue:
+        COPY:
+          en: "Continue"
+          nl: "Ga door"
+      YesPlease:
+        COPY:
+          en: "Yes please"
+          nl: "Ja, graag"
+      NoThanks:
+        COPY:
+          en: "No thanks"
+          nl: "Nee, bedankt"
+  ExternalAccountLinkingError:
+    Title:
+      COPY:
+        en: "Something went wrong"
+        nl: "Er is iets fout gegaan"
+    Subtitle:
+      COPY:
+        en: "We’re sorry, we were unable to retrieve the requested information."
+        nl: "Helaas konden we de gevraagde informatie niet ophalen."
+    TryAnotherOption:
+      COPY:
+        en: "Please try another option"
+        nl: "Probeer een andere optie"
+    
+
