@@ -730,6 +730,10 @@ public class UserController implements UserAuthentication {
     private ResponseEntity<UserResponse> userResponseRememberMe(User user) {
         List<SamlAuthenticationRequest> samlAuthenticationRequests = authenticationRequestRepository.findByUserIdAndRememberMe(user.getId(), true);
         Optional<Registration> optionalRegistration = registrationRepository.findRegistrationByUserId(user.getId());
+        //Run-time migrate inconsistent state for none of the (external)linkedAccounts being the preferred one - idempotent
+        if (user.reconcileLinkedAccounts()) {
+            userRepository.save(user);
+        }
         UserResponse userResponse = new UserResponse(user, user.convertEduIdPerServiceProvider(this.servicesConfiguration), optionalRegistration, !samlAuthenticationRequests.isEmpty(), manage, issuers);
         return ResponseEntity.ok(userResponse);
     }

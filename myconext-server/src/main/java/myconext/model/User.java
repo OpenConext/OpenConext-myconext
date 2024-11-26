@@ -369,9 +369,7 @@ public class User implements Serializable, UserDetails {
         if (!preferredInstitution) {
             Optional<ProvisionedLinkedAccount> first = provisionedLinkedAccounts.stream()
                     .max(Comparator.comparing(ProvisionedLinkedAccount::getCreatedAt));
-            first.ifPresent(provisionedLinkedAccount -> {
-                provisionedLinkedAccount.setPreferred(true);
-            });
+            first.ifPresent(provisionedLinkedAccount -> provisionedLinkedAccount.setPreferred(true));
             return first.isPresent();
         }
         return false;
