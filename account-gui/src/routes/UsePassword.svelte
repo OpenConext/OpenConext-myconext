@@ -1,7 +1,7 @@
 <script>
     import {user} from "../stores/user";
     import {validPassword} from "../constants/regexp";
-    import I18n from "i18n-js";
+    import I18n from "../locale/I18n";
     import critical from "../icons/critical.svg";
     import {fetchServiceName, passwordExistingUser} from "../api/index";
     import Spinner from "../components/Spinner.svelte";

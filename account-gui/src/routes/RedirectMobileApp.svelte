@@ -1,5 +1,5 @@
 <script>
-    import I18n from "i18n-js";
+    import I18n from "../locale/I18n";
     import {conf, links} from "../stores/conf";
     import Button from "../components/Button.svelte";
     import {onMount} from "svelte";
@@ -11,8 +11,7 @@
     onMount(() => {
         $links.displayBackArrow = false;
         redirectAppUrl = `${$conf.mobileAppRedirect}/${action}${window.location.search}`;
-        const translation = I18n.translations[I18n.locale];
-        actionTranslateKey = translation.redirectMobileApp[action] ? action : "fallback";
+        actionTranslateKey = I18n.t(`redirectMobileApp.${action}`, {}, "fallback");
     });
 
 </script>

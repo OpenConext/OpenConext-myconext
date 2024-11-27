@@ -1,7 +1,7 @@
 <script>
     import critical from "../icons/critical.svg";
 
-    import I18n from "i18n-js";
+    import I18n from "../locale/I18n";
     import {onMount, tick} from "svelte";
     import {links} from "../stores/conf";
     import {textPhoneNumber, validatePhoneCode} from "../api";

@@ -1,0 +1,7 @@
+Hi,
+
+An unexpected error occurred for user {{name}} in environment {{mySurfConextURL}}.
+
+{{json}}
+
+{{> footer_en.txt}}

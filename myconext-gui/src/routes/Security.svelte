@@ -1,6 +1,6 @@
 <script>
     import {config, flash, user} from "../stores/user";
-    import I18n from "i18n-js";
+    import I18n from "../locale/I18n";
     import {navigate} from "svelte-routing";
     import getApp from "../icons/redesign/undraw_Mobile_app_re_catg 1.svg";
     import hasApp from "../icons/redesign/undraw_Mobile_app_small.svg";

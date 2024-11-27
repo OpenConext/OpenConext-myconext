@@ -1,0 +1,7 @@
+Hi,
+
+Een onverwachte fout is opgetreden voor gebruiker {{name}} in de omgeving {{mySurfConextURL}}.
+
+{{json}}
+
+{{> footer_nl.txt}}

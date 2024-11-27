@@ -1,6 +1,6 @@
 <script>
     import chevronUpIcon from "../icons/chevron-up.svg";
-    import I18n from "i18n-js";
+    import I18n from "../locale/I18n";
     import LinkedInstitution from "./LinkedInstitution.svelte";
     import notFound from "../icons/school-building.svg";
     import {onMount} from "svelte";

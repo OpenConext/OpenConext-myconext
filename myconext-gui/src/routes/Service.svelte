@@ -1,6 +1,7 @@
 <script>
     import {flash, user} from "../stores/user";
-    import I18n from "i18n-js";
+    import I18n from "../locale/I18n";
+
     import {deleteServiceAndTokens, deleteTokens, oidcTokens} from "../api";
     import Button from "../components/Button.svelte";
     import Modal from "../components/Modal.svelte";
@@ -217,8 +218,8 @@
                     <td class="value">
                         <ul>
                             {#each service.scopes as scope}
-                                {#if scope.descriptions[I18n.locale] || scope.descriptions["en"]}
-                                    <li>{scope.descriptions[I18n.locale] || scope.descriptions["en"]}</li>
+                                {#if scope.descriptions[I18n.currentLocale()] || scope.descriptions["en"]}
+                                    <li>{scope.descriptions[I18n.currentLocale()] || scope.descriptions["en"]}</li>
                                 {/if}
                             {/each}
                         </ul>

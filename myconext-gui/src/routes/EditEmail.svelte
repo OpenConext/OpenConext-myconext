@@ -1,6 +1,6 @@
 <script>
     import {flash, user} from "../stores/user";
-    import I18n from "i18n-js";
+    import I18n from "../locale/I18n";
     import {updateEmail} from "../api";
     import {navigate} from "svelte-routing";
     import critical from "../icons/critical.svg";

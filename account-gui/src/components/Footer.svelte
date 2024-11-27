@@ -1,6 +1,6 @@
 <script>
 
-    import I18n from "i18n-js";
+    import I18n from "../locale/I18n";
     import Cookies from "js-cookie";
     import surfLogo from "../img/logo-surf.svg";
     import {conf} from "../stores/conf";
@@ -12,7 +12,7 @@
         window.location.search = urlSearchParams.toString();
     };
 
-    let isEn = I18n.locale === "en";
+    let isEn = I18n.currentLocale() === "en";
     let privacyUrl = isEn ? "https://eduid.nl/privacy-policy/" : "https://eduid.nl/privacy/";
     let termsUrl = isEn ? "https://eduid.nl/terms-of-use/" : "https://eduid.nl/gebruiksvoorwaarden/";
 
@@ -106,10 +106,10 @@
         </div>
 
         <ul>
-            <li class="{I18n.locale === 'en' ? 'active' : 'non_active'}">
+            <li class="{I18n.currentLocale() === 'en' ? 'active' : 'non_active'}">
                 <a href="/en" on:click|preventDefault|stopPropagation={changeLanguage("en")}>EN</a>
             </li>
-            <li class="{I18n.locale === 'nl' ? 'active' : 'non_active'}">
+            <li class="{I18n.currentLocale() === 'nl' ? 'active' : 'non_active'}">
                 <a href="/nl" on:click|preventDefault|stopPropagation={changeLanguage("nl")}>NL</a>
             </li>
         </ul>

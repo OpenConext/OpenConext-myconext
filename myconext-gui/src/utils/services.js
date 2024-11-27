@@ -1,11 +1,11 @@
-import I18n from "i18n-js";
+import I18n from "../locale/I18n";
 import {logo} from "../verify/banks";
 import {isEmpty} from "./utils";
 import notFound from "../icons/school-building.svg";
 
 export const serviceName = service => {
   //backward compatibility with eduID has multiple services
-  if (I18n.locale === "en") {
+  if (I18n.currentLocale() === "en") {
     return service.serviceName || service.name;
   }
   return service.serviceNameNl || service.serviceName || service.nameNl || service.name;
@@ -24,11 +24,7 @@ export const institutionLogo = institution => {
 
 export const institutionName = linkedAccount => {
   if (linkedAccount.external) {
-    const translation = I18n.translations[I18n.locale];
-    if (translation.verify.issuers[linkedAccount.issuer.name]) {
-      return I18n.t(`verify.issuers.${linkedAccount.issuer.name}`);
-    }
-    return linkedAccount.issuer.name;
+    return I18n.t(`verify.issuers.${linkedAccount.issuer.name}`, {}, linkedAccount.issuer.name);
   }
   if (I18n.locale === "en") {
     return linkedAccount.displayNameEn || linkedAccount.displayNameNl || linkedAccount.schacHomeOrganization;
