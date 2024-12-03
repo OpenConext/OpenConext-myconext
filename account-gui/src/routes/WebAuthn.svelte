@@ -1,5 +1,5 @@
 <script>
-    import {create, get, supported} from "@github/webauthn-json";
+    import {create} from "@github/webauthn-json";
     import {conf, links} from "../stores/conf";
     import {onMount} from "svelte";
     import {webAuthnRegistration, webAuthnRegistrationResponse} from "../api";
