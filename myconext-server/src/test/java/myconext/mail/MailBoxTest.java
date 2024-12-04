@@ -1,17 +1,11 @@
 package myconext.mail;
 
-import com.icegreen.greenmail.junit.GreenMailRule;
-import com.icegreen.greenmail.util.ServerSetup;
-import myconext.AbstractIntegrationTest;
+import myconext.AbstractMailBoxTest;
 import myconext.model.EmailsSend;
 import myconext.model.User;
 import org.apache.commons.mail.util.MimeMessageParser;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Rule;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.context.ActiveProfiles;
 
 import javax.mail.Message;
 import javax.mail.MessagingException;
@@ -21,32 +15,14 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import static com.icegreen.greenmail.util.GreenMailUtil.getBody;
-import static org.awaitility.Awaitility.await;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-@ActiveProfiles(value = "prod", inheritProfiles = false)
 @SuppressWarnings("deprecation")
-public class MailBoxTest extends AbstractIntegrationTest {
+public class MailBoxTest extends AbstractMailBoxTest {
 
     @Autowired
     private MailBox mailBox;
-
-    @Rule
-    public final GreenMailRule greenMail =
-            new GreenMailRule(new ServerSetup(1025, null, ServerSetup.PROTOCOL_SMTP));
-
-    @Before
-    public void before() throws Exception {
-        super.before();
-        greenMail.start();
-        greenMail.purgeEmailFromAllMailboxes();
-    }
-
-    @After
-    public void after() {
-        greenMail.stop();
-    }
 
     @Test
     public void sendMagicLink() throws MessagingException {
@@ -262,10 +238,5 @@ public class MailBoxTest extends AbstractIntegrationTest {
         matcher.find();
         String group = matcher.group(1);
         assertEquals(expected, group);
-    }
-
-    private MimeMessage mailMessage() {
-        await().until(() -> greenMail.getReceivedMessages().length != 0);
-        return greenMail.getReceivedMessages()[0];
     }
 }

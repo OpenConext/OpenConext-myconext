@@ -106,6 +106,13 @@ public class MailBox {
         sendMail("account_confirmation", title, variables, preferredLanguage(user), user.getEmail(), false);
     }
 
+    public void sendInstitutionMailWarning(User user) {
+        String title = this.getTitle("institution_mail_warning", user);
+        Map<String, Object> variables = variables(user, title);
+        variables.put("mySurfConextURL", mySURFconextURL);
+        sendMail("institution_mail_warning", title, variables, preferredLanguage(user), user.getEmail(), false);
+    }
+
     public void sendResetPassword(User user, String hash, boolean mobileRequest) {
         String title = this.getTitle("reset_password", user);
         Map<String, Object> variables = variables(user, title);

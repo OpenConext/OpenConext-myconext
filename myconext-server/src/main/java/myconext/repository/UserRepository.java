@@ -51,4 +51,7 @@ public interface UserRepository extends MongoRepository<User, String> {
 
     @Query(value = "{ linkedAccounts: { $exists: true, $type: 'array', $ne: [] } }")
     List<User> findByLinkedAccountsIsNotEmpty();
+
+    @Query("{'email' : {$regex : ?0, $options: 'i'}}")
+    List<User> findByEmailDomain(String regex);
 }

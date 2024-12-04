@@ -48,6 +48,8 @@ cron:
   token-cleaner-expression: "0 0/15 * * * *"
   manage-initial-delay-milliseconds: 15000
   manage-fixed-rate-milliseconds: 43_200_000
+  # Runs on the first day of February, May, August, and November.
+  mail-institution-mail-usage-expression: "0 0 0 1 2,5,8,11 *"
 
 manage:
   username: myconext
@@ -97,6 +99,8 @@ feature:
   id_verify: True
   # Do we support the remote creation API (e.g. for studielink)
   remote_creation_api: True
+  # Do we periodically mail users who have used their institution account
+  mail_institution_mail_usage: True
 
 secure_cookie: false
 idp_entity_id: https://localhost.surf.id

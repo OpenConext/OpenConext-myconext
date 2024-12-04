@@ -7,10 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
+import java.util.stream.Collectors;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -93,5 +91,16 @@ public class UserRepositoryTest extends AbstractIntegrationTest {
         userRepository.save(user);
         users = userRepository.findByLinkedAccountsIsNotEmpty();
         assertEquals(1, users.size());
+    }
+
+    @Test
+    public void findUsersByEmailDomains() {
+        List<String> domains = List.of("nope.com","example.com");
+        Set<String> querySet = domains.stream()
+                .map(domain -> domain.replace(".", "\\."))
+                .collect(Collectors.toSet());
+        String regex = "@" + String.join("|", querySet) + "$";
+        List<User> users = userRepository.findByEmailDomain(regex);
+        assertEquals(2, users.size());
     }
 }
