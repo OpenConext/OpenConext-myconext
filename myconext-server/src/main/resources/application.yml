@@ -211,6 +211,11 @@ spring:
     host: localhost
     port: 1025
 
+gui:
+  disclaimer:
+    background-color: red
+    content: LOCAL
+
 management:
   health:
     mail:
