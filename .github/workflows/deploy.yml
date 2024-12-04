@@ -118,7 +118,7 @@ jobs:
           type=semver,pattern={{version}},value=${{ steps.versioncheck.outputs.version }}
           type=sha
 
-    - name: Extract metadata (tags, labels) for acount GUI Docker
+    - name: Extract metadata (tags, labels) for account GUI Docker
       id: meta_account_gui
       uses: docker/metadata-action@v5
       with:
