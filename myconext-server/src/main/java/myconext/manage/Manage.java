@@ -97,9 +97,6 @@ public interface Manage {
                 results.put(scope, identityProvider);
             }
         });
-        if (results.isEmpty()) {
-
-        }
         return results;
     }
 }

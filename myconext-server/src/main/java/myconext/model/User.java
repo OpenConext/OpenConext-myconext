@@ -78,6 +78,7 @@ public class User implements Serializable, UserDetails {
     private List<PublicKeyCredentials> publicKeyCredentials = new ArrayList<>();
     @Setter
     private List<LinkedAccount> linkedAccounts = new ArrayList<>();
+    //Can't be final, despite what your IDE says
     private List<ExternalLinkedAccount> externalLinkedAccounts = new ArrayList<>();
     @Setter
     private List<EduID> eduIDS = new ArrayList<>();
