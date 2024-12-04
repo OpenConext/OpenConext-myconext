@@ -1,5 +1,5 @@
 <script>
-    import check from "../icons/check.svg";
+    import check from "../icons/check.svg?raw";
 
     export let value;
     export let onChange;

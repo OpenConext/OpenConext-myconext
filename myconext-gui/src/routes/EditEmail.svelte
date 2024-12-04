@@ -3,7 +3,7 @@
     import I18n from "i18n-js";
     import {updateEmail} from "../api";
     import {navigate} from "svelte-routing";
-    import critical from "../icons/critical.svg";
+    import critical from "../icons/critical.svg?raw";
     import Button from "../components/Button.svelte";
     import Modal from "../components/Modal.svelte";
 

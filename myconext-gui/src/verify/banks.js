@@ -1,5 +1,5 @@
-import EHERKENNING from "../icons/verify/eIDAS_color.svg";
-import UNKNOWN from "../icons/verify/banks/image-not-found.svg";
+import EHERKENNING from "../icons/verify/eIDAS_color.svg?raw";
+import UNKNOWN from "../icons/verify/banks/image-not-found.svg?raw";
 import {isEmpty} from "../utils/utils";
 
 

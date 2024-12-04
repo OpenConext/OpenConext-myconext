@@ -1,8 +1,8 @@
 <script>
     import I18n from "i18n-js";
     import Button from "../../components/Button.svelte";
-    import appStore from "../../icons/redesign/Download_on_the_App_Store_Badge.svg";
-    import googlePlay from "../../icons/redesign/Google_Play-Badge-Logo.wine.svg";
+    import appStore from "../../icons/redesign/Download_on_the_App_Store_Badge.svg?raw";
+    import googlePlay from "../../icons/redesign/Google_Play-Badge-Logo.wine.svg?raw";
     import {navigate} from "svelte-routing";
 
     const next = () => {

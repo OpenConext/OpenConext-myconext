@@ -1,7 +1,7 @@
 <script>
     import {validPhoneNumber} from "../../validation/regexp";
     import I18n from "i18n-js";
-    import critical from "../../icons/critical.svg";
+    import critical from "../../icons/critical.svg?raw";
     import Spinner from "../../components/Spinner.svelte";
     import Button from "../../components/Button.svelte";
     import {reTextPhoneNumber, textPhoneNumber} from "../../api";

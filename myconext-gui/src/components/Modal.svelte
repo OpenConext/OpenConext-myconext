@@ -3,7 +3,7 @@
     import Button from "./Button.svelte";
     import DOMPurify from "dompurify";
     import {onDestroy, onMount} from "svelte";
-    import closeIcon from "../icons/close_smll.svg";
+    import closeIcon from "../icons/close_smll.svg?raw";
 
     export let submit;
     export let cancel;

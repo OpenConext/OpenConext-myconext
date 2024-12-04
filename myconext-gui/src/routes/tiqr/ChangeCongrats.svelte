@@ -1,7 +1,7 @@
 <script>
     import I18n from "i18n-js";
     import ImageContainer from "../../components/ImageContainer.svelte";
-    import icon from "../../icons/redesign/undraw_Order_confirmed_re_g0if.svg";
+    import icon from "../../icons/redesign/undraw_Order_confirmed_re_g0if.svg?raw";
     import Button from "../../components/Button.svelte";
     import {navigate} from "svelte-routing";
     import {me} from "../../api";
