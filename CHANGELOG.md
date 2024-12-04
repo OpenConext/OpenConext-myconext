@@ -1,7 +1,7 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
-## [7.3.6]
+## [7.3.7]
 - UX improvements, including improved texts, show affiliation with new verification, show app nudges less often.
 - Improved and fixed names and validated names derivation. Including always ask a user which validated name they want to prefer.
 - New API endpoint Invite
