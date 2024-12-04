@@ -3,7 +3,7 @@
     import Spinner from "../components/Spinner.svelte";
     import {onMount} from "svelte";
     import ImageContainer from "../components/ImageContainer.svelte";
-    import icon from "../icons/redesign/undraw_Order_confirmed_re_g0if.svg";
+    import icon from "../icons/redesign/undraw_Order_confirmed_re_g0if.svg?raw";
     import {fetchServiceNameByHash} from "../api";
     import Button from "../components/Button.svelte";
     import {conf, links} from "../stores/conf";

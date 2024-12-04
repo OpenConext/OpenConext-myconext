@@ -1,5 +1,5 @@
 <script>
-    import trash from "../icons/redesign/trash.svg";
+    import trash from "../icons/redesign/trash.svg?raw";
 
     export let className = "";
     export let active = false;

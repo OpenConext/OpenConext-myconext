@@ -2,7 +2,7 @@
 
     import I18n from "i18n-js";
     import Cookies from "js-cookie";
-    import surfLogo from "../img/logo-surf.svg";
+    import surfLogo from "../img/logo-surf.svg?raw";
     import {config} from "../stores/user";
 
     const changeLanguage = lang => () => {

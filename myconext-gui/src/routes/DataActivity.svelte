@@ -3,9 +3,9 @@
     import I18n from "i18n-js";
     import {onMount} from "svelte";
     import {serviceName} from "../utils/services";
-    import chevronDownSvg from "../icons/chevron-down.svg";
-    import chevronUpSvg from "../icons/chevron-up.svg";
-    import informationalSvg from "../icons/informational.svg";
+    import chevronDownSvg from "../icons/chevron-down.svg?raw";
+    import chevronUpSvg from "../icons/chevron-up.svg?raw";
+    import informationalSvg from "../icons/informational.svg?raw";
     import {formatOptions} from "../format/date";
     import Service from "./Service.svelte";
 

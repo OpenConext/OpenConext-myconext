@@ -3,8 +3,8 @@
     import {link, navigate} from "svelte-routing";
     import {validEmail} from "../validation/regexp";
     import I18n from "i18n-js";
-    import critical from "../icons/critical.svg";
-    import attention from "../icons/alert-circle.svg";
+    import critical from "../icons/critical.svg?raw";
+    import attention from "../icons/alert-circle.svg?raw";
 
     import CheckBox from "../components/CheckBox.svelte";
     import Spinner from "../components/Spinner.svelte";

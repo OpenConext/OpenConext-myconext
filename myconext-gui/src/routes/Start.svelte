@@ -2,11 +2,11 @@
     import I18n from "i18n-js";
     import {navigate} from "svelte-routing";
     import {user} from "../stores/user";
-    import personalInfoSvg from "../icons/redesign/Personal_info.svg";
-    import dataActivitySvg from "../icons/redesign/data_activity.svg";
-    import securitySvg from "../icons/redesign/Security.svg";
-    import settingsSvg from "../icons/redesign/settings.svg";
-    import getApp from "../icons/redesign/undraw_Mobile_app_re_catg 1.svg";
+    import personalInfoSvg from "../icons/redesign/Personal_info.svg?raw";
+    import dataActivitySvg from "../icons/redesign/data_activity.svg?raw";
+    import securitySvg from "../icons/redesign/Security.svg?raw";
+    import settingsSvg from "../icons/redesign/settings.svg?raw";
+    import getApp from "../icons/redesign/undraw_Mobile_app_re_catg 1.svg?raw";
     import Button from "../components/Button.svelte";
     import {isEmpty} from "../utils/utils";
     import {startLinkAccountFlow} from "../api";

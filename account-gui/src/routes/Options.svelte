@@ -4,10 +4,10 @@
     import {knownAccount} from "../api/index";
     import Spinner from "../components/Spinner.svelte";
     import {onMount} from "svelte";
-    import appIcon from "../icons/redesign/phone-hand-hold-1.svg";
-    import webAuthnIcon from "../icons/redesign/video-game-key.svg";
-    import passwordIcon from "../icons/redesign/password-type.svg";
-    import magicLinkIcon from "../icons/redesign/video-game-magic-wand.svg";
+    import appIcon from "../icons/redesign/phone-hand-hold-1.svg?raw";
+    import webAuthnIcon from "../icons/redesign/video-game-key.svg?raw";
+    import passwordIcon from "../icons/redesign/password-type.svg?raw";
+    import magicLinkIcon from "../icons/redesign/video-game-magic-wand.svg?raw";
     import LoginOption from "../components/LoginOption.svelte";
     import {links} from "../stores/conf";
     import {navigate} from "svelte-routing";

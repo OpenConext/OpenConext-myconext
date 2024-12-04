@@ -1,10 +1,10 @@
 <script>
-    import editIcon from "../icons/edit.svg";
-    import shieldIcon from "../icons/redesign/shield-full.svg";
-    import chevronUpIcon from "../icons/chevron-up.svg";
+    import editIcon from "../icons/edit.svg?raw";
+    import shieldIcon from "../icons/redesign/shield-full.svg?raw";
+    import chevronUpIcon from "../icons/chevron-up.svg?raw";
     import Button from "./Button.svelte";
     import I18n from "i18n-js";
-    import critical from "../icons/critical.svg";
+    import critical from "../icons/critical.svg?raw";
     import LinkedInstitution from "./LinkedInstitution.svelte";
     import {institutionName} from "../utils/services";
 

@@ -1,7 +1,7 @@
 import I18n from "i18n-js";
 import {logo} from "../verify/banks";
 import {isEmpty} from "./utils";
-import notFound from "../icons/school-building.svg";
+import notFound from "../icons/school-building.svg?raw";
 
 export const serviceName = service => {
   //backward compatibility with eduID has multiple services

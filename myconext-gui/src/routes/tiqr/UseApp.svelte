@@ -4,11 +4,11 @@
     import {manualResponse, pollAuthentication, startTiqrAuthentication} from "../../api/index";
     import Spinner from "../../components/Spinner.svelte";
     import {onDestroy, onMount, tick} from "svelte";
-    import pushIcon from "../../icons/undraw_Push_notifications_re_t84m.svg";
+    import pushIcon from "../../icons/undraw_Push_notifications_re_t84m.svg?raw";
     import ImageContainer from "../../components/ImageContainer.svelte";
     import {poll, suspensionMinutes} from "../../utils/poll";
     import {authenticationStatus} from "../../constants/authenticationStatus";
-    import critical from "../../icons/critical.svg";
+    import critical from "../../icons/critical.svg?raw";
     import {navigate} from "svelte-routing";
     import Button from "../../components/Button.svelte";
 

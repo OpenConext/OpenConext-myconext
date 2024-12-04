@@ -1,13 +1,13 @@
 <script>
     import I18n from "i18n-js";
-    import securitySvg from "../icons/redesign/lock-1.svg";
-    import services from "../icons/streamline-icon-cloud-storage-drive.svg";
-    import home_icon from "../icons/redesign/house.svg";
-    import personalInfoSvg from "../icons/redesign/single-neutral-id-card-double.svg";
-    import accountSvg from "../icons/redesign/cog.svg";
-    import dataActivitySvg from "../icons/redesign/presentation-analytics.svg";
-    import chevron_left from "../icons/chevron-left.svg";
-    import chevron_right from "../icons/chevron-right.svg";
+    import securitySvg from "../icons/redesign/lock-1.svg?raw";
+    import services from "../icons/streamline-icon-cloud-storage-drive.svg?raw";
+    import home_icon from "../icons/redesign/house.svg?raw";
+    import personalInfoSvg from "../icons/redesign/single-neutral-id-card-double.svg?raw";
+    import accountSvg from "../icons/redesign/cog.svg?raw";
+    import dataActivitySvg from "../icons/redesign/presentation-analytics.svg?raw";
+    import chevron_left from "../icons/chevron-left.svg?raw";
+    import chevron_right from "../icons/chevron-right.svg?raw";
     import {navigate} from "svelte-routing";
     import {onMount} from "svelte";
 
