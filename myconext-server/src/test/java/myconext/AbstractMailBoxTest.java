@@ -12,7 +12,7 @@ import java.util.List;
 import static org.awaitility.Awaitility.await;
 
 @SuppressWarnings("deprecation")
-public class AbstractMailBoxTest extends AbstractIntegrationTest {
+public abstract class AbstractMailBoxTest extends AbstractIntegrationTest {
 
     @Rule
     public final GreenMailRule greenMail =
