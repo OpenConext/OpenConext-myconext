@@ -22,22 +22,25 @@ public class InstitutionMailUsage {
     private final MailBox mailBox;
     private final UserRepository userRepository;
     private final boolean mailInstitutionMailUsage;
+    private final boolean cronJobResponsible;
 
     @Autowired
     public InstitutionMailUsage(Manage manage,
                                 MailBox mailBox,
                                 UserRepository userRepository,
+                                @Value("${cron.node-cron-job-responsible}") boolean cronJobResponsible,
                                 @Value("${feature.mail_institution_mail_usage}") boolean mailInstitutionMailUsage) {
         this.manage = manage;
         this.mailBox = mailBox;
         this.userRepository = userRepository;
+        this.cronJobResponsible = cronJobResponsible;
         this.mailInstitutionMailUsage = mailInstitutionMailUsage;
     }
 
     @Scheduled(cron = "${cron.mail-institution-mail-usage-expression}")
     @SuppressWarnings("unchecked")
     public void mailUsersWithInstitutionMail() {
-        if (!mailInstitutionMailUsage) {
+        if (!mailInstitutionMailUsage || !cronJobResponsible) {
             return;
         }
         long start = System.currentTimeMillis();

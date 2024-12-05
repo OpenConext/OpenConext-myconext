@@ -1,0 +1,9 @@
+Hoi {{name}},
+
+Je hebt een eduID account aangemaakt maar de app niet geïnstalleerd. Het is super veel handiger als je de app wel
+installeert, daarmee kan je sneller inloggen. Ga naar {{mySurfConextURL}} om je account aan je eduID app te koppelen.
+
+Vriendelijke groetjes,
+eduID.
+
+{{> footer_nl.txt}}

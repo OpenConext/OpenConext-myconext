@@ -52,4 +52,19 @@ public interface UserRepository extends MongoRepository<User, String> {
 
     @Query("{'email' : {$regex : ?0, $options: 'i'}}")
     List<User> findByEmailDomain(String regex);
+
+
+    @Query("""
+            { $and: [ { $or: [
+                        { 'surfSecureId': { $exists: false } },
+                        { 'surfSecureId': { $eq: {} } }
+                ]},
+                    { $or: [
+                        { 'nudgeAppMailSend': false },
+                        { 'nudgeAppMailSend': { $exists: false } }
+                    ]},
+                    {'created': { $lt: ?0 }}]}
+            """)
+    List<User> findByNoEduIDApp(Long createdBefore);
+
 }

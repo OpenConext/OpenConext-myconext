@@ -1,6 +1,8 @@
 package myconext.cron;
 
+import myconext.AbstractIntegrationTest;
 import myconext.AbstractMailBoxTest;
+import myconext.model.User;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -8,7 +10,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import javax.mail.internet.MimeMessage;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
         properties = {
@@ -26,17 +28,21 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
                 "feature.deny_disposable_email_providers=false",
                 "verify.base_uri=http://localhost:8098"
         })
-public class InstitutionMailUsageTest extends AbstractMailBoxTest {
+public class NudgeAppMailTest extends AbstractMailBoxTest {
 
     @Autowired
-    protected InstitutionMailUsage institutionMailUsage;
+    protected NudgeAppMail nudgeAppMail;
 
     @Test
-    public void mailUsersWithInstitutionMail() {
-        institutionMailUsage.mailUsersWithInstitutionMail();
+    public void mailUsersWithoutApp() {
+        nudgeAppMail.mailUsersWithoutApp();
 
         List<MimeMessage> mimeMessages = mailMessages();
 
-        assertEquals(2, mimeMessages.size());
+        assertEquals(1, mimeMessages.size());
+
+        User mary = userRepository.findOneUserByEmail("mdoe@example.com");
+        assertTrue(mary.isNudgeAppMailSend());
     }
+
 }

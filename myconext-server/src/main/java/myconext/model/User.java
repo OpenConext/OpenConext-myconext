@@ -85,6 +85,9 @@ public class User implements Serializable, UserDetails {
 
     private long created;
     private long lastLogin;
+
+    @Setter
+    private boolean nudgeAppMailSend;
     @Setter
     @Indexed
     private String trackingUuid;

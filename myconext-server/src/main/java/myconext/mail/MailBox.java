@@ -113,6 +113,13 @@ public class MailBox {
         sendMail("institution_mail_warning", title, variables, preferredLanguage(user), user.getEmail(), false);
     }
 
+    public void sendNudgeAppMail(User user) {
+        String title = this.getTitle("nudge_eduid_app", user);
+        Map<String, Object> variables = variables(user, title);
+        variables.put("mySurfConextURL", mySURFconextURL);
+        sendMail("nudge_eduid_app", title, variables, preferredLanguage(user), user.getEmail(), false);
+    }
+
     public void sendResetPassword(User user, String hash, boolean mobileRequest) {
         String title = this.getTitle("reset_password", user);
         Map<String, Object> variables = variables(user, title);
