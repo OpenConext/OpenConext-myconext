@@ -95,7 +95,7 @@ public class UserRepositoryTest extends AbstractIntegrationTest {
 
     @Test
     public void findUsersByEmailDomains() {
-        List<String> domains = List.of("nope.com","example.com");
+        List<String> domains = List.of("nope.com", "example.com");
         Set<String> querySet = domains.stream()
                 .map(domain -> domain.replace(".", "\\."))
                 .collect(Collectors.toSet());

@@ -1333,7 +1333,7 @@ public class UserControllerTest extends AbstractIntegrationTest {
 
     @Test
     public void updateLinkedAccount() {
-        UpdateLinkedAccountRequest updateLinkedAccountRequest = new UpdateLinkedAccountRequest("guest@example.nl", null ,false, null, "schac");
+        UpdateLinkedAccountRequest updateLinkedAccountRequest = new UpdateLinkedAccountRequest("guest@example.nl", null, false, null, "schac");
         given()
                 .when()
                 .accept(ContentType.JSON)

@@ -439,8 +439,8 @@ public class AccountLinkerController implements UserAuthentication {
                                             "{\"url\":\"https://validate.test.eduid.nl/broker/sp/oidc/authenticate?scope=openid&response_type=code&redirect_uri=https://mijn.test2.eduid.nl/myconext/api/sp/verify/redirect&state=%242a%2410%249cyC3mjeJW0ljb%2FmPAGj0O4DVXz9LPw5U%2Fthl110BVYWFpMhjwKyK&prompt=login&client_id=myconext.ala.eduid\"}")})})}
     )
     public ResponseEntity<AuthorizationURL> startSPVerifyIDLinkAccountFlow(Authentication authentication,
-                                                                       @RequestParam("idpScoping") IdpScoping idpScoping,
-                                                                       @RequestParam(value = "bankId", required = false) String bankId) {
+                                                                           @RequestParam("idpScoping") IdpScoping idpScoping,
+                                                                           @RequestParam(value = "bankId", required = false) String bankId) {
         User user = userFromAuthentication(authentication);
 
         LOG.info(String.format("Start verify account flow for user %s for flow %s", user.getEmail(), idpScoping));
@@ -516,7 +516,7 @@ public class AccountLinkerController implements UserAuthentication {
 
             String clientRedirectUrl = isMobileFlow ? idpBaseRedirectUrl + "/client/mobile/external-account-linked-error" : spRedirectUrl;
             URI location = URI.create(String.format("%s/external-account-linked-error?error=%s&error_description=%s",
-                    clientRedirectUrl,
+                            clientRedirectUrl,
                             StringUtils.hasText(error) ? URLEncoder.encode(error, Charset.defaultCharset()) : "",
                             StringUtils.hasText(errorDescription) ? URLEncoder.encode(errorDescription, Charset.defaultCharset()) : "Unexpected+error+occurred"
                     )
@@ -551,7 +551,7 @@ public class AccountLinkerController implements UserAuthentication {
         Map<String, Object> body = restTemplate.exchange(verifyBaseUri + "/broker/sp/oidc/token",
                 HttpMethod.POST, request, parameterizedTypeReference).getBody();
 
-        MultiValueMap<String, String>  tokenMap = new LinkedMultiValueMap<>();
+        MultiValueMap<String, String> tokenMap = new LinkedMultiValueMap<>();
         tokenMap.add("access_token", (String) body.get("access_token"));
 
         request = new HttpEntity<>(tokenMap, headers);

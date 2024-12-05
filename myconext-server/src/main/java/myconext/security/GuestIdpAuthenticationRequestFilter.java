@@ -743,7 +743,8 @@ public class GuestIdpAuthenticationRequestFilter extends OncePerRequestFilter {
         }
         String displayName = String.format("%s %s", chosenName, familyName);
         String eppn = user.getEduPersonPrincipalName();
-        List<SAMLAttribute> attributes = new ArrayList(Arrays.asList(
+        //we need a mutable list
+        List<SAMLAttribute> attributes = new ArrayList<>(Arrays.asList(
                 attribute("urn:mace:dir:attribute-def:cn", displayName),
                 attribute("urn:mace:dir:attribute-def:displayName", displayName),
                 attribute("urn:mace:dir:attribute-def:eduPersonPrincipalName", eppn),

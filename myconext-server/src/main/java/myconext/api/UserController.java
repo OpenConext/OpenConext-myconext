@@ -26,7 +26,10 @@ import myconext.manage.Manage;
 import myconext.model.*;
 import myconext.oidcng.OpenIDConnect;
 import myconext.repository.*;
-import myconext.security.*;
+import myconext.security.EmailDomainGuard;
+import myconext.security.EmailGuessingPrevention;
+import myconext.security.ServicesConfiguration;
+import myconext.security.UserAuthentication;
 import myconext.webauthn.UserCredentialRepository;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -655,7 +658,7 @@ public class UserController implements UserAuthentication {
 
         String entityId = deleteService.getServiceProviderEntityId();
         user.getEduIDS().forEach(eduID -> eduID.getServices().removeIf(service ->
-                        entityId.equals(service.getEntityId()) || entityId.equals(service.getInstitutionGuid())));
+                entityId.equals(service.getEntityId()) || entityId.equals(service.getInstitutionGuid())));
         List<EduID> newEduIDs = user.getEduIDS().stream()
                 .filter(eduID -> !eduID.getServices().isEmpty())
                 .collect(Collectors.toList());

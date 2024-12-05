@@ -1,7 +1,6 @@
 package myconext.remotecreation;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -28,7 +27,7 @@ public class UpdateExternalEduID extends NewExternalEduID {
     }
 
     public UpdateExternalEduID(NewExternalEduID externalEduID, String newEduIDValue) {
-        super( externalEduID.getEmail(),
+        super(externalEduID.getEmail(),
                 externalEduID.getChosenName(),
                 externalEduID.getFirstName(),
                 externalEduID.getLastNamePrefix(),

@@ -48,7 +48,7 @@ public class InviteController implements HasUserRepository {
     @PostMapping(value = {"/provision-eduid"})
     @PreAuthorize("hasRole('ROLE_invite')")
     public ResponseEntity<EduIDProvision> provisionEduid(@Parameter(hidden = true) @AuthenticationPrincipal(errorOnInvalidType = true) RemoteUser remoteUser,
-                                                           @RequestBody @Validated EduIDProvision eduIDProvision) {
+                                                         @RequestBody @Validated EduIDProvision eduIDProvision) {
         LOG.info(String.format("POST api/invite/provision-eduid by %s for %s", remoteUser.getUsername(), eduIDProvision));
 
         User user = userRepository.findByEduIDS_value(eduIDProvision.getEduIDValue())

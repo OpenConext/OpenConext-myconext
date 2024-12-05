@@ -15,7 +15,8 @@ import java.util.Map;
 import java.util.UUID;
 
 import static io.restassured.RestAssured.given;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 
 @SuppressWarnings("unchecked")
 public class APIControllerTest extends AbstractIntegrationTest {

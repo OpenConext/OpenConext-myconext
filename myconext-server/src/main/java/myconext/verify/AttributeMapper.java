@@ -1,6 +1,5 @@
 package myconext.verify;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.SneakyThrows;
 import myconext.manage.Manage;
@@ -10,7 +9,6 @@ import myconext.model.Verification;
 import myconext.model.VerifyIssuer;
 import myconext.remotecreation.NewExternalEduID;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.annotation.Transient;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
@@ -268,7 +266,6 @@ public class AttributeMapper {
                         .map(idp -> String.format("student@%s", idp.getDomainName()))
                         .toList();
     }
-
 
 
     private String getAttribute(Map<String, Object> attributes, String key) {

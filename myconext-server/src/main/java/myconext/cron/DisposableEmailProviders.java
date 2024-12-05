@@ -14,7 +14,6 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import java.net.URI;
-import java.net.URL;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
@@ -70,11 +69,11 @@ public class DisposableEmailProviders {
         Set<Map.Entry<String, Object>> entries = domains.entrySet();
         HashSet<String> newDisposableEmailProviders = new HashSet<>();
         entries.forEach(entry -> {
-                    String domain = entry.getKey();
-                    Map<String, Object> provider = (Map<String, Object>) entry.getValue();
-                    newDisposableEmailProviders.add(domain.toLowerCase());
-                    newDisposableEmailProviders.add(((String) provider.get("provider")).toLowerCase());
-                });
+            String domain = entry.getKey();
+            Map<String, Object> provider = (Map<String, Object>) entry.getValue();
+            newDisposableEmailProviders.add(domain.toLowerCase());
+            newDisposableEmailProviders.add(((String) provider.get("provider")).toLowerCase());
+        });
         return newDisposableEmailProviders;
     }
 

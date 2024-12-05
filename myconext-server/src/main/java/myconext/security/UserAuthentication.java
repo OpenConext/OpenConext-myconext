@@ -8,7 +8,6 @@ import org.springframework.security.oauth2.server.resource.authentication.Bearer
 
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 public interface UserAuthentication {
 

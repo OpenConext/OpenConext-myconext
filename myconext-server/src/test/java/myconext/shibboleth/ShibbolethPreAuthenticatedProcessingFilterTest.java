@@ -5,8 +5,6 @@ import io.restassured.http.Headers;
 import myconext.AbstractIntegrationTest;
 import myconext.model.User;
 import org.junit.Test;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpStatus;
 import org.springframework.test.context.ActiveProfiles;
 
 import java.util.ArrayList;

@@ -27,13 +27,10 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -86,7 +83,7 @@ public class RemoteCreationController implements HasUserRepository {
                                             }
                                             """)})})})
     public ResponseEntity<EmailExistsResponse> emailEduIDExists(@Parameter(hidden = true) @AuthenticationPrincipal(errorOnInvalidType = true) RemoteUser remoteUser,
-                                                           @RequestParam(value = "email") String email) {
+                                                                @RequestParam(value = "email") String email) {
         LOG.info(String.format("GET email-eduid-exists by %s for %s", remoteUser.getUsername(), email));
 
         String remoteUserName = remoteUser.getUsername();
@@ -146,7 +143,7 @@ public class RemoteCreationController implements HasUserRepository {
                                             "  \"error\": \"Bad Request\",\n" +
                                             "  \"exception\": \"org.springframework.web.bind.MethodArgumentNotValidException\",\n" +
                                             "  \"message\": \"Validation failed for object='eduIDInstitutionPseudonym'. Error count: 1\",\n" +
-                                             "  \"path\": \"/api/remote-creation/eduid-institution-pseudonym\"\n" +
+                                            "  \"path\": \"/api/remote-creation/eduid-institution-pseudonym\"\n" +
                                             "}")})}),
                     @ApiResponse(responseCode = "404", description = "Not found - eduID or BRIN code not found",
                             content = {@Content(schema = @Schema(implementation = StatusResponse.class),
@@ -321,10 +318,6 @@ public class RemoteCreationController implements HasUserRepository {
                 remoteUserName,
                 remoteUser.getInstitutionGUID(),
                 String.format("https://static.surfconext.nl/logos/org/%s.png", remoteUser.getInstitutionGUID()));
-    }
-
-    private List<String> brinCodesSorted(List<String> brinCodes) {
-        return CollectionUtils.isEmpty(brinCodes) ? brinCodes : brinCodes.stream().sorted().toList();
     }
 
 }

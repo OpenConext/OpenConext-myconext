@@ -38,7 +38,7 @@ public class AttributeAggregatorControllerTest extends AbstractIntegrationTest {
 
     @Test
     public void aggregateWithEduIDIdP() {
-        String eduIDEppn = String .format("mdoe@%s", this.schacHomeOrganization);
+        String eduIDEppn = String.format("mdoe@%s", this.schacHomeOrganization);
         List<UserAttribute> userAttributes = doAggregate(
                 "aa", "secret", "http://brand-new-sp", eduIDEppn);
         assertEquals(1, userAttributes.size());

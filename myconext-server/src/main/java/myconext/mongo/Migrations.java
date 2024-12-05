@@ -151,7 +151,7 @@ public class Migrations {
             if (!CollectionUtils.isEmpty(user.getEduIDS())) {
                 AtomicBoolean userNeedsUpdate = new AtomicBoolean(false);
                 user.getEduIDS().forEach(eduID -> {
-                    if (!StringUtils.hasText(eduID.getServiceProviderEntityId()) && !CollectionUtils.isEmpty(eduID.getServices()) ) {
+                    if (!StringUtils.hasText(eduID.getServiceProviderEntityId()) && !CollectionUtils.isEmpty(eduID.getServices())) {
                         eduID.backwardCompatibleTransformation(eduID.getServices().get(0));
                         userNeedsUpdate.set(true);
                     }

@@ -19,7 +19,6 @@ import org.springframework.stereotype.Component;
 import java.io.*;
 import java.net.InetAddress;
 import java.net.URI;
-import java.net.URL;
 import java.nio.file.Files;
 import java.text.SimpleDateFormat;
 import java.util.*;

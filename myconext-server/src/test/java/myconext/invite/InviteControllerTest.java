@@ -12,7 +12,8 @@ import java.util.List;
 import java.util.UUID;
 
 import static io.restassured.RestAssured.given;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 class InviteControllerTest extends AbstractIntegrationTest {
 
@@ -40,7 +41,7 @@ class InviteControllerTest extends AbstractIntegrationTest {
         List<ServiceProvider> services = newEduID.getServices();
         assertEquals(1, services.size());
         ServiceProvider serviceProvider = services.get(0);
-        assertEquals("SURFdrops Beta IdP",serviceProvider.getName());
+        assertEquals("SURFdrops Beta IdP", serviceProvider.getName());
         assertEquals(newEduIDProvision.getInstitutionGUID(), serviceProvider.getInstitutionGuid());
         assertNull(serviceProvider.getEntityId());
 

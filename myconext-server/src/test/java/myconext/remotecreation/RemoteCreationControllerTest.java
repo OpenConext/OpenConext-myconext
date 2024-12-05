@@ -15,7 +15,6 @@ import java.util.stream.Stream;
 
 import static io.restassured.RestAssured.given;
 import static org.junit.jupiter.api.Assertions.*;
-import static org.junit.jupiter.api.Assertions.assertFalse;
 
 @SuppressWarnings("unchecked")
 class RemoteCreationControllerTest extends AbstractIntegrationTest {
@@ -488,7 +487,7 @@ class RemoteCreationControllerTest extends AbstractIntegrationTest {
                 });
         String eduIDValue = externalEduIDResult.getEduIDValue();
         //Now send the update with the same eduIDand verify no second external account is created
-        UpdateExternalEduID updatedExternalEduIDResult =given()
+        UpdateExternalEduID updatedExternalEduIDResult = given()
                 .when()
                 .auth().preemptive().basic(userName, password)
                 .contentType(ContentType.JSON)

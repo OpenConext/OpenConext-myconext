@@ -73,10 +73,10 @@ class UserResponseTest {
                 new HashMap<>();
         eduidServiceProvider.put(null, new EduID());
         eduidServiceProvider.put("key", null);
-        UserResponse userResponse = new UserResponse(new User(),eduidServiceProvider,Optional.empty(),false,
-                new MockManage(objectMapper),emptyList());
+        UserResponse userResponse = new UserResponse(new User(), eduidServiceProvider, Optional.empty(), false,
+                new MockManage(objectMapper), emptyList());
         Map<String, Object> parsedJson = objectMapper.readValue(objectMapper.writeValueAsString(userResponse), new TypeReference<>() {
-        }) ;
+        });
         Map<String, EduID> eduIdPerServiceProvider = (Map<String, EduID>) parsedJson.get("eduIdPerServiceProvider");
         assertTrue(eduIdPerServiceProvider.isEmpty());
     }

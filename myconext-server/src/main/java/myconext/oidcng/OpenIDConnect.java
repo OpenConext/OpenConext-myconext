@@ -6,7 +6,6 @@ import myconext.model.User;
 import org.springframework.http.HttpStatus;
 
 import java.util.List;
-import java.util.Map;
 
 public interface OpenIDConnect {
 

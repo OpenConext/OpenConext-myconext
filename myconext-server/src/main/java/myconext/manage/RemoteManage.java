@@ -1,7 +1,6 @@
 package myconext.manage;
 
 import myconext.model.IdentityProvider;
-import myconext.model.RemoteProvider;
 import myconext.model.ServiceProvider;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;

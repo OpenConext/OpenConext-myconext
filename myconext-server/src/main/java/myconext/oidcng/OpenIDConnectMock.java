@@ -6,7 +6,6 @@ import myconext.model.User;
 import org.springframework.http.HttpStatus;
 
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 public class OpenIDConnectMock implements OpenIDConnect {

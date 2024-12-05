@@ -13,6 +13,7 @@ import java.util.stream.IntStream;
 
 import static java.util.stream.Collectors.toMap;
 import static myconext.security.CookieResolver.cookieByName;
+
 @SuppressWarnings("unchecked")
 public interface Manage {
 

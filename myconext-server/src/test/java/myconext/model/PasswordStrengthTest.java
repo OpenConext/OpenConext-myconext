@@ -1,6 +1,5 @@
 package myconext.model;
 
-import myconext.validation.PasswordStrength;
 import org.junit.Test;
 
 import static myconext.validation.PasswordStrength.strongEnough;

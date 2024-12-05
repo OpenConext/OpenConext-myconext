@@ -57,7 +57,7 @@ public class SecurityConfiguration {
     @Configuration
     @Order(1)
     @EnableConfigurationProperties(IdentityProviderMetaData.class)
-    public static class SamlSecurity extends WebSecurityConfigurerAdapter  {
+    public static class SamlSecurity extends WebSecurityConfigurerAdapter {
 
         private final GuestIdpAuthenticationRequestFilter guestIdpAuthenticationRequestFilter;
 

@@ -1,10 +1,6 @@
 package myconext.cron;
 
-import lombok.Getter;
-import myconext.AbstractIntegrationTest;
 import myconext.AbstractMailBoxTest;
-import myconext.repository.UserRepository;
-import org.apache.commons.io.IOUtils;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -13,7 +9,7 @@ import javax.mail.internet.MimeMessage;
 import java.io.IOException;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class InstitutionMailUsageTest extends AbstractMailBoxTest {
 

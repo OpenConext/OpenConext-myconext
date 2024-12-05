@@ -58,7 +58,7 @@ public class LoginController {
                            @Value("${linked_accounts.expiry-duration-days-non-validated}") long expirationNonValidatedDurationDays,
                            @Value("${mobile_app_redirect}") String mobileAppRedirect,
                            @Value("${feature.id_verify}") boolean idVerify
-                           ) {
+    ) {
         this.config.put("loginUrl", basePath + "/login");
         this.config.put("continueAfterLoginUrl", continueAfterLoginUrl);
         this.config.put("baseDomain", baseDomain);

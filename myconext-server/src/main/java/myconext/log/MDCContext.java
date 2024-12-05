@@ -3,8 +3,6 @@ package myconext.log;
 import myconext.model.User;
 import org.apache.commons.logging.Log;
 import org.slf4j.MDC;
-import org.slf4j.spi.MDCAdapter;
-import org.springframework.util.Assert;
 
 import java.util.Map;
 
