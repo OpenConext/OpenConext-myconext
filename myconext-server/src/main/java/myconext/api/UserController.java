@@ -309,7 +309,7 @@ public class UserController implements UserAuthentication {
     @GetMapping("/sp/institution/names")
     public ResponseEntity<IdentityProvider> institutionNames(@RequestParam(value = "schac_home") String schacHome) {
         return ResponseEntity.ok(manage.findIdentityProviderByDomainName(schacHome)
-                .orElse(new IdentityProvider(new RemoteProvider(schacHome, schacHome, schacHome, null, null), null)));
+                .orElse(new IdentityProvider(new RemoteProvider(schacHome, schacHome, schacHome, null, null), null, null)));
     }
 
     @Operation(summary = "User details", description = "Retrieve the attributes of the current user")

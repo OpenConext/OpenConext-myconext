@@ -165,13 +165,17 @@ public class RemoteManage implements Manage {
                 "REQUESTED_ATTRIBUTES", Arrays.asList(
                         "metaDataFields.coin:institution_brin",
                         "metaDataFields.logo:0:url",
-                        "metaDataFields.coin:institution_guid"));
+                        "metaDataFields.coin:institution_guid",
+                        "metaDataFields.shibmd:scope:0:allowed"));
         HttpEntity<Map<String, Object>> requestEntity = new HttpEntity<>(requestBody, this.headers);
         return restTemplate.exchange(manageBaseUrl + "/manage/api/internal/search/saml20_idp",
                         HttpMethod.POST, requestEntity, typeReference)
                 .getBody()
                 .stream()
-                .map(m -> new IdentityProvider(remoteProvider(m), metaDataFields(m).get("coin:institution_brin")))
+                .map(m -> new IdentityProvider(
+                        remoteProvider(m),
+                        metaDataFields(m).get("coin:institution_brin"),
+                        metaDataFields(m).get("shibmd:scope:0:allowed")))
                 .findFirst();
     }
 

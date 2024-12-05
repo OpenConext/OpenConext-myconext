@@ -27,10 +27,13 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -266,6 +269,7 @@ public class RemoteCreationController implements HasUserRepository {
         optionalExternalLinkedAccount.ifPresentOrElse(externalLinkedAccount -> {
             //Not all external attributes can be changed
             externalLinkedAccount.setVerification(externalEduID.getVerification());
+            externalLinkedAccount.setAffiliations(AttributeMapper.externalAffiliations(externalEduID.getBrinCodes(), manage));
             externalLinkedAccount.setBrinCodes(externalEduID.getBrinCodes());
             externalLinkedAccount.setDateOfBirth(AttributeMapper.parseDate(externalEduID.getDateOfBirth()));
         }, () -> {
@@ -310,13 +314,17 @@ public class RemoteCreationController implements HasUserRepository {
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
-    private static RemoteProvider getRemoteProvider(RemoteUser remoteUser, String remoteUserName) {
+    private RemoteProvider getRemoteProvider(RemoteUser remoteUser, String remoteUserName) {
         return new RemoteProvider(
                 null,
                 remoteUserName,
                 remoteUserName,
                 remoteUser.getInstitutionGUID(),
                 String.format("https://static.surfconext.nl/logos/org/%s.png", remoteUser.getInstitutionGUID()));
+    }
+
+    private List<String> brinCodesSorted(List<String> brinCodes) {
+        return CollectionUtils.isEmpty(brinCodes) ? brinCodes : brinCodes.stream().sorted().toList();
     }
 
 }

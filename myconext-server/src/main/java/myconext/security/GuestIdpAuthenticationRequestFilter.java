@@ -772,18 +772,35 @@ public class GuestIdpAuthenticationRequestFilter extends OncePerRequestFilter {
                         values.forEach(value -> attributes.add(attribute(key, value))));
 
 
-        List<String> scopedAffiliations = linkedAccounts.stream()
+        //we need a mutable list
+        List<String> scopedAffiliations = new ArrayList<>(linkedAccounts.stream()
                 .map(linkedAccount -> linkedAccount.getEduPersonAffiliations().stream()
                         .map(affiliation -> affiliation.contains("@")
                                 ? affiliation : String.format("%s@%s", affiliation, linkedAccount.getSchacHomeOrganization()))
                         .collect(toList()))
-                .flatMap(Collection::stream).distinct().collect(Collectors.toList());
+                .flatMap(Collection::stream)
+                .distinct()
+                .toList());
         scopedAffiliations.add("affiliate@eduid.nl");
         scopedAffiliations.forEach(aff -> attributes.add(attribute("urn:mace:dir:attribute-def:eduPersonScopedAffiliation", aff)));
 
-        List<String> affiliations = scopedAffiliations.stream().map(affiliation -> affiliation.substring(0, affiliation.indexOf("@")))
-                .distinct().collect(toList());
-        affiliations.forEach(aff -> attributes.add(attribute("urn:mace:dir:attribute-def:eduPersonAffiliation", aff)));
+        scopedAffiliations.stream()
+                .map(affiliation -> affiliation.substring(0, affiliation.indexOf("@")))
+                .distinct()
+                .forEach(aff -> attributes.add(attribute("urn:mace:dir:attribute-def:eduPersonAffiliation", aff)));
+
+        List<String> studentAffiliations = user.getExternalLinkedAccounts().stream()
+                .map(ExternalLinkedAccount::getAffiliations)
+                .filter(externalLinkedAccountAffiliations -> !CollectionUtils.isEmpty(externalLinkedAccountAffiliations))
+                .flatMap(Collection::stream)
+                .distinct()
+                .toList();
+        studentAffiliations.forEach(aff -> attributes.add(attribute("urn:mace:dir:attribute-def:eduPersonScopedAffiliation", aff)));
+        if (!studentAffiliations.isEmpty() && attributes.stream()
+                .noneMatch(samlAttribute -> samlAttribute.getName().equals("urn:mace:dir:attribute-def:eduPersonAffiliation") &&
+                        samlAttribute.getValue().equals("student"))) {
+            attributes.add(attribute("urn:mace:dir:attribute-def:eduPersonAffiliation", "student"));
+        }
         return attributes;
     }
 
