@@ -187,6 +187,25 @@ public class Migrations {
         mongoTemplate.remove(new Query(), "sessions");
     }
 
+    @SuppressWarnings("unchecked")
+    @ChangeSet(order = "015", id = "alterUserLastLoginDate", author = "okke.harsta@surf.nl")
+    public void alterUserLastLoginDate(MongockTemplate mongoTemplate) {
+        Query query = new Query();
+        query.addCriteria(Criteria.where("lastLogin").isNull());
+        List<Map> usersAsMaps = mongoTemplate.find(query, Map.class, "users");
+        usersAsMaps.forEach(userAsMap -> {
+            userAsMap.get("updatedAt")
+        });
+
+
+    }
+
+    @SuppressWarnings("unchecked")
+    @ChangeSet(order = "017", id = "deleteSessionAfterUserLastLoginDate", author = "okke.harsta@surf.nl")
+    public void deleteSessionAfterUserLastLoginDate(MongockTemplate mongoTemplate) {
+        mongoTemplate.remove(new Query(), "sessions");
+    }
+
     protected User mergeEduIDs(User user) {
         List<EduID> eduIDS = user.getEduIDS();
         //Make a copy to search in
