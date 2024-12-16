@@ -97,6 +97,9 @@ public class User implements Serializable, UserDetails {
     @Setter
     private boolean mobileAuthentication;
 
+    @Setter
+    private UserInactivity userInactivity;
+
     public User(CreateInstitutionEduID createInstitutionEduID, Map<String, Object> userInfo) {
         this.email = createInstitutionEduID.getEmail();
         this.chosenName = (String) userInfo.get("given_name");

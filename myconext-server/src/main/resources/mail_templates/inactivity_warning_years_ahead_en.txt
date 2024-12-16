@@ -1,0 +1,7 @@
+Hi {{name}},
+
+You have not used your eduID account for {{inactivity_period_en}}. If you remain inactive than your eduID
+account will be deleted within {{deletion_period_en}}, on {{account_delete_date_en}}.
+Go to your {{mySurfConextURL}} and login to keep your account active.
+
+{{> footer_en.txt}}

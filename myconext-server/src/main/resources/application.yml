@@ -54,6 +54,8 @@ cron:
   nudge-app-mail-expression: "0 30 6 * * ?"
   # Number of days after creation of the eduID account which the nudge mail is send
   nudge-app-mail-days-after-creation: 14
+  # Every day at 7:30AM
+  inactivity-users-expression: "0 30 7 * * ?"
 
 manage:
   username: myconext
@@ -105,6 +107,8 @@ feature:
   remote_creation_api: True
   # Do we periodically mail users who have used their institution account
   mail_institution_mail_usage: True
+  # Do we periodically mail users who are inactive and might have their account deleted
+  mail_inactivity_mails: True
   # Do we mail users who have not installed the eduID app
   nudge_app_mail: True
 secure_cookie: false
