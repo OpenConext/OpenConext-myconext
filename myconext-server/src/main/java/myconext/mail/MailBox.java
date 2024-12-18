@@ -113,12 +113,12 @@ public class MailBox {
         sendMail("institution_mail_warning", title, variables, preferredLanguage(user), user.getEmail(), false);
     }
 
-    public void sendUserInactivityMail(User user, Map<String, Object> localeVariables, boolean yearsAhead) {
-        String title = this.getTitle(yearsAhead ? "inactivity_warning_years_ahead" : "inactivity_warning_short_term", user);
+    public void sendUserInactivityMail(User user, Map<String, String> localeVariables, boolean firstTwoWarnings) {
+        String title = this.getTitle(firstTwoWarnings ? "inactivity_warning_years_ahead" : "inactivity_warning_short_term", user);
         Map<String, Object> variables = variables(user, title);
         variables.put("mySurfConextURL", mySURFconextURL);
         variables.putAll(localeVariables);
-        String templateName = yearsAhead ? "inactivity_warning_years_ahead" : "inactivity_warning_short_term";
+        String templateName = firstTwoWarnings ? "inactivity_warning_years_ahead" : "inactivity_warning_short_term";
         sendMail(templateName, title, variables, preferredLanguage(user), user.getEmail(), false);
     }
 

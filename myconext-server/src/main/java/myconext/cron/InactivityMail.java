@@ -12,7 +12,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
-import java.util.List;
+import java.text.DateFormat;
+import java.util.*;
 
 @Component
 public class InactivityMail {
@@ -42,13 +43,31 @@ public class InactivityMail {
         if (!mailInactivityMails || !cronJobResponsible) {
             return;
         }
-        long start = System.currentTimeMillis();
+        long nowInMillis = System.currentTimeMillis();
+        long oneDayInMillis = 24 * 60 * 60 * 1000;
+        DateFormat dateFormatNL = DateFormat.getDateInstance(DateFormat.LONG, Locale.of("nl"));
+        DateFormat dateFormatUS = DateFormat.getDateInstance(DateFormat.LONG, Locale.of("us"));
         try {
+            //For all UserInactivity we check the last activity date and ensure they only receive one mail about this
+            long lastLoginBefore = nowInMillis - (oneDayInMillis * UserInactivity.YEAR_1_INTERVAL.getInactivityDays());
+            List<User> users = userRepository.findByLastLoginBeforeAndUserInactivity(UserInactivity.YEAR_1_INTERVAL.getInactivityDays(), null);
+            //We need the following localized variables
+            //inactivity_period_en, deletion_period_en, account_delete_date_en, inactivity_period_nl, deletion_period_nl, account_delete_date_nl
+            Map<String, String> localeVariables = new HashMap();
+            Date date = new Date(lastLoginBefore);
+            localeVariables.put("inactivity_period_en", "1 year");
+            localeVariables.put("deletion_period_en", "4 years");
+            localeVariables.put("account_delete_date_en", dateFormatUS.format(date));
+            localeVariables.put("inactivity_period_nl", "1 jaar");
+            localeVariables.put("deletion_period_nl", "4 jaren");
+            localeVariables.put("account_delete_date_nl", dateFormatNL.format(date));
+            users.forEach(user -> {
+                mailBox.sendUserInactivityMail(user, true);
+            });
 
-            List<User> users = userRepository.findByLastLoginBeforeAndLastLoginAfterAndUserInactivity(0L, 0L, null);
 
             LOG.info(String.format("Mailed %s users who has been inactive for %s in for %s ms",
-                    users.size(), UserInactivity.YEAR_1_INTERVAL,  System.currentTimeMillis() - start));
+                    users.size(), UserInactivity.YEAR_1_INTERVAL,  System.currentTimeMillis() - nowInMillis));
         } catch (Exception e) {
             LOG.error("Error in mailInactiveUsers", e);
         }

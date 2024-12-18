@@ -54,7 +54,7 @@ public interface UserRepository extends MongoRepository<User, String> {
     @Query("{'email' : {$regex : ?0, $options: 'i'}}")
     List<User> findByEmailDomain(String regex);
 
-    List<User> findByLastLoginBeforeAndLastLoginAfterAndUserInactivity(long lastLoginBefore, long lastLoginAfter, UserInactivity userInactivity);
+    List<User> findByLastLoginBeforeAndUserInactivity(long lastLoginBefore, UserInactivity userInactivity);
 
     @Query("""
             { $and: [ { $or: [
