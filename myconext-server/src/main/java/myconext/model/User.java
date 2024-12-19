@@ -84,6 +84,7 @@ public class User implements Serializable, UserDetails {
     private List<EduID> eduIDS = new ArrayList<>();
 
     private long created;
+    @Setter
     private long lastLogin;
 
     @Setter

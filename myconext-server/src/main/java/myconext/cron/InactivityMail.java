@@ -1,7 +1,6 @@
 package myconext.cron;
 
 import myconext.mail.MailBox;
-import myconext.manage.Manage;
 import myconext.model.User;
 import myconext.model.UserInactivity;
 import myconext.repository.UserRepository;
@@ -14,6 +13,8 @@ import org.springframework.stereotype.Component;
 
 import java.text.DateFormat;
 import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Component
 public class InactivityMail {
@@ -24,17 +25,20 @@ public class InactivityMail {
     private final UserRepository userRepository;
     private final boolean mailInactivityMails;
     private final boolean cronJobResponsible;
+    private final DateFormat dateFormatUS;
+    private final DateFormat dateFormatNL;
 
     @Autowired
-    public InactivityMail(Manage manage,
-                                MailBox mailBox,
-                                UserRepository userRepository,
-                                @Value("${cron.node-cron-job-responsible}") boolean cronJobResponsible,
-                                @Value("${feature.mail_inactivity_mails}") boolean mailInactivityMails) {
+    public InactivityMail(MailBox mailBox,
+                          UserRepository userRepository,
+                          @Value("${cron.node-cron-job-responsible}") boolean cronJobResponsible,
+                          @Value("${feature.mail_inactivity_mails}") boolean mailInactivityMails) {
         this.mailBox = mailBox;
         this.userRepository = userRepository;
         this.cronJobResponsible = cronJobResponsible;
         this.mailInactivityMails = mailInactivityMails;
+        this.dateFormatUS = DateFormat.getDateInstance(DateFormat.LONG, Locale.of("us"));
+        this.dateFormatNL = DateFormat.getDateInstance(DateFormat.LONG, Locale.of("nl"));
     }
 
     @Scheduled(cron = "${cron.inactivity-users-expression}")
@@ -43,35 +47,50 @@ public class InactivityMail {
         if (!mailInactivityMails || !cronJobResponsible) {
             return;
         }
-        long nowInMillis = System.currentTimeMillis();
-        long oneDayInMillis = 24 * 60 * 60 * 1000;
-        DateFormat dateFormatNL = DateFormat.getDateInstance(DateFormat.LONG, Locale.of("nl"));
-        DateFormat dateFormatUS = DateFormat.getDateInstance(DateFormat.LONG, Locale.of("us"));
         try {
-            //For all UserInactivity we check the last activity date and ensure they only receive one mail about this
-            long lastLoginBefore = nowInMillis - (oneDayInMillis * UserInactivity.YEAR_1_INTERVAL.getInactivityDays());
-            List<User> users = userRepository.findByLastLoginBeforeAndUserInactivity(UserInactivity.YEAR_1_INTERVAL.getInactivityDays(), null);
-            //We need the following localized variables
-            //inactivity_period_en, deletion_period_en, account_delete_date_en, inactivity_period_nl, deletion_period_nl, account_delete_date_nl
-            Map<String, String> localeVariables = new HashMap();
-            Date date = new Date(lastLoginBefore);
-            localeVariables.put("inactivity_period_en", "1 year");
-            localeVariables.put("deletion_period_en", "4 years");
-            localeVariables.put("account_delete_date_en", dateFormatUS.format(date));
-            localeVariables.put("inactivity_period_nl", "1 jaar");
-            localeVariables.put("deletion_period_nl", "4 jaren");
-            localeVariables.put("account_delete_date_nl", dateFormatNL.format(date));
-            users.forEach(user -> {
-                mailBox.sendUserInactivityMail(user, true);
-            });
-
-
-            LOG.info(String.format("Mailed %s users who has been inactive for %s in for %s ms",
-                    users.size(), UserInactivity.YEAR_1_INTERVAL,  System.currentTimeMillis() - nowInMillis));
+            Stream.of(UserInactivity.values()).forEach(this::doMailInactiveUsers);
+            this.doDeleteInactiveUsers();
         } catch (Exception e) {
+            //swallow exception as the scheduling stops then
             LOG.error("Error in mailInactiveUsers", e);
         }
     }
 
+    private void doMailInactiveUsers(UserInactivity userInactivity) {
+        long nowInMillis = System.currentTimeMillis();
+        long oneDayInMillis = 24 * 60 * 60 * 1000L;
+        long fiveYearsInMillis = 5 * 365 * oneDayInMillis;
 
+        long lastLoginBefore = nowInMillis - (oneDayInMillis * userInactivity.getInactivityDays());
+        List<User> users = userRepository.findByLastLoginBeforeAndUserInactivity(lastLoginBefore, userInactivity.getPreviousUserInactivity());
+
+        Map<String, String> localeVariables = new HashMap<>();
+        //This is the future date when the user will be deleted based on the inactivityDays of the userInactivity
+        Date date = new Date(nowInMillis + (fiveYearsInMillis - (oneDayInMillis * userInactivity.getInactivityDays())));
+        localeVariables.put("inactivity_period_en", userInactivity.getInactivityPeriodEn());
+        localeVariables.put("inactivity_period_nl", userInactivity.getInactivityPeriodNl());
+        localeVariables.put("deletion_period_en", userInactivity.getDeletionPeriodEn());
+        localeVariables.put("deletion_period_nl", userInactivity.getDeletionPeriodNl());
+        localeVariables.put("account_delete_date_en", dateFormatUS.format(date));
+        localeVariables.put("account_delete_date_nl", dateFormatNL.format(date));
+        users.forEach(user -> {
+            mailBox.sendUserInactivityMail(user, localeVariables, true);
+            user.setUserInactivity(userInactivity);
+            userRepository.save(user);
+        });
+        LOG.info(String.format("Mailed %s users who has been inactive for %s period in for %s ms",
+                users.size(), userInactivity, System.currentTimeMillis() - nowInMillis));
+    }
+
+    private void doDeleteInactiveUsers() {
+        long nowInMillis = System.currentTimeMillis();
+        long oneDayInMillis = 24 * 60 * 60 * 1000L;
+
+        long lastLoginBefore = nowInMillis - (oneDayInMillis * 5L * 365);
+        List<User> users = userRepository.findByLastLoginBeforeAndUserInactivity(lastLoginBefore, UserInactivity.WEEK_1_BEFORE_5_YEARS);
+        userRepository.deleteAll(users);
+        LOG.info(String.format("Deleted %s users (%s) who has been inactive for 5 years in for %s ms",
+                users.size(), users.stream().map(User::getEmail).collect(Collectors.joining(", ")),
+                System.currentTimeMillis() - nowInMillis));
+    }
 }
