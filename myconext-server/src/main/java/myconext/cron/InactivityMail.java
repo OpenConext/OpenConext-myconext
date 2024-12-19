@@ -74,7 +74,8 @@ public class InactivityMail {
         localeVariables.put("account_delete_date_en", dateFormatUS.format(date));
         localeVariables.put("account_delete_date_nl", dateFormatNL.format(date));
         users.forEach(user -> {
-            mailBox.sendUserInactivityMail(user, localeVariables, true);
+            mailBox.sendUserInactivityMail(user, localeVariables,
+                    userInactivity.equals(UserInactivity.YEAR_1_INTERVAL) || userInactivity.equals(UserInactivity.YEAR_3_INTERVAL));
             user.setUserInactivity(userInactivity);
             userRepository.save(user);
         });
