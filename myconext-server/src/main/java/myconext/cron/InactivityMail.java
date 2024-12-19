@@ -16,6 +16,8 @@ import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import static myconext.model.UserInactivity.*;
+
 @Component
 public class InactivityMail {
 
@@ -48,7 +50,7 @@ public class InactivityMail {
             return;
         }
         try {
-            Stream.of(UserInactivity.values()).forEach(this::doMailInactiveUsers);
+            Stream.of(values()).forEach(this::doMailInactiveUsers);
             this.doDeleteInactiveUsers();
         } catch (Exception e) {
             //swallow exception as the scheduling stops then
@@ -75,7 +77,7 @@ public class InactivityMail {
         localeVariables.put("account_delete_date_nl", dateFormatNL.format(date));
         users.forEach(user -> {
             mailBox.sendUserInactivityMail(user, localeVariables,
-                    userInactivity.equals(UserInactivity.YEAR_1_INTERVAL) || userInactivity.equals(UserInactivity.YEAR_3_INTERVAL));
+                    userInactivity.equals(YEAR_1_INTERVAL) || userInactivity.equals(YEAR_3_INTERVAL));
             user.setUserInactivity(userInactivity);
             userRepository.save(user);
         });
@@ -88,7 +90,7 @@ public class InactivityMail {
         long oneDayInMillis = 24 * 60 * 60 * 1000L;
 
         long lastLoginBefore = nowInMillis - (oneDayInMillis * 5L * 365);
-        List<User> users = userRepository.findByLastLoginBeforeAndUserInactivity(lastLoginBefore, UserInactivity.WEEK_1_BEFORE_5_YEARS);
+        List<User> users = userRepository.findByLastLoginBeforeAndUserInactivity(lastLoginBefore, WEEK_1_BEFORE_5_YEARS);
         userRepository.deleteAll(users);
         LOG.info(String.format("Deleted %s users (%s) who has been inactive for 5 years in for %s ms",
                 users.size(), users.stream().map(User::getEmail).collect(Collectors.joining(", ")),
