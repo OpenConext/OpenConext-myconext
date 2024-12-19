@@ -1,9 +1,11 @@
 package myconext.cron;
 
+import lombok.SneakyThrows;
 import myconext.AbstractMailBoxTest;
 import myconext.model.User;
 import myconext.model.UserInactivity;
 import org.apache.commons.io.IOUtils;
+import org.awaitility.core.ConditionTimeoutException;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -13,8 +15,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
         properties = {
@@ -39,6 +40,7 @@ public class InactivityMailTest extends AbstractMailBoxTest {
     @Autowired
     protected InactivityMail inactivityMail;
 
+    @SneakyThrows
     @Test
     public void mailInactivityMail() {
         inactivityUserSeed();
@@ -53,6 +55,11 @@ public class InactivityMailTest extends AbstractMailBoxTest {
         });
         Optional<User> optionalUser = userRepository.findUserByEmail(DELETED_EMAIL);
         assertFalse(optionalUser.isPresent());
+
+        //Idempotency check
+        greenMail.purgeEmailFromAllMailboxes();
+        inactivityMail.mailInactiveUsers();
+        assertThrows(ConditionTimeoutException.class, () -> mailMessages());
     }
 
     private void inactivityUserSeed() {

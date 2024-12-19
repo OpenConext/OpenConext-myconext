@@ -8,6 +8,7 @@ import org.junit.Rule;
 
 import javax.mail.internet.MimeMessage;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import static org.awaitility.Awaitility.await;
 
@@ -31,12 +32,13 @@ public abstract class AbstractMailBoxTest extends AbstractIntegrationTest {
     }
 
     protected MimeMessage mailMessage() {
-        await().until(() -> greenMail.getReceivedMessages().length != 0);
+        await().atMost(1, TimeUnit.SECONDS).until(() -> greenMail.getReceivedMessages().length != 0);
         return greenMail.getReceivedMessages()[0];
     }
 
     protected List<MimeMessage> mailMessages() {
-        await().until(() -> greenMail.getReceivedMessages().length != 0);
+        await().atMost(1, TimeUnit.SECONDS).until(() -> greenMail.getReceivedMessages().length != 0);
         return List.of(greenMail.getReceivedMessages());
     }
+
 }
