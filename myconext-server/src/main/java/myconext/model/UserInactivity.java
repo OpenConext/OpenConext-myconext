@@ -11,14 +11,14 @@ public enum UserInactivity {
             "1 year",
             "1 jaar",
             "4 years",
-            "4 jaren"),
+            "4 jaar"),
     // 3 year (= 3 year before the 5-year mark)
     YEAR_3_INTERVAL(2L * 365,
             YEAR_1_INTERVAL,
             "2 years",
-            "2 jaren",
+            "2 jaar",
             "3 years",
-            "3 jaren"),
+            "3 jaar"),
     // 1 month before the 5-year mark
     MONTH_1_BEFORE_5_YEARS((4L * 365) + (11L * 30),
             YEAR_3_INTERVAL,

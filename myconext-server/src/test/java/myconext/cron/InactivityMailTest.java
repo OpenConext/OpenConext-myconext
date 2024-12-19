@@ -11,8 +11,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import javax.mail.internet.MimeMessage;
+import java.nio.charset.Charset;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -43,7 +45,7 @@ public class InactivityMailTest extends AbstractMailBoxTest {
     @SneakyThrows
     @Test
     public void mailInactivityMail() {
-        inactivityUserSeed();
+        inactivityUserSeed("en");
 
         inactivityMail.mailInactiveUsers();
 
@@ -59,16 +61,40 @@ public class InactivityMailTest extends AbstractMailBoxTest {
         //Idempotency check
         greenMail.purgeEmailFromAllMailboxes();
         inactivityMail.mailInactiveUsers();
-        assertThrows(ConditionTimeoutException.class, () -> mailMessages());
+        assertThrows(ConditionTimeoutException.class, this::mailMessages);
     }
 
-    private void inactivityUserSeed() {
+    @SneakyThrows
+    @Test
+    public void mailInactivityMailDutch() {
+        inactivityUserSeed("nl");
+
+        inactivityMail.mailInactiveUsers();
+
+        List<MimeMessage> mimeMessages = mailMessages();
+        assertEquals(4, mimeMessages.size());
+        //Ordering is not stable
+        String allContent = mimeMessages.stream().map(this::messageContent).collect(Collectors.joining());
+        List.of("niet gebruikt in 1 jaar", "binnen 4 jaar",
+                "niet gebruikt in 2 jaar", "binnen 3 jaar",
+                "in bijna 5 jaar", "binnen 1 maand",
+                "binnen 1 week")
+                .forEach(s -> assertTrue(allContent.contains(s)));
+    }
+
+    @SneakyThrows
+    private String messageContent(MimeMessage mimeMessage) {
+        return IOUtils.toString(mimeMessage.getInputStream(), Charset.defaultCharset());
+    }
+
+    private void inactivityUserSeed(String preferredLanguage) {
         long oneDayInMillis = 24 * 60 * 60 * 1000L;
         long yesterday = System.currentTimeMillis() - oneDayInMillis;
         Stream.of(UserInactivity.values()).forEach(userInactivity -> {
             User user = new User();
             user.setLastLogin(yesterday - (userInactivity.getInactivityDays() * oneDayInMillis));
             user.setEmail(userInactivity.name());
+            user.setPreferredLanguage(preferredLanguage);
             user.setUserInactivity(userInactivity.getPreviousUserInactivity());
             userRepository.save(user);
         });
