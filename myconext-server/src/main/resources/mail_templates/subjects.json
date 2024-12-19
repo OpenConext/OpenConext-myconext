@@ -43,6 +43,14 @@
   "nudge_eduid_app": {
     "en": "Installeer de eduID app",
     "nl": "Install the eduID app"
+  },
+  "inactivity_warning_years_ahead": {
+    "en": "Inactivity warning",
+    "nl": "Inactiviteit waarschuwing"
+  },
+  "inactivity_warning_short_term": {
+    "en": "Inactivity warning",
+    "nl": "Inactiviteit waarschuwing"
   }
 
 }

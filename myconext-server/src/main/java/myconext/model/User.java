@@ -84,6 +84,7 @@ public class User implements Serializable, UserDetails {
     private List<EduID> eduIDS = new ArrayList<>();
 
     private long created;
+    @Setter
     private long lastLogin;
 
     @Setter
@@ -96,6 +97,9 @@ public class User implements Serializable, UserDetails {
     @JsonIgnore
     @Setter
     private boolean mobileAuthentication;
+
+    @Setter
+    private UserInactivity userInactivity;
 
     public User(CreateInstitutionEduID createInstitutionEduID, Map<String, Object> userInfo) {
         this.email = createInstitutionEduID.getEmail();

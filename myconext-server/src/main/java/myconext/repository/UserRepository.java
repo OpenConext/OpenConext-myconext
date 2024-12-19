@@ -2,6 +2,7 @@ package myconext.repository;
 
 
 import myconext.model.User;
+import myconext.model.UserInactivity;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.data.mongodb.repository.Query;
 import org.springframework.stereotype.Repository;
@@ -53,6 +54,7 @@ public interface UserRepository extends MongoRepository<User, String> {
     @Query("{'email' : {$regex : ?0, $options: 'i'}}")
     List<User> findByEmailDomain(String regex);
 
+    List<User> findByLastLoginBeforeAndUserInactivity(long lastLoginBefore, UserInactivity userInactivity);
 
     @Query("""
             { $and: [ { $or: [
