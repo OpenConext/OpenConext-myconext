@@ -50,7 +50,7 @@ public class InactivityMail {
             return;
         }
         try {
-            Stream.of(values()).forEach(this::doMailInactiveUsers);
+            Stream.of(UserInactivity.values()).forEach(this::doMailInactiveUsers);
             this.doDeleteInactiveUsers();
         } catch (Exception e) {
             //swallow exception as the scheduling stops then
