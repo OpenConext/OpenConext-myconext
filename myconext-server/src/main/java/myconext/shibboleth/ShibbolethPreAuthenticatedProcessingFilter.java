@@ -4,6 +4,7 @@ package myconext.shibboleth;
 import myconext.manage.Manage;
 import myconext.model.User;
 import myconext.repository.UserRepository;
+import org.apache.commons.lang3.stream.Streams;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -28,6 +29,7 @@ public class ShibbolethPreAuthenticatedProcessingFilter extends AbstractPreAuthe
     public static final String SHIB_EMAIL = "Shib-InetOrgPerson-mail";
     public static final String SHIB_UID = "uid";
     public static final String SHIB_SCHAC_HOME_ORGANIZATION = "schacHomeOrganization";
+    public static final String SHIB_MEMBERSHIPS = "is-member-of";
 
     private final UserRepository userRepository;
     private final Manage serviceProviderResolver;
@@ -51,6 +53,9 @@ public class ShibbolethPreAuthenticatedProcessingFilter extends AbstractPreAuthe
         String email = getHeader(SHIB_EMAIL, request);
         String givenName = getHeader(SHIB_GIVEN_NAME, request);
         String familyName = getHeader(SHIB_SUR_NAME, request);
+        Streams.of(getHeader(SHIB_MEMBERSHIPS, request).split(";"))
+                .map(String::trim)
+                .toList();
 
         boolean valid = Stream.of(uid, schacHomeOrganization, email, givenName, familyName).allMatch(StringUtils::hasText);
         if (!valid) {
