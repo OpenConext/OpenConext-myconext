@@ -33,7 +33,9 @@ import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.preauth.AbstractPreAuthenticatedProcessingFilter;
@@ -279,12 +281,13 @@ public class SecurityConfigurationOld {
 
         @Bean
         public UserDetailsService userDetailsService() {
-            InMemoryUserDetailsManager inMemoryUserDetailsManager =
-            new InMemoryUserDetailsManager();
-            inMemoryUserDetailsManager.set
             return new ExtendedInMemoryUserDetailsManager(remoteUsers.getRemoteUsers());
         }
 
+        @Bean
+        public PasswordEncoder userDetailsService() {
+            return User.withDefaultPasswordEncoder()
+        }
         @Override
         protected void configure(AuthenticationManagerBuilder auth) throws Exception {
             auth.userDetailsService(userDetailsService());
