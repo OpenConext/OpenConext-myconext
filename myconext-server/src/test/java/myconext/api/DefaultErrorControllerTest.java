@@ -52,7 +52,7 @@ public class DefaultErrorControllerTest {
         MockHttpServletRequest request = new MockHttpServletRequest();
         request.setAttribute("org.springframework.boot.web.servlet.error.DefaultErrorAttributes.ERROR",
                 new IllegalArgumentException("dope"));
-        request.setAttribute("javax.servlet.error.status_code", 409);
+        request.setAttribute("jakarta.servlet.error.status_code", 409);
 
         ResponseEntity responseEntity = subject.error(request);
         assertEquals(HttpStatus.BAD_REQUEST, responseEntity.getStatusCode());

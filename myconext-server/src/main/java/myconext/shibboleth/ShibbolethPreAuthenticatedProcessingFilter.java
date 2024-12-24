@@ -4,16 +4,17 @@ package myconext.shibboleth;
 import myconext.manage.Manage;
 import myconext.model.User;
 import myconext.repository.UserRepository;
-import org.apache.commons.lang3.stream.Streams;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.web.authentication.preauth.AbstractPreAuthenticatedProcessingFilter;
 import org.springframework.util.StringUtils;
 
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
 import java.nio.charset.StandardCharsets;
+import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
 
@@ -53,9 +54,6 @@ public class ShibbolethPreAuthenticatedProcessingFilter extends AbstractPreAuthe
         String email = getHeader(SHIB_EMAIL, request);
         String givenName = getHeader(SHIB_GIVEN_NAME, request);
         String familyName = getHeader(SHIB_SUR_NAME, request);
-        Streams.of(getHeader(SHIB_MEMBERSHIPS, request).split(";"))
-                .map(String::trim)
-                .toList();
 
         boolean valid = Stream.of(uid, schacHomeOrganization, email, givenName, familyName).allMatch(StringUtils::hasText);
         if (!valid) {
@@ -66,12 +64,25 @@ public class ShibbolethPreAuthenticatedProcessingFilter extends AbstractPreAuthe
         }
         Optional<User> optionalUser = userRepository.findUserByUid(uid);
         String preferredLanguage = cookieByName(request, "lang").map(Cookie::getValue).orElse("en");
-        return optionalUser.orElseGet(() ->
-                provisionUser(uid, schacHomeOrganization, givenName, familyName, email, preferredLanguage));
+        List<String> memberships = Stream.of(getHeader(SHIB_MEMBERSHIPS, request).split(";"))
+                .map(String::trim)
+                .toList();
+
+        return optionalUser.map(user -> syncMemberships(user, memberships)).orElseGet(() ->
+                provisionUser(uid, schacHomeOrganization, givenName, familyName, email, preferredLanguage, memberships));
+    }
+
+    private User syncMemberships(User user, List<String> memberships) {
+        if (!user.getMemberships().stream().sorted().toList().equals(
+                memberships.stream().sorted().toList())) {
+            user.setMemberships(memberships);
+            userRepository.save(user);
+        }
+        return user;
     }
 
     private User provisionUser(String uid, String schacHomeOrganization, String givenName, String familyName,
-                               String email, String preferredLanguage) {
+                               String email, String preferredLanguage, List<String> memberships) {
         User user = new User(uid, email, givenName, givenName, familyName, schacHomeOrganization,
                 preferredLanguage, mijnEduIDEntityId, serviceProviderResolver);
         user.setNewUser(false);

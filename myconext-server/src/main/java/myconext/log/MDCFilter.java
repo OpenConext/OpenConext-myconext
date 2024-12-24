@@ -3,7 +3,7 @@ package myconext.log;
 import org.slf4j.MDC;
 import org.springframework.stereotype.Component;
 
-import javax.servlet.*;
+import jakarta.servlet.*;
 import java.io.IOException;
 
 @Component
