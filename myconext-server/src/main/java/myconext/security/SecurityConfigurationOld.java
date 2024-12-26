@@ -35,7 +35,10 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.crypto.argon2.Argon2PasswordEncoder;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.*;
+import org.springframework.security.crypto.scrypt.SCryptPasswordEncoder;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.preauth.AbstractPreAuthenticatedProcessingFilter;
@@ -46,9 +49,7 @@ import saml.model.SAMLServiceProvider;
 
 import java.io.IOException;
 import java.nio.charset.Charset;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 import static java.util.stream.Collectors.toList;
 import static org.springframework.security.config.Customizer.withDefaults;
@@ -285,12 +286,11 @@ public class SecurityConfigurationOld {
         }
 
         @Bean
-        public PasswordEncoder userDetailsService() {
-            return User.withDefaultPasswordEncoder()
-        }
-        @Override
-        protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-            auth.userDetailsService(userDetailsService());
+        public PasswordEncoder passwordEncoder() {
+            String encodingId = "noop";
+            Map<String, PasswordEncoder> encoders = new HashMap();
+            encoders.put("noop", NoOpPasswordEncoder.getInstance());
+            return new DelegatingPasswordEncoder(encodingId, encoders);
         }
 
     }
