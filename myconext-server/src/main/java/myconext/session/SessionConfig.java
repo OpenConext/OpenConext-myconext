@@ -1,11 +1,14 @@
 package myconext.session;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.core.StreamReadConstraints;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import jakarta.servlet.ServletContext;
+import jakarta.servlet.ServletException;
 import myconext.model.EduID;
 import myconext.model.LinkedAccount;
 import myconext.model.PublicKeyCredentials;
@@ -25,11 +28,14 @@ import java.util.LinkedHashMap;
 
 @Configuration
 @EnableMongoHttpSession
-public class SessionConfig extends AbstractHttpSessionApplicationInitializer {
+public class SessionConfig {
 
     @Bean(name = "jsonMapper")
     @Primary
     public ObjectMapper jsonMapper() {
+        StreamReadConstraints.overrideDefaultStreamReadConstraints(
+                StreamReadConstraints.builder().maxStringLength(100_000_000).build()
+        );
         return new ObjectMapper()
                 .configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false)
                 .setSerializationInclusion(JsonInclude.Include.NON_ABSENT)
@@ -43,8 +49,6 @@ public class SessionConfig extends AbstractHttpSessionApplicationInitializer {
                 .addMixIn(PublicKeyCredentials.class, PublicKeyCredentialsMixin.class)
                 .addMixIn(LinkedHashMap.class, LinkedHashMapMixin.class)
                 .addMixIn(HashMap.class, HashMapMixin.class);
-
-//                .registerModule(new CoreJackson2Module());
     }
 
     @Bean

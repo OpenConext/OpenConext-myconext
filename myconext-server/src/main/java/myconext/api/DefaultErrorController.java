@@ -2,6 +2,7 @@ package myconext.api;
 
 
 import io.swagger.v3.oas.annotations.Hidden;
+import jakarta.servlet.http.HttpServletRequest;
 import myconext.exceptions.UserNotFoundException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -18,12 +19,10 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.context.request.ServletWebRequest;
 import org.springframework.web.context.request.WebRequest;
 
-import jakarta.servlet.http.HttpServletRequest;
 import java.net.URISyntaxException;
 import java.util.Map;
 
-import static org.springframework.http.HttpStatus.BAD_REQUEST;
-import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
+import static org.springframework.http.HttpStatus.*;
 
 @RestController
 @Hidden
@@ -45,7 +44,9 @@ public class DefaultErrorController implements ErrorController {
                 webRequest,
                 ErrorAttributeOptions.of(
                         ErrorAttributeOptions.Include.EXCEPTION,
+                        ErrorAttributeOptions.Include.STATUS,
                         ErrorAttributeOptions.Include.MESSAGE,
+                        ErrorAttributeOptions.Include.ERROR,
                         ErrorAttributeOptions.Include.BINDING_ERRORS)
         );
 
@@ -53,8 +54,13 @@ public class DefaultErrorController implements ErrorController {
         HttpStatus statusCode;
 
         if (error == null) {
-            statusCode = result.containsKey("status") && (int) result.get("status") != 999 ?
-                    HttpStatus.valueOf((int) result.get("status")) : INTERNAL_SERVER_ERROR;
+            if ("unauthorized".equalsIgnoreCase((String) result.getOrDefault("message", ""))) {
+                statusCode = UNAUTHORIZED;
+            } else {
+                statusCode = result.containsKey("status") && (int) result.get("status") != 999 ?
+                        HttpStatus.valueOf((int) result.get("status")) : INTERNAL_SERVER_ERROR;
+            }
+
         } else {
             if (error instanceof UserNotFoundException) {
                 LOG.warn(String.format("%s: %s", error.getClass(), error.getMessage()));
@@ -63,7 +69,13 @@ public class DefaultErrorController implements ErrorController {
             }
             //https://github.com/spring-projects/spring-boot/issues/3057
             ResponseStatus annotation = AnnotationUtils.getAnnotation(error.getClass(), ResponseStatus.class);
-            statusCode = annotation != null ? annotation.value() : BAD_REQUEST;
+            if (annotation != null) {
+                statusCode = annotation.value();
+            } else if (result.containsKey("status")) {
+                statusCode = HttpStatus.valueOf((Integer) result.get("status"));
+            } else {
+                statusCode = BAD_REQUEST;
+            }
         }
         result.put("status", statusCode.value());
         return ResponseEntity.status(statusCode).body(result);

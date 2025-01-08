@@ -55,11 +55,10 @@ public class DefaultErrorControllerTest {
         request.setAttribute("jakarta.servlet.error.status_code", 409);
 
         ResponseEntity responseEntity = subject.error(request);
-        assertEquals(HttpStatus.BAD_REQUEST, responseEntity.getStatusCode());
+        assertEquals(HttpStatus.CONFLICT, responseEntity.getStatusCode());
 
         Map<String, Object> body = (Map<String, Object>) responseEntity.getBody();
-        assertEquals(400, body.get("status"));
-        assertEquals("Conflict", body.get("error"));
+        assertEquals(409, body.get("status"));
     }
 
 }

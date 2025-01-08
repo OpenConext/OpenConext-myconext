@@ -22,12 +22,14 @@ import org.springframework.core.annotation.Order;
 import org.springframework.core.env.Environment;
 import org.springframework.core.env.Profiles;
 import org.springframework.core.io.Resource;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
+import org.springframework.security.authentication.AuthenticationProvider;
+import org.springframework.security.authentication.ProviderManager;
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.preauth.AbstractPreAuthenticatedProcessingFilter;
 import org.springframework.security.web.authentication.preauth.PreAuthenticatedAuthenticationProvider;
@@ -44,12 +46,17 @@ import java.util.List;
 import static java.util.stream.Collectors.toList;
 import static org.springframework.security.config.Customizer.withDefaults;
 
+@EnableWebSecurity
 @EnableConfigurationProperties
 @EnableMethodSecurity(prePostEnabled = true)
 @Configuration
 public class SecurityConfiguration {
 
     private static final Log LOG = LogFactory.getLog(SecurityConfiguration.class);
+
+    public SecurityConfiguration() {
+        System.out.println("debugger");
+    }
 
     @Configuration
     @Order(1)
@@ -172,9 +179,67 @@ public class SecurityConfiguration {
         }
     }
 
-    @Bean
-    public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
-        return authenticationConfiguration.getAuthenticationManager();
+    @Order
+    @Configuration
+    public static class InternalSecurityConfigurationAdapter {
+
+        private final Environment environment;
+        private final UserRepository userRepository;
+        private final Manage serviceProviderResolver;
+        private final String mijnEduIDEntityId;
+
+        public InternalSecurityConfigurationAdapter(Environment environment,
+                                                    UserRepository userRepository,
+                                                    Manage serviceProviderResolver,
+                                                    @Value("${mijn_eduid_entity_id}") String mijnEduIDEntityId) {
+            this.environment = environment;
+            this.userRepository = userRepository;
+            this.serviceProviderResolver = serviceProviderResolver;
+            this.mijnEduIDEntityId = mijnEduIDEntityId;
+        }
+
+        //        @Bean
+        private AuthenticationProvider preAuthenticatedAuthenticationProvider() {
+            PreAuthenticatedAuthenticationProvider provider = new PreAuthenticatedAuthenticationProvider();
+            provider.setPreAuthenticatedUserDetailsService(new ShibbolethUserDetailService());
+            return provider;
+        }
+
+//        @Bean
+//        public AuthenticationManager authenticationManager(AuthenticationProvider authenticationProvider) {
+//            return new ProviderManager(authenticationProvider);
+//        }
+
+        @Bean
+        public SecurityFilterChain shibbolethSecurityFilterChain(HttpSecurity http) throws Exception {
+            AuthenticationProvider authenticationProvider = preAuthenticatedAuthenticationProvider();
+            ProviderManager providerManager = new ProviderManager(authenticationProvider);
+            http
+                    .securityMatcher("/myconext/api/sp/**", "/startSSO", "/tiqr/sp/**")
+                    .csrf(csrf -> csrf.disable())
+                    .sessionManagement(smc -> smc.sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED))
+                    .authorizeHttpRequests(authz -> authz.requestMatchers("/internal/**",
+                                    "/myconext/api/idp/**",
+                                    "/myconext/api/sp/create-from-institution",
+                                    "/myconext/api/sp/create-from-institution/**",
+                                    "/myconext/api/sp/idin/issuers")
+                            .permitAll())
+//                    .authenticationProvider(authenticationProvider)
+                    .addFilterBefore(
+                            new ShibbolethPreAuthenticatedProcessingFilter(
+                                    providerManager,
+                                    userRepository,
+                                    serviceProviderResolver,
+                                    mijnEduIDEntityId),
+                            AbstractPreAuthenticatedProcessingFilter.class)
+                    .authorizeHttpRequests(auth -> auth
+                            .anyRequest().hasRole("GUEST"));
+            if (environment.acceptsProfiles(Profiles.of("test", "test2", "dev"))) {
+                //we can't use @Profile, because we need to add it before the real filter
+                http.addFilterBefore(new MockShibbolethFilter(), ShibbolethPreAuthenticatedProcessingFilter.class);
+            }
+            return http.build();
+        }
     }
 
     @Configuration
@@ -198,18 +263,27 @@ public class SecurityConfiguration {
                     "/api/remote-creation/**"
             };
             http.securityMatcher(antPatterns)
+                    .securityContext(sc -> sc.requireExplicitSave(false))
                     .csrf(csrf -> csrf.disable())
                     .authorizeHttpRequests(auth -> auth
                             .requestMatchers(antPatterns).authenticated())
                     .httpBasic(withDefaults())
+                    .authenticationProvider(inMemoryAuthenticationProvider())
                     .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
             return http.build();
         }
 
-        @Bean
-        public UserDetailsService userDetailsService() {
-            return new ExtendedInMemoryUserDetailsManager(remoteUsers.getRemoteUsers());
+        private DaoAuthenticationProvider inMemoryAuthenticationProvider() {
+            DaoAuthenticationProvider authenticationProvider = new DaoAuthenticationProvider();
+            authenticationProvider.setUserDetailsService(new ExtendedInMemoryUserDetailsManager(remoteUsers.getRemoteUsers()));
+            return authenticationProvider;
         }
+//        UserDetailsService
+//
+//        @Bean
+//        public UserDetailsService userDetailsService() {
+//            return ;
+//        }
     }
 
     @Configuration
@@ -229,7 +303,14 @@ public class SecurityConfiguration {
         public SecurityFilterChain jwtSecurityFilterChain(HttpSecurity http) throws Exception {
             String[] antPatterns = {"/myconext/api/eduid/**", "/mobile/**"};
             http.securityMatcher(antPatterns)
+                    .csrf(AbstractHttpConfigurer::disable)
                     .authorizeHttpRequests(authz -> authz
+                            .requestMatchers(
+                                    "/mobile/api/idp/create",
+                                    "/myconext/api/mobile/oidc/redirect",
+                                    "/myconext/api/mobile/verify/redirect",
+                                    "/mobile/api/create-from-mobile-api")
+                            .permitAll()
                             .requestMatchers("/myconext/api/eduid/eppn").hasAuthority("SCOPE_eduid.nl/eppn")
                             .requestMatchers("/myconext/api/eduid/eduid").hasAuthority("SCOPE_eduid.nl/eduid")
                             .requestMatchers("/myconext/api/eduid/links").hasAuthority("SCOPE_eduid.nl/links")

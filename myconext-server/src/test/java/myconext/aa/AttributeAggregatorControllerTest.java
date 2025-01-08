@@ -62,7 +62,7 @@ public class AttributeAggregatorControllerTest extends AbstractIntegrationTest {
     }
 
     @Test
-    public void aggregate401() {
+    public void aggregateUnauthorized() {
         given()
                 .when()
                 .queryParam("sp_entity_id", "n/a")
