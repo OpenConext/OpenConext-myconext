@@ -1,6 +1,4 @@
-import I18n from "i18n-js";
-
-I18n.translations.en = {
+export const enTranslations =  {
     login: {
         requestEduId: "No eduID?",
         requestEduId2: "Create one!",
