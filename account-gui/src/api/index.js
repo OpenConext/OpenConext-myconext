@@ -72,8 +72,8 @@ export function allowedEmailDomains() {
     return fetchJson("/myconext/api/idp/email/domain/allowed")
 }
 
-export function configuration(eduIdPreferencesCookie) {
-    return fetchJson(`/config/${eduIdPreferencesCookie ? `/${eduIdPreferencesCookie}` : ""}`);
+export function configuration() {
+    return fetchJson("/config");
 }
 
 export function webAuthnRegistration(token) {

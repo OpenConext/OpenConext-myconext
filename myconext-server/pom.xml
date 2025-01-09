@@ -196,11 +196,16 @@
             <version>2.0.0-M1</version>
         </dependency>
         <!-- https://mvnrepository.com/artifact/com.github.tomakehurst/wiremock -->
+<!--        <dependency>-->
+<!--            <groupId>org.wiremock</groupId>-->
+<!--            <artifactId>wiremock-standalone</artifactId>-->
+<!--            <version>3.10.0</version>-->
+<!--            <scope>test</scope>-->
+<!--        </dependency>-->
         <dependency>
-            <groupId>org.wiremock</groupId>
-            <artifactId>wiremock-standalone</artifactId>
-            <version>3.10.0</version>
-            <scope>test</scope>
+            <groupId>org.wiremock.integrations</groupId>
+            <artifactId>wiremock-spring-boot</artifactId>
+            <version>3.3.0</version>
         </dependency>
         <dependency>
             <groupId>org.awaitility</groupId>

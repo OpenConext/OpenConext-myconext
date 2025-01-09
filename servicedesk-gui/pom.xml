@@ -9,7 +9,7 @@
     </parent>
     <artifactId>servicedesk-gui</artifactId>
     <packaging>pom</packaging>
-    <name>public-gui</name>
+    <name>servicedesk-gui</name>
     <build>
         <plugins>
             <plugin>

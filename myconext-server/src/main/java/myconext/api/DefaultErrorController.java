@@ -71,7 +71,7 @@ public class DefaultErrorController implements ErrorController {
             ResponseStatus annotation = AnnotationUtils.getAnnotation(error.getClass(), ResponseStatus.class);
             if (annotation != null) {
                 statusCode = annotation.value();
-            } else if (result.containsKey("status")) {
+            } else if (result.containsKey("status") && !result.get("status").equals(500)) {
                 statusCode = HttpStatus.valueOf((Integer) result.get("status"));
             } else {
                 statusCode = BAD_REQUEST;

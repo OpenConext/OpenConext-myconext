@@ -33,6 +33,10 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.preauth.AbstractPreAuthenticatedProcessingFilter;
 import org.springframework.security.web.authentication.preauth.PreAuthenticatedAuthenticationProvider;
+import org.springframework.security.web.context.DelegatingSecurityContextRepository;
+import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
+import org.springframework.security.web.context.RequestAttributeSecurityContextRepository;
+import org.springframework.security.web.context.SecurityContextRepository;
 import saml.model.SAMLConfiguration;
 import saml.model.SAMLIdentityProvider;
 import saml.model.SAMLServiceProvider;
@@ -48,15 +52,11 @@ import static org.springframework.security.config.Customizer.withDefaults;
 
 @EnableWebSecurity
 @EnableConfigurationProperties
-@EnableMethodSecurity(prePostEnabled = true)
+@EnableMethodSecurity
 @Configuration
 public class SecurityConfiguration {
 
     private static final Log LOG = LogFactory.getLog(SecurityConfiguration.class);
-
-    public SecurityConfiguration() {
-        System.out.println("debugger");
-    }
 
     @Configuration
     @Order(1)
@@ -64,6 +64,7 @@ public class SecurityConfiguration {
     public static class SamlSecurity {
 
         private final GuestIdpAuthenticationRequestFilter guestIdpAuthenticationRequestFilter;
+        private final SecurityContextRepository securityContextRepository;
 
         public SamlSecurity(@Value("${private_key_path}") Resource privateKeyPath,
                             @Value("${certificate_path}") Resource certificatePath,
@@ -117,6 +118,7 @@ public class SecurityConfiguration {
                     serviceProviders,
                     requiresSignedAuthnRequest
             );
+            this.securityContextRepository = securityContextRepository();
             this.guestIdpAuthenticationRequestFilter = new GuestIdpAuthenticationRequestFilter(
                     redirectUrl,
                     serviceProviderResolver,
@@ -137,9 +139,16 @@ public class SecurityConfiguration {
                     featureDefaultRememberMe,
                     configuration,
                     identityProviderMetaData,
-                    cookieValueEncoder
+                    cookieValueEncoder,
+                    securityContextRepository
             );
+        }
 
+        private SecurityContextRepository securityContextRepository() {
+            return new DelegatingSecurityContextRepository(
+                    new RequestAttributeSecurityContextRepository(),
+                    new HttpSessionSecurityContextRepository()
+            );
         }
 
         @Bean
@@ -147,10 +156,15 @@ public class SecurityConfiguration {
             http
                     .securityMatcher("/saml/guest-idp/**")
                     .csrf(csrf -> csrf.disable())
+                    .sessionManagement(conf -> conf.sessionCreationPolicy(SessionCreationPolicy.ALWAYS))
                     .addFilterBefore(this.guestIdpAuthenticationRequestFilter,
                             AbstractPreAuthenticatedProcessingFilter.class)
                     .authorizeHttpRequests(auth -> auth
-                            .anyRequest().hasRole("GUEST"));
+                            .anyRequest().hasRole("GUEST"))
+                    //We need a reference to the securityContextRepository to update the authentication after an InstitutionAdmin invitation accept
+                    .securityContext(securityContextConfigurer ->
+                            securityContextConfigurer.securityContextRepository(this.securityContextRepository));
+
             return http.build();
         }
 
@@ -198,17 +212,11 @@ public class SecurityConfiguration {
             this.mijnEduIDEntityId = mijnEduIDEntityId;
         }
 
-        //        @Bean
         private AuthenticationProvider preAuthenticatedAuthenticationProvider() {
             PreAuthenticatedAuthenticationProvider provider = new PreAuthenticatedAuthenticationProvider();
             provider.setPreAuthenticatedUserDetailsService(new ShibbolethUserDetailService());
             return provider;
         }
-
-//        @Bean
-//        public AuthenticationManager authenticationManager(AuthenticationProvider authenticationProvider) {
-//            return new ProviderManager(authenticationProvider);
-//        }
 
         @Bean
         public SecurityFilterChain shibbolethSecurityFilterChain(HttpSecurity http) throws Exception {
@@ -218,13 +226,13 @@ public class SecurityConfiguration {
                     .securityMatcher("/myconext/api/sp/**", "/startSSO", "/tiqr/sp/**")
                     .csrf(csrf -> csrf.disable())
                     .sessionManagement(smc -> smc.sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED))
-                    .authorizeHttpRequests(authz -> authz.requestMatchers("/internal/**",
+                    .authorizeHttpRequests(authz -> authz.requestMatchers(
+                                    "/internal/**",
                                     "/myconext/api/idp/**",
                                     "/myconext/api/sp/create-from-institution",
                                     "/myconext/api/sp/create-from-institution/**",
                                     "/myconext/api/sp/idin/issuers")
                             .permitAll())
-//                    .authenticationProvider(authenticationProvider)
                     .addFilterBefore(
                             new ShibbolethPreAuthenticatedProcessingFilter(
                                     providerManager,
@@ -278,12 +286,7 @@ public class SecurityConfiguration {
             authenticationProvider.setUserDetailsService(new ExtendedInMemoryUserDetailsManager(remoteUsers.getRemoteUsers()));
             return authenticationProvider;
         }
-//        UserDetailsService
-//
-//        @Bean
-//        public UserDetailsService userDetailsService() {
-//            return ;
-//        }
+
     }
 
     @Configuration
