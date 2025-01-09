@@ -71,7 +71,6 @@ public class SecurityConfiguration {
                             @Value("${idp_entity_id}") String idpEntityId,
                             @Value("${sp_entity_id}") String spEntityId,
                             @Value("${sp_entity_metadata_url}") String spMetaDataUrl,
-                            @Value("${saml_metadata_base_path}") String samlMetadataBasePath,
                             @Value("${idp_redirect_url}") String redirectUrl,
                             @Value("${remember_me_max_age_seconds}") int rememberMeMaxAge,
                             @Value("${nudge_eduid_app_login_days}") int nudgeAppDays,

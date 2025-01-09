@@ -470,7 +470,7 @@ public class AccountLinkerController implements UserAuthentication {
                 StringUtils.hasText(bankId) ? " signicat:param:idin_idp:" + bankId : ""));
         params.put("redirect_uri", redirectUri);
         params.put("state", state);
-        UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(this.verifyBaseUri + "/broker/sp/oidc/authenticate");
+        UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(this.verifyBaseUri + "/broker/sp/oidc/authenticate");
         params.forEach(builder::queryParam);
         UriComponents uriComponents = builder.build();
         return ResponseEntity.ok(new AuthorizationURL(uriComponents.toUriString()));
@@ -620,7 +620,7 @@ public class AccountLinkerController implements UserAuthentication {
                 StringUtils.hasText(bankId) ? " signicat:param:idin_idp:" + bankId : ""));
         params.put("redirect_uri", this.idpVerifyRedirectUri);
         params.put("state", state);
-        UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(this.verifyBaseUri + "/broker/sp/oidc/authenticate");
+        UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(this.verifyBaseUri + "/broker/sp/oidc/authenticate");
         params.forEach(builder::queryParam);
         UriComponents uriComponents = builder.build();
         return ResponseEntity.status(HttpStatus.FOUND).location(uriComponents.toUri()).build();
@@ -648,7 +648,7 @@ public class AccountLinkerController implements UserAuthentication {
         VerifyState verifyState = attributeMapper.serializeFromBase64(state);
 
         String httpUrl = "http://localhost?" + verifyState.getStateIdentifier();
-        MultiValueMap<String, String> params = UriComponentsBuilder.fromHttpUrl(httpUrl).build().getQueryParams();
+        MultiValueMap<String, String> params = UriComponentsBuilder.fromUriString(httpUrl).build().getQueryParams();
         String id = params.getFirst("id");
         String encodedUserUid = params.getFirst("user_uid");
 
@@ -730,7 +730,7 @@ public class AccountLinkerController implements UserAuthentication {
         if (forceAuth) {
             params.put("prompt", "login");
         }
-        UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(oidcBaseUrl + "/oidc/authorize");
+        UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(oidcBaseUrl + "/oidc/authorize");
         params.forEach(builder::queryParam);
         return builder.build();
     }
@@ -787,7 +787,7 @@ public class AccountLinkerController implements UserAuthentication {
     @Hidden
     public ResponseEntity idpFlowRedirect(@RequestParam("code") String code, @RequestParam("state") String state) throws UnsupportedEncodingException {
         String decodedState = URLDecoder.decode(state, StandardCharsets.UTF_8);
-        MultiValueMap<String, String> params = UriComponentsBuilder.fromHttpUrl("http://localhost?" + decodedState).build().getQueryParams();
+        MultiValueMap<String, String> params = UriComponentsBuilder.fromUriString("http://localhost?" + decodedState).build().getQueryParams();
         String id = params.getFirst("id");
         String encodedUserUid = params.getFirst("user_uid");
 

@@ -109,7 +109,7 @@ public class TiqrEndpoint {
 
         ResponseEntity<Void> responseEntity = restTemplate.exchange(request, Void.class);
 
-        LOG.info(String.format("Enrolled enrollment for %s with status %s", enrollment.getUserDisplayName(), responseEntity.getStatusCodeValue()));
+        LOG.info(String.format("Enrolled enrollment for %s with status %s", enrollment.getUserDisplayName(), responseEntity.getStatusCode()));
 
         return new RedirectView("/enrollments");
     }

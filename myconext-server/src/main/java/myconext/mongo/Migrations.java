@@ -2,7 +2,7 @@ package myconext.mongo;
 
 import com.github.cloudyrock.mongock.ChangeLog;
 import com.github.cloudyrock.mongock.ChangeSet;
-import com.github.cloudyrock.mongock.driver.mongodb.springdata.v3.decorator.impl.MongockTemplate;
+import com.github.cloudyrock.mongock.driver.mongodb.springdata.v4.decorator.impl.MongockTemplate;
 import lombok.SneakyThrows;
 import myconext.manage.Manage;
 import myconext.model.EduID;
@@ -23,7 +23,9 @@ import java.time.temporal.ChronoUnit;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
+@SuppressWarnings("deprecation")
 @ChangeLog(order = "001")
 public class Migrations {
 
@@ -200,7 +202,7 @@ public class Migrations {
         Query query = new Query();
         query.addCriteria(Criteria.where("lastLogin").isNull());
         //Prevent to load everything into memory
-        StreamUtils.createStreamFromIterator(mongoTemplate.stream(query, Map.class, "users"))
+        mongoTemplate.stream(query, Map.class, "users")
                 .forEach(userAsMap -> {
                     Object updatedAtObject = userAsMap.get("updatedAt");
                     userAsMap.remove("updatedAt");

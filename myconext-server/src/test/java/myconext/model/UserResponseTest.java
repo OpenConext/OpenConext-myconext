@@ -13,6 +13,7 @@ import java.util.*;
 import static java.util.Collections.emptyList;
 import static org.junit.jupiter.api.Assertions.*;
 
+@SuppressWarnings("unchecked")
 class UserResponseTest {
 
     private final ObjectMapper objectMapper = new ObjectMapper();
