@@ -2,6 +2,6 @@
 <configuration>
     <include resource="org/springframework/boot/logging/logback/base.xml"/>
     <logger name="org.springframework" level="WARN"/>
-    <logger name="org.springframework.security" level="TRACE"/>
+    <logger name="org.springframework.security" level="WARN"/>
     <logger name="org.eclipse" level="WARN"/>
 </configuration>
