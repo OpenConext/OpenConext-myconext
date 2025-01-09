@@ -6,6 +6,7 @@ import myconext.model.User;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.core.ParameterizedTypeReference;
+
 import org.springframework.http.*;
 import org.springframework.web.client.ResponseErrorHandler;
 import org.springframework.web.client.RestTemplate;
@@ -69,7 +70,7 @@ public class OpenIDConnectRemote implements OpenIDConnect {
     }
 
     @Override
-    public HttpStatus deleteTokens(List<TokenRepresentation> tokenIdentifiers, User user) {
+    public HttpStatusCode deleteTokens(List<TokenRepresentation> tokenIdentifiers, User user) {
         if (!featureOidcTokenAPI) {
             return HttpStatus.OK;
         }
@@ -79,7 +80,6 @@ public class OpenIDConnectRemote implements OpenIDConnect {
         String uriString = UriComponentsBuilder.fromUri(oidcngUri).toUriString();
         ResponseEntity<Void> responseEntity = restTemplate.exchange(uriString, HttpMethod.PUT, requestEntity, Void.class);
         return responseEntity.getStatusCode();
-
     }
 
 }

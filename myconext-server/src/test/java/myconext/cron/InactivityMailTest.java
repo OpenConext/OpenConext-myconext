@@ -1,5 +1,6 @@
 package myconext.cron;
 
+import jakarta.mail.internet.MimeMessage;
 import lombok.SneakyThrows;
 import myconext.AbstractMailBoxTest;
 import myconext.model.User;
@@ -10,7 +11,7 @@ import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import javax.mail.internet.MimeMessage;
+
 import java.nio.charset.Charset;
 import java.util.List;
 import java.util.Optional;

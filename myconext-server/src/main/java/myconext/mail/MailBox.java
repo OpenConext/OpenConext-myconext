@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.mustachejava.DefaultMustacheFactory;
 import com.github.mustachejava.MustacheFactory;
+import jakarta.mail.internet.MimeMessage;
 import lombok.SneakyThrows;
 import myconext.model.EmailsSend;
 import myconext.model.User;
@@ -18,8 +19,6 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.util.StringUtils;
 
-import javax.mail.MessagingException;
-import javax.mail.internet.MimeMessage;
 import java.io.*;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
@@ -65,7 +64,7 @@ public class MailBox {
             LOG.info("Initializing mail templates from JAR resource: " + mailTemplatesDirectory.getFilename());
             mustacheFactory = new DefaultMustacheFactory(mailTemplatesDirectory.getFilename());
         }
-        this.subjects = objectMapper.readValue(inputStream("subjects.json", mailTemplatesDirectory), new TypeReference<Map<String, Map<String, String>>>() {
+        this.subjects = objectMapper.readValue(inputStream(mailTemplatesDirectory), new TypeReference<>() {
         });
     }
 
@@ -205,20 +204,16 @@ public class MailBox {
         String html = this.mailTemplate(String.format("%s_%s.html", templateName, language), variables);
         String text = this.mailTemplate(String.format("%s_%s.txt", templateName, language), variables);
 
-        MimeMessage message = mailSender.createMimeMessage();
-        try {
-            MimeMessageHelper helper = new MimeMessageHelper(message, true);
-            helper.setSubject(subject);
-            helper.setTo(to);
-            setText(html, text, helper);
-            helper.setFrom(emailFrom);
-            doSendMail(message);
-        } catch (MessagingException e) {
-            throw new IllegalArgumentException(e);
-        }
+        MimeMessage mimeMessage = mailSender.createMimeMessage();
+        MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, true);
+        helper.setSubject(subject);
+        helper.setTo(to);
+        setText(html, text, helper);
+        helper.setFrom(emailFrom);
+        doSendMail(mimeMessage);
     }
 
-    protected void setText(String html, String text, MimeMessageHelper helper) throws MessagingException {
+    protected void setText(String html, String text, MimeMessageHelper helper) throws jakarta.mail.MessagingException {
         helper.setText(text, html);
     }
 
@@ -242,14 +237,15 @@ public class MailBox {
     }
 
     @SneakyThrows
-    private InputStream inputStream(String name, Resource mailTemplatesDirectory) {
+    private InputStream inputStream(Resource mailTemplatesDirectory) {
         if (mailTemplatesDirectory.isFile()) {
-            FilenameFilter filter = (dir, fileName) -> name.equals(fileName);
+            FilenameFilter filter = (dir, fileName) -> "subjects.json".equals(fileName);
             File[] files = mailTemplatesDirectory.getFile().listFiles(filter);
+            assert files != null;
             File file = files[0];
             return new FileInputStream(file);
         } else {
-            return new ClassPathResource(mailTemplatesDirectory.getFilename() + "/" + name).getInputStream();
+            return new ClassPathResource(mailTemplatesDirectory.getFilename() + "/" + "subjects.json").getInputStream();
         }
     }
 }

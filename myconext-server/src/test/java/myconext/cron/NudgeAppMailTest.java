@@ -1,13 +1,12 @@
 package myconext.cron;
 
-import myconext.AbstractIntegrationTest;
+import jakarta.mail.internet.MimeMessage;
 import myconext.AbstractMailBoxTest;
 import myconext.model.User;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import javax.mail.internet.MimeMessage;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;

@@ -1,61 +1,44 @@
 package myconext.geo;
 
-import myconext.WireMockExtension;
+import lombok.SneakyThrows;
+import myconext.AbstractIntegrationTest;
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.IOUtils;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.RegisterExtension;
-import org.springframework.core.io.ClassPathResource;
+import org.junit.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 
 import java.io.File;
-import java.io.IOException;
 
-import static com.github.tomakehurst.wiremock.client.WireMock.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-class MaxMindGeoLocationTest {
+/**
+ * We converted from a WireMock stub based test, to a full-fledged integration test. Mainly
+ * because of <a href="https://github.com/wiremock/wiremock/issues/2651">an issue with WireMock</a>
+ */
+public class MaxMindGeoLocationTest extends AbstractIntegrationTest {
 
-    @RegisterExtension
-    WireMockExtension mockServer = new WireMockExtension(8382);
+    @Value("${geo_location.download_directory}")
+    protected String downloadDirectory;
 
-    private GeoLocation geoLocation;
+    @Autowired
+    protected GeoLocation geoLocation;
 
-    @BeforeEach
-    void before() throws IOException {
-        String path = "/geo/GeoLite2-City_20220101.tar.gz";
-        byte[] body = IOUtils.toByteArray(new ClassPathResource(path).getInputStream());
-        stubFor(get(urlPathMatching("/maxmind"))
-                .willReturn(aResponse()
-                        .withStatus(200)
-                        .withBody(body)));
-        String s = System.getProperty("java.io.tmpdir");
-        geoLocation = new MaxMindGeoLocation("nope", "http://localhost:8382/maxmind", s + "/geo");
-    }
-
-    @AfterEach
-    void after() throws IOException {
-        File file = new File(System.getProperty("java.io.tmpdir") + "/geo");
-        FileUtils.forceDelete(file);
-    }
-
+    @SneakyThrows
     @Test
-    void findLocation() {
-        String actual = geoLocation.findLocation("145.90.230.172").get();
-        assertEquals("Netherlands, Brielle", actual);
-
-        //Test that when there is a valid database that no refresh is done
-        stubFor(get(urlPathMatching("/maxmind"))
-                .willReturn(aResponse()
-                        .withStatus(500)));
-        String s = System.getProperty("java.io.tmpdir");
-        geoLocation = new MaxMindGeoLocation("nope", "http://localhost:8382/maxmind", s + "/geo");
-
-        actual = geoLocation.findLocation("145.90.230.172").get();
-        assertEquals("Netherlands, Brielle", actual);
+    public void findLocation() {
+        String location = geoLocation.findLocation("145.90.230.172").get();
+        assertEquals("The Netherlands, Amsterdam", location);
         assertTrue(geoLocation.findLocation("127.0.0.1").isEmpty());
+
+        ((MaxMindGeoLocation) geoLocation).refresh();
+
+        String actual = geoLocation.findLocation("145.90.230.172").get();
+        assertEquals("The Netherlands, Amsterdam", actual);
+
+        File file = new File(downloadDirectory);
+        FileUtils.forceDelete(file);
+
     }
 
 }

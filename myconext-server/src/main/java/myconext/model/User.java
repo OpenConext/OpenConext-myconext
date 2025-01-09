@@ -101,6 +101,9 @@ public class User implements Serializable, UserDetails {
     @Setter
     private UserInactivity userInactivity;
 
+    @Setter
+    private List<String> memberships = new ArrayList<>();
+
     public User(CreateInstitutionEduID createInstitutionEduID, Map<String, Object> userInfo) {
         this.email = createInstitutionEduID.getEmail();
         this.chosenName = (String) userInfo.get("given_name");
