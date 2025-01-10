@@ -2,6 +2,7 @@ package myconext.verify;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.SneakyThrows;
+import myconext.manage.Manage;
 import myconext.model.ExternalLinkedAccount;
 import myconext.model.IdpScoping;
 import myconext.model.Verification;
@@ -9,18 +10,18 @@ import myconext.model.VerifyIssuer;
 import myconext.remotecreation.NewExternalEduID;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.time.*;
+import java.time.DateTimeException;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
-import java.time.temporal.TemporalAccessor;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 import java.util.regex.Pattern;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
@@ -37,10 +38,12 @@ public class AttributeMapper {
     );
 
     private final ObjectMapper objectMapper;
+    private final Manage manage;
 
     @Autowired
-    public AttributeMapper(ObjectMapper objectMapper) {
+    public AttributeMapper(ObjectMapper objectMapper, Manage manage) {
         this.objectMapper = objectMapper;
+        this.manage = manage;
     }
 
     public ExternalLinkedAccount externalLinkedAccountFromAttributes(
@@ -145,7 +148,7 @@ public class AttributeMapper {
     }
 
     public ExternalLinkedAccount createExternalLinkedAccount(NewExternalEduID eduID, IdpScoping idpScoping) {
-        return new ExternalLinkedAccount(
+        ExternalLinkedAccount externalLinkedAccount = new ExternalLinkedAccount(
                 //String subjectId
                 eduID.getIdentifier(),
                 //IdpScoping idpScoping
@@ -188,9 +191,9 @@ public class AttributeMapper {
                 Date.from(Instant.now().plus(DEFAULT_EXPIRATION_YEARS * 365, ChronoUnit.DAYS)),
                 //boolean external
                 true
-
         );
-
+        externalLinkedAccount.setAffiliations(externalAffiliations(eduID.getBrinCodes(), manage));
+        return externalLinkedAccount;
     }
 
     @SneakyThrows
@@ -252,6 +255,18 @@ public class AttributeMapper {
         }
         return null;
     }
+
+    public static List<String> externalAffiliations(List<String> brinCodes, Manage manage) {
+        return CollectionUtils.isEmpty(brinCodes) ? Collections.emptyList() :
+                brinCodes.stream()
+                        .map(manage::findIdentityProviderByBrinCode)
+                        .filter(Optional::isPresent)
+                        .map(Optional::get)
+                        .filter(idp -> StringUtils.hasText(idp.getDomainName()))
+                        .map(idp -> String.format("student@%s", idp.getDomainName()))
+                        .toList();
+    }
+
 
     private String getAttribute(Map<String, Object> attributes, String key) {
         return (String) attributes.get(key);

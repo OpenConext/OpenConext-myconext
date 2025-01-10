@@ -1,8 +1,8 @@
 <script>
-    import chevronUpIcon from "../icons/chevron-up.svg";
+    import chevronUpIcon from "../icons/chevron-up.svg?raw";
     import I18n from "../locale/I18n";
     import LinkedInstitution from "./LinkedInstitution.svelte";
-    import notFound from "../icons/school-building.svg";
+    import notFound from "../icons/school-building.svg?raw";
     import {onMount} from "svelte";
     import {splitListSemantically} from "../utils/utils";
     import {institutionName} from "../utils/services";

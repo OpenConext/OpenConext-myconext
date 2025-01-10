@@ -8,7 +8,7 @@
     import {fetchServiceNameByHash} from "../api";
     import Cookies from "js-cookie";
     import {cookieNames} from "../constants/cookieNames";
-    import phone from "../icons/redesign/eduIDapp.svg";
+    import phone from "../icons/redesign/eduIDapp.svg?raw";
     import ButtonContainer from "../components/ButtonContainer.svelte";
     import ImageContainer from "../components/ImageContainer.svelte";
     import {navigate} from "svelte-routing";

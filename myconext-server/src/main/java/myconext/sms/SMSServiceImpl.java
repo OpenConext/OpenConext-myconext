@@ -3,7 +3,10 @@ package myconext.sms;
 import lombok.SneakyThrows;
 import org.apache.commons.io.IOUtils;
 import org.springframework.core.io.ClassPathResource;
-import org.springframework.http.*;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.MediaType;
+import org.springframework.http.RequestEntity;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
@@ -23,13 +26,13 @@ public class SMSServiceImpl implements SMSService {
     private final MultiValueMap<String, String> headers = new HttpHeaders();
 
     @SneakyThrows
-    public SMSServiceImpl(String url, String bearer){
+    public SMSServiceImpl(String url, String bearer) {
         this.url = url;
         this.templateNl = IOUtils.toString(new ClassPathResource("sms/template_nl.txt").getInputStream(), Charset.defaultCharset());
         this.templateEn = IOUtils.toString(new ClassPathResource("sms/template_en.txt").getInputStream(), Charset.defaultCharset());
         headers.add(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE);
         headers.add(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE);
-        headers.add(HttpHeaders.AUTHORIZATION, "Bearer "+ bearer);
+        headers.add(HttpHeaders.AUTHORIZATION, "Bearer " + bearer);
     }
 
     protected String formatMessage(String code, Locale locale) {

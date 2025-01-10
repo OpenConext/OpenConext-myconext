@@ -41,7 +41,7 @@ public class UserMobileControllerTest extends AbstractIntegrationTest {
                 .when()
                 .accept(ContentType.JSON)
                 .contentType(ContentType.JSON)
-                .auth().oauth2(doOpaqueAccessToken(true, new String[] {"eduid.nl/mobile"}, "introspect_no_linked_accounts"))
+                .auth().oauth2(doOpaqueAccessToken(true, new String[]{"eduid.nl/mobile"}, "introspect_no_linked_accounts"))
                 .body(userNameRequest)
                 .put("/mobile/api/sp/update")
                 .then()
@@ -60,7 +60,7 @@ public class UserMobileControllerTest extends AbstractIntegrationTest {
                 .when()
                 .accept(ContentType.JSON)
                 .contentType(ContentType.JSON)
-                .auth().oauth2(doOpaqueAccessToken(true, new String[] {"eduid.nl/mobile"}, "introspect_no_linked_accounts"))
+                .auth().oauth2(doOpaqueAccessToken(true, new String[]{"eduid.nl/mobile"}, "introspect_no_linked_accounts"))
                 .body(userNameRequest)
                 .put("/mobile/api/sp/update")
                 .then()
@@ -82,7 +82,7 @@ public class UserMobileControllerTest extends AbstractIntegrationTest {
                 .as(IdentityProvider.class);
 
         assertEquals("ROC Midden Nederland", identityProvider.getName());
-        assertEquals("ROC Midden Nederland",  identityProvider.getNameNl());
+        assertEquals("ROC Midden Nederland", identityProvider.getNameNl());
     }
 
     @Test

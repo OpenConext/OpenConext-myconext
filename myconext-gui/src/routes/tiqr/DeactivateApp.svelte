@@ -6,7 +6,7 @@
     import {onMount, tick} from "svelte";
     import {deactivateApp, me, sendDeactivationPhoneCode} from "../../api";
     import Spinner from "../../components/Spinner.svelte";
-    import critical from "../../icons/critical.svg";
+    import critical from "../../icons/critical.svg?raw";
     import CodeVerifier from "./CodeVerifier.svelte";
 
     let useRecoveryCode;

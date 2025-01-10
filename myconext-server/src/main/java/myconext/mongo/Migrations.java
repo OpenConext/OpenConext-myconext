@@ -2,7 +2,8 @@ package myconext.mongo;
 
 import com.github.cloudyrock.mongock.ChangeLog;
 import com.github.cloudyrock.mongock.ChangeSet;
-import com.github.cloudyrock.mongock.driver.mongodb.springdata.v3.decorator.impl.MongockTemplate;
+import com.github.cloudyrock.mongock.driver.mongodb.springdata.v4.decorator.impl.MongockTemplate;
+import lombok.SneakyThrows;
 import myconext.manage.Manage;
 import myconext.model.EduID;
 import myconext.model.LinkedAccount;
@@ -13,14 +14,18 @@ import org.apache.commons.logging.LogFactory;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.schema.JsonSchemaObject;
+import org.springframework.data.util.StreamUtils;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
+import java.text.SimpleDateFormat;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
+@SuppressWarnings("deprecation")
 @ChangeLog(order = "001")
 public class Migrations {
 
@@ -151,7 +156,7 @@ public class Migrations {
             if (!CollectionUtils.isEmpty(user.getEduIDS())) {
                 AtomicBoolean userNeedsUpdate = new AtomicBoolean(false);
                 user.getEduIDS().forEach(eduID -> {
-                    if (!StringUtils.hasText(eduID.getServiceProviderEntityId()) && !CollectionUtils.isEmpty(eduID.getServices()) ) {
+                    if (!StringUtils.hasText(eduID.getServiceProviderEntityId()) && !CollectionUtils.isEmpty(eduID.getServices())) {
                         eduID.backwardCompatibleTransformation(eduID.getServices().get(0));
                         userNeedsUpdate.set(true);
                     }
@@ -184,6 +189,46 @@ public class Migrations {
     @SuppressWarnings("unchecked")
     @ChangeSet(order = "015", id = "deleteSessionAfterUserChangeAgain", author = "okke.harsta@surf.nl")
     public void deleteSessionAfterUserChangeAgain(MongockTemplate mongoTemplate) {
+        mongoTemplate.remove(new Query(), "sessions");
+    }
+
+    @SneakyThrows
+    @SuppressWarnings("unchecked")
+    @ChangeSet(order = "016", id = "alterUserLastLoginDate", author = "okke.harsta@surf.nl")
+    public void alterUserLastLoginDate(MongockTemplate mongoTemplate) {
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd-MM-yyyy");
+        long startMillis = simpleDateFormat.parse("24-01-2023").getTime();
+        long beforeEduID = simpleDateFormat.parse("01-01-2010").getTime();
+        Query query = new Query();
+        query.addCriteria(Criteria.where("lastLogin").isNull());
+        //Prevent to load everything into memory
+        mongoTemplate.stream(query, Map.class, "users")
+                .forEach(userAsMap -> {
+                    Object updatedAtObject = userAsMap.get("updatedAt");
+                    userAsMap.remove("updatedAt");
+                    if (updatedAtObject == null) {
+                        //We did not store updatedAt from the beginning
+                        userAsMap.put("lastLogin", startMillis);
+                    } else {
+                        //It might be an Integer object or Long object, so we parse / box
+                        long updatedAt = Long.parseLong(updatedAtObject.toString());
+                        if (updatedAt == 0L) {
+                            userAsMap.put("lastLogin", startMillis);
+                        } else if (updatedAt < beforeEduID) {
+                            //Previously we stored the updatedAt as currentTime / 1000
+                            userAsMap.put("lastLogin", updatedAt * 1000L);
+                        } else {
+                            //And we changed that to using milliseconds
+                            userAsMap.put("lastLogin", updatedAt);
+                        }
+                    }
+                    mongoTemplate.save(userAsMap, "users");
+                });
+    }
+
+    @SuppressWarnings("unchecked")
+    @ChangeSet(order = "017", id = "deleteSessionAfterUserLastLoginDate", author = "okke.harsta@surf.nl")
+    public void deleteSessionAfterUserLastLoginDate(MongockTemplate mongoTemplate) {
         mongoTemplate.remove(new Query(), "sessions");
     }
 

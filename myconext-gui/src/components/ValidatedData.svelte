@@ -10,7 +10,7 @@
     import ValidatedField from "../verify/ValidatedField.svelte";
     import {isEmpty} from "../utils/utils";
     import {dateFromEpoch} from "../utils/date";
-    import personalInfo from "../icons/verify/personalInfo.svg";
+    import personalInfo from "../icons/verify/personalInfo.svg?raw";
 
     export let institution = {};
     export let replacement = false;

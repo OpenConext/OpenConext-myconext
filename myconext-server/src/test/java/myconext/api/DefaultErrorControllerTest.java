@@ -37,7 +37,7 @@ public class DefaultErrorControllerTest {
     public void errorAnnotated() throws URISyntaxException {
         MockHttpServletRequest request = new MockHttpServletRequest();
         request.setAttribute("org.springframework.boot.web.servlet.error.DefaultErrorAttributes.ERROR",
-            new  DuplicateUserEmailException("There already exists a user with email test@test.com"));
+                new DuplicateUserEmailException("There already exists a user with email test@test.com"));
 
         ResponseEntity responseEntity = subject.error(request);
         assertEquals(HttpStatus.CONFLICT, responseEntity.getStatusCode());
@@ -52,14 +52,13 @@ public class DefaultErrorControllerTest {
         MockHttpServletRequest request = new MockHttpServletRequest();
         request.setAttribute("org.springframework.boot.web.servlet.error.DefaultErrorAttributes.ERROR",
                 new IllegalArgumentException("dope"));
-        request.setAttribute("javax.servlet.error.status_code", 409);
+        request.setAttribute("jakarta.servlet.error.status_code", 409);
 
         ResponseEntity responseEntity = subject.error(request);
-        assertEquals(HttpStatus.BAD_REQUEST, responseEntity.getStatusCode());
+        assertEquals(HttpStatus.CONFLICT, responseEntity.getStatusCode());
 
         Map<String, Object> body = (Map<String, Object>) responseEntity.getBody();
-        assertEquals(400, body.get("status"));
-        assertEquals("Conflict", body.get("error"));
+        assertEquals(409, body.get("status"));
     }
 
 }

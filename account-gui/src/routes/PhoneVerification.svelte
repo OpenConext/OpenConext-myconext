@@ -1,7 +1,7 @@
 <script>
     import {validPhoneNumber} from "../constants/regexp";
     import I18n from "../locale/I18n";
-    import critical from "../icons/critical.svg";
+    import critical from "../icons/critical.svg?raw";
     import Spinner from "../components/Spinner.svelte";
     import {onMount} from "svelte";
     import Button from "../components/Button.svelte";

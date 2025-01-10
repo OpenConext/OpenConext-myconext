@@ -2,12 +2,11 @@ package myconext.repository;
 
 
 import myconext.model.User;
+import myconext.model.UserInactivity;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.data.mongodb.repository.Query;
-import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
-import javax.validation.constraints.NotNull;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -51,4 +50,23 @@ public interface UserRepository extends MongoRepository<User, String> {
 
     @Query(value = "{ linkedAccounts: { $exists: true, $type: 'array', $ne: [] } }")
     List<User> findByLinkedAccountsIsNotEmpty();
+
+    @Query("{'email' : {$regex : ?0, $options: 'i'}}")
+    List<User> findByEmailDomain(String regex);
+
+    List<User> findByLastLoginBeforeAndUserInactivity(long lastLoginBefore, UserInactivity userInactivity);
+
+    @Query("""
+            { $and: [ { $or: [
+                        { 'surfSecureId': { $exists: false } },
+                        { 'surfSecureId': { $eq: {} } }
+                ]},
+                    { $or: [
+                        { 'nudgeAppMailSend': false },
+                        { 'nudgeAppMailSend': { $exists: false } }
+                    ]},
+                    {'created': { $lt: ?0 }}]}
+            """)
+    List<User> findByNoEduIDApp(Long createdBefore);
+
 }

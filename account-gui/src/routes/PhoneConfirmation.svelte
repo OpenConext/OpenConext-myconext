@@ -1,5 +1,5 @@
 <script>
-    import critical from "../icons/critical.svg";
+    import critical from "../icons/critical.svg?raw";
 
     import I18n from "../locale/I18n";
     import {onMount, tick} from "svelte";

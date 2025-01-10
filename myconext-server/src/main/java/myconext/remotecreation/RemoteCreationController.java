@@ -83,7 +83,7 @@ public class RemoteCreationController implements HasUserRepository {
                                             }
                                             """)})})})
     public ResponseEntity<EmailExistsResponse> emailEduIDExists(@Parameter(hidden = true) @AuthenticationPrincipal(errorOnInvalidType = true) RemoteUser remoteUser,
-                                                           @RequestParam(value = "email") String email) {
+                                                                @RequestParam(value = "email") String email) {
         LOG.info(String.format("GET email-eduid-exists by %s for %s", remoteUser.getUsername(), email));
 
         String remoteUserName = remoteUser.getUsername();
@@ -143,7 +143,7 @@ public class RemoteCreationController implements HasUserRepository {
                                             "  \"error\": \"Bad Request\",\n" +
                                             "  \"exception\": \"org.springframework.web.bind.MethodArgumentNotValidException\",\n" +
                                             "  \"message\": \"Validation failed for object='eduIDInstitutionPseudonym'. Error count: 1\",\n" +
-                                             "  \"path\": \"/api/remote-creation/eduid-institution-pseudonym\"\n" +
+                                            "  \"path\": \"/api/remote-creation/eduid-institution-pseudonym\"\n" +
                                             "}")})}),
                     @ApiResponse(responseCode = "404", description = "Not found - eduID or BRIN code not found",
                             content = {@Content(schema = @Schema(implementation = StatusResponse.class),
@@ -266,6 +266,7 @@ public class RemoteCreationController implements HasUserRepository {
         optionalExternalLinkedAccount.ifPresentOrElse(externalLinkedAccount -> {
             //Not all external attributes can be changed
             externalLinkedAccount.setVerification(externalEduID.getVerification());
+            externalLinkedAccount.setAffiliations(AttributeMapper.externalAffiliations(externalEduID.getBrinCodes(), manage));
             externalLinkedAccount.setBrinCodes(externalEduID.getBrinCodes());
             externalLinkedAccount.setDateOfBirth(AttributeMapper.parseDate(externalEduID.getDateOfBirth()));
         }, () -> {
@@ -310,7 +311,7 @@ public class RemoteCreationController implements HasUserRepository {
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
-    private static RemoteProvider getRemoteProvider(RemoteUser remoteUser, String remoteUserName) {
+    private RemoteProvider getRemoteProvider(RemoteUser remoteUser, String remoteUserName) {
         return new RemoteProvider(
                 null,
                 remoteUserName,

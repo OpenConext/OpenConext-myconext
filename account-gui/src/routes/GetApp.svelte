@@ -4,8 +4,8 @@
     import {links} from "../stores/conf";
     import Button from "../components/Button.svelte";
     import Spinner from "../components/Spinner.svelte";
-    import appStore from "../icons/redesign/Download_on_the_App_Store_Badge.svg";
-    import googlePlay from "../icons/redesign/Google_Play-Badge-Logo.wine.svg";
+    import appStore from "../icons/redesign/Download_on_the_App_Store_Badge.svg?raw";
+    import googlePlay from "../icons/redesign/Google_Play-Badge-Logo.wine.svg?raw";
     import ButtonContainer from "../components/ButtonContainer.svelte";
     import {navigate} from "svelte-routing";
 

@@ -13,7 +13,6 @@ import org.springframework.core.io.ClassPathResource;
 import java.io.IOException;
 import java.net.URI;
 import java.util.List;
-import java.util.Map;
 
 @Configuration
 public class OpenIDConnectConfiguration {
@@ -22,7 +21,7 @@ public class OpenIDConnectConfiguration {
     @Profile({"dev"})
     @Primary
     public OpenIDConnect openIDConnectMock(ObjectMapper objectMapper) throws IOException {
-        List<Token>tokens = objectMapper.readValue(new ClassPathResource("oidcng/tokens.json").getInputStream(), new TypeReference<>() {
+        List<Token> tokens = objectMapper.readValue(new ClassPathResource("oidcng/tokens.json").getInputStream(), new TypeReference<>() {
         });
         return new OpenIDConnectMock(tokens);
     }

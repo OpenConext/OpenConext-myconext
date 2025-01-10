@@ -57,7 +57,7 @@
     }
 
     span.question {
-        font-weight: bold;
+        font-weight: 600;
     }
 
     span.pre-link {
@@ -71,7 +71,7 @@
 
         &:hover {
             color: var(--color-hover-blue);
-            font-weight: bold;
+            font-weight: 600;
         }
     }
 

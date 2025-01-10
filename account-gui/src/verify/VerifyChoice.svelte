@@ -1,14 +1,14 @@
 <script>
     import I18n from "../locale/I18n";
-    import studentIcon from "../icons/verify/student.svg";
-    import bankIcon from "../icons/verify/bank.svg";
+    import studentIcon from "../icons/verify/student.svg?raw";
+    import bankIcon from "../icons/verify/bank.svg?raw";
     import Button from "../components/Button.svelte";
-    import idinIcon from "../icons/verify/idin-logo.svg";
-    import eIDASIcon from "../icons/verify/eIDAS.svg";
-    import europeanSvg from "../icons/verify/european.svg";
-    import arrowLeftIcon from "../icons/verify/arrow-left.svg";
+    import idinIcon from "../icons/verify/idin-logo.svg?raw";
+    import eIDASIcon from "../icons/verify/eIDAS.svg?raw";
+    import europeanSvg from "../icons/verify/european.svg?raw";
+    import arrowLeftIcon from "../icons/verify/arrow-left.svg?raw";
     import {logo} from "./banks";
-    import alertSvg from "../icons/alert-circle.svg";
+    import alertSvg from "../icons/alert-circle.svg?raw";
     import Spinner from "../components/Spinner.svelte";
 
     export let addInstitution;
@@ -135,7 +135,7 @@
 
         span {
             color: var(--color-primary-blue);
-            font-weight: bold;
+            font-weight: 600;
         }
     }
 

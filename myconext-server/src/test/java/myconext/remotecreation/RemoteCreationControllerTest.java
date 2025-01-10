@@ -15,7 +15,6 @@ import java.util.stream.Stream;
 
 import static io.restassured.RestAssured.given;
 import static org.junit.jupiter.api.Assertions.*;
-import static org.junit.jupiter.api.Assertions.assertFalse;
 
 @SuppressWarnings("unchecked")
 class RemoteCreationControllerTest extends AbstractIntegrationTest {
@@ -153,7 +152,7 @@ class RemoteCreationControllerTest extends AbstractIntegrationTest {
                 "19880327",
                 UUID.randomUUID().toString(),
                 Verification.Decentraal,
-                null
+                List.of("ST42")
         );
         UpdateExternalEduID externalEduIDResult = given()
                 .when()
@@ -177,7 +176,9 @@ class RemoteCreationControllerTest extends AbstractIntegrationTest {
         assertEquals(institutionGUID, newEduID.getServices().get(0).getInstitutionGuid());
 
         assertEquals(1, user.getExternalLinkedAccounts().size());
-        assertEquals(IdpScoping.studielink, user.getExternalLinkedAccounts().get(0).getIdpScoping());
+        ExternalLinkedAccount externalLinkedAccount = user.getExternalLinkedAccounts().get(0);
+        assertEquals(IdpScoping.studielink, externalLinkedAccount.getIdpScoping());
+        assertEquals("student@aap.nl", externalLinkedAccount.getAffiliations().getFirst());
     }
 
     @Test
@@ -310,7 +311,7 @@ class RemoteCreationControllerTest extends AbstractIntegrationTest {
                 .extract()
                 .as(new TypeRef<>() {
                 });
-        externalEduIDResult.setBrinCodes(List.of("QWER"));
+        externalEduIDResult.setBrinCodes(List.of("ST42"));
         externalEduIDResult.setVerification(Verification.Geverifieerd);
         given()
                 .when()
@@ -329,6 +330,7 @@ class RemoteCreationControllerTest extends AbstractIntegrationTest {
         assertEquals(1, user.getExternalLinkedAccounts().size());
         ExternalLinkedAccount externalLinkedAccount = user.getExternalLinkedAccounts().get(0);
         assertEquals(externalEduIDResult.getBrinCodes(), externalLinkedAccount.getBrinCodes());
+        assertEquals("student@aap.nl", externalLinkedAccount.getAffiliations().getFirst());
         assertEquals(Verification.Geverifieerd, externalLinkedAccount.getVerification());
     }
 
@@ -485,7 +487,7 @@ class RemoteCreationControllerTest extends AbstractIntegrationTest {
                 });
         String eduIDValue = externalEduIDResult.getEduIDValue();
         //Now send the update with the same eduIDand verify no second external account is created
-        UpdateExternalEduID updatedExternalEduIDResult =given()
+        UpdateExternalEduID updatedExternalEduIDResult = given()
                 .when()
                 .auth().preemptive().basic(userName, password)
                 .contentType(ContentType.JSON)

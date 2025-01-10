@@ -1,10 +1,10 @@
 <script>
     import {config, flash, user} from "../stores/user";
     import I18n from "../locale/I18n";
-    import verifiedSvg from "../icons/redesign/shield-full.svg";
-    import personalInfo from "../icons/verify/personalInfo.svg";
-    import arrowLeft from "../icons/verify/arrow-left.svg";
-    import alertSvg from "../icons/alert-circle.svg";
+    import verifiedSvg from "../icons/redesign/shield-full.svg?raw";
+    import personalInfo from "../icons/verify/personalInfo.svg?raw";
+    import arrowLeft from "../icons/verify/arrow-left.svg?raw";
+    import alertSvg from "../icons/alert-circle.svg?raw";
     import Button from "../components/Button.svelte";
     import {
         deleteLinkedAccount,
@@ -18,7 +18,7 @@
     import Modal from "../components/Modal.svelte";
     import EditField from "../components/EditField.svelte";
     import {validEmail} from "../validation/regexp";
-    import check from "../icons/redesign/check.svg";
+    import check from "../icons/redesign/check.svg?raw";
     import {navigate} from "svelte-routing";
     import {onMount} from "svelte";
     import {isEmpty} from "../utils/utils";

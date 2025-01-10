@@ -2,8 +2,8 @@
     import {links} from "../stores/conf";
     import I18n from "../locale/I18n";
     import {onMount} from "svelte";
-    import phoneIcon from "../icons/redesign/mobile-phone.svg";
-    import backupIcon from "../icons/redesign/printer.svg";
+    import phoneIcon from "../icons/redesign/mobile-phone.svg?raw";
+    import backupIcon from "../icons/redesign/printer.svg?raw";
     import LoginOption from "../components/LoginOption.svelte";
     import {navigate} from "svelte-routing";
 

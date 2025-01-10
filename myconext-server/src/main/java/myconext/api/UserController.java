@@ -18,6 +18,7 @@ import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import jakarta.validation.Valid;
 import lombok.SneakyThrows;
 import myconext.cron.DisposableEmailProviders;
 import myconext.exceptions.*;
@@ -50,9 +51,9 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import tiqr.org.model.Registration;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
-import javax.validation.Valid;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
+
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Field;
@@ -337,7 +338,7 @@ public class UserController implements UserAuthentication {
     @GetMapping("/sp/institution/names")
     public ResponseEntity<IdentityProvider> institutionNames(@RequestParam(value = "schac_home") String schacHome) {
         return ResponseEntity.ok(manage.findIdentityProviderByDomainName(schacHome)
-                .orElse(new IdentityProvider(new RemoteProvider(schacHome, schacHome, schacHome, null, null), null)));
+                .orElse(new IdentityProvider(new RemoteProvider(schacHome, schacHome, schacHome, null, null), null, null)));
     }
 
     @Operation(summary = "User details", description = "Retrieve the attributes of the current user")
@@ -683,7 +684,7 @@ public class UserController implements UserAuthentication {
 
         String entityId = deleteService.getServiceProviderEntityId();
         user.getEduIDS().forEach(eduID -> eduID.getServices().removeIf(service ->
-                        entityId.equals(service.getEntityId()) || entityId.equals(service.getInstitutionGuid())));
+                entityId.equals(service.getEntityId()) || entityId.equals(service.getInstitutionGuid())));
         List<EduID> newEduIDs = user.getEduIDS().stream()
                 .filter(eduID -> !eduID.getServices().isEmpty())
                 .collect(Collectors.toList());
@@ -758,6 +759,10 @@ public class UserController implements UserAuthentication {
     private ResponseEntity<UserResponse> userResponseRememberMe(User user) {
         List<SamlAuthenticationRequest> samlAuthenticationRequests = authenticationRequestRepository.findByUserIdAndRememberMe(user.getId(), true);
         Optional<Registration> optionalRegistration = registrationRepository.findRegistrationByUserId(user.getId());
+        //Run-time migrate inconsistent state for none of the (external)linkedAccounts being the preferred one - idempotent
+        if (user.reconcileLinkedAccounts()) {
+            userRepository.save(user);
+        }
         UserResponse userResponse = new UserResponse(user, user.convertEduIdPerServiceProvider(this.servicesConfiguration), optionalRegistration, !samlAuthenticationRequests.isEmpty(), manage, issuers);
         return ResponseEntity.ok(userResponse);
     }

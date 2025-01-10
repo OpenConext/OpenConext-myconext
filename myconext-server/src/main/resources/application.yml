@@ -11,6 +11,7 @@ server:
   port: 8081
   error:
     path: "/error"
+    include-binding-errors: always
   forward-headers-strategy: framework
 
 springdoc:
@@ -49,6 +50,14 @@ cron:
   token-cleaner-expression: "0 0/15 * * * *"
   manage-initial-delay-milliseconds: 15000
   manage-fixed-rate-milliseconds: 43_200_000
+  # Runs on the first day of February, May, August, and November.
+  mail-institution-mail-usage-expression: "0 0 0 1 2,5,8,11 *"
+  # Every day at 6:30AM
+  nudge-app-mail-expression: "0 30 6 * * ?"
+  # Number of days after creation of the eduID account which the nudge mail is send
+  nudge-app-mail-days-after-creation: 14
+  # Every day at 7:30AM
+  inactivity-users-expression: "0 30 7 * * ?"
 
 manage:
   username: myconext
@@ -100,7 +109,12 @@ feature:
   remote_creation_api: True
   # Do we send error mails for reported errors by the JS UI
   send_js_exceptions: True
-
+  # Do we periodically mail users who have used their institution account
+  mail_institution_mail_usage: True
+  # Do we periodically mail users who are inactive and might have their account deleted
+  mail_inactivity_mails: True
+  # Do we mail users who have not installed the eduID app
+  nudge_app_mail: True
 secure_cookie: false
 idp_entity_id: https://localhost.surf.id
 private_key_path: classpath:/myconext.pem
@@ -214,6 +228,11 @@ spring:
     host: localhost
     port: 1025
 
+gui:
+  disclaimer:
+    background-color: red
+    content: LOCAL
+
 management:
   health:
     mail:
@@ -225,14 +244,14 @@ management:
       base-path: "/internal"
   endpoint:
     info:
-      enabled: true
+      access: unrestricted
     health:
-      enabled: true
+      access: unrestricted
       show-details: always
     mappings:
-      enabled: true
+      access: read_only
     metrics:
-      enabled: true
+      access: none
   info:
     git:
       mode: full

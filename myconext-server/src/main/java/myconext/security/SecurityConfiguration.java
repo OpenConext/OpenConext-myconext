@@ -14,7 +14,6 @@ import myconext.shibboleth.mock.MockShibbolethFilter;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
@@ -23,16 +22,21 @@ import org.springframework.core.annotation.Order;
 import org.springframework.core.env.Environment;
 import org.springframework.core.env.Profiles;
 import org.springframework.core.io.Resource;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
-import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
+import org.springframework.security.authentication.AuthenticationProvider;
+import org.springframework.security.authentication.ProviderManager;
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.preauth.AbstractPreAuthenticatedProcessingFilter;
 import org.springframework.security.web.authentication.preauth.PreAuthenticatedAuthenticationProvider;
+import org.springframework.security.web.context.DelegatingSecurityContextRepository;
+import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
+import org.springframework.security.web.context.RequestAttributeSecurityContextRepository;
+import org.springframework.security.web.context.SecurityContextRepository;
 import saml.model.SAMLConfiguration;
 import saml.model.SAMLIdentityProvider;
 import saml.model.SAMLServiceProvider;
@@ -44,12 +48,12 @@ import java.util.Arrays;
 import java.util.List;
 
 import static java.util.stream.Collectors.toList;
+import static org.springframework.security.config.Customizer.withDefaults;
 
 @EnableWebSecurity
-@EnableGlobalMethodSecurity(prePostEnabled = true)
+@EnableConfigurationProperties
+@EnableMethodSecurity
 @Configuration
-//TODO replace WebSecurityConfigurerAdapter with SecurityFilterChain
-@SuppressWarnings("deprecation")
 public class SecurityConfiguration {
 
     private static final Log LOG = LogFactory.getLog(SecurityConfiguration.class);
@@ -57,16 +61,16 @@ public class SecurityConfiguration {
     @Configuration
     @Order(1)
     @EnableConfigurationProperties(IdentityProviderMetaData.class)
-    public static class SamlSecurity extends WebSecurityConfigurerAdapter  {
+    public static class SamlSecurity {
 
         private final GuestIdpAuthenticationRequestFilter guestIdpAuthenticationRequestFilter;
+        private final SecurityContextRepository securityContextRepository;
 
         public SamlSecurity(@Value("${private_key_path}") Resource privateKeyPath,
                             @Value("${certificate_path}") Resource certificatePath,
                             @Value("${idp_entity_id}") String idpEntityId,
                             @Value("${sp_entity_id}") String spEntityId,
                             @Value("${sp_entity_metadata_url}") String spMetaDataUrl,
-                            @Value("${saml_metadata_base_path}") String samlMetadataBasePath,
                             @Value("${idp_redirect_url}") String redirectUrl,
                             @Value("${remember_me_max_age_seconds}") int rememberMeMaxAge,
                             @Value("${nudge_eduid_app_login_days}") int nudgeAppDays,
@@ -113,6 +117,7 @@ public class SecurityConfiguration {
                     serviceProviders,
                     requiresSignedAuthnRequest
             );
+            this.securityContextRepository = securityContextRepository();
             this.guestIdpAuthenticationRequestFilter = new GuestIdpAuthenticationRequestFilter(
                     redirectUrl,
                     serviceProviderResolver,
@@ -133,28 +138,37 @@ public class SecurityConfiguration {
                     featureDefaultRememberMe,
                     configuration,
                     identityProviderMetaData,
-                    cookieValueEncoder
+                    cookieValueEncoder,
+                    securityContextRepository
             );
+        }
 
+        private SecurityContextRepository securityContextRepository() {
+            return new DelegatingSecurityContextRepository(
+                    new RequestAttributeSecurityContextRepository(),
+                    new HttpSessionSecurityContextRepository()
+            );
+        }
+
+        @Bean
+        public SecurityFilterChain samlSecurityFilterChain(HttpSecurity http) throws Exception {
+            http
+                    .securityMatcher("/saml/guest-idp/**")
+                    .csrf(csrf -> csrf.disable())
+                    .sessionManagement(conf -> conf.sessionCreationPolicy(SessionCreationPolicy.ALWAYS))
+                    .addFilterBefore(this.guestIdpAuthenticationRequestFilter,
+                            AbstractPreAuthenticatedProcessingFilter.class)
+                    .authorizeHttpRequests(auth -> auth
+                            .anyRequest().hasRole("GUEST"))
+                    //We need a reference to the securityContextRepository to update the authentication after an InstitutionAdmin invitation accept
+                    .securityContext(securityContextConfigurer ->
+                            securityContextConfigurer.securityContextRepository(this.securityContextRepository));
+
+            return http.build();
         }
 
         private List<String> commaSeparatedToList(String spEntityId) {
             return Arrays.stream(spEntityId.split(",")).map(String::trim).collect(toList());
-        }
-
-        @Override
-        protected void configure(HttpSecurity http) throws Exception {
-            http
-                    .requestMatchers()
-                    .antMatchers("/saml/guest-idp/**")
-                    .and()
-                    .csrf()
-                    .disable()
-                    .addFilterBefore(this.guestIdpAuthenticationRequestFilter,
-                            AbstractPreAuthenticatedProcessingFilter.class
-                    )
-                    .authorizeRequests()
-                    .antMatchers("/**").hasRole("GUEST");
         }
 
         @SneakyThrows
@@ -178,17 +192,9 @@ public class SecurityConfiguration {
         }
     }
 
-    @Autowired
-    public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
-        //because Autowired this will end up in the global ProviderManager
-        PreAuthenticatedAuthenticationProvider authenticationProvider = new PreAuthenticatedAuthenticationProvider();
-        authenticationProvider.setPreAuthenticatedUserDetailsService(new ShibbolethUserDetailService());
-        auth.authenticationProvider(authenticationProvider);
-    }
-
     @Order
     @Configuration
-    public static class InternalSecurityConfigurationAdapter extends WebSecurityConfigurerAdapter {
+    public static class InternalSecurityConfigurationAdapter {
 
         private final Environment environment;
         private final UserRepository userRepository;
@@ -205,50 +211,48 @@ public class SecurityConfiguration {
             this.mijnEduIDEntityId = mijnEduIDEntityId;
         }
 
-        @Override
-        public void configure(WebSecurity web) {
-            web.ignoring().antMatchers(
-                    "/internal/**",
-                    "/myconext/api/idp/**",
-                    "/myconext/api/sp/create-from-institution",
-                    "/myconext/api/sp/create-from-institution/**",
-                    "/myconext/api/sp/idin/issuers"
-            );
+        private AuthenticationProvider preAuthenticatedAuthenticationProvider() {
+            PreAuthenticatedAuthenticationProvider provider = new PreAuthenticatedAuthenticationProvider();
+            provider.setPreAuthenticatedUserDetailsService(new ShibbolethUserDetailService());
+            return provider;
         }
 
-        @Override
-        protected void configure(HttpSecurity http) throws Exception {
+        @Bean
+        public SecurityFilterChain shibbolethSecurityFilterChain(HttpSecurity http) throws Exception {
+            AuthenticationProvider authenticationProvider = preAuthenticatedAuthenticationProvider();
+            ProviderManager providerManager = new ProviderManager(authenticationProvider);
             http
-                    .requestMatchers()
-                    .antMatchers("/myconext/api/sp/**", "/startSSO", "/tiqr/sp/**")
-                    .and()
-                    .sessionManagement()
-                    .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
-                    .and()
-                    .csrf()
-                    .disable()
+                    .securityMatcher("/myconext/api/sp/**", "/startSSO", "/tiqr/sp/**")
+                    .csrf(csrf -> csrf.disable())
+                    .sessionManagement(smc -> smc.sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED))
+                    .authorizeHttpRequests(authz -> authz.requestMatchers(
+                                    "/internal/**",
+                                    "/myconext/api/idp/**",
+                                    "/myconext/api/sp/create-from-institution",
+                                    "/myconext/api/sp/create-from-institution/**",
+                                    "/myconext/api/sp/idin/issuers")
+                            .permitAll())
                     .addFilterBefore(
                             new ShibbolethPreAuthenticatedProcessingFilter(
-                                    authenticationManagerBean(),
+                                    providerManager,
                                     userRepository,
                                     serviceProviderResolver,
                                     mijnEduIDEntityId),
-                            AbstractPreAuthenticatedProcessingFilter.class
-                    )
-                    .authorizeRequests()
-                    .antMatchers("/**").hasRole("GUEST");
-
+                            AbstractPreAuthenticatedProcessingFilter.class)
+                    .authorizeHttpRequests(auth -> auth
+                            .anyRequest().hasRole("GUEST"));
             if (environment.acceptsProfiles(Profiles.of("test", "test2", "dev"))) {
                 //we can't use @Profile, because we need to add it before the real filter
                 http.addFilterBefore(new MockShibbolethFilter(), ShibbolethPreAuthenticatedProcessingFilter.class);
             }
+            return http.build();
         }
     }
 
     @Configuration
     @Order(2)
-    @EnableConfigurationProperties({ExternalApiConfiguration.class})
-    public static class AppSecurity extends WebSecurityConfigurerAdapter {
+    @EnableConfigurationProperties(ExternalApiConfiguration.class)
+    public static class AppSecurity {
 
         private final ExternalApiConfiguration remoteUsers;
 
@@ -256,8 +260,8 @@ public class SecurityConfiguration {
             this.remoteUsers = remoteUsers;
         }
 
-        @Override
-        protected void configure(HttpSecurity http) throws Exception {
+        @Bean
+        public SecurityFilterChain appSecurityFilterChain(HttpSecurity http) throws Exception {
             String[] antPatterns = {
                     "/myconext/api/attribute-aggregation/**",
                     "/myconext/api/attribute-manipulation/**",
@@ -265,34 +269,28 @@ public class SecurityConfiguration {
                     "/myconext/api/invite/**",
                     "/api/remote-creation/**"
             };
-            http.requestMatchers()
-                    .antMatchers(antPatterns)
-                    .and()
-                    .csrf()
-                    .disable()
-                    .authorizeRequests()
-                    .antMatchers(antPatterns)
-                    .authenticated()
-                    .and()
-                    .httpBasic()
-                    .and()
-                    .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+            http.securityMatcher(antPatterns)
+                    .securityContext(sc -> sc.requireExplicitSave(false))
+                    .csrf(csrf -> csrf.disable())
+                    .authorizeHttpRequests(auth -> auth
+                            .requestMatchers(antPatterns).authenticated())
+                    .httpBasic(withDefaults())
+                    .authenticationProvider(inMemoryAuthenticationProvider())
+                    .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
+            return http.build();
         }
 
-        @Override
-        protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-            auth.userDetailsService(userDetailsService());
+        private DaoAuthenticationProvider inMemoryAuthenticationProvider() {
+            DaoAuthenticationProvider authenticationProvider = new DaoAuthenticationProvider();
+            authenticationProvider.setUserDetailsService(new ExtendedInMemoryUserDetailsManager(remoteUsers.getRemoteUsers()));
+            return authenticationProvider;
         }
 
-        @Bean
-        public UserDetailsService userDetailsService() {
-            return new ExtendedInMemoryUserDetailsManager(remoteUsers.getRemoteUsers());
-        }
     }
 
     @Configuration
     @Order(3)
-    public static class JWTSecurityConfig extends WebSecurityConfigurerAdapter {
+    public static class JWTSecurityConfig {
 
         @Value("${eduid_api.oidcng_introspection_uri}")
         private String introspectionUri;
@@ -303,35 +301,27 @@ public class SecurityConfiguration {
         @Value("${eduid_api.oidcng_secret}")
         private String secret;
 
-        @Override
-        public void configure(WebSecurity web) {
-            web.ignoring().antMatchers(
-                    "/mobile/api/idp/create",
-                    "/myconext/api/mobile/oidc/redirect",
-                    "/myconext/api/mobile/verify/redirect",
-                    "/mobile/api/create-from-mobile-api"
-            );
-        }
-
-        @Override
-        protected void configure(HttpSecurity http) throws Exception {
+        @Bean
+        public SecurityFilterChain jwtSecurityFilterChain(HttpSecurity http) throws Exception {
             String[] antPatterns = {"/myconext/api/eduid/**", "/mobile/**"};
-            http
-                    .requestMatchers()
-                    .antMatchers(antPatterns)
-                    .and()
-                    .authorizeRequests(authz -> authz
-                            .antMatchers("/myconext/api/eduid/eppn").hasAuthority("SCOPE_eduid.nl/eppn")
-                            .antMatchers("/myconext/api/eduid/eduid").hasAuthority("SCOPE_eduid.nl/eduid")
-                            .antMatchers("/myconext/api/eduid/links").hasAuthority("SCOPE_eduid.nl/links")
-                            .antMatchers("/mobile/**").hasAuthority("SCOPE_eduid.nl/mobile")
+            http.securityMatcher(antPatterns)
+                    .csrf(AbstractHttpConfigurer::disable)
+                    .authorizeHttpRequests(authz -> authz
+                            .requestMatchers(
+                                    "/mobile/api/idp/create",
+                                    "/myconext/api/mobile/oidc/redirect",
+                                    "/myconext/api/mobile/verify/redirect",
+                                    "/mobile/api/create-from-mobile-api")
+                            .permitAll()
+                            .requestMatchers("/myconext/api/eduid/eppn").hasAuthority("SCOPE_eduid.nl/eppn")
+                            .requestMatchers("/myconext/api/eduid/eduid").hasAuthority("SCOPE_eduid.nl/eduid")
+                            .requestMatchers("/myconext/api/eduid/links").hasAuthority("SCOPE_eduid.nl/links")
+                            .requestMatchers("/mobile/**").hasAuthority("SCOPE_eduid.nl/mobile")
                             .anyRequest().authenticated())
                     .oauth2ResourceServer(oauth2 -> oauth2.opaqueToken(token -> token
                             .introspectionUri(introspectionUri)
                             .introspectionClientCredentials(clientId, secret)));
-
+            return http.build();
         }
     }
 }
-
-

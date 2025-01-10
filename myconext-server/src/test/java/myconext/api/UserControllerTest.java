@@ -14,6 +14,7 @@ import myconext.repository.ChallengeRepository;
 import myconext.security.ACR;
 import org.apache.commons.io.IOUtils;
 import org.apache.http.client.CookieStore;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
@@ -1333,7 +1334,7 @@ public class UserControllerTest extends AbstractIntegrationTest {
 
     @Test
     public void updateLinkedAccount() {
-        UpdateLinkedAccountRequest updateLinkedAccountRequest = new UpdateLinkedAccountRequest("guest@example.nl", null ,false, null, "schac");
+        UpdateLinkedAccountRequest updateLinkedAccountRequest = new UpdateLinkedAccountRequest("guest@example.nl", null, false, null, "schac");
         given()
                 .when()
                 .accept(ContentType.JSON)

@@ -1,7 +1,8 @@
 package myconext.mongo;
 
-import com.github.cloudyrock.mongock.driver.mongodb.springdata.v3.SpringDataMongo3Driver;
-import com.github.cloudyrock.spring.v5.MongockSpring5;
+import io.mongock.driver.mongodb.springdata.v4.SpringDataMongoV4Driver;
+import io.mongock.runner.springboot.MongockSpringboot;
+import io.mongock.runner.springboot.base.MongockApplicationRunner;
 import lombok.SneakyThrows;
 import myconext.model.EmailsSend;
 import myconext.model.User;
@@ -51,14 +52,13 @@ public class MongoMapping {
     }
 
     @Bean
-    public MongockSpring5.MongockApplicationRunner mongockApplicationRunner(ApplicationContext springContext,
-                                                                            MongoTemplate mongoTemplate) {
-        SpringDataMongo3Driver driver = SpringDataMongo3Driver.withDefaultLock(mongoTemplate);
+    public MongockApplicationRunner mongockApplicationRunner(ApplicationContext springContext,
+                                                             MongoTemplate mongoTemplate) {
+        SpringDataMongoV4Driver driver = SpringDataMongoV4Driver.withDefaultLock(mongoTemplate);
         driver.disableTransaction();
-
-        return MongockSpring5.builder()
+        return MongockSpringboot.builder()
                 .setDriver(driver)
-                .addChangeLogsScanPackage("myconext.mongo")
+                .addMigrationScanPackage("myconext.mongo")
                 .setSpringContext(springContext)
                 .buildApplicationRunner();
     }

@@ -21,6 +21,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.web.context.SecurityContextRepository;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
@@ -30,11 +31,11 @@ import saml.model.SAMLAttribute;
 import saml.model.SAMLConfiguration;
 import saml.model.SAMLStatus;
 
-import javax.servlet.FilterChain;
-import javax.servlet.ServletException;
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.FilterChain;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
@@ -78,6 +79,7 @@ public class GuestIdpAuthenticationRequestFilter extends OncePerRequestFilter {
     private final String redirectUrl;
     private final AuthenticationRequestRepository authenticationRequestRepository;
     private final IdentityProviderMetaData identityProviderMetaData;
+    private final SecurityContextRepository securityContextRepository;
     @Setter
     private UserRepository userRepository;
     private final UserLoginRepository userLoginRepository;
@@ -121,7 +123,8 @@ public class GuestIdpAuthenticationRequestFilter extends OncePerRequestFilter {
                                                boolean featureDefaultRememberMe,
                                                SAMLConfiguration configuration,
                                                IdentityProviderMetaData identityProviderMetaData,
-                                               CookieValueEncoder cookieValueEncoder) {
+                                               CookieValueEncoder cookieValueEncoder,
+                                               SecurityContextRepository securityContextRepository) {
         this.cookieValueEncoder = cookieValueEncoder;
         this.ssoSamlRequestMatcher = new AntPathRequestMatcher("/saml/guest-idp/SSO/**");
         this.magicSamlRequestMatcher = new AntPathRequestMatcher("/saml/guest-idp/magic/**");
@@ -148,6 +151,7 @@ public class GuestIdpAuthenticationRequestFilter extends OncePerRequestFilter {
         this.samlService = new DefaultSAMLService(configuration);
         this.executor = Executors.newSingleThreadExecutor();
         this.identityProviderMetaData = identityProviderMetaData;
+        this.securityContextRepository = securityContextRepository;
     }
 
     @Override
@@ -576,6 +580,9 @@ public class GuestIdpAuthenticationRequestFilter extends OncePerRequestFilter {
         UserAuthenticationToken authentication = new UserAuthenticationToken(user, null,
                 authorities);
         SecurityContextHolder.getContext().setAuthentication(authentication);
+        //New in Spring security 6.x,
+        // See https://docs.spring.io/spring-security/reference/5.8/migration/servlet/session-management.html#_require_explicit_saving_of_securitycontextrepository
+        this.securityContextRepository.saveContext(SecurityContextHolder.getContext(), request, response);
 
         if (this.featureDefaultRememberMe) {
             LOG.info(String.format("Remember me functionality activated for %s ", user.getUsername()));
@@ -743,7 +750,8 @@ public class GuestIdpAuthenticationRequestFilter extends OncePerRequestFilter {
         }
         String displayName = String.format("%s %s", chosenName, familyName);
         String eppn = user.getEduPersonPrincipalName();
-        List<SAMLAttribute> attributes = new ArrayList(Arrays.asList(
+        //we need a mutable list
+        List<SAMLAttribute> attributes = new ArrayList<>(Arrays.asList(
                 attribute("urn:mace:dir:attribute-def:cn", displayName),
                 attribute("urn:mace:dir:attribute-def:displayName", displayName),
                 attribute("urn:mace:dir:attribute-def:eduPersonPrincipalName", eppn),
@@ -772,18 +780,35 @@ public class GuestIdpAuthenticationRequestFilter extends OncePerRequestFilter {
                         values.forEach(value -> attributes.add(attribute(key, value))));
 
 
-        List<String> scopedAffiliations = linkedAccounts.stream()
+        //we need a mutable list
+        List<String> scopedAffiliations = new ArrayList<>(linkedAccounts.stream()
                 .map(linkedAccount -> linkedAccount.getEduPersonAffiliations().stream()
                         .map(affiliation -> affiliation.contains("@")
                                 ? affiliation : String.format("%s@%s", affiliation, linkedAccount.getSchacHomeOrganization()))
                         .collect(toList()))
-                .flatMap(Collection::stream).distinct().collect(Collectors.toList());
+                .flatMap(Collection::stream)
+                .distinct()
+                .toList());
         scopedAffiliations.add("affiliate@eduid.nl");
         scopedAffiliations.forEach(aff -> attributes.add(attribute("urn:mace:dir:attribute-def:eduPersonScopedAffiliation", aff)));
 
-        List<String> affiliations = scopedAffiliations.stream().map(affiliation -> affiliation.substring(0, affiliation.indexOf("@")))
-                .distinct().collect(toList());
-        affiliations.forEach(aff -> attributes.add(attribute("urn:mace:dir:attribute-def:eduPersonAffiliation", aff)));
+        scopedAffiliations.stream()
+                .map(affiliation -> affiliation.substring(0, affiliation.indexOf("@")))
+                .distinct()
+                .forEach(aff -> attributes.add(attribute("urn:mace:dir:attribute-def:eduPersonAffiliation", aff)));
+
+        List<String> studentAffiliations = user.getExternalLinkedAccounts().stream()
+                .map(ExternalLinkedAccount::getAffiliations)
+                .filter(externalLinkedAccountAffiliations -> !CollectionUtils.isEmpty(externalLinkedAccountAffiliations))
+                .flatMap(Collection::stream)
+                .distinct()
+                .toList();
+        studentAffiliations.forEach(aff -> attributes.add(attribute("urn:mace:dir:attribute-def:eduPersonScopedAffiliation", aff)));
+        if (!studentAffiliations.isEmpty() && attributes.stream()
+                .noneMatch(samlAttribute -> samlAttribute.getName().equals("urn:mace:dir:attribute-def:eduPersonAffiliation") &&
+                        samlAttribute.getValue().equals("student"))) {
+            attributes.add(attribute("urn:mace:dir:attribute-def:eduPersonAffiliation", "student"));
+        }
         return attributes;
     }
 

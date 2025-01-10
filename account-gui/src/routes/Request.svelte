@@ -4,8 +4,8 @@
     import {link, navigate} from "svelte-routing";
     import {validEmail} from "../constants/regexp";
     import I18n from "../locale/I18n";
-    import critical from "../icons/critical.svg";
-    import attention from "../icons/alert-circle.svg";
+    import critical from "../icons/critical.svg?raw";
+    import attention from "../icons/alert-circle.svg?raw";
 
     import {fetchServiceName, magicLinkNewUser} from "../api/index";
     import CheckBox from "../components/CheckBox.svelte";

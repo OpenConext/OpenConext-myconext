@@ -3,14 +3,14 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.openconext</groupId>
     <artifactId>myconext</artifactId>
-    <version>7.3.6-SNAPSHOT</version>
+    <version>8.0.0-SNAPSHOT</version>
     <packaging>pom</packaging>
     <name>myconext</name>
     <description>My OpenConext</description>
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>2.7.18</version>
+        <version>3.4.1</version>
         <relativePath/>
         <!-- lookup parent from repository -->
     </parent>
@@ -18,7 +18,8 @@
         <module>myconext-server</module>
         <module>account-gui</module>
         <module>myconext-gui</module>
-<!--        <module>public-gui</module>-->
+        <module>public-gui</module>
+<!--        <module>servicedesk-gui</module>-->
         <module>tiqr-mock</module>
     </modules>
     <build>

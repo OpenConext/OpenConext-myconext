@@ -1,7 +1,7 @@
 <script>
-    import chevronRight from "../icons/chevron-right.svg";
-    import chevronDown from "../icons/chevron-down.svg";
-    import chevronUp from "../icons/chevron-up.svg";
+    import chevronRight from "../icons/chevron-right.svg?raw";
+    import chevronDown from "../icons/chevron-down.svg?raw";
+    import chevronUp from "../icons/chevron-up.svg?raw";
 
     export let icon;
     export let label;

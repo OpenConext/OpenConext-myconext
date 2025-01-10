@@ -51,7 +51,7 @@
         }
 
         span.has-sub-label {
-            font-weight: bold;
+            font-weight: 600;
         }
 
         span.login-icon {

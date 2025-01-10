@@ -31,6 +31,8 @@ public class ExternalLinkedAccount implements Serializable, ProvisionedLinkedAcc
     private String subjectIssuer;
     @Setter
     private List<String> brinCodes;
+    @Setter
+    private List<String> affiliations;
 
     private String initials;
     private String chosenName;

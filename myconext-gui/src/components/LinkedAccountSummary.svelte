@@ -3,9 +3,9 @@
     import {dateFromEpoch} from "../utils/date";
     import {onMount} from "svelte";
     import {institutionName, isStudent, linkedAccountFamilyName, linkedAccountGivenName} from "../utils/services";
-    import trash from "../icons/verify/bin.svg"
-    import studentIcon from "../icons/student.svg";
-    import personalInfo from "../icons/verify/personalInfo.svg";
+    import trash from "../icons/verify/bin.svg?raw"
+    import studentIcon from "../icons/student.svg?raw";
+    import personalInfo from "../icons/verify/personalInfo.svg?raw";
     import {isEmpty} from "../utils/utils";
     import ValidatedField from "../verify/ValidatedField.svelte";
     import {logo} from "../verify/banks";

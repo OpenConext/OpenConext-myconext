@@ -5,7 +5,6 @@ import lombok.Getter;
 import myconext.api.HasUserRepository;
 import myconext.exceptions.UserNotFoundException;
 import myconext.model.EduID;
-import myconext.model.ExternalLinkedAccount;
 import myconext.model.User;
 import myconext.repository.UserRepository;
 import org.apache.commons.logging.Log;
@@ -124,7 +123,7 @@ public class APIController implements HasUserRepository {
             String eduid = (String) authentication.getTokenAttributes().get("eduid");
             LOG.info("EPPN API call: finding user by eduid: " + eduid);
             Optional<User> optionalUser = this.findUserByEduIDValue(eduid);
-            user =  optionalUser.orElseThrow(() -> new UserNotFoundException(eduid));
+            user = optionalUser.orElseThrow(() -> new UserNotFoundException(eduid));
         } else {
             String uid = uids.get(0);
             LOG.info("EPPN API call: finding user by uid: " + uid);

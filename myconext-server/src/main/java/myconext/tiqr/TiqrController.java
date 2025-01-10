@@ -4,6 +4,7 @@ import com.google.zxing.WriterException;
 import io.swagger.v3.oas.annotations.Hidden;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import jakarta.validation.Valid;
 import myconext.exceptions.ExpiredAuthenticationException;
 import myconext.exceptions.ForbiddenException;
 import myconext.exceptions.UserNotFoundException;
@@ -32,9 +33,9 @@ import tiqr.org.TiqrService;
 import tiqr.org.model.*;
 import tiqr.org.secure.QRCodeGenerator;
 
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
-import javax.validation.Valid;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
+
 import java.io.IOException;
 import java.net.URLEncoder;
 import java.nio.charset.Charset;
@@ -262,8 +263,8 @@ public class TiqrController implements UserAuthentication {
     @Operation(summary = "Send new phone code", description = "Send a new verification code to mobile phone for a finished authentication")
     @PostMapping("/sp/re-send-phone-code")
     public ResponseEntity<FinishEnrollment> resendPhoneCodeForSp(HttpServletRequest request,
-                                                                    org.springframework.security.core.Authentication secAuthentication,
-                                                                    @Valid @RequestBody PhoneCode phoneCode) throws TiqrException {
+                                                                 org.springframework.security.core.Authentication secAuthentication,
+                                                                 @Valid @RequestBody PhoneCode phoneCode) throws TiqrException {
         String sessionKey = (String) request.getSession().getAttribute(SESSION_KEY);
         Authentication authentication = tiqrService.authenticationStatus(sessionKey);
         if (!authentication.getStatus().equals(AuthenticationStatus.SUCCESS)) {
@@ -306,7 +307,7 @@ public class TiqrController implements UserAuthentication {
     @Operation(summary = "Verify phone code", description = "Verify verification code for a finished authentication")
     @PostMapping("/sp/verify-phone-code")
     public ResponseEntity<VerifyPhoneCode> spVerifyPhoneCode(org.springframework.security.core.Authentication authentication,
-                                                                 @Valid @RequestBody PhoneVerification phoneVerification) throws TiqrException {
+                                                             @Valid @RequestBody PhoneVerification phoneVerification) throws TiqrException {
         User user = userFromAuthentication(authentication);
         return doVerifyPhoneCode(phoneVerification, user, false);
     }
@@ -314,8 +315,8 @@ public class TiqrController implements UserAuthentication {
     @Operation(summary = "Verify phone code again", description = "Verify verification code again for a finished authentication")
     @PostMapping("/sp/re-verify-phone-code")
     public ResponseEntity<VerifyPhoneCode> spReverifyPhoneCode(HttpServletRequest request,
-                                                                   org.springframework.security.core.Authentication secAuthentication,
-                                                                   @Valid @RequestBody PhoneVerification phoneVerification) throws TiqrException {
+                                                               org.springframework.security.core.Authentication secAuthentication,
+                                                               @Valid @RequestBody PhoneVerification phoneVerification) throws TiqrException {
         User user = userFromAuthentication(secAuthentication);
         String sessionKey = (String) request.getSession().getAttribute(SESSION_KEY);
         Authentication authentication = tiqrService.authenticationStatus(sessionKey);
@@ -347,8 +348,8 @@ public class TiqrController implements UserAuthentication {
     }
 
     private ResponseEntity<VerifyPhoneCode> doVerifyPhoneCode(PhoneVerification phoneVerification,
-                                                                  User user,
-                                                                  boolean regenerateSpFlow) throws TiqrException {
+                                                              User user,
+                                                              boolean regenerateSpFlow) throws TiqrException {
         String code = phoneVerification.getPhoneVerification();
         Map<String, Object> surfSecureId = user.getSurfSecureId();
         String phoneVerificationStored = (String) surfSecureId.get(PHONE_VERIFICATION_CODE);
@@ -415,7 +416,7 @@ public class TiqrController implements UserAuthentication {
                 sendPushNotification);
         String authenticationUrl = authentication.getAuthenticationUrl();
         String qrCode = QRCodeGenerator.generateQRCodeImage(authenticationUrl);
-        StartAuthentication startAuthentication = new StartAuthentication(authentication.getSessionKey(),authenticationUrl,qrCode,sendPushNotification && authentication.isPushNotificationSend());
+        StartAuthentication startAuthentication = new StartAuthentication(authentication.getSessionKey(), authenticationUrl, qrCode, sendPushNotification && authentication.isPushNotificationSend());
         return ResponseEntity.ok(startAuthentication);
     }
 

@@ -1,0 +1,6 @@
+Hi {{name}},
+
+You have created an eduID account, but have not installed the app. It is much more convenient if you install
+the app, so you can log in faster. Go to {{mySurfConextURL}} to link your account to your eduID app.
+
+{{> footer_en.txt}}

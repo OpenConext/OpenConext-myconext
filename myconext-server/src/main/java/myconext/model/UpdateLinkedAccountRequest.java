@@ -4,7 +4,6 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import javax.validation.constraints.NotBlank;
 import java.io.Serializable;
 
 @NoArgsConstructor
@@ -17,7 +16,6 @@ public class UpdateLinkedAccountRequest implements Serializable {
     private boolean external;
     private String idpScoping;
     private String schacHomeOrganization;
-
 
 
 }

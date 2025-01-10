@@ -38,7 +38,7 @@ public class AttributeAggregatorControllerTest extends AbstractIntegrationTest {
 
     @Test
     public void aggregateWithEduIDIdP() {
-        String eduIDEppn = String .format("mdoe@%s", this.schacHomeOrganization);
+        String eduIDEppn = String.format("mdoe@%s", this.schacHomeOrganization);
         List<UserAttribute> userAttributes = doAggregate(
                 "aa", "secret", "http://brand-new-sp", eduIDEppn);
         assertEquals(1, userAttributes.size());
@@ -62,7 +62,7 @@ public class AttributeAggregatorControllerTest extends AbstractIntegrationTest {
     }
 
     @Test
-    public void aggregate401() {
+    public void aggregateUnauthorized() {
         given()
                 .when()
                 .queryParam("sp_entity_id", "n/a")
@@ -74,7 +74,7 @@ public class AttributeAggregatorControllerTest extends AbstractIntegrationTest {
     }
 
     @Test
-    public void aggregate400WrongUser() {
+    public void aggregate400WrongScopeForUser() {
         given()
                 .when()
                 .auth().preemptive().basic("oidcng", "secret")
@@ -83,7 +83,7 @@ public class AttributeAggregatorControllerTest extends AbstractIntegrationTest {
                 .contentType(ContentType.JSON)
                 .get("/myconext/api/attribute-aggregation")
                 .then()
-                .statusCode(400);
+                .statusCode(403);
     }
 
     @Test
@@ -120,7 +120,7 @@ public class AttributeAggregatorControllerTest extends AbstractIntegrationTest {
                 .contentType(ContentType.JSON)
                 .get("/myconext/api/attribute-manipulation")
                 .then()
-                .statusCode(400);
+                .statusCode(403);
     }
 
     @Test

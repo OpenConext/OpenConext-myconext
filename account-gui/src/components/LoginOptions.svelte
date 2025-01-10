@@ -1,6 +1,6 @@
 <script>
   import Tooltip from './ToolTip.svelte';
-  import question from "../icons/question.svg";
+  import question from "../icons/question.svg?raw";
   import I18n from "../locale/I18n";
 
 </script>

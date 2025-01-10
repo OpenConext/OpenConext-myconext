@@ -78,12 +78,17 @@ public class User implements Serializable, UserDetails {
     private List<PublicKeyCredentials> publicKeyCredentials = new ArrayList<>();
     @Setter
     private List<LinkedAccount> linkedAccounts = new ArrayList<>();
+    //Can't be final, despite what your IDE says
     private List<ExternalLinkedAccount> externalLinkedAccounts = new ArrayList<>();
     @Setter
     private List<EduID> eduIDS = new ArrayList<>();
 
     private long created;
+    @Setter
     private long lastLogin;
+
+    @Setter
+    private boolean nudgeAppMailSend;
     @Setter
     @Indexed
     private String trackingUuid;
@@ -92,6 +97,12 @@ public class User implements Serializable, UserDetails {
     @JsonIgnore
     @Setter
     private boolean mobileAuthentication;
+
+    @Setter
+    private UserInactivity userInactivity;
+
+    @Setter
+    private List<String> memberships = new ArrayList<>();
 
     public User(CreateInstitutionEduID createInstitutionEduID, Map<String, Object> userInfo) {
         this.email = createInstitutionEduID.getEmail();
@@ -369,9 +380,7 @@ public class User implements Serializable, UserDetails {
         if (!preferredInstitution) {
             Optional<ProvisionedLinkedAccount> first = provisionedLinkedAccounts.stream()
                     .max(Comparator.comparing(ProvisionedLinkedAccount::getCreatedAt));
-            first.ifPresent(provisionedLinkedAccount -> {
-                provisionedLinkedAccount.setPreferred(true);
-            });
+            first.ifPresent(provisionedLinkedAccount -> provisionedLinkedAccount.setPreferred(true));
             return first.isPresent();
         }
         return false;

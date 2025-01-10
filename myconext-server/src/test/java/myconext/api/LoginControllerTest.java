@@ -5,7 +5,6 @@ import myconext.model.User;
 import org.junit.Test;
 import org.springframework.test.context.ActiveProfiles;
 
-import java.util.Map;
 import java.util.UUID;
 
 import static io.restassured.RestAssured.given;

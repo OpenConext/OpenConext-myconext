@@ -1,6 +1,14 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [7.3.7]
+- UX improvements, including improved texts, show affiliation with new verification, show app nudges less often.
+- Improved and fixed names and validated names derivation. Including always ask a user which validated name they want to prefer.
+- New API endpoint Invite
+- General improvements
+- Migration to Java 21
+- Updated dependencies
+
 ## [7.3.5]
 - UX improvements on the inlog screen, the security screen and the delete your eduID screen
 - Extend iDIN api with logos of banks

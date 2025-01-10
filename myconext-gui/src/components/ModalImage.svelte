@@ -1,7 +1,7 @@
 <script>
     export let src;
     export let alt;
-    import closeIcon from "../icons/close_smll.svg";
+    import closeIcon from "../icons/close_smll.svg?raw";
 
     let isModalActive = false;
 

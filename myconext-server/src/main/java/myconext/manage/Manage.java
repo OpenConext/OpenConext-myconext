@@ -6,13 +6,14 @@ import myconext.model.SamlAuthenticationRequest;
 import myconext.model.ServiceProvider;
 import org.springframework.util.StringUtils;
 
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
 import java.util.*;
 import java.util.stream.IntStream;
 
 import static java.util.stream.Collectors.toMap;
 import static myconext.security.CookieResolver.cookieByName;
+
 @SuppressWarnings("unchecked")
 public interface Manage {
 
@@ -87,7 +88,8 @@ public interface Manage {
         Map<String, String> metaDataFields = metaDataFields(map);
         IdentityProvider identityProvider = new IdentityProvider(
                 remoteProvider,
-                metaDataFields.get("coin:institution_brin")
+                metaDataFields.get("coin:institution_brin"),
+                metaDataFields.get("shibmd:scope:0:allowed")
         );
         Map<String, IdentityProvider> results = new HashMap<>();
 
@@ -97,9 +99,6 @@ public interface Manage {
                 results.put(scope, identityProvider);
             }
         });
-        if (results.isEmpty()) {
-
-        }
         return results;
     }
 }

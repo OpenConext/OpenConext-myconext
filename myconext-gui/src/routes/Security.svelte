@@ -2,20 +2,20 @@
     import {config, flash, user} from "../stores/user";
     import I18n from "../locale/I18n";
     import {navigate} from "svelte-routing";
-    import getApp from "../icons/redesign/undraw_Mobile_app_re_catg 1.svg";
-    import hasApp from "../icons/redesign/undraw_Mobile_app_small.svg";
+    import getApp from "../icons/redesign/undraw_Mobile_app_re_catg 1.svg?raw";
+    import hasApp from "../icons/redesign/undraw_Mobile_app_small.svg?raw";
     import Button from "../components/Button.svelte";
     import {testWebAutnUrl} from "../api";
     import {onMount} from "svelte";
     import {dateFromEpoch} from "../utils/date";
-    import binIcon from "../icons/redesign/trash.svg";
-    import verifiedSvg from "../icons/redesign/shield-full.svg";
-    import webAuthnIcon from "../icons/redesign/video-game-key.svg";
-    import passwordIcon from "../icons/redesign/password-type.svg";
-    import mobilePhoneIcon from "../icons/redesign/mobile-phone.svg";
-    import backupIcon from "../icons/redesign/backup-code.svg";
+    import binIcon from "../icons/redesign/trash.svg?raw";
+    import verifiedSvg from "../icons/redesign/shield-full.svg?raw";
+    import webAuthnIcon from "../icons/redesign/video-game-key.svg?raw";
+    import passwordIcon from "../icons/redesign/password-type.svg?raw";
+    import mobilePhoneIcon from "../icons/redesign/mobile-phone.svg?raw";
+    import backupIcon from "../icons/redesign/backup-code.svg?raw";
 
-    import magicLinkIcon from "../icons/redesign/video-game-magic-wand.svg";
+    import magicLinkIcon from "../icons/redesign/video-game-magic-wand.svg?raw";
     import SecurityOption from "../components/SecurityOption.svelte";
 
     let usePublicKey = $user.usePublicKey;

@@ -3,15 +3,15 @@
     import {links} from "../stores/conf";
     import {validEmail} from "../constants/regexp";
     import I18n from "../locale/I18n";
-    import critical from "../icons/critical.svg";
+    import critical from "../icons/critical.svg?raw";
     import {link, navigate} from "svelte-routing";
     import {fetchServiceName, knownAccount} from "../api/index";
     import Spinner from "../components/Spinner.svelte";
     import {onMount} from "svelte";
     import Cookies from "js-cookie";
     import Button from "../components/Button.svelte";
-    import userIcon from "../icons/redesign/single-neutral-id-card-1.svg";
-    import accountIcon from "../icons/redesign/single-neutral-actions-refresh.svg";
+    import userIcon from "../icons/redesign/single-neutral-id-card-1.svg?raw";
+    import accountIcon from "../icons/redesign/single-neutral-actions-refresh.svg?raw";
     import {cookieNames} from "../constants/cookieNames";
     import LoginOption from "../components/LoginOption.svelte";
     import {loginPreferences} from "../constants/loginPreferences";

@@ -39,6 +39,22 @@
   "error_email": {
     "en": "Unexpected error occurred",
     "nl": "Onverwachte fout opgetreden"
+  },
+  "institution_mail_warning": {
+    "en": "Warning: eduID institutional mail-account usage",
+    "nl": "Waarschuwing: eduID instellings e-mail gebruik"
+  },
+  "nudge_eduid_app": {
+    "en": "Installeer de eduID app",
+    "nl": "Install the eduID app"
+  },
+  "inactivity_warning_years_ahead": {
+    "en": "Inactivity warning",
+    "nl": "Inactiviteit waarschuwing"
+  },
+  "inactivity_warning_short_term": {
+    "en": "Inactivity warning",
+    "nl": "Inactiviteit waarschuwing"
   }
 
 }

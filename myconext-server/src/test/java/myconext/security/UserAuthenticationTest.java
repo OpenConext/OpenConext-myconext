@@ -4,7 +4,6 @@ import myconext.AbstractIntegrationTest;
 import myconext.exceptions.UserNotFoundException;
 import myconext.model.User;
 import org.junit.jupiter.api.Test;
-import org.springframework.data.util.ReflectionUtils;
 import org.springframework.security.authentication.TestingAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;

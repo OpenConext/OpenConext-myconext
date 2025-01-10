@@ -1,14 +1,13 @@
 package myconext.remotecreation;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import myconext.model.Verification;
 
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import java.util.List;
 
 @NoArgsConstructor
@@ -28,7 +27,7 @@ public class UpdateExternalEduID extends NewExternalEduID {
     }
 
     public UpdateExternalEduID(NewExternalEduID externalEduID, String newEduIDValue) {
-        super( externalEduID.getEmail(),
+        super(externalEduID.getEmail(),
                 externalEduID.getChosenName(),
                 externalEduID.getFirstName(),
                 externalEduID.getLastNamePrefix(),

@@ -1,62 +1,36 @@
 package myconext.mail;
 
-import com.icegreen.greenmail.junit.GreenMailRule;
-import com.icegreen.greenmail.util.ServerSetup;
+import jakarta.mail.Message;
+import jakarta.mail.internet.MimeMessage;
 import lombok.SneakyThrows;
-import myconext.AbstractIntegrationTest;
+import myconext.AbstractMailBoxTest;
 import myconext.model.EmailsSend;
 import myconext.model.User;
-import org.apache.commons.mail.util.MimeMessageParser;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Rule;
+import org.apache.commons.mail2.jakarta.util.MimeMessageParser;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.context.ActiveProfiles;
 
-import javax.mail.Message;
-import javax.mail.MessagingException;
-import javax.mail.internet.MimeMessage;
 import java.util.Map;
 import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import static com.icegreen.greenmail.util.GreenMailUtil.getBody;
-import static org.awaitility.Awaitility.await;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-@ActiveProfiles(value = "prod", inheritProfiles = false)
-@SuppressWarnings("deprecation")
-public class MailBoxTest extends AbstractIntegrationTest {
+public class MailBoxTest extends AbstractMailBoxTest {
 
     @Autowired
     private MailBox mailBox;
 
-    @Rule
-    public final GreenMailRule greenMail =
-            new GreenMailRule(new ServerSetup(1025, null, ServerSetup.PROTOCOL_SMTP));
-
-    @Before
-    public void before() throws Exception {
-        super.before();
-        greenMail.start();
-        greenMail.purgeEmailFromAllMailboxes();
-    }
-
-    @After
-    public void after() {
-        greenMail.stop();
-    }
-
     @Test
-    public void sendMagicLink() throws MessagingException {
+    public void sendMagicLink() {
         doSendMagicLink("Magic Link to login", "en");
     }
 
     @Test
-    public void sendMagicLinkNl() throws MessagingException {
+    public void sendMagicLinkNl() {
         doSendMagicLink("Magische link om in te loggen", "nl");
     }
 
@@ -73,7 +47,7 @@ public class MailBoxTest extends AbstractIntegrationTest {
     @SneakyThrows
     @Test
     public void errorMail() {
-        mailBox.sendErrorMail(Map.of("error","unexpected"),user("jdoe@examplee.com", "en"));
+        mailBox.sendErrorMail(Map.of("error", "unexpected"), user("jdoe@examplee.com", "en"));
         MimeMessage mimeMessage = mailMessage();
         assertEquals("info@surfconext.nl", mimeMessage.getRecipients(Message.RecipientType.TO)[0].toString());
 
@@ -82,7 +56,8 @@ public class MailBoxTest extends AbstractIntegrationTest {
         assertTrue(body.contains("user John Doe"));
     }
 
-    private void doSendMagicLink(String expectedSubject, String lang) throws MessagingException {
+    @SneakyThrows
+    private void doSendMagicLink(String expectedSubject, String lang) {
         String hash = UUID.randomUUID().toString();
         mailBox.sendMagicLink(user("jdoe@example.com", lang), hash, "http://mock-sp");
 
@@ -97,16 +72,17 @@ public class MailBoxTest extends AbstractIntegrationTest {
     }
 
     @Test
-    public void sendAccountVerification() throws MessagingException {
+    public void sendAccountVerification() {
         doSendAccountVerification("Please verify your email address for your eduID", "en");
     }
 
     @Test
-    public void sendAccountVerificationNl() throws MessagingException {
+    public void sendAccountVerificationNl() {
         doSendAccountVerification("Verifieer je e-mailadres voor je eduID", "nl");
     }
 
-    private void doSendAccountVerification(String expectedSubject, String lang) throws MessagingException {
+    @SneakyThrows
+    private void doSendAccountVerification(String expectedSubject, String lang) {
         String hash = UUID.randomUUID().toString();
         mailBox.sendAccountVerification(user("jdoe@examplee.com", lang), hash);
 
@@ -116,16 +92,17 @@ public class MailBoxTest extends AbstractIntegrationTest {
     }
 
     @Test
-    public void sendAccountConfirmation() throws MessagingException {
+    public void sendAccountConfirmation() {
         doSendAccountConfirmation("Your eduID has been created", "en");
     }
 
     @Test
-    public void sendAccountConfirmationNl() throws MessagingException {
+    public void sendAccountConfirmationNl() {
         doSendAccountConfirmation("Je eduID is aangemaakt", "nl");
     }
 
-    private void doSendAccountConfirmation(String expectedSubject, String lang) throws MessagingException {
+    @SneakyThrows
+    private void doSendAccountConfirmation(String expectedSubject, String lang) {
         mailBox.sendAccountConfirmation(user("jdoe@examplee.com", lang));
 
         MimeMessage mimeMessage = mailMessage();
@@ -276,10 +253,5 @@ public class MailBoxTest extends AbstractIntegrationTest {
         matcher.find();
         String group = matcher.group(1);
         assertEquals(expected, group);
-    }
-
-    private MimeMessage mailMessage() {
-        await().until(() -> greenMail.getReceivedMessages().length != 0);
-        return greenMail.getReceivedMessages()[0];
     }
 }

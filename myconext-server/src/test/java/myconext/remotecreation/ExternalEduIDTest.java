@@ -1,10 +1,10 @@
 package myconext.remotecreation;
 
+import jakarta.validation.ValidationException;
 import myconext.AbstractIntegrationTest;
 import myconext.model.Verification;
 import org.junit.jupiter.api.Test;
 
-import javax.validation.ValidationException;
 import java.util.List;
 import java.util.UUID;
 

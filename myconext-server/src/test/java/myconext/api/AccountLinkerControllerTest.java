@@ -28,7 +28,6 @@ import static com.github.tomakehurst.wiremock.client.WireMock.*;
 import static io.restassured.RestAssured.given;
 import static myconext.api.AccountLinkerController.parseAffiliations;
 import static myconext.security.GuestIdpAuthenticationRequestFilter.BROWSER_SESSION_COOKIE_NAME;
-import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -86,7 +85,7 @@ public class AccountLinkerControllerTest extends AbstractIntegrationTest {
         LinkedAccount linkedAccount = user.getLinkedAccounts().get(0);
 
         assertEquals(eppn, linkedAccount.getEduPersonPrincipalName());
-        assertEquals("mock.idp", linkedAccount.getInstitutionIdentifier() );
+        assertEquals("mock.idp", linkedAccount.getInstitutionIdentifier());
 
         //second time the institution identifier is updated from the surf-crm-id
         body.put("surf-crm-id", "12345678");
@@ -806,7 +805,7 @@ public class AccountLinkerControllerTest extends AbstractIntegrationTest {
         MultiValueMap<String, String> queryParams = UriComponentsBuilder
                 .fromUriString(authorizationURL)
                 .build().getQueryParams();
-        String scope = URLDecoder.decode( queryParams.getFirst("scope"), Charset.defaultCharset());
+        String scope = URLDecoder.decode(queryParams.getFirst("scope"), Charset.defaultCharset());
         assertEquals("openid dateofbirth name idp_scoping:eherkenning", scope);
 
         String state = queryParams.getFirst("state");

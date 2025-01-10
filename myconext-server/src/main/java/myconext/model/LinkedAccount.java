@@ -58,7 +58,7 @@ public class LinkedAccount implements Serializable, ProvisionedLinkedAccount {
                          Date createdAt,
                          Date expiresAt) {
         this.institutionIdentifier = institutionIdentifier;
-        this.schacHomeOrganization = StringUtils.hasText(schacHomeOrganization) ? schacHomeOrganization.toLowerCase() : schacHomeOrganization ;
+        this.schacHomeOrganization = StringUtils.hasText(schacHomeOrganization) ? schacHomeOrganization.toLowerCase() : schacHomeOrganization;
         this.eduPersonPrincipalName = eduPersonPrincipalName;
         this.subjectId = subjectId;
         this.givenName = givenName;

@@ -1,7 +1,7 @@
 <script>
     import I18n from "../locale/I18n";
-    import oneMoreThingEmpty from "../icons/onemorething_empty.svg";
-    import oneMoreThingFilled from "../icons/onemorething_filled.svg";
+    import oneMoreThingEmpty from "../icons/onemorething_empty.svg?raw";
+    import oneMoreThingFilled from "../icons/onemorething_filled.svg?raw";
     import DOMPurify from "dompurify";
 
     export let explanation;

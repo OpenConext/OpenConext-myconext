@@ -2,14 +2,14 @@
     import I18n from "../locale/I18n";
     import {user} from "../stores/user";
     import {onMount} from "svelte";
-    import backArrow from "../icons/arrow-left.svg";
+    import backArrow from "../icons/arrow-left.svg?raw";
     import Spinner from "../components/Spinner.svelte";
     import {resendMagicLinkMail, successfullyLoggedIn} from "../api";
     import {conf, links} from "../stores/conf";
     import {status} from "../constants/loginStatus";
     import Button from "../components/Button.svelte";
     import {validVerificationCode} from "../constants/regexp";
-    import critical from "../icons/critical.svg";
+    import critical from "../icons/critical.svg?raw";
     import DOMPurify from "dompurify";
 
     const gmail = "/img/get-started-icon-gmail@2x-e80b706.png";
@@ -217,7 +217,7 @@
         margin-right: 10px;
     }
     span.email {
-        font-weight: bold;
+        font-weight: 600;
     }
 
 </style>

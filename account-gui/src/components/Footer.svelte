@@ -2,7 +2,7 @@
 
     import I18n from "../locale/I18n";
     import Cookies from "js-cookie";
-    import surfLogo from "../img/logo-surf.svg";
+    import surfLogo from "../img/logo-surf.svg?raw";
     import {conf} from "../stores/conf";
 
     const changeLanguage = lang => () => {
@@ -91,7 +91,7 @@
     }
 
     li.active a {
-        font-weight: bold;
+        font-weight: 600;
         color: white;
         cursor: not-allowed;
     }

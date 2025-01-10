@@ -3,6 +3,7 @@ package myconext.verify;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.SneakyThrows;
+import myconext.manage.MockManage;
 import myconext.model.ExternalLinkedAccount;
 import myconext.model.IdpScoping;
 import myconext.model.VerifyIssuer;
@@ -22,7 +23,7 @@ import static org.junit.jupiter.api.Assertions.*;
 class AttributeMapperTest {
 
     private final ObjectMapper objectMapper = new ObjectMapper();
-    private final AttributeMapper attributeMapper = new AttributeMapper(objectMapper);
+    private final AttributeMapper attributeMapper = new AttributeMapper(objectMapper, new MockManage(objectMapper));
 
     @SneakyThrows
     @Test

@@ -9,6 +9,7 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import jakarta.validation.Valid;
 import myconext.cron.DisposableEmailProviders;
 import myconext.exceptions.DuplicateUserEmailException;
 import myconext.exceptions.ForbiddenException;
@@ -45,10 +46,9 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponents;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
-import javax.validation.Valid;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URI;
@@ -439,8 +439,8 @@ public class AccountLinkerController implements UserAuthentication {
                                             "{\"url\":\"https://validate.test.eduid.nl/broker/sp/oidc/authenticate?scope=openid&response_type=code&redirect_uri=https://mijn.test2.eduid.nl/myconext/api/sp/verify/redirect&state=%242a%2410%249cyC3mjeJW0ljb%2FmPAGj0O4DVXz9LPw5U%2Fthl110BVYWFpMhjwKyK&prompt=login&client_id=myconext.ala.eduid\"}")})})}
     )
     public ResponseEntity<AuthorizationURL> startSPVerifyIDLinkAccountFlow(Authentication authentication,
-                                                                       @RequestParam("idpScoping") IdpScoping idpScoping,
-                                                                       @RequestParam(value = "bankId", required = false) String bankId) {
+                                                                           @RequestParam("idpScoping") IdpScoping idpScoping,
+                                                                           @RequestParam(value = "bankId", required = false) String bankId) {
         User user = userFromAuthentication(authentication);
 
         LOG.info(String.format("Start verify account flow for user %s for flow %s", user.getEmail(), idpScoping));
@@ -470,7 +470,7 @@ public class AccountLinkerController implements UserAuthentication {
                 StringUtils.hasText(bankId) ? " signicat:param:idin_idp:" + bankId : ""));
         params.put("redirect_uri", redirectUri);
         params.put("state", state);
-        UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(this.verifyBaseUri + "/broker/sp/oidc/authenticate");
+        UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(this.verifyBaseUri + "/broker/sp/oidc/authenticate");
         params.forEach(builder::queryParam);
         UriComponents uriComponents = builder.build();
         return ResponseEntity.ok(new AuthorizationURL(uriComponents.toUriString()));
@@ -516,7 +516,7 @@ public class AccountLinkerController implements UserAuthentication {
 
             String clientRedirectUrl = isMobileFlow ? idpBaseRedirectUrl + "/client/mobile/external-account-linked-error" : spRedirectUrl;
             URI location = URI.create(String.format("%s/external-account-linked-error?error=%s&error_description=%s",
-                    clientRedirectUrl,
+                            clientRedirectUrl,
                             StringUtils.hasText(error) ? URLEncoder.encode(error, Charset.defaultCharset()) : "",
                             StringUtils.hasText(errorDescription) ? URLEncoder.encode(errorDescription, Charset.defaultCharset()) : "Unexpected+error+occurred"
                     )
@@ -551,7 +551,7 @@ public class AccountLinkerController implements UserAuthentication {
         Map<String, Object> body = restTemplate.exchange(verifyBaseUri + "/broker/sp/oidc/token",
                 HttpMethod.POST, request, parameterizedTypeReference).getBody();
 
-        MultiValueMap<String, String>  tokenMap = new LinkedMultiValueMap<>();
+        MultiValueMap<String, String> tokenMap = new LinkedMultiValueMap<>();
         tokenMap.add("access_token", (String) body.get("access_token"));
 
         request = new HttpEntity<>(tokenMap, headers);
@@ -620,7 +620,7 @@ public class AccountLinkerController implements UserAuthentication {
                 StringUtils.hasText(bankId) ? " signicat:param:idin_idp:" + bankId : ""));
         params.put("redirect_uri", this.idpVerifyRedirectUri);
         params.put("state", state);
-        UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(this.verifyBaseUri + "/broker/sp/oidc/authenticate");
+        UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(this.verifyBaseUri + "/broker/sp/oidc/authenticate");
         params.forEach(builder::queryParam);
         UriComponents uriComponents = builder.build();
         return ResponseEntity.status(HttpStatus.FOUND).location(uriComponents.toUri()).build();
@@ -648,7 +648,7 @@ public class AccountLinkerController implements UserAuthentication {
         VerifyState verifyState = attributeMapper.serializeFromBase64(state);
 
         String httpUrl = "http://localhost?" + verifyState.getStateIdentifier();
-        MultiValueMap<String, String> params = UriComponentsBuilder.fromHttpUrl(httpUrl).build().getQueryParams();
+        MultiValueMap<String, String> params = UriComponentsBuilder.fromUriString(httpUrl).build().getQueryParams();
         String id = params.getFirst("id");
         String encodedUserUid = params.getFirst("user_uid");
 
@@ -730,7 +730,7 @@ public class AccountLinkerController implements UserAuthentication {
         if (forceAuth) {
             params.put("prompt", "login");
         }
-        UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(oidcBaseUrl + "/oidc/authorize");
+        UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(oidcBaseUrl + "/oidc/authorize");
         params.forEach(builder::queryParam);
         return builder.build();
     }
@@ -787,7 +787,7 @@ public class AccountLinkerController implements UserAuthentication {
     @Hidden
     public ResponseEntity idpFlowRedirect(@RequestParam("code") String code, @RequestParam("state") String state) throws UnsupportedEncodingException {
         String decodedState = URLDecoder.decode(state, StandardCharsets.UTF_8);
-        MultiValueMap<String, String> params = UriComponentsBuilder.fromHttpUrl("http://localhost?" + decodedState).build().getQueryParams();
+        MultiValueMap<String, String> params = UriComponentsBuilder.fromUriString("http://localhost?" + decodedState).build().getQueryParams();
         String id = params.getFirst("id");
         String encodedUserUid = params.getFirst("user_uid");
 
