@@ -231,24 +231,27 @@ gui:
     content: LOCAL
 
 management:
-  health:
-    mail:
-      enabled: true
   endpoints:
     web:
       exposure:
-        include: "health,info,mappings,metrics"
+        include: "health,info"
       base-path: "/internal"
   endpoint:
     info:
-      enabled: true
+      access: unrestricted
     health:
-      enabled: true
+      access: unrestricted
       show-details: always
     mappings:
-      enabled: true
+      access: none
     metrics:
-      enabled: true
+      access: none
   info:
     git:
       mode: full
+
+# used by the git plugin
+info:
+  build:
+    artifact: "@project.artifactId@"
+    version: "@project.version@"

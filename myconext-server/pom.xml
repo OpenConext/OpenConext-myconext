@@ -36,7 +36,7 @@
         <dependency>
             <groupId>org.openconext</groupId>
             <artifactId>saml-idp</artifactId>
-            <version>3.0.0</version>
+            <version>3.0.1</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -248,12 +248,9 @@
             <!--                </configuration>-->
             <!--            </plugin>-->
             <plugin>
-                <groupId>pl.project13.maven</groupId>
-                <artifactId>git-commit-id-plugin</artifactId>
-                <version>4.9.10</version>
-                <configuration>
-                    <useNativeGit>true</useNativeGit>
-                </configuration>
+                <groupId>io.github.git-commit-id</groupId>
+                <artifactId>git-commit-id-maven-plugin</artifactId>
+                <version>9.0.1</version>
             </plugin>
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
