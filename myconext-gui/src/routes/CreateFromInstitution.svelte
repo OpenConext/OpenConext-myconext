@@ -1,6 +1,6 @@
 <script>
     import {config} from "../stores/user";
-    import I18n from "i18n-js";
+    import I18n from "../locale/I18n";
     import Button from "../components/Button.svelte";
     import {startCreateFromInstitutionFlow} from "../api";
     import {onMount} from "svelte";

@@ -1,5 +1,5 @@
 //Internal API
-import I18n from "i18n-js";
+import I18n from "../locale/I18n";
 import {status} from "../constants/loginStatus";
 
 let csrfToken = null;
@@ -26,7 +26,7 @@ function validFetch(path, options) {
     options.headers = {
         Accept: "application/json",
         "Content-Type": "application/json",
-        "Accept-Language": I18n.locale,
+        "Accept-Language": I18n.currentLocale(),
         "X-CSRF-TOKEN": csrfToken
     };
     return fetch(path, options).then(res => validateResponse(res));
@@ -178,3 +178,8 @@ export function rememberMe(hash) {
 export function iDINIssuers() {
     return fetchJson("/myconext/api/sp/idin/issuers");
 }
+
+export function reportError(error) {
+    return postPutJson("/myconext/api/sp/error", error, "post");
+}
+

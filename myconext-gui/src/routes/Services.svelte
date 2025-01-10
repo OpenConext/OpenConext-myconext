@@ -1,6 +1,6 @@
 <script>
     import {user} from "../stores/user";
-    import I18n from "i18n-js";
+    import I18n from "../locale/I18n";
     import {navigate} from "svelte-routing";
     import chevron_right from "../icons/chevron-right.svg?raw";
     import {onMount} from "svelte";

@@ -1,6 +1,6 @@
 <script>
     import {config, flash, user} from "../stores/user";
-    import I18n from "i18n-js";
+    import I18n from "../locale/I18n";
     import verifiedSvg from "../icons/redesign/shield-full.svg?raw";
     import personalInfo from "../icons/verify/personalInfo.svg?raw";
     import arrowLeft from "../icons/verify/arrow-left.svg?raw";

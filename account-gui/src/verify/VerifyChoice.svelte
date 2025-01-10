@@ -1,5 +1,5 @@
 <script>
-    import I18n from "i18n-js";
+    import I18n from "../locale/I18n";
     import studentIcon from "../icons/verify/student.svg?raw";
     import bankIcon from "../icons/verify/bank.svg?raw";
     import Button from "../components/Button.svelte";

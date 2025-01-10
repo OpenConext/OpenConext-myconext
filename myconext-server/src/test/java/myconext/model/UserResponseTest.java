@@ -24,7 +24,7 @@ class UserResponseTest {
             List<IdinIssuers> idinIssuers = new ObjectMapper().readValue(new ClassPathResource("/idin/issuers.json")
                     .getInputStream(), new TypeReference<>() {
             });
-            this.issuers = idinIssuers.get(0).getIssuers();
+            this.issuers = idinIssuers.getFirst().getIssuers();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -69,6 +69,7 @@ class UserResponseTest {
     }
 
     @Test
+    @SuppressWarnings("unchecked")
     void nullMapKey() throws JsonProcessingException {
         Map<String, EduID> eduidServiceProvider =
                 new HashMap<>();

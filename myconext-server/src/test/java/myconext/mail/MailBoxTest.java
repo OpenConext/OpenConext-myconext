@@ -10,6 +10,7 @@ import org.apache.commons.mail2.jakarta.util.MimeMessageParser;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.util.Map;
 import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -41,6 +42,18 @@ public class MailBoxTest extends AbstractMailBoxTest {
 
         String hash = UUID.randomUUID().toString();
         mailBox.sendMagicLink(user(email.toUpperCase(), "en"), hash, "http://mock-sp");
+    }
+
+    @SneakyThrows
+    @Test
+    public void errorMail() {
+        mailBox.sendErrorMail(Map.of("error", "unexpected"), user("jdoe@examplee.com", "en"));
+        MimeMessage mimeMessage = mailMessage();
+        assertEquals("info@surfconext.nl", mimeMessage.getRecipients(Message.RecipientType.TO)[0].toString());
+
+        String body = getBody(mimeMessage);
+        assertTrue(body.contains("Unexpected error occurred"));
+        assertTrue(body.contains("user John Doe"));
     }
 
     @SneakyThrows

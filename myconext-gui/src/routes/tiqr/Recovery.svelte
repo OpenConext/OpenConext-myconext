@@ -1,5 +1,5 @@
 <script>
-    import I18n from "i18n-js";
+    import I18n from "../../locale/I18n";
     import phoneIcon from "../../icons/redesign/mobile-phone.svg?raw";
     import backupIcon from "../../icons/redesign/backup-code.svg?raw";
     import LoginOption from "../../components/LoginOption.svelte";

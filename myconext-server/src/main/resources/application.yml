@@ -30,6 +30,7 @@ springdoc:
 
 email:
   from: noreply@surfconext.nl
+  error_mail: info@surfconext.nl
   magic-link-url: http://localhost:8081/saml/guest-idp/magic
   my-surfconext-url: http://localhost:3001
   idp-surfconext-url: http://localhost:3000
@@ -106,6 +107,8 @@ feature:
   id_verify: True
   # Do we support the remote creation API (e.g. for studielink)
   remote_creation_api: True
+  # Do we send error mails for reported errors by the JS UI
+  send_js_exceptions: True
   # Do we periodically mail users who have used their institution account
   mail_institution_mail_usage: True
   # Do we periodically mail users who are inactive and might have their account deleted
@@ -241,14 +244,14 @@ management:
       base-path: "/internal"
   endpoint:
     info:
-      enabled: true
+      access: unrestricted
     health:
-      enabled: true
+      access: unrestricted
       show-details: always
     mappings:
-      enabled: true
+      access: read_only
     metrics:
-      enabled: true
+      access: none
   info:
     git:
       mode: full

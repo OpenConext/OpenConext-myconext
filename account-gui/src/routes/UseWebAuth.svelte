@@ -2,7 +2,7 @@
     import {user} from "../stores/user";
     import {navigate} from "svelte-routing";
     import {get} from "@github/webauthn-json";
-    import I18n from "i18n-js";
+    import I18n from "../locale/I18n";
     import {fetchServiceName, webAuthnStartAuthentication, webAuthnTryAuthentication} from "../api/index";
     import Spinner from "../components/Spinner.svelte";
     import {onMount} from "svelte";
