@@ -19,7 +19,7 @@
         <module>account-gui</module>
         <module>myconext-gui</module>
         <module>public-gui</module>
-        <module>servicedesk-gui</module>
+<!--        <module>servicedesk-gui</module>-->
         <module>tiqr-mock</module>
     </modules>
     <build>
