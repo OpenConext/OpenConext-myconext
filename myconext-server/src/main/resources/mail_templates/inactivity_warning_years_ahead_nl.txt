@@ -1,7 +1,7 @@
 Hi {{name}},
 
-Je hebt je eduID account niet gebruikt in {{inactivity_period_nl}}. Als je je eduID account niet gebruikt, dan zullen we
-deze verwijderen binnen {{deletion_period_nl}} op {{account_delete_date_nl}}.
-Ga naar {{mySurfConextURL}} en login om je account actief te houden.
+Je hebt je eduID account niet gebruikt gedurende {{inactivity_period_nl}}. Als je je eduID account niet gebruikt, dan zullen we
+deze verwijderen na {{deletion_period_nl}} (op {{account_delete_date_nl}}).
+Ga naar {{mySurfConextURL}} en log in om je account actief te houden.
 
 {{> footer_en.txt}}
