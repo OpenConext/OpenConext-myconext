@@ -41,16 +41,16 @@
     "nl": "Waarschuwing: eduID instellings e-mail gebruik"
   },
   "nudge_eduid_app": {
-    "en": "Installeer de eduID app",
-    "nl": "Install the eduID app"
+    "en": "Install the eduID app"
+    "nl": "Installeer de eduID app",
   },
   "inactivity_warning_years_ahead": {
     "en": "Inactivity warning",
-    "nl": "Inactiviteit waarschuwing"
+    "nl": "Inactiviteitswaarschuwing"
   },
   "inactivity_warning_short_term": {
     "en": "Inactivity warning",
-    "nl": "Inactiviteit waarschuwing"
+    "nl": "Inactiviteitswaarschuwing"
   }
 
 }
