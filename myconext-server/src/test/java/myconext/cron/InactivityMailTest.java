@@ -76,10 +76,10 @@ public class InactivityMailTest extends AbstractMailBoxTest {
         assertEquals(4, mimeMessages.size());
         //Ordering is not stable
         String allContent = mimeMessages.stream().map(this::messageContent).collect(Collectors.joining());
-        List.of("niet gebruikt in 1 jaar", "binnen 4 jaar",
-                "niet gebruikt in 2 jaar", "binnen 3 jaar",
-                "in bijna 5 jaar", "binnen 1 maand",
-                "binnen 1 week")
+        List.of("niet gebruikt gedurende 1 jaar", "na 4 jaar",
+                "niet gebruikt gedurende 2 jaar", "na 3 jaar",
+                "gedurende bijna 5 jaar", "na 1 maand",
+                "na 1 week")
                 .forEach(s -> assertTrue(allContent.contains(s)));
     }
 
