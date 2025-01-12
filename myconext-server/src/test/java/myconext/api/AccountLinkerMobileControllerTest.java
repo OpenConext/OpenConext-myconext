@@ -1,9 +1,11 @@
 package myconext.api;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.github.tomakehurst.wiremock.junit.WireMockRule;
 import io.restassured.http.ContentType;
 import myconext.AbstractIntegrationTest;
 import myconext.model.AuthorizationURL;
+import myconext.model.ExternalLinkedAccount;
 import myconext.model.IdpScoping;
 import myconext.model.User;
 import org.junit.Rule;
@@ -170,5 +172,57 @@ public class AccountLinkerMobileControllerTest extends AbstractIntegrationTest {
                 .getHeader("Location");
         assertEquals(location, "http://localhost:3000/client/mobile/expired");
     }
+
+    @Test
+    public void mobileVerifyIDFlowSubjectIdAlreadyLinked() throws IOException {
+        AuthorizationURL authorizationURL = given().redirects().follow(false)
+                .when()
+                .queryParam("idpScoping", IdpScoping.idin)
+                .queryParam("bankId", "RABONL2U")
+                .contentType(ContentType.JSON)
+                .auth().oauth2(opaqueAccessToken(true, "eduid.nl/mobile"))
+                .get("/mobile/api/sp/verify/link")
+                .as(AuthorizationURL.class);
+        String url = authorizationURL.getUrl();
+        assertTrue(url.startsWith("http://localhost:8098/broker/sp/oidc/authenticate"));
+
+        MultiValueMap<String, String> queryParams = UriComponentsBuilder.fromUriString(url).build().getQueryParams();
+        Assertions.assertEquals("openid dateofbirth name idp_scoping:idin signicat:param:idin_idp:RABONL2U", queryParams.getFirst("scope"));
+
+        String state = queryParams.getFirst("state");
+        //Now call the redirect URI for the redirect by iDIN or eHerkenning
+        stubFor(post(urlPathMatching("/broker/sp/oidc/token")).willReturn(aResponse()
+                .withHeader("Content-Type", "application/json")
+                .withBody(objectMapper.writeValueAsString(Collections.singletonMap("access_token", "123456")))));
+        String userInfo = readFile("verify/idin.json");
+        stubFor(post(urlPathMatching("/broker/sp/oidc/userinfo")).willReturn(aResponse()
+                .withHeader("Content-Type", "application/json")
+                .withBody(userInfo)));
+        //Now we cheat and create an externalLinkedAccount
+        User otherUser = userRepository.findOneUserByEmail("mdoe@example.com");
+        Map<String, Object> userInfoAsMap =  objectMapper.readValue(userInfo, new TypeReference<>() {
+        });
+        otherUser.getExternalLinkedAccounts().add(new ExternalLinkedAccount(
+                (String)userInfoAsMap.get("sub"),
+                IdpScoping.idin,
+                true
+        ));
+        userRepository.save(otherUser);
+
+        String location = given().redirects().follow(false)
+                .when()
+                .queryParam("code", "123456")
+                .queryParam("state", state)
+                .contentType(ContentType.JSON)
+                .get("/myconext/api/mobile/verify/redirect")
+                .getHeader("Location");
+
+        String alreadyVerifiedUrl = "http://localhost:3000/client/mobile/verify-already-used?email=mdoe%40example.com";
+        assertEquals(alreadyVerifiedUrl, location);
+
+        User user = userRepository.findOneUserByEmail("jdoe@example.com");
+        Assertions.assertEquals(0, user.getExternalLinkedAccounts().size());
+    }
+
 
 }

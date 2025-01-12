@@ -566,7 +566,10 @@ public class AccountLinkerController implements UserAuthentication {
                     externalLinkedAccount.getSubjectId(),
                     user.getEmail(),
                     verifyState.getIdpScoping()));
-            String clientRedirectUrl = isMobileFlow ? idpBaseRedirectUrl + "/client/mobile/external-account-linked-error" : spRedirectUrl + "/subject-already-linked?idp_scoping";
+            String encodedOtherMail = URLEncoder.encode(optionalUsers.stream().findFirst().get().getEmail(),Charset.defaultCharset());
+            String clientRedirectUrl = isMobileFlow ?
+                    idpBaseRedirectUrl + String.format("/client/mobile/verify-already-used?email=%s", encodedOtherMail) :
+                    spRedirectUrl + String.format("/subject-already-linked?idp_scoping?email=%s", encodedOtherMail);
             return ResponseEntity.status(HttpStatus.FOUND)
                     .location(URI.create(clientRedirectUrl))
                     .build();
