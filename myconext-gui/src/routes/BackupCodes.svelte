@@ -66,7 +66,7 @@
 
             td.value {
                 width: 57%;
-                font-weight: bold;
+                font-weight: 600;
             }
         }
     }

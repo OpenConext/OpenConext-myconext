@@ -51,7 +51,7 @@
 
             &.value {
                 width: 65%;
-                font-weight: bold;
+                font-weight: 600;
             }
         }
     }

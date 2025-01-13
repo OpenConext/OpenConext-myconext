@@ -55,7 +55,7 @@
     }
 
     label {
-        font-weight: bold;
+        font-weight: 600;
         margin: 33px 0 13px 0;
         display: inline-block;
     }

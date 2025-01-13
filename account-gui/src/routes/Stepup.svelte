@@ -86,19 +86,22 @@
 {/if}
 <div class="home">
     <div class="card">
-        {#if !showChooseOptions}
+        {#if showChooseOptions}
+            <VerifyChoice addBank={addBank}
+                          addEuropean={addEuropean}
+                          addInstitution={addInstitution}
+                          issuers={issuers}
+                          id={id}
+                          showInstitutionOption={!isExternalNameValidation}
+                          serviceName={serviceName}
+            />
+        {:else}
             <h2>{I18n.t("stepup.header")}</h2>
             <p class="info">{@html I18n.t("stepup.info", {name: DOMPurify.sanitize(serviceName)})}</p>
             <Verification explanation={explanation} verified={false}/>
             <Button href="/proceed" onClick={() => proceed(false)}
                     className="full"
                     label={I18n.t("stepup.link")}/>
-        {:else}
-            <VerifyChoice addBank={addBank}
-                          addEuropean={addEuropean}
-                          addInstitution={addInstitution}
-                          issuers={issuers}
-                          showInstitutionOption={!isExternalNameValidation}/>
         {/if}
     </div>
 </div>

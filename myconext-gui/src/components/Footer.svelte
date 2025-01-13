@@ -98,7 +98,7 @@
     }
 
     li.active a {
-        font-weight: bold;
+        font-weight: 600;
         color: black;
         cursor: not-allowed;
     }

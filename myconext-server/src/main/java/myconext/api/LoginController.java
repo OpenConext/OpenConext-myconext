@@ -1,27 +1,38 @@
 package myconext.api;
 
 import io.swagger.v3.oas.annotations.Hidden;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import myconext.exceptions.UserNotFoundException;
+import myconext.model.SamlAuthenticationRequest;
 import myconext.model.User;
+import myconext.repository.AuthenticationRequestRepository;
 import myconext.repository.UserRepository;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.web.context.SecurityContextRepository;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.util.UriComponents;
 
-import jakarta.servlet.http.Cookie;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
-import jakarta.servlet.http.HttpSession;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.URI;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 import static myconext.security.GuestIdpAuthenticationRequestFilter.REGISTER_MODUS_COOKIE_NAME;
 import static org.springframework.security.web.context.HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY;
@@ -30,12 +41,18 @@ import static org.springframework.security.web.context.HttpSessionSecurityContex
 @Hidden
 public class LoginController {
 
+    private static final Log LOG = LogFactory.getLog(LoginController.class);
+
     private final boolean secureCookie;
 
     private final Map<String, Object> config = new HashMap<>();
     private final UserRepository userRepository;
+    private final AuthenticationRequestRepository authenticationRequestRepository;
+    private final SecurityContextRepository securityContextRepository;
 
     public LoginController(UserRepository userRepository,
+                           AuthenticationRequestRepository authenticationRequestRepository,
+                           SecurityContextRepository securityContextRepository,
                            @Value("${base_path}") String basePath,
                            @Value("${base_domain}") String baseDomain,
                            @Value("${my_conext_url}") String myConextUrl,
@@ -59,6 +76,7 @@ public class LoginController {
                            @Value("${mobile_app_redirect}") String mobileAppRedirect,
                            @Value("${feature.id_verify}") boolean idVerify
     ) {
+        this.config.put("basePath", basePath);
         this.config.put("loginUrl", basePath + "/login");
         this.config.put("continueAfterLoginUrl", continueAfterLoginUrl);
         this.config.put("baseDomain", baseDomain);
@@ -83,6 +101,8 @@ public class LoginController {
         this.config.put("featureIdVerify", idVerify);
         this.secureCookie = secureCookie;
         this.userRepository = userRepository;
+        this.authenticationRequestRepository = authenticationRequestRepository;
+        this.securityContextRepository = securityContextRepository;
     }
 
     @GetMapping("/config")
@@ -123,6 +143,33 @@ public class LoginController {
         response.sendRedirect(redirectLocation);
     }
 
+    @GetMapping("/servicedesk/{id}")
+    @Hidden
+    public ResponseEntity redirectToSPServiceDeskHook(@PathVariable("id") String id,
+                                                      HttpServletRequest request,
+                                                      HttpServletResponse response) {
+        Optional<SamlAuthenticationRequest> optionalSamlAuthenticationRequest = authenticationRequestRepository.findByIdAndNotExpired(id);
+        if (!optionalSamlAuthenticationRequest.isPresent()) {
+            String idpBaseUrl = (String) this.config.get("idpBaseUrl");
+            return ResponseEntity.status(HttpStatus.FOUND).location(URI.create(idpBaseUrl + "/expired")).build();
+        }
+        SamlAuthenticationRequest samlAuthenticationRequest = optionalSamlAuthenticationRequest.get();
+        String userId = samlAuthenticationRequest.getUserId();
+        User user = userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException(userId));
+
+        UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(user, null,
+                user.getAuthorities());
+        SecurityContext context = SecurityContextHolder.getContext();
+        context.setAuthentication(authentication);
+        this.securityContextRepository.saveContext(SecurityContextHolder.getContext(), request, response);
+
+        String redirectUrl = String.format("%s/personal?servicedesk=start", this.config.get("spBaseUrl"));
+
+        LOG.info(String.format("User %s logged in to process servicedesk request. Redirecting to %s", user.getEmail(), redirectUrl));
+
+        return ResponseEntity.status(HttpStatus.FOUND).location(URI.create(redirectUrl)).build();
+    }
+
     @GetMapping("/doLogin")
     public void doLogin(@RequestParam(value = "lang", required = false, defaultValue = "en") String lang,
                         @RequestParam(value = "location", required = false) String location,
@@ -137,6 +184,9 @@ public class LoginController {
             response.setHeader("Set-Cookie", cookieValue);
         }
         String redirectLocation = StringUtils.hasText(location) ? location : this.config.get("eduIDLoginUrl") + "&lang=" + lang;
+
+        LOG.info(String.format("Redirecting to %s", redirectLocation));
+
         response.sendRedirect(redirectLocation);
     }
 
@@ -158,6 +208,9 @@ public class LoginController {
         request.getSession().invalidate();
         SecurityContextHolder.clearContext();
         String redirectLocation = String.format("%s/landing?%s", this.config.get("spBaseUrl"), param);
+
+        LOG.info(String.format("Logout and redirect to %s", redirectLocation));
+
         response.sendRedirect(redirectLocation);
     }
 
@@ -196,12 +249,13 @@ public class LoginController {
 
         UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(user, null,
                 user.getAuthorities());
-        SecurityContext context = SecurityContextHolder.getContext();
-        context.setAuthentication(authentication);
-        HttpSession session = request.getSession();
-        session.setAttribute(SPRING_SECURITY_CONTEXT_KEY, context);
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+        this.securityContextRepository.saveContext(SecurityContextHolder.getContext(), request, response);
 
         String redirectLocation = redirectUrl + String.format("?new=%s", newUser ? "true" : "false");
+
+        LOG.info(String.format("User %s create from institutionKey. Redirecting to %s", user.getEmail(), redirectLocation));
+
         response.sendRedirect(redirectLocation);
     }
 }

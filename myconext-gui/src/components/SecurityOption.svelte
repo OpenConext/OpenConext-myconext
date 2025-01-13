@@ -56,7 +56,7 @@
         }
 
         .login-info p {
-            font-weight: bold;
+            font-weight: 600;
             font-size: 18px;
             color: var(--color-secondary-grey);
             &.active {

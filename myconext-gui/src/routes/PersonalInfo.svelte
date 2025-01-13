@@ -49,6 +49,7 @@
 
     let showManageVerifiedInformation = false;
     let showModal = false;
+    let serviceDeskStart = false;
     let showIdinOptions = false;
     let showDeleteInstitutionModal = false;
     let showNewInstitutionModal = false;
@@ -220,6 +221,7 @@
         const retry = urlSearchParams.get("retry");
         const verify = urlSearchParams.get("verify");
         const linkedAccountIdentifier = urlSearchParams.get("institution");
+        const showServiceDeskStart = urlSearchParams.get("servicedesk");
 
         showManageVerifiedInformation = window.location.pathname.indexOf("manage") > -1;
 
@@ -250,6 +252,11 @@
         }
         if ($config.featureIdVerify && isEmpty(issuers)) {
             iDINIssuers().then(res => issuers = res);
+        }
+        if (!isEmpty(showServiceDeskStart)) {
+            serviceDeskStart = true;
+            showIdinOptions = true;
+            showModal = true;
         }
     });
 
@@ -628,6 +635,7 @@
                       addEuropean={addEuropean}
                       issuers={issuers}
                       showIdinOptions={showIdinOptions}
+                      showServiceDesk={serviceDeskStart}
                       cancel={() => resetModalsAndQueryParams()}/>
     </Modal>
 {/if}

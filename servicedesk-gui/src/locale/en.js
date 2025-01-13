@@ -10,12 +10,11 @@ const en = {
     },
     landing: {
         header: {
-            title: "Manage access to your applications",
+            title: "ServiceDesk",
             login: "Log in",
-            sup: "SURFconext Invite is by invitation only.",
+            sup: "EduID ServiceDesk is by invitation only.",
         },
         works: "How does it work?",
-        adminFunction: "admin function",
         info: [
             //Arrays of titles and info blocks and if a function is an admin function
             ["Invites", "<p>SURF invites institution managers who can create roles for their applications.</p>" +

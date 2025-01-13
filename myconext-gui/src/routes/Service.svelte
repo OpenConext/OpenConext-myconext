@@ -84,7 +84,7 @@
             padding: 15px 10px;
 
             &.details {
-                font-weight: bold;
+                font-weight: 600;
 
                 div.content {
                     display: flex;
@@ -113,14 +113,14 @@
 
             &.value {
                 width: 62%;
-                font-weight: bold;
+                font-weight: 600;
 
                 ul {
                     list-style: disc outside none;
                     margin-left: 18px;
 
                     li {
-                        font-weight: bold;
+                        font-weight: 600;
 
                         &:not(:last-child) {
                             margin-bottom: 5px;

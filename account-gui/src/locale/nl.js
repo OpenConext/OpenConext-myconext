@@ -388,8 +388,9 @@ I18n.translations.nl = {
                 verifyBank: "Verifïeer met een Nederlandse ban app",
                 selectBank: "Selecteer je bank",
                 verifyEuropeanId: "Verifïeer met een Europses ID",
-                supportEuropean: "We ondersteunen de meederhead van de de nationalie digitale ID's",
+                supportEuropean: "We ondersteunen de meederheid van de de nationalie digitale ID's",
                 useEuropean: "gebruik een Europese ID",
+                cantUse: "Ik kan geen van bovenstaande manieren gebruiken",
                 help: "Als je geen van deze opties kan gebruiken, bezoek dan onze <a href='https://eduid.nl/help' target='_blank' rel='noreferrer'>support pagina's</a>"
             },
             bank: {
@@ -412,5 +413,15 @@ I18n.translations.nl = {
             idin: "Idin",
             studielink: "Studielink"
         }
+    },
+    serviceDesk: {
+        confirmIdentityHeader: "Bevestig wie je bent met je identiteitsbewijs",
+        confirmIdentity: "Je kunt je identiteit ook bevestigen via een van onze eduID Service Desks.",
+        stepsHeader: "Volg deze stappen:",
+        step1: "Vul je volledige naam in zoals die op je identiteitsbewijs staat (voornamen en achternaam).",
+        step2: "Genereer een persoonlijke controlecode.",
+        step3: "Laat je controlecode en identiteitsbewijs zien aan een eduID Service Desk. Die bevestigt zo je identiteit.",
+        redirectWarning: "We sturen je door naar een andere website om je naam in te vullen. Je kunt daarna nog niet gelijk inloggen bij <strong>{{service}}</strong>, maar je moet eerst contact opnemen met een eduID Service Desk.",
+        next: "Naar gegevens invullen"
     }
 };

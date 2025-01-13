@@ -143,7 +143,7 @@
             }
 
             &.value {
-                font-weight: bold;
+                font-weight: 600;
             }
 
             &.logo {

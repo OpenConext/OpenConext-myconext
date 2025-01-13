@@ -201,7 +201,7 @@
     <div class="inner-container">
         <h2>{I18n.t("security.title")}</h2>
         <p class="info">{I18n.t("security.subTitle")}</p>
-        {#if !$user.loginOptions.includes("useApp")}
+        {#if !$user.loginOptions.includes("useApp") || !$user.registration?.notificationType }
             <div class="banner">
                 <span class="verified-badge">{@html verifiedSvg}</span>
                 <p class="banner-info">{I18n.t("security.banner")}</p>
@@ -259,7 +259,7 @@
             {/each}
         {/if}
 
-        {#if !$user.loginOptions.includes("useApp")}
+        {#if !$user.loginOptions.includes("useApp") || !$user.registration?.notificationType}
             <h4 class="info">{I18n.t("security.recommendedOptions")}</h4>
             <div class="tiqr-app">
                 <div class="information">

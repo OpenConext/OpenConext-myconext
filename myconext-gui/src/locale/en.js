@@ -562,6 +562,7 @@ I18n.translations.en = {
                 verifyEuropeanId: "Verify with a European ID",
                 supportEuropean: "We accept the ID's of Austria, Belgium, Croatia, Czech Republic, Denmark, Estonia, Germany, Italy, Latvia, Liechtenstein, Lithuania, Luxembourg, Malta, Poland, Portugal, Slovakia, Slovenia, Spain and Sweden.",
                 useEuropean: "Use a European ID",
+                cantUse: "I can't use any of the above methods",
                 help: "If you can't use any of the these methods, please visit our <a href='https://eduid.nl/help' target='_blank' rel='noreferrer'>support pages</a>"
             },
             bank: {
@@ -576,6 +577,44 @@ I18n.translations.en = {
             eherkenning: "eIDAS",
             idin: "Idin",
             studielink: "Studielink"
+        },
+        serviceDesk: {
+            confirmIdentityHeader: "You need to manually confirm your identity",
+            confirmIdentity: "You can also confirm your identity at one of our eduID Service Desks.",
+            stepsHeader: "Follow these steps:",
+            step1: "Enter your full name as it appears on your ID (first and last name).",
+            step2: "Generate a personal verification code.",
+            step3: "Present your code and ID to an eduID Service Desk. They will verify your identity manually.",
+            acceptedIds: "Accepted IDs:",
+            passports: "Passports",
+            eea: "EEA<sup>*</sup> ID cards",
+            driverLicense: "Dutch driver's license",
+            residencePermit: "Dutch residence permits",
+            note: "Please note: copies, public transport passes and student cards are not valid ID's",
+            eeaNote: "<sup>*</sup>EEA: all EU member states plus Liechtenstein, Norway and Iceland",
+            next: "Enter your details",
+            idCard: {
+                information: "Vul je gegevens in zoals die op je identiteitsbewijs staan.",
+                lastName: "Achternaam",
+                firstName: "Voornamen",
+                dateOfBirth: "Geboortedatum",
+                generateControlCode: "Genereer controlcode"
+            },
+            controlCode: {
+                yourControlCode: "Je controlecode",
+                info: "Je krijgt ook een e-mail met deze code. De code is 14 dagen geldig en is bedoeld voor:",
+                typoPrefix: "Typfout gemaakt? ",
+                typoLink: "Pas gegevens aan",
+                todo: "Wat moet je nu doen?",
+                todoDetails: "Maak een afspraak met een eduID Service Desk (digitaal of op locatie). Laat tijdens je afspraak je controlecode en identiteisbewijs zien.",
+                serviceDesks: "Bekijk eduID Service Desks",
+                serviceDesksLocations: "https://wiki.surfnet.nl/display/EDUID/eduID+Service+Desk",
+                back: "Terug naar overzicht",
+                rethink: "Wil je toch op een andere manier bewijzen wie je bent? Verwijder dan eerst je controlecode.",
+                deleteControlCode: "Verwijder controlecode",
+                banner: "Bevestig je identiteit bij een eduID Service Desk. Dit doe je door je identiteitsbewijs en controlecode te laten zien.",
+                showCode: "Toon code"
+            }
         }
     }
 };

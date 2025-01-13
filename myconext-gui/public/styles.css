@@ -160,3 +160,7 @@ table {
     }
 
 }
+
+strong {
+    font-weight: 600;
+}

@@ -150,7 +150,7 @@
         }
 
         span.note {
-            font-weight: bold;
+            font-weight: 600;
         }
 
     }

@@ -124,6 +124,7 @@ public class ExternalLinkedAccount implements Serializable, ProvisionedLinkedAcc
             case eherkenning -> StringUtils.hasText(firstName) && StringUtils.hasText(preferredLastName);
             case studielink ->
                     StringUtils.hasText(firstName) && StringUtils.hasText(legalLastName) && !Verification.Ongeverifieerd.equals(verification);
+            case serviceDesk -> StringUtils.hasText(firstName) && StringUtils.hasText(legalLastName);
         };
     }
 

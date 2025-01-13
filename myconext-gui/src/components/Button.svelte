@@ -18,6 +18,7 @@
     export let icon = undefined;
     export let custom = false;
     export let inline = undefined;
+    export let fullSize = false;
 
     const handleLinkClick = e => e.key === " " && e.target.click();
 
@@ -117,6 +118,12 @@
         min-width: 240px;
         max-width: 240px;
         width: 240px;
+        padding: 8px 0;
+    }
+    .button.full-size {
+        min-width: 100%;
+        max-width: 100%;
+        width: 100%;
         padding: 8px 0;
     }
 
@@ -233,6 +240,7 @@
        class:custom={custom}
        class:large={large}
        class:larger={larger}
+       class:full-size={fullSize}
        class:disabled={disabled}
        on:click|preventDefault|stopPropagation={() => !disabled && onClick()}
        on:keydown={handleLinkClick}>

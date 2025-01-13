@@ -10,16 +10,20 @@
     import {logo} from "./banks";
     import alertSvg from "../icons/alert-circle.svg?raw";
     import Spinner from "../components/Spinner.svelte";
+    import ServiceDesk from "./ServiceDesk.svelte";
 
+    export let id;
     export let addInstitution;
     export let addBank;
     export let addEuropean;
     export let issuers = [];
     export let showInstitutionOption = true;
+    export let serviceName;
 
     let showOtherOptions = false;
     let showBankOptions = false;
     let busyProcessing = false;
+    let showServiceDesk = false;
 
     const proceed = action => {
         busyProcessing = true;
@@ -105,6 +109,7 @@
         display: flex;
         padding: 15px;
         cursor: pointer;
+        text-align: center;
 
         &:hover {
             background-color: var(--color-background);
@@ -157,23 +162,23 @@
     <Spinner/>
 {/if}
 <div class="account-link-mod">
-    {#if (!showBankOptions || busyProcessing)}
+    {#if !showServiceDesk && (!showBankOptions || busyProcessing)}
         <div class="info-container">
             <h2 class="header">{I18n.t("verify.modal.info.verify")}</h2>
         </div>
         {#if showInstitutionOption}
-        <div class="choice-container">
-            <div class="choice">
-                <h4>{I18n.t("verify.modal.info.educationalInstitution")}</h4>
-                {@html studentIcon}
+            <div class="choice-container">
+                <div class="choice">
+                    <h4>{I18n.t("verify.modal.info.educationalInstitution")}</h4>
+                    {@html studentIcon}
+                </div>
+                <div class="button-container">
+                    <Button label={I18n.t("verify.modal.info.selectInstitution")}
+                            large={true}
+                            disabled={busyProcessing}
+                            onClick={() => proceed(addInstitution)}/>
+                </div>
             </div>
-            <div class="button-container">
-                <Button label={I18n.t("verify.modal.info.selectInstitution")}
-                        large={true}
-                        disabled={busyProcessing}
-                        onClick={() => proceed(addInstitution)}/>
-            </div>
-        </div>
         {/if}
         {#if !showOtherOptions && showInstitutionOption}
             <div class="choice-container other-options" on:click={() => showOtherOptions = !showOtherOptions}>
@@ -213,12 +218,12 @@
                             onClick={() => proceed(addEuropean)}/>
                 </div>
             </div>
-            <div class="disclaimer">
-                {@html I18n.t("verify.modal.info.help")}
+            <div class="choice-container other-options" on:click={() => showServiceDesk = !showServiceDesk}>
+                <p>{I18n.t("verify.modal.info.cantUse")}</p>
             </div>
         {/if}
     {/if}
-    {#if showBankOptions && !busyProcessing}
+    {#if showBankOptions && !busyProcessing && !showServiceDesk}
         <div class="info-container">
             <div class="header-container">
             <span class="back" on:click={() => showBankOptions = !showBankOptions}>
@@ -238,7 +243,7 @@
         </div>
     {/if}
 </div>
-{#if showBankOptions && !busyProcessing}
+{#if showBankOptions && !busyProcessing && !showServiceDesk}
     <div class="alert">
         {@html alertSvg}
         <span>{I18n.t("verify.modal.bank.anotherMethodPrefix")}
@@ -248,3 +253,10 @@
         </span>
     </div>
 {/if}
+{#if !busyProcessing && showServiceDesk}
+    <ServiceDesk id={id}
+                 serviceName={serviceName}
+                 toggleView={() => showServiceDesk = false}
+                 />
+{/if}
+

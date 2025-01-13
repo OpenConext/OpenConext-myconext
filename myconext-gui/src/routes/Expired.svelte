@@ -11,7 +11,7 @@
         margin: 16px 0;
         color: var(--color-primary-red);
         font-size: 32px;
-        font-weight: bold;
+        font-weight: 600;
 
     }
 

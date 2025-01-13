@@ -29,7 +29,7 @@
         h1 {
             color: var(--color-primary-red);
             font-size: 32px;
-            font-weight: bold;
+            font-weight: 600;
             margin: 22px 0;
         }
 

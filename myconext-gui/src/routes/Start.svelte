@@ -95,7 +95,7 @@
             margin-bottom: 36px;
 
             span.info-bold {
-                font-weight: bold;
+                font-weight: 600;
             }
         }
 

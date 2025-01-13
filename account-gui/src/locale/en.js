@@ -389,6 +389,7 @@ I18n.translations.en = {
                 verifyEuropeanId: "Verify with a European ID",
                 supportEuropean: "We support the majority of National digital IDs",
                 useEuropean: "Use a European ID",
+                cantUse: "I can't use any of the above methods",
                 help: "If you can't use any of the these methods, please visit our <a href='https://eduid.nl/help' target='_blank' rel='noreferrer'>support pages</a>"
             },
             bank: {
@@ -412,5 +413,15 @@ I18n.translations.en = {
             idin: "Idin",
             studielink: "Studielink"
         }
+    },
+    serviceDesk: {
+        confirmIdentityHeader: "You need to manually confirm your identity",
+        confirmIdentity: "You must confirm your identity at one of our eduID Service Desks.",
+        stepsHeader: "Follow these steps:",
+        step1: "Enter your full name as it appears on your ID (first and last name).",
+        step2: "Generate a personal verification code.",
+        step3: "Present your code and ID to an eduID Service Desk. They will verify your identity manually.",
+        redirectWarning: "We will redirect you to another website to enter your name. You won’t be able to log in to <strong>{{service}}</strong> immediately afterward; you will first need to contact a eduID Service Desk.",
+        next: "Open website to enter your name"
     }
 };

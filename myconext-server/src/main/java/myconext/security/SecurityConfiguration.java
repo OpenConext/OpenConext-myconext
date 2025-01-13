@@ -58,13 +58,20 @@ public class SecurityConfiguration {
 
     private static final Log LOG = LogFactory.getLog(SecurityConfiguration.class);
 
+    @Bean
+    public SecurityContextRepository securityContextRepository() {
+        return new DelegatingSecurityContextRepository(
+                new RequestAttributeSecurityContextRepository(),
+                new HttpSessionSecurityContextRepository()
+        );
+    }
+
     @Configuration
     @Order(1)
     @EnableConfigurationProperties(IdentityProviderMetaData.class)
     public static class SamlSecurity {
 
         private final GuestIdpAuthenticationRequestFilter guestIdpAuthenticationRequestFilter;
-        private final SecurityContextRepository securityContextRepository;
 
         public SamlSecurity(@Value("${private_key_path}") Resource privateKeyPath,
                             @Value("${certificate_path}") Resource certificatePath,
@@ -95,7 +102,8 @@ public class SecurityConfiguration {
                             MailBox mailBox,
                             Manage serviceProviderResolver,
                             IdentityProviderMetaData identityProviderMetaData,
-                            CookieValueEncoder cookieValueEncoder) {
+                            CookieValueEncoder cookieValueEncoder,
+                            SecurityContextRepository securityContextRepository) {
             ACR.initialize(
                     linkedInstitution,
                     validateNames,
@@ -117,7 +125,6 @@ public class SecurityConfiguration {
                     serviceProviders,
                     requiresSignedAuthnRequest
             );
-            this.securityContextRepository = securityContextRepository();
             this.guestIdpAuthenticationRequestFilter = new GuestIdpAuthenticationRequestFilter(
                     redirectUrl,
                     serviceProviderResolver,
@@ -143,15 +150,8 @@ public class SecurityConfiguration {
             );
         }
 
-        private SecurityContextRepository securityContextRepository() {
-            return new DelegatingSecurityContextRepository(
-                    new RequestAttributeSecurityContextRepository(),
-                    new HttpSessionSecurityContextRepository()
-            );
-        }
-
         @Bean
-        public SecurityFilterChain samlSecurityFilterChain(HttpSecurity http) throws Exception {
+        public SecurityFilterChain samlSecurityFilterChain(HttpSecurity http, SecurityContextRepository securityContextRepository) throws Exception {
             http
                     .securityMatcher("/saml/guest-idp/**")
                     .csrf(csrf -> csrf.disable())
@@ -162,7 +162,7 @@ public class SecurityConfiguration {
                             .anyRequest().hasRole("GUEST"))
                     //We need a reference to the securityContextRepository to update the authentication after an InstitutionAdmin invitation accept
                     .securityContext(securityContextConfigurer ->
-                            securityContextConfigurer.securityContextRepository(this.securityContextRepository));
+                            securityContextConfigurer.securityContextRepository(securityContextRepository));
 
             return http.build();
         }

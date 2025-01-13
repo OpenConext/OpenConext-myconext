@@ -71,7 +71,7 @@
 
     td.value {
         width: 70%;
-        font-weight: bold;
+        font-weight: 600;
         padding: 20px;
     }
 

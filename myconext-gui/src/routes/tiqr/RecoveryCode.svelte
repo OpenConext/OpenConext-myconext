@@ -82,8 +82,8 @@
 
         span {
             margin: auto;
-            font-size: 18px;
-            font-weight: bold;
+            font-size: 20px;
+            font-weight: 600;
         }
 
     }
