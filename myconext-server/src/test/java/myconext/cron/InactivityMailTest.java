@@ -17,6 +17,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import static myconext.cron.InactivityMail.ONE_DAY_IN_MILLIS;
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
@@ -66,6 +67,30 @@ public class InactivityMailTest extends AbstractMailBoxTest {
 
     @SneakyThrows
     @Test
+    public void mailInactivityFirstRun() {
+        //See https://github.com/OpenConext/OpenConext-myconext/issues/656
+        User user = new User();
+        long yesterday = System.currentTimeMillis() - ONE_DAY_IN_MILLIS;
+        user.setLastLogin(yesterday - (UserInactivity.WEEK_1_BEFORE_5_YEARS.getInactivityDays() * ONE_DAY_IN_MILLIS));
+        user.setEmail(UserInactivity.WEEK_1_BEFORE_5_YEARS.name());
+        //Explicit set userInactivity to null for self-explanation of the test code
+        user.setUserInactivity(null);
+        userRepository.save(user);
+
+        inactivityMail.mailInactiveUsers();
+
+        List<MimeMessage> mimeMessages = mailMessages();
+        assertEquals(1, mimeMessages.size());
+        User userFromDB = userRepository.findOneUserByEmail(UserInactivity.WEEK_1_BEFORE_5_YEARS.name());
+        assertEquals(UserInactivity.WEEK_1_BEFORE_5_YEARS, userFromDB.getUserInactivity());
+        //Idempotency check
+        greenMail.purgeEmailFromAllMailboxes();
+        inactivityMail.mailInactiveUsers();
+        assertThrows(ConditionTimeoutException.class, this::mailMessages);
+    }
+
+    @SneakyThrows
+    @Test
     public void mailInactivityMailDutch() {
         inactivityUserSeed("nl");
 
@@ -88,11 +113,10 @@ public class InactivityMailTest extends AbstractMailBoxTest {
     }
 
     private void inactivityUserSeed(String preferredLanguage) {
-        long oneDayInMillis = 24 * 60 * 60 * 1000L;
-        long yesterday = System.currentTimeMillis() - oneDayInMillis;
+        long yesterday = System.currentTimeMillis() - ONE_DAY_IN_MILLIS;
         Stream.of(UserInactivity.values()).forEach(userInactivity -> {
             User user = new User();
-            user.setLastLogin(yesterday - (userInactivity.getInactivityDays() * oneDayInMillis));
+            user.setLastLogin(yesterday - (userInactivity.getInactivityDays() * ONE_DAY_IN_MILLIS));
             user.setEmail(userInactivity.name());
             user.setPreferredLanguage(preferredLanguage);
             user.setUserInactivity(userInactivity.getPreviousUserInactivity());
@@ -100,7 +124,7 @@ public class InactivityMailTest extends AbstractMailBoxTest {
         });
         //And one extra User who is to be deleted
         User user = new User();
-        user.setLastLogin(yesterday - (((5L * 365) + 5) * oneDayInMillis));
+        user.setLastLogin(yesterday - (((5L * 365) + 5) * ONE_DAY_IN_MILLIS));
         user.setEmail(DELETED_EMAIL);
         user.setUserInactivity(UserInactivity.WEEK_1_BEFORE_5_YEARS);
         userRepository.save(user);

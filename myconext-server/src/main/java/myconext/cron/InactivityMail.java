@@ -21,6 +21,8 @@ import static myconext.model.UserInactivity.*;
 @Component
 public class InactivityMail {
 
+    public static final long ONE_DAY_IN_MILLIS = 24 * 60 * 60 * 1000L;
+
     private static final Log LOG = LogFactory.getLog(InactivityMail.class);
 
     private final MailBox mailBox;
@@ -50,7 +52,9 @@ public class InactivityMail {
             return;
         }
         try {
-            Stream.of(UserInactivity.values()).forEach(this::doMailInactiveUsers);
+            //We need to process the users in reverse order to prevent multiple emails to one user in the initial run
+            List<UserInactivity> userInactivities = Stream.of(values()).toList().reversed();
+            userInactivities.forEach(this::doMailInactiveUsers);
             this.doDeleteInactiveUsers();
         } catch (Exception e) {
             //swallow exception as the scheduling stops then
@@ -60,15 +64,15 @@ public class InactivityMail {
 
     private void doMailInactiveUsers(UserInactivity userInactivity) {
         long nowInMillis = System.currentTimeMillis();
-        long oneDayInMillis = 24 * 60 * 60 * 1000L;
-        long fiveYearsInMillis = 5 * 365 * oneDayInMillis;
+        long fiveYearsInMillis = 5 * 365 * ONE_DAY_IN_MILLIS;
 
-        long lastLoginBefore = nowInMillis - (oneDayInMillis * userInactivity.getInactivityDays());
-        List<User> users = userRepository.findByLastLoginBeforeAndUserInactivity(lastLoginBefore, userInactivity.getPreviousUserInactivity());
+        long lastLoginBefore = nowInMillis - (ONE_DAY_IN_MILLIS * userInactivity.getInactivityDays());
+        List<User> users = userRepository.findByLastLoginBeforeAndUserInactivityIn(lastLoginBefore,
+                this.userInactivitiesWithNullElement(userInactivity.getPreviousUserInactivity()));
 
         Map<String, String> localeVariables = new HashMap<>();
         //This is the future date when the user will be deleted based on the inactivityDays of the userInactivity
-        Date date = new Date(nowInMillis + (fiveYearsInMillis - (oneDayInMillis * userInactivity.getInactivityDays())));
+        Date date = new Date(nowInMillis + (fiveYearsInMillis - (ONE_DAY_IN_MILLIS * userInactivity.getInactivityDays())));
         localeVariables.put("inactivity_period_en", userInactivity.getInactivityPeriodEn());
         localeVariables.put("inactivity_period_nl", userInactivity.getInactivityPeriodNl());
         localeVariables.put("deletion_period_en", userInactivity.getDeletionPeriodEn());
@@ -90,10 +94,18 @@ public class InactivityMail {
         long oneDayInMillis = 24 * 60 * 60 * 1000L;
 
         long lastLoginBefore = nowInMillis - (oneDayInMillis * 5L * 365);
-        List<User> users = userRepository.findByLastLoginBeforeAndUserInactivity(lastLoginBefore, WEEK_1_BEFORE_5_YEARS);
+        List<User> users = userRepository.findByLastLoginBeforeAndUserInactivityIn(lastLoginBefore, List.of(WEEK_1_BEFORE_5_YEARS));
         userRepository.deleteAll(users);
         LOG.info(String.format("Deleted %s users (%s) who has been inactive for 5 years in for %s ms",
                 users.size(), users.stream().map(User::getEmail).collect(Collectors.joining(", ")),
                 System.currentTimeMillis() - nowInMillis));
+    }
+
+    private List<UserInactivity> userInactivitiesWithNullElement(UserInactivity userInactivity) {
+        //Can't use List.of as this does not permit null values
+        List<UserInactivity> userInactivities = new ArrayList<>();
+        userInactivities.add(userInactivity);
+        userInactivities.add(null);
+        return userInactivities;
     }
 }
