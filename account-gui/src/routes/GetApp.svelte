@@ -55,21 +55,21 @@
     <Spinner/>
 {/if}
 
-<h2 class="header">{I18n.t("getApp.header")}</h2>
-<p class="explanation">{@html I18n.t("getApp.info")}</p>
+<h2 class="header">{I18n.t("GetApp.Header.COPY")}</h2>
+<p class="explanation">{@html I18n.t("GetApp.Info.COPY")}</p>
 <div class="store-icons">
-    <a class="google" href={I18n.t("getApp.google")} target="_blank">
+    <a class="google" href={I18n.t("GetApp.Google.COPY")} target="_blank">
         {@html googlePlay}
     </a>
-    <a class="apple" href={I18n.t("getApp.apple")} target="_blank">
+    <a class="apple" href={I18n.t("GetApp.Apple.COPY")} target="_blank">
         {@html appStore}
     </a>
 </div>
-<p class="explanation">{@html I18n.t("getApp.after")}</p>
+<p class="explanation">{@html I18n.t("GetApp.After.COPY")}</p>
 <ButtonContainer>
-    <Button className="cancel" href={I18n.t("getApp.back")} onClick={back}
-            label={I18n.t("getApp.back")}/>
-    <Button href={I18n.t("getApp.next")} onClick={next}
-            label={I18n.t("getApp.next")}/>
+    <Button className="cancel" href={I18n.t("GetApp.Back.COPY")} onClick={back}
+            label={I18n.t("GetApp.Back.COPY")}/>
+    <Button href={I18n.t("GetApp.Next.COPY")} onClick={next}
+            label={I18n.t("GetApp.Next.COPY")}/>
 </ButtonContainer>
 

@@ -132,23 +132,23 @@
 {#if showSpinner}
     <Spinner/>
 {/if}
-<h2 class="header">{I18n.t("login.header")}</h2>
+<h2 class="header">{I18n.t("Login.Header.COPY")}</h2>
 {#if serviceName}
-    <h2 class="top">{I18n.t("login.headerSubTitle")}<span>{serviceName}</span></h2>
+    <h2 class="top">{I18n.t("Login.HeaderSubTitle.COPY")}<span>{serviceName}</span></h2>
 {/if}
 {#if $user.knownUser}
     <div class="known-user">
         <LoginOption icon={userIcon} label={$user.knownUser} action={nextStep} index={1} preferred={true}/>
     </div>
     <div class="other-account">
-        <LoginOption icon={accountIcon} label={I18n.t("login.useOtherAccount")} action={otherAccount} index={2}/>
+        <LoginOption icon={accountIcon} label={I18n.t("Login.UseOtherAccount.COPY")} action={otherAccount} index={2}/>
     </div>
 {:else}
     <input type="email"
            autocomplete="username"
            id="email"
            class={`${emailNotFound ? 'error' : ''}`}
-           placeholder={I18n.t("login.emailPlaceholder")}
+           placeholder={I18n.t("LinkFromInstitution.EmailPlaceholder.COPY")}
            use:init
            on:input={handleInput}
            value={$user.email}
@@ -159,17 +159,17 @@
     <div class="error">
         <span class="svg">{@html critical}</span>
         <div>
-            <span>{I18n.t("login.emailNotFound1")}</span>
-            <span>{I18n.t("login.emailNotFound2")}</span>
+            <span>{I18n.t("Login.EmailNotFound1.COPY")}</span>
+            <span>{I18n.t("LinkFromInstitution.EmailInUse2.COPY")}</span>
             <a href={`/request/${id}`}
-               use:link>{I18n.t("login.emailNotFound3")}</a>
+               use:link>{I18n.t("Login.EmailNotFound3.COPY")}</a>
         </div>
     </div>
 {/if}
 
 <Button href="/next"
         disabled={showSpinner || !allowedNext($user.email)}
-        label={I18n.t("login.next")}
+        label={I18n.t("GetApp.Next.COPY")}
         className="full"
         onClick={nextStep}/>
 

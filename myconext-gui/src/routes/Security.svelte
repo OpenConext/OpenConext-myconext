@@ -25,7 +25,7 @@
         const urlSearchParams = new URLSearchParams(window.location.search);
         const newUser = urlSearchParams.get("new");
         if (newUser) {
-            flash.setValue(I18n.t(`createFromInstitution.welcome${newUser === "false" ? "Existing" : ""}`), 3750);
+            flash.setValue(I18n.t(`CreateFromInstitution.Welcome.COPY${newUser === "false" ? "Existing" : ""}`), 3750);
         }
 
     });
@@ -199,7 +199,7 @@
 </style>
 <div class="security">
     <div class="inner-container">
-        <h2>{I18n.t("security.title")}</h2>
+        <h2>{I18n.t("Security.Title.COPY")}</h2>
         <p class="info">{I18n.t("security.subTitle")}</p>
         {#if !$user.loginOptions.includes("useApp")}
             <div class="banner">
@@ -214,7 +214,7 @@
             <SecurityOption action={() => showAppDetails = !showAppDetails}
                             icon={hasApp}
                             label={I18n.t("security.options.app")}
-                            subLabel={I18n.t("security.tiqr.activated", {
+                            subLabel={I18n.t("Security.Tiqr.Activated.COPY", {
                                 date: dateFromEpoch($user.registration.created, false)
                             })}
                             hasSubContent={true}
@@ -237,14 +237,14 @@
 
         <SecurityOption action={() => navigate("/edit-email")}
                         icon={magicLinkIcon}
-                        label={I18n.t("security.magicLinkOption")}
+                        label={I18n.t("Security.UseMagicLink.COPY")}
                         subLabel={$user.email}
                         active={true}/>
 
         {#if $user.usePassword}
             <SecurityOption action={() => navigate("/reset-password-link")}
                             icon={passwordIcon}
-                            label={I18n.t("security.options.password")}
+                            label={I18n.t("Security.ChangePassword.COPY")}
                             subLabel="*****************"
                             active={true}/>
         {/if}
@@ -254,7 +254,7 @@
                 <SecurityOption action={credentialsDetails(credential)}
                                 icon={webAuthnIcon}
                                 label={I18n.t("security.options.passkey")}
-                                subLabel={credential.name}
+                                subLabel={Credential.Name.COPY}
                                 active={true}/>
             {/each}
         {/if}
@@ -263,9 +263,9 @@
             <h4 class="info">{I18n.t("security.recommendedOptions")}</h4>
             <div class="tiqr-app">
                 <div class="information">
-                    <h4 class="grey">{I18n.t("security.tiqr.title")}</h4>
-                    <p>{@html I18n.t("security.tiqr.info")}</p>
-                    <Button label={I18n.t("security.tiqr.fetch")} large={true} onClick={() => navigate("/get-app")}/>
+                    <h4 class="grey">{I18n.t("Security.Tiqr.Title.COPY")}</h4>
+                    <p>{@html I18n.t("Security.Tiqr.Info.COPY")}</p>
+                    <Button label={I18n.t("Security.Tiqr.Fetch.COPY")} large={true} onClick={() => navigate("/get-app")}/>
                 </div>
                 <div class="image">
                     {@html getApp}
@@ -273,11 +273,11 @@
             </div>
             {/if}
 
-        <h4 class="info">{I18n.t("security.otherMethods")}</h4>
+        <h4 class="info">{I18n.t("Security.OtherMethods.COPY")}</h4>
         {#if !$user.usePassword}
             <SecurityOption action={() => navigate("/reset-password-link")}
                             icon={passwordIcon}
-                            label={I18n.t("security.options.passwordAdd")}
+                            label={I18n.t("Security.AddPassword.COPY")}
                             active={false}/>
         {/if}
             {#if $config.featureWebAuthn }
@@ -291,7 +291,7 @@
             <div class="recovery-options">
                 <SecurityOption action={() => navigate("/backup-codes")}
                                 icon={mobilePhoneIcon}
-                                label={I18n.t("security.tiqr.sms")}
+                                label={I18n.t("Security.Tiqr.Sms.COPY")}
                                 subLabel={I18n.t(`security.tiqr.${$user.registration.recoveryCode ? "getSmsInfo" : "smsInfo"}`
                                 , {phone: `** ** *** ${$user.registration.phoneNumber}`})}
                                 active={!$user.registration.recoveryCode}/>

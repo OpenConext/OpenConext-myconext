@@ -164,11 +164,11 @@
         {#if showInstitutionOption}
         <div class="choice-container">
             <div class="choice">
-                <h4>{I18n.t("verify.modal.info.educationalInstitution")}</h4>
+                <h4>{I18n.t("VerifyIdentity.VerifyViaDutchInstitution.Title.COPY")}</h4>
                 {@html studentIcon}
             </div>
             <div class="button-container">
-                <Button label={I18n.t("verify.modal.info.selectInstitution")}
+                <Button label={I18n.t("VerifyIdentity.VerifyViaDutchInstitution.Button.COPY")}
                         large={true}
                         disabled={busyProcessing}
                         onClick={() => proceed(addInstitution)}/>
@@ -183,11 +183,11 @@
         {#if showOtherOptions || !showInstitutionOption}
             <div class="choice-container">
                 <div class="choice">
-                    <h4>{I18n.t("verify.modal.info.verifyBank")}</h4>
+                    <h4>{I18n.t("VerifyIdentity.VerifyWithBankApp.Title.COPY")}</h4>
                     {@html bankIcon}
                 </div>
                 <div class="button-container">
-                    <Button label={I18n.t("verify.modal.info.selectBank")}
+                    <Button label={I18n.t("VerifyIdentity.VerifyWithBankApp.Button.COPY")}
                             icon={idinIcon}
                             custom={true}
                             disabled={busyProcessing}
@@ -198,14 +198,14 @@
             </div>
             <div class="choice-container">
                 <div class="choice">
-                    <h4>{I18n.t("verify.modal.info.verifyEuropeanId")}</h4>
+                    <h4>{I18n.t("VerifyIdentity.VerifyWithAEuropianId.Title.COPY")}</h4>
                     {@html europeanSvg}
                 </div>
                 <p class="support">
                     {I18n.t("verify.modal.info.supportEuropean")}
                 </p>
                 <div class="button-container">
-                    <Button label={I18n.t("verify.modal.info.useEuropean")}
+                    <Button label={I18n.t("VerifyIdentity.VerifyWithAEuropianId.Button.COPY")}
                             icon={eIDASIcon}
                             custom={true}
                             disabled={busyProcessing}
@@ -224,7 +224,7 @@
             <span class="back" on:click={() => showBankOptions = !showBankOptions}>
                 {@html arrowLeftIcon}
             </span>
-                <h2 class="header">{I18n.t("verify.modal.bank.select")}</h2>
+                <h2 class="header">{I18n.t("VerifyIdentity.VerifyWithBankApp.Button.COPY")}</h2>
             </div>
             <p>{@html I18n.t("verify.modal.bank.disclaimer")}</p>
         </div>
@@ -243,7 +243,7 @@
         {@html alertSvg}
         <span>{I18n.t("verify.modal.bank.anotherMethodPrefix")}
             <a href="/#" on:click|preventDefault|stopPropagation={() => showBankOptions = !showBankOptions}>
-                {I18n.t("verify.modal.bank.anotherMethodPostfix")}
+                {I18n.t("SelectYourBank.BankNotInList.HighlightedPart.COPY")}
             </a>
         </span>
     </div>

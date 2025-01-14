@@ -29,7 +29,7 @@
     export let error = false;
     export let errorMessage;
     export let nameField = true;
-    export let saveLabel = I18n.t("edit.save");
+    export let saveLabel = I18n.t("Email.Save.COPY");
     export let manageVerifiedInformation;
     export let editHint;
 
@@ -207,7 +207,7 @@
                    bind:value={value}>
             <Button small={true}
                     className="cancel"
-                    label={I18n.t("edit.cancel")}
+                    label={I18n.t("YourVerifiedInformation.ConfirmRemoval.Button.Cancel.COPY")}
                     onClick={() => cancel()}/>
             <Button small={true}
                     label={saveLabel}

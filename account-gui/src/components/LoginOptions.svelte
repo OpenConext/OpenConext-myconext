@@ -26,9 +26,9 @@
 </style>
 
 <div class="login-options">
-    <span>{I18n.t("login.loginOptions")}</span>
+    <span>{I18n.t("Login.LoginOptions.COPY")}</span>
     <div class="wrapper">
-        <Tooltip tip={I18n.t("login.loginOptionsToolTip")}>
+        <Tooltip tip={I18n.t("Login.LoginOptionsToolTip.COPY")}>
             {@html question}
         </Tooltip>
     </div>

@@ -33,7 +33,7 @@
     }
 </style>
 {#if verified}
-    <p class="info">{I18n.t("confirmStepup.conditionMet")}</p>
+    <p class="info">{I18n.t("ConfirmStepup.ConditionMet.COPY")}</p>
 {/if}
 <div class="conditions-container">
     <p class="conditions">

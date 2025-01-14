@@ -16,7 +16,7 @@
                         $user[key] = json[key];
                     }
                 }
-                flash.setValue(I18n.t("email.confirmed", {email: $user.email}));
+                flash.setValue(I18n.t("Email.Confirmed.COPY", {email: $user.email}));
                 navigate("/personal");
             })
             .catch(() => navigate("/404"))

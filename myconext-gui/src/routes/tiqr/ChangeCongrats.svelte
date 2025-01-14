@@ -45,13 +45,13 @@
 </style>
 <div class="congrats">
     <div class="inner-container">
-        <h2 class="header">{I18n.t("congrats.header")}</h2>
+        <h2 class="header">{I18n.t("Congrats.Header.COPY")}</h2>
         <p class="explanation">{I18n.t("congrats.changeInfo")}</p>
         <ImageContainer icon={icon} margin={true}/>
         <Button href={"/next"}
                 onClick={nextStep}
                 large={true}
                 disabled={loading}
-                label={I18n.t("congrats.next")}/>
+                label={I18n.t("Congrats.Next.COPY")}/>
     </div>
 </div>

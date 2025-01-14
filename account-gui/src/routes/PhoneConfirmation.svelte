@@ -119,8 +119,8 @@
 
 </style>
 
-<h2 class="header">{I18n.t("sms.header")}</h2>
-<p class="explanation">{I18n.t("sms.info")}</p>
+<h2 class="header">{I18n.t("Sms.Header.COPY")}</h2>
+<p class="explanation">{I18n.t("Sms.Info.COPY")}</p>
 <div class="totp-value-container" class:with-error={wrongCode || maxAttempts}>
 
     {#each Array(6).fill("") as val, index}
@@ -143,7 +143,7 @@
 {#if wrongCode && !maxAttempts}
     <div class="error">
         <span class="svg">{@html critical}</span>
-        <span>{I18n.t("sms.codeIncorrect")}</span>
+        <span>{I18n.t("Sms.CodeIncorrect.COPY")}</span>
     </div>
 {/if}
 
@@ -151,14 +151,14 @@
     <div class="error">
         <span class="svg">{@html critical}</span>
         <div class="max-attempts">
-            <span>{I18n.t("sms.maxAttemptsPre")}</span>
+            <span>{I18n.t("Sms.MaxAttemptsPre.COPY")}</span>
             <a href="/phone"
-               on:click|preventDefault|stopPropagation={() => navigate(`/phone-verification?h=${hash}`)}>{I18n.t("sms.here")}</a>
-            <span>{I18n.t("sms.maxAttemptsPost")}</span>
+               on:click|preventDefault|stopPropagation={() => navigate(`/phone-verification?h=${hash}`)}>{I18n.t("Sms.Here.COPY")}</a>
+            <span>{I18n.t("Sms.MaxAttemptsPost.COPY")}</span>
         </div>
     </div>
 {/if}
 
 <div class="options">
-    <Button className="cancel" href="/sms" label={I18n.t("sms.sendSMSAgain")} onClick={sendSMSAgain}/>
+    <Button className="cancel" href="/sms" label={I18n.t("Sms.SendSMSAgain.COPY")} onClick={sendSMSAgain}/>
 </div>

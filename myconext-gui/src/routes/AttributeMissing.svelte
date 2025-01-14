@@ -72,7 +72,7 @@
         <Button href={`/link`}
                 didisabled={busy}
                 large={true}
-                label={I18n.t("attributeMissing.retryLink")}
+                label={I18n.t("EppnAlreadyLinked.RetryButton.COPY")}
                 onClick={retry}/>
     </div>
 </div>

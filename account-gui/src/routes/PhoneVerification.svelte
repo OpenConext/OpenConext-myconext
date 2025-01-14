@@ -90,16 +90,16 @@
 {#if showSpinner}
     <Spinner/>
 {/if}
-<h2 class="header">{I18n.t("phoneVerification.header")}</h2>
+<h2 class="header">{I18n.t("PhoneVerification.Header.COPY")}</h2>
 <p class="explanation">{I18n.t("phoneVerification.info")}</p>
-<p class="methods">{I18n.t("phoneVerification.text")}</p>
+<p class="methods">{I18n.t("PhoneVerification.Text.COPY")}</p>
 
 <input class:error={phoneNumberIncorrect}
        autocomplete="current-password"
        id="password-field"
        spellcheck="false"
        on:keydown={handleEnter}
-       placeholder={I18n.t("phoneVerification.placeHolder")}
+       placeholder={I18n.t("PhoneVerification.PlaceHolder.COPY")}
        use:init
        bind:value={phoneNumber}>
 {#if phoneNumberIncorrect}
@@ -111,7 +111,7 @@
 
 <Button href="/next"
         disabled={showSpinner || !allowedNext}
-        label={I18n.t("phoneVerification.verify")}
+        label={I18n.t("PhoneVerification.Verify.COPY")}
         className="full"
         onClick={next}/>
 

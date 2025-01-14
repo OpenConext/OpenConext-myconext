@@ -74,7 +74,7 @@
 {#if showSpinner}
     <Spinner/>
 {:else}
-    <h2 class="header">{I18n.t("options.header")}</h2>
+    <h2 class="header">{I18n.t("Options.Header.COPY")}</h2>
     {#each options as option, i}
         <LoginOption icon={option.icon}
                      translationKey={option.key}

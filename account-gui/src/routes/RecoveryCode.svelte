@@ -17,7 +17,7 @@
     const onConfirmRefresh = e => {
         e.preventDefault();
         window.removeEventListener("beforeunload", onConfirmRefresh, {capture: true});
-        return e.returnValue = I18n.t("recovery.leaveConfirmation");
+        return e.returnValue = I18n.t("Recovery.LeaveConfirmation.COPY");
     }
 
     onMount(() => {
@@ -83,8 +83,8 @@
 {#if showSpinner}
     <Spinner/>
 {/if}
-<h2 class="header">{I18n.t("recovery.save")}</h2>
-<p class="explanation">{I18n.t("recovery.active")}</p>
+<h2 class="header">{I18n.t("Recovery.Save.COPY")}</h2>
+<p class="explanation">{I18n.t("Recovery.Active.COPY")}</p>
 <div class="recovery-code">
     <span>{recoveryCode}</span>
 </div>
@@ -92,10 +92,10 @@
     <Button onClick={copyToClipboard}
             href={"/copy"}
             className="full"
-            label={copied ? I18n.t("recovery.copied") : I18n.t("recovery.copy")}/>
+            label={copied ? I18n.t("Recovery.Copied.COPY") : I18n.t("Recovery.Copy.COPY")}/>
     <Button onClick={next}
             className="cancel full"
             disabled={error}
             href={"/next"}
-            label={I18n.t("recovery.continue")}/>
+            label={I18n.t("Recovery.Continue.COPY")}/>
 </div>

@@ -18,7 +18,7 @@
 </style>
 <div class="home">
     <div class="card">
-        <h1>{I18n.t("success.title")}</h1>
-        <p>{@html I18n.t("success.info")}</p>
+        <h1>{I18n.t("Success.Title.COPY")}</h1>
+        <p>{@html I18n.t("Success.Info.COPY")}</p>
     </div>
 </div>

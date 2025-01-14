@@ -223,41 +223,41 @@
 </style>
 {#if timeOutReached}
     <div class="magic-link">
-        <h2 class="header">{I18n.t("magicLink.timeOutReached")}</h2>
-        <p>{@html I18n.t("magicLink.timeOutReachedInfo")}</p>
+        <h2 class="header">{I18n.t("PollFromInstitution.TimeOutReached.COPY")}</h2>
+        <p>{@html I18n.t("MagicLink.TimeOutReachedInfo.COPY")}</p>
     </div>
 
 {:else if loginStatus === status.NOT_LOGGED_IN}
     <div class="magic-link">
-        <h2 class="header">{I18n.t("magicLink.header")}</h2>
-            <p>{I18n.t("magicLink.info")}<span class="email">{$user.email}.</span></p>
+        <h2 class="header">{I18n.t("PollFromInstitution.Header.COPY")}</h2>
+            <p>{I18n.t("MagicLink.Info.COPY")}<span class="email">{$user.email}.</span></p>
         <div class="spinner-container">
             <Spinner relative={true}/>
-            <p>{I18n.t("magicLink.awaiting")}</p>
+            <p>{I18n.t("MagicLink.Awaiting.COPY")}</p>
         </div>
         {#if !onMobile}
             <div class="mail-clients">
                 <div class="mail-client gmail">
                     <img src={gmail} alt="gmail" width="26px"
                          on:click={() => window.location.href="https://www.gmail.com"}/>
-                    <a href="https://www.gmail.com">{I18n.t("magicLink.openGMail")}</a>
+                    <a href="https://www.gmail.com">{I18n.t("PollFromInstitution.OpenGMail.COPY")}</a>
                 </div>
                 <div class="mail-client outlook">
                     <img src={outlook} alt="outlook" on:click={() => window.location.href="https://outlook.live.com/owa/"}/>
-                    <a href="https://outlook.live.com/owa/">{I18n.t("magicLink.openOutlook")}</a>
+                    <a href="https://outlook.live.com/owa/">{I18n.t("PollFromInstitution.OpenOutlook.COPY")}</a>
                 </div>
             </div>
         {/if}
         <div class="spam">
-            <span>{I18n.t("magicLink.spam")}</span>
+            <span>{I18n.t("PollFromInstitution.Spam.COPY")}</span>
         </div>
         <div class="resend-mail">
             {#if allowedToResend}
-                <span class="link" on:click={resendMail}>{I18n.t("magicLink.resend")}</span>
+                <span class="link" on:click={resendMail}>{I18n.t("PollFromInstitution.Resend.COPY")}</span>
                 <a href="resend"
-                   on:click|preventDefault|stopPropagation={resendMail}>{I18n.t("magicLink.resendLink")}</a>
+                   on:click|preventDefault|stopPropagation={resendMail}>{I18n.t("PollFromInstitution.ResendLink.COPY")}</a>
             {:else if mailHasBeenResend}
-                <span>{I18n.t("magicLink.mailResend")}</span>
+                <span>{I18n.t("MagicLink.MailResend.COPY")}</span>
             {/if}
 
         </div>
@@ -265,14 +265,14 @@
     </div>
 {:else if loginStatus === status.LOGGED_IN_SAME_DEVICE}
     <div class="magic-link">
-        <h2 class="header">{I18n.t("magicLink.loggedIn")}</h2>
-        <p>{@html I18n.t("magicLink.loggedInInfo")}</p>
+        <h2 class="header">{I18n.t("PollFromInstitution.LoggedIn.COPY")}</h2>
+        <p>{@html I18n.t("PollFromInstitution.LoggedInInfo.COPY")}</p>
     </div>
 {:else if loginStatus === status.LOGGED_IN_DIFFERENT_DEVICE}
     <div class="magic-link no-center ">
-        <h2 class="header">{I18n.t("magicLink.loggedInDifferentDevice")}</h2>
-        <p class="no-center">{@html I18n.t("magicLink.loggedInDifferentDeviceInInfo")}</p>
-        <p class="no-center">{@html I18n.t("magicLink.loggedInDifferentDeviceInInfo2")}</p>
+        <h2 class="header">{I18n.t("MagicLink.LoggedInDifferentDevice.COPY")}</h2>
+        <p class="no-center">{@html I18n.t("MagicLink.LoggedInDifferentDeviceInInfo.COPY")}</p>
+        <p class="no-center">{@html I18n.t("MagicLink.LoggedInDifferentDeviceInInfo2.COPY")}</p>
         <input class="verification-code"
                type="text"
                spellcheck="false"
@@ -284,11 +284,11 @@
             <div class="error">
                 <span class="svg">{@html critical}</span>
                 <div>
-                    <span>{I18n.t("magicLink.verificationCodeError")}</span>
+                    <span>{I18n.t("MagicLink.VerificationCodeError.COPY")}</span>
                 </div>
             </div>
         {/if}
-        <Button label={I18n.t("magicLink.verify")} onClick={verify}
+        <Button label={I18n.t("Profile.Verify.COPY")} onClick={verify}
                 disabled={!validVerificationCode(verificationCode)}/>
     </div>
 {/if}

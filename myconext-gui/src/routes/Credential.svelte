@@ -15,10 +15,10 @@
         const urlSearchParams = new URLSearchParams(window.location.search);
         const id = urlSearchParams.get("id");
         credential = $user.publicKeyCredentials.find(cred => cred.identifier === id);
-        name = credential.name;
+        name = Credential.Name.COPY;
         const testWebAuthn = urlSearchParams.get("success");
         if (testWebAuthn) {
-            flash.setValue(I18n.t("webauthn.testFlash"), 3750);
+            flash.setValue(I18n.t("Webauthn.TestFlash.COPY"), 3750);
         }
     });
 
@@ -37,7 +37,7 @@
                     }
                 }
                 navigate("/security");
-                flash.setValue(I18n.t("credential.updated", {name: name}));
+                flash.setValue(I18n.t("Edit.Update.COPYd", {name: name}));
             });
     }
 
@@ -52,7 +52,7 @@
                     }
                 }
                 navigate("/security");
-                flash.setValue(I18n.t("credential.deleted", {name: credential.name}));
+                flash.setValue(I18n.t("credential.deleted", {name: Credential.Name.COPY}));
             });
         }
     }
@@ -102,8 +102,8 @@
 
 </style>
 <div class="credential">
-    <h2>{I18n.t("credential.title")}</h2>
-    <label for="credentialName">{I18n.t("credential.name")}</label>
+    <h2>{I18n.t("Credential.Title.COPY")}</h2>
+    <label for="credentialName">{I18n.t("Credential.Name.COPY")}</label>
     <input id="credentialName" type="text" bind:value={name}>
 
     <div class="options">
@@ -111,12 +111,12 @@
             <Button deletion={true}
                     onClick={deleteCredential(true)}/></span>
         <Button className="cancel"
-                label={I18n.t("credential.cancel")}
+                label={I18n.t("YourVerifiedInformation.ConfirmRemoval.Button.Cancel.COPY")}
                 onClick={cancel}/>
-        <Button label={I18n.t("security.test")}
+        <Button label={I18n.t("Webauthn.Test.COPY")}
                 className="ghost"
                 onClick={startTestFlow}/>
-        <Button label={I18n.t("credential.update")}
+        <Button label={I18n.t("Edit.Update.COPY")}
                 disabled={!name || name.trim().length === 0}
                 onClick={updateCredential}/>
     </div>
@@ -126,8 +126,8 @@
     <Modal submit={deleteCredential(false)}
            cancel={() => showModal = false}
            warning={true}
-           confirmTitle={I18n.t("modal.delete")}
-           question={I18n.t("credential.deleteCredentialConfirmation", {name: credential.name})}
-           title={I18n.t("credential.deleteCredential")}>
+           confirmTitle={I18n.t("YourVerifiedInformation.ConfirmRemoval.Button.YesDelete.COPY")}
+           question={I18n.t("Credential.DeleteCredential.COPYConfirmation", {name: Credential.Name.COPY})}
+           title={I18n.t("Credential.DeleteCredential.COPY")}>
     </Modal>
 {/if}

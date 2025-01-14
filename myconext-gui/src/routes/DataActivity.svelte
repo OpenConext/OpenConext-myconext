@@ -225,12 +225,12 @@
 </style>
 <div class="services">
     <div class="inner-container">
-        <h2>{I18n.t("dataActivity.title")}</h2>
+        <h2>{I18n.t("DataActivity.Title.COPY")}</h2>
         <p class="info">{I18n.t("dataActivity.info")}</p>
         {#if services.length === 0}
-            <p class="no-services">{I18n.t("dataActivity.noServices")}</p>
+            <p class="no-services">{I18n.t("DataActivity.NoServices.COPY")}</p>
         {:else}
-            <h4>{I18n.t("dataActivity.explanation")}</h4>
+            <h4>{I18n.t("DataActivity.ExplainIcon.COPY")}</h4>
             <table cellspacing="0" class="data-activity">
                 <thead></thead>
                 <tbody>
@@ -252,7 +252,7 @@
                                     {#if service.token}
                                         <div class="access">
                                             <span class="svg-informational">{@html informationalSvg}</span>
-                                            <span class="access">{I18n.t("dataActivity.access")}</span>
+                                            <span class="access">{I18n.t("DataActivity.Access.COPY")}</span>
                                         </div>
                                     {/if}
                                     <a class="toggle-link" href="/edit"

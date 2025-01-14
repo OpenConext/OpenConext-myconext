@@ -25,7 +25,7 @@
         } else {
             resetPasswordLink().then(() => {
                 navigate("/security");
-                flash.setValue(I18n.t("password.flash.passwordLink", {name: $user.email}));
+                flash.setValue(I18n.t("Password.Flash.PasswordLink.COPY", {name: $user.email}));
             })
         }
     }
@@ -56,12 +56,12 @@
 
 </style>
 <div class="password">
-    <h2>{usePassword ? I18n.t("password.updateTitle") : I18n.t("password.addTitle")}</h2>
-    <p class="info">{@html usePassword ? I18n.t("password.updateInfo") : I18n.t("password.addInfo")}</p>
+    <h2>{usePassword ? I18n.t("ChangePassword.Title.ChangePassword.COPY") : I18n.t("PasswordResetLink.Title.AddPassword.COPY")}</h2>
+    <p class="info">{@html usePassword ? I18n.t("Password.UpdateInfo.COPY") : I18n.t("Password.AddInfo.COPY")}</p>
     <div class="options">
-        <Button className="cancel" label={I18n.t("password.cancel")} onClick={cancel}/>
+        <Button className="cancel" label={I18n.t("YourVerifiedInformation.ConfirmRemoval.Button.Cancel.COPY")} onClick={cancel}/>
 
-        <Button label={I18n.t("modal.confirm")}
+        <Button label={I18n.t("ConfirmDelete.Button.Confirm.COPY")}
                 onClick={proceed}/>
     </div>
 </div>
@@ -69,7 +69,7 @@
     <Modal submit={proceed}
            cancel={() => navigate("/security")}
            warning={true}
-           question={I18n.t("password.outstandingEmailResetConfirmation")}
-           title={I18n.t("password.outstandingEmailReset")}>
+           question={I18n.t("Password.OutstandingEmailResetConfirmation.COPY")}
+           title={I18n.t("Password.OutstandingEmailReset.COPY")}>
     </Modal>
 {/if}

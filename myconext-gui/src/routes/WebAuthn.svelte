@@ -65,17 +65,17 @@
         <Spinner/>
     {:else}
         <Flash/>
-        <h2>{I18n.t("webauthn.updateTitle")}</h2>
-        <p class="info">{I18n.t("webauthn.info")}</p>
+        <h2>{I18n.t("Webauthn.SetTitle.COPY")}</h2>
+        <p class="info">{I18n.t("Webauthn.Info.COPY")}</p>
         <label for="credentialName">{I18n.t("webauthn.credentialName")}</label>
         <input id="credentialName"
                type="text"
-               placeholder={I18n.t("webauthn.credentialNamePlaceholder")}
+               placeholder={I18n.t("Webauthn.CredentialNamePlaceholder.COPY")}
                bind:value={credentialName} use:init>
 
         <div class="options">
-            <Button className="cancel" label={I18n.t("password.cancel")} onClick={cancel}/>
-            <Button label={I18n.t("webauthn.setUpdate")}
+            <Button className="cancel" label={I18n.t("YourVerifiedInformation.ConfirmRemoval.Button.Cancel.COPY")} onClick={cancel}/>
+            <Button label={I18n.t("Webauthn.SetUpdate.COPY")}
                     onClick={startWebAuthn}
                     disabled={!credentialName || credentialName.trim().length === 0}/>
         </div>

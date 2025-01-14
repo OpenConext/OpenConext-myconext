@@ -74,13 +74,13 @@
     </div>
 {/if}
 {#if !showSpinner && !mrccValue}
-    <h2 class="header">{I18n.t("useLink.header")}</h2>
+    <h2 class="header">{I18n.t("UseLink.Header.COPY")}</h2>
     {#if serviceName}
-        <h2 class="top">{I18n.t("login.headerSubTitle")}<span>{serviceName}</span></h2>
+        <h2 class="top">{I18n.t("Login.HeaderSubTitle.COPY")}<span>{serviceName}</span></h2>
     {/if}
     <Button href="/start"
             disabled={showSpinner}
-            label={I18n.t("useLink.next")}
+            label={I18n.t("Login.SendMagicLink.COPY")}
             className="full"
             onClick={magicLinkStart}/>
 {/if}

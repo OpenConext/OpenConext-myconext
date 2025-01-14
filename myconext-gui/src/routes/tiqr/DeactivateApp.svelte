@@ -127,29 +127,29 @@
 <div class="deactivate-app">
     <div class="inner-container">
 
-        <h2>{I18n.t("deactivate.titleDelete")}</h2>
-        <p class="explanation">{I18n.t("deactivate.info")}</p>
+        <h2>{I18n.t("Deactivate.TitleDelete.COPY")}</h2>
+        <p class="explanation">{I18n.t("Deactivate.Info.COPY")}</p>
         {#if !useRecoveryCode && step === 1}
-            <p class="explanation">{I18n.t("deactivate.sendSms")}</p>
+            <p class="explanation">{I18n.t("Deactivate.SendSms.COPY")}</p>
         {:else if useRecoveryCode}
-            <p class="explanation">{@html I18n.t("deactivate.recoveryCodeInfo")}</p>
+            <p class="explanation">{@html I18n.t("Deactivate.RecoveryCodeInfo.COPY")}</p>
         {/if}
         {#if useRecoveryCode}
             <input id="recoveryCode" type="text" spellcheck="false" bind:value={recoveryCode}/>
             {#if wrongCode && !maxAttempts}
                 <div class="error">
                     <span class="svg">{@html critical}</span>
-                    <span>{I18n.t("deactivate.codeIncorrect")}</span>
+                    <span>{I18n.t("Deactivate.CodeIncorrect.COPY")}</span>
                 </div>
             {/if}
             {#if maxAttempts}
                 <div class="error">
                     <span class="svg">{@html critical}</span>
-                    <span>{@html I18n.t("deactivate.maxAttempts")}</span>
+                    <span>{@html I18n.t("Deactivate.MaxAttempts.COPY")}</span>
                 </div>
             {/if}
         {:else if step === 2 && !useRecoveryCode}
-            <label for="recoveryCode">{I18n.t("deactivate.verificationCode")}</label>
+            <label for="recoveryCode">{I18n.t("Deactivate.VerificationCode.COPY")}</label>
             <CodeVerifier navigateTo="/security"
                           action={deactivateApp}
                           reEnter={false}
@@ -157,7 +157,7 @@
         {/if}
         <div class="options">
             <Button href="/cancel"
-                    label={I18n.t("account.cancel")}
+                    label={I18n.t("YourVerifiedInformation.ConfirmRemoval.Button.Cancel.COPY")}
                     onClick={() => navigate("/security")}
                     medium={true}
                     className="cancel"/>

@@ -62,12 +62,12 @@
     <Spinner/>
 {/if}
 
-<h2 class="header">{I18n.t("nudgeApp.header")}</h2>
+<h2 class="header">{I18n.t("Security.Tiqr.Title.COPY")}</h2>
 <ImageContainer icon={phone} margin={false}/>
-<p class="explanation">{@html I18n.t("nudgeApp.info")}</p>
+<p class="explanation">{@html I18n.t("NudgeApp.Info.COPY")}</p>
 <ButtonContainer>
-    <Button className="cancel" href={I18n.t("nudgeApp.noLink")} onClick={() => proceed($conf.magicLinkUrl)}
-            label={I18n.t("nudgeApp.no")}/>
-    <Button href={I18n.t("nudgeApp.yesLink")} onClick={() => navigate(`/getapp?h=${hash}`)}
-            label={I18n.t("nudgeApp.yes")}/>
+    <Button className="cancel" href={I18n.t("NudgeApp.NoLink.COPY")} onClick={() => proceed($conf.magicLinkUrl)}
+            label={I18n.t("NudgeApp.No.COPY")}/>
+    <Button href={I18n.t("NudgeApp.YesLink.COPY")} onClick={() => navigate(`/getapp?h=${hash}`)}
+            label={I18n.t("Security.Tiqr.Fetch.COPY")}/>
 </ButtonContainer>

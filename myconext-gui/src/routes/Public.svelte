@@ -55,7 +55,7 @@
 
 
 <div class="public">
-    <h1>{I18n.t("header.title")}</h1>
+    <h1>{I18n.t("Header.Title.COPY")}</h1>
     <h2>{I18n.t("landing.info")}</h2>
     <Button label={I18n.t("landing.login")} className="short" href={I18n.t("landing.login")} onClick={login}/>
 

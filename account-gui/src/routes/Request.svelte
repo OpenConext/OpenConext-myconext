@@ -180,33 +180,33 @@
     <Spinner/>
 {/if}
 
-<h2 class="header">{I18n.t("login.header2")}</h2>
+<h2 class="header">{I18n.t("LinkFromInstitution.RequestEduIdButton.COPY")}</h2>
 {#if serviceName}
-    <h2 class="top">{I18n.t("login.headerSubTitle")}<span>{serviceName}</span></h2>
+    <h2 class="top">{I18n.t("Login.HeaderSubTitle.COPY")}<span>{serviceName}</span></h2>
 {/if}
-<label for="email" class="pre-input-label">{I18n.t("login.email")}</label>
+<label for="email" class="pre-input-label">{I18n.t("LinkFromInstitution.Email.COPY")}</label>
 <input type="email"
        autocomplete="username"
        id="email"
        spellcheck="false"
        class:error={emailInUse || emailForbidden}
-       placeholder={I18n.t("login.emailPlaceholder")}
+       placeholder={I18n.t("LinkFromInstitution.EmailPlaceholder.COPY")}
        use:init
        on:input={handleInput}
        value={$user.email}
        on:blur={handleEmailBlur}>
 {#if !initial && !validEmail($user.email)}
-    <div class="error"><span class="svg">{@html critical}</span><span>{I18n.t("login.invalidEmail")}</span></div>
+    <div class="error"><span class="svg">{@html critical}</span><span>{I18n.t("LinkFromInstitution.InvalidEmail.COPY")}</span></div>
 {/if}
 {#if emailInUse}
     <div class="error">
         <span class="svg">{@html critical}</span>
         <div>
-            <span>{I18n.t("login.emailInUse1")}</span>
-            <span>{I18n.t("login.emailInUse2")}</span>
+            <span>{I18n.t("LinkFromInstitution.EmailInUse1.COPY")}</span>
+            <span>{I18n.t("LinkFromInstitution.EmailInUse2.COPY")}</span>
             <a use:link
                href={`/login/${id}`}
-            >{I18n.t("login.emailInUse3")}</a>
+            >{I18n.t("Login.EmailInUse3.COPY")}</a>
         </div>
     </div>
 {/if}
@@ -214,7 +214,7 @@
     <div class="error">
         <span class="svg">{@html critical}</span>
         <div>
-            <span>{@html I18n.t("login.emailForbidden")}</span>
+            <span>{@html I18n.t("LinkFromInstitution.EmailForbidden.COPY")}</span>
         </div>
     </div>
 {/if}
@@ -222,9 +222,9 @@
     <div class="institution-warning">
         <span class="svg attention">{@html attention}</span>
         <div class="text">
-            <span>{I18n.t("login.institutionDomainNameWarning")}</span>
+            <span>{I18n.t("LinkFromInstitution.InstitutionDomainNameWarning.COPY")}</span>
             <br/>
-            <span>{I18n.t("login.institutionDomainNameWarning2")}</span>
+            <span>{I18n.t("LinkFromInstitution.InstitutionDomainNameWarning2.COPY")}</span>
         </div>
     </div>
 
@@ -234,39 +234,39 @@
     <div class="domain-not-allowed">
         <span class="svg error">{@html critical}</span>
         <div class="text">
-            <span>{I18n.t("login.allowedDomainNamesError",
+            <span>{I18n.t("Login.AllowedDomainNamesError.COPY",
                 {domain: $user.email.substring($user.email.indexOf("@") + 1)})}</span>
             <br/>
-            <span>{I18n.t("login.allowedDomainNamesError2")}</span>
+            <span>{I18n.t("LinkFromInstitution.AllowedDomainNamesError2.COPY")}</span>
         </div>
     </div>
 
 {/if}
 
-<label for="given-name" class="pre-input-label">{I18n.t("login.givenName")}</label>
+<label for="given-name" class="pre-input-label">{I18n.t("Profile.FirstName.COPY")}</label>
 <input type="text"
        id="given-name"
-       placeholder={I18n.t("login.givenNamePlaceholder")}
+       placeholder={I18n.t("Login.GivenNamePlaceholder.COPY")}
        spellcheck="false"
        on:input={updateGivenName}>
 {#if !initial && !$user.givenName}
-    <span class="error">{I18n.t("login.requiredAttribute", {attr: I18n.t("login.givenName")})}</span>
+    <span class="error">{I18n.t("Login.RequiredAttribute.COPY", {attr: I18n.t("Profile.FirstName.COPY")})}</span>
 {/if}
-<label for="family-name" class="pre-input-label">{I18n.t("login.familyName")}</label>
+<label for="family-name" class="pre-input-label">{I18n.t("Profile.LastName.COPY")}</label>
 <input type="text"
        id="family-name"
        spellcheck="false"
-       placeholder={I18n.t("login.familyNamePlaceholder")}
+       placeholder={I18n.t("Login.FamilyNamePlaceholder.COPY")}
        on:input={updateFamilyName}>
 {#if !initial && !$user.familyName}
-    <span class="error">{I18n.t("login.requiredAttribute", {attr: I18n.t("login.familyName")})}</span>
+    <span class="error">{I18n.t("Login.RequiredAttribute.COPY", {attr: I18n.t("Profile.LastName.COPY")})}</span>
 {/if}
 <CheckBox value={agreedWithTerms}
           className="light"
-          label={I18n.t("login.agreeWithTerms")}
+          label={I18n.t("LinkFromInstitution.AgreeWithTerms.COPY")}
           onChange={val => agreedWithTerms = val}/>
 <Button disabled={showSpinner || !allowedNext($user.email, $user.familyName, $user.givenName, agreedWithTerms)}
         href="/magic"
         className="full"
-        label={I18n.t("login.requestEduIdButton")}
+        label={I18n.t("LinkFromInstitution.RequestEduIdButton.COPY")}
         onClick={handleNext}/>

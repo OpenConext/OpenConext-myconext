@@ -9,7 +9,7 @@
         if ($user.familyName && $user.givenName) {
             updateUser($user).then(() => {
                 navigate("/personal");
-                flash.setValue(I18n.t("edit.updated"));
+                flash.setValue(I18n.t("Edit.Updated.COPY"));
             });
         }
     };
@@ -63,16 +63,16 @@
 
 </style>
 <div class="profile">
-    <h2>{I18n.t("edit.title")}</h2>
-    <p class="info">{I18n.t("edit.info")}</p>
-    <label for="givenName">{I18n.t("edit.givenName")}</label>
+    <h2>{I18n.t("Profile.Name.COPY")}</h2>
+    <p class="info">{I18n.t("Edit.Info.COPY")}</p>
+    <label for="givenName">{I18n.t("Edit.GivenName.COPY")}</label>
     <input id="givenName" type="text" spellcheck="false" bind:value={$user.givenName}/>
-    <label for="familyName">{I18n.t("edit.familyName")}</label>
+    <label for="familyName">{I18n.t("Edit.FamilyName.COPY")}</label>
     <input id="familyName" type="text" spellcheck="false" bind:value={$user.familyName}/>
 
     <div class="options">
-        <Button className="cancel" label={I18n.t("edit.cancel")} onClick={cancel}/>
-        <Button label={I18n.t("edit.update")} onClick={update}
+        <Button className="cancel" label={I18n.t("YourVerifiedInformation.ConfirmRemoval.Button.Cancel.COPY")} onClick={cancel}/>
+        <Button label={I18n.t("Edit.Update.COPY")} onClick={update}
                 disabled={!($user.familyName && $user.givenName)}/>
     </div>
 </div>
