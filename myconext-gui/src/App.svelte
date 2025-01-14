@@ -41,7 +41,7 @@
             if (["nl", "en"].indexOf(lang) < 0) {
                 lang = "en";
             }
-            I18n.currentLocale(lang);
+            I18n.changeLocale(lang);
             if (unprotectedRoutes.some(route => window.location.pathname.indexOf(route) > -1)) {
                 loaded = true;
             } else {
