@@ -1,14 +1,22 @@
 package myconext.api;
 
+import io.restassured.http.Cookie;
+import io.restassured.response.Response;
 import myconext.AbstractIntegrationTest;
+import myconext.model.MagicLinkRequest;
 import myconext.model.User;
 import org.junit.Test;
+import org.springframework.http.HttpMethod;
 import org.springframework.test.context.ActiveProfiles;
 
+import java.io.IOException;
 import java.util.UUID;
 
 import static io.restassured.RestAssured.given;
+import static myconext.security.GuestIdpAuthenticationRequestFilter.GUEST_IDP_REMEMBER_ME_COOKIE_NAME;
+import static org.hamcrest.Matchers.startsWith;
 import static org.hamcrest.core.IsEqual.equalTo;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 
 @ActiveProfiles(value = "dev", inheritProfiles = false)
@@ -132,6 +140,33 @@ public class LoginControllerTest extends AbstractIntegrationTest {
                 .cookie("username", user.getEmail())
                 .header("Location",
                         "http://localhost:3001/security?new=true");
+    }
+
+    @Test
+    public void redirectToSPServiceDeskHook() throws IOException {
+        String authenticationRequestId = samlAuthnRequest();
+        User user = user("steve@example.com", "Steve", "Doe", "en");
+        MagicLinkResponse magicLinkResponse = magicLinkRequest(new MagicLinkRequest(authenticationRequestId, user, false), HttpMethod.POST);
+        Response response = magicResponse(magicLinkResponse);
+
+        String cookie = response.cookie(GUEST_IDP_REMEMBER_ME_COOKIE_NAME);
+        String authnContext = readFile("request_authn_context.xml");
+        samlAuthnRequestResponseWithLoa(
+                new Cookie.Builder(GUEST_IDP_REMEMBER_ME_COOKIE_NAME, cookie).build(), null, authnContext);
+        String location = given().redirects().follow(false)
+                .when()
+                .get("/servicedesk/" + authenticationRequestId)
+                .header("Location");
+        assertEquals("http://localhost:3001/personal?servicedesk=start", location);
+    }
+
+    @Test
+    public void redirectToSPServiceDeskHookNoAuthenticationRequest() throws IOException {
+        String location = given().redirects().follow(false)
+                .when()
+                .get("/servicedesk/" + UUID.randomUUID().toString())
+                .header("Location");
+        assertEquals("http://localhost:3000/expired", location);
     }
 
 }
