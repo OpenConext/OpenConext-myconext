@@ -65,7 +65,7 @@ public class RemoteManage implements Manage {
         LOG.info("Starting to refresh metadata from " + manageBaseUrl);
         doRefreshServiceProviders(Optional.empty());
         doRefreshIdentityProviders();
-        LOG.info(String.format("Refreshed %s services and %s scoped  IdP's in %s ms",
+        LOG.info(String.format("Refreshed %s services and %s scoped IdP's in %s ms",
                 this.serviceProviders.size(),
                 this.identityProviders.size(),
                 System.currentTimeMillis() - start));

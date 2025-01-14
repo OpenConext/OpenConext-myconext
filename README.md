@@ -9,12 +9,12 @@ An IdP for OpenConext. A user can create and manage his own identity. Authentica
 
 ### [System Requirements](#system-requirements)
 
-- Java 11
+- Java 21
 - Maven 3
 - MongoDB 3.4.x
 - Yarn 1.x
-- NodeJS
-- Ansible
+- NodeJS (v23.2.0)
+- Mailpit
 
 ## [Building and running](#building-and-running)
 
@@ -48,7 +48,7 @@ The IdP is also build with Svelte and to get initially started:
 ```
 cd myconext-gui
 yarn install
-yarn start
+yarn dev
 ```
 
 There is no home page, you'll need to visit an SP and choose eduID to login.
@@ -119,7 +119,6 @@ http://localhost:8081/myconext/api/swagger-ui/index.html
 http://localhost:8081/myconext/api/api-docs
 
 https://login.test2.eduid.nl/myconext/api/swagger-ui/index.html
-
 
 https://login.test2.eduid.nl/myconext/api/api-docs
 

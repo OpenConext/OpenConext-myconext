@@ -82,12 +82,14 @@ class AttributeMapperTest {
     void parseDate() {
         Date eherkenningDate = AttributeMapper.parseDate("1963-03-21");
         Date idinDate = AttributeMapper.parseDate("19630321");
-        Date idCardDate = AttributeMapper.parseDate("21-MRT-1963");
+        Date idCardDateEn = AttributeMapper.parseDate("21-MAR-1963");
+        Date idCardDateNl = AttributeMapper.parseDate("21-MRT-1963");
         Date passportDateNl = AttributeMapper.parseDate("21 MRT 1963");
         Date passportDateEn = AttributeMapper.parseDate("21 MAR 1963");
         assertNotNull(eherkenningDate);
         assertEquals(eherkenningDate, idinDate);
-        assertEquals(eherkenningDate, idCardDate);
+        assertEquals(eherkenningDate, idCardDateEn);
+        assertEquals(eherkenningDate, idCardDateNl);
         assertEquals(eherkenningDate, passportDateNl);
         assertEquals(eherkenningDate, passportDateEn);
     }

@@ -6,6 +6,7 @@ import com.github.mustachejava.DefaultMustacheFactory;
 import com.github.mustachejava.MustacheFactory;
 import jakarta.mail.internet.MimeMessage;
 import lombok.SneakyThrows;
+import myconext.model.ControlCode;
 import myconext.model.EmailsSend;
 import myconext.model.User;
 import myconext.model.UserLogin;
@@ -181,6 +182,10 @@ public class MailBox {
         variables.put("mySurfConextURL", mySURFconextURL);
         variables.put("verificationCode", verificationCode);
         sendMail("verification_code", title, variables, preferredLanguage(user), user.getEmail(), true);
+    }
+
+    public void sendControlCode(User user, ControlCode controlCode) {
+        //TODO Implement
     }
 
     private Map<String, Object> variables(User user, String title) {

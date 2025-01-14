@@ -3,6 +3,7 @@ package myconext.api;
 import com.yubico.webauthn.data.*;
 import com.yubico.webauthn.data.exception.Base64UrlException;
 import io.restassured.common.mapper.TypeRef;
+import io.restassured.filter.Filter;
 import io.restassured.filter.cookie.CookieFilter;
 import io.restassured.http.ContentType;
 import io.restassured.http.Cookie;
@@ -14,7 +15,6 @@ import myconext.repository.ChallengeRepository;
 import myconext.security.ACR;
 import org.apache.commons.io.IOUtils;
 import org.apache.http.client.CookieStore;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
@@ -1404,6 +1404,48 @@ public class UserControllerTest extends AbstractIntegrationTest {
                 .response()
                 .asString();
         assertTrue(xml.contains("eduID IdP"));
+    }
+
+    @Test
+    public void createUserControlCode() {
+        ControlCode controlCode = given()
+                .when()
+                .get("/myconext/api/sp/control-code")
+                .as(ControlCode.class);
+        assertEquals(5, controlCode.getCode().length());
+    }
+
+    @Test
+    public void updateUserControlCode() {
+        Filter cookieFilter = new CookieFilter();
+        ControlCode preControlCode = given()
+                .filter(cookieFilter)
+                .when()
+                .get("/myconext/api/sp/control-code")
+                .as(ControlCode.class);
+
+        ControlCode controlCode = new ControlCode("Lee", "Harpers", "01 Mar 1977", preControlCode.getCode());
+        given()
+                .filter(cookieFilter)
+                .body(controlCode)
+                .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+                .when()
+                .put("/myconext/api/sp/control-code")
+                .as(ControlCode.class);
+        User user = userRepository.findUserByEmail("jdoe@example.com").get();
+        assertEquals(user.getControlCode().getCode(), preControlCode.getCode());
+    }
+
+    @Test
+    public void updateUserControlCodeMismatch() {
+        ControlCode controlCode = new ControlCode("Lee", "Harpers", "01 Mar 1977", "nope");
+        given()
+                .body(controlCode)
+                .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+                .when()
+                .put("/myconext/api/sp/control-code")
+                .then()
+                .statusCode(403);
     }
 
     private String hash() {

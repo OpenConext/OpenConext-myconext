@@ -162,7 +162,9 @@ public class LoginControllerTest extends AbstractIntegrationTest {
 
     @Test
     public void redirectToSPServiceDeskHookNoAuthenticationRequest() throws IOException {
-        String location = given().redirects().follow(false)
+        String location = given()
+                .redirects()
+                .follow(false)
                 .when()
                 .get("/servicedesk/" + UUID.randomUUID().toString())
                 .header("Location");

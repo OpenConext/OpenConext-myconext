@@ -27,10 +27,7 @@ import myconext.manage.Manage;
 import myconext.model.*;
 import myconext.oidcng.OpenIDConnect;
 import myconext.repository.*;
-import myconext.security.EmailDomainGuard;
-import myconext.security.EmailGuessingPrevention;
-import myconext.security.ServicesConfiguration;
-import myconext.security.UserAuthentication;
+import myconext.security.*;
 import myconext.webauthn.UserCredentialRepository;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -75,6 +72,7 @@ import static myconext.log.MDCContext.logWithContext;
 public class UserController implements UserAuthentication {
 
     private static final Log LOG = LogFactory.getLog(UserController.class);
+    private static final String CONTROL_CODE = "CONTROL_CODE";
 
     private final UserRepository userRepository;
     private final AuthenticationRequestRepository authenticationRequestRepository;
@@ -981,6 +979,35 @@ public class UserController implements UserAuthentication {
 
         return doLogout(request);
     }
+
+    @GetMapping("sp/control-code")
+    @Hidden
+    public ResponseEntity<Map<String, String>> createUserControlCode(Authentication authentication, HttpServletRequest request) {
+        String code = VerificationCodeGenerator.generateControlCode();
+        request.getSession(true).setAttribute(CONTROL_CODE, code);
+        return ResponseEntity.ok(Map.of("code", code));
+    }
+
+    @PutMapping("sp/control-code")
+    public ResponseEntity<ControlCode> updateUserControlCode(Authentication authentication,
+                                                             HttpServletRequest request,
+                                                             @RequestBody ControlCode controlCode) {
+        HttpSession session = request.getSession();
+        if (session == null || !controlCode.getCode().equals(session.getAttribute(CONTROL_CODE))) {
+            throw new ForbiddenException("Control code does not match generated code");
+        }
+        User user = userFromAuthentication(authentication);
+
+        LOG.info(String.format("User %s updated with controlCode %s", user.getEmail(), controlCode));
+
+        user.setControlCode(controlCode);
+        userRepository.save(user);
+
+        mailBox.sendControlCode(user, controlCode);
+
+        return ResponseEntity.ok(controlCode);
+    }
+
 
     private ResponseEntity<StatusResponse> doLogout(HttpServletRequest request) {
         HttpSession session = request.getSession();

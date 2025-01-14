@@ -29,7 +29,10 @@ public class VerificationCodeGenerator {
 
     public static String generatePhoneVerification() {
         return String.valueOf(getChars(6, NUMBERS));
+    }
 
+    public static String generateControlCode() {
+        return String.valueOf(random.nextInt(10000, 60000));
     }
 
     private static char[] getChars(int nbrBytes, char[] charArray) {

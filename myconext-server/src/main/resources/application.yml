@@ -23,7 +23,7 @@ springdoc:
     path: "/myconext/api/api-docs"
     enabled: true
   swagger-ui:
-    # http://localhost:8081/myconext/swagger-ui/index.html
+    # http://localhost:8081/myconext/api/swagger-ui/index.html
     path: "/myconext/api/"
     operationsSorter: method
     enabled: true
@@ -215,6 +215,12 @@ verify:
   mobile_verify_redirect_url: http://localhost:8081/myconext/api/mobile/verify/redirect
   idp_verify_redirect_url: http://localhost:8081/myconext/api/idp/verify/redirect
   issuers_path: "classpath:idin/issuers.json"
+
+service_desk_role_auto_provisioning: True
+service_desk_roles: >
+  role1,
+  role2,
+  role3
 
 spring:
   data:

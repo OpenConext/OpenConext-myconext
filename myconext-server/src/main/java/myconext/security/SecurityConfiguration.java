@@ -196,20 +196,8 @@ public class SecurityConfiguration {
     @Configuration
     public static class InternalSecurityConfigurationAdapter {
 
-        private final Environment environment;
-        private final UserRepository userRepository;
-        private final Manage serviceProviderResolver;
-        private final String mijnEduIDEntityId;
-
-        public InternalSecurityConfigurationAdapter(Environment environment,
-                                                    UserRepository userRepository,
-                                                    Manage serviceProviderResolver,
-                                                    @Value("${mijn_eduid_entity_id}") String mijnEduIDEntityId) {
-            this.environment = environment;
-            this.userRepository = userRepository;
-            this.serviceProviderResolver = serviceProviderResolver;
-            this.mijnEduIDEntityId = mijnEduIDEntityId;
-        }
+        public static final String ROLE_GUEST = "ROLE_GUEST";
+        public static final String SERVICE_DESK = "SERVICE_DESK";
 
         private AuthenticationProvider preAuthenticatedAuthenticationProvider() {
             PreAuthenticatedAuthenticationProvider provider = new PreAuthenticatedAuthenticationProvider();
@@ -218,11 +206,18 @@ public class SecurityConfiguration {
         }
 
         @Bean
-        public SecurityFilterChain shibbolethSecurityFilterChain(HttpSecurity http) throws Exception {
+        public SecurityFilterChain shibbolethSecurityFilterChain(
+                HttpSecurity http,
+                Environment environment,
+                Manage manage,
+                UserRepository userRepository,
+                @Value("${mijn_eduid_entity_id}") String mijnEduIDEntityId,
+                @Value("${service_desk_roles}") String[] serviceDeskRoles,
+                @Value("${service_desk_role_auto_provisioning}") boolean serviceDeskRoleAutoProvisioning) throws Exception {
             AuthenticationProvider authenticationProvider = preAuthenticatedAuthenticationProvider();
             ProviderManager providerManager = new ProviderManager(authenticationProvider);
             http
-                    .securityMatcher("/myconext/api/sp/**", "/startSSO", "/tiqr/sp/**")
+                    .securityMatcher("/myconext/api/sp/**", "/startSSO", "/tiqr/sp/**", "/myconext/api/servicedesk/**")
                     .csrf(csrf -> csrf.disable())
                     .sessionManagement(smc -> smc.sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED))
                     .authorizeHttpRequests(authz -> authz.requestMatchers(
@@ -232,18 +227,22 @@ public class SecurityConfiguration {
                                     "/myconext/api/sp/create-from-institution/**",
                                     "/myconext/api/sp/idin/issuers")
                             .permitAll())
+                    .authorizeHttpRequests(authz -> authz.requestMatchers(
+                            "/myconext/api/servicedesk/**"
+                    ).hasAuthority(SERVICE_DESK))
                     .addFilterBefore(
                             new ShibbolethPreAuthenticatedProcessingFilter(
                                     providerManager,
                                     userRepository,
-                                    serviceProviderResolver,
-                                    mijnEduIDEntityId),
+                                    manage,
+                                    mijnEduIDEntityId,
+                                    List.of(serviceDeskRoles)),
                             AbstractPreAuthenticatedProcessingFilter.class)
                     .authorizeHttpRequests(auth -> auth
                             .anyRequest().hasRole("GUEST"));
             if (environment.acceptsProfiles(Profiles.of("test", "dev"))) {
                 //we can't use @Profile, because we need to add it before the real filter
-                http.addFilterBefore(new MockShibbolethFilter(), ShibbolethPreAuthenticatedProcessingFilter.class);
+                http.addFilterBefore(new MockShibbolethFilter(serviceDeskRoleAutoProvisioning), ShibbolethPreAuthenticatedProcessingFilter.class);
             }
             return http.build();
         }

@@ -22,6 +22,7 @@ import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeFormatterBuilder;
 import java.time.temporal.ChronoUnit;
+import java.time.temporal.TemporalQueries;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.regex.Pattern;
@@ -43,15 +44,13 @@ public class AttributeMapper {
                 "[dd MMM yyyy]",
                 "[dd-MMM-yyyy]",
                 "[yyyyMMdd]"));
+        DateTimeFormatterBuilder dateTimeFormatterBuilder = new DateTimeFormatterBuilder()
+                .parseCaseInsensitive()
+                .parseLenient()
+                .appendPattern(pattern);
         dateTimeFormatters = List.of(
-                new DateTimeFormatterBuilder()
-                        .parseCaseInsensitive()
-                        .parseLenient()
-                        .appendPattern(pattern).toFormatter(Locale.ENGLISH),
-                new DateTimeFormatterBuilder()
-                        .parseCaseInsensitive()
-                        .parseLenient()
-                        .appendPattern(pattern).toFormatter(Locale.of("nl"))
+                dateTimeFormatterBuilder.toFormatter(Locale.ENGLISH),
+                dateTimeFormatterBuilder.toFormatter(Locale.of("nl"))
         );
     }
 
@@ -259,17 +258,14 @@ public class AttributeMapper {
 
     public static Date parseDate(String dateString) {
         if (StringUtils.hasText(dateString)) {
-            //Final variables are required in functional code
-            AtomicReference<Date> atomicReference = new AtomicReference<>();
-            dateTimeFormatters.forEach(dateTimeFormatter -> {
+            for (DateTimeFormatter dateTimeFormatter: dateTimeFormatters) {
                 try {
                     LocalDate localDate = LocalDate.parse(dateString, dateTimeFormatter);
-                    atomicReference.set(Date.from(localDate.atStartOfDay(ZoneOffset.UTC).toInstant()));
+                    return Date.from(localDate.atStartOfDay(ZoneOffset.UTC).toInstant());
                 } catch (DateTimeException e) {
                     //Business decision, don't rethrow but return null, as we don't want to break external account linking
                 }
-            });
-            return atomicReference.get();
+            }
         }
         return null;
     }

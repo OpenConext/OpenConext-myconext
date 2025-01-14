@@ -35,16 +35,19 @@ public class ShibbolethPreAuthenticatedProcessingFilter extends AbstractPreAuthe
     private final UserRepository userRepository;
     private final Manage serviceProviderResolver;
     private final String mijnEduIDEntityId;
+    private final List<String> serviceDeskRoles;
 
     public ShibbolethPreAuthenticatedProcessingFilter(AuthenticationManager authenticationManager,
                                                       UserRepository userRepository,
                                                       Manage serviceProviderResolver,
-                                                      String mijnEduIDEntityId) {
+                                                      String mijnEduIDEntityId,
+                                                      List<String> serviceDeskRoles) {
         super();
         super.setAuthenticationManager(authenticationManager);
         this.userRepository = userRepository;
         this.serviceProviderResolver = serviceProviderResolver;
         this.mijnEduIDEntityId = mijnEduIDEntityId;
+        this.serviceDeskRoles = serviceDeskRoles;
     }
 
     @Override
@@ -73,9 +76,9 @@ public class ShibbolethPreAuthenticatedProcessingFilter extends AbstractPreAuthe
     }
 
     private User syncMemberships(User user, List<String> memberships) {
-        if (!user.getMemberships().stream().sorted().toList().equals(
-                memberships.stream().sorted().toList())) {
-            user.setMemberships(memberships);
+        boolean isServiceDeskMember = this.serviceDeskRoles.stream().anyMatch(memberships::contains);
+        if (user.isServiceDeskMember() != isServiceDeskMember) {
+            user.setServiceDeskMember(isServiceDeskMember);
             userRepository.save(user);
         }
         return user;
@@ -85,6 +88,8 @@ public class ShibbolethPreAuthenticatedProcessingFilter extends AbstractPreAuthe
                                String email, String preferredLanguage, List<String> memberships) {
         User user = new User(uid, email, givenName, givenName, familyName, schacHomeOrganization,
                 preferredLanguage, mijnEduIDEntityId, serviceProviderResolver);
+        boolean isServiceDeskMember = this.serviceDeskRoles.stream().anyMatch(memberships::contains);
+        user.setServiceDeskMember(isServiceDeskMember);
         user.setNewUser(false);
         user = userRepository.save(user);
 

@@ -4,6 +4,7 @@
     import arrowLeftIcon from "../icons/verify/arrow-left.svg?raw";
     import alertSvg from "../icons/alert-circle.svg?raw";
     import idCard from "../icons/verify/idCard.svg?raw";
+    import {isEmpty} from "../utils/utils.js";
 
     export let toggleView;
 
@@ -77,10 +78,6 @@
         margin-bottom: 20px;
     }
 
-    .button-container {
-        display: flex;
-    }
-
     :global(a.button) {
         margin: 25px auto 0 0;
     }
@@ -138,7 +135,7 @@
 <div class="info-container">
     {#if step === 0}
         <div class="header-container">
-            <span class="back" on:click={() => toggleView()}>
+            <span class="back" on:click={() => toggleView()} aria-label="toggle-view">
                 {@html arrowLeftIcon}
             </span>
             <h2 class="header">{I18n.t("verify.serviceDesk.confirmIdentityHeader")}</h2>
@@ -184,9 +181,9 @@
         <input id="dateOfBirth"
                type="text"
                bind:value={dateOfBirth}/>
-
         <Button label={I18n.t("verify.serviceDesk.idCard.generateControlCode")}
                 fullSize={true}
+                disabled={isEmpty(lastName) || isEmpty(firstName) || isEmpty(dateOfBirth)}
                 onClick={() => generateControlCode()}/>
     {/if}
 </div>

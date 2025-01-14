@@ -1,15 +1,13 @@
 package myconext.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.io.Serializable;
 
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
+@ToString
 public class ControlCode implements Serializable {
 
     private String firstName;

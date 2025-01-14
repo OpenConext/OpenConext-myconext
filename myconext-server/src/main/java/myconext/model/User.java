@@ -28,7 +28,10 @@ import org.springframework.util.StringUtils;
 import java.io.Serializable;
 import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
+import static myconext.security.SecurityConfiguration.InternalSecurityConfigurationAdapter.ROLE_GUEST;
+import static myconext.security.SecurityConfiguration.InternalSecurityConfigurationAdapter.SERVICE_DESK;
 import static myconext.validation.PasswordStrength.strongEnough;
 
 @NoArgsConstructor
@@ -102,7 +105,7 @@ public class User implements Serializable, UserDetails {
     private UserInactivity userInactivity;
 
     @Setter
-    private List<String> memberships = new ArrayList<>();
+    private boolean serviceDeskMember;
 
     @Setter
     private ControlCode controlCode;
@@ -244,7 +247,12 @@ public class User implements Serializable, UserDetails {
     @Override
     @JsonIgnore
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return Collections.singletonList(new SimpleGrantedAuthority("ROLE_GUEST"));
+        if (serviceDeskMember) {
+            return Stream.of(ROLE_GUEST, SERVICE_DESK)
+                    .map(SimpleGrantedAuthority::new)
+                    .toList();
+        }
+        return Collections.singletonList(new SimpleGrantedAuthority(ROLE_GUEST));
     }
 
     @Override
