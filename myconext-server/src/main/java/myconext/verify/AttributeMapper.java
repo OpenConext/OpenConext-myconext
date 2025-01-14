@@ -20,9 +20,12 @@ import java.time.Instant;
 import java.time.LocalDate;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeFormatterBuilder;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 
@@ -32,10 +35,25 @@ public class AttributeMapper {
 
     private static final int DEFAULT_EXPIRATION_YEARS = 6;
 
-    private static final Map<Pattern, DateTimeFormatter> datePatterns = Map.of(
-            Pattern.compile("^\\d{8}$"), DateTimeFormatter.ofPattern("yyyyMMdd"), //19750725
-            Pattern.compile("^\\d{4}-\\d{2}-\\d{2}$"), DateTimeFormatter.ofPattern("yyyy-MM-dd") //1963-02-05
-    );
+    private static final List<DateTimeFormatter> dateTimeFormatters;
+
+    static {
+        String pattern = String.join("", List.of(
+                "[yyyy-MM-dd]",
+                "[dd MMM yyyy]",
+                "[dd-MMM-yyyy]",
+                "[yyyyMMdd]"));
+        dateTimeFormatters = List.of(
+                new DateTimeFormatterBuilder()
+                        .parseCaseInsensitive()
+                        .parseLenient()
+                        .appendPattern(pattern).toFormatter(Locale.ENGLISH),
+                new DateTimeFormatterBuilder()
+                        .parseCaseInsensitive()
+                        .parseLenient()
+                        .appendPattern(pattern).toFormatter(Locale.of("nl"))
+        );
+    }
 
     private final ObjectMapper objectMapper;
     private final Manage manage;
@@ -241,17 +259,17 @@ public class AttributeMapper {
 
     public static Date parseDate(String dateString) {
         if (StringUtils.hasText(dateString)) {
-            DateTimeFormatter dateTimeFormatter = datePatterns.entrySet().stream()
-                    .filter(e -> e.getKey().matcher(dateString).matches())
-                    .map(e -> e.getValue())
-                    .findFirst()
-                    .orElse(DateTimeFormatter.ISO_LOCAL_DATE);
-            try {
-                LocalDate localDate = LocalDate.parse(dateString, dateTimeFormatter);
-                return Date.from(localDate.atStartOfDay(ZoneOffset.UTC).toInstant());
-            } catch (DateTimeException e) {
-                //Business decision, don't rethrow but return null, as we don't want to break external account linking
-            }
+            //Final variables are required in functional code
+            AtomicReference<Date> atomicReference = new AtomicReference<>();
+            dateTimeFormatters.forEach(dateTimeFormatter -> {
+                try {
+                    LocalDate localDate = LocalDate.parse(dateString, dateTimeFormatter);
+                    atomicReference.set(Date.from(localDate.atStartOfDay(ZoneOffset.UTC).toInstant()));
+                } catch (DateTimeException e) {
+                    //Business decision, don't rethrow but return null, as we don't want to break external account linking
+                }
+            });
+            return atomicReference.get();
         }
         return null;
     }

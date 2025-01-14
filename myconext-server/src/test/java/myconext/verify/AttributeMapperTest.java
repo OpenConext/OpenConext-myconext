@@ -13,10 +13,10 @@ import org.springframework.core.io.ClassPathResource;
 
 import java.io.IOException;
 import java.nio.charset.Charset;
-import java.util.Base64;
-import java.util.Date;
-import java.util.Map;
-import java.util.UUID;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeFormatterBuilder;
+import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -80,12 +80,16 @@ class AttributeMapperTest {
 
     @Test
     void parseDate() {
-        Date eherkenningDate = AttributeMapper.parseDate("1963-02-21");
-        Date idinDate = AttributeMapper.parseDate("19630221");
+        Date eherkenningDate = AttributeMapper.parseDate("1963-03-21");
+        Date idinDate = AttributeMapper.parseDate("19630321");
+        Date idCardDate = AttributeMapper.parseDate("21-MRT-1963");
+        Date passportDateNl = AttributeMapper.parseDate("21 MRT 1963");
+        Date passportDateEn = AttributeMapper.parseDate("21 MAR 1963");
         assertNotNull(eherkenningDate);
         assertEquals(eherkenningDate, idinDate);
-        Date dateOfBirth = AttributeMapper.parseDate("1991-12-19");
-        assertTrue(dateOfBirth.toString().startsWith("Thu Dec 19"));
+        assertEquals(eherkenningDate, idCardDate);
+        assertEquals(eherkenningDate, passportDateNl);
+        assertEquals(eherkenningDate, passportDateEn);
     }
 
     @Test
