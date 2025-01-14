@@ -594,26 +594,26 @@ I18n.translations.en = {
             eeaNote: "<sup>*</sup>EEA: all EU member states plus Liechtenstein, Norway and Iceland",
             next: "Enter your details",
             idCard: {
-                information: "Vul je gegevens in zoals die op je identiteitsbewijs staan.",
-                lastName: "Achternaam",
-                firstName: "Voornamen",
-                dateOfBirth: "Geboortedatum",
-                generateControlCode: "Genereer controlcode"
+                information: "Enter your details as they appear on your ID. Names must be in Roman characters.",
+                lastName: "Last name",
+                firstName: "First name(s)",
+                dateOfBirth: "Date of birth",
+                generateControlCode: "Generate verification code"
             },
             controlCode: {
-                yourControlCode: "Je controlecode",
-                info: "Je krijgt ook een e-mail met deze code. De code is 14 dagen geldig en is bedoeld voor:",
-                typoPrefix: "Typfout gemaakt? ",
-                typoLink: "Pas gegevens aan",
-                todo: "Wat moet je nu doen?",
-                todoDetails: "Maak een afspraak met een eduID Service Desk (digitaal of op locatie). Laat tijdens je afspraak je controlecode en identiteisbewijs zien.",
-                serviceDesks: "Bekijk eduID Service Desks",
+                yourControlCode: "Your verification code",
+                info: "You will also receive an email with this code. The code is valid for 14 days and is intended for:",
+                typoPrefix: "Made a typo? ",
+                typoLink: "Edit your details",
+                todo: "What;s next?",
+                todoDetails: "Schedule an appointment with an eduID Service Desk (online or in person). During your appointment, show your verification code and ID.",
+                serviceDesks: "Show eduID Service Desks",
                 serviceDesksLocations: "https://wiki.surfnet.nl/display/EDUID/eduID+Service+Desk",
-                back: "Terug naar overzicht",
-                rethink: "Wil je toch op een andere manier bewijzen wie je bent? Verwijder dan eerst je controlecode.",
-                deleteControlCode: "Verwijder controlecode",
-                banner: "Bevestig je identiteit bij een eduID Service Desk. Dit doe je door je identiteitsbewijs en controlecode te laten zien.",
-                showCode: "Toon code"
+                back: "Back to overview",
+                rethink: "Want to prove your identity another way? Make sure to delete your verification code first.",
+                deleteControlCode: "Delete verification code",
+                banner: "Verify your identity at an eduID Service Desk by presenting your ID and verification code.",
+                showCode: "Show code"
             }
         }
     }
