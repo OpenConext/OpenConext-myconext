@@ -595,29 +595,29 @@ I18n.translations.nl = {
             residencePermit: "Nederlandse verblijfsvergunningen",
             note: "Let op: kopieën, OV-kaarten en studentenkaarten zijn geen geldige identiteitsbewijzen.",
             eeaNote: "<sup>*</sup>EEA: alle EU-lidstaten + Liechtenstein, Noorwegen en IJsland.",
-            next: "Naar gegevens invullen"
+            next: "Naar gegevens invullen",
+            idCard: {
+                information: "Vul je gegevens in zoals die op je identiteitsbewijs staan.",
+                lastName: "Achternaam",
+                firstName: "Voornamen",
+                dateOfBirth: "Geboortedatum",
+                generateControlCode: "Genereer controlcode"
+            },
+            controlCode: {
+                yourControlCode: "Je controlecode",
+                info: "Je krijgt ook een e-mail met deze code. De code is 14 dagen geldig en is bedoeld voor:",
+                typoPrefix: "Typfout gemaakt? ",
+                typoLink: "Pas gegevens aan",
+                todo: "Wat moet je nu doen?",
+                todoDetails: "Maak een afspraak met een eduID Service Desk (digitaal of op locatie). Laat tijdens je afspraak je controlecode en identiteisbewijs zien.",
+                serviceDesks: "Bekijk eduID Service Desks",
+                serviceDesksLocations: "https://wiki.surfnet.nl/display/EDUID/eduID+Service+Desk",
+                back: "Terug naar overzicht",
+                rethink: "Wil je toch op een andere manier bewijzen wie je bent? Verwijder dan eerst je controlecode.",
+                deleteControlCode: "Verwijder controlecode",
+                banner: "Bevestig je identiteit bij een eduID Service Desk. Dit doe je door je identiteitsbewijs en controlecode te laten zien.",
+                showCode: "Toon code"
+            }
         },
-        idCard: {
-            information: "Vul je gegevens in zoals die op je identiteitsbewijs staan.",
-            lastName: "Achternaam",
-            firstName: "Voornamen",
-            dateOfBirth: "Geboortedatum",
-            generateControlCode: "Genereer controlcode"
-        },
-        controlCode: {
-            yourControlCode: "Je controlecode",
-            info: "Je krijgt ook een e-mail met deze code. De code is 14 dagen geldig en is bedoeld voor:",
-            typoPrefix: "Typfout gemaakt? ",
-            typoLink: "Pas gegevens aan",
-            todo: "Wat moet je nu doen?",
-            todoDetails: "Maak een afspraak met een eduID Service Desk (digitaal of op locatie). Laat tijdens je afspraak je controlecode en identiteisbewijs zien.",
-            serviceDesks: "Bekijk eduID Service Desks",
-            serviceDesksLocations: "https://wiki.surfnet.nl/display/EDUID/eduID+Service+Desk",
-            back: "Terug naar overzicht",
-            rethink: "Wil je toch op een andere manier bewijzen wie je bent? Verwijder dan eerst je controlecode.",
-            deleteControlCode: "Verwijder controlecode",
-            banner: "Bevestig je identiteit bij een eduID Service Desk. Dit doe je door je identiteitsbewijs en controlecode te laten zien.",
-            showCode: "Toon code"
-        }
     }
 };
