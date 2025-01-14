@@ -26,7 +26,7 @@ let locale = "en"
 const I18n = {
     changeLocale: lang => locale = lang,
     currentLocale: () => locale,
-    t: (key, model, fallback=null) => {
+    t: (key, model = {}, fallback = null) => {
         const msg = translations[locale][key]
         if (!msg) {
             if (fallback) {
