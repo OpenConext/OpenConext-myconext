@@ -18,6 +18,8 @@ import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import lombok.SneakyThrows;
 import myconext.cron.DisposableEmailProviders;
@@ -47,9 +49,6 @@ import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import tiqr.org.model.Registration;
-
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpSession;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -982,12 +981,15 @@ public class UserController implements UserAuthentication {
     @PostMapping("sp/control-code")
     public ResponseEntity<ControlCode> createUserControlCode(Authentication authentication,
                                                              @RequestBody ControlCode controlCode) {
+        User user = userFromAuthentication(authentication);
+        if (!user.getExternalLinkedAccounts().isEmpty() || !user.getLinkedAccounts().isEmpty()) {
+            throw new ForbiddenException("User has already linked-accounts: " + user.getEmail());
+        }
         String code = VerificationCodeGenerator.generateControlCode();
         //Very small chance, but better be safe than sorry (User#ControlCode#code is indexed)
         while (userRepository.findByControlCode_Code(code).isPresent()) {
             code = VerificationCodeGenerator.generateControlCode();
         }
-        User user = userFromAuthentication(authentication);
         controlCode.setCode(code);
         controlCode.setCreatedAt(System.currentTimeMillis());
 

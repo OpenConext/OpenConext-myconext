@@ -29,8 +29,8 @@
       }
     ],
     "attributes": {},
-    "surfSecureId" : {
-      "recovery-code" : "93132464"
+    "surfSecureId": {
+      "recovery-code": "93132464"
     },
     "publicKeyCredentials": [
       {
@@ -55,7 +55,6 @@
             "institutionGuid": "ad93daef-0911-e511-80d0-005056956c1a"
           }
         ]
-
       },
       {
         "value": "fc75dcc7-6def-4054-b8ba-3c3cc504dd4b",
@@ -78,6 +77,13 @@
     "familyName": "Doe",
     "password": "$2a$10$kUSu/Or0IX.E1WRaJtpUk.NWd83yV0mnt8CRnkbcQhvz6Qe3ntcAK",
     "schacHomeOrganization": "surfguest.nl",
-    "created": 1583337392
+    "created": 1583337392,
+    "controlCode": {
+      "firstName": "Marianne",
+      "lastName": "DoeDoe",
+      "dayOfBirth": "11 Mar 1987",
+      "code": "12345",
+      "createdAt": 7979472000000
+    }
   }
 ]

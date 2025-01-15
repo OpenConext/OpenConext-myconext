@@ -3,10 +3,7 @@ package myconext.verify;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.SneakyThrows;
 import myconext.manage.Manage;
-import myconext.model.ExternalLinkedAccount;
-import myconext.model.IdpScoping;
-import myconext.model.Verification;
-import myconext.model.VerifyIssuer;
+import myconext.model.*;
 import myconext.remotecreation.NewExternalEduID;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -22,11 +19,7 @@ import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeFormatterBuilder;
 import java.time.temporal.ChronoUnit;
-import java.time.temporal.TemporalQueries;
 import java.util.*;
-import java.util.concurrent.atomic.AtomicReference;
-import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 
@@ -213,6 +206,57 @@ public class AttributeMapper {
         return externalLinkedAccount;
     }
 
+    public ExternalLinkedAccount createFromControlCode(ControlCode controlCode) {
+        String uuid = UUID.randomUUID().toString();
+        ExternalLinkedAccount externalLinkedAccount =
+                new ExternalLinkedAccount(
+                        //String subjectId
+                        uuid,
+                        //IdpScoping idpScoping
+                        IdpScoping.serviceDesk,
+                        //VerifyIssuer issuer
+                        new VerifyIssuer(IdpScoping.serviceDesk.name(), IdpScoping.serviceDesk.name(), null),
+                        //Verification
+                        Verification.Geverifieerd,
+                        //String serviceUUID
+                        uuid,
+                        //String serviceID
+                        uuid,
+                        //String subjectIssuer
+                        uuid,
+                        //String brinCode
+                        null,
+                        //String initials
+                        null,
+                        //String chosenName
+                        controlCode.getFirstName(),
+                        //String firstName
+                        controlCode.getFirstName(),
+                        //String preferredLastName
+                        controlCode.getLastName(),
+                        //String legalLastName;
+                        controlCode.getLastName(),
+                        //String partnerLastNamePrefix
+                        null,
+                        //String legalLastNamePrefix
+                        null,
+                        //String preferredLastNamePrefix
+                        null,
+                        //String partnerLastName
+                        null,
+                        //Date dateOfBirth
+                        parseDate(controlCode.getDayOfBirth()),
+                        //Date createdAt
+                        new Date(),
+                        //Date expiresAt
+                        Date.from(Instant.now().plus(DEFAULT_EXPIRATION_YEARS * 365, ChronoUnit.DAYS)),
+                        //boolean external
+                        true
+                );
+        externalLinkedAccount.setPreferred(true);
+        return externalLinkedAccount;
+    }
+
     @SneakyThrows
     public String serializeToBase64(VerifyState verifyState) {
         Map<String, String> result = new HashMap<>();
@@ -258,7 +302,7 @@ public class AttributeMapper {
 
     public static Date parseDate(String dateString) {
         if (StringUtils.hasText(dateString)) {
-            for (DateTimeFormatter dateTimeFormatter: dateTimeFormatters) {
+            for (DateTimeFormatter dateTimeFormatter : dateTimeFormatters) {
                 try {
                     LocalDate localDate = LocalDate.parse(dateString, dateTimeFormatter);
                     return Date.from(localDate.atStartOfDay(ZoneOffset.UTC).toInstant());
@@ -280,7 +324,6 @@ public class AttributeMapper {
                         .map(idp -> String.format("student@%s", idp.getDomainName()))
                         .toList();
     }
-
 
     private String getAttribute(Map<String, Object> attributes, String key) {
         return (String) attributes.get(key);

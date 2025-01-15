@@ -1409,6 +1409,7 @@ public class UserControllerTest extends AbstractIntegrationTest {
 
     @Test
     public void createUserControlCode() {
+        clearExternalAccounts("jdoe@example.com");
         ControlCode controlCode = new ControlCode("Lee", "Harpers", "01 Mar 1977");
         ControlCode responseControlCode =given()
                 .body(controlCode)
@@ -1432,10 +1433,30 @@ public class UserControllerTest extends AbstractIntegrationTest {
         assertNull(userFromDB.getControlCode());
     }
 
+    @Test
+    public void createUserControlCodeForbidden() {
+        ControlCode controlCode = new ControlCode("Lee", "Harpers", "01 Mar 1977");
+        given()
+                .body(controlCode)
+                .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+                .when()
+                .post("/myconext/api/sp/control-code")
+                .then()
+                .statusCode(403);
+    }
+
     private String hash() {
         byte[] bytes = new byte[64];
         random.nextBytes(bytes);
         return Base64.getUrlEncoder().withoutPadding().encodeToString(bytes);
+    }
+
+    private void clearExternalAccounts(String email) {
+        User user = userRepository.findOneUserByEmail(email);
+        user.getLinkedAccounts().clear();
+        user.getExternalLinkedAccounts().clear();
+        userRepository.save(user);
+
     }
 
 }

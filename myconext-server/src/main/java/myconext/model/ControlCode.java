@@ -5,7 +5,6 @@ import lombok.*;
 import org.springframework.data.mongodb.core.index.Indexed;
 
 import java.io.Serializable;
-import java.time.Instant;
 
 @Getter
 @NoArgsConstructor
@@ -23,6 +22,9 @@ public class ControlCode implements Serializable {
     private String code;
     @Setter
     private long createdAt;
+
+    @Setter
+    private String userUid;
 
     public ControlCode(String firstName, String lastName, String dayOfBirth) {
         this.firstName = firstName;

@@ -12,12 +12,12 @@ import static io.restassured.RestAssured.given;
         })
 class ServiceDeskControllerUnauthorizedTest extends AbstractIntegrationTest {
 
-//    @Test
-//    void createUserControlCode() {
-//        given()
-//                .when()
-//                .get("/myconext/api/servicedesk")
-//                .then()
-//                .statusCode(403);
-//    }
+    @Test
+    void getUserControlCode() {
+        given()
+                .when()
+                .get("/myconext/api/servicedesk/user/12345")
+                .then()
+                .statusCode(403);
+    }
 }
