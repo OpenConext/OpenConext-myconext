@@ -32,7 +32,7 @@ public class VerificationCodeGenerator {
     }
 
     public static String generateControlCode() {
-        return String.valueOf(random.nextInt(10000, 60000));
+        return String.valueOf(getChars(5, NUMBERS));
     }
 
     private static char[] getChars(int nbrBytes, char[] charArray) {

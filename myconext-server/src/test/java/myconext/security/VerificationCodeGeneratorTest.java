@@ -15,6 +15,8 @@ public class VerificationCodeGeneratorTest {
 
     private final Pattern patternPhoneVerification = Pattern.compile("^[0-9]{6}$");
 
+    private final Pattern patternControlCode = Pattern.compile("^[0-9]{5}$");
+
     @Test
     public void generate() {
         String code = VerificationCodeGenerator.generate();
@@ -32,4 +34,11 @@ public class VerificationCodeGeneratorTest {
         String phoneVerification = VerificationCodeGenerator.generatePhoneVerification();
         assertTrue(patternPhoneVerification.matcher(phoneVerification).matches());
     }
+
+    @Test
+    public void generateControlCode() {
+        String controlCode = VerificationCodeGenerator.generateControlCode();
+        assertTrue(patternControlCode.matcher(controlCode).matches());
+    }
+
 }

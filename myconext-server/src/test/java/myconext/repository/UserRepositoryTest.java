@@ -3,6 +3,7 @@ package myconext.repository;
 import myconext.AbstractIntegrationTest;
 import myconext.model.ControlCode;
 import myconext.model.User;
+import myconext.security.VerificationCodeGenerator;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.util.ReflectionTestUtils;
@@ -67,7 +68,7 @@ public class UserRepositoryTest extends AbstractIntegrationTest {
     public void testFindOneUserByControlCode() {
         User user = userRepository.findOneUserByEmail("jdoe@example.com");
         ControlCode controlCode = new ControlCode();
-        controlCode.setCode("12345");
+        controlCode.setCode(VerificationCodeGenerator.generateControlCode());
         user.setControlCode(controlCode);
         userRepository.save(user);
 
