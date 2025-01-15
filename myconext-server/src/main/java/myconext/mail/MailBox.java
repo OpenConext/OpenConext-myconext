@@ -184,8 +184,12 @@ public class MailBox {
         sendMail("verification_code", title, variables, preferredLanguage(user), user.getEmail(), true);
     }
 
-    public void sendControlCode(User user, ControlCode controlCode) {
-        //TODO Implement
+    public void sendServiceDeskControlCode(User user, ControlCode controlCode) {
+        String title = this.getTitle("service_desk_control_code", user);
+        Map<String, Object> variables = variables(user, title);
+        variables.put("mySurfConextURL", mySURFconextURL);
+        variables.put("controlCode", controlCode);
+        sendMail("service_desk_control_code", title, variables, preferredLanguage(user), user.getEmail(), true);
     }
 
     private Map<String, Object> variables(User user, String title) {

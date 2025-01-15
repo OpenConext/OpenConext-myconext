@@ -6,6 +6,7 @@
     export let href = "/";
     export let disabled = false;
     export let warning = false;
+    export let deleteAction = false;
     export let label;
     export let onClick;
     export let medium = false;
@@ -87,6 +88,16 @@
     .button.warning:hover {
         background-color: #8e0000;
         color: whitesmoke;
+    }
+
+    .button.deleteAction {
+        background-color: white;
+        color: var(--color-warning-red);;
+        border: 1px solid var(--color-warning-red);;
+    }
+
+    .button.deleteAction:hover {
+        background-color: whitesmoke;
     }
 
     .button.small {
@@ -231,6 +242,7 @@
     <a class="{`button ${className}`}"
        class:active={active}
        class:warning={warning}
+       class:deleteAction={deleteAction}
        href="{href}"
        class:icon={icon != undefined}
        class:small={small}

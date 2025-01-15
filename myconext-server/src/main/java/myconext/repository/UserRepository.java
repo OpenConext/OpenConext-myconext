@@ -40,6 +40,10 @@ public interface UserRepository extends MongoRepository<User, String> {
 
     List<User> findByNewUserTrueAndCreatedLessThan(long millis);
 
+    List<User> findByControlCode_CreatedAtLessThan(long millis);
+
+    Optional<User> findByControlCode_Code(String code);
+
     Optional<User> findUserByWebAuthnIdentifier(String webAuthnIdentifier);
 
     Optional<User> findUserByUserHandle(String userHandle);

@@ -94,6 +94,15 @@ export function resetPasswordHashValid(hash) {
     return fetchJson(`/myconext/api/sp/password-reset-hash-valid?hash=${hash}`);
 }
 
+export function createUserControlCode(firstName, lastName, dayOfBirth) {
+    const body = {firstName, lastName, dayOfBirth};
+    return postPutJson("/myconext/api/sp/control-code", body, "POST");
+}
+
+export function deleteUserControlCode() {
+    return fetchDelete("/myconext/api/sp/control-code");
+}
+
 export function startWebAuthFlow() {
     return fetchJson("/myconext/api/sp/security/webauthn");
 }
@@ -141,7 +150,7 @@ export function startLinkAccountFlow() {
     return fetchJson("/myconext/api/sp/oidc/link");
 }
 
-export function startVerifyAccountFlow(idpScoping, bankId ) {
+export function startVerifyAccountFlow(idpScoping, bankId) {
     const bankIdParam = isEmpty(bankId) ? "" : `&bankId=${bankId}`;
     return fetchJson(`/myconext/api/sp/verify/link?idpScoping=${idpScoping}${bankIdParam}`);
 }

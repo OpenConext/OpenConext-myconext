@@ -605,13 +605,14 @@ I18n.translations.en = {
                 info: "You will also receive an email with this code. The code is valid for 14 days and is intended for:",
                 typoPrefix: "Made a typo? ",
                 typoLink: "Edit your details",
-                todo: "What;s next?",
+                todo: "What's next?",
                 todoDetails: "Schedule an appointment with an eduID Service Desk (online or in person). During your appointment, show your verification code and ID.",
                 serviceDesks: "Show eduID Service Desks",
                 serviceDesksLocations: "https://wiki.surfnet.nl/display/EDUID/eduID+Service+Desk",
                 back: "Back to overview",
                 rethink: "Want to prove your identity another way? Make sure to delete your verification code first.",
                 deleteControlCode: "Delete verification code",
+                deletedControlCode: "Verification code deleted",
                 banner: "Verify your identity at an eduID Service Desk by presenting your ID and verification code.",
                 showCode: "Show code"
             }

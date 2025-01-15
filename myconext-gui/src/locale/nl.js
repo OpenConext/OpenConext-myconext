@@ -615,6 +615,7 @@ I18n.translations.nl = {
                 back: "Terug naar overzicht",
                 rethink: "Wil je toch op een andere manier bewijzen wie je bent? Verwijder dan eerst je controlecode.",
                 deleteControlCode: "Verwijder controlecode",
+                deletedControlCode: "Verificatie-code verwijderd",
                 banner: "Bevestig je identiteit bij een eduID Service Desk. Dit doe je door je identiteitsbewijs en controlecode te laten zien.",
                 showCode: "Toon code"
             }

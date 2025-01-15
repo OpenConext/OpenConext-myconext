@@ -9,7 +9,9 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Date;
 
+import static myconext.cron.InactivityMail.ONE_DAY_IN_MILLIS;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 
 public class ResourceCleanerTest extends AbstractIntegrationTest {
 
@@ -95,6 +97,23 @@ public class ResourceCleanerTest extends AbstractIntegrationTest {
         resourceCleaner.clean();
 
         assertEquals(prev - 1, mobileLinkAccountRequestRepository.count());
+    }
+
+    @Test
+    public void cleanExpiredControlCode() {
+        ResourceCleaner resourceCleaner = getResourceCleaner(true);
+
+        User user = userRepository.findUserByEmail("jdoe@example.com").get();
+        ControlCode controlCode = new ControlCode();
+        long threeWeeksAgo = System.currentTimeMillis() - (ONE_DAY_IN_MILLIS * 21);
+        controlCode.setCreatedAt(threeWeeksAgo);
+        user.setControlCode(controlCode);
+        userRepository.save(user);
+
+        resourceCleaner.clean();
+
+        User userFromDB = userRepository.findUserByEmail("jdoe@example.com").get();
+        assertNull(userFromDB.getControlCode());
     }
 
     @Test

@@ -102,6 +102,8 @@
         --color-tertiare-grey: #989898;
         --color-background: #f9f9f9;
         --color-secondary-background: #f3f6f8;
+        --color-primary-yellow: #f3e178;
+        --color-secondary-yellow: #fdf7d2;
         --width-app: 1024px;
     }
 

@@ -51,6 +51,10 @@
   "inactivity_warning_short_term": {
     "en": "Inactivity warning",
     "nl": "Inactiviteitswaarschuwing"
+  },
+  "service_desk_control_code": {
+    "en": "Your verification code to conform your identity",
+    "nl": "Je verificatie-code om je identiteit te bevestigen"
   }
 
 }

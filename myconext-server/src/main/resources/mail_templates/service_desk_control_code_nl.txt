@@ -1,0 +1,22 @@
+Je verificatie-code om je identiteit te bevestigen
+
+{{controlCode.code}}
+
+Hi {{name}},
+
+Je hebt zojuist een verificatie-code gegenereerd in eduID. Met deze code kan je je identiteit bevestigen
+bij een ediID Service Desk. De code is geldig voor 14 dagen en je kan de code ook vinden in je eduID account:
+{{mySURFconextURL}}.
+
+De code is bedoeld voor:
+
+Achternaam - {{controlCode.lastName}}
+Voornaam - {{controlCode.FirstName}}
+Geboortedatum - {{controlCode.dayOfBirth}}
+
+Wat moet je nu doen?
+
+Maak een afspraak met een eduID Service Desk (digitaal of op locatie). Laat tijdens je afspraak je controlecode en identiteisbewijs zien.
+Alle eduID Service Desks: https://wiki.surfnet.nl/display/EDUID/eduID+Service+Desk
+
+{{> footer_nl.txt}}

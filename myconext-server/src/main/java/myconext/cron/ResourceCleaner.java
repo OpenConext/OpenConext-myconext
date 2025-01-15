@@ -16,6 +16,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static myconext.cron.InactivityMail.ONE_DAY_IN_MILLIS;
+
 @Component
 public class ResourceCleaner {
 
@@ -73,6 +75,14 @@ public class ResourceCleaner {
                     .collect(Collectors.toList());
             user.setLinkedAccounts(linkedAccounts);
             LOG.info(String.format("Removed expired linked account for user %s", user.getEmail()));
+            userRepository.save(user);
+        });
+
+        long twoWeeksAgo = System.currentTimeMillis() - (ONE_DAY_IN_MILLIS * 14);
+        List<User> controlCodeExpiredUsers = userRepository.findByControlCode_CreatedAtLessThan(twoWeeksAgo);
+        controlCodeExpiredUsers.forEach(user -> {
+            user.setControlCode(null);
+            LOG.info(String.format("Removed expired control code for user %s", user.getEmail()));
             userRepository.save(user);
         });
 

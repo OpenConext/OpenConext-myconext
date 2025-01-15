@@ -27,6 +27,7 @@ import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.util.StringUtils;
 
 import java.io.IOException;
+import java.lang.reflect.Type;
 import java.nio.charset.Charset;
 import java.security.SecureRandom;
 import java.time.Instant;
@@ -1408,44 +1409,27 @@ public class UserControllerTest extends AbstractIntegrationTest {
 
     @Test
     public void createUserControlCode() {
-        ControlCode controlCode = given()
-                .when()
-                .get("/myconext/api/sp/control-code")
-                .as(ControlCode.class);
-        assertEquals(5, controlCode.getCode().length());
-    }
-
-    @Test
-    public void updateUserControlCode() {
-        Filter cookieFilter = new CookieFilter();
-        ControlCode preControlCode = given()
-                .filter(cookieFilter)
-                .when()
-                .get("/myconext/api/sp/control-code")
-                .as(ControlCode.class);
-
-        ControlCode controlCode = new ControlCode("Lee", "Harpers", "01 Mar 1977", preControlCode.getCode());
-        given()
-                .filter(cookieFilter)
+        ControlCode controlCode = new ControlCode("Lee", "Harpers", "01 Mar 1977");
+        ControlCode responseControlCode =given()
                 .body(controlCode)
                 .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                 .when()
-                .put("/myconext/api/sp/control-code")
+                .post("/myconext/api/sp/control-code")
                 .as(ControlCode.class);
+        assertEquals(5, responseControlCode.getCode().length());
         User user = userRepository.findUserByEmail("jdoe@example.com").get();
-        assertEquals(user.getControlCode().getCode(), preControlCode.getCode());
-    }
+        assertEquals(user.getControlCode().getCode(), responseControlCode.getCode());
 
-    @Test
-    public void updateUserControlCodeMismatch() {
-        ControlCode controlCode = new ControlCode("Lee", "Harpers", "01 Mar 1977", "nope");
-        given()
-                .body(controlCode)
+        Map<String, Object> userResponse = given()
                 .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                 .when()
-                .put("/myconext/api/sp/control-code")
-                .then()
-                .statusCode(403);
+                .delete("/myconext/api/sp/control-code")
+                .as(new TypeRef<>() {
+                });
+        assertFalse(userResponse.containsKey("controlCode"));
+
+        User userFromDB = userRepository.findUserByEmail("jdoe@example.com").get();
+        assertNull(userFromDB.getControlCode());
     }
 
     private String hash() {

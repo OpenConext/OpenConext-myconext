@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>{{title}}</title>
+</head>
+<body>
+<div class="main" style="font-family: Helvetica, Arial, sans-serif;line-height: 18px;font-size: 14px;color: #353535;">
+    <div class="head"
+         style="background-color: #f5f5f5;border:1px solid #eaeaea;padding: 20px 0 40px 60px;font-weight: bold;font-size: 26px;border-radius: 8px;">
+        <p>Je verificatie-code om je identiteit te bevestigen</p>
+        <p style="margin: 25px 0;">{{controlCode.code}}</span>
+        </p>
+    </div>
+    <div class="middle" style="padding: 20px 0 40px 60px;max-width: 600px;">
+        <p>Hi <strong>{{name}}</strong>,</p>
+
+        <p>Je hebt zojuist een verificatie-code gegenereerd in eduID. Met deze code kan je je identiteit bevestigen
+            bij een ediID Service Desk. De code is geldig voor 14 dagen en je kan de code ook vinden in de
+            <a href="{{mySURFconextURL}}">eduID account</a>.
+        </p>
+        <br/>
+        <p>De code is bedoeld voor:</p>
+        <ul>
+            <li>Achternaam - {{controlCode.lastName}}</li>
+            <li>Voornaam - {{controlCode.FirstName}}</li>
+            <li>Geboortedatum - {{controlCode.dayOfBirth}}</li>
+        </ul>
+
+        <p style="font-weight: bold;margin: 20px 0 ">Wat moet je nu doen?</p>
+
+        <p>Maak een afspraak met een eduID Service Desk (digitaal of op locatie). Laat tijdens je afspraak je controlecode en identiteisbewijs zien.
+            <a href="https://wiki.surfnet.nl/display/EDUID/eduID+Service+Desk">Bekijk eduID Service Desks</a></p>
+    </div>
+    {{> footer_nl.html}}
+</div>
+</body>
+</html>

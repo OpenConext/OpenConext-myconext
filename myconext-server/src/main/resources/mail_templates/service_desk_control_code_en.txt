@@ -1,0 +1,22 @@
+Your verification code to conform your identity
+
+{{controlCode.code}}
+
+Hi {{name}},
+
+You just generated a verification code in eduID. With this code, you can confirm your identity at an eduID
+Service Desk. The code is valid for 14 days and can also be found in your eduID account:
+{{mySURFconextURL}}.
+
+This code is intended for:
+
+Last name - {{controlCode.lastName}}
+First name(s) - {{controlCode.FirstName}}
+Date of birth - {{controlCode.dayOfBirth}}
+
+What’s next?
+
+Schedule an appointment with an eduID Service Desk (online or in person). During your appointment, show your
+verification code and ID. All eduID Service Desks: https://wiki.surfnet.nl/display/EDUID/eduID+Service+Desk
+
+{{> footer_en.txt}}

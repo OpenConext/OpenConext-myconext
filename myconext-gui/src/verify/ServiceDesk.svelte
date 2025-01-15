@@ -1,29 +1,63 @@
 <script>
     import I18n from "i18n-js";
+    import {flash, user} from "../stores/user";
     import Button from "../components/Button.svelte";
     import arrowLeftIcon from "../icons/verify/arrow-left.svg?raw";
     import alertSvg from "../icons/alert-circle.svg?raw";
     import idCard from "../icons/verify/idCard.svg?raw";
     import {isEmpty} from "../utils/utils.js";
+    import {createUserControlCode, deleteUserControlCode} from "../api/index.js";
 
     export let toggleView;
+    export let cancelView;
 
     let step = 0;
     let lastName = "";
     let firstName = "";
     let dateOfBirth = "";
+    let code = "";
+
+    const cancel = () => {
+        toggleView();
+        step = 0;
+        lastName = "";
+        firstName = "";
+        dateOfBirth = "";
+    }
+
+    const backToPersonal = () => {
+        $user.controlCode = {code: code};
+        cancelView();
+    }
+
+    const deleteControlCode = () => {
+        deleteUserControlCode()
+            .then(() => {
+                $user.controlCode = null;
+                flash.setValue(I18n.t("verify.serviceDesk.controlCode.deletedControlCode"));
+                cancelView();
+            })
+    }
 
     const generateControlCode = () => {
-
+        createUserControlCode(firstName, lastName, dateOfBirth)
+            .then(res => {
+                code = res.code;
+                $user.controlCode = {code: res.code};
+                step = 2;
+            });
     }
 
-    const proceed = () => {
-
-    }
+    const init = el => el.focus();
 
 </script>
 
 <style lang="scss">
+    h3 {
+        color: var(--color-primary-green);
+        margin-bottom: 10px;
+    }
+
     div.info-container {
         display: flex;
         flex-direction: column;
@@ -60,7 +94,7 @@
     p {
         margin-bottom: 20px;
 
-        &.steps {
+        &.steps, &.important {
             font-weight: 600;
         }
     }
@@ -111,6 +145,7 @@
     div.id-card-container {
         display: flex;
         margin-bottom: 20px;
+
         span {
             margin: auto;
         }
@@ -130,12 +165,39 @@
         margin-bottom: 20px;
     }
 
+    .control-code {
+        display: flex;
+        flex-direction: column;
+        background-color: var(--color-secondary-yellow);
+        margin: 20px 0;
+        padding: 25px;
+        border-radius: 4px;
+        border: 1px solid var(--color-secondary-grey);
+
+        span {
+            margin: auto;
+            font-size: 34px;
+            letter-spacing: 6px;
+        }
+
+        .rethink {
+            display: flex;
+            gap: 2px;
+        }
+    }
+
+    .button-container {
+        margin-bottom: 20px;
+        padding-bottom: 30px;
+        border-bottom: 1px solid var(--color-primary-grey);
+    }
+
 </style>
 
 <div class="info-container">
     {#if step === 0}
         <div class="header-container">
-            <span class="back" on:click={() => toggleView()} aria-label="toggle-view">
+            <span class="back" on:click={cancel} aria-label="toggle-view">
                 {@html arrowLeftIcon}
             </span>
             <h2 class="header">{I18n.t("verify.serviceDesk.confirmIdentityHeader")}</h2>
@@ -164,7 +226,7 @@
         <Button label={I18n.t("verify.serviceDesk.next")}
                 fullSize={true}
                 onClick={() => step = 1}/>
-    {:else if (step === 1)}
+    {:else if step === 1}
         <div class="id-card-container">
             <span>{@html idCard}</span>
         </div>
@@ -172,6 +234,7 @@
         <label for="lastName">{I18n.t("verify.serviceDesk.idCard.lastName")}</label>
         <input id="lastName"
                type="text"
+               use:init
                bind:value={lastName}/>
         <label for="firstName">{I18n.t("verify.serviceDesk.idCard.firstName")}</label>
         <input id="firstName"
@@ -185,6 +248,57 @@
                 fullSize={true}
                 disabled={isEmpty(lastName) || isEmpty(firstName) || isEmpty(dateOfBirth)}
                 onClick={() => generateControlCode()}/>
+    {:else if step === 2}
+        <div>
+            <h3 class="header">{I18n.t("verify.serviceDesk.controlCode.yourControlCode")}</h3>
+            <div class="control-code">
+                <span>{code}</span>
+            </div>
+            <p>{I18n.t("verify.serviceDesk.controlCode.info")}</p>
+            <div class="control-code">
+                <label for="lastName">{I18n.t("verify.serviceDesk.idCard.lastName")}</label>
+                <input id="lastName"
+                       type="text"
+                       class="read-only"
+                       disabled="true"
+                       bind:value={lastName}/>
+                <label for="firstName">{I18n.t("verify.serviceDesk.idCard.firstName")}</label>
+                <input id="firstName"
+                       type="text"
+                       class="read-only"
+                       disabled="true"
+                       bind:value={firstName}/>
+                <label for="dateOfBirth">{I18n.t("verify.serviceDesk.idCard.dateOfBirth")}</label>
+                <input id="dateOfBirth"
+                       type="text"
+                       class="read-only"
+                       disabled="true"
+                       bind:value={dateOfBirth}/>
+                <div class="rethink">
+                    <p>{I18n.t("verify.serviceDesk.controlCode.typoPrefix")}</p>
+                    <a href="/#" on:click|preventDefault|stopPropagation={() => step = 1}>
+                        {I18n.t("verify.serviceDesk.controlCode.typoLink")}
+                    </a>
+
+                </div>
+            </div>
+            <p class="important">{I18n.t("verify.serviceDesk.controlCode.todo")}</p>
+            <p>{I18n.t("verify.serviceDesk.controlCode.todoDetails")}</p>
+            <div class="button-container">
+                <Button label={I18n.t("verify.serviceDesk.controlCode.serviceDesks")}
+                        fullSize={true}
+                        onClick={() => window.open(I18n.t("verify.serviceDesk.controlCode.serviceDesksLocations"), "_blank").focus()}/>
+                <Button label={I18n.t("verify.serviceDesk.controlCode.back")}
+                        fullSize={true}
+                        className="cancel"
+                        onClick={backToPersonal}/>
+            </div>
+            <p>{I18n.t("verify.serviceDesk.controlCode.rethink")}</p>
+            <Button label={I18n.t("verify.serviceDesk.controlCode.deleteControlCode")}
+                    fullSize={true}
+                    deleteAction={true}
+                    onClick={deleteControlCode}/>
+        </div>
     {/if}
 </div>
 

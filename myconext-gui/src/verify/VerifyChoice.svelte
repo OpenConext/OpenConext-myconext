@@ -12,13 +12,13 @@
     import alertSvg from "../icons/alert-circle.svg?raw";
     import Spinner from "../components/Spinner.svelte";
     import ServiceDesk from "./ServiceDesk.svelte";
-    import {onMount} from "svelte";
 
     export let addInstitution;
     export let addBank;
     export let addEuropean;
     export let issuers;
     export let showIdinOptions;
+    export let cancel;
     export let showServiceDesk = false;
 
     let showOtherOptions = false;
@@ -244,6 +244,6 @@
     </div>
 {/if}
 {#if !busyProcessing && showServiceDesk}
-    <ServiceDesk toggleView={() => showServiceDesk = false}/>
+    <ServiceDesk toggleView={() => showServiceDesk = false} cancelView={cancel}/>
 {/if}
 

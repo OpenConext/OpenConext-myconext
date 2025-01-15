@@ -104,6 +104,12 @@
         display: flex;
         text-align: center;
         justify-content: flex-end;
+
+        &.orphan {
+            :global(a.button) {
+                margin: 0 0 0 auto;
+            }
+        }
     }
 </style>
 
@@ -112,12 +118,12 @@
 <div class="modal">
     <div class="modal-content">
         {#if title}
-        <div class="modal-header" class:warning>
-            <h3>{title}</h3>
-            <span on:click={() => handleKeydown({key:"Escape"})}>
+            <div class="modal-header" class:warning>
+                <h3>{title}</h3>
+                <span on:click={() => handleKeydown({key:"Escape"})}>
                 {@html closeIcon}
             </span>
-        </div>
+            </div>
         {/if}
         <div class="modal-body" class:control-body={controlBody}>
             {#if question}
@@ -126,7 +132,7 @@
             <slot></slot>
         </div>
         {#if showOptions}
-            <div class="options">
+            <div class={`options ${!cancel && submit ? "orphan" : ""}`}>
                 {#if cancel}
                     <Button className="cancel"
                             onClick={cancel}

@@ -1,6 +1,7 @@
 package myconext.repository;
 
 import myconext.AbstractIntegrationTest;
+import myconext.model.ControlCode;
 import myconext.model.User;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -60,6 +61,18 @@ public class UserRepositoryTest extends AbstractIntegrationTest {
 
         user = userRepository.findOneUserByEmail("JDOE@EXAMPLE.COM");
         assertEquals("John", user.getGivenName());
+    }
+
+    @Test
+    public void testFindOneUserByControlCode() {
+        User user = userRepository.findOneUserByEmail("jdoe@example.com");
+        ControlCode controlCode = new ControlCode();
+        controlCode.setCode("12345");
+        user.setControlCode(controlCode);
+        userRepository.save(user);
+
+        user = userRepository.findByControlCode_Code(controlCode.getCode()).get();
+        assertEquals(controlCode.getCode(), user.getControlCode().getCode() );
     }
 
     @Test

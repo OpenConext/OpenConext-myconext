@@ -7,7 +7,7 @@
     import alertSvg from "../icons/alert-circle.svg?raw";
     import Button from "../components/Button.svelte";
     import {
-        deleteLinkedAccount,
+        deleteLinkedAccount, deleteUserControlCode,
         iDINIssuers,
         preferLinkedAccount,
         startLinkAccountFlow,
@@ -57,6 +57,8 @@
     let selectedInstitution;
     let newInstitution = {};
     let issuers;
+
+    let showControlCode = false;
 
     const manageVerifiedInformation = path => {
         navigate(`/${path}`, {replace:true});
@@ -369,7 +371,7 @@
         display: flex;
         align-items: center;
         background-color: var(--color-secondary-blue);
-        padding: 10px 10px 10px 42px;
+        padding: 15px 10px 15px 42px;
 
         @media (max-width: $max-width-mobile) {
             flex-direction: column;
@@ -381,7 +383,7 @@
 
         :global(a.button.ghost) {
             max-width: 90px;
-            margin-left: auto;
+            margin: 0 0 0 auto;
 
             @media (max-width: $max-width-mobile) {
                 margin-left: 0;
@@ -470,6 +472,18 @@
 
     }
 
+    .control-code {
+        display: flex;
+        flex-direction: column;
+        padding: 25px;
+        span {
+            margin: auto;
+            font-size: 34px;
+            letter-spacing: 6px;
+        }
+    }
+
+
 </style>
 <div class="profile">
     {#if showManageVerifiedInformation}
@@ -510,8 +524,7 @@
             </div>
             <p class="info">{I18n.t("profile.info")}</p>
         </div>
-
-        {#if !eduIDLinked && isEmpty($user.linkedAccounts) && isEmpty($user.externalLinkedAccounts)}
+        {#if !eduIDLinked && isEmpty($user.linkedAccounts) && isEmpty($user.externalLinkedAccounts) && isEmpty($user.controlCode)}
             <div class="banner">
                 <span class="verified-badge">{@html verifiedSvg}</span>
                 <p class="banner-info">{I18n.t("profile.banner")}</p>
@@ -527,6 +540,15 @@
                 <Button label={I18n.t("profile.verifyNow")}
                         className="ghost transparent"
                         onClick={() => addIdentity(true)}/>
+            </div>
+        {/if}
+        {#if !eduIDLinked && isEmpty($user.linkedAccounts) && isEmpty($user.externalLinkedAccounts) && !isEmpty($user.controlCode)}
+            <div class="banner expired">
+                <span class="verified-badge">{@html alertSvg}</span>
+                <p class="banner-info">{I18n.t("verify.serviceDesk.controlCode.banner")}</p>
+                <Button label={I18n.t("verify.serviceDesk.controlCode.showCode")}
+                        className="ghost transparent"
+                        onClick={() => showControlCode = true}/>
             </div>
         {/if}
         <div class="inner-container second">
@@ -671,3 +693,17 @@
         />
     </Modal>
 {/if}
+
+{#if showControlCode}
+    <Modal submit={() => showControlCode = false}
+           close={() => showControlCode = false}
+           cancelTitle={I18n.t("verify.serviceDesk.controlCode.deleteControlCode")}
+           largeConfirmation={true}
+           confirmTitle={I18n.t("profile.ok")}
+           title={I18n.t("verify.serviceDesk.controlCode.yourControlCode")}>
+        <div class="control-code">
+            <span>{$user.controlCode.code}</span>
+        </div>
+    </Modal>
+{/if}
+
