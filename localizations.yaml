@@ -780,7 +780,7 @@ SHARED:
       COPY:
         en: "You can delete your eduID whenever you want.
 
-          When you create a new eduID with the same email address, you’ll receive a new eduID number. This new number may cause some websites to recognize you as a new user. 
+          When you create a new eduID with the same email address, you’ll receive a new eduID number. This new number may cause some websites to recognize you as a new user.
           Good to know: deleting your eduID does not mean that all websites connected to your eduID will also delete your personal info."
         nl: "Wanneer je een nieuwe eduID maakt met hetzelfde e-mailadres, krijg je een nieuw eduID-nummer. Door dit nieuwe nummer zien sommige websites jou ook als nieuwe gebruiker. Goed om te weten: als je je eduID verwijdert, betekent dat niet dat alle websites die gekoppeld zijn aan je eduID ook je gegevens verwijderen."
     DeleteAccountButton:
@@ -915,7 +915,7 @@ SHARED:
   Security:
     Title:
       COPY:
-        en: Security 
+        en: Security
         nl: Beveiliging
     SubTitle:
       COPY:
@@ -960,7 +960,7 @@ SHARED:
     AddSecurityKeyInfo:
       COPY:
         en: >-
-          You can add a passkey to your eduIDto log in. 
+          You can add a passkey to your eduIDto log in.
           You can use, for example, the built-in sensor of your device
           (TouchID, FaceID) or a separate hardware key (YubiKey).
         nl: >-
@@ -1104,10 +1104,10 @@ SHARED:
         Description:
           COPY:
             en: |
-              There is already a eduID app connected to this eduID. 
+              There is already a eduID app connected to this eduID.
               Would you like to unconnect that app and connect this one?
             nl: |
-              Er is al een eduID app aan deze eduID gekoppeld. 
+              Er is al een eduID app aan deze eduID gekoppeld.
               Wil je de bestaande app-koppeling verwijderen en deze app koppelen?
   PasswordResetLink:
     Title:
@@ -1335,7 +1335,7 @@ SHARED:
         en: >-
           Note: if you delete your eduID, you will also <strong>lose your unique eduID number</strong> connected to your email address.
         nl: >-
-          Let op: als je je eduID verwijdert, <strong>verlies je ook je unieke eduID-nummer</strong> 
+          Let op: als je je eduID verwijdert, <strong>verlies je ook je unieke eduID-nummer</strong>
           dat gekoppeld is aan je e-mailadres.
     Data:
       COPY:
@@ -1374,25 +1374,26 @@ SHARED:
     Info2:
       COPY:
         en: >-
-          Note: if you delete your eduID, you will also lose your unique 
-          eduID number connected to your email address. When you create a new 
-          eduID with the same email address, you’ll receive a new eduID number. 
+          Note: if you delete your eduID, you will also lose your unique
+          eduID number connected to your email address. When you create a new
+          eduID with the same email address, you’ll receive a new eduID number.
           This new number may cause some websites to recognize you as a new user.
         nl: >-
-          Let op: als je je eduID verwijdert, verlies je ook je unieke 
-          eduID-nummer dat gekoppeld is aan je e-mailadres. Wanneer je een 
-          nieuwe eduID maakt met hetzelfde e-mailadres, krijg je een nieuw 
-          eduID-nummer. Door dit nieuwe nummer zien sommige websites jou ook 
+          Let op: als je je eduID verwijdert, verlies je ook je unieke
+          eduID-nummer dat gekoppeld is aan je e-mailadres. Wanneer je een
+          nieuwe eduID maakt met hetzelfde e-mailadres, krijg je een nieuw
+          eduID-nummer. Door dit nieuwe nummer zien sommige websites jou ook
           als nieuwe gebruiker.
     Info3:
       COPY:
         en: >-
-          Good to know: deleting your eduID does not mean that all 
+          Good to know: deleting your eduID does not mean that all
           websites connected to your eduID will also delete your info.
         nl: >-
-          Goed om te weten: als je je eduID verwijdert, betekent dat niet 
-          dat alle websites die gekoppeld zijn aan je eduID ook je gegevens 
+          Goed om te weten: als je je eduID verwijdert, betekent dat niet
+          dat alle websites die gekoppeld zijn aan je eduID ook je gegevens
           verwijderen.
+    Info4:
       COPY:
         en: >-
           Close the browser to delete your eduID.
@@ -1420,7 +1421,7 @@ SHARED:
           Type your first and last name exactly as they appear
           in <strong>Your personal info</strong> to proceed.
         nl: >-
-          Typ je voornamen en achternaam zoals die in 
+          Typ je voornamen en achternaam zoals die in
           <strong>Je persoonlijke gegevens</strong> staan om verder te gaan
     Name:
       COPY:
@@ -1469,7 +1470,7 @@ SHARED:
     Details:
       On:
         COPY:
-          en: on
+          en: "on"
           nl: op
       Login:
         COPY:
@@ -1494,9 +1495,9 @@ SHARED:
       DeleteDisclaimer:
         COPY:
           en: >-
-            * If you delete these login details, this information will 
-            be removed from your eduID. You will still have an 
-            account with the service itself. To delete that account, 
+            * If you delete these login details, this information will
+            be removed from your eduID. You will still have an
+            account with the service itself. To delete that account,
             please contact the service directly.
           nl: >-
             * Als je deze logingegevens verwijdert, verdwijnt deze
@@ -1531,9 +1532,9 @@ SHARED:
     Description:
       COPY:
         en: >-
-          If you delete these login details, this information will 
-            be removed from your eduID. You will still have an 
-            account with the service itself. To delete that account, 
+          If you delete these login details, this information will
+            be removed from your eduID. You will still have an
+            account with the service itself. To delete that account,
             please contact the service directly.
         nl: >-
           Als je deze logingegevens verwijdert, verdwijnt deze
@@ -1639,12 +1640,12 @@ SHARED:
         en: >-
           Are you sure you want to delete the connection with this
           institution?<br/><br/>Some services require that you your eduID is
-          connected to an educational institution. You may be asked to connect an institution 
+          connected to an educational institution. You may be asked to connect an institution
           again if you use such a service in the future.
         nl: >-
           Weet je zeker dat je de koppeling met deze instelling wilt verwijderen?<br/> <br/>
-          Voor sommige diensten is het nodig dat je eduID gekoppeld is met 
-          een onderwijsinstelling. Daarom word je mogelijk gevraagd een instelling te 
+          Voor sommige diensten is het nodig dat je eduID gekoppeld is met
+          een onderwijsinstelling. Daarom word je mogelijk gevraagd een instelling te
           koppelen als je in de toekomst zo’n dienst gebruikt.
   Credential:
     Title:
@@ -1715,9 +1716,9 @@ SHARED:
     UpdateInfo:
       COPY:
         en: >-
-          Do you want to reset or delete your eduID password? 
-          Press <strong>Confirm</strong> below to receive an 
-          email with a link. You can use this link to either 
+          Do you want to reset or delete your eduID password?
+          Press <strong>Confirm</strong> below to receive an
+          email with a link. You can use this link to either
           reset or delete your password.
         nl: >
           Wil je het wachtwoord van je eduID resetten of
@@ -1868,10 +1869,10 @@ SHARED:
     Info:
       COPY:
         en: >-
-          A passkey is a separate or built-in device that is strictly 
-          personal to you, allowing you to prove that you are the owner 
-          of your eduID. Once you’ve added a passkey to your eduID, 
-          you can use it to log in. You can still log in using an email 
+          A passkey is a separate or built-in device that is strictly
+          personal to you, allowing you to prove that you are the owner
+          of your eduID. Once you’ve added a passkey to your eduID,
+          you can use it to log in. You can still log in using an email
           link or password as well.
         nl: >-
           Een passkey is een los of ingebouwd apparaat dat strikt
@@ -1976,6 +1977,7 @@ SHARED:
           Download the eduID app (by SURF) in one of the app stores.
         nl: >-
          Download de eduID app (van SURF) in een van de app-stores
+    Google:
       COPY:
         en: https://play.google.com/store/apps/details?id=nl.eduid
         nl: https://play.google.com/store/apps/details?id=nl.eduid
@@ -1989,6 +1991,7 @@ SHARED:
           Have you installed the app? Then press ‘Next’
         nl: >-
           Heb je de app geïnstalleerd? Druk dan op ‘Volgende’.
+    Back:
       COPY:
         en: Back
         nl: Terug
@@ -2042,10 +2045,10 @@ SHARED:
     Info:
       COPY:
         en: >-
-         Can’t log in to eduID through the app or email? 
+         Can’t log in to eduID through the app or email?
          Try using a recovery method instead.
         nl: >-
-          Lukt het niet om in te loggen op eduID via de app of e-mail? 
+          Lukt het niet om in te loggen op eduID via de app of e-mail?
           Dan kun je ook met een herstelmethode inloggen.
     Methods:
       COPY:
@@ -2104,10 +2107,10 @@ SHARED:
     Info:
       COPY:
         en: >-
-          Your phone number is only needed for the security of your 
+          Your phone number is only needed for the security of your
           eduID, such as logging in if you forget your password.
         nl: >-
-         Je telefoonnummer is alleen nodig voor de veiligheid van je eduID. 
+         Je telefoonnummer is alleen nodig voor de veiligheid van je eduID.
          Zoals inloggen als je je wachtwoord bent vergeten.
     Text:
       COPY:
@@ -2133,7 +2136,7 @@ SHARED:
     Info:
       COPY:
         en: >-
-          You can now use the eduID app to quickly log in to 
+          You can now use the eduID app to quickly log in to
           services that require eduID.
 
         nl: >-
@@ -2208,8 +2211,8 @@ SHARED:
     Info:
       COPY:
         en: >-
-          You’ve installed and registered the eduID app. Want to 
-          change your recovery method? First, confirm your identity 
+          You’ve installed and registered the eduID app. Want to
+          change your recovery method? First, confirm your identity
           using the eduID app.
         nl: >-
           Je hebt de eduID app geïnstalleerd en geregistreerd. Wil je je
@@ -2374,6 +2377,7 @@ SHARED:
         nl: >-
           Je bent succesvol ingelogd bij je instelling. Vul nu je persoonlijke
           e-mailadres in. Dit wordt het e-maildres dat eduID gebruikt.
+    Email:
       COPY:
         en: Your email address
         nl: Je e-mailadres
@@ -2410,15 +2414,15 @@ SHARED:
     InstitutionDomainNameWarning:
       COPY:
         en: >-
-          This appears to be an email address from an educational 
-          or research institution. Note: if, in the future, you no 
-          longer study or work at this institution, you will lose 
+          This appears to be an email address from an educational
+          or research institution. Note: if, in the future, you no
+          longer study or work at this institution, you will lose
           access to this email address.
         nl: >-
-         Dit lijkt op een e-mailadres van een onderwijs- of 
-         onderzoeks instelling. Let op: als je in de toekomst niet 
-         meer studeert of werkt bij deze instelling, heb je geen 
-         toegang meer tot dit e-mailadres. 
+         Dit lijkt op een e-mailadres van een onderwijs- of
+         onderzoeks instelling. Let op: als je in de toekomst niet
+         meer studeert of werkt bij deze instelling, heb je geen
+         toegang meer tot dit e-mailadres.
     InstitutionDomainNameWarning2:
       COPY:
         en: We recommend using your personal email address for eduID.
@@ -2489,10 +2493,10 @@ SHARED:
     TimeOutReachedInfo:
       COPY:
         en: >-
-          Go back to the website where you wanted to log 
+          Go back to the website where you wanted to log
           in and try again. You will then receive a new link.
         nl: >-
-          Ga terug naar de website waar je wilde inloggen 
+          Ga terug naar de website waar je wilde inloggen
           en probeer het opnieuw. Je kijgt dan een nieuwe link toegestuurd.
     Resend:
       COPY:
@@ -2707,14 +2711,14 @@ SHARED:
     InstitutionDomainNameWarning:
       COPY:
         en: >-
-          This appears to be an email address from an educational 
-          or research institution. Note: if, in the future, you no 
-          longer study or work at this institution, you will lose 
+          This appears to be an email address from an educational
+          or research institution. Note: if, in the future, you no
+          longer study or work at this institution, you will lose
           access to this email address.
         nl: >-
-          Dit lijkt op een e-mailadres van een instelling. Let op: als je 
-          in de toekomst niet meer studeert of werkt bij deze instelling, 
-          heb je geen toegang meer tot dit e-mailadres. 
+          Dit lijkt op een e-mailadres van een instelling. Let op: als je
+          in de toekomst niet meer studeert of werkt bij deze instelling,
+          heb je geen toegang meer tot dit e-mailadres.
     InstitutionDomainNameWarning2:
       COPY:
         en: We recommend using your personal email address for eduID.
@@ -2874,10 +2878,10 @@ SHARED:
     TimeOutReachedInfo:
       COPY:
         en: >-
-          Go back to the website where you wanted to log in 
+          Go back to the website where you wanted to log in
           and try again. You will then receive a new link.
         nl: >-
-          Ga terug naar de website waar je wilde inloggen en 
+          Ga terug naar de website waar je wilde inloggen en
           probeer het opnieuw. Je kijgt dan een nieuwe link toegestuurd.
     Resend:
       COPY:
@@ -2900,7 +2904,7 @@ SHARED:
     LoggedInDifferentDeviceInInfo:
       COPY:
         en: >-
-          You used the link in a different browser than the one 
+          You used the link in a different browser than the one
           you used to request it. For security reasons, we ask you
           to enter a verification code.
         nl: >-
@@ -3139,7 +3143,7 @@ SHARED:
     Affiliation_student:
       COPY:
         en: >-
-          You need to prove that you are enrolled in education. 
+          You need to prove that you are enrolled in education.
           You can do this by connecting your eduID to an official institution.
         nl: >-
           Je moet aantonen dat je student bent. Dit doe je door je eduID te
@@ -3178,7 +3182,7 @@ SHARED:
           The <strong>eduID app</strong> allows you to log in extra
           securely, without needing a password. Installing the app is quick and easy.
         nl: >-
-          Met de <strong>eduID app</strong> log je extra veilig in, zonder wachtwoord. 
+          Met de <strong>eduID app</strong> log je extra veilig in, zonder wachtwoord.
           Het installeren van de app is zo gebeurd.
     'No':
       COPY:
@@ -3214,8 +3218,8 @@ SHARED:
           securely, without needing a password. Installing the app is quick and easy.
           Please press <strong>Proceed</strong> for the next step.
         nl: >-
-          Met de <strong>eduID app</strong> log je extra veilig in, zonder wachtwoord. 
-          Het installeren van de app is zo gebeurd. Druk op <strong>Doorgaan</strong> 
+          Met de <strong>eduID app</strong> log je extra veilig in, zonder wachtwoord.
+          Het installeren van de app is zo gebeurd. Druk op <strong>Doorgaan</strong>
           voor de volgende stap.
     Cancel:
       COPY:
@@ -3614,14 +3618,14 @@ SHARED:
       MainTitle:
         COPY:
           en: >-
-            Your educational institution 
+            Your educational institution
             has been successfully connected
           nl: >-
             Je onderwijsinstelling
             is succesvol gekoppeld
       MainTitleBoldPart:
         COPY:
-          en: Your educational institution 
+          en: Your educational institution
           nl: Je onderwijsinstelling
       MainText:
         COPY:
@@ -3842,7 +3846,7 @@ SHARED:
     SubtitleHasInternalLink:
       COPY:
         en: By adding an educational or research institution, you prove to eduID that you are a student or employee of that institution.
-        nl: Door een onderwijs- of onderzoeksinstelling toe te voegen, bewijs je aan eduID dat je een student of medewerker bent van die instelling. 
+        nl: Door een onderwijs- of onderzoeksinstelling toe te voegen, bewijs je aan eduID dat je een student of medewerker bent van die instelling.
     Title:
       FirstLine:
         COPY:
@@ -3946,8 +3950,8 @@ SHARED:
         nl: "De volgende gegevens zijn toegevoegd aan je eduID en kunnen nu worden gedeeld."
     SubtitlePreferInstitution:
       COPY:
-       en: "We also received new information. Do you want to use this for your eduID?"
-       nl: "We hebben ook nieuwe gegevens gekregen. Wil je deze gebruiken voor je eduID?"
+        en: "We also received new information. Do you want to use this for your eduID?"
+        nl: "We hebben ook nieuwe gegevens gekregen. Wil je deze gebruiken voor je eduID?"
     Button:
       Continue:
         COPY:
@@ -3983,5 +3987,3 @@ SHARED:
       COPY:
         en: "eIDAS"
         nl: "eIDAS"
-    
-
