@@ -181,7 +181,7 @@ SHARED:
           Scan the code here
         nl: |
           <b>Zie je geen QR-code?</b><br/>
-          Ga naar <a href="https://eduid.nl/security" target="_blank">eduid.nl/security</a> op je computer<br/> 
+          Ga naar <a href="https://eduid.nl/security" target="_blank">eduid.nl/security</a> op je computer<br/>
           Maak een QR-code<br/>
           Scan de code hier
     MainTextBoldPart:
@@ -654,10 +654,8 @@ SHARED:
           nl: E-mailadres
     Info:
       COPY:
-        en: Please enter your new email address. You’ll receive an email afterwards 
-          to confirm this email address.
-        nl: Vul je nieuwe e-mailadres in. Je krijgt daarna een e-mail om dit 
-          e-mailadres bevestigen.
+        en: Please enter your new email address. You’ll receive an email afterwards to confirm this email address.
+        nl: Vul je nieuwe e-mailadres in. Je krijgt daarna een e-mail om dit e-mailadres bevestigen.
     NewEmail:
       COPY:
         en: Your new email address
@@ -705,10 +703,8 @@ SHARED:
         nl: Uitstaand reset-verzoek voor wachtwoord
     OutstandingPasswordForgottenConfirmation:
       COPY:
-        en: A link to reset your password was previously sent to you. 
-        This link will no longer be valid if you confirm your email change.
-        nl: Er is eerder een link naar je gestuurd om je wachtwoord te resetten. 
-          Deze link is niet langer geldig als je deze e-mailwijziging bevestigt.
+        en: A link to reset your password was previously sent to you. This link will no longer be valid if you confirm your email change.
+        nl: Er is eerder een link naar je gestuurd om je wachtwoord te resetten. Deze link is niet langer geldig als je deze e-mailwijziging bevestigt.
   NameUpdated:
     Title:
       YourSchool:
@@ -778,16 +774,15 @@ SHARED:
         nl: Verwijder je eduID
     Disclaimer:
       COPY:
-        en: Note: if you delete your eduID, you will also <strong>lose your unique eduID number</strong> connected to your email address.
-        nl: Let op: als je je eduID verwijdert, <strong>verlies je ook je unieke eduID-nummer</strong> dat gekoppeld is aan je e-mailadres.
+        en: "Note: if you delete your eduID, you will also <strong>lose your unique eduID number</strong> connected to your email address."
+        nl: "Let op: als je je eduID verwijdert, <strong>verlies je ook je unieke eduID-nummer</strong> dat gekoppeld is aan je e-mailadres."
     LongDescription:
       COPY:
-        en: You can delete your eduID whenever you want.
+        en: "You can delete your eduID whenever you want.
 
           When you create a new eduID with the same email address, you’ll receive a new eduID number. This new number may cause some websites to recognize you as a new user. 
-          Good to know: deleting your eduID does not mean that all websites connected to your eduID will also delete your personal info.
-        nl: Wanneer je een nieuwe eduID maakt met hetzelfde e-mailadres, krijg je een nieuw eduID-nummer. Door dit nieuwe nummer zien sommige websites jou ook als nieuwe gebruiker.
-        Goed om te weten: als je je eduID verwijdert, betekent dat niet dat alle websites die gekoppeld zijn aan je eduID ook je gegevens verwijderen.
+          Good to know: deleting your eduID does not mean that all websites connected to your eduID will also delete your personal info."
+        nl: "Wanneer je een nieuwe eduID maakt met hetzelfde e-mailadres, krijg je een nieuw eduID-nummer. Door dit nieuwe nummer zien sommige websites jou ook als nieuwe gebruiker. Goed om te weten: als je je eduID verwijdert, betekent dat niet dat alle websites die gekoppeld zijn aan je eduID ook je gegevens verwijderen."
     DeleteAccountButton:
       COPY:
         en: Delete your account
@@ -808,13 +803,12 @@ SHARED:
         nl: Je telefoon lijkt offline te zijn
     Description:
       COPY:
-        en: >-
-          No worries, you can still log in another way:
+        en: "No worries, you can still log in another way:
           1. Select ‘Enter Code’ under the QR code on your computer.
-          2. Enter the following code:
-        nl: Gelukkig kun je ook op een andere manier inloggen:
+          2. Enter the following code:"
+        nl: "Gelukkig kun je ook op een andere manier inloggen:
           1. Druk op ‘Code invoeren’ onder de QR-code op je computer.
-          2. Voer daarna deze code in:
+          2. Voer daarna deze code in:"
 
     YourId:
       COPY:
@@ -831,16 +825,12 @@ SHARED:
     PinNotVerified:
       Title:
         COPY:
-          en: >-
-            Note: your PIN has not been verified yet.
-          nl: >-
-            Opmerking: Je PIN is nog niet geverifieerd.
+          en: "Note: your PIN has not been verified yet."
+          nl: "Opmerking: Je PIN is nog niet geverifieerd."
       Description:
         COPY:
-          en: >-
-            If you can't login with the credentials above, scan again and enter the correct PIN code.
-          nl: >-
-            Als je niet kunt inloggen met bovenstaande gegevens, scan dan opnieuw en voer de correcte pincode in.
+          en: If you can't login with the credentials above, scan again and enter the correct PIN code.
+          nl: Als je niet kunt inloggen met bovenstaande gegevens, scan dan opnieuw en voer de correcte pincode in.
     CloseButton:
       COPY:
         en: Close
@@ -2059,8 +2049,8 @@ SHARED:
           Dan kun je ook met een herstelmethode inloggen.
     Methods:
       COPY:
-        en: You can choose from these methods:
-        nl: Uit deze methodes kun je kiezen:
+        en: "You can choose from these methods:"
+        nl: "Uit deze methodes kun je kiezen:"
     PhoneNumber:
       COPY:
         en: Add a recovery phone number
@@ -2564,10 +2554,10 @@ SHARED:
           first set this up in your eduID.</li><li>You can use a passkey. You
           must first set this up in your eduID.</li></ol>
         nl: >-
-        Er bestaan drie manieren om in te loggen:</br><ol><li>Je kunt een
-        e-mail met een link ontvangen.</li><li>Je kunt een
-        wachtwoord gebruiken. Dit moet je eerst in je eduID instellen.</li><li>
-        Je kunt een passkey gebruiken. Dit moet je eerst in je eduID instellen.</li></ol>
+          Er bestaan drie manieren om in te loggen:</br><ol><li>Je kunt een
+          e-mail met een link ontvangen.</li><li>Je kunt een
+          wachtwoord gebruiken. Dit moet je eerst in je eduID instellen.</li><li>
+          Je kunt een passkey gebruiken. Dit moet je eerst in je eduID instellen.</li></ol>
     Email:
       COPY:
         en: Your email address
@@ -3635,8 +3625,8 @@ SHARED:
           nl: Je onderwijsinstelling
       MainText:
         COPY:
-          en: The following information has been added to your eduID and can now be shared with other services:
-          nl: De volgende gegevens zijn aan je eduID toegevoegd en kun je nu delen met andere diensten:
+          en: "The following information has been added to your eduID and can now be shared with other services:"
+          nl: "De volgende gegevens zijn aan je eduID toegevoegd en kun je nu delen met andere diensten:"
   RegEXError:
     Name:
       COPY:
