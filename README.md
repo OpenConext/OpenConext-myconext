@@ -5,31 +5,52 @@
 
 An IdP for OpenConext. A user can create and manage his own identity. Authentication uses a magic-link by default, and FIDO2 or a password can be added later.
 
-## [Getting started](#getting-started)
+## Content
 
-### [System Requirements](#system-requirements)
+- [Getting started](#getting-started)
+	- [System Requirements](#system-requirements)
+- [Building and running](#building-and-running)
+	- [The myconext-server](#The-myconext-server)
+	- [The account-gui](#the-account-gui)
+	- [The myconext-gui](#The-myconext-gui)
+	- [Build](#build)
+	- [Mail](#mail)
+	- [Crypto](#crypto)
+	- [Miscellaneous](#miscellaneous)
+	- [Migration](#migration)
+	- [Attribute Manipulation](#attribute-manipulation)
+	- [Attribute Aggregation](#attribute-aggregation)
+	- [OpenAPI Documentation](#OpenAPI-Documentation)
+	- [IDIN & e-Herkenning](#IDIN-&-e-Herkenning)
+	- [Running the IdP and testing localhost](#Running-the-IdP-and-testing-localhost)
 
-- Java 11
+
+## Getting started
+
+### System Requirements
+
+- Java 21
 - Maven 3
 - MongoDB 3.4.x
 - Yarn 1.x
 - NodeJS
-- Ansible
+- (Ansible)
 
-## [Building and running](#building-and-running)
+## Building and running
 
-### [The myconext-server](#myconext-server)
+### The myconext-server
 
 This project uses Spring Boot and Maven. To run locally, type:
 
-`cd myconext-server`
-
-`mvn spring-boot:run -Dspring-boot.run.profiles=dev`
+```
+cd myconext-server
+mvn spring-boot:run -Dspring-boot.run.profiles=dev
+```
 
 When developing, it's convenient to just execute the applications main-method, which is in [Application](myconext-server/src/main/java/myconext/MyConextServerApplication.java).
 Don't forget to set the active profile to dev.
 
-### [The account-gui](#myconext-gui)
+### The account-gui
 
 The myconext client is build with Svelte and to get initially started:
 
@@ -41,7 +62,7 @@ yarn dev
 
 Browse to the [application homepage](http://localhost:3001/).
 
-### [The myconext-gui](#myconext-gui)
+### The myconext-gui
 
 The IdP is also build with Svelte and to get initially started:
 
@@ -53,13 +74,13 @@ yarn start
 
 There is no home page, you'll need to visit an SP and choose eduID to login.
 
-### [Build](#build)
+### Build
 
 To deploy production bundles
 ```bash
 mvn deploy
 ```
-### [Mail](#mail)
+### Mail
 
 The default mail configuration sends mails to port 1025. Install https://mailpit.axllent.org/ and capture all emails send. 
 You can see all mails delivered at http://0.0.0.0:8025/ when mailpit is installed.
@@ -67,7 +88,7 @@ You can see all mails delivered at http://0.0.0.0:8025/ when mailpit is installe
 brew install mailpit
 ```
 
-### [Crypto](#crypto)
+### Crypto
 
 The myconext application uses a private RSA key and corresponding certificate to sign the SAML requests. We don't want
 to provide defaults, so in the integration tests the key / certificate pair is generated on the fly. if you want to
@@ -87,7 +108,7 @@ If you need to register the public key in EB then issue this command and copy & 
 ```
 cat myconext.crt |ghead -n -1 |tail -n +2 | tr -d '\n'; echo
 ```
-### [Translations](translations)
+### Translations
 
 The github actions will generate new translations of the source is changed.
 
@@ -98,23 +119,23 @@ yarn localicious render ./localizations.yaml ./myconext-gui/src/locale/ --langua
 rm -fr ./myconext-gui/src/locale/js/Localizable.ts
 ```
 
-### [Miscellaneous](#miscellaneous)
+### Miscellaneous
 
 To get an overview of the git source file's:
 ```
 cloc --read-lang-def=cloc_definitions.txt --vcs=git
 ```
 
-### [Migration](#migration)
+### Migration
 
 It's possible to migrate from an existing IdP to this IdP. A new identity will be created, and the eppn wil be copied.
 
-### [Attribute Manipulation](#attribute-manipulation)
+### Attribute Manipulation
 ```
 curl -u oidcng:secret "http://login.test2.eduid.nl/myconext/api/attribute-manipulation?sp_entity_id=https://test.okke&uid=0eaa7fb2-4f94-476f-b3f6-c8dfc4115a87&sp_institution_guid=null"
 ```
 
-### [Attribute Aggregation](#attribute-aggregation)
+### Attribute Aggregation
 ```
 curl -u aa:secret "https://login.test2.eduid.nl/myconext/api/attribute-aggregation?sp_entity_id=https://mijn.test2.eduid.nl/shibboleth&eduperson_principal_name=j.doe@example.com"
 ```
