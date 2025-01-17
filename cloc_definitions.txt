@@ -1061,13 +1061,6 @@ Objective C
     filter call_regexp_common C++
     3rd_gen_scale 2.96
     end_of_line_continuation \\$
-Objective C++
-    filter rm_comments_in_strings " /* */
-    filter rm_comments_in_strings " //
-    filter call_regexp_common C++
-    extension mm
-    3rd_gen_scale 2.96
-    end_of_line_continuation \\$
 Octave
     filter remove_matches ^\s*#
     filter remove_inline #.*$

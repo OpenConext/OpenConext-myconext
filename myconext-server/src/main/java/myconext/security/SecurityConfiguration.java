@@ -230,7 +230,8 @@ public class SecurityConfiguration {
                                     "/myconext/api/idp/**",
                                     "/myconext/api/sp/create-from-institution",
                                     "/myconext/api/sp/create-from-institution/**",
-                                    "/myconext/api/sp/idin/issuers")
+                                    "/myconext/api/sp/idin/issuers",
+                                    "myconext/api/swagger-ui/**")
                             .permitAll())
                     .authorizeHttpRequests(authz -> authz.requestMatchers(
                             "/myconext/api/servicedesk/**"
