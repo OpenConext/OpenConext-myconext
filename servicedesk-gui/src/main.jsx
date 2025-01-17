@@ -5,14 +5,16 @@ import {BrowserRouter, Route, Routes} from "react-router-dom";
 import '@surfnet/sds/styles/sds.css';
 import '@surfnet/sds/cjs/index.css';
 import "react-tooltip/dist/react-tooltip.css";
-//Always keep these two last
 import './index.scss';
+import {StrictMode} from "react";
 
-
-createRoot(document.getElementById('root')).render(
-    <BrowserRouter>
-        <Routes>
-            <Route path="/*" element={<App/>}/>
-        </Routes>
-    </BrowserRouter>
+const root = createRoot(document.getElementById("root"));
+root.render(
+    <StrictMode>
+        <BrowserRouter>
+            <Routes>
+                <Route path="/*" element={<App/>}/>
+            </Routes>
+        </BrowserRouter>
+    </StrictMode>
 );

@@ -7,7 +7,7 @@
     import alertSvg from "../icons/alert-circle.svg?raw";
     import Button from "../components/Button.svelte";
     import {
-        deleteLinkedAccount, deleteUserControlCode,
+        deleteLinkedAccount,
         iDINIssuers,
         preferLinkedAccount,
         startLinkAccountFlow,
@@ -61,7 +61,7 @@
     let showControlCode = false;
 
     const manageVerifiedInformation = path => {
-        navigate(`/${path}`, {replace:true});
+        navigate(`/${path}`, {replace: true});
     }
 
     const preferInstitution = (showConfirmation, linkedAccount) => {
@@ -136,7 +136,7 @@
         }
     }
 
-    const refresh = (retry=false) => {
+    const refresh = (retry = false) => {
         ($user.linkedAccounts || []).forEach(account => markExpired(account));
         ($user.externalLinkedAccounts || []).forEach(account => markExternalLinkedAccountExpired(account));
         sortedAccounts = ($user.linkedAccounts || []).sort((a, b) => b.createdAt - a.createdAt);
@@ -213,6 +213,7 @@
         showModal = false;
         showNewInstitutionModal = false;
         showPreferredInstitutionModal = false;
+        showControlCode = false;
         const url = new URL(window.location.href);
         url.search = "";
         history.pushState({}, "", url.toString());
@@ -233,20 +234,20 @@
         const newExternalAccountLinked = !isEmpty(verify) && !isEmpty($user.externalLinkedAccounts);
 
         if (newAccountLinked || newExternalAccountLinked) {
-                //Determine if the new account is external or not
-                const newAccount = newExternalAccountLinked ?
-                    $user.externalLinkedAccounts[0] :
-                    ($user.linkedAccounts || [])
-                        .find(la => la.eduPersonPrincipalName === linkedAccountIdentifier || la.subjectId === linkedAccountIdentifier);
+            //Determine if the new account is external or not
+            const newAccount = newExternalAccountLinked ?
+                $user.externalLinkedAccounts[0] :
+                ($user.linkedAccounts || [])
+                    .find(la => la.eduPersonPrincipalName === linkedAccountIdentifier || la.subjectId === linkedAccountIdentifier);
 
-                if (newAccount && (newExternalAccountLinked || !isEmpty(newAccount.givenName) || !isEmpty(newAccount.familyName))) {
-                    newInstitution = newAccount;
-                    if ((($user.linkedAccounts || []).length + ($user.externalLinkedAccounts || []).length) === 1) {
-                        showNewInstitutionModal = true;
-                    } else {
-                        preferInstitution(true, newAccount);
-                    }
+            if (newAccount && (newExternalAccountLinked || !isEmpty(newAccount.givenName) || !isEmpty(newAccount.familyName))) {
+                newInstitution = newAccount;
+                if ((($user.linkedAccounts || []).length + ($user.externalLinkedAccounts || []).length) === 1) {
+                    showNewInstitutionModal = true;
+                } else {
+                    preferInstitution(true, newAccount);
                 }
+            }
         }
         if (!isEmpty(retry)) {
             addIdentity(true);
@@ -357,8 +358,9 @@
         font-size: 22px;
         font-family: Nunito, sans-serif;
         color: var(--color-primary-green);
+
         &.second {
-          margin: 25px 0 15px 0;
+            margin: 25px 0 15px 0;
         }
     }
 
@@ -399,6 +401,7 @@
             @media (max-width: $max-width-mobile) {
                 margin-left: 0;
             }
+
             :global(svg) {
                 height: 28px;
                 width: auto;
@@ -476,10 +479,15 @@
         display: flex;
         flex-direction: column;
         padding: 25px;
+
         span {
             margin: auto;
-            font-size: 34px;
-            letter-spacing: 6px;
+
+            &.code {
+                font-size: 34px;
+                margin-bottom: 40px;
+                letter-spacing: 6px;
+            }
         }
     }
 
@@ -489,12 +497,12 @@
     {#if showManageVerifiedInformation}
         <div class="inner-container">
             <div class="verified-information">
-            <div class="with-icon">
+                <div class="with-icon">
                 <span class="back" on:click={() => manageVerifiedInformation("personal")}>
                     {@html arrowLeft}
                 </span>
-                <h2>{I18n.t("profile.verifiedInformation")}</h2>
-            </div>
+                    <h2>{I18n.t("profile.verifiedInformation")}</h2>
+                </div>
                 <p class="info">{I18n.t("profile.verifiedInformationInfo")}</p>
                 <div class="preferred-info">
                     {@html personalInfo}
@@ -648,9 +656,10 @@
     </Modal>
 {/if}
 
-{#if showModal}
+{#if showModal || showControlCode}
     <Modal close={() => resetModalsAndQueryParams()}
-           title={showIdinOptions ? I18n.t("verify.modal.header") : I18n.t("profile.addInstitution")}
+           title={showIdinOptions ? I18n.t("verify.modal.header") : showControlCode ?
+                I18n.t("verify.serviceDesk.controlCode.controlCode") : I18n.t("profile.addInstitution")}
            showOptions={false}>
         <VerifyChoice addInstitution={addInstitution}
                       addBank={addBank}
@@ -658,6 +667,7 @@
                       issuers={issuers}
                       showIdinOptions={showIdinOptions}
                       showServiceDesk={serviceDeskStart}
+                      showControlCode={showControlCode}
                       cancel={() => resetModalsAndQueryParams()}/>
     </Modal>
 {/if}
@@ -693,17 +703,3 @@
         />
     </Modal>
 {/if}
-
-{#if showControlCode}
-    <Modal submit={() => showControlCode = false}
-           close={() => showControlCode = false}
-           cancelTitle={I18n.t("verify.serviceDesk.controlCode.deleteControlCode")}
-           largeConfirmation={true}
-           confirmTitle={I18n.t("profile.ok")}
-           title={I18n.t("verify.serviceDesk.controlCode.yourControlCode")}>
-        <div class="control-code">
-            <span>{$user.controlCode.code}</span>
-        </div>
-    </Modal>
-{/if}
-

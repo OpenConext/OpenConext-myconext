@@ -217,11 +217,16 @@ public class SecurityConfiguration {
             AuthenticationProvider authenticationProvider = preAuthenticatedAuthenticationProvider();
             ProviderManager providerManager = new ProviderManager(authenticationProvider);
             http
-                    .securityMatcher("/myconext/api/sp/**", "/startSSO", "/tiqr/sp/**", "/myconext/api/servicedesk/**")
+                    .securityMatcher(
+                            "/myconext/api/sp/**",
+                            "/startSSO",
+                            "/config",
+                            "/tiqr/sp/**",
+                            "/myconext/api/servicedesk/**")
                     .csrf(csrf -> csrf.disable())
                     .sessionManagement(smc -> smc.sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED))
                     .authorizeHttpRequests(authz -> authz.requestMatchers(
-                                    "/internal/**",
+                                    "/config",
                                     "/myconext/api/idp/**",
                                     "/myconext/api/sp/create-from-institution",
                                     "/myconext/api/sp/create-from-institution/**",

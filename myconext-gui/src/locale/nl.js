@@ -195,7 +195,6 @@ I18n.translations.nl = {
             passkey: "Passkey",
             passkeyAdd: "Voeg een passkey toe"
         },
-
         tiqr: {
             title: "Wil je de volgende keer sneller en veiliger inloggen?",
             info: "Download de <strong>eduID app</strong> en log veilig in zonder wachtwoord of toegang tot je e-mail.",
@@ -221,7 +220,6 @@ I18n.translations.nl = {
             getCode: "Vraag een code aan",
             codeInfo: "Hopelijk bewaard op een veilige plek",
             getCodeInfo: "En bewaar het op een veilige plek",
-
         }
     },
     home: {
@@ -353,7 +351,6 @@ I18n.translations.nl = {
         flash: {
             passwordLink: "Een e-mail is verstuurd naar {{name}} om je wachtwoord opnieuw in te stellen."
         }
-
     },
     webauthn: {
         setTitle: "Beveiligingssleutel toevoegen",
@@ -413,7 +410,6 @@ I18n.translations.nl = {
         maxAttemptsPost: "om opnieuw je telefoonnummer in te voeren en een nieuwe code te ontvangen",
         maxAttemptsPostNoReEnter: "om een nieuwe code aan te vragen",
         here: " hier "
-
     },
     enrollApp: {
         header: "Voltooi de installatie in de eduID app",
@@ -579,7 +575,8 @@ I18n.translations.nl = {
         issuers: {
             eherkenning: "eIDAS",
             idin: "Idin",
-            studielink: "Studielink"
+            studielink: "Studielink",
+            servicedesk: "Service Desk"
         },
         serviceDesk: {
             confirmIdentityHeader: "Bevestig wie je bent met je identiteitsbewijs",
@@ -600,12 +597,13 @@ I18n.translations.nl = {
                 information: "Vul je gegevens in zoals die op je identiteitsbewijs staan.",
                 lastName: "Achternaam",
                 firstName: "Voornamen",
-                dateOfBirth: "Geboortedatum",
+                dayOfBirth: "Geboortedatum",
                 generateControlCode: "Genereer controlcode"
             },
             controlCode: {
+                controlCode: "Controlecode",
                 yourControlCode: "Je controlecode",
-                info: "Je krijgt ook een e-mail met deze code. De code is 14 dagen geldig en is bedoeld voor:",
+                info: "Je krijgt ook een e-mail met deze code. De code is {{nbr}} dagen geldig en is bedoeld voor:",
                 typoPrefix: "Typfout gemaakt? ",
                 typoLink: "Pas gegevens aan",
                 todo: "Wat moet je nu doen?",
@@ -617,7 +615,8 @@ I18n.translations.nl = {
                 deleteControlCode: "Verwijder controlecode",
                 deletedControlCode: "Verificatie-code verwijderd",
                 banner: "Bevestig je identiteit bij een eduID Service Desk. Dit doe je door je identiteitsbewijs en controlecode te laten zien.",
-                showCode: "Toon code"
+                showCode: "Toon code",
+                validityCode: "Je code is nog geldig voor {{nbr}} dagen."
             }
         },
     }

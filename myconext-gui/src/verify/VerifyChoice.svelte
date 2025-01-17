@@ -20,6 +20,7 @@
     export let showIdinOptions;
     export let cancel;
     export let showServiceDesk = false;
+    export let showControlCode = false;
 
     let showOtherOptions = false;
     let showBankOptions = false;
@@ -152,7 +153,7 @@
 <div class="account-link-mod">
 
 
-    {#if !showServiceDesk && (!showBankOptions || busyProcessing)}
+    {#if !showServiceDesk && !showControlCode && (!showBankOptions || busyProcessing)}
         <div class="info-container">
             <h3 class="header">{I18n.t("verify.modal.info.subheader")}</h3>
             <p>{showIdinOptions ? I18n.t("verify.modal.info.please") : I18n.t("profile.addInstitutionInfo")}</p>
@@ -170,12 +171,12 @@
                         onClick={() => proceed(addInstitution)}/>
             </div>
         </div>
-        {#if !showOtherOptions && $config.featureIdVerify && showIdinOptions && !showServiceDesk}
+        {#if !showOtherOptions && $config.featureIdVerify && showIdinOptions && !showServiceDesk && !showControlCode}
             <div class="choice-container other-options" on:click={() => showOtherOptions = !showOtherOptions}>
                 <p>{I18n.t("verify.modal.info.other")}</p>
             </div>
         {/if}
-        {#if showOtherOptions && !showServiceDesk}
+        {#if showOtherOptions && !showServiceDesk && !showControlCode}
             <div class="choice-container">
                 <div class="choice">
                     <p class="question">{I18n.t("verify.modal.info.verifyBank")}</p>
@@ -213,7 +214,7 @@
             </div>
         {/if}
     {/if}
-    {#if showBankOptions && !busyProcessing && !showServiceDesk}
+    {#if showBankOptions && !busyProcessing && !showServiceDesk && !showControlCode}
         <div class="info-container">
             <div class="header-container">
             <span class="back" on:click={() => showBankOptions = !showBankOptions}>
@@ -233,7 +234,7 @@
         </div>
     {/if}
 </div>
-{#if showBankOptions && !busyProcessing && !showServiceDesk}
+{#if showBankOptions && !busyProcessing && !showServiceDesk && !showControlCode}
     <div class="alert">
         {@html alertSvg}
         <span>{I18n.t("verify.modal.bank.anotherMethodPrefix")}
@@ -243,7 +244,9 @@
         </span>
     </div>
 {/if}
-{#if !busyProcessing && showServiceDesk}
-    <ServiceDesk toggleView={() => showServiceDesk = false} cancelView={cancel}/>
+{#if !busyProcessing && (showServiceDesk || showControlCode)}
+    <ServiceDesk toggleView={() => showServiceDesk = false}
+                 cancelView={cancel}
+                 showControlCode={showControlCode}/>
 {/if}
 

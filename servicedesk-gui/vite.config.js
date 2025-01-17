@@ -7,5 +7,18 @@ export default defineConfig({
     server: {
         port: 3002,
         open: true,
+        proxy: {
+            '/myconext/api': {
+                target: 'http://localhost:8081',
+                changeOrigin: false,
+                secure: false
+            },
+            '/config': {
+                target: 'http://localhost:8081',
+                changeOrigin: false,
+                secure: false
+            }
+        }
+
     },
 })

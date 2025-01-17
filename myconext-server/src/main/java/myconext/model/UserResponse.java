@@ -38,6 +38,7 @@ public class UserResponse implements Serializable {
     private final List<String> loginOptions;
     private final Map<String, Object> registration = new HashMap<>();
     private final ControlCode controlCode;
+    private final boolean serviceDeskMember;
 
     public UserResponse(User user,
                         Map<String, EduID> eduIdPerServiceProvider,
@@ -105,5 +106,6 @@ public class UserResponse implements Serializable {
             registration.put("updated", reg.getUpdated().toEpochMilli());
         });
         this.controlCode = user.getControlCode();
+        this.serviceDeskMember = user.isServiceDeskMember();
     }
 }

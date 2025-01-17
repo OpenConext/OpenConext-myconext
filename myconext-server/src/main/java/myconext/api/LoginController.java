@@ -16,6 +16,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.context.SecurityContextRepository;
@@ -107,7 +108,15 @@ public class LoginController {
 
     @GetMapping("/config")
     public Map<String, Object> config() {
-        return config;
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        Map<String ,Object> copyConfig = new HashMap<>(config);
+        boolean authenticated = authentication != null && authentication.isAuthenticated() && authentication.getPrincipal() instanceof User;
+        copyConfig.put("authenticated", authenticated);
+        if (authenticated ) {
+            User user = (User) authentication.getPrincipal();
+            copyConfig.put("user", user.serviceDeskSummary());
+        }
+        return copyConfig;
     }
 
     @GetMapping("/register")

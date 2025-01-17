@@ -1,7 +1,5 @@
-import {isEmpty} from "../utils/Utils";
 import I18n from "../locale/I18n";
 import {useAppStore} from "../stores/AppStore";
-import {paginationQueryParams} from "../utils/Pagination";
 
 //Internal API
 function validateResponse(showErrorDialog) {
@@ -24,12 +22,7 @@ function validateResponse(showErrorDialog) {
             }
             throw error;
         }
-        const sessionAlive = res.headers.get("x-session-alive");
-        if (sessionAlive !== "true") {
-            window.location.reload(true);
-        }
         return res;
-
     };
 }
 
@@ -63,14 +56,24 @@ function postPutJson(path, body, method, showErrorDialog = true) {
 
 //Base
 export function configuration() {
-    return fetchJson("/api/v1/users/config", {}, {}, false);
+    return fetchJson("/config");
 }
 
 //Users
 export function me() {
-    return fetchJson("/api/v1/users/me", {}, {}, false);
+    return fetchJson("/myconext/api/sp/me");
 }
 
-export function resendInvitation(invitationId) {
-    return postPutJson(`/api/v1/invitations/${invitationId}`, {}, "PUT");
+//Service Desk
+export function getUserControlCode(code) {
+    return fetchJson(`/myconext/api/servicedesk/user/${code}`);
+}
+
+export function validateDate(dayOfBirth) {
+    return fetchJson(`/myconext/api/servicedesk/validate?${encodeURIComponent(dayOfBirth)}`);
+}
+
+export function convertUserControlCode(firstName, lastName, dayOfBirth, code, userUid) {
+    const body = {firstName, lastName, dayOfBirth, code, userUid}
+    return postPutJson("/myconext/api/servicedesk/approve", body, "PUT");
 }

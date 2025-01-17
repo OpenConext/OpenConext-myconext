@@ -293,7 +293,6 @@ I18n.translations.en = {
         deleteToken: "Revoke access token",
         deleted: "eduID removed",
         tokenDeleted: "Tokens removed"
-
     },
     institution: {
         title: "Connected institution",
@@ -576,7 +575,8 @@ I18n.translations.en = {
         issuers: {
             eherkenning: "eIDAS",
             idin: "Idin",
-            studielink: "Studielink"
+            studielink: "Studielink",
+            servicedesk: "Service Desk"
         },
         serviceDesk: {
             confirmIdentityHeader: "You need to manually confirm your identity",
@@ -597,12 +597,13 @@ I18n.translations.en = {
                 information: "Enter your details as they appear on your ID. Names must be in Roman characters.",
                 lastName: "Last name",
                 firstName: "First name(s)",
-                dateOfBirth: "Date of birth",
+                dayOfBirth: "Date of birth",
                 generateControlCode: "Generate verification code"
             },
             controlCode: {
+                controlCode: "Verification code",
                 yourControlCode: "Your verification code",
-                info: "You will also receive an email with this code. The code is valid for 14 days and is intended for:",
+                info: "You will also receive an email with this code. The code is valid for {{nbr}} more days and is intended for:",
                 typoPrefix: "Made a typo? ",
                 typoLink: "Edit your details",
                 todo: "What's next?",
@@ -614,7 +615,8 @@ I18n.translations.en = {
                 deleteControlCode: "Delete verification code",
                 deletedControlCode: "Verification code deleted",
                 banner: "Verify your identity at an eduID Service Desk by presenting your ID and verification code.",
-                showCode: "Show code"
+                showCode: "Show code",
+                validityCode: "Your code is valid for {{nbr}} more days."
             }
         }
     }

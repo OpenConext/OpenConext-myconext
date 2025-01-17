@@ -7,26 +7,38 @@
     import idCard from "../icons/verify/idCard.svg?raw";
     import {isEmpty} from "../utils/utils.js";
     import {createUserControlCode, deleteUserControlCode} from "../api/index.js";
+    import {verificationCodeValidityDays} from "../utils/date";
+    import {onMount} from "svelte";
 
     export let toggleView;
     export let cancelView;
+    export let showControlCode = false;
 
-    let step = 0;
+    let step = showControlCode ? 2 : 0;
     let lastName = "";
     let firstName = "";
-    let dateOfBirth = "";
+    let dayOfBirth = "";
     let code = "";
+
+    onMount(() => {
+        if (showControlCode) {
+            lastName = $user.controlCode.lastName;
+            firstName = $user.controlCode.lastName;
+            dayOfBirth = $user.controlCode.dayOfBirth;
+            code = $user.controlCode.code;
+        }
+    })
+
 
     const cancel = () => {
         toggleView();
         step = 0;
         lastName = "";
         firstName = "";
-        dateOfBirth = "";
+        dayOfBirth = "";
     }
 
     const backToPersonal = () => {
-        $user.controlCode = {code: code};
         cancelView();
     }
 
@@ -40,10 +52,10 @@
     }
 
     const generateControlCode = () => {
-        createUserControlCode(firstName, lastName, dateOfBirth)
+        createUserControlCode(firstName, lastName, dayOfBirth)
             .then(res => {
                 code = res.code;
-                $user.controlCode = {code: res.code};
+                $user.controlCode = res;
                 step = 2;
             });
     }
@@ -180,6 +192,11 @@
             letter-spacing: 6px;
         }
 
+        input:disabled {
+            background-color: var(--color-primary-yellow);
+            border: none;
+        }
+
         .rethink {
             display: flex;
             gap: 2px;
@@ -240,13 +257,13 @@
         <input id="firstName"
                type="text"
                bind:value={firstName}/>
-        <label for="dateOfBirth">{I18n.t("verify.serviceDesk.idCard.dateOfBirth")}</label>
-        <input id="dateOfBirth"
+        <label for="dayOfBirth">{I18n.t("verify.serviceDesk.idCard.dayOfBirth")}</label>
+        <input id="dayOfBirth"
                type="text"
-               bind:value={dateOfBirth}/>
+               bind:value={dayOfBirth}/>
         <Button label={I18n.t("verify.serviceDesk.idCard.generateControlCode")}
                 fullSize={true}
-                disabled={isEmpty(lastName) || isEmpty(firstName) || isEmpty(dateOfBirth)}
+                disabled={isEmpty(lastName) || isEmpty(firstName) || isEmpty(dayOfBirth)}
                 onClick={() => generateControlCode()}/>
     {:else if step === 2}
         <div>
@@ -254,7 +271,7 @@
             <div class="control-code">
                 <span>{code}</span>
             </div>
-            <p>{I18n.t("verify.serviceDesk.controlCode.info")}</p>
+            <p>{I18n.t("verify.serviceDesk.controlCode.info", {nbr: verificationCodeValidityDays($user.controlCode)})}</p>
             <div class="control-code">
                 <label for="lastName">{I18n.t("verify.serviceDesk.idCard.lastName")}</label>
                 <input id="lastName"
@@ -268,12 +285,12 @@
                        class="read-only"
                        disabled="true"
                        bind:value={firstName}/>
-                <label for="dateOfBirth">{I18n.t("verify.serviceDesk.idCard.dateOfBirth")}</label>
-                <input id="dateOfBirth"
+                <label for="dayOfBirth">{I18n.t("verify.serviceDesk.idCard.dayOfBirth")}</label>
+                <input id="dayOfBirth"
                        type="text"
                        class="read-only"
                        disabled="true"
-                       bind:value={dateOfBirth}/>
+                       bind:value={dayOfBirth}/>
                 <div class="rethink">
                     <p>{I18n.t("verify.serviceDesk.controlCode.typoPrefix")}</p>
                     <a href="/#" on:click|preventDefault|stopPropagation={() => step = 1}>

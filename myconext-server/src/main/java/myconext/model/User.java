@@ -461,6 +461,14 @@ public class User implements Serializable, UserDetails {
                 .orElse(fallback);
     }
 
+    public Map<String, Object> serviceDeskSummary() {
+        return Map.of(
+                "name", String.format("%s %s", this.getDerivedGivenName(), this.getDerivedFamilyName()),
+                "email", this.email,
+                "serviceDeskMember", this.serviceDeskMember
+        );
+    }
+
     private interface ProvisionedNameProvider {
 
         String derivedName(ProvisionedLinkedAccount provisionedLinkedAccount);

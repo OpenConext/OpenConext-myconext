@@ -14,3 +14,8 @@ export function dateFromEpoch(epochMilli, includeTime = false) {
     const timeFormatted = ` ${I18n.t("security.tiqr.dateTimeOn")} ${date.getHours()}:${minutesFormatted}`;
     return `${dateFormatted}${timeFormatted}`
 }
+
+export function verificationCodeValidityDays(controlCode) {
+    const millis = new Date().getTime() - controlCode.createdAt || new Date().getTime();
+    return Math.floor(millis / (1000 * 60 * 60 * 24)) + 14;
+}
