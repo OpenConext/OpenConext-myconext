@@ -5,7 +5,34 @@ on:
     paths:
     - 'localizations.yaml'
 jobs:
+  localicious:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+    - uses: actions/checkout@v3
+    - uses: actions/setup-node@v4
+      with:
+        cache-dependency-path: myconext-gui/
+        node-version: 16
+        cache: 'npm'
+    - name: Install localicious/
+      run: |
+        npm install -g @picnicsupermarket/localicious
+    - name: Create Localizable.strings files
+      run: |
+        cd ${{ github.workspace }}
+        yarn localicious render ./localizations.yaml ./account-gui/src/locale/ --languages en,nl --outputTypes js -c SHARED
+        rm -fr ./account-gui/src/locale/js/Localizable.ts
+        yarn localicious render ./localizations.yaml ./myconext-gui/src/locale/ --languages en,nl --outputTypes js -c SHARED
+        rm -fr ./myconext-gui/src/locale/js/Localizable.ts
+    - name: Commit updated files
+      uses: stefanzweifel/git-auto-commit-action@v4
+      with:
+        commit_message: Automated update of strings.xml after updating localizations.yaml
+        file_pattern: '**/strings.json'
   sync-eduid-apps:
+    needs: localicious
     runs-on: ubuntu-latest
     if: ${{ !contains(github.event.head_commit.message, '#AUTO#') }}
     steps:
@@ -24,30 +51,5 @@ jobs:
           GH_INSTALLATION_TOKEN: ${{ steps.app-token-tiqr-org.outputs.token }}
           COMMIT_PREFIX: "#AUTO#"
           CONFIG_PATH: .github/sync.yml
-  localicious:
-    runs-on: ubuntu-latest
-    permissions:
-      contents: write
-    steps:
-    - uses: actions/checkout@v3
-    - uses: actions/setup-node@v3
-      with:
-        node-version: 16
-        cache: 'npm'
-    - name: Install localicious/
-      run: |
-        npm install -g @picnicsupermarket/localicious
-    - name: Create Localizable.strings files
-      run: |
-        cd ${{ github.workspace }}
-        yarn localicious render ./localizations.yaml ./account-gui/src/locale/ --languages en,nl --outputTypes js -c SHARED
-        rm -fr ./account-gui/src/locale/js/Localizable.ts
-        yarn localicious render ./localizations.yaml ./myconext-gui/src/locale/ --languages en,nl --outputTypes js -c SHARED
-        rm -fr ./myconext-gui/src/locale/js/Localizable.ts
-    - name: Commit updated files
-      uses: stefanzweifel/git-auto-commit-action@v4
-      with:
-        commit_message: Automated update of strings.xml after updating localizations.yaml
-        file_pattern: '**/strings.json'
 
   
