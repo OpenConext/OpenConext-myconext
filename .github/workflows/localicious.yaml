@@ -6,7 +6,7 @@ on:
     - 'localizations.yaml'
 jobs:
   localicious:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     permissions:
       contents: write
     steps:
@@ -37,7 +37,7 @@ jobs:
         file_pattern: '**/strings.json'
   sync-eduid-apps:
     needs: localicious
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     if: ${{ !contains(github.event.head_commit.message, '#AUTO#') }}
     steps:
       - name: Checkout Repository
