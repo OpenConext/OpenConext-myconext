@@ -30,27 +30,4 @@
         font-weight: 700;
     }
 
-    .eye-view {
-        display: flex;
-        align-items: center;
-        cursor: pointer;
-        margin-left: auto;
-        font-weight: bold;
-
-        @media (max-width: $medium) {
-            display: none;
-        }
-
-        svg {
-            width: 32px;
-            margin-right: 10px;
-        }
-
-        color: var(--sds--color--blue--400);
-
-        svg {
-            fill: var(--sds--color--blue--400);
-        }
-
-    }
 }

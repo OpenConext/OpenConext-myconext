@@ -2,6 +2,7 @@
 
 
 .unit-header-container {
+    width: 100%;
     background-color: $background;
     padding: 15px 0 25px 0;
 
@@ -9,7 +10,6 @@
         padding: 15px 15px 25px 15px;
     }
 
-    width: 100%;
 
     .urn-container {
         display: flex;
