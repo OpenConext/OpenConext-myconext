@@ -110,6 +110,7 @@ public class LoginController {
     public Map<String, Object> config() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         Map<String ,Object> copyConfig = new HashMap<>(config);
+        //Can be an AnonymousAuthenticationToken with Principal=anonymousUser
         boolean authenticated = authentication != null && authentication.isAuthenticated() && authentication.getPrincipal() instanceof User;
         copyConfig.put("authenticated", authenticated);
         if (authenticated ) {

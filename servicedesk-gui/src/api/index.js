@@ -54,6 +54,10 @@ function postPutJson(path, body, method, showErrorDialog = true) {
     return fetchJson(path, {method: method, body: jsonBody}, {}, showErrorDialog);
 }
 
+function fetchDelete(path) {
+    return validFetch(path, {method: "delete"});
+}
+
 //Base
 export function configuration() {
     return fetchJson("/config");
@@ -64,16 +68,30 @@ export function me() {
     return fetchJson("/myconext/api/sp/me");
 }
 
+export function forgetMe() {
+    return fetchDelete("/myconext/api/sp/forget");
+}
+
+export function logout() {
+    const fetchOptions = {
+        credentials: "same-origin",
+        redirect: "manual"
+    };
+    return forgetMe().then(() =>
+        fetchJson("/myconext/api/sp/logout").then(() => fetch("/Shibboleth.sso/Logout", fetchOptions))
+    );
+}
+
 //Service Desk
 export function getUserControlCode(code) {
     return fetchJson(`/myconext/api/servicedesk/user/${code}`);
 }
 
 export function validateDate(dayOfBirth) {
-    return fetchJson(`/myconext/api/servicedesk/validate?${encodeURIComponent(dayOfBirth)}`);
+    return fetchJson(`/myconext/api/servicedesk/validate?dayOfBirth=${encodeURIComponent(dayOfBirth)}`);
 }
 
-export function convertUserControlCode(firstName, lastName, dayOfBirth, code, userUid) {
-    const body = {firstName, lastName, dayOfBirth, code, userUid}
-    return postPutJson("/myconext/api/servicedesk/approve", body, "PUT");
+export function convertUserControlCode(firstName, lastName, dayOfBirth, code, documentId , userUid) {
+    const body = {firstName, lastName, dayOfBirth, code, documentId, userUid}
+    return postPutJson("/myconext/api/servicedesk/approve", body, "PUT", false);
 }

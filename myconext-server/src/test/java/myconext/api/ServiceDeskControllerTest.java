@@ -84,6 +84,7 @@ class ServiceDeskControllerTest extends AbstractIntegrationTest {
 
         User user = userRepository.findOneUserByEmail("mdoe@example.com");
         assertEquals(1, user.getExternalLinkedAccounts().size());
+        assertNull(user.getControlCode());
 
         ExternalLinkedAccount externalLinkedAccount = user.getExternalLinkedAccounts().getFirst();
         DateTimeFormatter dateTimeFormatter = new DateTimeFormatterBuilder().appendPattern("dd-MM-yyyy").toFormatter();

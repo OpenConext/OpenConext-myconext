@@ -3,6 +3,7 @@ package myconext.api;
 
 import io.swagger.v3.oas.annotations.Hidden;
 import jakarta.servlet.http.HttpServletRequest;
+import myconext.exceptions.RemoteException;
 import myconext.exceptions.UserNotFoundException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -75,6 +76,9 @@ public class DefaultErrorController implements ErrorController {
                 statusCode = HttpStatus.valueOf((Integer) result.get("status"));
             } else {
                 statusCode = BAD_REQUEST;
+            }
+            if (error instanceof RemoteException) {
+                result.put("reference", ((RemoteException)error).getReference());
             }
         }
         result.put("status", statusCode.value());

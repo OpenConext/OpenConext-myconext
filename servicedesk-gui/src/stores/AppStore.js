@@ -5,6 +5,7 @@ export const useAppStore = create(set => ({
     reload: false,
     config: {},
     user: {},
+    controlCode: {},
     flash: {msg: "", className: "hide", type: "info"},
     setFlash: (message, type) => {
         set({flash: {msg: message, type: type || "info"}});

@@ -1,0 +1,77 @@
+@use "../styles/vars.scss" as *;
+
+
+div.control {
+    margin: 25px 0 25px 0;
+
+    .control-header {
+        display: flex;
+        align-items: center;
+        margin-bottom: 25px;
+        max-width: $verification-width;
+
+        span.code {
+            color: var(--sds--color--blue--400);
+        }
+
+        button {
+            margin-left: auto;
+        }
+
+    }
+
+    p.inner-html span {
+        font-weight: 600;
+    }
+
+    .control-validation {
+        border: 1px solid var(--sds--color--gray--300);
+        border-radius: 8px;
+        max-width: $verification-width;
+        padding: 25px;
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+
+        .sds--toaster {
+            max-width: max-content;
+        }
+    }
+
+    .validation-item {
+        display: flex;
+        align-items: center;
+        border: 1px solid var(--sds--color--gray--200);
+        padding: 10px;
+
+        &.column {
+            flex-direction: column;
+            align-items: normal;
+        }
+
+        .sds--tooltip-parent {
+            margin-left: auto;
+        }
+
+    }
+
+    .sds--toaster {
+        margin-bottom: 10px;
+        font-weight: 600;
+    }
+
+    .code-validation {
+        padding: 15px 0 0 0;
+
+        button {
+            margin-left: auto;
+        }
+    }
+
+    .error {
+        margin: 15px 0;
+        font-weight: 600;
+        color: var(--sds--color--red--400);
+    }
+
+}

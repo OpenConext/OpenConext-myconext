@@ -1,0 +1,17 @@
+.code-validation {
+    padding: 25px;
+    display: flex;
+    gap: 20px;
+
+    .sds--code-validation-container {
+        margin-right: 25px;
+
+        .sds--code-validation input.value {
+            width: 48px;
+            height: 48px;
+            padding-left: 16px;
+            font-size: 24px;
+        }
+    }
+
+}
