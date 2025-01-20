@@ -1,11 +1,14 @@
-Hoi {{name}},
+Onderwerp: Tip: gebruik je persoonlijke e-mailadres
 
-Je hebt een eduID aangemaakt met je instelling account. Als je je instellingsaccount gebruikt, en je bent bijvoorbeeld
-klaar met je opleiding verlies je de toegang tot je eduID. Dit terwijl je je eduID ook na je opleiding weer kan
-gebruiken. Daarom raden we je aan om gewoon je eigen e-mail te gebruiken. Je kunt in je instellingen van je eduID
-account je e-mail adres wijzigen.
+Beste {{name}},
 
-Vriendelijke groetjes,
-eduID.
+Je hebt een eduID aangemaakt met het e-mailadres van je onderwijsinstelling. Belangrijk om te weten: als je je opleiding afrondt, verlies je waarschijnlijk je e-mailadres. Daarmee verlies je ook toegang tot je eduID. 
+
+Je kunt je eduID ook na je opleiding blijven gebruiken. Daarom raden we je aan om je persoonlijke e-mailadres te gebruiken. In de instellingen van mijn.eduid.nl kun je dit aanpassen.
+
+Met vriendelijke groet,
+Team eduID
+
+Let op: je kunt niet reageren op deze e-mail. Heb je hulp nodig? Ga dan naar eduid.nl/help
 
 {{> footer_nl.txt}}

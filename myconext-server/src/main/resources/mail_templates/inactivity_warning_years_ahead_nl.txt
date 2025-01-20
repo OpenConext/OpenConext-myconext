@@ -1,7 +1,17 @@
-Hi {{name}},
+Onderwerp: Belangrijk bericht over je eduID
 
-Je hebt je eduID account niet gebruikt in {{inactivity_period_nl}}. Als je je eduID account niet gebruikt, dan zullen we
-deze verwijderen binnen {{deletion_period_nl}} op {{account_delete_date_nl}}.
-Ga naar {{mySurfConextURL}} en login om je account actief te houden.
+Log in om je eduID actief te houden
+Log in {{mySurfConextURL}}
+
+Beste {{name}},
+
+We willen je eraan herinneren dat je een eduID hebt die je al {{inactivity_period_nl}} niet gebruikt hebt. Doe je niets, dan wordt je eduID over {{deletion_period_nl}}, op {{account_delete_date_nl}} verwijderd.
+
+Wil je je eduID behouden? Log dan in op {{mySurfConextURL}}. Zorg ervoor dat je eduID up-to-date blijft. Denk hierbij aan gegevens zoals je e-mailadres en hoe je wilt inloggen. Je vindt dit terug onder 'Veiligheid'.
+
+Met vriendelijke groet,
+Team eduID
+
+Let op: je kunt niet reageren op deze e-mail. Heb je hulp nodig? Ga dan naar eduid.nl/help
 
 {{> footer_en.txt}}
