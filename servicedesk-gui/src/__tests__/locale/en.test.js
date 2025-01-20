@@ -1,4 +1,4 @@
-import { assert, expect, test } from 'vitest'
+import {expect, test} from 'vitest'
 
 import en from "../../locale/en";
 import nl from "../../locale/nl";

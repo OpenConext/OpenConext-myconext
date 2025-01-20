@@ -7,6 +7,7 @@ import Confirmation from "./Confirmation.jsx";
 const VerifyWizard = () => {
 
     const [step, setStep] = useState(1);
+
     if (step === 1) {
         return <Verification proceed={() => setStep(2)}/>;
     }

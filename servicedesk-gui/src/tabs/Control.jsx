@@ -4,7 +4,6 @@ import I18n from "../locale/I18n";
 import {Button, ButtonType, CodeValidation, Switch, Toaster, ToasterType} from "@surfnet/sds";
 import {convertUserControlCode, validateDate} from "../api/index.js";
 import {useAppStore} from "../stores/AppStore.js";
-import {useNavigate} from "react-router-dom";
 import DOMPurify from "dompurify";
 import {isEmpty} from "../utils/Utils.js";
 
@@ -18,8 +17,6 @@ const Control = ({restart, proceed}) => {
     const [error, setError] = useState({});
 
     const confirmationItems = ["photo", "valid", "lastName", "firstName", "dayOfBirth"];
-
-    const navigate = useNavigate();
 
     useEffect(() => {
         validateDate(controlCode.dayOfBirth).then(res => {
