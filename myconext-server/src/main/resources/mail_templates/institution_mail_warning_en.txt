@@ -1,8 +1,14 @@
-Hi {{name}},
+Subject: Tip: use your personal email address
 
-You have created an eduID with your institutional account. If you're using your institution account, and you have
-completed your education, you will lose access to your eduID. While you can use your eduID after graduation.
-That's why we recommend that you just use your own email. You can change your email address
-in the {{mySurfConextURL}} settings of your eduID account
+Dear {{name}},
+
+You have created an eduID account using your educational institution's email address. It’s important to know that once you complete your studies, you will likely lose access to that email. This means you could also lose access to your eduID account. 
+
+However, you can continue using your eduID even after graduation. That’s why we recommend using your personal email address. You can update this in the settings on mijn.eduid.nl.
+
+Kind regards, 
+Team eduID
+
+Note: you cannot reply to this email. Need help? Visit eduid.nl/help-en
 
 {{> footer_en.txt}}

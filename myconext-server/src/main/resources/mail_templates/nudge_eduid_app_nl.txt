@@ -1,9 +1,12 @@
-Hoi {{name}},
+Beste {{name}},
 
-Je hebt een eduID account aangemaakt maar de app niet geïnstalleerd. Het is super veel handiger als je de app wel
-installeert, daarmee kan je sneller inloggen. Ga naar {{mySurfConextURL}} om je account aan je eduID app te koppelen.
+Welkom bij eduID! Jouw persoonlijke account om te bewijzen wie je bent bij onderwijs- en onderzoeksinstellingen in Nederland. 
 
-Vriendelijke groetjes,
-eduID.
+Wil je voortaan nog sneller en veiliger inloggen bij eduID? Gebruik dan de eduID app. Daarmee log je extra veilig in, zonder wachtwoord. Download de app via eduid.nl/app.
+
+Met vriendelijke groet,
+Team eduID
+
+Let op: je kunt niet reageren op deze e-mail. Heb je hulp nodig? Ga dan naar eduid.nl/help
 
 {{> footer_nl.txt}}
