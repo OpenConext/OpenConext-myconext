@@ -333,8 +333,8 @@ public class UserController implements UserAuthentication {
 
     @Operation(summary = "Create eduID account",
             description = "Create an eduID account and sent a verification mail to the user to confirm the ownership of the email. " +
-                    "<br/>Link in the validation email is <a href=\"\">https://login.{environment}.eduid.nl/mobile/api/create-from-mobile-api?h=={{hash}}</a> which" +
-                    "must NOT be captured by the eduID app." +
+                    "<br/>Link in the validation email is <a href=\"\">https://login.{environment}.eduid.nl/mobile/api/in-app/create-from-mobile-api?h=={{hash}}</a> which" +
+                    "must be captured by the eduID app webview." +
                     "<br/>After the account is finalized server-side the user is logged in and the server redirects to " +
                     "<a href=\"\">https://login.{environment}.eduid.nl/client/mobile/created</a>" +
                     "<br/>If the URL is not properly intercepted by the eduID app, then the browser app redirects to " +
@@ -350,7 +350,8 @@ public class UserController implements UserAuthentication {
                             content = {@Content(schema = @Schema(implementation = StatusResponse.class),
                                     examples = {@ExampleObject(value = "{\"status\":409}")})})})
     @PostMapping("/idp/create")
-    public ResponseEntity<StatusResponse> createEduIDAccount(@Valid @RequestBody CreateAccount createAccount) {
+    public ResponseEntity<StatusResponse> createEduIDAccount(@Valid @RequestBody CreateAccount createAccount,
+                                                             @RequestParam(value = "in-app", required = false, defaultValue = "false") boolean inAppIndicator) {
         String email = createAccount.getEmail();
         verifyEmails(email);
 
@@ -376,7 +377,8 @@ public class UserController implements UserAuthentication {
 
         userRepository.save(user);
 
-        String linkUrl = String.format("%s/mobile/api/create-from-mobile-api", this.idpBaseUrl);
+        String inAppPath = inAppIndicator ? "/in-app" : "";
+        String linkUrl = String.format("%s/mobile/api/create-from-mobile-api%s", this.idpBaseUrl, inAppPath);
         mailBox.sendAccountVerificationMobileAPI(user, institution.getHash(), linkUrl);
 
         logWithContext(user, "create", "user", LOG, "Create user in mobile API");

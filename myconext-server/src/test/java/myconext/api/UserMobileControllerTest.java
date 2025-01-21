@@ -110,7 +110,33 @@ public class UserMobileControllerTest extends AbstractIntegrationTest {
                 .then()
                 .statusCode(302)
                 .header("Location", "http://localhost:3000/client/mobile/created?new=true");
+    }
 
+    @Test
+    public void createEduIDInApp() {
+        CreateAccount createAccount = new CreateAccount("kasd.doe@unit.org", "Kasd", "Doe", "mobile.api.client_id");
+        given()
+                .when()
+                .accept(ContentType.JSON)
+                .contentType(ContentType.JSON)
+                .body(createAccount)
+                .queryParam("in-app", true)
+                .post("/mobile/api/idp/create")
+                .then()
+                .statusCode(201);
+        User user = userRepository.findOneUserByEmail(createAccount.getEmail());
 
+        assertEquals(createAccount.getRelyingPartClientId(), user.getEduIDS().getFirst().getServices().getFirst().getEntityId());
+        assertNotNull(user.getEduPersonPrincipalName());
+
+        given().redirects().follow(false)
+                .when()
+                .accept(ContentType.JSON)
+                .contentType(ContentType.JSON)
+                .queryParam("h", user.getCreateFromInstitutionKey())
+                .get("/mobile/api/create-from-mobile-api/in-app")
+                .then()
+                .statusCode(302)
+                .header("Location", "http://localhost:3000/client/mobile/created?new=true");
     }
 }

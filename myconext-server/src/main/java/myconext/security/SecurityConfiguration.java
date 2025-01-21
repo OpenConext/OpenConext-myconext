@@ -309,7 +309,8 @@ public class SecurityConfiguration {
                     "/mobile/api/idp/create",
                     "/myconext/api/mobile/oidc/redirect",
                     "/myconext/api/mobile/verify/redirect",
-                    "/mobile/api/create-from-mobile-api"
+                    "/mobile/api/create-from-mobile-api",
+                    "/mobile/api/create-from-mobile-api/in-app"
             );
         }
 
