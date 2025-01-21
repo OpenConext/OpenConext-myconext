@@ -89,6 +89,7 @@ jobs:
           /home/runner/work/OpenConext-myconext/OpenConext-myconext/myconext-server/target/myconext-server-${{ github.ref_name }}.jar
           /home/runner/work/OpenConext-myconext/OpenConext-myconext/myconext-gui/target/myconext-gui-${{ github.ref_name }}.zip
           /home/runner/work/OpenConext-myconext/OpenConext-myconext/account-gui/target/account-gui-${{ github.ref_name }}.zip
+          /home/runner/work/OpenConext-myconext/OpenConext-myconext/servicedesk-gui/target/servicedesk-gui-${{ github.ref_name }}.zip
         token: ${{ secrets.GITHUB_TOKEN }}
         fail_on_unmatched_files: true
         generate_release_notes: true
@@ -132,6 +133,20 @@ jobs:
           type=semver,pattern={{version}},value=${{ steps.versioncheck.outputs.version }}
           type=sha
 
+    - name: Extract metadata (tags, labels) for servicedesk GUI Docker
+      id: meta_servidesk_gui
+      uses: docker/metadata-action@v5
+      with:
+        images: ghcr.io/openconext/openconext-myconext/servicedesk-gui
+        flavor: |
+          latest=false
+        tags: |
+          type=ref,event=tag
+          type=raw,event=tag,value=latest
+          type=raw,event=workflow_dispatch,value=snapshot
+          type=semver,pattern={{version}},value=${{ steps.versioncheck.outputs.version }}
+          type=sha
+
     - name: Extract metadata (tags, labels) for Server Docker
       id: meta_server
       uses: docker/metadata-action@v5
@@ -155,6 +170,16 @@ jobs:
         push: true
         tags: ${{ steps.meta_account_gui.outputs.tags }}
         labels: ${{ steps.meta_account_gui.outputs.labels }}
+
+    - name: Build and push the servidesk gui image
+      uses: docker/build-push-action@v5
+      with:
+        context: servidesk-gui
+        file: servidesk-gui/docker/Dockerfile
+        platforms: linux/amd64
+        push: true
+        tags: ${{ steps.meta_servidesk_gui.outputs.tags }}
+        labels: ${{ steps.meta_servidesk_gui.outputs.labels }}
 
     - name: Build and push the myconext gui image
       uses: docker/build-push-action@v5
