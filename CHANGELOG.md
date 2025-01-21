@@ -1,7 +1,10 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
-## [7.3.7]
+## [7.4.0]
+- Activates e-mail nudges. This includes nudges for the use of a personal e-mail (and not the school or institute e-mail), two warning for account removal (1 month and 1 week in advance), inactivity (to prevent losing access to the account), and a nudge to start using the app.
+
+## [7.3.8]
 - UX improvements, including improved texts, show affiliation with new verification, show app nudges less often.
 - Improved and fixed names and validated names derivation. Including always ask a user which validated name they want to prefer.
 - New API endpoint Invite
