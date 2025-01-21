@@ -119,7 +119,7 @@ jobs:
           type=semver,pattern={{version}},value=${{ steps.versioncheck.outputs.version }}
           type=sha
 
-    - name: Extract metadata (tags, labels) for account GUI Docker
+    - name: Extract metadata (tags, labels) for Account GUI Docker
       id: meta_account_gui
       uses: docker/metadata-action@v5
       with:
@@ -133,8 +133,8 @@ jobs:
           type=semver,pattern={{version}},value=${{ steps.versioncheck.outputs.version }}
           type=sha
 
-    - name: Extract metadata (tags, labels) for servicedesk GUI Docker
-      id: meta_servidesk_gui
+    - name: Extract metadata (tags, labels) for Servicedesk GUI Docker
+      id: meta_servicedesk_gui
       uses: docker/metadata-action@v5
       with:
         images: ghcr.io/openconext/openconext-myconext/servicedesk-gui
@@ -161,7 +161,7 @@ jobs:
           type=semver,pattern={{version}},value=${{ steps.versioncheck.outputs.version }}
           type=sha
 
-    - name: Build and push the account gui image
+    - name: Build and push the Account gui image
       uses: docker/build-push-action@v5
       with:
         context: account-gui
@@ -171,15 +171,15 @@ jobs:
         tags: ${{ steps.meta_account_gui.outputs.tags }}
         labels: ${{ steps.meta_account_gui.outputs.labels }}
 
-    - name: Build and push the servidesk gui image
+    - name: Build and push the Servicedesk gui image
       uses: docker/build-push-action@v5
       with:
-        context: servidesk-gui
-        file: servidesk-gui/docker/Dockerfile
+        context: servicedesk-gui
+        file: servicedesk-gui/docker/Dockerfile
         platforms: linux/amd64
         push: true
-        tags: ${{ steps.meta_servidesk_gui.outputs.tags }}
-        labels: ${{ steps.meta_servidesk_gui.outputs.labels }}
+        tags: ${{ steps.meta_servicedesk_gui.outputs.tags }}
+        labels: ${{ steps.meta_servicedesk_gui.outputs.labels }}
 
     - name: Build and push the myconext gui image
       uses: docker/build-push-action@v5
@@ -191,7 +191,7 @@ jobs:
         tags: ${{ steps.meta_myconext_gui.outputs.tags }}
         labels: ${{ steps.meta_myconext_gui.outputs.labels }}
 
-    - name: Build and push the server image
+    - name: Build and push the Server image
       uses: docker/build-push-action@v5
       with:
         context: myconext-server
