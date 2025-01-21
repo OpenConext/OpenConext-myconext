@@ -10,6 +10,10 @@ div.control {
         margin-bottom: 25px;
         max-width: $verification-width;
 
+        @media (max-width: $medium) {
+            flex-direction: column;
+        }
+
         span.code {
             color: var(--sds--color--blue--400);
         }
@@ -50,6 +54,10 @@ div.control {
             align-items: normal;
         }
 
+        &.invalid {
+            border: 2px solid var(--sds--color--red--400);
+        }
+
         .sds--tooltip-parent {
             margin-left: auto;
         }
@@ -73,6 +81,19 @@ div.control {
         margin: 15px 0;
         font-weight: 600;
         color: var(--sds--color--red--400);
+    }
+
+    .react-datepicker-wrapper {
+        opacity: 0;
+    }
+
+    .calendar {
+        margin-right: 12px;
+        img {
+            width: 32px;
+            height: auto;
+            cursor: pointer;
+        }
     }
 
 }

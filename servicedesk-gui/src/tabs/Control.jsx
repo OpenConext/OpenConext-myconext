@@ -1,11 +1,15 @@
 import "./Control.scss";
-import React, {useEffect, useState} from "react";
+import React, {useEffect, useRef, useState} from "react";
 import I18n from "../locale/I18n";
 import {Button, ButtonType, CodeValidation, Switch, Toaster, ToasterType} from "@surfnet/sds";
 import {convertUserControlCode, validateDate} from "../api/index.js";
 import {useAppStore} from "../stores/AppStore.js";
 import DOMPurify from "dompurify";
 import {isEmpty} from "../utils/Utils.js";
+import DatePicker from "react-datepicker";
+import calendarIcon from "../icons/calendar-alt.svg";
+
+import "react-datepicker/dist/react-datepicker.css";
 
 const Control = ({restart, proceed}) => {
 
@@ -15,6 +19,10 @@ const Control = ({restart, proceed}) => {
     const [confirmations, setConfirmations] = useState(Array(5).fill(false));
     const [documentId, setDocumentId] = useState("");
     const [error, setError] = useState({});
+    const [birthDay, setBirthDay] = useState(null);
+
+    const inputRef = useRef(null);
+    const toggle = () => inputRef.current.setOpen(true);
 
     const confirmationItems = ["photo", "valid", "lastName", "firstName", "dayOfBirth"];
 
@@ -28,6 +36,18 @@ const Control = ({restart, proceed}) => {
         const newConfirmations = [...confirmations];
         newConfirmations[index] = value;
         setConfirmations(newConfirmations);
+    }
+
+    const leadingZero = num => {
+        return num < 10 ? `0${num}` : num.toString();
+    }
+
+    const convertDayOfBirth = newDate => {
+        setBirthDay(newDate);
+        //See AttributeMapper dateFormat yyyy-MM-dd
+        const formattedDate = `${newDate.getFullYear()}-${leadingZero(newDate.getMonth() + 1)}-${leadingZero(newDate.getDate())}`;
+        const newControlCode = {...controlCode, dayOfBirth: formattedDate}
+        useAppStore.setState(() => ({controlCode: newControlCode}));
     }
 
     const doConvertUserControlCode = () => {
@@ -76,25 +96,43 @@ const Control = ({restart, proceed}) => {
                        dangerouslySetInnerHTML={{__html: DOMPurify.sanitize(I18n.t(`control.validations.${name}`, controlCode))}}/>
                     <Switch value={confirmations[index]} onChange={val => confirm(index, val)}/>
                 </div>)}
-                <div className="validation-item column">
-                    <p className="inner-html"
-                       dangerouslySetInnerHTML={{__html: DOMPurify.sanitize(I18n.t("control.idDocument"))}}/>
-                    <div className="code-validation">
-                        <CodeValidation verify={val => setDocumentId(val)}
-                                        size={6}
-                                        focusFirst={false}
-                                        validate={() => true}
-                        />
-                        <Button txt={I18n.t("verification.proceed")}
-                                disabled={isEmpty(documentId) || confirmations.some(val => !val) || loading || !isEmpty(error)}
-                                onClick={() => doConvertUserControlCode()}
-                        />
+                {!validDayOfBirth && <div className={`validation-item ${birthDay === null ? "invalid" : ""}`}>
+                    <p>{I18n.t("control.invalidDate")}</p>
+                    <DatePicker
+                        ref={inputRef}
+                        preventOpenOnFocus
+                        onChange={convertDayOfBirth}
+                        showWeekNumbers
+                        selected={birthDay}
+                        showYearDropdown={true}
+                        showMonthDropdown={true}
+                        dropdownMode="select"
+                        weekLabel="Week"
+                        todayButton={null}/>
+                    <div className={"calendar"} onClick={toggle}>
+                        <img src={calendarIcon} alt="calendar"/>
+                    </div>
+                </div>}
+                    <div className="validation-item column">
+                        <p className="inner-html"
+                           dangerouslySetInnerHTML={{__html: DOMPurify.sanitize(I18n.t("control.idDocument"))}}/>
+                        <div className="code-validation">
+                            <CodeValidation verify={val => setDocumentId(val)}
+                                            size={6}
+                                            focusFirst={false}
+                                            validate={() => true}
+                            />
+                            <Button txt={I18n.t("verification.proceed")}
+                                    disabled={isEmpty(documentId) || confirmations.some(val => !val) || loading || !isEmpty(error)
+                            || (!validDayOfBirth && isEmpty(birthDay))}
+                                    onClick={() => doConvertUserControlCode()}
+                            />
+                        </div>
                     </div>
                 </div>
-            </div>
 
-        </div>
-    )
-};
+                    </div>
+                    )
+                };
 
-export default Control;
+                export default Control;
