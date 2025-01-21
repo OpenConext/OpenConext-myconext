@@ -1,5 +1,3 @@
-Subject: Log in faster and more securely with the eduID app
-
 Dear {{name}},
 
 Welcome to eduID! Your personal account for verifying your identity with educational and research institutions in the Netherlands.

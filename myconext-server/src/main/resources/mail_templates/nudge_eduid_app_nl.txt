@@ -1,10 +1,8 @@
-Onderwerp: Log sneller en veiliger in met de eduID app
-
 Beste {{name}},
 
 Welkom bij eduID! Jouw persoonlijke account om te bewijzen wie je bent bij onderwijs- en onderzoeksinstellingen in Nederland. 
 
-Wil je voortaan nog sneller en veiliger inloggen bij eduID? Gebruik dan de eduID app. Daarmee log je extra veilig in, zonder wachtwoord. Download de app via eduid.nl/app
+Wil je voortaan nog sneller en veiliger inloggen bij eduID? Gebruik dan de eduID app. Daarmee log je extra veilig in, zonder wachtwoord. Download de app via eduid.nl/app.
 
 Met vriendelijke groet,
 Team eduID
