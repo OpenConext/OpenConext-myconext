@@ -232,7 +232,7 @@ public class LoginController {
         doCreateUserFromInstitutionKey(request, response, key, redirectUrl);
     }
 
-    @GetMapping("/mobile/api/create-from-mobile-api")
+    @GetMapping({"/mobile/api/create-from-mobile-api", "/mobile/api/create-from-mobile-api/in-app"})
     public void createFromMobileApi(HttpServletRequest request,
                                     HttpServletResponse response,
                                     @RequestParam(value = "h") String hash) throws IOException {

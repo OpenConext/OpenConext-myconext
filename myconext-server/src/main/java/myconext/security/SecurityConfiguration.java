@@ -316,7 +316,8 @@ public class SecurityConfiguration {
                                     "/mobile/api/idp/create",
                                     "/myconext/api/mobile/oidc/redirect",
                                     "/myconext/api/mobile/verify/redirect",
-                                    "/mobile/api/create-from-mobile-api")
+                                    "/mobile/api/create-from-mobile-api",
+                                    "/mobile/api/create-from-mobile-api/in-app")
                             .permitAll()
                             .requestMatchers("/myconext/api/eduid/eppn").hasAuthority("SCOPE_eduid.nl/eppn")
                             .requestMatchers("/myconext/api/eduid/eduid").hasAuthority("SCOPE_eduid.nl/eduid")
