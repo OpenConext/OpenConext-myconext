@@ -44,6 +44,7 @@
     "js-cookie": "^3.0.5",
     "postcss": "^8.4.49",
     "sass": "^1.82.0",
+    "svelte-qrcode": "^1.0.1",
     "svelte-routing": "^2.13.0",
     "ts-loader": "^9.5.1",
     "typescript": "^5.7.2",
