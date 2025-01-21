@@ -97,7 +97,7 @@ const Control = ({restart, proceed}) => {
                     <Switch value={confirmations[index]} onChange={val => confirm(index, val)}/>
                 </div>)}
                 {!validDayOfBirth && <div className={`validation-item ${birthDay === null ? "invalid" : ""}`}>
-                    <p>{I18n.t("control.invalidDate")}</p>
+                    <p>{I18n.t(`control.${birthDay === null ? "invalidDate" : "validDate"}`)}</p>
                     <DatePicker
                         ref={inputRef}
                         preventOpenOnFocus
@@ -109,30 +109,30 @@ const Control = ({restart, proceed}) => {
                         dropdownMode="select"
                         weekLabel="Week"
                         todayButton={null}/>
-                    <div className={"calendar"} onClick={toggle}>
+                    <div className="calendar" onClick={toggle}>
                         <img src={calendarIcon} alt="calendar"/>
                     </div>
                 </div>}
-                    <div className="validation-item column">
-                        <p className="inner-html"
-                           dangerouslySetInnerHTML={{__html: DOMPurify.sanitize(I18n.t("control.idDocument"))}}/>
-                        <div className="code-validation">
-                            <CodeValidation verify={val => setDocumentId(val)}
-                                            size={6}
-                                            focusFirst={false}
-                                            validate={() => true}
-                            />
-                            <Button txt={I18n.t("verification.proceed")}
-                                    disabled={isEmpty(documentId) || confirmations.some(val => !val) || loading || !isEmpty(error)
-                            || (!validDayOfBirth && isEmpty(birthDay))}
-                                    onClick={() => doConvertUserControlCode()}
-                            />
-                        </div>
+                <div className="validation-item column">
+                    <p className="inner-html"
+                       dangerouslySetInnerHTML={{__html: DOMPurify.sanitize(I18n.t("control.idDocument"))}}/>
+                    <div className="code-validation">
+                        <CodeValidation verify={val => setDocumentId(val)}
+                                        size={6}
+                                        focusFirst={false}
+                                        validate={() => true}
+                        />
+                        <Button txt={I18n.t("verification.proceed")}
+                                disabled={isEmpty(documentId) || confirmations.some(val => !val) || loading || !isEmpty(error)
+                                    || (!validDayOfBirth && isEmpty(birthDay))}
+                                onClick={() => doConvertUserControlCode()}
+                        />
                     </div>
                 </div>
+            </div>
 
-                    </div>
-                    )
-                };
+        </div>
+    )
+};
 
-                export default Control;
+export default Control;

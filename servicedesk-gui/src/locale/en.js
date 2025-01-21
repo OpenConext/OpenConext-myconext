@@ -57,6 +57,7 @@ const en = {
             dayOfBirth: "The date of birth in the document: <span>{{dayOfBirth}}</span> ",
         },
         invalidDate: "The day of birth can not be recognized, please select the correct date",
+        validDate: "The day of birth is corrected",
         idDocument: "Fill in the <span>last 6 characters</span> of the ID document",
     },
     confirmation: {
