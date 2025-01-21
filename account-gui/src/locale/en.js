@@ -127,52 +127,66 @@ I18n.translations.en = {
         "account-linked": {
             title: "Account linked!",
             info: "Your institutional account has been linked, click the button below to open your new account in the eduID app.",
+            infoDesktop: "Your institutional account has been linked, scan the code below below to open your new account in the eduID app.",
         },
         "add-password": {
             title: "New password requested!",
             info: "To add your new password, click the button below to open eduID app.",
+            infoDesktop: "To add your new password, scan the code below to open eduID app.",
         },
         created: {
             title: "Account created!",
             info: "Your account has been created, click the button below to open your new account in the eduID app.",
+            infoDesktop: "Your account has been created, scan the code below to open your new account in the eduID app.",
         },
         "eppn-already-linked": {
             title: "EPPN already linked!",
             info: "Your account has not been linked, click the button below to open the eduID app.",
+            infoDesktop: "Your account has not been linked, scan the code below to open the eduID app.",
         },
         "subject-already-linked": {
             title: "Subject already linked!",
             info: "Your account has not been verified, click the button below to open the eduID app.",
+            infoDesktop: "Your account has not been verified, scan the code below to open the eduID app.",
         },
         expired: {
             title: "Session expired!",
             info: "Your account has not been linked, click the button below to open the eduID app.",
+            infoDesktop: "Your account has not been linked, scan the code below to open the eduID app.",
         },
         fallback: {
             title: "eduID app!",
-            info: "You have opened a link to the eduID app in the browser, click the button below to open eduID app."
+            info: "You have opened a link to the eduID app in the browser, click the button below to open eduID app.",
+            infoDesktop: "You have opened a link to the eduID app in the browser, scan the code below to open eduID app."
         },
         "reset-password": {
             title: "Reset password requested!",
             info: "To reset your password, click the button below to open eduID app.",
+            infoDesktop: "To reset your password, scan the code below to open eduID app.",
         },
         "security": {
             title: "Security!",
             info: "To view and update your security settings, click the button below to open eduID app.",
+            infoDesktop: "To view and update your security settings, scan the code below to open eduID app.",
         },
         "update-email": {
             title: "New email confirmed!",
             info: "To finalize your email update, click the button below to open eduID app.",
+            infoDesktop: "To finalize your email update, scan the code below to open eduID app.",
         },
         "external-account-linked": {
             title: "External Account linked!",
             info: "Your external account has been linked, click the button below to open your new account in the eduID app.",
+            infoDesktop: "Your external account has been linked, scan the code below to open your new account in the eduID app.",
         },
         "external-account-linked-error": {
             title: "External account error!",
             info: "Your external account has not been verified, click the button below to open the eduID app.",
+            infoDesktop: "Your external account has not been verified, scan the code below to open the eduID app.",
         },
-        proceedLink: "Go to eduID app"
+        proceedLink: "Go to eduID app",
+        qrCodeLink: "Scan to go to eduID app"
+
     },
     expired: {
         title: "Expired magic link",
