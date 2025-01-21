@@ -11,15 +11,15 @@ const nl = {
             title: "ServiceDesk",
             subTitle: "",
             login: "Log in",
-            sup: "EduID ServiceDesk is by invitation only.",
+            sup: "EduID ServiceDesk is alleen op uitnodiging beschikbaar.",
         },
-        works: "How does it work?",
+        works: "Hoe werkt het?",
         info: [
             //Arrays of titles and info blocks and if a function is an admin function
             "SURF TODO.",
         ],
-        footer: "<p>SURFconext ServiceDesk offers user validation for SURFconext-connected applications.</p>" +
-            "<p>Do you want to know more? <a href='https://support.surfconext.nl/servicedesk-en'>Read more</a>.</p>",
+        footer: "<p>SURFconext ServiceDesk biedt gebruikersvalidatie voor SURFconext-gekoppelde applicaties</p>" +
+            "<p>Wil je meer weten? <a href='https://support.surfconext.nl/servicedesk-en'>Lees verder</a>.</p>",
     },
     header: {
         title: "SURFconext ServiceDesk",
@@ -28,23 +28,23 @@ const nl = {
         }
     },
     serviceDesk: {
-        member: "ServiceDesk member"
+        member: "ServiceDesk lid"
     },
     tabs: {
         home: "Home",
-        verify: "Identity control"
+        verify: "Identiteitscontrole"
     },
     verification: {
-        header: "Enter the verification code",
-        proceed: "Continue",
-        error: "No user found for verification code {{code}}",
+        header: "Voer de verificatiecode in",
+        proceed: "Doorgaan",
+        error: "Geen gebruiker gevonden voo de verificatiecode {{code}}",
         info: "Deze code heeft de persoon gegenereerd in eduID"
     },
     control: {
-        header: "Identity control for code: ",
-        restart: "Start again",
-        proceed: "Continue",
-        error: "An unexpected error has occurred. Please contact <a href='mailto:servicedesk@surf.nl>?subject=Reference {{reference}}'>SURF ServiceDesk</a>",
+        header: "Identiteitscontrole voor de code : ",
+        restart: "Opnieuw beginnen",
+        proceed: "Doorgaan",
+        error: "Er is een onverwachte fout opgetreden. Neem dan contact op met <a href='mailto:servicedesk@surf.nl>?subject=Referentie {{reference}}'>SURF ServiceDesk</a>",
         info: "Controleer het identiteitsbewijs van deze persoon",
         validDocuments: "Geldige documenten: paspoorten, EER ID-kaarten, Nederlandse rijbewijzen en Nederlandse verblijfsvergunningen",
         inValidDocuments: "Kopieën, OV-kaarten en studentenkaarten zijn geen geldige documenten",
@@ -71,7 +71,6 @@ const nl = {
         privacyLink: "https://support.surfconext.nl/privacy-nl",
         surfLink: "https://surf.nl",
     },
-
 
 }
 

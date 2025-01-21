@@ -41,7 +41,8 @@ div.control {
     .validation-item {
         display: flex;
         align-items: center;
-        border: 1px solid var(--sds--color--gray--200);
+        border: 2px solid var(--sds--color--gray--200);
+        border-radius: 2px;
         padding: 10px;
 
         &.column {
