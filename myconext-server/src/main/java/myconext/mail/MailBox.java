@@ -214,13 +214,18 @@ public class MailBox {
         String html = this.mailTemplate(String.format("%s_%s.html", templateName, language), variables);
         String text = this.mailTemplate(String.format("%s_%s.txt", templateName, language), variables);
 
-        MimeMessage mimeMessage = mailSender.createMimeMessage();
-        MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, true);
-        helper.setSubject(subject);
-        helper.setTo(to);
-        setText(html, text, helper);
-        helper.setFrom(emailFrom);
-        doSendMail(mimeMessage);
+        try {
+            MimeMessage mimeMessage = mailSender.createMimeMessage();
+            MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, true);
+            helper.setSubject(subject);
+            helper.setTo(to);
+            setText(html, text, helper);
+            helper.setFrom(emailFrom);
+            doSendMail(mimeMessage);
+        } catch (Exception e) {
+            LOG.error("Error sending mail to "+to, e);
+            //We don't want to stop batch mailings
+        }
     }
 
     protected void setText(String html, String text, MimeMessageHelper helper) throws jakarta.mail.MessagingException {
