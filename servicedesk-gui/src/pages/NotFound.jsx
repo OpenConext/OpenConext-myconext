@@ -5,7 +5,7 @@ import I18n from "../locale/I18n";
 
 const NotFound = () => (
     <div className={"not-found"}>
-        <img src={NotFoundLogo} alt={I18n.t("notFound.alt")}/>
+        <NotFoundLogo/>
     </div>
 );
 export default NotFound;

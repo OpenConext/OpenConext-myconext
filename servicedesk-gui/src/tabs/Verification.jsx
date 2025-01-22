@@ -2,7 +2,7 @@ import "./Verification.scss";
 import React, {useState} from "react";
 import I18n from "../locale/I18n";
 import {Button, CodeValidation, ErrorIndicator} from "@surfnet/sds";
-import alertIcon from "../icons/alert.svg";
+import AlertIcon from "@surfnet/sds/icons/functional-icons/info.svg";
 import {getUserControlCode} from "../api/index.js";
 import {useAppStore} from "../stores/AppStore.js";
 
@@ -46,7 +46,7 @@ const Verification = ({proceed}) => {
             </div>
             {error && <ErrorIndicator message={I18n.t("verification.error", {code: code})}/>}
             <div className="disclaimer">
-                <img src={alertIcon} alt=""/>
+                <AlertIcon/>
                 <p>{I18n.t("verification.info")}</p>
             </div>
 

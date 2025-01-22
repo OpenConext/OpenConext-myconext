@@ -1,5 +1,5 @@
 import React from "react";
-import AlertIcon from "@surfnet/sds/icons/functional-icons/alert-circle.svg?react";
+import AlertIcon from "@surfnet/sds/icons/functional-icons/alert-circle.svg";
 import "./Tab.scss";
 import {BadgeNumber} from "@surfnet/sds";
 

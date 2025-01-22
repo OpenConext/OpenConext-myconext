@@ -4,7 +4,7 @@ import {useAppStore} from "../stores/AppStore";
 import {Link} from "react-router-dom";
 import {isEmpty} from "../utils/Utils";
 import DOMPurify from "dompurify";
-import arrowRight from "../icons/arrow-right.svg";
+import ArrowRight from "../icons/arrow-right.svg";
 
 export const BreadCrumb = () => {
 
@@ -22,7 +22,7 @@ export const BreadCrumb = () => {
                     .filter(p => !isEmpty(p))
                     .map((p, i) =>
                         <li key={i}>
-                            {i !== 0 && <img src={arrowRight} className="logo" alt="Vite logo"/>}
+                            {i !== 0 && <ArrowRight/>}
                             {((i + 1) !== paths.length && p.path) &&
                                 <Link to={p.path} onClick={() => clearFlash()}>
                                     {<span dangerouslySetInnerHTML={{__html: DOMPurify.sanitize(p.value)}}/>}

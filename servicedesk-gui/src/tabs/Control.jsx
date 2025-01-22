@@ -7,7 +7,7 @@ import {useAppStore} from "../stores/AppStore.js";
 import DOMPurify from "dompurify";
 import {isEmpty} from "../utils/Utils.js";
 import DatePicker from "react-datepicker";
-import calendarIcon from "../icons/calendar-alt.svg";
+import CalendarIcon from "../icons/calendar-alt.svg";
 
 import "react-datepicker/dist/react-datepicker.css";
 
@@ -132,7 +132,7 @@ const Control = ({restart, proceed}) => {
                                 weekLabel="Week"
                                 todayButton={null}/>
                             <div className="calendar" onClick={toggle}>
-                                <img src={calendarIcon} alt="calendar"/>
+                                <CalendarIcon/>
                             </div>
                         </div>}
 

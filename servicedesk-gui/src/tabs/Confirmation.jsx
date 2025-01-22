@@ -2,7 +2,7 @@ import "./Confirmation.scss";
 import React from "react";
 import I18n from "../locale/I18n";
 import {Button, ButtonType, Toaster, ToasterType} from "@surfnet/sds";
-import highFive from "../icons/undraw_High_five.svg";
+import HighFive from "../icons/undraw_High_five.svg";
 import {useAppStore} from "../stores/AppStore.js";
 
 const Confirmation = ({restart}) => {
@@ -15,7 +15,7 @@ const Confirmation = ({restart}) => {
             <Toaster toasterType={ToasterType.Success}
                      message={I18n.t("confirmation.info", {controlCode})}/>
             <div className={"img-container"}>
-                <img src={highFive} alt="high-five"/>
+                <HighFive/>
             </div>
             <div className={"button-container"}>
                 <Button txt={I18n.t("control.restart")}
