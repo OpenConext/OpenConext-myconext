@@ -73,6 +73,7 @@ class ServiceDeskControllerTest extends AbstractIntegrationTest {
                 .pathParam("code", "12345")
                 .get("/myconext/api/servicedesk/user/{code}")
                 .as(ControlCode.class);
+        controlCode.setDayOfBirth("11 Mar 1987");
 
         given()
                 .when()

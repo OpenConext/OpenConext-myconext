@@ -62,8 +62,8 @@ const en = {
             firstName: "The first names in the document: <span>{{firstName}}</span>",
             dayOfBirth: "The date of birth in the document: <span>{{dayOfBirth}}</span> ",
         },
-        invalidDate: "The day of birth can not be recognized, please select the correct date",
-        validDate: "The day of birth is corrected",
+        invalidDate: "The day of birth has an invalid format, first select the correct date by pressing the calendar button",
+        validDate: "The day of birth is now valid and can be confirmed",
         idDocument: "Fill in the <span>last 6 characters</span> of the ID document",
     },
     confirmation: {

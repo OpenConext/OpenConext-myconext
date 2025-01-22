@@ -54,8 +54,24 @@ div.control {
             align-items: normal;
         }
 
-        &.invalid {
-            border: 2px solid var(--sds--color--red--400);
+        .sds--tooltip-parent {
+            margin-left: auto;
+            padding-left: 8px;
+        }
+
+    }
+
+    .validation-item-inner {
+        display: flex;
+        align-items: center;
+
+        &.birthday {
+            margin-top: 25px;
+            position: relative;
+
+            &.invalid {
+                color: var(--sds--color--red--400);
+            }
         }
 
         .sds--tooltip-parent {
@@ -88,7 +104,10 @@ div.control {
     }
 
     .calendar {
-        margin: 0 12px 0 auto;
+        top: 0;
+        right: 15px;
+        position: absolute;
+
         img {
             width: 32px;
             height: auto;

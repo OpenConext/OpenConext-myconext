@@ -16,6 +16,7 @@ public class ControlCode implements Serializable {
     @NotBlank
     private String lastName;
     @NotBlank
+    @Setter
     private String dayOfBirth;
     @Setter
     @Indexed

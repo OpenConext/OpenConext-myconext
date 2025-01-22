@@ -24,7 +24,7 @@ const Control = ({restart, proceed}) => {
     const inputRef = useRef(null);
     const toggle = () => inputRef.current.setOpen(true);
 
-    const confirmationItems = ["photo", "valid", "lastName", "firstName", "dayOfBirth"];
+    const confirmationItems = ["photo", "valid", "lastName", "firstName"];
 
     useEffect(() => {
         validateDate(controlCode.dayOfBirth).then(res => {
@@ -68,6 +68,7 @@ const Control = ({restart, proceed}) => {
             });
     }
 
+
     return (
         <div className="control">
             <div className="control-header">
@@ -96,23 +97,35 @@ const Control = ({restart, proceed}) => {
                        dangerouslySetInnerHTML={{__html: DOMPurify.sanitize(I18n.t(`control.validations.${name}`, controlCode))}}/>
                     <Switch value={confirmations[index]} onChange={val => confirm(index, val)}/>
                 </div>)}
-                {!validDayOfBirth && <div className={`validation-item ${birthDay === null ? "invalid" : ""}`}>
-                    <p>{I18n.t(`control.${birthDay === null ? "invalidDate" : "validDate"}`)}</p>
-                    <DatePicker
-                        ref={inputRef}
-                        preventOpenOnFocus
-                        onChange={convertDayOfBirth}
-                        showWeekNumbers
-                        selected={birthDay}
-                        showYearDropdown={true}
-                        showMonthDropdown={true}
-                        dropdownMode="select"
-                        weekLabel="Week"
-                        todayButton={null}/>
-                    <div className="calendar" onClick={toggle}>
-                        <img src={calendarIcon} alt="calendar"/>
+                <div className="validation-item column">
+                    <div className="validation-item-inner">
+                        <p className="inner-html"
+                           dangerouslySetInnerHTML={{__html: DOMPurify.sanitize(I18n.t("control.validations.dayOfBirth", controlCode))}}/>
+                        <Switch value={confirmations[4]}
+                                disabled={!validDayOfBirth && birthDay === null}
+                                onChange={val => confirm(4, val)}/>
                     </div>
-                </div>}
+                    {!validDayOfBirth &&
+                        <div className={`validation-item-inner birthday ${birthDay === null ? "invalid" : ""}`}>
+                            <p>{I18n.t(`control.${birthDay === null ? "invalidDate" : "validDate"}`)}</p>
+                            <DatePicker
+                                ref={inputRef}
+                                preventOpenOnFocus
+                                onChange={convertDayOfBirth}
+                                showWeekNumbers
+                                selected={birthDay}
+                                showYearDropdown={true}
+                                showMonthDropdown={true}
+                                dropdownMode="select"
+                                weekLabel="Week"
+                                todayButton={null}/>
+                            <div className="calendar" onClick={toggle}>
+                                <img src={calendarIcon} alt="calendar"/>
+                            </div>
+                        </div>}
+
+                </div>
+
                 <div className="validation-item column">
                     <p className="inner-html"
                        dangerouslySetInnerHTML={{__html: DOMPurify.sanitize(I18n.t("control.idDocument"))}}/>

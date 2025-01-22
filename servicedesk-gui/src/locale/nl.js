@@ -61,8 +61,8 @@ const nl = {
             firstName: "De voornamen in het document: <span>{{firstName}}</span>",
             dayOfBirth: "De geboortedatum in het document: <span>{{dayOfBirth}}</span>",
         },
-        invalidDate: "De geboortedatum wordt niet herkent, selecteer de juiste datum",
-        validDate: "De geboortedatum is gecorrigeerd",
+        invalidDate: "De geboortedatum heeft een ongeldig formaat, selecteer eerst de juiste geboortedatum met door op de kalendat knop te drukken",
+        validDate: "De geboortedatum is nu correct en kan worden bevestigd",
         idDocument: "Vul de <span>laatste 6 karakters</span> van het document in",
     },
     confirmation: {
