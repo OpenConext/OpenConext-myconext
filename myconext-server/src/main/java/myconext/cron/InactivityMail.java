@@ -63,10 +63,12 @@ public class InactivityMail {
     }
 
     private void doMailInactiveUsers(UserInactivity userInactivity) {
+        LOG.info("Starting InactivityMail job");
         long nowInMillis = System.currentTimeMillis();
         long fiveYearsInMillis = 5 * 365 * ONE_DAY_IN_MILLIS;
 
         long lastLoginBefore = nowInMillis - (ONE_DAY_IN_MILLIS * userInactivity.getInactivityDays());
+
         List<User> users = userRepository.findByLastLoginBeforeAndUserInactivityIn(lastLoginBefore,
                 this.userInactivitiesWithNullElement(userInactivity.getPreviousUserInactivity()));
 

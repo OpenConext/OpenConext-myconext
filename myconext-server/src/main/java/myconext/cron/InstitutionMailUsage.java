@@ -43,6 +43,7 @@ public class InstitutionMailUsage {
         if (!mailInstitutionMailUsage || !cronJobResponsible) {
             return;
         }
+        LOG.info("Starting InstitutionMailUsage job");
         long start = System.currentTimeMillis();
         try {
             List<String> queryList = manage.getDomainNames().stream()

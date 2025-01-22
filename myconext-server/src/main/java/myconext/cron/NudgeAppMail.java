@@ -44,6 +44,7 @@ public class NudgeAppMail {
         if (!nudgeAppMailFeature || !cronJobResponsible) {
             return;
         }
+        LOG.info("Starting NudgeAppMail job");
         long start = System.currentTimeMillis();
         try {
             long createdBefore = (new Date().getTime() - (nudgeAppMailDaysAfterCreation * 24 * 60 * 60 * 1000)) / 1000;

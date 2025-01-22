@@ -47,6 +47,7 @@ public class DisposableEmailProviders {
         if (!denyDisposableEmailProviders) {
             return;
         }
+        LOG.info("Starting DisposableEmailProviders job");
         long start = System.currentTimeMillis();
         try {
             String remoteLocation = "https://raw.githubusercontent.com/7c/fakefilter/main/json/data.json";
