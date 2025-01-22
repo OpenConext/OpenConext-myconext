@@ -203,7 +203,9 @@ eduid_api:
   base_url: http://localhost:8081
 
 geo_location:
-  license_key: lb53kEx9iVCuBcnV
+  # Use either max_mind or mock
+  service: mock
+  license_key: "nope"
   external_url: "https://download.maxmind.com/app/geoip_download?edition_id=GeoLite2-City&license_key={license_key}&suffix=tar.gz"
   download_directory: "/var/tmp/geo2lite"
 

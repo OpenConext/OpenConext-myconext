@@ -3,14 +3,14 @@ package myconext.geo;
 import lombok.SneakyThrows;
 import myconext.AbstractIntegrationTest;
 import org.apache.commons.io.FileUtils;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 
 import java.io.File;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * We converted from a WireMock stub based test, to a full-fledged integration test. Mainly
@@ -26,6 +26,7 @@ public class MaxMindGeoLocationTest extends AbstractIntegrationTest {
 
     @SneakyThrows
     @Test
+    @Ignore
     public void findLocation() {
         String location = geoLocation.findLocation("145.90.230.172").get();
         assertEquals("The Netherlands, Amsterdam", location);
@@ -41,4 +42,10 @@ public class MaxMindGeoLocationTest extends AbstractIntegrationTest {
 
     }
 
+    @SneakyThrows
+    @Test
+    public void findMockLocation() {
+        assertInstanceOf(MockGeoLocation.class, geoLocation);
+        assertTrue(geoLocation.findLocation("127.0.0.1").isEmpty());
+    }
 }
