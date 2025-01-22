@@ -4,7 +4,9 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.mustachejava.DefaultMustacheFactory;
 import com.github.mustachejava.MustacheFactory;
+import jakarta.mail.internet.MimeMessage;
 import lombok.SneakyThrows;
+import myconext.model.ControlCode;
 import myconext.model.EmailsSend;
 import myconext.model.User;
 import myconext.model.UserLogin;
@@ -18,8 +20,6 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.util.StringUtils;
 
-import javax.mail.MessagingException;
-import javax.mail.internet.MimeMessage;
 import java.io.*;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
@@ -65,7 +65,7 @@ public class MailBox {
             LOG.info("Initializing mail templates from JAR resource: " + mailTemplatesDirectory.getFilename());
             mustacheFactory = new DefaultMustacheFactory(mailTemplatesDirectory.getFilename());
         }
-        this.subjects = objectMapper.readValue(inputStream("subjects.json", mailTemplatesDirectory), new TypeReference<Map<String, Map<String, String>>>() {
+        this.subjects = objectMapper.readValue(inputStream(mailTemplatesDirectory), new TypeReference<>() {
         });
     }
 
@@ -184,6 +184,14 @@ public class MailBox {
         sendMail("verification_code", title, variables, preferredLanguage(user), user.getEmail(), true);
     }
 
+    public void sendServiceDeskControlCode(User user, ControlCode controlCode) {
+        String title = this.getTitle("service_desk_control_code", user);
+        Map<String, Object> variables = variables(user, title);
+        variables.put("mySurfConextURL", mySURFconextURL);
+        variables.put("controlCode", controlCode);
+        sendMail("service_desk_control_code", title, variables, preferredLanguage(user), user.getEmail(), true);
+    }
+
     private Map<String, Object> variables(User user, String title) {
         Map<String, Object> variables = new HashMap<>();
         variables.put("title", title);
@@ -195,6 +203,7 @@ public class MailBox {
 
     @SneakyThrows
     private void sendMail(String templateName, String subject, Map<String, Object> variables, String language, String to, boolean checkSpam) {
+        LOG.info(String.format("Send %s email to %s", templateName, to));
         if (checkSpam) {
             Optional<EmailsSend> byEmail = emailsSendRepository.findByEmail(to);
             if (byEmail.isPresent() && byEmail.get().getSendAt().toInstant().isAfter(Instant.now().minus(emailSpamThresholdSeconds, ChronoUnit.SECONDS))) {
@@ -205,20 +214,21 @@ public class MailBox {
         String html = this.mailTemplate(String.format("%s_%s.html", templateName, language), variables);
         String text = this.mailTemplate(String.format("%s_%s.txt", templateName, language), variables);
 
-        MimeMessage message = mailSender.createMimeMessage();
         try {
-            MimeMessageHelper helper = new MimeMessageHelper(message, true);
+            MimeMessage mimeMessage = mailSender.createMimeMessage();
+            MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, true);
             helper.setSubject(subject);
             helper.setTo(to);
             setText(html, text, helper);
             helper.setFrom(emailFrom);
-            doSendMail(message);
-        } catch (MessagingException e) {
-            throw new IllegalArgumentException(e);
+            doSendMail(mimeMessage);
+        } catch (Exception e) {
+            LOG.error("Error sending mail to "+to, e);
+            //We don't want to stop batch mailings
         }
     }
 
-    protected void setText(String html, String text, MimeMessageHelper helper) throws MessagingException {
+    protected void setText(String html, String text, MimeMessageHelper helper) throws jakarta.mail.MessagingException {
         helper.setText(text, html);
     }
 
@@ -242,14 +252,15 @@ public class MailBox {
     }
 
     @SneakyThrows
-    private InputStream inputStream(String name, Resource mailTemplatesDirectory) {
+    private InputStream inputStream(Resource mailTemplatesDirectory) {
         if (mailTemplatesDirectory.isFile()) {
-            FilenameFilter filter = (dir, fileName) -> name.equals(fileName);
+            FilenameFilter filter = (dir, fileName) -> "subjects.json".equals(fileName);
             File[] files = mailTemplatesDirectory.getFile().listFiles(filter);
+            assert files != null;
             File file = files[0];
             return new FileInputStream(file);
         } else {
-            return new ClassPathResource(mailTemplatesDirectory.getFilename() + "/" + name).getInputStream();
+            return new ClassPathResource(mailTemplatesDirectory.getFilename() + "/" + "subjects.json").getInputStream();
         }
     }
 }
