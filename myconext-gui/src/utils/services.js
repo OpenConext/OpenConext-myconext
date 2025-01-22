@@ -25,8 +25,8 @@ export const institutionLogo = institution => {
 export const institutionName = linkedAccount => {
   if (linkedAccount.external) {
     const translation = I18n.translations[I18n.locale];
-    if (translation.verify.issuers[linkedAccount.issuer.name]) {
-      return I18n.t(`verify.issuers.${linkedAccount.issuer.name}`);
+    if (linkedAccount.issuer.name && translation.verify.issuers[linkedAccount.issuer.name.toLowerCase()]) {
+      return I18n.t(`verify.issuers.${linkedAccount.issuer.name.toLowerCase()}`);
     }
     return linkedAccount.issuer.name;
   }
