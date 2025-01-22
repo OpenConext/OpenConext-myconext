@@ -91,22 +91,10 @@
                     margin: 25px auto;
                 }
 
-                @keyframes logo-spin {
-                    from {
-                        transform: rotate(0deg);
-                    }
-                    to {
-                        transform: rotate(360deg);
-                    }
-                }
-
                 img {
-                    width: 310px;
+                    width: 240px;
                     height: auto;
-
-                    &.spin {
-                        animation: logo-spin 1 0.5s linear;
-                    }
+                    border-radius: $br;
 
                     @media (max-width: $medium) {
                         width: 180px;

@@ -14,15 +14,20 @@ const nl = {
             sup: "EduID ServiceDesk is alleen op uitnodiging beschikbaar.",
         },
         works: "Hoe werkt het?",
+        adminFunction: "Medewerker",
+        studentFunction: "Student",
         info: [
-            //Arrays of titles and info blocks and if a function is an admin function
-            "SURF TODO.",
+            //Matrices met titels en infoblokken en of een functie een beheerdersfunctie is
+            ["Beveiliging", "<p>EduID ServiceDesk is een beveiligd platform ontworpen om de identiteit te valideren van studenten die een identiteitscontrole hebben aangevraagd. Deze dienst waarborgt naleving van formele identificatienormen en biedt tegelijkertijd een gebruiksvriendelijk proces voor medewerkers en studenten. </p>",
+                true],
+            ["Compliance", "<p>Gebouwd om te voldoen aan de formele identificatievoorschriften en nauwkeurigheid bij identiteitsverificatie te garanderen. Vermindert fouten door een gestructureerd en stapsgewijs validatieproces</p>", true],
+            ["Authenticatie", "<p>Medewerkers initiëren het verificatieproces met behulp van een unieke code die via e-mail naar de student wordt verzonden. Het systeem zorgt ervoor dat alleen studenten met geldige aanmeldingscodes door kunnen gaan met de identiteitscontrole.</p><br/> ", false],
         ],
-        footer: "<p>SURFconext ServiceDesk biedt gebruikersvalidatie voor SURFconext-gekoppelde applicaties</p>" +
-            "<p>Wil je meer weten? <a href='https://support.surfconext.nl/servicedesk-en'>Lees verder</a>.</p>",
+        footer: "<p>De eduID ServiceDesk vereenvoudigt het identiteitsverificatieproces en zorgt voor veiligheid en efficiëntie.</p>" +
+            "<p>Wil je meer weten? <a href='https://support.surfconext.nl/servicedesk-nl'>Lees verder</a>.</p>",
     },
     header: {
-        title: "SURFconext ServiceDesk",
+        title: "EduID ServiceDesk",
         links: {
             logout: "Logout"
         }
