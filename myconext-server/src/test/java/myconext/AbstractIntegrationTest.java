@@ -333,11 +333,16 @@ public abstract class AbstractIntegrationTest implements HasUserRepository {
         return response;
     }
 
-
     protected String samlResponse(MagicLinkResponse magicLinkResponse) throws IOException {
         Response response = magicResponse(magicLinkResponse);
-
         return samlAuthnResponse(response, Optional.empty());
     }
 
+    protected void clearExternalAccounts(String email) {
+        User user = userRepository.findOneUserByEmail(email);
+        user.getLinkedAccounts().clear();
+        user.getExternalLinkedAccounts().clear();
+        userRepository.save(user);
+
+    }
 }

@@ -21,6 +21,7 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
+import lombok.Getter;
 import lombok.SneakyThrows;
 import myconext.cron.DisposableEmailProviders;
 import myconext.exceptions.*;
@@ -72,9 +73,11 @@ public class UserController implements UserAuthentication {
 
     private static final Log LOG = LogFactory.getLog(UserController.class);
 
+    @Getter
     private final UserRepository userRepository;
     private final AuthenticationRequestRepository authenticationRequestRepository;
     private final MailBox mailBox;
+    @Getter
     private final Manage manage;
     private final OpenIDConnect openIDConnect;
     private final String magicLinkUrl;
@@ -980,6 +983,13 @@ public class UserController implements UserAuthentication {
         return doLogout(request);
     }
 
+    @Operation(summary = "Create verification control code password link",
+            description = """
+            Create a verification control code which users can use to prove their identity at the Service Desk. The
+            code is also send by email to the user. The required field are firstName,  lastName and dayOfBirth.
+            There are no input validations, if the user's dayOfBirth can not be parsed, then this is solved in
+            the approval proces in the Serivce Desk
+            """)
     @PostMapping("sp/control-code")
     public ResponseEntity<ControlCode> createUserControlCode(Authentication authentication,
                                                              @RequestBody ControlCode controlCode) {
@@ -1006,6 +1016,11 @@ public class UserController implements UserAuthentication {
         return ResponseEntity.ok(controlCode);
     }
 
+
+    @Operation(summary = "Delete existing verification control code",
+            description = """
+            Delete an existing verification control code for a user
+            """)
     @DeleteMapping("sp/control-code")
     public ResponseEntity<UserResponse> deleteUserControlCode(Authentication authentication) {
         User user = userFromAuthentication(authentication);
@@ -1077,11 +1092,4 @@ public class UserController implements UserAuthentication {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Collections.singletonMap("status", HttpStatus.NOT_FOUND.value()));
     }
 
-    public Manage getManage() {
-        return manage;
-    }
-
-    public UserRepository getUserRepository() {
-        return userRepository;
-    }
 }

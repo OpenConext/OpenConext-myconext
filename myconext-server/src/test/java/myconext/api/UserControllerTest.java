@@ -1451,12 +1451,4 @@ public class UserControllerTest extends AbstractIntegrationTest {
         return Base64.getUrlEncoder().withoutPadding().encodeToString(bytes);
     }
 
-    private void clearExternalAccounts(String email) {
-        User user = userRepository.findOneUserByEmail(email);
-        user.getLinkedAccounts().clear();
-        user.getExternalLinkedAccounts().clear();
-        userRepository.save(user);
-
-    }
-
 }

@@ -1,21 +1,22 @@
 package myconext.api;
 
 import com.github.tomakehurst.wiremock.junit.WireMockRule;
+import io.restassured.common.mapper.TypeRef;
 import io.restassured.http.ContentType;
+import lombok.SneakyThrows;
 import myconext.AbstractIntegrationTest;
-import myconext.model.CreateAccount;
-import myconext.model.IdentityProvider;
-import myconext.model.UpdateUserNameRequest;
-import myconext.model.User;
+import myconext.model.*;
 import org.junit.ClassRule;
 import org.junit.Test;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 
 import java.io.IOException;
 import java.util.Map;
 
 import static io.restassured.RestAssured.given;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.*;
+import static org.junit.Assert.assertNull;
 
 public class UserMobileControllerTest extends AbstractIntegrationTest {
 
@@ -139,4 +140,36 @@ public class UserMobileControllerTest extends AbstractIntegrationTest {
                 .statusCode(302)
                 .header("Location", "http://localhost:3000/client/mobile/created?new=true");
     }
+
+    @SneakyThrows
+    @Test
+    public void createUserControlCodeMobileApi() {
+        clearExternalAccounts("jdoe@example.com");
+        ControlCode controlCode = new ControlCode("Lee", "Harpers", "01 Mar 1977");
+        ControlCode responseControlCode = given()
+                .accept(ContentType.JSON)
+                .contentType(ContentType.JSON)
+                .auth().oauth2(opaqueAccessToken(true, "eduid.nl/mobile"))
+                .body(controlCode)
+                .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+                .when()
+                .post("/mobile/api/sp/control-code")
+                .as(ControlCode.class);
+        assertEquals(5, responseControlCode.getCode().length());
+        User user = userRepository.findOneUserByEmail("jdoe@example.com");
+        assertEquals(user.getControlCode().getCode(), responseControlCode.getCode());
+
+        Map<String, Object> userResponse = given()
+                .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+                .auth().oauth2(opaqueAccessToken(true, "eduid.nl/mobile"))
+                .when()
+                .delete("/mobile/api/sp/control-code")
+                .as(new TypeRef<>() {
+                });
+        assertFalse(userResponse.containsKey("controlCode"));
+
+        User userFromDB = userRepository.findOneUserByEmail("jdoe@example.com");
+        assertNull(userFromDB.getControlCode());
+    }
+
 }
