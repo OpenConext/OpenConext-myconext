@@ -3,8 +3,8 @@ import {Button, ButtonSize, ButtonType} from "@surfnet/sds";
 import './Login.scss';
 import I18n from "../locale/I18n";
 import DOMPurify from "dompurify";
-import IdCard from "../icons/landing/idcard.svg";
-import LandingPage from "../icons/landing/landingpage.svg";
+import students from "../icons/chatgpt/openart-image_raw.jpg";
+import {LandingInfo} from "../components/LandingInfo.jsx";
 
 export const Login = () => {
 
@@ -23,11 +23,11 @@ export const Login = () => {
                            dangerouslySetInnerHTML={{__html: DOMPurify.sanitize(I18n.t("landing.header.sup"))}}/>
                     </div>
                     <div className="header-right">
-                        <img className={"spin"} src={IdCard} alt="logo"/>
+                        <img className="screen" src={students} alt="logo"/>
                     </div>
                 </div>
             </div>
-            <img className={"spin"} src={LandingPage} alt="logo"/>
+            <LandingInfo/>
         </div>
     );
 

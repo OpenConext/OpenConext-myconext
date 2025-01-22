@@ -6,6 +6,7 @@ const en = {
         en: "English",
         nl: "Dutch",
     },
+
     landing: {
         header: {
             title: "ServiceDesk",
@@ -14,15 +15,20 @@ const en = {
             sup: "EduID ServiceDesk is by invitation only.",
         },
         works: "How does it work?",
+        adminFunction: "Employee",
+        studentFunction: "Student",
         info: [
             //Arrays of titles and info blocks and if a function is an admin function
-            "SURF TODO.",
+            ["Security", "<p>EduID ServiceDesk is a secure platform designed to validate the identity of students who have applied for an identity check. This service ensures compliance with formal identification standards while providing a user-friendly process for employees and students.</p>",
+                true],
+            ["Compliance", "<p>Built to adhere to formal identification regulations and ensure accuracy in identity verification. Reduces errors through a structured and step-by-step validation process</p>", true],
+            ["Authentication", "<p>Employees initiate the verification process using a unique code sent to the student via email. The system ensures that only students with valid application codes can proceed with the identity check.</p><br/>", false],
         ],
-        footer: "<p>SURFconext ServiceDesk offers user validation for SURFconext-connected applications.</p>" +
+        footer: "<p>The eduID ServiceDesk simplifies the identity verification process, ensuring security and efficiency.</p>" +
             "<p>Do you want to know more? <a href='https://support.surfconext.nl/servicedesk-en'>Read more</a>.</p>",
     },
     header: {
-        title: "SURFconext ServiceDesk",
+        title: "EduID ServiceDesk",
         links: {
             logout: "Logout"
         }
