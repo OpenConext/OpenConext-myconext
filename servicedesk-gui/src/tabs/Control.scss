@@ -101,12 +101,14 @@ div.control {
 
     .react-datepicker-wrapper {
         opacity: 0;
+        max-width: 60px;
     }
 
     .calendar {
-        top: 0;
-        right: 15px;
-        position: absolute;
+        margin: 0 12px 0 auto;
+        padding-left: 20px;
+        cursor: pointer;
+        z-index: 2;
 
         img {
             width: 32px;

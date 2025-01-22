@@ -11,6 +11,12 @@ import calendarIcon from "../icons/calendar-alt.svg";
 
 import "react-datepicker/dist/react-datepicker.css";
 
+const dateFormatOptions = {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+};
+
 const Control = ({restart, proceed}) => {
 
     const {controlCode} = useAppStore(state => state);
@@ -40,6 +46,11 @@ const Control = ({restart, proceed}) => {
 
     const leadingZero = num => {
         return num < 10 ? `0${num}` : num.toString();
+    }
+
+    const formatDayOfBirth = () => {
+        const locale = I18n.locale === "nl" ? "nl-NL" : "en-EN";
+        return {dayOfBirth: birthDay.toLocaleDateString(locale, dateFormatOptions)};
     }
 
     const convertDayOfBirth = newDate => {
@@ -100,7 +111,8 @@ const Control = ({restart, proceed}) => {
                 <div className="validation-item column">
                     <div className="validation-item-inner">
                         <p className="inner-html"
-                           dangerouslySetInnerHTML={{__html: DOMPurify.sanitize(I18n.t("control.validations.dayOfBirth", controlCode))}}/>
+                           dangerouslySetInnerHTML={{__html: DOMPurify.sanitize(I18n.t("control.validations.dayOfBirth",
+                                   !validDayOfBirth && birthDay !== null ? formatDayOfBirth() : controlCode))}}/>
                         <Switch value={confirmations[4]}
                                 disabled={!validDayOfBirth && birthDay === null}
                                 onChange={val => confirm(4, val)}/>
