@@ -19,7 +19,7 @@ export const Home = () => {
 
     const navigate = useNavigate();
 
-    const user = useAppStore((state) => state.user)
+    const user = useAppStore((state) => state.user);
 
     useEffect(() => {
         if (user) {

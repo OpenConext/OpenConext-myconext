@@ -8,6 +8,12 @@ import {LandingInfo} from "../components/LandingInfo.jsx";
 
 export const Login = () => {
 
+    const doLogin = () => {
+        const path = window.location.origin;
+        const encodedQueryParams = `target=${encodeURIComponent("/startSSO")}&redirect_url=${encodeURIComponent(path + "/home")}`
+        window.location.href = `${path}/Shibboleth.sso/Login?${encodedQueryParams}`;
+    }
+
     return (
         <div className="top-container">
             <div className="mod-login-container">
@@ -15,7 +21,7 @@ export const Login = () => {
                     <div className="header-left">
                         <h2 className={"header-title"}
                             dangerouslySetInnerHTML={{__html: DOMPurify.sanitize(I18n.t("landing.header.title"))}}/>
-                        <Button onClick={() => alert("Login")}
+                        <Button onClick={() => doLogin()}
                                 txt={I18n.t("landing.header.login")}
                                 type={ButtonType.Primary}
                                 size={ButtonSize.Full}/>

@@ -17,7 +17,8 @@ export const LandingInfo = () => {
                     <div className={"info-title"}>
                         <h2>{info[0]}</h2>
                         {<div className={"admin-function-container"}>
-                            <Chip label={I18n.t(`landing.${info[2] ? "adminFunction":"studentFunction"}`)} type={ChipType.Main_400}/>
+                            <Chip label={I18n.t(`landing.${info[2] ? "adminFunction" : "studentFunction"}`)}
+                                  type={ChipType.Main_400}/>
                         </div>}
                     </div>
                     <p dangerouslySetInnerHTML={{__html: DOMPurify.sanitize(info[1])}}/>
@@ -30,7 +31,7 @@ export const LandingInfo = () => {
     }
 
 
-    const logos = [desk, badge, screen];
+    const logos = [screen, desk, badge];
     return (
         <div className="mod-login-container bottom">
             <div className="mod-login bottom">
