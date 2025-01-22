@@ -99,11 +99,20 @@
         $user.givenName = e.target.value = givenName;
     }
 
+    const handleGivenNameBlur = e => {
+        const givenName = e.target.value.trim();
+        $user.givenName = e.target.value = givenName;
+    }
+
     const updateFamilyName = e => {
         const familyName = e.target.value.replace(/[<>]/g, "");
         $user.familyName = e.target.value = familyName;
     }
 
+    const handleFamilyNameBlur = e => {
+        const familyName = e.target.value.trim();
+        $user.familyName = e.target.value = familyName;
+    }
 </script>
 
 <style lang="scss">
@@ -248,7 +257,8 @@
        id="given-name"
        placeholder={I18n.t("login.givenNamePlaceholder")}
        spellcheck="false"
-       on:input={updateGivenName}>
+       on:input={updateGivenName}
+       on:blur={handleGivenNameBlur}>
 {#if !initial && !$user.givenName}
     <span class="error">{I18n.t("login.requiredAttribute", {attr: I18n.t("login.givenName")})}</span>
 {/if}
@@ -257,7 +267,8 @@
        id="family-name"
        spellcheck="false"
        placeholder={I18n.t("login.familyNamePlaceholder")}
-       on:input={updateFamilyName}>
+       on:input={updateFamilyName}
+       on:blur={handleFamilyNameBlur}>
 {#if !initial && !$user.familyName}
     <span class="error">{I18n.t("login.requiredAttribute", {attr: I18n.t("login.familyName")})}</span>
 {/if}
