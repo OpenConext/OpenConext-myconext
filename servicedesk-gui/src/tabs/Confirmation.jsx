@@ -18,7 +18,7 @@ const Confirmation = ({restart}) => {
                 <HighFive/>
             </div>
             <div className={"button-container"}>
-                <Button txt={I18n.t("control.restart")}
+                <Button txt={I18n.t("confirmation.restart")}
                         type={ButtonType.GhostDark}
                         onClick={() => restart()}
                 />

@@ -26,6 +26,13 @@ div.verification {
             font-weight: 600;
             margin-left: 15px;
         }
+
+        svg {
+            color: var(--sds--color--white);
+            circle.bg {
+                fill:var(--sds--color--blue--400);
+            }
+        }
     }
 
     .sds--error-indicator {

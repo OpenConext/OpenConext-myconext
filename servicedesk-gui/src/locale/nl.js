@@ -40,15 +40,15 @@ const nl = {
         verify: "Identiteitscontrole"
     },
     verification: {
-        header: "Voer de verificatiecode in",
-        proceed: "Doorgaan",
-        error: "Geen gebruiker gevonden voo de verificatiecode {{code}}",
+        header: "Vul de controlecode in",
+        proceed: "Ga verder",
+        error: "Geen gebruiker gevonden voor de verificatiecode {{code}}",
         info: "Deze code heeft de persoon gegenereerd in eduID"
     },
     control: {
-        header: "Identiteitscontrole voor de code : ",
-        restart: "Opnieuw beginnen",
-        proceed: "Doorgaan",
+        header: "Identiteitscontrole voor code: ",
+        restart: "Start opnieuw",
+        proceed: "Klaar",
         error: "Er is een onverwachte fout opgetreden. Neem dan contact op met <a href='mailto:servicedesk@surf.nl>?subject=Referentie {{reference}}'>SURF ServiceDesk</a>",
         info: "Controleer het identiteitsbewijs van deze persoon",
         validDocuments: "Geldige documenten: paspoorten, EER ID-kaarten, Nederlandse rijbewijzen en Nederlandse verblijfsvergunningen",
@@ -61,7 +61,7 @@ const nl = {
             firstName: "De voornamen in het document: <span>{{firstName}}</span>",
             dayOfBirth: "De geboortedatum in het document: <span>{{dayOfBirth}}</span>",
         },
-        invalidDate: "De geboortedatum heeft een ongeldig formaat, selecteer eerst de juiste geboortedatum met door op de kalendat knop te drukken",
+        invalidDate: "De geboortedatum heeft een ongeldig formaat, selecteer eerst de juiste geboortedatum door op de kalendar knop rechts te drukken",
         validDate: "De geboortedatum is nu correct en kan worden bevestigd",
         idDocument: "Vul de <span>laatste 6 karakters</span> van het document in",
     },

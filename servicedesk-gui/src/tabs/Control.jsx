@@ -147,7 +147,7 @@ const Control = ({restart, proceed}) => {
                                         focusFirst={false}
                                         validate={() => true}
                         />
-                        <Button txt={I18n.t("verification.proceed")}
+                        <Button txt={I18n.t("control.proceed")}
                                 disabled={isEmpty(documentId) || confirmations.some(val => !val) || loading || !isEmpty(error)
                                     || (!validDayOfBirth && isEmpty(birthDay))}
                                 onClick={() => doConvertUserControlCode()}

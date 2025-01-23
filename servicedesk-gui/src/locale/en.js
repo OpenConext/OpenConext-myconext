@@ -6,7 +6,6 @@ const en = {
         en: "English",
         nl: "Dutch",
     },
-
     landing: {
         header: {
             title: "ServiceDesk",
@@ -49,7 +48,7 @@ const en = {
     control: {
         header: "Identity control for code: ",
         restart: "Start again",
-        proceed: "Continue",
+        proceed: "Ready",
         error: "An unexpected error has occurred. Please contact <a href='mailto:servicedesk@surf.nl>?subject=Reference {{reference}}'>SURF ServiceDesk</a>",
         info: "Control the ID of this user",
         validDocuments: "Valid documents: passports, EEA ID cards, Dutch driving licenses and Dutch residence permits",
@@ -62,7 +61,7 @@ const en = {
             firstName: "The first names in the document: <span>{{firstName}}</span>",
             dayOfBirth: "The date of birth in the document: <span>{{dayOfBirth}}</span> ",
         },
-        invalidDate: "The day of birth has an invalid format, first select the correct date by pressing the calendar button",
+        invalidDate: "The day of birth has an invalid format, first select the correct date by pressing the calendar button at the right",
         validDate: "The day of birth is now valid and can be confirmed",
         idDocument: "Fill in the <span>last 6 characters</span> of the ID document",
     },
