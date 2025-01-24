@@ -170,7 +170,7 @@ I18n.translations.nl = {
         subTitle: "Instellingen en aanbevelingen om je te helpen je eduID-account veilig te houden.",
         banner: "Blijf veilig. Voeg meer veiligheid toe aan je eduID-account. Kies één van de aanbevolen beveiligingsmethoden.",
         otherMethods: "Andere methoden",
-        recommendedOptions: "Aanbevolen methods",
+        recommendedOptions: "Aanbevolen methoden",
         currentSignInOptions: "Hoe je nu kunt inloggen met eduID",
         usePassword: "Wachtwoord",
         usePublicKey: "Beveiligingssleutel",
