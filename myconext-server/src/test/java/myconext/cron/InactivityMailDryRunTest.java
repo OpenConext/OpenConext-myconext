@@ -4,18 +4,12 @@ import lombok.SneakyThrows;
 import myconext.AbstractMailBoxTest;
 import myconext.model.User;
 import myconext.model.UserInactivity;
-import myconext.repository.UserRepository;
 import org.awaitility.core.ConditionTimeoutException;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import javax.mail.internet.MimeMessage;
-import java.util.List;
-import java.util.stream.Stream;
-
 import static myconext.cron.InactivityMail.ONE_DAY_IN_MILLIS;
-import static myconext.cron.InactivityMailTest.DELETED_EMAIL;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
