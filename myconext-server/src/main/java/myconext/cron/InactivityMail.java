@@ -93,9 +93,8 @@ public class InactivityMail {
 
     private void doDeleteInactiveUsers() {
         long nowInMillis = System.currentTimeMillis();
-        long oneDayInMillis = 24 * 60 * 60 * 1000L;
 
-        long lastLoginBefore = nowInMillis - (oneDayInMillis * 5L * 365);
+        long lastLoginBefore = nowInMillis - (ONE_DAY_IN_MILLIS * 5L * 365);
         List<User> users = userRepository.findByLastLoginBeforeAndUserInactivityIn(lastLoginBefore, List.of(WEEK_1_BEFORE_5_YEARS));
         userRepository.deleteAll(users);
         LOG.info(String.format("Deleted %s users (%s) who has been inactive for 5 years in for %s ms",

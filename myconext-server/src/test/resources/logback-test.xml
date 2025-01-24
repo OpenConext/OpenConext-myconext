@@ -3,5 +3,6 @@
     <include resource="org/springframework/boot/logging/logback/base.xml"/>
     <logger name="org.springframework" level="WARN"/>
     <logger name="org.springframework.security" level="WARN"/>
+    <logger name="org.springframework.data.mongodb.core.MongoTemplate" level="DEBUG"/>
     <logger name="org.eclipse" level="WARN"/>
 </configuration>
