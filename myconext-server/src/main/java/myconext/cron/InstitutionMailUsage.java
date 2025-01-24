@@ -23,18 +23,21 @@ public class InstitutionMailUsage {
     private final UserRepository userRepository;
     private final boolean mailInstitutionMailUsage;
     private final boolean cronJobResponsible;
+    private final boolean dryRunEmail;
 
     @Autowired
     public InstitutionMailUsage(Manage manage,
                                 MailBox mailBox,
                                 UserRepository userRepository,
                                 @Value("${cron.node-cron-job-responsible}") boolean cronJobResponsible,
-                                @Value("${feature.mail_institution_mail_usage}") boolean mailInstitutionMailUsage) {
+                                @Value("${feature.mail_institution_mail_usage}") boolean mailInstitutionMailUsage,
+                                @Value("${cron.dry-run-email}") boolean dryRunEmail) {
         this.manage = manage;
         this.mailBox = mailBox;
         this.userRepository = userRepository;
         this.cronJobResponsible = cronJobResponsible;
         this.mailInstitutionMailUsage = mailInstitutionMailUsage;
+        this.dryRunEmail = dryRunEmail;
     }
 
     @Scheduled(cron = "${cron.mail-institution-mail-usage-expression}")
@@ -53,10 +56,11 @@ public class InstitutionMailUsage {
             String regex = "@" + String.join("|", queryList) + "$";
             List<User> users = userRepository.findByEmailDomain(regex);
 
-            users.forEach(mailBox::sendInstitutionMailWarning);
-
-            LOG.info(String.format("Mailed %s users who use their institution domain in %s ms",
-                    users.size(), System.currentTimeMillis() - start));
+            if (!dryRunEmail) {
+                users.forEach(mailBox::sendInstitutionMailWarning);
+            }
+            LOG.info(String.format("Mailed %s users who use their institution domain in %s ms, dry-run: %s",
+                    users.size(), System.currentTimeMillis() - start, dryRunEmail));
         } catch (Exception e) {
             LOG.error("Error in mailUsersWithInstitutionMail", e);
         }

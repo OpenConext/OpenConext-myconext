@@ -57,6 +57,8 @@ cron:
   nudge-app-mail-days-after-creation: 14
   # Every day at 7:30AM
   inactivity-users-expression: "0 30 7 * * ?"
+  # Set to true to disable sending emails
+  dry-run-email: false
 
 manage:
   username: myconext
