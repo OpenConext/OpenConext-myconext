@@ -2,6 +2,9 @@ package myconext;
 
 import com.icegreen.greenmail.junit.GreenMailRule;
 import com.icegreen.greenmail.util.ServerSetup;
+import myconext.model.User;
+import myconext.model.UserInactivity;
+import myconext.repository.UserRepository;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
@@ -9,7 +12,10 @@ import org.junit.Rule;
 import javax.mail.internet.MimeMessage;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Stream;
 
+import static myconext.cron.InactivityMail.ONE_DAY_IN_MILLIS;
+import static myconext.cron.InactivityMailTest.DELETED_EMAIL;
 import static org.awaitility.Awaitility.await;
 
 @SuppressWarnings("deprecation")
@@ -40,5 +46,25 @@ public abstract class AbstractMailBoxTest extends AbstractIntegrationTest {
         await().atMost(1, TimeUnit.SECONDS).until(() -> greenMail.getReceivedMessages().length != 0);
         return List.of(greenMail.getReceivedMessages());
     }
+
+    protected void inactivityUserSeed(String language) {
+        long yesterday = System.currentTimeMillis() - ONE_DAY_IN_MILLIS;
+        Stream.of(UserInactivity.values()).forEach(userInactivity -> {
+            User user = new User();
+            user.setLastLogin(yesterday - (userInactivity.getInactivityDays() * ONE_DAY_IN_MILLIS));
+            user.setEmail(userInactivity.name());
+            user.setPreferredLanguage(language);
+            user.setUserInactivity(userInactivity.getPreviousUserInactivity());
+            userRepository.save(user);
+        });
+        //And one extra User who is to be deleted
+        User user = new User();
+        user.setLastLogin(yesterday - (((5L * 365) + 5) * ONE_DAY_IN_MILLIS));
+        user.setEmail(DELETED_EMAIL);
+        user.setUserInactivity(UserInactivity.WEEK_1_BEFORE_5_YEARS);
+        userRepository.save(user);
+
+    }
+
 
 }

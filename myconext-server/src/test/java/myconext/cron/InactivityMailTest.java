@@ -38,7 +38,7 @@ import static org.junit.jupiter.api.Assertions.*;
         })
 public class InactivityMailTest extends AbstractMailBoxTest {
 
-    private final String DELETED_EMAIL = "DELETED";
+    public static final String DELETED_EMAIL = "DELETED";
 
     @Autowired
     protected InactivityMail inactivityMail;
@@ -70,7 +70,8 @@ public class InactivityMailTest extends AbstractMailBoxTest {
     public void mailInactivityFirstRun() {
         //See https://github.com/OpenConext/OpenConext-myconext/issues/656
         User user = new User();
-        long yesterday = System.currentTimeMillis() - ONE_DAY_IN_MILLIS;
+        long now = System.currentTimeMillis();
+        long yesterday = now - ONE_DAY_IN_MILLIS;
         user.setLastLogin(yesterday - (UserInactivity.WEEK_1_BEFORE_5_YEARS.getInactivityDays() * ONE_DAY_IN_MILLIS));
         user.setEmail(UserInactivity.WEEK_1_BEFORE_5_YEARS.name());
         //Explicit set userInactivity to null for self-explanation of the test code
@@ -83,6 +84,9 @@ public class InactivityMailTest extends AbstractMailBoxTest {
         assertEquals(1, mimeMessages.size());
         User userFromDB = userRepository.findOneUserByEmail(UserInactivity.WEEK_1_BEFORE_5_YEARS.name());
         assertEquals(UserInactivity.WEEK_1_BEFORE_5_YEARS, userFromDB.getUserInactivity());
+        //Ensure users which have received the last warning have a new lastLogin which is one week before the deletion threshold
+        long newLastLoginDelta = (UserInactivity.WEEK_1_BEFORE_5_YEARS.getInactivityDays() + 6) * ONE_DAY_IN_MILLIS;
+        assertTrue(userFromDB.getLastLogin() >= (now - newLastLoginDelta) );
         //Idempotency check
         greenMail.purgeEmailFromAllMailboxes();
         inactivityMail.mailInactiveUsers();
@@ -110,25 +114,6 @@ public class InactivityMailTest extends AbstractMailBoxTest {
     @SneakyThrows
     private String messageContent(MimeMessage mimeMessage) {
         return IOUtils.toString(mimeMessage.getInputStream(), Charset.defaultCharset());
-    }
-
-    private void inactivityUserSeed(String preferredLanguage) {
-        long yesterday = System.currentTimeMillis() - ONE_DAY_IN_MILLIS;
-        Stream.of(UserInactivity.values()).forEach(userInactivity -> {
-            User user = new User();
-            user.setLastLogin(yesterday - (userInactivity.getInactivityDays() * ONE_DAY_IN_MILLIS));
-            user.setEmail(userInactivity.name());
-            user.setPreferredLanguage(preferredLanguage);
-            user.setUserInactivity(userInactivity.getPreviousUserInactivity());
-            userRepository.save(user);
-        });
-        //And one extra User who is to be deleted
-        User user = new User();
-        user.setLastLogin(yesterday - (((5L * 365) + 5) * ONE_DAY_IN_MILLIS));
-        user.setEmail(DELETED_EMAIL);
-        user.setUserInactivity(UserInactivity.WEEK_1_BEFORE_5_YEARS);
-        userRepository.save(user);
-
     }
 
 }

@@ -31,16 +31,19 @@ public class InactivityMail {
     private final boolean cronJobResponsible;
     private final DateFormat dateFormatUS;
     private final DateFormat dateFormatNL;
+    private final boolean dryRunEmail;
 
     @Autowired
     public InactivityMail(MailBox mailBox,
                           UserRepository userRepository,
                           @Value("${cron.node-cron-job-responsible}") boolean cronJobResponsible,
-                          @Value("${feature.mail_inactivity_mails}") boolean mailInactivityMails) {
+                          @Value("${feature.mail_inactivity_mails}") boolean mailInactivityMails,
+                          @Value("${cron.dry-run-email}") boolean dryRunEmail) {
         this.mailBox = mailBox;
         this.userRepository = userRepository;
         this.cronJobResponsible = cronJobResponsible;
         this.mailInactivityMails = mailInactivityMails;
+        this.dryRunEmail = dryRunEmail;
         this.dateFormatUS = DateFormat.getDateInstance(DateFormat.LONG, Locale.of("us"));
         this.dateFormatNL = DateFormat.getDateInstance(DateFormat.LONG, Locale.of("nl"));
     }
@@ -79,14 +82,21 @@ public class InactivityMail {
         localeVariables.put("deletion_period_nl", userInactivity.getDeletionPeriodNl());
         localeVariables.put("account_delete_date_en", dateFormatUS.format(date));
         localeVariables.put("account_delete_date_nl", dateFormatNL.format(date));
-        users.forEach(user -> {
-            mailBox.sendUserInactivityMail(user, localeVariables,
-                    userInactivity.equals(YEAR_1_INTERVAL) || userInactivity.equals(YEAR_3_INTERVAL));
-            user.setUserInactivity(userInactivity);
-            userRepository.save(user);
-        });
-        LOG.info(String.format("Mailed %s users who has been inactive for %s period in for %s ms",
-                users.size(), userInactivity, System.currentTimeMillis() - nowInMillis));
+
+        if (!dryRunEmail) {
+            users.forEach(user -> {
+                mailBox.sendUserInactivityMail(user, localeVariables,
+                        userInactivity.equals(YEAR_1_INTERVAL) || userInactivity.equals(YEAR_3_INTERVAL));
+                user.setUserInactivity(userInactivity);
+                //Ensure users who receive their last warning are not deleted the next run, but after one week
+                if (userInactivity.equals(WEEK_1_BEFORE_5_YEARS)) {
+                    user.setLastLogin(nowInMillis - (WEEK_1_BEFORE_5_YEARS.getInactivityDays() * ONE_DAY_IN_MILLIS));
+                }
+                userRepository.save(user);
+            });
+        }
+        LOG.info(String.format("Mailed %s users who has been inactive for %s period in for %s ms, dry run: ",
+                users.size(), userInactivity, System.currentTimeMillis() - nowInMillis, dryRunEmail));
     }
 
     private void doDeleteInactiveUsers() {
@@ -95,10 +105,13 @@ public class InactivityMail {
 
         long lastLoginBefore = nowInMillis - (oneDayInMillis * 5L * 365);
         List<User> users = userRepository.findByLastLoginBeforeAndUserInactivityIn(lastLoginBefore, List.of(WEEK_1_BEFORE_5_YEARS));
-        userRepository.deleteAll(users);
-        LOG.info(String.format("Deleted %s users (%s) who has been inactive for 5 years in for %s ms",
+        if (!dryRunEmail) {
+            userRepository.deleteAll(users);
+        }
+        LOG.info(String.format("Deleted %s users (%s) who has been inactive for 5 years in for %s ms, dry-run: %s",
                 users.size(), users.stream().map(User::getEmail).collect(Collectors.joining(", ")),
-                System.currentTimeMillis() - nowInMillis));
+                System.currentTimeMillis() - nowInMillis,
+                dryRunEmail));
     }
 
     private List<UserInactivity> userInactivitiesWithNullElement(UserInactivity userInactivity) {
