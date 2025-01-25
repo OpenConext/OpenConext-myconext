@@ -1,8 +1,10 @@
 package myconext.cron;
 
 import jakarta.mail.internet.MimeMessage;
+import lombok.SneakyThrows;
 import myconext.AbstractMailBoxTest;
 import myconext.model.User;
+import org.awaitility.core.ConditionTimeoutException;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -32,6 +34,7 @@ public class NudgeAppMailTest extends AbstractMailBoxTest {
     @Autowired
     protected NudgeAppMail nudgeAppMail;
 
+    @SneakyThrows
     @Test
     public void mailUsersWithoutApp() {
         nudgeAppMail.mailUsersWithoutApp();
@@ -42,6 +45,11 @@ public class NudgeAppMailTest extends AbstractMailBoxTest {
 
         User mary = userRepository.findOneUserByEmail("mdoe@example.com");
         assertTrue(mary.isNudgeAppMailSend());
+
+        //Check idempotency
+        greenMail.purgeEmailFromAllMailboxes();
+        nudgeAppMail.mailUsersWithoutApp();
+        assertThrows(ConditionTimeoutException.class, this::mailMessages);
     }
 
 }
