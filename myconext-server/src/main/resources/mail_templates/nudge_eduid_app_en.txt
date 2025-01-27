@@ -1,6 +1,12 @@
-Hi {{name}},
+Dear {{name}},
 
-You have created an eduID account, but have not installed the app. It is much more convenient if you install
-the app, so you can log in faster. Go to {{mySurfConextURL}} to link your account to your eduID app.
+Welcome to eduID! Your personal account for verifying your identity with educational and research institutions in the Netherlands.
+
+Want to log in to eduID even faster and more securely? Use the eduID app to log in extra securely — without needing a password. Download the app via eduid.nl/app-en.
+
+Kind regards,
+Team eduID
+
+Note: you cannot reply to this email. Need help? Visit eduid.nl/help-en
 
 {{> footer_en.txt}}

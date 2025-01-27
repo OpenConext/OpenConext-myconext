@@ -207,6 +207,7 @@ public class MailBox {
 
     @SneakyThrows
     private void sendMail(String templateName, String subject, Map<String, Object> variables, String language, String to, boolean checkSpam) {
+        LOG.info(String.format("Send %s email to %s", templateName, to));
         if (checkSpam) {
             Optional<EmailsSend> byEmail = emailsSendRepository.findByEmail(to);
             if (byEmail.isPresent() && byEmail.get().getSendAt().toInstant().isAfter(Instant.now().minus(emailSpamThresholdSeconds, ChronoUnit.SECONDS))) {
@@ -217,13 +218,18 @@ public class MailBox {
         String html = this.mailTemplate(String.format("%s_%s.html", templateName, language), variables);
         String text = this.mailTemplate(String.format("%s_%s.txt", templateName, language), variables);
 
-        MimeMessage mimeMessage = mailSender.createMimeMessage();
-        MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, true);
-        helper.setSubject(subject);
-        helper.setTo(to);
-        setText(html, text, helper);
-        helper.setFrom(emailFrom);
-        doSendMail(mimeMessage);
+        try {
+            MimeMessage mimeMessage = mailSender.createMimeMessage();
+            MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, true);
+            helper.setSubject(subject);
+            helper.setTo(to);
+            setText(html, text, helper);
+            helper.setFrom(emailFrom);
+            doSendMail(mimeMessage);
+        } catch (Exception e) {
+            LOG.error("Error sending mail to " + to, e);
+            //We don't want to stop batch mailings
+        }
     }
 
     protected void setText(String html, String text, MimeMessageHelper helper) throws jakarta.mail.MessagingException {

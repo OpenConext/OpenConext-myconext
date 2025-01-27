@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.openconext</groupId>
     <artifactId>myconext</artifactId>
-    <version>8.0.0-SNAPSHOT</version>
+    <version>7.4.4</version>
     <packaging>pom</packaging>
     <name>myconext</name>
     <description>My OpenConext</description>
@@ -55,21 +55,21 @@
                     </execution>
                 </executions>
             </plugin>
-            <!--            <plugin>-->
-            <!--                <groupId>org.owasp</groupId>-->
-            <!--                <artifactId>dependency-check-maven</artifactId>-->
-            <!--                <version>7.4.3</version>-->
-            <!--                <configuration>-->
-            <!--                    <failBuildOnCVSS>11</failBuildOnCVSS>-->
-            <!--                </configuration>-->
-            <!--                <executions>-->
-            <!--                    <execution>-->
-            <!--                        <goals>-->
-            <!--                            <goal>check</goal>-->
-            <!--                        </goals>-->
-            <!--                    </execution>-->
-            <!--                </executions>-->
-            <!--            </plugin>-->
+<!--                        <plugin>-->
+<!--                            <groupId>org.owasp</groupId>-->
+<!--                            <artifactId>dependency-check-maven</artifactId>-->
+<!--                            <version>12.0.1</version>-->
+<!--                            <configuration>-->
+<!--                                <failBuildOnCVSS>11</failBuildOnCVSS>-->
+<!--                            </configuration>-->
+<!--                            <executions>-->
+<!--                                <execution>-->
+<!--                                    <goals>-->
+<!--                                        <goal>check</goal>-->
+<!--                                    </goals>-->
+<!--                                </execution>-->
+<!--                            </executions>-->
+<!--                        </plugin>-->
         </plugins>
         <extensions>
             <extension>

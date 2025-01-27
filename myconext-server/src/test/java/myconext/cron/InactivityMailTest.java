@@ -18,6 +18,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import static myconext.cron.InactivityMail.ONE_DAY_IN_MILLIS;
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
@@ -38,7 +39,7 @@ import static org.junit.jupiter.api.Assertions.*;
         })
 public class InactivityMailTest extends AbstractMailBoxTest {
 
-    private final String DELETED_EMAIL = "DELETED";
+    public static final String DELETED_EMAIL = "DELETED";
 
     @Autowired
     protected InactivityMail inactivityMail;
@@ -67,6 +68,34 @@ public class InactivityMailTest extends AbstractMailBoxTest {
 
     @SneakyThrows
     @Test
+    public void mailInactivityFirstRun() {
+        //See https://github.com/OpenConext/OpenConext-myconext/issues/656
+        User user = new User();
+        long now = System.currentTimeMillis();
+        long yesterday = now - ONE_DAY_IN_MILLIS;
+        user.setLastLogin(yesterday - (UserInactivity.WEEK_1_BEFORE_5_YEARS.getInactivityDays() * ONE_DAY_IN_MILLIS));
+        user.setEmail(UserInactivity.WEEK_1_BEFORE_5_YEARS.name());
+        //Explicit set userInactivity to null for self-explanation of the test code
+        user.setUserInactivity(null);
+        userRepository.save(user);
+
+        inactivityMail.mailInactiveUsers();
+
+        List<MimeMessage> mimeMessages = mailMessages();
+        assertEquals(1, mimeMessages.size());
+        User userFromDB = userRepository.findOneUserByEmail(UserInactivity.WEEK_1_BEFORE_5_YEARS.name());
+        assertEquals(UserInactivity.WEEK_1_BEFORE_5_YEARS, userFromDB.getUserInactivity());
+        //Ensure users which have received the last warning have a new lastLogin which is one week before the deletion threshold
+        long newLastLoginDelta = (UserInactivity.WEEK_1_BEFORE_5_YEARS.getInactivityDays() + 6) * ONE_DAY_IN_MILLIS;
+        assertTrue(userFromDB.getLastLogin() >= (now - newLastLoginDelta) );
+        //Idempotency check
+        greenMail.purgeEmailFromAllMailboxes();
+        inactivityMail.mailInactiveUsers();
+        assertThrows(ConditionTimeoutException.class, this::mailMessages);
+    }
+
+    @SneakyThrows
+    @Test
     public void mailInactivityMailDutch() {
         inactivityUserSeed("nl");
 
@@ -76,36 +105,16 @@ public class InactivityMailTest extends AbstractMailBoxTest {
         assertEquals(4, mimeMessages.size());
         //Ordering is not stable
         String allContent = mimeMessages.stream().map(this::messageContent).collect(Collectors.joining());
-        List.of("niet gebruikt in 1 jaar", "binnen 4 jaar",
-                "niet gebruikt in 2 jaar", "binnen 3 jaar",
-                "in bijna 5 jaar", "binnen 1 maand",
-                "binnen 1 week")
+        List.of("1 jaar", "4 jaar",
+                "2 jaar", "3 jaar",
+                "5 jaar", "1 maand",
+                "1 week")
                 .forEach(s -> assertTrue(allContent.contains(s)));
     }
 
     @SneakyThrows
     private String messageContent(MimeMessage mimeMessage) {
         return IOUtils.toString(mimeMessage.getInputStream(), Charset.defaultCharset());
-    }
-
-    private void inactivityUserSeed(String preferredLanguage) {
-        long oneDayInMillis = 24 * 60 * 60 * 1000L;
-        long yesterday = System.currentTimeMillis() - oneDayInMillis;
-        Stream.of(UserInactivity.values()).forEach(userInactivity -> {
-            User user = new User();
-            user.setLastLogin(yesterday - (userInactivity.getInactivityDays() * oneDayInMillis));
-            user.setEmail(userInactivity.name());
-            user.setPreferredLanguage(preferredLanguage);
-            user.setUserInactivity(userInactivity.getPreviousUserInactivity());
-            userRepository.save(user);
-        });
-        //And one extra User who is to be deleted
-        User user = new User();
-        user.setLastLogin(yesterday - (((5L * 365) + 5) * oneDayInMillis));
-        user.setEmail(DELETED_EMAIL);
-        user.setUserInactivity(UserInactivity.WEEK_1_BEFORE_5_YEARS);
-        userRepository.save(user);
-
     }
 
 }

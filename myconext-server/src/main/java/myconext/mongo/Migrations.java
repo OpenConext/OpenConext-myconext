@@ -197,8 +197,7 @@ public class Migrations {
     @ChangeSet(order = "016", id = "alterUserLastLoginDate", author = "okke.harsta@surf.nl")
     public void alterUserLastLoginDate(MongockTemplate mongoTemplate) {
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd-MM-yyyy");
-        long startMillis = simpleDateFormat.parse("24-01-2023").getTime();
-        long beforeEduID = simpleDateFormat.parse("01-01-2010").getTime();
+        long startMillis = simpleDateFormat.parse("29-10-2024").getTime();
         Query query = new Query();
         query.addCriteria(Criteria.where("lastLogin").isNull());
         //Prevent to load everything into memory
@@ -212,11 +211,8 @@ public class Migrations {
                     } else {
                         //It might be an Integer object or Long object, so we parse / box
                         long updatedAt = Long.parseLong(updatedAtObject.toString());
-                        if (updatedAt == 0L) {
+                        if (updatedAt == 0L || updatedAt < startMillis) {
                             userAsMap.put("lastLogin", startMillis);
-                        } else if (updatedAt < beforeEduID) {
-                            //Previously we stored the updatedAt as currentTime / 1000
-                            userAsMap.put("lastLogin", updatedAt * 1000L);
                         } else {
                             //And we changed that to using milliseconds
                             userAsMap.put("lastLogin", updatedAt);

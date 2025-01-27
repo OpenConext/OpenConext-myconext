@@ -41,20 +41,20 @@
     "nl": "Onverwachte fout opgetreden"
   },
   "institution_mail_warning": {
-    "en": "Warning: eduID institutional mail-account usage",
-    "nl": "Waarschuwing: eduID instellings e-mail gebruik"
+    "en": "Tip: use your personal email address",
+    "nl": "Tip: gebruik je persoonlijke e-mailadres"
   },
   "nudge_eduid_app": {
-    "en": "Installeer de eduID app",
-    "nl": "Install the eduID app"
+    "en": "Log in faster and more securely with the eduID app",
+    "nl": "Log sneller en veiliger in met de eduID app"
   },
   "inactivity_warning_years_ahead": {
-    "en": "Inactivity warning",
-    "nl": "Inactiviteit waarschuwing"
+    "en": "Important message about your eduID",
+    "nl": "Belangrijk bericht over je eduID"
   },
   "inactivity_warning_short_term": {
-    "en": "Inactivity warning",
-    "nl": "Inactiviteit waarschuwing"
+    "en": "Important: your eduID will be deleted soon",
+    "nl": "Belangrijk: je eduID wordt binnenkort verwijderd"
   }
 
 }

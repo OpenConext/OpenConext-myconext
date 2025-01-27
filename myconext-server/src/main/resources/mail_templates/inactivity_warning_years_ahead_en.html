@@ -6,18 +6,22 @@
 <body>
 <div class="main" style="font-family: Helvetica, Arial, sans-serif;line-height: 18px;font-size: 14px;color: #353535;">
     <div class="head" style="background-color: #f5f5f5;padding: 30px 0 20px 60px;">
-        <p class="title" style="font-weight: 600;font-size: 38px;line-height: 38px; margin: 0;margin-bottom: 10px">You
-            have not used your eidUD account for {{inactivity_period_en}}</p>
+        <p class="title" style="font-weight: 600;font-size: 38px;line-height: 38px; margin: 0;margin-bottom: 10px">Important message about your eduID</p>
     </div>
     <div class="middle" style="padding: 20px 0 40px 60px;max-width: 600px;">
-        <p>Hi <strong>{{name}}</strong>,</p>
-        <p>You have not used your eduID account for {{inactivity_period_en}}. If you remain inactive than your eduID
-            account will be deleted within {{deletion_period_en}}, on {{account_delete_date_en}}.
-            Go to your <a href="{{mySurfConextURL}}">eduID account</a> and login to keep your account active.</p>
+        <p>Dear <strong>{{name}}</strong>,</p>
+        <p>We want to remind you that you have an eduID account that you haven't used for {{inactivity_period_en}}. If no action is taken, your eduID will be deleted in {{deletion_period_en}}, on {{account_delete_date_en}}.
+        </p>
+        <p>
+            Want to keep your eduID? Log in at mijn.eduid.nl to keep your account active. Make sure your eduID is up-to-date by checking details like your email address and login preferences. You can find this under 'Security'.</p>
         <br/>
         <p>
             Kind regards,
-            eduID.
+            <br>
+            Team eduID
+        </p>
+        <p>
+            Note: you cannot reply to this email. Need help? Visit eduid.nl/help-en.
         </p>
     </div>
     {{> footer_nl.html}}
