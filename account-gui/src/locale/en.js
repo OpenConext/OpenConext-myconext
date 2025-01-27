@@ -423,18 +423,9 @@ const en =  {
         issuers: {
             eherkenning: "eIDAS",
             idin: "Idin",
-            studielink: "Studielink"
+            studielink: "Studielink",
+            servicedesk: "Service Desk"
         }
-    },
-    serviceDesk: {
-        confirmIdentityHeader: "You need to manually confirm your identity",
-        confirmIdentity: "You must confirm your identity at one of our eduID Service Desks.",
-        stepsHeader: "Follow these steps:",
-        step1: "Enter your full name as it appears on your ID (first and last name).",
-        step2: "Generate a personal verification code.",
-        step3: "Present your code and ID to an eduID Service Desk. They will verify your identity manually.",
-        redirectWarning: "We will redirect you to another website to enter your name. You won’t be able to log in to <strong>{{service}}</strong> immediately afterward; you will first need to contact a eduID Service Desk.",
-        next: "Open website to enter your name"
     }
 };
 export default en;

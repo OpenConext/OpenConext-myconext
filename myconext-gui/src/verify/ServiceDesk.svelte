@@ -46,7 +46,7 @@
         deleteUserControlCode()
             .then(() => {
                 $user.controlCode = null;
-                flash.setValue(I18n.t("verify.serviceDesk.controlCode.deletedControlCode"));
+                flash.setValue(I18n.t("ServiceDesk.ControlCode.DeletedControlCode.COPY"));
                 cancelView();
             })
     }
@@ -217,101 +217,101 @@
             <span class="back" on:click={cancel} aria-label="toggle-view">
                 {@html arrowLeftIcon}
             </span>
-            <h2 class="header">{I18n.t("verify.serviceDesk.confirmIdentityHeader")}</h2>
+            <h2 class="header">{I18n.t("ServiceDesk.ConfirmIdentityHeader.COPY")}</h2>
         </div>
-        <p>{I18n.t("verify.serviceDesk.confirmIdentity")}</p>
-        <p class="steps">{I18n.t("verify.serviceDesk.stepsHeader")}</p>
+        <p>{I18n.t("ServiceDesk.ConfirmIdentity.COPY")}</p>
+        <p class="steps">{I18n.t("ServiceDesk.StepsHeader.COPY")}</p>
         <ol>
-            <li>{I18n.t("verify.serviceDesk.step1")}</li>
-            <li>{I18n.t("verify.serviceDesk.step2")}</li>
-            <li>{I18n.t("verify.serviceDesk.step3")}</li>
+            <li>{I18n.t("ServiceDesk.Step1.COPY")}</li>
+            <li>{I18n.t("ServiceDesk.Step2.COPY")}</li>
+            <li>{I18n.t("ServiceDesk.Step3.COPY")}</li>
         </ol>
         <div class="redirect">
             {@html alertSvg}
             <div class="content">
-                <span>{@html I18n.t("verify.serviceDesk.acceptedIds")}</span>
+                <span>{@html I18n.t("ServiceDesk.AcceptedIds.COPY")}</span>
                 <ul>
-                    <li>{@html I18n.t("verify.serviceDesk.passports")}</li>
-                    <li>{@html I18n.t("verify.serviceDesk.eea")}</li>
-                    <li>{@html I18n.t("verify.serviceDesk.driverLicense")}</li>
-                    <li>{@html I18n.t("verify.serviceDesk.residencePermit")}</li>
+                    <li>{@html I18n.t("ServiceDesk.Passports.COPY")}</li>
+                    <li>{@html I18n.t("ServiceDesk.Eea.COPY")}</li>
+                    <li>{@html I18n.t("ServiceDesk.DriverLicense.COPY")}</li>
+                    <li>{@html I18n.t("ServiceDesk.ResidencePermit.COPY")}</li>
                 </ul>
-                <p>{I18n.t("verify.serviceDesk.note")}</p>
-                <p class="eea-note">{@html I18n.t("verify.serviceDesk.eeaNote")}</p>
+                <p>{I18n.t("ServiceDesk.Note.COPY")}</p>
+                <p class="eea-note">{@html I18n.t("ServiceDesk.EeaNote.COPY")}</p>
             </div>
         </div>
-        <Button label={I18n.t("verify.serviceDesk.next")}
+        <Button label={I18n.t("ServiceDesk.Next.COPY")}
                 fullSize={true}
                 onClick={() => step = 1}/>
     {:else if step === 1}
         <div class="id-card-container">
             <span>{@html idCard}</span>
         </div>
-        <p>{I18n.t("verify.serviceDesk.idCard.information")}</p>
-        <label for="lastName">{I18n.t("verify.serviceDesk.idCard.lastName")}</label>
+        <p>{I18n.t("ServiceDesk.IdCard.Information.COPY")}</p>
+        <label for="lastName">{I18n.t("ServiceDesk.IdCard.LastName.COPY")}</label>
         <input id="lastName"
                type="text"
                use:init
                bind:value={lastName}/>
-        <label for="firstName">{I18n.t("verify.serviceDesk.idCard.firstName")}</label>
+        <label for="firstName">{I18n.t("ServiceDesk.IdCard.FirstName.COPY")}</label>
         <input id="firstName"
                type="text"
                bind:value={firstName}/>
-        <label for="dayOfBirth">{I18n.t("verify.serviceDesk.idCard.dayOfBirth")}</label>
+        <label for="dayOfBirth">{I18n.t("ServiceDesk.IdCard.DayOfBirth.COPY")}</label>
         <input id="dayOfBirth"
                type="text"
                bind:value={dayOfBirth}/>
-        <Button label={I18n.t("verify.serviceDesk.idCard.generateControlCode")}
+        <Button label={I18n.t("ServiceDesk.IdCard.GenerateControlCode.COPY")}
                 fullSize={true}
                 disabled={isEmpty(lastName) || isEmpty(firstName) || isEmpty(dayOfBirth)}
                 onClick={() => generateControlCode()}/>
     {:else if step === 2}
         <div>
-            <h3 class="header">{I18n.t("verify.serviceDesk.controlCode.yourControlCode")}</h3>
+            <h3 class="header">{I18n.t("ServiceDesk.ControlCode.YourControlCode.COPY")}</h3>
             <div class="control-code">
                 <span>{code}</span>
             </div>
-            <p>{I18n.t("verify.serviceDesk.controlCode.info", {nbr: verificationCodeValidityDays($user.controlCode)})}</p>
+            <p>{I18n.t("ServiceDesk.ControlCode.Info.COPY", {nbr: verificationCodeValidityDays($user.controlCode)})}</p>
             <div class="control-code">
-                <label for="lastName">{I18n.t("verify.serviceDesk.idCard.lastName")}</label>
+                <label for="lastName">{I18n.t("ServiceDesk.IdCard.LastName.COPY")}</label>
                 <input id="lastName"
                        type="text"
                        class="read-only"
                        disabled="true"
                        bind:value={lastName}/>
-                <label for="firstName">{I18n.t("verify.serviceDesk.idCard.firstName")}</label>
+                <label for="firstName">{I18n.t("ServiceDesk.IdCard.FirstName.COPY")}</label>
                 <input id="firstName"
                        type="text"
                        class="read-only"
                        disabled="true"
                        bind:value={firstName}/>
-                <label for="dayOfBirth">{I18n.t("verify.serviceDesk.idCard.dayOfBirth")}</label>
+                <label for="dayOfBirth">{I18n.t("ServiceDesk.IdCard.DayOfBirth.COPY")}</label>
                 <input id="dayOfBirth"
                        type="text"
                        class="read-only"
                        disabled="true"
                        bind:value={dayOfBirth}/>
                 <div class="rethink">
-                    <p>{I18n.t("verify.serviceDesk.controlCode.typoPrefix")}</p>
+                    <p>{I18n.t("ServiceDesk.ControlCode.TypoPrefix.COPY")}</p>
                     <a href="/#" on:click|preventDefault|stopPropagation={() => step = 1}>
-                        {I18n.t("verify.serviceDesk.controlCode.typoLink")}
+                        {I18n.t("ServiceDesk.ControlCode.TypoLink.COPY")}
                     </a>
 
                 </div>
             </div>
-            <p class="important">{I18n.t("verify.serviceDesk.controlCode.todo")}</p>
-            <p>{I18n.t("verify.serviceDesk.controlCode.todoDetails")}</p>
+            <p class="important">{I18n.t("ServiceDesk.ControlCode.Todo.COPY")}</p>
+            <p>{I18n.t("ServiceDesk.ControlCode.TodoDetails.COPY")}</p>
             <div class="button-container">
-                <Button label={I18n.t("verify.serviceDesk.controlCode.serviceDesks")}
+                <Button label={I18n.t("ServiceDesk.ControlCode.ServiceDesks.COPY")}
                         fullSize={true}
-                        onClick={() => window.open(I18n.t("verify.serviceDesk.controlCode.serviceDesksLocations"), "_blank").focus()}/>
-                <Button label={I18n.t("verify.serviceDesk.controlCode.back")}
+                        onClick={() => window.open(I18n.t("ServiceDesk.ControlCode.ServiceDesksLocations.COPY"), "_blank").focus()}/>
+                <Button label={I18n.t("ServiceDesk.ControlCode.Back.COPY")}
                         fullSize={true}
                         className="cancel"
                         onClick={backToPersonal}/>
             </div>
-            <p>{I18n.t("verify.serviceDesk.controlCode.rethink")}</p>
-            <Button label={I18n.t("verify.serviceDesk.controlCode.deleteControlCode")}
+            <p>{I18n.t("ServiceDesk.ControlCode.Rethink.COPY")}</p>
+            <Button label={I18n.t("ServiceDesk.ControlCode.DeleteControlCode.COPY")}
                     fullSize={true}
                     deleteAction={true}
                     onClick={deleteControlCode}/>

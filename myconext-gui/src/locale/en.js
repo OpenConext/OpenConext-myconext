@@ -575,47 +575,6 @@
             idin: "Idin",
             studielink: "Studielink",
             servicedesk: "Service Desk"
-        },
-        serviceDesk: {
-            confirmIdentityHeader: "You need to manually confirm your identity",
-            confirmIdentity: "You can also confirm your identity at one of our eduID Service Desks.",
-            stepsHeader: "Follow these steps:",
-            step1: "Enter your full name as it appears on your ID (first and last name).",
-            step2: "Generate a personal verification code.",
-            step3: "Present your code and ID to an eduID Service Desk. They will verify your identity manually.",
-            acceptedIds: "Accepted IDs:",
-            passports: "Passports",
-            eea: "EEA<sup>*</sup> ID cards",
-            driverLicense: "Dutch driver's license",
-            residencePermit: "Dutch residence permits",
-            note: "Please note: copies, public transport passes and student cards are not valid ID's",
-            eeaNote: "<sup>*</sup>EEA: all EU member states plus Liechtenstein, Norway and Iceland",
-            next: "Enter your details",
-            idCard: {
-                information: "Enter your details as they appear on your ID. Names must be in Roman characters.",
-                lastName: "Last name",
-                firstName: "First name(s)",
-                dayOfBirth: "Date of birth",
-                generateControlCode: "Generate verification code"
-            },
-            controlCode: {
-                controlCode: "Verification code",
-                yourControlCode: "Your verification code",
-                info: "You will also receive an email with this code. The code is valid for {{nbr}} more days and is intended for:",
-                typoPrefix: "Made a typo? ",
-                typoLink: "Edit your details",
-                todo: "What's next?",
-                todoDetails: "Schedule an appointment with an eduID Service Desk (online or in person). During your appointment, show your verification code and ID.",
-                serviceDesks: "Show eduID Service Desks",
-                serviceDesksLocations: "https://wiki.surfnet.nl/display/EDUID/eduID+Service+Desk",
-                back: "Back to overview",
-                rethink: "Want to prove your identity another way? Make sure to delete your verification code first.",
-                deleteControlCode: "Delete verification code",
-                deletedControlCode: "Verification code deleted",
-                banner: "Verify your identity at an eduID Service Desk by presenting your ID and verification code.",
-                showCode: "Show code",
-                validityCode: "Your code is valid for {{nbr}} more days."
-            }
         }
     }
 };

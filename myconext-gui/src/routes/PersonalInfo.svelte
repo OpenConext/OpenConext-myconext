@@ -553,8 +553,8 @@
         {#if !eduIDLinked && isEmpty($user.linkedAccounts) && isEmpty($user.externalLinkedAccounts) && !isEmpty($user.controlCode)}
             <div class="banner expired">
                 <span class="verified-badge">{@html alertSvg}</span>
-                <p class="banner-info">{I18n.t("verify.serviceDesk.controlCode.banner")}</p>
-                <Button label={I18n.t("verify.serviceDesk.controlCode.showCode")}
+                <p class="banner-info">{I18n.t("ServiceDesk.ControlCode.Banner.COPY")}</p>
+                <Button label={I18n.t("ServiceDesk.ControlCode.ShowCode.COPY")}
                         className="ghost transparent"
                         onClick={() => showControlCode = true}/>
             </div>
@@ -659,7 +659,7 @@
 {#if showModal || showControlCode}
     <Modal close={() => resetModalsAndQueryParams()}
     title={showIdinOptions ? I18n.t("WelcomeToApp.VerifyYour.Highlight.COPY") : showControlCode ?
-    I18n.t("verify.serviceDesk.controlCode.controlCode") : I18n.t("Profile.AddAnOrganisation.COPY")}
+    I18n.t("ServiceDesk.ControlCode.ControlCode.COPY") : I18n.t("Profile.AddAnOrganisation.COPY")}
     showOptions={false}>
     <VerifyChoice addInstitution={addInstitution}
                   addBank={addBank}

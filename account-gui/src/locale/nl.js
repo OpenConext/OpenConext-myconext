@@ -422,18 +422,9 @@ const nl = {
         issuers: {
             eherkenning: "eIDAS",
             idin: "Idin",
-            studielink: "Studielink"
+            studielink: "Studielink",
+            servicedesk: "Service Desk"
         }
-    },
-    serviceDesk: {
-        confirmIdentityHeader: "Bevestig wie je bent met je identiteitsbewijs",
-        confirmIdentity: "Je kunt je identiteit ook bevestigen via een van onze eduID Service Desks.",
-        stepsHeader: "Volg deze stappen:",
-        step1: "Vul je volledige naam in zoals die op je identiteitsbewijs staat (voornamen en achternaam).",
-        step2: "Genereer een persoonlijke controlecode.",
-        step3: "Laat je controlecode en identiteitsbewijs zien aan een eduID Service Desk. Die bevestigt zo je identiteit.",
-        redirectWarning: "We sturen je door naar een andere website om je naam in te vullen. Je kunt daarna nog niet gelijk inloggen bij <strong>{{service}}</strong>, maar je moet eerst contact opnemen met een eduID Service Desk.",
-        next: "Naar gegevens invullen"
     }
 };
 export default nl;

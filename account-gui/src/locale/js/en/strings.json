@@ -1,5 +1,4 @@
 {
-
   "About.Info.COPY": "App information",
   "Sidebar.Home.COPY": "Home",
   "Sidebar.PersonalInfo.COPY": "Personal info",
@@ -580,7 +579,7 @@
   "MagicLink.OpenMailTitle.COPY": "Open your e-mail",
   "MagicLink.OpenMailDisclaimer.COPY": "Can't find the email? Check the spam folder",
   "MagicLink.Header.COPY": "Check your email",
-  "MagicLink.Info.COPY": "Press the link we sent to %1$s.",
+  "MagicLink.Info.COPY": "Press the link we sent to ",
   "MagicLink.Awaiting.COPY": "Waiting for you to press the link…",
   "MagicLink.OpenGMail.COPY": "Open gmail.com",
   "MagicLink.OpenOutlook.COPY": "Open outlook.com",
@@ -823,5 +822,14 @@
   "ExternalAccountLinkingError.Subtitle.COPY": "We’re sorry, we were unable to retrieve the requested information.",
   "ExternalAccountLinkingError.TryAnotherOption.COPY": "Please try another method",
   "ReferenceNames.Idin.COPY": "iDIN",
-  "ReferenceNames.Eherkenning.COPY": "eIDAS"
+  "ReferenceNames.Eherkenning.COPY": "eIDAS",
+  "ServiceDesk.ConfirmIdentityHeader.COPY": "You need to manually confirm your identity",
+  "ServiceDesk.ConfirmIdentity.COPY": "You must confirm your identity at one of our eduID Service Desks.",
+  "ServiceDesk.StepsHeader.COPY": "Follow these steps:",
+  "ServiceDesk.Step1.COPY": "Enter your full name as it appears on your ID (first and last name).",
+  "ServiceDesk.Step2.COPY": "Generate a personal verification code.",
+  "ServiceDesk.Step3.COPY": "Present your code and ID to an eduID Service Desk. They will verify your identity manually.",
+  "ServiceDesk.RedirectWarning.COPY": "We will redirect you to another website to enter your name. You won’t be able to log in to <strong>%1$s</strong> immediately afterward; you will first need to contact a eduID Service Desk.",
+  "ServiceDesk.Next.COPY": "Open website to enter your name"
+
 }

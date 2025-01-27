@@ -575,48 +575,7 @@ const nl = {
             idin: "Idin",
             studielink: "Studielink",
             servicedesk: "Service Desk"
-        },
-        serviceDesk: {
-            confirmIdentityHeader: "Bevestig wie je bent met je identiteitsbewijs",
-            confirmIdentity: "Je kunt je identiteit ook bevestigen via een van onze eduID Service Desks.",
-            stepsHeader: "Volg deze stappen:",
-            step1: "Vul je volledige naam in zoals die op je identiteitsbewijs staat (voornamen en achternaam).",
-            step2: "Genereer een persoonlijke controlecode.",
-            step3: "Laat je controlecode en identiteitsbewijs zien aan een eduID Service Desk. Die bevestigt zo je identiteit.",
-            acceptedIds: "Geldige identiteitsbewijzen:",
-            passports: "paspoorten",
-            eea: "EEA<sup>*</sup> ID-kaarten",
-            driverLicense: "Nederlandse rijbewijzen",
-            residencePermit: "Nederlandse verblijfsvergunningen",
-            note: "Let op: kopieën, OV-kaarten en studentenkaarten zijn geen geldige identiteitsbewijzen.",
-            eeaNote: "<sup>*</sup>EEA: alle EU-lidstaten + Liechtenstein, Noorwegen en IJsland.",
-            next: "Naar gegevens invullen",
-            idCard: {
-                information: "Vul je gegevens in zoals die op je identiteitsbewijs staan.",
-                lastName: "Achternaam",
-                firstName: "Voornamen",
-                dayOfBirth: "Geboortedatum",
-                generateControlCode: "Genereer controlcode"
-            },
-            controlCode: {
-                controlCode: "Controlecode",
-                yourControlCode: "Je controlecode",
-                info: "Je krijgt ook een e-mail met deze code. De code is {{nbr}} dagen geldig en is bedoeld voor:",
-                typoPrefix: "Typfout gemaakt? ",
-                typoLink: "Pas gegevens aan",
-                todo: "Wat moet je nu doen?",
-                todoDetails: "Maak een afspraak met een eduID Service Desk (digitaal of op locatie). Laat tijdens je afspraak je controlecode en identiteisbewijs zien.",
-                serviceDesks: "Bekijk eduID Service Desks",
-                serviceDesksLocations: "https://wiki.surfnet.nl/display/EDUID/eduID+Service+Desk",
-                back: "Terug naar overzicht",
-                rethink: "Wil je toch op een andere manier bewijzen wie je bent? Verwijder dan eerst je controlecode.",
-                deleteControlCode: "Verwijder controlecode",
-                deletedControlCode: "Verificatie-code verwijderd",
-                banner: "Bevestig je identiteit bij een eduID Service Desk. Dit doe je door je identiteitsbewijs en controlecode te laten zien.",
-                showCode: "Toon code",
-                validityCode: "Je code is nog geldig voor {{nbr}} dagen."
-            }
-        },
+        }
     }
 };
 export default nl;
