@@ -4,7 +4,7 @@ import './Login.scss';
 import I18n from "../locale/I18n";
 import DOMPurify from "dompurify";
 import students from "../icons/chatgpt/openart-image_raw.jpg";
-import {LandingInfo} from "../components/LandingInfo.jsx";
+import {LandingInfo} from "../components/LandingInfo";
 
 export const Login = () => {
 
