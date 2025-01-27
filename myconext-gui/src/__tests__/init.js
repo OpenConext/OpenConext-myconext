@@ -6,7 +6,7 @@ test("Init", () => {});
 
 export default init => {
     //we need to use them, otherwise the imports are deleted when organizing them
-    expect(I18n.locale).toBe("en");
+    expect(I18n.currentLocale()).toBe("en");
     expect(en).toBeDefined();
     expect(nl).toBeDefined();
 
