@@ -1,11 +1,11 @@
-import I18n from "i18n-js";
+import I18n from "../locale/I18n";
 import {logo} from "../verify/banks";
 import {isEmpty} from "./utils";
 import notFound from "../icons/school-building.svg?raw";
 
 export const serviceName = service => {
   //backward compatibility with eduID has multiple services
-  if (I18n.locale === "en") {
+  if (I18n.currentLocale() === "en") {
     return service.serviceName || service.name;
   }
   return service.serviceNameNl || service.serviceName || service.nameNl || service.name;

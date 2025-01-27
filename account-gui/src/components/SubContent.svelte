@@ -1,7 +1,7 @@
 <script>
     import {link, navigate} from "svelte-routing";
     import {onMount} from "svelte";
-    import I18n from "i18n-js";
+    import I18n from "../locale/I18n";
     import Modal from "../components/Modal.svelte";
 
     export let question = null;
@@ -99,10 +99,10 @@
 {#if showModal}
     <Modal submit={() => mfaWarning(false)}
            cancel={() => showModal = false}
-           question={I18n.t("subContent.warning", {service: "test"})}
-           title={I18n.t("subContent.warningTitle")}
-           cancelLabel={I18n.t("subContent.cancelLabel")}
-           confirmLabel={I18n.t("subContent.confirmLabel")}>
+           question={I18n.t("SubContent.Warning.COPY", {service: "test"})}
+           title={I18n.t("SubContent.WarningTitle.COPY")}
+           cancelLabel={I18n.t("SubContent.CancelLabel.COPY")}
+           confirmLabel={I18n.t("SubContent.ConfirmLabel.COPY")}>
     </Modal>
 {/if}
 

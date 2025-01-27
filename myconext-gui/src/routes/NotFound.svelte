@@ -1,5 +1,5 @@
 <script>
-    import I18n from "i18n-js";
+    import I18n from "../locale/I18n";
 
 </script>
 
@@ -23,6 +23,6 @@
 
 </style>
 <div class="not-found">
-    <h1>{I18n.t("notFound.title")}</h1>
-    <p>{I18n.t("notFound.title2")}</p>
+    <h1>{I18n.t("NotFound.Title.COPY")}</h1>
+    <p>{I18n.t("NotFound.Title2.COPY")}</p>
 </div>

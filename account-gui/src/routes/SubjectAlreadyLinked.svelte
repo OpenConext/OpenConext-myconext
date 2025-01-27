@@ -1,5 +1,5 @@
 <script>
-    import I18n from "i18n-js";
+    import I18n from "../locale/I18n";
     import {onMount} from 'svelte';
     import {conf, links} from "../stores/conf";
     import Button from "../components/Button.svelte";
@@ -54,10 +54,10 @@
 
         <Button href="/proceed" onClick={() => proceed($conf.magicLinkUrl)}
                 className="cancel"
-                label={I18n.t("subjectAlreadyLinked.proceedLink")}/>
+                label={I18n.t("Profile.Proceed.COPY")}/>
         <div class="last">
             <Button href="/retry" onClick={retry}
-                    label={I18n.t("subjectAlreadyLinked.retryLink")}/>
+                    label={I18n.t("EppnAlreadyLinked.RetryButton.COPY")}/>
         </div>
 
     </div>

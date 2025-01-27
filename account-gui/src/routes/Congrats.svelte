@@ -1,5 +1,5 @@
 <script>
-    import I18n from "i18n-js";
+    import I18n from "../locale/I18n";
     import Spinner from "../components/Spinner.svelte";
     import {onMount} from "svelte";
     import ImageContainer from "../components/ImageContainer.svelte";
@@ -45,8 +45,8 @@
     <Spinner/>
 {/if}
 
-<h2 class="header">{I18n.t("congrats.header")}</h2>
-<p class="explanation">{I18n.t("congrats.info")}</p>
+<h2 class="header">{I18n.t("Congrats.Header.COPY")}</h2>
+<p class="explanation">{I18n.t("Congrats.Info.COPY")}</p>
 <ImageContainer icon={icon} margin={true}/>
 <Button href={"/next"} onClick={nextStep}
-        label={I18n.t("congrats.next", {name: serviceName})}/>
+        label={I18n.t("Congrats.Next.COPY", {name: serviceName})}/>

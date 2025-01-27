@@ -4,7 +4,7 @@
     import {confirmEmail} from "../api";
     import {navigate} from "svelte-routing";
     import Spinner from "../components/Spinner.svelte";
-    import I18n from "i18n-js";
+    import I18n from "../locale/I18n";
 
     onMount(() => {
         const urlSearchParams = new URLSearchParams(window.location.search);
@@ -16,7 +16,7 @@
                         $user[key] = json[key];
                     }
                 }
-                flash.setValue(I18n.t("email.confirmed", {email: $user.email}));
+                flash.setValue(I18n.t("Email.Confirmed.COPY", {email: $user.email}));
                 navigate("/personal");
             })
             .catch(() => navigate("/404"))

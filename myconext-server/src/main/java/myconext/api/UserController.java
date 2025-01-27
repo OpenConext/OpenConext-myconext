@@ -98,6 +98,7 @@ public class UserController implements UserAuthentication {
     private final ObjectMapper objectMapper;
     private final RegistrationRepository registrationRepository;
     private final boolean featureDefaultRememberMe;
+    private final boolean sendJsExceptions;
     private final ServicesConfiguration servicesConfiguration;
 
     private final List<VerifyIssuer> issuers;
@@ -125,6 +126,7 @@ public class UserController implements UserAuthentication {
                           @Value("${rp_origin}") String rpOrigin,
                           @Value("${rp_id}") String rpId,
                           @Value("${feature.default_remember_me}") boolean featureDefaultRememberMe,
+                          @Value("${feature.send_js_exceptions}") boolean sendJsExceptions,
                           @Value("${verify.issuers_path}") Resource issuersResource,
                           ServicesConfiguration servicesConfiguration) throws IOException {
         this.userRepository = userRepository;
@@ -149,6 +151,7 @@ public class UserController implements UserAuthentication {
         this.relyingParty = relyingParty(rpId, rpOrigin);
         this.emailGuessingPreventor = new EmailGuessingPrevention(emailGuessingSleepMillis);
         this.featureDefaultRememberMe = featureDefaultRememberMe;
+        this.sendJsExceptions = sendJsExceptions;
 
         List<IdinIssuers> idinIssuers = objectMapper.readValue(issuersResource.getInputStream(), new TypeReference<>() {
         });
@@ -199,6 +202,28 @@ public class UserController implements UserAuthentication {
         User user = userRepository.findUserByEmail(email.get("email"))
                 .orElseThrow(() -> new UserNotFoundException(String.format("User with email %s not found", email.get("email"))));
         return user.loginOptions();
+    }
+
+    @Hidden
+    @PostMapping("/sp/error")
+    public ResponseEntity<Map<String, Integer>> reportError(@RequestBody Map<String, Object> json, Authentication authentication, HttpServletRequest request) {
+        if (!this.sendJsExceptions) {
+            return ResponseEntity.status(HttpStatus.NO_CONTENT)
+                    .body(Map.of("status", HttpStatus.NO_CONTENT.value()));
+        }
+        User user = this.userFromAuthentication(authentication);
+        // We don't want to fill the logs and more so, don't want to reach queue limits for mail
+        HttpSession session = request.getSession(true);
+        Integer errorCount = (Integer) session.getAttribute("error_count");
+        if (errorCount != null && errorCount > 9) {
+            return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY)
+                    .body(Map.of("status", HttpStatus.UNPROCESSABLE_ENTITY.value()));
+        } else {
+            session.setAttribute("error_count", errorCount == null ? 1 : errorCount + 1);
+        }
+        mailBox.sendErrorMail(json, user);
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(Map.of("status", HttpStatus.CREATED.value()));
     }
 
     @Hidden
@@ -970,6 +995,7 @@ public class UserController implements UserAuthentication {
 
         return doLogout(request);
     }
+
 
     @DeleteMapping("/sp/delete")
     @Operation(summary = "Delete",

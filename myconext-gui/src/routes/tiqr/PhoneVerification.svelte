@@ -1,6 +1,6 @@
 <script>
     import {validPhoneNumber} from "../../validation/regexp";
-    import I18n from "i18n-js";
+    import I18n from "../../locale/I18n";
     import critical from "../../icons/critical.svg?raw";
     import Spinner from "../../components/Spinner.svelte";
     import Button from "../../components/Button.svelte";
@@ -98,16 +98,16 @@
 <div class="phone-verification">
     <div class="inner-container">
 
-        <h2 class="header">{I18n.t("phoneVerification.header")}</h2>
+        <h2 class="header">{I18n.t("PhoneVerification.Header.COPY")}</h2>
         <p class="explanation">{I18n.t("phoneVerification.info")}</p>
-        <p class="methods">{I18n.t("phoneVerification.text")}</p>
+        <p class="methods">{I18n.t("PhoneVerification.Text.COPY")}</p>
 
         <input class:error={phoneNumberIncorrect}
                type="tel"
                id="password-field"
                spellcheck="false"
                on:keydown={handleEnter}
-               placeholder={I18n.t("phoneVerification.placeHolder")}
+               placeholder={I18n.t("PhoneVerification.PlaceHolder.COPY")}
                use:init
                bind:value={phoneNumber}>
         {#if phoneNumberIncorrect}
@@ -120,7 +120,7 @@
         <Button href="/next"
                 larger={true}
                 disabled={showSpinner || !allowedNext}
-                label={I18n.t("phoneVerification.verify")}
+                label={I18n.t("PhoneVerification.Verify.COPY")}
                 onClick={next}/>
 
     </div>

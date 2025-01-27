@@ -35,6 +35,10 @@
     "en": "New eduID device sign-in",
     "nl": "Nieuw apparaat ingelogd op eduID"
   },
+  "error_email": {
+    "en": "Unexpected error occurred",
+    "nl": "Onverwachte fout opgetreden"
+  },
   "institution_mail_warning": {
     "en": "Tip: use your personal email address",
     "nl": "Tip: gebruik je persoonlijke e-mailadres"

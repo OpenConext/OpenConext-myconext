@@ -1,5 +1,5 @@
 <script>
-    import I18n from "i18n-js";
+    import I18n from "../locale/I18n";
     import Button from "../components/Button.svelte";
     import {conf, links} from "../stores/conf";
 
@@ -22,7 +22,7 @@
     }
 
 </style>
-<h1>{I18n.t("expired.title")}</h1>
-<p>{@html I18n.t("expired.info")}</p>
-<Button label={I18n.t("expired.back")} href={`https://${$conf.domain}`}
+<h1>{I18n.t("Expired.Title.COPY")}</h1>
+<p>{@html I18n.t("Expired.Info.COPY")}</p>
+<Button label={I18n.t("Expired.Back.COPY")} href={`https://${$conf.domain}`}
         onClick={() => window.location.href = `https://${$conf.domain}`}/>

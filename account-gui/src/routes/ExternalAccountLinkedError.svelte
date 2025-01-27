@@ -1,5 +1,5 @@
 <script>
-    import I18n from "i18n-js";
+    import I18n from "../locale/I18n";
     import Button from "../components/Button.svelte";
     import {navigate} from "svelte-routing";
     import {onMount} from "svelte";
@@ -42,5 +42,5 @@
     <p class="last">{@html DOMPurify.sanitize(errorDescription)}</p>
 {/if}
 
-<Button label={I18n.t("expired.back")} href={`https://${$conf.domain}`}
+<Button label={I18n.t("Expired.Back.COPY")} href={`https://${$conf.domain}`}
         onClick={() => window.location.href = `https://${$conf.domain}`}/>

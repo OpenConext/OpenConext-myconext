@@ -1445,6 +1445,30 @@ public class UserControllerTest extends AbstractIntegrationTest {
                 .statusCode(403);
     }
 
+    public void errorMailOverload() {
+        Map<String, Object> json = Map.of("error", "unexpected");
+        CookieFilter cookieFilter = new CookieFilter();
+        for (int i = 0; i < 10; i++) {
+            given()
+                    .when()
+                    .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+                    .body(json)
+                    .filter(cookieFilter)
+                    .post("/myconext/api/sp/error")
+                    .then()
+                    .statusCode(HttpStatus.CREATED.value());
+        }
+        given()
+                .when()
+                .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+                .body(json)
+                .filter(cookieFilter)
+                .post("/myconext/api/sp/error")
+                .then()
+                .statusCode(HttpStatus.UNPROCESSABLE_ENTITY.value());
+    }
+
+
     private String hash() {
         byte[] bytes = new byte[64];
         random.nextBytes(bytes);

@@ -1,5 +1,5 @@
 <script>
-    import I18n from "i18n-js";
+    import I18n from "../locale/I18n";
     import {onMount} from 'svelte';
     import {conf, links} from "../stores/conf";
     import Button from "../components/Button.svelte";
@@ -39,6 +39,6 @@
     <ValidatedData institution={institution}/>
     <Button href="/proceed" onClick={() => proceed($conf.magicLinkUrl)}
             className="full"
-            label={I18n.t("confirmStepup.proceed", {name: serviceName})}/>
+            label={I18n.t("ConfirmStepup.Proceed.COPY", {name: serviceName})}/>
 {/if}
 

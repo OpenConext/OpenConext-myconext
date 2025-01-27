@@ -1,5 +1,5 @@
 <script>
-    import I18n from "i18n-js";
+    import I18n from "../locale/I18n";
     import Button from "./Button.svelte";
     import DOMPurify from "dompurify";
     import {onDestroy, onMount} from "svelte";
@@ -13,8 +13,8 @@
     export let warning = false;
     export let showOptions = true;
     export let controlBody = false;
-    export let confirmTitle = I18n.t("modal.confirm");
-    export let cancelTitle = I18n.t("modal.cancel");
+    export let confirmTitle = I18n.t("ConfirmDelete.Button.Confirm.COPY");
+    export let cancelTitle = I18n.t("YourVerifiedInformation.ConfirmRemoval.Button.Cancel.COPY");
     export let disableSubmit = false;
     export let download = undefined;
     export let href = undefined;

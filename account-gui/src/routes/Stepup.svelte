@@ -1,5 +1,5 @@
 <script>
-    import I18n from "i18n-js";
+    import I18n from "../locale/I18n";
     import {onMount} from 'svelte';
     import Button from "../components/Button.svelte";
     import Verification from "../components/Verification.svelte";
@@ -96,7 +96,7 @@
                           serviceName={serviceName}
             />
         {:else}
-            <h2>{I18n.t("stepup.header")}</h2>
+            <h2>{I18n.t("Stepup.Header.COPY")}</h2>
             <p class="info">{@html I18n.t("stepup.info", {name: DOMPurify.sanitize(serviceName)})}</p>
             <Verification explanation={explanation} verified={false}/>
             <Button href="/proceed" onClick={() => proceed(false)}

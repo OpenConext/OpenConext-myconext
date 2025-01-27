@@ -1,5 +1,5 @@
 //Internal API
-import I18n from "i18n-js";
+import I18n from "../locale/I18n";
 import {isEmpty} from "../utils/utils";
 
 let csrfToken = null;
@@ -26,7 +26,7 @@ function validFetch(path, options) {
     options.headers = {
         Accept: "application/json",
         "Content-Type": "application/json",
-        "Accept-Language": I18n.locale,
+        "Accept-Language": I18n.currentLocale(),
         "X-CSRF-TOKEN": csrfToken
     };
     return fetch(path, options).then(res => validateResponse(res));
@@ -263,6 +263,10 @@ export function reTextPhoneNumber(phoneNumber) {
 
 export function reValidatePhoneCode(phoneVerification) {
     return postPutJson(`/tiqr/sp/re-verify-phone-code`, {phoneVerification}, "POST")
+}
+
+export function reportError(error) {
+    return postPutJson("/myconext/api/sp/error", error, "post");
 }
 
 

@@ -1,6 +1,6 @@
 <script>
     import {user} from "../stores/user";
-    import I18n from "i18n-js";
+    import I18n from "../locale/I18n";
     import {knownAccount} from "../api/index";
     import Spinner from "../components/Spinner.svelte";
     import {onMount} from "svelte";
@@ -74,7 +74,7 @@
 {#if showSpinner}
     <Spinner/>
 {:else}
-    <h2 class="header">{I18n.t("options.header")}</h2>
+    <h2 class="header">{I18n.t("Options.Header.COPY")}</h2>
     {#each options as option, i}
         <LoginOption icon={option.icon}
                      translationKey={option.key}

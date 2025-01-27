@@ -1,5 +1,5 @@
 <script>
-    import I18n from "i18n-js";
+    import I18n from "../locale/I18n";
     import {onMount} from 'svelte';
     import {conf, links} from "../stores/conf";
     import Button from "../components/Button.svelte";
@@ -48,14 +48,14 @@
     <Spinner/>
 {/if}
 
-<h2>{I18n.t("affiliationMissing.header")}</h2>
-<p class="info">{I18n.t("affiliationMissing.info")}</p>
-<p class="info">{I18n.t("affiliationMissing.proceed", {name: serviceName})}</p>
+<h2>{I18n.t("AffiliationMissing.Header.COPY")}</h2>
+<p class="info">{I18n.t("AffiliationMissing.Info.COPY")}</p>
+<p class="info">{I18n.t("AffiliationMissing.Proceed.COPY", {name: serviceName})}</p>
 
 <Button href="/proceed" onClick={() => proceed($conf.magicLinkUrl)}
         className="cancel"
-        label={I18n.t("affiliationMissing.proceedLink")}/>
+        label={I18n.t("Profile.Proceed.COPY")}/>
 <div class="last">
     <Button href="/retry" onClick={retry}
-            label={I18n.t("affiliationMissing.retryLink")}/>
+            label={I18n.t("EppnAlreadyLinked.RetryButton.COPY")}/>
 </div>

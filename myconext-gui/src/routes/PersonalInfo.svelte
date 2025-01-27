@@ -1,6 +1,6 @@
 <script>
     import {config, flash, user} from "../stores/user";
-    import I18n from "i18n-js";
+    import I18n from "../locale/I18n";
     import verifiedSvg from "../icons/redesign/shield-full.svg?raw";
     import personalInfo from "../icons/verify/personalInfo.svg?raw";
     import arrowLeft from "../icons/verify/arrow-left.svg?raw";
@@ -116,7 +116,7 @@
                         refresh();
                     }
                 }
-                flash.setValue(I18n.t("institution.deleted", {name: institutionName(linkedAccount)}));
+                flash.setValue(I18n.t("Institution.Deleted.COPY", {name: institutionName(linkedAccount)}));
             });
         }
     }
@@ -173,7 +173,7 @@
     const doUpdateName = () => {
         if ($user.chosenName && $user.familyName && $user.givenName) {
             updateUser($user).then(() => {
-                flash.setValue(I18n.t("edit.updated"));
+                flash.setValue(I18n.t("Edit.Updated.COPY"));
             });
         }
     };
@@ -182,7 +182,7 @@
         if (validEmail(value) && value.toLowerCase() !== $user.email.toLowerCase()) {
             updateEmail({...$user, email: value}, force)
                 .then(() => {
-                    flash.setValue(I18n.t("email.updated", {email: value}), 6500);
+                    flash.setValue(I18n.t("Email.Updated.COPY", {email: value}), 6500);
                     tempEmailValue = null;
                     outstandingPasswordForgotten = false;
                     emailError = false;
@@ -191,7 +191,7 @@
                 }).catch(e => {
                 if (e.status === 409) {
                     emailError = true;
-                    emailErrorMessage = I18n.t("email.duplicateEmail");
+                    emailErrorMessage = I18n.t("Email.DuplicateEmail.COPY");
                 } else if (e.status === 406) {
                     tempEmailValue = value;
                     outstandingPasswordForgotten = true;
@@ -501,9 +501,9 @@
                 <span class="back" on:click={() => manageVerifiedInformation("personal")}>
                     {@html arrowLeft}
                 </span>
-                    <h2>{I18n.t("profile.verifiedInformation")}</h2>
+                    <h2>{I18n.t("YourVerifiedInformation.Title.COPY")}</h2>
                 </div>
-                <p class="info">{I18n.t("profile.verifiedInformationInfo")}</p>
+                <p class="info">{I18n.t("YourVerifiedInformation.Subtitle.COPY")}</p>
                 <div class="preferred-info">
                     {@html personalInfo}
                     <p>{I18n.t("profile.defaultPreferred")}</p>
@@ -528,15 +528,15 @@
     {:else}
         <div class="inner-container">
             <div class="with-icon">
-                <h2>{I18n.t("profile.title")}</h2>
+                <h2>{I18n.t("Profile.Title.COPY")}</h2>
             </div>
-            <p class="info">{I18n.t("profile.info")}</p>
+            <p class="info">{I18n.t("Profile.Info.COPY")}</p>
         </div>
         {#if !eduIDLinked && isEmpty($user.linkedAccounts) && isEmpty($user.externalLinkedAccounts) && isEmpty($user.controlCode)}
             <div class="banner">
                 <span class="verified-badge">{@html verifiedSvg}</span>
                 <p class="banner-info">{I18n.t("profile.banner")}</p>
-                <Button label={I18n.t("profile.verifyNow")}
+                <Button label={I18n.t("Profile.VerifyNow.Button.COPY")}
                         className="ghost transparent"
                         onClick={() => addIdentity(true)}/>
             </div>
@@ -545,7 +545,7 @@
             <div class="banner expired">
                 <span class="verified-badge">{@html alertSvg}</span>
                 <p class="banner-info">{I18n.t("profile.expiredBanner")}</p>
-                <Button label={I18n.t("profile.verifyNow")}
+                <Button label={I18n.t("Profile.VerifyNow.Button.COPY")}
                         className="ghost transparent"
                         onClick={() => addIdentity(true)}/>
             </div>
@@ -561,17 +561,17 @@
         {/if}
         <div class="inner-container second">
             <div class="verified-container">
-                <p class="info-section">{I18n.t("profile.basic")}</p>
+                <p class="info-section">{I18n.t("Profile.YourIdentity.COPY")}</p>
                 {#if eduIDLinked}
-                    <span class="verified">{@html check} {I18n.t("profile.verified")}</span>
+                    <span class="verified">{@html check} {I18n.t("Profile.Verified.COPY")}</span>
                 {:else}
-                    <span class="not-verified">{I18n.t("profile.notVerified")}</span>
+                    <span class="not-verified">{I18n.t("Profile.NotVerified.COPY")}</span>
                 {/if}
             </div>
             <EditField firstValue={$user.chosenName}
                        editableByUser={true}
-                       editLabel={I18n.t("profile.chosenName")}
-                       saveLabel={I18n.t("edit.save")}
+                       editLabel={I18n.t("Profile.FirstName.COPY")}
+                       saveLabel={I18n.t("Email.Save.COPY")}
                        editMode={chosenNameEditMode}
                        onEdit={() => chosenNameEditMode = true}
                        onSave={value => updateChosenName(value)}
@@ -582,7 +582,7 @@
                        editLabel={I18n.t(`profile.${preferredAccount ? "validatedGivenName":"givenName"}`)}
                        manageVerifiedInformation={() => manageVerifiedInformation("manage")}
                        linkedAccount={preferredAccount}
-                       saveLabel={I18n.t("edit.save")}
+                       saveLabel={I18n.t("Email.Save.COPY")}
                        editMode={givenNameEditMode}
                        onEdit={() => givenNameEditMode = true}
                        onSave={value => updateGivenName(value)}
@@ -593,7 +593,7 @@
                        editLabel={I18n.t(`profile.${preferredAccount ? "validatedFamilyName":"familyName"}`)}
                        manageVerifiedInformation={() => manageVerifiedInformation("manage")}
                        linkedAccount={preferredAccount}
-                       saveLabel={I18n.t("edit.save")}
+                       saveLabel={I18n.t("Email.Save.COPY")}
                        editMode={familyNameEditMode}
                        onEdit={() => familyNameEditMode = true}
                        onSave={value => updateFamilyName(value)}
@@ -602,31 +602,31 @@
             {#if !isEmpty($user.externalLinkedAccounts) && !isEmpty($user.dateOfBirth)}
                 <EditField firstValue={dateFromEpoch($user.dateOfBirth)}
                            editableByUser={false}
-                           editLabel={I18n.t(`profile.validatedDayOfBirth`)}
+                           editLabel={I18n.t(`Profile.VerifiedDateOfBirth.COPY`)}
                            manageVerifiedInformation={() => manageVerifiedInformation("manage")}
                            linkedAccount={$user.externalLinkedAccounts[0]}
-                           saveLabel={I18n.t("edit.save")}
+                           saveLabel={I18n.t("Email.Save.COPY")}
                            editMode={dayOfBirthEditMode}
                            onEdit={() => dayOfBirthEditMode = true}
                            onSave={value => value}
                            onCancel={() => dayOfBirthEditMode = false}
                 />
             {/if}
-            <p class="info-section second">{I18n.t("profile.contact")}</p>
+            <p class="info-section second">{I18n.t("Profile.ContactDetails.COPY")}</p>
             <EditField firstValue={$user.email}
                        editableByUser={true}
                        nameField={true}
                        error={emailError}
-                       editLabel={I18n.t("profile.email")}
+                       editLabel={I18n.t("Profile.Email.COPY")}
                        editHint={I18n.t("email.info")}
-                       saveLabel={I18n.t("email.update")}
+                       saveLabel={I18n.t("Email.Update.COPY")}
                        errorMessage={emailErrorMessage}
                        editMode={emailEditMode}
                        onEdit={() => emailEditMode = true}
                        onSave={value => updateEmailValue(value)}
                        onCancel={() => cancelEmailEditMode()}
             />
-            <p class="info-section second">{I18n.t("profile.role")}</p>
+            <p class="info-section second">{I18n.t("Profile.OrganisationsHeader.COPY")}</p>
             <section class="linked-accounts">
                 {#each sortedAccounts as account}
                     <InstitutionRole manageVerifiedInformation={() => manageVerifiedInformation("manage")}
@@ -636,7 +636,7 @@
             <div class="add-institution"
                  on:click={() => addIdentity(false)}>
                 <div class="info">
-                    <p>{I18n.t("profile.addInstitution")}</p>
+                    <p>{I18n.t("Profile.AddAnOrganisation.COPY")}</p>
                     <em class="info">{I18n.t(`profile.${($config.featureIdVerify && isEmpty($user.externalLinkedAccounts)) ? "proceedVerify" : "proceedConext"}`)}</em>
                 </div>
                 <span class="add">+</span>
@@ -651,24 +651,24 @@
     <Modal submit={() => updateEmailValue(tempEmailValue, true)}
            cancel={() => history.back()}
            warning={true}
-           question={I18n.t("email.outstandingPasswordForgottenConfirmation")}
-           title={I18n.t("email.outstandingPasswordForgotten")}>
+           question={I18n.t("Email.OutstandingPasswordForgottenConfirmation.COPY")}
+           title={I18n.t("Email.OutstandingPasswordForgotten.COPY")}>
     </Modal>
 {/if}
 
 {#if showModal || showControlCode}
     <Modal close={() => resetModalsAndQueryParams()}
-           title={showIdinOptions ? I18n.t("verify.modal.header") : showControlCode ?
-                I18n.t("verify.serviceDesk.controlCode.controlCode") : I18n.t("profile.addInstitution")}
-           showOptions={false}>
-        <VerifyChoice addInstitution={addInstitution}
-                      addBank={addBank}
-                      addEuropean={addEuropean}
-                      issuers={issuers}
-                      showIdinOptions={showIdinOptions}
-                      showServiceDesk={serviceDeskStart}
-                      showControlCode={showControlCode}
-                      cancel={() => resetModalsAndQueryParams()}/>
+    title={showIdinOptions ? I18n.t("WelcomeToApp.VerifyYour.Highlight.COPY") : showControlCode ?
+    I18n.t("verify.serviceDesk.controlCode.controlCode") : I18n.t("Profile.AddAnOrganisation.COPY")}
+    showOptions={false}>
+    <VerifyChoice addInstitution={addInstitution}
+                  addBank={addBank}
+                  addEuropean={addEuropean}
+                  issuers={issuers}
+                  showIdinOptions={showIdinOptions}
+                  showServiceDesk={serviceDeskStart}
+                  showControlCode={showControlCode}
+                  cancel={() => resetModalsAndQueryParams()}/>
     </Modal>
 {/if}
 
@@ -676,9 +676,9 @@
     <Modal submit={() => deleteInstitution(false, selectedInstitution)}
            cancel={() => showDeleteInstitutionModal = false}
            warning={true}
-           confirmTitle={I18n.t("modal.delete")}
-           question={I18n.t("institution.deleteInstitutionConfirmation")}
-           title={I18n.t("institution.deleteInstitution")}>
+           confirmTitle={I18n.t("YourVerifiedInformation.ConfirmRemoval.Button.YesDelete.COPY")}
+           question={I18n.t("Institution.DeleteInstitutionConfirmation.COPY")}
+           title={I18n.t("YourVerifiedInformation.ConfirmRemoval.Title.COPY")}>
     </Modal>
 {/if}
 
@@ -687,7 +687,7 @@
            cancel={() => resetModalsAndQueryParams()}
            confirmTitle={I18n.t("profile.yes")}
            cancelTitle={I18n.t("profile.no")}
-           title={I18n.t("profile.preferInstitution")}>
+           title={I18n.t("WelcomeToApp.VerifyYour.Highlight.COPY")}>
         <ValidatedData institution={newInstitution}
                        replacement={true}/>
     </Modal>
@@ -695,9 +695,9 @@
 
 {#if showNewInstitutionModal}
     <Modal submit={() => resetModalsAndQueryParams()}
-           confirmTitle={I18n.t("profile.ok")}
+           confirmTitle={I18n.t("NameUpdated.Continue.COPY")}
            largeConfirmation={true}
-           title={I18n.t("verify.modal.header")}>
+           title={I18n.t("WelcomeToApp.VerifyYour.Highlight.COPY")}>
         <ValidatedData institution={newInstitution}
                        readOnly={true}
         />

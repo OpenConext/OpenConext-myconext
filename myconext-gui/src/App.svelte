@@ -10,7 +10,7 @@
     import Header from "./components/Header.svelte";
     import {configuration, me, oidcTokens} from "./api";
     import {config, redirectPath, user} from "./stores/user";
-    import I18n from "i18n-js";
+    import I18n from "./locale/I18n";
     import CreateFromInstitution from "./routes/CreateFromInstitution.svelte";
     import Expired from "./routes/Expired.svelte";
     import EppnAlreadyLinked from "./routes/EppnAlreadyLinked.svelte";
@@ -29,21 +29,19 @@
     onMount(() => configuration()
         .then(json => {
             $config = json;
-            if (typeof window !== "undefined") {
-                const urlSearchParams = new URLSearchParams(window.location.search);
-                if (urlSearchParams.has("lang")) {
-                    I18n.locale = urlSearchParams.get("lang");
-                } else if (Cookies.get("lang", {domain: $config.domain})) {
-                    I18n.locale = Cookies.get("lang", {domain: $config.domain});
-                } else {
-                    I18n.locale = navigator.language.toLowerCase().substring(0, 2);
-                }
+            const urlSearchParams = new URLSearchParams(window.location.search);
+            let lang = "en";
+            if (urlSearchParams.has("lang")) {
+                lang = urlSearchParams.get("lang");
+            } else if (Cookies.get("lang", {domain: $config.domain})) {
+                lang = Cookies.get("lang", {domain: $config.domain});
             } else {
-                I18n.locale = "en";
+                lang = navigator.language.toLowerCase().substring(0, 2);
             }
-            if (["nl", "en"].indexOf(I18n.locale) < 0) {
-                I18n.locale = "en";
+            if (["nl", "en"].indexOf(lang) < 0) {
+                lang = "en";
             }
+            I18n.changeLocale(lang);
             if (unprotectedRoutes.some(route => window.location.pathname.indexOf(route) > -1)) {
                 loaded = true;
             } else {
@@ -368,7 +366,7 @@
                 <Router url="{url}">
                     {#if $config.createEduIDInstitutionEnabled}
                         <Route path="/create-from-institution" component={CreateFromInstitution}/>
-                        <Route path="/create-from-institution/eppn-already-linked" component={EppnAlreadyLinked}/>
+                        <Route path="/create-from-Institution.Eppn.COPY-already-linked" component={EppnAlreadyLinked}/>
                         <Route path="/create-from-institution/attribute-missing" component={AttributeMissing}/>
                         <Route path="/create-from-institution/expired" component={Expired}/>
                         <Route path="/create-from-institution/poll/:hash" let:params>

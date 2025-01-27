@@ -1,6 +1,6 @@
 <script>
 
-    import I18n from "i18n-js";
+    import I18n from "../locale/I18n";
     import eduidLogo from "../img/logo_eduID.svg?raw";
     import {logout} from "../api";
     import {config, user} from "../stores/user";
@@ -65,10 +65,10 @@
             {@html eduidLogo}
         </a>
     </div>
-    <h1>{I18n.t("header.title")}</h1>
+    <h1>{I18n.t("Header.Title.COPY")}</h1>
     {#if !$user.guest}
         <div class="logout">
-            <Button href="/logout" label={I18n.t("header.logout")} onClick={logoutUser}
+            <Button href="/logout" label={I18n.t("Header.Logout.COPY")} onClick={logoutUser}
                     medium={true}
                     className="cancel"/>
         </div>

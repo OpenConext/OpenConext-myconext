@@ -1,5 +1,5 @@
 <script>
-    import I18n from "i18n-js";
+    import I18n from "../locale/I18n";
     import {onMount} from 'svelte';
     import {conf, links} from "../stores/conf";
     import Button from "../components/Button.svelte";
@@ -38,8 +38,8 @@
 {#if showSpinner}
     <Spinner/>
 {/if}
-<h2 class="green">{I18n.t("confirmStepup.header")}</h2>
+<h2 class="green">{I18n.t("ConfirmStepup.Header.COPY")}</h2>
 <Verification explanation={explanation} verified={true}/>
 <Button href="/proceed" onClick={() => proceed($conf.magicLinkUrl)}
         className="full"
-        label={I18n.t("confirmStepup.proceed", {name: serviceName})}/>
+        label={I18n.t("ConfirmStepup.Proceed.COPY", {name: serviceName})}/>

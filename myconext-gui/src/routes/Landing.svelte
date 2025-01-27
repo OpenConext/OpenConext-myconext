@@ -1,7 +1,7 @@
 <script>
     import {config} from "../stores/user";
     import {onMount} from "svelte";
-    import I18n from "i18n-js";
+    import I18n from "../locale/I18n";
     import {navigate} from "svelte-routing";
     import Button from "../components/Button.svelte";
 
@@ -54,18 +54,18 @@
 <div class="landing">
     <div class="inner">
         {#if isLogoutRedirect}
-            <h3>{I18n.t("landing.logoutTitle")}</h3>
+            <h3>{I18n.t("Landing.LogoutTitle.COPY")}</h3>
             <div>
-                <Button label={I18n.t("landing.loginAgain")}
+                <Button label={I18n.t("RegistrationCheck.LoginAgain.COPY")}
                         large={true}
                         onClick={loginAgain}/>
             </div>
 
         {/if}
         {#if isAccountDeletionRedirect}
-            <h3>{I18n.t("landing.deleteTitle")}</h3>
+            <h3>{I18n.t("RegistrationCheck.DeleteTitle.COPY")}</h3>
             <div>
-                <Button label={I18n.t("landing.registerAgain")}
+                <Button label={I18n.t("RegistrationCheck.RegisterAgain.COPY")}
                         large={true}
                         onClick={loginAgain}/>
             </div>

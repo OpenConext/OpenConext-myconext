@@ -1,6 +1,6 @@
 <script>
     import {flash, user} from "../stores/user";
-    import I18n from "i18n-js";
+    import I18n from "../locale/I18n";
     import {updateEmail} from "../api";
     import {navigate} from "svelte-routing";
     import critical from "../icons/critical.svg?raw";
@@ -18,7 +18,7 @@
             updateEmail({...$user, email: verifiedEmail}, force)
                 .then(() => {
                     history.back();
-                    flash.setValue(I18n.t("email.updated", {email: verifiedEmail}));
+                    flash.setValue(I18n.t("Email.Updated.COPY", {email: verifiedEmail}));
                 }).catch(e => {
                 if (e.status === 409) {
                     duplicateEmail = true;
@@ -101,9 +101,9 @@
 
 </style>
 <div class="email">
-    <h2>{I18n.t("email.title")}</h2>
+    <h2>{I18n.t("Email.Title.Edit.COPY")}</h2>
     <p class="info">{I18n.t("email.info")}</p>
-    <label for="verifiedEmail">{I18n.t("email.email")}</label>
+    <label for="verifiedEmail">{I18n.t("Email.Info.COPY")}</label>
     <input id="verifiedEmail"
            class:error={emailEquality || duplicateEmail}
            type="email"
@@ -112,18 +112,18 @@
     {#if emailEquality}
         <div class="error">
             <span class="svg">{@html critical}</span>
-            <span class="error">{I18n.t("email.emailEquality")}</span>
+            <span class="error">{I18n.t("Email.EmailEquality.COPY")}</span>
         </div>
     {/if}
     {#if duplicateEmail}
         <div class="error">
             <span class="svg">{@html critical}</span>
-            <span class="error">{I18n.t("email.duplicateEmail")}</span>
+            <span class="error">{I18n.t("Email.DuplicateEmail.COPY")}</span>
         </div>
     {/if}
     <div class="options">
-        <Button className="cancel" label={I18n.t("email.cancel")} onClick={cancel}/>
-        <Button label={I18n.t("email.update")} onClick={update}
+        <Button className="cancel" label={I18n.t("YourVerifiedInformation.ConfirmRemoval.Button.Cancel.COPY")} onClick={cancel}/>
+        <Button label={I18n.t("Email.Update.COPY")} onClick={update}
                 disabled={!validEmail(verifiedEmail) || emailEquality}/>
     </div>
 </div>
@@ -131,8 +131,8 @@
     <Modal submit={() => update(true)}
            cancel={() => history.back()}
            warning={true}
-           question={I18n.t("email.outstandingPasswordForgottenConfirmation")}
-           title={I18n.t("email.outstandingPasswordForgotten")}>
+           question={I18n.t("Email.OutstandingPasswordForgottenConfirmation.COPY")}
+           title={I18n.t("Email.OutstandingPasswordForgotten.COPY")}>
     </Modal>
 {/if}
 

@@ -6,7 +6,7 @@
         webAuthnTryAuthentication
     } from "../api";
     import Spinner from "../components/Spinner.svelte";
-    import I18n from "i18n-js";
+    import I18n from "../locale/I18n";
     import Button from "../components/Button.svelte";
     import {user} from "../stores/user";
     import Cookies from "js-cookie";
@@ -59,8 +59,8 @@
     {#if showSpinner}
         <Spinner/>
     {:else}
-        <h2>{I18n.t("webAuthnTest.info")}</h2>
-        <p class="info">{I18n.t("webAuthnTest.browserPrompt")}</p>
-        <Button label={I18n.t("webAuthnTest.start")} onClick={webAuthnStart}/>
+        <h2>{I18n.t("WebAuthnTest.Info.COPY")}</h2>
+        <p class="info">{I18n.t("WebAuthnTest.BrowserPrompt.COPY")}</p>
+        <Button label={I18n.t("Webauthn.Test.COPY")} onClick={webAuthnStart}/>
     {/if}
 </div>

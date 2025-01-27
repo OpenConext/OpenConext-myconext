@@ -1,5 +1,5 @@
 <script>
-    import I18n from "i18n-js";
+    import I18n from "../locale/I18n";
     import {startCreateFromInstitutionFlow, startLinkAccountFlow} from "../api";
     import Button from "../components/Button.svelte";
     import {onMount} from "svelte";
@@ -72,7 +72,7 @@
         <Button href={`/link`}
                 didisabled={busy}
                 large={true}
-                label={I18n.t("attributeMissing.retryLink")}
+                label={I18n.t("EppnAlreadyLinked.RetryButton.COPY")}
                 onClick={retry}/>
     </div>
 </div>

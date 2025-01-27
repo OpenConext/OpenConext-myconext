@@ -42,7 +42,9 @@
     "test:watch": "npm run test -- --watch"
   },
   "dependencies": {
+    "save-dev": "^0.0.1-security",
     "@github/webauthn-json": "^2.1.1",
+    "@picnicsupermarket/localicious": "^1.0.1",
     "dompurify": "^3.2.2",
     "i18n-js": "^3.3.0",
     "js-cookie": "^3.0.5",

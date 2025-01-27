@@ -1,5 +1,5 @@
 <script>
-    import I18n from "i18n-js";
+    import I18n from "../../locale/I18n";
     import Button from "../../components/Button.svelte";
     import appStore from "../../icons/redesign/Download_on_the_App_Store_Badge.svg?raw";
     import googlePlay from "../../icons/redesign/Google_Play-Badge-Logo.wine.svg?raw";
@@ -60,18 +60,18 @@
 <div class="get-app">
     <div class="inner-container">
 
-        <h2 class="header">{I18n.t("getApp.header")}</h2>
-        <p class="explanation">{@html I18n.t("getApp.info")}</p>
+        <h2 class="header">{I18n.t("GetApp.Header.COPY")}</h2>
+        <p class="explanation">{@html I18n.t("GetApp.Info.COPY")}</p>
         <div class="store-icons">
-            <a class="google" href={I18n.t("getApp.google")} target="_blank">
+            <a class="google" href={I18n.t("GetApp.Google.COPY")} target="_blank">
                 {@html googlePlay}
             </a>
-            <a class="apple" href={I18n.t("getApp.apple")} target="_blank">
+            <a class="apple" href={I18n.t("GetApp.Apple.COPY")} target="_blank">
                 {@html appStore}
             </a>
         </div>
-        <p class="explanation">{@html I18n.t("getApp.after")}</p>
-        <Button href={I18n.t("getApp.next")} onClick={next} label={I18n.t("getApp.next")} medium={true}/>
+        <p class="explanation">{@html I18n.t("GetApp.After.COPY")}</p>
+        <Button href={I18n.t("GetApp.Next.COPY")} onClick={next} label={I18n.t("GetApp.Next.COPY")} medium={true}/>
     </div>
 </div>
 

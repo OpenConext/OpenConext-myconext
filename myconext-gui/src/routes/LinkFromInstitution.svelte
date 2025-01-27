@@ -2,7 +2,7 @@
     import {config, user} from "../stores/user";
     import {link, navigate} from "svelte-routing";
     import {validEmail} from "../validation/regexp";
-    import I18n from "i18n-js";
+    import I18n from "../locale/I18n";
     import critical from "../icons/critical.svg?raw";
     import attention from "../icons/alert-circle.svg?raw";
 
@@ -207,32 +207,32 @@
 
     <div class="inner">
 
-        <h3 class="header">{I18n.t("linkFromInstitution.header", {name: `${userInfo.given_name}`})}</h3>
-        <p>{I18n.t("linkFromInstitution.info")}</p>
+        <h3 class="header">{I18n.t("LinkFromInstitution.Header.COPY", {name: `${userInfo.given_name}`})}</h3>
+        <p>{I18n.t("LinkFromInstitution.Info.COPY")}</p>
         <input type="email"
                autocomplete="username"
                id="email"
                spellcheck="false"
                class:error={emailInUse || emailForbidden}
-               placeholder={I18n.t("linkFromInstitution.emailPlaceholder")}
+               placeholder={I18n.t("LinkFromInstitution.EmailPlaceholder.COPY")}
                use:init
                on:input={updateEmail}
                on:blur={handleEmailBlur}>
         {#if !initial && !validEmail($user.email)}
             <div class="error">
                 <span class="svg">{@html critical}</span>
-                <span>{I18n.t("linkFromInstitution.invalidEmail")}</span>
+                <span>{I18n.t("LinkFromInstitution.InvalidEmail.COPY")}</span>
             </div>
         {/if}
         {#if emailInUse}
             <div class="error">
                 <span class="svg">{@html critical}</span>
                 <div>
-                    <span>{I18n.t("linkFromInstitution.emailInUse1")}</span>
-                    <span>{I18n.t("linkFromInstitution.emailInUse2")}</span>
+                    <span>{I18n.t("LinkFromInstitution.EmailInUse1.COPY")}</span>
+                    <span>{I18n.t("LinkFromInstitution.EmailInUse2.COPY")}</span>
                     <a href="/next"
                        on:click|preventDefault|stopPropagation={() => handleNext(false)}>
-                        {I18n.t("linkFromInstitution.emailInUse3")}
+                        {I18n.t("LinkFromInstitution.EmailInUse3.COPY")}
                     </a>
                 </div>
             </div>
@@ -241,7 +241,7 @@
             <div class="error">
                 <span class="svg">{@html critical}</span>
                 <div>
-                    <span>{@html I18n.t("linkFromInstitution.emailForbidden")}</span>
+                    <span>{@html I18n.t("LinkFromInstitution.EmailForbidden.COPY")}</span>
                 </div>
             </div>
         {/if}
@@ -249,9 +249,9 @@
             <div class="institution-warning">
                 <span class="svg attention">{@html attention}</span>
                 <div class="text">
-                    <span>{I18n.t("linkFromInstitution.institutionDomainNameWarning")}</span>
+                    <span>{I18n.t("LinkFromInstitution.InstitutionDomainNameWarning.COPY")}</span>
                     <br/>
-                    <span>{I18n.t("linkFromInstitution.institutionDomainNameWarning2")}</span>
+                    <span>{I18n.t("LinkFromInstitution.InstitutionDomainNameWarning2.COPY")}</span>
                 </div>
             </div>
 
@@ -261,10 +261,10 @@
             <div class="domain-not-allowed">
                 <span class="svg error">{@html critical}</span>
                 <div class="text">
-            <span>{I18n.t("linkFromInstitution.allowedDomainNamesError",
+            <span>{I18n.t("LinkFromInstitution.AllowedDomainNamesError.COPY",
                 {domain: $user.email.substring($user.email.indexOf("@") + 1)})}</span>
                     <br/>
-                    <span>{I18n.t("linkFromInstitution.allowedDomainNamesError2")}</span>
+                    <span>{I18n.t("LinkFromInstitution.AllowedDomainNamesError2.COPY")}</span>
                 </div>
             </div>
 
@@ -273,13 +273,13 @@
         <CheckBox value={agreedWithTerms}
                   className="light"
                   terms={true}
-                  label={I18n.t("linkFromInstitution.agreeWithTerms")}
+                  label={I18n.t("LinkFromInstitution.AgreeWithTerms.COPY")}
                   onChange={val => agreedWithTerms = val}/>
         <div class="actions">
             <Button disabled={showSpinner || !allowedNext($user.email, agreedWithTerms)}
                     href="/finish"
                     large={true}
-                    label={I18n.t("linkFromInstitution.requestEduIdButton")}
+                    label={I18n.t("LinkFromInstitution.RequestEduIdButton.COPY")}
                     onClick={handleNext}/>
 
         </div>

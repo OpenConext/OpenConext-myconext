@@ -1,6 +1,6 @@
 <script>
     import {flash, user} from "../stores/user";
-    import I18n from "i18n-js";
+    import I18n from "../locale/I18n";
     import {validPassword} from "../validation/regexp";
     import {resetPasswordHashValid, resetPasswordLink, updatePassword} from "../api";
     import {navigate} from "svelte-routing";
@@ -39,7 +39,7 @@
                         }
                     }
                     navigate("/security");
-                    flash.setValue(usePassword ? I18n.t("password.updated") : I18n.t("password.set"));
+                    flash.setValue(usePassword ? I18n.t("Password.Updated.COPY") : I18n.t("Password.Set.COPY"));
                 })
                 .catch(() => {
                     passwordResetHashExpired = true;
@@ -63,7 +63,7 @@
                     }
                 }
                 navigate("/security");
-                flash.setValue(I18n.t("password.deleted"));
+                flash.setValue(I18n.t("Password.Deleted.COPY"));
             }).catch(() => {
                 showModalDeletePassword = false;
                 passwordResetHashExpired = true;
@@ -74,7 +74,7 @@
     const resetPasswordLinkAgain = () => {
         resetPasswordLink().then(() => {
             navigate("/security");
-            flash.setValue(I18n.t("password.flash.passwordLink", {name: $user.email}));
+            flash.setValue(I18n.t("Password.Flash.PasswordLink.COPY", {name: $user.email}));
         })
 
     }
@@ -140,25 +140,25 @@
     {#if loading}
         <Spinner/>
     {:else}
-        <h2>{usePassword ? I18n.t("password.updateTitle") : I18n.t("password.addTitle")}</h2>
+        <h2>{usePassword ? I18n.t("ChangePassword.Title.ChangePassword.COPY") : I18n.t("PasswordResetLink.Title.AddPassword.COPY")}</h2>
         {#if passwordResetHashExpired}
             <div class="error-container">
-            <span class="error">{I18n.t("password.passwordResetHashExpired")}
+            <span class="error">{I18n.t("Password.PasswordResetHashExpired.COPY")}
                 <a href="/reset-link" on:click|preventDefault|stopPropagation={resetPasswordLinkAgain}>
-                    {I18n.t("password.passwordResetSendAgain")}
+                    {I18n.t("Password.PasswordResetSendAgain.COPY")}
                 </a>
             </span>
             </div>
         {:else}
-            <p class="info">{I18n.t("password.passwordDisclaimer")}</p>
+            <p class="info">{I18n.t("Password.PasswordDisclaimer.COPY")}</p>
 
             <input id="username" autocomplete="username email" type="hidden" name="username" value={$user.email}>
 
-            <label for="newPassword">{I18n.t("password.newPassword")}</label>
+            <label for="newPassword">{I18n.t("Password.NewPassword.COPY")}</label>
             <input id="newPassword" type="password" autocomplete="new-password" spellcheck="false"
                    bind:value={newPassword}>
 
-            <label for="confirmPassword">{I18n.t("password.confirmPassword")}</label>
+            <label for="confirmPassword">{I18n.t("Password.ConfirmPassword.COPY")}</label>
             <input id="confirmPassword" type="password" spellcheck="false" autocomplete="new-password"
                    bind:value={confirmPassword}>
 
@@ -168,8 +168,8 @@
             <Button deletion={true} onClick={deletePasswordOption(true)}/>
         </span>
                 {/if}
-                <Button className="cancel" label={I18n.t("password.cancel")} onClick={cancel}/>
-                <Button label={usePassword ? I18n.t("password.updateUpdate") : I18n.t("password.setUpdate")}
+                <Button className="cancel" label={I18n.t("YourVerifiedInformation.ConfirmRemoval.Button.Cancel.COPY")} onClick={cancel}/>
+                <Button label={usePassword ? I18n.t("Password.UpdateUpdate.COPY") : I18n.t("Password.SetUpdate.COPY")}
                         onClick={update}
                         disabled={!allowedNext}/>
             </div>
@@ -180,8 +180,8 @@
     <Modal submit={deletePasswordOption(false)}
            cancel={() => showModalDeletePassword = false}
            warning={false}
-           confirmTitle={I18n.t("modal.delete")}
-           question={I18n.t("password.deletePasswordConfirmation")}
-           title={I18n.t("password.deletePassword")}>
+           confirmTitle={I18n.t("YourVerifiedInformation.ConfirmRemoval.Button.YesDelete.COPY")}
+           question={I18n.t("Password.DeletePasswordConfirmation.COPY")}
+           title={I18n.t("Password.DeletePassword.COPY")}>
     </Modal>
 {/if}

@@ -1,5 +1,5 @@
 <script>
-    import I18n from "i18n-js";
+    import I18n from "../locale/I18n";
     import Button from "../components/Button.svelte";
     import {navigate} from "svelte-routing";
 
@@ -43,6 +43,6 @@
     <Button href={`/link`}
             didisabled={busy}
             large={true}
-            label={I18n.t("subjectAlreadyLinked.retryLink")}
+            label={I18n.t("EppnAlreadyLinked.RetryButton.COPY")}
             onClick={retry}/>
 </div>

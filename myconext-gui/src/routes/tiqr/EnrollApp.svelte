@@ -1,5 +1,5 @@
 <script>
-    import I18n from "i18n-js";
+    import I18n from "../../locale/I18n";
     import {pollEnrollment, startEnrollment} from "../../api/index";
     import Spinner from "../../components/Spinner.svelte";
     import {onDestroy, onMount} from "svelte";
@@ -106,23 +106,23 @@
             <p class="time-out">
                 <span>{I18n.t("enrollApp.existingRegistrationInfoFirst")}</span>
                 <a href="/security">
-                    {I18n.t("enrollApp.existingRegistrationInfoLink")}
+                    {I18n.t("UseApp.TimeOutInfoLink.COPY")}
                 </a>
                 <span>{I18n.t("enrollApp.existingRegistrationInfoLast")}</span>
             </p>
         {:else if timeOut}
-            <h2 class="header">{I18n.t("enrollApp.timeOut")}</h2>
+            <h2 class="header">{I18n.t("UseApp.TimeOut.COPY")}</h2>
             <p class="time-out">
-                <span>{I18n.t("enrollApp.timeOutInfoFirst")}</span>
+                <span>{I18n.t("UseApp.TimeOutInfoFirst.COPY")}</span>
                 <a href="/"
                    on:click|preventDefault|stopPropagation={() => window.location.reload(true)}>
-                    {I18n.t("enrollApp.timeOutInfoLink")}
+                    {I18n.t("UseApp.TimeOutInfoLink.COPY")}
                 </a>
-                <span>{I18n.t("enrollApp.timeOutInfoLast")}</span>
+                <span>{I18n.t("UseApp.TimeOutInfoLast.COPY")}</span>
             </p>
 
         {:else if status === enrollmentStatus.INITIALIZED}
-            <h2 class="header">{I18n.t("enrollApp.scan")}</h2>
+            <h2 class="header">{I18n.t("UseApp.Scan.COPY")}</h2>
             <ImageContainer>
                 {#if onMobile}
                     <div class="mobile-qr-code">
@@ -133,7 +133,7 @@
                             <Button href={url}
                                     onClick={() => window.location.href = url}
                                     larger={true}
-                                    label={I18n.t("enrollApp.openEduIDApp")}/>
+                                    label={I18n.t("UseApp.OpenEduIDApp.COPY")}/>
                         </div>
                     </div>
                 {:else}
@@ -141,7 +141,7 @@
                 {/if}
             </ImageContainer>
         {:else if status === enrollmentStatus.RETRIEVED}
-            <h2 class="header">{I18n.t("enrollApp.header")}</h2>
+            <h2 class="header">{I18n.t("EnrollApp.Header.COPY")}</h2>
             <div class="spinner-container">
                 <Spinner relative={true}/>
             </div>

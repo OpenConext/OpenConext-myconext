@@ -1,5 +1,5 @@
 <script>
-    import I18n from "i18n-js";
+    import I18n from "../locale/I18n";
     import {dateFromEpoch} from "../utils/date";
     import {onMount} from "svelte";
     import {institutionName, isStudent, linkedAccountFamilyName, linkedAccountGivenName} from "../utils/services";
@@ -120,32 +120,32 @@
     </div>
     <div class="">
         {#if !isEmpty(linkedAccountGivenName(linkedAccount))}
-            <ValidatedField label={I18n.t("profile.validatedGivenName")}
+            <ValidatedField label={I18n.t("Profile.VerifiedGivenName.COPY")}
                             icon={preferredAccount ? personalInfo : null}
                             readOnly={true}
                             value={linkedAccountGivenName(linkedAccount)}/>
         {/if}
 
         {#if !isEmpty(linkedAccountFamilyName(linkedAccount))}
-            <ValidatedField label={I18n.t("profile.validatedFamilyName")}
+            <ValidatedField label={I18n.t("Profile.VerifiedFamilyName.COPY")}
                             icon={preferredAccount ? personalInfo : null}
                             readOnly={true}
                             value={linkedAccountFamilyName(linkedAccount)}/>
         {/if}
 
         {#if !isEmpty(linkedAccount.dateOfBirth)}
-            <ValidatedField label={I18n.t("profile.validatedDayOfBirth")}
+            <ValidatedField label={I18n.t("Profile.VerifiedDateOfBirth.COPY")}
                             icon={preferredAccount ? personalInfo : null}
                             readOnly={true}
                             value={dateFromEpoch(linkedAccount.dateOfBirth)}/>
         {/if}
 
         {#if isStudent(linkedAccount)}
-            <ValidatedField label={I18n.t("profile.atInstitution", {name: institutionName(linkedAccount)})}
+            <ValidatedField label={I18n.t("Profile.InstitutionAt.COPY", {name: institutionName(linkedAccount)})}
                             icon={preferredAccount ? personalInfo : null}
                             overrideShieldIcon={studentIcon}
                             readOnly={true}
-                            value={I18n.t("profile.studentRole")}/>
+                            value={I18n.t("Profile.Student.COPYRole")}/>
         {/if}
 
         {#if (linkedAccount.idpScoping === "idin" || isEmpty(linkedAccountGivenName(linkedAccount))) &&
@@ -161,7 +161,7 @@
             <div class="remove">
                 <a href="/#"
                    on:click|preventDefault|stopPropagation={deleteLinkedAccount}>
-                    {I18n.t("profile.removeLinkPrefix")}
+                    {I18n.t("YourVerifiedInformation.RemoveThisInformation.COPY")}
                 </a>
                 <span>{I18n.t("profile.removeLinkPostfix")}</span>
             </div>

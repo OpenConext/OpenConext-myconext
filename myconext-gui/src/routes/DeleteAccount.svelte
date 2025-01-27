@@ -1,6 +1,6 @@
 <script>
     import {config, user} from "../stores/user";
-    import I18n from "i18n-js";
+    import I18n from "../locale/I18n";
     import {navigate} from "svelte-routing";
     import critical from "../icons/critical.svg?raw";
 
@@ -101,14 +101,14 @@
 
 <div class="account">
 
-    <h2>{I18n.t("account.titleDelete")}</h2>
+    <h2>{I18n.t("Account.TitleDelete.COPY")}</h2>
     {#each [1, 2, 3, 4] as i}
-        <p class="divider">{I18n.t("account.info" + i)}</p>
+        <p class="divider">{I18n.t("Account.Info.COPY" + i)}</p>
     {/each}
     <div class="options">
-        <Button href="/cancel" label={I18n.t("account.cancel")}
+        <Button href="/cancel" label={I18n.t("YourVerifiedInformation.ConfirmRemoval.Button.Cancel.COPY")}
                 onClick={() => navigate("/account")} className="cancel"/>
-        <Button href="/delete" label={I18n.t("account.deleteAccount")}
+        <Button href="/delete" label={I18n.t("Account.Delete.COPY")}
                 large={true}
                 onClick={deleteUserAction(true)}/>
     </div>
@@ -118,18 +118,18 @@
     <Modal submit={deleteUserAction(false)}
            cancel={() => showModal = false}
            warning={true}
-           confirmTitle={I18n.t("modal.delete")}
+           confirmTitle={I18n.t("YourVerifiedInformation.ConfirmRemoval.Button.YesDelete.COPY")}
            disableSubmit={disableDeleteButton(name)}
-           title={I18n.t("account.deleteAccountSure")}>
+           title={I18n.t("ConfirmDelete.Title.COPY")}>
         <div class="slot">
             <div class="warning-box">
                 <span>{@html critical}</span>
-                <span>{I18n.t("account.deleteAccountWarning")}</span>
+                <span>{I18n.t("ConfirmDelete.Disclaimer.COPY")}</span>
             </div>
-            <p>{I18n.t("account.proceed")}</p>
+            <p>{I18n.t("Account.Proceed.COPY")}</p>
             <label for="name">{I18n.t("account.confirmation")}</label>
             <input id="name"
-                   placeholder={I18n.t("account.confirmationPlaceholder")}
+                   placeholder={I18n.t("Profile.RemoveServicePrompt.Delete.COPY")}
                    type="text"
                    spellcheck="false"
                    bind:value={name}/>

@@ -1,5 +1,5 @@
 <script>
-    import I18n from "i18n-js";
+    import I18n from "../../locale/I18n";
     import {reValidatePhoneCode, validatePhoneCode} from "../../api";
     import CodeVerifier from "./CodeVerifier.svelte";
 
@@ -35,8 +35,8 @@
 </style>
 <div class="phone-confirmation">
     <div class="inner-container">
-        <h2 class="header">{I18n.t("sms.header")}</h2>
-        <p class="explanation">{I18n.t("sms.info")}</p>
+        <h2 class="header">{I18n.t("Sms.Header.COPY")}</h2>
+        <p class="explanation">{I18n.t("Sms.Info.COPY")}</p>
         <CodeVerifier navigateTo={change ? `/change-congrats` : `/congrats`}
                       action={change ? reValidatePhoneCode : validatePhoneCode}
                       phoneVerificationURL={`/${change ? "change-" : ""}phone-verification`}/>

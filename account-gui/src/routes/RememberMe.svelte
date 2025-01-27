@@ -1,5 +1,5 @@
 <script>
-    import I18n from "i18n-js";
+    import I18n from "../locale/I18n";
     import {onMount} from "svelte";
     import {rememberMe} from "../api";
     import Button from "../components/Button.svelte";
@@ -28,12 +28,12 @@
         margin: 15px 0;
     }
 </style>
-<h2 class="header">{I18n.t("rememberMe.header")}</h2>
-<p class="explanation">{I18n.t("rememberMe.info")}</p>
+<h2 class="header">{I18n.t("RememberMe.Header.COPY")}</h2>
+<p class="explanation">{I18n.t("RememberMe.Info.COPY")}</p>
 <ButtonContainer>
     <Button href={"/no"} onClick={() => proceed($conf.magicLinkUrl)}
-            label={I18n.t("rememberMe.no")}/>
+            label={I18n.t("RememberMe.No.COPY")}/>
     <Button href={"/yes"} onClick={doRememberMe}
-            label={I18n.t("rememberMe.yes")}/>
+            label={I18n.t("RememberMe.Yes.COPY")}/>
 
 </ButtonContainer>

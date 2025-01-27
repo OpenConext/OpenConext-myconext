@@ -1,6 +1,6 @@
 <script>
     import chevronUpIcon from "../icons/chevron-up.svg?raw";
-    import I18n from "i18n-js";
+    import I18n from "../locale/I18n";
     import LinkedInstitution from "./LinkedInstitution.svelte";
     import notFound from "../icons/school-building.svg?raw";
     import {onMount} from "svelte";
@@ -114,12 +114,12 @@
         {/if}
         </span>
         <div class="role">
-            <p>{affiliations || I18n.t("profile.studentRole")}
+            <p>{affiliations || I18n.t("Profile.Student.COPYRole")}
                 {#if linkedAccount.expired}
                     <span class="expired">{` (${I18n.t("profile.expired")})`}</span>
                 {/if}
             </p>
-            <span>{I18n.t("profile.atInstitution", {name: institutionName(linkedAccount)})}</span>
+            <span>{I18n.t("Profile.InstitutionAt.COPY", {name: institutionName(linkedAccount)})}</span>
         </div>
 
         <span class="icon" class:show-drop-down={!showDropDown}>

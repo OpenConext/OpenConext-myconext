@@ -1,5 +1,5 @@
 <script>
-    import I18n from "i18n-js";
+    import I18n from "../locale/I18n";
     import studentIcon from "../icons/verify/student.svg?raw";
     import bankIcon from "../icons/verify/bank.svg?raw";
     import Button from "../components/Button.svelte";
@@ -156,15 +156,15 @@
     {#if !showServiceDesk && !showControlCode && (!showBankOptions || busyProcessing)}
         <div class="info-container">
             <h3 class="header">{I18n.t("verify.modal.info.subheader")}</h3>
-            <p>{showIdinOptions ? I18n.t("verify.modal.info.please") : I18n.t("profile.addInstitutionInfo")}</p>
+            <p>{showIdinOptions ? I18n.t("verify.modal.info.please") : I18n.t("VerifyIdentity.SubtitleHasInternalLink.COPY")}</p>
         </div>
         <div class="choice-container">
             <div class="choice">
-                <p class="question">{showIdinOptions ? I18n.t("verify.modal.info.educationalInstitution") : I18n.t("profile.addInstitutionAction")}</p>
+                <p class="question">{showIdinOptions ? I18n.t("VerifyIdentity.VerifyViaDutchInstitution.Title.COPY") : I18n.t("VerifyIdentity.VerifyViaDutchInstitution.TitleHasInternalLink.COPY")}</p>
                 {@html studentIcon}
             </div>
             <div class="button-container">
-                <Button label={I18n.t("verify.modal.info.selectInstitution")}
+                <Button label={I18n.t("VerifyIdentity.VerifyViaDutchInstitution.Button.COPY")}
                         larger={true}
                         custom={true}
                         disabled={busyProcessing}
@@ -179,11 +179,11 @@
         {#if showOtherOptions && !showServiceDesk && !showControlCode}
             <div class="choice-container">
                 <div class="choice">
-                    <p class="question">{I18n.t("verify.modal.info.verifyBank")}</p>
+                    <p class="question">{I18n.t("VerifyIdentity.VerifyWithBankApp.Title.COPY")}</p>
                     {@html bankIcon}
                 </div>
                 <div class="button-container">
-                    <Button label={I18n.t("verify.modal.info.selectBank")}
+                    <Button label={I18n.t("VerifyIdentity.VerifyWithBankApp.Button.COPY")}
                             icon={idinIcon}
                             custom={true}
                             disabled={busyProcessing}
@@ -194,14 +194,14 @@
             </div>
             <div class="choice-container">
                 <div class="choice">
-                    <p class="question">{I18n.t("verify.modal.info.verifyEuropeanId")}</p>
+                    <p class="question">{I18n.t("VerifyIdentity.VerifyWithAEuropianId.Title.COPY")}</p>
                     {@html europeanSvg}
                 </div>
                 <p class="support">
                     {I18n.t("verify.modal.info.supportEuropean")}
                 </p>
                 <div class="button-container">
-                    <Button label={I18n.t("verify.modal.info.useEuropean")}
+                    <Button label={I18n.t("VerifyIdentity.VerifyWithAEuropianId.Button.COPY")}
                             icon={eIDASIcon}
                             custom={true}
                             disabled={busyProcessing}
@@ -220,7 +220,7 @@
             <span class="back" on:click={() => showBankOptions = !showBankOptions}>
                 {@html arrowLeftIcon}
             </span>
-                <h3 class="header">{I18n.t("verify.modal.bank.select")}</h3>
+                <h3 class="header">{I18n.t("VerifyIdentity.VerifyWithBankApp.Button.COPY")}</h3>
             </div>
             <p>{@html I18n.t("verify.modal.bank.disclaimer")}</p>
         </div>
@@ -239,7 +239,7 @@
         {@html alertSvg}
         <span>{I18n.t("verify.modal.bank.anotherMethodPrefix")}
             <a href="/#" on:click|preventDefault|stopPropagation={() => showBankOptions = !showBankOptions}>
-                {I18n.t("verify.modal.bank.anotherMethodPostfix")}
+                {I18n.t("SelectYourBank.BankNotInList.HighlightedPart.COPY")}
             </a>
         </span>
     </div>

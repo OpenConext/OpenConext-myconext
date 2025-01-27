@@ -36,14 +36,17 @@ public class MailBox {
     private final String mySURFconextURL;
     private final String loginSURFconextURL;
     private final String emailFrom;
+    private final String errorEmail;
     private final Map<String, Map<String, String>> subjects;
 
     private final MustacheFactory mustacheFactory;
     private final EmailsSendRepository emailsSendRepository;
     private final long emailSpamThresholdSeconds;
+    private final ObjectMapper objectMapper;
 
     public MailBox(JavaMailSender mailSender,
                    String emailFrom,
+                   String errorEmail,
                    String magicLinkUrl,
                    String mySURFconextURL,
                    String loginSURFconextURL,
@@ -53,6 +56,7 @@ public class MailBox {
                    long emailSpamThresholdSeconds) throws IOException {
         this.mailSender = mailSender;
         this.emailFrom = emailFrom;
+        this.errorEmail = errorEmail;
         this.magicLinkUrl = magicLinkUrl;
         this.mySURFconextURL = mySURFconextURL;
         this.loginSURFconextURL = loginSURFconextURL;
@@ -65,8 +69,8 @@ public class MailBox {
             LOG.info("Initializing mail templates from JAR resource: " + mailTemplatesDirectory.getFilename());
             mustacheFactory = new DefaultMustacheFactory(mailTemplatesDirectory.getFilename());
         }
-        this.subjects = objectMapper.readValue(inputStream(mailTemplatesDirectory), new TypeReference<>() {
-        });
+        this.subjects = objectMapper.readValue(inputStream(mailTemplatesDirectory), new TypeReference<>() {});
+        this.objectMapper = objectMapper;
     }
 
     public void sendMagicLink(User user, String hash, String requesterId) {
@@ -190,6 +194,15 @@ public class MailBox {
         variables.put("mySurfConextURL", mySURFconextURL);
         variables.put("controlCode", controlCode);
         sendMail("service_desk_control_code", title, variables, preferredLanguage(user), user.getEmail(), true);
+    }
+
+    @SneakyThrows
+    public void sendErrorMail(Map<String, Object> json, User user) {
+        String title = this.getTitle("error_email", user);
+        Map<String, Object> variables = variables(user, title);
+        variables.put("mySurfConextURL", mySURFconextURL);
+        variables.put("json", objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(json));
+        sendMail("error_email", title, variables, preferredLanguage(user), errorEmail, false);
     }
 
     private Map<String, Object> variables(User user, String title) {

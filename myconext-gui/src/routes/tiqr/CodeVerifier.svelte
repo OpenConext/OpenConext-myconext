@@ -1,7 +1,7 @@
 <script>
     import critical from "../../icons/critical.svg?raw";
 
-    import I18n from "i18n-js";
+    import I18n from "../../locale/I18n";
     import {onMount, tick} from "svelte";
     import {navigate} from "svelte-routing";
     import {me, sendDeactivationPhoneCode} from "../../api";
@@ -152,7 +152,7 @@
 {#if wrongCode && !maxAttempts}
     <div class="error">
         <span class="svg">{@html critical}</span>
-        <span>{I18n.t("sms.codeIncorrect")}</span>
+        <span>{I18n.t("Sms.CodeIncorrect.COPY")}</span>
     </div>
 {/if}
 
@@ -160,13 +160,13 @@
     <div class="error">
         <span class="svg">{@html critical}</span>
         <div class="max-attempts">
-            <span>{I18n.t("sms.maxAttemptsPre")}</span>
+            <span>{I18n.t("Sms.MaxAttemptsPre.COPY")}</span>
             <a href="/phone"
-               on:click|preventDefault|stopPropagation={sendSMSAgain}>{I18n.t("sms.here")}</a>
+               on:click|preventDefault|stopPropagation={sendSMSAgain}>{I18n.t("Sms.Here.COPY")}</a>
             {#if reEnter}
-                <span>{I18n.t("sms.maxAttemptsPost")}</span>
+                <span>{I18n.t("Sms.MaxAttemptsPost.COPY")}</span>
             {:else}
-                <span>{I18n.t("sms.maxAttemptsPostNoReEnter")}</span>
+                <span>{I18n.t("Sms.MaxAttemptsPost.COPYNoReEnter")}</span>
             {/if}
         </div>
     </div>

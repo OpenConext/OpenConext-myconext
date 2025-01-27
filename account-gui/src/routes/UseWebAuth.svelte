@@ -2,7 +2,7 @@
     import {user} from "../stores/user";
     import {navigate} from "svelte-routing";
     import {get} from "@github/webauthn-json";
-    import I18n from "i18n-js";
+    import I18n from "../locale/I18n";
     import {fetchServiceName, webAuthnStartAuthentication, webAuthnTryAuthentication} from "../api/index";
     import Spinner from "../components/Spinner.svelte";
     import {onMount} from "svelte";
@@ -71,14 +71,14 @@
     <Spinner/>
 {/if}
 {#if !isMrcc}
-    <h2 class="header">{I18n.t("webAuthn.header")}</h2>
+    <h2 class="header">{I18n.t("Login.UseWebAuth.COPY")}</h2>
     {#if serviceName}
-        <h2 class="top">{I18n.t("login.headerSubTitle")}<span>{serviceName}</span></h2>
+        <h2 class="top">{I18n.t("Login.HeaderSubTitle.COPY")}<span>{serviceName}</span></h2>
     {/if}
-    <p class="explanation">{I18n.t("webAuthn.explanation")}</p>
+    <p class="explanation">{I18n.t("WebAuthn.Explanation.COPY")}</p>
     <Button href="/start"
             disabled={showSpinner}
-            label={I18n.t("webAuthn.next")}
+            label={I18n.t("WebAuthn.Next.COPY")}
             className="full"
             onClick={webAuthnStart}/>
 

@@ -1,6 +1,6 @@
 <script>
     import {links} from "../stores/conf";
-    import I18n from "i18n-js";
+    import I18n from "../locale/I18n";
     import {onMount} from "svelte";
     import phoneIcon from "../icons/redesign/mobile-phone.svg?raw";
     import backupIcon from "../icons/redesign/printer.svg?raw";
@@ -38,21 +38,21 @@
         margin-bottom: 15px;
     }
 </style>
-<h2 class="header">{I18n.t("recovery.header")}</h2>
-<p class="explanation">{I18n.t("recovery.info")}</p>
-<p class="methods">{I18n.t("recovery.methods")}</p>
+<h2 class="header">{I18n.t("Recovery.Header.COPY")}</h2>
+<p class="explanation">{I18n.t("Recovery.Info.COPY")}</p>
+<p class="methods">{I18n.t("Recovery.Methods.COPY")}</p>
 <div class="phone-number">
     <LoginOption icon={phoneIcon}
-                 label={I18n.t("recovery.phoneNumber")}
-                 subLabel={I18n.t("recovery.phoneNumberInfo")}
+                 label={I18n.t("Recovery.PhoneNumber.COPY")}
+                 subLabel={I18n.t("Recovery.PhoneNumberInfo.COPY")}
                  action={phoneNumber}
                  index={1}
                  preferred={true}/>
 </div>
 <div class="other-account">
     <LoginOption icon={backupIcon}
-                 label={I18n.t("recovery.backupCode")}
-                 subLabel={I18n.t("recovery.backupCodeInfo")}
+                 label={I18n.t("Recovery.BackupCode.COPY")}
+                 subLabel={I18n.t("Recovery.BackupCodeInfo.COPY")}
                  action={backUpCode}
                  index={2}/>
 </div>

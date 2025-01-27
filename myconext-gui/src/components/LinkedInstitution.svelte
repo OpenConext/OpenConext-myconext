@@ -1,5 +1,5 @@
 <script>
-    import I18n from "i18n-js";
+    import I18n from "../locale/I18n";
     import {dateFromEpoch} from "../utils/date";
     import {onMount} from "svelte";
     import {isEmpty} from "../utils/utils";
@@ -57,13 +57,13 @@
 <div class="linked-institution-container">
 
     <div class="linked-institution">
-        <p>{I18n.t("profile.verifiedBy", {name: institutionName(linkedAccount)})}</p>
+        <p>{I18n.t("Profile.VerifiedBy.COPY", {name: institutionName(linkedAccount)})}</p>
         <ul>
             <li>{@html I18n.t("profile.receivedOn", {date: dateFromEpoch(linkedAccount.createdAt)})}</li>
             <li>{@html I18n.t("profile.validUntilDate", {date: dateFromEpoch(expiresAt)})}</li>
         </ul>
         {#if includeAffiliations && !isEmpty(affiliations)}
-            <p class="details">{I18n.t("profile.affiliations")}</p>
+            <p class="details">{I18n.t("Profile.Affiliations.COPY")}</p>
             <ul>
                 {#each affiliations as aff}
                     <li>{aff}</li>
@@ -87,7 +87,7 @@
             <a class="manage-information"
                href="/#"
                on:click|preventDefault|stopPropagation={manageVerifiedInformation}>
-                {I18n.t("profile.manageInformation")}
+                {I18n.t("Profile.ManageYourVerifiedInformation.COPY")}
             </a>
         </div>
     </div>

@@ -1,5 +1,5 @@
 <script>
-    import I18n from "i18n-js";
+    import I18n from "../locale/I18n";
     import {config, user} from "../stores/user";
     import {onMount} from "svelte";
     import Spinner from "../components/Spinner.svelte";
@@ -133,11 +133,11 @@
 <div class="poll-from-institution">
     <div class="inner">
         {#if timeOutReached}
-            <h2 class="header">{I18n.t("pollFromInstitution.timeOutReached")}</h2>
-            <p>{@html I18n.t("pollFromInstitution.timeOutReachedInfo")}</p>
+            <h2 class="header">{I18n.t("PollFromInstitution.TimeOutReached.COPY")}</h2>
+            <p>{@html I18n.t("PollFromInstitution.TimeOutReached.COPYInfo")}</p>
         {:else if loginStatus === status.NOT_LOGGED_IN}
             <Spinner relative={true} account={true}/>
-            <h3 class="header">{I18n.t("pollFromInstitution.header")}</h3>
+            <h3 class="header">{I18n.t("PollFromInstitution.Header.COPY")}</h3>
             <p>
                 <span>{@html I18n.t("pollFromInstitution.info", {email: DOMPurify.sanitize($user.email)})}</span>
                 <span>{I18n.t("pollFromInstitution.awaiting")}</span>
@@ -147,31 +147,31 @@
                     <div class="mail-client gmail">
                         <img src={gmail} alt="gmail" width="26px"
                              on:click={() => window.location.href="https://www.gmail.com"}/>
-                        <a href="https://www.gmail.com">{I18n.t("pollFromInstitution.openGMail")}</a>
+                        <a href="https://www.gmail.com">{I18n.t("PollFromInstitution.OpenGMail.COPY")}</a>
                     </div>
                     <div class="mail-client outlook">
                         <img src={outlook} alt="outlook"
                              on:click={() => window.location.href="https://outlook.live.com/owa/"}/>
-                        <a href="https://outlook.live.com/owa/">{I18n.t("pollFromInstitution.openOutlook")}</a>
+                        <a href="https://outlook.live.com/owa/">{I18n.t("PollFromInstitution.OpenOutlook.COPY")}</a>
                     </div>
                 </div>
             {/if}
             <div>
-                <span>{I18n.t("pollFromInstitution.spam")}</span>
+                <span>{I18n.t("PollFromInstitution.Spam.COPY")}</span>
             </div>
             <div class="resend-mail">
                 {#if allowedToResend}
-                    <span class="link" on:click={resendMail}>{I18n.t("pollFromInstitution.resend")}</span>
+                    <span class="link" on:click={resendMail}>{I18n.t("PollFromInstitution.Resend.COPY")}</span>
                     <a href="resend"
-                       on:click|preventDefault|stopPropagation={resendMail}>{I18n.t("pollFromInstitution.resendLink")}</a>
+                       on:click|preventDefault|stopPropagation={resendMail}>{I18n.t("PollFromInstitution.ResendLink.COPY")}</a>
                 {:else if mailHasBeenResend}
-                    <span>{I18n.t("pollFromInstitution.mailResend")}</span>
+                    <span>{I18n.t("PollFromInstitution.MailResend.COPY")}</span>
                 {/if}
 
             </div>
         {:else if loginStatus === status.LOGGED_IN_SAME_DEVICE}
-            <h3 class="header">{I18n.t("pollFromInstitution.loggedIn")}</h3>
-            <p>{@html I18n.t("pollFromInstitution.loggedInInfo")}</p>
+            <h3 class="header">{I18n.t("PollFromInstitution.LoggedIn.COPY")}</h3>
+            <p>{@html I18n.t("PollFromInstitution.LoggedInInfo.COPY")}</p>
         {/if}
     </div>
 </div>

@@ -3,7 +3,7 @@
     import shieldIcon from "../icons/redesign/shield-full.svg?raw";
     import chevronUpIcon from "../icons/chevron-up.svg?raw";
     import Button from "./Button.svelte";
-    import I18n from "i18n-js";
+    import I18n from "../locale/I18n";
     import critical from "../icons/critical.svg?raw";
     import LinkedInstitution from "./LinkedInstitution.svelte";
     import {institutionName} from "../utils/services";
@@ -29,7 +29,7 @@
     export let error = false;
     export let errorMessage;
     export let nameField = true;
-    export let saveLabel = I18n.t("edit.save");
+    export let saveLabel = I18n.t("Email.Save.COPY");
     export let manageVerifiedInformation;
     export let editHint;
 
@@ -207,7 +207,7 @@
                    bind:value={value}>
             <Button small={true}
                     className="cancel"
-                    label={I18n.t("edit.cancel")}
+                    label={I18n.t("YourVerifiedInformation.ConfirmRemoval.Button.Cancel.COPY")}
                     onClick={() => cancel()}/>
             <Button small={true}
                     label={saveLabel}

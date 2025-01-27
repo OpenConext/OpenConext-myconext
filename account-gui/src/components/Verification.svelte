@@ -1,5 +1,5 @@
 <script>
-    import I18n from "i18n-js";
+    import I18n from "../locale/I18n";
     import oneMoreThingEmpty from "../icons/onemorething_empty.svg?raw";
     import oneMoreThingFilled from "../icons/onemorething_filled.svg?raw";
     import DOMPurify from "dompurify";
@@ -33,7 +33,7 @@
     }
 </style>
 {#if verified}
-    <p class="info">{I18n.t("confirmStepup.conditionMet")}</p>
+    <p class="info">{I18n.t("ConfirmStepup.ConditionMet.COPY")}</p>
 {/if}
 <div class="conditions-container">
     <p class="conditions">

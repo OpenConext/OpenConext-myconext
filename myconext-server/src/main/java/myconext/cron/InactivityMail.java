@@ -71,7 +71,6 @@ public class InactivityMail {
         long fiveYearsInMillis = 5 * 365 * ONE_DAY_IN_MILLIS;
 
         long lastLoginBefore = nowInMillis - (ONE_DAY_IN_MILLIS * userInactivity.getInactivityDays());
-
         List<User> users = userRepository.findByLastLoginBeforeAndUserInactivityIn(lastLoginBefore,
                 this.userInactivitiesWithNullElement(userInactivity.getPreviousUserInactivity()));
 
