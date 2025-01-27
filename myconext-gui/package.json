@@ -46,7 +46,7 @@
     "@github/webauthn-json": "^2.1.1",
     "@picnicsupermarket/localicious": "^1.0.1",
     "dompurify": "^3.2.2",
-    "i18n-js": "^3.3.0",
+    "i18n-js": "^4.5.1",
     "js-cookie": "^3.0.5",
     "postcss": "^8.4.49",
     "sass": "^1.82.0",

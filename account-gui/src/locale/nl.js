@@ -1,6 +1,4 @@
-import I18n from "i18n-js";
-
-I18n.translations.nl = {
+const nl = {
     login: {
         requestEduId: "Geen eduID?",
         requestEduId2: "Maak het aan!",
@@ -438,3 +436,4 @@ I18n.translations.nl = {
         next: "Naar gegevens invullen"
     }
 };
+export default nl;

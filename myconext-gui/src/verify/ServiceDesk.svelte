@@ -1,5 +1,5 @@
 <script>
-    import I18n from "i18n-js";
+    import I18n from "../locale/I18n";
     import {flash, user} from "../stores/user";
     import Button from "../components/Button.svelte";
     import arrowLeftIcon from "../icons/verify/arrow-left.svg?raw";

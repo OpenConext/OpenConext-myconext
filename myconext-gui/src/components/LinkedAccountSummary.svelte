@@ -145,7 +145,7 @@
                             icon={preferredAccount ? personalInfo : null}
                             overrideShieldIcon={studentIcon}
                             readOnly={true}
-                            value={I18n.t("Profile.Student.COPYRole")}/>
+                            value={I18n.t("Profile.Student.COPY")}/>
         {/if}
 
         {#if (linkedAccount.idpScoping === "idin" || isEmpty(linkedAccountGivenName(linkedAccount))) &&

@@ -1,6 +1,4 @@
-import I18n from "i18n-js";
-
-I18n.translations.nl = {
+const nl = {
     sidebar: {
         home: "Home",
         personalInfo: "Persoonlijke info",
@@ -621,3 +619,4 @@ I18n.translations.nl = {
         },
     }
 };
+export default nl;

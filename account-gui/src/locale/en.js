@@ -1,4 +1,4 @@
-export const enTranslations =  {
+const en =  {
     login: {
         requestEduId: "No eduID?",
         requestEduId2: "Create one!",
@@ -437,3 +437,4 @@ export const enTranslations =  {
         next: "Open website to enter your name"
     }
 };
+export default en;

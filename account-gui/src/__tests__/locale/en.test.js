@@ -1,6 +1,6 @@
-import I18n from "i18n-js";
-import en from "../../locale/en";
-import nl from "../../locale/nl";
+// import I18n from "i18n-js";
+// import en from "../../locale/en";
+// import nl from "../../locale/nl";
 
 expect.extend({
     toContainKey(translation, key) {

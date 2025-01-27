@@ -1,6 +1,8 @@
 import en from "./js/en/strings.json";
 import nl from "./js/nl/strings.json";
 import {reportError} from "../api";
+import I18nLocal from "./I18nRemote";
+
 
 const translations = {
     en: en,
@@ -24,13 +26,19 @@ const format = (msg, ...args) => {
 let locale = "en"
 
 const I18n = {
-    changeLocale: lang => locale = lang,
+    changeLocale: lang => {
+        locale = lang;
+    },
     currentLocale: () => locale,
     t: (key, model = {}, fallback = null) => {
         const msg = translations[locale][key]
         if (!msg) {
             if (fallback) {
                 return fallback;
+            }
+            const oldTranslation = I18nLocal.t(key, model);
+            if (oldTranslation) {
+                return oldTranslation;
             }
             reportError({"Missing translation": `${key} in ${locale} translation`});
             return `[missing "${key}" translation]`;

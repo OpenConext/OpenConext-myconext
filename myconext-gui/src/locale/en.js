@@ -1,6 +1,4 @@
-import I18n from "i18n-js";
-
-I18n.translations.en = {
+ const en = {
     sidebar: {
         home: "Home",
         personalInfo: "Personal info",
@@ -621,3 +619,5 @@ I18n.translations.en = {
         }
     }
 };
+
+export default en;

@@ -1,4 +1,4 @@
-import {enTranslations} from "./en.js";
+import en from "./en";
 
 const parse = (dict, key, index, results = {}, stack = []) => {
     const value = dict[key];
@@ -16,8 +16,8 @@ const parse = (dict, key, index, results = {}, stack = []) => {
     }
 }
 const results = {};
-Object.keys(enTranslations).forEach((key, index) => {
-    parse(enTranslations, key, index, results);
+Object.keys(en).forEach((key, index) => {
+    parse(en, key, index, results);
 });
 
 console.log(results);

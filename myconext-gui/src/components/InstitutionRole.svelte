@@ -114,7 +114,7 @@
         {/if}
         </span>
         <div class="role">
-            <p>{affiliations || I18n.t("Profile.Student.COPYRole")}
+            <p>{affiliations || I18n.t("Profile.Student.COPY")}
                 {#if linkedAccount.expired}
                     <span class="expired">{` (${I18n.t("profile.expired")})`}</span>
                 {/if}
