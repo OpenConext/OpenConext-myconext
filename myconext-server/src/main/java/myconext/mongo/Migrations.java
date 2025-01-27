@@ -197,7 +197,7 @@ public class Migrations {
     @ChangeSet(order = "016", id = "alterUserLastLoginDate", author = "okke.harsta@surf.nl")
     public void alterUserLastLoginDate(MongockTemplate mongoTemplate) {
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd-MM-yyyy");
-        long startMillis = simpleDateFormat.parse("29-19-2024").getTime();
+        long startMillis = simpleDateFormat.parse("29-10-2024").getTime();
         Query query = new Query();
         query.addCriteria(Criteria.where("lastLogin").isNull());
         //Prevent to load everything into memory
