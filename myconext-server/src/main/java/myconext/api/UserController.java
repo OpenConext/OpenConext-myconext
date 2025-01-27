@@ -57,6 +57,7 @@ import java.lang.reflect.Field;
 import java.net.URLEncoder;
 import java.nio.charset.Charset;
 import java.security.SecureRandom;
+import java.time.Instant;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -1020,9 +1021,21 @@ public class UserController implements UserAuthentication {
     public ResponseEntity<ControlCode> createUserControlCode(Authentication authentication,
                                                              @RequestBody ControlCode controlCode) {
         User user = userFromAuthentication(authentication);
+        //First check if we need to clean up expired accounts
+        Instant nowInstant = new Date().toInstant();
+            List<LinkedAccount> linkedAccounts = user.getLinkedAccounts().stream()
+                    .filter(linkedAccount -> linkedAccount.getExpiresAt().toInstant().isAfter(nowInstant))
+                    .toList();
+        user.setLinkedAccounts(linkedAccounts);
+        List<ExternalLinkedAccount> externalLinkedAccounts = user.getExternalLinkedAccounts().stream()
+                .filter(linkedAccount -> linkedAccount.getExpiresAt().toInstant().isAfter(nowInstant))
+                .toList();
+        user.setExternalLinkedAccounts(externalLinkedAccounts);
+
         if (!user.getExternalLinkedAccounts().isEmpty() || !user.getLinkedAccounts().isEmpty()) {
             throw new ForbiddenException("User has already linked-accounts: " + user.getEmail());
         }
+
         String code = VerificationCodeGenerator.generateControlCode();
         //Very small chance, but better be safe than sorry (User#ControlCode#code is indexed)
         while (userRepository.findByControlCode_Code(code).isPresent()) {

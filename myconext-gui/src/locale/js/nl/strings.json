@@ -97,7 +97,7 @@
   "Profile.TrustedInfo.COPY": "Je eduID is nog niet gekoppeld aan een officiële partij.",
   "Profile.Link.COPY": "Koppel",
   "Profile.Institution.COPY": "Onderwijs- of onderzoeksinstelling",
-  "Profile.InstitutionAt.COPY": "Door ",
+  "Profile.InstitutionAt.COPY": "Door %1$s",
   "Profile.Employee.COPY": "Medewerker",
   "Profile.Affiliations.COPY": "Rol(len)",
   "Profile.Expires.COPY": "Koppeling verloopt",
