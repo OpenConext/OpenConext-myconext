@@ -5,13 +5,16 @@ import I18n from "../locale/I18n";
 import DOMPurify from "dompurify";
 import students from "../icons/chatgpt/openart-image_raw.jpg";
 import {LandingInfo} from "../components/LandingInfo";
+import {useAppStore} from "../stores/AppStore.js";
 
 export const Login = () => {
 
+    const {config} = useAppStore(state => state);
+
     const doLogin = () => {
-        const path = window.location.origin;
-        const encodedQueryParams = `target=${encodeURIComponent("/startSSO")}&redirect_url=${encodeURIComponent(path + "/home")}`
-        window.location.href = `${path}/Shibboleth.sso/Login?${encodedQueryParams}`;
+        window.location.href = `${config.loginUrl}?redirect_path=/`;
+        // const encodedQueryParams = `target=${encodeURIComponent("/startSSO")}&redirect_url=${encodeURIComponent(path + "/home")}`
+        // window.location.href = `${path}/Shibboleth.sso/Login?${encodedQueryParams}`;
     }
 
     return (

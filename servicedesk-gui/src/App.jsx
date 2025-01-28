@@ -3,7 +3,7 @@ import {Loader} from "@surfnet/sds";
 import './App.scss';
 import {Navigate, Route, Routes, useNavigate} from "react-router-dom";
 // import {useNavigate} from "react-router-dom";
-import {configuration} from "./api/index.js";
+import {configuration, me} from "./api/index.js";
 import {useAppStore} from "./stores/AppStore.js";
 import {Flash} from "./components/Flash.jsx";
 import {Header} from "./components/Header.jsx";
@@ -23,16 +23,21 @@ const App = () => {
 
     useEffect(() => {
         configuration().then(res => {
-            useAppStore.setState(() => ({config: res, authenticated: res.authenticated, user: res.user}));
-            setLoading(false);
-            setIsAuthenticated(res.authenticated);
-            if (res.authenticated && res.user?.serviceDeskMember) {
-                navigate("/home")
-            } else if (res.authenticated && !res.user)
-                navigate("/not-found")
-            else {
-                navigate("/login")
-            }
+            me()
+                .then(js => {
+                    console.log(JSON.stringify(js))
+                    useAppStore.setState(() => ({config: res, authenticated: res.authenticated, user: res.user}));
+                    setLoading(false);
+                    setIsAuthenticated(res.authenticated);
+                    if (res.authenticated && res.user?.serviceDeskMember) {
+                        navigate("/home")
+                    } else if (res.authenticated && !res.user)
+                        navigate("/not-found")
+                    else {
+                        navigate("/login")
+                    }
+
+            }).catch(e => navigate("/login"));
         });
 
     }, []);
