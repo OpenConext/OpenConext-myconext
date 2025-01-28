@@ -25,8 +25,8 @@ const App = () => {
             .then(res => {
                 useAppStore.setState(() => ({user: res}));
                 setLoading(false);
-                setIsAuthenticated(true);
                 if (res.serviceDeskMember) {
+                    setIsAuthenticated(true);
                     navigate("/home");
                 } else {
                     navigate("/404");
