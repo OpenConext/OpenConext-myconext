@@ -37,7 +37,10 @@ const App = () => {
                         navigate("/login")
                     }
 
-            }).catch(e => navigate("/login"));
+            }).catch(e => {
+                setLoading(false);
+                navigate("/login");
+            });
         });
 
     }, []);
