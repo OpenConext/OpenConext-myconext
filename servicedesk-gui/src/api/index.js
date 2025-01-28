@@ -68,18 +68,12 @@ export function me() {
     return fetchJson("/myconext/api/sp/me");
 }
 
-export function forgetMe() {
-    return fetchDelete("/myconext/api/sp/forget");
-}
-
 export function logout() {
     const fetchOptions = {
         credentials: "same-origin",
         redirect: "manual"
     };
-    return forgetMe().then(() =>
-        fetchJson("/myconext/api/sp/logout").then(() => fetch("/Shibboleth.sso/Logout", fetchOptions))
-    );
+    return fetchJson("/myconext/api/sp/logout").then(() => fetch("/Shibboleth.sso/Logout", fetchOptions));
 }
 
 //Service Desk

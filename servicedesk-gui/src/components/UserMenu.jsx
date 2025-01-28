@@ -16,8 +16,8 @@ export const UserMenu = ({user}) => {
     const logoutUser = e => {
         stopEvent(e);
         logout().then(() => {
-            useAppStore.setState(() => ({breadcrumbPath: []}));
-            navigate("/login", {state: "force"});
+            useAppStore.setState(() => ({breadcrumbPath: [], user: {}, controlCode: {}}));
+            navigate("/login");
             setTimeout(() =>
                 useAppStore.setState(() => ({user: null, breadcrumbPath: []})), 125);
         });
