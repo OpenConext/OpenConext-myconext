@@ -3,18 +3,14 @@ import {Button, ButtonSize, ButtonType} from "@surfnet/sds";
 import './Login.scss';
 import I18n from "../locale/I18n";
 import DOMPurify from "dompurify";
-import students from "../icons/chatgpt/openart-image_raw.jpg";
+import Frontdesk from "../icons/frontdesk.svg";
 import {LandingInfo} from "../components/LandingInfo";
-import {useAppStore} from "../stores/AppStore.js";
 
 export const Login = () => {
 
-    const {config} = useAppStore(state => state);
-
     const doLogin = () => {
-        window.location.href = `${config.loginUrl}?redirect_path=/`;
-        // const encodedQueryParams = `target=${encodeURIComponent("/startSSO")}&redirect_url=${encodeURIComponent(path + "/home")}`
-        // window.location.href = `${path}/Shibboleth.sso/Login?${encodedQueryParams}`;
+        const path = window.location.origin;
+        window.location.href = `${path}/Shibboleth.sso/Login?target=/`;
     }
 
     return (
@@ -22,7 +18,7 @@ export const Login = () => {
             <div className="mod-login-container">
                 <div className="mod-login">
                     <div className="header-left">
-                        <h2 className={"header-title"}
+                        <h1 className={"header-title"}
                             dangerouslySetInnerHTML={{__html: DOMPurify.sanitize(I18n.t("landing.header.title"))}}/>
                         <Button onClick={() => doLogin()}
                                 txt={I18n.t("landing.header.login")}
@@ -32,7 +28,7 @@ export const Login = () => {
                            dangerouslySetInnerHTML={{__html: DOMPurify.sanitize(I18n.t("landing.header.sup"))}}/>
                     </div>
                     <div className="header-right">
-                        <img className="screen" src={students} alt="logo"/>
+                        <Frontdesk/>
                     </div>
                 </div>
             </div>

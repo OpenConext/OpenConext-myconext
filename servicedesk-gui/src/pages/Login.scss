@@ -17,7 +17,7 @@
         }
 
         .header-title {
-            margin-bottom: 60px;
+            margin-bottom: 40px;
         }
 
         &.bottom {
@@ -91,10 +91,13 @@
                     margin: 25px auto;
                 }
 
-                img {
-                    width: 240px;
+                svg {
+                    width: 160px;
                     height: auto;
                     border-radius: $br;
+                    color: var(--sds--color--blue--400);
+                    padding: 15px;
+                    border: 1px solid var(--sds--color--blue--400);
 
                     @media (max-width: $medium) {
                         width: 180px;
