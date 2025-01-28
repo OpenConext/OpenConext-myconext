@@ -19,7 +19,7 @@ export const UserMenu = ({user}) => {
             useAppStore.setState(() => ({breadcrumbPath: []}));
             navigate("/login", {state: "force"});
             setTimeout(() =>
-                useAppStore.setState(() => ({user: null, breadcrumbPath: []})), 500);
+                useAppStore.setState(() => ({user: null, breadcrumbPath: []})), 125);
         });
     }
 

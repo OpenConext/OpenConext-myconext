@@ -2,8 +2,7 @@ import React, {useEffect, useState} from 'react'
 import {Loader} from "@surfnet/sds";
 import './App.scss';
 import {Navigate, Route, Routes, useNavigate} from "react-router-dom";
-// import {useNavigate} from "react-router-dom";
-import {configuration, me} from "./api/index.js";
+import {me} from "./api/index.js";
 import {useAppStore} from "./stores/AppStore.js";
 import {Flash} from "./components/Flash.jsx";
 import {Header} from "./components/Header.jsx";
@@ -22,25 +21,19 @@ const App = () => {
     const navigate = useNavigate();
 
     useEffect(() => {
-        configuration().then(res => {
-            me()
-                .then(js => {
-                    console.log(JSON.stringify(js))
-                    useAppStore.setState(() => ({config: res, authenticated: res.authenticated, user: res.user}));
-                    setLoading(false);
-                    setIsAuthenticated(res.authenticated);
-                    if (res.authenticated && res.user?.serviceDeskMember) {
-                        navigate("/home")
-                    } else if (res.authenticated && !res.user)
-                        navigate("/not-found")
-                    else {
-                        navigate("/login")
-                    }
-
-            }).catch(e => {
+        me()
+            .then(res => {
+                useAppStore.setState(() => ({user: res}));
+                setLoading(false);
+                setIsAuthenticated(true);
+                if (res.serviceDeskMember) {
+                    navigate("/home");
+                } else {
+                    navigate("/not-found");
+                }
+            }).catch(() => {
                 setLoading(false);
                 navigate("/login");
-            });
         });
 
     }, []);
@@ -59,7 +52,6 @@ const App = () => {
                     <Routes>
                         <Route path="/" element={<Navigate replace to="home"/>}/>
                         <Route path="home/:tab?" element={<Home/>}/>
-                        <Route path="login" element={<Login/>}/>
                         <Route path="refresh-route/:path" element={<RefreshRoute/>}/>
                         <Route path="*" element={<NotFound/>}/>
                     </Routes>}

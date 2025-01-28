@@ -1,9 +1,6 @@
 import {create} from 'zustand'
 
 export const useAppStore = create(set => ({
-    authenticated: false,
-    reload: false,
-    config: {},
     user: {},
     controlCode: {},
     flash: {msg: "", className: "hide", type: "info"},

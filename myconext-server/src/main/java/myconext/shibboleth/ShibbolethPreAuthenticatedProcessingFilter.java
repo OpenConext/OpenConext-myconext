@@ -67,7 +67,10 @@ public class ShibbolethPreAuthenticatedProcessingFilter extends AbstractPreAuthe
         String familyName = getHeader(SHIB_SUR_NAME, request);
 
         boolean valid = Stream.of(uid, schacHomeOrganization, email, givenName, familyName).allMatch(StringUtils::hasText);
-        if (!valid) {
+        if (valid) {
+            LOG.info(String.format("Required attribute(s) present in shib headers: uid '%s', schacHomeOrganization '%s', givenName '%s', familyName '%s', email '%s'",
+                    uid, schacHomeOrganization, givenName, familyName, email));
+        } else {
             //this is the contract. See AbstractPreAuthenticatedProcessingFilter#doAuthenticate
             LOG.warn(String.format("Missing required attribute(s): uid '%s', schacHomeOrganization '%s', givenName '%s', familyName '%s', email '%s'",
                     uid, schacHomeOrganization, givenName, familyName, email));
