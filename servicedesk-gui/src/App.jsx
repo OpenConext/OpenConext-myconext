@@ -29,7 +29,7 @@ const App = () => {
                 if (res.serviceDeskMember) {
                     navigate("/home");
                 } else {
-                    navigate("/not-found");
+                    navigate("/404");
                 }
             }).catch(() => {
                 setLoading(false);
