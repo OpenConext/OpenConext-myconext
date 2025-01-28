@@ -8,6 +8,7 @@ export const conf = writable({
     eduIDWebAuthnRedirectSpUrl: "",
     featureWebAuthn: false,
     featureAllowList: false,
+    idpBaseUrl: "",
     featureWarningEducationalEmailDomain: false,
     featureIdVerify: false,
     emailSpamThresholdSeconds: 5,
