@@ -70,8 +70,19 @@ cd myconext-gui
 yarn install
 yarn dev
 ```
-
 There is no home page, you'll need to visit an SP and choose eduID to login.
+
+### The servicdedesk-gui
+
+The myconext service desk is also build with Svelte and to get initially started:
+
+```
+cd servicdedesk-gui
+yarn install
+yarn dev
+```
+
+Browse to the [application homepage](http://localhost:3002/).
 
 ### Build
 
