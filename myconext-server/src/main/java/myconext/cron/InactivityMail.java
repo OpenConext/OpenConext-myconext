@@ -96,7 +96,7 @@ public class InactivityMail {
                 userRepository.save(user);
             });
         }
-        LOG.info(String.format("Mailed %s users who has been inactive for %s period in for %s ms, dry run: ",
+        LOG.info(String.format("Mailed %s users who has been inactive for %s period in for %s ms, dry run: %s",
                 users.size(), userInactivity, System.currentTimeMillis() - nowInMillis, dryRunEmail));
     }
 
