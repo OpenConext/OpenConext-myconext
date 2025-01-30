@@ -93,6 +93,7 @@ jobs:
         token: ${{ secrets.GITHUB_TOKEN }}
         fail_on_unmatched_files: true
         generate_release_notes: true
+        prerelease: true
       if: ${{!( endsWith(steps.versioncheck.outputs.version, '-SNAPSHOT')) }}
 
     - name: Set up Docker Buildx
