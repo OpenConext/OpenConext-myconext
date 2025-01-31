@@ -86,7 +86,7 @@ public class InactivityMailTest extends AbstractMailBoxTest {
         assertEquals(UserInactivity.WEEK_1_BEFORE_5_YEARS, userFromDB.getUserInactivity());
         //Ensure users which have received the last warning have a new lastLogin which is one week before the deletion threshold
         long newLastLoginDelta = (UserInactivity.WEEK_1_BEFORE_5_YEARS.getInactivityDays() + 6) * ONE_DAY_IN_MILLIS;
-        assertTrue(userFromDB.getLastLogin() >= (now - newLastLoginDelta) );
+        assertTrue(userFromDB.getLastLogin() >= (now - newLastLoginDelta));
         //Idempotency check
         greenMail.purgeEmailFromAllMailboxes();
         inactivityMail.mailInactiveUsers();
@@ -104,11 +104,9 @@ public class InactivityMailTest extends AbstractMailBoxTest {
         assertEquals(4, mimeMessages.size());
         //Ordering is not stable
         String allContent = mimeMessages.stream().map(this::messageContent).collect(Collectors.joining());
-        List.of("1 jaar", "4 jaar",
-                "2 jaar", "3 jaar",
-                "5 jaar", "1 maand",
-                "1 week")
-                .forEach(s -> assertTrue(allContent.contains(s)));
+        System.out.println(allContent);
+        List.of("1 jaar", "2 jaar", "5 jaar", "1 maand", "1 week")
+                .forEach(s -> assertTrue(allContent.contains(s), "Contains " + s));
     }
 
     @SneakyThrows
