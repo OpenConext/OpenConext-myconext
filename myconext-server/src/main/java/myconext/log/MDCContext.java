@@ -15,7 +15,7 @@ public class MDCContext {
                 "result", "ok",
                 "tag", "myconext_loginstats",
                 "userid", user.getEmail()));
-        log.info(String.format("%S %s", message, user.getEmail()));
+        log.info(String.format("%S %s %s", message, user.getEmail(), user.getId()));
     }
 
 
@@ -26,7 +26,7 @@ public class MDCContext {
                 "result", success ? "ok" : "error",
                 "tag", "myconext_loginstats",
                 "userid", user.getEmail()));
-        log.info(String.format("%S %s", message, user.getEmail()));
+        log.info(String.format("%S %s %s", message, user.getEmail(), user.getId()));
     }
 
 }
