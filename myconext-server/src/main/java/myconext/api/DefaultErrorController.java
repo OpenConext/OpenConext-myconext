@@ -56,11 +56,11 @@ public class DefaultErrorController implements ErrorController {
             statusCode = result.containsKey("status") && (int) result.get("status") != 999 ?
                     HttpStatus.valueOf((int) result.get("status")) : INTERNAL_SERVER_ERROR;
         } else {
-            if (error instanceof UserNotFoundException) {
-                LOG.warn(String.format("%s: %s", error.getClass(), error.getMessage()));
-            } else {
+//            if (error instanceof UserNotFoundException) {
+//                LOG.warn(String.format("%s: %s", error.getClass(), error.getMessage()));
+//            } else {
                 LOG.error(String.format("Error occurred; %s %s", error.getClass(), error), error);
-            }
+//            }
             //https://github.com/spring-projects/spring-boot/issues/3057
             ResponseStatus annotation = AnnotationUtils.getAnnotation(error.getClass(), ResponseStatus.class);
             statusCode = annotation != null ? annotation.value() : BAD_REQUEST;
