@@ -44,6 +44,7 @@ import java.security.MessageDigest;
 import java.time.Instant;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.function.Function;
 
 import static myconext.crypto.HashGenerator.hash;
 import static myconext.log.MDCContext.logWithContext;
@@ -529,22 +530,34 @@ public class TiqrController implements UserAuthentication {
     @PostMapping(value = "/authentication", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
     @Hidden
     public ResponseEntity<Object> doAuthentication(@ModelAttribute AuthenticationData authenticationData) {
-        String userId = authenticationData.getUserId();
-        User user = userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException(userId));
+        String metaDataIdentity = authenticationData.getUserId();
+        /*
+         * This used to be the userID, but in https://github.com/OpenConext/OpenConext-myconext/issues/552 this has
+         * changed to the registrationID. We need to try them both to be backwards compatible
+         */
+        Optional<Registration> optionalRegistration = registrationRepository.findById(metaDataIdentity);
+        Optional<User> optionalUser = optionalRegistration
+                .map(registration -> userRepository.findById(registration.getUserId()))
+                .flatMap(Function.identity());
+        User user = optionalUser
+                .orElseGet(() -> userRepository.findById(metaDataIdentity)
+                        .orElseThrow(() -> new UserNotFoundException("User not found with authenticationData#userId:" + metaDataIdentity)));
+
         if (!rateLimitEnforcer.isUserAllowedTiqrVerification(user)) {
             return ResponseEntity.ok("ERROR");
         }
         try {
             tiqrService.postAuthentication(authenticationData);
 
-            LOG.debug("Successful authentication for user " + userId);
+            LOG.debug(String.format("Successful authentication for user %s, %s" ,user.getEmail(), user.getId()));
 
             rateLimitEnforcer.unsuspendUserAfterTiqrSuccess(user);
             return ResponseEntity.ok("OK");
         } catch (TiqrException | RuntimeException e) {
             //Do not show stacktrace
-            LOG.error(String.format("Exception during authentication for user %s, message %s",
-                    userId,
+            LOG.error(String.format("Exception during authentication for user %s, %s message %s",
+                    user.getEmail(),
+                    user.getId(),
                     e.getMessage()));
             rateLimitEnforcer.suspendUserAfterTiqrFailure(user);
             try {

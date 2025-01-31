@@ -309,7 +309,16 @@ public class TiqrControllerTest extends AbstractIntegrationTest {
     }
 
     @Test
-    public void startAuthentication() throws Exception {
+    public void startAuthenticationWithRegistrationID() throws Exception {
+        doStartAuthentication(true);
+    }
+
+    @Test
+    public void startAuthenticationBackwardCompatibleWithUserID() throws Exception {
+        doStartAuthentication(false);
+    }
+
+    private void doStartAuthentication(boolean useRegistrationId) throws Exception {
         SamlAuthenticationRequest samlAuthenticationRequest = doEnrollmment(true);
 
         Map<String, Object> results = given()
@@ -338,10 +347,11 @@ public class TiqrControllerTest extends AbstractIntegrationTest {
         String decryptedSecret = this.decryptRegistrationSecret(registration.getSecret());
         String ocra = OCRA.generateOCRA(decryptedSecret, authentication.getChallenge(), sessionKey);
 
+        String userId = useRegistrationId ? registration.getId() : samlAuthenticationRequest.getUserId();
         given()
                 .contentType(ContentType.URLENC)
                 .formParam("sessionKey", sessionKey)
-                .formParam("userId", samlAuthenticationRequest.getUserId())
+                .formParam("userId", userId)
                 .formParam("response", ocra)
                 .formParam("language", "en")
                 .formParam("operation", "login")

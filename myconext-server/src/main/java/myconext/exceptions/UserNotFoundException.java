@@ -12,6 +12,6 @@ public class UserNotFoundException extends AbstractBaseException {
 
     @Override
     protected boolean suppressStackTrace() {
-        return true;
+        return false;
     }
 }
