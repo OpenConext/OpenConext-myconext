@@ -17,7 +17,7 @@ export const Header = () => {
                           position={LogoType.Bottom}
                           color={LogoColor.White}/>
                 </Link>
-                {user &&
+                {(user && user.serviceDeskMember) &&
                     <UserMenu user={user}
                               actions={[]}
                     />

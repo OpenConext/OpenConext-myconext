@@ -58,8 +58,8 @@ const App = () => {
                     </Routes>}
                 {!isAuthenticated &&
                     <Routes>
-                        <Route path="/" element={<Navigate replace to="login"/>}/>
-                        <Route path="/home" element={<Navigate replace to="login"/>}/>
+                        <Route path="/" element={<Navigate replace to="404"/>}/>
+                        <Route path="/404" element={<NotFound/>}/>
                         <Route path="/login" element={<Login/>}/>
                         <Route path="/*" element={<NotFound/>}/>
                     </Routes>}
