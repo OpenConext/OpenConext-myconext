@@ -74,8 +74,12 @@ const Control = ({restart, proceed}) => {
                 setLoading(false);
                 e.response.json().then(j => {
                     setError(j);
+                    window.scrollTo({
+                        top: 0,
+                        left: 0,
+                        behavior: "smooth",
+                    });
                 });
-
             });
     }
 

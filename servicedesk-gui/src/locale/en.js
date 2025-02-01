@@ -49,7 +49,7 @@ const en = {
         header: "Identity control for code: ",
         restart: "Start again",
         proceed: "Ready",
-        error: "An unexpected error has occurred. Please contact <a href='mailto:servicedesk@surf.nl>?subject=Reference {{reference}}'>SURF ServiceDesk</a>",
+        error: "An unexpected error has occurred. Please contact <a href='mailto:servicedesk@surf.nl?subject=Reference {{reference}}'>SURF ServiceDesk</a>",
         info: "Control the ID of this user",
         validDocuments: "Valid documents: passports, EEA ID cards, Dutch driving licenses and Dutch residence permits",
         inValidDocuments: "Copies, public transport tickets and student cards are not valid documents",
