@@ -269,6 +269,13 @@
             copyServerInformation(res);
             showControlCode = !isEmpty(res.controlCode);
         });
+    }
+
+    const cancelVerifyChoice = () => {
+        me().then(res => {
+            copyServerInformation(res);
+            resetModalsAndQueryParams();
+        });
 
     }
 
@@ -677,7 +684,7 @@
                       showIdinOptions={showIdinOptions}
                       showServiceDesk={serviceDeskStart}
                       showControlCode={showControlCode}
-                      cancel={() => resetModalsAndQueryParams()}/>
+                      cancel={() => cancelVerifyChoice()}/>
     </Modal>
 {/if}
 
