@@ -76,6 +76,7 @@ const en = {
         privacy: "Privacy policy",
         privacyLink: "https://support.surfconext.nl/privacy-en",
         surfLink: "https://surf.nl",
+        select_locale: "Select your preferred language"
     },
 
 }
