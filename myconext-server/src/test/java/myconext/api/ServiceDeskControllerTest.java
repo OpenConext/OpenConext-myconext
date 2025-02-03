@@ -7,9 +7,9 @@ import myconext.model.User;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
-import java.time.Instant;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
@@ -20,7 +20,8 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
         properties = {
-                "service_desk_role_auto_provisioning=True"
+                "service_desk_role_auto_provisioning=True",
+                "feature.service_desk_active=False"
         })
 class ServiceDeskControllerTest extends AbstractIntegrationTest {
 
@@ -128,5 +129,18 @@ class ServiceDeskControllerTest extends AbstractIntegrationTest {
                 .put("/myconext/api/servicedesk/approve")
                 .then()
                 .statusCode(403);
+    }
+
+    @Test
+    void createUserControlCode() {
+        clearExternalAccounts("jdoe@example.com");
+        ControlCode controlCode = new ControlCode("Lee", "Harpers", "01 Mar 1977");
+        given()
+                .body(controlCode)
+                .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+                .when()
+                .post("/myconext/api/sp/control-code")
+                .then()
+                .statusCode(HttpStatus.FORBIDDEN.value());
     }
 }

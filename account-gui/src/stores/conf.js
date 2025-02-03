@@ -11,6 +11,7 @@ export const conf = writable({
     idpBaseUrl: "",
     featureWarningEducationalEmailDomain: false,
     featureIdVerify: false,
+    featureServiceDeskActive: false,
     emailSpamThresholdSeconds: 5,
     mobileAppRedirect: ""
 });

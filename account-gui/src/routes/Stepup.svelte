@@ -94,6 +94,7 @@
                           id={id}
                           showInstitutionOption={!isExternalNameValidation}
                           serviceName={serviceName}
+                          serviceDeskActive={$conf.featureServiceDeskActive}
             />
         {:else}
             <h2>{I18n.t("Stepup.Header.COPY")}</h2>

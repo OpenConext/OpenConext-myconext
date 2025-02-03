@@ -105,6 +105,7 @@ public class UserController implements UserAuthentication {
     private final List<VerifyIssuer> issuers;
     //For now, hardcode the not known issuers from test
     private final List<String> unknownIssuers = List.of("CURRNL2A");
+    private final boolean serviceDeskActive;
 
     public UserController(UserRepository userRepository,
                           UserCredentialRepository userCredentialRepository,
@@ -128,6 +129,7 @@ public class UserController implements UserAuthentication {
                           @Value("${rp_id}") String rpId,
                           @Value("${feature.default_remember_me}") boolean featureDefaultRememberMe,
                           @Value("${feature.send_js_exceptions}") boolean sendJsExceptions,
+                          @Value("${feature.service_desk_active}") boolean serviceDeskActive,
                           @Value("${verify.issuers_path}") Resource issuersResource,
                           ServicesConfiguration servicesConfiguration) throws IOException {
         this.userRepository = userRepository;
@@ -153,6 +155,7 @@ public class UserController implements UserAuthentication {
         this.emailGuessingPreventor = new EmailGuessingPrevention(emailGuessingSleepMillis);
         this.featureDefaultRememberMe = featureDefaultRememberMe;
         this.sendJsExceptions = sendJsExceptions;
+        this.serviceDeskActive = serviceDeskActive;
 
         List<IdinIssuers> idinIssuers = objectMapper.readValue(issuersResource.getInputStream(), new TypeReference<>() {
         });
@@ -1012,20 +1015,23 @@ public class UserController implements UserAuthentication {
 
     @Operation(summary = "Create verification control code password link",
             description = """
-            Create a verification control code which users can use to prove their identity at the Service Desk. The
-            code is also send by email to the user. The required field are firstName,  lastName and dayOfBirth.
-            There are no input validations, if the user's dayOfBirth can not be parsed, then this is solved in
-            the approval proces in the Serivce Desk
-            """)
+                    Create a verification control code which users can use to prove their identity at the Service Desk. The
+                    code is also send by email to the user. The required field are firstName,  lastName and dayOfBirth.
+                    There are no input validations, if the user's dayOfBirth can not be parsed, then this is solved in
+                    the approval proces in the Serivce Desk
+                    """)
     @PostMapping("sp/control-code")
     public ResponseEntity<ControlCode> createUserControlCode(Authentication authentication,
                                                              @RequestBody ControlCode controlCode) {
         User user = userFromAuthentication(authentication);
+        if (!this.serviceDeskActive) {
+            throw new ForbiddenException("ServiceDesk is not active. Foul play by " + user.getEmail());
+        }
         //First check if we need to clean up expired accounts
         Instant nowInstant = new Date().toInstant();
-            List<LinkedAccount> linkedAccounts = user.getLinkedAccounts().stream()
-                    .filter(linkedAccount -> linkedAccount.getExpiresAt().toInstant().isAfter(nowInstant))
-                    .toList();
+        List<LinkedAccount> linkedAccounts = user.getLinkedAccounts().stream()
+                .filter(linkedAccount -> linkedAccount.getExpiresAt().toInstant().isAfter(nowInstant))
+                .toList();
         user.setLinkedAccounts(linkedAccounts);
         List<ExternalLinkedAccount> externalLinkedAccounts = user.getExternalLinkedAccounts().stream()
                 .filter(linkedAccount -> linkedAccount.getExpiresAt().toInstant().isAfter(nowInstant))
@@ -1058,8 +1064,8 @@ public class UserController implements UserAuthentication {
 
     @Operation(summary = "Delete existing verification control code",
             description = """
-            Delete an existing verification control code for a user
-            """)
+                    Delete an existing verification control code for a user
+                    """)
     @DeleteMapping("sp/control-code")
     public ResponseEntity<UserResponse> deleteUserControlCode(Authentication authentication) {
         User user = userFromAuthentication(authentication);

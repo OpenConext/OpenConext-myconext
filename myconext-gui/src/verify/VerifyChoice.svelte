@@ -209,9 +209,11 @@
                             onClick={() => proceed(addEuropean)}/>
                 </div>
             </div>
-            <div class="choice-container other-options" on:click={() => showServiceDesk = !showServiceDesk}>
-                <p>{I18n.t("verify.modal.info.cantUse")}</p>
-            </div>
+            {#if $config.featureServiceDeskActive}
+                <div class="choice-container other-options" on:click={() => showServiceDesk = !showServiceDesk}>
+                    <p>{I18n.t("verify.modal.info.cantUse")}</p>
+                </div>
+            {/if}
         {/if}
     {/if}
     {#if showBankOptions && !busyProcessing && !showServiceDesk && !showControlCode}

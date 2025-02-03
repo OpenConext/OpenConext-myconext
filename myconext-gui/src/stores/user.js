@@ -38,6 +38,7 @@ export const config = writable({
     featureDefaultRememberMe: false,
     featureWarningEducationalEmailDomain: false,
     featureIdVerify: false,
+    featureServiceDeskActive: false,
     createEduIDInstitutionEnabled: false,
     expirationNonValidatedDurationDays: 0
 });

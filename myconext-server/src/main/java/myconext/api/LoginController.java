@@ -75,7 +75,8 @@ public class LoginController {
                            @Value("${email_spam_threshold_seconds}") long emailSpamThresholdSeconds,
                            @Value("${linked_accounts.expiry-duration-days-non-validated}") long expirationNonValidatedDurationDays,
                            @Value("${mobile_app_redirect}") String mobileAppRedirect,
-                           @Value("${feature.id_verify}") boolean idVerify
+                           @Value("${feature.id_verify}") boolean idVerify,
+                           @Value("${feature.service_desk_active}") boolean serviceDeskActive
     ) {
         this.config.put("basePath", basePath);
         this.config.put("loginUrl", basePath + "/login");
@@ -100,6 +101,7 @@ public class LoginController {
         this.config.put("expirationNonValidatedDurationDays", expirationNonValidatedDurationDays);
         this.config.put("mobileAppRedirect", mobileAppRedirect);
         this.config.put("featureIdVerify", idVerify);
+        this.config.put("featureServiceDeskActive", serviceDeskActive);
         this.secureCookie = secureCookie;
         this.userRepository = userRepository;
         this.authenticationRequestRepository = authenticationRequestRepository;

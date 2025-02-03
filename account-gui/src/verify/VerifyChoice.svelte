@@ -18,6 +18,7 @@
     export let addEuropean;
     export let issuers = [];
     export let showInstitutionOption = true;
+    export let serviceDeskActive;
     export let serviceName;
 
     let showOtherOptions = false;
@@ -220,9 +221,11 @@
                             onClick={() => proceed(addEuropean)}/>
                 </div>
             </div>
-            <div class="choice-container other-options" on:click={() => showServiceDesk = !showServiceDesk}>
-                <p>{I18n.t("verify.modal.info.cantUse")}</p>
-            </div>
+            {#if serviceDeskActive}
+                <div class="choice-container other-options" on:click={() => showServiceDesk = !showServiceDesk}>
+                    <p>{I18n.t("verify.modal.info.cantUse")}</p>
+                </div>
+            {/if}
         {/if}
     {/if}
     {#if showBankOptions && !busyProcessing && !showServiceDesk}

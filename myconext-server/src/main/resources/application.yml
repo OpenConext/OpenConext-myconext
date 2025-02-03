@@ -117,6 +117,9 @@ feature:
   mail_inactivity_mails: True
   # Do we mail users who have not installed the eduID app
   nudge_app_mail: True
+  # Set to true if the servicedesk is fully operational (e.g. show the user the control-code option)
+  service_desk_active: true
+
 secure_cookie: false
 idp_entity_id: https://localhost.surf.id
 private_key_path: classpath:/myconext.pem
