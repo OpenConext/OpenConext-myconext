@@ -253,6 +253,7 @@ public class AttributeMapper {
                         //boolean external
                         true
                 );
+        externalLinkedAccount.setDocumentId(controlCode.getDocumentId());
         externalLinkedAccount.setPreferred(true);
         return externalLinkedAccount;
     }

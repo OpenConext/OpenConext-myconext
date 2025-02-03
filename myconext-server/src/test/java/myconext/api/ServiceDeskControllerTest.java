@@ -74,6 +74,7 @@ class ServiceDeskControllerTest extends AbstractIntegrationTest {
                 .get("/myconext/api/servicedesk/user/{code}")
                 .as(ControlCode.class);
         controlCode.setDayOfBirth("11 Mar 1987");
+        controlCode.setDocumentId("QWERTY");
 
         given()
                 .when()
@@ -88,6 +89,8 @@ class ServiceDeskControllerTest extends AbstractIntegrationTest {
         assertNull(user.getControlCode());
 
         ExternalLinkedAccount externalLinkedAccount = user.getExternalLinkedAccounts().getFirst();
+        assertEquals(controlCode.getDocumentId(), externalLinkedAccount.getDocumentId());
+
         DateTimeFormatter dateTimeFormatter = new DateTimeFormatterBuilder().appendPattern("dd-MM-yyyy").toFormatter();
         ZonedDateTime dateOfBirth = externalLinkedAccount.getDateOfBirth().toInstant().atZone(ZoneId.systemDefault());
         //See myconext-server/src/test/resources/users.json

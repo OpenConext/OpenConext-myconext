@@ -21,7 +21,7 @@ public class ControlCode implements Serializable {
     @Setter
     @Indexed
     private String code;
-
+    @Setter
     private String documentId;
     @Setter
     private long createdAt;

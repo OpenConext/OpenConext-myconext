@@ -9,6 +9,7 @@
     import {
         deleteLinkedAccount,
         iDINIssuers,
+        me,
         preferLinkedAccount,
         startLinkAccountFlow,
         startVerifyAccountFlow,
@@ -69,13 +70,8 @@
         if (showConfirmation) {
             showPreferredInstitutionModal = true;
         } else {
-            preferLinkedAccount(preferredInstitution).then(json => {
-                for (let key in json) {
-                    if (json.hasOwnProperty(key)) {
-                        $user[key] = json[key];
-                        refresh();
-                    }
-                }
+            preferLinkedAccount(preferredInstitution).then(res => {
+                copyServerInformation(res);
                 resetModalsAndQueryParams();
                 flash.setValue(I18n.t("profile.preferred", {name: institutionName(linkedAccount)}));
             });
@@ -108,14 +104,9 @@
         if (showConfirmation) {
             showDeleteInstitutionModal = true;
         } else {
-            deleteLinkedAccount(linkedAccount).then(json => {
+            deleteLinkedAccount(linkedAccount).then(res => {
                 showDeleteInstitutionModal = false;
-                for (let key in json) {
-                    if (json.hasOwnProperty(key)) {
-                        $user[key] = json[key];
-                        refresh();
-                    }
-                }
+                copyServerInformation(res);
                 flash.setValue(I18n.t("Institution.Deleted.COPY", {name: institutionName(linkedAccount)}));
             });
         }
@@ -262,6 +253,24 @@
             showModal = true;
         }
     });
+
+    const copyServerInformation = res => {
+        for (let key in res) {
+            if (res.hasOwnProperty(key)) {
+                $user[key] = res[key];
+            }
+        }
+        $user.controlCode = res.controlCode;
+        refresh();
+    }
+
+    const refreshControlCode = () => {
+        me().then(res => {
+            copyServerInformation(res);
+            showControlCode = !isEmpty(res.controlCode);
+        });
+
+    }
 
 </script>
 
@@ -556,7 +565,7 @@
                 <p class="banner-info">{I18n.t("ServiceDesk.ControlCode.Banner.COPY")}</p>
                 <Button label={I18n.t("ServiceDesk.ControlCode.ShowCode.COPY")}
                         className="ghost transparent"
-                        onClick={() => showControlCode = true}/>
+                        onClick={() => refreshControlCode()}/>
             </div>
         {/if}
         <div class="inner-container second">
@@ -658,17 +667,17 @@
 
 {#if showModal || showControlCode}
     <Modal close={() => resetModalsAndQueryParams()}
-    title={showIdinOptions ? I18n.t("WelcomeToApp.VerifyYour.Highlight.COPY") : showControlCode ?
+           title={showIdinOptions ? I18n.t("WelcomeToApp.VerifyYour.Highlight.COPY") : showControlCode ?
     I18n.t("ServiceDesk.ControlCode.ControlCode.COPY") : I18n.t("Profile.AddAnOrganisation.COPY")}
-    showOptions={false}>
-    <VerifyChoice addInstitution={addInstitution}
-                  addBank={addBank}
-                  addEuropean={addEuropean}
-                  issuers={issuers}
-                  showIdinOptions={showIdinOptions}
-                  showServiceDesk={serviceDeskStart}
-                  showControlCode={showControlCode}
-                  cancel={() => resetModalsAndQueryParams()}/>
+           showOptions={false}>
+        <VerifyChoice addInstitution={addInstitution}
+                      addBank={addBank}
+                      addEuropean={addEuropean}
+                      issuers={issuers}
+                      showIdinOptions={showIdinOptions}
+                      showServiceDesk={serviceDeskStart}
+                      showControlCode={showControlCode}
+                      cancel={() => resetModalsAndQueryParams()}/>
     </Modal>
 {/if}
 

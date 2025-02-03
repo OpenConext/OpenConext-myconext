@@ -228,6 +228,12 @@ public class Migrations {
         mongoTemplate.remove(new Query(), "sessions");
     }
 
+    @SuppressWarnings("unchecked")
+    @ChangeSet(order = "018", id = "deleteSessionAfterExternalLinkedAccountDocumentId", author = "okke.harsta@surf.nl")
+    public void deleteSessionAfterExternalLinkedAccountDocumentId(MongockTemplate mongoTemplate) {
+        mongoTemplate.remove(new Query(), "sessions");
+    }
+
     protected User mergeEduIDs(User user) {
         List<EduID> eduIDS = user.getEduIDS();
         //Make a copy to search in

@@ -55,6 +55,8 @@ public class ExternalLinkedAccount implements Serializable, ProvisionedLinkedAcc
     private boolean external = true;
     @Setter
     private boolean preferred;
+    @Setter
+    private String documentId;
 
     public ExternalLinkedAccount(String subjectId, IdpScoping idpScoping, boolean external) {
         this.subjectId = subjectId;
@@ -156,4 +158,5 @@ public class ExternalLinkedAccount implements Serializable, ProvisionedLinkedAcc
         }
         return null;
     }
+
 }
