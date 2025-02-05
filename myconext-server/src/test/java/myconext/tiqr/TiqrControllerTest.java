@@ -32,6 +32,7 @@ import java.util.regex.Pattern;
 import static io.restassured.RestAssured.given;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static myconext.security.GuestIdpAuthenticationRequestFilter.BROWSER_SESSION_COOKIE_NAME;
+import static org.hamcrest.Matchers.equalTo;
 import static org.junit.jupiter.api.Assertions.*;
 
 @SuppressWarnings("unchecked")
@@ -343,7 +344,6 @@ public class TiqrControllerTest extends AbstractIntegrationTest {
         Authentication authentication = authenticationRepository.findAuthenticationBySessionKey(sessionKey).get();
 
         Registration registration = registrationRepository.findRegistrationByUserId(samlAuthenticationRequest.getUserId()).get();
-        registration = registrationRepository.findById(registration.getId()).get();
         String decryptedSecret = this.decryptRegistrationSecret(registration.getSecret());
         String ocra = OCRA.generateOCRA(decryptedSecret, authentication.getChallenge(), sessionKey);
 
@@ -359,7 +359,8 @@ public class TiqrControllerTest extends AbstractIntegrationTest {
                 .formParam("notificationAddress", "1234567890")
                 .post("/tiqr/authentication")
                 .then()
-                .statusCode(200);
+                .statusCode(200)
+                .body(equalTo("OK"));
 
         Map<String, String> newStatus = given()
                 .queryParam("sessionKey", sessionKey)
@@ -666,17 +667,6 @@ public class TiqrControllerTest extends AbstractIntegrationTest {
                 .get("/tiqr/poll-enrollment")
                 .as(String.class);
         assertEquals(EnrollmentStatus.PROCESSED.name(), enrollmentStatus);
-    }
-
-    private String decryptRegistrationSecret(String encryptedSecret) throws Exception {
-        MessageDigest sha = MessageDigest.getInstance("SHA-256");
-        String secret = "secret";
-        byte[] digest = sha.digest(secret.getBytes(UTF_8));
-        SecretKeySpec secretKey = new SecretKeySpec(Arrays.copyOf(digest, 32), "AES");
-        GCMParameterSpec parameterSpec = new GCMParameterSpec(128, secret.getBytes(UTF_8));
-        Cipher cipher = Cipher.getInstance("AES/GCM/NoPadding");
-        cipher.init(Cipher.DECRYPT_MODE, secretKey, parameterSpec);
-        return new String(cipher.doFinal(Base64.getDecoder().decode(encryptedSecret)));
     }
 
     private Map<String, String> spStartAuthentication(CookieFilter cookieFilter, boolean finishAuthentication) throws IOException {

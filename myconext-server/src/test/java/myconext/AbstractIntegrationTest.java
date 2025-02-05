@@ -47,9 +47,13 @@ import tiqr.org.model.Authentication;
 import tiqr.org.model.Enrollment;
 import tiqr.org.model.Registration;
 
+import javax.crypto.Cipher;
+import javax.crypto.spec.GCMParameterSpec;
+import javax.crypto.spec.SecretKeySpec;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.nio.charset.Charset;
+import java.security.MessageDigest;
 import java.security.SecureRandom;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
@@ -62,6 +66,7 @@ import java.util.zip.DeflaterOutputStream;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.*;
 import static io.restassured.RestAssured.given;
+import static java.nio.charset.StandardCharsets.UTF_8;
 import static myconext.security.GuestIdpAuthenticationRequestFilter.BROWSER_SESSION_COOKIE_NAME;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -345,4 +350,17 @@ public abstract class AbstractIntegrationTest implements HasUserRepository {
         userRepository.save(user);
 
     }
+
+    protected String decryptRegistrationSecret(String encryptedSecret) throws Exception {
+        MessageDigest sha = MessageDigest.getInstance("SHA-256");
+        String secret = "secret";
+        byte[] digest = sha.digest(secret.getBytes(UTF_8));
+        SecretKeySpec secretKey = new SecretKeySpec(Arrays.copyOf(digest, 32), "AES");
+        GCMParameterSpec parameterSpec = new GCMParameterSpec(128, secret.getBytes(UTF_8));
+        Cipher cipher = Cipher.getInstance("AES/GCM/NoPadding");
+        cipher.init(Cipher.DECRYPT_MODE, secretKey, parameterSpec);
+        return new String(cipher.doFinal(java.util.Base64.getDecoder().decode(encryptedSecret)));
+    }
+
+
 }
