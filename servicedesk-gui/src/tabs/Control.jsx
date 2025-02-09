@@ -122,7 +122,7 @@ const Control = ({restart, proceed}) => {
                                 onChange={val => confirm(4, val)}/>
                     </div>
                     {!validDayOfBirth &&
-                        <div className={`validation-item-inner birthday ${birthDay === null ? "invalid" : ""}`}>
+                        <div className={`validation-item-inner birthday ${birthDay === null ? "invalid" : "valid"}`}>
                             <p>{I18n.t(`control.${birthDay === null ? "invalidDate" : "validDate"}`)}</p>
                             <DatePicker
                                 ref={inputRef}

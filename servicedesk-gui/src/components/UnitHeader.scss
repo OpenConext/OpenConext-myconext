@@ -44,10 +44,41 @@
             border-radius: 5px;
             border: 1px solid var(--sds--color--gray--300);
 
+            @keyframes rainbow {
+                0% {
+                    fill: red;
+                }
+                14% {
+                    fill: orange;
+                }
+                28% {
+                    fill: yellow;
+                }
+                42% {
+                    fill: green;
+                }
+                57% {
+                    fill: blue;
+                }
+                71% {
+                    fill: indigo;
+                }
+                85% {
+                    fill: violet;
+                }
+                100% {
+                    fill: red;
+                }
+            }
+
             svg {
                 height: 76px;
                 width: auto;
                 margin-bottom: auto;
+            }
+
+            &.animated svg {
+                animation: rainbow 2s linear ;
             }
 
             &.small {

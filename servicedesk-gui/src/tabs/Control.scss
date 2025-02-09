@@ -72,6 +72,10 @@ div.control {
             &.invalid {
                 color: var(--sds--color--red--400);
             }
+
+            &.valid {
+                font-weight: 600;
+            }
         }
 
         .sds--tooltip-parent {
