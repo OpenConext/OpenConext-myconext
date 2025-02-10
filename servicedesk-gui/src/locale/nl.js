@@ -43,7 +43,8 @@ const nl = {
         header: "Vul de controlecode in",
         proceed: "Ga verder",
         error: "Geen gebruiker gevonden voor de verificatiecode {{code}}",
-        info: "Deze code heeft de persoon gegenereerd in eduID"
+        info: "Deze code heeft de persoon gegenereerd in eduID",
+        flash: "Verificatie code gevonden voor gebruiker {{name}}"
     },
     control: {
         header: "Identiteitscontrole voor code: ",

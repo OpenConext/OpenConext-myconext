@@ -11,11 +11,13 @@ const Verification = ({proceed}) => {
     const [clear, setClear] = useState(false);
     const [error, setError] = useState(false);
     const [code, setCode] = useState("");
+    const {setFlash} = useAppStore(state => state);
 
     const doGetUserControlCode = val => {
         setCode(val);
         getUserControlCode(val)
             .then(controlCode => {
+                setFlash(I18n.t("verification.flash", {name: `${controlCode.firstName} ${controlCode.lastName}`}))
                 useAppStore.setState(() => ({controlCode: controlCode}));
                 setClear(false);
                 setCode("");
