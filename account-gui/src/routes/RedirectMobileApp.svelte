@@ -4,6 +4,8 @@
     import Button from "../components/Button.svelte";
     import {onMount} from "svelte";
     import QrCode from "svelte-qrcode"
+    import {isEmpty} from "../utils/utils.js";
+    import en from "../locale/en";
 
     export let action;
     let redirectAppUrl = null;
@@ -12,8 +14,10 @@
 
     onMount(() => {
         $links.displayBackArrow = false;
-        redirectAppUrl = `${$conf.mobileAppRedirect}/${action}${window.location.search}`;
-        actionTranslateKey = I18n.t(`redirectMobileApp.${action}`, {}, "fallback");
+        const translationExists = en.redirectMobileApp[action];
+        actionTranslateKey = isEmpty(translationExists)  ? "fallback" : action;
+        redirectAppUrl = `${$conf.mobileAppRedirect}/${actionTranslateKey}${window.location.search}`;
+
     });
 
 </script>
