@@ -15,7 +15,7 @@
         const urlSearchParams = new URLSearchParams(window.location.search);
         const id = urlSearchParams.get("id");
         credential = $user.publicKeyCredentials.find(cred => cred.identifier === id);
-        name = Credential.Name.COPY;
+        name = credential.name;
         const testWebAuthn = urlSearchParams.get("success");
         if (testWebAuthn) {
             flash.setValue(I18n.t("Webauthn.TestFlash.COPY"), 3750);
@@ -37,7 +37,7 @@
                     }
                 }
                 navigate("/security");
-                flash.setValue(I18n.t("Edit.Update.COPYd", {name: name}));
+                flash.setValue(I18n.t("Edit.Update.COPY", {name: name}));
             });
     }
 
@@ -52,7 +52,7 @@
                     }
                 }
                 navigate("/security");
-                flash.setValue(I18n.t("credential.deleted", {name: Credential.Name.COPY}));
+                flash.setValue(I18n.t("credential.deleted", {name: credential.name}));
             });
         }
     }
@@ -127,7 +127,7 @@
            cancel={() => showModal = false}
            warning={true}
            confirmTitle={I18n.t("YourVerifiedInformation.ConfirmRemoval.Button.YesDelete.COPY")}
-           question={I18n.t("Credential.DeleteCredential.COPYConfirmation", {name: Credential.Name.COPY})}
+           question={I18n.t("Credential.DeleteCredential.COPYConfirmation", {name: credential.name})}
            title={I18n.t("Credential.DeleteCredential.COPY")}>
     </Modal>
 {/if}
