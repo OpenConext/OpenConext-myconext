@@ -254,7 +254,7 @@
                 <SecurityOption action={credentialsDetails(credential)}
                                 icon={webAuthnIcon}
                                 label={I18n.t("security.options.passkey")}
-                                subLabel={Credential.Name.COPY}
+                                subLabel={credential.name}
                                 active={true}/>
             {/each}
         {/if}
