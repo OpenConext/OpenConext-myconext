@@ -16,8 +16,8 @@
         $links.displayBackArrow = false;
         const translationExists = en.redirectMobileApp[action];
         actionTranslateKey = isEmpty(translationExists)  ? "fallback" : action;
-        redirectAppUrl = `${$conf.mobileAppRedirect}/${actionTranslateKey}${window.location.search}`;
-
+        //Do not use the actionTranslateKey in the redirect URL, as we can't ensure all actions are translated
+        redirectAppUrl = `${$conf.mobileAppRedirect}/${action}${window.location.search}`;
     });
 
 </script>
