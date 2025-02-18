@@ -47,8 +47,8 @@
     "dompurify": "^3.2.4",
     "i18n-js": "^4.5.1",
     "js-cookie": "^3.0.5",
-    "postcss": "^8.4.49",
-    "sass": "^1.82.0",
+    "postcss": "^8.5.2",
+    "sass": "^1.85.0",
     "svelte-routing": "^2.13.0"
   }
 }
