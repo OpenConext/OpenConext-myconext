@@ -851,7 +851,7 @@
   "ServiceDesk.ControlCode.Todo.COPY": "Wat moet je nu doen?",
   "ServiceDesk.ControlCode.TodoDetails.COPY": "Maak een afspraak met een eduID Service Desk (digitaal of op locatie). Laat tijdens je afspraak je controlecode en identiteisbewijs zien.",
   "ServiceDesk.ControlCode.ServiceDesks.COPY":  "Bekijk eduID Service Desks",
-  "ServiceDesk.ControlCode.ServiceDesksLocations.COPY": "https://wiki.surfnet.nl/display/EDUID/eduID+Service+Desk",
+  "ServiceDesk.ControlCode.ServiceDesksLocations.COPY": "https://eduID.nl/servicedesk",
   "ServiceDesk.ControlCode.Back.COPY": "Terug naar overzicht",
   "ServiceDesk.ControlCode.Rethink.COPY":"Wil je toch op een andere manier bewijzen wie je bent? Verwijder dan eerst je controlecode.",
   "ServiceDesk.ControlCode.DeleteControlCode.COPY":  "Verwijder controlecode",
