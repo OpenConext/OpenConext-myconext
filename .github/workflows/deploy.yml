@@ -163,7 +163,7 @@ jobs:
           type=sha
 
     - name: Build and push the Account gui image
-      uses: docker/build-push-action@v5
+      uses: docker/build-push-action@v6
       with:
         context: account-gui
         file: account-gui/docker/Dockerfile
@@ -173,7 +173,7 @@ jobs:
         labels: ${{ steps.meta_account_gui.outputs.labels }}
 
     - name: Build and push the Servicedesk gui image
-      uses: docker/build-push-action@v5
+      uses: docker/build-push-action@v6
       with:
         context: servicedesk-gui
         file: servicedesk-gui/docker/Dockerfile
@@ -183,7 +183,7 @@ jobs:
         labels: ${{ steps.meta_servicedesk_gui.outputs.labels }}
 
     - name: Build and push the myconext gui image
-      uses: docker/build-push-action@v5
+      uses: docker/build-push-action@v6
       with:
         context: myconext-gui
         file: myconext-gui/docker/Dockerfile
@@ -193,7 +193,7 @@ jobs:
         labels: ${{ steps.meta_myconext_gui.outputs.labels }}
 
     - name: Build and push the Server image
-      uses: docker/build-push-action@v5
+      uses: docker/build-push-action@v6
       with:
         context: myconext-server
         file: myconext-server/docker/Dockerfile

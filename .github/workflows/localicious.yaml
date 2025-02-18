@@ -10,7 +10,7 @@ jobs:
     permissions:
       contents: write
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
     - name: lint yaml files
       uses: ibiqlik/action-yamllint@v3
       with:
@@ -31,7 +31,7 @@ jobs:
         localicious render ./localizations.yaml ./myconext-gui/src/locale/ --languages en,nl --outputTypes js -c SHARED
         rm -fr ./myconext-gui/src/locale/js/Localizable.ts
     - name: Commit updated files
-      uses: stefanzweifel/git-auto-commit-action@v4
+      uses: stefanzweifel/git-auto-commit-action@v5
       with:
         commit_message: Automated update of strings.xml after updating localizations.yaml
         file_pattern: '**/strings.json'
