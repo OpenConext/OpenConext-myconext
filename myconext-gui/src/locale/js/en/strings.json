@@ -851,7 +851,7 @@
   "ServiceDesk.ControlCode.Todo.COPY": "What's next?",
   "ServiceDesk.ControlCode.TodoDetails.COPY": "Schedule an appointment with an eduID Service Desk (online or in person). During your appointment, show your verification code and ID.",
   "ServiceDesk.ControlCode.ServiceDesks.COPY": "Show eduID Service Desks",
-  "ServiceDesk.ControlCode.ServiceDesksLocations.COPY": "https://wiki.surfnet.nl/display/EDUID/eduID+Service+Desk",
+  "ServiceDesk.ControlCode.ServiceDesksLocations.COPY": "https://eduID.nl/servicedesk-en",
   "ServiceDesk.ControlCode.Back.COPY": "Back to overview",
   "ServiceDesk.ControlCode.Rethink.COPY": "Want to prove your identity another way? Make sure to delete your verification code first.",
   "ServiceDesk.ControlCode.DeleteControlCode.COPY": "Delete verification code",
