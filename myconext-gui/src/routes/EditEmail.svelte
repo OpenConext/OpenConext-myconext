@@ -7,7 +7,7 @@
     import Button from "../components/Button.svelte";
     import Modal from "../components/Modal.svelte";
 
-    const {validEmail} = require("../validation/regexp");
+    import {validEmail} from "../validation/regexp";
 
     let verifiedEmail = "";
     let duplicateEmail = false;
