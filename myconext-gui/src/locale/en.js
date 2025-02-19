@@ -1,4 +1,4 @@
- const en = {
+const en = {
     sidebar: {
         home: "Home",
         personalInfo: "Personal info",
@@ -574,7 +574,14 @@
             eherkenning: "eIDAS",
             idin: "Idin",
             studielink: "Studielink",
-            servicedesk: "Service Desk"
+            servicedesk: "Service Desk",
+            "abn amro": "ABN AMRO",
+            "asn bank": "ASN Bank",
+            bunq: "Bunq",
+            ing: "ING",
+            rabobank: "Rabobank",
+            regioBank: "RegioBank",
+            sns: "SNS"
         }
     }
 };
