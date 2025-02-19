@@ -208,7 +208,7 @@ public class MailBox {
     private Map<String, Object> variables(User user, String title) {
         Map<String, Object> variables = new HashMap<>();
         variables.put("title", title);
-        String fullName = user.getGivenName() + " " + user.getFamilyName();
+        String fullName = user.getDerivedGivenName() + " " + user.getDerivedFamilyName();
         String fullNameSanitized = fullName.replaceAll(SANITIZE_NAME, "");
         variables.put("name", fullNameSanitized);
         return variables;
