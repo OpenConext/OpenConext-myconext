@@ -2582,7 +2582,7 @@ SHARED:
     GivenName:
       COPY:
         en: First name
-        nl: Voornaam
+        nl: Roepnaam
     FamilyNamePlaceholder:
       COPY:
         en: e.g. Berners-Lee
