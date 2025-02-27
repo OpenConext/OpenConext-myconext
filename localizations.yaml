@@ -4047,7 +4047,7 @@ SHARED:
         nl: "<sup>*</sup>EEA: alle EU-lidstaten + Liechtenstein, Noorwegen en IJsland."
     Next:
       COPY:
-        en: "Open website to enter your name"
+        en: "Enter your details"
         nl: "Naar gegevens invullen"
     IdCard:
       Information:
