@@ -838,7 +838,7 @@
   "ServiceDesk.ResidencePermit.COPY": "Dutch residence permits",
   "ServiceDesk.Note.COPY": "Please note: copies, public transport passes and student cards are not valid ID's",
   "ServiceDesk.EeaNote.COPY": "<sup>*</sup>EEA: all EU member states plus Liechtenstein, Norway and Iceland",
-  "ServiceDesk.Next.COPY": "Open website to enter your name",
+  "ServiceDesk.Next.COPY": "Enter your details",
   "ServiceDesk.IdCard.Information.COPY": "Enter your details as they appear on your ID. Names must be in Roman characters.",
   "ServiceDesk.IdCard.LastName.COPY": "Last name",
   "ServiceDesk.IdCard.FirstName.COPY": "First name(s)",
