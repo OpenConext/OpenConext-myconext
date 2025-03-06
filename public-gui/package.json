@@ -10,7 +10,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@surfnet/sds": "^0.0.127",
+    "@surfnet/sds": "^0.0.128",
     "react": "^19.0.0",
     "react-dom": "^19.0.0"
   },
