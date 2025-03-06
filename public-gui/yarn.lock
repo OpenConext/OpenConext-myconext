@@ -642,10 +642,10 @@
   resolved "https://registry.yarnpkg.com/@rollup/rollup-win32-x64-msvc/-/rollup-win32-x64-msvc-4.34.8.tgz#4cdb2cfae69cdb7b1a3cc58778e820408075e928"
   integrity sha512-U0FaE5O1BCpZSeE6gBl3c5ObhePQSfk9vDRToMmTkbhCOgW4jqvtS5LGyQ76L1fH8sM0keRp4uDTsbjiUyjk0g==
 
-"@surfnet/sds@^0.0.127":
-  version "0.0.127"
-  resolved "https://registry.yarnpkg.com/@surfnet/sds/-/sds-0.0.127.tgz#90c600768e75896d80136b50fbb540fe18f833dd"
-  integrity sha512-SY08iJOhcghlUV2iGDjfch+s+rFlHg3gSQ5pj/uZQfATRawXDkELjxTxnL37FAjnixJhTdoXhBu3uJVmBx/CMg==
+"@surfnet/sds@^0.0.128":
+  version "0.0.128"
+  resolved "https://registry.yarnpkg.com/@surfnet/sds/-/sds-0.0.128.tgz#8036196a86824a6617624e1ee24bec05319f095c"
+  integrity sha512-st4NvvwJ3zUD8aBBivpUGl958zh8BxOw2+fvyB3wmzxeQQoJOgaXbmE03f25yKxGmTK+wdUELH6G3uf+HljXIg==
 
 "@types/babel__core@^7.20.5":
   version "7.20.5"
@@ -2302,9 +2302,9 @@ possible-typed-array-names@^1.0.0:
   integrity sha512-d7Uw+eZoloe0EHDIYoe+bQ5WXnGMOpmiZFTuMWCwpjzzkL2nTjcKiAk4hh8TjnGye2TwWOk3UXucZ+3rbmBa8Q==
 
 postcss@^8.5.1:
-  version "8.5.2"
-  resolved "https://registry.yarnpkg.com/postcss/-/postcss-8.5.2.tgz#e7b99cb9d2ec3e8dd424002e7c16517cb2b846bd"
-  integrity sha512-MjOadfU3Ys9KYoX0AdkBlFEF1Vx37uCCeN4ZHnmwm9FfpbsGWMZeBLMmmpY+6Ocqod7mkdZ0DT31OlbsFrLlkA==
+  version "8.5.3"
+  resolved "https://registry.yarnpkg.com/postcss/-/postcss-8.5.3.tgz#1463b6f1c7fb16fe258736cba29a2de35237eafb"
+  integrity sha512-dle9A3yYxlBSrt8Fu+IpjGT8SY8hN0mlaA6GY8t0P5PjIOZemULz/E2Bnm/2dcUOena75OTNkHI76uZBNUUq3A==
   dependencies:
     nanoid "^3.3.8"
     picocolors "^1.1.1"
