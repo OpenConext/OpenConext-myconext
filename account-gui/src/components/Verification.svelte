@@ -4,7 +4,7 @@
     import oneMoreThingFilled from "../icons/onemorething_filled.svg?raw";
     import DOMPurify from "dompurify";
 
-    export let explanation;
+    export let explanation = "info";
     export let explanationText;
     export let verified = false;
 

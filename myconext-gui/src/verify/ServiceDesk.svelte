@@ -9,6 +9,8 @@
     import {createUserControlCode, deleteUserControlCode} from "../api/index.js";
     import {verificationCodeValidityDays} from "../utils/date";
     import {onMount} from "svelte";
+    import Select from "svelte-select";
+    import {months, range} from "../utils/date.js"
 
     export let toggleView;
     export let cancelView;
@@ -17,8 +19,15 @@
     let step = showControlCode ? 2 : 0;
     let lastName = "";
     let firstName = "";
+    let dateOfBirth = null;
+    let monthOfBirth = null;
+    let yearOfBirth = null;
     let dayOfBirth = "";
     let code = "";
+
+    const yearItems = range(1926, new Date().getFullYear(), false, true);
+    const monthItems = months(I18n.currentLocale());
+    let dayItems = range(1, 31, true, true);
 
     onMount(() => {
         if (showControlCode) {
@@ -52,6 +61,7 @@
     }
 
     const generateControlCode = () => {
+        dayOfBirth = `${dateOfBirth} ${monthOfBirth} ${yearOfBirth}`;
         createUserControlCode(firstName, lastName, dayOfBirth)
             .then(res => {
                 code = res.code;
@@ -60,7 +70,39 @@
             });
     }
 
+    const onChangeDateOfBirth = e => {
+        dateOfBirth = e.detail.value;
+    }
+
+    const onChangeMonthOfBirth = e => {
+        const detail = e.detail;
+        monthOfBirth = detail.value;
+        monthInvariant(detail.value, yearOfBirth);
+    }
+
+    const onChangeYearOfBirth = e => {
+        const detail = e.detail;
+        yearOfBirth = detail.value;
+        monthInvariant(monthOfBirth, detail.value);
+    }
+
+    const monthInvariant = (month, year) => {
+        let newDayItems;
+        if (month === "FEB") {
+            const isLeapYear = parseInt(year) % 4 === 0;
+            newDayItems = range(1, isLeapYear ? 29 : 28, true, true);
+        } else {
+            const monthItem = monthItems.find(item => item.value === month)
+            newDayItems = range(1, monthItem.days, true, true);
+        }
+        if (!newDayItems.includes(dateOfBirth)) {
+            dateOfBirth = null;
+        }
+        dayItems = newDayItems;
+    }
+
     const init = el => el.focus();
+
 
 </script>
 
@@ -203,6 +245,21 @@
         }
     }
 
+    .day-of-birth-container {
+        display: grid;
+        grid-template-columns: 6fr 7fr 6fr;
+        grid-template-rows: repeat(1, 1fr);
+        grid-column-gap: 15px;
+        grid-row-gap: 0;
+
+        :global(.svelte-select) {
+            border-radius: 8px;
+            border: solid 1px #676767;
+            font-size: 16px;
+        }
+
+    }
+
     .button-container {
         margin-bottom: 20px;
         padding-bottom: 30px;
@@ -257,13 +314,41 @@
         <input id="firstName"
                type="text"
                bind:value={firstName}/>
-        <label for="dayOfBirth">{I18n.t("ServiceDesk.IdCard.DayOfBirth.COPY")}</label>
-        <input id="dayOfBirth"
-               type="text"
-               bind:value={dayOfBirth}/>
+        <div class="day-of-birth-container">
+            <label for="dayOfBirth">{I18n.t("ServiceDesk.IdCard.DateOfBirth.COPY")}</label>
+            <label for="monthOfBirth">{I18n.t("ServiceDesk.IdCard.MonthOfBirth.COPY")}</label>
+            <label for="yearOfBirth">{I18n.t("ServiceDesk.IdCard.YearOfBirth.COPY")}</label>
+        </div>
+        <div class="day-of-birth-container">
+            <Select items={dayItems}
+                    value={dateOfBirth}
+                    clearable={false}
+                    searchable={false}
+                    showChevron={true}
+                    on:change={onChangeDateOfBirth}
+                    placeholder={I18n.t("ServiceDesk.IdCard.SelectPlaceholder.COPY")}
+            />
+            <Select items={monthItems}
+                    value={monthOfBirth}
+                    clearable={false}
+                    searchable={false}
+                    showChevron={true}
+                    on:change={onChangeMonthOfBirth}
+                    placeholder={I18n.t("ServiceDesk.IdCard.SelectPlaceholder.COPY")}
+            />
+            <Select items={yearItems}
+                    value={yearOfBirth}
+                    clearable={false}
+                    searchable={false}
+                    showChevron={true}
+                    on:change={onChangeYearOfBirth}
+                    placeholder={I18n.t("ServiceDesk.IdCard.SelectPlaceholder.COPY")}
+            />
+        </div>
         <Button label={I18n.t("ServiceDesk.IdCard.GenerateControlCode.COPY")}
                 fullSize={true}
-                disabled={isEmpty(lastName) || isEmpty(firstName) || isEmpty(dayOfBirth)}
+                disabled={isEmpty(lastName) || isEmpty(firstName)
+                || isEmpty(dateOfBirth) || isEmpty(monthOfBirth) || isEmpty(yearOfBirth)}
                 onClick={() => generateControlCode()}/>
     {:else if step === 2}
         <div>
