@@ -39,6 +39,7 @@
         text-align: center;
         font-weight: 600;
         min-width: 180px;
+        text-wrap: nowrap;
 
         &:focus {
             background-color: #003980;

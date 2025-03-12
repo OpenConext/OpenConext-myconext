@@ -25,7 +25,8 @@
     let dayOfBirth = "";
     let code = "";
 
-    const yearItems = range(1926, new Date().getFullYear(), false, true);
+    const currentYear = new Date().getFullYear();
+    const yearItems = range(currentYear - 100, currentYear, false, true);
     const monthItems = months(I18n.currentLocale());
     let dayItems = range(1, 31, true, true);
 
