@@ -3,9 +3,6 @@
     import {onMount} from 'svelte';
     import {conf, links} from "../stores/conf";
     import Button from "../components/Button.svelte";
-    import Verification from "../components/Verification.svelte";
-    import Spinner from "../components/Spinner.svelte";
-    import {fetchServiceNameByHash} from "../api";
     import Cookies from "js-cookie";
     import {cookieNames} from "../constants/cookieNames";
     import phone from "../icons/redesign/eduIDapp.svg?raw";
@@ -15,19 +12,12 @@
     import {proceed} from "../utils/sso";
     import {user} from "../stores/user";
     import DOMPurify from "dompurify";
-    let serviceName = null;
-    let explanation = null;
-    let showSpinner = true;
-    let isNew = false;
+
     let hash = null;
 
     onMount(() => {
         $links.displayBackArrow = false;
         const urlSearchParams = new URLSearchParams(window.location.search);
-
-        explanation = urlSearchParams.get("explanation");
-        isNew = urlSearchParams.get("new") === "true"
-
         hash = urlSearchParams.get("h");
         const email = urlSearchParams.get("email");
         if (email) {
@@ -39,10 +29,6 @@
                 sameSite: "Lax"
             });
         }
-        fetchServiceNameByHash(hash).then(res => {
-            serviceName = res.name;
-            showSpinner = false;
-        });
     });
 
 </script>
@@ -58,9 +44,6 @@
     }
 
 </style>
-{#if showSpinner}
-    <Spinner/>
-{/if}
 
 <h2 class="header">{I18n.t("Security.Tiqr.Title.COPY")}</h2>
 <ImageContainer icon={phone} margin={false}/>

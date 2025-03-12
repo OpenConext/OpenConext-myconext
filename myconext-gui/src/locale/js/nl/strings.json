@@ -827,7 +827,7 @@
   "ServiceDesk.ConfirmIdentityHeader.COPY": "Bevestig wie je bent met je identiteitsbewijs",
   "ServiceDesk.ConfirmIdentity.COPY": "Je kunt je identiteit ook bevestigen via een van onze eduID Service Desks.",
   "ServiceDesk.StepsHeader.COPY": "Volg deze stappen:",
-  "ServiceDesk.Step1.COPY": "Vul je volledige naam in zoals die op je identiteitsbewijs staat (voornamen en achternaam).",
+  "ServiceDesk.Step1.COPY": "Vul je volledige naam (voornamen en achternaam) en geboortedatum in zoals die op je identiteitsbewijs staat .",
   "ServiceDesk.Step2.COPY": "Genereer een persoonlijke controlecode.",
   "ServiceDesk.Step3.COPY": "Laat je controlecode en identiteitsbewijs zien aan een eduID Service Desk. Die bevestigt zo je identiteit.",
   "ServiceDesk.RedirectWarning.COPY": "We sturen je door naar een andere website om je naam in te vullen. Je kunt daarna nog niet gelijk inloggen bij <strong>%1$s</strong>, maar je moet eerst contact opnemen met een eduID Service Desk.",

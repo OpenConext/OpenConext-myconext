@@ -22,6 +22,7 @@
         text-align: center;
         font-weight: 600;
         font-size: 18px;
+        text-wrap: nowrap;
 
         &:hover {
             background-color: #004c97;
