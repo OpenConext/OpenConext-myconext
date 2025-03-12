@@ -43,13 +43,15 @@
         }
     })
 
-
     const cancel = () => {
         toggleView();
         step = 0;
         lastName = "";
         firstName = "";
         dayOfBirth = "";
+        dateOfBirth = null;
+        monthOfBirth = null;
+        yearOfBirth = null;
     }
 
     const backToPersonal = () => {
