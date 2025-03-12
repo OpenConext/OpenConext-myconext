@@ -35,6 +35,11 @@
             firstName = $user.controlCode.lastName;
             dayOfBirth = $user.controlCode.dayOfBirth;
             code = $user.controlCode.code;
+            //Initialize the date selects
+            const birthDayParts = $user.controlCode.dayOfBirth.split(" ");
+            dateOfBirth = birthDayParts[0];
+            monthOfBirth = birthDayParts[1];
+            yearOfBirth = birthDayParts[2];
         }
     })
 
