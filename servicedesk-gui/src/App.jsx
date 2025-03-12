@@ -6,7 +6,6 @@ import {me} from "./api/index.js";
 import {useAppStore} from "./stores/AppStore.js";
 import {Flash} from "./components/Flash.jsx";
 import {Header} from "./components/Header.jsx";
-import {BreadCrumb} from "./components/BreadCrumb.jsx";
 import NotFound from "./pages/NotFound.jsx";
 import RefreshRoute from "./pages/RefreshRoute.jsx";
 import {Login} from "./pages/Login.jsx";
@@ -32,8 +31,8 @@ const App = () => {
                     navigate("/404");
                 }
             }).catch(() => {
-                setLoading(false);
-                navigate("/login");
+            setLoading(false);
+            navigate("/login");
         });
 
     }, []);
@@ -47,7 +46,6 @@ const App = () => {
             <div className="container">
                 <Flash/>
                 <Header/>
-                {isAuthenticated && <BreadCrumb/>}
                 {isAuthenticated &&
                     <Routes>
                         <Route path="/" element={<Navigate replace to="home"/>}/>

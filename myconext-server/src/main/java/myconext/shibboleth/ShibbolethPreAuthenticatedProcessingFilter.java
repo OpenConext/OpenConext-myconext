@@ -53,13 +53,14 @@ public class ShibbolethPreAuthenticatedProcessingFilter extends AbstractPreAuthe
 
     @Override
     protected Object getPreAuthenticatedPrincipal(HttpServletRequest request) {
-        Enumeration<String> headerNames = request.getHeaderNames();
-        if (headerNames != null && !request.getRequestURI().endsWith("health") && !request.getRequestURI().endsWith("ico")) {
-            Collections.list(headerNames).forEach(s -> {
-                LOG.info(String.format("Header %s, value: %s", s, request.getHeader(s)));
-            });
+        if (LOG.isTraceEnabled()) {
+            Enumeration<String> headerNames = request.getHeaderNames();
+            if (headerNames != null && !request.getRequestURI().endsWith("health") && !request.getRequestURI().endsWith("ico")) {
+                Collections.list(headerNames).forEach(s -> {
+                    LOG.trace(String.format("Header %s, value: %s", s, request.getHeader(s)));
+                });
+            }
         }
-
         String uid = getHeader(SHIB_UID, request);
         String schacHomeOrganization = getHeader(SHIB_SCHAC_HOME_ORGANIZATION, request);
         String email = getHeader(SHIB_EMAIL, request);

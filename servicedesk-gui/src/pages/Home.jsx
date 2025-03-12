@@ -52,8 +52,8 @@ export const Home = () => {
     return (
         <div className="home">
             <div className="mod-home-container">
-                <UnitHeader obj={({name: I18n.t("landing.header.title")})}>
-                    <p>{I18n.t("landing.header.subTitle")}</p>
+                <UnitHeader>
+                    <h1>{I18n.t("landing.header.subTitle", {name: user.displayName})}</h1>
                 </UnitHeader>
                 <Tabs activeTab={currentTab}
                       tabChanged={tabChanged}>

@@ -298,11 +298,11 @@ public class UserController implements UserAuthentication {
 
         if (magicLinkRequest.isUsePassword()) {
             if (!passwordEncoder.matches(providedUser.getPassword(), user.getPassword())) {
-                logLoginWithContext(user, "password", false, LOG, "Bad attempt to login with password");
+                logLoginWithContext(user, "password", false, LOG, "Bad attempt to login with password", request);
                 return ResponseEntity.status(HttpStatus.FORBIDDEN)
                         .body(Collections.singletonMap("status", HttpStatus.FORBIDDEN.value()));
             }
-            logLoginWithContext(user, "password", true, LOG, "Successfully logged in with password");
+            logLoginWithContext(user, "password", true, LOG, "Successfully logged in with password", request);
             LOG.info("Successfully logged in with password");
         }
         return doMagicLink(user, samlAuthenticationRequest, magicLinkRequest.isUsePassword(), request);
@@ -924,7 +924,7 @@ public class UserController implements UserAuthentication {
         }
         User user = optionalUser.get();
 
-        logLoginWithContext(user, "webauthn", true, LOG, "Successfully logged in with webauthn");
+        logLoginWithContext(user, "webauthn", true, LOG, "Successfully logged in with webauthn", request);
 
         if (samlAuthenticationRequest.isTestInstance()) {
             //back to SP

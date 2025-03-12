@@ -35,83 +35,18 @@
         }
 
 
-        .image {
-            display: flex;
-            align-items: center;
-            margin-bottom: auto;
-            background-color: var(--sds--color--white);
-            padding: 10px;
-            border-radius: 5px;
-            border: 1px solid var(--sds--color--gray--300);
-
-            @keyframes rainbow {
-                0% {
-                    fill: red;
-                }
-                14% {
-                    fill: orange;
-                }
-                28% {
-                    fill: yellow;
-                }
-                42% {
-                    fill: green;
-                }
-                57% {
-                    fill: blue;
-                }
-                71% {
-                    fill: indigo;
-                }
-                85% {
-                    fill: violet;
-                }
-                100% {
-                    fill: red;
-                }
-            }
-
-            svg {
-                height: 76px;
-                width: auto;
-                margin-bottom: auto;
-                fill: var(--sds--color--blue--400);
-            }
-
-            &.animated svg {
-                animation: rainbow 1s linear ;
-            }
-
-            &.small {
-                svg {
-                    width: 28px;
-                    height: auto;
-                    color: var(--sds--color--green--300);
-                    margin-top: 10px;
-                }
-            }
-
-            @media (max-width: $medium) {
-                display: none;
-            }
-
+        @media (max-width: $medium) {
+            display: none;
         }
 
-        .obj-name {
-            margin-left: 26px;
-            flex-grow: 3;
-            display: flex;
-            flex-direction: column;
-            word-break: break-word;
+    }
 
-            span.description {
-                margin: 20px 0;
-
-                &.compact {
-                    margin: 10px 0;
-                }
-            }
-        }
+    .obj-name {
+        flex-grow: 3;
+        display: flex;
+        flex-direction: column;
+        word-break: break-word;
+        margin-top: 15px;
 
     }
 

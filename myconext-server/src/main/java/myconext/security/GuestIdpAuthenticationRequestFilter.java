@@ -594,7 +594,7 @@ public class GuestIdpAuthenticationRequestFilter extends OncePerRequestFilter {
         }
         String loginMethod = samlAuthenticationRequest.isTiqrFlow() ? "tiqr" : "magiclink";
 
-        logLoginWithContext(user, loginMethod, true, LOG, "Successfully logged in with " + loginMethod);
+        logLoginWithContext(user, loginMethod, true, LOG, "Successfully logged in with " + loginMethod, request);
 
         sendAssertion(request, response, samlAuthenticationRequest, user);
     }

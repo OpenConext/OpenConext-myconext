@@ -40,8 +40,8 @@ export const UserMenu = ({user}) => {
              onBlur={() => setTimeout(() => setDropDownActive(false), 325)}>
             <UserInfo isOpen={dropDownActive}
                       children={renderMenu()}
-                      organisationName={I18n.t("serviceDesk.member")}
-                      userName={user.name}
+                      userName={user.displayName}
+                      organisationName={user.schacHomeOrganization}
                       toggle={() => setDropDownActive(!dropDownActive)}
             />
         </div>
