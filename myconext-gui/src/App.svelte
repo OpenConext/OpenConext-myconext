@@ -242,8 +242,12 @@
             <Header/>
             <div class="content">
                 <Router url="{url}">
-                    <Route path="/" component={Home}/>
-                    <Route path="/home" component={Home}/>
+                    <Route path="/">
+                        <Home bookmark="home"/>
+                    </Route>
+                    <Route path="/home">
+                        <Home bookmark="home"/>
+                    </Route>
                     <Route path="/personal">
                         <Home bookmark="personal"/>
                     </Route>
