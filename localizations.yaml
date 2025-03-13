@@ -1,4 +1,5 @@
 ---
+# yamllint disable rule:line-length
 ANDROID:
   Button:
     OK:
@@ -71,6 +72,10 @@ ANDROID:
         COPY:
           en: "Failed to initialize AppData. Reason: %1{{s}}"
           nl: "AppData kan niet worden geïnitialiseerd. Reden: %1{{s}}"
+      NoSupportedBrowserFound:
+        COPY:
+          en: "Failed to initialize AppData. No supported browser found."
+          nl: "AppData kan niet worden geïnitialiseerd. Geen ondersteunde browser gevonden."
 SHARED:
   About:
     Info:
@@ -585,9 +590,14 @@ SHARED:
             succesvol bent ingelogd kom je hier weer terug.
   EppnAlreadyLinked:
     Title:
-      COPY:
-        en: Account not connected!
-        nl: Koppeling niet gemaakt!
+      AccountNotConnected:
+        COPY:
+          en: Account not connected!
+          nl: Koppeling niet gemaakt!
+      VerificationFailed:
+        COPY:
+          en: Verification failed!
+          nl: Verificatie mislukt!
     Info:
       COPY:
         en: >-
@@ -598,6 +608,22 @@ SHARED:
           Je eduID kon niet worden gekoppeld. Het account waarmee je
           zojuist bent ingelogd, is al aan een ander eduID gekoppeld:
           %1{{s}}.
+    InfoExternalAccountWithoutEmail:
+      COPY:
+        en: >-
+          Your eduID could not be verified.
+          The external account with which you just logged in, is already linked to a different eduID account.
+        nl: >-
+          Je eduID kon niet worden geverifïeerd.
+          Het externe account waarmee je zojuist bent ingelogd, is al aan een ander eduID-account gekoppeld.
+    InfoExternalAccountWithEmail:
+      COPY:
+        en: >-
+          Your eduID could not be verified.
+          The external account with which you just logged in, is already linked to a different eduID account: %1{{s}}
+        nl: >-
+          Je eduID kon niet worden geverifïeerd.
+          Het externe account waarmee je zojuist bent ingelogd, is al aan een ander eduID-account gekoppeld: %1{{s}}
     RetryButton:
       COPY:
         en: Retry
@@ -3466,7 +3492,7 @@ SHARED:
     LandingPage:
       MainText:
         COPY:
-          en: Verifiy who you are in the field of education and research
+          en: Verify who you are in the field of education and research
           nl: Bewijs wie je bent in het veld van onderwijs en onderzoek
       SignInButton:
         COPY:
@@ -3674,6 +3700,10 @@ SHARED:
       COPY:
         en: Could not request SMS code, please retry.
         nl: Kan geen sms-code aanvragen, probeer het opnieuw.
+    RemoveControlCodeError:
+      COPY:
+        en: Could not remove control code, please retry.
+        nl: Kan de controlecode niet verwijderen, probeer het opnieuw.
     PasswordUpdateError:
       COPY:
         en: Cannot update password
@@ -3811,6 +3841,10 @@ SHARED:
         COPY:
           en: "The email domain used in %1{{s}} is not allowed."
           nl: "Het e-maildomein gebruikt in %1{{s}} is niet toegestaan."
+    GenerateControlCodeError:
+      COPY:
+        en: Could not generate control code
+        nl: Kan geen controlecode genereren
     Auth:
       Invalid:
         Title:
@@ -3988,6 +4022,16 @@ SHARED:
       COPY:
         en: "eIDAS"
         nl: "eIDAS"
+  ConfirmIdentityWithIdIntro:
+    Title:
+      FirstLine:
+        COPY:
+          en: Confirm your identity
+          nl: Bevestig wie je bent
+      SecondLine:
+        COPY:
+          en: with your ID
+          nl: met je identiteitsbewijs
   ServiceDesk:
     ConfirmIdentityHeader:
       COPY:
@@ -4135,3 +4179,7 @@ SHARED:
         COPY:
           en: "Your code is valid for %1$s more days."
           nl: "Je code is nog geldig voor %1$s dagen."
+      CantUse:
+        COPY:
+          en: "I can't use any of the above methods"
+          nl: "Ik kan geen van bovenstaande manieren gebruiken"
