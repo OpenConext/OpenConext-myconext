@@ -635,10 +635,10 @@
   resolved "https://registry.yarnpkg.com/@rollup/rollup-win32-x64-msvc/-/rollup-win32-x64-msvc-4.34.8.tgz#4cdb2cfae69cdb7b1a3cc58778e820408075e928"
   integrity sha512-U0FaE5O1BCpZSeE6gBl3c5ObhePQSfk9vDRToMmTkbhCOgW4jqvtS5LGyQ76L1fH8sM0keRp4uDTsbjiUyjk0g==
 
-"@surfnet/sds@^0.0.127":
-  version "0.0.127"
-  resolved "https://registry.yarnpkg.com/@surfnet/sds/-/sds-0.0.127.tgz#90c600768e75896d80136b50fbb540fe18f833dd"
-  integrity sha512-SY08iJOhcghlUV2iGDjfch+s+rFlHg3gSQ5pj/uZQfATRawXDkELjxTxnL37FAjnixJhTdoXhBu3uJVmBx/CMg==
+"@surfnet/sds@^0.0.129":
+  version "0.0.129"
+  resolved "https://registry.yarnpkg.com/@surfnet/sds/-/sds-0.0.129.tgz#f49c117933b9172b3137a5d2f6f577f089d7053a"
+  integrity sha512-aG7gNkTxUe9HOc93NNSThd7xT+7MM8qXKfsYi8t5UxiVCvAUS8d40wd9tylfYVfSbd9ZMp67c1NXfuZyEseqGg==
 
 "@types/babel__core@^7.20.5":
   version "7.20.5"
@@ -2474,10 +2474,10 @@ safe-regex-test@^1.1.0:
     es-errors "^1.3.0"
     is-regex "^1.2.1"
 
-sass@^1.85.0:
-  version "1.85.0"
-  resolved "https://registry.yarnpkg.com/sass/-/sass-1.85.0.tgz#0127ef697d83144496401553f0a0e87be83df45d"
-  integrity sha512-3ToiC1xZ1Y8aU7+CkgCI/tqyuPXEmYGJXO7H4uqp0xkLXUqp88rQQ4j1HmP37xSJLbCJPaIiv+cT1y+grssrww==
+sass@^1.85.1:
+  version "1.85.1"
+  resolved "https://registry.yarnpkg.com/sass/-/sass-1.85.1.tgz#18ab0bb48110ae99163778f06445b406148ca0d5"
+  integrity sha512-Uk8WpxM5v+0cMR0XjX9KfRIacmSG86RH4DCCZjLU2rFh5tyutt9siAXJ7G+YfxQ99Q6wrRMbMlVl6KqUms71ag==
   dependencies:
     chokidar "^4.0.0"
     immutable "^5.0.2"
