@@ -48,7 +48,7 @@
     "svelte-qrcode": "^1.0.1",
     "svelte-routing": "^2.13.0",
     "ts-loader": "^9.5.1",
-    "typescript": "^5.7.2",
+    "typescript": "^5.8.2",
     "vite-plugin-svelte-svg-loader": "^1.0.1"
   }
 }
