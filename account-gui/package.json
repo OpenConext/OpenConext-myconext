@@ -44,11 +44,11 @@
     "i18n-js": "^4.5.1",
     "js-cookie": "^3.0.5",
     "postcss": "^8.4.49",
-    "sass": "^1.85.0",
+    "sass": "^1.85.1",
     "svelte-qrcode": "^1.0.1",
     "svelte-routing": "^2.13.0",
     "ts-loader": "^9.5.1",
-    "typescript": "^5.7.2",
+    "typescript": "^5.8.2",
     "vite-plugin-svelte-svg-loader": "^1.0.1"
   }
 }
