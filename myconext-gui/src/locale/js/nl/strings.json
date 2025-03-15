@@ -440,7 +440,7 @@
   "PhoneVerification.PhoneIncorrect.COPY": "Telefoonnummer is onjuist",
   "Congrats.Header.COPY": "Gelukt",
   "Congrats.Info.COPY": "Je kunt nu de eduID app gebruiken om snel in te loggen bij diensten waarvoor je eduID nodig is.",
-  "Congrats.Next.COPY": "Verder naar %1$s",
+  "Congrats.Next.COPY": "Terug naar instellingen",
   "Deactivate.TitleDelete.COPY": "Deactiveer je eduID app",
   "Deactivate.Info.COPY": "Je kunt je eduID app deactiveren als je de app opnieuw wilt installeren of als je een nieuw apparaat hebt.",
   "Deactivate.RecoveryCode.COPY": "Herstelcode",

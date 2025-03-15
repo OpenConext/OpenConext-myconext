@@ -440,7 +440,7 @@
   "PhoneVerification.PhoneIncorrect.COPY": "Phone number is incorrect",
   "Congrats.Header.COPY": "Success",
   "Congrats.Info.COPY": "You can now use the eduID app to quickly log in to services that require eduID.",
-  "Congrats.Next.COPY": "Continue to %1$s",
+  "Congrats.Next.COPY": "Back to settings",
   "Deactivate.TitleDelete.COPY": "Deactivate your eduID app",
   "Deactivate.Info.COPY": "You can deactivate your eduID app if you want to reinstall this app or if you have a new device.",
   "Deactivate.RecoveryCode.COPY": "Recovery code",
