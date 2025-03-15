@@ -86,7 +86,7 @@
                         large={true}
                         label={I18n.t("Account.Delete.COPY")}/>
             </td>
-            <td>{I18n.t("Account.DeleteInfo.COPY")}</td>
+            <td>{@html I18n.t("Account.DeleteInfo.COPY")}</td>
         </tr>
         </tbody>
     </table>
