@@ -40,6 +40,7 @@
         font-weight: 600;
         min-width: 180px;
         text-wrap: nowrap;
+        white-space: nowrap;
 
         &:focus {
             background-color: #003980;
