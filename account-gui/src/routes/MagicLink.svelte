@@ -2,7 +2,6 @@
     import I18n from "../locale/I18n";
     import {user} from "../stores/user";
     import {onMount} from "svelte";
-    import backArrow from "../icons/arrow-left.svg?raw";
     import Spinner from "../components/Spinner.svelte";
     import {resendMagicLinkMail, successfullyLoggedIn} from "../api";
     import {conf, links} from "../stores/conf";
@@ -10,7 +9,6 @@
     import Button from "../components/Button.svelte";
     import {validVerificationCode} from "../constants/regexp";
     import critical from "../icons/critical.svg?raw";
-    import DOMPurify from "dompurify";
 
     const gmail = "/img/get-started-icon-gmail@2x-e80b706.png";
     const outlook = "/img/get-started-icon-outlook-55f9ac5.png";
@@ -35,7 +33,7 @@
         const urlParams = new URLSearchParams(window.location.search);
         verificationCodeError = urlParams.get("mismatch") === "true";
         if (verificationCodeError) {
-           loginStatus = status.LOGGED_IN_DIFFERENT_DEVICE;
+            loginStatus = status.LOGGED_IN_DIFFERENT_DEVICE;
         }
         serviceName = urlParams.get("name");
         modus = urlParams.get("modus");
@@ -216,7 +214,10 @@
         display: inline-block;
         margin-right: 10px;
     }
+
     span.email {
+        display: inline-block;
+        margin-left: 4px;
         font-weight: 600;
     }
 
@@ -230,7 +231,7 @@
 {:else if loginStatus === status.NOT_LOGGED_IN}
     <div class="magic-link">
         <h2 class="header">{I18n.t("PollFromInstitution.Header.COPY")}</h2>
-            <p>{I18n.t("MagicLink.Info.COPY")}<span class="email">{$user.email}.</span></p>
+        <p>{I18n.t("MagicLink.Info.COPY")}<span class="email">{$user.email}.</span></p>
         <div class="spinner-container">
             <Spinner relative={true}/>
             <p>{I18n.t("MagicLink.Awaiting.COPY")}</p>
@@ -243,7 +244,8 @@
                     <a href="https://www.gmail.com">{I18n.t("PollFromInstitution.OpenGMail.COPY")}</a>
                 </div>
                 <div class="mail-client outlook">
-                    <img src={outlook} alt="outlook" on:click={() => window.location.href="https://outlook.live.com/owa/"}/>
+                    <img src={outlook} alt="outlook"
+                         on:click={() => window.location.href="https://outlook.live.com/owa/"}/>
                     <a href="https://outlook.live.com/owa/">{I18n.t("PollFromInstitution.OpenOutlook.COPY")}</a>
                 </div>
             </div>
