@@ -1943,7 +1943,7 @@ SHARED:
     TestFlash:
       COPY:
         en: You successfully tested your security key to authenticate.
-        nl: Je hebt met succes de beveligingssleutel getest voor inloggen.
+        nl: Je hebt met succes de beveiligingssleutel getest voor inloggen.
   RememberMe:
     'Yes':
       COPY:
@@ -2644,7 +2644,7 @@ SHARED:
     UseWebAuth:
       COPY:
         en: Log in with a security key
-        nl: Log in in met een beveligingssleutel
+        nl: Log in in met een beveiligingssleutel
     UseOr:
       COPY:
         en: or
@@ -3034,7 +3034,7 @@ SHARED:
     Info:
       COPY:
         en: Add security key
-        nl: Voeg een beveligingssleutel toe
+        nl: Voeg een beveiligingssleutel toe
     BrowserPrompt:
       COPY:
         en: >-
@@ -3089,7 +3089,7 @@ SHARED:
     Info:
       COPY:
         en: Test security key
-        nl: Test een beveligingssleutel
+        nl: Test een beveiligingssleutel
     BrowserPrompt:
       COPY:
         en: >-
