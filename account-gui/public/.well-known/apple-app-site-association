@@ -7,7 +7,8 @@
           "/tiqrenroll/",
           "/tiqrauth/",
           "/tiqrenroll",
-          "/tiqrauth"
+          "/tiqrauth",
+          "/mobile/api/create-from-mobile-api/in-app"
         ]
       },
       {
@@ -25,6 +26,9 @@
             "/": "/client/mobile/*",
             "comment": "mobile"
           }
+          {
+            "/": "/mobile/api/create-from-mobile-api/in-app*",
+            "comment": "open flow van in app"
         ]
       }
     ]
