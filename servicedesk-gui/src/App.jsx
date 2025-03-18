@@ -21,6 +21,7 @@ const App = () => {
 
     useEffect(() => {
         if (window.location.pathname.endsWith("/login")) {
+            setLoading(false);
             return;
         }
         me()
