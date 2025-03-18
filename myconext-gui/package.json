@@ -48,7 +48,7 @@
     "i18n-js": "^4.5.1",
     "js-cookie": "^3.0.5",
     "postcss": "^8.4.49",
-    "sass": "^1.85.1",
+    "sass": "^1.86.0",
     "save-dev": "^0.0.1-security",
     "svelte-routing": "^2.13.0"
   }
