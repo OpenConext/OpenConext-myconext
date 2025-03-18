@@ -91,6 +91,41 @@
                     margin: 25px auto;
                 }
 
+                @keyframes rainbow {
+                    0% {
+                        fill: red;
+                        border: 1px solid red;
+                    }
+                    14% {
+                        fill: orange;
+                        border: 1px solid orange;
+                    }
+                    28% {
+                        fill: yellow;
+                        border: 1px solid yellow;
+                    }
+                    42% {
+                        fill: green;
+                        border: 1px solid green;
+                    }
+                    57% {
+                        fill: blue;
+                        border: 1px solid blue;
+                    }
+                    71% {
+                        fill: indigo;
+                        border: 1px solid indigo;
+                    }
+                    85% {
+                        fill: violet;
+                        border: 1px solid violet;
+                    }
+                    100% {
+                        fill: red;
+                        border: 1px solid red;
+                    }
+                }
+
                 svg {
                     width: 160px;
                     height: auto;
@@ -103,6 +138,10 @@
                         width: 180px;
                     }
 
+                }
+
+                &.animated svg {
+                    animation: rainbow 2s linear ;
                 }
 
                 &.info {

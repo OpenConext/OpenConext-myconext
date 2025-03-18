@@ -1,12 +1,19 @@
-import React from "react";
+import React, {useState} from "react";
 import {Button, ButtonSize, ButtonType} from "@surfnet/sds";
 import './Login.scss';
 import I18n from "../locale/I18n";
 import DOMPurify from "dompurify";
-import Frontdesk from "../icons/frontdesk.svg";
+import FrontDesk from "../icons/frontdesk.svg";
 import {LandingInfo} from "../components/LandingInfo";
 
 export const Login = () => {
+
+    const [isAnimating, setIsAnimating] = useState(false);
+
+    const toggleAnimation = () => {
+        setIsAnimating(true);
+        setTimeout(() => setIsAnimating(false), 2250);
+    }
 
     const doLogin = () => {
         const path = window.location.origin;
@@ -27,8 +34,8 @@ export const Login = () => {
                         <p className={"sup"}
                            dangerouslySetInnerHTML={{__html: DOMPurify.sanitize(I18n.t("landing.header.sup"))}}/>
                     </div>
-                    <div className="header-right">
-                        <Frontdesk/>
+                    <div className={`header-right ${isAnimating ? "animated" : ""}`} onClick={toggleAnimation}>
+                        <FrontDesk/>
                     </div>
                 </div>
             </div>
