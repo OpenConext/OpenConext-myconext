@@ -70,6 +70,7 @@ button, .button {
     width: 240px;
     border: none;
     cursor: pointer;
+    text-wrap: nowrap;
 }
 
 a.button {

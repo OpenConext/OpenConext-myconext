@@ -9,7 +9,7 @@
     import {proceed} from "../utils/sso";
 
     let serviceName = null;
-    let explanation = null;
+    let explanation = "info";
     let showSpinner = true;
 
     onMount(() => {

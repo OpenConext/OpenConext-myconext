@@ -87,7 +87,7 @@ const Control = ({restart, proceed}) => {
     return (
         <div className="control">
             <div className="control-header">
-                <h4>{I18n.t("control.header")}<span className="code">{controlCode.code}</span></h4>
+                <h2>{I18n.t("control.header")}<span className="code">{controlCode.code}</span></h2>
                 <Button txt={I18n.t("control.restart")}
                         type={ButtonType.GhostDark}
                         onClick={() => restart()}

@@ -11,7 +11,7 @@
 
     export let id;
 
-    let explanation = null;
+    let explanation = "info";
     let serviceName = null;
     let showSpinner = true;
     let showChooseOptions = false;

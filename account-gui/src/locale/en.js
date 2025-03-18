@@ -319,12 +319,14 @@ const en =  {
         retryLink: "Retry"
     },
     stepUpExplanation: {
+        info: " ",
         linked_institution: "Your eduID account must be linked to a trusted party.",
         validate_names: "Your first name and last name must be verified by a trusted party.",
         validate_names_external: "Your identity must be verified by a trusted party.",
         affiliation_student: "You must prove that you are following education by linking your eduID account to a trusted party."
     },
     stepUpVerification: {
+        info: " ",
         linked_institution: "Your eduID account is linked to a trusted party.",
         validate_names: "Your first name and last name are verified by a trusted party.",
         validate_names_external: "Your identity is verified by a trusted party.",

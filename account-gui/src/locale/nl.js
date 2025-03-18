@@ -318,12 +318,14 @@ const nl = {
         retryLink: "Opnieuw proberen"
     },
     stepUpExplanation: {
+        info: " ",
         linked_institution: "Je eduID-account moet gekoppeld zijn aan een vertrouwde instelling.",
         validate_names: "Je voornaam en achternaam moeten worden geverifieerd door een vertrouwde instelling.",
         validate_names_external: "Je voornaam en achternaam moeten worden geverifieerd door een externe vertrouwde instelling.",
         affiliation_student: "Je moet aantonen dat je onderwijs volgt door je eduID-account te koppelen aan een vertrouwde instelling."
     },
     stepUpVerification: {
+        info: " ",
         linked_institution: "Je eduID-account is gekoppeld aan een vertrouwde instelling.",
         validate_names: "Je voornaam en achternaam zijn geverifieerd door een vertrouwde instelling.",
         validate_names_external: "Je voornaam en achternaam moeten worden geverifieerd door een externe vertrouwde instelling.",

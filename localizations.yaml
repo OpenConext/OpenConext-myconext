@@ -1,4 +1,5 @@
 ---
+# yamllint disable rule:line-length
 ANDROID:
   Button:
     OK:
@@ -71,6 +72,10 @@ ANDROID:
         COPY:
           en: "Failed to initialize AppData. Reason: %1{{s}}"
           nl: "AppData kan niet worden geïnitialiseerd. Reden: %1{{s}}"
+      NoSupportedBrowserFound:
+        COPY:
+          en: "Failed to initialize AppData. No supported browser found."
+          nl: "AppData kan niet worden geïnitialiseerd. Geen ondersteunde browser gevonden."
 SHARED:
   About:
     Info:
@@ -585,9 +590,14 @@ SHARED:
             succesvol bent ingelogd kom je hier weer terug.
   EppnAlreadyLinked:
     Title:
-      COPY:
-        en: Account not connected!
-        nl: Koppeling niet gemaakt!
+      AccountNotConnected:
+        COPY:
+          en: Account not connected!
+          nl: Koppeling niet gemaakt!
+      VerificationFailed:
+        COPY:
+          en: Verification failed!
+          nl: Verificatie mislukt!
     Info:
       COPY:
         en: >-
@@ -598,6 +608,22 @@ SHARED:
           Je eduID kon niet worden gekoppeld. Het account waarmee je
           zojuist bent ingelogd, is al aan een ander eduID gekoppeld:
           %1{{s}}.
+    InfoExternalAccountWithoutEmail:
+      COPY:
+        en: >-
+          Your eduID could not be verified.
+          The external account with which you just logged in, is already linked to a different eduID account.
+        nl: >-
+          Je eduID kon niet worden geverifïeerd.
+          Het externe account waarmee je zojuist bent ingelogd, is al aan een ander eduID-account gekoppeld.
+    InfoExternalAccountWithEmail:
+      COPY:
+        en: >-
+          Your eduID could not be verified.
+          The external account with which you just logged in, is already linked to a different eduID account: %1{{s}}
+        nl: >-
+          Je eduID kon niet worden geverifïeerd.
+          Het externe account waarmee je zojuist bent ingelogd, is al aan een ander eduID-account gekoppeld: %1{{s}}
     RetryButton:
       COPY:
         en: Retry
@@ -2582,7 +2608,7 @@ SHARED:
     GivenName:
       COPY:
         en: First name
-        nl: Voornaam
+        nl: Roepnaam
     FamilyNamePlaceholder:
       COPY:
         en: e.g. Berners-Lee
@@ -3466,7 +3492,7 @@ SHARED:
     LandingPage:
       MainText:
         COPY:
-          en: Verifiy who you are in the field of education and research
+          en: Verify who you are in the field of education and research
           nl: Bewijs wie je bent in het veld van onderwijs en onderzoek
       SignInButton:
         COPY:
@@ -3674,6 +3700,10 @@ SHARED:
       COPY:
         en: Could not request SMS code, please retry.
         nl: Kan geen sms-code aanvragen, probeer het opnieuw.
+    RemoveControlCodeError:
+      COPY:
+        en: Could not remove control code, please retry.
+        nl: Kan de controlecode niet verwijderen, probeer het opnieuw.
     PasswordUpdateError:
       COPY:
         en: Cannot update password
@@ -3811,6 +3841,10 @@ SHARED:
         COPY:
           en: "The email domain used in %1{{s}} is not allowed."
           nl: "Het e-maildomein gebruikt in %1{{s}} is niet toegestaan."
+    GenerateControlCodeError:
+      COPY:
+        en: Could not generate control code
+        nl: Kan geen controlecode genereren
     Auth:
       Invalid:
         Title:
@@ -3988,3 +4022,164 @@ SHARED:
       COPY:
         en: "eIDAS"
         nl: "eIDAS"
+  ConfirmIdentityWithIdIntro:
+    Title:
+      FirstLine:
+        COPY:
+          en: Confirm your identity
+          nl: Bevestig wie je bent
+      SecondLine:
+        COPY:
+          en: with your ID
+          nl: met je identiteitsbewijs
+  ServiceDesk:
+    ConfirmIdentityHeader:
+      COPY:
+        en: "You need to manually confirm your identity"
+        nl: "Bevestig wie je bent met je identiteitsbewijs"
+    ConfirmIdentity:
+      COPY:
+        en: You must confirm your identity at one of our eduID Service Desks."
+        nl: "Je kunt je identiteit ook bevestigen via een van onze eduID Service Desks."
+    StepsHeader:
+      COPY:
+        en: "Follow these steps:"
+        nl: "Volg deze stappen:"
+    Step1:
+      COPY:
+        en: "Enter your full name as it appears on your ID (first and last name)."
+        nl: "Vul je volledige naam in zoals die op je identiteitsbewijs staat (voornamen en achternaam)."
+    Step2:
+      COPY:
+        en: "Generate a personal verification code."
+        nl: "Genereer een persoonlijke controlecode."
+    Step3:
+      COPY:
+        en: Present your code and ID to an eduID Service Desk. They will verify your identity manually."
+        nl: "Laat je controlecode en identiteitsbewijs zien aan een eduID Service Desk. Die bevestigt zo je identiteit."
+    RedirectWarning:
+      COPY:
+        en: "We will redirect you to another website to enter your name. You won’t be able to log in to <strong>%1$s</strong> immediately afterward; you will first need to contact a eduID Service Desk."
+        nl: "We sturen je door naar een andere website om je naam in te vullen. Je kunt daarna nog niet gelijk inloggen bij <strong>%1$s</strong>, maar je moet eerst contact opnemen met een eduID Service Desk."
+    AcceptedIds:
+      COPY:
+        en: "Accepted IDs:"
+        nl: "Geldige identiteitsbewijzen:"
+    Passports:
+      COPY:
+        en: "Passports"
+        nl: "paspoorten"
+    Eea:
+      COPY:
+        en: "EEA<sup>*</sup> ID cards"
+        nl: "EEA<sup>*</sup> ID-kaarten"
+    DriverLicense:
+      COPY:
+        en: "Dutch driver's license"
+        nl: "Nederlandse rijbewijzen"
+    ResidencePermit:
+      COPY:
+        en: "Dutch residence permits"
+        nl: "Nederlandse verblijfsvergunningen"
+    Note:
+      COPY:
+        en: "Please note: copies, public transport passes and student cards are not valid ID's"
+        nl: "Let op: kopieën, OV-kaarten en studentenkaarten zijn geen geldige identiteitsbewijzen."
+    EeaNote:
+      COPY:
+        en: "<sup>*</sup>EEA: all EU member states plus Liechtenstein, Norway and Iceland"
+        nl: "<sup>*</sup>EEA: alle EU-lidstaten + Liechtenstein, Noorwegen en IJsland."
+    Next:
+      COPY:
+        en: "Enter your details"
+        nl: "Naar gegevens invullen"
+    IdCard:
+      Information:
+        COPY:
+          en: "Enter your details as they appear on your ID. Names must be in Roman characters."
+          nl: "Vul je gegevens in zoals die op je identiteitsbewijs staan."
+      LastName:
+        COPY:
+          en: "Last name"
+          nl: "Achternaam"
+      FirstName:
+        COPY:
+          en: "First name(s)"
+          nl: "Voornamen"
+      DayOfBirth:
+        COPY:
+          en: "Date of birth"
+          nl: "Geboortedatum"
+      GenerateControlCode:
+        COPY:
+          en: "Generate verification code"
+          nl: "Genereer controlcode"
+    ControlCode:
+      ControlCode:
+        COPY:
+          en: "Verification code"
+          nl: "Controlecode"
+      YourControlCode:
+        COPY:
+          en: "Your verification code"
+          nl: "Je controlecode"
+      Info:
+        COPY:
+          en: "You will also receive an email with this code. The code is valid for %1$s more days and is intended for:"
+          nl: "Je krijgt ook een e-mail met deze code. De code is %1$s dagen geldig en is bedoeld voor:"
+      TypoPrefix:
+        COPY:
+          en: "Made a typo? "
+          nl: "Typfout gemaakt? "
+      TypoLink:
+        COPY:
+          en: "Edit your details"
+          nl: "Pas gegevens aan"
+      Todo:
+        COPY:
+          en: "What's next?"
+          nl: "Wat moet je nu doen?"
+      TodoDetails:
+        COPY:
+          en: "Schedule an appointment with an eduID Service Desk (online or in person). During your appointment, show your verification code and ID."
+          nl: "Maak een afspraak met een eduID Service Desk (digitaal of op locatie). Laat tijdens je afspraak je controlecode en identiteisbewijs zien."
+      ServiceDesks:
+        COPY:
+          en: "Show eduID Service Desks"
+          nl: "Bekijk eduID Service Desks"
+      ServiceDesksLocations:
+        COPY:
+          en: "https://eduID.nl/servicedesk-en"
+          nl: "https://eduID.nl/servicedesk"
+      Back:
+        COPY:
+          en: "Back to overview"
+          nl: "Terug naar overzicht"
+      Rethink:
+        COPY:
+          en: "Want to prove your identity another way? Make sure to delete your verification code first."
+          nl: "Wil je toch op een andere manier bewijzen wie je bent? Verwijder dan eerst je controlecode."
+      DeleteControlCode:
+        COPY:
+          en: "Delete verification code"
+          nl: "Verwijder controlecode"
+      DeletedControlCode:
+        COPY:
+          en: "Verification code deleted"
+          nl: "Verificatie-code verwijderd"
+      Banner:
+        COPY:
+          en: "Verify your identity at an eduID Service Desk by presenting your ID and verification code."
+          nl: "Bevestig je identiteit bij een eduID Service Desk. Dit doe je door je identiteitsbewijs en controlecode te laten zien."
+      ShowCode:
+        COPY:
+          en: "Show code"
+          nl: "Toon code"
+      ValidityCode:
+        COPY:
+          en: "Your code is valid for %1$s more days."
+          nl: "Je code is nog geldig voor %1$s dagen."
+      CantUse:
+        COPY:
+          en: "I can't use any of the above methods"
+          nl: "Ik kan geen van bovenstaande manieren gebruiken"

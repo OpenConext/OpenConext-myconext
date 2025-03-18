@@ -431,6 +431,7 @@ public class AccountLinkerController implements UserAuthentication {
                     "<ul>" +
                     "<li>Success: <a href=\"\">https://login.{environment}.eduid.nl/client/mobile/verify-account-linked</a></li>" +
                     "<li>Failure, something went wrong: <a href=\"\">https://login.{environment}.eduid.nl/client/mobile/verify-error</a></li>" +
+                    "<li>Failure, account already linked: <a href=\"\">https://login.{environment}.eduid.nl/client/mobile/subject-already-linked?idp_scoping=idin?email=jdoe%40example.com</a></li>" +
                     "</ul>",
             responses = {
                     @ApiResponse(responseCode = "200", description = "Url for authentication", useReturnTypeSchema = true,
@@ -569,7 +570,8 @@ public class AccountLinkerController implements UserAuthentication {
             String encodedOtherMail = URLEncoder.encode(optionalUsers.stream().findFirst().get().getEmail(),Charset.defaultCharset());
             String clientRedirectUrl = isMobileFlow ?
                     idpBaseRedirectUrl + String.format("/client/mobile/verify-already-used?email=%s", encodedOtherMail) :
-                    spRedirectUrl + String.format("/subject-already-linked?idp_scoping?email=%s", encodedOtherMail);
+                    spRedirectUrl + String.format("/subject-already-linked?idp_scoping=%s?email=%s",
+                            verifyState.getIdpScoping().name(), encodedOtherMail);
             return ResponseEntity.status(HttpStatus.FOUND)
                     .location(URI.create(clientRedirectUrl))
                     .build();

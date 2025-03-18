@@ -96,7 +96,8 @@ public class InactivityMail {
                 userRepository.save(user);
             });
         }
-        LOG.info(String.format("Mailed %s users who has been inactive for %s period in for %s ms, dry run: %s",
+        LOG.info(String.format("%s %s users who has been inactive for %s period in for %s ms, dry run: %s",
+                dryRunEmail ? "Would have mailed" : "Mailed",
                 users.size(), userInactivity, System.currentTimeMillis() - nowInMillis, dryRunEmail));
     }
 
@@ -108,7 +109,8 @@ public class InactivityMail {
         if (!dryRunEmail) {
             userRepository.deleteAll(users);
         }
-        LOG.info(String.format("Deleted %s users (%s) who has been inactive for 5 years in for %s ms, dry-run: %s",
+        LOG.info(String.format("%s %s users (%s) who has been inactive for 5 years in for %s ms, dry-run: %s",
+                dryRunEmail ? "Would have deleted" : "Deleted",
                 users.size(), users.stream().map(User::getEmail).collect(Collectors.joining(", ")),
                 System.currentTimeMillis() - nowInMillis,
                 dryRunEmail));

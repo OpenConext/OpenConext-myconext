@@ -98,7 +98,9 @@
     let displayMenu = false;
     let menuIcon = chevron_right;
 
-    onMount(() => currentTab = bookmark ? currentTab = tabs.find(tab => tab.name === bookmark) : tabs[0]);
+    onMount(() => {
+        currentTab = bookmark ? currentTab = tabs.find(tab => tab.name === bookmark) : tabs[0]
+    });
 
     const switchTab = name => () => {
         navigate(`/${name}`);
@@ -265,7 +267,8 @@
             {/each}
         </ul>
     </nav>
-    <div class:includes-banner={currentTab.name === "personal" || currentTab.name === "manage"} class="component-container">
+    <div class:includes-banner={currentTab.name === "personal" || currentTab.name === "manage"}
+         class="component-container">
         <Flash/>
         <svelte:component this={currentTab.component} {...currentTab.props}/>
     </div>
