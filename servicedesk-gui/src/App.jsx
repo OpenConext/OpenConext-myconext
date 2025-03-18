@@ -20,6 +20,9 @@ const App = () => {
     const navigate = useNavigate();
 
     useEffect(() => {
+        if (window.location.pathname.endsWith("/login")) {
+            return;
+        }
         me()
             .then(res => {
                 useAppStore.setState(() => ({user: res}));
@@ -30,10 +33,11 @@ const App = () => {
                 } else {
                     navigate("/404");
                 }
-            }).catch(() => {
-            setLoading(false);
-            navigate("/login");
-        });
+            })
+            .catch(() => {
+                setLoading(false);
+                navigate("/login");
+            });
 
     }, []);
 
@@ -56,9 +60,9 @@ const App = () => {
                     </Routes>}
                 {!isAuthenticated &&
                     <Routes>
+                        <Route path="/login" element={<Login/>}/>
                         <Route path="/" element={<Navigate replace to="404"/>}/>
                         <Route path="/404" element={<NotFound/>}/>
-                        <Route path="/login" element={<Login/>}/>
                         <Route path="/*" element={<NotFound/>}/>
                     </Routes>}
             </div>
