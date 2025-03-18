@@ -27,7 +27,7 @@ const nl = {
         usePasswordNoWebAuthn: "Typ een wachtwoord",
         useMagicLink: "Gebruik magische link",
         useMagicLinkNoWebAuthn: "Gebruik magische link.",
-        useWebAuth: "Login in met een beveligingssleutel",
+        useWebAuth: "Login in met een beveiligingssleutel",
         useOr: " of ",
         requestEduIdButton: "Vraag een eduID aan",
         rememberMe: "Ingelogd blijven",
@@ -199,13 +199,13 @@ const nl = {
         title2: "Er is iets fout gegaan (404)."
     },
     webAuthn: {
-        info: "Voeg een beveligingssleutel toe",
-        browserPrompt: "Klik op de onderstaande knop om een beveligingssleutel toe te voegen aan je eduID-account. Volg daarbij de instructies van je browser op.",
+        info: "Voeg een beveiligingssleutel toe",
+        browserPrompt: "Klik op de onderstaande knop om een beveiligingssleutel toe te voegen aan je eduID-account. Volg daarbij de instructies van je browser op.",
         start: "Start",
         header: "Log in met een beveiligingssleutel",
         explanation: "Er wordt een nieuw venster geopend. Volg de instructies om in te loggen.",
         next: "Log in met een beveiligingssleutel",
-        error: "De beveligingssleutel kan niet gebruikt worden."
+        error: "De beveiligingssleutel kan niet gebruikt worden."
     },
     useLink: {
         header: "Vraag een magische link aan",
@@ -274,8 +274,8 @@ const nl = {
         next: "Verder naar {{name}}"
     },
     webAuthnTest: {
-        info: "Test een beveligingssleutel",
-        browserPrompt: "Klik op de onderstaande knop om een beveligingssleutel te testen. Volg daarbij de instructies van je browser op.",
+        info: "Test een beveiligingssleutel",
+        browserPrompt: "Klik op de onderstaande knop om een beveiligingssleutel te testen. Volg daarbij de instructies van je browser op.",
         start: "Test"
     },
     affiliationMissing: {

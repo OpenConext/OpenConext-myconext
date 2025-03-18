@@ -366,7 +366,7 @@ const nl = {
         credentialNamePlaceholder: "bijv. mijn gele Yubikey",
         test: "Test",
         testInfo: "Druk op de <strong>test</strong>knop om een 1 van je beveiligingssleutels te testen. Je wordt doorgestuurd naar het eduID loginscherm.",
-        testFlash: "Je hebt met succes de beveligingssleutel getest voor inloggen."
+        testFlash: "Je hebt met succes de beveiligingssleutel getest voor inloggen."
     },
     rememberMe: {
         updated: "Dit apparaat wordt niet langer onthouden",
