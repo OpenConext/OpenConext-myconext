@@ -4119,7 +4119,7 @@ SHARED:
           en: "Select..."
           nl: "Selecteer..."
       DateOfBirth:
-        COPY: 
+        COPY:
           en: "Day of birth"
           nl: "Geboortedag"
       MonthOfBirth:
