@@ -4114,6 +4114,22 @@ SHARED:
         COPY:
           en: "Generate verification code"
           nl: "Genereer controlcode"
+      SelectPlaceholder:
+        COPY:
+          en: "Select..."
+          nl: "Selecteer..."
+      DateOfBirth:
+        COPY: 
+          en: "Day of birth"
+          nl: "Geboortedag"
+      MonthOfBirth:
+        COPY:
+          en: "Month"
+          nl: "Maand"
+      YearOfBirth:
+        COPY:
+          en: "Year"
+          nl: "Jaar"
     ControlCode:
       ControlCode:
         COPY:
