@@ -583,7 +583,7 @@
   "MagicLink.OpenMailTitle.COPY": "Open your e-mail",
   "MagicLink.OpenMailDisclaimer.COPY": "Can't find the email? Check the spam folder",
   "MagicLink.Header.COPY": "Check your email",
-  "MagicLink.Info.COPY": "Press the link we sent to %1$s.",
+  "MagicLink.Info.COPY": "Press the link we sent to",
   "MagicLink.Awaiting.COPY": "Waiting for you to press the link…",
   "MagicLink.OpenGMail.COPY": "Open gmail.com",
   "MagicLink.OpenOutlook.COPY": "Open outlook.com",
