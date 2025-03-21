@@ -2872,8 +2872,8 @@ SHARED:
         nl: Controleer je e-mail
     Info:
       COPY:
-        en: Press the link we sent to %1{{s}}.
-        nl: Druk op de link die we verstuurd hebben naar %1{{s}}.
+        en: Press the link we sent to
+        nl: Druk op de link die we verstuurd hebben naar
     Awaiting:
       COPY:
         en: Waiting for you to press the link…
