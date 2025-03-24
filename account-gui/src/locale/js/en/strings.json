@@ -289,7 +289,7 @@
   "Account.Info1.COPY": "You can delete your eduID whenever you want.",
   "Account.Info2.COPY": "Note: if you delete your eduID, you will also lose your unique eduID number connected to your email address. When you create a new eduID with the same email address, you’ll receive a new eduID number. This new number may cause some websites to recognize you as a new user.",
   "Account.Info3.COPY": "Good to know: deleting your eduID does not mean that all websites connected to your eduID will also delete your info.",
-  "Account.Info4.COPY": "Close the browser to delete your eduID.",
+  "Account.Info4.COPY": "Close the browser afterwards to delete your eduID.",
   "Account.DeleteAccount.COPY": "Delete your eduID",
   "Account.DeleteAccountConfirmation.COPY": "Are you sure you want to delete your eduID?",
   "Account.DeleteAccountSure.COPY": "Delete your account forever?",
