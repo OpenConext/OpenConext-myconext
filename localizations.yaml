@@ -1423,9 +1423,9 @@ SHARED:
     Info4:
       COPY:
         en: >-
-          Close the browser to delete your eduID.
+          Close the browser afterwards to delete your eduID.
         nl: >-
-          Sluit de browser om je eduID te verwijderen.
+          Sluit na afloop de browser om je eduID te verwijderen.
     DeleteAccount:
       COPY:
         en: Delete your eduID
