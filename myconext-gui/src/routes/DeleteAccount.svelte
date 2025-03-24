@@ -102,9 +102,10 @@
 <div class="account">
 
     <h2>{I18n.t("Account.TitleDelete.COPY")}</h2>
-    {#each [1, 2, 3, 4] as i}
-        <p class="divider">{I18n.t("Account.Info.COPY" + i)}</p>
-    {/each}
+    <p class="divider">{I18n.t("Account.Info1.COPY")}</p>
+    <p class="divider">{I18n.t("Account.Info2.COPY")}</p>
+    <p class="divider">{I18n.t("Account.Info3.COPY")}</p>
+    <p class="divider">{I18n.t("Account.Info4.COPY")}</p>
     <div class="options">
         <Button href="/cancel" label={I18n.t("YourVerifiedInformation.ConfirmRemoval.Button.Cancel.COPY")}
                 onClick={() => navigate("/account")} className="cancel"/>
