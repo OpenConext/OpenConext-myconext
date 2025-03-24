@@ -1372,7 +1372,7 @@ SHARED:
       COPY:
         en: >-
           Press the button to download all your personal data from your
-          eduID .
+          eduID.
         nl: >-
           Druk op de knop om al je persoonlijke gegevens in je
           eduID te downloaden.
@@ -1444,12 +1444,8 @@ SHARED:
         nl: Je kunt deze actie daarna niet meer ongedaan maken.
     Proceed:
       COPY:
-        en: >-
-          Type your first and last name exactly as they appear
-          in <strong>Your personal info</strong> to proceed.
-        nl: >-
-          Typ je voornamen en achternaam zoals die in
-          <strong>Je persoonlijke gegevens</strong> staan om verder te gaan
+        en: "Type 'delete' if you are sure you want to delete your eduID."
+        nl: "Typ 'verwijder' als je er zeker van bent dat je je eduID wil verwijderen."
     Name:
       COPY:
         en: Your full name
@@ -2471,7 +2467,7 @@ SHARED:
         en: >-
           <span>I agree with <a tabindex='-1'
           href='https://eduid.nl/terms-of-use/' target='_blank'>the terms of
-          service</a> and I've read<a tabindex='-1'
+          service</a> and I've read <a tabindex='-1'
           href='https://eduid.nl/privacy_policy/' target='_blank'>the privacy
           policy</a>.</span>
         nl: >-
@@ -2479,7 +2475,7 @@ SHARED:
           href='https://eduid.nl/gebruiksvoorwaarden/' target='_blank'>de
           voorwaarden</a> en ik heb de <a tabindex='-1'
           href='https://eduid.nl/privacy/' target='_blank'>de
-          privacyverklaring</a>gelezen.</span>
+          privacyverklaring</a> gelezen.</span>
     RequestEduIdButton:
       COPY:
         en: Make an eduID
