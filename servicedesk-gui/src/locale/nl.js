@@ -66,6 +66,11 @@ const nl = {
         validDate: "De geboortedatum is nu correct en kan worden bevestigd",
         idDocument: "Vul de <span>laatste 6 karakters</span> van het document in",
     },
+    forbidden: {
+        info: "Helaas heb je geen toegang tot de ServiceDesk.",
+        logoutInfo: "Na het uitloggen, MOET je de browser sluiten om compleet uit te loggen.",
+        logout: "Uitloggen"
+    },
     confirmation: {
         header: "De identiteit van de persoon is bevestigd",
         info: "De persoon ziet vanaf nu in eduID een vinkje voor de persoonsgegevens",

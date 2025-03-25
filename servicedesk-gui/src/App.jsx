@@ -11,6 +11,7 @@ import RefreshRoute from "./pages/RefreshRoute.jsx";
 import {Login} from "./pages/Login.jsx";
 import {Home} from "./pages/Home.jsx";
 import {Footer} from "./components/Footer.jsx";
+import Forbidden from "./pages/Forbidden.jsx";
 
 const App = () => {
 
@@ -32,7 +33,7 @@ const App = () => {
                     setIsAuthenticated(true);
                     navigate("/home");
                 } else {
-                    navigate("/404");
+                    navigate("/forbidden");
                 }
             })
             .catch(() => {
@@ -56,13 +57,15 @@ const App = () => {
                         <Route path="/" element={<Navigate replace to="home"/>}/>
                         <Route path="/home/:tab?" element={<Home/>}/>
                         <Route path="/refresh-route/:path" element={<RefreshRoute/>}/>
+                        <Route path="/forbidden" element={<Forbidden/>}/>
                         <Route path="/login" element={<Login/>}/>
                         <Route path="*" element={<NotFound/>}/>
                     </Routes>}
                 {!isAuthenticated &&
                     <Routes>
                         <Route path="/login" element={<Login/>}/>
-                        <Route path="/" element={<Navigate replace to="404"/>}/>
+                        <Route path="/" element={<Navigate replace to="forbidden"/>}/>
+                        <Route path="/forbidden" element={<Forbidden/>}/>
                         <Route path="/404" element={<NotFound/>}/>
                         <Route path="/*" element={<NotFound/>}/>
                     </Routes>}

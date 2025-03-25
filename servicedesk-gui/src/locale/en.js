@@ -66,6 +66,11 @@ const en = {
         validDate: "The day of birth is now valid and can be confirmed",
         idDocument: "Fill in the <span>last 6 characters</span> of the ID document",
     },
+    forbidden: {
+        info: "Unfortunately you do not have access to the ServiceDesk.",
+        logoutInfo: "After logout, you MUST close your browser to complete the logout process.",
+        logout: "Logout"
+    },
     confirmation: {
         header: "The identity of the person has been confirmed",
         info: "From now on, the person will see a check mark in front of the personal data in eduID",
