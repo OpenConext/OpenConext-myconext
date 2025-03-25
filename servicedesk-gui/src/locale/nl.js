@@ -67,8 +67,7 @@ const nl = {
         idDocument: "Vul de <span>laatste 6 karakters</span> van het document in",
     },
     forbidden: {
-        info: "Helaas heb je geen toegang tot de ServiceDesk.",
-        logoutInfo: "Na het uitloggen, MOET je de browser sluiten om compleet uit te loggen.",
+        info: "Helaas heb je geen toegang tot de ServiceDesk. Als je uitlogt, dan kan je het opnieuw proberen met een andere account",
         logout: "Uitloggen"
     },
     confirmation: {

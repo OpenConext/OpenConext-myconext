@@ -22,8 +22,7 @@ const Forbidden = () => {
     return (
         <div className="forbidden-container">
             <div className="forbidden">
-                <h4>{I18n.t("forbidden.info")}</h4>
-                {/*<p>{I18n.t("forbidden.logoutInfo")}</p>*/}
+                <p>{I18n.t("forbidden.info")}</p>
                 <WarningLogo/>
                 <div className="actions">
                     <Button txt={I18n.t("forbidden.logout")}

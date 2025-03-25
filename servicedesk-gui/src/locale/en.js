@@ -67,8 +67,7 @@ const en = {
         idDocument: "Fill in the <span>last 6 characters</span> of the ID document",
     },
     forbidden: {
-        info: "Unfortunately you do not have access to the ServiceDesk.",
-        logoutInfo: "After logout, you MUST close your browser to complete the logout process.",
+        info: "Unfortunately you do not have access to the ServiceDesk. If you logout, you can try again with a different account.",
         logout: "Logout"
     },
     confirmation: {
