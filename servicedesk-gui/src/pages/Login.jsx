@@ -17,7 +17,7 @@ export const Login = () => {
 
     const doLogin = () => {
         const path = window.location.origin;
-        window.location.href = `${path}/Shibboleth.sso/Login?target=/`;
+        window.location.href = `${path}/Shibboleth.sso/Login?target=/&forceAuthn=true`;
     }
 
     return (
