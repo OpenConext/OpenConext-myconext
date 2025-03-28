@@ -7,5 +7,12 @@ export default defineConfig({
     server: {
         port: 3002,
         open: true,
+        proxy: {
+            '/config': {
+                target: 'http://localhost:8081',
+                changeOrigin: false,
+                secure: false
+            },
+        }
     },
 })

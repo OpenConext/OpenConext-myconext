@@ -1,0 +1,67 @@
+@use "../index";
+
+.desktop-navigation {
+    display: flex;
+    gap: 25px;
+    width: 100%;
+
+    @media (max-width: index.$mobile-width) {
+        flex-direction: column;
+    }
+
+    @media (min-width: calc(index.$mobile-width + 1px)) {
+        &.mobile {
+            display: none;
+        }
+    }
+
+    a {
+        color: #5E6873;
+        text-decoration: none;
+        font-weight: 400;
+        font-size: 18px;
+        line-height: 36px;
+
+        @media (max-width: index.$mobile-width) {
+            color: black;
+            font-weight: 400;
+            font-size: 32px;
+            line-height: 44px;
+        }
+
+        &.active {
+            font-weight: 600;
+            color: black;
+            border-bottom: 2px solid var(--sds--color--blue--400);
+
+            @media (max-width: index.$mobile-width) {
+                font-weight: 400;
+                color: black;
+                border-bottom: none;
+            }
+        }
+
+    }
+
+    .links {
+        margin: 0 40px 0 auto;
+        display: flex;
+        gap: 15px;
+
+        @media (max-width: index.$mobile-width) {
+            flex-direction: column;
+            margin: 16px 0 0 0;
+            gap: 50px;
+        }
+
+        button.sds--btn {
+            min-width: 180px;
+
+            @media (max-width: index.$mobile-width) {
+                max-width: 180px;
+            }
+        }
+    }
+
+}
+

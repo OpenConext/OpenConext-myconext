@@ -1,37 +1,39 @@
-import {Link, useNavigate} from "react-router";
-import eduIDLogo from '../assets/logo_eduID.svg'
-import {useState} from "react";
+import {Link, useLocation, useNavigate} from "react-router";
+import eduIDLogo from "../assets/logo_eduID.svg";
+import hamburger from "../assets/hamburger.svg";
+import close from "../assets/close.svg";
 import {stopEvent} from "../utils/Utils.js";
-import I18n from "../locale/I18n.js";
-
-
-const tabNames = ["home", "about", "support"]
+import "./Header.scss";
+import {Navigation} from "./Navigation.jsx";
 
 export const Header = () => {
 
     const navigate = useNavigate();
-    const [tab, setTab] = useState("home")
+    const currentLocation = useLocation();
 
-
-    const doNavigate = (e, tabName) => {
+    const navigateBack = e => {
         stopEvent(e);
-        setTab(tabName);
-        navigate(`/${tabName}`)
+        navigate(-1);
     }
 
     return (
         <div className="header-container">
             <div className="header-inner">
                 <Link className="logo" to={"/"}>
-                    <img src={eduIDLogo} className="logo" alt="eduID logo" />
+                    <img src={eduIDLogo} className="logo" alt="eduID logo"/>
                 </Link>
-                {tabNames.map(tabName => <a key={tabName}
-                                            href={`/${tabName}`}
-                                            className={tabName === tab ? "active" : ""}
-                                            onClick={e => doNavigate(e, tabName)} >
-                    {I18n.t(`tabs.${tabName}`)}
-                </a>)}
-
+                <Navigation mobile={false}/>
+                <div className="mobile-navigation">
+                    {currentLocation.pathname === "/nav" &&
+                        <Link className="close" to={".."}
+                              onClick={e => navigateBack(e)}>
+                            <img src={close} className="close" alt="close"/>
+                        </Link>}
+                    {currentLocation.pathname !== "/nav" &&
+                        <Link className="hamburger" to={"/nav"}>
+                            <img src={hamburger} className="hamburger" alt="hamburger"/>
+                        </Link>}
+                </div>
             </div>
         </div>
     );

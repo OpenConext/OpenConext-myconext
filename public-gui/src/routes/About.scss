@@ -1,0 +1,87 @@
+@use "../index";
+
+.about-container {
+    display: flex;
+    flex-direction: column;
+    margin-top: 25px;
+
+    img {
+        &.about {
+            width: 200px;
+            height: auto;
+            @media (max-width: index.$mobile-width) {
+                width: 140px;
+            }
+        }
+
+    }
+
+    h5 {
+        font-weight: 600;
+        font-size: 24px;
+    }
+
+    .about {
+        @include index.page;
+        display: flex;
+        flex-direction: column;
+        gap: 25px;
+    }
+
+
+    .top {
+        display: flex;
+        gap: 25px;
+        background-color: white;
+
+        @media (max-width: index.$mobile-width) {
+            flex-direction: column;
+            align-items: center;
+        }
+    }
+
+    .top-right {
+        max-width: 460px;
+        display: flex;
+        flex-direction: column;
+
+        @media (max-width: index.$mobile-width) {
+            align-items: center;
+            padding: 0 15px;
+        }
+
+        h1 {
+            color: var(--sds--color--blue--400);
+            margin-bottom: 10px;
+        }
+
+    }
+
+    .background {
+        margin-top: 150px;
+        position: relative;
+        background-color: #F4F6F8;
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+        padding: 40px;
+
+    }
+
+    .card {
+        background: white;
+        border: 1px solid #EAECF0;
+        border-radius: 10px;
+        flex-direction: column;
+        padding: 35px;
+        margin: -130px auto 0 auto;
+        display: flex;
+        gap: 10px;
+        max-width: 740px;
+
+        &.bottom {
+            margin-top: 35px;
+        }
+    }
+
+}

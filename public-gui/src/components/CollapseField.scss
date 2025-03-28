@@ -1,0 +1,29 @@
+@use "../index";
+
+.collapse-field {
+    box-shadow: 0 2px 4px 0 #CBD0D5;
+    width: 600px;
+    margin: 8px 0;
+    border-radius: 4px;
+    padding: 10px 20px 10px 10px;
+
+    @media (max-width: index.$mobile-width) {
+        width: 100%;
+    }
+    .collapse-field-inner {
+        display: flex;
+        align-items: center;
+        cursor: pointer;
+        span.collapsed {
+            font-weight: 600;
+        }
+
+        img {
+            margin-left: auto;
+        }
+
+    }
+    p.collapsed {
+        margin: 5px 0;
+    }
+}

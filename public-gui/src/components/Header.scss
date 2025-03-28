@@ -1,3 +1,36 @@
-footer.sds--footer {
-    margin-top: auto;
+@use "../index";
+
+.header-container {
+
+    padding-bottom: 20px;
+    border-bottom: 1px solid #B2B6BE;
+
+    .header-inner {
+        @include index.page;
+        display: flex;
+        align-items: center;
+        margin-top: 15px;
+
+        .logo {
+            margin: 0 25px 0 15px;
+        }
+
+        .nav {
+            @media (max-width: index.$mobile-width) {
+                display: none;
+            }
+        }
+        .desktop-navigation {
+            @media (max-width: index.$mobile-width) {
+                display: none;
+            }
+        }
+        .mobile-navigation {
+            margin: 0 25px 0 auto;
+
+            @media (min-width: calc(index.$mobile-width + 1px)) {
+                display: none;
+            }
+        }
+    }
 }

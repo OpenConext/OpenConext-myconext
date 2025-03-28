@@ -1,18 +1,11 @@
 logging:
-  config:  "classpath:/logback.xml"
+  config:  "classpath:/logback-spring.xml"
   level:
     org.springframework.data.mongodb: INFO
     org.springframework.data.convert: INFO
-    org.springframework.security: DEBUG
-#
-#logging:
-#  level:
-#    org.springframework: WARN
-#    org.springframework.web: WARN
-#    org.springframework.security: WARN
-#    com.zaxxer.hikari: ERROR
-#    myconext: DEBUG
-#    tiqr.org: DEBUG
+    org.springframework.security: INFO
+    tiqr.org: DEBUG
+    myconext: DEBUG
 
 server:
   port: 8081
