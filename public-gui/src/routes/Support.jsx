@@ -3,6 +3,7 @@ import I18n from "../locale/I18n.js";
 import "./Support.scss"
 import support from "../assets/support.svg";
 import mobileScreenshot from "../assets/mobile_screenshot.svg";
+import {Background} from "../components/Background.jsx";
 
 export const Support = () => {
     return (
@@ -18,7 +19,7 @@ export const Support = () => {
                     </div>
                 </div>
             </div>
-            <div className="background">
+            <Background>
                 <div className="card row">
                     <img src={support} className="support" alt="support"/>
                     <div className="top-right middle">
@@ -51,7 +52,7 @@ export const Support = () => {
                     <p className="info"
                        dangerouslySetInnerHTML={{__html: I18n.t("support.helpInfo")}}/>
                 </div>
-            </div>
+            </Background>
         </div>
     );
 }

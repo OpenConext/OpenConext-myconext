@@ -9,6 +9,7 @@ import I18n from "../locale/I18n.js";
 import {useAppStore} from "../stores/AppStore.js";
 import {Button} from "@surfnet/sds";
 import {Link} from "react-router";
+import {Background} from "../components/Background.jsx";
 
 export const Home = () => {
 
@@ -29,7 +30,7 @@ export const Home = () => {
                     </div>
                 </div>
             </div>
-            <div className="background">
+            <Background>
                 <div className="card">
                     <img src={cheering} className="cheering" alt="cheering"/>
                     <div className="top-right middle">
@@ -63,7 +64,7 @@ export const Home = () => {
                         </div>
                     </div>
                 </div>
-            </div>
+            </Background>
         </div>
     );
 }

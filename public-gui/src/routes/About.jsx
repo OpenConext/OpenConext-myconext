@@ -3,6 +3,7 @@ import I18n from "../locale/I18n.js";
 import "./About.scss";
 import {CollapseField} from "../components/CollapseField.jsx";
 import {useAppStore} from "../stores/AppStore.js";
+import {Background} from "../components/Background.jsx";
 
 export const About = () => {
 
@@ -21,7 +22,7 @@ export const About = () => {
                     </div>
                 </div>
             </div>
-            <div className="background">
+            <Background>
                 <div className="card">
                     <h5>
                         {I18n.t("about.why")}
@@ -70,7 +71,7 @@ export const About = () => {
                     <p className="info"
                        dangerouslySetInnerHTML={{__html: I18n.t("about.manageInfo", {url: config.spBaseUrl})}}/>
                 </div>
-            </div>
+            </Background>
         </div>
     );
 }
