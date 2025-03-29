@@ -61,6 +61,17 @@ const en = {
     support: {
         eduID: "eduID Support",
         title: "Voor als je er niet uit komt",
+        studying: "Are you studying in NL?",
+        connect: "Connect your institution!",
+        studyInfo: "<strong>When you study in the Netherlands</strong> and you want to use eduID to logon to an educational services, we need to be sure it’s you and not someone impersonating you.",
+        information: "You must therefore add the following information to your eduID:",
+        informationBullet1: "Validation of your full name by a third party",
+        informationBullet2: "Proof of being a student",
+        informationBullet3: "Your current institution",
+        allAtOnce: "You can add this information <strong>all at once</strong> by connecting your school/institution to your eduID. Select the 'add an organisation' button in the app or My eduID.",
+        note: "<strong>Please note:</strong> Did you create an eduID last academic year? Then you may have to link it to your institution again.",
+        help: "More help needed?",
+        helpInfo: "Kom je er helemaal niet meer uit, neem dan contact met ons op via <a href='mailto:help@eduID.nl'>help@eduID.nl</a>"
     },
     footer: {
         terms: "Terms of Use",

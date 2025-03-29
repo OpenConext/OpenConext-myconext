@@ -10,7 +10,16 @@
             width: 200px;
             height: auto;
             @media (max-width: index.$mobile-width) {
-                width: 140px;
+                display: none;
+            }
+        }
+
+        &.mobileScreenshot {
+            width: 240px;
+            height: auto;
+            margin: 15px 0;
+            @media (min-width: calc(index.$mobile-width + 1px)) {
+                display: none;
             }
         }
 
@@ -19,7 +28,20 @@
     h5 {
         font-weight: 600;
         font-size: 24px;
-        margin-top: 20px;
+    }
+
+    h2.green {
+        color: var(--sds--color--green--400);
+        font-weight: 600;
+        margin: 10px 0 15px 0;
+    }
+
+    p.info {
+        margin-top: 10px;
+
+        &.cursive {
+            font-style: italic;
+        }
     }
 
     .support {
@@ -28,7 +50,6 @@
         flex-direction: column;
         gap: 25px;
     }
-
 
 
     .top {
@@ -52,11 +73,22 @@
             padding: 0 15px;
         }
 
-        h1 {
-            color: var(--sds--color--blue--400);
-            margin-bottom: 10px;
+        &.middle {
+            margin-left: 50px;
+            @media (max-width: index.$mobile-width) {
+                margin-left: 0;
+            }
+
         }
 
+    }
+
+    ul {
+        list-style: inherit;
+
+        li {
+            margin-left: 16px;
+        }
     }
 
     .background {
@@ -83,6 +115,14 @@
 
         &.bottom {
             margin-top: 35px;
+        }
+
+        &.row {
+            flex-direction: row;
+        }
+
+        &.help {
+            width: 100%;
         }
     }
 

@@ -1,6 +1,8 @@
 import parachute from "../assets/parachute.svg";
 import I18n from "../locale/I18n.js";
 import "./Support.scss"
+import support from "../assets/support.svg";
+import mobileScreenshot from "../assets/mobile_screenshot.svg";
 
 export const Support = () => {
     return (
@@ -17,20 +19,37 @@ export const Support = () => {
                 </div>
             </div>
             <div className="background">
-                <div className="card">
-                    <h5>
-                        {I18n.t("about.why")}
-                    </h5>
-                    <p className="info">
-                        {I18n.t("about.whyInfo")}
-                    </p>
+                <div className="card row">
+                    <img src={support} className="support" alt="support"/>
+                    <div className="top-right middle">
+                        <h2 className="title">
+                            {I18n.t("support.studying")}
+                        </h2>
+                        <h2 className="title green">
+                            {I18n.t("support.connect")}
+                        </h2>
+                        <p className="info"
+                           dangerouslySetInnerHTML={{__html: I18n.t("support.studyInfo")}}/>
+                        <p className="info"
+                           dangerouslySetInnerHTML={{__html: I18n.t("support.information")}}/>
+                        <ul>
+                            <li>{I18n.t("support.informationBullet1")}</li>
+                            <li>{I18n.t("support.informationBullet2")}</li>
+                            <li>{I18n.t("support.informationBullet3")}</li>
+                        </ul>
+                        <p className="info"
+                           dangerouslySetInnerHTML={{__html: I18n.t("support.allAtOnce")}}/>
+                        <img src={mobileScreenshot} className="mobileScreenshot" alt="mobileScreenshot"/>
+                        <p className="info cursive"
+                           dangerouslySetInnerHTML={{__html: I18n.t("support.note")}}/>
+                    </div>
                 </div>
-                <div className="card bottom">
+                <div className="card bottom help">
                     <h5>
-                        {I18n.t("about.register")}
+                        {I18n.t("support.help")}
                     </h5>
                     <p className="info"
-                       dangerouslySetInnerHTML={{__html: I18n.t("about.registerInfo")}}/>
+                       dangerouslySetInnerHTML={{__html: I18n.t("support.helpInfo")}}/>
                 </div>
             </div>
         </div>

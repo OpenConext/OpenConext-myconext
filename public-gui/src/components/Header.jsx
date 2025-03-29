@@ -5,11 +5,15 @@ import close from "../assets/close.svg";
 import {stopEvent} from "../utils/Utils.js";
 import "./Header.scss";
 import {Navigation} from "./Navigation.jsx";
+import {useEffect} from "react";
 
-export const Header = () => {
+export const Header = ({currentLocation}) => {
 
     const navigate = useNavigate();
-    const currentLocation = useLocation();
+
+    useEffect(() => {
+        //force re-render on location change
+    }, [currentLocation]);
 
     const navigateBack = e => {
         stopEvent(e);
@@ -22,7 +26,7 @@ export const Header = () => {
                 <Link className="logo" to={"/"}>
                     <img src={eduIDLogo} className="logo" alt="eduID logo"/>
                 </Link>
-                <Navigation mobile={false}/>
+                <Navigation mobile={false} path={currentLocation.pathname}/>
                 <div className="mobile-navigation">
                     {currentLocation.pathname === "/nav" &&
                         <Link className="close" to={".."}

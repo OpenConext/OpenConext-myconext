@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import I18n from "../locale/I18n";
 import "./Navigation.scss"
 import {stopEvent} from "../utils/Utils.js";
@@ -8,12 +8,16 @@ import {Button, ButtonType} from "@surfnet/sds";
 
 const tabNames = ["home", "about", "support"]
 
-export const Navigation = ({mobile}) => {
+export const Navigation = ({mobile, path}) => {
 
     const config = useAppStore((state) => state.config);
 
-    const [tab, setTab] = useState("home");
+    const [tab, setTab] = useState("");
     const navigate = useNavigate();
+
+    useEffect(() => {
+        setTab(path.substring(1));
+    }, [path]);
 
     const doNavigate = (e, tabName) => {
         stopEvent(e);

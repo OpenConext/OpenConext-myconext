@@ -1,5 +1,5 @@
 import "./App.scss";
-import {Navigate, Route, Routes} from "react-router";
+import {Navigate, Route, Routes, useLocation} from "react-router";
 import {Home} from "./routes/Home.jsx";
 import {About} from "./routes/About.jsx";
 import {Support} from "./routes/Support.jsx";
@@ -13,16 +13,18 @@ import {MobileNavigation} from "./routes/MobileNavigation.jsx";
 
 function App() {
 
-    useEffect(() => {
-        configuration().then(res => {
-            useAppStore.setState(() => ({config: res}))
-        });
-    }, []);
+    const currentLocation = useLocation();
+
+    // useEffect(() => {
+    //     configuration().then(res => {
+    //         useAppStore.setState(() => ({config: res}))
+    //     });
+    // }, []);
 
     return (
         <div className="eduid">
             <div className="container">
-                <Header/>
+                <Header currentLocation={currentLocation}/>
                 <Routes>
                     <Route path="/" element={<Navigate replace to="home"/>}/>
                     <Route path="home" element={<Home/>}/>
