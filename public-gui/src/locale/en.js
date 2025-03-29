@@ -19,7 +19,9 @@ const en = {
         info2: "Inloggen op een groeiend aantal websites speciaal voor onderwijs en onderzoek.",
         info3: "Lees meer...",
         eduIdApp: "De eduID app",
-        appInfo: "Wil je sneller en veiliger inloggen zonder wachtwoorden of het openen van je mail? Download dan onze app."
+        appInfo: "Wil je sneller en veiliger inloggen zonder wachtwoorden of het openen van je mail? Download dan onze app.",
+        google: "https://play.google.com/store/apps/details?id=nl.eduid",
+        apple: "https://apps.apple.com/us/app/eduid/id1600756434",
     },
     about: {
         eduID: "Over eduID",

@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import {useState} from "react";
 import "./CollapseField.scss"
 import caretUp from "../assets/caret_up.svg";
 import caretDown from "../assets/caret_down.svg";

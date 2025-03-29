@@ -1,8 +1,8 @@
-import React from "react";
 import I18n from "../locale/I18n";
 import "./Footer.scss"
 import {LanguageSelector} from "./LanguageSelector";
 import {Logo, LogoType} from "@surfnet/sds";
+import {Link} from "react-router";
 
 export const Footer = () => {
 
@@ -13,12 +13,14 @@ export const Footer = () => {
                     <nav className="menu sds--text--body--small">
                         <ul>
                             <li>
-                                <a href={I18n.t("footer.termsLink")} target="_blank"
-                                   rel="noopener noreferrer"><span>{I18n.t("footer.terms")}</span></a>
+                                <Link to={"/terms"}>
+                                    <span>{I18n.t("footer.terms")}</span>
+                                </Link>
                             </li>
                             <li>
-                                <a href={I18n.t("footer.privacyLink")} target="_blank"
-                                   rel="noopener noreferrer"><span>{I18n.t("footer.privacy")}</span></a>
+                                <Link to={"/privacy"}>
+                                    <span>{I18n.t("footer.privacy")}</span>
+                                </Link>
                             </li>
                         </ul>
                     </nav>

@@ -1,27 +1,16 @@
 @use "../index";
 
-.about-container {
+.terms-container {
     display: flex;
     flex-direction: column;
     margin-top: 25px;
-
-    img {
-        &.about {
-            width: 200px;
-            height: auto;
-            @media (max-width: index.$mobile-width) {
-                width: 140px;
-            }
-        }
-
-    }
 
     h5 {
         font-weight: 600;
         font-size: 24px;
     }
 
-    .about {
+    .terms {
         @include index.page;
     }
 

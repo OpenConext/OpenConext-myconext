@@ -53,8 +53,12 @@ export const Home = () => {
                         <div className="store-container">
                             <img src={qrCode} className="qrCode" alt="qrCode"/>
                             <div className="inner-store-container">
-                                <img src={appStore} className="appStore" alt="appStore"/>
-                                <img src={googlePlay} className="googlePlay" alt="googlePlay"/>
+                                <a href={I18n.t("home.apple")}>
+                                    <img src={appStore} className="appStore" alt="appStore"/>
+                                </a>
+                                <a href={I18n.t("home.google")}>
+                                    <img src={googlePlay} className="googlePlay" alt="googlePlay"/>
+                                </a>
                             </div>
                         </div>
                     </div>

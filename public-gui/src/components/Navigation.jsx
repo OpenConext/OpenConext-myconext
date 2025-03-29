@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from "react";
+import {useEffect, useState} from "react";
 import I18n from "../locale/I18n";
 import "./Navigation.scss"
 import {stopEvent} from "../utils/Utils.js";

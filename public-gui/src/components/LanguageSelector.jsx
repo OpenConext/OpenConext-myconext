@@ -1,4 +1,3 @@
-import React from "react";
 import I18n from "../locale/I18n";
 import Cookies from "js-cookie";
 import {replaceQueryParameter} from "../utils/QueryParameters";

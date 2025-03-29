@@ -1,4 +1,4 @@
-import {Link, useLocation, useNavigate} from "react-router";
+import {Link, useNavigate} from "react-router";
 import eduIDLogo from "../assets/logo_eduID.svg";
 import hamburger from "../assets/hamburger.svg";
 import close from "../assets/close.svg";

@@ -9,7 +9,7 @@
         flex-direction: column;
     }
 
-    @media (min-width: calc(index.$mobile-width + 1px)) {
+    @media (min-width: calc(820px + 1px)) {
         &.mobile {
             display: none;
         }

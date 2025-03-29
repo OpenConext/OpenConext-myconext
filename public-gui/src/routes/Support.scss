@@ -18,7 +18,7 @@
             width: 240px;
             height: auto;
             margin: 15px 0;
-            @media (min-width: calc(index.$mobile-width + 1px)) {
+            @media (min-width: calc(820px + 1px)) {
                 display: none;
             }
         }
@@ -46,9 +46,6 @@
 
     .support {
         @include index.page;
-        display: flex;
-        flex-direction: column;
-        gap: 25px;
     }
 
 

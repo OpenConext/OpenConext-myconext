@@ -10,16 +10,18 @@ import {useEffect} from "react";
 import {configuration} from "./api/index.js";
 import {useAppStore} from "./stores/AppStore.js";
 import {MobileNavigation} from "./routes/MobileNavigation.jsx";
+import {Terms} from "./routes/Terms.jsx";
+import {Privacy} from "./routes/Privacy.jsx";
 
 function App() {
 
     const currentLocation = useLocation();
 
-    // useEffect(() => {
-    //     configuration().then(res => {
-    //         useAppStore.setState(() => ({config: res}))
-    //     });
-    // }, []);
+    useEffect(() => {
+        configuration().then(res => {
+            useAppStore.setState(() => ({config: res}))
+        });
+    }, []);
 
     return (
         <div className="eduid">
@@ -31,6 +33,8 @@ function App() {
                     <Route path="about" element={<About/>}/>
                     <Route path="nav" element={<MobileNavigation/>}/>
                     <Route path="support" element={<Support/>}/>
+                    <Route path="privacy" element={<Privacy/>}/>
+                    <Route path="terms" element={<Terms/>}/>
                     <Route path="*" element={<NotFound/>}/>
                 </Routes>
                 <Footer/>

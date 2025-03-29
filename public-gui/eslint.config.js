@@ -17,12 +17,7 @@ export default [
                 sourceType: 'module',
             },
         },
-        "compilerOptions": {
-            "paths": {
-                "react": ["node_modules/@types/react"]
-            }
-        },
-        settings: {react: {version: '18.3'}},
+        settings: {react: {version: '19.0'}},
         plugins: {
             react,
             'react-hooks': reactHooks,
@@ -38,6 +33,7 @@ export default [
                 'warn',
                 {allowConstantExport: true},
             ],
+            "react/prop-types": 0
         },
     },
 ]

@@ -1,4 +1,3 @@
-import React from "react";
 import {stopEvent} from "../utils/Utils.js";
 
 export const AnchorLink = ({label, identifier}) => {
@@ -15,7 +14,7 @@ export const AnchorLink = ({label, identifier}) => {
     return (
         <a className="anchor-field"
            href={`#${identifier}`}
-           onClick={e => smoothScroll()}>
+           onClick={e => smoothScroll(e)}>
             {label}
         </a>
     );
