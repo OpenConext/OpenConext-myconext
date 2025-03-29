@@ -2,8 +2,13 @@ import I18n from "../locale/I18n.js";
 import "./Privacy.scss";
 import {PrivacyEN} from "../terms/PrivacyEN.jsx";
 import {PrivacyNL} from "../terms/PrivacyNL.jsx";
+import {useEffect} from "react";
 
 export const Privacy = () => {
+
+    useEffect(() => {
+        window.scroll(0, 0);
+    }, []);
 
     return (
         <div className="privacy-container">
