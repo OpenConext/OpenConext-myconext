@@ -9,5 +9,11 @@
     margin-bottom: 10px;
     font-weight: 600;
     font-size: 58px;
+    @media (max-width: 820px) {
+        &.small {
+            font-size: 40px;
+        }
+    }
+
 }
 

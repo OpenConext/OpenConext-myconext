@@ -5,10 +5,10 @@ const en = {
     tabs: {
         home: "Home",
         support: "Support",
-        about: "Over eduID"
+        about: "About  eduID"
     },
     header: {
-        mineEduID: "Mine eduID",
+        mineEduID: "My eduID",
         register: "Register"
     },
     home: {
@@ -74,6 +74,14 @@ const en = {
         note: "<strong>Please note:</strong> Did you create an eduID last academic year? Then you may have to link it to your institution again.",
         help: "More help needed?",
         helpInfo: "Kom je er helemaal niet meer uit, neem dan contact met ons op via <a href='mailto:help@eduID.nl'>help@eduID.nl</a>"
+    },
+    privacy: {
+        eduID: "Privacyverklaring",
+        title: "Versie 17 juni 2024"
+    },
+    terms: {
+        eduID: "Gebruiksvoorwaarden",
+        title: "Versie 17 juni 2024"
     },
     footer: {
         terms: "Terms of Use",

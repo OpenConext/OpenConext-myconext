@@ -8,14 +8,10 @@ export const Terms = () => {
     return (
         <div className="terms-container">
             <div className="terms">
-                <div className="top">
-                    <div className="top-right">
-                        <h1 className="title">
-                            {I18n.t("terms.eduID")}
-                        </h1>
-                        <h3>{I18n.t("terms.title")}</h3>
-                    </div>
-                </div>
+                <h1 className="title small">
+                    {I18n.t("terms.eduID")}
+                </h1>
+                <h3>{I18n.t("terms.title")}</h3>
             </div>
             {I18n.locale === "en" && <TermsEN/>}
             {I18n.locale === "nl" && <TermsNL/>}

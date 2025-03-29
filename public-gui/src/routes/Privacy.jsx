@@ -8,14 +8,10 @@ export const Privacy = () => {
     return (
         <div className="privacy-container">
             <div className="privacy">
-                <div className="top">
-                    <div className="top-right">
-                        <h1 className="title">
-                            {I18n.t("privacy.eduID")}
-                        </h1>
-                        <h3>{I18n.t("privacy.title")}</h3>
-                    </div>
-                </div>
+                <h1 className="title small">
+                    {I18n.t("privacy.eduID")}
+                </h1>
+                <h3>{I18n.t("privacy.title")}</h3>
             </div>
             {I18n.locale === "en" && <PrivacyEN/>}
             {I18n.locale === "nl" && <PrivacyNL/>}
