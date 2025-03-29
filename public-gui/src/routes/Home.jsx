@@ -31,7 +31,7 @@ export const Home = () => {
                 </div>
             </div>
             <Background>
-                <div className="card">
+                <div className="card row">
                     <img src={cheering} className="cheering" alt="cheering"/>
                     <div className="top-right middle">
                         <h2 className="title">
@@ -44,7 +44,7 @@ export const Home = () => {
                         </ul>
                     </div>
                 </div>
-                <div className="card bottom">
+                <div className="card bottom row">
                     <img src={app} className="app" alt="app"/>
                     <div className="top-right middle">
                         <h2 className="title">

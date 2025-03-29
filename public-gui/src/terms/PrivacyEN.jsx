@@ -10,7 +10,7 @@ export const PrivacyEN = () => {
 
     return (
         <Background>
-            <div className="card">
+            <div className="card full">
                 <p className="info">
                     Goed dat je de privacyverklaring voor eduID bekijkt! Het eduID-team van SURF besteedt veel aandacht
                     aan de bescherming van je persoonsgegevens en in deze privacyverklaring lees je daar alles over. Als
@@ -39,7 +39,7 @@ export const PrivacyEN = () => {
                                info="Versie 1: 17 juni 2024"/>
 
             </div>
-            <div id="eduid" className="card bottom">
+            <div id="eduid" className="card full bottom">
                 <h5>Wat is eduID?</h5>
                 <p className="info">
                     Een eduID-account is een door SURF aangeboden en beheerde digitale identiteit van de gebruiker, die
@@ -52,7 +52,7 @@ export const PrivacyEN = () => {
                     <Link to={"/about"}>Lees meer over eduID.</Link>
                 </p>
             </div>
-            <div id="surf" className="card bottom">
+            <div id="surf" className="card full bottom">
                 <h5>Contactgegevens SURF</h5>
                 <p className="info">
                     eduID wordt aangeboden en beheerd door SURF, een coöperatie van Nederlandse onderwijs- en
@@ -65,7 +65,7 @@ export const PrivacyEN = () => {
                 <p>De contactgegevens van onze functionaris
                     gegevensbescherming zijn: <a href="mailto:fg@surf.nl">fg@surf.nl</a></p>
             </div>
-            <div id="gegevens" className="card bottom">
+            <div id="gegevens" className="card full bottom">
                 <h5>Welke gegevens verwerken wij van jou?</h5>
                 <p className="info">
                     eduID verwerkt persoonsgegevens van de natuurlijke persoon die houder is van een eduID. Het gaat om
@@ -112,7 +112,7 @@ export const PrivacyEN = () => {
                     </ol>
                 </p>
             </div>
-            <div id="persoonsgegevens" className="card bottom">
+            <div id="persoonsgegevens" className="card full bottom">
                 <h5>Waarom mag eduID je persoonsgegevens verwerken?</h5>
                 <p className="info">
                     Persoonsgegevens mogen enkel worden verwerkt als hier een wettelijke grondslag voor is. De grondslag
@@ -197,7 +197,7 @@ export const PrivacyEN = () => {
                     vrijgegeven kunnen worden tijdens het inloggen op een applicatie (zie hierboven).
                 </p>
             </div>
-            <div id="verstrekken" className="card bottom">
+            <div id="verstrekken" className="card full bottom">
                 <h5>Aan wie verstrekken wij je gegevens?</h5>
                 <p className="info">
                     eduID verstrekt je persoonsgegevens alleen aan derde partijen als dit noodzakelijk is om de
@@ -222,14 +222,14 @@ export const PrivacyEN = () => {
                     </ul>
                 </p>
             </div>
-            <div id="waar" className="card bottom">
+            <div id="waar" className="card full bottom">
                 <h5>Waar slaan wij je gegevens op?</h5>
                 <p className="info">
                     De eduID-infrastructuur wordt gehost op infrastructuur van SURF. De servers daarvan bevinden zich in
                     Amsterdam en Utrecht, met een back-uplocatie in Tilburg.
                 </p>
             </div>
-            <div id="bewaren" className="card bottom">
+            <div id="bewaren" className="card full bottom">
                 <h5>Hoe lang bewaren wij je gegevens?</h5>
                 <p className="info">
                     De persoonsgegevens die verkregen zijn van een instelling door je eduID te koppelen aan een
@@ -249,7 +249,7 @@ export const PrivacyEN = () => {
                     incidenten te kunnen onderzoeken.
                 </p>
             </div>
-            <div id="rechten" className="card bottom">
+            <div id="rechten" className="card full bottom">
                 <h5>Welke rechten heb je?</h5>
                 <p className="info">
                     Je hebt het recht om de persoonsgegevens die eduID van jou verwerkt te laten wijzigen, aanvullen of
@@ -304,7 +304,7 @@ export const PrivacyEN = () => {
                     href="www.autoriteitpersoonsgegevens.nl">www.autoriteitpersoonsgegevens.nl</a>.
                 </p>
             </div>
-            <div id="terecht" className="card bottom">
+            <div id="terecht" className="card full bottom">
                 <h5>Waar kun je terecht om je rechten uit te oefenen?</h5>
                 <p className="info">
                     Een verzoek om je rechten uit te oefenen kun je indienen bij de organisatie die verantwoordelijk is
@@ -315,7 +315,7 @@ export const PrivacyEN = () => {
                     betreffende instelling.
                 </p>
             </div>
-            <div id="cookies" className="card bottom">
+            <div id="cookies" className="card full bottom">
                 <h5>Welke cookies plaatst eduID?</h5>
                 <p className="info">
                     eduID plaatst cookies op het apparaat waar je eduID mee bezoekt. Cookies zijn kleine bestanden die
@@ -359,7 +359,7 @@ export const PrivacyEN = () => {
                     </ul>
                 </p>
             </div>
-            <div id="privacyverklaring" className="card bottom">
+            <div id="privacyverklaring" className="card full bottom">
                 <h5>Wijzigingen privacyverklaring</h5>
                 <p className="info">
                     Er kunnen wijzigingen worden aangebracht in deze privacyverklaring. We raden je daarom aan om deze

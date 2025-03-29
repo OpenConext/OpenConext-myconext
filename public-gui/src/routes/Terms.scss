@@ -5,37 +5,12 @@
     flex-direction: column;
     margin-top: 25px;
 
-    h5 {
-        font-weight: 600;
-        font-size: 24px;
-    }
-
     .terms {
         @include index.page;
         gap: 0;
         width: 740px;
         @media (max-width: index.$mobile-width) {
             width: auto;
-        }
-    }
-
-    .card {
-        background: white;
-        border: 1px solid #EAECF0;
-        border-radius: 10px;
-        flex-direction: column;
-        padding: 35px;
-        margin: -130px auto 0 auto;
-        display: flex;
-        gap: 10px;
-        width: 740px;
-
-        @media (max-width: index.$mobile-width) {
-            width: auto;
-        }
-
-        &.bottom {
-            margin-top: 35px;
         }
     }
 

@@ -6,7 +6,7 @@ export const TermsEN = () => {
 
     return (
         <Background>
-            <div className="card">
+            <div className="card full">
                 <p className="info">
                     Een eduID-account is een door SURF aangeboden en beheerde digitale identiteit van de gebruiker, die
                     gebruikt kan worden in het domein van onderwijs en onderzoek. Iedere persoon kan een eduID-account
@@ -20,7 +20,7 @@ export const TermsEN = () => {
                 <CollapseField title="Wijzigingshistorie"
                                info="Versie 1: 17 juni 2024"/>
             </div>
-            <div className="card bottom">
+            <div className="card bottom full">
                 <h5>
                     1. Definities
                 </h5>
@@ -54,7 +54,7 @@ export const TermsEN = () => {
 
                 </p>
             </div>
-            <div className="card bottom">
+            <div className="card bottom full">
                 <h5>
                     2. Rechten en plichten van de Gebruiker
                 </h5>
@@ -77,7 +77,7 @@ export const TermsEN = () => {
                     gekoppelde applicaties aan een derde over te dragen of in gebruik te geven.
                 </p>
             </div>
-            <div className="card bottom">
+            <div className="card bottom full">
                 <h5>3. Misbruik
                 </h5>
                 <p className="info">
@@ -98,7 +98,7 @@ export const TermsEN = () => {
                     normen en waarden.
                 </p>
             </div>
-            <div className="card bottom">
+            <div className="card bottom full">
                 <h5>4. Gevolgen misbruik
                 </h5>
                 <p className="info">
@@ -120,7 +120,7 @@ export const TermsEN = () => {
                     om SURF, Gebruikers en/of derden tegen schade, hinder of inbreuken op rechten te beschermen.
                 </p>
             </div>
-            <div className="card bottom">
+            <div className="card bottom full">
                 <h5>5. Aansprakelijkheid
                 </h5>
                 <p className="info">
@@ -134,7 +134,7 @@ export const TermsEN = () => {
                     Gebruiksvoorwaarden.
                 </p>
             </div>
-            <div className="card bottom">
+            <div className="card bottom full">
                 <h5>6. Looptijd
                 </h5>
                 <p className="info">
@@ -148,14 +148,14 @@ export const TermsEN = () => {
                     (tijdelijk) niet beschikbaar zijn van de Dienst.
                 </p>
             </div>
-            <div className="card bottom">
+            <div className="card bottom full">
                 <h5>7. Privacy- en cookiebeleid
                 </h5>
                 <p className="info">
                     <strong>7.1</strong> Zie <Link to={"/privacy"}>privacyverklaring</Link>
                 </p>
             </div>
-            <div className="card bottom">
+            <div className="card bottom full">
                 <h5>8. Toepasselijk recht
                 </h5>
                 <p className="info">
@@ -163,7 +163,7 @@ export const TermsEN = () => {
                     rechter is de Rechtbank Midden-Nederland, locatie Utrecht.
                 </p>
             </div>
-            <div className="card bottom">
+            <div className="card bottom full">
                 <h5>9. Wijzigen van de Gebruiksvoorwaarden
                 </h5>
                 <p className="info">
@@ -175,7 +175,7 @@ export const TermsEN = () => {
                     zijn doorgevoerd.
                 </p>
             </div>
-            <div className="card bottom">
+            <div className="card full bottom">
                 <h5>10. Support en vragen
                 </h5>
                 <p className="info">

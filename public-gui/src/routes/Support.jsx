@@ -45,7 +45,7 @@ export const Support = () => {
                            dangerouslySetInnerHTML={{__html: I18n.t("support.note")}}/>
                     </div>
                 </div>
-                <div className="card bottom help">
+                <div className="card bottom full">
                     <h5>
                         {I18n.t("support.help")}
                     </h5>
