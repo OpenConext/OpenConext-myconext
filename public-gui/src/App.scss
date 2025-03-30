@@ -13,7 +13,7 @@
     font-size: 58px;
     @media (max-width: index.$mobile-width) {
         &.small {
-            font-size: 40px;
+            font-size: 38px;
         }
     }
 
@@ -27,7 +27,7 @@ h5 {
 
 .top {
     display: flex;
-    gap: 25px;
+    gap: 20px;
     background-color: white;
 
     @media (max-width: index.$mobile-width) {
@@ -37,7 +37,7 @@ h5 {
 }
 
 .top-right {
-    max-width: 460px;
+    max-width: 418px;
     display: flex;
     flex-direction: column;
 
@@ -47,7 +47,7 @@ h5 {
     }
 
     &.middle {
-        margin-left: 50px;
+        margin-left: 30px;
         @media (max-width: index.$mobile-width) {
             margin-left: 0;
         }
@@ -78,6 +78,11 @@ h5 {
     &.full {
         width: 100%;
     }
+
+    @media (max-width: index.$mobile-width) {
+        padding: 20px;
+    }
+
 }
 
 

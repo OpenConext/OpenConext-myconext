@@ -6,6 +6,11 @@
     margin-top: 25px;
 
     img {
+        &.parachute {
+            width: 182px;
+            height: auto;
+        }
+
         &.support {
             width: 200px;
             height: auto;
