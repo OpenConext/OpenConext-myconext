@@ -4,9 +4,10 @@ updates:
   # Enable version updates for Docker
   - package-ecosystem: "docker"
     # Look for a `Dockerfile` in the `root` directory
-    directories: 
+    directories:
      - "/myconext-server/docker/"
      - "/servicedesk-gui/docker/"
+     - "/public-gui/docker/"
      - "/myconext-gui/docker/"
      - "/account-gui/docker/"
     schedule:
@@ -51,7 +52,7 @@ updates:
           - "patch"
   # Maintain dependencies for server
   - package-ecosystem: "maven"
-    directories: 
+    directories:
      - "/**"
     schedule:
       interval: "daily"

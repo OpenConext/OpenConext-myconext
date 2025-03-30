@@ -90,6 +90,7 @@ jobs:
           /home/runner/work/OpenConext-myconext/OpenConext-myconext/myconext-gui/target/myconext-gui-${{ github.ref_name }}.zip
           /home/runner/work/OpenConext-myconext/OpenConext-myconext/account-gui/target/account-gui-${{ github.ref_name }}.zip
           /home/runner/work/OpenConext-myconext/OpenConext-myconext/servicedesk-gui/target/servicedesk-gui-${{ github.ref_name }}.zip
+          /home/runner/work/OpenConext-myconext/OpenConext-myconext/public-gui/target/public-gui-${{ github.ref_name }}.zip
         token: ${{ secrets.GITHUB_TOKEN }}
         fail_on_unmatched_files: true
         generate_release_notes: true
@@ -148,6 +149,20 @@ jobs:
           type=semver,pattern={{version}},value=${{ steps.versioncheck.outputs.version }}
           type=sha
 
+    - name: Extract metadata (tags, labels) for Public GUI Docker
+      id: meta_public_gui
+      uses: docker/metadata-action@v5
+      with:
+        images: ghcr.io/openconext/openconext-myconext/public-gui
+        flavor: |
+          latest=false
+        tags: |
+          type=ref,event=tag
+          type=raw,event=tag,value=latest
+          type=raw,event=workflow_dispatch,value=snapshot
+          type=semver,pattern={{version}},value=${{ steps.versioncheck.outputs.version }}
+          type=sha
+
     - name: Extract metadata (tags, labels) for Server Docker
       id: meta_server
       uses: docker/metadata-action@v5
@@ -177,6 +192,16 @@ jobs:
       with:
         context: servicedesk-gui
         file: servicedesk-gui/docker/Dockerfile
+        platforms: linux/amd64
+        push: true
+        tags: ${{ steps.meta_servicedesk_gui.outputs.tags }}
+        labels: ${{ steps.meta_servicedesk_gui.outputs.labels }}
+
+    - name: Build and push the Public gui image
+      uses: docker/build-push-action@v6
+      with:
+        context: public-gui
+        file: public-gui/docker/Dockerfile
         platforms: linux/amd64
         push: true
         tags: ${{ steps.meta_servicedesk_gui.outputs.tags }}
