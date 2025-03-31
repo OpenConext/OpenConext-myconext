@@ -10,8 +10,9 @@
       <directory>dist</directory>
       <outputDirectory>.</outputDirectory>
       <includes>
-        <include>**/*.*</include>
+        <include>**/*</include>
       </includes>
+      <useDefaultExcludes>false</useDefaultExcludes>
     </fileSet>
   </fileSets>
 </assembly>
