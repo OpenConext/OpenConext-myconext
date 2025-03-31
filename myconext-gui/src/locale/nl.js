@@ -128,7 +128,7 @@ const nl = {
         retryLink: "Opnieuw proberen"
     },
     subjectAlreadyLinked: {
-        header: "Verificatie mislukt niet gemaakt!",
+        header: "Verificatie mislukt!",
         info: "Je eduID kon niet worden geverifïeerd. Het externe account waarmee je zojuist bent ingelogd, is al aan een ander eduID-account gekoppeld.",
         retryLink: "Opnieuw proberen"
     },
