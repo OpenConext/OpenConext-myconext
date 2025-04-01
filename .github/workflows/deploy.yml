@@ -204,8 +204,8 @@ jobs:
         file: public-gui/docker/Dockerfile
         platforms: linux/amd64
         push: true
-        tags: ${{ steps.meta_servicedesk_gui.outputs.tags }}
-        labels: ${{ steps.meta_servicedesk_gui.outputs.labels }}
+        tags: ${{ steps.meta_public_gui.outputs.tags }}
+        labels: ${{ steps.meta_public_gui.outputs.labels }}
 
     - name: Build and push the myconext gui image
       uses: docker/build-push-action@v6
