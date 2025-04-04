@@ -43,7 +43,7 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@master
       - name: Get token for the Tiqr github org
-        uses: actions/create-github-app-token@v1
+        uses: actions/create-github-app-token@v2
         id: app-token-tiqr-org
         with:
           app-id: ${{ secrets.SYNC_APP_ID }}
