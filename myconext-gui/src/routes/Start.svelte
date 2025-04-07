@@ -210,7 +210,7 @@
     <Modal submit={() => addInstitution(false)}
            cancel={() => showModal = false}
            question={I18n.t(`Profile.VerifyFirstAndLastName.AddInstitutionConfirmation.COPY`)}
-           title={I18n.t(`Profile.Verify.COPYFirstAndLastName.addInstitution`)}
+           title={I18n.t(`Profile.VerifyFirstAndLastName.addInstitution.COPY`)}
            confirmTitle={I18n.t("Profile.Proceed.COPY")}>
     </Modal>
 {/if}
