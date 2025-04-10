@@ -15,7 +15,7 @@ export const About = () => {
                 <div className="top">
                     <img src={about} className="about" alt="about"/>
                     <div className="top-right">
-                        <h1 className="title">
+                        <h1 className="title small">
                             {I18n.t("about.eduID")}
                         </h1>
                         <h3>{I18n.t("about.title")}</h3>
