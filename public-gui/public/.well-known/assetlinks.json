@@ -1,0 +1,83 @@
+[
+  {
+    "relation": [
+      "delegate_permission/common.handle_all_urls"
+    ],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "nl.eduid.verifai",
+      "sha256_cert_fingerprints": [
+        "E6:26:56:11:8D:F8:1A:FC:1D:CE:F5:7E:32:A4:BC:4B:FF:72:6E:E8:C8:02:94:1E:C4:82:BB:AA:B4:C1:6C:AA"
+      ]
+    }
+  },
+  {
+    "relation": [
+      "delegate_permission/common.handle_all_urls"
+    ],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "nl.eduid.verifai",
+      "sha256_cert_fingerprints": [
+        "2B:45:BA:8C:3E:52:5C:CF:D3:E4:4E:C1:04:D1:CB:55:00:A7:DD:B8:EB:7C:EC:C3:B3:93:6C:CE:8A:00:07:9F"
+      ]
+    }
+  },
+  {
+    "relation": [
+      "delegate_permission/common.handle_all_urls"
+    ],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "nl.eduid.testing",
+      "sha256_cert_fingerprints": [
+        "86:D6:46:BE:EB:32:2E:67:EC:D3:EE:F5:90:22:18:8A:58:2A:81:B2:16:7E:E0:50:34:A3:80:26:81:D1:F2:48"
+      ]
+    }
+  },
+  {
+    "relation": [
+      "delegate_permission/common.handle_all_urls"
+    ],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "nl.eduid",
+      "sha256_cert_fingerprints": [
+        "66:37:7D:01:DB:8F:D3:83:9E:7E:93:DC:95:9C:4B:F1:C4:80:A1:C7:11:69:81:E5:4F:03:50:B7:40:DF:93:F2"
+      ]
+    }
+  },
+  {
+    "relation": [
+      "delegate_permission/common.handle_all_urls"
+    ],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "nl.eduid",
+      "sha256_cert_fingerprints": [
+        "52:49:E6:86:EB:10:82:21:75:FB:F6:D5:99:26:65:4E:2A:4A:97:41:A8:CF:78:1F:1F:83:3B:89:16:8C:B2:CD"
+      ]
+    }
+  },
+  {
+    "relation": [
+      "delegate_permission/common.handle_all_urls"
+    ],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "nl.eduid",
+      "sha256_cert_fingerprints": [
+        "9C:E0:9F:0F:88:2B:32:1C:93:C2:EB:C4:98:6D:75:DB:D7:9A:81:0F:90:B5:9F:90:6B:AB:AA:37:9B:94:07:34"
+      ]
+    }
+  },
+  {
+    "relation": ["delegate_permission/common.handle_all_urls"],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "nl.eduid.testing",
+      "sha256_cert_fingerprints":
+        ["E3:36:AA:24:24:50:18:4B:47:84:2A:39:6B:D6:D6:C7:D5:42:D0:7C:07:4B:CA:5A:B0:DC:63:54:43:B2:43:0A"]
+    }
+  }
+]

@@ -1,0 +1,15 @@
+{
+    "applinks": {
+        "apps": [],
+        "details": [
+            {
+                "appID": "ZYJ4TZX4UU.nl.eduid",
+                "paths": [ "/tiqrenroll/", "/tiqrauth/", "/tiqrenroll", "/tiqrauth", "/client/mobile","/client/mobile/", "/client/mobile/oauth-redirect", "/client/mobile/oauth-redirect/", "/client/mobile/eppn-already-linked", "/client/mobile/eppn-already-linked/"]
+            },
+	    {
+                "appID": "ZYJ4TZX4UU.nl.eduid.testing",
+                "paths": [ "/tiqrenroll/", "/tiqrauth/", "/tiqrenroll", "/tiqrauth", "/client/mobile","/client/mobile/", "/client/mobile/oauth-redirect", "/client/mobile/oauth-redirect/", "/client/mobile/eppn-already-linked", "/client/mobile/eppn-already-linked/"]
+            }
+        ]
+    }
+}
