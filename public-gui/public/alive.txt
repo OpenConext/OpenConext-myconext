@@ -1,0 +1,5 @@
+A text file named alive.txt
+Keeps servers from getting too vexed.
+With each timely ping,
+It does its small thing,
+So the loadbalancer stays unperplexed.
