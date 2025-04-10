@@ -826,23 +826,24 @@ SHARED:
           nl: Er is iets misgegaan bij het aanmaken van je eenmalige wachtwoord.
     Title:
       COPY:
-        en: You phone appears to be offline
-        nl: Je telefoon lijkt offline te zijn
+        en: Your device seems to be offline
+        nl: Je apparaat lijkt offline te zijn
     Description:
       COPY:
-        en: "No worries, you can still log in another way:
-          1. Select ‘Enter Code’ under the QR code on your computer.
-          2. Enter the following code:"
-        nl: "Gelukkig kun je ook op een andere manier inloggen:
-          1. Druk op ‘Code invoeren’ onder de QR-code op je computer.
-          2. Voer daarna deze code in:"
-
+        en: >-
+          Fortunately, you can log in another way:
+            1. Select ‘Enter Code’ under the QR code on your computer.
+            2. Enter the following code:
+        nl: >-
+          Gelukkig kan je ook op een andere manier inloggen:
+            1. Druk op ‘Code invoeren’ onder de QR-code op je computer.
+            2. Voer daarna deze code in:
     YourId:
       COPY:
         en: >-
-          Your ID is:
+          Your ID:
         nl: >-
-          Je gebruikers ID is:
+          Je ID:
     OneTimePassword:
       COPY:
         en: >-
