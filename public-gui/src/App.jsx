@@ -7,7 +7,6 @@ import NotFound from "./routes/NotFound.jsx";
 import {Header} from "./components/Header.jsx";
 import {Footer} from "./components/Footer.jsx";
 import {useEffect} from "react";
-import {configuration} from "./api/index.js";
 import {useAppStore} from "./stores/AppStore.js";
 import {MobileNavigation} from "./routes/MobileNavigation.jsx";
 import {Terms} from "./routes/Terms.jsx";
@@ -18,9 +17,13 @@ function App() {
     const currentLocation = useLocation();
 
     useEffect(() => {
-        configuration().then(res => {
-            useAppStore.setState(() => ({config: res}))
-        });
+        const host = window.location.host;//test.eduid.nl
+        useAppStore.setState(() => ({
+            config: {
+                idpBaseUrl: `https://login.${host}`,
+                spBaseUrl: `https://mijn.${host}`
+            }
+        }))
     }, []);
 
     return (
@@ -29,12 +32,12 @@ function App() {
                 <Header currentLocation={currentLocation}/>
                 <Routes>
                     <Route path="/" element={<Navigate replace to="home"/>}/>
-                    <Route path="home" element={<Home/>}/>
-                    <Route path="about" element={<About/>}/>
-                    <Route path="nav" element={<MobileNavigation/>}/>
-                    <Route path="support" element={<Support/>}/>
-                    <Route path="privacy" element={<Privacy/>}/>
-                    <Route path="terms" element={<Terms/>}/>
+                    <Route path="/home" element={<Home/>}/>
+                    <Route path="/about" element={<About/>}/>
+                    <Route path="/nav" element={<MobileNavigation/>}/>
+                    <Route path="/support" element={<Support/>}/>
+                    <Route path="/privacy" element={<Privacy/>}/>
+                    <Route path="/terms" element={<Terms/>}/>
                     <Route path="*" element={<NotFound/>}/>
                 </Routes>
                 <Footer/>
