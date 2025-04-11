@@ -6,7 +6,6 @@
     export let verify;
     export let intermediateCallback;
     export let disabled = false;
-    export let error;
     export let validate;
     export let transformer;
     export let focusFirst = true;
@@ -20,20 +19,11 @@
     let inputRefs = new Map();
 
     onMount(() => {
-        const emptyValues = isEmpty(values.join(""));
-        if (clear) {
-            values = Array(size).fill("");
-        }
         values.forEach((_, index) => inputRefs.set(index, document.querySelector(`#ref_${index}`)));
-        debugger;
-        if (emptyValues && focusFirst && !disabled) {
+        if (focusFirst && !disabled) {
             const firstElement = inputRefs.get(0);
             setTimeout(() => firstElement.focus(), timeout);
         }
-        if (focusFirst && !disabled) {
-            setTimeout(() => inputRefs.get(0)?.focus(), timeout);
-        }
-
     });
 
     const handleChange = (index, e) => {
@@ -116,7 +106,6 @@
 <div class="sds--code-validation-container">
     <div class="sds--code-validation">
         {#each Array(size) as _, index}
-            <!--{#key index}-->
             <input id={`ref_${index}`}
                    type="text"
                    class={`value index_${index}`}
@@ -127,10 +116,8 @@
                    on:keydown={e => handleKeyDown(index, e)}
                    on:paste={e => handlePaste(index, e)}
             />
-            <!--{/key}-->
         {/each}
     </div>
-
     {#if info}
         <p class="info">{@html info}></p>
     {/if}

@@ -3,7 +3,7 @@
     import Cookies from "js-cookie";
     import Login from "./routes/Login.svelte";
     import Success from "./routes/Success.svelte";
-    import MagicLink from "./routes/MagicLink.svelte";
+    import LoginCode from "./routes/LoginCode.svelte";
     import Confirm from "./routes/Confirm.svelte";
     import ConfirmStepup from "./routes/ConfirmStepup.svelte";
     import LinkExpired from "./routes/LinkExpired.svelte";
@@ -177,8 +177,8 @@
                 <Route path="/usepassword/:id" let:params>
                     <UsePassword id="{params.id}"/>
                 </Route>
-                <Route path="/magic/:id" let:params>
-                    <MagicLink id="{params.id}"/>
+                <Route path="/code/:id" let:params>
+                    <LoginCode id="{params.id}"/>
                 </Route>
                 <Route path="/options/:id" let:params>
                     <Options id="{params.id}"/>

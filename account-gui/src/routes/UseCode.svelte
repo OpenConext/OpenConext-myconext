@@ -49,6 +49,8 @@
                 }
                 if (json.stepup) {
                     navigate(`/stepup/${id}?name=${encodeURIComponent(serviceName)}&explanation=${json.explanation}`, {replace: true})
+                } else {
+                    navigate(`/code/${id}?name=${encodeURIComponent(serviceName)}`, {replace: true});
                 }
                 codeSend = true;
             }).catch(() => navigate("/expired", {replace: true}));

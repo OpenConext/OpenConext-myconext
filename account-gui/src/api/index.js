@@ -41,13 +41,23 @@ function postPutJson(path, body, method) {
 }
 
 //Base
+export function generateCodeNewUser(email, givenName, familyName, authenticationRequestId) {
+    const body = {user: {email, givenName, familyName}, authenticationRequestId};
+    return postPutJson("/myconext/api/idp/generate_code_request", body, "POST");
+}
+
+export function generateCodeExistingUser(email, authenticationRequestId) {
+    const body = {user: {email}, code, authenticationRequestId};
+    return postPutJson("/myconext/api/idp/generate_code_request", body, "PUT");
+}
+
 export function codeNewUser(email, givenName, familyName, authenticationRequestId) {
     const body = {user: {email, givenName, familyName}, authenticationRequestId};
     return postPutJson("/myconext/api/idp/code_request", body, "POST");
 }
 
-export function codeExistingUser(email, authenticationRequestId) {
-    const body = {user: {email}, authenticationRequestId};
+export function codeExistingUser(email, code, authenticationRequestId) {
+    const body = {user: {email}, code, authenticationRequestId};
     return postPutJson("/myconext/api/idp/code_request", body, "PUT");
 }
 
@@ -100,13 +110,6 @@ export function webAuthnStartAuthentication(email, authenticationRequestId, test
 export function webAuthnTryAuthentication(credentials, authenticationRequestId, rememberMe) {
     const body = {credentials, authenticationRequestId, rememberMe};
     return postPutJson("/myconext/api/idp/security/webauthn/authentication", body, "PUT");
-}
-
-export function successfullyLoggedIn(id) {
-    if (typeof document.hidden !== "undefined" && document.hidden) {
-        return Promise.resolve(status.NOT_LOGGED_IN)
-    }
-    return fetchJson(`/myconext/api/idp/security/success?id=${id}`);
 }
 
 //We can safely cache this for the duration of the session

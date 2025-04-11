@@ -74,7 +74,7 @@ const en =  {
         learnLink: "recover your acccount",
         useApp: "Use the <strong>eduID app</strong> to sign in with your mobile device.",
         useWebAuthn: "Use your <strong>security key</strong>.",
-        useCode: "Get a <strong>login code</strong> sent to your inbox.",
+        useCode: "Get a <strong>one time code</strong> sent to your inbox.",
         usePassword: "Use <strong>a password</strong>.",
     },
     magicLink: {
