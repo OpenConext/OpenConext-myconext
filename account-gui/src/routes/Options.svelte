@@ -7,7 +7,7 @@
     import appIcon from "../icons/redesign/phone-hand-hold-1.svg?raw";
     import webAuthnIcon from "../icons/redesign/video-game-key.svg?raw";
     import passwordIcon from "../icons/redesign/password-type.svg?raw";
-    import magicLinkIcon from "../icons/redesign/video-game-magic-wand.svg?raw";
+    import codeIcon from "../icons/redesign/mail.svg?raw";
     import LoginOption from "../components/LoginOption.svelte";
     import {links} from "../stores/conf";
     import {navigate} from "svelte-routing";
@@ -27,12 +27,12 @@
             icon: webAuthnIcon
         },
         {
-            key: "useLink",
-            icon: passwordIcon
+            key: "useCode",
+            icon: codeIcon
         },
         {
             key: "usePassword",
-            icon: magicLinkIcon
+            icon: passwordIcon
         }
     ]
 
@@ -46,7 +46,7 @@
         } else {
             knownAccount($user.email)
                 .then(res => {
-                    //res = ["useApp", "useWebAuthn", "useLink", "usePassword"];
+                    //res = ["useApp", "useWebAuthn", "useCode", "usePassword"];
                     const allOptions = possibleOptions.filter(option => res.includes(option.key));
                     if (!allOptions.some(option => option.preferred)) {
                         allOptions[0].preferred = true;

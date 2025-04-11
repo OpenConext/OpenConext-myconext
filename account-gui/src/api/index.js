@@ -41,23 +41,23 @@ function postPutJson(path, body, method) {
 }
 
 //Base
-export function magicLinkNewUser(email, givenName, familyName, authenticationRequestId) {
+export function codeNewUser(email, givenName, familyName, authenticationRequestId) {
     const body = {user: {email, givenName, familyName}, authenticationRequestId};
-    return postPutJson("/myconext/api/idp/magic_link_request", body, "POST");
+    return postPutJson("/myconext/api/idp/code_request", body, "POST");
 }
 
-export function magicLinkExistingUser(email, authenticationRequestId) {
+export function codeExistingUser(email, authenticationRequestId) {
     const body = {user: {email}, authenticationRequestId};
-    return postPutJson("/myconext/api/idp/magic_link_request", body, "PUT");
+    return postPutJson("/myconext/api/idp/code_request", body, "PUT");
 }
 
 export function passwordExistingUser(email, password, authenticationRequestId) {
     const body = {user: {email, password}, authenticationRequestId, usePassword: true};
-    return postPutJson("/myconext/api/idp/magic_link_request", body, "PUT");
+    return postPutJson("/myconext/api/idp/password_request", body, "PUT");
 }
 
-export function resendMagicLinkMail(id) {
-    return fetchJson(`/myconext/api/idp/resend_magic_link_request?id=${id}`);
+export function resendCodeMail(id) {
+    return fetchJson(`/myconext/api/idp/resend_code_request?id=${id}`);
 }
 
 export function institutionalEmailDomains() {

@@ -74,7 +74,7 @@ const en =  {
         learnLink: "recover your acccount",
         useApp: "Use the <strong>eduID app</strong> to sign in with your mobile device.",
         useWebAuthn: "Use your <strong>security key</strong>.",
-        useLink: "Get a <strong>magic link</strong> sent to your inbox.",
+        useCode: "Get a <strong>login code</strong> sent to your inbox.",
         usePassword: "Use <strong>a password</strong>.",
     },
     magicLink: {
@@ -208,9 +208,9 @@ const en =  {
         next: "Log in with a security key",
         error: "Currently you can not use your security key to login."
     },
-    useLink: {
-        header: "Request a magic link",
-        next: "Email a magic link"
+    useCode: {
+        header: "Request a login code",
+        next: "Email a login code"
     },
     usePassword: {
         header: "Enter your password",

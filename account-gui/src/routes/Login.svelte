@@ -60,9 +60,8 @@
                     sameSite: "Lax"
                 });
                 if (magicLink) {
-                    navigate(`/${loginPreferences.MAGIC.toLowerCase()}/${id}?magicLink=true`)
-                }
-                else if (mfaRequired && res.includes(loginPreferences.APP)) {
+                    navigate(`/${loginPreferences.CODE.toLowerCase()}/${id}?magicLink=true`)
+                } else if (mfaRequired && res.includes(loginPreferences.APP)) {
                     navigate(`/${loginPreferences.APP.toLowerCase()}/${id}?mfa=true`);
                 }
                 //If the server does not confirm the preferredLogin, we won't use it
@@ -172,4 +171,3 @@
         label={I18n.t("GetApp.Next.COPY")}
         className="full"
         onClick={nextStep}/>
-

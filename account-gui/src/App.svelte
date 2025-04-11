@@ -29,7 +29,7 @@
     import {cookieNames} from "./constants/cookieNames";
     import UseApp from "./routes/UseApp.svelte";
     import UseWebAuth from "./routes/UseWebAuth.svelte";
-    import UseLink from "./routes/UseLink.svelte";
+    import UseCode from "./routes/UseCode.svelte";
     import UsePassword from "./routes/UsePassword.svelte";
     import Options from "./routes/Options.svelte";
     import UserLink from "./components/UserLink.svelte";
@@ -162,8 +162,8 @@
                 <Route path="/usewebauthn/:id" let:params>
                     <UseWebAuth id="{params.id}"/>
                 </Route>
-                <Route path="/uselink/:id" let:params>
-                    <UseLink id="{params.id}"/>
+                <Route path="/usecode/:id" let:params>
+                    <UseCode id="{params.id}"/>
                 </Route>
                 <Route path="/app-required" component={AppRequired}/>
                 <Route path="/getapp" component={GetApp}/>
@@ -239,7 +239,7 @@
                             linkText={I18n.t("Login.OptionsLink.COPY")}
                             route="/options/{params.id}"/>
             </Route>
-            <Route path="/uselink/:id" let:params>
+            <Route path="/usecode/:id" let:params>
                 <SubContent question={I18n.t("Login.NoMailAccess.COPY")}
                             preLink={I18n.t("Login.UseAnother.COPY")}
                             linkText={I18n.t("Login.OptionsLink.COPY")}

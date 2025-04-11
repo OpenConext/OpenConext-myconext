@@ -327,7 +327,7 @@ public class User implements Serializable, UserDetails {
         if (StringUtils.hasText(this.password)) {
             result.add(LoginOptions.PASSWORD);
         }
-        result.add(LoginOptions.MAGIC);
+        result.add(LoginOptions.CODE);
         return result.stream().map(LoginOptions::getValue).collect(Collectors.toList());
     }
 

@@ -2,7 +2,7 @@
     import {user} from "../stores/user";
     import I18n from "../locale/I18n";
 
-    import {fetchServiceName, magicLinkExistingUser} from "../api/index";
+    import {codeNewUser, fetchServiceName} from "../api/index";
     import Spinner from "../components/Spinner.svelte";
     import {navigate} from "svelte-routing";
     import {onMount} from "svelte";
@@ -16,16 +16,17 @@
     export let id;
     let showSpinner = true;
     let serviceName = "";
-    let magicLink = false;
+    let code = false;
     let mrccValue = null;
+    let codeSend = false;
 
     onMount(() => {
         const urlParams = new URLSearchParams(window.location.search);
         mrccValue = urlParams.get(mrcc);
-        magicLink = urlParams.has("magicLink");
+        code = urlParams.has("code");
 
         if (mrccValue) {
-            magicLinkStart();
+            codeStart();
         } else {
             $links.displayBackArrow = true;
             fetchServiceName(id).then(res => {
@@ -35,12 +36,12 @@
         }
     });
 
-    const magicLinkStart = () => {
+    const codeStart = () => {
         showSpinner = true;
-        magicLinkExistingUser($user.email, id)
+        codeNewUser($user.email, id)
             .then(json => {
-                if (!magicLink) {
-                    Cookies.set(cookieNames.LOGIN_PREFERENCE, loginPreferences.MAGIC, {
+                if (!code) {
+                    Cookies.set(cookieNames.LOGIN_PREFERENCE, loginPreferences.CODE, {
                         expires: 365,
                         secure: true,
                         sameSite: "Lax"
@@ -48,9 +49,8 @@
                 }
                 if (json.stepup) {
                     navigate(`/stepup/${id}?name=${encodeURIComponent(serviceName)}&explanation=${json.explanation}`, {replace: true})
-                } else {
-                    navigate(`/magic/${id}?name=${encodeURIComponent(serviceName)}`, {replace: true});
                 }
+                codeSend = true;
             }).catch(() => navigate("/expired", {replace: true}));
     };
 
@@ -67,20 +67,31 @@
 </style>
 {#if showSpinner}
     <div class="spinner-container">
-    <Spinner/>
+        <Spinner/>
         {#if mrccValue}
             <p>{I18n.t("login.sendingEmail")}</p>
         {/if}
     </div>
 {/if}
-{#if !showSpinner && !mrccValue}
+{#if !showSpinner && !mrccValue && !codeSend}
     <h2 class="header">{I18n.t("UseLink.Header.COPY")}</h2>
     {#if serviceName}
         <h2 class="top">{I18n.t("Login.HeaderSubTitle.COPY")}<span>{serviceName}</span></h2>
     {/if}
     <Button href="/start"
             disabled={showSpinner}
-            label={I18n.t("Login.SendMagicLink.COPY")}
+            label={I18n.t("Login.SendCode.COPY")}
             className="full"
-            onClick={magicLinkStart}/>
+            onClick={codeStart}/>
+{/if}
+{#if !showSpinner && codeSend}
+    <h2 class="header">{I18n.t("UseLink.Header.COPY")}</h2>
+    {#if serviceName}
+        <h2 class="top">{I18n.t("Login.HeaderSubTitle.COPY")}<span>{serviceName}</span></h2>
+    {/if}
+    <Button href="/start"
+            disabled={showSpinner}
+            label={I18n.t("Login.SendCode.COPY")}
+            className="full"
+            onClick={codeStart}/>
 {/if}

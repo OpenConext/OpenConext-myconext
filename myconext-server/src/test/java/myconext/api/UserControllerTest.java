@@ -3,7 +3,6 @@ package myconext.api;
 import com.yubico.webauthn.data.*;
 import com.yubico.webauthn.data.exception.Base64UrlException;
 import io.restassured.common.mapper.TypeRef;
-import io.restassured.filter.Filter;
 import io.restassured.filter.cookie.CookieFilter;
 import io.restassured.http.ContentType;
 import io.restassured.http.Cookie;
@@ -27,7 +26,6 @@ import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.util.StringUtils;
 
 import java.io.IOException;
-import java.lang.reflect.Type;
 import java.nio.charset.Charset;
 import java.security.SecureRandom;
 import java.time.Instant;
@@ -995,7 +993,7 @@ public class UserControllerTest extends AbstractIntegrationTest {
                 LoginOptions.APP.getValue(),
                 LoginOptions.FIDO.getValue(),
                 LoginOptions.PASSWORD.getValue(),
-                LoginOptions.MAGIC.getValue()), loginOptions);
+                LoginOptions.CODE.getValue()), loginOptions);
     }
 
     @Test
