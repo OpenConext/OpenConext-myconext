@@ -43,7 +43,7 @@ public class AccountLinkerControllerTest extends AbstractIntegrationTest {
         //This ensures the user is tied to the authnRequest
         given().when()
                 .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
-                .body(new MagicLinkRequest(authenticationRequestId, user("mdoe@example.com"), false))
+                .body(new ClientAuthenticationRequest(authenticationRequestId, user("mdoe@example.com"), false))
                 .put("/myconext/api/idp/magic_link_request")
                 .then()
                 .statusCode(HttpStatus.CREATED.value());
@@ -122,7 +122,7 @@ public class AccountLinkerControllerTest extends AbstractIntegrationTest {
         String authenticationRequestId = samlAuthnRequest();
         given().when()
                 .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
-                .body(new MagicLinkRequest(authenticationRequestId, user("mdoe@example.com"), false))
+                .body(new ClientAuthenticationRequest(authenticationRequestId, user("mdoe@example.com"), false))
                 .put("/myconext/api/idp/magic_link_request")
                 .then()
                 .statusCode(HttpStatus.CREATED.value());
@@ -237,7 +237,7 @@ public class AccountLinkerControllerTest extends AbstractIntegrationTest {
         //This ensures the user is tied to the authnRequest
         given().when()
                 .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
-                .body(new MagicLinkRequest(authenticationRequestId, user("mdoe@example.com"), false))
+                .body(new ClientAuthenticationRequest(authenticationRequestId, user("mdoe@example.com"), false))
                 .put("/myconext/api/idp/magic_link_request")
                 .then()
                 .statusCode(HttpStatus.CREATED.value());
@@ -790,7 +790,7 @@ public class AccountLinkerControllerTest extends AbstractIntegrationTest {
 
     @Test
     public void idpVerifyIDFlow() throws IOException {
-        MagicLinkResponse magicLinkResponse = magicLinkRequest(user("jdoe@example.com"), HttpMethod.PUT);
+        ClientAuthenticationResponse magicLinkResponse = magicLinkRequest(user("jdoe@example.com"), HttpMethod.PUT);
 
         String authorizationURL = given().redirects().follow(false)
                 .when()
@@ -843,7 +843,7 @@ public class AccountLinkerControllerTest extends AbstractIntegrationTest {
 
     @Test
     public void idpVerifyIDErrorFlow() throws IOException {
-        MagicLinkResponse magicLinkResponse = magicLinkRequest(user("jdoe@example.com"), HttpMethod.PUT);
+        ClientAuthenticationResponse magicLinkResponse = magicLinkRequest(user("jdoe@example.com"), HttpMethod.PUT);
 
         String authorizationURL = given().redirects().follow(false)
                 .when()

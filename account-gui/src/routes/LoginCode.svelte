@@ -7,11 +7,17 @@
     import CodeValidation from "../components/CodeValidation.svelte";
     import {isEmpty} from "../utils/utils.js";
     import {navigate} from "svelte-routing";
+    import Cookies from "js-cookie";
+    import {cookieNames} from "../constants/cookieNames.js";
+    import {loginPreferences} from "../constants/loginPreferences.js";
+    import Spinner from "../components/Spinner.svelte";
+    import Button from "../components/Button.svelte";
 
     const resendMailAllowedTimeOut = $conf.emailSpamThresholdSeconds * 1000;
 
     export let id;
 
+    let showSpinner = true;
     let allowedToResend = false;
     let mailHasBeenResend = false;
     let wrongCode = false;
@@ -20,14 +26,27 @@
         $links.displayBackArrow = false;
         generateCodeExistingUser($user.email, id)
             .then(() => {
+                showSpinner = false;
                 setTimeout(() => allowedToResend = true, resendMailAllowedTimeOut);
             })
             .catch(() => navigate("/expired", {replace: true}));
     });
 
     const verifyCode = code => {
+        showSpinner = true;
         codeExistingUser($user.email, code, id)
-            .then()
+            .then(json => {
+                Cookies.set(cookieNames.LOGIN_PREFERENCE, loginPreferences.CODE, {
+                    expires: 365,
+                    secure: true,
+                    sameSite: "Lax"
+                });
+                if (json.stepup) {
+                    navigate(`/stepup/${id}?name=${encodeURIComponent(serviceName)}&explanation=${json.explanation}`, {replace: true})
+                } else {
+                    window.location.href = json.url;
+                }
+            })
             .catch(() => {
                 wrongCode = true;
             });
@@ -158,6 +177,9 @@
     }
 
 </style>
+{#if showSpinner}
+    <Spinner/>
+{/if}
 <div class="login-code">
     <h2 class="header">{I18n.t("LoginCode.Header.COPY")}</h2>
     <p>{@html I18n.t("LoginCode.Info.COPY", {email: $user.email})}</p>
@@ -170,6 +192,10 @@
     {#if wrongCode}
         <p class="error">{I18n.t("LoginCode.Error.COPY")}</p>
     {/if}
+
+    <Button label={I18n.t("LoginCode.Continue.COPY")}
+            onClick={verifyCode}
+            disabled={true}/>
 
     <div class="resend-mail">
         {#if allowedToResend}

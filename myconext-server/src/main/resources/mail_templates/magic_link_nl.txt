@@ -1,14 +1,9 @@
-Magische link
+Login code
 
-Volg de onderstaande link om in te loggen en door te gaan naar je bestemming:
+Je bevestigingscode staat hieronder. Voer deze in het geopende browservenster om je e-mailadres te bevestigen.
 
-{{magicLinkUrl}}?h={{hash}}
+{{code}}
 
-Meld je aan bij {{destination}}. Deze link verloopt na 10 minuten en kan slechts eenmaal worden gebruikt.
+Ben jij dit niet of wil je toch geen eduID? Dan kun je dit bericht negeren.
 
-Hallo {{name}},
-
-Iemand heeft zojuist om een magische link aangevraagd op eduID voor dit e-mailadres. Als jij dit was, kun je inloggen door de bovenstaande link te volgen.
-Als je deze magische link niet hebt aangevraagd, kun je dit bericht negeren of verwijderen.
-
-{{> footer_nl.txt}}
+{{> footer_en.txt}}

@@ -247,8 +247,9 @@ public class UserController implements UserAuthentication {
     }
 
     @Hidden
-    @PostMapping("/idp/magic_link_request")
-    public ResponseEntity newMagicLinkRequest(HttpServletRequest request, @Valid @RequestBody MagicLinkRequest magicLinkRequest) {
+    @PostMapping("/idp/generate_code_request")
+    public ResponseEntity generateCodeRequestNewUser(HttpServletRequest request,
+                                                     @Valid @RequestBody ClientAuthenticationRequest magicLinkRequest) {
         SamlAuthenticationRequest samlAuthenticationRequest = authenticationRequestRepository.findByIdAndNotExpired(magicLinkRequest.getAuthenticationRequestId())
                 .orElseThrow(() -> new ExpiredAuthenticationException("Expired authentication request"));
 
@@ -271,12 +272,12 @@ public class UserController implements UserAuthentication {
                 user.getFamilyName(), schacHomeOrganization, preferredLanguage, requesterEntityId, manage);
         userToSave = userRepository.save(userToSave);
 
-        return this.doMagicLink(userToSave, samlAuthenticationRequest, false, request);
+        return this.doInternalAuthentication(userToSave, samlAuthenticationRequest, false, request);
     }
 
     @Hidden
     @PutMapping("/idp/magic_link_request")
-    public ResponseEntity magicLinkRequest(HttpServletRequest request, @Valid @RequestBody MagicLinkRequest magicLinkRequest) {
+    public ResponseEntity magicLinkRequest(HttpServletRequest request, @Valid @RequestBody ClientAuthenticationRequest magicLinkRequest) {
         SamlAuthenticationRequest samlAuthenticationRequest = authenticationRequestRepository.findByIdAndNotExpired(magicLinkRequest.getAuthenticationRequestId())
                 .orElseThrow(() -> new ExpiredAuthenticationException("Expired samlAuthenticationRequest: " + magicLinkRequest.getAuthenticationRequestId()));
 
@@ -305,7 +306,7 @@ public class UserController implements UserAuthentication {
             logLoginWithContext(user, "password", true, LOG, "Successfully logged in with password", request);
             LOG.info("Successfully logged in with password");
         }
-        return doMagicLink(user, samlAuthenticationRequest, magicLinkRequest.isUsePassword(), request);
+        return doInternalAuthentication(user, samlAuthenticationRequest, magicLinkRequest.isUsePassword(), request);
     }
 
     @Hidden
@@ -319,7 +320,7 @@ public class UserController implements UserAuthentication {
             sendAccountVerificationMail(samlAuthenticationRequest, user);
         } else {
             String serviceName = this.manage.getServiceName(request, samlAuthenticationRequest);
-            mailBox.sendMagicLink(user, samlAuthenticationRequest.getHash(), serviceName);
+            mailBox.sendOneTimeLoginCode(user, samlAuthenticationRequest.getHash(), serviceName);
         }
         return ResponseEntity.ok(true);
     }
@@ -933,7 +934,7 @@ public class UserController implements UserAuthentication {
             return ResponseEntity.status(201).body(Collections.singletonMap("url", url));
         }
 
-        return doMagicLink(user, samlAuthenticationRequest, true, request);
+        return doInternalAuthentication(user, samlAuthenticationRequest, true, request);
     }
 
     @SneakyThrows
@@ -1085,10 +1086,10 @@ public class UserController implements UserAuthentication {
         return ResponseEntity.ok(new StatusResponse(HttpStatus.OK.value()));
     }
 
-    private ResponseEntity doMagicLink(User user,
-                                       SamlAuthenticationRequest samlAuthenticationRequest,
-                                       boolean passwordOrWebAuthnFlow,
-                                       HttpServletRequest request) {
+    private ResponseEntity doInternalAuthentication(User user,
+                                                    SamlAuthenticationRequest samlAuthenticationRequest,
+                                                    boolean passwordOrWebAuthnFlow,
+                                                    HttpServletRequest request) {
         samlAuthenticationRequest.setHash(hash());
         samlAuthenticationRequest.setUserId(user.getId());
         samlAuthenticationRequest.setPasswordOrWebAuthnFlow(passwordOrWebAuthnFlow);
@@ -1101,14 +1102,15 @@ public class UserController implements UserAuthentication {
 
         if (passwordOrWebAuthnFlow) {
             LOG.debug(String.format("Returning passwordOrWebAuthnFlow magic link for existing user %s", user.getUsername()));
-            return ResponseEntity.status(201).body(Collections.singletonMap("url", this.magicLinkUrl + "?h=" + samlAuthenticationRequest.getHash()));
+            String url = this.magicLinkUrl + "?h=" + samlAuthenticationRequest.getHash();
+            return ResponseEntity.status(201).body(Map.of("url", url));
         }
 
         if (user.isNewUser()) {
             sendAccountVerificationMail(samlAuthenticationRequest, user);
         } else {
-            LOG.debug("Sending magic link email for existing user");
-            mailBox.sendMagicLink(user, samlAuthenticationRequest.getHash(), serviceName);
+            LOG.debug("Sending login code email for existing user");
+            mailBox.sendOneTimeLoginCode(user, samlAuthenticationRequest.getHash(), serviceName);
         }
         return ResponseEntity.status(201).body(Collections.singletonMap("result", "ok"));
     }

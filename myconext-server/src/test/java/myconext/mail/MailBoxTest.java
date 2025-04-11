@@ -25,13 +25,13 @@ public class MailBoxTest extends AbstractMailBoxTest {
     private MailBox mailBox;
 
     @Test
-    public void sendMagicLink() {
-        doSendMagicLink("Magic Link to login", "en");
+    public void sendOneTimeLoginCode() {
+        doSendOneTimeLoginCode("Magic Link to login", "en");
     }
 
     @Test
-    public void sendMagicLinkNl() {
-        doSendMagicLink("Magische link om in te loggen", "nl");
+    public void sendOneTimeLoginCodeNl() {
+        doSendOneTimeLoginCode("Magische link om in te loggen", "nl");
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -41,7 +41,7 @@ public class MailBoxTest extends AbstractMailBoxTest {
         emailsSendRepository.save(emailsSend);
 
         String hash = UUID.randomUUID().toString();
-        mailBox.sendMagicLink(user(email.toUpperCase(), "en"), hash, "http://mock-sp");
+        mailBox.sendOneTimeLoginCode(user(email.toUpperCase(), "en"), hash, "http://mock-sp");
     }
 
     @SneakyThrows
@@ -57,9 +57,9 @@ public class MailBoxTest extends AbstractMailBoxTest {
     }
 
     @SneakyThrows
-    private void doSendMagicLink(String expectedSubject, String lang) {
+    private void doSendOneTimeLoginCode(String expectedSubject, String lang) {
         String hash = UUID.randomUUID().toString();
-        mailBox.sendMagicLink(user("jdoe@example.com", lang), hash, "http://mock-sp");
+        mailBox.sendOneTimeLoginCode(user("jdoe@example.com", lang), hash, "http://mock-sp");
 
         MimeMessage mimeMessage = mailMessage();
         assertEquals("jdoe@example.com", mimeMessage.getRecipients(Message.RecipientType.TO)[0].toString());
@@ -242,7 +242,7 @@ public class MailBoxTest extends AbstractMailBoxTest {
         User user = user("jdoe@example.com");
         user.setGivenName(givenName);
         user.setFamilyName(familyName);
-        mailBox.sendMagicLink(user, "hash", "requesterId");
+        mailBox.sendOneTimeLoginCode(user, "hash", "requesterId");
 
         MimeMessage mimeMessage = mailMessage();
         MimeMessageParser parser = new MimeMessageParser(mimeMessage);

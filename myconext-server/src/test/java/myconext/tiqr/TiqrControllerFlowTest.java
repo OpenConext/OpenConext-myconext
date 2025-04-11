@@ -2,38 +2,22 @@ package myconext.tiqr;
 
 import com.github.tomakehurst.wiremock.junit.WireMockRule;
 import io.restassured.common.mapper.TypeRef;
-import io.restassured.filter.cookie.CookieFilter;
 import io.restassured.http.ContentType;
-import io.restassured.http.Headers;
-import io.restassured.response.Response;
 import myconext.AbstractIntegrationTest;
-import myconext.model.MagicLinkRequest;
-import myconext.model.SamlAuthenticationRequest;
 import myconext.model.User;
-import org.apache.commons.io.IOUtils;
 import org.junit.ClassRule;
 import org.junit.Test;
-import org.springframework.http.HttpMethod;
 import org.springframework.web.util.UriComponents;
 import org.springframework.web.util.UriComponentsBuilder;
 import tiqr.org.model.*;
 import tiqr.org.secure.Challenge;
 import tiqr.org.secure.OCRA;
 
-import javax.crypto.Cipher;
-import javax.crypto.spec.GCMParameterSpec;
-import javax.crypto.spec.SecretKeySpec;
-import java.io.IOException;
 import java.net.URLEncoder;
 import java.nio.charset.Charset;
-import java.security.MessageDigest;
 import java.util.*;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import static io.restassured.RestAssured.given;
-import static java.nio.charset.StandardCharsets.UTF_8;
-import static myconext.security.GuestIdpAuthenticationRequestFilter.BROWSER_SESSION_COOKIE_NAME;
 import static org.hamcrest.Matchers.equalTo;
 import static org.junit.jupiter.api.Assertions.*;
 

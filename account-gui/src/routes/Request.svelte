@@ -7,7 +7,7 @@
     import critical from "../icons/critical.svg?raw";
     import attention from "../icons/alert-circle.svg?raw";
 
-    import {fetchServiceName, magicLinkNewUser} from "../api/index";
+    import {fetchServiceName, generateCodeNewUser} from "../api/index";
     import CheckBox from "../components/CheckBox.svelte";
     import Spinner from "../components/Spinner.svelte";
     import {onMount} from "svelte";
@@ -40,10 +40,10 @@
     const handleNext = () => {
         if (allowedNext($user.email, $user.givenName, $user.familyName, agreedWithTerms)) {
             showSpinner = true;
-            magicLinkNewUser($user.email, $user.givenName, $user.familyName, id)
+            generateCodeNewUser($user.email, $user.givenName, $user.familyName, id)
                 .then(res => {
                     const url = res.stepup ? `/stepup/${id}?name=${encodeURIComponent(serviceName)}&explanation=${res.explanation}` :
-                        `/magic/${id}?name=${encodeURIComponent(serviceName)}&modus=cr`;
+                        `/code/${id}?name=${encodeURIComponent(serviceName)}&modus=cr`;
                     navigate(url, {replace: true})
                 })
                 .catch(e => {

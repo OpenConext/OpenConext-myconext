@@ -110,6 +110,10 @@
         font-style: italic;
     }
 
+    :global(strong) {
+        font-weight: 600;
+    }
+
     .idp {
         display: flex;
         flex-direction: column;

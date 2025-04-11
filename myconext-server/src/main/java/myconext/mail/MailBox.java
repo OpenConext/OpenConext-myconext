@@ -73,12 +73,11 @@ public class MailBox {
         this.objectMapper = objectMapper;
     }
 
-    public void sendMagicLink(User user, String hash, String requesterId) {
+    public void sendOneTimeLoginCode(User user, String code, String requesterId) {
         String title = this.getTitle("magic_link", user);
         Map<String, Object> variables = variables(user, title);
         variables.put("destination", requesterId);
-        variables.put("hash", hash);
-        variables.put("magicLinkUrl", magicLinkUrl);
+        variables.put("code", code);
         sendMail("magic_link", title, variables, preferredLanguage(user), user.getEmail(), true);
     }
 
@@ -91,6 +90,7 @@ public class MailBox {
     }
 
     public void sendAccountVerificationMobileAPI(User user, String hash, String linkUrl) {
+        //TODO need to differentiate here. Backward compatibility for magic link and new login code
         doSendAccountVerification(user, hash, linkUrl);
     }
 

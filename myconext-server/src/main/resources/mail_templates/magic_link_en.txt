@@ -1,16 +1,9 @@
-Magic Link
+Login code
 
-Follow the link below to sign in to proceed to your destination:
+Your confirmation code is below. Enter it in the opened browser window to confirm your email address.
 
-{{magicLinkUrl}}?h={{hash}}
+{{code}}
 
-
-Sign in to {{destination}}. This link will expire in 10 minutes and can only be used once.
-
-
-Hi {{name}},
-
-Someone just requested a magic link on eduID using this email address. If this was you, you can sign in by following the link above.
-If you didn't request the magic link, you can just ignore or delete this message.
+If this is not you or you do not want an eduID after all, you can ignore this message.
 
 {{> footer_en.txt}}

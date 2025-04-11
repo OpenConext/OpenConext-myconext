@@ -3,7 +3,7 @@ package myconext.api;
 import io.restassured.http.Cookie;
 import io.restassured.response.Response;
 import myconext.AbstractIntegrationTest;
-import myconext.model.MagicLinkRequest;
+import myconext.model.ClientAuthenticationRequest;
 import myconext.model.User;
 import org.junit.Test;
 import org.springframework.http.HttpMethod;
@@ -14,7 +14,6 @@ import java.util.UUID;
 
 import static io.restassured.RestAssured.given;
 import static myconext.security.GuestIdpAuthenticationRequestFilter.GUEST_IDP_REMEMBER_ME_COOKIE_NAME;
-import static org.hamcrest.Matchers.startsWith;
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
@@ -146,7 +145,7 @@ public class LoginControllerTest extends AbstractIntegrationTest {
     public void redirectToSPServiceDeskHook() throws IOException {
         String authenticationRequestId = samlAuthnRequest();
         User user = user("steve@example.com", "Steve", "Doe", "en");
-        MagicLinkResponse magicLinkResponse = magicLinkRequest(new MagicLinkRequest(authenticationRequestId, user, false), HttpMethod.POST);
+        ClientAuthenticationResponse magicLinkResponse = magicLinkRequest(new ClientAuthenticationRequest(authenticationRequestId, user, false), HttpMethod.POST);
         Response response = magicResponse(magicLinkResponse);
 
         String cookie = response.cookie(GUEST_IDP_REMEMBER_ME_COOKIE_NAME);

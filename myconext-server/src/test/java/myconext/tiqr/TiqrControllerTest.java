@@ -6,7 +6,7 @@ import io.restassured.http.ContentType;
 import io.restassured.http.Headers;
 import io.restassured.response.Response;
 import myconext.AbstractIntegrationTest;
-import myconext.model.MagicLinkRequest;
+import myconext.model.ClientAuthenticationRequest;
 import myconext.model.SamlAuthenticationRequest;
 import myconext.model.User;
 import org.apache.commons.io.IOUtils;
@@ -18,19 +18,14 @@ import tiqr.org.model.*;
 import tiqr.org.secure.Challenge;
 import tiqr.org.secure.OCRA;
 
-import javax.crypto.Cipher;
-import javax.crypto.spec.GCMParameterSpec;
-import javax.crypto.spec.SecretKeySpec;
 import java.io.IOException;
 import java.net.URLEncoder;
 import java.nio.charset.Charset;
-import java.security.MessageDigest;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import static io.restassured.RestAssured.given;
-import static java.nio.charset.StandardCharsets.UTF_8;
 import static myconext.security.GuestIdpAuthenticationRequestFilter.BROWSER_SESSION_COOKIE_NAME;
 import static org.hamcrest.Matchers.equalTo;
 import static org.junit.jupiter.api.Assertions.*;
@@ -598,7 +593,7 @@ public class TiqrControllerTest extends AbstractIntegrationTest {
     private SamlAuthenticationRequest doEnrollmment(boolean finishRegistration) throws IOException {
         String authenticationRequestId = samlAuthnRequest();
         User user = user("jdoe@example.com");
-        MagicLinkRequest magicLinkRequest = new MagicLinkRequest(authenticationRequestId, user, false);
+        ClientAuthenticationRequest magicLinkRequest = new ClientAuthenticationRequest(authenticationRequestId, user, false);
         magicLinkRequest(magicLinkRequest, HttpMethod.PUT);
 
         SamlAuthenticationRequest samlAuthenticationRequest = authenticationRequestRepository.findById(authenticationRequestId).get();
