@@ -915,7 +915,7 @@ public class UserController implements UserAuthentication {
                 String url = String.format("%s/credential?id=%s&success=false", spBaseUrl, credentialId);
                 return ResponseEntity.status(201).body(Collections.singletonMap("url", url));
             }
-            throw new ForbiddenException("Unsuccessfull SAML authentication ");
+            throw new ForbiddenException("Unsuccessfully SAML authentication ");
         }
         challengeRepository.delete(challenge);
 
@@ -1090,6 +1090,7 @@ public class UserController implements UserAuthentication {
                                                     SamlAuthenticationRequest samlAuthenticationRequest,
                                                     boolean passwordOrWebAuthnFlow,
                                                     HttpServletRequest request) {
+        //TODO add code to SamlAuthenticationRequest, when not passwordOrWebAuthnFlow
         samlAuthenticationRequest.setHash(hash());
         samlAuthenticationRequest.setUserId(user.getId());
         samlAuthenticationRequest.setPasswordOrWebAuthnFlow(passwordOrWebAuthnFlow);

@@ -22,7 +22,7 @@
         values.forEach((_, index) => inputRefs.set(index, document.querySelector(`#ref_${index}`)));
         if (focusFirst && !disabled) {
             const firstElement = inputRefs.get(0);
-            setTimeout(() => firstElement.focus(), timeout);
+            setTimeout(() => firstElement.focus(), 165);
         }
     });
 
