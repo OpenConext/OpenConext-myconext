@@ -82,7 +82,7 @@ public class UserControllerRememberMeTest extends AbstractIntegrationTest {
         String authnContext = readFile("request_authn_context_mfa.xml");
         response = samlAuthnRequestResponseWithLoa(
                 new Cookie.Builder(GUEST_IDP_REMEMBER_ME_COOKIE_NAME, cookie).build(), null, authnContext);
-        response.then().header("Location", startsWith("http://localhost:3000/uselink/"));
+        response.then().header("Location", startsWith("http://localhost:3000/usecode/"));
     }
 
     @Test

@@ -44,7 +44,7 @@ public class AccountLinkerControllerTest extends AbstractIntegrationTest {
         given().when()
                 .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                 .body(new ClientAuthenticationRequest(authenticationRequestId, user("mdoe@example.com"), false))
-                .put("/myconext/api/idp/magic_link_request")
+                .put("/myconext/api/idp/generate_code_request")
                 .then()
                 .statusCode(HttpStatus.CREATED.value());
 
@@ -123,7 +123,7 @@ public class AccountLinkerControllerTest extends AbstractIntegrationTest {
         given().when()
                 .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                 .body(new ClientAuthenticationRequest(authenticationRequestId, user("mdoe@example.com"), false))
-                .put("/myconext/api/idp/magic_link_request")
+                .put("/myconext/api/idp/generate_code_request")
                 .then()
                 .statusCode(HttpStatus.CREATED.value());
         given().redirects().follow(false)
@@ -238,7 +238,7 @@ public class AccountLinkerControllerTest extends AbstractIntegrationTest {
         given().when()
                 .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                 .body(new ClientAuthenticationRequest(authenticationRequestId, user("mdoe@example.com"), false))
-                .put("/myconext/api/idp/magic_link_request")
+                .put("/myconext/api/idp/generate_code_request")
                 .then()
                 .statusCode(HttpStatus.CREATED.value());
         stubForTokenUserInfo(userInfo);
