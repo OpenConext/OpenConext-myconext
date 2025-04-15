@@ -60,7 +60,7 @@
                     sameSite: "Lax"
                 });
                 if (magicLink) {
-                    navigate(`/${loginPreferences.CODE.toLowerCase()}/${id}?magicLink=true`)
+                    navigate(`/${loginPreferences.CODE.toLowerCase()}/${id}?magicLink=true`);
                 } else if (mfaRequired && res.includes(loginPreferences.APP)) {
                     navigate(`/${loginPreferences.APP.toLowerCase()}/${id}?mfa=true`);
                 }
@@ -68,7 +68,7 @@
                 else if ($user.preferredLogin && res.includes($user.preferredLogin)) {
                     navigate(`/${$user.preferredLogin.toLowerCase()}/${id}`);
                 } else {
-                    //By contract the list ordered from more secure to less secure
+                    //By contract the list is ordered from more secure to less secure
                     navigate(`/${res[0].toLowerCase()}/${id}`);
                 }
             }).catch(() => emailNotFound = true);

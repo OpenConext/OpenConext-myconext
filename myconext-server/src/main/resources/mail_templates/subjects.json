@@ -4,12 +4,12 @@
     "nl": "Je eduID is aangemaakt"
   },
   "account_verification": {
-    "en": "Please verify your email address for your eduID",
-    "nl": "Verifieer je e-mailadres voor je eduID"
+    "en": "Verify your eduID email with the code: ",
+    "nl": "Bevestig je eduID e-mailadres met de code: "
   },
-  "magic_link": {
-    "en": "Magic Link to login",
-    "nl": "Magische link om in te loggen"
+  "one_time_login_code": {
+    "en": "Confirm your eduID email with code: ",
+    "nl": "Bevestig je eduID e-mailadres met de code: "
   },
   "reset_password": {
     "en": "Reset your eduID password",

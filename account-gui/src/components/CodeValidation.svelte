@@ -9,7 +9,6 @@
     export let validate;
     export let transformer;
     export let focusFirst = true;
-    export let clear = false;
     export let info;
 
     const timeout = 35;

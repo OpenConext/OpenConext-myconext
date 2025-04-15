@@ -35,6 +35,10 @@ public class VerificationCodeGenerator {
         return String.valueOf(getChars(5, NUMBERS));
     }
 
+    public static String generateOneTimeLoginCode() {
+        return String.valueOf(getChars(6, NUMBERS));
+    }
+
     private static char[] getChars(int nbrBytes, char[] charArray) {
         byte[] verifierBytes = new byte[nbrBytes];
         random.nextBytes(verifierBytes);

@@ -47,7 +47,7 @@ export function generateCodeNewUser(email, givenName, familyName, authentication
 }
 
 export function generateCodeExistingUser(email, authenticationRequestId) {
-    const body = {user: {email}, code, authenticationRequestId};
+    const body = {user: {email}, authenticationRequestId};
     return postPutJson("/myconext/api/idp/generate_code_request", body, "PUT");
 }
 

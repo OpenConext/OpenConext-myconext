@@ -7,6 +7,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import myconext.exceptions.ForbiddenException;
 import myconext.exceptions.WeakPasswordException;
 import myconext.manage.Manage;
 import myconext.remotecreation.NewExternalEduID;
@@ -26,6 +27,9 @@ import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
 import java.io.Serializable;
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
+import java.time.Instant;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -110,6 +114,8 @@ public class User implements Serializable, UserDetails {
 
     @Setter
     private ControlCode controlCode;
+
+    private OneTimeLoginCode oneTimeLoginCode;
 
     public User(CreateInstitutionEduID createInstitutionEduID, Map<String, Object> userInfo) {
         this.email = createInstitutionEduID.getEmail();
@@ -469,6 +475,16 @@ public class User implements Serializable, UserDetails {
                 "serviceDeskMember", this.serviceDeskMember
         );
     }
+
+    public void startOneTimeLoginCode(String oneTimeLoginCode) {
+        this.oneTimeLoginCode = new OneTimeLoginCode(oneTimeLoginCode);
+    }
+
+    // time-constant comparison
+    public boolean attemptOneTimeLoginVerification(String code) {
+        return this.oneTimeLoginCode.attemptOneTimeLoginVerification(code);
+    }
+
 
     private interface ProvisionedNameProvider {
 

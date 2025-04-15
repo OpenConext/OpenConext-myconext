@@ -4,6 +4,7 @@ import org.junit.Test;
 
 import java.util.regex.Pattern;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 
@@ -33,6 +34,13 @@ public class VerificationCodeGeneratorTest {
     public void generatePhoneVerification() {
         String phoneVerification = VerificationCodeGenerator.generatePhoneVerification();
         assertTrue(patternPhoneVerification.matcher(phoneVerification).matches());
+    }
+
+    @Test
+    public void generateOneTimeLoginCode() {
+        String oneTimeLoginCode = VerificationCodeGenerator.generateOneTimeLoginCode();
+        assertEquals(6, oneTimeLoginCode.length());
+        Integer.parseInt(oneTimeLoginCode);
     }
 
     @Test

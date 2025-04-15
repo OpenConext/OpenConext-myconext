@@ -74,11 +74,11 @@ public class MailBox {
     }
 
     public void sendOneTimeLoginCode(User user, String code, String requesterId) {
-        String title = this.getTitle("magic_link", user);
+        String title = this.getTitle("one_time_login_code", user);
         Map<String, Object> variables = variables(user, title);
         variables.put("destination", requesterId);
         variables.put("code", code);
-        sendMail("magic_link", title, variables, preferredLanguage(user), user.getEmail(), true);
+        sendMail("one_time_login_code", title, variables, preferredLanguage(user), user.getEmail(), true);
     }
 
     public void sendAccountVerification(User user, String hash) {
@@ -90,8 +90,11 @@ public class MailBox {
     }
 
     public void sendAccountVerificationMobileAPI(User user, String hash, String linkUrl) {
-        //TODO need to differentiate here. Backward compatibility for magic link and new login code
-        doSendAccountVerification(user, hash, linkUrl);
+        String title = this.getTitle("account_verification", user);
+        Map<String, Object> variables = variables(user, title);
+        variables.put("hash", hash);
+        variables.put("magicLinkUrl", linkUrl);
+        sendMail("account_verification", title, variables, preferredLanguage(user), user.getEmail(), true);
     }
 
     private void doSendAccountVerification(User user, String hash, String linkUrl) {
@@ -100,7 +103,6 @@ public class MailBox {
         variables.put("hash", hash);
         variables.put("magicLinkUrl", linkUrl);
         sendMail("account_verification", title, variables, preferredLanguage(user), user.getEmail(), true);
-
     }
 
     public void sendAccountConfirmation(User user) {
