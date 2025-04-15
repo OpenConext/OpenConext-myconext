@@ -25,11 +25,11 @@ const nl = {
     },
     about: {
         eduID: "Over eduID",
-        title: "Eén persoonlijk account voor de onderwijs en onderzoeks sector",
-        why: "Waarom een eduID?",
-        whyInfo: "eduID is ontstaan om studenten de mogelijkheid te geven zich eenvoudig bij meerdere instellingen te kunnen identificeren. Ze konden zich namelijk niet met hun ene instellings identiteit aanmelden bij een andere. Ook voor gast gebruikers die niet gelieerd zijn aan een opleiding, maar wel op digitale platformen wilden meewerken, is een eduID een uitkomst.",
-        register: "Registreren",
-        registerInfo: "Klik bovenaan de pagina op ‘registreren’. Vul je persoonlijk e-mailadres en voor- en achternaam in. Je ontvangt hierna een bevestigingsmail.<br/>Nadat je op de link in die mail klikt, is jouw eduID-account meteen actief.",
+        title: "Eén account voor onderwijs- en onderzoeksinstellingen",
+        why: "Wat is eduID?",
+        whyInfo: "eduID helpt studenten om eenvoudig te bewijzen wie ze zijn bij onderwijs- en onderzoeksinstellingen in Nederland. Vroeger konden studenten namelijk niet met het account van de ene instelling inloggen bij een andere instelling. Dit was ook zo bij gast-studenten die niet ingeschreven waren bij een opleiding, maar wel op digitale platformen wilden meewerken.<br/><br/>eduID is de oplossing: één account waarmee je bij verschillende Nederlandse onderwijs- en onderzoeksinstellingen kunt bewijzen wie je bent.",
+        register: "Hoe krijg je een eduID",
+        registerInfo: "Een eduID maak je eenvoudig zelf. Druk daarvoor op <strong>eduID aanmaken</strong> bovenaan de pagina. Nadat je je eduID hebt aangemaakt is het vaak nog wel nodig dat je identiteit bevestigd wordt door een officiële partij. Zoals je school, universiteit of bank.",
         logins: "Manieren van inloggen",
         loginsInfo: "Je gebruikt je eduID om in te loggen op websites en cloudapplicaties.<br/>" +
             "Om dit zo veilig en eenvoudig mogelijk te doen raden we je aan om hiervoor de eduID app te gebruiken.<br/>" +
@@ -61,33 +61,33 @@ const nl = {
         manageInfo: "Je kunt je eduID-account beheren via <a href='{{url}}'>Mijn eduID</a>. Hier beheer je jouw naam, e-mailadres en de beveiliging van je eduID-account. Ook kun je zien op welke diensten je al bent ingelogd met eduID en je eduID accountinformatie downloaden."
     },
     support: {
-        eduID: "eduID Support",
+        eduID: "Help",
         title: "Voor als je er niet uit komt",
-        studying: "Are you studying in NL?",
-        connect: "Connect your institution!",
-        studyInfo: "<strong>When you study in the Netherlands</strong> and you want to use eduID to logon to an educational services, we need to be sure it’s you and not someone impersonating you.",
-        information: "You must therefore add the following information to your eduID:",
-        informationBullet1: "Validation of your full name by a third party",
-        informationBullet2: "Proof of being a student",
-        informationBullet3: "Your current institution",
-        allAtOnce: "You can add this information <strong>all at once</strong> by connecting your school/institution to your eduID. Select the 'add an organisation' button in the app or My eduID.",
-        note: "<strong>Please note:</strong> Did you create an eduID last academic year? Then you may have to link it to your institution again.",
-        help: "More help needed?",
-        helpInfo: "Kom je er helemaal niet meer uit, neem dan contact met ons op via <a href='mailto:help@eduID.nl'>help@eduID.nl</a>"
+        studying: "Studeer je in Nederland?",
+        connect: "Koppel je onderwijsinstelling",
+        studyInfo: "We moeten eerst zeker zijn wie je bent. Alleen zo kun je eduID gebruiken voor diensten in het Nederlandse onderwijs.",
+        information: "Daarom vragen we je deze gegevens toe te voegen aan je eduID:",
+        informationBullet1: "Je volledige naam, bevestigd door een officiële partij",
+        informationBullet2: "Bewijs dat je student bent",
+        informationBullet3: "Je huidige instelling",
+        allAtOnce: "Je kunt deze gegevens in één keer toevoegen door je onderwijsinstelling te koppelen met eduID. Druk hiervoor op <strong>Voeg instelling toe</strong> in de eduID app of Mijn eduID.",
+        note: "<strong>Let op:</strong> heb je vorig schooljaar al een eduID gemaakt? Dan moet je misschien opnieuw je instelling koppelen",
+        help: "Meer hulp nodig?",
+        helpInfo: "Stuur een e-mail naar <a href='mailto:help@eduID.nl'>help@eduID.nl</a>. We komen zo snel mogelijk bij je terug."
     },
     privacy: {
         eduID: "Privacyverklaring",
-        title: "Versie 17 juni 2024"
+        title: "Versie 18 oktober 2024"
     },
     terms: {
         eduID: "Gebruiksvoorwaarden",
         title: "Versie 17 juni 2024"
     },
     footer: {
-        terms: "Terms of Use",
-        termsLink: "https://support.surfconext.nl/terms-en",
-        privacy: "Privacy policy",
-        privacyLink: "https://support.surfconext.nl/privacy-en",
+        terms: "Gebruiksvoorwaarden",
+        termsLink: "https://eduid.nl/terms",
+        privacy: "Privacyverklaring",
+        privacyLink: "https://eduid.nl/privacy",
         surfLink: "https://surf.nl",
     },
 
