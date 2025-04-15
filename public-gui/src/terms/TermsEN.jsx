@@ -8,47 +8,45 @@ export const TermsEN = () => {
         <Background>
             <div className="card full">
                 <p className="info">
-                    Een eduID-account is een door SURF aangeboden en beheerde digitale identiteit van de gebruiker, die
-                    gebruikt kan worden in het domein van onderwijs en onderzoek. Iedere persoon kan een eduID-account
-                    aanmaken, ongeacht of deze persoon verbonden is aan een instelling. Met dit account kan de gebruiker
-                    inloggen op aan eduID gekoppelde applicaties. Deze applicaties kunnen van instellingen zijn die bij
-                    SURF zijn aangesloten, van SURF zelf of van derden.
-                    In deze gebruiksvoorwaarden vind je de gedragsregels voor het gebruik van eduID en daarnaast vind je
-                    de rechten en plichten die gelden bij het gebruik van een eduID-account.
-                    Door het aanmaken van een eduID-account, gaat de Gebruiker akkoord met deze gebruikersvoorwaarden.
+                    <strong>Please note:</strong> the Dutch version of the terms of service is authoritative. <br/>
+                    An eduID account is a digital identity of the user offered and managed by SURF, which can be 
+                    used in the field of education and research. Any person can create an eduID account, regardless 
+                    of whether this person is affiliated with an institution. With this account the user can log in 
+                    to applications connected to eduID. These applications can be from institutions affiliated with 
+                    SURF, from SURF itself or from third parties.<br/>
+                    In these terms of use you will find the rules of conduct for the use of eduID and you will also 
+                    find the rights and obligations that apply when using an eduID account.<br/>
+                    By creating an eduID account, the User agrees to these terms of use.
                 </p>
-                <CollapseField title="Wijzigingshistorie"
+                <CollapseField title="Changes since previous versions"
                                info="Versie 1: 17 juni 2024"/>
             </div>
             <div className="card bottom full">
                 <h5>
-                    1. Definities
+                    1. Definitions
                 </h5>
                 <p className="info">
-                    <strong>1.1</strong> In deze Gebruiksvoorwaarden wordt een aantal definities gehanteerd. Definities
-                    worden met hoofdletter geschreven.
+                    <strong>1.1</strong> Several definitions are used in these Terms of Use. Definitions are capitalized.
                 </p>
                 <p>
                     <ul className="indented">
-                        <li><strong>Dienst of eduID Dienst</strong> <br/>
-                            de eduID applicatie zoals aangeboden door SURF waarmee een Gebruiker een
-                            eduID-account kan verkrijgen en inloggen op aan eduID gekoppelde applicaties.
+                        <li><strong>Service or eduID Service</strong> <br/>
+                            the eduID application as offered by SURF with which a User can obtain an eduID Account 
+                            and log in to applications connected to eduID.
                         </li>
-                        <li><strong>eduID-Account</strong> <br/>
-                            het geheel aan gegevens die de eduID Dienst van een Gebruiker bijhoudt, waaronder de
-                            gegevens waarmee de Gebruiker bij de eduID Dienst en op de eduID Dienst gekoppelde
-                            applicaties kan
-                            inloggen.
+                        <li><strong>eduID Account</strong> <br/>
+                            all the data that the eduID Service keeps track of for a User, including the data with 
+                            which the User can log in to the eduID Service and applications connected to the eduID 
+                            Service.
                         </li>
-                        <li><strong>Gebruiker</strong> <br/>
-                            de natuurlijke persoon die houder is van een eduID-Account, zoals aangeboden en beheerd
-                            door SURF.
+                        <li><strong>User</strong> <br/>
+                            the natural person who is the holder of an eduID Account, as offered and managed by SURF.
                         </li>
-                        <li><strong>Gebruiksvoorwaarden</strong> <br/>
-                            deze gebruiksvoorwaarden
+                        <li><strong>Terms of use</strong> <br/>
+                            these terms of use.
                         </li>
                         <li><strong>SURF</strong> <br/>
-                            SURF B.V. SURF stelt eduID beschikbaar aan de Gebruiker.
+                            SURF B.V. SURF makes eduID available to the User.
                         </li>
                     </ul>
 
@@ -56,130 +54,127 @@ export const TermsEN = () => {
             </div>
             <div className="card bottom full">
                 <h5>
-                    2. Rechten en plichten van de Gebruiker
+                    2. Rights and obligations of the User
                 </h5>
                 <p className="info">
-                    <strong>2.1</strong> Een Gebruiker heeft standaard de volgende gebruiksrechten op de eduID Dienst:
-                    het aanmaken van een eduID-Account, persoonlijke informatie aanpassen of verrijken, het inloggen met
-                    het eduID-Account op aan de eduID Dienst gekoppelde applicaties.
+                    <strong>2.1</strong> A User has the following standard usage rights to the eduID Service: creating 
+                    an eduID Account, modifying or enriching personal information, logging in with the eduID Account 
+                    to applications connected to the eduID Service.
                 </p>
                 <p className="info">
-                    <strong>2.2</strong> De Gebruiker houdt zich aan de deze Gebruiksvoorwaarden.
+                    <strong>2.2</strong> The User adheres to these Terms of Use.
                 </p>
                 <p className="info">
-                    <strong>2.3</strong> De Gebruiker gebruikt zijn eduID-Account in overeenstemming met onderhavige
-                    gebruiksvoorwaarden, met specifieke verwijzing naar artikel 3 Misbruik.
+                    <strong>2.3</strong> The User uses his eduID Account in accordance with these terms of use, with 
+                    specific reference to Article 3 Abuse.
                 </p>
                 <p className="info">
-                    <strong>2.4</strong> De inloggegevens voor een eduID-Account, waaronder gebruikersnaam en wachtwoord
-                    of een andere vorm van identificatie/authenticatie zijn strikt persoonlijk. Het is de Gebruiker niet
-                    toegestaan inloggegevens en daaruit voortvloeiende rechten voor toegang tot aan eduID Dienst
-                    gekoppelde applicaties aan een derde over te dragen of in gebruik te geven.
+                    <strong>2.4</strong> The login details for an eduID Account, including username and password or 
+                    another form of identification/authentication, are strictly personal. The User is not permitted 
+                    to transfer login details and resulting rights for access to applications connected to the eduID 
+                    Service to a third party or to allow them to be used.
                 </p>
             </div>
             <div className="card bottom full">
-                <h5>3. Misbruik
+                <h5>3. Abuse
                 </h5>
                 <p className="info">
-                    <strong>3.1</strong> Onder misbruik wordt verstaan – maar is hiertoe niet beperkt – het gebruiken van
-                    het eduID-Account op een wijze waarvoor het account niet bedoeld is. Onder misbruik valt in ieder
-                    geval:
+                    <strong>3.1</strong> Abuse includes – but is not limited to – using the eduID Account in a manner 
+                    for which the account is not intended. In any case, abuse includes:
                     <ul>
-                        <li>Het aanmaken van een eduID-Account met gegevens van een derde;</li>
-                        <li>Het aanmaken van een eduID-Account voor een rechtspersoon;</li>
-                        <li>Phishing of identiteitsfraude;</li>
-                        <li>Het gebruik van het eduID-Account dat indruist tegen de wet, openbare orde of goede zeden.
+                        <li>Creating an eduID Account with data from a third party;</li>
+                        <li>Creating an eduID Account for a legal entity;</li>
+                        <li>Phishing or identity fraud;</li>
+                        <li>The use of the eduID Account to contravene the law, public order, and public decency.
                         </li>
                     </ul>
                 </p>
                 <p className="info">
-                    <strong>3.2</strong> Het is verboden het eduID-Account te gebruiken op een van de hierboven genoemde
-                    vormen van misbruik of op een andere wijze die niet in overeenstemming is met de maatschappelijke
-                    normen en waarden.
+                    <strong>3.2</strong> It is prohibited to use the eduID Account in any of the above-mentioned 
+                    forms of Abuse or in any other way that is not in accordance with social norms and values.
                 </p>
             </div>
             <div className="card bottom full">
-                <h5>4. Gevolgen misbruik
+                <h5>4. Consequences of Abuse
                 </h5>
                 <p className="info">
-                    <strong>4.1</strong> SURF informeert de Gebruiker bij misbruik.
+                    <strong>4.1</strong> SURF informs the User in the event of Abuse.
                 </p>
                 <p className="info">
-                    <strong>4.2</strong> Indien SURF een reden heeft om aan te nemen dat door Gebruiker inbreuk wordt
-                    gemaakt of dreigt te worden gemaakt op regels of verplichtingen als in deze Gebruikersvoorwaarden
-                    beschreven, is de Gebruiker verplicht in overleg met SURF de bedoelde inbreuk zo snel mogelijk te
-                    beëindigen en voor de toekomst te voorkomen.
+                    <strong>4.2</strong> If SURF has reason to believe that the User is infringing or is in danger 
+                    of infringing rules or obligations as described in these Terms of Use, the User is obliged, in 
+                    consultation with SURF, to end the intended infringement as quickly as possible and for the prevent 
+                    in the future.
                 </p>
                 <p className="info">
-                    <strong>4.3</strong> SURF behoudt zich het recht voor het eduID-Account van een Gebruiker zonder
-                    opgaaf van reden (onmiddellijk) te sluiten en/of de Gebruiker toegang te ontzeggen tot de aan eduID
-                    Dienst gekoppelde applicaties.
+                    <strong>4.3</strong> SURF reserves the right to (immediately) close a User’s eduID Account without 
+                    stating a reason and/or to deny the User access to the applications connected to the eduID Service.
                 </p>
                 <p className="info">
-                    <strong>4.4</strong> SURF heeft tevens het recht overige maatregelen te nemen die noodzakelijk zijn
-                    om SURF, Gebruikers en/of derden tegen schade, hinder of inbreuken op rechten te beschermen.
+                    <strong>4.4</strong> SURF also has the right to take other measures that are necessary to protect 
+                    SURF, Users and/or third parties against damage, nuisance, or infringements of rights.
                 </p>
             </div>
             <div className="card bottom full">
-                <h5>5. Aansprakelijkheid
+                <h5>5. Liability
                 </h5>
                 <p className="info">
-                    <strong>5.1</strong> SURF aanvaardt geen aansprakelijkheid van Gebruiker of derden voortvloeiend uit
-                    het niet-nakomen van de Gebruiksvoorwaarden door Gebruiker.
+                    <strong>5.1</strong> SURF accepts no liability from the User or third parties arising from the 
+                    User’s failure to comply with the Terms of Use.
                 </p>
                 <p className="info">
-                    <strong>5.2</strong> SURF aanvaardt geen aansprakelijkheid voor eventuele schade die door de
-                    Gebruiker of een derde wordt geleden als gevolg van het sluiten van het eduID-Account en het
-                    ontzeggen tot de aan eduID Dienst gekoppelde applicaties, zoals genoemd in artikel 4 lid 3 van deze
-                    Gebruiksvoorwaarden.
+                    <strong>5.2</strong> SURF accepts no liability for any damage suffered by the User or a third 
+                    party as a result of closing the eduID Account and being denied access to the applications connected 
+                    to the eduID Service, as referred to in Article 4, paragraph 3 of these Terms of Use.
                 </p>
             </div>
             <div className="card bottom full">
-                <h5>6. Looptijd
+                <h5>6. Term
                 </h5>
                 <p className="info">
-                    <strong>6.1</strong> SURF zorgt dat de eduID Dienst beschikbaar is en kan de eduID Dienst zonder
-                    voorafgaande bekendmaking (tijdelijk) buiten gebruik stellen of het gebruik ervan beperken voor
-                    zover dit noodzakelijk is voor het redelijkerwijs benodigde onderhoud of noodzakelijk door SURF te
-                    verrichten aanpassingen en/of verbeteringen van de Dienst.
+                    <strong>6.1</strong> SURF ensures that the eduID Service is available and may, without prior notice, 
+                    put the eduID Service (temporarily or otherwise) out of operation or limit its use insofar as this is 
+                    necessary for reasonably necessary maintenance or adjustments and/or improvements to be made by SURF 
+                    to the Service.
                 </p>
                 <p className="info">
-                    <strong>6.2</strong> SURF is niet aansprakelijk voor eventuele schade die voortvloeit uit het
-                    (tijdelijk) niet beschikbaar zijn van de Dienst.
+                    <strong>6.2</strong> SURF is not liable for any damage resulting from the (temporary) unavailability 
+                    of the Service.
                 </p>
             </div>
             <div className="card bottom full">
-                <h5>7. Privacy- en cookiebeleid
+                <h5>7. Privacy en cookie policy
                 </h5>
                 <p className="info">
-                    <strong>7.1</strong> Zie <Link to={"/privacy"}>privacyverklaring</Link>
+                    <strong>7.1</strong> Read via <Link to={"/privacy"}>this link</Link> how eduID handles your privacy 
+                    (privacy and cookie policy).
                 </p>
             </div>
             <div className="card bottom full">
-                <h5>8. Toepasselijk recht
+                <h5>8. Applicable law
                 </h5>
                 <p className="info">
-                    <strong>8.1</strong> Op deze voorwaarden is het Nederlands recht van toepassing en de bevoegde
-                    rechter is de Rechtbank Midden-Nederland, locatie Utrecht.
+                    <strong>8.1</strong> Dutch law applies to these conditions and the competent court is the District 
+                    Court of Central Netherlands, location Utrecht.
                 </p>
             </div>
             <div className="card bottom full">
-                <h5>9. Wijzigen van de Gebruiksvoorwaarden
+                <h5>9. Changing the Terms of Use
                 </h5>
                 <p className="info">
-                    <strong>9.1</strong> SURF behoudt zich het recht voor deze Gebruiksvoorwaarden alsmede de eduID
-                    privacyverklaring aan te passen.
+                    <strong>9.1</strong> SURF reserves the right to amend these Terms of Use as well as the eduID privacy 
+                    policy.
                 </p>
                 <p className="info">
-                    <strong>9.2</strong> We adviseren dan ook om regelmatig op deze pagina te kijken of er veranderingen
-                    zijn doorgevoerd.
+                    <strong>9.2</strong> We therefore advise you to regularly check this page to see if any changes have 
+                    been made.
                 </p>
             </div>
             <div className="card full bottom">
-                <h5>10. Support en vragen
+                <h5>10. Support and questions
                 </h5>
                 <p className="info">
-                    <strong>10.1</strong> Contact kan opgenomen worden via <a href="help@eduid.nl">help@eduid.nl</a>.
+                    <strong>10.1</strong> You can contact <a href="help@eduid.nl">help@eduid.nl</a>.
                 </p>
             </div>
         </Background>

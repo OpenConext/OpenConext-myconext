@@ -12,9 +12,9 @@ export const TermsNL = () => {
                     gebruikt kan worden in het domein van onderwijs en onderzoek. Iedere persoon kan een eduID-account
                     aanmaken, ongeacht of deze persoon verbonden is aan een instelling. Met dit account kan de gebruiker
                     inloggen op aan eduID gekoppelde applicaties. Deze applicaties kunnen van instellingen zijn die bij
-                    SURF zijn aangesloten, van SURF zelf of van derden.
+                    SURF zijn aangesloten, van SURF zelf of van derden.<br/>
                     In deze gebruiksvoorwaarden vind je de gedragsregels voor het gebruik van eduID en daarnaast vind je
-                    de rechten en plichten die gelden bij het gebruik van een eduID-account.
+                    de rechten en plichten die gelden bij het gebruik van een eduID-account. <br/>
                     Door het aanmaken van een eduID-account, gaat de Gebruiker akkoord met deze gebruikersvoorwaarden.
                 </p>
                 <CollapseField title="Wijzigingshistorie"
