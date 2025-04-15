@@ -15,8 +15,7 @@ export const PrivacyEN = () => {
                     <strong>Please note:</strong> the Dutch version of the Privacy Policy is authoritative.<br/>
 					Thank you for viewing the privacy policy for eduID! SURF’s eduID team pays a lot of attention to the
 					protection of your personal data and you can read all about it in this privacy policy. If you have any 
-					questions or concerns about this privacy policy, please email <a
-                    href="mailto:help@eduid.nl">help@eduid.nl</a>.
+					questions or concerns about this privacy policy, please email <a href="mailto:help@eduid.nl">help@eduid.nl</a>.
                 </p>
                 <p className="info">
                     This privacy policy contains the following topics:
