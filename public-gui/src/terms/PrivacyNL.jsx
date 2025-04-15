@@ -36,7 +36,7 @@ export const PrivacyNL = () => {
                     </ol>
                 </p>
                 <CollapseField title="Wijzigingshistorie"
-                               info="Versie 1: 17 juni 2024"/>
+                               info="Versie 18 oktober 2024"/>
 
             </div>
             <div id="eduid" className="card full bottom">
@@ -68,48 +68,62 @@ export const PrivacyNL = () => {
             <div id="gegevens" className="card full bottom">
                 <h5>Welke gegevens verwerken wij van jou?</h5>
                 <p className="info">
-                    eduID verwerkt persoonsgegevens van de natuurlijke persoon die houder is van een eduID. Het gaat om
-                    de volgende gegevens:
                     <ol>
-                        <li>Je e-mailadres</li>
-                        <li>Je voor- en achternaam</li>
-                        <li>Een uniek identificerend nummer en daarbij behorende pseudoniemen die aan diensten worden
-                            verstrekt
-                        </li>
-                        <li>De datum en het tijdstip waarop de eerste login plaatsvindt van iedere dienst waarop je met
-                            eduID inlogt
-                        </li>
-                        <li>Extra technische data:
+                        <li>eduID verwerkt persoonsgegevens van de natuurlijke persoon die houder is van een eduID. Het gaat om
+                        de volgende gegevens:
                             <ul>
+                                <li>Je e-mailadres</li>
+                                <li>Je voor- en achternaam</li>
+                                <li>Een uniek identificerend nummer en daarbij behorende pseudoniemen die aan diensten worden
+                                    verstrekt</li>
+                                <li>De datum en het tijdstip waarop de eerste login plaatsvindt van iedere dienst waarop je met
+                                    eduID inlogt </li>
                                 <li>Voorkeurstaal eduID-interface</li>
-                                <li>Technische logging (user agent)</li>
+                                <li>Gebruikte browser (naam, versie, OS, device type)</li>
                                 <li>IP-adres</li>
                                 <li>Tijdelijk Session ID</li>
                             </ul>
                         </li>
-                    </ol>
-                </p>
-                <p>
-                    Als je je eduID koppelt aan het account van je instelling, dan verwerkt eduID ook de volgende
-                    gegevens:
-                    <ol>
-                        <li>Naam van de gekoppelde instelling</li>
-                        <li>Je voor- en achternaam zoals bekend bij de gekoppelde instelling</li>
-                        <li>Gebruikersnaam van je account bij de gekoppelde instelling</li>
-                        <li>Je rol(len) binnen de gekoppelde instelling (bijvoorbeeld ‘student’ of ‘medewerker’)
+
+                        <li>Als je je eduID koppelt aan het account van je instelling, dan verwerkt eduID ook de volgende
+                        gegevens:
+                            <ul>
+                                <li>Naam van de gekoppelde instelling</li>
+                                <li>Je voor- en achternaam zoals bekend bij de gekoppelde instelling</li>
+                                <li>Gebruikersnaam van je account bij de gekoppelde instelling</li>
+                                <li>Je rol(len) binnen de gekoppelde instelling (bijvoorbeeld ‘student’ of ‘medewerker’)
+                                </li>
+                            </ul>
                         </li>
-                    </ol>
-                </p>
-                <p>
-                    Als je de eduID-app gebruikt, dan verwerkt eduID ook de volgende gegevens:
-                    <ol>
-                        <li>Een uniek identificerend nummer van je eduID-app-registratie</li>
-                        <li>Een uniek identificerend nummer van je telefoon om een push-bericht te kunnen sturen
+
+                        <li>Wanneer je met je bank (iDIN) je identiteit verifieerd verwerkt eduID ook de volgende gegevens:
+                            <ul>
+                                <li>Je voor- en achternaam zoals bekend bij bij de bank waar de verificatie mee uitgevoerd wordt.</li>
+                                <li>Je geboortedatum zoals bekend bij de bank waar de verificatie mee uitgevoerd wordt.</li>
+                            </ul>
                         </li>
-                        <li>Optioneel: je mobiele telefoonnummer als je als herstelmethode je telefoonnummer hebt
-                            gekozen
+
+                        <li>Wanneer je met een nationaal <a href="https://www.logius.nl/domeinen/toegang/eidas/wat-is-het">eID 
+                            (eIDAS)</a> je identiteit verifieerd verwerkt eduID ook de volgende gegevens:
+                            <ul>
+                                <li>Je voor- en achternaam zoals bekend bij het eID waar de verificatie mee uitgevoerd wordt.</li>
+                                <li>Je geboortedatum zoals bekend bij het eID waar de verificatie mee uitgevoerd wordt.</li>
+                                <li>Een PseudoID, een identificerend nummer dat wordt gebruikt om een natuurlijk persoon te 
+                                    identificeren.</li>
+                            </ul>
                         </li>
-                    </ol>
+                        
+                        <li>Als je de eduID-app gebruikt, dan verwerkt eduID ook de volgende gegevens:
+                            <ul>
+                                <li>Een uniek identificerend nummer van je eduID-app-registratie</li>
+                                <li>Een uniek identificerend nummer van je telefoon om een push-bericht te kunnen sturen
+                                </li>
+                                <li>Optioneel: je mobiele telefoonnummer als je als herstelmethode je telefoonnummer hebt
+                                    gekozen
+                                </li>
+                            </ul>
+                        </li>
+                  </ol>
                 </p>
             </div>
             <div id="persoonsgegevens" className="card full bottom">
@@ -124,7 +138,8 @@ export const PrivacyNL = () => {
                             naam en
                             e-mailadres. Deze worden gebruikt door eduID en applicaties waarop je inlogt, om jou te
                             kunnen
-                            herkennen en met jou te communiceren via e-mail. Grondslag: uitvoering van een overeenkomst,
+                            herkennen en met jou te communiceren via e-mail. <br/>
+                            Grondslag: uitvoering van een overeenkomst,
                             namelijk de overeenkomst tussen SURF en degene die een eduID aanmaakt. Bij het aanmaken
                             krijgt de
                             gebruiker de eduID-gebruiksvoorwaarden te zien en door daarmee akkoord te gaan, wordt het
@@ -137,19 +152,21 @@ export const PrivacyNL = () => {
                             communiceren
                             via e-mail. Dit doel geldt voor applicaties die niet voorgeschreven of verplicht worden door
                             een
-                            instelling waar je een relatie mee hebt. Grondslag: uitvoering van een overeenkomst,
+                            instelling waar je een relatie mee hebt. <br/>
+                            Grondslag: uitvoering van een overeenkomst,
                             namelijk de
                             gebruiksvoorwaarden die je accepteert bij het aanmaken van je eduID.
                         </li>
                         <li>Doel: Om je inzicht te kunnen geven in je login-geschiedenis, houden we bij op welke
                             applicatie je
-                            hebt ingelogd, en welke persoonsgegevens daarbij aan de applicatie zijn verstrekt.
+                            hebt ingelogd, en welke persoonsgegevens daarbij aan de applicatie zijn verstrekt. <br/>
                             Grondslag:
                             uitvoering van een overeenkomst, namelijk de gebruiksvoorwaarden die je accepteert bij het
                             aanmaken
                             van je eduID.
                         </li>
-                        <li>Doel: voor de juiste werking van eduID verwerken we genoemde technische data. Grondslag:
+                        <li>Doel: voor de juiste werking van eduID verwerken we genoemde technische data. <br/>
+                            Grondslag:
                             uitvoering
                             van een overeenkomst, namelijk de gebruiksvoorwaarden die je accepteert bij het aanmaken van
                             je
@@ -167,7 +184,8 @@ export const PrivacyNL = () => {
                             communiceren
                             via e-mail. Dit doel geldt voor applicaties waarvan de instelling het inloggen met eduID
                             verplicht
-                            stelt Grondslag: deze wordt bepaald door de instelling, en kan bijvoorbeeld zijn: het
+                            stelt <br/>
+                            Grondslag: deze wordt bepaald door de instelling, en kan bijvoorbeeld zijn: het
                             vervullen van
                             een taak van algemeen belang zoals onderwijs, of uitvoering van een overeenkomst zijn, zoals
                             een
@@ -182,9 +200,8 @@ export const PrivacyNL = () => {
                             instelling, je relatie met de instelling (bijv. student of medewerker) en de
                             organisatienaam. Het
                             verstrekken van deze persoonsgegevens aan eduID gebeurt onder verantwoordelijkheid van de
-                            instelling.
-                        </li>
-                        <li>Grondslag: deze wordt bepaald door de instelling, en kan bijvoorbeeld zijn: het vervullen
+                            instelling. <br/>
+                            Grondslag: deze wordt bepaald door de instelling, en kan bijvoorbeeld zijn: het vervullen
                             van een
                             taak van algemeen belang zoals het verzorgen van onderwijs , of uitvoering van een
                             overeenkomst,
@@ -219,6 +236,7 @@ export const PrivacyNL = () => {
                     partij verwerkt in opdracht en instructie van SURF persoonsgegevens:
                     <ul>
                         <li>Hosting- en beheerpartij</li>
+                        <li>Identitybroker voor iDIN en eIDAS</li>
                     </ul>
                 </p>
             </div>
