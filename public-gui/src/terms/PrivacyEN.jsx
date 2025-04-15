@@ -12,358 +12,307 @@ export const PrivacyEN = () => {
         <Background>
             <div className="card full">
                 <p className="info">
-                    Goed dat je de privacyverklaring voor eduID bekijkt! Het eduID-team van SURF besteedt veel aandacht
-                    aan de bescherming van je persoonsgegevens en in deze privacyverklaring lees je daar alles over. Als
-                    je vragen of zorgen hebt over deze privacyverklaring, mail dan gerust naar <a
-                    href="mailto:help@eduid.nl">help@eduid.nl</a>.
+                    <strong>Please note:</strong> the Dutch version of the Privacy Policy is authoritative.<br/>
+					Thank you for viewing the privacy policy for eduID! SURF’s eduID team pays a lot of attention to the
+					protection of your personal data and you can read all about it in this privacy policy. If you have any 
+					questions or concerns about this privacy policy, please email <a href="mailto:help@eduid.nl">help@eduid.nl</a>.
                 </p>
                 <p className="info">
-                    Deze privacyverklaring bevat de volgende onderwerpen:
+                    This privacy policy contains the following topics:
                     <ol>
-                        <li><AnchorLink identifier="eduid" label="Wat is eduID?"/></li>
-                        <li><AnchorLink identifier="surf" label="Contactgegevens SURF"/></li>
-                        <li><AnchorLink identifier="gegevens" label="Welke gegevens verwerken wij van jou?"/></li>
+                        <li><AnchorLink identifier="eduid" label="What is eduID?"/></li>
+                        <li><AnchorLink identifier="surf" label="Contact details SURF"/></li>
+                        <li><AnchorLink identifier="gegevens" label="What data do we process from you?"/></li>
                         <li><AnchorLink identifier="persoonsgegevens"
-                                        label="Waarom mag eduID je persoonsgegevens verwerken??"/></li>
-                        <li><AnchorLink identifier="verstrekken" label="Aan wie verstrekken wij je gegevens?"/></li>
-                        <li><AnchorLink identifier="waar" label="Waar slaan wij je gegevens op??"/></li>
-                        <li><AnchorLink identifier="bewaren" label="Hoe lang bewaren wij je gegevens?"/></li>
-                        <li><AnchorLink identifier="rechten" label="Welke rechten heb je?"/></li>
-                        <li><AnchorLink identifier="terecht" label="Waar kun je terecht om je rechten uit te oefenen?"/>
+                                        label="Why is eduID allowed to process your personal data?"/></li>
+                        <li><AnchorLink identifier="verstrekken" label="To whom do we provide your data?"/></li>
+                        <li><AnchorLink identifier="waar" label="Where do we store your data?"/></li>
+                        <li><AnchorLink identifier="bewaren" label="How long do we keep your data?"/></li>
+                        <li><AnchorLink identifier="rechten" label="What rights do you have?"/></li>
+                        <li><AnchorLink identifier="terecht" label="Where can you go to exercise your rights?"/>
                         </li>
-                        <li><AnchorLink identifier="cookies" label="Welke cookies plaatst eduID?"/></li>
-                        <li><AnchorLink identifier="privacyverklaring" label="Wijzigingen privacyverklaring"/></li>
+                        <li><AnchorLink identifier="cookies" label="Which cookies does eduID use?"/></li>
+                        <li><AnchorLink identifier="privacyverklaring" label="Changes to privacy policy"/></li>
                     </ol>
                 </p>
-                <CollapseField title="Wijzigingshistorie"
-                               info="Versie 1: 17 juni 2024"/>
+                <CollapseField title="Changes since previous versions"
+                               info="Version 18 October 2024"/>
 
             </div>
             <div id="eduid" className="card full bottom">
-                <h5>Wat is eduID?</h5>
+                <h5>What is eduID?</h5>
                 <p className="info">
-                    Een eduID-account is een door SURF aangeboden en beheerde digitale identiteit van de gebruiker, die
-                    gebruikt kan worden in het domein van onderwijs en onderzoek. Iedere persoon kan een eduID-account
-                    aanmaken, ongeacht of deze persoon verbonden is aan een instelling. Dus niet alleen studenten, maar
-                    bijvoorbeeld ook stage- of praktijkbegeleiders, (gast)docenten, onderzoekers, alumni,
-                    voorinschrijvers, professionals, mensen uit het bedrijfsleven en anderen. Met dit account kan de
-                    gebruiker inloggen op aan eduID gekoppelde applicaties. Deze applicaties kunnen van instellingen
-                    zijn die bij SURF zijn aangesloten, van SURF zelf of van derden.<br/>
-                    <Link to={"/about"}>Lees meer over eduID.</Link>
+                    An eduID account is a digital identity of the user offered and managed by SURF, which can be used in the 
+					field of education and research. Any person can create an eduID account, regardless of whether this person 
+					is affiliated with an institution. So not only students, but also internship or practice supervisors, 
+					(guest) lecturers, researchers, alumni, pre-registrants, professionals, people from the business community 
+					and others. With this account the user can log in to applications connected to eduID. These applications 
+					can be from institutions affiliated with SURF, from SURF itself or from third parties. <br/>
+                    <Link to={"/about"}>Read more about eduID.</Link>
                 </p>
             </div>
             <div id="surf" className="card full bottom">
-                <h5>Contactgegevens SURF</h5>
+                <h5>Contact details SURF</h5>
                 <p className="info">
-                    eduID wordt aangeboden en beheerd door SURF, een coöperatie van Nederlandse onderwijs- en
-                    onderzoeksinstellingen.<br/>
+                    eduID is offered and managed by SURF, a cooperative of Dutch educational and research institutions.<br/>
                     SURF<br/>
                     Moreelsepark 48<br/>
                     3511 EP Utrecht, Nederland<br/>
                     <a href="www.surf.nl">www.surf.nl</a>
                 </p>
-                <p>De contactgegevens van onze functionaris
-                    gegevensbescherming zijn: <a href="mailto:fg@surf.nl">fg@surf.nl</a></p>
+                <p>The contact details of our data protection officer are: <a href="mailto:fg@surf.nl">fg@surf.nl</a></p>
             </div>
             <div id="gegevens" className="card full bottom">
-                <h5>Welke gegevens verwerken wij van jou?</h5>
-                <p className="info">
-                    eduID verwerkt persoonsgegevens van de natuurlijke persoon die houder is van een eduID. Het gaat om
-                    de volgende gegevens:
-                    <ol>
-                        <li>Je e-mailadres</li>
-                        <li>Je voor- en achternaam</li>
-                        <li>Een uniek identificerend nummer en daarbij behorende pseudoniemen die aan diensten worden
-                            verstrekt
-                        </li>
-                        <li>De datum en het tijdstip waarop de eerste login plaatsvindt van iedere dienst waarop je met
-                            eduID inlogt
-                        </li>
-                        <li>Extra technische data:
-                            <ul>
-                                <li>Voorkeurstaal eduID-interface</li>
-                                <li>Technische logging (user agent)</li>
-                                <li>IP-adres</li>
-                                <li>Tijdelijk Session ID</li>
-                            </ul>
-                        </li>
-                    </ol>
-                </p>
-                <p>
-                    Als je je eduID koppelt aan het account van je instelling, dan verwerkt eduID ook de volgende
-                    gegevens:
-                    <ol>
-                        <li>Naam van de gekoppelde instelling</li>
-                        <li>Je voor- en achternaam zoals bekend bij de gekoppelde instelling</li>
-                        <li>Gebruikersnaam van je account bij de gekoppelde instelling</li>
-                        <li>Je rol(len) binnen de gekoppelde instelling (bijvoorbeeld ‘student’ of ‘medewerker’)
-                        </li>
-                    </ol>
-                </p>
-                <p>
-                    Als je de eduID-app gebruikt, dan verwerkt eduID ook de volgende gegevens:
-                    <ol>
-                        <li>Een uniek identificerend nummer van je eduID-app-registratie</li>
-                        <li>Een uniek identificerend nummer van je telefoon om een push-bericht te kunnen sturen
-                        </li>
-                        <li>Optioneel: je mobiele telefoonnummer als je als herstelmethode je telefoonnummer hebt
-                            gekozen
-                        </li>
-                    </ol>
-                </p>
+                <h5>What data do we process from you?</h5>
+				<p className="info">
+                <ol>
+                    <li>eduID processes personal data of the natural person who is the holder of an eduID. This concerns the 
+					following data:
+	                    <ul>
+	                        <li>Your e-mailaddress</li>
+	                        <li>Your first and last name</li>
+	                        <li>A unique identifying number and associated pseudonyms provided to services</li>
+	                        <li>The date and time when the first login takes place for each service to which you log 
+								in with eduID</li>
+	                        <li>Preferred language eduID interface</li>
+	                        <li>Browser used (name, version, OS, device type)</li>
+	                        <li>IP address </li>
+	                        <li>Temporary Session ID</li>
+	                    </ul>
+					</li>
+					
+                    <li>If you link your eduID to your institution's account, eduID also processes the following data:
+						<ul>
+							<li>Name of the associated institution</li>
+							<li>Your first and last name as known to the linked institution&nbsp;</li>
+							<li>Username of your account at the linked institution</li>
+							<li>Your role(s) within the linked institution (for example student or employee)</li>
+						</ul>
+					</li>
+
+					<li>If you verify your eduID using iDIN, eduID also processes the following data:
+						<ul>
+							<li>Your first name and surname as known to the bank through which the verification is carried 
+								out. </li>
+							<li>Your date of birth as known by the bank through which verification is carried out. </li>
+						</ul>
+					</li>
+
+					<li>If you verify your eduID through eIDAS, eduID also processes the following data:
+						<ul>
+							<li>Your first name and last name as known to the eID through which the verification is carried 
+								out. </li>
+							<li>Your date of birth as known to the eID with which verification is performed. </li>
+							<li>A PseudoID, an identifying number used to identify a natural person</li>
+						</ul>
+					</li>
+					
+					<li>If you use the eduID app, eduID also processes the following data:
+						<ul>
+							<li>A unique identifying number from your eduID app registration</li>
+							<li>A unique identifying number from your phone to send a push message</li>
+							<li>Optional: your mobile phone number if you choose your phone number as the recovery method</li>
+						</ul>
+					</li>
+				</ol>
+				</p>
             </div>
             <div id="persoonsgegevens" className="card full bottom">
-                <h5>Waarom mag eduID je persoonsgegevens verwerken?</h5>
+                <h5>Why is eduID allowed to process your personal data?</h5>
                 <p className="info">
-                    Persoonsgegevens mogen enkel worden verwerkt als hier een wettelijke grondslag voor is. De grondslag
-                    verschilt per doel en wie verwerkingsverantwoordelijke is. Voor een aantal doelen is SURF de
-                    verwerkingsverantwoordelijke. SURF zorgt voor een rechtmatige grondslag voor verwerking van
-                    persoonsgegevens:
+                    Personal data may only be processed if there is a legal basis for this. The basis differs per purpose and 
+					who is the controller.<br/>
+					SURF is the controller for several purposes. SURF ensures a lawful basis for processing personal data: 
                     <ul>
-                        <li>Doel: als je een eduID aanmaakt, voeg je hier zelf een aantal persoonsgegevens aan toe zoals
-                            naam en
-                            e-mailadres. Deze worden gebruikt door eduID en applicaties waarop je inlogt, om jou te
-                            kunnen
-                            herkennen en met jou te communiceren via e-mail. Grondslag: uitvoering van een overeenkomst,
-                            namelijk de overeenkomst tussen SURF en degene die een eduID aanmaakt. Bij het aanmaken
-                            krijgt de
-                            gebruiker de eduID-gebruiksvoorwaarden te zien en door daarmee akkoord te gaan, wordt het
-                            eduID
-                            aangemaakt.
+                        <li>Purpose: when you create an eduID, you add several personal data such as name and email address. 
+							These are used by eduID and applications to which you log in to recognize you and communicate with 
+							you via email. <br/>
+							Lawfulness: execution of an agreement, namely the agreement between SURF and the person who creates 
+							an eduID. When creating, the user is shown the eduID terms of use and by agreeing to them, the eduID 
+							is created. 
                         </li>
-                        <li>Doel: met eduID inloggen op een applicatie waarbij persoonsgegevens verstrekt kunnen worden
-                            aan de
-                            applicatie om jou te kunnen herkennen, je te voorzien van een autorisatie of met je te
-                            communiceren
-                            via e-mail. Dit doel geldt voor applicaties die niet voorgeschreven of verplicht worden door
-                            een
-                            instelling waar je een relatie mee hebt. Grondslag: uitvoering van een overeenkomst,
-                            namelijk de
-                            gebruiksvoorwaarden die je accepteert bij het aanmaken van je eduID.
+                        <li>Purpose: to log in to an application with eduID where personal data can be provided to the application 
+							to recognize you, provide you with authorization or communicate with you via e-mail. This purpose 
+							applies to applications that are not prescribed or required by an institution with which you have a 
+							relationship. <br/>
+							Lawfulness: execution of an agreement, namely the terms of use that you accept when creating your eduID. 
                         </li>
-                        <li>Doel: Om je inzicht te kunnen geven in je login-geschiedenis, houden we bij op welke
-                            applicatie je
-                            hebt ingelogd, en welke persoonsgegevens daarbij aan de applicatie zijn verstrekt.
-                            Grondslag:
-                            uitvoering van een overeenkomst, namelijk de gebruiksvoorwaarden die je accepteert bij het
-                            aanmaken
-                            van je eduID.
+                        <li>Purpose: To provide you with insight into your login history, we keep track of which application you have 
+							logged in to and what personal data has been provided to the application. <br/>
+							Lawfulness: execution of an agreement, namely the terms of use that you accept when creating your eduID. 
                         </li>
-                        <li>Doel: voor de juiste werking van eduID verwerken we genoemde technische data. Grondslag:
-                            uitvoering
-                            van een overeenkomst, namelijk de gebruiksvoorwaarden die je accepteert bij het aanmaken van
-                            je
-                            eduID.
+                        <li>Purpose: We process the technical data mentioned for the correct operation of eduID. <br/>
+							Lawfulness: execution of an agreement, namely the terms of use that you accept when creating your eduID. 
                         </li>
                     </ul>
                 </p>
                 <p className="info">
-                    Voor een aantal doelen is een instelling verwerkingsverantwoordelijke. De instelling zorgt voor een
-                    rechtmatige grondslag voor verwerking van persoonsgegevens:
+                    An institution is controller for several purposes. The institution ensures a lawful basis for processing 
+					personal data:
                     <ul>
-                        <li>Doel: met eduID inloggen op een applicatie waarbij persoonsgegevens verstrekt kunnen worden
-                            aan de
-                            applicatie om jou te kunnen herkennen, je te voorzien van een autorisatie of met je te
-                            communiceren
-                            via e-mail. Dit doel geldt voor applicaties waarvan de instelling het inloggen met eduID
-                            verplicht
-                            stelt Grondslag: deze wordt bepaald door de instelling, en kan bijvoorbeeld zijn: het
-                            vervullen van
-                            een taak van algemeen belang zoals onderwijs, of uitvoering van een overeenkomst zijn, zoals
-                            een
-                            leerovereenkomst, contractonderwijs of arbeidscontract.
+                        <li>Purpose: to log in to an application with eduID where personal data can be provided to the application 
+							in order to recognize you, provide you with authorization or communicate with you via e-mail. This 
+							purpose applies to applications for which the institution requires logging in with eduID <br/>
+							Lawfulness: this is determined by the institution, and can be, for example: performing a task of public 
+							interest such as education, or the performance of a contract, such as an apprenticeship agreement, 
+							contract education or employment contract.
                         </li>
-                        <li>Doel: sommige applicaties hebben meer en/of betrouwbare persoonsgegevens nodig voordat
-                            toegang
-                            verleend kan worden. Deze gegevens kun je aan je eduID toevoegen door je eduID te koppelen
-                            aan een
-                            externe gegevensbron, zoals een onderwijsinstelling. Denk dan aan je naam zoals bekend bij
-                            de
-                            instelling, je relatie met de instelling (bijv. student of medewerker) en de
-                            organisatienaam. Het
-                            verstrekken van deze persoonsgegevens aan eduID gebeurt onder verantwoordelijkheid van de
-                            instelling.
-                        </li>
-                        <li>Grondslag: deze wordt bepaald door de instelling, en kan bijvoorbeeld zijn: het vervullen
-                            van een
-                            taak van algemeen belang zoals het verzorgen van onderwijs , of uitvoering van een
-                            overeenkomst,
-                            zoals een leerovereenkomst, contractonderwijs of arbeidscontract.
+                        <li>Purpose: some applications require more and/or reliable personal data before access can be granted. 
+							You can add this data to your eduID by linking your eduID to an external data source, such as an 
+							educational institution, bank or national eID. For example your name as known to the institution, your 
+							relationship with the institution (e.g. student or employee) and the organization name. Providing these 
+							personal data to eduID is done under the responsibility of the institution. <br/>
+							Lawfulness: this is determined by the institution, and can be, for example: performing a task of public 
+							interest such as education, or the performance of a contract, such as an apprenticeship agreement, 
+							contract education or employment contract. <br/>
+							It is good to know that this data can subsequently be released under the responsibility of SURF when 
+							logging in to an application (see above).
                         </li>
                     </ul>
-                </p>
-                <p className="info">
-                    Het is goed om te weten dat deze gegevens vervolgens weer onder verantwoordelijkheid van SURF
-                    vrijgegeven kunnen worden tijdens het inloggen op een applicatie (zie hierboven).
                 </p>
             </div>
             <div id="verstrekken" className="card full bottom">
-                <h5>Aan wie verstrekken wij je gegevens?</h5>
+                <h5>To whom do we provide your data?</h5>
                 <p className="info">
-                    eduID verstrekt je persoonsgegevens alleen aan derde partijen als dit noodzakelijk is om de
-                    betreffende applicatie aan jou te kunnen leveren. Zo verstrekt eduID gegevens aan applicaties waarop
-                    je inlogt via eduID. Bij de eerste keer dat je met eduID inlogt op een applicatie, krijg je een
-                    informatiescherm te zien met welke gegevens er precies aan de applicatie worden verstrekt. Pas als
-                    je hier akkoord geeft, worden je gegevens daadwerkelijk doorgegeven. Door dit scherm te sluiten kun
-                    je voorkomen dat de applicatie je gegevens ontvangt. Je kunt dan ook niet met eduID inloggen op de
-                    applicatie.
+                    eduID only provides your personal data to third parties if this is necessary for you to access the application. 
+					For example, eduID provides data to applications to which you log in via eduID. The first time you log in to an 
+					application with eduID, you will see an information screen showing exactly what data is provided to the 
+					application. Your data will only be transferred if you agree to this. By closing this window, you can prevent 
+					the application from receiving your data. You cannot log in to the application with eduID.
                 </p>
                 <p>
-                    Via <a href={config.spBaseUrl}>Mijn eduID</a> kun je zien welke diensten je via eduID hebt gebruikt.
-                    Aan andere partijen dan bovenstaande verstrekken we je gegevens alléén na jouw toestemming, tenzij
-                    het wettelijk verplicht of toegestaan is je gegevens te verstrekken. Zo kan bijvoorbeeld de politie
-                    in het kader van een fraudeonderzoek gegevens bij ons opvragen. SURF is dan wettelijk verplicht deze
-                    gegevens af te geven.
+                    Via <a href={config.spBaseUrl}>My eduID</a> you can see which services you have logged into with eduID.
+				</p>
+				<p>
+                    We will only provide your data to parties other than the above with your permission unless it is legally 
+					required or permitted to provide your data. For example, the police can request data from us in the context 
+					of a fraud investigation. SURF is then legally obliged to provide this information.
                 </p>
-                <p> Er zijn daarnaast verschillende partijen betrokken bij het aanbieden van het platform. De volgende
-                    partij verwerkt in opdracht en instructie van SURF persoonsgegevens:
+                <p> There are also various parties involved in offering the platform. The following party processes personal data 
+					on the instructions and instructions of SURF:
                     <ul>
-                        <li>Hosting- en beheerpartij</li>
+                        <li>Hosting and management provider</li>
+						<li>Identitybroker for iDIN and eIDAS</li>
                     </ul>
                 </p>
             </div>
             <div id="waar" className="card full bottom">
-                <h5>Waar slaan wij je gegevens op?</h5>
+                <h5>Where do we store your data?</h5>
                 <p className="info">
-                    De eduID-infrastructuur wordt gehost op infrastructuur van SURF. De servers daarvan bevinden zich in
-                    Amsterdam en Utrecht, met een back-uplocatie in Tilburg.
+                    The eduID infrastructure is hosted on SURF infrastructure. Its servers are located in Amsterdam and Utrecht, 
+					with a backup location in Tilburg.
                 </p>
             </div>
             <div id="bewaren" className="card full bottom">
-                <h5>Hoe lang bewaren wij je gegevens?</h5>
+                <h5>How long do we keep your data?</h5>
                 <p className="info">
-                    De persoonsgegevens die verkregen zijn van een instelling door je eduID te koppelen aan een
-                    instellingsaccount worden 6 maanden bewaard, met uitzondering van de verkregen voor- en/of
-                    achternaam, die worden 6 jaar bewaard. Deze periode is gekozen om deze gegevens nog voldoende
-                    up-to-date te kunnen houden.
+                    The personal data obtained from an institution by linking your eduID to an institutional account will be kept 
+					for 6 months, except for the obtained first and/or last name, which will be kept for 6 years. This period has 
+					been chosen to keep this data sufficiently up to date.
                 </p>
                 <p className="info">
-                    De bewaartermijn voor alle eduID accountgegevens is 5 jaar na de laatste keer dat je met je eduID
-                    ergens inlogt. Deze periode is gekozen omdat in het proces van leven-lang ontwikkelen het te
-                    verwachten is dat er periodes zijn waarin een gebruiker zijn eduID niet gebruikt, maar dat het eduID
-                    daarna wel weer relevant wordt voor die persoon. In die tussentijd zal eduID reminders sturen als
-                    het account dreigt te verdwijnen.
+                    The retention period for all eduID account data is 5 years after the last time you log in somewhere with your 
+					eduID. This period has been chosen because in the process of lifelong development it is expected that there will 
+					be periods in which a user does not use his eduID, but that the eduID can become relevant to that person again. 
+					In the meantime, eduID will send reminders if the account is in danger of being removed.
                 </p>
                 <p className="info">
-                    De technische loggegevens worden zes maanden bewaard om nog tijd te hebben om eventuele problemen en
-                    incidenten te kunnen onderzoeken.
+                    The technical log data is kept for six months to allow time to investigate any problems and incidents.
                 </p>
             </div>
             <div id="rechten" className="card full bottom">
-                <h5>Welke rechten heb je?</h5>
+                <h5>What rights do you have?</h5>
                 <p className="info">
-                    Je hebt het recht om de persoonsgegevens die eduID van jou verwerkt te laten wijzigen, aanvullen of
-                    verwijderen. Ook kun je inzage verzoeken in de persoonsgegevens die van je worden verwerkt. De
-                    gegevens die eduID van jou heeft kun je inzien op <a href={config.spBaseUrl}>Mijn eduID</a>.
-                    Daar kun je je gegevens ook wijzigen
-                    of aanvullen.
+                    You have the right to have the personal data that eduID processes about you changed, supplemented, or deleted. 
+					You can also request access to the personal data that is processed about you. You can view the information that 
+					eduID has about you on <a href={config.spBaseUrl}>My eduID</a>. You can also change or supplement your details 
+					there.
                 </p>
                 <p className="info">
-                    Als het gaat om een automatische verwerking van door jou zelf verstrekte gegevens op basis van
-                    toestemming of de uitvoering van een overeenkomst, kun je een overzicht in een gestructureerde en
-                    gangbare vorm opvragen van de persoonsgegevens die wij van jou verwerken via <a
-                    href={config.spBaseUrl}>Mijn eduID</a>. Ook heb je
-                    het recht op overdraagbaarheid van deze gegevens naar een andere partij, mits dit technisch mogelijk
-                    is.
+                    If it concerns automatic processing of data provided by you based on consent or the execution of an agreement, 
+					you can request an overview in a structured and common form of the personal data that we process about you via 
+					<a href={config.spBaseUrl}>Mijn eduID</a>. You also have the right to have this data transferred to another 
+					party, provided this is technically possible. 
                 </p>
                 <p className="info">
-                    Je kunt ook een verzoek indienen om de verwerking van je persoonsgegevens te beperken, waardoor de
-                    verwerkingsverantwoordelijke tijdelijk ophoudt met het verwerken van je gegevens. Dit gebeurt als:
+                    You can also submit a request to restrict the processing of your personal data, which will cause the controller 
+					to temporarily stop processing your data. This happens if:
                     <ul>
-                        <li>je bezwaar maakt (zie verderop meer uitleg), of</li>
-                        <li>je de juistheid van persoonsgegevens die worden verwerkt, betwist, of</li>
-                        <li>je vindt dat de verwerking van gegevens onrechtmatig is, of</li>
-                        <li>je vindt dat de verwerkingsverantwoordelijke je persoonsgegevens niet meer nodig heeft, maar
-                            jij ze
-                            nodig hebt in het kader van een rechtsvordering.
-                        </li>
+                        <li>you object (see further explanation below), or</li>
+                        <li>you contest the accuracy of personal data being processed, or</li>
+                        <li>you believe that the processing of data is unlawful, or</li>
+                        <li>you believe that the controller no longer needs your personal data, but you need them in the context 
+							of a legal claim.</li>
                     </ul>
                 </p>
                 <p className="info">
-                    <strong>Let op!</strong> Als eduID de verwerking beperkt van gegevens die nodig zijn voor het
-                    verlenen van onze
-                    dienstverlening, kan deze beperking invloed hebben op het functioneren van de dienst.
+                    <strong>NB</strong> If eduID restricts the processing of data necessary for running our services, this 
+					restriction may affect the functioning of the service.
                 </p>
                 <p className="info">
-                    <strong>Recht van bezwaar</strong><br/>
-                    Je kunt bezwaar maken tegen verwerking van je persoonsgegevens als je gegevens verwerkt worden op
-                    basis van een gerechtvaardigd belang of op basis van de uitvoering van een taak van algemeen belang.
-                    Als de verwerkingsverantwoordelijke geen dwingende gerechtvaardigde gronden heeft om de verwerking
-                    voort te zetten, zal de verwerking worden gestaakt.
+                    <strong>Right to object</strong><br/>
+                    You can object to the processing of your personal data if your data is processed based on a legitimate interest 
+					or on the basis of the performance of a task of public interest. If the controller has no compelling legitimate 
+					grounds to continue the processing, the processing will cease.
                 </p>
                 <p className="info">
-                    Als je bezwaar maakt, kun je ook een verzoek indienen om de verwerking van je persoonsgegevens te
-                    beperken gedurende dit bezwaar.
+                    If you object, you can also submit a request to restrict the processing of your personal data during this 
+					objection.
                 </p>
                 <p className="info">
-                    <strong>Klacht indienen</strong><br/>
-                    Als je vindt dat eduID niet goed omgaat met jouw persoonsgegevens kun je een klacht indienen bij de
-                    functionaris gegevensbescherming van SURF of van een instelling. Ook heb je het recht om een klacht
-                    in te dienen bij de Autoriteit Persoonsgegevens. Meer informatie over de Autoriteit Persoonsgegevens
-                    en het indienen van klachten vind je op <a
-                    href="www.autoriteitpersoonsgegevens.nl">www.autoriteitpersoonsgegevens.nl</a>.
+                    <strong>How to file a complaint</strong><br/>
+                    If you believe that eduID is not handling your personal data properly, you can file a complaint with the data 
+					protection officer of SURF or an institution. You also have the right to file a complaint with the Dutch Data 
+					Protection Authority. More information about the Dutch Data Protection Authority and submitting complaints can be 
+					found at <a href="www.autoriteitpersoonsgegevens.nl">www.autoriteitpersoonsgegevens.nl</a>.
                 </p>
             </div>
             <div id="terecht" className="card full bottom">
-                <h5>Waar kun je terecht om je rechten uit te oefenen?</h5>
+                <h5>Where can you go to exercise your rights?</h5>
                 <p className="info">
-                    Een verzoek om je rechten uit te oefenen kun je indienen bij de organisatie die verantwoordelijk is
-                    voor de verwerking van jouw persoonsgegevens. Voor eduID kunnen dit echter verschillende
-                    organisaties zijn: SURF of een van de deelnemende instellingen. SURF coördineert de verzoeken en
-                    brengt je in contact met de juiste persoon bij de juiste instelling. Neem hiervoor contact op via:
-                    <a href="help@eduid.nl">help@eduid.nl</a>. Je mag uiteraard ook direct contact opnemen met de
-                    betreffende instelling.
+                    You can submit a request to exercise your rights to the organization responsible for processing your personal 
+					data (the controller). However, for eduID these can be different organizations: SURF or one of the participating 
+					institutions. SURF coordinates the requests and puts you in touch with the right person at the right institution. 
+					Please contact us at:
+                    <a href="help@eduid.nl">help@eduid.nl</a>. You can of course also contact the relevant institution directly.
                 </p>
             </div>
             <div id="cookies" className="card full bottom">
-                <h5>Welke cookies plaatst eduID?</h5>
+                <h5>Which cookies does eduID use?</h5>
                 <p className="info">
-                    eduID plaatst cookies op het apparaat waar je eduID mee bezoekt. Cookies zijn kleine bestanden die
-                    verstuurd worden door een internetserver en die worden opgeslagen op je apparaat. De cookies die
-                    eduID plaatst zijn noodzakelijk voor het functioneren van eduID. eduID plaatst geen analytische of
-                    tracking cookies.
+                    eduID places cookies on the device you use to visit eduID. Cookies are small files that are sent by an internet 
+					server and stored on your device. The cookies that eduID places are necessary for the functioning of eduID. eduID 
+					does not place analytical or tracking cookies.
                 </p>
                 <p className="info">
-                    <strong>Functionele cookies</strong><br/>
-                    eduID maakt gebruik van een aantal functionele cookies die ervoor zorgen dat eduID correct
-                    functioneert:
+                    <strong>Functional cookies</strong><br/>
+                    eduID uses several functional cookies that ensure that eduID functions correctly:
                     <ul>
-                        <li>Cookie ‘login_preference’ om te onthouden op welke manier je inlogt (bijv. via magische link
-                            of wachtwoord). Deze cookie is 1 jaar geldig.
-                        </li>
-                        <li>Cookie ‘lang’ om te onthouden in welke taal je de eduID interface wenst te zien. Deze cookie
-                            is 1 jaar geldig.
-                        </li>
-                        <li>Cookie ‘REGISTER_MODUS’ om aan te geven of je in het registratieproces dient uit te komen.
-                            Deze cookie wordt alleen tijdens de sessie gezet, daarna verwijderd.
-                        </li>
-                        <li>Cookie ‘BROWSER_SESSION’ om ervoor te zorgen dat je de magische link gebruikt in dezelfde
-                            browser als waar de login is gestart. Deze cookie wordt alleen tijdens de sessie gezet,
-                            daarna verwijderd.
-                        </li>
-                        <li>Cookie ‘guest-idp-remember-me’, om het mogelijk te maken dat je ingelogd blijft (in de
-                            browser waar je dit gebruikt). Deze cookie is 6 maanden geldig.
-                        </li>
-                        <li>Cookie ‘username’ om je gebruikersnaam te onthouden zodat je die de volgende keer niet hoeft
-                            in te vullen.
-                        </li>
-                        <li>Cookie ‘REMEMBER_ME_QUESTION_ASKED_COOKIE’ om te onthouden of eduID heeft gevraagd dat je
-                            ingelogd wilt blijven.
-                        </li>
-                        <li>Cookie ‘TIQR_COOKIE’ om te onthouden of je in deze browser al een keer ingelogd bent met de
-                            eduID app
-                        </li>
-                        <li>Cookie ‘TRACKING_DEVICE’ om te detecteren of dit een nieuw apparaat is waarop ingelogd
-                            wordt. Als dit een nieuw apparaat is wordt er een notificatie e-mail gestuurd.
-                        </li>
+						<li>Cookie ‘login_preference’ to remember how you log in (e.g. via magic link or password). This cookie is 
+							valid for 1 year. </li>
+						<li>Cookie ‘lang’ to remember in which language you wish to see the eduID interface. This cookie is valid for 
+							1 year. </li>
+						<li>Cookie ‘REGISTER_MODUS’ to indicate whether you should proceed with the registration process. This cookie 
+							is only set during the session and then deleted. </li>
+						<li>Cookie ‘BROWSER_SESSION’ to ensure that you use the magic link in the same browser where the login was 
+							initiated. This cookie is only set during the session and then deleted. </li>
+						<li>Cookie ‘guest-idp-remember-me’, to enable you to remain logged in (in the browser where you use this). 
+							This cookie is valid for 6 months. </li>
+						<li>Cookie ‘username’ to remember your username so that you do not have to enter it next time. </li>
+						<li>Cookie ‘REMEMBER_ME_QUESTION_ASKED_COOKIE’ to remember whether eduID has asked that you remain logged in. 
+						</li>
+						<li>Cookie ‘TIQR_COOKIE’ to remember whether you have already logged in with the eduID app in this browser 
+						</li>
+						<li>Cookie ‘TRACKING_DEVICE’ to detect whether this is a new device that is being logged in. If this is a new 
+							device, a notification email will be sent.</li>
                     </ul>
                 </p>
             </div>
             <div id="privacyverklaring" className="card full bottom">
-                <h5>Wijzigingen privacyverklaring</h5>
+                <h5>Changes to privacy policy</h5>
                 <p className="info">
-                    Er kunnen wijzigingen worden aangebracht in deze privacyverklaring. We raden je daarom aan om deze
-                    privacyverklaring geregeld te raadplegen. Het versienummer staat bovenaan de pagina.
+                    Changes may be made to this privacy policy. We therefore recommend that you consult this privacy policy 
+					regularly. The version number is at the top of the page.
                 </p>
             </div>
         </Background>
