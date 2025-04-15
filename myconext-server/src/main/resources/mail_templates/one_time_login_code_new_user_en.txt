@@ -1,6 +1,6 @@
 Login code
 
-You can use the code below to log in. The code expires in 10 minutes.
+Your confirmation code is below. Enter it in the opened browser window to confirm your email address.
 
 {{code}}
 

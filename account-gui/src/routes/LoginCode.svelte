@@ -2,10 +2,9 @@
     import I18n from "../locale/I18n";
     import {user} from "../stores/user";
     import {onMount} from "svelte";
-    import {codeExistingUser, resendCodeMail} from "../api";
+    import {fetchServiceName, resendCodeMail, verifyCodeExistingUser} from "../api";
     import {conf, links} from "../stores/conf";
     import CodeValidation from "../components/CodeValidation.svelte";
-    import {isEmpty} from "../utils/utils.js";
     import {navigate} from "svelte-routing";
     import Cookies from "js-cookie";
     import {cookieNames} from "../constants/cookieNames.js";
@@ -22,6 +21,8 @@
     let mailHasBeenResend = false;
     let wrongCode = false;
     let disabledButton = true;
+    let delay = 1;
+    let rateLimited = false;
 
     onMount(() => {
         $links.displayBackArrow = false;
@@ -29,8 +30,11 @@
     });
 
     const verifyCode = code => {
+        if (disabledButton) {
+            return;
+        }
         showSpinner = true;
-        codeExistingUser($user.email, code, id)
+        verifyCodeExistingUser(code, id)
             .then(json => {
                 showSpinner = false;
                 Cookies.set(cookieNames.LOGIN_PREFERENCE, loginPreferences.CODE, {
@@ -39,14 +43,24 @@
                     sameSite: "Lax"
                 });
                 if (json.stepup) {
-                    navigate(`/stepup/${id}?name=${encodeURIComponent(serviceName)}&explanation=${json.explanation}`, {replace: true})
+                    fetchServiceName(id).then(serviceName => {
+                        navigate(`/stepup/${id}?name=${encodeURIComponent(serviceName)}&explanation=${json.explanation}`, {replace: true})
+                    })
                 } else {
                     window.location.href = json.url;
                 }
             })
-            .catch(() => {
-                wrongCode = true;
+            .catch(e => {
                 showSpinner = false;
+                if (e.status === 403) {
+                    rateLimited = true;
+                } else {
+                    wrongCode = true;
+                    delay = delay * 2;
+                    setTimeout(() => {
+                        disabledButton = false;
+                    }, delay * 1000)
+                }
             });
     }
 
@@ -87,6 +101,10 @@
         margin: 6px 0 30px 0;
         color: var(--color-primary-green);
         font-size: 28px;
+
+        &.error {
+            color: var(--color-primary-red);
+        }
     }
 
     div.code-validation {
@@ -112,32 +130,36 @@
     <Spinner/>
 {/if}
 <div class="login-code">
-    <h2 class="header">{I18n.t("LoginCode.Header.COPY")}</h2>
-    <p class="info">{@html I18n.t("LoginCode.Info.COPY", {email: $user.email})}</p>
-    <div class="code-validation">
-        <CodeValidation verify={verifyCode}
-                        size={6}
-                        validate={val => !isNaN(val)}
-                        intermediateCallback={valueCallback}/>
-        {#if wrongCode}
-            <p class="error">{I18n.t("LoginCode.Error.COPY")}</p>
-        {/if}
-    </div>
+    {#if rateLimited}
+        <h2 class="header error">{I18n.t("LoginCode.ErrorHeader.COPY")}</h2>
+        <p class="info">{@html I18n.t("LoginCode.ErrorInfo.COPY", {email: $user.email})}</p>
+    {:else}
+        <h2 class="header">{I18n.t("LoginCode.Header.COPY")}</h2>
+        <p class="info">{@html I18n.t("LoginCode.Info.COPY", {email: $user.email})}</p>
+        <div class="code-validation">
+            <CodeValidation verify={verifyCode}
+                            size={6}
+                            validate={val => !isNaN(val)}
+                            intermediateCallback={valueCallback}/>
+            {#if wrongCode}
+                <p class="error">{I18n.t("LoginCode.Error.COPY", {delay: delay})}</p>
+            {/if}
+        </div>
 
-    <Button label={I18n.t("LoginCode.Continue.COPY")}
-            onClick={verifyCode}
-            disabled={disabledButton || wrongCode}/>
+        <Button label={I18n.t("LoginCode.Continue.COPY")}
+                onClick={verifyCode}
+                disabled={disabledButton || wrongCode}/>
 
-    <div class="resend-mail">
-        {#if allowedToResend}
-            <p>{I18n.t("LoginCode.Resend.COPY")}
-                <a href="resend"
-                   on:click|preventDefault|stopPropagation={resendMail}>{I18n.t("LoginCode.ResendLink.COPY")}</a>
-            </p>
-        {:else if mailHasBeenResend}
-            <span>{I18n.t("MagicLink.MailResend.COPY")}</span>
-        {/if}
+        <div class="resend-mail">
+            {#if allowedToResend}
+                <p>{I18n.t("LoginCode.Resend.COPY")}
+                    <a href="resend"
+                       on:click|preventDefault|stopPropagation={resendMail}>{I18n.t("LoginCode.ResendLink.COPY")}</a>
+                </p>
+            {:else if mailHasBeenResend}
+                <span>{I18n.t("MagicLink.MailResend.COPY")}</span>
+            {/if}
 
-    </div>
-
+        </div>
+    {/if}
 </div>

@@ -3,10 +3,8 @@ package myconext.model;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 import lombok.ToString;
 import myconext.exceptions.ForbiddenException;
-import org.springframework.data.mongodb.core.index.Indexed;
 
 import java.io.Serializable;
 import java.nio.charset.StandardCharsets;
@@ -27,14 +25,14 @@ public class OneTimeLoginCode implements Serializable {
     public OneTimeLoginCode(String code) {
         this.code = code;
         this.createdAt = System.currentTimeMillis();
-        this.delay = 1L;
+        this.delay = 1000L;
     }
 
-    // time-constant comparison
     public boolean attemptOneTimeLoginVerification(String code) {
-        if ( System.currentTimeMillis() < this.createdAt + this.delay) {
+        if (System.currentTimeMillis() < this.createdAt + this.delay) {
             throw new ForbiddenException("Attempt forbidden due to rate limit");
         }
+        // time-constant comparison
         boolean equals = MessageDigest.isEqual(this.code.getBytes(StandardCharsets.UTF_8),
                 code.getBytes(StandardCharsets.UTF_8));
         if (equals) {

@@ -47,7 +47,7 @@ public class UserMobileControllerTest extends AbstractIntegrationTest {
                 .put("/mobile/api/sp/update")
                 .then()
                 .statusCode(201);
-        User user = userRepository.findUserByEmail("mdoe@example.com").get();
+        User user = userRepository.findUserByEmailAndRateLimitedFalse("mdoe@example.com").get();
 
         assertEquals(userNameRequest.getChosenName(), user.getChosenName());
         assertEquals(userNameRequest.getGivenName(), user.getGivenName());
@@ -66,7 +66,7 @@ public class UserMobileControllerTest extends AbstractIntegrationTest {
                 .put("/mobile/api/sp/update")
                 .then()
                 .statusCode(201);
-        User user = userRepository.findUserByEmail("mdoe@example.com").get();
+        User user = userRepository.findUserByEmailAndRateLimitedFalse("mdoe@example.com").get();
 
         assertEquals(userNameRequest.getGivenName(), user.getChosenName());
     }
@@ -97,7 +97,7 @@ public class UserMobileControllerTest extends AbstractIntegrationTest {
                 .post("/mobile/api/idp/create")
                 .then()
                 .statusCode(201);
-        User user = userRepository.findUserByEmail(createAccount.getEmail()).get();
+        User user = userRepository.findUserByEmailAndRateLimitedFalse(createAccount.getEmail()).get();
 
         assertEquals(createAccount.getRelyingPartClientId(), user.getEduIDS().get(0).getServices().get(0).getEntityId());
         assertNotNull(user.getEduPersonPrincipalName());

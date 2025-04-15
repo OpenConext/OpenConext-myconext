@@ -72,19 +72,19 @@ public class MailBoxTest extends AbstractMailBoxTest {
     }
 
     @Test
-    public void sendAccountVerification() {
-        doSendAccountVerification("Please verify your email address for your eduID", "en");
+    public void sendOneTimeLoginCodeNewUser() {
+        doSendOneTimeLoginCodeNewUser("Please verify your email address for your eduID", "en");
     }
 
     @Test
-    public void sendAccountVerificationNl() {
-        doSendAccountVerification("Verifieer je e-mailadres voor je eduID", "nl");
+    public void sendOneTimeLoginCodeNewUserNl() {
+        doSendOneTimeLoginCodeNewUser("Verifieer je e-mailadres voor je eduID", "nl");
     }
 
     @SneakyThrows
-    private void doSendAccountVerification(String expectedSubject, String lang) {
+    private void doSendOneTimeLoginCodeNewUser(String expectedSubject, String lang) {
         String hash = UUID.randomUUID().toString();
-        mailBox.sendAccountVerification(user("jdoe@examplee.com", lang), hash);
+        mailBox.sendOneTimeLoginCodeNewUser(user("jdoe@examplee.com", lang), hash);
 
         MimeMessage mimeMessage = mailMessage();
         String subject = mimeMessage.getSubject();

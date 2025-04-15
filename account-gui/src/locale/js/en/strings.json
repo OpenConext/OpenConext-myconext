@@ -505,6 +505,8 @@
   "LoginCode.Resend.COPY": "Didn’t receive the email? Check your spam folder, or ",
   "LoginCode.ResendLink.COPY": "click to resend",
   "LoginCode.Error.COPY": "Wrong code. Please try again.",
+  "LoginCode.ErrorHeader.COPY": "Maximum attempts reached",
+  "LoginCode.ErrorInfo.COPY": "You've reached the maximum attempts and your account is suspended.",
   "Login.RequestEduId.COPY": "No eduID yet?",
   "Login.RequestEduId2.COPY": "Create an eduID",
   "Login.LoginEduId.COPY": "Login",

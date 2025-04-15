@@ -107,7 +107,7 @@ public class SamlAuthenticationRequest implements Serializable {
         this.issuer = issuer;
         this.consumerAssertionServiceURL = consumerAssertionServiceURL;
         this.relayState = relayState;
-        this.expiresIn = Date.from(LocalDateTime.now().plusHours(1).atZone(ZoneId.systemDefault()).toInstant());
+        this.expiresIn = Date.from(LocalDateTime.now().plusMinutes(10).atZone(ZoneId.systemDefault()).toInstant());
         this.requesterEntityId = requesterEntityId;
         this.accountLinkingRequired = accountLinkingRequired;
         this.mfaProfileRequired = mfaProfileRequired;

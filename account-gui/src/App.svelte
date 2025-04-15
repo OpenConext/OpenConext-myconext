@@ -249,6 +249,12 @@
                             linkText={I18n.t("Login.OptionsLink.COPY")}
                             route="/options/{params.id}"/>
             </Route>
+            <Route path="/code/:id" let:params>
+                <SubContent question={I18n.t("Login.NoMailAccess.COPY")}
+                            preLink={I18n.t("Login.UseAnother.COPY")}
+                            linkText={I18n.t("Login.OptionsLink.COPY")}
+                            route="/options/{params.id}"/>
+            </Route>
             <Route path="/usepassword/:id" let:params>
                 <SubContent question={I18n.t("Login.ForgotPassword.COPY")}
                             preLink={I18n.t("Login.UseAnother.COPY")}

@@ -25,6 +25,16 @@
         }
     });
 
+    const doVerify = () => {
+        setTimeout(() => {
+            verify(values.join(""));
+            setTimeout(() => {
+                    values = Array(size).fill("");
+                    inputRefs.get(0).focus();
+                }, 850);
+        }, timeout);
+    }
+
     const handleChange = (index, e) => {
         const val = e.target.value;
 
@@ -44,7 +54,7 @@
         if (index !== size - 1 && !isEmpty(val)) {
             setTimeout(() => inputRefs.get(index + 1)?.focus(), timeout);
         } else if (!isEmpty(val)) {
-            setTimeout(() => verify(values.join("")), timeout);
+            doVerify();
         }
     }
 
@@ -72,7 +82,7 @@
         values = transformer ? newValues.map(val => transformer(val)) : newValues;
         inputRefs.get(inputRefs.size - 1)?.focus();
 
-        setTimeout(() => verify(values.join("")), timeout);
+        doVerify();
     }
 </script>
 

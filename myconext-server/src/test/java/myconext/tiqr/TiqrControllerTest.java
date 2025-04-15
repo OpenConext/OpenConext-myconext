@@ -136,7 +136,7 @@ public class TiqrControllerTest extends AbstractIntegrationTest {
                 .post("/tiqr/sp/send-phone-code")
                 .body().as(new TypeRef<>() {
                 });
-        User user = userRepository.findUserByEmail("jdoe@example.com").get();
+        User user = userRepository.findUserByEmailAndRateLimitedFalse("jdoe@example.com").get();
         assertEquals(phoneNumber, user.getSurfSecureId().get(SURFSecureID.PHONE_NUMBER));
     }
 
@@ -146,7 +146,7 @@ public class TiqrControllerTest extends AbstractIntegrationTest {
 
         String phoneVerification = "0612345678";
 
-        User user = userRepository.findUserByEmail("jdoe@example.com").get();
+        User user = userRepository.findUserByEmailAndRateLimitedFalse("jdoe@example.com").get();
         user.getSurfSecureId().put(SURFSecureID.PHONE_VERIFICATION_CODE, phoneVerification);
         userRepository.save(user);
 
@@ -157,7 +157,7 @@ public class TiqrControllerTest extends AbstractIntegrationTest {
                 .post("/tiqr/sp/verify-phone-code")
                 .then()
                 .statusCode(200);
-        user = userRepository.findUserByEmail("jdoe@example.com").get();
+        user = userRepository.findUserByEmailAndRateLimitedFalse("jdoe@example.com").get();
         assertTrue((Boolean) user.getSurfSecureId().get(SURFSecureID.PHONE_VERIFIED));
     }
 
@@ -165,7 +165,7 @@ public class TiqrControllerTest extends AbstractIntegrationTest {
     public void spVerifyPhoneCodeWrongCode() {
         String phoneVerification = "0612345678";
 
-        User user = userRepository.findUserByEmail("jdoe@example.com").get();
+        User user = userRepository.findUserByEmailAndRateLimitedFalse("jdoe@example.com").get();
         user.getSurfSecureId().put(SURFSecureID.PHONE_VERIFICATION_CODE, phoneVerification);
         userRepository.save(user);
 
@@ -193,7 +193,7 @@ public class TiqrControllerTest extends AbstractIntegrationTest {
 
     @Test
     public void spDeactivationCode() {
-        User user = userRepository.findUserByEmail("jdoe@example.com").get();
+        User user = userRepository.findUserByEmailAndRateLimitedFalse("jdoe@example.com").get();
         user.getSurfSecureId().put(SURFSecureID.PHONE_NUMBER, "0612345678");
         user.getSurfSecureId().put(SURFSecureID.RATE_LIMIT, 2);
         userRepository.save(user);
@@ -205,7 +205,7 @@ public class TiqrControllerTest extends AbstractIntegrationTest {
                 .then()
                 .statusCode(200);
 
-        user = userRepository.findUserByEmail("jdoe@example.com").get();
+        user = userRepository.findUserByEmailAndRateLimitedFalse("jdoe@example.com").get();
         assertFalse(user.getSurfSecureId().containsKey(SURFSecureID.RATE_LIMIT));
         assertTrue(user.getSurfSecureId().containsKey(SURFSecureID.PHONE_VERIFICATION_CODE));
     }
@@ -224,7 +224,7 @@ public class TiqrControllerTest extends AbstractIntegrationTest {
     public void spDeactivation() throws IOException {
         doEnrollmment(false);
 
-        User user = userRepository.findUserByEmail("jdoe@example.com").get();
+        User user = userRepository.findUserByEmailAndRateLimitedFalse("jdoe@example.com").get();
         user.getSurfSecureId().put(SURFSecureID.RECOVERY_CODE, "123456");
         user.getSurfSecureId().put(SURFSecureID.RATE_LIMIT, 2);
         userRepository.save(user);
@@ -236,7 +236,7 @@ public class TiqrControllerTest extends AbstractIntegrationTest {
                 .post("/tiqr/sp/deactivate-app")
                 .then()
                 .statusCode(200);
-        user = userRepository.findUserByEmail("jdoe@example.com").get();
+        user = userRepository.findUserByEmailAndRateLimitedFalse("jdoe@example.com").get();
         assertTrue(user.getSurfSecureId().isEmpty());
     }
 
@@ -244,7 +244,7 @@ public class TiqrControllerTest extends AbstractIntegrationTest {
     public void spDeactivationValidateBody() throws IOException {
         doEnrollmment(false);
 
-        User user = userRepository.findUserByEmail("jdoe@example.com").get();
+        User user = userRepository.findUserByEmailAndRateLimitedFalse("jdoe@example.com").get();
         user.getSurfSecureId().put(SURFSecureID.RECOVERY_CODE, "123456");
         user.getSurfSecureId().put(SURFSecureID.RATE_LIMIT, 2);
         userRepository.save(user);
@@ -279,7 +279,7 @@ public class TiqrControllerTest extends AbstractIntegrationTest {
     public void spDeactivationWrongCode() throws IOException {
         doEnrollmment(false);
 
-        User user = userRepository.findUserByEmail("jdoe@example.com").get();
+        User user = userRepository.findUserByEmailAndRateLimitedFalse("jdoe@example.com").get();
         user.getSurfSecureId().put(SURFSecureID.RECOVERY_CODE, "123456");
         userRepository.save(user);
 
@@ -509,7 +509,7 @@ public class TiqrControllerTest extends AbstractIntegrationTest {
                 .body().as(new TypeRef<>() {
                 });
         assertTrue(body.containsKey("enrollmentVerificationKey"));
-        User user = userRepository.findUserByEmail("jdoe@example.com").get();
+        User user = userRepository.findUserByEmailAndRateLimitedFalse("jdoe@example.com").get();
         assertEquals(body.get("enrollmentVerificationKey"), user.getEnrollmentVerificationKey());
     }
 
@@ -555,7 +555,7 @@ public class TiqrControllerTest extends AbstractIntegrationTest {
                 .post("/tiqr/sp/re-send-phone-code")
                 .then()
                 .statusCode(200);
-        User user = userRepository.findUserByEmail("jdoe@example.com").get();
+        User user = userRepository.findUserByEmailAndRateLimitedFalse("jdoe@example.com").get();
         assertEquals(phoneNumber, user.getSurfSecureId().get(SURFSecureID.NEW_UNVERIFIED_PHONE_NUMBER));
         assertNull(user.getSurfSecureId().get(SURFSecureID.PHONE_NUMBER));
     }
@@ -573,7 +573,7 @@ public class TiqrControllerTest extends AbstractIntegrationTest {
                 .post("/tiqr/sp/re-send-phone-code")
                 .then()
                 .statusCode(200);
-        User user = userRepository.findUserByEmail("jdoe@example.com").get();
+        User user = userRepository.findUserByEmailAndRateLimitedFalse("jdoe@example.com").get();
         String phoneVerification = (String) user.getSurfSecureId().get(SURFSecureID.PHONE_VERIFICATION_CODE);
 
         given()
@@ -584,7 +584,7 @@ public class TiqrControllerTest extends AbstractIntegrationTest {
                 .then()
                 .statusCode(200);
 
-        user = userRepository.findUserByEmail("jdoe@example.com").get();
+        user = userRepository.findUserByEmailAndRateLimitedFalse("jdoe@example.com").get();
         assertEquals(phoneNumber, user.getSurfSecureId().get(SURFSecureID.PHONE_NUMBER));
         assertNull(user.getSurfSecureId().get(SURFSecureID.RECOVERY_CODE));
     }

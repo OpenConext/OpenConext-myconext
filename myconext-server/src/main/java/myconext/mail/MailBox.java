@@ -74,15 +74,19 @@ public class MailBox {
     }
 
     public void sendOneTimeLoginCode(User user, String code, String requesterId) {
-        String title = this.getTitle("one_time_login_code", user);
+        String title = this.getTitle("one_time_login_code", user) + user.getOneTimeLoginCode().getCode();
         Map<String, Object> variables = variables(user, title);
         variables.put("destination", requesterId);
         variables.put("code", code);
         sendMail("one_time_login_code", title, variables, preferredLanguage(user), user.getEmail(), true);
     }
 
-    public void sendAccountVerification(User user, String hash) {
-        doSendAccountVerification(user, hash, magicLinkUrl);
+    public void sendOneTimeLoginCodeNewUser(User user, String code, String requesterId) {
+        String title = this.getTitle("one_time_login_code_new_user", user) + user.getOneTimeLoginCode().getCode();
+        Map<String, Object> variables = variables(user, title);
+        variables.put("destination", requesterId);
+        variables.put("code", code);
+        sendMail("one_time_login_code_new_user", title, variables, preferredLanguage(user), user.getEmail(), true);
     }
 
     public void sendAccountVerificationCreateFromInstitution(User user, String hash, String linkUrl) {
@@ -90,11 +94,7 @@ public class MailBox {
     }
 
     public void sendAccountVerificationMobileAPI(User user, String hash, String linkUrl) {
-        String title = this.getTitle("account_verification", user);
-        Map<String, Object> variables = variables(user, title);
-        variables.put("hash", hash);
-        variables.put("magicLinkUrl", linkUrl);
-        sendMail("account_verification", title, variables, preferredLanguage(user), user.getEmail(), true);
+        doSendAccountVerification(user, hash, linkUrl);
     }
 
     private void doSendAccountVerification(User user, String hash, String linkUrl) {

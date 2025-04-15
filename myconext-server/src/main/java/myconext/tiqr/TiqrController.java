@@ -394,7 +394,8 @@ public class TiqrController implements UserAuthentication {
         authenticationRequestRepository.findByIdAndNotExpired(tiqrRequest.getAuthenticationRequestId())
                 .orElseThrow(() -> new ExpiredAuthenticationException("Expired tiqrRequest:" + tiqrRequest.getEmail()));
         String email = tiqrRequest.getEmail().trim();
-        User user = userRepository.findUserByEmail(email).orElseThrow(() -> new UserNotFoundException(String.format("User %s not found", email)));
+        User user = userRepository.findUserByEmailAndRateLimitedFalse(email)
+                .orElseThrow(() -> new UserNotFoundException(String.format("User %s not found", email)));
 
         return doStartAuthentication(request, user);
     }

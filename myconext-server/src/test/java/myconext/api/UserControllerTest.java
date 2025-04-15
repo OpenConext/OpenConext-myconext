@@ -98,14 +98,14 @@ public class UserControllerTest extends AbstractIntegrationTest {
         User user = user("new@example.com", "Mary", "Doe", "en");
 
         ClientAuthenticationResponse magicLinkResponse = magicLinkRequest(user, HttpMethod.POST);
-        User userFromDB = userRepository.findUserByEmail(user.getEmail()).get();
+        User userFromDB = userRepository.findUserByEmailAndRateLimitedFalse(user.getEmail()).get();
         assertEquals(0L, ReflectionTestUtils.getField(userFromDB, "lastSeenAppNudge"));
         assertEquals(user.getGivenName(), userFromDB.getGivenName());
 
         String samlResponse = samlResponse(magicLinkResponse);
         assertTrue(samlResponse.contains("new@example.com"));
 
-        User userFromAfter = userRepository.findUserByEmail(user.getEmail()).get();
+        User userFromAfter = userRepository.findUserByEmailAndRateLimitedFalse(user.getEmail()).get();
         assertEquals(0L, ReflectionTestUtils.getField(userFromAfter, "lastSeenAppNudge"));
 
         when()
@@ -598,7 +598,7 @@ public class UserControllerTest extends AbstractIntegrationTest {
                 .statusCode(HttpStatus.OK.value())
                 .cookie("SESSION", "");
 
-        Optional<User> optionalUser = userRepository.findUserByEmail("jdoe@example.com");
+        Optional<User> optionalUser = userRepository.findUserByEmailAndRateLimitedFalse("jdoe@example.com");
         assertFalse(optionalUser.isPresent());
     }
 
@@ -1416,7 +1416,7 @@ public class UserControllerTest extends AbstractIntegrationTest {
                 .post("/myconext/api/sp/control-code")
                 .as(ControlCode.class);
         assertEquals(5, responseControlCode.getCode().length());
-        User user = userRepository.findUserByEmail("jdoe@example.com").get();
+        User user = userRepository.findUserByEmailAndRateLimitedFalse("jdoe@example.com").get();
         assertEquals(user.getControlCode().getCode(), responseControlCode.getCode());
 
         Map<String, Object> userResponse = given()
@@ -1427,7 +1427,7 @@ public class UserControllerTest extends AbstractIntegrationTest {
                 });
         assertFalse(userResponse.containsKey("controlCode"));
 
-        User userFromDB = userRepository.findUserByEmail("jdoe@example.com").get();
+        User userFromDB = userRepository.findUserByEmailAndRateLimitedFalse("jdoe@example.com").get();
         assertNull(userFromDB.getControlCode());
     }
 

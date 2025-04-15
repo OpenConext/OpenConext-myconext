@@ -20,6 +20,9 @@ public interface UserRepository extends MongoRepository<User, String> {
     Optional<User> findUserByEmail(String email);
 
     @Query(collation = "{ 'locale' : 'en_US', 'strength' : 2 }")
+    Optional<User> findUserByEmailAndRateLimitedFalse(String email);
+
+    @Query(collation = "{ 'locale' : 'en_US', 'strength' : 2 }")
     User findOneUserByEmail(String email);
 
     Optional<User> findUserByLinkedAccounts_eduPersonPrincipalName(String eduPersonPrincipalName);

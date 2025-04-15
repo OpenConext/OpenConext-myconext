@@ -11,5 +11,6 @@ export const user = writable({
     useWebAuth: false,
     createAccount: false,
     preferredLogin: null,
-    knownUser: null
+    knownUser: null,
+    delay: 0
 });

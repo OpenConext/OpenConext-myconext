@@ -8,9 +8,13 @@
     "nl": "Bevestig je eduID e-mailadres met de code: "
   },
   "one_time_login_code": {
+    "en": "eduID login code: ",
+    "nl": "eduID login code: "
+  },
+  "one_time_login_code_new_user": {
     "en": "Confirm your eduID email with code: ",
     "nl": "Bevestig je eduID e-mailadres met de code: "
-  },
+},
   "reset_password": {
     "en": "Reset your eduID password",
     "nl": "Reset je eduID wachtwoord"

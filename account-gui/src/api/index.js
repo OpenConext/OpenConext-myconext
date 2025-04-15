@@ -51,14 +51,9 @@ export function generateCodeExistingUser(email, authenticationRequestId) {
     return postPutJson("/myconext/api/idp/generate_code_request", body, "PUT");
 }
 
-export function codeNewUser(email, givenName, familyName, authenticationRequestId) {
-    const body = {user: {email, givenName, familyName}, authenticationRequestId};
-    return postPutJson("/myconext/api/idp/code_request", body, "POST");
-}
-
-export function codeExistingUser(email, code, authenticationRequestId) {
-    const body = {user: {email}, code, authenticationRequestId};
-    return postPutJson("/myconext/api/idp/code_request", body, "PUT");
+export function verifyCodeExistingUser(code, authenticationRequestId) {
+    const body = {code, authenticationRequestId};
+    return postPutJson("/myconext/api/idp/verify_code_request", body, "PUT");
 }
 
 export function passwordExistingUser(email, password, authenticationRequestId) {

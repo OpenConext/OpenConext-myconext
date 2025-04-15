@@ -203,7 +203,7 @@ public class UserController implements UserAuthentication {
     @PostMapping("/idp/service/email")
     public List<String> knownAccount(@RequestBody Map<String, String> email) {
         emailGuessingPreventor.potentialUserEmailGuess();
-        User user = userRepository.findUserByEmail(email.get("email"))
+        User user = userRepository.findUserByEmailAndRateLimitedFalse(email.get("email"))
                 .orElseThrow(() -> new UserNotFoundException(String.format("User with email %s not found", email.get("email"))));
         return user.loginOptions();
     }
@@ -249,11 +249,12 @@ public class UserController implements UserAuthentication {
     @Hidden
     @PostMapping("/idp/generate_code_request")
     public ResponseEntity generateCodeRequestNewUser(HttpServletRequest request,
-                                                     @Valid @RequestBody ClientAuthenticationRequest magicLinkRequest) {
-        SamlAuthenticationRequest samlAuthenticationRequest = authenticationRequestRepository.findByIdAndNotExpired(magicLinkRequest.getAuthenticationRequestId())
+                                                     @Valid @RequestBody ClientAuthenticationRequest clientAuthenticationRequest) {
+        SamlAuthenticationRequest samlAuthenticationRequest = authenticationRequestRepository
+                .findByIdAndNotExpired(clientAuthenticationRequest.getAuthenticationRequestId())
                 .orElseThrow(() -> new ExpiredAuthenticationException("Expired authentication request"));
 
-        User user = magicLinkRequest.getUser();
+        User user = clientAuthenticationRequest.getUser();
 
         String email = user.getEmail();
         verifyEmails(email);
@@ -270,19 +271,17 @@ public class UserController implements UserAuthentication {
 
         User userToSave = new User(UUID.randomUUID().toString(), email, user.getGivenName(), user.getGivenName(),
                 user.getFamilyName(), schacHomeOrganization, preferredLanguage, requesterEntityId, manage);
-        userToSave = userRepository.save(userToSave);
-
         return this.doInternalAuthentication(userToSave, samlAuthenticationRequest, false, request);
     }
 
     @Hidden
     @PutMapping("/idp/generate_code_request")
     public ResponseEntity generateCodeRequestExistingUser(HttpServletRequest request,
-                                                          @Valid @RequestBody ClientAuthenticationRequest magicLinkRequest) {
-        SamlAuthenticationRequest samlAuthenticationRequest = authenticationRequestRepository.findByIdAndNotExpired(magicLinkRequest.getAuthenticationRequestId())
-                .orElseThrow(() -> new ExpiredAuthenticationException("Expired samlAuthenticationRequest: " + magicLinkRequest.getAuthenticationRequestId()));
+                                                          @Valid @RequestBody ClientAuthenticationRequest clientAuthenticationRequest) {
+        SamlAuthenticationRequest samlAuthenticationRequest = authenticationRequestRepository.findByIdAndNotExpired(clientAuthenticationRequest.getAuthenticationRequestId())
+                .orElseThrow(() -> new ExpiredAuthenticationException("Expired samlAuthenticationRequest: " + clientAuthenticationRequest.getAuthenticationRequestId()));
 
-        User providedUser = magicLinkRequest.getUser();
+        User providedUser = clientAuthenticationRequest.getUser();
 
         String email = providedUser.getEmail();
         this.verifyEmails(email);
@@ -297,9 +296,8 @@ public class UserController implements UserAuthentication {
         logWithContext(user, "update", "user", LOG, "Updating user " + user.getEmail());
 
         user.computeEduIdForServiceProviderIfAbsent(requesterEntityId, manage);
-        userRepository.save(user);
 
-        if (magicLinkRequest.isUsePassword()) {
+        if (clientAuthenticationRequest.isUsePassword()) {
             if (!passwordEncoder.matches(providedUser.getPassword(), user.getPassword())) {
                 logLoginWithContext(user, "password", false, LOG, "Bad attempt to login with password", request);
                 return ResponseEntity.status(HttpStatus.FORBIDDEN)
@@ -308,35 +306,61 @@ public class UserController implements UserAuthentication {
             logLoginWithContext(user, "password", true, LOG, "Successfully logged in with password", request);
             LOG.info("Successfully logged in with password");
         }
-        return doInternalAuthentication(user, samlAuthenticationRequest, magicLinkRequest.isUsePassword(), request);
+        return doInternalAuthentication(user, samlAuthenticationRequest, clientAuthenticationRequest.isUsePassword(), request);
     }
 
     @Hidden
-    @GetMapping("/idp/resend_magic_link_request")
-    public ResponseEntity resendMagicLinkRequest(HttpServletRequest request, @RequestParam("id") String authenticationRequestId) {
+    @PutMapping("/idp/verify_code_request")
+    public ResponseEntity verifyCodeExistingUser(@Valid @RequestBody VerifyOneTimeLoginCode verifyOneTimeLoginCode) {
+        String authenticationRequestId = verifyOneTimeLoginCode.getAuthenticationRequestId();
+        SamlAuthenticationRequest samlAuthenticationRequest = authenticationRequestRepository
+                .findByIdAndNotExpired(authenticationRequestId)
+                .orElseThrow(() -> new ExpiredAuthenticationException("Expired samlAuthenticationRequest: " + authenticationRequestId));
+        String userId = samlAuthenticationRequest.getUserId();
+        User user = userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException(userId));
+        boolean success = user.attemptOneTimeLoginVerification(verifyOneTimeLoginCode.getCode());
+        userRepository.save(user);
+        if (success) {
+            LOG.debug(String.format("Login for existing user %s in oneTimeLoginCode flow", user.getUsername()));
+            String url = this.magicLinkUrl + "?h=" + samlAuthenticationRequest.getHash();
+            return ResponseEntity.status(201).body(Map.of("url", url));
+        }
+        try {
+            long delay = user.getOneTimeLoginCode().getDelay();
+            throw new InvalidOneTimeLoginCodeException(String.format("Invalid code entered for email %s, delay: %s, attempt: %s",
+                    user.getEmail(),
+                    delay,
+                    (int) (Math.log(delay / 1000) / Math.log(2))));
+        } catch (ForbiddenException e) {
+            authenticationRequestRepository.delete(samlAuthenticationRequest);
+            user.setRateLimited(true);
+            throw e;
+        }
+    }
+
+    @Hidden
+    @GetMapping("/idp/resend_code_request")
+    public ResponseEntity resendCodeMail(HttpServletRequest request, @RequestParam("id") String authenticationRequestId) {
         SamlAuthenticationRequest samlAuthenticationRequest = authenticationRequestRepository.findByIdAndNotExpired(authenticationRequestId)
                 .orElseThrow(() -> new ExpiredAuthenticationException("Expired samlAuthenticationRequest: " + authenticationRequestId));
         String userId = samlAuthenticationRequest.getUserId();
         User user = userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException(userId));
+        String serviceName = this.manage.getServiceName(request, samlAuthenticationRequest);
+        String code = user.getOneTimeLoginCode().getCode();
         if (user.isNewUser()) {
-            sendAccountVerificationMail(samlAuthenticationRequest, user);
+            mailBox.sendOneTimeLoginCodeNewUser(user, code, serviceName);
         } else {
-            String serviceName = this.manage.getServiceName(request, samlAuthenticationRequest);
-            mailBox.sendOneTimeLoginCode(user, samlAuthenticationRequest.getHash(), serviceName);
+            mailBox.sendOneTimeLoginCode(user, code, serviceName);
         }
         return ResponseEntity.ok(true);
-    }
-
-    private void sendAccountVerificationMail(SamlAuthenticationRequest samlAuthenticationRequest, User user) {
-        LOG.debug(String.format("Sending account verification mail with magic link for new user %s", user.getUsername()));
-        mailBox.sendAccountVerification(user, samlAuthenticationRequest.getHash());
     }
 
     @Hidden
     @GetMapping("/idp/security/success")
     public int successfullyLoggedIn(@RequestParam("id") String id) {
         Optional<SamlAuthenticationRequest> optionalSamlAuthenticationRequest = authenticationRequestRepository.findById(id);
-        return optionalSamlAuthenticationRequest.map(samlAuthenticationRequest -> samlAuthenticationRequest.getLoginStatus().ordinal()).orElse(LoginStatus.NOT_LOGGED_IN.ordinal());
+        return optionalSamlAuthenticationRequest.map(samlAuthenticationRequest ->
+                samlAuthenticationRequest.getLoginStatus().ordinal()).orElse(LoginStatus.NOT_LOGGED_IN.ordinal());
     }
 
     @Operation(summary = "Institution displaynames",
@@ -868,7 +892,7 @@ public class UserController implements UserAuthentication {
         String email = body.get("email");
         verifyEmails(email);
 
-        Optional<User> optionalUser = userRepository.findUserByEmail(emailGuessingPreventor.sanitizeEmail(email));
+        Optional<User> optionalUser = userRepository.findUserByEmailAndRateLimitedFalse(emailGuessingPreventor.sanitizeEmail(email));
         if (!optionalUser.isPresent()) {
             return return404();
         }
@@ -1096,34 +1120,38 @@ public class UserController implements UserAuthentication {
         samlAuthenticationRequest.setHash(hash());
         samlAuthenticationRequest.setUserId(user.getId());
         samlAuthenticationRequest.setPasswordOrWebAuthnFlow(passwordOrWebAuthnFlow);
+
         if (this.featureDefaultRememberMe) {
             samlAuthenticationRequest.setRememberMe(true);
             samlAuthenticationRequest.setRememberMeValue(UUID.randomUUID().toString());
         }
+
         if (!passwordOrWebAuthnFlow) {
             user.startOneTimeLoginCode(VerificationCodeGenerator.generateOneTimeLoginCode());
         }
+
+        userRepository.save(user);
         authenticationRequestRepository.save(samlAuthenticationRequest);
         String serviceName = this.manage.getServiceName(request, samlAuthenticationRequest);
 
         if (passwordOrWebAuthnFlow) {
-            LOG.debug(String.format("Returning passwordOrWebAuthnFlow magic link for existing user %s", user.getUsername()));
+            LOG.debug(String.format("Returning login hash for passwordFlow for existing user %s", user.getUsername()));
             String url = this.magicLinkUrl + "?h=" + samlAuthenticationRequest.getHash();
             return ResponseEntity.status(201).body(Map.of("url", url));
         }
-
+        String code = user.getOneTimeLoginCode().getCode();
         if (user.isNewUser()) {
             LOG.debug("Sending login code email for new user: " + user.getEmail());
-            sendAccountVerificationMail(samlAuthenticationRequest, user);
+            mailBox.sendOneTimeLoginCodeNewUser(user, code, serviceName);
         } else {
             LOG.debug("Sending login code email for existing user: " + user.getEmail());
-            mailBox.sendOneTimeLoginCode(user, user.getOneTimeLoginCode().getCode(), serviceName);
+            mailBox.sendOneTimeLoginCode(user, code, serviceName);
         }
-        return ResponseEntity.status(201).body(Collections.singletonMap("result", "ok"));
+        return ResponseEntity.status(201).body(Map.of("result", "ok"));
     }
 
     private Optional<User> findUserStoreLanguage(String email) {
-        Optional<User> optionalUser = userRepository.findUserByEmail(emailGuessingPreventor.sanitizeEmail(email));
+        Optional<User> optionalUser = userRepository.findUserByEmailAndRateLimitedFalse(emailGuessingPreventor.sanitizeEmail(email));
         optionalUser.ifPresent(user -> {
             String preferredLanguage = user.getPreferredLanguage();
             String language = LocaleContextHolder.getLocale().getLanguage();

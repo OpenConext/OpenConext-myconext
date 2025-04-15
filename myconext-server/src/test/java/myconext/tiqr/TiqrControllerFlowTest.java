@@ -111,7 +111,7 @@ public class TiqrControllerFlowTest extends AbstractIntegrationTest {
                 .body().as(new TypeRef<>() {
                 });
 
-        User user = userRepository.findUserByEmail("jdoe@example.com").get();
+        User user = userRepository.findUserByEmailAndRateLimitedFalse("jdoe@example.com").get();
         String phoneVerification = (String) user.getSurfSecureId().get(SURFSecureID.PHONE_VERIFICATION_CODE);
 
         given()

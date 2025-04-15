@@ -79,7 +79,7 @@ public class LoginControllerTest extends AbstractIntegrationTest {
 
     @Test
     public void registerWithEnrollmentVerificationKey() {
-        User user = userRepository.findUserByEmail("jdoe@example.com").get();
+        User user = userRepository.findUserByEmailAndRateLimitedFalse("jdoe@example.com").get();
         String enrollmentVerificationKey = UUID.randomUUID().toString();
         user.setEnrollmentVerificationKey(enrollmentVerificationKey);
         userRepository.save(user);
@@ -96,13 +96,13 @@ public class LoginControllerTest extends AbstractIntegrationTest {
                 .header("Location",
                         "http://localhost:3001/security");
 
-        user = userRepository.findUserByEmail("jdoe@example.com").get();
+        user = userRepository.findUserByEmailAndRateLimitedFalse("jdoe@example.com").get();
         assertNull(user.getEnrollmentVerificationKey());
     }
 
     @Test
     public void testCreateFromInstitutionLogin() {
-        User user = userRepository.findUserByEmail("jdoe@example.com").get();
+        User user = userRepository.findUserByEmailAndRateLimitedFalse("jdoe@example.com").get();
         user.setNewUser(false);
         String createFromInstitutionKey = UUID.randomUUID().toString();
         user.setCreateFromInstitutionKey(createFromInstitutionKey);
@@ -118,13 +118,13 @@ public class LoginControllerTest extends AbstractIntegrationTest {
                 .header("Location",
                         "http://localhost:3001/security?new=false");
 
-        user = userRepository.findUserByEmail("jdoe@example.com").get();
+        user = userRepository.findUserByEmailAndRateLimitedFalse("jdoe@example.com").get();
         assertNull(user.getCreateFromInstitutionKey());
     }
 
     @Test
     public void testCreateFromInstitutionLoginNewUser() {
-        User user = userRepository.findUserByEmail("jdoe@example.com").get();
+        User user = userRepository.findUserByEmailAndRateLimitedFalse("jdoe@example.com").get();
         String createFromInstitutionKey = UUID.randomUUID().toString();
         user.setCreateFromInstitutionKey(createFromInstitutionKey);
         user.setNewUser(true);

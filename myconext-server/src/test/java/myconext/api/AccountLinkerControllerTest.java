@@ -643,7 +643,7 @@ public class AccountLinkerControllerTest extends AbstractIntegrationTest {
                 .queryParam("h", emailHash)
                 .get("/myconext/api/sp/create-from-institution/finish")
                 .getHeader("Location");
-        User user = userRepository.findUserByEmail("new@example.com").get();
+        User user = userRepository.findUserByEmailAndRateLimitedFalse("new@example.com").get();
         assertEquals("http://localhost:3000/create-from-institution-login?key=" + user.getCreateFromInstitutionKey(), location);
     }
 
@@ -668,7 +668,7 @@ public class AccountLinkerControllerTest extends AbstractIntegrationTest {
                 .queryParam("h", emailHash)
                 .get("/myconext/api/sp/create-from-institution/finish")
                 .getHeader("Location");
-        User user = userRepository.findUserByEmail("jdoe@example.com").get();
+        User user = userRepository.findUserByEmailAndRateLimitedFalse("jdoe@example.com").get();
         assertEquals("http://localhost:3000/create-from-institution-login?key=" + user.getCreateFromInstitutionKey(), location);
     }
 

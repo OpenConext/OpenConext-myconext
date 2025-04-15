@@ -56,7 +56,7 @@ public class InactivityMailTest extends AbstractMailBoxTest {
             User user = userRepository.findOneUserByEmail(userInactivity.name());
             assertEquals(userInactivity, user.getUserInactivity());
         });
-        Optional<User> optionalUser = userRepository.findUserByEmail(DELETED_EMAIL);
+        Optional<User> optionalUser = userRepository.findUserByEmailAndRateLimitedFalse(DELETED_EMAIL);
         assertFalse(optionalUser.isPresent());
 
         //Idempotency check

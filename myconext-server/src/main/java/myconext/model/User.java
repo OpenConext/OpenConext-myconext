@@ -117,6 +117,9 @@ public class User implements Serializable, UserDetails {
 
     private OneTimeLoginCode oneTimeLoginCode;
 
+    @Setter
+    private boolean rateLimited;
+
     public User(CreateInstitutionEduID createInstitutionEduID, Map<String, Object> userInfo) {
         this.email = createInstitutionEduID.getEmail();
         this.chosenName = (String) userInfo.get("given_name");
@@ -480,11 +483,13 @@ public class User implements Serializable, UserDetails {
         this.oneTimeLoginCode = new OneTimeLoginCode(oneTimeLoginCode);
     }
 
-    // time-constant comparison
     public boolean attemptOneTimeLoginVerification(String code) {
-        return this.oneTimeLoginCode.attemptOneTimeLoginVerification(code);
+        boolean success = this.oneTimeLoginCode.attemptOneTimeLoginVerification(code);
+        if (success) {
+            this.oneTimeLoginCode = null;
+        }
+        return success;
     }
-
 
     private interface ProvisionedNameProvider {
 
