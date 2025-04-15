@@ -334,6 +334,7 @@ public class UserController implements UserAuthentication {
         } catch (ForbiddenException e) {
             authenticationRequestRepository.delete(samlAuthenticationRequest);
             user.setRateLimited(true);
+            userRepository.save(user);
             throw e;
         }
     }

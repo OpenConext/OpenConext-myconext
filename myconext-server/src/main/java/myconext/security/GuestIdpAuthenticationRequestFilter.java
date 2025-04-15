@@ -1,5 +1,10 @@
 package myconext.security;
 
+import jakarta.servlet.FilterChain;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -31,11 +36,6 @@ import saml.model.SAMLAttribute;
 import saml.model.SAMLConfiguration;
 import saml.model.SAMLStatus;
 
-import jakarta.servlet.FilterChain;
-import jakarta.servlet.ServletException;
-import jakarta.servlet.http.Cookie;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
@@ -592,7 +592,9 @@ public class GuestIdpAuthenticationRequestFilter extends OncePerRequestFilter {
             LOG.info(String.format("Tiqr flow authenticated for %s ", user.getUsername()));
             addTiqrCookie(response, user);
         }
-        String loginMethod = samlAuthenticationRequest.isTiqrFlow() ? "tiqr" : "magiclink";
+        String loginMethod = samlAuthenticationRequest.isTiqrFlow() ? "tiqr" :
+                samlAuthenticationRequest.isOneTimeLoginCodeFlow() ? "one_time_login_code" :
+                        samlAuthenticationRequest.isPasswordOrWebAuthnFlow() ? "password" : "magiclink";
 
         logLoginWithContext(user, loginMethod, true, LOG, "Successfully logged in with " + loginMethod, request);
 
