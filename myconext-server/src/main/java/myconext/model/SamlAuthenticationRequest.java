@@ -58,6 +58,9 @@ public class SamlAuthenticationRequest implements Serializable {
     private boolean passwordOrWebAuthnFlow;
 
     @Setter
+    private boolean oneTimeLoginCodeFlow;
+
+    @Setter
     private boolean tiqrFlow;
 
     @Setter

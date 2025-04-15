@@ -201,10 +201,11 @@ public class UserController implements UserAuthentication {
 
     @Hidden
     @PostMapping("/idp/service/email")
-    public List<String> knownAccount(@RequestBody Map<String, String> email) {
-        emailGuessingPreventor.potentialUserEmailGuess();
-        User user = userRepository.findUserByEmailAndRateLimitedFalse(email.get("email"))
-                .orElseThrow(() -> new UserNotFoundException(String.format("User with email %s not found", email.get("email"))));
+    public List<String> knownAccount(@RequestBody Map<String, String> emailMap) {
+        this.emailGuessingPreventor.potentialUserEmailGuess();
+        String email = emailMap.get("email");
+        User user = userRepository.findUserByEmailAndRateLimitedFalse(email)
+                .orElseThrow(() -> new UserNotFoundException(String.format("User with email %s not found", email)));
         return user.loginOptions();
     }
 
@@ -257,7 +258,7 @@ public class UserController implements UserAuthentication {
         User user = clientAuthenticationRequest.getUser();
 
         String email = user.getEmail();
-        verifyEmails(email);
+        verifyEmails(email, true);
 
         Optional<User> optionalUser = userRepository.findUserByEmail(emailGuessingPreventor.sanitizeEmail(email));
         if (optionalUser.isPresent()) {
@@ -284,7 +285,6 @@ public class UserController implements UserAuthentication {
         User providedUser = clientAuthenticationRequest.getUser();
 
         String email = providedUser.getEmail();
-        this.verifyEmails(email);
 
         Optional<User> optionalUser = findUserStoreLanguage(email);
         if (!optionalUser.isPresent()) {
@@ -409,7 +409,7 @@ public class UserController implements UserAuthentication {
     public ResponseEntity<StatusResponse> createEduIDAccount(@Valid @RequestBody CreateAccount createAccount,
                                                              @RequestParam(value = "in-app", required = false, defaultValue = "false") boolean inAppIndicator) {
         String email = createAccount.getEmail();
-        verifyEmails(email);
+        verifyEmails(email, false);
 
         Optional<User> optionalUser = userRepository.findUserByEmail(emailGuessingPreventor.sanitizeEmail(email));
         if (optionalUser.isPresent()) {
@@ -890,13 +890,13 @@ public class UserController implements UserAuthentication {
     @Hidden
     public ResponseEntity idpWebAuthnStartAuthentication(@RequestBody Map<String, String> body) {
         String email = body.get("email");
-        verifyEmails(email);
 
         Optional<User> optionalUser = userRepository.findUserByEmailAndRateLimitedFalse(emailGuessingPreventor.sanitizeEmail(email));
         if (!optionalUser.isPresent()) {
             return return404();
         }
         User user = optionalUser.get();
+        verifyEmails(email, false);
 
         AssertionRequest request = this.relyingParty.startAssertion(StartAssertionOptions.builder()
                 .username(Optional.of(user.getEmail()))
@@ -1117,6 +1117,12 @@ public class UserController implements UserAuthentication {
                                                     SamlAuthenticationRequest samlAuthenticationRequest,
                                                     boolean passwordOrWebAuthnFlow,
                                                     HttpServletRequest request) {
+        if (!passwordOrWebAuthnFlow) {
+            user.startOneTimeLoginCode(VerificationCodeGenerator.generateOneTimeLoginCode());
+            samlAuthenticationRequest.setOneTimeLoginCodeFlow(true);
+        }
+        user = userRepository.save(user);
+
         samlAuthenticationRequest.setHash(hash());
         samlAuthenticationRequest.setUserId(user.getId());
         samlAuthenticationRequest.setPasswordOrWebAuthnFlow(passwordOrWebAuthnFlow);
@@ -1126,11 +1132,6 @@ public class UserController implements UserAuthentication {
             samlAuthenticationRequest.setRememberMeValue(UUID.randomUUID().toString());
         }
 
-        if (!passwordOrWebAuthnFlow) {
-            user.startOneTimeLoginCode(VerificationCodeGenerator.generateOneTimeLoginCode());
-        }
-
-        userRepository.save(user);
         authenticationRequestRepository.save(samlAuthenticationRequest);
         String serviceName = this.manage.getServiceName(request, samlAuthenticationRequest);
 
@@ -1164,9 +1165,11 @@ public class UserController implements UserAuthentication {
         return optionalUser;
     }
 
-    private void verifyEmails(String email) {
+    private void verifyEmails(String email, boolean userEmailGuessCheck) {
+        if (userEmailGuessCheck) {
+            this.emailGuessingPreventor.potentialUserEmailGuess();
+        }
         this.emailDomainGuard.enforceIsAllowed(email);
-        this.emailGuessingPreventor.potentialUserEmailGuess();
         this.disposableEmailProviders.verifyDisposableEmailProviders(email);
     }
 

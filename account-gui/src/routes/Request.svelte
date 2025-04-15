@@ -50,8 +50,10 @@
                     showSpinner = false;
                     if (e.status === 409) {
                         emailInUse = true;
+                        emailForbidden = false;
                     } else if (e.status === 412) {
                         emailForbidden = true;
+                        emailInUse = false;
                     } else {
                         navigate("/expired", {replace: true});
                     }

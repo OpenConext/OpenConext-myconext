@@ -190,7 +190,7 @@ public class AccountLinkerController implements UserAuthentication {
     @GetMapping("/idp/oidc/account/{id}")
     @Hidden
     public ResponseEntity startIdPLinkAccountFlow(@PathVariable("id") String id,
-                                                  @RequestParam(value = "forceAuth", required = false, defaultValue = "false") boolean forceAuth) throws UnsupportedEncodingException {
+                                                  @RequestParam(value = "forceAuth", required = false, defaultValue = "false") boolean forceAuth) {
 
         Optional<SamlAuthenticationRequest> optionalSamlAuthenticationRequest = authenticationRequestRepository.findByIdAndNotExpired(id);
         if (!optionalSamlAuthenticationRequest.isPresent()) {
@@ -750,8 +750,6 @@ public class AccountLinkerController implements UserAuthentication {
     @GetMapping("/sp/oidc/redirect")
     @Hidden
     public ResponseEntity spFlowRedirect(Authentication authentication, @RequestParam("code") String code, @RequestParam("state") String state) throws UnsupportedEncodingException {
-        LOG.debug("");
-
         User user = userFromAuthentication(authentication);
 
         LOG.info(String.format("In SP redirect link account for user %s", user.getEmail()));

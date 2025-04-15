@@ -22,7 +22,6 @@
     let wrongCode = false;
     let disabledButton = true;
     let delay = 1;
-    let rateLimited = false;
 
     onMount(() => {
         $links.displayBackArrow = false;
@@ -53,7 +52,7 @@
             .catch(e => {
                 showSpinner = false;
                 if (e.status === 403) {
-                    rateLimited = true;
+                    navigate("/rate-limited")
                 } else {
                     wrongCode = true;
                     delay = delay * 2;
@@ -130,10 +129,6 @@
     <Spinner/>
 {/if}
 <div class="login-code">
-    {#if rateLimited}
-        <h2 class="header error">{I18n.t("LoginCode.ErrorHeader.COPY")}</h2>
-        <p class="info">{@html I18n.t("LoginCode.ErrorInfo.COPY", {email: $user.email})}</p>
-    {:else}
         <h2 class="header">{I18n.t("LoginCode.Header.COPY")}</h2>
         <p class="info">{@html I18n.t("LoginCode.Info.COPY", {email: $user.email})}</p>
         <div class="code-validation">
@@ -161,5 +156,4 @@
             {/if}
 
         </div>
-    {/if}
 </div>

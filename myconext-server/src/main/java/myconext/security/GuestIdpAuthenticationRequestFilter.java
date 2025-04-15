@@ -424,7 +424,7 @@ public class GuestIdpAuthenticationRequestFilter extends OncePerRequestFilter {
         }
 
         Optional<Cookie> optionalCookie = cookieByName(request, BROWSER_SESSION_COOKIE_NAME);
-        if (!optionalCookie.isPresent()) {
+        if (!optionalCookie.isPresent() && !samlAuthenticationRequest.isOneTimeLoginCodeFlow()) {
             samlAuthenticationRequest.setLoginStatus(LoginStatus.LOGGED_IN_DIFFERENT_DEVICE);
             samlAuthenticationRequest.setVerificationCode(VerificationCodeGenerator.generate());
             if (incrementVerificationCodeRetry(samlAuthenticationRequest)) {

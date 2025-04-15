@@ -47,6 +47,7 @@
     import SubjectAlreadyLinked from "./routes/SubjectAlreadyLinked.svelte";
     import ExternalAccountLinkedError from "./routes/ExternalAccountLinkedError.svelte";
     import AttributeMissing from "./routes/AttributeMissing.svelte";
+    import RateLimited from "./routes/RateLimited.svelte";
 
     export let url = "";
 
@@ -178,6 +179,7 @@
                 <Route path="/phone-confirmation" component={PhoneConfirmation}/>
                 <Route path="/congrats" component={Congrats}/>
                 <Route path="/remember" component={RememberMe}/>
+                <Route path="/rate-limited" component={RateLimited}/>
                 <Route path="/usepassword/:id" let:params>
                     <UsePassword id="{params.id}"/>
                 </Route>
