@@ -74,7 +74,7 @@ public class MailBox {
     }
 
     public void sendOneTimeLoginCode(User user, String code, String requesterId) {
-        String title = this.getTitle("one_time_login_code", user) + user.getOneTimeLoginCode().getCode();
+        String title = this.getTitle("one_time_login_code", user) + code;
         Map<String, Object> variables = variables(user, title);
         variables.put("destination", requesterId);
         variables.put("code", code);
@@ -82,7 +82,7 @@ public class MailBox {
     }
 
     public void sendOneTimeLoginCodeNewUser(User user, String code, String requesterId) {
-        String title = this.getTitle("one_time_login_code_new_user", user) + user.getOneTimeLoginCode().getCode();
+        String title = this.getTitle("one_time_login_code_new_user", user) + code;
         Map<String, Object> variables = variables(user, title);
         variables.put("destination", requesterId);
         variables.put("code", code);

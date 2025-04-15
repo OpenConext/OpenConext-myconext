@@ -185,18 +185,18 @@ public abstract class AbstractIntegrationTest implements HasUserRepository {
         return samlAuthnRequestResponseWithLoa(cookie, relayState, "");
     }
 
-    protected ClientAuthenticationResponse magicLinkRequest(User user, HttpMethod method) throws IOException {
+    protected ClientAuthenticationResponse oneTimeLoginCodeRequest(User user, HttpMethod method) throws IOException {
         String authenticationRequestId = samlAuthnRequest();
-        return magicLinkRequest(new ClientAuthenticationRequest(authenticationRequestId, user, StringUtils.hasText(user.getPassword())), method);
+        return oneTimeLoginCodeRequest(new ClientAuthenticationRequest(authenticationRequestId, user, StringUtils.hasText(user.getPassword())), method);
     }
 
-    protected ClientAuthenticationResponse magicLinkRequest(ClientAuthenticationRequest linkRequest, HttpMethod method) {
+    protected ClientAuthenticationResponse oneTimeLoginCodeRequest(ClientAuthenticationRequest linkRequest, HttpMethod method) {
         RequestSpecification requestSpecification = given()
                 .when()
                 .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                 .body(linkRequest);
 
-        String path = "/myconext/api/idp/magic_link_request";
+        String path = "/myconext/api/idp/generate_code_request";
         Response response = method.equals(HttpMethod.POST) ? requestSpecification.post(path) : requestSpecification.put(path);
         return new ClientAuthenticationResponse(linkRequest.getAuthenticationRequestId(), response.then());
     }

@@ -594,7 +594,7 @@ public class TiqrControllerTest extends AbstractIntegrationTest {
         String authenticationRequestId = samlAuthnRequest();
         User user = user("jdoe@example.com");
         ClientAuthenticationRequest magicLinkRequest = new ClientAuthenticationRequest(authenticationRequestId, user, false);
-        magicLinkRequest(magicLinkRequest, HttpMethod.PUT);
+        oneTimeLoginCodeRequest(magicLinkRequest, HttpMethod.PUT);
 
         SamlAuthenticationRequest samlAuthenticationRequest = authenticationRequestRepository.findById(authenticationRequestId).get();
         Map<String, String> body = given()

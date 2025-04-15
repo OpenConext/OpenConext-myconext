@@ -40,7 +40,7 @@ public class UserControllerSSOMfaTest extends AbstractIntegrationTest {
         String authnContext = readFile("request_authn_context_mfa.xml");
         Response response = samlAuthnRequestResponseWithLoa(null, "relay", authnContext);
         String authenticationRequestId = extractAuthenticationRequestIdFromAuthnResponse(response);
-        ClientAuthenticationResponse magicLinkResponse = magicLinkRequest(new ClientAuthenticationRequest(authenticationRequestId, user, false), HttpMethod.PUT);
+        ClientAuthenticationResponse magicLinkResponse = oneTimeLoginCodeRequest(new ClientAuthenticationRequest(authenticationRequestId, user, false), HttpMethod.PUT);
         SamlAuthenticationRequest samlAuthenticationRequest = authenticationRequestRepository.findById(magicLinkResponse.authenticationRequestId).get();
         samlAuthenticationRequest.setTiqrFlow(true);
         authenticationRequestRepository.save(samlAuthenticationRequest);
@@ -68,7 +68,7 @@ public class UserControllerSSOMfaTest extends AbstractIntegrationTest {
         Response response = samlAuthnRequestResponseWithLoa(null, "relay", authnContext);
         String authenticationRequestId = extractAuthenticationRequestIdFromAuthnResponse(response);
 
-        ClientAuthenticationResponse magicLinkResponse = magicLinkRequest(new ClientAuthenticationRequest(authenticationRequestId, user, false), HttpMethod.PUT);
+        ClientAuthenticationResponse magicLinkResponse = oneTimeLoginCodeRequest(new ClientAuthenticationRequest(authenticationRequestId, user, false), HttpMethod.PUT);
         SamlAuthenticationRequest samlAuthenticationRequest = authenticationRequestRepository.findById(magicLinkResponse.authenticationRequestId).get();
         samlAuthenticationRequest.setTiqrFlow(true);
         authenticationRequestRepository.save(samlAuthenticationRequest);

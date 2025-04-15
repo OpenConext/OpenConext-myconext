@@ -790,7 +790,7 @@ public class AccountLinkerControllerTest extends AbstractIntegrationTest {
 
     @Test
     public void idpVerifyIDFlow() throws IOException {
-        ClientAuthenticationResponse magicLinkResponse = magicLinkRequest(user("jdoe@example.com"), HttpMethod.PUT);
+        ClientAuthenticationResponse magicLinkResponse = oneTimeLoginCodeRequest(user("jdoe@example.com"), HttpMethod.PUT);
 
         String authorizationURL = given().redirects().follow(false)
                 .when()
@@ -843,7 +843,7 @@ public class AccountLinkerControllerTest extends AbstractIntegrationTest {
 
     @Test
     public void idpVerifyIDErrorFlow() throws IOException {
-        ClientAuthenticationResponse magicLinkResponse = magicLinkRequest(user("jdoe@example.com"), HttpMethod.PUT);
+        ClientAuthenticationResponse magicLinkResponse = oneTimeLoginCodeRequest(user("jdoe@example.com"), HttpMethod.PUT);
 
         String authorizationURL = given().redirects().follow(false)
                 .when()

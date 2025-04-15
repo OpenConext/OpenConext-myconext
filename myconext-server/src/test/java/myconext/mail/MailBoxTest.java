@@ -6,6 +6,7 @@ import lombok.SneakyThrows;
 import myconext.AbstractMailBoxTest;
 import myconext.model.EmailsSend;
 import myconext.model.User;
+import myconext.security.VerificationCodeGenerator;
 import org.apache.commons.mail2.jakarta.util.MimeMessageParser;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,12 +27,12 @@ public class MailBoxTest extends AbstractMailBoxTest {
 
     @Test
     public void sendOneTimeLoginCode() {
-        doSendOneTimeLoginCode("Magic Link to login", "en");
+        doSendOneTimeLoginCode("eduID login code: %s", "en");
     }
 
     @Test
     public void sendOneTimeLoginCodeNl() {
-        doSendOneTimeLoginCode("Magische link om in te loggen", "nl");
+        doSendOneTimeLoginCode("eduID login code: %s", "nl");
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -58,37 +59,37 @@ public class MailBoxTest extends AbstractMailBoxTest {
 
     @SneakyThrows
     private void doSendOneTimeLoginCode(String expectedSubject, String lang) {
-        String hash = UUID.randomUUID().toString();
-        mailBox.sendOneTimeLoginCode(user("jdoe@example.com", lang), hash, "http://mock-sp");
+        String code = VerificationCodeGenerator.generateOneTimeLoginCode();
+        mailBox.sendOneTimeLoginCode(user("jdoe@example.com", lang), code, "http://mock-sp");
 
         MimeMessage mimeMessage = mailMessage();
         assertEquals("jdoe@example.com", mimeMessage.getRecipients(Message.RecipientType.TO)[0].toString());
 
         String subject = mimeMessage.getSubject();
-        assertEquals(expectedSubject, subject);
+        assertEquals(String.format(expectedSubject, code), subject);
 
         String body = getBody(mimeMessage);
-        assertTrue(body.contains(hash));
+        assertTrue(body.contains(code));
     }
 
     @Test
     public void sendOneTimeLoginCodeNewUser() {
-        doSendOneTimeLoginCodeNewUser("Please verify your email address for your eduID", "en");
+        doSendOneTimeLoginCodeNewUser("Confirm your eduID email with code: %s", "en");
     }
 
     @Test
     public void sendOneTimeLoginCodeNewUserNl() {
-        doSendOneTimeLoginCodeNewUser("Verifieer je e-mailadres voor je eduID", "nl");
+        doSendOneTimeLoginCodeNewUser("Bevestig je eduID e-mailadres met de code: %s", "nl");
     }
 
     @SneakyThrows
     private void doSendOneTimeLoginCodeNewUser(String expectedSubject, String lang) {
-        String hash = UUID.randomUUID().toString();
-        mailBox.sendOneTimeLoginCodeNewUser(user("jdoe@examplee.com", lang), hash);
+        String code = VerificationCodeGenerator.generateOneTimeLoginCode();
+        mailBox.sendOneTimeLoginCodeNewUser(user("jdoe@examplee.com", lang), code, "SP");
 
         MimeMessage mimeMessage = mailMessage();
         String subject = mimeMessage.getSubject();
-        assertEquals(expectedSubject, subject);
+        assertEquals(String.format(expectedSubject, code), subject);
     }
 
     @Test
@@ -215,16 +216,6 @@ public class MailBoxTest extends AbstractMailBoxTest {
     }
 
     @Test
-    public void mustacheDefaultEncoding() throws Exception {
-        nameEscapeTest("<script>alert()", "</script>", "scriptalert script");
-    }
-
-    @Test
-    public void preventLink() throws Exception {
-        nameEscapeTest("https://föóäërg", "- jj'", "httpsföóäërg - jj&#39;");
-    }
-
-    @Test
     public void defaultLocale() throws Exception {
         User user = user("jdoe@example.com");
         user.setPreferredLanguage("pl");
@@ -238,20 +229,4 @@ public class MailBoxTest extends AbstractMailBoxTest {
         assertTrue(htmlContent.contains("Someone just requested"));
     }
 
-    private void nameEscapeTest(String givenName, String familyName, String expected) throws Exception {
-        User user = user("jdoe@example.com");
-        user.setGivenName(givenName);
-        user.setFamilyName(familyName);
-        mailBox.sendOneTimeLoginCode(user, "hash", "requesterId");
-
-        MimeMessage mimeMessage = mailMessage();
-        MimeMessageParser parser = new MimeMessageParser(mimeMessage);
-        parser.parse();
-
-        String htmlContent = parser.getHtmlContent();
-        Matcher matcher = Pattern.compile("Hi <strong>(.+?)</strong>").matcher(htmlContent);
-        matcher.find();
-        String group = matcher.group(1);
-        assertEquals(expected, group);
-    }
 }

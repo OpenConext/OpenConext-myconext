@@ -52,7 +52,7 @@ public class UserControllerTest extends AbstractIntegrationTest {
 
     @Test
     public void existingUser() throws IOException {
-        ClientAuthenticationResponse magicLinkResponse = magicLinkRequest(user("jdoe@example.com"), HttpMethod.PUT);
+        ClientAuthenticationResponse magicLinkResponse = oneTimeLoginCodeRequest(user("jdoe@example.com"), HttpMethod.PUT);
 
         when()
                 .get("/myconext/api/idp/service/name/" + magicLinkResponse.authenticationRequestId)
@@ -66,7 +66,7 @@ public class UserControllerTest extends AbstractIntegrationTest {
         assertTrue(samlResponse.contains("urn:oasis:names:tc:SAML:attribute:subject-id"));
 
         when()
-                .get("/myconext/api/idp/resend_magic_link_request?id=" + magicLinkResponse.authenticationRequestId)
+                .get("/myconext/api/idp/resend_code_request?id=" + magicLinkResponse.authenticationRequestId)
                 .then()
                 .statusCode(HttpStatus.OK.value());
     }
@@ -81,14 +81,14 @@ public class UserControllerTest extends AbstractIntegrationTest {
 
     @Test
     public void newUserNotFound() throws IOException {
-        magicLinkRequest(user("new@example.com"), HttpMethod.PUT)
+        oneTimeLoginCodeRequest(user("new@example.com"), HttpMethod.PUT)
                 .response
                 .statusCode(HttpStatus.NOT_FOUND.value());
     }
 
     @Test
     public void duplicateEmailNewUser() throws IOException {
-        magicLinkRequest(user("jdoe@example.com"), HttpMethod.POST)
+        oneTimeLoginCodeRequest(user("jdoe@example.com"), HttpMethod.POST)
                 .response
                 .statusCode(HttpStatus.CONFLICT.value());
     }
@@ -97,7 +97,7 @@ public class UserControllerTest extends AbstractIntegrationTest {
     public void newUserProvisioned() throws IOException {
         User user = user("new@example.com", "Mary", "Doe", "en");
 
-        ClientAuthenticationResponse magicLinkResponse = magicLinkRequest(user, HttpMethod.POST);
+        ClientAuthenticationResponse magicLinkResponse = oneTimeLoginCodeRequest(user, HttpMethod.POST);
         User userFromDB = userRepository.findUserByEmailAndRateLimitedFalse(user.getEmail()).get();
         assertEquals(0L, ReflectionTestUtils.getField(userFromDB, "lastSeenAppNudge"));
         assertEquals(user.getGivenName(), userFromDB.getGivenName());
@@ -109,7 +109,7 @@ public class UserControllerTest extends AbstractIntegrationTest {
         assertEquals(0L, ReflectionTestUtils.getField(userFromAfter, "lastSeenAppNudge"));
 
         when()
-                .get("/myconext/api/idp/resend_magic_link_request?id=" + magicLinkResponse.authenticationRequestId)
+                .get("/myconext/api/idp/resend_code_request?id=" + magicLinkResponse.authenticationRequestId)
                 .then()
                 .statusCode(HttpStatus.OK.value());
 
@@ -123,7 +123,7 @@ public class UserControllerTest extends AbstractIntegrationTest {
         ClientAuthenticationRequest linkRequest = new ClientAuthenticationRequest(authenticationRequestId,
                 user("new@example.com", "Mary", "Doe", "en"), false);
 
-        magicLinkRequest(linkRequest, HttpMethod.POST)
+        oneTimeLoginCodeRequest(linkRequest, HttpMethod.POST)
                 .response
                 .statusCode(HttpStatus.BAD_REQUEST.value());
     }
@@ -140,7 +140,7 @@ public class UserControllerTest extends AbstractIntegrationTest {
         Response response = samlAuthnRequestResponseWithLoa(null, "relay", authnContext);
         String authenticationRequestId = extractAuthenticationRequestIdFromAuthnResponse(response);
 
-        ClientAuthenticationResponse magicLinkResponse = magicLinkRequest(new ClientAuthenticationRequest(authenticationRequestId, user, false), HttpMethod.PUT);
+        ClientAuthenticationResponse magicLinkResponse = oneTimeLoginCodeRequest(new ClientAuthenticationRequest(authenticationRequestId, user, false), HttpMethod.PUT);
         String samlResponse = samlResponse(magicLinkResponse);
 
         assertTrue(samlResponse.contains(ACR.LINKED_INSTITUTION));
@@ -154,7 +154,7 @@ public class UserControllerTest extends AbstractIntegrationTest {
         Response response = samlAuthnRequestResponseWithLoa(null, "relay", authnContext);
         String authenticationRequestId = extractAuthenticationRequestIdFromAuthnResponse(response);
 
-        ClientAuthenticationResponse magicLinkResponse = magicLinkRequest(new ClientAuthenticationRequest(authenticationRequestId, user, false), HttpMethod.PUT);
+        ClientAuthenticationResponse magicLinkResponse = oneTimeLoginCodeRequest(new ClientAuthenticationRequest(authenticationRequestId, user, false), HttpMethod.PUT);
         String samlResponse = samlResponse(magicLinkResponse);
 
         assertTrue(samlResponse.contains(ACR.VALIDATE_NAMES));
@@ -179,7 +179,7 @@ public class UserControllerTest extends AbstractIntegrationTest {
         samlAuthenticationRequest.setSteppedUp(StepUpStatus.FINISHED_STEP_UP);
         authenticationRequestRepository.save(samlAuthenticationRequest);
 
-        ClientAuthenticationResponse magicLinkResponse = magicLinkRequest(new ClientAuthenticationRequest(authenticationRequestId, user, false), HttpMethod.PUT);
+        ClientAuthenticationResponse magicLinkResponse = oneTimeLoginCodeRequest(new ClientAuthenticationRequest(authenticationRequestId, user, false), HttpMethod.PUT);
         String samlResponse = this.samlResponse(magicLinkResponse);
 
         assertTrue(samlResponse.contains("Your institution has not provided this affiliation"));
@@ -206,7 +206,7 @@ public class UserControllerTest extends AbstractIntegrationTest {
         samlAuthenticationRequest.setSteppedUp(StepUpStatus.FINISHED_STEP_UP);
         authenticationRequestRepository.save(samlAuthenticationRequest);
 
-        ClientAuthenticationResponse magicLinkResponse = magicLinkRequest(new ClientAuthenticationRequest(authenticationRequestId, user, false), HttpMethod.PUT);
+        ClientAuthenticationResponse magicLinkResponse = oneTimeLoginCodeRequest(new ClientAuthenticationRequest(authenticationRequestId, user, false), HttpMethod.PUT);
         String samlResponse = this.samlResponse(magicLinkResponse);
 
         assertTrue(samlResponse.contains("Your institution has not provided those attributes"));
@@ -225,7 +225,7 @@ public class UserControllerTest extends AbstractIntegrationTest {
         authenticationRequestRepository.save(samlAuthenticationRequest);
 
         User user = userRepository.findOneUserByEmail("jdoe@example.com");
-        ClientAuthenticationResponse magicLinkResponse = magicLinkRequest(new ClientAuthenticationRequest(authenticationRequestId, user, false), HttpMethod.PUT);
+        ClientAuthenticationResponse magicLinkResponse = oneTimeLoginCodeRequest(new ClientAuthenticationRequest(authenticationRequestId, user, false), HttpMethod.PUT);
         String samlResponse = this.samlResponse(magicLinkResponse);
 
         assertTrue(samlResponse.contains("Your identity is not verified by an external trusted party"));
@@ -266,7 +266,7 @@ public class UserControllerTest extends AbstractIntegrationTest {
         Response response = samlAuthnRequestResponseWithLoa(null, "relay", authnContext);
         String authenticationRequestId = extractAuthenticationRequestIdFromAuthnResponse(response);
 
-        ClientAuthenticationResponse magicLinkResponse = magicLinkRequest(new ClientAuthenticationRequest(authenticationRequestId, user, false), HttpMethod.PUT);
+        ClientAuthenticationResponse magicLinkResponse = oneTimeLoginCodeRequest(new ClientAuthenticationRequest(authenticationRequestId, user, false), HttpMethod.PUT);
         String samlResponse = samlResponse(magicLinkResponse);
 
         assertTrue(samlResponse.contains(ACR.VALIDATE_NAMES));
@@ -281,7 +281,7 @@ public class UserControllerTest extends AbstractIntegrationTest {
         Response response = samlAuthnRequestResponseWithLoa(null, "relay", authnContext);
 
         String authenticationRequestId = extractAuthenticationRequestIdFromAuthnResponse(response);
-        ClientAuthenticationResponse magicLinkResponse = magicLinkRequest(new ClientAuthenticationRequest(authenticationRequestId, user, false), HttpMethod.PUT);
+        ClientAuthenticationResponse magicLinkResponse = oneTimeLoginCodeRequest(new ClientAuthenticationRequest(authenticationRequestId, user, false), HttpMethod.PUT);
         String samlResponse = this.samlResponse(magicLinkResponse);
 
         assertTrue(samlResponse.contains("The specified authentication context requirements"));
@@ -323,7 +323,7 @@ public class UserControllerTest extends AbstractIntegrationTest {
     public void relayState() throws IOException {
         User user = user("steve@example.com", "Steve", "Doe", "en");
         String authenticationRequestId = samlAuthnRequest("Nice");
-        ClientAuthenticationResponse magicLinkResponse = magicLinkRequest(new ClientAuthenticationRequest(authenticationRequestId, user, false), HttpMethod.POST);
+        ClientAuthenticationResponse magicLinkResponse = oneTimeLoginCodeRequest(new ClientAuthenticationRequest(authenticationRequestId, user, false), HttpMethod.POST);
         Response response = magicResponse(magicLinkResponse);
         assertTrue(IOUtils.toString(response.asInputStream(), Charset.defaultCharset()).contains("Nice"));
     }
@@ -644,7 +644,7 @@ public class UserControllerTest extends AbstractIntegrationTest {
                 .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                 .body(magicLinkRequest)
                 .filter(cookieFilter)
-                .put("/myconext/api/idp/magic_link_request");
+                .put("/myconext/api/idp/generate_code_request");
 
         String url = (String) response.body().as(Map.class).get("url");
         url = url.replace("8081", this.port + "");
@@ -681,14 +681,14 @@ public class UserControllerTest extends AbstractIntegrationTest {
                 .when()
                 .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                 .body(magicLinkRequest)
-                .put("/myconext/api/idp/magic_link_request")
+                .put("/myconext/api/idp/generate_code_request")
                 .then()
                 .statusCode(HttpStatus.FORBIDDEN.value());
     }
 
     @Test
     public void magicLinkCanNotBeReused() throws IOException {
-        ClientAuthenticationResponse magicLinkResponse = magicLinkRequest(user("jdoe@example.com"), HttpMethod.PUT);
+        ClientAuthenticationResponse magicLinkResponse = oneTimeLoginCodeRequest(user("jdoe@example.com"), HttpMethod.PUT);
         SamlAuthenticationRequest samlAuthenticationRequest = authenticationRequestRepository.findById(magicLinkResponse.authenticationRequestId).get();
         String samlResponse = samlResponse(magicLinkResponse);
         assertTrue(samlResponse.contains("jdoe@example.com"));
@@ -701,99 +701,6 @@ public class UserControllerTest extends AbstractIntegrationTest {
                 .then()
                 .statusCode(HttpStatus.FOUND.value())
                 .header("Location", "http://localhost:3000/expired");
-    }
-
-    @Test
-    public void magicLinkRequiresSameBrowser() throws IOException {
-        SamlAuthenticationRequest samlAuthenticationRequest = doInternalAuthenticationRequiredSameBrowser();
-        Response response = given().redirects().follow(false)
-                .when()
-                .queryParam("id", samlAuthenticationRequest.getId())
-                .queryParam("verificationCode", samlAuthenticationRequest.getVerificationCode())
-                .get("/saml/guest-idp/continue");
-        String saml = samlAuthnResponse(response, Optional.empty());
-
-        assertTrue(saml.contains("jdoe@example.com"));
-    }
-
-    @Test
-    public void magicLinkRequiresSameBrowseWrongCode() throws IOException {
-        SamlAuthenticationRequest samlAuthenticationRequest = doInternalAuthenticationRequiredSameBrowser();
-        given().redirects().follow(false)
-                .when()
-                .queryParam("id", samlAuthenticationRequest.getId())
-                .queryParam("verificationCode", "NOP-123")
-                .queryParam("currentUrl", "https://expected")
-                .get("/saml/guest-idp/continue")
-                .then()
-                .statusCode(302)
-                .header("Location", equalTo("https://expected&mismatch=true"));
-    }
-
-    @Test
-    public void magicLinkRequiresSameBrowseWrongCodeMaxRetry() throws IOException {
-        SamlAuthenticationRequest samlAuthenticationRequest = doInternalAuthenticationRequiredSameBrowser();
-        samlAuthenticationRequest.setRetryVerificationCode(3);
-        authenticationRequestRepository.save(samlAuthenticationRequest);
-
-        given().redirects().follow(false)
-                .when()
-                .queryParam("id", samlAuthenticationRequest.getId())
-                .queryParam("verificationCode", "NOP-123")
-                .queryParam("currentUrl", "https://expected")
-                .get("/saml/guest-idp/continue")
-                .then()
-                .statusCode(302)
-                .header("Location", equalTo("http://localhost:3000/max-attempts"));
-    }
-
-    @Test
-    public void magicLinkRequiresSameBrowseNotLoggedIn() throws IOException {
-        SamlAuthenticationRequest samlAuthenticationRequest = doInternalAuthenticationRequiredSameBrowser();
-        samlAuthenticationRequest.setLoginStatus(LoginStatus.NOT_LOGGED_IN);
-        authenticationRequestRepository.save(samlAuthenticationRequest);
-        given().redirects().follow(false)
-                .when()
-                .queryParam("id", samlAuthenticationRequest.getId())
-                .queryParam("verificationCode", samlAuthenticationRequest.getVerificationCode())
-                .get("/saml/guest-idp/continue")
-                .then()
-                .statusCode(302)
-                .header("Location", equalTo("http://localhost:3000/expired"));
-    }
-
-    @Test
-    public void magicLinkRequiresSameBrowseExpiredRequest() throws IOException {
-        SamlAuthenticationRequest samlAuthenticationRequest = doInternalAuthenticationRequiredSameBrowser();
-        authenticationRequestRepository.delete(samlAuthenticationRequest);
-        given().redirects().follow(false)
-                .when()
-                .queryParam("id", samlAuthenticationRequest.getId())
-                .get("/saml/guest-idp/continue")
-                .then()
-                .statusCode(302)
-                .header("Location", equalTo("http://localhost:3000/expired"));
-    }
-
-    private SamlAuthenticationRequest doInternalAuthenticationRequiredSameBrowser() throws IOException {
-        ClientAuthenticationResponse magicLinkResponse = magicLinkRequest(user("jdoe@example.com"), HttpMethod.PUT);
-        SamlAuthenticationRequest samlAuthenticationRequest = authenticationRequestRepository.findById(magicLinkResponse.authenticationRequestId).get();
-        given().redirects().follow(false)
-                .when()
-                .queryParam("h", samlAuthenticationRequest.getHash())
-                .get("/saml/guest-idp/magic")
-                .then()
-                .statusCode(HttpStatus.FOUND.value())
-                .header("Location", "http://localhost:3000/success");
-        given()
-                .when()
-                .queryParam("id", samlAuthenticationRequest.getId())
-                .get("/myconext/api/idp/security/success")
-                .then()
-                .body(equalTo("" + LoginStatus.LOGGED_IN_DIFFERENT_DEVICE.ordinal()));
-
-        samlAuthenticationRequest = authenticationRequestRepository.findById(magicLinkResponse.authenticationRequestId).get();
-        return samlAuthenticationRequest;
     }
 
     @Test
@@ -823,7 +730,7 @@ public class UserControllerTest extends AbstractIntegrationTest {
 
         String authenticationRequestId = location.substring(location.lastIndexOf("/") + 1, location.lastIndexOf("?"));
         User user = user("jdoe@example.com");
-        ClientAuthenticationResponse magicLinkResponse = magicLinkRequest(new ClientAuthenticationRequest(authenticationRequestId, user, StringUtils.hasText(user.getPassword())), HttpMethod.PUT);
+        ClientAuthenticationResponse magicLinkResponse = oneTimeLoginCodeRequest(new ClientAuthenticationRequest(authenticationRequestId, user, StringUtils.hasText(user.getPassword())), HttpMethod.PUT);
 
         SamlAuthenticationRequest samlAuthenticationRequest = authenticationRequestRepository.findById(magicLinkResponse.authenticationRequestId).get();
         response = given().redirects().follow(false)
@@ -857,7 +764,7 @@ public class UserControllerTest extends AbstractIntegrationTest {
 
         String authenticationRequestId = location.substring(location.lastIndexOf("/") + 1, location.lastIndexOf("?"));
         User user = user("jdoe@example.com");
-        ClientAuthenticationResponse magicLinkResponse = magicLinkRequest(new ClientAuthenticationRequest(authenticationRequestId, user, StringUtils.hasText(user.getPassword())), HttpMethod.PUT);
+        ClientAuthenticationResponse magicLinkResponse = oneTimeLoginCodeRequest(new ClientAuthenticationRequest(authenticationRequestId, user, StringUtils.hasText(user.getPassword())), HttpMethod.PUT);
 
         SamlAuthenticationRequest samlAuthenticationRequest = authenticationRequestRepository.findById(magicLinkResponse.authenticationRequestId).get();
         response = given().redirects().follow(false)
@@ -877,7 +784,7 @@ public class UserControllerTest extends AbstractIntegrationTest {
         String authnContext = readFile("request_authn_context_mfa.xml");
         Response response = samlAuthnRequestResponseWithLoa(null, "relay", authnContext);
         String authenticationRequestId = extractAuthenticationRequestIdFromAuthnResponse(response);
-        ClientAuthenticationResponse magicLinkResponse = magicLinkRequest(new ClientAuthenticationRequest(authenticationRequestId, user, false), HttpMethod.PUT);
+        ClientAuthenticationResponse magicLinkResponse = oneTimeLoginCodeRequest(new ClientAuthenticationRequest(authenticationRequestId, user, false), HttpMethod.PUT);
         SamlAuthenticationRequest samlAuthenticationRequest = authenticationRequestRepository.findById(magicLinkResponse.authenticationRequestId).get();
 
         Response magicResponse = given().redirects().follow(false)
@@ -903,7 +810,7 @@ public class UserControllerTest extends AbstractIntegrationTest {
         Response response = samlAuthnRequestResponseWithLoa(null, "relay", authnContext);
         String authenticationRequestId = extractAuthenticationRequestIdFromAuthnResponse(response);
 
-        ClientAuthenticationResponse magicLinkResponse = magicLinkRequest(new ClientAuthenticationRequest(authenticationRequestId, user, false), HttpMethod.PUT);
+        ClientAuthenticationResponse magicLinkResponse = oneTimeLoginCodeRequest(new ClientAuthenticationRequest(authenticationRequestId, user, false), HttpMethod.PUT);
         SamlAuthenticationRequest samlAuthenticationRequest = authenticationRequestRepository.findById(magicLinkResponse.authenticationRequestId).get();
         samlAuthenticationRequest.setTiqrFlow(true);
         authenticationRequestRepository.save(samlAuthenticationRequest);
@@ -1161,7 +1068,7 @@ public class UserControllerTest extends AbstractIntegrationTest {
         user.setLinkedAccounts(linkedAccounts);
         userRepository.save(user);
 
-        magicLinkRequest(new ClientAuthenticationRequest(authenticationRequestId, user, false), HttpMethod.PUT);
+        oneTimeLoginCodeRequest(new ClientAuthenticationRequest(authenticationRequestId, user, false), HttpMethod.PUT);
 
         samlAuthenticationRequest = authenticationRequestRepository.findById(authenticationRequestId).get();
         response = given().redirects().follow(false)
@@ -1199,7 +1106,7 @@ public class UserControllerTest extends AbstractIntegrationTest {
         authenticationRequestRepository.save(samlAuthenticationRequest);
 
         User user = userRepository.findOneUserByEmail("jdoe@example.com");
-        magicLinkRequest(new ClientAuthenticationRequest(authenticationRequestId, user, false), HttpMethod.PUT);
+        oneTimeLoginCodeRequest(new ClientAuthenticationRequest(authenticationRequestId, user, false), HttpMethod.PUT);
 
         samlAuthenticationRequest = authenticationRequestRepository.findById(authenticationRequestId).get();
         response = given().redirects().follow(false)

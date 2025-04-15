@@ -39,7 +39,7 @@ public class UserControllerRememberMeTest extends AbstractIntegrationTest {
     public void rememberMe() throws IOException {
         String authenticationRequestId = samlAuthnRequest();
         User user = user("steve@example.com", "Steve", "Doe", "en");
-        ClientAuthenticationResponse magicLinkResponse = magicLinkRequest(new ClientAuthenticationRequest(authenticationRequestId, user, false), HttpMethod.POST);
+        ClientAuthenticationResponse magicLinkResponse = oneTimeLoginCodeRequest(new ClientAuthenticationRequest(authenticationRequestId, user, false), HttpMethod.POST);
         Response response = magicResponse(magicLinkResponse);
 
         String cookie = response.cookie(GUEST_IDP_REMEMBER_ME_COOKIE_NAME);
@@ -61,7 +61,7 @@ public class UserControllerRememberMeTest extends AbstractIntegrationTest {
     public void rememberMeButAccountLinkingRequired() throws IOException {
         String authenticationRequestId = samlAuthnRequest();
         User user = user("steve@example.com", "Steve", "Doe", "en");
-        ClientAuthenticationResponse magicLinkResponse = magicLinkRequest(new ClientAuthenticationRequest(authenticationRequestId, user, false), HttpMethod.POST);
+        ClientAuthenticationResponse magicLinkResponse = oneTimeLoginCodeRequest(new ClientAuthenticationRequest(authenticationRequestId, user, false), HttpMethod.POST);
         Response response = magicResponse(magicLinkResponse);
 
         String cookie = response.cookie(GUEST_IDP_REMEMBER_ME_COOKIE_NAME);
@@ -75,7 +75,7 @@ public class UserControllerRememberMeTest extends AbstractIntegrationTest {
     public void rememberMeButMFARegistrationRequired() throws IOException {
         String authenticationRequestId = samlAuthnRequest();
         User user = user("steve@example.com", "Steve", "Doe", "en");
-        ClientAuthenticationResponse magicLinkResponse = magicLinkRequest(new ClientAuthenticationRequest(authenticationRequestId, user, false), HttpMethod.POST);
+        ClientAuthenticationResponse magicLinkResponse = oneTimeLoginCodeRequest(new ClientAuthenticationRequest(authenticationRequestId, user, false), HttpMethod.POST);
         Response response = magicResponse(magicLinkResponse);
 
         String cookie = response.cookie(GUEST_IDP_REMEMBER_ME_COOKIE_NAME);
@@ -93,7 +93,7 @@ public class UserControllerRememberMeTest extends AbstractIntegrationTest {
         user.setNewUser(false);
         userRepository.save(user);
 
-        ClientAuthenticationResponse magicLinkResponse = magicLinkRequest(new ClientAuthenticationRequest(authenticationRequestId, user, false), HttpMethod.PUT);
+        ClientAuthenticationResponse magicLinkResponse = oneTimeLoginCodeRequest(new ClientAuthenticationRequest(authenticationRequestId, user, false), HttpMethod.PUT);
         Response response = magicResponse(magicLinkResponse);
 
         String cookie = response.cookie(GUEST_IDP_REMEMBER_ME_COOKIE_NAME);
