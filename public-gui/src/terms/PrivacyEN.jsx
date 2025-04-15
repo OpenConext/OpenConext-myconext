@@ -192,6 +192,7 @@ export const PrivacyEN = () => {
 					on the instructions and instructions of SURF:
                     <ul>
                         <li>Hosting and management provider</li>
+						<li>Identitybroker for iDIN and eIDAS</li>
                     </ul>
                 </p>
             </div>
