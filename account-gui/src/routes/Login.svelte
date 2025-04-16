@@ -62,7 +62,7 @@
                     sameSite: "Lax"
                 });
                 if (magicLink) {
-                    navigate(`/${loginPreferences.CODE.toLowerCase()}/${id}?magicLink=true`);
+                    navigate(`/${loginPreferences.CODE.toLowerCase()}/${id}`);
                 } else if (mfaRequired && res.includes(loginPreferences.APP)) {
                     navigate(`/${loginPreferences.APP.toLowerCase()}/${id}?mfa=true`);
                 }
