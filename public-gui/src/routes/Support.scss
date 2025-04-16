@@ -37,7 +37,7 @@
     }
 
     p.info {
-        margin-top: 10px;
+        margin-top: 20px;
 
         &.cursive {
             font-style: italic;
@@ -51,6 +51,7 @@
 
     ul {
         list-style: inherit;
+        margin-top: 20px;
 
         li {
             margin-left: 16px;

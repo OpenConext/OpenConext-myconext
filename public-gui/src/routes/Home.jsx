@@ -40,8 +40,9 @@ export const Home = () => {
                         <ul>
                             <li>{I18n.t("home.info1")}</li>
                             <li>{I18n.t("home.info2")}</li>
-                            <li><Link to={"/about"}>{I18n.t("home.info3")}</Link></li>
+                            <li>{I18n.t("home.info3")}</li>
                         </ul>
+                        <p><Link to={"/about"}>{I18n.t("home.readMore")}</Link></p>
                     </div>
                 </div>
                 <div className="card bottom row">
@@ -50,7 +51,7 @@ export const Home = () => {
                         <h2 className="title">
                             {I18n.t("home.eduIdApp")}
                         </h2>
-                        <p>{I18n.t("home.appInfo")}</p>
+                        <p dangerouslySetInnerHTML={{__html: I18n.t("home.appInfo")}}/>
                         <div className="store-container">
                             <img src={qrCode} className="qrCode" alt="qrCode"/>
                             <div className="inner-store-container">

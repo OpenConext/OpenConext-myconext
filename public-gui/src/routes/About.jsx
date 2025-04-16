@@ -1,7 +1,6 @@
 import about from "../assets/about.svg";
 import I18n from "../locale/I18n.js";
 import "./About.scss";
-import {CollapseField} from "../components/CollapseField.jsx";
 import {useAppStore} from "../stores/AppStore.js";
 import {Background} from "../components/Background.jsx";
 
@@ -28,7 +27,10 @@ export const About = () => {
                         {I18n.t("about.why")}
                     </h5>
                     <p className="info">
-                        {I18n.t("about.whyInfo")}
+                        {I18n.t("about.whyInfo1")}
+                    </p>
+                    <p className="info">
+                        {I18n.t("about.whyInfo2")}
                     </p>
                 </div>
                 <div className="card bottom">
@@ -44,25 +46,40 @@ export const About = () => {
                     </h5>
                     <p className="info"
                        dangerouslySetInnerHTML={{__html: I18n.t("about.loginsInfo")}}/>
-                    <CollapseField title={I18n.t("about.magicLink")}
-                                   info={I18n.t("about.magicLinkInfo")}/>
-                    <CollapseField title={I18n.t("about.password")}
-                                   info={I18n.t("about.passwordInfo")}/>
-                    <CollapseField title={I18n.t("about.passKey")}
-                                   info={I18n.t("about.passKeyInfo")}/>
+                    <ul>
+                        <li>
+                            <span className="header">{I18n.t("about.institution")}</span><br/>
+                            <span className="indented">{I18n.t("about.institutionInfo")}</span>
+                        </li>
+                        <li>
+                            <span className="header">{I18n.t("about.bank")}</span><br/>
+                            <span className="indented">{I18n.t("about.bankInfo")}</span>
+                        </li>
+                        <li>
+                            <span className="header">{I18n.t("about.european")}</span><br/>
+                            <span className="indented">{I18n.t("about.europeanInfo")}</span>
+                        </li>
+                    </ul>
                 </div>
                 <div className="card bottom">
                     <h5>
                         {I18n.t("about.identity")}
                     </h5>
                     <p className="info"
-                       dangerouslySetInnerHTML={{__html: I18n.t("about.identityInfo")}}/>
-                    <CollapseField title={I18n.t("about.institution")}
-                                   info={I18n.t("about.institutionInfo")}/>
-                    <CollapseField title={I18n.t("about.bank")}
-                                   info={I18n.t("about.bankInfo")}/>
-                    <CollapseField title={I18n.t("about.european")}
-                                   info={I18n.t("about.europeanInfo")}/>
+                       dangerouslySetInnerHTML={{__html: I18n.t("about.identityInfo1")}}/>
+                    <p className="info"
+                       dangerouslySetInnerHTML={{__html: I18n.t("about.identityInfo2")}}/>
+                    <ul>
+                        <li>
+                            <span className="header">{I18n.t("about.magicLink")}</span>
+                        </li>
+                        <li>
+                            <span className="header">{I18n.t("about.password")}</span>
+                        </li>
+                        <li>
+                            <span className="header">{I18n.t("about.passKey")}</span>
+                        </li>
+                    </ul>
                 </div>
                 <div className="card bottom">
                     <h5>
