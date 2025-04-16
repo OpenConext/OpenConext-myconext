@@ -58,6 +58,7 @@ import java.net.URLEncoder;
 import java.nio.charset.Charset;
 import java.security.SecureRandom;
 import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -204,8 +205,17 @@ public class UserController implements UserAuthentication {
     public List<String> knownAccount(@RequestBody Map<String, String> emailMap) {
         this.emailGuessingPreventor.potentialUserEmailGuess();
         String email = emailMap.get("email");
-        User user = userRepository.findUserByEmailAndRateLimitedFalse(email)
+        User user = userRepository.findUserByEmail(email)
                 .orElseThrow(() -> new UserNotFoundException(String.format("User with email %s not found", email)));
+        if (user.isRateLimited()) {
+            boolean minutes15ago = Instant.now().plus(15, ChronoUnit.MINUTES).isBefore(Instant.ofEpochMilli(user.getOneTimeLoginCode().getCreatedAt()));
+            if (minutes15ago) {
+                user.setRateLimited(false);
+                userRepository.save(user);
+            } else {
+                throw new RateLimitedException("User rate limited");
+            }
+        }
         return user.loginOptions();
     }
 
@@ -318,21 +328,25 @@ public class UserController implements UserAuthentication {
                 .orElseThrow(() -> new ExpiredAuthenticationException("Expired samlAuthenticationRequest: " + authenticationRequestId));
         String userId = samlAuthenticationRequest.getUserId();
         User user = userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException(userId));
-        boolean success = user.attemptOneTimeLoginVerification(verifyOneTimeLoginCode.getCode());
-        userRepository.save(user);
-        if (success) {
-            LOG.debug(String.format("Login for existing user %s in oneTimeLoginCode flow", user.getUsername()));
-            String url = this.magicLinkUrl + "?h=" + samlAuthenticationRequest.getHash();
-            return ResponseEntity.status(201).body(Map.of("url", url));
-        }
         try {
+            boolean success = user.attemptOneTimeLoginVerification(verifyOneTimeLoginCode.getCode());
+            userRepository.save(user);
             long delay = user.getOneTimeLoginCode().getDelay();
-            throw new InvalidOneTimeLoginCodeException(String.format("Invalid code entered for email %s, delay: %s, attempt: %s",
+            if (success) {
+                LOG.debug(String.format("Successful login for existing user %s in oneTimeLoginCode flow, delay: %s, attempt: %s",
+                        user.getEmail(),
+                        delay,
+                        (int) (Math.log(delay / 1000) / Math.log(2))));
+                String url = this.magicLinkUrl + "?h=" + samlAuthenticationRequest.getHash();
+                return ResponseEntity.status(201).body(Map.of("url", url));
+            }
+            throw new InvalidOneTimeLoginCodeException(String.format("Invalid oneTimeLoginCode entered for email %s, delay: %s, attempt: %s",
                     user.getEmail(),
                     delay,
                     (int) (Math.log(delay / 1000) / Math.log(2))));
         } catch (ForbiddenException e) {
             authenticationRequestRepository.delete(samlAuthenticationRequest);
+            LOG.info("Rate-limiting user " + user.getEmail());
             user.setRateLimited(true);
             userRepository.save(user);
             throw e;

@@ -18,3 +18,13 @@ export const splitListSemantically = (arr, lastSeparator) => {
     return [arr.slice(0, -1).join(", "), arr.slice(-1)[0]].join(arr.length < 2 ? "" : ` ${lastSeparator} `);
 }
 
+export const stopEvent = e => {
+    if (e !== undefined && e !== null) {
+        e.preventDefault();
+        e.stopPropagation();
+        return false;
+    }
+    return true;
+}
+
+

@@ -20,6 +20,7 @@
     let mfaRequired = false;
     let magicLink = false;
     let emailNotFound = false;
+    let rateLimited = false;
     let showSpinner = true;
     let serviceName = "";
 
@@ -71,7 +72,13 @@
                     //By contract the list is ordered from more secure to less secure
                     navigate(`/${res[0].toLowerCase()}/${id}`);
                 }
-            }).catch(() => emailNotFound = true);
+            }).catch(e => {
+            if (e.status === 409) {
+                rateLimited = true
+            } else {
+                emailNotFound = true
+            }
+        });
 
     }
 
@@ -85,6 +92,8 @@
         Cookies.remove(cookieNames.USERNAME);
         $user.knownUser = null;
         $user.email = "";
+        rateLimited = false;
+        emailNotFound = false;
     }
 
 </script>
@@ -137,16 +146,24 @@
 {/if}
 {#if $user.knownUser}
     <div class="known-user">
-        <LoginOption icon={userIcon} label={$user.knownUser} action={nextStep} index={1} preferred={true}/>
+        <LoginOption icon={userIcon}
+                     label={$user.knownUser}
+                     action={nextStep}
+                     index={1}
+                     error={rateLimited}
+                     preferred={true}/>
     </div>
     <div class="other-account">
-        <LoginOption icon={accountIcon} label={I18n.t("Login.UseOtherAccount.COPY")} action={otherAccount} index={2}/>
+        <LoginOption icon={accountIcon}
+                     label={I18n.t("Login.UseOtherAccount.COPY")}
+                     action={otherAccount}
+                     index={2}/>
     </div>
 {:else}
     <input type="email"
            autocomplete="username"
            id="email"
-           class={`${emailNotFound ? 'error' : ''}`}
+           class={`${(emailNotFound || rateLimited) ? 'error' : ''}`}
            placeholder={I18n.t("LinkFromInstitution.EmailPlaceholder.COPY")}
            use:init
            on:input={handleInput}
@@ -162,6 +179,14 @@
             <span>{I18n.t("LinkFromInstitution.EmailInUse2.COPY")}</span>
             <a href={`/request/${id}`}
                use:link>{I18n.t("Login.EmailNotFound3.COPY")}</a>
+        </div>
+    </div>
+{/if}
+{#if rateLimited}
+    <div class="error">
+        <span class="svg">{@html critical}</span>
+        <div>
+            <span>{I18n.t("Login.RateLimited.COPY")}</span>
         </div>
     </div>
 {/if}
