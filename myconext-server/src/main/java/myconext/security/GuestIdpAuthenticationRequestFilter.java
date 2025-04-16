@@ -261,6 +261,12 @@ public class GuestIdpAuthenticationRequestFilter extends OncePerRequestFilter {
             String path = optionalCookie.map(c -> "/request/").orElse("/login/");
             String location = this.redirectUrl + path + samlAuthenticationRequest.getId() +
                     separator + stepUp + mfa + preferMagicLink;
+
+            //Remove register cookie, as it has served its purpose
+            Cookie registerCookie = new Cookie(REGISTER_MODUS_COOKIE_NAME, "");
+            registerCookie.setMaxAge(0);
+            response.addCookie(registerCookie);
+
             response.sendRedirect(location);
         }
     }
