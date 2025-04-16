@@ -76,6 +76,7 @@ public class UserController implements UserAuthentication {
     private static final Log LOG = LogFactory.getLog(UserController.class);
 
     private static final int VALIDITY_LOGIN_CODE_MINUTES = 10;
+    private static final int RATE_LIMIT_DURATION = 15;
 
     @Getter
     private final UserRepository userRepository;
@@ -210,12 +211,13 @@ public class UserController implements UserAuthentication {
         User user = userRepository.findUserByEmail(email)
                 .orElseThrow(() -> new UserNotFoundException(String.format("User with email %s not found", email)));
         if (user.isRateLimited()) {
-            boolean minutes15ago = Instant.now().plus(15, ChronoUnit.MINUTES).isBefore(Instant.ofEpochMilli(user.getOneTimeLoginCode().getCreatedAt()));
+            long createdAt = user.getOneTimeLoginCode() != null ? user.getOneTimeLoginCode().getCreatedAt() : 0;
+            boolean minutes15ago = Instant.ofEpochMilli(createdAt).isBefore(Instant.now().minus(RATE_LIMIT_DURATION, ChronoUnit.MINUTES));
             if (minutes15ago) {
                 user.setRateLimited(false);
                 userRepository.save(user);
             } else {
-                throw new RateLimitedException(String.valueOf(user.getOneTimeLoginCode().getCreatedAt()));
+                throw new RateLimitedException(String.valueOf(createdAt));
             }
         }
         return user.loginOptions();
@@ -331,7 +333,7 @@ public class UserController implements UserAuthentication {
         String userId = samlAuthenticationRequest.getUserId();
         User user = userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException(userId));
         OneTimeLoginCode oneTimeLoginCode = user.getOneTimeLoginCode();
-        if (oneTimeLoginCode == null ||  (oneTimeLoginCode.getCreatedAt() + (1000 * 60 * 10)) < System.currentTimeMillis()) {
+        if (oneTimeLoginCode == null ||  (oneTimeLoginCode.getCreatedAt() + (1000 * 60 * VALIDITY_LOGIN_CODE_MINUTES)) < System.currentTimeMillis()) {
             //expired
             user.setOneTimeLoginCode(null);
             throw new ExpiredAuthenticationException(String.format("Expired OneTimeLoginCode"));
@@ -383,14 +385,6 @@ public class UserController implements UserAuthentication {
             mailBox.sendOneTimeLoginCode(user, code, serviceName);
         }
         return ResponseEntity.ok(true);
-    }
-
-    @Hidden
-    @GetMapping("/idp/security/success")
-    public int successfullyLoggedIn(@RequestParam("id") String id) {
-        Optional<SamlAuthenticationRequest> optionalSamlAuthenticationRequest = authenticationRequestRepository.findById(id);
-        return optionalSamlAuthenticationRequest.map(samlAuthenticationRequest ->
-                samlAuthenticationRequest.getLoginStatus().ordinal()).orElse(LoginStatus.NOT_LOGGED_IN.ordinal());
     }
 
     @Operation(summary = "Institution displaynames",

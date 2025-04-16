@@ -11,6 +11,9 @@ import java.util.stream.Stream;
 
 public class MDCContext {
 
+    private MDCContext() {
+    }
+
     public static void logWithContext(User user, String action, String target, Log log, String message) {
         MDC.setContextMap(Map.of(
                 "action", action,
@@ -45,10 +48,9 @@ public class MDCContext {
      * Resolves client IP address when application is behind a NGINX or other reverse proxy server
      */
     public static String resolve(HttpServletRequest request) {
-        String xForwardedFor = request.getHeader("X-Forwarded-For"); // used by the majority of load balancers
-        String xRealIp = request.getHeader("X-Real-IP"); // used by Nginx
-        String remoteAddr = request.getRemoteAddr(); // otherwise uses the remote IP address obtained by our Servlet container
-        // returns the first non-null
+        String xForwardedFor = request.getHeader("X-Forwarded-For");
+        String xRealIp = request.getHeader("X-Real-IP");
+        String remoteAddr = request.getRemoteAddr();
         return Stream.of(xRealIp, xForwardedFor, remoteAddr)
                 .filter(Objects::nonNull)
                 .findFirst().orElse(null);

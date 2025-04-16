@@ -8,6 +8,7 @@ import io.restassured.http.ContentType;
 import io.restassured.http.Cookie;
 import io.restassured.response.Response;
 import io.restassured.response.ValidatableResponse;
+import lombok.SneakyThrows;
 import myconext.AbstractIntegrationTest;
 import myconext.model.*;
 import myconext.repository.ChallengeRepository;
@@ -52,23 +53,42 @@ public class UserControllerTest extends AbstractIntegrationTest {
 
     @Test
     public void existingUser() throws IOException {
-        ClientAuthenticationResponse magicLinkResponse = oneTimeLoginCodeRequest(user("jdoe@example.com"), HttpMethod.PUT);
+        ClientAuthenticationResponse authenticationResponse = oneTimeLoginCodeRequest(user("jdoe@example.com"), HttpMethod.PUT);
 
         when()
-                .get("/myconext/api/idp/service/name/" + magicLinkResponse.authenticationRequestId)
+                .get("/myconext/api/idp/service/name/" + authenticationResponse.authenticationRequestId)
                 .then()
                 .body("name", equalTo("Bart TEst spd 6.00"));
 
-        magicLinkResponse.response
+        authenticationResponse.response
                 .statusCode(HttpStatus.CREATED.value());
-        String samlResponse = samlResponse(magicLinkResponse);
+        String samlResponse = samlResponse(authenticationResponse);
         assertTrue(samlResponse.contains("jdoe@example.com"));
         assertTrue(samlResponse.contains("urn:oasis:names:tc:SAML:attribute:subject-id"));
 
         when()
-                .get("/myconext/api/idp/resend_code_request?id=" + magicLinkResponse.authenticationRequestId)
+                .get("/myconext/api/idp/resend_code_request?id=" + authenticationResponse.authenticationRequestId)
                 .then()
                 .statusCode(HttpStatus.OK.value());
+    }
+
+    @Test
+    public void resendOneTimeCode() throws IOException {
+        ClientAuthenticationResponse authenticationResponse = oneTimeLoginCodeRequest(user("jdoe@example.com"), HttpMethod.PUT);
+        User user = userRepository.findOneUserByEmail("jdoe@example.com");
+        user.setNewUser(true);
+        OneTimeLoginCode oneTimeLoginCode = new OneTimeLoginCode("code");
+        ReflectionTestUtils.setField(oneTimeLoginCode, "createdAt", 1L);
+        user.setOneTimeLoginCode(oneTimeLoginCode);
+        userRepository.save(user);
+
+        when()
+                .get("/myconext/api/idp/resend_code_request?id=" + authenticationResponse.authenticationRequestId)
+                .then()
+                .statusCode(HttpStatus.OK.value());
+
+        User userFromDB = userRepository.findOneUserByEmail("jdoe@example.com");
+        assertNotEquals(user.getOneTimeLoginCode().getCode(), userFromDB.getOneTimeLoginCode().getCode());
     }
 
     @Test
@@ -97,19 +117,19 @@ public class UserControllerTest extends AbstractIntegrationTest {
     public void newUserProvisioned() throws IOException {
         User user = user("new@example.com", "Mary", "Doe", "en");
 
-        ClientAuthenticationResponse magicLinkResponse = oneTimeLoginCodeRequest(user, HttpMethod.POST);
+        ClientAuthenticationResponse authenticationResponse = oneTimeLoginCodeRequest(user, HttpMethod.POST);
         User userFromDB = userRepository.findUserByEmailAndRateLimitedFalse(user.getEmail()).get();
         assertEquals(0L, ReflectionTestUtils.getField(userFromDB, "lastSeenAppNudge"));
         assertEquals(user.getGivenName(), userFromDB.getGivenName());
 
-        String samlResponse = samlResponse(magicLinkResponse);
+        String samlResponse = samlResponse(authenticationResponse);
         assertTrue(samlResponse.contains("new@example.com"));
 
         User userFromAfter = userRepository.findUserByEmailAndRateLimitedFalse(user.getEmail()).get();
         assertEquals(0L, ReflectionTestUtils.getField(userFromAfter, "lastSeenAppNudge"));
 
         when()
-                .get("/myconext/api/idp/resend_code_request?id=" + magicLinkResponse.authenticationRequestId)
+                .get("/myconext/api/idp/resend_code_request?id=" + authenticationResponse.authenticationRequestId)
                 .then()
                 .statusCode(HttpStatus.OK.value());
 
@@ -140,8 +160,8 @@ public class UserControllerTest extends AbstractIntegrationTest {
         Response response = samlAuthnRequestResponseWithLoa(null, "relay", authnContext);
         String authenticationRequestId = extractAuthenticationRequestIdFromAuthnResponse(response);
 
-        ClientAuthenticationResponse magicLinkResponse = oneTimeLoginCodeRequest(new ClientAuthenticationRequest(authenticationRequestId, user, false), HttpMethod.PUT);
-        String samlResponse = samlResponse(magicLinkResponse);
+        ClientAuthenticationResponse authenticationResponse = oneTimeLoginCodeRequest(new ClientAuthenticationRequest(authenticationRequestId, user, false), HttpMethod.PUT);
+        String samlResponse = samlResponse(authenticationResponse);
 
         assertTrue(samlResponse.contains(ACR.LINKED_INSTITUTION));
     }
@@ -154,8 +174,8 @@ public class UserControllerTest extends AbstractIntegrationTest {
         Response response = samlAuthnRequestResponseWithLoa(null, "relay", authnContext);
         String authenticationRequestId = extractAuthenticationRequestIdFromAuthnResponse(response);
 
-        ClientAuthenticationResponse magicLinkResponse = oneTimeLoginCodeRequest(new ClientAuthenticationRequest(authenticationRequestId, user, false), HttpMethod.PUT);
-        String samlResponse = samlResponse(magicLinkResponse);
+        ClientAuthenticationResponse authenticationResponse = oneTimeLoginCodeRequest(new ClientAuthenticationRequest(authenticationRequestId, user, false), HttpMethod.PUT);
+        String samlResponse = samlResponse(authenticationResponse);
 
         assertTrue(samlResponse.contains(ACR.VALIDATE_NAMES));
         assertTrue(samlResponse.contains(user.getDerivedGivenName()));
@@ -179,8 +199,8 @@ public class UserControllerTest extends AbstractIntegrationTest {
         samlAuthenticationRequest.setSteppedUp(StepUpStatus.FINISHED_STEP_UP);
         authenticationRequestRepository.save(samlAuthenticationRequest);
 
-        ClientAuthenticationResponse magicLinkResponse = oneTimeLoginCodeRequest(new ClientAuthenticationRequest(authenticationRequestId, user, false), HttpMethod.PUT);
-        String samlResponse = this.samlResponse(magicLinkResponse);
+        ClientAuthenticationResponse authenticationResponse = oneTimeLoginCodeRequest(new ClientAuthenticationRequest(authenticationRequestId, user, false), HttpMethod.PUT);
+        String samlResponse = this.samlResponse(authenticationResponse);
 
         assertTrue(samlResponse.contains("Your institution has not provided this affiliation"));
         assertTrue(samlResponse.contains("urn:oasis:names:tc:SAML:2.0:status:Responder"));
@@ -206,8 +226,8 @@ public class UserControllerTest extends AbstractIntegrationTest {
         samlAuthenticationRequest.setSteppedUp(StepUpStatus.FINISHED_STEP_UP);
         authenticationRequestRepository.save(samlAuthenticationRequest);
 
-        ClientAuthenticationResponse magicLinkResponse = oneTimeLoginCodeRequest(new ClientAuthenticationRequest(authenticationRequestId, user, false), HttpMethod.PUT);
-        String samlResponse = this.samlResponse(magicLinkResponse);
+        ClientAuthenticationResponse authenticationResponse = oneTimeLoginCodeRequest(new ClientAuthenticationRequest(authenticationRequestId, user, false), HttpMethod.PUT);
+        String samlResponse = this.samlResponse(authenticationResponse);
 
         assertTrue(samlResponse.contains("Your institution has not provided those attributes"));
         assertTrue(samlResponse.contains("urn:oasis:names:tc:SAML:2.0:status:NoAuthnContext"));
@@ -225,8 +245,8 @@ public class UserControllerTest extends AbstractIntegrationTest {
         authenticationRequestRepository.save(samlAuthenticationRequest);
 
         User user = userRepository.findOneUserByEmail("jdoe@example.com");
-        ClientAuthenticationResponse magicLinkResponse = oneTimeLoginCodeRequest(new ClientAuthenticationRequest(authenticationRequestId, user, false), HttpMethod.PUT);
-        String samlResponse = this.samlResponse(magicLinkResponse);
+        ClientAuthenticationResponse authenticationResponse = oneTimeLoginCodeRequest(new ClientAuthenticationRequest(authenticationRequestId, user, false), HttpMethod.PUT);
+        String samlResponse = this.samlResponse(authenticationResponse);
 
         assertTrue(samlResponse.contains("Your identity is not verified by an external trusted party"));
         assertTrue(samlResponse.contains("urn:oasis:names:tc:SAML:2.0:status:NoAuthnContext"));
@@ -266,8 +286,8 @@ public class UserControllerTest extends AbstractIntegrationTest {
         Response response = samlAuthnRequestResponseWithLoa(null, "relay", authnContext);
         String authenticationRequestId = extractAuthenticationRequestIdFromAuthnResponse(response);
 
-        ClientAuthenticationResponse magicLinkResponse = oneTimeLoginCodeRequest(new ClientAuthenticationRequest(authenticationRequestId, user, false), HttpMethod.PUT);
-        String samlResponse = samlResponse(magicLinkResponse);
+        ClientAuthenticationResponse authenticationResponse = oneTimeLoginCodeRequest(new ClientAuthenticationRequest(authenticationRequestId, user, false), HttpMethod.PUT);
+        String samlResponse = samlResponse(authenticationResponse);
 
         assertTrue(samlResponse.contains(ACR.VALIDATE_NAMES));
         assertTrue(samlResponse.contains(user.getFamilyName()));
@@ -281,8 +301,8 @@ public class UserControllerTest extends AbstractIntegrationTest {
         Response response = samlAuthnRequestResponseWithLoa(null, "relay", authnContext);
 
         String authenticationRequestId = extractAuthenticationRequestIdFromAuthnResponse(response);
-        ClientAuthenticationResponse magicLinkResponse = oneTimeLoginCodeRequest(new ClientAuthenticationRequest(authenticationRequestId, user, false), HttpMethod.PUT);
-        String samlResponse = this.samlResponse(magicLinkResponse);
+        ClientAuthenticationResponse authenticationResponse = oneTimeLoginCodeRequest(new ClientAuthenticationRequest(authenticationRequestId, user, false), HttpMethod.PUT);
+        String samlResponse = this.samlResponse(authenticationResponse);
 
         assertTrue(samlResponse.contains("The specified authentication context requirements"));
         assertTrue(samlResponse.contains("cannot be met by the responder"));
@@ -323,8 +343,8 @@ public class UserControllerTest extends AbstractIntegrationTest {
     public void relayState() throws IOException {
         User user = user("steve@example.com", "Steve", "Doe", "en");
         String authenticationRequestId = samlAuthnRequest("Nice");
-        ClientAuthenticationResponse magicLinkResponse = oneTimeLoginCodeRequest(new ClientAuthenticationRequest(authenticationRequestId, user, false), HttpMethod.POST);
-        Response response = magicResponse(magicLinkResponse);
+        ClientAuthenticationResponse authenticationResponse = oneTimeLoginCodeRequest(new ClientAuthenticationRequest(authenticationRequestId, user, false), HttpMethod.POST);
+        Response response = magicResponse(authenticationResponse);
         assertTrue(IOUtils.toString(response.asInputStream(), Charset.defaultCharset()).contains("Nice"));
     }
 
@@ -688,9 +708,9 @@ public class UserControllerTest extends AbstractIntegrationTest {
 
     @Test
     public void magicLinkCanNotBeReused() throws IOException {
-        ClientAuthenticationResponse magicLinkResponse = oneTimeLoginCodeRequest(user("jdoe@example.com"), HttpMethod.PUT);
-        SamlAuthenticationRequest samlAuthenticationRequest = authenticationRequestRepository.findById(magicLinkResponse.authenticationRequestId).get();
-        String samlResponse = samlResponse(magicLinkResponse);
+        ClientAuthenticationResponse authenticationResponse = oneTimeLoginCodeRequest(user("jdoe@example.com"), HttpMethod.PUT);
+        SamlAuthenticationRequest samlAuthenticationRequest = authenticationRequestRepository.findById(authenticationResponse.authenticationRequestId).get();
+        String samlResponse = samlResponse(authenticationResponse);
         assertTrue(samlResponse.contains("jdoe@example.com"));
 
         given().redirects().follow(false)
@@ -730,9 +750,9 @@ public class UserControllerTest extends AbstractIntegrationTest {
 
         String authenticationRequestId = location.substring(location.lastIndexOf("/") + 1, location.lastIndexOf("?"));
         User user = user("jdoe@example.com");
-        ClientAuthenticationResponse magicLinkResponse = oneTimeLoginCodeRequest(new ClientAuthenticationRequest(authenticationRequestId, user, StringUtils.hasText(user.getPassword())), HttpMethod.PUT);
+        ClientAuthenticationResponse authenticationResponse = oneTimeLoginCodeRequest(new ClientAuthenticationRequest(authenticationRequestId, user, StringUtils.hasText(user.getPassword())), HttpMethod.PUT);
 
-        SamlAuthenticationRequest samlAuthenticationRequest = authenticationRequestRepository.findById(magicLinkResponse.authenticationRequestId).get();
+        SamlAuthenticationRequest samlAuthenticationRequest = authenticationRequestRepository.findById(authenticationResponse.authenticationRequestId).get();
         response = given().redirects().follow(false)
                 .when()
                 .queryParam("h", samlAuthenticationRequest.getHash())
@@ -764,9 +784,9 @@ public class UserControllerTest extends AbstractIntegrationTest {
 
         String authenticationRequestId = location.substring(location.lastIndexOf("/") + 1, location.lastIndexOf("?"));
         User user = user("jdoe@example.com");
-        ClientAuthenticationResponse magicLinkResponse = oneTimeLoginCodeRequest(new ClientAuthenticationRequest(authenticationRequestId, user, StringUtils.hasText(user.getPassword())), HttpMethod.PUT);
+        ClientAuthenticationResponse authenticationResponse = oneTimeLoginCodeRequest(new ClientAuthenticationRequest(authenticationRequestId, user, StringUtils.hasText(user.getPassword())), HttpMethod.PUT);
 
-        SamlAuthenticationRequest samlAuthenticationRequest = authenticationRequestRepository.findById(magicLinkResponse.authenticationRequestId).get();
+        SamlAuthenticationRequest samlAuthenticationRequest = authenticationRequestRepository.findById(authenticationResponse.authenticationRequestId).get();
         response = given().redirects().follow(false)
                 .when()
                 .queryParam("h", samlAuthenticationRequest.getHash())
@@ -784,8 +804,8 @@ public class UserControllerTest extends AbstractIntegrationTest {
         String authnContext = readFile("request_authn_context_mfa.xml");
         Response response = samlAuthnRequestResponseWithLoa(null, "relay", authnContext);
         String authenticationRequestId = extractAuthenticationRequestIdFromAuthnResponse(response);
-        ClientAuthenticationResponse magicLinkResponse = oneTimeLoginCodeRequest(new ClientAuthenticationRequest(authenticationRequestId, user, false), HttpMethod.PUT);
-        SamlAuthenticationRequest samlAuthenticationRequest = authenticationRequestRepository.findById(magicLinkResponse.authenticationRequestId).get();
+        ClientAuthenticationResponse authenticationResponse = oneTimeLoginCodeRequest(new ClientAuthenticationRequest(authenticationRequestId, user, false), HttpMethod.PUT);
+        SamlAuthenticationRequest samlAuthenticationRequest = authenticationRequestRepository.findById(authenticationResponse.authenticationRequestId).get();
 
         Response magicResponse = given().redirects().follow(false)
                 .when()
@@ -810,12 +830,12 @@ public class UserControllerTest extends AbstractIntegrationTest {
         Response response = samlAuthnRequestResponseWithLoa(null, "relay", authnContext);
         String authenticationRequestId = extractAuthenticationRequestIdFromAuthnResponse(response);
 
-        ClientAuthenticationResponse magicLinkResponse = oneTimeLoginCodeRequest(new ClientAuthenticationRequest(authenticationRequestId, user, false), HttpMethod.PUT);
-        SamlAuthenticationRequest samlAuthenticationRequest = authenticationRequestRepository.findById(magicLinkResponse.authenticationRequestId).get();
+        ClientAuthenticationResponse authenticationResponse = oneTimeLoginCodeRequest(new ClientAuthenticationRequest(authenticationRequestId, user, false), HttpMethod.PUT);
+        SamlAuthenticationRequest samlAuthenticationRequest = authenticationRequestRepository.findById(authenticationResponse.authenticationRequestId).get();
         samlAuthenticationRequest.setTiqrFlow(true);
         authenticationRequestRepository.save(samlAuthenticationRequest);
 
-        String samlResponse = samlResponse(magicLinkResponse);
+        String samlResponse = samlResponse(authenticationResponse);
         assertTrue(samlResponse.contains(ACR.PROFILE_MFA));
     }
 
@@ -901,6 +921,45 @@ public class UserControllerTest extends AbstractIntegrationTest {
                 LoginOptions.FIDO.getValue(),
                 LoginOptions.PASSWORD.getValue(),
                 LoginOptions.CODE.getValue()), loginOptions);
+    }
+
+    @Test
+    public void knownAccountRateLimited() {
+        User user = userRepository.findUserByEmailAndRateLimitedFalse("jdoe@example.com").get();
+        user.setRateLimited(true);
+        user.setOneTimeLoginCode(new OneTimeLoginCode("code"));
+        userRepository.save(user);
+
+        Map<String, Object> res = given()
+                .when()
+                .body(Map.of("email", "jdoe@example.com"))
+                .contentType(ContentType.JSON)
+                .accept(ContentType.JSON)
+                .post("/myconext/api/idp/service/email")
+                .as(new TypeRef<>() {
+                });
+        assertEquals(409, res.get("status"));
+        assertTrue(Long.parseLong((String) res.get("message")) > 1744803308921L);
+        User userFromDB = userRepository.findUserByEmail("jdoe@example.com").get();
+        assertTrue(userFromDB.isRateLimited());
+    }
+
+    @Test
+    public void knownAccountRateLimitedExpired() {
+        User user = userRepository.findUserByEmailAndRateLimitedFalse("jdoe@example.com").get();
+        user.setRateLimited(true);
+        userRepository.save(user);
+
+        given()
+                .when()
+                .body(Map.of("email", "jdoe@example.com"))
+                .contentType(ContentType.JSON)
+                .accept(ContentType.JSON)
+                .post("/myconext/api/idp/service/email")
+                .as(new TypeRef<>() {
+                });
+        User userFromDB = userRepository.findUserByEmailAndRateLimitedFalse("jdoe@example.com").get();
+        assertFalse(userFromDB.isRateLimited());
     }
 
     @Test
@@ -1093,6 +1152,22 @@ public class UserControllerTest extends AbstractIntegrationTest {
                 .then()
                 .body("name", equalTo("Bart TEst spd 6.00"));
 
+    }
+
+    @Test
+    public void testServiceNameExpired() {
+        when()
+                .get("/myconext/api/idp/service/hash/nope")
+                .then()
+                .statusCode(400);
+    }
+
+    @Test
+    public void testServiceNameIdExpired() {
+        when()
+                .get("/myconext/api/idp/service/id/nope")
+                .then()
+                .statusCode(400);
     }
 
     @Test
@@ -1316,7 +1391,7 @@ public class UserControllerTest extends AbstractIntegrationTest {
     public void createUserControlCode() {
         clearExternalAccounts("jdoe@example.com");
         ControlCode controlCode = new ControlCode("Lee", "Harpers", "01 Mar 1977");
-        ControlCode responseControlCode =given()
+        ControlCode responseControlCode = given()
                 .body(controlCode)
                 .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                 .when()
@@ -1350,6 +1425,7 @@ public class UserControllerTest extends AbstractIntegrationTest {
                 .statusCode(403);
     }
 
+    @Test
     public void errorMailOverload() {
         Map<String, Object> json = Map.of("error", "unexpected");
         CookieFilter cookieFilter = new CookieFilter();
@@ -1373,6 +1449,75 @@ public class UserControllerTest extends AbstractIntegrationTest {
                 .statusCode(HttpStatus.UNPROCESSABLE_ENTITY.value());
     }
 
+    @Test
+    public void verifyCodeExistingUserExpired() throws IOException {
+        ClientAuthenticationResponse authenticationResponse = oneTimeLoginCodeRequest(user("jdoe@example.com"), HttpMethod.PUT);
+        User user = userRepository.findOneUserByEmail("jdoe@example.com");
+        user.setOneTimeLoginCode(null);
+        userRepository.save(user);
+
+        given().
+                when()
+                .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+                .body(new VerifyOneTimeLoginCode("code", authenticationResponse.authenticationRequestId))
+                .put("/myconext/api/idp/verify_code_request")
+                .then()
+                .statusCode(HttpStatus.BAD_REQUEST.value());
+    }
+
+    @SneakyThrows
+    @Test
+    public void verifyCodeExistingUserSuccess() {
+        ClientAuthenticationResponse authenticationResponse = oneTimeLoginCodeRequest(user("jdoe@example.com"), HttpMethod.PUT);
+        User user = userRepository.findOneUserByEmail("jdoe@example.com");
+
+        //have to sleep some time, otherwise now() < createdAt + delay
+        Thread.sleep(1000);
+        VerifyOneTimeLoginCode oneTimeLoginCode = new VerifyOneTimeLoginCode(
+                user.getOneTimeLoginCode().getCode(),
+                authenticationResponse.authenticationRequestId);
+        given().
+                when()
+                .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+                .body(oneTimeLoginCode)
+                .put("/myconext/api/idp/verify_code_request")
+                .then()
+                .statusCode(HttpStatus.CREATED.value());
+
+        User userFromDB = userRepository.findOneUserByEmail("jdoe@example.com");
+        assertNull(userFromDB.getOneTimeLoginCode());
+    }
+
+    @SneakyThrows
+    @Test
+    public void verifyCodeExistingUserWrongCode() throws IOException {
+        ClientAuthenticationResponse authenticationResponse = oneTimeLoginCodeRequest(user("jdoe@example.com"), HttpMethod.PUT);
+        //have to sleep some time, otherwise now() < createdAt + delay
+        Thread.sleep(1000);
+        given().
+                when()
+                .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+                .body(new VerifyOneTimeLoginCode("code", authenticationResponse.authenticationRequestId))
+                .put("/myconext/api/idp/verify_code_request")
+                .then()
+                .statusCode(HttpStatus.UNAUTHORIZED.value());
+    }
+
+    @Test
+    public void verifyCodeExistingUserRateLimited() throws IOException {
+        ClientAuthenticationResponse authenticationResponse = oneTimeLoginCodeRequest(user("jdoe@example.com"), HttpMethod.PUT);
+        User user = userRepository.findOneUserByEmail("jdoe@example.com");
+        ReflectionTestUtils.setField(user.getOneTimeLoginCode(), "delay", 180_000); ;
+        userRepository.save(user);
+
+        given().
+                when()
+                .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+                .body(new VerifyOneTimeLoginCode("code", authenticationResponse.authenticationRequestId))
+                .put("/myconext/api/idp/verify_code_request")
+                .then()
+                .statusCode(HttpStatus.FORBIDDEN.value());
+    }
 
     private String hash() {
         byte[] bytes = new byte[64];
