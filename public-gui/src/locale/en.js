@@ -4,76 +4,65 @@ const en = {
     select_locale: "Select English as language",
     tabs: {
         home: "Home",
-        support: "Support",
+        support: "Help",
         about: "About eduID"
     },
     header: {
         mineEduID: "My eduID",
-        register: "Register"
+        register: "Create an eduID"
     },
     home: {
         eduID: "eduID",
-        title: "One account. For a lifetime of learning and research.",
-        whatCanYouDo: "What can you do with eduID?",
-        info1: "Easily prove who you are within Dutch education and research.",
-        info2: "Log in to a growing number of websites specifically for education and research.",
-        info3: "Read more...",
-        eduIdApp: "The eduID app",
-        appInfo: "Want to log in faster and more securely without passwords or opening your email? Then download our app.",
+        title: "Easily prove who you are",
+        whatCanYouDo: "What is eduID for?",
+        info1: "Verify your identity for education and research in the Netherlands",
+        info2: "Log in to a growing number of websites and online services",
+        info3: "For students, staff, and professionals",
+        readMore: "Learn more about eduID",
+        eduIdApp: "Want to log in faster and more securely?",
+        appInfo: "With the <strong>eduID app</strong>, you can log in without a password or checking your email. Installation is quick and easy.",
         google: "https://play.google.com/store/apps/details?id=nl.eduid",
         apple: "https://apps.apple.com/us/app/eduid/id1600756434",
     },
     about: {
         eduID: "About eduID",
-        title: "One personal account for the education and research sector",
-        why: "Why an eduID?",
-        whyInfo: "eduID was created to allow students to identify themselves easily at multiple institutions. They couldn’t use the identity from their own institution to log in elsewhere. For guest users not affiliated with a school but wanting to collaborate on digital platforms, eduID is also a solution.",
-        register: "Register",
-        registerInfo: "Click ‘Register’ at the top of the page. Enter your personal email address and first and last name. You will then receive a confirmation email.<br/>After clicking the link in that email, your eduID account will be active immediately.",
-        logins: "Ways to log in",
-        loginsInfo: "You use your eduID to log in to websites and cloud applications.<br/>" +
-            "To do this as securely and easily as possible, we recommend using the eduID app.<br/>" +
-            "<br/>" +
-            "With the eduID app, you can log in passwordless, meaning without a password or email link. The app also provides additional security via 2-factor authentication.<br/>" +
-            "<br/>" +
-            "When creating your eduID account, you’ll be asked if you want to download the app. Prefer to do this later? You can also do it via My eduID.<br/>" +
-            "<br/>" +
-            "<strong>Other login methods</strong><br/>" +
-            "If you can't use the app, you can also log in using the following methods:",
-        magicLink: "Magic link in your email",
-        magicLinkInfo: "You don’t need a password for eduID (though you can set one if you prefer, see below). Instead, you log in using a 'magic link'. After creating your eduID, enter your email address and click the ‘Email a magic link’ button. You'll receive an email with a login button within minutes. Click it and you’re logged in and redirected to the service you were trying to reach.<br/>" +
-            "The link expires after 10 minutes. If it’s expired, just request another magic link to log in. Didn’t receive an email? Check your spam folder.<br/>",
+        title: "One account for educational and research institutions",
+        why: "What is eduID?",
+        whyInfo1: "eduID helps students easily verify their identity at educational and research institutions in the Netherlands. Previously, students couldn't log in to one institution using an account from another. The same issue applied to guest students who weren’t officially enrolled but needed access to digital platforms.",
+        whyInfo2: "eduID solves this problem by providing one account to verify your identity across multiple Dutch educational and research institutions.",
+        register: "How to get an eduID?",
+        registerInfo: "Creating an eduID is simple. Press <strong>Create an eduID</strong> at the top of the page. After creating your eduID, you may need to verify your identity through an official party, such as your school, university, or bank.",
+        logins: "How to confirm your identity?",
+        loginsInfo: "In most cases, you must prove your identity through an official party before you can fully use your eduID. You can do this in the following ways:",
+
+        magicLink: "Link in email",
         password: "Password",
-        passwordInfo: "A regular password. Make sure it's at least 15 characters OR at least 8 characters including a number and an uppercase letter.",
-        passKey: "Passkey (security key, e.g. YubiKey)",
-        passKeyInfo: "Our website now supports Passkey authentication, allowing students to log in securely without passwords. This feature uses biometrics or device-based authentication for quick and safe access. No more forgotten passwords—just a seamless and secure login experience! Enable Passkey in your account settings today.",
-        identity: "Ways to verify your identity",
-        identityInfo: "Some services require your identity in eduID to be verified by a trusted party, like your Dutch school or university.<br/>" +
-            "<br/>" +
-            "<strong>eduID can verify your identity in the following ways:</strong>",
+        passKey: "Passkey",
+        identity: "How to use eduID?",
+        identityInfo1: "You can use eduID to log in to websites and online services in the Netherlands. We recommend using the eduID app for the most secure and convenient experience. The app lets you log in without a password, and two-factor authentication (2FA) adds an extra layer of security.",
+        identityInfo2: "Prefer not to download an app? You can also log in using:",
         institution: "Via a Dutch educational institution",
-        institutionInfo: "Via a Dutch educational institution",
-        bank: "Via a Dutch bank app",
-        bankInfo: "Our website now supports login via your Dutch bank identity provider for secure and simple authentication. Use your trusted bank credentials to access your account without extra passwords. This method offers strong security and meets Dutch standards. Enable bank login today in your account settings!",
+        institutionInfo: "Log in to your institution, which will then share details like your name and role (student, lecturer, etc.) with us.",
+        bank: "Via a Dutch banking app",
+        bankInfo: "Log in to your bank, which will provide us with your name and date of birth. No payment is required.",
         european: "With a European ID",
-        europeanInfo: "Our website now supports login with your European digital identity for secure and easy access. Use your official EU ID to verify your identity without extra passwords. This method provides high security and complies with EU regulations. Enable EU ID login today in your account settings!",
-        manage: "Managing your eduID",
-        manageInfo: "You can manage your eduID account via <a href='{{url}}'>My eduID</a>. Here, you can manage your name, email address, and account security. You can also view which services you've logged into with eduID and download your account information."
+        europeanInfo: "Show your ID and a verification code at an eduID Service Desk (online or at an institution).",
+        manage: "Where can you find your data?",
+        manageInfo: "In <a href='{{url}}'>My eduID</a>, you can view your name, email address, and security settings. You can also check which websites and services you’ve accessed with eduID and download or delete your data."
     },
     support: {
-        eduID: "eduID Support",
-        title: "If you're stuck",
-        studying: "Are you studying in NL?",
-        connect: "Connect your institution!",
-        studyInfo: "<strong>If you're studying in the Netherlands</strong> and want to use eduID to log into educational services, we need to make sure it's really you.",
-        information: "You must therefore add the following information to your eduID:",
-        informationBullet1: "Validation of your full name by a third party",
-        informationBullet2: "Proof of being a student",
-        informationBullet3: "Your current institution",
-        allAtOnce: "You can add this information <strong>all at once</strong> by connecting your school/institution to your eduID. Select the 'add an organisation' button in the app or My eduID.",
-        note: "<strong>Please note:</strong> Did you create an eduID last academic year? Then you may have to link it to your institution again.",
+        eduID: "Help",
+        title: "When you need assistance",
+        studying: "Do you study in the Netherlands?",
+        connect: "Connect your educational institution",
+        studyInfo: "Before you can use eduID for services in Dutch education, we need to verify your identity. That’s why we ask you to add the following information to your eduID:",
+        informationBullet1: "Your full name, verified by an official party",
+        informationBullet2: "Proof that you are a student",
+        informationBullet3: "Your current institutionValidation of your full name by a third party",
+        allAtOnce: "You can add this information all at once by connecting your educational institution to eduID. To do this, press <strong>Add an institution</strong> in the eduID app or <a href='{{url}}'>My eduID</a>.",
+        note: "<strong>Note</strong>: did you create an eduID last school year? You may need to connect your institution again.",
         help: "Need more help?",
-        helpInfo: "Still stuck? Contact us at <a href='mailto:help@eduID.nl'>help@eduID.nl</a>"
+        helpInfo: "Send an email to <a href='mailto:help@eduID.nl'>help@eduID.nl</a>. We’ll get back to you as soon as possible."
     },
     privacy: {
         eduID: "Privacy Policy",

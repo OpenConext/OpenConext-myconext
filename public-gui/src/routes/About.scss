@@ -16,6 +16,20 @@
 
     }
 
+    ul {
+        list-style: initial;
+
+        li {
+            margin: 0 0 12px 16px;
+
+            span {
+                &.header {
+                    font-weight: 600;
+                }
+            }
+        }
+    }
+
     .about {
         @include index.page;
     }

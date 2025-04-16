@@ -4,8 +4,12 @@ import "./Support.scss"
 import support from "../assets/support.svg";
 import mobileScreenshot from "../assets/mobile_screenshot.svg";
 import {Background} from "../components/Background.jsx";
+import {useAppStore} from "../stores/AppStore.js";
 
 export const Support = () => {
+
+    const config = useAppStore((state) => state.config);
+
     return (
         <div className="support-container">
             <div className="support">
@@ -31,15 +35,13 @@ export const Support = () => {
                         </h2>
                         <p className="info"
                            dangerouslySetInnerHTML={{__html: I18n.t("support.studyInfo")}}/>
-                        <p className="info"
-                           dangerouslySetInnerHTML={{__html: I18n.t("support.information")}}/>
                         <ul>
                             <li>{I18n.t("support.informationBullet1")}</li>
                             <li>{I18n.t("support.informationBullet2")}</li>
                             <li>{I18n.t("support.informationBullet3")}</li>
                         </ul>
                         <p className="info"
-                           dangerouslySetInnerHTML={{__html: I18n.t("support.allAtOnce")}}/>
+                           dangerouslySetInnerHTML={{__html: I18n.t("support.allAtOnce", {url: config.spBaseUrl})}}/>
                         <img src={mobileScreenshot} className="mobileScreenshot" alt="mobileScreenshot"/>
                         <p className="info cursive"
                            dangerouslySetInnerHTML={{__html: I18n.t("support.note")}}/>
@@ -49,8 +51,7 @@ export const Support = () => {
                     <h5>
                         {I18n.t("support.help")}
                     </h5>
-                    <p className="info"
-                       dangerouslySetInnerHTML={{__html: I18n.t("support.helpInfo")}}/>
+                    <p dangerouslySetInnerHTML={{__html: I18n.t("support.helpInfo")}}/>
                 </div>
             </Background>
         </div>
