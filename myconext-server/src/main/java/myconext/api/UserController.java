@@ -75,6 +75,8 @@ public class UserController implements UserAuthentication {
 
     private static final Log LOG = LogFactory.getLog(UserController.class);
 
+    private static final int VALIDITY_LOGIN_CODE_MINUTES = 10;
+
     @Getter
     private final UserRepository userRepository;
     private final AuthenticationRequestRepository authenticationRequestRepository;
@@ -213,7 +215,7 @@ public class UserController implements UserAuthentication {
                 user.setRateLimited(false);
                 userRepository.save(user);
             } else {
-                throw new RateLimitedException("User rate limited");
+                throw new RateLimitedException(String.valueOf(user.getOneTimeLoginCode().getCreatedAt()));
             }
         }
         return user.loginOptions();
@@ -328,10 +330,16 @@ public class UserController implements UserAuthentication {
                 .orElseThrow(() -> new ExpiredAuthenticationException("Expired samlAuthenticationRequest: " + authenticationRequestId));
         String userId = samlAuthenticationRequest.getUserId();
         User user = userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException(userId));
+        OneTimeLoginCode oneTimeLoginCode = user.getOneTimeLoginCode();
+        if (oneTimeLoginCode == null ||  (oneTimeLoginCode.getCreatedAt() + (1000 * 60 * 10)) < System.currentTimeMillis()) {
+            //expired
+            user.setOneTimeLoginCode(null);
+            throw new ExpiredAuthenticationException(String.format("Expired OneTimeLoginCode"));
+        }
         try {
             boolean success = user.attemptOneTimeLoginVerification(verifyOneTimeLoginCode.getCode());
             userRepository.save(user);
-            long delay = user.getOneTimeLoginCode().getDelay();
+            long delay = oneTimeLoginCode.getDelay();
             if (success) {
                 LOG.debug(String.format("Successful login for existing user %s in oneTimeLoginCode flow, delay: %s, attempt: %s",
                         user.getEmail(),
@@ -348,6 +356,7 @@ public class UserController implements UserAuthentication {
             authenticationRequestRepository.delete(samlAuthenticationRequest);
             LOG.info("Rate-limiting user " + user.getEmail());
             user.setRateLimited(true);
+            user.endOneTimeLoginCode();
             userRepository.save(user);
             throw e;
         }
@@ -361,7 +370,13 @@ public class UserController implements UserAuthentication {
         String userId = samlAuthenticationRequest.getUserId();
         User user = userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException(userId));
         String serviceName = this.manage.getServiceName(request, samlAuthenticationRequest);
-        String code = user.getOneTimeLoginCode().getCode();
+        OneTimeLoginCode oneTimeLoginCode = user.getOneTimeLoginCode();
+        String code = oneTimeLoginCode.getCode();
+        if ((oneTimeLoginCode.getCreatedAt() + (1000 * 60 * 9)) < System.currentTimeMillis()) {
+            code = VerificationCodeGenerator.generateOneTimeLoginCode();
+            oneTimeLoginCode.setCode(code);
+            userRepository.save(user);
+        }
         if (user.isNewUser()) {
             mailBox.sendOneTimeLoginCodeNewUser(user, code, serviceName);
         } else {
@@ -1155,7 +1170,8 @@ public class UserController implements UserAuthentication {
             String url = this.magicLinkUrl + "?h=" + samlAuthenticationRequest.getHash();
             return ResponseEntity.status(201).body(Map.of("url", url));
         }
-        String code = user.getOneTimeLoginCode().getCode();
+        OneTimeLoginCode oneTimeLoginCode = user.getOneTimeLoginCode();
+        String code = oneTimeLoginCode.getCode();
         if (user.isNewUser()) {
             LOG.debug("Sending login code email for new user: " + user.getEmail());
             mailBox.sendOneTimeLoginCodeNewUser(user, code, serviceName);

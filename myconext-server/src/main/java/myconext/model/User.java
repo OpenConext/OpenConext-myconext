@@ -115,6 +115,7 @@ public class User implements Serializable, UserDetails {
     @Setter
     private ControlCode controlCode;
 
+    @Setter
     private OneTimeLoginCode oneTimeLoginCode;
 
     @Setter
@@ -481,6 +482,12 @@ public class User implements Serializable, UserDetails {
 
     public void startOneTimeLoginCode(String oneTimeLoginCode) {
         this.oneTimeLoginCode = new OneTimeLoginCode(oneTimeLoginCode);
+    }
+
+    public void endOneTimeLoginCode() {
+        if (this.oneTimeLoginCode != null) {
+            this.oneTimeLoginCode.setCode(null);
+        }
     }
 
     public boolean attemptOneTimeLoginVerification(String code) {

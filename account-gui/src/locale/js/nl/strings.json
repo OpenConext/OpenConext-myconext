@@ -551,7 +551,7 @@
   "Login.EmailNotFound1.COPY": "We konden geen eduID vinden met dit e-mailadres.",
   "Login.EmailNotFound2.COPY": "Probeer een andere, of ",
   "Login.EmailNotFound3.COPY": "maak een nieuwe eduID aan.",
-  "Login.RateLimited.COPY": "Je bent nog steeds geschorst. Probeer het opnieuw over 15 minuten.",
+  "Login.RateLimited.COPY": "Je bent nog steeds geschorst. Probeer het opnieuw over %1$s minuten.",
   "Login.EmailOrPasswordIncorrect.COPY": "E-mailadres of wachtwoord is niet juist",
   "Login.InstitutionDomainNameWarning.COPY": "Dit lijkt op een e-mailadres van een instelling. Let op: als je in de toekomst niet meer studeert of werkt bij deze instelling, heb je geen toegang meer tot dit e-mailadres.",
   "Login.InstitutionDomainNameWarning2.COPY": "We raden je aan om je persoonlijke e-mailadres te gebruiken voor eduID.",

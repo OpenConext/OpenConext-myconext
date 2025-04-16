@@ -52,7 +52,9 @@
             .catch(e => {
                 showSpinner = false;
                 if (e.status === 403) {
-                    navigate("/rate-limited")
+                    navigate("/rate-limited");
+                } else if (e.status === 400) {
+                    navigate("/expired")
                 } else {
                     wrongCode = true;
                     delay = delay * 2;
@@ -129,31 +131,31 @@
     <Spinner/>
 {/if}
 <div class="login-code">
-        <h2 class="header">{I18n.t("LoginCode.Header.COPY")}</h2>
-        <p class="info">{@html I18n.t("LoginCode.Info.COPY", {email: $user.email})}</p>
-        <div class="code-validation">
-            <CodeValidation verify={verifyCode}
-                            size={6}
-                            validate={val => !isNaN(val)}
-                            intermediateCallback={valueCallback}/>
-            {#if wrongCode}
-                <p class="error">{I18n.t("LoginCode.Error.COPY", {delay: delay})}</p>
-            {/if}
-        </div>
+    <h2 class="header">{I18n.t("LoginCode.Header.COPY")}</h2>
+    <p class="info">{@html I18n.t("LoginCode.Info.COPY", {email: $user.email})}</p>
+    <div class="code-validation">
+        <CodeValidation verify={verifyCode}
+                        size={6}
+                        validate={val => !isNaN(val)}
+                        intermediateCallback={valueCallback}/>
+        {#if wrongCode}
+            <p class="error">{I18n.t("LoginCode.Error.COPY", {delay: delay})}</p>
+        {/if}
+    </div>
 
-        <Button label={I18n.t("LoginCode.Continue.COPY")}
-                onClick={verifyCode}
-                disabled={disabledButton || wrongCode}/>
+    <Button label={I18n.t("LoginCode.Continue.COPY")}
+            onClick={verifyCode}
+            disabled={disabledButton || wrongCode}/>
 
-        <div class="resend-mail">
-            {#if allowedToResend}
-                <p>{I18n.t("LoginCode.Resend.COPY")}
-                    <a href="resend"
-                       on:click|preventDefault|stopPropagation={resendMail}>{I18n.t("LoginCode.ResendLink.COPY")}</a>
-                </p>
-            {:else if mailHasBeenResend}
-                <span>{I18n.t("MagicLink.MailResend.COPY")}</span>
-            {/if}
+    <div class="resend-mail">
+        {#if allowedToResend}
+            <p>{I18n.t("LoginCode.Resend.COPY")}
+                <a href="resend"
+                   on:click|preventDefault|stopPropagation={resendMail}>{I18n.t("LoginCode.ResendLink.COPY")}</a>
+            </p>
+        {:else if mailHasBeenResend}
+            <span>{I18n.t("MagicLink.MailResend.COPY")}</span>
+        {/if}
 
-        </div>
+    </div>
 </div>

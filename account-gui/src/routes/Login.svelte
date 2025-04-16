@@ -21,6 +21,7 @@
     let magicLink = false;
     let emailNotFound = false;
     let rateLimited = false;
+    let minutesDelay = false;
     let showSpinner = true;
     let serviceName = "";
 
@@ -74,7 +75,10 @@
                 }
             }).catch(e => {
             if (e.status === 409) {
-                rateLimited = true
+                e.json().then(res => {
+                    rateLimited = true;
+                    minutesDelay = 15 - Math.floor((new Date().getTime() - parseInt(res.message)) / 1000 / 60);
+                })
             } else {
                 emailNotFound = true
             }
@@ -186,7 +190,7 @@
     <div class="error">
         <span class="svg">{@html critical}</span>
         <div>
-            <span>{I18n.t("Login.RateLimited.COPY")}</span>
+            <span>{I18n.t("Login.RateLimited.COPY", {minutes: minutesDelay})}</span>
         </div>
     </div>
 {/if}

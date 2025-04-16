@@ -3,6 +3,7 @@ package myconext.model;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import lombok.ToString;
 import myconext.exceptions.ForbiddenException;
 
@@ -15,7 +16,7 @@ import java.security.MessageDigest;
 @ToString
 public class OneTimeLoginCode implements Serializable {
 
-    @NotBlank
+    @Setter
     private String code;
 
     private long createdAt;
@@ -29,7 +30,8 @@ public class OneTimeLoginCode implements Serializable {
     }
 
     public boolean attemptOneTimeLoginVerification(String code) {
-        if (System.currentTimeMillis() < this.createdAt + this.delay) {
+        long now = System.currentTimeMillis();
+        if (now < this.createdAt + this.delay) {
             throw new ForbiddenException("Attempt forbidden due to rate limit");
         }
         // time-constant comparison
