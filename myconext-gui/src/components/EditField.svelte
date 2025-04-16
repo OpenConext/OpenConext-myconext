@@ -211,7 +211,7 @@
                     onClick={() => cancel()}/>
             <Button small={true}
                     label={saveLabel}
-                    disabled={!value || !value.trim()}
+                    disabled={!value || !value.trim() || firstValue === value}
                     onClick={() => onSave(value)}/>
         </div>
         {#if editHint}

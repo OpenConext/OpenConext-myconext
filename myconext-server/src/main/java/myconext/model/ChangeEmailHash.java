@@ -21,6 +21,8 @@ public class ChangeEmailHash implements Serializable {
 
     private String hash;
 
+    private OneTimeLoginCode oneTimeLoginCode;
+
     @Schema(type = "integer", format = "int64", example = "1634813554997")
     private Date expiresIn;
 
@@ -29,9 +31,14 @@ public class ChangeEmailHash implements Serializable {
     private String newEmail;
 
     public ChangeEmailHash(User user, String newEmail, String hash) {
+        this(user, newEmail, hash, null);
+    }
+
+    public ChangeEmailHash(User user, String newEmail, String hash, OneTimeLoginCode oneTimeLoginCode) {
         this.userId = user.getId();
-        this.hash = hash;
         this.newEmail = newEmail;
-        this.expiresIn = Date.from(LocalDateTime.now().plusHours(1).atZone(ZoneId.systemDefault()).toInstant());
+        this.hash = hash;
+        this.oneTimeLoginCode = oneTimeLoginCode;
+        this.expiresIn = Date.from(LocalDateTime.now().plusMinutes(10).atZone(ZoneId.systemDefault()).toInstant());
     }
 }

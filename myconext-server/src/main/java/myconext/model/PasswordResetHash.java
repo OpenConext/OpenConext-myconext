@@ -22,15 +22,22 @@ public class PasswordResetHash implements Serializable {
 
     private String hash;
 
+        private OneTimeLoginCode oneTimeLoginCode;
+
     @Schema(type = "integer", format = "int64", example = "1634813554997")
     private Date expiresIn;
 
     private String userId;
 
     public PasswordResetHash(User user, String hash) {
+        this(user, hash, null);
+    }
+
+    public PasswordResetHash(User user, String hash, OneTimeLoginCode oneTimeLoginCode) {
         this.userId = user.getId();
         this.hash = hash;
-        this.expiresIn = Date.from(LocalDateTime.now().plusHours(1).atZone(ZoneId.systemDefault()).toInstant());
+        this.oneTimeLoginCode = oneTimeLoginCode;
+        this.expiresIn = Date.from(LocalDateTime.now().plusMinutes(10).atZone(ZoneId.systemDefault()).toInstant());
     }
 
     @Transient

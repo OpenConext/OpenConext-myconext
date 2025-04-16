@@ -14,6 +14,6 @@ public class VerifyOneTimeLoginCode implements Serializable {
 
     @NotBlank
     private String code;
-    @NotBlank
+
     private String authenticationRequestId;
 }

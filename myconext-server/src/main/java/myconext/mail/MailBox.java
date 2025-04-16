@@ -144,6 +144,13 @@ public class MailBox {
         sendMail("reset_password", title, variables, preferredLanguage(user), user.getEmail(), false);
     }
 
+    public void sendResetPasswordOneTimeCode(User user, String code, boolean mobileRequest) {
+        String title = this.getTitle("reset_password_code", user) + code;
+        Map<String, Object> variables = variables(user, title);
+        variables.put("code", code);
+        sendMail("reset_password_code", title, variables, preferredLanguage(user), user.getEmail(), false);
+    }
+
     public void sendAddPassword(User user, String hash, boolean mobileRequest) {
         String title = this.getTitle("add_password", user);
         Map<String, Object> variables = variables(user, title);

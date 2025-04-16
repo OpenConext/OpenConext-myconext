@@ -14,7 +14,8 @@
         startLinkAccountFlow,
         startVerifyAccountFlow,
         updateEmail,
-        updateUser
+        generatePasswordResetCode,
+        updateUser, verifyPasswordCode
     } from "../api";
     import Modal from "../components/Modal.svelte";
     import EditField from "../components/EditField.svelte";
@@ -29,6 +30,7 @@
     import VerifyChoice from "../verify/VerifyChoice.svelte";
     import {dateFromEpoch} from "../utils/date";
     import LinkedAccountSummary from "../components/LinkedAccountSummary.svelte";
+    import CodeValidation from "../components/CodeValidation.svelte";
 
     let eduIDLinked = false;
 
@@ -61,6 +63,11 @@
 
     let showControlCode = false;
 
+    let hasCodeValidation = false;
+    let showCodeValidation = false;
+    let wrongCode = false;
+    let disabledButton = true;
+
     const manageVerifiedInformation = path => {
         navigate(`/${path}`, {replace: true});
     }
@@ -76,6 +83,22 @@
                 flash.setValue(I18n.t("profile.preferred", {name: institutionName(linkedAccount)}));
             });
         }
+    }
+
+    const verifyCode = code => {
+        verifyPasswordCode(code)
+            .then(res => {
+                navigate(`reset-password?h=${res.hash}`)
+            })
+            .catch(e => {
+                if (e.status === 403) {
+                    navigate("/rate-limited");
+                } else if (e.status === 400) {
+                    navigate("/expired")
+                } else {
+                    wrongCode = true;
+                }
+            })
     }
 
     const addInstitution = () => {
@@ -171,25 +194,43 @@
 
     const updateEmailValue = (value, force = false) => {
         if (validEmail(value) && value.toLowerCase() !== $user.email.toLowerCase()) {
-            updateEmail({...$user, email: value}, force)
-                .then(() => {
-                    flash.setValue(I18n.t("Email.Updated.COPY", {email: value}), 6500);
-                    tempEmailValue = null;
-                    outstandingPasswordForgotten = false;
-                    emailError = false;
-                    emailErrorMessage = null;
-                    emailEditMode = false;
-                }).catch(e => {
-                if (e.status === 409) {
-                    emailError = true;
-                    emailErrorMessage = I18n.t("Email.DuplicateEmail.COPY");
-                } else if (e.status === 406) {
-                    tempEmailValue = value;
-                    outstandingPasswordForgotten = true;
-                }
-            });
+            if (hasCodeValidation) {
+                showCodeValidation = true;
+            } else {
+                generatePasswordResetCode().then(() => {
+                    hasCodeValidation = true;
+                    showCodeValidation = true;
+                })
+            }
         }
-    };
+    }
+
+    const valueCallback = values => {
+        wrongCode = false;
+        disabledButton = values.filter(v => v !== '').length !== 6;
+    }
+
+    // const updateEmailValue = (value, force = false) => {
+    //     if (validEmail(value) && value.toLowerCase() !== $user.email.toLowerCase()) {
+    //         updateEmail({...$user, email: value}, force)
+    //             .then(() => {
+    //                 flash.setValue(I18n.t("Email.Updated.COPY", {email: value}), 6500);
+    //                 tempEmailValue = null;
+    //                 outstandingPasswordForgotten = false;
+    //                 emailError = false;
+    //                 emailErrorMessage = null;
+    //                 emailEditMode = false;
+    //             }).catch(e => {
+    //             if (e.status === 409) {
+    //                 emailError = true;
+    //                 emailErrorMessage = I18n.t("Email.DuplicateEmail.COPY");
+    //             } else if (e.status === 406) {
+    //                 tempEmailValue = value;
+    //                 outstandingPasswordForgotten = true;
+    //             }
+    //         });
+    //     }
+    // };
 
     const cancelEmailEditMode = () => {
         emailError = false;
@@ -507,6 +548,40 @@
         }
     }
 
+    div.login-code {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    p.validation-info {
+        text-align: center;
+        margin-bottom: 40px;
+    }
+
+    h2.header {
+        margin: 6px 0 30px 0;
+        color: var(--color-primary-green);
+        font-size: 28px;
+
+        &.error {
+            color: var(--color-primary-red);
+        }
+    }
+
+    div.code-validation {
+        margin-bottom: 40px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    p.error {
+        margin-top: 10px;
+        color: var(--color-primary-red);
+    }
+
+
 
 </style>
 <div class="profile">
@@ -717,5 +792,43 @@
         <ValidatedData institution={newInstitution}
                        readOnly={true}
         />
+    </Modal>
+{/if}
+
+{#if showCodeValidation}
+    <Modal showOptions={false}
+           cancel={() => showCodeValidation = false}
+           title={I18n.t("LoginCode.Title.COPY")}>
+        <div class="login-code">
+            <h2 class="header">{I18n.t("LoginCode.Header.COPY")}</h2>
+            <p class="validation-info">{@html I18n.t("LoginCode.Info.COPY", {email: $user.email})}</p>
+            <div class="code-validation">
+                <CodeValidation verify={verifyCode}
+                                size={6}
+                                validate={val => !isNaN(val)}
+                                intermediateCallback={valueCallback}/>
+                {#if wrongCode}
+                    <p class="error">{I18n.t("LoginCode.Error.COPY")}</p>
+                {/if}
+            </div>
+
+            <Button label={I18n.t("LoginCode.Continue.COPY")}
+                    onClick={verifyCode}
+                    fullSize={true}
+                    disabled={disabledButton || wrongCode}/>
+
+            <!--            <div class="resend-mail">-->
+            <!--                {#if allowedToResend}-->
+            <!--                    <p>{I18n.t("LoginCode.Resend.COPY")}-->
+            <!--                        <a href="resend"-->
+            <!--                           on:click|preventDefault|stopPropagation={resendMail}>{I18n.t("LoginCode.ResendLink.COPY")}</a>-->
+            <!--                    </p>-->
+            <!--                {:else if mailHasBeenResend}-->
+            <!--                    <span>{I18n.t("MagicLink.MailResend.COPY")}</span>-->
+            <!--                {/if}-->
+
+            <!--            </div>-->
+        </div>
+
     </Modal>
 {/if}

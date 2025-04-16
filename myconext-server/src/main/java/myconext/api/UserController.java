@@ -75,7 +75,6 @@ public class UserController implements UserAuthentication {
 
     private static final Log LOG = LogFactory.getLog(UserController.class);
 
-    private static final int VALIDITY_LOGIN_CODE_MINUTES = 10;
     private static final int RATE_LIMIT_DURATION = 15;
 
     @Getter
@@ -333,7 +332,7 @@ public class UserController implements UserAuthentication {
         String userId = samlAuthenticationRequest.getUserId();
         User user = userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException(userId));
         OneTimeLoginCode oneTimeLoginCode = user.getOneTimeLoginCode();
-        if (oneTimeLoginCode == null ||  (oneTimeLoginCode.getCreatedAt() + (1000 * 60 * VALIDITY_LOGIN_CODE_MINUTES)) < System.currentTimeMillis()) {
+        if (oneTimeLoginCode == null || oneTimeLoginCode.isExpired()) {
             //expired
             user.setOneTimeLoginCode(null);
             throw new ExpiredAuthenticationException(String.format("Expired OneTimeLoginCode"));
@@ -532,7 +531,8 @@ public class UserController implements UserAuthentication {
                     "<br/>If the URL is not properly intercepted by the eduID app, then the browser app redirects to " +
                     "<a href=\"\">eduid://client/mobile/confirm-email?h={{hash}}</a>")
     @PutMapping("/sp/email")
-    public ResponseEntity<UserResponse> updateEmail(Authentication authentication, @Valid @RequestBody UpdateEmailRequest updateEmailRequest,
+    public ResponseEntity<UserResponse> updateEmail(Authentication authentication,
+                                                    @Valid @RequestBody UpdateEmailRequest updateEmailRequest,
                                                     @RequestParam(value = "force", required = false, defaultValue = "false") boolean force) {
         User user = userFromAuthentication(authentication);
         List<PasswordResetHash> passwordResetHashes = passwordResetHashRepository.findByUserId(user.getId());
@@ -667,6 +667,62 @@ public class UserController implements UserAuthentication {
         return returnUserResponse(user);
     }
 
+    @PutMapping("/sp/generate-password-code")
+    @Operation(summary = "Generate change password code", description = """
+            Sent the user a mail with a one-time code for the user to change his / hers password.
+            """)
+    public ResponseEntity<UserResponse> generatePasswordCode(Authentication authentication) {
+        User user = userFromAuthentication(authentication);
+        List<ChangeEmailHash> changeEmailHashes = changeEmailHashRepository.findByUserId(user.getId());
+        changeEmailHashRepository.deleteAll(changeEmailHashes);
+        List<PasswordResetHash> existingPasswordHashes = passwordResetHashRepository.findByUserId(user.getId());
+        passwordResetHashRepository.deleteAll(existingPasswordHashes);
+
+        user.setForgottenPassword(true);
+        userRepository.save(user);
+
+        String hashValue = hash();
+        String code = VerificationCodeGenerator.generateOneTimeLoginCode();
+        OneTimeLoginCode oneTimeLoginCode = new OneTimeLoginCode(code);
+
+        passwordResetHashRepository.save(new PasswordResetHash(user, hashValue, oneTimeLoginCode));
+
+        logWithContext(user, "update", "generate-password-code", LOG, "Send password reset code mail");
+        mailBox.sendResetPasswordOneTimeCode(user, code, isMobileRequest(authentication));
+        //Ensure the SSO is removed the next login
+        authenticationRequestRepository.deleteByUserId(user.getId());
+        return returnUserResponse(user);
+    }
+
+    @PutMapping("/sp/verify-password-code")
+    @Operation(summary = "Verify change password code", description = """
+            If the password code is valid, then return the hash to change the password
+            """)
+    public ResponseEntity<Map<String, String>> verifyPasswordResetCode(Authentication authentication,
+                                                                       @Valid @RequestBody VerifyOneTimeLoginCode verifyOneTimeLoginCode) {
+        User user = userFromAuthentication(authentication);
+        PasswordResetHash passwordResetHash = passwordResetHashRepository.findByUserId(user.getId()).stream()
+                .findFirst()
+                .orElseThrow(() -> new ForbiddenException("No password reset hashed for user: " + user.getEmail()));
+        OneTimeLoginCode oneTimeLoginCode = passwordResetHash.getOneTimeLoginCode();
+        if (oneTimeLoginCode == null || oneTimeLoginCode.isExpired()) {
+            //expired
+            passwordResetHashRepository.delete(passwordResetHash);
+            throw new ForbiddenException("Expired passwordResetHash for User :"+user.getEmail());
+        }
+        try {
+            boolean success = oneTimeLoginCode.attemptOneTimeLoginVerification(verifyOneTimeLoginCode.getCode());
+            if (success) {
+                LOG.debug(String.format("Successful passwordResetHash for user %s",
+                        user.getEmail()));
+                return ResponseEntity.status(200).body(Map.of("hash", passwordResetHash.getHash()));
+            }
+            throw new InvalidOneTimeLoginCodeException("Invalid oneTimeLoginCode entered for user: "+ user.getEmail());
+        } catch (ForbiddenException e) {
+            passwordResetHashRepository.delete(passwordResetHash);
+            throw e;
+        }
+    }
 
     @PutMapping("/sp/institution")
     @Operation(summary = "Remove linked account",

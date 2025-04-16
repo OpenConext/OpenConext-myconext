@@ -16,6 +16,8 @@ import java.security.MessageDigest;
 @ToString
 public class OneTimeLoginCode implements Serializable {
 
+    private static final int VALIDITY_LOGIN_CODE_MINUTES = 10;
+
     @Setter
     private String code;
 
@@ -44,4 +46,7 @@ public class OneTimeLoginCode implements Serializable {
         return false;
     }
 
+    public boolean isExpired() {
+        return (createdAt + (1000 * 60 * VALIDITY_LOGIN_CODE_MINUTES)) < System.currentTimeMillis();
+    }
 }

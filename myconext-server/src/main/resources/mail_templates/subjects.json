@@ -19,6 +19,10 @@
     "en": "Reset your eduID password",
     "nl": "Reset je eduID wachtwoord"
   },
+  "reset_password_code": {
+    "en": "Reset your eduID password with code: ",
+    "nl": "Reset je eduID wachtwoord met de code: "
+  },
   "add_password": {
     "en": "Add an eduID password",
     "nl": "Toevoegen eduID wachtwoord"

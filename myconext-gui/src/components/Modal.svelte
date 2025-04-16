@@ -20,8 +20,6 @@
     export let href = undefined;
     export let largeConfirmation = false;
 
-    let modal;
-
     const handleKeydown = e => {
         if (e.key === "Escape") {
             if (cancel) {

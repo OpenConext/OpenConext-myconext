@@ -86,9 +86,15 @@ export function updatePassword(userId, newPassword, hash) {
     return postPutJson("/myconext/api/sp/update-password", body, "PUT");
 }
 
-export function resetPasswordLink() {
-    return postPutJson("/myconext/api/sp/reset-password-link", {}, "PUT");
+export function generatePasswordResetCode() {
+    return postPutJson("/myconext/api/sp/generate-password-code", {}, "PUT");
 }
+
+export function verifyPasswordCode(code) {
+    const body = {code: code};
+    return postPutJson("/myconext/api/sp/verify-password-code", body, "PUT");
+}
+
 
 export function resetPasswordHashValid(hash) {
     return fetchJson(`/myconext/api/sp/password-reset-hash-valid?hash=${hash}`);
