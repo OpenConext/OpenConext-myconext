@@ -61,7 +61,7 @@ const nl = {
         allAtOnce: "Je kunt deze gegevens in één keer toevoegen door je onderwijsinstelling te koppelen met eduID. Druk hiervoor op <strong>Voeg instelling toe</strong> in de eduID app of <a href='{{url}}'>Mijn eduID</a>.",
         note: "<strong>Let op:</strong> heb je vorig schooljaar al een eduID gemaakt? Dan moet je misschien opnieuw je instelling koppelen",
         help: "Meer hulp nodig?",
-        helpInfo: "Stuur een e-mail naar <a href='mailto:help@eduID.nl'>help@eduid.nl</a>. We komen zo snel mogelijk bij je terug."
+        helpInfo: "Bekijk de <a href="https://servicedesk.surf.nl/wiki/x/L4JsB">eduID documentatie</a> en de <a href="https://servicedesk.surf.nl/wiki/x/UIJsB">veelgestelde vragen</a>. Als je er niet uit komt kun je een e-mail sturen naar <a href='mailto:help@eduID.nl'>help@eduid.nl</a>. We komen zo snel mogelijk bij je terug."
     },
     privacy: {
         eduID: "Privacyverklaring",
