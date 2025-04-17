@@ -35,8 +35,43 @@ export const PrivacyNL = () => {
                         <li><AnchorLink identifier="privacyverklaring" label="Wijzigingen privacyverklaring"/></li>
                     </ol>
                 </p>
-                <CollapseField title="Wijzigingshistorie"
-                               info="Versie 18 oktober 2024"/>
+                <CollapseField title="Wijzigingshistorie">
+                    <ul>
+                        <li>Wijzigingen in versie 18 oktober 2024
+                            <ul>
+                                <li>Verwerkingen toegevoegd die plaatsvinden tijdens identiteitsverificatie via iDIN en eIDAS.</li>
+                            </ul>
+                        </li>
+                        <li>Wijzigingen in versie 17 juni 2024
+                            <ul>
+                                <li>Grote stukken herschreven. De belangrijkste wijzigingen zijn: </li>
+                                <li>Doelen en grondslagen van de verwerkingen. Hierbij is ook aangegeven voor welke verwerkingen SURF verantwoordelijk is, en voor welke verwerkingen een instelling.</li>
+                                <li>Bewaartermijnen uitgebreid en de uitgelegd waarom de bewaartermijn wordt gehanteerd.</li>
+                                <li>Je rechten en waar je die kunt uitoefenen beter beschreven</li>
+                            </ul>
+                        </li>
+                        <li>Wijzigingen in versie 4 april 2023
+                            <ul>
+                                <li>Overzicht cookies bijgewerkt.</li>
+                            </ul>
+                        </li>
+                        <li>Wijzigingen in versie 16 januari 2023
+                            <ul>
+                                <li>Verwerkingen van de eduID-app toegevoegd.</li>
+                                <li>Overzicht cookies bijgewerkt</li>
+                            </ul>
+                        </li>
+                        <li>Wijzigingen in versie 29 september 2020
+                            <ul>
+                                <li>We hebben het e-mailadres gewijzigd van help@surfconext.nl naar help@eduid.nl.</li>
+                                <li>Een overzicht van welke cookies eduID gebruikt. eduID gebruikt geen tracking of analytische cookies</li>
+                                <li>eduID bevat nu de mogelijkheid om andere accounts te linken.</li>
+                                <li>Een beschrijving van welke gegevens er (extra) worden opgeslagen als je een ander account koppelt.</li>
+                                <li>Kleine tekstuele wijzigingen om de leesbaarheid te verbeteren.</li>
+                            </ul>
+                        </li>
+                    </ul>
+                </CollapseField>
 
             </div>
             <div id="eduid" className="card full bottom">
@@ -48,7 +83,7 @@ export const PrivacyNL = () => {
                     bijvoorbeeld ook stage- of praktijkbegeleiders, (gast)docenten, onderzoekers, alumni,
                     voorinschrijvers, professionals, mensen uit het bedrijfsleven en anderen. Met dit account kan de
                     gebruiker inloggen op aan eduID gekoppelde applicaties. Deze applicaties kunnen van instellingen
-                    zijn die bij SURF zijn aangesloten, van SURF zelf of van derden.<br/>
+                    zijn die bij SURF zijn aangesloten, van SURF zelf of van derden.<br/><br/>
                     <Link to={"/about"}>Lees meer over eduID.</Link>
                 </p>
             </div>
@@ -84,7 +119,8 @@ export const PrivacyNL = () => {
                                 <li>Tijdelijk Session ID</li>
                             </ul>
                         </li>
-
+                        <br/>
+                        
                         <li>Als je je eduID koppelt aan het account van je instelling, dan verwerkt eduID ook de volgende
                         gegevens:
                             <ul>
@@ -95,6 +131,7 @@ export const PrivacyNL = () => {
                                 </li>
                             </ul>
                         </li>
+                        <br/>
 
                         <li>Wanneer je met je bank (iDIN) je identiteit verifieerd verwerkt eduID ook de volgende gegevens:
                             <ul>
@@ -102,6 +139,7 @@ export const PrivacyNL = () => {
                                 <li>Je geboortedatum zoals bekend bij de bank waar de verificatie mee uitgevoerd wordt.</li>
                             </ul>
                         </li>
+                        <br/>
 
                         <li>Wanneer je met een nationaal <a href="https://www.logius.nl/domeinen/toegang/eidas/wat-is-het">eID 
                             (eIDAS)</a> je identiteit verifieerd verwerkt eduID ook de volgende gegevens:
@@ -112,6 +150,7 @@ export const PrivacyNL = () => {
                                     identificeren.</li>
                             </ul>
                         </li>
+                        <br/>
                         
                         <li>Als je de eduID-app gebruikt, dan verwerkt eduID ook de volgende gegevens:
                             <ul>
