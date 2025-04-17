@@ -135,7 +135,7 @@
   "Email.Update.COPY": "Verstuur",
   "Email.Cancel.COPY": "Annuleer",
   "Email.Save.COPY": "Opslaan",
-  "Email.Updated.COPY": "Een e-email is verzonden naar %1$s",
+  "Email.Updated.COPY": "Een verificatie e-email is verzonden naar %1$s",
   "Email.Confirmed.COPY": "Je e-mail is gewijzigd naar %1$s",
   "Email.Back.COPY": "/personal",
   "Email.EmailEquality.COPY": "Je nieuwe e-mailadres is hetzelfde als je huidige e-mailadres",

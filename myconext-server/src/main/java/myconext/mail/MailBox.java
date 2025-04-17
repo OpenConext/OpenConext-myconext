@@ -169,6 +169,13 @@ public class MailBox {
         sendMail("new_device", title, variables, preferredLanguage(user), user.getEmail(), false);
     }
 
+    public void sendChangeEmailOneTimeCode(User user, String newMail, String code) {
+        String title = this.getTitle("change_email_code", user) + code;
+        Map<String, Object> variables = variables(user, title);
+        variables.put("code", code);
+        sendMail("change_email_code", title, variables, preferredLanguage(user), newMail, false);
+    }
+
     public void sendUpdateEmail(User user, String newMail, String hash, boolean mobileRequest) {
         String title = this.getTitle("update_email", user);
         Map<String, Object> variables = variables(user, title);

@@ -31,6 +31,10 @@
     "en": "Update your eduID email",
     "nl": "Verander je eduID email"
   },
+  "change_email_code": {
+    "en": "Update your eduID email with code: ",
+    "nl": "Verander je eduID email met code: "
+  },
   "confirmation_update_email": {
     "en": "Change of eduID email",
     "nl": "Aanpassing eduID email"

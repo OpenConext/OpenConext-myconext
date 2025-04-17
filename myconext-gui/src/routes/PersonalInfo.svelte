@@ -8,14 +8,14 @@
     import Button from "../components/Button.svelte";
     import {
         deleteLinkedAccount,
+        generateEmailChangeCode,
         iDINIssuers,
         me,
         preferLinkedAccount,
         startLinkAccountFlow,
         startVerifyAccountFlow,
-        updateEmail,
-        generatePasswordResetCode,
-        updateUser, verifyPasswordCode
+        updateUser,
+        verifyEmailChangeCode
     } from "../api";
     import Modal from "../components/Modal.svelte";
     import EditField from "../components/EditField.svelte";
@@ -31,6 +31,8 @@
     import {dateFromEpoch} from "../utils/date";
     import LinkedAccountSummary from "../components/LinkedAccountSummary.svelte";
     import CodeValidation from "../components/CodeValidation.svelte";
+    
+    const resendMailAllowedTimeOut = $config.emailSpamThresholdSeconds * 1000;
 
     let eduIDLinked = false;
 
@@ -67,6 +69,8 @@
     let showCodeValidation = false;
     let wrongCode = false;
     let disabledButton = true;
+    let allowedToResend = false;
+    let mailHasBeenResend = false;
 
     const manageVerifiedInformation = path => {
         navigate(`/${path}`, {replace: true});
@@ -86,9 +90,9 @@
     }
 
     const verifyCode = code => {
-        verifyPasswordCode(code)
+        verifyEmailChangeCode(code)
             .then(res => {
-                navigate(`reset-password?h=${res.hash}`)
+                navigate(`update-email?h=${res.hash}`)
             })
             .catch(e => {
                 if (e.status === 403) {
@@ -197,10 +201,25 @@
             if (hasCodeValidation) {
                 showCodeValidation = true;
             } else {
-                generatePasswordResetCode().then(() => {
+                generateEmailChangeCode(value, force).then(() => {
                     hasCodeValidation = true;
                     showCodeValidation = true;
-                })
+                    flash.setValue(I18n.t("Email.Updated.COPY", {email: value}), 6500);
+                    tempEmailValue = null;
+                    outstandingPasswordForgotten = false;
+                    emailError = false;
+                    emailErrorMessage = null;
+                    emailEditMode = false;
+                    setTimeout(() => allowedToResend = true, resendMailAllowedTimeOut);
+                }).catch(e => {
+                    if (e.status === 409) {
+                        emailError = true;
+                        emailErrorMessage = I18n.t("Email.DuplicateEmail.COPY");
+                    } else if (e.status === 406) {
+                        tempEmailValue = value;
+                        outstandingPasswordForgotten = true;
+                    }
+                });
             }
         }
     }
@@ -209,28 +228,6 @@
         wrongCode = false;
         disabledButton = values.filter(v => v !== '').length !== 6;
     }
-
-    // const updateEmailValue = (value, force = false) => {
-    //     if (validEmail(value) && value.toLowerCase() !== $user.email.toLowerCase()) {
-    //         updateEmail({...$user, email: value}, force)
-    //             .then(() => {
-    //                 flash.setValue(I18n.t("Email.Updated.COPY", {email: value}), 6500);
-    //                 tempEmailValue = null;
-    //                 outstandingPasswordForgotten = false;
-    //                 emailError = false;
-    //                 emailErrorMessage = null;
-    //                 emailEditMode = false;
-    //             }).catch(e => {
-    //             if (e.status === 409) {
-    //                 emailError = true;
-    //                 emailErrorMessage = I18n.t("Email.DuplicateEmail.COPY");
-    //             } else if (e.status === 406) {
-    //                 tempEmailValue = value;
-    //                 outstandingPasswordForgotten = true;
-    //             }
-    //         });
-    //     }
-    // };
 
     const cancelEmailEditMode = () => {
         emailError = false;
@@ -582,7 +579,6 @@
     }
 
 
-
 </style>
 <div class="profile">
     {#if showManageVerifiedInformation}
@@ -817,17 +813,17 @@
                     fullSize={true}
                     disabled={disabledButton || wrongCode}/>
 
-            <!--            <div class="resend-mail">-->
-            <!--                {#if allowedToResend}-->
-            <!--                    <p>{I18n.t("LoginCode.Resend.COPY")}-->
-            <!--                        <a href="resend"-->
-            <!--                           on:click|preventDefault|stopPropagation={resendMail}>{I18n.t("LoginCode.ResendLink.COPY")}</a>-->
-            <!--                    </p>-->
-            <!--                {:else if mailHasBeenResend}-->
-            <!--                    <span>{I18n.t("MagicLink.MailResend.COPY")}</span>-->
-            <!--                {/if}-->
+                    <div class="resend-mail">
+                        {#if allowedToResend}
+                            <p>{I18n.t("LoginCode.Resend.COPY")}
+                                <a href="resend"
+                                   on:click|preventDefault|stopPropagation={resendMail}>{I18n.t("LoginCode.ResendLink.COPY")}</a>
+                            </p>
+                        {:else if mailHasBeenResend}
+                            <span>{I18n.t("MagicLink.MailResend.COPY")}</span>
+                        {/if}
 
-            <!--            </div>-->
+                    </div>
         </div>
 
     </Modal>

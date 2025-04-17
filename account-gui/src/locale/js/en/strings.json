@@ -135,7 +135,7 @@
   "Email.Update.COPY": "Request",
   "Email.Cancel.COPY": "Cancel",
   "Email.Save.COPY": "Save",
-  "Email.Updated.COPY": "An email has been sent to %1$s",
+  "Email.Updated.COPY": "A verification email has been sent to %1$s",
   "Email.Confirmed.COPY": "Your email address has been changed to %1$s",
   "Email.Back.COPY": "/personal",
   "Email.EmailEquality.COPY": "Your new email address is the same as your current email",

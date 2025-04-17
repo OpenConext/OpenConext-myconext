@@ -1,0 +1,9 @@
+Login code
+
+Your confirmation code is below. Enter it in the opened browser window to confirm your email address.
+
+{{code}}
+
+If this is not you or you do not want an eduID after all, you can ignore this message.
+
+{{> footer_en.txt}}

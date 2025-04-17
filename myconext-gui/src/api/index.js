@@ -95,6 +95,16 @@ export function verifyPasswordCode(code) {
     return postPutJson("/myconext/api/sp/verify-password-code", body, "PUT");
 }
 
+export function generateEmailChangeCode(value, force) {
+    const body = {email: value};
+    const forceParam = force ? "?force=true" : "";
+    return postPutJson(`/myconext/api/sp/generate-email-code${forceParam}`, body, "PUT");
+}
+
+export function verifyEmailChangeCode(code) {
+    const body = {code: code};
+    return postPutJson("/myconext/api/sp/verify-email-code", body, "PUT");
+}
 
 export function resetPasswordHashValid(hash) {
     return fetchJson(`/myconext/api/sp/password-reset-hash-valid?hash=${hash}`);

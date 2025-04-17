@@ -561,6 +561,72 @@ public class UserController implements UserAuthentication {
         return returnUserResponse(user);
     }
 
+    @Operation(summary = "Generate email change code",
+            description = "Request to change the email of the user. We sned a ont-time verification code in verification email")
+    @PutMapping("/sp/generate-email-code")
+    public ResponseEntity<UserResponse> generateEmailCode(Authentication authentication,
+                                                    @Valid @RequestBody UpdateEmailRequest updateEmailRequest,
+                                                    @RequestParam(value = "force", required = false, defaultValue = "false") boolean force) {
+        User user = userFromAuthentication(authentication);
+        List<PasswordResetHash> passwordResetHashes = passwordResetHashRepository.findByUserId(user.getId());
+        if (!CollectionUtils.isEmpty(passwordResetHashes)) {
+            if (force) {
+                passwordResetHashRepository.deleteAll(passwordResetHashes);
+            } else {
+                throw new NotAcceptableException("Update email not allowed. Outstanding password reset for: " + user.getEmail());
+            }
+        }
+        changeEmailHashRepository.deleteByUserId(user.getId());
+
+        String newEmail = updateEmailRequest.getEmail();
+        Optional<User> optionalUser = userRepository.findUserByEmail(emailGuessingPreventor.sanitizeEmail(newEmail));
+        if (optionalUser.isPresent()) {
+            throw new DuplicateUserEmailException("There already exists a user with email " + newEmail);
+        }
+
+        String hashValue = hash();
+        String code = VerificationCodeGenerator.generateOneTimeLoginCode();
+        OneTimeLoginCode oneTimeLoginCode = new OneTimeLoginCode(code);
+
+        changeEmailHashRepository.save(new ChangeEmailHash(user, newEmail, hashValue, oneTimeLoginCode));
+        logWithContext(user, "update", "generate-email-code", LOG, "Send email-one-time-login mail");
+
+        mailBox.sendChangeEmailOneTimeCode(user, newEmail, code);
+
+        authenticationRequestRepository.deleteByUserId(user.getId());
+        return returnUserResponse(user);
+    }
+
+    @PutMapping("/sp/verify-email-code")
+    @Operation(summary = "Verify change email code", description = """
+            If the email code is valid, then return the hash to change the email
+            """)
+    public ResponseEntity<Map<String, String>> verifyChangeEmailCode(Authentication authentication,
+                                                               @Valid @RequestBody VerifyOneTimeLoginCode verifyOneTimeLoginCode) {
+        User user = userFromAuthentication(authentication);
+        ChangeEmailHash changeEmailHash = changeEmailHashRepository.findByUserId(user.getId()).stream()
+                .findFirst()
+                .orElseThrow(() -> new ForbiddenException("No change email hash for user: " + user.getEmail()));
+        OneTimeLoginCode oneTimeLoginCode = changeEmailHash.getOneTimeLoginCode();
+        if (oneTimeLoginCode == null || oneTimeLoginCode.isExpired()) {
+            //expired
+            changeEmailHashRepository.delete(changeEmailHash);
+            throw new ForbiddenException("Expired changeEmailHash for User :"+user.getEmail());
+        }
+        try {
+            boolean success = oneTimeLoginCode.attemptOneTimeLoginVerification(verifyOneTimeLoginCode.getCode());
+            if (success) {
+                LOG.debug(String.format("Successful changeEmailHash for user %s",
+                        user.getEmail()));
+                return ResponseEntity.status(200).body(Map.of("hash", changeEmailHash.getHash()));
+            }
+            throw new InvalidOneTimeLoginCodeException("Invalid oneTimeLoginCode entered for user: "+ user.getEmail());
+        } catch (ForbiddenException e) {
+            changeEmailHashRepository.delete(changeEmailHash);
+            throw e;
+        }
+    }
+
     @Operation(summary = "Confirm email change",
             description = "Confirm the user has clicked on the link in the email sent after requesting to change the users email" +
                     "<br/>A confirmation email is sent to notify the user of the security change with a link to the " +
