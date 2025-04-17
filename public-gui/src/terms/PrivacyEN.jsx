@@ -35,8 +35,45 @@ export const PrivacyEN = () => {
                         <li><AnchorLink identifier="privacyverklaring" label="Changes to privacy policy"/></li>
                     </ol>
                 </p>
-                <CollapseField title="Changes since previous versions"
-                               info="Version 18 October 2024"/>
+
+		<CollapseField title="Changes since previous versions">
+                    <ul>
+                        <li>Changes in version 18 October 2024
+                            <ul>
+                                <li>Added the data which is processed when verifying the eduID via iDIN or eIDAS.</li>
+                            </ul>
+                        </li>
+                        <li>Changes in version 17 June 2024
+                            <ul>
+                                <li>Large parts rewritten. The most important changes are: </li>
+                                <li>Purposes and lawfulness of processing. It is also indicated for which processing SURF is the controller and for which processing an institution.</li>
+                                <li>Retention periods expanded and explained why the retention period is used.</li>
+                                <li>Your rights and where you can exercise them are better described.</li>
+                            </ul>
+                        </li>
+                        <li>Changes in version 4 april 2023
+                            <ul>
+                                <li>Cookie overview updated.</li>
+                            </ul>
+                        </li>
+                        <li>Changes in version 16 January 2023
+                            <ul>
+                                <li>Added data processing of the eduID app.</li>
+                                <li>Cookie overview updated</li>
+                            </ul>
+                        </li>
+                        <li>Changes in version 29 September 2020
+                            <ul>
+                                <li>We changed the email address mentioned in this privacy policy from help@surfconext.nl to help@eduid.nl.</li>
+                                <li>The privacy policy now explains which cookies eduID uses. eduID does not use any tracking or analytical cookies.</li>
+                                <li>eduID bevat nu de mogelijkheid om andere accounts te linken.</li>
+                                <li>eduID now contains the feature to connect other accounts to eduID. The privacy policy desribes which (extra) data is being stored when you connect another account to your eduID.</li>
+                                <li>Several smaller textual changes to improve readability.</li>
+                            </ul>
+                        </li>
+                    </ul>
+                </CollapseField>
+		    
 
             </div>
             <div id="eduid" className="card full bottom">
@@ -47,14 +84,14 @@ export const PrivacyEN = () => {
 					is affiliated with an institution. So not only students, but also internship or practice supervisors,
 					(guest) lecturers, researchers, alumni, pre-registrants, professionals, people from the business community
 					and others. With this account the user can log in to applications connected to eduID. These applications
-					can be from institutions affiliated with SURF, from SURF itself or from third parties. <br/>
+					can be from institutions affiliated with SURF, from SURF itself or from third parties. <br/><br/>
                     <Link to={"/about"}>Read more about eduID.</Link>
                 </p>
             </div>
             <div id="surf" className="card full bottom">
                 <h5>Contact details SURF</h5>
                 <p className="info">
-                    eduID is offered and managed by SURF, a cooperative of Dutch educational and research institutions.<br/>
+                    eduID is offered and managed by SURF, a cooperative of Dutch educational and research institutions.<br/><br/>
                     SURF<br/>
                     Moreelsepark 48<br/>
                     3511 EP Utrecht, Nederland<br/>
@@ -80,6 +117,7 @@ export const PrivacyEN = () => {
 	                        <li>Temporary Session ID</li>
 	                    </ul>
 					</li>
+			<br/>
 
                     <li>If you link your eduID to your institution&apos;s account, eduID also processes the following data:
 						<ul>
@@ -89,6 +127,7 @@ export const PrivacyEN = () => {
 							<li>Your role(s) within the linked institution (for example student or employee)</li>
 						</ul>
 					</li>
+			<br/>
 
 					<li>If you verify your eduID using iDIN, eduID also processes the following data:
 						<ul>
@@ -97,6 +136,7 @@ export const PrivacyEN = () => {
 							<li>Your date of birth as known by the bank through which verification is carried out. </li>
 						</ul>
 					</li>
+			<br/>
 
 					<li>If you verify your eduID through eIDAS, eduID also processes the following data:
 						<ul>
@@ -106,6 +146,7 @@ export const PrivacyEN = () => {
 							<li>A PseudoID, an identifying number used to identify a natural person</li>
 						</ul>
 					</li>
+			<br/>
 
 					<li>If you use the eduID app, eduID also processes the following data:
 						<ul>
