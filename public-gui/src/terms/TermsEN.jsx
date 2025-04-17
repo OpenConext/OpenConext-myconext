@@ -8,7 +8,7 @@ export const TermsEN = () => {
         <Background>
             <div className="card full">
                 <p className="info">
-                    <strong>Please note:</strong> the Dutch version of the terms of service is authoritative. <br/>
+                    <strong>Please note:</strong> the Dutch version of the terms of service is authoritative. <br/><br/>
                     An eduID account is a digital identity of the user offered and managed by SURF, which can be 
                     used in the field of education and research. Any person can create an eduID account, regardless 
                     of whether this person is affiliated with an institution. With this account the user can log in 
@@ -18,8 +18,23 @@ export const TermsEN = () => {
                     find the rights and obligations that apply when using an eduID account.<br/>
                     By creating an eduID account, the User agrees to these terms of use.
                 </p>
-                <CollapseField title="Changes since previous versions"
-                               info="Versie 1: 17 juni 2024"/>
+                
+                <CollapseField title="Changes since previous versions">
+                    <ul>
+                        <li>Changes in version 17 juni 2024
+                            <ul>
+                                <li>Terms of Use are better structured. Not much has changed in terms of content.</li>
+                                <li>Introduction text has been adjusted</li>
+                            </ul>
+                        </li>
+                        <li>Changes in version 11 maart 2020
+                            <ul>
+                                <li>Initial version</li>
+                            </ul>
+                        </li>
+                    </ul>
+                </CollapseField>
+                
             </div>
             <div className="card bottom full">
                 <h5>
