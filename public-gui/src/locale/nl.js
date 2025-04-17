@@ -46,8 +46,8 @@ const nl = {
         bankInfo: "Je logt in bij je bank. Die deelt je naam en geboortedatum met ons. Je doet geen betaling.",
         european: "Met een Europees identiteitsbewijs",
         europeanInfo: "Je laat je identiteitsbewijs en een controlecode zien aan een eduID Service Desk (online of bij een instelling).",
-        manage: "Beheren van jouw eduID",
-        manageInfo: "Je kunt je eduID-account beheren via <a href='{{url}}'>Mijn eduID</a>. Hier beheer je jouw naam, e-mailadres en de beveiliging van je eduID-account. Ook kun je zien op welke diensten je al bent ingelogd met eduID en je eduID accountinformatie downloaden."
+        manage: "Waar vind je je gegevens terug?",
+        manageInfo: "In <a href='{{url}}'>Mijn eduID</a> staat je naam, e-mailadres en hoe je eduID beveiligd is. Ook kun je hier zien bij welke websites en diensten je al bent ingelogd met eduID en je gegevens downloaden en verwijderen."
     },
     support: {
         eduID: "Help",
@@ -61,7 +61,7 @@ const nl = {
         allAtOnce: "Je kunt deze gegevens in één keer toevoegen door je onderwijsinstelling te koppelen met eduID. Druk hiervoor op <strong>Voeg instelling toe</strong> in de eduID app of <a href='{{url}}'>Mijn eduID</a>.",
         note: "<strong>Let op:</strong> heb je vorig schooljaar al een eduID gemaakt? Dan moet je misschien opnieuw je instelling koppelen",
         help: "Meer hulp nodig?",
-        helpInfo: "Stuur een e-mail naar <a href='mailto:help@eduID.nl'>help@eduID.nl</a>. We komen zo snel mogelijk bij je terug."
+        helpInfo: "Bekijk de <a href=\"https://servicedesk.surf.nl/wiki/x/L4JsB\">eduID documentatie</a> en de <a href=\"https://servicedesk.surf.nl/wiki/x/UIJsB\">veelgestelde vragen</a>. Als je er niet uit komt kun je een e-mail sturen naar <a href='mailto:help@eduID.nl'>help@eduid.nl</a>. We komen zo snel mogelijk bij je terug."
     },
     privacy: {
         eduID: "Privacyverklaring",

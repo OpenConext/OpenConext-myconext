@@ -62,11 +62,11 @@ const en = {
         allAtOnce: "You can add this information all at once by connecting your educational institution to eduID. To do this, press <strong>Add an institution</strong> in the eduID app or <a href='{{url}}'>My eduID</a>.",
         note: "<strong>Note</strong>: did you create an eduID last school year? You may need to connect your institution again.",
         help: "Need more help?",
-        helpInfo: "Send an email to <a href='mailto:help@eduID.nl'>help@eduID.nl</a>. We’ll get back to you as soon as possible."
+        helpInfo: "Have a look at the <a href=\"https://servicedesk.surf.nl/wiki/x/MIJsB\">eduID documentation</a> and the <a href=\"https://servicedesk.surf.nl/wiki/x/ToJsB\">FAQ</a>, or send an email to <a href='mailto:help@eduid.nl'>help@eduid.nl</a>. We’ll get back to you as soon as possible."
     },
     privacy: {
         eduID: "Privacy Policy",
-        title: "Version June 17, 2024"
+        title: "Version October 18, 2024"
     },
     terms: {
         eduID: "Terms of Use",

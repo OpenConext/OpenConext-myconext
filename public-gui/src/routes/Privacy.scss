@@ -32,6 +32,10 @@
         margin-top: 8px;
         word-break: break-word;
 
+        &.inner {
+            margin-top: 0;
+        }
+
         li {
             margin-left: 16px;
         }

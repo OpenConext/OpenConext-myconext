@@ -12,13 +12,29 @@ export const TermsNL = () => {
                     gebruikt kan worden in het domein van onderwijs en onderzoek. Iedere persoon kan een eduID-account
                     aanmaken, ongeacht of deze persoon verbonden is aan een instelling. Met dit account kan de gebruiker
                     inloggen op aan eduID gekoppelde applicaties. Deze applicaties kunnen van instellingen zijn die bij
-                    SURF zijn aangesloten, van SURF zelf of van derden.<br/>
+                    SURF zijn aangesloten, van SURF zelf of van derden.<br/><br/>
                     In deze gebruiksvoorwaarden vind je de gedragsregels voor het gebruik van eduID en daarnaast vind je
-                    de rechten en plichten die gelden bij het gebruik van een eduID-account. <br/>
+                    de rechten en plichten die gelden bij het gebruik van een eduID-account. <br/><br/>
                     Door het aanmaken van een eduID-account, gaat de Gebruiker akkoord met deze gebruikersvoorwaarden.
                 </p>
-                <CollapseField title="Wijzigingshistorie"
-                               info="Versie 1: 17 juni 2024"/>
+
+                <CollapseField title="Wijzigingen ten opzichte van vorige versies">
+                    <ul>
+                        <li>Wijzigingen in versie 17 juni 2024
+                            <ul className="inner">
+                                <li>Gebruiksvoorwaarden zijn beter gestructureerd. Inhoudelijk is niet veel gewijzigd.
+                                </li>
+                                <li>Introductie-tekst is aangepast.</li>
+                            </ul>
+                        </li>
+                        <li>Wijzigingen in versie 11 maart 2020
+                            <ul className="inner">
+                                <li>Initiële versie</li>
+                            </ul>
+                        </li>
+                    </ul>
+                </CollapseField>
+
             </div>
             <div className="card bottom full">
                 <h5>
@@ -81,7 +97,8 @@ export const TermsNL = () => {
                 <h5>3. Misbruik
                 </h5>
                 <p className="info">
-                    <strong>3.1</strong> Onder misbruik wordt verstaan – maar is hiertoe niet beperkt – het gebruiken van
+                    <strong>3.1</strong> Onder misbruik wordt verstaan – maar is hiertoe niet beperkt – het gebruiken
+                    van
                     het eduID-Account op een wijze waarvoor het account niet bedoeld is. Onder misbruik valt in ieder
                     geval:
                     <ul>
