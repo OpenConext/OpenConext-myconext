@@ -31,8 +31,8 @@
     import {dateFromEpoch} from "../utils/date";
     import LinkedAccountSummary from "../components/LinkedAccountSummary.svelte";
     import CodeValidation from "../components/CodeValidation.svelte";
-    
-    const resendMailAllowedTimeOut = $config.emailSpamThresholdSeconds * 1000;
+
+    const resendMailAllowedTimeOut = 2000;//$config.emailSpamThresholdSeconds * 1000;
 
     let eduIDLinked = false;
 
@@ -814,7 +814,7 @@
                     disabled={disabledButton || wrongCode}/>
 
                     <div class="resend-mail">
-                        {#if allowedToResend}
+                        {#if allowedToResend || 1==1}
                             <p>{I18n.t("LoginCode.Resend.COPY")}
                                 <a href="resend"
                                    on:click|preventDefault|stopPropagation={resendMail}>{I18n.t("LoginCode.ResendLink.COPY")}</a>
