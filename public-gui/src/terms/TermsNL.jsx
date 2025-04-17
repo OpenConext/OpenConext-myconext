@@ -17,23 +17,24 @@ export const TermsNL = () => {
                     de rechten en plichten die gelden bij het gebruik van een eduID-account. <br/><br/>
                     Door het aanmaken van een eduID-account, gaat de Gebruiker akkoord met deze gebruikersvoorwaarden.
                 </p>
-                
+
                 <CollapseField title="Wijzigingen ten opzichte van vorige versies">
                     <ul>
                         <li>Wijzigingen in versie 17 juni 2024
-                            <ul>
-                                <li>Gebruiksvoorwaarden zijn beter gestructureerd. Inhoudelijk is niet veel gewijzigd.</li>
+                            <ul className="inner">
+                                <li>Gebruiksvoorwaarden zijn beter gestructureerd. Inhoudelijk is niet veel gewijzigd.
+                                </li>
                                 <li>Introductie-tekst is aangepast.</li>
                             </ul>
                         </li>
                         <li>Wijzigingen in versie 11 maart 2020
-                            <ul>
+                            <ul className="inner">
                                 <li>Initiële versie</li>
                             </ul>
                         </li>
                     </ul>
                 </CollapseField>
-                
+
             </div>
             <div className="card bottom full">
                 <h5>
@@ -96,7 +97,8 @@ export const TermsNL = () => {
                 <h5>3. Misbruik
                 </h5>
                 <p className="info">
-                    <strong>3.1</strong> Onder misbruik wordt verstaan – maar is hiertoe niet beperkt – het gebruiken van
+                    <strong>3.1</strong> Onder misbruik wordt verstaan – maar is hiertoe niet beperkt – het gebruiken
+                    van
                     het eduID-Account op een wijze waarvoor het account niet bedoeld is. Onder misbruik valt in ieder
                     geval:
                     <ul>

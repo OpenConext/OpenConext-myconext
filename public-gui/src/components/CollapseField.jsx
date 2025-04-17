@@ -3,7 +3,7 @@ import "./CollapseField.scss"
 import caretUp from "../assets/caret_up.svg";
 import caretDown from "../assets/caret_down.svg";
 
-export const CollapseField = ({title, info}) => {
+export const CollapseField = ({title, info, children}) => {
 
     const [collapse, setCollapse] = useState(false)
 
@@ -17,8 +17,11 @@ export const CollapseField = ({title, info}) => {
                 <img src={collapse ?  caretUp: caretDown}
                      className="caret" alt="caret"/>
             </div>
-            {collapse && <p className="collapsed"
+            {(collapse && info) && <p className="collapsed"
                             dangerouslySetInnerHTML={{__html: info}}/>}
+            {(collapse && !info) && <div className="collapsed">
+                {children}
+            </div>}
         </div>
     );
 }
