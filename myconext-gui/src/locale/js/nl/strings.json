@@ -31,6 +31,7 @@
   "Header.Logout.COPY": "Uitloggen",
   "Header.LogOff.COPY": "Afmelden",
   "Landing.LogoutTitle.COPY": "Je bent uitgelogd",
+  "Landing.RateLimitTitle.COPY": "Je bent uitgelogd, omdat je het maximale aantal pogingen hebt bereikt",
   "RegistrationCheck.MainText.COPY": "Controleren op\nbestaande inschrijving\n",
   "RegistrationCheck.HighLight.COPY": "bestaande inschrijving",
   "RegistrationCheck.LogoutStatus.COPY": "Sluit de browser om uit te loggen.",

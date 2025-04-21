@@ -1,5 +1,5 @@
 <script>
-    import {user, flash} from "../stores/user";
+    import {flash, user} from "../stores/user";
     import {onMount} from "svelte";
     import {confirmEmail} from "../api";
     import {navigate} from "svelte-routing";
@@ -9,6 +9,7 @@
     onMount(() => {
         const urlSearchParams = new URLSearchParams(window.location.search);
         const hash = urlSearchParams.get("h");
+        const nav = urlSearchParams.get("nav");
         confirmEmail(hash)
             .then(json => {
                 for (var key in json) {
@@ -17,7 +18,7 @@
                     }
                 }
                 flash.setValue(I18n.t("Email.Confirmed.COPY", {email: $user.email}));
-                navigate("/personal");
+                navigate(`/${nav ? "security" : "personal"}`);
             })
             .catch(() => navigate("/404"))
     });

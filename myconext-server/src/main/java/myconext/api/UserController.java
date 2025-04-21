@@ -335,11 +335,11 @@ public class UserController implements UserAuthentication {
         if (oneTimeLoginCode == null || oneTimeLoginCode.isExpired()) {
             //expired
             user.setOneTimeLoginCode(null);
+            userRepository.save(user);
             throw new ExpiredAuthenticationException(String.format("Expired OneTimeLoginCode"));
         }
         try {
             boolean success = user.attemptOneTimeLoginVerification(verifyOneTimeLoginCode.getCode());
-            userRepository.save(user);
             long delay = oneTimeLoginCode.getDelay();
             if (success) {
                 LOG.debug(String.format("Successful login for existing user %s in oneTimeLoginCode flow, delay: %s, attempt: %s",
@@ -349,6 +349,7 @@ public class UserController implements UserAuthentication {
                 String url = this.magicLinkUrl + "?h=" + samlAuthenticationRequest.getHash();
                 return ResponseEntity.status(201).body(Map.of("url", url));
             }
+            userRepository.save(user);
             throw new InvalidOneTimeLoginCodeException(String.format("Invalid oneTimeLoginCode entered for email %s, delay: %s, attempt: %s",
                     user.getEmail(),
                     delay,
@@ -597,6 +598,24 @@ public class UserController implements UserAuthentication {
         return returnUserResponse(user);
     }
 
+    @Operation(summary = "Resend email change code",
+            description = "Resend the one-time verification code in verification email")
+    @GetMapping("/sp/resend-email-code")
+    public ResponseEntity resendSpCodeMail(Authentication authentication) {
+        User user = userFromAuthentication(authentication);
+        ChangeEmailHash changeEmailHash = changeEmailHashRepository.findByUserId(user.getId()).stream().findFirst()
+                .orElseThrow(() -> new ForbiddenException("No change email hash for user: " + user.getEmail()));
+        OneTimeLoginCode oneTimeLoginCode = changeEmailHash.getOneTimeLoginCode();
+        String code = oneTimeLoginCode.getCode();
+        if ((oneTimeLoginCode.getCreatedAt() + (1000 * 60 * 9)) < System.currentTimeMillis()) {
+            code = VerificationCodeGenerator.generateOneTimeLoginCode();
+            oneTimeLoginCode.setCode(code);
+            changeEmailHashRepository.save(changeEmailHash);
+        }
+        mailBox.sendChangeEmailOneTimeCode(user, changeEmailHash.getNewEmail(), code);
+        return ResponseEntity.ok(true);
+    }
+
     @PutMapping("/sp/verify-email-code")
     @Operation(summary = "Verify change email code", description = """
             If the email code is valid, then return the hash to change the email
@@ -620,6 +639,8 @@ public class UserController implements UserAuthentication {
                         user.getEmail()));
                 return ResponseEntity.status(200).body(Map.of("hash", changeEmailHash.getHash()));
             }
+            //Need to save the upped delay
+            changeEmailHashRepository.save(changeEmailHash);
             throw new InvalidOneTimeLoginCodeException("Invalid oneTimeLoginCode entered for user: "+ user.getEmail());
         } catch (ForbiddenException e) {
             changeEmailHashRepository.delete(changeEmailHash);
@@ -644,7 +665,10 @@ public class UserController implements UserAuthentication {
 
         user.setEmail(changeEmailHash.getNewEmail());
         userRepository.save(user);
+
         authenticationRequestRepository.deleteByUserId(user.getId());
+        changeEmailHashRepository.deleteByUserId(user.getId());
+
         mailBox.sendUpdateConfirmationEmail(user, oldEmail, user.getEmail(), isMobileRequest(authentication));
         return returnUserResponse(user);
     }
@@ -754,11 +778,31 @@ public class UserController implements UserAuthentication {
         passwordResetHashRepository.save(new PasswordResetHash(user, hashValue, oneTimeLoginCode));
 
         logWithContext(user, "update", "generate-password-code", LOG, "Send password reset code mail");
-        mailBox.sendResetPasswordOneTimeCode(user, code, isMobileRequest(authentication));
-        //Ensure the SSO is removed the next login
+        mailBox.sendResetPasswordOneTimeCode(user, code);
+        //Ensure the SSO is removed at the next login
         authenticationRequestRepository.deleteByUserId(user.getId());
         return returnUserResponse(user);
     }
+
+    @Operation(summary = "Resend password change code",
+            description = "Resend the one-time verification code in password change email")
+    @GetMapping("/sp/resend-password-code")
+    public ResponseEntity resendSpCodePassword(Authentication authentication) {
+        User user = userFromAuthentication(authentication);
+        PasswordResetHash passwordResetHash = passwordResetHashRepository.findByUserId(user.getId()).stream().findFirst()
+                .orElseThrow(() -> new ForbiddenException("No change email hash for user: " + user.getEmail()));
+        OneTimeLoginCode oneTimeLoginCode = passwordResetHash.getOneTimeLoginCode();
+        String code = oneTimeLoginCode.getCode();
+        if ((oneTimeLoginCode.getCreatedAt() + (1000 * 60 * 9)) < System.currentTimeMillis()) {
+            code = VerificationCodeGenerator.generateOneTimeLoginCode();
+            oneTimeLoginCode.setCode(code);
+            passwordResetHashRepository.save(passwordResetHash);
+        }
+        logWithContext(user, "update", "resend-password-code", LOG, "Resend password reset code mail");
+        mailBox.sendResetPasswordOneTimeCode(user, code);
+        return ResponseEntity.ok(true);
+    }
+
 
     @PutMapping("/sp/verify-password-code")
     @Operation(summary = "Verify change password code", description = """
@@ -783,6 +827,8 @@ public class UserController implements UserAuthentication {
                         user.getEmail()));
                 return ResponseEntity.status(200).body(Map.of("hash", passwordResetHash.getHash()));
             }
+            //Need to save the upped delay
+            passwordResetHashRepository.save(passwordResetHash);
             throw new InvalidOneTimeLoginCodeException("Invalid oneTimeLoginCode entered for user: "+ user.getEmail());
         } catch (ForbiddenException e) {
             passwordResetHashRepository.delete(passwordResetHash);

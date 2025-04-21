@@ -68,11 +68,6 @@ export function preferLinkedAccount(linkedAccount) {
     return postPutJson("/myconext/api/sp/prefer-linked-account", updateLinkedAccountRequest, "PUT");
 }
 
-export function updateEmail(user, force) {
-    const forceParam = force ? "?force=true" : "";
-    return postPutJson(`/myconext/api/sp/email${forceParam}`, user, "PUT");
-}
-
 export function confirmEmail(hash) {
     return fetchJson(`/myconext/api/sp/confirm-email?h=${hash}`);
 }
@@ -90,6 +85,10 @@ export function generatePasswordResetCode() {
     return postPutJson("/myconext/api/sp/generate-password-code", {}, "PUT");
 }
 
+export function resendMailChangeCode() {
+    return fetchJson("/myconext/api/sp/resend-email-code");
+}
+
 export function verifyPasswordCode(code) {
     const body = {code: code};
     return postPutJson("/myconext/api/sp/verify-password-code", body, "PUT");
@@ -99,6 +98,10 @@ export function generateEmailChangeCode(value, force) {
     const body = {email: value};
     const forceParam = force ? "?force=true" : "";
     return postPutJson(`/myconext/api/sp/generate-email-code${forceParam}`, body, "PUT");
+}
+
+export function resendPasswordChangeCode() {
+    return fetchJson("/myconext/api/sp/resend-password-code");
 }
 
 export function verifyEmailChangeCode(code) {
@@ -181,7 +184,8 @@ export function logout() {
         redirect: "manual"
     };
     return forgetMe().then(() =>
-        fetchJson("/myconext/api/sp/logout").then(() => fetch("/Shibboleth.sso/Logout", fetchOptions))
+        fetchJson("/myconext/api/sp/logout")
+            .then(() => fetch("/Shibboleth.sso/Logout", fetchOptions))
     );
 }
 

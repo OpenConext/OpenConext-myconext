@@ -1,3 +1,7 @@
+import {logout} from "../api/index.js";
+import {navigate} from "svelte-routing";
+import {config, flash, user} from "../stores/user";
+
 export function isEmpty(obj) {
     if (obj === undefined || obj === null) {
         return true;
@@ -27,4 +31,9 @@ export const stopEvent = e => {
     return true;
 }
 
+export const doLogOutAfterRateLimit = idpBaseUrl => {
+    logout().then(() => {
+        window.location.href = `${idpBaseUrl}/doLogout?param=${encodeURIComponent("ratelimit=true")}`;
+    });
+}
 

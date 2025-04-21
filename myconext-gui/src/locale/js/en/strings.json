@@ -31,6 +31,7 @@
   "Header.Logout.COPY": "Logout",
   "Header.LogOff.COPY": "Log Off",
   "Landing.LogoutTitle.COPY": "You have been logged out",
+  "Landing.RateLimitTitle.COPY": "You have been logged out, because you've exceeded the maximum attempts",
   "RegistrationCheck.MainText.COPY": "Checking for\nexisting registration\n",
   "RegistrationCheck.HighLight.COPY": "existing registration",
   "RegistrationCheck.LogoutStatus.COPY": "Close the browser to log out.",

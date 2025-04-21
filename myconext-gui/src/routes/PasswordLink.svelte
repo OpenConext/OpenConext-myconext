@@ -1,12 +1,18 @@
 <script>
-    import {flash, user} from "../stores/user";
+    import {config, flash, user} from "../stores/user";
     import I18n from "../locale/I18n";
-    import {outstandingEmailLinks, generatePasswordResetCode, verifyPasswordCode} from "../api";
+    import {
+        generatePasswordResetCode,
+        outstandingEmailLinks,
+        resendPasswordChangeCode,
+        verifyPasswordCode
+    } from "../api";
     import {navigate} from "svelte-routing";
     import Button from "../components/Button.svelte";
     import {onMount} from "svelte";
     import Modal from "../components/Modal.svelte";
     import CodeValidation from "../components/CodeValidation.svelte";
+    import {doLogOutAfterRateLimit} from "../utils/utils.js";
 
     const usePassword = $user.usePassword;
     let outstandingEmailReset = false;
@@ -16,6 +22,11 @@
 
     let wrongCode = false;
     let disabledButton = true;
+
+    let allowedToResend = false;
+    let mailHasBeenResend = false;
+
+    const resendMailAllowedTimeOut = $config.emailSpamThresholdSeconds * 1000;
 
     onMount(() => {
         outstandingEmailLinks().then(res => {
@@ -35,6 +46,8 @@
                 generatePasswordResetCode().then(() => {
                     hasCodeValidation = true;
                     showCodeValidation = true;
+                    flash.setValue(I18n.t("Email.Updated.COPY", {email: $user.email}), 6500);
+                    setTimeout(() => allowedToResend = true, resendMailAllowedTimeOut);
                 })
             }
         }
@@ -46,14 +59,22 @@
                 navigate(`reset-password?h=${res.hash}`)
             })
             .catch(e => {
-                if (e.status === 403) {
-                    navigate("/rate-limited");
-                } else if (e.status === 400) {
-                    navigate("/expired")
+                if (e.status === 403 || e.status === 400) {
+                    doLogOutAfterRateLimit($config.idpBaseUrl);
                 } else {
                     wrongCode = true;
                 }
             })
+    }
+
+    const resendMail = () => {
+        resendPasswordChangeCode()
+            .then(() => {
+                allowedToResend = false;
+                setTimeout(() => allowedToResend = true, resendMailAllowedTimeOut);
+            }).catch(() => {
+            doLogOutAfterRateLimit($config.idpBaseUrl);
+        })
     }
 
     const valueCallback = values => {
@@ -100,10 +121,6 @@
         margin: 6px 0 30px 0;
         color: var(--color-primary-green);
         font-size: 28px;
-
-        &.error {
-            color: var(--color-primary-red);
-        }
     }
 
     div.code-validation {
@@ -118,13 +135,20 @@
         color: var(--color-primary-red);
     }
 
+    div.resend-mail {
+        margin-top: 30px;
+        font-size: 15px;
+        text-align: center;
+    }
+
 
 </style>
 <div class="password">
     <h2>{usePassword ? I18n.t("ChangePassword.Title.ChangePassword.COPY") : I18n.t("PasswordResetLink.Title.AddPassword.COPY")}</h2>
     <p class="info">{@html usePassword ? I18n.t("Password.UpdateInfo.COPY") : I18n.t("Password.AddInfo.COPY")}</p>
     <div class="options">
-        <Button className="cancel" label={I18n.t("YourVerifiedInformation.ConfirmRemoval.Button.Cancel.COPY")} onClick={cancel}/>
+        <Button className="cancel" label={I18n.t("YourVerifiedInformation.ConfirmRemoval.Button.Cancel.COPY")}
+                onClick={cancel}/>
 
         <Button label={I18n.t("ConfirmDelete.Button.Confirm.COPY")}
                 onClick={proceed}/>
@@ -161,17 +185,17 @@
                     fullSize={true}
                     disabled={disabledButton || wrongCode}/>
 
-<!--            <div class="resend-mail">-->
-<!--                {#if allowedToResend}-->
-<!--                    <p>{I18n.t("LoginCode.Resend.COPY")}-->
-<!--                        <a href="resend"-->
-<!--                           on:click|preventDefault|stopPropagation={resendMail}>{I18n.t("LoginCode.ResendLink.COPY")}</a>-->
-<!--                    </p>-->
-<!--                {:else if mailHasBeenResend}-->
-<!--                    <span>{I18n.t("MagicLink.MailResend.COPY")}</span>-->
-<!--                {/if}-->
+            <div class="resend-mail">
+                {#if allowedToResend}
+                    <p>{I18n.t("LoginCode.Resend.COPY")}
+                        <a href="resend"
+                           on:click|preventDefault|stopPropagation={resendMail}>{I18n.t("LoginCode.ResendLink.COPY")}</a>
+                    </p>
+                {:else if mailHasBeenResend}
+                    <span>{I18n.t("MagicLink.MailResend.COPY")}</span>
+                {/if}
 
-<!--            </div>-->
+            </div>
         </div>
 
     </Modal>

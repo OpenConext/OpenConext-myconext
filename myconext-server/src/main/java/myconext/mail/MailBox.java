@@ -144,7 +144,7 @@ public class MailBox {
         sendMail("reset_password", title, variables, preferredLanguage(user), user.getEmail(), false);
     }
 
-    public void sendResetPasswordOneTimeCode(User user, String code, boolean mobileRequest) {
+    public void sendResetPasswordOneTimeCode(User user, String code) {
         String title = this.getTitle("reset_password_code", user) + code;
         Map<String, Object> variables = variables(user, title);
         variables.put("code", code);

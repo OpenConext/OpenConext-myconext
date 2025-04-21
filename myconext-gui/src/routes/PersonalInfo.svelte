@@ -10,8 +10,10 @@
         deleteLinkedAccount,
         generateEmailChangeCode,
         iDINIssuers,
+        logout,
         me,
         preferLinkedAccount,
+        resendMailChangeCode,
         startLinkAccountFlow,
         startVerifyAccountFlow,
         updateUser,
@@ -23,7 +25,7 @@
     import check from "../icons/redesign/check.svg?raw";
     import {navigate} from "svelte-routing";
     import {onMount} from "svelte";
-    import {isEmpty} from "../utils/utils";
+    import {doLogOutAfterRateLimit, isEmpty} from "../utils/utils";
     import InstitutionRole from "../components/InstitutionRole.svelte";
     import {institutionName} from "../utils/services";
     import ValidatedData from "../components/ValidatedData.svelte";
@@ -32,7 +34,7 @@
     import LinkedAccountSummary from "../components/LinkedAccountSummary.svelte";
     import CodeValidation from "../components/CodeValidation.svelte";
 
-    const resendMailAllowedTimeOut = 2000;//$config.emailSpamThresholdSeconds * 1000;
+    const resendMailAllowedTimeOut = $config.emailSpamThresholdSeconds * 1000;
 
     let eduIDLinked = false;
 
@@ -95,10 +97,8 @@
                 navigate(`update-email?h=${res.hash}`)
             })
             .catch(e => {
-                if (e.status === 403) {
-                    navigate("/rate-limited");
-                } else if (e.status === 400) {
-                    navigate("/expired")
+                if (e.status === 403 || e.status === 400) {
+                    doLogOutAfterRateLimit($config.idpBaseUrl);
                 } else {
                     wrongCode = true;
                 }
@@ -218,10 +218,22 @@
                     } else if (e.status === 406) {
                         tempEmailValue = value;
                         outstandingPasswordForgotten = true;
+                    } else {
+                        doLogOutAfterRateLimit($config.idpBaseUrl);
                     }
                 });
             }
         }
+    }
+
+    const resendMail = () => {
+        resendMailChangeCode()
+            .then(() => {
+                allowedToResend = false;
+                setTimeout(() => allowedToResend = true, resendMailAllowedTimeOut);
+            }).catch(() => {
+            logout().then(() => navigate("/landing?ratelimit=true"));
+        })
     }
 
     const valueCallback = values => {
@@ -578,6 +590,11 @@
         color: var(--color-primary-red);
     }
 
+    div.resend-mail {
+        margin-top: 30px;
+        font-size: 15px;
+        text-align: center;
+    }
 
 </style>
 <div class="profile">
@@ -813,17 +830,17 @@
                     fullSize={true}
                     disabled={disabledButton || wrongCode}/>
 
-                    <div class="resend-mail">
-                        {#if allowedToResend || 1==1}
-                            <p>{I18n.t("LoginCode.Resend.COPY")}
-                                <a href="resend"
-                                   on:click|preventDefault|stopPropagation={resendMail}>{I18n.t("LoginCode.ResendLink.COPY")}</a>
-                            </p>
-                        {:else if mailHasBeenResend}
-                            <span>{I18n.t("MagicLink.MailResend.COPY")}</span>
-                        {/if}
+            <div class="resend-mail">
+                {#if allowedToResend}
+                    <p>{I18n.t("LoginCode.Resend.COPY")}
+                        <a href="resend"
+                           on:click|preventDefault|stopPropagation={resendMail}>{I18n.t("LoginCode.ResendLink.COPY")}</a>
+                    </p>
+                {:else if mailHasBeenResend}
+                    <span>{I18n.t("MagicLink.MailResend.COPY")}</span>
+                {/if}
 
-                    </div>
+            </div>
         </div>
 
     </Modal>
