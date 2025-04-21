@@ -340,6 +340,7 @@ public class UserController implements UserAuthentication {
         }
         try {
             boolean success = user.attemptOneTimeLoginVerification(verifyOneTimeLoginCode.getCode());
+            userRepository.save(user);
             long delay = oneTimeLoginCode.getDelay();
             if (success) {
                 LOG.debug(String.format("Successful login for existing user %s in oneTimeLoginCode flow, delay: %s, attempt: %s",
@@ -349,7 +350,7 @@ public class UserController implements UserAuthentication {
                 String url = this.magicLinkUrl + "?h=" + samlAuthenticationRequest.getHash();
                 return ResponseEntity.status(201).body(Map.of("url", url));
             }
-            userRepository.save(user);
+
             throw new InvalidOneTimeLoginCodeException(String.format("Invalid oneTimeLoginCode entered for email %s, delay: %s, attempt: %s",
                     user.getEmail(),
                     delay,
