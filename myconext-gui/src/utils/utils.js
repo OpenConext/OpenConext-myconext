@@ -1,6 +1,4 @@
 import {logout} from "../api/index.js";
-import {navigate} from "svelte-routing";
-import {config, flash, user} from "../stores/user";
 
 export function isEmpty(obj) {
     if (obj === undefined || obj === null) {
