@@ -36,7 +36,7 @@
                     .then(() => {
                         hasCodeValidation = true;
                         showCodeValidation = true;
-                        flash.setValue(I18n.t("Email.Updated.COPY", {email: $user.email}), 6500);
+                        flash.setValue(I18n.t("Email.Updated.COPY", {email: verifiedEmail}), 6500);
                         setTimeout(() => allowedToResend = true, resendMailAllowedTimeOut);
                     }).catch(e => {
                     if (e.status === 409) {
@@ -228,7 +228,7 @@
            title={I18n.t("LoginCode.Title.COPY")}>
         <div class="login-code">
             <h2 class="header">{I18n.t("LoginCode.Header.COPY")}</h2>
-            <p class="validation-info">{@html I18n.t("LoginCode.Info.COPY", {email: $user.email})}</p>
+            <p class="validation-info">{@html I18n.t("LoginCode.Info.COPY", {email: verifiedEmail})}</p>
             <div class="code-validation">
                 <CodeValidation verify={verifyCode}
                                 size={6}
