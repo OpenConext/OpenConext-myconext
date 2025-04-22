@@ -58,7 +58,7 @@ export function verifyCodeExistingUser(code, authenticationRequestId) {
 
 export function passwordExistingUser(email, password, authenticationRequestId) {
     const body = {user: {email, password}, authenticationRequestId, usePassword: true};
-    return postPutJson("/myconext/api/idp/password_request", body, "PUT");
+    return postPutJson("/myconext/api/idp/generate_code_request", body, "PUT");
 }
 
 export function resendCodeMail(id) {
