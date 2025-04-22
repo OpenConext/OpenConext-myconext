@@ -564,7 +564,7 @@ public class UserController implements UserAuthentication {
     }
 
     @Operation(summary = "Generate email change code",
-            description = "Request to change the email of the user. We sned a ont-time verification code in verification email")
+            description = "Request to change the email of the user. We sent a one-time verification code in verification email")
     @PutMapping("/sp/generate-email-code")
     public ResponseEntity<UserResponse> generateEmailCode(Authentication authentication,
                                                     @Valid @RequestBody UpdateEmailRequest updateEmailRequest,
@@ -650,11 +650,14 @@ public class UserController implements UserAuthentication {
     }
 
     @Operation(summary = "Confirm email change",
-            description = "Confirm the user has clicked on the link in the email sent after requesting to change the users email" +
-                    "<br/>A confirmation email is sent to notify the user of the security change with a link to the " +
-                    "security settings <a href=\"\">https://login.{environment}.eduid.nl/client/mobile/security</a>. " +
-                    "<br/>If this URL is not properly intercepted by the eduID app, then the browser app redirects to " +
-                    "<a href=\"\">eduid://client/mobile/security</a>")
+            description = """
+                    Confirm the user has entered the correct one-time code or has clicked on the link in the email sent
+                    after requesting to change the users email
+                    <br/>A confirmation email is sent to notify the user of the security change with a link to the
+                    security settings <a href="/#">https://login.{environment}.eduid.nl/client/mobile/security</a>. 
+                    <br/>If this URL is not properly intercepted by the eduID app, then the browser app redirects to 
+                    <a href="/#">eduid://client/mobile/security</a>
+                    """)
     @GetMapping("/sp/confirm-email")
     public ResponseEntity<UserResponse> confirmUpdateEmail(Authentication authentication,
                                                            @Parameter(description = "The hash obtained from the query parameter 'h' in the URL sent to the user in the update-email")
@@ -695,8 +698,11 @@ public class UserController implements UserAuthentication {
     }
 
     @Operation(summary = "Update password",
-            description = "Update or delete the user's password using the hash from the 'h' query param in the validation email. " +
-                    "If 'newPassword' is null / empty than the password is removed.")
+            description = """
+                    Update or delete the user's password using the hash from the 'h' query param in the validation email
+                    or the hash returned after the correct one-time code is verified. 
+                    If 'newPassword' is null / empty than the password is removed.
+                    """)
     @PutMapping("/sp/update-password")
     public ResponseEntity<UserResponse> updateUserPassword(Authentication authentication, @RequestBody UpdateUserSecurityRequest updateUserRequest) {
         User user = userFromAuthentication(authentication);

@@ -33,12 +33,6 @@
     const credentialsDetails = credential => () =>
         navigate(`/credential?id=${encodeURIComponent(credential.identifier)}`);
 
-    const startTestFlow = () => {
-        testWebAutnUrl().then(res => {
-            window.location.href = res.url;
-        });
-    }
-
 </script>
 
 <style lang="scss">

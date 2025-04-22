@@ -1507,7 +1507,8 @@ public class UserControllerTest extends AbstractIntegrationTest {
     public void verifyCodeExistingUserRateLimited() throws IOException {
         ClientAuthenticationResponse authenticationResponse = oneTimeLoginCodeRequest(user("jdoe@example.com"), HttpMethod.PUT);
         User user = userRepository.findOneUserByEmail("jdoe@example.com");
-        ReflectionTestUtils.setField(user.getOneTimeLoginCode(), "delay", 180_000); ;
+        ReflectionTestUtils.setField(user.getOneTimeLoginCode(), "delay", 180_000);
+        ;
         userRepository.save(user);
 
         given().
@@ -1517,6 +1518,204 @@ public class UserControllerTest extends AbstractIntegrationTest {
                 .put("/myconext/api/idp/verify_code_request")
                 .then()
                 .statusCode(HttpStatus.FORBIDDEN.value());
+    }
+
+    @SneakyThrows
+    @Test
+    public void generateEmailCodeWithExistingPasswordResetHash() {
+        User user = userRepository.findOneUserByEmail("jdoe@example.com");
+        passwordResetHashRepository.save(new PasswordResetHash(user, hash(), new OneTimeLoginCode("123456")));
+
+        UpdateEmailRequest updateEmailRequest = new UpdateEmailRequest("new@email.com");
+        given().
+                when()
+                .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+                .body(updateEmailRequest)
+                .put("/myconext/api/sp/generate-email-code")
+                .then()
+                .statusCode(HttpStatus.NOT_ACCEPTABLE.value());
+
+        given().
+                when()
+                .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+                .queryParam("force", "true")
+                .body(updateEmailRequest)
+                .put("/myconext/api/sp/generate-email-code")
+                .then()
+                .statusCode(HttpStatus.CREATED.value());
+        assertEquals(0, passwordResetHashRepository.findByUserId(user.getId()).size());
+    }
+
+    @SneakyThrows
+    @Test
+    public void generateEmailCodeWithExistingEmail() {
+        UpdateEmailRequest updateEmailRequest = new UpdateEmailRequest("mdoe@example.com");
+        given().
+                when()
+                .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+                .body(updateEmailRequest)
+                .put("/myconext/api/sp/generate-email-code")
+                .then()
+                .statusCode(HttpStatus.CONFLICT.value());
+    }
+
+    @SneakyThrows
+    @Test
+    public void resendEmailCodeFlow() {
+        given().
+                when()
+                .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+                .get("/myconext/api/sp/resend-email-code")
+                .then()
+                .statusCode(HttpStatus.FORBIDDEN.value());
+
+    }
+
+    @SneakyThrows
+    @Test
+    public void generateEmailCodeFlowChangeExpiringCode() {
+        UpdateEmailRequest updateEmailRequest = new UpdateEmailRequest("new@email.com");
+        given().
+                when()
+                .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+                .body(updateEmailRequest)
+                .put("/myconext/api/sp/generate-email-code")
+                .then()
+                .statusCode(HttpStatus.CREATED.value());
+        User user = userRepository.findOneUserByEmail("jdoe@example.com");
+        ChangeEmailHash changeEmailHash = changeEmailHashRepository.findByUserId(user.getId()).getFirst();
+        ReflectionTestUtils.setField(changeEmailHash.getOneTimeLoginCode(), "createdAt", 0);
+        changeEmailHashRepository.save(changeEmailHash);
+
+        given().
+                when()
+                .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+                .get("/myconext/api/sp/resend-email-code")
+                .then()
+                .statusCode(HttpStatus.OK.value());
+        ChangeEmailHash changeEmailHashFromDB = changeEmailHashRepository.findByUserId(user.getId()).getFirst();
+        String code = changeEmailHash.getOneTimeLoginCode().getCode();
+        assertNotEquals(code, changeEmailHashFromDB.getOneTimeLoginCode().getCode());
+    }
+
+    @SneakyThrows
+    @Test
+    public void generateEmailCodeFlow() {
+        UpdateEmailRequest updateEmailRequest = new UpdateEmailRequest("new@email.com");
+        given().
+                when()
+                .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+                .body(updateEmailRequest)
+                .put("/myconext/api/sp/generate-email-code")
+                .then()
+                .statusCode(HttpStatus.CREATED.value());
+        User user = userRepository.findOneUserByEmail("jdoe@example.com");
+        ChangeEmailHash changeEmailHash = changeEmailHashRepository.findByUserId(user.getId()).getFirst();
+        assertNotNull(changeEmailHash);
+
+        given().
+                when()
+                .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+                .get("/myconext/api/sp/resend-email-code")
+                .then()
+                .statusCode(HttpStatus.OK.value());
+        ChangeEmailHash changeEmailHashFromDB = changeEmailHashRepository.findByUserId(user.getId()).getFirst();
+        String code = changeEmailHash.getOneTimeLoginCode().getCode();
+        assertEquals(code, changeEmailHashFromDB.getOneTimeLoginCode().getCode());
+
+        //have to sleep some time, otherwise now() < createdAt + delay
+        Thread.sleep(1000);
+
+        //One invalid attempt
+        given().
+                when()
+                .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+                .body(new VerifyOneTimeLoginCode("none", null))
+                .put("/myconext/api/sp/verify-email-code")
+                .then()
+                .statusCode(HttpStatus.UNAUTHORIZED.value());
+
+        //have to sleep some time, otherwise now() < createdAt + delay
+        Thread.sleep(1000);
+        Map<String, String> hash = given().
+                when()
+                .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+                .body(new VerifyOneTimeLoginCode(code, null))
+                .put("/myconext/api/sp/verify-email-code")
+                .as(new TypeRef<>() {
+                });
+        //Use the hash to confirm the change of email
+        given().
+                when()
+                .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+                .queryParam("h", hash.get("hash"))
+                .get("/myconext/api/sp/confirm-email")
+                .then()
+                .statusCode(HttpStatus.CREATED.value());
+        assertEquals(0, changeEmailHashRepository.findByUserId(user.getId()).size());
+        User updatedUser = userRepository.findOneUserByEmail(updateEmailRequest.getEmail());
+        assertNotNull(updatedUser);
+    }
+
+    @SneakyThrows
+    @Test
+    public void generatePasswordCodeFlow() {
+        given().
+                when()
+                .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+                .put("/myconext/api/sp/generate-password-code")
+                .then()
+                .statusCode(HttpStatus.CREATED.value());
+
+        User user = userRepository.findOneUserByEmail("jdoe@example.com");
+        assertTrue(user.isForgottenPassword());
+
+        PasswordResetHash passwordResetHash = passwordResetHashRepository.findByUserId(user.getId()).getFirst();
+        assertNotNull(passwordResetHash);
+
+        given().
+                when()
+                .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+                .get("/myconext/api/sp/resend-password-code")
+                .then()
+                .statusCode(HttpStatus.OK.value());
+        PasswordResetHash passwordResetHashFromDB = passwordResetHashRepository.findByUserId(user.getId()).getFirst();
+        String code = passwordResetHash.getOneTimeLoginCode().getCode();
+        assertEquals(code, passwordResetHashFromDB.getOneTimeLoginCode().getCode());
+
+        //have to sleep some time, otherwise now() < createdAt + delay
+        Thread.sleep(1000);
+
+        //One invalid attempt
+        given().
+                when()
+                .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+                .body(new VerifyOneTimeLoginCode("none", null))
+                .put("/myconext/api/sp/verify-password-code")
+                .then()
+                .statusCode(HttpStatus.UNAUTHORIZED.value());
+
+        //have to sleep some time, otherwise now() < createdAt + delay
+        Thread.sleep(1000);
+        Map<String, String> hash = given().
+                when()
+                .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+                .body(new VerifyOneTimeLoginCode(code, null))
+                .put("/myconext/api/sp/verify-password-code")
+                .as(new TypeRef<>() {
+                });
+        //Use the hash to confirm the change of password
+        given().
+                when()
+                .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+                .body(new UpdateUserSecurityRequest(UUID.randomUUID().toString(), hash.get("hash")))
+                .put("/myconext/api/sp/update-password")
+                .then()
+                .statusCode(HttpStatus.CREATED.value());
+        assertEquals(0, passwordResetHashRepository.findByUserId(user.getId()).size());
+
+        User updatedUser = userRepository.findOneUserByEmail(user.getEmail());
+        assertFalse(updatedUser.isForgottenPassword());
     }
 
     private String hash() {
