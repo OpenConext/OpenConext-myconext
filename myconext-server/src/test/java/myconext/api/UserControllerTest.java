@@ -367,6 +367,33 @@ public class UserControllerTest extends AbstractIntegrationTest {
     }
 
     @Test
+    public void changeLanguage() {
+        LanguageChangeRequest languageChangeRequest = new LanguageChangeRequest("EN");
+        given()
+                .when()
+                .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+                .body(languageChangeRequest)
+                .put("/myconext/api/sp/lang")
+                .then()
+                .statusCode(HttpStatus.CREATED.value());
+
+        User userFromDB = userRepository.findOneUserByEmail("jdoe@example.com");
+        assertEquals(userFromDB.getPreferredLanguage(), languageChangeRequest.getLanguage().toLowerCase());
+    }
+
+    @Test
+    public void changeLanguageForbidden() {
+        LanguageChangeRequest languageChangeRequest = new LanguageChangeRequest("nope");
+        given()
+                .when()
+                .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+                .body(languageChangeRequest)
+                .put("/myconext/api/sp/lang")
+                .then()
+                .statusCode(HttpStatus.FORBIDDEN.value());
+    }
+
+    @Test
     public void removeUserLinkedAccounts() {
         User user = userRepository.findOneUserByEmail("jdoe@example.com");
         assertEquals(2, user.getLinkedAccounts().size());

@@ -3,13 +3,17 @@
     import I18n from "../locale/I18n";
     import Cookies from "js-cookie";
     import surfLogo from "../img/logo-surf.svg?raw";
-    import {config} from "../stores/user";
+    import {config, flash} from "../stores/user";
+    import {updateLanguage} from "../api/index.js";
 
     const changeLanguage = lang => () => {
         const urlSearchParams = new URLSearchParams(window.location.search);
         urlSearchParams.set("lang", lang);
         Cookies.set("lang", lang, {expires: 365, secure: true, sameSite: "Lax", domain: $config.domain});
-        window.location.search = urlSearchParams.toString();
+        updateLanguage(lang).then(() => {
+            flash.setValue("Footer.LanguageChanged.COPY");
+            window.location.search = urlSearchParams.toString();
+        })
     };
 
     let isEn = I18n.currentLocale() === "en";

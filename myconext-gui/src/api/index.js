@@ -109,6 +109,11 @@ export function verifyEmailChangeCode(code) {
     return postPutJson("/myconext/api/sp/verify-email-code", body, "PUT");
 }
 
+export function updateLanguage(lang) {
+    const body = {language: lang};
+    return postPutJson("/myconext/api/sp/lang", body, "PUT");
+}
+
 export function resetPasswordHashValid(hash) {
     return fetchJson(`/myconext/api/sp/password-reset-hash-valid?hash=${hash}`);
 }
@@ -230,7 +235,7 @@ export function sendDeactivationPhoneCode() {
     return fetchJson("/tiqr/sp/send-deactivation-phone-code")
 }
 
-// Create from institution
+// Create from Institution
 export function startCreateFromInstitutionFlow(forceAuth = false) {
     return fetchJson("/myconext/api/sp/create-from-institution?forceAuth=" + forceAuth);
 }

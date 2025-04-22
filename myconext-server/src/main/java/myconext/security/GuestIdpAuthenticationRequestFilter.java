@@ -773,6 +773,10 @@ public class GuestIdpAuthenticationRequestFilter extends OncePerRequestFilter {
         String eduIDValue = user.computeEduIdForServiceProviderIfAbsent(requesterEntityId, manage);
         userRepository.save(user);
 
+        if (StringUtils.hasText(user.getPreferredLanguage())) {
+            attributes.add(attribute("urn:mace:dir:attribute-def:preferredLanguage", user.getPreferredLanguage()));
+        }
+
         attributes.add(attribute("urn:mace:eduid.nl:1.1", eduIDValue));
         if (user.getDerivedDateOfBirth() != null) {
             // https://wiki.refeds.org/display/STAN/SCHAC+Releases
