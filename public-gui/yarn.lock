@@ -814,10 +814,10 @@
   resolved "https://registry.yarnpkg.com/@rollup/rollup-win32-x64-msvc/-/rollup-win32-x64-msvc-4.40.0.tgz#fd92d31a2931483c25677b9c6698106490cbbc76"
   integrity sha512-lpPE1cLfP5oPzVjKMx10pgBmKELQnFJXHgvtHCtuJWOv8MxqdEIMNtgHgBFf7Ea2/7EuVwa9fodWUfXAlXZLZQ==
 
-"@surfnet/sds@^0.0.129":
-  version "0.0.129"
-  resolved "https://registry.yarnpkg.com/@surfnet/sds/-/sds-0.0.129.tgz#f49c117933b9172b3137a5d2f6f577f089d7053a"
-  integrity sha512-aG7gNkTxUe9HOc93NNSThd7xT+7MM8qXKfsYi8t5UxiVCvAUS8d40wd9tylfYVfSbd9ZMp67c1NXfuZyEseqGg==
+"@surfnet/sds@^0.0.130":
+  version "0.0.130"
+  resolved "https://registry.yarnpkg.com/@surfnet/sds/-/sds-0.0.130.tgz#5a5ed07d98e4ed4517f93b8d785ad51984d99832"
+  integrity sha512-NGIN7x5ZuVEKv2vKvSK9fvAx//ioE8IZuzEr1cFlF3RpDwAsXZBTO9Xx0si6/MxFtO7AAeVGTK6QB5OO74wFBA==
 
 "@types/babel__core@^7.20.5":
   version "7.20.5"
@@ -3564,10 +3564,10 @@ vite-node@3.1.1:
   optionalDependencies:
     fsevents "~2.3.3"
 
-vite@^6.3.1:
-  version "6.3.1"
-  resolved "https://registry.yarnpkg.com/vite/-/vite-6.3.1.tgz#6b080ff907308ca691c5639c095ab6d938734c0d"
-  integrity sha512-kkzzkqtMESYklo96HKKPE5KKLkC1amlsqt+RjFMlX2AvbRB/0wghap19NdBxxwGZ+h/C6DLCrcEphPIItlGrRQ==
+vite@^6.3.2:
+  version "6.3.2"
+  resolved "https://registry.yarnpkg.com/vite/-/vite-6.3.2.tgz#4c1bb01b1cea853686a191657bbc14272a038f0a"
+  integrity sha512-ZSvGOXKGceizRQIZSz7TGJ0pS3QLlVY/9hwxVh17W3re67je1RKYzFHivZ/t0tubU78Vkyb9WnHPENSBCzbckg==
   dependencies:
     esbuild "^0.25.0"
     fdir "^6.4.3"
