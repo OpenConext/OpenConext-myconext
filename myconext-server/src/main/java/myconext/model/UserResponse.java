@@ -39,6 +39,7 @@ public class UserResponse implements Serializable {
     private final Map<String, Object> registration = new HashMap<>();
     private final ControlCode controlCode;
     private final boolean serviceDeskMember;
+    private final String preferredLanguage;
 
     public UserResponse(User user,
                         Map<String, EduID> eduIdPerServiceProvider,
@@ -107,5 +108,6 @@ public class UserResponse implements Serializable {
         });
         this.controlCode = user.getControlCode();
         this.serviceDeskMember = user.isServiceDeskMember();
+        this.preferredLanguage = user.getPreferredLanguage();
     }
 }

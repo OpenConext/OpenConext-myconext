@@ -48,6 +48,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import tiqr.org.model.Registration;
 
@@ -197,6 +198,20 @@ public class UserController implements UserAuthentication {
         User user = userRepository.findById(samlAuthenticationRequest.getUserId())
                 .orElseThrow(() -> new ExpiredAuthenticationException("Expired authentication request"));
         return new UserResponse(user, null, Optional.empty(), false, manage, issuers);
+    }
+
+    @Hidden
+    @PutMapping("/sp/lang")
+    public ResponseEntity<Map<String, Integer>> changeLanguage(Authentication authentication,
+                                       @Validated @RequestBody LanguageChangeRequest languageChangeRequest) {
+        String language = languageChangeRequest.getLanguage().toLowerCase();
+        if (!List.of("nl", "en").contains(language)) {
+            throw new ForbiddenException("Not allowed language");
+        }
+        User user = this.userFromAuthentication(authentication);
+        user.setPreferredLanguage(language);
+        userRepository.save(user);
+        return ResponseEntity.status(201).body(Map.of("status", 201));
     }
 
     @Hidden

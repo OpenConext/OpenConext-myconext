@@ -53,6 +53,9 @@
                             }
                         }
                         $user.guest = false;
+                        if (json.preferredLanguage !== lang) {
+                            I18n.changeLocale(json.preferredLanguage);
+                        }
                         const useOidcApi = $config.featureOidcTokenAPI;
                         if (useOidcApi) {
                             oidcTokens().then(tokens => {

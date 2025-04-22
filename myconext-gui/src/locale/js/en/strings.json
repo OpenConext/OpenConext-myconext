@@ -401,6 +401,7 @@
   "Footer.Terms.COPY": "Terms of Use",
   "Footer.Help.COPY": "Help",
   "Footer.PoweredBy.COPY": "Powered by",
+  "Footer.LanguageChanged.COPY": "Language choice stored in your user account",
   "Modal.Cancel.COPY": "Cancel",
   "Modal.Confirm.COPY": "Confirm",
   "Format.CreationDate.COPY": "%1$s at %2$s:%3$s",

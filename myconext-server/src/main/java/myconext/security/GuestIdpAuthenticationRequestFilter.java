@@ -1,5 +1,10 @@
 package myconext.security;
 
+import jakarta.servlet.FilterChain;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -31,11 +36,6 @@ import saml.model.SAMLAttribute;
 import saml.model.SAMLConfiguration;
 import saml.model.SAMLStatus;
 
-import jakarta.servlet.FilterChain;
-import jakarta.servlet.ServletException;
-import jakarta.servlet.http.Cookie;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
@@ -770,6 +770,10 @@ public class GuestIdpAuthenticationRequestFilter extends OncePerRequestFilter {
         ));
         String eduIDValue = user.computeEduIdForServiceProviderIfAbsent(requesterEntityId, manage);
         userRepository.save(user);
+
+        if (StringUtils.hasText(user.getPreferredLanguage())) {
+            attributes.add(attribute("urn:mace:dir:attribute-def:preferredLanguage", user.getPreferredLanguage()));
+        }
 
         attributes.add(attribute("urn:mace:eduid.nl:1.1", eduIDValue));
         if (user.getDerivedDateOfBirth() != null) {

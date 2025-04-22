@@ -23,9 +23,7 @@
                 const user = res[1];
                 institution = user.externalLinkedAccounts[0];
                 showSpinner = false;
-
             });
-
     });
 
 </script>

@@ -86,6 +86,11 @@ export function updatePassword(userId, newPassword, hash) {
     return postPutJson("/myconext/api/sp/update-password", body, "PUT");
 }
 
+export function updateLanguage(lang) {
+    const body = {language: lang};
+    return postPutJson("/myconext/api/sp/lang", body, "PUT");
+}
+
 export function resetPasswordLink() {
     return postPutJson("/myconext/api/sp/reset-password-link", {}, "PUT");
 }
