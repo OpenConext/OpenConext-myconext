@@ -212,12 +212,12 @@ const nl = {
             dateTimeOn: "om",
             backupMethod: "Herstelmethode",
             sms: "SMS/Text message",
-            smsInfo: "Je ontvant eenmalige codes op: {{phone}}",
+            smsInfo: "Je ontvangt eenmalige codes op: {{phone}}",
             getSmsInfo: "Ontvang eenmalige codes op je mobiel",
             code: "Backup code",
             getCode: "Vraag een code aan",
             codeInfo: "Hopelijk bewaard op een veilige plek",
-            getCodeInfo: "En bewaar het op een veilige plek",
+            getCodeInfo: "En bewaar die op een veilige plek",
         }
     },
     home: {
@@ -428,7 +428,7 @@ const nl = {
         info: "Als je de eduID app niet meer kunt gebruiken, bijvoorbeeld bij verlies van je mobiele telefoon, kun je met de herstelmethode de eduID app opnieuw registreren.",
         changeInfo: "Je bent succesvol geauthenticeerd met je eduID app. Je kan nu je herstelmethode voor de eduID app veranderen. LET OP: je huidige herstelmethode komt te vervallen.",
         methods: "De volgende methoden zijn beschikbaar.",
-        phoneNumber: "Register hersteltelefoonnummer.",
+        phoneNumber: "Registreer hersteltelefoonnummer.",
         phoneNumberInfo: "Je ontvangt een SMS met een verificatiecode.",
         backupCode: "Registreer herstelcode.",
         backupCodeInfo: "Bewaar deze code op een veilige plek.",
