@@ -543,7 +543,7 @@ public class TiqrController implements UserAuthentication {
         try {
             tiqrService.postAuthentication(authenticationData);
 
-            LOG.debug(String.format("Successful authentication for user %s, %s" ,user.getEmail(), user.getId()));
+            LOG.debug(String.format("Successful authentication for user %s, %s", user.getEmail(), user.getId()));
 
             rateLimitEnforcer.unsuspendUserAfterTiqrSuccess(user);
             return ResponseEntity.ok("OK");

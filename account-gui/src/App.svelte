@@ -4,6 +4,7 @@
     import Login from "./routes/Login.svelte";
     import Success from "./routes/Success.svelte";
     import MagicLink from "./routes/MagicLink.svelte";
+    import Confirm from "./routes/Confirm.svelte";
     import ConfirmStepup from "./routes/ConfirmStepup.svelte";
     import LinkExpired from "./routes/LinkExpired.svelte";
     import MaxAttempts from "./routes/MaxAttempts.svelte";
@@ -198,6 +199,7 @@
                     <SubjectAlreadyLinked id="{params.id}"/>
                 </Route>
                 <Route path="/external-account-linked-error" component={ExternalAccountLinkedError}/>
+                <Route path="/confirm" component={Confirm}/>
                 <Route path="/confirm-stepup" component={ConfirmStepup}/>
                 <Route path="/confirm-external-stepup" component={ConfirmExternalStepup}/>
                 <Route path="/success" component={Success}/>

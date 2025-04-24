@@ -847,6 +847,31 @@ public class UserControllerTest extends AbstractIntegrationTest {
     }
 
     @Test
+    public void mfaNoTiqrAuthentication() throws IOException {
+        User user = userRepository.findOneUserByEmail("jdoe@example.com");
+        String authnContext = readFile("request_authn_context_mfa.xml");
+        Response response = samlAuthnRequestResponseWithLoa(null, "relay", authnContext);
+        String authenticationRequestId = extractAuthenticationRequestIdFromAuthnResponse(response);
+        MagicLinkResponse magicLinkResponse = magicLinkRequest(new MagicLinkRequest(authenticationRequestId, user, false), HttpMethod.PUT);
+        SamlAuthenticationRequest samlAuthenticationRequest = authenticationRequestRepository.findById(magicLinkResponse.authenticationRequestId).get();
+
+        Response magicResponse = given().redirects().follow(false)
+                .when()
+                .queryParam("h", samlAuthenticationRequest.getHash())
+                .cookie(BROWSER_SESSION_COOKIE_NAME, "true")
+                .get("/saml/guest-idp/magic");
+        while (magicResponse.statusCode() == 302) {
+            String location = magicResponse.getHeader("Location");
+            assertNotNull(location);
+            magicResponse = this.get302Response(magicResponse, Optional.empty(), "?force=true");
+        }
+        String samlResponse = samlAuthnResponse(magicResponse, Optional.empty());
+
+        assertTrue(samlResponse.contains("urn:oasis:names:tc:SAML:2.0:status:NoAuthnContext"));
+        assertTrue(samlResponse.contains("The requesting service has indicated that a login with the eduID app is required to login"));
+    }
+
+    @Test
     public void stepUpValidateName() throws IOException {
         User jdoe = userRepository.findOneUserByEmail("jdoe@example.com");
         jdoe.getLinkedAccounts().clear();
