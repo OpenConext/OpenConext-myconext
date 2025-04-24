@@ -191,7 +191,8 @@ public class GuestIdpAuthenticationRequestFilter extends OncePerRequestFilter {
         List<String> authenticationContextClassReferenceValues = getAuthenticationContextClassReferenceValues(authnRequest);
         boolean accountLinkingRequired =
                 this.accountLinkingContextClassReferences.stream().anyMatch(authenticationContextClassReferenceValues::contains);
-        boolean mfaProfileRequired = authenticationContextClassReferenceValues.contains(ACR.PROFILE_MFA);
+        //We don't want to use the App during IdP login
+        boolean mfaProfileRequired = false; //authenticationContextClassReferenceValues.contains(ACR.PROFILE_MFA);
 
         SamlAuthenticationRequest samlAuthenticationRequest = new SamlAuthenticationRequest(
                 authnRequest.getID(),
@@ -492,17 +493,6 @@ public class GuestIdpAuthenticationRequestFilter extends OncePerRequestFilter {
                     "&redirect=" + URLEncoder.encode(this.magicLinkUrl, charSet) +
                     "&explanation=" + explanation +
                     "&ref=" + user.getId());
-            return false;
-        } else if (!samlAuthenticationRequest.isPasswordOrWebAuthnFlow() && !samlAuthenticationRequest.isTiqrFlow() &&
-                !user.loginOptions().contains(LoginOptions.APP.getValue()) &&
-                user.nudgeToApp(nudgeAppDays, nudgeAppDelayDays)) {
-            userRepository.save(user);
-
-            //Nudge user to use the app
-            String url = this.redirectUrl + "/confirm?h=" + hash +
-                    "&redirect=" + URLEncoder.encode(this.magicLinkUrl, charSet) +
-                    "&new=false";
-            response.sendRedirect(url);
             return false;
         } else if (!this.featureDefaultRememberMe && !samlAuthenticationRequest.isRememberMeQuestionAsked()) {
             samlAuthenticationRequest.setRememberMeQuestionAsked(true);

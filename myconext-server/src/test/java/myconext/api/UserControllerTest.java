@@ -847,31 +847,6 @@ public class UserControllerTest extends AbstractIntegrationTest {
     }
 
     @Test
-    public void mfa() throws IOException {
-        String authnContext = readFile("request_authn_context_mfa.xml");
-        Response response = samlAuthnRequestResponseWithLoa(null, null, authnContext);
-        assertEquals(302, response.getStatusCode());
-
-        String location = response.getHeader("Location");
-        assertTrue(location.startsWith("http://localhost:3000/login/"));
-
-        String authenticationRequestId = location.substring(location.lastIndexOf("/") + 1, location.lastIndexOf("?"));
-        User user = user("jdoe@example.com");
-        MagicLinkResponse magicLinkResponse = magicLinkRequest(new MagicLinkRequest(authenticationRequestId, user, StringUtils.hasText(user.getPassword())), HttpMethod.PUT);
-
-        SamlAuthenticationRequest samlAuthenticationRequest = authenticationRequestRepository.findById(magicLinkResponse.authenticationRequestId).get();
-        response = given().redirects().follow(false)
-                .when()
-                .queryParam("h", samlAuthenticationRequest.getHash())
-                .cookie(BROWSER_SESSION_COOKIE_NAME, "true")
-                .get("/saml/guest-idp/magic");
-
-        //stepup screen
-        String uri = response.getHeader("Location");
-        assertTrue(uri.contains("app-required"));
-    }
-
-    @Test
     public void mfaNoTiqrAuthentication() throws IOException {
         User user = userRepository.findOneUserByEmail("jdoe@example.com");
         String authnContext = readFile("request_authn_context_mfa.xml");
@@ -894,22 +869,6 @@ public class UserControllerTest extends AbstractIntegrationTest {
 
         assertTrue(samlResponse.contains("urn:oasis:names:tc:SAML:2.0:status:NoAuthnContext"));
         assertTrue(samlResponse.contains("The requesting service has indicated that a login with the eduID app is required to login"));
-    }
-
-    @Test
-    public void mfaTiqrAuthenticated() throws IOException {
-        User user = userRepository.findOneUserByEmail("jdoe@example.com");
-        String authnContext = readFile("request_authn_context_mfa.xml");
-        Response response = samlAuthnRequestResponseWithLoa(null, "relay", authnContext);
-        String authenticationRequestId = extractAuthenticationRequestIdFromAuthnResponse(response);
-
-        MagicLinkResponse magicLinkResponse = magicLinkRequest(new MagicLinkRequest(authenticationRequestId, user, false), HttpMethod.PUT);
-        SamlAuthenticationRequest samlAuthenticationRequest = authenticationRequestRepository.findById(magicLinkResponse.authenticationRequestId).get();
-        samlAuthenticationRequest.setTiqrFlow(true);
-        authenticationRequestRepository.save(samlAuthenticationRequest);
-
-        String samlResponse = samlResponse(magicLinkResponse);
-        assertTrue(samlResponse.contains(ACR.PROFILE_MFA));
     }
 
     @Test

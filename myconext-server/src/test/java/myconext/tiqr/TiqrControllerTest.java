@@ -54,34 +54,6 @@ public class TiqrControllerTest extends AbstractIntegrationTest {
     }
 
     @Test
-    public void enrollmentFlowWithSMSVerification() throws IOException {
-        SamlAuthenticationRequest samlAuthenticationRequest = doEnrollmment(false);
-
-        //We now should have a initialized registration and can request a verification code
-        given()
-                .queryParam("hash", samlAuthenticationRequest.getHash())
-                .body(Map.of("phoneNumber", "0612345678"))
-                .contentType(ContentType.JSON)
-                .post("/tiqr/send-phone-code")
-                .then()
-                .statusCode(200);
-
-        User user = userRepository.findById(samlAuthenticationRequest.getUserId()).get();
-        String phoneVerification = (String) user.getSurfSecureId().get(SURFSecureID.PHONE_VERIFICATION_CODE);
-
-        given()
-                .queryParam("hash", samlAuthenticationRequest.getHash())
-                .body(Map.of("phoneVerification", phoneVerification))
-                .contentType(ContentType.JSON)
-                .post("/tiqr/verify-phone-code")
-                .then()
-                .statusCode(200);
-
-        Registration registration = registrationRepository.findRegistrationByUserId(samlAuthenticationRequest.getUserId()).get();
-        assertEquals(RegistrationStatus.FINALIZED, registration.getStatus());
-    }
-
-    @Test
     public void enrollmentFlowForSp() {
         Map<String, String> body = given()
                 .when()

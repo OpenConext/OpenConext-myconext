@@ -4,7 +4,6 @@
     import Login from "./routes/Login.svelte";
     import Success from "./routes/Success.svelte";
     import MagicLink from "./routes/MagicLink.svelte";
-    import Confirm from "./routes/Confirm.svelte";
     import ConfirmStepup from "./routes/ConfirmStepup.svelte";
     import LinkExpired from "./routes/LinkExpired.svelte";
     import MaxAttempts from "./routes/MaxAttempts.svelte";
@@ -33,12 +32,10 @@
     import UsePassword from "./routes/UsePassword.svelte";
     import Options from "./routes/Options.svelte";
     import UserLink from "./components/UserLink.svelte";
-    import PhoneConfirmation from "./routes/PhoneConfirmation.svelte";
     import GetApp from "./routes/GetApp.svelte";
     import EnrollApp from "./routes/EnrollApp.svelte";
     import Recovery from "./routes/Recovery.svelte";
     import RecoveryCode from "./routes/RecoveryCode.svelte";
-    import PhoneVerification from "./routes/PhoneVerification.svelte";
     import Congrats from "./routes/Congrats.svelte";
     import RememberMe from "./routes/RememberMe.svelte";
     import AppRequired from "./routes/AppRequired.svelte";
@@ -171,8 +168,6 @@
                 <Route path="/enrollapp" component={EnrollApp}/>
                 <Route path="/recovery" component={Recovery}/>
                 <Route path="/recovery-code" component={RecoveryCode}/>
-                <Route path="/phone-verification" component={PhoneVerification}/>
-                <Route path="/phone-confirmation" component={PhoneConfirmation}/>
                 <Route path="/congrats" component={Congrats}/>
                 <Route path="/remember" component={RememberMe}/>
                 <Route path="/usepassword/:id" let:params>
@@ -203,7 +198,6 @@
                     <SubjectAlreadyLinked id="{params.id}"/>
                 </Route>
                 <Route path="/external-account-linked-error" component={ExternalAccountLinkedError}/>
-                <Route path="/confirm" component={Confirm}/>
                 <Route path="/confirm-stepup" component={ConfirmStepup}/>
                 <Route path="/confirm-external-stepup" component={ConfirmExternalStepup}/>
                 <Route path="/success" component={Success}/>

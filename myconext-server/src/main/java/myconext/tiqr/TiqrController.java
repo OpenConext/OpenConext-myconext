@@ -275,16 +275,11 @@ public class TiqrController implements UserAuthentication {
         return doSendPhoneCode(user, phoneNumber, true, request);
     }
 
-    @PostMapping("/send-phone-code")
-    @Hidden
-    public ResponseEntity<FinishEnrollment> sendPhoneCode(HttpServletRequest request, @RequestParam("hash") String hash,
-                                                          @RequestBody Map<String, String> requestBody) {
-        User user = getUserFromAuthenticationRequest(hash);
-        String phoneNumber = requestBody.get("phoneNumber");
-        return doSendPhoneCode(user, phoneNumber, false, request);
-    }
-
     private ResponseEntity<FinishEnrollment> doSendPhoneCode(User user, String phoneNumber, boolean regenerateSpFlow, HttpServletRequest request) {
+        rateLimitEnforcer.checkSendSMSRateLimit(user);
+
+        LOG.info(String.format("Sending SMS for user %s to number %s", user.getEmail(), phoneNumber));
+
         String phoneVerification = VerificationCodeGenerator.generatePhoneVerification();
 
         smsService.send(phoneNumber, phoneVerification, request.getLocale());
