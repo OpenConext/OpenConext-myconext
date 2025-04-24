@@ -41,8 +41,8 @@ public class MailBoxTest extends AbstractMailBoxTest {
         EmailsSend emailsSend = new EmailsSend(email);
         emailsSendRepository.save(emailsSend);
 
-        String hash = UUID.randomUUID().toString();
-        mailBox.sendOneTimeLoginCode(user(email.toUpperCase(), "en"), hash, "http://mock-sp");
+        String code = VerificationCodeGenerator.generateOneTimeLoginCode();
+        mailBox.sendOneTimeLoginCode(user(email.toUpperCase(), "en"), code);
     }
 
     @SneakyThrows
@@ -60,7 +60,7 @@ public class MailBoxTest extends AbstractMailBoxTest {
     @SneakyThrows
     private void doSendOneTimeLoginCode(String expectedSubject, String lang) {
         String code = VerificationCodeGenerator.generateOneTimeLoginCode();
-        mailBox.sendOneTimeLoginCode(user("jdoe@example.com", lang), code, "http://mock-sp");
+        mailBox.sendOneTimeLoginCode(user("jdoe@example.com", lang), code);
 
         MimeMessage mimeMessage = mailMessage();
         assertEquals("jdoe@example.com", mimeMessage.getRecipients(Message.RecipientType.TO)[0].toString());
@@ -85,7 +85,7 @@ public class MailBoxTest extends AbstractMailBoxTest {
     @SneakyThrows
     private void doSendOneTimeLoginCodeNewUser(String expectedSubject, String lang) {
         String code = VerificationCodeGenerator.generateOneTimeLoginCode();
-        mailBox.sendOneTimeLoginCodeNewUser(user("jdoe@examplee.com", lang), code, "SP");
+        mailBox.sendOneTimeLoginCodeNewUser(user("jdoe@examplee.com", lang), code);
 
         MimeMessage mimeMessage = mailMessage();
         String subject = mimeMessage.getSubject();

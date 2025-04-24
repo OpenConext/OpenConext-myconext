@@ -7,7 +7,6 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import myconext.exceptions.ForbiddenException;
 import myconext.exceptions.WeakPasswordException;
 import myconext.manage.Manage;
 import myconext.remotecreation.NewExternalEduID;
@@ -27,9 +26,6 @@ import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
 import java.io.Serializable;
-import java.nio.charset.StandardCharsets;
-import java.security.MessageDigest;
-import java.time.Instant;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -43,9 +39,14 @@ import static myconext.validation.PasswordStrength.strongEnough;
 @Document(collection = "users")
 public class User implements Serializable, UserDetails {
 
+    private static final List<SimpleGrantedAuthority> GUEST_AUTHORITIES = List.of(new SimpleGrantedAuthority(ROLE_GUEST));
+    private static final List<SimpleGrantedAuthority> SERVICE_DESK_AUTHORIES = Stream.of(ROLE_GUEST, SERVICE_DESK)
+            .map(SimpleGrantedAuthority::new)
+            .toList();
+
     @Id
     private String id;
-    //Do not index the email here, this is already done in MongoMapping with a custom strength (case-insensitive)
+    //Do not index the email here, this is already done in MongoMapping with custom strength (case-insensitive)
     @Setter
     private String email;
     @Setter
@@ -259,11 +260,9 @@ public class User implements Serializable, UserDetails {
     @JsonIgnore
     public Collection<? extends GrantedAuthority> getAuthorities() {
         if (serviceDeskMember) {
-            return Stream.of(ROLE_GUEST, SERVICE_DESK)
-                    .map(SimpleGrantedAuthority::new)
-                    .toList();
+            return SERVICE_DESK_AUTHORIES;
         }
-        return Collections.singletonList(new SimpleGrantedAuthority(ROLE_GUEST));
+        return GUEST_AUTHORITIES;
     }
 
     @Override

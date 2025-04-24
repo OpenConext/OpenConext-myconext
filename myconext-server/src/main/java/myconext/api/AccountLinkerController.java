@@ -13,6 +13,7 @@ import jakarta.validation.Valid;
 import myconext.cron.DisposableEmailProviders;
 import myconext.exceptions.DuplicateUserEmailException;
 import myconext.exceptions.ForbiddenException;
+import myconext.exceptions.InvalidOneTimeLoginCodeException;
 import myconext.exceptions.UserNotFoundException;
 import myconext.mail.MailBox;
 import myconext.manage.Manage;
@@ -24,6 +25,7 @@ import myconext.repository.UserRepository;
 import myconext.security.ACR;
 import myconext.security.EmailGuessingPrevention;
 import myconext.security.UserAuthentication;
+import myconext.security.VerificationCodeGenerator;
 import myconext.verify.AttributeMapper;
 import myconext.verify.VerifyState;
 import org.apache.commons.logging.Log;
@@ -241,14 +243,13 @@ public class AccountLinkerController implements UserAuthentication {
             String uri = this.spRedirectUrl + "/create-from-institution/attribute-missing?fromInstitution=true";
             return ResponseEntity.status(HttpStatus.FOUND).location(URI.create(uri)).build();
         }
-        //Check if the eppn is taken, before proceeding
+        //Check if the eppn is taken before proceeding
         String eppnAlreadyLinkedRequiredUri = this.spRedirectUrl + "/create-from-institution/eppn-already-linked?fromInstitution=true";
         Optional<ResponseEntity<Object>> eppnAlreadyLinkedOptional = checkEppnAlreadyLinked(eppnAlreadyLinkedRequiredUri, eppn, subjectId);
         if (eppnAlreadyLinkedOptional.isPresent()) {
             LOG.debug("EPPN already linked in create-institution-flow for " + eppn);
             return eppnAlreadyLinkedOptional.get();
         }
-        //We want this also to work when mail is opened in different browser
         RequestInstitutionEduID requestInstitutionEduID = new RequestInstitutionEduID(hash(), userInfo);
         requestInstitutionEduIDRepository.save(requestInstitutionEduID);
         //Now the user needs to enter email and validate this email to finish up the registration
@@ -291,51 +292,60 @@ public class AccountLinkerController implements UserAuthentication {
         requestInstitutionEduID.setUserId(user.getId());
 
         requestInstitutionEduID.setCreateInstitutionEduID(createInstitutionEduID);
-        //We need a new Hash for email verification, one that is not exposed to the browser
-        requestInstitutionEduID.setEmailHash(hash());
+
+        String code = VerificationCodeGenerator.generateOneTimeLoginCode();
+        requestInstitutionEduID.setOneTimeLoginCode(new OneTimeLoginCode(code));
+
         requestInstitutionEduIDRepository.save(requestInstitutionEduID);
 
-        String uri = basePath + "/myconext/api/sp/create-from-institution/finish";
-        mailBox.sendAccountVerificationCreateFromInstitution(user, requestInstitutionEduID.getEmailHash(), uri);
+        mailBox.sendAccountVerificationCreateFromInstitution(user, code);
 
         return ResponseEntity.ok(Map.of("status", "ok"));
     }
 
-    @GetMapping("/sp/create-from-institution/poll")
-    @Hidden
-    public int pollCreateFromInstitution(@RequestParam("hash") String hash) {
-        LOG.debug("Poll login status for create-institution-flow");
-
-        RequestInstitutionEduID requestInstitutionEduID = requestInstitutionEduIDRepository.findByHash(hash)
-                .orElseThrow(() -> new ForbiddenException("Wrong hash"));
-        return requestInstitutionEduID.getLoginStatus().ordinal();
-    }
-
     @GetMapping("/sp/create-from-institution/resendMail")
     @Hidden
-    public void resendMailCreateFromInstitution(@RequestParam("hash") String hash) {
+    public ResponseEntity resendMailCreateFromInstitution(@RequestParam("hash") String hash) {
         LOG.debug("Resend mail for create-institution-flow");
 
         RequestInstitutionEduID requestInstitutionEduID = requestInstitutionEduIDRepository.findByHash(hash)
                 .orElseThrow(() -> new ForbiddenException("Wrong hash"));
-        if (!requestInstitutionEduID.getLoginStatus().equals(LoginStatus.NOT_LOGGED_IN)) {
-            throw new ForbiddenException("User status is not NOT_LOGGED_IN, but " + requestInstitutionEduID.getLoginStatus());
+        OneTimeLoginCode oneTimeLoginCode = requestInstitutionEduID.getOneTimeLoginCode();
+        if (oneTimeLoginCode.isCodeAlmostExpired()) {
+            requestInstitutionEduIDRepository.save(requestInstitutionEduID);
         }
-        String uri = basePath + "/myconext/api/sp/create-from-institution/finish";
         User user = new User(requestInstitutionEduID.getCreateInstitutionEduID(), requestInstitutionEduID.getUserInfo());
-        mailBox.sendAccountVerificationCreateFromInstitution(user, requestInstitutionEduID.getEmailHash(), uri);
+        mailBox.sendAccountVerificationCreateFromInstitution(user, oneTimeLoginCode.getCode());
+        return ResponseEntity.ok(Map.of("ok", true));
     }
 
-    @GetMapping("/sp/create-from-institution/finish")
+    @PutMapping("/sp/create-from-institution/verify")
     @Hidden
-    public ResponseEntity createFromInstitutionFinish(HttpServletRequest request, @RequestParam("h") String emailHash) throws UnsupportedEncodingException {
+    public ResponseEntity createFromInstitutionFinish(HttpServletRequest request,
+                                                      @Valid @RequestBody VerifyOneTimeLoginCode verifyOneTimeLoginCode) throws UnsupportedEncodingException {
         LOG.debug("Finish create-institution-flow flow and create account");
 
-        RequestInstitutionEduID requestInstitutionEduID = requestInstitutionEduIDRepository.findByEmailHashAndLoginStatus(emailHash, LoginStatus.NOT_LOGGED_IN)
-                .orElseThrow(() -> new ForbiddenException("Wrong emailHash"));
+        RequestInstitutionEduID requestInstitutionEduID = requestInstitutionEduIDRepository
+                .findByHash(verifyOneTimeLoginCode.getHash())
+                .orElseThrow(() -> new ForbiddenException("Wrong hash"));
         CreateInstitutionEduID createInstitutionEduID = requestInstitutionEduID.getCreateInstitutionEduID();
-        if (createInstitutionEduID == null) {
-            throw new ForbiddenException("Tampering");
+        OneTimeLoginCode oneTimeLoginCode = requestInstitutionEduID.getOneTimeLoginCode();
+        if (createInstitutionEduID == null || oneTimeLoginCode == null || oneTimeLoginCode.isExpired()) {
+            //expired
+            requestInstitutionEduIDRepository.delete(requestInstitutionEduID);
+            throw new ForbiddenException("Expired requestInstitutionEduID for User :"+requestInstitutionEduID.getUserInfo());
+        }
+        String email = createInstitutionEduID.getEmail();
+        try {
+            boolean success = oneTimeLoginCode.attemptOneTimeLoginVerification(verifyOneTimeLoginCode.getCode());
+            if (!success) {
+                //Need to save the upped delay
+                requestInstitutionEduIDRepository.save(requestInstitutionEduID);
+                throw new InvalidOneTimeLoginCodeException("Invalid oneTimeLoginCode entered for user: "+ email);
+            }
+        } catch (ForbiddenException e) {
+            requestInstitutionEduIDRepository.delete(requestInstitutionEduID);
+            throw e;
         }
         Map<String, Object> userInfo = requestInstitutionEduID.getUserInfo();
         //Now we can create the User and populate the SecurityContext
@@ -347,7 +357,7 @@ public class AccountLinkerController implements UserAuthentication {
         } else {
             user = new User(
                     UUID.randomUUID().toString(),
-                    createInstitutionEduID.getEmail(),
+                    email,
                     (String) userInfo.get("given_name"),
                     (String) userInfo.get("given_name"),
                     (String) userInfo.get("family_name"),
@@ -368,7 +378,6 @@ public class AccountLinkerController implements UserAuthentication {
                 null,
                 null,
                 userInfo);
-        requestInstitutionEduID.setLoginStatus(LoginStatus.LOGGED_IN_SAME_DEVICE);
         requestInstitutionEduIDRepository.save(requestInstitutionEduID);
 
         //This is primarily for localhost development, in real environments the login will be done by Shibboleth filter

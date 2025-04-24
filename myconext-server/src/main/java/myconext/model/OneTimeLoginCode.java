@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 import myconext.exceptions.ForbiddenException;
+import myconext.security.VerificationCodeGenerator;
 
 import java.io.Serializable;
 import java.nio.charset.StandardCharsets;
@@ -48,5 +49,14 @@ public class OneTimeLoginCode implements Serializable {
 
     public boolean isExpired() {
         return (createdAt + (1000 * 60 * VALIDITY_LOGIN_CODE_MINUTES)) < System.currentTimeMillis();
+    }
+
+    public boolean isCodeAlmostExpired() {
+        if ((createdAt + (1000 * 60 * 9)) < System.currentTimeMillis()) {
+            String newCode = VerificationCodeGenerator.generateOneTimeLoginCode();
+            this.code = newCode;
+            return true;
+        }
+        return false;
     }
 }

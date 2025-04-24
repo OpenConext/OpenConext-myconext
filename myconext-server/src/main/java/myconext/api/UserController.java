@@ -387,18 +387,14 @@ public class UserController implements UserAuthentication {
                 .orElseThrow(() -> new ExpiredAuthenticationException("Expired samlAuthenticationRequest: " + authenticationRequestId));
         String userId = samlAuthenticationRequest.getUserId();
         User user = userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException(userId));
-        String serviceName = this.manage.getServiceName(request, samlAuthenticationRequest);
         OneTimeLoginCode oneTimeLoginCode = user.getOneTimeLoginCode();
-        String code = oneTimeLoginCode.getCode();
-        if ((oneTimeLoginCode.getCreatedAt() + (1000 * 60 * 9)) < System.currentTimeMillis()) {
-            code = VerificationCodeGenerator.generateOneTimeLoginCode();
-            oneTimeLoginCode.setCode(code);
+        if (oneTimeLoginCode.isCodeAlmostExpired()) {
             userRepository.save(user);
         }
         if (user.isNewUser()) {
-            mailBox.sendOneTimeLoginCodeNewUser(user, code, serviceName);
+            mailBox.sendOneTimeLoginCodeNewUser(user, oneTimeLoginCode.getCode());
         } else {
-            mailBox.sendOneTimeLoginCode(user, code, serviceName);
+            mailBox.sendOneTimeLoginCode(user, oneTimeLoginCode.getCode());
         }
         return ResponseEntity.ok(true);
     }
@@ -622,13 +618,10 @@ public class UserController implements UserAuthentication {
         ChangeEmailHash changeEmailHash = changeEmailHashRepository.findByUserId(user.getId()).stream().findFirst()
                 .orElseThrow(() -> new ForbiddenException("No change email hash for user: " + user.getEmail()));
         OneTimeLoginCode oneTimeLoginCode = changeEmailHash.getOneTimeLoginCode();
-        String code = oneTimeLoginCode.getCode();
-        if ((oneTimeLoginCode.getCreatedAt() + (1000 * 60 * 9)) < System.currentTimeMillis()) {
-            code = VerificationCodeGenerator.generateOneTimeLoginCode();
-            oneTimeLoginCode.setCode(code);
+        if (oneTimeLoginCode.isCodeAlmostExpired()) {
             changeEmailHashRepository.save(changeEmailHash);
         }
-        mailBox.sendChangeEmailOneTimeCode(user, changeEmailHash.getNewEmail(), code);
+        mailBox.sendChangeEmailOneTimeCode(user, changeEmailHash.getNewEmail(), oneTimeLoginCode.getCode());
         return ResponseEntity.ok(true);
     }
 
@@ -814,14 +807,12 @@ public class UserController implements UserAuthentication {
         PasswordResetHash passwordResetHash = passwordResetHashRepository.findByUserId(user.getId()).stream().findFirst()
                 .orElseThrow(() -> new ForbiddenException("No change email hash for user: " + user.getEmail()));
         OneTimeLoginCode oneTimeLoginCode = passwordResetHash.getOneTimeLoginCode();
-        String code = oneTimeLoginCode.getCode();
-        if ((oneTimeLoginCode.getCreatedAt() + (1000 * 60 * 9)) < System.currentTimeMillis()) {
-            code = VerificationCodeGenerator.generateOneTimeLoginCode();
-            oneTimeLoginCode.setCode(code);
+        if (oneTimeLoginCode.isCodeAlmostExpired()) {
             passwordResetHashRepository.save(passwordResetHash);
         }
         logWithContext(user, "update", "resend-password-code", LOG, "Resend password reset code mail");
-        mailBox.sendResetPasswordOneTimeCode(user, code);
+
+        mailBox.sendResetPasswordOneTimeCode(user, oneTimeLoginCode.getCode());
         return ResponseEntity.ok(true);
     }
 
@@ -1347,7 +1338,6 @@ public class UserController implements UserAuthentication {
         }
 
         authenticationRequestRepository.save(samlAuthenticationRequest);
-        String serviceName = this.manage.getServiceName(request, samlAuthenticationRequest);
 
         if (passwordOrWebAuthnFlow) {
             LOG.debug(String.format("Returning login hash for passwordFlow for existing user %s", user.getUsername()));
@@ -1358,10 +1348,10 @@ public class UserController implements UserAuthentication {
         String code = oneTimeLoginCode.getCode();
         if (user.isNewUser()) {
             LOG.debug("Sending login code email for new user: " + user.getEmail());
-            mailBox.sendOneTimeLoginCodeNewUser(user, code, serviceName);
+            mailBox.sendOneTimeLoginCodeNewUser(user, code);
         } else {
             LOG.debug("Sending login code email for existing user: " + user.getEmail());
-            mailBox.sendOneTimeLoginCode(user, code, serviceName);
+            mailBox.sendOneTimeLoginCode(user, code);
         }
         return ResponseEntity.status(201).body(Map.of("result", "ok"));
     }

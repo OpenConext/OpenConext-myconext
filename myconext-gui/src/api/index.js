@@ -257,8 +257,9 @@ export function allowedEmailDomains() {
     return fetchJson("/myconext/api/sp/create-from-institution/domain/allowed")
 }
 
-export function createFromInstitutionPoll(hash) {
-    return fetchJson("/myconext/api/sp/create-from-institution/poll?hash=" + hash)
+export function createFromInstitutionVerify(hash, code) {
+    const body = {code: code, hash: hash};
+    return postPutJson("/myconext/api/sp/create-from-institution/verify", body, "PUT");
 }
 
 export function resendCreateFromInstitutionMail(hash) {

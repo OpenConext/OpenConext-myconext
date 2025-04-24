@@ -14,8 +14,6 @@ public interface RequestInstitutionEduIDRepository extends MongoRepository<Reque
 
     Optional<RequestInstitutionEduID> findByHash(String hash);
 
-    Optional<RequestInstitutionEduID> findByEmailHashAndLoginStatus(String hash, LoginStatus loginStatus);
-
     Long deleteByExpiresInBefore(Date expiryDate);
 
 }

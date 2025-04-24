@@ -624,7 +624,7 @@
   "Success.Info.COPY": "Please go back to the screen where you requested the link and follow the instructions there.<br/><br/>You can close this tab / window.",
   "Expired.Title.COPY": "Your link is invalid",
   "Expired.Info.COPY": "The link you used is either expired or has already been used.",
-  "Expired.Back.COPY": "Go to eduid.nl",
+  "Expired.Back.COPY": "Try again",
   "MaxAttempt.Title.COPY": "Maximum attempts reached",
   "MaxAttempt.Info.COPY": "You've reached the maximum verification attempts.",
   "WebAuthn.Info.COPY": "Add security key",

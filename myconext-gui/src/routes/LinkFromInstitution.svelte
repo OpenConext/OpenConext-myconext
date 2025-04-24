@@ -59,8 +59,8 @@
         if (allowedNext($user.email, agreedWithTerms)) {
             showSpinner = true;
             createInstitutionEduID($user.email, hash, newUser)
-                .then(res => {
-                    const url = `/create-from-institution/poll/${hash}`;
+                .then(() => {
+                    const url = `/create-from-institution/verify/${hash}`;
                     navigate(url, {replace: true})
                 })
                 .catch(e => {

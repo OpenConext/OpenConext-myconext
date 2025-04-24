@@ -20,7 +20,6 @@
     let allowedToResend = false;
     let mailHasBeenResend = false;
     let wrongCode = false;
-    let disabledButton = true;
     let delay = 1;
 
     onMount(() => {
@@ -29,9 +28,6 @@
     });
 
     const verifyCode = code => {
-        if (disabledButton) {
-            return;
-        }
         showSpinner = true;
         verifyCodeExistingUser(code, id)
             .then(json => {
@@ -142,10 +138,6 @@
             <p class="error">{I18n.t("LoginCode.Error.COPY", {delay: delay})}</p>
         {/if}
     </div>
-
-    <Button label={I18n.t("LoginCode.Continue.COPY")}
-            onClick={verifyCode}
-            disabled={disabledButton || wrongCode}/>
 
     <div class="resend-mail">
         {#if allowedToResend}

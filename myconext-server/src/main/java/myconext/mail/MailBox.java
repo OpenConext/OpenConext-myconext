@@ -32,7 +32,6 @@ public class MailBox {
     private static final List<String> supportedLanguages = List.of("en", "nl");
 
     private final JavaMailSender mailSender;
-    private final String magicLinkUrl;
     private final String mySURFconextURL;
     private final String loginSURFconextURL;
     private final String emailFrom;
@@ -47,7 +46,6 @@ public class MailBox {
     public MailBox(JavaMailSender mailSender,
                    String emailFrom,
                    String errorEmail,
-                   String magicLinkUrl,
                    String mySURFconextURL,
                    String loginSURFconextURL,
                    ObjectMapper objectMapper,
@@ -57,7 +55,6 @@ public class MailBox {
         this.mailSender = mailSender;
         this.emailFrom = emailFrom;
         this.errorEmail = errorEmail;
-        this.magicLinkUrl = magicLinkUrl;
         this.mySURFconextURL = mySURFconextURL;
         this.loginSURFconextURL = loginSURFconextURL;
         this.emailsSendRepository = emailsSendRepository;
@@ -73,31 +70,25 @@ public class MailBox {
         this.objectMapper = objectMapper;
     }
 
-    public void sendOneTimeLoginCode(User user, String code, String requesterId) {
+    public void sendOneTimeLoginCode(User user, String code) {
         String title = this.getTitle("one_time_login_code", user) + code;
         Map<String, Object> variables = variables(user, title);
-        variables.put("destination", requesterId);
         variables.put("code", code);
         sendMail("one_time_login_code", title, variables, preferredLanguage(user), user.getEmail(), true);
     }
 
-    public void sendOneTimeLoginCodeNewUser(User user, String code, String requesterId) {
+    public void sendOneTimeLoginCodeNewUser(User user, String code) {
         String title = this.getTitle("one_time_login_code_new_user", user) + code;
         Map<String, Object> variables = variables(user, title);
-        variables.put("destination", requesterId);
         variables.put("code", code);
         sendMail("one_time_login_code_new_user", title, variables, preferredLanguage(user), user.getEmail(), true);
     }
 
-    public void sendAccountVerificationCreateFromInstitution(User user, String hash, String linkUrl) {
-        doSendAccountVerification(user, hash, linkUrl);
+    public void sendAccountVerificationCreateFromInstitution(User user, String code) {
+        this.sendOneTimeLoginCodeNewUser(user, code);
     }
 
     public void sendAccountVerificationMobileAPI(User user, String hash, String linkUrl) {
-        doSendAccountVerification(user, hash, linkUrl);
-    }
-
-    private void doSendAccountVerification(User user, String hash, String linkUrl) {
         String title = this.getTitle("account_verification", user);
         Map<String, Object> variables = variables(user, title);
         variables.put("hash", hash);

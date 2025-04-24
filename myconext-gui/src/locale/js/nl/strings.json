@@ -624,7 +624,7 @@
   "Success.Info.COPY": "Ga terug naar het scherm waar je de link hebt aangevraagd en volg de instructies daar op.<br/><br/>Je kunt dit tabblad / venster sluiten.",
   "Expired.Title.COPY": "Je link is niet geldig",
   "Expired.Info.COPY": "De link die je hebt gebruikt, is verlopen of al een keer gebruikt.",
-  "Expired.Back.COPY": "Ga naar eduid.nl",
+  "Expired.Back.COPY": "Probeer opnieuw",
   "MaxAttempt.Title.COPY": "Maximum aantal pogingen bereikt",
   "MaxAttempt.Info.COPY": "Je hebt het maximale aantal controlepogingen bereikt.",
   "WebAuthn.Info.COPY": "Voeg een beveiligingssleutel toe",
