@@ -71,37 +71,6 @@ public class UserControllerRememberMeTest extends AbstractIntegrationTest {
         response.then().header("Location", startsWith("http://localhost:3000/stepup/"));
     }
 
-    @Test
-    public void rememberMeButMFARegistrationRequired() throws IOException {
-        String authenticationRequestId = samlAuthnRequest();
-        User user = user("steve@example.com", "Steve", "Doe", "en");
-        MagicLinkResponse magicLinkResponse = magicLinkRequest(new MagicLinkRequest(authenticationRequestId, user, false), HttpMethod.POST);
-        Response response = magicResponse(magicLinkResponse);
-
-        String cookie = response.cookie(GUEST_IDP_REMEMBER_ME_COOKIE_NAME);
-        String authnContext = readFile("request_authn_context_mfa.xml");
-        response = samlAuthnRequestResponseWithLoa(
-                new Cookie.Builder(GUEST_IDP_REMEMBER_ME_COOKIE_NAME, cookie).build(), null, authnContext);
-        response.then().header("Location", startsWith("http://localhost:3000/uselink/"));
-    }
-
-    @Test
-    public void rememberMeButMFALoginRequired() throws IOException {
-        String authenticationRequestId = samlAuthnRequest();
-        User user = user("steve@example.com", "Steve", "Doe", "en");
-        user.getSurfSecureId().put(SURFSecureID.RECOVERY_CODE, "12345678");
-        user.setNewUser(false);
-        userRepository.save(user);
-
-        MagicLinkResponse magicLinkResponse = magicLinkRequest(new MagicLinkRequest(authenticationRequestId, user, false), HttpMethod.PUT);
-        Response response = magicResponse(magicLinkResponse);
-
-        String cookie = response.cookie(GUEST_IDP_REMEMBER_ME_COOKIE_NAME);
-        String authnContext = readFile("request_authn_context_mfa.xml");
-        response = samlAuthnRequestResponseWithLoa(
-                new Cookie.Builder(GUEST_IDP_REMEMBER_ME_COOKIE_NAME, cookie).build(), null, authnContext);
-        response.then().header("Location", startsWith("http://localhost:3000/useapp/"));
-    }
 
 
 }

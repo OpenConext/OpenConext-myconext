@@ -42,7 +42,7 @@ public class RateLimitEnforcer {
         int rateLimit = (int) surfSecureId.merge(SMS_RATE_LIMIT, 1, (i, j) -> Integer.sum((int) i, (int) j));
         if (rateLimit >= 5) {
             Long rateLimitUpdated = (Long) surfSecureId.get(SMS_RATE_LIMIT_UPDATED);
-            boolean resetRateLimit = (System.currentTimeMillis() - rateLimitUpdated) > (24 * 60 * 60 * 1000L);
+            boolean resetRateLimit = (System.currentTimeMillis() - rateLimitUpdated) > (1 * 60 * 60 * 1000L);
             if (resetRateLimit) {
                 surfSecureId.put(SMS_RATE_LIMIT, 0);
             } else {
