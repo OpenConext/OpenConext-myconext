@@ -20,7 +20,6 @@
     let showCodeValidation = false;
 
     let wrongCode = false;
-    let disabledButton = true;
 
     let allowedToResend = false;
     let mailHasBeenResend = false;
@@ -75,7 +74,6 @@
 
     const valueCallback = values => {
         wrongCode = false;
-        disabledButton = values.filter(v => v !== '').length !== 6;
     }
 
     const cancel = () => {
@@ -238,11 +236,6 @@
                     <p class="error">{I18n.t("LoginCode.Error.COPY")}</p>
                 {/if}
             </div>
-
-            <Button label={I18n.t("LoginCode.Continue.COPY")}
-                    onClick={verifyCode}
-                    fullSize={true}
-                    disabled={disabledButton || wrongCode}/>
 
             <div class="resend-mail">
                 {#if allowedToResend}

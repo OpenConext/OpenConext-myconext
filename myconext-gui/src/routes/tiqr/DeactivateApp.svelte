@@ -8,6 +8,7 @@
     import Spinner from "../../components/Spinner.svelte";
     import critical from "../../icons/critical.svg?raw";
     import CodeVerifier from "./CodeVerifier.svelte";
+    import Modal from "../../components/Modal.svelte";
 
     let useRecoveryCode;
     let recoveryCode = "";
@@ -17,6 +18,8 @@
     let wrongCode = false;
     let validTotp = false;
     let maxAttempts = false;
+    let rateLimited = false;
+    let showRateLimitedModal = false;
 
     const onValid = () => {
         validTotp = true;
@@ -33,7 +36,12 @@
                 .then(() => {
                     showSpinner = false;
                     step = 2;
-                });
+                })
+                .catch(() => {
+                    rateLimited = true;
+                    showRateLimitedModal = true;
+                    showSpinner = false;
+                })
         } else {
             step = 2;
         }
@@ -164,8 +172,16 @@
             <Button href="/deactivate"
                     label={I18n.t(`deactivate.${(step === 1 && !useRecoveryCode)? "next" : "deactivateApp" }`)}
                     medium={true}
-                    disabled={(recoveryCode === "" && useRecoveryCode) || (step === 2 && !validTotp) || (maxAttempts)}
+                    disabled={(recoveryCode === "" && useRecoveryCode) || (step === 2 && !validTotp) || maxAttempts || rateLimited}
                     onClick={() => (step === 1 && !useRecoveryCode) ? nextStep() : deactivateUserAction()}/>
         </div>
     </div>
 </div>
+{#if rateLimited && showRateLimitedModal}
+    <Modal submit={() => showRateLimitedModal = false}
+           warning={true}
+           question={I18n.t("PhoneVerification.RateLimitedInfo.COPY")}
+           title={I18n.t("PhoneVerification.RateLimited.COPY")}
+           confirmTitle={I18n.t("PhoneVerification.Ok.COPY")}>
+    </Modal>
+{/if}

@@ -266,7 +266,10 @@ const nl = {
         text: "We sturen je een code om je nummer te verifiëren.",
         verify: "Verifieer dit telefoonnummer",
         placeHolder: "+31 612345678",
-        phoneIncorrect: "Verificatie code is onjuist"
+        phoneIncorrect: "Verificatie code is onjuist",
+        rateLimited: "Rate limited",
+        rateLimitedInfo: "Teveel verzoeken om een SMS te versturen. Je bent rate limited en je kan het morgen opnieuw proberen.",
+        ok: "Ok"
     },
     congrats: {
         header: "Succes",

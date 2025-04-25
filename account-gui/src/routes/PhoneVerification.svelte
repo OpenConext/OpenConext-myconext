@@ -9,11 +9,14 @@
     import {textPhoneNumber} from "../api";
     import {navigate} from "svelte-routing";
     import {user} from "../stores/user";
+    import Modal from "../components/Modal.svelte";
 
     let showSpinner = true;
     let initial = true;
     let hash = null;
     let phoneNumber = "";
+    let rateLimited = false;
+    let showRateLimitedModal = false;
 
     onMount(() => {
         $links.displayBackArrow = true;
@@ -32,10 +35,16 @@
         if (!phoneNumberIncorrect) {
             showSpinner = true;
             const trimmedPhoneNumber = phoneNumber.replaceAll(" ", "").replaceAll("-", "");
-            textPhoneNumber(hash, trimmedPhoneNumber).then(() => {
-                $user.phoneNumber = phoneNumber;
-                navigate(`phone-confirmation?h=${hash}`);
-            })
+            textPhoneNumber(hash, trimmedPhoneNumber)
+                .then(() => {
+                    $user.phoneNumber = phoneNumber;
+                    navigate(`phone-confirmation?h=${hash}`);
+                })
+                .catch(() => {
+                    rateLimited = true;
+                    showRateLimitedModal = true;
+                    showSpinner = false;
+                })
         }
     }
 
@@ -110,8 +119,16 @@
 {/if}
 
 <Button href="/next"
-        disabled={showSpinner || !allowedNext}
+        disabled={showSpinner || !allowedNext || rateLimited}
         label={I18n.t("PhoneVerification.Verify.COPY")}
         className="full"
         onClick={next}/>
 
+{#if rateLimited && showRateLimitedModal}
+    <Modal submit={() => showRateLimitedModal = false}
+           warning={true}
+           question={I18n.t("phoneVerification.rateLimitedInfo")}
+           title={I18n.t("phoneVerification.rateLimited")}
+           confirmLabel={I18n.t("phoneVerification.ok")}>
+    </Modal>
+{/if}

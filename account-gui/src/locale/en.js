@@ -267,7 +267,10 @@ const en =  {
         text: "We will text you a code to verify your number",
         verify: "Verify this phone number",
         placeHolder: "+31 612345678",
-        phoneIncorrect: "Phone number is incorrect"
+        phoneIncorrect: "Phone number is incorrect",
+        rateLimited: "Rate limited",
+        rateLimitedInfo: "Too many requests to send a SMS. You are rate limited and can try again tomorrow",
+        ok: "Ok"
     },
     congrats: {
         header: "Success",

@@ -7,6 +7,7 @@
     import {me, sendDeactivationPhoneCode} from "../../api";
     import {user} from "../../stores/user";
     import Spinner from "../../components/Spinner.svelte";
+    import Modal from "../../components/Modal.svelte";
 
     export let action;
     export let navigateTo;
@@ -17,6 +18,8 @@
     let wrongCode = false;
     let maxAttempts = false;
     let showSpinner = false;
+    let rateLimited = false;
+    let showRateLimitedModal = false;
 
     let refs = Array(6).fill("");
     let totp = Array(6).fill("");
@@ -30,13 +33,20 @@
             navigate(phoneVerificationURL);
         } else {
             showSpinner = true;
-            sendDeactivationPhoneCode().then(() => {
-                totp = Array(6).fill("");
-                refs[0].focus();
-                wrongCode = false;
-                maxAttempts = false;
-                showSpinner = false;
-            });
+            sendDeactivationPhoneCode()
+                .then(() => {
+                    totp = Array(6).fill("");
+                    refs[0].focus();
+                    wrongCode = false;
+                    maxAttempts = false;
+                    showSpinner = false;
+                })
+                .catch(() => {
+                    rateLimited = true;
+                    showRateLimitedModal = true;
+                    showSpinner = false;
+                })
+            ;
         }
 
     }
@@ -156,7 +166,7 @@
     </div>
 {/if}
 
-{#if maxAttempts}
+{#if maxAttempts && !rateLimited}
     <div class="error">
         <span class="svg">{@html critical}</span>
         <div class="max-attempts">
@@ -166,8 +176,16 @@
             {#if reEnter}
                 <span>{I18n.t("Sms.MaxAttemptsPost.COPY")}</span>
             {:else}
-                <span>{I18n.t("Sms.MaxAttemptsPost.COPYNoReEnter")}</span>
+                <span>{I18n.t("Sms.MaxAttemptsPostNoReEnter.COPY")}</span>
             {/if}
         </div>
     </div>
+{/if}
+{#if rateLimited && showRateLimitedModal}
+    <Modal submit={() => showRateLimitedModal = false}
+           warning={true}
+           question={I18n.t("PhoneVerification.RateLimitedInfo.COPY")}
+           title={I18n.t("PhoneVerification.RateLimited.COPY")}
+           confirmTitle={I18n.t("PhoneVerification.Ok.COPY")}>
+    </Modal>
 {/if}
