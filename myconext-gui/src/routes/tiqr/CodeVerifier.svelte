@@ -166,7 +166,7 @@
             {#if reEnter}
                 <span>{I18n.t("Sms.MaxAttemptsPost.COPY")}</span>
             {:else}
-                <span>{I18n.t("Sms.MaxAttemptsPost.COPYNoReEnter")}</span>
+                <span>{I18n.t("Sms.MaxAttemptsPostNoReEnter.COPY")}</span>
             {/if}
         </div>
     </div>
