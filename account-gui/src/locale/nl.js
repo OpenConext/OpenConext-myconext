@@ -248,9 +248,7 @@ const nl = {
     recovery: {
         header: "Een herstelmethode instellen",
         info: "Als je geen toegang hebt tot eduID met de app of via e-mail, kun je een herstelmethode gebruiken om in te loggen op je eduID-account.",
-        methods: "De volgende methoden zijn beschikbaar.",
-        phoneNumber: "Voeg een hersteltelefoonnummer toe.",
-        phoneNumberInfo: "Je ontvangt een sms met een code.",
+        methods: "De volgende methode is beschikbaar.",
         backupCode: "Vraag een herstelcode aan.",
         backupCodeInfo: "De code kan worden gebruikt om in te loggen.",
         save: "Bewaar de code ergens veilig.",
