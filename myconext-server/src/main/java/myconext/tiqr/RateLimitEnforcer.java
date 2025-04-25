@@ -38,6 +38,11 @@ public class RateLimitEnforcer {
     }
 
     public void checkSendSMSRateLimit(User user) {
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            //don't care
+        }
         Map<String, Object> surfSecureId = user.getSurfSecureId();
         int rateLimit = (int) surfSecureId.merge(SMS_RATE_LIMIT, 1, (i, j) -> Integer.sum((int) i, (int) j));
         if (rateLimit >= 5) {
