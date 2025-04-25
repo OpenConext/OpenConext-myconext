@@ -17,7 +17,11 @@ public class SURFSecureID {
 
     public static final String RATE_LIMIT = "rate-limit";
 
+    public static final String SMS_RATE_LIMIT = "sms-rate-limit";
+
     public static final String RATE_LIMIT_UPDATED = "rate-limit-updated";
+
+    public static final String SMS_RATE_LIMIT_UPDATED = "sms-rate-limit-updated";
 
     public static final String SUSPENDED_UNTIL = "suspendedUntil";
 

@@ -286,6 +286,10 @@ public class TiqrController implements UserAuthentication {
     }
 
     private ResponseEntity<FinishEnrollment> doSendPhoneCode(User user, String phoneNumber, boolean regenerateSpFlow, HttpServletRequest request) {
+        rateLimitEnforcer.checkSendSMSRateLimit(user);
+
+        LOG.info(String.format("Sending SMS for user %s to number %s", user.getEmail(), phoneNumber));
+
         String phoneVerification = VerificationCodeGenerator.generatePhoneVerification();
 
         smsService.send(phoneNumber, phoneVerification, request.getLocale());
