@@ -55,7 +55,6 @@
                     wrongCode = true;
                     delay = delay * 2;
                     setTimeout(() => {
-                        disabledButton = false;
                     }, delay * 1000)
                 }
             });
@@ -63,7 +62,6 @@
 
     const valueCallback = values => {
         wrongCode = false;
-        disabledButton = values.filter(v => v !== '').length !== 6;
     }
 
     const resendMail = () => {
