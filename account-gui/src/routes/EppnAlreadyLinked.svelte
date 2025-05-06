@@ -52,7 +52,7 @@
 {/if}
 <div class="home">
     <div class="card">
-        <h2>{I18n.t("EppnAlreadyLinked.Title.COPY")}</h2>
+        <h2>{I18n.t("EppnAlreadyLinked.Title.AccountNotConnected.COPY")}</h2>
         <p class="info">{I18n.t("EppnAlreadyLinked.Info.COPY", {email: email})}</p>
         <p class="info">{I18n.t("eppnAlreadyLinked.proceed", {name: serviceName})}</p>
 
