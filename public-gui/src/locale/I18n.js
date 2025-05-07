@@ -22,6 +22,16 @@ if (isEmpty(parameterByName)) {
 if (isEmpty(parameterByName)) {
     parameterByName = navigator.language.toLowerCase().substring(0, 2);
 }
+const path = window.location.pathname;
+
+if (path === "/servicedesk-en") {
+    parameterByName = "en";
+}
+
+if (path === "/servicedesk") {
+    parameterByName = "nl";
+}
+
 if (["nl", "en"].indexOf(parameterByName) === -1) {
     parameterByName = "en";
 }

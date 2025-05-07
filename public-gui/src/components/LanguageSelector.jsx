@@ -10,7 +10,17 @@ export const LanguageSelector = () => {
         stopEvent(e);
         Cookies.set("lang", locale, {expires: 356, secure: document.location.protocol.endsWith("https")});
         I18n.locale = locale;
-        window.location.search = replaceQueryParameter(window.location.search, "lang", locale);
+
+        const path = window.location.pathname;
+
+        if (path === "/servicedesk-en") {
+            window.location.href = "/servicedesk";
+        } else if (path === "/servicedesk") {
+            window.location.href = "/servicedesk-en";
+        } else {
+            window.location.search = replaceQueryParameter(window.location.search, "lang", locale);
+        }
+
     };
 
     const renderLocaleChooser = locale => {
