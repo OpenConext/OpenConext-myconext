@@ -76,16 +76,14 @@
     }
 
 </style>
-{#if !isMfaParameter}
+{#if !isMfa}
     <div class="sub-content">
         <div class="sub-content-inner">
         <span class="question">{@html question}
             {#if preLink}
                 <span class="pre-link">{preLink}</span>
             {/if}
-            {#if isMfa && isMfaParameter}
-                <a href={route} on:click|preventDefault|stopPropagation={() => mfaWarning(true)}>{linkText}</a>
-            {:else if route}
+            {#if route}
                 <a href={route} use:link>
                     {linkText}
                 </a>

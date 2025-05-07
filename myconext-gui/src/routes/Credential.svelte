@@ -127,7 +127,7 @@
            cancel={() => showModal = false}
            warning={true}
            confirmTitle={I18n.t("YourVerifiedInformation.ConfirmRemoval.Button.YesDelete.COPY")}
-           question={I18n.t("Credential.DeleteCredential.COPYConfirmation", {name: credential.name})}
+           question={I18n.t("Credential.DeleteCredentialConfirmation.COPY", {name: credential.name})}
            title={I18n.t("Credential.DeleteCredential.COPY")}>
     </Modal>
 {/if}

@@ -276,15 +276,6 @@ public class TiqrController implements UserAuthentication {
         return doSendPhoneCode(user, phoneNumber, true, request);
     }
 
-    @PostMapping("/send-phone-code")
-    @Hidden
-    public ResponseEntity<FinishEnrollment> sendPhoneCode(HttpServletRequest request, @RequestParam("hash") String hash,
-                                                          @RequestBody Map<String, String> requestBody) {
-        User user = getUserFromAuthenticationRequest(hash);
-        String phoneNumber = requestBody.get("phoneNumber");
-        return doSendPhoneCode(user, phoneNumber, false, request);
-    }
-
     private ResponseEntity<FinishEnrollment> doSendPhoneCode(User user, String phoneNumber, boolean regenerateSpFlow, HttpServletRequest request) {
         rateLimitEnforcer.checkSendSMSRateLimit(user);
 
@@ -554,7 +545,7 @@ public class TiqrController implements UserAuthentication {
         try {
             tiqrService.postAuthentication(authenticationData);
 
-            LOG.debug(String.format("Successful authentication for user %s, %s" ,user.getEmail(), user.getId()));
+            LOG.debug(String.format("Successful authentication for user %s, %s", user.getEmail(), user.getId()));
 
             rateLimitEnforcer.unsuspendUserAfterTiqrSuccess(user);
             return ResponseEntity.ok("OK");

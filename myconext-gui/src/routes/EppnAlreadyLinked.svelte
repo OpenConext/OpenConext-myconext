@@ -69,7 +69,7 @@
 </style>
 <div class="eppn-already-linked" class:create-from-institution={fromInstitution}>
     <div class:inner={fromInstitution}>
-        <h1>{I18n.t("EppnAlreadyLinked.Title.COPY")}</h1>
+        <h1>{I18n.t("EppnAlreadyLinked.Title.AccountNotConnected.COPY")}</h1>
         <p class="last">{I18n.t(`EppnAlreadyLinked.Info.COPY${fromInstitution ? "New" : ""}`, {email: email})}</p>
         <Button href={`/link`}
                 didisabled={busy}

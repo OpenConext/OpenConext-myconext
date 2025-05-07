@@ -1,0 +1,17 @@
+@use "../index";
+
+.servicedesk-container {
+    display: flex;
+    flex-direction: column;
+    margin-top: 25px;
+
+    img {
+        width: 140px;
+        height: auto;
+    }
+
+    .servicedesk {
+        @include index.page;
+    }
+
+}

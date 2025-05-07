@@ -2056,6 +2056,10 @@ SHARED:
       COPY:
         en: ' here '
         nl: ' hier '
+    MaxAttemptsPostNoReEnter:
+      COPY:
+        en: "to request a new verification"
+        nl: "om een nieuwe code te ontvangen"
   EnrollApp:
     Header:
       COPY:
@@ -2168,8 +2172,8 @@ SHARED:
           waarvoor je eduID nodig is.
     Next:
       COPY:
-        en: Continue to %1{{s}}
-        nl: Verder naar %1{{s}}
+        en: Continue
+        nl: Verder
   Deactivate:
     TitleDelete:
       COPY:

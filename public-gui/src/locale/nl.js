@@ -71,6 +71,11 @@ const nl = {
         eduID: "Gebruiksvoorwaarden",
         title: "Versie 17 juni 2024"
     },
+    servicedesk: {
+        title: "Servicedesk",
+        info:"Meer informatie over hoe, wanneer en bij welke service desk je je eduID met behulp van een code kan verifiëren? Kijk dan op onze" +
+            " <a href='https://servicedesk.surf.nl/wiki/pages/viewpage.action?pageId=166920530'>Wiki</a>",
+    },
     footer: {
         terms: "Gebruiksvoorwaarden",
         termsLink: "https://eduid.nl/terms",

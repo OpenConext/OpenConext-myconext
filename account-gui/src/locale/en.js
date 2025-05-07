@@ -249,9 +249,7 @@ const en =  {
     recovery: {
         header: "Set up a recovery method",
         info: "If you can't access eduID with the app or via email, you can use a recovery method to sign in to your eduID account.",
-        methods: "The following methods are available.",
-        phoneNumber: "Add a recovery phone number.",
-        phoneNumberInfo: "You'll receive a text message with a code.",
+        methods: "The following method is available.",
         backupCode: "Request a recovery code.",
         backupCodeInfo: "The code can be used to sign in with.",
         save: "Save the code somewhere safe.",

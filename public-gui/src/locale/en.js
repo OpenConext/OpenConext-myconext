@@ -72,6 +72,11 @@ const en = {
         eduID: "Terms of Use",
         title: "Version June 17, 2024"
     },
+    servicedesk: {
+        title: "Servicedesk",
+        info:"For more information about how, when and by which service desk you can verify your eduID using a code, please visit our" +
+            " <a href='https://servicedesk.surf.nl/wiki/pages/viewpage.action?pageId=166920533'>Wiki</a>"
+    },
     footer: {
         terms: "Terms of Use",
         termsLink: "https://support.surfconext.nl/terms-en",
