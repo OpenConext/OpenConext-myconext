@@ -1,7 +1,6 @@
 import I18n from "../locale/I18n.js";
 import "./ServiceDesk.scss"
 import FrontDesk from "../assets/frontdesk.svg";
-import {useState} from "react";
 
 export const ServiceDesk = () => {
 
