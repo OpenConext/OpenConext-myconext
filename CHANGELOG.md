@@ -1,8 +1,21 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
-## [7.4.0]
+## [7.5.12] May 2025
+- Add new feature: the ServiceDesk. This feature allows end users to verifiy their myconext (eduID) account using a ServiceDesk, which they can physically visit or video call. This is an alternative method of identify verification, for users that cannot use their Institute account, iDIN (Dutch Banks), or eIDAS (European ID) to verify their myconext (eduID).
+- Textual changes to improve UX and understandability (and start using Localicious for good text synchronisation)
+- Improvement to the .well-known files and apple-app-site-association files, to improve the working with the myconext (eduID) app.
+- Improved logging (for SMS features and email features)
+- Bump a lot of dependancies to their newer stable version.
+
+## [7.4.10] April 2025
+- Security Patch! Strongly advices for all parties using the SMS functionality
+
+## [7.4.0] 
 - Activates e-mail nudges. This includes nudges for the use of a personal e-mail (and not the school or institute e-mail), two warning for account removal (1 month and 1 week in advance), inactivity (to prevent losing access to the account), and a nudge to start using the app.
+- Updated to the latest passkey library. Now passkey users with all different versions of their webbrowers should be able to use their passkey with myconext.
+- Fixed a user experience flaw, involving the MFA TIQR secret. The fix should make it easier for users to unlink and link a new MFA.
+- The new build includes the libopensaml upgraden to 3.3.1.
 
 ## [7.3.8]
 - UX improvements, including improved texts, show affiliation with new verification, show app nudges less often.
