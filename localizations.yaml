@@ -2622,10 +2622,18 @@ SHARED:
       COPY:
         en: Send a link
         nl: Stuur een link
+    SendCode:
+      COPY:
+        en: Send a link
+        nl: Stuur een link
     LoginWebAuthn:
       COPY:
         en: Log in with passkey
         nl: Inloggen in met een passkey
+    UseCode:
+      COPY:
+        en: Email a login code
+        nl: E-mail een login code
     UsePassword:
       COPY:
         en: type a password.
