@@ -4236,42 +4236,42 @@ SHARED:
       nl: "Vraag een code aan"
     Next:
       COPY:
-        en: "Send a code",
+        en: "Send a code"
         nl: "Verstuur een code"
   LoginCode:
     Header:
       Copy:
-        en: "Check your email",
+        en: "Check your email"
         nl: "Check je e-mail"
     Info:
       Copy:
-        en: "We sent a code to <strong>%1$s</strong>",
+        en: "We sent a code to <strong>%1$s</strong>"
         nl: "We hebben een code verstuurd naar <strong>%1$s</strong>"
     Continue:
       Copy:
-        en: "Continue",
+        en: "Continue"
         nl: "Doorgaan"
     Resend:
       Copy:
-        en: "Didn’t receive the email? Check your spam folder, or ",
+        en: "Didn’t receive the email? Check your spam folder, or "
         nl: "E-mail niet ontvangen? Controleer uw spamfolder of "
     ResendLink:
       Copy:
-        en: "click to resend",
+        en: "click to resend"
         nl: "klik om opnieuw te versturen"
     Error:
       Copy:
-        en: "Wrong code. Please try again.",
+        en: "Wrong code. Please try again."
         nl: "Verkeerde code. Probeer het opnieuw."
     ErrorHeader:
       Copy:
-        en: "Maximum attempts reached",
+        en: "Maximum attempts reached"
         nl: "Maximale pogingen bereikt"
     ErrorInfo:
       Copy:
-        en: "You've reached the maximum attempts and your account is suspended for 15 minutes.",
+        en: "You've reached the maximum attempts and your account is suspended for 15 minutes."
         nl: "Je hebt het maximale aantal pogingen bereikt en je account is voor 15 minuten geschorst."
     MailResend:
       Copy:
-        en: "Check your inbox again. We've sent another email with a code",
+        en: "Check your inbox again. We've sent another email with a code"
         nl: "Check je inbox. We hebben je de e-mail met de code opnieuw verzonden."
