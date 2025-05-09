@@ -4232,7 +4232,7 @@ SHARED:
           nl: "Ik kan geen van bovenstaande manieren gebruiken"
   UseCode:
     Header:
-      en: "Request a code",
+      en: "Request a code"
       nl: "Vraag een code aan"
     Next:
       COPY:
@@ -4275,4 +4275,3 @@ SHARED:
       Copy:
         en: "Check your inbox again. We've sent another email with a code",
         nl: "Check je inbox. We hebben je de e-mail met de code opnieuw verzonden."
-
