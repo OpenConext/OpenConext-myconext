@@ -199,6 +199,7 @@
   "Security.NotAddedYet.COPY": "Nog niet toegevoegd aan je eduID",
   "Security.NotSupported.COPY": "Niet ondersteund",
   "Security.UseMagicLink.COPY": "Link via e-mail",
+  "Security.UseCode.COPY": "Verificatie-code e-mail",
   "Security.AddSecurityKeyInfo.COPY": "Je kunt een passkey toevoegen aan je eduID om in te loggen.\n Dit kan bijv. de ingebouwde sensor van je apparaat\nzijn (TouchID, FaceID) of een los hardwaretoken (YubiKey).",
   "Security.RememberMeInfo.COPY": "<strong>Dit apparaat wordt momenteel onthouden. Je wordt automatisch ingelogd op eduD</strong>",
   "Security.NoRememberMeInfo.COPY": "Als je inlogt met eduID kun je ervoor kiezen om <strong>ingelogd te blijven</strong>. Je login wordt onthouden op het apparaat dat je op dat moment gebruikt.",

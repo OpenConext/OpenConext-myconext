@@ -199,6 +199,7 @@
   "Security.NotAddedYet.COPY": "Not added to your eduID yet",
   "Security.NotSupported.COPY": "Not supported",
   "Security.UseMagicLink.COPY": "Magic link email",
+  "Security.UseCode.COPY": "Verificationcode email",
   "Security.AddSecurityKeyInfo.COPY": "You can add a passkey to your eduIDto log in. You can use, for example, the built-in sensor of your device (TouchID, FaceID) or a separate hardware key (YubiKey).",
   "Security.RememberMeInfo.COPY": "<strong>Your device is currently remembered. You will be automatically logged in to eduID.</strong>",
   "Security.NoRememberMeInfo.COPY": "When logging in with your eduID, you can choose to <strong>stay logged in</strong>. This remembers your login on the device you use at that moment.",
