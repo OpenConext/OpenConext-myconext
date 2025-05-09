@@ -83,7 +83,7 @@
         {#if preLink}
             <span class="pre-link">{preLink}</span>
         {/if}
-        {#if route && (userOverride || !isMfaParameter)}
+        {#if route && (userOverride || !isMfaParameter || !isMfa)}
             <a href={route} use:link>
                 {linkText}
             </a>
