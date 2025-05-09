@@ -2000,7 +2000,7 @@ SHARED:
         en: >-
           Download the eduID app (by SURF) in one of the app stores.
         nl: >-
-         Download de eduID app (van SURF) in een van de app-stores
+          Download de eduID app (van SURF) in een van de app-stores
     Google:
       COPY:
         en: https://play.google.com/store/apps/details?id=nl.eduid
@@ -2073,8 +2073,8 @@ SHARED:
     Info:
       COPY:
         en: >-
-         Can’t log in to eduID through the app or email?
-         Try using a recovery method instead.
+          Can’t log in to eduID through the app or email?
+          Try using a recovery method instead.
         nl: >-
           Lukt het niet om in te loggen op eduID via de app of e-mail?
           Dan kun je ook met een herstelmethode inloggen.
@@ -2138,8 +2138,8 @@ SHARED:
           Your phone number is only needed for the security of your
           eduID, such as logging in if you forget your password.
         nl: >-
-         Je telefoonnummer is alleen nodig voor de veiligheid van je eduID.
-         Zoals inloggen als je je wachtwoord bent vergeten.
+          Je telefoonnummer is alleen nodig voor de veiligheid van je eduID.
+          Zoals inloggen als je je wachtwoord bent vergeten.
     Text:
       COPY:
         en: We will send you a code to verify your phone number.
@@ -2447,10 +2447,10 @@ SHARED:
           longer study or work at this institution, you will lose
           access to this email address.
         nl: >-
-         Dit lijkt op een e-mailadres van een onderwijs- of
-         onderzoeks instelling. Let op: als je in de toekomst niet
-         meer studeert of werkt bij deze instelling, heb je geen
-         toegang meer tot dit e-mailadres.
+          Dit lijkt op een e-mailadres van een onderwijs- of
+          onderzoeks instelling. Let op: als je in de toekomst niet
+          meer studeert of werkt bij deze instelling, heb je geen
+          toegang meer tot dit e-mailadres.
     InstitutionDomainNameWarning2:
       COPY:
         en: We recommend using your personal email address for eduID.
@@ -3294,11 +3294,11 @@ SHARED:
       COPY:
         en: >-
           The service you're logging into has explicitly requested you log in using
-          the eduID app. If you log in with a different method, this application might 
+          the eduID app. If you log in with a different method, this application might
           not work correctly or allow you access.
         nl: >-
           De dienst waarop je inlogt heeft gevraagd om in te loggen
-          met de eduID app. Als je op een andere manier inlogt, dan is het mogelijk dat 
+          met de eduID app. Als je op een andere manier inlogt, dan is het mogelijk dat
           deze dienst niet goed werkt of je geen toegang verleent.
     ConfirmLabel:
       COPY:
@@ -3601,7 +3601,7 @@ SHARED:
           en: >-
             All you need to do now is set a PIN code to use the app securely. Tip: also add a phone number in case you forget the code.
           nl: >-
-           Je hoeft alleen nog een pincode in te stellen om de app veilig te gebruiken. Tip: voeg ook een telefoonnummer toe voor het geval je de code vergeet.
+            Je hoeft alleen nog een pincode in te stellen om de app veilig te gebruiken. Tip: voeg ook een telefoonnummer toe voor het geval je de code vergeet.
     EnterPersonalInfo:
       EmailFieldTitle:
         COPY:
