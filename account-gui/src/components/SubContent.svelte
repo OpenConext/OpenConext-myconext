@@ -13,6 +13,7 @@
 
     let isMfaParameter = false;
     let showModal = false;
+    let userOverride = false;
 
     onMount(() => {
         const urlSearchParams = new URLSearchParams(window.location.search);
@@ -76,24 +77,25 @@
     }
 
 </style>
-{#if !isMfa}
-    <div class="sub-content">
-        <div class="sub-content-inner">
-        <span class="question">{@html question}
-            {#if preLink}
-                <span class="pre-link">{preLink}</span>
-            {/if}
-            {#if route}
-                <a href={route} use:link>
-                    {linkText}
-                </a>
-            {:else}
-                <a href={href} target="_blank">{linkText}</a>
-            {/if}
-        </span>
-        </div>
+<div class="sub-content">
+    <div class="sub-content-inner">
+    <span class="question">{@html question}
+        {#if preLink}
+            <span class="pre-link">{preLink}</span>
+        {/if}
+        {#if route && (userOverride || !isMfaParameter || !isMfa)}
+            <a href={route} use:link>
+                {linkText}
+            </a>
+        {:else if route && !userOverride && isMfaParameter && isMfa}
+            <a href={route}
+               on:click|preventDefault|stopPropagation={() => showModal = true}>{linkText}</a>
+        {:else}
+            <a href={href} target="_blank">{linkText}</a>
+        {/if}
+    </span>
     </div>
-{/if}
+</div>
 {#if showModal}
     <Modal submit={() => mfaWarning(false)}
            cancel={() => showModal = false}
