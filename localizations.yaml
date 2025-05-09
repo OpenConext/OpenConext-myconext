@@ -3294,20 +3294,20 @@ SHARED:
       COPY:
         en: >-
           The service you're logging into has explicitly requested you log in using
-          the eduID app. If you log in with a different method, this service
-          will not receive your attributes.
+          the eduID app. If you log in with a different method, this application might 
+          not work correctly or allow you access.
         nl: >-
           De dienst waarop je inlogt heeft gevraagd om in te loggen
-          met de eduID app. Als je op een andere manier inlogt, ontvangt deze
-          dienst je attributen niet.
+          met de eduID app. Als je op een andere manier inlogt, dan is het mogelijk dat 
+          deze dienst niet goed werkt of je geen toegang verleent.
     ConfirmLabel:
       COPY:
         en: Change login option anyway
         nl: Verander manier van inloggen
     CancelLabel:
       COPY:
-        en: Did not know that
-        nl: Dat wist ik niet
+        en: Log in with the App
+        nl: Login met de app
   PinAndBioMetrics:
     SetupBiometrics:
       COPY:

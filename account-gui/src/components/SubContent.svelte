@@ -97,12 +97,12 @@
     </div>
 </div>
 {#if showModal}
-    <Modal submit={() => mfaWarning(false)}
-           cancel={() => showModal = false}
+    <Modal submit={() => showModal = false}
+           cancel={() => mfaWarning(false)}
            question={I18n.t("SubContent.Warning.COPY", {service: "test"})}
            title={I18n.t("SubContent.WarningTitle.COPY")}
-           cancelLabel={I18n.t("SubContent.CancelLabel.COPY")}
-           confirmLabel={I18n.t("SubContent.ConfirmLabel.COPY")}>
+           cancelLabel={I18n.t("SubContent.ConfirmLabel.COPY")}
+           confirmLabel={I18n.t("SubContent.CancelLabel.COPY")}>
     </Modal>
 {/if}
 
