@@ -989,6 +989,10 @@ SHARED:
       COPY:
         en: Magic link email
         nl: Link via e-mail
+    UseCode:
+      COPY:
+        en: Verificationcode email
+        nl: Verificatie-code e-mail
     AddSecurityKeyInfo:
       COPY:
         en: >-
