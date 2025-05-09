@@ -4232,8 +4232,9 @@ SHARED:
           nl: "Ik kan geen van bovenstaande manieren gebruiken"
   UseCode:
     Header:
-      en: "Request a code"
-      nl: "Vraag een code aan"
+      COPY:
+        en: "Request a code"
+        nl: "Vraag een code aan"
     Next:
       COPY:
         en: "Send a code"
