@@ -203,7 +203,7 @@
                 generateEmailChangeCode(value, force).then(() => {
                     hasCodeValidation = true;
                     showCodeValidation = true;
-                    flash.setValue(I18n.t("Email.Updated.COPY", {email: value}), 6500);
+                    flash.setValue(I18n.t("Email.UpdatedVerified.COPY", {email: value}), 6500);
                     tempEmailValue = null;
                     outstandingPasswordForgotten = false;
                     emailError = false;

@@ -708,6 +708,10 @@ SHARED:
       COPY:
         en: An email has been sent to %1{{s}}
         nl: Een e-email is verzonden naar %1{{s}}
+    UpdatedVerified:
+      COPY:
+        en: A verification email has been sent to %1{{s}}
+        nl: Een verificatie e-email is verzonden naar %1{{s}}
     Confirmed:
       COPY:
         en: Your email address has been changed to %1{{s}}
@@ -2624,8 +2628,8 @@ SHARED:
         nl: Stuur een link
     SendCode:
       COPY:
-        en: Send a link
-        nl: Stuur een link
+        en: Send a code
+        nl: Stuur een code
     LoginWebAuthn:
       COPY:
         en: Log in with passkey
@@ -2833,6 +2837,10 @@ SHARED:
       COPY:
         en: login option.
         nl: inlogmethode.
+    RateLimited:
+      COPY:
+        en: You are still suspended. Try again in %1$s minutes.
+        nl: Je bent nog steeds geschorst. Probeer het over %1$s minuten opnieuw.
   Options:
     Header:
       COPY:
@@ -2866,6 +2874,10 @@ SHARED:
       COPY:
         en: Use <strong>a password</strong>.
         nl: Gebruik <strong>een wachtwoord</strong>.
+    UseCode:
+      COPY:
+        en: Get a <strong>code</strong> sent to your inbox.
+        nl: Ontvang een <strong>code</strong> in je inbox.
   MagicLink:
     OpenMailTitle:
       COPY:
@@ -3020,11 +3032,21 @@ SHARED:
       COPY:
         en: Your link is invalid
         nl: Je link is niet geldig
+    CodeTitle:
+      COPY:
+        en: Your code is invalid
+        nl: Je code is niet geldig
     Info:
       COPY:
         en: The link you used is either expired or has already been used.
         nl: >-
           De link die je hebt gebruikt, is verlopen of al een keer
+          gebruikt.
+    CodeInfo:
+      COPY:
+        en: The code you used is either expired or has already been used.
+        nl: >-
+          De code die je hebt gebruikt, is verlopen of al een keer
           gebruikt.
     Back:
       COPY:
@@ -4208,3 +4230,49 @@ SHARED:
         COPY:
           en: "I can't use any of the above methods"
           nl: "Ik kan geen van bovenstaande manieren gebruiken"
+  UseCode:
+    Header:
+      en: "Request a code",
+      nl: "Vraag een code aan"
+    Next:
+      COPY:
+        en: "Send a code",
+        nl: "Verstuur een code"
+  LoginCode:
+    Header:
+      Copy:
+        en: "Check your email",
+        nl: "Check je e-mail"
+    Info:
+      Copy:
+        en: "We sent a code to <strong>%1$s</strong>",
+        nl: "We hebben een code verstuurd naar <strong>%1$s</strong>"
+    Continue:
+      Copy:
+        en: "Continue",
+        nl: "Doorgaan"
+    Resend:
+      Copy:
+        en: "Didn’t receive the email? Check your spam folder, or ",
+        nl: "E-mail niet ontvangen? Controleer uw spamfolder of "
+    ResendLink:
+      Copy:
+        en: "click to resend",
+        nl: "klik om opnieuw te versturen"
+    Error:
+      Copy:
+        en: "Wrong code. Please try again.",
+        nl: "Verkeerde code. Probeer het opnieuw."
+    ErrorHeader:
+      Copy:
+        en: "Maximum attempts reached",
+        nl: "Maximale pogingen bereikt"
+    ErrorInfo:
+      Copy:
+        en: "You've reached the maximum attempts and your account is suspended for 15 minutes.",
+        nl: "Je hebt het maximale aantal pogingen bereikt en je account is voor 15 minuten geschorst."
+    MailResend:
+      Copy:
+        en: "Check your inbox again. We've sent another email with a code",
+        nl: "Check je inbox. We hebben je de e-mail met de code opnieuw verzonden."
+

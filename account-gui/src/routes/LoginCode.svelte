@@ -144,7 +144,7 @@
                    on:click|preventDefault|stopPropagation={resendMail}>{I18n.t("LoginCode.ResendLink.COPY")}</a>
             </p>
         {:else if mailHasBeenResend}
-            <span>{I18n.t("MagicLink.MailResend.COPY")}</span>
+            <span>{I18n.t("LoginCode.MailResend.COPY")}</span>
         {/if}
 
     </div>

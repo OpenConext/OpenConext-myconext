@@ -16,7 +16,7 @@
     let mailHasBeenResend = false;
 
     onMount(() => {
-        flash.setValue(I18n.t("Email.Updated.COPY", {email: $user.email}), 6500);
+        flash.setValue(I18n.t("Email.UpdatedVerified.COPY", {email: $user.email}), 6500);
         setTimeout(() => allowedToResend = true, resendMailAllowedTimeOut);
     });
 

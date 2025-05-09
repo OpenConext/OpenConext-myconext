@@ -35,7 +35,7 @@
                     .then(() => {
                         hasCodeValidation = true;
                         showCodeValidation = true;
-                        flash.setValue(I18n.t("Email.Updated.COPY", {email: verifiedEmail}), 6500);
+                        flash.setValue(I18n.t("Email.UpdatedVerified.COPY", {email: verifiedEmail}), 6500);
                         setTimeout(() => allowedToResend = true, resendMailAllowedTimeOut);
                     }).catch(e => {
                     if (e.status === 409) {
