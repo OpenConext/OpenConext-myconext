@@ -1,0 +1,9 @@
+Login code
+
+Je bevestigingscode staat hieronder. Voer deze in het geopende browservenster om je e-mailadres te bevestigen.
+
+{{code}}
+
+Ben jij dit niet of wil je toch geen eduID? Dan kun je dit bericht negeren.
+
+{{> footer_en.txt}}

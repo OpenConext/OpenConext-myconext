@@ -23,9 +23,6 @@ public class RequestInstitutionEduID implements Serializable {
 
     private String hash;
 
-    @Setter
-    private String emailHash;
-
     @Schema(type = "integer", format = "int64", example = "1634813554997")
     private Date expiresIn;
 
@@ -35,7 +32,7 @@ public class RequestInstitutionEduID implements Serializable {
     private CreateInstitutionEduID createInstitutionEduID;
 
     @Setter
-    private LoginStatus loginStatus;
+    private OneTimeLoginCode oneTimeLoginCode;
 
     @Setter
     private String userId;
@@ -44,7 +41,6 @@ public class RequestInstitutionEduID implements Serializable {
         this.expiresIn = Date.from(LocalDateTime.now().plusHours(1).atZone(ZoneId.systemDefault()).toInstant());
         this.hash = hash;
         this.userInfo = userInfo;
-        this.loginStatus = LoginStatus.NOT_LOGGED_IN;
     }
 
 }

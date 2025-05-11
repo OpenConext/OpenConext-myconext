@@ -23,9 +23,6 @@ public class MailConfiguration {
     @Value("${email.error_mail}")
     private String errorEmail;
 
-    @Value("${email.magic-link-url}")
-    private String magicLinkUrl;
-
     @Value("${email.my-surfconext-url}")
     private String mySURFconextURL;
 
@@ -49,7 +46,7 @@ public class MailConfiguration {
 
     @Bean
     public MailBox mailSenderProd() throws IOException {
-        return new MailBox(mailSender, emailFrom, errorEmail, magicLinkUrl, mySURFconextURL, loginSURFconextURL, objectMapper, mailTemplatesDirectory,
+        return new MailBox(mailSender, emailFrom, errorEmail, mySURFconextURL, loginSURFconextURL, objectMapper, mailTemplatesDirectory,
                 emailsSendRepository, emailSpamThresholdSeconds);
     }
 }

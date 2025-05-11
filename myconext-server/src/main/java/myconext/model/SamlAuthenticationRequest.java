@@ -4,6 +4,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import myconext.security.VerificationCodeGenerator;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.Transient;
 import org.springframework.data.mongodb.core.index.Indexed;
@@ -11,6 +12,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.util.CollectionUtils;
 
 import java.io.Serializable;
+import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.ArrayList;
@@ -56,6 +58,9 @@ public class SamlAuthenticationRequest implements Serializable {
     private boolean passwordOrWebAuthnFlow;
 
     @Setter
+    private boolean oneTimeLoginCodeFlow;
+
+    @Setter
     private boolean tiqrFlow;
 
     @Setter
@@ -89,8 +94,7 @@ public class SamlAuthenticationRequest implements Serializable {
         this.testInstance = testInstance;
         this.requesterEntityId = "test";
         this.authenticationContextClassReferences = new ArrayList<>();
-        this.expiresIn = Date.from(LocalDateTime.now().plusHours(1).atZone(ZoneId.systemDefault()).toInstant());
-
+        this.expiresIn = Date.from(LocalDateTime.now().plusMinutes(10).atZone(ZoneId.systemDefault()).toInstant());
     }
 
     public SamlAuthenticationRequest(String requestId,
@@ -106,7 +110,7 @@ public class SamlAuthenticationRequest implements Serializable {
         this.issuer = issuer;
         this.consumerAssertionServiceURL = consumerAssertionServiceURL;
         this.relayState = relayState;
-        this.expiresIn = Date.from(LocalDateTime.now().plusHours(1).atZone(ZoneId.systemDefault()).toInstant());
+        this.expiresIn = Date.from(LocalDateTime.now().plusMinutes(10).atZone(ZoneId.systemDefault()).toInstant());
         this.requesterEntityId = requesterEntityId;
         this.accountLinkingRequired = accountLinkingRequired;
         this.mfaProfileRequired = mfaProfileRequired;

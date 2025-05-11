@@ -26,3 +26,4 @@ dist
 account-gui/public/index.html
 myconext-gui/public/index.html
 spring-security-migration.md
+pom.xml.versionsBackup

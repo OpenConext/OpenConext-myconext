@@ -31,7 +31,7 @@ public class UserCredentialRepository implements CredentialRepository {
 
     @Override
     public Set<PublicKeyCredentialDescriptor> getCredentialIdsForUsername(String email) {
-        Optional<User> userOptional = userRepository.findUserByEmail(email.trim());
+        Optional<User> userOptional = userRepository.findUserByEmailAndRateLimitedFalse(email.trim());
         return userOptional.map(user -> user.getPublicKeyCredentials().stream()
                 .map(publicKeyCredentials ->
                         PublicKeyCredentialDescriptor.builder()
@@ -43,7 +43,7 @@ public class UserCredentialRepository implements CredentialRepository {
 
     @Override
     public Optional<ByteArray> getUserHandleForUsername(String email) {
-        return userRepository.findUserByEmail(email.trim())
+        return userRepository.findUserByEmailAndRateLimitedFalse(email.trim())
                 .map(user -> byteArrayFromBase64Url(user.getUserHandle()));
     }
 

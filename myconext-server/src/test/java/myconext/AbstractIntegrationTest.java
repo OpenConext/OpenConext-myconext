@@ -11,7 +11,7 @@ import io.restassured.response.Response;
 import io.restassured.specification.RequestSpecification;
 import lombok.Getter;
 import myconext.api.HasUserRepository;
-import myconext.api.MagicLinkResponse;
+import myconext.api.ClientAuthenticationResponse;
 import myconext.manage.Manage;
 import myconext.manage.MockManage;
 import myconext.model.*;
@@ -185,20 +185,20 @@ public abstract class AbstractIntegrationTest implements HasUserRepository {
         return samlAuthnRequestResponseWithLoa(cookie, relayState, "");
     }
 
-    protected MagicLinkResponse magicLinkRequest(User user, HttpMethod method) throws IOException {
+    protected ClientAuthenticationResponse oneTimeLoginCodeRequest(User user, HttpMethod method) throws IOException {
         String authenticationRequestId = samlAuthnRequest();
-        return magicLinkRequest(new MagicLinkRequest(authenticationRequestId, user, StringUtils.hasText(user.getPassword())), method);
+        return oneTimeLoginCodeRequest(new ClientAuthenticationRequest(authenticationRequestId, user, StringUtils.hasText(user.getPassword())), method);
     }
 
-    protected MagicLinkResponse magicLinkRequest(MagicLinkRequest linkRequest, HttpMethod method) {
+    protected ClientAuthenticationResponse oneTimeLoginCodeRequest(ClientAuthenticationRequest linkRequest, HttpMethod method) {
         RequestSpecification requestSpecification = given()
                 .when()
                 .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                 .body(linkRequest);
 
-        String path = "/myconext/api/idp/magic_link_request";
+        String path = "/myconext/api/idp/generate_code_request";
         Response response = method.equals(HttpMethod.POST) ? requestSpecification.post(path) : requestSpecification.put(path);
-        return new MagicLinkResponse(linkRequest.getAuthenticationRequestId(), response.then());
+        return new ClientAuthenticationResponse(linkRequest.getAuthenticationRequestId(), response.then());
     }
 
     protected Response samlAuthnRequestResponseWithLoa(Cookie cookie, String relayState, String loaLevel) throws IOException {
@@ -324,7 +324,7 @@ public abstract class AbstractIntegrationTest implements HasUserRepository {
         return new String(java.util.Base64.getDecoder().decode(matcher.group(1)));
     }
 
-    protected Response magicResponse(MagicLinkResponse magicLinkResponse) {
+    protected Response magicResponse(ClientAuthenticationResponse magicLinkResponse) {
         SamlAuthenticationRequest samlAuthenticationRequest = authenticationRequestRepository.findById(magicLinkResponse.authenticationRequestId).get();
         Response response = given().redirects().follow(false)
                 .when()
@@ -338,7 +338,7 @@ public abstract class AbstractIntegrationTest implements HasUserRepository {
         return response;
     }
 
-    protected String samlResponse(MagicLinkResponse magicLinkResponse) throws IOException {
+    protected String samlResponse(ClientAuthenticationResponse magicLinkResponse) throws IOException {
         Response response = magicResponse(magicLinkResponse);
         return samlAuthnResponse(response, Optional.empty());
     }

@@ -14,7 +14,6 @@ import org.apache.commons.logging.LogFactory;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.schema.JsonSchemaObject;
-import org.springframework.data.util.StreamUtils;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
@@ -23,7 +22,6 @@ import java.time.temporal.ChronoUnit;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 @SuppressWarnings("deprecation")
 @ChangeLog(order = "001")
@@ -231,6 +229,17 @@ public class Migrations {
     @SuppressWarnings("unchecked")
     @ChangeSet(order = "018", id = "deleteSessionAfterExternalLinkedAccountDocumentId", author = "okke.harsta@surf.nl")
     public void deleteSessionAfterExternalLinkedAccountDocumentId(MongockTemplate mongoTemplate) {
+        mongoTemplate.remove(new Query(), "sessions");
+    }
+
+    @SuppressWarnings("unchecked")
+    @ChangeSet(order = "019", id = "addRateLimitedToUsers", author = "okke.harsta@surf.nl", runAlways = true)
+    public void addRateLimitedToUsers(MongockTemplate mongoTemplate) {
+        mongoTemplate.stream(new Query(), Map.class, "users")
+                .forEach(userAsMap -> {
+                    userAsMap.put("rateLimited", false);
+                    mongoTemplate.save(userAsMap, "users");
+                });
         mongoTemplate.remove(new Query(), "sessions");
     }
 

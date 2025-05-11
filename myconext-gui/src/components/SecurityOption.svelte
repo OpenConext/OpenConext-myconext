@@ -73,10 +73,12 @@
 
         :global(span.login-icon svg) {
             color: var(--color-secondary-grey);
+            fill: var(--color-secondary-grey);
         }
 
         :global(span.login-icon.active svg) {
             color: var(--color-tertiare-blue);
+            fill: var(--color-tertiare-blue);
         }
 
         span.login-navigate {

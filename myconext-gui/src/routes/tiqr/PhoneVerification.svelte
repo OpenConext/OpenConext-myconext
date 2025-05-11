@@ -6,12 +6,15 @@
     import Button from "../../components/Button.svelte";
     import {reTextPhoneNumber, textPhoneNumber} from "../../api";
     import {navigate} from "svelte-routing";
+    import Modal from "../../components/Modal.svelte";
 
     export let change = false;
 
     let initial = true;
     let phoneNumber = "";
     let showSpinner = false;
+    let rateLimited = false;
+    let showRateLimitedModal = false;
 
     $: allowedNext = validPhoneNumber(phoneNumber);
     $: phoneNumberIncorrect = !initial && !validPhoneNumber(phoneNumber);
@@ -23,7 +26,12 @@
             showSpinner = true;
             const promise = change ? reTextPhoneNumber : textPhoneNumber;
             promise(phoneNumber.replaceAll(" ", "").replaceAll("-", ""))
-                .then(() => navigate(`${change ? "change-" : ""}phone-confirmation`));
+                .then(() => navigate(`${change ? "change-" : ""}phone-confirmation`))
+                .catch(() => {
+                    rateLimited = true;
+                    showRateLimitedModal = true;
+                    showSpinner = false;
+                })
         }
     }
 
@@ -125,3 +133,12 @@
 
     </div>
 </div>
+
+{#if rateLimited && showRateLimitedModal}
+    <Modal submit={() => showRateLimitedModal = false}
+           warning={true}
+           question={I18n.t("PhoneVerification.RateLimitedInfo.COPY")}
+           title={I18n.t("PhoneVerification.RateLimited.COPY")}
+           confirmTitle={I18n.t("PhoneVerification.Ok.COPY")}>
+    </Modal>
+{/if}

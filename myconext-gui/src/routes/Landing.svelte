@@ -7,12 +7,14 @@
 
     let isLogoutRedirect = false;
     let isAccountDeletionRedirect = false;
+    let isRateLimitedRedirect = false;
 
     onMount(() => {
         const urlSearchParams = new URLSearchParams(window.location.search);
         isLogoutRedirect = urlSearchParams.get("logout");
         isAccountDeletionRedirect = urlSearchParams.get("delete");
-        if (!isLogoutRedirect && !isAccountDeletionRedirect) {
+        isRateLimitedRedirect = urlSearchParams.get("ratelimit");
+        if (!isLogoutRedirect && !isAccountDeletionRedirect && !isRateLimitedRedirect) {
             navigate("/404");
         }
     });
@@ -66,6 +68,14 @@
             <h3>{I18n.t("RegistrationCheck.DeleteTitle.COPY")}</h3>
             <div>
                 <Button label={I18n.t("RegistrationCheck.RegisterAgain.COPY")}
+                        large={true}
+                        onClick={loginAgain}/>
+            </div>
+        {/if}
+        {#if isRateLimitedRedirect}
+            <h3>{I18n.t("Landing.RateLimitTitle.COPY")}</h3>
+            <div>
+                <Button label={I18n.t("RegistrationCheck.LoginAgain.COPY")}
                         large={true}
                         onClick={loginAgain}/>
             </div>

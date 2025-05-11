@@ -39,9 +39,14 @@ import static myconext.validation.PasswordStrength.strongEnough;
 @Document(collection = "users")
 public class User implements Serializable, UserDetails {
 
+    private static final List<SimpleGrantedAuthority> GUEST_AUTHORITIES = List.of(new SimpleGrantedAuthority(ROLE_GUEST));
+    private static final List<SimpleGrantedAuthority> SERVICE_DESK_AUTHORIES = Stream.of(ROLE_GUEST, SERVICE_DESK)
+            .map(SimpleGrantedAuthority::new)
+            .toList();
+
     @Id
     private String id;
-    //Do not index the email here, this is already done in MongoMapping with a custom strength (case-insensitive)
+    //Do not index the email here, this is already done in MongoMapping with custom strength (case-insensitive)
     @Setter
     private String email;
     @Setter
@@ -110,6 +115,12 @@ public class User implements Serializable, UserDetails {
 
     @Setter
     private ControlCode controlCode;
+
+    @Setter
+    private OneTimeLoginCode oneTimeLoginCode;
+
+    @Setter
+    private boolean rateLimited;
 
     public User(CreateInstitutionEduID createInstitutionEduID, Map<String, Object> userInfo) {
         this.email = createInstitutionEduID.getEmail();
@@ -249,11 +260,9 @@ public class User implements Serializable, UserDetails {
     @JsonIgnore
     public Collection<? extends GrantedAuthority> getAuthorities() {
         if (serviceDeskMember) {
-            return Stream.of(ROLE_GUEST, SERVICE_DESK)
-                    .map(SimpleGrantedAuthority::new)
-                    .toList();
+            return SERVICE_DESK_AUTHORIES;
         }
-        return Collections.singletonList(new SimpleGrantedAuthority(ROLE_GUEST));
+        return GUEST_AUTHORITIES;
     }
 
     @Override
@@ -327,7 +336,7 @@ public class User implements Serializable, UserDetails {
         if (StringUtils.hasText(this.password)) {
             result.add(LoginOptions.PASSWORD);
         }
-        result.add(LoginOptions.MAGIC);
+        result.add(LoginOptions.CODE);
         return result.stream().map(LoginOptions::getValue).collect(Collectors.toList());
     }
 
@@ -468,6 +477,24 @@ public class User implements Serializable, UserDetails {
                 "email", this.email,
                 "serviceDeskMember", this.serviceDeskMember
         );
+    }
+
+    public void startOneTimeLoginCode(String oneTimeLoginCode) {
+        this.oneTimeLoginCode = new OneTimeLoginCode(oneTimeLoginCode);
+    }
+
+    public void endOneTimeLoginCode() {
+        if (this.oneTimeLoginCode != null) {
+            this.oneTimeLoginCode.setCode(null);
+        }
+    }
+
+    public boolean attemptOneTimeLoginVerification(String code) {
+        boolean success = this.oneTimeLoginCode.attemptOneTimeLoginVerification(code);
+        if (success) {
+            this.oneTimeLoginCode = null;
+        }
+        return success;
     }
 
     private interface ProvisionedNameProvider {

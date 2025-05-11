@@ -430,7 +430,7 @@ public class GuestIdpAuthenticationRequestFilter extends OncePerRequestFilter {
         }
 
         Optional<Cookie> optionalCookie = cookieByName(request, BROWSER_SESSION_COOKIE_NAME);
-        if (!optionalCookie.isPresent()) {
+        if (!optionalCookie.isPresent() && !samlAuthenticationRequest.isOneTimeLoginCodeFlow()) {
             samlAuthenticationRequest.setLoginStatus(LoginStatus.LOGGED_IN_DIFFERENT_DEVICE);
             samlAuthenticationRequest.setVerificationCode(VerificationCodeGenerator.generate());
             if (incrementVerificationCodeRetry(samlAuthenticationRequest)) {
@@ -598,7 +598,9 @@ public class GuestIdpAuthenticationRequestFilter extends OncePerRequestFilter {
             LOG.info(String.format("Tiqr flow authenticated for %s ", user.getUsername()));
             addTiqrCookie(response, user);
         }
-        String loginMethod = samlAuthenticationRequest.isTiqrFlow() ? "tiqr" : "magiclink";
+        String loginMethod = samlAuthenticationRequest.isTiqrFlow() ? "tiqr" :
+                samlAuthenticationRequest.isOneTimeLoginCodeFlow() ? "one_time_login_code" :
+                        samlAuthenticationRequest.isPasswordOrWebAuthnFlow() ? "password" : "magiclink";
 
         logLoginWithContext(user, loginMethod, true, LOG, "Successfully logged in with " + loginMethod, request);
 

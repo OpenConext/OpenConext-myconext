@@ -1,6 +1,6 @@
 export const loginPreferences = {
     APP: "useApp",
     FIDO: "useWebAuthn",
-    MAGIC: "useLink",
+    CODE: "useCode",
     PASSWORD: "usePassword"
 }

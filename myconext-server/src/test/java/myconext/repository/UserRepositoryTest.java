@@ -12,8 +12,7 @@ import java.time.temporal.ChronoUnit;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.*;
 
 public class UserRepositoryTest extends AbstractIntegrationTest {
 
@@ -21,12 +20,17 @@ public class UserRepositoryTest extends AbstractIntegrationTest {
     private UserRepository userRepository;
 
     @Test
-    public void testFindUserByEmail() {
-        Optional<User> user = userRepository.findUserByEmail("jdoe@example.com");
-        assertEquals("John", user.get().getGivenName());
+    public void testFindUserByEmailAndRateLimitedFalse() {
+        User user = userRepository.findUserByEmailAndRateLimitedFalse("jdoe@example.com").get();
+        assertEquals("John", user.getGivenName());
 
-        user = userRepository.findUserByEmail("JDOE@EXAMPLE.COM");
-        assertEquals("John", user.get().getGivenName());
+        user = userRepository.findUserByEmailAndRateLimitedFalse("JDOE@EXAMPLE.COM").get();
+        assertEquals("John", user.getGivenName());
+
+        user.setRateLimited(true);
+        userRepository.save(user);
+
+        assertTrue(userRepository.findUserByEmailAndRateLimitedFalse("jdoe@example.com").isEmpty());
     }
 
     @Test(expected = org.springframework.dao.DuplicateKeyException.class)
@@ -94,13 +98,13 @@ public class UserRepositoryTest extends AbstractIntegrationTest {
         List<User> users = userRepository.findByLinkedAccountsIsNotEmpty();
         assertEquals(1, users.size());
 
-        User user = userRepository.findUserByEmail("mdoe@example.com").get();
+        User user = userRepository.findUserByEmailAndRateLimitedFalse("mdoe@example.com").get();
         user.setLinkedAccounts(new ArrayList<>());
         userRepository.save(user);
         users = userRepository.findByLinkedAccountsIsNotEmpty();
         assertEquals(1, users.size());
 
-        user = userRepository.findUserByEmail("mdoe@example.com").get();
+        user = userRepository.findUserByEmailAndRateLimitedFalse("mdoe@example.com").get();
         user.setLinkedAccounts(null);
         userRepository.save(user);
         users = userRepository.findByLinkedAccountsIsNotEmpty();

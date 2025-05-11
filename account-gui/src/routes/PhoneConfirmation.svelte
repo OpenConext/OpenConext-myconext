@@ -8,11 +8,16 @@
     import {navigate} from "svelte-routing";
     import {user} from "../stores/user";
     import Button from "../components/Button.svelte";
+    import Spinner from "../components/Spinner.svelte";
+    import Modal from "../components/Modal.svelte";
 
     let showSpinner = true;
     let hash = null;
     let wrongCode = false;
     let maxAttempts = false;
+    let rateLimited = false;
+    let showRateLimitedModal = false;
+
 
     let refs = Array(6).fill("");
     let totp = Array(6).fill("");
@@ -29,13 +34,18 @@
     const sendSMSAgain = () => {
         showSpinner = true;
         const trimmedPhoneNumber = $user.phoneNumber.replaceAll(" ", "").replaceAll("-", "");
-        textPhoneNumber(hash, trimmedPhoneNumber).then(() => {
+        textPhoneNumber(hash, trimmedPhoneNumber)
+            .then(() => {
+                showSpinner = false;
+                totp = Array(6).fill("");
+                refs[0].focus();
+                wrongCode = false;
+                maxAttempts = false;
+            }).catch(() => {
+            rateLimited = true;
+            showRateLimitedModal = true;
             showSpinner = false;
-            totp = Array(6).fill("");
-            refs[0].focus();
-            wrongCode = false;
-            maxAttempts = false;
-        });
+        })
     }
 
     const onKeyDownTotp = index => e => {
@@ -118,6 +128,9 @@
 
 
 </style>
+{#if showSpinner}
+    <Spinner/>
+{/if}
 
 <h2 class="header">{I18n.t("Sms.Header.COPY")}</h2>
 <p class="explanation">{I18n.t("Sms.Info.COPY")}</p>
@@ -160,5 +173,18 @@
 {/if}
 
 <div class="options">
-    <Button className="cancel" href="/sms" label={I18n.t("Sms.SendSMSAgain.COPY")} onClick={sendSMSAgain}/>
+    <Button className="cancel"
+            href="/sms"
+            disabled={rateLimited}
+            label={I18n.t("Sms.SendSMSAgain.COPY")}
+            onClick={sendSMSAgain}/>
 </div>
+
+{#if rateLimited && showRateLimitedModal}
+    <Modal submit={() => showRateLimitedModal = false}
+           warning={true}
+           question={I18n.t("phoneVerification.rateLimitedInfo")}
+           title={I18n.t("phoneVerification.rateLimited")}
+           confirmLabel={I18n.t("phoneVerification.ok")}>
+    </Modal>
+{/if}

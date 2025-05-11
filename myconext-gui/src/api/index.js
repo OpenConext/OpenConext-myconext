@@ -68,11 +68,6 @@ export function preferLinkedAccount(linkedAccount) {
     return postPutJson("/myconext/api/sp/prefer-linked-account", updateLinkedAccountRequest, "PUT");
 }
 
-export function updateEmail(user, force) {
-    const forceParam = force ? "?force=true" : "";
-    return postPutJson(`/myconext/api/sp/email${forceParam}`, user, "PUT");
-}
-
 export function confirmEmail(hash) {
     return fetchJson(`/myconext/api/sp/confirm-email?h=${hash}`);
 }
@@ -86,13 +81,37 @@ export function updatePassword(userId, newPassword, hash) {
     return postPutJson("/myconext/api/sp/update-password", body, "PUT");
 }
 
+export function generatePasswordResetCode() {
+    return postPutJson("/myconext/api/sp/generate-password-code", {}, "PUT");
+}
+
+export function resendMailChangeCode() {
+    return fetchJson("/myconext/api/sp/resend-email-code");
+}
+
+export function verifyPasswordCode(code) {
+    const body = {code: code};
+    return postPutJson("/myconext/api/sp/verify-password-code", body, "PUT");
+}
+
+export function generateEmailChangeCode(value, force) {
+    const body = {email: value};
+    const forceParam = force ? "?force=true" : "";
+    return postPutJson(`/myconext/api/sp/generate-email-code${forceParam}`, body, "PUT");
+}
+
+export function resendPasswordChangeCode() {
+    return fetchJson("/myconext/api/sp/resend-password-code");
+}
+
+export function verifyEmailChangeCode(code) {
+    const body = {code: code};
+    return postPutJson("/myconext/api/sp/verify-email-code", body, "PUT");
+}
+
 export function updateLanguage(lang) {
     const body = {language: lang};
     return postPutJson("/myconext/api/sp/lang", body, "PUT");
-}
-
-export function resetPasswordLink() {
-    return postPutJson("/myconext/api/sp/reset-password-link", {}, "PUT");
 }
 
 export function resetPasswordHashValid(hash) {
@@ -170,7 +189,8 @@ export function logout() {
         redirect: "manual"
     };
     return forgetMe().then(() =>
-        fetchJson("/myconext/api/sp/logout").then(() => fetch("/Shibboleth.sso/Logout", fetchOptions))
+        fetchJson("/myconext/api/sp/logout")
+            .then(() => fetch("/Shibboleth.sso/Logout", fetchOptions))
     );
 }
 
@@ -215,7 +235,7 @@ export function sendDeactivationPhoneCode() {
     return fetchJson("/tiqr/sp/send-deactivation-phone-code")
 }
 
-// Create from institution
+// Create from Institution
 export function startCreateFromInstitutionFlow(forceAuth = false) {
     return fetchJson("/myconext/api/sp/create-from-institution?forceAuth=" + forceAuth);
 }
@@ -237,8 +257,9 @@ export function allowedEmailDomains() {
     return fetchJson("/myconext/api/sp/create-from-institution/domain/allowed")
 }
 
-export function createFromInstitutionPoll(hash) {
-    return fetchJson("/myconext/api/sp/create-from-institution/poll?hash=" + hash)
+export function createFromInstitutionVerify(hash, code) {
+    const body = {code: code, hash: hash};
+    return postPutJson("/myconext/api/sp/create-from-institution/verify", body, "PUT");
 }
 
 export function resendCreateFromInstitutionMail(hash) {

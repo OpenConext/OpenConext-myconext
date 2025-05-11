@@ -20,8 +20,6 @@
     export let href = undefined;
     export let largeConfirmation = false;
 
-    let modal;
-
     const handleKeydown = e => {
         if (e.key === "Escape") {
             if (cancel) {
@@ -120,9 +118,11 @@
         {#if title}
             <div class="modal-header" class:warning>
                 <h3>{title}</h3>
-                <span on:click={() => handleKeydown({key:"Escape"})}>
-                {@html closeIcon}
-            </span>
+                {#if close || cancel}
+                    <span on:click={() => handleKeydown({key:"Escape"})}>
+                    {@html closeIcon}
+                    </span>
+                {/if}
             </div>
         {/if}
         <div class="modal-body" class:control-body={controlBody}>

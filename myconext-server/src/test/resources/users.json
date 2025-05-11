@@ -7,6 +7,7 @@
     "givenName": "John",
     "familyName": "Doe",
     "schacHomeOrganization": "surfguest.nl",
+    "rateLimited": false,
     "linkedAccounts": [
       {
         "createdAt": "2020-11-12T13:55:50.229Z",
@@ -78,6 +79,7 @@
     "password": "$2a$10$kUSu/Or0IX.E1WRaJtpUk.NWd83yV0mnt8CRnkbcQhvz6Qe3ntcAK",
     "schacHomeOrganization": "surfguest.nl",
     "created": 1583337392,
+    "rateLimited": false,
     "controlCode": {
       "firstName": "Marianne",
       "lastName": "DoeDoe",

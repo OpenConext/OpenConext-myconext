@@ -4,6 +4,7 @@ logging:
     org.springframework.data.mongodb: INFO
     org.springframework.data.convert: INFO
     org.springframework.security: INFO
+    io.mongock.: TRACE
     tiqr.org: DEBUG
     myconext: DEBUG
 

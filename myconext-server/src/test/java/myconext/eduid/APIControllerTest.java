@@ -64,7 +64,7 @@ public class APIControllerTest extends AbstractIntegrationTest {
 
     @Test
     public void linksExternalAccount() throws Exception {
-        User user = userRepository.findUserByEmail("jdoe@example.com").get();
+        User user = userRepository.findUserByEmailAndRateLimitedFalse("jdoe@example.com").get();
         ExternalLinkedAccount externalLinkedAccount = new ExternalLinkedAccount(
                 UUID.randomUUID().toString(),
                 IdpScoping.eherkenning,

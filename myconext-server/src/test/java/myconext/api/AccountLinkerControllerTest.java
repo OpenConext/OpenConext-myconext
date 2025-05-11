@@ -6,6 +6,7 @@ import io.restassured.common.mapper.TypeRef;
 import io.restassured.filter.cookie.CookieFilter;
 import io.restassured.http.ContentType;
 import io.restassured.response.Response;
+import lombok.SneakyThrows;
 import myconext.AbstractIntegrationTest;
 import myconext.model.*;
 import org.junit.Rule;
@@ -43,8 +44,8 @@ public class AccountLinkerControllerTest extends AbstractIntegrationTest {
         //This ensures the user is tied to the authnRequest
         given().when()
                 .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
-                .body(new MagicLinkRequest(authenticationRequestId, user("mdoe@example.com"), false))
-                .put("/myconext/api/idp/magic_link_request")
+                .body(new ClientAuthenticationRequest(authenticationRequestId, user("mdoe@example.com"), false))
+                .put("/myconext/api/idp/generate_code_request")
                 .then()
                 .statusCode(HttpStatus.CREATED.value());
 
@@ -122,8 +123,8 @@ public class AccountLinkerControllerTest extends AbstractIntegrationTest {
         String authenticationRequestId = samlAuthnRequest();
         given().when()
                 .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
-                .body(new MagicLinkRequest(authenticationRequestId, user("mdoe@example.com"), false))
-                .put("/myconext/api/idp/magic_link_request")
+                .body(new ClientAuthenticationRequest(authenticationRequestId, user("mdoe@example.com"), false))
+                .put("/myconext/api/idp/generate_code_request")
                 .then()
                 .statusCode(HttpStatus.CREATED.value());
         given().redirects().follow(false)
@@ -237,8 +238,8 @@ public class AccountLinkerControllerTest extends AbstractIntegrationTest {
         //This ensures the user is tied to the authnRequest
         given().when()
                 .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
-                .body(new MagicLinkRequest(authenticationRequestId, user("mdoe@example.com"), false))
-                .put("/myconext/api/idp/magic_link_request")
+                .body(new ClientAuthenticationRequest(authenticationRequestId, user("mdoe@example.com"), false))
+                .put("/myconext/api/idp/generate_code_request")
                 .then()
                 .statusCode(HttpStatus.CREATED.value());
         stubForTokenUserInfo(userInfo);
@@ -465,39 +466,10 @@ public class AccountLinkerControllerTest extends AbstractIntegrationTest {
     }
 
     @Test
-    public void spCreateFromInstitutionPollWrongHash() throws JsonProcessingException {
-        Map<Object, Object> userInfo = userInfoMap("new-user@qwerty.com");
-        String hash = getHashFromCreateInstitutionFlow(userInfo);
-
-        given()
-                .when()
-                .contentType(ContentType.JSON)
-                .queryParam("hash", hash + "bogus")
-                .get("/myconext/api/sp/create-from-institution/poll")
-                .then()
-                .statusCode(403);
-    }
-
-    @Test
-    public void spCreateFromInstitutionPoll() throws JsonProcessingException {
-        Map<Object, Object> userInfo = userInfoMap("new-user@qwerty.com");
-        String hash = getHashFromCreateInstitutionFlow(userInfo);
-
-        Integer loginStatus = given()
-                .when()
-                .contentType(ContentType.JSON)
-                .queryParam("hash", hash)
-                .get("/myconext/api/sp/create-from-institution/poll")
-                .as(new TypeRef<>() {
-                });
-        assertEquals(LoginStatus.NOT_LOGGED_IN, Arrays.asList(LoginStatus.values()).get(loginStatus));
-    }
-
-    @Test
     public void spCreateFromInstitutionResendMail() throws JsonProcessingException {
         Map<Object, Object> userInfo = userInfoMap("new-user@qwerty.com");
         String hash = getHashFromCreateInstitutionFlow(userInfo);
-        //We can only resend, if the first mail is send
+        //We can only resent if the first mail is sent
         CreateInstitutionEduID createInstitutionEduID = new CreateInstitutionEduID(hash, "new@example.com", true);
         given()
                 .when()
@@ -514,22 +486,6 @@ public class AccountLinkerControllerTest extends AbstractIntegrationTest {
                 .get("/myconext/api/sp/create-from-institution/resendMail")
                 .then()
                 .statusCode(200);
-    }
-
-    @Test
-    public void spCreateFromInstitutionResendMailWrongStatus() throws JsonProcessingException {
-        Map<Object, Object> userInfo = userInfoMap("new-user@qwerty.com");
-        String hash = getHashFromCreateInstitutionFlow(userInfo);
-
-        swapStatus(hash, LoginStatus.LOGGED_IN_SAME_DEVICE);
-        given()
-                .when()
-                .contentType(ContentType.JSON)
-                .queryParam("hash", hash)
-                .get("/myconext/api/sp/create-from-institution/resendMail")
-                .then()
-                .statusCode(403);
-        swapStatus(hash, LoginStatus.NOT_LOGGED_IN);
     }
 
     @Test
@@ -622,6 +578,7 @@ public class AccountLinkerControllerTest extends AbstractIntegrationTest {
                 .statusCode(403);
     }
 
+    @SneakyThrows
     @Test
     public void spCreateFromInstitutionLinkFromInstitutionFinishNewUser() throws JsonProcessingException {
         Map<Object, Object> userInfo = userInfoMap("new-user@qwerty.com");
@@ -636,17 +593,20 @@ public class AccountLinkerControllerTest extends AbstractIntegrationTest {
                 .statusCode(200);
 
         RequestInstitutionEduID requestInstitutionEduID = requestInstitutionEduIDRepository.findByHash(hash).get();
-        String emailHash = requestInstitutionEduID.getEmailHash();
+        VerifyOneTimeLoginCode verifyOneTimeLoginCode = new VerifyOneTimeLoginCode(requestInstitutionEduID.getOneTimeLoginCode().getCode(), null, requestInstitutionEduID.getHash());
+        //have to sleep some time, otherwise now() < createdAt + delay
+        Thread.sleep(1000);
         String location = given().redirects().follow(false)
                 .when()
                 .contentType(ContentType.JSON)
-                .queryParam("h", emailHash)
-                .get("/myconext/api/sp/create-from-institution/finish")
+                .body(verifyOneTimeLoginCode)
+                .put("/myconext/api/sp/create-from-institution/verify")
                 .getHeader("Location");
-        User user = userRepository.findUserByEmail("new@example.com").get();
+        User user = userRepository.findUserByEmailAndRateLimitedFalse("new@example.com").get();
         assertEquals("http://localhost:3000/create-from-institution-login?key=" + user.getCreateFromInstitutionKey(), location);
     }
 
+    @SneakyThrows
     @Test
     public void spCreateFromInstitutionLinkFromInstitutionFinishExistingUser() throws JsonProcessingException {
         Map<Object, Object> userInfo = userInfoMap("new-user@qwerty.com");
@@ -661,19 +621,22 @@ public class AccountLinkerControllerTest extends AbstractIntegrationTest {
                 .statusCode(200);
 
         RequestInstitutionEduID requestInstitutionEduID = requestInstitutionEduIDRepository.findByHash(hash).get();
-        String emailHash = requestInstitutionEduID.getEmailHash();
+        VerifyOneTimeLoginCode verifyOneTimeLoginCode = new VerifyOneTimeLoginCode(requestInstitutionEduID.getOneTimeLoginCode().getCode(), null, requestInstitutionEduID.getHash());
+        //have to sleep some time, otherwise now() < createdAt + delay
+        Thread.sleep(1000);
+
         String location = given().redirects().follow(false)
                 .when()
                 .contentType(ContentType.JSON)
-                .queryParam("h", emailHash)
-                .get("/myconext/api/sp/create-from-institution/finish")
+                .body(verifyOneTimeLoginCode)
+                .put("/myconext/api/sp/create-from-institution/verify")
                 .getHeader("Location");
-        User user = userRepository.findUserByEmail("jdoe@example.com").get();
+        User user = userRepository.findUserByEmailAndRateLimitedFalse("jdoe@example.com").get();
         assertEquals("http://localhost:3000/create-from-institution-login?key=" + user.getCreateFromInstitutionKey(), location);
     }
 
     @Test
-    public void spCreateFromInstitutionLinkFromInstitutionFinishUserNotFound() throws JsonProcessingException {
+    public void spCreateFromInstitutionLinkFromInstitutionFinishUserNotFound() throws JsonProcessingException, InterruptedException {
         Map<Object, Object> userInfo = userInfoMap("new-user@qwerty.com");
         String hash = getHashFromCreateInstitutionFlow(userInfo);
         CreateInstitutionEduID createInstitutionEduID = new CreateInstitutionEduID(hash, "jdoe@example.com", false);
@@ -688,12 +651,15 @@ public class AccountLinkerControllerTest extends AbstractIntegrationTest {
         RequestInstitutionEduID requestInstitutionEduID = requestInstitutionEduIDRepository.findByHash(hash).get();
         requestInstitutionEduID.setUserId("bogus");
         requestInstitutionEduIDRepository.save(requestInstitutionEduID);
-        String emailHash = requestInstitutionEduID.getEmailHash();
+        VerifyOneTimeLoginCode verifyOneTimeLoginCode = new VerifyOneTimeLoginCode(requestInstitutionEduID.getOneTimeLoginCode().getCode(), null, requestInstitutionEduID.getHash());
+        //have to sleep some time, otherwise now() < createdAt + delay
+        Thread.sleep(1000);
+
         given().redirects().follow(false)
                 .when()
                 .contentType(ContentType.JSON)
-                .queryParam("h", emailHash)
-                .get("/myconext/api/sp/create-from-institution/finish")
+                .body(verifyOneTimeLoginCode)
+                .put("/myconext/api/sp/create-from-institution/verify")
                 .then()
                 .statusCode(404);
     }
@@ -790,7 +756,7 @@ public class AccountLinkerControllerTest extends AbstractIntegrationTest {
 
     @Test
     public void idpVerifyIDFlow() throws IOException {
-        MagicLinkResponse magicLinkResponse = magicLinkRequest(user("jdoe@example.com"), HttpMethod.PUT);
+        ClientAuthenticationResponse magicLinkResponse = oneTimeLoginCodeRequest(user("jdoe@example.com"), HttpMethod.PUT);
 
         String authorizationURL = given().redirects().follow(false)
                 .when()
@@ -843,7 +809,7 @@ public class AccountLinkerControllerTest extends AbstractIntegrationTest {
 
     @Test
     public void idpVerifyIDErrorFlow() throws IOException {
-        MagicLinkResponse magicLinkResponse = magicLinkRequest(user("jdoe@example.com"), HttpMethod.PUT);
+        ClientAuthenticationResponse magicLinkResponse = oneTimeLoginCodeRequest(user("jdoe@example.com"), HttpMethod.PUT);
 
         String authorizationURL = given().redirects().follow(false)
                 .when()
@@ -908,12 +874,6 @@ public class AccountLinkerControllerTest extends AbstractIntegrationTest {
         assertTrue(location.startsWith("http://localhost:3001/create-from-institution/link/"));
 
         return location.substring(location.indexOf("link/") + "link/".length());
-    }
-
-    private void swapStatus(String hash, LoginStatus newStatus) {
-        RequestInstitutionEduID requestInstitutionEduID = requestInstitutionEduIDRepository.findByHash(hash).get();
-        requestInstitutionEduID.setLoginStatus(newStatus);
-        requestInstitutionEduIDRepository.save(requestInstitutionEduID);
     }
 
     private String stateParameterSp() {

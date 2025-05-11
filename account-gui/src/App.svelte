@@ -3,7 +3,7 @@
     import Cookies from "js-cookie";
     import Login from "./routes/Login.svelte";
     import Success from "./routes/Success.svelte";
-    import MagicLink from "./routes/MagicLink.svelte";
+    import LoginCode from "./routes/LoginCode.svelte";
     import Confirm from "./routes/Confirm.svelte";
     import ConfirmStepup from "./routes/ConfirmStepup.svelte";
     import LinkExpired from "./routes/LinkExpired.svelte";
@@ -29,7 +29,7 @@
     import {cookieNames} from "./constants/cookieNames";
     import UseApp from "./routes/UseApp.svelte";
     import UseWebAuth from "./routes/UseWebAuth.svelte";
-    import UseLink from "./routes/UseLink.svelte";
+    import UseCode from "./routes/UseCode.svelte";
     import UsePassword from "./routes/UsePassword.svelte";
     import Options from "./routes/Options.svelte";
     import UserLink from "./components/UserLink.svelte";
@@ -45,6 +45,7 @@
     import SubjectAlreadyLinked from "./routes/SubjectAlreadyLinked.svelte";
     import ExternalAccountLinkedError from "./routes/ExternalAccountLinkedError.svelte";
     import AttributeMissing from "./routes/AttributeMissing.svelte";
+    import RateLimited from "./routes/RateLimited.svelte";
 
     export let url = "";
 
@@ -108,6 +109,10 @@
         font-style: italic;
     }
 
+    :global(strong) {
+        font-weight: 600;
+    }
+
     .idp {
         display: flex;
         flex-direction: column;
@@ -160,8 +165,8 @@
                 <Route path="/usewebauthn/:id" let:params>
                     <UseWebAuth id="{params.id}"/>
                 </Route>
-                <Route path="/uselink/:id" let:params>
-                    <UseLink id="{params.id}"/>
+                <Route path="/usecode/:id" let:params>
+                    <UseCode id="{params.id}"/>
                 </Route>
                 <Route path="/app-required" component={AppRequired}/>
                 <Route path="/getapp" component={GetApp}/>
@@ -170,11 +175,12 @@
                 <Route path="/recovery-code" component={RecoveryCode}/>
                 <Route path="/congrats" component={Congrats}/>
                 <Route path="/remember" component={RememberMe}/>
+                <Route path="/rate-limited" component={RateLimited}/>
                 <Route path="/usepassword/:id" let:params>
                     <UsePassword id="{params.id}"/>
                 </Route>
-                <Route path="/magic/:id" let:params>
-                    <MagicLink id="{params.id}"/>
+                <Route path="/code/:id" let:params>
+                    <LoginCode id="{params.id}"/>
                 </Route>
                 <Route path="/options/:id" let:params>
                     <Options id="{params.id}"/>
@@ -235,7 +241,13 @@
                             linkText={I18n.t("Login.OptionsLink.COPY")}
                             route="/options/{params.id}"/>
             </Route>
-            <Route path="/uselink/:id" let:params>
+            <Route path="/usecode/:id" let:params>
+                <SubContent question={I18n.t("Login.NoMailAccess.COPY")}
+                            preLink={I18n.t("Login.UseAnother.COPY")}
+                            linkText={I18n.t("Login.OptionsLink.COPY")}
+                            route="/options/{params.id}"/>
+            </Route>
+            <Route path="/code/:id" let:params>
                 <SubContent question={I18n.t("Login.NoMailAccess.COPY")}
                             preLink={I18n.t("Login.UseAnother.COPY")}
                             linkText={I18n.t("Login.OptionsLink.COPY")}

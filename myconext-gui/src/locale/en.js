@@ -323,7 +323,7 @@ const en = {
     password: {
         addTitle: "Add password",
         updateTitle: "Change password",
-        addInfo: "If you want to add a password to your eduID account, press <strong>Confirm</strong> below to instantly receive an email with a link to add a password.",
+        addInfo: "If you want to add a password to your eduID account, press <strong>Confirm</strong> below to instantly receive an email with a one-time login code to add a password.",
         updateInfo: "If you want to reset or delete your password from your eduID account, press <strong>Confirm</strong> below to instantly receive an email with a link to change or delete your current password.",
         resetTitle: "Reset your password",
         newPassword: "New password",

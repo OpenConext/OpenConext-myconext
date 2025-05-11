@@ -20,6 +20,8 @@
     let mfaRequired = false;
     let magicLink = false;
     let emailNotFound = false;
+    let rateLimited = false;
+    let minutesDelay = false;
     let showSpinner = true;
     let serviceName = "";
 
@@ -60,19 +62,27 @@
                     sameSite: "Lax"
                 });
                 if (magicLink) {
-                    navigate(`/${loginPreferences.MAGIC.toLowerCase()}/${id}?magicLink=true`)
-                }
-                else if (mfaRequired && res.includes(loginPreferences.APP)) {
+                    navigate(`/${loginPreferences.CODE.toLowerCase()}/${id}`);
+                } else if (mfaRequired && res.includes(loginPreferences.APP)) {
                     navigate(`/${loginPreferences.APP.toLowerCase()}/${id}?mfa=true`);
                 }
                 //If the server does not confirm the preferredLogin, we won't use it
                 else if ($user.preferredLogin && res.includes($user.preferredLogin)) {
                     navigate(`/${$user.preferredLogin.toLowerCase()}/${id}`);
                 } else {
-                    //By contract the list ordered from more secure to less secure
+                    //By contract the list is ordered from more secure to less secure
                     navigate(`/${res[0].toLowerCase()}/${id}`);
                 }
-            }).catch(() => emailNotFound = true);
+            }).catch(e => {
+            if (e.status === 409) {
+                e.json().then(res => {
+                    rateLimited = true;
+                    minutesDelay = 15 - Math.floor((new Date().getTime() - parseInt(res.message)) / 1000 / 60);
+                })
+            } else {
+                emailNotFound = true
+            }
+        });
 
     }
 
@@ -86,6 +96,8 @@
         Cookies.remove(cookieNames.USERNAME);
         $user.knownUser = null;
         $user.email = "";
+        rateLimited = false;
+        emailNotFound = false;
     }
 
 </script>
@@ -138,16 +150,24 @@
 {/if}
 {#if $user.knownUser}
     <div class="known-user">
-        <LoginOption icon={userIcon} label={$user.knownUser} action={nextStep} index={1} preferred={true}/>
+        <LoginOption icon={userIcon}
+                     label={$user.knownUser}
+                     action={nextStep}
+                     index={1}
+                     error={rateLimited}
+                     preferred={true}/>
     </div>
     <div class="other-account">
-        <LoginOption icon={accountIcon} label={I18n.t("Login.UseOtherAccount.COPY")} action={otherAccount} index={2}/>
+        <LoginOption icon={accountIcon}
+                     label={I18n.t("Login.UseOtherAccount.COPY")}
+                     action={otherAccount}
+                     index={2}/>
     </div>
 {:else}
     <input type="email"
            autocomplete="username"
            id="email"
-           class={`${emailNotFound ? 'error' : ''}`}
+           class={`${(emailNotFound || rateLimited) ? 'error' : ''}`}
            placeholder={I18n.t("LinkFromInstitution.EmailPlaceholder.COPY")}
            use:init
            on:input={handleInput}
@@ -166,10 +186,17 @@
         </div>
     </div>
 {/if}
+{#if rateLimited}
+    <div class="error">
+        <span class="svg">{@html critical}</span>
+        <div>
+            <span>{I18n.t("Login.RateLimited.COPY", {minutes: minutesDelay})}</span>
+        </div>
+    </div>
+{/if}
 
 <Button href="/next"
         disabled={showSpinner || !allowedNext($user.email)}
         label={I18n.t("GetApp.Next.COPY")}
         className="full"
         onClick={nextStep}/>
-

@@ -1,0 +1,9 @@
+Login code
+
+You can use the code below to log in. The code expires in 10 minutes.
+
+{{code}}
+
+If this is not you or you do not want an eduID after all, you can ignore this message.
+
+{{> footer_en.txt}}

@@ -10,7 +10,7 @@ import java.io.Serializable;
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
-public class MagicLinkRequest implements Serializable {
+public class ClientAuthenticationRequest implements Serializable {
 
     @NotNull
     private String authenticationRequestId;

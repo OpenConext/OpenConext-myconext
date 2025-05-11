@@ -41,23 +41,28 @@ function postPutJson(path, body, method) {
 }
 
 //Base
-export function magicLinkNewUser(email, givenName, familyName, authenticationRequestId) {
+export function generateCodeNewUser(email, givenName, familyName, authenticationRequestId) {
     const body = {user: {email, givenName, familyName}, authenticationRequestId};
-    return postPutJson("/myconext/api/idp/magic_link_request", body, "POST");
+    return postPutJson("/myconext/api/idp/generate_code_request", body, "POST");
 }
 
-export function magicLinkExistingUser(email, authenticationRequestId) {
+export function generateCodeExistingUser(email, authenticationRequestId) {
     const body = {user: {email}, authenticationRequestId};
-    return postPutJson("/myconext/api/idp/magic_link_request", body, "PUT");
+    return postPutJson("/myconext/api/idp/generate_code_request", body, "PUT");
+}
+
+export function verifyCodeExistingUser(code, authenticationRequestId) {
+    const body = {code, authenticationRequestId};
+    return postPutJson("/myconext/api/idp/verify_code_request", body, "PUT");
 }
 
 export function passwordExistingUser(email, password, authenticationRequestId) {
     const body = {user: {email, password}, authenticationRequestId, usePassword: true};
-    return postPutJson("/myconext/api/idp/magic_link_request", body, "PUT");
+    return postPutJson("/myconext/api/idp/generate_code_request", body, "PUT");
 }
 
-export function resendMagicLinkMail(id) {
-    return fetchJson(`/myconext/api/idp/resend_magic_link_request?id=${id}`);
+export function resendCodeMail(id) {
+    return fetchJson(`/myconext/api/idp/resend_code_request?id=${id}`);
 }
 
 export function institutionalEmailDomains() {
@@ -100,13 +105,6 @@ export function webAuthnStartAuthentication(email, authenticationRequestId, test
 export function webAuthnTryAuthentication(credentials, authenticationRequestId, rememberMe) {
     const body = {credentials, authenticationRequestId, rememberMe};
     return postPutJson("/myconext/api/idp/security/webauthn/authentication", body, "PUT");
-}
-
-export function successfullyLoggedIn(id) {
-    if (typeof document.hidden !== "undefined" && document.hidden) {
-        return Promise.resolve(status.NOT_LOGGED_IN)
-    }
-    return fetchJson(`/myconext/api/idp/security/success?id=${id}`);
 }
 
 //We can safely cache this for the duration of the session

@@ -2,7 +2,7 @@
     import {flash, user} from "../stores/user";
     import I18n from "../locale/I18n";
     import {validPassword} from "../validation/regexp";
-    import {resetPasswordHashValid, resetPasswordLink, updatePassword} from "../api";
+    import {resetPasswordHashValid, generatePasswordResetCode, updatePassword} from "../api";
     import {navigate} from "svelte-routing";
     import Button from "../components/Button.svelte";
     import Modal from "../components/Modal.svelte";
@@ -72,7 +72,7 @@
     }
 
     const resetPasswordLinkAgain = () => {
-        resetPasswordLink().then(() => {
+        generatePasswordResetCode().then(() => {
             navigate("/security");
             flash.setValue(I18n.t("Password.Flash.PasswordLink.COPY", {name: $user.email}));
         })

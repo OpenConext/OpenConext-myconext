@@ -89,16 +89,19 @@
         </div>
 
         <div class="modal-options">
-            <Button className="cancel"
-                    onClick={cancel}
-                    label={cancelLabel}/>
-
-            <Button onClick={submit}
-                    warning={warning}
-                    href={href}
-                    download={download}
-                    disabled={disableSubmit}
-                    label={confirmLabel}/>
+            {#if cancel}
+                <Button className="cancel"
+                        onClick={cancel}
+                        label={cancelLabel}/>
+            {/if}
+            {#if submit}
+                <Button onClick={submit}
+                        warning={warning}
+                        href={href}
+                        download={download}
+                        disabled={disableSubmit}
+                        label={confirmLabel}/>
+            {/if}
         </div>
     </div>
 </div>

@@ -74,7 +74,7 @@ const nl = {
         learnLink: "account kunt herstellen",
         useApp: "Gebruik de <strong>eduID app</strong> om in te loggen met je mobiel.",
         useWebAuthn: "Gebruik je <strong>beveiligingssleutel</strong>.",
-        useLink: "Ontvang een <strong>magische link</strong> in je inbox.",
+        useCode: "Ontvang een <strong>login code</strong> in je inbox.",
         usePassword: "Gebruik <strong>een wachtwoord</strong>.",
     },
     magicLink: {
@@ -207,9 +207,9 @@ const nl = {
         next: "Log in met een beveiligingssleutel",
         error: "De beveiligingssleutel kan niet gebruikt worden."
     },
-    useLink: {
-        header: "Vraag een magische link aan",
-        next: "E-mail een magische link"
+    useCode: {
+        header: "Vraag een login code aan",
+        next: "E-mail een login code"
     },
     usePassword: {
         header: "Voer je wachtwoord in",
@@ -264,7 +264,10 @@ const nl = {
         text: "We sturen je een code om je nummer te verifiëren.",
         verify: "Verifieer dit telefoonnummer",
         placeHolder: "+31 612345678",
-        phoneIncorrect: "Verificatie code is onjuist"
+        phoneIncorrect: "Verificatie code is onjuist",
+        rateLimited: "Rate limited",
+        rateLimitedInfo: "Teveel verzoeken om een SMS te versturen. Je bent rate limited en je kan het morgen opnieuw proberen.",
+        ok: "Ok"
     },
     congrats: {
         header: "Succes",

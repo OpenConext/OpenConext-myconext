@@ -103,7 +103,7 @@ public class ResourceCleanerTest extends AbstractIntegrationTest {
     public void cleanExpiredControlCode() {
         ResourceCleaner resourceCleaner = getResourceCleaner(true);
 
-        User user = userRepository.findUserByEmail("jdoe@example.com").get();
+        User user = userRepository.findUserByEmailAndRateLimitedFalse("jdoe@example.com").get();
         ControlCode controlCode = new ControlCode();
         long threeWeeksAgo = System.currentTimeMillis() - (ONE_DAY_IN_MILLIS * 21);
         controlCode.setCreatedAt(threeWeeksAgo);
@@ -112,7 +112,7 @@ public class ResourceCleanerTest extends AbstractIntegrationTest {
 
         resourceCleaner.clean();
 
-        User userFromDB = userRepository.findUserByEmail("jdoe@example.com").get();
+        User userFromDB = userRepository.findUserByEmailAndRateLimitedFalse("jdoe@example.com").get();
         assertNull(userFromDB.getControlCode());
     }
 

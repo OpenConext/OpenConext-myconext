@@ -28,14 +28,14 @@ public class UserControllerAllowedDomainsTest extends AbstractIntegrationTest {
 
     @Test
     public void allowedEmailNewUser() throws IOException {
-        magicLinkRequest(user("jdoe@SUBDOMAIN.stRanGe.ME"), HttpMethod.POST)
+        oneTimeLoginCodeRequest(user("jdoe@SUBDOMAIN.stRanGe.ME"), HttpMethod.POST)
                 .response
                 .statusCode(HttpStatus.CREATED.value());
     }
 
     @Test
     public void notAllowedEmailNewUser() throws IOException {
-        magicLinkRequest(user("jdoe@example.com"), HttpMethod.POST)
+        oneTimeLoginCodeRequest(user("jdoe@example.com"), HttpMethod.POST)
                 .response
                 .statusCode(HttpStatus.FORBIDDEN.value());
     }

@@ -4,16 +4,24 @@
     "nl": "Je eduID is aangemaakt"
   },
   "account_verification": {
-    "en": "Please verify your email address for your eduID",
-    "nl": "Verifieer je e-mailadres voor je eduID"
+    "en": "Verify your eduID email with the code: ",
+    "nl": "Bevestig je eduID e-mailadres met de code: "
   },
-  "magic_link": {
-    "en": "Magic Link to login",
-    "nl": "Magische link om in te loggen"
+  "one_time_login_code": {
+    "en": "eduID login code: ",
+    "nl": "eduID login code: "
   },
+  "one_time_login_code_new_user": {
+    "en": "Confirm your eduID email with code: ",
+    "nl": "Bevestig je eduID e-mailadres met de code: "
+},
   "reset_password": {
     "en": "Reset your eduID password",
     "nl": "Reset je eduID wachtwoord"
+  },
+  "reset_password_code": {
+    "en": "Reset your eduID password with code: ",
+    "nl": "Reset je eduID wachtwoord met de code: "
   },
   "add_password": {
     "en": "Add an eduID password",
@@ -22,6 +30,10 @@
   "update_email": {
     "en": "Update your eduID email",
     "nl": "Verander je eduID email"
+  },
+  "change_email_code": {
+    "en": "Update your eduID email with code: ",
+    "nl": "Verander je eduID email met code: "
   },
   "confirmation_update_email": {
     "en": "Change of eduID email",

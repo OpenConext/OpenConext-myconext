@@ -22,7 +22,7 @@
     }
 
 </style>
-<h1>{I18n.t("Expired.Title.COPY")}</h1>
-<p>{@html I18n.t("Expired.Info.COPY")}</p>
+<h1>{I18n.t("Expired.CodeTitle.COPY")}</h1>
+<p>{@html I18n.t("Expired.CodeInfo.COPY")}</p>
 <Button label={I18n.t("Expired.Back.COPY")} href={`https://${$conf.domain}`}
         onClick={() => window.location.href = `https://${$conf.domain}`}/>

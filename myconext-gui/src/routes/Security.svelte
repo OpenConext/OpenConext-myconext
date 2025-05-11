@@ -5,7 +5,6 @@
     import getApp from "../icons/redesign/undraw_Mobile_app_re_catg 1.svg?raw";
     import hasApp from "../icons/redesign/undraw_Mobile_app_small.svg?raw";
     import Button from "../components/Button.svelte";
-    import {testWebAutnUrl} from "../api";
     import {onMount} from "svelte";
     import {dateFromEpoch} from "../utils/date";
     import binIcon from "../icons/redesign/trash.svg?raw";
@@ -14,9 +13,9 @@
     import passwordIcon from "../icons/redesign/password-type.svg?raw";
     import mobilePhoneIcon from "../icons/redesign/mobile-phone.svg?raw";
     import backupIcon from "../icons/redesign/backup-code.svg?raw";
-
-    import magicLinkIcon from "../icons/redesign/video-game-magic-wand.svg?raw";
+    import codeIcon from "../icons/mail.svg?raw";
     import SecurityOption from "../components/SecurityOption.svelte";
+    import magicLinkIcon from "../icons/redesign/video-game-magic-wand.svg?raw";
 
     let usePublicKey = $user.usePublicKey;
     let showAppDetails = false;
@@ -32,12 +31,6 @@
 
     const credentialsDetails = credential => () =>
         navigate(`/credential?id=${encodeURIComponent(credential.identifier)}`);
-
-    const startTestFlow = () => {
-        testWebAutnUrl().then(res => {
-            window.location.href = res.url;
-        });
-    }
 
 </script>
 
@@ -236,8 +229,8 @@
         {/if}
 
         <SecurityOption action={() => navigate("/edit-email")}
-                        icon={magicLinkIcon}
-                        label={I18n.t("Security.UseMagicLink.COPY")}
+                        icon={codeIcon}
+                        label={I18n.t("Security.UseCode.COPY")}
                         subLabel={$user.email}
                         active={true}/>
 

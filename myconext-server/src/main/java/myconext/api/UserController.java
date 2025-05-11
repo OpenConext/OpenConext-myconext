@@ -59,6 +59,7 @@ import java.net.URLEncoder;
 import java.nio.charset.Charset;
 import java.security.SecureRandom;
 import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -74,6 +75,8 @@ import static myconext.log.MDCContext.logWithContext;
 public class UserController implements UserAuthentication {
 
     private static final Log LOG = LogFactory.getLog(UserController.class);
+
+    private static final int RATE_LIMIT_DURATION = 15;
 
     @Getter
     private final UserRepository userRepository;
@@ -216,10 +219,21 @@ public class UserController implements UserAuthentication {
 
     @Hidden
     @PostMapping("/idp/service/email")
-    public List<String> knownAccount(@RequestBody Map<String, String> email) {
-        emailGuessingPreventor.potentialUserEmailGuess();
-        User user = userRepository.findUserByEmail(email.get("email"))
-                .orElseThrow(() -> new UserNotFoundException(String.format("User with email %s not found", email.get("email"))));
+    public List<String> knownAccount(@RequestBody Map<String, String> emailMap) {
+        this.emailGuessingPreventor.potentialUserEmailGuess();
+        String email = emailMap.get("email");
+        User user = userRepository.findUserByEmail(email)
+                .orElseThrow(() -> new UserNotFoundException(String.format("User with email %s not found", email)));
+        if (user.isRateLimited()) {
+            long createdAt = user.getOneTimeLoginCode() != null ? user.getOneTimeLoginCode().getCreatedAt() : 0;
+            boolean minutes15ago = Instant.ofEpochMilli(createdAt).isBefore(Instant.now().minus(RATE_LIMIT_DURATION, ChronoUnit.MINUTES));
+            if (minutes15ago) {
+                user.setRateLimited(false);
+                userRepository.save(user);
+            } else {
+                throw new RateLimitedException(String.valueOf(createdAt));
+            }
+        }
         return user.loginOptions();
     }
 
@@ -262,15 +276,17 @@ public class UserController implements UserAuthentication {
     }
 
     @Hidden
-    @PostMapping("/idp/magic_link_request")
-    public ResponseEntity newMagicLinkRequest(HttpServletRequest request, @Valid @RequestBody MagicLinkRequest magicLinkRequest) {
-        SamlAuthenticationRequest samlAuthenticationRequest = authenticationRequestRepository.findByIdAndNotExpired(magicLinkRequest.getAuthenticationRequestId())
+    @PostMapping("/idp/generate_code_request")
+    public ResponseEntity generateCodeRequestNewUser(HttpServletRequest request,
+                                                     @Valid @RequestBody ClientAuthenticationRequest clientAuthenticationRequest) {
+        SamlAuthenticationRequest samlAuthenticationRequest = authenticationRequestRepository
+                .findByIdAndNotExpired(clientAuthenticationRequest.getAuthenticationRequestId())
                 .orElseThrow(() -> new ExpiredAuthenticationException("Expired authentication request"));
 
-        User user = magicLinkRequest.getUser();
+        User user = clientAuthenticationRequest.getUser();
 
         String email = user.getEmail();
-        verifyEmails(email);
+        verifyEmails(email, true);
 
         Optional<User> optionalUser = userRepository.findUserByEmail(emailGuessingPreventor.sanitizeEmail(email));
         if (optionalUser.isPresent()) {
@@ -284,21 +300,19 @@ public class UserController implements UserAuthentication {
 
         User userToSave = new User(UUID.randomUUID().toString(), email, user.getGivenName(), user.getGivenName(),
                 user.getFamilyName(), schacHomeOrganization, preferredLanguage, requesterEntityId, manage);
-        userToSave = userRepository.save(userToSave);
-
-        return this.doMagicLink(userToSave, samlAuthenticationRequest, false, request);
+        return this.doInternalAuthentication(userToSave, samlAuthenticationRequest, false, request);
     }
 
     @Hidden
-    @PutMapping("/idp/magic_link_request")
-    public ResponseEntity magicLinkRequest(HttpServletRequest request, @Valid @RequestBody MagicLinkRequest magicLinkRequest) {
-        SamlAuthenticationRequest samlAuthenticationRequest = authenticationRequestRepository.findByIdAndNotExpired(magicLinkRequest.getAuthenticationRequestId())
-                .orElseThrow(() -> new ExpiredAuthenticationException("Expired samlAuthenticationRequest: " + magicLinkRequest.getAuthenticationRequestId()));
+    @PutMapping("/idp/generate_code_request")
+    public ResponseEntity generateCodeRequestExistingUser(HttpServletRequest request,
+                                                          @Valid @RequestBody ClientAuthenticationRequest clientAuthenticationRequest) {
+        SamlAuthenticationRequest samlAuthenticationRequest = authenticationRequestRepository.findByIdAndNotExpired(clientAuthenticationRequest.getAuthenticationRequestId())
+                .orElseThrow(() -> new ExpiredAuthenticationException("Expired samlAuthenticationRequest: " + clientAuthenticationRequest.getAuthenticationRequestId()));
 
-        User providedUser = magicLinkRequest.getUser();
+        User providedUser = clientAuthenticationRequest.getUser();
 
         String email = providedUser.getEmail();
-        this.verifyEmails(email);
 
         Optional<User> optionalUser = findUserStoreLanguage(email);
         if (!optionalUser.isPresent()) {
@@ -308,10 +322,10 @@ public class UserController implements UserAuthentication {
         String requesterEntityId = samlAuthenticationRequest.getRequesterEntityId();
 
         logWithContext(user, "update", "user", LOG, "Updating user " + user.getEmail());
-        user.computeEduIdForServiceProviderIfAbsent(requesterEntityId, manage);
-        userRepository.save(user);
 
-        if (magicLinkRequest.isUsePassword()) {
+        user.computeEduIdForServiceProviderIfAbsent(requesterEntityId, manage);
+
+        if (clientAuthenticationRequest.isUsePassword()) {
             if (!passwordEncoder.matches(providedUser.getPassword(), user.getPassword())) {
                 logLoginWithContext(user, "password", false, LOG, "Bad attempt to login with password", request);
                 return ResponseEntity.status(HttpStatus.FORBIDDEN)
@@ -320,35 +334,69 @@ public class UserController implements UserAuthentication {
             logLoginWithContext(user, "password", true, LOG, "Successfully logged in with password", request);
             LOG.info("Successfully logged in with password");
         }
-        return doMagicLink(user, samlAuthenticationRequest, magicLinkRequest.isUsePassword(), request);
+        return doInternalAuthentication(user, samlAuthenticationRequest, clientAuthenticationRequest.isUsePassword(), request);
     }
 
     @Hidden
-    @GetMapping("/idp/resend_magic_link_request")
-    public ResponseEntity resendMagicLinkRequest(HttpServletRequest request, @RequestParam("id") String authenticationRequestId) {
+    @PutMapping("/idp/verify_code_request")
+    public ResponseEntity verifyCodeExistingUser(@Valid @RequestBody VerifyOneTimeLoginCode verifyOneTimeLoginCode) {
+        String authenticationRequestId = verifyOneTimeLoginCode.getAuthenticationRequestId();
+        SamlAuthenticationRequest samlAuthenticationRequest = authenticationRequestRepository
+                .findByIdAndNotExpired(authenticationRequestId)
+                .orElseThrow(() -> new ExpiredAuthenticationException("Expired samlAuthenticationRequest: " + authenticationRequestId));
+        String userId = samlAuthenticationRequest.getUserId();
+        User user = userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException(userId));
+        OneTimeLoginCode oneTimeLoginCode = user.getOneTimeLoginCode();
+        if (oneTimeLoginCode == null || oneTimeLoginCode.isExpired()) {
+            //expired
+            user.setOneTimeLoginCode(null);
+            userRepository.save(user);
+            throw new ExpiredAuthenticationException(String.format("Expired OneTimeLoginCode"));
+        }
+        try {
+            boolean success = user.attemptOneTimeLoginVerification(verifyOneTimeLoginCode.getCode());
+            userRepository.save(user);
+            long delay = oneTimeLoginCode.getDelay();
+            if (success) {
+                LOG.debug(String.format("Successful login for existing user %s in oneTimeLoginCode flow, delay: %s, attempt: %s",
+                        user.getEmail(),
+                        delay,
+                        (int) (Math.log(delay / 1000) / Math.log(2))));
+                String url = this.magicLinkUrl + "?h=" + samlAuthenticationRequest.getHash();
+                return ResponseEntity.status(201).body(Map.of("url", url));
+            }
+
+            throw new InvalidOneTimeLoginCodeException(String.format("Invalid oneTimeLoginCode entered for email %s, delay: %s, attempt: %s",
+                    user.getEmail(),
+                    delay,
+                    (int) (Math.log(delay / 1000) / Math.log(2))));
+        } catch (ForbiddenException e) {
+            authenticationRequestRepository.delete(samlAuthenticationRequest);
+            LOG.info("Rate-limiting user " + user.getEmail());
+            user.setRateLimited(true);
+            user.endOneTimeLoginCode();
+            userRepository.save(user);
+            throw e;
+        }
+    }
+
+    @Hidden
+    @GetMapping("/idp/resend_code_request")
+    public ResponseEntity resendCodeMail(HttpServletRequest request, @RequestParam("id") String authenticationRequestId) {
         SamlAuthenticationRequest samlAuthenticationRequest = authenticationRequestRepository.findByIdAndNotExpired(authenticationRequestId)
                 .orElseThrow(() -> new ExpiredAuthenticationException("Expired samlAuthenticationRequest: " + authenticationRequestId));
         String userId = samlAuthenticationRequest.getUserId();
         User user = userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException(userId));
+        OneTimeLoginCode oneTimeLoginCode = user.getOneTimeLoginCode();
+        if (oneTimeLoginCode.isCodeAlmostExpired()) {
+            userRepository.save(user);
+        }
         if (user.isNewUser()) {
-            sendAccountVerificationMail(samlAuthenticationRequest, user);
+            mailBox.sendOneTimeLoginCodeNewUser(user, oneTimeLoginCode.getCode());
         } else {
-            String serviceName = this.manage.getServiceName(request, samlAuthenticationRequest);
-            mailBox.sendMagicLink(user, samlAuthenticationRequest.getHash(), serviceName);
+            mailBox.sendOneTimeLoginCode(user, oneTimeLoginCode.getCode());
         }
         return ResponseEntity.ok(true);
-    }
-
-    private void sendAccountVerificationMail(SamlAuthenticationRequest samlAuthenticationRequest, User user) {
-        LOG.debug(String.format("Sending account verification mail with magic link for new user %s", user.getUsername()));
-        mailBox.sendAccountVerification(user, samlAuthenticationRequest.getHash());
-    }
-
-    @Hidden
-    @GetMapping("/idp/security/success")
-    public int successfullyLoggedIn(@RequestParam("id") String id) {
-        Optional<SamlAuthenticationRequest> optionalSamlAuthenticationRequest = authenticationRequestRepository.findById(id);
-        return optionalSamlAuthenticationRequest.map(samlAuthenticationRequest -> samlAuthenticationRequest.getLoginStatus().ordinal()).orElse(LoginStatus.NOT_LOGGED_IN.ordinal());
     }
 
     @Operation(summary = "Institution displaynames",
@@ -397,7 +445,7 @@ public class UserController implements UserAuthentication {
     public ResponseEntity<StatusResponse> createEduIDAccount(@Valid @RequestBody CreateAccount createAccount,
                                                              @RequestParam(value = "in-app", required = false, defaultValue = "false") boolean inAppIndicator) {
         String email = createAccount.getEmail();
-        verifyEmails(email);
+        verifyEmails(email, false);
 
         Optional<User> optionalUser = userRepository.findUserByEmail(emailGuessingPreventor.sanitizeEmail(email));
         if (optionalUser.isPresent()) {
@@ -496,7 +544,8 @@ public class UserController implements UserAuthentication {
                     "<br/>If the URL is not properly intercepted by the eduID app, then the browser app redirects to " +
                     "<a href=\"\">eduid://client/mobile/confirm-email?h={{hash}}</a>")
     @PutMapping("/sp/email")
-    public ResponseEntity<UserResponse> updateEmail(Authentication authentication, @Valid @RequestBody UpdateEmailRequest updateEmailRequest,
+    public ResponseEntity<UserResponse> updateEmail(Authentication authentication,
+                                                    @Valid @RequestBody UpdateEmailRequest updateEmailRequest,
                                                     @RequestParam(value = "force", required = false, defaultValue = "false") boolean force) {
         User user = userFromAuthentication(authentication);
         List<PasswordResetHash> passwordResetHashes = passwordResetHashRepository.findByUserId(user.getId());
@@ -525,12 +574,98 @@ public class UserController implements UserAuthentication {
         return returnUserResponse(user);
     }
 
+    @Operation(summary = "Generate email change code",
+            description = "Request to change the email of the user. We sent a one-time verification code in verification email")
+    @PutMapping("/sp/generate-email-code")
+    public ResponseEntity<UserResponse> generateEmailCode(Authentication authentication,
+                                                    @Valid @RequestBody UpdateEmailRequest updateEmailRequest,
+                                                    @RequestParam(value = "force", required = false, defaultValue = "false") boolean force) {
+        User user = userFromAuthentication(authentication);
+        List<PasswordResetHash> passwordResetHashes = passwordResetHashRepository.findByUserId(user.getId());
+        if (!CollectionUtils.isEmpty(passwordResetHashes)) {
+            if (force) {
+                passwordResetHashRepository.deleteAll(passwordResetHashes);
+            } else {
+                throw new NotAcceptableException("Update email not allowed. Outstanding password reset for: " + user.getEmail());
+            }
+        }
+        changeEmailHashRepository.deleteByUserId(user.getId());
+
+        String newEmail = updateEmailRequest.getEmail();
+        Optional<User> optionalUser = userRepository.findUserByEmail(emailGuessingPreventor.sanitizeEmail(newEmail));
+        if (optionalUser.isPresent()) {
+            throw new DuplicateUserEmailException("There already exists a user with email " + newEmail);
+        }
+
+        String hashValue = hash();
+        String code = VerificationCodeGenerator.generateOneTimeLoginCode();
+        OneTimeLoginCode oneTimeLoginCode = new OneTimeLoginCode(code);
+
+        changeEmailHashRepository.save(new ChangeEmailHash(user, newEmail, hashValue, oneTimeLoginCode));
+        logWithContext(user, "update", "generate-email-code", LOG, "Send email-one-time-login mail");
+
+        mailBox.sendChangeEmailOneTimeCode(user, newEmail, code);
+
+        authenticationRequestRepository.deleteByUserId(user.getId());
+        return returnUserResponse(user);
+    }
+
+    @Operation(summary = "Resend email change code",
+            description = "Resend the one-time verification code in verification email")
+    @GetMapping("/sp/resend-email-code")
+    public ResponseEntity resendSpCodeMail(Authentication authentication) {
+        User user = userFromAuthentication(authentication);
+        ChangeEmailHash changeEmailHash = changeEmailHashRepository.findByUserId(user.getId()).stream().findFirst()
+                .orElseThrow(() -> new ForbiddenException("No change email hash for user: " + user.getEmail()));
+        OneTimeLoginCode oneTimeLoginCode = changeEmailHash.getOneTimeLoginCode();
+        if (oneTimeLoginCode.isCodeAlmostExpired()) {
+            changeEmailHashRepository.save(changeEmailHash);
+        }
+        mailBox.sendChangeEmailOneTimeCode(user, changeEmailHash.getNewEmail(), oneTimeLoginCode.getCode());
+        return ResponseEntity.ok(true);
+    }
+
+    @PutMapping("/sp/verify-email-code")
+    @Operation(summary = "Verify change email code", description = """
+            If the email code is valid, then return the hash to change the email
+            """)
+    public ResponseEntity<Map<String, String>> verifyChangeEmailCode(Authentication authentication,
+                                                               @Valid @RequestBody VerifyOneTimeLoginCode verifyOneTimeLoginCode) {
+        User user = userFromAuthentication(authentication);
+        ChangeEmailHash changeEmailHash = changeEmailHashRepository.findByUserId(user.getId()).stream()
+                .findFirst()
+                .orElseThrow(() -> new ForbiddenException("No change email hash for user: " + user.getEmail()));
+        OneTimeLoginCode oneTimeLoginCode = changeEmailHash.getOneTimeLoginCode();
+        if (oneTimeLoginCode == null || oneTimeLoginCode.isExpired()) {
+            //expired
+            changeEmailHashRepository.delete(changeEmailHash);
+            throw new ForbiddenException("Expired changeEmailHash for User :"+user.getEmail());
+        }
+        try {
+            boolean success = oneTimeLoginCode.attemptOneTimeLoginVerification(verifyOneTimeLoginCode.getCode());
+            if (success) {
+                LOG.debug(String.format("Successful changeEmailHash for user %s",
+                        user.getEmail()));
+                return ResponseEntity.status(200).body(Map.of("hash", changeEmailHash.getHash()));
+            }
+            //Need to save the upped delay
+            changeEmailHashRepository.save(changeEmailHash);
+            throw new InvalidOneTimeLoginCodeException("Invalid oneTimeLoginCode entered for user: "+ user.getEmail());
+        } catch (ForbiddenException e) {
+            changeEmailHashRepository.delete(changeEmailHash);
+            throw e;
+        }
+    }
+
     @Operation(summary = "Confirm email change",
-            description = "Confirm the user has clicked on the link in the email sent after requesting to change the users email" +
-                    "<br/>A confirmation email is sent to notify the user of the security change with a link to the " +
-                    "security settings <a href=\"\">https://login.{environment}.eduid.nl/client/mobile/security</a>. " +
-                    "<br/>If this URL is not properly intercepted by the eduID app, then the browser app redirects to " +
-                    "<a href=\"\">eduid://client/mobile/security</a>")
+            description = """
+                    Confirm the user has entered the correct one-time code or has clicked on the link in the email sent
+                    after requesting to change the users email
+                    <br/>A confirmation email is sent to notify the user of the security change with a link to the
+                    security settings <a href="/#">https://login.{environment}.eduid.nl/client/mobile/security</a>. 
+                    <br/>If this URL is not properly intercepted by the eduID app, then the browser app redirects to 
+                    <a href="/#">eduid://client/mobile/security</a>
+                    """)
     @GetMapping("/sp/confirm-email")
     public ResponseEntity<UserResponse> confirmUpdateEmail(Authentication authentication,
                                                            @Parameter(description = "The hash obtained from the query parameter 'h' in the URL sent to the user in the update-email")
@@ -542,7 +677,10 @@ public class UserController implements UserAuthentication {
 
         user.setEmail(changeEmailHash.getNewEmail());
         userRepository.save(user);
+
         authenticationRequestRepository.deleteByUserId(user.getId());
+        changeEmailHashRepository.deleteByUserId(user.getId());
+
         mailBox.sendUpdateConfirmationEmail(user, oldEmail, user.getEmail(), isMobileRequest(authentication));
         return returnUserResponse(user);
     }
@@ -568,8 +706,11 @@ public class UserController implements UserAuthentication {
     }
 
     @Operation(summary = "Update password",
-            description = "Update or delete the user's password using the hash from the 'h' query param in the validation email. " +
-                    "If 'newPassword' is null / empty than the password is removed.")
+            description = """
+                    Update or delete the user's password using the hash from the 'h' query param in the validation email
+                    or the hash returned after the correct one-time code is verified. 
+                    If 'newPassword' is null / empty than the password is removed.
+                    """)
     @PutMapping("/sp/update-password")
     public ResponseEntity<UserResponse> updateUserPassword(Authentication authentication, @RequestBody UpdateUserSecurityRequest updateUserRequest) {
         User user = userFromAuthentication(authentication);
@@ -631,6 +772,82 @@ public class UserController implements UserAuthentication {
         return returnUserResponse(user);
     }
 
+    @PutMapping("/sp/generate-password-code")
+    @Operation(summary = "Generate change password code", description = """
+            Sent the user a mail with a one-time code for the user to change his / hers password.
+            """)
+    public ResponseEntity<UserResponse> generatePasswordCode(Authentication authentication) {
+        User user = userFromAuthentication(authentication);
+        List<ChangeEmailHash> changeEmailHashes = changeEmailHashRepository.findByUserId(user.getId());
+        changeEmailHashRepository.deleteAll(changeEmailHashes);
+        List<PasswordResetHash> existingPasswordHashes = passwordResetHashRepository.findByUserId(user.getId());
+        passwordResetHashRepository.deleteAll(existingPasswordHashes);
+
+        user.setForgottenPassword(true);
+        userRepository.save(user);
+
+        String hashValue = hash();
+        String code = VerificationCodeGenerator.generateOneTimeLoginCode();
+        OneTimeLoginCode oneTimeLoginCode = new OneTimeLoginCode(code);
+
+        passwordResetHashRepository.save(new PasswordResetHash(user, hashValue, oneTimeLoginCode));
+
+        logWithContext(user, "update", "generate-password-code", LOG, "Send password reset code mail");
+        mailBox.sendResetPasswordOneTimeCode(user, code);
+        //Ensure the SSO is removed at the next login
+        authenticationRequestRepository.deleteByUserId(user.getId());
+        return returnUserResponse(user);
+    }
+
+    @Operation(summary = "Resend password change code",
+            description = "Resend the one-time verification code in password change email")
+    @GetMapping("/sp/resend-password-code")
+    public ResponseEntity resendSpCodePassword(Authentication authentication) {
+        User user = userFromAuthentication(authentication);
+        PasswordResetHash passwordResetHash = passwordResetHashRepository.findByUserId(user.getId()).stream().findFirst()
+                .orElseThrow(() -> new ForbiddenException("No change email hash for user: " + user.getEmail()));
+        OneTimeLoginCode oneTimeLoginCode = passwordResetHash.getOneTimeLoginCode();
+        if (oneTimeLoginCode.isCodeAlmostExpired()) {
+            passwordResetHashRepository.save(passwordResetHash);
+        }
+        logWithContext(user, "update", "resend-password-code", LOG, "Resend password reset code mail");
+
+        mailBox.sendResetPasswordOneTimeCode(user, oneTimeLoginCode.getCode());
+        return ResponseEntity.ok(true);
+    }
+
+
+    @PutMapping("/sp/verify-password-code")
+    @Operation(summary = "Verify change password code", description = """
+            If the password code is valid, then return the hash to change the password
+            """)
+    public ResponseEntity<Map<String, String>> verifyPasswordResetCode(Authentication authentication,
+                                                                       @Valid @RequestBody VerifyOneTimeLoginCode verifyOneTimeLoginCode) {
+        User user = userFromAuthentication(authentication);
+        PasswordResetHash passwordResetHash = passwordResetHashRepository.findByUserId(user.getId()).stream()
+                .findFirst()
+                .orElseThrow(() -> new ForbiddenException("No password reset hashed for user: " + user.getEmail()));
+        OneTimeLoginCode oneTimeLoginCode = passwordResetHash.getOneTimeLoginCode();
+        if (oneTimeLoginCode == null || oneTimeLoginCode.isExpired()) {
+            //expired
+            passwordResetHashRepository.delete(passwordResetHash);
+            throw new ForbiddenException("Expired passwordResetHash for User :"+user.getEmail());
+        }
+        try {
+            boolean success = oneTimeLoginCode.attemptOneTimeLoginVerification(verifyOneTimeLoginCode.getCode());
+            if (success) {
+                LOG.debug(String.format("Successful passwordResetHash for user %s",
+                        user.getEmail()));
+                return ResponseEntity.status(200).body(Map.of("hash", passwordResetHash.getHash()));
+            }
+            //Need to save the upped delay
+            passwordResetHashRepository.save(passwordResetHash);
+            throw new InvalidOneTimeLoginCodeException("Invalid oneTimeLoginCode entered for user: "+ user.getEmail());
+        } catch (ForbiddenException e) {
+            passwordResetHashRepository.delete(passwordResetHash);
+            throw e;
+        }
+    }
 
     @PutMapping("/sp/institution")
     @Operation(summary = "Remove linked account",
@@ -878,13 +1095,13 @@ public class UserController implements UserAuthentication {
     @Hidden
     public ResponseEntity idpWebAuthnStartAuthentication(@RequestBody Map<String, String> body) {
         String email = body.get("email");
-        verifyEmails(email);
 
-        Optional<User> optionalUser = userRepository.findUserByEmail(emailGuessingPreventor.sanitizeEmail(email));
+        Optional<User> optionalUser = userRepository.findUserByEmailAndRateLimitedFalse(emailGuessingPreventor.sanitizeEmail(email));
         if (!optionalUser.isPresent()) {
             return return404();
         }
         User user = optionalUser.get();
+        verifyEmails(email, false);
 
         AssertionRequest request = this.relyingParty.startAssertion(StartAssertionOptions.builder()
                 .username(Optional.of(user.getEmail()))
@@ -929,7 +1146,7 @@ public class UserController implements UserAuthentication {
                 String url = String.format("%s/credential?id=%s&success=false", spBaseUrl, credentialId);
                 return ResponseEntity.status(201).body(Collections.singletonMap("url", url));
             }
-            throw new ForbiddenException("Unsuccessfull SAML authentication ");
+            throw new ForbiddenException("Unsuccessfully SAML authentication ");
         }
         challengeRepository.delete(challenge);
 
@@ -948,7 +1165,7 @@ public class UserController implements UserAuthentication {
             return ResponseEntity.status(201).body(Collections.singletonMap("url", url));
         }
 
-        return doMagicLink(user, samlAuthenticationRequest, true, request);
+        return doInternalAuthentication(user, samlAuthenticationRequest, true, request);
     }
 
     @SneakyThrows
@@ -1000,6 +1217,7 @@ public class UserController implements UserAuthentication {
         Map map = objectMapper.readValue(userString, Map.class);
         map.remove("password");
         map.remove("surfSecureId");
+        map.remove("oneTimeLoginCode");
         return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON)
                 .body(objectWriter.writeValueAsString(map));
     }
@@ -1100,36 +1318,46 @@ public class UserController implements UserAuthentication {
         return ResponseEntity.ok(new StatusResponse(HttpStatus.OK.value()));
     }
 
-    private ResponseEntity doMagicLink(User user,
-                                       SamlAuthenticationRequest samlAuthenticationRequest,
-                                       boolean passwordOrWebAuthnFlow,
-                                       HttpServletRequest request) {
+    private ResponseEntity doInternalAuthentication(User user,
+                                                    SamlAuthenticationRequest samlAuthenticationRequest,
+                                                    boolean passwordOrWebAuthnFlow,
+                                                    HttpServletRequest request) {
+        if (!passwordOrWebAuthnFlow) {
+            user.startOneTimeLoginCode(VerificationCodeGenerator.generateOneTimeLoginCode());
+            samlAuthenticationRequest.setOneTimeLoginCodeFlow(true);
+        }
+        user = userRepository.save(user);
+
         samlAuthenticationRequest.setHash(hash());
         samlAuthenticationRequest.setUserId(user.getId());
         samlAuthenticationRequest.setPasswordOrWebAuthnFlow(passwordOrWebAuthnFlow);
+
         if (this.featureDefaultRememberMe) {
             samlAuthenticationRequest.setRememberMe(true);
             samlAuthenticationRequest.setRememberMeValue(UUID.randomUUID().toString());
         }
+
         authenticationRequestRepository.save(samlAuthenticationRequest);
-        String serviceName = this.manage.getServiceName(request, samlAuthenticationRequest);
 
         if (passwordOrWebAuthnFlow) {
-            LOG.debug(String.format("Returning passwordOrWebAuthnFlow magic link for existing user %s", user.getUsername()));
-            return ResponseEntity.status(201).body(Collections.singletonMap("url", this.magicLinkUrl + "?h=" + samlAuthenticationRequest.getHash()));
+            LOG.debug(String.format("Returning login hash for passwordFlow for existing user %s", user.getUsername()));
+            String url = this.magicLinkUrl + "?h=" + samlAuthenticationRequest.getHash();
+            return ResponseEntity.status(201).body(Map.of("url", url));
         }
-
+        OneTimeLoginCode oneTimeLoginCode = user.getOneTimeLoginCode();
+        String code = oneTimeLoginCode.getCode();
         if (user.isNewUser()) {
-            sendAccountVerificationMail(samlAuthenticationRequest, user);
+            LOG.debug("Sending login code email for new user: " + user.getEmail());
+            mailBox.sendOneTimeLoginCodeNewUser(user, code);
         } else {
-            LOG.debug("Sending magic link email for existing user");
-            mailBox.sendMagicLink(user, samlAuthenticationRequest.getHash(), serviceName);
+            LOG.debug("Sending login code email for existing user: " + user.getEmail());
+            mailBox.sendOneTimeLoginCode(user, code);
         }
-        return ResponseEntity.status(201).body(Collections.singletonMap("result", "ok"));
+        return ResponseEntity.status(201).body(Map.of("result", "ok"));
     }
 
     private Optional<User> findUserStoreLanguage(String email) {
-        Optional<User> optionalUser = userRepository.findUserByEmail(emailGuessingPreventor.sanitizeEmail(email));
+        Optional<User> optionalUser = userRepository.findUserByEmailAndRateLimitedFalse(emailGuessingPreventor.sanitizeEmail(email));
         optionalUser.ifPresent(user -> {
             String preferredLanguage = user.getPreferredLanguage();
             String language = LocaleContextHolder.getLocale().getLanguage();
@@ -1142,9 +1370,11 @@ public class UserController implements UserAuthentication {
         return optionalUser;
     }
 
-    private void verifyEmails(String email) {
+    private void verifyEmails(String email, boolean userEmailGuessCheck) {
+        if (userEmailGuessCheck) {
+            this.emailGuessingPreventor.potentialUserEmailGuess();
+        }
         this.emailDomainGuard.enforceIsAllowed(email);
-        this.emailGuessingPreventor.potentialUserEmailGuess();
         this.disposableEmailProviders.verifyDisposableEmailProviders(email);
     }
 

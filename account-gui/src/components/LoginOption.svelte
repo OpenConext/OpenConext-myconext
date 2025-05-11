@@ -10,6 +10,7 @@
     export let route;
     export let action;
     export let index;
+    export let error = false;
     export let preferred = false;
 
     const init = el => preferred && el.focus();
@@ -45,6 +46,10 @@
             border: none;
         }
 
+        &.error {
+            box-shadow: 0 1px 0 2px var(--color-primary-red);
+        }
+
         span.option-container {
             display: flex;
             flex-direction: column
@@ -65,7 +70,9 @@
     }
 </style>
 
-<div class="login-option" use:init
+<div class="login-option"
+     class:error={error}
+     use:init
      on:click={() => route ? navigate(route) : action()}
      on:keydown={handleKeyDown(route)}
      tabindex={index}>
