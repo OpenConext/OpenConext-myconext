@@ -884,6 +884,7 @@
   "UseCode.Header.COPY": "Vraag een code aan",
   "UseCode.Next.COPY": "Verstuur een code",
   "LoginCode.Header.COPY": "Check je e-mail",
+  "LoginCode.Title.COPY": "Eenmalige verificatiecode",
   "LoginCode.Info.COPY": "We hebben een code verstuurd naar <strong>%1$s</strong>",
   "LoginCode.Continue.COPY": "Doorgaan",
   "LoginCode.Resend.COPY": "E-mail niet ontvangen? Controleer uw spamfolder of ",
