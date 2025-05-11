@@ -4248,6 +4248,10 @@ SHARED:
       COPY:
         en: "Check your email"
         nl: "Check je e-mail"
+    Title:
+      COPY:
+        en: "One-time verification code"
+        nl: "Eenmalige verificatiecode"
     Info:
       COPY:
         en: "We sent a code to <strong>%1$s</strong>"
