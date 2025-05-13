@@ -11,7 +11,7 @@
     "test": "vitest"
   },
   "dependencies": {
-    "@surfnet/sds": "^0.0.131",
+    "@surfnet/sds": "^0.0.133",
     "i18n-js": "^4.5.1",
     "isomorphic-dompurify": "^2.24.0",
     "js-cookie": "^3.0.5",

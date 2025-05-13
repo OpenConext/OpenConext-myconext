@@ -678,10 +678,10 @@
   resolved "https://registry.yarnpkg.com/@rollup/rollup-win32-x64-msvc/-/rollup-win32-x64-msvc-4.40.2.tgz#8dae04d01a2cbd84d6297d99356674c6b993f0fc"
   integrity sha512-bwspbWB04XJpeElvsp+DCylKfF4trJDa2Y9Go8O6A7YLX2LIKGcNK/CYImJN6ZP4DcuOHB4Utl3iCbnR62DudA==
 
-"@surfnet/sds@^0.0.131":
-  version "0.0.131"
-  resolved "https://registry.yarnpkg.com/@surfnet/sds/-/sds-0.0.131.tgz#f496b4e26254325a0dc2f67b7f88fe732ee38ca6"
-  integrity sha512-efDm/DDmPyHLfW6zsv5lBx2VX0tI4GBMhlpRtu85T0FsCuR3nTWObbCse1rd4ZMAJG5qStulJJBFqVSDvN7dUg==
+"@surfnet/sds@^0.0.133":
+  version "0.0.133"
+  resolved "https://registry.yarnpkg.com/@surfnet/sds/-/sds-0.0.133.tgz#c063ac8bd7c040c5b276827f856cafd11f23c3cf"
+  integrity sha512-N0r6gSRecTfI1Dt+D1wSLEhn7BGhqdfP8+gWHHqKVhUH3Wpm7HaaGu3vBDa0LXHTp/eusuG6yRtFWjeSdcZNEw==
 
 "@types/babel__core@^7.20.5":
   version "7.20.5"
