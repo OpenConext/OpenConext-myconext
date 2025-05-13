@@ -20,6 +20,10 @@ public class TiqrConfiguration {
     private String eduIdAppBaseUrl;
     private int rateLimitThreshold = 5;
     private int rateLimitResetMinutes = 30;
+    private int smsRateLimitThreshold = 5;
+    private int smsRateLimitResetMinutes = 1440;
+    private int smsSendingDelayInMillis = 2500;
+
 
     private APNSConfiguration apns;
     private GCMConfiguration gcm;

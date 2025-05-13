@@ -12,6 +12,8 @@
     import WebAuthn from "./routes/WebAuthn.svelte";
     import WebAuthnTest from "./routes/WebAuthnTest.svelte";
     import Header from "./components/Header.svelte";
+    import PhoneConfirmation from "./routes/PhoneConfirmation.svelte";
+    import PhoneVerification from "./routes/PhoneVerification.svelte";
     import Footer from "./components/Footer.svelte";
     import {onMount} from "svelte";
     import {allowedEmailDomains, configuration, institutionalEmailDomains} from "./api";
@@ -173,6 +175,8 @@
                 <Route path="/enrollapp" component={EnrollApp}/>
                 <Route path="/recovery" component={Recovery}/>
                 <Route path="/recovery-code" component={RecoveryCode}/>
+                <Route path="/phone-verification" component={PhoneVerification}/>
+                <Route path="/phone-confirmation" component={PhoneConfirmation}/>
                 <Route path="/congrats" component={Congrats}/>
                 <Route path="/remember" component={RememberMe}/>
                 <Route path="/rate-limited" component={RateLimited}/>

@@ -233,7 +233,7 @@ public class Migrations {
     }
 
     @SuppressWarnings("unchecked")
-    @ChangeSet(order = "019", id = "addRateLimitedToUsers", author = "okke.harsta@surf.nl", runAlways = true)
+    @ChangeSet(order = "019", id = "addRateLimitedToUsers", author = "okke.harsta@surf.nl")
     public void addRateLimitedToUsers(MongockTemplate mongoTemplate) {
         mongoTemplate.stream(new Query(), Map.class, "users")
                 .forEach(userAsMap -> {

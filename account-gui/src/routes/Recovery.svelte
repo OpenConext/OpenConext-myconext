@@ -41,6 +41,15 @@
 
 <h2 class="header">{I18n.t("Recovery.Header.COPY")}</h2>
 <p class="explanation">{I18n.t("Recovery.Info.COPY")}</p>
+<p class="methods">{I18n.t("Recovery.Methods.COPY")}</p>
+<div class="phone-number">
+    <LoginOption icon={phoneIcon}
+                 label={I18n.t("Recovery.PhoneNumber.COPY")}
+                 subLabel={I18n.t("Recovery.PhoneNumberInfo.COPY")}
+                 action={phoneNumber}
+                 index={1}
+                 preferred={true}/>
+</div>
 <div class="other-account">
     <LoginOption icon={backupIcon}
                  label={I18n.t("Recovery.BackupCode.COPY")}

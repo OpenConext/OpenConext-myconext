@@ -39,15 +39,15 @@ public class RateLimitEnforcer {
 
     public void checkSendSMSRateLimit(User user) {
         try {
-            Thread.sleep(1000);
+            Thread.sleep(tiqrConfiguration.getSmsSendingDelayInMillis());
         } catch (InterruptedException e) {
             //don't care
         }
         Map<String, Object> surfSecureId = user.getSurfSecureId();
         int rateLimit = (int) surfSecureId.merge(SMS_RATE_LIMIT, 1, (i, j) -> Integer.sum((int) i, (int) j));
-        if (rateLimit >= 5) {
+        if (rateLimit >= tiqrConfiguration.getSmsRateLimitThreshold()) {
             Long rateLimitUpdated = (Long) surfSecureId.get(SMS_RATE_LIMIT_UPDATED);
-            boolean resetRateLimit = (System.currentTimeMillis() - rateLimitUpdated) > (1 * 60 * 60 * 1000L);
+            boolean resetRateLimit = (System.currentTimeMillis() - rateLimitUpdated) > (tiqrConfiguration.getSmsRateLimitResetMinutes() * 1000L * 60);
             if (resetRateLimit) {
                 surfSecureId.put(SMS_RATE_LIMIT, 0);
             } else {
