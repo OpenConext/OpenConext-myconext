@@ -707,11 +707,11 @@ SHARED:
     Updated:
       COPY:
         en: An email has been sent to %1{{s}}
-        nl: Een e-email is verzonden naar %1{{s}}
+        nl: Een e-mail is verzonden naar %1{{s}}
     UpdatedVerified:
       COPY:
         en: A verification email has been sent to %1{{s}}
-        nl: Een verificatie e-email is verzonden naar %1{{s}}
+        nl: Een verificatie e-mail is verzonden naar %1{{s}}
     Confirmed:
       COPY:
         en: Your email address has been changed to %1{{s}}
@@ -4254,8 +4254,8 @@ SHARED:
         nl: "Eenmalige verificatiecode"
     Info:
       COPY:
-        en: "We sent a code to <strong>%1$s</strong>"
-        nl: "We hebben een code verstuurd naar <strong>%1$s</strong>"
+        en: "Enter the code sent to <strong>%1$s</strong>"
+        nl: "Voer de code in die verstuurd is naar <strong>%1$s</strong>"
     Continue:
       COPY:
         en: "Continue"
