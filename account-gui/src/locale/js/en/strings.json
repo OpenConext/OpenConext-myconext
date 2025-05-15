@@ -885,7 +885,7 @@
   "UseCode.Next.COPY": "Send a code",
   "LoginCode.Header.COPY": "Check your email",
   "LoginCode.Title.COPY": "One-time verification code",
-  "LoginCode.Info.COPY": "We sent a code to <strong>%1$s</strong>",
+  "LoginCode.Info.COPY": "Enter the code sent to <strong>%1$s</strong>",
   "LoginCode.Continue.COPY": "Continue",
   "LoginCode.Resend.COPY": "Didn’t receive the email? Check your spam folder, or ",
   "LoginCode.ResendLink.COPY": "click to resend",
