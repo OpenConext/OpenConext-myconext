@@ -441,7 +441,7 @@
   "PhoneVerification.Verify.COPY": "Stuur code",
   "PhoneVerification.PlaceHolder.COPY": "+31 612345678",
   "PhoneVerification.PhoneIncorrect.COPY": "Telefoonnummer is onjuist",
-  "PhoneVerification.RateLimited.COPY": "Te Veel Pogingen",
+  "PhoneVerification.RateLimited.COPY": "Te veel pogingen",
   "PhoneVerification.RateLimitedInfo.COPY": "Je hebt te vaak een onjuiste verificatiecode ingevoerd. Wacht alstublieft even voordat je het opnieuw probeert.",
   "PhoneVerification.Ok.COPY": "Ok",
   "Congrats.Header.COPY": "Gelukt",

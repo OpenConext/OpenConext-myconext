@@ -441,7 +441,7 @@
   "PhoneVerification.Verify.COPY": "Send code",
   "PhoneVerification.PlaceHolder.COPY": "+31 612345678",
   "PhoneVerification.PhoneIncorrect.COPY": "Phone number is incorrect",
-  "PhoneVerification.RateLimited.COPY": "Too Many Attempts",
+  "PhoneVerification.RateLimited.COPY": "Too many attempts",
   "PhoneVerification.RateLimitedInfo.COPY": "You've entered incorrect verification codes too many times. Please wait before trying again.",
   "PhoneVerification.Ok.COPY": "Ok",
   "Congrats.Header.COPY": "Success",
