@@ -2166,8 +2166,8 @@ SHARED:
         nl: Telefoonnummer is onjuist
     RateLimited:
       COPY:
-        en: Too Many Attempts
-        nl: Te Veel Pogingen
+        en: Too many attempts
+        nl: Te veel pogingen
     RateLimitedInfo:
       COPY:
         en: You've entered incorrect verification codes too many times. Please wait before trying again.
