@@ -991,7 +991,7 @@ SHARED:
         nl: Link via e-mail
     UseCode:
       COPY:
-        en: Verificationcode email
+        en: Verification code email
         nl: Verificatie-code e-mail
     AddSecurityKeyInfo:
       COPY:

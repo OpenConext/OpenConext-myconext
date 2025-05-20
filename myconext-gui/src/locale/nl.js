@@ -286,7 +286,7 @@ const nl = {
             revoke: "Intrekken"
         },
         deleteService: "Verwijder applicatie",
-        deleteServiceConfirmation: "Weet je zeker dat je de applicatie {{name}} wilt verwijderen? <br/> <br/> Deze applicatie herkent je wellicht niet meer de volgende keer dat je inlogt en je persoonlijke gegevens bij deze applicatie zijn daardoor mogelijk niet meer toegankelijk.",
+        deleteServiceConfirmation: "Weet je zeker dat je de koppeling met applicatie {{name}} wilt verwijderen? <br/> <br/> Deze applicatie herkent je wellicht niet meer de volgende keer dat je inlogt en je persoonlijke gegevens bij deze applicatie zijn daardoor mogelijk niet meer toegankelijk.",
         deleteTokenConfirmation: "Weet je zeker dat de toegang voor {{name}} wilt intrekken?",
         deleteToken: "Beveiligingssleutel intrekken",
         deleted: "eduID verwijderd",

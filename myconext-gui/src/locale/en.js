@@ -286,7 +286,7 @@ const en = {
             revoke: "Revoke access"
         },
         deleteService: "Delete application",
-        deleteServiceConfirmation: "Are you sure you want to delete the application {{name}}?<br/><br/>This application might not recognize you the next time you login and all your personal data within this application might be lost.",
+        deleteServiceConfirmation: "Are you sure you want to delete the connection to the application {{name}}?<br/><br/>This application might not recognize you the next time you login and all your personal data within this application might be lost.",
         deleteTokenConfirmation: "Are you sure you want to revoke access for {{name}}?",
         deleteToken: "Revoke access token",
         deleted: "eduID removed",
