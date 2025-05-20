@@ -2164,6 +2164,18 @@ SHARED:
       COPY:
         en: Phone number is incorrect
         nl: Telefoonnummer is onjuist
+    RateLimited:
+      COPY:
+        en: Too Many Attempts
+        nl: Te Veel Pogingen
+    RateLimitedInfo:
+      COPY:
+        en: You've entered incorrect verification codes too many times. Please wait before trying again.
+        nl: Je hebt te vaak een onjuiste verificatiecode ingevoerd. Wacht alstublieft even voordat je het opnieuw probeert.
+    Ok:
+      COPY:
+        en: Ok
+        nl: Ok
   Congrats:
     Header:
       COPY:
