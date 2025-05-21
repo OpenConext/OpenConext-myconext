@@ -11,6 +11,7 @@ import {useAppStore} from "./stores/AppStore.js";
 import {MobileNavigation} from "./routes/MobileNavigation.jsx";
 import {Terms} from "./routes/Terms.jsx";
 import {Privacy} from "./routes/Privacy.jsx";
+import {InstallApp} from "./routes/InstallApp.jsx";
 import {ServiceDesk} from "./routes/ServiceDesk.jsx";
 
 function App() {
@@ -39,6 +40,7 @@ function App() {
                     <Route path="/support" element={<Support/>}/>
                     <Route path="/privacy" element={<Privacy/>}/>
                     <Route path="/terms" element={<Terms/>}/>
+                    <Route path="/install-app" element={<InstallApp/>}/>
                     <Route path="/servicedesk" element={<ServiceDesk/>}/>
                     <Route path="/servicedesk-en" element={<ServiceDesk/>}/>
                     <Route path="*" element={<NotFound/>}/>
