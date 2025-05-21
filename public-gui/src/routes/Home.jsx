@@ -2,7 +2,6 @@ import "./Home.scss";
 import phone from "../assets/phone.svg";
 import cheering from "../assets/cheering.svg";
 import app from "../assets/app.svg";
-import qrCode from "../assets/qr_code.svg";
 import appStore from "../assets/app_store.svg";
 import googlePlay from "../assets/google_play.svg";
 import I18n from "../locale/I18n.js";
@@ -53,7 +52,6 @@ export const Home = () => {
                         </h2>
                         <p dangerouslySetInnerHTML={{__html: I18n.t("home.appInfo")}}/>
                         <div className="store-container">
-                            <img src={qrCode} className="qrCode" alt="qrCode"/>
                             <div className="inner-store-container">
                                 <a href={I18n.t("home.apple")}>
                                     <img src={appStore} className="appStore" alt="appStore"/>
