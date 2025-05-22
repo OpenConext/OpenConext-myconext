@@ -206,7 +206,7 @@ public class UserController implements UserAuthentication {
     @Hidden
     @PutMapping("/sp/lang")
     public ResponseEntity<Map<String, Integer>> changeLanguage(Authentication authentication,
-                                       @Validated @RequestBody LanguageChangeRequest languageChangeRequest) {
+                                                               @Validated @RequestBody LanguageChangeRequest languageChangeRequest) {
         String language = languageChangeRequest.getLanguage().toLowerCase();
         if (!List.of("nl", "en").contains(language)) {
             throw new ForbiddenException("Not allowed language");
@@ -277,8 +277,7 @@ public class UserController implements UserAuthentication {
 
     @Hidden
     @PostMapping("/idp/generate_code_request")
-    public ResponseEntity generateCodeRequestNewUser(HttpServletRequest request,
-                                                     @Valid @RequestBody ClientAuthenticationRequest clientAuthenticationRequest) {
+    public ResponseEntity generateCodeRequestNewUser(@Valid @RequestBody ClientAuthenticationRequest clientAuthenticationRequest) {
         SamlAuthenticationRequest samlAuthenticationRequest = authenticationRequestRepository
                 .findByIdAndNotExpired(clientAuthenticationRequest.getAuthenticationRequestId())
                 .orElseThrow(() -> new ExpiredAuthenticationException("Expired authentication request"));
@@ -300,7 +299,7 @@ public class UserController implements UserAuthentication {
 
         User userToSave = new User(UUID.randomUUID().toString(), email, user.getGivenName(), user.getGivenName(),
                 user.getFamilyName(), schacHomeOrganization, preferredLanguage, requesterEntityId, manage);
-        return this.doInternalAuthentication(userToSave, samlAuthenticationRequest, false, request);
+        return this.doInternalAuthentication(userToSave, samlAuthenticationRequest, false);
     }
 
     @Hidden
@@ -334,7 +333,7 @@ public class UserController implements UserAuthentication {
             logLoginWithContext(user, "password", true, LOG, "Successfully logged in with password", request);
             LOG.info("Successfully logged in with password");
         }
-        return doInternalAuthentication(user, samlAuthenticationRequest, clientAuthenticationRequest.isUsePassword(), request);
+        return doInternalAuthentication(user, samlAuthenticationRequest, clientAuthenticationRequest.isUsePassword());
     }
 
     @Hidden
@@ -346,6 +345,34 @@ public class UserController implements UserAuthentication {
                 .orElseThrow(() -> new ExpiredAuthenticationException("Expired samlAuthenticationRequest: " + authenticationRequestId));
         String userId = samlAuthenticationRequest.getUserId();
         User user = userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException(userId));
+        return doVerifyCodeExistingUser(verifyOneTimeLoginCode, user, samlAuthenticationRequest.getHash(),
+                req -> authenticationRequestRepository.delete(req),
+                samlAuthenticationRequest);
+    }
+
+    @Operation(summary = "Validate the one-time verification code",
+            description = "Validate the one-time verification code send to user in the email." +
+                    "<br/>Together with the validation code, also send the hash returned in '/idp/v2/create'" +
+                    "<br/>If the response is 201, then finalize with this url: /mobile/api/create-from-mobile-api/in-app/h={hash}",
+            responses = {
+                    @ApiResponse(responseCode = "201", description = "Ok. Use the hash to finalize the creation"),
+                    @ApiResponse(responseCode = "400", description = "Expired. Dead end, need to start again"),
+                    @ApiResponse(responseCode = "401", description = "Wrong code. The user can try again"),
+                    @ApiResponse(responseCode = "403", description = "Rate limited. Dead end")})
+    @PutMapping("/idp/v2/verify_code_request")
+    public ResponseEntity verifyCodeMobileUser(@Valid @RequestBody VerifyOneTimeLoginCode verifyOneTimeLoginCode) {
+        String hash = verifyOneTimeLoginCode.getHash();
+        User user = userRepository.findUserByCreateFromInstitutionKey(hash).orElseThrow(() -> new UserNotFoundException(hash));
+        return doVerifyCodeExistingUser(verifyOneTimeLoginCode, user, hash, samlAuthenticationRequest -> {
+            //nope
+        }, null);
+    }
+
+    private ResponseEntity<Map<String, String>> doVerifyCodeExistingUser(VerifyOneTimeLoginCode verifyOneTimeLoginCode,
+                                                                         User user,
+                                                                         String hash,
+                                                                         SamlAuthenticationCallBack callBack,
+                                                                         SamlAuthenticationRequest samlAuthenticationRequest) {
         OneTimeLoginCode oneTimeLoginCode = user.getOneTimeLoginCode();
         if (oneTimeLoginCode == null || oneTimeLoginCode.isExpired()) {
             //expired
@@ -362,16 +389,15 @@ public class UserController implements UserAuthentication {
                         user.getEmail(),
                         delay,
                         (int) (Math.log(delay / 1000) / Math.log(2))));
-                String url = this.magicLinkUrl + "?h=" + samlAuthenticationRequest.getHash();
+                String url = this.magicLinkUrl + "?h=" + hash;
                 return ResponseEntity.status(201).body(Map.of("url", url));
             }
-
             throw new InvalidOneTimeLoginCodeException(String.format("Invalid oneTimeLoginCode entered for email %s, delay: %s, attempt: %s",
                     user.getEmail(),
                     delay,
                     (int) (Math.log(delay / 1000) / Math.log(2))));
         } catch (ForbiddenException e) {
-            authenticationRequestRepository.delete(samlAuthenticationRequest);
+            callBack.apply(samlAuthenticationRequest);
             LOG.info("Rate-limiting user " + user.getEmail());
             user.setRateLimited(true);
             user.endOneTimeLoginCode();
@@ -444,16 +470,26 @@ public class UserController implements UserAuthentication {
     @PostMapping("/idp/create")
     public ResponseEntity<StatusResponse> createEduIDAccount(@Valid @RequestBody CreateAccount createAccount,
                                                              @RequestParam(value = "in-app", required = false, defaultValue = "false") boolean inAppIndicator) {
+        User user = doCreateEduIDAccount(createAccount);
+
+        String inAppPath = inAppIndicator ? "/in-app" : "";
+        String linkUrl = String.format("%s/mobile/api/create-from-mobile-api%s", this.idpBaseUrl, inAppPath);
+        mailBox.sendAccountVerificationMobileAPI(user, user.getCreateFromInstitutionKey(), linkUrl);
+
+        logWithContext(user, "create", "user", LOG, "Create user in mobile API");
+
+        return ResponseEntity.status(HttpStatus.CREATED).body(new StatusResponse(HttpStatus.CREATED.value()));
+    }
+
+    private User doCreateEduIDAccount(CreateAccount createAccount) {
         String email = createAccount.getEmail();
         verifyEmails(email, false);
 
         Optional<User> optionalUser = userRepository.findUserByEmail(emailGuessingPreventor.sanitizeEmail(email));
         if (optionalUser.isPresent()) {
-            return ResponseEntity.status(HttpStatus.CONFLICT)
-                    .body(new StatusResponse(HttpStatus.CONFLICT.value()));
+            throw new DuplicateUserEmailException("User with email already exists: " + email);
         }
-        CreateInstitutionEduID institution = new CreateInstitutionEduID(hash(),
-                email, true);
+        CreateInstitutionEduID institution = new CreateInstitutionEduID(hash(), email, true);
         User user = new User(
                 UUID.randomUUID().toString(),
                 institution.getEmail(),
@@ -468,14 +504,38 @@ public class UserController implements UserAuthentication {
         user.validate();
 
         userRepository.save(user);
+        return user;
+    }
 
-        String inAppPath = inAppIndicator ? "/in-app" : "";
-        String linkUrl = String.format("%s/mobile/api/create-from-mobile-api%s", this.idpBaseUrl, inAppPath);
-        mailBox.sendAccountVerificationMobileAPI(user, institution.getHash(), linkUrl);
+    @Operation(summary = "Create eduID account with one-time verification code",
+            description = "Create an eduID account and sent a verification mail to the user to confirm the ownership of the email. " +
+                    "<br/>There is a one-time verification code in the email." +
+                    "<br/>Together with the hash returned in this endpoint, this code can be verified (and possible resend)",
+            responses = {
+                    @ApiResponse(responseCode = "201", description = "Created. Mail is sent to the user",
+                            content = {@Content(schema = @Schema(implementation = CreateEduIDResponse.class),
+                                    examples = {@ExampleObject(value = "{\"status\":201, \"hash\":\"t5lrutakeLqMUg68hNCGIvqSeZsC1o3DoWGWF9IBqPvHsCwLlaZmKP0lYR4xyfRUKH_lYc9_Jmg5eG__zIQCvg\"}")})}),
+                    @ApiResponse(responseCode = "412", description = "Forbidden email domain",
+                            content = {@Content(schema = @Schema(implementation = CreateEduIDResponse.class),
+                                    examples = {@ExampleObject(value = "{\"status\":412}")})}),
+                    @ApiResponse(responseCode = "409", description = "Email is in use",
+                            content = {@Content(schema = @Schema(implementation = CreateEduIDResponse.class),
+                                    examples = {@ExampleObject(value = "{\"status\":409}")})})})
+    @PostMapping("/idp/v2/create")
+    public ResponseEntity<CreateEduIDResponse> createEduIDAccountWithVerificationCode(
+            @Valid @RequestBody CreateAccount createAccount) {
+        User user = doCreateEduIDAccount(createAccount);
 
-        logWithContext(user, "create", "user", LOG, "Create user in mobile API");
+        userRepository.save(user);
+        String oneTimeLoginCode = VerificationCodeGenerator.generateOneTimeLoginCode();
+        user.startOneTimeLoginCode(oneTimeLoginCode);
+        mailBox.sendOneTimeLoginCodeNewUser(user, oneTimeLoginCode);
 
-        return ResponseEntity.status(HttpStatus.CREATED).body(new StatusResponse(HttpStatus.CREATED.value()));
+        logWithContext(user, "create", "user", LOG, "Create user in mobile API with one-time verification code");
+
+        return ResponseEntity.status(HttpStatus.CREATED).body(
+                new CreateEduIDResponse(HttpStatus.CREATED.value(),
+                        user.getCreateFromInstitutionKey()));
     }
 
     @Operation(summary = "Change names", description = "Update the givenName, chosenName and / or the familyName of the User")
@@ -578,8 +638,8 @@ public class UserController implements UserAuthentication {
             description = "Request to change the email of the user. We sent a one-time verification code in verification email")
     @PutMapping("/sp/generate-email-code")
     public ResponseEntity<UserResponse> generateEmailCode(Authentication authentication,
-                                                    @Valid @RequestBody UpdateEmailRequest updateEmailRequest,
-                                                    @RequestParam(value = "force", required = false, defaultValue = "false") boolean force) {
+                                                          @Valid @RequestBody UpdateEmailRequest updateEmailRequest,
+                                                          @RequestParam(value = "force", required = false, defaultValue = "false") boolean force) {
         User user = userFromAuthentication(authentication);
         List<PasswordResetHash> passwordResetHashes = passwordResetHashRepository.findByUserId(user.getId());
         if (!CollectionUtils.isEmpty(passwordResetHashes)) {
@@ -630,7 +690,7 @@ public class UserController implements UserAuthentication {
             If the email code is valid, then return the hash to change the email
             """)
     public ResponseEntity<Map<String, String>> verifyChangeEmailCode(Authentication authentication,
-                                                               @Valid @RequestBody VerifyOneTimeLoginCode verifyOneTimeLoginCode) {
+                                                                     @Valid @RequestBody VerifyOneTimeLoginCode verifyOneTimeLoginCode) {
         User user = userFromAuthentication(authentication);
         ChangeEmailHash changeEmailHash = changeEmailHashRepository.findByUserId(user.getId()).stream()
                 .findFirst()
@@ -639,7 +699,7 @@ public class UserController implements UserAuthentication {
         if (oneTimeLoginCode == null || oneTimeLoginCode.isExpired()) {
             //expired
             changeEmailHashRepository.delete(changeEmailHash);
-            throw new ForbiddenException("Expired changeEmailHash for User :"+user.getEmail());
+            throw new ForbiddenException("Expired changeEmailHash for User :" + user.getEmail());
         }
         try {
             boolean success = oneTimeLoginCode.attemptOneTimeLoginVerification(verifyOneTimeLoginCode.getCode());
@@ -650,7 +710,7 @@ public class UserController implements UserAuthentication {
             }
             //Need to save the upped delay
             changeEmailHashRepository.save(changeEmailHash);
-            throw new InvalidOneTimeLoginCodeException("Invalid oneTimeLoginCode entered for user: "+ user.getEmail());
+            throw new InvalidOneTimeLoginCodeException("Invalid oneTimeLoginCode entered for user: " + user.getEmail());
         } catch (ForbiddenException e) {
             changeEmailHashRepository.delete(changeEmailHash);
             throw e;
@@ -831,7 +891,7 @@ public class UserController implements UserAuthentication {
         if (oneTimeLoginCode == null || oneTimeLoginCode.isExpired()) {
             //expired
             passwordResetHashRepository.delete(passwordResetHash);
-            throw new ForbiddenException("Expired passwordResetHash for User :"+user.getEmail());
+            throw new ForbiddenException("Expired passwordResetHash for User :" + user.getEmail());
         }
         try {
             boolean success = oneTimeLoginCode.attemptOneTimeLoginVerification(verifyOneTimeLoginCode.getCode());
@@ -842,7 +902,7 @@ public class UserController implements UserAuthentication {
             }
             //Need to save the upped delay
             passwordResetHashRepository.save(passwordResetHash);
-            throw new InvalidOneTimeLoginCodeException("Invalid oneTimeLoginCode entered for user: "+ user.getEmail());
+            throw new InvalidOneTimeLoginCodeException("Invalid oneTimeLoginCode entered for user: " + user.getEmail());
         } catch (ForbiddenException e) {
             passwordResetHashRepository.delete(passwordResetHash);
             throw e;
@@ -1165,7 +1225,7 @@ public class UserController implements UserAuthentication {
             return ResponseEntity.status(201).body(Collections.singletonMap("url", url));
         }
 
-        return doInternalAuthentication(user, samlAuthenticationRequest, true, request);
+        return doInternalAuthentication(user, samlAuthenticationRequest, true);
     }
 
     @SneakyThrows
@@ -1320,8 +1380,7 @@ public class UserController implements UserAuthentication {
 
     private ResponseEntity doInternalAuthentication(User user,
                                                     SamlAuthenticationRequest samlAuthenticationRequest,
-                                                    boolean passwordOrWebAuthnFlow,
-                                                    HttpServletRequest request) {
+                                                    boolean passwordOrWebAuthnFlow) {
         if (!passwordOrWebAuthnFlow) {
             user.startOneTimeLoginCode(VerificationCodeGenerator.generateOneTimeLoginCode());
             samlAuthenticationRequest.setOneTimeLoginCodeFlow(true);

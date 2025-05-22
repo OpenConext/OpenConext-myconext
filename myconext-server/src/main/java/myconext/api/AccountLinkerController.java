@@ -298,7 +298,7 @@ public class AccountLinkerController implements UserAuthentication {
 
         requestInstitutionEduIDRepository.save(requestInstitutionEduID);
 
-        mailBox.sendAccountVerificationCreateFromInstitution(user, code);
+        mailBox.sendOneTimeLoginCodeNewUser()
 
         return ResponseEntity.ok(Map.of("status", "ok"));
     }

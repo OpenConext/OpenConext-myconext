@@ -10,7 +10,6 @@
     import {cookieNames} from "../constants/cookieNames.js";
     import {loginPreferences} from "../constants/loginPreferences.js";
     import Spinner from "../components/Spinner.svelte";
-    import Button from "../components/Button.svelte";
 
     const resendMailAllowedTimeOut = $conf.emailSpamThresholdSeconds * 1000;
 
