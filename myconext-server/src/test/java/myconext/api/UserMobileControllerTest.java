@@ -213,15 +213,18 @@ public class UserMobileControllerTest extends AbstractMailBoxTest {
         //have to sleep some time, otherwise now() < createdAt + delay
         Thread.sleep(1000);
 
-        given()
+        Map<String, Object> urlMap = given()
                 .when()
                 .accept(ContentType.JSON)
                 .contentType(ContentType.JSON)
                 .body(verifyOneTimeLoginCode)
                 .queryParam("in-app", true)
                 .put("/mobile/api/idp/v2/verify_code_request")
-                .then()
-                .statusCode(201);
+                .as(new TypeRef<>() {
+                });
+        String url = (String) urlMap.get("url");
+        assertTrue(url.startsWith("http://localhost:3000/mobile/api/create-from-mobile-api/in-app?h="));
+
         user = userRepository.findOneUserByEmail(createAccount.getEmail());
         assertNull(user.getOneTimeLoginCode());
 
