@@ -15,7 +15,4 @@ public class CreateEduIDResponse implements Serializable {
 
     private String hash;
 
-    public CreateEduIDResponse(int status) {
-        this.status = status;
-    }
 }

@@ -21,7 +21,7 @@ public class VerifyOneTimeLoginCode implements Serializable {
     private String hash;
 
     public VerifyOneTimeLoginCode(String code) {
-        this(code, null);
+        this.code = code;
     }
 
     public VerifyOneTimeLoginCode(String code, String authenticationRequestId) {

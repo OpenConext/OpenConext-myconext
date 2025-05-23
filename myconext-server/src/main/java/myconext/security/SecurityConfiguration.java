@@ -314,6 +314,7 @@ public class SecurityConfiguration {
                     .authorizeHttpRequests(authz -> authz
                             .requestMatchers(
                                     "/mobile/api/idp/create",
+                                    "/mobile/api/idp/v2/**",
                                     "/myconext/api/mobile/oidc/redirect",
                                     "/myconext/api/mobile/verify/redirect",
                                     "/mobile/api/create-from-mobile-api",

@@ -2,9 +2,12 @@ package myconext.api;
 
 import com.github.tomakehurst.wiremock.junit.WireMockRule;
 import io.restassured.common.mapper.TypeRef;
+import io.restassured.filter.cookie.CookieFilter;
 import io.restassured.http.ContentType;
+import jakarta.mail.internet.MimeMessage;
 import lombok.SneakyThrows;
 import myconext.AbstractIntegrationTest;
+import myconext.AbstractMailBoxTest;
 import myconext.model.*;
 import org.junit.ClassRule;
 import org.junit.Test;
@@ -12,13 +15,14 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.Map;
 
 import static io.restassured.RestAssured.given;
 import static org.junit.Assert.*;
 import static org.junit.Assert.assertNull;
 
-public class UserMobileControllerTest extends AbstractIntegrationTest {
+public class UserMobileControllerTest extends AbstractMailBoxTest {
 
     @ClassRule
     public static WireMockRule wireMockRule = new WireMockRule(8098);
@@ -171,5 +175,76 @@ public class UserMobileControllerTest extends AbstractIntegrationTest {
         User userFromDB = userRepository.findOneUserByEmail("jdoe@example.com");
         assertNull(userFromDB.getControlCode());
     }
+
+    @SneakyThrows
+    @Test
+    public void createEduIDInAppWithOneTimeCodeFlow() {
+        CreateAccount createAccount = new CreateAccount("kasd.doe@unit.org", "Kasd", "Doe", "mobile.api.client_id");
+        Map<String, Object> result = given()
+                .when()
+                .accept(ContentType.JSON)
+                .contentType(ContentType.JSON)
+                .body(createAccount)
+                .queryParam("in-app", true)
+                .post("/mobile/api/idp/v2/create")
+                .as(new TypeRef<>() {
+                });
+
+        assertEquals(201, result.get("status"));
+
+        String hash = (String) result.get("hash");
+        User user = userRepository.findOneUserByEmail(createAccount.getEmail());
+
+        VerifyOneTimeLoginCode verifyOneTimeLoginCode = new VerifyOneTimeLoginCode(user.getOneTimeLoginCode().getCode());
+        verifyOneTimeLoginCode.setHash(hash);
+
+        given()
+                .when()
+                .accept(ContentType.JSON)
+                .contentType(ContentType.JSON)
+                .queryParam("hash", hash)
+                .get("/mobile/api/idp/v2/resend_code_request")
+                .then()
+                .statusCode(200);
+
+        List<MimeMessage> mimeMessages = super.mailMessages();
+        assertEquals(2, mimeMessages.size());
+
+        //have to sleep some time, otherwise now() < createdAt + delay
+        Thread.sleep(1000);
+
+        given()
+                .when()
+                .accept(ContentType.JSON)
+                .contentType(ContentType.JSON)
+                .body(verifyOneTimeLoginCode)
+                .queryParam("in-app", true)
+                .put("/mobile/api/idp/v2/verify_code_request")
+                .then()
+                .statusCode(201);
+        user = userRepository.findOneUserByEmail(createAccount.getEmail());
+        assertNull(user.getOneTimeLoginCode());
+
+        CookieFilter cookieFilter = new CookieFilter();
+        String location = given().redirects().follow(false)
+                .when()
+                .filter(cookieFilter)
+                .accept(ContentType.JSON)
+                .contentType(ContentType.JSON)
+                .body(createAccount)
+                .queryParam("h", hash)
+                .get("/mobile/api/create-from-mobile-api/in-app")
+                .header("Location");
+        assertEquals("http://localhost:3000/client/mobile/created?new=true", location);
+
+        String cookieName = cookieFilter.getCookieStore().getCookies().getFirst().getName();
+        assertEquals("SESSION", cookieName);
+
+        User userFromDB = userRepository.findOneUserByEmail(createAccount.getEmail());
+
+        assertFalse(userFromDB.isNewUser());
+        assertNull(userFromDB.getCreateFromInstitutionKey());
+    }
+
 
 }

@@ -350,24 +350,6 @@ public class UserController implements UserAuthentication {
                 samlAuthenticationRequest);
     }
 
-    @Operation(summary = "Validate the one-time verification code",
-            description = "Validate the one-time verification code send to user in the email." +
-                    "<br/>Together with the validation code, also send the hash returned in '/idp/v2/create'" +
-                    "<br/>If the response is 201, then finalize with this url: /mobile/api/create-from-mobile-api/in-app/h={hash}",
-            responses = {
-                    @ApiResponse(responseCode = "201", description = "Ok. Use the hash to finalize the creation"),
-                    @ApiResponse(responseCode = "400", description = "Expired. Dead end, need to start again"),
-                    @ApiResponse(responseCode = "401", description = "Wrong code. The user can try again"),
-                    @ApiResponse(responseCode = "403", description = "Rate limited. Dead end")})
-    @PutMapping("/idp/v2/verify_code_request")
-    public ResponseEntity verifyCodeMobileUser(@Valid @RequestBody VerifyOneTimeLoginCode verifyOneTimeLoginCode) {
-        String hash = verifyOneTimeLoginCode.getHash();
-        User user = userRepository.findUserByCreateFromInstitutionKey(hash).orElseThrow(() -> new UserNotFoundException(hash));
-        return doVerifyCodeExistingUser(verifyOneTimeLoginCode, user, hash, samlAuthenticationRequest -> {
-            //nope
-        }, null);
-    }
-
     private ResponseEntity<Map<String, String>> doVerifyCodeExistingUser(VerifyOneTimeLoginCode verifyOneTimeLoginCode,
                                                                          User user,
                                                                          String hash,
@@ -413,16 +395,7 @@ public class UserController implements UserAuthentication {
                 .orElseThrow(() -> new ExpiredAuthenticationException("Expired samlAuthenticationRequest: " + authenticationRequestId));
         String userId = samlAuthenticationRequest.getUserId();
         User user = userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException(userId));
-        OneTimeLoginCode oneTimeLoginCode = user.getOneTimeLoginCode();
-        if (oneTimeLoginCode.isCodeAlmostExpired()) {
-            userRepository.save(user);
-        }
-        if (user.isNewUser()) {
-            mailBox.sendOneTimeLoginCodeNewUser(user, oneTimeLoginCode.getCode());
-        } else {
-            mailBox.sendOneTimeLoginCode(user, oneTimeLoginCode.getCode());
-        }
-        return ResponseEntity.ok(true);
+        return doResendCodeMail(user);
     }
 
     @Operation(summary = "Institution displaynames",
@@ -526,9 +499,11 @@ public class UserController implements UserAuthentication {
             @Valid @RequestBody CreateAccount createAccount) {
         User user = doCreateEduIDAccount(createAccount);
 
-        userRepository.save(user);
         String oneTimeLoginCode = VerificationCodeGenerator.generateOneTimeLoginCode();
         user.startOneTimeLoginCode(oneTimeLoginCode);
+
+        userRepository.save(user);
+
         mailBox.sendOneTimeLoginCodeNewUser(user, oneTimeLoginCode);
 
         logWithContext(user, "create", "user", LOG, "Create user in mobile API with one-time verification code");
@@ -536,6 +511,50 @@ public class UserController implements UserAuthentication {
         return ResponseEntity.status(HttpStatus.CREATED).body(
                 new CreateEduIDResponse(HttpStatus.CREATED.value(),
                         user.getCreateFromInstitutionKey()));
+    }
+
+    @Operation(summary = "Validate the one-time verification code",
+            description = "Validate the one-time verification code send to user in the email." +
+                    "<br/>Together with the validation code, also send the hash returned in '/idp/v2/create'" +
+                    "<br/>If the response is 201, then finalize with this url: /mobile/api/create-from-mobile-api/in-app/h={hash}",
+            responses = {
+                    @ApiResponse(responseCode = "201", description = "Ok. Use the hash to finalize the creation"),
+                    @ApiResponse(responseCode = "400", description = "Expired. Dead end, need to start again"),
+                    @ApiResponse(responseCode = "401", description = "Wrong code. The user can try again"),
+                    @ApiResponse(responseCode = "403", description = "Rate limited. Dead end")})
+    @PutMapping("/idp/v2/verify_code_request")
+    public ResponseEntity verifyCodeMobileUser(@Valid @RequestBody VerifyOneTimeLoginCode verifyOneTimeLoginCode) {
+        String hash = verifyOneTimeLoginCode.getHash();
+        User user = userRepository.findUserByCreateFromInstitutionKey(hash).orElseThrow(() -> new UserNotFoundException(hash));
+        return doVerifyCodeExistingUser(verifyOneTimeLoginCode, user, hash, samlAuthenticationRequest -> {
+            //nope
+        }, null);
+    }
+
+    @Operation(summary = "Re-send the one-time verification code",
+            description = "Send the one-time verification code to the user, based on the hash" +
+                    "<br/>returned in '/idp/v2/create'",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Ok. Mail is sent to the user"),
+                    @ApiResponse(responseCode = "404", description = "Not Found. User is not found")
+            })
+    @GetMapping("/idp/v2/resend_code_request")
+    public ResponseEntity resendCodeMailMobile(@RequestParam("hash") String hash) {
+        User user = userRepository.findUserByCreateFromInstitutionKey(hash).orElseThrow(() -> new UserNotFoundException(hash));
+        return doResendCodeMail(user);
+    }
+
+    private ResponseEntity<Boolean> doResendCodeMail(User user) {
+        OneTimeLoginCode oneTimeLoginCode = user.getOneTimeLoginCode();
+        if (oneTimeLoginCode.isCodeAlmostExpired()) {
+            userRepository.save(user);
+        }
+        if (user.isNewUser()) {
+            mailBox.sendOneTimeLoginCodeNewUser(user, oneTimeLoginCode.getCode());
+        } else {
+            mailBox.sendOneTimeLoginCode(user, oneTimeLoginCode.getCode());
+        }
+        return ResponseEntity.ok(true);
     }
 
     @Operation(summary = "Change names", description = "Update the givenName, chosenName and / or the familyName of the User")
