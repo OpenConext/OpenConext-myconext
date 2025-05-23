@@ -371,7 +371,13 @@ public class UserController implements UserAuthentication {
                         user.getEmail(),
                         delay,
                         (int) (Math.log(delay / 1000) / Math.log(2))));
-                String url = this.magicLinkUrl + "?h=" + hash;
+                String url;
+                if (samlAuthenticationRequest != null) {
+                    url = this.magicLinkUrl + "?h=" + hash;
+                } else {
+                    //Mobile app
+                    url = this.idpBaseUrl + "/mobile/api/create-from-mobile-api/in-app?h=" + hash;
+                }
                 return ResponseEntity.status(201).body(Map.of("url", url));
             }
             throw new InvalidOneTimeLoginCodeException(String.format("Invalid oneTimeLoginCode entered for email %s, delay: %s, attempt: %s",
