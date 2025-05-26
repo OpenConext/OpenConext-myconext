@@ -1902,14 +1902,14 @@ SHARED:
           personal to you, allowing you to prove that you are the owner
           of your eduID. Once you’ve added a passkey to your eduID,
           you can use it to log in. You can still log in using an email
-          link or password as well.
+          code or password as well.
         nl: >-
           Een passkey is een los of ingebouwd apparaat dat strikt
           persoonlijk van jou is, waarmee je kunt bewijzen dat jij de
           eigenaar van je eduID bent. Nadat je een
           passkey hebt toegevoegd aan je eduID kun je deze
           gebruiken om mee in te loggen. Ook kun je nog steeds inloggen
-          met een link via e-mail of wachtwoord.
+          met een code via e-mail of wachtwoord.
     Back:
       COPY:
         en: /security
@@ -2533,16 +2533,16 @@ SHARED:
         nl: Je kan dit tabblad / venster sluiten.
     TimeOutReached:
       COPY:
-        en: Your link has expired
-        nl: Je link is niet meer geldig
+        en: Your code has expired
+        nl: Je code is niet meer geldig
     TimeOutReachedInfo:
       COPY:
         en: >-
           Go back to the website where you wanted to log
-          in and try again. You will then receive a new link.
+          in and try again. You will then receive a new code.
         nl: >-
           Ga terug naar de website waar je wilde inloggen
-          en probeer het opnieuw. Je kijgt dan een nieuwe link toegestuurd.
+          en probeer het opnieuw. Je kijgt dan een nieuwe code toegestuurd.
     Resend:
       COPY:
         en: Still can't find the email?
