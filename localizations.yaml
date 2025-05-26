@@ -734,8 +734,8 @@ SHARED:
         nl: Uitstaand reset-verzoek voor wachtwoord
     OutstandingPasswordForgottenConfirmation:
       COPY:
-        en: A link to reset your password was previously sent to you. This link will no longer be valid if you confirm your email change.
-        nl: Er is eerder een link naar je gestuurd om je wachtwoord te resetten. Deze link is niet langer geldig als je deze e-mailwijziging bevestigt.
+        en: A code to reset your password was previously sent to you. This code will no longer be valid. You will receive a new code to change your email address.
+        nl: Er is eerder een code naar je gestuurd om je wachtwoord te resetten. Deze code is niet langer geldig. Je ontvant een nieuwe code om je e-mailwijziging te bevestigt.
   NameUpdated:
     Title:
       YourSchool:
@@ -1739,23 +1739,21 @@ SHARED:
       COPY:
         en: >-
           Do you want to add a password to your eduID? Press
-          <strong>Confirm</strong> below to instantly receive an email with a
-          link to add a password.
+          <strong>Confirm</strong> below to receive an email with a
+          code. Whereafter you can add a password.
         nl: >-
-          Wil je een wachtwoord toevoegen aan je eduID? Druk dan
-          hieronder op <strong>Bevestigen</strong> om direct een e-mail te
-          ontvangen met een link om een wachtwoord toe te voegen.
+          Wil je een wachtwoord toevoegen aan je eduID? Druk dan hieronder op <strong>Bevestigen</strong> en ontvang een e-mail met een code. Daarna kan je een wachtwoord toevoegen.
     UpdateInfo:
       COPY:
         en: >-
           Do you want to reset or delete your eduID password?
           Press <strong>Confirm</strong> below to receive an
-          email with a link. You can use this link to either
+          email with a code. After you fill in the code you can
           reset or delete your password.
-        nl: >
+        nl: >-
           Wil je het wachtwoord van je eduID resetten of
           verwijderen? Druk hieronder op <strong>Bevestigen</strong> om direct
-          een e-mail te ontvangen met een link. Daarmee kun je je wachtwoord opnieuw
+          een e-mail te ontvangen met een code. Nadat je de code invult, kun je je wachtwoord opnieuw
           instellen of verwijderen.
     ResetTitle:
       COPY:
@@ -1828,8 +1826,8 @@ SHARED:
         nl: Je huidige wachtwoord is niet correct.
     PasswordResetHashExpired:
       COPY:
-        en: 'Your password reset link has expired. '
-        nl: 'De link om je wachtwoord opnieuw in te stellen is verlopen. '
+        en: 'Your password reset code has expired. '
+        nl: 'De code om je wachtwoord opnieuw in te stellen is verlopen. '
     ForgotPassword:
       COPY:
         en: I forgot my password
@@ -1842,10 +1840,10 @@ SHARED:
       COPY:
         en: >-
           Forgot your password? Press 'Confirm' below to instantly receive an
-          email with a link to reset your current password.
+          email with a code to reset your current password.
         nl: >-
           Wachtwoord vergeten? Druk hieronder op 'Bevestigen' om direct een
-          e-mail te ontvangen waarmee je je huidige wachtwoord opnieuw kunt
+          e-mail te ontvangen met een code, waarmee je je huidige wachtwoord opnieuw kunt
           instellen.
     OutstandingEmailReset:
       COPY:
@@ -1854,12 +1852,11 @@ SHARED:
     OutstandingEmailResetConfirmation:
       COPY:
         en: >-
-          You have an outstanding new email confirmation link. This link will no
-          longer be valid if you confirm your password forgotten request.
+          You recently received a code to confirm a new email address. This code will no
+          longer be valid. You will receive a new code to confirm your change password request.
         nl: >-
-          Je hebt een openstaande bevestigingslink voor een nieuwe e-mail. Deze
-          link is niet langer geldig als je dit verzoek voor een vergeten
-          wachtwoord bevestigt.
+          Je hebt recent een code ontvangen voor het bevestigen van een nieuwe e-mail. Deze
+          code is niet langer geldig. Je ontvangt een nieuwe code om je wachtwoord te wijzigen.
     Flash:
       PasswordLink:
         COPY:
