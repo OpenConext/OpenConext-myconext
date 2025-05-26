@@ -46,7 +46,7 @@ public class SMSServiceImpl implements SMSService {
         Map<String, Object> body = Map.of(
                 "encoding", "auto",
                 "body", format,
-                "route", "business",
+                "route", "1984",
                 "originator", "eduID",
                 "recipients", List.of(mobile)
         );
