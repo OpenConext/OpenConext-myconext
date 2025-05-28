@@ -9,13 +9,15 @@
 
     export let action;
     let redirectAppUrl = null;
-    let actionTranslateKey = null;
+    let actionTranslateKey = "fallback";
     let isMobile = "ontouchstart" in window || navigator.maxTouchPoints > 0;
 
     onMount(() => {
         $links.displayBackArrow = false;
-        const translationExists = en.redirectMobileApp[action];
-        actionTranslateKey = isEmpty(translationExists)  ? "fallback" : action;
+        const translationExists = !isEmpty(en.redirectMobileApp[action]);
+        if (translationExists) {
+            actionTranslateKey = action;
+        }
         //Do not use the actionTranslateKey in the redirect URL, as we can't ensure all actions are translated
         redirectAppUrl = `${$conf.mobileAppRedirect}/${action}${window.location.search}`;
     });
