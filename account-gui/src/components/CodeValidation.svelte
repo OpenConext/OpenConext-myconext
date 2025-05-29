@@ -29,9 +29,9 @@
         setTimeout(() => {
             verify(values.join(""));
             setTimeout(() => {
-                    values = Array(size).fill("");
-                    inputRefs.get(0).focus();
-                }, 850);
+                values = Array(size).fill("");
+                inputRefs.get(0).focus();
+            }, 850);
         }, timeout);
     }
 
@@ -109,6 +109,15 @@
         p.info {
             margin-top: 15px;
         }
+
+        .no-spinner::-webkit-inner-spin-button, .no-spinner::-webkit-outer-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+
+        .no-spinner[type=number] {
+            -moz-appearance: textfield;
+        }
     }
 </style>
 
@@ -116,8 +125,10 @@
     <div class="sds--code-validation">
         {#each Array(size) as _, index}
             <input id={`ref_${index}`}
-                   type="text"
-                   class={`value index_${index}`}
+                   type="number"
+                   inputmode="numeric"
+                   pattern="[0-9]"
+                   class={`no-spinner value index_${index}`}
                    maxLength="1"
                    value={values[index] || ""}
                    disabled={ disabled || (isEmpty(values[index]) && index !== 0 && isEmpty(values[index - 1]))}
