@@ -83,6 +83,9 @@
         inputRefs.get(inputRefs.size - 1)?.focus();
 
         doVerify();
+
+        stopEvent(e);
+        return false;
     }
 </script>
 
@@ -127,9 +130,10 @@
             <input id={`ref_${index}`}
                    type="number"
                    inputmode="numeric"
-                   pattern="[0-9]"
+                   pattern="[0-9]{1}"
                    class={`no-spinner value index_${index}`}
                    maxLength="1"
+                   step="1"
                    value={values[index] || ""}
                    disabled={ disabled || (isEmpty(values[index]) && index !== 0 && isEmpty(values[index - 1]))}
                    on:input={e => handleChange(index, e)}

@@ -83,6 +83,10 @@
         inputRefs.get(inputRefs.size - 1)?.focus();
 
         doVerify();
+
+        stopEvent(e);
+        return false;
+
     }
 </script>
 
