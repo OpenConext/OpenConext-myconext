@@ -801,6 +801,12 @@
   "ResponseErrors.EmailDomainForbidden.Title.COPY": "E-maildomein is verboden",
   "ResponseErrors.EmailDomainForbidden.Description.COPY": "Het e-maildomein gebruikt in %1$s is niet toegestaan.",
   "ResponseErrors.GenerateControlCodeError.COPY": "Kan geen controlecode genereren",
+  "ResponseErrors.SendOneTimeCodeError.COPY": "Verzenden van eenmalige code mislukt",
+  "ResponseErrors.VerifyOneTimeCodeError.COPY": "Verifiëren van eenmalige code mislukt",
+  "ResponseErrors.EmailCodeError.Title.COPY": "Verificatie van code mislukt",
+  "ResponseErrors.EmailCodeError.Expired.COPY": "De code is verlopen",
+  "ResponseErrors.EmailCodeError.Incorrect.COPY": "De code is onjuist",
+  "ResponseErrors.EmailCodeError.RateLimited.COPY": "Te veel pogingen, probeer het later opnieuw",
   "ResponseErrors.Auth.Invalid.Title.COPY": "Autorisatie ongeldig",
   "ResponseErrors.Auth.Invalid.Description.COPY": "Ontvangen verificatie is ongeldig.",
   "ResponseErrors.Auth.Failed.Title.COPY": "Autorisatie mislukt",
@@ -895,5 +901,10 @@
   "LoginCode.Error.COPY": "Verkeerde code. Probeer het opnieuw.",
   "LoginCode.ErrorHeader.COPY": "Maximale pogingen bereikt",
   "LoginCode.ErrorInfo.COPY": "Je hebt het maximale aantal pogingen bereikt en je account is voor 15 minuten geschorst.",
-  "LoginCode.MailResend.COPY": "Check je inbox. We hebben je de e-mail met de code opnieuw verzonden."
+  "LoginCode.MailResend.COPY": "Check je inbox. We hebben je de e-mail met de code opnieuw verzonden.",
+  "LogInWithEmailCode.CheckYourEmail.COPY": "Controleer je e-mail",
+  "LogInWithEmailCode.EnterTheCodeSentTo.COPY": "Voer de code in die is verzonden naar %1$s",
+  "LogInWithEmailCode.Problems.COPY": "Problemen?",
+  "LogInWithEmailCode.ResendTheCode.COPY": "Stuur de code opnieuw",
+  "LogInWithEmailCode.CodeHasBeenResent.COPY": "De code is opnieuw verzonden naar je e-mailadres."
 }
