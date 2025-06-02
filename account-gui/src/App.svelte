@@ -48,6 +48,7 @@
     import ExternalAccountLinkedError from "./routes/ExternalAccountLinkedError.svelte";
     import AttributeMissing from "./routes/AttributeMissing.svelte";
     import RateLimited from "./routes/RateLimited.svelte";
+    import InstallApp from "./routes/InstallApp.svelte";
 
     export let url = "";
 
@@ -172,6 +173,7 @@
                 </Route>
                 <Route path="/app-required" component={AppRequired}/>
                 <Route path="/getapp" component={GetApp}/>
+                <Route path="/install-app" component={InstallApp}/>
                 <Route path="/enrollapp" component={EnrollApp}/>
                 <Route path="/recovery" component={Recovery}/>
                 <Route path="/recovery-code" component={RecoveryCode}/>
