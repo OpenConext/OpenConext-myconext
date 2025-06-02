@@ -50,6 +50,7 @@
     "postcss": "^8.5.4",
     "sass": "^1.89.0",
     "save-dev": "^0.0.1-security",
+    "svelte-qrcode": "^1.0.1",
     "svelte-routing": "^2.13.0"
   }
 }

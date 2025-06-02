@@ -17,6 +17,7 @@
     import LinkFromInstitution from "./routes/LinkFromInstitution.svelte";
     import AwaitLinkFromInstitutionMail from "./routes/AwaitLinkFromInstitutionMail.svelte";
     import AttributeMissing from "./routes/AttributeMissing.svelte";
+    import InstallApp from "./routes/tiqr/InstallApp.svelte";
 
     const unprotectedRoutes = [
         "/create-from-institution",
@@ -357,6 +358,7 @@
                     <Route path="/add-password">
                         <Home bookmark="reset-password"/>
                     </Route>
+                    <Route path="/install-app" component={InstallApp}/>
                     <Route path="/update-email" component={ConfirmUpdateEmail}/>
                     <Route path="/create-from-institution" component={CreateFromInstitution}/>
                     <Route component={NotFound}/>
