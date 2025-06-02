@@ -3889,6 +3889,31 @@ SHARED:
       COPY:
         en: Could not generate control code
         nl: Kan geen controlecode genereren
+    SendOneTimeCodeError:
+      COPY:
+        en: Could not send one-time code
+        nl: Verzenden van eenmalige code mislukt
+    VerifyOneTimeCodeError:
+      COPY:
+        en: Could not verify one-time code
+        nl: Verifiëren van eenmalige code mislukt
+    EmailCodeError:
+      Title:
+        COPY:
+          en: Code verification failed
+          nl: Verificatie van code mislukt
+      Expired:
+        COPY:
+          en: The code has expired
+          nl: De code is verlopen
+      Incorrect:
+        COPY:
+          en: The code is incorrect
+          nl: De code is onjuist
+      RateLimited:
+        COPY:
+          en: Too many attempts, please try again later
+          nl: Te veel pogingen, probeer het later opnieuw
     Auth:
       Invalid:
         Title:
@@ -4293,3 +4318,24 @@ SHARED:
       COPY:
         en: "Check your inbox again. We've sent another email with a code"
         nl: "Check je inbox. We hebben je de e-mail met de code opnieuw verzonden."
+  LogInWithEmailCode:
+    CheckYourEmail:
+      COPY:
+        en: "Check your email"
+        nl: "Controleer je e-mail"
+    EnterTheCodeSentTo:
+      COPY:
+        en: "Enter the code sent to %1$s"
+        nl: "Voer de code in die is verzonden naar %1$s"
+    Problems:
+      COPY:
+        en: "Problems?"
+        nl: "Problemen?"
+    ResendTheCode:
+      COPY:
+        en: "Resend the code"
+        nl: "Stuur de code opnieuw"
+    CodeHasBeenResent:
+      COPY:
+        en: "The code has been resent to your email address."
+        nl: "De code is opnieuw verzonden naar je e-mailadres."

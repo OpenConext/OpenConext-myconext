@@ -801,6 +801,12 @@
   "ResponseErrors.EmailDomainForbidden.Title.COPY": "Email domain is forbidden",
   "ResponseErrors.EmailDomainForbidden.Description.COPY": "The email domain used in %1$s is not allowed.",
   "ResponseErrors.GenerateControlCodeError.COPY": "Could not generate control code",
+  "ResponseErrors.SendOneTimeCodeError.COPY": "Could not send one-time code",
+  "ResponseErrors.VerifyOneTimeCodeError.COPY": "Could not verify one-time code",
+  "ResponseErrors.EmailCodeError.Title.COPY": "Code verification failed",
+  "ResponseErrors.EmailCodeError.Expired.COPY": "The code has expired",
+  "ResponseErrors.EmailCodeError.Incorrect.COPY": "The code is incorrect",
+  "ResponseErrors.EmailCodeError.RateLimited.COPY": "Too many attempts, please try again later",
   "ResponseErrors.Auth.Invalid.Title.COPY": "Authorization invalid",
   "ResponseErrors.Auth.Invalid.Description.COPY": "Did not receive valid authentication.",
   "ResponseErrors.Auth.Failed.Title.COPY": "Authorization failed",
@@ -895,5 +901,10 @@
   "LoginCode.Error.COPY": "Wrong code. Please try again.",
   "LoginCode.ErrorHeader.COPY": "Maximum attempts reached",
   "LoginCode.ErrorInfo.COPY": "You've reached the maximum attempts and your account is suspended for 15 minutes.",
-  "LoginCode.MailResend.COPY": "Check your inbox again. We've sent another email with a code"
+  "LoginCode.MailResend.COPY": "Check your inbox again. We've sent another email with a code",
+  "LogInWithEmailCode.CheckYourEmail.COPY": "Check your email",
+  "LogInWithEmailCode.EnterTheCodeSentTo.COPY": "Enter the code sent to %1$s",
+  "LogInWithEmailCode.Problems.COPY": "Problems?",
+  "LogInWithEmailCode.ResendTheCode.COPY": "Resend the code",
+  "LogInWithEmailCode.CodeHasBeenResent.COPY": "The code has been resent to your email address."
 }
