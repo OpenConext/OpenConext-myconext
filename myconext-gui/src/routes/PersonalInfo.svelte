@@ -46,6 +46,7 @@
     let outstandingPasswordForgotten = false;
 
     let tempEmailValue;
+    let newEmailValue;
     let emailError = false;
     let emailErrorMessage = "";
     let emailEditMode = false;
@@ -205,12 +206,14 @@
                     showCodeValidation = true;
                     flash.setValue(I18n.t("Email.UpdatedVerified.COPY", {email: value}), 6500);
                     tempEmailValue = null;
+                    newEmailValue = value;
                     outstandingPasswordForgotten = false;
                     emailError = false;
                     emailErrorMessage = null;
                     emailEditMode = false;
                     setTimeout(() => allowedToResend = true, resendMailAllowedTimeOut);
                 }).catch(e => {
+                    newEmailValue = null;
                     if (e.status === 409) {
                         emailError = true;
                         emailErrorMessage = I18n.t("Email.DuplicateEmail.COPY");
@@ -812,7 +815,7 @@
            title={I18n.t("LoginCode.Title.COPY")}>
         <div class="login-code">
             <h2 class="header">{I18n.t("LoginCode.Header.COPY")}</h2>
-            <p class="validation-info">{@html I18n.t("LoginCode.Info.COPY", {email: $user.email})}</p>
+            <p class="validation-info">{@html I18n.t("LoginCode.Info.COPY", {email: newEmailValue})}</p>
             <div class="code-validation">
                 <CodeValidation verify={verifyCode}
                                 size={6}
