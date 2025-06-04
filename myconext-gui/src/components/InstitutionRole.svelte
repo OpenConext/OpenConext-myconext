@@ -109,7 +109,7 @@
         <span class="student">
         {#if linkedAccount.logoUrl}
             <img src={linkedAccount.logoUrl} alt="logo">
-            {:else}
+        {:else}
             {@html notFound}
         {/if}
         </span>

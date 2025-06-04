@@ -18,6 +18,7 @@
     import AwaitLinkFromInstitutionMail from "./routes/AwaitLinkFromInstitutionMail.svelte";
     import AttributeMissing from "./routes/AttributeMissing.svelte";
     import InstallApp from "./routes/tiqr/InstallApp.svelte";
+    import {isEmpty} from "./utils/utils.js";
 
     const unprotectedRoutes = [
         "/create-from-institution",
@@ -54,7 +55,7 @@
                             }
                         }
                         $user.guest = false;
-                        if (json.preferredLanguage !== lang) {
+                        if (json.preferredLanguage !== lang && !isEmpty(json.preferredLanguage)) {
                             I18n.changeLocale(json.preferredLanguage);
                         }
                         const useOidcApi = $config.featureOidcTokenAPI;
