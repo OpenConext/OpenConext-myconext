@@ -15,6 +15,8 @@ export const Home = () => {
 
     const config = useAppStore((state) => state.config);
 
+    const isMobile = "ontouchstart" in window || navigator.maxTouchPoints > 0;
+
     return (
         <div className="home-container">
             <div className="home">
@@ -53,11 +55,12 @@ export const Home = () => {
                         </h2>
                         <p dangerouslySetInnerHTML={{__html: I18n.t("home.appInfo")}}/>
                         <div className="store-container">
+                            {!isMobile &&
                             <QRCode
                                 size={140}
                                 style={{ height: "auto"}}
                                 value={`${window.location.origin}/install-app`}
-                            />
+                            />}
                             <div className="inner-store-container">
                                 <a href={I18n.t("home.apple")}>
                                     <img src={appStore} className="appStore" alt="appStore"/>
