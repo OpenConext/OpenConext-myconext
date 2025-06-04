@@ -56,11 +56,11 @@ export const Home = () => {
                         <p dangerouslySetInnerHTML={{__html: I18n.t("home.appInfo")}}/>
                         <div className="store-container">
                             {!isMobile &&
-                            <QRCode
-                                size={140}
-                                style={{ height: "auto"}}
-                                value={`${window.location.origin}/install-app`}
-                            />}
+                                <QRCode
+                                    size={140}
+                                    style={{height: "auto"}}
+                                    value={`${window.location.origin}/install-app`}
+                                />}
                             <div className="inner-store-container">
                                 <a href={I18n.t("home.apple")}>
                                     <img src={appStore} className="appStore" alt="appStore"/>

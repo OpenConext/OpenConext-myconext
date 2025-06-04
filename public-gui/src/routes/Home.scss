@@ -95,6 +95,12 @@
         gap: 40px;
         margin-top: auto;
 
+        @media (max-width: index.$mobile-width) {
+            svg {
+                display: none;
+            }
+        }
+
         .inner-store-container {
             display: flex;
             flex-direction: column;
