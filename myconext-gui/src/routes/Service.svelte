@@ -163,7 +163,7 @@
                         <span>{I18n.t("DataActivity.Details.Login.COPY")}</span>
                         <span class="button">
                             <Button onClick={deleteEduId(true)}
-                                    large={true}
+                                    larger={true}
                                     inline={true}
                                     label={I18n.t("DataActivity.Details.Delete.COPY")}/>
                         </span>

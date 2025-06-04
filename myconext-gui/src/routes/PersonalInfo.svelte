@@ -675,7 +675,7 @@
             </div>
             <EditField firstValue={$user.chosenName}
                        editableByUser={true}
-                       editLabel={I18n.t("Profile.FirstName.COPY")}
+                       editLabel={I18n.t("Login.GivenName.COPY")}
                        saveLabel={I18n.t("Email.Save.COPY")}
                        editMode={chosenNameEditMode}
                        onEdit={() => chosenNameEditMode = true}
