@@ -5,6 +5,7 @@ import {stopEvent} from "../utils/Utils.js";
 import {useNavigate} from "react-router";
 import {useAppStore} from "../stores/AppStore.js";
 import {Button, ButtonType} from "@surfnet/sds";
+import {LanguageSelector} from "./LanguageSelector.jsx";
 
 const tabNames = ["home", "about", "support"]
 
@@ -39,7 +40,9 @@ export const Navigation = ({mobile, path}) => {
                         txt={I18n.t("header.mineEduID")}/>
                 <Button onClick={() => window.location.href = `${config.idpBaseUrl}/register`}
                         txt={I18n.t("header.register")}/>
+                <LanguageSelector/>
             </div>
+
         </div>
     );
 }

@@ -1,3 +1,5 @@
+@use "../index";
+
 footer.sds--footer {
     margin-top: auto;
 
@@ -6,5 +8,25 @@ footer.sds--footer {
         max-width: 100%;
         margin-left: auto;
         margin-right: auto;
+    }
+
+    img.eu-logo {
+        width: auto;
+        height: 37px;
+    }
+
+    @media (min-width: index.$mobile-width-cutoff) {
+        .sds--branding.mobile {
+            display: none;
+        }
+    }
+
+    @media (max-width: index.$mobile-width) {
+        nav.menu, nav.sds--language-switcher, img.eu-logo:not(.mobile) {
+            display: none;
+        }
+        .sds--branding.mobile {
+            justify-content: flex-start;
+        }
     }
 }

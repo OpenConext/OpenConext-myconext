@@ -5,11 +5,21 @@
     gap: 25px;
     width: 100%;
 
+    .sds--language-switcher {
+        margin-left: 44px;
+    }
+
+    &:not(.mobile) {
+        .sds--language-switcher {
+            display: none;
+        }
+    }
+
     @media (max-width: index.$mobile-width) {
         flex-direction: column;
     }
 
-    @media (min-width: calc(820px + 1px)) {
+    @media (min-width: index.$mobile-width-cutoff) {
         &.mobile {
             display: none;
         }
@@ -53,6 +63,7 @@
             flex-direction: column;
             margin: 16px 0 0 0;
             gap: 50px;
+            max-height: initial;
         }
 
         button.sds--btn {
