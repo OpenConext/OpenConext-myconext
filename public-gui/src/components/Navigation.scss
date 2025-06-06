@@ -10,7 +10,7 @@
     }
 
     &:not(.mobile) {
-        .sds--language-switcher {
+        .sds--language-switcher, a.terms, a.privacy {
             display: none;
         }
     }

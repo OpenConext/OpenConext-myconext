@@ -2,7 +2,7 @@ import {useEffect, useState} from "react";
 import I18n from "../locale/I18n";
 import "./Navigation.scss"
 import {stopEvent} from "../utils/Utils.js";
-import {useNavigate} from "react-router";
+import {Link, useNavigate} from "react-router";
 import {useAppStore} from "../stores/AppStore.js";
 import {Button, ButtonType} from "@surfnet/sds";
 import {LanguageSelector} from "./LanguageSelector.jsx";
@@ -34,6 +34,12 @@ export const Navigation = ({mobile, path}) => {
                                         onClick={e => doNavigate(e, tabName)}>
                 {I18n.t(`tabs.${tabName}`)}
             </a>)}
+            <Link to={"/terms"} className="terms">
+                <span>{I18n.t("footer.terms")}</span>
+            </Link>
+            <Link to={"/privacy"} className="terms">
+                <span>{I18n.t("footer.privacy")}</span>
+            </Link>
             <div className="links">
                 <Button type={ButtonType.Secondary}
                         onClick={() => window.location.href = `${config.spBaseUrl}`}
@@ -41,6 +47,7 @@ export const Navigation = ({mobile, path}) => {
                 <Button onClick={() => window.location.href = `${config.idpBaseUrl}/register`}
                         txt={I18n.t("header.register")}/>
                 <LanguageSelector/>
+
             </div>
 
         </div>
