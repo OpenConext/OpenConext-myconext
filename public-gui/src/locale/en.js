@@ -35,7 +35,7 @@ const en = {
         logins: "How to confirm your identity?",
         loginsInfo: "In most cases, you must prove your identity through an official party before you can fully use your eduID. You can do this in the following ways:",
 
-        magicLink: "Link in email",
+        magicLink: "Code in email",
         password: "Password",
         passKey: "Passkey",
         identity: "How to use eduID?",
