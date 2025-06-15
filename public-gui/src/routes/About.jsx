@@ -3,10 +3,15 @@ import I18n from "../locale/I18n.js";
 import "./About.scss";
 import {useAppStore} from "../stores/AppStore.js";
 import {Background} from "../components/Background.jsx";
+import {useEffect} from "react";
 
 export const About = () => {
 
     const config = useAppStore((state) => state.config);
+
+    useEffect(() => {
+        window.scroll(0, 0);
+    }, []);
 
     return (
         <div className="about-container">

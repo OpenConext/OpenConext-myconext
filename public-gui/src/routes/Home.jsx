@@ -10,12 +10,17 @@ import {useAppStore} from "../stores/AppStore.js";
 import {Button} from "@surfnet/sds";
 import {Link} from "react-router";
 import {Background} from "../components/Background.jsx";
+import {useEffect} from "react";
 
 export const Home = () => {
 
     const config = useAppStore((state) => state.config);
 
     const isMobile = "ontouchstart" in window || navigator.maxTouchPoints > 0;
+
+    useEffect(() => {
+        window.scroll(0, 0);
+    }, []);
 
     return (
         <div className="home-container">
