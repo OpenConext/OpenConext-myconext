@@ -13,7 +13,7 @@ export const InstallApp = () => {
         } else {
             navigate(url);
         }
-    }, []);
+    }, [navigate]);
 
     const detectMobileOS = () => {
         const userAgent = navigator.userAgent || navigator.vendor || window.opera;
