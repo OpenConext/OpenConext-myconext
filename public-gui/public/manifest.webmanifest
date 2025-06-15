@@ -1,0 +1,15 @@
+{
+  "name": "eduID",
+  "theme_color": "#002568",
+  "background_color": "#0062b0",
+  "display": "browser",
+  "scope": "/",
+  "start_url": "/"
+  "prefer_related_applications": true,
+  "related_applications": [
+    {
+      "platform": "play",
+      "id": "nl.eduid"
+    }
+  ]
+}
