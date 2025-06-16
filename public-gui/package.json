@@ -17,9 +17,9 @@
     "js-cookie": "^3.0.5",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
-    "react-qr-code": "^2.0.15",
+    "react-qr-code": "^2.0.16",
     "react-router": "^7.6.2",
-    "react-tooltip": "^5.29.0",
+    "react-tooltip": "^5.29.1",
     "zustand": "^5.0.5"
   },
   "devDependencies": {
