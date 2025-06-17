@@ -10,14 +10,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
     if (u && s && q && i && v) {
       const tiqrUri = `eduidauth://${u}@${i}/${s}/${q}/${i}/${v}`;
-
-      document.body.innerHTML = `<p>Opening eduID app...</p>`;
-
       window.location.href = tiqrUri;
-    } else {
-      document.body.innerHTML = '<p>Misscing parameters.</p>';
     }
-  } else {
-    document.body.innerHTML = '<p>Incorrect path.</p>';
   }
 });
