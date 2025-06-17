@@ -4,7 +4,7 @@
   "background_color": "#0062b0",
   "display": "browser",
   "scope": "/",
-  "start_url": "/"
+  "start_url": "/",
   "prefer_related_applications": true,
   "related_applications": [
     {
