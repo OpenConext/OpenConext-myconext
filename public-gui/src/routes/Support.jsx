@@ -5,10 +5,15 @@ import support from "../assets/support.svg";
 import mobileScreenshot from "../assets/mobile_screenshot.svg";
 import {Background} from "../components/Background.jsx";
 import {useAppStore} from "../stores/AppStore.js";
+import {useEffect} from "react";
 
 export const Support = () => {
 
     const config = useAppStore((state) => state.config);
+
+    useEffect(() => {
+        window.scroll(0, 0);
+    }, []);
 
     return (
         <div className="support-container">

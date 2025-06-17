@@ -1,8 +1,13 @@
 import I18n from "../locale/I18n.js";
 import "./ServiceDesk.scss"
 import FrontDesk from "../assets/frontdesk.svg";
+import {useEffect} from "react";
 
 export const ServiceDesk = () => {
+
+    useEffect(() => {
+        window.scroll(0, 0);
+    }, []);
 
     return (
         <div className="servicedesk-container">

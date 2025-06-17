@@ -34,7 +34,7 @@ const nl = {
         registerInfo: "Een eduID maak je eenvoudig zelf. Druk daarvoor op <strong>eduID aanmaken</strong> bovenaan de pagina. Nadat je je eduID hebt aangemaakt is het vaak nog wel nodig dat je identiteit bevestigd wordt door een officiële partij. Zoals je school, universiteit of bank.",
         logins: "Hoe bevestig je je identiteit?",
         loginsInfo: "Je kunt een eduID in veel gevallen pas echt gebruiken nadat je via een officiële partij hebt bewezen wie je bent. Dat kan op de volgende manieren:",
-        magicLink: "Link in je e-mail",
+        magicLink: "Code in je e-mail",
         password: "Wachtwoord",
         passKey: "Passkey",
         identity: "Hoe gebruik je eduID?",
