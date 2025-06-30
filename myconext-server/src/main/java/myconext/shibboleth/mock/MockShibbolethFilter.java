@@ -19,14 +19,14 @@ public class MockShibbolethFilter extends GenericFilterBean {
 //    private String uid = "7287aa59-01c9-4b5c-8a10-c21e82090b52";
 //    public String email = "ok@ok.com";
 
-//    private String host = "mijn.test2.eduid.nl";
-    private String host = "servicedesk.test2.eduid.nl";
+    private final String host;
     private String uid = "1234567890";
     public String email = "jdoe@example.com";
 
 
-    public MockShibbolethFilter(boolean serviceDeskRoleAutoProvisioning) {
+    public MockShibbolethFilter(boolean serviceDeskRoleAutoProvisioning, String activeHost) {
         this.serviceDeskRoleAutoProvisioning = serviceDeskRoleAutoProvisioning;
+        this.host = activeHost;
     }
 
     private static class SetHeader extends HttpServletRequestWrapper {

@@ -216,6 +216,7 @@ public class SecurityConfiguration {
                 @Value("${mijn_eduid_entity_id}") String mijnEduIDEntityId,
                 @Value("${service_desk_roles}") String[] serviceDeskRoles,
                 @Value("${service_desk_role_auto_provisioning}") boolean serviceDeskRoleAutoProvisioning,
+                @Value("${host_headers.active}") String activeHost,
                 @Value("${host_headers.mijn_ediuid}") String mijnEduIDHost,
                 @Value("${host_headers.service_desk}") String serviceDeskHost) throws Exception {
             AuthenticationProvider authenticationProvider = preAuthenticatedAuthenticationProvider();
@@ -255,7 +256,7 @@ public class SecurityConfiguration {
                             .anyRequest().hasRole("GUEST"));
             if (environment.acceptsProfiles(Profiles.of("test", "dev"))) {
                 //we can't use @Profile, because we need to add it before the real filter
-                http.addFilterBefore(new MockShibbolethFilter(serviceDeskRoleAutoProvisioning), ShibbolethPreAuthenticatedProcessingFilter.class);
+                http.addFilterBefore(new MockShibbolethFilter(serviceDeskRoleAutoProvisioning, activeHost), ShibbolethPreAuthenticatedProcessingFilter.class);
             }
             return http.build();
         }

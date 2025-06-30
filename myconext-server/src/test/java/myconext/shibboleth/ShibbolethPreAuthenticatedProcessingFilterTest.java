@@ -70,6 +70,7 @@ public class ShibbolethPreAuthenticatedProcessingFilterTest extends AbstractInte
 
     private Headers headers(String uid, String email) {
         return new Headers(
+                new Header("host", "mijn.test2.eduid.nl"),
                 new Header(SHIB_UID, uid),
                 new Header(SHIB_SCHAC_HOME_ORGANIZATION, "surfguest.nl"),
                 new Header(SHIB_GIVEN_NAME, "Steven"),
