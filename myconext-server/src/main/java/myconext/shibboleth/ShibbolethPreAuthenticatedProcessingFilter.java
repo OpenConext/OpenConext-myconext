@@ -94,8 +94,8 @@ public class ShibbolethPreAuthenticatedProcessingFilter extends AbstractPreAuthe
         }
         boolean logInToEduID = host.toLowerCase().equals(this.mijnEduIDHost);
         boolean logInToServiceDesk = host.toLowerCase().equals(this.serviceDeskHost);
-        Optional<User> optionalUser = null;
-        Optional<ExternalUser> optionalExternalUser = null;
+        Optional<User> optionalUser = Optional.empty();
+        Optional<ExternalUser> optionalExternalUser = Optional.empty();
 
         if (logInToEduID) {
             optionalUser = userRepository.findUserByUid(uid);
