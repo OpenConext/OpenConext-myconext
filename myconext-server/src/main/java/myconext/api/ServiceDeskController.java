@@ -1,12 +1,14 @@
 package myconext.api;
 
+import io.swagger.v3.oas.annotations.Operation;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 import lombok.Getter;
 import myconext.exceptions.ForbiddenException;
 import myconext.exceptions.RemoteException;
 import myconext.exceptions.UserNotFoundException;
-import myconext.model.ControlCode;
-import myconext.model.ExternalLinkedAccount;
-import myconext.model.User;
+import myconext.model.*;
+import myconext.repository.ExternalUserRepository;
 import myconext.repository.UserRepository;
 import myconext.security.UserAuthentication;
 import myconext.verify.AttributeMapper;
@@ -16,25 +18,50 @@ import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Date;
 
+import static myconext.log.MDCContext.logWithContext;
+
 
 @RestController
 @RequestMapping(value = {"/myconext/api/servicedesk"})
-public class ServiceDeskController implements UserAuthentication {
+public class ServiceDeskController {
 
     private static final Log LOG = LogFactory.getLog(ServiceDeskController.class);
 
     @Getter
     private final UserRepository userRepository;
+    private final ExternalUserRepository externalUserRepository;
     private final AttributeMapper attributeMapper;
 
     public ServiceDeskController(UserRepository userRepository,
+                                 ExternalUserRepository externalUserRepository,
                                  AttributeMapper attributeMapper) {
         this.userRepository = userRepository;
+        this.externalUserRepository = externalUserRepository;
         this.attributeMapper = attributeMapper;
+    }
+
+    @GetMapping("/me")
+    public ResponseEntity<ExternalUser> me(Authentication authentication) {
+        String userId = ((ExternalUser) authentication.getPrincipal()).getId();
+        ExternalUser user = this.externalUserRepository.findById(userId).orElseThrow(() -> new UserNotFoundException(userId));
+
+        return ResponseEntity.ok(user);
+    }
+
+    @GetMapping("/sp/logout")
+    @Operation(summary = "Logout",
+            description = "Logout the current logged in user")
+    public ResponseEntity<StatusResponse> logout(HttpServletRequest request, Authentication authentication) {
+        HttpSession session = request.getSession();
+        session.invalidate();
+        SecurityContextHolder.getContext().setAuthentication(null);
+        SecurityContextHolder.clearContext();
+        return ResponseEntity.ok(new StatusResponse(HttpStatus.OK.value()));
     }
 
     @GetMapping("/user/{code}")
@@ -82,8 +109,8 @@ public class ServiceDeskController implements UserAuthentication {
             throw new ForbiddenException("User UID's do not match");
         }
 
-        String userUid = ((User) authentication.getPrincipal()).getUid();
-        User serviceDeskMember = getUserRepository().findUserByUid(userUid).orElseThrow(() -> new UserNotFoundException(userUid));
+        String userUid = ((ExternalUser) authentication.getPrincipal()).getUid();
+        ExternalUser serviceDeskMember = this.externalUserRepository.findUserByUid(userUid).orElseThrow(() -> new UserNotFoundException(userUid));
 
         LOG.info(String.format("Adding external linked account for service desk for user %s by user %s",
                 user.getEmail(), serviceDeskMember.getEmail()));

@@ -4,7 +4,9 @@ package myconext.shibboleth;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import myconext.manage.Manage;
+import myconext.model.ExternalUser;
 import myconext.model.User;
+import myconext.repository.ExternalUserRepository;
 import myconext.repository.UserRepository;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -34,21 +36,30 @@ public class ShibbolethPreAuthenticatedProcessingFilter extends AbstractPreAuthe
     public static final String SHIB_MEMBERSHIPS = "is-member-of";
 
     private final UserRepository userRepository;
+    private final ExternalUserRepository externalUserRepository;
     private final Manage serviceProviderResolver;
     private final String mijnEduIDEntityId;
     private final List<String> serviceDeskRoles;
+    private final String mijnEduIDHost;
+    private final String serviceDeskHost;
 
     public ShibbolethPreAuthenticatedProcessingFilter(AuthenticationManager authenticationManager,
                                                       UserRepository userRepository,
+                                                      ExternalUserRepository externalUserRepository,
                                                       Manage serviceProviderResolver,
                                                       String mijnEduIDEntityId,
-                                                      List<String> serviceDeskRoles) {
+                                                      List<String> serviceDeskRoles,
+                                                      String mijnEduIDHost,
+                                                      String serviceDeskHost) {
         super();
         super.setAuthenticationManager(authenticationManager);
         this.userRepository = userRepository;
+        this.externalUserRepository = externalUserRepository;
         this.serviceProviderResolver = serviceProviderResolver;
         this.mijnEduIDEntityId = mijnEduIDEntityId;
         this.serviceDeskRoles = serviceDeskRoles;
+        this.mijnEduIDHost = mijnEduIDHost.toLowerCase();
+        this.serviceDeskHost = serviceDeskHost.toLowerCase();
     }
 
     @Override
@@ -77,35 +88,63 @@ public class ShibbolethPreAuthenticatedProcessingFilter extends AbstractPreAuthe
                     uid, schacHomeOrganization, givenName, familyName, email));
             return null;
         }
-        Optional<User> optionalUser = userRepository.findUserByUid(uid);
+        String host = getHeader("host", request);
+        if (!StringUtils.hasText(host)) {
+            throw new IllegalArgumentException("There is no host header in the request");
+        }
+        boolean logInToEduID = host.toLowerCase().equals(this.mijnEduIDHost);
+        boolean logInToServiceDesk = host.toLowerCase().equals(this.serviceDeskHost);
+        Optional<User> optionalUser = null;
+        Optional<ExternalUser> optionalExternalUser = null;
+
+        if (logInToEduID) {
+            optionalUser = userRepository.findUserByUid(uid);
+        } else if (logInToServiceDesk) {
+            optionalExternalUser = externalUserRepository.findUserByUid(uid);
+        } else {
+            throw new IllegalArgumentException("Unknown host header in the request: " + host);
+        }
         String preferredLanguage = cookieByName(request, "lang").map(Cookie::getValue).orElse("en");
         List<String> memberships = Stream.of(getHeader(SHIB_MEMBERSHIPS, request).split(";"))
                 .map(String::trim)
                 .toList();
-
-        return optionalUser.map(user -> syncMemberships(user, memberships)).orElseGet(() ->
-                provisionUser(uid, schacHomeOrganization, givenName, familyName, email, preferredLanguage, memberships));
+        if (logInToEduID) {
+            return optionalUser.orElseGet(() ->
+                    provisionUser(uid, schacHomeOrganization, givenName, familyName, email, preferredLanguage));
+        } else {
+            return optionalExternalUser.map(user -> syncMemberships(user, memberships)).orElseGet(() ->
+                    provisionServiceDeskUser(uid, schacHomeOrganization, givenName, familyName, email, memberships));
+        }
     }
 
-    private User syncMemberships(User user, List<String> memberships) {
+    private ExternalUser syncMemberships(ExternalUser user, List<String> memberships) {
         boolean isServiceDeskMember = this.serviceDeskRoles.stream().anyMatch(memberships::contains);
         if (user.isServiceDeskMember() != isServiceDeskMember) {
             user.setServiceDeskMember(isServiceDeskMember);
-            userRepository.save(user);
+            externalUserRepository.save(user);
         }
         return user;
     }
 
     private User provisionUser(String uid, String schacHomeOrganization, String givenName, String familyName,
-                               String email, String preferredLanguage, List<String> memberships) {
+                               String email, String preferredLanguage) {
         User user = new User(uid, email, givenName, givenName, familyName, schacHomeOrganization,
                 preferredLanguage, mijnEduIDEntityId, serviceProviderResolver);
-        boolean isServiceDeskMember = this.serviceDeskRoles.stream().anyMatch(memberships::contains);
-        user.setServiceDeskMember(isServiceDeskMember);
         user.setNewUser(false);
         user = userRepository.save(user);
 
         logWithContext(user, "add", "user", LOG, String.format("Provisioned new user %s", user.getEmail()));
+
+        return user;
+    }
+
+    private ExternalUser provisionServiceDeskUser(String uid, String schacHomeOrganization, String givenName, String familyName,
+                                                  String email, List<String> memberships) {
+        ExternalUser user = new ExternalUser(uid, email, givenName, familyName, schacHomeOrganization);
+        boolean isServiceDeskMember = this.serviceDeskRoles.stream().anyMatch(memberships::contains);
+        user.setServiceDeskMember(isServiceDeskMember);
+        user.setNewUser(false);
+        user = externalUserRepository.save(user);
 
         return user;
     }

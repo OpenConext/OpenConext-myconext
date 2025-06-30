@@ -40,9 +40,6 @@ import static myconext.validation.PasswordStrength.strongEnough;
 public class User implements Serializable, UserDetails {
 
     private static final List<SimpleGrantedAuthority> GUEST_AUTHORITIES = List.of(new SimpleGrantedAuthority(ROLE_GUEST));
-    private static final List<SimpleGrantedAuthority> SERVICE_DESK_AUTHORIES = Stream.of(ROLE_GUEST, SERVICE_DESK)
-            .map(SimpleGrantedAuthority::new)
-            .toList();
 
     @Id
     private String id;
@@ -259,9 +256,6 @@ public class User implements Serializable, UserDetails {
     @Override
     @JsonIgnore
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        if (serviceDeskMember) {
-            return SERVICE_DESK_AUTHORIES;
-        }
         return GUEST_AUTHORITIES;
     }
 
