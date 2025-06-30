@@ -580,7 +580,7 @@ const en = {
             bunq: "Bunq",
             ing: "ING",
             rabobank: "Rabobank",
-            regioBank: "RegioBank",
+            regiobank: "RegioBank",
             sns: "SNS"
         }
     }
