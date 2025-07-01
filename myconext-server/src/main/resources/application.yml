@@ -86,6 +86,13 @@ mijn_eduid_entity_id: http://mijn.localhost/shibboleth
 mobile_app_redirect: eduid:///client/mobile
 mobile_app_rp_entity_id: mobile_app_rp_entity_id
 
+# The host headers to identify the service the user is logged in
+host_headers:
+  service_desk: servicedesk.test2.eduid.nl
+  mijn_ediuid: mijn.test2.eduid.nl
+  #Only for testing purposes
+  active: mijn.test2.eduid.nl
+
 feature:
   webauthn: True
   warning_educational_email_domain: True

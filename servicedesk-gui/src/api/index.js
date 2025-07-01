@@ -54,18 +54,9 @@ function postPutJson(path, body, method, showErrorDialog = true) {
     return fetchJson(path, {method: method, body: jsonBody}, {}, showErrorDialog);
 }
 
-function fetchDelete(path) {
-    return validFetch(path, {method: "delete"});
-}
-
-//Base
-export function configuration() {
-    return fetchJson("/config");
-}
-
 //Users
 export function me() {
-    return fetchJson("/myconext/api/sp/me");
+    return fetchJson("/myconext/api/servicedesk/me");
 }
 
 export function logout() {
@@ -73,7 +64,7 @@ export function logout() {
         credentials: "same-origin",
         redirect: "manual"
     };
-    return fetchJson("/myconext/api/sp/logout")
+    return fetchJson("/myconext/api/servicedesk/logout")
         .then(() => fetch("/Shibboleth.sso/Logout", fetchOptions));
 }
 

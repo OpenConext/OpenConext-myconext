@@ -12,6 +12,7 @@ public class ShibbolethUserDetailService implements
     @Override
     public UserDetails loadUserDetails(PreAuthenticatedAuthenticationToken authentication) throws
             UsernameNotFoundException {
-        return (User) authentication.getPrincipal();
+        Object principal = authentication.getPrincipal();
+        return (UserDetails) principal;
     }
 }

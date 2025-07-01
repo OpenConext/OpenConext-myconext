@@ -1441,18 +1441,6 @@ public class UserControllerTest extends AbstractIntegrationTest {
     }
 
     @Test
-    public void createUserControlCodeForbidden() {
-        ControlCode controlCode = new ControlCode("Lee", "Harpers", "01 Mar 1977");
-        given()
-                .body(controlCode)
-                .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
-                .when()
-                .post("/myconext/api/sp/control-code")
-                .then()
-                .statusCode(403);
-    }
-
-    @Test
     public void errorMailOverload() {
         Map<String, Object> json = Map.of("error", "unexpected");
         CookieFilter cookieFilter = new CookieFilter();

@@ -6,6 +6,7 @@ import myconext.geo.GeoLocation;
 import myconext.mail.MailBox;
 import myconext.manage.Manage;
 import myconext.repository.AuthenticationRequestRepository;
+import myconext.repository.ExternalUserRepository;
 import myconext.repository.UserLoginRepository;
 import myconext.repository.UserRepository;
 import myconext.shibboleth.ShibbolethPreAuthenticatedProcessingFilter;
@@ -211,9 +212,13 @@ public class SecurityConfiguration {
                 Environment environment,
                 Manage manage,
                 UserRepository userRepository,
+                ExternalUserRepository externalUserRepository,
                 @Value("${mijn_eduid_entity_id}") String mijnEduIDEntityId,
                 @Value("${service_desk_roles}") String[] serviceDeskRoles,
-                @Value("${service_desk_role_auto_provisioning}") boolean serviceDeskRoleAutoProvisioning) throws Exception {
+                @Value("${service_desk_role_auto_provisioning}") boolean serviceDeskRoleAutoProvisioning,
+                @Value("${host_headers.active}") String activeHost,
+                @Value("${host_headers.mijn_ediuid}") String mijnEduIDHost,
+                @Value("${host_headers.service_desk}") String serviceDeskHost) throws Exception {
             AuthenticationProvider authenticationProvider = preAuthenticatedAuthenticationProvider();
             ProviderManager providerManager = new ProviderManager(authenticationProvider);
             http
@@ -240,15 +245,18 @@ public class SecurityConfiguration {
                             new ShibbolethPreAuthenticatedProcessingFilter(
                                     providerManager,
                                     userRepository,
+                                    externalUserRepository,
                                     manage,
                                     mijnEduIDEntityId,
-                                    List.of(serviceDeskRoles)),
+                                    List.of(serviceDeskRoles),
+                                    mijnEduIDHost,
+                                    serviceDeskHost),
                             AbstractPreAuthenticatedProcessingFilter.class)
                     .authorizeHttpRequests(auth -> auth
                             .anyRequest().hasRole("GUEST"));
             if (environment.acceptsProfiles(Profiles.of("test", "dev"))) {
                 //we can't use @Profile, because we need to add it before the real filter
-                http.addFilterBefore(new MockShibbolethFilter(serviceDeskRoleAutoProvisioning), ShibbolethPreAuthenticatedProcessingFilter.class);
+                http.addFilterBefore(new MockShibbolethFilter(serviceDeskRoleAutoProvisioning, activeHost), ShibbolethPreAuthenticatedProcessingFilter.class);
             }
             return http.build();
         }
