@@ -114,6 +114,9 @@ public abstract class AbstractIntegrationTest implements HasUserRepository {
     protected UserRepository userRepository;
 
     @Autowired
+    protected ExternalUserRepository externalUserRepository;
+
+    @Autowired
     protected AuthenticationRequestRepository authenticationRequestRepository;
 
     @Autowired
