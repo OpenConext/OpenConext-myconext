@@ -110,6 +110,29 @@ class RemoteCreationControllerTest extends AbstractIntegrationTest {
     }
 
     @Test
+    void eduIDForInstitutionBatchHappyFlow() {
+        List<EduIDAssignedValue> eduIDAssignedValues = given()
+                .when()
+                .auth().preemptive().basic(userName, password)
+                .contentType(ContentType.JSON)
+                //See src/test/resources/users.json eduIDs#value
+                .body(new EduIDInstitutionPseudonymBatch("ST42",
+                        List.of("fc75dcc7-6def-4054-b8ba-3c3cc504dd4b","fc75dcc7-6def-4054-b8ba-3c3cc504dd4b","nope")))
+                .post("/api/remote-creation/eduid-institution-pseudonym-batch")
+                .as(new TypeRef<>() {
+                });
+        assertEquals(2, eduIDAssignedValues.size());
+        String value = eduIDAssignedValues.getFirst().getValue();
+        User user = this.findUserByEduIDValue(value).get();
+        //See src/main/resources/manage/saml20_idp.json read by MockManage
+        String institutionGUID = "8017e83f-bca7-e911-90f2-0050569571ea";
+        EduID newEduID = user.getEduIDS().stream()
+                .filter(anEduID -> anEduID.getServices().stream().anyMatch(service -> institutionGUID.equals(service.getInstitutionGuid())))
+                .findFirst().get();
+        assertEquals(value, newEduID.getValue());
+    }
+
+    @Test
     void eduIDForInstitutionEduIDNotExists() {
         Map<String, Object> result = given()
                 .when()

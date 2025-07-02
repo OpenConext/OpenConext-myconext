@@ -31,6 +31,8 @@ import org.springframework.util.StringUtils;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -168,6 +170,58 @@ public class RemoteCreationController implements HasUserRepository {
         userRepository.save(user);
 
         return ResponseEntity.ok(new EduIDValue(eduIDValue));
+    }
+
+    @PostMapping(value = {"/eduid-institution-pseudonym-batch"})
+    @PreAuthorize("hasRole('ROLE_remote-creation')")
+    @Operation(summary = "Return eduID pseudonyms for an institution",
+            description = "Return eduID pseudonyms for an institution identified by the BRIN code",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "OK",
+                            content = {@Content(schema = @Schema(implementation = EduIDInstitutionPseudonymBatch.class),
+                                    examples = {@ExampleObject(value = "[{\n" +
+                                            "  \"eduID\": \"46ab5162-e098-4c24-9f28-cdf4d9b5fbb0\",\n" +
+                                            "  \"value\": \"46ab5162-e098-4c24-9f28-cdf4d9b5fbb0\"\n" +
+                                            "}]")})}),
+                    @ApiResponse(responseCode = "400", description = "BadRequest",
+                            content = {@Content(schema = @Schema(implementation = StatusResponse.class),
+                                    examples = {@ExampleObject(value = "{\n" +
+                                            "  \"timestamp\": 1718865813679,\n" +
+                                            "  \"status\": 400,\n" +
+                                            "  \"error\": \"Bad Request\",\n" +
+                                            "  \"exception\": \"org.springframework.web.bind.MethodArgumentNotValidException\",\n" +
+                                            "  \"message\": \"Validation failed for object='eduIDInstitutionPseudonym'. Error count: 1\",\n" +
+                                            "  \"path\": \"/api/remote-creation/eduid-institution-pseudonym-batch\"\n" +
+                                            "}")})}),
+                    @ApiResponse(responseCode = "404", description = "Not found - eduID or BRIN code not found",
+                            content = {@Content(schema = @Schema(implementation = StatusResponse.class),
+                                    examples = {@ExampleObject(value = "{\n" +
+                                            "  \"timestamp\": 1717671525908,\n" +
+                                            "  \"status\": 404,\n" +
+                                            "  \"error\": \"Not Found\",\n" +
+                                            "  \"exception\": \"myconext.exceptions.UserNotFoundException\",\n" +
+                                            "  \"message\": \"IdentityProvider with BRIN code AB!@ not found\",\n" +
+                                            "  \"path\": \"/api/remote-creation/eduid-institution-pseudonym-batch\"\n" +
+                                            "}")})})})
+    public ResponseEntity<List<EduIDAssignedValue>> eduIDForInstitutionBatch(
+            @Parameter(hidden = true) @AuthenticationPrincipal(errorOnInvalidType = true) RemoteUser remoteUser,
+            @RequestBody @Validated EduIDInstitutionPseudonymBatch eduIDInstitutionPseudonymBatch) {
+        LOG.info(String.format("eduid-institution-pseudonym by %s for %s", remoteUser.getUsername(), eduIDInstitutionPseudonymBatch));
+
+        IdentityProvider identityProvider = manage.findIdentityProviderByBrinCode(eduIDInstitutionPseudonymBatch.getBrinCode())
+                .orElseThrow(() -> new IdentityProviderNotFoundException(String.format("IdentityProvider with BRIN code %s not found", eduIDInstitutionPseudonymBatch.getBrinCode())));
+        List<EduIDAssignedValue> eduIDAssignedValues = eduIDInstitutionPseudonymBatch.getEduIDValues().stream()
+                .map(eduID -> {
+                    String pseudonym = this.findUserByEduIDValue(eduID).map(user -> {
+                        String eduIDValue = user.computeEduIdForIdentityProviderProviderIfAbsent(identityProvider, manage);
+                        userRepository.save(user);
+                        return eduIDValue;
+                    }).orElse(null);
+                    return StringUtils.hasText(pseudonym) ? new EduIDAssignedValue(eduID, pseudonym) : null;
+                })
+                .filter(Objects::nonNull)
+                .toList();
+        return ResponseEntity.ok(eduIDAssignedValues);
     }
 
     @PostMapping(value = {"/eduid-create"})
