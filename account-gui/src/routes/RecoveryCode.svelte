@@ -7,11 +7,13 @@
     import Spinner from "../components/Spinner.svelte";
     import {navigate} from "svelte-routing";
 
+    const RECOVERY_CODE = "recovery-code";
+    const REDIRECT = "redirect";
+
     let showSpinner = true;
     let hash = null;
     let recoveryCode;
     let redirect;
-    let error;
     let copied = false;
 
     const onConfirmRefresh = e => {
@@ -25,20 +27,26 @@
 
         const urlParams = new URLSearchParams(window.location.search);
         hash = urlParams.get("h");
+
+        window.addEventListener("beforeunload", onConfirmRefresh, {capture: true});
+
         generateBackupCode(hash).then(res => {
             const recoveryCodeRaw = res.recoveryCode;
             recoveryCode = recoveryCodeRaw.substring(0, 4) + " " + recoveryCodeRaw.substring(4);
             redirect = res.redirect;
+            sessionStorage.setItem(RECOVERY_CODE, recoveryCode);
+            sessionStorage.setItem(REDIRECT, redirect);
             showSpinner = false;
-            window.addEventListener("beforeunload", onConfirmRefresh, {capture: true});
         }).catch(() => {
             showSpinner = false;
-            recoveryCode = "";
-            error = true;
+            recoveryCode = sessionStorage.getItem(RECOVERY_CODE);
+            redirect = sessionStorage.getItem(REDIRECT);
         })
     });
 
-    onDestroy(() => window.removeEventListener("beforeunload", onConfirmRefresh, {capture: true}));
+    onDestroy(() => {
+        window.removeEventListener("beforeunload", onConfirmRefresh, {capture: true});
+    });
 
     const copyToClipboard = () => {
         navigator.clipboard.writeText(recoveryCode);
@@ -95,7 +103,6 @@
             label={copied ? I18n.t("Recovery.Copied.COPY") : I18n.t("Recovery.Copy.COPY")}/>
     <Button onClick={next}
             className="cancel full"
-            disabled={error}
             href={"/next"}
             label={I18n.t("Recovery.Continue.COPY")}/>
 </div>

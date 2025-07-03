@@ -243,6 +243,9 @@ public class TiqrController implements UserAuthentication {
         }
         String recoveryCode = (String) surfSecureId
                 .computeIfAbsent(RECOVERY_CODE, k -> VerificationCodeGenerator.generateBackupCode().replaceAll(" ", ""));
+        //Can't have both
+        List.of(PHONE_VERIFICATION_CODE, PHONE_VERIFIED, PHONE_NUMBER)
+                .forEach(surfSecureId::remove);
         userRepository.save(user);
 
         if (!regenerateSpFlow) {
@@ -365,6 +368,7 @@ public class TiqrController implements UserAuthentication {
         if (MessageDigest.isEqual(code.getBytes(StandardCharsets.UTF_8), phoneVerificationStored.getBytes(StandardCharsets.UTF_8))) {
             surfSecureId.remove(PHONE_VERIFICATION_CODE);
             surfSecureId.put(PHONE_VERIFIED, true);
+            surfSecureId.remove(RECOVERY_CODE);
             surfSecureId.remove(RATE_LIMIT);
             if (regenerateSpFlow) {
                 String unverifiedPhoneNumber = (String) surfSecureId.get(NEW_UNVERIFIED_PHONE_NUMBER);

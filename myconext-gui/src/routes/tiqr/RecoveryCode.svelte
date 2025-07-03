@@ -1,17 +1,17 @@
 <script>
     import I18n from "../../locale/I18n";
     import Button from "../../components/Button.svelte";
-    import {onMount} from "svelte";
+    import {onDestroy, onMount} from "svelte";
     import {generateBackupCode, regenerateBackupCode} from "../../api";
     import Spinner from "../../components/Spinner.svelte";
     import {navigate} from "svelte-routing";
 
     export let change = false;
 
+    const RECOVERY_CODE = "recovery-code";
+
     let showSpinner = true;
     let recoveryCode = "";
-    let redirect;
-    let error;
     let copied = false;
 
     const onConfirmRefresh = e => {
@@ -26,14 +26,17 @@
             .then(res => {
                 const recoveryCodeRaw = res.recoveryCode;
                 recoveryCode = recoveryCodeRaw.substring(0, 4) + " " + recoveryCodeRaw.substring(4);
-                redirect = res.redirect;
+                sessionStorage.setItem(RECOVERY_CODE, recoveryCode);
                 showSpinner = false;
                 window.addEventListener("beforeunload", onConfirmRefresh, {capture: true});
             }).catch(() => {
             showSpinner = false;
-            recoveryCode = "";
-            error = true;
+            recoveryCode = sessionStorage.getItem(RECOVERY_CODE);
         })
+    });
+
+    onDestroy(() => {
+        window.removeEventListener("beforeunload", onConfirmRefresh, {capture: true});
     });
 
     const copyToClipboard = () => {
@@ -111,7 +114,6 @@
                     label={copied ? I18n.t("Recovery.Copied.COPY") : I18n.t("Recovery.Copy.COPY")}/>
             <Button onClick={next}
                     larger={true}
-                    disabled={error}
                     href={"/next"}
                     label={I18n.t("Recovery.Continue.COPY")}/>
         </div>
