@@ -14,7 +14,7 @@ public class SMSServiceMock extends SMSServiceImpl {
     private final Environment environment;
 
     public SMSServiceMock(Environment environment) {
-        super(null, null);
+        super(null, null, null);
         this.environment = environment;
     }
 
