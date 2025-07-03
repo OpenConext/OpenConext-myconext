@@ -12,6 +12,7 @@ import {MobileNavigation} from "./routes/MobileNavigation.jsx";
 import {Terms} from "./routes/Terms.jsx";
 import {Privacy} from "./routes/Privacy.jsx";
 import {InstallApp} from "./routes/InstallApp.jsx";
+import {TiqrAuth} from "./routes/TiqrAuth.jsx";
 import {ServiceDesk} from "./routes/ServiceDesk.jsx";
 
 function App() {
@@ -34,6 +35,7 @@ function App() {
                 <Header currentLocation={currentLocation}/>
                 <Routes>
                     <Route path="/" element={<Navigate replace to="home"/>}/>
+                    <Route path="/tiqrauth/*" element={<TiqrAuth/>}/>
                     <Route path="/home" element={<Home/>}/>
                     <Route path="/about" element={<About/>}/>
                     <Route path="/nav" element={<MobileNavigation/>}/>
