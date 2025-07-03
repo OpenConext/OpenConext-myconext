@@ -294,9 +294,7 @@ public class SecurityConfiguration {
         }
 
         private DaoAuthenticationProvider inMemoryAuthenticationProvider() {
-            DaoAuthenticationProvider authenticationProvider = new DaoAuthenticationProvider();
-            authenticationProvider.setUserDetailsService(new ExtendedInMemoryUserDetailsManager(remoteUsers.getRemoteUsers()));
-            return authenticationProvider;
+            return new DaoAuthenticationProvider(new ExtendedInMemoryUserDetailsManager(remoteUsers.getRemoteUsers()));
         }
 
     }

@@ -278,8 +278,10 @@ class RemoteCreationControllerTest extends AbstractIntegrationTest {
                 .extract()
                 .as(new TypeRef<>() {
                 });
-        assertEquals(Stream.of("chosenName", "identifier", "lastName", "verification").sorted().collect(Collectors.toList()),
-                ((List<Map<String, Object>>) errorResult.get("errors")).stream().map(m -> m.get("field")).sorted().collect(Collectors.toList()));
+        List<String> expected = Stream.of("chosenName", "identifier", "lastName", "verification").sorted().toList();
+        List<Object> actual = ((List<Map<String, Object>>) errorResult.get("errors")).stream()
+                .map(m -> ((Map<String, Object>) m.get("cause")).get("field")).sorted().toList();
+        assertEquals(expected, actual);
     }
 
     @Test

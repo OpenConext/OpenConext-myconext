@@ -76,7 +76,7 @@ public class MongoMapping {
             if (clazz.isAnnotationPresent(Document.class)) {
                 MongoPersistentEntityIndexResolver resolver = new MongoPersistentEntityIndexResolver(mappingContext);
                 IndexOperations indexOps = mongoTemplate.indexOps(clazz);
-                resolver.resolveIndexFor(clazz).forEach(indexOps::ensureIndex);
+                resolver.resolveIndexFor(clazz).forEach(indexOps::createIndex);
             }
         }
         //Avoid command failed with error 86 (IndexKeySpecsConflict): An existing index has the same name as the requested index.
@@ -84,7 +84,7 @@ public class MongoMapping {
                 .getIndexInfo().stream()
                 .map(IndexInfo::getName)
                 .filter(name -> name.contains("email"))
-                .collect(Collectors.toList());
+                .toList();
         String userEmailUniqueIndexName = "user_email_unique";
         //Drop existing indexes on email, but not the new one
         userIndexes.stream()
@@ -92,7 +92,7 @@ public class MongoMapping {
                 .forEach(name -> mongoTemplate.indexOps(User.class).dropIndex(name));
         //Create - if not already exists - an email case-insensitive unique index
         if (!userIndexes.contains(userEmailUniqueIndexName)) {
-            mongoTemplate.indexOps(User.class).ensureIndex(
+            mongoTemplate.indexOps(User.class).createIndex(
                     new Index("email", Sort.Direction.ASC)
                             .named(userEmailUniqueIndexName)
                             .collation(Collation.of(Locale.ENGLISH).strength(2))
@@ -100,19 +100,19 @@ public class MongoMapping {
         }
 
         //tiqr
-        mongoTemplate.indexOps(Enrollment.class).ensureIndex(
+        mongoTemplate.indexOps(Enrollment.class).createIndex(
                 new Index("key", Sort.Direction.ASC));
-        mongoTemplate.indexOps(Enrollment.class).ensureIndex(
+        mongoTemplate.indexOps(Enrollment.class).createIndex(
                 new Index("enrollmentSecret", Sort.Direction.ASC));
-        mongoTemplate.indexOps(Authentication.class).ensureIndex(
+        mongoTemplate.indexOps(Authentication.class).createIndex(
                 new Index("sessionKey", Sort.Direction.ASC));
         IndexOperations registrationsIndex = mongoTemplate.indexOps(Registration.class);
         if (registrationsIndex.getIndexInfo().stream().anyMatch(indexInfo -> indexInfo.getName().equals("userid"))) {
             registrationsIndex.dropIndex("userid");
         }
-        registrationsIndex.ensureIndex(
+        registrationsIndex.createIndex(
                 new Index("userId", Sort.Direction.ASC));
-        mongoTemplate.indexOps(EmailsSend.class).ensureIndex(
+        mongoTemplate.indexOps(EmailsSend.class).createIndex(
                 new Index("email", Sort.Direction.ASC).collation(Collation.of(Locale.ENGLISH).strength(2)));
     }
 

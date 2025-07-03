@@ -27,7 +27,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.context.SecurityContextRepository;
-import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
+import org.springframework.security.web.servlet.util.matcher.PathPatternRequestMatcher;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -72,10 +72,10 @@ public class GuestIdpAuthenticationRequestFilter extends OncePerRequestFilter {
     private static final Log LOG = LogFactory.getLog(GuestIdpAuthenticationRequestFilter.class);
     public static final String ROLE_MFA = "ROLE_MFA";
 
-    private final AntPathRequestMatcher ssoSamlRequestMatcher;
-    private final AntPathRequestMatcher magicSamlRequestMatcher;
-    private final AntPathRequestMatcher continueAfterLoginSamlRequestMatcher;
-    private final AntPathRequestMatcher metaDataSamlRequestMatcher;
+    private final PathPatternRequestMatcher ssoSamlRequestMatcher;
+    private final PathPatternRequestMatcher magicSamlRequestMatcher;
+    private final PathPatternRequestMatcher continueAfterLoginSamlRequestMatcher;
+    private final PathPatternRequestMatcher metaDataSamlRequestMatcher;
     private final String redirectUrl;
     private final AuthenticationRequestRepository authenticationRequestRepository;
     private final IdentityProviderMetaData identityProviderMetaData;
@@ -126,10 +126,10 @@ public class GuestIdpAuthenticationRequestFilter extends OncePerRequestFilter {
                                                CookieValueEncoder cookieValueEncoder,
                                                SecurityContextRepository securityContextRepository) {
         this.cookieValueEncoder = cookieValueEncoder;
-        this.ssoSamlRequestMatcher = new AntPathRequestMatcher("/saml/guest-idp/SSO/**");
-        this.magicSamlRequestMatcher = new AntPathRequestMatcher("/saml/guest-idp/magic/**");
-        this.continueAfterLoginSamlRequestMatcher = new AntPathRequestMatcher("/saml/guest-idp/continue/**");
-        this.metaDataSamlRequestMatcher = new AntPathRequestMatcher("/saml/guest-idp/metadata/**");
+        this.ssoSamlRequestMatcher = PathPatternRequestMatcher.withDefaults().matcher("/saml/guest-idp/SSO/**");
+        this.magicSamlRequestMatcher = PathPatternRequestMatcher.withDefaults().matcher("/saml/guest-idp/magic/**");
+        this.continueAfterLoginSamlRequestMatcher = PathPatternRequestMatcher.withDefaults().matcher("/saml/guest-idp/continue/**");
+        this.metaDataSamlRequestMatcher = PathPatternRequestMatcher.withDefaults().matcher("/saml/guest-idp/metadata/**");
         this.redirectUrl = redirectUrl;
         this.manage = manage;
         this.authenticationRequestRepository = authenticationRequestRepository;
