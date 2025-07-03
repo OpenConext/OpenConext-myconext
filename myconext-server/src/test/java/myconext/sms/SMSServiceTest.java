@@ -15,7 +15,7 @@ class SMSServiceTest {
     @RegisterExtension
     WireMockExtension mockServer = new WireMockExtension(8381);
 
-    private final SMSService smsService = new SMSServiceImpl("http://localhost:8381/sms", "secret");
+    private final SMSService smsService = new SMSServiceImpl("http://localhost:8381/sms", "secret", "1984");
 
     @Test
     void send() {

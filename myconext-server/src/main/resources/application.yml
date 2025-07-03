@@ -145,6 +145,7 @@ email_spam_threshold_seconds: 15
 sms:
   url: "http://localhost:8081/sms"
   bearer: "secret"
+  route: "1984"
 
 tiqr_configuration: "classpath:/tiqr.configuration.yml"
 

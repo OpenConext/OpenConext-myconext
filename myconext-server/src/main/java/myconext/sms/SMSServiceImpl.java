@@ -20,16 +20,18 @@ import java.util.Map;
 public class SMSServiceImpl implements SMSService {
 
     private final String url;
+    public final String route;
     private final String templateNl;
     private final String templateEn;
     private final RestTemplate restTemplate = new RestTemplate();
     private final MultiValueMap<String, String> headers = new HttpHeaders();
 
     @SneakyThrows
-    public SMSServiceImpl(String url, String bearer) {
+    public SMSServiceImpl(String url, String bearer, String route) {
         this.url = url;
         this.templateNl = IOUtils.toString(new ClassPathResource("sms/template_nl.txt").getInputStream(), Charset.defaultCharset());
         this.templateEn = IOUtils.toString(new ClassPathResource("sms/template_en.txt").getInputStream(), Charset.defaultCharset());
+        this.route = route;
         headers.add(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE);
         headers.add(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE);
         headers.add(HttpHeaders.AUTHORIZATION, "Bearer " + bearer);
@@ -46,7 +48,7 @@ public class SMSServiceImpl implements SMSService {
         Map<String, Object> body = Map.of(
                 "encoding", "auto",
                 "body", format,
-                "route", "business",
+                "route", route,
                 "originator", "eduID",
                 "recipients", List.of(mobile)
         );
