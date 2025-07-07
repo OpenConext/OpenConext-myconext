@@ -473,7 +473,7 @@ public class GuestIdpAuthenticationRequestFilter extends OncePerRequestFilter {
         Instant now = new Date().toInstant();
         boolean missingLinkedInstitution = !CollectionUtils.isEmpty(authenticationContextClassReferences) && authenticationContextClassReferences.contains(ACR.LINKED_INSTITUTION) &&
                 (CollectionUtils.isEmpty(user.getLinkedAccounts()) || user.getLinkedAccounts().stream()
-                .allMatch(linkedAccount -> now.isAfter(linkedAccount.getExpiresAt().toInstant())));
+                        .allMatch(linkedAccount -> now.isAfter(linkedAccount.getExpiresAt().toInstant())));
 
         if (user.isNewUser()) {
             user.setNewUser(false);
@@ -836,7 +836,76 @@ public class GuestIdpAuthenticationRequestFilter extends OncePerRequestFilter {
                         samlAttribute.getValue().equals("student"))) {
             attributes.add(attribute("urn:mace:dir:attribute-def:eduPersonAffiliation", "student"));
         }
+        List<String> eduPersonAssurances = eduPersonAssurances(user);
+        eduPersonAssurances
+                .forEach(eduPersonAssurance -> attributes.add(attribute("urn:mace:dir:attribute-def:eduPersonAssurance", eduPersonAssurance)));
         return attributes;
+    }
+
+    private List<String> eduPersonAssurances(User user) {
+        //we need a mutable list
+        List<String> eduPersonAssuranceIdP = user.getLinkedAccounts().stream()
+                .map(LinkedAccount::getEduPersonAssurances)
+                .flatMap(Collection::stream)
+                .toList();
+        //we do not send the IdP original assurances to the SP
+        List<String> eduPersonAssurances = new ArrayList<>();
+        if (eduPersonAssuranceIdP.stream().noneMatch(ass -> ass.startsWith("https://refeds.org/assurance/IAP/"))) {
+            eduPersonAssurances.add("https://refeds.org/assurance/IAP/medium");
+            eduPersonAssurances.add("https://eduid.nl/validated/institution");
+        } else if (eduPersonAssuranceIdP.stream().anyMatch(ass -> ass.equals("https://refeds.org/assurance/IAP/medium")
+                || ass.equals("https://refeds.org/assurance/IAP/high"))) {
+            eduPersonAssurances.add("https://refeds.org/assurance/IAP/medium");
+            eduPersonAssurances.add("https://refeds.org/assurance/IAP/high");
+            eduPersonAssurances.add("https://eduid.nl/validated/institution");
+        }
+
+        List<ExternalLinkedAccount> externalLinkedAccounts = user.getExternalLinkedAccounts();
+        if (externalLinkedAccounts.stream().anyMatch(acc -> acc.getIdpScoping().equals(IdpScoping.idin))) {
+            eduPersonAssurances.add("https://refeds.org/assurance/IAP/medium");
+            eduPersonAssurances.add("https://refeds.org/assurance/IAP/high");
+            eduPersonAssurances.add("https://eduid.nl/validated/bank");
+        }
+        if (externalLinkedAccounts.stream().anyMatch(acc -> acc.getIdpScoping().equals(IdpScoping.eherkenning))) {
+            eduPersonAssurances.add("https://refeds.org/assurance/IAP/medium");
+            eduPersonAssurances.add("https://refeds.org/assurance/IAP/high");
+            eduPersonAssurances.add("https://eduid.nl/validated/eidas");
+        }
+        if (externalLinkedAccounts.stream().anyMatch(acc -> acc.getIdpScoping().equals(IdpScoping.serviceDesk))) {
+            eduPersonAssurances.add("https://refeds.org/assurance/IAP/medium");
+            eduPersonAssurances.add("https://refeds.org/assurance/IAP/high");
+            eduPersonAssurances.add("https://eduid.nl/validated/servicedesk");
+        }
+        externalLinkedAccounts.stream()
+                .filter(acc -> acc.getIdpScoping().equals(IdpScoping.studielink)
+                        && acc.getVerification() != null && !acc.getVerification().equals(Verification.Ongeverifieerd))
+                .findFirst()
+                .ifPresent(acc -> {
+                    eduPersonAssurances.add("https://refeds.org/assurance/IAP/medium");
+
+                    if (acc.getVerification().equals(Verification.Geverifieerd)) {
+                        eduPersonAssurances.add("https://refeds.org/assurance/IAP/high");
+                        eduPersonAssurances.add("https://eduid.nl/validated/central-enrollment/G");
+                    } else if (acc.getVerification().equals(Verification.Verifai)) {
+                        eduPersonAssurances.add("https://eduid.nl/validated/central-enrollment/V");
+                    } else if (acc.getVerification().equals(Verification.Decentraal)) {
+                        eduPersonAssurances.add("https://eduid.nl/validated/central-enrollment/D");
+                    }
+                });
+        if (externalLinkedAccounts.stream().anyMatch(acc -> acc.getIdpScoping().equals(IdpScoping.serviceDesk))) {
+            eduPersonAssurances.add("https://refeds.org/assurance/IAP/medium");
+            eduPersonAssurances.add("https://refeds.org/assurance/IAP/high");
+            eduPersonAssurances.add("https://eduid.nl/validated/servicedesk");
+        }
+
+        eduPersonAssurances.addAll(List.of(
+                "https://refeds.org/assurance",
+                "https://refeds.org/assurance/ID/unique",
+                "https://refeds.org/assurance/ID/eppn-unique-no-reassign",
+                "https://refeds.org/assurance/IAP/low",
+                "https://refeds.org/assurance/version/2",
+                "https://eduid.nl/validated/email-validated"));
+        return eduPersonAssurances.stream().distinct().toList();
     }
 
     private List<LinkedAccount> safeSortedAffiliations(User user) {

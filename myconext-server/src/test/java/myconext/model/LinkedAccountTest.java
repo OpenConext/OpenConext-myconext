@@ -23,7 +23,7 @@ public class LinkedAccountTest {
     @Test
     public void schacHomeCaseInsensitive() {
         LinkedAccount linkedAccount = new LinkedAccount("id", "SCHAC", "eppn", "subjectId",
-                "givenName", "familyName", Arrays.asList("student"), false, new Date(), new Date());
+                "givenName", "familyName", Arrays.asList("student"), List.of(), false, new Date(), new Date());
         assertEquals("schac", linkedAccount.getSchacHomeOrganization());
     }
 
@@ -48,12 +48,12 @@ public class LinkedAccountTest {
 
     public static LinkedAccount linkedAccount(String givenName, String familyName, Date createdAt) {
         return new LinkedAccount("id", "schac", "eppn", "subjectId",
-                givenName, familyName, Arrays.asList("student"), false, createdAt, expired(createdAt));
+                givenName, familyName, Arrays.asList("student"), List.of(), false, createdAt, expired(createdAt));
     }
 
     public static LinkedAccount linkedAccount(Date createdAt, List<String> affiliations) {
         return new LinkedAccount("id", "schac", "eppn", "subjectId",
-                null, null, affiliations, false, createdAt, expired(createdAt));
+                null, null, affiliations, List.of(), false, createdAt, expired(createdAt));
     }
 
     private static Date expired(Date createdAt) {

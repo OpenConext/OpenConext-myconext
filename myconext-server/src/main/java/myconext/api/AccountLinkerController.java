@@ -915,9 +915,13 @@ public class AccountLinkerController implements UserAuthentication {
                 if (eppnAlreadyLinkedOptional.isPresent()) {
                     return eppnAlreadyLinkedOptional.get();
                 }
+                List<String> eduPersonAssurances = ((List<String>) body.getOrDefault("eduperson_assurance", new ArrayList<>()))
+                        .stream()
+                        .map(eduPersonAssurance -> eduPersonAssurance.toLowerCase())
+                        .toList();
                 linkedAccounts.add(
                         new LinkedAccount(institutionIdentifier, schacHomeOrganization, eppn, subjectId, givenName,
-                                familyName, affiliations, false, new Date(), expiresAt));
+                                familyName, affiliations, eduPersonAssurances, false, new Date(), expiresAt));
             }
             //We don't want to override by default, only if this is the only linked account
             if (linkedAccounts.size() == 1 && user.getExternalLinkedAccounts().isEmpty()) {
@@ -1000,8 +1004,13 @@ public class AccountLinkerController implements UserAuthentication {
             return new ArrayList<>();
         }
         List<String> eduPersonAffiliations = ((List<String>) idpAttributes.getOrDefault("eduperson_affiliation", new ArrayList<>()))
-                .stream().map(affiliation -> String.format("%s@%s", affiliation, schacHomeOrganization)).collect(Collectors.toList());
-        List<String> eduPersonScopedAffiliations = (List<String>) idpAttributes.getOrDefault("eduperson_scoped_affiliation", eduPersonAffiliations);
+                .stream()
+                .map(affiliation -> String.format("%s@%s", affiliation, schacHomeOrganization).toLowerCase())
+                .toList();
+        List<String> eduPersonScopedAffiliations = ((List<String>) idpAttributes.getOrDefault("eduperson_scoped_affiliation", eduPersonAffiliations))
+                .stream()
+                .map(String::toLowerCase)
+                .toList();
         Set<String> uniqueAffiliations = new HashSet<>(eduPersonAffiliations);
         uniqueAffiliations.addAll(eduPersonScopedAffiliations);
         return CollectionUtils.isEmpty(uniqueAffiliations) ? List.of(String.format("affiliate@%s", schacHomeOrganization)) : new ArrayList<>(uniqueAffiliations);

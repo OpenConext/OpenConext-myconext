@@ -36,6 +36,8 @@ public class LinkedAccount implements Serializable, ProvisionedLinkedAccount {
     @Setter
     private List<String> eduPersonAffiliations = new ArrayList<>();
     @Setter
+    private List<String> eduPersonAssurances = new ArrayList<>();
+    @Setter
     private boolean preferred;
     @Setter
     @Schema(type = "integer", format = "int64", example = "1634813554997")
@@ -54,6 +56,7 @@ public class LinkedAccount implements Serializable, ProvisionedLinkedAccount {
                          String givenName,
                          String familyName,
                          List<String> eduPersonAffiliations,
+                         List<String> eduPersonAssurances,
                          boolean preferred,
                          Date createdAt,
                          Date expiresAt) {
@@ -64,6 +67,7 @@ public class LinkedAccount implements Serializable, ProvisionedLinkedAccount {
         this.givenName = givenName;
         this.familyName = familyName;
         this.eduPersonAffiliations = eduPersonAffiliations;
+        this.eduPersonAssurances = eduPersonAssurances;
         this.preferred = preferred;
         this.createdAt = createdAt;
         this.expiresAt = expiresAt;
