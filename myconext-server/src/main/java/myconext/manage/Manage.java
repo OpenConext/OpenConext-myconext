@@ -89,7 +89,7 @@ public interface Manage {
         IdentityProvider identityProvider = new IdentityProvider(
                 remoteProvider,
                 metaDataFields.get("coin:institution_brin"),
-                metaDataFields.get("shibmd:scope:0:allowed")
+                metaDataFields.get("coin:institution_brin_schac_home")
         );
         Map<String, IdentityProvider> results = new HashMap<>();
 

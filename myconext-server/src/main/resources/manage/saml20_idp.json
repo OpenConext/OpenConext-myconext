@@ -12,6 +12,7 @@
         "logo:0:url": "https://static.surfconext.nl/media/idp/avat_st.jpg",
         "name:en": "thkidp EN",
         "OrganizationName:en": "Bolliger <strong> Mabillard</strong>",
+        "coin:institution_brin_schac_home": "aap.nl",
         "shibmd:scope:0:allowed": "aap.nl",
         "shibmd:scope:1:allowed": "noot.je",
         "shibmd:scope:2:allowed": "sub1.aap.nl",
@@ -38,6 +39,7 @@
         "name:en": "ROC Midden Nederland",
         "OrganizationName:nl": "ROC Midden Nederland NL",
         "OrganizationName:en": "ROC Midden Nederland EN",
+        "coin:institution_brin_schac_home": "rocmn.nl",
         "shibmd:scope:0:allowed": "rocmn.nl",
         "logo:0:url": "https://static.surfconext.nl/logos/idp/ROCMNlogo.png",
         "coin:institution_guid": "e7adb9d1-0911-e511-80d0-005056956c1a"
@@ -55,6 +57,7 @@
       "metaDataFields": {
         "name:nl": "EncAssertion Shib IdP",
         "name:en": "EncAssertion Shib IdP",
+        "coin:institution_brin_schac_home": "surfcloud.nl",
         "shibmd:scope:0:allowed": "surfcloud.nl",
         "shibmd:scope:1:allowed": "nope.mope",
         "coin:institution_guid": "noppy"
@@ -72,8 +75,9 @@
         "name:en": "SURFdrops Beta IdP",
         "OrganizationName:en": "SURFdropjes Beta",
         "OrganizationName:nl": "SURFdropjes Beta",
-        "shibmd:scope:0:allowed": "braindrops.nl",
         "logo:0:url": "https://static.surfconext.nl/media/sp/SURFdropsBeta.png",
+        "coin:institution_brin_schac_home": "braindrops.nl",
+        "shibmd:scope:0:allowed": "braindrops.nl",
         "shibmd:scope:1:allowed": "groningen.nl",
         "shibmd:scope:2:allowed": "surfnet.nl",
         "shibmd:scope:3:allowed": "dropjes.surfnet.nl",
