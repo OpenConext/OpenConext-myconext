@@ -331,7 +331,6 @@ public class UserController implements UserAuthentication {
                         .body(Collections.singletonMap("status", HttpStatus.FORBIDDEN.value()));
             }
             logLoginWithContext(user, "password", true, LOG, "Successfully logged in with password", request);
-            LOG.info("Successfully logged in with password");
         }
         return doInternalAuthentication(user, samlAuthenticationRequest, clientAuthenticationRequest.isUsePassword());
     }

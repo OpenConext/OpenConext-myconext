@@ -41,7 +41,8 @@ public class MDCContext {
                 "result", success ? "ok" : "error",
                 "tag", "myconext_loginstats",
                 "userid", user.getEmail()));
-        log.info(String.format("%S %s %s", message, user.getEmail(), user.getId()));
+        String ipAddress = resolve(request);
+        log.info(String.format("%s %s %s, ipAddress: %s", message, user.getEmail(), user.getId(), ipAddress));
     }
 
     /*
