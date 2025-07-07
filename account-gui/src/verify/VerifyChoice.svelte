@@ -18,6 +18,7 @@
     export let addEuropean;
     export let issuers = [];
     export let showInstitutionOption = true;
+    export let otherOptionsAllowed = false;
     export let serviceDeskActive;
     export let serviceName;
 
@@ -183,12 +184,12 @@
                 </div>
             </div>
         {/if}
-        {#if !showOtherOptions && showInstitutionOption}
+        {#if otherOptionsAllowed && !showOtherOptions && showInstitutionOption}
             <div class="choice-container other-options" on:click={() => showOtherOptions = !showOtherOptions}>
                 <p>{I18n.t("verify.modal.info.other")}</p>
             </div>
         {/if}
-        {#if showOtherOptions || !showInstitutionOption}
+        {#if otherOptionsAllowed && (showOtherOptions || !showInstitutionOption)}
             <div class="choice-container">
                 <div class="choice">
                     <h4>{I18n.t("VerifyIdentity.VerifyWithBankApp.Title.COPY")}</h4>

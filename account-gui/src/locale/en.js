@@ -303,7 +303,7 @@ const en =  {
     },
     subjectAlreadyLinked: {
         header: "Account not verified!",
-        info: "Your eduID could not be verified. The external account with which you just logged in, is already linked to a different eduID account.",
+        info: "Your eduID could not be verified. The external account with which you just logged in, is already linked to a different eduID account: {{subjectId}}.",
         proceed: "You can try to verify your account again or proceed to {{name}}.",
         proceedLink: "Proceed",
         retryLink: "Retry"

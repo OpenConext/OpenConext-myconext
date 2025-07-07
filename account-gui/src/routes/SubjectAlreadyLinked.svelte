@@ -9,10 +9,13 @@
 
     export let id;
     let serviceName = null;
+    let email = "";
     let showSpinner = true;
 
     onMount(() => {
         $links.displayBackArrow = false;
+        const urlSearchParams = new URLSearchParams(window.location.search);
+        email = urlSearchParams.get("email");
         fetchServiceName(id).then(res => {
             serviceName = res.name;
             showSpinner = false;
@@ -49,7 +52,7 @@
 <div class="home">
     <div class="card">
         <h2>{I18n.t("subjectAlreadyLinked.header")}</h2>
-        <p class="info">{I18n.t("subjectAlreadyLinked.info")}</p>
+        <p class="info">{I18n.t("subjectAlreadyLinked.info", {subjectId: email})}</p>
         <p class="info">{I18n.t("subjectAlreadyLinked.proceed", {name: serviceName})}</p>
 
         <Button href="/proceed" onClick={() => proceed($conf.magicLinkUrl)}

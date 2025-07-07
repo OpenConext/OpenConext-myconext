@@ -4,6 +4,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import myconext.model.User;
 import org.apache.commons.logging.Log;
 import org.slf4j.MDC;
+import org.springframework.util.CollectionUtils;
 
 import java.util.List;
 import java.util.Map;
@@ -53,7 +54,8 @@ public class MDCContext {
                 ipAddress,
                 loginMethod,
                 userAgent,
-                String.join(", ", authenticationContextClassReferences),
+                CollectionUtils.isEmpty(authenticationContextClassReferences) ? "[]" :
+                        String.join(", ", authenticationContextClassReferences),
                 authnContextClassRefValue
                 ));
     }

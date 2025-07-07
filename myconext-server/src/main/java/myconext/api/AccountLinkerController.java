@@ -9,6 +9,9 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import myconext.cron.DisposableEmailProviders;
 import myconext.exceptions.DuplicateUserEmailException;
@@ -48,9 +51,6 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponents;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import jakarta.servlet.http.Cookie;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpSession;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URI;
@@ -333,7 +333,7 @@ public class AccountLinkerController implements UserAuthentication {
         if (createInstitutionEduID == null || oneTimeLoginCode == null || oneTimeLoginCode.isExpired()) {
             //expired
             requestInstitutionEduIDRepository.delete(requestInstitutionEduID);
-            throw new ForbiddenException("Expired requestInstitutionEduID for User :"+requestInstitutionEduID.getUserInfo());
+            throw new ForbiddenException("Expired requestInstitutionEduID for User :" + requestInstitutionEduID.getUserInfo());
         }
         String email = createInstitutionEduID.getEmail();
         try {
@@ -341,7 +341,7 @@ public class AccountLinkerController implements UserAuthentication {
             if (!success) {
                 //Need to save the upped delay
                 requestInstitutionEduIDRepository.save(requestInstitutionEduID);
-                throw new InvalidOneTimeLoginCodeException("Invalid oneTimeLoginCode entered for user: "+ email);
+                throw new InvalidOneTimeLoginCodeException("Invalid oneTimeLoginCode entered for user: " + email);
             }
         } catch (ForbiddenException e) {
             requestInstitutionEduIDRepository.delete(requestInstitutionEduID);
@@ -576,10 +576,10 @@ public class AccountLinkerController implements UserAuthentication {
                     externalLinkedAccount.getSubjectId(),
                     user.getEmail(),
                     verifyState.getIdpScoping()));
-            String encodedOtherMail = URLEncoder.encode(optionalUsers.stream().findFirst().get().getEmail(),Charset.defaultCharset());
+            String encodedOtherMail = URLEncoder.encode(optionalUsers.stream().findFirst().get().getEmail(), Charset.defaultCharset());
             String clientRedirectUrl = isMobileFlow ?
                     idpBaseRedirectUrl + String.format("/client/mobile/verify-already-used?email=%s", encodedOtherMail) :
-                    spRedirectUrl + String.format("/subject-already-linked?idp_scoping=%s?email=%s",
+                    spRedirectUrl + String.format("/subject-already-linked?idp_scoping=%s&email=%s",
                             verifyState.getIdpScoping().name(), encodedOtherMail);
             return ResponseEntity.status(HttpStatus.FOUND)
                     .location(URI.create(clientRedirectUrl))
@@ -706,13 +706,14 @@ public class AccountLinkerController implements UserAuthentication {
         ExternalLinkedAccount externalLinkedAccount = attributeMapper.externalLinkedAccountFromAttributes(attributes, verifyState);
         List<User> optionalUsers = userRepository.findByExternalLinkedAccounts_SubjectId(externalLinkedAccount.getSubjectId());
         if (!optionalUsers.isEmpty() && optionalUsers.stream().anyMatch(existingUser -> !user.getId().equals(existingUser.getId()))) {
-            //Not allowed to link an external linked account which identity is already linked to another user
+            //Not allowed to link an external linked account whose identity is already linked to another user
             LOG.warn(String.format("Subject %s already linked to user %s", externalLinkedAccount.getSubjectId(), user.getEmail()));
-
+            String encodedEmail = URLEncoder.encode(optionalUsers.get(0).getEmail(), Charset.defaultCharset());
             String subjectAlreadyLinkedRequiredUri = this.idpBaseRedirectUrl + "/subject-already-linked/" +
                     samlAuthenticationRequest.getId() +
                     "?h=" + samlAuthenticationRequest.getHash() +
-                    "&redirect=" + URLEncoder.encode(this.magicLinkUrl, Charset.defaultCharset());
+                    "&redirect=" + URLEncoder.encode(this.magicLinkUrl, Charset.defaultCharset()) +
+                    "&email=" + encodedEmail;
             return ResponseEntity.status(HttpStatus.FOUND).location(URI.create(subjectAlreadyLinkedRequiredUri)).build();
         }
         List<ExternalLinkedAccount> externalLinkedAccounts = user.getExternalLinkedAccounts();

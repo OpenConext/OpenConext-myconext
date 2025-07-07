@@ -302,7 +302,7 @@ public class GuestIdpAuthenticationRequestFilter extends OncePerRequestFilter {
         List<LinkedAccount> nonExpiredLinkedAccounts = linkedAccounts.stream()
                 .filter(linkedAccount -> {
                     Instant expiresAt = linkedAccount.getExpiresAt().toInstant();
-                    //Non-validated name ARC's expire much sooner than ACR.VALIDATE_NAMES
+                    //Non-validated name ACR's expire much sooner than ACR.VALIDATE_NAMES
                     if (!validatedNameACR) {
                         expiresAt = linkedAccount.getCreatedAt().toInstant().plus(expiryNonValidatedDurationDays, ChronoUnit.DAYS);
                     }
@@ -464,11 +464,17 @@ public class GuestIdpAuthenticationRequestFilter extends OncePerRequestFilter {
         boolean inStepUpFlow = StepUpStatus.IN_STEP_UP.equals(samlAuthenticationRequest.getSteppedUp());
 
         boolean hasStudentAffiliation = hasRequiredStudentAffiliation(user.allEduPersonAffiliations());
+
         List<String> authenticationContextClassReferences = samlAuthenticationRequest.getAuthenticationContextClassReferences();
         boolean missingStudentAffiliation = !CollectionUtils.isEmpty(authenticationContextClassReferences) && authenticationContextClassReferences.contains(ACR.AFFILIATION_STUDENT) &&
                 !hasStudentAffiliation;
         boolean missingValidName = !CollectionUtils.isEmpty(authenticationContextClassReferences) && authenticationContextClassReferences.contains(ACR.VALIDATE_NAMES) &&
                 !hasValidatedName(user);
+        Instant now = new Date().toInstant();
+        boolean missingLinkedInstitution = !CollectionUtils.isEmpty(authenticationContextClassReferences) && authenticationContextClassReferences.contains(ACR.LINKED_INSTITUTION) &&
+                (CollectionUtils.isEmpty(user.getLinkedAccounts()) || user.getLinkedAccounts().stream()
+                .allMatch(linkedAccount -> now.isAfter(linkedAccount.getExpiresAt().toInstant())));
+
         if (user.isNewUser()) {
             user.setNewUser(false);
             userRepository.save(user);
@@ -478,8 +484,8 @@ public class GuestIdpAuthenticationRequestFilter extends OncePerRequestFilter {
             if (inStepUpFlow) {
                 finishStepUp(samlAuthenticationRequest);
             }
-            if (missingStudentAffiliation || missingValidName) {
-                //When we send the assertion EB stops the flow but this will be fixed upstream
+            if (missingStudentAffiliation || missingValidName || missingLinkedInstitution) {
+                //When we send the assertion, EB stops the flow, but this will be fixed upstream
                 return true;
             }
             if (samlAuthenticationRequest.isTiqrFlow()) {
@@ -491,8 +497,8 @@ public class GuestIdpAuthenticationRequestFilter extends OncePerRequestFilter {
             return false;
         } else if (inStepUpFlow) {
             finishStepUp(samlAuthenticationRequest);
-            if (missingStudentAffiliation || missingValidName) {
-                //When we send the assertion EB stops the flow but this will be fixed upstream
+            if (missingStudentAffiliation || missingValidName || missingLinkedInstitution) {
+                //When we send the assertion, EB stops the flow, but this will be fixed upstream
                 return true;
             }
             boolean externalNameValidation = !CollectionUtils.isEmpty(authenticationContextClassReferences)
@@ -686,13 +692,21 @@ public class GuestIdpAuthenticationRequestFilter extends OncePerRequestFilter {
                     !hasValidatedName(user);
             boolean missingExternalName = authenticationContextClassReferences.contains(ACR.VALIDATE_NAMES_EXTERNAL) &&
                     !hasValidatedExternalName(user);
-            if (missingStudentAffiliation || missingValidName || missingExternalName) {
+            Instant now = new Date().toInstant();
+            boolean missingLinkedInstitution = authenticationContextClassReferences.contains(ACR.LINKED_INSTITUTION) &&
+                    (CollectionUtils.isEmpty(user.getLinkedAccounts()) || user.getLinkedAccounts().stream()
+                            .allMatch(linkedAccount -> now.isAfter(linkedAccount.getExpiresAt().toInstant())));
+
+            if (missingStudentAffiliation || missingValidName || missingExternalName || missingLinkedInstitution) {
                 if (missingValidName) {
                     optionalMessage = "The requesting service has indicated that the authenticated user is required to have a first_name and last_name." +
                             " Your institution has not provided those attributes.";
                 } else if (missingExternalName) {
                     optionalMessage = "The requesting service has indicated that the authenticated user has verified their first_name and last_name." +
                             " Your identity is not verified by an external trusted party.";
+                } else if (missingLinkedInstitution) {
+                    optionalMessage = "The requesting service has indicated that the authenticated user has linked its account to an Institution." +
+                            " Your identity is not verified by an external educational institution.";
                 } else {
                     optionalMessage = "The requesting service has indicated that the authenticated user is required to have an affiliation Student." +
                             " Your institution has not provided this affiliation.";
@@ -725,7 +739,7 @@ public class GuestIdpAuthenticationRequestFilter extends OncePerRequestFilter {
         this.addTrackingCookie(request, response, user);
         String loginMethod = samlAuthenticationRequest.isTiqrFlow() ? "tiqr" :
                 samlAuthenticationRequest.isOneTimeLoginCodeFlow() ? "one_time_login_code" :
-                        samlAuthenticationRequest.isPasswordOrWebAuthnFlow() ? "password" : "magiclink";
+                        samlAuthenticationRequest.isPasswordOrWebAuthnFlow() ? "password" : "cookie";
 
         logLoginWithContext(user, loginMethod, true, LOG, "Successfully logged in with " + loginMethod,
                 request, authnContextClassRefValue, authenticationContextClassReferences);

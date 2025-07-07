@@ -17,12 +17,14 @@
     let showChooseOptions = false;
     let issuers = [];
     let isExternalNameValidation = false;
+    let isLinkedInstitutionRequired = false;
 
     onMount(() => {
         $links.displayBackArrow = false;
         const urlSearchParams = new URLSearchParams(window.location.search);
         explanation = decodeURIComponent(urlSearchParams.get("explanation"));
         isExternalNameValidation = explanation === "validate_names_external";
+        isLinkedInstitutionRequired = explanation === "linked_institution";
 
         const retry = urlSearchParams.get("retry");
         if (retry) {
@@ -93,6 +95,7 @@
                           issuers={issuers}
                           id={id}
                           showInstitutionOption={!isExternalNameValidation}
+                          otherOptionsAllowed={!isLinkedInstitutionRequired}
                           serviceName={serviceName}
                           serviceDeskActive={$conf.featureServiceDeskActive}
             />
