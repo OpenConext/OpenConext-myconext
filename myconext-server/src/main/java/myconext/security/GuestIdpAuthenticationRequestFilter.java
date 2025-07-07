@@ -598,12 +598,6 @@ public class GuestIdpAuthenticationRequestFilter extends OncePerRequestFilter {
             LOG.info(String.format("Tiqr flow authenticated for %s ", user.getUsername()));
             addTiqrCookie(response, user);
         }
-        String loginMethod = samlAuthenticationRequest.isTiqrFlow() ? "tiqr" :
-                samlAuthenticationRequest.isOneTimeLoginCodeFlow() ? "one_time_login_code" :
-                        samlAuthenticationRequest.isPasswordOrWebAuthnFlow() ? "password" : "magiclink";
-
-        logLoginWithContext(user, loginMethod, true, LOG, "Successfully logged in with " + loginMethod, request);
-
         sendAssertion(request, response, samlAuthenticationRequest, user);
     }
 
@@ -727,8 +721,15 @@ public class GuestIdpAuthenticationRequestFilter extends OncePerRequestFilter {
             cookie.setMaxAge(0);
             response.addCookie(cookie);
         });
-        //Tracking cookie for user new device discovery
+        //Tracking cookie for user's new device discovery
         this.addTrackingCookie(request, response, user);
+        String loginMethod = samlAuthenticationRequest.isTiqrFlow() ? "tiqr" :
+                samlAuthenticationRequest.isOneTimeLoginCodeFlow() ? "one_time_login_code" :
+                        samlAuthenticationRequest.isPasswordOrWebAuthnFlow() ? "password" : "magiclink";
+
+        logLoginWithContext(user, loginMethod, true, LOG, "Successfully logged in with " + loginMethod,
+                request, authnContextClassRefValue, authenticationContextClassReferences);
+
         this.samlService.sendResponse(
                 samlAuthenticationRequest.getIssuer(),
                 samlAuthenticationRequest.getRequestId(),

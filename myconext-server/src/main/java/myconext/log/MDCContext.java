@@ -5,8 +5,10 @@ import myconext.model.User;
 import org.apache.commons.logging.Log;
 import org.slf4j.MDC;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class MDCContext {
@@ -34,7 +36,8 @@ public class MDCContext {
      * status (start, ingelogd, PB verstuurd, gefaald, enz.)
      */
     public static void logLoginWithContext(User user, String loginMethod, boolean success, Log log, String message,
-                                           HttpServletRequest request) {
+                                           HttpServletRequest request, String authnContextClassRefValue,
+                                           List<String> authenticationContextClassReferences) {
         MDC.setContextMap(Map.of(
                 "login_method", loginMethod,
                 "action", "login",
@@ -42,7 +45,17 @@ public class MDCContext {
                 "tag", "myconext_loginstats",
                 "userid", user.getEmail()));
         String ipAddress = resolve(request);
-        log.info(String.format("%s %s %s, ipAddress: %s", message, user.getEmail(), user.getId(), ipAddress));
+        String userAgent = request.getHeader("User-Agent");
+        log.info(String.format("%s %s %s, ipAddress: %s, type: %s, userAgent: %s, requestedACR: %s, responseACR: %s",
+                message,
+                user.getEmail(),
+                user.getId(),
+                ipAddress,
+                loginMethod,
+                userAgent,
+                String.join(", ", authenticationContextClassReferences),
+                authnContextClassRefValue
+                ));
     }
 
     /*

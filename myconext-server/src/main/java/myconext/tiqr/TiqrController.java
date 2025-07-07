@@ -426,6 +426,10 @@ public class TiqrController implements UserAuthentication {
                 this.tiqrConfiguration.getEduIdAppBaseUrl(),
                 sendPushNotification);
         String authenticationUrl = authentication.getAuthenticationUrl();
+
+        LOG.info(String.format("Started Tiqr authentication for user %s and sendPushNotification %s and authenticationURL %s",
+                user.getEmail(), sendPushNotification, authenticationUrl));
+
         String qrCode = QRCodeGenerator.generateQRCodeImage(authenticationUrl);
         StartAuthentication startAuthentication = new StartAuthentication(authentication.getSessionKey(), authenticationUrl, qrCode, sendPushNotification && authentication.isPushNotificationSend());
         return ResponseEntity.ok(startAuthentication);
@@ -559,7 +563,8 @@ public class TiqrController implements UserAuthentication {
         try {
             tiqrService.postAuthentication(authenticationData);
 
-            LOG.debug(String.format("Successful authentication for user %s, %s", user.getEmail(), user.getId()));
+            LOG.info(String.format("Successful authentication for user %s, %s after response %s from Tiqr app",
+                    user.getEmail(), user.getId(), authenticationData.getResponse()));
 
             rateLimitEnforcer.unsuspendUserAfterTiqrSuccess(user);
             return ResponseEntity.ok("OK");

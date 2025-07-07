@@ -65,7 +65,6 @@ import java.util.stream.Collectors;
 
 import static myconext.SwaggerOpenIdConfig.OPEN_ID_SCHEME_NAME;
 import static myconext.crypto.HashGenerator.hash;
-import static myconext.log.MDCContext.logLoginWithContext;
 import static myconext.log.MDCContext.logWithContext;
 
 @RestController
@@ -326,11 +325,9 @@ public class UserController implements UserAuthentication {
 
         if (clientAuthenticationRequest.isUsePassword()) {
             if (!passwordEncoder.matches(providedUser.getPassword(), user.getPassword())) {
-                logLoginWithContext(user, "password", false, LOG, "Bad attempt to login with password", request);
                 return ResponseEntity.status(HttpStatus.FORBIDDEN)
                         .body(Collections.singletonMap("status", HttpStatus.FORBIDDEN.value()));
             }
-            logLoginWithContext(user, "password", true, LOG, "Successfully logged in with password", request);
         }
         return doInternalAuthentication(user, samlAuthenticationRequest, clientAuthenticationRequest.isUsePassword());
     }
@@ -1239,8 +1236,6 @@ public class UserController implements UserAuthentication {
             return return404();
         }
         User user = optionalUser.get();
-
-        logLoginWithContext(user, "webauthn", true, LOG, "Successfully logged in with webauthn", request);
 
         if (samlAuthenticationRequest.isTestInstance()) {
             //back to SP
