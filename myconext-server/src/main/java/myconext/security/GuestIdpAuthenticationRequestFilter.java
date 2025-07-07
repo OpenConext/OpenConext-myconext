@@ -844,20 +844,25 @@ public class GuestIdpAuthenticationRequestFilter extends OncePerRequestFilter {
 
     private List<String> eduPersonAssurances(User user) {
         //we need a mutable list
-        List<String> eduPersonAssuranceIdP = user.getLinkedAccounts().stream()
+        List<LinkedAccount> linkedAccounts = user.getLinkedAccounts();
+        List<String> eduPersonAssuranceIdP = linkedAccounts.stream()
                 .map(LinkedAccount::getEduPersonAssurances)
                 .flatMap(Collection::stream)
                 .toList();
         //we do not send the IdP original assurances to the SP
         List<String> eduPersonAssurances = new ArrayList<>();
-        if (eduPersonAssuranceIdP.stream().noneMatch(ass -> ass.startsWith("https://refeds.org/assurance/IAP/"))) {
-            eduPersonAssurances.add("https://refeds.org/assurance/IAP/medium");
-            eduPersonAssurances.add("https://eduid.nl/validated/institution");
-        } else if (eduPersonAssuranceIdP.stream().anyMatch(ass -> ass.equals("https://refeds.org/assurance/IAP/medium")
-                || ass.equals("https://refeds.org/assurance/IAP/high"))) {
-            eduPersonAssurances.add("https://refeds.org/assurance/IAP/medium");
-            eduPersonAssurances.add("https://refeds.org/assurance/IAP/high");
-            eduPersonAssurances.add("https://eduid.nl/validated/institution");
+        if (!linkedAccounts.isEmpty()) {
+            if (eduPersonAssuranceIdP.stream().noneMatch(ass -> ass.startsWith("https://refeds.org/assurance/IAP/"))) {
+                eduPersonAssurances.add("https://refeds.org/assurance/IAP/medium");
+                eduPersonAssurances.add("https://eduid.nl/validated/institution");
+            } else if (eduPersonAssuranceIdP.stream().anyMatch(ass -> ass.equals("https://refeds.org/assurance/IAP/medium"))) {
+                eduPersonAssurances.add("https://refeds.org/assurance/IAP/medium");
+                eduPersonAssurances.add("https://eduid.nl/validated/institution");
+            } else if (eduPersonAssuranceIdP.stream().anyMatch(ass -> ass.equals("https://refeds.org/assurance/IAP/high"))) {
+                eduPersonAssurances.add("https://refeds.org/assurance/IAP/medium");
+                eduPersonAssurances.add("https://refeds.org/assurance/IAP/high");
+                eduPersonAssurances.add("https://eduid.nl/validated/institution");
+            }
         }
 
         List<ExternalLinkedAccount> externalLinkedAccounts = user.getExternalLinkedAccounts();
