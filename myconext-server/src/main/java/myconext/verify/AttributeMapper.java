@@ -319,8 +319,7 @@ public class AttributeMapper {
         return CollectionUtils.isEmpty(brinCodes) ? Collections.emptyList() :
                 brinCodes.stream()
                         .map(manage::findIdentityProviderByBrinCode)
-                        .filter(Optional::isPresent)
-                        .map(Optional::get)
+                        .flatMap(Optional::stream)
                         .filter(idp -> StringUtils.hasText(idp.getDomainName()))
                         .map(idp -> String.format("student@%s", idp.getDomainName()))
                         .toList();
