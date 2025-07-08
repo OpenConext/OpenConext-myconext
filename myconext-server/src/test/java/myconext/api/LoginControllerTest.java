@@ -145,7 +145,9 @@ public class LoginControllerTest extends AbstractIntegrationTest {
     public void redirectToSPServiceDeskHook() throws IOException {
         String authenticationRequestId = samlAuthnRequest();
         User user = user("steve@example.com", "Steve", "Doe", "en");
-        ClientAuthenticationResponse magicLinkResponse = oneTimeLoginCodeRequest(new ClientAuthenticationRequest(authenticationRequestId, user, false), HttpMethod.POST);
+        ClientAuthenticationRequest clientAuthenticationRequest = new ClientAuthenticationRequest(authenticationRequestId, user, false, "response");
+
+        ClientAuthenticationResponse magicLinkResponse = oneTimeLoginCodeRequest(clientAuthenticationRequest, HttpMethod.POST);
         Response response = magicResponse(magicLinkResponse);
 
         String cookie = response.cookie(GUEST_IDP_REMEMBER_ME_COOKIE_NAME);

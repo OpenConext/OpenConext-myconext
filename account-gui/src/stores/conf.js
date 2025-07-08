@@ -13,7 +13,9 @@ export const conf = writable({
     featureIdVerify: false,
     featureServiceDeskActive: false,
     emailSpamThresholdSeconds: 5,
-    mobileAppRedirect: ""
+    mobileAppRedirect: "",
+    captchaEnabled: false,
+    captchaSiteKey: null
 });
 
 export const links = writable({

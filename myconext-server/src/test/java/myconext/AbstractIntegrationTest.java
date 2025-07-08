@@ -191,7 +191,7 @@ public abstract class AbstractIntegrationTest implements HasUserRepository {
 
     protected ClientAuthenticationResponse oneTimeLoginCodeRequest(User user, HttpMethod method) throws IOException {
         String authenticationRequestId = samlAuthnRequest();
-        return oneTimeLoginCodeRequest(new ClientAuthenticationRequest(authenticationRequestId, user, StringUtils.hasText(user.getPassword())), method);
+        return oneTimeLoginCodeRequest(new ClientAuthenticationRequest(authenticationRequestId, user, StringUtils.hasText(user.getPassword()),"response"), method);
     }
 
     protected ClientAuthenticationResponse oneTimeLoginCodeRequest(ClientAuthenticationRequest linkRequest, HttpMethod method) {

@@ -42,9 +42,11 @@ public class AccountLinkerControllerTest extends AbstractIntegrationTest {
         Response response = samlAuthnRequestResponseWithLoa(null, null, "");
         String authenticationRequestId = extractAuthenticationRequestIdFromAuthnResponse(response);
         //This ensures the user is tied to the authnRequest
+        ClientAuthenticationRequest clientAuthenticationRequest = new ClientAuthenticationRequest(authenticationRequestId, user("mdoe@example.com"), false, "response");
+
         given().when()
                 .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
-                .body(new ClientAuthenticationRequest(authenticationRequestId, user("mdoe@example.com"), false))
+                .body(clientAuthenticationRequest)
                 .put("/myconext/api/idp/generate_code_request")
                 .then()
                 .statusCode(HttpStatus.CREATED.value());
@@ -121,9 +123,10 @@ public class AccountLinkerControllerTest extends AbstractIntegrationTest {
     @Test
     public void redirectWrongUser() throws IOException {
         String authenticationRequestId = samlAuthnRequest();
+        ClientAuthenticationRequest clientAuthenticationRequest = new ClientAuthenticationRequest(authenticationRequestId, user("mdoe@example.com"), false, "response");
         given().when()
                 .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
-                .body(new ClientAuthenticationRequest(authenticationRequestId, user("mdoe@example.com"), false))
+                .body(clientAuthenticationRequest)
                 .put("/myconext/api/idp/generate_code_request")
                 .then()
                 .statusCode(HttpStatus.CREATED.value());
@@ -236,9 +239,10 @@ public class AccountLinkerControllerTest extends AbstractIntegrationTest {
 
     private User doRedirectResult(Map<Object, Object> userInfo, String authenticationRequestId, String expectedLocation) throws JsonProcessingException {
         //This ensures the user is tied to the authnRequest
+        ClientAuthenticationRequest clientAuthenticationRequest = new ClientAuthenticationRequest(authenticationRequestId, user("mdoe@example.com"), false, "response");
         given().when()
                 .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
-                .body(new ClientAuthenticationRequest(authenticationRequestId, user("mdoe@example.com"), false))
+                .body(clientAuthenticationRequest)
                 .put("/myconext/api/idp/generate_code_request")
                 .then()
                 .statusCode(HttpStatus.CREATED.value());

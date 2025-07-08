@@ -6,7 +6,7 @@
     import I18n from "../locale/I18n";
     import critical from "../icons/critical.svg?raw";
     import attention from "../icons/alert-circle.svg?raw";
-
+    import {FriendlyCaptchaSDK} from "@friendlycaptcha/sdk"
     import {fetchServiceName, generateCodeNewUser} from "../api/index";
     import CheckBox from "../components/CheckBox.svelte";
     import Spinner from "../components/Spinner.svelte";
@@ -15,15 +15,17 @@
     import {domains} from "../stores/domains";
     import Cookies from "js-cookie";
     import {cookieNames} from "../constants/cookieNames";
+    import {isEmpty} from "../utils/utils.js";
 
     export let id;
+
     let emailInUse = false;
     let emailForbidden = false;
     let initial = true;
     let showSpinner = true;
     let serviceName = "";
-
     let agreedWithTerms = false;
+    let captchaShowWarning = false;
 
     onMount(() => {
         $links.displayBackArrow = true;
@@ -31,6 +33,21 @@
         $user.familyName = "";
         $user.knowUser = null;
         Cookies.remove(cookieNames.USERNAME);
+        if ($conf.captchaEnabled) {
+            const mount = document.querySelector("#captcha");
+            mount.addEventListener("frc:widget.complete", function(event) {
+                captchaShowWarning = false;
+            });
+
+            const sdk = new FriendlyCaptchaSDK();
+            sdk.createWidget({
+                element: mount,
+                sitekey: $conf.captchaSiteKey,
+                startMode: "auto",
+                language: I18n.locale,
+            });
+        }
+
         fetchServiceName(id).then(res => {
             serviceName = res.name;
             showSpinner = false;
@@ -39,8 +56,13 @@
 
     const handleNext = () => {
         if (allowedNext($user.email, $user.givenName, $user.familyName, agreedWithTerms)) {
+            const captchaResponse = document.querySelector("[name='frc-captcha-response']").value;
+            if ($conf.captchaEnabled && isEmpty(captchaResponse) || captchaResponse === ".ACTIVATED") {
+                captchaShowWarning = true;
+                return;
+            }
             showSpinner = true;
-            generateCodeNewUser($user.email, $user.givenName, $user.familyName, id)
+            generateCodeNewUser($user.email, $user.givenName, $user.familyName, id, captchaResponse)
                 .then(res => {
                     const url = res.stepup ? `/stepup/${id}?name=${encodeURIComponent(serviceName)}&explanation=${res.explanation}` :
                         `/code/${id}?name=${encodeURIComponent(serviceName)}&modus=cr`;
@@ -72,7 +94,7 @@
     }
 
     const allowedNext = (email, familyName, givenName, agreedWithTerms) => {
-        return validEmail(email) && familyName && givenName && agreedWithTerms && !$domains.allowedDomainNamesError
+        return validEmail(email) && familyName && givenName && agreedWithTerms && !$domains.allowedDomainNamesError && !captchaShowWarning
     };
 
     const handleEmailBlur = e => {
@@ -186,11 +208,28 @@
         font-weight: 600;
     }
 
+    .controls {
+        margin: 10px 0 10px 0;
+        display: flex;
+        flex-direction: column;
+        gap: 10px
+    }
+
+    #captcha {
+        width: 335px !important;
+        margin-top: 15px;
+    }
+
+    :global(.frc-banner) {
+        display: none;
+    }
+
+
 </style>
 {#if showSpinner}
     <Spinner/>
 {/if}
-
+<form on:keydown={(e) => e.key === 'Enter' && e.preventDefault()}>
 <h2 class="header">{I18n.t("LinkFromInstitution.RequestEduIdButton.COPY")}</h2>
 {#if serviceName}
     <h2 class="top">{I18n.t("Login.HeaderSubTitle.COPY")}<span>{serviceName}</span></h2>
@@ -207,7 +246,8 @@
        value={$user.email}
        on:blur={handleEmailBlur}>
 {#if !initial && !validEmail($user.email)}
-    <div class="error"><span class="svg">{@html critical}</span><span>{I18n.t("LinkFromInstitution.InvalidEmail.COPY")}</span></div>
+    <div class="error"><span
+            class="svg">{@html critical}</span><span>{I18n.t("LinkFromInstitution.InvalidEmail.COPY")}</span></div>
 {/if}
 {#if emailInUse}
     <div class="error">
@@ -274,12 +314,19 @@
 {#if !initial && !$user.familyName}
     <span class="error">{I18n.t("Login.RequiredAttribute.COPY", {attr: I18n.t("Profile.LastName.COPY")})}</span>
 {/if}
-<CheckBox value={agreedWithTerms}
-          className="light"
-          label={I18n.t("LinkFromInstitution.AgreeWithTerms.COPY")}
-          onChange={val => agreedWithTerms = val}/>
-<Button disabled={showSpinner || !allowedNext($user.email, $user.familyName, $user.givenName, agreedWithTerms)}
-        href="/magic"
-        className="full"
-        label={I18n.t("LinkFromInstitution.RequestEduIdButton.COPY")}
-        onClick={handleNext}/>
+<div class="controls">
+    <CheckBox value={agreedWithTerms}
+              className="light"
+              label={I18n.t("LinkFromInstitution.AgreeWithTerms.COPY")}
+              onChange={val => agreedWithTerms = val}/>
+    <div id="captcha"></div>
+    {#if captchaShowWarning}
+        <span class="captcha error">{I18n.t("captcha.proveNotRobot")}</span>
+    {/if}
+    <Button disabled={showSpinner || !allowedNext($user.email, $user.familyName, $user.givenName, agreedWithTerms)}
+            href="/magic"
+            className="full"
+            label={I18n.t("LinkFromInstitution.RequestEduIdButton.COPY")}
+            onClick={handleNext}/>
+</div>
+</form>

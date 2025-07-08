@@ -23,6 +23,7 @@ import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import lombok.Getter;
 import lombok.SneakyThrows;
+import myconext.captcha.CaptchaVerifier;
 import myconext.cron.DisposableEmailProviders;
 import myconext.exceptions.*;
 import myconext.mail.MailBox;
@@ -104,7 +105,7 @@ public class UserController implements UserAuthentication {
     private final boolean featureDefaultRememberMe;
     private final boolean sendJsExceptions;
     private final ServicesConfiguration servicesConfiguration;
-
+    private final CaptchaVerifier captchaVerifier;
     private final List<VerifyIssuer> issuers;
     //For now, hardcode the not known issuers from test
     private final List<String> unknownIssuers = List.of("CURRNL2A");
@@ -122,6 +123,7 @@ public class UserController implements UserAuthentication {
                           EmailDomainGuard emailDomainGuard,
                           DisposableEmailProviders disposableEmailProviders,
                           RegistrationRepository registrationRepository,
+                          CaptchaVerifier captchaVerifier,
                           @Qualifier("jsonMapper") ObjectMapper objectMapper,
                           @Value("${email.magic-link-url}") String magicLinkUrl,
                           @Value("${schac_home_organization}") String schacHomeOrganization,
@@ -148,6 +150,7 @@ public class UserController implements UserAuthentication {
         this.disposableEmailProviders = disposableEmailProviders;
         this.registrationRepository = registrationRepository;
         this.objectMapper = objectMapper;
+        this.captchaVerifier = captchaVerifier;
         this.magicLinkUrl = magicLinkUrl;
         this.schacHomeOrganization = schacHomeOrganization;
         this.idpBaseUrl = idpBaseUrl;
@@ -282,8 +285,12 @@ public class UserController implements UserAuthentication {
                 .orElseThrow(() -> new ExpiredAuthenticationException("Expired authentication request"));
 
         User user = clientAuthenticationRequest.getUser();
-
         String email = user.getEmail();
+
+        boolean success = this.captchaVerifier.verify(clientAuthenticationRequest.getCaptchaResponse());
+        if (!success) {
+            throw new CaptchInvalidException("Invalid captcha for user: " + email);
+        }
         verifyEmails(email, true);
 
         Optional<User> optionalUser = userRepository.findUserByEmail(emailGuessingPreventor.sanitizeEmail(email));

@@ -141,7 +141,7 @@ public class UserControllerTest extends AbstractIntegrationTest {
         doExpireWithFindProperty(SamlAuthenticationRequest.class, "id", authenticationRequestId);
 
         ClientAuthenticationRequest linkRequest = new ClientAuthenticationRequest(authenticationRequestId,
-                user("new@example.com", "Mary", "Doe", "en"), false);
+                user("new@example.com", "Mary", "Doe", "en"), false, "repsonse");
 
         oneTimeLoginCodeRequest(linkRequest, HttpMethod.POST)
                 .response
@@ -160,7 +160,8 @@ public class UserControllerTest extends AbstractIntegrationTest {
         Response response = samlAuthnRequestResponseWithLoa(null, "relay", authnContext);
         String authenticationRequestId = extractAuthenticationRequestIdFromAuthnResponse(response);
 
-        ClientAuthenticationResponse authenticationResponse = oneTimeLoginCodeRequest(new ClientAuthenticationRequest(authenticationRequestId, user, false), HttpMethod.PUT);
+        ClientAuthenticationRequest clientAuthenticationRequest = new ClientAuthenticationRequest(authenticationRequestId, user, false, "repsonse");
+        ClientAuthenticationResponse authenticationResponse = oneTimeLoginCodeRequest(clientAuthenticationRequest, HttpMethod.PUT);
         String samlResponse = samlResponse(authenticationResponse);
 
         assertTrue(samlResponse.contains(ACR.LINKED_INSTITUTION));
@@ -174,7 +175,7 @@ public class UserControllerTest extends AbstractIntegrationTest {
         Response response = samlAuthnRequestResponseWithLoa(null, "relay", authnContext);
         String authenticationRequestId = extractAuthenticationRequestIdFromAuthnResponse(response);
 
-        ClientAuthenticationResponse authenticationResponse = oneTimeLoginCodeRequest(new ClientAuthenticationRequest(authenticationRequestId, user, false), HttpMethod.PUT);
+        ClientAuthenticationResponse authenticationResponse = oneTimeLoginCodeRequest(new ClientAuthenticationRequest(authenticationRequestId, user, false, "repsonse"), HttpMethod.PUT);
         String samlResponse = samlResponse(authenticationResponse);
 
         assertTrue(samlResponse.contains(ACR.VALIDATE_NAMES));
@@ -199,7 +200,7 @@ public class UserControllerTest extends AbstractIntegrationTest {
         samlAuthenticationRequest.setSteppedUp(StepUpStatus.FINISHED_STEP_UP);
         authenticationRequestRepository.save(samlAuthenticationRequest);
 
-        ClientAuthenticationResponse authenticationResponse = oneTimeLoginCodeRequest(new ClientAuthenticationRequest(authenticationRequestId, user, false), HttpMethod.PUT);
+        ClientAuthenticationResponse authenticationResponse = oneTimeLoginCodeRequest(new ClientAuthenticationRequest(authenticationRequestId, user, false, "repsonse"), HttpMethod.PUT);
         String samlResponse = this.samlResponse(authenticationResponse);
 
         assertTrue(samlResponse.contains("Your institution has not provided this affiliation"));
@@ -226,7 +227,7 @@ public class UserControllerTest extends AbstractIntegrationTest {
         samlAuthenticationRequest.setSteppedUp(StepUpStatus.FINISHED_STEP_UP);
         authenticationRequestRepository.save(samlAuthenticationRequest);
 
-        ClientAuthenticationResponse authenticationResponse = oneTimeLoginCodeRequest(new ClientAuthenticationRequest(authenticationRequestId, user, false), HttpMethod.PUT);
+        ClientAuthenticationResponse authenticationResponse = oneTimeLoginCodeRequest(new ClientAuthenticationRequest(authenticationRequestId, user, false, "repsonse"), HttpMethod.PUT);
         String samlResponse = this.samlResponse(authenticationResponse);
 
         assertTrue(samlResponse.contains("Your institution has not provided those attributes"));
@@ -245,7 +246,7 @@ public class UserControllerTest extends AbstractIntegrationTest {
         authenticationRequestRepository.save(samlAuthenticationRequest);
 
         User user = userRepository.findOneUserByEmail("jdoe@example.com");
-        ClientAuthenticationResponse authenticationResponse = oneTimeLoginCodeRequest(new ClientAuthenticationRequest(authenticationRequestId, user, false), HttpMethod.PUT);
+        ClientAuthenticationResponse authenticationResponse = oneTimeLoginCodeRequest(new ClientAuthenticationRequest(authenticationRequestId, user, false, "repsonse"), HttpMethod.PUT);
         String samlResponse = this.samlResponse(authenticationResponse);
 
         assertTrue(samlResponse.contains("Your identity is not verified by an external trusted party"));
@@ -286,7 +287,7 @@ public class UserControllerTest extends AbstractIntegrationTest {
         Response response = samlAuthnRequestResponseWithLoa(null, "relay", authnContext);
         String authenticationRequestId = extractAuthenticationRequestIdFromAuthnResponse(response);
 
-        ClientAuthenticationResponse authenticationResponse = oneTimeLoginCodeRequest(new ClientAuthenticationRequest(authenticationRequestId, user, false), HttpMethod.PUT);
+        ClientAuthenticationResponse authenticationResponse = oneTimeLoginCodeRequest(new ClientAuthenticationRequest(authenticationRequestId, user, false, "repsonse"), HttpMethod.PUT);
         String samlResponse = samlResponse(authenticationResponse);
 
         assertTrue(samlResponse.contains(ACR.VALIDATE_NAMES));
@@ -301,7 +302,7 @@ public class UserControllerTest extends AbstractIntegrationTest {
         Response response = samlAuthnRequestResponseWithLoa(null, "relay", authnContext);
 
         String authenticationRequestId = extractAuthenticationRequestIdFromAuthnResponse(response);
-        ClientAuthenticationResponse authenticationResponse = oneTimeLoginCodeRequest(new ClientAuthenticationRequest(authenticationRequestId, user, false), HttpMethod.PUT);
+        ClientAuthenticationResponse authenticationResponse = oneTimeLoginCodeRequest(new ClientAuthenticationRequest(authenticationRequestId, user, false, "repsonse"), HttpMethod.PUT);
         String samlResponse = this.samlResponse(authenticationResponse);
 
         assertTrue(samlResponse.contains("The specified authentication context requirements"));
@@ -343,7 +344,7 @@ public class UserControllerTest extends AbstractIntegrationTest {
     public void relayState() throws IOException {
         User user = user("steve@example.com", "Steve", "Doe", "en");
         String authenticationRequestId = samlAuthnRequest("Nice");
-        ClientAuthenticationResponse authenticationResponse = oneTimeLoginCodeRequest(new ClientAuthenticationRequest(authenticationRequestId, user, false), HttpMethod.POST);
+        ClientAuthenticationResponse authenticationResponse = oneTimeLoginCodeRequest(new ClientAuthenticationRequest(authenticationRequestId, user, false, "repsonse"), HttpMethod.POST);
         Response response = magicResponse(authenticationResponse);
         assertTrue(IOUtils.toString(response.asInputStream(), Charset.defaultCharset()).contains("Nice"));
     }
@@ -683,7 +684,7 @@ public class UserControllerTest extends AbstractIntegrationTest {
         User user = user("mdoe@example.com");
         userSetPassword(user, "Secret123");
         String authenticationRequestId = samlAuthnRequest();
-        ClientAuthenticationRequest magicLinkRequest = new ClientAuthenticationRequest(authenticationRequestId, user, true);
+        ClientAuthenticationRequest magicLinkRequest = new ClientAuthenticationRequest(authenticationRequestId, user, true, "repsonse");
 
         CookieFilter cookieFilter = new CookieFilter();
         Response response = given()
@@ -722,7 +723,7 @@ public class UserControllerTest extends AbstractIntegrationTest {
         User user = user("mdoe@example.com");
         userSetPassword(user, "nope");
         String authenticationRequestId = samlAuthnRequest();
-        ClientAuthenticationRequest magicLinkRequest = new ClientAuthenticationRequest(authenticationRequestId, user, true);
+        ClientAuthenticationRequest magicLinkRequest = new ClientAuthenticationRequest(authenticationRequestId, user, true, "repsonse");
 
         given()
                 .when()
@@ -777,7 +778,8 @@ public class UserControllerTest extends AbstractIntegrationTest {
 
         String authenticationRequestId = location.substring(location.lastIndexOf("/") + 1, location.lastIndexOf("?"));
         User user = user("jdoe@example.com");
-        ClientAuthenticationResponse authenticationResponse = oneTimeLoginCodeRequest(new ClientAuthenticationRequest(authenticationRequestId, user, StringUtils.hasText(user.getPassword())), HttpMethod.PUT);
+        ClientAuthenticationRequest clientAuthenticationRequest = new ClientAuthenticationRequest(authenticationRequestId, user, StringUtils.hasText(user.getPassword()), "repsonse");
+        ClientAuthenticationResponse authenticationResponse = oneTimeLoginCodeRequest(clientAuthenticationRequest, HttpMethod.PUT);
 
         SamlAuthenticationRequest samlAuthenticationRequest = authenticationRequestRepository.findById(authenticationResponse.authenticationRequestId).get();
         response = given().redirects().follow(false)
@@ -811,7 +813,8 @@ public class UserControllerTest extends AbstractIntegrationTest {
 
         String authenticationRequestId = location.substring(location.lastIndexOf("/") + 1, location.lastIndexOf("?"));
         User user = user("jdoe@example.com");
-        ClientAuthenticationResponse authenticationResponse = oneTimeLoginCodeRequest(new ClientAuthenticationRequest(authenticationRequestId, user, StringUtils.hasText(user.getPassword())), HttpMethod.PUT);
+        ClientAuthenticationRequest clientAuthenticationRequest = new ClientAuthenticationRequest(authenticationRequestId, user, StringUtils.hasText(user.getPassword()), "response");
+        ClientAuthenticationResponse authenticationResponse = oneTimeLoginCodeRequest(clientAuthenticationRequest, HttpMethod.PUT);
 
         SamlAuthenticationRequest samlAuthenticationRequest = authenticationRequestRepository.findById(authenticationResponse.authenticationRequestId).get();
         response = given().redirects().follow(false)
@@ -831,7 +834,7 @@ public class UserControllerTest extends AbstractIntegrationTest {
         String authnContext = readFile("request_authn_context_mfa.xml");
         Response response = samlAuthnRequestResponseWithLoa(null, "relay", authnContext);
         String authenticationRequestId = extractAuthenticationRequestIdFromAuthnResponse(response);
-        ClientAuthenticationResponse authenticationResponse = oneTimeLoginCodeRequest(new ClientAuthenticationRequest(authenticationRequestId, user, false), HttpMethod.PUT);
+        ClientAuthenticationResponse authenticationResponse = oneTimeLoginCodeRequest(new ClientAuthenticationRequest(authenticationRequestId, user, false, "repsonse"), HttpMethod.PUT);
         SamlAuthenticationRequest samlAuthenticationRequest = authenticationRequestRepository.findById(authenticationResponse.authenticationRequestId).get();
 
         Response magicResponse = given().redirects().follow(false)
@@ -857,7 +860,7 @@ public class UserControllerTest extends AbstractIntegrationTest {
         Response response = samlAuthnRequestResponseWithLoa(null, "relay", authnContext);
         String authenticationRequestId = extractAuthenticationRequestIdFromAuthnResponse(response);
 
-        ClientAuthenticationResponse authenticationResponse = oneTimeLoginCodeRequest(new ClientAuthenticationRequest(authenticationRequestId, user, false), HttpMethod.PUT);
+        ClientAuthenticationResponse authenticationResponse = oneTimeLoginCodeRequest(new ClientAuthenticationRequest(authenticationRequestId, user, false, "repsonse"), HttpMethod.PUT);
         SamlAuthenticationRequest samlAuthenticationRequest = authenticationRequestRepository.findById(authenticationResponse.authenticationRequestId).get();
         samlAuthenticationRequest.setTiqrFlow(true);
         authenticationRequestRepository.save(samlAuthenticationRequest);
@@ -1154,7 +1157,7 @@ public class UserControllerTest extends AbstractIntegrationTest {
         user.setLinkedAccounts(linkedAccounts);
         userRepository.save(user);
 
-        oneTimeLoginCodeRequest(new ClientAuthenticationRequest(authenticationRequestId, user, false), HttpMethod.PUT);
+        oneTimeLoginCodeRequest(new ClientAuthenticationRequest(authenticationRequestId, user, false, "repsonse"), HttpMethod.PUT);
 
         samlAuthenticationRequest = authenticationRequestRepository.findById(authenticationRequestId).get();
         response = given().redirects().follow(false)
@@ -1208,7 +1211,7 @@ public class UserControllerTest extends AbstractIntegrationTest {
         authenticationRequestRepository.save(samlAuthenticationRequest);
 
         User user = userRepository.findOneUserByEmail("jdoe@example.com");
-        oneTimeLoginCodeRequest(new ClientAuthenticationRequest(authenticationRequestId, user, false), HttpMethod.PUT);
+        oneTimeLoginCodeRequest(new ClientAuthenticationRequest(authenticationRequestId, user, false, "repsonse"), HttpMethod.PUT);
 
         samlAuthenticationRequest = authenticationRequestRepository.findById(authenticationRequestId).get();
         response = given().redirects().follow(false)

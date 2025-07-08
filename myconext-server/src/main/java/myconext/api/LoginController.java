@@ -67,6 +67,8 @@ public class LoginController {
                            @Value("${oidc-token-api.enabled}") boolean featureOidcTokenAPI,
                            @Value("${feature.create_eduid_institution_enabled}") boolean createEduIDInstitutionEnabled,
                            @Value("${feature.create_eduid_institution_landing}") boolean createEduIDInstitutionLanding,
+                           @Value("${feature.captcha_enabled}") boolean captchaEnabled,
+                           @Value("${captcha.sitekey}") String captchaSiteKey,
                            @Value("${email_spam_threshold_seconds}") long emailSpamThresholdSeconds,
                            @Value("${linked_accounts.expiry-duration-days-non-validated}") long expirationNonValidatedDurationDays,
                            @Value("${mobile_app_redirect}") String mobileAppRedirect,
@@ -97,6 +99,8 @@ public class LoginController {
         this.config.put("mobileAppRedirect", mobileAppRedirect);
         this.config.put("featureIdVerify", idVerify);
         this.config.put("featureServiceDeskActive", serviceDeskActive);
+        this.config.put("captchaEnabled", captchaEnabled);
+        this.config.put("captchaSiteKey", captchaSiteKey);
         this.secureCookie = secureCookie;
         this.userRepository = userRepository;
         this.authenticationRequestRepository = authenticationRequestRepository;

@@ -21,8 +21,7 @@ import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.springframework.data.util.ReflectionUtils.findRequiredField;
-import static org.springframework.data.util.ReflectionUtils.setField;
+import static org.springframework.data.util.ReflectionUtils.*;
 
 class UserAuthenticationTest extends AbstractIntegrationTest implements UserAuthentication {
 
@@ -48,7 +47,7 @@ class UserAuthenticationTest extends AbstractIntegrationTest implements UserAuth
     void testUserFromAuthenticationIdNotFound() {
         User principal = new User();
         //Pragmatic hack
-        setField(findRequiredField(User.class, "id"), principal, UUID.randomUUID().toString());
+        setField(getRequiredField(User.class, "id"), principal, UUID.randomUUID().toString());
         TestingAuthenticationToken tokenAuthentication = new TestingAuthenticationToken(principal, "N/A");
         assertThrows(UserNotFoundException.class, () -> userFromAuthentication(tokenAuthentication));
     }

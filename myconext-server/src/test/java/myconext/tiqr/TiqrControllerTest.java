@@ -593,7 +593,7 @@ public class TiqrControllerTest extends AbstractIntegrationTest {
     private SamlAuthenticationRequest doEnrollmment(boolean finishRegistration) throws IOException {
         String authenticationRequestId = samlAuthnRequest();
         User user = user("jdoe@example.com");
-        ClientAuthenticationRequest magicLinkRequest = new ClientAuthenticationRequest(authenticationRequestId, user, false);
+        ClientAuthenticationRequest magicLinkRequest = new ClientAuthenticationRequest(authenticationRequestId, user, false, "response");
         oneTimeLoginCodeRequest(magicLinkRequest, HttpMethod.PUT);
 
         SamlAuthenticationRequest samlAuthenticationRequest = authenticationRequestRepository.findById(authenticationRequestId).get();

@@ -428,6 +428,9 @@ const nl = {
             studielink: "Studielink",
             servicedesk: "Service Desk"
         }
+    },
+    captcha: {
+        proveNotRobot: "Check de 'I am human' checkbox"
     }
 };
 export default nl;

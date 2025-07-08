@@ -41,8 +41,8 @@ function postPutJson(path, body, method) {
 }
 
 //Base
-export function generateCodeNewUser(email, givenName, familyName, authenticationRequestId) {
-    const body = {user: {email, givenName, familyName}, authenticationRequestId};
+export function generateCodeNewUser(email, givenName, familyName, authenticationRequestId, captchaResponse) {
+    const body = {user: {email, givenName, familyName}, authenticationRequestId, captchaResponse};
     return postPutJson("/myconext/api/idp/generate_code_request", body, "POST");
 }
 

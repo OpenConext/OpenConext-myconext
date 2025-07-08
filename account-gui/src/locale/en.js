@@ -1,4 +1,4 @@
-const en =  {
+const en = {
     login: {
         requestEduId: "No eduID?",
         requestEduId2: "Create one!",
@@ -429,6 +429,9 @@ const en =  {
             studielink: "Studielink",
             servicedesk: "Service Desk"
         }
+    },
+    captcha: {
+        proveNotRobot: "Please tick the 'I am human' checkbox"
     }
 };
 export default en;

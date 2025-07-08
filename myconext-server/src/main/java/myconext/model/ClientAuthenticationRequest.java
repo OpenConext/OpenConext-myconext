@@ -20,4 +20,6 @@ public class ClientAuthenticationRequest implements Serializable {
 
     private boolean usePassword;
 
+    private String captchaResponse;
+
 }
