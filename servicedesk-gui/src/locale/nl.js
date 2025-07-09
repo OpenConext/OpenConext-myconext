@@ -37,10 +37,17 @@ const nl = {
     },
     tabs: {
         home: "Home",
-        verify: "Identiteitscontrole"
+        verify: "Identiteitscontrole eduID"
+    },
+    info: {
+        title: "Verifieer iemands identiteit",
+        subTitle: "Een eduID gebruiker heeft een afspraak gemaakt om zijn identiteit te laten verifiëren.",
+        verify1: "Vraag naar <strong>een eduID verificatie code</strong>",
+        verify2: "Deze code heeft de gebruiker eerder gegenereerd in zijn/haar eduID.",
+        verify3: "Heeft de gebruiker géén code, vraag de gebruiker deze dan alsnog te maken door het verificatieprocess in eduID te starten."
     },
     verification: {
-        header: "Vul de controlecode in",
+        header: "Voer de eduID verificatie code in",
         proceed: "Ga verder",
         error: "Geen gebruiker gevonden voor de verificatiecode {{code}}",
         info: "Deze code heeft de persoon gegenereerd in eduID",
