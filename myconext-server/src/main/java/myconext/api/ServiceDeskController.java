@@ -53,7 +53,7 @@ public class ServiceDeskController {
         return ResponseEntity.ok(user);
     }
 
-    @GetMapping("/sp/logout")
+    @GetMapping("/logout")
     @Operation(summary = "Logout",
             description = "Logout the current logged in user")
     public ResponseEntity<StatusResponse> logout(HttpServletRequest request, Authentication authentication) {

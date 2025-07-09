@@ -132,4 +132,12 @@ class ServiceDeskControllerTest extends AbstractIntegrationTest {
                 .statusCode(403);
     }
 
+    @Test
+    void logout() {
+        given()
+                .when()
+                .get("/myconext/api/servicedesk/logout")
+                .then()
+                .statusCode(HttpStatus.OK.value());
+    }
 }
