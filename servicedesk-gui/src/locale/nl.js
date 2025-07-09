@@ -43,7 +43,7 @@ const nl = {
         title: "Verifieer iemands identiteit",
         subTitle: "Een eduID gebruiker heeft een afspraak gemaakt om zijn identiteit te laten verifiëren.",
         verify1: "Vraag naar <strong>een eduID verificatie code</strong>",
-        verify2: "Deze code heeft de gebruiker eerder gegenereerd in zijn/haar eduID.",
+        verify2: "Deze code heeft de gebruiker eerder gegenereerd in de eduID applicatie.",
         verify3: "Heeft de gebruiker géén code, vraag de gebruiker deze dan alsnog te maken door het verificatieprocess in eduID te starten."
     },
     verification: {
