@@ -267,18 +267,22 @@ management:
   endpoints:
     web:
       exposure:
-        include: "health,info"
+#        include: "health,info,prometheus"
+        include: "*"
       base-path: "/internal"
   endpoint:
     info:
       access: unrestricted
     health:
       access: unrestricted
-      show-details: never
+      show-details: when_authorized
+    prometheus:
+      access: unrestricted
+      show-details: always
     mappings:
       access: none
     metrics:
-      access: none
+      access: unrestricted
   info:
     git:
       mode: full
