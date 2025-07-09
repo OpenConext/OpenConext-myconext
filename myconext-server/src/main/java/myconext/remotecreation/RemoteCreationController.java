@@ -31,11 +31,10 @@ import org.springframework.util.StringUtils;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
+import java.util.stream.Collectors;
 
+import static java.util.function.UnaryOperator.identity;
 import static myconext.SwaggerOpenIdConfig.BASIC_AUTHENTICATION_SCHEME_NAME;
 
 
@@ -178,7 +177,7 @@ public class RemoteCreationController implements HasUserRepository {
             description = "Return eduID pseudonyms for an institution identified by the BRIN code",
             responses = {
                     @ApiResponse(responseCode = "200", description = "OK",
-                            content = {@Content(schema = @Schema(implementation = EduIDInstitutionPseudonymBatch.class),
+                            content = {@Content(schema = @Schema(implementation = List.class),
                                     examples = {@ExampleObject(value = "[{\n" +
                                             "  \"eduID\": \"46ab5162-e098-4c24-9f28-cdf4d9b5fbb0\",\n" +
                                             "  \"value\": \"46ab5162-e098-4c24-9f28-cdf4d9b5fbb0\"\n" +
@@ -205,14 +204,26 @@ public class RemoteCreationController implements HasUserRepository {
                                             "}")})})})
     public ResponseEntity<List<EduIDAssignedValue>> eduIDForInstitutionBatch(
             @Parameter(hidden = true) @AuthenticationPrincipal(errorOnInvalidType = true) RemoteUser remoteUser,
-            @RequestBody @Validated EduIDInstitutionPseudonymBatch eduIDInstitutionPseudonymBatch) {
-        LOG.info(String.format("eduid-institution-pseudonym by %s for %s", remoteUser.getUsername(), eduIDInstitutionPseudonymBatch));
+            @RequestBody @Validated List<EduIDInstitutionPseudonym> eduIDInstitutionPseudonyms) {
+        LOG.info(String.format("eduid-institution-pseudonym by %s for %s", remoteUser.getUsername(), eduIDInstitutionPseudonyms));
+        //First, get all identityProviders and remove those not found e.g. Optional<IdentityProvider>
 
-        IdentityProvider identityProvider = manage.findIdentityProviderByBrinCode(eduIDInstitutionPseudonymBatch.getBrinCode())
-                .orElseThrow(() -> new IdentityProviderNotFoundException(String.format("IdentityProvider with BRIN code %s not found", eduIDInstitutionPseudonymBatch.getBrinCode())));
-        List<EduIDAssignedValue> eduIDAssignedValues = eduIDInstitutionPseudonymBatch.getEduIDValues().stream()
-                .map(eduID -> {
+        Map<String, IdentityProvider> identityProviderMap = eduIDInstitutionPseudonyms.stream()
+                .map(pseudonym -> pseudonym.getBrinCode())
+                .distinct()
+                .map(brinCode -> manage.findIdentityProviderByBrinCode(brinCode))
+                .flatMap(Optional::stream)
+                .collect(Collectors.toMap(IdentityProvider::getInstitutionBrin, identity()));
+
+        List<EduIDAssignedValue> eduIDAssignedValues = eduIDInstitutionPseudonyms.stream()
+                .map(eduIDInstitutionPseudonym -> {
+                    String eduID = eduIDInstitutionPseudonym.getEduID();
                     String pseudonym = this.findUserByEduIDValue(eduID).map(user -> {
+                        IdentityProvider identityProvider = identityProviderMap.get(eduIDInstitutionPseudonym.getBrinCode());
+                        //It might be that no identityProvider was found for this BRIN code
+                        if (identityProvider == null) {
+                            return null;
+                        }
                         String eduIDValue = user.computeEduIdForIdentityProviderProviderIfAbsent(identityProvider, manage);
                         userRepository.save(user);
                         return eduIDValue;

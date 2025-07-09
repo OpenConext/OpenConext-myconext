@@ -10,7 +10,6 @@ import org.springframework.http.HttpStatus;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static io.restassured.RestAssured.given;
@@ -116,12 +115,14 @@ class RemoteCreationControllerTest extends AbstractIntegrationTest {
                 .auth().preemptive().basic(userName, password)
                 .contentType(ContentType.JSON)
                 //See src/test/resources/users.json eduIDs#value
-                .body(new EduIDInstitutionPseudonymBatch("ST42",
-                        List.of("fc75dcc7-6def-4054-b8ba-3c3cc504dd4b","fc75dcc7-6def-4054-b8ba-3c3cc504dd4b","nope")))
+                .body(List.of(
+                        new EduIDInstitutionPseudonym("ST42", "fc75dcc7-6def-4054-b8ba-3c3cc504dd4b"),
+                        new EduIDInstitutionPseudonym("nope", "nope")
+                ))
                 .post("/api/remote-creation/eduid-institution-pseudonym-batch")
                 .as(new TypeRef<>() {
                 });
-        assertEquals(2, eduIDAssignedValues.size());
+        assertEquals(1, eduIDAssignedValues.size());
         String value = eduIDAssignedValues.getFirst().getValue();
         User user = this.findUserByEduIDValue(value).get();
         //See src/main/resources/manage/saml20_idp.json read by MockManage
