@@ -31,7 +31,8 @@ import static org.junit.Assert.assertTrue;
                 "cron.service-name-resolver-initial-delay-milliseconds=60000",
                 "oidc.base-url=http://localhost:8098/",
                 "sso_mfa_duration_seconds=-1000",
-                "feature.default_remember_me=True"
+                "feature.default_remember_me=True",
+                "feature.captcha_enabled=false"
         })
 public class UserControllerRememberMeTest extends AbstractIntegrationTest {
 
