@@ -28,7 +28,7 @@ const en = {
         eduID: "About eduID",
         title: "One account for educational and research institutions",
         why: "What is eduID?",
-        whyInfo1: "eduID helps students easily verify their identity at educational and research institutions in the Netherlands. Previously, students couldn't log in to one institution using an account from another. The same issue applied to guest students who weren’t officially enrolled but needed access to digital platforms.",
+        whyInfo1: "eduID helps students, staff, and professionals easily prove their identity at educational and research institutions in the Netherlands. Students are increasingly attending courses at multiple institutions. Previously, students couldn't log in to one institution using an account from another. Staff, professionals, and guests experience the same problems and are often active at multiple institutions.",
         whyInfo2: "eduID solves this problem by providing one account to verify your identity across multiple Dutch educational and research institutions.",
         register: "How to get an eduID?",
         registerInfo: "Creating an eduID is simple. Press <strong>Create an eduID</strong> at the top of the page. After creating your eduID, you may need to verify your identity through an official party, such as your school, university, or bank.",
