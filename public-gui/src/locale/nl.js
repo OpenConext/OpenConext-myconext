@@ -28,7 +28,7 @@ const nl = {
         eduID: "Over eduID",
         title: "Eén account voor onderwijs- en onderzoeksinstellingen",
         why: "Wat is eduID?",
-        whyInfo1: "eduID helpt studenten om eenvoudig te bewijzen wie ze zijn bij onderwijs- en onderzoeksinstellingen in Nederland. Vroeger konden studenten namelijk niet met het account van de ene instelling inloggen bij een andere instelling. Dit was ook zo bij gast-studenten die niet ingeschreven waren bij een opleiding, maar wel op digitale platformen wilden meewerken.",
+        whyInfo1: "eduID helpt studenten, medewerkers en professionals om eenvoudig te bewijzen wie ze zijn bij onderwijs- en onderzoeksinstellingen in Nederland. Studenten volgen steeds vaker onderwijs bij verschillende instellingen. Hiervoor konden studenten niet met het account van de ene instelling inloggen bij een andere instelling. Medewerkers, professionals en gasten ondervinden dezelfde problemen en zijn ook vaak actief bij meerdere instellingen.",
         whyInfo2: "eduID is de oplossing: één account waarmee je bij verschillende Nederlandse onderwijs- en onderzoeksinstellingen kunt bewijzen wie je bent.",
         register: "Hoe krijg je een eduID",
         registerInfo: "Een eduID maak je eenvoudig zelf. Druk daarvoor op <strong>eduID aanmaken</strong> bovenaan de pagina. Nadat je je eduID hebt aangemaakt is het vaak nog wel nodig dat je identiteit bevestigd wordt door een officiële partij. Zoals je school, universiteit of bank.",
