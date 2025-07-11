@@ -267,8 +267,7 @@ management:
   endpoints:
     web:
       exposure:
-#        include: "health,info,prometheus"
-        include: "*"
+        include: "health,info,prometheus"
       base-path: "/internal"
   endpoint:
     info:

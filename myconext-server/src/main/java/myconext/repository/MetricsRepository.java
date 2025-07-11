@@ -1,16 +1,13 @@
 package myconext.repository;
 
 import com.mongodb.client.AggregateIterable;
-import myconext.model.User;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.mongodb.core.MongoTemplate;
-import org.springframework.data.mongodb.core.aggregation.*;
+import myconext.model.IdpScoping;
 import org.bson.Document;
+import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.stereotype.Repository;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 
 @Repository
 public class MetricsRepository {
@@ -21,44 +18,43 @@ public class MetricsRepository {
         this.mongoTemplate = mongoTemplate;
     }
 
-    public Number getTotalLinkedAccountCount() {
-        UnwindOperation unwindLinkedAccounts = Aggregation.unwind("linkedAccounts");
-        CountOperation countTotal = Aggregation.count().as("totalLinkedAccounts");
-        TypedAggregation<User> aggregation = Aggregation.newAggregation(
-                User.class,
-                unwindLinkedAccounts,
-                countTotal
-        );
-        AggregationResults<Map> results = mongoTemplate.aggregate(
-                aggregation,
-                Map.class
-        );
-        return (Number) results.getUniqueMappedResult().get("totalLinkedAccounts");
+    public Integer countTotalLinkedAccounts() {
+        return doInCollection("users",
+                List.of(
+                        "{ \"$unwind\": \"$linkedAccounts\" }",
+                        "{ \"$count\": \"totalLinkedAccounts\" }"
+                ), "totalLinkedAccounts");
     }
 
-    // Alternative approach: Using MongoTemplate's native execute method
-    public Number countTotalLinkedAccountsNativeExecute() {
-        /*
-            users.aggregate([
-                  {
-                    "$unwind": "$linkedAccounts"
-                  },
-                  {
-                    "$count": "totalLinkedAccounts"
-                  }
-                ])
+    public Integer countTotalExternalLinkedAccountsByType(IdpScoping idpScoping) {
+        return doInCollection("users",
+                List.of(
+                        "{ \"$unwind\": \"$externalLinkedAccounts\" }",
+                        "{ \"$match\": { \"externalLinkedAccounts.idpScoping\": \"" + idpScoping.name() + "\" } },",
+                        "{ \"$count\": \"countExternalLinkedAccounts\" }"
+                ), "countExternalLinkedAccounts");
+    }
 
-         */
-        return mongoTemplate.execute("users", collection -> {
-            List<Document> pipeline = Arrays.asList(
-                    Document.parse("{ \"$unwind\": \"$linkedAccounts\" }"),
-                    Document.parse("{ \"$count\": \"totalLinkedAccounts\" }")
-            );
+    public Integer countTotalRegisteredApps() {
+        return doInCollection("users",
+                List.of(
+                        "{ \"$unwind\": \"$eduIDS\" }",
+                        "{ \"$unwind\": \"$eduIDS.services\" }",
+                        "{ \"$group\": { \"_id\": \"$eduIDS.services.entityId\" } },",
+                        "{ \"$count\": \"countTotalRegisteredApps\" }"
+                ), "countTotalRegisteredApps");
+    }
 
-            AggregateIterable<Document> result = collection.aggregate(pipeline);
+    private Integer doInCollection(String collectionName, List<String> pipeLines, String resultKeyWord) {
+        return mongoTemplate.execute(collectionName, collection -> {
+            List<Document> documents = pipeLines
+                    .stream()
+                    .map(Document::parse)
+                    .toList();
+            AggregateIterable<Document> result = collection.aggregate(documents);
             Document doc = result.first();
-
-            return doc != null ? doc.getInteger("totalLinkedAccounts") : 0;
+            return doc != null ? doc.getInteger(resultKeyWord) : 0;
         });
+
     }
 }

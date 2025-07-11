@@ -60,11 +60,6 @@ const Verification = ({proceed}) => {
                 />
             </div>
             {error && <ErrorIndicator message={I18n.t("verification.error", {code: code})}/>}
-            <div className="disclaimer">
-                <AlertIcon/>
-                <p>{I18n.t("verification.info")}</p>
-            </div>
-
         </div>
         </>
     );

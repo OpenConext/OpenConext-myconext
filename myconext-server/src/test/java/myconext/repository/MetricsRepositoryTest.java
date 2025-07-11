@@ -1,12 +1,11 @@
 package myconext.repository;
 
 import myconext.AbstractIntegrationTest;
+import myconext.model.IdpScoping;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.util.Map;
-
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class MetricsRepositoryTest extends AbstractIntegrationTest {
 
@@ -15,11 +14,12 @@ class MetricsRepositoryTest extends AbstractIntegrationTest {
 
     @Test
     void getTotalLinkedAccountCount() {
-        Number totalLinkedAccountCount = metricsRepository.getTotalLinkedAccountCount();
-        System.out.println(totalLinkedAccountCount);
-
-        Number l = metricsRepository.countTotalLinkedAccountsNativeExecute();
-        System.out.println(l);
+        Integer totalLinkedAccountCount = metricsRepository.countTotalLinkedAccounts();
+        assertEquals(2, totalLinkedAccountCount);
+        Integer idinExternalAccounts = metricsRepository.countTotalExternalLinkedAccountsByType(IdpScoping.idin);
+        assertEquals(0, idinExternalAccounts);
+        Integer countTotalRegisteredApps = metricsRepository.countTotalRegisteredApps();
+        assertEquals(2, countTotalRegisteredApps);
     }
 
 }
