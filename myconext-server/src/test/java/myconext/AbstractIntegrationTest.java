@@ -93,7 +93,6 @@ import static org.junit.Assert.assertTrue;
                 "verify.base_uri=http://localhost:8098",
                 "host_headers.active=mijn.test2.eduid.nl",
                 "feature.captcha_enabled=false",
-                "host_headers.active: mijn.test2.eduid.nl"
         })
 @ActiveProfiles({"test"})
 @SuppressWarnings("unchecked")

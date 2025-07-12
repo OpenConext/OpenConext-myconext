@@ -277,7 +277,6 @@ management:
       show-details: when_authorized
     prometheus:
       access: unrestricted
-      show-details: always
     mappings:
       access: none
     metrics:
