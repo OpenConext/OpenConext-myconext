@@ -2490,7 +2490,7 @@ SHARED:
           <span>I agree with <a tabindex='-1'
           href='https://eduid.nl/terms-of-use/' target='_blank'>the terms of
           service</a> and I've read <a tabindex='-1'
-          href='https://eduid.nl/privacy_policy/' target='_blank'>the privacy
+          href='https://eduid.nl/privacy' target='_blank'>the privacy
           policy</a>.</span>
         nl: >-
           <span>Ik ga akkoord met <a tabindex='-1'
@@ -2814,7 +2814,7 @@ SHARED:
           <span>I agree with <a tabindex='-1'
           href='https://eduid.nl/terms-of-use/' target='_blank'>the terms of
           service</a> and I've read<a tabindex='-1'
-          href='https://eduid.nl/privacy_policy/' target='_blank'>the privacy
+          href='https://eduid.nl/privacy' target='_blank'>the privacy
           policy</a>.</span>
         nl: >-
           <span>Ik ga akkoord met <a tabindex='-1'
