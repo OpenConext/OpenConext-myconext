@@ -66,7 +66,8 @@ public class MailBox {
             LOG.info("Initializing mail templates from JAR resource: " + mailTemplatesDirectory.getFilename());
             mustacheFactory = new DefaultMustacheFactory(mailTemplatesDirectory.getFilename());
         }
-        this.subjects = objectMapper.readValue(inputStream(mailTemplatesDirectory), new TypeReference<>() {});
+        this.subjects = objectMapper.readValue(inputStream(mailTemplatesDirectory), new TypeReference<>() {
+        });
         this.objectMapper = objectMapper;
     }
 
@@ -243,7 +244,7 @@ public class MailBox {
             helper.setFrom(emailFrom);
             doSendMail(mimeMessage);
         } catch (Exception e) {
-            LOG.error("Error sending mail to "+to, e);
+            LOG.error("Error sending mail to " + to, e);
             //We don't want to stop batch mailings
         }
     }

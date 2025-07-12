@@ -10,7 +10,6 @@ import myconext.exceptions.UserNotFoundException;
 import myconext.model.*;
 import myconext.repository.ExternalUserRepository;
 import myconext.repository.UserRepository;
-import myconext.security.UserAuthentication;
 import myconext.verify.AttributeMapper;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -22,8 +21,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Date;
-
-import static myconext.log.MDCContext.logWithContext;
 
 
 @RestController
@@ -86,7 +83,7 @@ public class ServiceDeskController {
 
     @PutMapping("/approve")
     public ResponseEntity<ExternalLinkedAccount> convertUserControlCode(Authentication authentication,
-                                                       @RequestBody ControlCode controlCode) {
+                                                                        @RequestBody ControlCode controlCode) {
         try {
             return doConvertUserControlCode(authentication, controlCode);
         } catch (RuntimeException e) {
@@ -97,7 +94,7 @@ public class ServiceDeskController {
         }
     }
 
-    private ResponseEntity<ExternalLinkedAccount> doConvertUserControlCode(Authentication authentication, ControlCode controlCode) throws RuntimeException{
+    private ResponseEntity<ExternalLinkedAccount> doConvertUserControlCode(Authentication authentication, ControlCode controlCode) throws RuntimeException {
         String code = controlCode.getCode();
         User user = userRepository.findByControlCode_Code(code)
                 .orElseThrow(() -> new UserNotFoundException(String.format("No user found with controlCode %s", code)));

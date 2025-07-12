@@ -22,7 +22,7 @@ public class PasswordResetHash implements Serializable {
 
     private String hash;
 
-        private OneTimeLoginCode oneTimeLoginCode;
+    private OneTimeLoginCode oneTimeLoginCode;
 
     @Schema(type = "integer", format = "int64", example = "1634813554997")
     private Date expiresIn;

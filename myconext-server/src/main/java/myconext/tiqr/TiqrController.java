@@ -4,6 +4,8 @@ import com.google.zxing.WriterException;
 import io.swagger.v3.oas.annotations.Hidden;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import myconext.exceptions.ExpiredAuthenticationException;
 import myconext.exceptions.ForbiddenException;
@@ -32,9 +34,6 @@ import tiqr.org.TiqrException;
 import tiqr.org.TiqrService;
 import tiqr.org.model.*;
 import tiqr.org.secure.QRCodeGenerator;
-
-import jakarta.servlet.http.Cookie;
-import jakarta.servlet.http.HttpServletRequest;
 
 import java.io.IOException;
 import java.net.URLEncoder;

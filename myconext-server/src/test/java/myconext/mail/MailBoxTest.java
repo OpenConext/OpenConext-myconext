@@ -12,9 +12,6 @@ import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Map;
-import java.util.UUID;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import static com.icegreen.greenmail.util.GreenMailUtil.getBody;
 import static org.junit.Assert.assertEquals;

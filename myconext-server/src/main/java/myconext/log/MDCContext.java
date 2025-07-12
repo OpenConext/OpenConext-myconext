@@ -9,7 +9,6 @@ import org.springframework.util.CollectionUtils;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class MDCContext {
@@ -57,7 +56,7 @@ public class MDCContext {
                 CollectionUtils.isEmpty(authenticationContextClassReferences) ? "[]" :
                         String.join(", ", authenticationContextClassReferences),
                 authnContextClassRefValue
-                ));
+        ));
     }
 
     /*

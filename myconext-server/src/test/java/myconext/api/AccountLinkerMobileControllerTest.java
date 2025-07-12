@@ -200,10 +200,10 @@ public class AccountLinkerMobileControllerTest extends AbstractIntegrationTest {
                 .withBody(userInfo)));
         //Now we cheat and create an externalLinkedAccount
         User otherUser = userRepository.findOneUserByEmail("mdoe@example.com");
-        Map<String, Object> userInfoAsMap =  objectMapper.readValue(userInfo, new TypeReference<>() {
+        Map<String, Object> userInfoAsMap = objectMapper.readValue(userInfo, new TypeReference<>() {
         });
         otherUser.getExternalLinkedAccounts().add(new ExternalLinkedAccount(
-                (String)userInfoAsMap.get("sub"),
+                (String) userInfoAsMap.get("sub"),
                 IdpScoping.idin,
                 true
         ));

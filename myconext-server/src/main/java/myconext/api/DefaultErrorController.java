@@ -4,7 +4,6 @@ package myconext.api;
 import io.swagger.v3.oas.annotations.Hidden;
 import jakarta.servlet.http.HttpServletRequest;
 import myconext.exceptions.RemoteException;
-import myconext.exceptions.UserNotFoundException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -66,7 +65,7 @@ public class DefaultErrorController implements ErrorController {
 //            if (error instanceof UserNotFoundException) {
 //                LOG.warn(String.format("%s: %s", error.getClass(), error.getMessage()));
 //            } else {
-                LOG.error(String.format("Error occurred; %s %s", error.getClass(), error), error);
+            LOG.error(String.format("Error occurred; %s %s", error.getClass(), error), error);
 //            }
             //https://github.com/spring-projects/spring-boot/issues/3057
             ResponseStatus annotation = AnnotationUtils.getAnnotation(error.getClass(), ResponseStatus.class);
@@ -78,7 +77,7 @@ public class DefaultErrorController implements ErrorController {
                 statusCode = BAD_REQUEST;
             }
             if (error instanceof RemoteException) {
-                result.put("reference", ((RemoteException)error).getReference());
+                result.put("reference", ((RemoteException) error).getReference());
             }
         }
         result.put("status", statusCode.value());

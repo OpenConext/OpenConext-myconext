@@ -9,7 +9,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import java.time.temporal.ChronoUnit;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import static org.junit.Assert.*;
@@ -77,7 +80,7 @@ public class UserRepositoryTest extends AbstractIntegrationTest {
         userRepository.save(user);
 
         user = userRepository.findByControlCode_Code(controlCode.getCode()).get();
-        assertEquals(controlCode.getCode(), user.getControlCode().getCode() );
+        assertEquals(controlCode.getCode(), user.getControlCode().getCode());
     }
 
     @Test

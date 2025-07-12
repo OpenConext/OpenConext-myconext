@@ -172,10 +172,10 @@ public class GuestIdpAuthenticationRequestFilterTest {
         assertEquals(9, getEduPersonAssurancesCount(samlAttributes));
 
         user.getExternalLinkedAccounts().addAll(List.of(
-                externalLinkedAccount(IdpScoping.idin,null),
-                externalLinkedAccount(IdpScoping.serviceDesk,null),
-                externalLinkedAccount(IdpScoping.eherkenning,null),
-                externalLinkedAccount(IdpScoping.studielink,Verification.Geverifieerd)
+                externalLinkedAccount(IdpScoping.idin, null),
+                externalLinkedAccount(IdpScoping.serviceDesk, null),
+                externalLinkedAccount(IdpScoping.eherkenning, null),
+                externalLinkedAccount(IdpScoping.studielink, Verification.Geverifieerd)
         ));
 
         samlAttributes = subject.attributes(user, "requester");

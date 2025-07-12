@@ -6,7 +6,6 @@ import io.restassured.filter.cookie.CookieFilter;
 import io.restassured.http.ContentType;
 import jakarta.mail.internet.MimeMessage;
 import lombok.SneakyThrows;
-import myconext.AbstractIntegrationTest;
 import myconext.AbstractMailBoxTest;
 import myconext.model.*;
 import org.junit.ClassRule;
@@ -20,7 +19,6 @@ import java.util.Map;
 
 import static io.restassured.RestAssured.given;
 import static org.junit.Assert.*;
-import static org.junit.Assert.assertNull;
 
 public class UserMobileControllerTest extends AbstractMailBoxTest {
 

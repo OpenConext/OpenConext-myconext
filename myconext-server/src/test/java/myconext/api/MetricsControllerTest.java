@@ -33,7 +33,7 @@ class MetricsControllerTest {
 
         String metrics = IOUtils.toString(inputStream, Charset.defaultCharset());
 
-        List.of("user_count","linked_account_count","registered_apps_count")
+        List.of("user_count", "linked_account_count", "registered_apps_count")
                 .forEach(s -> assertTrue(metrics.contains(s)));
         Stream.of(IdpScoping.values()).forEach(idpScoping ->
                 assertTrue(metrics.contains("external_linked_account_" + idpScoping.name())));

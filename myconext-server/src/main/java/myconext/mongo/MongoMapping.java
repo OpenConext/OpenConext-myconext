@@ -32,7 +32,6 @@ import tiqr.org.model.Registration;
 import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
-import java.util.stream.Collectors;
 
 @Configuration
 public class MongoMapping {

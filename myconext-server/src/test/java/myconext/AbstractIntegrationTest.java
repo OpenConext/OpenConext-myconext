@@ -10,8 +10,8 @@ import io.restassured.http.Cookie;
 import io.restassured.response.Response;
 import io.restassured.specification.RequestSpecification;
 import lombok.Getter;
-import myconext.api.HasUserRepository;
 import myconext.api.ClientAuthenticationResponse;
+import myconext.api.HasUserRepository;
 import myconext.manage.Manage;
 import myconext.manage.MockManage;
 import myconext.model.*;
@@ -192,7 +192,7 @@ public abstract class AbstractIntegrationTest implements HasUserRepository {
 
     protected ClientAuthenticationResponse oneTimeLoginCodeRequest(User user, HttpMethod method) throws IOException {
         String authenticationRequestId = samlAuthnRequest();
-        return oneTimeLoginCodeRequest(new ClientAuthenticationRequest(authenticationRequestId, user, StringUtils.hasText(user.getPassword()),"response"), method);
+        return oneTimeLoginCodeRequest(new ClientAuthenticationRequest(authenticationRequestId, user, StringUtils.hasText(user.getPassword()), "response"), method);
     }
 
     protected ClientAuthenticationResponse oneTimeLoginCodeRequest(ClientAuthenticationRequest linkRequest, HttpMethod method) {

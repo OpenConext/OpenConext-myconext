@@ -17,21 +17,25 @@ public class MetricsController {
     public MetricsController(UserRepository userRepository,
                              MetricsRepository metricsRepository,
                              MeterRegistry meterRegistry) {
-        Gauge.builder("user_count", () -> userRepository.count())
+        Gauge.builder("user_count", () ->
+                        userRepository.count())
                 .description("User count")
                 .register(meterRegistry);
 
-        Gauge.builder("linked_account_count", () -> metricsRepository.countTotalLinkedAccounts())
+        Gauge.builder("linked_account_count",
+                        () -> metricsRepository.countTotalLinkedAccounts())
                 .description("Internal linked account count")
                 .register(meterRegistry);
 
-        Gauge.builder("registered_apps_count", () -> metricsRepository.countTotalRegisteredApps())
+        Gauge.builder("registered_apps_count",
+                        () -> metricsRepository.countTotalRegisteredApps())
                 .description("Registered apps count")
                 .register(meterRegistry);
 
         Stream.of(IdpScoping.values())
                 .forEach(idpScoping -> Gauge
-                        .builder("external_linked_account_" + idpScoping.name(), () -> metricsRepository.countTotalExternalLinkedAccountsByType(idpScoping))
+                        .builder("external_linked_account_" + idpScoping.name(),
+                                () -> metricsRepository.countTotalExternalLinkedAccountsByType(idpScoping))
                         .description("External account " + idpScoping.name() + " count ")
                         .register(meterRegistry));
     }

@@ -7,7 +7,7 @@ import java.util.Optional;
 
 @ConditionalOnProperty(prefix = "geo_location", name = "service", havingValue = "mock")
 @Component
-public class MockGeoLocation implements GeoLocation{
+public class MockGeoLocation implements GeoLocation {
 
     @Override
     public Optional<String> findLocation(String ipAddress) {

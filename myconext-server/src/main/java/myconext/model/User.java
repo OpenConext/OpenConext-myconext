@@ -28,10 +28,8 @@ import org.springframework.util.StringUtils;
 import java.io.Serializable;
 import java.util.*;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import static myconext.security.SecurityConfiguration.InternalSecurityConfigurationAdapter.ROLE_GUEST;
-import static myconext.security.SecurityConfiguration.InternalSecurityConfigurationAdapter.SERVICE_DESK;
 import static myconext.validation.PasswordStrength.strongEnough;
 
 @NoArgsConstructor

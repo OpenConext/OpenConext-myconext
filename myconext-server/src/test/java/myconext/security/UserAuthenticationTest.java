@@ -21,7 +21,8 @@ import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.springframework.data.util.ReflectionUtils.*;
+import static org.springframework.data.util.ReflectionUtils.getRequiredField;
+import static org.springframework.data.util.ReflectionUtils.setField;
 
 class UserAuthenticationTest extends AbstractIntegrationTest implements UserAuthentication {
 
