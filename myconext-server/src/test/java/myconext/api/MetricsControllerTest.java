@@ -26,6 +26,7 @@ class MetricsControllerTest {
 
         InputStream inputStream = given()
                 .when()
+                .auth().basic("internal", "secret")
                 .get("/internal/prometheus")
                 .asInputStream();
         SpringApplication.exit(applicationContext);

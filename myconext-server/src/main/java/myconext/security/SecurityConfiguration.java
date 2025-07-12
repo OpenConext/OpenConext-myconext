@@ -280,11 +280,14 @@ public class SecurityConfiguration {
                     "/myconext/api/attribute-manipulation/**",
                     "/myconext/api/system/**",
                     "/myconext/api/invite/**",
-                    "/api/remote-creation/**"
+                    "/api/remote-creation/**",
+                    "/internal/prometheus"
             };
             http.securityMatcher(antPatterns)
                     .securityContext(sc -> sc.requireExplicitSave(false))
                     .csrf(csrf -> csrf.disable())
+                    .authorizeHttpRequests(auth -> auth
+                            .requestMatchers("/internal/prometheus").hasRole("actuator"))
                     .authorizeHttpRequests(auth -> auth
                             .requestMatchers(antPatterns).authenticated())
                     .httpBasic(withDefaults())

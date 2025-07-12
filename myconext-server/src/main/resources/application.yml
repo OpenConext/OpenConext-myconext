@@ -3,7 +3,7 @@ logging:
   level:
     org.springframework.data.mongodb: INFO
     org.springframework.data.convert: INFO
-    org.springframework.security: INFO
+    org.springframework.security: TRACE
     io.mongock.: TRACE
     tiqr.org: DEBUG
     myconext: DEBUG
@@ -183,6 +183,11 @@ external-api-configuration:
       password: "secret"
       scopes:
         - invite
+    -
+      username: internal
+      password: "secret"
+      scopes:
+        - actuator
 
 oidc-token-api:
   token-url: https://connect.test2.surfconext.nl/tokens
