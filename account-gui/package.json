@@ -38,7 +38,7 @@
     "test:watch": "npm run test -- --watch"
   },
   "dependencies": {
-    "@friendlycaptcha/sdk": "^0.1.24",
+    "@friendlycaptcha/sdk": "^0.1.26",
     "@github/webauthn-json": "^2.1.1",
     "dompurify": "^3.2.6",
     "i18n-js": "^4.5.1",
