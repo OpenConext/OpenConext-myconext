@@ -53,9 +53,11 @@ public class ServiceDeskController {
     @GetMapping("/logout")
     @Operation(summary = "Logout",
             description = "Logout the current logged in user")
-    public ResponseEntity<StatusResponse> logout(HttpServletRequest request, Authentication authentication) {
-        HttpSession session = request.getSession();
-        session.invalidate();
+    public ResponseEntity<StatusResponse> logout(HttpServletRequest request) {
+        HttpSession session = request.getSession(false);
+        if (session != null) {
+            session.invalidate();
+        }
         SecurityContextHolder.getContext().setAuthentication(null);
         SecurityContextHolder.clearContext();
         return ResponseEntity.ok(new StatusResponse(HttpStatus.OK.value()));

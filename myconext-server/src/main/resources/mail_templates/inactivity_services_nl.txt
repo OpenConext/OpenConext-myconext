@@ -1,0 +1,6 @@
+{{#hasServiceNames}}
+Als je eduID account verwijderd is, heb je geen toegang meer tot de volgende diensten:
+{{#serviceNames}}
+    -{{.}}
+{{/serviceNames}}
+{{/hasServiceNames}}

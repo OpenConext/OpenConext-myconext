@@ -115,9 +115,18 @@ public class MailBox {
         String title = this.getTitle(firstTwoWarnings ? "inactivity_warning_years_ahead" : "inactivity_warning_short_term", user);
         Map<String, Object> variables = variables(user, title);
         variables.put("mySurfConextURL", mySURFconextURL);
+        String language = preferredLanguage(user);
+        List<String> serviceNames = user.getEduIDS().stream()
+                .map(eduID -> eduID.getServices())
+                .flatMap(Collection::stream)
+                .map(serviceProvider -> serviceProvider.nameByLanguage(language))
+                .distinct()
+                .toList();
+        variables.put("serviceNames", serviceNames);
+        variables.put("hasServiceNames", !serviceNames.isEmpty());
         variables.putAll(localeVariables);
         String templateName = firstTwoWarnings ? "inactivity_warning_years_ahead" : "inactivity_warning_short_term";
-        sendMail(templateName, title, variables, preferredLanguage(user), user.getEmail(), false);
+        sendMail(templateName, title, variables, language, user.getEmail(), false);
     }
 
     public void sendNudgeAppMail(User user) {

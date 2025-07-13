@@ -1,0 +1,8 @@
+{{#hasServiceNames}}
+<p>If your eduID account is deleted, you will no longer have access to the following services:</p>
+<ul>
+    {{#serviceNames}}
+    <li>{{.}}</li>
+    {{/serviceNames}}
+</ul>
+{{/hasServiceNames}}

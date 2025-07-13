@@ -2,6 +2,8 @@ Dear {{name}},
 
 We want to remind you that you have an eduID account that you haven't used since {{inactivity_period_en}}. Please note: if you don't take any action, your eduID will be deleted in a {{deletion_period_en}}, on {{account_delete_date_en}}.
 
+{{> inactivity_services_en.txt}}
+
 Want to keep your eduID? Log in at mijn.eduid.nl to keep your account active. Make sure your eduID is up-to-date by checking details like your email address and login preferences. You can find this under 'Security'.
 
 Kind regards,

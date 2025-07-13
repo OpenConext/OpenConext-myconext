@@ -46,12 +46,15 @@ public class InactivityMailTest extends AbstractMailBoxTest {
     @SneakyThrows
     @Test
     public void mailInactivityMail() {
-        inactivityUserSeed("en");
+        inactivityUserSeed("en", false);
 
         inactivityMail.mailInactiveUsers();
 
         List<MimeMessage> mimeMessages = mailMessages();
         assertEquals(4, mimeMessages.size());
+        String allContent = mimeMessages.stream().map(this::messageContent).collect(Collectors.joining());
+        assertFalse(allContent.contains("If your eduID account is deleted"));
+
         Stream.of(UserInactivity.values()).forEach(userInactivity -> {
             User user = userRepository.findOneUserByEmail(userInactivity.name());
             assertEquals(userInactivity, user.getUserInactivity());
@@ -96,7 +99,7 @@ public class InactivityMailTest extends AbstractMailBoxTest {
     @SneakyThrows
     @Test
     public void mailInactivityMailDutch() {
-        inactivityUserSeed("nl");
+        inactivityUserSeed("nl", false);
 
         inactivityMail.mailInactiveUsers();
 
@@ -106,6 +109,39 @@ public class InactivityMailTest extends AbstractMailBoxTest {
         String allContent = mimeMessages.stream().map(this::messageContent).collect(Collectors.joining());
         List.of("1 jaar", "2 jaar", "5 jaar", "1 maand", "1 week")
                 .forEach(s -> assertTrue(allContent.contains(s), "Contains " + s));
+        assertFalse(allContent.contains("Als je eduID account verwijderd is"));
+    }
+
+    @SneakyThrows
+    @Test
+    public void mailInactivityMailEnglishWithServiceName() {
+        inactivityUserSeed("en", true);
+
+        inactivityMail.mailInactiveUsers();
+
+        List<MimeMessage> mimeMessages = mailMessages();
+        assertEquals(4, mimeMessages.size());
+        mimeMessages.forEach(mimeMessage -> {
+            String messageContent = this.messageContent(mimeMessage);
+            assertTrue(messageContent.contains("If your eduID account is deleted"));
+            assertTrue(messageContent.contains("OpenConext Mujina SP EN"));
+        });
+    }
+
+    @SneakyThrows
+    @Test
+    public void mailInactivityMailDutchWithServiceName() {
+        inactivityUserSeed("nl", true);
+
+        inactivityMail.mailInactiveUsers();
+
+        List<MimeMessage> mimeMessages = mailMessages();
+        assertEquals(4, mimeMessages.size());
+        mimeMessages.forEach(mimeMessage -> {
+            String messageContent = this.messageContent(mimeMessage);
+            assertTrue(messageContent.contains("Als je eduID account verwijderd is"));
+            assertTrue(messageContent.contains("OpenConext Mujina SP NL"));
+        });
     }
 
     @SneakyThrows
