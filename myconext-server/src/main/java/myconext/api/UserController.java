@@ -290,6 +290,8 @@ public class UserController implements UserAuthentication {
         boolean success = this.captchaVerifier.verify(clientAuthenticationRequest.getCaptchaResponse());
         if (!success) {
             throw new CaptchInvalidException("Invalid captcha for user: " + email);
+        } else {
+            LOG.info(String.format("Validated captcha for user: %s",email));
         }
         verifyEmails(email, true);
 
