@@ -852,13 +852,13 @@ public class GuestIdpAuthenticationRequestFilter extends OncePerRequestFilter {
         //we do not send the IdP original assurances to the SP
         List<String> eduPersonAssurances = new ArrayList<>();
         if (!linkedAccounts.isEmpty()) {
-            if (eduPersonAssuranceIdP.stream().noneMatch(ass -> ass.startsWith("https://refeds.org/assurance/IAP/"))) {
+            if (eduPersonAssuranceIdP.stream().noneMatch(ass -> ass.startsWith("https://refeds.org/assurance/iap/"))) {
                 eduPersonAssurances.add("https://refeds.org/assurance/IAP/medium");
                 eduPersonAssurances.add("https://eduid.nl/validated/institution");
-            } else if (eduPersonAssuranceIdP.stream().anyMatch(ass -> ass.equals("https://refeds.org/assurance/IAP/medium"))) {
+            } else if (eduPersonAssuranceIdP.stream().anyMatch(ass -> ass.equals("https://refeds.org/assurance/iap/medium"))) {
                 eduPersonAssurances.add("https://refeds.org/assurance/IAP/medium");
                 eduPersonAssurances.add("https://eduid.nl/validated/institution");
-            } else if (eduPersonAssuranceIdP.stream().anyMatch(ass -> ass.equals("https://refeds.org/assurance/IAP/high"))) {
+            } else if (eduPersonAssuranceIdP.stream().anyMatch(ass -> ass.equals("https://refeds.org/assurance/iap/high"))) {
                 eduPersonAssurances.add("https://refeds.org/assurance/IAP/medium");
                 eduPersonAssurances.add("https://refeds.org/assurance/IAP/high");
                 eduPersonAssurances.add("https://eduid.nl/validated/institution");
