@@ -848,6 +848,7 @@ public class GuestIdpAuthenticationRequestFilter extends OncePerRequestFilter {
         List<String> eduPersonAssuranceIdP = linkedAccounts.stream()
                 .map(LinkedAccount::getEduPersonAssurances)
                 .flatMap(Collection::stream)
+                .map(String::toLowerCase)
                 .toList();
         //we do not send the IdP original assurances to the SP
         List<String> eduPersonAssurances = new ArrayList<>();
