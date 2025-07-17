@@ -1,6 +1,22 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [8.1.0] july 2025
+- Add Prometheus monitoring endpoint
+- Add CAPTCHA to new account registrations
+- Allow name edits for remotely created "Ongevalideerd" (Unvalidated) accounts
+- Add eduPersonAssurance attribute
+- Extend scoped affiliations to include finalized enrollments
+- Improve logging
+- Include service overview in deprovisioning emails
+- Fix: Using the back button after recovery code is shown causes the code to be lost
+- Fix: ACR-linked institution still offers option to use a different one
+- Make Spryng SMS route configurable
+- Add bulk API for Studielink pseudonym creation
+
+## [8.0.6] July 2025
+- Bugfix for validated name ordering if multiple sources are available
+
 ## [7.5.12] May 2025
 - Add new feature: the ServiceDesk. This feature allows end users to verifiy their myconext (eduID) account using a ServiceDesk, which they can physically visit or video call. This is an alternative method of identify verification, for users that cannot use their Institute account, iDIN (Dutch Banks), or eIDAS (European ID) to verify their myconext (eduID).
 - Textual changes to improve UX and understandability (and start using Localicious for good text synchronisation)
