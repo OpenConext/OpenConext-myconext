@@ -11,10 +11,10 @@
     "test": "vitest"
   },
   "dependencies": {
-    "@surfnet/sds": "^0.0.139",
+    "@surfnet/sds": "^0.0.140",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
-    "react-router-dom": "7.6.3",
+    "react-router-dom": "7.7.0",
     "react-tooltip": "^5.29.1",
     "react-datepicker": "^8.4.0",
     "dompurify": "^3.2.6",
