@@ -123,7 +123,8 @@ class RemoteCreationControllerTest extends AbstractIntegrationTest {
                 .as(new TypeRef<>() {
                 });
         assertEquals(1, eduIDAssignedValues.size());
-        String value = eduIDAssignedValues.getFirst().getValue();
+        EduIDAssignedValue eduIDAssignedValue= eduIDAssignedValues.getFirst();
+        String value = eduIDAssignedValue.getValue();
         User user = this.findUserByEduIDValue(value).get();
         //See src/main/resources/manage/saml20_idp.json read by MockManage
         String institutionGUID = "8017e83f-bca7-e911-90f2-0050569571ea";
@@ -131,6 +132,7 @@ class RemoteCreationControllerTest extends AbstractIntegrationTest {
                 .filter(anEduID -> anEduID.getServices().stream().anyMatch(service -> institutionGUID.equals(service.getInstitutionGuid())))
                 .findFirst().get();
         assertEquals(value, newEduID.getValue());
+        assertEquals("ST42", eduIDAssignedValue.getBrinCode());
     }
 
     @Test

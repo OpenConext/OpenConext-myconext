@@ -218,8 +218,9 @@ public class RemoteCreationController implements HasUserRepository {
         List<EduIDAssignedValue> eduIDAssignedValues = eduIDInstitutionPseudonyms.stream()
                 .map(eduIDInstitutionPseudonym -> {
                     String eduID = eduIDInstitutionPseudonym.getEduID();
+                    String brinCode = eduIDInstitutionPseudonym.getBrinCode();
                     String pseudonym = this.findUserByEduIDValue(eduID).map(user -> {
-                        IdentityProvider identityProvider = identityProviderMap.get(eduIDInstitutionPseudonym.getBrinCode());
+                        IdentityProvider identityProvider = identityProviderMap.get(brinCode);
                         //It might be that no identityProvider was found for this BRIN code
                         if (identityProvider == null) {
                             return null;
@@ -228,7 +229,7 @@ public class RemoteCreationController implements HasUserRepository {
                         userRepository.save(user);
                         return eduIDValue;
                     }).orElse(null);
-                    return StringUtils.hasText(pseudonym) ? new EduIDAssignedValue(eduID, pseudonym) : null;
+                    return StringUtils.hasText(pseudonym) ? new EduIDAssignedValue(eduID, pseudonym, brinCode) : null;
                 })
                 .filter(Objects::nonNull)
                 .toList();

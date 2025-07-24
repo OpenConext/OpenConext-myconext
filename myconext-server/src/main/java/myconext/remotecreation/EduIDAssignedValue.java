@@ -17,4 +17,7 @@ public class EduIDAssignedValue {
 
     @Schema(description = "New assigned eduID pseudonym scoped on external remote API user")
     private String value;
+
+    @Schema(description = "The brinCode of the institution for the new assigned eduID pseudonym ")
+    private String brinCode;
 }
