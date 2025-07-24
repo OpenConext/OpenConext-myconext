@@ -17,6 +17,9 @@ All notable changes to this project will be documented in this file.
 ## [8.0.6] July 2025
 - Bugfix for validated name ordering if multiple sources are available
 
+## [8.0.4] May 2025
+- Add the code login flow instead of magic link: Changed magic link login flow into a code flow. End users will receive, instead of a magic link, a code in their email, which they have to fill in in the UI. This is to prevent UX issues, for example where users open the magic link in "another browser" which resulted in a lot of unhappy user flows. The mechanics for magic link is still in this release. #onetimepassword
+
 ## [7.5.12] May 2025
 - Add new feature: the ServiceDesk. This feature allows end users to verifiy their myconext (eduID) account using a ServiceDesk, which they can physically visit or video call. This is an alternative method of identify verification, for users that cannot use their Institute account, iDIN (Dutch Banks), or eIDAS (European ID) to verify their myconext (eduID).
 - Textual changes to improve UX and understandability (and start using Localicious for good text synchronisation)
