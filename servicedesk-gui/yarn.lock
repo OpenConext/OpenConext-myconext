@@ -759,10 +759,10 @@
   resolved "https://registry.yarnpkg.com/@rollup/rollup-win32-x64-msvc/-/rollup-win32-x64-msvc-4.44.2.tgz#660018c9696ad4f48abe8c5d56db53c81aadba25"
   integrity sha512-3+QZROYfJ25PDcxFF66UEk8jGWigHJeecZILvkPkyQN7oc5BvFo4YEXFkOs154j3FTMp9mn9Ky8RCOwastduEA==
 
-"@surfnet/sds@^0.0.139":
-  version "0.0.139"
-  resolved "https://registry.yarnpkg.com/@surfnet/sds/-/sds-0.0.139.tgz#d6f0485dba2f483e0b3f71050f3ed5e257d9ec47"
-  integrity sha512-t0QphR5De7MjLOqYFX+GdD3r4GUNbapDwYcGB7kL/6KTyS5JjUhp822m5HjHD2R+WoticoNrSkqoM2SSzJuTDg==
+"@surfnet/sds@^0.0.143":
+  version "0.0.143"
+  resolved "https://registry.yarnpkg.com/@surfnet/sds/-/sds-0.0.143.tgz#2e0a877934faece496d9ee9979c479ef3f548304"
+  integrity sha512-GcHWmzUzQM/dh8ZCZvVQxmfVde2icq8brVrMqb/tgXbP3Liby6mPn7AE0ngmIUYSod8GVd/t2PzppoC+2/+H7Q==
 
 "@svgr/babel-plugin-add-jsx-attribute@8.0.0":
   version "8.0.0"
@@ -2756,17 +2756,17 @@ react-refresh@^0.17.0:
   resolved "https://registry.yarnpkg.com/react-refresh/-/react-refresh-0.17.0.tgz#b7e579c3657f23d04eccbe4ad2e58a8ed51e7e53"
   integrity sha512-z6F7K9bV85EfseRCp2bzrpyQ0Gkw1uLoCel9XBVWPg/TjRj94SkJzUTGfOa4bs7iJvBWtQG0Wq7wnI0syw3EBQ==
 
-react-router-dom@7.6.3:
-  version "7.6.3"
-  resolved "https://registry.yarnpkg.com/react-router-dom/-/react-router-dom-7.6.3.tgz#45686e71bb958cf80dd93ca3abf4111feb4edd35"
-  integrity sha512-DiWJm9qdUAmiJrVWaeJdu4TKu13+iB/8IEi0EW/XgaHCjW/vWGrwzup0GVvaMteuZjKnh5bEvJP/K0MDnzawHw==
+react-router-dom@7.7.0:
+  version "7.7.0"
+  resolved "https://registry.yarnpkg.com/react-router-dom/-/react-router-dom-7.7.0.tgz#25be91ba474b934cdeb36b54551789c2361fbcad"
+  integrity sha512-wwGS19VkNBkneVh9/YD0pK3IsjWxQUVMDD6drlG7eJpo1rXBtctBqDyBm/k+oKHRAm1x9XWT3JFC82QI9YOXXA==
   dependencies:
-    react-router "7.6.3"
+    react-router "7.7.0"
 
-react-router@7.6.3:
-  version "7.6.3"
-  resolved "https://registry.yarnpkg.com/react-router/-/react-router-7.6.3.tgz#7a4ea5b479b66d2c49a8f000812b2319b4d0a6da"
-  integrity sha512-zf45LZp5skDC6I3jDLXQUu0u26jtuP4lEGbc7BbdyxenBN1vJSTA18czM2D+h5qyMBuMrD+9uB+mU37HIoKGRA==
+react-router@7.7.0:
+  version "7.7.0"
+  resolved "https://registry.yarnpkg.com/react-router/-/react-router-7.7.0.tgz#9e5dc8a3be0c7a1931fcff6f32624b66a285b56a"
+  integrity sha512-3FUYSwlvB/5wRJVTL/aavqHmfUKe0+Xm9MllkYgGo9eDwNdkvwlJGjpPxono1kCycLt6AnDTgjmXvK3/B4QGuw==
   dependencies:
     cookie "^1.0.1"
     set-cookie-parser "^2.6.0"
