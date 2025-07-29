@@ -11,10 +11,10 @@
     "test": "vitest"
   },
   "dependencies": {
-    "@surfnet/sds": "^0.0.139",
-    "react": "^19.1.0",
-    "react-dom": "^19.1.0",
-    "react-router-dom": "7.6.3",
+    "@surfnet/sds": "^0.0.143",
+    "react": "^19.1.1",
+    "react-dom": "^19.1.1",
+    "react-router-dom": "7.7.1",
     "react-tooltip": "^5.29.1",
     "react-datepicker": "^8.4.0",
     "dompurify": "^3.2.6",
@@ -25,8 +25,8 @@
   },
   "devDependencies": {
     "@eslint/js": "^9.31.0",
-    "@types/react": "^19.1.8",
-    "@types/react-dom": "^19.1.6",
+    "@types/react": "^19.1.9",
+    "@types/react-dom": "^19.1.7",
     "@vitejs/plugin-react": "^4.6.0",
     "eslint": "^9.31.0",
     "eslint-plugin-react": "^7.37.5",
