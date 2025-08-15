@@ -350,11 +350,11 @@ public class RemoteCreationController implements HasUserRepository {
 
     @DeleteMapping(value = {"/eduid-delete/{eduid}"})
     @PreAuthorize("hasRole('ROLE_remote-creation')")
-    @Operation(summary = "Delete an eduID",
-            description = "Delete an eduID",
+    @Operation(summary = "Delete the eduID pseudonym for the remote source",
+            description = "Delete the eduID pseudonym for the remote source",
             responses = {
                     @ApiResponse(responseCode = "204", description = "No content",
-                            content = {@Content(schema = @Schema(implementation = UpdateExternalEduID.class))}),
+                            content = {@Content(schema = @Schema(implementation = Void.class))}),
                     @ApiResponse(responseCode = "400", description = "BadRequest",
                             content = {@Content(schema = @Schema(implementation = StatusResponse.class),
                                     examples = {@ExampleObject(value = "{\"status\":400}")})}),
