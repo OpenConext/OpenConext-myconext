@@ -55,6 +55,7 @@ The myconext client is build with Svelte and to get initially started:
 
 ```
 cd account-gui
+nvm use
 yarn install
 yarn dev
 ```
@@ -67,6 +68,7 @@ The IdP is also build with Svelte and to get initially started:
 
 ```
 cd myconext-gui
+nvm use
 yarn install
 yarn dev
 ```
