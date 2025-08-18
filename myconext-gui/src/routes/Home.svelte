@@ -44,11 +44,11 @@
     export let bookmark = "home";
 
     const tabs = [
-        {name: "home", component: Start, icon: home_icon},
-        {name: "personal", component: PersonalInfo, icon: personalInfoSvg},
-        {name: "data-activity", component: DataActivity, icon: dataActivitySvg},
-        {name: "security", component: Security, icon: securitySvg},
-        {name: "account", component: Account, icon: accountSvg},
+        {name: "home", alias: "Home", component: Start, icon: home_icon},
+        {name: "personal", alias: "Personal", component: PersonalInfo, icon: personalInfoSvg},
+        {name: "data-activity", alias: "DataAndActivity", component: DataActivity, icon: dataActivitySvg},
+        {name: "security", alias: "Security", component: Security, icon: securitySvg},
+        {name: "account", alias: "Account", component: Account, icon: accountSvg},
 
         {name: "edit-name", alias: "personal", component: EditName, ignore: true},
         {name: "manage", alias: "personal", component: PersonalInfo, ignore: true},
@@ -260,7 +260,7 @@
                         {@html tab.icon}
                         <a href="/{tab.name}"
                            on:click|preventDefault|stopPropagation={switchTab(tab.name)}>
-                            {I18n.t(`home.${tab.name}`)}
+                            {I18n.t(`Home.${tab.alias}.COPY`)}
                         </a>
                     </li>
                 {/if}
