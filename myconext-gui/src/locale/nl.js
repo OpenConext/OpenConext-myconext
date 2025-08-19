@@ -437,7 +437,10 @@ const nl = {
         copy: "Kopieer de code",
         copied: "Gekopieerd",
         continue: "Mijn code is veilig. Doorgaan",
-        leaveConfirmation: "Weet je zeker dat je deze pagina wilt verlaten? Wijzigingen worden niet opgeslagen."
+        leaveConfirmation: "Weet je zeker dat je deze pagina wilt verlaten? Wijzigingen worden niet opgeslagen.",
+        finalizedRegistration: "Bestaande herstelmethode",
+        finalizedRegistrationExplanation: "Je mag geen telefoonnummer registreren, omdat je al een bestaande back-upcode als herstelmethode hebt. Wijzig je herstelmethode ",
+        finalizedRegistrationHere: "hier."
     },
     phoneVerification: {
         header: "Voeg een hersteltelefoonnummer toe",

@@ -4,8 +4,18 @@
     import backupIcon from "../../icons/redesign/backup-code.svg?raw";
     import LoginOption from "../../components/LoginOption.svelte";
     import {navigate} from "svelte-routing";
+    import {user} from "../../stores/user";
+    import {onMount} from "svelte";
 
     export let change = false;
+
+    let finalizedRegistration = false;
+
+    onMount(() => {
+        if ($user.registration?.status === "FINALIZED") {
+            finalizedRegistration = true;
+        }
+    })
 
     const phoneNumber = () => {
         navigate(`/${change ? "change-" : ""}phone-verification`);
@@ -46,24 +56,32 @@
 </style>
 <div class="recovery">
     <div class="inner-container">
-
-        <h2 class="header">{I18n.t(`recovery.${change ? "changeHeader" : "header"}`)}</h2>
-        <p class="explanation">{I18n.t(`recovery.${change ? "changeInfo" : "info"}`)}</p>
-        <p class="methods">{I18n.t("Recovery.Methods.COPY")}</p>
-        <div class="phone-number">
-            <LoginOption icon={phoneIcon}
-                         label={I18n.t("Recovery.PhoneNumber.COPY")}
-                         subLabel={I18n.t("Recovery.PhoneNumberInfo.COPY")}
-                         action={phoneNumber}
-                         index={1}
-                         preferred={true}/>
-        </div>
-        <div class="other-account">
-            <LoginOption icon={backupIcon}
-                         label={I18n.t("Recovery.BackupCode.COPY")}
-                         subLabel={I18n.t("Recovery.BackupCodeInfo.COPY")}
-                         action={backUpCode}
-                         index={2}/>
-        </div>
+        {#if !change && finalizedRegistration}
+            <h2 class="header">{I18n.t("recovery.finalizedRegistration")}</h2>
+            <p class="explanation">{I18n.t("recovery.finalizedRegistrationExplanation")}
+                <a href="/backup-codes" on:click|preventDefault|stopPropagation={() => navigate("/backup-codes")}>
+                    {I18n.t("recovery.finalizedRegistrationHere")}
+                </a>
+            </p>
+        {:else}
+            <h2 class="header">{I18n.t(`recovery.${change ? "changeHeader" : "header"}`)}</h2>
+            <p class="explanation">{I18n.t(`recovery.${change ? "changeInfo" : "info"}`)}</p>
+            <p class="methods">{I18n.t("Recovery.Methods.COPY")}</p>
+            <div class="phone-number">
+                <LoginOption icon={phoneIcon}
+                             label={I18n.t("Recovery.PhoneNumber.COPY")}
+                             subLabel={I18n.t("Recovery.PhoneNumberInfo.COPY")}
+                             action={phoneNumber}
+                             index={1}
+                             preferred={true}/>
+            </div>
+            <div class="other-account">
+                <LoginOption icon={backupIcon}
+                             label={I18n.t("Recovery.BackupCode.COPY")}
+                             subLabel={I18n.t("Recovery.BackupCodeInfo.COPY")}
+                             action={backUpCode}
+                             index={2}/>
+            </div>
+        {/if}
     </div>
 </div>

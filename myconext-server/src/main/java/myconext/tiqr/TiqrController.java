@@ -9,6 +9,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import myconext.exceptions.ExpiredAuthenticationException;
 import myconext.exceptions.ForbiddenException;
+import myconext.exceptions.NotAcceptableException;
 import myconext.exceptions.UserNotFoundException;
 import myconext.manage.Manage;
 import myconext.model.SamlAuthenticationRequest;
@@ -231,7 +232,7 @@ public class TiqrController implements UserAuthentication {
     private ResponseEntity<GeneratedBackupCode> doGenerateBackupCode(User user, boolean regenerateSpFlow) throws TiqrException {
         if (!regenerateSpFlow) {
             Registration registration = registrationRepository.findRegistrationByUserId(user.getId()).orElseThrow(IllegalArgumentException::new);
-            if (!registration.getStatus().equals(RegistrationStatus.INITIALIZED)) {
+            if (registration.getStatus().equals(RegistrationStatus.FINALIZED)) {
                 throw new ForbiddenException("Forbidden backup code, wrong status: " + registration.getStatus());
             }
         }
@@ -260,7 +261,7 @@ public class TiqrController implements UserAuthentication {
                                                                @Valid @RequestBody PhoneCode phoneCode) {
         User user = userFromAuthentication(authentication);
         String phoneNumber = phoneCode.getPhoneNumber();
-        return doSendPhoneCode(user, phoneNumber, false, request);
+        return doSendPhoneCode(user, phoneNumber, false, false, request);
     }
 
     @Operation(summary = "Send new phone code", description = "Send a new verification code to mobile phone for a finished authentication")
@@ -275,7 +276,7 @@ public class TiqrController implements UserAuthentication {
         }
         User user = userFromAuthentication(secAuthentication);
         String phoneNumber = phoneCode.getPhoneNumber();
-        return doSendPhoneCode(user, phoneNumber, true, request);
+        return doSendPhoneCode(user, phoneNumber, true, true, request);
     }
 
     @PostMapping("/send-phone-code")
@@ -285,10 +286,23 @@ public class TiqrController implements UserAuthentication {
                                                           @RequestBody Map<String, String> requestBody) {
         User user = getUserFromAuthenticationRequest(hash);
         String phoneNumber = requestBody.get("phoneNumber");
-        return doSendPhoneCode(user, phoneNumber, false, request);
+        return doSendPhoneCode(user, phoneNumber, false, false, request);
     }
 
-    private ResponseEntity<FinishEnrollment> doSendPhoneCode(User user, String phoneNumber, boolean regenerateSpFlow, HttpServletRequest request) {
+    private ResponseEntity<FinishEnrollment> doSendPhoneCode(User user,
+                                                             String phoneNumber,
+                                                             boolean regenerateSpFlow,
+                                                             boolean deactivationFlow,
+                                                             HttpServletRequest request) {
+        Registration registration = registrationRepository.findRegistrationByUserId(user.getId()).orElseThrow(IllegalArgumentException::new);
+        //When the 1st factor is compromised, then it is not allowed to reset MFA
+        if (deactivationFlow && !registration.getStatus().equals(RegistrationStatus.FINALIZED)) {
+            throw new NotAcceptableException("Not allowed to resend phone code, registration is not finalized");
+        }
+        if (!deactivationFlow && registration.getStatus().equals(RegistrationStatus.FINALIZED)) {
+            throw new NotAcceptableException("Not allowed to send phone code, registration is already finalized");
+        }
+
         rateLimitEnforcer.checkSendSMSRateLimit(user);
 
         LOG.info(String.format("Sending SMS for user %s to number %s", user.getEmail(), phoneNumber));
@@ -300,6 +314,8 @@ public class TiqrController implements UserAuthentication {
         Map<String, Object> surfSecureId = user.getSurfSecureId();
         surfSecureId.put(PHONE_VERIFICATION_CODE, phoneVerification);
         surfSecureId.remove(RATE_LIMIT);
+        //Can't have both
+        surfSecureId.remove(RECOVERY_CODE);
 
         if (regenerateSpFlow) {
             surfSecureId.put(NEW_UNVERIFIED_PHONE_NUMBER, phoneNumber);
@@ -603,7 +619,7 @@ public class TiqrController implements UserAuthentication {
         if (!StringUtils.hasText(phoneNumber)) {
             throw new ForbiddenException("Forbidden empty phone number");
         }
-        return doSendPhoneCode(user, phoneNumber, false, request);
+        return doSendPhoneCode(user, phoneNumber, false, true, request);
     }
 
     @Operation(summary = "De-activate the app", description = "De-activate the eduID app for the current user")

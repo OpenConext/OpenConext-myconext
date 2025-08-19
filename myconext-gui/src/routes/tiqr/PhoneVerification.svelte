@@ -8,6 +8,8 @@
     import {navigate} from "svelte-routing";
     import Modal from "../../components/Modal.svelte";
 
+    const RECOVERY_CODE = "recovery-code";
+
     export let change = false;
 
     let initial = true;
@@ -15,6 +17,8 @@
     let showSpinner = false;
     let rateLimited = false;
     let showRateLimitedModal = false;
+    let finalizedRegistration = false;
+    let recoveryCode = sessionStorage.getItem(RECOVERY_CODE);
 
     $: allowedNext = validPhoneNumber(phoneNumber);
     $: phoneNumberIncorrect = !initial && !validPhoneNumber(phoneNumber);
@@ -27,9 +31,13 @@
             const promise = change ? reTextPhoneNumber : textPhoneNumber;
             promise(phoneNumber.replaceAll(" ", "").replaceAll("-", ""))
                 .then(() => navigate(`${change ? "change-" : ""}phone-confirmation`))
-                .catch(() => {
-                    rateLimited = true;
-                    showRateLimitedModal = true;
+                .catch(e => {
+                    if (e.status === 406) {
+                        finalizedRegistration = true;
+                    } else {
+                        rateLimited = true;
+                        showRateLimitedModal = true;
+                    }
                     showSpinner = false;
                 })
         }
@@ -105,32 +113,42 @@
 {/if}
 <div class="phone-verification">
     <div class="inner-container">
+        {#if finalizedRegistration}
+            <h2 class="header">{I18n.t("recovery.finalizedRegistration")}</h2>
+            <p class="explanation">{I18n.t("recovery.finalizedRegistrationExplanation")}
+                <a href="/backup-codes" on:click|preventDefault|stopPropagation={() => navigate("/backup-codes")}>
+                    {I18n.t("recovery.finalizedRegistrationHere")}
+                </a>
+            </p>
+            {#if recoveryCode}
+                //TODO recovery code show + translation
+            {/if}
+        {:else}
+            <h2 class="header">{I18n.t("PhoneVerification.Header.COPY")}</h2>
+            <p class="explanation">{I18n.t("phoneVerification.info")}</p>
+            <p class="methods">{I18n.t("PhoneVerification.Text.COPY")}</p>
 
-        <h2 class="header">{I18n.t("PhoneVerification.Header.COPY")}</h2>
-        <p class="explanation">{I18n.t("phoneVerification.info")}</p>
-        <p class="methods">{I18n.t("PhoneVerification.Text.COPY")}</p>
+            <input class:error={phoneNumberIncorrect}
+                   type="tel"
+                   id="password-field"
+                   spellcheck="false"
+                   on:keydown={handleEnter}
+                   placeholder={I18n.t("PhoneVerification.PlaceHolder.COPY")}
+                   use:init
+                   bind:value={phoneNumber}>
+            {#if phoneNumberIncorrect}
+                <div class="error">
+                    <span class="svg">{@html critical}</span>
+                    <span>{I18n.t("phoneVerification.phoneIncorrect")}</span>
+                </div>
+            {/if}
 
-        <input class:error={phoneNumberIncorrect}
-               type="tel"
-               id="password-field"
-               spellcheck="false"
-               on:keydown={handleEnter}
-               placeholder={I18n.t("PhoneVerification.PlaceHolder.COPY")}
-               use:init
-               bind:value={phoneNumber}>
-        {#if phoneNumberIncorrect}
-            <div class="error">
-                <span class="svg">{@html critical}</span>
-                <span>{I18n.t("phoneVerification.phoneIncorrect")}</span>
-            </div>
+            <Button href="/next"
+                    larger={true}
+                    disabled={showSpinner || !allowedNext}
+                    label={I18n.t("PhoneVerification.Verify.COPY")}
+                    onClick={next}/>
         {/if}
-
-        <Button href="/next"
-                larger={true}
-                disabled={showSpinner || !allowedNext}
-                label={I18n.t("PhoneVerification.Verify.COPY")}
-                onClick={next}/>
-
     </div>
 </div>
 

@@ -437,7 +437,10 @@ const en = {
         copy: "Copy the code",
         copied: "Copied",
         continue: "My code is safe. Continue",
-        leaveConfirmation: "Are you sure you want to leave the page? Changes will not be saved."
+        leaveConfirmation: "Are you sure you want to leave the page? Changes will not be saved.",
+        finalizedRegistration: "Existing recovery method",
+        finalizedRegistrationExplanation: "You are not allowed to register a phone number, as you already have an existing backup code as recovery method. You can change your recovery-method ",
+        finalizedRegistrationHere: "here."
     },
     phoneVerification: {
         header: "Add a recovery phone number",
