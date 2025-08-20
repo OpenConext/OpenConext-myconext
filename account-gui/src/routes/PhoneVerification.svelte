@@ -23,7 +23,7 @@
     let finalizedRegistration = false;
     let recoveryCode = sessionStorage.getItem(RECOVERY_CODE);
     let redirect = sessionStorage.getItem(REDIRECT);
-    
+
     onMount(() => {
         $links.displayBackArrow = true;
 
