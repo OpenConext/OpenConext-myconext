@@ -128,6 +128,11 @@ public class TiqrControllerTest extends AbstractIntegrationTest {
     public void spSendPhoneCode() throws IOException {
         doEnrollmment(true);
 
+        User user = userRepository.findUserByEmailAndRateLimitedFalse("jdoe@example.com").get();
+        Registration registration = registrationRepository.findRegistrationByUserId(user.getId()).get();
+        registration.setStatus(RegistrationStatus.INITIALIZED);
+        registrationRepository.saveAll(List.of(registration));
+
         String phoneNumber = "0612345678";
         given()
                 .when()
@@ -136,7 +141,7 @@ public class TiqrControllerTest extends AbstractIntegrationTest {
                 .post("/tiqr/sp/send-phone-code")
                 .body().as(new TypeRef<>() {
                 });
-        User user = userRepository.findUserByEmailAndRateLimitedFalse("jdoe@example.com").get();
+        user = userRepository.findUserByEmailAndRateLimitedFalse("jdoe@example.com").get();
         assertEquals(phoneNumber, user.getSurfSecureId().get(SURFSecureID.PHONE_NUMBER));
     }
 
@@ -197,6 +202,11 @@ public class TiqrControllerTest extends AbstractIntegrationTest {
         user.getSurfSecureId().put(SURFSecureID.PHONE_NUMBER, "0612345678");
         user.getSurfSecureId().put(SURFSecureID.RATE_LIMIT, 2);
         userRepository.save(user);
+
+        Registration registration = new Registration();
+        registration.setStatus(RegistrationStatus.FINALIZED);
+        registration.setUserId(user.getId());
+        registrationRepository.saveAll(List.of(registration));
 
         given()
                 .when()
