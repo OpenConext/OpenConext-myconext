@@ -440,7 +440,8 @@ const nl = {
         leaveConfirmation: "Weet je zeker dat je deze pagina wilt verlaten? Wijzigingen worden niet opgeslagen.",
         finalizedRegistration: "Bestaande herstelmethode",
         finalizedRegistrationExplanation: "Je mag geen telefoonnummer registreren, omdat je al een bestaande back-upcode als herstelmethode hebt. Wijzig je herstelmethode ",
-        finalizedRegistrationHere: "hier."
+        finalizedRegistrationHere: "hier.",
+        finalizedRegistrationBackupCode: "Je herstelcode is: "
     },
     phoneVerification: {
         header: "Voeg een hersteltelefoonnummer toe",
