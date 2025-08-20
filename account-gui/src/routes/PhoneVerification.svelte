@@ -11,13 +11,19 @@
     import {user} from "../stores/user";
     import Modal from "../components/Modal.svelte";
 
+    const RECOVERY_CODE = "recovery-code";
+    const REDIRECT = "redirect";
+
     let showSpinner = true;
     let initial = true;
     let hash = null;
     let phoneNumber = "";
     let rateLimited = false;
     let showRateLimitedModal = false;
-
+    let finalizedRegistration = false;
+    let recoveryCode = sessionStorage.getItem(RECOVERY_CODE);
+    let redirect = sessionStorage.getItem(REDIRECT);
+    
     onMount(() => {
         $links.displayBackArrow = true;
 
@@ -40,9 +46,13 @@
                     $user.phoneNumber = phoneNumber;
                     navigate(`phone-confirmation?h=${hash}`);
                 })
-                .catch(() => {
-                    rateLimited = true;
-                    showRateLimitedModal = true;
+                .catch(e => {
+                    if (e.status === 406) {
+                        finalizedRegistration = true;
+                    } else {
+                        rateLimited = true;
+                        showRateLimitedModal = true;
+                    }
                     showSpinner = false;
                 })
         }
@@ -94,35 +104,56 @@
         outline: none;
     }
 
+    span.backup-code {
+        font-weight: 600;
+    }
 
 </style>
 {#if showSpinner}
     <Spinner/>
 {/if}
-<h2 class="header">{I18n.t("PhoneVerification.Header.COPY")}</h2>
-<p class="explanation">{I18n.t("phoneVerification.info")}</p>
-<p class="methods">{I18n.t("PhoneVerification.Text.COPY")}</p>
+{#if finalizedRegistration}
+    <h2 class="header">{I18n.t("recovery.finalizedRegistration")}</h2>
+    <p class="explanation">{I18n.t("recovery.finalizedRegistrationExplanation")}</p>
+    {#if recoveryCode}
+        <p class="explanation">{I18n.t("recovery.finalizedRegistrationBackupCode")}
+            <span class="backup-code">{recoveryCode}</span>
+        </p>
+    {/if}
 
-<input class:error={phoneNumberIncorrect}
-       autocomplete="current-password"
-       id="password-field"
-       spellcheck="false"
-       on:keydown={handleEnter}
-       placeholder={I18n.t("PhoneVerification.PlaceHolder.COPY")}
-       use:init
-       bind:value={phoneNumber}>
-{#if phoneNumberIncorrect}
-    <div class="error">
-        <span class="svg">{@html critical}</span>
-        <span>{I18n.t("phoneVerification.phoneIncorrect")}</span>
-    </div>
+    <Button onClick={() => navigate(`/congrats?h=${hash}&redirect=${encodeURIComponent(redirect)}`)}
+            className="cancel full"
+            href={"/next"}
+            label={I18n.t("recovery.next")}/>
+{:else}
+    <h2 class="header">{I18n.t("PhoneVerification.Header.COPY")}</h2>
+    <p class="explanation">{I18n.t("phoneVerification.info")}</p>
+    <p class="methods">{I18n.t("PhoneVerification.Text.COPY")}</p>
+
+    <input class:error={phoneNumberIncorrect}
+           autocomplete="current-password"
+           id="password-field"
+           spellcheck="false"
+           on:keydown={handleEnter}
+           placeholder={I18n.t("PhoneVerification.PlaceHolder.COPY")}
+           use:init
+           bind:value={phoneNumber}>
+    {#if phoneNumberIncorrect}
+        <div class="error">
+            <span class="svg">{@html critical}</span>
+            <span>{I18n.t("phoneVerification.phoneIncorrect")}</span>
+        </div>
+    {/if}
+
+    <Button href="/next"
+            disabled={showSpinner || !allowedNext || rateLimited}
+            label={I18n.t("PhoneVerification.Verify.COPY")}
+            className="full"
+            onClick={next}/>
+
 {/if}
 
-<Button href="/next"
-        disabled={showSpinner || !allowedNext || rateLimited}
-        label={I18n.t("PhoneVerification.Verify.COPY")}
-        className="full"
-        onClick={next}/>
+
 
 {#if rateLimited && showRateLimitedModal}
     <Modal submit={() => showRateLimitedModal = false}

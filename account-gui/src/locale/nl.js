@@ -256,7 +256,11 @@ const nl = {
         copy: "Kopieer de code",
         copied: "Gekopieerd",
         continue: "Mijn code is veilig. Doorgaan",
-        leaveConfirmation: "Weet je zeker dat je de pagina wilt verlaten? De registratie wordt afgebroken."
+        leaveConfirmation: "Weet je zeker dat je de pagina wilt verlaten? De registratie wordt afgebroken.",
+        finalizedRegistration: "Bestaande herstelmethode",
+        finalizedRegistrationExplanation: "Je mag geen telefoonnummer registreren, omdat je al een bestaande back-upcode als herstelmethode hebt.",
+        finalizedRegistrationBackupCode: "Je herstelcode is: ",
+        next: "Doorgaan"
     },
     phoneVerification: {
         header: "Voeg een hersteltelefoonnummer toe",

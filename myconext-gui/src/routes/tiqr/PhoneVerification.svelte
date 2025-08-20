@@ -106,6 +106,9 @@
         outline: none;
     }
 
+    span.backup-code {
+        font-weight: 600;
+    }
 
 </style>
 {#if showSpinner}
@@ -121,7 +124,9 @@
                 </a>
             </p>
             {#if recoveryCode}
-                //TODO recovery code show + translation
+                <p class="explanation">{I18n.t("recovery.finalizedRegistrationBackupCode")}
+                    <span class="backup-code">{recoveryCode}</span>
+                </p>
             {/if}
         {:else}
             <h2 class="header">{I18n.t("PhoneVerification.Header.COPY")}</h2>
