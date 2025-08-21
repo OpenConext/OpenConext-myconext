@@ -65,7 +65,8 @@ const en = {
         forgotPassword: "Forgot your password?",
         useAnother: "Use another",
         optionsLink: "sign-in option.",
-        sendingEmail: "Sending email..."
+        sendingEmail: "Sending email...",
+        termsRequired: "Please agree with the terms and privacy statement"
     },
     options: {
         header: "How do you want to login?",

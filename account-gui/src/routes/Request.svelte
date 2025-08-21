@@ -55,12 +55,13 @@
     });
 
     const handleNext = () => {
+        const captchaResponse = document.querySelector("[name='frc-captcha-response']").value;
+        if ($conf.captchaEnabled && isEmpty(captchaResponse) || captchaResponse === ".ACTIVATED") {
+            captchaShowWarning = true;
+            initial = false;
+            return;
+        }
         if (allowedNext($user.email, $user.givenName, $user.familyName, agreedWithTerms)) {
-            const captchaResponse = document.querySelector("[name='frc-captcha-response']").value;
-            if ($conf.captchaEnabled && isEmpty(captchaResponse) || captchaResponse === ".ACTIVATED") {
-                captchaShowWarning = true;
-                return;
-            }
             showSpinner = true;
             generateCodeNewUser($user.email, $user.givenName, $user.familyName, id, captchaResponse)
                 .then(res => {
@@ -180,7 +181,7 @@
     }
 
     span.error {
-        display: inline-block;
+        display: block;
         margin: 0 auto 10px 0;
         color: var(--color-primary-red);
     }
@@ -319,11 +320,14 @@
               className="light"
               label={I18n.t("LinkFromInstitution.AgreeWithTerms.COPY")}
               onChange={val => agreedWithTerms = val}/>
+    {#if !initial && !agreedWithTerms}
+        <span class="error">{I18n.t("login.termsRequired")}</span>
+    {/if}
     <div id="captcha"></div>
     {#if captchaShowWarning}
         <span class="captcha error">{I18n.t("captcha.proveNotRobot")}</span>
     {/if}
-    <Button disabled={showSpinner || !allowedNext($user.email, $user.familyName, $user.givenName, agreedWithTerms)}
+    <Button disabled={!initial && (showSpinner || !allowedNext($user.email, $user.familyName, $user.givenName, agreedWithTerms))}
             href="/magic"
             className="full"
             label={I18n.t("LinkFromInstitution.RequestEduIdButton.COPY")}

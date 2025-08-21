@@ -65,7 +65,8 @@ const nl = {
         forgotPassword: "Wachtwoord vergeten?",
         useAnother: "Gebruik een andere",
         optionsLink: "inlogmethode.",
-        sendingEmail: "Email aan het sturen..."
+        sendingEmail: "Email aan het sturen...",
+        termsRequired: "Je moet akkoord gaan met de voorwaarden en privacyverklaring"
     },
     options: {
         header: "Hoe wil je inloggen?",
