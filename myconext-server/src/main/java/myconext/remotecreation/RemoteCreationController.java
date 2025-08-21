@@ -180,6 +180,7 @@ public class RemoteCreationController implements HasUserRepository {
                             content = {@Content(schema = @Schema(implementation = List.class),
                                     examples = {@ExampleObject(value = "[{\n" +
                                             "  \"eduID\": \"46ab5162-e098-4c24-9f28-cdf4d9b5fbb0\",\n" +
+                                            "  \"brinCode\": \"UV-001\",\n" +
                                             "  \"value\": \"46ab5162-e098-4c24-9f28-cdf4d9b5fbb0\"\n" +
                                             "}]")})}),
                     @ApiResponse(responseCode = "400", description = "BadRequest",
