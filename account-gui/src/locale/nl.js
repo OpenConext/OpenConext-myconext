@@ -438,7 +438,7 @@ const nl = {
         }
     },
     captcha: {
-        proveNotRobot: "Check de 'I am human' checkbox"
+        proveNotRobot: "Check de 'Anti-robotverificatie' checkbox"
     }
 };
 export default nl;

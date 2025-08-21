@@ -35,16 +35,15 @@
         Cookies.remove(cookieNames.USERNAME);
         if ($conf.captchaEnabled) {
             const mount = document.querySelector("#captcha");
-            mount.addEventListener("frc:widget.complete", function(event) {
-                captchaShowWarning = false;
-            });
+            mount.addEventListener("frc:widget.complete", () => captchaShowWarning = false);
 
             const sdk = new FriendlyCaptchaSDK();
+            const language = I18n.currentLocale();
             sdk.createWidget({
                 element: mount,
                 sitekey: $conf.captchaSiteKey,
                 startMode: "auto",
-                language: I18n.locale,
+                language: language,
             });
         }
 
@@ -323,7 +322,7 @@
     {#if !initial && !agreedWithTerms}
         <span class="error">{I18n.t("login.termsRequired")}</span>
     {/if}
-    <div id="captcha"></div>
+    <div id="captcha" class="frc-captcha"></div>
     {#if captchaShowWarning}
         <span class="captcha error">{I18n.t("captcha.proveNotRobot")}</span>
     {/if}
