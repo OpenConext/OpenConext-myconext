@@ -1,7 +1,10 @@
 package myconext.sms;
 
 import lombok.SneakyThrows;
+import myconext.tiqr.TiqrController;
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -19,12 +22,15 @@ import java.util.Map;
 @SuppressWarnings("unchecked")
 public class SMSServiceImpl implements SMSService {
 
+    private static final Log LOG = LogFactory.getLog(SMSServiceImpl.class);
+
     private final String url;
     public final String route;
     private final String templateNl;
     private final String templateEn;
     private final RestTemplate restTemplate = new RestTemplate();
     private final MultiValueMap<String, String> headers = new HttpHeaders();
+
 
     @SneakyThrows
     public SMSServiceImpl(String url, String bearer, String route) {
@@ -53,7 +59,11 @@ public class SMSServiceImpl implements SMSService {
                 "recipients", List.of(mobile)
         );
 
-        RequestEntity<?> requestEntity = new RequestEntity(body, headers, HttpMethod.POST, URI.create(url));
+        RequestEntity<?> requestEntity = new RequestEntity<>(body, headers, HttpMethod.POST, URI.create(url));
+        LOG.info(String.format("Sending SMS with url : %s, route : %s body: %s",
+                url,
+                route,
+                body));
         restTemplate.exchange(requestEntity, Void.class);
         return format;
     }
