@@ -1,7 +1,6 @@
 package myconext.sms;
 
 import lombok.SneakyThrows;
-import myconext.tiqr.TiqrController;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
