@@ -987,8 +987,8 @@ SHARED:
         nl: Niet ondersteund
     UseMagicLink:
       COPY:
-        en: Magic link email
-        nl: Link via e-mail
+        en: Verification code email
+        nl: Verificatie-code e-mail
     UseCode:
       COPY:
         en: Verification code email
@@ -2661,8 +2661,8 @@ SHARED:
         nl: Typ een wachtwoord
     UseMagicLink:
       COPY:
-        en: Email a magic link
-        nl: Gebruik magische link
+        en: Verificatie-code e-mail
+        nl: Verificatie-code e-mail
     UseMagicLinkNoWebAuthn:
       COPY:
         en: Email a magic link.
