@@ -22,13 +22,14 @@ import java.util.Map;
 @SuppressWarnings("unchecked")
 public class SMSServiceImpl implements SMSService {
 
+    private static final Log LOG = LogFactory.getLog(SMSServiceImpl.class);
+
     private final String url;
     public final String route;
     private final String templateNl;
     private final String templateEn;
     private final RestTemplate restTemplate = new RestTemplate();
     private final MultiValueMap<String, String> headers = new HttpHeaders();
-    private static final Log LOG = LogFactory.getLog(SMSServiceImpl.class);
 
 
     @SneakyThrows
@@ -58,8 +59,11 @@ public class SMSServiceImpl implements SMSService {
                 "recipients", List.of(mobile)
         );
 
-        RequestEntity<?> requestEntity = new RequestEntity(body, headers, HttpMethod.POST, URI.create(url));
-        LOG.info(String.format("SMS url : %s, route : %s body: %s", url, route, requestEntity.getBody()));
+        RequestEntity<?> requestEntity = new RequestEntity<>(body, headers, HttpMethod.POST, URI.create(url));
+        LOG.info(String.format("Sending SMS with url : %s, route : %s body: %s",
+                url,
+                route,
+                body));
         restTemplate.exchange(requestEntity, Void.class);
         return format;
     }
