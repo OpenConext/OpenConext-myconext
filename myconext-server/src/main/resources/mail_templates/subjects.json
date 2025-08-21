@@ -7,6 +7,10 @@
     "en": "Verify your eduID email",
     "nl": "Bevestig je eduID e-mailadres"
   },
+  "account_validated": {
+    "en": "Your eduID has been validated",
+    "nl": "Je eduID is gevalideerd"
+  },
   "one_time_login_code": {
     "en": "eduID login code: ",
     "nl": "eduID login code: "

@@ -5,7 +5,9 @@ import jakarta.mail.internet.MimeMessage;
 import lombok.SneakyThrows;
 import myconext.AbstractMailBoxTest;
 import myconext.model.EmailsSend;
+import myconext.model.IdpScoping;
 import myconext.model.User;
+import myconext.remotecreation.UpdateExternalEduID;
 import myconext.security.VerificationCodeGenerator;
 import org.apache.commons.mail2.jakarta.util.MimeMessageParser;
 import org.junit.Test;
@@ -119,6 +121,23 @@ public class MailBoxTest extends AbstractMailBoxTest {
 
         String htmlContent = parser.getHtmlContent();
         assertTrue(htmlContent.contains("http://localhost:3001/reset-password?h=hash"));
+    }
+
+    @Test
+    public void sendUserValidated() throws Exception {
+        User user = user("jdoe@example.com");
+        UpdateExternalEduID updateExternalEduID = new UpdateExternalEduID();
+        updateExternalEduID.setFirstName("Paula Lola");
+        updateExternalEduID.setDateOfBirth("01-02-1999");
+        mailBox.sendUserValidated(user, updateExternalEduID, IdpScoping.studielink.name());
+
+        MimeMessage mimeMessage = mailMessage();
+        MimeMessageParser parser = new MimeMessageParser(mimeMessage);
+        parser.parse();
+
+        String htmlContent = parser.getHtmlContent();
+
+        assertTrue(htmlContent.contains("Paula Lola"));
     }
 
     @Test

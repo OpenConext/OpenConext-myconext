@@ -1,0 +1,8 @@
+Hi {{name}},
+
+Je persoonlijke gegevens van je eduID-account zijn gevalideerd door {{source}}.
+Je bijgewerkte gegevens zijn:
+    - {{firstName}}
+    - {{dateOfBirth}}
+
+{{> footer_nl.txt}}

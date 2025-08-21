@@ -32,6 +32,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
 
 import static java.util.function.UnaryOperator.identity;
@@ -327,10 +328,15 @@ public class RemoteCreationController implements HasUserRepository {
         User user = this.findUserByEduIDValue(eduIDValue)
                 .orElseThrow(() -> new UserNotFoundException(String.format("User not found by eduID %s", eduIDValue)));
         user.updateWithExternalEduID(externalEduID);
+        AtomicBoolean userIsValidated = new AtomicBoolean(false);
         Optional<ExternalLinkedAccount> optionalExternalLinkedAccount = user.getExternalLinkedAccounts().stream()
                 .filter(account -> IdpScoping.valueOf(remoteUserName).equals(account.getIdpScoping()))
                 .findAny();
         optionalExternalLinkedAccount.ifPresentOrElse(externalLinkedAccount -> {
+            if (Verification.Ongeverifieerd.equals(externalLinkedAccount.getVerification()) &&
+                    !Verification.Ongeverifieerd.equals(externalEduID.getVerification()) ) {
+                userIsValidated.set(true);
+            }
             //Not all external attributes can be changed
             externalLinkedAccount.setVerification(externalEduID.getVerification());
             externalLinkedAccount.setAffiliations(AttributeMapper.externalAffiliations(externalEduID.getBrinCodes(), manage));
@@ -342,10 +348,16 @@ public class RemoteCreationController implements HasUserRepository {
             String provisionedEduIDValue = user.computeEduIdForIdentityProviderProviderIfAbsent(remoteProvider, manage);
             externalEduID.setEduIDValue(provisionedEduIDValue);
             ExternalLinkedAccount externalLinkedAccount = attributeMapper.createExternalLinkedAccount(externalEduID, IdpScoping.valueOf(remoteUserName));
+            if (!Verification.Ongeverifieerd.equals(externalLinkedAccount.getVerification()) ) {
+                userIsValidated.set(true);
+            }
             user.getExternalLinkedAccounts().add(externalLinkedAccount);
         });
 
         userRepository.save(user);
+        if (userIsValidated.get()) {
+            mailBox.sendUserValidated(user, externalEduID, remoteUserName);
+        }
         return ResponseEntity.status(HttpStatus.CREATED).body(externalEduID);
     }
 

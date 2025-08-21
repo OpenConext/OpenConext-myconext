@@ -10,6 +10,7 @@ import myconext.model.ControlCode;
 import myconext.model.EmailsSend;
 import myconext.model.User;
 import myconext.model.UserLogin;
+import myconext.remotecreation.UpdateExternalEduID;
 import myconext.repository.EmailsSendRepository;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -213,6 +214,16 @@ public class MailBox {
         sendMail("service_desk_control_code", title, variables, preferredLanguage(user), user.getEmail(), true);
     }
 
+    public void sendUserValidated(User user, UpdateExternalEduID externalEduID, String source) {
+        String title = this.getTitle("account_validated", user);
+        Map<String, Object> variables = variables(user, title);
+        variables.put("mySurfConextURL", mySURFconextURL);
+        variables.put("dateOfBirth", externalEduID.getDateOfBirth());
+        variables.put("source", source);
+        variables.put("firstName", externalEduID.getFirstName());
+        sendMail("account_validated", title, variables, preferredLanguage(user), user.getEmail(), false);
+    }
+
     @SneakyThrows
     public void sendErrorMail(Map<String, Object> json, User user) {
         String title = this.getTitle("error_email", user);
@@ -293,4 +304,5 @@ public class MailBox {
             return new ClassPathResource(mailTemplatesDirectory.getFilename() + "/" + "subjects.json").getInputStream();
         }
     }
+
 }
