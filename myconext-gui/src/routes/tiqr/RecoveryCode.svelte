@@ -5,6 +5,7 @@
     import {generateBackupCode, regenerateBackupCode} from "../../api";
     import Spinner from "../../components/Spinner.svelte";
     import {navigate} from "svelte-routing";
+    import Modal from "../../components/Modal.svelte";
 
     export let change = false;
 
@@ -13,12 +14,20 @@
     let showSpinner = true;
     let recoveryCode = "";
     let copied = false;
+    let showModalBackButton = false;
+
 
     const onConfirmRefresh = e => {
         e.preventDefault();
         window.removeEventListener("beforeunload", onConfirmRefresh, {capture: true});
         return e.returnValue = I18n.t("Recovery.LeaveConfirmation.COPY");
     }
+
+    const handlePopState = (event) => {
+        event.preventDefault();
+        showModalBackButton = true;
+        window.history.pushState(null, null, window.location.pathname); // Prevent navigation
+    };
 
     onMount(() => {
         const promise = change ? regenerateBackupCode : generateBackupCode;
@@ -29,6 +38,10 @@
                 sessionStorage.setItem(RECOVERY_CODE, recoveryCode);
                 showSpinner = false;
                 window.addEventListener("beforeunload", onConfirmRefresh, {capture: true});
+
+                window.addEventListener('popstate', handlePopState);
+                // Push a state so the first "back" triggers popstate
+                window.history.pushState(null, null, window.location.pathname);
             }).catch(() => {
             showSpinner = false;
             recoveryCode = sessionStorage.getItem(RECOVERY_CODE);
@@ -37,6 +50,7 @@
 
     onDestroy(() => {
         window.removeEventListener("beforeunload", onConfirmRefresh, {capture: true});
+        window.removeEventListener('popstate', handlePopState);
     });
 
     const copyToClipboard = () => {
@@ -47,6 +61,7 @@
 
     const next = () => {
         window.removeEventListener("beforeunload", onConfirmRefresh, {capture: true});
+        window.removeEventListener('popstate', handlePopState);
         navigate(change ? `/change-congrats` : `/congrats`);
     }
 
@@ -119,3 +134,15 @@
         </div>
     </div>
 </div>
+{#if showModalBackButton}
+    <Modal submit={() => {
+        showModalBackButton = false;
+        window.removeEventListener('popstate', handlePopState);
+    }}
+           cancel={null}
+           warning={false}
+           question={I18n.t("recovery.backButtonWarning")}
+           confirmTitle={I18n.t("recovery.backButtonWarningConfirmation")}
+           title={I18n.t("recovery.backButtonWarningTitle")}>
+    </Modal>
+{/if}

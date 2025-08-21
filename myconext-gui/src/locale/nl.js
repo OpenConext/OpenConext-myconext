@@ -441,7 +441,10 @@ const nl = {
         finalizedRegistration: "Bestaande herstelmethode",
         finalizedRegistrationExplanation: "Je mag geen telefoonnummer registreren, omdat je al een bestaande back-upcode als herstelmethode hebt. Wijzig je herstelmethode ",
         finalizedRegistrationHere: "hier.",
-        finalizedRegistrationBackupCode: "Je herstelcode is: "
+        finalizedRegistrationBackupCode: "Je herstelcode is: ",
+        backButtonWarning: "Je eduID-app is succesvol toegevoegd aan je account. Je kunt je herstelcode niet wijzigen met de terugknop.",
+        backButtonWarningTitle: "Terugknop niet aanbevolen",
+        backButtonWarningConfirmation: "Ok",
     },
     phoneVerification: {
         header: "Voeg een hersteltelefoonnummer toe",

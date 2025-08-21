@@ -441,7 +441,10 @@ const en = {
         finalizedRegistration: "Existing recovery method",
         finalizedRegistrationExplanation: "You are not allowed to register a phone number, as you already have an existing backup code as recovery method. You can change your recovery-method ",
         finalizedRegistrationHere: "here.",
-        finalizedRegistrationBackupCode: "Your recovery code is: "
+        finalizedRegistrationBackupCode: "Your recovery code is: ",
+        backButtonWarning: "Your eduID app is successfully added to your account. You are not allowed to change your recovery code using the back button.",
+        backButtonWarningTitle: "Back button not recommended",
+        backButtonWarningConfirmation: "Ok",
     },
     phoneVerification: {
         header: "Add a recovery phone number",
