@@ -58,14 +58,12 @@
                         if (json.preferredLanguage !== lang && !isEmpty(json.preferredLanguage)) {
                             I18n.changeLocale(json.preferredLanguage);
                         }
+                        loaded = true;
                         const useOidcApi = $config.featureOidcTokenAPI;
                         if (useOidcApi) {
                             oidcTokens().then(tokens => {
                                 $user.oidcTokens = tokens;
-                                loaded = true;
                             });
-                        } else {
-                            loaded = true;
                         }
                     })
                     .catch(e => {
