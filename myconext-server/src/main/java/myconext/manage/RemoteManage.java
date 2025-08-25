@@ -151,16 +151,17 @@ public class RemoteManage implements Manage {
     }
 
     @Override
-    public Optional<IdentityProvider> findIdentityProviderByBrinCode(String brinCode) {
+    public List<IdentityProvider> findIdentityProviderByBrinCode(String brinCode) {
         return searchIdentityProvider("metaDataFields.coin:institution_brin", brinCode);
     }
 
     @Override
     public Optional<IdentityProvider> findIdentityProviderByInstitutionGUID(String institutionGUID) {
-        return searchIdentityProvider("metaDataFields.coin:institution_guid", institutionGUID);
+        return searchIdentityProvider("metaDataFields.coin:institution_guid", institutionGUID)
+                .stream().findFirst();
     }
 
-    private Optional<IdentityProvider> searchIdentityProvider(String metaDataField, String metaDataValue) {
+    private List<IdentityProvider> searchIdentityProvider(String metaDataField, String metaDataValue) {
         Map<String, Object> requestBody = Map.of(metaDataField, metaDataValue,
                 "REQUESTED_ATTRIBUTES", Arrays.asList(
                         "metaDataFields.coin:institution_brin",
@@ -177,7 +178,7 @@ public class RemoteManage implements Manage {
                         remoteProvider(m),
                         metaDataFields(m).get("coin:institution_brin"),
                         metaDataFields(m).get("coin:institution_brin_schac_home")))
-                .findFirst();
+                .toList();
     }
 
 }

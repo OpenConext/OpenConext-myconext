@@ -52,10 +52,10 @@ public class MockManage implements Manage {
     }
 
     @Override
-    public Optional<IdentityProvider> findIdentityProviderByBrinCode(String brinCode) {
+    public List<IdentityProvider> findIdentityProviderByBrinCode(String brinCode) {
         return this.identityProviders.values().stream()
                 .filter(identityProvider -> brinCode.equals(identityProvider.getInstitutionBrin()))
-                .findFirst();
+                .toList();
     }
 
     @Override

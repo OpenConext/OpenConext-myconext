@@ -73,7 +73,7 @@ public class RemoteManageTest {
                 .willReturn(aResponse()
                         .withHeader("Content-Type", "application/json")
                         .withBody(readFile("manage/idp_brin_code.json"))));
-        IdentityProvider identityProvider = manage.findIdentityProviderByBrinCode("ST42").get();
+        IdentityProvider identityProvider = manage.findIdentityProviderByBrinCode("ST42").getFirst();
 
         assertEquals("Hartingcollege ADFS IDP EN", identityProvider.getName());
     }
@@ -85,7 +85,7 @@ public class RemoteManageTest {
                 .willReturn(aResponse()
                         .withHeader("Content-Type", "application/json")
                         .withBody("[]")));
-        assertFalse(manage.findIdentityProviderByBrinCode("nope").isPresent());
+        assertTrue(manage.findIdentityProviderByBrinCode("nope").isEmpty());
     }
 
     @SneakyThrows

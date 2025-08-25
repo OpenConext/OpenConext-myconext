@@ -23,7 +23,7 @@ public interface Manage {
 
     Optional<IdentityProvider> findIdentityProviderByDomainName(String domainName);
 
-    Optional<IdentityProvider> findIdentityProviderByBrinCode(String brinCode);
+    List<IdentityProvider> findIdentityProviderByBrinCode(String brinCode);
 
     Optional<IdentityProvider> findIdentityProviderByInstitutionGUID(String institutionGUID);
 

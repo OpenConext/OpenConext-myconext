@@ -34,6 +34,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static java.util.function.UnaryOperator.identity;
 import static myconext.SwaggerOpenIdConfig.BASIC_AUTHENTICATION_SCHEME_NAME;
@@ -164,6 +165,8 @@ public class RemoteCreationController implements HasUserRepository {
         User user = this.findUserByEduIDValue(eduIDInstitutionPseudonym.getEduID())
                 .orElseThrow(() -> new UserNotFoundException(String.format("User with eduID %s not found", eduIDInstitutionPseudonym.getEduID())));
         IdentityProvider identityProvider = manage.findIdentityProviderByBrinCode(eduIDInstitutionPseudonym.getBrinCode())
+                .stream()
+                .findFirst()
                 .orElseThrow(() -> new IdentityProviderNotFoundException(String.format("IdentityProvider with BRIN code %s not found", eduIDInstitutionPseudonym.getBrinCode())));
 
         String eduIDValue = user.computeEduIdForIdentityProviderProviderIfAbsent(identityProvider, manage);
@@ -214,7 +217,7 @@ public class RemoteCreationController implements HasUserRepository {
                 .map(pseudonym -> pseudonym.getBrinCode())
                 .distinct()
                 .map(brinCode -> manage.findIdentityProviderByBrinCode(brinCode))
-                .flatMap(Optional::stream)
+                .flatMap(List::stream)
                 .collect(Collectors.toMap(IdentityProvider::getInstitutionBrin, identity()));
 
         List<EduIDAssignedValue> eduIDAssignedValues = eduIDInstitutionPseudonyms.stream()

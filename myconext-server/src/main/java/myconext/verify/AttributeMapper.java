@@ -5,6 +5,8 @@ import lombok.SneakyThrows;
 import myconext.manage.Manage;
 import myconext.model.*;
 import myconext.remotecreation.NewExternalEduID;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
@@ -20,6 +22,7 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeFormatterBuilder;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
+import java.util.stream.Stream;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 
@@ -28,6 +31,8 @@ import java.util.zip.GZIPOutputStream;
 public class AttributeMapper {
 
     private static final int DEFAULT_EXPIRATION_YEARS = 6;
+
+    private static final Log LOG = LogFactory.getLog(AttributeMapper.class);
 
     private static final List<DateTimeFormatter> dateTimeFormatters;
 
@@ -316,13 +321,27 @@ public class AttributeMapper {
     }
 
     public static List<String> externalAffiliations(List<String> brinCodes, Manage manage) {
-        return CollectionUtils.isEmpty(brinCodes) ? Collections.emptyList() :
-                brinCodes.stream()
-                        .map(manage::findIdentityProviderByBrinCode)
-                        .flatMap(Optional::stream)
-                        .filter(idp -> StringUtils.hasText(idp.getDomainName()))
-                        .map(idp -> String.format("student@%s", idp.getDomainName()))
-                        .toList();
+        LOG.info("Adding external affiliations for brinCodes: " + brinCodes);
+
+        if (CollectionUtils.isEmpty(brinCodes)) {
+            return Collections.emptyList();
+        }
+
+        List<IdentityProvider> identityProviders = brinCodes.stream()
+                .map(manage::findIdentityProviderByBrinCode)
+                .flatMap(List::stream)
+                .toList();
+
+        LOG.info("IdentifyProviders for brinCodes: " + identityProviders);
+
+        List<String> affiliations = identityProviders.stream()
+                .filter(idp -> StringUtils.hasText(idp.getDomainName()))
+                .map(idp -> String.format("student@%s", idp.getDomainName()))
+                .toList();
+
+        LOG.info("Affiliations for brinCodes: "+affiliations);
+
+        return affiliations;
     }
 
     private String getAttribute(Map<String, Object> attributes, String key) {
