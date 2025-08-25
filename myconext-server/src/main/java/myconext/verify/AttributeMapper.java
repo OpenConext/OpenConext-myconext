@@ -22,7 +22,6 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeFormatterBuilder;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
-import java.util.stream.Stream;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 
@@ -339,7 +338,11 @@ public class AttributeMapper {
                 .map(idp -> String.format("student@%s", idp.getDomainName()))
                 .toList();
 
-        LOG.info("Affiliations for brinCodes: "+affiliations);
+        LOG.info("Affiliations for brinCodes: " + affiliations);
+
+        if (identityProviders.size() != affiliations.size()) {
+            LOG.warn("There are IdP with valid brin_codes, but no corresponding institution_brin_schac_home: " + identityProviders);
+        }
 
         return affiliations;
     }
