@@ -177,7 +177,7 @@ public class RemoteManage implements Manage {
                 .map(m -> new IdentityProvider(
                         remoteProvider(m),
                         metaDataFields(m).get("coin:institution_brin"),
-                            metaDataFields(m).get("coin:institution_brin_schac_home")))
+                        metaDataFields(m).get("coin:institution_brin_schac_home")))
                 .toList();
     }
 

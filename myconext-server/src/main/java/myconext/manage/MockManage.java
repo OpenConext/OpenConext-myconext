@@ -53,9 +53,13 @@ public class MockManage implements Manage {
 
     @Override
     public List<IdentityProvider> findIdentityProviderByBrinCode(String brinCode) {
-        return this.identityProviders.values().stream()
+        List<IdentityProvider> filteredIdentityProviders = this.identityProviders.values().stream()
                 .filter(identityProvider -> brinCode.equals(identityProvider.getInstitutionBrin()))
                 .toList();
+        Map<String, IdentityProvider> map = filteredIdentityProviders.stream()
+                .collect(Collectors.toMap(IdentityProvider::getEntityId, e -> e, (a, b) -> a));
+
+        return new ArrayList<>(map.values());
     }
 
     @Override

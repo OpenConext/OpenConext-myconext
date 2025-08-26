@@ -27,12 +27,14 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -213,30 +215,30 @@ public class RemoteCreationController implements HasUserRepository {
         LOG.info(String.format("eduid-institution-pseudonym by %s for %s", remoteUser.getUsername(), eduIDInstitutionPseudonyms));
         //First, get all identityProviders and remove those not found e.g. Optional<IdentityProvider>
 
-        Map<String, IdentityProvider> identityProviderMap = eduIDInstitutionPseudonyms.stream()
+        Map<String, List<IdentityProvider>> identityProvidersGroupedBy = eduIDInstitutionPseudonyms.stream()
                 .map(pseudonym -> pseudonym.getBrinCode())
                 .distinct()
                 .map(brinCode -> manage.findIdentityProviderByBrinCode(brinCode))
                 .flatMap(List::stream)
-                .collect(Collectors.toMap(IdentityProvider::getInstitutionBrin, identity()));
+                .collect(Collectors.groupingBy(IdentityProvider::getInstitutionBrin));
 
         List<EduIDAssignedValue> eduIDAssignedValues = eduIDInstitutionPseudonyms.stream()
-                .map(eduIDInstitutionPseudonym -> {
+                .flatMap(eduIDInstitutionPseudonym -> {
                     String eduID = eduIDInstitutionPseudonym.getEduID();
                     String brinCode = eduIDInstitutionPseudonym.getBrinCode();
-                    String pseudonym = this.findUserByEduIDValue(eduID).map(user -> {
-                        IdentityProvider identityProvider = identityProviderMap.get(brinCode);
+                    List<String> pseudonyms = this.findUserByEduIDValue(eduID)
+                            .map(user -> {
+                        List<IdentityProvider> identityProviders = identityProvidersGroupedBy.get(brinCode);
                         //It might be that no identityProvider was found for this BRIN code
-                        if (identityProvider == null) {
-                            return null;
-                        }
-                        String eduIDValue = user.computeEduIdForIdentityProviderProviderIfAbsent(identityProvider, manage);
+                        List<String> eduIDValues = identityProviders.stream()
+                                .map(identityProvider -> user.computeEduIdForIdentityProviderProviderIfAbsent(identityProvider, manage))
+                                .distinct()
+                                .toList();
                         userRepository.save(user);
-                        return eduIDValue;
-                    }).orElse(null);
-                    return StringUtils.hasText(pseudonym) ? new EduIDAssignedValue(eduID, pseudonym, brinCode) : null;
+                        return eduIDValues;
+                    }).orElse(Collections.emptyList());
+                    return pseudonyms.stream().map(pseudonym -> new EduIDAssignedValue(eduID, pseudonym, brinCode));
                 })
-                .filter(Objects::nonNull)
                 .toList();
         return ResponseEntity.ok(eduIDAssignedValues);
     }

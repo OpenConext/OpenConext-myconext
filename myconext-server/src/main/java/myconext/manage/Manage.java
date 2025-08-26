@@ -44,7 +44,8 @@ public interface Manage {
                             acc.putAll(providerMap);
                             return acc;
                         }
-                ).entrySet().stream().collect(toMap(e -> e.getKey(), e -> (IdentityProvider) e.getValue()));
+                ).entrySet().stream()
+                .collect(toMap(e -> e.getKey(), e -> (IdentityProvider) e.getValue()));
     }
 
     default String entityId(Map<String, Object> map) {
