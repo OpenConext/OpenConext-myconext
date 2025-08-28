@@ -4,6 +4,7 @@ test("Valid email", () => {
     expect(validEmail("nope")).toBe(false);
     expect(validEmail("nope@a")).toBe(false);
     expect(validEmail("nope@a#$%")).toBe(false);
+    expect(validEmail("nope@@aa.com")).toBe(false);
 
     expect(validEmail("nope+test@a.com")).toBe(true);
     expect(validEmail("nope@a.com")).toBe(true);
