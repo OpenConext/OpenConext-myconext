@@ -6,6 +6,7 @@
     import {onMount} from "svelte";
     import {splitListSemantically} from "../utils/utils";
     import {institutionName} from "../utils/services";
+    import studieLinkLogo from "../icons/remotecreation/studielink.png";
 
     export let linkedAccount;
     export let manageVerifiedInformation;
@@ -109,6 +110,8 @@
         <span class="student">
         {#if linkedAccount.logoUrl}
             <img src={linkedAccount.logoUrl} alt="logo">
+        {:else if linkedAccount.idpScoping === "studielink"}
+            <img class="studielink" src={studieLinkLogo} alt="studielink"/>
         {:else}
             {@html notFound}
         {/if}

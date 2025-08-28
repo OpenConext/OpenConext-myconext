@@ -10,11 +10,15 @@
     export let roleContext;
     export let includeAffiliations = false;
 
-    let affiliations;
+    let affiliations = [];
     let expiresAt = 0;
 
     onMount(() => {
-        affiliations = Array.from(new Set(linkedAccount.eduPersonAffiliations));
+        if (!isEmpty(linkedAccount.eduPersonAffiliations)) {
+            affiliations = Array.from(new Set(linkedAccount.eduPersonAffiliations));
+        } else if (!isEmpty(linkedAccount.affiliations)) {
+            affiliations = Array.from(new Set(linkedAccount.affiliations));
+        }
         expiresAt = linkedAccount.expiresAt;
     })
 
@@ -71,12 +75,12 @@
             </ul>
         {/if}
         {#if roleContext && (linkedAccount.subjectId || linkedAccount.eduPersonPrincipalName)}
-            {#if linkedAccount.subjectId}
+            {#if linkedAccount.subjectId && !linkedAccount.external}
                 <p class="details">{I18n.t("profile.subjectId")}</p>
                 <ul>
                     <li>{linkedAccount.subjectId}</li>
                 </ul>
-            {:else}
+            {:else if linkedAccount.eduPersonPrincipalName}
                 <p class="details">{I18n.t("profile.eppn")}</p>
                 <ul>
                     <li>{linkedAccount.eduPersonPrincipalName}</li>
