@@ -13,17 +13,14 @@ import org.springframework.core.io.ClassPathResource;
 
 import java.io.IOException;
 import java.nio.charset.Charset;
-import java.util.Base64;
-import java.util.Date;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 class AttributeMapperTest {
 
     private final ObjectMapper objectMapper = new ObjectMapper();
-    private final AttributeMapper attributeMapper = new AttributeMapper(objectMapper, new MockManage(objectMapper));
+    private final AttributeMapper attributeMapper = new AttributeMapper(objectMapper, new MockManage(objectMapper), true);
 
     @SneakyThrows
     @Test
@@ -125,6 +122,13 @@ class AttributeMapperTest {
     void serializeFromBase64GZipBomb() {
         String s = Base64.getEncoder().encodeToString(new byte[42 * 1024]);
         assertThrows(IllegalArgumentException.class, () -> attributeMapper.serializeFromBase64(s));
+    }
+
+    @Test
+    void a() {
+        AttributeMapper attributeMapper = new AttributeMapper(objectMapper, new MockManage(objectMapper), false);
+        List<String> affiliations = attributeMapper.externalAffiliations(List.of("QW12"), null);
+        assertTrue(affiliations.isEmpty());
     }
 
     private Map<String, Object> attributesFromFile(String path) throws IOException {

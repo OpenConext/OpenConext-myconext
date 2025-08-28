@@ -20,6 +20,7 @@ import myconext.security.RemoteUser;
 import myconext.verify.AttributeMapper;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.http.HttpStatus;
@@ -55,7 +56,10 @@ public class RemoteCreationController implements HasUserRepository {
     private final MailBox mailBox;
     private final AttributeMapper attributeMapper;
 
-    public RemoteCreationController(UserRepository userRepository, Manage manage, MailBox mailBox, AttributeMapper attributeMapper) {
+    public RemoteCreationController(UserRepository userRepository,
+                                    Manage manage,
+                                    MailBox mailBox,
+                                    AttributeMapper attributeMapper) {
         this.userRepository = userRepository;
         this.manage = manage;
         this.mailBox = mailBox;
@@ -344,7 +348,7 @@ public class RemoteCreationController implements HasUserRepository {
             }
             //Not all external attributes can be changed
             externalLinkedAccount.setVerification(externalEduID.getVerification());
-            externalLinkedAccount.setAffiliations(AttributeMapper.externalAffiliations(externalEduID.getBrinCodes(), manage));
+            externalLinkedAccount.setAffiliations(attributeMapper.externalAffiliations(externalEduID.getBrinCodes(), manage));
             externalLinkedAccount.setBrinCodes(externalEduID.getBrinCodes());
             externalLinkedAccount.setDateOfBirth(AttributeMapper.parseDate(externalEduID.getDateOfBirth()));
         }, () -> {

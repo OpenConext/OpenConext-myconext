@@ -8,6 +8,7 @@ import myconext.remotecreation.NewExternalEduID;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
@@ -53,11 +54,15 @@ public class AttributeMapper {
 
     private final ObjectMapper objectMapper;
     private final Manage manage;
+    private final boolean useRemoteCreationForAffiliation;
 
     @Autowired
-    public AttributeMapper(ObjectMapper objectMapper, Manage manage) {
+    public AttributeMapper(ObjectMapper objectMapper,
+                           Manage manage,
+                           @Value("${feature.use_remote_creation_for_affiliation}") boolean useRemoteCreationForAffiliation) {
         this.objectMapper = objectMapper;
         this.manage = manage;
+        this.useRemoteCreationForAffiliation = useRemoteCreationForAffiliation;
     }
 
     public ExternalLinkedAccount externalLinkedAccountFromAttributes(
@@ -161,7 +166,8 @@ public class AttributeMapper {
         throw new IllegalArgumentException();
     }
 
-    public ExternalLinkedAccount createExternalLinkedAccount(NewExternalEduID eduID, IdpScoping idpScoping) {
+    public ExternalLinkedAccount createExternalLinkedAccount(NewExternalEduID eduID,
+                                                             IdpScoping idpScoping) {
         ExternalLinkedAccount externalLinkedAccount = new ExternalLinkedAccount(
                 //String subjectId
                 eduID.getIdentifier(),
@@ -319,7 +325,12 @@ public class AttributeMapper {
         return null;
     }
 
-    public static List<String> externalAffiliations(List<String> brinCodes, Manage manage) {
+    public List<String> externalAffiliations(List<String> brinCodes, Manage manage) {
+        if (!this.useRemoteCreationForAffiliation) {
+            LOG.info("Not adding external affiliations for brinCodes: " + brinCodes + " cause of feature toggle is false");
+            return Collections.emptyList();
+        }
+
         LOG.info("Adding external affiliations for brinCodes: " + brinCodes);
 
         if (CollectionUtils.isEmpty(brinCodes)) {
