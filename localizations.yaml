@@ -507,8 +507,8 @@ SHARED:
         nl: Onderwijs- of onderzoeksinstelling
     InstitutionAt:
       COPY:
-        en: "At "
-        nl: "Door "
+        en: "At %1$s"
+        nl: "Door %1$s"
     Employee:
       COPY:
         en: Employee
