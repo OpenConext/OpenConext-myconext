@@ -59,17 +59,17 @@ class AttributeMapperTest {
         //Verify entire mapping
         assertEquals("BGEuxX6iGQR2i2XNU2A3GHFYLtJ5Dmehf2aQ+qDQUJ4AbjgX+j9+1DEuhUK4sRJ5AwMa0CV2xQyf93xrU/8yqfzTtxc6c+wsYPzWF9tqux9T", externalLinkedAccount.getSubjectId());
         assertEquals(IdpScoping.eherkenning, externalLinkedAccount.getIdpScoping());
-        assertEquals(null, externalLinkedAccount.getIssuer());
-        assertEquals(null, externalLinkedAccount.getServiceID());
+        assertNull(externalLinkedAccount.getIssuer());
+        assertNull(externalLinkedAccount.getServiceID());
         assertEquals("a23aed9b-e310-495e-adea-561a1b07f333", externalLinkedAccount.getServiceUUID());
         assertEquals("urn:etoegang:HM:00000003244440010000:entities:9713", externalLinkedAccount.getSubjectIssuer());
         assertEquals("M.", externalLinkedAccount.getInitials());
         assertEquals("Mariana", externalLinkedAccount.getFirstName());
         assertEquals("Kjällström", externalLinkedAccount.getPreferredLastName());
         assertEquals("Kjällström", externalLinkedAccount.getLegalLastName());
-        assertEquals(null, externalLinkedAccount.getPartnerLastNamePrefix());
-        assertEquals(null, externalLinkedAccount.getLegalLastNamePrefix());
-        assertEquals(null, externalLinkedAccount.getPartnerLastName());
+        assertNull(externalLinkedAccount.getPartnerLastNamePrefix());
+        assertNull(externalLinkedAccount.getLegalLastNamePrefix());
+        assertNull(externalLinkedAccount.getPartnerLastName());
         assertEquals(AttributeMapper.parseDate("1963-02-05"), externalLinkedAccount.getDateOfBirth());
         assertNotNull(externalLinkedAccount.getCreatedAt());
         assertNotNull(externalLinkedAccount.getExpiresAt());
