@@ -17,7 +17,7 @@ const en = {
             validatedName: "Validation of your full name by a third party",
             proofStudent: "Proof of being a student",
             institution: "Your current institution",
-            connect: "Connect your school institution"
+            connect: "Connect your institution"
         }
     },
     header: {
