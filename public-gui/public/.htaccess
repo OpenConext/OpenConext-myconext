@@ -1,8 +1,10 @@
 RewriteEngine on
 
 RewriteRule ^security.txt$ https://www.surf.nl/.well-known/security.txt [R=302,L]
-# Match any request starting with /validated/
+# Redirect RAF values to documentation
 RewriteRule ^validated/.*$ https://servicedesk.surf.nl/wiki/x/PYpCDQ [R=302,L]
+# Redirect AuthnContextClassRef values to documentation
+RewriteRule ^trust/.*$ https://servicedesk.surf.nl/wiki/x/f-WsCw [R=302,L]
 
 RewriteCond %{REQUEST_URI} !\.html$
 RewriteCond %{REQUEST_URI} !\.(js|css)(\.map)?$
