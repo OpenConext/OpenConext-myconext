@@ -54,11 +54,18 @@ public class MaxMindGeoLocation implements GeoLocation {
             downloadDir.mkdirs();
         }
 
-        InputStream inputStream = new FileInputStream(this.latestDownloadBinary(true));
-        this.databaseReader = new DatabaseReader.Builder(inputStream).withCache(new CHMCache()).build();
+        Optional<File> optionalFile = this.latestDownloadBinary(true);
+        optionalFile.ifPresent(file -> {
+            try {
+                InputStream     inputStream = new FileInputStream(file);
+                this.databaseReader = new DatabaseReader.Builder(inputStream).withCache(new CHMCache()).build();
+            } catch (IOException e) {
+                LOG.error("Unable to find file", e);
+            }
+        });
     }
 
-    private File latestDownloadBinary(boolean refresh) {
+    private Optional<File> latestDownloadBinary(boolean refresh) {
         long start = System.currentTimeMillis();
         LOG.info("Locating latest download binary geo2lite database");
 
@@ -73,10 +80,15 @@ public class MaxMindGeoLocation implements GeoLocation {
         if (needToRefreshGeoData(refresh, databaseBinary)) {
             return this.latestDownloadBinary(false);
         }
-        LOG.info(String.format("Located latest download binary geo2lite database %s in %s ms",
-                databaseBinary[0].getAbsolutePath(),
-                System.currentTimeMillis() - start));
-        return databaseBinary[0];
+        Optional<File> optionalFile =  databaseBinary != null && databaseBinary.length > 0 ? Optional.of(databaseBinary[0]) : Optional.empty();
+        if (optionalFile.isPresent()) {
+            LOG.info(String.format("Located latest download binary geo2lite database %s in %s ms",
+                    optionalFile.get().getAbsolutePath(),
+                    System.currentTimeMillis() - start));
+        } else {
+            LOG.info("Unable to located latest download binary geo2lite database");
+        }
+        return optionalFile;
     }
 
     private boolean needToRefreshGeoData(boolean refresh, File[] files) {
@@ -85,7 +97,8 @@ public class MaxMindGeoLocation implements GeoLocation {
                 this.refresh();
                 return true;
             } else {
-                throw new IllegalArgumentException("Unable to locate or download latest geo_lite_2 file");
+                //We don't throw a Exception as this breaks the startup
+                return false;
             }
         }
         return false;
@@ -93,6 +106,9 @@ public class MaxMindGeoLocation implements GeoLocation {
 
     @Override
     public Optional<String> findLocation(String ipAddress) {
+        if (databaseReader == null) {
+            return Optional.empty();
+        }
         try {
             InetAddress inetAddress = InetAddress.getByName(ipAddress);
             CityResponse city = databaseReader.city(inetAddress);
