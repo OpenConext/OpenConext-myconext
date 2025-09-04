@@ -9,4 +9,9 @@ public class ExpiredAuthenticationException extends AbstractBaseException {
     public ExpiredAuthenticationException(String message) {
         super(message);
     }
+
+    @Override
+    protected boolean suppressStackTrace() {
+        return true;
+    }
 }
