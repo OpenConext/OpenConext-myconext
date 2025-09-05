@@ -17,6 +17,6 @@ Geboortedatum - {{controlCode.dayOfBirth}}
 Wat moet je nu doen?
 
 Maak een afspraak met een eduID Service Desk (digitaal of op locatie). Laat tijdens je afspraak je controlecode en identiteisbewijs zien.
-Alle eduID Service Desks: https://wiki.surfnet.nl/display/EDUID/eduID+Service+Desk
+Alle eduID Service Desks: https://edu.nl/3q6e8
 
 {{> footer_nl.txt}}
