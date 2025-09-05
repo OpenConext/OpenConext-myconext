@@ -5,7 +5,7 @@ Je verificatie-code om je identiteit te bevestigen
 Hi {{name}},
 
 Je hebt zojuist een verificatie-code gegenereerd in eduID. Met deze code kan je je identiteit bevestigen
-bij een ediID Service Desk. De code is geldig voor 14 dagen en je kan de code ook vinden in je eduID account:
+bij een eduID Service Desk. De code is geldig voor 14 dagen en je kan de code ook vinden in je eduID account:
 {{mySURFconextURL}}.
 
 De code is bedoeld voor:
