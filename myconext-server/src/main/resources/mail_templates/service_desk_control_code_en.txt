@@ -17,6 +17,6 @@ Date of birth - {{controlCode.dayOfBirth}}
 What’s next?
 
 Schedule an appointment with an eduID Service Desk (online or in person). During your appointment, show your
-verification code and ID. All eduID Service Desks: https://wiki.surfnet.nl/display/EDUID/eduID+Service+Desk
+verification code and ID. All eduID Service Desks: https://edu.nl/nd7fy
 
 {{> footer_en.txt}}
