@@ -4,6 +4,17 @@
 
 All notable changes to this project will be documented in this file.
 
+## [8.1.5]
+
+- Show roles for external linked accounts
+- Feature toggle for external linked accounts
+- Update translations and Servicedesk URL's
+- Allow two @ signs in an email address
+- Trim spaces in code login clipboard
+- Redirect eduPersonAssurance strings to wiki
+- Do not kill the server startup when max_mind geo fails
+- No stack-trace for ExpiredAuthenticationException
+
 ## [8.1.4]
 
 - Fix for Maxmind GeoIP Downloads
