@@ -4,6 +4,14 @@
 
 All notable changes to this project will be documented in this file.
 
+## [8.1.4]
+
+- Fix for Maxmind GeoIP Downloads
+
+## [8.1.3]
+
+- Fix for recovery method registration
+
 ## [8.1.1]
 
 - Update javascript dependencies
