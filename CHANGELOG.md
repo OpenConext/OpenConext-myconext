@@ -9,7 +9,7 @@ All notable changes to this project will be documented in this file.
 - Show roles for external linked accounts
 - Feature toggle for external linked accounts
 - Update translations and Servicedesk URL's
-- Allow two @ signs in an email address
+- Do not allow two @ signs in an email address
 - Trim spaces in code login clipboard
 - Redirect eduPersonAssurance strings to wiki
 - Do not kill the server startup when max_mind geo fails
