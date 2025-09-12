@@ -6,6 +6,7 @@ import myconext.AbstractIntegrationTest;
 import myconext.model.*;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
+import org.springframework.util.StringUtils;
 
 import java.util.List;
 import java.util.Map;
@@ -117,13 +118,16 @@ class RemoteCreationControllerTest extends AbstractIntegrationTest {
                 //See src/test/resources/users.json eduIDs#value
                 .body(List.of(
                         new EduIDInstitutionPseudonym("ST42", "fc75dcc7-6def-4054-b8ba-3c3cc504dd4b"),
-                        new EduIDInstitutionPseudonym("nope", "nope")
+                        new EduIDInstitutionPseudonym("nope", "3060b9ce-9cf2-4e5b-8164-bf0a2b706720"),
+                        new EduIDInstitutionPseudonym("SA44", "nope")
                 ))
                 .post("/api/remote-creation/eduid-institution-pseudonym-batch")
                 .as(new TypeRef<>() {
                 });
-        assertEquals(1, eduIDAssignedValues.size());
-        EduIDAssignedValue eduIDAssignedValue= eduIDAssignedValues.getFirst();
+        assertEquals(3, eduIDAssignedValues.size());
+
+        EduIDAssignedValue eduIDAssignedValue = eduIDAssignedValues.stream()
+                .filter(val -> StringUtils.hasText(val.getValue())).findFirst().get();
         String value = eduIDAssignedValue.getValue();
         User user = this.findUserByEduIDValue(value).get();
         //See src/main/resources/manage/saml20_idp.json read by MockManage
@@ -133,6 +137,13 @@ class RemoteCreationControllerTest extends AbstractIntegrationTest {
                 .findFirst().get();
         assertEquals(value, newEduID.getValue());
         assertEquals("ST42", eduIDAssignedValue.getBrinCode());
+        EduIDAssignedValue noBrinCode = eduIDAssignedValues.stream()
+                .filter(val -> val.getBrinCode().equals("nope")).findFirst().get();
+        assertEquals("Unknown brinCode", noBrinCode.getError());
+        EduIDAssignedValue noUser = eduIDAssignedValues.stream()
+                .filter(val -> val.getEduID().equals("nope")).findFirst().get();
+        assertEquals("Unknown eduID", noUser.getError());
+
     }
 
     @Test

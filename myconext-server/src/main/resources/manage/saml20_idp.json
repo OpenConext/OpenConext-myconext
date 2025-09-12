@@ -42,7 +42,8 @@
         "coin:institution_brin_schac_home": "rocmn.nl",
         "shibmd:scope:0:allowed": "rocmn.nl",
         "logo:0:url": "https://static.surfconext.nl/logos/idp/ROCMNlogo.png",
-        "coin:institution_guid": "e7adb9d1-0911-e511-80d0-005056956c1a"
+        "coin:institution_guid": "e7adb9d1-0911-e511-80d0-005056956c1a",
+        "coin:institution_brin": "SA44"
       }
     }
   },

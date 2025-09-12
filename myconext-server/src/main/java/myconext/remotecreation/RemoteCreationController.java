@@ -20,7 +20,6 @@ import myconext.security.RemoteUser;
 import myconext.verify.AttributeMapper;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.http.HttpStatus;
@@ -28,18 +27,15 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static java.util.function.UnaryOperator.identity;
 import static myconext.SwaggerOpenIdConfig.BASIC_AUTHENTICATION_SCHEME_NAME;
 
 
@@ -191,8 +187,21 @@ public class RemoteCreationController implements HasUserRepository {
                                     examples = {@ExampleObject(value = "[{\n" +
                                             "  \"eduID\": \"46ab5162-e098-4c24-9f28-cdf4d9b5fbb0\",\n" +
                                             "  \"brinCode\": \"UV-001\",\n" +
-                                            "  \"value\": \"46ab5162-e098-4c24-9f28-cdf4d9b5fbb0\"\n" +
-                                            "}]")})}),
+                                            "  \"value\": \"46ab5162-e098-4c24-9f28-cdf4d9b5fbb0\",\n" +
+                                            "  \"error\": null\n" +
+                                            "}]"),
+                                            @ExampleObject(value = "[{\n" +
+                                                    "  \"eduID\": \"46ab5162-e098-4c24-9f28-cdf4d9b5fbb0\",\n" +
+                                                    "  \"brinCode\": \"UV-001\",\n" +
+                                                    "  \"value\": null\n" +
+                                                    "  \"error\": \"Unknown eduID\"\n" +
+                                                    "}]"),
+                                            @ExampleObject(value = "[{\n" +
+                                                    "  \"eduID\": \"46ab5162-e098-4c24-9f28-cdf4d9b5fbb0\",\n" +
+                                                    "  \"brinCode\": \"UV-001\",\n" +
+                                                    "  \"value\": null\n" +
+                                                    "  \"error\": \"Unknown brinCode\"\n" +
+                                                    "}]")})}),
                     @ApiResponse(responseCode = "400", description = "BadRequest",
                             content = {@Content(schema = @Schema(implementation = StatusResponse.class),
                                     examples = {@ExampleObject(value = "{\n" +
@@ -230,18 +239,26 @@ public class RemoteCreationController implements HasUserRepository {
                 .flatMap(eduIDInstitutionPseudonym -> {
                     String eduID = eduIDInstitutionPseudonym.getEduID();
                     String brinCode = eduIDInstitutionPseudonym.getBrinCode();
-                    List<String> pseudonyms = this.findUserByEduIDValue(eduID)
+                    if (!identityProvidersGroupedBy.containsKey(brinCode)) {
+                        return Stream.of(new EduIDAssignedValue(eduID, null, brinCode, "Unknown brinCode"));
+                    }
+                    Optional<User> optionalUser = this.findUserByEduIDValue(eduID);
+                    if (optionalUser.isEmpty()) {
+                        return Stream.of(new EduIDAssignedValue(eduID, null, brinCode, "Unknown eduID"));
+                    }
+                    List<String> pseudonyms = optionalUser
                             .map(user -> {
-                        List<IdentityProvider> identityProviders = identityProvidersGroupedBy.get(brinCode);
-                        //It might be that no identityProvider was found for this BRIN code
-                        List<String> eduIDValues = identityProviders.stream()
-                                .map(identityProvider -> user.computeEduIdForIdentityProviderProviderIfAbsent(identityProvider, manage))
-                                .distinct()
-                                .toList();
-                        userRepository.save(user);
-                        return eduIDValues;
-                    }).orElse(Collections.emptyList());
-                    return pseudonyms.stream().map(pseudonym -> new EduIDAssignedValue(eduID, pseudonym, brinCode));
+                                List<IdentityProvider> identityProviders = identityProvidersGroupedBy.get(brinCode);
+                                //It might be that no identityProvider was found for this BRIN code
+                                List<String> eduIDValues = identityProviders.stream()
+                                        .map(identityProvider -> user.computeEduIdForIdentityProviderProviderIfAbsent(identityProvider, manage))
+                                        .distinct()
+                                        .toList();
+                                userRepository.save(user);
+                                return eduIDValues;
+                            }).orElse(Collections.emptyList());
+                    return pseudonyms.stream()
+                            .map(pseudonym -> new EduIDAssignedValue(eduID, pseudonym, brinCode, null));
                 })
                 .toList();
         return ResponseEntity.ok(eduIDAssignedValues);
@@ -343,7 +360,7 @@ public class RemoteCreationController implements HasUserRepository {
                 .findAny();
         optionalExternalLinkedAccount.ifPresentOrElse(externalLinkedAccount -> {
             if (Verification.Ongeverifieerd.equals(externalLinkedAccount.getVerification()) &&
-                    !Verification.Ongeverifieerd.equals(externalEduID.getVerification()) ) {
+                    !Verification.Ongeverifieerd.equals(externalEduID.getVerification())) {
                 userIsValidated.set(true);
             }
             //Not all external attributes can be changed
@@ -357,7 +374,7 @@ public class RemoteCreationController implements HasUserRepository {
             String provisionedEduIDValue = user.computeEduIdForIdentityProviderProviderIfAbsent(remoteProvider, manage);
             externalEduID.setEduIDValue(provisionedEduIDValue);
             ExternalLinkedAccount externalLinkedAccount = attributeMapper.createExternalLinkedAccount(externalEduID, IdpScoping.valueOf(remoteUserName));
-            if (!Verification.Ongeverifieerd.equals(externalLinkedAccount.getVerification()) ) {
+            if (!Verification.Ongeverifieerd.equals(externalLinkedAccount.getVerification())) {
                 userIsValidated.set(true);
             }
             user.getExternalLinkedAccounts().add(externalLinkedAccount);

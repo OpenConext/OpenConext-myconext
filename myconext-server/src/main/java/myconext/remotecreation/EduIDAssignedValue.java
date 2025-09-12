@@ -20,4 +20,7 @@ public class EduIDAssignedValue {
 
     @Schema(description = "The brinCode of the institution for the new assigned eduID pseudonym ")
     private String brinCode;
+
+    @Schema(description = "Error indicating that either the eduID or Brincode was nout found")
+    private String error;
 }
