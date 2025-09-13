@@ -2,6 +2,7 @@ package myconext.remotecreation;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -37,7 +38,6 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static myconext.SwaggerOpenIdConfig.BASIC_AUTHENTICATION_SCHEME_NAME;
-
 
 @RestController
 @ConditionalOnProperty("feature.remote_creation_api")
@@ -182,46 +182,50 @@ public class RemoteCreationController implements HasUserRepository {
     @Operation(summary = "Return eduID pseudonyms for an institution",
             description = "Return eduID pseudonyms for an institution identified by the BRIN code",
             responses = {
-                    @ApiResponse(responseCode = "200", description = "OK",
-                            content = {@Content(schema = @Schema(implementation = List.class),
-                                    examples = {@ExampleObject(value = "[{\n" +
-                                            "  \"eduID\": \"46ab5162-e098-4c24-9f28-cdf4d9b5fbb0\",\n" +
-                                            "  \"brinCode\": \"UV-001\",\n" +
-                                            "  \"value\": \"46ab5162-e098-4c24-9f28-cdf4d9b5fbb0\",\n" +
-                                            "  \"error\": null\n" +
-                                            "}]"),
-                                            @ExampleObject(value = "[{\n" +
-                                                    "  \"eduID\": \"46ab5162-e098-4c24-9f28-cdf4d9b5fbb0\",\n" +
-                                                    "  \"brinCode\": \"UV-001\",\n" +
-                                                    "  \"value\": null\n" +
-                                                    "  \"error\": \"Unknown eduID\"\n" +
-                                                    "}]"),
-                                            @ExampleObject(value = "[{\n" +
-                                                    "  \"eduID\": \"46ab5162-e098-4c24-9f28-cdf4d9b5fbb0\",\n" +
-                                                    "  \"brinCode\": \"UV-001\",\n" +
-                                                    "  \"value\": null\n" +
-                                                    "  \"error\": \"Unknown brinCode\"\n" +
-                                                    "}]")})}),
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "OK",
+                            content = @Content(
+                                    mediaType = "application/json",
+                                    array = @ArraySchema(schema = @Schema(implementation = EduIDAssignedValue.class)),
+                                    examples = {
+                                            @ExampleObject(
+                                                    name = "Success",
+                                                    value = "[{\n" +
+                                                            "  \"eduID\": \"46ab5162-e098-4c24-9f28-cdf4d9b5fbb0\",\n" +
+                                                            "  \"brinCode\": \"UV-001\",\n" +
+                                                            "  \"value\": \"46ab5162-e098-4c24-9f28-cdf4d9b5fbb0\",\n" +
+                                                            "  \"error\": null\n" +
+                                                            "}]"),
+                                            @ExampleObject(
+                                                    name = "Unknown eduID",
+                                                    value = "[{\n" +
+                                                            "  \"eduID\": \"46ab5162-e098-4c24-9f28-cdf4d9b5fbb0\",\n" +
+                                                            "  \"brinCode\": \"UV-001\",\n" +
+                                                            "  \"value\": null,\n" +
+                                                            "  \"error\": \"Unknown eduID\"\n" +
+                                                            "}]"),
+                                            @ExampleObject(
+                                                    name = "Unknown brinCode",
+                                                    value = "[{\n" +
+                                                            "  \"eduID\": \"46ab5162-e098-4c24-9f28-cdf4d9b5fbb0\",\n" +
+                                                            "  \"brinCode\": \"UV-001\",\n" +
+                                                            "  \"value\": null,\n" +
+                                                            "  \"error\": \"Unknown brinCode\"\n" +
+                                                            "}]")
+                                    })),
                     @ApiResponse(responseCode = "400", description = "BadRequest",
                             content = {@Content(schema = @Schema(implementation = StatusResponse.class),
-                                    examples = {@ExampleObject(value = "{\n" +
-                                            "  \"timestamp\": 1718865813679,\n" +
-                                            "  \"status\": 400,\n" +
-                                            "  \"error\": \"Bad Request\",\n" +
-                                            "  \"exception\": \"org.springframework.web.bind.MethodArgumentNotValidException\",\n" +
-                                            "  \"message\": \"Validation failed for object='eduIDInstitutionPseudonym'. Error count: 1\",\n" +
-                                            "  \"path\": \"/api/remote-creation/eduid-institution-pseudonym-batch\"\n" +
-                                            "}")})}),
-                    @ApiResponse(responseCode = "404", description = "Not found - eduID or BRIN code not found",
-                            content = {@Content(schema = @Schema(implementation = StatusResponse.class),
-                                    examples = {@ExampleObject(value = "{\n" +
-                                            "  \"timestamp\": 1717671525908,\n" +
-                                            "  \"status\": 404,\n" +
-                                            "  \"error\": \"Not Found\",\n" +
-                                            "  \"exception\": \"myconext.exceptions.UserNotFoundException\",\n" +
-                                            "  \"message\": \"IdentityProvider with BRIN code AB!@ not found\",\n" +
-                                            "  \"path\": \"/api/remote-creation/eduid-institution-pseudonym-batch\"\n" +
-                                            "}")})})})
+                                    examples = {@ExampleObject(
+                                            name = "BadRequest",
+                                            value = "{\n" +
+                                                    "  \"timestamp\": 1718865813679,\n" +
+                                                    "  \"status\": 400,\n" +
+                                                    "  \"error\": \"Bad Request\",\n" +
+                                                    "  \"exception\": \"org.springframework.web.bind.MethodArgumentNotValidException\",\n" +
+                                                    "  \"message\": \"Validation failed for object='eduIDInstitutionPseudonym'. Error count: 1\",\n" +
+                                                    "  \"path\": \"/api/remote-creation/eduid-institution-pseudonym-batch\"\n" +
+                                                    "}")})})})
     public ResponseEntity<List<EduIDAssignedValue>> eduIDForInstitutionBatch(
             @Parameter(hidden = true) @AuthenticationPrincipal(errorOnInvalidType = true) RemoteUser remoteUser,
             @RequestBody @Validated List<EduIDInstitutionPseudonym> eduIDInstitutionPseudonyms) {
