@@ -9,7 +9,8 @@
   "related_applications": [
     {
       "platform": "play",
-      "id": "nl.eduid"
+      "id": "nl.eduid",
+      "url": "https://play.google.com/store/apps/details?id=nl.eduid"
     }
   ]
 }
