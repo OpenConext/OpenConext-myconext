@@ -4,6 +4,10 @@
 
 All notable changes to this project will be documented in this file.
 
+## [8.1.6]
+
+- Handle errors in bulk commands on remote creation endpoint
+
 ## [8.1.5]
 
 - Show roles for external linked accounts
