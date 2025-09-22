@@ -319,7 +319,9 @@ public class GuestIdpAuthenticationRequestFilter extends OncePerRequestFilter {
                         .anyMatch(linkedAccount -> hasRequiredStudentAffiliation(linkedAccount.getEduPersonAffiliations()));
         boolean hasValidatedNames = !authenticationContextClassReferenceValues.contains(ACR.VALIDATE_NAMES) ||
                 validatedName;
-        return atLeastOneNotExpired && hasRequiredStudentAffiliation && hasValidatedNames;
+        boolean linkedInstitutionMissing = authenticationContextClassReferenceValues.contains(ACR.LINKED_INSTITUTION) &&
+                nonExpiredLinkedAccounts.isEmpty();
+        return atLeastOneNotExpired && hasRequiredStudentAffiliation && hasValidatedNames && !linkedInstitutionMissing;
     }
 
     public static boolean hasValidatedName(User user) {
