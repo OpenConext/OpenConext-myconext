@@ -87,6 +87,7 @@ public class GuestIdpAuthenticationRequestFilter extends OncePerRequestFilter {
     private final GeoLocation geoLocation;
 
     private final int rememberMeMaxAge;
+    private final int tiqrCookieMaxAge;
     private final boolean secureCookie;
     private final String magicLinkUrl;
     private final MailBox mailBox;
@@ -111,6 +112,7 @@ public class GuestIdpAuthenticationRequestFilter extends OncePerRequestFilter {
                                                UserLoginRepository userLoginRepository,
                                                GeoLocation geoLocation,
                                                int rememberMeMaxAge,
+                                               int tiqrCookieMaxAge,
                                                int nudgeAppDays,
                                                int nudgeAppDelayDays,
                                                int rememberMeQuestionAskedDays,
@@ -138,6 +140,7 @@ public class GuestIdpAuthenticationRequestFilter extends OncePerRequestFilter {
         this.geoLocation = geoLocation;
         this.accountLinkingContextClassReferences = ACR.allAccountLinkingContextClassReferences();
         this.rememberMeMaxAge = rememberMeMaxAge;
+        this.tiqrCookieMaxAge = tiqrCookieMaxAge;
         this.nudgeAppDays = nudgeAppDays;
         this.nudgeAppDelayDays = nudgeAppDelayDays;
         this.rememberMeQuestionAskedDays = rememberMeQuestionAskedDays;
@@ -624,7 +627,7 @@ public class GuestIdpAuthenticationRequestFilter extends OncePerRequestFilter {
 
     private void addTiqrCookie(HttpServletResponse response, User user) {
         Cookie cookie = new Cookie(TIQR_COOKIE_NAME, this.cookieValueEncoder.encode(user.getUsername()));
-        cookie.setMaxAge(rememberMeMaxAge);
+        cookie.setMaxAge(tiqrCookieMaxAge);
         cookie.setSecure(secureCookie);
         cookie.setHttpOnly(true);
         cookie.setPath("/");
