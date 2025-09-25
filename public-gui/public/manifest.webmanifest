@@ -12,5 +12,23 @@
       "id": "nl.eduid",
       "url": "https://play.google.com/store/apps/details?id=nl.eduid"
     }
-  ]
+  ],
+  "icon": "/assets/logo_eduID.svg",
+  "icons": [
+  {
+    "src": "/assets/eduid-192.png",
+    "type": "image/png",
+    "sizes": "192x192"
+  },
+  {
+    "src": "/assets/eduid-256.png",
+    "type": "image/png",
+    "sizes": "256x256"
+  },
+  {
+    "src": "/assets/eduid-512.png",
+    "type": "image/png",
+    "sizes": "512x512"
+  }
+]
 }
