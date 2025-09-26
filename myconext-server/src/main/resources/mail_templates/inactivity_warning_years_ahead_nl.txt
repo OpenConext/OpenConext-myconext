@@ -1,6 +1,6 @@
 Beste {{name}},
 
-We willen je eraan herinneren dat je een eduID hebt die je al {{inactivity_period_nl}} niet gebruikt hebt. Daarom adviseren we je om je eduID up-to-date te houden. Controleer hiervoor je gegevens zoals je e-mailadres en hoe je wilt inloggen. Je vindt dit terug op mijn.eduid.nl onder ‘Veiligheid’.
+We willen je eraan herinneren dat je een eduID hebt die je al {{inactivity_period_nl}} niet gebruikt hebt. Log in op eduid.nl om je account actief te houden. En controleer je gegevens zoals je e-mailadres en hoe je wilt inloggen. Je vindt dit terug op mijn.eduid.nl onder ‘Veiligheid’.
 
 {{> inactivity_services_en.txt}}
 
@@ -9,6 +9,6 @@ Met een up-to-date eduID houd je ook op de lange termijn toegang tot de diensten
 Met vriendelijke groet,
 Team eduID
 
-Let op: je kunt niet reageren op deze e-mail. Heb je hulp nodig? Ga dan naar eduid.nl/help
+Let op: je kunt niet reageren op deze e-mail. Heb je hulp nodig? Ga dan naar eduid.nl/support
 
 {{> footer_en.txt}}

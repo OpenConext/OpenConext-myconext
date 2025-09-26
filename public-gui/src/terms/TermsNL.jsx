@@ -196,7 +196,7 @@ export const TermsNL = () => {
                 <h5>10. Support en vragen
                 </h5>
                 <p className="info">
-                    <strong>10.1</strong> Contact kan opgenomen worden via <a href="help@eduid.nl">help@eduid.nl</a>.
+                    <strong>10.1</strong> Contact kan opgenomen worden via <a href="mailto:help@eduid.nl">help@eduid.nl</a>.
                 </p>
             </div>
         </Background>
