@@ -112,7 +112,7 @@ export const PrivacyEN = () => {
                     SURF<br/>
                     Moreelsepark 48<br/>
                     3511 EP Utrecht, Nederland<br/>
-                    <a href="www.surf.nl">www.surf.nl</a>
+                    <a href="https://www.surf.nl">www.surf.nl</a>
                 </p>
                 <p>The contact details of our data protection officer are: <a href="mailto:fg@surf.nl">fg@surf.nl</a>
                 </p>
@@ -162,7 +162,8 @@ export const PrivacyEN = () => {
                         </li>
                         <br/>
 
-                        <li>If you verify your eduID through eIDAS, eduID also processes the following data:
+                        <li>If you verify your eduID through <a href="https://www.logius.nl/domeinen/toegang/eidas/wat-is-het">eID</a>
+                            (eIDAS), eduID also processes the following data:
                             <ul>
                                 <li>Your first name and last name as known to the eID through which the verification is
                                     carried
@@ -345,8 +346,7 @@ export const PrivacyEN = () => {
                     If it concerns automatic processing of data provided by you based on consent or the execution of an
                     agreement,
                     you can request an overview in a structured and common form of the personal data that we process
-                    about you via
-                    <a href={config.spBaseUrl}>Mijn eduID</a>. You also have the right to have this data transferred to
+                    about you via <a href={config.spBaseUrl}>Mijn eduID</a>. You also have the right to have this data transferred to
                     another
                     party, provided this is technically possible.
                 </p>
@@ -390,7 +390,7 @@ export const PrivacyEN = () => {
                     Dutch Data
                     Protection Authority. More information about the Dutch Data Protection Authority and submitting
                     complaints can be
-                    found at <a href="www.autoriteitpersoonsgegevens.nl">www.autoriteitpersoonsgegevens.nl</a>.
+                    found at <a href="https://www.autoriteitpersoonsgegevens.nl">www.autoriteitpersoonsgegevens.nl</a>.
                 </p>
             </div>
             <div id="terecht" className="card full bottom">
@@ -402,8 +402,7 @@ export const PrivacyEN = () => {
                     participating
                     institutions. SURF coordinates the requests and puts you in touch with the right person at the right
                     institution.
-                    Please contact us at:
-                    <a href="help@eduid.nl">help@eduid.nl</a>. You can of course also contact the relevant institution
+                    Please contact us at: <a href="mailto:help@eduid.nl">help@eduid.nl</a>. You can of course also contact the relevant institution
                     directly.
                 </p>
             </div>

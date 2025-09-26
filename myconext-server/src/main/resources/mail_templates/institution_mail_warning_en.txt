@@ -9,6 +9,6 @@ However, you can continue using your eduID even after graduation. That’s why w
 Kind regards, 
 Team eduID
 
-Note: you cannot reply to this email. Need help? Visit eduid.nl/help-en
+Note: you cannot reply to this email. Need help? Visit eduid.nl/support
 
 {{> footer_en.txt}}

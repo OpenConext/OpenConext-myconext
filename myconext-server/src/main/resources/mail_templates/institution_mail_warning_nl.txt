@@ -9,6 +9,6 @@ Je kunt je eduID ook na je opleiding blijven gebruiken. Daarom raden we je aan o
 Met vriendelijke groet,
 Team eduID
 
-Let op: je kunt niet reageren op deze e-mail. Heb je hulp nodig? Ga dan naar eduid.nl/help
+Let op: je kunt niet reageren op deze e-mail. Heb je hulp nodig? Ga dan naar eduid.nl/support
 
 {{> footer_nl.txt}}

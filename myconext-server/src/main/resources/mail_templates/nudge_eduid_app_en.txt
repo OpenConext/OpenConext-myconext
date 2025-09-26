@@ -7,6 +7,6 @@ Want to log in to eduID even faster and more securely? Use the eduID app to log 
 Kind regards,
 Team eduID
 
-Note: you cannot reply to this email. Need help? Visit eduid.nl/help-en
+Note: you cannot reply to this email. Need help? Visit eduid.nl/support
 
 {{> footer_en.txt}}

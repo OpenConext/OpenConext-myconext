@@ -192,7 +192,7 @@ export const TermsEN = () => {
                 <h5>10. Support and questions
                 </h5>
                 <p className="info">
-                    <strong>10.1</strong> You can contact <a href="help@eduid.nl">help@eduid.nl</a>.
+                    <strong>10.1</strong> You can contact <a href="mailto:help@eduid.nl">help@eduid.nl</a>.
                 </p>
             </div>
         </Background>

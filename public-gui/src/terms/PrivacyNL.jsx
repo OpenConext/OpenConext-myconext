@@ -105,7 +105,7 @@ export const PrivacyNL = () => {
                     SURF<br/>
                     Moreelsepark 48<br/>
                     3511 EP Utrecht, Nederland<br/>
-                    <a href="www.surf.nl">www.surf.nl</a>
+                    <a href="https://www.surf.nl">www.surf.nl</a>
                 </p>
                 <p>De contactgegevens van onze functionaris
                     gegevensbescherming zijn: <a href="mailto:fg@surf.nl">fg@surf.nl</a></p>
@@ -347,8 +347,7 @@ export const PrivacyNL = () => {
                 <p className="info">
                     Als het gaat om een automatische verwerking van door jou zelf verstrekte gegevens op basis van
                     toestemming of de uitvoering van een overeenkomst, kun je een overzicht in een gestructureerde en
-                    gangbare vorm opvragen van de persoonsgegevens die wij van jou verwerken via <a
-                    href={config.spBaseUrl}>Mijn eduID</a>. Ook heb je
+                    gangbare vorm opvragen van de persoonsgegevens die wij van jou verwerken via <a href={config.spBaseUrl}>Mijn eduID</a>. Ook heb je
                     het recht op overdraagbaarheid van deze gegevens naar een andere partij, mits dit technisch mogelijk
                     is.
                 </p>
@@ -387,7 +386,7 @@ export const PrivacyNL = () => {
                     functionaris gegevensbescherming van SURF of van een instelling. Ook heb je het recht om een klacht
                     in te dienen bij de Autoriteit Persoonsgegevens. Meer informatie over de Autoriteit Persoonsgegevens
                     en het indienen van klachten vind je op <a
-                    href="www.autoriteitpersoonsgegevens.nl">www.autoriteitpersoonsgegevens.nl</a>.
+                    href="https://www.autoriteitpersoonsgegevens.nl">www.autoriteitpersoonsgegevens.nl</a>.
                 </p>
             </div>
             <div id="terecht" className="card full bottom">
@@ -397,7 +396,7 @@ export const PrivacyNL = () => {
                     voor de verwerking van jouw persoonsgegevens. Voor eduID kunnen dit echter verschillende
                     organisaties zijn: SURF of een van de deelnemende instellingen. SURF coördineert de verzoeken en
                     brengt je in contact met de juiste persoon bij de juiste instelling. Neem hiervoor contact op via:
-                    <a href="help@eduid.nl">help@eduid.nl</a>. Je mag uiteraard ook direct contact opnemen met de
+                    <a href="mailto:help@eduid.nl">help@eduid.nl</a>. Je mag uiteraard ook direct contact opnemen met de
                     betreffende instelling.
                 </p>
             </div>

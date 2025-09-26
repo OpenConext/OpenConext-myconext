@@ -9,7 +9,7 @@ Wil je je eduID behouden? Log dan in op mijn.eduid.nl. Zorg ervoor dat je eduID 
 Met vriendelijke groet,
 Team eduID
 
-Let op: je kunt niet reageren op deze e-mail. Heb je hulp nodig? Ga dan naar eduid.nl/help
+Let op: je kunt niet reageren op deze e-mail. Heb je hulp nodig? Ga dan naar eduid.nl/support
 
 {{> footer_en.txt}}
 
