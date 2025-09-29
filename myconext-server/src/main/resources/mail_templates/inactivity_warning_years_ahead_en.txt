@@ -1,6 +1,6 @@
 Dear {{name}},
 
-We want to remind you that you have an eduID account that you haven’t used for {{inactivity_period_en}}. Log in to keep your account up to date. And check your details, such as your email address and login preferences. You can find these under ‘Security’ at mijn.eduid.nl.
+We want to remind you that you have an eduID account that you haven’t used for {{inactivity_period_en}}. Log in to eduid.nl and keep your account up to date. And check your details, such as your email address and login preferences. You can find these under ‘Security’ at mijn.eduid.nl.
 
 {{> inactivity_services_en.txt}}
 
