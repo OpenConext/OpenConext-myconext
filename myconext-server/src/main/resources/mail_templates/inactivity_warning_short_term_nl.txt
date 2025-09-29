@@ -1,6 +1,6 @@
 Beste {{name}},
 
-We willen je eraan herinneren dat je een eduID hebt die je niet meer gebruikt hebt sinds {{inactivity_period_nl}}. Let op: doe je niets, dan wordt je eduID over een {{deletion_period_nl}} op {{account_delete_date_nl}} verwijderd.
+We willen je eraan herinneren dat je een eduID al {{inactivity_period_nl}} niet meer gebruikt hebt. Let op: doe je niets, dan wordt je eduID over een {{deletion_period_nl}} op {{account_delete_date_nl}} verwijderd.
 
 {{> inactivity_services_nl.txt}}
 
