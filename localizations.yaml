@@ -90,15 +90,15 @@ SHARED:
     PersonalInfo:
       COPY:
         en: Personal info
-        nl: Je gegevens
+        nl: Persoonlijke info
     DataActivity:
       COPY:
-        en: Activity
-        nl: Activiteit
+        en: Data & activity
+        nl: Data & activiteit
     Security:
       COPY:
         en: Security
-        nl: Veiligheid
+        nl: Beveiling
     Account:
       COPY:
         en: Account
@@ -1302,12 +1302,12 @@ SHARED:
         nl: Welkom %1{{s}}
     DataAndActivity:
       COPY:
-        en: Activity
-        nl: Activiteit
+        en: Data & activity
+        nl: Data & activiteit
     Personal:
       COPY:
         en: Personal info
-        nl: Je gegevens
+        nl: Persoonlijke info
     Security:
       COPY:
         en: Security
@@ -3679,8 +3679,8 @@ SHARED:
             Welk telefoonnummer wil je hiervoor gebruiken?
       BoldRange:
         COPY:
-          en: "32"
-          nl: "34"
+          en: "34"
+          nl: "38"
       VerifyPhoneNumber:
         COPY:
           en: Send SMS code
