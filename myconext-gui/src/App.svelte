@@ -374,7 +374,7 @@
                 <Router url="{url}">
                     {#if $config.createEduIDInstitutionEnabled}
                         <Route path="/create-from-institution" component={CreateFromInstitution}/>
-                        <Route path="/create-from-Institution/eppn-already-linked" component={EppnAlreadyLinked}/>
+                        <Route path="/create-from-institution/eppn-already-linked" component={EppnAlreadyLinked}/>
                         <Route path="/create-from-institution/attribute-missing" component={AttributeMissing}/>
                         <Route path="/create-from-institution/expired" component={Expired}/>
                         <Route path="/create-from-institution/verify/:hash" let:params>
