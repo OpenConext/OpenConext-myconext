@@ -11,4 +11,4 @@ Team eduID
 
 Let op: je kunt niet reageren op deze e-mail. Heb je hulp nodig? Ga dan naar eduid.nl/support
 
-{{> footer_en.txt}}
+{{> footer_nl.txt}}

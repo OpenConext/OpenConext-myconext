@@ -6,4 +6,4 @@ Je kunt onderstaande code gebruiken om in te loggen. De code verloopt over 10 mi
 
 Ben jij dit niet of wil je toch geen eduID? Dan kun je dit bericht negeren.
 
-{{> footer_en.txt}}
+{{> footer_nl.txt}}
