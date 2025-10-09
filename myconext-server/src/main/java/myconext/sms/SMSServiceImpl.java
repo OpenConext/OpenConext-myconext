@@ -14,9 +14,8 @@ import org.springframework.web.client.RestTemplate;
 
 import java.net.URI;
 import java.nio.charset.Charset;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
+import java.nio.charset.StandardCharsets;
+import java.util.*;
 
 @SuppressWarnings("unchecked")
 public class SMSServiceImpl implements SMSService {
@@ -28,7 +27,7 @@ public class SMSServiceImpl implements SMSService {
     private final String templateNl;
     private final String templateEn;
     private final RestTemplate restTemplate = new RestTemplate();
-    private final MultiValueMap<String, String> headers = new HttpHeaders();
+    private final String bearer;
 
 
     @SneakyThrows
@@ -37,32 +36,41 @@ public class SMSServiceImpl implements SMSService {
         this.templateNl = IOUtils.toString(new ClassPathResource("sms/template_nl.txt").getInputStream(), Charset.defaultCharset());
         this.templateEn = IOUtils.toString(new ClassPathResource("sms/template_en.txt").getInputStream(), Charset.defaultCharset());
         this.route = route;
-        headers.add(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE);
-        headers.add(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE);
-        headers.add(HttpHeaders.AUTHORIZATION, "Bearer " + bearer);
+        this.bearer = bearer;
+
+        LOG.info("Converters: " + restTemplate.getMessageConverters());
+
+        restTemplate.getInterceptors().add((request, body, execution) -> {
+            LOG.info(String.format("Sending SMS request to %s with headers %s and body:\n%s",
+                    request.getURI(),
+                    request.getHeaders(),
+                    new String(body, StandardCharsets.UTF_8)));
+            return execution.execute(request, body);
+        });
     }
 
     protected String formatMessage(String code, Locale locale) {
-        String template = locale != null && locale.getLanguage().equalsIgnoreCase("nl") ? templateNl : templateEn;
+        String template = locale != null && "nl".equalsIgnoreCase(locale.getLanguage()) ? templateNl : templateEn;
         return String.format(template, code);
     }
 
     @Override
     public String send(String mobile, String code, Locale locale) {
         String format = formatMessage(code, locale);
-        Map<String, Object> body = Map.of(
-                "encoding", "auto",
-                "body", format,
-                "route", route,
-                "originator", "eduID",
-                "recipients", List.of(mobile)
-        );
+
+        Map<String, Object> body = new HashMap<>();
+        body.put("encoding", "auto");
+        body.put("body", format);
+        body.put("route", route);
+        body.put("originator", "eduID");
+        body.put("recipients", Collections.singletonList(mobile));
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        headers.setAccept(List.of(MediaType.APPLICATION_JSON));
+        headers.setBearerAuth(this.bearer);
 
         RequestEntity<?> requestEntity = new RequestEntity<>(body, headers, HttpMethod.POST, URI.create(url));
-        LOG.info(String.format("Sending SMS with url : %s, route : %s body: %s",
-                url,
-                route,
-                body));
         restTemplate.exchange(requestEntity, Void.class);
         return format;
     }
