@@ -31,6 +31,10 @@
     "en": "Add an eduID password",
     "nl": "Toevoegen eduID wachtwoord"
   },
+    "add_password_code": {
+    "en": "Add an eduID password with code: ",
+    "nl": "Voeg een eduID wachtwoord toe met de code: "
+  },
   "update_email": {
     "en": "Update your eduID email",
     "nl": "Verander je eduID email"
