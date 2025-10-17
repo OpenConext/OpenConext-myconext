@@ -1826,8 +1826,8 @@ SHARED:
         nl: Je huidige wachtwoord is niet correct.
     PasswordResetHashExpired:
       COPY:
-        en: 'Your password reset code has expired. '
-        nl: 'De code om je wachtwoord opnieuw in te stellen is verlopen. '
+        en: 'Your password code has expired. '
+        nl: 'De code om je wachtwoord in te stellen is verlopen. '
     ForgotPassword:
       COPY:
         en: I forgot my password
