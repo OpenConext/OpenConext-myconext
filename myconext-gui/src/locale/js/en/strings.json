@@ -372,7 +372,7 @@
   "Password.Back.COPY": "/security",
   "Password.PasswordDisclaimer.COPY": "Make sure it's at least 15 characters OR at least 8 characters including a number and an uppercase letter.",
   "Password.InvalidCurrentPassword.COPY": "Your current password is invalid.",
-  "Password.PasswordResetHashExpired.COPY": "Your password reset code has expired. ",
+  "Password.PasswordResetHashExpired.COPY": "Your password code has expired. ",
   "Password.ForgotPassword.COPY": "I forgot my password",
   "Password.PasswordResetSendAgain.COPY": "Send an email to reset my password.",
   "Password.ForgotPasswordConfirmation.COPY": "Forgot your password? Press 'Confirm' below to instantly receive an email with a code to reset your current password.",

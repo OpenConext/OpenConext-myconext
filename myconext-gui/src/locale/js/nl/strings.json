@@ -372,7 +372,7 @@
   "Password.Back.COPY": "/security",
   "Password.PasswordDisclaimer.COPY": "Kies een wachtwoord van tenminste 8 karakters met minimaal een hoofdletter en een cijfer. Een langer wachtwoord van minimaal 15 karakters mag ook.",
   "Password.InvalidCurrentPassword.COPY": "Je huidige wachtwoord is niet correct.",
-  "Password.PasswordResetHashExpired.COPY": "De code om je wachtwoord opnieuw in te stellen is verlopen. ",
+  "Password.PasswordResetHashExpired.COPY": "De code om je wachtwoord in te stellen is verlopen. ",
   "Password.ForgotPassword.COPY": "Ik ben mijn wachtwoord vergeten",
   "Password.PasswordResetSendAgain.COPY": "Stuur een e-mail om mijn wachtwoord opnieuw in te stellen.",
   "Password.ForgotPasswordConfirmation.COPY": "Wachtwoord vergeten? Druk hieronder op 'Bevestigen' om direct een e-mail te ontvangen met een code, waarmee je je huidige wachtwoord opnieuw kunt instellen.",
