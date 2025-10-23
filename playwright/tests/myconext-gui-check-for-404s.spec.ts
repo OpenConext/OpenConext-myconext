@@ -24,7 +24,7 @@ async function getAllLinksFromPage(page: Page) {
 
 test.describe("No 404s on Checkly pages", () => {
   test(`The docs have no 404s`, async ({ page }, testInfo) => {
-    await page.goto("https://www.eduid.nl")
+    await page.goto("http://localhost:3002")
     const linkUrls = await getAllLinksFromPage(page)
 
     for (const url of linkUrls) {
