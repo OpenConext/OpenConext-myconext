@@ -6,7 +6,7 @@ export const login = async (page: Page) => {
   await page.getByRole('button', { name: 'My eduID' }).click();
   await page.getByRole('link', { name: 'EN' }).click();
   await page.getByRole('textbox', { name: 'e.g. user@gmail.com' }).click();
-  await page.getByRole('textbox', { name: 'e.g. user@gmail.com' }).fill('1234567890@surfguest.nl');
+  await page.getByRole('textbox', { name: 'e.g. user@gmail.com' }).fill('jdoe@example.com');
   await page.getByRole('link', { name: 'Next' }).click();
   await page.getByRole('textbox', { name: 'Password' }).click();
   await page.getByRole('textbox', { name: 'Password' }).fill('secret');
