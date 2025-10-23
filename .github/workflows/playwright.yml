@@ -1,18 +1,39 @@
 name: Playwright Tests
 on:
   push:
-    branches: [ main, master ]
+    branches: [ main ]
   pull_request:
-    branches: [ main, master ]
+    branches: [ main ]
 jobs:
   test:
     timeout-minutes: 60
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v4
-    - uses: actions/setup-node@v4
+    - uses: actions/setup-node@v5
       with:
-        node-version: lts/*
+        node-version: '24.3.0'
+    - name: Start MongoDB
+      uses: supercharge/mongodb-github-action@1.12.0
+      with:
+        mongodb-version: ${{ matrix.mongodb-version }}
+    - name: Set up JDK 21
+      uses: actions/setup-java@v5
+      with:
+        java-version: 21
+        distribution: 'temurin'
+        cache: 'maven'
+    - name: Set up cache
+      uses: actions/cache@v4
+      with:
+        path: ~/.m2/repository
+        key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+        restore-keys: |
+          ${{ runner.os }}-maven-
+    - name: Build with Maven
+      run: mvn clean install --file pom.xml
+    - name: Run myconext-server
+      run : cd myconext-server && mvn spring-boot:run -Dspring-boot.run.profiles=dev
     - name: Install dependencies
       run: npm install -g yarn && yarn
     - name: Install Playwright Browsers
