@@ -42,15 +42,15 @@ jobs:
 #    - name: Build with Maven
 #      run: mvn clean install --file pom.xml
     - name: Run myconext-server
-      run : cd myconext-server && mvn spring-boot:run -Dspring-boot.run.profiles=dev &
+      run : cd myconext-server && mvn spring-boot:run &
     - name: Run account-gui
-      run: cd account-gui && nvm use && yarn install && yarn dev &
+      run: cd account-gui && yarn install && yarn dev &
     - name: Run myconext--gui
-      run: cd myconext-gui && nvm use && yarn install && yarn dev &
+      run: cd myconext-gui && yarn install && yarn dev &
     - name: Run servicedesk-gui
-      run: cd servcedesk-gui && nvm use && yarn install && yarn dev &
+      run: cd servcedesk-gui && yarn install && yarn dev &
     - name: Run public-gui
-      run: cd public-gui && nvm use && yarn install && yarn dev &
+      run: cd public-gui && yarn install && yarn dev &
     - name: Install dependencies for plarwright
       run: cd playwright && npm install -g yarn && yarn
     - name: Install Playwright Browsers
