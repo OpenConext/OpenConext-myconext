@@ -96,7 +96,19 @@ yarn install
 yarn dev
 ```
 
-Browse to the [application homepage](http://localhost:3002/).
+Browse to the [application homepage](http://localhost:3003/).
+
+### The public-gui
+
+The myconext public gui can also be build with Svelte and to get initially started:
+
+```
+cd public-gui
+yarn install
+yarn dev
+```
+
+Browse to the [application homepage](http://localhost:3002).
 
 ### Build
 
