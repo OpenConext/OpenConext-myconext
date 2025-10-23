@@ -1,4 +1,4 @@
-const filePath = "../myconext-server/src/test/resources/users.json";
+const filePath = "./myconext-server/src/test/resources/users.json";
 
 try {
     const fileContent = fs.readFileSync(filePath, 'utf8');

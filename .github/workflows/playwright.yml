@@ -52,11 +52,11 @@ jobs:
     - name: Run public-gui
       run: cd public-gui && nvm use && yarn install && yarn dev &
     - name: Install dependencies for plarwright
-      run: npm install -g yarn && yarn
+      run: cd playwright && npm install -g yarn && yarn
     - name: Install Playwright Browsers
-      run: yarn playwright install --with-deps
+      run: cd playwright && yarn playwright install --with-deps
     - name: Run Playwright tests
-      run: yarn playwright test
+      run: cd playwright && yarn playwright test
     - uses: actions/upload-artifact@v4
       if: ${{ !cancelled() }}
       with:
