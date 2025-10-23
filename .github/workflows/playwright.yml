@@ -23,15 +23,15 @@ jobs:
         java-version: 21
         distribution: 'temurin'
         cache: 'maven'
-    - name: Load users.json to MongoDB
+    - name: Install mongosh and import start data in database
       run: |
-          mongoimport \
-            --host localhost \
-            --port 27017 \
-            --db myconext \
-            --collection users \
-            --file myconext-server/src/test/resources/users.json \
-            --jsonArray
+        sudo apt-get install gnupg
+        wget -qO- https://www.mongodb.org/static/pgp/server-7.0.asc | sudo tee /etc/apt/trusted.gpg.d/server-7.0.asc
+        echo "deb [ arch=amd64,arm64 ] https://repo.mongodb.org/apt/ubuntu focal/mongodb-org/7.0 multiverse" | sudo tee /etc/apt/sources.list.d/mongodb-org-7.0.list
+        sudo apt-get update
+        sudo apt-get install -y mongodb-mongosh
+        mongosh --version
+        mongosh localhost:27017/myconext playwright/loadusers.js
     - name: Set up cache
       uses: actions/cache@v4
       with:
