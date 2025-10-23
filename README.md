@@ -96,7 +96,7 @@ yarn install
 yarn dev
 ```
 
-Browse to the [application homepage](http://localhost:3002/).
+Browse to the [application homepage](http://localhost:8081).
 
 ### Build
 
