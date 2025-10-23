@@ -23,15 +23,15 @@ jobs:
         java-version: 21
         distribution: 'temurin'
         cache: 'maven'
-    - name: Install mongosh and import start data in database
-      run: |
-        sudo apt-get install gnupg
-        wget -qO- https://www.mongodb.org/static/pgp/server-7.0.asc | sudo tee /etc/apt/trusted.gpg.d/server-7.0.asc
-        echo "deb [ arch=amd64,arm64 ] https://repo.mongodb.org/apt/ubuntu focal/mongodb-org/7.0 multiverse" | sudo tee /etc/apt/sources.list.d/mongodb-org-7.0.list
-        sudo apt-get update
-        sudo apt-get install -y mongodb-mongosh
-        mongosh --version
-        mongosh localhost:27017/myconext playwright/loadusers.js
+    # - name: Install mongosh and import start data in database
+    #   run: |
+    #     sudo apt-get install gnupg
+    #     wget -qO- https://www.mongodb.org/static/pgp/server-7.0.asc | sudo tee /etc/apt/trusted.gpg.d/server-7.0.asc
+    #     echo "deb [ arch=amd64,arm64 ] https://repo.mongodb.org/apt/ubuntu focal/mongodb-org/7.0 multiverse" | sudo tee /etc/apt/sources.list.d/mongodb-org-7.0.list
+    #     sudo apt-get update
+    #     sudo apt-get install -y mongodb-mongosh
+    #     mongosh --version
+    #     mongosh localhost:27017/myconext playwright/loadusers.js
     - name: Set up cache
       uses: actions/cache@v4
       with:
@@ -43,12 +43,14 @@ jobs:
 #      run: mvn clean install --file pom.xml
     - name: Run myconext-server
       run : cd myconext-server && mvn spring-boot:run -Dspring-boot.run.profiles=dev && sleep 20 &
-    - name: Run GUIs
-      run: |
-        cd account-gui && yarn install && yarn dev && sleep 10 &
-        cd myconext-gui && yarn install && yarn dev && sleep 10 &
-        cd servicedesk-gui && yarn install && yarn dev && sleep 10 &
-        cd public-gui && yarn install && yarn dev && sleep 10 &
+    - name: Run account-gui
+      run: cd account-gui && yarn install && yarn dev && sleep 10 &
+    - name: Run myconext-gui
+      run: cd myconext-gui && yarn install && yarn dev && sleep 10 &
+    - name: Run servicedesk-gui
+      run: cd servicedesk-gui && yarn install && yarn dev && sleep 10 &
+    - name: Run public-gui
+      run: cd public-gui && yarn install && yarn dev && sleep 10 &
     - name: Install dependencies for plarwright
       run: cd playwright && npm install -g yarn && yarn
     - name: Install Playwright Browsers
