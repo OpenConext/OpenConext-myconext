@@ -23,7 +23,7 @@ public class MDCContext {
                 "result", "ok",
                 "tag", "myconext_loginstats",
                 "userid", user.getEmail()));
-        log.info(String.format("%S %s %s", message, user.getEmail(), user.getId()));
+        log.info(String.format("%s %s %s", message, user.getEmail(), user.getId()));
     }
 
     /**
