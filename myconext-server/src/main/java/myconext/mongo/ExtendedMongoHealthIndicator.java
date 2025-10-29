@@ -1,6 +1,9 @@
 package myconext.mongo;
 
 import com.mongodb.client.MongoClient;
+import myconext.security.SecurityConfiguration;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.bson.Document;
 import org.springframework.boot.actuate.health.Health;
 import org.springframework.boot.actuate.health.HealthIndicator;
@@ -8,6 +11,8 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class ExtendedMongoHealthIndicator implements HealthIndicator {
+
+    private static final Log LOG = LogFactory.getLog(ExtendedMongoHealthIndicator.class);
 
     private final MongoClient mongoClient;
 
@@ -43,6 +48,7 @@ public class ExtendedMongoHealthIndicator implements HealthIndicator {
                     .build();
 
         } catch (Exception e) {
+            LOG.error("Unhealthy mongoDB", e);
             return Health.down(e).build();
         }
     }
