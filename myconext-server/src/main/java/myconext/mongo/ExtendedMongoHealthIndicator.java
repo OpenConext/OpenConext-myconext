@@ -1,65 +1,44 @@
 package myconext.mongo;
 
-import com.mongodb.client.MongoClient;
-import myconext.security.SecurityConfiguration;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.bson.Document;
 import org.springframework.boot.actuate.health.Health;
 import org.springframework.boot.actuate.health.HealthIndicator;
+import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.stereotype.Component;
+
+import java.util.List;
 
 @Component
 public class ExtendedMongoHealthIndicator implements HealthIndicator {
 
     private static final Log LOG = LogFactory.getLog(ExtendedMongoHealthIndicator.class);
 
-    private final MongoClient mongoClient;
+    private final MongoTemplate mongoTemplate;
 
-    public ExtendedMongoHealthIndicator(MongoClient mongoClient) {
-        this.mongoClient = mongoClient;
+    private final List<String> attributes = List.of(
+            "maxWireVersion", "hosts", "isWritablePrimary", "secondary", "primary", "logicalSessionTimeoutMinutes"
+    );
+
+    public ExtendedMongoHealthIndicator(MongoTemplate mongoTemplate) {
+        this.mongoTemplate = mongoTemplate;
     }
 
     @Override
     public Health health() {
         try {
-            // Ping MongoDB to verify connectivity
-            mongoClient.getDatabase("admin").runCommand(new Document("ping", 1));
-
-            // Retrieve server status info
-            Document serverStatus = mongoClient.getDatabase("admin")
-                    .runCommand(new Document("serverStatus", 1));
-
-            String host = serverStatus.getString("host");
-            String version = serverStatus.getString("version");
-            Double uptime = serverStatus.getDouble("uptime");
-            Document connections = (Document) serverStatus.get("connections");
-
-            // Optionally, get the default database name
-            String databaseName = mongoClient.listDatabaseNames().first();
-
-            return Health.up()
-                    .withDetail("host", host)
-                    .withDetail("version", version)
-                    .withDetail("uptimeSeconds", uptime)
-                    .withDetail("connections", connections)
-                    .withDetail("defaultDatabase", databaseName)
-                    .withDetail("maxWireVersion", getMaxWireVersion())
+            Document result = this.mongoTemplate.executeCommand("{ hello: 1 }");
+            Health.Builder builder = Health.up();
+            result.entrySet().stream()
+                    .filter(entry -> attributes.contains(entry.getKey()))
+                    .forEach(entry -> builder.withDetail(entry.getKey(), entry.getValue()));
+            return builder.up()
                     .build();
-
         } catch (Exception e) {
             LOG.error("Unhealthy mongoDB", e);
             return Health.down(e).build();
         }
     }
 
-    private int getMaxWireVersion() {
-        try {
-            Document buildInfo = mongoClient.getDatabase("admin")
-                    .runCommand(new Document("buildInfo", 1));
-            return buildInfo.getInteger("maxWireVersion", -1);
-        } catch (Exception e) {
-            return -1;
-        }
-    }}
-
+}
