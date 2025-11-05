@@ -1,7 +1,9 @@
 services:
-  openconenxtmongo:
+  mongo:
     image: mongo:7
-    restart: always
+    restart: unless-stopped
+    volumes:
+      - mongodb_data:/data/db
     ports:
       - "27017:27017"
     command: |
@@ -20,7 +22,7 @@ services:
             if (name=="MongoServerError" && message.includes("no replset config has been received")) {
               rs.initiate({
                 _id : "openconext",
-                members: [ { _id: 0, host: "openconenxtmongo:27017" } ]
+                members: [ { _id: 0, host: "mongo:27017" } ]
               });
               rs.status().ok;
             }
@@ -31,7 +33,6 @@ services:
       retries: 5
   mailpit:
     image: axllent/mailpit:v1.27
-    container_name: mailpit
     ports:
       - "8025:8025"
       - "1025:1025"
@@ -39,3 +40,6 @@ services:
       MP_UI_AUTH: "user:password"
       MP_MAX_MESSAGES: 5000
     restart: unless-stopped
+
+volumes:
+  mongodb_data:

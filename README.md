@@ -37,11 +37,11 @@ An IdP for OpenConext. A user can create and manage his own identity. Authentica
 
 ## Building and running
 
-### The myconext-server
+### MyConext-Server
 
 This project uses Spring Boot and Maven. To run locally, type:
 
-```
+```shell
 cd myconext-server
 mvn spring-boot:run -Dspring-boot.run.profiles=dev
 ```
@@ -53,7 +53,7 @@ Don't forget to set the active profile to dev.
 
 The myconext ServiceProvider is built with Svelte and to get initially started:
 
-```
+```shell
 cd account-gui
 nvm use
 yarn install
@@ -66,7 +66,7 @@ Browse to the [application homepage](http://localhost:3001/).
 
 The IdP is also built with Svelte and to get initially started:
 
-```
+```shell
 cd myconext-gui
 nvm use
 yarn install
@@ -74,11 +74,11 @@ yarn dev
 ```
 There is no home page, you'll need to visit an SP and choose "Local SURFconext Guest IdP" to login.
 
-### The servicedesk-gui
+### Servicedesk-GUI
 
 The myconext servicedesk is also built with Svelte and to get initially started:
 
-```
+```shell
 cd servicedesk-gui
 yarn install
 yarn dev
@@ -86,11 +86,11 @@ yarn dev
 
 Browse to the [application homepage](http://localhost:3003/).
 
-### The public-gui
+### Public-GUI
 
 The myconext public gui is built with Vite and to get initially started:
 
-```
+```shell
 cd public-gui
 yarn install
 yarn dev
@@ -107,7 +107,7 @@ mvn deploy
 ### Mail
 
 The default mail configuration sends mails to port 1025. Install https://mailpit.axllent.org/ and capture all emails send. 
-You can see all mails delivered at http://0.0.0.0:8025/ when mailpit is installed.
+You can see all mails delivered at http://localhost:8025/ when mailpit is installed.
 ```bash
 brew install mailpit
 ```
