@@ -34,7 +34,8 @@ import static org.junit.Assert.assertTrue;
                 "sp_entity_metadata_url=https://engine.test.surfconext.nl/authentication/sp/metadata",
                 "spring.main.lazy-initialization=true",
                 "oidc-token-api.token-url=http://localhost:8098/tokens",
-                "host_headers.active: mijn.test2.eduid.nl"
+                "host_headers.active: mijn.test2.eduid.nl",
+                "oidc-token-api.enabled=True"
         })
 public class OpenIDConnectTest extends AbstractIntegrationTest {
 

@@ -77,8 +77,8 @@ idp_redirect_url: http://localhost:3000
 rp_id: localhost
 rp_origin: http://localhost:3000
 sp_redirect_url: http://localhost:3001
-sp_entity_id: https://engine.test.surfconext.nl/authentication/sp/metadata
-sp_entity_metadata_url: https://engine.test.surfconext.nl/authentication/sp/metadata
+sp_entity_id: https://engine.test.surfconext.nl/authentication/sp/metadata, https://engine.test2.surfconext.nl/authentication/sp/metadata
+sp_entity_metadata_url: https://engine.test.surfconext.nl/authentication/sp/metadata, https://engine.test2.surfconext.nl/authentication/sp/metadata
 guest_idp_entity_id: https://localhost.surf.id
 my_conext_url: https://my.test2.surfconext.nl
 domain: eduid.nl
@@ -129,7 +129,7 @@ feature:
   # Set to true if the servicedesk is fully operational (e.g. show the user the control-code option)
   service_desk_active: True
   # Set to true to enable captcha in the account creation
-  captcha_enabled: True
+  captcha_enabled: False
   # Set to true to use the BRIN code to add ui-roles and authentication scoped affiliations
   use_remote_creation_for_affiliation: True
 
@@ -196,7 +196,7 @@ oidc-token-api:
   token-url: https://connect.test2.surfconext.nl/tokens
   user: eduid
   password: secret
-  enabled: true
+  enabled: False
 
 oidc:
   client-id: myconext.rp.localhost
