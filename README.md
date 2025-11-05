@@ -49,9 +49,9 @@ mvn spring-boot:run -Dspring-boot.run.profiles=dev
 When developing, it's convenient to just execute the applications main-method, which is in [Application](myconext-server/src/main/java/myconext/MyConextServerApplication.java).
 Don't forget to set the active profile to dev.
 
-### The account-gui
+### The myconext-gui
 
-The myconext client is build with Svelte and to get initially started:
+The myconext ServiceProvider is built with Svelte and to get initially started:
 
 ```
 cd account-gui
@@ -62,9 +62,9 @@ yarn dev
 
 Browse to the [application homepage](http://localhost:3001/).
 
-### The myconext-gui
+### The account-gui
 
-The IdP is also build with Svelte and to get initially started:
+The IdP is also built with Svelte and to get initially started:
 
 ```
 cd myconext-gui
@@ -72,11 +72,11 @@ nvm use
 yarn install
 yarn dev
 ```
-There is no home page, you'll need to visit an SP and choose eduID to login.
+There is no home page, you'll need to visit an SP and choose "Local SURFconext Guest IdP" to login.
 
 ### The servicedesk-gui
 
-The myconext servicedesk is also build with Svelte and to get initially started:
+The myconext servicedesk is also built with Svelte and to get initially started:
 
 ```
 cd servicedesk-gui
@@ -88,7 +88,7 @@ Browse to the [application homepage](http://localhost:3003/).
 
 ### The public-gui
 
-The myconext public gui can also be build with Svelte and to get initially started:
+The myconext public gui is built with Vite and to get initially started:
 
 ```
 cd public-gui
