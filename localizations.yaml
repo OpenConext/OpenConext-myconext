@@ -3550,61 +3550,6 @@ SHARED:
         COPY:
           en: I don't have an eduID
           nl: Ik heb nog geen eduID
-    FirstTimeDialog:
-      ConnectButtonTitle:
-        COPY:
-          en: Connect your educational institution
-          nl: Koppel je onderwijsinstelling
-      MainTextTitle:
-        FirstPart:
-          COPY:
-            en: Do you study in the Netherlands?
-            nl: Studeer je in Nederland?
-        SecondPart:
-          COPY:
-            en: Connect your educational institution
-            nl: Koppel je onderwijsinstelling
-      MainText:
-        COPY:
-          en: >-
-            We need to verify who you are before you can use eduID for services in the Dutch education system.
-          nl: >-
-            We moeten eerst zeker zijn wie je bent. Alleen zo kun je eduID gebruiken voor diensten in het Nederlandse onderwijs.
-      MainTextPoint1:
-        COPY:
-          en: Your full name, verified by an official party
-          nl: Je volledige naam, bevestigd door een officiële partij
-      MainTextPoint2:
-        COPY:
-          en: Proof of being a student
-          nl: Bewijs dat je student bent
-      MainTextPoint3:
-        COPY:
-          en: Your current institution
-          nl: Je huidige instelling
-
-      MainTextFirstBoldPart:
-        COPY:
-          en: When you study in the Netherlands
-          nl: Wanneer je in Nederland studeert
-      MainTextSecondBoldPart:
-        COPY:
-          en: >-
-            Provide the following information:
-          nl: >-
-            Voeg deze gegevens toe
-      AddInformationText:
-        COPY:
-          en: You can provide this information by connecting your educational institution through SURFconext.
-          nl: Je voegt deze gegevens toe door je onderwijsinstelling te koppelen via SURFconext.
-      AddInformationBoldPart:
-        COPY:
-          en: Add this information
-          nl: Voeg deze informatie toe
-      SkipButtonTitle:
-        COPY:
-          en: Skip this
-          nl: Overslaan
     Explanation:
       MainTitleLabel:
         COPY:
@@ -3679,8 +3624,8 @@ SHARED:
             Welk telefoonnummer wil je hiervoor gebruiken?
       BoldRange:
         COPY:
-          en: "32"
-          nl: "34"
+          en: "34"
+          nl: "38"
       VerifyPhoneNumber:
         COPY:
           en: Send SMS code
