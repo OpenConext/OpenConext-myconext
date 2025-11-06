@@ -21,6 +21,7 @@ import myconext.security.RemoteUser;
 import myconext.verify.AttributeMapper;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.http.HttpStatus;
@@ -51,15 +52,18 @@ public class RemoteCreationController implements HasUserRepository {
     private final Manage manage;
     private final MailBox mailBox;
     private final AttributeMapper attributeMapper;
+    private final String schacHomeOrganization;
 
     public RemoteCreationController(UserRepository userRepository,
                                     Manage manage,
                                     MailBox mailBox,
-                                    AttributeMapper attributeMapper) {
+                                    AttributeMapper attributeMapper,
+                                    @Value("${schac_home_organization}") String schacHomeOrganization) {
         this.userRepository = userRepository;
         this.manage = manage;
         this.mailBox = mailBox;
         this.attributeMapper = attributeMapper;
+        this.schacHomeOrganization = schacHomeOrganization;
     }
 
     @GetMapping(value = {"/email-eduid-exists"})
@@ -305,7 +309,7 @@ public class RemoteCreationController implements HasUserRepository {
         String lastNamePrefix = externalEduID.getLastNamePrefix();
         String lastName = StringUtils.hasText(lastNamePrefix) ? String.format("%s %s", lastNamePrefix, externalEduID.getLastName()) : externalEduID.getLastName();
         User user = new User(UUID.randomUUID().toString(), externalEduID.getEmail(), externalEduID.getChosenName(),
-                externalEduID.getFirstName(), lastName, remoteUser.getSchacHome(), LocaleContextHolder.getLocale().getLanguage(), remoteProvider
+                externalEduID.getFirstName(), lastName, this.schacHomeOrganization, LocaleContextHolder.getLocale().getLanguage(), remoteProvider
                 , manage);
         //Otherwise another email is sent out when the user logs in
         user.setNewUser(false);
