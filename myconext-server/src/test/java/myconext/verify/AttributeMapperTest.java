@@ -127,7 +127,7 @@ class AttributeMapperTest {
     @Test
     void a() {
         AttributeMapper attributeMapper = new AttributeMapper(objectMapper, new MockManage(objectMapper), false);
-        List<String> affiliations = attributeMapper.externalAffiliations(List.of("QW12"), null);
+        List<String> affiliations = attributeMapper.externalAffiliations(List.of("QW12"));
         assertTrue(affiliations.isEmpty());
     }
 

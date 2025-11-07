@@ -318,7 +318,6 @@ public class RemoteCreationController implements HasUserRepository {
         UpdateExternalEduID updateExternalEduID = new UpdateExternalEduID(externalEduID, eduIDValue);
 
         ExternalLinkedAccount externalLinkedAccount = attributeMapper.createExternalLinkedAccount(externalEduID, IdpScoping.valueOf(apiUserName));
-        externalLinkedAccount.setAffiliations(attributeMapper.externalAffiliations(externalEduID.getBrinCodes(), manage));
         user.getExternalLinkedAccounts().add(externalLinkedAccount);
 
         userRepository.save(user);
@@ -374,7 +373,7 @@ public class RemoteCreationController implements HasUserRepository {
             }
             //Not all external attributes can be changed
             externalLinkedAccount.setVerification(externalEduID.getVerification());
-            externalLinkedAccount.setAffiliations(attributeMapper.externalAffiliations(externalEduID.getBrinCodes(), manage));
+            externalLinkedAccount.setAffiliations(attributeMapper.externalAffiliations(externalEduID.getBrinCodes()));
             externalLinkedAccount.setBrinCodes(externalEduID.getBrinCodes());
             externalLinkedAccount.setDateOfBirth(AttributeMapper.parseDate(externalEduID.getDateOfBirth()));
         }, () -> {
@@ -383,7 +382,7 @@ public class RemoteCreationController implements HasUserRepository {
             String provisionedEduIDValue = user.computeEduIdForIdentityProviderProviderIfAbsent(remoteProvider, manage);
             externalEduID.setEduIDValue(provisionedEduIDValue);
             ExternalLinkedAccount externalLinkedAccount = attributeMapper.createExternalLinkedAccount(externalEduID, IdpScoping.valueOf(remoteUserName));
-            externalLinkedAccount.setAffiliations(attributeMapper.externalAffiliations(externalEduID.getBrinCodes(), manage));
+            externalLinkedAccount.setAffiliations(attributeMapper.externalAffiliations(externalEduID.getBrinCodes()));
             if (!Verification.Ongeverifieerd.equals(externalLinkedAccount.getVerification())) {
                 userIsValidated.set(true);
             }
