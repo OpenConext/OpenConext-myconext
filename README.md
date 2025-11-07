@@ -10,9 +10,11 @@ An IdP for OpenConext. A user can create and manage his own identity. Authentica
 - [Getting started](#getting-started)
 	- [System Requirements](#system-requirements)
 - [Building and running](#building-and-running)
-	- [The myconext-server](#The-myconext-server)
-	- [The account-gui](#the-account-gui)
-	- [The myconext-gui](#The-myconext-gui)
+	- [MyConext-Server](#myconext-server)
+	- [Account-GUI](#account-gui-idp)
+	- [MyConext-GUI](#myconext-gui-sp)
+    - [Servicedesk-GUI](#servicedesk-gui-sp)
+    - [Public-GUI](#public-gui-content-website)
 	- [Build](#build)
 	- [Mail](#mail)
 	- [Crypto](#crypto)
@@ -21,8 +23,9 @@ An IdP for OpenConext. A user can create and manage his own identity. Authentica
 	- [Attribute Manipulation](#attribute-manipulation)
 	- [Attribute Aggregation](#attribute-aggregation)
 	- [OpenAPI Documentation](#OpenAPI-Documentation)
-	- [IDIN & e-Herkenning](#IDIN-&-e-Herkenning)
+	- [IDIN & e-Herkenning](#IDIN--e-Herkenning)
 	- [Running the IdP and testing localhost](#Running-the-IdP-and-testing-localhost)
+- [How to use](#how-to-use)
 
 ## Getting started
 
@@ -37,11 +40,19 @@ An IdP for OpenConext. A user can create and manage his own identity. Authentica
 
 ## Building and running
 
-### The myconext-server
+### Database and Maipit
+
+The `docker-compose.yaml` file in this project is meant for local development and contains a Mongo database and Mailpit instance
+
+```shell
+docker compose up -d
+```
+
+### MyConext-Server
 
 This project uses Spring Boot and Maven. To run locally, type:
 
-```
+```shell
 cd myconext-server
 mvn spring-boot:run -Dspring-boot.run.profiles=dev
 ```
@@ -49,12 +60,24 @@ mvn spring-boot:run -Dspring-boot.run.profiles=dev
 When developing, it's convenient to just execute the applications main-method, which is in [Application](myconext-server/src/main/java/myconext/MyConextServerApplication.java).
 Don't forget to set the active profile to dev.
 
-### The myconext-gui
+### Account-GUI (IDP)
+
+The IdP is also built with Svelte and to get initially started:
+
+```shell
+cd account-gui
+nvm use
+yarn install
+yarn dev
+```
+There is no home page, you'll need to visit an SP and choose "Local SURFconext Guest IdP" to login. App is running on port 3000.
+
+### MyConext-GUI (SP)
 
 The myconext ServiceProvider is built with Svelte and to get initially started:
 
-```
-cd account-gui
+```shell
+cd myconext-gui
 nvm use
 yarn install
 yarn dev
@@ -62,23 +85,11 @@ yarn dev
 
 Browse to the [application homepage](http://localhost:3001/).
 
-### The account-gui
-
-The IdP is also built with Svelte and to get initially started:
-
-```
-cd myconext-gui
-nvm use
-yarn install
-yarn dev
-```
-There is no home page, you'll need to visit an SP and choose "Local SURFconext Guest IdP" to login.
-
-### The servicedesk-gui
+### Servicedesk-GUI (SP)
 
 The myconext servicedesk is also built with Svelte and to get initially started:
 
-```
+```shell
 cd servicedesk-gui
 yarn install
 yarn dev
@@ -86,11 +97,11 @@ yarn dev
 
 Browse to the [application homepage](http://localhost:3003/).
 
-### The public-gui
+### Public-GUI (Content website)
 
 The myconext public gui is built with Vite and to get initially started:
 
-```
+```shell
 cd public-gui
 yarn install
 yarn dev
@@ -107,7 +118,10 @@ mvn deploy
 ### Mail
 
 The default mail configuration sends mails to port 1025. Install https://mailpit.axllent.org/ and capture all emails send. 
-You can see all mails delivered at http://0.0.0.0:8025/ when mailpit is installed.
+You can see all mails delivered at http://localhost:8025/ when mailpit is installed.
+
+In case when not using the Docker Compose file, you can install Mailpit with Brew
+
 ```bash
 brew install mailpit
 ```
@@ -189,3 +203,15 @@ ngrok http --domain okke.harsta.eu.ngrok.io 8081
 
 The [idp_metadata.xml](idp_metadata.xml) file contains the IdP metadata for localhost development. Import an IdP in Manage and
 whitelist this for the SP's you want to test with. The OIDC-Playground is capable of testing the different ACR options.
+
+## How to use
+
+Have MyConext server and all 4 GUI projects running.
+Note: Account-GUI starts with `Whoops… Something went wrong (404)`, this is ok.
+
+1. https://oidc-playground.test2.surfconext.nl/
+2. Check `Force authentication` and click on Submit
+3. Select `Local SURFconext Guest IdP` from the list
+4. User is `jdoe@example.com`, chose one-time login via e-mail
+5. See [Mailpit](http://user:password@145.90.230.133:8025/) for the OTP
+6. You get redirected back to the playground with JWT data
