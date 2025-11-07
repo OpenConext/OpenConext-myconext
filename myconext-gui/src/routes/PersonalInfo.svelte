@@ -733,7 +733,7 @@
             />
             <p class="info-section second">{I18n.t("Profile.OrganisationsHeader.COPY")}</p>
             <section class="linked-accounts">
-                {#each sortedExternalAccounts.filter(acc => acc.idpScoping === "studielink") as externalAccount}
+                {#each sortedExternalAccounts.filter(acc => acc.idpScoping === "studielink" && !isEmpty(acc.eduPersonAffiliations)) as externalAccount}
                     <InstitutionRole manageVerifiedInformation={() => manageVerifiedInformation("manage")}
                                      linkedAccount={externalAccount}/>
                 {/each}
