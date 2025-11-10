@@ -2,7 +2,7 @@ Dear {{name}},
 
 Welcome to eduID! Your personal account for verifying your identity with educational and research institutions in the Netherlands.
 
-Want to log in to eduID even faster and more securely? Use the eduID app to log in extra securely — without needing a password. Download the app via eduid.nl.
+Do you want to log in to eduID even faster and more securely? Use the eduID app to log in without needing the one time password in your mail. Download the app via eduid.nl.
 
 Kind regards,
 Team eduID
