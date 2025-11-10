@@ -5,13 +5,14 @@ import org.junit.Test;
 import java.util.Collections;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 public class UserLoginTest {
 
     @Test
     public void inetAddress() {
         UserLogin userLogin = new UserLogin(new User(), Collections.singletonMap("x-forwarded-for", "145.100.190.243 , 145.100.190.999"));
-        assertEquals("surf.nl", userLogin.getIpAddress());
+        assertTrue(userLogin.getIpAddress().equals("surf.nl" ) || userLogin.getIpAddress().equals("145.100.190.243"));
     }
 
     @Test

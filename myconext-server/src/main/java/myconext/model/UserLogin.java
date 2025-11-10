@@ -2,6 +2,7 @@ package myconext.model;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.util.StringUtils;
@@ -29,6 +30,7 @@ public class UserLogin implements Serializable {
 
     private String ipAddress;
 
+    @Setter
     private String ipLocation;
 
     public UserLogin(User user, Map<String, String> headers) {
@@ -47,10 +49,6 @@ public class UserLogin implements Serializable {
         } else {
             this.ipAddress = headers.get("ipAddress");
         }
-    }
-
-    public void setIpLocation(String ipLocation) {
-        this.ipLocation = ipLocation;
     }
 
     public String getLookupAddress() {

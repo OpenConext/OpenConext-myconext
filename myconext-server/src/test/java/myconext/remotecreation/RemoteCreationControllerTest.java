@@ -418,8 +418,9 @@ class RemoteCreationControllerTest extends AbstractIntegrationTest {
                 });
         //See src/main/resources/application.yml#external-api-configuration
         String institutionGUID = "ec9d6d75-0d11-e511-80d0-005056956c1a";
-        Map<String, Object> eduIDMap = ((Map<String, Map<String, Object>>) me.get("eduIdPerServiceProvider")).get(institutionGUID);
-        assertEquals(eduIDValue, eduIDMap.get("value"));
+        Map<String, Map<String, Object>> eduIdPerServiceProvider = (Map<String, Map<String, Object>>) me.get("eduIdPerServiceProvider");
+        // See https://github.com/OpenConext/OpenConext-myconext/issues/766#issuecomment-3511242241
+        assertFalse(eduIdPerServiceProvider.containsKey(institutionGUID));
     }
 
     @Test
