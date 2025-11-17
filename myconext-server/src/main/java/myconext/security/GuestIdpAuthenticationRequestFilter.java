@@ -828,7 +828,7 @@ public class GuestIdpAuthenticationRequestFilter extends OncePerRequestFilter {
                 .distinct()
                 .toList());
         if (this.featureDefaultAffiliateEmail) {
-            LOG.info(String.format("Default affiliate me functionality activated for %s ", user.getUsername()));
+            LOG.debug(String.format("Default affiliate me functionality activated for %s ", user.getUsername()));
             scopedAffiliations.add(String.format("affiliate@%s", defaultAffiliateEmailDomain));
         }
 
