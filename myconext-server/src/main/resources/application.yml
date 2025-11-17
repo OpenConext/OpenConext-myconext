@@ -112,6 +112,8 @@ feature:
   create_eduid_institution_landing: True
   # Do we default remember the user for a longer period
   default_remember_me: False
+  # Do we default add affiliate email address
+  default_affiliate_email: True
   # Does the SAMLIdpService expects authn requests to be signed
   requires_signed_authn_request: False
   # Do we support ID verify
@@ -132,6 +134,8 @@ feature:
   captcha_enabled: False
   # Set to true to use the BRIN code to add ui-roles and authentication scoped affiliations
   use_remote_creation_for_affiliation: True
+
+default_affiliate_email_domain: eduid.nl
 
 captcha:
   sitekey: secret

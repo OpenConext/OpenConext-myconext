@@ -102,6 +102,8 @@ public class GuestIdpAuthenticationRequestFilter extends OncePerRequestFilter {
     private final long ssoMFADurationSeconds;
     private final String mobileAppROEntityId;
     private final boolean featureDefaultRememberMe;
+    private final boolean featureDefaultAffiliateEmail;
+    private final String defaultAffiliateEmailDomain;
     private final DefaultSAMLService samlService;
     private final CookieValueEncoder cookieValueEncoder;
 
@@ -123,6 +125,8 @@ public class GuestIdpAuthenticationRequestFilter extends OncePerRequestFilter {
                                                long ssoMFADurationSeconds,
                                                String mobileAppROEntityId,
                                                boolean featureDefaultRememberMe,
+                                               boolean featureDefaultAffiliateEmail,
+                                               String defaultAffiliateEmailDomain,
                                                SAMLConfiguration configuration,
                                                IdentityProviderMetaData identityProviderMetaData,
                                                CookieValueEncoder cookieValueEncoder,
@@ -151,6 +155,8 @@ public class GuestIdpAuthenticationRequestFilter extends OncePerRequestFilter {
         this.ssoMFADurationSeconds = ssoMFADurationSeconds;
         this.mobileAppROEntityId = mobileAppROEntityId;
         this.featureDefaultRememberMe = featureDefaultRememberMe;
+        this.featureDefaultAffiliateEmail = featureDefaultAffiliateEmail;
+        this.defaultAffiliateEmailDomain = defaultAffiliateEmailDomain;
         this.samlService = new DefaultSAMLService(configuration);
         this.executor = Executors.newSingleThreadExecutor();
         this.identityProviderMetaData = identityProviderMetaData;
@@ -821,7 +827,11 @@ public class GuestIdpAuthenticationRequestFilter extends OncePerRequestFilter {
                 .flatMap(Collection::stream)
                 .distinct()
                 .toList());
-        scopedAffiliations.add("affiliate@eduid.nl");
+        if (this.featureDefaultAffiliateEmail) {
+            LOG.info(String.format("Default affiliate me functionality activated for %s ", user.getUsername()));
+            scopedAffiliations.add(String.format("affiliate@%s", defaultAffiliateEmailDomain));
+        }
+
         scopedAffiliations.forEach(aff -> attributes.add(attribute("urn:mace:dir:attribute-def:eduPersonScopedAffiliation", aff)));
 
         scopedAffiliations.stream()
