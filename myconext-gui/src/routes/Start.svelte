@@ -1,7 +1,7 @@
 <script>
     import I18n from "../locale/I18n";
     import {navigate} from "svelte-routing";
-    import {user} from "../stores/user";
+    import {user, config} from "../stores/user";
     import personalInfoSvg from "../icons/redesign/Personal_info.svg?raw";
     import dataActivitySvg from "../icons/redesign/data_activity.svg?raw";
     import securitySvg from "../icons/redesign/Security.svg?raw";
@@ -157,7 +157,7 @@
     <h2>{I18n.t("Start.Hi.COPY", {name: $user.chosenName})}</h2>
     <p class="manage">{I18n.t("Start.Manage.COPY")}</p>
     <div class="card-container">
-        {#if isEmpty($user.linkedAccounts)}
+        {#if $config.connectYourSchoolInstitution && isEmpty($user.linkedAccounts)}
             <div class="info-container">
                 <h4>{I18n.t("start.app.title")}</h4>
                 <div class="content-section">

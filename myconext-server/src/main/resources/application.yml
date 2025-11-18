@@ -134,6 +134,8 @@ feature:
   captcha_enabled: False
   # Set to true to use the BRIN code to add ui-roles and authentication scoped affiliations
   use_remote_creation_for_affiliation: True
+  # Set to true to show the connect your school institution options
+  connect_your_school_institution: False
 
 default_affiliate_email_domain: eduid.nl
 
