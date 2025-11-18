@@ -22,7 +22,8 @@
     export let showServiceDesk = false;
     export let showControlCode = false;
 
-    let showOtherOptions = false;
+    // Showing immediately all options when school/institution connection is disabled
+    let showOtherOptions = !$config.connectYourSchoolInstitution;
     let showBankOptions = false;
     let busyProcessing = false;
 
@@ -31,6 +32,9 @@
         action();
     }
 
+    $: shouldShowInstitution = $config.connectYourSchoolInstitution;
+    $: shouldShowOtherOptions = showOtherOptions && !showServiceDesk && !showControlCode;
+    $: shouldShowServiceDesk = showBankOptions && !busyProcessing && !showServiceDesk && !showControlCode;
 </script>
 
 <style lang="scss">
@@ -158,25 +162,29 @@
             <h3 class="header">{I18n.t("verify.modal.info.subheader")}</h3>
             <p>{showIdinOptions ? I18n.t("verify.modal.info.please") : I18n.t("VerifyIdentity.SubtitleHasInternalLink.COPY")}</p>
         </div>
-        <div class="choice-container">
-            <div class="choice">
-                <p class="question">{showIdinOptions ? I18n.t("VerifyIdentity.VerifyViaDutchInstitution.Title.COPY") : I18n.t("VerifyIdentity.VerifyViaDutchInstitution.TitleHasInternalLink.COPY")}</p>
-                {@html studentIcon}
+        {#if shouldShowInstitution}
+            <div class="choice-container">
+                <div class="choice">
+                    <p class="question">{showIdinOptions
+                        ? I18n.t("VerifyIdentity.VerifyViaDutchInstitution.Title.COPY")
+                        : I18n.t("VerifyIdentity.VerifyViaDutchInstitution.TitleHasInternalLink.COPY")}</p>
+                    {@html studentIcon}
+                </div>
+                <div class="button-container">
+                    <Button label={I18n.t("VerifyIdentity.VerifyViaDutchInstitution.Button.COPY")}
+                            larger={true}
+                            custom={true}
+                            disabled={busyProcessing}
+                            onClick={() => proceed(addInstitution)}/>
+                </div>
             </div>
-            <div class="button-container">
-                <Button label={I18n.t("VerifyIdentity.VerifyViaDutchInstitution.Button.COPY")}
-                        larger={true}
-                        custom={true}
-                        disabled={busyProcessing}
-                        onClick={() => proceed(addInstitution)}/>
-            </div>
-        </div>
+        {/if}
         {#if !showOtherOptions && $config.featureIdVerify && showIdinOptions && !showServiceDesk && !showControlCode}
             <div class="choice-container other-options" on:click={() => showOtherOptions = !showOtherOptions}>
                 <p>{I18n.t("verify.modal.info.other")}</p>
             </div>
         {/if}
-        {#if showOtherOptions && !showServiceDesk && !showControlCode}
+        {#if shouldShowOtherOptions}
             <div class="choice-container">
                 <div class="choice">
                     <p class="question">{I18n.t("VerifyIdentity.VerifyWithBankApp.Title.COPY")}</p>
@@ -216,7 +224,7 @@
             {/if}
         {/if}
     {/if}
-    {#if showBankOptions && !busyProcessing && !showServiceDesk && !showControlCode}
+    {#if shouldShowServiceDesk}
         <div class="info-container">
             <div class="header-container">
             <span class="back" on:click={() => showBankOptions = !showBankOptions}>
@@ -236,7 +244,7 @@
         </div>
     {/if}
 </div>
-{#if showBankOptions && !busyProcessing && !showServiceDesk && !showControlCode}
+{#if shouldShowServiceDesk}
     <div class="alert">
         {@html alertSvg}
         <span>{I18n.t("verify.modal.bank.anotherMethodPrefix")}
