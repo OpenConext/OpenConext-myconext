@@ -637,32 +637,34 @@
             </div>
             <p class="info">{I18n.t("Profile.Info.COPY")}</p>
         </div>
-        {#if !eduIDLinked && isEmpty($user.linkedAccounts) && isEmpty($user.externalLinkedAccounts) && isEmpty($user.controlCode)}
-            <div class="banner">
-                <span class="verified-badge">{@html verifiedSvg}</span>
-                <p class="banner-info">{I18n.t("profile.banner")}</p>
-                <Button label={I18n.t("Profile.VerifyNow.Button.COPY")}
-                        className="ghost transparent"
-                        onClick={() => addIdentity(true)}/>
-            </div>
-        {/if}
-        {#if !eduIDLinked && (!isEmpty($user.linkedAccounts) || !isEmpty($user.externalLinkedAccounts))}
-            <div class="banner expired">
-                <span class="verified-badge">{@html alertSvg}</span>
-                <p class="banner-info">{I18n.t("profile.expiredBanner")}</p>
-                <Button label={I18n.t("Profile.VerifyNow.Button.COPY")}
-                        className="ghost transparent"
-                        onClick={() => addIdentity(true)}/>
-            </div>
-        {/if}
-        {#if !eduIDLinked && isEmpty($user.linkedAccounts) && isEmpty($user.externalLinkedAccounts) && !isEmpty($user.controlCode)}
-            <div class="banner expired">
-                <span class="verified-badge">{@html alertSvg}</span>
-                <p class="banner-info">{I18n.t("ServiceDesk.ControlCode.Banner.COPY")}</p>
-                <Button label={I18n.t("ServiceDesk.ControlCode.ShowCode.COPY")}
-                        className="ghost transparent"
-                        onClick={() => refreshControlCode()}/>
-            </div>
+        {#if $config.enableAccountLinking && !eduIDLinked}
+            {#if isEmpty($user.linkedAccounts) && isEmpty($user.externalLinkedAccounts) && isEmpty($user.controlCode)}
+                <div class="banner">
+                    <span class="verified-badge">{@html verifiedSvg}</span>
+                    <p class="banner-info">{I18n.t("profile.banner")}</p>
+                    <Button label={I18n.t("Profile.VerifyNow.Button.COPY")}
+                            className="ghost transparent"
+                            onClick={() => addIdentity(true)}/>
+                </div>
+            {/if}
+            {#if !isEmpty($user.linkedAccounts) || !isEmpty($user.externalLinkedAccounts)}
+                <div class="banner expired">
+                    <span class="verified-badge">{@html alertSvg}</span>
+                    <p class="banner-info">{I18n.t("profile.expiredBanner")}</p>
+                    <Button label={I18n.t("Profile.VerifyNow.Button.COPY")}
+                            className="ghost transparent"
+                            onClick={() => addIdentity(true)}/>
+                </div>
+            {/if}
+            {#if isEmpty($user.linkedAccounts) && isEmpty($user.externalLinkedAccounts) && !isEmpty($user.controlCode)}
+                <div class="banner expired">
+                    <span class="verified-badge">{@html alertSvg}</span>
+                    <p class="banner-info">{I18n.t("ServiceDesk.ControlCode.Banner.COPY")}</p>
+                    <Button label={I18n.t("ServiceDesk.ControlCode.ShowCode.COPY")}
+                            className="ghost transparent"
+                            onClick={() => refreshControlCode()}/>
+                </div>
+            {/if}
         {/if}
         <div class="inner-container second">
             <div class="verified-container">
@@ -731,29 +733,28 @@
                        onSave={value => updateEmailValue(value)}
                        onCancel={() => cancelEmailEditMode()}
             />
-            <p class="info-section second">{I18n.t("Profile.OrganisationsHeader.COPY")}</p>
-            <section class="linked-accounts">
-                {#each sortedExternalAccounts.filter(acc => acc.idpScoping === "studielink" && !isEmpty(acc.eduPersonAffiliations)) as externalAccount}
-                    <InstitutionRole manageVerifiedInformation={() => manageVerifiedInformation("manage")}
-                                     linkedAccount={externalAccount}/>
-                {/each}
-                {#each sortedAccounts as account}
-                    <InstitutionRole manageVerifiedInformation={() => manageVerifiedInformation("manage")}
-                                     linkedAccount={account}/>
-                {/each}
-            </section>
-            <div class="add-institution"
-                 on:click={() => addIdentity(false)}>
-                <div class="info">
-                    <p>{I18n.t("Profile.AddAnOrganisation.COPY")}</p>
-                    <em class="info">{I18n.t(`profile.${($config.featureIdVerify && isEmpty($user.externalLinkedAccounts)) ? "proceedVerify" : "proceedConext"}`)}</em>
+            {#if $config.enableAccountLinking}
+                <p class="info-section second">{I18n.t("Profile.OrganisationsHeader.COPY")}</p>
+                <section class="linked-accounts">
+                    {#each sortedExternalAccounts.filter(acc => acc.idpScoping === "studielink" && !isEmpty(acc.eduPersonAffiliations)) as externalAccount}
+                        <InstitutionRole manageVerifiedInformation={() => manageVerifiedInformation("manage")}
+                                         linkedAccount={externalAccount}/>
+                    {/each}
+                    {#each sortedAccounts as account}
+                        <InstitutionRole manageVerifiedInformation={() => manageVerifiedInformation("manage")}
+                                         linkedAccount={account}/>
+                    {/each}
+                </section>
+                <div class="add-institution"
+                     on:click={() => addIdentity(false)}>
+                    <div class="info">
+                        <p>{I18n.t("Profile.AddAnOrganisation.COPY")}</p>
+                        <em class="info">{I18n.t(`profile.${($config.featureIdVerify && isEmpty($user.externalLinkedAccounts)) ? "proceedVerify" : "proceedConext"}`)}</em>
+                    </div>
+                    <span class="add">+</span>
                 </div>
-                <span class="add">+</span>
-            </div>
-
-
+            {/if}
         </div>
-
     {/if}
 </div>
 {#if outstandingPasswordForgotten}
