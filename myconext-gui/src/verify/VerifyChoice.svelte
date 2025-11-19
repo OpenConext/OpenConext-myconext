@@ -23,7 +23,7 @@
     export let showControlCode = false;
 
     // Showing immediately all options when school/institution connection is disabled
-    let showOtherOptions = !$config.connectYourSchoolInstitution;
+    let showOtherOptions = !$config.enableAccountLinking;
     let showBankOptions = false;
     let busyProcessing = false;
 
@@ -32,7 +32,7 @@
         action();
     }
 
-    $: shouldShowInstitution = $config.connectYourSchoolInstitution;
+    $: shouldShowInstitution = $config.enableAccountLinking;
     $: shouldShowOtherOptions = showOtherOptions && !showServiceDesk && !showControlCode;
     $: shouldShowServiceDesk = showBankOptions && !busyProcessing && !showServiceDesk && !showControlCode;
 </script>

@@ -41,7 +41,7 @@ export const config = writable({
     featureServiceDeskActive: false,
     createEduIDInstitutionEnabled: false,
     expirationNonValidatedDurationDays: 0,
-    connectYourSchoolInstitution: true
+    enableAccountLinking: true
 });
 
 export const redirectPath = writable("");

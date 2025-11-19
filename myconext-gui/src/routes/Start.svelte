@@ -157,7 +157,7 @@
     <h2>{I18n.t("Start.Hi.COPY", {name: $user.chosenName})}</h2>
     <p class="manage">{I18n.t("Start.Manage.COPY")}</p>
     <div class="card-container">
-        {#if $config.connectYourSchoolInstitution && isEmpty($user.linkedAccounts)}
+        {#if $config.enableAccountLinking && isEmpty($user.linkedAccounts)}
             <div class="info-container">
                 <h4>{I18n.t("start.app.title")}</h4>
                 <div class="content-section">
