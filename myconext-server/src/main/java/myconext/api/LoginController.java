@@ -74,7 +74,8 @@ public class LoginController {
                            @Value("${mobile_app_redirect}") String mobileAppRedirect,
                            @Value("${feature.id_verify}") boolean idVerify,
                            @Value("${feature.service_desk_active}") boolean serviceDeskActive,
-                           @Value("${feature.use_remote_creation_for_affiliation}") boolean useRemoteCreationForAffiliation
+                           @Value("${feature.use_remote_creation_for_affiliation}") boolean useRemoteCreationForAffiliation,
+                           @Value("${feature.enable_account_linking}") boolean enableAccountLinking
     ) {
         this.config.put("basePath", basePath);
         this.config.put("loginUrl", basePath + "/login");
@@ -103,6 +104,7 @@ public class LoginController {
         this.config.put("captchaEnabled", captchaEnabled);
         this.config.put("captchaSiteKey", captchaSiteKey);
         this.config.put("useRemoteCreationForAffiliation", useRemoteCreationForAffiliation);
+        this.config.put("enableAccountLinking", enableAccountLinking);
         this.secureCookie = secureCookie;
         this.userRepository = userRepository;
         this.authenticationRequestRepository = authenticationRequestRepository;

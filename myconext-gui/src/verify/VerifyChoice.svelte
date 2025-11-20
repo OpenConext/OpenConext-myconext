@@ -31,6 +31,8 @@
         action();
     }
 
+    $: shouldShowOtherOptions = showOtherOptions && !showServiceDesk && !showControlCode;
+    $: shouldShowServiceDesk = showBankOptions && !busyProcessing && !showServiceDesk && !showControlCode;
 </script>
 
 <style lang="scss">
@@ -160,7 +162,9 @@
         </div>
         <div class="choice-container">
             <div class="choice">
-                <p class="question">{showIdinOptions ? I18n.t("VerifyIdentity.VerifyViaDutchInstitution.Title.COPY") : I18n.t("VerifyIdentity.VerifyViaDutchInstitution.TitleHasInternalLink.COPY")}</p>
+                <p class="question">{showIdinOptions
+                    ? I18n.t("VerifyIdentity.VerifyViaDutchInstitution.Title.COPY")
+                    : I18n.t("VerifyIdentity.VerifyViaDutchInstitution.TitleHasInternalLink.COPY")}</p>
                 {@html studentIcon}
             </div>
             <div class="button-container">
@@ -176,7 +180,7 @@
                 <p>{I18n.t("verify.modal.info.other")}</p>
             </div>
         {/if}
-        {#if showOtherOptions && !showServiceDesk && !showControlCode}
+        {#if shouldShowOtherOptions}
             <div class="choice-container">
                 <div class="choice">
                     <p class="question">{I18n.t("VerifyIdentity.VerifyWithBankApp.Title.COPY")}</p>
@@ -216,7 +220,7 @@
             {/if}
         {/if}
     {/if}
-    {#if showBankOptions && !busyProcessing && !showServiceDesk && !showControlCode}
+    {#if shouldShowServiceDesk}
         <div class="info-container">
             <div class="header-container">
             <span class="back" on:click={() => showBankOptions = !showBankOptions}>
@@ -236,7 +240,7 @@
         </div>
     {/if}
 </div>
-{#if showBankOptions && !busyProcessing && !showServiceDesk && !showControlCode}
+{#if shouldShowServiceDesk}
     <div class="alert">
         {@html alertSvg}
         <span>{I18n.t("verify.modal.bank.anotherMethodPrefix")}

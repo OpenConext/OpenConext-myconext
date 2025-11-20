@@ -40,7 +40,8 @@ export const config = writable({
     featureIdVerify: false,
     featureServiceDeskActive: false,
     createEduIDInstitutionEnabled: false,
-    expirationNonValidatedDurationDays: 0
+    expirationNonValidatedDurationDays: 0,
+    enableAccountLinking: true
 });
 
 export const redirectPath = writable("");
