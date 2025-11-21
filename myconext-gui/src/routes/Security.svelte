@@ -198,6 +198,8 @@
     <div class="inner-container">
         <h2>{I18n.t("Security.Title.COPY")}</h2>
         <p class="info">{I18n.t("security.subTitle")}</p>
+
+        <!-- Banner -->
         {#if shouldShowAppOptions && !userIsFullyEnrolledWithApp }
             <div class="banner">
                 <span class="verified-badge">{@html verifiedSvg}</span>
@@ -205,8 +207,8 @@
             </div>
         {/if}
 
+        <!-- Current sign in options -->
         <h4 class="info">{I18n.t("security.currentSignInOptions")}</h4>
-
         {#if shouldShowAppOptions && userIsFullyEnrolledWithApp}
             <SecurityOption action={() => showAppDetails = !showAppDetails}
                             icon={hasApp}
@@ -231,13 +233,11 @@
                 </div>
             </SecurityOption>
         {/if}
-
         <SecurityOption action={() => navigate("/edit-email")}
                         icon={codeIcon}
                         label={I18n.t("Security.UseCode.COPY")}
                         subLabel={$user.email}
                         active={true}/>
-
         {#if $user.usePassword}
             <SecurityOption action={() => navigate("/reset-password-link")}
                             icon={passwordIcon}
@@ -245,7 +245,6 @@
                             subLabel="*****************"
                             active={true}/>
         {/if}
-
         {#if $config.featureWebAuthn && usePublicKey}
             {#each $user.publicKeyCredentials as credential, i}
                 <SecurityOption action={credentialsDetails(credential)}
@@ -256,7 +255,8 @@
             {/each}
         {/if}
 
-        {#if !userIsFullyEnrolledWithApp}
+        <!-- Recommended methods -->
+        {#if shouldShowAppOptions && !userIsFullyEnrolledWithApp}
             <h4 class="info">{I18n.t("security.recommendedOptions")}</h4>
             <div class="tiqr-app">
                 <div class="information">
@@ -268,8 +268,9 @@
                     {@html getApp}
                 </div>
             </div>
-            {/if}
+        {/if}
 
+        <!-- Other methods -->
         <h4 class="info">{I18n.t("Security.OtherMethods.COPY")}</h4>
         {#if !$user.usePassword}
             <SecurityOption action={() => navigate("/reset-password-link")}
@@ -282,7 +283,7 @@
                             icon={webAuthnIcon}
                             label={I18n.t("security.options.passkeyAdd")}
                                 active={false}/>
-            {/if}
+        {/if}
         {#if shouldShowAppOptions && userIsFullyEnrolledWithApp}
             <h4 class="info">{I18n.t("security.tiqr.backupCodes")}</h4>
             <div class="recovery-options">
