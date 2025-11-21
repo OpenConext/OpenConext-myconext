@@ -103,6 +103,7 @@ public class GuestIdpAuthenticationRequestFilter extends OncePerRequestFilter {
     private final String mobileAppROEntityId;
     private final boolean featureDefaultRememberMe;
     private final boolean featureDefaultAffiliateEmail;
+    private final boolean featureUseApp;
     private final String defaultAffiliateEmailDomain;
     private final DefaultSAMLService samlService;
     private final CookieValueEncoder cookieValueEncoder;
@@ -126,6 +127,7 @@ public class GuestIdpAuthenticationRequestFilter extends OncePerRequestFilter {
                                                String mobileAppROEntityId,
                                                boolean featureDefaultRememberMe,
                                                boolean featureDefaultAffiliateEmail,
+                                               boolean featureUseApp,
                                                String defaultAffiliateEmailDomain,
                                                SAMLConfiguration configuration,
                                                IdentityProviderMetaData identityProviderMetaData,
@@ -156,6 +158,7 @@ public class GuestIdpAuthenticationRequestFilter extends OncePerRequestFilter {
         this.mobileAppROEntityId = mobileAppROEntityId;
         this.featureDefaultRememberMe = featureDefaultRememberMe;
         this.featureDefaultAffiliateEmail = featureDefaultAffiliateEmail;
+        this.featureUseApp = featureUseApp;
         this.defaultAffiliateEmailDomain = defaultAffiliateEmailDomain;
         this.samlService = new DefaultSAMLService(configuration);
         this.executor = Executors.newSingleThreadExecutor();
@@ -520,7 +523,8 @@ public class GuestIdpAuthenticationRequestFilter extends OncePerRequestFilter {
                     "&explanation=" + explanation +
                     "&ref=" + user.getId());
             return false;
-        } else if (!samlAuthenticationRequest.isPasswordOrWebAuthnFlow() && !samlAuthenticationRequest.isTiqrFlow() &&
+        } else if (this.featureUseApp &&
+                !samlAuthenticationRequest.isPasswordOrWebAuthnFlow() && !samlAuthenticationRequest.isTiqrFlow() &&
                 !user.loginOptions().contains(LoginOptions.APP.getValue()) &&
                 user.nudgeToApp(nudgeAppDays, nudgeAppDelayDays)) {
             userRepository.save(user);
