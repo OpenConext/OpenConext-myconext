@@ -136,6 +136,8 @@ feature:
   use_remote_creation_for_affiliation: True
   # Set to true to show the account linking related options on the personal-info page and home page (banner)
   enable_account_linking: True
+  # Set to true to show the app login option
+  use_app: True
 
 default_affiliate_email_domain: eduid.nl
 

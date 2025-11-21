@@ -32,6 +32,9 @@
     const credentialsDetails = credential => () =>
         navigate(`/credential?id=${encodeURIComponent(credential.identifier)}`);
 
+    $: shouldShowAppOptions = $config.useApp
+    $: userHasActiveApp = $user.loginOptions.includes("useApp")
+
 </script>
 
 <style lang="scss">
@@ -194,7 +197,7 @@
     <div class="inner-container">
         <h2>{I18n.t("Security.Title.COPY")}</h2>
         <p class="info">{I18n.t("security.subTitle")}</p>
-        {#if !$user.loginOptions.includes("useApp") || !$user.registration?.notificationType }
+        {#if !userHasActiveApp || !$user.registration?.notificationType }
             <div class="banner">
                 <span class="verified-badge">{@html verifiedSvg}</span>
                 <p class="banner-info">{I18n.t("security.banner")}</p>
@@ -203,7 +206,7 @@
 
         <h4 class="info">{I18n.t("security.currentSignInOptions")}</h4>
 
-        {#if $user.loginOptions.includes("useApp") && $user.registration && $user.registration.notificationType}
+        {#if shouldShowAppOptions && userHasActiveApp && $user.registration?.notificationType}
             <SecurityOption action={() => showAppDetails = !showAppDetails}
                             icon={hasApp}
                             label={I18n.t("security.options.app")}
@@ -252,7 +255,7 @@
             {/each}
         {/if}
 
-        {#if !$user.loginOptions.includes("useApp") || !$user.registration?.notificationType}
+        {#if !userHasActiveApp || !$user.registration?.notificationType}
             <h4 class="info">{I18n.t("security.recommendedOptions")}</h4>
             <div class="tiqr-app">
                 <div class="information">
@@ -273,13 +276,13 @@
                             label={I18n.t("Security.AddPassword.COPY")}
                             active={false}/>
         {/if}
-            {#if $config.featureWebAuthn }
-                <SecurityOption action={() => navigate("/webauthn")}
-                                icon={webAuthnIcon}
-                                label={I18n.t("security.options.passkeyAdd")}
+        {#if $config.featureWebAuthn }
+            <SecurityOption action={() => navigate("/webauthn")}
+                            icon={webAuthnIcon}
+                            label={I18n.t("security.options.passkeyAdd")}
                                 active={false}/>
             {/if}
-        {#if $user.loginOptions.includes("useApp") && $user.registration && $user.registration.notificationType}
+        {#if shouldShowAppOptions && userHasActiveApp && $user.registration?.notificationType}
             <h4 class="info">{I18n.t("security.tiqr.backupCodes")}</h4>
             <div class="recovery-options">
                 <SecurityOption action={() => navigate("/backup-codes")}
