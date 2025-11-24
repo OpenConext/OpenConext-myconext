@@ -3550,6 +3550,19 @@ SHARED:
         COPY:
           en: I don't have an eduID
           nl: Ik heb nog geen eduID
+    FirstTimeDialog:
+      MainTextPoint1:
+        COPY:
+          en: Your full name, verified by an official party
+          nl: Je volledige naam, bevestigd door een officiële partij
+      MainTextPoint2:
+        COPY:
+          en: Proof of being a student
+          nl: Bewijs dat je student bent
+      MainTextPoint3:
+        COPY:
+          en: Your current institution
+          nl: Je huidige instelling
     Explanation:
       MainTitleLabel:
         COPY:
