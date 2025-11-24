@@ -15,7 +15,6 @@
     import backupIcon from "../icons/redesign/backup-code.svg?raw";
     import codeIcon from "../icons/mail.svg?raw";
     import SecurityOption from "../components/SecurityOption.svelte";
-    import magicLinkIcon from "../icons/redesign/video-game-magic-wand.svg?raw";
 
     let usePublicKey = $user.usePublicKey;
     let showAppDetails = false;
@@ -32,9 +31,9 @@
     const credentialsDetails = credential => () =>
         navigate(`/credential?id=${encodeURIComponent(credential.identifier)}`);
 
-    $: shouldShowAppOptions = $config.useApp
-    $: userHasActiveApp = $user.loginOptions.includes("useApp")
-    $: userIsFullyEnrolledWithApp = userHasActiveApp && $user.registration?.notificationType
+    const shouldShowAppOptions = $config.useApp
+    const userHasActiveApp = $user.loginOptions.includes("useApp")
+    const userIsFullyEnrolledWithApp = userHasActiveApp && $user.registration?.notificationType
 
 </script>
 
@@ -284,6 +283,8 @@
                             label={I18n.t("security.options.passkeyAdd")}
                                 active={false}/>
         {/if}
+
+        <!-- Recovery Options (Mobile App) -->
         {#if shouldShowAppOptions && userIsFullyEnrolledWithApp}
             <h4 class="info">{I18n.t("security.tiqr.backupCodes")}</h4>
             <div class="recovery-options">
