@@ -24,6 +24,7 @@ public class NudgeAppMail {
     private final boolean cronJobResponsible;
     private final long nudgeAppMailDaysAfterCreation;
     private final boolean dryRunEmail;
+    private final boolean useApp;
 
     @Autowired
     public NudgeAppMail(MailBox mailBox,
@@ -31,19 +32,21 @@ public class NudgeAppMail {
                         @Value("${cron.node-cron-job-responsible}") boolean cronJobResponsible,
                         @Value("${cron.nudge-app-mail-days-after-creation}") long nudgeAppMailDaysAfterCreation,
                         @Value("${feature.nudge_app_mail}") boolean nudgeAppMailFeature,
-                        @Value("${cron.dry-run-email}") boolean dryRunEmail) {
+                        @Value("${cron.dry-run-email}") boolean dryRunEmail,
+                        @Value("${feature.use_app}") boolean useApp) {
         this.mailBox = mailBox;
         this.userRepository = userRepository;
         this.cronJobResponsible = cronJobResponsible;
         this.nudgeAppMailDaysAfterCreation = nudgeAppMailDaysAfterCreation;
         this.nudgeAppMailFeature = nudgeAppMailFeature;
         this.dryRunEmail = dryRunEmail;
+        this.useApp = useApp;
     }
 
     @Scheduled(cron = "${cron.nudge-app-mail-expression}")
     @SuppressWarnings("unchecked")
     public void mailUsersWithoutApp() {
-        if (!nudgeAppMailFeature || !cronJobResponsible) {
+        if (!nudgeAppMailFeature || !cronJobResponsible || !useApp) {
             return;
         }
         LOG.info("Starting NudgeAppMail job");
