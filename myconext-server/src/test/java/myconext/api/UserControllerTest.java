@@ -184,6 +184,27 @@ public class UserControllerTest extends AbstractIntegrationTest {
     }
 
     @Test
+    public void nudgeUserToUseTheApp() throws IOException {
+        User user = userRepository.findOneUserByEmail("jdoe@example.com");
+        user.getSurfSecureId().clear();
+        userRepository.save(user);
+
+        String authnContext = readFile("request_authn_context_validated_name.xml");
+        Response magicLinkResponse = samlAuthnRequestResponseWithLoa(null, "relay", authnContext);
+        String authenticationRequestId = extractAuthenticationRequestIdFromAuthnResponse(magicLinkResponse);
+
+        ClientAuthenticationResponse authenticationResponse = oneTimeLoginCodeRequest(new ClientAuthenticationRequest(authenticationRequestId, user, false, "repsonse"), HttpMethod.PUT);
+        SamlAuthenticationRequest samlAuthenticationRequest = authenticationRequestRepository.findById(authenticationResponse.authenticationRequestId).get();
+        Response confirmResponse = given().redirects().follow(false)
+                .when()
+                .queryParam("h", samlAuthenticationRequest.getHash())
+                .cookie(BROWSER_SESSION_COOKIE_NAME, "true")
+                .get("/saml/guest-idp/magic");
+        String location = confirmResponse.getHeader("Location");
+        assertTrue(location.startsWith("http://localhost:3000/confirm"));
+    }
+
+    @Test
     public void accountLinkingWithoutStudentAffiliation() throws IOException {
         User user = userRepository.findOneUserByEmail("jdoe@example.com");
         Date createdAt = Date.from(Instant.now().plus(30 * 365, ChronoUnit.DAYS));
