@@ -1087,8 +1087,8 @@ SHARED:
           nl: Laatst ingelogd op
       Activated:
         COPY:
-          en: Activated on
-          nl: Geactiveerd op
+          en: Activated on %1{{s}}
+          nl: Geactiveerd op %1{{s}}
       DateTimeOn:
         COPY:
           en: 'on'
