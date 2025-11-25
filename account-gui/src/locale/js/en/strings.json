@@ -218,7 +218,7 @@
   "Security.Tiqr.FCM_DIRECT.COPY": "Android",
   "Security.Tiqr.AppCode.COPY": "App code",
   "Security.Tiqr.LastLogin.COPY": "Last login",
-  "Security.Tiqr.Activated.COPY": "Activated on",
+  "Security.Tiqr.Activated.COPY": "Activated on %1$s",
   "Security.Tiqr.DateTimeOn.COPY": "on",
   "Security.Tiqr.BackupMethod.COPY": "Recovery method",
   "Security.Tiqr.Sms.COPY": "SMS",
