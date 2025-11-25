@@ -30,8 +30,11 @@ springdoc:
     enabled: true
 
 email:
-  from: noreply@surfconext.nl
-  error_mail: info@surfconext.nl
+  from_deprovisioning: noreply+deprovisioning@surfconext.nl
+  from_code: noreply@surfconext.nl
+  from_app_nudge: noreply+appnudge@surfconext.nl
+  from_new_device: noreply+newdevice@surfconext.nl
+  error: info@surfconext.nl
   magic-link-url: http://localhost:8081/saml/guest-idp/magic
   my-surfconext-url: http://localhost:3001
   idp-surfconext-url: http://localhost:3000

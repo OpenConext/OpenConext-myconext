@@ -17,10 +17,19 @@ import java.io.IOException;
 @EnableConfigurationProperties(MailProperties.class)
 public class MailConfiguration {
 
-    @Value("${email.from}")
-    private String emailFrom;
+    @Value("${email.from_deprovisioning}")
+    private String emailFromDeprovisioning;
 
-    @Value("${email.error_mail}")
+    @Value("${email.from_code}")
+    private String emailFromCode;
+
+    @Value("${email.from_app_nudge}")
+    private String emailFromAppNudge;
+
+    @Value("${email.from_new_device}")
+    private String emailFromNewDevice;
+
+    @Value("${email.error}")
     private String errorEmail;
 
     @Value("${email.my-surfconext-url}")
@@ -46,7 +55,7 @@ public class MailConfiguration {
 
     @Bean
     public MailBox mailSenderProd() throws IOException {
-        return new MailBox(mailSender, emailFrom, errorEmail, mySURFconextURL, loginSURFconextURL, objectMapper, mailTemplatesDirectory,
+        return new MailBox(mailSender, emailFromDeprovisioning, emailFromCode, emailFromAppNudge, emailFromNewDevice, errorEmail, mySURFconextURL, loginSURFconextURL, objectMapper, mailTemplatesDirectory,
                 emailsSendRepository, emailSpamThresholdSeconds);
     }
 }

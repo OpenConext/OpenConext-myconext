@@ -35,7 +35,10 @@ public class MailBox {
     private final JavaMailSender mailSender;
     private final String mySURFconextURL;
     private final String loginSURFconextURL;
-    private final String emailFrom;
+    private final String emailFromDeprovisioning;
+    private final String emailFromCode;
+    private final String emailFromAppNudge;
+    private final String emailFromNewDevice;
     private final String errorEmail;
     private final Map<String, Map<String, String>> subjects;
 
@@ -45,7 +48,10 @@ public class MailBox {
     private final ObjectMapper objectMapper;
 
     public MailBox(JavaMailSender mailSender,
-                   String emailFrom,
+                   String emailFromDeprovisioning,
+                   String emailFromCode,
+                   String emailFromAppNudge,
+                   String emailFromNewDevice,
                    String errorEmail,
                    String mySURFconextURL,
                    String loginSURFconextURL,
@@ -54,7 +60,10 @@ public class MailBox {
                    EmailsSendRepository emailsSendRepository,
                    long emailSpamThresholdSeconds) throws IOException {
         this.mailSender = mailSender;
-        this.emailFrom = emailFrom;
+        this.emailFromDeprovisioning = emailFromDeprovisioning;
+        this.emailFromCode = emailFromCode;
+        this.emailFromAppNudge = emailFromAppNudge;
+        this.emailFromNewDevice = emailFromNewDevice;
         this.errorEmail = errorEmail;
         this.mySURFconextURL = mySURFconextURL;
         this.loginSURFconextURL = loginSURFconextURL;
@@ -109,7 +118,7 @@ public class MailBox {
         String title = this.getTitle("institution_mail_warning", user);
         Map<String, Object> variables = variables(user, title);
         variables.put("mySurfConextURL", mySURFconextURL);
-        sendMail("institution_mail_warning", title, variables, preferredLanguage(user), user.getEmail(), false);
+        sendMail("institution_mail_warning", title, variables, preferredLanguage(user), user.getEmail(), false, emailFromAppNudge);
     }
 
     public void sendUserInactivityMail(User user, Map<String, String> localeVariables, boolean firstTwoWarnings) {
@@ -127,14 +136,14 @@ public class MailBox {
         variables.put("hasServiceNames", !serviceNames.isEmpty());
         variables.putAll(localeVariables);
         String templateName = firstTwoWarnings ? "inactivity_warning_years_ahead" : "inactivity_warning_short_term";
-        sendMail(templateName, title, variables, language, user.getEmail(), false);
+        sendMail(templateName, title, variables, language, user.getEmail(), false, emailFromDeprovisioning);
     }
 
     public void sendNudgeAppMail(User user) {
         String title = this.getTitle("nudge_eduid_app", user);
         Map<String, Object> variables = variables(user, title);
         variables.put("mySurfConextURL", mySURFconextURL);
-        sendMail("nudge_eduid_app", title, variables, preferredLanguage(user), user.getEmail(), false);
+        sendMail("nudge_eduid_app", title, variables, preferredLanguage(user), user.getEmail(), false, emailFromAppNudge);
     }
 
     public void sendResetPassword(User user, String hash, boolean mobileRequest) {
@@ -168,7 +177,7 @@ public class MailBox {
         variables.put("mySurfConextURL", mySURFconextURL);
         variables.put("ipAddress", userLogin.getLookupAddress());
         variables.put("ipLocation", userLogin.getIpLocation());
-        sendMail("new_device", title, variables, preferredLanguage(user), user.getEmail(), false);
+        sendMail("new_device", title, variables, preferredLanguage(user), user.getEmail(), false, emailFromNewDevice);
     }
 
     public void sendChangeEmailOneTimeCode(User user, String newMail, String code) {
@@ -244,6 +253,11 @@ public class MailBox {
 
     @SneakyThrows
     private void sendMail(String templateName, String subject, Map<String, Object> variables, String language, String to, boolean checkSpam) {
+        this.sendMail(templateName, subject, variables, language, to, checkSpam, null);
+    }
+
+    @SneakyThrows
+    private void sendMail(String templateName, String subject, Map<String, Object> variables, String language, String to, boolean checkSpam, String email) {
         LOG.info(String.format("Send %s email to %s", templateName, to));
         if (checkSpam) {
             Optional<EmailsSend> byEmail = emailsSendRepository.findByEmail(to);
@@ -261,7 +275,7 @@ public class MailBox {
             helper.setSubject(subject);
             helper.setTo(to);
             setText(html, text, helper);
-            helper.setFrom(emailFrom);
+            helper.setFrom(email != null && !email.isBlank() ? email : emailFromCode);
             doSendMail(mimeMessage);
         } catch (Exception e) {
             LOG.error("Error sending mail to " + to, e);
