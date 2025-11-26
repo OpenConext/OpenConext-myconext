@@ -243,7 +243,9 @@
             <SecurityOption action={() => navigate("/reset-password-link")}
                             icon={passwordIcon}
                             label={I18n.t("Security.ChangePassword.COPY")}
-                            subLabel={$user.passwordUpdatedAt ? I18n.t("Security.PasswordActivated.COPY", {date: dateFromEpoch($user.passwordUpdatedAt, false)}) : ''}
+                            subLabel={I18n.t("Security.PasswordActivated.COPY", {
+                                date: $user.passwordUpdatedAt ? dateFromEpoch($user.passwordUpdatedAt, false) : ''
+                            })}
                             active={true}/>
         {/if}
         {#if $config.featureWebAuthn && usePublicKey}
@@ -251,7 +253,10 @@
                 <SecurityOption action={credentialsDetails(credential)}
                                 icon={webAuthnIcon}
                                 label={I18n.t("security.options.passkey")}
-                                subLabel={I18n.t("Security.CredentialActivated.COPY", {name: credential.name, date: dateFromEpoch(credential.createdAt, false)})}
+                                subLabel={I18n.t("Security.CredentialActivated.COPY", {
+                                    name: credential.name,
+                                    date: dateFromEpoch(credential.createdAt, false)
+                                })}
                                 active={true}/>
             {/each}
         {/if}
