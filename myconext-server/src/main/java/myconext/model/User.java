@@ -57,6 +57,7 @@ public class User implements Serializable, UserDetails {
     private String uid;
     private String schacHomeOrganization;
     private String password;
+    private long passwordUpdatedAt;
     @Setter
     private boolean newUser;
     @Setter
@@ -160,10 +161,12 @@ public class User implements Serializable, UserDetails {
             throw new WeakPasswordException("Weak password: " + password);
         }
         this.password = encoder.encode(password);
+        this.passwordUpdatedAt = System.currentTimeMillis();
     }
 
     public void deletePassword() {
         this.password = null;
+        this.passwordUpdatedAt = 0;
     }
 
     @Transient
