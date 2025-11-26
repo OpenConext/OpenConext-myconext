@@ -243,7 +243,7 @@
             <SecurityOption action={() => navigate("/reset-password-link")}
                             icon={passwordIcon}
                             label={I18n.t("Security.ChangePassword.COPY")}
-                            subLabel="*****************"
+                            subLabel={$user.passwordUpdatedAt ? `Activated on ${dateFromEpoch($user.passwordUpdatedAt, false)}` : ''}
                             active={true}/>
         {/if}
         {#if $config.featureWebAuthn && usePublicKey}
