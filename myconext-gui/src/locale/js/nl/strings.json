@@ -194,6 +194,8 @@
   "Security.AddPassword.COPY": "Wachtwoord toevoegen",
   "Security.PasswordPlaceholder.COPY": "• • • • • • • • • •",
   "Security.ChangePassword.COPY": "Wachtwoord",
+  "Security.PasswordActivated.COPY": "Geactiveerd op %1$s",
+  "Security.CredentialActivated.COPY": "%1$s: Geactiveerd op %2$s",
   "Security.TwoFAKey.COPY": "Inloggen met app",
   "Security.ProvidedBy.COPY": "Gedeeld door",
   "Security.NotAddedYet.COPY": "Nog niet toegevoegd aan je eduID",
