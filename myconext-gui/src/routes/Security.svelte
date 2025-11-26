@@ -1,4 +1,6 @@
 <script>
+    // Todo: apply translations!
+
     import {config, flash, user} from "../stores/user";
     import I18n from "../locale/I18n";
     import {navigate} from "svelte-routing";
@@ -249,7 +251,7 @@
                 <SecurityOption action={credentialsDetails(credential)}
                                 icon={webAuthnIcon}
                                 label={I18n.t("security.options.passkey")}
-                                subLabel={credential.name}
+                                subLabel={`${credential.name}: Activated on ${dateFromEpoch(credential.createdAt, false)}`}
                                 active={true}/>
             {/each}
         {/if}
