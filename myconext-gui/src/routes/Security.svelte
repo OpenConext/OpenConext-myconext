@@ -295,18 +295,21 @@
         {#if shouldShowAppOptions && userIsFullyEnrolledWithApp}
             <h4 class="info">{I18n.t("security.tiqr.backupCodes")}</h4>
             <div class="recovery-options">
-                <SecurityOption action={() => navigate("/backup-codes")}
-                                icon={mobilePhoneIcon}
-                                label={I18n.t("Security.Tiqr.Sms.COPY")}
-                                subLabel={I18n.t(`security.tiqr.${$user.registration.recoveryCode ? "getSmsInfo" : "smsInfo"}`
-                                , {phone: `** ** *** ${$user.registration.phoneNumber}`})}
-                                active={!$user.registration.recoveryCode}/>
+                {#if $user.registration.recoveryCode}
+                    <SecurityOption action={() => navigate("/backup-codes")}
+                                    icon={backupIcon}
+                                    label={I18n.t(`security.tiqr.${$user.registration.recoveryCode ? "code" : "getCode"}`)}
+                                    subLabel={I18n.t(`security.tiqr.${$user.registration.recoveryCode ? "codeInfo" : "getCodeInfo"}`)}
+                                    active={true}/>
+                {:else}
+                    <SecurityOption action={() => navigate("/backup-codes")}
+                                    icon={mobilePhoneIcon}
+                                    label={I18n.t("Security.Tiqr.Sms.COPY")}
+                                    subLabel={I18n.t(`security.tiqr.${$user.registration.recoveryCode ? "getSmsInfo" : "smsInfo"}`
+                                    , {phone: `** ** *** ${$user.registration.phoneNumber}`})}
+                                    active={true}/>
+                {/if}
 
-                <SecurityOption action={() => navigate("/backup-codes")}
-                                icon={backupIcon}
-                                label={I18n.t(`security.tiqr.${$user.registration.recoveryCode ? "code" : "getCode"}`)}
-                                subLabel={I18n.t(`security.tiqr.${$user.registration.recoveryCode ? "codeInfo" : "getCodeInfo"}`)}
-                                active={$user.registration.recoveryCode}/>
             </div>
         {/if}
     </div>
