@@ -10,6 +10,7 @@ export const user = writable({
     schacHomeOrganization: "",
     uid: "",
     usePassword: false,
+    passwordUpdatedAt: 0,
     forgottenPassword: false,
     usePublicKey: false,
     rememberMe: true,
