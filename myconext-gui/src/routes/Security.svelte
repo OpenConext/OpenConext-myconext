@@ -1,6 +1,4 @@
 <script>
-    // Todo: apply translations!
-
     import {config, flash, user} from "../stores/user";
     import I18n from "../locale/I18n";
     import {navigate} from "svelte-routing";
@@ -187,12 +185,17 @@
 
     }
 
-    .recovery-options {
-        padding: 25px 20px;
-        background-color: var(--color-secondary-background);
-        border-radius: 8px;
+    .security-options-group {
         display: flex;
         flex-direction: column;
+        gap: 20px;
+        margin-bottom: 30px;
+
+        &.recovery-options {
+            padding: 25px 20px;
+            background-color: var(--color-secondary-background);
+            border-radius: 8px;
+        }
     }
 </style>
 <div class="security">
@@ -210,56 +213,58 @@
 
         <!-- Current sign in options -->
         <h4 class="info">{I18n.t("security.currentSignInOptions")}</h4>
-        {#if shouldShowAppOptions && userIsFullyEnrolledWithApp}
-            <SecurityOption action={() => showAppDetails = !showAppDetails}
-                            icon={hasApp}
-                            label={I18n.t("security.options.app")}
-                            subLabel={I18n.t("Security.Tiqr.Activated.COPY", {
-                                date: dateFromEpoch($user.registration.created, false)
-                            })}
-                            hasSubContent={true}
-                            showSubContent={showAppDetails}
-                            active={true}>
-                <div class="app-details">
-                    <span class="me">{`${I18n.t(`security.tiqr.${$user.registration.notificationType}`)} ${$user.givenName} ${$user.familyName}`}</span>
-                    <span class="last-login">{I18n.t("security.tiqr.lastLogin",
-                        {date: dateFromEpoch($user.registration.updated, true)})}</span>
-                    <span class="de-activate" on:click={() => navigate("/deactivate-app")}>
-                        <span class="icon">{@html binIcon}</span>
-                        <a href="/#"
-                           on:click|preventDefault|stopPropagation={() => navigate("/deactivate-app")}>
-                            {I18n.t("security.tiqr.deactivate")}
-                        </a>
-                    </span>
-                </div>
-            </SecurityOption>
-        {/if}
-        <SecurityOption action={() => navigate("/edit-email")}
-                        icon={codeIcon}
-                        label={I18n.t("Security.UseCode.COPY")}
-                        subLabel={$user.email}
-                        active={true}/>
-        {#if $user.usePassword}
-            <SecurityOption action={() => navigate("/reset-password-link")}
-                            icon={passwordIcon}
-                            label={I18n.t("Security.ChangePassword.COPY")}
-                            subLabel={I18n.t("Security.PasswordActivated.COPY", {
-                                date: $user.passwordUpdatedAt ? dateFromEpoch($user.passwordUpdatedAt, false) : ''
-                            })}
+        <div class="security-options-group">
+            {#if shouldShowAppOptions && userIsFullyEnrolledWithApp}
+                <SecurityOption action={() => showAppDetails = !showAppDetails}
+                                icon={hasApp}
+                                label={I18n.t("security.options.app")}
+                                subLabel={I18n.t("Security.Tiqr.Activated.COPY", {
+                                    date: dateFromEpoch($user.registration.created, false)
+                                })}
+                                hasSubContent={true}
+                                showSubContent={showAppDetails}
+                                active={true}>
+                    <div class="app-details">
+                        <span class="me">{`${I18n.t(`security.tiqr.${$user.registration.notificationType}`)} ${$user.givenName} ${$user.familyName}`}</span>
+                        <span class="last-login">{I18n.t("security.tiqr.lastLogin",
+                            {date: dateFromEpoch($user.registration.updated, true)})}</span>
+                        <span class="de-activate" on:click={() => navigate("/deactivate-app")}>
+                            <span class="icon">{@html binIcon}</span>
+                            <a href="/#"
+                               on:click|preventDefault|stopPropagation={() => navigate("/deactivate-app")}>
+                                {I18n.t("security.tiqr.deactivate")}
+                            </a>
+                        </span>
+                    </div>
+                </SecurityOption>
+            {/if}
+            <SecurityOption action={() => navigate("/edit-email")}
+                            icon={codeIcon}
+                            label={I18n.t("Security.UseCode.COPY")}
+                            subLabel={$user.email}
                             active={true}/>
-        {/if}
-        {#if $config.featureWebAuthn && usePublicKey}
-            {#each $user.publicKeyCredentials as credential, i}
-                <SecurityOption action={credentialsDetails(credential)}
-                                icon={webAuthnIcon}
-                                label={I18n.t("security.options.passkey")}
-                                subLabel={I18n.t("Security.CredentialActivated.COPY", {
-                                    name: credential.name,
-                                    date: dateFromEpoch(credential.createdAt, false)
+            {#if $user.usePassword}
+                <SecurityOption action={() => navigate("/reset-password-link")}
+                                icon={passwordIcon}
+                                label={I18n.t("Security.ChangePassword.COPY")}
+                                subLabel={I18n.t("Security.PasswordActivated.COPY", {
+                                    date: $user.passwordUpdatedAt ? dateFromEpoch($user.passwordUpdatedAt, false) : ''
                                 })}
                                 active={true}/>
-            {/each}
-        {/if}
+            {/if}
+            {#if $config.featureWebAuthn && usePublicKey}
+                {#each $user.publicKeyCredentials as credential, i}
+                    <SecurityOption action={credentialsDetails(credential)}
+                                    icon={webAuthnIcon}
+                                    label={I18n.t("security.options.passkey")}
+                                    subLabel={I18n.t("Security.CredentialActivated.COPY", {
+                                        name: credential.name,
+                                        date: dateFromEpoch(credential.createdAt, false)
+                                    })}
+                                    active={true}/>
+                {/each}
+            {/if}
+        </div>
 
         <!-- Recommended methods -->
         {#if shouldShowAppOptions && !userIsFullyEnrolledWithApp}
@@ -278,35 +283,40 @@
 
         <!-- Other methods -->
         <h4 class="info">{I18n.t("Security.OtherMethods.COPY")}</h4>
-        {#if !$user.usePassword}
-            <SecurityOption action={() => navigate("/reset-password-link")}
-                            icon={passwordIcon}
-                            label={I18n.t("Security.AddPassword.COPY")}
-                            active={false}/>
-        {/if}
-        {#if $config.featureWebAuthn }
-            <SecurityOption action={() => navigate("/webauthn")}
-                            icon={webAuthnIcon}
-                            label={I18n.t("security.options.passkeyAdd")}
+        <div class="security-options-group">
+            {#if !$user.usePassword}
+                <SecurityOption action={() => navigate("/reset-password-link")}
+                                icon={passwordIcon}
+                                label={I18n.t("Security.AddPassword.COPY")}
                                 active={false}/>
-        {/if}
+            {/if}
+            {#if $config.featureWebAuthn }
+                <SecurityOption action={() => navigate("/webauthn")}
+                                icon={webAuthnIcon}
+                                label={I18n.t("security.options.passkeyAdd")}
+                                    active={false}/>
+            {/if}
+        </div>
 
         <!-- Recovery Options (Mobile App) -->
         {#if shouldShowAppOptions && userIsFullyEnrolledWithApp}
             <h4 class="info">{I18n.t("security.tiqr.backupCodes")}</h4>
-            <div class="recovery-options">
-                <SecurityOption action={() => navigate("/backup-codes")}
-                                icon={mobilePhoneIcon}
-                                label={I18n.t("Security.Tiqr.Sms.COPY")}
-                                subLabel={I18n.t(`security.tiqr.${$user.registration.recoveryCode ? "getSmsInfo" : "smsInfo"}`
-                                , {phone: `** ** *** ${$user.registration.phoneNumber}`})}
-                                active={!$user.registration.recoveryCode}/>
+            <div class="security-options-group recovery-options">
+                {#if $user.registration.recoveryCode}
+                    <SecurityOption action={() => navigate("/backup-codes")}
+                                    icon={backupIcon}
+                                    label={I18n.t(`security.tiqr.${$user.registration.recoveryCode ? "code" : "getCode"}`)}
+                                    subLabel={I18n.t(`security.tiqr.${$user.registration.recoveryCode ? "codeInfo" : "getCodeInfo"}`)}
+                                    active={true}/>
+                {:else}
+                    <SecurityOption action={() => navigate("/backup-codes")}
+                                    icon={mobilePhoneIcon}
+                                    label={I18n.t("Security.Tiqr.Sms.COPY")}
+                                    subLabel={I18n.t(`security.tiqr.${$user.registration.recoveryCode ? "getSmsInfo" : "smsInfo"}`
+                                    , {phone: `** ** *** ${$user.registration.phoneNumber}`})}
+                                    active={true}/>
+                {/if}
 
-                <SecurityOption action={() => navigate("/backup-codes")}
-                                icon={backupIcon}
-                                label={I18n.t(`security.tiqr.${$user.registration.recoveryCode ? "code" : "getCode"}`)}
-                                subLabel={I18n.t(`security.tiqr.${$user.registration.recoveryCode ? "codeInfo" : "getCodeInfo"}`)}
-                                active={$user.registration.recoveryCode}/>
             </div>
         {/if}
     </div>
