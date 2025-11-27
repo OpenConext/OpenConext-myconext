@@ -5,6 +5,8 @@ import lombok.Getter;
 import myconext.api.HasUserRepository;
 import myconext.manage.Manage;
 import myconext.model.EduID;
+import myconext.model.RemoteProvider;
+import myconext.model.ServiceProvider;
 import myconext.model.User;
 import myconext.repository.UserRepository;
 import org.apache.commons.logging.Log;
@@ -31,14 +33,14 @@ public class AttributeAggregatorController implements HasUserRepository {
 
     @Getter
     private final UserRepository userRepository;
-    private final Manage serviceProviderResolver;
+    private final Manage manage;
     private final String schacHomeOrganization;
 
     public AttributeAggregatorController(UserRepository userRepository,
-                                         Manage serviceProviderResolver,
+                                         Manage manage,
                                          @Value("${schac_home_organization}") String schacHomeOrganization) {
         this.userRepository = userRepository;
-        this.serviceProviderResolver = serviceProviderResolver;
+        this.manage = manage;
         this.schacHomeOrganization = schacHomeOrganization;
     }
 
@@ -60,7 +62,7 @@ public class AttributeAggregatorController implements HasUserRepository {
         }
         List<UserAttribute> userAttributes = new ArrayList<>();
         userOptional.ifPresent(user -> {
-            String eduID = user.computeEduIdForServiceProviderIfAbsent(spEntityId, serviceProviderResolver);
+            String eduID = user.computeEduIdForServiceProviderIfAbsent(spEntityId, manage);
             userRepository.save(user);
             userAttributes.add(new UserAttribute("urn:mace:eduid.nl:1.1", eduID));
         });
@@ -70,34 +72,43 @@ public class AttributeAggregatorController implements HasUserRepository {
         return ResponseEntity.ok(userAttributes);
     }
 
-    //Note that the spEntityId is the same as the  OIDC client ID
+    //Note that the spEntityId is the same as the OIDC client ID
     @GetMapping(value = "attribute-manipulation")
     @PreAuthorize("hasRole('ROLE_attribute-manipulation')")
-    public ResponseEntity<Map> manipulate(@RequestParam("sp_entity_id") String spEntityId,
+    public ResponseEntity<Map> manipulate(@RequestParam("sp_entity_id") String resourceServerEntityId,
                                           @RequestParam("eduid") String eduid,
-                                          @RequestParam(value = "sp_institution_guid", required = false) String spInstitutionGuid) {
+                                          @RequestParam(value = "sp_institution_guid", required = false) String resourceServerInstitutionGuid) {
         Optional<User> userOptional = this.findUserByEduIDValue(eduid);
         if (!userOptional.isPresent()) {
-            LOG.warn(String.format("Attribute manipulation request for %s with an eduID %s that is not present", spEntityId, eduid));
+            LOG.warn(String.format("Attribute manipulation request for %s with an eduID %s that is not present", resourceServerEntityId, eduid));
+            return ResponseEntity.ok(new HashMap<>());
+        }
+        if (!StringUtils.hasText(resourceServerInstitutionGuid)) {
+            LOG.warn(String.format("Attribute manipulation request for %s with an empty sp_institution_guid / resourceServerInstitutionGuid",
+                    resourceServerEntityId));
             return ResponseEntity.ok(new HashMap<>());
         }
         User user = userOptional.get();
-        String eduId = user.computeEduIdForServiceProviderIfAbsent(spEntityId, serviceProviderResolver);
+        Optional<RemoteProvider> optionalResourceServer = manage.findResourceServerByEntityId(resourceServerEntityId);
+        if (optionalResourceServer.isEmpty()) {
+            LOG.warn(String.format("Attribute manipulation request for resourceServerEntityId %s that is not present",
+                    resourceServerEntityId));
+            return ResponseEntity.ok(new HashMap<>());
+        }
+        ServiceProvider serviceProvider = new ServiceProvider(optionalResourceServer.get(), null);
+        String eduId = user.doComputeEduIDIfAbsent(serviceProvider, manage, true);
         userRepository.save(user);
         Map<String, String> result = new HashMap<>();
         result.put("eduid", eduId);
-        if (StringUtils.hasText(spInstitutionGuid)) {
-            user.getLinkedAccounts().stream()
-                    .filter(linkedAccount -> linkedAccount.getInstitutionIdentifier().equals(spInstitutionGuid))
-                    .findFirst()
-                    .ifPresent(linkedAccount -> {
-                        result.put("eduperson_principal_name", linkedAccount.getEduPersonPrincipalName());
-                        if (StringUtils.hasText(linkedAccount.getSubjectId())) {
-                            result.put("subject_id", linkedAccount.getSubjectId());
-                        }
-
-                    });
-        }
+        user.getLinkedAccounts().stream()
+                .filter(linkedAccount -> linkedAccount.getInstitutionIdentifier().equals(resourceServerInstitutionGuid))
+                .findFirst()
+                .ifPresent(linkedAccount -> {
+                    result.put("eduperson_principal_name", linkedAccount.getEduPersonPrincipalName());
+                    if (StringUtils.hasText(linkedAccount.getSubjectId())) {
+                        result.put("subject_id", linkedAccount.getSubjectId());
+                    }
+                });
 
         LOG.debug(String.format("Attribute manipulation response %s", result));
 

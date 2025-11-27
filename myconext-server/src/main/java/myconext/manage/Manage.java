@@ -27,6 +27,8 @@ public interface Manage {
 
     Optional<IdentityProvider> findIdentityProviderByInstitutionGUID(String institutionGUID);
 
+    Optional<RemoteProvider> findResourceServerByEntityId(String entityId);
+
     default String getServiceName(HttpServletRequest request, SamlAuthenticationRequest samlAuthenticationRequest) {
         String lang = cookieByName(request, "lang").map(Cookie::getValue).orElse("en");
         String requesterEntityId = samlAuthenticationRequest.getRequesterEntityId();
@@ -102,4 +104,5 @@ public interface Manage {
         });
         return results;
     }
+
 }
