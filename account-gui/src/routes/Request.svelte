@@ -54,7 +54,7 @@
     });
 
     const handleNext = () => {
-        const captchaResponse = document.querySelector("[name='frc-captcha-response']").value;
+        const captchaResponse = document.querySelector("[name='frc-captcha-response']")?.value;
         if ($conf.captchaEnabled && isEmpty(captchaResponse) || captchaResponse === ".ACTIVATED") {
             captchaShowWarning = true;
             initial = false;
