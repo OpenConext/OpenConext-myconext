@@ -127,7 +127,7 @@ public abstract class AbstractNodeLeader {
         }
     }
 
-    private void releaseLock(String name, String nodeId) {
+    protected void releaseLock(String name, String nodeId) {
         try {
             MongoDatabase database = mongoClient.getDatabase(databaseName);
             MongoCollection<Document> collection = database.getCollection(LOCK_COLLECTION);
@@ -144,7 +144,7 @@ public abstract class AbstractNodeLeader {
         }
     }
 
-    private String generateNodeId() {
+    protected String generateNodeId() {
         // Generate unique node identifier
         return String.format("%s-%s-%d",
                 getHostName(),

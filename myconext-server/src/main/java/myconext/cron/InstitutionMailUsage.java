@@ -1,5 +1,6 @@
 package myconext.cron;
 
+import com.mongodb.client.MongoClient;
 import myconext.mail.MailBox;
 import myconext.manage.Manage;
 import myconext.model.User;
@@ -14,28 +15,30 @@ import org.springframework.stereotype.Component;
 import java.util.List;
 
 @Component
-public class InstitutionMailUsage {
+public class InstitutionMailUsage extends AbstractNodeLeader {
 
+    public static final String LOCK_NAME =  "institution_mail_usage_lock_name";
     private static final Log LOG = LogFactory.getLog(InstitutionMailUsage.class);
 
     private final Manage manage;
     private final MailBox mailBox;
     private final UserRepository userRepository;
     private final boolean mailInstitutionMailUsage;
-    private final boolean cronJobResponsible;
     private final boolean dryRunEmail;
 
     @Autowired
     public InstitutionMailUsage(Manage manage,
                                 MailBox mailBox,
                                 UserRepository userRepository,
-                                @Value("${cron.node-cron-job-responsible}") boolean cronJobResponsible,
+                                MongoClient mongoClient,
+                                @Value("${mongodb_db}") String databaseName,
                                 @Value("${feature.mail_institution_mail_usage}") boolean mailInstitutionMailUsage,
                                 @Value("${cron.dry-run-email}") boolean dryRunEmail) {
+        super(LOCK_NAME, mongoClient, databaseName);
+
         this.manage = manage;
         this.mailBox = mailBox;
         this.userRepository = userRepository;
-        this.cronJobResponsible = cronJobResponsible;
         this.mailInstitutionMailUsage = mailInstitutionMailUsage;
         this.dryRunEmail = dryRunEmail;
     }
@@ -43,9 +46,13 @@ public class InstitutionMailUsage {
     @Scheduled(cron = "${cron.mail-institution-mail-usage-expression}")
     @SuppressWarnings("unchecked")
     public void mailUsersWithInstitutionMail() {
-        if (!mailInstitutionMailUsage || !cronJobResponsible) {
+        if (!mailInstitutionMailUsage) {
             return;
         }
+        super.perform("InstitutionMailUsage#mailUsersWithInstitutionMail", () -> doMailUsersWithInstitutionMail());
+    }
+
+    private void doMailUsersWithInstitutionMail() {
         LOG.info("Starting InstitutionMailUsage job");
         long start = System.currentTimeMillis();
         try {
