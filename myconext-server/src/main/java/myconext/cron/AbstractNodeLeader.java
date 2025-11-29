@@ -1,5 +1,6 @@
 package myconext.cron;
 
+import com.mongodb.MongoWriteException;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
@@ -17,11 +18,11 @@ import java.util.Date;
 import static com.mongodb.client.model.Filters.*;
 import static com.mongodb.client.model.Updates.*;
 
-public class AbstractNodeLeader {
+public abstract class AbstractNodeLeader {
 
     private static final Log LOG = LogFactory.getLog(AbstractNodeLeader.class);
     private static final String LOCK_COLLECTION = "distributed_locks";
-    private static final int LOCK_TIMEOUT_SECONDS = 60 * 15; // 15-minute stale lock timeout
+    private static final int LOCK_TIMEOUT_SECONDS = 300; // 5 minutes stale lock timeout
 
     private final String lockName;
     private final MongoClient mongoClient;
@@ -47,6 +48,7 @@ public class AbstractNodeLeader {
             LOG.warn("Failed to create indexes for distributed locks", e);
         }
     }
+
     public void perform(String name, Executable executable) {
         String nodeId = null;
         boolean lockAcquired = false;
@@ -85,28 +87,40 @@ public class AbstractNodeLeader {
             Instant now = Instant.now();
             Instant expiresAt = now.plusSeconds(LOCK_TIMEOUT_SECONDS);
 
-            // Try to acquire a lock if it doesn't exist or if it's expired
-            Document result = collection.findOneAndUpdate(
-                    or(
-                            eq("_id", name),
+            // First, try to insert a new lock document (for when lock doesn't exist)
+            try {
+                Document lockDoc = new Document()
+                        .append("_id", name)
+                        .append("nodeId", nodeId)
+                        .append("acquiredAt", Date.from(now))
+                        .append("expiresAt", Date.from(expiresAt));
+
+                collection.insertOne(lockDoc);
+                return true; // Successfully inserted = lock acquired
+            } catch (MongoWriteException e) {
+                // Lock already exists (duplicate key error), try to update if expired
+                if (e.getCode() == 11000) { // Duplicate key error
+                    // Try to acquire lock only if it's expired
+                    Document result = collection.findOneAndUpdate(
                             and(
                                     eq("_id", name),
                                     lt("expiresAt", Date.from(now))
-                            )
-                    ),
-                    combine(
-                            set("_id", name),
-                            set("nodeId", nodeId),
-                            set("acquiredAt", Date.from(now)),
-                            set("expiresAt", Date.from(expiresAt))
-                    ),
-                    new FindOneAndUpdateOptions()
-                            .upsert(true)
-                            .returnDocument(ReturnDocument.AFTER)
-            );
+                            ),
+                            combine(
+                                    set("nodeId", nodeId),
+                                    set("acquiredAt", Date.from(now)),
+                                    set("expiresAt", Date.from(expiresAt))
+                            ),
+                            new FindOneAndUpdateOptions()
+                                    .returnDocument(ReturnDocument.AFTER)
+                    );
 
-            // Check if we acquired the lock
-            return result != null && nodeId.equals(result.getString("nodeId"));
+                    // Check if we successfully updated an expired lock
+                    return result != null && nodeId.equals(result.getString("nodeId"));
+                } else {
+                    throw e; // Rethrow if it's a different error
+                }
+            }
         } catch (Exception e) {
             LOG.error(String.format("Failed to acquire lock %s", name), e);
             return false;

@@ -3,26 +3,27 @@ package myconext.cron;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
+import myconext.AbstractIntegrationTest;
 import org.bson.Document;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.DynamicPropertyRegistry;
-import org.springframework.test.context.DynamicPropertySource;
 
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.concurrent.*;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-@SpringBootTest
-class AbstractNodeLeaderTest {
+
+class AbstractNodeLeaderTest extends AbstractIntegrationTest {
 
     @Autowired
     private MongoClient mongoClient;
@@ -187,11 +188,9 @@ class AbstractNodeLeaderTest {
 
         assertEquals(1, executionCount.get(), "Job should execute despite stale lock");
 
-        // Verify the lock was updated with new nodeId
+        // Verify the new lock was deleted
         Document updatedLock = collection.find(new Document("_id", TEST_LOCK_NAME)).first();
-        assertNotNull(updatedLock);
-        assertNotEquals("dead-node-123", updatedLock.getString("nodeId"),
-                "Lock should have new nodeId");
+        assertNull(updatedLock);
     }
 
     @Test
@@ -238,9 +237,4 @@ class AbstractNodeLeaderTest {
         }
     }
 
-    // Functional interface for executable tasks
-    @FunctionalInterface
-    interface Executable {
-        void execute() throws Exception;
-    }
 }
