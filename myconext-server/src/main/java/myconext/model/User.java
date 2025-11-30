@@ -94,6 +94,10 @@ public class User implements Serializable, UserDetails {
 
     @Setter
     private boolean nudgeAppMailSend;
+
+    @Setter
+    private boolean institutionMailSend;
+
     @Setter
     @Indexed
     private String trackingUuid;

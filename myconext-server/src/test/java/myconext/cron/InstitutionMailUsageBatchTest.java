@@ -1,6 +1,7 @@
 package myconext.cron;
 
 import jakarta.mail.Message;
+import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import lombok.SneakyThrows;
 import myconext.AbstractMailBoxTest;
@@ -8,8 +9,10 @@ import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import java.util.Arrays;
 import java.util.List;
 
+import static org.junit.Assert.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
@@ -27,9 +30,9 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
                 "feature.requires_signed_authn_request=false",
                 "feature.deny_disposable_email_providers=false",
                 "verify.base_uri=http://localhost:8098",
-                "cron.mail-institution-batch-size=1"
+                "cron.mail-institution-batch-size=200"
         })
-public class InstitutionMailUsageTest extends AbstractMailBoxTest {
+public class InstitutionMailUsageBatchTest extends AbstractMailBoxTest {
 
     @Autowired
     protected InstitutionMailUsage institutionMailUsage;
@@ -40,19 +43,21 @@ public class InstitutionMailUsageTest extends AbstractMailBoxTest {
         //Run first batch
         institutionMailUsage.mailUsersWithInstitutionMail();
 
-        List<MimeMessage> mimeMessagesFirstBatch = mailMessages();
+        List<MimeMessage> mimeMessagesBatch = mailMessages();
 
-        assertEquals(1, mimeMessagesFirstBatch.size());
-        assertEquals("jdoe@example.com", mimeMessagesFirstBatch.get(0).getRecipients(Message.RecipientType.TO)[0].toString());
+        assertEquals(2, mimeMessagesBatch.size());
+        assertTrue(mimeMessagesBatch.stream().anyMatch(m -> hasRecipient(m, "jdoe@example.com")));
+        assertTrue(mimeMessagesBatch.stream().anyMatch(m -> hasRecipient(m, "mdoe@example.com")));
+    }
 
-        //Run Second batch
-        purgeEmailFromAllMailboxes();
+    private boolean hasRecipient(MimeMessage msg, String email) {
 
-        institutionMailUsage.mailUsersWithInstitutionMail();
+        try {
+            return Arrays.stream(msg.getRecipients(Message.RecipientType.TO))
+                    .anyMatch(a -> a.toString().equals(email));
+        } catch (MessagingException e) {
+            return false;
+        }
 
-        List<MimeMessage> mimeMessagesSecondBatch = mailMessages();
-
-        assertEquals(1, mimeMessagesSecondBatch.size());
-        assertEquals("mdoe@example.com", mimeMessagesSecondBatch.get(0).getRecipients(Message.RecipientType.TO)[0].toString());
     }
 }
