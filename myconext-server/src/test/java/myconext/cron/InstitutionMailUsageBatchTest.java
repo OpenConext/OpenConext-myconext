@@ -3,14 +3,19 @@ package myconext.cron;
 import jakarta.mail.Message;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
+import lombok.Getter;
 import lombok.SneakyThrows;
 import myconext.AbstractMailBoxTest;
+import myconext.model.User;
+import myconext.repository.UserRepository;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 import static org.junit.Assert.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -35,12 +40,65 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 public class InstitutionMailUsageBatchTest extends AbstractMailBoxTest {
 
     @Autowired
+    @Getter
+    protected UserRepository userRepository;
+
+    @Autowired
     protected InstitutionMailUsage institutionMailUsage;
 
     @Test
     @SneakyThrows
     public void mailUsersWithInstitutionMail() {
-        //Run first batch
+        institutionMailUsage.mailUsersWithInstitutionMail();
+
+        List<MimeMessage> mimeMessagesBatch = mailMessages();
+
+        assertEquals(2, mimeMessagesBatch.size());
+        assertTrue(mimeMessagesBatch.stream().anyMatch(m -> hasRecipient(m, "jdoe@example.com")));
+        assertTrue(mimeMessagesBatch.stream().anyMatch(m -> hasRecipient(m, "mdoe@example.com")));
+    }
+
+    @Test
+    @SneakyThrows
+    public void mailUsersWithInstitutionMailWithDateNotOlderThan5Months() {
+        User user = userRepository.findUserByEmail("jdoe@example.com").get();
+        user.setInstitutionMailSendDate(LocalDateTime.now());
+        userRepository.save(user);
+
+        institutionMailUsage.mailUsersWithInstitutionMail();
+
+        List<MimeMessage> mimeMessagesBatch = mailMessages();
+
+        assertEquals(1, mimeMessagesBatch.size());
+        assertTrue(mimeMessagesBatch.stream().anyMatch(m -> hasRecipient(m, "mdoe@example.com")));
+    }
+
+    @Test
+    @SneakyThrows
+    public void mailUsersWithInstitutionMailWithDateOlderThan5Months() {
+        User john = userRepository.findUserByEmail("jdoe@example.com").get();
+        john.setInstitutionMailSendDate(LocalDateTime.now().minusMonths(5));
+        userRepository.save(john);
+
+        User mary = userRepository.findUserByEmail("mdoe@example.com").get();
+        mary.setInstitutionMailSendDate(LocalDateTime.now());
+        userRepository.save(mary);
+
+        institutionMailUsage.mailUsersWithInstitutionMail();
+
+        List<MimeMessage> mimeMessagesBatch = mailMessages();
+
+        assertEquals(1, mimeMessagesBatch.size());
+        assertTrue(mimeMessagesBatch.stream().anyMatch(m -> hasRecipient(m, "jdoe@example.com")));
+    }
+
+    @Test
+    @SneakyThrows
+    public void mailUsersWithInstitutionMailWithDateOlderThan5MonthsAndNew() {
+        User john = userRepository.findUserByEmail("jdoe@example.com").get();
+        john.setInstitutionMailSendDate(LocalDateTime.now().minusMonths(5));
+        userRepository.save(john);
+
         institutionMailUsage.mailUsersWithInstitutionMail();
 
         List<MimeMessage> mimeMessagesBatch = mailMessages();

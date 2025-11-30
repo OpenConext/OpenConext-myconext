@@ -26,6 +26,7 @@ import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
 import java.io.Serializable;
+import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -96,7 +97,7 @@ public class User implements Serializable, UserDetails {
     private boolean nudgeAppMailSend;
 
     @Setter
-    private boolean institutionMailSend;
+    private LocalDateTime institutionMailSendDate;
 
     @Setter
     @Indexed

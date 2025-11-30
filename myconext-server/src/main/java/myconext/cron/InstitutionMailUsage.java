@@ -9,9 +9,11 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Component
@@ -19,6 +21,7 @@ public class InstitutionMailUsage extends AbstractNodeLeader {
 
     public static final String LOCK_NAME =  "institution_mail_usage_lock_name";
     private static final Log LOG = LogFactory.getLog(InstitutionMailUsage.class);
+    public static final int INSTITUTION_MAIL_MONTHS = 5;
 
     private final Manage manage;
     private final MailBox mailBox;
@@ -65,14 +68,18 @@ public class InstitutionMailUsage extends AbstractNodeLeader {
                     .toList();
             String regex = "@" + String.join("|", queryList) + "$";
 
-            List<User> users = userRepository.findByEmailDomain(regex)
-                    .stream().filter(user -> !user.isInstitutionMailSend())
-                    .limit(mailInstitutionBatchSize).toList();
+            LocalDateTime cutoff = LocalDateTime.now().minusMonths(INSTITUTION_MAIL_MONTHS);
+
+            List<User> users = userRepository.findByEmailRegexAndInstitutionMailSendDateBeforeOrInstitutionMailSendDateIsNull(
+                    regex,
+                    cutoff,
+                    PageRequest.of(0, mailInstitutionBatchSize)
+            );
 
             if (!dryRunEmail) {
                 users.forEach(user -> {
                     mailBox.sendInstitutionMailWarning(user);
-                    user.setInstitutionMailSend(true);
+                    user.setInstitutionMailSendDate(LocalDateTime.now());
                     userRepository.save(user);
                 });
             }
@@ -83,62 +90,5 @@ public class InstitutionMailUsage extends AbstractNodeLeader {
             LOG.error("Error in mailUsersWithInstitutionMail", e);
         }
     }
-
-//    private void doMailUsersWithInstitutionMail1() {
-//        LOG.info("Starting InstitutionMailUsage job");
-//        long start = System.currentTimeMillis();
-//
-//        try {
-//            // Only run in Feb, May, Aug, Nov
-//            int month = LocalDate.now().getMonthValue();
-//            if (!List.of(2, 5, 8, 11).contains(month)) {
-//                LOG.info("Skipping job: month " + month + " not configured for sending warnings.");
-//                return;
-//            }
-//
-//            // Build regex of institution domains
-//            List<String> domainList = manage.getDomainNames().stream()
-//                    .filter(domainName -> !domainName.contains("*") && !domainName.contains("surf"))
-//                    .map(domain -> domain.replace(".", "\\."))
-//                    .toList();
-//
-//            String regex = "@" + String.join("|", domainList) + "$";
-//
-//            // Filter: not mailed in last 5 months
-//            LocalDate threshold = LocalDate.now().minusMonths(5);
-//
-//            List<User> eligibleUsers =
-//                    userRepository.findInstitutionUsersNotNotifiedSince(regex, threshold);
-//
-//            if (eligibleUsers.isEmpty()) {
-//                LOG.info("No eligible users to notify.");
-//                return;
-//            }
-//
-//            // Apply batching
-//            List<User> batch = eligibleUsers.stream()
-//                    .limit(mailBatchSize)
-//                    .toList();
-//
-//            if (!dryRunEmail) {
-//                batch.forEach(mailBox::sendInstitutionMailWarning);
-//
-//                // Update send date
-//                batch.forEach(u -> u.setInstitutionMailWarningSendDate(LocalDate.now()));
-//                userRepository.saveAll(batch);
-//            }
-//
-//            LOG.info(String.format(
-//                    "Sent %s mails (out of %s pending) in %s ms, dry-run=%s",
-//                    batch.size(),
-//                    eligibleUsers.size(),
-//                    System.currentTimeMillis() - start,
-//                    dryRunEmail
-//            ));
-//
-//        } catch (Exception e) {
-//            LOG.error("Error in InstitutionMailUsage job", e);
-//        }
-//    }
 
 }
