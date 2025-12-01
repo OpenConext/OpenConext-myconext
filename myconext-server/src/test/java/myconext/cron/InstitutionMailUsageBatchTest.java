@@ -1,7 +1,5 @@
 package myconext.cron;
 
-import jakarta.mail.Message;
-import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import lombok.Getter;
 import lombok.SneakyThrows;
@@ -13,9 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.time.LocalDateTime;
-import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
 
 import static org.junit.Assert.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -54,8 +50,8 @@ public class InstitutionMailUsageBatchTest extends AbstractMailBoxTest {
         List<MimeMessage> mimeMessagesBatch = mailMessages();
 
         assertEquals(2, mimeMessagesBatch.size());
-        assertTrue(mimeMessagesBatch.stream().anyMatch(m -> hasRecipient(m, "jdoe@example.com")));
-        assertTrue(mimeMessagesBatch.stream().anyMatch(m -> hasRecipient(m, "mdoe@example.com")));
+        List.of("jdoe@example.com", "mdoe@example.com").forEach(email ->
+                assertTrue(mimeMessagesBatch.stream().anyMatch(m -> hasRecipient(m, email))));
     }
 
     @Test
@@ -120,18 +116,8 @@ public class InstitutionMailUsageBatchTest extends AbstractMailBoxTest {
         List<MimeMessage> mimeMessagesBatch = mailMessages();
 
         assertEquals(2, mimeMessagesBatch.size());
-        assertTrue(mimeMessagesBatch.stream().anyMatch(m -> hasRecipient(m, "jdoe@example.com")));
-        assertTrue(mimeMessagesBatch.stream().anyMatch(m -> hasRecipient(m, "mdoe@example.com")));
+        List.of("jdoe@example.com", "mdoe@example.com").forEach(email ->
+                assertTrue(mimeMessagesBatch.stream().anyMatch(m -> hasRecipient(m, email))));
     }
 
-    private boolean hasRecipient(MimeMessage msg, String email) {
-
-        try {
-            return Arrays.stream(msg.getRecipients(Message.RecipientType.TO))
-                    .anyMatch(a -> a.toString().equals(email));
-        } catch (MessagingException e) {
-            return false;
-        }
-
-    }
 }
