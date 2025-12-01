@@ -15,6 +15,7 @@ import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.regex.Pattern;
 
 @Component
 public class InstitutionMailUsage extends AbstractNodeLeader {
@@ -64,9 +65,9 @@ public class InstitutionMailUsage extends AbstractNodeLeader {
         try {
             List<String> queryList = manage.getDomainNames().stream()
                     .filter(domainName -> !domainName.contains("*") && !domainName.contains("surf"))
-                    .map(domain -> domain.replace(".", "\\."))
+                    .map(domain -> Pattern.quote(domain))
                     .toList();
-            String regex = "@" + String.join("|", queryList) + "$";
+            String regex = "@(" + String.join("|", queryList) + "$)";
 
             LocalDateTime cutoff = LocalDateTime.now().minusMonths(INSTITUTION_MAIL_MONTHS);
 
