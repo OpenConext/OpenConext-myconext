@@ -1,6 +1,7 @@
 package myconext;
 
 import com.icegreen.greenmail.junit.GreenMailRule;
+import com.icegreen.greenmail.store.FolderException;
 import com.icegreen.greenmail.util.ServerSetup;
 import jakarta.mail.internet.MimeMessage;
 import myconext.model.User;
@@ -69,6 +70,10 @@ public abstract class AbstractMailBoxTest extends AbstractIntegrationTest {
         user.setUserInactivity(UserInactivity.WEEK_1_BEFORE_5_YEARS);
         userRepository.save(user);
 
+    }
+
+    protected void purgeEmailFromAllMailboxes() throws FolderException {
+        greenMail.purgeEmailFromAllMailboxes();
     }
 
 
