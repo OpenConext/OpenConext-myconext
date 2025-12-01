@@ -75,6 +75,22 @@ public class InstitutionMailUsageBatchTest extends AbstractMailBoxTest {
 
     @Test
     @SneakyThrows
+    public void mailUsersWithInstitutionMailWithNotExistingDomain() {
+        User user = userRepository.findUserByEmail("jdoe@example.com").get();
+        user.setInstitutionMailSendDate(null);
+        user.setEmail("jdoe@NotExistingDomain.com");
+        userRepository.save(user);
+
+        institutionMailUsage.mailUsersWithInstitutionMail();
+
+        List<MimeMessage> mimeMessagesBatch = mailMessages();
+
+        assertEquals(1, mimeMessagesBatch.size());
+        assertTrue(mimeMessagesBatch.stream().anyMatch(m -> hasRecipient(m, "mdoe@example.com")));
+    }
+
+    @Test
+    @SneakyThrows
     public void mailUsersWithInstitutionMailWithDateOlderThan5Months() {
         User john = userRepository.findUserByEmail("jdoe@example.com").get();
         john.setInstitutionMailSendDate(LocalDateTime.now().minusMonths(5));

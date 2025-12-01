@@ -78,7 +78,13 @@ public interface UserRepository extends MongoRepository<User, String> {
             """)
     List<User> findByNoEduIDApp(Long createdBefore);
 
-
+    @Query("{ $and: [ " +
+            "  { 'email': { $regex: ?0, $options: 'i' } }, " +
+            "  { $or: [ " +
+            "    { 'institutionMailSendDate': { $lt: ?1 } }, " +
+            "    { 'institutionMailSendDate': null } " +
+            "  ] } " +
+            "] }")
     List<User> findByEmailRegexAndInstitutionMailSendDateBeforeOrInstitutionMailSendDateIsNull(
             String emailRegex,
             LocalDateTime beforeDate,
