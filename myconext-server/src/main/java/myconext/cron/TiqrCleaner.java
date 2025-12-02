@@ -22,7 +22,7 @@ import java.time.temporal.ChronoUnit;
 @Component
 public class TiqrCleaner extends AbstractNodeLeader {
 
-    public static final String LOCK_NAME =  "tiqr_cleaner_usage_lock_name";
+    public static final String LOCK_NAME = "tiqr_cleaner_usage_lock_name";
 
     private static final Log LOG = LogFactory.getLog(TiqrCleaner.class);
 
@@ -35,8 +35,9 @@ public class TiqrCleaner extends AbstractNodeLeader {
                        AuthenticationRepository authenticationRepository,
                        EnrollmentRepository enrollmentRepository,
                        MongoClient mongoClient,
+                       @Value("${cron.node-cron-job-responsible}") boolean cronJobResponsible,
                        @Value("${mongodb_db}") String databaseName) {
-        super(LOCK_NAME, mongoClient, databaseName);
+        super(LOCK_NAME, mongoClient, databaseName, cronJobResponsible);
 
         this.registrationRepository = registrationRepository;
         this.authenticationRepository = authenticationRepository;

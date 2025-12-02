@@ -27,11 +27,13 @@ public abstract class AbstractNodeLeader {
     private final String lockName;
     private final MongoClient mongoClient;
     private final String databaseName;
+    private final boolean cronJobResponsible;
 
-    protected AbstractNodeLeader(String lockName, MongoClient mongoClient, String databaseName) {
+    protected AbstractNodeLeader(String lockName, MongoClient mongoClient, String databaseName, boolean cronJobResponsible) {
         this.lockName = lockName;
         this.mongoClient = mongoClient;
         this.databaseName = databaseName;
+        this.cronJobResponsible = cronJobResponsible;
         ensureIndexes();
     }
 
@@ -50,6 +52,10 @@ public abstract class AbstractNodeLeader {
     }
 
     public void perform(String name, Executable executable) {
+        if (!cronJobResponsible) {
+            LOG.info(String.format("This node is not cronJob responsible, skipping task %s", name));
+            return;
+        }
         String nodeId = null;
         boolean lockAcquired = false;
 

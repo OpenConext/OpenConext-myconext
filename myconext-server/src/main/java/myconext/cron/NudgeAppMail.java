@@ -32,11 +32,12 @@ public class NudgeAppMail extends AbstractNodeLeader {
                         UserRepository userRepository,
                         MongoClient mongoClient,
                         @Value("${mongodb_db}") String databaseName,
+                        @Value("${cron.node-cron-job-responsible}") boolean cronJobResponsible,
                         @Value("${cron.nudge-app-mail-days-after-creation}") long nudgeAppMailDaysAfterCreation,
                         @Value("${feature.nudge_app_mail}") boolean nudgeAppMailFeature,
                         @Value("${cron.dry-run-email}") boolean dryRunEmail,
                         @Value("${feature.use_app}") boolean useApp) {
-        super(LOCK_NAME, mongoClient, databaseName);
+        super(LOCK_NAME, mongoClient, databaseName, cronJobResponsible);
 
         this.mailBox = mailBox;
         this.userRepository = userRepository;

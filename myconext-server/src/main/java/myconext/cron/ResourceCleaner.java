@@ -22,7 +22,7 @@ import static myconext.cron.InactivityMail.ONE_DAY_IN_MILLIS;
 @Component
 public class ResourceCleaner extends AbstractNodeLeader {
 
-    public static final String LOCK_NAME =  "resource_cleaner_lock_name";
+    public static final String LOCK_NAME = "resource_cleaner_lock_name";
 
     private static final Log LOG = LogFactory.getLog(ResourceCleaner.class);
 
@@ -43,8 +43,9 @@ public class ResourceCleaner extends AbstractNodeLeader {
                            RequestInstitutionEduIDRepository requestInstitutionEduIDRepository,
                            MobileLinkAccountRequestRepository mobileLinkAccountRequestRepository,
                            MongoClient mongoClient,
+                           @Value("${cron.node-cron-job-responsible}") boolean cronJobResponsible,
                            @Value("${mongodb_db}") String databaseName) {
-        super(LOCK_NAME, mongoClient, databaseName);
+        super(LOCK_NAME, mongoClient, databaseName, cronJobResponsible);
 
         this.authenticationRequestRepository = authenticationRequestRepository;
         this.userRepository = userRepository;

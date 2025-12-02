@@ -36,11 +36,12 @@ public class InstitutionMailUsage extends AbstractNodeLeader {
                                 MailBox mailBox,
                                 UserRepository userRepository,
                                 MongoClient mongoClient,
+                                @Value("${cron.node-cron-job-responsible}") boolean cronJobResponsible,
                                 @Value("${mongodb_db}") String databaseName,
                                 @Value("${feature.mail_institution_mail_usage}") boolean mailInstitutionMailUsage,
                                 @Value("${cron.dry-run-email}") boolean dryRunEmail,
                                 @Value("${cron.mail-institution-batch-size:1}") int mailInstitutionBatchSize) {
-        super(LOCK_NAME, mongoClient, databaseName);
+        super(LOCK_NAME, mongoClient, databaseName, cronJobResponsible);
 
         this.manage = manage;
         this.mailBox = mailBox;

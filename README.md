@@ -18,6 +18,7 @@ An IdP for OpenConext. A user can create and manage his own identity. Authentica
 	- [Public-GUI](#public-gui-content-website)
 	- [Build](#build)
 	- [Mail](#mail)
+    - [Cron](#cron)
 	- [Crypto](#crypto)
 	- [Translations](#translations)
 	- [Miscellaneous](#miscellaneous)
@@ -128,6 +129,11 @@ In case when not using the Docker Compose file, you can install Mailpit with Bre
 ```bash
 brew install mailpit
 ```
+
+### Cron
+
+The cron jobs, which may only run on one node, use a database locking mechanisme to obtain a lock. If successful, then the
+job is executed, otherwise not. See `myconext.cron.AbstractNodeLeader`
 
 ### Crypto
 
