@@ -4,6 +4,11 @@
 
 All notable changes to this project will be documented in this file.
 
+## [8.2.0]
+
+- Attribute Aggregation is skipped id the Resource Server has no institution GUID ([#1050](https://github.com/OpenConext/OpenConext-myconext/issues/1050))
+- TODO - see https://github.com/orgs/OpenConext/projects/7/views/1
+
 ## [8.1.6]
 
 - Handle errors in bulk commands on remote creation endpoint
