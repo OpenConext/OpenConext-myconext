@@ -8,7 +8,6 @@
     import {onMount} from "svelte";
 
     export let change = false;
-    export let showBackUpCode = false
 
     let finalizedRegistration = false;
 
@@ -77,7 +76,7 @@
                              preferred={true}/>
             </div>
             <p class="explanation">{I18n.t("recovery.requestRecoveryCode")}
-                <a href="/#" on:click|preventDefault|stopPropagation={() => navigate("/backup-codes")}>
+                <a href="/#" on:click|preventDefault|stopPropagation={() => backUpCode()}>
                     {I18n.t("recovery.requestRecoveryCodeButton")}
                 </a>
             </p>
