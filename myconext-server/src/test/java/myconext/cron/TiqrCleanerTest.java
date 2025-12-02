@@ -86,6 +86,7 @@ class TiqrCleanerTest extends AbstractIntegrationTest {
                 authenticationRepository,
                 enrollmentRepository,
                 mongoClient,
+                true,
                 databaseName);
     }
 }

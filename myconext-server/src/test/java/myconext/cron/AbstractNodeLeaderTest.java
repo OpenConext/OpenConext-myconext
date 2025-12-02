@@ -233,7 +233,7 @@ class AbstractNodeLeaderTest extends AbstractIntegrationTest {
     // Test implementation of AbstractNodeLeader
     static class TestNodeLeader extends AbstractNodeLeader {
         public TestNodeLeader(String lockName, MongoClient mongoClient, String databaseName) {
-            super(lockName, mongoClient, databaseName);
+            super(lockName, mongoClient, databaseName, true);
         }
     }
 

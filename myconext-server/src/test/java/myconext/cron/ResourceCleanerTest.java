@@ -159,6 +159,7 @@ public class ResourceCleanerTest extends AbstractIntegrationTest {
                 requestInstitutionEduIDRepository,
                 mobileLinkAccountRequestRepository,
                 mongoClient,
+                true,
                 databaseName);
     }
 
