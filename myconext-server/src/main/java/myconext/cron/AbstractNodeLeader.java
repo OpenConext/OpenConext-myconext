@@ -22,7 +22,7 @@ public abstract class AbstractNodeLeader {
 
     private static final Log LOG = LogFactory.getLog(AbstractNodeLeader.class);
     private static final String LOCK_COLLECTION = "distributed_locks";
-    private static final int LOCK_TIMEOUT_SECONDS = 300; // 5 minutes stale lock timeout
+    private static final int LOCK_TIMEOUT_SECONDS = 60 * 15; // 15-minute stale lock timeout
 
     private final String lockName;
     private final MongoClient mongoClient;
