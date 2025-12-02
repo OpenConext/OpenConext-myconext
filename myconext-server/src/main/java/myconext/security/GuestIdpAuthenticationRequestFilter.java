@@ -56,6 +56,7 @@ import static java.util.stream.Collectors.toMap;
 import static myconext.crypto.HashGenerator.hash;
 import static myconext.log.MDCContext.logLoginWithContext;
 import static myconext.log.MDCContext.logWithContext;
+import static myconext.security.ACR.MFA;
 import static myconext.security.CookieResolver.cookieByName;
 
 @SuppressWarnings("unchecked")
@@ -207,7 +208,7 @@ public class GuestIdpAuthenticationRequestFilter extends OncePerRequestFilter {
         List<String> authenticationContextClassReferenceValues = getAuthenticationContextClassReferenceValues(authnRequest);
         boolean accountLinkingRequired =
                 this.accountLinkingContextClassReferences.stream().anyMatch(authenticationContextClassReferenceValues::contains);
-        boolean mfaProfileRequired = authenticationContextClassReferenceValues.contains(ACR.PROFILE_MFA);
+        boolean mfaProfileRequired = authenticationContextClassReferenceValues.stream().anyMatch(acr -> acr.endsWith(MFA));
 
         SamlAuthenticationRequest samlAuthenticationRequest = new SamlAuthenticationRequest(
                 authnRequest.getID(),

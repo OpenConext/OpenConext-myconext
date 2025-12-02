@@ -10,11 +10,18 @@ public class ACR {
     private ACR() {
     }
 
-    public static String LINKED_INSTITUTION = "https://eduid.nl/trust/linked-institution";
+    public static String MFA = "/mfa";
+
+    public static String LINKED_INSTITUTION = "https://eduid.nl/trust/linked-institution"; //student, staff, faculty, affiliate
     public static String VALIDATE_NAMES = "https://eduid.nl/trust/validate-names";
     public static String VALIDATE_NAMES_EXTERNAL = "https://eduid.nl/trust/validate-names-external";
-    public static String AFFILIATION_STUDENT = "https://eduid.nl/trust/affiliation-student";
+    public static String AFFILIATION_STUDENT = "https://eduid.nl/trust/affiliation-student"; // only student
     public static String PROFILE_MFA = "https://refeds.org/profile/mfa";
+
+    public static String LINKED_INSTITUTION_MFA = LINKED_INSTITUTION + MFA;
+    public static String VALIDATE_NAMES_MFA = VALIDATE_NAMES + MFA;
+    public static String VALIDATE_NAMES_EXTERNAL_MFA = VALIDATE_NAMES_EXTERNAL + MFA;
+    public static String AFFILIATION_STUDENT_MFA = AFFILIATION_STUDENT + MFA;
 
     public static List<String> allAccountLinkingContextClassReferences() {
         return Arrays.asList(VALIDATE_NAMES, VALIDATE_NAMES_EXTERNAL, LINKED_INSTITUTION, AFFILIATION_STUDENT);
@@ -33,18 +40,32 @@ public class ACR {
     }
 
     public static String selectACR(List<String> acrValues, boolean studentAffiliationPresent) {
-        if (acrValues.contains(PROFILE_MFA)) {
-            return PROFILE_MFA;
+        List<String> priorityOrder = Arrays.asList(
+            VALIDATE_NAMES_EXTERNAL_MFA,
+            VALIDATE_NAMES_MFA,
+            AFFILIATION_STUDENT_MFA,
+            LINKED_INSTITUTION_MFA,
+            PROFILE_MFA,
+            VALIDATE_NAMES_EXTERNAL,
+            VALIDATE_NAMES,
+            AFFILIATION_STUDENT,
+            LINKED_INSTITUTION
+        );
+
+        for (String acr : priorityOrder) {
+            if ((acr.equals(AFFILIATION_STUDENT_MFA) || acr.equals(AFFILIATION_STUDENT))) {
+                if(studentAffiliationPresent && acrValues.contains(acr)) {
+                    return acr;
+                }
+                // without studentAffiliationPresent the ACR is not selected
+                continue;
+            }
+
+            if (acrValues.contains(acr)) {
+                return acr;
+            }
         }
-        if (acrValues.contains(VALIDATE_NAMES_EXTERNAL)) {
-            return VALIDATE_NAMES_EXTERNAL;
-        }
-        if (acrValues.contains(VALIDATE_NAMES)) {
-            return VALIDATE_NAMES;
-        }
-        if (acrValues.contains(AFFILIATION_STUDENT) && studentAffiliationPresent) {
-            return AFFILIATION_STUDENT;
-        }
+
         return LINKED_INSTITUTION;
     }
 
