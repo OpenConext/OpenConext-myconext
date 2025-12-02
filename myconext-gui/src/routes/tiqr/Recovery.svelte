@@ -23,7 +23,7 @@
     }
 
     const backUpCode = () => {
-        return `/${change ? "change-" : ""}recovery-code`;
+        navigate(`/${change ? "change-" : ""}recovery-code`);
     }
 
 </script>
@@ -76,7 +76,11 @@
                              index={1}
                              preferred={true}/>
             </div>
-            <span>{@html I18n.t("recovery.requestRecoveryCode", {location: backUpCode()})}</span>
+            <p class="explanation">{I18n.t("recovery.requestRecoveryCode")}
+                <a href="/#" on:click|preventDefault|stopPropagation={() => navigate("/backup-codes")}>
+                    {I18n.t("recovery.requestRecoveryCodeButton")}
+                </a>
+            </p>
         {/if}
     </div>
 </div>

@@ -445,7 +445,8 @@ const nl = {
         backButtonWarning: "Je eduID-app is al succesvol toegevoegd aan je account. Je kunt je herstelcode niet aanpassen door terug te gaan. Als je terug gaat, krijg je een foutmelding te zien.",
         backButtonWarningTitle: "Terug gaan is afgeraden",
         backButtonWarningConfirmation: "Ok",
-        requestRecoveryCode: "Als je geen telefoonnummer kunt opgeven, <a href=\"{{location}}\">kun je een herstelcode aanvragen.</a>",
+        requestRecoveryCode: "Als je geen telefoonnummer kunt opgeven, ",
+        requestRecoveryCodeButton: "kun je een herstelcode aanvragen.",
     },
     phoneVerification: {
         header: "Voeg een hersteltelefoonnummer toe",
