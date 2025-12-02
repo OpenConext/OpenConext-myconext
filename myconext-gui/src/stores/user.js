@@ -10,6 +10,7 @@ export const user = writable({
     schacHomeOrganization: "",
     uid: "",
     usePassword: false,
+    passwordUpdatedAt: 0,
     forgottenPassword: false,
     usePublicKey: false,
     rememberMe: true,
@@ -41,7 +42,8 @@ export const config = writable({
     featureServiceDeskActive: false,
     createEduIDInstitutionEnabled: false,
     expirationNonValidatedDurationDays: 0,
-    enableAccountLinking: true
+    enableAccountLinking: true,
+    useApp: true
 });
 
 export const redirectPath = writable("");

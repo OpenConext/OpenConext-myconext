@@ -26,6 +26,7 @@ import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
 import java.io.Serializable;
+import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -57,6 +58,7 @@ public class User implements Serializable, UserDetails {
     private String uid;
     private String schacHomeOrganization;
     private String password;
+    private long passwordUpdatedAt;
     @Setter
     private boolean newUser;
     @Setter
@@ -93,6 +95,10 @@ public class User implements Serializable, UserDetails {
 
     @Setter
     private boolean nudgeAppMailSend;
+
+    @Setter
+    private LocalDateTime institutionMailSendDate;
+
     @Setter
     @Indexed
     private String trackingUuid;
@@ -160,10 +166,12 @@ public class User implements Serializable, UserDetails {
             throw new WeakPasswordException("Weak password: " + password);
         }
         this.password = encoder.encode(password);
+        this.passwordUpdatedAt = System.currentTimeMillis();
     }
 
     public void deletePassword() {
         this.password = null;
+        this.passwordUpdatedAt = 0;
     }
 
     @Transient

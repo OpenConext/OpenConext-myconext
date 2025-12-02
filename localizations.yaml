@@ -969,6 +969,14 @@ SHARED:
       COPY:
         en: Password
         nl: Wachtwoord
+    PasswordActivated:
+      COPY:
+        en: Activated on %1{{s}}
+        nl: Geactiveerd op %1{{s}}
+    CredentialActivated:
+      COPY:
+        en: "%1{{s}}: Activated on %2{{s}}"
+        nl: "%1{{s}}: Geactiveerd op %2{{s}}"
     TwoFAKey:
       COPY:
         en: Login with app
@@ -1087,8 +1095,8 @@ SHARED:
           nl: Laatst ingelogd op
       Activated:
         COPY:
-          en: Activated on
-          nl: Geactiveerd op
+          en: Activated on %1{{s}}
+          nl: Geactiveerd op %1{{s}}
       DateTimeOn:
         COPY:
           en: 'on'

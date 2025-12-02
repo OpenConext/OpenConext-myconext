@@ -30,8 +30,11 @@ springdoc:
     enabled: true
 
 email:
-  from: noreply@surfconext.nl
-  error_mail: info@surfconext.nl
+  from_deprovisioning: noreply+deprovisioning@surfconext.nl
+  from_code: noreply@surfconext.nl
+  from_app_nudge: noreply+appnudge@surfconext.nl
+  from_new_device: noreply+newdevice@surfconext.nl
+  error: info@surfconext.nl
   magic-link-url: http://localhost:8081/saml/guest-idp/magic
   my-surfconext-url: http://localhost:3001
   idp-surfconext-url: http://localhost:3000
@@ -52,7 +55,15 @@ cron:
   manage-initial-delay-milliseconds: 15000
   manage-fixed-rate-milliseconds: 43_200_000
   # Runs on the first day of February, May, August, and November.
-  mail-institution-mail-usage-expression: "0 0 0 1 2,5,8,11 *"
+  #  0 seconds
+  #  0 minutes
+  #  0 hours → midnight
+  #  * → every day of the month
+  #  2,5,8,11 → only in February, May, August, November
+  #  * → every day of the week
+  mail-institution-mail-usage-expression: "0 0 0 * 2,5,8,11 *"
+  # Run institution mails in batches
+  mail-institution-batch-size: 200
   # Every day at 6:30AM
   nudge-app-mail-expression: "0 30 6 * * ?"
   # Number of days after creation of the eduID account which the nudge mail is send
@@ -136,6 +147,8 @@ feature:
   use_remote_creation_for_affiliation: True
   # Set to true to show the account linking related options on the personal-info page and home page (banner)
   enable_account_linking: True
+  # Set to true to show the app login option
+  use_app: True
 
 default_affiliate_email_domain: eduid.nl
 

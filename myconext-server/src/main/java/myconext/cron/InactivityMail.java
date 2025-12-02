@@ -1,5 +1,6 @@
 package myconext.cron;
 
+import com.mongodb.client.MongoClient;
 import myconext.mail.MailBox;
 import myconext.model.User;
 import myconext.model.UserInactivity;
@@ -19,8 +20,9 @@ import java.util.stream.Stream;
 import static myconext.model.UserInactivity.*;
 
 @Component
-public class InactivityMail {
+public class InactivityMail extends AbstractNodeLeader {
 
+    public static final String LOCK_NAME =  "inactivity_mail_lock_name";
     public static final long ONE_DAY_IN_MILLIS = 24 * 60 * 60 * 1000L;
 
     private static final Log LOG = LogFactory.getLog(InactivityMail.class);
@@ -28,7 +30,6 @@ public class InactivityMail {
     private final MailBox mailBox;
     private final UserRepository userRepository;
     private final boolean mailInactivityMails;
-    private final boolean cronJobResponsible;
     private final DateFormat dateFormatUS;
     private final DateFormat dateFormatNL;
     private final boolean dryRunEmail;
@@ -36,12 +37,13 @@ public class InactivityMail {
     @Autowired
     public InactivityMail(MailBox mailBox,
                           UserRepository userRepository,
-                          @Value("${cron.node-cron-job-responsible}") boolean cronJobResponsible,
+                          MongoClient mongoClient,
+                          @Value("${mongodb_db}") String databaseName,
                           @Value("${feature.mail_inactivity_mails}") boolean mailInactivityMails,
                           @Value("${cron.dry-run-email}") boolean dryRunEmail) {
+        super(LOCK_NAME, mongoClient, databaseName);
         this.mailBox = mailBox;
         this.userRepository = userRepository;
-        this.cronJobResponsible = cronJobResponsible;
         this.mailInactivityMails = mailInactivityMails;
         this.dryRunEmail = dryRunEmail;
         this.dateFormatUS = DateFormat.getDateInstance(DateFormat.LONG, Locale.of("us"));
@@ -51,9 +53,13 @@ public class InactivityMail {
     @Scheduled(cron = "${cron.inactivity-users-expression}")
     @SuppressWarnings("unchecked")
     public void mailInactiveUsers() {
-        if (!mailInactivityMails || !cronJobResponsible) {
+        if (!mailInactivityMails) {
             return;
         }
+        super.perform("InactivityMail#mailInactiveUsers", () -> doMailInactiveUsers());
+    }
+
+    private void doMailInactiveUsers() {
         try {
             //We need to process the users in reverse order to prevent multiple emails to one user in the initial run
             List<UserInactivity> userInactivities = Stream.of(values()).toList().reversed();

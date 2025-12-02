@@ -1,16 +1,12 @@
 package myconext.cron;
 
-import jakarta.mail.Message;
-import jakarta.mail.internet.MimeMessage;
-import lombok.SneakyThrows;
 import myconext.AbstractMailBoxTest;
+import org.awaitility.core.ConditionTimeoutException;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import java.util.List;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.Assert.assertThrows;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
         properties = {
@@ -27,32 +23,18 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
                 "feature.requires_signed_authn_request=false",
                 "feature.deny_disposable_email_providers=false",
                 "verify.base_uri=http://localhost:8098",
-                "cron.mail-institution-batch-size=1"
+                "feature.use_app=false"
         })
-public class InstitutionMailUsageTest extends AbstractMailBoxTest {
+public class NudgeAppMailDisabledAppTest extends AbstractMailBoxTest {
 
     @Autowired
-    protected InstitutionMailUsage institutionMailUsage;
+    protected NudgeAppMail nudgeAppMail;
 
     @Test
-    @SneakyThrows
-    public void mailUsersWithInstitutionMail() {
-        //Run first batch
-        institutionMailUsage.mailUsersWithInstitutionMail();
+    public void mailUsersWithoutApp() {
+        nudgeAppMail.mailUsersWithoutApp();
 
-        List<MimeMessage> mimeMessagesFirstBatch = mailMessages();
-
-        assertEquals(1, mimeMessagesFirstBatch.size());
-        assertEquals("jdoe@example.com", mimeMessagesFirstBatch.get(0).getRecipients(Message.RecipientType.TO)[0].toString());
-
-        //Run Second batch
-        purgeEmailFromAllMailboxes();
-
-        institutionMailUsage.mailUsersWithInstitutionMail();
-
-        List<MimeMessage> mimeMessagesSecondBatch = mailMessages();
-
-        assertEquals(1, mimeMessagesSecondBatch.size());
-        assertEquals("mdoe@example.com", mimeMessagesSecondBatch.get(0).getRecipients(Message.RecipientType.TO)[0].toString());
+        assertThrows(ConditionTimeoutException.class, this::mailMessages);
     }
+
 }

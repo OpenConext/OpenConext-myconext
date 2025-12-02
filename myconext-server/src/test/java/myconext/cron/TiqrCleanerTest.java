@@ -1,7 +1,10 @@
-package myconext.tiqr;
+package myconext.cron;
 
+import com.mongodb.client.MongoClient;
 import myconext.AbstractIntegrationTest;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import tiqr.org.model.Authentication;
 import tiqr.org.model.Enrollment;
 import tiqr.org.model.Registration;
@@ -15,9 +18,15 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class TiqrCleanerTest extends AbstractIntegrationTest {
 
+    @Autowired
+    protected MongoClient mongoClient;
+
+    @Value("${mongodb_db}")
+    protected String databaseName;
+
     @Test
     void clean() {
-        TiqrCleaner tiqrCleaner = getTiqrCleaner(true);
+        TiqrCleaner tiqrCleaner = getTiqrCleaner();
 
         Instant oneDayAgo = Instant.now().minus(1, ChronoUnit.DAYS);
 
@@ -45,16 +54,22 @@ class TiqrCleanerTest extends AbstractIntegrationTest {
     }
 
     @Test
-    void cleanNoCronJobResponsible() {
-        TiqrCleaner tiqrCleaner = getTiqrCleaner(false);
+    void cleanNoLockAcquired() {
+        TiqrCleaner tiqrCleaner = getTiqrCleaner();
+        String nodeId = tiqrCleaner.generateNodeId();
+        try {
+            tiqrCleaner.tryGetLock(TiqrCleaner.LOCK_NAME, nodeId);
 
-        Instant oneDayAgo = Instant.now().minus(1, ChronoUnit.DAYS);
+            Instant oneDayAgo = Instant.now().minus(1, ChronoUnit.DAYS);
 
-        registration(oneDayAgo, RegistrationStatus.INITIALIZED);
+            registration(oneDayAgo, RegistrationStatus.INITIALIZED);
 
-        tiqrCleaner.clean();
+            tiqrCleaner.clean();
 
-        assertEquals(1, registrationRepository.count());
+            assertEquals(1, registrationRepository.count());
+        } finally {
+            tiqrCleaner.releaseLock(TiqrCleaner.LOCK_NAME, nodeId);
+        }
     }
 
     private void registration(Instant oneDayAgo, RegistrationStatus status) {
@@ -65,7 +80,12 @@ class TiqrCleanerTest extends AbstractIntegrationTest {
     }
 
 
-    private TiqrCleaner getTiqrCleaner(boolean cronJobResponsible) {
-        return new TiqrCleaner(registrationRepository, authenticationRepository, enrollmentRepository, cronJobResponsible);
+    private TiqrCleaner getTiqrCleaner() {
+        return new TiqrCleaner(
+                registrationRepository,
+                authenticationRepository,
+                enrollmentRepository,
+                mongoClient,
+                databaseName);
     }
 }
