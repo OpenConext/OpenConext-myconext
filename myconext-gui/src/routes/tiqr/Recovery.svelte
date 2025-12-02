@@ -4,10 +4,11 @@
     import backupIcon from "../../icons/redesign/backup-code.svg?raw";
     import LoginOption from "../../components/LoginOption.svelte";
     import {navigate} from "svelte-routing";
-    import {user} from "../../stores/user";
+    import {config, user} from "../../stores/user";
     import {onMount} from "svelte";
 
     export let change = false;
+    export let showBackUpCode = false
 
     let finalizedRegistration = false;
 
@@ -22,7 +23,7 @@
     }
 
     const backUpCode = () => {
-        navigate(`/${change ? "change-" : ""}recovery-code`);
+        return `/${change ? "change-" : ""}recovery-code`;
     }
 
 </script>
@@ -75,13 +76,7 @@
                              index={1}
                              preferred={true}/>
             </div>
-            <div class="other-account">
-                <LoginOption icon={backupIcon}
-                             label={I18n.t("Recovery.BackupCode.COPY")}
-                             subLabel={I18n.t("Recovery.BackupCodeInfo.COPY")}
-                             action={backUpCode}
-                             index={2}/>
-            </div>
+            <span>{@html I18n.t("recovery.requestRecoveryCode", {location: backUpCode()})}</span>
         {/if}
     </div>
 </div>
