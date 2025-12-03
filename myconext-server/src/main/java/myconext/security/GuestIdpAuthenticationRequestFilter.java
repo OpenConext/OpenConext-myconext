@@ -207,7 +207,8 @@ public class GuestIdpAuthenticationRequestFilter extends OncePerRequestFilter {
 
         List<String> authenticationContextClassReferenceValues = getAuthenticationContextClassReferenceValues(authnRequest);
         boolean accountLinkingRequired =
-                this.accountLinkingContextClassReferences.stream().anyMatch(authenticationContextClassReferenceValues::contains);
+                authenticationContextClassReferenceValues.stream()
+                        .anyMatch(acr -> this.accountLinkingContextClassReferences.stream().anyMatch(acr::startsWith));
         boolean mfaProfileRequired = authenticationContextClassReferenceValues.stream().anyMatch(acr -> acr.endsWith(MFA));
 
         SamlAuthenticationRequest samlAuthenticationRequest = new SamlAuthenticationRequest(
@@ -312,6 +313,8 @@ public class GuestIdpAuthenticationRequestFilter extends OncePerRequestFilter {
         }
         boolean validatedName = hasValidatedName(user);
         boolean validatedNameACR = authenticationContextClassReferenceValues.contains(ACR.VALIDATE_NAMES);
+        boolean validatedNameACR = authenticationContextClassReferenceValues.stream()
+                .anyMatch(acr -> acr.startsWith(ACR.VALIDATE_NAMES));
         List<LinkedAccount> nonExpiredLinkedAccounts = linkedAccounts.stream()
                 .filter(linkedAccount -> {
                     Instant expiresAt = linkedAccount.getExpiresAt().toInstant();
@@ -333,6 +336,9 @@ public class GuestIdpAuthenticationRequestFilter extends OncePerRequestFilter {
         boolean hasValidatedNames = !authenticationContextClassReferenceValues.contains(ACR.VALIDATE_NAMES) ||
                 validatedName;
         boolean linkedInstitutionMissing = authenticationContextClassReferenceValues.contains(ACR.LINKED_INSTITUTION) &&
+                nonExpiredLinkedAccounts.isEmpty();
+        boolean linkedInstitutionMissing = authenticationContextClassReferenceValues.stream()
+                .anyMatch(acr -> acr.startsWith(ACR.LINKED_INSTITUTION)) &&
                 nonExpiredLinkedAccounts.isEmpty();
         return atLeastOneNotExpired && hasRequiredStudentAffiliation && hasValidatedNames && !linkedInstitutionMissing;
     }

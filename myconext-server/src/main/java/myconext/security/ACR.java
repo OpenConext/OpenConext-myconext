@@ -37,6 +37,10 @@ public class ACR {
         VALIDATE_NAMES_EXTERNAL = externalValidateNames;
         AFFILIATION_STUDENT = affiliationStudent;
         PROFILE_MFA = profileMfa;
+        LINKED_INSTITUTION_MFA = linkedInstitution + MFA;
+        VALIDATE_NAMES_MFA = validateNames + MFA;
+        VALIDATE_NAMES_EXTERNAL_MFA = externalValidateNames + MFA;
+        AFFILIATION_STUDENT_MFA = affiliationStudent + MFA;
     }
 
     public static String selectACR(List<String> acrValues, boolean studentAffiliationPresent) {
