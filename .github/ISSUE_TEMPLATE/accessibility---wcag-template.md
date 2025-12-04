@@ -1,13 +1,13 @@
 ---
-name: WCAG template
-about: WCAG related finds
-title: "[WCAG] "
+name: Accessibility / WCAG template
+about: Accessibility (WCAG) related finds
+title: "[Accessibility] "
 labels: ux, WCAG
 assignees: ''
 
 ---
 
-De volgende bevinding is naar voren gekomen tijden het WCAG onderzoek: de tekst van de privacy voorwaarden is niet goed leesbaar.
+De volgende bevinding is naar voren gekomen tijden het Accessibility onderzoek: de tekst van de privacy voorwaarden is niet goed leesbaar.
 
 **WCAG bevinding**
 
