@@ -73,6 +73,17 @@ public class ACR {
         return LINKED_INSTITUTION;
     }
 
+    // Checks if any of the ACR values contains a given ACR.
+    // It returns true for both the ACR and the ACR with MFA suffix.
+    public static boolean containsAcr(List<String> acrValues, String acrValue) {
+        if (acrValues == null) {
+            return false;
+        }
+
+        final String acrValueMfa = acrValue + MFA;
+        return acrValues.contains(acrValue) || acrValues.contains(acrValueMfa);
+    }
+
     public static String explanationKeyWord(List<String> acrValues, boolean studentAffiliationPresent) {
         if (CollectionUtils.isEmpty(acrValues) || acrValues.contains(LINKED_INSTITUTION)) {
             return "linked_institution";

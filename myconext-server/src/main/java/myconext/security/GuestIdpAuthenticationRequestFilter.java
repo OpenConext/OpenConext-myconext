@@ -305,8 +305,7 @@ public class GuestIdpAuthenticationRequestFilter extends OncePerRequestFilter {
             return false;
         }
         Instant now = new Date().toInstant();
-        boolean validateNamesExternalAcr = authenticationContextClassReferenceValues.stream()
-                .anyMatch(acr -> acr.startsWith(ACR.VALIDATE_NAMES_EXTERNAL));
+        boolean validateNamesExternalAcr = ACR.containsAcr(authenticationContextClassReferenceValues, ACR.VALIDATE_NAMES_EXTERNAL);
         if (validateNamesExternalAcr) {
             //We don't support multiple ACR's being enforced all, we pick the most rigid one
             return externalLinkedAccounts.stream()
