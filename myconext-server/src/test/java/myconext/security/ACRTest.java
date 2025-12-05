@@ -7,6 +7,8 @@ import java.util.Collections;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class ACRTest {
     // selectACR
@@ -64,6 +66,124 @@ class ACRTest {
         String result = ACR.selectACR(acrValues, false);
 
         assertEquals(ACR.VALIDATE_NAMES_MFA, result);
+    }
+
+    // containsAcr
+    @Test
+    void testContainsAcr() {
+        List<String> acrValues = Arrays.asList(
+            ACR.PROFILE_MFA,
+            ACR.AFFILIATION_STUDENT
+        );
+
+        boolean result = ACR.containsAcr(acrValues, ACR.AFFILIATION_STUDENT);
+
+        assertTrue(result);
+    }
+
+    @Test
+    void testContainsAcr_Mfa() {
+        List<String> acrValues = Collections.singletonList(ACR.AFFILIATION_STUDENT_MFA);
+
+        boolean result = ACR.containsAcr(acrValues, ACR.AFFILIATION_STUDENT);
+
+        assertTrue(result);
+    }
+
+    @Test
+    void testContainsAcr_NotInList() {
+        List<String> acrValues = Collections.singletonList(ACR.AFFILIATION_STUDENT_MFA);
+
+        boolean result = ACR.containsAcr(acrValues, ACR.VALIDATE_NAMES);
+
+        assertFalse(result);
+    }
+
+    @Test
+    void testContainsAcr_EmptyList() {
+        List<String> acrValues = Collections.emptyList();
+
+        boolean result = ACR.containsAcr(acrValues, ACR.AFFILIATION_STUDENT);
+
+        assertFalse(result);
+    }
+
+    @Test
+    void testContainsAcr_NullValue() {
+        List<String> acrValues = Collections.singletonList(ACR.AFFILIATION_STUDENT_MFA);
+
+        boolean result = ACR.containsAcr(acrValues, null);
+
+        assertFalse(result);
+    }
+
+    // containsAnyAcr
+    @Test
+    void testContainsAnyAcr() {
+        List<String> acrValues = Collections.singletonList(ACR.AFFILIATION_STUDENT_MFA);
+        List<String> targetAcrs = Arrays.asList(
+            ACR.AFFILIATION_STUDENT,
+            ACR.VALIDATE_NAMES_EXTERNAL
+        );
+
+        boolean result = ACR.containsAnyAcr(acrValues, targetAcrs);
+
+        assertTrue(result);
+    }
+
+    @Test
+    void testContainsAnyAcr_NoMatch() {
+        List<String> acrValues = Collections.singletonList(ACR.AFFILIATION_STUDENT_MFA);
+        List<String> targetAcrs = Collections.singletonList(ACR.VALIDATE_NAMES);
+
+        boolean result = ACR.containsAnyAcr(acrValues, targetAcrs);
+
+        assertFalse(result);
+    }
+
+    @Test
+    void testContainsAnyAcr_AcrValuesNull() {
+        List<String> acrValues = null;
+        List<String> targetAcrs = Collections.singletonList(ACR.VALIDATE_NAMES);
+
+        boolean result = ACR.containsAnyAcr(acrValues, targetAcrs);
+
+        assertFalse(result);
+    }
+
+    @Test
+    void testContainsAnyAcr_TargetAcrsNull() {
+        List<String> acrValues = Collections.singletonList(ACR.VALIDATE_NAMES);
+        List<String> targetAcrs = null;
+
+        boolean result = ACR.containsAnyAcr(acrValues, targetAcrs);
+
+        assertFalse(result);
+    }
+
+    // containsMfaAcr
+    @Test
+    void testContainsMfaAcr() {
+        List<String> acrValues = Arrays.asList(
+            ACR.AFFILIATION_STUDENT_MFA,
+            ACR.VALIDATE_NAMES_MFA
+        );
+
+        boolean result = ACR.containsMfaAcr(acrValues);
+
+        assertTrue(result);
+    }
+
+    @Test
+    void testContainsMfaAcr_NoAcr() {
+        List<String> acrValues = Arrays.asList(
+                ACR.AFFILIATION_STUDENT,
+                ACR.VALIDATE_NAMES
+        );
+
+        boolean result = ACR.containsMfaAcr(acrValues);
+
+        assertFalse(result);
     }
 
     // explanationKeyWord

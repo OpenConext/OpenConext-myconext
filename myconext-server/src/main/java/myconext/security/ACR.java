@@ -12,10 +12,10 @@ public class ACR {
 
     public static String MFA = "/mfa";
 
-    public static String LINKED_INSTITUTION = "https://eduid.nl/trust/linked-institution"; //student, staff, faculty, affiliate
+    public static String LINKED_INSTITUTION = "https://eduid.nl/trust/linked-institution";
     public static String VALIDATE_NAMES = "https://eduid.nl/trust/validate-names";
     public static String VALIDATE_NAMES_EXTERNAL = "https://eduid.nl/trust/validate-names-external";
-    public static String AFFILIATION_STUDENT = "https://eduid.nl/trust/affiliation-student"; // only student
+    public static String AFFILIATION_STUDENT = "https://eduid.nl/trust/affiliation-student";
     public static String PROFILE_MFA = "https://refeds.org/profile/mfa";
 
     public static String LINKED_INSTITUTION_MFA = LINKED_INSTITUTION + MFA;
