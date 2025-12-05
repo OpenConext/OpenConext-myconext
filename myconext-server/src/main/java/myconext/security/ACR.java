@@ -84,20 +84,39 @@ public class ACR {
         return acrValues.contains(acrValue) || acrValues.contains(acrValueMfa);
     }
 
+    // Checks if any of the ACR values matches any ACR in the target list.
+    // It returns true for both the ACR and the ACR with MFA suffix.
+    public static boolean containsAnyAcr(List<String> acrValues, List<String> targetAcrs) {
+        if (acrValues == null || targetAcrs == null) {
+            return false;
+        }
+
+        return targetAcrs.stream().anyMatch(targetAcr -> containsAcr(acrValues, targetAcr));
+    }
+
+    // Checks if any of the ACR values ends with MFA suffix.
+    public static boolean containsMfaAcr(List<String> acrValues) {
+        if (acrValues == null) {
+            return false;
+        }
+
+        return acrValues.stream().anyMatch(acr -> acr.endsWith(MFA));
+    }
+
     public static String explanationKeyWord(List<String> acrValues, boolean studentAffiliationPresent) {
-        if (CollectionUtils.isEmpty(acrValues) || acrValues.contains(LINKED_INSTITUTION)) {
+        if (CollectionUtils.isEmpty(acrValues) || containsAcr(acrValues, LINKED_INSTITUTION)) {
             return "linked_institution";
         }
-        if (acrValues.contains(PROFILE_MFA)) {
+        if (containsMfaAcr(acrValues)) {
             return "profile_mfa";
         }
-        if (acrValues.contains(VALIDATE_NAMES_EXTERNAL)) {
+        if (containsAcr(acrValues, VALIDATE_NAMES_EXTERNAL)) {
             return "validate_names_external";
         }
-        if (acrValues.contains(VALIDATE_NAMES)) {
+        if (containsAcr(acrValues, VALIDATE_NAMES)) {
             return "validate_names";
         }
-        if (acrValues.contains(AFFILIATION_STUDENT) && studentAffiliationPresent) {
+        if (containsAcr(acrValues, AFFILIATION_STUDENT) && studentAffiliationPresent) {
             return "affiliation_student";
         }
         return "linked_institution";
