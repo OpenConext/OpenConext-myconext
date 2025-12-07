@@ -1,8 +1,11 @@
 package myconext.cron;
 
+import com.mongodb.client.MongoClient;
 import myconext.AbstractIntegrationTest;
 import myconext.model.*;
 import org.junit.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import java.time.LocalDateTime;
@@ -15,9 +18,15 @@ import static org.junit.Assert.assertNull;
 
 public class ResourceCleanerTest extends AbstractIntegrationTest {
 
+    @Autowired
+    protected MongoClient mongoClient;
+
+    @Value("${mongodb_db}")
+    protected String databaseName;
+
     @Test
     public void cleanNewUsersNotFinishedRegistration() {
-        ResourceCleaner resourceCleaner = getResourceCleaner(true);
+        ResourceCleaner resourceCleaner = getResourceCleaner();
 
         User user = user("mp@example.org");
         long twoDaysAgo = (System.currentTimeMillis() / 1000L) - (2 * 24 * 60 * 60);
@@ -33,7 +42,7 @@ public class ResourceCleanerTest extends AbstractIntegrationTest {
 
     @Test
     public void cleanPassForgottenHash() {
-        ResourceCleaner resourceCleaner = getResourceCleaner(true);
+        ResourceCleaner resourceCleaner = getResourceCleaner();
 
         PasswordResetHash passwordResetHash = new PasswordResetHash(user("qwert@exp.com"), "1234567890");
         Date twoHoursAgo = Date.from(LocalDateTime.now().minusHours(2).atZone(ZoneId.systemDefault()).toInstant());
@@ -50,7 +59,7 @@ public class ResourceCleanerTest extends AbstractIntegrationTest {
 
     @Test
     public void cleanChangeEmailHash() {
-        ResourceCleaner resourceCleaner = getResourceCleaner(true);
+        ResourceCleaner resourceCleaner = getResourceCleaner();
 
         ChangeEmailHash changeEmailHash = new ChangeEmailHash(user("qwert@exp.com"), "new@email.com", "1234567890");
         Date twoHoursAgo = Date.from(LocalDateTime.now().minusHours(2).atZone(ZoneId.systemDefault()).toInstant());
@@ -67,7 +76,7 @@ public class ResourceCleanerTest extends AbstractIntegrationTest {
 
     @Test
     public void cleanEmailsSend() {
-        ResourceCleaner resourceCleaner = getResourceCleaner(true);
+        ResourceCleaner resourceCleaner = getResourceCleaner();
 
         String email = "jdoe@qwerty.com";
         EmailsSend emailsSend = new EmailsSend(email);
@@ -85,7 +94,7 @@ public class ResourceCleanerTest extends AbstractIntegrationTest {
 
     @Test
     public void cleanMobileLinkAccountRequests() {
-        ResourceCleaner resourceCleaner = getResourceCleaner(true);
+        ResourceCleaner resourceCleaner = getResourceCleaner();
 
         MobileLinkAccountRequest request = new MobileLinkAccountRequest("hash", "userId");
         Date hourAgo = Date.from(LocalDateTime.now().minusHours(1).atZone(ZoneId.systemDefault()).toInstant());
@@ -101,7 +110,7 @@ public class ResourceCleanerTest extends AbstractIntegrationTest {
 
     @Test
     public void cleanExpiredControlCode() {
-        ResourceCleaner resourceCleaner = getResourceCleaner(true);
+        ResourceCleaner resourceCleaner = getResourceCleaner();
 
         User user = userRepository.findUserByEmailAndRateLimitedFalse("jdoe@example.com").get();
         ControlCode controlCode = new ControlCode();
@@ -117,28 +126,17 @@ public class ResourceCleanerTest extends AbstractIntegrationTest {
     }
 
     @Test
-    public void clean() {
-        doTest(true, 0);
-    }
-
-    @Test
-    public void notClean() {
-        doTest(false, 1);
-    }
-
-    private void doTest(boolean cronJobResponsible, int deletedAuthenticationRequests) {
-        ResourceCleaner resourceCleaner = getResourceCleaner(cronJobResponsible);
+    public void testClean() {
+        ResourceCleaner resourceCleaner = getResourceCleaner();
         doExpireWithFindProperty(SamlAuthenticationRequest.class, "id", "1");
         expireUserLinkedAccount();
 
         resourceCleaner.clean();
 
-        assertEquals(deletedAuthenticationRequests, authenticationRequestRepository.findAll().size());
+        assertEquals(0, authenticationRequestRepository.findAll().size());
 
-        if (cronJobResponsible) {
-            User user = userRepository.findOneUserByEmail("jdoe@example.com");
-            assertEquals(0, user.getLinkedAccounts().size());
-        }
+        User user = userRepository.findOneUserByEmail("jdoe@example.com");
+        assertEquals(0, user.getLinkedAccounts().size());
     }
 
     private void expireUserLinkedAccount() {
@@ -151,7 +149,7 @@ public class ResourceCleanerTest extends AbstractIntegrationTest {
         userRepository.save(user);
     }
 
-    private ResourceCleaner getResourceCleaner(boolean cronJobResponsible) {
+    private ResourceCleaner getResourceCleaner() {
         return new ResourceCleaner(
                 authenticationRequestRepository,
                 userRepository,
@@ -160,7 +158,9 @@ public class ResourceCleanerTest extends AbstractIntegrationTest {
                 emailsSendRepository,
                 requestInstitutionEduIDRepository,
                 mobileLinkAccountRequestRepository,
-                cronJobResponsible);
+                mongoClient,
+                true,
+                databaseName);
     }
 
 }

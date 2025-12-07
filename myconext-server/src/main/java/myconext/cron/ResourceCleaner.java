@@ -1,6 +1,7 @@
 package myconext.cron;
 
 
+import com.mongodb.client.MongoClient;
 import myconext.model.*;
 import myconext.repository.*;
 import org.apache.commons.logging.Log;
@@ -19,7 +20,9 @@ import java.util.stream.Collectors;
 import static myconext.cron.InactivityMail.ONE_DAY_IN_MILLIS;
 
 @Component
-public class ResourceCleaner {
+public class ResourceCleaner extends AbstractNodeLeader {
+
+    public static final String LOCK_NAME = "resource_cleaner_lock_name";
 
     private static final Log LOG = LogFactory.getLog(ResourceCleaner.class);
 
@@ -27,7 +30,6 @@ public class ResourceCleaner {
     private final UserRepository userRepository;
     private final PasswordResetHashRepository passwordResetHashRepository;
     private final ChangeEmailHashRepository changeEmailHashRepository;
-    private final boolean cronJobResponsible;
     private final EmailsSendRepository emailsSendRepository;
     private final RequestInstitutionEduIDRepository requestInstitutionEduIDRepository;
     private final MobileLinkAccountRequestRepository mobileLinkAccountRequestRepository;
@@ -40,7 +42,11 @@ public class ResourceCleaner {
                            EmailsSendRepository emailsSendRepository,
                            RequestInstitutionEduIDRepository requestInstitutionEduIDRepository,
                            MobileLinkAccountRequestRepository mobileLinkAccountRequestRepository,
-                           @Value("${cron.node-cron-job-responsible}") boolean cronJobResponsible) {
+                           MongoClient mongoClient,
+                           @Value("${cron.node-cron-job-responsible}") boolean cronJobResponsible,
+                           @Value("${mongodb_db}") String databaseName) {
+        super(LOCK_NAME, mongoClient, databaseName, cronJobResponsible);
+
         this.authenticationRequestRepository = authenticationRequestRepository;
         this.userRepository = userRepository;
         this.passwordResetHashRepository = passwordResetHashRepository;
@@ -48,14 +54,14 @@ public class ResourceCleaner {
         this.emailsSendRepository = emailsSendRepository;
         this.requestInstitutionEduIDRepository = requestInstitutionEduIDRepository;
         this.mobileLinkAccountRequestRepository = mobileLinkAccountRequestRepository;
-        this.cronJobResponsible = cronJobResponsible;
     }
 
     @Scheduled(cron = "${cron.token-cleaner-expression}")
     public void clean() {
-        if (!cronJobResponsible) {
-            return;
-        }
+        super.perform("ResourceCleaner#clean", () -> doClean());
+    }
+
+    private void doClean() {
         Date now = new Date();
         Instant nowInstant = now.toInstant();
 

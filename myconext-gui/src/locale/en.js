@@ -445,6 +445,8 @@ const en = {
         backButtonWarning: "Your eduID app is already successfully added to your account. You cannot change your recovery method by going back. If you go back, you see an error message.",
         backButtonWarningTitle: "Going back not recommended",
         backButtonWarningConfirmation: "Ok",
+        requestRecoveryCode: "If you can't provide a phone number, ",
+        requestRecoveryCodeButton: "you can request a recovery code.",
     },
     phoneVerification: {
         header: "Add a recovery phone number",

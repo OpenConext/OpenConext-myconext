@@ -482,8 +482,9 @@ public class AccountLinkerController implements UserAuthentication {
         params.put("state", state);
         UriComponentsBuilder builder = UriComponentsBuilder.fromUriString(this.verifyBaseUri + "/broker/sp/oidc/authenticate");
         params.forEach(builder::queryParam);
-        UriComponents uriComponents = builder.build();
-        return ResponseEntity.ok(new AuthorizationURL(uriComponents.toUriString()));
+        UriComponents uriComponents = builder.build().encode();
+        String uriString = uriComponents.toUriString();
+        return ResponseEntity.ok(new AuthorizationURL(uriString));
     }
 
     @GetMapping({"/sp/verify/redirect"})

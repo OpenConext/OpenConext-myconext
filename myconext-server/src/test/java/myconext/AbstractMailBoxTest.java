@@ -1,13 +1,17 @@
 package myconext;
 
 import com.icegreen.greenmail.junit.GreenMailRule;
+import com.icegreen.greenmail.store.FolderException;
 import com.icegreen.greenmail.util.ServerSetup;
+import jakarta.mail.Message;
 import jakarta.mail.internet.MimeMessage;
+import lombok.SneakyThrows;
 import myconext.model.User;
 import myconext.model.UserInactivity;
 import org.junit.Before;
 import org.junit.Rule;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Stream;
@@ -71,5 +75,14 @@ public abstract class AbstractMailBoxTest extends AbstractIntegrationTest {
 
     }
 
+    protected void purgeEmailFromAllMailboxes() throws FolderException {
+        greenMail.purgeEmailFromAllMailboxes();
+    }
+
+    @SneakyThrows
+    protected boolean hasRecipient(MimeMessage msg, String email) {
+        return Arrays.stream(msg.getRecipients(Message.RecipientType.TO))
+                .anyMatch(a -> a.toString().equals(email));
+    }
 
 }

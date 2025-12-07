@@ -1,6 +1,8 @@
 package myconext.cron;
 
+import jakarta.mail.Message;
 import jakarta.mail.internet.MimeMessage;
+import lombok.SneakyThrows;
 import myconext.AbstractMailBoxTest;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,7 +26,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
                 "sso_mfa_duration_seconds=-1000",
                 "feature.requires_signed_authn_request=false",
                 "feature.deny_disposable_email_providers=false",
-                "verify.base_uri=http://localhost:8098"
+                "verify.base_uri=http://localhost:8098",
+                "cron.mail-institution-batch-size=1"
         })
 public class InstitutionMailUsageTest extends AbstractMailBoxTest {
 
@@ -32,11 +35,24 @@ public class InstitutionMailUsageTest extends AbstractMailBoxTest {
     protected InstitutionMailUsage institutionMailUsage;
 
     @Test
+    @SneakyThrows
     public void mailUsersWithInstitutionMail() {
+        //Run first batch
         institutionMailUsage.mailUsersWithInstitutionMail();
 
-        List<MimeMessage> mimeMessages = mailMessages();
+        List<MimeMessage> mimeMessagesFirstBatch = mailMessages();
 
-        assertEquals(2, mimeMessages.size());
+        assertEquals(1, mimeMessagesFirstBatch.size());
+        assertEquals("jdoe@example.com", mimeMessagesFirstBatch.get(0).getRecipients(Message.RecipientType.TO)[0].toString());
+
+        //Run Second batch
+        purgeEmailFromAllMailboxes();
+
+        institutionMailUsage.mailUsersWithInstitutionMail();
+
+        List<MimeMessage> mimeMessagesSecondBatch = mailMessages();
+
+        assertEquals(1, mimeMessagesSecondBatch.size());
+        assertEquals("mdoe@example.com", mimeMessagesSecondBatch.get(0).getRecipients(Message.RecipientType.TO)[0].toString());
     }
 }

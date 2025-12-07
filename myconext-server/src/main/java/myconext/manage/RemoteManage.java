@@ -1,7 +1,6 @@
 package myconext.manage;
 
-import myconext.model.IdentityProvider;
-import myconext.model.ServiceProvider;
+import myconext.model.*;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.core.ParameterizedTypeReference;
@@ -159,6 +158,21 @@ public class RemoteManage implements Manage {
     public Optional<IdentityProvider> findIdentityProviderByInstitutionGUID(String institutionGUID) {
         return searchIdentityProvider("metaDataFields.coin:institution_guid", institutionGUID)
                 .stream().findFirst();
+    }
+
+    @Override
+    public Optional<RemoteProvider> findResourceServerByEntityId(String entityId) {
+        Map<String, Object> requestBody = Map.of("entityid", entityId,
+                "REQUESTED_ATTRIBUTES", Arrays.asList(
+                        "metaDataFields.coin:institution_guid"
+                ));
+        HttpEntity<Map<String, Object>> requestEntity = new HttpEntity<>(requestBody, this.headers);
+        return restTemplate.exchange(manageBaseUrl + "/manage/api/internal/search/oauth20_rs",
+                        HttpMethod.POST, requestEntity, typeReference)
+                .getBody()
+                .stream()
+                .map(m -> remoteProvider(m))
+                .findFirst();
     }
 
     private List<IdentityProvider> searchIdentityProvider(String metaDataField, String metaDataValue) {

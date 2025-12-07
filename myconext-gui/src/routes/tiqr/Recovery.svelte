@@ -4,7 +4,7 @@
     import backupIcon from "../../icons/redesign/backup-code.svg?raw";
     import LoginOption from "../../components/LoginOption.svelte";
     import {navigate} from "svelte-routing";
-    import {user} from "../../stores/user";
+    import {config, user} from "../../stores/user";
     import {onMount} from "svelte";
 
     export let change = false;
@@ -75,13 +75,11 @@
                              index={1}
                              preferred={true}/>
             </div>
-            <div class="other-account">
-                <LoginOption icon={backupIcon}
-                             label={I18n.t("Recovery.BackupCode.COPY")}
-                             subLabel={I18n.t("Recovery.BackupCodeInfo.COPY")}
-                             action={backUpCode}
-                             index={2}/>
-            </div>
+            <p class="explanation">{I18n.t("recovery.requestRecoveryCode")}
+                <a href="/#" on:click|preventDefault|stopPropagation={() => backUpCode()}>
+                    {I18n.t("recovery.requestRecoveryCodeButton")}
+                </a>
+            </p>
         {/if}
     </div>
 </div>

@@ -243,6 +243,12 @@ public class Migrations {
         mongoTemplate.remove(new Query(), "sessions");
     }
 
+    @ChangeSet(order = "020", id = "deleteSessionAfterUserInstitutionMailSendDate", author = "leroy.vanzeeland@surf.nl")
+    public void deleteSessionAfterUserInstitutionMailSendDate(MongockTemplate mongoTemplate) {
+        mongoTemplate.remove(new Query(), "sessions");
+    }
+
+
     protected User mergeEduIDs(User user) {
         List<EduID> eduIDS = user.getEduIDS();
         //Make a copy to search in

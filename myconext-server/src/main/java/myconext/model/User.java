@@ -26,6 +26,7 @@ import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
 import java.io.Serializable;
+import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -94,6 +95,10 @@ public class User implements Serializable, UserDetails {
 
     @Setter
     private boolean nudgeAppMailSend;
+
+    @Setter
+    private LocalDateTime institutionMailSendDate;
+
     @Setter
     @Indexed
     private String trackingUuid;
@@ -199,7 +204,7 @@ public class User implements Serializable, UserDetails {
         } catch (RuntimeException e) {
             serviceProvider = new ServiceProvider(new RemoteProvider(entityId, entityId, entityId, null, null), null);
         }
-        return doComputeEduIDIfAbsent(serviceProvider, manage);
+        return doComputeEduIDIfAbsent(serviceProvider, manage, false);
     }
 
     @Transient
@@ -207,10 +212,11 @@ public class User implements Serializable, UserDetails {
         //we want to pre-provision the eduID based on the institutional GUID, not the entityID
         remoteProvider.setEntityId(null);
         ServiceProvider serviceProvider = new ServiceProvider(remoteProvider, null);
-        return doComputeEduIDIfAbsent(serviceProvider, manage);
+        return doComputeEduIDIfAbsent(serviceProvider, manage, false);
     }
 
-    private String doComputeEduIDIfAbsent(ServiceProvider serviceProvider, Manage manage) {
+    @Transient
+    public String doComputeEduIDIfAbsent(ServiceProvider serviceProvider, Manage manage, boolean isResourceServer) {
         this.lastLogin = System.currentTimeMillis();
         serviceProvider.setLastLogin(new Date());
         String institutionGuid = serviceProvider.getInstitutionGuid();
@@ -230,7 +236,7 @@ public class User implements Serializable, UserDetails {
                 }).findFirst();
         //If there is an existing eduID then we add or update the service for this eduID, otherwise add new one
         String eduIDValue = optionalExistingEduID.map(
-                eduId -> eduId.updateServiceProvider(serviceProvider).getValue()
+                eduId -> isResourceServer ? eduId.getValue() : eduId.updateServiceProvider(serviceProvider).getValue()
         ).orElseGet(() -> {
             EduID eduID = new EduID(UUID.randomUUID().toString(), serviceProvider);
             this.eduIDS.add(eduID);

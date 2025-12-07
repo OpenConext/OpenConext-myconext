@@ -1,6 +1,7 @@
-package myconext.tiqr;
+package myconext.cron;
 
 
+import com.mongodb.client.MongoClient;
 import myconext.repository.AuthenticationRepository;
 import myconext.repository.EnrollmentRepository;
 import myconext.repository.RegistrationRepository;
@@ -19,31 +20,36 @@ import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 
 @Component
-public class TiqrCleaner {
+public class TiqrCleaner extends AbstractNodeLeader {
+
+    public static final String LOCK_NAME = "tiqr_cleaner_usage_lock_name";
 
     private static final Log LOG = LogFactory.getLog(TiqrCleaner.class);
 
     private final RegistrationRepository registrationRepository;
     private final AuthenticationRepository authenticationRepository;
     private final EnrollmentRepository enrollmentRepository;
-    private final boolean cronJobResponsible;
 
     @Autowired
     public TiqrCleaner(RegistrationRepository registrationRepository,
                        AuthenticationRepository authenticationRepository,
                        EnrollmentRepository enrollmentRepository,
-                       @Value("${cron.node-cron-job-responsible}") boolean cronJobResponsible) {
+                       MongoClient mongoClient,
+                       @Value("${cron.node-cron-job-responsible}") boolean cronJobResponsible,
+                       @Value("${mongodb_db}") String databaseName) {
+        super(LOCK_NAME, mongoClient, databaseName, cronJobResponsible);
+
         this.registrationRepository = registrationRepository;
         this.authenticationRepository = authenticationRepository;
         this.enrollmentRepository = enrollmentRepository;
-        this.cronJobResponsible = cronJobResponsible;
     }
 
     @Scheduled(cron = "${cron.token-cleaner-expression}")
     public void clean() {
-        if (!cronJobResponsible) {
-            return;
-        }
+        super.perform("TiqrCleaner#clean", () -> doClean());
+    }
+
+    private void doClean() {
         Instant hourAgo = Instant.now().minus(1, ChronoUnit.HOURS);
 
         info(Authentication.class, authenticationRepository.deleteByUpdatedBefore(hourAgo));
