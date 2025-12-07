@@ -1,6 +1,6 @@
 <script>
     import I18n from "../locale/I18n";
-    import {dateFromEpoch} from "../utils/date";
+    import {dateFromEpoch, getAffiliationsVerificationDate} from "../utils/date";
     import {onMount} from "svelte";
     import {isEmpty} from "../utils/utils";
     import {institutionName} from "../utils/services";
@@ -20,6 +20,10 @@
             affiliations = Array.from(new Set(linkedAccount.affiliations));
         }
         expiresAt = linkedAccount.expiresAt;
+
+        if (includeAffiliations){
+            expiresAt = getAffiliationsVerificationDate(linkedAccount.createdAt);
+        }
     })
 
 </script>

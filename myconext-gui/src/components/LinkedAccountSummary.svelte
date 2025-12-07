@@ -1,6 +1,6 @@
 <script>
     import I18n from "../locale/I18n";
-    import {dateFromEpoch} from "../utils/date";
+    import {dateFromEpoch, getAffiliationsVerificationDate} from "../utils/date";
     import {onMount} from "svelte";
     import {institutionName, isStudent, linkedAccountFamilyName, linkedAccountGivenName} from "../utils/services";
     import trash from "../icons/verify/bin.svg?raw"
@@ -100,7 +100,7 @@
         <div class="info">
             <h4>{I18n.t("profile.from", {name: institutionName(linkedAccount)})}</h4>
             <span>{@html I18n.t("profile.receivedOnInfo", {date: dateFromEpoch(linkedAccount.createdAt)})}</span>
-            <span>{@html I18n.t("profile.validUntilDateInfo", {date: dateFromEpoch(expiresAt)})}
+            <span>{@html I18n.t("profile.validUntilDateInfo", {date: dateFromEpoch(expiresAt), rolDate: dateFromEpoch(getAffiliationsVerificationDate(linkedAccount.createdAt))})}
                 {#if linkedAccount.expired}
                     <span class="expired"> ({I18n.t("profile.expired")})</span>
                 {/if}

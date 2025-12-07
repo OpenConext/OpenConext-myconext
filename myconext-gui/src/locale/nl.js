@@ -45,7 +45,7 @@ const nl = {
         receivedOn: "op <strong>{{date}}</strong>",
         receivedOnInfo: "Ontvangen op <strong>{{date}}</strong>",
         validUntilDate: "Geldig tot <strong>{{date}}</strong>",
-        validUntilDateInfo: "Geldig tot <strong>{{date}}</strong>",
+        validUntilDateInfo: "Geldig tot <strong>{{date}}</strong> en de rol zelf is geldig tot {{rolDate}}",
         removeLinkPrefix: "Verwijder deze informatie",
         removeLinkPostfix: " uit je eduID",
         banner: "Voor sommige applicaties moeten je gegevens zijn gevalideerd door een vertrouwde partij.",

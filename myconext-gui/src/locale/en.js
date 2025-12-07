@@ -45,7 +45,7 @@ const en = {
         receivedOn: "on <strong>{{date}}</strong>",
         receivedOnInfo: "Received on <strong>{{date}}</strong>",
         validUntilDate: "valid until <strong>{{date}}</strong>",
-        validUntilDateInfo: "Valid until <strong>{{date}}</strong>",
+        validUntilDateInfo: "Valid until <strong>{{date}}</strong> and the rol itself is valid until {{rolDate}}",
         removeLinkPrefix: "Remove this information",
         removeLinkPostfix: " from your eduID",
         banner: "Some applications require that your identity is verified by a trusted party.",
