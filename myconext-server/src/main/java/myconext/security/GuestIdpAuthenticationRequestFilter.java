@@ -205,9 +205,8 @@ public class GuestIdpAuthenticationRequestFilter extends OncePerRequestFilter {
         String issuer = authnRequest.getIssuer().getValue();
 
         List<String> authenticationContextClassReferenceValues = getAuthenticationContextClassReferenceValues(authnRequest);
-        boolean accountLinkingRequired =
-                this.accountLinkingContextClassReferences.stream().anyMatch(authenticationContextClassReferenceValues::contains);
-        boolean mfaProfileRequired = authenticationContextClassReferenceValues.contains(ACR.PROFILE_MFA);
+        boolean accountLinkingRequired = ACR.containsAnyAcr(authenticationContextClassReferenceValues, this.accountLinkingContextClassReferences);
+        boolean mfaProfileRequired = ACR.containsMfaAcr(authenticationContextClassReferenceValues);
 
         SamlAuthenticationRequest samlAuthenticationRequest = new SamlAuthenticationRequest(
                 authnRequest.getID(),
@@ -285,8 +284,7 @@ public class GuestIdpAuthenticationRequestFilter extends OncePerRequestFilter {
 
     private boolean isApplySsoMfa() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (authentication instanceof UserAuthenticationToken) {
-            UserAuthenticationToken userAuthenticationToken = (UserAuthenticationToken) authentication;
+        if (authentication instanceof UserAuthenticationToken userAuthenticationToken) {
             long createdAt = userAuthenticationToken.getCreatedAt();
             boolean mfaRole = userAuthenticationToken.getAuthorities().stream().anyMatch(auth -> auth.getAuthority().equals(ROLE_MFA));
             return mfaRole && (System.currentTimeMillis() - createdAt) < (ssoMFADurationSeconds * 1000);
@@ -303,14 +301,16 @@ public class GuestIdpAuthenticationRequestFilter extends OncePerRequestFilter {
             return false;
         }
         Instant now = new Date().toInstant();
-        if (authenticationContextClassReferenceValues.contains(ACR.VALIDATE_NAMES_EXTERNAL)) {
+        boolean validateNamesExternalAcr = ACR.containsAcr(authenticationContextClassReferenceValues, ACR.VALIDATE_NAMES_EXTERNAL);
+        if (validateNamesExternalAcr) {
             //We don't support multiple ACR's being enforced all, we pick the most rigid one
             return externalLinkedAccounts.stream()
                     .anyMatch(externalLinkedAccount -> externalLinkedAccount.getExpiresAt().toInstant().isAfter(now) &&
                             !Verification.Ongeverifieerd.equals(externalLinkedAccount.getVerification()));
         }
         boolean validatedName = hasValidatedName(user);
-        boolean validatedNameACR = authenticationContextClassReferenceValues.contains(ACR.VALIDATE_NAMES);
+
+        boolean validatedNameACR = ACR.containsAcr(authenticationContextClassReferenceValues, ACR.VALIDATE_NAMES);
         List<LinkedAccount> nonExpiredLinkedAccounts = linkedAccounts.stream()
                 .filter(linkedAccount -> {
                     Instant expiresAt = linkedAccount.getExpiresAt().toInstant();
@@ -326,12 +326,12 @@ public class GuestIdpAuthenticationRequestFilter extends OncePerRequestFilter {
                     return now.isBefore(expiresAt);
                 }).collect(toList());
         boolean atLeastOneNotExpired = !CollectionUtils.isEmpty(nonExpiredLinkedAccounts) || !CollectionUtils.isEmpty(nonExpiredExternalLinkedAccounts);
-        boolean hasRequiredStudentAffiliation = !authenticationContextClassReferenceValues.contains(ACR.AFFILIATION_STUDENT) ||
+        boolean hasRequiredStudentAffiliation = !ACR.containsAcr(authenticationContextClassReferenceValues, ACR.AFFILIATION_STUDENT) ||
                 nonExpiredLinkedAccounts.stream()
                         .anyMatch(linkedAccount -> hasRequiredStudentAffiliation(linkedAccount.getEduPersonAffiliations()));
-        boolean hasValidatedNames = !authenticationContextClassReferenceValues.contains(ACR.VALIDATE_NAMES) ||
+        boolean hasValidatedNames = !ACR.containsAcr(authenticationContextClassReferenceValues, ACR.VALIDATE_NAMES) ||
                 validatedName;
-        boolean linkedInstitutionMissing = authenticationContextClassReferenceValues.contains(ACR.LINKED_INSTITUTION) &&
+        boolean linkedInstitutionMissing = ACR.containsAcr(authenticationContextClassReferenceValues, ACR.LINKED_INSTITUTION) &&
                 nonExpiredLinkedAccounts.isEmpty();
         return atLeastOneNotExpired && hasRequiredStudentAffiliation && hasValidatedNames && !linkedInstitutionMissing;
     }
@@ -480,12 +480,12 @@ public class GuestIdpAuthenticationRequestFilter extends OncePerRequestFilter {
         boolean hasStudentAffiliation = hasRequiredStudentAffiliation(user.allEduPersonAffiliations());
 
         List<String> authenticationContextClassReferences = samlAuthenticationRequest.getAuthenticationContextClassReferences();
-        boolean missingStudentAffiliation = !CollectionUtils.isEmpty(authenticationContextClassReferences) && authenticationContextClassReferences.contains(ACR.AFFILIATION_STUDENT) &&
+        boolean missingStudentAffiliation = ACR.containsAcr(authenticationContextClassReferences, ACR.AFFILIATION_STUDENT) &&
                 !hasStudentAffiliation;
-        boolean missingValidName = !CollectionUtils.isEmpty(authenticationContextClassReferences) && authenticationContextClassReferences.contains(ACR.VALIDATE_NAMES) &&
+        boolean missingValidName = ACR.containsAcr(authenticationContextClassReferences, ACR.VALIDATE_NAMES) &&
                 !hasValidatedName(user);
         Instant now = new Date().toInstant();
-        boolean missingLinkedInstitution = !CollectionUtils.isEmpty(authenticationContextClassReferences) && authenticationContextClassReferences.contains(ACR.LINKED_INSTITUTION) &&
+        boolean missingLinkedInstitution = ACR.containsAcr(authenticationContextClassReferences, ACR.LINKED_INSTITUTION) &&
                 (CollectionUtils.isEmpty(user.getLinkedAccounts()) || user.getLinkedAccounts().stream()
                         .allMatch(linkedAccount -> now.isAfter(linkedAccount.getExpiresAt().toInstant())));
 
@@ -515,8 +515,7 @@ public class GuestIdpAuthenticationRequestFilter extends OncePerRequestFilter {
                 //When we send the assertion, EB stops the flow, but this will be fixed upstream
                 return true;
             }
-            boolean externalNameValidation = !CollectionUtils.isEmpty(authenticationContextClassReferences)
-                    && authenticationContextClassReferences.contains(ACR.VALIDATE_NAMES_EXTERNAL);
+            boolean externalNameValidation = ACR.containsAcr(authenticationContextClassReferences, ACR.VALIDATE_NAMES_EXTERNAL);
             String path = externalNameValidation ? "confirm-external-stepup" : "confirm-stepup";
             response.sendRedirect(this.redirectUrl + "/" + path + "?h=" + hash +
                     "&redirect=" + URLEncoder.encode(this.magicLinkUrl, charSet) +
@@ -701,14 +700,14 @@ public class GuestIdpAuthenticationRequestFilter extends OncePerRequestFilter {
             boolean hasStudentAffiliation = hasRequiredStudentAffiliation(user.allEduPersonAffiliations());
 
             //When we change the status of the response to NO_AUTH_CONTEXT EB stops the flow but this will be fixed upstream
-            boolean missingStudentAffiliation = authenticationContextClassReferences.contains(ACR.AFFILIATION_STUDENT) &&
+            boolean missingStudentAffiliation = ACR.containsAcr(authenticationContextClassReferences, ACR.AFFILIATION_STUDENT) &&
                     !hasStudentAffiliation;
-            boolean missingValidName = authenticationContextClassReferences.contains(ACR.VALIDATE_NAMES) &&
+            boolean missingValidName = ACR.containsAcr(authenticationContextClassReferences, ACR.VALIDATE_NAMES) &&
                     !hasValidatedName(user);
-            boolean missingExternalName = authenticationContextClassReferences.contains(ACR.VALIDATE_NAMES_EXTERNAL) &&
+            boolean missingExternalName = ACR.containsAcr(authenticationContextClassReferences, ACR.VALIDATE_NAMES_EXTERNAL) &&
                     !hasValidatedExternalName(user);
             Instant now = new Date().toInstant();
-            boolean missingLinkedInstitution = authenticationContextClassReferences.contains(ACR.LINKED_INSTITUTION) &&
+            boolean missingLinkedInstitution = ACR.containsAcr(authenticationContextClassReferences, ACR.LINKED_INSTITUTION) &&
                     (CollectionUtils.isEmpty(user.getLinkedAccounts()) || user.getLinkedAccounts().stream()
                             .allMatch(linkedAccount -> now.isAfter(linkedAccount.getExpiresAt().toInstant())));
 
