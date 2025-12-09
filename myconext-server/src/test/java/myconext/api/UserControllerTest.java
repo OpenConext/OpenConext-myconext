@@ -169,58 +169,47 @@ public class UserControllerTest extends AbstractIntegrationTest {
 
     @Test
     public void accountLinkingAndMfa() throws IOException {
-        // have both state
-        User user = userRepository.findOneUserByEmail("mdoe@example.com");
-        LinkedAccount linkedAccount = linkedAccount("John", "Doe", new Date());
-        user.getLinkedAccounts().add(linkedAccount);
-        // user.getSurfSecureId().put(SURFSecureID.RECOVERY_CODE, "93132464");
-        userRepository.save(user);
-
         String authnContext = readFile("request_authn_context_linked_institution_mfa.xml");
         Response response = samlAuthnRequestResponseWithLoa(null, "relay", authnContext);
         String authenticationRequestId = extractAuthenticationRequestIdFromAuthnResponse(response);
 
+        String location = response.getHeader("Location");
+        assertTrue(location.contains("/login"));
+        assertTrue(location.contains("stepup=true"));
+        assertTrue(location.contains("mfa=true"));
+
+        // Linking institution
+        User user = userRepository.findOneUserByEmail("mdoe@example.com");
+        LinkedAccount linkedAccount = linkedAccount("John", "Doe", new Date());
+        user.getLinkedAccounts().add(linkedAccount);
+        userRepository.save(user);
+
         ClientAuthenticationRequest clientAuthenticationRequest = new ClientAuthenticationRequest(authenticationRequestId, user, false, "repsonse");
         ClientAuthenticationResponse authenticationResponse = oneTimeLoginCodeRequest(clientAuthenticationRequest, HttpMethod.PUT);
 
-        // Added by Cursor verify
-        // It seems to skip the app check all the way, but we want to check that eventually
-        // SamlAuthenticationRequest samlAuthenticationRequest = authenticationRequestRepository.findById(authenticationResponse.authenticationRequestId).get();
-        // samlAuthenticationRequest.setTiqrFlow(true);
-        // authenticationRequestRepository.save(samlAuthenticationRequest);
+        // Setting MFA
+        SamlAuthenticationRequest samlAuthenticationRequest = authenticationRequestRepository.findById(authenticationResponse.authenticationRequestId).get();
+        samlAuthenticationRequest.setTiqrFlow(true);
+        authenticationRequestRepository.save(samlAuthenticationRequest);
 
         String samlResponse = samlResponse(authenticationResponse);
 
-        assertTrue(samlResponse.contains(ACR.LINKED_INSTITUTION));
+        assertTrue(samlResponse.contains(ACR.LINKED_INSTITUTION_MFA));
     }
 
     @Test
-    public void accountLinkingAndMfa_Linked() throws IOException {
-        // only linking
-    }
-
-    @Test
-    public void accountLinkingAndMfa_MfaAdded() throws IOException {
-        // only mfa
-    }
-
-    @Test
-    public void accountLinkingAndMfa_NotLinkedAndNoMfa() throws IOException {
-        // none
-    }
-
-    @Test
-    public void accountLinkingWithMfa() throws IOException {
+    public void accountLinkingAndMfa_Flow() throws IOException {
+        // Login
         String authnContext = readFile("request_authn_context_linked_institution_mfa.xml");
-        Response response = samlAuthnRequestResponseWithLoa(null, "relay", authnContext);
-        String location = response.getHeader("Location");
+        Response response1 = samlAuthnRequestResponseWithLoa(null, "relay", authnContext);
+        String location = response1.getHeader("Location");
 
         assertTrue(location.contains("/login"));
         assertTrue(location.contains("stepup=true"));
         assertTrue(location.contains("mfa=true"));
 
-        String authenticationRequestId = extractAuthenticationRequestIdFromAuthnResponse(response);
-
+        // Linked institution missing, triggers step-up
+        String authenticationRequestId = extractAuthenticationRequestIdFromAuthnResponse(response1);
         User user = userRepository.findOneUserByEmail("mdoe@example.com");
         ClientAuthenticationRequest clientAuthenticationRequest = new ClientAuthenticationRequest(authenticationRequestId, user, false, "repsonse");
         ClientAuthenticationResponse authenticationResponse = oneTimeLoginCodeRequest(clientAuthenticationRequest, HttpMethod.PUT);
@@ -236,38 +225,26 @@ public class UserControllerTest extends AbstractIntegrationTest {
         assertTrue(location2.contains("/stepup"));
         assertTrue(location2.contains("explanation=linked_institution"));
 
-        // Linking account
+        // Linking an institution
         LinkedAccount linkedAccount = linkedAccount("John", "Doe", new Date());
         user.getLinkedAccounts().add(linkedAccount);
         userRepository.save(user);
 
-        // Triggering magic endpoint again
-        SamlAuthenticationRequest samlAuthenticationRequest2 = authenticationRequestRepository.findById(authenticationResponse.authenticationRequestId).get();
+        // Skips step-up and redirects to app-required
         Response response3 = given().redirects().follow(false)
                 .when()
-                .queryParam("h", samlAuthenticationRequest2.getHash())
+                .queryParam("h", samlAuthenticationRequest.getHash())
                 .cookie(BROWSER_SESSION_COOKIE_NAME, "true")
                 .get("/saml/guest-idp/magic");
-
         String location3 = response3.getHeader("Location");
         assertTrue(location3.contains("app-required"));
 
-        user = userRepository.findOneUserByEmail("mdoe@example.com");
-        ClientAuthenticationRequest clientAuthenticationRequest2 = new ClientAuthenticationRequest(authenticationRequestId, user, false, "repsonse");
-        ClientAuthenticationResponse authenticationResponse2 = oneTimeLoginCodeRequest(clientAuthenticationRequest2, HttpMethod.PUT);
+        // Enabling MFA
+        samlAuthenticationRequest.setTiqrFlow(true);
+        authenticationRequestRepository.save(samlAuthenticationRequest);
 
-        SamlAuthenticationRequest samlAuthenticationRequest3 = authenticationRequestRepository.findById(authenticationResponse2.authenticationRequestId).get();
-        samlAuthenticationRequest3.setTiqrFlow(true);
-        authenticationRequestRepository.save(samlAuthenticationRequest3);
-        Response response4 = given().redirects().follow(false)
-                .when()
-                .queryParam("h", samlAuthenticationRequest3.getHash())
-                .cookie(BROWSER_SESSION_COOKIE_NAME, "true")
-                .get("/saml/guest-idp/magic");
-
-        System.out.println(response4.getBody().asString());
-
-        String samlResponse = samlResponse(authenticationResponse2);
+        // Calling magic endpoint and finalizing the flow
+        String samlResponse = samlResponse(authenticationResponse);
         assertTrue(samlResponse.contains(ACR.LINKED_INSTITUTION_MFA));
     }
 
