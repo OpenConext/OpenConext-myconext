@@ -13,6 +13,7 @@ import tiqr.org.model.RegistrationStatus;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.Arrays;
+import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -76,6 +77,7 @@ class TiqrCleanerTest extends AbstractIntegrationTest {
         Registration registration = new Registration();
         registration.setUpdated(oneDayAgo);
         registration.setStatus(status);
+        registration.setUserId(UUID.randomUUID().toString());
         registrationRepository.saveAll(Arrays.asList(registration));
     }
 
@@ -85,6 +87,7 @@ class TiqrCleanerTest extends AbstractIntegrationTest {
                 registrationRepository,
                 authenticationRepository,
                 enrollmentRepository,
+                userRepository,
                 mongoClient,
                 true,
                 databaseName);
