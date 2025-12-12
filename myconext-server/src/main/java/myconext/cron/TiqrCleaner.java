@@ -5,6 +5,7 @@ import com.mongodb.client.MongoClient;
 import myconext.repository.AuthenticationRepository;
 import myconext.repository.EnrollmentRepository;
 import myconext.repository.RegistrationRepository;
+import myconext.repository.UserRepository;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +19,7 @@ import tiqr.org.model.RegistrationStatus;
 
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
+import java.util.List;
 
 @Component
 public class TiqrCleaner extends AbstractNodeLeader {
@@ -29,11 +31,13 @@ public class TiqrCleaner extends AbstractNodeLeader {
     private final RegistrationRepository registrationRepository;
     private final AuthenticationRepository authenticationRepository;
     private final EnrollmentRepository enrollmentRepository;
+    private final UserRepository userRepository;
 
     @Autowired
     public TiqrCleaner(RegistrationRepository registrationRepository,
                        AuthenticationRepository authenticationRepository,
                        EnrollmentRepository enrollmentRepository,
+                       UserRepository userRepository,
                        MongoClient mongoClient,
                        @Value("${cron.node-cron-job-responsible}") boolean cronJobResponsible,
                        @Value("${mongodb_db}") String databaseName) {
@@ -42,18 +46,31 @@ public class TiqrCleaner extends AbstractNodeLeader {
         this.registrationRepository = registrationRepository;
         this.authenticationRepository = authenticationRepository;
         this.enrollmentRepository = enrollmentRepository;
+        this.userRepository = userRepository;
     }
 
     @Scheduled(cron = "${cron.token-cleaner-expression}")
     public void clean() {
-        super.perform("TiqrCleaner#clean", () -> doClean());
+        super.perform("TiqrCleaner#clean", this::doClean);
     }
 
     private void doClean() {
         Instant hourAgo = Instant.now().minus(1, ChronoUnit.HOURS);
 
         info(Authentication.class, authenticationRepository.deleteByUpdatedBefore(hourAgo));
-        info(Registration.class, registrationRepository.deleteByUpdatedBeforeAndStatus(hourAgo, RegistrationStatus.INITIALIZED));
+
+        List<Registration> registrations = registrationRepository.findByUpdatedBeforeAndStatus(hourAgo, RegistrationStatus.INITIALIZED);
+        long deletedCount = 0;
+        for (Registration registration : registrations) {
+            userRepository.findById(registration.getUserId()).ifPresent(user -> {
+                user.getSurfSecureId().clear();
+                userRepository.save(user);
+            });
+            registrationRepository.delete(registration);
+            deletedCount++;
+        }
+        info(Registration.class, deletedCount);
+
         info(Enrollment.class, enrollmentRepository.deleteByUpdatedBefore(hourAgo));
     }
 
