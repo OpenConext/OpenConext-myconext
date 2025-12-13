@@ -65,6 +65,7 @@ public class TiqrCleaner extends AbstractNodeLeader {
             userRepository.findById(registration.getUserId()).ifPresent(user -> {
                 user.getSurfSecureId().clear();
                 userRepository.save(user);
+                LOG.info(String.format("Clean surfSecureId settings for user %s, because of stale and initialized registration", user.getEmail()));
             });
             registrationRepository.delete(registration);
             deletedCount++;

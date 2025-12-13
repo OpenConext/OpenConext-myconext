@@ -2,6 +2,8 @@ package myconext.cron;
 
 import com.mongodb.client.MongoClient;
 import myconext.AbstractIntegrationTest;
+import myconext.model.User;
+import myconext.tiqr.SURFSecureID;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -16,6 +18,7 @@ import java.util.Arrays;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class TiqrCleanerTest extends AbstractIntegrationTest {
 
@@ -31,7 +34,8 @@ class TiqrCleanerTest extends AbstractIntegrationTest {
 
         Instant oneDayAgo = Instant.now().minus(1, ChronoUnit.DAYS);
 
-        registration(oneDayAgo, RegistrationStatus.INITIALIZED);
+        User user = user();
+        registration(oneDayAgo, RegistrationStatus.INITIALIZED, user.getId());
         registration(oneDayAgo, RegistrationStatus.FINALIZED);
         assertEquals(2, registrationRepository.count());
 
@@ -49,6 +53,8 @@ class TiqrCleanerTest extends AbstractIntegrationTest {
 
         assertEquals(1, registrationRepository.count());
         assertEquals(RegistrationStatus.FINALIZED, registrationRepository.findAll().get(0).getStatus());
+        User userFromDB = userRepository.findOneUserByEmail(user.getEmail());
+        assertTrue(userFromDB.getSurfSecureId().isEmpty());
         assertEquals(0, authenticationRepository.count());
         assertEquals(0, enrollmentRepository.count());
 
@@ -74,13 +80,24 @@ class TiqrCleanerTest extends AbstractIntegrationTest {
     }
 
     private void registration(Instant oneDayAgo, RegistrationStatus status) {
+        this.registration(oneDayAgo, status, UUID.randomUUID().toString());
+    }
+
+    private void registration(Instant oneDayAgo, RegistrationStatus status, String userId) {
         Registration registration = new Registration();
         registration.setUpdated(oneDayAgo);
         registration.setStatus(status);
-        registration.setUserId(UUID.randomUUID().toString());
+        registration.setUserId(userId);
         registrationRepository.saveAll(Arrays.asList(registration));
     }
 
+    private User user() {
+        User user = new User();
+        user.getSurfSecureId().put(SURFSecureID.PHONE_VERIFIED, true);
+        user.setEmail("q@ex.com");
+        userRepository.save(user);
+        return user;
+    }
 
     private TiqrCleaner getTiqrCleaner() {
         return new TiqrCleaner(
