@@ -2866,6 +2866,10 @@ SHARED:
       COPY:
         en: Try another email address
         nl: Probeer een ander emailadres
+    OrDivider:
+      COPY:
+        en: or
+        nl: of
   Options:
     Header:
       COPY:

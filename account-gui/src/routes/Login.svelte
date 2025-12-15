@@ -143,6 +143,14 @@
         outline: none;
     }
 
+    .or-divider{
+      display: flex;
+      justify-content: center;
+      align-items: center;
+
+      margin-top: 25px;
+    }
+
 </style>
 {#if showSpinner}
     <Spinner/>
@@ -199,7 +207,9 @@
                 showButton="true"
     />
 
-    <div style="width: 100%"><span style="width: 100%;height: 0px;border: 1px solid #000000;"></span>of<span style="height: 0px;border: 1px solid #000000;"></span></div>
+    <div class="or-divider">
+        <span>{I18n.t("Login.OrDivider.COPY")}</span>
+    </div>
 
     <Button href="/"
             label={I18n.t("Login.TryOtherEmail.COPY")}
