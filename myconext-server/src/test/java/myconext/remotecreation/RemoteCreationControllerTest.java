@@ -354,6 +354,11 @@ class RemoteCreationControllerTest extends AbstractIntegrationTest {
                 });
         externalEduIDResult.setBrinCodes(List.of("ST42"));
         externalEduIDResult.setVerification(Verification.Geverifieerd);
+        externalEduIDResult.setChosenName("Hadda");
+        externalEduIDResult.setFirstName("Hedwig");
+        externalEduIDResult.setLastName("Marken");
+        externalEduIDResult.setLastNamePrefix("bis");
+
         given()
                 .when()
                 .auth().preemptive().basic(userName, password)
@@ -373,6 +378,13 @@ class RemoteCreationControllerTest extends AbstractIntegrationTest {
         assertEquals(externalEduIDResult.getBrinCodes(), externalLinkedAccount.getBrinCodes());
         assertEquals("student@aap.nl", externalLinkedAccount.getAffiliations().getFirst());
         assertEquals(Verification.Geverifieerd, externalLinkedAccount.getVerification());
+        //Apparently things can change
+        assertEquals(externalEduIDResult.getChosenName(), externalLinkedAccount.getChosenName());
+        assertEquals(externalEduIDResult.getFirstName(), externalLinkedAccount.getFirstName());
+        assertEquals(externalEduIDResult.getLastName(), externalLinkedAccount.getPreferredLastName());
+        assertEquals(externalEduIDResult.getLastName(), externalLinkedAccount.getLegalLastName());
+        assertEquals(externalEduIDResult.getLastNamePrefix(), externalLinkedAccount.getLegalLastNamePrefix());
+        assertEquals(externalEduIDResult.getLastNamePrefix(), externalLinkedAccount.getPreferredLastNamePrefix());
     }
 
     @Test

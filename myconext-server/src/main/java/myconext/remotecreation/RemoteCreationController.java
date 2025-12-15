@@ -356,8 +356,8 @@ public class RemoteCreationController implements HasUserRepository {
 
         /*
          * There must be an existing User for the eduIDValue, because the account was created earlier with the POST eduid-create.
-         * If there was an existing User for the email then the user was redirected and login with the eduID account for this email. In this case
-         * we create new eduID value for the remote API institutionGUID
+         * If there was an existing User for the email, then the user was redirected and logged in with the eduID account for this email. In this case
+         * we create a new eduID value for the remote API institutionGUID
          */
         User user = this.findUserByEduIDValue(eduIDValue)
                 .orElseThrow(() -> new UserNotFoundException(String.format("User not found by eduID %s", eduIDValue)));
@@ -371,11 +371,7 @@ public class RemoteCreationController implements HasUserRepository {
                     !Verification.Ongeverifieerd.equals(externalEduID.getVerification())) {
                 userIsValidated.set(true);
             }
-            //Not all external attributes can be changed
-            externalLinkedAccount.setVerification(externalEduID.getVerification());
-            externalLinkedAccount.setAffiliations(attributeMapper.externalAffiliations(externalEduID.getBrinCodes()));
-            externalLinkedAccount.setBrinCodes(externalEduID.getBrinCodes());
-            externalLinkedAccount.setDateOfBirth(AttributeMapper.parseDate(externalEduID.getDateOfBirth()));
+            externalLinkedAccount.updateAttributesFromUpdateExternalEduID(externalEduID, this.attributeMapper);
         }, () -> {
             //Create external account for this remoteAPI user
             RemoteProvider remoteProvider = getRemoteProvider(remoteUser, remoteUserName);
