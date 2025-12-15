@@ -49,6 +49,7 @@
     import AttributeMissing from "./routes/AttributeMissing.svelte";
     import RateLimited from "./routes/RateLimited.svelte";
     import InstallApp from "./routes/InstallApp.svelte";
+    import RequestSuccess from "./routes/RequestSuccess.svelte";
 
     export let url = "";
 
@@ -161,6 +162,9 @@
                 </Route>
                 <Route path="/request/:id" let:params>
                     <Request id="{params.id}"/>
+                </Route>
+                <Route path="/request-success">
+                    <RequestSuccess/>
                 </Route>
                 <Route path="/useapp/:id" let:params>
                     <UseApp id="{params.id}"/>

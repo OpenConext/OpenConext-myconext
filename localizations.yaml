@@ -2559,6 +2559,18 @@ SHARED:
           Controleer je inbox. We hebben je de e-mail met de link opnieuw
           verzonden.
   Login:
+    RequestSuccessHeader:
+      COPY:
+        en: Your eduID has been created
+        nl: Je eduID is aangemaakt
+    RequestSuccessInfo:
+      COPY:
+        en: We have also sent you a confirmation email.
+        nl: We hebben je ook een bevestigingsmail gestuurd.
+    RequestSuccessNext:
+      COPY:
+        en: Manage your eduID (on mijn.eduid.nl)
+        nl: Beheer je eduID (op mijn.eduid.nl)
     RequestEduId:
       COPY:
         en: No eduID yet?
