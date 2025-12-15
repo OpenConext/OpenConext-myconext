@@ -969,14 +969,6 @@ SHARED:
       COPY:
         en: Password
         nl: Wachtwoord
-    PasswordActivated:
-      COPY:
-        en: Activated on %1{{s}}
-        nl: Geactiveerd op %1{{s}}
-    CredentialActivated:
-      COPY:
-        en: "%1{{s}}: Activated on %2{{s}}"
-        nl: "%1{{s}}: Geactiveerd op %2{{s}}"
     TwoFAKey:
       COPY:
         en: Login with app
@@ -1095,8 +1087,8 @@ SHARED:
           nl: Laatst ingelogd op
       Activated:
         COPY:
-          en: Activated on %1{{s}}
-          nl: Geactiveerd op %1{{s}}
+          en: Activated on
+          nl: Geactiveerd op
       DateTimeOn:
         COPY:
           en: 'on'
@@ -3559,6 +3551,25 @@ SHARED:
           en: I don't have an eduID
           nl: Ik heb nog geen eduID
     FirstTimeDialog:
+      ConnectButtonTitle:
+        COPY:
+          en: Connect your educational institution
+          nl: Koppel je onderwijsinstelling
+      MainTextTitle:
+        FirstPart:
+          COPY:
+            en: Do you study in the Netherlands?
+            nl: Studeer je in Nederland?
+        SecondPart:
+          COPY:
+            en: Connect your educational institution
+            nl: Koppel je onderwijsinstelling
+      MainText:
+        COPY:
+          en: >-
+            We need to verify who you are before you can use eduID for services in the Dutch education system.
+          nl: >-
+            We moeten eerst zeker zijn wie je bent. Alleen zo kun je eduID gebruiken voor diensten in het Nederlandse onderwijs.
       MainTextPoint1:
         COPY:
           en: Your full name, verified by an official party
@@ -3571,6 +3582,29 @@ SHARED:
         COPY:
           en: Your current institution
           nl: Je huidige instelling
+
+      MainTextFirstBoldPart:
+        COPY:
+          en: When you study in the Netherlands
+          nl: Wanneer je in Nederland studeert
+      MainTextSecondBoldPart:
+        COPY:
+          en: >-
+            Provide the following information:
+          nl: >-
+            Voeg deze gegevens toe
+      AddInformationText:
+        COPY:
+          en: You can provide this information by connecting your educational institution through SURFconext.
+          nl: Je voegt deze gegevens toe door je onderwijsinstelling te koppelen via SURFconext.
+      AddInformationBoldPart:
+        COPY:
+          en: Add this information
+          nl: Voeg deze informatie toe
+      SkipButtonTitle:
+        COPY:
+          en: Skip this
+          nl: Overslaan
     Explanation:
       MainTitleLabel:
         COPY:
@@ -3863,6 +3897,10 @@ SHARED:
       COPY:
         en: Could not verify one-time code
         nl: Verifiëren van eenmalige code mislukt
+    InvalidLinkError:
+      COPY:
+        en: Invalid link received, please try again later
+        nl: Ontvangen link is ongeldig, probeer later opnieuw
     EmailCodeError:
       Title:
         COPY:
@@ -3909,75 +3947,53 @@ SHARED:
               en: "Authorization code exchange failed: %1{{s}}."
               nl: "Autorisatiecode-uitwisseling mislukt: %1{{s}}."
   VerifyIdentity:
-    TitleHasInternalLink:
-      COPY:
-        en: Add an institution
-        nl: Voeg een instelling toe
-    SubtitleHasInternalLink:
-      COPY:
-        en: By adding an educational or research institution, you prove to eduID that you are a student or employee of that institution.
-        nl: Door een onderwijs- of onderzoeksinstelling toe te voegen, bewijs je aan eduID dat je een student of medewerker bent van die instelling.
     Title:
-      FirstLine:
-        COPY:
-          en: Confirm your identity
-          nl: Bevestig wie je bent
-      SecondLine:
-        COPY:
-          en: Quick and easy
-          nl: Snel en eenvoudig
+      COPY:
+        en: Confirm your identity
+        nl: Bevestig wie je bent
     Subtitle:
       COPY:
-        en: Select a method to confirm who you are. Your first name, surname, and possibly your date of birth will be added to your eduID afterwards.
-        nl: Kies een manier om te bewijzen wie je bent. Daarna worden je voornaam, achternaam en eventueel geboortedatum aan je eduID toegevoegd.
-    VerifyViaDutchInstitution:
-      Title:
+        en: Use one of the following services to prove to us who you are
+        nl: Gebruik een van de volgende methodes om te bewijzen wie je bent
+    DoYouOwnAnAccount:
+      Text:
         COPY:
-          en: Dutch educational or research institution
-          nl: Nederlandse onderwijs- of onderzoeksinstelling
-      TitleHasInternalLink:
+          en: Do you own an account at a Dutch educational or research institute?
+          nl: Heb je een account bij een Nederlands school of onderzoeksinstelling?
+      BoldPart:
         COPY:
-          en: Add your institution by logging in
-          nl: Voeg je instelling toe door in te loggen
+          en: Do you own
+          nl: Heb je een account
       Button:
         COPY:
-          en: Select your institution
-          nl: Kies je instelling
-    VerifyWithBankApp:
-      Title:
+          en: Use your school or work account
+          nl: "Gebruik je school- of werkaccount"
+    IfYouDontOwnAnAccount:
+      Text:
         COPY:
-          en: Dutch bank app
-          nl: Nederlandse bank-app
-      Button:
+          en: "If you don't own an account at a Dutch educational or research insitute, choose one of the following alternatives"
+          nl: Als je geen account hebt bij een Nederlandse school of onderzoeksinstelling, kies dan een van de volgende mogelijkheden
+      BoldPart:
         COPY:
-          en: Select your bank
-          nl: Kies je bank
-    VerifyWithAEuropianId:
-      Title:
+          en: "If you don't own"
+          nl: Als je geen account hebt
+    Button:
+      UseADutchBank:
         COPY:
-          en: European ID
-          nl: Europese identiteit
-      Button:
+          en: Use a Dutch bank
+          nl: Gebruik je bank
+      UseAEuropeanId:
         COPY:
-          en: Select your country
-          nl: Kies je land
-    OtherOptions:
+          en: Use a European ID
+          nl: Gebruik een Europees ID
+      ContactServiceDesk:
+        COPY:
+          en: Contact the Service Desk
+          nl: Neem contact op met de Service Desk
+    SupportLink:
       COPY:
-        en: Show other options
-        nl: Toon andere manieren
-    VisitSupport:
-      Full:
-        COPY:
-          en: Can’t use these methods? Visit our Help page.
-          nl: "Kun je deze manieren niet gebruiken? Bezoek dan onze Hulp-pagina."
-      HighlightedPart:
-        COPY:
-          en: "Help page"
-          nl: "Hulp-pagina"
-      Link:
-        COPY:
-          en: "https://eduid.nl/help-en/"
-          nl: "https://eduid.nl/help/"
+        en: "https://eduid.nl/support/?lang=en"
+        nl: "https://eduid.nl/support/?lang=nl"
   SelectYourBank:
     Title:
       COPY:
