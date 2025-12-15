@@ -559,7 +559,7 @@ const nl = {
             info: {
                 subheader: "Verifieer je identiteit, snel en gemakkelijk",
                 title: "Verificatie",
-                please: "Verifieer dat je bent wie je zegt dat je bent.",
+                please: "Gebruik een van de volgende methodes om je bewijzen wie je bent.",
                 educationalInstitution: "Verifieer via een Nederlandse onderwijsinstelling",
                 selectInstitution: "Selecteer je instelling",
                 other: "Meer opties...",
@@ -568,7 +568,7 @@ const nl = {
                 verifyEuropeanId: "Verifieer met een Europees ID",
                 supportEuropean: "Dit kan met de inlogmiddelen van België, Denemarken, Duitsland, Estland, Italië, Kroatië, Litouwen, Letland, Liechtenstein, Luxemburg, Malta, Oostenrijk, Polen, Portugal, Slowakije, Slovenië, Spanje, Tsjechië en Zweden",
                 useEuropean: "Selecteer een Europees ID",
-                cantUse: "Ik kan geen van bovenstaande manieren gebruiken",
+                cantUse: "Neem contact met de Service Desk",
                 help: "Kun je deze opties niet gebruiken, bezoek dan onze <a href='https://eduid.nl/help' target='_blank' rel='noreferrer'>support pagina's</a>"
             },
             bank: {

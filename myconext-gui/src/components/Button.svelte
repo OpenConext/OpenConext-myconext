@@ -21,6 +21,8 @@
     export let inline = undefined;
     export let fullSize = false;
 
+    export let big = false
+
     const handleLinkClick = e => e.key === " " && e.target.click();
 
 </script>
@@ -67,6 +69,17 @@
     }
 
     .button.cancel:hover {
+        color: #0066b8;
+        background-color: whitesmoke;
+    }
+
+    .button.secondary {
+        color: #5E6873;
+        background-color: white;
+        border: 1px solid #B2B6BE;
+    }
+
+    .button.secondary:hover {
         color: #0066b8;
         background-color: whitesmoke;
     }
@@ -225,6 +238,22 @@
         top: 8px;
     }
 
+    .big {
+      height: 48px;
+      &.button.icon {
+        justify-content: center;
+      }
+    }
+
+    :global(a.button.big span.icon svg) {
+      justify-content: center;
+      position: absolute;
+      width: 30px;
+      height: 30px;
+      left: 6px;
+      top: 8px;
+    }
+
 </style>
 
 {#if download}
@@ -256,6 +285,7 @@
        class:larger={larger}
        class:full-size={fullSize}
        class:disabled={disabled}
+       class:big={big}
        on:click|preventDefault|stopPropagation={() => !disabled && onClick()}
        on:keydown={handleLinkClick}>
         {#if icon}
