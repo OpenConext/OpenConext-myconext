@@ -3933,16 +3933,21 @@ SHARED:
     VerifyViaDutchInstitution:
       Title:
         COPY:
-          en: Dutch educational or research institution
-          nl: Nederlandse onderwijs- of onderzoeksinstelling
+          en: <b>Do you own</b> an account at a Dutch educational or research institute?
+          nl: <b>Heb je</b> een account bij een Nederlands school of onderzoeksinstelling?
       TitleHasInternalLink:
         COPY:
           en: Add your institution by logging in
           nl: Voeg je instelling toe door in te loggen
       Button:
         COPY:
-          en: Select your institution
-          nl: Kies je instelling
+          en: Use your school or work account
+          nl: Gebruik je school- of werkaccount
+    VerifyViaOptions:
+      Title:
+        COPY:
+          en: <b>If you don't own</b> an account at a Dutch educational or research insitute, choose one of the following alternatives
+          nl: <b>Als je geen</b> account hebt bij een Nederlandse school of onderzoeksinstelling, kies dan een van de volgende mogelijkheden
     VerifyWithBankApp:
       Title:
         COPY:
@@ -3950,8 +3955,8 @@ SHARED:
           nl: Nederlandse bank-app
       Button:
         COPY:
-          en: Select your bank
-          nl: Kies je bank
+          en: Use a Dutch bank
+          nl: Gebruik je bank
     VerifyWithAEuropianId:
       Title:
         COPY:
@@ -3959,8 +3964,8 @@ SHARED:
           nl: Europese identiteit
       Button:
         COPY:
-          en: Select your country
-          nl: Kies je land
+          en: Use a European ID
+          nl: Gebruik een Europees ID
     OtherOptions:
       COPY:
         en: Show other options

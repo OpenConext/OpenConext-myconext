@@ -1,17 +1,16 @@
 <script>
     import I18n from "../locale/I18n";
-    import studentIcon from "../icons/verify/student.svg?raw";
-    import bankIcon from "../icons/verify/bank.svg?raw";
     import Button from "../components/Button.svelte";
-    import idinIcon from "../icons/verify/idin-logo.svg?raw";
-    import eIDASIcon from "../icons/verify/eIDAS.svg?raw";
-    import europeanSvg from "../icons/verify/european.svg?raw";
     import {config} from "../stores/user";
     import arrowLeftIcon from "../icons/verify/arrow-left.svg?raw";
     import {logo} from "./banks";
     import alertSvg from "../icons/alert-circle.svg?raw";
     import Spinner from "../components/Spinner.svelte";
     import ServiceDesk from "./ServiceDesk.svelte";
+
+    import idinSvg from "../icons/verify/idin.svg?raw";
+    import eIDASSvg from "../icons/verify/eIDAS/eIDAS logo, Monochromatisch, wit.svg?raw";
+    import customerSupportSvg from "../icons/verify/headphones-customer-support-human 1.svg?raw";
 
     export let addInstitution;
     export let addBank;
@@ -22,7 +21,6 @@
     export let showServiceDesk = false;
     export let showControlCode = false;
 
-    let showOtherOptions = false;
     let showBankOptions = false;
     let busyProcessing = false;
 
@@ -31,7 +29,6 @@
         action();
     }
 
-    $: shouldShowOtherOptions = showOtherOptions && !showServiceDesk && !showControlCode;
     $: shouldShowServiceDesk = showBankOptions && !busyProcessing && !showServiceDesk && !showControlCode;
 </script>
 
@@ -46,6 +43,38 @@
             font-size: 16px;
         }
 
+    }
+
+    div.info-id-verify-container {
+      display: flex;
+      flex-direction: column;
+      position: relative;
+
+      p {
+        margin: 25px auto 0 0;
+        font-size: 16px;
+      }
+    }
+
+    .alert-info {
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      background-color: #DFF4FF;
+      padding: 15px;
+
+      div.content {
+        display: flex;
+        flex-direction: column;
+
+        p.eea-note {
+          font-size: 12px;
+        }
+      }
+
+      span {
+        line-height: 22px;
+      }
     }
 
     div.header-container {
@@ -88,10 +117,6 @@
 
         .button-container {
             display: flex;
-        }
-
-        :global(a.button) {
-            margin: 25px auto 0 0;
         }
     }
 
@@ -147,77 +172,76 @@
             margin-right: 20px;
         }
     }
+    :global(a.button) {
+      margin: 25px auto 0 0;
+    }
 </style>
 
 {#if busyProcessing}
     <Spinner/>
 {/if}
 <div class="account-link-mod">
-
-
     {#if !showServiceDesk && !showControlCode && (!showBankOptions || busyProcessing)}
         <div class="info-container">
-            <h3 class="header">{I18n.t("verify.modal.info.subheader")}</h3>
             <p>{showIdinOptions ? I18n.t("verify.modal.info.please") : I18n.t("VerifyIdentity.SubtitleHasInternalLink.COPY")}</p>
         </div>
-        <div class="choice-container">
-            <div class="choice">
-                <p class="question">{showIdinOptions
-                    ? I18n.t("VerifyIdentity.VerifyViaDutchInstitution.Title.COPY")
-                    : I18n.t("VerifyIdentity.VerifyViaDutchInstitution.TitleHasInternalLink.COPY")}</p>
-                {@html studentIcon}
-            </div>
+        <div class="alert-info">
+            <p class="question">{showIdinOptions
+                ? I18n.t("VerifyIdentity.VerifyViaDutchInstitution.Title.COPY")
+                : I18n.t("VerifyIdentity.VerifyViaDutchInstitution.TitleHasInternalLink.COPY")}</p>
             <div class="button-container">
                 <Button label={I18n.t("VerifyIdentity.VerifyViaDutchInstitution.Button.COPY")}
                         larger={true}
-                        custom={true}
+                        custom={false}
                         disabled={busyProcessing}
-                        onClick={() => proceed(addInstitution)}/>
+                        onClick={() => proceed(addInstitution)}
+                        fullSize="true"
+                />
             </div>
         </div>
-        {#if !showOtherOptions && $config.featureIdVerify && showIdinOptions && !showServiceDesk && !showControlCode}
-            <div class="choice-container other-options" on:click={() => showOtherOptions = !showOtherOptions}>
-                <p>{I18n.t("verify.modal.info.other")}</p>
+        {#if $config.featureIdVerify && showIdinOptions && !showServiceDesk && !showControlCode}
+            <div class="info-id-verify-container">
+                <p>{I18n.t("VerifyIdentity.VerifyViaOptions.Title.COPY")}</p>
             </div>
-        {/if}
-        {#if shouldShowOtherOptions}
-            <div class="choice-container">
-                <div class="choice">
-                    <p class="question">{I18n.t("VerifyIdentity.VerifyWithBankApp.Title.COPY")}</p>
-                    {@html bankIcon}
-                </div>
-                <div class="button-container">
-                    <Button label={I18n.t("VerifyIdentity.VerifyWithBankApp.Button.COPY")}
-                            icon={idinIcon}
-                            custom={true}
-                            disabled={busyProcessing}
-                            larger={true}
-                            onClick={() => showBankOptions = !showBankOptions}/>
-
-                </div>
+            <div class="button-container">
+                <Button label={I18n.t("VerifyIdentity.VerifyWithBankApp.Button.COPY")}
+                        icon={idinSvg}
+                        custom={false}
+                        disabled={busyProcessing}
+                        larger={true}
+                        onClick={() => showBankOptions = !showBankOptions}
+                        className="secondary"
+                        fullSize="true"
+                        big="true"
+                />
             </div>
-            <div class="choice-container">
-                <div class="choice">
-                    <p class="question">{I18n.t("VerifyIdentity.VerifyWithAEuropianId.Title.COPY")}</p>
-                    {@html europeanSvg}
-                </div>
-                <p class="support">
-                    {I18n.t("verify.modal.info.supportEuropean")}
-                </p>
-                <div class="button-container">
-                    <Button label={I18n.t("VerifyIdentity.VerifyWithAEuropianId.Button.COPY")}
-                            icon={eIDASIcon}
-                            custom={true}
-                            disabled={busyProcessing}
-                            larger={true}
-                            onClick={() => proceed(addEuropean)}/>
-                </div>
+            <div class="button-container">
+                <Button label={I18n.t("VerifyIdentity.VerifyWithAEuropianId.Button.COPY")}
+                        icon={eIDASSvg}
+                        custom={false}
+                        disabled={busyProcessing}
+                        larger={true}
+                        onClick={() => proceed(addEuropean)}
+                        className="secondary"
+                        fullSize="true"
+                        big="true"
+                />
             </div>
             {#if $config.featureServiceDeskActive}
-                <div class="choice-container other-options" on:click={() => showServiceDesk = !showServiceDesk}>
-                    <p>{I18n.t("verify.modal.info.cantUse")}</p>
+                <div class="button-container">
+                    <Button label={I18n.t("verify.modal.info.cantUse")}
+                            icon={customerSupportSvg}
+                            custom={false}
+                            disabled={busyProcessing}
+                            larger={true}
+                            onClick={() => showServiceDesk = !showServiceDesk}
+                            className="secondary"
+                            fullSize="true"
+                            big="true"
+                    />
                 </div>
             {/if}
+
         {/if}
     {/if}
     {#if shouldShowServiceDesk}
