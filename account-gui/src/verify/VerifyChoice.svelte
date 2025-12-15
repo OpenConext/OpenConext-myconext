@@ -203,7 +203,7 @@
         </div>
         {#if showInstitutionOption}
             <div class="alert-info">
-                <p>{I18n.t("VerifyIdentity.VerifyViaDutchInstitution.Title.COPY")}</p>
+                <p>{@html I18n.t("VerifyIdentity.VerifyViaDutchInstitution.Title.COPY")}</p>
                 <Button label={I18n.t("VerifyIdentity.VerifyViaDutchInstitution.Button.COPY")}
                         large={true}
                         disabled={busyProcessing}
@@ -212,7 +212,7 @@
         {/if}
         {#if otherOptionsAllowed && showInstitutionOption}
             <div class="info-id-verify-container">
-                <p>{I18n.t("VerifyIdentity.VerifyViaOptions.Title.COPY")}</p>
+                <p>{@html I18n.t("VerifyIdentity.VerifyViaOptions.Title.COPY")}</p>
             </div>
             <Button label={I18n.t("VerifyIdentity.VerifyWithBankApp.Button.COPY")}
                     icon={idinSvg}

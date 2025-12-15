@@ -186,7 +186,7 @@
             <p>{showIdinOptions ? I18n.t("verify.modal.info.please") : I18n.t("VerifyIdentity.SubtitleHasInternalLink.COPY")}</p>
         </div>
         <div class="alert-info">
-            <p class="question">{showIdinOptions
+            <p class="question">{@html showIdinOptions
                 ? I18n.t("VerifyIdentity.VerifyViaDutchInstitution.Title.COPY")
                 : I18n.t("VerifyIdentity.VerifyViaDutchInstitution.TitleHasInternalLink.COPY")}</p>
             <div class="button-container">
@@ -201,7 +201,7 @@
         </div>
         {#if $config.featureIdVerify && showIdinOptions && !showServiceDesk && !showControlCode}
             <div class="info-id-verify-container">
-                <p>{I18n.t("VerifyIdentity.VerifyViaOptions.Title.COPY")}</p>
+                <p>{@html I18n.t("VerifyIdentity.VerifyViaOptions.Title.COPY")}</p>
             </div>
             <div class="button-container">
                 <Button label={I18n.t("VerifyIdentity.VerifyWithBankApp.Button.COPY")}
