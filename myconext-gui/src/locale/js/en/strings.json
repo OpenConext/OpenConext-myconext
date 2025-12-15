@@ -584,6 +584,7 @@
   "Login.OptionsLink.COPY": "login option.",
   "Login.RateLimited.COPY": "You are still suspended. Try again in %1$s minutes.",
   "Login.TryOtherEmail.COPY": "Try another email address",
+  "Login.OrDivider.COPY": "or",
   "Options.Header.COPY": "How do you want to login?",
   "Options.NoLogin.COPY": "Still not able to login?",
   "Options.Learn.COPY": "Learn how to",

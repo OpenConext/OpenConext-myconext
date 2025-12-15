@@ -584,6 +584,7 @@
   "Login.OptionsLink.COPY": "inlogmethode.",
   "Login.RateLimited.COPY": "Je bent nog steeds geschorst. Probeer het over %1$s minuten opnieuw.",
   "Login.TryOtherEmail.COPY": "Probeer een ander emailadres",
+  "Login.OrDivider.COPY": "of",
   "Options.Header.COPY": "Hoe wil je inloggen?",
   "Options.NoLogin.COPY": "Kun je nog niet inloggen?",
   "Options.Learn.COPY": "Zie hoe je jouw",
