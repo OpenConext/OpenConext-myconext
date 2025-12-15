@@ -17,6 +17,7 @@
     import {isEmpty} from "../utils/utils.js";
     import Alert from "../components/Alert.svelte";
     import AlertType from "../constants/AlertType.js";
+    import SubContent from "../components/SubContent.svelte";
 
     export let id;
 
@@ -348,3 +349,8 @@
     </div>
 </div>
 </form>
+<div hidden={emailInUse}>
+    <SubContent question={I18n.t("Login.AlreadyGuestAccount.COPY")}
+                linkText={I18n.t("Login.LoginEduId.COPY")}
+                route="/login/{id}" interContent="true"/>
+</div>

@@ -1,10 +1,12 @@
 <script>
+    import {links} from "../stores/conf";
     import I18n from "../locale/I18n";
     import {onMount} from "svelte";
     import ImageContainer from "../components/ImageContainer.svelte";
     import icon from "../icons/redesign/undraw_Order_confirmed_re_g0if 1.svg?raw";
     import Button from "../components/Button.svelte";
 
+    $links.displayBackArrow = false;
     let newUser = null;
 
     onMount(() => {

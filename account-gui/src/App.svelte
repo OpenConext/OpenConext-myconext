@@ -229,11 +229,6 @@
             </Router>
         </div>
         <Router url="{url}">
-            <Route path="/request/:id" let:params>
-                <SubContent question={I18n.t("Login.AlreadyGuestAccount.COPY")}
-                            linkText={I18n.t("Login.LoginEduId.COPY")}
-                            route="/login/{params.id}"/>
-            </Route>
             <Route path="/useapp/:id" let:params>
                 <SubContent question={I18n.t("Login.NoAppAccess.COPY")}
                             preLink={I18n.t("Login.UseAnother.COPY")}
@@ -247,12 +242,6 @@
                             route="/options/{params.id}"/>
             </Route>
             <Route path="/usecode/:id" let:params>
-                <SubContent question={I18n.t("Login.NoMailAccess.COPY")}
-                            preLink={I18n.t("Login.UseAnother.COPY")}
-                            linkText={I18n.t("Login.OptionsLink.COPY")}
-                            route="/options/{params.id}"/>
-            </Route>
-            <Route path="/code/:id" let:params>
                 <SubContent question={I18n.t("Login.NoMailAccess.COPY")}
                             preLink={I18n.t("Login.UseAnother.COPY")}
                             linkText={I18n.t("Login.OptionsLink.COPY")}
