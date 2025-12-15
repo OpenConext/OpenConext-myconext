@@ -225,11 +225,6 @@
             </Router>
         </div>
         <Router url="{url}">
-            <Route path="/login/:id" let:params>
-                <SubContent question={I18n.t("Login.RequestEduId.COPY")}
-                            linkText={I18n.t("Login.RequestEduId2.COPY")}
-                            route="/request/{params.id}"/>
-            </Route>
             <Route path="/request/:id" let:params>
                 <SubContent question={I18n.t("Login.AlreadyGuestAccount.COPY")}
                             linkText={I18n.t("Login.LoginEduId.COPY")}

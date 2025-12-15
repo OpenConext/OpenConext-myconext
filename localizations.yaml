@@ -2573,8 +2573,8 @@ SHARED:
         nl: Nog geen eduID?
     RequestEduId2:
       COPY:
-        en: Create an eduID
-        nl: eduID aanmaken
+        en: Create directly
+        nl: Direct aanmaken
     LoginEduId:
       COPY:
         en: Login
@@ -2862,6 +2862,10 @@ SHARED:
       COPY:
         en: You are still suspended. Try again in %1$s minutes.
         nl: Je bent nog steeds geschorst. Probeer het over %1$s minuten opnieuw.
+    TryOtherEmail:
+      COPY:
+        en: Try another email address
+        nl: Probeer een ander emailadres
   Options:
     Header:
       COPY:
