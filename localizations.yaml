@@ -2466,16 +2466,8 @@ SHARED:
         nl: Ongeldig e-mailadres
     InstitutionDomainNameWarning:
       COPY:
-        en: >-
-          This appears to be an email address from an educational
-          or research institution. Note: if, in the future, you no
-          longer study or work at this institution, you will lose
-          access to this email address.
-        nl: >-
-          Dit lijkt op een e-mailadres van een onderwijs- of
-          onderzoeks instelling. Let op: als je in de toekomst niet
-          meer studeert of werkt bij deze instelling, heb je geen
-          toegang meer tot dit e-mailadres.
+        en: This looks like a school or work email. Use a <b>personal email</b>, because that one can still be used when you switch school or job.
+        nl: Dit lijkt een school- of werkmail. Gebruik een <b>persoonlijk e-mailadres</b>, omdat dat ook blijft werken als je van school of baan veranderd.
     InstitutionDomainNameWarning2:
       COPY:
         en: We recommend using your personal email address for eduID.

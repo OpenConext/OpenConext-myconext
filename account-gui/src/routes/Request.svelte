@@ -1,11 +1,10 @@
 <script>
     import {user} from "../stores/user";
     import {conf, links} from "../stores/conf";
-    import {link, navigate} from "svelte-routing";
+    import {navigate} from "svelte-routing";
     import {validEmail} from "../constants/regexp";
     import I18n from "../locale/I18n";
     import critical from "../icons/critical.svg?raw";
-    import attention from "../icons/alert-circle.svg?raw";
     import {FriendlyCaptchaSDK} from "@friendlycaptcha/sdk"
     import {fetchServiceName, generateCodeNewUser} from "../api/index";
     import CheckBox from "../components/CheckBox.svelte";
@@ -16,6 +15,8 @@
     import Cookies from "js-cookie";
     import {cookieNames} from "../constants/cookieNames";
     import {isEmpty} from "../utils/utils.js";
+    import Alert from "../components/Alert.svelte";
+    import AlertType from "../constants/AlertType.js";
 
     export let id;
 
@@ -137,6 +138,15 @@
         const familyName = e.target.value.trim();
         $user.familyName = e.target.value = familyName;
     }
+
+    const otherEmail = () => {
+        $user.email = "";
+        agreedWithTerms = false;
+        emailInUse = false;
+        emailForbidden = false;
+        $domains.institutionDomainNameWarning = false;
+        $domains.allowedDomainNamesError = false;
+    }
 </script>
 
 <style lang="scss">
@@ -224,6 +234,13 @@
         display: none;
     }
 
+    .or-divider{
+      display: flex;
+      justify-content: center;
+      align-items: center;
+
+      margin-top: 25px;
+    }
 
 </style>
 {#if showSpinner}
@@ -239,7 +256,7 @@
        autocomplete="username"
        id="email"
        spellcheck="false"
-       class:error={emailInUse || emailForbidden}
+       class:error={emailForbidden}
        placeholder={I18n.t("LinkFromInstitution.EmailPlaceholder.COPY")}
        use:init
        on:input={handleInput}
@@ -250,16 +267,18 @@
             class="svg">{@html critical}</span><span>{I18n.t("LinkFromInstitution.InvalidEmail.COPY")}</span></div>
 {/if}
 {#if emailInUse}
-    <div class="error">
-        <span class="svg">{@html critical}</span>
-        <div>
-            <span>{I18n.t("LinkFromInstitution.EmailInUse1.COPY")}</span>
-            <span>{I18n.t("LinkFromInstitution.EmailInUse2.COPY")}</span>
-            <a use:link
-               href={`/login/${id}`}
-            >{I18n.t("Login.EmailInUse3.COPY")}</a>
-        </div>
+    <Button href="/login/${id}"
+            label={I18n.t("Login.EmailInUse3.COPY")}
+            useLink="true"/>
+
+    <div class="or-divider">
+        <span>{I18n.t("Login.OrDivider.COPY")}</span>
     </div>
+
+    <Button href="/"
+            label={I18n.t("Login.TryOtherEmail.COPY")}
+            onClick={otherEmail}/>
+
 {/if}
 {#if emailForbidden}
     <div class="error">
@@ -269,16 +288,11 @@
         </div>
     </div>
 {/if}
-{#if $domains.institutionDomainNameWarning}
-    <div class="institution-warning">
-        <span class="svg attention">{@html attention}</span>
-        <div class="text">
-            <span>{I18n.t("LinkFromInstitution.InstitutionDomainNameWarning.COPY")}</span>
-            <br/>
-            <span>{I18n.t("LinkFromInstitution.InstitutionDomainNameWarning2.COPY")}</span>
-        </div>
-    </div>
-
+{#if $domains.institutionDomainNameWarning && !emailInUse}
+    <Alert
+            message={I18n.t("LinkFromInstitution.InstitutionDomainNameWarning.COPY")}
+            alertType={AlertType.Warning}
+    />
 {/if}
 
 {#if $domains.allowedDomainNamesError}
@@ -293,43 +307,44 @@
     </div>
 
 {/if}
-
-<label for="given-name" class="pre-input-label">{I18n.t("Profile.FirstName.COPY")}</label>
-<input type="text"
-       id="given-name"
-       placeholder={I18n.t("Login.GivenNamePlaceholder.COPY")}
-       spellcheck="false"
-       on:input={updateGivenName}
-       on:blur={handleGivenNameBlur}>
-{#if !initial && !$user.givenName}
-    <span class="error">{I18n.t("Login.RequiredAttribute.COPY", {attr: I18n.t("Profile.FirstName.COPY")})}</span>
-{/if}
-<label for="family-name" class="pre-input-label">{I18n.t("Profile.LastName.COPY")}</label>
-<input type="text"
-       id="family-name"
-       spellcheck="false"
-       placeholder={I18n.t("Login.FamilyNamePlaceholder.COPY")}
-       on:input={updateFamilyName}
-       on:blur={handleFamilyNameBlur}>
-{#if !initial && !$user.familyName}
-    <span class="error">{I18n.t("Login.RequiredAttribute.COPY", {attr: I18n.t("Profile.LastName.COPY")})}</span>
-{/if}
-<div class="controls">
-    <CheckBox value={agreedWithTerms}
-              className="light"
-              label={I18n.t("LinkFromInstitution.AgreeWithTerms.COPY")}
-              onChange={val => agreedWithTerms = val}/>
-    {#if !initial && !agreedWithTerms}
-        <span class="error">{I18n.t("login.termsRequired")}</span>
+<div hidden={emailInUse}>
+    <label for="given-name" class="pre-input-label">{I18n.t("Profile.FirstName.COPY")}</label>
+    <input type="text"
+           id="given-name"
+           placeholder={I18n.t("Login.GivenNamePlaceholder.COPY")}
+           spellcheck="false"
+           on:input={updateGivenName}
+           on:blur={handleGivenNameBlur}>
+    {#if !initial && !$user.givenName}
+        <span class="error">{I18n.t("Login.RequiredAttribute.COPY", {attr: I18n.t("Profile.FirstName.COPY")})}</span>
     {/if}
-    <div id="captcha" class="frc-captcha"></div>
-    {#if captchaShowWarning}
-        <span class="captcha error">{I18n.t("captcha.proveNotRobot")}</span>
+    <label for="family-name" class="pre-input-label">{I18n.t("Profile.LastName.COPY")}</label>
+    <input type="text"
+           id="family-name"
+           spellcheck="false"
+           placeholder={I18n.t("Login.FamilyNamePlaceholder.COPY")}
+           on:input={updateFamilyName}
+           on:blur={handleFamilyNameBlur}>
+    {#if !initial && !$user.familyName}
+        <span class="error">{I18n.t("Login.RequiredAttribute.COPY", {attr: I18n.t("Profile.LastName.COPY")})}</span>
     {/if}
-    <Button disabled={!initial && (showSpinner || !allowedNext($user.email, $user.familyName, $user.givenName, agreedWithTerms))}
-            href="/magic"
-            className="full"
-            label={I18n.t("LinkFromInstitution.RequestEduIdButton.COPY")}
-            onClick={handleNext}/>
+    <div class="controls">
+        <CheckBox value={agreedWithTerms}
+                  className="light"
+                  label={I18n.t("LinkFromInstitution.AgreeWithTerms.COPY")}
+                  onChange={val => agreedWithTerms = val}/>
+        {#if !initial && !agreedWithTerms}
+            <span class="error">{I18n.t("login.termsRequired")}</span>
+        {/if}
+        <div id="captcha" class="frc-captcha"></div>
+        {#if captchaShowWarning}
+            <span class="captcha error">{I18n.t("captcha.proveNotRobot")}</span>
+        {/if}
+        <Button disabled={!initial && (showSpinner || !allowedNext($user.email, $user.familyName, $user.givenName, agreedWithTerms))}
+                href="/magic"
+                className="full"
+                label={I18n.t("LinkFromInstitution.RequestEduIdButton.COPY")}
+                onClick={handleNext}/>
+    </div>
 </div>
 </form>
