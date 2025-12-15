@@ -6,6 +6,9 @@
     export let label;
     export let onClick;
 
+    export let icon = undefined;
+    export let big = false
+
     const handleLinkClick = e => e.key === " " && e.target.click();
 
 </script>
@@ -21,9 +24,11 @@
         cursor: pointer;
         text-align: center;
         font-weight: 600;
-        font-size: 18px;
         text-wrap: nowrap;
         white-space: nowrap;
+        align-items: center;
+        justify-content: center;
+        position: relative;
 
         &:hover {
             background-color: #004c97;
@@ -64,9 +69,46 @@
         background-color: whitesmoke;
     }
 
+    .button.secondary {
+      color: #5E6873;
+      background-color: white;
+      border: 1px solid #B2B6BE;
+    }
+
+    .button.secondary:hover {
+      color: #0066b8;
+      background-color: whitesmoke;
+    }
+
     .button.full {
         margin-top: 15px;
         margin-left: 0;
+    }
+
+    :global(a.button span.icon svg) {
+      position: absolute;
+      width: 16px;
+      height: auto;
+      color: var(--color-primary-blue);
+      fill: var(--color-primary-blue);
+      left: 6px;
+      top: 8px;
+    }
+
+    .big {
+      height: 48px;
+      &.button.icon {
+        justify-content: center;
+      }
+    }
+
+    :global(a.button.big span.icon svg) {
+      justify-content: center;
+      position: absolute;
+      width: 30px;
+      height: 30px;
+      left: 6px;
+      top: 8px;
     }
 
 </style>
@@ -75,7 +117,11 @@
    class:active={active}
    href="{href}"
    class:disabled={disabled}
+   class:big={big}
    on:click|preventDefault|stopPropagation={() => !disabled && onClick()}
    on:keydown={handleLinkClick}>
+    {#if icon}
+        <span class="icon" >{@html icon}</span>
+    {/if}
     {label}
 </a>

@@ -245,11 +245,11 @@
       }
     }
 
-    :global(a.button span.icon.big svg) {
+    :global(a.button.big span.icon svg) {
       justify-content: center;
       position: absolute;
       width: 30px;
-      height: auto;
+      height: 30px;
       left: 6px;
       top: 8px;
     }
@@ -289,7 +289,7 @@
        on:click|preventDefault|stopPropagation={() => !disabled && onClick()}
        on:keydown={handleLinkClick}>
         {#if icon}
-            <span class="icon" class:custom={custom} class:big={big}>{@html icon}</span>
+            <span class="icon" class:custom={custom}>{@html icon}</span>
         {/if}
         {#if deletion}
             <span class="trash">{@html trash}</span>

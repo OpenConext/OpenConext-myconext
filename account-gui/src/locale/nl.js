@@ -403,7 +403,7 @@ const nl = {
             info: {
                 title: "Verificatie",
                 verify: "Verifïeer je identiteit, snel en gemakkelijk",
-                please: "Verifïeer a.u.b dat je bent wie je zegt dat je bent.",
+                please: "Gebruik een van de volgende methodes om je bewijzen wie je bent.",
                 educationalInstitution: "Verifïeer met een Nederlandse onderwijsinstelling",
                 selectInstitution: "Selecteer je instelling",
                 other: "Andere opties...",
@@ -412,7 +412,7 @@ const nl = {
                 verifyEuropeanId: "Verifïeer met een Europees ID",
                 supportEuropean: "We ondersteunen de meederheid van de de nationalie digitale ID's",
                 useEuropean: "gebruik een Europees ID",
-                cantUse: "Ik kan geen van bovenstaande manieren gebruiken",
+                cantUse: "Neem contact met de Service Desk",
                 help: "Als je geen van deze opties kan gebruiken, bezoek dan onze <a href='https://eduid.nl/help' target='_blank' rel='noreferrer'>support pagina's</a>"
             },
             bank: {
