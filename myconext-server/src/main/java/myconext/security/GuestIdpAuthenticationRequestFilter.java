@@ -755,6 +755,9 @@ public class GuestIdpAuthenticationRequestFilter extends OncePerRequestFilter {
                 samlAuthenticationRequest.isOneTimeLoginCodeFlow() ? "one_time_login_code" :
                         samlAuthenticationRequest.isPasswordOrWebAuthnFlow() ? "password" : "cookie";
 
+        user.setLastLogin(new Date().getTime());
+        userRepository.save(user);
+
         logLoginWithContext(user, loginMethod, true, LOG, "Successfully logged in with " + loginMethod,
                 request, authnContextClassRefValue, authenticationContextClassReferences);
 
