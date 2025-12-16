@@ -373,7 +373,7 @@ public class RemoteCreationController implements HasUserRepository {
             }
             externalLinkedAccount.updateAttributesFromUpdateExternalEduID(externalEduID, this.attributeMapper);
         }, () -> {
-            //Create external account for this remoteAPI user
+            //Create the StudieLink external account for this remoteAPI user
             RemoteProvider remoteProvider = getRemoteProvider(remoteUser, remoteUserName);
             String provisionedEduIDValue = user.computeEduIdForIdentityProviderProviderIfAbsent(remoteProvider, manage);
             externalEduID.setEduIDValue(provisionedEduIDValue);
@@ -384,7 +384,7 @@ public class RemoteCreationController implements HasUserRepository {
             }
             user.getExternalLinkedAccounts().add(externalLinkedAccount);
         });
-
+        //TODO do we need to mark the new or updated ExternalLinkedAccount with externalLinkedAccount.setPreferred(true);
         userRepository.save(user);
         if (userIsValidated.get()) {
             mailBox.sendUserValidated(user, externalEduID, remoteUserName);
