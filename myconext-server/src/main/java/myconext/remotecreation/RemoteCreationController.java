@@ -361,6 +361,7 @@ public class RemoteCreationController implements HasUserRepository {
          */
         User user = this.findUserByEduIDValue(eduIDValue)
                 .orElseThrow(() -> new UserNotFoundException(String.format("User not found by eduID %s", eduIDValue)));
+        //TODO why would we want to do this? After this call the values are there anyway in the studie link external account
         user.updateWithExternalEduID(externalEduID);
         AtomicBoolean userIsValidated = new AtomicBoolean(false);
         Optional<ExternalLinkedAccount> optionalExternalLinkedAccount = user.getExternalLinkedAccounts().stream()
