@@ -361,16 +361,22 @@ public class RemoteCreationController implements HasUserRepository {
          */
         User user = this.findUserByEduIDValue(eduIDValue)
                 .orElseThrow(() -> new UserNotFoundException(String.format("User not found by eduID %s", eduIDValue)));
-        //TODO why would we want to do this? After this call the values are there anyway in the studie link external account
+        boolean isVerifiedStatus = !Verification.Ongeverifieerd.equals(externalEduID.getVerification());
+        if (isVerifiedStatus) {
+            user.setDateOfBirth(AttributeMapper.parseDate(externalEduID.getDateOfBirth()));
+        }
         user.updateWithExternalEduID(externalEduID);
+
         AtomicBoolean userIsValidated = new AtomicBoolean(false);
         Optional<ExternalLinkedAccount> optionalExternalLinkedAccount = user.getExternalLinkedAccounts().stream()
                 .filter(account -> IdpScoping.valueOf(remoteUserName).equals(account.getIdpScoping()))
                 .findAny();
         optionalExternalLinkedAccount.ifPresentOrElse(externalLinkedAccount -> {
-            if (Verification.Ongeverifieerd.equals(externalLinkedAccount.getVerification()) &&
-                    !Verification.Ongeverifieerd.equals(externalEduID.getVerification())) {
+            //Prevent sending mail's again
+            boolean currentExternalAccountUnverified = Verification.Ongeverifieerd.equals(externalLinkedAccount.getVerification());
+            if (isVerifiedStatus && currentExternalAccountUnverified) {
                 userIsValidated.set(true);
+                externalLinkedAccount.setPreferred(true);
             }
             externalLinkedAccount.updateAttributesFromUpdateExternalEduID(externalEduID, this.attributeMapper);
         }, () -> {
@@ -380,12 +386,12 @@ public class RemoteCreationController implements HasUserRepository {
             externalEduID.setEduIDValue(provisionedEduIDValue);
             ExternalLinkedAccount externalLinkedAccount = attributeMapper.createExternalLinkedAccount(externalEduID, IdpScoping.valueOf(remoteUserName));
             externalLinkedAccount.setAffiliations(attributeMapper.externalAffiliations(externalEduID.getBrinCodes()));
-            if (!Verification.Ongeverifieerd.equals(externalLinkedAccount.getVerification())) {
+            if (isVerifiedStatus) {
                 userIsValidated.set(true);
+                externalLinkedAccount.setPreferred(true);
             }
             user.getExternalLinkedAccounts().add(externalLinkedAccount);
         });
-        //TODO do we need to mark the new or updated ExternalLinkedAccount with externalLinkedAccount.setPreferred(true);
         userRepository.save(user);
         if (userIsValidated.get()) {
             mailBox.sendUserValidated(user, externalEduID, remoteUserName);
