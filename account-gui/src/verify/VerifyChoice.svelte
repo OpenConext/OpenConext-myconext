@@ -211,9 +211,11 @@
             </div>
         {/if}
         {#if otherOptionsAllowed}
-            <div class="info-id-verify-container">
-                <p>{@html I18n.t("VerifyIdentity.VerifyViaOptions.Title.COPY")}</p>
-            </div>
+            {#if showInstitutionOption}
+                <div class="info-id-verify-container">
+                    <p>{@html I18n.t("VerifyIdentity.VerifyViaOptions.Title.COPY")}</p>
+                </div>
+            {/if}
             <Button label={I18n.t("VerifyIdentity.VerifyWithBankApp.Button.COPY")}
                     icon={idinSvg}
                     disabled={busyProcessing}
