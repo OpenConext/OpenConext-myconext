@@ -210,7 +210,7 @@
                         onClick={() => proceed(addInstitution)}/>
             </div>
         {/if}
-        {#if otherOptionsAllowed && showInstitutionOption}
+        {#if otherOptionsAllowed}
             <div class="info-id-verify-container">
                 <p>{@html I18n.t("VerifyIdentity.VerifyViaOptions.Title.COPY")}</p>
             </div>

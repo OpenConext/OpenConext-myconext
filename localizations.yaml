@@ -181,12 +181,12 @@ SHARED:
     MainText:
       COPY:
         en: |
-          <b>Don't see a QR code?</b><br/>
+          <strong>Don't see a QR code?</strong><br/>
           Go to <a href="https://eduid.nl/security" target="_blank">eduid.nl/security</a> on your computer<br/>
           Create a QR code<br/>
           Scan the code here
         nl: |
-          <b>Zie je geen QR-code?</b><br/>
+          <strong>Zie je geen QR-code?</strong><br/>
           Ga naar <a href="https://eduid.nl/security" target="_blank">eduid.nl/security</a> op je computer<br/>
           Maak een QR-code<br/>
           Scan de code hier
@@ -3945,8 +3945,8 @@ SHARED:
     VerifyViaDutchInstitution:
       Title:
         COPY:
-          en: <b>Do you own</b> an account at a Dutch educational or research institute?
-          nl: <b>Heb je</b> een account bij een Nederlands school of onderzoeksinstelling?
+          en: <strong>Do you own</strong> an account at a Dutch educational or research institute?
+          nl: <strong>Heb je</strong> een account bij een Nederlands school of onderzoeksinstelling?
       TitleHasInternalLink:
         COPY:
           en: Add your institution by logging in
@@ -3958,8 +3958,8 @@ SHARED:
     VerifyViaOptions:
       Title:
         COPY:
-          en: <b>If you don't own</b> an account at a Dutch educational or research insitute, choose one of the following alternatives
-          nl: <b>Als je geen</b> account hebt bij een Nederlandse school of onderzoeksinstelling, kies dan een van de volgende mogelijkheden
+          en: <strong>If you don't own</strong> an account at a Dutch educational or research insitute, choose one of the following alternatives
+          nl: <strong>Als je geen</strong> account hebt bij een Nederlandse school of onderzoeksinstelling, kies dan een van de volgende mogelijkheden
     VerifyWithBankApp:
       Title:
         COPY:
