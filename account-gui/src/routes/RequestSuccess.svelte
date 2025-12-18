@@ -22,11 +22,12 @@
         font-weight: 600;
 
     }
+
 </style>
 
 
 <h2 class="header">{I18n.t("Login.RequestSuccessHeader.COPY")}</h2>
-<ImageContainer icon={icon} margin={true}/>
+<ImageContainer icon={icon} margin={true} class="image-container-success" height="220px"/>
 <p class="info">{I18n.t("Login.RequestSuccessInfo.COPY")}</p>
 <Button href={"/"} onClick={next}
         label={I18n.t("Login.RequestSuccessNext.COPY")}/>
