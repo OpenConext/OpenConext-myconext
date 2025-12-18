@@ -521,7 +521,7 @@
   "PollFromInstitution.MailResend.COPY": "Controleer je inbox. We hebben je de e-mail met de link opnieuw verzonden.",
   "Login.RequestSuccessHeader.COPY": "Je eduID is aangemaakt",
   "Login.RequestSuccessInfo.COPY": "We hebben je ook een bevestigingsmail gestuurd.",
-  "Login.RequestSuccessNext.COPY": "Beheer je eduID (op mijn.eduid.nl)",
+  "Login.RequestSuccessNext.COPY": "Volgende",
   "Login.RequestEduId.COPY": "Nog geen eduID?",
   "Login.RequestEduId2.COPY": "Direct aanmaken",
   "Login.LoginEduId.COPY": "Inloggen",

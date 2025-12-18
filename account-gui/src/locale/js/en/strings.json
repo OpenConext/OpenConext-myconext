@@ -521,7 +521,7 @@
   "PollFromInstitution.MailResend.COPY": "Check your inbox again. We've sent another email with a link.",
   "Login.RequestSuccessHeader.COPY": "Your eduID has been created",
   "Login.RequestSuccessInfo.COPY": "We have also sent you a confirmation email.",
-  "Login.RequestSuccessNext.COPY": "Manage your eduID (on mijn.eduid.nl)",
+  "Login.RequestSuccessNext.COPY": "Next",
   "Login.RequestEduId.COPY": "No eduID yet?",
   "Login.RequestEduId2.COPY": "Create directly",
   "Login.LoginEduId.COPY": "Login",
