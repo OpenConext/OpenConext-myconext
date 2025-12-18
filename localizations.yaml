@@ -2569,8 +2569,8 @@ SHARED:
         nl: We hebben je ook een bevestigingsmail gestuurd.
     RequestSuccessNext:
       COPY:
-        en: Manage your eduID (on mijn.eduid.nl)
-        nl: Beheer je eduID (op mijn.eduid.nl)
+        en: Next
+        nl: Volgende
     RequestEduId:
       COPY:
         en: No eduID yet?

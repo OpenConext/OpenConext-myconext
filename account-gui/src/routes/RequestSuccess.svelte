@@ -1,22 +1,17 @@
 <script>
-    import {links} from "../stores/conf";
+    import {conf, links} from "../stores/conf";
     import I18n from "../locale/I18n";
-    import {onMount} from "svelte";
     import ImageContainer from "../components/ImageContainer.svelte";
     import icon from "../icons/redesign/undraw_Order_confirmed_re_g0if 1.svg?raw";
     import Button from "../components/Button.svelte";
+    import {proceed} from "../utils/sso.js";
 
     $links.displayBackArrow = false;
-    let newUser = null;
 
-    onMount(() => {
-        const urlSearchParams = new URLSearchParams(window.location.search);
-        newUser = urlSearchParams.get("new-user")
-    });
-
-    const nextStep = () => {
-
+    const next = () => {
+        proceed($conf.magicLinkUrl);
     }
+
 </script>
 
 <style>
@@ -33,5 +28,5 @@
 <h2 class="header">{I18n.t("Login.RequestSuccessHeader.COPY")}</h2>
 <ImageContainer icon={icon} margin={true}/>
 <p class="info">{I18n.t("Login.RequestSuccessInfo.COPY")}</p>
-<Button href={"/next"} onClick={nextStep}
+<Button href={"/"} onClick={next}
         label={I18n.t("Login.RequestSuccessNext.COPY")}/>
