@@ -227,7 +227,7 @@ public class UserTest {
         assertEquals(0L, ReflectionTestUtils.getField(user, "lastSeenAppNudge"));
 
         //User logs in again very shortly after the second login
-        user.computeEduIdForServiceProviderIfAbsent("SP", mock(Manage.class));
+        user.setLastLogin(nowMillis);
         assertTrue(user.nudgeToApp(nudgeAppDays, nudgeAppDelayDays));
         assertTrue((long) ReflectionTestUtils.getField(user, "lastSeenAppNudge") >= nowMillis);
 

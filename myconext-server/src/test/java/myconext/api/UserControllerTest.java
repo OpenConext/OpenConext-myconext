@@ -267,6 +267,7 @@ public class UserControllerTest extends AbstractIntegrationTest {
     @Test
     public void nudgeUserToUseTheApp() throws IOException {
         User user = userRepository.findOneUserByEmail("jdoe@example.com");
+        user.setLastLogin(System.currentTimeMillis());
         user.getSurfSecureId().clear();
         userRepository.save(user);
 
