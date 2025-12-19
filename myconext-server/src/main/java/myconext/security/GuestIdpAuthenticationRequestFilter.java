@@ -800,6 +800,7 @@ public class GuestIdpAuthenticationRequestFilter extends OncePerRequestFilter {
                 attribute("urn:mace:terena.org:attribute-def:schacHomeOrganization", user.getSchacHomeOrganization())
         ));
         String eduIDValue = user.computeEduIdForServiceProviderIfAbsent(requesterEntityId, manage);
+        user.setLastLogin(System.currentTimeMillis());
         userRepository.save(user);
 
         if (StringUtils.hasText(user.getPreferredLanguage())) {

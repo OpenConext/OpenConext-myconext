@@ -217,7 +217,6 @@ public class User implements Serializable, UserDetails {
 
     @Transient
     public String doComputeEduIDIfAbsent(ServiceProvider serviceProvider, Manage manage, boolean isResourceServer) {
-        this.lastLogin = System.currentTimeMillis();
         serviceProvider.setLastLogin(new Date());
         String institutionGuid = serviceProvider.getInstitutionGuid();
         String entityId = serviceProvider.getEntityId();
