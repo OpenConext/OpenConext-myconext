@@ -19,13 +19,16 @@ It includes:
 
 
 
-
+# Run UserDataSeeder
+mvn clean && mvn test-compile exec:java
 
 # Run Gradual Ramp Up (8 minutes)
-mvn gatling:test -Dgatling.simulationClass=simulations.GradualRampUpSimulation
+mvn gatling:test -Dgatling.simulationClass=myconext.simulations.GradualRampUpSimulation
 
 # Run Stress Test (5 minutes)
-mvn gatling:test -Dgatling.simulationClass=simulations.StressTestSimulation
+mvn gatling:test -Dgatling.simulationClass=myconext.simulations.StressTestSimulation
 
 # Run Soak Test (35 minutes)
-mvn gatling:test -Dgatling.simulationClass=simulations.SoakTestSimulation
+mvn gatling:test -Dgatling.simulationClass=myconext.simulations.SoakTestSimulation
+
+
