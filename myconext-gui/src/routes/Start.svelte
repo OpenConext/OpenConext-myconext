@@ -1,6 +1,6 @@
 <script>
     import I18n from "../locale/I18n";
-    import {navigate} from "svelte-routing";
+    import {Link} from "svelte-routing";
     import {user, config} from "../stores/user";
     import personalInfoSvg from "../icons/redesign/Personal_info.svg?raw";
     import dataActivitySvg from "../icons/redesign/data_activity.svg?raw";
@@ -131,7 +131,7 @@
         }
     }
 
-    .card {
+    :global(.card) {
         padding: 40px 0 25px 0;
         box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.5);
         display: flex;
@@ -139,18 +139,19 @@
         align-items: center;
         cursor: pointer;
         min-height: 275px;
+        text-decoration: none;
+        color: inherit;
 
         :global(svg) {
-            width: 160px;
-            height: auto;
+          width: 160px;
+          height: auto;
         }
 
         h3 {
-            margin-top: auto;
-            font-size: 22px;
+          margin-top: auto;
+          font-size: 22px;
         }
     }
-
 
 </style>
 <div class="start">
@@ -186,22 +187,22 @@
             </div>
         {/if}
 
-        <div class="card" on:click={() => navigate("/personal")}>
+        <Link to="/personal" class="card">
             {@html personalInfoSvg}
             <h3>{I18n.t("Sidebar.PersonalInfo.COPY")}</h3>
-        </div>
-        <div class="card" on:click={() => navigate("/data-activity")}>
+        </Link>
+        <Link to="/data-activity" class="card">
             {@html dataActivitySvg}
             <h3>{I18n.t("Sidebar.DataActivity.COPY")}</h3>
-        </div>
-        <div class="card" on:click={() => navigate("/security")}>
+        </Link>
+        <Link to="/security" class="card">
             {@html securitySvg}
             <h3>{I18n.t("Sidebar.Security.COPY")}</h3>
-        </div>
-        <div class="card" on:click={() => navigate("/account")}>
+        </Link>
+        <Link to="/account" class="card">
             {@html settingsSvg}
             <h3>{I18n.t("Sidebar.Account.COPY")}</h3>
-        </div>
+        </Link>
 
     </div>
 
