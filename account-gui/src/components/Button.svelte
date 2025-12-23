@@ -1,4 +1,5 @@
 <script>
+    import {link} from "svelte-routing";
     export let className = "";
     export let active = false;
     export let href = "/";
@@ -10,6 +11,8 @@
     export let big = false
 
     const handleLinkClick = e => e.key === " " && e.target.click();
+
+    export let useLink = false
 
 </script>
 <style lang="scss">
@@ -112,16 +115,24 @@
     }
 
 </style>
-
-<a class="{`button ${className}`}"
-   class:active={active}
-   href="{href}"
-   class:disabled={disabled}
-   class:big={big}
-   on:click|preventDefault|stopPropagation={() => !disabled && onClick()}
-   on:keydown={handleLinkClick}>
-    {#if icon}
-        <span class="icon" >{@html icon}</span>
-    {/if}
-    {label}
-</a>
+{#if !useLink}
+    <a class="{`button ${className}`}"
+       class:active={active}
+       href="{href}"
+       class:disabled={disabled}
+       class:big={big}
+       on:click|preventDefault|stopPropagation={() => !disabled && onClick()}
+       on:keydown={handleLinkClick}>
+        {#if icon}
+            <span class="icon" >{@html icon}</span>
+        {/if}
+        {label}
+    </a>
+{:else}
+    <a class="{`button ${className}`}"
+       href="{href}"
+       use:link
+    >
+        {label}
+    </a>
+{/if}

@@ -506,7 +506,8 @@ public class GuestIdpAuthenticationRequestFilter extends OncePerRequestFilter {
                 return true;
             }
             //we don't redirect the user to the nudge app page anymore
-            String url = String.format("%s?h=%s&force=true", this.magicLinkUrl, hash);
+            String url = this.redirectUrl + "/request-success?h=" + hash +
+                    "&redirect=" + URLEncoder.encode(this.magicLinkUrl, charSet);
             response.sendRedirect(url);
             return false;
         } else if (inStepUpFlow) {

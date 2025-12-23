@@ -49,6 +49,7 @@
     import AttributeMissing from "./routes/AttributeMissing.svelte";
     import RateLimited from "./routes/RateLimited.svelte";
     import InstallApp from "./routes/InstallApp.svelte";
+    import RequestSuccess from "./routes/RequestSuccess.svelte";
 
     export let url = "";
 
@@ -132,7 +133,7 @@
         margin: 0 auto;
         justify-content: center;
         border-radius: 4px;
-        box-shadow: 0 3px 0 2px #003980;
+        box-shadow: 0px 4px 4px 0px #00000040;
         min-height: 100px;
     }
 
@@ -161,6 +162,9 @@
                 </Route>
                 <Route path="/request/:id" let:params>
                     <Request id="{params.id}"/>
+                </Route>
+                <Route path="/request-success">
+                    <RequestSuccess/>
                 </Route>
                 <Route path="/useapp/:id" let:params>
                     <UseApp id="{params.id}"/>
@@ -225,51 +229,12 @@
             </Router>
         </div>
         <Router url="{url}">
-            <Route path="/login/:id" let:params>
-                <SubContent question={I18n.t("Login.RequestEduId.COPY")}
-                            linkText={I18n.t("Login.RequestEduId2.COPY")}
-                            route="/request/{params.id}"/>
-            </Route>
-            <Route path="/request/:id" let:params>
-                <SubContent question={I18n.t("Login.AlreadyGuestAccount.COPY")}
-                            linkText={I18n.t("Login.LoginEduId.COPY")}
-                            route="/login/{params.id}"/>
-            </Route>
             <Route path="/useapp/:id" let:params>
                 <SubContent question={I18n.t("Login.NoAppAccess.COPY")}
                             preLink={I18n.t("Login.UseAnother.COPY")}
                             isMfa={true}
                             linkText={I18n.t("Login.OptionsLink.COPY")}
                             route="/options/{params.id}"/>
-            </Route>
-            <Route path="/usewebauthn/:id" let:params>
-                <SubContent question={I18n.t("Login.UseAnother.COPY")}
-                            linkText={I18n.t("Login.OptionsLink.COPY")}
-                            route="/options/{params.id}"/>
-            </Route>
-            <Route path="/usecode/:id" let:params>
-                <SubContent question={I18n.t("Login.NoMailAccess.COPY")}
-                            preLink={I18n.t("Login.UseAnother.COPY")}
-                            linkText={I18n.t("Login.OptionsLink.COPY")}
-                            route="/options/{params.id}"/>
-            </Route>
-            <Route path="/code/:id" let:params>
-                <SubContent question={I18n.t("Login.NoMailAccess.COPY")}
-                            preLink={I18n.t("Login.UseAnother.COPY")}
-                            linkText={I18n.t("Login.OptionsLink.COPY")}
-                            route="/options/{params.id}"/>
-            </Route>
-            <Route path="/usepassword/:id" let:params>
-                <SubContent question={I18n.t("Login.ForgotPassword.COPY")}
-                            preLink={I18n.t("Login.UseAnother.COPY")}
-                            linkText={I18n.t("Login.OptionsLink.COPY")}
-                            route="/options/{params.id}"/>
-            </Route>
-            <Route path="/options/:id" let:params>
-                <SubContent question={I18n.t("Options.NoLogin.COPY")}
-                            preLink={I18n.t("Options.Learn.COPY")}
-                            linkText={I18n.t("Options.LearnLink.COPY")}
-                            href="https://eduid.nl/help"/>
             </Route>
         </Router>
         <Footer/>

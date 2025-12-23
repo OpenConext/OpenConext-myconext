@@ -2466,16 +2466,8 @@ SHARED:
         nl: Ongeldig e-mailadres
     InstitutionDomainNameWarning:
       COPY:
-        en: >-
-          This appears to be an email address from an educational
-          or research institution. Note: if, in the future, you no
-          longer study or work at this institution, you will lose
-          access to this email address.
-        nl: >-
-          Dit lijkt op een e-mailadres van een onderwijs- of
-          onderzoeks instelling. Let op: als je in de toekomst niet
-          meer studeert of werkt bij deze instelling, heb je geen
-          toegang meer tot dit e-mailadres.
+        en: This looks like a school or work email. Use a <b>personal email</b>, because that one can still be used when you switch school or job.
+        nl: Dit lijkt een school- of werkmail. Gebruik een <b>persoonlijk e-mailadres</b>, omdat dat ook blijft werken als je van school of baan veranderd.
     InstitutionDomainNameWarning2:
       COPY:
         en: We recommend using your personal email address for eduID.
@@ -2567,14 +2559,26 @@ SHARED:
           Controleer je inbox. We hebben je de e-mail met de link opnieuw
           verzonden.
   Login:
+    RequestSuccessHeader:
+      COPY:
+        en: Your eduID has been created
+        nl: Je eduID is aangemaakt
+    RequestSuccessInfo:
+      COPY:
+        en: We have also sent you a confirmation email.
+        nl: We hebben je ook een bevestigingsmail gestuurd.
+    RequestSuccessNext:
+      COPY:
+        en: Next
+        nl: Volgende
     RequestEduId:
       COPY:
         en: No eduID yet?
         nl: Nog geen eduID?
     RequestEduId2:
       COPY:
-        en: Create an eduID
-        nl: eduID aanmaken
+        en: Create directly
+        nl: Direct aanmaken
     LoginEduId:
       COPY:
         en: Login
@@ -2862,6 +2866,14 @@ SHARED:
       COPY:
         en: You are still suspended. Try again in %1$s minutes.
         nl: Je bent nog steeds geschorst. Probeer het over %1$s minuten opnieuw.
+    TryOtherEmail:
+      COPY:
+        en: Try another email address
+        nl: Probeer een ander emailadres
+    OrDivider:
+      COPY:
+        en: or
+        nl: of
   Options:
     Header:
       COPY:

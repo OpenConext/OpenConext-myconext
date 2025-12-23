@@ -10,6 +10,7 @@
     import {cookieNames} from "../constants/cookieNames.js";
     import {loginPreferences} from "../constants/loginPreferences.js";
     import Spinner from "../components/Spinner.svelte";
+    import SubContent from "../components/SubContent.svelte";
 
     const resendMailAllowedTimeOut = $conf.emailSpamThresholdSeconds * 1000;
 
@@ -148,3 +149,8 @@
 
     </div>
 </div>
+
+<SubContent question={I18n.t("Login.NoMailAccess.COPY")}
+            preLink={I18n.t("Login.UseAnother.COPY")}
+            linkText={I18n.t("Login.OptionsLink.COPY")}
+            route="/options/{id}" interContent="true"/>

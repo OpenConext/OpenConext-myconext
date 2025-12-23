@@ -12,6 +12,7 @@
     import {links} from "../stores/conf";
     import {navigate} from "svelte-routing";
     import {mrcc} from "../utils/constants";
+    import SubContent from "../components/SubContent.svelte";
 
 
     export let id;
@@ -83,3 +84,8 @@
                      route={`/${option.key.toLowerCase()}/${id}?${mrcc}=true`}/>
     {/each}
 {/if}
+
+<SubContent question={I18n.t("Options.NoLogin.COPY")}
+            preLink={I18n.t("Options.Learn.COPY")}
+            linkText={I18n.t("Options.LearnLink.COPY")}
+            href="https://eduid.nl/help" interContent="true"/>
