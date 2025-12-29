@@ -1,14 +1,6 @@
-// Old mobile width
+$mobile-width: 576px;
 $tablet-width: 820px;
 $tablet-width-cutoff: 821px;
-
-// Bootstrap breakpoints
-// sm: >=576
-$mobile-width-sm: 576px;
-$mobile-width-md: 820px; // >=768
-// $mobile-width-lg: 992px;
-// $mobile-width-xl: 1200px;
-// $mobile-width-xxl: 1400px;
 
 @mixin page {
     margin: 0 auto;

@@ -7,7 +7,7 @@ div.mobile-navigation-container {
     padding: 40px 0 0 15%;
     height: 100vh;
 
-    @media (max-width: index.$mobile-width-sm) {
+    @media (max-width: index.$mobile-width) {
         padding: 30px 0 0 8%;
     }
 }
