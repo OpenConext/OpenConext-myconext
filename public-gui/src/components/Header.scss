@@ -16,19 +16,19 @@
         }
 
         .nav {
-            @media (max-width: index.$mobile-width) {
+            @media (max-width: index.$tablet-width) {
                 display: none;
             }
         }
         .desktop-navigation {
-            @media (max-width: index.$mobile-width) {
+            @media (max-width: index.$tablet-width) {
                 display: none;
             }
         }
         .mobile-navigation {
             margin: 0 25px 0 auto;
 
-            @media (min-width: calc(index.$mobile-width + 1px)) {
+            @media (min-width: index.$tablet-width-cutoff) {
                 display: none;
             }
         }

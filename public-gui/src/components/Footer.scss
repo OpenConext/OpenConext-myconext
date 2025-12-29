@@ -13,13 +13,13 @@ footer.sds--footer {
         height: 37px;
     }
 
-    @media (min-width: index.$mobile-width-cutoff) {
+    @media (min-width: index.$tablet-width-cutoff) {
         .sds--branding.mobile {
             display: none;
         }
     }
 
-    @media (max-width: index.$mobile-width) {
+    @media (max-width: index.$tablet-width) {
         nav.menu, nav.sds--language-switcher, img.eu-logo:not(.mobile) {
             display: none;
         }
