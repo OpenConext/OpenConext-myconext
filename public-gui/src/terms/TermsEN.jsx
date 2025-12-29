@@ -37,9 +37,9 @@ export const TermsEN = () => {
 
             </div>
             <div className="card bottom full">
-                <h5>
+                <h3>
                     1. Definitions
-                </h5>
+                </h3>
                 <p className="info">
                     <strong>1.1</strong> Several definitions are used in these Terms of Use. Definitions are
                     capitalized.
@@ -69,9 +69,9 @@ export const TermsEN = () => {
                 </p>
             </div>
             <div className="card bottom full">
-                <h5>
+                <h3>
                     2. Rights and obligations of the User
-                </h5>
+                </h3>
                 <p className="info">
                     <strong>2.1</strong> A User has the following standard usage rights to the eduID Service: creating
                     an eduID Account, modifying or enriching personal information, logging in with the eduID Account
@@ -92,8 +92,8 @@ export const TermsEN = () => {
                 </p>
             </div>
             <div className="card bottom full">
-                <h5>3. Abuse
-                </h5>
+                <h3>3. Abuse
+                </h3>
                 <p className="info">
                     <strong>3.1</strong> Abuse includes – but is not limited to – using the eduID Account in a manner
                     for which the account is not intended. In any case, abuse includes:
@@ -111,8 +111,8 @@ export const TermsEN = () => {
                 </p>
             </div>
             <div className="card bottom full">
-                <h5>4. Consequences of Abuse
-                </h5>
+                <h3>4. Consequences of Abuse
+                </h3>
                 <p className="info">
                     <strong>4.1</strong> SURF informs the User in the event of Abuse.
                 </p>
@@ -132,8 +132,8 @@ export const TermsEN = () => {
                 </p>
             </div>
             <div className="card bottom full">
-                <h5>5. Liability
-                </h5>
+                <h3>5. Liability
+                </h3>
                 <p className="info">
                     <strong>5.1</strong> SURF accepts no liability from the User or third parties arising from the
                     User’s failure to comply with the Terms of Use.
@@ -145,8 +145,8 @@ export const TermsEN = () => {
                 </p>
             </div>
             <div className="card bottom full">
-                <h5>6. Term
-                </h5>
+                <h3>6. Term
+                </h3>
                 <p className="info">
                     <strong>6.1</strong> SURF ensures that the eduID Service is available and may, without prior notice,
                     put the eduID Service (temporarily or otherwise) out of operation or limit its use insofar as this
@@ -160,24 +160,24 @@ export const TermsEN = () => {
                 </p>
             </div>
             <div className="card bottom full">
-                <h5>7. Privacy en cookie policy
-                </h5>
+                <h3>7. Privacy en cookie policy
+                </h3>
                 <p className="info">
                     <strong>7.1</strong> Read via <Link to={"/privacy"}>this link</Link> how eduID handles your privacy
                     (privacy and cookie policy).
                 </p>
             </div>
             <div className="card bottom full">
-                <h5>8. Applicable law
-                </h5>
+                <h3>8. Applicable law
+                </h3>
                 <p className="info">
                     <strong>8.1</strong> Dutch law applies to these conditions and the competent court is the District
                     Court of Central Netherlands, location Utrecht.
                 </p>
             </div>
             <div className="card bottom full">
-                <h5>9. Changing the Terms of Use
-                </h5>
+                <h3>9. Changing the Terms of Use
+                </h3>
                 <p className="info">
                     <strong>9.1</strong> SURF reserves the right to amend these Terms of Use as well as the eduID
                     privacy
@@ -189,8 +189,8 @@ export const TermsEN = () => {
                 </p>
             </div>
             <div className="card full bottom">
-                <h5>10. Support and questions
-                </h5>
+                <h3>10. Support and questions
+                </h3>
                 <p className="info">
                     <strong>10.1</strong> You can contact <a href="mailto:help@eduid.nl">help@eduid.nl</a>.
                 </p>

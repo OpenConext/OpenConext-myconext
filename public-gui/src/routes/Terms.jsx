@@ -16,7 +16,7 @@ export const Terms = () => {
                 <h1 className="title small">
                     {I18n.t("terms.eduID")}
                 </h1>
-                <h3>{I18n.t("terms.title")}</h3>
+                <h2>{I18n.t("terms.title")}</h2>
             </div>
             {I18n.locale === "en" && <TermsEN/>}
             {I18n.locale === "nl" && <TermsNL/>}

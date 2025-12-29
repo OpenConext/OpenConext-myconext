@@ -37,9 +37,9 @@ export const TermsNL = () => {
 
             </div>
             <div className="card bottom full">
-                <h5>
+                <h3>
                     1. Definities
-                </h5>
+                </h3>
                 <p className="info">
                     <strong>1.1</strong> In deze Gebruiksvoorwaarden wordt een aantal definities gehanteerd. Definities
                     worden met hoofdletter geschreven.
@@ -71,9 +71,9 @@ export const TermsNL = () => {
                 </p>
             </div>
             <div className="card bottom full">
-                <h5>
+                <h3>
                     2. Rechten en plichten van de Gebruiker
-                </h5>
+                </h3>
                 <p className="info">
                     <strong>2.1</strong> Een Gebruiker heeft standaard de volgende gebruiksrechten op de eduID Dienst:
                     het aanmaken van een eduID-Account, persoonlijke informatie aanpassen of verrijken, het inloggen met
@@ -94,8 +94,8 @@ export const TermsNL = () => {
                 </p>
             </div>
             <div className="card bottom full">
-                <h5>3. Misbruik
-                </h5>
+                <h3>3. Misbruik
+                </h3>
                 <p className="info">
                     <strong>3.1</strong> Onder misbruik wordt verstaan – maar is hiertoe niet beperkt – het gebruiken
                     van
@@ -116,8 +116,8 @@ export const TermsNL = () => {
                 </p>
             </div>
             <div className="card bottom full">
-                <h5>4. Gevolgen misbruik
-                </h5>
+                <h3>4. Gevolgen misbruik
+                </h3>
                 <p className="info">
                     <strong>4.1</strong> SURF informeert de Gebruiker bij misbruik.
                 </p>
@@ -138,8 +138,8 @@ export const TermsNL = () => {
                 </p>
             </div>
             <div className="card bottom full">
-                <h5>5. Aansprakelijkheid
-                </h5>
+                <h3>5. Aansprakelijkheid
+                </h3>
                 <p className="info">
                     <strong>5.1</strong> SURF aanvaardt geen aansprakelijkheid van Gebruiker of derden voortvloeiend uit
                     het niet-nakomen van de Gebruiksvoorwaarden door Gebruiker.
@@ -152,8 +152,8 @@ export const TermsNL = () => {
                 </p>
             </div>
             <div className="card bottom full">
-                <h5>6. Looptijd
-                </h5>
+                <h3>6. Looptijd
+                </h3>
                 <p className="info">
                     <strong>6.1</strong> SURF zorgt dat de eduID Dienst beschikbaar is en kan de eduID Dienst zonder
                     voorafgaande bekendmaking (tijdelijk) buiten gebruik stellen of het gebruik ervan beperken voor
@@ -166,23 +166,23 @@ export const TermsNL = () => {
                 </p>
             </div>
             <div className="card bottom full">
-                <h5>7. Privacy- en cookiebeleid
-                </h5>
+                <h3>7. Privacy- en cookiebeleid
+                </h3>
                 <p className="info">
                     <strong>7.1</strong> Zie <Link to={"/privacy"}>privacyverklaring</Link>
                 </p>
             </div>
             <div className="card bottom full">
-                <h5>8. Toepasselijk recht
-                </h5>
+                <h3>8. Toepasselijk recht
+                </h3>
                 <p className="info">
                     <strong>8.1</strong> Op deze voorwaarden is het Nederlands recht van toepassing en de bevoegde
                     rechter is de Rechtbank Midden-Nederland, locatie Utrecht.
                 </p>
             </div>
             <div className="card bottom full">
-                <h5>9. Wijzigen van de Gebruiksvoorwaarden
-                </h5>
+                <h3>9. Wijzigen van de Gebruiksvoorwaarden
+                </h3>
                 <p className="info">
                     <strong>9.1</strong> SURF behoudt zich het recht voor deze Gebruiksvoorwaarden alsmede de eduID
                     privacyverklaring aan te passen.
@@ -193,8 +193,8 @@ export const TermsNL = () => {
                 </p>
             </div>
             <div className="card full bottom">
-                <h5>10. Support en vragen
-                </h5>
+                <h3>10. Support en vragen
+                </h3>
                 <p className="info">
                     <strong>10.1</strong> Contact kan opgenomen worden via <a href="mailto:help@eduid.nl">help@eduid.nl</a>.
                 </p>
