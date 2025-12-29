@@ -39,11 +39,17 @@
             line-height: 44px;
         }
 
+        @media (max-width: index.$mobile-width-sm) {
+           font-size: 28px;
+           line-height: 40px;
+        }
+
         &.active {
             font-weight: 600;
             color: black;
             border-bottom: 2px solid var(--sds--color--blue--400);
 
+            
             @media (max-width: index.$mobile-width) {
                 font-weight: 400;
                 color: black;

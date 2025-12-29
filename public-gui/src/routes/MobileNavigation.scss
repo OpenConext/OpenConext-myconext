@@ -1,7 +1,13 @@
+@use "../index";
+
 div.mobile-navigation-container {
     background-color: #F4F6F8;
     display: flex;
     flex-direction: column;
     padding: 40px 0 0 15%;
     height: 100vh;
+
+    @media (max-width: index.$mobile-width-sm) {
+        padding: 30px 0 0 8%;
+    }
 }
