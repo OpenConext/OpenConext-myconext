@@ -100,12 +100,12 @@ const Control = ({restart, proceed}) => {
                 </div>}
 
             <div className="control-validation">
-                <h4>{I18n.t("control.info")}</h4>
+                <h3>{I18n.t("control.info")}</h3>
                 <p>{I18n.t("control.validDocuments")}</p>
                 <Toaster toasterType={ToasterType.Warning}
                          message={I18n.t("control.inValidDocuments")}
                 />
-                <h4>{I18n.t("control.isValid")}</h4>
+                <h3>{I18n.t("control.isValid")}</h3>
                 {confirmationItems.map((name, index) => <div key={name}
                                                              className="validation-item">
                     <p className="inner-html"
