@@ -128,7 +128,7 @@
         }
     }
 
-    h3 {
+    h2 {
         color: var(--color-primary-green);
         margin-bottom: 40px;
     }
@@ -207,7 +207,7 @@
 
     <div class="inner">
 
-        <h3 class="header">{I18n.t("LinkFromInstitution.Header.COPY", {name: `${userInfo.given_name}`})}</h3>
+        <h2 class="header">{I18n.t("LinkFromInstitution.Header.COPY", {name: `${userInfo.given_name}`})}</h2>
         <p>{I18n.t("LinkFromInstitution.Info.COPY")}</p>
         <input type="email"
                autocomplete="username"

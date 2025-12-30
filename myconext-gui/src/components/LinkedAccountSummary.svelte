@@ -59,7 +59,7 @@
                 margin-bottom: 15px;
 
 
-                h4 {
+                h3 {
                     color: var(--color-primary-green);
                 }
 
@@ -98,7 +98,7 @@
 <div class="linked-account-container">
     <div class="linked-account">
         <div class="info">
-            <h4>{I18n.t("profile.from", {name: institutionName(linkedAccount)})}</h4>
+            <h3>{I18n.t("profile.from", {name: institutionName(linkedAccount)})}</h3>
             <span>{@html I18n.t("profile.receivedOnInfo", {date: dateFromEpoch(linkedAccount.createdAt)})}</span>
             <span>{@html I18n.t("profile.validUntilDateInfo", {date: dateFromEpoch(expiresAt), rolDate: dateFromEpoch(getAffiliationsVerificationDate(linkedAccount.createdAt))})}
                 {#if linkedAccount.expired}

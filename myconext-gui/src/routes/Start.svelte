@@ -69,7 +69,7 @@
             grid-column: 1 / 1;
         }
 
-        h4 {
+        h3 {
             color: var(--color-primary-green);
             margin-bottom: 25px;
         }
@@ -160,7 +160,7 @@
     <div class="card-container">
         {#if $config.enableAccountLinking && isEmpty($user.linkedAccounts)}
             <div class="info-container">
-                <h4>{I18n.t("start.app.title")}</h4>
+                <h3>{I18n.t("start.app.title")}</h3>
                 <div class="content-section">
                     <div class="info-section">
                         <p class="info">
