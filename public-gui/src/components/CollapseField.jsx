@@ -8,20 +8,17 @@ export const CollapseField = ({title, info, children}) => {
     const [collapse, setCollapse] = useState(false)
 
     return (
-        <div className="collapse-field">
-            <div className="collapse-field-inner"
-                 onClick={() => setCollapse(!collapse)}>
-            <span className={`${collapse ? "collapsed" : "open"}`}>
-                {title}
-            </span>
-                <img src={collapse ?  caretUp: caretDown}
-                     className="caret" alt="caret"/>
+        <div className="collapse-field" onClick={() => setCollapse(!collapse)}>
+            <div className="collapse-field-inner">
+                <span className={`${collapse ? "collapsed" : "open"}`}>
+                    {title}
+                </span>
+                <button>
+                    <img src={collapse ?  caretUp: caretDown} className="caret" alt="caret"/>
+                </button>
             </div>
-            {(collapse && info) && <p className="collapsed"
-                            dangerouslySetInnerHTML={{__html: info}}/>}
-            {(collapse && !info) && <div className="collapsed">
-                {children}
-            </div>}
+            {(collapse && info) && <p className="collapsed" dangerouslySetInnerHTML={{__html: info}}/>}
+            {(collapse && !info) && <div className="collapsed">{children}</div>}
         </div>
     );
 }

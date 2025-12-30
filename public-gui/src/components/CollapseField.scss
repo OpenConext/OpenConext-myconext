@@ -6,6 +6,7 @@
     margin: 8px 0;
     border-radius: 4px;
     padding: 10px 20px 10px 10px;
+    cursor: pointer;
 
     @media (max-width: index.$mobile-width) {
         width: 100%;
@@ -18,8 +19,9 @@
             font-weight: 600;
         }
 
-        img {
+        button {
             margin-left: auto;
+            cursor: pointer;
         }
 
     }
