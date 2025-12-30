@@ -143,13 +143,14 @@
         color: inherit;
 
         :global(svg) {
-          width: 160px;
-          height: auto;
+            width: 160px;
+            height: auto;
         }
 
         h3 {
-          margin-top: auto;
-          font-size: 22px;
+            margin-top: auto;
+            font-size: 22px;
+            color: var(--color-primary-black);
         }
     }
 
