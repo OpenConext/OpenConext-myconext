@@ -45,7 +45,7 @@
         }
     }
 
-    h3 {
+    h2 {
         color: var(--color-primary-green);
         margin-bottom: 40px;
     }
@@ -56,7 +56,7 @@
 <div class="landing">
     <div class="inner">
         {#if isLogoutRedirect}
-            <h3>{I18n.t("Landing.LogoutTitle.COPY")}</h3>
+            <h2>{I18n.t("Landing.LogoutTitle.COPY")}</h2>
             <div>
                 <Button label={I18n.t("RegistrationCheck.LoginAgain.COPY")}
                         large={true}
@@ -65,7 +65,7 @@
 
         {/if}
         {#if isAccountDeletionRedirect}
-            <h3>{I18n.t("RegistrationCheck.DeleteTitle.COPY")}</h3>
+            <h2>{I18n.t("RegistrationCheck.DeleteTitle.COPY")}</h2>
             <div>
                 <Button label={I18n.t("RegistrationCheck.RegisterAgain.COPY")}
                         large={true}
@@ -73,7 +73,7 @@
             </div>
         {/if}
         {#if isRateLimitedRedirect}
-            <h3>{I18n.t("Landing.RateLimitTitle.COPY")}</h3>
+            <h2>{I18n.t("Landing.RateLimitTitle.COPY")}</h2>
             <div>
                 <Button label={I18n.t("RegistrationCheck.LoginAgain.COPY")}
                         large={true}
