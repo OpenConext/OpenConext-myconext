@@ -17,8 +17,8 @@ export const CollapseField = ({title, info, children}) => {
                     <img src={collapse ?  caretUp: caretDown} className="caret" alt="caret"/>
                 </button>
             </div>
-            {(collapse && info) && <p className="collapsed" dangerouslySetInnerHTML={{__html: info}}/>}
-            {(collapse && !info) && <div className="collapsed">{children}</div>}
+            {(collapse && info) && <p className="collapse-field-content" dangerouslySetInnerHTML={{__html: info}}/>}
+            {(collapse && !info) && <div className="collapse-field-content">{children}</div>}
         </div>
     );
 }

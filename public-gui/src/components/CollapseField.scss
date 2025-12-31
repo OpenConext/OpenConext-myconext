@@ -5,7 +5,7 @@
     width: 600px;
     margin: 8px 0;
     border-radius: 4px;
-    padding: 10px 20px 10px 10px;
+    padding: 10px 15px 10px 10px;
     cursor: pointer;
 
     @media (max-width: index.$mobile-width) {
@@ -22,10 +22,11 @@
         button {
             margin-left: auto;
             cursor: pointer;
+            padding: 5px;
         }
 
     }
-    .collapsed {
-        margin: 5px 0;
+    .collapse-field-content {
+        margin: 10px 0 5px 0;
     }
 }
