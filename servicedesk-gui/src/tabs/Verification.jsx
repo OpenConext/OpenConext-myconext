@@ -46,7 +46,7 @@ const Verification = ({proceed}) => {
 
             </div>
         <div className="verification">
-            <h4>{I18n.t("verification.header")}</h4>
+            <h3>{I18n.t("verification.header")}</h3>
             <div className="code-validation">
                 <CodeValidation verify={val => doGetUserControlCode(val)}
                                 size={5}

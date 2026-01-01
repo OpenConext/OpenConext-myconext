@@ -40,8 +40,8 @@
 </style>
 <div class="validated-data">
     <div class="title">
-        <h4><span class="green">{institutionName(institution)}</span>
-            {I18n.t("NameUpdated.Title.ContactedSuccessfully.COPY")}</h4>
+        <h2><span class="green">{institutionName(institution)}</span>
+            {I18n.t("NameUpdated.Title.ContactedSuccessfully.COPY")}</h2>
     </div>
     <p class="info">{I18n.t("NameUpdated.Description.COPY")}</p>
 

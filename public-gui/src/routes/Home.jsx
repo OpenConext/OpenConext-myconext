@@ -31,7 +31,7 @@ export const Home = () => {
                         <h1 className="title">
                             {I18n.t("home.eduID")}
                         </h1>
-                        <h3>{I18n.t("home.title")}</h3>
+                        <h2>{I18n.t("home.title")}</h2>
                         <Button onClick={() => window.location.href = `${config.idpBaseUrl}/register`}
                                 txt={I18n.t("header.register")}/>
                     </div>

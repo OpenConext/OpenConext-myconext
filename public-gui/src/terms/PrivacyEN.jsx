@@ -88,7 +88,7 @@ export const PrivacyEN = () => {
 
             </div>
             <div id="eduid" className="card full bottom">
-                <h5>What is eduID?</h5>
+                <h3>What is eduID?</h3>
                 <p className="info">
                     An eduID account is a digital identity of the user offered and managed by SURF, which can be used in
                     the
@@ -105,7 +105,7 @@ export const PrivacyEN = () => {
                 </p>
             </div>
             <div id="surf" className="card full bottom">
-                <h5>Contact details SURF</h5>
+                <h3>Contact details SURF</h3>
                 <p className="info">
                     eduID is offered and managed by SURF, a cooperative of Dutch educational and research
                     institutions.<br/><br/>
@@ -118,7 +118,7 @@ export const PrivacyEN = () => {
                 </p>
             </div>
             <div id="gegevens" className="card full bottom">
-                <h5>What data do we process from you?</h5>
+                <h3>What data do we process from you?</h3>
                 <p className="info">
                     <ol>
                         <li>eduID processes personal data of the natural person who is the holder of an eduID. This
@@ -188,7 +188,7 @@ export const PrivacyEN = () => {
                 </p>
             </div>
             <div id="persoonsgegevens" className="card full bottom">
-                <h5>Why is eduID allowed to process your personal data?</h5>
+                <h3>Why is eduID allowed to process your personal data?</h3>
                 <p className="info">
                     Personal data may only be processed if there is a legal basis for this. The basis differs per
                     purpose and
@@ -268,7 +268,7 @@ export const PrivacyEN = () => {
                 </p>
             </div>
             <div id="verstrekken" className="card full bottom">
-                <h5>To whom do we provide your data?</h5>
+                <h3>To whom do we provide your data?</h3>
                 <p className="info">
                     eduID only provides your personal data to third parties if this is necessary for you to access the
                     application.
@@ -301,7 +301,7 @@ export const PrivacyEN = () => {
                 </p>
             </div>
             <div id="waar" className="card full bottom">
-                <h5>Where do we store your data?</h5>
+                <h3>Where do we store your data?</h3>
                 <p className="info">
                     The eduID infrastructure is hosted on SURF infrastructure. Its servers are located in Amsterdam and
                     Utrecht,
@@ -309,7 +309,7 @@ export const PrivacyEN = () => {
                 </p>
             </div>
             <div id="bewaren" className="card full bottom">
-                <h5>How long do we keep your data?</h5>
+                <h3>How long do we keep your data?</h3>
                 <p className="info">
                     The personal data obtained from an institution by linking your eduID to an institutional account
                     will be kept
@@ -332,7 +332,7 @@ export const PrivacyEN = () => {
                 </p>
             </div>
             <div id="rechten" className="card full bottom">
-                <h5>What rights do you have?</h5>
+                <h3>What rights do you have?</h3>
                 <p className="info">
                     You have the right to have the personal data that eduID processes about you changed, supplemented,
                     or deleted.
@@ -394,7 +394,7 @@ export const PrivacyEN = () => {
                 </p>
             </div>
             <div id="terecht" className="card full bottom">
-                <h5>Where can you go to exercise your rights?</h5>
+                <h3>Where can you go to exercise your rights?</h3>
                 <p className="info">
                     You can submit a request to exercise your rights to the organization responsible for processing your
                     personal
@@ -407,7 +407,7 @@ export const PrivacyEN = () => {
                 </p>
             </div>
             <div id="cookies" className="card full bottom">
-                <h5>Which cookies does eduID use?</h5>
+                <h3>Which cookies does eduID use?</h3>
                 <p className="info">
                     eduID places cookies on the device you use to visit eduID. Cookies are small files that are sent by
                     an internet
@@ -455,7 +455,7 @@ export const PrivacyEN = () => {
                 </p>
             </div>
             <div id="privacyverklaring" className="card full bottom">
-                <h5>Changes to privacy policy</h5>
+                <h3>Changes to privacy policy</h3>
                 <p className="info">
                     Changes may be made to this privacy policy. We therefore recommend that you consult this privacy
                     policy

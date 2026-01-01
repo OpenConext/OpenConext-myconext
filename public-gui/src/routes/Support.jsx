@@ -24,7 +24,7 @@ export const Support = () => {
                         <h1 className="title">
                             {I18n.t("support.eduID")}
                         </h1>
-                        <h3>{I18n.t("support.title")}</h3>
+                        <h2>{I18n.t("support.title")}</h2>
                     </div>
                 </div>
             </div>
@@ -53,9 +53,9 @@ export const Support = () => {
                     </div>
                 </div>
                 <div className="card bottom full">
-                    <h5>
+                    <h3>
                         {I18n.t("support.help")}
-                    </h5>
+                    </h3>
                     <p dangerouslySetInnerHTML={{__html: I18n.t("support.helpInfo")}}/>
                 </div>
             </Background>

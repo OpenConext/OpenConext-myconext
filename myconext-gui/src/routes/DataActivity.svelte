@@ -230,7 +230,7 @@
         {#if services.length === 0}
             <p class="no-services">{I18n.t("DataActivity.NoServices.COPY")}</p>
         {:else}
-            <h4>{I18n.t("dataActivity.explanation")}</h4>
+            <h3>{I18n.t("dataActivity.explanation")}</h3>
             <table cellspacing="0" class="data-activity">
                 <thead></thead>
                 <tbody>

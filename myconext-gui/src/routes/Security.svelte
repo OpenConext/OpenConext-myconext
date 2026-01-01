@@ -65,7 +65,7 @@
         margin-bottom: 26px;
     }
 
-    h4 {
+    h3 {
         margin-bottom: 2px;
 
         &.info {
@@ -164,7 +164,7 @@
             display: flex;
             flex-direction: column;
 
-            h4 {
+            h3 {
                 margin-bottom: 25px;
             }
 
@@ -212,7 +212,7 @@
         {/if}
 
         <!-- Current sign in options -->
-        <h4 class="info">{I18n.t("security.currentSignInOptions")}</h4>
+        <h3 class="info">{I18n.t("security.currentSignInOptions")}</h3>
         <div class="security-options-group">
             {#if shouldShowAppOptions && userIsFullyEnrolledWithApp}
                 <SecurityOption action={() => showAppDetails = !showAppDetails}
@@ -268,10 +268,10 @@
 
         <!-- Recommended methods -->
         {#if shouldShowAppOptions && !userIsFullyEnrolledWithApp}
-            <h4 class="info">{I18n.t("security.recommendedOptions")}</h4>
+            <h3 class="info">{I18n.t("security.recommendedOptions")}</h3>
             <div class="tiqr-app">
                 <div class="information">
-                    <h4 class="grey">{I18n.t("Security.Tiqr.Title.COPY")}</h4>
+                    <h3 class="grey">{I18n.t("Security.Tiqr.Title.COPY")}</h3>
                     <p>{@html I18n.t("Security.Tiqr.Info.COPY")}</p>
                     <Button label={I18n.t("Security.Tiqr.Fetch.COPY")} large={true} onClick={() => navigate("/get-app")}/>
                 </div>
@@ -282,7 +282,7 @@
         {/if}
 
         <!-- Other methods -->
-        <h4 class="info">{I18n.t("Security.OtherMethods.COPY")}</h4>
+        <h3 class="info">{I18n.t("Security.OtherMethods.COPY")}</h3>
         <div class="security-options-group">
             {#if !$user.usePassword}
                 <SecurityOption action={() => navigate("/reset-password-link")}
@@ -300,7 +300,7 @@
 
         <!-- Recovery Options (Mobile App) -->
         {#if shouldShowAppOptions && userIsFullyEnrolledWithApp}
-            <h4 class="info">{I18n.t("security.tiqr.backupCodes")}</h4>
+            <h3 class="info">{I18n.t("security.tiqr.backupCodes")}</h3>
             <div class="security-options-group recovery-options">
                 {#if $user.registration.recoveryCode}
                     <SecurityOption action={() => navigate("/backup-codes")}

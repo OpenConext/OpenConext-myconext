@@ -22,15 +22,15 @@ export const About = () => {
                         <h1 className="title small">
                             {I18n.t("about.eduID")}
                         </h1>
-                        <h3>{I18n.t("about.title")}</h3>
+                        <h2>{I18n.t("about.title")}</h2>
                     </div>
                 </div>
             </div>
             <Background>
                 <div className="card">
-                    <h5>
+                    <h3>
                         {I18n.t("about.why")}
-                    </h5>
+                    </h3>
                     <p className="info">
                         {I18n.t("about.whyInfo1")}
                     </p>
@@ -39,16 +39,16 @@ export const About = () => {
                     </p>
                 </div>
                 <div className="card bottom">
-                    <h5>
+                    <h3>
                         {I18n.t("about.register")}
-                    </h5>
+                    </h3>
                     <p className="info"
                        dangerouslySetInnerHTML={{__html: I18n.t("about.registerInfo")}}/>
                 </div>
                 <div className="card bottom">
-                    <h5>
+                    <h3>
                         {I18n.t("about.logins")}
-                    </h5>
+                    </h3>
                     <p className="info"
                        dangerouslySetInnerHTML={{__html: I18n.t("about.loginsInfo")}}/>
                     <ul>
@@ -67,9 +67,9 @@ export const About = () => {
                     </ul>
                 </div>
                 <div className="card bottom">
-                    <h5>
+                    <h3>
                         {I18n.t("about.identity")}
-                    </h5>
+                    </h3>
                     <p className="info"
                        dangerouslySetInnerHTML={{__html: I18n.t("about.identityInfo1")}}/>
                     <p className="info"
@@ -87,9 +87,9 @@ export const About = () => {
                     </ul>
                 </div>
                 <div className="card bottom">
-                    <h5>
+                    <h3>
                         {I18n.t("about.manage")}
-                    </h5>
+                    </h3>
                     <p className="info"
                        dangerouslySetInnerHTML={{__html: I18n.t("about.manageInfo", {url: config.spBaseUrl})}}/>
                 </div>

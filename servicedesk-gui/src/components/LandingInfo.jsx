@@ -15,7 +15,7 @@ export const LandingInfo = () => {
             <div key={index} className={`mod-login info ${reversed}`}>
                 <div className="header-left info">
                     <div className={"info-title"}>
-                        <h2>{info[0]}</h2>
+                        <h3>{info[0]}</h3>
                         {<div className={"admin-function-container"}>
                             <Chip label={I18n.t(`landing.${info[2] ? "adminFunction" : "studentFunction"}`)}
                                   type={ChipType.Main_400}/>
@@ -35,7 +35,7 @@ export const LandingInfo = () => {
     return (
         <div className="mod-login-container bottom">
             <div className="mod-login bottom">
-                <h1>{I18n.t("landing.works")}</h1>
+                <h2>{I18n.t("landing.works")}</h2>
                 {I18n.translations[I18n.locale].landing.info.map((info, index) =>
                     infoBlock(info, logos[index], index)
                 )}
