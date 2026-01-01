@@ -9,7 +9,7 @@
         &.phone {
             width: 182px;
             height: auto;
-            @media (max-width: index.$mobile-width) {
+            @media (max-width: index.$tablet-width) {
                 width: 140px;
             }
         }
@@ -17,7 +17,7 @@
         &.cheering {
             width: 150px;
             height: auto;
-            @media (max-width: index.$mobile-width) {
+            @media (max-width: index.$tablet-width) {
                 width: 90px;
             }
         }
@@ -25,7 +25,7 @@
         &.app {
             width: 150px;
             height: auto;
-            @media (max-width: index.$mobile-width) {
+            @media (max-width: index.$tablet-width) {
                 width: 90px;
             }
         }
@@ -33,7 +33,7 @@
         &.qrCode {
             width: 140px;
             height: auto;
-            @media (max-width: index.$mobile-width) {
+            @media (max-width: index.$tablet-width) {
                 display: none;
             }
 
@@ -62,7 +62,7 @@
             min-width: 180px;
             width: 180px;
 
-            @media (max-width: index.$mobile-width) {
+            @media (max-width: index.$tablet-width) {
                 width: 100%;
             }
         }
@@ -80,7 +80,7 @@
 
     .card {
 
-        @media (max-width: index.$mobile-width) {
+        @media (max-width: index.$tablet-width) {
             flex-direction: column;
             align-items: center;
         }
@@ -95,7 +95,7 @@
         gap: 40px;
         margin-top: auto;
 
-        @media (max-width: index.$mobile-width) {
+        @media (max-width: index.$tablet-width) {
             svg {
                 display: none;
             }
@@ -106,7 +106,7 @@
             flex-direction: column;
             gap: 25px;
 
-            @media (max-width: index.$mobile-width) {
+            @media (max-width: index.$tablet-width) {
                 margin-top: 25px;
             }
 

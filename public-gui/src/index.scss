@@ -1,5 +1,6 @@
-$mobile-width: 820px;
-$mobile-width-cutoff: 821px;
+$mobile-width: 576px;
+$tablet-width: 820px;
+$tablet-width-cutoff: 821px;
 
 @mixin page {
     margin: 0 auto;
