@@ -21,6 +21,8 @@ It includes:
 
 # Run UserDataSeeder
 mvn clean && mvn test-compile exec:java
+or 
+mvn clean && mvn test-compile exec:java -Dexec.systemProperties="-DdbUrl=mongodb://localhost:27017 -DdbName=myconext_performance -DusersCollection=users"
 
 # Run Gradual Ramp Up (8 minutes)
 mvn gatling:test -Dgatling.simulationClass=myconext.simulations.GradualRampUpSimulation

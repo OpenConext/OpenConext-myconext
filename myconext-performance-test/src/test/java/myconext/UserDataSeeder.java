@@ -17,18 +17,15 @@ import java.util.*;
 public class UserDataSeeder {
 
     // ---- Database configuration ----
-    private static final String MONGO_URI = "mongodb://localhost:27017";
-    private static final String DATABASE_NAME = "myconext_performance";
-    private static final String USERS_COLLECTION = "users";
+    private static final String MONGO_URI = System.getProperty("dbUrl", "mongodb://localhost:27017");
+    private static final String DATABASE_NAME = System.getProperty("dbName", "myconext_performance");
+    private static final String USERS_COLLECTION = System.getProperty("usersCollection", "users");
 
     // ---- Seeding configuration ----
     private static final int TOTAL_USERS = 1_000_000;
     private static final int BATCH_SIZE = 5_000;
 
     public static void main(String[] args) {
-
-        String mongoUri = System.getProperty("mongo.uri", MONGO_URI);
-
         Faker faker = new Faker(new Random(42)); // deterministic
 
         try (MongoClient client = MongoClients.create(MONGO_URI)) {

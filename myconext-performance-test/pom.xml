@@ -3,17 +3,16 @@
 
   <modelVersion>4.0.0</modelVersion>
 
-  <groupId>io.gatling.demo</groupId>
+  <groupId>org.openconext</groupId>
   <artifactId>myconext-performance-test</artifactId>
-  <version>3.14.9</version>
+  <version>1.0.0-SNAPSHOT</version>
 
   <properties>
     <maven.compiler.release>21</maven.compiler.release>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <gatling.version>${project.version}</gatling.version>
-    <gatling-maven-plugin.version>4.20.15</gatling-maven-plugin.version>
-    <maven-compiler-plugin.version>3.14.1</maven-compiler-plugin.version>
-    <maven-resources-plugin.version>3.4.0</maven-resources-plugin.version>
+    <gatling.version>3.14.9</gatling.version>
+    <gatling-maven-plugin.version>4.19.0</gatling-maven-plugin.version>
+    <maven-compiler-plugin.version>3.14.0</maven-compiler-plugin.version>
     <maven-jar-plugin.version>3.5.0</maven-jar-plugin.version>
     <mongodb.version>5.2.1</mongodb.version>
     <datafaker.version>2.4.2</datafaker.version>
@@ -26,14 +25,14 @@
       <version>${gatling.version}</version>
       <scope>test</scope>
     </dependency>
-
+    <!-- Mongodb driver for UserDataSeeder -->
     <dependency>
       <groupId>org.mongodb</groupId>
       <artifactId>mongodb-driver-sync</artifactId>
       <version>${mongodb.version}</version>
       <scope>test</scope>
     </dependency>
-
+    <!-- Datafaker for UserDataSeeder -->
     <dependency>
       <groupId>net.datafaker</groupId>
       <artifactId>datafaker</artifactId>
@@ -49,10 +48,6 @@
         <version>${maven-compiler-plugin.version}</version>
       </plugin>
       <plugin>
-        <artifactId>maven-resources-plugin</artifactId>
-        <version>${maven-resources-plugin.version}</version>
-      </plugin>
-      <plugin>
         <artifactId>maven-jar-plugin</artifactId>
         <version>${maven-jar-plugin.version}</version>
       </plugin>
@@ -64,6 +59,7 @@
           <!-- Enterprise Cloud (https://cloud.gatling.io/) configuration reference: https://docs.gatling.io/reference/integrations/build-tools/maven-plugin/#running-your-simulations-on-gatling-enterprise-cloud -->
         </configuration>
       </plugin>
+      <!-- exec-maven-plugin for UserDataSeeder -->
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>exec-maven-plugin</artifactId>
