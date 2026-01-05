@@ -29,7 +29,7 @@ public class EduID {
                 System.out.println("✓ Step 1 completed: Email check for " + session.getString("email"));
                 return session;
             })
-            .pause(Duration.ofMillis(100), Duration.ofMillis(500))
+            .pause(Duration.ofSeconds(1), Duration.ofSeconds(2))  // Give DB time to commit
             // Step 2: Create new EduID with Ongeverifieerd status
             .exec(
                     http("Create EduID - Ongeverifieerd")
@@ -55,7 +55,7 @@ public class EduID {
                 System.out.println("✓ Step 2 completed: EduID created with ID " + session.getString("eduIDValue"));
                 return session;
             })
-            .pause(Duration.ofMillis(100), Duration.ofMillis(500))
+            .pause(Duration.ofSeconds(1), Duration.ofSeconds(2))  // Give DB time to commit
             // Step 3: Update - use data from step 2, change verification + add brinCodes
             .exec(
                     http("Update EduID - Geverifieerd")
