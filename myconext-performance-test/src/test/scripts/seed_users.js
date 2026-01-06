@@ -10,7 +10,7 @@
 // mongosh "mongodb://localhost:27017/myconext_performance" < seed_users.js
 
 // Configuration (can be overridden with --eval)
-const DATABASE_NAME = typeof DATABASE_NAME !== 'undefined' ? DATABASE_NAME : "myconext_performance";
+const DATABASE_NAME = typeof DATABASE_NAME !== 'undefined' ? DATABASE_NAME : "surf_id_test";
 const USERS_COLLECTION = typeof USERS_COLLECTION !== 'undefined' ? USERS_COLLECTION : "users";
 const TOTAL_USERS = typeof TOTAL_USERS !== 'undefined' ? TOTAL_USERS : 10000;
 

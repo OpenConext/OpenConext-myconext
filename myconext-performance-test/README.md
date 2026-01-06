@@ -23,6 +23,11 @@ At the moment, the project supports a single test flow:
  ⚠️ Warning
 This script will **DELETE all existing data** in the target collection before seeding!
 
+This is simple command to count users: 
+``` shell
+mongosh "mongodb://localhost:27017" --eval "db.getSiblingDB('surf_id_test').users.countDocuments()"
+```
+
 ### How to Run MongoDB User Data Seeder
 1. Navigate to the scripts directory
 ```bash
