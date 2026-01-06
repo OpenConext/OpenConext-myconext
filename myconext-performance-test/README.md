@@ -19,7 +19,37 @@ At the moment, the project supports a single test flow:
 - Java 21
 - Maven 3
 
-## Run UserDataSeeder
+## How to generate lots of users
+ ⚠️ Warning
+This script will **DELETE all existing data** in the target collection before seeding!
+
+### How to Run MongoDB User Data Seeder
+1. Navigate to the scripts directory
+```bash
+cd ./src/test/scripts
+```
+2. Configure the connection (edit `seed_script.sh`)
+**Local MongoDB (no authentication):**
+```bash
+MONGO_HOST="localhost"
+MONGO_PORT="27017"
+MONGO_USERNAME=""
+MONGO_AUTH_DB=""
+```
+**Remote MongoDB (with authentication):**
+```bash
+MONGO_HOST="your-server.com"
+MONGO_PORT="27017"
+MONGO_USERNAME="admin"
+MONGO_AUTH_DB="admin"
+```
+
+3. Run the script
+```bash
+bash seed_script.sh
+```
+
+### How to Run MongoDB User Data Seeder with mvn
 ```shell
 mvn clean && mvn test-compile exec:java \
   -Dexec.mainClass=myconext.UserDataSeeder \
