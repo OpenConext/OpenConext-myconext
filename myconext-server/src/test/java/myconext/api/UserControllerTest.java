@@ -1597,13 +1597,16 @@ public class UserControllerTest extends AbstractIntegrationTest {
         VerifyOneTimeLoginCode oneTimeLoginCode = new VerifyOneTimeLoginCode(
                 user.getOneTimeLoginCode().getCode(),
                 authenticationResponse.authenticationRequestId);
-        given().
-                when()
+        Map<String, String> res = given()
+                .when()
                 .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                 .body(oneTimeLoginCode)
                 .put("/myconext/api/idp/verify_code_request")
-                .then()
-                .statusCode(HttpStatus.CREATED.value());
+                .as(new TypeRef<>() {
+                });
+        assertEquals("jdoe@example.com", res.get("email"));
+        String url = res.get("url");
+        assertTrue(url.startsWith("http://localhost:8081/saml/guest-idp/magic?h="));
 
         User userFromDB = userRepository.findOneUserByEmail("jdoe@example.com");
         assertNull(userFromDB.getOneTimeLoginCode());

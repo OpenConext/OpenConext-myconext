@@ -383,7 +383,7 @@ public class UserController implements UserAuthentication {
                     //Mobile app
                     url = this.idpBaseUrl + "/mobile/api/create-from-mobile-api/in-app?h=" + hash;
                 }
-                return ResponseEntity.status(201).body(Map.of("url", url));
+                return ResponseEntity.status(201).body(Map.of("url", url, "email", user.getEmail()));
             }
             throw new InvalidOneTimeLoginCodeException(String.format("Invalid oneTimeLoginCode entered for email %s, delay: %s, attempt: %s",
                     user.getEmail(),

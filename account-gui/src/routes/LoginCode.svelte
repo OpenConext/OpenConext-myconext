@@ -37,6 +37,11 @@
                     secure: true,
                     sameSite: "Lax"
                 });
+                Cookies.set(cookieNames.USERNAME, json.email, {
+                    expires: 365,
+                    secure: true,
+                    sameSite: "Lax"
+                });
                 if (json.stepup) {
                     fetchServiceName(id).then(serviceName => {
                         navigate(`/stepup/${id}?name=${encodeURIComponent(serviceName)}&explanation=${json.explanation}`, {replace: true})
