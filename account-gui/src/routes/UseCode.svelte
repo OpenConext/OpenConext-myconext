@@ -5,14 +5,21 @@
     import Spinner from "../components/Spinner.svelte";
     import {navigate} from "svelte-routing";
     import {onMount} from "svelte";
+    import {isEmpty} from "../utils/utils.js";
 
     export let id;
 
     onMount(() => {
-        generateCodeExistingUser($user.email, id)
-            .then(() => {
-                navigate(`/code/${id}`, {replace: true});
-            }).catch(() => navigate("/expired", {replace: true}));
+        if (isEmpty($user.email)) {
+            console.log('Just before redirecting to login', { user: $user})
+            debugger;
+            navigate(`/login/${id}`);
+        } else {
+            generateCodeExistingUser($user.email, id)
+                .then(() => {
+                    navigate(`/code/${id}`, {replace: true});
+                }).catch(() => navigate("/expired", {replace: true}));
+        }
     });
 
 </script>
