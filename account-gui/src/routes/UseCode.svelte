@@ -11,9 +11,10 @@
 
     onMount(() => {
         if (isEmpty($user.email)) {
-            console.log('Just before redirecting to login', { user: $user})
-            debugger;
-            navigate(`/login/${id}`);
+            // Svelte needs time to render the component, else "navigate" is not working
+            setTimeout(() => {
+                navigate(`/login/${id}`, {replace: true});
+            }, 200);
         } else {
             generateCodeExistingUser($user.email, id)
                 .then(() => {
