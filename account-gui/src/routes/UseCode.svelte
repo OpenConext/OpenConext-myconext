@@ -5,14 +5,22 @@
     import Spinner from "../components/Spinner.svelte";
     import {navigate} from "svelte-routing";
     import {onMount} from "svelte";
+    import {isEmpty} from "../utils/utils.js";
 
     export let id;
 
     onMount(() => {
-        generateCodeExistingUser($user.email, id)
-            .then(() => {
-                navigate(`/code/${id}`, {replace: true});
-            }).catch(() => navigate("/expired", {replace: true}));
+        if (isEmpty($user.email)) {
+            // Svelte needs time to render the component, else "navigate" is not working
+            setTimeout(() => {
+                navigate(`/login/${id}`, {replace: true});
+            }, 200);
+        } else {
+            generateCodeExistingUser($user.email, id)
+                .then(() => {
+                    navigate(`/code/${id}`, {replace: true});
+                }).catch(() => navigate("/expired", {replace: true}));
+        }
     });
 
 </script>
