@@ -49,7 +49,7 @@
          */
         if (!$conf.featureIdVerify) {
             //proceed to WAYF right away
-            window.location.href = `/myconext/api/idp/oidc/account/${id}?forceAuth=true`;
+            window.location.href = `/myconext/api/idp/oidc/account/${id}`;
         } else {
             showChooseOptions = true;
         }
@@ -57,7 +57,7 @@
 
     const addInstitution = () => {
         //proceed to WAYF right away
-        window.location.href = `/myconext/api/idp/oidc/account/${id}?forceAuth=true`;
+        window.location.href = `/myconext/api/idp/oidc/account/${id}`;
     }
 
     const addBank = bankId => {
