@@ -17,8 +17,11 @@
 
     let expiresAt = 0;
 
+    let hasEduPersonAffiliations = false;
+
     onMount(() => {
         expiresAt = linkedAccount.expiresAt;
+        const hasEduPersonAffiliations = (linkedAccount.eduPersonAffiliations || []).length > 0;
     })
 
     const hideImage = e => {
@@ -101,11 +104,10 @@
             <h4>{I18n.t("profile.from", {name: institutionName(linkedAccount)})}</h4>
             <span>{@html I18n.t("profile.receivedOnInfo", {date: dateFromEpoch(linkedAccount.createdAt)})}</span>
             <span>
-                <!-- ToDo--> Waar haal ik deze vandaan?
-                {#if isAffiliation}
+                {#if hasEduPersonAffiliations}
                     {@html I18n.t("profile.validUntilDateInfo", {date: dateFromEpoch(expiresAt), rolDate: dateFromEpoch(getAffiliationsVerificationDate(linkedAccount.createdAt))})}
                 {:else}
-                    {@html I18n.t("profile.validUntilDate")}
+                    {@html I18n.t("profile.validUntilDate", {date: dateFromEpoch(expiresAt)})}
                 {/if}
 
                 {#if linkedAccount.expired}
