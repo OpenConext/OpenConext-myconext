@@ -730,17 +730,18 @@ public class GuestIdpAuthenticationRequestFilter extends OncePerRequestFilter {
             } else {
                 authnContextClassRefValue = ACR.selectACR(authenticationContextClassReferences, hasStudentAffiliation);
             }
-        } else if (samlAuthenticationRequest.isMfaProfileRequired()) {
+        } else if (!applySsoMfa && !CollectionUtils.isEmpty(authenticationContextClassReferences)) {
+            optionalMessage = String.format("The specified authentication context requirements '%s' cannot be met by the responder.",
+                    String.join(", ", authenticationContextClassReferences));
+            samlStatus = SAMLStatus.NO_AUTHN_CONTEXT;
+        }
+        if (samlAuthenticationRequest.isMfaProfileRequired()) {
             if (samlAuthenticationRequest.isTiqrFlow() || applySsoMfa) {
                 authnContextClassRefValue = ACR.selectACR(authenticationContextClassReferences, false);
             } else {
                 optionalMessage = "The requesting service has indicated that a login with the eduID app is required to login.";
                 samlStatus = SAMLStatus.NO_AUTHN_CONTEXT;
             }
-        } else if (!applySsoMfa && !CollectionUtils.isEmpty(authenticationContextClassReferences)) {
-            optionalMessage = String.format("The specified authentication context requirements '%s' cannot be met by the responder.",
-                    String.join(", ", authenticationContextClassReferences));
-            samlStatus = SAMLStatus.NO_AUTHN_CONTEXT;
         }
         if (!samlStatus.equals(SAMLStatus.SUCCESS)) {
             authnContextClassRefValue = DefaultSAMLService.authnContextClassRefUnspecified;
