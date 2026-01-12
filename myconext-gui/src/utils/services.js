@@ -51,3 +51,7 @@ export const linkedAccountFamilyName = linkedAccount => {
 export const isStudent = linkedAccount => {
     return (linkedAccount.eduPersonAffiliations || []).some(aff => aff.toLowerCase().indexOf("student") > -1);
 }
+
+export const hasAffiliations = linkedAccount => {
+    return (linkedAccount.eduPersonAffiliations || []).length > 0;
+}

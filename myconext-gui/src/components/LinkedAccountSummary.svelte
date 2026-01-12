@@ -2,7 +2,13 @@
     import I18n from "../locale/I18n";
     import {dateFromEpoch, getAffiliationsVerificationDate} from "../utils/date";
     import {onMount} from "svelte";
-    import {institutionName, isStudent, linkedAccountFamilyName, linkedAccountGivenName} from "../utils/services";
+    import {
+        hasAffiliations,
+        institutionName,
+        isStudent,
+        linkedAccountFamilyName,
+        linkedAccountGivenName
+    } from "../utils/services";
     import trash from "../icons/verify/bin.svg?raw"
     import studentIcon from "../icons/student.svg?raw";
     import personalInfo from "../icons/verify/personalInfo.svg?raw";
@@ -17,11 +23,8 @@
 
     let expiresAt = 0;
 
-    let hasEduPersonAffiliations = false;
-
     onMount(() => {
         expiresAt = linkedAccount.expiresAt;
-        const hasEduPersonAffiliations = (linkedAccount.eduPersonAffiliations || []).length > 0;
     })
 
     const hideImage = e => {
@@ -33,11 +36,11 @@
     .linked-account-container {
         .linked-account {
             display: flex;
+            align-items: flex-start;
             position: relative;
 
             .image-container {
-                position: absolute;
-                right: 0;
+                margin-left: auto; /* duwt image naar rechts */
 
                 img {
                     width: 88px;
@@ -104,7 +107,7 @@
             <h4>{I18n.t("profile.from", {name: institutionName(linkedAccount)})}</h4>
             <span>{@html I18n.t("profile.receivedOnInfo", {date: dateFromEpoch(linkedAccount.createdAt)})}</span>
             <span>
-                {#if hasEduPersonAffiliations}
+                {#if hasAffiliations(linkedAccount)}
                     {@html I18n.t("profile.validUntilDateInfo", {date: dateFromEpoch(expiresAt), rolDate: dateFromEpoch(getAffiliationsVerificationDate(linkedAccount.createdAt))})}
                 {:else}
                     {@html I18n.t("profile.validUntilDate", {date: dateFromEpoch(expiresAt)})}
