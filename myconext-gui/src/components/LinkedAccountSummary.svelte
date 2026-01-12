@@ -100,7 +100,14 @@
         <div class="info">
             <h4>{I18n.t("profile.from", {name: institutionName(linkedAccount)})}</h4>
             <span>{@html I18n.t("profile.receivedOnInfo", {date: dateFromEpoch(linkedAccount.createdAt)})}</span>
-            <span>{@html I18n.t("profile.validUntilDateInfo", {date: dateFromEpoch(expiresAt), rolDate: dateFromEpoch(getAffiliationsVerificationDate(linkedAccount.createdAt))})}
+            <span>
+                <!-- ToDo--> Waar haal ik deze vandaan?
+                {#if isAffiliation}
+                    {@html I18n.t("profile.validUntilDateInfo", {date: dateFromEpoch(expiresAt), rolDate: dateFromEpoch(getAffiliationsVerificationDate(linkedAccount.createdAt))})}
+                {:else}
+                    {@html I18n.t("profile.validUntilDate")}
+                {/if}
+
                 {#if linkedAccount.expired}
                     <span class="expired"> ({I18n.t("profile.expired")})</span>
                 {/if}
