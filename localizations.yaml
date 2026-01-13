@@ -3239,6 +3239,10 @@ SHARED:
         nl: >-
           Je moet aantonen dat je student bent. Dit doe je door je eduID te
           koppelen aan een officiële instelling.
+    Profile_mfa:
+      COPY:
+        en: You must log in using the eduID app for multi-factor authentication.
+        nl: Je moet inloggen met de eduID app voor multi-factor authenticatie.
   StepUpVerification:
     Linked_institution:
       COPY:
@@ -3258,6 +3262,10 @@ SHARED:
         nl: >-
           Je hebt aangetoond dat je student bent, doordat je eduID is
           gekoppeld aan een officiële instelling.
+    Profile_mfa:
+      COPY:
+        en: You have successfully logged in using the eduID app with multi-factor authentication.
+        nl: Je bent succesvol ingelogd met de eduID app met multi-factor authenticatie.
   NudgeApp:
     New:
       COPY:
