@@ -16,6 +16,7 @@ import myconext.security.ACR;
 import org.apache.commons.io.IOUtils;
 import org.apache.http.client.CookieStore;
 import org.junit.Test;
+import org.opensaml.saml.saml2.core.StatusCode;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -195,6 +196,45 @@ public class UserControllerTest extends AbstractIntegrationTest {
         String samlResponse = samlResponse(authenticationResponse);
 
         assertTrue(samlResponse.contains(ACR.LINKED_INSTITUTION_MFA));
+    }
+
+    @Test
+    public void accountLinkingAndMfa_RejectMfa() throws IOException {
+        String authnContext = readFile("request_authn_context_linked_institution_mfa.xml");
+        Response response = samlAuthnRequestResponseWithLoa(null, "relay", authnContext);
+        String authenticationRequestId = extractAuthenticationRequestIdFromAuthnResponse(response);
+
+        String location = response.getHeader("Location");
+        assertTrue(location.contains("/login"));
+        assertTrue(location.contains("stepup=true"));
+        assertTrue(location.contains("mfa=true"));
+
+        // Linking institution
+        User user = userRepository.findOneUserByEmail("mdoe@example.com");
+        LinkedAccount linkedAccount = linkedAccount("John", "Doe", new Date());
+        user.getLinkedAccounts().add(linkedAccount);
+        userRepository.save(user);
+
+        ClientAuthenticationRequest clientAuthenticationRequest = new ClientAuthenticationRequest(authenticationRequestId, user, false, "repsonse");
+        ClientAuthenticationResponse authenticationResponse = oneTimeLoginCodeRequest(clientAuthenticationRequest, HttpMethod.PUT);
+
+        SamlAuthenticationRequest samlAuthenticationRequest = authenticationRequestRepository
+                .findById(authenticationResponse.authenticationRequestId).get();
+
+        Response magicResponse = given().redirects().follow(false)
+                .when()
+                .queryParam("h", samlAuthenticationRequest.getHash())
+                .cookie(BROWSER_SESSION_COOKIE_NAME, "true")
+                .get("/saml/guest-idp/magic");
+        while (magicResponse.statusCode() == 302) {
+            String redirectLocation = magicResponse.getHeader("Location");
+            assertNotNull(redirectLocation);
+            magicResponse = this.get302Response(magicResponse, Optional.empty(), "?force=true");
+        }
+        String samlResponse = samlAuthnResponse(magicResponse, Optional.empty());
+
+        assertTrue(samlResponse.contains(StatusCode.NO_AUTHN_CONTEXT));
+        assertTrue(samlResponse.contains("The requesting service has indicated that a login with the eduID app is required to login."));
     }
 
     @Test
