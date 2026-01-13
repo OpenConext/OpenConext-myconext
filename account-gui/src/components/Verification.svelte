@@ -37,7 +37,7 @@
 {/if}
 <div class="conditions-container">
     <p class="conditions">
-        {@html verified ? I18n.t(`stepUpVerification.${explanation}`) : (DOMPurify.sanitize(explanationText) || I18n.t(`stepUpExplanation.${explanation}`))}
+        {@html verified ? I18n.t(`StepUpVerification.${explanation}.COPY`) : (DOMPurify.sanitize(explanationText) || I18n.t(`StepUpExplanation.${explanation}.COPY`))}
     </p>
     <span class="icon">{@html verified ? oneMoreThingFilled : oneMoreThingEmpty}</span>
 
