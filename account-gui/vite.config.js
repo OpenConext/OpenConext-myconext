@@ -1,10 +1,15 @@
 import { defineConfig } from 'vite';
 import { svelte } from '@sveltejs/vite-plugin-svelte';
+import legacy from '@vitejs/plugin-legacy'
 
 export default defineConfig({
     plugins: [
         svelte({
             /* plugin options */
+        }),
+        legacy({
+            targets: ['ie >= 11'],
+            additionalLegacyPolyfills: ['regenerator-runtime/runtime'],
         })
     ],
     server: {
