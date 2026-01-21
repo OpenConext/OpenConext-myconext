@@ -4009,16 +4009,12 @@ SHARED:
     VisitSupport:
       Full:
         COPY:
-          en: Can’t use these methods? Visit our Help page.
-          nl: "Kun je deze manieren niet gebruiken? Bezoek dan onze Hulp-pagina."
-      HighlightedPart:
-        COPY:
-          en: "Help page"
-          nl: "Hulp-pagina"
-      Link:
-        COPY:
-          en: "https://eduid.nl/help-en/"
-          nl: "https://eduid.nl/help/"
+          en: Contact the Service Desk
+          nl: Contact met de Service Desk
+    SupportLink:
+      COPY:
+        en: "https://eduid.nl/support/?lang=en"
+        nl: "https://eduid.nl/support/?lang=nl"
   SelectYourBank:
     Title:
       COPY:
