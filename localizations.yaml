@@ -3239,8 +3239,8 @@ SHARED:
   StepUpExplanation:
     info:
       COPY:
-        en:
-        nl:
+        en: " "
+        nl: " "
     Linked_institution:
       COPY:
         en: Your eduID must be connected to an official party.
@@ -3270,8 +3270,8 @@ SHARED:
   StepUpVerification:
     info:
       COPY:
-        en:
-        nl:
+        en: " "
+        nl: " "
     Linked_institution:
       COPY:
         en: Your eduID is connected to an official party.
