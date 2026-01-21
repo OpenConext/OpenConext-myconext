@@ -125,13 +125,13 @@
         margin-right: 10px;
     }
 
-    input[type=email] {
-        border: 1px solid #727272;
-        border-radius: 2px;
-        padding: 14px;
-        font-size: 16px;
-        width: 100%;
-        margin-bottom: 15px;
+    input[type=email], input[type=text] {
+      border: 1px solid #B2B6BE;
+      border-radius: 6px;
+      padding: 14px;
+      font-size: 16px;
+      width: 100%;
+      margin: 8px 0 15px 0;
     }
 
     input.error {
@@ -149,6 +149,31 @@
       align-items: center;
 
       margin-top: 25px;
+      .or-divider-text {
+        margin-left: 10px;
+        margin-right: 10px;
+        color: #5E6873;
+      }
+      .stripe {
+        margin-top: 3px;
+        height: 1px;
+        width: 100%;
+        background: #000;
+      }
+    }
+
+    .pre-input-label {
+      color: var(--color-primary-black);
+      font-weight: 600;
+    }
+
+    .message-email-not-found{
+      padding-top: 12px;
+      padding-bottom: 10px;
+    }
+
+    .header {
+      margin-bottom: 15px;
     }
 
 </style>
@@ -175,6 +200,7 @@
                      index={2}/>
     </div>
 {:else}
+    <label for="email" class="pre-input-label">{I18n.t("LinkFromInstitution.Email.COPY")}</label>
     <input type="email"
            autocomplete="username"
            id="email"
@@ -187,10 +213,12 @@
            spellcheck="false">
 {/if}
 {#if emailNotFound}
-    <Alert
-            message={I18n.t("Login.EmailNotFound1.COPY")}
-            alertType={AlertType.Warning}
-    />
+    <div class="message-email-not-found">
+        <Alert
+                message={I18n.t("Login.EmailNotFound1.COPY")}
+                alertType={AlertType.Warning}
+        />
+    </div>
 {/if}
 {#if rateLimited}
     <div class="error">
@@ -201,19 +229,21 @@
     </div>
 {/if}
 {#if emailNotFound}
-    <SubContent linkText={I18n.t("Login.RequestEduId2.COPY")}
+    <SubContent linkText={I18n.t("Login.RequestEduId3.COPY")}
                 route="/request/{id}"
                 interContent="true"
                 showButton="true"
     />
 
     <div class="or-divider">
-        <span>{I18n.t("Login.OrDivider.COPY")}</span>
+        <div class="stripe"></div>
+        <span class="or-divider-text">{I18n.t("Login.OrDivider.COPY")}</span>
+        <div class="stripe"></div>
     </div>
 
     <Button href="/"
             label={I18n.t("Login.TryOtherEmail.COPY")}
-            className="cancel"
+            className="secondary"
             onClick={otherAccount}/>
 {:else}
 <Button href="/next"
