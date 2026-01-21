@@ -2034,8 +2034,8 @@ SHARED:
         nl: Terug
     Next:
       COPY:
-        en: Next
-        nl: Volgende
+        en: Continue
+        nl: Ga door
   Sms:
     Header:
       COPY:
@@ -2587,6 +2587,10 @@ SHARED:
       COPY:
         en: Create directly
         nl: Direct aanmaken
+    RequestEduId3:
+      COPY:
+        en: Create eduID
+        nl: eduID aanmaken
     LoginEduId:
       COPY:
         en: Login
@@ -2597,8 +2601,8 @@ SHARED:
         nl: Wat is eduID?
     Header:
       COPY:
-        en: Log in with eduID
-        nl: Log in met eduID
+        en: Log in
+        nl: Inloggen
     HeaderSubTitle:
       COPY:
         en: 'to continue to '
