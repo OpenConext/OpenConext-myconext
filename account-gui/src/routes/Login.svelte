@@ -172,6 +172,10 @@
       padding-bottom: 10px;
     }
 
+    .header {
+      margin-bottom: 15px;
+    }
+
 </style>
 {#if showSpinner}
     <Spinner/>

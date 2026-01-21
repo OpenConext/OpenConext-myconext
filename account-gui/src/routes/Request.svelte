@@ -257,15 +257,19 @@
       padding-top: 12px;
     }
 
+    .header {
+      margin-bottom: 15px;
+    }
+
 </style>
 {#if showSpinner}
     <Spinner/>
 {/if}
 <form on:keydown={(e) => e.key === 'Enter' && e.preventDefault()}>
     <h2 class="header">{I18n.t("Login.RequestHeader.COPY")}</h2>
-    {#if serviceName}
-        <h2 class="top">{I18n.t("Login.RequestSubHeader.COPY")}</h2>
-    {/if}
+
+    <h2 class="top">{I18n.t("Login.RequestSubHeader.COPY")}</h2>
+
     <label for="email" class="pre-input-label">{I18n.t("LinkFromInstitution.Email.COPY")}</label>
     <input type="email"
            autocomplete="username"
