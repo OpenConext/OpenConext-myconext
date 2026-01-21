@@ -2432,8 +2432,8 @@ SHARED:
           e-mailadres in. Dit wordt het e-maildres dat eduID gebruikt.
     Email:
       COPY:
-        en: Your email address
-        nl: Je e-mailadres
+        en: Email address
+        nl: E-mailadres
     EmailPlaceholder:
       COPY:
         en: e.g. user@gmail.com
@@ -2559,6 +2559,14 @@ SHARED:
           Controleer je inbox. We hebben je de e-mail met de link opnieuw
           verzonden.
   Login:
+    RequestHeader:
+      COPY:
+        en: Create eduID
+        nl: eduID aanmaken
+    RequestSubHeader:
+      COPY:
+        en: Fill in your personal details below.
+        nl: Vul hieronder je persoonlijke gegevens in.
     RequestSuccessHeader:
       COPY:
         en: Your eduID has been created
@@ -2869,7 +2877,11 @@ SHARED:
     TryOtherEmail:
       COPY:
         en: Try another email address
-        nl: Probeer een ander emailadres
+        nl: Probeer een ander e-mailadres
+    LoginWithThisEmail:
+      COPY:
+        en: Log in with this email address
+        nl: Log in met dit e-mailadres
     OrDivider:
       COPY:
         en: or
