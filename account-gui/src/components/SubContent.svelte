@@ -51,8 +51,8 @@
     .inter-content {
       display: flex;
       flex-direction: column;
-      margin: 16px auto 0 auto;
-      padding: 22px 32px;
+      margin: 0 auto 0 auto;
+      padding: 22px 32px 0 32px;
       background-color: white;
       justify-content: center;
     }
@@ -79,7 +79,11 @@
     }
 
     span.question {
-        font-weight: 600;
+        font-weight: 400;
+        font-size: 14px;
+        color: #173552;
+        width: 100%;
+        text-align: center;
     }
 
     span.pre-link {
@@ -87,9 +91,10 @@
     }
 
     a {
-        color: var(--color-primary-blue);
+        color: #173552;
         text-decoration: underline;
-        font-weight: normal;
+        font-weight: 400;
+        font-size: 14px;
 
         &:hover {
             color: var(--color-hover-blue);

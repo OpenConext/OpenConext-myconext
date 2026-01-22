@@ -19,6 +19,7 @@
     export let download = undefined;
     export let href = undefined;
     export let largeConfirmation = false;
+    export let fixedWidth = null;
 
     const handleKeydown = e => {
         if (e.key === "Escape") {
@@ -114,7 +115,7 @@
 <svelte:window on:keydown={handleKeydown}/>
 
 <div class="modal">
-    <div class="modal-content">
+    <div class="modal-content" style:width={fixedWidth}>
         {#if title}
             <div class="modal-header" class:warning>
                 <h3>{title}</h3>

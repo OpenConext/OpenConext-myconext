@@ -8,6 +8,9 @@
     export let explanationText;
     export let verified = false;
 
+    export function capitalizeForLocalizationsFile(str) {
+        return str ? str[0].toUpperCase() + str.slice(1) : '';
+    }
 </script>
 <style>
     p.info {
@@ -37,7 +40,7 @@
 {/if}
 <div class="conditions-container">
     <p class="conditions">
-        {@html verified ? I18n.t(`StepUpVerification.${explanation}.COPY`) : (DOMPurify.sanitize(explanationText) || I18n.t(`StepUpExplanation.${explanation}.COPY`))}
+        {@html verified ? I18n.t(`StepUpVerification.${capitalizeForLocalizationsFile(explanation)}.COPY`) : (DOMPurify.sanitize(explanationText) || I18n.t(`StepUpExplanation.${capitalizeForLocalizationsFile(explanation)}.COPY`))}
     </p>
     <span class="icon">{@html verified ? oneMoreThingFilled : oneMoreThingEmpty}</span>
 

@@ -767,7 +767,8 @@
 {/if}
 
 {#if showModal || showControlCode}
-    <Modal close={() => resetModalsAndQueryParams()}
+    <Modal fixedWidth="400px"
+            close={() => resetModalsAndQueryParams()}
            title={showIdinOptions ? I18n.t("WelcomeToApp.VerifyYour.Highlight.COPY") : showControlCode ?
     I18n.t("ServiceDesk.ControlCode.ControlCode.COPY") : I18n.t("Profile.AddAnOrganisation.COPY")}
            showOptions={false}>

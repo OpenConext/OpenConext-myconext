@@ -2034,8 +2034,8 @@ SHARED:
         nl: Terug
     Next:
       COPY:
-        en: Next
-        nl: Volgende
+        en: Continue
+        nl: Ga door
   Sms:
     Header:
       COPY:
@@ -2432,8 +2432,8 @@ SHARED:
           e-mailadres in. Dit wordt het e-maildres dat eduID gebruikt.
     Email:
       COPY:
-        en: Your email address
-        nl: Je e-mailadres
+        en: Email address
+        nl: E-mailadres
     EmailPlaceholder:
       COPY:
         en: e.g. user@gmail.com
@@ -2559,6 +2559,14 @@ SHARED:
           Controleer je inbox. We hebben je de e-mail met de link opnieuw
           verzonden.
   Login:
+    RequestHeader:
+      COPY:
+        en: Create eduID
+        nl: eduID aanmaken
+    RequestSubHeader:
+      COPY:
+        en: Fill in your personal details below.
+        nl: Vul hieronder je persoonlijke gegevens in.
     RequestSuccessHeader:
       COPY:
         en: Your eduID has been created
@@ -2579,6 +2587,10 @@ SHARED:
       COPY:
         en: Create directly
         nl: Direct aanmaken
+    RequestEduId3:
+      COPY:
+        en: Create eduID
+        nl: eduID aanmaken
     LoginEduId:
       COPY:
         en: Login
@@ -2589,8 +2601,8 @@ SHARED:
         nl: Wat is eduID?
     Header:
       COPY:
-        en: Log in with eduID
-        nl: Log in met eduID
+        en: Log in
+        nl: Inloggen
     HeaderSubTitle:
       COPY:
         en: 'to continue to '
@@ -2869,7 +2881,11 @@ SHARED:
     TryOtherEmail:
       COPY:
         en: Try another email address
-        nl: Probeer een ander emailadres
+        nl: Probeer een ander e-mailadres
+    LoginWithThisEmail:
+      COPY:
+        en: Log in with this email address
+        nl: Log in met dit e-mailadres
     OrDivider:
       COPY:
         en: or
@@ -3221,6 +3237,10 @@ SHARED:
         en: Retry
         nl: Opnieuw proberen
   StepUpExplanation:
+    info:
+      COPY:
+        en: " "
+        nl: " "
     Linked_institution:
       COPY:
         en: Your eduID must be connected to an official party.
@@ -3231,6 +3251,10 @@ SHARED:
         nl: >-
           Je voornaam en achternaam moeten worden bevestigd door een
           officiële instelling.
+    Validate_names_external:
+      COPY:
+        en: Your identity must be verified by a trusted party.
+        nl: Je voornaam en achternaam moeten worden geverifieerd door een externe vertrouwde instelling.
     Affiliation_student:
       COPY:
         en: >-
@@ -3244,6 +3268,10 @@ SHARED:
         en: You must log in using the eduID app for multi-factor authentication.
         nl: Je moet inloggen met de eduID app voor multi-factor authenticatie.
   StepUpVerification:
+    info:
+      COPY:
+        en: " "
+        nl: " "
     Linked_institution:
       COPY:
         en: Your eduID is connected to an official party.
@@ -3254,6 +3282,10 @@ SHARED:
         nl: >-
           Je voornaam en achternaam zijn bevestigd door een officiële
           instelling.
+    Validate_names_external:
+      COPY:
+        en: Your identity is verified by a trusted party.
+        nl: Je voornaam en achternaam moeten worden geverifieerd door een externe vertrouwde instelling.
     Affiliation_student:
       COPY:
         en: >-

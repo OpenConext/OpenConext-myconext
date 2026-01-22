@@ -197,7 +197,7 @@
     }
 
     input[type=email], input[type=text] {
-        border: 1px solid #727272;
+        border: 1px solid #B2B6BE;
         border-radius: 6px;
         padding: 14px;
         font-size: 16px;
@@ -228,7 +228,6 @@
 
     #captcha {
         width: 335px !important;
-        margin-top: 15px;
     }
 
     :global(.frc-banner) {
@@ -241,6 +240,25 @@
       align-items: center;
 
       margin-top: 25px;
+      .or-divider-text {
+        margin-left: 10px;
+        margin-right: 10px;
+        color: #5E6873;
+      }
+      .stripe {
+        margin-top: 3px;
+        height: 1px;
+        width: 100%;
+        background: #000;
+      }
+    }
+
+    .message-email-in-use{
+      padding-top: 12px;
+    }
+
+    .header {
+      margin-bottom: 15px;
     }
 
 </style>
@@ -248,106 +266,118 @@
     <Spinner/>
 {/if}
 <form on:keydown={(e) => e.key === 'Enter' && e.preventDefault()}>
-<h2 class="header">{I18n.t("LinkFromInstitution.RequestEduIdButton.COPY")}</h2>
-{#if serviceName}
-    <h2 class="top">{I18n.t("Login.HeaderSubTitle.COPY")}<span>{serviceName}</span></h2>
-{/if}
-<label for="email" class="pre-input-label">{I18n.t("LinkFromInstitution.Email.COPY")}</label>
-<input type="email"
-       autocomplete="username"
-       id="email"
-       spellcheck="false"
-       class:error={emailForbidden}
-       placeholder={I18n.t("LinkFromInstitution.EmailPlaceholder.COPY")}
-       use:init
-       on:input={handleInput}
-       value={$user.email}
-       on:blur={handleEmailBlur}>
-{#if !initial && !validEmail($user.email)}
-    <div class="error"><span
-            class="svg">{@html critical}</span><span>{I18n.t("LinkFromInstitution.InvalidEmail.COPY")}</span></div>
-{/if}
-{#if emailInUse}
-    <Button href="/login/${id}"
-            label={I18n.t("Login.EmailInUse3.COPY")}
-            useLink="true"/>
+    <h2 class="header">{I18n.t("Login.RequestHeader.COPY")}</h2>
 
-    <div class="or-divider">
-        <span>{I18n.t("Login.OrDivider.COPY")}</span>
-    </div>
+    <h2 class="top">{I18n.t("Login.RequestSubHeader.COPY")}</h2>
 
-    <Button href="/"
-            label={I18n.t("Login.TryOtherEmail.COPY")}
-            onClick={otherEmail}/>
+    <label for="email" class="pre-input-label">{I18n.t("LinkFromInstitution.Email.COPY")}</label>
+    <input type="email"
+           autocomplete="username"
+           id="email"
+           spellcheck="false"
+           class:error={emailForbidden}
+           placeholder={I18n.t("LinkFromInstitution.EmailPlaceholder.COPY")}
+           use:init
+           on:input={handleInput}
+           value={$user.email}
+           on:blur={handleEmailBlur}>
+    {#if !initial && !validEmail($user.email)}
+        <div class="error"><span
+                class="svg">{@html critical}</span><span>{I18n.t("LinkFromInstitution.InvalidEmail.COPY")}</span></div>
+    {/if}
+    {#if emailInUse}
 
-{/if}
-{#if emailForbidden}
-    <div class="error">
-        <span class="svg">{@html critical}</span>
-        <div>
-            <span>{@html I18n.t("LinkFromInstitution.EmailForbidden.COPY")}</span>
+        <div class="message-email-in-use">
+            <Alert
+                    message={I18n.t("Login.EmailInUse1.COPY")}
+                    alertType={AlertType.Warning}
+                    class="message-email-in-use"
+            />
+        </div>
+        <Button href="/login/${id}"
+                label={I18n.t("Login.LoginWithThisEmail.COPY")}
+                useLink="true"/>
+
+        <div class="or-divider">
+            <div class="stripe"></div>
+            <span class="or-divider-text">{I18n.t("Login.OrDivider.COPY")}</span>
+            <div class="stripe"></div>
+        </div>
+
+        <Button href="/"
+                label={I18n.t("Login.TryOtherEmail.COPY")}
+                onClick={otherEmail}
+                className="secondary"
+        />
+
+    {/if}
+    {#if emailForbidden}
+        <div class="error">
+            <span class="svg">{@html critical}</span>
+            <div>
+                <span>{@html I18n.t("LinkFromInstitution.EmailForbidden.COPY")}</span>
+            </div>
+        </div>
+    {/if}
+    {#if $domains.institutionDomainNameWarning && !emailInUse}
+        <Alert
+                message={I18n.t("LinkFromInstitution.InstitutionDomainNameWarning.COPY")}
+                alertType={AlertType.Warning}
+        />
+    {/if}
+
+    {#if $domains.allowedDomainNamesError}
+        <div class="domain-not-allowed">
+            <span class="svg error">{@html critical}</span>
+            <div class="text">
+                <span>{I18n.t("Login.AllowedDomainNamesError.COPY",
+                    {domain: $user.email.substring($user.email.indexOf("@") + 1)})}</span>
+                <br/>
+                <span>{I18n.t("LinkFromInstitution.AllowedDomainNamesError2.COPY")}</span>
+            </div>
+        </div>
+
+    {/if}
+    <div hidden={emailInUse}>
+        <label for="given-name" class="pre-input-label">{I18n.t("Profile.FirstName.COPY")}</label>
+        <input type="text"
+               id="given-name"
+               placeholder={I18n.t("Login.GivenNamePlaceholder.COPY")}
+               spellcheck="false"
+               on:input={updateGivenName}
+               on:blur={handleGivenNameBlur}>
+        {#if !initial && !$user.givenName}
+            <span class="error">{I18n.t("Login.RequiredAttribute.COPY", {attr: I18n.t("Profile.FirstName.COPY")})}</span>
+        {/if}
+        <label for="family-name" class="pre-input-label">{I18n.t("Profile.LastName.COPY")}</label>
+        <input type="text"
+               id="family-name"
+               spellcheck="false"
+               placeholder={I18n.t("Login.FamilyNamePlaceholder.COPY")}
+               on:input={updateFamilyName}
+               on:blur={handleFamilyNameBlur}>
+        {#if !initial && !$user.familyName}
+            <span class="error">{I18n.t("Login.RequiredAttribute.COPY", {attr: I18n.t("Profile.LastName.COPY")})}</span>
+        {/if}
+        <div class="controls">
+            <CheckBox value={agreedWithTerms}
+                      className="light"
+                      label={I18n.t("LinkFromInstitution.AgreeWithTerms.COPY")}
+                      onChange={val => agreedWithTerms = val}/>
+            {#if !initial && !agreedWithTerms}
+                <span class="error">{I18n.t("login.termsRequired")}</span>
+            {/if}
+            <div id="captcha" class="frc-captcha"></div>
+            {#if captchaShowWarning}
+                <span class="captcha error">{I18n.t("captcha.proveNotRobot")}</span>
+            {/if}
+            <Button disabled={!initial && (showSpinner || !allowedNext($user.email, $user.familyName, $user.givenName, agreedWithTerms))}
+                    href="/magic"
+                    className="full"
+                    label={I18n.t("LinkFromInstitution.RequestEduIdButton.COPY")}
+                    onClick={handleNext}/>
         </div>
     </div>
-{/if}
-{#if $domains.institutionDomainNameWarning && !emailInUse}
-    <Alert
-            message={I18n.t("LinkFromInstitution.InstitutionDomainNameWarning.COPY")}
-            alertType={AlertType.Warning}
-    />
-{/if}
-
-{#if $domains.allowedDomainNamesError}
-    <div class="domain-not-allowed">
-        <span class="svg error">{@html critical}</span>
-        <div class="text">
-            <span>{I18n.t("Login.AllowedDomainNamesError.COPY",
-                {domain: $user.email.substring($user.email.indexOf("@") + 1)})}</span>
-            <br/>
-            <span>{I18n.t("LinkFromInstitution.AllowedDomainNamesError2.COPY")}</span>
-        </div>
-    </div>
-
-{/if}
-<div hidden={emailInUse}>
-    <label for="given-name" class="pre-input-label">{I18n.t("Profile.FirstName.COPY")}</label>
-    <input type="text"
-           id="given-name"
-           placeholder={I18n.t("Login.GivenNamePlaceholder.COPY")}
-           spellcheck="false"
-           on:input={updateGivenName}
-           on:blur={handleGivenNameBlur}>
-    {#if !initial && !$user.givenName}
-        <span class="error">{I18n.t("Login.RequiredAttribute.COPY", {attr: I18n.t("Profile.FirstName.COPY")})}</span>
-    {/if}
-    <label for="family-name" class="pre-input-label">{I18n.t("Profile.LastName.COPY")}</label>
-    <input type="text"
-           id="family-name"
-           spellcheck="false"
-           placeholder={I18n.t("Login.FamilyNamePlaceholder.COPY")}
-           on:input={updateFamilyName}
-           on:blur={handleFamilyNameBlur}>
-    {#if !initial && !$user.familyName}
-        <span class="error">{I18n.t("Login.RequiredAttribute.COPY", {attr: I18n.t("Profile.LastName.COPY")})}</span>
-    {/if}
-    <div class="controls">
-        <CheckBox value={agreedWithTerms}
-                  className="light"
-                  label={I18n.t("LinkFromInstitution.AgreeWithTerms.COPY")}
-                  onChange={val => agreedWithTerms = val}/>
-        {#if !initial && !agreedWithTerms}
-            <span class="error">{I18n.t("login.termsRequired")}</span>
-        {/if}
-        <div id="captcha" class="frc-captcha"></div>
-        {#if captchaShowWarning}
-            <span class="captcha error">{I18n.t("captcha.proveNotRobot")}</span>
-        {/if}
-        <Button disabled={!initial && (showSpinner || !allowedNext($user.email, $user.familyName, $user.givenName, agreedWithTerms))}
-                href="/magic"
-                className="full"
-                label={I18n.t("LinkFromInstitution.RequestEduIdButton.COPY")}
-                onClick={handleNext}/>
-    </div>
-</div>
 </form>
 <div hidden={emailInUse}>
     <SubContent question={I18n.t("Login.AlreadyGuestAccount.COPY")}
