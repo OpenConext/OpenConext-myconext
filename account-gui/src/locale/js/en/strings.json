@@ -669,7 +669,7 @@
   "StepUpExplanation.Validate_names_external.COPY": "Your identity must be verified by a trusted party.",
   "StepUpExplanation.Affiliation_student.COPY": "You need to prove that you are enrolled in education. You can do this by connecting your eduID to an official institution.",
   "StepUpExplanation.Profile_mfa.COPY": "You must log in using the eduID app for multi-factor authentication.",
-  "StepUpVerification.info.COPY": " ",
+  "StepUpVerification.Info.COPY": " ",
   "StepUpVerification.Linked_institution.COPY": "Your eduID is connected to an official party.",
   "StepUpVerification.Validate_names.COPY": "Your first name and last name are verified by an official party.",
   "StepUpVerification.Validate_names_external.COPY": "Your identity is verified by a trusted party.",

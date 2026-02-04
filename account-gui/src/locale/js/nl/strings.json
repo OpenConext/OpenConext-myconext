@@ -669,7 +669,7 @@
   "StepUpExplanation.Validate_names_external.COPY": "Je voornaam en achternaam moeten worden geverifieerd door een externe vertrouwde instelling.",
   "StepUpExplanation.Affiliation_student.COPY": "Je moet aantonen dat je student bent. Dit doe je door je eduID te koppelen aan een officiële instelling.",
   "StepUpExplanation.Profile_mfa.COPY": "Je moet inloggen met de eduID app voor multi-factor authenticatie.",
-  "StepUpVerification.info.COPY": " ",
+  "StepUpVerification.Info.COPY": " ",
   "StepUpVerification.Linked_institution.COPY": "Je eduID is gekoppeld aan een officiële instelling.",
   "StepUpVerification.Validate_names.COPY": "Je voornaam en achternaam zijn bevestigd door een officiële instelling.",
   "StepUpVerification.Validate_names_external.COPY": "Je voornaam en achternaam moeten worden geverifieerd door een externe vertrouwde instelling.",
