@@ -79,21 +79,22 @@ public class AttributeAggregatorController implements HasUserRepository {
                                           @RequestParam("eduid") String eduid,
                                           @RequestParam(value = "sp_institution_guid", required = false) String resourceServerInstitutionGuid) {
         Optional<User> userOptional = this.findUserByEduIDValue(eduid);
-        if (!userOptional.isPresent()) {
-            LOG.warn(String.format("Attribute manipulation request for %s with an eduID %s that is not present", resourceServerEntityId, eduid));
-            return ResponseEntity.ok(new HashMap<>());
+        if (userOptional.isEmpty()) {
+            String message = String.format("Attribute manipulation request for %s with an eduID %s that is not present", resourceServerEntityId, eduid);
+            LOG.warn(message);
+            return ResponseEntity.badRequest().body(Map.of("error", message));
         }
         if (!StringUtils.hasText(resourceServerInstitutionGuid)) {
             LOG.warn(String.format("Attribute manipulation request for %s with an empty sp_institution_guid / resourceServerInstitutionGuid",
                     resourceServerEntityId));
-            return ResponseEntity.ok(new HashMap<>());
+            return ResponseEntity.ok(Map.of("eduid",eduid));
         }
         User user = userOptional.get();
         Optional<RemoteProvider> optionalResourceServer = manage.findResourceServerByEntityId(resourceServerEntityId);
         if (optionalResourceServer.isEmpty()) {
             LOG.warn(String.format("Attribute manipulation request for resourceServerEntityId %s that is not present",
                     resourceServerEntityId));
-            return ResponseEntity.ok(new HashMap<>());
+            return ResponseEntity.ok(Map.of("eduid",eduid));
         }
         ServiceProvider serviceProvider = new ServiceProvider(optionalResourceServer.get(), null);
         String eduId = user.doComputeEduIDIfAbsent(serviceProvider, manage, true);

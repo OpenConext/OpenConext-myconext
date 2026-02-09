@@ -13,6 +13,7 @@ import java.util.Optional;
 
 import static io.restassured.RestAssured.given;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 public class AttributeAggregatorControllerTest extends AbstractIntegrationTest {
 
@@ -107,7 +108,8 @@ public class AttributeAggregatorControllerTest extends AbstractIntegrationTest {
     @Test
     public void manipulateNotFound() {
         Map<String, Object> res = doManipulate("http://new-sp", "noppes", "noppes", null);
-        assertEquals(0, res.size());
+        assertEquals(1, res.size());
+        assertTrue(res.containsKey("error"));
     }
 
     @Test
