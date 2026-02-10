@@ -54,6 +54,7 @@ public class ACR {
             VALIDATE_NAMES_MFA,
             AFFILIATION_STUDENT_MFA,
             LINKED_INSTITUTION_MFA,
+            PROFILE_MFA,
             VALIDATE_NAMES_EXTERNAL,
             VALIDATE_NAMES,
             AFFILIATION_STUDENT,
