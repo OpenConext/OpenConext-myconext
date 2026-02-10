@@ -19,10 +19,10 @@ public class ACR {
 
     public static String PROFILE_MFA = "https://refeds.org/profile/mfa";
 
-    public static String LINKED_INSTITUTION_MFA = LINKED_INSTITUTION + MFA;
-    public static String VALIDATE_NAMES_MFA = VALIDATE_NAMES + MFA;
-    public static String VALIDATE_NAMES_EXTERNAL_MFA = VALIDATE_NAMES_EXTERNAL + MFA;
-    public static String AFFILIATION_STUDENT_MFA = AFFILIATION_STUDENT + MFA;
+    public static String LINKED_INSTITUTION_MFA = "https://eduid.nl/trust/linked-institution/mfa";
+    public static String VALIDATE_NAMES_MFA = "https://eduid.nl/trust/validate-names/mfa";
+    public static String VALIDATE_NAMES_EXTERNAL_MFA = "https://eduid.nl/trust/validate-names-external/mfa";
+    public static String AFFILIATION_STUDENT_MFA = "https://eduid.nl/trust/affiliation-student/mfa";
 
     public static List<String> allAccountLinkingContextClassReferences() {
         return Arrays.asList(VALIDATE_NAMES, VALIDATE_NAMES_EXTERNAL, LINKED_INSTITUTION, AFFILIATION_STUDENT);
@@ -32,16 +32,20 @@ public class ACR {
                                   String validateNames,
                                   String externalValidateNames,
                                   String affiliationStudent,
-                                  String profileMfa) {
+                                  String profileMfa,
+                                  String linkedInstitutionMfa,
+                                  String validateNamesMfa,
+                                  String externalValidateNamesMfa,
+                                  String affiliationStudentMfa) {
         LINKED_INSTITUTION = linkedInstitution;
         VALIDATE_NAMES = validateNames;
         VALIDATE_NAMES_EXTERNAL = externalValidateNames;
         AFFILIATION_STUDENT = affiliationStudent;
         PROFILE_MFA = profileMfa;
-        LINKED_INSTITUTION_MFA = linkedInstitution + MFA;
-        VALIDATE_NAMES_MFA = validateNames + MFA;
-        VALIDATE_NAMES_EXTERNAL_MFA = externalValidateNames + MFA;
-        AFFILIATION_STUDENT_MFA = affiliationStudent + MFA;
+        LINKED_INSTITUTION_MFA = linkedInstitutionMfa;
+        VALIDATE_NAMES_MFA = validateNamesMfa;
+        VALIDATE_NAMES_EXTERNAL_MFA = externalValidateNamesMfa;
+        AFFILIATION_STUDENT_MFA = affiliationStudentMfa;
     }
 
     public static String selectACR(List<String> acrValues, boolean studentAffiliationPresent) {
