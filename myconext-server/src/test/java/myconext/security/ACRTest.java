@@ -11,20 +11,6 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class ACRTest {
-    // selectACR
-    @Test
-    void testSelectACR_ProfileMfaHasHighestPriority() {
-        List<String> acrValues = Arrays.asList(
-                ACR.LINKED_INSTITUTION,
-                ACR.VALIDATE_NAMES,
-                ACR.PROFILE_MFA,
-                ACR.AFFILIATION_STUDENT
-        );
-
-        String result = ACR.selectACR(acrValues, true);
-
-        assertEquals(ACR.PROFILE_MFA, result);
-    }
 
     @Test
     void testSelectACR_AffiliationStudentAndPresent() {
@@ -59,7 +45,6 @@ class ACRTest {
     @Test
     void testSelectACR_PrioSpecificMfaOverGenericMfa() {
         List<String> acrValues = Arrays.asList(
-                ACR.PROFILE_MFA,
                 ACR.VALIDATE_NAMES_MFA
         );
 
@@ -72,13 +57,25 @@ class ACRTest {
     @Test
     void testContainsAcr() {
         List<String> acrValues = Arrays.asList(
-            ACR.PROFILE_MFA,
             ACR.AFFILIATION_STUDENT
         );
 
         boolean result = ACR.containsAcr(acrValues, ACR.AFFILIATION_STUDENT);
 
         assertTrue(result);
+    }
+
+    @Test
+    public void testContainsAcr_shouldReturnFalse_whenAcrValuesIsNull() {
+        // Given
+        List<String> acrValues = null;
+        String acrValue = ACR.AFFILIATION_STUDENT;
+
+        // When
+        boolean result = ACR.containsAcr(acrValues, acrValue);
+
+        // Then
+        assertFalse(result);
     }
 
     @Test
@@ -186,6 +183,18 @@ class ACRTest {
         assertFalse(result);
     }
 
+    @Test
+    public void testContainsMfaAcr_shouldReturnFalse_whenAcrValuesIsNull() {
+        // Given
+        List<String> acrValues = null;
+
+        // When
+        boolean result = ACR.containsMfaAcr(acrValues);
+
+        // Then
+        assertFalse(result);
+    }
+
     // explanationKeyWord
     @Test
     void testExplanationKeyWord_EmptyList() {
@@ -224,12 +233,65 @@ class ACRTest {
     }
 
     @Test
+    void testExplanationKeyWord_ValidateNamesExternalAndPresent() {
+        List<String> acrValues = Collections.singletonList(ACR.VALIDATE_NAMES_EXTERNAL);
+
+        String result = ACR.explanationKeyWord(acrValues, true);
+
+        assertEquals("validate_names_external", result);
+    }
+
+    @Test
+    void testExplanationKeyWord_ValidateNamesAndPresent() {
+        List<String> acrValues = Collections.singletonList(ACR.VALIDATE_NAMES);
+
+        String result = ACR.explanationKeyWord(acrValues, true);
+
+        assertEquals("validate_names", result);
+    }
+
+    @Test
     void testExplanationKeyWord_RandomText() {
         List<String> acrValues = Collections.singletonList("unknown-acr");
 
         String result = ACR.explanationKeyWord(acrValues, true);
 
         assertEquals("linked_institution", result);
+    }
+
+    @Test
+    public void testAllAccountLinkingContextClassReferences_shouldReturnAllAcrValues_whenCalled() {
+        // When
+        List<String> result = ACR.allAccountLinkingContextClassReferences();
+
+        // Then;
+        assertEquals(4, result.size());
+        assertTrue(result.contains(ACR.VALIDATE_NAMES));
+        assertTrue(result.contains(ACR.VALIDATE_NAMES_EXTERNAL));
+        assertTrue(result.contains(ACR.LINKED_INSTITUTION));
+        assertTrue(result.contains(ACR.AFFILIATION_STUDENT));
+    }
+
+    @Test
+    public void testInitialize_shouldUpdateAllAcrValues_whenCalledWithNewValues() {
+        // Given
+        String newLinkedInstitution = "https://test.nl/linked-institution";
+        String newValidateNames = "https://test.nl/validate-names";
+        String newExternalValidateNames = "https://test.nl/validate-names-external";
+        String newAffiliationStudent = "https://test.nl/affiliation-student";
+
+        // When
+        ACR.initialize(newLinkedInstitution, newValidateNames, newExternalValidateNames, newAffiliationStudent);
+
+        // Then
+        assertEquals(newLinkedInstitution, ACR.LINKED_INSTITUTION);
+        assertEquals(newValidateNames, ACR.VALIDATE_NAMES);
+        assertEquals(newExternalValidateNames, ACR.VALIDATE_NAMES_EXTERNAL);
+        assertEquals(newAffiliationStudent, ACR.AFFILIATION_STUDENT);
+        assertEquals(newLinkedInstitution + ACR.MFA, ACR.LINKED_INSTITUTION_MFA);
+        assertEquals(newValidateNames + ACR.MFA, ACR.VALIDATE_NAMES_MFA);
+        assertEquals(newExternalValidateNames + ACR.MFA, ACR.VALIDATE_NAMES_EXTERNAL_MFA);
+        assertEquals(newAffiliationStudent + ACR.MFA, ACR.AFFILIATION_STUDENT_MFA);
     }
 }
 
