@@ -17,6 +17,8 @@ public class ACR {
     public static String VALIDATE_NAMES_EXTERNAL = "https://eduid.nl/trust/validate-names-external";
     public static String AFFILIATION_STUDENT = "https://eduid.nl/trust/affiliation-student";
 
+    public static String PROFILE_MFA = "https://refeds.org/profile/mfa";
+
     public static String LINKED_INSTITUTION_MFA = LINKED_INSTITUTION + MFA;
     public static String VALIDATE_NAMES_MFA = VALIDATE_NAMES + MFA;
     public static String VALIDATE_NAMES_EXTERNAL_MFA = VALIDATE_NAMES_EXTERNAL + MFA;
@@ -29,11 +31,13 @@ public class ACR {
     public static void initialize(String linkedInstitution,
                                   String validateNames,
                                   String externalValidateNames,
-                                  String affiliationStudent) {
+                                  String affiliationStudent,
+                                  String profileMfa) {
         LINKED_INSTITUTION = linkedInstitution;
         VALIDATE_NAMES = validateNames;
         VALIDATE_NAMES_EXTERNAL = externalValidateNames;
         AFFILIATION_STUDENT = affiliationStudent;
+        PROFILE_MFA = profileMfa;
         LINKED_INSTITUTION_MFA = linkedInstitution + MFA;
         VALIDATE_NAMES_MFA = validateNames + MFA;
         VALIDATE_NAMES_EXTERNAL_MFA = externalValidateNames + MFA;
@@ -102,6 +106,9 @@ public class ACR {
     public static String explanationKeyWord(List<String> acrValues, boolean studentAffiliationPresent) {
         if (CollectionUtils.isEmpty(acrValues) || containsAcr(acrValues, LINKED_INSTITUTION)) {
             return "linked_institution";
+        }
+        if (containsAcr(acrValues, PROFILE_MFA)) {
+            return "profile_mfa";
         }
         if (containsAcr(acrValues, VALIDATE_NAMES_EXTERNAL)) {
             return "validate_names_external";

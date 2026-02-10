@@ -113,7 +113,8 @@ public class SecurityConfiguration {
                     linkedInstitution,
                     validateNames,
                     validateNamesExternal,
-                    affiliationStudent
+                    affiliationStudent,
+                    profileMfa
             );
             String[] keys = this.getKeys(certificatePath, privateKeyPath);
             final List<SAMLServiceProvider> serviceProviders = new ArrayList<>();
