@@ -29,6 +29,8 @@
     let agreedWithTerms = false;
     let captchaShowWarning = false;
 
+    let captchaWidget = null;
+
     onMount(() => {
         $links.displayBackArrow = true;
         $user.givenName = "";
@@ -41,7 +43,7 @@
 
             const sdk = new FriendlyCaptchaSDK();
             const language = I18n.currentLocale();
-            sdk.createWidget({
+            captchaWidget = sdk.createWidget({
                 element: mount,
                 sitekey: $conf.captchaSiteKey,
                 startMode: "auto",
@@ -147,6 +149,10 @@
         emailForbidden = false;
         $domains.institutionDomainNameWarning = false;
         $domains.allowedDomainNamesError = false;
+
+        if (captchaWidget) {
+            captchaWidget.reset();
+        }
     }
 </script>
 
