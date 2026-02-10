@@ -1009,7 +1009,7 @@ public class UserControllerTest extends AbstractIntegrationTest {
         authenticationRequestRepository.save(samlAuthenticationRequest);
 
         String samlResponse = samlResponse(authenticationResponse);
-        assertTrue(samlResponse.contains(ACR.PROFILE_MFA));
+        assertTrue(samlResponse.contains("https://refeds.org/profile/mfa"));
     }
 
     @Test
