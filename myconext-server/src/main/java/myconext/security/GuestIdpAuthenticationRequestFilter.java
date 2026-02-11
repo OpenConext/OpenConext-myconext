@@ -919,12 +919,6 @@ public class GuestIdpAuthenticationRequestFilter extends OncePerRequestFilter {
                         eduPersonAssurances.add("https://eduid.nl/validated/central-enrollment/D");
                     }
                 });
-        if (externalLinkedAccounts.stream().anyMatch(acc -> acc.getIdpScoping().equals(IdpScoping.serviceDesk))) {
-            eduPersonAssurances.add("https://refeds.org/assurance/IAP/medium");
-            eduPersonAssurances.add("https://refeds.org/assurance/IAP/high");
-            eduPersonAssurances.add("https://eduid.nl/validated/servicedesk");
-        }
-
         eduPersonAssurances.addAll(List.of(
                 "https://refeds.org/assurance",
                 "https://refeds.org/assurance/ID/unique",
