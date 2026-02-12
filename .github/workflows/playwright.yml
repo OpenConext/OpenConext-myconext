@@ -1,0 +1,65 @@
+name: Playwright Tests
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+jobs:
+  test:
+    timeout-minutes: 60
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    - uses: actions/setup-node@v5
+      with:
+        node-version: '24.3.0'
+    - name: Start MongoDB
+      uses: supercharge/mongodb-github-action@1.12.0
+      with:
+        mongodb-version: 4.4
+    - name: Set up JDK 21
+      uses: actions/setup-java@v5
+      with:
+        java-version: 21
+        distribution: 'temurin'
+        cache: 'maven'
+    # - name: Install mongosh and import start data in database
+    #   run: |
+    #     sudo apt-get install gnupg
+    #     wget -qO- https://www.mongodb.org/static/pgp/server-7.0.asc | sudo tee /etc/apt/trusted.gpg.d/server-7.0.asc
+    #     echo "deb [ arch=amd64,arm64 ] https://repo.mongodb.org/apt/ubuntu focal/mongodb-org/7.0 multiverse" | sudo tee /etc/apt/sources.list.d/mongodb-org-7.0.list
+    #     sudo apt-get update
+    #     sudo apt-get install -y mongodb-mongosh
+    #     mongosh --version
+    #     mongosh localhost:27017/myconext playwright/loadusers.js
+    - name: Set up cache
+      uses: actions/cache@v4
+      with:
+        path: ~/.m2/repository
+        key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+        restore-keys: |
+          ${{ runner.os }}-maven-
+#    - name: Build with Maven
+#      run: mvn clean install --file pom.xml
+    - name: Run myconext-server
+      run : cd myconext-server && mvn spring-boot:run -Dspring-boot.run.profiles=dev && sleep 30 &
+    - name: Run account-gui
+      run: cd account-gui && yarn install && yarn dev && sleep 10 &
+    - name: Run myconext-gui
+      run: cd myconext-gui && yarn install && yarn dev && sleep 10 &
+    - name: Run servicedesk-gui
+      run: cd servicedesk-gui && yarn install && yarn dev && sleep 10 &
+    - name: Run public-gui
+      run: cd public-gui && yarn install && yarn dev && sleep 10 & 
+    - name: Install dependencies for plarwright
+      run: cd playwright && npm install -g yarn && yarn
+    - name: Install Playwright Browsers
+      run: cd playwright && yarn playwright install --with-deps
+    - name: Run Playwright tests
+      run: cd playwright && yarn playwright test
+    - uses: actions/upload-artifact@v4
+      if: ${{ !cancelled() }}
+      with:
+        name: playwright-report
+        path: playwright-report/
+        retention-days: 30
