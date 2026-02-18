@@ -663,7 +663,7 @@
   "ValidNameMissing.Proceed.COPY": "You can try to connect to another institution or proceed to %1$s.",
   "ValidNameMissing.ProceedLink.COPY": "Proceed",
   "ValidNameMissing.RetryLink.COPY": "Retry",
-  "StepUpExplanation.info.COPY": " ",
+  "StepUpExplanation.Info.COPY": " ",
   "StepUpExplanation.Linked_institution.COPY": "Your eduID must be connected to an official party.",
   "StepUpExplanation.Validate_names.COPY": "Your first name and last name must be verified by an official party.",
   "StepUpExplanation.Validate_names_external.COPY": "Your identity must be verified by a trusted party.",
