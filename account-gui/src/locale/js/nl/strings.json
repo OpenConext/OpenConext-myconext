@@ -663,7 +663,7 @@
   "ValidNameMissing.Proceed.COPY": "Je kan een andere instelling proberen te koppelen of doorgaan naar %1$s.",
   "ValidNameMissing.ProceedLink.COPY": "Doorgaan",
   "ValidNameMissing.RetryLink.COPY": "Opnieuw proberen",
-  "StepUpExplanation.info.COPY": " ",
+  "StepUpExplanation.Info.COPY": " ",
   "StepUpExplanation.Linked_institution.COPY": "Je eduID moet gekoppeld zijn aan een officiële instelling.",
   "StepUpExplanation.Validate_names.COPY": "Je voornaam en achternaam moeten worden bevestigd door een officiële instelling.",
   "StepUpExplanation.Validate_names_external.COPY": "Je voornaam en achternaam moeten worden geverifieerd door een externe vertrouwde instelling.",
