@@ -341,7 +341,7 @@ const nl = {
         affiliation_student: "Je hebt aangetoont dat je onderwijs volgt doordat je eduID-account is gekoppeld aan een vertrouwde instelling."
     },
     nudgeApp: {
-        new: "J eduID is aangemaakt!",
+        new: "Je eduID is aangemaakt!",
         header: "Wil je de volgende keer sneller en veiliger inloggen?",
         info: "Installeer de <strong>eduID app</strong> en log veiliger in zonder wachtwoord of het openen van je email. Het kost je maar een minuut.",
         no: "Nee bedankt",
