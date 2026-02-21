@@ -21,6 +21,7 @@ RewriteCond %{REQUEST_URI} !^/internal
 RewriteCond %{REQUEST_URI} !^/robots.txt
 RewriteCond %{REQUEST_URI} !^/fonts
 RewriteCond %{REQUEST_URI} !^/.well-known
+RewriteCond %{REQUEST_URI} !^/manifest.webmanifest
 RewriteRule (.*) /index.html [L]
 
 Header always set X-Frame-Options "DENY"
