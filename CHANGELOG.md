@@ -4,7 +4,7 @@
 
 All notable changes to this project will be documented in this file.
 
-## [8.2.6]
+## [8.2.6] Feb 2026
 - First tickets to improve UX accessibility (WCAG)
 - General update of dependencies
 - Remote create API update
