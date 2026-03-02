@@ -4,10 +4,16 @@
 
 All notable changes to this project will be documented in this file.
 
-## [8.2.0]
-
+## [8.2.6]
+- First tickets to improve UX accessibility (WCAG)
+- General update of dependencies
+- Remote create API update
+- Update template to have multiple noreply-email adressen voor myconext mails
+- New MFA ACR values introduced
+- UX Improvement, which includes more friendly "wrong email" screens and more clear "are you studying screens"?
+- Fix a bug between the older version of OIDC-NG and the newer eduID
 - Attribute Aggregation is skipped id the Resource Server has no institution GUID ([#1050](https://github.com/OpenConext/OpenConext-myconext/issues/1050))
-- TODO - see https://github.com/orgs/OpenConext/projects/7/views/1
+- more details: https://github.com/OpenConext/OpenConext-myconext/releases/tag/8.2.6
 
 ## [8.1.6]
 
