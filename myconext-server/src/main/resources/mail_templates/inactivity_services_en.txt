@@ -1,5 +1,5 @@
 {{#hasServiceNames}}
-If your eduID account is deleted, you will no longer have access to the following services:
+You have used your eduID account to access these applications:
 {{#serviceNames}}
     -{{.}}
 {{/serviceNames}}

@@ -1,5 +1,5 @@
 {{#hasServiceNames}}
-Als je eduID account verwijderd is, heb je geen toegang meer tot de volgende diensten:
+Je hebt je eduID account gebruikt voor toegang tot deze applicaties:
 {{#serviceNames}}
     -{{.}}
 {{/serviceNames}}
