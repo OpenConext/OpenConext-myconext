@@ -82,14 +82,14 @@ public class MailBox {
     }
 
     public void sendOneTimeLoginCode(User user, String code) {
-        String title = this.getTitle("one_time_login_code", user) + code;
+        String title = this.getTitle("one_time_login_code", user);
         Map<String, Object> variables = variables(user, title);
         variables.put("code", code);
         sendMail("one_time_login_code", title, variables, preferredLanguage(user), user.getEmail(), true);
     }
 
     public void sendOneTimeLoginCodeNewUser(User user, String code) {
-        String title = this.getTitle("one_time_login_code_new_user", user) + code;
+        String title = this.getTitle("one_time_login_code_new_user", user);
         Map<String, Object> variables = variables(user, title);
         variables.put("code", code);
         sendMail("one_time_login_code_new_user", title, variables, preferredLanguage(user), user.getEmail(), true);
@@ -156,7 +156,7 @@ public class MailBox {
     }
 
     public void sendResetPasswordOneTimeCode(User user, String code) {
-        String title = this.getTitle("reset_password_code", user) + code;
+        String title = this.getTitle("reset_password_code", user);
         Map<String, Object> variables = variables(user, title);
         variables.put("code", code);
         sendMail("reset_password_code", title, variables, preferredLanguage(user), user.getEmail(), false);
@@ -181,7 +181,7 @@ public class MailBox {
     }
 
     public void sendChangeEmailOneTimeCode(User user, String newMail, String code) {
-        String title = this.getTitle("change_email_code", user) + code;
+        String title = this.getTitle("change_email_code", user);
         Map<String, Object> variables = variables(user, title);
         variables.put("code", code);
         sendMail("change_email_code", title, variables, preferredLanguage(user), newMail, false);

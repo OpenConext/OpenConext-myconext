@@ -12,36 +12,36 @@
     "nl": "Je eduID is gevalideerd"
   },
   "one_time_login_code": {
-    "en": "eduID login code: ",
-    "nl": "eduID login code: "
+    "en": "eduID login code",
+    "nl": "eduID login code"
   },
   "one_time_login_code_new_user": {
-    "en": "Confirm your eduID email with code: ",
-    "nl": "Bevestig je eduID e-mailadres met de code: "
-},
+    "en": "Confirm your eduID email with code",
+    "nl": "Bevestig je eduID e-mailadres met een code"
+  },
   "reset_password": {
     "en": "Reset your eduID password",
     "nl": "Reset je eduID wachtwoord"
   },
   "reset_password_code": {
-    "en": "Reset your eduID password with code: ",
-    "nl": "Reset je eduID wachtwoord met de code: "
+    "en": "Reset your eduID password with code",
+    "nl": "Reset je eduID wachtwoord met een code"
   },
   "add_password": {
     "en": "Add an eduID password",
     "nl": "Toevoegen eduID wachtwoord"
   },
-    "add_password_code": {
-    "en": "Add an eduID password with code: ",
-    "nl": "Voeg een eduID wachtwoord toe met de code: "
+  "add_password_code": {
+    "en": "Add an eduID password with code",
+    "nl": "Voeg een eduID wachtwoord toe met een code"
   },
   "update_email": {
     "en": "Update your eduID email",
     "nl": "Verander je eduID email"
   },
   "change_email_code": {
-    "en": "Update your eduID email with code: ",
-    "nl": "Verander je eduID email met code: "
+    "en": "Update your eduID email with code",
+    "nl": "Verander je eduID email met een code"
   },
   "confirmation_update_email": {
     "en": "Change of eduID email",
