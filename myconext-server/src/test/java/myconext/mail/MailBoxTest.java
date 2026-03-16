@@ -54,12 +54,12 @@ public class MailBoxTest extends AbstractMailBoxTest {
 
     @Test
     public void sendOneTimeLoginCode() {
-        doSendOneTimeLoginCode("eduID login code: %s", "en");
+        doSendOneTimeLoginCode("eduID login code", "en");
     }
 
     @Test
     public void sendOneTimeLoginCodeNl() {
-        doSendOneTimeLoginCode("eduID login code: %s", "nl");
+        doSendOneTimeLoginCode("eduID login code", "nl");
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -103,12 +103,12 @@ public class MailBoxTest extends AbstractMailBoxTest {
 
     @Test
     public void sendOneTimeLoginCodeNewUser() {
-        doSendOneTimeLoginCodeNewUser("Confirm your eduID email with code: %s", "en");
+        doSendOneTimeLoginCodeNewUser("Confirm your eduID email with code", "en");
     }
 
     @Test
     public void sendOneTimeLoginCodeNewUserNl() {
-        doSendOneTimeLoginCodeNewUser("Bevestig je eduID e-mailadres met de code: %s", "nl");
+        doSendOneTimeLoginCodeNewUser("Bevestig je eduID e-mailadres met een code", "nl");
     }
 
     @SneakyThrows
@@ -120,7 +120,7 @@ public class MailBoxTest extends AbstractMailBoxTest {
         assertEquals("noreplyTest@surfconext.nl", mimeMessage.getFrom()[0].toString());
 
         String subject = mimeMessage.getSubject();
-        assertEquals(String.format(expectedSubject, code), subject);
+        assertEquals(expectedSubject, subject);
     }
 
     @Test
@@ -313,13 +313,13 @@ public class MailBoxTest extends AbstractMailBoxTest {
     @Test
     public void sendAccountVerificationCreateFromInstitution() {
         String code = VerificationCodeGenerator.generateOneTimeLoginCode();
-        doSendAccountVerificationCreateFromInstitution(String.format("Confirm your eduID email with code: %s", code), "en", code);
+        doSendAccountVerificationCreateFromInstitution("Confirm your eduID email with code", "en", code);
     }
 
     @Test
     public void sendAccountVerificationCreateFromInstitutionNl() {
         String code = VerificationCodeGenerator.generateOneTimeLoginCode();
-        doSendAccountVerificationCreateFromInstitution(String.format("Bevestig je eduID e-mailadres met de code: %s", code), "nl", code);
+        doSendAccountVerificationCreateFromInstitution("Bevestig je eduID e-mailadres met een code", "nl", code);
     }
 
     @SneakyThrows
@@ -357,13 +357,13 @@ public class MailBoxTest extends AbstractMailBoxTest {
     @Test
     public void sendResetPasswordOneTimeCode() {
         String code = VerificationCodeGenerator.generateOneTimeLoginCode();
-        doSendResetPasswordOneTimeCode(String.format("Reset your eduID password with code: %s", code), "en", code);
+        doSendResetPasswordOneTimeCode("Reset your eduID password with code", "en", code);
     }
 
     @Test
     public void sendResetPasswordOneTimeCodeNl() {
         String code = VerificationCodeGenerator.generateOneTimeLoginCode();
-        doSendResetPasswordOneTimeCode(String.format("Reset je eduID wachtwoord met de code: %s", code), "nl", code);
+        doSendResetPasswordOneTimeCode("Reset je eduID wachtwoord met een code", "nl", code);
     }
 
     @SneakyThrows
@@ -379,13 +379,13 @@ public class MailBoxTest extends AbstractMailBoxTest {
     @Test
     public void sendChangeEmailOneTimeCode() {
         String code = VerificationCodeGenerator.generateOneTimeLoginCode();
-        doSendChangeEmailOneTimeCode(String.format("Update your eduID email with code: %s", code), "en", code);
+        doSendChangeEmailOneTimeCode("Update your eduID email with code", "en", code);
     }
 
     @Test
     public void sendChangeEmailOneTimeCodeNl() {
         String code = VerificationCodeGenerator.generateOneTimeLoginCode();
-        doSendChangeEmailOneTimeCode(String.format("Verander je eduID email met code: %s", code), "nl", code);
+        doSendChangeEmailOneTimeCode("Verander je eduID email met een code", "nl", code);
     }
 
     @SneakyThrows
