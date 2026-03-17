@@ -86,7 +86,7 @@ function buildUser() {
         expiresAt: expiresAt
     };
 
-    const eduIdService = {
+    const myConextService = {
         name: "studielink",
         nameNl: "studielink",
         institutionGuid: "ec9d6d75-0d11-e511-80d0-005056956c1a",
@@ -95,10 +95,10 @@ function buildUser() {
         lastLogin: now
     };
 
-    const eduId = {
+    const myConextId = {
         value: generateUUID(),
         createdAt: now,
-        services: [eduIdService]
+        services: [myConextService]
     };
 
     return {
@@ -115,9 +115,9 @@ function buildUser() {
         forgottenPassword: false,
         rateLimited: false,
         serviceDeskMember: false,
-        schacHomeOrganization: "eduid.nl",
+        schacHomeOrganization: "myconext.nl",
         dateOfBirth: birthday,
-        eduIDS: [eduId],
+        eduIDS: [myConextId],
         externalLinkedAccounts: [externalLinkedAccount],
         linkedAccounts: [],
         publicKeyCredentials: [],
