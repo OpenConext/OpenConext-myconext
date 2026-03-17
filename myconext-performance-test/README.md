@@ -54,15 +54,6 @@ MONGO_AUTH_DB="admin"
 bash seed_script.sh
 ```
 
-### How to Run MongoDB User Data Seeder with mvn
-```shell
-mvn clean && mvn test-compile exec:java \
-  -Dexec.mainClass=myconext.UserDataSeeder \
-  -DdbUrl=mongodb://localhost:27017 \
-  -DdbName=myconext_performance \
-  -DusersCollection=users
-```
-
 ## How to run Gatling tests
 - Run the command `mvn gatling:test -Dgatling.simulationClass=...........`
 - The results can be found in the logging and there is a nice html page generated in the *target/gatling* folder
