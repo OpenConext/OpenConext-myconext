@@ -24,7 +24,7 @@ if [ -n "$MONGO_USERNAME" ] && [ -n "$SSH_USER" ] && [ -n "$SSH_HOST" ]; then
     read -s MONGO_PASSWORD
 fi
 
-echo "⚠️  This will DELETE all existing data in '${USERS_COLLECTION}' collection!"
+echo "⚠️  This will Insert data in '${USERS_COLLECTION}' collection!"
 read -p "Continue? (y/n): " -n 1 -r
 
 if [[ ! $REPLY =~ ^[Yy]$ ]]; then
