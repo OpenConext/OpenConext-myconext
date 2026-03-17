@@ -2,7 +2,7 @@ package myconext.simulations;
 
 import io.gatling.javaapi.core.ScenarioBuilder;
 import io.gatling.javaapi.core.Simulation;
-import myconext.chains.EduID;
+import myconext.chains.MyConextUserFlow;
 import myconext.protocols.Protocols;
 
 import java.time.Duration;
@@ -26,7 +26,7 @@ import static io.gatling.javaapi.core.CoreDsl.*;
  */
 public class GradualRampUpSimulation extends Simulation {
     private ScenarioBuilder scenario = scenario("Gradual Ramp Up - Baseline")
-            .exec(EduID.creationFlow);
+            .exec(MyConextUserFlow.creationFlow);
 
     {
         setUp(

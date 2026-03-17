@@ -2,7 +2,7 @@ package myconext.simulations;
 
 import io.gatling.javaapi.core.ScenarioBuilder;
 import io.gatling.javaapi.core.Simulation;
-import myconext.chains.EduID;
+import myconext.chains.MyConextUserFlow;
 import myconext.protocols.Protocols;
 
 import java.time.Duration;
@@ -19,10 +19,10 @@ import static io.gatling.javaapi.core.CoreDsl.*;
  * - 250 requests per path per minute (~4.2 req/sec per endpoint)
  * - 1000 requests overall per 10 seconds (100 req/sec total)
  *
- * Our flow uses 3 endpoints:
- * - GET  /api/remote-creation/email-eduid-exists
- * - POST /api/remote-creation/eduid-create
- * - PUT  /api/remote-creation/eduid-update
+ * Our flow uses 3 remote-creation endpoints:
+ * - exists check
+ * - create user
+ * - update user
  *
  * Safe limit: 4 users/sec × 3 requests = 12 req/sec total
  * Per endpoint: 4 req/sec (under 4.2/sec limit) ✓
@@ -32,7 +32,7 @@ import static io.gatling.javaapi.core.CoreDsl.*;
 public class LoadTestSimulation extends Simulation {
 
     private ScenarioBuilder scenario = scenario("Load Test - Within Limits")
-            .exec(EduID.creationFlow);
+            .exec(MyConextUserFlow.creationFlow);
 
     {
         setUp(

@@ -83,7 +83,7 @@ public class UserDataSeeder {
                 .append("createdAt", Date.from(now))
                 .append("expiresAt", Date.from(expiresAt));
 
-        Document eduIdService = new Document()
+        Document myConextService = new Document()
                 .append("name", "studielink")
                 .append("nameNl", "studielink")
                 .append("institutionGuid", "ec9d6d75-0d11-e511-80d0-005056956c1a")
@@ -91,10 +91,10 @@ public class UserDataSeeder {
                 .append("createdAt", Date.from(now))
                 .append("lastLogin", Date.from(now));
 
-        Document eduId = new Document()
+        Document myConextId = new Document()
                 .append("value", UUID.randomUUID().toString())
                 .append("createdAt", Date.from(now))
-                .append("services", List.of(eduIdService));
+                .append("services", List.of(myConextService));
 
         return new Document()
                 .append("_class", "myconext.model.User")
@@ -110,10 +110,10 @@ public class UserDataSeeder {
                 .append("forgottenPassword", false)
                 .append("rateLimited", false)
                 .append("serviceDeskMember", false)
-                .append("schacHomeOrganization", "eduid.nl")
+                .append("schacHomeOrganization", "myconext.nl")
                 .append("dateOfBirth",
                         Date.from(birthday.atStartOfDay(ZoneOffset.UTC).toInstant()))
-                .append("eduIDS", List.of(eduId))
+                .append("eduIDS", List.of(myConextId))
                 .append("externalLinkedAccounts", List.of(externalLinkedAccount))
                 .append("linkedAccounts", List.of())
                 .append("publicKeyCredentials", List.of())

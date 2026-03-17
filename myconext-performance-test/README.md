@@ -11,8 +11,8 @@ It includes:
 At the moment, the project supports a single test flow:
 
 1. **Check if an email exists**
-2. **Create a new EduID** with status **Ongeverifieerd**
-3. **Update the EduID** using data from step 2:
+2. **Create a new myconext user** with status **Ongeverifieerd**
+3. **Update the myconext user** using data from step 2:
     - Change the verification status
 
 ## System Requirements

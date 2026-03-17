@@ -2,7 +2,7 @@ package myconext.simulations;
 
 import io.gatling.javaapi.core.ScenarioBuilder;
 import io.gatling.javaapi.core.Simulation;
-import myconext.chains.EduID;
+import myconext.chains.MyConextUserFlow;
 import myconext.protocols.Protocols;
 
 import java.time.Duration;
@@ -35,7 +35,7 @@ import static io.gatling.javaapi.core.CoreDsl.*;
 public class SoakTestSimulation extends Simulation {
 
     private ScenarioBuilder scenario = scenario("Soak Test - Long Duration Stability")
-            .exec(EduID.creationFlow);
+            .exec(MyConextUserFlow.creationFlow);
 
     {
         setUp(
