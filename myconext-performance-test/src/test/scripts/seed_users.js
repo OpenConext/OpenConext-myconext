@@ -20,8 +20,8 @@ if (db.getName() !== DATABASE_NAME) {
 }
 
 // Clear existing data
-db[USERS_COLLECTION].deleteMany({});
-print(`✅ Cleared collection: ${USERS_COLLECTION}`);
+// db[USERS_COLLECTION].deleteMany({});
+// print(`✅ Cleared collection: ${USERS_COLLECTION}`);
 
 // Helper function to generate random data
 function randomInt(min, max) {
