@@ -13,15 +13,19 @@
 const DATABASE_NAME = typeof DATABASE_NAME !== 'undefined' ? DATABASE_NAME : "surf_id_test";
 const USERS_COLLECTION = typeof USERS_COLLECTION !== 'undefined' ? USERS_COLLECTION : "users";
 const TOTAL_USERS = typeof TOTAL_USERS !== 'undefined' ? TOTAL_USERS : 10000;
+const CLEAR_COLLECTION = typeof CLEAR_COLLECTION !== 'undefined' ? CLEAR_COLLECTION : false;
 
 // Switch to the database (if not already specified in connection string)
 if (db.getName() !== DATABASE_NAME) {
     db = db.getSiblingDB(DATABASE_NAME);
 }
 
-// Clear existing data
-// db[USERS_COLLECTION].deleteMany({});
-// print(`✅ Cleared collection: ${USERS_COLLECTION}`);
+if (CLEAR_COLLECTION) {
+    db[USERS_COLLECTION].deleteMany({});
+    print(`✅ Cleared collection: ${USERS_COLLECTION}`);
+} else {
+    print(`ℹ️ Keeping existing data in collection: ${USERS_COLLECTION}`);
+}
 
 // Helper function to generate random data
 function randomInt(min, max) {
