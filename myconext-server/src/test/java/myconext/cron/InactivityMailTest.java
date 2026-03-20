@@ -123,7 +123,7 @@ public class InactivityMailTest extends AbstractMailBoxTest {
         assertEquals(4, mimeMessages.size());
         mimeMessages.forEach(mimeMessage -> {
             String messageContent = this.messageContent(mimeMessage);
-            assertTrue(messageContent.contains("If your eduID account is deleted"));
+            assertTrue(messageContent.contains("We want to remind you"));
             assertTrue(messageContent.contains("OpenConext Mujina SP EN"));
         });
     }
@@ -139,7 +139,7 @@ public class InactivityMailTest extends AbstractMailBoxTest {
         assertEquals(4, mimeMessages.size());
         mimeMessages.forEach(mimeMessage -> {
             String messageContent = this.messageContent(mimeMessage);
-            assertTrue(messageContent.contains("Als je eduID account verwijderd is"));
+            assertTrue(messageContent.contains("Veiligheid"));
             assertTrue(messageContent.contains("OpenConext Mujina SP NL"));
         });
     }
