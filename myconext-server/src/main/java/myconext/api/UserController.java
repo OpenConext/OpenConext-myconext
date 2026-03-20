@@ -883,7 +883,11 @@ public class UserController implements UserAuthentication {
         passwordResetHashRepository.save(new PasswordResetHash(user, hashValue, oneTimeLoginCode));
 
         logWithContext(user, "update", "generate-password-code", LOG, "Send password reset code mail");
-        mailBox.sendResetPasswordOneTimeCode(user, code);
+        if (StringUtils.hasText(user.getPassword())) {
+            mailBox.sendResetPasswordOneTimeCode(user, code);
+        } else {
+            mailBox.sendAddPasswordOneTimeCode(user, code);
+        }
         //Ensure the SSO is removed at the next login
         authenticationRequestRepository.deleteByUserId(user.getId());
         return returnUserResponse(user);
