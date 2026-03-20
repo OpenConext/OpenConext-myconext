@@ -155,6 +155,13 @@ public class MailBox {
         sendMail("reset_password", title, variables, preferredLanguage(user), user.getEmail(), false);
     }
 
+    public void sendAddPasswordOneTimeCode(User user, String code) {
+        String title = this.getTitle("add_password_code", user);
+        Map<String, Object> variables = variables(user, title);
+        variables.put("code", code);
+        sendMail("add_password_code", title, variables, preferredLanguage(user), user.getEmail(), false);
+    }
+
     public void sendResetPasswordOneTimeCode(User user, String code) {
         String title = this.getTitle("reset_password_code", user);
         Map<String, Object> variables = variables(user, title);
