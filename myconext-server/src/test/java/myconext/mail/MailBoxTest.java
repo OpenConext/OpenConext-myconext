@@ -355,6 +355,28 @@ public class MailBoxTest extends AbstractMailBoxTest {
     }
 
     @Test
+    public void sendAddPasswordOneTimeCode() {
+        String code = VerificationCodeGenerator.generateOneTimeLoginCode();
+        doSendAddPasswordOneTimeCode("Add an eduID password with code", "en", code);
+    }
+
+    @Test
+    public void sendAddPasswordOneTimeCodeNl() {
+        String code = VerificationCodeGenerator.generateOneTimeLoginCode();
+        doSendAddPasswordOneTimeCode("Voeg een eduID wachtwoord toe met een code", "nl", code);
+    }
+
+    @SneakyThrows
+    private void doSendAddPasswordOneTimeCode(String expectedSubject, String lang, String code) {
+        mailBox.sendAddPasswordOneTimeCode(user("jdoe@examplee.com", lang), code);
+
+        MimeMessage mimeMessage = mailMessage();
+        assertEquals("noreplyTest@surfconext.nl", mimeMessage.getFrom()[0].toString());
+        String subject = mimeMessage.getSubject();
+        assertEquals(expectedSubject, subject);
+    }
+
+    @Test
     public void sendResetPasswordOneTimeCode() {
         String code = VerificationCodeGenerator.generateOneTimeLoginCode();
         doSendResetPasswordOneTimeCode("Reset your eduID password with code", "en", code);
