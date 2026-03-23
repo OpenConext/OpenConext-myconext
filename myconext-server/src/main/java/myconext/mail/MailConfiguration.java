@@ -53,9 +53,12 @@ public class MailConfiguration {
     @Autowired
     private EmailsSendRepository emailsSendRepository;
 
+    @Value("${gui.disclaimer.content}")
+    private String environmentName;
+
     @Bean
     public MailBox mailSenderProd() throws IOException {
         return new MailBox(mailSender, emailFromDeprovisioning, emailFromCode, emailFromAppNudge, emailFromNewDevice, errorEmail, mySURFconextURL, loginSURFconextURL, objectMapper, mailTemplatesDirectory,
-                emailsSendRepository, emailSpamThresholdSeconds);
+                emailsSendRepository, emailSpamThresholdSeconds, environmentName);
     }
 }

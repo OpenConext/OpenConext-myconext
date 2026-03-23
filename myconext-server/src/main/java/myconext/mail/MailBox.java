@@ -46,6 +46,7 @@ public class MailBox {
     private final EmailsSendRepository emailsSendRepository;
     private final long emailSpamThresholdSeconds;
     private final ObjectMapper objectMapper;
+    private final String environmentName;
 
     public MailBox(JavaMailSender mailSender,
                    String emailFromDeprovisioning,
@@ -58,7 +59,8 @@ public class MailBox {
                    ObjectMapper objectMapper,
                    Resource mailTemplatesDirectory,
                    EmailsSendRepository emailsSendRepository,
-                   long emailSpamThresholdSeconds) throws IOException {
+                   long emailSpamThresholdSeconds,
+                   String environmentName) throws IOException {
         this.mailSender = mailSender;
         this.emailFromDeprovisioning = emailFromDeprovisioning;
         this.emailFromCode = emailFromCode;
@@ -79,6 +81,7 @@ public class MailBox {
         this.subjects = objectMapper.readValue(inputStream(mailTemplatesDirectory), new TypeReference<>() {
         });
         this.objectMapper = objectMapper;
+        this.environmentName = environmentName;
     }
 
     public void sendOneTimeLoginCode(User user, String code) {
@@ -304,7 +307,11 @@ public class MailBox {
     }
 
     private String getTitle(String templateName, User user) {
-        return this.subjects.get(templateName).get(preferredLanguage(user));
+        String title = this.subjects.get(templateName).get(preferredLanguage(user));
+        if (StringUtils.hasText(this.environmentName)) {
+            return String.format("[%s environment] %s", this.environmentName.toUpperCase(), title);
+        }
+        return title;
     }
 
     private String preferredLanguage(User user) {
