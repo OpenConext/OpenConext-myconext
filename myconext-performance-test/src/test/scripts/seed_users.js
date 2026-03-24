@@ -9,6 +9,8 @@
 // Or redirect input:
 // mongosh "mongodb://localhost:27017/myconext_performance" < seed_users.js
 
+const crypto = require('crypto');
+
 // Configuration (can be overridden with --eval)
 const DATABASE_NAME = typeof DATABASE_NAME !== 'undefined' ? DATABASE_NAME : "surf_id_test";
 const USERS_COLLECTION = typeof USERS_COLLECTION !== 'undefined' ? USERS_COLLECTION : "users";
@@ -37,11 +39,22 @@ function randomChoice(array) {
 }
 
 function generateUUID() {
-    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
-        const r = Math.random() * 16 | 0;
-        const v = c === 'x' ? r : (r & 0x3 | 0x8);
-        return v.toString(16);
-    });
+    // Generate an RFC 4122 version 4 UUID using cryptographically secure randomness
+    const bytes = crypto.randomBytes(16);
+
+    // Per RFC 4122 section 4.4: set the four most significant bits of byte 6 to 0100 (version 4)
+    bytes[6] = (bytes[6] & 0x0f) | 0x40;
+    // Set the two most significant bits of byte 8 to 10 (variant 1)
+    bytes[8] = (bytes[8] & 0x3f) | 0x80;
+
+    const hex = bytes.toString('hex');
+    return (
+        hex.slice(0, 8) + '-' +
+        hex.slice(8, 12) + '-' +
+        hex.slice(12, 16) + '-' +
+        hex.slice(16, 20) + '-' +
+        hex.slice(20)
+    );
 }
 
 // Sample data for faker-like functionality
