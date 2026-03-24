@@ -1,0 +1,128 @@
+name: Performance test
+
+on:
+  workflow_dispatch:
+    inputs:
+      benchmark_sizes:
+        description: 'Comma-separated database sizes to test'
+        required: false
+        default: '1000,10000,100000,1000000,2000000,4000000'
+      benchmark_users:
+        description: 'Virtual users per Gatling run'
+        required: false
+        default: '100'
+      benchmark_ramp_seconds:
+        description: 'Ramp-up duration in seconds per Gatling run'
+        required: false
+        default: '30'
+
+jobs:
+  benchmark:
+    runs-on: ubuntu-latest
+    timeout-minutes: 180
+
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Set up JDK 21
+        uses: actions/setup-java@v5
+        with:
+          java-version: 21
+          distribution: temurin
+          cache: maven
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: '24.3.0'
+
+      - name: Install mongosh
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y wget gnupg
+          wget -qO - https://pgp.mongodb.com/server-7.0.asc | sudo gpg --dearmor -o /usr/share/keyrings/mongodb-server-7.0.gpg
+          echo "deb [ arch=amd64,arm64 signed-by=/usr/share/keyrings/mongodb-server-7.0.gpg ] https://repo.mongodb.org/apt/ubuntu jammy/mongodb-org/7.0 multiverse" | sudo tee /etc/apt/sources.list.d/mongodb-org-7.0.list
+          sudo apt-get update
+          sudo apt-get install -y mongodb-mongosh
+
+      - name: Start MongoDB and Mailpit
+        run: docker compose up -d mongo mailpit
+
+      - name: Wait for MongoDB
+        run: |
+          for i in $(seq 1 60); do
+            if docker compose exec -T mongo mongosh --quiet --eval "db.adminCommand({ ping: 1 }).ok" | grep -q 1; then
+              exit 0
+            fi
+            sleep 2
+          done
+          echo "MongoDB did not become ready in time"
+          exit 1
+
+      - name: Start backend
+        run: |
+          mkdir -p myconext-performance-test/target
+          cd myconext-server
+          nohup mvn spring-boot:run -Dspring-boot.run.profiles=dev > ../myconext-performance-test/target/backend.log 2>&1 &
+          echo $! > ../myconext-performance-test/target/backend.pid
+
+      - name: Wait for backend
+        run: |
+          for i in $(seq 1 120); do
+            if curl --silent --fail http://localhost:8081/myconext/api/swagger-ui/index.html >/dev/null; then
+              exit 0
+            fi
+            sleep 5
+          done
+          echo "Backend did not become ready in time"
+          tail -200 myconext-performance-test/target/backend.log || true
+          exit 1
+
+      - name: Run database growth benchmark
+        working-directory: myconext-performance-test/src/test/scripts
+        env:
+          BENCHMARK_SIZES: ${{ inputs.benchmark_sizes }}
+          BENCHMARK_USERS_PER_RUN: ${{ inputs.benchmark_users }}
+          BENCHMARK_RAMP_SECONDS: ${{ inputs.benchmark_ramp_seconds }}
+        run: bash ./benchmark_database_growth.sh
+
+      - name: Stop backend
+        if: always()
+        run: |
+          if [ -f myconext-performance-test/target/backend.pid ]; then
+            kill $(cat myconext-performance-test/target/backend.pid) || true
+          fi
+
+      - name: Stop Docker services
+        if: always()
+        run: docker compose down -v
+
+
+      - name: Write workflow summary
+        if: always()
+        run: |
+          {
+            echo "## Database Growth Benchmark"
+            echo
+            echo "Artifacts uploaded: `database-growth-benchmark`"
+            echo
+            echo "Important files inside the artifact:"
+            echo "- `myconext-performance-test/target/gatling/compare.html`"
+            echo "- `myconext-performance-test/src/test/scripts/benchmark_database_growth.log`"
+            echo "- `myconext-performance-test/target/backend.log`"
+            echo
+            echo "Inputs used:"
+            echo "- sizes: `${{ inputs.benchmark_sizes }}`"
+            echo "- benchmark users: `${{ inputs.benchmark_users }}`"
+            echo "- ramp seconds: `${{ inputs.benchmark_ramp_seconds }}`"
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Upload benchmark artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: database-growth-benchmark
+          path: |
+            myconext-performance-test/target/gatling
+            myconext-performance-test/src/test/scripts/benchmark_database_growth.log
+            myconext-performance-test/target/backend.log
