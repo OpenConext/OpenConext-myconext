@@ -17,7 +17,7 @@ on:
         default: '30'
 
 jobs:
-  benchmark:
+  performance_test:
     runs-on: ubuntu-latest
     timeout-minutes: 180
 

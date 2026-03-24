@@ -20,14 +20,44 @@ At the moment, the project supports a single test flow:
 - Maven 3
 - mongoese 5.0.3
 
-## How to run the preformance Test (Database Growth Benchmark)
-There is a script to run the performance test. This script will insert users in the database and run the performance test. It testing the database growth.
-1. It wil insert x amount of users in the database.
-2. It will run the performance test and generate a report.
+## How to Run the Performance Test (Database Growth Benchmark)
 
-It will repeat step 1 and 2 with the following amount of users 1000 10000 100000 1000000 2000000 4000000.
+There is a script that runs the performance test. It inserts users into the database and measures performance as the database grows.
 
-For `DatabaseGrowthBenchmarkSimulation`, a `target/gatling/compare.html` page is generated automatically after each run.
+For each run it will:
+1. Insert x amount of users into the database
+2. Run the performance test and generate a report
+
+This repeats for the following database sizes: 1000, 10000, 100000, 1000000, 2000000, 4000000.
+
+After each run, a `target/gatling/compare.html` page is generated automatically for `DatabaseGrowthBenchmarkSimulation`.
+
+## How to run the Performance Test github action
+
+The performance test is a manually triggered GitHub Actions workflow that benchmarks backend performance across different database sizes.
+
+### How to trigger
+
+1. Go to the **Actions** tab in the repository
+2. Select **Performance test** from the workflow list
+3. Click **Run workflow**
+4. Optionally adjust the inputs and click **Run workflow** to confirm
+
+### Inputs
+
+| Input | Default | Description |
+|---|---|---|
+| `benchmark_sizes` | `1000,10000,...,4000000` | Comma-separated list of database sizes to test |
+| `benchmark_users` | `100` | Number of virtual users per Gatling run |
+| `benchmark_ramp_seconds` | `30` | Ramp-up duration in seconds per Gatling run |
+
+### Results
+
+After the workflow completes, download the `database-growth-benchmark` artifact from the workflow run. The key files are:
+
+- `myconext-performance-test/target/gatling/compare.html` — visual comparison of results across database sizes
+- `myconext-performance-test/src/test/scripts/benchmark_database_growth.log` — benchmark script output
+- `myconext-performance-test/target/backend.log` — backend logs
 
 ### Run the full database growth preformance test
 ```bash
