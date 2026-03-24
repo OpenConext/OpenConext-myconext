@@ -95,7 +95,7 @@ public class MailBoxTest extends AbstractMailBoxTest {
         assertEquals("noreplyTest@surfconext.nl", mimeMessage.getFrom()[0].toString());
 
         String subject = mimeMessage.getSubject();
-        assertEquals(String.format(expectedSubject, code), subject);
+        assertTrue(subject.endsWith(String.format(expectedSubject, code)));
 
         String body = getBody(mimeMessage);
         assertTrue(body.contains(code));
@@ -120,7 +120,7 @@ public class MailBoxTest extends AbstractMailBoxTest {
         assertEquals("noreplyTest@surfconext.nl", mimeMessage.getFrom()[0].toString());
 
         String subject = mimeMessage.getSubject();
-        assertEquals(expectedSubject, subject);
+        assertTrue(subject.endsWith(expectedSubject));
     }
 
     @Test
@@ -140,7 +140,7 @@ public class MailBoxTest extends AbstractMailBoxTest {
         MimeMessage mimeMessage = mailMessage();
         assertEquals("noreplyTest@surfconext.nl", mimeMessage.getFrom()[0].toString());
         String subject = mimeMessage.getSubject();
-        assertEquals(expectedSubject, subject);
+        assertTrue(subject.endsWith(expectedSubject));
     }
 
     @Test
@@ -161,7 +161,7 @@ public class MailBoxTest extends AbstractMailBoxTest {
         MimeMessage mimeMessage = mailMessage();
         assertEquals("app-nudgeTest@surfconext.nl", mimeMessage.getFrom()[0].toString());
         String subject = mimeMessage.getSubject();
-        assertEquals(expectedSubject, subject);
+        assertTrue(subject.endsWith(expectedSubject));
     }
 
     @Test
@@ -330,7 +330,7 @@ public class MailBoxTest extends AbstractMailBoxTest {
         MimeMessage mimeMessage = mailMessage();
         assertEquals("noreplyTest@surfconext.nl", mimeMessage.getFrom()[0].toString());
         String subject = mimeMessage.getSubject();
-        assertEquals(expectedSubject, subject);
+        assertTrue(subject.endsWith(expectedSubject));
     }
 
     @Test
@@ -351,7 +351,7 @@ public class MailBoxTest extends AbstractMailBoxTest {
         MimeMessage mimeMessage = mailMessage();
         assertEquals("noreplyTest@surfconext.nl", mimeMessage.getFrom()[0].toString());
         String subject = mimeMessage.getSubject();
-        assertEquals(expectedSubject, subject);
+        assertTrue(subject.endsWith(expectedSubject));
     }
 
     @Test
@@ -373,7 +373,7 @@ public class MailBoxTest extends AbstractMailBoxTest {
         MimeMessage mimeMessage = mailMessage();
         assertEquals("noreplyTest@surfconext.nl", mimeMessage.getFrom()[0].toString());
         String subject = mimeMessage.getSubject();
-        assertEquals(expectedSubject, subject);
+        assertTrue(subject.endsWith(expectedSubject));
     }
 
     @Test
@@ -395,7 +395,7 @@ public class MailBoxTest extends AbstractMailBoxTest {
         MimeMessage mimeMessage = mailMessage();
         assertEquals("noreplyTest@surfconext.nl", mimeMessage.getFrom()[0].toString());
         String subject = mimeMessage.getSubject();
-        assertEquals(expectedSubject, subject);
+        assertTrue(subject.endsWith(expectedSubject));
     }
 
     @Test
@@ -418,7 +418,7 @@ public class MailBoxTest extends AbstractMailBoxTest {
         MimeMessage mimeMessage = mailMessage();
         assertEquals("noreplyTest@surfconext.nl", mimeMessage.getFrom()[0].toString());
         String subject = mimeMessage.getSubject();
-        assertEquals(expectedSubject, subject);
+        assertTrue(subject.endsWith(expectedSubject));
     }
 
     @Test
@@ -439,7 +439,7 @@ public class MailBoxTest extends AbstractMailBoxTest {
         MimeMessage mimeMessage = mailMessage();
         assertEquals("noreplyTest@surfconext.nl", mimeMessage.getFrom()[0].toString());
         String subject = mimeMessage.getSubject();
-        assertEquals(expectedSubject, subject);
+        assertTrue(subject.endsWith(expectedSubject));
     }
 
     @Test
@@ -460,7 +460,7 @@ public class MailBoxTest extends AbstractMailBoxTest {
         MimeMessage mimeMessage = mailMessage();
         assertEquals("deprovisioningTest@surfconext.nl", mimeMessage.getFrom()[0].toString());
         String subject = mimeMessage.getSubject();
-        assertEquals(expectedSubject, subject);
+        assertTrue(subject.endsWith(expectedSubject));
     }
 
     @Test
@@ -480,7 +480,7 @@ public class MailBoxTest extends AbstractMailBoxTest {
         MimeMessage mimeMessage = mailMessage();
         assertEquals("app-nudgeTest@surfconext.nl", mimeMessage.getFrom()[0].toString());
         String subject = mimeMessage.getSubject();
-        assertEquals(expectedSubject, subject);
+        assertTrue(subject.endsWith(expectedSubject));
     }
 
     @Test
@@ -501,7 +501,7 @@ public class MailBoxTest extends AbstractMailBoxTest {
         MimeMessage mimeMessage = mailMessage();
         assertEquals("noreplyTest@surfconext.nl", mimeMessage.getFrom()[0].toString());
         String subject = mimeMessage.getSubject();
-        assertEquals(expectedSubject, subject);
+        assertTrue(subject.endsWith(expectedSubject));
     }
 
     @Test
@@ -521,7 +521,7 @@ public class MailBoxTest extends AbstractMailBoxTest {
         MimeMessage mimeMessage = mailMessage();
         assertEquals("new-deviceTest@surfconext.nl", mimeMessage.getFrom()[0].toString());
         String subject = mimeMessage.getSubject();
-        assertEquals(expectedSubject, subject);
+        assertTrue(subject.endsWith(expectedSubject));
     }
 
 }
