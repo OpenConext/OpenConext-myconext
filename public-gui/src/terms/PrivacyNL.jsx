@@ -385,8 +385,8 @@ export const PrivacyNL = () => {
                     Als je vindt dat eduID niet goed omgaat met jouw persoonsgegevens kun je een klacht indienen bij de
                     functionaris gegevensbescherming van SURF of van een instelling. Ook heb je het recht om een klacht
                     in te dienen bij de Autoriteit Persoonsgegevens. Meer informatie over de Autoriteit Persoonsgegevens
-                    en het indienen van klachten vind je op <a
-                    href="https://www.autoriteitpersoonsgegevens.nl">www.autoriteitpersoonsgegevens.nl</a>.
+                    en het indienen van klachten vind je op de website van <a
+                    href="https://www.autoriteitpersoonsgegevens.nl">Autoriteit Persoonsgegevens</a>.
                 </p>
             </div>
             <div id="terecht" className="card full bottom">
