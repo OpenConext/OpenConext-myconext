@@ -403,7 +403,7 @@ const nl = {
             info: {
                 title: "Verificatie",
                 verify: "Verifïeer je identiteit, snel en gemakkelijk",
-                please: "Gebruik een van de volgende methodes om je bewijzen wie je bent.",
+                please: "Gebruik een van de volgende methodes om te bewijzen wie je bent.",
                 educationalInstitution: "Verifïeer met een Nederlandse onderwijsinstelling",
                 selectInstitution: "Selecteer je instelling",
                 other: "Andere opties...",

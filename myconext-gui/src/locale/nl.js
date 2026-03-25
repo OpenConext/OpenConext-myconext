@@ -559,7 +559,7 @@ const nl = {
             info: {
                 subheader: "Verifieer je identiteit, snel en gemakkelijk",
                 title: "Verificatie",
-                please: "Gebruik een van de volgende methodes om je bewijzen wie je bent.",
+                please: "Gebruik een van de volgende methodes om te bewijzen wie je bent.",
                 educationalInstitution: "Verifieer via een Nederlandse onderwijsinstelling",
                 selectInstitution: "Selecteer je instelling",
                 other: "Meer opties...",
