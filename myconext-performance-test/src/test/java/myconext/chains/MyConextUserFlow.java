@@ -11,7 +11,7 @@ import static io.gatling.javaapi.http.HttpDsl.status;
 
 public class MyConextUserFlow {
     public static ChainBuilder creationFlow = exec(session -> {
-        String email = "leroy.vanzeeland+test-"+ UUID.randomUUID() +"@surf.nl";
+        String email = "user-"+ UUID.randomUUID() +"@domain.nl";
         String identifier = UUID.randomUUID().toString();
         System.out.println("=== Starting myconext flow for email: " + email + " ===");
         return session
