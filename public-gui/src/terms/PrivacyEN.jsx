@@ -390,7 +390,7 @@ export const PrivacyEN = () => {
                     Dutch Data
                     Protection Authority. More information about the Dutch Data Protection Authority and submitting
                     complaints can be
-                    found at <a href="https://www.autoriteitpersoonsgegevens.nl">www.autoriteitpersoonsgegevens.nl</a>.
+                    found on the website of <a href="https://www.autoriteitpersoonsgegevens.nl">Autoriteit Persoonsgegevens</a>.
                 </p>
             </div>
             <div id="terecht" className="card full bottom">
