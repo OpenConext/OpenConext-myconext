@@ -415,8 +415,11 @@ public class TiqrController implements UserAuthentication {
     @Hidden
     public ResponseEntity<StartAuthentication> startAuthentication(HttpServletRequest request,
                                                                    @Valid @RequestBody TiqrRequest tiqrRequest) throws IOException, WriterException, TiqrException {
-        authenticationRequestRepository.findByIdAndNotExpired(tiqrRequest.getAuthenticationRequestId())
+        SamlAuthenticationRequest theRequest = authenticationRequestRepository.findByIdAndNotExpired(tiqrRequest.getAuthenticationRequestId())
                 .orElseThrow(() -> new ExpiredAuthenticationException("Expired tiqrRequest:" + tiqrRequest.getEmail()));
+        String serviceName = theRequest.getServiceName();
+        System.out.println("Service name: " + serviceName);
+
         String email = tiqrRequest.getEmail().trim();
         User user = userRepository.findUserByEmailAndRateLimitedFalse(email)
                 .orElseThrow(() -> new UserNotFoundException(String.format("User %s not found", email)));
@@ -435,6 +438,8 @@ public class TiqrController implements UserAuthentication {
         // Reset any outstanding suspensions
         rateLimitEnforcer.unsuspendUserAfterTiqrSuccess(user);
         boolean sendPushNotification = tiqrCookieValid.get() && this.tiqrConfiguration.isPushNotificationsEnabled();
+        
+        // Start Tiqr authentication -- pass the SP name?
         Authentication authentication = tiqrService.startAuthentication(
                 user.getId(),
                 String.format("%s %s", user.getGivenName(), user.getFamilyName()),
