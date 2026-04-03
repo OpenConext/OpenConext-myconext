@@ -70,6 +70,7 @@ public class TiqrController implements UserAuthentication {
     private final RegistrationRepository registrationRepository;
     private final RateLimitEnforcer rateLimitEnforcer;
     private final CookieValueEncoder cookieValueEncoder;
+    private final String mijnEduIdServiceName;
 
     @Autowired
     public TiqrController(@Value("${tiqr_configuration}") Resource resource,
@@ -82,6 +83,7 @@ public class TiqrController implements UserAuthentication {
                           SMSService smsService,
                           Environment environment,
                           @Value("${email.magic-link-url}") String magicLinkUrl,
+                          @Value("${mijn_eduid_service_name}") String mijnEduIdServiceName,
                           CookieValueEncoder cookieValueEncoder) throws IOException {
         this.tiqrConfiguration = new Yaml().loadAs(resource.getInputStream(), TiqrConfiguration.class);
         this.cookieValueEncoder = cookieValueEncoder;
@@ -112,6 +114,7 @@ public class TiqrController implements UserAuthentication {
         this.serviceProviderResolver = serviceProviderResolver;
         this.smsService = smsService;
         this.magicLinkUrl = magicLinkUrl;
+        this.mijnEduIdServiceName = mijnEduIdServiceName;
         this.rateLimitEnforcer = new RateLimitEnforcer(userRepository, tiqrConfiguration);
     }
 
@@ -405,7 +408,7 @@ public class TiqrController implements UserAuthentication {
     public ResponseEntity<StartAuthentication> startAuthenticationForSP(HttpServletRequest request,
                                                                         org.springframework.security.core.Authentication authentication) throws IOException, WriterException, TiqrException {
         User user = userFromAuthentication(authentication);
-        ResponseEntity<StartAuthentication> startAuthenticationResponseEntity = doStartAuthentication(request, user);
+        ResponseEntity<StartAuthentication> startAuthenticationResponseEntity = doStartAuthentication(request, user, this.mijnEduIdServiceName);
         String sessionKey = startAuthenticationResponseEntity.getBody().getSessionKey();
         request.getSession().setAttribute(SESSION_KEY, sessionKey);
         return startAuthenticationResponseEntity;
@@ -424,10 +427,10 @@ public class TiqrController implements UserAuthentication {
         User user = userRepository.findUserByEmailAndRateLimitedFalse(email)
                 .orElseThrow(() -> new UserNotFoundException(String.format("User %s not found", email)));
 
-        return doStartAuthentication(request, user);
+        return doStartAuthentication(request, user, serviceName);
     }
 
-    private ResponseEntity<StartAuthentication> doStartAuthentication(HttpServletRequest request, User user) throws WriterException, IOException, TiqrException {
+    private ResponseEntity<StartAuthentication> doStartAuthentication(HttpServletRequest request, User user, String serviceName) throws WriterException, IOException, TiqrException {
         Optional<Cookie> optionalTiqrCookie = cookieByName(request, TIQR_COOKIE_NAME);
         AtomicBoolean tiqrCookieValid = new AtomicBoolean(false);
         optionalTiqrCookie.ifPresent(tiqrCookie -> tiqrCookieValid.set(this.cookieValueEncoder.matches(user.getUsername(), tiqrCookie.getValue())));
@@ -444,6 +447,7 @@ public class TiqrController implements UserAuthentication {
                 user.getId(),
                 String.format("%s %s", user.getGivenName(), user.getFamilyName()),
                 this.tiqrConfiguration.getEduIdAppBaseUrl(),
+                serviceName,
                 sendPushNotification);
         String authenticationUrl = authentication.getAuthenticationUrl();
 
