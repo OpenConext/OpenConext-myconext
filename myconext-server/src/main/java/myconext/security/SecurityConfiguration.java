@@ -293,6 +293,7 @@ public class SecurityConfiguration {
                             "/myconext/api/servicedesk/**")
                     .csrf(csrf -> csrf.disable())
                     .sessionManagement(smc -> smc.sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED))
+                    .securityMatcher("/login/oauth2/**", "/oauth2/authorization/**")
                     .authorizeHttpRequests(authz -> authz.requestMatchers(
                                     "/config",
                                     "/myconext/api/idp/**",
