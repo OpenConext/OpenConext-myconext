@@ -12,6 +12,8 @@ import myconext.repository.UserRepository;
 import myconext.shibboleth.ShibbolethPreAuthenticatedProcessingFilter;
 import myconext.shibboleth.ShibbolethUserDetailService;
 import myconext.shibboleth.mock.MockShibbolethFilter;
+import oidc.security.AuthorizationRequestCustomizer;
+import oidc.security.CustomOidcUserService;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -31,6 +33,9 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
+import org.springframework.security.oauth2.client.web.DefaultOAuth2AuthorizationRequestResolver;
+import org.springframework.security.oauth2.client.web.OAuth2AuthorizationRequestResolver;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.preauth.AbstractPreAuthenticatedProcessingFilter;
 import org.springframework.security.web.authentication.preauth.PreAuthenticatedAuthenticationProvider;
@@ -38,6 +43,8 @@ import org.springframework.security.web.context.DelegatingSecurityContextReposit
 import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
 import org.springframework.security.web.context.RequestAttributeSecurityContextRepository;
 import org.springframework.security.web.context.SecurityContextRepository;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import saml.model.SAMLConfiguration;
 import saml.model.SAMLIdentityProvider;
 import saml.model.SAMLServiceProvider;
@@ -50,6 +57,12 @@ import java.util.List;
 
 import static java.util.stream.Collectors.toList;
 import static org.springframework.security.config.Customizer.withDefaults;
+
+// TLDR:
+//1. SamlSecurity (@Order(1)) — Handles the SAML login page where guest users authenticate (the "eduID login screen").
+//2. InternalSecurityConfigurationAdapter (@Order default) — Handles requests from users who are already logged in via their institution (Shibboleth), plus service desk access.
+//3. AppSecurity (@Order(2)) — Handles system-to-system API calls (other OpenConext components talking to myconext) using username/password credentials.
+//4. JWTSecurityConfig (@Order(3)) — Handles mobile app and eduID API calls that come in with an OAuth2 access token.
 
 @EnableWebSecurity
 @EnableConfigurationProperties
@@ -67,6 +80,20 @@ public class SecurityConfiguration {
         );
     }
 
+    @Configuration
+    public static class MvcConfig implements WebMvcConfigurer {
+
+        // Allow all origins and methods
+        // Can also used to set allowed headers and credentials etc
+        @Override
+        public void addCorsMappings(CorsRegistry registry) {
+            registry.addMapping("/**")
+                    .allowedMethods("*")
+                    .allowedOrigins("*");
+        }
+    }
+
+    //1. SamlSecurity (@Order(1)) — Handles the SAML login page where guest users authenticate (the "eduID login screen").
     @Configuration
     @Order(1)
     @EnableConfigurationProperties(IdentityProviderMetaData.class)
@@ -209,17 +236,36 @@ public class SecurityConfiguration {
         }
     }
 
+    //2. InternalSecurityConfigurationAdapter (@Order default) — Handles requests from users who are already logged in via their institution (Shibboleth), plus service desk access.
     @Order
     @Configuration
     public static class InternalSecurityConfigurationAdapter {
 
+        private final ClientRegistrationRepository clientRegistrationRepository;
+
         public static final String ROLE_GUEST = "ROLE_GUEST";
         public static final String SERVICE_DESK = "SERVICE_DESK";
+
+        public InternalSecurityConfigurationAdapter(ClientRegistrationRepository clientRegistrationRepository) {
+            this.clientRegistrationRepository = clientRegistrationRepository;
+        }
+
+
 
         private AuthenticationProvider preAuthenticatedAuthenticationProvider() {
             PreAuthenticatedAuthenticationProvider provider = new PreAuthenticatedAuthenticationProvider();
             provider.setPreAuthenticatedUserDetailsService(new ShibbolethUserDetailService());
             return provider;
+        }
+
+        private OAuth2AuthorizationRequestResolver authorizationRequestResolver(
+                ClientRegistrationRepository clientRegistrationRepository) {
+            DefaultOAuth2AuthorizationRequestResolver authorizationRequestResolver =
+                    new DefaultOAuth2AuthorizationRequestResolver(
+                            clientRegistrationRepository, "/oauth2/authorization");
+            authorizationRequestResolver.setAuthorizationRequestCustomizer(
+                    new AuthorizationRequestCustomizer());
+            return authorizationRequestResolver;
         }
 
         @Bean
@@ -258,27 +304,38 @@ public class SecurityConfiguration {
                     .authorizeHttpRequests(authz -> authz.requestMatchers(
                             "/myconext/api/servicedesk/**"
                     ).hasAuthority(SERVICE_DESK))
-                    .addFilterBefore(
-                            new ShibbolethPreAuthenticatedProcessingFilter(
-                                    providerManager,
-                                    userRepository,
-                                    externalUserRepository,
-                                    manage,
-                                    mijnEduIDEntityId,
-                                    List.of(serviceDeskRoles),
-                                    mijnEduIDHost,
-                                    serviceDeskHost),
-                            AbstractPreAuthenticatedProcessingFilter.class)
+                    .oauth2Login(oAuth2LoginConfigurer -> oAuth2LoginConfigurer
+                            // Custom resolver adds prompt=login when original request had force= (OpenConext helper).
+                            .authorizationEndpoint(authorization -> authorization
+                                    .authorizationRequestResolver(
+                                            authorizationRequestResolver(this.clientRegistrationRepository)
+                                    )
+                            )
+                            // After tokens: load user then run provisioning hook (here: println only).
+                            .userInfoEndpoint(userInfoEndpointConfigurer -> userInfoEndpointConfigurer.oidcUserService(
+                                    // request and user is availbale here
+                                    // Checken of user van de service desk is
+
+                                    // boolean logInToEduID = host.toLowerCase().equals(this.mijnEduIDHost);
+
+                                    // "Current request thread local" -- spring iets die request kan achterhalen
+
+                                    new CustomOidcUserService(oidcUser -> {
+                                        System.out.println(oidcUser);
+                                    })))
+                    )
                     .authorizeHttpRequests(auth -> auth
-                            .anyRequest().hasRole("GUEST"));
-            if (environment.acceptsProfiles(Profiles.of("test", "dev"))) {
-                //we can't use @Profile, because we need to add it before the real filter
-                http.addFilterBefore(new MockShibbolethFilter(serviceDeskRoleAutoProvisioning, activeHost), ShibbolethPreAuthenticatedProcessingFilter.class);
-            }
+                            .anyRequest().hasRole("GUEST")); // guest role expected, do add in user hook
+            // This is the reference to Shibboleth too, the library also has a trick to pretend to be logged in
+//            if (environment.acceptsProfiles(Profiles.of("test", "dev"))) {
+//                //we can't use @Profile, because we need to add it before the real filter
+//                http.addFilterBefore(new MockShibbolethFilter(serviceDeskRoleAutoProvisioning, activeHost), ShibbolethPreAuthenticatedProcessingFilter.class);
+//            }
             return http.build();
         }
     }
 
+    //3. AppSecurity (@Order(2)) — Handles system-to-system API calls (other OpenConext components talking to myconext) using username/password credentials.
     @Configuration
     @Order(2)
     @EnableConfigurationProperties(ExternalApiConfiguration.class)
@@ -319,6 +376,7 @@ public class SecurityConfiguration {
 
     }
 
+    //4. JWTSecurityConfig (@Order(3)) — Handles mobile app and eduID API calls that come in with an OAuth2 access token.
     @Configuration
     @Order(3)
     public static class JWTSecurityConfig {

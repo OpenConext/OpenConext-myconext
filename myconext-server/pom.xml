@@ -164,6 +164,16 @@
         </dependency>
         <dependency>
             <groupId>org.openconext</groupId>
+            <artifactId>openconext-oidc-client</artifactId>
+            <version>0.0.4</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-oauth2-client</artifactId>
+            <version>3.5.5</version>
+        </dependency>
+        <dependency>
+            <groupId>org.openconext</groupId>
             <artifactId>tiqr-java-connector</artifactId>
             <version>3.0.0</version>
         </dependency>

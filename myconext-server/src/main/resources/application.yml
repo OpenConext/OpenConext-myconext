@@ -3,7 +3,7 @@ logging:
   level:
     org.springframework.data.mongodb: INFO
     org.springframework.data.convert: INFO
-    org.springframework.security: WARN
+    org.springframework.security: TRACE
     io.mongock.: TRACE
     tiqr.org: DEBUG
     myconext: DEBUG
@@ -289,6 +289,24 @@ spring:
   mail:
     host: localhost
     port: 1025
+  security:
+    oauth2:
+      client:
+        registration:
+          oidcng:
+            client-id: playground_client
+            client-secret: secret
+            redirect-uri: "{baseUrl}/login/oauth2/code/{registrationId}"
+            authorization-grant-type: "authorization_code"
+            scope: openid
+        provider:
+          oidcng:
+            authorization-uri: "https://connect.test2.surfconext.nl/oidc/authorize"
+            token-uri: "https://connect.test2.surfconext.nl/oidc/token"
+            user-info-uri: "https://connect.test2.surfconext.nl/oidc/userinfo"
+            jwk-set-uri: "https://connect.test2.surfconext.nl/oidc/certs"
+            user-name-attribute: sub
+            user-info-authentication-method: client_secret_basic
 
 gui:
   disclaimer:
