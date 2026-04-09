@@ -108,6 +108,8 @@ public class ShibbolethPreAuthenticatedProcessingFilter extends AbstractPreAuthe
         List<String> memberships = Stream.of(getHeader(SHIB_MEMBERSHIPS, request).split(";"))
                 .map(String::trim)
                 .toList();
+
+        // Split between desk
         if (logInToEduID) {
             return optionalUser.orElseGet(() ->
                     provisionUser(uid, schacHomeOrganization, givenName, familyName, email, preferredLanguage));
