@@ -12,7 +12,7 @@ export const Footer = () => {
             <div className="sds--page-container">
                 <div className="sds--footer--inner">
                     <div className="sds--branding mobile">
-                        <img src={eu_logo} className="eu-logo mobile" alt="EU"/>
+                        <img src={eu_logo} className="eu-logo mobile" alt={I18n.t("footer.euLogoAlt")}/>
                     </div>
                     <nav className="menu sds--text--body--small">
                         <ul>
@@ -31,8 +31,9 @@ export const Footer = () => {
                     <LanguageSelector/>
                     <div className="sds--branding">
                         <a href={I18n.t("footer.surfLink")} target="_blank"
-                           rel="noopener noreferrer">{<Logo label={""} position={LogoType.Bottom}/>}</a>
-                        <img src={eu_logo} className="eu-logo" alt="EU"/>
+                           rel="noopener noreferrer"
+                           aria-label={I18n.t("footer.surfLogoLabel")}>{<Logo label={""} position={LogoType.Bottom}/>}</a>
+                        <img src={eu_logo} className="eu-logo" alt={I18n.t("footer.euLogoAlt")}/>
                     </div>
                 </div>
             </div>
