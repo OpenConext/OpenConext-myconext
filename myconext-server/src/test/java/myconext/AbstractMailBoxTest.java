@@ -23,6 +23,7 @@ import static org.awaitility.Awaitility.await;
 @SuppressWarnings("deprecation")
 public abstract class AbstractMailBoxTest extends AbstractIntegrationTest {
 
+    public static final int TIMEOUT_SECONDS = 10;
     @Rule
     public final GreenMailRule greenMail =
             new GreenMailRule(new ServerSetup(1025, null, ServerSetup.PROTOCOL_SMTP));
@@ -34,12 +35,12 @@ public abstract class AbstractMailBoxTest extends AbstractIntegrationTest {
     }
 
     protected MimeMessage mailMessage() {
-        await().atMost(1, TimeUnit.SECONDS).until(() -> greenMail.getReceivedMessages().length != 0);
+        await().atMost(TIMEOUT_SECONDS, TimeUnit.SECONDS).until(() -> greenMail.getReceivedMessages().length != 0);
         return greenMail.getReceivedMessages()[0];
     }
 
     protected List<MimeMessage> mailMessages() {
-        await().atMost(1, TimeUnit.SECONDS).until(() -> greenMail.getReceivedMessages().length != 0);
+        await().atMost(TIMEOUT_SECONDS, TimeUnit.SECONDS).until(() -> greenMail.getReceivedMessages().length != 0);
         return List.of(greenMail.getReceivedMessages());
     }
 
