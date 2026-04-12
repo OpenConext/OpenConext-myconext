@@ -9,7 +9,10 @@ const en = {
     },
     header: {
         mineEduID: "My eduID",
-        register: "Create an eduID"
+        register: "Create an eduID",
+        menu: "Menu",
+        closeMenu: "Close menu",
+        home: "eduID home"
     },
     home: {
         eduID: "eduID",
@@ -23,6 +26,8 @@ const en = {
         appInfo: "With the <strong>eduID app</strong>, you can log in without a password or checking your email. Installation is quick and easy.",
         google: "https://play.google.com/store/apps/details?id=nl.eduid",
         apple: "https://apps.apple.com/us/app/eduid/id1600756434",
+        appStoreAlt: "Download on the App Store",
+        googlePlayAlt: "Get it on Google Play",
     },
     about: {
         eduID: "About eduID",
@@ -60,6 +65,7 @@ const en = {
         informationBullet2: "Proof that you are a student",
         informationBullet3: "Your current institutionValidation of your full name by a third party",
         allAtOnce: "You can add this information all at once by connecting your educational institution to eduID. To do this, press <strong>Add an institution</strong> in the eduID app or <a href='{{url}}'>My eduID</a>.",
+        mobileScreenshotAlt: "Screenshot of the eduID app showing where to add an institution",
         note: "<strong>Note</strong>: did you create an eduID last school year? You may need to connect your institution again.",
         help: "Need more help?",
         helpInfo: "Have a look at the <a href=\"https://servicedesk.surf.nl/wiki/x/MIJsB\">eduID documentation</a> and the <a href=\"https://servicedesk.surf.nl/wiki/x/ToJsB\">FAQ</a>, or send an email to <a href='mailto:help@eduid.nl'>help@eduid.nl</a>. We’ll get back to you as soon as possible."
@@ -83,6 +89,8 @@ const en = {
         privacy: "Privacy Policy",
         privacyLink: "https://support.surfconext.nl/privacy-en",
         surfLink: "https://surf.nl",
+        surfLogoLabel: "SURF",
+        euLogoAlt: "Funded by the European Union. NextGenerationEU."
     },
 }
 export default en;

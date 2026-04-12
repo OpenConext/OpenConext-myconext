@@ -19,7 +19,7 @@ export const Support = () => {
         <div className="support-container">
             <div className="support">
                 <div className="top">
-                    <img src={parachute} className="parachute" alt="parachute"/>
+                    <img src={parachute} className="parachute" alt=""/>
                     <div className="top-right">
                         <h1 className="title">
                             {I18n.t("support.eduID")}
@@ -30,7 +30,7 @@ export const Support = () => {
             </div>
             <Background>
                 <div className="card row">
-                    <img src={support} className="support" alt="support"/>
+                    <img src={support} className="support" alt=""/>
                     <div className="top-right middle">
                         <h2 className="title">
                             {I18n.t("support.studying")}
@@ -47,7 +47,11 @@ export const Support = () => {
                         </ul>
                         <p className="info"
                            dangerouslySetInnerHTML={{__html: I18n.t("support.allAtOnce", {url: config.spBaseUrl})}}/>
-                        <img src={mobileScreenshot} className="mobileScreenshot" alt="mobileScreenshot"/>
+                        <img
+                            src={mobileScreenshot}
+                            className="mobileScreenshot"
+                            alt={I18n.t("support.mobileScreenshotAlt")}
+                        />
                         <p className="info cursive"
                            dangerouslySetInnerHTML={{__html: I18n.t("support.note")}}/>
                     </div>

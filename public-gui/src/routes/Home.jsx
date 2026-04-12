@@ -26,7 +26,7 @@ export const Home = () => {
         <div className="home-container">
             <div className="home">
                 <div className="top">
-                    <img src={phone} className="phone" alt="phone"/>
+                    <img src={phone} className="phone" alt=""/>
                     <div className="top-right">
                         <h1 className="title">
                             {I18n.t("home.eduID")}
@@ -39,7 +39,7 @@ export const Home = () => {
             </div>
             <Background>
                 <div className="card row">
-                    <img src={cheering} className="cheering" alt="cheering"/>
+                    <img src={cheering} className="cheering" alt=""/>
                     <div className="top-right middle">
                         <h2 className="title">
                             {I18n.t("home.whatCanYouDo")}
@@ -53,7 +53,7 @@ export const Home = () => {
                     </div>
                 </div>
                 <div className="card bottom row">
-                    <img src={app} className="app" alt="app"/>
+                    <img src={app} className="app" alt=""/>
                     <div className="top-right middle">
                         <h2 className="title">
                             {I18n.t("home.eduIdApp")}
@@ -68,10 +68,10 @@ export const Home = () => {
                                 />}
                             <div className="inner-store-container">
                                 <a href={I18n.t("home.apple")}>
-                                    <img src={appStore} className="appStore" alt="appStore"/>
+                                    <img src={appStore} className="appStore" alt={I18n.t("home.appStoreAlt")}/>
                                 </a>
                                 <a href={I18n.t("home.google")}>
-                                    <img src={googlePlay} className="googlePlay" alt="googlePlay"/>
+                                    <img src={googlePlay} className="googlePlay" alt={I18n.t("home.googlePlayAlt")}/>
                                 </a>
                             </div>
                         </div>
