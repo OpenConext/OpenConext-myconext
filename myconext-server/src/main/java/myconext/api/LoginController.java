@@ -4,11 +4,13 @@ import io.swagger.v3.oas.annotations.Hidden;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import myconext.config.CreateFromInstitutionProperties;
 import myconext.exceptions.UserNotFoundException;
 import myconext.model.SamlAuthenticationRequest;
 import myconext.model.User;
 import myconext.repository.AuthenticationRequestRepository;
 import myconext.repository.UserRepository;
+import myconext.util.CreateFromInstitutionReturnUrlSupport;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -28,6 +30,7 @@ import java.io.IOException;
 import java.net.URI;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -45,6 +48,7 @@ public class LoginController {
     private final UserRepository userRepository;
     private final AuthenticationRequestRepository authenticationRequestRepository;
     private final SecurityContextRepository securityContextRepository;
+    private final List<String> createFromInstitutionAllowedReturnDomains;
 
     public LoginController(UserRepository userRepository,
                            AuthenticationRequestRepository authenticationRequestRepository,
@@ -76,7 +80,8 @@ public class LoginController {
                            @Value("${feature.service_desk_active}") boolean serviceDeskActive,
                            @Value("${feature.use_remote_creation_for_affiliation}") boolean useRemoteCreationForAffiliation,
                            @Value("${feature.enable_account_linking}") boolean enableAccountLinking,
-                           @Value("${feature.use_app}") boolean useApp
+                           @Value("${feature.use_app}") boolean useApp,
+                           CreateFromInstitutionProperties createFromInstitutionProperties
     ) {
         this.config.put("basePath", basePath);
         this.config.put("loginUrl", basePath + "/login");
@@ -111,6 +116,7 @@ public class LoginController {
         this.userRepository = userRepository;
         this.authenticationRequestRepository = authenticationRequestRepository;
         this.securityContextRepository = securityContextRepository;
+        this.createFromInstitutionAllowedReturnDomains = createFromInstitutionProperties.getReturnUrlAllowedDomains();
     }
 
     @GetMapping("/config")
@@ -242,11 +248,16 @@ public class LoginController {
                                                 HttpServletResponse response,
                                                 String key,
                                                 String redirectUrl) throws IOException {
+        LOG.info(String.format("Create-from-institution-login called with key=%s, fallback redirectUrl=%s", key, redirectUrl));
         User user = userRepository.findUserByCreateFromInstitutionKey(key)
                 .orElseThrow(() -> new UserNotFoundException("User by createFromInstitutionKey not found"));
         boolean newUser = user.isNewUser();
+        String createFromInstitutionReturnUrl = user.getCreateFromInstitutionReturnUrl();
+        LOG.info(String.format("Create-from-institution-login user=%s, newUser=%s, stored return_to=%s, allowed domains=%s",
+                user.getEmail(), newUser, createFromInstitutionReturnUrl, createFromInstitutionAllowedReturnDomains));
         user.setNewUser(false);
         user.setCreateFromInstitutionKey(null);
+        user.setCreateFromInstitutionReturnUrl(null);
         userRepository.save(user);
 
         Cookie usernameCookie = new Cookie("username", user.getEmail());
@@ -260,7 +271,10 @@ public class LoginController {
         SecurityContextHolder.getContext().setAuthentication(authentication);
         this.securityContextRepository.saveContext(SecurityContextHolder.getContext(), request, response);
 
-        String redirectLocation = redirectUrl + String.format("?new=%s", newUser ? "true" : "false");
+        String baseRedirectUrl = CreateFromInstitutionReturnUrlSupport
+                .validateAndNormalize(createFromInstitutionReturnUrl, createFromInstitutionAllowedReturnDomains)
+                .orElse(redirectUrl);
+        String redirectLocation = baseRedirectUrl + String.format(baseRedirectUrl.contains("?") ? "&new=%s" : "?new=%s", newUser ? "true" : "false");
 
         LOG.info(String.format("User %s create from institutionKey. Redirecting to %s", user.getEmail(), redirectLocation));
 

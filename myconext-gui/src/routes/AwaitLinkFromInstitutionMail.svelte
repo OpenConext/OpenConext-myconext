@@ -35,7 +35,11 @@
 
     const verifyCode = code => {
         createFromInstitutionVerify(hash, code)
-            .then(() => {
+            .then(res => {
+                if (res.location) {
+                    window.location.href = res.location;
+                    return;
+                }
                 navigate("/security?new=true")
             }).catch(e => {
             if (e.status === 403 || e.status === 400) {

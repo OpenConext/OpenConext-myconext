@@ -13,6 +13,7 @@ import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
+import myconext.config.CreateFromInstitutionProperties;
 import myconext.cron.DisposableEmailProviders;
 import myconext.exceptions.DuplicateUserEmailException;
 import myconext.exceptions.ForbiddenException;
@@ -29,6 +30,7 @@ import myconext.security.ACR;
 import myconext.security.EmailGuessingPrevention;
 import myconext.security.UserAuthentication;
 import myconext.security.VerificationCodeGenerator;
+import myconext.util.CreateFromInstitutionReturnUrlSupport;
 import myconext.verify.AttributeMapper;
 import myconext.verify.VerifyState;
 import org.apache.commons.logging.Log;
@@ -48,6 +50,7 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.util.UriComponents;
 import org.springframework.web.util.UriComponentsBuilder;
 
@@ -100,6 +103,7 @@ public class AccountLinkerController implements UserAuthentication {
     private final String mijnEduIDEntityId;
     private final String schacHomeOrganization;
     private final boolean createEduIDInstitutionEnabled;
+    private final List<String> createFromInstitutionAllowedReturnDomains;
 
     private final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder(4);
     private final RestTemplate restTemplate = new RestTemplate();
@@ -141,6 +145,7 @@ public class AccountLinkerController implements UserAuthentication {
             @Value("${linked_accounts.removal-duration-days-validated}") long removalValidatedDurationDays,
             @Value("${account_linking.myconext_sp_entity_id}") String myConextSpEntityId,
             @Value("${feature.create_eduid_institution_enabled}") boolean createEduIDInstitutionEnabled,
+            CreateFromInstitutionProperties createFromInstitutionProperties,
             @Value("${email_guessing_sleep_millis}") int emailGuessingSleepMillis,
             @Value("${verify.client_id}") String verifyClientId,
             @Value("${verify.secret}") String verifySecret,
@@ -174,6 +179,7 @@ public class AccountLinkerController implements UserAuthentication {
         this.removalValidatedDurationDays = removalValidatedDurationDays;
         this.myConextSpEntityId = myConextSpEntityId;
         this.createEduIDInstitutionEnabled = createEduIDInstitutionEnabled;
+        this.createFromInstitutionAllowedReturnDomains = createFromInstitutionProperties.getReturnUrlAllowedDomains();
         this.emailGuessingPreventor = new EmailGuessingPrevention(emailGuessingSleepMillis);
         this.verifyClientId = verifyClientId;
         this.verifySecret = verifySecret;
@@ -213,9 +219,15 @@ public class AccountLinkerController implements UserAuthentication {
     @GetMapping("/sp/create-from-institution")
     @Hidden
     public ResponseEntity<Map<String, String>> createFromInstitution(HttpServletRequest request,
-                                                                     @RequestParam(value = "forceAuth", required = false, defaultValue = "false") boolean forceAuth) throws UnsupportedEncodingException {
+                                                                     @RequestParam(value = "forceAuth", required = false, defaultValue = "false") boolean forceAuth,
+                                                                     @RequestParam(value = "return_to", required = false) String returnTo) throws UnsupportedEncodingException {
         LOG.info("Start create from institution");
-        String state = request.getSession(true).getId();
+        HttpSession session = request.getSession(true);
+        String state = session.getId();
+        String validatedReturnUrl = validateReturnUrl(returnTo);
+        session.setAttribute("create_from_institution_return_url", validatedReturnUrl);
+        LOG.info(String.format("Create-from-institution start state=%s, raw return_to=%s, validated return_to=%s",
+                state, returnTo, validatedReturnUrl));
         UriComponents uriComponents = doStartLinkAccountFlow(state, spCreateFromInstitutionRedirectUri, forceAuth, myConextSpEntityId);
         return ResponseEntity.ok(Collections.singletonMap("url", uriComponents.toUriString()));
     }
@@ -251,6 +263,9 @@ public class AccountLinkerController implements UserAuthentication {
             return eppnAlreadyLinkedOptional.get();
         }
         RequestInstitutionEduID requestInstitutionEduID = new RequestInstitutionEduID(hash(), userInfo);
+        requestInstitutionEduID.setReturnUrl((String) session.getAttribute("create_from_institution_return_url"));
+        LOG.info(String.format("Create-from-institution oidc redirect state=%s, request hash=%s, stored return_to=%s",
+                storedState, requestInstitutionEduID.getHash(), requestInstitutionEduID.getReturnUrl()));
         requestInstitutionEduIDRepository.save(requestInstitutionEduID);
         //Now the user needs to enter email and validate this email to finish up the registration
         String returnUri = this.spRedirectUrl + "/create-from-institution/link/" + requestInstitutionEduID.getHash();
@@ -367,6 +382,9 @@ public class AccountLinkerController implements UserAuthentication {
                     manage);
         }
         user.setCreateFromInstitutionKey(hash());
+        user.setCreateFromInstitutionReturnUrl(requestInstitutionEduID.getReturnUrl());
+        LOG.info(String.format("Create-from-institution verify email=%s, newUser=%s, userId=%s, createFromInstitutionKey=%s, stored return_to=%s",
+                email, user.isNewUser(), user.getId(), user.getCreateFromInstitutionKey(), user.getCreateFromInstitutionReturnUrl()));
         ResponseEntity<Object> responseEntity = saveOrUpdateLinkedAccountToUser(
                 user,
                 this.idpBaseRedirectUrl + "/create-from-institution-login?key=" + user.getCreateFromInstitutionKey(),
@@ -388,7 +406,7 @@ public class AccountLinkerController implements UserAuthentication {
         HttpSession session = request.getSession();
         session.setAttribute(SPRING_SECURITY_CONTEXT_KEY, context);
 
-        return responseEntity;
+        return responseWithJsonLocationForSpa(request, responseEntity);
     }
 
     @GetMapping("/sp/oidc/link")
@@ -974,6 +992,31 @@ public class AccountLinkerController implements UserAuthentication {
             return Optional.of(ResponseEntity.status(HttpStatus.FOUND).location(URI.create(eppnAlreadyLinkedRequiredUri)).build());
         }
         return Optional.empty();
+    }
+
+    private String validateReturnUrl(String returnTo) {
+        if (!StringUtils.hasText(returnTo)) {
+            return null;
+        }
+        return CreateFromInstitutionReturnUrlSupport
+                .validateAndNormalize(returnTo, this.createFromInstitutionAllowedReturnDomains)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid return_to parameter"));
+    }
+
+    private ResponseEntity<?> responseWithJsonLocationForSpa(HttpServletRequest request, ResponseEntity<?> responseEntity) {
+        if (!acceptsJson(request) || !responseEntity.getStatusCode().is3xxRedirection()) {
+            return responseEntity;
+        }
+        URI location = responseEntity.getHeaders().getLocation();
+        if (location == null) {
+            return responseEntity;
+        }
+        return ResponseEntity.status(HttpStatus.CREATED).body(Collections.singletonMap("location", location.toString()));
+    }
+
+    private boolean acceptsJson(HttpServletRequest request) {
+        String accept = request.getHeader(HttpHeaders.ACCEPT);
+        return StringUtils.hasText(accept) && accept.contains(MediaType.APPLICATION_JSON_VALUE);
     }
 
     private Map<String, Object> requestUserInfo(String code, String oidcRedirectUri) {
