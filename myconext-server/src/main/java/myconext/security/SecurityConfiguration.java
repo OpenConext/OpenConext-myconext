@@ -285,14 +285,13 @@ public class SecurityConfiguration {
             ProviderManager providerManager = new ProviderManager(authenticationProvider);
             http
                     .securityMatcher(
-                            "/myconext/api/sp/**",
                             "/startSSO",
                             "/config",
                             "/tiqr/sp/**",
                             "/myconext/api/servicedesk/**")
                     .csrf(csrf -> csrf.disable())
                     .sessionManagement(smc -> smc.sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED))
-                    .securityMatcher("/login/oauth2/**", "/oauth2/authorization/**")
+                    .securityMatcher("/login/oauth2/**", "/oauth2/authorization/**", "/myconext/api/sp/**")
                     .authorizeHttpRequests(authz -> authz.requestMatchers(
                                     "/config",
                                     "/myconext/api/idp/**",
