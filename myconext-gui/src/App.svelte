@@ -28,9 +28,24 @@
     export let url = "";
     let loaded = false;
 
+    // Todo: check if user is logged in
     onMount(() => configuration()
         .then(json => {
             $config = json;
+
+            if($config.isAuthenticated === false) {
+                console.log('User not authenticated');
+
+                // $redirectPath = window.location.pathname;
+                // const path = encodeURIComponent($redirectPath || "/");
+                // console.log(`${$config.basePath}?redirect_path=${path}`);
+                // window.location.href = `${$config.basePath}?redirect_path=${path}`;
+                window.location.href = `http://localhost:8081/myconext/api/sp/me`;
+                return
+            } else {
+                console.log('User is authenticated!!!')
+            }
+
             const urlSearchParams = new URLSearchParams(window.location.search);
             let lang = "en";
             if (urlSearchParams.has("lang")) {
@@ -78,7 +93,7 @@
                             navigate("/landing?delete=true");
                         } else {
                             const path = encodeURIComponent($redirectPath || "/");
-                            window.location.href = `${$config.loginUrl}?redirect_path=${path}`;
+                            // window.location.href = `${$config.loginUrl}?redirect_path=${path}`;
                         }
                     })
             }
