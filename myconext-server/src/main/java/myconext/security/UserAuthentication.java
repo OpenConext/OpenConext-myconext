@@ -4,6 +4,7 @@ import myconext.exceptions.UserNotFoundException;
 import myconext.model.User;
 import myconext.repository.UserRepository;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.oauth2.core.oidc.user.OidcUser;
 import org.springframework.security.oauth2.server.resource.authentication.BearerTokenAuthentication;
 
 import java.util.List;
@@ -22,7 +23,8 @@ public interface UserAuthentication {
             String uid = ((List<String>) tokenAttributes.get("uids")).getFirst();
             user = getUserRepository().findUserByUid(uid).orElseThrow(() -> new UserNotFoundException(uid));
         } else {
-            String userId = ((User) authentication.getPrincipal()).getId();
+            String userId = (String) ((OidcUser) authentication.getPrincipal()).getClaims().get("id");
+//            String userId = ((User) authentication.getPrincipal()).getId();
             user = getUserRepository().findById(userId).orElseThrow(() -> new UserNotFoundException(userId));
         }
         user.setMobileAuthentication(mobileAuthentication);
