@@ -289,14 +289,14 @@ public class SecurityConfiguration {
                             "/startSSO",
                             "/config",
                             "/tiqr/sp/**",
-                            "/myconext/api/servicedesk/**")
-                    .csrf(csrf -> csrf.disable())
-                    .sessionManagement(smc -> smc.sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED))
-                    .securityMatcher(
+                            "/myconext/api/servicedesk/**",
                             "/dodo-login",
                             "/login/oauth2/**",
                             "/oauth2/authorization/**",
-                            "/myconext/api/sp/**")
+                            "/myconext/api/sp/**"
+                            )
+                    .csrf(csrf -> csrf.disable())
+                    .sessionManagement(smc -> smc.sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED))
                    .authorizeHttpRequests(authz -> authz.requestMatchers(
                            "/myconext/api/servicedesk/**"
                    ).hasAuthority(SERVICE_DESK))
