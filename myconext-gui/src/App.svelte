@@ -40,7 +40,8 @@
                 // const path = encodeURIComponent($redirectPath || "/");
                 // console.log(`${$config.basePath}?redirect_path=${path}`);
                 // window.location.href = `${$config.basePath}?redirect_path=${path}`;
-                window.location.href = `http://localhost:8081/myconext/api/sp/me`;
+                // window.location.href = `http://localhost:8081/myconext/api/sp/me`;
+                window.location.href = `http://localhost:8081/dodo-login`;
                 return
             } else {
                 console.log('User is authenticated!!!')

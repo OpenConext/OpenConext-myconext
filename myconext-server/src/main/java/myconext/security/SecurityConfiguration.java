@@ -291,7 +291,14 @@ public class SecurityConfiguration {
                             "/myconext/api/servicedesk/**")
                     .csrf(csrf -> csrf.disable())
                     .sessionManagement(smc -> smc.sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED))
-                    .securityMatcher("/login/oauth2/**", "/oauth2/authorization/**", "/myconext/api/sp/**")
+                    .securityMatcher(
+                            "/dodo-login",
+                            "/login/oauth2/**",
+                            "/oauth2/authorization/**",
+                            "/myconext/api/sp/**")
+                   .authorizeHttpRequests(authz -> authz.requestMatchers(
+                           "/myconext/api/servicedesk/**"
+                   ).hasAuthority(SERVICE_DESK))
                     .authorizeHttpRequests(authz -> authz.requestMatchers(
                                     "/config",
                                     "/myconext/api/idp/**",
@@ -300,10 +307,10 @@ public class SecurityConfiguration {
                                     "/myconext/api/sp/idin/issuers",
                                     "/myconext/api/servicedesk/logout",
                                     "/myconext/api/swagger-ui/**")
-                            .permitAll())
-                    .authorizeHttpRequests(authz -> authz.requestMatchers(
-                            "/myconext/api/servicedesk/**"
-                    ).hasAuthority(SERVICE_DESK))
+                            .permitAll()
+                            .anyRequest()
+                            .authenticated()
+                                    )
                     .oauth2Login(oAuth2LoginConfigurer -> oAuth2LoginConfigurer
                             // Custom resolver adds prompt=login when original request had force= (OpenConext helper).
                             .authorizationEndpoint(authorization -> authorization
@@ -323,9 +330,9 @@ public class SecurityConfiguration {
                                     new CustomOidcUserService(oidcUser -> {
                                         System.out.println(oidcUser);
                                     })))
-                    )
-                    .authorizeHttpRequests(auth -> auth
-                            .anyRequest().hasRole("GUEST")); // guest role expected, do add in user hook
+                    );
+                //     .authorizeHttpRequests(auth -> auth
+                //             .anyRequest().hasRole("GUEST")); // guest role expected, do add in user hook
             // This is the reference to Shibboleth too, the library also has a trick to pretend to be logged in
 //            if (environment.acceptsProfiles(Profiles.of("test", "dev"))) {
 //                //we can't use @Profile, because we need to add it before the real filter

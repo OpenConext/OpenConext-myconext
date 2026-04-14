@@ -24,6 +24,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.View;
+import org.springframework.web.servlet.view.RedirectView;
 
 import java.io.IOException;
 import java.net.URI;
@@ -182,6 +184,21 @@ public class LoginController {
         return ResponseEntity.status(HttpStatus.FOUND).location(URI.create(redirectUrl)).build();
     }
 
+   @GetMapping("dodo-login")
+   public View login(@RequestParam(value = "app", required = false, defaultValue = "client") String app) {
+       LOG.debug(String.format("/login for app: %s", app));
+       return new RedirectView(this.config.get("spBaseUrl").toString(), false);
+//       return new RedirectView(app.equals("client") ? config.getClientUrl() : config.getWelcomeUrl(), false);
+   }
+
+
+// Todo
+// - Add /login path here
+// - Add it to correct security configuration to make Spring Security redirect
+// - Consider doing the same for /logout
+
+
+    // Todo: this might be Shibboleth specific, verify
     @GetMapping("/doLogin")
     public void doLogin(@RequestParam(value = "lang", required = false, defaultValue = "en") String lang,
                         @RequestParam(value = "location", required = false) String location,
