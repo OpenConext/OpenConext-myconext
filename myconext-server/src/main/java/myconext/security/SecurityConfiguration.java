@@ -328,9 +328,7 @@ public class SecurityConfiguration {
 
                                     // "Current request thread local" -- spring iets die request kan achterhalen
 
-                                    new CustomOidcUserService(oidcUser -> {
-                                        System.out.println(oidcUser);
-                                    })))
+                                    new EduIDOidcUserService(userRepository))
                     );
                 //     .authorizeHttpRequests(auth -> auth
                 //             .anyRequest().hasRole("GUEST")); // guest role expected, do add in user hook
