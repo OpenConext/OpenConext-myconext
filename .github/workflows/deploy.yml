@@ -83,7 +83,7 @@ jobs:
         MAVEN_PASSWORD: ${{ secrets.BUILD_PASSWORD }}
 
     - name: Release
-      uses: softprops/action-gh-release@v2
+      uses: softprops/action-gh-release@v3
       with:
         files: |
           /home/runner/work/OpenConext-myconext/OpenConext-myconext/myconext-server/target/myconext-server-${{ github.ref_name }}.jar
