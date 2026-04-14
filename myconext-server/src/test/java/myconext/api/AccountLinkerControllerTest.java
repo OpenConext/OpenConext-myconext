@@ -11,10 +11,13 @@ import myconext.AbstractIntegrationTest;
 import myconext.model.*;
 import org.junit.Rule;
 import org.junit.Test;
+import org.junit.Before;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.util.UriComponentsBuilder;
 
@@ -34,8 +37,20 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class AccountLinkerControllerTest extends AbstractIntegrationTest {
 
+    @Autowired
+    private AccountLinkerController accountLinkerController;
+
+    @Autowired
+    private LoginController loginController;
+
     @Rule
     public WireMockRule wireMockRule = new WireMockRule(8098);
+
+    @Before
+    public void resetCreateFromInstitutionReturnUrlAllowList() {
+        ReflectionTestUtils.setField(accountLinkerController, "createFromInstitutionAllowedReturnDomains", List.of());
+        ReflectionTestUtils.setField(loginController, "createFromInstitutionAllowedReturnDomains", List.of());
+    }
 
     @Test
     public void linkAccountRedirect() throws IOException {
@@ -352,6 +367,32 @@ public class AccountLinkerControllerTest extends AbstractIntegrationTest {
     }
 
     @Test
+    public void createFromInstitutionRejectsReturnToWhenFeatureDisabled() {
+        given().redirects().follow(false)
+                .when()
+                .contentType(ContentType.JSON)
+                .queryParam("return_to", "https://sitte.myuniversity.nl/landing")
+                .get("/myconext/api/sp/create-from-institution")
+                .then()
+                .statusCode(400);
+    }
+
+    @Test
+    public void createFromInstitutionAcceptsAllowedReturnToSubdomain() {
+        ReflectionTestUtils.setField(accountLinkerController, "createFromInstitutionAllowedReturnDomains", List.of("myuniversity.nl"));
+
+        Map<String, String> results = given().redirects().follow(false)
+                .when()
+                .contentType(ContentType.JSON)
+                .queryParam("return_to", "https://sitte.myuniversity.nl/landing?true")
+                .get("/myconext/api/sp/create-from-institution")
+                .as(new TypeRef<>() {
+                });
+
+        assertTrue(results.get("url").contains("redirect_uri=http://localhost:8081/myconext/api/sp/create-from-institution/oidc-redirect"));
+    }
+
+    @Test
     public void spCreateFromInstitutionRedirectNoSession() {
         given().redirects().follow(false)
                 .when()
@@ -637,6 +678,94 @@ public class AccountLinkerControllerTest extends AbstractIntegrationTest {
                 .getHeader("Location");
         User user = userRepository.findUserByEmailAndRateLimitedFalse("jdoe@example.com").get();
         assertEquals("http://localhost:3000/create-from-institution-login?key=" + user.getCreateFromInstitutionKey(), location);
+    }
+
+    @SneakyThrows
+    @Test
+    public void spCreateFromInstitutionLinkFromInstitutionStoresAllowedReturnUrl() {
+        ReflectionTestUtils.setField(accountLinkerController, "createFromInstitutionAllowedReturnDomains", List.of("myuniversity.nl"));
+
+        Map<Object, Object> userInfo = userInfoMap("new-user@qwerty.com");
+        CookieFilter cookieFilter = new CookieFilter();
+        Map<String, String> results = given()
+                .filter(cookieFilter)
+                .when()
+                .contentType(ContentType.JSON)
+                .queryParam("return_to", "https://sitte.myuniversity.nl/landing")
+                .get("/myconext/api/sp/create-from-institution")
+                .as(new TypeRef<>() {
+                });
+        String state = UriComponentsBuilder.fromUriString(results.get("url")).build().getQueryParams().getFirst("state");
+
+        stubForTokenUserInfo(userInfo);
+
+        String location = given().redirects().follow(false)
+                .filter(cookieFilter)
+                .when()
+                .queryParam("code", "123456")
+                .queryParam("state", state)
+                .contentType(ContentType.JSON)
+                .get("/myconext/api/sp/create-from-institution/oidc-redirect")
+                .getHeader("Location");
+        String hash = location.substring(location.indexOf("link/") + "link/".length());
+
+        CreateInstitutionEduID createInstitutionEduID = new CreateInstitutionEduID(hash, "new@example.com", true);
+        given()
+                .when()
+                .contentType(ContentType.JSON)
+                .body(createInstitutionEduID)
+                .post("/myconext/api/sp/create-from-institution/email")
+                .then()
+                .statusCode(200);
+
+        RequestInstitutionEduID requestInstitutionEduID = requestInstitutionEduIDRepository.findByHash(hash).get();
+        VerifyOneTimeLoginCode verifyOneTimeLoginCode = new VerifyOneTimeLoginCode(requestInstitutionEduID.getOneTimeLoginCode().getCode(), null, requestInstitutionEduID.getHash());
+        Thread.sleep(1000);
+
+        given().redirects().follow(false)
+                .when()
+                .contentType(ContentType.JSON)
+                .body(verifyOneTimeLoginCode)
+                .put("/myconext/api/sp/create-from-institution/verify")
+                .then()
+                .statusCode(302);
+
+        User user = userRepository.findUserByEmailAndRateLimitedFalse("new@example.com").get();
+        assertEquals("https://sitte.myuniversity.nl/landing", user.getCreateFromInstitutionReturnUrl());
+    }
+
+    @SneakyThrows
+    @Test
+    public void spCreateFromInstitutionVerifyReturnsJsonLocationForSpaClient() {
+        Map<Object, Object> userInfo = userInfoMap("new-user@qwerty.com");
+        String hash = getHashFromCreateInstitutionFlow(userInfo);
+        CreateInstitutionEduID createInstitutionEduID = new CreateInstitutionEduID(hash, "new@example.com", true);
+        given()
+                .when()
+                .contentType(ContentType.JSON)
+                .body(createInstitutionEduID)
+                .post("/myconext/api/sp/create-from-institution/email")
+                .then()
+                .statusCode(200);
+
+        RequestInstitutionEduID requestInstitutionEduID = requestInstitutionEduIDRepository.findByHash(hash).get();
+        VerifyOneTimeLoginCode verifyOneTimeLoginCode = new VerifyOneTimeLoginCode(requestInstitutionEduID.getOneTimeLoginCode().getCode(), null, requestInstitutionEduID.getHash());
+        Thread.sleep(1000);
+
+        Map<String, String> response = given()
+                .when()
+                .accept(ContentType.JSON)
+                .contentType(ContentType.JSON)
+                .body(verifyOneTimeLoginCode)
+                .put("/myconext/api/sp/create-from-institution/verify")
+                .then()
+                .statusCode(201)
+                .extract()
+                .as(new TypeRef<>() {
+                });
+
+        User user = userRepository.findUserByEmailAndRateLimitedFalse("new@example.com").get();
+        assertEquals("http://localhost:3000/create-from-institution-login?key=" + user.getCreateFromInstitutionKey(), response.get("location"));
     }
 
     @Test

@@ -29,6 +29,9 @@ public class RequestInstitutionEduID implements Serializable {
     private Map<String, Object> userInfo;
 
     @Setter
+    private String returnUrl;
+
+    @Setter
     private CreateInstitutionEduID createInstitutionEduID;
 
     @Setter

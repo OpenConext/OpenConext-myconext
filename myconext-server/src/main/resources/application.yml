@@ -98,6 +98,10 @@ mijn_eduid_service_name: "Mijn eduID"
 mobile_app_redirect: eduid:///client/mobile
 mobile_app_rp_entity_id: mobile_app_rp_entity_id
 
+create-from-institution:
+  return-url-allowed-domains:
+    - app.localhost
+
 # The host headers to identify the service the user is logged in
 host_headers:
   service_desk: servicedesk.test2.eduid.nl

@@ -1,6 +1,7 @@
 package myconext.security;
 
 import lombok.SneakyThrows;
+import myconext.config.CreateFromInstitutionProperties;
 import myconext.crypto.KeyGenerator;
 import myconext.geo.GeoLocation;
 import myconext.mail.MailBox;
@@ -52,7 +53,7 @@ import static java.util.stream.Collectors.toList;
 import static org.springframework.security.config.Customizer.withDefaults;
 
 @EnableWebSecurity
-@EnableConfigurationProperties
+@EnableConfigurationProperties(CreateFromInstitutionProperties.class)
 @EnableMethodSecurity
 @Configuration
 public class SecurityConfiguration {

@@ -6,10 +6,14 @@ import myconext.AbstractIntegrationTest;
 import myconext.model.ClientAuthenticationRequest;
 import myconext.model.User;
 import org.junit.Test;
+import org.junit.Before;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpMethod;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.util.ReflectionTestUtils;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.UUID;
 
 import static io.restassured.RestAssured.given;
@@ -20,6 +24,14 @@ import static org.junit.Assert.assertNull;
 
 @ActiveProfiles(value = "dev", inheritProfiles = false)
 public class LoginControllerTest extends AbstractIntegrationTest {
+
+    @Autowired
+    private LoginController loginController;
+
+    @Before
+    public void resetCreateFromInstitutionReturnUrlAllowList() {
+        ReflectionTestUtils.setField(loginController, "createFromInstitutionAllowedReturnDomains", List.of());
+    }
 
     @Test
     public void config() {
@@ -139,6 +151,31 @@ public class LoginControllerTest extends AbstractIntegrationTest {
                 .cookie("username", user.getEmail())
                 .header("Location",
                         "http://localhost:3001/security?new=true");
+    }
+
+    @Test
+    public void testCreateFromInstitutionLoginRedirectsToAllowedReturnUrl() {
+        ReflectionTestUtils.setField(loginController, "createFromInstitutionAllowedReturnDomains", List.of("myuniversity.nl"));
+
+        User user = userRepository.findUserByEmailAndRateLimitedFalse("jdoe@example.com").get();
+        String createFromInstitutionKey = UUID.randomUUID().toString();
+        user.setCreateFromInstitutionKey(createFromInstitutionKey);
+        user.setCreateFromInstitutionReturnUrl("https://sitte.myuniversity.nl/landing");
+        user.setNewUser(false);
+        userRepository.save(user);
+
+        given()
+                .redirects().follow(false)
+                .when()
+                .queryParam("key", createFromInstitutionKey)
+                .get("/create-from-institution-login")
+                .then()
+                .statusCode(302)
+                .header("Location", "https://sitte.myuniversity.nl/landing?new=false");
+
+        user = userRepository.findUserByEmailAndRateLimitedFalse("jdoe@example.com").get();
+        assertNull(user.getCreateFromInstitutionKey());
+        assertNull(user.getCreateFromInstitutionReturnUrl());
     }
 
     @Test
