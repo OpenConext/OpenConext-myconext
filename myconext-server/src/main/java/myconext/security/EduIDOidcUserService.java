@@ -1,5 +1,6 @@
 package myconext.security;
 
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import myconext.manage.Manage;
 import myconext.model.ExternalUser;
@@ -25,12 +26,16 @@ import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 import java.nio.charset.StandardCharsets;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Stream;
 
 import static myconext.log.MDCContext.logWithContext;
+import static myconext.security.CookieResolver.cookieByName;
 
 public class EduIDOidcUserService implements OAuth2UserService<OidcUserRequest, OidcUser> {
 
@@ -106,8 +111,23 @@ public class EduIDOidcUserService implements OAuth2UserService<OidcUserRequest, 
 
         if (logInToEduID) {
             optionalUser = userRepository.findUserByUid(uid);
+
+            String preferredLanguage = cookieByName(getRequest(), "lang").map(Cookie::getValue).orElse("en");
+            User user = optionalUser.orElseGet(() ->
+                    provisionUser(uid, schacHomeOrganization, givenName, familyName, email, preferredLanguage));
+            System.out.println(user.getEmail());
         } else if (logInToServiceDesk) {
             optionalExternalUser = externalUserRepository.findUserByUid(uid);
+
+            // Todo: this is the old way
+//            List<String> memberships = Stream.of(getHeader(SHIB_MEMBERSHIPS, request).split(";"))
+//                    .map(String::trim)
+//                    .toList();
+
+            List<String> memberships = Collections.emptyList();
+            ExternalUser externalUser = optionalExternalUser.map(user -> syncMemberships(user, memberships)).orElseGet(() ->
+                    provisionServiceDeskUser(uid, schacHomeOrganization, givenName, familyName, email, memberships));
+            System.out.println(externalUser.getEmail());
         } else {
             throw new IllegalArgumentException("Unknown host header in the request: " + host);
         }
@@ -159,6 +179,15 @@ public class EduIDOidcUserService implements OAuth2UserService<OidcUserRequest, 
         user.setNewUser(false);
         user = externalUserRepository.save(user);
 
+        return user;
+    }
+
+    private ExternalUser syncMemberships(ExternalUser user, List<String> memberships) {
+        boolean isServiceDeskMember = this.serviceDeskRoles.stream().anyMatch(memberships::contains);
+        if (user.isServiceDeskMember() != isServiceDeskMember) {
+            user.setServiceDeskMember(isServiceDeskMember);
+            externalUserRepository.save(user);
+        }
         return user;
     }
 }
