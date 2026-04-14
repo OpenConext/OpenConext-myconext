@@ -327,7 +327,10 @@ public class SecurityConfiguration {
 
                                     // "Current request thread local" -- spring iets die request kan achterhalen
 
-                                    new EduIDOidcUserService(userRepository))
+                                    new EduIDOidcUserService(
+                                            environment, manage, userRepository, externalUserRepository, mijnEduIDEntityId, mijnEduIDHost, serviceDeskHost, activeHost, Arrays.asList(serviceDeskRoles)
+                                    )
+                            ))
                     );
                 //     .authorizeHttpRequests(auth -> auth
                 //             .anyRequest().hasRole("GUEST")); // guest role expected, do add in user hook
