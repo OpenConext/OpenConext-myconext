@@ -10,11 +10,8 @@ import myconext.repository.AuthenticationRequestRepository;
 import myconext.repository.ExternalUserRepository;
 import myconext.repository.UserLoginRepository;
 import myconext.repository.UserRepository;
-import myconext.shibboleth.ShibbolethPreAuthenticatedProcessingFilter;
 import myconext.shibboleth.ShibbolethUserDetailService;
-import myconext.shibboleth.mock.MockShibbolethFilter;
 import oidc.security.AuthorizationRequestCustomizer;
-import oidc.security.CustomOidcUserService;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -24,7 +21,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
 import org.springframework.core.env.Environment;
-import org.springframework.core.env.Profiles;
 import org.springframework.core.io.Resource;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.ProviderManager;
@@ -293,13 +289,12 @@ public class SecurityConfiguration {
                             "/dodo-login",
                             "/login/oauth2/**",
                             "/oauth2/authorization/**",
-                            "/myconext/api/sp/**"
-                            )
+                            "/myconext/api/sp/**")
                     .csrf(csrf -> csrf.disable())
                     .sessionManagement(smc -> smc.sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED))
-                   .authorizeHttpRequests(authz -> authz.requestMatchers(
+                    .authorizeHttpRequests(authz -> authz.requestMatchers(
                            "/myconext/api/servicedesk/**"
-                   ).hasAuthority(SERVICE_DESK))
+                    ).hasAuthority(SERVICE_DESK))
                     .authorizeHttpRequests(authz -> authz.requestMatchers(
                                     "/config",
                                     "/myconext/api/idp/**",
@@ -321,25 +316,12 @@ public class SecurityConfiguration {
                             )
                             // After tokens: load user then run provisioning hook (here: println only).
                             .userInfoEndpoint(userInfoEndpointConfigurer -> userInfoEndpointConfigurer.oidcUserService(
-                                    // request and user is availbale here
-                                    // Checken of user van de service desk is
-
-                                    // boolean logInToEduID = host.toLowerCase().equals(this.mijnEduIDHost);
-
-                                    // "Current request thread local" -- spring iets die request kan achterhalen
-
                                     new EduIDOidcUserService(
                                             environment, manage, userRepository, externalUserRepository, mijnEduIDEntityId, mijnEduIDHost, serviceDeskHost, activeHost, Arrays.asList(serviceDeskRoles)
                                     )
                             ))
-                    );
-                //     .authorizeHttpRequests(auth -> auth
-                //             .anyRequest().hasRole("GUEST")); // guest role expected, do add in user hook
-            // This is the reference to Shibboleth too, the library also has a trick to pretend to be logged in
-//            if (environment.acceptsProfiles(Profiles.of("test", "dev"))) {
-//                //we can't use @Profile, because we need to add it before the real filter
-//                http.addFilterBefore(new MockShibbolethFilter(serviceDeskRoleAutoProvisioning, activeHost), ShibbolethPreAuthenticatedProcessingFilter.class);
-//            }
+                    )
+                    .authorizeHttpRequests(auth -> auth.anyRequest().hasRole("GUEST"));
             return http.build();
         }
     }
