@@ -24,7 +24,6 @@ public interface UserAuthentication {
             user = getUserRepository().findUserByUid(uid).orElseThrow(() -> new UserNotFoundException(uid));
         } else {
             String userId = (String) ((OidcUser) authentication.getPrincipal()).getClaims().get("id");
-//            String userId = ((User) authentication.getPrincipal()).getId();
             user = getUserRepository().findById(userId).orElseThrow(() -> new UserNotFoundException(userId));
         }
         user.setMobileAuthentication(mobileAuthentication);
