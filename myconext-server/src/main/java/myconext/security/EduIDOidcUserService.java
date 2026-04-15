@@ -7,11 +7,8 @@ import myconext.model.ExternalUser;
 import myconext.model.User;
 import myconext.repository.ExternalUserRepository;
 import myconext.repository.UserRepository;
-import oidc.security.CustomOidcUserService;
-import oidc.security.UserProvisioning;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.env.Environment;
 import org.springframework.core.env.Profiles;
 import org.springframework.security.oauth2.client.oidc.userinfo.OidcUserRequest;
@@ -26,13 +23,11 @@ import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 import java.nio.charset.StandardCharsets;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.stream.Stream;
 
 import static myconext.log.MDCContext.logWithContext;
 import static myconext.security.CookieResolver.cookieByName;
@@ -116,18 +111,25 @@ public class EduIDOidcUserService implements OAuth2UserService<OidcUserRequest, 
             User user = optionalUser.orElseGet(() ->
                     provisionUser(uid, schacHomeOrganization, givenName, familyName, email, preferredLanguage));
             System.out.println(user.getEmail());
+
+            // return oidc user here: duplicate code
+            OidcUserInfo oidcUserInfo = new OidcUserInfo(newClaims);
+            oidcUser = new DefaultOidcUser(oidcUser.getAuthorities(), oidcUser.getIdToken(), oidcUserInfo);
+            return oidcUser;
         } else if (logInToServiceDesk) {
             optionalExternalUser = externalUserRepository.findUserByUid(uid);
 
-            // Todo: this is the old way
-//            List<String> memberships = Stream.of(getHeader(SHIB_MEMBERSHIPS, request).split(";"))
-//                    .map(String::trim)
-//                    .toList();
-
-            List<String> memberships = Collections.emptyList();
+            List<String> memberships = Optional
+                    .ofNullable(oidcUser.getClaimAsStringList("edumember_is_member_of"))
+                    .orElse(Collections.emptyList());
             ExternalUser externalUser = optionalExternalUser.map(user -> syncMemberships(user, memberships)).orElseGet(() ->
                     provisionServiceDeskUser(uid, schacHomeOrganization, givenName, familyName, email, memberships));
             System.out.println(externalUser.getEmail());
+
+            // return oidc user here: duplicate code
+            OidcUserInfo oidcUserInfo = new OidcUserInfo(newClaims);
+            oidcUser = new DefaultOidcUser(oidcUser.getAuthorities(), oidcUser.getIdToken(), oidcUserInfo);
+            return oidcUser;
         } else {
             throw new IllegalArgumentException("Unknown host header in the request: " + host);
         }
@@ -138,10 +140,7 @@ public class EduIDOidcUserService implements OAuth2UserService<OidcUserRequest, 
         // The endgame is to return a OidcUser at all times
 
         // TODO add the ID of the usesr (either existing or new user) to the claims
-//        newClaims.put("sub", uid);
-        OidcUserInfo oidcUserInfo = new OidcUserInfo(newClaims);
-        oidcUser = new DefaultOidcUser(oidcUser.getAuthorities(), oidcUser.getIdToken(), oidcUserInfo);
-        return oidcUser;
+        // newClaims.put("sub", uid);
 
     }
 
