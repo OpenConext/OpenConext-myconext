@@ -58,7 +58,6 @@ public class EduIDOidcUserService implements OAuth2UserService<OidcUserRequest, 
             String activeHost,
             List<String> serviceDeskRoles
     ) {
-        //This is the default
         this.environment = environment;
         this.manage = manage;
         this.userRepository = userRepository;
@@ -81,14 +80,12 @@ public class EduIDOidcUserService implements OAuth2UserService<OidcUserRequest, 
 
         LOG.debug("Provision oidcUser: " + claims);
 
-        // Get from claims
         String uid = claims.get("sub").toString();
-        String schacHomeOrganization = claims.get("schac_home_organization").toString(); //getHeader(SHIB_SCHAC_HOME_ORGANIZATION, request);
-        String email = claims.get("email_verified").toString(); //getHeader(SHIB_EMAIL, request);
-        String givenName = claims.get("given_name").toString(); //getHeader(SHIB_GIVEN_NAME, request);
-        String familyName = claims.get("family_name").toString(); //getHeader(SHIB_SUR_NAME, request);
+        String schacHomeOrganization = claims.get("schac_home_organization").toString();
+        String email = claims.get("email").toString();
+        String givenName = claims.get("given_name").toString();
+        String familyName = claims.get("family_name").toString();
 
-        //Now provision the user orretrieve the user
         String host;
         if (environment.acceptsProfiles(Profiles.of("test", "dev"))) {
             host = activeHost;
@@ -101,47 +98,35 @@ public class EduIDOidcUserService implements OAuth2UserService<OidcUserRequest, 
         }
         boolean logInToEduID = host.toLowerCase().equals(this.mijnEduIDHost);
         boolean logInToServiceDesk = host.toLowerCase().equals(this.serviceDeskHost);
-        Optional<User> optionalUser = Optional.empty();
-        Optional<ExternalUser> optionalExternalUser = Optional.empty();
 
+        // Retrieve or provision the user (always ending up with a user to return)
         if (logInToEduID) {
-            optionalUser = userRepository.findUserByUid(uid);
+            Optional<User> optionalUser = userRepository.findUserByUid(uid);
 
             String preferredLanguage = cookieByName(getRequest(), "lang").map(Cookie::getValue).orElse("en");
             User user = optionalUser.orElseGet(() ->
                     provisionUser(uid, schacHomeOrganization, givenName, familyName, email, preferredLanguage));
-            System.out.println(user.getEmail());
 
-            // return oidc user here: duplicate code
+            newClaims.put("id", user.getId());
+
             OidcUserInfo oidcUserInfo = new OidcUserInfo(newClaims);
-            oidcUser = new DefaultOidcUser(oidcUser.getAuthorities(), oidcUser.getIdToken(), oidcUserInfo);
-            return oidcUser;
+            return new DefaultOidcUser(oidcUser.getAuthorities(), oidcUser.getIdToken(), oidcUserInfo);
         } else if (logInToServiceDesk) {
-            optionalExternalUser = externalUserRepository.findUserByUid(uid);
+            Optional<ExternalUser> optionalExternalUser = externalUserRepository.findUserByUid(uid);
 
             List<String> memberships = Optional
                     .ofNullable(oidcUser.getClaimAsStringList("edumember_is_member_of"))
                     .orElse(Collections.emptyList());
             ExternalUser externalUser = optionalExternalUser.map(user -> syncMemberships(user, memberships)).orElseGet(() ->
                     provisionServiceDeskUser(uid, schacHomeOrganization, givenName, familyName, email, memberships));
-            System.out.println(externalUser.getEmail());
 
-            // return oidc user here: duplicate code
+            newClaims.put("id", externalUser.getId());
+
             OidcUserInfo oidcUserInfo = new OidcUserInfo(newClaims);
-            oidcUser = new DefaultOidcUser(oidcUser.getAuthorities(), oidcUser.getIdToken(), oidcUserInfo);
-            return oidcUser;
+            return new DefaultOidcUser(oidcUser.getAuthorities(), oidcUser.getIdToken(), oidcUserInfo);
         } else {
             throw new IllegalArgumentException("Unknown host header in the request: " + host);
         }
-
-
-
-        // Any of the 2 types of users is fetched -- see the provision step in Shib filter
-        // The endgame is to return a OidcUser at all times
-
-        // TODO add the ID of the usesr (either existing or new user) to the claims
-        // newClaims.put("sub", uid);
-
     }
 
     private String getHeader(String name) {
