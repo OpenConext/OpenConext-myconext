@@ -292,21 +292,18 @@ public class SecurityConfiguration {
                             "/myconext/api/sp/**")
                     .csrf(csrf -> csrf.disable())
                     .sessionManagement(smc -> smc.sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED))
-                    .authorizeHttpRequests(authz -> authz.requestMatchers(
-                           "/myconext/api/servicedesk/**"
-                    ).hasAuthority(SERVICE_DESK))
-                    .authorizeHttpRequests(authz -> authz.requestMatchers(
+                    .authorizeHttpRequests(authz -> authz
+                            .requestMatchers(
+                                    "/myconext/api/servicedesk/**").hasAuthority(SERVICE_DESK)
+                            .requestMatchers(
                                     "/config",
                                     "/myconext/api/idp/**",
                                     "/myconext/api/sp/create-from-institution",
                                     "/myconext/api/sp/create-from-institution/**",
                                     "/myconext/api/sp/idin/issuers",
                                     "/myconext/api/servicedesk/logout",
-                                    "/myconext/api/swagger-ui/**")
-                            .permitAll()
-                            .anyRequest()
-                            .authenticated()
-                                    )
+                                    "/myconext/api/swagger-ui/**").permitAll()
+                            .anyRequest().authenticated())
                     .oauth2Login(oAuth2LoginConfigurer -> oAuth2LoginConfigurer
                             // Custom resolver adds prompt=login when original request had force= (OpenConext helper).
                             .authorizationEndpoint(authorization -> authorization
@@ -320,8 +317,7 @@ public class SecurityConfiguration {
                                             environment, manage, userRepository, externalUserRepository, mijnEduIDEntityId, mijnEduIDHost, serviceDeskHost, activeHost, Arrays.asList(serviceDeskRoles)
                                     )
                             ))
-                    )
-                    .authorizeHttpRequests(auth -> auth.anyRequest().hasRole("GUEST"));
+                    );
             return http.build();
         }
     }
