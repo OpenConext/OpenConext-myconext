@@ -4,6 +4,10 @@
 
 All notable changes to this project will be documented in this file.
 
+## Next
+
+- Send Apple Push Notifications with `InterruptionLevel.TIME_SENSITIVE`
+
 ## [8.2.6] Feb 2026
 - First tickets to improve UX accessibility (WCAG)
 - General update of dependencies
