@@ -21,7 +21,7 @@ import static org.hamcrest.core.IsEqual.equalTo;
                 "sp_entity_metadata_url=https://engine.test.surfconext.nl/authentication/sp/metadata",
                 "management.health.mail.enabled=false"
         })
-@ActiveProfiles("dev")
+@ActiveProfiles("test")
 public class SecurityConfigurationTest extends AbstractIntegrationTest {
 
     @Test
