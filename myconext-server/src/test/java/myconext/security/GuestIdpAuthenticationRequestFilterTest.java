@@ -2,16 +2,26 @@ package myconext.security;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import myconext.manage.MockManage;
-import myconext.model.*;
+import myconext.model.ExternalLinkedAccount;
+import myconext.model.IdpScoping;
+import myconext.model.LinkedAccount;
+import myconext.model.User;
+import myconext.model.Verification;
+import myconext.model.VerifyIssuer;
 import myconext.repository.UserRepository;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
+import org.springframework.test.util.ReflectionTestUtils;
 import saml.model.SAMLAttribute;
 
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Date;
+import java.util.List;
+import java.util.UUID;
 
 import static myconext.AbstractIntegrationTest.user;
 import static myconext.model.LinkedAccountTest.linkedAccount;
@@ -27,6 +37,7 @@ public class GuestIdpAuthenticationRequestFilterTest {
     public void beforeEach() {
         subject.setManage(new MockManage(objectMapper));
         subject.setUserRepository(Mockito.mock(UserRepository.class));
+        ReflectionTestUtils.setField(subject, "expiryNonValidatedDurationDays", 180);
     }
 
     @Test
@@ -121,19 +132,31 @@ public class GuestIdpAuthenticationRequestFilterTest {
         List<LinkedAccount> linkedAccounts = Arrays.asList(
                 linkedAccount("John", "Doe", createdAt(15)),
                 linkedAccount("Mary", "Poppins", createdAt(10)),
-                linkedAccount("Mark", "Lee", createdAt(25))
+                linkedAccount("Mark", "Lee", createdAt(25)),
+                linkedAccount(Date.from(Instant.now().minus(200, ChronoUnit.DAYS)), List.of("expired-aff")),
+                linkedAccount(Date.from(Instant.now().minus(160, ChronoUnit.DAYS)), List.of("valid-aff"))
         );
         user.setLinkedAccounts(linkedAccounts);
+
         List<SAMLAttribute> attributes = subject.attributes(user, "requesterEntityID");
         String givenName = getValue(attributes, "urn:mace:dir:attribute-def:givenName");
-        String familyName = getValue(attributes, "urn:mace:dir:attribute-def:sn");
-        String displayName = getValue(attributes, "urn:mace:dir:attribute-def:displayName");
-        boolean dateOfBirthPresent = attributes.stream().filter(attr -> attr.getName().equals("urn:schac:attribute-def:schacDateOfBirth")).findFirst().isPresent();
-
         assertEquals("Mary", givenName);
+
+        String familyName = getValue(attributes, "urn:mace:dir:attribute-def:sn");
         assertEquals("Poppins", familyName);
+
+        String displayName = getValue(attributes, "urn:mace:dir:attribute-def:displayName");
         assertEquals("Marrrry Poppins", displayName);
+
+        boolean dateOfBirthPresent = attributes.stream().filter(attr -> attr.getName().equals("urn:schac:attribute-def:schacDateOfBirth")).findFirst().isPresent();
         assertFalse(dateOfBirthPresent);
+
+        List<SAMLAttribute> eduPersonScopedAffiliations = attributes.stream()
+                .filter(attr ->
+                        attr.getName().equals("urn:mace:dir:attribute-def:eduPersonScopedAffiliation") )
+                .toList();
+        assertTrue(eduPersonScopedAffiliations.stream().anyMatch(aff -> aff.getValue().startsWith("valid-aff")));
+        assertFalse(eduPersonScopedAffiliations.stream().anyMatch(aff -> aff.getValue().startsWith("expired-aff")));
     }
 
     @Test

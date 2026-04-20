@@ -12,14 +12,28 @@ import myconext.exceptions.UserNotFoundException;
 import myconext.geo.GeoLocation;
 import myconext.mail.MailBox;
 import myconext.manage.Manage;
-import myconext.model.*;
+import myconext.model.ExternalLinkedAccount;
+import myconext.model.IdpScoping;
+import myconext.model.LinkedAccount;
+import myconext.model.LoginOptions;
+import myconext.model.LoginStatus;
+import myconext.model.SamlAuthenticationRequest;
+import myconext.model.StepUpStatus;
+import myconext.model.User;
+import myconext.model.UserLogin;
+import myconext.model.Verification;
 import myconext.repository.AuthenticationRequestRepository;
 import myconext.repository.UserLoginRepository;
 import myconext.repository.UserRepository;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.opensaml.core.xml.schema.XSURI;
-import org.opensaml.saml.saml2.core.*;
+import org.opensaml.saml.saml2.core.AuthnContextClassRef;
+import org.opensaml.saml.saml2.core.AuthnRequest;
+import org.opensaml.saml.saml2.core.Issuer;
+import org.opensaml.saml.saml2.core.RequestedAuthnContext;
+import org.opensaml.saml.saml2.core.RequesterID;
+import org.opensaml.saml.saml2.core.Scoping;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -44,7 +58,15 @@ import java.time.Instant;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.UUID;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.stream.Collectors;
@@ -803,7 +825,6 @@ public class GuestIdpAuthenticationRequestFilter extends OncePerRequestFilter {
         ));
         String eduIDValue = user.computeEduIdForServiceProviderIfAbsent(requesterEntityId, manage);
         user.setLastLogin(System.currentTimeMillis());
-        userRepository.save(user);
 
         if (StringUtils.hasText(user.getPreferredLanguage())) {
             attributes.add(attribute("urn:mace:dir:attribute-def:preferredLanguage", user.getPreferredLanguage()));
@@ -824,6 +845,12 @@ public class GuestIdpAuthenticationRequestFilter extends OncePerRequestFilter {
                         values.forEach(value -> attributes.add(attribute(key, value))));
 
 
+        Instant now = Instant.now();
+        //delete all affiliations for accounts that are older then expirationNonValidatedDurationDays
+        linkedAccounts.stream()
+                .filter(linkedAccount ->
+                        linkedAccount.getCreatedAt().toInstant().plus(expiryNonValidatedDurationDays, ChronoUnit.DAYS).isBefore(now))
+                .forEach(linkedAccount -> linkedAccount.setEduPersonAffiliations(new ArrayList<>()));
         //we need a mutable list
         List<String> scopedAffiliations = new ArrayList<>(linkedAccounts.stream()
                 .map(linkedAccount -> linkedAccount.getEduPersonAffiliations().stream()
@@ -860,6 +887,8 @@ public class GuestIdpAuthenticationRequestFilter extends OncePerRequestFilter {
         List<String> eduPersonAssurances = eduPersonAssurances(user);
         eduPersonAssurances
                 .forEach(eduPersonAssurance -> attributes.add(attribute("urn:mace:dir:attribute-def:eduPersonAssurance", eduPersonAssurance)));
+        // lastLogin is updated, possible an new eduID value or deleted affiliations
+        userRepository.save(user);
         return attributes;
     }
 
@@ -933,7 +962,7 @@ public class GuestIdpAuthenticationRequestFilter extends OncePerRequestFilter {
         List<LinkedAccount> linkedAccounts = user.linkedAccountsSorted();
         List<LinkedAccount> linkedAccountsEmptyAffiliations = linkedAccounts.stream()
                 .filter(linkedAccount -> CollectionUtils.isEmpty(linkedAccount.getEduPersonAffiliations()))
-                .collect(toList());
+                .toList();
         linkedAccountsEmptyAffiliations.forEach(linkedAccount -> linkedAccount.setEduPersonAffiliations(
                 Collections.singletonList("affiliation@" + linkedAccount.getSchacHomeOrganization())));
         if (!linkedAccountsEmptyAffiliations.isEmpty()) {
