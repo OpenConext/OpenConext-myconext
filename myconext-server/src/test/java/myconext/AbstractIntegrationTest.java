@@ -16,6 +16,7 @@ import myconext.manage.Manage;
 import myconext.manage.MockManage;
 import myconext.model.*;
 import myconext.repository.*;
+import myconext.tiqr.TiqrConfiguration;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.io.IOUtils;
 import org.junit.Before;
@@ -43,6 +44,8 @@ import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.util.MultiValueMap;
 import org.springframework.util.StringUtils;
 import org.springframework.web.util.UriComponentsBuilder;
+import org.yaml.snakeyaml.Yaml;
+import tiqr.org.SecretCipher;
 import tiqr.org.model.Authentication;
 import tiqr.org.model.Enrollment;
 import tiqr.org.model.Registration;
@@ -149,6 +152,8 @@ public abstract class AbstractIntegrationTest implements HasUserRepository {
     protected final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder(4, new SecureRandom());
 
     protected final Filter noopFilter = new NoopFilter();
+
+    protected SecretCipher secretCipher;
 
     @Before
     @BeforeEach
@@ -357,14 +362,12 @@ public abstract class AbstractIntegrationTest implements HasUserRepository {
     }
 
     protected String decryptRegistrationSecret(String encryptedSecret) throws Exception {
-        MessageDigest sha = MessageDigest.getInstance("SHA-256");
-        String secret = "secret";
-        byte[] digest = sha.digest(secret.getBytes(UTF_8));
-        SecretKeySpec secretKey = new SecretKeySpec(Arrays.copyOf(digest, 32), "AES");
-        GCMParameterSpec parameterSpec = new GCMParameterSpec(128, secret.getBytes(UTF_8));
-        Cipher cipher = Cipher.getInstance("AES/GCM/NoPadding");
-        cipher.init(Cipher.DECRYPT_MODE, secretKey, parameterSpec);
-        return new String(cipher.doFinal(java.util.Base64.getDecoder().decode(encryptedSecret)));
+        if (secretCipher == null) {
+            TiqrConfiguration tiqrConfiguration = new Yaml().loadAs(new ClassPathResource("tiqr.configuration.yml")
+                    .getInputStream(), TiqrConfiguration.class);
+            this.secretCipher = new SecretCipher(tiqrConfiguration.getEncryptionSecret());
+        }
+        return this.secretCipher.decrypt(encryptedSecret);
     }
 
 

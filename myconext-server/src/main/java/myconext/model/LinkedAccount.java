@@ -11,11 +11,12 @@ import org.springframework.util.StringUtils;
 
 import java.beans.Transient;
 import java.io.Serializable;
+import java.time.ZoneId;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-@NoArgsConstructor
 @AllArgsConstructor
 @Getter
 public class LinkedAccount implements Serializable, ProvisionedLinkedAccount {
@@ -48,6 +49,12 @@ public class LinkedAccount implements Serializable, ProvisionedLinkedAccount {
     private boolean external = false;
     @Setter
     private String institutionGuid;
+
+    public LinkedAccount() {
+        this.createdAt = new Date();
+        this.expiresAt = Date.from(this.createdAt.toInstant()
+                .plus(180, ChronoUnit.DAYS));
+    }
 
     public LinkedAccount(String institutionIdentifier,
                          String schacHomeOrganization,
