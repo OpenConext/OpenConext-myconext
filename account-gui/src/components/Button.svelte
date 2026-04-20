@@ -27,8 +27,6 @@
         cursor: pointer;
         text-align: center;
         font-weight: 600;
-        text-wrap: nowrap;
-        white-space: nowrap;
         align-items: center;
         justify-content: center;
         position: relative;
