@@ -35,8 +35,8 @@
             let lang = "en";
             if (urlSearchParams.has("lang")) {
                 lang = urlSearchParams.get("lang");
-            } else if (Cookies.get("lang", {domain: $config.domain})) {
-                lang = Cookies.get("lang", {domain: $config.domain});
+            } else if (Cookies.get("lang")) {
+                lang = Cookies.get("lang");
             } else {
                 lang = navigator.language.toLowerCase().substring(0, 2);
             }

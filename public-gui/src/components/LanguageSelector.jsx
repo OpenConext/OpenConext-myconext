@@ -8,7 +8,11 @@ export const LanguageSelector = () => {
 
     const handleChooseLocale = locale => e => {
         stopEvent(e);
-        Cookies.set("lang", locale, {expires: 356, secure: document.location.protocol.endsWith("https")});
+        Cookies.set("lang", locale, {
+            expires: 365,
+            secure: document.location.protocol.endsWith("https"),
+            domain: window.location.hostname.split(".").slice(-2).join(".")
+        });
         I18n.locale = locale;
 
         const path = window.location.pathname;

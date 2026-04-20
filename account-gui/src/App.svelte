@@ -62,8 +62,8 @@
             let locale = "en";
             if (urlSearchParams.has("lang")) {
                 locale = urlSearchParams.get("lang").toLowerCase();
-            } else if (Cookies.get("lang", {domain: $conf.domain})) {
-                locale = Cookies.get("lang", {domain: $conf.domain}).toLowerCase();
+            } else if (Cookies.get("lang")) {
+                locale = Cookies.get("lang").toLowerCase();
             } else {
                 locale = navigator.language.toLowerCase().substring(0, 2);
             }
