@@ -184,14 +184,7 @@ export function iDINIssuers() {
 }
 
 export function logout() {
-    const fetchOptions = {
-        credentials: "same-origin",
-        redirect: "manual"
-    };
-    return forgetMe().then(() =>
-        fetchJson("/myconext/api/sp/logout")
-            .then(() => fetch("/Shibboleth.sso/Logout", fetchOptions))
-    );
+    return forgetMe().then(() => fetchJson("/myconext/api/sp/logout"));
 }
 
 export function forgetMe() {
