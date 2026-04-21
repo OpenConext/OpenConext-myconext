@@ -80,7 +80,7 @@ public class EduIDOidcUserService implements OAuth2UserService<OidcUserRequest, 
 
         LOG.debug("Provision oidcUser: " + claims);
 
-        String uid = claims.get("sub").toString();
+        String uid = ((List<String>) claims.get("uids")).getFirst();
         String schacHomeOrganization = claims.get("schac_home_organization").toString();
         String email = claims.get("email").toString();
         String givenName = claims.get("given_name").toString();
