@@ -35,7 +35,7 @@ import static org.junit.Assert.assertTrue;
                 "spring.main.lazy-initialization=true",
                 "oidc-token-api.token-url=http://localhost:8098/tokens",
                 "host_headers.active: mijn.test2.eduid.nl",
-                "oidc-token-api.enabled=True"
+                "oidc-token-api.enabled=True",
         })
 public class OpenIDConnectTest extends AbstractIntegrationTest {
 

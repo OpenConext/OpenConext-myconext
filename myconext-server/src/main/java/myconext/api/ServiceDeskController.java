@@ -18,6 +18,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.oauth2.core.oidc.user.OidcUser;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Date;
@@ -108,7 +109,7 @@ public class ServiceDeskController {
             throw new ForbiddenException("User UID's do not match");
         }
 
-        String userUid = ((ExternalUser) authentication.getPrincipal()).getUid();
+        String userUid = (String) ((OidcUser) authentication.getPrincipal()).getClaims().get("id");
         ExternalUser serviceDeskMember = this.externalUserRepository.findUserByUid(userUid).orElseThrow(() -> new UserNotFoundException(userUid));
 
         LOG.info(String.format("Adding external linked account for service desk for user %s by user %s",
