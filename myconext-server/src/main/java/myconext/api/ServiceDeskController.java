@@ -22,6 +22,8 @@ import org.springframework.security.oauth2.core.oidc.user.OidcUser;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Date;
+import java.util.List;
+import java.util.Optional;
 
 
 @RestController
@@ -109,7 +111,12 @@ public class ServiceDeskController {
             throw new ForbiddenException("User UID's do not match");
         }
 
-        String userUid = (String) ((OidcUser) authentication.getPrincipal()).getClaims().get("id");
+        String userUid = Optional.ofNullable(
+                        ((OidcUser) authentication.getPrincipal()).getClaimAsStringList("uids"))
+                .filter(l -> !l.isEmpty())
+                .map(List::getFirst)
+                .orElseThrow(() -> new ForbiddenException("Missing 'uids' claim"));
+
         ExternalUser serviceDeskMember = this.externalUserRepository.findUserByUid(userUid).orElseThrow(() -> new UserNotFoundException(userUid));
 
         LOG.info(String.format("Adding external linked account for service desk for user %s by user %s",
