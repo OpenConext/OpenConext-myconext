@@ -28,23 +28,16 @@
     export let url = "";
     let loaded = false;
 
-    // Todo: check if user is logged in
     onMount(() => configuration()
         .then(json => {
             $config = json;
 
-            if($config.isAuthenticated === false) {
-                console.log('User not authenticated');
-
-                // $redirectPath = window.location.pathname;
-                // const path = encodeURIComponent($redirectPath || "/");
-                // console.log(`${$config.basePath}?redirect_path=${path}`);
-                // window.location.href = `${$config.basePath}?redirect_path=${path}`;
-                // window.location.href = `http://localhost:8081/myconext/api/sp/me`;
-                window.location.href = `http://localhost:8081/dodo-login`;
-                return
-            } else {
-                console.log('User is authenticated!!!')
+            if ($config.isAuthenticated === false &&
+              !unprotectedRoutes.some(route => window.location.pathname.indexOf(route) > -1)) {
+                $redirectPath = window.location.pathname;
+                const path = encodeURIComponent($redirectPath || "/");
+                window.location.href = `${$config.loginUrl}?redirect_path=${path}`;
+                return;
             }
 
             const urlSearchParams = new URLSearchParams(window.location.search);
@@ -94,7 +87,7 @@
                             navigate("/landing?delete=true");
                         } else {
                             const path = encodeURIComponent($redirectPath || "/");
-                            // window.location.href = `${$config.loginUrl}?redirect_path=${path}`;
+                            window.location.href = `${$config.loginUrl}?redirect_path=${path}`;
                         }
                     })
             }
