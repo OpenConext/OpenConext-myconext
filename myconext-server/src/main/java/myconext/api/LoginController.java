@@ -29,6 +29,8 @@ import org.springframework.web.servlet.view.RedirectView;
 
 import java.io.IOException;
 import java.net.URI;
+import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
@@ -82,7 +84,7 @@ public class LoginController {
                            @Value("${feature.use_app}") boolean useApp
     ) {
         this.config.put("basePath", basePath);
-        this.config.put("loginUrl", basePath + "/login");
+        this.config.put("loginUrl", basePath + "/dodo-login");
         this.config.put("continueAfterLoginUrl", continueAfterLoginUrl);
         this.config.put("baseDomain", baseDomain);
         this.config.put("magicLinkUrl", magicLinkUrl);
@@ -184,32 +186,26 @@ public class LoginController {
         return ResponseEntity.status(HttpStatus.FOUND).location(URI.create(redirectUrl)).build();
     }
 
-    // From Invite project:
-    // Todo: implement logout
-//    @GetMapping("login")
-//    public View login(@RequestParam(value = "app", required = false, defaultValue = "client") String app) {
-//        LOG.debug(String.format("/login for app: %s", app));
-//        return new RedirectView(app.equals("client") ? config.getClientUrl() : config.getWelcomeUrl(), false);
-//    }
-//
-//    @GetMapping("logout")
-//    public ResponseEntity<Map<String, Integer>> logout(HttpServletRequest request) {
-//        LOG.debug("/logout");
-//        SecurityContextHolder.clearContext();
-//        HttpSession session = request.getSession(false);
-//        if (session != null) {
-//            session.invalidate();
-//        }
-//        return Results.okResult();
-//    }
 
-
-   @GetMapping("dodo-login")
-   public View login(@RequestParam(value = "app", required = false, defaultValue = "client") String app) {
-       LOG.debug(String.format("/login for app: %s", app));
-       return new RedirectView(this.config.get("spBaseUrl").toString(), false);
-//       return new RedirectView(app.equals("client") ? config.getClientUrl() : config.getWelcomeUrl(), false);
-   }
+    // Todo: rename this one it was temporary
+    // Protected by the OIDC security chain in SecurityConfiguration. Hitting this endpoint
+    // unauthenticated triggers the OIDC login; on return Spring Security replays the saved
+    // request (including the redirect_path query param) so we can send the user back to the
+    // SPA page they originally requested.
+    @GetMapping("/dodo-login")
+    public View login(@RequestParam(value = "redirect_path", required = false) String redirectPath) {
+        String spBaseUrl = this.config.get("spBaseUrl").toString();
+        String target = spBaseUrl;
+        if (StringUtils.hasText(redirectPath)) {
+            String path = URLDecoder.decode(redirectPath, StandardCharsets.UTF_8);
+            // Only allow internal, same-origin paths to avoid open-redirects
+            if (path.startsWith("/") && !path.startsWith("//")) {
+                target = spBaseUrl + path;
+            }
+        }
+        LOG.debug(String.format("/dodo-login redirecting to %s", target));
+        return new RedirectView(target, false);
+    }
 
     // Todo: this might be Shibboleth specific, verify
     @GetMapping("/doLogin")
