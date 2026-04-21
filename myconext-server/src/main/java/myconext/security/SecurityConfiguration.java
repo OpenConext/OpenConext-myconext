@@ -321,7 +321,7 @@ public class SecurityConfiguration {
                     );
             if (environment.acceptsProfiles(Profiles.of("local", "test"))) {
                 // Fake OIDC user so APIs work without hitting SURFconext.
-                http.addFilterBefore(new LocalDevelopmentAuthenticationFilter(), AnonymousAuthenticationFilter.class);
+                http.addFilterBefore(new LocalDevelopmentAuthenticationFilter(userRepository, serviceDeskRoleAutoProvisioning), AnonymousAuthenticationFilter.class);
             }
             return http.build();
         }
