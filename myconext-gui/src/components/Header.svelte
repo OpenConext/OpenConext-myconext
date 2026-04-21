@@ -3,8 +3,9 @@
     import I18n from "../locale/I18n";
     import eduidLogo from "../img/logo_eduID.svg?raw";
     import {logout} from "../api";
-    import {config, user} from "../stores/user";
+    import {user} from "../stores/user";
     import Button from "./Button.svelte";
+    import {navigate} from "svelte-routing";
 
     const logoutUser = () => {
         logout().then(() => {
@@ -15,7 +16,7 @@
                 familyName: "",
                 usePassword: false
             };
-            window.location.href = `${$config.idpBaseUrl}/doLogout?param=${encodeURIComponent("logout=true")}`;
+            navigate("/landing?logout=true");
         });
     }
 
