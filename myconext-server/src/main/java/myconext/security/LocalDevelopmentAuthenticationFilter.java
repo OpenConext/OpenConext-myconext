@@ -31,7 +31,6 @@ public class LocalDevelopmentAuthenticationFilter implements Filter {
 
     public LocalDevelopmentAuthenticationFilter(UserRepository userRepository, boolean serviceDeskRoleAutoProvisioning) {
         this.userRepository = userRepository;
-        // Todo: the mocked user is not the one we are looking for in the unit test
         this.serviceDeskRoleAutoProvisioning = serviceDeskRoleAutoProvisioning;
     }
 
@@ -79,20 +78,4 @@ public class LocalDevelopmentAuthenticationFilter implements Filter {
                 Map.entry("sub", "urn:collab:person:example.com:super"),
                 Map.entry("uids", List.of("super")));
     }
-
-//    private Map<String, Object> createClaimsForMaryDoe(User user) {
-//        return Map.ofEntries(
-//                Map.entry("id", user.getId()),
-//                Map.entry("eduperson_principal_name", "urn:collab:person:surfguest.nl:mdoe"),
-//                Map.entry("email", "mdoe@example.com"),
-//                Map.entry("family_name", "Doe"),
-//                Map.entry("given_name", "Mary"),
-//                Map.entry("name", "Mary Doe"),
-//                Map.entry("schac_home_organization", "surfguest.nl"),
-//                Map.entry("scope", "openid"),
-//                Map.entry("edumember_is_member_of",
-//                        List.of(serviceDeskRoleAutoProvisioning ? "role3" : "non-servicedesk-role")),
-//                Map.entry("sub", "urn:collab:person:surfguest.nl:mdoe"),
-//                Map.entry("uids", List.of("mdoe")));
-//    }
 }
