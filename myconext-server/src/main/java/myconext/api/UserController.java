@@ -51,13 +51,17 @@ import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.View;
+import org.springframework.web.servlet.view.RedirectView;
 import tiqr.org.model.Registration;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Field;
+import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.security.SecureRandom;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
@@ -1314,6 +1318,20 @@ public class UserController implements UserAuthentication {
                 .body(objectWriter.writeValueAsString(map));
     }
 
+
+    @GetMapping("/sp/login")
+    public View login(@RequestParam(value = "redirect_path", required = false) String redirectPath) {
+        String target = spBaseUrl;
+        if (StringUtils.hasText(redirectPath)) {
+            String path = URLDecoder.decode(redirectPath, StandardCharsets.UTF_8);
+            // Only allow internal, same-origin paths to avoid open-redirects
+            if (path.startsWith("/") && !path.startsWith("//")) {
+                target = spBaseUrl + path;
+            }
+        }
+        LOG.debug(String.format("/login redirecting to %s", target));
+        return new RedirectView(target, false);
+    }
 
     @GetMapping("/sp/logout")
     @Operation(summary = "Logout",
