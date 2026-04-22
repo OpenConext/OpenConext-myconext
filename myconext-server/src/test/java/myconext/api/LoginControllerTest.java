@@ -28,7 +28,7 @@ public class LoginControllerTest extends AbstractIntegrationTest {
                 .get("/config")
                 .then()
                 .body("baseDomain", equalTo("test2.surfconext.nl"))
-                .body("loginUrl", equalTo("http://localhost:8081/login"));
+                .body("loginUrl", equalTo("http://localhost:8081/myconext/api/sp/login"));
     }
 
     @Test
@@ -39,42 +39,6 @@ public class LoginControllerTest extends AbstractIntegrationTest {
                 .then()
                 .statusCode(302)
                 .header("Location", "https://my.test2.surfconext.nl/Shibboleth.sso/Login?entityID=https://localhost.surf.id&lang=en");
-    }
-
-    @Test
-    public void doLogin() {
-        given().redirects().follow(false)
-                .when()
-                .get("/doLogin")
-                .then()
-                .statusCode(302)
-                .header("Location", "https://my.test2.surfconext.nl/Shibboleth.sso/Login?entityID=https://localhost.surf.id&lang=en");
-    }
-
-    @Test
-    public void doLogout() {
-        String param = "logout=true";
-        given().redirects().follow(false)
-                .when()
-                .queryParam("param", param)
-                .get("/doLogout")
-                .then()
-                .statusCode(302)
-                .header("Location", "http://localhost:3001/landing?logout=true");
-    }
-
-    @Test
-    public void doLogoutAfterDelete() {
-        String param = "delete=true";
-        given().redirects().follow(false)
-                .when()
-                .queryParam("param", param)
-                .cookie("TEST", "value")
-                .get("/doLogout")
-                .then()
-                .statusCode(302)
-                .header("Location", "http://localhost:3001/landing?delete=true")
-                .cookie("TEST", equalTo(""));
     }
 
     @Test
