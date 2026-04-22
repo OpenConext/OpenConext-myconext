@@ -20,7 +20,7 @@
     });
 
     const loginAgain = () => {
-        window.location.href = `${$config.idpBaseUrl}/doLogin?register=false`;
+        window.location.href = `${$config.loginUrl}`;
     }
 
 </script>
