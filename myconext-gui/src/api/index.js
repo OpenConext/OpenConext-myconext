@@ -132,11 +132,7 @@ export function startWebAuthFlow() {
 }
 
 export function deleteUser() {
-    const fetchOptions = {
-        credentials: "same-origin",
-        redirect: "manual"
-    };
-    return fetchDelete("/myconext/api/sp/delete").then(() => fetch("/Shibboleth.sso/Logout", fetchOptions));
+    return fetchDelete("/myconext/api/sp/delete").then(() => logout());
 }
 
 export function deleteLinkedAccount(linkedAccount) {
