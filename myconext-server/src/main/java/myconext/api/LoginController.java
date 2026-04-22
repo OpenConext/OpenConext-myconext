@@ -26,14 +26,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.servlet.View;
-import org.springframework.web.servlet.view.RedirectView;
 
 import java.io.IOException;
 import java.net.URI;
-import java.net.URLDecoder;
-import java.nio.charset.StandardCharsets;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -89,7 +84,7 @@ public class LoginController {
                            CreateFromInstitutionProperties createFromInstitutionProperties
     ) {
         this.config.put("basePath", basePath);
-        this.config.put("loginUrl", basePath + "/dodo-login");
+        this.config.put("loginUrl", basePath + "/myconext/api/sp/login");
         this.config.put("continueAfterLoginUrl", continueAfterLoginUrl);
         this.config.put("baseDomain", baseDomain);
         this.config.put("magicLinkUrl", magicLinkUrl);
@@ -192,36 +187,6 @@ public class LoginController {
         return ResponseEntity.status(HttpStatus.FOUND).location(URI.create(redirectUrl)).build();
     }
 
-
-    // Todo: rename this one it was temporary
-    // Protected by the OIDC security chain in SecurityConfiguration. Hitting this endpoint
-    // unauthenticated triggers the OIDC login; on return Spring Security replays the saved
-    // request (including the redirect_path query param) so we can send the user back to the
-    // SPA page they originally requested.
-    @GetMapping("/dodo-login")
-    public View login(@RequestParam(value = "redirect_path", required = false) String redirectPath) {
-        String spBaseUrl = this.config.get("spBaseUrl").toString();
-        String target = spBaseUrl;
-        if (StringUtils.hasText(redirectPath)) {
-            String path = URLDecoder.decode(redirectPath, StandardCharsets.UTF_8);
-            // Only allow internal, same-origin paths to avoid open-redirects
-            if (path.startsWith("/") && !path.startsWith("//")) {
-                target = spBaseUrl + path;
-            }
-        }
-        LOG.debug(String.format("/dodo-login redirecting to %s", target));
-        return new RedirectView(target, false);
-    }
-
-    // Todo: this might be Shibboleth specific, verify
-    @GetMapping("/doLogin")
-    public void doLogin(@RequestParam(value = "lang", required = false, defaultValue = "en") String lang,
-                        @RequestParam(value = "location", required = false) String location,
-                        @RequestParam(value = "register", required = false, defaultValue = "true") String register,
-                        HttpServletResponse response) throws IOException {
-        doRedirect(lang, location, response, Boolean.valueOf(register));
-    }
-
     private void doRedirect(String lang, String location, HttpServletResponse response, boolean register) throws IOException {
         if (register) {
             String cookieValue = String.format("%s=true; Max-Age=%s; SameSite=None%s", REGISTER_MODUS_COOKIE_NAME, 60 * 10, secureCookie ? "; Secure" : "");
@@ -230,30 +195,6 @@ public class LoginController {
         String redirectLocation = StringUtils.hasText(location) ? location : this.config.get("eduIDLoginUrl") + "&lang=" + lang;
 
         LOG.info(String.format("Redirecting to %s", redirectLocation));
-
-        response.sendRedirect(redirectLocation);
-    }
-
-    @GetMapping("/doLogout")
-    public void doLogout(HttpServletRequest request,
-                         HttpServletResponse response,
-                         @RequestParam(value = "param") String param) throws IOException {
-        if (param.contains("delete")) {
-            Cookie[] cookies = request.getCookies();
-            if (cookies != null) {
-                Arrays.asList(cookies).forEach(cookie -> {
-                    cookie.setMaxAge(0);
-                    cookie.setSecure(true);
-                    cookie.setValue("");
-                    response.addCookie(cookie);
-                });
-            }
-        }
-        request.getSession().invalidate();
-        SecurityContextHolder.clearContext();
-        String redirectLocation = String.format("%s/landing?%s", this.config.get("spBaseUrl"), param);
-
-        LOG.info(String.format("Logout and redirect to %s", redirectLocation));
 
         response.sendRedirect(redirectLocation);
     }
