@@ -803,6 +803,60 @@ public class UserControllerTest extends AbstractIntegrationTest {
     }
 
     @Test
+    public void login() {
+        given().redirects().follow(false)
+                .when()
+                .get("/myconext/api/sp/login")
+                .then()
+                .statusCode(302)
+                .header("Location", "http://localhost:3001");
+    }
+
+    @Test
+    public void loginWithRedirectPath() {
+        given().redirects().follow(false)
+                .when()
+                .queryParam("redirect_path", "/security")
+                .get("/myconext/api/sp/login")
+                .then()
+                .statusCode(302)
+                .header("Location", "http://localhost:3001/security");
+    }
+
+    @Test
+    public void loginWithEncodedRedirectPath() {
+        given().redirects().follow(false)
+                .when()
+                .queryParam("redirect_path", "%2Fpersonal%3Fservicedesk%3Dstart")
+                .get("/myconext/api/sp/login")
+                .then()
+                .statusCode(302)
+                .header("Location", "http://localhost:3001/personal?servicedesk=start");
+    }
+
+    @Test
+    public void loginWithExternalRedirectPathIsIgnored() {
+        given().redirects().follow(false)
+                .when()
+                .queryParam("redirect_path", "https://evil.example.com/phishing")
+                .get("/myconext/api/sp/login")
+                .then()
+                .statusCode(302)
+                .header("Location", "http://localhost:3001");
+    }
+
+    @Test
+    public void loginWithProtocolRelativeRedirectPathIsIgnored() {
+        given().redirects().follow(false)
+                .when()
+                .queryParam("redirect_path", "//evil.example.com/phishing")
+                .get("/myconext/api/sp/login")
+                .then()
+                .statusCode(302)
+                .header("Location", "http://localhost:3001");
+    }
+
+    @Test
     public void personal() {
         Map res = given()
                 .when()
