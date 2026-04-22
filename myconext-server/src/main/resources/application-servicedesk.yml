@@ -1,0 +1,8 @@
+# Spring profile: 'servicedesk'
+# Activate with -Dspring.profiles.active=servicedesk (or SPRING_PROFILES_ACTIVE=servicedesk)
+# Overrides for running the backend in Service Desk mode (servicedesk-gui as the front-end).
+
+sp_redirect_url: http://localhost:3003
+
+host_headers:
+  active: servicedesk.test2.eduid.nl

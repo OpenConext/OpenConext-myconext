@@ -1,14 +1,22 @@
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import {Button, ButtonSize, ButtonType} from "@surfnet/sds";
 import './Login.scss';
 import I18n from "../locale/I18n";
 import DOMPurify from "dompurify";
 import FrontDesk from "../icons/frontdesk.svg";
 import {LandingInfo} from "../components/LandingInfo";
+import {configuration} from "../api";
 
 export const Login = () => {
 
     const [isAnimating, setIsAnimating] = useState(false);
+    const [config, setConfig] = useState(null);
+
+    useEffect(() => {
+        configuration().then(res => {
+            setConfig(res);
+        });
+    }, []);
 
     const toggleAnimation = () => {
         setIsAnimating(true);
@@ -16,8 +24,8 @@ export const Login = () => {
     }
 
     const doLogin = () => {
-        const path = window.location.origin;
-        window.location.href = `${path}/Shibboleth.sso/Login?target=/&forceAuthn=true`;
+        const path = encodeURIComponent(window.location.pathname || "/");
+        window.location.href = `${config.loginUrl}?redirect_path=${path}`;
     }
 
     return (
