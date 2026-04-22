@@ -288,7 +288,6 @@ public class SecurityConfiguration {
                             "/config",
                             "/tiqr/sp/**",
                             "/myconext/api/servicedesk/**",
-                            "/dodo-login",
                             "/login/oauth2/**",
                             "/oauth2/authorization/**",
                             "/myconext/api/sp/**")
