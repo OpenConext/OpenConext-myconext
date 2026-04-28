@@ -44,7 +44,7 @@
   },
   "dependencies": {
     "@github/webauthn-json": "^2.1.1",
-    "dompurify": "^3.4.0",
+    "dompurify": "^3.4.1",
     "i18n-js": "^4.5.1",
     "js-cookie": "^3.0.5",
     "postcss": "^8.5.6",
