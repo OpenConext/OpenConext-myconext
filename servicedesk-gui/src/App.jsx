@@ -26,7 +26,6 @@ const App = () => {
             return;
         }
         configuration().then(({isAuthenticated}) => {
-            console.log('CONFIG, isAthenticated = ' + isAuthenticated )
             if (isAuthenticated) {
                 me()
                     .then(res => {
