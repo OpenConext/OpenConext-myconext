@@ -24,8 +24,7 @@ export const Login = () => {
     }
 
     const doLogin = () => {
-        const path = encodeURIComponent(window.location.pathname || "/");
-        window.location.href = `${config.loginUrl}?redirect_path=${path}`;
+        window.location.href = `${config.loginUrl}?redirect_path=/`;
     }
 
     return (
