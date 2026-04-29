@@ -56,7 +56,7 @@ public class ServiceDeskController {
 
     @GetMapping("/me")
     public ResponseEntity<ExternalUser> me(Authentication authentication) {
-        String userId = ((ExternalUser) authentication.getPrincipal()).getId();
+        String userId = (String) ((OidcUser) authentication.getPrincipal()).getClaims().get("id");
         ExternalUser user = this.externalUserRepository.findById(userId).orElseThrow(() -> new UserNotFoundException(userId));
 
         return ResponseEntity.ok(user);

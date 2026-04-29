@@ -11,6 +11,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.core.env.Environment;
 import org.springframework.core.env.Profiles;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.oauth2.client.oidc.userinfo.OidcUserRequest;
 import org.springframework.security.oauth2.client.oidc.userinfo.OidcUserService;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserService;
@@ -23,11 +24,14 @@ import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 import java.nio.charset.StandardCharsets;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 
 import static myconext.log.MDCContext.logWithContext;
 import static myconext.security.CookieResolver.cookieByName;
@@ -110,7 +114,10 @@ public class EduIDOidcUserService implements OAuth2UserService<OidcUserRequest, 
             newClaims.put("id", user.getId());
 
             OidcUserInfo oidcUserInfo = new OidcUserInfo(newClaims);
-            return new DefaultOidcUser(oidcUser.getAuthorities(), oidcUser.getIdToken(), oidcUserInfo);
+            return new DefaultOidcUser(
+                    mergeAuthorities(oidcUser.getAuthorities(), user.getAuthorities()),
+                    oidcUser.getIdToken(),
+                    oidcUserInfo);
         } else if (logInToServiceDesk) {
             Optional<ExternalUser> optionalExternalUser = externalUserRepository.findUserByUid(uid);
 
@@ -123,10 +130,21 @@ public class EduIDOidcUserService implements OAuth2UserService<OidcUserRequest, 
             newClaims.put("id", externalUser.getId());
 
             OidcUserInfo oidcUserInfo = new OidcUserInfo(newClaims);
-            return new DefaultOidcUser(oidcUser.getAuthorities(), oidcUser.getIdToken(), oidcUserInfo);
+            return new DefaultOidcUser(
+                    mergeAuthorities(oidcUser.getAuthorities(), externalUser.getAuthorities()),
+                    oidcUser.getIdToken(),
+                    oidcUserInfo);
         } else {
             throw new IllegalArgumentException("Unknown host header in the request: " + host);
         }
+    }
+
+    private static Set<GrantedAuthority> mergeAuthorities(
+            Collection<? extends GrantedAuthority> upstream,
+            Collection<? extends GrantedAuthority> local) {
+        Set<GrantedAuthority> merged = new LinkedHashSet<>(upstream);
+        merged.addAll(local);
+        return merged;
     }
 
     private String getHeader(String name) {

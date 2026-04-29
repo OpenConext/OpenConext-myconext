@@ -10,7 +10,6 @@ import myconext.repository.AuthenticationRequestRepository;
 import myconext.repository.ExternalUserRepository;
 import myconext.repository.UserLoginRepository;
 import myconext.repository.UserRepository;
-import myconext.shibboleth.ShibbolethUserDetailService;
 import oidc.security.AuthorizationRequestCustomizer;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.logging.Log;
@@ -23,8 +22,6 @@ import org.springframework.core.annotation.Order;
 import org.springframework.core.env.Environment;
 import org.springframework.core.env.Profiles;
 import org.springframework.core.io.Resource;
-import org.springframework.security.authentication.AuthenticationProvider;
-import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -37,7 +34,6 @@ import org.springframework.security.oauth2.client.web.OAuth2AuthorizationRequest
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.AnonymousAuthenticationFilter;
 import org.springframework.security.web.authentication.preauth.AbstractPreAuthenticatedProcessingFilter;
-import org.springframework.security.web.authentication.preauth.PreAuthenticatedAuthenticationProvider;
 import org.springframework.security.web.context.DelegatingSecurityContextRepository;
 import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
 import org.springframework.security.web.context.RequestAttributeSecurityContextRepository;
@@ -249,14 +245,6 @@ public class SecurityConfiguration {
             this.clientRegistrationRepository = clientRegistrationRepository;
         }
 
-
-
-        private AuthenticationProvider preAuthenticatedAuthenticationProvider() {
-            PreAuthenticatedAuthenticationProvider provider = new PreAuthenticatedAuthenticationProvider();
-            provider.setPreAuthenticatedUserDetailsService(new ShibbolethUserDetailService());
-            return provider;
-        }
-
         private OAuth2AuthorizationRequestResolver authorizationRequestResolver(
                 ClientRegistrationRepository clientRegistrationRepository) {
             DefaultOAuth2AuthorizationRequestResolver authorizationRequestResolver =
@@ -280,8 +268,6 @@ public class SecurityConfiguration {
                 @Value("${host_headers.active}") String activeHost,
                 @Value("${host_headers.mijn_ediuid}") String mijnEduIDHost,
                 @Value("${host_headers.service_desk}") String serviceDeskHost) throws Exception {
-            AuthenticationProvider authenticationProvider = preAuthenticatedAuthenticationProvider();
-            ProviderManager providerManager = new ProviderManager(authenticationProvider);
             http
                     .securityMatcher(
                             "/startSSO",
