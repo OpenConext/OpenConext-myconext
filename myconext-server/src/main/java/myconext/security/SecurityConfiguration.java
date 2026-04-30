@@ -256,7 +256,7 @@ public class SecurityConfiguration {
         }
 
         @Bean
-        public SecurityFilterChain shibbolethSecurityFilterChain(
+        public SecurityFilterChain internalSecuritySecurityFilterChain(
                 HttpSecurity http,
                 Environment environment,
                 Manage manage,
