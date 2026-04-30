@@ -4,11 +4,19 @@
 
 All notable changes to this project will be documented in this file.
 
-## Next
+## [8.3.0] Apr 2026
 
 - Send Apple Push Notifications with `InterruptionLevel.TIME_SENSITIVE`
+- Never return empty results in attribute-manipulation endpoint ([#1125](https://github.com/OpenConext/OpenConext-myconext/issues/1125))
+- Fix issue with entering email address during registration
+- Textual changes and improvements in translations
+- Remove login code from email subject
+- Fix a11y issues
+- Add return url option for the create-from-institution page ([#1042](https://github.com/OpenConext/OpenConext-myconext/issues/1042))
+- Update dependencies
 
 ## [8.2.6] Feb 2026
+
 - First tickets to improve UX accessibility (WCAG)
 - General update of dependencies
 - Remote create API update
