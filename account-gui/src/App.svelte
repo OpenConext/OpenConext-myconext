@@ -1,5 +1,6 @@
 <script>
-    import {Route, Router} from "svelte-routing";
+    import {Router} from "svelte-routing";
+    import Route from "./components/Route.svelte";
     import Cookies from "js-cookie";
     import Login from "./routes/Login.svelte";
     import Success from "./routes/Success.svelte";
