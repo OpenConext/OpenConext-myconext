@@ -56,7 +56,6 @@ public class LoginController {
                            @Value("${base_path}") String basePath,
                            @Value("${base_domain}") String baseDomain,
                            @Value("${my_conext_url}") String myConextUrl,
-                           @Value("${guest_idp_entity_id}") String guestIdpEntityId,
                            @Value("${continue_after_login_url}") String continueAfterLoginUrl,
                            @Value("${email.magic-link-url}") String magicLinkUrl,
                            @Value("${domain}") String domain,
@@ -91,7 +90,7 @@ public class LoginController {
         this.config.put("idpBaseUrl", idpBaseUrl);
         this.config.put("spBaseUrl", spBaseUrl);
         this.config.put("eduIDWebAuthnUrl", String.format("%s/webauthn", idpBaseUrl));
-        this.config.put("eduIDLoginUrl", String.format("%s/Shibboleth.sso/Login?entityID=%s", myConextUrl, guestIdpEntityId));
+        this.config.put("eduIDLoginUrl", myConextUrl + "/oauth2/authorization/oidcng"); // todo verify, might be /login
         this.config.put("eduIDWebAuthnRedirectSpUrl", String.format("%s/security", spBaseUrl));
         this.config.put("domain", domain);
         this.config.put("featureWebAuthn", featureWebAuthn);
@@ -192,7 +191,7 @@ public class LoginController {
             String cookieValue = String.format("%s=true; Max-Age=%s; SameSite=None%s", REGISTER_MODUS_COOKIE_NAME, 60 * 10, secureCookie ? "; Secure" : "");
             response.setHeader("Set-Cookie", cookieValue);
         }
-        String redirectLocation = StringUtils.hasText(location) ? location : this.config.get("eduIDLoginUrl") + "&lang=" + lang;
+        String redirectLocation = StringUtils.hasText(location) ? location : this.config.get("eduIDLoginUrl") + "?lang=" + lang;
 
         LOG.info(String.format("Redirecting to %s", redirectLocation));
 

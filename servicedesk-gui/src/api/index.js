@@ -64,13 +64,7 @@ export function configuration() {
 }
 
 export function logout() {
-    const fetchOptions = {
-        credentials: "same-origin",
-        redirect: "manual"
-    };
-    return fetchJson("/myconext/api/servicedesk/logout")
-        // Todo update
-        .then(() => fetch("/Shibboleth.sso/Logout", fetchOptions));
+    return fetchJson("/myconext/api/servicedesk/logout");
 }
 
 //Service Desk

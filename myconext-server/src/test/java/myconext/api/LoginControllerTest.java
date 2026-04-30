@@ -50,7 +50,8 @@ public class LoginControllerTest extends AbstractIntegrationTest {
                 .get("/register")
                 .then()
                 .statusCode(302)
-                .header("Location", "https://my.test2.surfconext.nl/Shibboleth.sso/Login?entityID=https://localhost.surf.id&lang=en");
+                // Todo: verify
+                .header("Location", "https://my.test2.surfconext.nl/oauth2/authorization/oidcng?lang=en");
     }
 
     @Test
