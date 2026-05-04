@@ -501,7 +501,7 @@
   "LinkFromInstitution.EmailInUse2.COPY": "Probeer een andere, of ",
   "LinkFromInstitution.EmailInUse3.COPY": " koppel met deze eduID.",
   "LinkFromInstitution.InvalidEmail.COPY": "Ongeldig e-mailadres",
-  "LinkFromInstitution.InstitutionDomainNameWarning.COPY": "Dit lijkt een school- of werkmail. Gebruik een <b>persoonlijk e-mailadres</b>, omdat dat ook blijft werken als je van school of baan veranderd.",
+  "LinkFromInstitution.InstitutionDomainNameWarning.COPY": "Dit lijkt een school- of werkmail. Gebruik een <b>persoonlijk e-mailadres</b>, omdat dat ook blijft werken als je van school of baan verandert.",
   "LinkFromInstitution.InstitutionDomainNameWarning2.COPY": "We raden je aan om je persoonlijke e-mailadres te gebruiken voor eduID.",
   "LinkFromInstitution.AllowedDomainNamesError.COPY": "Domeinnaam %1$s niet toegestaan.",
   "LinkFromInstitution.AllowedDomainNamesError2.COPY": "eduID is beperkt om alleen te worden gebruikt voor toegestane domeinen.",
