@@ -417,7 +417,7 @@ const nl = {
         timeOutInfoLast: " om het opnieuw te proberen.",
         timeOutInfoLink: "link",
         openEduIDApp: "Open de app op dit apparaat",
-        existingRegistration: "Bestaande registrate",
+        existingRegistration: "Bestaande registratie",
         existingRegistrationInfoFirst: "Je kan geen nieuwe registratie starten, omdat je al een registratie hebt. Klik op ",
         existingRegistrationInfoLast: " om de instellingen van je beveiliging opnieuw te laden.",
         existingRegistrationInfoLink: "link",
