@@ -232,7 +232,7 @@ const nl = {
         timeOutInfoFirst: "Je sessie is verlopen. Klik op deze ",
         timeOutInfoLast: " om het opnieuw te proberen.",
         timeOutInfoLink: "link",
-        existingRegistration: "Bestaande registrate",
+        existingRegistration: "Bestaande registratie",
         existingRegistrationInfoFirst: "Je kan geen nieuwe registratie starten, omdat je al een registratie hebt. Klik op ",
         existingRegistrationInfoLast: " om opnieuw in te loggen.",
         existingRegistrationInfoLink: "link",
