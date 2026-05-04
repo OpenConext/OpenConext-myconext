@@ -2467,7 +2467,7 @@ SHARED:
     InstitutionDomainNameWarning:
       COPY:
         en: This looks like a school or work email. Use a <b>personal email</b>, because that one can still be used when you switch school or job.
-        nl: Dit lijkt een school- of werkmail. Gebruik een <b>persoonlijk e-mailadres</b>, omdat dat ook blijft werken als je van school of baan veranderd.
+        nl: Dit lijkt een school- of werkmail. Gebruik een <b>persoonlijk e-mailadres</b>, omdat dat ook blijft werken als je van school of baan verandert.
     InstitutionDomainNameWarning2:
       COPY:
         en: We recommend using your personal email address for eduID.
