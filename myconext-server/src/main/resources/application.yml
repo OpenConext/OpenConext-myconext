@@ -3,7 +3,7 @@ logging:
   level:
     org.springframework.data.mongodb: INFO
     org.springframework.data.convert: INFO
-    org.springframework.security: TRACE
+    org.springframework.security: WARN
     io.mongock.: TRACE
     tiqr.org: DEBUG
     myconext: DEBUG
