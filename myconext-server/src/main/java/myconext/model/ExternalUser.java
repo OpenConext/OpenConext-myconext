@@ -29,7 +29,7 @@ import static myconext.security.SecurityConfiguration.InternalSecurityConfigurat
 public class ExternalUser implements Serializable, UserDetails {
 
     private static final List<SimpleGrantedAuthority> GUEST_AUTHORITIES = List.of(new SimpleGrantedAuthority(ROLE_GUEST));
-    private static final List<SimpleGrantedAuthority> SERVICE_DESK_AUTHORIES = Stream.of(ROLE_GUEST, SERVICE_DESK)
+    private static final List<SimpleGrantedAuthority> SERVICE_DESK_AUTHORITIES = Stream.of(ROLE_GUEST, SERVICE_DESK)
             .map(SimpleGrantedAuthority::new)
             .toList();
 
@@ -74,7 +74,7 @@ public class ExternalUser implements Serializable, UserDetails {
     @JsonIgnore
     public Collection<? extends GrantedAuthority> getAuthorities() {
         if (serviceDeskMember) {
-            return SERVICE_DESK_AUTHORIES;
+            return SERVICE_DESK_AUTHORITIES;
         }
         return GUEST_AUTHORITIES;
     }

@@ -59,13 +59,12 @@ export function me() {
     return fetchJson("/myconext/api/servicedesk/me");
 }
 
+export function configuration() {
+    return fetchJson("/config");
+}
+
 export function logout() {
-    const fetchOptions = {
-        credentials: "same-origin",
-        redirect: "manual"
-    };
-    return fetchJson("/myconext/api/servicedesk/logout")
-        .then(() => fetch("/Shibboleth.sso/Logout", fetchOptions));
+    return fetchJson("/myconext/api/servicedesk/logout");
 }
 
 //Service Desk

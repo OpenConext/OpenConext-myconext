@@ -30,7 +30,8 @@ const nl = {
         loginAgain: "Opnieuw inloggen",
         deleteTitle: "Jouw eduID is verwijderd",
         deleteStatus: "Om het verwijderen van je eduID te voltooien, moet je jouw browser nu afsluiten.",
-        registerAgain: "Opnieuw registreren"
+        registerAgain: "Opnieuw registreren",
+        rateLimitTitle: "Te veel mislukte pogingen"
     },
     notFound: {
         title: "Oeps...",

@@ -31,6 +31,15 @@
     onMount(() => configuration()
         .then(json => {
             $config = json;
+
+            if ($config.isAuthenticated === false &&
+              !unprotectedRoutes.some(route => window.location.pathname.indexOf(route) > -1)) {
+                $redirectPath = window.location.pathname;
+                const path = encodeURIComponent($redirectPath || "/");
+                window.location.href = `${$config.loginUrl}?redirect_path=${path}`;
+                return;
+            }
+
             const urlSearchParams = new URLSearchParams(window.location.search);
             let lang = "en";
             if (urlSearchParams.has("lang")) {

@@ -2,7 +2,7 @@ import React, {useEffect, useState} from 'react'
 import {Loader} from "@surfnet/sds";
 import './App.scss';
 import {Navigate, Route, Routes, useNavigate} from "react-router-dom";
-import {me} from "./api/index.js";
+import {configuration, me} from "./api/index.js";
 import {useAppStore} from "./stores/AppStore.js";
 import {Flash} from "./components/Flash.jsx";
 import {Header} from "./components/Header.jsx";
@@ -25,21 +25,31 @@ const App = () => {
             setLoading(false);
             return;
         }
-        me()
-            .then(res => {
-                useAppStore.setState(() => ({user: res}));
-                setLoading(false);
-                if (res.serviceDeskMember) {
-                    setIsAuthenticated(true);
-                    navigate("/home");
-                } else {
-                    navigate("/forbidden");
-                }
-            })
-            .catch(() => {
+        configuration().then(({isAuthenticated}) => {
+            if (isAuthenticated) {
+                me()
+                    .then(res => {
+                        useAppStore.setState(() => ({user: res}));
+                        setLoading(false);
+                        if (res.serviceDeskMember) {
+                            setIsAuthenticated(true);
+                            navigate("/home");
+                        } else {
+                            navigate("/forbidden");
+                        }
+                    })
+                    .catch(() => {
+                        setLoading(false);
+                        navigate("/login");
+                    });
+            }
+            else {
                 setLoading(false);
                 navigate("/login");
-            });
+            }
+        })
+
+
 
     }, []);
 

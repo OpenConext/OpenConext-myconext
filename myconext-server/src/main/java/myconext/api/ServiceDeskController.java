@@ -13,14 +13,23 @@ import myconext.repository.UserRepository;
 import myconext.verify.AttributeMapper;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.oauth2.core.oidc.user.OidcUser;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.View;
+import org.springframework.web.servlet.view.RedirectView;
 
+import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
 import java.util.Date;
+import java.util.List;
+import java.util.Optional;
 
 
 @RestController
@@ -33,21 +42,38 @@ public class ServiceDeskController {
     private final UserRepository userRepository;
     private final ExternalUserRepository externalUserRepository;
     private final AttributeMapper attributeMapper;
+    private final String spBaseUrl;
 
     public ServiceDeskController(UserRepository userRepository,
                                  ExternalUserRepository externalUserRepository,
-                                 AttributeMapper attributeMapper) {
+                                 AttributeMapper attributeMapper,
+                                 @Value("${sp_redirect_url}") String spBaseUrl) {
         this.userRepository = userRepository;
         this.externalUserRepository = externalUserRepository;
         this.attributeMapper = attributeMapper;
+        this.spBaseUrl = spBaseUrl;
     }
 
     @GetMapping("/me")
     public ResponseEntity<ExternalUser> me(Authentication authentication) {
-        String userId = ((ExternalUser) authentication.getPrincipal()).getId();
+        String userId = (String) ((OidcUser) authentication.getPrincipal()).getClaims().get("id");
         ExternalUser user = this.externalUserRepository.findById(userId).orElseThrow(() -> new UserNotFoundException(userId));
 
         return ResponseEntity.ok(user);
+    }
+
+    @GetMapping("/login")
+    public View login(@RequestParam(value = "redirect_path", required = false) String redirectPath) {
+        String target = spBaseUrl;
+        if (StringUtils.hasText(redirectPath)) {
+            String path = URLDecoder.decode(redirectPath, StandardCharsets.UTF_8);
+            // Only allow internal, same-origin paths to avoid open-redirects
+            if (path.startsWith("/") && !path.startsWith("//")) {
+                target = spBaseUrl + path;
+            }
+        }
+        LOG.debug(String.format("/login redirecting to %s", target));
+        return new RedirectView(target, false);
     }
 
     @GetMapping("/logout")
@@ -108,7 +134,12 @@ public class ServiceDeskController {
             throw new ForbiddenException("User UID's do not match");
         }
 
-        String userUid = ((ExternalUser) authentication.getPrincipal()).getUid();
+        String userUid = Optional.ofNullable(
+                        ((OidcUser) authentication.getPrincipal()).getClaimAsStringList("uids"))
+                .filter(l -> !l.isEmpty())
+                .map(List::getFirst)
+                .orElseThrow(() -> new ForbiddenException("Missing 'uids' claim"));
+
         ExternalUser serviceDeskMember = this.externalUserRepository.findUserByUid(userUid).orElseThrow(() -> new UserNotFoundException(userUid));
 
         LOG.info(String.format("Adding external linked account for service desk for user %s by user %s",

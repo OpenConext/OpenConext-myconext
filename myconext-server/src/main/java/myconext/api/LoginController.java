@@ -17,6 +17,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.context.SecurityContextRepository;
@@ -28,7 +29,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.io.IOException;
 import java.net.URI;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -56,7 +56,6 @@ public class LoginController {
                            @Value("${base_path}") String basePath,
                            @Value("${base_domain}") String baseDomain,
                            @Value("${my_conext_url}") String myConextUrl,
-                           @Value("${guest_idp_entity_id}") String guestIdpEntityId,
                            @Value("${continue_after_login_url}") String continueAfterLoginUrl,
                            @Value("${email.magic-link-url}") String magicLinkUrl,
                            @Value("${domain}") String domain,
@@ -84,14 +83,14 @@ public class LoginController {
                            CreateFromInstitutionProperties createFromInstitutionProperties
     ) {
         this.config.put("basePath", basePath);
-        this.config.put("loginUrl", basePath + "/login");
+        this.config.put("loginUrl", basePath + "/myconext/api/sp/login");
         this.config.put("continueAfterLoginUrl", continueAfterLoginUrl);
         this.config.put("baseDomain", baseDomain);
         this.config.put("magicLinkUrl", magicLinkUrl);
         this.config.put("idpBaseUrl", idpBaseUrl);
         this.config.put("spBaseUrl", spBaseUrl);
         this.config.put("eduIDWebAuthnUrl", String.format("%s/webauthn", idpBaseUrl));
-        this.config.put("eduIDLoginUrl", String.format("%s/Shibboleth.sso/Login?entityID=%s", myConextUrl, guestIdpEntityId));
+        this.config.put("eduIDLoginUrl", myConextUrl + "/oauth2/authorization/oidcng"); // todo verify, might be /login
         this.config.put("eduIDWebAuthnRedirectSpUrl", String.format("%s/security", spBaseUrl));
         this.config.put("domain", domain);
         this.config.put("featureWebAuthn", featureWebAuthn);
@@ -112,6 +111,7 @@ public class LoginController {
         this.config.put("useRemoteCreationForAffiliation", useRemoteCreationForAffiliation);
         this.config.put("enableAccountLinking", enableAccountLinking);
         this.config.put("useApp", useApp);
+        this.config.put("isAuthenticated", false);
         this.secureCookie = secureCookie;
         this.userRepository = userRepository;
         this.authenticationRequestRepository = authenticationRequestRepository;
@@ -120,8 +120,10 @@ public class LoginController {
     }
 
     @GetMapping("/config")
-    public Map<String, Object> config() {
-        return this.config;
+    public Map<String, Object> config(Authentication authentication) {
+        Map<String, Object> result = new HashMap<>(this.config);
+        result.put("isAuthenticated", authentication != null);
+        return result;
     }
 
     @GetMapping("/register")
@@ -184,46 +186,14 @@ public class LoginController {
         return ResponseEntity.status(HttpStatus.FOUND).location(URI.create(redirectUrl)).build();
     }
 
-    @GetMapping("/doLogin")
-    public void doLogin(@RequestParam(value = "lang", required = false, defaultValue = "en") String lang,
-                        @RequestParam(value = "location", required = false) String location,
-                        @RequestParam(value = "register", required = false, defaultValue = "true") String register,
-                        HttpServletResponse response) throws IOException {
-        doRedirect(lang, location, response, Boolean.valueOf(register));
-    }
-
     private void doRedirect(String lang, String location, HttpServletResponse response, boolean register) throws IOException {
         if (register) {
             String cookieValue = String.format("%s=true; Max-Age=%s; SameSite=None%s", REGISTER_MODUS_COOKIE_NAME, 60 * 10, secureCookie ? "; Secure" : "");
             response.setHeader("Set-Cookie", cookieValue);
         }
-        String redirectLocation = StringUtils.hasText(location) ? location : this.config.get("eduIDLoginUrl") + "&lang=" + lang;
+        String redirectLocation = StringUtils.hasText(location) ? location : this.config.get("eduIDLoginUrl") + "?lang=" + lang;
 
         LOG.info(String.format("Redirecting to %s", redirectLocation));
-
-        response.sendRedirect(redirectLocation);
-    }
-
-    @GetMapping("/doLogout")
-    public void doLogout(HttpServletRequest request,
-                         HttpServletResponse response,
-                         @RequestParam(value = "param") String param) throws IOException {
-        if (param.contains("delete")) {
-            Cookie[] cookies = request.getCookies();
-            if (cookies != null) {
-                Arrays.asList(cookies).forEach(cookie -> {
-                    cookie.setMaxAge(0);
-                    cookie.setSecure(true);
-                    cookie.setValue("");
-                    response.addCookie(cookie);
-                });
-            }
-        }
-        request.getSession().invalidate();
-        SecurityContextHolder.clearContext();
-        String redirectLocation = String.format("%s/landing?%s", this.config.get("spBaseUrl"), param);
-
-        LOG.info(String.format("Logout and redirect to %s", redirectLocation));
 
         response.sendRedirect(redirectLocation);
     }
