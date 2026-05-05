@@ -34,14 +34,12 @@ export const About = () => {
                     <p className="info">
                         {I18n.t("about.whyInfo1")}
                     </p>
-                    <p className="info">
-                        {I18n.t("about.whyInfo2")}
-                    </p>
                 </div>
                 <div className="card bottom">
                     <h3>
                         {I18n.t("about.register")}
                     </h3>
+
                     <p className="info"
                        dangerouslySetInnerHTML={{__html: I18n.t("about.registerInfo")}}/>
                 </div>

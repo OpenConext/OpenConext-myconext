@@ -73,7 +73,6 @@ public abstract class AbstractMailBoxTest extends AbstractIntegrationTest {
         user.setEmail(DELETED_EMAIL);
         user.setUserInactivity(UserInactivity.WEEK_1_BEFORE_5_YEARS);
         userRepository.save(user);
-
     }
 
     protected void purgeEmailFromAllMailboxes() throws FolderException {

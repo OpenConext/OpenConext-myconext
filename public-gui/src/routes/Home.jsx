@@ -2,7 +2,7 @@ import "./Home.scss";
 import phone from "../assets/phone.svg";
 import cheering from "../assets/cheering.svg";
 import app from "../assets/app.svg";
-import QRCode from "react-qr-code";
+import {QRCode} from "react-qr-code";
 import appStore from "../assets/app_store.svg";
 import googlePlay from "../assets/google_play.svg";
 import I18n from "../locale/I18n.js";
