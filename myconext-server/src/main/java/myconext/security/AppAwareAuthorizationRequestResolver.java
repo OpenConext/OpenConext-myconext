@@ -26,11 +26,17 @@ public class AppAwareAuthorizationRequestResolver implements OAuth2Authorization
         // Without this guard, every request through this filter chain (e.g. /config) would be
         // turned into an OAuth2 redirect because the 2-arg delegate.resolve does not check the path.
         String path = request.getRequestURI().substring(request.getContextPath().length());
-        if (!path.startsWith("/oauth2/authorization/")) {
+        if (path.endsWith("config")) {
             return null;
         }
-        String registrationId = resolveRegistrationId(request);
-        return delegate.resolve(request, registrationId);
+        String registrationId;
+        if (path.startsWith("/myconext/api/sp/login")) {
+            registrationId = "oidcng";
+        } else {
+            registrationId = "oidcng-gg";
+        }
+        OAuth2AuthorizationRequest resolve = delegate.resolve(request, registrationId);
+        return resolve;
     }
 
     @Override
