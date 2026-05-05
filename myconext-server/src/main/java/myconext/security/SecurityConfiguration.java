@@ -10,7 +10,6 @@ import myconext.repository.AuthenticationRequestRepository;
 import myconext.repository.ExternalUserRepository;
 import myconext.repository.UserLoginRepository;
 import myconext.repository.UserRepository;
-import oidc.security.AuthorizationRequestCustomizer;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -28,8 +27,6 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
-import org.springframework.security.oauth2.client.web.DefaultOAuth2AuthorizationRequestResolver;
 import org.springframework.security.oauth2.client.web.OAuth2AuthorizationRequestResolver;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.AnonymousAuthenticationFilter;
@@ -236,23 +233,13 @@ public class SecurityConfiguration {
     @Configuration
     public static class InternalSecurityConfigurationAdapter {
 
-        private final ClientRegistrationRepository clientRegistrationRepository;
+        private final OAuth2AuthorizationRequestResolver authorizationRequestResolver;
 
         public static final String ROLE_GUEST = "ROLE_GUEST";
         public static final String SERVICE_DESK = "SERVICE_DESK";
 
-        public InternalSecurityConfigurationAdapter(ClientRegistrationRepository clientRegistrationRepository) {
-            this.clientRegistrationRepository = clientRegistrationRepository;
-        }
-
-        private OAuth2AuthorizationRequestResolver authorizationRequestResolver(
-                ClientRegistrationRepository clientRegistrationRepository) {
-            DefaultOAuth2AuthorizationRequestResolver authorizationRequestResolver =
-                    new DefaultOAuth2AuthorizationRequestResolver(
-                            clientRegistrationRepository, "/oauth2/authorization");
-            authorizationRequestResolver.setAuthorizationRequestCustomizer(
-                    new AuthorizationRequestCustomizer());
-            return authorizationRequestResolver;
+        public InternalSecurityConfigurationAdapter(AppAwareAuthorizationRequestResolver authorizationRequestResolver) {
+            this.authorizationRequestResolver = authorizationRequestResolver;
         }
 
         @Bean
@@ -288,15 +275,14 @@ public class SecurityConfiguration {
                                     "/myconext/api/sp/create-from-institution",
                                     "/myconext/api/sp/create-from-institution/**",
                                     "/myconext/api/sp/idin/issuers",
-                                    "/myconext/api/servicedesk/logout",
+//                                    "/myconext/api/servicedesk/logout", // Todo: possibly not needed
                                     "/myconext/api/swagger-ui/**").permitAll()
                             .anyRequest().authenticated())
                     .oauth2Login(oAuth2LoginConfigurer -> oAuth2LoginConfigurer
-                            // Custom resolver adds prompt=login when original request had force= (OpenConext helper).
+                            // App-aware resolver picks the correct registrationId based on the request host
+                            // and adds prompt=login when original request had force= (OpenConext helper).
                             .authorizationEndpoint(authorization -> authorization
-                                    .authorizationRequestResolver(
-                                            authorizationRequestResolver(this.clientRegistrationRepository)
-                                    )
+                                    .authorizationRequestResolver(this.authorizationRequestResolver)
                             )
                             // After tokens: load user then run provisioning hook (here: println only).
                             .userInfoEndpoint(userInfoEndpointConfigurer -> userInfoEndpointConfigurer.oidcUserService(
