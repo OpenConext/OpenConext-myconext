@@ -46,6 +46,7 @@ import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
 
 import static java.util.stream.Collectors.toList;
 import static org.springframework.security.config.Customizer.withDefaults;
@@ -238,6 +239,9 @@ public class SecurityConfiguration {
         public static final String ROLE_GUEST = "ROLE_GUEST";
         public static final String SERVICE_DESK = "SERVICE_DESK";
 
+        private static final Set<String> ALLOWED_REGISTRATION_IDS =
+                Set.of("mijn_ediuid", "service_desk");
+
         public InternalSecurityConfigurationAdapter(AppAwareAuthorizationRequestResolver authorizationRequestResolver) {
             this.authorizationRequestResolver = authorizationRequestResolver;
         }
@@ -295,7 +299,8 @@ public class SecurityConfiguration {
                     )
                     // With multiple ClientRegistrations Spring's default entry point would redirect
                     // unauthenticated users to a provider-chooser page (/login). Pick the right
-                    // registrationId based on the protected endpoint they tried to access.
+                    // registrationId based on the `registration_id` query parameter on the
+                    // (typically /auth/login) request.
                     .exceptionHandling(eh -> eh.authenticationEntryPoint(appAwareAuthenticationEntryPoint()));
             if (environment.acceptsProfiles(Profiles.of("local", "test"))) {
                 // Fake OIDC user so APIs work without hitting SURFconext.
@@ -306,10 +311,10 @@ public class SecurityConfiguration {
 
         private AuthenticationEntryPoint appAwareAuthenticationEntryPoint() {
             return (request, response, authException) -> {
-                String path = request.getRequestURI().substring(request.getContextPath().length());
-                String registrationId = path.startsWith("/myconext/api/servicedesk")
-                        ? "service_desk"
-                        : "mijn_ediuid";
+                String registrationId = request.getParameter("registration_id");
+                if (!ALLOWED_REGISTRATION_IDS.contains(registrationId)) {
+                    registrationId = "mijn_ediuid";
+                }
                 response.sendRedirect(request.getContextPath() + "/oauth2/authorization/" + registrationId);
             };
         }

@@ -1318,21 +1318,7 @@ public class UserController implements UserAuthentication {
                 .body(objectWriter.writeValueAsString(map));
     }
 
-
-    @GetMapping("/sp/login")
-    public View login(@RequestParam(value = "redirect_path", required = false) String redirectPath) {
-        String target = spBaseUrl;
-        if (StringUtils.hasText(redirectPath)) {
-            String path = URLDecoder.decode(redirectPath, StandardCharsets.UTF_8);
-            // Only allow internal, same-origin paths to avoid open-redirects
-            if (path.startsWith("/") && !path.startsWith("//")) {
-                target = spBaseUrl + path;
-            }
-        }
-        LOG.debug(String.format("/login redirecting to %s", target));
-        return new RedirectView(target, false);
-    }
-
+    // Todo consider moving to LoginController
     @GetMapping("/sp/logout")
     @Operation(summary = "Logout",
             description = "Logout the current logged in user")
