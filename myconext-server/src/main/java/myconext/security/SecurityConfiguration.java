@@ -27,7 +27,6 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.oauth2.client.web.OAuth2AuthorizationRequestResolver;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.AnonymousAuthenticationFilter;
@@ -234,7 +233,7 @@ public class SecurityConfiguration {
     @Configuration
     public static class InternalSecurityConfigurationAdapter {
 
-        private final OAuth2AuthorizationRequestResolver authorizationRequestResolver;
+        private final AppAwareAuthorizationRequestResolver authorizationRequestResolver;
 
         public static final String ROLE_GUEST = "ROLE_GUEST";
         public static final String SERVICE_DESK = "SERVICE_DESK";
@@ -258,6 +257,7 @@ public class SecurityConfiguration {
                 @Value("${host_headers.service_desk}") String serviceDeskHost) throws Exception {
             http
                     .securityMatcher(
+                            "/auth/**",
                             "/startSSO",
                             "/config",
                             "/tiqr/sp/**",

@@ -26,9 +26,13 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.View;
+import org.springframework.web.servlet.view.RedirectView;
 
 import java.io.IOException;
 import java.net.URI;
+import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -49,6 +53,7 @@ public class LoginController {
     private final AuthenticationRequestRepository authenticationRequestRepository;
     private final SecurityContextRepository securityContextRepository;
     private final List<String> createFromInstitutionAllowedReturnDomains;
+    private final String spBaseUrl;
 
     public LoginController(UserRepository userRepository,
                            AuthenticationRequestRepository authenticationRequestRepository,
@@ -83,7 +88,7 @@ public class LoginController {
                            CreateFromInstitutionProperties createFromInstitutionProperties
     ) {
         this.config.put("basePath", basePath);
-        this.config.put("loginUrl", basePath + "/myconext/api/sp/login");
+        this.config.put("loginUrl", basePath + "/auth/login");
         this.config.put("continueAfterLoginUrl", continueAfterLoginUrl);
         this.config.put("baseDomain", baseDomain);
         this.config.put("magicLinkUrl", magicLinkUrl);
@@ -117,6 +122,7 @@ public class LoginController {
         this.authenticationRequestRepository = authenticationRequestRepository;
         this.securityContextRepository = securityContextRepository;
         this.createFromInstitutionAllowedReturnDomains = createFromInstitutionProperties.getReturnUrlAllowedDomains();
+        this.spBaseUrl = spBaseUrl;
     }
 
     @GetMapping("/config")
@@ -124,6 +130,24 @@ public class LoginController {
         Map<String, Object> result = new HashMap<>(this.config);
         result.put("isAuthenticated", authentication != null);
         return result;
+    }
+
+    @GetMapping("/auth/login")
+    public View login(
+            @RequestParam(value = "redirect_path", required = false) String redirectPath,
+            @RequestParam(value = "registration_id") String registrationId
+    ) {
+        System.out.println("registration_id: " + registrationId);
+        String target = spBaseUrl;
+        if (StringUtils.hasText(redirectPath)) {
+            String path = URLDecoder.decode(redirectPath, StandardCharsets.UTF_8);
+            // Only allow internal, same-origin paths to avoid open-redirects
+            if (path.startsWith("/") && !path.startsWith("//")) {
+                target = spBaseUrl + path;
+            }
+        }
+        LOG.debug(String.format("/login redirecting to %s", target));
+        return new RedirectView(target, false);
     }
 
     @GetMapping("/register")

@@ -35,8 +35,10 @@
             if ($config.isAuthenticated === false &&
               !unprotectedRoutes.some(route => window.location.pathname.indexOf(route) > -1)) {
                 $redirectPath = window.location.pathname;
-                const path = encodeURIComponent($redirectPath || "/");
-                window.location.href = `${$config.loginUrl}?redirect_path=${path}`;
+                const loginUrl = new URL($config.loginUrl);
+                loginUrl.searchParams.set("redirect_path", $redirectPath || "/");
+                loginUrl.searchParams.set("registration_id", "mijn_ediuid");
+                window.location.href = loginUrl.toString();
                 return;
             }
 
