@@ -8,6 +8,14 @@ import org.springframework.security.oauth2.client.web.OAuth2AuthorizationRequest
 import org.springframework.security.oauth2.core.endpoint.OAuth2AuthorizationRequest;
 import org.springframework.stereotype.Component;
 
+/**
+ * Thin wrapper around {@link DefaultOAuth2AuthorizationRequestResolver} that installs the
+ * OpenConext {@link AuthorizationRequestCustomizer} (adds {@code prompt=login} when the
+ * original request carried {@code force=}). The registrationId is taken from the request
+ * URL ({@code /oauth2/authorization/{registrationId}}); choosing which registration to use
+ * for an unauthenticated request is handled by the {@code AuthenticationEntryPoint} in
+ * {@link SecurityConfiguration}.
+ */
 @Component
 public class AppAwareAuthorizationRequestResolver implements OAuth2AuthorizationRequestResolver {
 
@@ -22,34 +30,11 @@ public class AppAwareAuthorizationRequestResolver implements OAuth2Authorization
 
     @Override
     public OAuth2AuthorizationRequest resolve(HttpServletRequest request) {
-        // Only initiate an authorization request when the URI is the login-initiation endpoint.
-        // Without this guard, every request through this filter chain (e.g. /config) would be
-        // turned into an OAuth2 redirect because the 2-arg delegate.resolve does not check the path.
-        String path = request.getRequestURI().substring(request.getContextPath().length());
-        if (path.endsWith("config")) {
-            return null;
-        }
-        String registrationId;
-        if (path.startsWith("/myconext/api/sp/login")) {
-            registrationId = "oidcng";
-        } else {
-            registrationId = "oidcng-gg";
-        }
-        OAuth2AuthorizationRequest resolve = delegate.resolve(request, registrationId);
-        return resolve;
+        return delegate.resolve(request);
     }
 
     @Override
     public OAuth2AuthorizationRequest resolve(HttpServletRequest request, String registrationId) {
         return delegate.resolve(request, registrationId);
     }
-
-    private String resolveRegistrationId(HttpServletRequest request) {
-        String host = request.getServerName();
-        if (host.startsWith("app1")) { // todo
-            return "oidcng";
-        }
-        return "oidcng";
-    }
-
 }

@@ -28,6 +28,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.oauth2.client.web.OAuth2AuthorizationRequestResolver;
+import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.AnonymousAuthenticationFilter;
 import org.springframework.security.web.authentication.preauth.AbstractPreAuthenticatedProcessingFilter;
@@ -279,8 +280,9 @@ public class SecurityConfiguration {
                                     "/myconext/api/swagger-ui/**").permitAll()
                             .anyRequest().authenticated())
                     .oauth2Login(oAuth2LoginConfigurer -> oAuth2LoginConfigurer
-                            // App-aware resolver picks the correct registrationId based on the request host
-                            // and adds prompt=login when original request had force= (OpenConext helper).
+                            // Resolver delegates to the default URL-based lookup
+                            // (/oauth2/authorization/{registrationId}) and adds prompt=login when the
+                            // original request had force= (OpenConext helper).
                             .authorizationEndpoint(authorization -> authorization
                                     .authorizationRequestResolver(this.authorizationRequestResolver)
                             )
@@ -290,12 +292,26 @@ public class SecurityConfiguration {
                                             environment, manage, userRepository, externalUserRepository, mijnEduIDEntityId, mijnEduIDHost, serviceDeskHost, activeHost, Arrays.asList(serviceDeskRoles)
                                     )
                             ))
-                    );
+                    )
+                    // With multiple ClientRegistrations Spring's default entry point would redirect
+                    // unauthenticated users to a provider-chooser page (/login). Pick the right
+                    // registrationId based on the protected endpoint they tried to access.
+                    .exceptionHandling(eh -> eh.authenticationEntryPoint(appAwareAuthenticationEntryPoint()));
             if (environment.acceptsProfiles(Profiles.of("local", "test"))) {
                 // Fake OIDC user so APIs work without hitting SURFconext.
                 http.addFilterBefore(new LocalDevelopmentAuthenticationFilter(userRepository, serviceDeskRoleAutoProvisioning), AnonymousAuthenticationFilter.class);
             }
             return http.build();
+        }
+
+        private AuthenticationEntryPoint appAwareAuthenticationEntryPoint() {
+            return (request, response, authException) -> {
+                String path = request.getRequestURI().substring(request.getContextPath().length());
+                String registrationId = path.startsWith("/myconext/api/servicedesk")
+                        ? "service_desk"
+                        : "mijn_ediuid";
+                response.sendRedirect(request.getContextPath() + "/oauth2/authorization/" + registrationId);
+            };
         }
     }
 

@@ -297,13 +297,14 @@ spring:
     oauth2:
       client:
         registration:
-          oidcng:
+          mijn_ediuid:
             client-id: playground_client
             client-secret: secret
             redirect-uri: "{baseUrl}/login/oauth2/code/{registrationId}"
             authorization-grant-type: "authorization_code"
             scope: openid
-          oidcng-gg:
+            provider: oidcng
+          service_desk:
             client-id: playground_client
             client-secret: secret
             redirect-uri: "{baseUrl}/login/oauth2/code/{registrationId}"
