@@ -160,14 +160,13 @@ public abstract class AbstractIntegrationTest implements HasUserRepository {
     @BeforeEach
     public void before() throws Exception {
         RestAssured.port = port;
-        Arrays.asList(SamlAuthenticationRequest.class, User.class)
+        Arrays.asList(SamlAuthenticationRequest.class, User.class, ExternalUser.class)
                 .forEach(clazz -> mongoTemplate.bulkOps(BulkOperations.BulkMode.ORDERED, clazz)
                         .remove(new Query())
                         .insert(readFromFile(clazz))
                         .execute());
         Arrays.asList(PasswordResetHash.class, ChangeEmailHash.class, Challenge.class, EmailsSend.class,
-                        Registration.class, Authentication.class, Enrollment.class, MobileLinkAccountRequest.class,
-                        ExternalUser.class)
+                        Registration.class, Authentication.class, Enrollment.class, MobileLinkAccountRequest.class)
                 .forEach(clazz -> mongoTemplate.bulkOps(BulkOperations.BulkMode.ORDERED, clazz)
                         .remove(new Query())
                         .execute());
