@@ -92,5 +92,19 @@ const en = {
         surfLogoLabel: "SURF",
         euLogoAlt: "Funded by the European Union. NextGenerationEU."
     },
+    faq: [
+        {
+            q: "question 1",
+            a: "answer 1 with {{variable}} interpolation"
+        },
+        {
+            q: "question 2",
+            a: "answer 2 with <code>HTML</code> formatting"
+        },
+        {
+            q: "question 3",
+            a: "answer 3"
+        }
+    ]
 }
 export default en;
