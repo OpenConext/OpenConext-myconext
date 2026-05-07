@@ -20,7 +20,10 @@
     });
 
     const loginAgain = () => {
-        window.location.href = `${$config.loginUrl}`;
+        const loginUrl = new URL($config.loginUrl);
+        loginUrl.searchParams.set("redirect_path", "/");
+        loginUrl.searchParams.set("registration_id", "mijn_ediuid");
+        window.location.href = loginUrl.toString();
     }
 
 </script>

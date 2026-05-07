@@ -88,8 +88,10 @@
                         } else if (afterDelete) {
                             navigate("/landing?delete=true");
                         } else {
-                            const path = encodeURIComponent($redirectPath || "/");
-                            window.location.href = `${$config.loginUrl}?redirect_path=${path}`;
+                            const loginUrl = new URL($config.loginUrl);
+                            loginUrl.searchParams.set("redirect_path", $redirectPath || "/");
+                            loginUrl.searchParams.set("registration_id", "mijn_ediuid");
+                            window.location.href = loginUrl.toString();
                         }
                     })
             }
