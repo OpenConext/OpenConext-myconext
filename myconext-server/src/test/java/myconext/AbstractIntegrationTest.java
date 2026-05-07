@@ -166,7 +166,8 @@ public abstract class AbstractIntegrationTest implements HasUserRepository {
                         .insert(readFromFile(clazz))
                         .execute());
         Arrays.asList(PasswordResetHash.class, ChangeEmailHash.class, Challenge.class, EmailsSend.class,
-                        Registration.class, Authentication.class, Enrollment.class, MobileLinkAccountRequest.class)
+                        Registration.class, Authentication.class, Enrollment.class, MobileLinkAccountRequest.class,
+                        ExternalUser.class)
                 .forEach(clazz -> mongoTemplate.bulkOps(BulkOperations.BulkMode.ORDERED, clazz)
                         .remove(new Query())
                         .execute());
