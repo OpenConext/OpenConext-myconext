@@ -1,0 +1,54 @@
+@use "../index";
+
+.info-link-field {
+    width: 100%;
+    padding: 16px 24px 16px 35px;
+
+    border-top: 1px solid var(--sl-color-grey-100);
+    border-bottom: 1px solid var(--sl-color-grey-100);
+
+    .info-link-field-inner {
+        display: flex;
+        align-items: center;
+        cursor: pointer;
+
+        span.title {
+            font-weight: 600;
+
+            &.collapsed {
+                color: #0077C8;
+            }
+
+        }
+
+        button {
+            background-color: var(--sl-color-neutral-50);
+            display: flex;
+            width: 40px;
+            height: 40px;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            border-radius: 20px;
+            margin-left: auto;
+            cursor: pointer;
+
+            &.open {
+                background-color: transparent;
+            }
+
+            svg {
+                width: 16px;
+
+                path {
+                    fill: #0077C8
+                }
+            }
+        }
+
+    }
+
+    .info-link-field-content {
+        margin: 15px 0 5px 0;
+    }
+}

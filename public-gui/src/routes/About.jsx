@@ -1,13 +1,11 @@
 import about from "../assets/about.svg";
 import I18n from "../locale/I18n.js";
 import "./About.scss";
-import {useAppStore} from "../stores/AppStore.js";
 import {Background} from "../components/Background.jsx";
 import {useEffect} from "react";
+import {InfoLinkField} from "../components/InfoLinkField.jsx";
 
 export const About = () => {
-
-    const config = useAppStore((state) => state.config);
 
     useEffect(() => {
         window.scroll(0, 0);
@@ -35,13 +33,14 @@ export const About = () => {
                         {I18n.t("about.whyInfo1")}
                     </p>
                 </div>
-                <div className="card bottom">
+                <div className="card bottom with-collapse-fields">
                     <h3>
                         {I18n.t("about.register")}
                     </h3>
+                    <InfoLinkField title={I18n.t("about.createEduId")}>
+                        <>{I18n.t("about.createEduIdInfo")}</>
+                    </InfoLinkField>
 
-                    <p className="info"
-                       dangerouslySetInnerHTML={{__html: I18n.t("about.registerInfo")}}/>
                 </div>
                 <div className="card bottom">
                     <h3>
@@ -49,47 +48,6 @@ export const About = () => {
                     </h3>
                     <p className="info"
                        dangerouslySetInnerHTML={{__html: I18n.t("about.loginsInfo")}}/>
-                    <ul>
-                        <li>
-                            <span className="header">{I18n.t("about.institution")}</span><br/>
-                            <span className="indented">{I18n.t("about.institutionInfo")}</span>
-                        </li>
-                        <li>
-                            <span className="header">{I18n.t("about.bank")}</span><br/>
-                            <span className="indented">{I18n.t("about.bankInfo")}</span>
-                        </li>
-                        <li>
-                            <span className="header">{I18n.t("about.european")}</span><br/>
-                            <span className="indented">{I18n.t("about.europeanInfo")}</span>
-                        </li>
-                    </ul>
-                </div>
-                <div className="card bottom">
-                    <h3>
-                        {I18n.t("about.identity")}
-                    </h3>
-                    <p className="info"
-                       dangerouslySetInnerHTML={{__html: I18n.t("about.identityInfo1")}}/>
-                    <p className="info"
-                       dangerouslySetInnerHTML={{__html: I18n.t("about.identityInfo2")}}/>
-                    <ul>
-                        <li>
-                            <span className="header">{I18n.t("about.magicLink")}</span>
-                        </li>
-                        <li>
-                            <span className="header">{I18n.t("about.password")}</span>
-                        </li>
-                        <li>
-                            <span className="header">{I18n.t("about.passKey")}</span>
-                        </li>
-                    </ul>
-                </div>
-                <div className="card bottom">
-                    <h3>
-                        {I18n.t("about.manage")}
-                    </h3>
-                    <p className="info"
-                       dangerouslySetInnerHTML={{__html: I18n.t("about.manageInfo", {url: config.spBaseUrl})}}/>
                 </div>
             </Background>
         </div>

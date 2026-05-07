@@ -79,6 +79,14 @@ h5 {
         margin-top: 35px;
     }
 
+    &.with-collapse-fields {
+        padding: 35px 0;
+        width: 100%;
+        h3 {
+            padding: 0 35px 12px 35px;
+        }
+    }
+
     &.row {
         flex-direction: row;
     }

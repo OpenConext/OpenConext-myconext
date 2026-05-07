@@ -2,6 +2,26 @@ $mobile-width: 576px;
 $tablet-width: 820px;
 $tablet-width-cutoff: 821px;
 
+:root {
+    --sds--color--gray--background: #F4F6F8;
+    --sl-color-warning: #FFC100;
+    --sl-color-warning-50: #FEFBE6;
+    --sl-color-warning-100: #FFD03A;
+    --sl-color-warning-600: #F5B800;
+    --sl-color-grey-100: #E1E4E8;
+    --sl-color-grey-400: #EAECF0;
+    --sl-color-green-100: #ECFCF3;
+    --sl-color-green-200: #B8E3C9;
+    --sl-color-neutral-50: #F4F6F8;
+    --sl-color-neutral-100: #EEEFF1;
+    --sl-color-neutral-200: #CED1D7;
+    --sl-color-neutral-400: #888F99;
+    --sl-color-neutral-500: #5E6873;
+    --sl-color-secondary-400: #888F99;
+    --sl-color-informative-50: #DFF4FF;
+    --sl-color-succes-50: #DCF2E5;
+}
+
 @mixin page {
     margin: 0 auto;
     display: flex;
