@@ -240,7 +240,7 @@ public class SecurityConfiguration {
         public static final String SERVICE_DESK = "SERVICE_DESK";
 
         private static final Set<String> ALLOWED_REGISTRATION_IDS =
-                Set.of("mijn_ediuid", "service_desk");
+                Set.of("mijn_eduid", "service_desk");
 
         public InternalSecurityConfigurationAdapter(AppAwareAuthorizationRequestResolver authorizationRequestResolver) {
             this.authorizationRequestResolver = authorizationRequestResolver;
@@ -313,7 +313,7 @@ public class SecurityConfiguration {
             return (request, response, authException) -> {
                 String registrationId = request.getParameter("registration_id");
                 if (!ALLOWED_REGISTRATION_IDS.contains(registrationId)) {
-                    registrationId = "mijn_ediuid";
+                    registrationId = "mijn_eduid";
                 }
                 response.sendRedirect(request.getContextPath() + "/oauth2/authorization/" + registrationId);
             };

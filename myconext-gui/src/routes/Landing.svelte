@@ -22,7 +22,7 @@
     const loginAgain = () => {
         const loginUrl = new URL($config.loginUrl);
         loginUrl.searchParams.set("redirect_path", "/");
-        loginUrl.searchParams.set("registration_id", "mijn_ediuid");
+        loginUrl.searchParams.set("registration_id", "mijn_eduid");
         window.location.href = loginUrl.toString();
     }
 
