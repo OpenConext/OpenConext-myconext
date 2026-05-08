@@ -112,6 +112,32 @@ public class LoginControllerTest extends AbstractIntegrationTest {
     }
 
     @Test
+    public void doLogout() {
+        String param = "logout=true";
+        given().redirects().follow(false)
+                .when()
+                .queryParam("param", param)
+                .get("/doLogout")
+                .then()
+                .statusCode(302)
+                .header("Location", "http://localhost:3001/landing?logout=true");
+    }
+
+    @Test
+    public void doLogoutAfterDelete() {
+        String param = "delete=true";
+        given().redirects().follow(false)
+                .when()
+                .queryParam("param", param)
+                .cookie("TEST", "value")
+                .get("/doLogout")
+                .then()
+                .statusCode(302)
+                .header("Location", "http://localhost:3001/landing?delete=true")
+                .cookie("TEST", equalTo(""));
+    }
+
+    @Test
     public void register() {
         given().redirects().follow(false)
                 .when()

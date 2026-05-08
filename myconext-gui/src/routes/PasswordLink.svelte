@@ -59,7 +59,7 @@
             })
             .catch(e => {
                 if (e.status === 403 || e.status === 400) {
-                    doLogOutAfterRateLimit();
+                    doLogOutAfterRateLimit($config.idpBaseUrl);
                 } else {
                     wrongCode = true;
                 }
@@ -72,7 +72,7 @@
                 allowedToResend = false;
                 setTimeout(() => allowedToResend = true, resendMailAllowedTimeOut);
             }).catch(() => {
-            doLogOutAfterRateLimit();
+            doLogOutAfterRateLimit($config.idpBaseUrl);
         })
     }
 

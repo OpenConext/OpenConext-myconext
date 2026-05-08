@@ -98,7 +98,7 @@
             })
             .catch(e => {
                 if (e.status === 403 || e.status === 400) {
-                    doLogOutAfterRateLimit();
+                    doLogOutAfterRateLimit($config.idpBaseUrl);
                 } else {
                     wrongCode = true;
                 }
@@ -221,7 +221,7 @@
                         tempEmailValue = value;
                         outstandingPasswordForgotten = true;
                     } else {
-                        doLogOutAfterRateLimit();
+                        doLogOutAfterRateLimit($config.idpBaseUrl);
                     }
                 });
             }

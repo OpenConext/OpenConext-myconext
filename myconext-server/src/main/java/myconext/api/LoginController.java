@@ -33,6 +33,7 @@ import java.io.IOException;
 import java.net.URI;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -218,6 +219,30 @@ public class LoginController {
         String redirectLocation = StringUtils.hasText(location) ? location : this.config.get("eduIDLoginUrl") + "?lang=" + lang;
 
         LOG.info(String.format("Redirecting to %s", redirectLocation));
+
+        response.sendRedirect(redirectLocation);
+    }
+
+    @GetMapping("/doLogout")
+    public void doLogout(HttpServletRequest request,
+                         HttpServletResponse response,
+                         @RequestParam(value = "param") String param) throws IOException {
+        if (param.contains("delete")) {
+            Cookie[] cookies = request.getCookies();
+            if (cookies != null) {
+                Arrays.asList(cookies).forEach(cookie -> {
+                    cookie.setMaxAge(0);
+                    cookie.setSecure(true);
+                    cookie.setValue("");
+                    response.addCookie(cookie);
+                });
+            }
+        }
+        request.getSession().invalidate();
+        SecurityContextHolder.clearContext();
+        String redirectLocation = String.format("%s/landing?%s", this.config.get("spBaseUrl"), param);
+
+        LOG.info(String.format("Logout and redirect to %s", redirectLocation));
 
         response.sendRedirect(redirectLocation);
     }

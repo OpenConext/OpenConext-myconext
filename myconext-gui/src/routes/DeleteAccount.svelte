@@ -1,5 +1,5 @@
 <script>
-    import {user} from "../stores/user";
+    import {config, user} from "../stores/user";
     import I18n from "../locale/I18n";
     import {navigate} from "svelte-routing";
     import critical from "../icons/critical.svg?raw";
@@ -30,7 +30,7 @@
                     familyName: "",
                     usePassword: false
                 };
-                navigate("/landing?delete=true");
+                window.location.href = `${$config.idpBaseUrl}/doLogout?param=${encodeURIComponent("delete=true")}`;
             });
         }
     }

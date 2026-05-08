@@ -29,9 +29,9 @@ export const stopEvent = e => {
     return true;
 }
 
-export const doLogOutAfterRateLimit = () => {
+export const doLogOutAfterRateLimit = idpBaseUrl => {
     logout().then(() => {
-        window.location.href = "/landing?ratelimit=true";
+        window.location.href = `${idpBaseUrl}/doLogout?param=${encodeURIComponent("ratelimit=true")}`;
     });
 }
 
