@@ -25,7 +25,9 @@ const App = () => {
             setLoading(false);
             return;
         }
-        configuration().then(({isAuthenticated}) => {
+        configuration().then(res => {
+            const {isAuthenticated} = res;
+            useAppStore.setState(() => ({config: res}));
             if (isAuthenticated) {
                 me()
                     .then(res => {

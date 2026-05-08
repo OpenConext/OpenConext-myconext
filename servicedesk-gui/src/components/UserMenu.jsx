@@ -1,7 +1,6 @@
 import I18n from "../locale/I18n";
 import React, {useState} from "react";
 import "./UserMenu.scss";
-import {useNavigate} from "react-router-dom";
 import {stopEvent} from "../utils/Utils";
 import {UserInfo} from "@surfnet/sds";
 import {useAppStore} from "../stores/AppStore";
@@ -9,17 +8,15 @@ import {logout} from "../api";
 
 
 export const UserMenu = ({user}) => {
-    const navigate = useNavigate();
 
     const [dropDownActive, setDropDownActive] = useState(false);
 
     const logoutUser = e => {
         stopEvent(e);
+        const {config} = useAppStore.getState();
         logout().then(() => {
             useAppStore.setState(() => ({breadcrumbPath: [], user: {}, controlCode: {}}));
-            navigate("/login");
-            setTimeout(() =>
-                useAppStore.setState(() => ({user: null, breadcrumbPath: []})), 125);
+            window.location.href = `${config.idpBaseUrl}/doLogout?param=${encodeURIComponent("logout=true")}`;
         });
     }
 
