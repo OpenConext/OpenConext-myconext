@@ -292,7 +292,7 @@ public class SecurityConfiguration {
                             )
                             // After tokens: load user then run provisioning hook (here: println only).
                             .userInfoEndpoint(userInfoEndpointConfigurer -> userInfoEndpointConfigurer.oidcUserService(
-                                    new EduIDOidcUserService(
+                                    new OpenConextOidcUserService(
                                             environment, manage, userRepository, externalUserRepository, mijnEduIDEntityId, mijnEduIDHost, serviceDeskHost, activeHost, Arrays.asList(serviceDeskRoles)
                                     )
                             ))

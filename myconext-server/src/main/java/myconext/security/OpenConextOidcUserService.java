@@ -36,28 +36,28 @@ import java.util.Set;
 import static myconext.log.MDCContext.logWithContext;
 import static myconext.security.CookieResolver.cookieByName;
 
-public class EduIDOidcUserService implements OAuth2UserService<OidcUserRequest, OidcUser> {
+public class OpenConextOidcUserService implements OAuth2UserService<OidcUserRequest, OidcUser> {
 
-    private static final Log LOG = LogFactory.getLog(EduIDOidcUserService.class);
+    private static final Log LOG = LogFactory.getLog(OpenConextOidcUserService.class);
 
     private final Environment environment;
     private final Manage manage;
     private final UserRepository userRepository;
     private final ExternalUserRepository externalUserRepository;
     private final OidcUserService delegate;
-    private final String mijnEduIDEntityId;
-    private final String mijnEduIDHost;
+    private final String myConextEntityId;
+    private final String myConextHost;
     private final String serviceDeskHost;
     private  final String activeHost;
     private final List<String> serviceDeskRoles;
 
-    public EduIDOidcUserService(
+    public OpenConextOidcUserService(
             Environment environment,
             Manage manage,
             UserRepository userRepository,
             ExternalUserRepository externalUserRepository,
-            String mijnEduIDEntityId,
-            String mijnEduIDHost,
+            String myConextEntityId,
+            String myConextHost,
             String serviceDeskHost,
             String activeHost,
             List<String> serviceDeskRoles
@@ -67,8 +67,8 @@ public class EduIDOidcUserService implements OAuth2UserService<OidcUserRequest, 
         this.userRepository = userRepository;
         this.externalUserRepository = externalUserRepository;
         this.delegate = new OidcUserService();
-        this.mijnEduIDEntityId = mijnEduIDEntityId;
-        this.mijnEduIDHost = mijnEduIDHost;
+        this.myConextEntityId = myConextEntityId;
+        this.myConextHost = myConextHost;
         this.serviceDeskHost = serviceDeskHost;
         this.activeHost = activeHost;
         this.serviceDeskRoles = serviceDeskRoles;
@@ -100,11 +100,11 @@ public class EduIDOidcUserService implements OAuth2UserService<OidcUserRequest, 
         if (!StringUtils.hasText(host)) {
             throw new IllegalArgumentException("There is no host header in the request");
         }
-        boolean logInToEduID = host.toLowerCase().equals(this.mijnEduIDHost);
+        boolean logInToMyConext = host.toLowerCase().equals(this.myConextHost);
         boolean logInToServiceDesk = host.toLowerCase().equals(this.serviceDeskHost);
 
         // Retrieve or provision the user (always ending up with a user to return)
-        if (logInToEduID) {
+        if (logInToMyConext) {
             Optional<User> optionalUser = userRepository.findUserByUid(uid);
 
             String preferredLanguage = cookieByName(getRequest(), "lang").map(Cookie::getValue).orElse("en");
@@ -164,7 +164,7 @@ public class EduIDOidcUserService implements OAuth2UserService<OidcUserRequest, 
     private User provisionUser(String uid, String schacHomeOrganization, String givenName, String familyName,
                                String email, String preferredLanguage) {
         User user = new User(uid, email, givenName, givenName, familyName, schacHomeOrganization,
-                preferredLanguage, mijnEduIDEntityId, manage);
+                preferredLanguage, myConextEntityId, manage);
         user.setNewUser(false);
         user = userRepository.save(user);
 
