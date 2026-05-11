@@ -60,6 +60,7 @@ public class LoginController {
                            AuthenticationRequestRepository authenticationRequestRepository,
                            SecurityContextRepository securityContextRepository,
                            @Value("${base_path}") String basePath,
+                           @Value("${base_path_service_desk}") String basePathServiceDesk,
                            @Value("${base_domain}") String baseDomain,
                            @Value("${my_conext_url}") String myConextUrl,
                            @Value("${continue_after_login_url}") String continueAfterLoginUrl,
@@ -90,13 +91,14 @@ public class LoginController {
     ) {
         this.config.put("basePath", basePath);
         this.config.put("loginUrl", basePath + "/auth/login");
+        this.config.put("loginUrlServiceDesk", basePathServiceDesk + "/auth/login");
         this.config.put("continueAfterLoginUrl", continueAfterLoginUrl);
         this.config.put("baseDomain", baseDomain);
         this.config.put("magicLinkUrl", magicLinkUrl);
         this.config.put("idpBaseUrl", idpBaseUrl);
         this.config.put("spBaseUrl", spBaseUrl);
         this.config.put("eduIDWebAuthnUrl", String.format("%s/webauthn", idpBaseUrl));
-        this.config.put("eduIDLoginUrl", myConextUrl + "/oauth2/authorization/oidcng"); // todo verify, might be /login
+        this.config.put("eduIDLoginUrl", myConextUrl + "/oauth2/authorization/oidcng");
         this.config.put("eduIDWebAuthnRedirectSpUrl", String.format("%s/security", spBaseUrl));
         this.config.put("domain", domain);
         this.config.put("featureWebAuthn", featureWebAuthn);

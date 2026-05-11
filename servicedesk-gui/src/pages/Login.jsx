@@ -24,7 +24,7 @@ export const Login = () => {
     }
 
     const doLogin = () => {
-        const loginUrl = new URL(config.loginUrl);
+        const loginUrl = new URL(config.loginUrlServiceDesk);
         loginUrl.searchParams.set("redirect_path", "/");
         loginUrl.searchParams.set("registration_id", "service_desk");
         window.location.href = loginUrl.toString();
