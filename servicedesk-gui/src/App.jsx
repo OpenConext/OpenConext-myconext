@@ -34,18 +34,22 @@ const App = () => {
                         useAppStore.setState(() => ({user: res}));
                         setLoading(false);
                         if (res.serviceDeskMember) {
+                            console.log('App.jsx - redirecting to /home', {user: res})
                             setIsAuthenticated(true);
                             navigate("/home");
                         } else {
+                            console.log('App.jsx - redirecting to /forbidden', {user: res})
                             navigate("/forbidden");
                         }
                     })
                     .catch(() => {
+                        console.log('App.jsx - Error loading user - redirecting to /login')
                         setLoading(false);
                         navigate("/login");
                     });
             }
             else {
+                console.log('App.jsx - Not authenticated - redirecting to /login')
                 setLoading(false);
                 navigate("/login");
             }
