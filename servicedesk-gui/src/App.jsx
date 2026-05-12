@@ -46,8 +46,6 @@ const App = () => {
             .catch(() => setAuthStatus(AUTH_STATUS.UNAUTHENTICATED));
     }, []);
 
-    console.log('AUTH_STATUS = ' + authStatus)
-
     if (authStatus === AUTH_STATUS.LOADING) {
         return <Loader/>;
     }
