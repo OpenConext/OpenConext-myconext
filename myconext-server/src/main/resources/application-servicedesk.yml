@@ -6,3 +6,8 @@ sp_redirect_url: http://localhost:3003
 
 host_headers:
   active: servicedesk.test2.eduid.nl
+
+# Use Mujina "admin" to login on ServiceDesk
+# The Manage app needs to be configured to get isMemberOf value from Invite
+service_desk_roles: >
+  urn:mace:surf.nl:invite.test2.surfconext.nl:eadf712c-9612-4540-8495-220eba0b2519:servicedesk_members
