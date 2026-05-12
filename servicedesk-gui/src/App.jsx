@@ -36,22 +36,22 @@ const App = () => {
                         if (res.serviceDeskMember) {
                             console.log('App.jsx - redirecting to /home', {user: res})
                             setIsAuthenticated(true);
-                            navigate("/home");
+                            window.location.href = "/home";
                         } else {
                             console.log('App.jsx - redirecting to /forbidden', {user: res})
-                            navigate("/forbidden");
+                            window.location.href = "/forbidden";
                         }
                     })
                     .catch(() => {
                         console.log('App.jsx - Error loading user - redirecting to /login')
                         setLoading(false);
-                        navigate("/login");
+                        window.location.href = "/login";
                     });
             }
             else {
                 console.log('App.jsx - Not authenticated - redirecting to /login')
                 setLoading(false);
-                navigate("/login");
+                window.location.href = "/login";
             }
         })
 
@@ -62,6 +62,8 @@ const App = () => {
     if (loading) {
         return <Loader/>
     }
+
+    console.log("App.jsx -- isAuthenticated: " + isAuthenticated)
 
     return (
         <div className="service-desk">
