@@ -10,6 +10,7 @@ import myconext.model.SamlAuthenticationRequest;
 import myconext.model.User;
 import myconext.repository.AuthenticationRequestRepository;
 import myconext.repository.UserRepository;
+import myconext.security.SecurityConfiguration.InternalSecurityConfigurationAdapter;
 import myconext.util.CreateFromInstitutionReturnUrlSupport;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -55,6 +56,7 @@ public class LoginController {
     private final SecurityContextRepository securityContextRepository;
     private final List<String> createFromInstitutionAllowedReturnDomains;
     private final String spBaseUrl;
+    private final String spServiceDeskBaseUrl;
 
     public LoginController(UserRepository userRepository,
                            AuthenticationRequestRepository authenticationRequestRepository,
@@ -69,6 +71,7 @@ public class LoginController {
                            @Value("${secure_cookie}") boolean secureCookie,
                            @Value("${idp_redirect_url}") String idpBaseUrl,
                            @Value("${sp_redirect_url}") String spBaseUrl,
+                           @Value("${sp_servicedesk_redirect_url}") String spServiceDeskBaseUrl,
                            @Value("${feature.webauthn}") boolean featureWebAuthn,
                            @Value("${feature.connections}") boolean featureConnections,
                            @Value("${feature.warning_educational_email_domain}") boolean featureWarningEducationalEmailDomain,
@@ -97,6 +100,7 @@ public class LoginController {
         this.config.put("magicLinkUrl", magicLinkUrl);
         this.config.put("idpBaseUrl", idpBaseUrl);
         this.config.put("spBaseUrl", spBaseUrl);
+        this.config.put("spServiceDeskBaseUrl", spServiceDeskBaseUrl); // todo: not sure if this is needed
         this.config.put("eduIDWebAuthnUrl", String.format("%s/webauthn", idpBaseUrl));
         this.config.put("eduIDLoginUrl", myConextUrl + "/oauth2/authorization/oidcng");
         this.config.put("eduIDWebAuthnRedirectSpUrl", String.format("%s/security", spBaseUrl));
@@ -126,6 +130,7 @@ public class LoginController {
         this.securityContextRepository = securityContextRepository;
         this.createFromInstitutionAllowedReturnDomains = createFromInstitutionProperties.getReturnUrlAllowedDomains();
         this.spBaseUrl = spBaseUrl;
+        this.spServiceDeskBaseUrl = spServiceDeskBaseUrl;
     }
 
     @GetMapping("/config")
@@ -140,13 +145,15 @@ public class LoginController {
             @RequestParam(value = "redirect_path", required = false) String redirectPath,
             @RequestParam(value = "registration_id") String registrationId
     ) {
-        System.out.println("registration_id: " + registrationId);
-        String target = spBaseUrl;
+        String baseUrl = InternalSecurityConfigurationAdapter.REGISTRATION_ID_SERVICE_DESK.equals(registrationId)
+                ? spServiceDeskBaseUrl
+                : spBaseUrl;
+        String target = baseUrl;
         if (StringUtils.hasText(redirectPath)) {
             String path = URLDecoder.decode(redirectPath, StandardCharsets.UTF_8);
             // Only allow internal, same-origin paths to avoid open-redirects
             if (path.startsWith("/") && !path.startsWith("//")) {
-                target = spBaseUrl + path;
+                target = baseUrl + path;
             }
         }
         LOG.debug(String.format("/login redirecting to %s", target));

@@ -238,9 +238,11 @@ public class SecurityConfiguration {
 
         public static final String ROLE_GUEST = "ROLE_GUEST";
         public static final String SERVICE_DESK = "SERVICE_DESK";
+        public static final String REGISTRATION_ID_MIIN_EDUID = "mijn_eduid";
+        public static final String REGISTRATION_ID_SERVICE_DESK = "service_desk";
 
         private static final Set<String> ALLOWED_REGISTRATION_IDS =
-                Set.of("mijn_eduid", "service_desk");
+                Set.of(REGISTRATION_ID_MIIN_EDUID, REGISTRATION_ID_SERVICE_DESK);
 
         public InternalSecurityConfigurationAdapter(AppAwareAuthorizationRequestResolver authorizationRequestResolver) {
             this.authorizationRequestResolver = authorizationRequestResolver;
