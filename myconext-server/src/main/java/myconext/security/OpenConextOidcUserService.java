@@ -79,7 +79,6 @@ public class OpenConextOidcUserService implements OAuth2UserService<OidcUserRequ
         // Delegate to the default implementation for loading a user
         OidcUser oidcUser = delegate.loadUser(userRequest);
         Map<String, Object> claims = oidcUser.getUserInfo().getClaims();
-        // We need a mutable Map instead of the returned immutable Map
         Map<String, Object> newClaims = new HashMap<>(claims);
 
         LOG.debug("Provision oidcUser: " + claims);

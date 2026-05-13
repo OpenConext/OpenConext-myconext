@@ -51,18 +51,18 @@ import java.util.Set;
 import static java.util.stream.Collectors.toList;
 import static org.springframework.security.config.Customizer.withDefaults;
 
-// TLDR:
-//1. SamlSecurity (@Order(1)) — Handles the SAML login page where guest users authenticate (the "eduID login screen").
-//2. InternalSecurityConfigurationAdapter (@Order default) — Handles requests from users who are already logged in via their institution (Shibboleth), plus service desk access.
-//3. AppSecurity (@Order(2)) — Handles system-to-system API calls (other OpenConext components talking to myconext) using username/password credentials.
-//4. JWTSecurityConfig (@Order(3)) — Handles mobile app and eduID API calls that come in with an OAuth2 access token.
-
 @EnableWebSecurity
 @EnableConfigurationProperties(CreateFromInstitutionProperties.class)
 @EnableMethodSecurity
 @Configuration
 public class SecurityConfiguration {
 
+    // Overview of the security configuration:
+    // 1. SamlSecurity (@Order(1)) — Secures the SAML guest IdP endpoint (eduID guest login).
+    // 2. InternalSecurityConfigurationAdapter (@Order default) — Secures the Mijn eduID and Service Desk portals via OAuth2/OIDC login against OpenConext.
+    // 3. AppSecurity (@Order(2)) — Secures system-to-system OpenConext APIs with HTTP Basic auth.
+    // 4. JWTSecurityConfig (@Order(3)) — Secures mobile app and eduID APIs via OAuth2 opaque token introspection.
+    
     private static final Log LOG = LogFactory.getLog(SecurityConfiguration.class);
 
     @Bean
@@ -86,7 +86,7 @@ public class SecurityConfiguration {
         }
     }
 
-    //1. SamlSecurity (@Order(1)) — Handles the SAML login page where guest users authenticate (the "eduID login screen").
+    //1. SamlSecurity (@Order(1)) — Secures the SAML guest IdP endpoint (eduID guest login).
     @Configuration
     @Order(1)
     @EnableConfigurationProperties(IdentityProviderMetaData.class)
@@ -229,7 +229,7 @@ public class SecurityConfiguration {
         }
     }
 
-    //2. InternalSecurityConfigurationAdapter (@Order default) — Handles requests from users who are already logged in via their institution (Shibboleth), plus service desk access.
+    //2. InternalSecurityConfigurationAdapter (@Order default) — Secures the Mijn eduID and Service Desk portals via OAuth2/OIDC login against OpenConext.
     @Order
     @Configuration
     public static class InternalSecurityConfigurationAdapter {
@@ -282,7 +282,6 @@ public class SecurityConfiguration {
                                     "/myconext/api/sp/create-from-institution",
                                     "/myconext/api/sp/create-from-institution/**",
                                     "/myconext/api/sp/idin/issuers",
-//                                    "/myconext/api/servicedesk/logout", // Todo: possibly not needed
                                     "/myconext/api/swagger-ui/**").permitAll()
                             .anyRequest().authenticated())
                     .oauth2Login(oAuth2LoginConfigurer -> oAuth2LoginConfigurer
@@ -292,7 +291,6 @@ public class SecurityConfiguration {
                             .authorizationEndpoint(authorization -> authorization
                                     .authorizationRequestResolver(this.authorizationRequestResolver)
                             )
-                            // After tokens: load user then run provisioning hook (here: println only).
                             .userInfoEndpoint(userInfoEndpointConfigurer -> userInfoEndpointConfigurer.oidcUserService(
                                     new OpenConextOidcUserService(
                                             environment, manage, userRepository, externalUserRepository, mijnEduIDEntityId, mijnEduIDHost, serviceDeskHost, activeHost, Arrays.asList(serviceDeskRoles)
@@ -322,7 +320,7 @@ public class SecurityConfiguration {
         }
     }
 
-    //3. AppSecurity (@Order(2)) — Handles system-to-system API calls (other OpenConext components talking to myconext) using username/password credentials.
+    //3. AppSecurity (@Order(2)) — Secures system-to-system OpenConext APIs with HTTP Basic auth.
     @Configuration
     @Order(2)
     @EnableConfigurationProperties(ExternalApiConfiguration.class)
@@ -363,7 +361,7 @@ public class SecurityConfiguration {
 
     }
 
-    //4. JWTSecurityConfig (@Order(3)) — Handles mobile app and eduID API calls that come in with an OAuth2 access token.
+    //4. JWTSecurityConfig (@Order(3)) — Secures mobile app and eduID APIs via OAuth2 opaque token introspection.
     @Configuration
     @Order(3)
     public static class JWTSecurityConfig {
