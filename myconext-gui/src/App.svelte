@@ -18,7 +18,7 @@
     import AwaitLinkFromInstitutionMail from "./routes/AwaitLinkFromInstitutionMail.svelte";
     import AttributeMissing from "./routes/AttributeMissing.svelte";
     import InstallApp from "./routes/tiqr/InstallApp.svelte";
-    import {isEmpty} from "./utils/utils.js";
+    import {isEmpty, redirectToLogin} from "./utils/utils.js";
 
     const unprotectedRoutes = [
         "/create-from-institution",
@@ -35,10 +35,7 @@
             if ($config.isAuthenticated === false &&
               !unprotectedRoutes.some(route => window.location.pathname.indexOf(route) > -1)) {
                 $redirectPath = window.location.pathname;
-                const loginUrl = new URL($config.loginUrl);
-                loginUrl.searchParams.set("redirect_path", $redirectPath || "/");
-                loginUrl.searchParams.set("registration_id", "mijn_eduid");
-                window.location.href = loginUrl.toString();
+                redirectToLogin($config.loginUrl, $redirectPath);
                 return;
             }
 
@@ -88,10 +85,7 @@
                         } else if (afterDelete) {
                             navigate("/landing?delete=true");
                         } else {
-                            const loginUrl = new URL($config.loginUrl);
-                            loginUrl.searchParams.set("redirect_path", $redirectPath || "/");
-                            loginUrl.searchParams.set("registration_id", "mijn_eduid");
-                            window.location.href = loginUrl.toString();
+                            redirectToLogin($config.loginUrl, $redirectPath);
                         }
                     })
             }
