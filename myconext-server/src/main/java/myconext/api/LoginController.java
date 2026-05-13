@@ -100,7 +100,7 @@ public class LoginController {
         this.config.put("magicLinkUrl", magicLinkUrl);
         this.config.put("idpBaseUrl", idpBaseUrl);
         this.config.put("spBaseUrl", spBaseUrl);
-        this.config.put("spServiceDeskBaseUrl", spServiceDeskBaseUrl); // todo: not sure if this is needed
+        this.config.put("spServiceDeskBaseUrl", spServiceDeskBaseUrl);
         this.config.put("eduIDWebAuthnUrl", String.format("%s/webauthn", idpBaseUrl));
         this.config.put("eduIDLoginUrl", myConextUrl + "/oauth2/authorization/oidcng");
         this.config.put("eduIDWebAuthnRedirectSpUrl", String.format("%s/security", spBaseUrl));

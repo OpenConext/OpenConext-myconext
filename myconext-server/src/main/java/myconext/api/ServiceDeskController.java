@@ -62,7 +62,6 @@ public class ServiceDeskController {
         return ResponseEntity.ok(user);
     }
 
-    // Todo consider moving to LoginController
     @GetMapping("/logout")
     @Operation(summary = "Logout",
             description = "Logout the current logged in user")

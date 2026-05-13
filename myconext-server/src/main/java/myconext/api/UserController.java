@@ -1318,7 +1318,6 @@ public class UserController implements UserAuthentication {
                 .body(objectWriter.writeValueAsString(map));
     }
 
-    // Todo consider moving to LoginController
     @GetMapping("/sp/logout")
     @Operation(summary = "Logout",
             description = "Logout the current logged in user")
