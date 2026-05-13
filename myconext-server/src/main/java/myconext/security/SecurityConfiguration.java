@@ -304,7 +304,9 @@ public class SecurityConfiguration {
                     .exceptionHandling(eh -> eh.authenticationEntryPoint(appAwareAuthenticationEntryPoint()));
             if (environment.acceptsProfiles(Profiles.of("local", "test"))) {
                 // Fake OIDC user so APIs work without hitting SURFconext.
-                http.addFilterBefore(new LocalDevelopmentAuthenticationFilter(userRepository, serviceDeskRoleAutoProvisioning), AnonymousAuthenticationFilter.class);
+                http.addFilterBefore(
+                        new LocalDevelopmentAuthenticationFilter(userRepository, externalUserRepository, serviceDeskRoleAutoProvisioning),
+                        AnonymousAuthenticationFilter.class);
             }
             return http.build();
         }
