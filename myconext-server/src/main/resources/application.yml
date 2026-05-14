@@ -281,7 +281,7 @@ verify:
   idp_verify_redirect_url: http://localhost:8081/myconext/api/idp/verify/redirect
   issuers_path: "classpath:idin/issuers.json"
 
-service_desk_role_auto_provisioning: True
+service_desk_role_auto_provisioning: False
 service_desk_roles: >
   role1,
   role2,

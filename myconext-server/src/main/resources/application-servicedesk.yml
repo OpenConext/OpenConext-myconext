@@ -5,6 +5,8 @@
 host_headers:
   active: servicedesk.test2.eduid.nl
 
+service_desk_role_auto_provisioning: True
+
 # Use Mujina "admin" to login on ServiceDesk
 # The Manage app needs to be configured to get isMemberOf value from Invite
 service_desk_roles: >
