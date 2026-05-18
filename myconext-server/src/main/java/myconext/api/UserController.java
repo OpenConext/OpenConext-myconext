@@ -51,13 +51,17 @@ import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.View;
+import org.springframework.web.servlet.view.RedirectView;
 import tiqr.org.model.Registration;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Field;
+import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.security.SecureRandom;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
@@ -1313,7 +1317,6 @@ public class UserController implements UserAuthentication {
         return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON)
                 .body(objectWriter.writeValueAsString(map));
     }
-
 
     @GetMapping("/sp/logout")
     @Operation(summary = "Logout",

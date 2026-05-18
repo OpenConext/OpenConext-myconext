@@ -22,7 +22,6 @@ import static org.hamcrest.core.IsEqual.equalTo;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 
-@ActiveProfiles(value = "dev", inheritProfiles = false)
 public class LoginControllerTest extends AbstractIntegrationTest {
 
     @Autowired
@@ -40,27 +39,76 @@ public class LoginControllerTest extends AbstractIntegrationTest {
                 .get("/config")
                 .then()
                 .body("baseDomain", equalTo("test2.surfconext.nl"))
-                .body("loginUrl", equalTo("http://localhost:8081/login"));
+                .body("loginUrl", equalTo("http://localhost:8081/auth/login"));
     }
 
     @Test
-    public void register() {
+    public void login() {
         given().redirects().follow(false)
                 .when()
-                .get("/register")
+                .queryParam("registration_id", "mijn_eduid")
+                .get("/auth/login")
                 .then()
                 .statusCode(302)
-                .header("Location", "https://my.test2.surfconext.nl/Shibboleth.sso/Login?entityID=https://localhost.surf.id&lang=en");
+                .header("Location", "http://localhost:3001");
     }
 
     @Test
-    public void doLogin() {
+    public void loginWithRedirectPath() {
         given().redirects().follow(false)
                 .when()
-                .get("/doLogin")
+                .queryParam("redirect_path", "/security")
+                .queryParam("registration_id", "mijn_eduid")
+                .get("/auth/login")
                 .then()
                 .statusCode(302)
-                .header("Location", "https://my.test2.surfconext.nl/Shibboleth.sso/Login?entityID=https://localhost.surf.id&lang=en");
+                .header("Location", "http://localhost:3001/security");
+    }
+
+    @Test
+    public void loginWithEncodedRedirectPath() {
+        given().redirects().follow(false)
+                .when()
+                .queryParam("redirect_path", "%2Fpersonal%3Fservicedesk%3Dstart")
+                .queryParam("registration_id", "mijn_eduid")
+                .get("/auth/login")
+                .then()
+                .statusCode(302)
+                .header("Location", "http://localhost:3001/personal?servicedesk=start");
+    }
+
+    @Test
+    public void loginWithExternalRedirectPathIsIgnored() {
+        given().redirects().follow(false)
+                .when()
+                .queryParam("redirect_path", "https://evil.example.com/phishing")
+                .queryParam("registration_id", "mijn_eduid")
+                .get("/auth/login")
+                .then()
+                .statusCode(302)
+                .header("Location", "http://localhost:3001");
+    }
+
+    @Test
+    public void loginWithProtocolRelativeRedirectPathIsIgnored() {
+        given().redirects().follow(false)
+                .when()
+                .queryParam("redirect_path", "//evil.example.com/phishing")
+                .queryParam("registration_id", "mijn_eduid")
+                .get("/auth/login")
+                .then()
+                .statusCode(302)
+                .header("Location", "http://localhost:3001");
+    }
+
+    @Test
+    public void loginWithoutRegistrationId() {
+        given().redirects().follow(false)
+                .when()
+                .queryParam("redirect_path", "/security")
+                .get("/auth/login")
+                .then()
+                .statusCode(400);
     }
 
     @Test
@@ -87,6 +135,16 @@ public class LoginControllerTest extends AbstractIntegrationTest {
                 .statusCode(302)
                 .header("Location", "http://localhost:3001/landing?delete=true")
                 .cookie("TEST", equalTo(""));
+    }
+
+    @Test
+    public void register() {
+        given().redirects().follow(false)
+                .when()
+                .get("/register")
+                .then()
+                .statusCode(302)
+                .header("Location", "https://my.test2.surfconext.nl/oauth2/authorization/oidcng?lang=en");
     }
 
     @Test

@@ -30,7 +30,8 @@ const en = {
         loginAgain: "Login again",
         deleteTitle: "Your eduID account has been deleted",
         deleteStatus: "To finalise the removal process you must now close this browser.",
-        registerAgain: "Register again"
+        registerAgain: "Register again",
+        rateLimitTitle: "Too many failed attempts"
     },
     notFound: {
         title: "Whoops...",

@@ -9,6 +9,9 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.oauth2.core.OAuth2AccessToken;
 import org.springframework.security.oauth2.core.OAuth2AuthenticatedPrincipal;
+import org.springframework.security.oauth2.core.oidc.OidcIdToken;
+import org.springframework.security.oauth2.core.oidc.OidcUserInfo;
+import org.springframework.security.oauth2.core.oidc.user.DefaultOidcUser;
 import org.springframework.security.oauth2.core.user.DefaultOAuth2User;
 import org.springframework.security.oauth2.server.resource.authentication.BearerTokenAuthentication;
 
@@ -21,8 +24,6 @@ import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.springframework.data.util.ReflectionUtils.getRequiredField;
-import static org.springframework.data.util.ReflectionUtils.setField;
 
 class UserAuthenticationTest extends AbstractIntegrationTest implements UserAuthentication {
 
@@ -39,17 +40,15 @@ class UserAuthenticationTest extends AbstractIntegrationTest implements UserAuth
     @Test
     void testUserFromAuthenticationId() {
         User user = userRepository.findUserByUid(VALID_UID).get();
-        TestingAuthenticationToken tokenAuthentication = new TestingAuthenticationToken(user, "N/A");
+        TestingAuthenticationToken tokenAuthentication = testingAuthenticationTokenForUserId(user.getId());
         User userFromContext = userFromAuthentication(tokenAuthentication);
         assertEquals(VALID_UID, userFromContext.getUid());
     }
 
     @Test
     void testUserFromAuthenticationIdNotFound() {
-        User principal = new User();
-        //Pragmatic hack
-        setField(getRequiredField(User.class, "id"), principal, UUID.randomUUID().toString());
-        TestingAuthenticationToken tokenAuthentication = new TestingAuthenticationToken(principal, "N/A");
+        String unknownId = UUID.randomUUID().toString();
+        TestingAuthenticationToken tokenAuthentication = testingAuthenticationTokenForUserId(unknownId);
         assertThrows(UserNotFoundException.class, () -> userFromAuthentication(tokenAuthentication));
     }
 
@@ -57,6 +56,23 @@ class UserAuthenticationTest extends AbstractIntegrationTest implements UserAuth
     void testUserFromAuthenticationNotFound() {
         BearerTokenAuthentication tokenAuthentication = getBearerTokenAuthentication("nope");
         assertThrows(UserNotFoundException.class, () -> userFromAuthentication(tokenAuthentication));
+    }
+    
+    private static DefaultOidcUser oidcUserWithIdClaim(String userId) {
+        Map<String, Object> claims = Map.of(
+                "id", userId,
+                "sub", userId);
+        OidcIdToken idToken = new OidcIdToken(
+                UUID.randomUUID().toString(),
+                Instant.now(),
+                Instant.now().plus(1, ChronoUnit.HOURS),
+                claims);
+        OidcUserInfo userInfo = new OidcUserInfo(claims);
+        return new DefaultOidcUser(List.of(), idToken, userInfo);
+    }
+
+    private static TestingAuthenticationToken testingAuthenticationTokenForUserId(String userId) {
+        return new TestingAuthenticationToken(oidcUserWithIdClaim(userId), "N/A");
     }
 
     private BearerTokenAuthentication getBearerTokenAuthentication(String uid) {

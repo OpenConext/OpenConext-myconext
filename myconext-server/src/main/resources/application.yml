@@ -83,11 +83,13 @@ mongodb_db: surf_id_test
 base_domain: test2.surfconext.nl
 saml_metadata_base_path: http://localhost:8081
 base_path: http://localhost:8081
+base_path_service_desk: http://localhost:8081
 continue_after_login_url: http://localhost:8081/saml/guest-idp/continue
 idp_redirect_url: http://localhost:3000
 rp_id: localhost
 rp_origin: http://localhost:3000
 sp_redirect_url: http://localhost:3001
+sp_servicedesk_redirect_url: http://localhost:3003
 sp_entity_id: https://engine.test.surfconext.nl/authentication/sp/metadata, https://engine.test2.surfconext.nl/authentication/sp/metadata
 sp_entity_metadata_url: https://engine.test.surfconext.nl/authentication/sp/metadata, https://engine.test2.surfconext.nl/authentication/sp/metadata
 guest_idp_entity_id: https://localhost.surf.id
@@ -279,7 +281,7 @@ verify:
   idp_verify_redirect_url: http://localhost:8081/myconext/api/idp/verify/redirect
   issuers_path: "classpath:idin/issuers.json"
 
-service_desk_role_auto_provisioning: True
+service_desk_role_auto_provisioning: False
 service_desk_roles: >
   role1,
   role2,
@@ -293,6 +295,32 @@ spring:
   mail:
     host: localhost
     port: 1025
+  security:
+    oauth2:
+      client:
+        registration:
+          mijn_eduid:
+            client-id: playground_client
+            client-secret: secret
+            redirect-uri: "{baseUrl}/login/oauth2/code/{registrationId}"
+            authorization-grant-type: "authorization_code"
+            scope: openid
+            provider: oidcng
+          service_desk:
+            client-id: playground_client
+            client-secret: secret
+            redirect-uri: "{baseUrl}/login/oauth2/code/{registrationId}"
+            authorization-grant-type: "authorization_code"
+            scope: openid
+            provider: oidcng
+        provider:
+          oidcng:
+            authorization-uri: "https://connect.test2.surfconext.nl/oidc/authorize"
+            token-uri: "https://connect.test2.surfconext.nl/oidc/token"
+            user-info-uri: "https://connect.test2.surfconext.nl/oidc/userinfo"
+            jwk-set-uri: "https://connect.test2.surfconext.nl/oidc/certs"
+            user-name-attribute: sub
+            user-info-authentication-method: client_secret_basic
 
 gui:
   disclaimer:

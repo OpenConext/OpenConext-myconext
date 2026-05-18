@@ -96,6 +96,7 @@ import static org.junit.Assert.assertTrue;
                 "verify.base_uri=http://localhost:8098",
                 "host_headers.active=mijn.test2.eduid.nl",
                 "feature.captcha_enabled=false",
+                "service_desk_role_auto_provisioning=false"
         })
 @ActiveProfiles({"test"})
 @SuppressWarnings("unchecked")
@@ -159,7 +160,7 @@ public abstract class AbstractIntegrationTest implements HasUserRepository {
     @BeforeEach
     public void before() throws Exception {
         RestAssured.port = port;
-        Arrays.asList(SamlAuthenticationRequest.class, User.class)
+        Arrays.asList(SamlAuthenticationRequest.class, User.class, ExternalUser.class)
                 .forEach(clazz -> mongoTemplate.bulkOps(BulkOperations.BulkMode.ORDERED, clazz)
                         .remove(new Query())
                         .insert(readFromFile(clazz))

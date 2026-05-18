@@ -1,0 +1,10 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="BE - MyConextServerApplication (Servicedesk)" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot">
+    <option name="ACTIVE_PROFILES" value="dev,servicedesk" />
+    <module name="myconext-server" />
+    <option name="SPRING_BOOT_MAIN_CLASS" value="myconext.MyConextServerApplication" />
+    <method v="2">
+      <option name="Make" enabled="true" />
+    </method>
+  </configuration>
+</component>

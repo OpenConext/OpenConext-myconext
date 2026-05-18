@@ -4,6 +4,7 @@
     import I18n from "../locale/I18n";
     import {navigate} from "svelte-routing";
     import Button from "../components/Button.svelte";
+    import {redirectToLogin} from "../utils/utils.js";
 
     let isLogoutRedirect = false;
     let isAccountDeletionRedirect = false;
@@ -19,9 +20,7 @@
         }
     });
 
-    const loginAgain = () => {
-        window.location.href = `${$config.idpBaseUrl}/doLogin?register=false`;
-    }
+    const loginAgain = () => redirectToLogin($config.loginUrl);
 
 </script>
 

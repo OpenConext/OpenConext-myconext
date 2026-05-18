@@ -225,6 +225,10 @@ SHARED:
       COPY:
         en: You have been logged out
         nl: Je bent uitgelogd
+    RateLimitTitle:
+      COPY:
+        en: Too many failed attempts
+        nl: Te veel mislukte pogingen
   RegistrationCheck:
     MainText:
       COPY:
