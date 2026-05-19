@@ -58,10 +58,10 @@ import static org.springframework.security.config.Customizer.withDefaults;
 public class SecurityConfiguration {
 
     // Overview of the security configuration:
-    // 1. SamlSecurity (@Order(1)) — Secures the SAML guest IdP endpoint (eduID guest login).
-    // 2. InternalSecurityConfigurationAdapter (@Order default) — Secures the Mijn eduID and Service Desk portals via OAuth2/OIDC login against OpenConext.
+    // 1. SamlSecurity (@Order(1)) — Secures the SAML guest IdP endpoint (myconext guest login).
+    // 2. InternalSecurityConfigurationAdapter (@Order default) — Secures the myconext and Service Desk portals via OAuth2/OIDC login against OpenConext.
     // 3. AppSecurity (@Order(2)) — Secures system-to-system OpenConext APIs with HTTP Basic auth.
-    // 4. JWTSecurityConfig (@Order(3)) — Secures mobile app and eduID APIs via OAuth2 opaque token introspection.
+    // 4. JWTSecurityConfig (@Order(3)) — Secures mobile app and myconext APIs via OAuth2 opaque token introspection.
 
     private static final Log LOG = LogFactory.getLog(SecurityConfiguration.class);
 
@@ -86,7 +86,7 @@ public class SecurityConfiguration {
         }
     }
 
-    //1. SamlSecurity (@Order(1)) — Secures the SAML guest IdP endpoint (eduID guest login).
+    //1. SamlSecurity (@Order(1)) — Secures the SAML guest IdP endpoint (myconext guest login).
     @Configuration
     @Order(1)
     @EnableConfigurationProperties(IdentityProviderMetaData.class)
@@ -229,7 +229,7 @@ public class SecurityConfiguration {
         }
     }
 
-    //2. InternalSecurityConfigurationAdapter (@Order default) — Secures the Mijn eduID and Service Desk portals via OAuth2/OIDC login against OpenConext.
+    //2. InternalSecurityConfigurationAdapter (@Order default) — Secures the myconext and Service Desk portals via OAuth2/OIDC login against OpenConext.
     @Order
     @Configuration
     public static class InternalSecurityConfigurationAdapter {
@@ -363,7 +363,7 @@ public class SecurityConfiguration {
 
     }
 
-    //4. JWTSecurityConfig (@Order(3)) — Secures mobile app and eduID APIs via OAuth2 opaque token introspection.
+    //4. JWTSecurityConfig (@Order(3)) — Secures mobile app and myconext APIs via OAuth2 opaque token introspection.
     @Configuration
     @Order(3)
     public static class JWTSecurityConfig {
