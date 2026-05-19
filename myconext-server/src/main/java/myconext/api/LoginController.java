@@ -57,6 +57,7 @@ public class LoginController {
     private final List<String> createFromInstitutionAllowedReturnDomains;
     private final String spBaseUrl;
     private final String spServiceDeskBaseUrl;
+    private final String myconextLoginUrl;
 
     public LoginController(UserRepository userRepository,
                            AuthenticationRequestRepository authenticationRequestRepository,
@@ -102,7 +103,6 @@ public class LoginController {
         this.config.put("spBaseUrl", spBaseUrl);
         this.config.put("spServiceDeskBaseUrl", spServiceDeskBaseUrl);
         this.config.put("myconextWebAuthUrl", String.format("%s/webauthn", idpBaseUrl));
-        this.config.put("eduIDLoginUrl", myConextUrl + "/oauth2/authorization/oidcng");
         this.config.put("eduIDWebAuthnRedirectSpUrl", String.format("%s/security", spBaseUrl));
         this.config.put("domain", domain);
         this.config.put("featureWebAuthn", featureWebAuthn);
@@ -131,6 +131,7 @@ public class LoginController {
         this.createFromInstitutionAllowedReturnDomains = createFromInstitutionProperties.getReturnUrlAllowedDomains();
         this.spBaseUrl = spBaseUrl;
         this.spServiceDeskBaseUrl = spServiceDeskBaseUrl;
+        this.myconextLoginUrl = myConextUrl + "/oauth2/authorization/oidcng";
     }
 
     @GetMapping("/config")
@@ -225,7 +226,7 @@ public class LoginController {
             String cookieValue = String.format("%s=true; Max-Age=%s; SameSite=None%s", REGISTER_MODUS_COOKIE_NAME, 60 * 10, secureCookie ? "; Secure" : "");
             response.setHeader("Set-Cookie", cookieValue);
         }
-        String redirectLocation = StringUtils.hasText(location) ? location : this.config.get("eduIDLoginUrl") + "?lang=" + lang;
+        String redirectLocation = StringUtils.hasText(location) ? location : this.myconextLoginUrl + "?lang=" + lang;
 
         LOG.info(String.format("Redirecting to %s", redirectLocation));
 
