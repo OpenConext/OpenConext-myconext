@@ -21,7 +21,8 @@ import static org.junit.jupiter.api.Assertions.*;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
         properties = {
                 "service_desk_role_auto_provisioning=True",
-                "feature.service_desk_active=False"
+                "feature.service_desk_active=True",
+                "host_headers.active=servicedesk.test2.eduid.nl"
         })
 class ServiceDeskControllerTest extends AbstractIntegrationTest {
 
@@ -132,15 +133,11 @@ class ServiceDeskControllerTest extends AbstractIntegrationTest {
     }
 
     @Test
-    void createUserControlCode() {
-        clearExternalAccounts("jdoe@example.com");
-        ControlCode controlCode = new ControlCode("Lee", "Harpers", "01 Mar 1977");
+    void logout() {
         given()
-                .body(controlCode)
-                .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                 .when()
-                .post("/myconext/api/sp/control-code")
+                .get("/myconext/api/servicedesk/logout")
                 .then()
-                .statusCode(HttpStatus.FORBIDDEN.value());
+                .statusCode(HttpStatus.OK.value());
     }
 }

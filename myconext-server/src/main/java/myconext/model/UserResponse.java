@@ -34,6 +34,7 @@ public class UserResponse implements Serializable {
     private final String uid;
     private final boolean rememberMe;
     private final long created;
+    private final long passwordUpdatedAt;
     private final Map<String, EduID> eduIdPerServiceProvider;
     private final List<String> loginOptions;
     private final Map<String, Object> registration = new HashMap<>();
@@ -79,6 +80,7 @@ public class UserResponse implements Serializable {
         this.forgottenPassword = user.isForgottenPassword();
         this.rememberMe = rememberMe;
         this.created = user.getCreated();
+        this.passwordUpdatedAt = user.getPasswordUpdatedAt();
         if (!CollectionUtils.isEmpty(eduIdPerServiceProvider)) {
             //Prevent HttpMessageNotWritableException: Could not write JSON: Null key for a Map not allowed in JSON
             eduIdPerServiceProvider.keySet().removeIf(Objects::isNull);

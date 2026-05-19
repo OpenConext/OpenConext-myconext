@@ -3,6 +3,7 @@
     import {onMount} from "svelte";
     import I18n from "../locale/I18n";
     import Modal from "../components/Modal.svelte";
+    import Button from "./Button.svelte";
 
     export let question = null;
     export let preLink = null;
@@ -10,6 +11,9 @@
     export let route = null;
     export let href = null;
     export let isMfa = false;
+    export let interContent = false;
+
+    export let showButton = false;
 
     let isMfaParameter = false;
     let showModal = false;
@@ -44,6 +48,23 @@
         box-shadow: 0 3px 0 2px #003980;
     }
 
+    .inter-content {
+      display: flex;
+      flex-direction: column;
+      margin: 0 auto 0 auto;
+      padding: 22px 32px 0 32px;
+      background-color: white;
+      justify-content: center;
+    }
+
+    .show-button {
+      margin: 0;
+      padding: 0;
+      .sub-content-inner {
+        display: block;
+      }
+    }
+
     @media (max-width: 800px) {
         .sub-content {
             padding: 32px 28px;
@@ -58,7 +79,11 @@
     }
 
     span.question {
-        font-weight: 600;
+        font-weight: 400;
+        font-size: 14px;
+        color: #173552;
+        width: 100%;
+        text-align: center;
     }
 
     span.pre-link {
@@ -66,9 +91,10 @@
     }
 
     a {
-        color: var(--color-primary-blue);
+        color: #173552;
         text-decoration: underline;
-        font-weight: normal;
+        font-weight: 400;
+        font-size: 14px;
 
         &:hover {
             color: var(--color-hover-blue);
@@ -77,19 +103,25 @@
     }
 
 </style>
-<div class="sub-content">
+<div class="{interContent ? 'inter-content' : 'sub-content'} {showButton ? 'show-button' : ''}">
     <div class="sub-content-inner">
     <span class="question">{@html question}
         {#if preLink}
             <span class="pre-link">{preLink}</span>
         {/if}
-        {#if route && (userOverride || !isMfaParameter || !isMfa)}
+        {#if !showButton && route && (userOverride || !isMfaParameter || !isMfa)}
             <a href={route} use:link>
                 {linkText}
             </a>
-        {:else if route && !userOverride && isMfaParameter && isMfa}
+        {:else if showButton && route && (userOverride || !isMfaParameter || !isMfa)}
+            <Button href="{route}" useLink="true" label={linkText} className="full" big="true"/>
+        {:else if !showButton && route && !userOverride && isMfaParameter && isMfa}
             <a href={route}
-               on:click|preventDefault|stopPropagation={() => showModal = true}>{linkText}</a>
+               on:click|preventDefault|stopPropagation={() => showModal = true}>
+                {linkText}
+            </a>
+        {:else if showButton && route && !userOverride && isMfaParameter && isMfa}
+            <Button href="{route}" label={linkText} onClick="{() => showModal = true}" className="full"/>
         {:else}
             <a href={href} target="_blank">{linkText}</a>
         {/if}

@@ -85,17 +85,18 @@ public class APIController implements HasUserRepository {
     }
 
     @GetMapping("/links")
-    public List<Map<String, String>> links(BearerTokenAuthentication authentication) {
+    public List<Map<String, Object>> links(BearerTokenAuthentication authentication) {
         String clientId = (String) authentication.getTokenAttributes().get("client_id");
 
         LOG.info(String.format("Endpoint '/links/ called by authentication %s", clientId));
 
         User user = getUser(authentication);
-        List<Map<String, String>> results = new ArrayList<>(user.linkedAccountsSorted().stream()
+        List<Map<String, Object>> results = new ArrayList<>(user.linkedAccountsSorted().stream()
                 .map(linkedAccount -> {
-                    Map<String, String> info = new HashMap<>();
+                    Map<String, Object> info = new HashMap<>();
                     info.put("eppn", linkedAccount.getEduPersonPrincipalName());
                     info.put("schac_home_organization", linkedAccount.getSchacHomeOrganization());
+                    info.put("preferred", linkedAccount.isPreferred());
                     if (linkedAccount.areNamesValidated()) {
                         info.put("validated_name", String.format("%s %s", linkedAccount.getGivenName(), linkedAccount.getFamilyName()));
                     }
@@ -103,11 +104,17 @@ public class APIController implements HasUserRepository {
                 })
                 .toList());
 
-        List<Map<String, String>> externalValidatedNames = user.getExternalLinkedAccounts().stream()
-                .filter(acc -> acc.areNamesValidated() && acc.isPreferred())
-                .map(externalLinkedAccount -> Map.of("validated_name",
-                        String.format("%s %s", externalLinkedAccount.getGivenName(), externalLinkedAccount.getFamilyName())))
-                .toList();
+        List<Map<String, Object>> externalValidatedNames =
+                user.getExternalLinkedAccounts().stream()
+                        .filter(acc -> acc.areNamesValidated() && acc.isPreferred())
+                        .map(externalLinkedAccount -> {
+                            Map<String, Object> info = new HashMap<>();
+                            String validatedName = String.format("%s %s", externalLinkedAccount.getGivenName(), externalLinkedAccount.getFamilyName());
+                            info.put("validated_name", validatedName);
+                            info.put("preferred", true);
+                            return info;
+                        })
+                        .toList();
         results.addAll(externalValidatedNames);
 
         LOG.info(String.format("Endpoint '/links/ results %s for authentication %s", results, clientId));

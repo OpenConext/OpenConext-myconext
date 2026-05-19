@@ -2,6 +2,7 @@ package myconext.remotecreation;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -20,6 +21,7 @@ import myconext.security.RemoteUser;
 import myconext.verify.AttributeMapper;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.http.HttpStatus;
@@ -31,11 +33,12 @@ import org.springframework.util.StringUtils;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static myconext.SwaggerOpenIdConfig.BASIC_AUTHENTICATION_SCHEME_NAME;
-
 
 @RestController
 @ConditionalOnProperty("feature.remote_creation_api")
@@ -49,12 +52,18 @@ public class RemoteCreationController implements HasUserRepository {
     private final Manage manage;
     private final MailBox mailBox;
     private final AttributeMapper attributeMapper;
+    private final String schacHomeOrganization;
 
-    public RemoteCreationController(UserRepository userRepository, Manage manage, MailBox mailBox, AttributeMapper attributeMapper) {
+    public RemoteCreationController(UserRepository userRepository,
+                                    Manage manage,
+                                    MailBox mailBox,
+                                    AttributeMapper attributeMapper,
+                                    @Value("${schac_home_organization}") String schacHomeOrganization) {
         this.userRepository = userRepository;
         this.manage = manage;
         this.mailBox = mailBox;
         this.attributeMapper = attributeMapper;
+        this.schacHomeOrganization = schacHomeOrganization;
     }
 
     @GetMapping(value = {"/email-eduid-exists"})
@@ -162,12 +171,105 @@ public class RemoteCreationController implements HasUserRepository {
         User user = this.findUserByEduIDValue(eduIDInstitutionPseudonym.getEduID())
                 .orElseThrow(() -> new UserNotFoundException(String.format("User with eduID %s not found", eduIDInstitutionPseudonym.getEduID())));
         IdentityProvider identityProvider = manage.findIdentityProviderByBrinCode(eduIDInstitutionPseudonym.getBrinCode())
+                .stream()
+                .findFirst()
                 .orElseThrow(() -> new IdentityProviderNotFoundException(String.format("IdentityProvider with BRIN code %s not found", eduIDInstitutionPseudonym.getBrinCode())));
 
         String eduIDValue = user.computeEduIdForIdentityProviderProviderIfAbsent(identityProvider, manage);
         userRepository.save(user);
 
         return ResponseEntity.ok(new EduIDValue(eduIDValue));
+    }
+
+    @PostMapping(value = {"/eduid-institution-pseudonym-batch"})
+    @PreAuthorize("hasRole('ROLE_remote-creation')")
+    @Operation(summary = "Return eduID pseudonyms for an institution",
+            description = "Return eduID pseudonyms for an institution identified by the BRIN code",
+            responses = {
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "OK",
+                            content = @Content(
+                                    mediaType = "application/json",
+                                    array = @ArraySchema(schema = @Schema(implementation = EduIDAssignedValue.class)),
+                                    examples = {
+                                            @ExampleObject(
+                                                    name = "Success",
+                                                    value = "[{\n" +
+                                                            "  \"eduID\": \"46ab5162-e098-4c24-9f28-cdf4d9b5fbb0\",\n" +
+                                                            "  \"brinCode\": \"UV-001\",\n" +
+                                                            "  \"value\": \"46ab5162-e098-4c24-9f28-cdf4d9b5fbb0\",\n" +
+                                                            "  \"error\": null\n" +
+                                                            "}]"),
+                                            @ExampleObject(
+                                                    name = "Unknown eduID",
+                                                    value = "[{\n" +
+                                                            "  \"eduID\": \"46ab5162-e098-4c24-9f28-cdf4d9b5fbb0\",\n" +
+                                                            "  \"brinCode\": \"UV-001\",\n" +
+                                                            "  \"value\": null,\n" +
+                                                            "  \"error\": \"Unknown eduID\"\n" +
+                                                            "}]"),
+                                            @ExampleObject(
+                                                    name = "Unknown brinCode",
+                                                    value = "[{\n" +
+                                                            "  \"eduID\": \"46ab5162-e098-4c24-9f28-cdf4d9b5fbb0\",\n" +
+                                                            "  \"brinCode\": \"UV-001\",\n" +
+                                                            "  \"value\": null,\n" +
+                                                            "  \"error\": \"Unknown brinCode\"\n" +
+                                                            "}]")
+                                    })),
+                    @ApiResponse(responseCode = "400", description = "BadRequest",
+                            content = {@Content(schema = @Schema(implementation = StatusResponse.class),
+                                    examples = {@ExampleObject(
+                                            name = "BadRequest",
+                                            value = "{\n" +
+                                                    "  \"timestamp\": 1718865813679,\n" +
+                                                    "  \"status\": 400,\n" +
+                                                    "  \"error\": \"Bad Request\",\n" +
+                                                    "  \"exception\": \"org.springframework.web.bind.MethodArgumentNotValidException\",\n" +
+                                                    "  \"message\": \"Validation failed for object='eduIDInstitutionPseudonym'. Error count: 1\",\n" +
+                                                    "  \"path\": \"/api/remote-creation/eduid-institution-pseudonym-batch\"\n" +
+                                                    "}")})})})
+    public ResponseEntity<List<EduIDAssignedValue>> eduIDForInstitutionBatch(
+            @Parameter(hidden = true) @AuthenticationPrincipal(errorOnInvalidType = true) RemoteUser remoteUser,
+            @RequestBody @Validated List<EduIDInstitutionPseudonym> eduIDInstitutionPseudonyms) {
+        LOG.info(String.format("eduid-institution-pseudonym by %s for %s", remoteUser.getUsername(), eduIDInstitutionPseudonyms));
+        //First, get all identityProviders and remove those not found e.g. Optional<IdentityProvider>
+
+        Map<String, List<IdentityProvider>> identityProvidersGroupedBy = eduIDInstitutionPseudonyms.stream()
+                .map(pseudonym -> pseudonym.getBrinCode())
+                .distinct()
+                .map(brinCode -> manage.findIdentityProviderByBrinCode(brinCode))
+                .flatMap(List::stream)
+                .collect(Collectors.groupingBy(IdentityProvider::getInstitutionBrin));
+
+        List<EduIDAssignedValue> eduIDAssignedValues = eduIDInstitutionPseudonyms.stream()
+                .flatMap(eduIDInstitutionPseudonym -> {
+                    String eduID = eduIDInstitutionPseudonym.getEduID();
+                    String brinCode = eduIDInstitutionPseudonym.getBrinCode();
+                    if (!identityProvidersGroupedBy.containsKey(brinCode)) {
+                        return Stream.of(new EduIDAssignedValue(eduID, null, brinCode, "Unknown brinCode"));
+                    }
+                    Optional<User> optionalUser = this.findUserByEduIDValue(eduID);
+                    if (optionalUser.isEmpty()) {
+                        return Stream.of(new EduIDAssignedValue(eduID, null, brinCode, "Unknown eduID"));
+                    }
+                    List<String> pseudonyms = optionalUser
+                            .map(user -> {
+                                List<IdentityProvider> identityProviders = identityProvidersGroupedBy.get(brinCode);
+                                //It might be that no identityProvider was found for this BRIN code
+                                List<String> eduIDValues = identityProviders.stream()
+                                        .map(identityProvider -> user.computeEduIdForIdentityProviderProviderIfAbsent(identityProvider, manage))
+                                        .distinct()
+                                        .toList();
+                                userRepository.save(user);
+                                return eduIDValues;
+                            }).orElse(Collections.emptyList());
+                    return pseudonyms.stream()
+                            .map(pseudonym -> new EduIDAssignedValue(eduID, pseudonym, brinCode, null));
+                })
+                .toList();
+        return ResponseEntity.ok(eduIDAssignedValues);
     }
 
     @PostMapping(value = {"/eduid-create"})
@@ -207,7 +309,7 @@ public class RemoteCreationController implements HasUserRepository {
         String lastNamePrefix = externalEduID.getLastNamePrefix();
         String lastName = StringUtils.hasText(lastNamePrefix) ? String.format("%s %s", lastNamePrefix, externalEduID.getLastName()) : externalEduID.getLastName();
         User user = new User(UUID.randomUUID().toString(), externalEduID.getEmail(), externalEduID.getChosenName(),
-                externalEduID.getFirstName(), lastName, remoteUser.getSchacHome(), LocaleContextHolder.getLocale().getLanguage(), remoteProvider
+                externalEduID.getFirstName(), lastName, this.schacHomeOrganization, LocaleContextHolder.getLocale().getLanguage(), remoteProvider
                 , manage);
         //Otherwise another email is sent out when the user logs in
         user.setNewUser(false);
@@ -254,41 +356,56 @@ public class RemoteCreationController implements HasUserRepository {
 
         /*
          * There must be an existing User for the eduIDValue, because the account was created earlier with the POST eduid-create.
-         * If there was an existing User for the email then the user was redirected and login with the eduID account for this email. In this case
-         * we create new eduID value for the remote API institutionGUID
+         * If there was an existing User for the email, then the user was redirected and logged in with the eduID account for this email. In this case
+         * we create a new eduID value for the remote API institutionGUID
          */
         User user = this.findUserByEduIDValue(eduIDValue)
                 .orElseThrow(() -> new UserNotFoundException(String.format("User not found by eduID %s", eduIDValue)));
+        boolean isVerifiedStatus = !Verification.Ongeverifieerd.equals(externalEduID.getVerification());
+        if (isVerifiedStatus) {
+            user.setDateOfBirth(AttributeMapper.parseDate(externalEduID.getDateOfBirth()));
+        }
         user.updateWithExternalEduID(externalEduID);
+
+        AtomicBoolean userIsValidated = new AtomicBoolean(false);
         Optional<ExternalLinkedAccount> optionalExternalLinkedAccount = user.getExternalLinkedAccounts().stream()
                 .filter(account -> IdpScoping.valueOf(remoteUserName).equals(account.getIdpScoping()))
                 .findAny();
         optionalExternalLinkedAccount.ifPresentOrElse(externalLinkedAccount -> {
-            //Not all external attributes can be changed
-            externalLinkedAccount.setVerification(externalEduID.getVerification());
-            externalLinkedAccount.setAffiliations(AttributeMapper.externalAffiliations(externalEduID.getBrinCodes(), manage));
-            externalLinkedAccount.setBrinCodes(externalEduID.getBrinCodes());
-            externalLinkedAccount.setDateOfBirth(AttributeMapper.parseDate(externalEduID.getDateOfBirth()));
+            //Prevent sending mail's again
+            boolean currentExternalAccountUnverified = Verification.Ongeverifieerd.equals(externalLinkedAccount.getVerification());
+            if (isVerifiedStatus && currentExternalAccountUnverified) {
+                userIsValidated.set(true);
+                externalLinkedAccount.setPreferred(true);
+            }
+            externalLinkedAccount.updateAttributesFromUpdateExternalEduID(externalEduID, this.attributeMapper);
         }, () -> {
-            //Create external account for this remoteAPI user
+            //Create the StudieLink external account for this remoteAPI user
             RemoteProvider remoteProvider = getRemoteProvider(remoteUser, remoteUserName);
             String provisionedEduIDValue = user.computeEduIdForIdentityProviderProviderIfAbsent(remoteProvider, manage);
             externalEduID.setEduIDValue(provisionedEduIDValue);
             ExternalLinkedAccount externalLinkedAccount = attributeMapper.createExternalLinkedAccount(externalEduID, IdpScoping.valueOf(remoteUserName));
+            externalLinkedAccount.setAffiliations(attributeMapper.externalAffiliations(externalEduID.getBrinCodes()));
+            if (isVerifiedStatus) {
+                userIsValidated.set(true);
+                externalLinkedAccount.setPreferred(true);
+            }
             user.getExternalLinkedAccounts().add(externalLinkedAccount);
         });
-
         userRepository.save(user);
+        if (userIsValidated.get()) {
+            mailBox.sendUserValidated(user, externalEduID, remoteUserName);
+        }
         return ResponseEntity.status(HttpStatus.CREATED).body(externalEduID);
     }
 
     @DeleteMapping(value = {"/eduid-delete/{eduid}"})
     @PreAuthorize("hasRole('ROLE_remote-creation')")
-    @Operation(summary = "Delete an eduID",
-            description = "Delete an eduID",
+    @Operation(summary = "Delete the eduID pseudonym for the remote source",
+            description = "Delete the eduID pseudonym for the remote source",
             responses = {
                     @ApiResponse(responseCode = "204", description = "No content",
-                            content = {@Content(schema = @Schema(implementation = UpdateExternalEduID.class))}),
+                            content = {@Content(schema = @Schema(implementation = Void.class))}),
                     @ApiResponse(responseCode = "400", description = "BadRequest",
                             content = {@Content(schema = @Schema(implementation = StatusResponse.class),
                                     examples = {@ExampleObject(value = "{\"status\":400}")})}),

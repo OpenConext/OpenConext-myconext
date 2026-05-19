@@ -1,10 +1,10 @@
 package myconext.model;
 
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import jakarta.validation.constraints.NotNull;
 import java.io.Serializable;
 
 @NoArgsConstructor
@@ -19,5 +19,7 @@ public class ClientAuthenticationRequest implements Serializable {
     private User user;
 
     private boolean usePassword;
+
+    private String captchaResponse;
 
 }

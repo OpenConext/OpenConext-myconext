@@ -21,7 +21,6 @@
         flex-direction: column;
         border: 2px solid var(--color-secondary-grey);
         padding: 16px 22px;
-        margin-bottom: 20px;
         cursor: pointer;
         background-color: white;
 

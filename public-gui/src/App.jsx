@@ -12,6 +12,7 @@ import {MobileNavigation} from "./routes/MobileNavigation.jsx";
 import {Terms} from "./routes/Terms.jsx";
 import {Privacy} from "./routes/Privacy.jsx";
 import {InstallApp} from "./routes/InstallApp.jsx";
+import {TiqrAuth} from "./routes/TiqrAuth.jsx";
 import {ServiceDesk} from "./routes/ServiceDesk.jsx";
 
 function App() {
@@ -32,19 +33,23 @@ function App() {
         <div className="eduid">
             <div className="container">
                 <Header currentLocation={currentLocation}/>
-                <Routes>
-                    <Route path="/" element={<Navigate replace to="home"/>}/>
-                    <Route path="/home" element={<Home/>}/>
-                    <Route path="/about" element={<About/>}/>
-                    <Route path="/nav" element={<MobileNavigation/>}/>
-                    <Route path="/support" element={<Support/>}/>
-                    <Route path="/privacy" element={<Privacy/>}/>
-                    <Route path="/terms" element={<Terms/>}/>
-                    <Route path="/install-app" element={<InstallApp/>}/>
-                    <Route path="/servicedesk" element={<ServiceDesk/>}/>
-                    <Route path="/servicedesk-en" element={<ServiceDesk/>}/>
-                    <Route path="*" element={<NotFound/>}/>
-                </Routes>
+                <div className="router-container">
+                    {/* First child should be the Route component. CSS targets this to vertically flex-grow the container */}
+                    <Routes>
+                        <Route path="/" element={<Navigate replace to="home"/>}/>
+                        <Route path="/tiqrauth/*" element={<TiqrAuth/>}/>
+                        <Route path="/home" element={<Home/>}/>
+                        <Route path="/about" element={<About/>}/>
+                        <Route path="/nav" element={<MobileNavigation/>}/>
+                        <Route path="/support" element={<Support/>}/>
+                        <Route path="/privacy" element={<Privacy/>}/>
+                        <Route path="/terms" element={<Terms/>}/>
+                        <Route path="/install-app" element={<InstallApp/>}/>
+                        <Route path="/servicedesk" element={<ServiceDesk/>}/>
+                        <Route path="/servicedesk-en" element={<ServiceDesk/>}/>
+                        <Route path="*" element={<NotFound/>}/>
+                    </Routes>
+                </div>
                 <Footer/>
             </div>
         </div>);

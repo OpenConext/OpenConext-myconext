@@ -1,40 +1,78 @@
 package myconext.api;
 
+import io.swagger.v3.oas.annotations.Operation;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 import lombok.Getter;
 import myconext.exceptions.ForbiddenException;
 import myconext.exceptions.RemoteException;
 import myconext.exceptions.UserNotFoundException;
-import myconext.model.ControlCode;
-import myconext.model.ExternalLinkedAccount;
-import myconext.model.User;
+import myconext.model.*;
+import myconext.repository.ExternalUserRepository;
 import myconext.repository.UserRepository;
-import myconext.security.UserAuthentication;
 import myconext.verify.AttributeMapper;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.oauth2.core.oidc.user.OidcUser;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.View;
+import org.springframework.web.servlet.view.RedirectView;
 
+import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
 import java.util.Date;
+import java.util.List;
+import java.util.Optional;
 
 
 @RestController
 @RequestMapping(value = {"/myconext/api/servicedesk"})
-public class ServiceDeskController implements UserAuthentication {
+public class ServiceDeskController {
 
     private static final Log LOG = LogFactory.getLog(ServiceDeskController.class);
 
     @Getter
     private final UserRepository userRepository;
+    private final ExternalUserRepository externalUserRepository;
     private final AttributeMapper attributeMapper;
+    private final String spBaseUrl;
 
     public ServiceDeskController(UserRepository userRepository,
-                                 AttributeMapper attributeMapper) {
+                                 ExternalUserRepository externalUserRepository,
+                                 AttributeMapper attributeMapper,
+                                 @Value("${sp_redirect_url}") String spBaseUrl) {
         this.userRepository = userRepository;
+        this.externalUserRepository = externalUserRepository;
         this.attributeMapper = attributeMapper;
+        this.spBaseUrl = spBaseUrl;
+    }
+
+    @GetMapping("/me")
+    public ResponseEntity<ExternalUser> me(Authentication authentication) {
+        String userId = (String) ((OidcUser) authentication.getPrincipal()).getClaims().get("id");
+        ExternalUser user = this.externalUserRepository.findById(userId).orElseThrow(() -> new UserNotFoundException(userId));
+
+        return ResponseEntity.ok(user);
+    }
+
+    @GetMapping("/logout")
+    @Operation(summary = "Logout",
+            description = "Logout the current logged in user")
+    public ResponseEntity<StatusResponse> logout(HttpServletRequest request) {
+        HttpSession session = request.getSession(false);
+        if (session != null) {
+            session.invalidate();
+        }
+        SecurityContextHolder.getContext().setAuthentication(null);
+        SecurityContextHolder.clearContext();
+        return ResponseEntity.ok(new StatusResponse(HttpStatus.OK.value()));
     }
 
     @GetMapping("/user/{code}")
@@ -59,7 +97,7 @@ public class ServiceDeskController implements UserAuthentication {
 
     @PutMapping("/approve")
     public ResponseEntity<ExternalLinkedAccount> convertUserControlCode(Authentication authentication,
-                                                       @RequestBody ControlCode controlCode) {
+                                                                        @RequestBody ControlCode controlCode) {
         try {
             return doConvertUserControlCode(authentication, controlCode);
         } catch (RuntimeException e) {
@@ -70,7 +108,7 @@ public class ServiceDeskController implements UserAuthentication {
         }
     }
 
-    private ResponseEntity<ExternalLinkedAccount> doConvertUserControlCode(Authentication authentication, ControlCode controlCode) throws RuntimeException{
+    private ResponseEntity<ExternalLinkedAccount> doConvertUserControlCode(Authentication authentication, ControlCode controlCode) throws RuntimeException {
         String code = controlCode.getCode();
         User user = userRepository.findByControlCode_Code(code)
                 .orElseThrow(() -> new UserNotFoundException(String.format("No user found with controlCode %s", code)));
@@ -82,8 +120,13 @@ public class ServiceDeskController implements UserAuthentication {
             throw new ForbiddenException("User UID's do not match");
         }
 
-        String userUid = ((User) authentication.getPrincipal()).getUid();
-        User serviceDeskMember = getUserRepository().findUserByUid(userUid).orElseThrow(() -> new UserNotFoundException(userUid));
+        String userUid = Optional.ofNullable(
+                        ((OidcUser) authentication.getPrincipal()).getClaimAsStringList("uids"))
+                .filter(l -> !l.isEmpty())
+                .map(List::getFirst)
+                .orElseThrow(() -> new ForbiddenException("Missing 'uids' claim"));
+
+        ExternalUser serviceDeskMember = this.externalUserRepository.findUserByUid(userUid).orElseThrow(() -> new UserNotFoundException(userUid));
 
         LOG.info(String.format("Adding external linked account for service desk for user %s by user %s",
                 user.getEmail(), serviceDeskMember.getEmail()));

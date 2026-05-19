@@ -4,7 +4,9 @@ import jakarta.servlet.http.HttpServletRequest;
 import myconext.model.User;
 import org.apache.commons.logging.Log;
 import org.slf4j.MDC;
+import org.springframework.util.CollectionUtils;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Stream;
@@ -21,7 +23,7 @@ public class MDCContext {
                 "result", "ok",
                 "tag", "myconext_loginstats",
                 "userid", user.getEmail()));
-        log.info(String.format("%S %s %s", message, user.getEmail(), user.getId()));
+        log.info(String.format("%s %s %s", message, user.getEmail(), user.getId()));
     }
 
     /**
@@ -34,14 +36,27 @@ public class MDCContext {
      * status (start, ingelogd, PB verstuurd, gefaald, enz.)
      */
     public static void logLoginWithContext(User user, String loginMethod, boolean success, Log log, String message,
-                                           HttpServletRequest request) {
+                                           HttpServletRequest request, String authnContextClassRefValue,
+                                           List<String> authenticationContextClassReferences) {
         MDC.setContextMap(Map.of(
                 "login_method", loginMethod,
                 "action", "login",
                 "result", success ? "ok" : "error",
                 "tag", "myconext_loginstats",
                 "userid", user.getEmail()));
-        log.info(String.format("%S %s %s", message, user.getEmail(), user.getId()));
+        String ipAddress = resolve(request);
+        String userAgent = request.getHeader("User-Agent");
+        log.info(String.format("%s %s %s, ipAddress: %s, type: %s, userAgent: %s, requestedACR: %s, responseACR: %s",
+                message,
+                user.getEmail(),
+                user.getId(),
+                ipAddress,
+                loginMethod,
+                userAgent,
+                CollectionUtils.isEmpty(authenticationContextClassReferences) ? "[]" :
+                        String.join(", ", authenticationContextClassReferences),
+                authnContextClassRefValue
+        ));
     }
 
     /*

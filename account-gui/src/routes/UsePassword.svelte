@@ -12,6 +12,7 @@
     import {cookieNames} from "../constants/cookieNames";
     import {loginPreferences} from "../constants/loginPreferences";
     import {links} from "../stores/conf";
+    import SubContent from "../components/SubContent.svelte";
 
     export let id;
     let showSpinner = true;
@@ -132,4 +133,9 @@
         label={I18n.t("Login.Login.COPY")}
         className="full"
         onClick={passwordStart}/>
+
+<SubContent question={I18n.t("Login.ForgotPassword.COPY")}
+            preLink={I18n.t("Login.UseAnother.COPY")}
+            linkText={I18n.t("Login.OptionsLink.COPY")}
+            route="/options/{id}" interContent="true"/>
 

@@ -16,6 +16,7 @@ import myconext.security.ACR;
 import org.apache.commons.io.IOUtils;
 import org.apache.http.client.CookieStore;
 import org.junit.Test;
+import org.opensaml.saml.saml2.core.StatusCode;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -141,7 +142,7 @@ public class UserControllerTest extends AbstractIntegrationTest {
         doExpireWithFindProperty(SamlAuthenticationRequest.class, "id", authenticationRequestId);
 
         ClientAuthenticationRequest linkRequest = new ClientAuthenticationRequest(authenticationRequestId,
-                user("new@example.com", "Mary", "Doe", "en"), false);
+                user("new@example.com", "Mary", "Doe", "en"), false, "repsonse");
 
         oneTimeLoginCodeRequest(linkRequest, HttpMethod.POST)
                 .response
@@ -160,10 +161,131 @@ public class UserControllerTest extends AbstractIntegrationTest {
         Response response = samlAuthnRequestResponseWithLoa(null, "relay", authnContext);
         String authenticationRequestId = extractAuthenticationRequestIdFromAuthnResponse(response);
 
-        ClientAuthenticationResponse authenticationResponse = oneTimeLoginCodeRequest(new ClientAuthenticationRequest(authenticationRequestId, user, false), HttpMethod.PUT);
+        ClientAuthenticationRequest clientAuthenticationRequest = new ClientAuthenticationRequest(authenticationRequestId, user, false, "repsonse");
+        ClientAuthenticationResponse authenticationResponse = oneTimeLoginCodeRequest(clientAuthenticationRequest, HttpMethod.PUT);
         String samlResponse = samlResponse(authenticationResponse);
 
         assertTrue(samlResponse.contains(ACR.LINKED_INSTITUTION));
+    }
+
+    @Test
+    public void accountLinkingAndMfa() throws IOException {
+        String authnContext = readFile("request_authn_context_linked_institution_mfa.xml");
+        Response response = samlAuthnRequestResponseWithLoa(null, "relay", authnContext);
+        String authenticationRequestId = extractAuthenticationRequestIdFromAuthnResponse(response);
+
+        String location = response.getHeader("Location");
+        assertTrue(location.contains("/login"));
+        assertTrue(location.contains("stepup=true"));
+        assertTrue(location.contains("mfa=true"));
+
+        // Linking institution
+        User user = userRepository.findOneUserByEmail("mdoe@example.com");
+        LinkedAccount linkedAccount = linkedAccount("John", "Doe", new Date());
+        user.getLinkedAccounts().add(linkedAccount);
+        userRepository.save(user);
+
+        ClientAuthenticationRequest clientAuthenticationRequest = new ClientAuthenticationRequest(authenticationRequestId, user, false, "repsonse");
+        ClientAuthenticationResponse authenticationResponse = oneTimeLoginCodeRequest(clientAuthenticationRequest, HttpMethod.PUT);
+
+        // Setting MFA
+        SamlAuthenticationRequest samlAuthenticationRequest = authenticationRequestRepository.findById(authenticationResponse.authenticationRequestId).get();
+        samlAuthenticationRequest.setTiqrFlow(true);
+        authenticationRequestRepository.save(samlAuthenticationRequest);
+
+        String samlResponse = samlResponse(authenticationResponse);
+
+        assertTrue(samlResponse.contains(ACR.LINKED_INSTITUTION_MFA));
+    }
+
+    @Test
+    public void accountLinkingAndMfa_RejectMfa() throws IOException {
+        String authnContext = readFile("request_authn_context_linked_institution_mfa.xml");
+        Response response = samlAuthnRequestResponseWithLoa(null, "relay", authnContext);
+        String authenticationRequestId = extractAuthenticationRequestIdFromAuthnResponse(response);
+
+        String location = response.getHeader("Location");
+        assertTrue(location.contains("/login"));
+        assertTrue(location.contains("stepup=true"));
+        assertTrue(location.contains("mfa=true"));
+
+        // Linking institution
+        User user = userRepository.findOneUserByEmail("mdoe@example.com");
+        LinkedAccount linkedAccount = linkedAccount("John", "Doe", new Date());
+        user.getLinkedAccounts().add(linkedAccount);
+        userRepository.save(user);
+
+        ClientAuthenticationRequest clientAuthenticationRequest = new ClientAuthenticationRequest(authenticationRequestId, user, false, "repsonse");
+        ClientAuthenticationResponse authenticationResponse = oneTimeLoginCodeRequest(clientAuthenticationRequest, HttpMethod.PUT);
+
+        SamlAuthenticationRequest samlAuthenticationRequest = authenticationRequestRepository
+                .findById(authenticationResponse.authenticationRequestId).get();
+
+        Response magicResponse = given().redirects().follow(false)
+                .when()
+                .queryParam("h", samlAuthenticationRequest.getHash())
+                .cookie(BROWSER_SESSION_COOKIE_NAME, "true")
+                .get("/saml/guest-idp/magic");
+        while (magicResponse.statusCode() == 302) {
+            String redirectLocation = magicResponse.getHeader("Location");
+            assertNotNull(redirectLocation);
+            magicResponse = this.get302Response(magicResponse, Optional.empty(), "?force=true");
+        }
+        String samlResponse = samlAuthnResponse(magicResponse, Optional.empty());
+
+        assertTrue(samlResponse.contains(StatusCode.NO_AUTHN_CONTEXT));
+        assertTrue(samlResponse.contains("The requesting service has indicated that a login with the eduID app is required to login."));
+    }
+
+    @Test
+    public void accountLinkingAndMfa_Flow() throws IOException {
+        // Login
+        String authnContext = readFile("request_authn_context_linked_institution_mfa.xml");
+        Response response1 = samlAuthnRequestResponseWithLoa(null, "relay", authnContext);
+        String location = response1.getHeader("Location");
+
+        assertTrue(location.contains("/login"));
+        assertTrue(location.contains("stepup=true"));
+        assertTrue(location.contains("mfa=true"));
+
+        // Linked institution missing, triggers step-up
+        String authenticationRequestId = extractAuthenticationRequestIdFromAuthnResponse(response1);
+        User user = userRepository.findOneUserByEmail("mdoe@example.com");
+        ClientAuthenticationRequest clientAuthenticationRequest = new ClientAuthenticationRequest(authenticationRequestId, user, false, "repsonse");
+        ClientAuthenticationResponse authenticationResponse = oneTimeLoginCodeRequest(clientAuthenticationRequest, HttpMethod.PUT);
+
+        SamlAuthenticationRequest samlAuthenticationRequest = authenticationRequestRepository.findById(authenticationResponse.authenticationRequestId).get();
+        Response response2 = given().redirects().follow(false)
+                .when()
+                .queryParam("h", samlAuthenticationRequest.getHash())
+                .cookie(BROWSER_SESSION_COOKIE_NAME, "true")
+                .get("/saml/guest-idp/magic");
+
+        String location2 = response2.getHeader("Location");
+        assertTrue(location2.contains("/stepup"));
+        assertTrue(location2.contains("explanation=linked_institution"));
+
+        // Linking an institution
+        LinkedAccount linkedAccount = linkedAccount("John", "Doe", new Date());
+        user.getLinkedAccounts().add(linkedAccount);
+        userRepository.save(user);
+
+        // Skips step-up and redirects to app-required
+        Response response3 = given().redirects().follow(false)
+                .when()
+                .queryParam("h", samlAuthenticationRequest.getHash())
+                .cookie(BROWSER_SESSION_COOKIE_NAME, "true")
+                .get("/saml/guest-idp/magic");
+        String location3 = response3.getHeader("Location");
+        assertTrue(location3.contains("app-required"));
+
+        // Enabling MFA
+        samlAuthenticationRequest.setTiqrFlow(true);
+        authenticationRequestRepository.save(samlAuthenticationRequest);
+
+        // Calling magic endpoint and finalizing the flow
+        String samlResponse = samlResponse(authenticationResponse);
+        assertTrue(samlResponse.contains(ACR.LINKED_INSTITUTION_MFA));
     }
 
     @Test
@@ -174,12 +296,34 @@ public class UserControllerTest extends AbstractIntegrationTest {
         Response response = samlAuthnRequestResponseWithLoa(null, "relay", authnContext);
         String authenticationRequestId = extractAuthenticationRequestIdFromAuthnResponse(response);
 
-        ClientAuthenticationResponse authenticationResponse = oneTimeLoginCodeRequest(new ClientAuthenticationRequest(authenticationRequestId, user, false), HttpMethod.PUT);
+        ClientAuthenticationResponse authenticationResponse = oneTimeLoginCodeRequest(new ClientAuthenticationRequest(authenticationRequestId, user, false, "repsonse"), HttpMethod.PUT);
         String samlResponse = samlResponse(authenticationResponse);
 
         assertTrue(samlResponse.contains(ACR.VALIDATE_NAMES));
         assertTrue(samlResponse.contains(user.getDerivedGivenName()));
         assertTrue(samlResponse.contains(user.getDerivedFamilyName()));
+    }
+
+    @Test
+    public void nudgeUserToUseTheApp() throws IOException {
+        User user = userRepository.findOneUserByEmail("jdoe@example.com");
+        user.setLastLogin(System.currentTimeMillis());
+        user.getSurfSecureId().clear();
+        userRepository.save(user);
+
+        String authnContext = readFile("request_authn_context_validated_name.xml");
+        Response magicLinkResponse = samlAuthnRequestResponseWithLoa(null, "relay", authnContext);
+        String authenticationRequestId = extractAuthenticationRequestIdFromAuthnResponse(magicLinkResponse);
+
+        ClientAuthenticationResponse authenticationResponse = oneTimeLoginCodeRequest(new ClientAuthenticationRequest(authenticationRequestId, user, false, "repsonse"), HttpMethod.PUT);
+        SamlAuthenticationRequest samlAuthenticationRequest = authenticationRequestRepository.findById(authenticationResponse.authenticationRequestId).get();
+        Response confirmResponse = given().redirects().follow(false)
+                .when()
+                .queryParam("h", samlAuthenticationRequest.getHash())
+                .cookie(BROWSER_SESSION_COOKIE_NAME, "true")
+                .get("/saml/guest-idp/magic");
+        String location = confirmResponse.getHeader("Location");
+        assertTrue(location.startsWith("http://localhost:3000/confirm"));
     }
 
     @Test
@@ -199,7 +343,7 @@ public class UserControllerTest extends AbstractIntegrationTest {
         samlAuthenticationRequest.setSteppedUp(StepUpStatus.FINISHED_STEP_UP);
         authenticationRequestRepository.save(samlAuthenticationRequest);
 
-        ClientAuthenticationResponse authenticationResponse = oneTimeLoginCodeRequest(new ClientAuthenticationRequest(authenticationRequestId, user, false), HttpMethod.PUT);
+        ClientAuthenticationResponse authenticationResponse = oneTimeLoginCodeRequest(new ClientAuthenticationRequest(authenticationRequestId, user, false, "repsonse"), HttpMethod.PUT);
         String samlResponse = this.samlResponse(authenticationResponse);
 
         assertTrue(samlResponse.contains("Your institution has not provided this affiliation"));
@@ -226,7 +370,7 @@ public class UserControllerTest extends AbstractIntegrationTest {
         samlAuthenticationRequest.setSteppedUp(StepUpStatus.FINISHED_STEP_UP);
         authenticationRequestRepository.save(samlAuthenticationRequest);
 
-        ClientAuthenticationResponse authenticationResponse = oneTimeLoginCodeRequest(new ClientAuthenticationRequest(authenticationRequestId, user, false), HttpMethod.PUT);
+        ClientAuthenticationResponse authenticationResponse = oneTimeLoginCodeRequest(new ClientAuthenticationRequest(authenticationRequestId, user, false, "repsonse"), HttpMethod.PUT);
         String samlResponse = this.samlResponse(authenticationResponse);
 
         assertTrue(samlResponse.contains("Your institution has not provided those attributes"));
@@ -245,7 +389,7 @@ public class UserControllerTest extends AbstractIntegrationTest {
         authenticationRequestRepository.save(samlAuthenticationRequest);
 
         User user = userRepository.findOneUserByEmail("jdoe@example.com");
-        ClientAuthenticationResponse authenticationResponse = oneTimeLoginCodeRequest(new ClientAuthenticationRequest(authenticationRequestId, user, false), HttpMethod.PUT);
+        ClientAuthenticationResponse authenticationResponse = oneTimeLoginCodeRequest(new ClientAuthenticationRequest(authenticationRequestId, user, false, "repsonse"), HttpMethod.PUT);
         String samlResponse = this.samlResponse(authenticationResponse);
 
         assertTrue(samlResponse.contains("Your identity is not verified by an external trusted party"));
@@ -286,7 +430,7 @@ public class UserControllerTest extends AbstractIntegrationTest {
         Response response = samlAuthnRequestResponseWithLoa(null, "relay", authnContext);
         String authenticationRequestId = extractAuthenticationRequestIdFromAuthnResponse(response);
 
-        ClientAuthenticationResponse authenticationResponse = oneTimeLoginCodeRequest(new ClientAuthenticationRequest(authenticationRequestId, user, false), HttpMethod.PUT);
+        ClientAuthenticationResponse authenticationResponse = oneTimeLoginCodeRequest(new ClientAuthenticationRequest(authenticationRequestId, user, false, "repsonse"), HttpMethod.PUT);
         String samlResponse = samlResponse(authenticationResponse);
 
         assertTrue(samlResponse.contains(ACR.VALIDATE_NAMES));
@@ -301,7 +445,7 @@ public class UserControllerTest extends AbstractIntegrationTest {
         Response response = samlAuthnRequestResponseWithLoa(null, "relay", authnContext);
 
         String authenticationRequestId = extractAuthenticationRequestIdFromAuthnResponse(response);
-        ClientAuthenticationResponse authenticationResponse = oneTimeLoginCodeRequest(new ClientAuthenticationRequest(authenticationRequestId, user, false), HttpMethod.PUT);
+        ClientAuthenticationResponse authenticationResponse = oneTimeLoginCodeRequest(new ClientAuthenticationRequest(authenticationRequestId, user, false, "repsonse"), HttpMethod.PUT);
         String samlResponse = this.samlResponse(authenticationResponse);
 
         assertTrue(samlResponse.contains("The specified authentication context requirements"));
@@ -343,7 +487,7 @@ public class UserControllerTest extends AbstractIntegrationTest {
     public void relayState() throws IOException {
         User user = user("steve@example.com", "Steve", "Doe", "en");
         String authenticationRequestId = samlAuthnRequest("Nice");
-        ClientAuthenticationResponse authenticationResponse = oneTimeLoginCodeRequest(new ClientAuthenticationRequest(authenticationRequestId, user, false), HttpMethod.POST);
+        ClientAuthenticationResponse authenticationResponse = oneTimeLoginCodeRequest(new ClientAuthenticationRequest(authenticationRequestId, user, false, "repsonse"), HttpMethod.POST);
         Response response = magicResponse(authenticationResponse);
         assertTrue(IOUtils.toString(response.asInputStream(), Charset.defaultCharset()).contains("Nice"));
     }
@@ -683,7 +827,7 @@ public class UserControllerTest extends AbstractIntegrationTest {
         User user = user("mdoe@example.com");
         userSetPassword(user, "Secret123");
         String authenticationRequestId = samlAuthnRequest();
-        ClientAuthenticationRequest magicLinkRequest = new ClientAuthenticationRequest(authenticationRequestId, user, true);
+        ClientAuthenticationRequest magicLinkRequest = new ClientAuthenticationRequest(authenticationRequestId, user, true, "repsonse");
 
         CookieFilter cookieFilter = new CookieFilter();
         Response response = given()
@@ -722,7 +866,7 @@ public class UserControllerTest extends AbstractIntegrationTest {
         User user = user("mdoe@example.com");
         userSetPassword(user, "nope");
         String authenticationRequestId = samlAuthnRequest();
-        ClientAuthenticationRequest magicLinkRequest = new ClientAuthenticationRequest(authenticationRequestId, user, true);
+        ClientAuthenticationRequest magicLinkRequest = new ClientAuthenticationRequest(authenticationRequestId, user, true, "repsonse");
 
         given()
                 .when()
@@ -777,7 +921,8 @@ public class UserControllerTest extends AbstractIntegrationTest {
 
         String authenticationRequestId = location.substring(location.lastIndexOf("/") + 1, location.lastIndexOf("?"));
         User user = user("jdoe@example.com");
-        ClientAuthenticationResponse authenticationResponse = oneTimeLoginCodeRequest(new ClientAuthenticationRequest(authenticationRequestId, user, StringUtils.hasText(user.getPassword())), HttpMethod.PUT);
+        ClientAuthenticationRequest clientAuthenticationRequest = new ClientAuthenticationRequest(authenticationRequestId, user, StringUtils.hasText(user.getPassword()), "repsonse");
+        ClientAuthenticationResponse authenticationResponse = oneTimeLoginCodeRequest(clientAuthenticationRequest, HttpMethod.PUT);
 
         SamlAuthenticationRequest samlAuthenticationRequest = authenticationRequestRepository.findById(authenticationResponse.authenticationRequestId).get();
         response = given().redirects().follow(false)
@@ -811,7 +956,8 @@ public class UserControllerTest extends AbstractIntegrationTest {
 
         String authenticationRequestId = location.substring(location.lastIndexOf("/") + 1, location.lastIndexOf("?"));
         User user = user("jdoe@example.com");
-        ClientAuthenticationResponse authenticationResponse = oneTimeLoginCodeRequest(new ClientAuthenticationRequest(authenticationRequestId, user, StringUtils.hasText(user.getPassword())), HttpMethod.PUT);
+        ClientAuthenticationRequest clientAuthenticationRequest = new ClientAuthenticationRequest(authenticationRequestId, user, StringUtils.hasText(user.getPassword()), "response");
+        ClientAuthenticationResponse authenticationResponse = oneTimeLoginCodeRequest(clientAuthenticationRequest, HttpMethod.PUT);
 
         SamlAuthenticationRequest samlAuthenticationRequest = authenticationRequestRepository.findById(authenticationResponse.authenticationRequestId).get();
         response = given().redirects().follow(false)
@@ -831,7 +977,7 @@ public class UserControllerTest extends AbstractIntegrationTest {
         String authnContext = readFile("request_authn_context_mfa.xml");
         Response response = samlAuthnRequestResponseWithLoa(null, "relay", authnContext);
         String authenticationRequestId = extractAuthenticationRequestIdFromAuthnResponse(response);
-        ClientAuthenticationResponse authenticationResponse = oneTimeLoginCodeRequest(new ClientAuthenticationRequest(authenticationRequestId, user, false), HttpMethod.PUT);
+        ClientAuthenticationResponse authenticationResponse = oneTimeLoginCodeRequest(new ClientAuthenticationRequest(authenticationRequestId, user, false, "repsonse"), HttpMethod.PUT);
         SamlAuthenticationRequest samlAuthenticationRequest = authenticationRequestRepository.findById(authenticationResponse.authenticationRequestId).get();
 
         Response magicResponse = given().redirects().follow(false)
@@ -857,7 +1003,7 @@ public class UserControllerTest extends AbstractIntegrationTest {
         Response response = samlAuthnRequestResponseWithLoa(null, "relay", authnContext);
         String authenticationRequestId = extractAuthenticationRequestIdFromAuthnResponse(response);
 
-        ClientAuthenticationResponse authenticationResponse = oneTimeLoginCodeRequest(new ClientAuthenticationRequest(authenticationRequestId, user, false), HttpMethod.PUT);
+        ClientAuthenticationResponse authenticationResponse = oneTimeLoginCodeRequest(new ClientAuthenticationRequest(authenticationRequestId, user, false, "repsonse"), HttpMethod.PUT);
         SamlAuthenticationRequest samlAuthenticationRequest = authenticationRequestRepository.findById(authenticationResponse.authenticationRequestId).get();
         samlAuthenticationRequest.setTiqrFlow(true);
         authenticationRequestRepository.save(samlAuthenticationRequest);
@@ -1154,7 +1300,7 @@ public class UserControllerTest extends AbstractIntegrationTest {
         user.setLinkedAccounts(linkedAccounts);
         userRepository.save(user);
 
-        oneTimeLoginCodeRequest(new ClientAuthenticationRequest(authenticationRequestId, user, false), HttpMethod.PUT);
+        oneTimeLoginCodeRequest(new ClientAuthenticationRequest(authenticationRequestId, user, false, "repsonse"), HttpMethod.PUT);
 
         samlAuthenticationRequest = authenticationRequestRepository.findById(authenticationRequestId).get();
         response = given().redirects().follow(false)
@@ -1208,7 +1354,7 @@ public class UserControllerTest extends AbstractIntegrationTest {
         authenticationRequestRepository.save(samlAuthenticationRequest);
 
         User user = userRepository.findOneUserByEmail("jdoe@example.com");
-        oneTimeLoginCodeRequest(new ClientAuthenticationRequest(authenticationRequestId, user, false), HttpMethod.PUT);
+        oneTimeLoginCodeRequest(new ClientAuthenticationRequest(authenticationRequestId, user, false, "repsonse"), HttpMethod.PUT);
 
         samlAuthenticationRequest = authenticationRequestRepository.findById(authenticationRequestId).get();
         response = given().redirects().follow(false)
@@ -1441,18 +1587,6 @@ public class UserControllerTest extends AbstractIntegrationTest {
     }
 
     @Test
-    public void createUserControlCodeForbidden() {
-        ControlCode controlCode = new ControlCode("Lee", "Harpers", "01 Mar 1977");
-        given()
-                .body(controlCode)
-                .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
-                .when()
-                .post("/myconext/api/sp/control-code")
-                .then()
-                .statusCode(403);
-    }
-
-    @Test
     public void errorMailOverload() {
         Map<String, Object> json = Map.of("error", "unexpected");
         CookieFilter cookieFilter = new CookieFilter();
@@ -1503,13 +1637,16 @@ public class UserControllerTest extends AbstractIntegrationTest {
         VerifyOneTimeLoginCode oneTimeLoginCode = new VerifyOneTimeLoginCode(
                 user.getOneTimeLoginCode().getCode(),
                 authenticationResponse.authenticationRequestId);
-        given().
-                when()
+        Map<String, String> res = given()
+                .when()
                 .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                 .body(oneTimeLoginCode)
                 .put("/myconext/api/idp/verify_code_request")
-                .then()
-                .statusCode(HttpStatus.CREATED.value());
+                .as(new TypeRef<>() {
+                });
+        assertEquals("jdoe@example.com", res.get("email"));
+        String url = res.get("url");
+        assertTrue(url.startsWith("http://localhost:8081/saml/guest-idp/magic?h="));
 
         User userFromDB = userRepository.findOneUserByEmail("jdoe@example.com");
         assertNull(userFromDB.getOneTimeLoginCode());

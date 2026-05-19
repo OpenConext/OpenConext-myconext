@@ -26,6 +26,16 @@ export default defineConfig({
                 changeOrigin: false,
                 secure: false
             },
+            '/create-from-institution-login': {
+                target: 'http://localhost:8081',
+                changeOrigin: false,
+                secure: false
+            },
+            '/doLogout': {
+                target: 'http://localhost:8081',
+                changeOrigin: false,
+                secure: false
+            },
             '/tiqr': {
                 target: 'http://localhost:8081',
                 changeOrigin: false,

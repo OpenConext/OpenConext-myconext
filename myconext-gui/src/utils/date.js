@@ -39,3 +39,9 @@ export function months(locale) {
 
 export const range = (start, end, includeEnd = false, strings= false) =>
     Array.from({length: end - start + (includeEnd ? 1 : 0)}, (_, i) => strings ? (i + start).toString() : i + start);
+
+export function getAffiliationsVerificationDate(createAtDate) {
+    const verificationDate = new Date(createAtDate);
+    verificationDate.setMonth(verificationDate.getMonth() + 6)
+    return verificationDate
+}

@@ -21,7 +21,8 @@ import java.io.IOException;
                 "sp_entity_metadata_url=https://engine.test.surfconext.nl/authentication/sp/metadata",
                 "spring.main.lazy-initialization=true",
                 "cron.service-name-resolver-initial-delay-milliseconds=60000",
-                "feature.use_deny_allow_list.allow_enabled=True"
+                "feature.use_deny_allow_list.allow_enabled=True",
+                "feature.captcha_enabled=false"
         })
 @ActiveProfiles({"test"})
 public class UserControllerAllowedDomainsTest extends AbstractIntegrationTest {

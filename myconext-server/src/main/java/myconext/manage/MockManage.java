@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.SneakyThrows;
 import myconext.model.IdentityProvider;
+import myconext.model.RemoteProvider;
 import myconext.model.ServiceProvider;
 import org.apache.commons.io.IOUtils;
 import org.springframework.core.io.ClassPathResource;
@@ -17,6 +18,7 @@ public class MockManage implements Manage {
 
     private final Map<String, ServiceProvider> serviceProviders;
     private final Map<String, IdentityProvider> identityProviders;
+    private final List<RemoteProvider> resourceServers;
 
     @SneakyThrows
     public MockManage(ObjectMapper objectMapper) {
@@ -27,6 +29,9 @@ public class MockManage implements Manage {
         serviceProviders = manageServices.stream().collect(Collectors.toMap(this::entityId, this::serviceProvider));
         List<Map<String, Object>> manageIdentityProviders = convertMaps(objectMapper, "/manage/saml20_idp.json");
         identityProviders = mergeByDomainNames(manageIdentityProviders);
+        resourceServers = convertMaps(objectMapper, "/manage/oauth20_rs.json")
+                .stream()
+                .map(m -> remoteProvider(m)).toList();
     }
 
     @SneakyThrows
@@ -52,10 +57,14 @@ public class MockManage implements Manage {
     }
 
     @Override
-    public Optional<IdentityProvider> findIdentityProviderByBrinCode(String brinCode) {
-        return this.identityProviders.values().stream()
+    public List<IdentityProvider> findIdentityProviderByBrinCode(String brinCode) {
+        List<IdentityProvider> filteredIdentityProviders = this.identityProviders.values().stream()
                 .filter(identityProvider -> brinCode.equals(identityProvider.getInstitutionBrin()))
-                .findFirst();
+                .toList();
+        Map<String, IdentityProvider> map = filteredIdentityProviders.stream()
+                .collect(Collectors.toMap(IdentityProvider::getEntityId, e -> e, (a, b) -> a));
+
+        return new ArrayList<>(map.values());
     }
 
     @Override
@@ -63,5 +72,11 @@ public class MockManage implements Manage {
         return this.identityProviders.values().stream()
                 .filter(identityProvider -> institutionGUID.equals(identityProvider.getInstitutionGuid()))
                 .findFirst();
+    }
+
+    @Override
+    public Optional<RemoteProvider> findResourceServerByEntityId(String entityId) {
+        return this.resourceServers.stream()
+                .filter(provider -> provider.getEntityId().equals(entityId)).findFirst();
     }
 }

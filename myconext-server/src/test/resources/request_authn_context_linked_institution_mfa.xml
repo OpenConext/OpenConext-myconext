@@ -1,0 +1,3 @@
+<samlp:RequestedAuthnContext>
+    <saml:AuthnContextClassRef>https://eduid.nl/trust/linked-institution/mfa</saml:AuthnContextClassRef>
+</samlp:RequestedAuthnContext>

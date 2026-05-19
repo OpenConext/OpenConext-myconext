@@ -9,7 +9,10 @@ const en = {
     },
     header: {
         mineEduID: "My eduID",
-        register: "Create an eduID"
+        register: "Create an eduID",
+        menu: "Menu",
+        closeMenu: "Close menu",
+        home: "eduID home"
     },
     home: {
         eduID: "eduID",
@@ -23,12 +26,14 @@ const en = {
         appInfo: "With the <strong>eduID app</strong>, you can log in without a password or checking your email. Installation is quick and easy.",
         google: "https://play.google.com/store/apps/details?id=nl.eduid",
         apple: "https://apps.apple.com/us/app/eduid/id1600756434",
+        appStoreAlt: "Download on the App Store",
+        googlePlayAlt: "Get it on Google Play",
     },
     about: {
         eduID: "About eduID",
         title: "One account for educational and research institutions",
         why: "What is eduID?",
-        whyInfo1: "eduID helps students easily verify their identity at educational and research institutions in the Netherlands. Previously, students couldn't log in to one institution using an account from another. The same issue applied to guest students who weren’t officially enrolled but needed access to digital platforms.",
+        whyInfo1: "eduID helps students, staff, and professionals easily prove their identity at educational and research institutions in the Netherlands. Students are increasingly attending courses at multiple institutions. Previously, students couldn't log in to one institution using an account from another. Staff, professionals, and guests experience the same problems and are often active at multiple institutions.",
         whyInfo2: "eduID solves this problem by providing one account to verify your identity across multiple Dutch educational and research institutions.",
         register: "How to get an eduID?",
         registerInfo: "Creating an eduID is simple. Press <strong>Create an eduID</strong> at the top of the page. After creating your eduID, you may need to verify your identity through an official party, such as your school, university, or bank.",
@@ -60,6 +65,7 @@ const en = {
         informationBullet2: "Proof that you are a student",
         informationBullet3: "Your current institutionValidation of your full name by a third party",
         allAtOnce: "You can add this information all at once by connecting your educational institution to eduID. To do this, press <strong>Add an institution</strong> in the eduID app or <a href='{{url}}'>My eduID</a>.",
+        mobileScreenshotAlt: "Screenshot of the eduID app showing where to add an institution",
         note: "<strong>Note</strong>: did you create an eduID last school year? You may need to connect your institution again.",
         help: "Need more help?",
         helpInfo: "Have a look at the <a href=\"https://servicedesk.surf.nl/wiki/x/MIJsB\">eduID documentation</a> and the <a href=\"https://servicedesk.surf.nl/wiki/x/ToJsB\">FAQ</a>, or send an email to <a href='mailto:help@eduid.nl'>help@eduid.nl</a>. We’ll get back to you as soon as possible."
@@ -83,6 +89,8 @@ const en = {
         privacy: "Privacy Policy",
         privacyLink: "https://support.surfconext.nl/privacy-en",
         surfLink: "https://surf.nl",
+        surfLogoLabel: "SURF",
+        euLogoAlt: "Funded by the European Union. NextGenerationEU."
     },
 }
 export default en;

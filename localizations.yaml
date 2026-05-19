@@ -181,12 +181,12 @@ SHARED:
     MainText:
       COPY:
         en: |
-          <b>Don't see a QR code?</b><br/>
+          <strong>Don't see a QR code?</strong><br/>
           Go to <a href="https://eduid.nl/security" target="_blank">eduid.nl/security</a> on your computer<br/>
           Create a QR code<br/>
           Scan the code here
         nl: |
-          <b>Zie je geen QR-code?</b><br/>
+          <strong>Zie je geen QR-code?</strong><br/>
           Ga naar <a href="https://eduid.nl/security" target="_blank">eduid.nl/security</a> op je computer<br/>
           Maak een QR-code<br/>
           Scan de code hier
@@ -225,6 +225,10 @@ SHARED:
       COPY:
         en: You have been logged out
         nl: Je bent uitgelogd
+    RateLimitTitle:
+      COPY:
+        en: Too many failed attempts
+        nl: Te veel mislukte pogingen
   RegistrationCheck:
     MainText:
       COPY:
@@ -507,8 +511,8 @@ SHARED:
         nl: Onderwijs- of onderzoeksinstelling
     InstitutionAt:
       COPY:
-        en: "At "
-        nl: "Door "
+        en: "At %1$s"
+        nl: "Door %1$s"
     Employee:
       COPY:
         en: Employee
@@ -969,6 +973,14 @@ SHARED:
       COPY:
         en: Password
         nl: Wachtwoord
+    PasswordActivated:
+      COPY:
+        en: Activated on %1{{s}}
+        nl: Geactiveerd op %1{{s}}
+    CredentialActivated:
+      COPY:
+        en: "%1{{s}}: Activated on %2{{s}}"
+        nl: "%1{{s}}: Geactiveerd op %2{{s}}"
     TwoFAKey:
       COPY:
         en: Login with app
@@ -987,8 +999,8 @@ SHARED:
         nl: Niet ondersteund
     UseMagicLink:
       COPY:
-        en: Magic link email
-        nl: Link via e-mail
+        en: Verification code email
+        nl: Verificatie-code e-mail
     UseCode:
       COPY:
         en: Verification code email
@@ -1087,8 +1099,8 @@ SHARED:
           nl: Laatst ingelogd op
       Activated:
         COPY:
-          en: Activated on
-          nl: Geactiveerd op
+          en: Activated on %1{{s}}
+          nl: Geactiveerd op %1{{s}}
       DateTimeOn:
         COPY:
           en: 'on'
@@ -1826,8 +1838,8 @@ SHARED:
         nl: Je huidige wachtwoord is niet correct.
     PasswordResetHashExpired:
       COPY:
-        en: 'Your password reset code has expired. '
-        nl: 'De code om je wachtwoord opnieuw in te stellen is verlopen. '
+        en: 'Your password code has expired. '
+        nl: 'De code om je wachtwoord in te stellen is verlopen. '
     ForgotPassword:
       COPY:
         en: I forgot my password
@@ -2026,8 +2038,8 @@ SHARED:
         nl: Terug
     Next:
       COPY:
-        en: Next
-        nl: Volgende
+        en: Continue
+        nl: Ga door
   Sms:
     Header:
       COPY:
@@ -2424,8 +2436,8 @@ SHARED:
           e-mailadres in. Dit wordt het e-maildres dat eduID gebruikt.
     Email:
       COPY:
-        en: Your email address
-        nl: Je e-mailadres
+        en: Email address
+        nl: E-mailadres
     EmailPlaceholder:
       COPY:
         en: e.g. user@gmail.com
@@ -2458,16 +2470,8 @@ SHARED:
         nl: Ongeldig e-mailadres
     InstitutionDomainNameWarning:
       COPY:
-        en: >-
-          This appears to be an email address from an educational
-          or research institution. Note: if, in the future, you no
-          longer study or work at this institution, you will lose
-          access to this email address.
-        nl: >-
-          Dit lijkt op een e-mailadres van een onderwijs- of
-          onderzoeks instelling. Let op: als je in de toekomst niet
-          meer studeert of werkt bij deze instelling, heb je geen
-          toegang meer tot dit e-mailadres.
+        en: This looks like a school or work email. Use a <b>personal email</b>, because that one can still be used when you switch school or job.
+        nl: Dit lijkt een school- of werkmail. Gebruik een <b>persoonlijk e-mailadres</b>, omdat dat ook blijft werken als je van school of baan verandert.
     InstitutionDomainNameWarning2:
       COPY:
         en: We recommend using your personal email address for eduID.
@@ -2490,7 +2494,7 @@ SHARED:
           <span>I agree with <a tabindex='-1'
           href='https://eduid.nl/terms-of-use/' target='_blank'>the terms of
           service</a> and I've read <a tabindex='-1'
-          href='https://eduid.nl/privacy_policy/' target='_blank'>the privacy
+          href='https://eduid.nl/privacy' target='_blank'>the privacy
           policy</a>.</span>
         nl: >-
           <span>Ik ga akkoord met <a tabindex='-1'
@@ -2559,13 +2563,37 @@ SHARED:
           Controleer je inbox. We hebben je de e-mail met de link opnieuw
           verzonden.
   Login:
+    RequestHeader:
+      COPY:
+        en: Create eduID
+        nl: eduID aanmaken
+    RequestSubHeader:
+      COPY:
+        en: Fill in your personal details below.
+        nl: Vul hieronder je persoonlijke gegevens in.
+    RequestSuccessHeader:
+      COPY:
+        en: Your eduID has been created
+        nl: Je eduID is aangemaakt
+    RequestSuccessInfo:
+      COPY:
+        en: We have also sent you a confirmation email.
+        nl: We hebben je ook een bevestigingsmail gestuurd.
+    RequestSuccessNext:
+      COPY:
+        en: Next
+        nl: Volgende
     RequestEduId:
       COPY:
         en: No eduID yet?
         nl: Nog geen eduID?
     RequestEduId2:
       COPY:
-        en: Create an eduID
+        en: Create directly
+        nl: Direct aanmaken
+    RequestEduId3:
+      COPY:
+        en: Create eduID
         nl: eduID aanmaken
     LoginEduId:
       COPY:
@@ -2577,8 +2605,8 @@ SHARED:
         nl: Wat is eduID?
     Header:
       COPY:
-        en: Log in with eduID
-        nl: Log in met eduID
+        en: Log in
+        nl: Inloggen
     HeaderSubTitle:
       COPY:
         en: 'to continue to '
@@ -2661,8 +2689,8 @@ SHARED:
         nl: Typ een wachtwoord
     UseMagicLink:
       COPY:
-        en: Email a magic link
-        nl: Gebruik magische link
+        en: Verificatie-code e-mail
+        nl: Verificatie-code e-mail
     UseMagicLinkNoWebAuthn:
       COPY:
         en: Email a magic link.
@@ -2814,7 +2842,7 @@ SHARED:
           <span>I agree with <a tabindex='-1'
           href='https://eduid.nl/terms-of-use/' target='_blank'>the terms of
           service</a> and I've read<a tabindex='-1'
-          href='https://eduid.nl/privacy_policy/' target='_blank'>the privacy
+          href='https://eduid.nl/privacy' target='_blank'>the privacy
           policy</a>.</span>
         nl: >-
           <span>Ik ga akkoord met <a tabindex='-1'
@@ -2854,6 +2882,18 @@ SHARED:
       COPY:
         en: You are still suspended. Try again in %1$s minutes.
         nl: Je bent nog steeds geschorst. Probeer het over %1$s minuten opnieuw.
+    TryOtherEmail:
+      COPY:
+        en: Try another email address
+        nl: Probeer een ander e-mailadres
+    LoginWithThisEmail:
+      COPY:
+        en: Log in with this email address
+        nl: Log in met dit e-mailadres
+    OrDivider:
+      COPY:
+        en: or
+        nl: of
   Options:
     Header:
       COPY:
@@ -3201,6 +3241,10 @@ SHARED:
         en: Retry
         nl: Opnieuw proberen
   StepUpExplanation:
+    Info:
+      COPY:
+        en: " "
+        nl: " "
     Linked_institution:
       COPY:
         en: Your eduID must be connected to an official party.
@@ -3211,6 +3255,10 @@ SHARED:
         nl: >-
           Je voornaam en achternaam moeten worden bevestigd door een
           officiële instelling.
+    Validate_names_external:
+      COPY:
+        en: Your identity must be verified by a trusted party.
+        nl: Je voornaam en achternaam moeten worden geverifieerd door een externe vertrouwde instelling.
     Affiliation_student:
       COPY:
         en: >-
@@ -3219,7 +3267,15 @@ SHARED:
         nl: >-
           Je moet aantonen dat je student bent. Dit doe je door je eduID te
           koppelen aan een officiële instelling.
+    Profile_mfa:
+      COPY:
+        en: You must log in using the eduID app for multi-factor authentication.
+        nl: Je moet inloggen met de eduID app voor multi-factor authenticatie.
   StepUpVerification:
+    Info:
+      COPY:
+        en: " "
+        nl: " "
     Linked_institution:
       COPY:
         en: Your eduID is connected to an official party.
@@ -3230,6 +3286,10 @@ SHARED:
         nl: >-
           Je voornaam en achternaam zijn bevestigd door een officiële
           instelling.
+    Validate_names_external:
+      COPY:
+        en: Your identity is verified by a trusted party.
+        nl: Je voornaam en achternaam moeten worden geverifieerd door een externe vertrouwde instelling.
     Affiliation_student:
       COPY:
         en: >-
@@ -3238,6 +3298,10 @@ SHARED:
         nl: >-
           Je hebt aangetoond dat je student bent, doordat je eduID is
           gekoppeld aan een officiële instelling.
+    Profile_mfa:
+      COPY:
+        en: You have successfully logged in using the eduID app with multi-factor authentication.
+        nl: Je bent succesvol ingelogd met de eduID app met multi-factor authenticatie.
   NudgeApp:
     New:
       COPY:
@@ -3551,25 +3615,6 @@ SHARED:
           en: I don't have an eduID
           nl: Ik heb nog geen eduID
     FirstTimeDialog:
-      ConnectButtonTitle:
-        COPY:
-          en: Connect your educational institution
-          nl: Koppel je onderwijsinstelling
-      MainTextTitle:
-        FirstPart:
-          COPY:
-            en: Do you study in the Netherlands?
-            nl: Studeer je in Nederland?
-        SecondPart:
-          COPY:
-            en: Connect your educational institution
-            nl: Koppel je onderwijsinstelling
-      MainText:
-        COPY:
-          en: >-
-            We need to verify who you are before you can use eduID for services in the Dutch education system.
-          nl: >-
-            We moeten eerst zeker zijn wie je bent. Alleen zo kun je eduID gebruiken voor diensten in het Nederlandse onderwijs.
       MainTextPoint1:
         COPY:
           en: Your full name, verified by an official party
@@ -3582,29 +3627,6 @@ SHARED:
         COPY:
           en: Your current institution
           nl: Je huidige instelling
-
-      MainTextFirstBoldPart:
-        COPY:
-          en: When you study in the Netherlands
-          nl: Wanneer je in Nederland studeert
-      MainTextSecondBoldPart:
-        COPY:
-          en: >-
-            Provide the following information:
-          nl: >-
-            Voeg deze gegevens toe
-      AddInformationText:
-        COPY:
-          en: You can provide this information by connecting your educational institution through SURFconext.
-          nl: Je voegt deze gegevens toe door je onderwijsinstelling te koppelen via SURFconext.
-      AddInformationBoldPart:
-        COPY:
-          en: Add this information
-          nl: Voeg deze informatie toe
-      SkipButtonTitle:
-        COPY:
-          en: Skip this
-          nl: Overslaan
     Explanation:
       MainTitleLabel:
         COPY:
@@ -3679,8 +3701,8 @@ SHARED:
             Welk telefoonnummer wil je hiervoor gebruiken?
       BoldRange:
         COPY:
-          en: "32"
-          nl: "34"
+          en: "34"
+          nl: "38"
       VerifyPhoneNumber:
         COPY:
           en: Send SMS code
@@ -3967,16 +3989,21 @@ SHARED:
     VerifyViaDutchInstitution:
       Title:
         COPY:
-          en: Dutch educational or research institution
-          nl: Nederlandse onderwijs- of onderzoeksinstelling
+          en: <strong>Do you own</strong> an account at a Dutch educational or research institute?
+          nl: <strong>Heb je</strong> een account bij een Nederlands school of onderzoeksinstelling?
       TitleHasInternalLink:
         COPY:
           en: Add your institution by logging in
           nl: Voeg je instelling toe door in te loggen
       Button:
         COPY:
-          en: Select your institution
-          nl: Kies je instelling
+          en: Use your school or work account
+          nl: Gebruik je school- of werkaccount
+    VerifyViaOptions:
+      Title:
+        COPY:
+          en: <strong>If you don't own</strong> an account at a Dutch educational or research insitute, choose one of the following alternatives
+          nl: <strong>Als je geen</strong> account hebt bij een Nederlandse school of onderzoeksinstelling, kies dan een van de volgende mogelijkheden
     VerifyWithBankApp:
       Title:
         COPY:
@@ -3984,8 +4011,8 @@ SHARED:
           nl: Nederlandse bank-app
       Button:
         COPY:
-          en: Select your bank
-          nl: Kies je bank
+          en: Use a Dutch bank
+          nl: Gebruik je bank
     VerifyWithAEuropianId:
       Title:
         COPY:
@@ -3993,8 +4020,8 @@ SHARED:
           nl: Europese identiteit
       Button:
         COPY:
-          en: Select your country
-          nl: Kies je land
+          en: Use a European ID
+          nl: Gebruik een Europees ID
     OtherOptions:
       COPY:
         en: Show other options

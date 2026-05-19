@@ -1,8 +1,14 @@
 <script>
     import I18n from "../locale/I18n";
-    import {dateFromEpoch} from "../utils/date";
+    import {dateFromEpoch, getAffiliationsVerificationDate} from "../utils/date";
     import {onMount} from "svelte";
-    import {institutionName, isStudent, linkedAccountFamilyName, linkedAccountGivenName} from "../utils/services";
+    import {
+        hasAffiliations,
+        institutionName,
+        isStudent,
+        linkedAccountFamilyName,
+        linkedAccountGivenName
+    } from "../utils/services";
     import trash from "../icons/verify/bin.svg?raw"
     import studentIcon from "../icons/student.svg?raw";
     import personalInfo from "../icons/verify/personalInfo.svg?raw";
@@ -30,11 +36,11 @@
     .linked-account-container {
         .linked-account {
             display: flex;
+            align-items: flex-start;
             position: relative;
 
             .image-container {
-                position: absolute;
-                right: 0;
+                margin-left: auto; /* duwt image naar rechts */
 
                 img {
                     width: 88px;
@@ -59,7 +65,7 @@
                 margin-bottom: 15px;
 
 
-                h4 {
+                h3 {
                     color: var(--color-primary-green);
                 }
 
@@ -98,9 +104,15 @@
 <div class="linked-account-container">
     <div class="linked-account">
         <div class="info">
-            <h4>{I18n.t("profile.from", {name: institutionName(linkedAccount)})}</h4>
+            <h3>{I18n.t("profile.from", {name: institutionName(linkedAccount)})}</h3>
             <span>{@html I18n.t("profile.receivedOnInfo", {date: dateFromEpoch(linkedAccount.createdAt)})}</span>
-            <span>{@html I18n.t("profile.validUntilDateInfo", {date: dateFromEpoch(expiresAt)})}
+            <span>
+                {#if hasAffiliations(linkedAccount)}
+                    {@html I18n.t("profile.validUntilDateInfo", {date: dateFromEpoch(expiresAt), rolDate: dateFromEpoch(getAffiliationsVerificationDate(linkedAccount.createdAt))})}
+                {:else}
+                    {@html I18n.t("profile.validUntilDate", {date: dateFromEpoch(expiresAt)})}
+                {/if}
+
                 {#if linkedAccount.expired}
                     <span class="expired"> ({I18n.t("profile.expired")})</span>
                 {/if}

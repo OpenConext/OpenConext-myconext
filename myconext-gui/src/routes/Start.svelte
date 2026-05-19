@@ -1,7 +1,7 @@
 <script>
     import I18n from "../locale/I18n";
-    import {navigate} from "svelte-routing";
-    import {user} from "../stores/user";
+    import {Link} from "svelte-routing";
+    import {user, config} from "../stores/user";
     import personalInfoSvg from "../icons/redesign/Personal_info.svg?raw";
     import dataActivitySvg from "../icons/redesign/data_activity.svg?raw";
     import securitySvg from "../icons/redesign/Security.svg?raw";
@@ -69,7 +69,7 @@
             grid-column: 1 / 1;
         }
 
-        h4 {
+        h3 {
             color: var(--color-primary-green);
             margin-bottom: 25px;
         }
@@ -131,7 +131,7 @@
         }
     }
 
-    .card {
+    :global(.card) {
         padding: 40px 0 25px 0;
         box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.5);
         display: flex;
@@ -139,6 +139,8 @@
         align-items: center;
         cursor: pointer;
         min-height: 275px;
+        text-decoration: none;
+        color: inherit;
 
         :global(svg) {
             width: 160px;
@@ -148,18 +150,18 @@
         h3 {
             margin-top: auto;
             font-size: 22px;
+            color: var(--color-primary-black);
         }
     }
-
 
 </style>
 <div class="start">
     <h2>{I18n.t("Start.Hi.COPY", {name: $user.chosenName})}</h2>
     <p class="manage">{I18n.t("Start.Manage.COPY")}</p>
     <div class="card-container">
-        {#if isEmpty($user.linkedAccounts)}
+        {#if $config.enableAccountLinking && isEmpty($user.linkedAccounts)}
             <div class="info-container">
-                <h4>{I18n.t("start.app.title")}</h4>
+                <h3>{I18n.t("start.app.title")}</h3>
                 <div class="content-section">
                     <div class="info-section">
                         <p class="info">
@@ -186,22 +188,22 @@
             </div>
         {/if}
 
-        <div class="card" on:click={() => navigate("/personal")}>
+        <Link to="/personal" class="card">
             {@html personalInfoSvg}
             <h3>{I18n.t("Sidebar.PersonalInfo.COPY")}</h3>
-        </div>
-        <div class="card" on:click={() => navigate("/data-activity")}>
+        </Link>
+        <Link to="/data-activity" class="card">
             {@html dataActivitySvg}
             <h3>{I18n.t("Sidebar.DataActivity.COPY")}</h3>
-        </div>
-        <div class="card" on:click={() => navigate("/security")}>
+        </Link>
+        <Link to="/security" class="card">
             {@html securitySvg}
             <h3>{I18n.t("Sidebar.Security.COPY")}</h3>
-        </div>
-        <div class="card" on:click={() => navigate("/account")}>
+        </Link>
+        <Link to="/account" class="card">
             {@html settingsSvg}
             <h3>{I18n.t("Sidebar.Account.COPY")}</h3>
-        </div>
+        </Link>
 
     </div>
 

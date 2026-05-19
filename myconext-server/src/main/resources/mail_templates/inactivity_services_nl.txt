@@ -1,0 +1,6 @@
+{{#hasServiceNames}}
+Je hebt je eduID account gebruikt voor toegang tot deze applicaties:
+{{#serviceNames}}
+    -{{.}}
+{{/serviceNames}}
+{{/hasServiceNames}}

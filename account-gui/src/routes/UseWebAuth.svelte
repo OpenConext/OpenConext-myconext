@@ -12,6 +12,7 @@
     import {loginPreferences} from "../constants/loginPreferences";
     import {links} from "../stores/conf";
     import {mrcc} from "../utils/constants";
+    import SubContent from "../components/SubContent.svelte";
 
     export let id;
     let showSpinner = true;
@@ -83,3 +84,7 @@
             onClick={webAuthnStart}/>
 
 {/if}
+
+<SubContent question={I18n.t("Login.UseAnother.COPY")}
+            linkText={I18n.t("Login.OptionsLink.COPY")}
+            route="/options/{id}" interContent="true"/>

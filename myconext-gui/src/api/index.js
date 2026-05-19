@@ -132,11 +132,7 @@ export function startWebAuthFlow() {
 }
 
 export function deleteUser() {
-    const fetchOptions = {
-        credentials: "same-origin",
-        redirect: "manual"
-    };
-    return fetchDelete("/myconext/api/sp/delete").then(() => fetch("/Shibboleth.sso/Logout", fetchOptions));
+    return fetchDelete("/myconext/api/sp/delete").then(() => logout());
 }
 
 export function deleteLinkedAccount(linkedAccount) {
@@ -184,14 +180,7 @@ export function iDINIssuers() {
 }
 
 export function logout() {
-    const fetchOptions = {
-        credentials: "same-origin",
-        redirect: "manual"
-    };
-    return forgetMe().then(() =>
-        fetchJson("/myconext/api/sp/logout")
-            .then(() => fetch("/Shibboleth.sso/Logout", fetchOptions))
-    );
+    return forgetMe().then(() => fetchJson("/myconext/api/sp/logout"));
 }
 
 export function forgetMe() {
@@ -236,8 +225,12 @@ export function sendDeactivationPhoneCode() {
 }
 
 // Create from Institution
-export function startCreateFromInstitutionFlow(forceAuth = false) {
-    return fetchJson("/myconext/api/sp/create-from-institution?forceAuth=" + forceAuth);
+export function startCreateFromInstitutionFlow(forceAuth = false, returnTo = null) {
+    const params = new URLSearchParams({forceAuth: `${forceAuth}`});
+    if (returnTo) {
+        params.set("return_to", returnTo);
+    }
+    return fetchJson(`/myconext/api/sp/create-from-institution?${params.toString()}`);
 }
 
 export function createInstitutionEduID(email, hash, newUser) {
@@ -294,5 +287,3 @@ export function reValidatePhoneCode(phoneVerification) {
 export function reportError(error) {
     return postPutJson("/myconext/api/sp/error", error, "post");
 }
-
-

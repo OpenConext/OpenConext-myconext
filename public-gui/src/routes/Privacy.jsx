@@ -16,7 +16,7 @@ export const Privacy = () => {
                 <h1 className="title small">
                     {I18n.t("privacy.eduID")}
                 </h1>
-                <h3>{I18n.t("privacy.title")}</h3>
+                <h2>{I18n.t("privacy.title")}</h2>
             </div>
             {I18n.locale === "en" && <PrivacyEN/>}
             {I18n.locale === "nl" && <PrivacyNL/>}

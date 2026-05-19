@@ -19,18 +19,18 @@ export const Support = () => {
         <div className="support-container">
             <div className="support">
                 <div className="top">
-                    <img src={parachute} className="parachute" alt="parachute"/>
+                    <img src={parachute} className="parachute" alt=""/>
                     <div className="top-right">
                         <h1 className="title">
                             {I18n.t("support.eduID")}
                         </h1>
-                        <h3>{I18n.t("support.title")}</h3>
+                        <h2>{I18n.t("support.title")}</h2>
                     </div>
                 </div>
             </div>
             <Background>
                 <div className="card row">
-                    <img src={support} className="support" alt="support"/>
+                    <img src={support} className="support" alt=""/>
                     <div className="top-right middle">
                         <h2 className="title">
                             {I18n.t("support.studying")}
@@ -47,15 +47,19 @@ export const Support = () => {
                         </ul>
                         <p className="info"
                            dangerouslySetInnerHTML={{__html: I18n.t("support.allAtOnce", {url: config.spBaseUrl})}}/>
-                        <img src={mobileScreenshot} className="mobileScreenshot" alt="mobileScreenshot"/>
+                        <img
+                            src={mobileScreenshot}
+                            className="mobileScreenshot"
+                            alt={I18n.t("support.mobileScreenshotAlt")}
+                        />
                         <p className="info cursive"
                            dangerouslySetInnerHTML={{__html: I18n.t("support.note")}}/>
                     </div>
                 </div>
                 <div className="card bottom full">
-                    <h5>
+                    <h3>
                         {I18n.t("support.help")}
-                    </h5>
+                    </h3>
                     <p dangerouslySetInnerHTML={{__html: I18n.t("support.helpInfo")}}/>
                 </div>
             </Background>

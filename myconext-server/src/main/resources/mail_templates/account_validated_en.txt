@@ -1,0 +1,8 @@
+Hi {{name}},
+
+Your personal data of your eduID account has been validated by {{source}}.
+Your updated information is:
+    - {{firstName}}
+    - {{dateOfBirth}}
+
+{{> footer_en.txt}}

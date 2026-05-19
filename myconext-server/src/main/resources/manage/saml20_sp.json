@@ -1111,10 +1111,10 @@
       "entityid": "http://mock-sp-test",
       "state": "testaccepted",
       "metaDataFields": {
-        "name:en": "OpenConext Mujina SP <p>",
+        "name:en": "OpenConext Mujina SP EN",
         "OrganizationName:en": "SURF",
         "logo:0:url": "https://static.test2.surfconext.nl/media/conext_logo.png",
-        "name:nl": "OpenConext Mujina SP <script>alert(1)</script>"
+        "name:nl": "OpenConext Mujina SP NL <script>alert(1)</script>"
       }
     }
   },

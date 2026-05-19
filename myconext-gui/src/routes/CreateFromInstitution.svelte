@@ -16,7 +16,8 @@
 
     const startFlow = () => {
         busy = true;
-        startCreateFromInstitutionFlow().then(res => {
+        const returnTo = new URLSearchParams(window.location.search).get("return_to");
+        startCreateFromInstitutionFlow(false, returnTo).then(res => {
             window.location.href = res.url;
         })
 

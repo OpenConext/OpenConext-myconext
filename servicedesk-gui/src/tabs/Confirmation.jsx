@@ -11,7 +11,7 @@ const Confirmation = ({restart}) => {
 
     return (
         <div className="confirmation">
-            <h4>{I18n.t("confirmation.header")}</h4>
+            <h2>{I18n.t("confirmation.header")}</h2>
             <Toaster toasterType={ToasterType.Success}
                      message={I18n.t("confirmation.info", {controlCode})}/>
             <div className={"img-container"}>

@@ -20,7 +20,7 @@ export const ServiceDesk = () => {
                         <p className="info"
                            dangerouslySetInnerHTML={{__html: I18n.t("servicedesk.info")}}/>
                     </div>
-                    <img src={FrontDesk} className="frontdesk" alt="frontdesk"/>
+                    <img src={FrontDesk} className="frontdesk" alt=""/>
                 </div>
             </div>
         </div>

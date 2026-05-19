@@ -1,10 +1,10 @@
 package myconext.model;
 
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import jakarta.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.List;
 

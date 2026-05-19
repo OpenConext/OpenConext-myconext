@@ -12,14 +12,28 @@ import myconext.exceptions.UserNotFoundException;
 import myconext.geo.GeoLocation;
 import myconext.mail.MailBox;
 import myconext.manage.Manage;
-import myconext.model.*;
+import myconext.model.ExternalLinkedAccount;
+import myconext.model.IdpScoping;
+import myconext.model.LinkedAccount;
+import myconext.model.LoginOptions;
+import myconext.model.LoginStatus;
+import myconext.model.SamlAuthenticationRequest;
+import myconext.model.StepUpStatus;
+import myconext.model.User;
+import myconext.model.UserLogin;
+import myconext.model.Verification;
 import myconext.repository.AuthenticationRequestRepository;
 import myconext.repository.UserLoginRepository;
 import myconext.repository.UserRepository;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.opensaml.core.xml.schema.XSURI;
-import org.opensaml.saml.saml2.core.*;
+import org.opensaml.saml.saml2.core.AuthnContextClassRef;
+import org.opensaml.saml.saml2.core.AuthnRequest;
+import org.opensaml.saml.saml2.core.Issuer;
+import org.opensaml.saml.saml2.core.RequestedAuthnContext;
+import org.opensaml.saml.saml2.core.RequesterID;
+import org.opensaml.saml.saml2.core.Scoping;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -27,7 +41,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.context.SecurityContextRepository;
-import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
+import org.springframework.security.web.servlet.util.matcher.PathPatternRequestMatcher;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -44,7 +58,15 @@ import java.time.Instant;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.UUID;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.stream.Collectors;
@@ -72,10 +94,10 @@ public class GuestIdpAuthenticationRequestFilter extends OncePerRequestFilter {
     private static final Log LOG = LogFactory.getLog(GuestIdpAuthenticationRequestFilter.class);
     public static final String ROLE_MFA = "ROLE_MFA";
 
-    private final AntPathRequestMatcher ssoSamlRequestMatcher;
-    private final AntPathRequestMatcher magicSamlRequestMatcher;
-    private final AntPathRequestMatcher continueAfterLoginSamlRequestMatcher;
-    private final AntPathRequestMatcher metaDataSamlRequestMatcher;
+    private final PathPatternRequestMatcher ssoSamlRequestMatcher;
+    private final PathPatternRequestMatcher magicSamlRequestMatcher;
+    private final PathPatternRequestMatcher continueAfterLoginSamlRequestMatcher;
+    private final PathPatternRequestMatcher metaDataSamlRequestMatcher;
     private final String redirectUrl;
     private final AuthenticationRequestRepository authenticationRequestRepository;
     private final IdentityProviderMetaData identityProviderMetaData;
@@ -87,6 +109,7 @@ public class GuestIdpAuthenticationRequestFilter extends OncePerRequestFilter {
     private final GeoLocation geoLocation;
 
     private final int rememberMeMaxAge;
+    private final int tiqrCookieMaxAge;
     private final boolean secureCookie;
     private final String magicLinkUrl;
     private final MailBox mailBox;
@@ -101,6 +124,9 @@ public class GuestIdpAuthenticationRequestFilter extends OncePerRequestFilter {
     private final long ssoMFADurationSeconds;
     private final String mobileAppROEntityId;
     private final boolean featureDefaultRememberMe;
+    private final boolean featureDefaultAffiliateEmail;
+    private final boolean featureUseApp;
+    private final String defaultAffiliateEmailDomain;
     private final DefaultSAMLService samlService;
     private final CookieValueEncoder cookieValueEncoder;
 
@@ -111,6 +137,7 @@ public class GuestIdpAuthenticationRequestFilter extends OncePerRequestFilter {
                                                UserLoginRepository userLoginRepository,
                                                GeoLocation geoLocation,
                                                int rememberMeMaxAge,
+                                               int tiqrCookieMaxAge,
                                                int nudgeAppDays,
                                                int nudgeAppDelayDays,
                                                int rememberMeQuestionAskedDays,
@@ -121,15 +148,18 @@ public class GuestIdpAuthenticationRequestFilter extends OncePerRequestFilter {
                                                long ssoMFADurationSeconds,
                                                String mobileAppROEntityId,
                                                boolean featureDefaultRememberMe,
+                                               boolean featureDefaultAffiliateEmail,
+                                               boolean featureUseApp,
+                                               String defaultAffiliateEmailDomain,
                                                SAMLConfiguration configuration,
                                                IdentityProviderMetaData identityProviderMetaData,
                                                CookieValueEncoder cookieValueEncoder,
                                                SecurityContextRepository securityContextRepository) {
         this.cookieValueEncoder = cookieValueEncoder;
-        this.ssoSamlRequestMatcher = new AntPathRequestMatcher("/saml/guest-idp/SSO/**");
-        this.magicSamlRequestMatcher = new AntPathRequestMatcher("/saml/guest-idp/magic/**");
-        this.continueAfterLoginSamlRequestMatcher = new AntPathRequestMatcher("/saml/guest-idp/continue/**");
-        this.metaDataSamlRequestMatcher = new AntPathRequestMatcher("/saml/guest-idp/metadata/**");
+        this.ssoSamlRequestMatcher = PathPatternRequestMatcher.withDefaults().matcher("/saml/guest-idp/SSO/**");
+        this.magicSamlRequestMatcher = PathPatternRequestMatcher.withDefaults().matcher("/saml/guest-idp/magic/**");
+        this.continueAfterLoginSamlRequestMatcher = PathPatternRequestMatcher.withDefaults().matcher("/saml/guest-idp/continue/**");
+        this.metaDataSamlRequestMatcher = PathPatternRequestMatcher.withDefaults().matcher("/saml/guest-idp/metadata/**");
         this.redirectUrl = redirectUrl;
         this.manage = manage;
         this.authenticationRequestRepository = authenticationRequestRepository;
@@ -138,6 +168,7 @@ public class GuestIdpAuthenticationRequestFilter extends OncePerRequestFilter {
         this.geoLocation = geoLocation;
         this.accountLinkingContextClassReferences = ACR.allAccountLinkingContextClassReferences();
         this.rememberMeMaxAge = rememberMeMaxAge;
+        this.tiqrCookieMaxAge = tiqrCookieMaxAge;
         this.nudgeAppDays = nudgeAppDays;
         this.nudgeAppDelayDays = nudgeAppDelayDays;
         this.rememberMeQuestionAskedDays = rememberMeQuestionAskedDays;
@@ -148,6 +179,9 @@ public class GuestIdpAuthenticationRequestFilter extends OncePerRequestFilter {
         this.ssoMFADurationSeconds = ssoMFADurationSeconds;
         this.mobileAppROEntityId = mobileAppROEntityId;
         this.featureDefaultRememberMe = featureDefaultRememberMe;
+        this.featureDefaultAffiliateEmail = featureDefaultAffiliateEmail;
+        this.featureUseApp = featureUseApp;
+        this.defaultAffiliateEmailDomain = defaultAffiliateEmailDomain;
         this.samlService = new DefaultSAMLService(configuration);
         this.executor = Executors.newSingleThreadExecutor();
         this.identityProviderMetaData = identityProviderMetaData;
@@ -193,9 +227,8 @@ public class GuestIdpAuthenticationRequestFilter extends OncePerRequestFilter {
         String issuer = authnRequest.getIssuer().getValue();
 
         List<String> authenticationContextClassReferenceValues = getAuthenticationContextClassReferenceValues(authnRequest);
-        boolean accountLinkingRequired =
-                this.accountLinkingContextClassReferences.stream().anyMatch(authenticationContextClassReferenceValues::contains);
-        boolean mfaProfileRequired = authenticationContextClassReferenceValues.contains(ACR.PROFILE_MFA);
+        boolean accountLinkingRequired = ACR.containsAnyAcr(authenticationContextClassReferenceValues, this.accountLinkingContextClassReferences);
+        boolean mfaProfileRequired = ACR.containsMfaAcr(authenticationContextClassReferenceValues);
 
         SamlAuthenticationRequest samlAuthenticationRequest = new SamlAuthenticationRequest(
                 authnRequest.getID(),
@@ -273,8 +306,7 @@ public class GuestIdpAuthenticationRequestFilter extends OncePerRequestFilter {
 
     private boolean isApplySsoMfa() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (authentication instanceof UserAuthenticationToken) {
-            UserAuthenticationToken userAuthenticationToken = (UserAuthenticationToken) authentication;
+        if (authentication instanceof UserAuthenticationToken userAuthenticationToken) {
             long createdAt = userAuthenticationToken.getCreatedAt();
             boolean mfaRole = userAuthenticationToken.getAuthorities().stream().anyMatch(auth -> auth.getAuthority().equals(ROLE_MFA));
             return mfaRole && (System.currentTimeMillis() - createdAt) < (ssoMFADurationSeconds * 1000);
@@ -291,18 +323,20 @@ public class GuestIdpAuthenticationRequestFilter extends OncePerRequestFilter {
             return false;
         }
         Instant now = new Date().toInstant();
-        if (authenticationContextClassReferenceValues.contains(ACR.VALIDATE_NAMES_EXTERNAL)) {
+        boolean validateNamesExternalAcr = ACR.containsAcr(authenticationContextClassReferenceValues, ACR.VALIDATE_NAMES_EXTERNAL);
+        if (validateNamesExternalAcr) {
             //We don't support multiple ACR's being enforced all, we pick the most rigid one
             return externalLinkedAccounts.stream()
                     .anyMatch(externalLinkedAccount -> externalLinkedAccount.getExpiresAt().toInstant().isAfter(now) &&
                             !Verification.Ongeverifieerd.equals(externalLinkedAccount.getVerification()));
         }
         boolean validatedName = hasValidatedName(user);
-        boolean validatedNameACR = authenticationContextClassReferenceValues.contains(ACR.VALIDATE_NAMES);
+
+        boolean validatedNameACR = ACR.containsAcr(authenticationContextClassReferenceValues, ACR.VALIDATE_NAMES);
         List<LinkedAccount> nonExpiredLinkedAccounts = linkedAccounts.stream()
                 .filter(linkedAccount -> {
                     Instant expiresAt = linkedAccount.getExpiresAt().toInstant();
-                    //Non-validated name ARC's expire much sooner than ACR.VALIDATE_NAMES
+                    //Non-validated name ACR's expire much sooner than ACR.VALIDATE_NAMES
                     if (!validatedNameACR) {
                         expiresAt = linkedAccount.getCreatedAt().toInstant().plus(expiryNonValidatedDurationDays, ChronoUnit.DAYS);
                     }
@@ -314,12 +348,14 @@ public class GuestIdpAuthenticationRequestFilter extends OncePerRequestFilter {
                     return now.isBefore(expiresAt);
                 }).collect(toList());
         boolean atLeastOneNotExpired = !CollectionUtils.isEmpty(nonExpiredLinkedAccounts) || !CollectionUtils.isEmpty(nonExpiredExternalLinkedAccounts);
-        boolean hasRequiredStudentAffiliation = !authenticationContextClassReferenceValues.contains(ACR.AFFILIATION_STUDENT) ||
+        boolean hasRequiredStudentAffiliation = !ACR.containsAcr(authenticationContextClassReferenceValues, ACR.AFFILIATION_STUDENT) ||
                 nonExpiredLinkedAccounts.stream()
                         .anyMatch(linkedAccount -> hasRequiredStudentAffiliation(linkedAccount.getEduPersonAffiliations()));
-        boolean hasValidatedNames = !authenticationContextClassReferenceValues.contains(ACR.VALIDATE_NAMES) ||
+        boolean hasValidatedNames = !ACR.containsAcr(authenticationContextClassReferenceValues, ACR.VALIDATE_NAMES) ||
                 validatedName;
-        return atLeastOneNotExpired && hasRequiredStudentAffiliation && hasValidatedNames;
+        boolean linkedInstitutionMissing = ACR.containsAcr(authenticationContextClassReferenceValues, ACR.LINKED_INSTITUTION) &&
+                nonExpiredLinkedAccounts.isEmpty();
+        return atLeastOneNotExpired && hasRequiredStudentAffiliation && hasValidatedNames && !linkedInstitutionMissing;
     }
 
     public static boolean hasValidatedName(User user) {
@@ -464,11 +500,17 @@ public class GuestIdpAuthenticationRequestFilter extends OncePerRequestFilter {
         boolean inStepUpFlow = StepUpStatus.IN_STEP_UP.equals(samlAuthenticationRequest.getSteppedUp());
 
         boolean hasStudentAffiliation = hasRequiredStudentAffiliation(user.allEduPersonAffiliations());
+
         List<String> authenticationContextClassReferences = samlAuthenticationRequest.getAuthenticationContextClassReferences();
-        boolean missingStudentAffiliation = !CollectionUtils.isEmpty(authenticationContextClassReferences) && authenticationContextClassReferences.contains(ACR.AFFILIATION_STUDENT) &&
+        boolean missingStudentAffiliation = ACR.containsAcr(authenticationContextClassReferences, ACR.AFFILIATION_STUDENT) &&
                 !hasStudentAffiliation;
-        boolean missingValidName = !CollectionUtils.isEmpty(authenticationContextClassReferences) && authenticationContextClassReferences.contains(ACR.VALIDATE_NAMES) &&
+        boolean missingValidName = ACR.containsAcr(authenticationContextClassReferences, ACR.VALIDATE_NAMES) &&
                 !hasValidatedName(user);
+        Instant now = new Date().toInstant();
+        boolean missingLinkedInstitution = ACR.containsAcr(authenticationContextClassReferences, ACR.LINKED_INSTITUTION) &&
+                (CollectionUtils.isEmpty(user.getLinkedAccounts()) || user.getLinkedAccounts().stream()
+                        .allMatch(linkedAccount -> now.isAfter(linkedAccount.getExpiresAt().toInstant())));
+
         if (user.isNewUser()) {
             user.setNewUser(false);
             userRepository.save(user);
@@ -478,32 +520,33 @@ public class GuestIdpAuthenticationRequestFilter extends OncePerRequestFilter {
             if (inStepUpFlow) {
                 finishStepUp(samlAuthenticationRequest);
             }
-            if (missingStudentAffiliation || missingValidName) {
-                //When we send the assertion EB stops the flow but this will be fixed upstream
+            if (missingStudentAffiliation || missingValidName || missingLinkedInstitution) {
+                //When we send the assertion, EB stops the flow, but this will be fixed upstream
                 return true;
             }
             if (samlAuthenticationRequest.isTiqrFlow()) {
                 return true;
             }
             //we don't redirect the user to the nudge app page anymore
-            String url = String.format("%s?h=%s&force=true", this.magicLinkUrl, hash);
+            String url = this.redirectUrl + "/request-success?h=" + hash +
+                    "&redirect=" + URLEncoder.encode(this.magicLinkUrl, charSet);
             response.sendRedirect(url);
             return false;
         } else if (inStepUpFlow) {
             finishStepUp(samlAuthenticationRequest);
-            if (missingStudentAffiliation || missingValidName) {
-                //When we send the assertion EB stops the flow but this will be fixed upstream
+            if (missingStudentAffiliation || missingValidName || missingLinkedInstitution) {
+                //When we send the assertion, EB stops the flow, but this will be fixed upstream
                 return true;
             }
-            boolean externalNameValidation = !CollectionUtils.isEmpty(authenticationContextClassReferences)
-                    && authenticationContextClassReferences.contains(ACR.VALIDATE_NAMES_EXTERNAL);
+            boolean externalNameValidation = ACR.containsAcr(authenticationContextClassReferences, ACR.VALIDATE_NAMES_EXTERNAL);
             String path = externalNameValidation ? "confirm-external-stepup" : "confirm-stepup";
             response.sendRedirect(this.redirectUrl + "/" + path + "?h=" + hash +
                     "&redirect=" + URLEncoder.encode(this.magicLinkUrl, charSet) +
                     "&explanation=" + explanation +
                     "&ref=" + user.getId());
             return false;
-        } else if (!samlAuthenticationRequest.isPasswordOrWebAuthnFlow() && !samlAuthenticationRequest.isTiqrFlow() &&
+        } else if (this.featureUseApp &&
+                !samlAuthenticationRequest.isPasswordOrWebAuthnFlow() && !samlAuthenticationRequest.isTiqrFlow() &&
                 !user.loginOptions().contains(LoginOptions.APP.getValue()) &&
                 user.nudgeToApp(nudgeAppDays, nudgeAppDelayDays)) {
             userRepository.save(user);
@@ -598,12 +641,6 @@ public class GuestIdpAuthenticationRequestFilter extends OncePerRequestFilter {
             LOG.info(String.format("Tiqr flow authenticated for %s ", user.getUsername()));
             addTiqrCookie(response, user);
         }
-        String loginMethod = samlAuthenticationRequest.isTiqrFlow() ? "tiqr" :
-                samlAuthenticationRequest.isOneTimeLoginCodeFlow() ? "one_time_login_code" :
-                        samlAuthenticationRequest.isPasswordOrWebAuthnFlow() ? "password" : "magiclink";
-
-        logLoginWithContext(user, loginMethod, true, LOG, "Successfully logged in with " + loginMethod, request);
-
         sendAssertion(request, response, samlAuthenticationRequest, user);
     }
 
@@ -622,7 +659,7 @@ public class GuestIdpAuthenticationRequestFilter extends OncePerRequestFilter {
 
     private void addTiqrCookie(HttpServletResponse response, User user) {
         Cookie cookie = new Cookie(TIQR_COOKIE_NAME, this.cookieValueEncoder.encode(user.getUsername()));
-        cookie.setMaxAge(rememberMeMaxAge);
+        cookie.setMaxAge(tiqrCookieMaxAge);
         cookie.setSecure(secureCookie);
         cookie.setHttpOnly(true);
         cookie.setPath("/");
@@ -686,19 +723,27 @@ public class GuestIdpAuthenticationRequestFilter extends OncePerRequestFilter {
             boolean hasStudentAffiliation = hasRequiredStudentAffiliation(user.allEduPersonAffiliations());
 
             //When we change the status of the response to NO_AUTH_CONTEXT EB stops the flow but this will be fixed upstream
-            boolean missingStudentAffiliation = authenticationContextClassReferences.contains(ACR.AFFILIATION_STUDENT) &&
+            boolean missingStudentAffiliation = ACR.containsAcr(authenticationContextClassReferences, ACR.AFFILIATION_STUDENT) &&
                     !hasStudentAffiliation;
-            boolean missingValidName = authenticationContextClassReferences.contains(ACR.VALIDATE_NAMES) &&
+            boolean missingValidName = ACR.containsAcr(authenticationContextClassReferences, ACR.VALIDATE_NAMES) &&
                     !hasValidatedName(user);
-            boolean missingExternalName = authenticationContextClassReferences.contains(ACR.VALIDATE_NAMES_EXTERNAL) &&
+            boolean missingExternalName = ACR.containsAcr(authenticationContextClassReferences, ACR.VALIDATE_NAMES_EXTERNAL) &&
                     !hasValidatedExternalName(user);
-            if (missingStudentAffiliation || missingValidName || missingExternalName) {
+            Instant now = new Date().toInstant();
+            boolean missingLinkedInstitution = ACR.containsAcr(authenticationContextClassReferences, ACR.LINKED_INSTITUTION) &&
+                    (CollectionUtils.isEmpty(user.getLinkedAccounts()) || user.getLinkedAccounts().stream()
+                            .allMatch(linkedAccount -> now.isAfter(linkedAccount.getExpiresAt().toInstant())));
+
+            if (missingStudentAffiliation || missingValidName || missingExternalName || missingLinkedInstitution) {
                 if (missingValidName) {
                     optionalMessage = "The requesting service has indicated that the authenticated user is required to have a first_name and last_name." +
                             " Your institution has not provided those attributes.";
                 } else if (missingExternalName) {
                     optionalMessage = "The requesting service has indicated that the authenticated user has verified their first_name and last_name." +
                             " Your identity is not verified by an external trusted party.";
+                } else if (missingLinkedInstitution) {
+                    optionalMessage = "The requesting service has indicated that the authenticated user has linked its account to an Institution." +
+                            " Your identity is not verified by an external educational institution.";
                 } else {
                     optionalMessage = "The requesting service has indicated that the authenticated user is required to have an affiliation Student." +
                             " Your institution has not provided this affiliation.";
@@ -707,17 +752,18 @@ public class GuestIdpAuthenticationRequestFilter extends OncePerRequestFilter {
             } else {
                 authnContextClassRefValue = ACR.selectACR(authenticationContextClassReferences, hasStudentAffiliation);
             }
-        } else if (samlAuthenticationRequest.isMfaProfileRequired()) {
+        } else if (!applySsoMfa && !CollectionUtils.isEmpty(authenticationContextClassReferences)) {
+            optionalMessage = String.format("The specified authentication context requirements '%s' cannot be met by the responder.",
+                    String.join(", ", authenticationContextClassReferences));
+            samlStatus = SAMLStatus.NO_AUTHN_CONTEXT;
+        }
+        if (samlAuthenticationRequest.isMfaProfileRequired()) {
             if (samlAuthenticationRequest.isTiqrFlow() || applySsoMfa) {
                 authnContextClassRefValue = ACR.selectACR(authenticationContextClassReferences, false);
             } else {
                 optionalMessage = "The requesting service has indicated that a login with the eduID app is required to login.";
                 samlStatus = SAMLStatus.NO_AUTHN_CONTEXT;
             }
-        } else if (!applySsoMfa && !CollectionUtils.isEmpty(authenticationContextClassReferences)) {
-            optionalMessage = String.format("The specified authentication context requirements '%s' cannot be met by the responder.",
-                    String.join(", ", authenticationContextClassReferences));
-            samlStatus = SAMLStatus.NO_AUTHN_CONTEXT;
         }
         if (!samlStatus.equals(SAMLStatus.SUCCESS)) {
             authnContextClassRefValue = DefaultSAMLService.authnContextClassRefUnspecified;
@@ -727,8 +773,15 @@ public class GuestIdpAuthenticationRequestFilter extends OncePerRequestFilter {
             cookie.setMaxAge(0);
             response.addCookie(cookie);
         });
-        //Tracking cookie for user new device discovery
+        //Tracking cookie for user's new device discovery
         this.addTrackingCookie(request, response, user);
+        String loginMethod = samlAuthenticationRequest.isTiqrFlow() ? "tiqr" :
+                samlAuthenticationRequest.isOneTimeLoginCodeFlow() ? "one_time_login_code" :
+                        samlAuthenticationRequest.isPasswordOrWebAuthnFlow() ? "password" : "cookie";
+
+        logLoginWithContext(user, loginMethod, true, LOG, "Successfully logged in with " + loginMethod,
+                request, authnContextClassRefValue, authenticationContextClassReferences);
+
         this.samlService.sendResponse(
                 samlAuthenticationRequest.getIssuer(),
                 samlAuthenticationRequest.getRequestId(),
@@ -771,7 +824,7 @@ public class GuestIdpAuthenticationRequestFilter extends OncePerRequestFilter {
                 attribute("urn:mace:terena.org:attribute-def:schacHomeOrganization", user.getSchacHomeOrganization())
         ));
         String eduIDValue = user.computeEduIdForServiceProviderIfAbsent(requesterEntityId, manage);
-        userRepository.save(user);
+        user.setLastLogin(System.currentTimeMillis());
 
         if (StringUtils.hasText(user.getPreferredLanguage())) {
             attributes.add(attribute("urn:mace:dir:attribute-def:preferredLanguage", user.getPreferredLanguage()));
@@ -792,6 +845,12 @@ public class GuestIdpAuthenticationRequestFilter extends OncePerRequestFilter {
                         values.forEach(value -> attributes.add(attribute(key, value))));
 
 
+        Instant now = Instant.now();
+        //delete all affiliations for accounts that are older then expirationNonValidatedDurationDays
+        linkedAccounts.stream()
+                .filter(linkedAccount ->
+                        linkedAccount.getCreatedAt().toInstant().plus(expiryNonValidatedDurationDays, ChronoUnit.DAYS).isBefore(now))
+                .forEach(linkedAccount -> linkedAccount.setEduPersonAffiliations(new ArrayList<>()));
         //we need a mutable list
         List<String> scopedAffiliations = new ArrayList<>(linkedAccounts.stream()
                 .map(linkedAccount -> linkedAccount.getEduPersonAffiliations().stream()
@@ -801,7 +860,11 @@ public class GuestIdpAuthenticationRequestFilter extends OncePerRequestFilter {
                 .flatMap(Collection::stream)
                 .distinct()
                 .toList());
-        scopedAffiliations.add("affiliate@eduid.nl");
+        if (this.featureDefaultAffiliateEmail) {
+            LOG.debug(String.format("Default affiliate me functionality activated for %s ", user.getUsername()));
+            scopedAffiliations.add(String.format("affiliate@%s", defaultAffiliateEmailDomain));
+        }
+
         scopedAffiliations.forEach(aff -> attributes.add(attribute("urn:mace:dir:attribute-def:eduPersonScopedAffiliation", aff)));
 
         scopedAffiliations.stream()
@@ -821,14 +884,85 @@ public class GuestIdpAuthenticationRequestFilter extends OncePerRequestFilter {
                         samlAttribute.getValue().equals("student"))) {
             attributes.add(attribute("urn:mace:dir:attribute-def:eduPersonAffiliation", "student"));
         }
+        List<String> eduPersonAssurances = eduPersonAssurances(user);
+        eduPersonAssurances
+                .forEach(eduPersonAssurance -> attributes.add(attribute("urn:mace:dir:attribute-def:eduPersonAssurance", eduPersonAssurance)));
+        // lastLogin is updated, possible an new eduID value or deleted affiliations
+        userRepository.save(user);
         return attributes;
+    }
+
+    private List<String> eduPersonAssurances(User user) {
+        //we need a mutable list
+        List<LinkedAccount> linkedAccounts = user.getLinkedAccounts();
+        List<String> eduPersonAssuranceIdP = linkedAccounts.stream()
+                .map(LinkedAccount::getEduPersonAssurances)
+                .flatMap(Collection::stream)
+                .map(String::toLowerCase)
+                .toList();
+        //we do not send the IdP original assurances to the SP
+        List<String> eduPersonAssurances = new ArrayList<>();
+        if (!linkedAccounts.isEmpty()) {
+            if (eduPersonAssuranceIdP.stream().noneMatch(ass -> ass.startsWith("https://refeds.org/assurance/iap/"))) {
+                eduPersonAssurances.add("https://refeds.org/assurance/IAP/medium");
+                eduPersonAssurances.add("https://eduid.nl/validated/institution");
+            } else if (eduPersonAssuranceIdP.stream().anyMatch(ass -> ass.equals("https://refeds.org/assurance/iap/medium"))) {
+                eduPersonAssurances.add("https://refeds.org/assurance/IAP/medium");
+                eduPersonAssurances.add("https://eduid.nl/validated/institution");
+            } else if (eduPersonAssuranceIdP.stream().anyMatch(ass -> ass.equals("https://refeds.org/assurance/iap/high"))) {
+                eduPersonAssurances.add("https://refeds.org/assurance/IAP/medium");
+                eduPersonAssurances.add("https://refeds.org/assurance/IAP/high");
+                eduPersonAssurances.add("https://eduid.nl/validated/institution");
+            }
+        }
+
+        List<ExternalLinkedAccount> externalLinkedAccounts = user.getExternalLinkedAccounts();
+        if (externalLinkedAccounts.stream().anyMatch(acc -> acc.getIdpScoping().equals(IdpScoping.idin))) {
+            eduPersonAssurances.add("https://refeds.org/assurance/IAP/medium");
+            eduPersonAssurances.add("https://refeds.org/assurance/IAP/high");
+            eduPersonAssurances.add("https://eduid.nl/validated/bank");
+        }
+        if (externalLinkedAccounts.stream().anyMatch(acc -> acc.getIdpScoping().equals(IdpScoping.eherkenning))) {
+            eduPersonAssurances.add("https://refeds.org/assurance/IAP/medium");
+            eduPersonAssurances.add("https://refeds.org/assurance/IAP/high");
+            eduPersonAssurances.add("https://eduid.nl/validated/eidas");
+        }
+        if (externalLinkedAccounts.stream().anyMatch(acc -> acc.getIdpScoping().equals(IdpScoping.serviceDesk))) {
+            eduPersonAssurances.add("https://refeds.org/assurance/IAP/medium");
+            eduPersonAssurances.add("https://refeds.org/assurance/IAP/high");
+            eduPersonAssurances.add("https://eduid.nl/validated/servicedesk");
+        }
+        externalLinkedAccounts.stream()
+                .filter(acc -> acc.getIdpScoping().equals(IdpScoping.studielink)
+                        && acc.getVerification() != null && !acc.getVerification().equals(Verification.Ongeverifieerd))
+                .findFirst()
+                .ifPresent(acc -> {
+                    eduPersonAssurances.add("https://refeds.org/assurance/IAP/medium");
+
+                    if (acc.getVerification().equals(Verification.Geverifieerd)) {
+                        eduPersonAssurances.add("https://refeds.org/assurance/IAP/high");
+                        eduPersonAssurances.add("https://eduid.nl/validated/central-enrollment/G");
+                    } else if (acc.getVerification().equals(Verification.Verifai)) {
+                        eduPersonAssurances.add("https://eduid.nl/validated/central-enrollment/V");
+                    } else if (acc.getVerification().equals(Verification.Decentraal)) {
+                        eduPersonAssurances.add("https://eduid.nl/validated/central-enrollment/D");
+                    }
+                });
+        eduPersonAssurances.addAll(List.of(
+                "https://refeds.org/assurance",
+                "https://refeds.org/assurance/ID/unique",
+                "https://refeds.org/assurance/ID/eppn-unique-no-reassign",
+                "https://refeds.org/assurance/IAP/low",
+                "https://refeds.org/assurance/version/2",
+                "https://eduid.nl/validated/email-validated"));
+        return eduPersonAssurances.stream().distinct().toList();
     }
 
     private List<LinkedAccount> safeSortedAffiliations(User user) {
         List<LinkedAccount> linkedAccounts = user.linkedAccountsSorted();
         List<LinkedAccount> linkedAccountsEmptyAffiliations = linkedAccounts.stream()
                 .filter(linkedAccount -> CollectionUtils.isEmpty(linkedAccount.getEduPersonAffiliations()))
-                .collect(toList());
+                .toList();
         linkedAccountsEmptyAffiliations.forEach(linkedAccount -> linkedAccount.setEduPersonAffiliations(
                 Collections.singletonList("affiliation@" + linkedAccount.getSchacHomeOrganization())));
         if (!linkedAccountsEmptyAffiliations.isEmpty()) {

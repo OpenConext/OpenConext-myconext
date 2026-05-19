@@ -13,9 +13,6 @@ import org.springframework.core.io.ClassPathResource;
 
 import java.io.IOException;
 import java.nio.charset.Charset;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import java.time.format.DateTimeFormatterBuilder;
 import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -23,7 +20,7 @@ import static org.junit.jupiter.api.Assertions.*;
 class AttributeMapperTest {
 
     private final ObjectMapper objectMapper = new ObjectMapper();
-    private final AttributeMapper attributeMapper = new AttributeMapper(objectMapper, new MockManage(objectMapper));
+    private final AttributeMapper attributeMapper = new AttributeMapper(objectMapper, new MockManage(objectMapper), true);
 
     @SneakyThrows
     @Test
@@ -62,17 +59,17 @@ class AttributeMapperTest {
         //Verify entire mapping
         assertEquals("BGEuxX6iGQR2i2XNU2A3GHFYLtJ5Dmehf2aQ+qDQUJ4AbjgX+j9+1DEuhUK4sRJ5AwMa0CV2xQyf93xrU/8yqfzTtxc6c+wsYPzWF9tqux9T", externalLinkedAccount.getSubjectId());
         assertEquals(IdpScoping.eherkenning, externalLinkedAccount.getIdpScoping());
-        assertEquals(null, externalLinkedAccount.getIssuer());
-        assertEquals(null, externalLinkedAccount.getServiceID());
+        assertNull(externalLinkedAccount.getIssuer());
+        assertNull(externalLinkedAccount.getServiceID());
         assertEquals("a23aed9b-e310-495e-adea-561a1b07f333", externalLinkedAccount.getServiceUUID());
         assertEquals("urn:etoegang:HM:00000003244440010000:entities:9713", externalLinkedAccount.getSubjectIssuer());
         assertEquals("M.", externalLinkedAccount.getInitials());
         assertEquals("Mariana", externalLinkedAccount.getFirstName());
         assertEquals("Kjällström", externalLinkedAccount.getPreferredLastName());
         assertEquals("Kjällström", externalLinkedAccount.getLegalLastName());
-        assertEquals(null, externalLinkedAccount.getPartnerLastNamePrefix());
-        assertEquals(null, externalLinkedAccount.getLegalLastNamePrefix());
-        assertEquals(null, externalLinkedAccount.getPartnerLastName());
+        assertNull(externalLinkedAccount.getPartnerLastNamePrefix());
+        assertNull(externalLinkedAccount.getLegalLastNamePrefix());
+        assertNull(externalLinkedAccount.getPartnerLastName());
         assertEquals(AttributeMapper.parseDate("1963-02-05"), externalLinkedAccount.getDateOfBirth());
         assertNotNull(externalLinkedAccount.getCreatedAt());
         assertNotNull(externalLinkedAccount.getExpiresAt());
@@ -125,6 +122,13 @@ class AttributeMapperTest {
     void serializeFromBase64GZipBomb() {
         String s = Base64.getEncoder().encodeToString(new byte[42 * 1024]);
         assertThrows(IllegalArgumentException.class, () -> attributeMapper.serializeFromBase64(s));
+    }
+
+    @Test
+    void a() {
+        AttributeMapper attributeMapper = new AttributeMapper(objectMapper, new MockManage(objectMapper), false);
+        List<String> affiliations = attributeMapper.externalAffiliations(List.of("QW12"));
+        assertTrue(affiliations.isEmpty());
     }
 
     private Map<String, Object> attributesFromFile(String path) throws IOException {

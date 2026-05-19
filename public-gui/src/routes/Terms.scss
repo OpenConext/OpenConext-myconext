@@ -9,7 +9,7 @@
         @include index.page;
         gap: 0;
         width: 740px;
-        @media (max-width: index.$mobile-width) {
+        @media (max-width: index.$tablet-width) {
             width: auto;
         }
     }

@@ -15,11 +15,11 @@
         }
     }
 
-    @media (max-width: index.$mobile-width) {
+    @media (max-width: index.$tablet-width) {
         flex-direction: column;
     }
 
-    @media (min-width: index.$mobile-width-cutoff) {
+    @media (min-width: index.$tablet-width-cutoff) {
         &.mobile {
             display: none;
         }
@@ -32,11 +32,16 @@
         font-size: 18px;
         line-height: 36px;
 
-        @media (max-width: index.$mobile-width) {
+        @media (max-width: index.$tablet-width) {
             color: black;
             font-weight: 400;
             font-size: 32px;
             line-height: 44px;
+        }
+
+        @media (max-width: index.$mobile-width) {
+           font-size: 28px;
+           line-height: 40px;
         }
 
         &.active {
@@ -44,7 +49,8 @@
             color: black;
             border-bottom: 2px solid var(--sds--color--blue--400);
 
-            @media (max-width: index.$mobile-width) {
+            
+            @media (max-width: index.$tablet-width) {
                 font-weight: 400;
                 color: black;
                 border-bottom: none;
@@ -59,7 +65,7 @@
         gap: 15px;
         max-height: 0;
 
-        @media (max-width: index.$mobile-width) {
+        @media (max-width: index.$tablet-width) {
             flex-direction: column;
             margin: 16px 0 0 0;
             gap: 50px;
@@ -69,7 +75,7 @@
         button.sds--btn {
             min-width: 180px;
 
-            @media (max-width: index.$mobile-width) {
+            @media (max-width: index.$tablet-width) {
                 max-width: 180px;
             }
         }

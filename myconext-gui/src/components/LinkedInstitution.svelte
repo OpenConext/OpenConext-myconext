@@ -1,6 +1,6 @@
 <script>
     import I18n from "../locale/I18n";
-    import {dateFromEpoch} from "../utils/date";
+    import {dateFromEpoch, getAffiliationsVerificationDate} from "../utils/date";
     import {onMount} from "svelte";
     import {isEmpty} from "../utils/utils";
     import {institutionName} from "../utils/services";
@@ -10,12 +10,20 @@
     export let roleContext;
     export let includeAffiliations = false;
 
-    let affiliations;
+    let affiliations = [];
     let expiresAt = 0;
 
     onMount(() => {
-        affiliations = Array.from(new Set(linkedAccount.eduPersonAffiliations));
+        if (!isEmpty(linkedAccount.eduPersonAffiliations)) {
+            affiliations = Array.from(new Set(linkedAccount.eduPersonAffiliations));
+        } else if (!isEmpty(linkedAccount.affiliations)) {
+            affiliations = Array.from(new Set(linkedAccount.affiliations));
+        }
         expiresAt = linkedAccount.expiresAt;
+
+        if (includeAffiliations){
+            expiresAt = getAffiliationsVerificationDate(linkedAccount.createdAt);
+        }
     })
 
 </script>
@@ -71,12 +79,12 @@
             </ul>
         {/if}
         {#if roleContext && (linkedAccount.subjectId || linkedAccount.eduPersonPrincipalName)}
-            {#if linkedAccount.subjectId}
+            {#if linkedAccount.subjectId && !linkedAccount.external}
                 <p class="details">{I18n.t("profile.subjectId")}</p>
                 <ul>
                     <li>{linkedAccount.subjectId}</li>
                 </ul>
-            {:else}
+            {:else if linkedAccount.eduPersonPrincipalName}
                 <p class="details">{I18n.t("profile.eppn")}</p>
                 <ul>
                     <li>{linkedAccount.eduPersonPrincipalName}</li>

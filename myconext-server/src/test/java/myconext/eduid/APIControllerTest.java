@@ -15,8 +15,7 @@ import java.util.Map;
 import java.util.UUID;
 
 import static io.restassured.RestAssured.given;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.*;
 
 @SuppressWarnings("unchecked")
 public class APIControllerTest extends AbstractIntegrationTest {
@@ -49,17 +48,21 @@ public class APIControllerTest extends AbstractIntegrationTest {
 
     @Test
     public void links() throws Exception {
-        List<Map<String, String>> results = given()
+        List<Map<String, Object>> results = given()
                 .when()
                 .accept(ContentType.JSON)
                 .auth().oauth2(opaqueAccessToken(true, "eduid.nl/links"))
                 .get("/myconext/api/eduid/links")
                 .as(List.class);
-        String validatedName = results.get(0).get("validated_name");
+        Map<String, Object> userInfo = results.getFirst();
+        String validatedName = (String) userInfo.get("validated_name");
         assertEquals("Mary Dahl", validatedName);
+        assertTrue((Boolean) userInfo.get("preferred"));
 
-        String eppn = results.get(1).get("eppn");
+        userInfo = results.get(1);
+        String eppn = (String) userInfo.get("eppn");
         assertEquals("1234567890@surfguest.nl", eppn);
+        assertFalse((Boolean) userInfo.get("preferred"));
     }
 
     @Test

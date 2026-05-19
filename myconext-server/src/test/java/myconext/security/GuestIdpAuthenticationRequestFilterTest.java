@@ -2,16 +2,26 @@ package myconext.security;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import myconext.manage.MockManage;
-import myconext.model.*;
+import myconext.model.ExternalLinkedAccount;
+import myconext.model.IdpScoping;
+import myconext.model.LinkedAccount;
+import myconext.model.User;
+import myconext.model.Verification;
+import myconext.model.VerifyIssuer;
 import myconext.repository.UserRepository;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
+import org.springframework.test.util.ReflectionTestUtils;
 import saml.model.SAMLAttribute;
 
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Date;
+import java.util.List;
+import java.util.UUID;
 
 import static myconext.AbstractIntegrationTest.user;
 import static myconext.model.LinkedAccountTest.linkedAccount;
@@ -27,6 +37,7 @@ public class GuestIdpAuthenticationRequestFilterTest {
     public void beforeEach() {
         subject.setManage(new MockManage(objectMapper));
         subject.setUserRepository(Mockito.mock(UserRepository.class));
+        ReflectionTestUtils.setField(subject, "expiryNonValidatedDurationDays", 180);
     }
 
     @Test
@@ -121,33 +132,92 @@ public class GuestIdpAuthenticationRequestFilterTest {
         List<LinkedAccount> linkedAccounts = Arrays.asList(
                 linkedAccount("John", "Doe", createdAt(15)),
                 linkedAccount("Mary", "Poppins", createdAt(10)),
-                linkedAccount("Mark", "Lee", createdAt(25))
+                linkedAccount("Mark", "Lee", createdAt(25)),
+                linkedAccount(Date.from(Instant.now().minus(200, ChronoUnit.DAYS)), List.of("expired-aff")),
+                linkedAccount(Date.from(Instant.now().minus(160, ChronoUnit.DAYS)), List.of("valid-aff"))
         );
         user.setLinkedAccounts(linkedAccounts);
-        List<SAMLAttribute> attributes = subject.attributes(user, "requesterEntityID");
-        String givenName = attributes.stream().filter(attr -> attr.getName().equals("urn:mace:dir:attribute-def:givenName")).findFirst().get().getValue();
-        String familyName = attributes.stream().filter(attr -> attr.getName().equals("urn:mace:dir:attribute-def:sn")).findFirst().get().getValue();
-        String displayName = attributes.stream().filter(attr -> attr.getName().equals("urn:mace:dir:attribute-def:displayName")).findFirst().get().getValue();
-        boolean dateOfBirthPresent = attributes.stream().filter(attr -> attr.getName().equals("urn:schac:attribute-def:schacDateOfBirth")).findFirst().isPresent();
 
+        List<SAMLAttribute> attributes = subject.attributes(user, "requesterEntityID");
+        String givenName = getValue(attributes, "urn:mace:dir:attribute-def:givenName");
         assertEquals("Mary", givenName);
+
+        String familyName = getValue(attributes, "urn:mace:dir:attribute-def:sn");
         assertEquals("Poppins", familyName);
+
+        String displayName = getValue(attributes, "urn:mace:dir:attribute-def:displayName");
         assertEquals("Marrrry Poppins", displayName);
+
+        boolean dateOfBirthPresent = attributes.stream().filter(attr -> attr.getName().equals("urn:schac:attribute-def:schacDateOfBirth")).findFirst().isPresent();
         assertFalse(dateOfBirthPresent);
+
+        List<SAMLAttribute> eduPersonScopedAffiliations = attributes.stream()
+                .filter(attr ->
+                        attr.getName().equals("urn:mace:dir:attribute-def:eduPersonScopedAffiliation") )
+                .toList();
+        assertTrue(eduPersonScopedAffiliations.stream().anyMatch(aff -> aff.getValue().startsWith("valid-aff")));
+        assertFalse(eduPersonScopedAffiliations.stream().anyMatch(aff -> aff.getValue().startsWith("expired-aff")));
     }
 
     @Test
     public void attributesExternalLinkedAccount() {
         User user = new User();
         user.setChosenName("Chosen");
-        ExternalLinkedAccount externalLinkedAccount = new ExternalLinkedAccount(
+        ExternalLinkedAccount externalLinkedAccount = externalLinkedAccount(IdpScoping.studielink, Verification.Geverifieerd);
+        externalLinkedAccount.setPreferred(true);
+        user.getExternalLinkedAccounts().add(externalLinkedAccount);
+        List<SAMLAttribute> attributes = subject.attributes(user, "requesterEntityID");
+        String givenName = getValue(attributes, "urn:mace:dir:attribute-def:givenName");
+        String familyName = getValue(attributes, "urn:mace:dir:attribute-def:sn");
+        String displayName = getValue(attributes, "urn:mace:dir:attribute-def:displayName");
+        String dateOfBirth = getValue(attributes, "urn:schac:attribute-def:schacDateOfBirth");
+
+        assertEquals("John", givenName);
+        assertEquals("Doe", familyName);
+        assertEquals("Chosen Doe", displayName);
+        //We are good to go for the next 6 years
+        assertTrue(dateOfBirth.startsWith("202"));
+    }
+
+    @Test
+    public void assurances() {
+        User user = new User();
+        List<SAMLAttribute> samlAttributes = subject.attributes(user, "requester");
+        assertEquals(6, getEduPersonAssurancesCount(samlAttributes));
+
+        LinkedAccount linkedAccount = new LinkedAccount();
+        user.getLinkedAccounts().add(linkedAccount);
+        samlAttributes = subject.attributes(user, "requester");
+        assertEquals(8, getEduPersonAssurancesCount(samlAttributes));
+
+        linkedAccount.setEduPersonAssurances(List.of("https://refeds.org/assurance/IAP/high"));
+        samlAttributes = subject.attributes(user, "requester");
+        assertEquals(9, getEduPersonAssurancesCount(samlAttributes));
+
+        user.getExternalLinkedAccounts().addAll(List.of(
+                externalLinkedAccount(IdpScoping.idin, null),
+                externalLinkedAccount(IdpScoping.serviceDesk, null),
+                externalLinkedAccount(IdpScoping.eherkenning, null),
+                externalLinkedAccount(IdpScoping.studielink, Verification.Geverifieerd)
+        ));
+
+        samlAttributes = subject.attributes(user, "requester");
+        assertEquals(13, getEduPersonAssurancesCount(samlAttributes));
+    }
+
+    private static long getEduPersonAssurancesCount(List<SAMLAttribute> samlAttributes) {
+        return samlAttributes.stream().filter(attr -> attr.getName().equals("urn:mace:dir:attribute-def:eduPersonAssurance")).count();
+    }
+
+    private ExternalLinkedAccount externalLinkedAccount(IdpScoping idpScoping, Verification verification) {
+        return new ExternalLinkedAccount(
                 UUID.randomUUID().toString(),
-                IdpScoping.studielink,
-                new VerifyIssuer(IdpScoping.studielink.name(), IdpScoping.studielink.name(), null),
-                Verification.Geverifieerd,
+                idpScoping,
+                new VerifyIssuer(idpScoping.name(), idpScoping.name(), null),
+                verification,
                 UUID.randomUUID().toString(),
-                IdpScoping.studielink.name(),
-                IdpScoping.studielink.name(),
+                idpScoping.name(),
+                idpScoping.name(),
                 null,
                 null,
                 "Johny",
@@ -163,19 +233,10 @@ public class GuestIdpAuthenticationRequestFilterTest {
                 Date.from(Instant.now().plus(365 * 5, ChronoUnit.DAYS)),
                 true
         );
-        externalLinkedAccount.setPreferred(true);
-        user.getExternalLinkedAccounts().add(externalLinkedAccount);
-        List<SAMLAttribute> attributes = subject.attributes(user, "requesterEntityID");
-        String givenName = attributes.stream().filter(attr -> attr.getName().equals("urn:mace:dir:attribute-def:givenName")).findFirst().get().getValue();
-        String familyName = attributes.stream().filter(attr -> attr.getName().equals("urn:mace:dir:attribute-def:sn")).findFirst().get().getValue();
-        String displayName = attributes.stream().filter(attr -> attr.getName().equals("urn:mace:dir:attribute-def:displayName")).findFirst().get().getValue();
-        String dateOfBirth = attributes.stream().filter(attr -> attr.getName().equals("urn:schac:attribute-def:schacDateOfBirth")).findFirst().get().getValue();
+    }
 
-        assertEquals("John", givenName);
-        assertEquals("Doe", familyName);
-        assertEquals("Chosen Doe", displayName);
-        //We are good to go for the next 6 years
-        assertTrue(dateOfBirth.startsWith("202"));
+    private String getValue(List<SAMLAttribute> attributes, String anObject) {
+        return attributes.stream().filter(attr -> attr.getName().equals(anObject)).findFirst().get().getValue();
     }
 
     private Date createdAt(int numberOfDaysInThePast) {

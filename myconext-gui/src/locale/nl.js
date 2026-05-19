@@ -30,7 +30,8 @@ const nl = {
         loginAgain: "Opnieuw inloggen",
         deleteTitle: "Jouw eduID is verwijderd",
         deleteStatus: "Om het verwijderen van je eduID te voltooien, moet je jouw browser nu afsluiten.",
-        registerAgain: "Opnieuw registreren"
+        registerAgain: "Opnieuw registreren",
+        rateLimitTitle: "Te veel mislukte pogingen"
     },
     notFound: {
         title: "Oeps...",
@@ -45,7 +46,7 @@ const nl = {
         receivedOn: "op <strong>{{date}}</strong>",
         receivedOnInfo: "Ontvangen op <strong>{{date}}</strong>",
         validUntilDate: "Geldig tot <strong>{{date}}</strong>",
-        validUntilDateInfo: "Geldig tot <strong>{{date}}</strong>",
+        validUntilDateInfo: "Geldig tot <strong>{{date}}</strong> en de rol zelf is geldig tot {{rolDate}}",
         removeLinkPrefix: "Verwijder deze informatie",
         removeLinkPostfix: " uit je eduID",
         banner: "Voor sommige applicaties moeten je gegevens zijn gevalideerd door een vertrouwde partij.",
@@ -417,7 +418,7 @@ const nl = {
         timeOutInfoLast: " om het opnieuw te proberen.",
         timeOutInfoLink: "link",
         openEduIDApp: "Open de app op dit apparaat",
-        existingRegistration: "Bestaande registrate",
+        existingRegistration: "Bestaande registratie",
         existingRegistrationInfoFirst: "Je kan geen nieuwe registratie starten, omdat je al een registratie hebt. Klik op ",
         existingRegistrationInfoLast: " om de instellingen van je beveiliging opnieuw te laden.",
         existingRegistrationInfoLink: "link",
@@ -437,7 +438,16 @@ const nl = {
         copy: "Kopieer de code",
         copied: "Gekopieerd",
         continue: "Mijn code is veilig. Doorgaan",
-        leaveConfirmation: "Weet je zeker dat je deze pagina wilt verlaten? Wijzigingen worden niet opgeslagen."
+        leaveConfirmation: "Weet je zeker dat je deze pagina wilt verlaten? Wijzigingen worden niet opgeslagen.",
+        finalizedRegistration: "Bestaande herstelmethode",
+        finalizedRegistrationExplanation: "Je mag geen nieuwe herstelmethode registreren omdat je al een bestaande herstelmethode hebt. Wijzig je herstelmethode ",
+        finalizedRegistrationHere: "hier.",
+        finalizedRegistrationBackupCode: "Je herstelcode is: ",
+        backButtonWarning: "Je eduID-app is al succesvol toegevoegd aan je account. Je kunt je herstelcode niet aanpassen door terug te gaan. Als je terug gaat, krijg je een foutmelding te zien.",
+        backButtonWarningTitle: "Terug gaan is afgeraden",
+        backButtonWarningConfirmation: "Ok",
+        requestRecoveryCode: "Als je geen telefoonnummer kunt opgeven, ",
+        requestRecoveryCodeButton: "kun je een herstelcode aanvragen.",
     },
     phoneVerification: {
         header: "Voeg een hersteltelefoonnummer toe",
@@ -550,7 +560,7 @@ const nl = {
             info: {
                 subheader: "Verifieer je identiteit, snel en gemakkelijk",
                 title: "Verificatie",
-                please: "Verifieer dat je bent wie je zegt dat je bent.",
+                please: "Gebruik een van de volgende methodes om te bewijzen wie je bent.",
                 educationalInstitution: "Verifieer via een Nederlandse onderwijsinstelling",
                 selectInstitution: "Selecteer je instelling",
                 other: "Meer opties...",
@@ -559,7 +569,7 @@ const nl = {
                 verifyEuropeanId: "Verifieer met een Europees ID",
                 supportEuropean: "Dit kan met de inlogmiddelen van België, Denemarken, Duitsland, Estland, Italië, Kroatië, Litouwen, Letland, Liechtenstein, Luxemburg, Malta, Oostenrijk, Polen, Portugal, Slowakije, Slovenië, Spanje, Tsjechië en Zweden",
                 useEuropean: "Selecteer een Europees ID",
-                cantUse: "Ik kan geen van bovenstaande manieren gebruiken",
+                cantUse: "Neem contact met de Service Desk",
                 help: "Kun je deze opties niet gebruiken, bezoek dan onze <a href='https://eduid.nl/help' target='_blank' rel='noreferrer'>support pagina's</a>"
             },
             bank: {
@@ -580,7 +590,7 @@ const nl = {
             bunq: "Bunq",
             ing: "ING",
             rabobank: "Rabobank",
-            regioBank: "RegioBank",
+            regiobank: "RegioBank",
             sns: "SNS"
         }
     }

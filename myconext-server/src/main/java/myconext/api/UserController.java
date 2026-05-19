@@ -23,6 +23,7 @@ import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import lombok.Getter;
 import lombok.SneakyThrows;
+import myconext.captcha.CaptchaVerifier;
 import myconext.cron.DisposableEmailProviders;
 import myconext.exceptions.*;
 import myconext.mail.MailBox;
@@ -50,13 +51,17 @@ import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.View;
+import org.springframework.web.servlet.view.RedirectView;
 import tiqr.org.model.Registration;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Field;
+import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.security.SecureRandom;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
@@ -65,7 +70,6 @@ import java.util.stream.Collectors;
 
 import static myconext.SwaggerOpenIdConfig.OPEN_ID_SCHEME_NAME;
 import static myconext.crypto.HashGenerator.hash;
-import static myconext.log.MDCContext.logLoginWithContext;
 import static myconext.log.MDCContext.logWithContext;
 
 @RestController
@@ -105,7 +109,7 @@ public class UserController implements UserAuthentication {
     private final boolean featureDefaultRememberMe;
     private final boolean sendJsExceptions;
     private final ServicesConfiguration servicesConfiguration;
-
+    private final CaptchaVerifier captchaVerifier;
     private final List<VerifyIssuer> issuers;
     //For now, hardcode the not known issuers from test
     private final List<String> unknownIssuers = List.of("CURRNL2A");
@@ -123,6 +127,7 @@ public class UserController implements UserAuthentication {
                           EmailDomainGuard emailDomainGuard,
                           DisposableEmailProviders disposableEmailProviders,
                           RegistrationRepository registrationRepository,
+                          CaptchaVerifier captchaVerifier,
                           @Qualifier("jsonMapper") ObjectMapper objectMapper,
                           @Value("${email.magic-link-url}") String magicLinkUrl,
                           @Value("${schac_home_organization}") String schacHomeOrganization,
@@ -149,6 +154,7 @@ public class UserController implements UserAuthentication {
         this.disposableEmailProviders = disposableEmailProviders;
         this.registrationRepository = registrationRepository;
         this.objectMapper = objectMapper;
+        this.captchaVerifier = captchaVerifier;
         this.magicLinkUrl = magicLinkUrl;
         this.schacHomeOrganization = schacHomeOrganization;
         this.idpBaseUrl = idpBaseUrl;
@@ -283,8 +289,14 @@ public class UserController implements UserAuthentication {
                 .orElseThrow(() -> new ExpiredAuthenticationException("Expired authentication request"));
 
         User user = clientAuthenticationRequest.getUser();
-
         String email = user.getEmail();
+
+        boolean success = this.captchaVerifier.verify(clientAuthenticationRequest.getCaptchaResponse());
+        if (!success) {
+            throw new CaptchInvalidException("Invalid captcha for user: " + email);
+        } else {
+            LOG.info(String.format("Validated captcha for user: %s",email));
+        }
         verifyEmails(email, true);
 
         Optional<User> optionalUser = userRepository.findUserByEmail(emailGuessingPreventor.sanitizeEmail(email));
@@ -326,12 +338,9 @@ public class UserController implements UserAuthentication {
 
         if (clientAuthenticationRequest.isUsePassword()) {
             if (!passwordEncoder.matches(providedUser.getPassword(), user.getPassword())) {
-                logLoginWithContext(user, "password", false, LOG, "Bad attempt to login with password", request);
                 return ResponseEntity.status(HttpStatus.FORBIDDEN)
                         .body(Collections.singletonMap("status", HttpStatus.FORBIDDEN.value()));
             }
-            logLoginWithContext(user, "password", true, LOG, "Successfully logged in with password", request);
-            LOG.info("Successfully logged in with password");
         }
         return doInternalAuthentication(user, samlAuthenticationRequest, clientAuthenticationRequest.isUsePassword());
     }
@@ -378,7 +387,7 @@ public class UserController implements UserAuthentication {
                     //Mobile app
                     url = this.idpBaseUrl + "/mobile/api/create-from-mobile-api/in-app?h=" + hash;
                 }
-                return ResponseEntity.status(201).body(Map.of("url", url));
+                return ResponseEntity.status(201).body(Map.of("url", url, "email", user.getEmail()));
             }
             throw new InvalidOneTimeLoginCodeException(String.format("Invalid oneTimeLoginCode entered for email %s, delay: %s, attempt: %s",
                     user.getEmail(),
@@ -878,7 +887,11 @@ public class UserController implements UserAuthentication {
         passwordResetHashRepository.save(new PasswordResetHash(user, hashValue, oneTimeLoginCode));
 
         logWithContext(user, "update", "generate-password-code", LOG, "Send password reset code mail");
-        mailBox.sendResetPasswordOneTimeCode(user, code);
+        if (StringUtils.hasText(user.getPassword())) {
+            mailBox.sendResetPasswordOneTimeCode(user, code);
+        } else {
+            mailBox.sendAddPasswordOneTimeCode(user, code);
+        }
         //Ensure the SSO is removed at the next login
         authenticationRequestRepository.deleteByUserId(user.getId());
         return returnUserResponse(user);
@@ -1241,8 +1254,6 @@ public class UserController implements UserAuthentication {
         }
         User user = optionalUser.get();
 
-        logLoginWithContext(user, "webauthn", true, LOG, "Successfully logged in with webauthn", request);
-
         if (samlAuthenticationRequest.isTestInstance()) {
             //back to SP
             String credentialId = credentialId(body);
@@ -1306,7 +1317,6 @@ public class UserController implements UserAuthentication {
         return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON)
                 .body(objectWriter.writeValueAsString(map));
     }
-
 
     @GetMapping("/sp/logout")
     @Operation(summary = "Logout",

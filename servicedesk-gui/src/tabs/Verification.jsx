@@ -5,6 +5,7 @@ import {Button, CodeValidation, ErrorIndicator} from "@surfnet/sds";
 import AlertIcon from "@surfnet/sds/icons/functional-icons/info.svg";
 import {getUserControlCode} from "../api/index.js";
 import {useAppStore} from "../stores/AppStore.js";
+import DOMPurify from "dompurify";
 
 const Verification = ({proceed}) => {
 
@@ -32,8 +33,20 @@ const Verification = ({proceed}) => {
     }
 
     return (
+        <>
+            <div className="info">
+                <h2>{I18n.t("info.title")}</h2>
+                <p className="info">{I18n.t("info.subTitle")}</p>
+                <p
+                    dangerouslySetInnerHTML={{__html: DOMPurify.sanitize(I18n.t("info.verify1"))}}/>
+                <ul>
+                    <li>{I18n.t("info.verify2")}</li>
+                    <li>{I18n.t("info.verify3")}</li>
+                </ul>
+
+            </div>
         <div className="verification">
-            <h4>{I18n.t("verification.header")}</h4>
+            <h3>{I18n.t("verification.header")}</h3>
             <div className="code-validation">
                 <CodeValidation verify={val => doGetUserControlCode(val)}
                                 size={5}
@@ -47,12 +60,8 @@ const Verification = ({proceed}) => {
                 />
             </div>
             {error && <ErrorIndicator message={I18n.t("verification.error", {code: code})}/>}
-            <div className="disclaimer">
-                <AlertIcon/>
-                <p>{I18n.t("verification.info")}</p>
-            </div>
-
         </div>
+        </>
     );
 
 };

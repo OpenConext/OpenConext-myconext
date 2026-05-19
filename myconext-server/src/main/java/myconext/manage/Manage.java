@@ -1,13 +1,13 @@
 package myconext.manage;
 
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
 import myconext.model.IdentityProvider;
 import myconext.model.RemoteProvider;
 import myconext.model.SamlAuthenticationRequest;
 import myconext.model.ServiceProvider;
 import org.springframework.util.StringUtils;
 
-import jakarta.servlet.http.Cookie;
-import jakarta.servlet.http.HttpServletRequest;
 import java.util.*;
 import java.util.stream.IntStream;
 
@@ -23,9 +23,11 @@ public interface Manage {
 
     Optional<IdentityProvider> findIdentityProviderByDomainName(String domainName);
 
-    Optional<IdentityProvider> findIdentityProviderByBrinCode(String brinCode);
+    List<IdentityProvider> findIdentityProviderByBrinCode(String brinCode);
 
     Optional<IdentityProvider> findIdentityProviderByInstitutionGUID(String institutionGUID);
+
+    Optional<RemoteProvider> findResourceServerByEntityId(String entityId);
 
     default String getServiceName(HttpServletRequest request, SamlAuthenticationRequest samlAuthenticationRequest) {
         String lang = cookieByName(request, "lang").map(Cookie::getValue).orElse("en");
@@ -44,7 +46,8 @@ public interface Manage {
                             acc.putAll(providerMap);
                             return acc;
                         }
-                ).entrySet().stream().collect(toMap(e -> e.getKey(), e -> (IdentityProvider) e.getValue()));
+                ).entrySet().stream()
+                .collect(toMap(e -> e.getKey(), e -> (IdentityProvider) e.getValue()));
     }
 
     default String entityId(Map<String, Object> map) {
@@ -89,7 +92,7 @@ public interface Manage {
         IdentityProvider identityProvider = new IdentityProvider(
                 remoteProvider,
                 metaDataFields.get("coin:institution_brin"),
-                metaDataFields.get("shibmd:scope:0:allowed")
+                metaDataFields.get("coin:institution_brin_schac_home")
         );
         Map<String, IdentityProvider> results = new HashMap<>();
 
@@ -101,4 +104,5 @@ public interface Manage {
         });
         return results;
     }
+
 }

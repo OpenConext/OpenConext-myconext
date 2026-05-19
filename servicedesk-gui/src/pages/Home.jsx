@@ -53,7 +53,7 @@ export const Home = () => {
         <div className="home">
             <div className="mod-home-container">
                 <UnitHeader>
-                    <h1>{I18n.t("landing.header.subTitle", {name: user.displayName})}</h1>
+                    <h1>{I18n.t("landing.header.subTitle", {name: user.name})}</h1>
                 </UnitHeader>
                 <Tabs activeTab={currentTab}
                       tabChanged={tabChanged}>

@@ -2,7 +2,6 @@ package myconext.model;
 
 import jakarta.validation.constraints.NotBlank;
 import lombok.*;
-import org.springframework.data.mongodb.core.index.Indexed;
 
 import java.io.Serializable;
 

@@ -18,7 +18,7 @@
     import AwaitLinkFromInstitutionMail from "./routes/AwaitLinkFromInstitutionMail.svelte";
     import AttributeMissing from "./routes/AttributeMissing.svelte";
     import InstallApp from "./routes/tiqr/InstallApp.svelte";
-    import {isEmpty} from "./utils/utils.js";
+    import {isEmpty, redirectToLogin} from "./utils/utils.js";
 
     const unprotectedRoutes = [
         "/create-from-institution",
@@ -31,12 +31,20 @@
     onMount(() => configuration()
         .then(json => {
             $config = json;
+
+            if ($config.isAuthenticated === false &&
+              !unprotectedRoutes.some(route => window.location.pathname.indexOf(route) > -1)) {
+                $redirectPath = window.location.pathname;
+                redirectToLogin($config.loginUrl, $redirectPath);
+                return;
+            }
+
             const urlSearchParams = new URLSearchParams(window.location.search);
             let lang = "en";
             if (urlSearchParams.has("lang")) {
                 lang = urlSearchParams.get("lang");
-            } else if (Cookies.get("lang", {domain: $config.domain})) {
-                lang = Cookies.get("lang", {domain: $config.domain});
+            } else if (Cookies.get("lang")) {
+                lang = Cookies.get("lang");
             } else {
                 lang = navigator.language.toLowerCase().substring(0, 2);
             }
@@ -58,14 +66,12 @@
                         if (json.preferredLanguage !== lang && !isEmpty(json.preferredLanguage)) {
                             I18n.changeLocale(json.preferredLanguage);
                         }
+                        loaded = true;
                         const useOidcApi = $config.featureOidcTokenAPI;
                         if (useOidcApi) {
                             oidcTokens().then(tokens => {
                                 $user.oidcTokens = tokens;
-                                loaded = true;
                             });
-                        } else {
-                            loaded = true;
                         }
                     })
                     .catch(e => {
@@ -79,8 +85,7 @@
                         } else if (afterDelete) {
                             navigate("/landing?delete=true");
                         } else {
-                            const path = encodeURIComponent($redirectPath || "/");
-                            window.location.href = `${$config.loginUrl}?redirect_path=${path}`;
+                            redirectToLogin($config.loginUrl, $redirectPath);
                         }
                     })
             }
@@ -376,7 +381,7 @@
                 <Router url="{url}">
                     {#if $config.createEduIDInstitutionEnabled}
                         <Route path="/create-from-institution" component={CreateFromInstitution}/>
-                        <Route path="/create-from-Institution/eppn-already-linked" component={EppnAlreadyLinked}/>
+                        <Route path="/create-from-institution/eppn-already-linked" component={EppnAlreadyLinked}/>
                         <Route path="/create-from-institution/attribute-missing" component={AttributeMissing}/>
                         <Route path="/create-from-institution/expired" component={Expired}/>
                         <Route path="/create-from-institution/verify/:hash" let:params>

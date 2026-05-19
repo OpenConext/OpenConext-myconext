@@ -6,10 +6,15 @@ import myconext.model.User;
 import myconext.security.VerificationCodeGenerator;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.test.util.ReflectionTestUtils;
 
+import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import static org.junit.Assert.*;
@@ -77,7 +82,7 @@ public class UserRepositoryTest extends AbstractIntegrationTest {
         userRepository.save(user);
 
         user = userRepository.findByControlCode_Code(controlCode.getCode()).get();
-        assertEquals(controlCode.getCode(), user.getControlCode().getCode() );
+        assertEquals(controlCode.getCode(), user.getControlCode().getCode());
     }
 
     @Test
@@ -119,6 +124,19 @@ public class UserRepositoryTest extends AbstractIntegrationTest {
                 .collect(Collectors.toSet());
         String regex = "@" + String.join("|", querySet) + "$";
         List<User> users = userRepository.findByEmailDomain(regex);
+        assertEquals(2, users.size());
+    }
+
+    @Test
+    public void findByEmailRegexAndInstitutionMailSendDateBeforeOrInstitutionMailSendDateIsNull() {
+        int mailInstitutionBatchSize = 2;
+        List<String> domains = List.of("nope.com", "example.com");
+        Set<String> querySet = domains.stream()
+                .map(domain -> domain.replace(".", "\\."))
+                .collect(Collectors.toSet());
+        String regex = "@" + String.join("|", querySet) + "$";
+        List<User> users = userRepository.findByEmailRegexAndInstitutionMailSendDateBeforeOrInstitutionMailSendDateIsNull(
+                regex, LocalDateTime.now(), PageRequest.of(0, mailInstitutionBatchSize));
         assertEquals(2, users.size());
     }
 }

@@ -174,10 +174,6 @@
         margin-bottom: 20px;
     }
 
-    :global(a.button) {
-        margin: 25px auto 0 0;
-    }
-
     .redirect {
         display: flex;
         align-items: flex-start;

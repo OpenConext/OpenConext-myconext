@@ -37,7 +37,7 @@ public class InactivityMailDryRunTest extends AbstractMailBoxTest {
     @SneakyThrows
     @Test
     public void mailInactivityMail() {
-        inactivityUserSeed("en");
+        inactivityUserSeed("en", false);
 
         inactivityMail.mailInactiveUsers();
 

@@ -13,6 +13,7 @@ import java.util.Optional;
 
 import static io.restassured.RestAssured.given;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 public class AttributeAggregatorControllerTest extends AbstractIntegrationTest {
 
@@ -88,7 +89,7 @@ public class AttributeAggregatorControllerTest extends AbstractIntegrationTest {
 
     @Test
     public void manipulate() {
-        String spEntityId = "http://mock-sp";
+        String spEntityId = "https@//oidc.rp.resourceServer";
         User user = userRepository.findUserByUid(uid).get();
         LinkedAccount linkedAccount = user.getLinkedAccounts().get(0);
         String value = user.getEduIDS().get(0).getValue();
@@ -101,13 +102,14 @@ public class AttributeAggregatorControllerTest extends AbstractIntegrationTest {
     @Test
     public void manipulateNewSP() {
         String eduid = "fc75dcc7-6def-4054-b8ba-3c3cc504dd4b";
-        doManipulate("http://new-sp", eduid, uid, null);
+        doManipulate("https@//oidc.rp.resourceServer", eduid, uid, "409542a0-0d11-e511-80d0-005056956c1a");
     }
 
     @Test
     public void manipulateNotFound() {
         Map<String, Object> res = doManipulate("http://new-sp", "noppes", "noppes", null);
-        assertEquals(0, res.size());
+        assertEquals(1, res.size());
+        assertTrue(res.containsKey("error"));
     }
 
     @Test

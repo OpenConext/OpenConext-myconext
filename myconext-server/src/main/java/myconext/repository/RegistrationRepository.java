@@ -7,11 +7,12 @@ import tiqr.org.model.Registration;
 import tiqr.org.model.RegistrationStatus;
 
 import java.time.Instant;
+import java.util.List;
 
 @Repository
 public interface RegistrationRepository extends MongoRepository<Registration, String>, tiqr.org.repo.RegistrationRepository {
 
-    Long deleteByUpdatedBeforeAndStatus(Instant instant, RegistrationStatus status);
+    List<Registration> findByUpdatedBeforeAndStatus(Instant instant, RegistrationStatus status);
 
     void delete(Registration registration);
 }

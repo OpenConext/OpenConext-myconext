@@ -35,3 +35,10 @@ export const doLogOutAfterRateLimit = idpBaseUrl => {
     });
 }
 
+export const redirectToLogin = (loginUrl, redirectTo) => {
+    const url = new URL(loginUrl);
+    url.searchParams.set("redirect_path", redirectTo || "/");
+    url.searchParams.set("registration_id", "mijn_eduid");
+    window.location.href = url.toString();
+}
+

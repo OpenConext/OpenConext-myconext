@@ -5,7 +5,10 @@ import lombok.SneakyThrows;
 import myconext.manage.Manage;
 import myconext.model.*;
 import myconext.remotecreation.NewExternalEduID;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
@@ -29,6 +32,8 @@ public class AttributeMapper {
 
     private static final int DEFAULT_EXPIRATION_YEARS = 6;
 
+    private static final Log LOG = LogFactory.getLog(AttributeMapper.class);
+
     private static final List<DateTimeFormatter> dateTimeFormatters;
 
     static {
@@ -49,115 +54,116 @@ public class AttributeMapper {
 
     private final ObjectMapper objectMapper;
     private final Manage manage;
+    private final boolean useRemoteCreationForAffiliation;
 
     @Autowired
-    public AttributeMapper(ObjectMapper objectMapper, Manage manage) {
+    public AttributeMapper(ObjectMapper objectMapper,
+                           Manage manage,
+                           @Value("${feature.use_remote_creation_for_affiliation}") boolean useRemoteCreationForAffiliation) {
         this.objectMapper = objectMapper;
         this.manage = manage;
+        this.useRemoteCreationForAffiliation = useRemoteCreationForAffiliation;
     }
 
     public ExternalLinkedAccount externalLinkedAccountFromAttributes(
             Map<String, Object> attributes,
             VerifyState verifyState) {
         //first determine which attribute set we need to convert
-        switch (verifyState.getIdpScoping()) {
-            case idin: {
-                return new ExternalLinkedAccount(
-                        //String subjectId
-                        getAttribute(attributes, "sub"),
-                        //IdpScoping idpScoping
-                        verifyState.getIdpScoping(),
-                        //VerifyIssuer issuer
-                        verifyState.getVerifyIssuer(),
-                        //Verification
-                        Verification.Decentraal,
-                        //String serviceUUID
-                        getAttribute(attributes, "urn:nl:bvn:bankid:1.0:bankid.deliveredserviceid"),
-                        //String serviceID
-                        getAttribute(attributes, "urn:nl:bvn:bankid:1.0:bankid.deliveredserviceid"),
-                        //String subjectIssuer
-                        getAttribute(attributes, "subject_issuer"),
-                        //String brinCode
-                        null,
-                        //String initials
-                        getAttribute(attributes, "urn:nl:bvn:bankid:1.0:consumer.initials"),
-                        //String chosenName
-                        null,
-                        //String firstName
-                        getAttribute(attributes, "urn:nl:bvn:bankid:1.0:consumer.initials"),
-                        //String preferredLastName
-                        getAttribute(attributes, "urn:nl:bvn:bankid:1.0:consumer.preferredlastname"),
-                        //String legalLastName;
-                        getAttribute(attributes, "urn:nl:bvn:bankid:1.0:consumer.legallastname"),
-                        //String partnerLastNamePrefix
-                        getAttribute(attributes, "urn:nl:bvn:bankid:1.0:consumer.partnerlastnameprefix"),
-                        //String legalLastNamePrefix
-                        getAttribute(attributes, "urn:nl:bvn:bankid:1.0:consumer.legallastnameprefix"),
-                        //String preferredLastNamePrefix
-                        getAttribute(attributes, "urn:nl:bvn:bankid:1.0:consumer.preferredlastnameprefix"),
-                        //String partnerLastName
-                        getAttribute(attributes, "urn:nl:bvn:bankid:1.0:consumer.partnerlastname"),
-                        //Date dateOfBirth
-                        parseDate(getAttribute(attributes, "urn:nl:bvn:bankid:1.0:consumer.dateofbirth")),
-                        //Date createdAt
-                        new Date(),
-                        //Date expiresAt
-                        Date.from(Instant.now().plus(DEFAULT_EXPIRATION_YEARS * 365, ChronoUnit.DAYS)),
-                        //boolean external
-                        true
-                );
-            }
-            case eherkenning: {
-                return new ExternalLinkedAccount(
-                        //String subjectId
-                        getAttribute(attributes, "sub"),
-                        //IdpScoping idpScoping
-                        verifyState.getIdpScoping(),
-                        //VerifyIssuer issuer
-                        verifyState.getVerifyIssuer(),
-                        //Verification
-                        Verification.Decentraal,
-                        //String serviceUUID
-                        getAttribute(attributes, "urn:etoegang:core:ServiceUUID"),
-                        //String serviceID
-                        getAttribute(attributes, "urn:etoegang:DV:00000003411824080000:services:9001"),
-                        //String subjectIssuer
-                        getAttribute(attributes, "subject_issuer"),
-                        //String brinCode
-                        null,
-                        //String initials
-                        getAttribute(attributes, "urn:etoegang:1.9:attribute:Initials"),
-                        //String chosenName
-                        null,
-                        //String firstName
-                        getAttribute(attributes, "urn:etoegang:1.9:attribute:FirstName"),
-                        //String preferredLastName
-                        getAttribute(attributes, "urn:etoegang:1.9:attribute:FamilyName"),
-                        //String legalLastName;
-                        getAttribute(attributes, "urn:etoegang:1.9:attribute:FamilyName"),
-                        //String partnerLastNamePrefix
-                        null,
-                        //String legalLastNamePrefix
-                        null,
-                        //String preferredLastNamePrefix
-                        null,
-                        //String partnerLastName
-                        null,
-                        //Date dateOfBirth
-                        parseDate(getAttribute(attributes, "urn:etoegang:1.9:attribute:DateOfBirth")),
-                        //Date createdAt
-                        new Date(),
-                        //Date expiresAt
-                        Date.from(Instant.now().plus(DEFAULT_EXPIRATION_YEARS * 365, ChronoUnit.DAYS)),
-                        //boolean external
-                        true
-                );
-            }
-        }
-        throw new IllegalArgumentException();
+        return switch (verifyState.getIdpScoping()) {
+            case idin -> new ExternalLinkedAccount(
+                    //String subjectId
+                    getAttribute(attributes, "sub"),
+                    //IdpScoping idpScoping
+                    verifyState.getIdpScoping(),
+                    //VerifyIssuer issuer
+                    verifyState.getVerifyIssuer(),
+                    //Verification
+                    Verification.Decentraal,
+                    //String serviceUUID
+                    getAttribute(attributes, "urn:nl:bvn:bankid:1.0:bankid.deliveredserviceid"),
+                    //String serviceID
+                    getAttribute(attributes, "urn:nl:bvn:bankid:1.0:bankid.deliveredserviceid"),
+                    //String subjectIssuer
+                    getAttribute(attributes, "subject_issuer"),
+                    //String brinCode
+                    null,
+                    //String initials
+                    getAttribute(attributes, "urn:nl:bvn:bankid:1.0:consumer.initials"),
+                    //String chosenName
+                    null,
+                    //String firstName
+                    getAttribute(attributes, "urn:nl:bvn:bankid:1.0:consumer.initials"),
+                    //String preferredLastName
+                    getAttribute(attributes, "urn:nl:bvn:bankid:1.0:consumer.preferredlastname"),
+                    //String legalLastName;
+                    getAttribute(attributes, "urn:nl:bvn:bankid:1.0:consumer.legallastname"),
+                    //String partnerLastNamePrefix
+                    getAttribute(attributes, "urn:nl:bvn:bankid:1.0:consumer.partnerlastnameprefix"),
+                    //String legalLastNamePrefix
+                    getAttribute(attributes, "urn:nl:bvn:bankid:1.0:consumer.legallastnameprefix"),
+                    //String preferredLastNamePrefix
+                    getAttribute(attributes, "urn:nl:bvn:bankid:1.0:consumer.preferredlastnameprefix"),
+                    //String partnerLastName
+                    getAttribute(attributes, "urn:nl:bvn:bankid:1.0:consumer.partnerlastname"),
+                    //Date dateOfBirth
+                    parseDate(getAttribute(attributes, "urn:nl:bvn:bankid:1.0:consumer.dateofbirth")),
+                    //Date createdAt
+                    new Date(),
+                    //Date expiresAt
+                    Date.from(Instant.now().plus(DEFAULT_EXPIRATION_YEARS * 365, ChronoUnit.DAYS)),
+                    //boolean external
+                    true
+            );
+            case eherkenning -> new ExternalLinkedAccount(
+                    //String subjectId
+                    getAttribute(attributes, "sub"),
+                    //IdpScoping idpScoping
+                    verifyState.getIdpScoping(),
+                    //VerifyIssuer issuer
+                    verifyState.getVerifyIssuer(),
+                    //Verification
+                    Verification.Decentraal,
+                    //String serviceUUID
+                    getAttribute(attributes, "urn:etoegang:core:ServiceUUID"),
+                    //String serviceID
+                    getAttribute(attributes, "urn:etoegang:DV:00000003411824080000:services:9001"),
+                    //String subjectIssuer
+                    getAttribute(attributes, "subject_issuer"),
+                    //String brinCode
+                    null,
+                    //String initials
+                    getAttribute(attributes, "urn:etoegang:1.9:attribute:Initials"),
+                    //String chosenName
+                    null,
+                    //String firstName
+                    getAttribute(attributes, "urn:etoegang:1.9:attribute:FirstName"),
+                    //String preferredLastName
+                    getAttribute(attributes, "urn:etoegang:1.9:attribute:FamilyName"),
+                    //String legalLastName;
+                    getAttribute(attributes, "urn:etoegang:1.9:attribute:FamilyName"),
+                    //String partnerLastNamePrefix
+                    null,
+                    //String legalLastNamePrefix
+                    null,
+                    //String preferredLastNamePrefix
+                    null,
+                    //String partnerLastName
+                    null,
+                    //Date dateOfBirth
+                    parseDate(getAttribute(attributes, "urn:etoegang:1.9:attribute:DateOfBirth")),
+                    //Date createdAt
+                    new Date(),
+                    //Date expiresAt
+                    Date.from(Instant.now().plus(DEFAULT_EXPIRATION_YEARS * 365, ChronoUnit.DAYS)),
+                    //boolean external
+                    true
+            );
+            default -> throw new IllegalArgumentException();
+        };
     }
 
-    public ExternalLinkedAccount createExternalLinkedAccount(NewExternalEduID eduID, IdpScoping idpScoping) {
+    public ExternalLinkedAccount createExternalLinkedAccount(NewExternalEduID eduID,
+                                                             IdpScoping idpScoping) {
         ExternalLinkedAccount externalLinkedAccount = new ExternalLinkedAccount(
                 //String subjectId
                 eduID.getIdentifier(),
@@ -202,7 +208,7 @@ public class AttributeMapper {
                 //boolean external
                 true
         );
-        externalLinkedAccount.setAffiliations(externalAffiliations(eduID.getBrinCodes(), manage));
+        externalLinkedAccount.setAffiliations(externalAffiliations(eduID.getBrinCodes()));
         return externalLinkedAccount;
     }
 
@@ -315,15 +321,37 @@ public class AttributeMapper {
         return null;
     }
 
-    public static List<String> externalAffiliations(List<String> brinCodes, Manage manage) {
-        return CollectionUtils.isEmpty(brinCodes) ? Collections.emptyList() :
-                brinCodes.stream()
-                        .map(manage::findIdentityProviderByBrinCode)
-                        .filter(Optional::isPresent)
-                        .map(Optional::get)
-                        .filter(idp -> StringUtils.hasText(idp.getDomainName()))
-                        .map(idp -> String.format("student@%s", idp.getDomainName()))
-                        .toList();
+    public List<String> externalAffiliations(List<String> brinCodes) {
+        if (!this.useRemoteCreationForAffiliation) {
+            LOG.info("Not adding external affiliations for brinCodes: " + brinCodes + " cause of feature toggle is false");
+            return Collections.emptyList();
+        }
+
+        LOG.info("Adding external affiliations for brinCodes: " + brinCodes);
+
+        if (CollectionUtils.isEmpty(brinCodes)) {
+            return Collections.emptyList();
+        }
+
+        List<IdentityProvider> identityProviders = brinCodes.stream()
+                .map(manage::findIdentityProviderByBrinCode)
+                .flatMap(List::stream)
+                .toList();
+
+        LOG.info("IdentifyProviders for brinCodes: " + identityProviders);
+
+        List<String> affiliations = identityProviders.stream()
+                .filter(idp -> StringUtils.hasText(idp.getDomainName()))
+                .map(idp -> String.format("student@%s", idp.getDomainName()))
+                .toList();
+
+        LOG.info("Affiliations for brinCodes: " + affiliations);
+
+        if (identityProviders.size() != affiliations.size()) {
+            LOG.warn("There are IdP with valid brin_codes, but no corresponding institution_brin_schac_home: " + identityProviders);
+        }
+
+        return affiliations;
     }
 
     private String getAttribute(Map<String, Object> attributes, String key) {

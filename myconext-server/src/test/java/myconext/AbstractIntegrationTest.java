@@ -10,12 +10,13 @@ import io.restassured.http.Cookie;
 import io.restassured.response.Response;
 import io.restassured.specification.RequestSpecification;
 import lombok.Getter;
-import myconext.api.HasUserRepository;
 import myconext.api.ClientAuthenticationResponse;
+import myconext.api.HasUserRepository;
 import myconext.manage.Manage;
 import myconext.manage.MockManage;
 import myconext.model.*;
 import myconext.repository.*;
+import myconext.tiqr.TiqrConfiguration;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.io.IOUtils;
 import org.junit.Before;
@@ -43,6 +44,8 @@ import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.util.MultiValueMap;
 import org.springframework.util.StringUtils;
 import org.springframework.web.util.UriComponentsBuilder;
+import org.yaml.snakeyaml.Yaml;
+import tiqr.org.SecretCipher;
 import tiqr.org.model.Authentication;
 import tiqr.org.model.Enrollment;
 import tiqr.org.model.Registration;
@@ -90,7 +93,10 @@ import static org.junit.Assert.assertTrue;
                 "sso_mfa_duration_seconds=-1000",
                 "feature.requires_signed_authn_request=false",
                 "feature.deny_disposable_email_providers=false",
-                "verify.base_uri=http://localhost:8098"
+                "verify.base_uri=http://localhost:8098",
+                "host_headers.active=mijn.test2.eduid.nl",
+                "feature.captcha_enabled=false",
+                "service_desk_role_auto_provisioning=false"
         })
 @ActiveProfiles({"test"})
 @SuppressWarnings("unchecked")
@@ -111,6 +117,9 @@ public abstract class AbstractIntegrationTest implements HasUserRepository {
     @Autowired
     @Getter
     protected UserRepository userRepository;
+
+    @Autowired
+    protected ExternalUserRepository externalUserRepository;
 
     @Autowired
     protected AuthenticationRequestRepository authenticationRequestRepository;
@@ -145,11 +154,13 @@ public abstract class AbstractIntegrationTest implements HasUserRepository {
 
     protected final Filter noopFilter = new NoopFilter();
 
+    protected SecretCipher secretCipher;
+
     @Before
     @BeforeEach
     public void before() throws Exception {
         RestAssured.port = port;
-        Arrays.asList(SamlAuthenticationRequest.class, User.class)
+        Arrays.asList(SamlAuthenticationRequest.class, User.class, ExternalUser.class)
                 .forEach(clazz -> mongoTemplate.bulkOps(BulkOperations.BulkMode.ORDERED, clazz)
                         .remove(new Query())
                         .insert(readFromFile(clazz))
@@ -187,7 +198,7 @@ public abstract class AbstractIntegrationTest implements HasUserRepository {
 
     protected ClientAuthenticationResponse oneTimeLoginCodeRequest(User user, HttpMethod method) throws IOException {
         String authenticationRequestId = samlAuthnRequest();
-        return oneTimeLoginCodeRequest(new ClientAuthenticationRequest(authenticationRequestId, user, StringUtils.hasText(user.getPassword())), method);
+        return oneTimeLoginCodeRequest(new ClientAuthenticationRequest(authenticationRequestId, user, StringUtils.hasText(user.getPassword()), "response"), method);
     }
 
     protected ClientAuthenticationResponse oneTimeLoginCodeRequest(ClientAuthenticationRequest linkRequest, HttpMethod method) {
@@ -352,14 +363,12 @@ public abstract class AbstractIntegrationTest implements HasUserRepository {
     }
 
     protected String decryptRegistrationSecret(String encryptedSecret) throws Exception {
-        MessageDigest sha = MessageDigest.getInstance("SHA-256");
-        String secret = "secret";
-        byte[] digest = sha.digest(secret.getBytes(UTF_8));
-        SecretKeySpec secretKey = new SecretKeySpec(Arrays.copyOf(digest, 32), "AES");
-        GCMParameterSpec parameterSpec = new GCMParameterSpec(128, secret.getBytes(UTF_8));
-        Cipher cipher = Cipher.getInstance("AES/GCM/NoPadding");
-        cipher.init(Cipher.DECRYPT_MODE, secretKey, parameterSpec);
-        return new String(cipher.doFinal(java.util.Base64.getDecoder().decode(encryptedSecret)));
+        if (secretCipher == null) {
+            TiqrConfiguration tiqrConfiguration = new Yaml().loadAs(new ClassPathResource("tiqr.configuration.yml")
+                    .getInputStream(), TiqrConfiguration.class);
+            this.secretCipher = new SecretCipher(tiqrConfiguration.getEncryptionSecret());
+        }
+        return this.secretCipher.decrypt(encryptedSecret);
     }
 
 

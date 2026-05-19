@@ -6,11 +6,11 @@ import myconext.AbstractIntegrationTest;
 import myconext.model.*;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
+import org.springframework.util.StringUtils;
 
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static io.restassured.RestAssured.given;
@@ -110,6 +110,43 @@ class RemoteCreationControllerTest extends AbstractIntegrationTest {
     }
 
     @Test
+    void eduIDForInstitutionBatchHappyFlow() {
+        List<EduIDAssignedValue> eduIDAssignedValues = given()
+                .when()
+                .auth().preemptive().basic(userName, password)
+                .contentType(ContentType.JSON)
+                //See src/test/resources/users.json eduIDs#value
+                .body(List.of(
+                        new EduIDInstitutionPseudonym("ST42", "fc75dcc7-6def-4054-b8ba-3c3cc504dd4b"),
+                        new EduIDInstitutionPseudonym("nope", "3060b9ce-9cf2-4e5b-8164-bf0a2b706720"),
+                        new EduIDInstitutionPseudonym("SA44", "nope")
+                ))
+                .post("/api/remote-creation/eduid-institution-pseudonym-batch")
+                .as(new TypeRef<>() {
+                });
+        assertEquals(3, eduIDAssignedValues.size());
+
+        EduIDAssignedValue eduIDAssignedValue = eduIDAssignedValues.stream()
+                .filter(val -> StringUtils.hasText(val.getValue())).findFirst().get();
+        String value = eduIDAssignedValue.getValue();
+        User user = this.findUserByEduIDValue(value).get();
+        //See src/main/resources/manage/saml20_idp.json read by MockManage
+        String institutionGUID = "8017e83f-bca7-e911-90f2-0050569571ea";
+        EduID newEduID = user.getEduIDS().stream()
+                .filter(anEduID -> anEduID.getServices().stream().anyMatch(service -> institutionGUID.equals(service.getInstitutionGuid())))
+                .findFirst().get();
+        assertEquals(value, newEduID.getValue());
+        assertEquals("ST42", eduIDAssignedValue.getBrinCode());
+        EduIDAssignedValue noBrinCode = eduIDAssignedValues.stream()
+                .filter(val -> val.getBrinCode().equals("nope")).findFirst().get();
+        assertEquals("Unknown brinCode", noBrinCode.getError());
+        EduIDAssignedValue noUser = eduIDAssignedValues.stream()
+                .filter(val -> val.getEduID().equals("nope")).findFirst().get();
+        assertEquals("Unknown eduID", noUser.getError());
+
+    }
+
+    @Test
     void eduIDForInstitutionEduIDNotExists() {
         Map<String, Object> result = given()
                 .when()
@@ -166,6 +203,7 @@ class RemoteCreationControllerTest extends AbstractIntegrationTest {
         User user = this.findUserByEduIDValue(eduIDValue).get();
         assertFalse(user.isNewUser());
         assertEquals("von Munich", user.getFamilyName());
+        assertEquals("eduid.nl", user.getSchacHomeOrganization());
 
         EduID newEduID = user.getEduIDS().stream()
                 .filter(anEduID -> anEduID.getValue().equals(eduIDValue))
@@ -255,8 +293,11 @@ class RemoteCreationControllerTest extends AbstractIntegrationTest {
                 .extract()
                 .as(new TypeRef<>() {
                 });
-        assertEquals(Stream.of("chosenName", "identifier", "lastName", "verification").sorted().collect(Collectors.toList()),
-                ((List<Map<String, Object>>) errorResult.get("errors")).stream().map(m -> m.get("field")).sorted().collect(Collectors.toList()));
+        List<String> expected = Stream.of("chosenName", "identifier", "lastName", "verification").sorted().toList();
+        List<Map<String, Object>> errors = (List<Map<String, Object>>) errorResult.get("errors");
+        List<String> actual = errors.stream()
+                .map(m -> (String) m.get("field")).sorted().toList();
+        assertEquals(expected, actual);
     }
 
     @Test
@@ -313,6 +354,11 @@ class RemoteCreationControllerTest extends AbstractIntegrationTest {
                 });
         externalEduIDResult.setBrinCodes(List.of("ST42"));
         externalEduIDResult.setVerification(Verification.Geverifieerd);
+        externalEduIDResult.setChosenName("Hadda");
+        externalEduIDResult.setFirstName("Hedwig");
+        externalEduIDResult.setLastName("Marken");
+        externalEduIDResult.setLastNamePrefix("bis");
+
         given()
                 .when()
                 .auth().preemptive().basic(userName, password)
@@ -332,6 +378,13 @@ class RemoteCreationControllerTest extends AbstractIntegrationTest {
         assertEquals(externalEduIDResult.getBrinCodes(), externalLinkedAccount.getBrinCodes());
         assertEquals("student@aap.nl", externalLinkedAccount.getAffiliations().getFirst());
         assertEquals(Verification.Geverifieerd, externalLinkedAccount.getVerification());
+        //Apparently things can change
+        assertEquals(externalEduIDResult.getChosenName(), externalLinkedAccount.getChosenName());
+        assertEquals(externalEduIDResult.getFirstName(), externalLinkedAccount.getFirstName());
+        assertEquals(externalEduIDResult.getLastName(), externalLinkedAccount.getPreferredLastName());
+        assertEquals(externalEduIDResult.getLastName(), externalLinkedAccount.getLegalLastName());
+        assertEquals(externalEduIDResult.getLastNamePrefix(), externalLinkedAccount.getLegalLastNamePrefix());
+        assertEquals(externalEduIDResult.getLastNamePrefix(), externalLinkedAccount.getPreferredLastNamePrefix());
     }
 
     @Test
@@ -377,8 +430,9 @@ class RemoteCreationControllerTest extends AbstractIntegrationTest {
                 });
         //See src/main/resources/application.yml#external-api-configuration
         String institutionGUID = "ec9d6d75-0d11-e511-80d0-005056956c1a";
-        Map<String, Object> eduIDMap = ((Map<String, Map<String, Object>>) me.get("eduIdPerServiceProvider")).get(institutionGUID);
-        assertEquals(eduIDValue, eduIDMap.get("value"));
+        Map<String, Map<String, Object>> eduIdPerServiceProvider = (Map<String, Map<String, Object>>) me.get("eduIdPerServiceProvider");
+        // See https://github.com/OpenConext/OpenConext-myconext/issues/766#issuecomment-3511242241
+        assertFalse(eduIdPerServiceProvider.containsKey(institutionGUID));
     }
 
     @Test

@@ -1,13 +1,15 @@
 Beste {{name}},
 
-We willen je eraan herinneren dat je een eduID hebt die je niet meer gebruikt hebt sinds {{inactivity_period_nl}}. Let op: doe je niets, dan wordt je eduID over een {{deletion_period_nl}} op {{account_delete_date_nl}} verwijderd.
+We willen je eraan herinneren dat je een eduID al {{inactivity_period_nl}} niet meer gebruikt hebt. Let op: doe je niets, dan wordt je eduID over {{deletion_period_nl}} op {{account_delete_date_nl}} verwijderd.
+
+{{> inactivity_services_nl.txt}}
 
 Wil je je eduID behouden? Log dan in op mijn.eduid.nl. Zorg ervoor dat je eduID up-to-date blijft. Denk hierbij aan gegevens zoals je e-mailadres en hoe je wilt inloggen. Je vindt dit terug onder 'Veiligheid'.
 
 Met vriendelijke groet,
 Team eduID
 
-Let op: je kunt niet reageren op deze e-mail. Heb je hulp nodig? Ga dan naar eduid.nl/help
+Let op: je kunt niet reageren op deze e-mail. Heb je hulp nodig? Ga dan naar eduid.nl/support
 
-{{> footer_en.txt}}
+{{> footer_nl.txt}}
 

@@ -4,9 +4,12 @@ import com.google.zxing.WriterException;
 import io.swagger.v3.oas.annotations.Hidden;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import myconext.exceptions.ExpiredAuthenticationException;
 import myconext.exceptions.ForbiddenException;
+import myconext.exceptions.NotAcceptableException;
 import myconext.exceptions.UserNotFoundException;
 import myconext.manage.Manage;
 import myconext.model.SamlAuthenticationRequest;
@@ -32,9 +35,6 @@ import tiqr.org.TiqrException;
 import tiqr.org.TiqrService;
 import tiqr.org.model.*;
 import tiqr.org.secure.QRCodeGenerator;
-
-import jakarta.servlet.http.Cookie;
-import jakarta.servlet.http.HttpServletRequest;
 
 import java.io.IOException;
 import java.net.URLEncoder;
@@ -70,6 +70,7 @@ public class TiqrController implements UserAuthentication {
     private final RegistrationRepository registrationRepository;
     private final RateLimitEnforcer rateLimitEnforcer;
     private final CookieValueEncoder cookieValueEncoder;
+    private final String mijnEduIdServiceName;
 
     @Autowired
     public TiqrController(@Value("${tiqr_configuration}") Resource resource,
@@ -82,6 +83,7 @@ public class TiqrController implements UserAuthentication {
                           SMSService smsService,
                           Environment environment,
                           @Value("${email.magic-link-url}") String magicLinkUrl,
+                          @Value("${mijn_eduid_service_name}") String mijnEduIdServiceName,
                           CookieValueEncoder cookieValueEncoder) throws IOException {
         this.tiqrConfiguration = new Yaml().loadAs(resource.getInputStream(), TiqrConfiguration.class);
         this.cookieValueEncoder = cookieValueEncoder;
@@ -112,6 +114,7 @@ public class TiqrController implements UserAuthentication {
         this.serviceProviderResolver = serviceProviderResolver;
         this.smsService = smsService;
         this.magicLinkUrl = magicLinkUrl;
+        this.mijnEduIdServiceName = mijnEduIdServiceName;
         this.rateLimitEnforcer = new RateLimitEnforcer(userRepository, tiqrConfiguration);
     }
 
@@ -232,7 +235,7 @@ public class TiqrController implements UserAuthentication {
     private ResponseEntity<GeneratedBackupCode> doGenerateBackupCode(User user, boolean regenerateSpFlow) throws TiqrException {
         if (!regenerateSpFlow) {
             Registration registration = registrationRepository.findRegistrationByUserId(user.getId()).orElseThrow(IllegalArgumentException::new);
-            if (!registration.getStatus().equals(RegistrationStatus.INITIALIZED)) {
+            if (registration.getStatus().equals(RegistrationStatus.FINALIZED)) {
                 throw new ForbiddenException("Forbidden backup code, wrong status: " + registration.getStatus());
             }
         }
@@ -243,6 +246,9 @@ public class TiqrController implements UserAuthentication {
         }
         String recoveryCode = (String) surfSecureId
                 .computeIfAbsent(RECOVERY_CODE, k -> VerificationCodeGenerator.generateBackupCode().replaceAll(" ", ""));
+        //Can't have both
+        List.of(PHONE_VERIFICATION_CODE, PHONE_VERIFIED, PHONE_NUMBER)
+                .forEach(surfSecureId::remove);
         userRepository.save(user);
 
         if (!regenerateSpFlow) {
@@ -258,7 +264,7 @@ public class TiqrController implements UserAuthentication {
                                                                @Valid @RequestBody PhoneCode phoneCode) {
         User user = userFromAuthentication(authentication);
         String phoneNumber = phoneCode.getPhoneNumber();
-        return doSendPhoneCode(user, phoneNumber, false, request);
+        return doSendPhoneCode(user, phoneNumber, false, false, request);
     }
 
     @Operation(summary = "Send new phone code", description = "Send a new verification code to mobile phone for a finished authentication")
@@ -273,7 +279,7 @@ public class TiqrController implements UserAuthentication {
         }
         User user = userFromAuthentication(secAuthentication);
         String phoneNumber = phoneCode.getPhoneNumber();
-        return doSendPhoneCode(user, phoneNumber, true, request);
+        return doSendPhoneCode(user, phoneNumber, true, true, request);
     }
 
     @PostMapping("/send-phone-code")
@@ -283,10 +289,23 @@ public class TiqrController implements UserAuthentication {
                                                           @RequestBody Map<String, String> requestBody) {
         User user = getUserFromAuthenticationRequest(hash);
         String phoneNumber = requestBody.get("phoneNumber");
-        return doSendPhoneCode(user, phoneNumber, false, request);
+        return doSendPhoneCode(user, phoneNumber, false, false, request);
     }
 
-    private ResponseEntity<FinishEnrollment> doSendPhoneCode(User user, String phoneNumber, boolean regenerateSpFlow, HttpServletRequest request) {
+    private ResponseEntity<FinishEnrollment> doSendPhoneCode(User user,
+                                                             String phoneNumber,
+                                                             boolean regenerateSpFlow,
+                                                             boolean deactivationFlow,
+                                                             HttpServletRequest request) {
+        Registration registration = registrationRepository.findRegistrationByUserId(user.getId()).orElseThrow(IllegalArgumentException::new);
+        //When the 1st factor is compromised, then it is not allowed to reset MFA
+        if (deactivationFlow && !registration.getStatus().equals(RegistrationStatus.FINALIZED)) {
+            throw new NotAcceptableException("Not allowed to resend phone code, registration is not finalized");
+        }
+        if (!deactivationFlow && registration.getStatus().equals(RegistrationStatus.FINALIZED)) {
+            throw new NotAcceptableException("Not allowed to send phone code, registration is already finalized");
+        }
+
         rateLimitEnforcer.checkSendSMSRateLimit(user);
 
         LOG.info(String.format("Sending SMS for user %s to number %s", user.getEmail(), phoneNumber));
@@ -298,6 +317,8 @@ public class TiqrController implements UserAuthentication {
         Map<String, Object> surfSecureId = user.getSurfSecureId();
         surfSecureId.put(PHONE_VERIFICATION_CODE, phoneVerification);
         surfSecureId.remove(RATE_LIMIT);
+        //Can't have both
+        surfSecureId.remove(RECOVERY_CODE);
 
         if (regenerateSpFlow) {
             surfSecureId.put(NEW_UNVERIFIED_PHONE_NUMBER, phoneNumber);
@@ -365,6 +386,7 @@ public class TiqrController implements UserAuthentication {
         if (MessageDigest.isEqual(code.getBytes(StandardCharsets.UTF_8), phoneVerificationStored.getBytes(StandardCharsets.UTF_8))) {
             surfSecureId.remove(PHONE_VERIFICATION_CODE);
             surfSecureId.put(PHONE_VERIFIED, true);
+            surfSecureId.remove(RECOVERY_CODE);
             surfSecureId.remove(RATE_LIMIT);
             if (regenerateSpFlow) {
                 String unverifiedPhoneNumber = (String) surfSecureId.get(NEW_UNVERIFIED_PHONE_NUMBER);
@@ -386,7 +408,7 @@ public class TiqrController implements UserAuthentication {
     public ResponseEntity<StartAuthentication> startAuthenticationForSP(HttpServletRequest request,
                                                                         org.springframework.security.core.Authentication authentication) throws IOException, WriterException, TiqrException {
         User user = userFromAuthentication(authentication);
-        ResponseEntity<StartAuthentication> startAuthenticationResponseEntity = doStartAuthentication(request, user);
+        ResponseEntity<StartAuthentication> startAuthenticationResponseEntity = doStartAuthentication(request, user, this.mijnEduIdServiceName);
         String sessionKey = startAuthenticationResponseEntity.getBody().getSessionKey();
         request.getSession().setAttribute(SESSION_KEY, sessionKey);
         return startAuthenticationResponseEntity;
@@ -396,16 +418,18 @@ public class TiqrController implements UserAuthentication {
     @Hidden
     public ResponseEntity<StartAuthentication> startAuthentication(HttpServletRequest request,
                                                                    @Valid @RequestBody TiqrRequest tiqrRequest) throws IOException, WriterException, TiqrException {
-        authenticationRequestRepository.findByIdAndNotExpired(tiqrRequest.getAuthenticationRequestId())
+        SamlAuthenticationRequest samlAuthenticationRequest = authenticationRequestRepository.findByIdAndNotExpired(tiqrRequest.getAuthenticationRequestId())
                 .orElseThrow(() -> new ExpiredAuthenticationException("Expired tiqrRequest:" + tiqrRequest.getEmail()));
+        String serviceName = samlAuthenticationRequest.getServiceName();
+
         String email = tiqrRequest.getEmail().trim();
         User user = userRepository.findUserByEmailAndRateLimitedFalse(email)
                 .orElseThrow(() -> new UserNotFoundException(String.format("User %s not found", email)));
 
-        return doStartAuthentication(request, user);
+        return doStartAuthentication(request, user, serviceName);
     }
 
-    private ResponseEntity<StartAuthentication> doStartAuthentication(HttpServletRequest request, User user) throws WriterException, IOException, TiqrException {
+    private ResponseEntity<StartAuthentication> doStartAuthentication(HttpServletRequest request, User user, String serviceName) throws WriterException, IOException, TiqrException {
         Optional<Cookie> optionalTiqrCookie = cookieByName(request, TIQR_COOKIE_NAME);
         AtomicBoolean tiqrCookieValid = new AtomicBoolean(false);
         optionalTiqrCookie.ifPresent(tiqrCookie -> tiqrCookieValid.set(this.cookieValueEncoder.matches(user.getUsername(), tiqrCookie.getValue())));
@@ -416,12 +440,19 @@ public class TiqrController implements UserAuthentication {
         // Reset any outstanding suspensions
         rateLimitEnforcer.unsuspendUserAfterTiqrSuccess(user);
         boolean sendPushNotification = tiqrCookieValid.get() && this.tiqrConfiguration.isPushNotificationsEnabled();
+
+        // Start Tiqr authentication -- pass the SP name?
         Authentication authentication = tiqrService.startAuthentication(
                 user.getId(),
                 String.format("%s %s", user.getGivenName(), user.getFamilyName()),
                 this.tiqrConfiguration.getEduIdAppBaseUrl(),
+                serviceName,
                 sendPushNotification);
         String authenticationUrl = authentication.getAuthenticationUrl();
+
+        LOG.info(String.format("Started Tiqr authentication for user %s and sendPushNotification %s and authenticationURL %s",
+                user.getEmail(), sendPushNotification, authenticationUrl));
+
         String qrCode = QRCodeGenerator.generateQRCodeImage(authenticationUrl);
         StartAuthentication startAuthentication = new StartAuthentication(authentication.getSessionKey(), authenticationUrl, qrCode, sendPushNotification && authentication.isPushNotificationSend());
         return ResponseEntity.ok(startAuthentication);
@@ -555,7 +586,8 @@ public class TiqrController implements UserAuthentication {
         try {
             tiqrService.postAuthentication(authenticationData);
 
-            LOG.debug(String.format("Successful authentication for user %s, %s", user.getEmail(), user.getId()));
+            LOG.info(String.format("Successful authentication for user %s, %s after response %s from Tiqr app",
+                    user.getEmail(), user.getId(), authenticationData.getResponse()));
 
             rateLimitEnforcer.unsuspendUserAfterTiqrSuccess(user);
             return ResponseEntity.ok("OK");
@@ -595,7 +627,7 @@ public class TiqrController implements UserAuthentication {
         if (!StringUtils.hasText(phoneNumber)) {
             throw new ForbiddenException("Forbidden empty phone number");
         }
-        return doSendPhoneCode(user, phoneNumber, false, request);
+        return doSendPhoneCode(user, phoneNumber, false, true, request);
     }
 
     @Operation(summary = "De-activate the app", description = "De-activate the eduID app for the current user")

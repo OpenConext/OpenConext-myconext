@@ -2,7 +2,7 @@ import "./Home.scss";
 import phone from "../assets/phone.svg";
 import cheering from "../assets/cheering.svg";
 import app from "../assets/app.svg";
-import QRCode from "react-qr-code";
+import {QRCode} from "react-qr-code";
 import appStore from "../assets/app_store.svg";
 import googlePlay from "../assets/google_play.svg";
 import I18n from "../locale/I18n.js";
@@ -26,12 +26,12 @@ export const Home = () => {
         <div className="home-container">
             <div className="home">
                 <div className="top">
-                    <img src={phone} className="phone" alt="phone"/>
+                    <img src={phone} className="phone" alt=""/>
                     <div className="top-right">
                         <h1 className="title">
                             {I18n.t("home.eduID")}
                         </h1>
-                        <h3>{I18n.t("home.title")}</h3>
+                        <h2>{I18n.t("home.title")}</h2>
                         <Button onClick={() => window.location.href = `${config.idpBaseUrl}/register`}
                                 txt={I18n.t("header.register")}/>
                     </div>
@@ -39,7 +39,7 @@ export const Home = () => {
             </div>
             <Background>
                 <div className="card row">
-                    <img src={cheering} className="cheering" alt="cheering"/>
+                    <img src={cheering} className="cheering" alt=""/>
                     <div className="top-right middle">
                         <h2 className="title">
                             {I18n.t("home.whatCanYouDo")}
@@ -53,7 +53,7 @@ export const Home = () => {
                     </div>
                 </div>
                 <div className="card bottom row">
-                    <img src={app} className="app" alt="app"/>
+                    <img src={app} className="app" alt=""/>
                     <div className="top-right middle">
                         <h2 className="title">
                             {I18n.t("home.eduIdApp")}
@@ -68,10 +68,10 @@ export const Home = () => {
                                 />}
                             <div className="inner-store-container">
                                 <a href={I18n.t("home.apple")}>
-                                    <img src={appStore} className="appStore" alt="appStore"/>
+                                    <img src={appStore} className="appStore" alt={I18n.t("home.appStoreAlt")}/>
                                 </a>
                                 <a href={I18n.t("home.google")}>
-                                    <img src={googlePlay} className="googlePlay" alt="googlePlay"/>
+                                    <img src={googlePlay} className="googlePlay" alt={I18n.t("home.googlePlayAlt")}/>
                                 </a>
                             </div>
                         </div>

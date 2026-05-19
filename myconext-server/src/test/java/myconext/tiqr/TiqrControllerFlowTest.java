@@ -15,11 +15,12 @@ import tiqr.org.secure.OCRA;
 
 import java.net.URLEncoder;
 import java.nio.charset.Charset;
-import java.util.*;
+import java.util.Map;
 
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.equalTo;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @SuppressWarnings("unchecked")
 public class TiqrControllerFlowTest extends AbstractIntegrationTest {

@@ -26,12 +26,11 @@ import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
 import java.io.Serializable;
+import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import static myconext.security.SecurityConfiguration.InternalSecurityConfigurationAdapter.ROLE_GUEST;
-import static myconext.security.SecurityConfiguration.InternalSecurityConfigurationAdapter.SERVICE_DESK;
 import static myconext.validation.PasswordStrength.strongEnough;
 
 @NoArgsConstructor
@@ -40,9 +39,6 @@ import static myconext.validation.PasswordStrength.strongEnough;
 public class User implements Serializable, UserDetails {
 
     private static final List<SimpleGrantedAuthority> GUEST_AUTHORITIES = List.of(new SimpleGrantedAuthority(ROLE_GUEST));
-    private static final List<SimpleGrantedAuthority> SERVICE_DESK_AUTHORIES = Stream.of(ROLE_GUEST, SERVICE_DESK)
-            .map(SimpleGrantedAuthority::new)
-            .toList();
 
     @Id
     private String id;
@@ -62,6 +58,7 @@ public class User implements Serializable, UserDetails {
     private String uid;
     private String schacHomeOrganization;
     private String password;
+    private long passwordUpdatedAt;
     @Setter
     private boolean newUser;
     @Setter
@@ -78,6 +75,8 @@ public class User implements Serializable, UserDetails {
     @Setter
     @Indexed
     private String createFromInstitutionKey;
+    @Setter
+    private String createFromInstitutionReturnUrl;
     //Attributes and surfSecureId can't be final because of Jackson serialization (despite what your IDE tells tou)
     private Map<String, List<String>> attributes = new HashMap<>();
     private Map<String, Object> surfSecureId = new HashMap<>();
@@ -98,6 +97,10 @@ public class User implements Serializable, UserDetails {
 
     @Setter
     private boolean nudgeAppMailSend;
+
+    @Setter
+    private LocalDateTime institutionMailSendDate;
+
     @Setter
     @Indexed
     private String trackingUuid;
@@ -165,10 +168,12 @@ public class User implements Serializable, UserDetails {
             throw new WeakPasswordException("Weak password: " + password);
         }
         this.password = encoder.encode(password);
+        this.passwordUpdatedAt = System.currentTimeMillis();
     }
 
     public void deletePassword() {
         this.password = null;
+        this.passwordUpdatedAt = 0;
     }
 
     @Transient
@@ -201,7 +206,7 @@ public class User implements Serializable, UserDetails {
         } catch (RuntimeException e) {
             serviceProvider = new ServiceProvider(new RemoteProvider(entityId, entityId, entityId, null, null), null);
         }
-        return doComputeEduIDIfAbsent(serviceProvider, manage);
+        return doComputeEduIDIfAbsent(serviceProvider, manage, false);
     }
 
     @Transient
@@ -209,11 +214,11 @@ public class User implements Serializable, UserDetails {
         //we want to pre-provision the eduID based on the institutional GUID, not the entityID
         remoteProvider.setEntityId(null);
         ServiceProvider serviceProvider = new ServiceProvider(remoteProvider, null);
-        return doComputeEduIDIfAbsent(serviceProvider, manage);
+        return doComputeEduIDIfAbsent(serviceProvider, manage, false);
     }
 
-    private String doComputeEduIDIfAbsent(ServiceProvider serviceProvider, Manage manage) {
-        this.lastLogin = System.currentTimeMillis();
+    @Transient
+    public String doComputeEduIDIfAbsent(ServiceProvider serviceProvider, Manage manage, boolean isResourceServer) {
         serviceProvider.setLastLogin(new Date());
         String institutionGuid = serviceProvider.getInstitutionGuid();
         String entityId = serviceProvider.getEntityId();
@@ -232,7 +237,7 @@ public class User implements Serializable, UserDetails {
                 }).findFirst();
         //If there is an existing eduID then we add or update the service for this eduID, otherwise add new one
         String eduIDValue = optionalExistingEduID.map(
-                eduId -> eduId.updateServiceProvider(serviceProvider).getValue()
+                eduId -> isResourceServer ? eduId.getValue() : eduId.updateServiceProvider(serviceProvider).getValue()
         ).orElseGet(() -> {
             EduID eduID = new EduID(UUID.randomUUID().toString(), serviceProvider);
             this.eduIDS.add(eduID);
@@ -259,9 +264,6 @@ public class User implements Serializable, UserDetails {
     @Override
     @JsonIgnore
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        if (serviceDeskMember) {
-            return SERVICE_DESK_AUTHORIES;
-        }
         return GUEST_AUTHORITIES;
     }
 
@@ -343,19 +345,21 @@ public class User implements Serializable, UserDetails {
     @Transient
     @JsonIgnore
     public Map<String, EduID> convertEduIdPerServiceProvider(ServicesConfiguration servicesConfiguration) {
-        //We need to be backward compatible, but also deal with new many services refactor. Key of map may not be null
+        //We need to be backward compatible but also deal with new many services refactor. Key of a map may not be null
         Map<String, EduID> result = new HashMap<>();
         List<String> hideInOverview = servicesConfiguration.getHideInOverview();
         this.getEduIDS().forEach(eduID -> {
             if (CollectionUtils.isEmpty(eduID.getServices()) && StringUtils.hasText(eduID.getServiceProviderEntityId())
-                    && !hideInOverview.contains(eduID.getServiceProviderEntityId())) {
+                    && !hideInOverview.contains(eduID.getServiceProviderEntityId()) && StringUtils.hasText(eduID.getServiceProviderEntityId())) {
                 result.put(eduID.getServiceProviderEntityId(), eduID);
             } else {
-                eduID.getServices().stream().filter(service -> !hideInOverview.contains(service.getEntityId()))
+                eduID.getServices().stream()
+                        .filter(service -> !hideInOverview.contains(service.getEntityId()))
+                        .filter(service -> StringUtils.hasText(service.getEntityId()))
                         .forEach(service -> {
                             String entityId = service.getEntityId();
                             String key = StringUtils.hasText(entityId) ? entityId : service.getInstitutionGuid();
-                            //need to make copy otherwise the reference is the same and for mobile authentication we override the properties
+                            //need to make copy otherwise the reference is the same, and for mobile authentication we override the properties
                             result.put(key, eduID.copy(key));
                         });
             }

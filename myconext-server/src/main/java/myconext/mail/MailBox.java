@@ -10,6 +10,7 @@ import myconext.model.ControlCode;
 import myconext.model.EmailsSend;
 import myconext.model.User;
 import myconext.model.UserLogin;
+import myconext.remotecreation.UpdateExternalEduID;
 import myconext.repository.EmailsSendRepository;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -34,7 +35,10 @@ public class MailBox {
     private final JavaMailSender mailSender;
     private final String mySURFconextURL;
     private final String loginSURFconextURL;
-    private final String emailFrom;
+    private final String emailFromDeprovisioning;
+    private final String emailFromCode;
+    private final String emailFromAppNudge;
+    private final String emailFromNewDevice;
     private final String errorEmail;
     private final Map<String, Map<String, String>> subjects;
 
@@ -42,18 +46,26 @@ public class MailBox {
     private final EmailsSendRepository emailsSendRepository;
     private final long emailSpamThresholdSeconds;
     private final ObjectMapper objectMapper;
+    private final String environmentName;
 
     public MailBox(JavaMailSender mailSender,
-                   String emailFrom,
+                   String emailFromDeprovisioning,
+                   String emailFromCode,
+                   String emailFromAppNudge,
+                   String emailFromNewDevice,
                    String errorEmail,
                    String mySURFconextURL,
                    String loginSURFconextURL,
                    ObjectMapper objectMapper,
                    Resource mailTemplatesDirectory,
                    EmailsSendRepository emailsSendRepository,
-                   long emailSpamThresholdSeconds) throws IOException {
+                   long emailSpamThresholdSeconds,
+                   String environmentName) throws IOException {
         this.mailSender = mailSender;
-        this.emailFrom = emailFrom;
+        this.emailFromDeprovisioning = emailFromDeprovisioning;
+        this.emailFromCode = emailFromCode;
+        this.emailFromAppNudge = emailFromAppNudge;
+        this.emailFromNewDevice = emailFromNewDevice;
         this.errorEmail = errorEmail;
         this.mySURFconextURL = mySURFconextURL;
         this.loginSURFconextURL = loginSURFconextURL;
@@ -66,19 +78,21 @@ public class MailBox {
             LOG.info("Initializing mail templates from JAR resource: " + mailTemplatesDirectory.getFilename());
             mustacheFactory = new DefaultMustacheFactory(mailTemplatesDirectory.getFilename());
         }
-        this.subjects = objectMapper.readValue(inputStream(mailTemplatesDirectory), new TypeReference<>() {});
+        this.subjects = objectMapper.readValue(inputStream(mailTemplatesDirectory), new TypeReference<>() {
+        });
         this.objectMapper = objectMapper;
+        this.environmentName = environmentName;
     }
 
     public void sendOneTimeLoginCode(User user, String code) {
-        String title = this.getTitle("one_time_login_code", user) + code;
+        String title = this.getTitle("one_time_login_code", user);
         Map<String, Object> variables = variables(user, title);
         variables.put("code", code);
         sendMail("one_time_login_code", title, variables, preferredLanguage(user), user.getEmail(), true);
     }
 
     public void sendOneTimeLoginCodeNewUser(User user, String code) {
-        String title = this.getTitle("one_time_login_code_new_user", user) + code;
+        String title = this.getTitle("one_time_login_code_new_user", user);
         Map<String, Object> variables = variables(user, title);
         variables.put("code", code);
         sendMail("one_time_login_code_new_user", title, variables, preferredLanguage(user), user.getEmail(), true);
@@ -107,23 +121,32 @@ public class MailBox {
         String title = this.getTitle("institution_mail_warning", user);
         Map<String, Object> variables = variables(user, title);
         variables.put("mySurfConextURL", mySURFconextURL);
-        sendMail("institution_mail_warning", title, variables, preferredLanguage(user), user.getEmail(), false);
+        sendMail("institution_mail_warning", title, variables, preferredLanguage(user), user.getEmail(), false, emailFromAppNudge);
     }
 
     public void sendUserInactivityMail(User user, Map<String, String> localeVariables, boolean firstTwoWarnings) {
         String title = this.getTitle(firstTwoWarnings ? "inactivity_warning_years_ahead" : "inactivity_warning_short_term", user);
         Map<String, Object> variables = variables(user, title);
         variables.put("mySurfConextURL", mySURFconextURL);
+        String language = preferredLanguage(user);
+        List<String> serviceNames = user.getEduIDS().stream()
+                .map(eduID -> eduID.getServices())
+                .flatMap(Collection::stream)
+                .map(serviceProvider -> serviceProvider.nameByLanguage(language))
+                .distinct()
+                .toList();
+        variables.put("serviceNames", serviceNames);
+        variables.put("hasServiceNames", !serviceNames.isEmpty());
         variables.putAll(localeVariables);
         String templateName = firstTwoWarnings ? "inactivity_warning_years_ahead" : "inactivity_warning_short_term";
-        sendMail(templateName, title, variables, preferredLanguage(user), user.getEmail(), false);
+        sendMail(templateName, title, variables, language, user.getEmail(), false, emailFromDeprovisioning);
     }
 
     public void sendNudgeAppMail(User user) {
         String title = this.getTitle("nudge_eduid_app", user);
         Map<String, Object> variables = variables(user, title);
         variables.put("mySurfConextURL", mySURFconextURL);
-        sendMail("nudge_eduid_app", title, variables, preferredLanguage(user), user.getEmail(), false);
+        sendMail("nudge_eduid_app", title, variables, preferredLanguage(user), user.getEmail(), false, emailFromAppNudge);
     }
 
     public void sendResetPassword(User user, String hash, boolean mobileRequest) {
@@ -135,8 +158,15 @@ public class MailBox {
         sendMail("reset_password", title, variables, preferredLanguage(user), user.getEmail(), false);
     }
 
+    public void sendAddPasswordOneTimeCode(User user, String code) {
+        String title = this.getTitle("add_password_code", user);
+        Map<String, Object> variables = variables(user, title);
+        variables.put("code", code);
+        sendMail("add_password_code", title, variables, preferredLanguage(user), user.getEmail(), false);
+    }
+
     public void sendResetPasswordOneTimeCode(User user, String code) {
-        String title = this.getTitle("reset_password_code", user) + code;
+        String title = this.getTitle("reset_password_code", user);
         Map<String, Object> variables = variables(user, title);
         variables.put("code", code);
         sendMail("reset_password_code", title, variables, preferredLanguage(user), user.getEmail(), false);
@@ -157,11 +187,11 @@ public class MailBox {
         variables.put("mySurfConextURL", mySURFconextURL);
         variables.put("ipAddress", userLogin.getLookupAddress());
         variables.put("ipLocation", userLogin.getIpLocation());
-        sendMail("new_device", title, variables, preferredLanguage(user), user.getEmail(), false);
+        sendMail("new_device", title, variables, preferredLanguage(user), user.getEmail(), false, emailFromNewDevice);
     }
 
     public void sendChangeEmailOneTimeCode(User user, String newMail, String code) {
-        String title = this.getTitle("change_email_code", user) + code;
+        String title = this.getTitle("change_email_code", user);
         Map<String, Object> variables = variables(user, title);
         variables.put("code", code);
         sendMail("change_email_code", title, variables, preferredLanguage(user), newMail, false);
@@ -203,6 +233,16 @@ public class MailBox {
         sendMail("service_desk_control_code", title, variables, preferredLanguage(user), user.getEmail(), true);
     }
 
+    public void sendUserValidated(User user, UpdateExternalEduID externalEduID, String source) {
+        String title = this.getTitle("account_validated", user);
+        Map<String, Object> variables = variables(user, title);
+        variables.put("mySurfConextURL", mySURFconextURL);
+        variables.put("dateOfBirth", externalEduID.getDateOfBirth());
+        variables.put("source", source);
+        variables.put("firstName", externalEduID.getFirstName());
+        sendMail("account_validated", title, variables, preferredLanguage(user), user.getEmail(), false);
+    }
+
     @SneakyThrows
     public void sendErrorMail(Map<String, Object> json, User user) {
         String title = this.getTitle("error_email", user);
@@ -223,6 +263,11 @@ public class MailBox {
 
     @SneakyThrows
     private void sendMail(String templateName, String subject, Map<String, Object> variables, String language, String to, boolean checkSpam) {
+        this.sendMail(templateName, subject, variables, language, to, checkSpam, null);
+    }
+
+    @SneakyThrows
+    private void sendMail(String templateName, String subject, Map<String, Object> variables, String language, String to, boolean checkSpam, String email) {
         LOG.info(String.format("Send %s email to %s", templateName, to));
         if (checkSpam) {
             Optional<EmailsSend> byEmail = emailsSendRepository.findByEmail(to);
@@ -240,10 +285,10 @@ public class MailBox {
             helper.setSubject(subject);
             helper.setTo(to);
             setText(html, text, helper);
-            helper.setFrom(emailFrom);
+            helper.setFrom(email != null && !email.isBlank() ? email : emailFromCode);
             doSendMail(mimeMessage);
         } catch (Exception e) {
-            LOG.error("Error sending mail to "+to, e);
+            LOG.error("Error sending mail to " + to, e);
             //We don't want to stop batch mailings
         }
     }
@@ -262,7 +307,11 @@ public class MailBox {
     }
 
     private String getTitle(String templateName, User user) {
-        return this.subjects.get(templateName).get(preferredLanguage(user));
+        String title = this.subjects.get(templateName).get(preferredLanguage(user));
+        if (StringUtils.hasText(this.environmentName)) {
+            return String.format("[%s environment] %s", this.environmentName.toUpperCase(), title);
+        }
+        return title;
     }
 
     private String preferredLanguage(User user) {
@@ -283,4 +332,5 @@ public class MailBox {
             return new ClassPathResource(mailTemplatesDirectory.getFilename() + "/" + "subjects.json").getInputStream();
         }
     }
+
 }

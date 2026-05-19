@@ -6,10 +6,14 @@ import myconext.AbstractIntegrationTest;
 import myconext.model.ClientAuthenticationRequest;
 import myconext.model.User;
 import org.junit.Test;
+import org.junit.Before;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpMethod;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.util.ReflectionTestUtils;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.UUID;
 
 import static io.restassured.RestAssured.given;
@@ -18,8 +22,15 @@ import static org.hamcrest.core.IsEqual.equalTo;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 
-@ActiveProfiles(value = "dev", inheritProfiles = false)
 public class LoginControllerTest extends AbstractIntegrationTest {
+
+    @Autowired
+    private LoginController loginController;
+
+    @Before
+    public void resetCreateFromInstitutionReturnUrlAllowList() {
+        ReflectionTestUtils.setField(loginController, "createFromInstitutionAllowedReturnDomains", List.of());
+    }
 
     @Test
     public void config() {
@@ -28,27 +39,76 @@ public class LoginControllerTest extends AbstractIntegrationTest {
                 .get("/config")
                 .then()
                 .body("baseDomain", equalTo("test2.surfconext.nl"))
-                .body("loginUrl", equalTo("http://localhost:8081/login"));
+                .body("loginUrl", equalTo("http://localhost:8081/auth/login"));
     }
 
     @Test
-    public void register() {
+    public void login() {
         given().redirects().follow(false)
                 .when()
-                .get("/register")
+                .queryParam("registration_id", "mijn_eduid")
+                .get("/auth/login")
                 .then()
                 .statusCode(302)
-                .header("Location", "https://my.test2.surfconext.nl/Shibboleth.sso/Login?entityID=https://localhost.surf.id&lang=en");
+                .header("Location", "http://localhost:3001");
     }
 
     @Test
-    public void doLogin() {
+    public void loginWithRedirectPath() {
         given().redirects().follow(false)
                 .when()
-                .get("/doLogin")
+                .queryParam("redirect_path", "/security")
+                .queryParam("registration_id", "mijn_eduid")
+                .get("/auth/login")
                 .then()
                 .statusCode(302)
-                .header("Location", "https://my.test2.surfconext.nl/Shibboleth.sso/Login?entityID=https://localhost.surf.id&lang=en");
+                .header("Location", "http://localhost:3001/security");
+    }
+
+    @Test
+    public void loginWithEncodedRedirectPath() {
+        given().redirects().follow(false)
+                .when()
+                .queryParam("redirect_path", "%2Fpersonal%3Fservicedesk%3Dstart")
+                .queryParam("registration_id", "mijn_eduid")
+                .get("/auth/login")
+                .then()
+                .statusCode(302)
+                .header("Location", "http://localhost:3001/personal?servicedesk=start");
+    }
+
+    @Test
+    public void loginWithExternalRedirectPathIsIgnored() {
+        given().redirects().follow(false)
+                .when()
+                .queryParam("redirect_path", "https://evil.example.com/phishing")
+                .queryParam("registration_id", "mijn_eduid")
+                .get("/auth/login")
+                .then()
+                .statusCode(302)
+                .header("Location", "http://localhost:3001");
+    }
+
+    @Test
+    public void loginWithProtocolRelativeRedirectPathIsIgnored() {
+        given().redirects().follow(false)
+                .when()
+                .queryParam("redirect_path", "//evil.example.com/phishing")
+                .queryParam("registration_id", "mijn_eduid")
+                .get("/auth/login")
+                .then()
+                .statusCode(302)
+                .header("Location", "http://localhost:3001");
+    }
+
+    @Test
+    public void loginWithoutRegistrationId() {
+        given().redirects().follow(false)
+                .when()
+                .queryParam("redirect_path", "/security")
+                .get("/auth/login")
+                .then()
+                .statusCode(400);
     }
 
     @Test
@@ -75,6 +135,16 @@ public class LoginControllerTest extends AbstractIntegrationTest {
                 .statusCode(302)
                 .header("Location", "http://localhost:3001/landing?delete=true")
                 .cookie("TEST", equalTo(""));
+    }
+
+    @Test
+    public void register() {
+        given().redirects().follow(false)
+                .when()
+                .get("/register")
+                .then()
+                .statusCode(302)
+                .header("Location", "https://my.test2.surfconext.nl/oauth2/authorization/oidcng?lang=en");
     }
 
     @Test
@@ -142,10 +212,37 @@ public class LoginControllerTest extends AbstractIntegrationTest {
     }
 
     @Test
+    public void testCreateFromInstitutionLoginRedirectsToAllowedReturnUrl() {
+        ReflectionTestUtils.setField(loginController, "createFromInstitutionAllowedReturnDomains", List.of("myuniversity.nl"));
+
+        User user = userRepository.findUserByEmailAndRateLimitedFalse("jdoe@example.com").get();
+        String createFromInstitutionKey = UUID.randomUUID().toString();
+        user.setCreateFromInstitutionKey(createFromInstitutionKey);
+        user.setCreateFromInstitutionReturnUrl("https://sitte.myuniversity.nl/landing");
+        user.setNewUser(false);
+        userRepository.save(user);
+
+        given()
+                .redirects().follow(false)
+                .when()
+                .queryParam("key", createFromInstitutionKey)
+                .get("/create-from-institution-login")
+                .then()
+                .statusCode(302)
+                .header("Location", "https://sitte.myuniversity.nl/landing?new=false");
+
+        user = userRepository.findUserByEmailAndRateLimitedFalse("jdoe@example.com").get();
+        assertNull(user.getCreateFromInstitutionKey());
+        assertNull(user.getCreateFromInstitutionReturnUrl());
+    }
+
+    @Test
     public void redirectToSPServiceDeskHook() throws IOException {
         String authenticationRequestId = samlAuthnRequest();
         User user = user("steve@example.com", "Steve", "Doe", "en");
-        ClientAuthenticationResponse magicLinkResponse = oneTimeLoginCodeRequest(new ClientAuthenticationRequest(authenticationRequestId, user, false), HttpMethod.POST);
+        ClientAuthenticationRequest clientAuthenticationRequest = new ClientAuthenticationRequest(authenticationRequestId, user, false, "response");
+
+        ClientAuthenticationResponse magicLinkResponse = oneTimeLoginCodeRequest(clientAuthenticationRequest, HttpMethod.POST);
         Response response = magicResponse(magicLinkResponse);
 
         String cookie = response.cookie(GUEST_IDP_REMEMBER_ME_COOKIE_NAME);

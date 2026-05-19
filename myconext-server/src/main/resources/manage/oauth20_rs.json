@@ -1,0 +1,26 @@
+[
+  {
+    "id": "10",
+    "type": "oauth20_rs",
+    "revision": {
+      "number": 0,
+      "created": "2018-06-15T08:20:34.575Z",
+      "updatedBy": "oidc_user.com"
+    },
+    "data": {
+      "entityid": "https@//oidc.rp.resourceServer",
+      "eid": 10,
+      "state": "prodaccepted",
+      "metaDataFields": {
+        "name:en": "OIDC ResourceServer",
+        "OrganizationName:en": "Organization name en",
+        "coin:institution_guid": "409542a0-0d11-e511-80d0-005056956c1a",
+        "secret": "secret1234567890",
+        "scopes": [
+          "openid",
+          "groups"
+        ]
+      }
+    }
+  }
+]

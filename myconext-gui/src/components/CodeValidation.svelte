@@ -69,7 +69,7 @@
             return;
         }
 
-        const data = e.clipboardData?.getData("text/plain") || "";
+        const data = (e.clipboardData?.getData("text/plain") || "").trim();
         const newValues = data.split("");
 
         if (newValues.length !== size) {

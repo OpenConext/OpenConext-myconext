@@ -13,6 +13,7 @@ import org.springframework.http.*;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -129,7 +130,9 @@ public class TiqrEndpoint {
     public ModelAndView authentication(@PathVariable("sessionKey") String sessionKey) {
         Authentication authentication = findAuthentication(sessionKey);
         Registration registration = findRegistration(authentication.getUserID());
-        String decryptedSecret = secretCipher.decrypt(registration.getSecret());
+        String secret = registration.getSecret();
+        //TODO: When using 4.0.0 of tiqr-java-connector then use the encryptedSecret
+        String decryptedSecret = secretCipher.decrypt(secret);
         String ocra = OCRA.generateOCRA(decryptedSecret, authentication.getChallenge(), sessionKey);
         Map<String, Object> body = Map.of(
                 "authentication", authentication,
@@ -149,6 +152,7 @@ public class TiqrEndpoint {
         HttpHeaders headers = getHttpHeaders();
 
         Registration registration = findRegistration(authentication.getUserID());
+        //TODO: When using 4.0.0 of tiqr-java-connector then use the encryptedSecret
         String decryptedSecret = secretCipher.decrypt(registration.getSecret());
         String ocra = OCRA.generateOCRA(decryptedSecret, authentication.getChallenge(), sessionKey);
 

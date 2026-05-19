@@ -1,0 +1,9 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="BE - TiqrApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot">
+    <module name="tiqr-mock" />
+    <option name="SPRING_BOOT_MAIN_CLASS" value="tiqr.org.TiqrApplication" />
+    <method v="2">
+      <option name="Make" enabled="true" />
+    </method>
+  </configuration>
+</component>

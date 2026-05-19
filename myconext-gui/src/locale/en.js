@@ -17,7 +17,7 @@ const en = {
             validatedName: "Validation of your full name by a third party",
             proofStudent: "Proof of being a student",
             institution: "Your current institution",
-            connect: "Connect your school institution"
+            connect: "Connect your institution"
         }
     },
     header: {
@@ -30,7 +30,8 @@ const en = {
         loginAgain: "Login again",
         deleteTitle: "Your eduID account has been deleted",
         deleteStatus: "To finalise the removal process you must now close this browser.",
-        registerAgain: "Register again"
+        registerAgain: "Register again",
+        rateLimitTitle: "Too many failed attempts"
     },
     notFound: {
         title: "Whoops...",
@@ -45,7 +46,7 @@ const en = {
         receivedOn: "on <strong>{{date}}</strong>",
         receivedOnInfo: "Received on <strong>{{date}}</strong>",
         validUntilDate: "valid until <strong>{{date}}</strong>",
-        validUntilDateInfo: "Valid until <strong>{{date}}</strong>",
+        validUntilDateInfo: "Valid until <strong>{{date}}</strong> and the role itself is valid until {{rolDate}}",
         removeLinkPrefix: "Remove this information",
         removeLinkPostfix: " from your eduID",
         banner: "Some applications require that your identity is verified by a trusted party.",
@@ -437,7 +438,16 @@ const en = {
         copy: "Copy the code",
         copied: "Copied",
         continue: "My code is safe. Continue",
-        leaveConfirmation: "Are you sure you want to leave the page? Changes will not be saved."
+        leaveConfirmation: "Are you sure you want to leave the page? Changes will not be saved.",
+        finalizedRegistration: "Existing recovery method",
+        finalizedRegistrationExplanation: "You cannot add a new recovery method, since you already have an existing recovery method. You can change your recovery-method ",
+        finalizedRegistrationHere: "here.",
+        finalizedRegistrationBackupCode: "Your recovery code is: ",
+        backButtonWarning: "Your eduID app is already successfully added to your account. You cannot change your recovery method by going back. If you go back, you see an error message.",
+        backButtonWarningTitle: "Going back not recommended",
+        backButtonWarningConfirmation: "Ok",
+        requestRecoveryCode: "If you can't provide a phone number, ",
+        requestRecoveryCodeButton: "you can request a recovery code.",
     },
     phoneVerification: {
         header: "Add a recovery phone number",
@@ -550,7 +560,7 @@ const en = {
             info: {
                 subheader: "Verify your identity, quick and easy",
                 title: "Verification",
-                please: "Please verify that you are who you say you are.",
+                please: "Use one of the following services to prove to us who you are.",
                 educationalInstitution: "Verify via a Dutch educational institution",
                 selectInstitution: "Select your institution",
                 other: "Other options...",
@@ -559,7 +569,7 @@ const en = {
                 verifyEuropeanId: "Verify with a European ID",
                 supportEuropean: "We accept the ID's of Austria, Belgium, Croatia, Czech Republic, Denmark, Estonia, Germany, Italy, Latvia, Liechtenstein, Lithuania, Luxembourg, Malta, Poland, Portugal, Slovakia, Slovenia, Spain and Sweden.",
                 useEuropean: "Use a European ID",
-                cantUse: "I can't use any of the above methods",
+                cantUse: "Contact the Service Desk",
                 help: "If you can't use any of the these methods, please visit our <a href='https://eduid.nl/help' target='_blank' rel='noreferrer'>support pages</a>"
             },
             bank: {
@@ -580,7 +590,7 @@ const en = {
             bunq: "Bunq",
             ing: "ING",
             rabobank: "Rabobank",
-            regioBank: "RegioBank",
+            regiobank: "RegioBank",
             sns: "SNS"
         }
     }

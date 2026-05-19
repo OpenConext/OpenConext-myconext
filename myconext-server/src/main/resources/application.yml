@@ -3,7 +3,7 @@ logging:
   level:
     org.springframework.data.mongodb: INFO
     org.springframework.data.convert: INFO
-    org.springframework.security: INFO
+    org.springframework.security: WARN
     io.mongock.: TRACE
     tiqr.org: DEBUG
     myconext: DEBUG
@@ -30,8 +30,11 @@ springdoc:
     enabled: true
 
 email:
-  from: noreply@surfconext.nl
-  error_mail: info@surfconext.nl
+  from_deprovisioning: noreply+deprovisioning@surfconext.nl
+  from_code: noreply@surfconext.nl
+  from_app_nudge: noreply+appnudge@surfconext.nl
+  from_new_device: noreply+newdevice@surfconext.nl
+  error: info@surfconext.nl
   magic-link-url: http://localhost:8081/saml/guest-idp/magic
   my-surfconext-url: http://localhost:3001
   idp-surfconext-url: http://localhost:3000
@@ -52,7 +55,15 @@ cron:
   manage-initial-delay-milliseconds: 15000
   manage-fixed-rate-milliseconds: 43_200_000
   # Runs on the first day of February, May, August, and November.
-  mail-institution-mail-usage-expression: "0 0 0 1 2,5,8,11 *"
+  #  0 seconds
+  #  0 minutes
+  #  0 hours → midnight
+  #  * → every day of the month
+  #  2,5,8,11 → only in February, May, August, November
+  #  * → every day of the week
+  mail-institution-mail-usage-expression: "0 0 0 * 2,5,8,11 *"
+  # Run institution mails in batches
+  mail-institution-batch-size: 200
   # Every day at 6:30AM
   nudge-app-mail-expression: "0 30 6 * * ?"
   # Number of days after creation of the eduID account which the nudge mail is send
@@ -72,19 +83,34 @@ mongodb_db: surf_id_test
 base_domain: test2.surfconext.nl
 saml_metadata_base_path: http://localhost:8081
 base_path: http://localhost:8081
+base_path_service_desk: http://localhost:8081
 continue_after_login_url: http://localhost:8081/saml/guest-idp/continue
 idp_redirect_url: http://localhost:3000
 rp_id: localhost
 rp_origin: http://localhost:3000
 sp_redirect_url: http://localhost:3001
-sp_entity_id: https://engine.test.surfconext.nl/authentication/sp/metadata
-sp_entity_metadata_url: https://engine.test.surfconext.nl/authentication/sp/metadata
+sp_servicedesk_redirect_url: http://localhost:3003
+sp_entity_id: https://engine.test.surfconext.nl/authentication/sp/metadata, https://engine.test2.surfconext.nl/authentication/sp/metadata
+sp_entity_metadata_url: https://engine.test.surfconext.nl/authentication/sp/metadata, https://engine.test2.surfconext.nl/authentication/sp/metadata
 guest_idp_entity_id: https://localhost.surf.id
 my_conext_url: https://my.test2.surfconext.nl
 domain: eduid.nl
 mijn_eduid_entity_id: http://mijn.localhost/shibboleth
+mijn_eduid_service_name: "Mijn eduID"
 mobile_app_redirect: eduid:///client/mobile
 mobile_app_rp_entity_id: mobile_app_rp_entity_id
+
+create-from-institution:
+  return-url-allowed-domains:
+    - app.localhost
+
+# The host headers to identify the service the user is logged in
+host_headers:
+  service_desk: servicedesk.test2.eduid.nl
+  mijn_ediuid: mijn.test2.eduid.nl
+  #Only for testing purposes
+#  active: servicedesk.test2.eduid.nl
+  active: mijn.test2.eduid.nl
 
 feature:
   webauthn: True
@@ -104,6 +130,8 @@ feature:
   create_eduid_institution_landing: True
   # Do we default remember the user for a longer period
   default_remember_me: False
+  # Do we default add affiliate email address
+  default_affiliate_email: True
   # Does the SAMLIdpService expects authn requests to be signed
   requires_signed_authn_request: False
   # Do we support ID verify
@@ -119,7 +147,22 @@ feature:
   # Do we mail users who have not installed the eduID app
   nudge_app_mail: True
   # Set to true if the servicedesk is fully operational (e.g. show the user the control-code option)
-  service_desk_active: true
+  service_desk_active: True
+  # Set to true to enable captcha in the account creation
+  captcha_enabled: False
+  # Set to true to use the BRIN code to add ui-roles and authentication scoped affiliations
+  use_remote_creation_for_affiliation: True
+  # Set to true to show the account linking related options on the personal-info page and home page (banner)
+  enable_account_linking: True
+  # Set to true to show the app login option
+  use_app: True
+
+default_affiliate_email_domain: eduid.nl
+
+captcha:
+  sitekey: secret
+  apikey: secret
+  host: http://localhost:8098/api/v2/captcha/siteverify
 
 secure_cookie: false
 idp_entity_id: https://localhost.surf.id
@@ -128,6 +171,7 @@ certificate_path: classpath:/myconext.crt
 tiqr_hash_secret: 43234502-2AAC-4E53-AA32-C7B909F71442
 
 remember_me_max_age_seconds: 15_768_000
+tiqr_trust_for_pn_max_age_seconds: 15_768_000
 sso_mfa_duration_seconds: 900
 nudge_eduid_app_login_days: 5
 nudge_eduid_app_pause_days: 7
@@ -138,6 +182,7 @@ email_spam_threshold_seconds: 15
 sms:
   url: "http://localhost:8081/sms"
   bearer: "secret"
+  route: "1984"
 
 tiqr_configuration: "classpath:/tiqr.configuration.yml"
 
@@ -167,12 +212,17 @@ external-api-configuration:
       password: "secret"
       scopes:
         - invite
+    -
+      username: internal
+      password: "secret"
+      scopes:
+        - actuator
 
 oidc-token-api:
   token-url: https://connect.test2.surfconext.nl/tokens
   user: eduid
   password: secret
-  enabled: true
+  enabled: False
 
 oidc:
   client-id: myconext.rp.localhost
@@ -199,6 +249,10 @@ account_linking_context_class_ref:
   validate_names_external: https://eduid.nl/trust/validate-names-external
   affiliation_student: https://eduid.nl/trust/affiliation-student
   profile_mfa: https://refeds.org/profile/mfa
+  linked_institution_mfa: https://eduid.nl/trust/linked-institution/mfa
+  validate_names_mfa: https://eduid.nl/trust/validate-names/mfa
+  validate_names_external_mfa: https://eduid.nl/trust/validate-names-external/mfa
+  affiliation_student_mfa: https://eduid.nl/trust/affiliation-student/mfa
 
 account_linking:
   myconext_sp_entity_id: https://mijn.test2.eduid.nl/shibboleth
@@ -227,7 +281,7 @@ verify:
   idp_verify_redirect_url: http://localhost:8081/myconext/api/idp/verify/redirect
   issuers_path: "classpath:idin/issuers.json"
 
-service_desk_role_auto_provisioning: True
+service_desk_role_auto_provisioning: False
 service_desk_roles: >
   role1,
   role2,
@@ -241,6 +295,32 @@ spring:
   mail:
     host: localhost
     port: 1025
+  security:
+    oauth2:
+      client:
+        registration:
+          mijn_eduid:
+            client-id: playground_client
+            client-secret: secret
+            redirect-uri: "{baseUrl}/login/oauth2/code/{registrationId}"
+            authorization-grant-type: "authorization_code"
+            scope: openid
+            provider: oidcng
+          service_desk:
+            client-id: playground_client
+            client-secret: secret
+            redirect-uri: "{baseUrl}/login/oauth2/code/{registrationId}"
+            authorization-grant-type: "authorization_code"
+            scope: openid
+            provider: oidcng
+        provider:
+          oidcng:
+            authorization-uri: "https://connect.test2.surfconext.nl/oidc/authorize"
+            token-uri: "https://connect.test2.surfconext.nl/oidc/token"
+            user-info-uri: "https://connect.test2.surfconext.nl/oidc/userinfo"
+            jwk-set-uri: "https://connect.test2.surfconext.nl/oidc/certs"
+            user-name-attribute: sub
+            user-info-authentication-method: client_secret_basic
 
 gui:
   disclaimer:
@@ -251,18 +331,20 @@ management:
   endpoints:
     web:
       exposure:
-        include: "health,info"
+        include: "health,info,prometheus"
       base-path: "/internal"
   endpoint:
     info:
       access: unrestricted
     health:
       access: unrestricted
-      show-details: never
+      show-details: when_authorized
+    prometheus:
+      access: unrestricted
     mappings:
       access: none
     metrics:
-      access: none
+      access: unrestricted
   info:
     git:
       mode: full

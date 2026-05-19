@@ -65,7 +65,8 @@ const nl = {
         forgotPassword: "Wachtwoord vergeten?",
         useAnother: "Gebruik een andere",
         optionsLink: "inlogmethode.",
-        sendingEmail: "Email aan het sturen..."
+        sendingEmail: "Email aan het sturen...",
+        termsRequired: "Je moet akkoord gaan met de voorwaarden en privacyverklaring"
     },
     options: {
         header: "Hoe wil je inloggen?",
@@ -231,7 +232,7 @@ const nl = {
         timeOutInfoFirst: "Je sessie is verlopen. Klik op deze ",
         timeOutInfoLast: " om het opnieuw te proberen.",
         timeOutInfoLink: "link",
-        existingRegistration: "Bestaande registrate",
+        existingRegistration: "Bestaande registratie",
         existingRegistrationInfoFirst: "Je kan geen nieuwe registratie starten, omdat je al een registratie hebt. Klik op ",
         existingRegistrationInfoLast: " om opnieuw in te loggen.",
         existingRegistrationInfoLink: "link",
@@ -256,7 +257,14 @@ const nl = {
         copy: "Kopieer de code",
         copied: "Gekopieerd",
         continue: "Mijn code is veilig. Doorgaan",
-        leaveConfirmation: "Weet je zeker dat je de pagina wilt verlaten? De registratie wordt afgebroken."
+        leaveConfirmation: "Weet je zeker dat je de pagina wilt verlaten? De registratie wordt afgebroken.",
+        finalizedRegistration: "Bestaande herstelmethode",
+        finalizedRegistrationExplanation: "Je mag geen telefoonnummer registreren, omdat je al een bestaande back-upcode als herstelmethode hebt.",
+        finalizedRegistrationBackupCode: "Je herstelcode is: ",
+        next: "Doorgaan",
+        backButtonWarning: "Je eduID-app is succesvol toegevoegd aan je account. Je kunt je herstelcode niet wijzigen met de terugknop.",
+        backButtonWarningTitle: "Terugknop niet aanbevolen",
+        backButtonWarningConfirmation: "Ok",
     },
     phoneVerification: {
         header: "Voeg een hersteltelefoonnummer toe",
@@ -333,7 +341,7 @@ const nl = {
         affiliation_student: "Je hebt aangetoont dat je onderwijs volgt doordat je eduID-account is gekoppeld aan een vertrouwde instelling."
     },
     nudgeApp: {
-        new: "J eduID is aangemaakt!",
+        new: "Je eduID is aangemaakt!",
         header: "Wil je de volgende keer sneller en veiliger inloggen?",
         info: "Installeer de <strong>eduID app</strong> en log veiliger in zonder wachtwoord of het openen van je email. Het kost je maar een minuut.",
         no: "Nee bedankt",
@@ -395,7 +403,7 @@ const nl = {
             info: {
                 title: "Verificatie",
                 verify: "Verifïeer je identiteit, snel en gemakkelijk",
-                please: "Verifïeer a.u.b dat je bent wie je zegt dat je bent.",
+                please: "Gebruik een van de volgende methodes om te bewijzen wie je bent.",
                 educationalInstitution: "Verifïeer met een Nederlandse onderwijsinstelling",
                 selectInstitution: "Selecteer je instelling",
                 other: "Andere opties...",
@@ -404,7 +412,7 @@ const nl = {
                 verifyEuropeanId: "Verifïeer met een Europees ID",
                 supportEuropean: "We ondersteunen de meederheid van de de nationalie digitale ID's",
                 useEuropean: "gebruik een Europees ID",
-                cantUse: "Ik kan geen van bovenstaande manieren gebruiken",
+                cantUse: "Neem contact met de Service Desk",
                 help: "Als je geen van deze opties kan gebruiken, bezoek dan onze <a href='https://eduid.nl/help' target='_blank' rel='noreferrer'>support pagina's</a>"
             },
             bank: {
@@ -428,6 +436,9 @@ const nl = {
             studielink: "Studielink",
             servicedesk: "Service Desk"
         }
+    },
+    captcha: {
+        proveNotRobot: "Check de 'Anti-robotverificatie' checkbox"
     }
 };
 export default nl;

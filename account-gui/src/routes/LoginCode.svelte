@@ -10,6 +10,7 @@
     import {cookieNames} from "../constants/cookieNames.js";
     import {loginPreferences} from "../constants/loginPreferences.js";
     import Spinner from "../components/Spinner.svelte";
+    import SubContent from "../components/SubContent.svelte";
 
     const resendMailAllowedTimeOut = $conf.emailSpamThresholdSeconds * 1000;
 
@@ -32,6 +33,11 @@
             .then(json => {
                 showSpinner = false;
                 Cookies.set(cookieNames.LOGIN_PREFERENCE, loginPreferences.CODE, {
+                    expires: 365,
+                    secure: true,
+                    sameSite: "Lax"
+                });
+                Cookies.set(cookieNames.USERNAME, json.email, {
                     expires: 365,
                     secure: true,
                     sameSite: "Lax"
@@ -148,3 +154,8 @@
 
     </div>
 </div>
+
+<SubContent question={I18n.t("Login.NoMailAccess.COPY")}
+            preLink={I18n.t("Login.UseAnother.COPY")}
+            linkText={I18n.t("Login.OptionsLink.COPY")}
+            route="/options/{id}" interContent="true"/>

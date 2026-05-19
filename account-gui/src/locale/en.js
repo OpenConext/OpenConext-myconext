@@ -1,4 +1,4 @@
-const en =  {
+const en = {
     login: {
         requestEduId: "No eduID?",
         requestEduId2: "Create one!",
@@ -65,7 +65,8 @@ const en =  {
         forgotPassword: "Forgot your password?",
         useAnother: "Use another",
         optionsLink: "sign-in option.",
-        sendingEmail: "Sending email..."
+        sendingEmail: "Sending email...",
+        termsRequired: "Please agree with the terms and privacy statement"
     },
     options: {
         header: "How do you want to login?",
@@ -257,7 +258,14 @@ const en =  {
         copy: "Copy the code",
         copied: "Copied",
         continue: "My code is safe. Continue",
-        leaveConfirmation: "Are you sure you want to leave the page? Changes will not be saved."
+        leaveConfirmation: "Are you sure you want to leave the page? Changes will not be saved.",
+        finalizedRegistration: "Existing recovery method",
+        finalizedRegistrationExplanation: "You are not allowed to register a phone number, as you already have an existing backup code as recovery method.",
+        finalizedRegistrationBackupCode: "Your recovery code is: ",
+        next: "Proceed",
+        backButtonWarning: "Your eduID app is successfully added to your account. You are not allowed to change your recovery code using the back button.",
+        backButtonWarningTitle: "Back button not recommended",
+        backButtonWarningConfirmation: "Ok",
     },
     phoneVerification: {
         header: "Add a recovery phone number",
@@ -303,7 +311,7 @@ const en =  {
     },
     subjectAlreadyLinked: {
         header: "Account not verified!",
-        info: "Your eduID could not be verified. The external account with which you just logged in, is already linked to a different eduID account.",
+        info: "Your eduID could not be verified. The external account with which you just logged in, is already linked to a different eduID account: {{subjectId}}.",
         proceed: "You can try to verify your account again or proceed to {{name}}.",
         proceedLink: "Proceed",
         retryLink: "Retry"
@@ -395,7 +403,7 @@ const en =  {
             info: {
                 title: "Verification",
                 verify: "Verify your identity, quick and easy",
-                please: "Please verify that you are who you say you are.",
+                please: "Use one of the following services to prove to us who you are.",
                 educationalInstitution: "Verify via a Dutch educational institution",
                 selectInstitution: "Select your institution",
                 other: "Other options...",
@@ -404,7 +412,7 @@ const en =  {
                 verifyEuropeanId: "Verify with a European ID",
                 supportEuropean: "We support the majority of National digital IDs",
                 useEuropean: "Use a European ID",
-                cantUse: "I can't use any of the above methods",
+                cantUse: "Contact the Service Desk",
                 help: "If you can't use any of the these methods, please visit our <a href='https://eduid.nl/help' target='_blank' rel='noreferrer'>support pages</a>"
             },
             bank: {
@@ -429,6 +437,9 @@ const en =  {
             studielink: "Studielink",
             servicedesk: "Service Desk"
         }
+    },
+    captcha: {
+        proveNotRobot: "Please tick the 'I am human' checkbox"
     }
 };
 export default en;

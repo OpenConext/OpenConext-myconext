@@ -1,0 +1,13 @@
+# Spring profile: 'servicedesk'
+# Activate with -Dspring.profiles.active=servicedesk (or SPRING_PROFILES_ACTIVE=servicedesk)
+# Overrides for running the backend in Service Desk mode (servicedesk-gui as the front-end).
+
+host_headers:
+  active: servicedesk.test2.eduid.nl
+
+service_desk_role_auto_provisioning: True
+
+# Use Mujina "admin" to login on ServiceDesk
+# The Manage app needs to be configured to get isMemberOf value from Invite
+service_desk_roles: >
+  urn:mace:surf.nl:invite.test2.surfconext.nl:eadf712c-9612-4540-8495-220eba0b2519:servicedesk_members

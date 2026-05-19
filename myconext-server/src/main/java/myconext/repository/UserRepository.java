@@ -3,10 +3,12 @@ package myconext.repository;
 
 import myconext.model.User;
 import myconext.model.UserInactivity;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.data.mongodb.repository.Query;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -76,4 +78,16 @@ public interface UserRepository extends MongoRepository<User, String> {
             """)
     List<User> findByNoEduIDApp(Long createdBefore);
 
+    @Query("{ $and: [ " +
+            "  { 'email': { $regex: ?0, $options: 'i' } }, " +
+            "  { $or: [ " +
+            "    { 'institutionMailSendDate': { $lt: ?1 } }, " +
+            "    { 'institutionMailSendDate': null } " +
+            "  ] } " +
+            "] }")
+    List<User> findByEmailRegexAndInstitutionMailSendDateBeforeOrInstitutionMailSendDateIsNull(
+            String emailRegex,
+            LocalDateTime beforeDate,
+            Pageable pageable
+    );
 }

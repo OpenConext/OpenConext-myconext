@@ -75,7 +75,8 @@ public class AccountLinkerMobileControllerTest extends AbstractIntegrationTest {
         assertTrue(url.startsWith("http://localhost:8098/broker/sp/oidc/authenticate"));
 
         MultiValueMap<String, String> queryParams = UriComponentsBuilder.fromUriString(url).build().getQueryParams();
-        Assertions.assertEquals("openid dateofbirth name idp_scoping:idin signicat:param:idin_idp:RABONL2U", queryParams.getFirst("scope"));
+        String expectedScope = "openid%20dateofbirth%20name%20idp_scoping:idin%20signicat:param:idin_idp:RABONL2U";
+        Assertions.assertEquals(expectedScope, queryParams.getFirst("scope"));
 
         String state = queryParams.getFirst("state");
         //Now call the redirect URI for the redirect by iDIN or eHerkenning
@@ -187,7 +188,8 @@ public class AccountLinkerMobileControllerTest extends AbstractIntegrationTest {
         assertTrue(url.startsWith("http://localhost:8098/broker/sp/oidc/authenticate"));
 
         MultiValueMap<String, String> queryParams = UriComponentsBuilder.fromUriString(url).build().getQueryParams();
-        Assertions.assertEquals("openid dateofbirth name idp_scoping:idin signicat:param:idin_idp:RABONL2U", queryParams.getFirst("scope"));
+        String expectedScope = "openid%20dateofbirth%20name%20idp_scoping:idin%20signicat:param:idin_idp:RABONL2U";
+        assertEquals(expectedScope, queryParams.getFirst("scope"));
 
         String state = queryParams.getFirst("state");
         //Now call the redirect URI for the redirect by iDIN or eHerkenning
@@ -200,10 +202,10 @@ public class AccountLinkerMobileControllerTest extends AbstractIntegrationTest {
                 .withBody(userInfo)));
         //Now we cheat and create an externalLinkedAccount
         User otherUser = userRepository.findOneUserByEmail("mdoe@example.com");
-        Map<String, Object> userInfoAsMap =  objectMapper.readValue(userInfo, new TypeReference<>() {
+        Map<String, Object> userInfoAsMap = objectMapper.readValue(userInfo, new TypeReference<>() {
         });
         otherUser.getExternalLinkedAccounts().add(new ExternalLinkedAccount(
-                (String)userInfoAsMap.get("sub"),
+                (String) userInfoAsMap.get("sub"),
                 IdpScoping.idin,
                 true
         ));

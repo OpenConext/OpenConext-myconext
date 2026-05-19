@@ -10,4 +10,4 @@ Je hebt de magische link gebruikt in een andere browser dan van waaruit je de ma
 Als extra veiligheidsmaatregel moet je de verificatiecode invoeren in je openstaande browservenster.
 Als je geen magische link hebt aangevraagd, kun je dit bericht negeren of verwijderen.
 
-{{> footer_en.txt}}
+{{> footer_nl.txt}}

@@ -6,6 +6,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
+import myconext.remotecreation.UpdateExternalEduID;
+import myconext.verify.AttributeMapper;
 import org.springframework.data.annotation.Transient;
 import org.springframework.util.StringUtils;
 
@@ -157,6 +159,20 @@ public class ExternalLinkedAccount implements Serializable, ProvisionedLinkedAcc
             return preferredLastName;
         }
         return null;
+    }
+
+    public void updateAttributesFromUpdateExternalEduID(UpdateExternalEduID externalEduID, AttributeMapper attributeMapper) {
+        this.chosenName = externalEduID.getChosenName();
+        this.firstName = externalEduID.getFirstName();
+        this.preferredLastName = externalEduID.getLastName();
+        this.legalLastName = externalEduID.getLastName();
+        this.legalLastNamePrefix = externalEduID.getLastNamePrefix();
+        this.preferredLastNamePrefix = externalEduID.getLastNamePrefix();
+
+        this.verification = externalEduID.getVerification();
+        this.affiliations = attributeMapper.externalAffiliations(externalEduID.getBrinCodes());
+        this.brinCodes = externalEduID.getBrinCodes();
+        this.dateOfBirth = AttributeMapper.parseDate(externalEduID.getDateOfBirth());
     }
 
 }

@@ -13,6 +13,7 @@
 
     const timeout = 35;
     const delKeys = ["Delete", "Backspace"];
+    const ignoredKeys = ["ArrowUp", "ArrowDown"];
 
     let values = Array(size).fill("");
     let inputRefs = new Map();
@@ -59,7 +60,10 @@
     }
 
     const handleKeyDown = (index, e) => {
-        if (delKeys.includes(e.key) && index > 0 && e.target.value === "") {
+        if (ignoredKeys.includes(e.key)) {
+            e.preventDefault();
+        }
+        else if (delKeys.includes(e.key) && index > 0 && e.target.value === "") {
             inputRefs.get(index - 1)?.focus();
         }
     }
@@ -69,7 +73,7 @@
             return;
         }
 
-        const data = e.clipboardData?.getData("text/plain") || "";
+        const data = (e.clipboardData?.getData("text/plain") || "").trim();
         const newValues = data.split("");
 
         if (newValues.length !== size) {

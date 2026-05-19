@@ -12,7 +12,7 @@ export default defineConfig({
         }
     )],
     server: {
-        port: 3002,
+        port: 3003,
         open: true,
         proxy: {
             '/myconext/api': {
@@ -21,6 +21,11 @@ export default defineConfig({
                 secure: false
             },
             '/config': {
+                target: 'http://localhost:8081',
+                changeOrigin: false,
+                secure: false
+            },
+            '/doLogout': {
                 target: 'http://localhost:8081',
                 changeOrigin: false,
                 secure: false

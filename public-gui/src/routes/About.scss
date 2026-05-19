@@ -9,7 +9,7 @@
         &.about {
             width: 182px;
             height: auto;
-            @media (max-width: index.$mobile-width) {
+            @media (max-width: index.$tablet-width) {
                 width: 140px;
             }
         }

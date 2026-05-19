@@ -1,4 +1,4 @@
-const mailRegExp = /(.+)@(.+)\.(.+)/;
+const mailRegExp = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const passwordRegExp = /^(((?=.*[A-Z])(?=.*[0-9])(.{8,}))|(.{15,}))$/;
 const phoneRegExp = /^\+?(?:[0-9] ?){6,14}[0-9]$/;
 

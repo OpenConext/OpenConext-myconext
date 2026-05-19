@@ -15,6 +15,9 @@
     import {cookieNames} from "../constants/cookieNames";
     import LoginOption from "../components/LoginOption.svelte";
     import {loginPreferences} from "../constants/loginPreferences";
+    import SubContent from "../components/SubContent.svelte";
+    import Alert from "../components/Alert.svelte";
+    import AlertType from "../constants/AlertType.js";
 
     export let id;
     let mfaRequired = false;
@@ -122,13 +125,13 @@
         margin-right: 10px;
     }
 
-    input[type=email] {
-        border: 1px solid #727272;
-        border-radius: 2px;
-        padding: 14px;
-        font-size: 16px;
-        width: 100%;
-        margin-bottom: 15px;
+    input[type=email], input[type=text] {
+      border: 1px solid #B2B6BE;
+      border-radius: 6px;
+      padding: 14px;
+      font-size: 16px;
+      width: 100%;
+      margin: 8px 0 15px 0;
     }
 
     input.error {
@@ -138,6 +141,39 @@
 
     input.error:focus {
         outline: none;
+    }
+
+    .or-divider{
+      display: flex;
+      justify-content: center;
+      align-items: center;
+
+      margin-top: 25px;
+      .or-divider-text {
+        margin-left: 10px;
+        margin-right: 10px;
+        color: #5E6873;
+      }
+      .stripe {
+        margin-top: 3px;
+        height: 1px;
+        width: 100%;
+        background: #000;
+      }
+    }
+
+    .pre-input-label {
+      color: var(--color-primary-black);
+      font-weight: 600;
+    }
+
+    .message-email-not-found{
+      padding-top: 12px;
+      padding-bottom: 10px;
+    }
+
+    .header {
+      margin-bottom: 15px;
     }
 
 </style>
@@ -164,10 +200,11 @@
                      index={2}/>
     </div>
 {:else}
+    <label for="email" class="pre-input-label">{I18n.t("LinkFromInstitution.Email.COPY")}</label>
     <input type="email"
            autocomplete="username"
            id="email"
-           class={`${(emailNotFound || rateLimited) ? 'error' : ''}`}
+           class={`${(rateLimited) ? 'error' : ''}`}
            placeholder={I18n.t("LinkFromInstitution.EmailPlaceholder.COPY")}
            use:init
            on:input={handleInput}
@@ -176,14 +213,11 @@
            spellcheck="false">
 {/if}
 {#if emailNotFound}
-    <div class="error">
-        <span class="svg">{@html critical}</span>
-        <div>
-            <span>{I18n.t("Login.EmailNotFound1.COPY")}</span>
-            <span>{I18n.t("LinkFromInstitution.EmailInUse2.COPY")}</span>
-            <a href={`/request/${id}`}
-               use:link>{I18n.t("Login.EmailNotFound3.COPY")}</a>
-        </div>
+    <div class="message-email-not-found">
+        <Alert
+                message={I18n.t("Login.EmailNotFound1.COPY")}
+                alertType={AlertType.Warning}
+        />
     </div>
 {/if}
 {#if rateLimited}
@@ -194,9 +228,33 @@
         </div>
     </div>
 {/if}
+{#if emailNotFound}
+    <SubContent linkText={I18n.t("Login.RequestEduId3.COPY")}
+                route="/request/{id}"
+                interContent="true"
+                showButton="true"
+    />
 
+    <div class="or-divider">
+        <div class="stripe"></div>
+        <span class="or-divider-text">{I18n.t("Login.OrDivider.COPY")}</span>
+        <div class="stripe"></div>
+    </div>
+
+    <Button href="/"
+            label={I18n.t("Login.TryOtherEmail.COPY")}
+            className="secondary"
+            onClick={otherAccount}/>
+{:else}
 <Button href="/next"
         disabled={showSpinner || !allowedNext($user.email)}
         label={I18n.t("GetApp.Next.COPY")}
         className="full"
         onClick={nextStep}/>
+
+<SubContent question={I18n.t("Login.RequestEduId.COPY")}
+            linkText={I18n.t("Login.RequestEduId2.COPY")}
+            route="/request/{id}"
+            interContent="true"
+/>
+{/if}

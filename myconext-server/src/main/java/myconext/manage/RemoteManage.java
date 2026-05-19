@@ -1,7 +1,6 @@
 package myconext.manage;
 
-import myconext.model.IdentityProvider;
-import myconext.model.ServiceProvider;
+import myconext.model.*;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.core.ParameterizedTypeReference;
@@ -45,6 +44,7 @@ public class RemoteManage implements Manage {
                 "metaDataFields.coin:institution_brin",
                 "metaDataFields.logo:0:url",
                 "metaDataFields.coin:institution_guid",
+                "metaDataFields.coin:institution_brin_schac_home",
                 "metaDataFields.shibmd:scope:0:allowed",
                 "metaDataFields.shibmd:scope:1:allowed",
                 "metaDataFields.shibmd:scope:2:allowed",
@@ -150,21 +150,38 @@ public class RemoteManage implements Manage {
     }
 
     @Override
-    public Optional<IdentityProvider> findIdentityProviderByBrinCode(String brinCode) {
+    public List<IdentityProvider> findIdentityProviderByBrinCode(String brinCode) {
         return searchIdentityProvider("metaDataFields.coin:institution_brin", brinCode);
     }
 
     @Override
     public Optional<IdentityProvider> findIdentityProviderByInstitutionGUID(String institutionGUID) {
-        return searchIdentityProvider("metaDataFields.coin:institution_guid", institutionGUID);
+        return searchIdentityProvider("metaDataFields.coin:institution_guid", institutionGUID)
+                .stream().findFirst();
     }
 
-    private Optional<IdentityProvider> searchIdentityProvider(String metaDataField, String metaDataValue) {
+    @Override
+    public Optional<RemoteProvider> findResourceServerByEntityId(String entityId) {
+        Map<String, Object> requestBody = Map.of("entityid", entityId,
+                "REQUESTED_ATTRIBUTES", Arrays.asList(
+                        "metaDataFields.coin:institution_guid"
+                ));
+        HttpEntity<Map<String, Object>> requestEntity = new HttpEntity<>(requestBody, this.headers);
+        return restTemplate.exchange(manageBaseUrl + "/manage/api/internal/search/oauth20_rs",
+                        HttpMethod.POST, requestEntity, typeReference)
+                .getBody()
+                .stream()
+                .map(m -> remoteProvider(m))
+                .findFirst();
+    }
+
+    private List<IdentityProvider> searchIdentityProvider(String metaDataField, String metaDataValue) {
         Map<String, Object> requestBody = Map.of(metaDataField, metaDataValue,
                 "REQUESTED_ATTRIBUTES", Arrays.asList(
                         "metaDataFields.coin:institution_brin",
                         "metaDataFields.logo:0:url",
                         "metaDataFields.coin:institution_guid",
+                        "metaDataFields.coin:institution_brin_schac_home",
                         "metaDataFields.shibmd:scope:0:allowed"));
         HttpEntity<Map<String, Object>> requestEntity = new HttpEntity<>(requestBody, this.headers);
         return restTemplate.exchange(manageBaseUrl + "/manage/api/internal/search/saml20_idp",
@@ -174,8 +191,8 @@ public class RemoteManage implements Manage {
                 .map(m -> new IdentityProvider(
                         remoteProvider(m),
                         metaDataFields(m).get("coin:institution_brin"),
-                        metaDataFields(m).get("shibmd:scope:0:allowed")))
-                .findFirst();
+                        metaDataFields(m).get("coin:institution_brin_schac_home")))
+                .toList();
     }
 
 }

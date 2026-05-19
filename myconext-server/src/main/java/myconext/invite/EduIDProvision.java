@@ -1,16 +1,13 @@
 package myconext.invite;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-
 import jakarta.validation.constraints.NotNull;
+import lombok.*;
 
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
 @Setter
+@ToString
 public class EduIDProvision {
 
     @NotNull

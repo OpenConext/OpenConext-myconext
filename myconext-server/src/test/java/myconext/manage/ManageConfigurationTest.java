@@ -22,7 +22,7 @@ class ManageConfigurationTest {
         Optional<ServiceProvider> optionalServiceProvider = manage.findServiceProviderByEntityId("nope");
         assertFalse(optionalServiceProvider.isPresent());
 
-        IdentityProvider identityProvider = manage.findIdentityProviderByBrinCode("ST42").get();
+        IdentityProvider identityProvider = manage.findIdentityProviderByBrinCode("ST42").getFirst();
         assertEquals("https://static.surfconext.nl/media/idp/avat_st.jpg", identityProvider.getLogoUrl());
 
     }
