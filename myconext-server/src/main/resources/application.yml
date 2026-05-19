@@ -299,7 +299,7 @@ spring:
     oauth2:
       client:
         registration:
-          mijn_eduid:
+          my_conext:
             client-id: playground_client
             client-secret: secret
             redirect-uri: "{baseUrl}/login/oauth2/code/{registrationId}"

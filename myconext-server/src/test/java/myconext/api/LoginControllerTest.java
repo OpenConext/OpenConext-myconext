@@ -9,7 +9,6 @@ import org.junit.Test;
 import org.junit.Before;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpMethod;
-import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import java.io.IOException;
@@ -18,6 +17,7 @@ import java.util.UUID;
 
 import static io.restassured.RestAssured.given;
 import static myconext.security.GuestIdpAuthenticationRequestFilter.GUEST_IDP_REMEMBER_ME_COOKIE_NAME;
+import static myconext.security.SecurityConfiguration.InternalSecurityConfigurationAdapter.REGISTRATION_ID_MY_CONEXT;
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
@@ -46,7 +46,7 @@ public class LoginControllerTest extends AbstractIntegrationTest {
     public void login() {
         given().redirects().follow(false)
                 .when()
-                .queryParam("registration_id", "mijn_eduid")
+                .queryParam("registration_id", REGISTRATION_ID_MY_CONEXT)
                 .get("/auth/login")
                 .then()
                 .statusCode(302)
@@ -58,7 +58,7 @@ public class LoginControllerTest extends AbstractIntegrationTest {
         given().redirects().follow(false)
                 .when()
                 .queryParam("redirect_path", "/security")
-                .queryParam("registration_id", "mijn_eduid")
+                .queryParam("registration_id", REGISTRATION_ID_MY_CONEXT)
                 .get("/auth/login")
                 .then()
                 .statusCode(302)
@@ -70,7 +70,7 @@ public class LoginControllerTest extends AbstractIntegrationTest {
         given().redirects().follow(false)
                 .when()
                 .queryParam("redirect_path", "%2Fpersonal%3Fservicedesk%3Dstart")
-                .queryParam("registration_id", "mijn_eduid")
+                .queryParam("registration_id", REGISTRATION_ID_MY_CONEXT)
                 .get("/auth/login")
                 .then()
                 .statusCode(302)
@@ -82,7 +82,7 @@ public class LoginControllerTest extends AbstractIntegrationTest {
         given().redirects().follow(false)
                 .when()
                 .queryParam("redirect_path", "https://evil.example.com/phishing")
-                .queryParam("registration_id", "mijn_eduid")
+                .queryParam("registration_id", REGISTRATION_ID_MY_CONEXT)
                 .get("/auth/login")
                 .then()
                 .statusCode(302)
@@ -94,7 +94,7 @@ public class LoginControllerTest extends AbstractIntegrationTest {
         given().redirects().follow(false)
                 .when()
                 .queryParam("redirect_path", "//evil.example.com/phishing")
-                .queryParam("registration_id", "mijn_eduid")
+                .queryParam("registration_id", REGISTRATION_ID_MY_CONEXT)
                 .get("/auth/login")
                 .then()
                 .statusCode(302)
