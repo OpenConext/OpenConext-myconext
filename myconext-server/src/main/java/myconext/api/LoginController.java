@@ -103,7 +103,7 @@ public class LoginController {
         this.config.put("spBaseUrl", spBaseUrl);
         this.config.put("spServiceDeskBaseUrl", spServiceDeskBaseUrl);
         this.config.put("myconextWebAuthUrl", String.format("%s/webauthn", idpBaseUrl));
-        this.config.put("eduIDWebAuthnRedirectSpUrl", String.format("%s/security", spBaseUrl));
+        this.config.put("myconextWebAuthnRedirectSpUrl", String.format("%s/security", spBaseUrl));
         this.config.put("domain", domain);
         this.config.put("featureWebAuthn", featureWebAuthn);
         this.config.put("featureWarningEducationalEmailDomain", featureWarningEducationalEmailDomain);

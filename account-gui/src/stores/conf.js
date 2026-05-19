@@ -5,7 +5,7 @@ export const conf = writable({
     magicLinkUrl: "",
     continueAfterLoginUrl: "",
     domain: "",
-    eduIDWebAuthnRedirectSpUrl: "",
+    myconextWebAuthnRedirectSpUrl: "",
     featureWebAuthn: false,
     featureAllowList: false,
     idpBaseUrl: "",

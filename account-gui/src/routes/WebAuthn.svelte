@@ -35,7 +35,7 @@
                     })
                     .catch(() => {
                         //happens when the key is already registered
-                        window.location.href = $conf.eduIDWebAuthnRedirectSpUrl;
+                        window.location.href = $conf.myconextWebAuthnRedirectSpUrl;
                     })
             })
             .catch(() => navigate("/404"));
