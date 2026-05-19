@@ -315,10 +315,10 @@ spring:
             provider: oidcng
         provider:
           oidcng:
-            authorization-uri: "https://connect.test2.surfconext.nl/oidc/authorize"
-            token-uri: "https://connect.test2.surfconext.nl/oidc/token"
-            user-info-uri: "https://connect.test2.surfconext.nl/oidc/userinfo"
-            jwk-set-uri: "https://connect.test2.surfconext.nl/oidc/certs"
+            authorization-uri: "http://localhost:8098/oidc/authorize"
+            token-uri: "http://localhost:8098/oidc/token"
+            user-info-uri: "http://localhost:8098/oidc/userinfo"
+            jwk-set-uri: "http://localhost:8098/oidc/certs"
             user-name-attribute: sub
             user-info-authentication-method: client_secret_basic
 

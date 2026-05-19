@@ -21,6 +21,7 @@ log
 NOTES.md
 dep.tree
 application-test2.yml
+application-dev.yml
 api-docs.json
 dist
 account-gui/public/index.html
