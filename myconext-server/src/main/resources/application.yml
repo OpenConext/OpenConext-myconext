@@ -106,11 +106,11 @@ create-from-institution:
 
 # The host headers to identify the service the user is logged in
 host_headers:
-  service_desk: servicedesk.test2.eduid.nl
-  mijn_ediuid: mijn.test2.eduid.nl
+  service_desk: servicedesk.myconext.nl
+  mijn_ediuid: mijn.myconext.nl
   #Only for testing purposes
-#  active: servicedesk.test2.eduid.nl
-  active: mijn.test2.eduid.nl
+#  active: servicedesk.myconext.nl
+  active: mijn.myconext.nl
 
 feature:
   webauthn: True
