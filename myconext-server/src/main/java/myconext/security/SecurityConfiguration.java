@@ -58,11 +58,11 @@ import static org.springframework.security.config.Customizer.withDefaults;
 public class SecurityConfiguration {
 
     // Overview of the security configuration:
-    // 1. SamlSecurity (@Order(1)) — Secures the SAML guest IdP endpoint (eduID guest login).
-    // 2. InternalSecurityConfigurationAdapter (@Order default) — Secures the Mijn eduID and Service Desk portals via OAuth2/OIDC login against OpenConext.
+    // 1. SamlSecurity (@Order(1)) — Secures the SAML guest IdP endpoint (myconext guest login).
+    // 2. InternalSecurityConfigurationAdapter (@Order default) — Secures the myconext and Service Desk portals via OAuth2/OIDC login against OpenConext.
     // 3. AppSecurity (@Order(2)) — Secures system-to-system OpenConext APIs with HTTP Basic auth.
-    // 4. JWTSecurityConfig (@Order(3)) — Secures mobile app and eduID APIs via OAuth2 opaque token introspection.
-    
+    // 4. JWTSecurityConfig (@Order(3)) — Secures mobile app and myconext APIs via OAuth2 opaque token introspection.
+
     private static final Log LOG = LogFactory.getLog(SecurityConfiguration.class);
 
     @Bean
@@ -86,7 +86,7 @@ public class SecurityConfiguration {
         }
     }
 
-    //1. SamlSecurity (@Order(1)) — Secures the SAML guest IdP endpoint (eduID guest login).
+    //1. SamlSecurity (@Order(1)) — Secures the SAML guest IdP endpoint (myconext guest login).
     @Configuration
     @Order(1)
     @EnableConfigurationProperties(IdentityProviderMetaData.class)
@@ -229,7 +229,7 @@ public class SecurityConfiguration {
         }
     }
 
-    //2. InternalSecurityConfigurationAdapter (@Order default) — Secures the Mijn eduID and Service Desk portals via OAuth2/OIDC login against OpenConext.
+    //2. InternalSecurityConfigurationAdapter (@Order default) — Secures the myconext and Service Desk portals via OAuth2/OIDC login against OpenConext.
     @Order
     @Configuration
     public static class InternalSecurityConfigurationAdapter {
@@ -238,11 +238,11 @@ public class SecurityConfiguration {
 
         public static final String ROLE_GUEST = "ROLE_GUEST";
         public static final String SERVICE_DESK = "SERVICE_DESK";
-        public static final String REGISTRATION_ID_MIIN_EDUID = "mijn_eduid";
+        public static final String REGISTRATION_ID_MY_CONEXT = "my_conext";
         public static final String REGISTRATION_ID_SERVICE_DESK = "service_desk";
 
         private static final Set<String> ALLOWED_REGISTRATION_IDS =
-                Set.of(REGISTRATION_ID_MIIN_EDUID, REGISTRATION_ID_SERVICE_DESK);
+                Set.of(REGISTRATION_ID_MY_CONEXT, REGISTRATION_ID_SERVICE_DESK);
 
         public InternalSecurityConfigurationAdapter(AppAwareAuthorizationRequestResolver authorizationRequestResolver) {
             this.authorizationRequestResolver = authorizationRequestResolver;
@@ -315,7 +315,7 @@ public class SecurityConfiguration {
             return (request, response, authException) -> {
                 String registrationId = request.getParameter("registration_id");
                 if (!ALLOWED_REGISTRATION_IDS.contains(registrationId)) {
-                    registrationId = "mijn_eduid";
+                    registrationId = REGISTRATION_ID_MY_CONEXT;
                 }
                 response.sendRedirect(request.getContextPath() + "/oauth2/authorization/" + registrationId);
             };
@@ -363,7 +363,7 @@ public class SecurityConfiguration {
 
     }
 
-    //4. JWTSecurityConfig (@Order(3)) — Secures mobile app and eduID APIs via OAuth2 opaque token introspection.
+    //4. JWTSecurityConfig (@Order(3)) — Secures mobile app and myconext APIs via OAuth2 opaque token introspection.
     @Configuration
     @Order(3)
     public static class JWTSecurityConfig {

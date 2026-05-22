@@ -1,9 +1,7 @@
-# Spring profile: 'servicedesk'
-# Activate with -Dspring.profiles.active=servicedesk (or SPRING_PROFILES_ACTIVE=servicedesk)
 # Overrides for running the backend in Service Desk mode (servicedesk-gui as the front-end).
 
 host_headers:
-  active: servicedesk.test2.eduid.nl
+  active: servicedesk.myconext.nl
 
 service_desk_role_auto_provisioning: True
 

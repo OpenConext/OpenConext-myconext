@@ -15,7 +15,7 @@
     const startWebAuthn = () => {
         loading = true;
         startWebAuthFlow().then(res => {
-            window.location.href = `${$config.eduIDWebAuthnUrl}?token=${res.token}&name=${encodeURIComponent(credentialName)}`
+            window.location.href = `${$config.myconextWebAuthUrl}?token=${res.token}&name=${encodeURIComponent(credentialName)}`
         });
     }
 

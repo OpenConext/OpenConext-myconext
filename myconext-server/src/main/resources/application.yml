@@ -106,11 +106,11 @@ create-from-institution:
 
 # The host headers to identify the service the user is logged in
 host_headers:
-  service_desk: servicedesk.test2.eduid.nl
-  mijn_ediuid: mijn.test2.eduid.nl
+  service_desk: servicedesk.myconext.nl
+  mijn_ediuid: mijn.myconext.nl
   #Only for testing purposes
-#  active: servicedesk.test2.eduid.nl
-  active: mijn.test2.eduid.nl
+#  active: servicedesk.myconext.nl
+  active: mijn.myconext.nl
 
 feature:
   webauthn: True
@@ -299,7 +299,7 @@ spring:
     oauth2:
       client:
         registration:
-          mijn_eduid:
+          my_conext:
             client-id: playground_client
             client-secret: secret
             redirect-uri: "{baseUrl}/login/oauth2/code/{registrationId}"
@@ -315,10 +315,10 @@ spring:
             provider: oidcng
         provider:
           oidcng:
-            authorization-uri: "https://connect.test2.surfconext.nl/oidc/authorize"
-            token-uri: "https://connect.test2.surfconext.nl/oidc/token"
-            user-info-uri: "https://connect.test2.surfconext.nl/oidc/userinfo"
-            jwk-set-uri: "https://connect.test2.surfconext.nl/oidc/certs"
+            authorization-uri: "http://localhost:8098/oidc/authorize"
+            token-uri: "http://localhost:8098/oidc/token"
+            user-info-uri: "http://localhost:8098/oidc/userinfo"
+            jwk-set-uri: "http://localhost:8098/oidc/certs"
             user-name-attribute: sub
             user-info-authentication-method: client_secret_basic
 
