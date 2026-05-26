@@ -4,6 +4,10 @@
 
 All notable changes to this project will be documented in this file.
 
+## [8.4.0] mei 2026
+
+- Use oidc directly for logging in to myconext-gui and servicedesk-gui, instead of shibboleth
+
 ## [8.3.0] Apr 2026
 
 - Send Apple Push Notifications with `InterruptionLevel.TIME_SENSITIVE`
