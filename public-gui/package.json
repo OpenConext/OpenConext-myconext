@@ -14,7 +14,7 @@
     "@surfnet/sds": "^0.0.144",
     "i18n-js": "^4.5.1",
     "isomorphic-dompurify": "^3.10.0",
-    "js-cookie": "^3.0.5",
+    "js-cookie": "^3.0.7",
     "react": "^19.1.1",
     "react-dom": "^19.1.1",
     "react-qr-code": "^2.0.18",
