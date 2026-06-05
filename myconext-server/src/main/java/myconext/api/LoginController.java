@@ -194,6 +194,26 @@ public class LoginController {
         response.sendRedirect(redirectLocation);
     }
 
+    @GetMapping("/register/login-preference/{token}")
+    public void registerLoginPreference(@PathVariable("token") String token,
+                                        HttpServletResponse response) throws IOException {
+
+        User user = userRepository.findUserByLoginPreferenceKey(token)
+                .orElseThrow(() -> new UserNotFoundException("User not found"));
+        String preference = user.getLoginPreference();
+        user.setLoginPreferenceKey(null);
+        user.setLoginPreference(null);
+        userRepository.save(user);
+
+        Cookie loginPreferenceCookie = new Cookie("login_preference", preference);
+        loginPreferenceCookie.setMaxAge(365 * 60 * 60 * 24);
+        loginPreferenceCookie.setSecure(secureCookie);
+        loginPreferenceCookie.setPath("/");
+        response.addCookie(loginPreferenceCookie);
+
+        response.sendRedirect(this.config.get("spBaseUrl") + "/security");
+    }
+
     @GetMapping("/servicedesk/{id}")
     @Hidden
     public ResponseEntity redirectToSPServiceDeskHook(@PathVariable("id") String id,

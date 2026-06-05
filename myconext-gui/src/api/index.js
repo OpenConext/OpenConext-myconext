@@ -131,6 +131,10 @@ export function startWebAuthFlow() {
     return fetchJson("/myconext/api/sp/security/webauthn");
 }
 
+export function setLoginPreference(loginPreference) {
+    return postPutJson("/myconext/api/sp/login-preference", {loginPreference}, "PUT");
+}
+
 export function deleteUser() {
     return fetchDelete("/myconext/api/sp/delete").then(() => logout());
 }

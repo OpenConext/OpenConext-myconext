@@ -267,4 +267,38 @@ public class LoginControllerTest extends AbstractIntegrationTest {
         assertEquals("http://localhost:3000/expired", location);
     }
 
+    @Test
+    public void registerLoginPreferenceWithToken() {
+        User user = userRepository.findUserByEmailAndRateLimitedFalse("jdoe@example.com").get();
+        String token = UUID.randomUUID().toString();
+        user.setLoginPreferenceKey(token);
+        user.setLoginPreference("usePassword");
+        userRepository.save(user);
+
+        given()
+                .redirects().follow(false)
+                .when()
+                .pathParam("token", token)
+                .get("/register/login-preference/{token}")
+                .then()
+                .statusCode(302)
+                .cookie("login_preference", "usePassword")
+                .header("Location", "http://localhost:3001/security");
+
+        user = userRepository.findUserByEmailAndRateLimitedFalse("jdoe@example.com").get();
+        assertNull(user.getLoginPreferenceKey());
+        assertNull(user.getLoginPreference());
+    }
+
+    @Test
+    public void registerLoginPreferenceWithUnknownToken() {
+        given()
+                .redirects().follow(false)
+                .when()
+                .pathParam("token", UUID.randomUUID().toString())
+                .get("/register/login-preference/{token}")
+                .then()
+                .statusCode(404);
+    }
+
 }

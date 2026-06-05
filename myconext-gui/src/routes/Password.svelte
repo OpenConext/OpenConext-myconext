@@ -1,8 +1,8 @@
 <script>
-    import {flash, user} from "../stores/user";
+    import {flash, user, config} from "../stores/user";
     import I18n from "../locale/I18n";
     import {validPassword} from "../validation/regexp";
-    import {resetPasswordHashValid, generatePasswordResetCode, updatePassword} from "../api";
+    import {resetPasswordHashValid, generatePasswordResetCode, updatePassword, setLoginPreference} from "../api";
     import {navigate} from "svelte-routing";
     import Button from "../components/Button.svelte";
     import Modal from "../components/Modal.svelte";
@@ -38,8 +38,10 @@
                             $user[key] = json[key];
                         }
                     }
-                    navigate("/security");
-                    flash.setValue(usePassword ? I18n.t("Password.Updated.COPY") : I18n.t("Password.Set.COPY"));
+                    return setLoginPreference("usePassword");
+                })
+                .then(res => {
+                    window.location.href = `${$config.idpBaseUrl}/register/login-preference/${res.token}`;
                 })
                 .catch(() => {
                     passwordResetHashExpired = true;

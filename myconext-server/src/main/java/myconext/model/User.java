@@ -76,6 +76,11 @@ public class User implements Serializable, UserDetails {
     @Indexed
     private String createFromInstitutionKey;
     @Setter
+    @Indexed
+    private String loginPreferenceKey;
+    @Setter
+    private String loginPreference;
+    @Setter
     private String createFromInstitutionReturnUrl;
     //Attributes and surfSecureId can't be final because of Jackson serialization (despite what your IDE tells tou)
     private Map<String, List<String>> attributes = new HashMap<>();
