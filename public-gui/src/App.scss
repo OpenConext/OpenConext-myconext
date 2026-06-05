@@ -81,8 +81,9 @@ h5 {
 
     &.with-collapse-fields {
         padding: 35px 0;
+        gap: 0;
         width: 100%;
-        h3 {
+        h2, h3 {
             padding: 0 35px 12px 35px;
         }
     }
@@ -101,5 +102,28 @@ h5 {
 
 }
 
+table.servicedesk-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 12px 0;
+    font-size: 14px;
 
+    th, td {
+        text-align: left;
+        padding: 8px 12px;
+        border: 1px solid var(--sl-color-grey-100);
+    }
+
+    thead tr {
+        background-color: var(--sl-color-neutral-50);
+
+        th {
+            font-weight: 600;
+        }
+    }
+
+    tbody tr {
+        background-color: white;
+    }
+}
 

@@ -1,68 +1,11 @@
-import parachute from "../assets/parachute.svg";
 import I18n from "../locale/I18n.js";
 import "./Support.scss"
-import support from "../assets/support.svg";
-import mobileScreenshot from "../assets/mobile_screenshot.svg";
-import {Background} from "../components/Background.jsx";
-import {useAppStore} from "../stores/AppStore.js";
-import {useEffect} from "react";
+import {Support_NL} from "./Support_NL.jsx";
+import {Support_EN} from "./Support_EN.jsx";
 
 export const Support = () => {
-
-    const config = useAppStore((state) => state.config);
-
-    useEffect(() => {
-        window.scroll(0, 0);
-    }, []);
-
-    return (
-        <div className="support-container">
-            <div className="support">
-                <div className="top">
-                    <img src={parachute} className="parachute" alt=""/>
-                    <div className="top-right">
-                        <h1 className="title">
-                            {I18n.t("support.eduID")}
-                        </h1>
-                        <h2>{I18n.t("support.title")}</h2>
-                    </div>
-                </div>
-            </div>
-            <Background>
-                <div className="card row">
-                    <img src={support} className="support" alt=""/>
-                    <div className="top-right middle">
-                        <h2 className="title">
-                            {I18n.t("support.studying")}
-                        </h2>
-                        <h2 className="title green">
-                            {I18n.t("support.connect")}
-                        </h2>
-                        <p className="info"
-                           dangerouslySetInnerHTML={{__html: I18n.t("support.studyInfo")}}/>
-                        <ul>
-                            <li>{I18n.t("support.informationBullet1")}</li>
-                            <li>{I18n.t("support.informationBullet2")}</li>
-                            <li>{I18n.t("support.informationBullet3")}</li>
-                        </ul>
-                        <p className="info"
-                           dangerouslySetInnerHTML={{__html: I18n.t("support.allAtOnce", {url: config.spBaseUrl})}}/>
-                        <img
-                            src={mobileScreenshot}
-                            className="mobileScreenshot"
-                            alt={I18n.t("support.mobileScreenshotAlt")}
-                        />
-                        <p className="info cursive"
-                           dangerouslySetInnerHTML={{__html: I18n.t("support.note")}}/>
-                    </div>
-                </div>
-                <div className="card bottom full">
-                    <h3>
-                        {I18n.t("support.help")}
-                    </h3>
-                    <p dangerouslySetInnerHTML={{__html: I18n.t("support.helpInfo")}}/>
-                </div>
-            </Background>
-        </div>
-    );
+    return <>
+        {I18n.locale === "nl" && <Support_NL/>}
+        {I18n.locale === "en" && <Support_EN/>}
+    </>
 }

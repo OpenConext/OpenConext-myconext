@@ -14,6 +14,7 @@ import {Privacy} from "./routes/Privacy.jsx";
 import {InstallApp} from "./routes/InstallApp.jsx";
 import {TiqrAuth} from "./routes/TiqrAuth.jsx";
 import {ServiceDesk} from "./routes/ServiceDesk.jsx";
+import {Verify} from "./routes/Verify.jsx";
 
 function App() {
 
@@ -47,6 +48,7 @@ function App() {
                         <Route path="/install-app" element={<InstallApp/>}/>
                         <Route path="/servicedesk" element={<ServiceDesk/>}/>
                         <Route path="/servicedesk-en" element={<ServiceDesk/>}/>
+                        <Route path="/verify" element={<Verify/>}/>
                         <Route path="*" element={<NotFound/>}/>
                     </Routes>
                 </div>

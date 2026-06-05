@@ -28,3 +28,12 @@ $tablet-width-cutoff: 821px;
     flex-direction: column;
     gap: 25px;
 }
+
+strong {
+    font-weight: 600;
+}
+
+p.section-label {
+    font-weight: 600;
+    margin-bottom: 10px;
+}

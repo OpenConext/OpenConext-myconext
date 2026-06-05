@@ -7,7 +7,7 @@ import {useAppStore} from "../stores/AppStore.js";
 import {Button, ButtonType} from "@surfnet/sds";
 import {LanguageSelector} from "./LanguageSelector.jsx";
 
-const tabNames = ["home", "about", "support"]
+const tabNames = ["home", "about", "support", "verify", "servicedesk"]
 
 export const Navigation = ({mobile, path}) => {
 
