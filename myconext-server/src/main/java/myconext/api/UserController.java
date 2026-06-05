@@ -18,7 +18,9 @@ import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import lombok.Getter;
@@ -51,13 +53,17 @@ import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.View;
+import org.springframework.web.servlet.view.RedirectView;
 import tiqr.org.model.Registration;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Field;
+import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.security.SecureRandom;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
@@ -110,6 +116,7 @@ public class UserController implements UserAuthentication {
     //For now, hardcode the not known issuers from test
     private final List<String> unknownIssuers = List.of("CURRNL2A");
     private final boolean serviceDeskActive;
+    private final boolean secureCookie;
 
     public UserController(UserRepository userRepository,
                           UserCredentialRepository userCredentialRepository,
@@ -135,6 +142,7 @@ public class UserController implements UserAuthentication {
                           @Value("${feature.default_remember_me}") boolean featureDefaultRememberMe,
                           @Value("${feature.send_js_exceptions}") boolean sendJsExceptions,
                           @Value("${feature.service_desk_active}") boolean serviceDeskActive,
+                          @Value("${secure_cookie}") boolean secureCookie,
                           @Value("${verify.issuers_path}") Resource issuersResource,
                           ServicesConfiguration servicesConfiguration) throws IOException {
         this.userRepository = userRepository;
@@ -162,6 +170,7 @@ public class UserController implements UserAuthentication {
         this.featureDefaultRememberMe = featureDefaultRememberMe;
         this.sendJsExceptions = sendJsExceptions;
         this.serviceDeskActive = serviceDeskActive;
+        this.secureCookie = secureCookie;
 
         List<IdinIssuers> idinIssuers = objectMapper.readValue(issuersResource.getInputStream(), new TypeReference<>() {
         });
@@ -1111,6 +1120,19 @@ public class UserController implements UserAuthentication {
         return ResponseEntity.status(200).body(Collections.singletonMap("token", webAuthnIdentifier));
     }
 
+    @PutMapping("sp/login-preference")
+    @Hidden
+    public ResponseEntity<Map<String, String>> setLoginPreference(Authentication authentication,
+                                                                  @RequestBody Map<String, String> body) {
+        User user = userFromAuthentication(authentication);
+        String loginPreference = body.get("loginPreference");
+        String token = hash();
+        user.setLoginPreferenceKey(token);
+        user.setLoginPreference(loginPreference);
+        userRepository.save(user);
+        return ResponseEntity.ok(Collections.singletonMap("token", token));
+    }
+
     @PostMapping("idp/security/webauthn/registration")
     @Hidden
     public ResponseEntity idpWebAuthnRegistration(@RequestBody Map<String, String> body) throws Base64UrlException {
@@ -1137,16 +1159,16 @@ public class UserController implements UserAuthentication {
      */
     @PutMapping("idp/security/webauthn/registration")
     @Hidden
-    public ResponseEntity idpWebAuthn(@RequestBody Map<String, Object> body) {
+    public ResponseEntity idpWebAuthn(HttpServletResponse response, @RequestBody Map<String, Object> body) {
         try {
-            return doIdpWebAuthn(body);
+            return doIdpWebAuthn(response, body);
         } catch (Exception e) {
             //We always want to redirect back to the SP
             return ResponseEntity.status(201).body(Collections.singletonMap("location", webAuthnSpRedirectUrl));
         }
     }
 
-    private ResponseEntity doIdpWebAuthn(Map<String, Object> body) throws IOException, Base64UrlException, RegistrationFailedException, NoSuchFieldException, IllegalAccessException {
+    private ResponseEntity doIdpWebAuthn(HttpServletResponse response, Map<String, Object> body) throws IOException, Base64UrlException, RegistrationFailedException, NoSuchFieldException, IllegalAccessException {
         String token = (String) body.get("token");
         String name = (String) body.get("name");
 
@@ -1180,6 +1202,12 @@ public class UserController implements UserAuthentication {
         userRepository.save(user);
 
         logWithContext(user, "add", "webauthn_key", LOG, "Created publicKeyCredential " + name);
+
+        Cookie loginPreferenceCookie = new Cookie("login_preference", LoginOptions.FIDO.getValue());
+        loginPreferenceCookie.setMaxAge(365 * 60 * 60 * 24);
+        loginPreferenceCookie.setSecure(secureCookie);
+        loginPreferenceCookie.setPath("/");
+        response.addCookie(loginPreferenceCookie);
 
         return ResponseEntity.status(201).body(Collections.singletonMap("location", webAuthnSpRedirectUrl));
     }
@@ -1313,7 +1341,6 @@ public class UserController implements UserAuthentication {
         return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON)
                 .body(objectWriter.writeValueAsString(map));
     }
-
 
     @GetMapping("/sp/logout")
     @Operation(summary = "Logout",

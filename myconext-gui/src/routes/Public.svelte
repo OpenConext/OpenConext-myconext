@@ -4,6 +4,7 @@
     import I18n from "../locale/I18n";
     import {navigate} from "svelte-routing";
     import Button from "../components/Button.svelte";
+    import {redirectToLogin} from "../utils/utils.js";
 
     let isLogoutRedirect = false;
     let isAccountDeletionRedirect = false;
@@ -17,10 +18,7 @@
         }
     });
 
-    const login = () => {
-        const path = isLogoutRedirect ? "/" : encodeURIComponent($redirectPath || "/");
-        window.location.href = `${$config.loginUrl}?redirect_path=${path}`;
-    };
+    const login = () => redirectToLogin($config.loginUrl, $redirectPath);
 
 
 </script>

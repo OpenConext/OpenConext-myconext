@@ -1033,6 +1033,28 @@ public class UserControllerTest extends AbstractIntegrationTest {
         User user = userRepository.findOneUserByEmail("jdoe@example.com");
         assertEquals(1, user.getPublicKeyCredentials().size());
 
+        performWebAuthnRegistration()
+                .body("location", equalTo("http://localhost:3001/security"));
+
+        user = userRepository.findOneUserByEmail("jdoe@example.com");
+        assertEquals(2, user.getPublicKeyCredentials().size());
+    }
+
+    @Test
+    public void webAuthnRegistrationSetsCookie() throws Base64UrlException, IOException {
+        User user = userRepository.findOneUserByEmail("jdoe@example.com");
+        assertEquals(1, user.getPublicKeyCredentials().size());
+
+        performWebAuthnRegistration()
+                .statusCode(201)
+                .body("location", equalTo("http://localhost:3001/security"))
+                .cookie("login_preference", "useWebAuthn");
+
+        user = userRepository.findOneUserByEmail("jdoe@example.com");
+        assertEquals(2, user.getPublicKeyCredentials().size());
+    }
+
+    private ValidatableResponse performWebAuthnRegistration() throws Base64UrlException, IOException {
         String token = given().when().get("/myconext/api/sp/security/webauthn")
                 .then().extract().body().jsonPath().getString("token");
         String attestation = "o2NmbXRkbm9uZWdhdHRTdG10oGhhdXRoRGF0YVj_SZYN5YgOjGh0NBcPZHZgW4_krrmihjLHmVzzuoMdl2NFXtS5-K3OAAI1vMYKZIsLJfHwVQMAewFBb2GSzftwFaO2t01mWWDmvgjYzJfp9YL55miRnO9cO4jnIIyPjPgXY7XoJCXHf70tN9cMrM8haGb8D1TfpS-1ijer4ChFgDypfhNGUfAxbfs7mk-IQR3gS8Afxfks17mE68fid_4lZt7lOi6Z9-RiWx_m6BbX0OjViaUBAgMmIAEhWCAyic9YLBoxd3zvxePnDbBktATOgR5jBvrUFdPptlyg-SJYIFv4tjumhccPrGTFkUBvtbQKhrDZcGWdIBhFlF_JtGIR";
@@ -1065,17 +1087,13 @@ public class UserControllerTest extends AbstractIntegrationTest {
         Map<String, Object> postData = new HashMap<>();
         postData.put("token", token);
         postData.put("credentials", objectMapper.writeValueAsString(pkc));
-        given()
+        return given()
                 .when()
                 .body(postData)
                 .contentType(ContentType.JSON)
                 .accept(ContentType.JSON)
                 .put("/myconext/api/idp/security/webauthn/registration")
-                .then()
-                .body("location", equalTo("http://localhost:3001/security"));
-
-        user = userRepository.findOneUserByEmail("jdoe@example.com");
-        assertEquals(2, user.getPublicKeyCredentials().size());
+                .then();
     }
 
     @Test
@@ -1880,6 +1898,46 @@ public class UserControllerTest extends AbstractIntegrationTest {
 
         User updatedUser = userRepository.findOneUserByEmail(user.getEmail());
         assertFalse(updatedUser.isForgottenPassword());
+    }
+
+    @Test
+    public void setLoginPreferencePassword() {
+        Map<String, String> res = given()
+                .when()
+                .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+                .body(Collections.singletonMap("loginPreference", "usePassword"))
+                .put("/myconext/api/sp/login-preference")
+                .then()
+                .statusCode(HttpStatus.OK.value())
+                .extract().as(new TypeRef<>() {
+                });
+
+        String token = res.get("token");
+        assertTrue(StringUtils.hasText(token));
+
+        User user = userRepository.findOneUserByEmail("jdoe@example.com");
+        assertEquals(token, user.getLoginPreferenceKey());
+        assertEquals("usePassword", user.getLoginPreference());
+    }
+
+    @Test
+    public void setLoginPreferenceWebAuthn() {
+        Map<String, String> res = given()
+                .when()
+                .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+                .body(Collections.singletonMap("loginPreference", "useWebAuthn"))
+                .put("/myconext/api/sp/login-preference")
+                .then()
+                .statusCode(HttpStatus.OK.value())
+                .extract().as(new TypeRef<>() {
+                });
+
+        String token = res.get("token");
+        assertTrue(StringUtils.hasText(token));
+
+        User user = userRepository.findOneUserByEmail("jdoe@example.com");
+        assertEquals(token, user.getLoginPreferenceKey());
+        assertEquals("useWebAuthn", user.getLoginPreference());
     }
 
     private String hash() {

@@ -28,7 +28,7 @@ export const config = writable({
     myConextUrlGuestIdp: "",
     spBaseUrl: "",
     createEduIDInstitutionLanding: false,
-    eduIDWebAuthnUrl: "",
+    myconextWebAuthUrl: "",
     magicLinkUrl: "",
     domain: "",
     idpBaseUrl: "",

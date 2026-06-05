@@ -18,7 +18,7 @@
     import AwaitLinkFromInstitutionMail from "./routes/AwaitLinkFromInstitutionMail.svelte";
     import AttributeMissing from "./routes/AttributeMissing.svelte";
     import InstallApp from "./routes/tiqr/InstallApp.svelte";
-    import {isEmpty} from "./utils/utils.js";
+    import {isEmpty, redirectToLogin} from "./utils/utils.js";
 
     const unprotectedRoutes = [
         "/create-from-institution",
@@ -31,6 +31,14 @@
     onMount(() => configuration()
         .then(json => {
             $config = json;
+
+            if ($config.isAuthenticated === false &&
+              !unprotectedRoutes.some(route => window.location.pathname.indexOf(route) > -1)) {
+                $redirectPath = window.location.pathname;
+                redirectToLogin($config.loginUrl, $redirectPath);
+                return;
+            }
+
             const urlSearchParams = new URLSearchParams(window.location.search);
             let lang = "en";
             if (urlSearchParams.has("lang")) {
@@ -77,8 +85,7 @@
                         } else if (afterDelete) {
                             navigate("/landing?delete=true");
                         } else {
-                            const path = encodeURIComponent($redirectPath || "/");
-                            window.location.href = `${$config.loginUrl}?redirect_path=${path}`;
+                            redirectToLogin($config.loginUrl, $redirectPath);
                         }
                     })
             }

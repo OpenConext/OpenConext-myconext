@@ -1,0 +1,12 @@
+[
+  {
+    "uid": "super",
+    "email": "super@example.com",
+    "givenName": "John",
+    "familyName": "Doe",
+    "schacHomeOrganization": "example.com",
+    "serviceDeskMember": true,
+    "newUser": false,
+    "created": 1583337392
+  }
+]

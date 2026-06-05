@@ -10,9 +10,6 @@ import myconext.repository.AuthenticationRequestRepository;
 import myconext.repository.ExternalUserRepository;
 import myconext.repository.UserLoginRepository;
 import myconext.repository.UserRepository;
-import myconext.shibboleth.ShibbolethPreAuthenticatedProcessingFilter;
-import myconext.shibboleth.ShibbolethUserDetailService;
-import myconext.shibboleth.mock.MockShibbolethFilter;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -24,21 +21,22 @@ import org.springframework.core.annotation.Order;
 import org.springframework.core.env.Environment;
 import org.springframework.core.env.Profiles;
 import org.springframework.core.io.Resource;
-import org.springframework.security.authentication.AuthenticationProvider;
-import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.AnonymousAuthenticationFilter;
 import org.springframework.security.web.authentication.preauth.AbstractPreAuthenticatedProcessingFilter;
-import org.springframework.security.web.authentication.preauth.PreAuthenticatedAuthenticationProvider;
 import org.springframework.security.web.context.DelegatingSecurityContextRepository;
 import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
 import org.springframework.security.web.context.RequestAttributeSecurityContextRepository;
 import org.springframework.security.web.context.SecurityContextRepository;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import saml.model.SAMLConfiguration;
 import saml.model.SAMLIdentityProvider;
 import saml.model.SAMLServiceProvider;
@@ -48,6 +46,7 @@ import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
 
 import static java.util.stream.Collectors.toList;
 import static org.springframework.security.config.Customizer.withDefaults;
@@ -57,6 +56,12 @@ import static org.springframework.security.config.Customizer.withDefaults;
 @EnableMethodSecurity
 @Configuration
 public class SecurityConfiguration {
+
+    // Overview of the security configuration:
+    // 1. SamlSecurity (@Order(1)) — Secures the SAML guest IdP endpoint (myconext guest login).
+    // 2. InternalSecurityConfigurationAdapter (@Order default) — Secures the myconext and Service Desk portals via OAuth2/OIDC login against OpenConext.
+    // 3. AppSecurity (@Order(2)) — Secures system-to-system OpenConext APIs with HTTP Basic auth.
+    // 4. JWTSecurityConfig (@Order(3)) — Secures mobile app and myconext APIs via OAuth2 opaque token introspection.
 
     private static final Log LOG = LogFactory.getLog(SecurityConfiguration.class);
 
@@ -68,6 +73,20 @@ public class SecurityConfiguration {
         );
     }
 
+    @Configuration
+    public static class MvcConfig implements WebMvcConfigurer {
+
+        // Allow all origins and methods
+        // Can also used to set allowed headers and credentials etc
+        @Override
+        public void addCorsMappings(CorsRegistry registry) {
+            registry.addMapping("/**")
+                    .allowedMethods("*")
+                    .allowedOrigins("*");
+        }
+    }
+
+    //1. SamlSecurity (@Order(1)) — Secures the SAML guest IdP endpoint (myconext guest login).
     @Configuration
     @Order(1)
     @EnableConfigurationProperties(IdentityProviderMetaData.class)
@@ -210,21 +229,27 @@ public class SecurityConfiguration {
         }
     }
 
+    //2. InternalSecurityConfigurationAdapter (@Order default) — Secures the myconext and Service Desk portals via OAuth2/OIDC login against OpenConext.
     @Order
     @Configuration
     public static class InternalSecurityConfigurationAdapter {
 
+        private final AppAwareAuthorizationRequestResolver authorizationRequestResolver;
+
         public static final String ROLE_GUEST = "ROLE_GUEST";
         public static final String SERVICE_DESK = "SERVICE_DESK";
+        public static final String REGISTRATION_ID_MY_CONEXT = "my_conext";
+        public static final String REGISTRATION_ID_SERVICE_DESK = "service_desk";
 
-        private AuthenticationProvider preAuthenticatedAuthenticationProvider() {
-            PreAuthenticatedAuthenticationProvider provider = new PreAuthenticatedAuthenticationProvider();
-            provider.setPreAuthenticatedUserDetailsService(new ShibbolethUserDetailService());
-            return provider;
+        private static final Set<String> ALLOWED_REGISTRATION_IDS =
+                Set.of(REGISTRATION_ID_MY_CONEXT, REGISTRATION_ID_SERVICE_DESK);
+
+        public InternalSecurityConfigurationAdapter(AppAwareAuthorizationRequestResolver authorizationRequestResolver) {
+            this.authorizationRequestResolver = authorizationRequestResolver;
         }
 
         @Bean
-        public SecurityFilterChain shibbolethSecurityFilterChain(
+        public SecurityFilterChain internalSecuritySecurityFilterChain(
                 HttpSecurity http,
                 Environment environment,
                 Manage manage,
@@ -236,50 +261,68 @@ public class SecurityConfiguration {
                 @Value("${host_headers.active}") String activeHost,
                 @Value("${host_headers.mijn_ediuid}") String mijnEduIDHost,
                 @Value("${host_headers.service_desk}") String serviceDeskHost) throws Exception {
-            AuthenticationProvider authenticationProvider = preAuthenticatedAuthenticationProvider();
-            ProviderManager providerManager = new ProviderManager(authenticationProvider);
             http
                     .securityMatcher(
-                            "/myconext/api/sp/**",
+                            "/auth/**",
                             "/startSSO",
                             "/config",
                             "/tiqr/sp/**",
-                            "/myconext/api/servicedesk/**")
+                            "/myconext/api/servicedesk/**",
+                            "/login/oauth2/**",
+                            "/oauth2/authorization/**",
+                            "/myconext/api/sp/**")
                     .csrf(csrf -> csrf.disable())
                     .sessionManagement(smc -> smc.sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED))
-                    .authorizeHttpRequests(authz -> authz.requestMatchers(
+                    .authorizeHttpRequests(authz -> authz
+                            .requestMatchers(
+                                    "/myconext/api/servicedesk/**").hasAuthority(SERVICE_DESK)
+                            .requestMatchers(
                                     "/config",
                                     "/myconext/api/idp/**",
                                     "/myconext/api/sp/create-from-institution",
                                     "/myconext/api/sp/create-from-institution/**",
                                     "/myconext/api/sp/idin/issuers",
-                                    "/myconext/api/servicedesk/logout",
-                                    "/myconext/api/swagger-ui/**")
-                            .permitAll())
-                    .authorizeHttpRequests(authz -> authz.requestMatchers(
-                            "/myconext/api/servicedesk/**"
-                    ).hasAuthority(SERVICE_DESK))
-                    .addFilterBefore(
-                            new ShibbolethPreAuthenticatedProcessingFilter(
-                                    providerManager,
-                                    userRepository,
-                                    externalUserRepository,
-                                    manage,
-                                    mijnEduIDEntityId,
-                                    List.of(serviceDeskRoles),
-                                    mijnEduIDHost,
-                                    serviceDeskHost),
-                            AbstractPreAuthenticatedProcessingFilter.class)
-                    .authorizeHttpRequests(auth -> auth
-                            .anyRequest().hasRole("GUEST"));
-            if (environment.acceptsProfiles(Profiles.of("test", "dev"))) {
-                //we can't use @Profile, because we need to add it before the real filter
-                http.addFilterBefore(new MockShibbolethFilter(serviceDeskRoleAutoProvisioning, activeHost), ShibbolethPreAuthenticatedProcessingFilter.class);
+                                    "/myconext/api/swagger-ui/**").permitAll()
+                            .anyRequest().authenticated())
+                    .oauth2Login(oAuth2LoginConfigurer -> oAuth2LoginConfigurer
+                            // Resolver delegates to the default URL-based lookup
+                            // (/oauth2/authorization/{registrationId}) and adds prompt=login when the
+                            // original request had force= (OpenConext helper).
+                            .authorizationEndpoint(authorization -> authorization
+                                    .authorizationRequestResolver(this.authorizationRequestResolver)
+                            )
+                            .userInfoEndpoint(userInfoEndpointConfigurer -> userInfoEndpointConfigurer.oidcUserService(
+                                    new OpenConextOidcUserService(
+                                            environment, manage, userRepository, externalUserRepository, mijnEduIDEntityId, mijnEduIDHost, serviceDeskHost, activeHost, Arrays.asList(serviceDeskRoles)
+                                    )
+                            ))
+                    )
+                    // With multiple ClientRegistrations Spring's default entry point would redirect
+                    // unauthenticated users to a provider-chooser page (/login). Pick the right
+                    // registrationId based on the `registration_id` query parameter on the
+                    // (typically /auth/login) request.
+                    .exceptionHandling(eh -> eh.authenticationEntryPoint(appAwareAuthenticationEntryPoint()));
+            if (environment.acceptsProfiles(Profiles.of("local", "test"))) {
+                // Fake OIDC user so APIs work without hitting SURFconext.
+                http.addFilterBefore(
+                        new LocalDevelopmentAuthenticationFilter(userRepository, externalUserRepository, serviceDeskRoleAutoProvisioning),
+                        AnonymousAuthenticationFilter.class);
             }
             return http.build();
         }
+
+        private AuthenticationEntryPoint appAwareAuthenticationEntryPoint() {
+            return (request, response, authException) -> {
+                String registrationId = request.getParameter("registration_id");
+                if (!ALLOWED_REGISTRATION_IDS.contains(registrationId)) {
+                    registrationId = REGISTRATION_ID_MY_CONEXT;
+                }
+                response.sendRedirect(request.getContextPath() + "/oauth2/authorization/" + registrationId);
+            };
+        }
     }
 
+    //3. AppSecurity (@Order(2)) — Secures system-to-system OpenConext APIs with HTTP Basic auth.
     @Configuration
     @Order(2)
     @EnableConfigurationProperties(ExternalApiConfiguration.class)
@@ -320,6 +363,7 @@ public class SecurityConfiguration {
 
     }
 
+    //4. JWTSecurityConfig (@Order(3)) — Secures mobile app and myconext APIs via OAuth2 opaque token introspection.
     @Configuration
     @Order(3)
     public static class JWTSecurityConfig {
