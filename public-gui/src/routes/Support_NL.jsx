@@ -197,7 +197,7 @@ export const Support_NL = () => {
                 <div className="card bottom">
                     <h2>Meer hulp nodig?</h2>
                     <p className="info">Staat je vraag er niet tussen? Stuur dan een e-mail naar <a
-                        href="mailto:help@eduid.nl">help@eduid.nl</a>. We helpen je graag.</p>
+                        href="mailto:help@eduid.nl">help@eduid.nl</a>. We helpen je graag en leggen je uit hoe het werkt.</p>
                 </div>
             </Background>
         </div>

@@ -30,6 +30,7 @@ export const Verify_NL = () => {
                     </p>
                 </div>
                 <div className="card bottom with-collapse-fields">
+                    <h2>Verificatie methoden</h2>
                     <InfoLinkField title="Via je instelling">
                         <p>Ben je student of medewerker? Koppel je eduID aan het account van je instelling.</p>
                         <ol>
@@ -161,7 +162,7 @@ export const Verify_NL = () => {
                 <div className="card bottom">
                     <h2>Ik heb een andere vraag</h2>
                     <p className="info">Staat je vraag er niet tussen? Stuur dan een e-mail naar <a
-                        href="mailto:help@eduid.nl">help@eduid.nl</a>. We helpen je graag.</p>
+                        href="mailto:help@eduid.nl">help@eduid.nl</a>. We helpen je graag en leggen je uit hoe het werkt.</p>
                 </div>
             </Background>
         </div>

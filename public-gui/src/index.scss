@@ -30,10 +30,14 @@ $tablet-width-cutoff: 821px;
 }
 
 strong {
-    font-weight: 600;
+    font-weight: 600!important;
 }
 
 p.section-label {
     font-weight: 600;
     margin-bottom: 10px;
+
+    &.top {
+        margin-top: 10px;
+    }
 }

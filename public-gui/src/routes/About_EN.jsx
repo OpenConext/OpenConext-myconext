@@ -39,7 +39,7 @@ export const About_EN = () => {
                     <InfoLinkField title="2. Verify your identity with an official party">
                         <p>In most cases, you'll need to verify your identity before you can use your eduID. You
                             can do this in one of the following ways:</p>
-                        <p className="section-label"><strong>With your Dutch educational or research institution</strong></p>
+                        <p className="section-label top"><strong>With your Dutch educational or research institution</strong></p>
                         <p>By linking your institution, you add the following to your eduID in one go:</p>
                         <ul>
                             <li>Your full name, confirmed by an official party</li>
@@ -53,14 +53,14 @@ export const About_EN = () => {
                             with us.</p>
                         <p>Please note: your institution data will be automatically deleted after 6 months. After
                             that, you can easily re-link your institution.</p>
-                        <p><strong>Not affiliated with an institution?</strong> You can verify your eduID in the
+                        <p className="section-label top"><strong>Not affiliated with an institution?</strong> You can verify your eduID in the
                             following ways:</p>
                         <ul>
                             <li><strong>Via your bank (iDIN)</strong> – for customers of a Dutch bank</li>
                             <li><strong>European identity document (eIDAS)</strong> – for citizens from other
                                 European countries
                             </li>
-                            <li>Service desk – only for participants in eduBadges pilots</li>
+                            <li><Link to={"/servicedesk"}>Service desk</Link> – only for participants in eduBadges pilots</li>
                         </ul>
                         <p><Link to="/verify">Learn more about verifying your eduID</Link></p>
                     </InfoLinkField>

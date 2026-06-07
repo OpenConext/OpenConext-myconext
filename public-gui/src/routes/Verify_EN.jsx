@@ -29,6 +29,7 @@ export const Verify_EN = () => {
                     </p>
                 </div>
                 <div className="card bottom with-collapse-fields">
+                    <h2>Verification methods</h2>
                     <InfoLinkField title="Through your institution">
                         <p>Are you a student or employee? Link your eduID to your institution's account.</p>
                         <ol>
@@ -159,7 +160,7 @@ export const Verify_EN = () => {
                 <div className="card bottom">
                     <h2>I have a different question</h2>
                     <p className="info">Is your question not listed here? Send an email to <a
-                        href="mailto:help@eduid.nl">help@eduid.nl</a>. We're happy to help.</p>
+                        href="mailto:help@eduid.nl">help@eduid.nl</a>. We are happy to help and explain how it works.</p>
                 </div>
             </Background>
         </div>

@@ -8,8 +8,8 @@ export const InfoLinkField = ({title, info, children}) => {
     const [collapse, setCollapse] = useState(false)
 
     return (
-        <div className="info-link-field" onClick={() => setCollapse(!collapse)}>
-            <div className="info-link-field-inner">
+        <div className="info-link-field">
+            <div className="info-link-field-inner" onClick={() => setCollapse(!collapse)}>
                 <span className={`title ${collapse ? "open" : "collapsed"}`}>
                     {title}
                 </span>

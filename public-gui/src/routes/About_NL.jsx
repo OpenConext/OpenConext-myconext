@@ -57,7 +57,7 @@ export const About_NL = () => {
                         <ul>
                             <li>Via je bank (iDIN) - voor klanten van een Nederlandse bank</li>
                             <li>Europees identiteitsbewijs (eIDAS) - voor burgers uit andere Europese landen</li>
-                            <li>Servicedesk - alleen voor deelnemers aan pilots met eduBadges</li>
+                            <li><Link to={"/servicedesk"}>Servicedesk</Link> - alleen voor deelnemers aan pilots met eduBadges</li>
                         </ul>
                         <p><Link to="/verify">Bekijk hoe je je eduID verifieert</Link></p>
                     </InfoLinkField>

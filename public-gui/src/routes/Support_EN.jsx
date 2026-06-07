@@ -199,7 +199,7 @@ export const Support_EN = () => {
                 <div className="card bottom">
                     <h2>Need more help?</h2>
                     <p className="info">Can't find your question here? Send an email to <a
-                        href="mailto:help@eduid.nl">help@eduid.nl</a>. We're happy to help.</p>
+                        href="mailto:help@eduid.nl">help@eduid.nl</a>. We're happy to help and explain how it works.</p>
                 </div>
             </Background>
         </div>
