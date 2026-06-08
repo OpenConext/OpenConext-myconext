@@ -18,7 +18,7 @@ const en = {
     },
     home: {
         eduID: "eduID",
-        title: "Easily prove who you are",
+        title: "Your ID for lifelong learning",
         whatCanYouDo: "What is eduID for?",
         info1: "Log in to a growing number of education and research services, whether you're a student, staff member, or professional.",
         info2: "Your eduID stays with you throughout your entire career, from your studies to work and courses later in life.",

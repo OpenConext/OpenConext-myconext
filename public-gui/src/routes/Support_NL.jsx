@@ -26,7 +26,7 @@ export const Support_NL = () => {
                 <div className="card bottom with-collapse-fields">
                     <h3>Accountbeheer</h3>
                     <InfoLinkField title="Hoe beheer ik mijn eduID?">
-                        <p>Wil je je gegevens bekijken of aanpassen? Ga naar mijn.eduid.nl. Daar beheer je alles wat
+                        <p>Wil je je gegevens bekijken of aanpassen? Ga naar <a href="https://mijn.eduid.nl">Mijn eduID</a>. Daar beheer je alles wat
                             met je eduID te maken heeft.</p>
                     </InfoLinkField>
                     <InfoLinkField title="Hoe wijzig ik mijn e-mailadres?">
@@ -38,9 +38,9 @@ export const Support_NL = () => {
                         </ol>
                     </InfoLinkField>
                     <InfoLinkField title="Hoe kan ik mijn eduID verwijderen?">
-                        <p>Wil je je eduID verwijderen? Log in op mijn.eduid.nl en ga naar 'Account'. Daar kun je je
+                        <p>Wil je je eduID verwijderen? Log in op <a href="https://mijn.eduid.nl">Mijn eduID</a> en ga naar 'Account'. Daar kun je je
                             eduID verwijderen.</p>
-                        <p>Let op: denk goed na voordat je je eduID verwijdert. Je kunt toegang verliezen tot
+                        <p className="quote">Let op: denk goed na voordat je je eduID verwijdert. Je kunt toegang verliezen tot
                             applicaties waar je nu mee inlogt, en die toegang is niet meer terug te krijgen.</p>
                     </InfoLinkField>
                 </div>
@@ -61,16 +61,17 @@ export const Support_NL = () => {
                             Wil je je voor- of achternaam wijzigen, dan moet je dit bij de partij doen waarmee je je
                             eduID hebt geverifieerd.</p>
                         <ul>
-                            <li>Instelling: neem contact op met je school of universiteit.</li>
-                            <li>Nederlandse bank: pas je naam aan bij de bank.</li>
-                            <li>Europese ID: ga naar de website van de ID-partij die je hebt gebruikt. Na de
-                                wijziging kun je jouw naam opnieuw updaten in eduID. Dit doe je door de gegevens
-                                eerst te verwijderen (zie hieronder) en vervolgens de verificatie opnieuw te doen.
+                            <li><strong>Instelling:</strong> neem contact op met je school of universiteit.</li>
+                            <li><strong>Nederlandse bank:</strong> pas je naam aan bij de bank.</li>
+                            <li><strong>Europese ID:</strong> ga naar de website van de ID-partij die je hebt gebruikt.
                             </li>
                         </ul>
-                        <p>Is je naam veranderd omdat je bijvoorbeeld trouwt of van gender verandert? Dan regel je
+                        <p>Na de
+                            wijziging kun je jouw naam opnieuw updaten in eduID. Dit doe je door de gegevens
+                            eerst te verwijderen (zie hieronder) en vervolgens de verificatie opnieuw te doen.</p>
+                        <p className="separator">Is je naam veranderd omdat je bijvoorbeeld trouwt of van gender verandert? Dan regel je
                             dit meestal eerst via de gemeente. Daarna kun je de naam ook in eduID aanpassen.</p>
-                        <p>Zie je alleen een voorletter? Dat kan kloppen. Als je je naam hebt geverifieerd via je
+                        <p className="separator">Zie je alleen een voorletter? Dat kan kloppen. Als je je naam hebt geverifieerd via je
                             bank, dan ontvangen we alleen de voorletter(s) van je naam. Je kunt dan bij 'roepnaam'
                             je volledige naam invullen.</p>
                     </InfoLinkField>
@@ -90,13 +91,13 @@ export const Support_NL = () => {
                             te houden, bijvoorbeeld als je van instelling of rol wisselt. Je merkt dit meestal
                             doordat je wordt gevraagd opnieuw te koppelen wanneer je ergens probeert in te
                             loggen.</p>
-                        <p>Koppel je instelling opnieuw via de eduID-app of Mijn eduID.</p>
+                        <p className="separator">Koppel je instelling opnieuw via de eduID-app of <a href="https://mijn.eduid.nl">Mijn eduID</a>.</p>
                     </InfoLinkField>
                     <InfoLinkField title="Kan ik meerdere organisaties aan mijn eduID koppelen?">
                         <p>Ja, je kunt meerdere onderwijs- of onderzoeksinstellingen aan je eduID koppelen. Dit kan
                             nodig zijn als je bij meerdere instellingen studeert of werkt. Per instelling kun je
                             bewijzen wie je bent en met welke rol (zoals student of medewerker). Ga naar
-                            mijn.eduid.nl en kies 'Voeg instelling toe'.</p>
+                            <a href="https://mijn.eduid.nl">Mijn eduID</a> en kies 'Voeg instelling toe'.</p>
                     </InfoLinkField>
                 </div>
                 <div className="card bottom with-collapse-fields">
@@ -129,7 +130,7 @@ export const Support_NL = () => {
                             <li>Kies op het inlogscherm voor Login met een passkey.</li>
                             <li>Vul je e-mailadres in en volg de instructies van je browser. Klaar!</li>
                         </ol>
-                        <p>Let op: een passkey die je instelt in één browser (bijvoorbeeld Chrome) werkt niet
+                        <p className="quote">Let op: een passkey die je instelt in één browser (bijvoorbeeld Chrome) werkt niet
                             automatisch in een andere browser (bijvoorbeeld Safari). Voeg de passkey in die browser
                             opnieuw toe.</p>
                     </InfoLinkField>
@@ -164,7 +165,7 @@ export const Support_NL = () => {
                     <InfoLinkField title="Ik krijg de foutmelding 'registratie mislukt'">
                         <p>Volg de onderstaande stappen om dit op te lossen. Zorg dat je stap 1 volledig afrondt
                             voordat je verdergaat met stap 2.</p>
-                        <p className="section-label"><strong>Stap 1: Verwijder de app en reset je browser</strong></p>
+                        <p className="section-label top"><strong>Stap 1: Verwijder de app en reset je browser</strong></p>
                         <ul>
                             <li>Verwijder de eduID app van je telefoon.</li>
                             <li>Log in op eduid.nl en verwijder de app van je account.</li>

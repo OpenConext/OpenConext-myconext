@@ -39,9 +39,9 @@ export const About_NL = () => {
                     <InfoLinkField title="2. Verifieer je identiteit bij een officiele partij">
                         <p>Om je eduID te kunnen gebruiken, moet je in de meeste gevallen eerst bevestigen wie je
                             bent. Dat doe je via een van de volgende methodes:</p>
-                        <p className="section-label"><strong>Via je Nederlandse onderwijs- of onderzoeksinstelling</strong></p>
+                        <p className="section-label top"><strong>Via je Nederlandse onderwijs- of onderzoeksinstelling</strong></p>
                         <p>Door je instelling te koppelen, voeg je in één keer het volgende toe aan je eduID:</p>
-                        <ul>
+                        <ul className="verify-options">
                             <li>Je volledige naam, bevestigd door een officiële partij</li>
                             <li>Bewijs dat je student of medewerker bent</li>
                             <li>Je huidige instelling</li>
@@ -49,15 +49,15 @@ export const About_NL = () => {
                         <p className="section-label"><strong>Zo doe je het</strong></p>
                         <p>Open de eduID-app of ga naar Mijn eduID en kies 'Koppel je instelling'. Of klik op
                             'bevestig je identiteit' en vervolgens op 'gebruik je school- of werkaccount'.</p>
-                        <p>Je logt in bij je instelling, waarna die je naam en rol automatisch met ons deelt.</p>
-                        <p>Let op: je instellingsgegevens worden na 6 maanden automatisch verwijderd. Daarna kun je
+                        <p className="separator">Je logt in bij je instelling, waarna die je naam en rol automatisch met ons deelt.</p>
+                        <p className="quote">Let op: je instellingsgegevens worden na 6 maanden automatisch verwijderd. Daarna kun je
                             je instelling eenvoudig opnieuw koppelen.</p>
-                        <p>Niet aangesloten bij een instelling? Dan kun je op de volgende manieren je eduID
+                        <p className="section-label top"><strong>Niet aangesloten bij een instelling?</strong> Dan kun je op de volgende manieren je eduID
                             verifiëren:</p>
                         <ul>
-                            <li>Via je bank (iDIN) - voor klanten van een Nederlandse bank</li>
-                            <li>Europees identiteitsbewijs (eIDAS) - voor burgers uit andere Europese landen</li>
-                            <li><Link to={"/servicedesk"}>Servicedesk</Link> - alleen voor deelnemers aan pilots met eduBadges</li>
+                            <li><strong>Via je bank (iDIN)</strong> - voor klanten van een Nederlandse bank</li>
+                            <li><strong>Europees identiteitsbewijs (eIDAS)</strong> - voor burgers uit andere Europese landen</li>
+                            <li><strong><Link to={"/servicedesk"}>Servicedesk</Link></strong> - alleen voor deelnemers aan pilots met eduBadges</li>
                         </ul>
                         <p><Link to="/verify">Bekijk hoe je je eduID verifieert</Link></p>
                     </InfoLinkField>
@@ -71,7 +71,7 @@ export const About_NL = () => {
                 <div className="card bottom">
                     <h2>Waar vind je je account en gegevens terug?</h2>
                     <p className="info">
-                        In Mijn eduID vind je al je gegevens, zoals je naam, e-mailadres en beveiligingsinstellingen.
+                        In <a href="https://mijn.eduid.nl">Mijn eduID</a> vind je al je gegevens, zoals je naam, e-mailadres en beveiligingsinstellingen.
                         Je kunt daar ook zien bij welke diensten je bent ingelogd met eduID, en gegevens aanpassen
                         wanneer je dat wilt.
                     </p>

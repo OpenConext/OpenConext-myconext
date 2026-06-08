@@ -26,7 +26,7 @@ export const Support_EN = () => {
                 <div className="card bottom with-collapse-fields">
                     <h3>Account management</h3>
                     <InfoLinkField title="How do I manage my eduID?">
-                        <p>Want to view or update your details? Go to mijn.eduid.nl. This is where you manage
+                        <p>Want to view or update your details? Go to <a href="https://mijn.eduid.nl">My eduID</a>. This is where you manage
                             everything related to your eduID.</p>
                     </InfoLinkField>
                     <InfoLinkField title="How do I change my email address?">
@@ -38,7 +38,7 @@ export const Support_EN = () => {
                         </ol>
                     </InfoLinkField>
                     <InfoLinkField title="How do I delete my eduID?">
-                        <p>Want to delete your eduID? Log in at mijn.eduid.nl and go to 'Account'. From there you
+                        <p>Want to delete your eduID? Log in at <a href="https://mijn.eduid.nl">My eduID</a> and go to 'Account'. From there you
                             can delete your eduID.</p>
                         <p>Please note: think carefully before deleting your eduID. You may lose access to
                             applications you currently log in to with it, and that access cannot be recovered.</p>
@@ -64,17 +64,18 @@ export const Support_EN = () => {
                         <p>To change your first or last name, you need to do this with the party you used to
                             verify your eduID.</p>
                         <ul>
-                            <li>Institution: contact your school or university.</li>
-                            <li>Dutch bank: update your name with your bank.</li>
-                            <li>European ID: visit the website of the ID provider you used. Once the change has
-                                been made, you can update your name in eduID by first removing the existing
-                                details (see below) and then completing the verification again.
+                            <li><strong>Institution:</strong> contact your school or university.</li>
+                            <li><strong>Dutch bank:</strong> update your name with your bank.</li>
+                            <li><strong>European ID:</strong> visit the website of the ID provider you used.
                             </li>
                         </ul>
-                        <p>Has your name changed due to marriage or a gender change? This is usually arranged
+                        <p>Once the change has
+                            been made, you can update your name in eduID by first removing the existing
+                            details (see below) and then completing the verification again.</p>
+                        <p className="separator">Has your name changed due to marriage or a gender change? This is usually arranged
                             through your local municipality first. After that, you can update your name in eduID
                             as well.</p>
-                        <p>Seeing only an initial? That may be correct. When you verify your name via your bank,
+                        <p className="separator">Seeing only an initial? That may be correct. When you verify your name via your bank,
                             we only receive the initial(s) of your name. In that case, you can enter your full
                             first name under 'preferred first name'.</p>
                     </InfoLinkField>
@@ -93,13 +94,13 @@ export const Support_EN = () => {
                         <p>Your institution data is automatically removed after 6 months to keep your details up
                             to date, for example if you switch institutions or roles. You will usually notice this
                             when you are prompted to re-link when trying to log in somewhere.</p>
-                        <p>Re-link your institution via the eduID app or mijn.eduid.nl.</p>
+                        <p>Re-link your institution via the eduID app or <a href="https://mijn.eduid.nl">My eduID</a>.</p>
                     </InfoLinkField>
                     <InfoLinkField title="Can I link multiple organisations to my eduID?">
                         <p>Yes, you can link multiple education or research institutions to your eduID. This may
                             be necessary if you study or work at more than one institution. For each institution,
                             you can verify who you are and in what role (such as student or staff member). Go to
-                            mijn.eduid.nl and select 'Add institution'.</p>
+                            <a href="https://mijn.eduid.nl">My eduID</a> and select 'Add institution'.</p>
                     </InfoLinkField>
                 </div>
                 <div className="card bottom with-collapse-fields">

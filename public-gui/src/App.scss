@@ -8,6 +8,7 @@
     > .router-container {
         flex-grow: 1;
         display: flex;
+
         > :first-child {
             flex-grow: 1;
         }
@@ -83,6 +84,7 @@ h5 {
         padding: 35px 0;
         gap: 0;
         width: 100%;
+
         h2, h3 {
             padding: 0 35px 12px 35px;
         }
@@ -125,5 +127,17 @@ table.servicedesk-table {
     tbody tr {
         background-color: white;
     }
+
+
 }
 
+p.separator {
+    margin-top: 10px;
+}
+
+p.quote {
+    color: var(--sds--color--gray--500);
+    margin: 10px 0 10px 18px;
+    padding: 4px 0 4px 18px;
+    border-left: 2px solid var(--sds--color--gray--400);
+}

@@ -25,7 +25,7 @@ export const ServiceDesk_NL = () => {
                         opties: via je instelling, je bank (iDIN) of een Europees identiteitsbewijs (eIDAS).
                     </p>
                     <div className="callout">
-                        <p><strong>Let op:</strong> de servicedesk is op dit moment alleen beschikbaar voor
+                        <p className="quote"><strong>Let op:</strong> de servicedesk is op dit moment alleen beschikbaar voor
                             deelnemers aan pilots met eduBadges. Ontvang je een badge en heeft je instelling je
                             gevraagd je account te verifiëren? Dan ben je hier op de juiste plek.</p>
                     </div>

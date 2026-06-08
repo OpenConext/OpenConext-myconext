@@ -33,20 +33,20 @@ export const Verify_EN = () => {
                     <InfoLinkField title="Through your institution">
                         <p>Are you a student or employee? Link your eduID to your institution's account.</p>
                         <ol>
-                            <li>Go to mijn.eduid.nl and log in.</li>
+                            <li>Go to <a href="https://mijn.eduid.nl">My eduID</a> and log in.</li>
                             <li>Go to Your details and click Verify your identity or Add an organisation.</li>
                             <li>Click Use your school or work account and follow the steps.</li>
                             <li>Your eduID is verified immediately.</li>
                         </ol>
-                        <p>You only need to do this once. Have you already verified your identity before? Then you
+                        <p className="quote">You only need to do this once. Have you already verified your identity before? Then you
                             don't need to follow these steps.</p>
-                        <p>Not affiliated with an institution? Use one of the methods below to verify your
+                        <p><strong>Not affiliated with an institution?</strong> Use one of the methods below to verify your
                             eduID.</p>
                     </InfoLinkField>
                     <InfoLinkField title="Through your bank (iDIN)">
                         <p>iDIN is a system that allows you to identify yourself online through your bank.</p>
                         <ol>
-                            <li>Go to mijn.eduid.nl and log in.</li>
+                            <li>Go to <a href="https://mijn.eduid.nl">My eduID</a> and log in.</li>
                             <li>Go to Your details and click Verify your identity.</li>
                             <li>Click Use your bank.</li>
                             <li>Choose your bank, log in and confirm. You only share your personal details, not any
@@ -54,7 +54,7 @@ export const Verify_EN = () => {
                             </li>
                             <li>Your eduID is verified immediately.</li>
                         </ol>
-                        <p>Almost all Dutch banks participate in iDIN. Check at idin.nl whether your bank is
+                        <p className="quote">Almost all Dutch banks participate in iDIN. Check at idin.nl whether your bank is
                             connected.</p>
                     </InfoLinkField>
                     <InfoLinkField title="Through your European identity document (eIDAS)">
@@ -62,13 +62,13 @@ export const Verify_EN = () => {
                             Europe. Are you a European citizen (non-Dutch)? Then you can verify your eduID account
                             using your country's digital identity tool, similar to DigiD.</p>
                         <ol>
-                            <li>Go to mijn.eduid.nl and log in.</li>
+                            <li>Go to <a href="https://mijn.eduid.nl">My eduID</a> and log in.</li>
                             <li>Go to Your details and click Verify your identity.</li>
                             <li>Click Use a European ID.</li>
                             <li>Select your country and follow the steps.</li>
                             <li>Your eduID is verified immediately.</li>
                         </ol>
-                        <p>Not all European countries are connected. View the current list on the government
+                        <p className="quote">Not all European countries are connected. View the current list on the government
                             website. Are you Dutch? Use iDIN or your institution account instead.</p>
                     </InfoLinkField>
                     <InfoLinkField title="At an eduID service desk">
@@ -76,7 +76,7 @@ export const Verify_EN = () => {
                             to="/servicedesk">service desk</Link>. Please note: the service desk is currently only
                             available for participants in eduBadges pilots.</p>
                         <ol>
-                            <li>Go to mijn.eduid.nl and log in.</li>
+                            <li>Go to <a href="https://mijn.eduid.nl">My eduID</a> and log in.</li>
                             <li>Go to Your details and click Verify your identity.</li>
                             <li>Click Contact the service desk and follow the steps to generate a verification
                                 code.
@@ -114,7 +114,7 @@ export const Verify_EN = () => {
                             </tr>
                             </tbody>
                         </table>
-                        <p>Is your institution not listed? First check whether you can use another verification
+                        <p className="quote">Is your institution not listed? First check whether you can use another verification
                             method. If not, please contact your institution.</p>
                     </InfoLinkField>
                 </div>

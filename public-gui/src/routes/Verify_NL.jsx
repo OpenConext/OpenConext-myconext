@@ -34,22 +34,22 @@ export const Verify_NL = () => {
                     <InfoLinkField title="Via je instelling">
                         <p>Ben je student of medewerker? Koppel je eduID aan het account van je instelling.</p>
                         <ol>
-                            <li>Ga naar mijn.eduid.nl en log in.</li>
+                            <li>Ga naar <a href="https://mijn.eduid.nl">Mijn eduID</a> en log in.</li>
                             <li>Ga naar Je gegevens en klik op Bevestig je identiteit of Voeg een organisatie
                                 toe.
                             </li>
                             <li>Klik op Gebruik je school- of werkaccount en volg de stappen.</li>
                             <li>Je eduID is direct geverifieerd.</li>
                         </ol>
-                        <p>Je hoeft dit maar één keer te doen. Heb je je identiteit al eerder bevestigd? Dan hoef
+                        <p className="quote">Je hoeft dit maar één keer te doen. Heb je je identiteit al eerder bevestigd? Dan hoef
                             je deze stappen niet te volgen.</p>
-                        <p>Ben je niet aangesloten bij een instelling? Gebruik dan een van de onderstaande manieren
+                        <p><strong>Ben je niet aangesloten bij een instelling?</strong> Gebruik dan een van de onderstaande manieren
                             om je eduID te verifiëren.</p>
                     </InfoLinkField>
                     <InfoLinkField title="Via je bank (iDIN)">
                         <p>iDIN is een systeem waarmee je jezelf online kunt identificeren via je bank.</p>
                         <ol>
-                            <li>Ga naar mijn.eduid.nl en log in.</li>
+                            <li>Ga naar <a href="https://mijn.eduid.nl">Mijn eduID</a> en log in.</li>
                             <li>Ga naar Je gegevens en klik op Bevestig je identiteit.</li>
                             <li>Klik op Gebruik je bank.</li>
                             <li>Kies je bank, log in en bevestig. Je deelt alleen je persoonsgegevens, geen
@@ -57,7 +57,7 @@ export const Verify_NL = () => {
                             </li>
                             <li>Je eduID is direct geverifieerd.</li>
                         </ol>
-                        <p>Bijna alle Nederlandse banken doen mee aan iDIN. Controleer op idin.nl of jouw bank is
+                        <p className="quote">Bijna alle Nederlandse banken doen mee aan iDIN. Controleer op idin.nl of jouw bank is
                             aangesloten.</p>
                     </InfoLinkField>
                     <InfoLinkField title="Via je Europees identiteitsbewijs (eIDAS)">
@@ -66,13 +66,13 @@ export const Verify_NL = () => {
                             identiteitsmiddel van je eigen land, vergelijkbaar met DigiD, je eduID-account
                             verifiëren.</p>
                         <ol>
-                            <li>Ga naar mijn.eduid.nl en log in.</li>
+                            <li>Ga naar <a href="https://mijn.eduid.nl">Mijn eduID</a> en log in.</li>
                             <li>Ga naar Je gegevens en klik op Bevestig je identiteit.</li>
                             <li>Klik op Gebruik een Europees ID.</li>
                             <li>Selecteer je land en volg de stappen.</li>
                             <li>Je eduID is direct geverifieerd.</li>
                         </ol>
-                        <p>Niet alle Europese landen zijn aangesloten. Bekijk de actuele lijst op de website van de
+                        <p className="quote">Niet alle Europese landen zijn aangesloten. Bekijk de actuele lijst op de website van de
                             overheid. Ben je Nederlander? Gebruik dan iDIN of je instellingsaccount.</p>
                     </InfoLinkField>
                     <InfoLinkField title="Bij een eduID servicedesk">
@@ -80,7 +80,7 @@ export const Verify_NL = () => {
                             een <Link to="/servicedesk">servicedesk</Link>. Let op: de servicedesk is momenteel alleen beschikbaar voor deelnemers
                             aan pilots met eduBadges.</p>
                         <ol>
-                            <li>Ga naar mijn.eduid.nl en log in.</li>
+                            <li>Ga naar <a href="https://mijn.eduid.nl">Mijn eduID</a> en log in.</li>
                             <li>Ga naar Je gegevens en klik op Bevestig je identiteit.</li>
                             <li>Klik dan Neem contact op met de servicedesk en volg de stappen om een
                                 verificatiecode aan te maken.
@@ -116,7 +116,7 @@ export const Verify_NL = () => {
                             </tr>
                             </tbody>
                         </table>
-                        <p>Staat je instelling er niet bij? Controleer eerst of je een andere verificatiemethode
+                        <p className="quote">Staat je instelling er niet bij? Controleer eerst of je een andere verificatiemethode
                             kunt gebruiken. Zo niet, neem dan contact op met je instelling.</p>
                     </InfoLinkField>
                 </div>

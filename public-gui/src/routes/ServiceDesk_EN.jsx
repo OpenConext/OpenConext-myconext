@@ -25,7 +25,7 @@ export const ServiceDesk_EN = () => {
                         through your institution, your bank (iDIN), or a European identity document (eIDAS).
                     </p>
                     <div className="callout">
-                        <p><strong>Please note:</strong> the service desk is currently only available to
+                        <p className="quote"><strong>Please note:</strong> the service desk is currently only available to
                             participants in eduBadges pilots. Are you receiving a badge and has your institution
                             asked you to verify your account? Then you are in the right place.</p>
                     </div>

@@ -41,7 +41,7 @@ export const About_EN = () => {
                             can do this in one of the following ways:</p>
                         <p className="section-label top"><strong>With your Dutch educational or research institution</strong></p>
                         <p>By linking your institution, you add the following to your eduID in one go:</p>
-                        <ul>
+                        <ul className="verify-options">
                             <li>Your full name, confirmed by an official party</li>
                             <li>Proof that you are a student or employee</li>
                             <li>Your current institution</li>
@@ -49,9 +49,9 @@ export const About_EN = () => {
                         <p className="section-label"><strong>Here's how:</strong></p>
                         <p>Open the eduID app or go to My eduID and select 'Link your institution'. Or click
                             'verify your identity' and then 'use your school or work account'.</p>
-                        <p>You log in to your institution, after which it automatically shares your name and role
+                        <p className="separator">You log in to your institution, after which it automatically shares your name and role
                             with us.</p>
-                        <p>Please note: your institution data will be automatically deleted after 6 months. After
+                        <p className="quote">Please note: your institution data will be automatically deleted after 6 months. After
                             that, you can easily re-link your institution.</p>
                         <p className="section-label top"><strong>Not affiliated with an institution?</strong> You can verify your eduID in the
                             following ways:</p>
@@ -60,7 +60,7 @@ export const About_EN = () => {
                             <li><strong>European identity document (eIDAS)</strong> – for citizens from other
                                 European countries
                             </li>
-                            <li><Link to={"/servicedesk"}>Service desk</Link> – only for participants in eduBadges pilots</li>
+                            <li><strong><Link to={"/servicedesk"}>Service desk</Link></strong> – only for participants in eduBadges pilots</li>
                         </ul>
                         <p><Link to="/verify">Learn more about verifying your eduID</Link></p>
                     </InfoLinkField>
@@ -74,7 +74,7 @@ export const About_EN = () => {
                 <div className="card bottom">
                     <h2>Where can you find your account and details?</h2>
                     <p className="info">
-                        In My eduID you'll find all your details, such as your name, email address, and security
+                        In <a href="https://mijn.eduid.nl">My eduID</a> you'll find all your details, such as your name, email address, and security
                         settings. You can also see which services you've logged in to with eduID, and update your
                         information whenever you like.
                     </p>
