@@ -175,17 +175,17 @@
                 <Route path="/usecode/:id" let:params>
                     <UseCode id="{params.id}"/>
                 </Route>
-                <Route path="/app-required" component={AppRequired}/>
-                <Route path="/getapp" component={GetApp}/>
-                <Route path="/install-app" component={InstallApp}/>
-                <Route path="/enrollapp" component={EnrollApp}/>
-                <Route path="/recovery" component={Recovery}/>
-                <Route path="/recovery-code" component={RecoveryCode}/>
-                <Route path="/phone-verification" component={PhoneVerification}/>
-                <Route path="/phone-confirmation" component={PhoneConfirmation}/>
-                <Route path="/congrats" component={Congrats}/>
-                <Route path="/remember" component={RememberMe}/>
-                <Route path="/rate-limited" component={RateLimited}/>
+                <Route path="/app-required"><AppRequired/></Route>
+                <Route path="/getapp"><GetApp/></Route>
+                <Route path="/install-app"><InstallApp/></Route>
+                <Route path="/enrollapp"><EnrollApp/></Route>
+                <Route path="/recovery"><Recovery/></Route>
+                <Route path="/recovery-code"><RecoveryCode/></Route>
+                <Route path="/phone-verification"><PhoneVerification/></Route>
+                <Route path="/phone-confirmation"><PhoneConfirmation/></Route>
+                <Route path="/congrats"><Congrats/></Route>
+                <Route path="/remember"><RememberMe/></Route>
+                <Route path="/rate-limited"><RateLimited/></Route>
                 <Route path="/usepassword/:id" let:params>
                     <UsePassword id="{params.id}"/>
                 </Route>
@@ -213,19 +213,21 @@
                 <Route path="/subject-already-linked/:id" let:params>
                     <SubjectAlreadyLinked id="{params.id}"/>
                 </Route>
-                <Route path="/external-account-linked-error" component={ExternalAccountLinkedError}/>
-                <Route path="/confirm" component={Confirm}/>
-                <Route path="/confirm-stepup" component={ConfirmStepup}/>
-                <Route path="/confirm-external-stepup" component={ConfirmExternalStepup}/>
-                <Route path="/success" component={Success}/>
-                <Route path="/expired" component={LinkExpired}/>
-                <Route path="/max-attempts" component={MaxAttempts}/>
-                <Route path="/webauthn" component={WebAuthn}/>
+                <Route path="/external-account-linked-error"><ExternalAccountLinkedError/></Route>
+                <Route path="/confirm"><Confirm/></Route>
+                <Route path="/confirm-stepup"><ConfirmStepup/></Route>
+                <Route path="/confirm-external-stepup"><ConfirmExternalStepup/></Route>
+                <Route path="/success"><Success/></Route>
+                <Route path="/expired"><LinkExpired/></Route>
+                <Route path="/max-attempts"><MaxAttempts/></Route>
+                <Route path="/webauthn"><WebAuthn/></Route>
                 <Route path="/webauthnTest/:id" let:params>
                     <WebAuthnTest id="{params.id}"/>
                 </Route>
-                <Route path="/client/mobile/*action" component={RedirectMobileApp}/>
-                <Route component={NotFound}/>
+                <Route path="/client/mobile/*action" let:params>
+                    <RedirectMobileApp action="{params.action}"/>
+                </Route>
+                <Route><NotFound/></Route>
             </Router>
         </div>
         <Router url="{url}">
