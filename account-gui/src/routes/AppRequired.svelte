@@ -13,7 +13,7 @@
     import {proceed} from "../utils/sso";
 
     let hash;
-    let serviceName = null;
+    let serviceName = "";
     let showSpinner = true;
     let showModal = false;
 
