@@ -1,14 +1,12 @@
 import verify from "../assets/verify.svg";
 import {Background} from "../components/Background.jsx";
 import {InfoLinkField} from "../components/InfoLinkField.jsx";
-import {useEffect} from "react";
 import {Link} from "react-router";
+import {useFragmentOpen} from "../hooks/useFragmentOpen.js";
 
 export const Verify_NL = () => {
 
-    useEffect(() => {
-        window.scroll(0, 0);
-    }, []);
+    const {openId, handleToggle} = useFragmentOpen();
 
     return (
         <div className="verify-container">
@@ -31,7 +29,8 @@ export const Verify_NL = () => {
                 </div>
                 <div className="card bottom with-collapse-fields">
                     <h2>Verificatie methoden</h2>
-                    <InfoLinkField title="Via je instelling">
+                    <InfoLinkField id="through-your-institution" title="Via je instelling"
+                                   isOpen={openId === "through-your-institution"} onToggle={handleToggle}>
                         <p>Ben je student of medewerker? Koppel je eduID aan het account van je instelling.</p>
                         <ol>
                             <li>Ga naar <a href="https://mijn.eduid.nl">Mijn eduID</a> en log in.</li>
@@ -46,7 +45,8 @@ export const Verify_NL = () => {
                         <p><strong>Ben je niet aangesloten bij een instelling?</strong> Gebruik dan een van de onderstaande manieren
                             om je eduID te verifiëren.</p>
                     </InfoLinkField>
-                    <InfoLinkField title="Via je bank (iDIN)">
+                    <InfoLinkField id="through-your-bank-idin" title="Via je bank (iDIN)"
+                                   isOpen={openId === "through-your-bank-idin"} onToggle={handleToggle}>
                         <p>iDIN is een systeem waarmee je jezelf online kunt identificeren via je bank.</p>
                         <ol>
                             <li>Ga naar <a href="https://mijn.eduid.nl">Mijn eduID</a> en log in.</li>
@@ -60,7 +60,9 @@ export const Verify_NL = () => {
                         <p className="quote">Bijna alle Nederlandse banken doen mee aan iDIN. Controleer op idin.nl of jouw bank is
                             aangesloten.</p>
                     </InfoLinkField>
-                    <InfoLinkField title="Via je Europees identiteitsbewijs (eIDAS)">
+                    <InfoLinkField id="through-your-european-identity-document-eidas"
+                                   title="Via je Europees identiteitsbewijs (eIDAS)"
+                                   isOpen={openId === "through-your-european-identity-document-eidas"} onToggle={handleToggle}>
                         <p>eIDAS is een Europese wet die zorgt voor veilige en betrouwbare digitale identificatie
                             binnen Europa. Ben je een Europese burger (niet Nederlands)? Dan kun je met het digitale
                             identiteitsmiddel van je eigen land, vergelijkbaar met DigiD, je eduID-account
@@ -75,7 +77,8 @@ export const Verify_NL = () => {
                         <p className="quote">Niet alle Europese landen zijn aangesloten. Bekijk de actuele lijst op de website van de
                             overheid. Ben je Nederlander? Gebruik dan iDIN of je instellingsaccount.</p>
                     </InfoLinkField>
-                    <InfoLinkField title="Bij een eduID servicedesk">
+                    <InfoLinkField id="at-an-eduid-service-desk" title="Bij een eduID servicedesk"
+                                   isOpen={openId === "at-an-eduid-service-desk"} onToggle={handleToggle}>
                         <p>Kun je geen gebruik maken van de andere opties? Verifieer je identiteit in persoon bij
                             een <Link to="/servicedesk">servicedesk</Link>. Let op: de servicedesk is momenteel alleen beschikbaar voor deelnemers
                             aan pilots met eduBadges.</p>
@@ -122,26 +125,34 @@ export const Verify_NL = () => {
                 </div>
                 <div className="card bottom with-collapse-fields">
                     <h2>Veelgestelde vragen</h2>
-                    <InfoLinkField title="Mijn bank doet niet mee aan iDIN. Wat nu?">
+                    <InfoLinkField id="my-bank-is-not-listed-under-idin" title="Mijn bank doet niet mee aan iDIN. Wat nu?"
+                                   isOpen={openId === "my-bank-is-not-listed-under-idin"} onToggle={handleToggle}>
                         <p>Kies een andere verificatiemethode, zoals via je instelling. Welke banken zijn
                             aangesloten vind je op idin.nl.</p>
                     </InfoLinkField>
-                    <InfoLinkField title="Ik heb geen geldig identiteitsbewijs. Kan ik nog verifiëren?">
+                    <InfoLinkField id="i-dont-have-a-valid-id-for-the-service-desk"
+                                   title="Ik heb geen geldig identiteitsbewijs. Kan ik nog verifiëren?"
+                                   isOpen={openId === "i-dont-have-a-valid-id-for-the-service-desk"} onToggle={handleToggle}>
                         <p>Zonder geldig identiteitsbewijs is verificatie via de servicedesk niet mogelijk. Vraag
                             eerst een nieuw document aan, of gebruik een andere methode zoals je instellingsaccount
                             of bank. Een studentenkaart is geen geldig identiteitsbewijs.</p>
                     </InfoLinkField>
-                    <InfoLinkField title="Mijn instelling heeft geen eduID servicedesk">
+                    <InfoLinkField id="my-institution-does-not-have-an-eduid-service-desk"
+                                   title="Mijn instelling heeft geen eduID servicedesk"
+                                   isOpen={openId === "my-institution-does-not-have-an-eduid-service-desk"} onToggle={handleToggle}>
                         <p>Staat de instelling waar je een edubadge van krijgt niet in de lijst van beschikbare
                             servicedesks? Dan kun je deze verificatiemethode helaas niet gebruiken. Neem contact op
                             met je instelling.</p>
                     </InfoLinkField>
-                    <InfoLinkField title="Kan ik mijn naam aanpassen na verificatie?">
+                    <InfoLinkField id="can-i-change-my-name-after-verification" title="Kan ik mijn naam aanpassen na verificatie?"
+                                   isOpen={openId === "can-i-change-my-name-after-verification"} onToggle={handleToggle}>
                         <p>Je roepnaam kun je altijd zelf wijzigen in Mijn eduID. Je geverifieerde naam pas je aan
                             bij de partij waarmee je je hebt geverifieerd, je bank, instelling, of de autoriteit
                             van je land.</p>
                     </InfoLinkField>
-                    <InfoLinkField title="Ik krijg een foutmelding. Wat kan ik doen?">
+                    <InfoLinkField id="i-am-receiving-an-error-message-what-can-i-do"
+                                   title="Ik krijg een foutmelding. Wat kan ik doen?"
+                                   isOpen={openId === "i-am-receiving-an-error-message-what-can-i-do"} onToggle={handleToggle}>
                         <ul>
                             <li>Probeer het later opnieuw, je bank of Europese identiteitsdienst kan tijdelijk niet
                                 bereikbaar zijn.
@@ -154,7 +165,9 @@ export const Verify_NL = () => {
                             </li>
                         </ul>
                     </InfoLinkField>
-                    <InfoLinkField title="Ik ben Nederlander. Kan ik verifiëren met een Europees identiteitsbewijs?">
+                    <InfoLinkField id="i-am-dutch-can-i-verify-with-a-european-identity-document"
+                                   title="Ik ben Nederlander. Kan ik verifiëren met een Europees identiteitsbewijs?"
+                                   isOpen={openId === "i-am-dutch-can-i-verify-with-a-european-identity-document"} onToggle={handleToggle}>
                         <p>Nee, de eIDAS-optie is bedoeld voor burgers uit andere Europese landen. Nederlanders
                             verifiëren via hun bank (iDIN) of via hun onderwijs- of onderzoeksinstelling.</p>
                     </InfoLinkField>

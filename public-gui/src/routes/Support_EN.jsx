@@ -1,13 +1,11 @@
 import parachute from "../assets/parachute.svg";
 import {Background} from "../components/Background.jsx";
 import {InfoLinkField} from "../components/InfoLinkField.jsx";
-import {useEffect} from "react";
+import {useFragmentOpen} from "../hooks/useFragmentOpen.js";
 
 export const Support_EN = () => {
 
-    useEffect(() => {
-        window.scroll(0, 0);
-    }, []);
+    const {openId, handleToggle} = useFragmentOpen();
 
     return (
         <div className="support-container">
@@ -25,11 +23,13 @@ export const Support_EN = () => {
                 </div>
                 <div className="card bottom with-collapse-fields">
                     <h3>Account management</h3>
-                    <InfoLinkField title="How do I manage my eduID?">
+                    <InfoLinkField id="how-do-i-manage-my-eduid" title="How do I manage my eduID?"
+                                   isOpen={openId === "how-do-i-manage-my-eduid"} onToggle={handleToggle}>
                         <p>Want to view or update your details? Go to <a href="https://mijn.eduid.nl">My eduID</a>. This is where you manage
                             everything related to your eduID.</p>
                     </InfoLinkField>
-                    <InfoLinkField title="How do I change my email address?">
+                    <InfoLinkField id="how-do-i-change-my-email-address" title="How do I change my email address?"
+                                   isOpen={openId === "how-do-i-change-my-email-address"} onToggle={handleToggle}>
                         <p>You can update your email address in <a href="https://mijn.eduid.nl/">My eduID</a>:</p>
                         <ol>
                             <li>Log in at <a href="https://eduid.nl/">eduid.nl</a>.</li>
@@ -37,7 +37,8 @@ export const Support_EN = () => {
                             <li>Click the 'edit' icon next to your email address.</li>
                         </ol>
                     </InfoLinkField>
-                    <InfoLinkField title="How do I delete my eduID?">
+                    <InfoLinkField id="how-do-i-delete-my-eduid" title="How do I delete my eduID?"
+                                   isOpen={openId === "how-do-i-delete-my-eduid"} onToggle={handleToggle}>
                         <p>Want to delete your eduID? Log in at <a href="https://mijn.eduid.nl">My eduID</a> and go to 'Account'. From there you
                             can delete your eduID.</p>
                         <p>Please note: think carefully before deleting your eduID. You may lose access to
@@ -46,7 +47,8 @@ export const Support_EN = () => {
                 </div>
                 <div className="card bottom with-collapse-fields">
                     <h2>Personal details</h2>
-                    <InfoLinkField title="Do I need multiple eduIDs?">
+                    <InfoLinkField id="do-i-need-multiple-eduids" title="Do I need multiple eduIDs?"
+                                   isOpen={openId === "do-i-need-multiple-eduids"} onToggle={handleToggle}>
                         <p>No. You only need one eduID.</p>
                         <ul>
                             <li>You create it with your personal email address.</li>
@@ -58,7 +60,8 @@ export const Support_EN = () => {
                         <p>Did you accidentally create an eduID with your school or work email address? You can
                             update this in My eduID under 'Personal info'.</p>
                     </InfoLinkField>
-                    <InfoLinkField title="My name is incorrect. What can I do?">
+                    <InfoLinkField id="my-name-is-incorrect-what-can-i-do" title="My name is incorrect. What can I do?"
+                                   isOpen={openId === "my-name-is-incorrect-what-can-i-do"} onToggle={handleToggle}>
                         <p>You cannot change your verified name yourself. However, you can always update your
                             preferred first name.</p>
                         <p>To change your first or last name, you need to do this with the party you used to
@@ -79,7 +82,8 @@ export const Support_EN = () => {
                             we only receive the initial(s) of your name. In that case, you can enter your full
                             first name under 'preferred first name'.</p>
                     </InfoLinkField>
-                    <InfoLinkField title="Can I delete my verified details?">
+                    <InfoLinkField id="can-i-delete-my-verified-details" title="Can I delete my verified details?"
+                                   isOpen={openId === "can-i-delete-my-verified-details"} onToggle={handleToggle}>
                         <p>Yes, you can, but think it through carefully. If you delete your verified details, you
                             may no longer be able to log in to services that currently rely on your eduID.</p>
                         <p>To delete verified details:</p>
@@ -90,13 +94,16 @@ export const Support_EN = () => {
                             <li>Find the details and click Delete this information.</li>
                         </ol>
                     </InfoLinkField>
-                    <InfoLinkField title="Why do I need to re-link my institution?">
+                    <InfoLinkField id="why-do-i-need-to-re-link-my-institution" title="Why do I need to re-link my institution?"
+                                   isOpen={openId === "why-do-i-need-to-re-link-my-institution"} onToggle={handleToggle}>
                         <p>Your institution data is automatically removed after 6 months to keep your details up
                             to date, for example if you switch institutions or roles. You will usually notice this
                             when you are prompted to re-link when trying to log in somewhere.</p>
                         <p>Re-link your institution via the eduID app or <a href="https://mijn.eduid.nl">My eduID</a>.</p>
                     </InfoLinkField>
-                    <InfoLinkField title="Can I link multiple organisations to my eduID?">
+                    <InfoLinkField id="can-i-link-multiple-organisations-to-my-eduid"
+                                   title="Can I link multiple organisations to my eduID?"
+                                   isOpen={openId === "can-i-link-multiple-organisations-to-my-eduid"} onToggle={handleToggle}>
                         <p>Yes, you can link multiple education or research institutions to your eduID. This may
                             be necessary if you study or work at more than one institution. For each institution,
                             you can verify who you are and in what role (such as student or staff member). Go to
@@ -105,16 +112,19 @@ export const Support_EN = () => {
                 </div>
                 <div className="card bottom with-collapse-fields">
                     <h2>Logging in</h2>
-                    <InfoLinkField title="My session has expired. What can I do?">
+                    <InfoLinkField id="my-session-has-expired-what-can-i-do" title="My session has expired. What can I do?"
+                                   isOpen={openId === "my-session-has-expired-what-can-i-do"} onToggle={handleToggle}>
                         <p>You see this message when something goes wrong during login, for example if you wait
                             too long after clicking the login button. Simply log in again.</p>
                     </InfoLinkField>
-                    <InfoLinkField title="Can I choose a different login method?">
+                    <InfoLinkField id="can-i-choose-a-different-login-method" title="Can I choose a different login method?"
+                                   isOpen={openId === "can-i-choose-a-different-login-method"} onToggle={handleToggle}>
                         <p>Yes, you can. By default, you receive a login code by email. To use a different method,
                             go to 'Security' in My eduID. There you can see your current login method and change
                             it or add another one, such as a password or a passkey.</p>
                     </InfoLinkField>
-                    <InfoLinkField title="What is a passkey and how do I use it?">
+                    <InfoLinkField id="what-is-a-passkey-and-how-do-i-use-it" title="What is a passkey and how do I use it?"
+                                   isOpen={openId === "what-is-a-passkey-and-how-do-i-use-it"} onToggle={handleToggle}>
                         <p>A passkey is a way to log in without a password. Instead of a password, you use
                             something already on your device, such as your fingerprint, face recognition, or a
                             physical key (like a YubiKey).</p>
@@ -139,7 +149,8 @@ export const Support_EN = () => {
                 </div>
                 <div className="card bottom with-collapse-fields">
                     <h2>eduID app</h2>
-                    <InfoLinkField title="I am not receiving the SMS code.">
+                    <InfoLinkField id="i-am-not-receiving-the-sms-code" title="I am not receiving the SMS code."
+                                   isOpen={openId === "i-am-not-receiving-the-sms-code"} onToggle={handleToggle}>
                         <ul>
                             <li>Have you requested an SMS code multiple times today? You may have reached the
                                 limit. Try again after 24 hours.
@@ -150,7 +161,9 @@ export const Support_EN = () => {
                             </li>
                         </ul>
                     </InfoLinkField>
-                    <InfoLinkField title="I can no longer access the app or have forgotten my PIN.">
+                    <InfoLinkField id="i-can-no-longer-access-the-app-or-have-forgotten-my-pin"
+                                   title="I can no longer access the app or have forgotten my PIN."
+                                   isOpen={openId === "i-can-no-longer-access-the-app-or-have-forgotten-my-pin"} onToggle={handleToggle}>
                         <ol>
                             <li>Go to eduid.nl and log in. At the bottom, choose a different login method.</li>
                             <li>Select "Receive a login code in your inbox".</li>
@@ -164,7 +177,9 @@ export const Support_EN = () => {
                         </ol>
                         <p>After that, you can add the app again.</p>
                     </InfoLinkField>
-                    <InfoLinkField title="I am getting the error message 'registration failed'.">
+                    <InfoLinkField id="i-am-getting-the-error-message-registration-failed"
+                                   title="I am getting the error message 'registration failed'."
+                                   isOpen={openId === "i-am-getting-the-error-message-registration-failed"} onToggle={handleToggle}>
                         <p>Follow the steps below to resolve this. Make sure you complete step 1 fully before
                             moving on to step 2.</p>
                         <p className="section-label"><strong>Step 1: Remove the app and reset your browser</strong></p>
@@ -184,11 +199,13 @@ export const Support_EN = () => {
                             <li>Follow the on-screen instructions to complete the app registration.</li>
                         </ul>
                     </InfoLinkField>
-                    <InfoLinkField title="I cannot scan the QR code.">
+                    <InfoLinkField id="i-cannot-scan-the-qr-code" title="I cannot scan the QR code."
+                                   isOpen={openId === "i-cannot-scan-the-qr-code"} onToggle={handleToggle}>
                         <p>Check whether the eduID app has permission to use the camera. You can set this in your
                             phone's app settings.</p>
                     </InfoLinkField>
-                    <InfoLinkField title="Which phones are supported?">
+                    <InfoLinkField id="which-phones-are-supported" title="Which phones are supported?"
+                                   isOpen={openId === "which-phones-are-supported"} onToggle={handleToggle}>
                         <p>The eduID app works on:</p>
                         <ul>
                             <li>iOS (version 13 and above)</li>

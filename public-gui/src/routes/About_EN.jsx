@@ -1,14 +1,12 @@
 import about from "../assets/about.svg";
 import {Background} from "../components/Background.jsx";
 import {InfoLinkField} from "../components/InfoLinkField.jsx";
-import {useEffect} from "react";
 import {Link} from "react-router";
+import {useFragmentOpen} from "../hooks/useFragmentOpen.js";
 
 export const About_EN = () => {
 
-    useEffect(() => {
-        window.scroll(0, 0);
-    }, []);
+    const {openId, handleToggle} = useFragmentOpen();
 
     return (
         <div className="about-container">
@@ -31,12 +29,15 @@ export const About_EN = () => {
                 </div>
                 <div className="card bottom with-collapse-fields">
                     <h2>How do you use eduID?</h2>
-                    <InfoLinkField title="1. Create an eduID">
+                    <InfoLinkField id="1-create-an-eduid" title="1. Create an eduID"
+                                   isOpen={openId === "1-create-an-eduid"} onToggle={handleToggle}>
                         <p>Click 'Create eduID' and follow the steps.</p>
                         <p>Use a <strong>personal email address</strong> that you will continue to use, even if
                             you change schools or jobs.</p>
                     </InfoLinkField>
-                    <InfoLinkField title="2. Verify your identity with an official party">
+                    <InfoLinkField id="2-verify-your-identity-with-an-official-party"
+                                   title="2. Verify your identity with an official party"
+                                   isOpen={openId === "2-verify-your-identity-with-an-official-party"} onToggle={handleToggle}>
                         <p>In most cases, you'll need to verify your identity before you can use your eduID. You
                             can do this in one of the following ways:</p>
                         <p className="section-label top"><strong>With your Dutch educational or research institution</strong></p>
@@ -64,7 +65,9 @@ export const About_EN = () => {
                         </ul>
                         <p><Link to="/verify">Learn more about verifying your eduID</Link></p>
                     </InfoLinkField>
-                    <InfoLinkField title="3. Log in to websites and other online services">
+                    <InfoLinkField id="3-log-in-to-websites-and-other-online-services"
+                                   title="3. Log in to websites and other online services"
+                                   isOpen={openId === "3-log-in-to-websites-and-other-online-services"} onToggle={handleToggle}>
                         <p>With your eduID you can log in to websites and other online services in the
                             Netherlands. We recommend using the eduID app, as it is the most secure and convenient
                             option. The app lets you log in without a password, and two-factor authentication
