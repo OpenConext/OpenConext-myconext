@@ -130,6 +130,7 @@ public class User implements Serializable, UserDetails {
         this.chosenName = (String) userInfo.get("given_name");
         this.givenName = (String) userInfo.get("given_name");
         this.familyName = (String) userInfo.get("family_name");
+        this.lastLogin = System.currentTimeMillis();
     }
 
     public User(String uid, String email, String chosenName, String givenName, String familyName,
@@ -147,6 +148,7 @@ public class User implements Serializable, UserDetails {
         }
         this.newUser = true;
         this.created = System.currentTimeMillis() / 1000L;
+        this.lastLogin = System.currentTimeMillis();
     }
 
     public User(String uid, String email, String chosenName, String givenName, String familyName,
