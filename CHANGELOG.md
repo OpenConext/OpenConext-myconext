@@ -8,9 +8,11 @@ All notable changes to this project will be documented in this file.
 
 - Use oidc directly for logging in to myconext-gui and servicedesk-gui, instead of shibboleth
 
-## [8.3.1] juni 2026
+## [8.3.4] juni 2026
 
 - Revert Svelte upgrade
+- Fix routing issues
+- Add lastlogin to newly created accounts, to prevent incorrect deprovisioning on unused accounts
 
 ## [8.3.0] Apr 2026
 
