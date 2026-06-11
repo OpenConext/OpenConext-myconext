@@ -22,7 +22,8 @@
 
     const unprotectedRoutes = [
         "/create-from-institution",
-        "/landing"
+        "/landing",
+        "/install-app"
     ];
 
     export let url = "";
