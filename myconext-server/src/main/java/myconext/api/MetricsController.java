@@ -27,9 +27,14 @@ public class MetricsController {
                 .description("Internal linked account count")
                 .register(meterRegistry);
 
-        Gauge.builder("registered_apps_count",
-                        () -> metricsRepository.countTotalRegisteredApps())
-                .description("Registered apps count")
+        Gauge.builder("app_registration_count",
+                        () -> metricsRepository.countTotalAppRegistrations())
+                .description("App registration count")
+                .register(meterRegistry);
+
+        Gauge.builder("used_services_count",
+                        () -> metricsRepository.countTotalUsedServices())
+                .description("Used services count")
                 .register(meterRegistry);
 
         Stream.of(IdpScoping.values())

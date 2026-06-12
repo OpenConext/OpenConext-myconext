@@ -25,6 +25,13 @@ public class MetricsRepository {
                 ), "totalLinkedAccounts");
     }
 
+    public Integer countTotalAppRegistrations() {
+        return doInCollection("registrations",
+                List.of(
+                        "{ \"$count\": \"totalAppRegistrations\" }"
+                ), "totalAppRegistrations");
+    }
+
     public Integer countTotalExternalLinkedAccountsByType(IdpScoping idpScoping) {
         return doInCollection("users",
                 List.of(
@@ -32,6 +39,16 @@ public class MetricsRepository {
                         "{ \"$match\": { \"externalLinkedAccounts.idpScoping\": \"" + idpScoping.name() + "\" } },",
                         "{ \"$count\": \"countExternalLinkedAccounts\" }"
                 ), "countExternalLinkedAccounts");
+    }
+
+    public Integer countTotalUsedServices() {
+        return doInCollection("users",
+                List.of(
+                        "{ \"$unwind\": \"$eduIDS\" }",
+                        "{ \"$unwind\": \"$eduIDS.services\" }",
+                        "{ \"$group\": { \"_id\": \"$eduIDS.services.entityId\" } },",
+                        "{ \"$count\": \"countTotalUsedServices\" }"
+                ), "countTotalUsedServices");
     }
 
     public Integer countTotalRegisteredApps() {
