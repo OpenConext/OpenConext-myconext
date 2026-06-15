@@ -4,7 +4,7 @@
     import {onMount} from "svelte";
 
     onMount(() => {
-        const url = detectMobileOS();
+       const url = detectMobileOS();
         if (url.startsWith("http")) {
             window.location.href = url;
         } else {

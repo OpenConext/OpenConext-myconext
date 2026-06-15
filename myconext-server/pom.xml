@@ -4,7 +4,7 @@
     <parent>
         <groupId>org.openconext</groupId>
         <artifactId>myconext</artifactId>
-        <version>8.3.5</version>
+        <version>8.3.6-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
     <artifactId>myconext-server</artifactId>
@@ -165,7 +165,7 @@
         <dependency>
             <groupId>org.openconext</groupId>
             <artifactId>tiqr-java-connector</artifactId>
-            <version>3.1.0</version>
+            <version>3.1.1</version>
         </dependency>
         <dependency>
             <groupId>com.fasterxml.jackson.datatype</groupId>

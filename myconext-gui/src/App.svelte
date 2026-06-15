@@ -45,7 +45,8 @@
                 lang = "en";
             }
             I18n.changeLocale(lang);
-            if (unprotectedRoutes.some(route => window.location.pathname.indexOf(route) > -1)) {
+            const pathname = window.location.pathname;
+            if (unprotectedRoutes.some(route => pathname.indexOf(route) > -1)) {
                 loaded = true;
             } else {
                 me()
@@ -69,7 +70,7 @@
                     })
                     .catch(e => {
                         loaded = true;
-                        $redirectPath = window.location.pathname;
+                        $redirectPath = pathname;
                         const urlSearchParams = new URLSearchParams(window.location.search);
                         const logout = urlSearchParams.get("logout");
                         const afterDelete = urlSearchParams.get("delete");
@@ -327,7 +328,7 @@
                     <Route path="/services">
                         <Home bookmark="services"/>
                     </Route>
-                    <Route path="/landing" component={Landing}/>
+                    <Route path="/landing"><Landing/></Route>
                     <Route path="/edit-name">
                         <Home bookmark="edit-name"/>
                     </Route>
@@ -358,10 +359,10 @@
                     <Route path="/add-password">
                         <Home bookmark="reset-password"/>
                     </Route>
-                    <Route path="/install-app" component={InstallApp}/>
-                    <Route path="/update-email" component={ConfirmUpdateEmail}/>
-                    <Route path="/create-from-institution" component={CreateFromInstitution}/>
-                    <Route component={NotFound}/>
+                    <Route path="/install-app"><InstallApp/></Route>
+                    <Route path="/update-email"><ConfirmUpdateEmail/></Route>
+                    <Route path="/create-from-institution"><CreateFromInstitution/></Route>
+                    <Route><NotFound/></Route>
                 </Router>
             </div>
         </div>
@@ -374,10 +375,10 @@
             <div class="content">
                 <Router url="{url}">
                     {#if $config.createEduIDInstitutionEnabled}
-                        <Route path="/create-from-institution" component={CreateFromInstitution}/>
-                        <Route path="/create-from-institution/eppn-already-linked" component={EppnAlreadyLinked}/>
-                        <Route path="/create-from-institution/attribute-missing" component={AttributeMissing}/>
-                        <Route path="/create-from-institution/expired" component={Expired}/>
+                        <Route path="/create-from-institution"><CreateFromInstitution/></Route>
+                        <Route path="/create-from-institution/eppn-already-linked"><EppnAlreadyLinked/></Route>
+                        <Route path="/create-from-institution/attribute-missing"><AttributeMissing/></Route>
+                        <Route path="/create-from-institution/expired"><Expired/></Route>
                         <Route path="/create-from-institution/verify/:hash" let:params>
                             <AwaitLinkFromInstitutionMail hash="{params.hash}"/>
                         </Route>
@@ -385,8 +386,9 @@
                             <LinkFromInstitution hash="{params.hash}"/>
                         </Route>
                     {/if}
-                    <Route path="/landing" component={Landing}/>
-                    <Route component={NotFound}/>
+                    <Route path="/install-app"><InstallApp/></Route>
+                    <Route path="/landing"><Landing/></Route>
+                    <Route><NotFound/></Route>
                 </Router>
             </div>
         </div>
