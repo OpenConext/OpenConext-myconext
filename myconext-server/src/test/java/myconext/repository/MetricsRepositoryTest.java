@@ -18,8 +18,8 @@ class MetricsRepositoryTest extends AbstractIntegrationTest {
         assertEquals(2, totalLinkedAccountCount);
         Integer idinExternalAccounts = metricsRepository.countTotalExternalLinkedAccountsByType(IdpScoping.idin);
         assertEquals(0, idinExternalAccounts);
-        Integer countTotalRegisteredApps = metricsRepository.countTotalRegisteredApps();
-        assertEquals(2, countTotalRegisteredApps);
+        Integer countTotalUsedServices = metricsRepository.countTotalUsedServices();
+        assertEquals(2, countTotalUsedServices);
     }
 
 }

@@ -51,16 +51,6 @@ public class MetricsRepository {
                 ), "countTotalUsedServices");
     }
 
-    public Integer countTotalRegisteredApps() {
-        return doInCollection("users",
-                List.of(
-                        "{ \"$unwind\": \"$eduIDS\" }",
-                        "{ \"$unwind\": \"$eduIDS.services\" }",
-                        "{ \"$group\": { \"_id\": \"$eduIDS.services.entityId\" } },",
-                        "{ \"$count\": \"countTotalRegisteredApps\" }"
-                ), "countTotalRegisteredApps");
-    }
-
     private Integer doInCollection(String collectionName, List<String> pipeLines, String resultKeyWord) {
         return mongoTemplate.execute(collectionName, collection -> {
             List<Document> documents = pipeLines
