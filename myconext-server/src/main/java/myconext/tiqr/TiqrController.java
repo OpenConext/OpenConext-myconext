@@ -551,6 +551,7 @@ public class TiqrController implements UserAuthentication {
     public ResponseEntity<Object> doEnrollment(@ModelAttribute Registration registration,
                                                @RequestParam("enrollment_secret") String enrollmentSecret) {
         registration.setEnrollmentSecret(enrollmentSecret);
+        LOG.info(String.format("Enrollment with registration %s ", registration));
         try {
             Registration savedRegistration = tiqrService.enrollData(registration);
             LOG.debug("Successful enrollment for user " + savedRegistration.getUserId());
