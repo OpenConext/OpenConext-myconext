@@ -41,6 +41,14 @@ public class MetricsRepository {
                 ), "countExternalLinkedAccounts");
     }
 
+    public Integer countTotalExternalLinkedAccounts() {
+        return doInCollection("users",
+                List.of(
+                        "{ \"$unwind\": \"$externalLinkedAccounts\" }",
+                        "{ \"$count\": \"totalExternalLinkedAccounts\" }"
+                ), "totalExternalLinkedAccounts");
+    }
+
     public Integer countTotalUsedServices() {
         return doInCollection("users",
                 List.of(

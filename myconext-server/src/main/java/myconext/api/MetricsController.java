@@ -37,6 +37,11 @@ public class MetricsController {
                 .description("Used services count")
                 .register(meterRegistry);
 
+        Gauge.builder("total_external_linked_account_count",
+                        () -> metricsRepository.countTotalExternalLinkedAccounts())
+                .description("Total external linked account count")
+                .register(meterRegistry);
+
         Stream.of(IdpScoping.values())
                 .forEach(idpScoping -> Gauge
                         .builder("external_linked_account_" + idpScoping.name(),
