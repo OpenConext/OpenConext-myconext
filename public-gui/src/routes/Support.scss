@@ -29,7 +29,11 @@
         }
 
     }
-
+    .centered {
+        h2 {
+            margin: auto 0;
+        }
+    }
     h2.green {
         color: var(--sds--color--green--400);
         font-weight: 600;

@@ -12,17 +12,14 @@ export const Support_NL = () => {
             <div className="support">
                 <div className="top">
                     <img src={parachute} className="parachute" alt=""/>
-                    <div className="top-right">
-                        <h2>Voor als je er niet uit komt</h2>
+                    <div className="top-right centered">
+                        <h2>Veelgestelde vragen</h2>
                     </div>
                 </div>
             </div>
             <Background>
-                <div className="card">
-                    <h2>Veelgestelde vragen</h2>
-                </div>
-                <div className="card bottom with-collapse-fields">
-                    <h3>Accountbeheer</h3>
+                <div className="card with-collapse-fields">
+                    <h2>Accountbeheer</h2>
                     <InfoLinkField id="how-do-i-manage-my-eduid" title="Hoe beheer ik mijn eduID?"
                                    isOpen={openId === "how-do-i-manage-my-eduid"} onToggle={handleToggle}>
                         <p>Wil je je gegevens bekijken of aanpassen? Ga naar <a href="https://mijn.eduid.nl">Mijn eduID</a>. Daar beheer je alles wat

@@ -5,6 +5,10 @@
     flex-direction: column;
     margin-top: 25px;
 
+    button {
+        margin-top: 25px;
+    }
+
     img {
         &.about {
             width: 182px;
@@ -36,6 +40,34 @@
 
     .about {
         @include index.page;
+    }
+
+    .store-container {
+        display: flex;
+        margin-top: 25px;
+
+        @media (max-width: index.$tablet-width) {
+            svg {
+                display: none;
+            }
+        }
+
+        .store-container-content {
+            display: flex;
+            gap: 40px;
+            margin: 0 auto;
+        }
+
+        .inner-store-container {
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+
+            @media (max-width: index.$tablet-width) {
+                margin-top: 25px;
+            }
+
+        }
     }
 
 }

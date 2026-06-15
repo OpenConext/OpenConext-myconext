@@ -33,8 +33,8 @@ export const Verify_EN = () => {
                         <p>Are you a student or employee? Link your eduID to your institution's account.</p>
                         <ol>
                             <li>Go to <a href="https://mijn.eduid.nl">My eduID</a> and log in.</li>
-                            <li>Go to Your details and click Verify your identity or Add an organisation.</li>
-                            <li>Click Use your school or work account and follow the steps.</li>
+                            <li>Go to <strong>Your details</strong> and click <strong>Verify your identity</strong> or <strong>Add an organisation</strong>.</li>
+                            <li>Click <strong>Use your school or work account</strong> and follow the steps.</li>
                             <li>Your eduID is verified immediately.</li>
                         </ol>
                         <p className="quote">You only need to do this once. Have you already verified your identity before? Then you
@@ -47,8 +47,8 @@ export const Verify_EN = () => {
                         <p>iDIN is a system that allows you to identify yourself online through your bank.</p>
                         <ol>
                             <li>Go to <a href="https://mijn.eduid.nl">My eduID</a> and log in.</li>
-                            <li>Go to Your details and click Verify your identity.</li>
-                            <li>Click Use your bank.</li>
+                            <li>Go to <strong>Your details</strong> and click <strong>Verify your identity</strong>.</li>
+                            <li>Click <strong>Use your bank</strong>.</li>
                             <li>Choose your bank, log in and confirm. You only share your personal details, not any
                                 financial information.
                             </li>
@@ -65,8 +65,8 @@ export const Verify_EN = () => {
                             using your country's digital identity tool, similar to DigiD.</p>
                         <ol>
                             <li>Go to <a href="https://mijn.eduid.nl">My eduID</a> and log in.</li>
-                            <li>Go to Your details and click Verify your identity.</li>
-                            <li>Click Use a European ID.</li>
+                            <li>Go to <strong>Your details</strong> and click <strong>Verify your identity</strong>.</li>
+                            <li>Click <strong>Use a European ID</strong>.</li>
                             <li>Select your country and follow the steps.</li>
                             <li>Your eduID is verified immediately.</li>
                         </ol>
@@ -80,8 +80,8 @@ export const Verify_EN = () => {
                             available for participants in eduBadges pilots.</p>
                         <ol>
                             <li>Go to <a href="https://mijn.eduid.nl">My eduID</a> and log in.</li>
-                            <li>Go to Your details and click Verify your identity.</li>
-                            <li>Click Contact the service desk and follow the steps to generate a verification
+                            <li>Go to <strong>Your details</strong> and click <strong>Verify your identity</strong>.</li>
+                            <li>Click <strong>Contact the service desk</strong> and follow the steps to generate a verification
                                 code.
                             </li>
                             <li>Bring the verification code and a valid ID to a service desk at your
@@ -143,7 +143,7 @@ export const Verify_EN = () => {
                     </InfoLinkField>
                     <InfoLinkField id="can-i-change-my-name-after-verification" title="Can I change my name after verification?"
                                    isOpen={openId === "can-i-change-my-name-after-verification"} onToggle={handleToggle}>
-                        <p>You can always change your display name yourself in My eduID. To update your verified
+                        <p>You can always change your display name yourself in <a href="https://mijn.eduid.nl">My eduID</a>. To update your verified
                             name, contact the party you verified with - your bank, institution, or your country's
                             authority.</p>
                     </InfoLinkField>

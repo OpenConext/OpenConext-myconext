@@ -34,10 +34,10 @@ export const Verify_NL = () => {
                         <p>Ben je student of medewerker? Koppel je eduID aan het account van je instelling.</p>
                         <ol>
                             <li>Ga naar <a href="https://mijn.eduid.nl">Mijn eduID</a> en log in.</li>
-                            <li>Ga naar Je gegevens en klik op Bevestig je identiteit of Voeg een organisatie
-                                toe.
+                            <li>Ga naar <strong>Je gegevens</strong> en klik op <strong>Bevestig je identiteit</strong> of <strong>Voeg een organisatie
+                                toe</strong>.
                             </li>
-                            <li>Klik op Gebruik je school- of werkaccount en volg de stappen.</li>
+                            <li>Klik op <strong>Gebruik je school- of werkaccount</strong> en volg de stappen.</li>
                             <li>Je eduID is direct geverifieerd.</li>
                         </ol>
                         <p className="quote">Je hoeft dit maar één keer te doen. Heb je je identiteit al eerder bevestigd? Dan hoef
@@ -50,8 +50,8 @@ export const Verify_NL = () => {
                         <p>iDIN is een systeem waarmee je jezelf online kunt identificeren via je bank.</p>
                         <ol>
                             <li>Ga naar <a href="https://mijn.eduid.nl">Mijn eduID</a> en log in.</li>
-                            <li>Ga naar Je gegevens en klik op Bevestig je identiteit.</li>
-                            <li>Klik op Gebruik je bank.</li>
+                            <li>Ga naar <strong>Je gegevens</strong> en klik op <strong>Bevestig je identiteit</strong>.</li>
+                            <li>Klik op <strong>Gebruik je bank</strong>.</li>
                             <li>Kies je bank, log in en bevestig. Je deelt alleen je persoonsgegevens, geen
                                 financiële gegevens.
                             </li>
@@ -69,8 +69,8 @@ export const Verify_NL = () => {
                             verifiëren.</p>
                         <ol>
                             <li>Ga naar <a href="https://mijn.eduid.nl">Mijn eduID</a> en log in.</li>
-                            <li>Ga naar Je gegevens en klik op Bevestig je identiteit.</li>
-                            <li>Klik op Gebruik een Europees ID.</li>
+                            <li>Ga naar <strong>Je gegevens</strong> en klik op <strong>Bevestig je identiteit</strong>.</li>
+                            <li>Klik op <strong>Gebruik een Europees ID</strong>.</li>
                             <li>Selecteer je land en volg de stappen.</li>
                             <li>Je eduID is direct geverifieerd.</li>
                         </ol>
@@ -84,8 +84,8 @@ export const Verify_NL = () => {
                             aan pilots met eduBadges.</p>
                         <ol>
                             <li>Ga naar <a href="https://mijn.eduid.nl">Mijn eduID</a> en log in.</li>
-                            <li>Ga naar Je gegevens en klik op Bevestig je identiteit.</li>
-                            <li>Klik dan Neem contact op met de servicedesk en volg de stappen om een
+                            <li>Ga naar <strong>Je gegevens</strong> en klik op <strong>Bevestig je identiteit</strong>.</li>
+                            <li>Klik dan <strong>Neem contact op met de servicedesk</strong> en volg de stappen om een
                                 verificatiecode aan te maken.
                             </li>
                             <li>Neem de verificatiecode en een geldig identiteitsbewijs mee naar een servicedesk
@@ -146,7 +146,7 @@ export const Verify_NL = () => {
                     </InfoLinkField>
                     <InfoLinkField id="can-i-change-my-name-after-verification" title="Kan ik mijn naam aanpassen na verificatie?"
                                    isOpen={openId === "can-i-change-my-name-after-verification"} onToggle={handleToggle}>
-                        <p>Je roepnaam kun je altijd zelf wijzigen in Mijn eduID. Je geverifieerde naam pas je aan
+                        <p>Je roepnaam kun je altijd zelf wijzigen in <a href="https://mijn.eduid.nl">Mijn eduID</a>. Je geverifieerde naam pas je aan
                             bij de partij waarmee je je hebt geverifieerd, je bank, instelling, of de autoriteit
                             van je land.</p>
                     </InfoLinkField>
