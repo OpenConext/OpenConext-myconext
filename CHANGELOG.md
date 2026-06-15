@@ -8,6 +8,11 @@ All notable changes to this project will be documented in this file.
 
 - Use oidc directly for logging in to myconext-gui and servicedesk-gui, instead of shibboleth
 
+## [8.3.6] juni 2026
+
+- Open /install-app for app downloads on mobile
+- Handle empty notfication type during enrollment
+
 ## [8.3.4] juni 2026
 
 - Revert Svelte upgrade
