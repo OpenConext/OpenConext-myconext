@@ -275,7 +275,7 @@ public class TiqrController implements UserAuthentication {
         String sessionKey = (String) request.getSession().getAttribute(SESSION_KEY);
         Authentication authentication = tiqrService.authenticationStatus(sessionKey);
         if (!authentication.getStatus().equals(AuthenticationStatus.SUCCESS)) {
-            throw new ForbiddenException("Forbidden phone code, wrong status: " + authentication.getStatus());
+            throw new ForbiddenException("Invalid phone code status, wrong status: " + authentication.getStatus());
         }
         User user = userFromAuthentication(secAuthentication);
         String phoneNumber = phoneCode.getPhoneNumber();
@@ -398,7 +398,7 @@ public class TiqrController implements UserAuthentication {
             }
             userRepository.save(user);
         } else {
-            throw new ForbiddenException("Forbidden phone code, wrong code: " + code);
+            throw new ForbiddenException("Wrong phone code, wrong code: " + code);
         }
         return ResponseEntity.ok(new VerifyPhoneCode(this.magicLinkUrl));
     }
