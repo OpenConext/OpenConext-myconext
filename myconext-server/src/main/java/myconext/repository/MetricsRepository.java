@@ -25,6 +25,13 @@ public class MetricsRepository {
                 ), "totalLinkedAccounts");
     }
 
+    public Integer countTotalAppRegistrations() {
+        return doInCollection("registrations",
+                List.of(
+                        "{ \"$count\": \"totalAppRegistrations\" }"
+                ), "totalAppRegistrations");
+    }
+
     public Integer countTotalExternalLinkedAccountsByType(IdpScoping idpScoping) {
         return doInCollection("users",
                 List.of(
@@ -34,14 +41,14 @@ public class MetricsRepository {
                 ), "countExternalLinkedAccounts");
     }
 
-    public Integer countTotalRegisteredApps() {
+    public Integer countTotalUsedServices() {
         return doInCollection("users",
                 List.of(
                         "{ \"$unwind\": \"$eduIDS\" }",
                         "{ \"$unwind\": \"$eduIDS.services\" }",
                         "{ \"$group\": { \"_id\": \"$eduIDS.services.entityId\" } },",
-                        "{ \"$count\": \"countTotalRegisteredApps\" }"
-                ), "countTotalRegisteredApps");
+                        "{ \"$count\": \"countTotalUsedServices\" }"
+                ), "countTotalUsedServices");
     }
 
     private Integer doInCollection(String collectionName, List<String> pipeLines, String resultKeyWord) {
