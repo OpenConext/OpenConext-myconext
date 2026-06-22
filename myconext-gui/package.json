@@ -5,7 +5,7 @@
   "license": "MIT",
   "type": "module",
   "devDependencies": {
-    "@babel/core": "^7.28.3",
+    "@babel/core": "^7.29.6",
     "@babel/preset-env": "^7.28.3",
     "@castlenine/svelte-qrcode": "^2.3.0",
     "@sveltejs/vite-plugin-svelte": "^6.1.2",
