@@ -9,4 +9,9 @@ public class ForbiddenException extends AbstractBaseException {
     public ForbiddenException(String message) {
         super(message);
     }
+
+    @Override
+    protected boolean suppressStackTrace() {
+        return true;
+    }
 }
