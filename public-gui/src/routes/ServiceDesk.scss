@@ -5,9 +5,14 @@
     flex-direction: column;
     margin-top: 25px;
 
+    .top {
+        display: flex;
+        align-items: center;
+    }
+
     img {
-        width: 140px;
-        height: auto;
+        width: auto;
+        height: 180px;
     }
 
     .servicedesk {

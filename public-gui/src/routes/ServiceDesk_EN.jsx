@@ -12,10 +12,11 @@ export const ServiceDesk_EN = () => {
         <div className="servicedesk-container">
             <div className="servicedesk">
                 <div className="top">
-                    <div className="top-right">
-                        <h1 className="title">eduID Service Desk</h1>
-                    </div>
                     <img src={FrontDesk} className="frontdesk" alt=""/>
+                    <div className="top-right">
+                        <h2 className="title">eduID Service Desk</h2>
+                    </div>
+
                 </div>
             </div>
             <Background>

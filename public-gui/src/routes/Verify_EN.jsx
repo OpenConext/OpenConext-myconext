@@ -14,7 +14,6 @@ export const Verify_EN = () => {
                 <div className="top">
                     <img src={verify} className="verify" alt=""/>
                     <div className="top-right">
-                        <h1 className="title small">eduID</h1>
                         <h2>Verify your identity</h2>
                     </div>
                 </div>
@@ -75,10 +74,13 @@ export const Verify_EN = () => {
                     </InfoLinkField>
                     <InfoLinkField id="at-an-eduid-service-desk" title="At an eduID service desk"
                                    isOpen={openId === "at-an-eduid-service-desk"} onToggle={handleToggle}>
-                        <p>Unable to use any of the other options? Verify your identity in person at a <Link
-                            to="/servicedesk">service desk</Link>. Please note: the service desk is currently only
-                            available for participants in eduBadges pilots.</p>
+                        <p>Unable to use any of the other options? By some institutions it is possible to verify
+                            your identity in person at a <Link
+                            to="/servicedesk">service desk</Link>. If this option is available for you, then you have been notified
+                            by your institution about this.
+                        </p>
                         <ol>
+
                             <li>Go to <a href="https://mijn.eduid.nl">My eduID</a> and log in.</li>
                             <li>Go to <strong>Your details</strong> and click <strong>Verify your identity</strong>.</li>
                             <li>Click <strong>Contact the service desk</strong> and follow the steps to generate a verification
@@ -89,36 +91,6 @@ export const Verify_EN = () => {
                             </li>
                             <li>Have your eduID verified.</li>
                         </ol>
-                        <p>Service desks are currently available at:</p>
-                        <table className="servicedesk-table">
-                            <thead>
-                            <tr>
-                                <th>Institution</th>
-                                <th>For whom</th>
-                                <th>Purpose</th>
-                                <th>Contact</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            <tr>
-                                <td>TU Delft</td>
-                                <td>TU Delft students only</td>
-                                <td>Awarding microcredentials</td>
-                                <td><a href="mailto:learningforlife@tudelft.nl">learningforlife@tudelft.nl</a>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>Radboud Universiteit</td>
-                                <td>RU students only</td>
-                                <td>Awarding microcredentials</td>
-                                <td><a
-                                    href="mailto:onderwijsvoorprofessionals@ru.nl">onderwijsvoorprofessionals@ru.nl</a>
-                                </td>
-                            </tr>
-                            </tbody>
-                        </table>
-                        <p className="quote">Is your institution not listed? First check whether you can use another verification
-                            method. If not, please contact your institution.</p>
                     </InfoLinkField>
                 </div>
                 <div className="card bottom with-collapse-fields">

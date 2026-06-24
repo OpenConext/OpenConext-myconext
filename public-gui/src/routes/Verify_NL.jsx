@@ -14,7 +14,6 @@ export const Verify_NL = () => {
                 <div className="top">
                     <img src={verify} className="verify" alt=""/>
                     <div className="top-right">
-                        <h1 className="title small">eduID</h1>
                         <h2>Verifieer je identiteit</h2>
                     </div>
                 </div>
@@ -28,7 +27,7 @@ export const Verify_NL = () => {
                     </p>
                 </div>
                 <div className="card bottom with-collapse-fields">
-                    <h2>Verificatie methoden</h2>
+                    <h2>Verificatiemethoden</h2>
                     <InfoLinkField id="through-your-institution" title="Via je instelling"
                                    isOpen={openId === "through-your-institution"} onToggle={handleToggle}>
                         <p>Ben je student of medewerker? Koppel je eduID aan het account van je instelling.</p>
@@ -79,9 +78,11 @@ export const Verify_NL = () => {
                     </InfoLinkField>
                     <InfoLinkField id="at-an-eduid-service-desk" title="Bij een eduID servicedesk"
                                    isOpen={openId === "at-an-eduid-service-desk"} onToggle={handleToggle}>
-                        <p>Kun je geen gebruik maken van de andere opties? Verifieer je identiteit in persoon bij
-                            een <Link to="/servicedesk">servicedesk</Link>. Let op: de servicedesk is momenteel alleen beschikbaar voor deelnemers
-                            aan pilots met eduBadges.</p>
+                        <p>Kun je geen gebruik maken van de andere opties?
+                            Voor sommige instellingen is het ook mogelijk om je identiteit in persoon te verifiëren bij
+                            een <Link to="/servicedesk">servicedesk</Link>. Als deze optie voor jou beschikbaar is, heb je
+                            dit van jouw instelling gehoord.
+                        </p>
                         <ol>
                             <li>Ga naar <a href="https://mijn.eduid.nl">Mijn eduID</a> en log in.</li>
                             <li>Ga naar <strong>Je gegevens</strong> en klik op <strong>Bevestig je identiteit</strong>.</li>
@@ -93,34 +94,6 @@ export const Verify_NL = () => {
                             </li>
                             <li>Laat je eduID verifiëren.</li>
                         </ol>
-                        <p>Op dit moment zijn er servicedesks beschikbaar bij:</p>
-                        <table className="servicedesk-table">
-                            <thead>
-                            <tr>
-                                <th>Instelling</th>
-                                <th>Voor wie</th>
-                                <th>Doel</th>
-                                <th>Contact</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            <tr>
-                                <td>TU Delft</td>
-                                <td>Alleen voor studenten van TU Delft</td>
-                                <td>Toekennen van microcredentials</td>
-                                <td><a href="mailto:learningforlife@tudelft.nl">learningforlife@tudelft.nl</a></td>
-                            </tr>
-                            <tr>
-                                <td>Radboud Universiteit</td>
-                                <td>Alleen voor studenten van de RU</td>
-                                <td>Toekennen van microcredentials</td>
-                                <td><a href="mailto:onderwijsvoorprofessionals@ru.nl">onderwijsvoorprofessionals@ru.nl</a>
-                                </td>
-                            </tr>
-                            </tbody>
-                        </table>
-                        <p className="quote">Staat je instelling er niet bij? Controleer eerst of je een andere verificatiemethode
-                            kunt gebruiken. Zo niet, neem dan contact op met je instelling.</p>
                     </InfoLinkField>
                 </div>
                 <div className="card bottom with-collapse-fields">

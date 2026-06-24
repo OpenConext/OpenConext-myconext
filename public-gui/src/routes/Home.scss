@@ -5,10 +5,15 @@
     flex-direction: column;
     margin-top: 25px;
 
+    .top {
+        display: flex;
+        align-items: center;
+    }
+
     img {
         &.phone {
-            width: 182px;
-            height: auto;
+            width: auto;
+            height: 180px;
             @media (max-width: index.$tablet-width) {
                 width: 140px;
             }

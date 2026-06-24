@@ -5,10 +5,15 @@
     flex-direction: column;
     margin-top: 25px;
 
+    .top {
+        display: flex;
+        align-items: center;
+    }
+
     img {
         &.parachute {
-            width: 182px;
-            height: auto;
+            width: auto;
+            height: 180px;
         }
 
         &.support {
@@ -29,11 +34,13 @@
         }
 
     }
+
     .centered {
         h2 {
             margin: auto 0;
         }
     }
+
     h2.green {
         color: var(--sds--color--green--400);
         font-weight: 600;
