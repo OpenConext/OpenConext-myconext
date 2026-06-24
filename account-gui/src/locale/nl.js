@@ -1,444 +1,1393 @@
 const nl = {
-    login: {
-        requestEduId: "Geen eduID?",
-        requestEduId2: "Maak het aan!",
-        loginEduId: "Login",
-        whatis: "Wat is eduID?",
-        header: "Login met eduID",
-        headerSubTitle: "om door te gaan naar ",
-        header2: "Vraag een eduID aan",
-        trust: "Vertrouw deze computer",
-        loginOptions: "Andere inlogmanieren",
-        loginOptionsToolTip: "We bieden drie manieren om in te loggen:</br><ol>" +
-            "<li>Je kunt een magische link ontvangen op je e-mailadres.</li>" +
-            "<li>Je kunt een wachtwoord gebruiken. Dit dien je eerst in Mijn eduID in te stellen.</li>" +
-            "<li>Je kunt een beveiligingssleutel gebruiken. Dit dien je eerst in Mijn eduID in te stellen.</li>" +
-            "</ol>",
-        email: "Je e-mailadres",
-        emailPlaceholder: "bijv. naam@gmail.com",
-        passwordPlaceholder: "Wachtwoord",
-        familyName: "Achternaam",
-        givenName: "Voornaam",
-        familyNamePlaceholder: "bijv. Berners-Lee",
-        givenNamePlaceholder: "bijv. Tim",
-        sendMagicLink: "Mail een magische link",
-        loginWebAuthn: "Login in met een beveiligingssleutel",
-        usePassword: "typ een wachtwoord",
-        usePasswordNoWebAuthn: "Typ een wachtwoord",
-        useMagicLink: "Gebruik magische link",
-        useMagicLinkNoWebAuthn: "Gebruik magische link.",
-        useWebAuth: "Login in met een beveiligingssleutel",
-        useOr: " of ",
-        requestEduIdButton: "Vraag een eduID aan",
-        rememberMe: "Ingelogd blijven",
-        password: "Je wachtwoord",
-        passwordForgotten: "Wachtwoord vergeten of liever een magische link? ",
-        passwordForgottenLink: "Ontvang een e-mail om direct in te loggen.",
-        login: "Login",
-        create: "Aanmaken",
-        newTo: "Voor het eerst bij eduID?",
-        createAccount: "Maak een account aan.",
-        useExistingAccount: "Gebruik een bestaand account",
-        invalidEmail: "Ongeldig e-mailadres",
-        requiredAttribute: "{{attr}} is verplicht",
-        emailInUse1: "Dit e-mailadres is al in gebruik.",
-        emailInUse2: "Probeer een andere, of ",
-        emailInUse3: " login met dit eduID account.",
-        emailForbidden: "Het aanmaken van een eduID-account met deze email is niet toegestaan, neem contact op met <a href=\"mailto:help@eduid.nl\">help@eduid.nl</a> als je denkt dat het e-maildomein geldig is.",
-        emailNotFound1: "We konden geen eduID vinden met deze mail.",
-        emailNotFound2: "Probeer een andere, of ",
-        emailNotFound3: "maak een nieuw eduID account aan.",
-        emailOrPasswordIncorrect: "E-mailadres of wachtwoord is niet juist",
-        institutionDomainNameWarning: "Het lijkt erop dat je een instellings e-mailadres hebt ingevoerd. Houd er rekening mee dat wanneer je niet meer studeert of werkt bij die instelling, je geen toegang meer hebt tot dat e-mail adres.",
-        institutionDomainNameWarning2: "We raden je aan om je persoonlijke e-mailadres te gebruiken voor eduID.",
-        allowedDomainNamesError: "Domeinnaam {{domain}} niet toegestaan.",
-        allowedDomainNamesError2: "eduID is beperkt om alleen te worden gebruikt door toegestane domeinen.",
-        passwordDisclaimer: "Je wachtwoord moet minimaal 15 karakters lang zijn, of minimaal 8 als het een hoofdletter en een getal bevat.",
-        alreadyGuestAccount: "Heb je al een eduID?",
-        usePasswordLink: "Gebruik toch een wachtwoord",
-        useWebAuthnLink: "Of gebruik een beveiligingssleutel",
-        agreeWithTerms: "<span>Ik ga akkoord met <a tabindex='-1' href='https://eduid.nl/gebruiksvoorwaarden/' target='_blank'>de voorwaarden.</a> En ik begrijp <a tabindex='-1' href='https://eduid.nl/privacyverklaring/' target='_blank'>de privacyverklaring</a>.</span>",
-        next: "Volgende",
-        useOtherAccount: "Gebruik een andere login",
-        noAppAccess: "Heb je de app niet bij de hand?",
-        noMailAccess: "Kun je niet bij je email?",
-        forgotPassword: "Wachtwoord vergeten?",
-        useAnother: "Gebruik een andere",
-        optionsLink: "inlogmethode.",
-        sendingEmail: "Email aan het sturen...",
-        termsRequired: "Je moet akkoord gaan met de voorwaarden en privacyverklaring"
+    "login": {
+        "requestEduId": "Nog geen eduID?",
+        "requestEduId2": "Direct aanmaken",
+        "loginEduId": "Inloggen",
+        "whatis": "Wat is eduID?",
+        "header": "Inloggen",
+        "headerSubTitle": "om door te gaan naar ",
+        "header2": "eduID aanmaken",
+        "trust": "Vertrouw deze computer",
+        "loginOptions": "Andere manieren",
+        "loginOptionsToolTip": "Er bestaan drie manieren om in te loggen:</br><ol><li>Je kunt een e-mail met een link ontvangen.</li><li>Je kunt een wachtwoord gebruiken. Dit moet je eerst in je eduID instellen.</li><li> Je kunt een passkey gebruiken. Dit moet je eerst in je eduID instellen.</li></ol>",
+        "email": "Je e-mailadres",
+        "emailPlaceholder": "bijv. naam@gmail.com",
+        "passwordPlaceholder": "Wachtwoord",
+        "familyName": "Achternaam",
+        "givenName": "Roepnaam",
+        "familyNamePlaceholder": "bijv. Berners-Lee",
+        "givenNamePlaceholder": "bijv. Tim",
+        "sendMagicLink": "Stuur een link",
+        "loginWebAuthn": "Inloggen in met een passkey",
+        "usePassword": "typ een wachtwoord",
+        "usePasswordNoWebAuthn": "Typ een wachtwoord",
+        "useMagicLink": "Verificatie-code e-mail",
+        "useMagicLinkNoWebAuthn": "Gebruik magische link.",
+        "useWebAuth": "Log in in met een beveiligingssleutel",
+        "useOr": " of ",
+        "requestEduIdButton": "eduID aanmaken",
+        "rememberMe": "Ingelogd blijven",
+        "password": "Je wachtwoord",
+        "passwordForgotten": "Wachtwoord vergeten of liever inloggen met link? ",
+        "passwordForgottenLink": "Ontvang een e-mail om direct in te loggen.",
+        "login": "Inloggen",
+        "create": "Aanmaken",
+        "newTo": "Nieuw bij eduID?",
+        "createAccount": "Maak een account aan.",
+        "useExistingAccount": "Gebruik een bestaand account",
+        "invalidEmail": "Ongeldig e-mailadres",
+        "requiredAttribute": "%1$s is verplicht",
+        "emailInUse1": "Dit e-mailadres is al in gebruik.",
+        "emailInUse2": "Probeer een andere, of ",
+        "emailInUse3": " log in met dit eduID account.",
+        "emailForbidden": "Het aanmaken van een eduID met dit e-mailadres is niet toegestaan. Neem contact op met <a href=\"mailto:help@eduid.nl\">help@eduid.nl</a> als je denkt dat het e-mailadres geldig is.",
+        "emailNotFound1": "We konden geen eduID vinden met dit e-mailadres.",
+        "emailNotFound2": "Probeer een andere, of ",
+        "emailNotFound3": "maak een nieuwe eduID aan.",
+        "emailOrPasswordIncorrect": "E-mailadres of wachtwoord is niet juist",
+        "institutionDomainNameWarning": "Dit lijkt op een e-mailadres van een instelling. Let op: als je in de toekomst niet meer studeert of werkt bij deze instelling, heb je geen toegang meer tot dit e-mailadres.",
+        "institutionDomainNameWarning2": "We raden je aan om je persoonlijke e-mailadres te gebruiken voor eduID.",
+        "allowedDomainNamesError": "E-mailadres %1$s niet toegestaan.",
+        "allowedDomainNamesError2": "eduID is beperkt om alleen te worden gebruikt door toegestane e-mailadressen.",
+        "passwordDisclaimer": "Je wachtwoord moet minimaal 15 karakters zijn. Of minimaal 8 als het een hoofdletter en een getal bevat.",
+        "alreadyGuestAccount": "Heb je al een eduID?",
+        "usePasswordLink": "Gebruik toch een wachtwoord",
+        "useWebAuthnLink": "Of gebruik een passkey",
+        "agreeWithTerms": "<span>Ik ga akkoord met <a tabindex='-1' href='https://eduid.nl/gebruiksvoorwaarden/' target='_blank'>de voorwaarden</a> en ik heb de <a tabindex='-1' href='https://eduid.nl/privacy/' target='_blank'>de privacyverklaring</a>.gelezen</span>",
+        "next": "Volgende",
+        "useOtherAccount": "Gebruik een ander account",
+        "noAppAccess": "Geen toegang tot de app?",
+        "noMailAccess": "Kun je niet bij je e-mail?",
+        "forgotPassword": "Wachtwoord vergeten?",
+        "useAnother": "Gebruik een andere",
+        "optionsLink": "inlogmethode.",
+        "sendingEmail": "Email aan het sturen...",
+        "termsRequired": "Je moet akkoord gaan met de voorwaarden en privacyverklaring",
+        "requestHeader": "eduID aanmaken",
+        "requestSubHeader": "Vul hieronder je persoonlijke gegevens in.",
+        "requestSuccessHeader": "Je eduID is aangemaakt",
+        "requestSuccessInfo": "We hebben je ook een bevestigingsmail gestuurd.",
+        "requestSuccessNext": "Volgende",
+        "requestEduId3": "eduID aanmaken",
+        "sendCode": "Stuur een code",
+        "useCode": "E-mail een login code",
+        "rateLimited": "Je bent nog steeds geschorst. Probeer het over %1$s minuten opnieuw.",
+        "tryOtherEmail": "Probeer een ander e-mailadres",
+        "loginWithThisEmail": "Log in met dit e-mailadres",
+        "orDivider": "of"
     },
-    options: {
-        header: "Hoe wil je inloggen?",
-        noLogin: "Kun je nog niet inloggen?",
-        learn: "Zie hoe je jouw",
-        learnLink: "account kunt herstellen",
-        useApp: "Gebruik de <strong>eduID app</strong> om in te loggen met je mobiel.",
-        useWebAuthn: "Gebruik je <strong>beveiligingssleutel</strong>.",
-        useCode: "Ontvang een <strong>login code</strong> in je inbox.",
-        usePassword: "Gebruik <strong>een wachtwoord</strong>.",
+    "options": {
+        "header": "Hoe wil je inloggen?",
+        "noLogin": "Kun je nog niet inloggen?",
+        "learn": "Zie hoe je jouw",
+        "learnLink": "account kunt herstellen",
+        "useApp": "Gebruik de <strong>eduID app</strong> om in te loggen met je telefoon.",
+        "useWebAuthn": "Gebruik je <strong>passkey</strong>.",
+        "useCode": "Ontvang een <strong>code</strong> in je inbox.",
+        "usePassword": "Gebruik <strong>een wachtwoord</strong>.",
+        "useLink": "Ontvang een <strong>link</strong> in je inbox."
     },
-    magicLink: {
-        header: "Open je mailbox!",
-        info: "Om in te loggen, klik op de link in de e-mail die we hebben verstuurd naar ",
-        awaiting: "Wachten tot je op de link klikt...",
-        openGMail: "Open Gmail.com",
-        openOutlook: "Open Outlook.com",
-        spam: "Kan je de e-mail niet vinden? Kijk in je spam.",
-        loggedIn: "Inloggen geslaagd!",
-        loggedInInfo: "Je kan dit tabblad / venster sluiten.",
-        timeOutReached: "Timeout!",
-        timeOutReachedInfo: "Je magische link is verlopen. Ga terug naar de applicatie waar je heen wil en probeer het opnieuw.",
-        resend: "E-mail nog steeds niet gevonden?",
-        resendLink: " Stuur de e-mail opnieuw.",
-        mailResend: "Check je inbox. We hebben je de e-mail met de magische link opnieuw verzonden.",
-        loggedInDifferentDevice: "Verificatiecode vereist",
-        loggedInDifferentDeviceInInfo: "Je hebt de magische link gebruikt in een andere browser dan van waaruit je de magische link hebt aangevraagd. Als extra veiligheidsmaatregel moet je een verificatiecode invoeren.",
-        loggedInDifferentDeviceInInfo2: "We hebben je een extra e-mail gestuurd met de verificatiecode.",
-        verificationCodeError: "Verkeerde verificatiecode.",
-        verify: "Verifïeer"
+    "magicLink": {
+        "header": "Controleer je e-mail",
+        "info": "Druk op de link die we verstuurd hebben naar",
+        "awaiting": "Wachten tot je op de link drukt…",
+        "openGMail": "Open gmail.com",
+        "openOutlook": "Open outlook.com",
+        "spam": "Kun je de mail niet vinden? Kijk ook in de spam folder.",
+        "loggedIn": "Inloggen is gelukt",
+        "loggedInInfo": "Je kan dit tabblad / venster sluiten.",
+        "timeOutReached": "Je link is niet meer geldig",
+        "timeOutReachedInfo": "Ga terug naar de website waar je wilde inloggen en probeer het opnieuw. Je kijgt dan een nieuwe link toegestuurd.",
+        "resend": "E-mail nog steeds niet gevonden?",
+        "resendLink": "Stuur de e-mail opnieuw.",
+        "mailResend": "Check je inbox. We hebben je de e-mail met de link opnieuw verzonden.",
+        "loggedInDifferentDevice": "Je hebt een controlecode nodig",
+        "loggedInDifferentDeviceInInfo": "Je hebt de link gebruikt in een andere browser dan van waaruit je de link hebt aangevraagd. Voor de veiligheid vragen we je een controlecode in te voeren.",
+        "loggedInDifferentDeviceInInfo2": "We hebben je een extra e-mail gestuurd met de controlecode.",
+        "verificationCodeError": "Verkeerde controlecode.",
+        "verify": "Controleer",
+        "openMailTitle": "Open je e-mail",
+        "openMailDisclaimer": "Kun je de mail niet vinden? Kijk ook in de spam folder"
     },
-    confirm: {
-        header: "Gelukt!",
-        thanks: "Je eduID is geactiveerd. Ga door naar je bestemming."
+    "confirm": {
+        "header": "Gelukt!",
+        "thanks": "Je eduID is geactiveerd. Ga door naar je bestemming."
     },
-    confirmStepup: {
-        header: "Gelukt!",
-        proceed: "Ga naar {{name}}",
-        conditionMet: "Je hebt aan alle voorwaarden voldaan."
+    "confirmStepup": {
+        "header": "Gelukt!",
+        "proceed": "Ga naar %1$s",
+        "conditionMet": "Je hebt aan alle voorwaarden voldaan."
     },
-    stepup: {
-        header: "Nog één ding!",
-        info: "Om door te gaan naar <strong>{{name}}</strong>, moet je nog aan de volgende voorwaarde(n) voldoen.",
-        link: "Verifïeer nu"
+    "stepup": {
+        "header": "Je bent er bijna",
+        "info": "Je hoeft alleen nog het volgende doen om door te gaan naar <strong>%1$s</strong>:",
+        "link": "Controleer dit via SURFconext",
+        "linkExternalValidation": "Controleer dit via ReadID"
     },
-    footer: {
-        privacy: "Privacy",
-        terms: "Voorwaarden",
-        help: "Help",
-        poweredBy: "Powered by"
+    "footer": {
+        "privacy": "Privacy",
+        "terms": "Voorwaarden",
+        "help": "Help",
+        "poweredBy": "Powered by"
     },
-    success: {
-        title: "Inloggen bijna geslaagd!",
-        info: "Ga terug naar het scherm waar je de magische link hebt aangevraagd en volg de instructies daar op.<br/><br/>Je kunt dit tabblad / venster sluiten."
+    "success": {
+        "title": "Inloggen is bijna klaar!",
+        "info": "Ga terug naar het scherm waar je de link hebt aangevraagd en volg de instructies daar op.<br/><br/>Je kunt dit tabblad / venster sluiten."
     },
-    redirectMobileApp: {
+    "redirectMobileApp": {
         "account-linked": {
-            title: "Account gekoppeld!",
-            info: "Je instellingsaccount is gekoppeld, klik op de knop hier onder om je nieuwe account te openen in de eduID app.",
-            infoDesktop: "Je instellingsaccount is gekoppeld, scan de code hier onder om je nieuwe account te openen in de eduID app.",
+            "title": "Account gekoppeld!",
+            "info": "Je instellingsaccount is gekoppeld, klik op de knop hier onder om je nieuwe account te openen in de eduID app.",
+            "infoDesktop": "Je instellingsaccount is gekoppeld, scan de code hier onder om je nieuwe account te openen in de eduID app."
         },
         "add-password": {
-            title: "Nieuw wachtwoord!",
-            info: "Om een nieuw wachtwoord te kiezen, klik op de knop hier onder om de eduID app te openen.",
-            infoDesktop: "Om een nieuw wachtwoord te kiezen, scan de code hier onder om de eduID app te openen.",
+            "title": "Nieuw wachtwoord!",
+            "info": "Om een nieuw wachtwoord te kiezen, klik op de knop hier onder om de eduID app te openen.",
+            "infoDesktop": "Om een nieuw wachtwoord te kiezen, scan de code hier onder om de eduID app te openen."
         },
-        created: {
-            title: "Account aangemaakt!",
-            info: "Je account is gemaakt, klik op de knop hier onder om je nieuwe account te openen in de eduID app.",
-            infoDesktop: "Je account is gemaakt, scan de code hier onder om je nieuwe account te openen in de eduID app.",
+        "created": {
+            "title": "Account aangemaakt!",
+            "info": "Je account is gemaakt, klik op de knop hier onder om je nieuwe account te openen in de eduID app.",
+            "infoDesktop": "Je account is gemaakt, scan de code hier onder om je nieuwe account te openen in de eduID app."
         },
         "eppn-already-linked": {
-            title: "EPPN is al gekoppeld!",
-            info: "Je account is niet gekoppeld, klik op de knop hier onder om de eduID app te openen.",
-            infoDesktop: "Je account is niet gekoppeld, scan de code hier onder om de eduID app te openen.",
+            "title": "EPPN is al gekoppeld!",
+            "info": "Je account is niet gekoppeld, klik op de knop hier onder om de eduID app te openen.",
+            "infoDesktop": "Je account is niet gekoppeld, scan de code hier onder om de eduID app te openen."
         },
         "subject-already-linked": {
-            title: "Subject is al gekoppeld!",
-            info: "Je account is niet geverifïeerd, klik op de knop hier onder om de eduID app te openen.",
-            infoDesktop: "Je account is niet geverifïeerd, scan de code hier onder om de eduID app te openen.",
+            "title": "Subject is al gekoppeld!",
+            "info": "Je account is niet geverifïeerd, klik op de knop hier onder om de eduID app te openen.",
+            "infoDesktop": "Je account is niet geverifïeerd, scan de code hier onder om de eduID app te openen."
         },
-        expired: {
-            title: "Sessie verlopen!",
-            info: "Je account is niet gekoppeld, klik op de knop hier onder om de eduID app te openen.",
-            infoDesktop: "Je account is niet gekoppeld, scan de code hier onder om de eduID app te openen.",
+        "expired": {
+            "title": "Sessie verlopen!",
+            "info": "Je account is niet gekoppeld, klik op de knop hier onder om de eduID app te openen.",
+            "infoDesktop": "Je account is niet gekoppeld, scan de code hier onder om de eduID app te openen."
         },
         "reset-password": {
-            title: "Wijzig wachtwoord!",
-            info: "Om je wachtwoord te wijzigen, klik op de knop hier onder om de eduID app te openen.",
-            infoDesktop: "Om je wachtwoord te wijzigen, scan de code hier onder om de eduID app te openen.",
+            "title": "Wijzig wachtwoord!",
+            "info": "Om je wachtwoord te wijzigen, klik op de knop hier onder om de eduID app te openen.",
+            "infoDesktop": "Om je wachtwoord te wijzigen, scan de code hier onder om de eduID app te openen."
         },
         "security": {
-            title: "Beveiliging!",
-            info: "Om je beveiliging instellingen te bekijken, klik op de knop hier onder om de eduID app te openen.",
-            infoDesktop: "Om je beveiliging instellingen te bekijken, scan de code hier onder om de eduID app te openen.",
+            "title": "Beveiliging!",
+            "info": "Om je beveiliging instellingen te bekijken, klik op de knop hier onder om de eduID app te openen.",
+            "infoDesktop": "Om je beveiliging instellingen te bekijken, scan de code hier onder om de eduID app te openen."
         },
         "update-email": {
-            title: "Nieuwe e-mail bevestigd!",
-            info: "Om je e-mail te wijzigen, klik op de knop hier onder om de eduID app te openen.",
-            infoDesktop: "Om je e-mail te wijzigen, scan de code hier onder om de eduID app te openen.",
+            "title": "Nieuwe e-mail bevestigd!",
+            "info": "Om je e-mail te wijzigen, klik op de knop hier onder om de eduID app te openen.",
+            "infoDesktop": "Om je e-mail te wijzigen, scan de code hier onder om de eduID app te openen."
         },
-        fallback: {
-            title: "eduID app!",
-            info: "Je hebt een link naar de eduID app geopend in de browser, klik op de knop hier onder om de eduID app te openen.",
-            infoDesktop: "Je hebt een link naar de eduID app geopend in de browser, scan de code hier onder om de eduID app te openen.",
+        "fallback": {
+            "title": "eduID app!",
+            "info": "Je hebt een link naar de eduID app geopend in de browser, klik op de knop hier onder om de eduID app te openen.",
+            "infoDesktop": "Je hebt een link naar de eduID app geopend in de browser, scan de code hier onder om de eduID app te openen."
         },
         "external-account-linked": {
-            title: "Externe Account gekoppeld!",
-            info: "Je externe account is gekoppeld, klik op de knop hier onder om de eduID app te openen.",
-            infoDesktop: "Je externe account is gekoppeld, scan de code hier onder om de eduID app te openen.",
+            "title": "Externe Account gekoppeld!",
+            "info": "Je externe account is gekoppeld, klik op de knop hier onder om de eduID app te openen.",
+            "infoDesktop": "Je externe account is gekoppeld, scan de code hier onder om de eduID app te openen."
         },
         "external-account-linked-error": {
-            title: "Externe account error!",
-            info: "Je externe account kon niet worden gekoppeld, klik op de knop hier onder om de eduID app te openen.",
-            infoDesktop: "Je externe account kon niet worden gekoppeld, scan de code hier onder om de eduID app te openen.",
+            "title": "Externe account error!",
+            "info": "Je externe account kon niet worden gekoppeld, klik op de knop hier onder om de eduID app te openen.",
+            "infoDesktop": "Je externe account kon niet worden gekoppeld, scan de code hier onder om de eduID app te openen."
         },
-        proceedLink: "Open de eduID app",
-        qrCodeLink: "Scan om de eduID app te openen"
+        "proceedLink": "Open de eduID app",
+        "qrCodeLink": "Scan om de eduID app te openen"
     },
-    expired: {
-        title: "Verlopen magische link",
-        info: "De magische link die je hebt gebruikt, is verlopen of al een keer gebruikt",
-        back: "Ga naar eduid.nl"
+    "expired": {
+        "title": "Je link is niet geldig",
+        "info": "De link die je hebt gebruikt, is verlopen of al een keer gebruikt.",
+        "back": "Ga naar eduid.nl",
+        "codeTitle": "Je code is niet geldig",
+        "codeInfo": "De code die je hebt gebruikt, is verlopen of al een keer gebruikt."
     },
-    maxAttempt: {
-        title: "Maximum aantal pogingen bereikt",
-        info: "Je hebt het maximale aantal verificatiepogingen bereikt. Ga terug naar de applicatie waarop je wilde inloggen en probeer het opnieuw.",
+    "maxAttempt": {
+        "title": "Maximum aantal pogingen bereikt",
+        "info": "Je hebt het maximale aantal controlepogingen bereikt."
     },
-    notFound: {
-        title: "Oeps...",
-        title2: "Er is iets fout gegaan (404)."
+    "notFound": {
+        "title": "Oeps…",
+        "title2": "Er is iets fout gegaan (404)."
     },
-    webAuthn: {
-        info: "Voeg een beveiligingssleutel toe",
-        browserPrompt: "Klik op de onderstaande knop om een beveiligingssleutel toe te voegen aan je eduID-account. Volg daarbij de instructies van je browser op.",
-        start: "Start",
-        header: "Log in met een beveiligingssleutel",
-        explanation: "Er wordt een nieuw venster geopend. Volg de instructies om in te loggen.",
-        next: "Log in met een beveiligingssleutel",
-        error: "De beveiligingssleutel kan niet gebruikt worden."
+    "webAuthn": {
+        "info": "Voeg een beveiligingssleutel toe",
+        "browserPrompt": "Druk op de knop hieronder om een beveiligingssleutel toe te voegen aan je eduID. Volg daarbij de instructies van je browser op.",
+        "start": "Start",
+        "header": "Log in met een passkey",
+        "explanation": "Er wordt een nieuw venster geopend. Volg de instructies om in te loggen.",
+        "next": "Log in met een passkey",
+        "error": "Je kunt de passkey op dit moment niet gebruiken."
     },
-    useCode: {
-        header: "Vraag een login code aan",
-        next: "E-mail een login code"
+    "useCode": {
+        "header": "Vraag een code aan",
+        "next": "Verstuur een code"
     },
-    usePassword: {
-        header: "Voer je wachtwoord in",
-        passwordIncorrect: "Wachtwoord is onjuist"
+    "usePassword": {
+        "header": "Voer je wachtwoord in",
+        "passwordIncorrect": "Wachtwoord is onjuist"
     },
-    useApp: {
-        header: "Controleer je eduID-app",
-        info: "We hebben een pushmelding naar je app gestuurd om te verifiëren dat jij het bent die probeert in te loggen.",
-        scan: "Scan deze QR-code met je eduID app",
-        noNotification: "Geen melding?",
-        qrCodeLink: "Maak een QR-code",
-        qrCodePostfix: "en scan deze.",
-        offline: "Wanneer je apparaat offline is, moet je een ",
-        offlineLink: "eenmalige code invoeren.",
-        openEduIDApp: "Open de app op dit apparaat",
-        lost: "Je app verloren?",
-        lostLink: "Lees op <a href=\"https://eduid.nl/help\" target=\"_blank\">hoe je een nieuwe moet registreren</a>.",
-        timeOut: "Sessie timeout",
-        timeOutInfoFirst: "Je sessie is verlopen. Klik op deze ",
-        timeOutInfoLast: " om het opnieuw te proberen.",
-        timeOutInfoLink: "link",
-        existingRegistration: "Bestaande registratie",
-        existingRegistrationInfoFirst: "Je kan geen nieuwe registratie starten, omdat je al een registratie hebt. Klik op ",
-        existingRegistrationInfoLast: " om opnieuw in te loggen.",
-        existingRegistrationInfoLink: "link",
-        responseIncorrect: "De code is niet juist.",
-        suspendedResult: "De verficatie van je eduID app is mislukt. ",
-        accountNotSuspended: "Je kan het opnieuw proberen.",
-        accountSuspended: "Je zal {{minutes}} {{plural}} moeten wachten totdat je het opnieuw kan proberen.",
-        minutes: "minuten",
-        minute: "minuut"
+    "useApp": {
+        "header": "Controleer je eduID app",
+        "info": "We hebben een pushmelding naar je app gestuurd om te controleren dat jij het bent die probeert in te loggen.",
+        "scan": "Scan deze QR-code met je eduID app",
+        "noNotification": "Geen melding?",
+        "qrCodeLink": "Maak een QR-code",
+        "qrCodePostfix": "en scan deze.",
+        "offline": "Toont je telefoon een code?",
+        "offlineLink": "Code invoeren",
+        "openEduIDApp": "Open de app op dit apparaat",
+        "lost": "Je app kwijt?",
+        "lostLink": "Lees op <a href=\"https://eduid.nl/help\" target=\"_blank\">hoe je een nieuwe moet registreren</a>.",
+        "timeOut": "Sessie verlopen",
+        "timeOutInfoFirst": "Je sessie is verlopen. Druk op deze ",
+        "timeOutInfoLast": " om het opnieuw te proberen.",
+        "timeOutInfoLink": "link",
+        "existingRegistration": "Bestaande registratie",
+        "existingRegistrationInfoFirst": "Je kan geen nieuwe registratie starten, omdat je al een registratie hebt. Klik op ",
+        "existingRegistrationInfoLast": " om opnieuw in te loggen.",
+        "existingRegistrationInfoLink": "link",
+        "responseIncorrect": "De code is niet juist.",
+        "suspendedResult": "De controle van je eduID app is mislukt. ",
+        "accountNotSuspended": "Je kan het opnieuw proberen.",
+        "accountSuspended": "Je moet %1$s %2$s wachten voordat je het opnieuw kan proberen.",
+        "minutes": "minuten",
+        "minute": "minuut"
     },
-    enrollApp: {
-        header: "Voltooi de installatie in de eduID app"
+    "enrollApp": {
+        "header": "Maak de installatie af in de eduID app"
     },
-    recovery: {
-        header: "Een herstelmethode instellen",
-        info: "Als je geen toegang hebt tot eduID met de app of via e-mail, kun je een herstelmethode gebruiken om in te loggen op je eduID-account.",
-        methods: "De volgende methode is beschikbaar.",
-        backupCode: "Vraag een herstelcode aan.",
-        backupCodeInfo: "De code kan worden gebruikt om in te loggen.",
-        save: "Bewaar de code ergens veilig.",
-        active: "Deze code is nu actief, maar je kan op elk moment een nieuwe code aanmaken binnen mijn eduID.",
-        copy: "Kopieer de code",
-        copied: "Gekopieerd",
-        continue: "Mijn code is veilig. Doorgaan",
-        leaveConfirmation: "Weet je zeker dat je de pagina wilt verlaten? De registratie wordt afgebroken.",
-        finalizedRegistration: "Bestaande herstelmethode",
-        finalizedRegistrationExplanation: "Je mag geen telefoonnummer registreren, omdat je al een bestaande back-upcode als herstelmethode hebt.",
-        finalizedRegistrationBackupCode: "Je herstelcode is: ",
-        next: "Doorgaan",
-        backButtonWarning: "Je eduID-app is succesvol toegevoegd aan je account. Je kunt je herstelcode niet wijzigen met de terugknop.",
-        backButtonWarningTitle: "Terugknop niet aanbevolen",
-        backButtonWarningConfirmation: "Ok",
+    "recovery": {
+        "header": "Herstelmethode instellen",
+        "info": "Lukt het niet om in te loggen op eduID via de app of e-mail? Dan kun je ook met een herstelmethode inloggen.",
+        "methods": "Uit deze methodes kun je kiezen:",
+        "backupCode": "Vraag een herstelcode aan.",
+        "backupCodeInfo": "De code kan je gebruiken om in te loggen.",
+        "save": "Bewaar de code op een veilige plek",
+        "active": "Deze code is nu actief, maar je kan op elk moment een nieuwe code aanmaken.",
+        "copy": "Kopieer de code",
+        "copied": "Gekopieerd",
+        "continue": "Ik heb de code bewaard. Ga verder",
+        "leaveConfirmation": "Weet je zeker dat je de pagina wilt verlaten? De registratie wordt afgebroken.",
+        "finalizedRegistration": "Bestaande herstelmethode",
+        "finalizedRegistrationExplanation": "Je mag geen telefoonnummer registreren, omdat je al een bestaande back-upcode als herstelmethode hebt.",
+        "finalizedRegistrationBackupCode": "Je herstelcode is: ",
+        "next": "Doorgaan",
+        "backButtonWarning": "Je eduID-app is succesvol toegevoegd aan je account. Je kunt je herstelcode niet wijzigen met de terugknop.",
+        "backButtonWarningTitle": "Terugknop niet aanbevolen",
+        "backButtonWarningConfirmation": "Ok",
+        "phoneNumber": "Voeg een hersteltelefoonnummer toe",
+        "phoneNumberInfo": "Je krijgt een sms met een code."
     },
-    phoneVerification: {
-        header: "Voeg een hersteltelefoonnummer toe",
-        info: "Je telefoonnummer wordt gebruikt om weer toegang te krijgen tot je account als je de app ooit kwijtraakt.",
-        text: "We sturen je een code om je nummer te verifiëren.",
-        verify: "Verifieer dit telefoonnummer",
-        placeHolder: "+31 612345678",
-        phoneIncorrect: "Verificatie code is onjuist",
-        rateLimited: "Rate limited",
-        rateLimitedInfo: "Teveel verzoeken om een SMS te versturen. Je bent rate limited en je kan het morgen opnieuw proberen.",
-        ok: "Ok"
+    "phoneVerification": {
+        "header": "Telefoonnummer toevoegen",
+        "info": "Je telefoonnummer is alleen nodig voor de veiligheid van je eduID. Zoals inloggen als je je wachtwoord bent vergeten.",
+        "text": "We sturen je een code om je telefoonnnummer te controleren.",
+        "verify": "Stuur code",
+        "placeHolder": "+31 612345678",
+        "phoneIncorrect": "Telefoonnummer is onjuist",
+        "rateLimited": "Te veel pogingen",
+        "rateLimitedInfo": "Je hebt te vaak een onjuiste verificatiecode ingevoerd. Wacht alstublieft even voordat je het opnieuw probeert.",
+        "ok": "Ok"
     },
-    congrats: {
-        header: "Succes",
-        info: "Je kunt nu de eduID app gebruiken om snel in te loggen bij applicaties waarvoor je moet inloggen met je eduID.",
-        next: "Verder naar {{name}}"
+    "congrats": {
+        "header": "Gelukt",
+        "info": "Je kunt nu de eduID app gebruiken om snel in te loggen bij diensten waarvoor je eduID nodig is.",
+        "next": "Verder"
     },
-    webAuthnTest: {
-        info: "Test een beveiligingssleutel",
-        browserPrompt: "Klik op de onderstaande knop om een beveiligingssleutel te testen. Volg daarbij de instructies van je browser op.",
-        start: "Test"
+    "webAuthnTest": {
+        "info": "Test een beveiligingssleutel",
+        "browserPrompt": "Druk op de onderstaande knop om een beveiligingssleutel te testen. Volg daarbij de instructies van je browser op.",
+        "start": "Test"
     },
-    affiliationMissing: {
-        header: "Account is gekoppeld, maar...",
-        info: "Je eduID is succesvol gekoppeld, maar de instelling die je hebt gekozen heeft niet de vereiste persoonsgegevens teruggegeven.",
-        proceed: "Je kan het nogmaals met een andere instelling proberen of doorgaan naar {{name}}.",
-        proceedLink: "Doorgaan",
-        retryLink: "Opnieuw proberen"
+    "affiliationMissing": {
+        "header": "Account is gekoppeld, maar…",
+        "info": "Je eduID is succesvol gekoppeld, maar de instelling die je hebt gekozen heeft niet de juiste attributen teruggegeven.",
+        "proceed": "Je kan een andere instelling proberen te koppelen of doorgaan naar %1$s.",
+        "proceedLink": "Doorgaan",
+        "retryLink": "Opnieuw proberen"
     },
-    eppnAlreadyLinked: {
-        header: "Account niet gekoppeld!",
-        info: "Je eduID kon niet worden gekoppeld. Het vertrouwde account waarmee je zojuist bent ingelogd, is al aan een ander eduID-account gekoppeld: {{email}}.",
-        proceed: "Je kan het nogmaals met een andere instelling proberen of doorgaan naar {{name}}.",
-        proceedLink: "Doorgaan",
-        retryLink: "Opnieuw proberen"
+    "eppnAlreadyLinked": {
+        "header": "Account niet gekoppeld!",
+        "info": "Je eduID kon niet worden gekoppeld. Het account waarmee je zojuist bent ingelogd, is al aan een ander eduID gekoppeld: %1$s.",
+        "proceed": "Je kan het nogmaals met een andere instelling proberen of doorgaan naar {{name}}.",
+        "proceedLink": "Doorgaan",
+        "retryLink": "Opnieuw proberen",
+        "title": {
+            "accountNotConnected": "Koppeling niet gemaakt!",
+            "verificationFailed": "Verificatie mislukt!"
+        },
+        "infoExternalAccountWithoutEmail": "Je eduID kon niet worden geverifïeerd. Het externe account waarmee je zojuist bent ingelogd, is al aan een ander eduID-account gekoppeld.",
+        "infoExternalAccountWithEmail": "Je eduID kon niet worden geverifïeerd. Het externe account waarmee je zojuist bent ingelogd, is al aan een ander eduID-account gekoppeld: %1$s",
+        "retryButton": "Opnieuw proberen"
     },
-    attributeMissing: {
-        header: "Account niet gekoppeld!",
-        info: "Je eduID kon niet worden gekoppeld. Het vertrouwde account waarmee je zojuist bent ingelogd, heeft geen EPPN vrijgegeven.",
-        proceed: "Je kan het nogmaals met een andere instelling proberen of doorgaan naar {{name}}.",
-        proceedLink: "Doorgaan",
-        retryLink: "Opnieuw proberen"
+    "attributeMissing": {
+        "header": "Account niet gekoppeld!",
+        "info": "Je eduID kon niet worden gekoppeld. Het vertrouwde account waarmee je zojuist bent ingelogd, heeft geen EPPN vrijgegeven.",
+        "proceed": "Je kan het nogmaals met een andere instelling proberen of doorgaan naar {{name}}.",
+        "proceedLink": "Doorgaan",
+        "retryLink": "Opnieuw proberen"
     },
-    subjectAlreadyLinked: {
-        header: "Account niet geverifïeerd!",
-        info: "Je eduID kon niet worden geverifïeerd. Het externe account waarmee je zojuist bent ingelogd, is al aan een ander eduID-account gekoppeld.",
-        proceed: "Je kan nogmaaal proberen je account te verifieren of doorgaan naar {{name}}.",
-        proceedLink: "Doorgaan",
-        retryLink: "Opnieuw proberen"
+    "subjectAlreadyLinked": {
+        "header": "Account niet geverifïeerd!",
+        "info": "Je eduID kon niet worden geverifïeerd. Het externe account waarmee je zojuist bent ingelogd, is al aan een ander eduID-account gekoppeld.",
+        "proceed": "Je kan nogmaaal proberen je account te verifieren of doorgaan naar {{name}}.",
+        "proceedLink": "Doorgaan",
+        "retryLink": "Opnieuw proberen"
     },
-    externalAccountLinkedError: {
-        header: "Account niet geverifïeerd!",
-        info: "Je eduID kon niet worden geverifïeerd. De vertrouwde partij die je hebt gekozen heeft een fout teruggemeld.",
+    "externalAccountLinkedError": {
+        "header": "Account niet geverifïeerd!",
+        "info": "Je eduID kon niet worden geverifïeerd. De vertrouwde partij die je hebt gekozen heeft een fout teruggemeld."
     },
-    validNameMissing: {
-        header: "Account is gekoppeld, maar...",
-        info: "Je eduID is succesvol gekoppeld, maar de instelling die je hebt gekozen heeft niet de vereiste persoonsgegevens teruggegeven.",
-        proceed: "Je kan het nogmaals met een andere instelling proberen of doorgaan naar {{name}}.",
-        proceedLink: "Doorgaan",
-        retryLink: "Opnieuw proberen"
+    "validNameMissing": {
+        "header": "Account is gekoppeld, maar…",
+        "info": "Je eduID is succesvol gekoppeld, maar de instelling die je hebt gekozen heeft niet de juiste attributen teruggegeven.",
+        "proceed": "Je kan een andere instelling proberen te koppelen of doorgaan naar %1$s.",
+        "proceedLink": "Doorgaan",
+        "retryLink": "Opnieuw proberen"
     },
-    stepUpExplanation: {
-        info: " ",
-        linked_institution: "Je eduID-account moet gekoppeld zijn aan een vertrouwde instelling.",
-        validate_names: "Je voornaam en achternaam moeten worden geverifieerd door een vertrouwde instelling.",
-        validate_names_external: "Je voornaam en achternaam moeten worden geverifieerd door een externe vertrouwde instelling.",
-        affiliation_student: "Je moet aantonen dat je onderwijs volgt door je eduID-account te koppelen aan een vertrouwde instelling."
+    "stepUpExplanation": {
+        "info": " ",
+        "linked_institution": "Je eduID moet gekoppeld zijn aan een officiële instelling.",
+        "validate_names": "Je voornaam en achternaam moeten worden bevestigd door een officiële instelling.",
+        "validate_names_external": "Je voornaam en achternaam moeten worden geverifieerd door een externe vertrouwde instelling.",
+        "affiliation_student": "Je moet aantonen dat je student bent. Dit doe je door je eduID te koppelen aan een officiële instelling.",
+        "profile_mfa": "Je moet inloggen met de eduID app voor multi-factor authenticatie."
     },
-    stepUpVerification: {
-        info: " ",
-        linked_institution: "Je eduID-account is gekoppeld aan een vertrouwde instelling.",
-        validate_names: "Je voornaam en achternaam zijn geverifieerd door een vertrouwde instelling.",
-        validate_names_external: "Je voornaam en achternaam moeten worden geverifieerd door een externe vertrouwde instelling.",
-        affiliation_student: "Je hebt aangetoont dat je onderwijs volgt doordat je eduID-account is gekoppeld aan een vertrouwde instelling."
+    "stepUpVerification": {
+        "info": " ",
+        "linked_institution": "Je eduID is gekoppeld aan een officiële instelling.",
+        "validate_names": "Je voornaam en achternaam zijn bevestigd door een officiële instelling.",
+        "validate_names_external": "Je voornaam en achternaam moeten worden geverifieerd door een externe vertrouwde instelling.",
+        "affiliation_student": "Je hebt aangetoond dat je student bent, doordat je eduID is gekoppeld aan een officiële instelling.",
+        "profile_mfa": "Je bent succesvol ingelogd met de eduID app met multi-factor authenticatie."
     },
-    nudgeApp: {
-        new: "Je eduID is aangemaakt!",
-        header: "Wil je de volgende keer sneller en veiliger inloggen?",
-        info: "Installeer de <strong>eduID app</strong> en log veiliger in zonder wachtwoord of het openen van je email. Het kost je maar een minuut.",
-        no: "Nee bedankt",
-        noLink: "/proceed",
-        yes: "Installeer nu",
-        yesLink: "/eduid-app"
+    "nudgeApp": {
+        "new": "Je eduID is aangemaakt",
+        "header": "Wil je de volgende keer sneller en veiliger inloggen?",
+        "info": "Met de <strong>eduID app</strong> log je extra veilig in, zonder wachtwoord. Het installeren van de app is zo gebeurd.",
+        "no": "Nee, bedankt",
+        "noLink": "/proceed",
+        "yes": "Download app",
+        "yesLink": "/eduid-app"
     },
-    getApp: {
-        header: "Download de eduID app",
-        info: "Download en installeer <a href=\"https://eduid.nl/help\" target=\"_blank\">de eduID app</a> (uitgegeven door SURF) op je mobiele apparaat.",
-        google: "https://play.google.com/store/apps/details?id=nl.eduid",
-        apple: "https://apps.apple.com/nl/app/eduid/id1600756434",
-        after: "Als je de eduID app op je telefoon hebt gedownload, kom dan hier terug en klik op volgende.",
-        back: "Terug",
-        next: "Volgende"
+    "getApp": {
+        "header": "Download de eduID app",
+        "info": "Download de eduID app (van SURF) in een van de app-stores",
+        "google": "https://play.google.com/store/apps/details?id=nl.eduid",
+        "apple": "https://apps.apple.com/",
+        "after": "Heb je de app geïnstalleerd? Druk dan op ‘Volgende’.",
+        "back": "Terug",
+        "next": "Volgende"
     },
-    sms: {
-        header: "Controleer je telefoon",
-        info: "Voer de zescijferige code in die we naar je telefoon hebben gestuurd om door te gaan.",
-        codeIncorrect: "De code is onjuist",
-        sendSMSAgain: "Nieuwe code",
-        maxAttemptsPre: "Maximum aantal pogingen bereikt. Klik",
-        maxAttemptsPost: "om een ander telefoonnummer te gebruiken of de verstuur een nieuwe code",
-        here: " hier "
-
+    "sms": {
+        "header": "Controleer je telefoon",
+        "info": "Voer de sms-code in die je hebt ontvangen. Deze bestaat uit 6 cijfers.",
+        "codeIncorrect": "De code is onjuist",
+        "sendSMSAgain": "Nieuwe code",
+        "maxAttemptsPre": "Maximum aantal pogingen bereikt. Druk",
+        "maxAttemptsPost": "om een ander telefoonnummer te gebruiken of de verstuur een nieuwe code",
+        "here": " hier ",
+        "maxAttemptsPostNoReEnter": "om een nieuwe code te ontvangen"
     },
-    rememberMe: {
-        yes: "Ja",
-        no: "Nee",
-        header: "Ingelogd blijven?",
-        info: "Blijf ingelogd op dit apparaat zodat je de volgende keer niet hoeft in te loggen."
+    "rememberMe": {
+        "yes": "Ja",
+        "no": "Nee",
+        "header": "Ingelogd blijven?",
+        "info": "Blijf ingelogd op dit apparaat."
     },
-    modal: {
-        cancel: "Annuleer",
-        confirm: "Bevestig",
+    "modal": {
+        "cancel": "Annuleer",
+        "confirm": "Bevestig"
     },
-    appRequired: {
-        header: "Login met de eduID app",
-        info: "Applicatie <strong>{{service}}</strong> heeft een login verzocht met de eduID app om je identiteit te bevestigen.",
-        info2: "Download de <strong>eduID-app</strong> en log veilig in zonder wachtwoord of toegang tot je e-mail. Het duurt maar een minuut. Klik op <strong>Doorgaan</strong> voor de volgende stap.",
-        cancel: "/cancel",
-        no: "Ik weiger",
-        yesLink: "/proceed",
-        yes: "Doorgaan",
-        warning: "Doorgaan zonder de eduID-app is niet toegestaan. Je kunt dan niet inloggen op {{service}}.",
-        warningTitle: "Download eduID-app",
-        confirmLabel: "Download eduID-app",
-        cancelLabel: "Ik weiger echt"
+    "appRequired": {
+        "header": "Log in met de eduID app",
+        "info": "Dienst <strong>%1$s</strong> heeft een login verzocht met de eduID app om je identiteit te bevestigen.",
+        "info2": "Met de <strong>eduID app</strong> log je extra veilig in, zonder wachtwoord. Het installeren van de app is zo gebeurd. Druk op <strong>Doorgaan</strong> voor de volgende stap.",
+        "cancel": "/cancel",
+        "no": "Ik weiger",
+        "yesLink": "/proceed",
+        "yes": "Doorgaan",
+        "warning": "We raden het af om zonder de eduID app in te loggen. De dienst %1$s zal niet je attributen ontvangen.",
+        "warningTitle": "Download eduID app",
+        "confirmLabel": "Download eduID app",
+        "cancelLabel": "Ik weiger echt"
     },
-    subContent: {
-        warningTitle: "Weet je het zeker?",
-        warning: "De applicatie vraagt om in te loggen met je eduID app. Als je met een andere methode inlogt, ontvangt deze applicatie je persoonsgegevens niet.",
-        confirmLabel: "Verander login optie",
-        cancelLabel: "Dat wist ik niet"
+    "subContent": {
+        "warningTitle": "Weet je het zeker?",
+        "warning": "De dienst waarop je inlogt heeft gevraagd om in te loggen met de eduID app. Als je op een andere manier inlogt, dan is het mogelijk dat deze dienst niet goed werkt of je geen toegang verleent.",
+        "confirmLabel": "Verander manier van inloggen",
+        "cancelLabel": "Login met de app"
     },
-    verify: {
-        modal: {
-            header: "Verificatie",
-            info: {
-                title: "Verificatie",
-                verify: "Verifïeer je identiteit, snel en gemakkelijk",
-                please: "Gebruik een van de volgende methodes om te bewijzen wie je bent.",
-                educationalInstitution: "Verifïeer met een Nederlandse onderwijsinstelling",
-                selectInstitution: "Selecteer je instelling",
-                other: "Andere opties...",
-                verifyBank: "Verifïeer met een Nederlandse bank app",
-                selectBank: "Selecteer je bank",
-                verifyEuropeanId: "Verifïeer met een Europees ID",
-                supportEuropean: "We ondersteunen de meederheid van de de nationalie digitale ID's",
-                useEuropean: "gebruik een Europees ID",
-                cantUse: "Neem contact met de Service Desk",
-                help: "Als je geen van deze opties kan gebruiken, bezoek dan onze <a href='https://eduid.nl/help' target='_blank' rel='noreferrer'>support pagina's</a>"
+    "verify": {
+        "modal": {
+            "header": "Verificatie",
+            "info": {
+                "title": "Verificatie",
+                "verify": "Verifïeer je identiteit, snel en gemakkelijk",
+                "please": "Gebruik een van de volgende methodes om te bewijzen wie je bent.",
+                "educationalInstitution": "Verifïeer met een Nederlandse onderwijsinstelling",
+                "selectInstitution": "Selecteer je instelling",
+                "other": "Andere opties...",
+                "verifyBank": "Verifïeer met een Nederlandse bank app",
+                "selectBank": "Selecteer je bank",
+                "verifyEuropeanId": "Verifïeer met een Europees ID",
+                "supportEuropean": "We ondersteunen de meederheid van de de nationalie digitale ID's",
+                "useEuropean": "gebruik een Europees ID",
+                "cantUse": "Neem contact met de Service Desk",
+                "help": "Als je geen van deze opties kan gebruiken, bezoek dan onze <a href='https://eduid.nl/help' target='_blank' rel='noreferrer'>support pagina's</a>"
             },
-            bank: {
-                select: "Selecteer je bank",
-                disclaimer: "Met iDIN controleren we via de bank de persoonlijke informatie, om ervan zeker te zijn wie je bent. " +
-                    "<strong>Je maakt geen geld over</strong>. <a href='https://www.idin.nl/' target='_blank' rel='noreferrer'>Meer over iDIN.</a>",
-                anotherMethodPrefix: "Als je eigen bank niet in de lijst staat, selecteer dan ",
-                anotherMethodPostfix: "een andere methode"
+            "bank": {
+                "select": "Selecteer je bank",
+                "disclaimer": "Met iDIN controleren we via de bank de persoonlijke informatie, om ervan zeker te zijn wie je bent. <strong>Je maakt geen geld over</strong>. <a href='https://www.idin.nl/' target='_blank' rel='noreferrer'>Meer over iDIN.</a>",
+                "anotherMethodPrefix": "Als je eigen bank niet in de lijst staat, selecteer dan ",
+                "anotherMethodPostfix": "een andere methode"
             }
         },
-        feedback: {
-            newInstitutionTitle: "is met succes gekoppeld",
-            newInstitutionInfo: "De volgende informatie is toegevoegd aan je eduID account en kan nu worden gedeeld.",
-            validatedGivenName: "Geverifïeerde voornaam",
-            validatedFamilyName: "Geverifïeerde achternaam",
-            validatedDayOfBirth: "Geverifïeerde geboortedatum"
+        "feedback": {
+            "newInstitutionTitle": "is met succes gekoppeld",
+            "newInstitutionInfo": "De volgende informatie is toegevoegd aan je eduID account en kan nu worden gedeeld.",
+            "validatedGivenName": "Geverifïeerde voornaam",
+            "validatedFamilyName": "Geverifïeerde achternaam",
+            "validatedDayOfBirth": "Geverifïeerde geboortedatum"
         },
-        issuers: {
-            eherkenning: "eIDAS",
-            idin: "Idin",
-            studielink: "Studielink",
-            servicedesk: "Service Desk"
+        "issuers": {
+            "eherkenning": "eIDAS",
+            "idin": "Idin",
+            "studielink": "Studielink",
+            "servicedesk": "Service Desk"
         }
     },
-    captcha: {
-        proveNotRobot: "Check de 'Anti-robotverificatie' checkbox"
+    "captcha": {
+        "proveNotRobot": "Check de 'Anti-robotverificatie' checkbox"
+    },
+    "about": {
+        "info": "App-informatie"
+    },
+    "sidebar": {
+        "home": "Home",
+        "personalInfo": "Je gegevens",
+        "dataActivity": "Activiteit",
+        "security": "Veiligheid",
+        "account": "Account"
+    },
+    "start": {
+        "hi": "Hoi %1$s!",
+        "manage": "Beheer je persoonlijke gegevens, privacy en de beveiliging van je eduID."
+    },
+    "environmentSwitcher": {
+        "button": "Omgeving",
+        "title": "Wisselen van omgeving",
+        "subtitle": "Klik op een van de omgevingen om die te gebruiken voor de communicatie"
+    },
+    "featureFlags": {
+        "title": "Feature flags",
+        "identityVerification": "Controle van identiteit"
+    },
+    "promptForOAuth": {
+        "title": "Inloggen",
+        "description": "Je moet ingelogd zijn om gegevens op te halen."
+    },
+    "homeView": {
+        "mainText": {
+            "firstPart": "Je eduID app",
+            "secondPart": "is klaar voor gebruik"
+        },
+        "securityButton": "Beveiliging",
+        "personalInfoButton": "Je gegevens",
+        "activityButton": "Activiteit",
+        "scanQRButton": "Scan QR"
+    },
+    "scanView": {
+        "title": "Scan de QR-code",
+        "mainText": "<strong>Zie je geen QR-code?</strong><br/>\nGa naar <a href=\"https://eduid.nl/security\" target=\"_blank\">eduid.nl/security</a> op je computer<br/>\nMaak een QR-code<br/>\nScan de code hier\n",
+        "mainTextBoldPart": "Zie je geen QR-code?",
+        "flashlight": {
+            "notAvailable": "Zaklamp is niet beschikbaar",
+            "turnOn": "Zet zaklamp aan"
+        },
+        "error": "Fout"
+    },
+    "header": {
+        "title": "eduID",
+        "logout": "Uitloggen",
+        "logOff": "Afmelden"
+    },
+    "landing": {
+        "logoutTitle": "Je bent uitgelogd",
+        "rateLimitTitle": "Te veel mislukte pogingen"
+    },
+    "registrationCheck": {
+        "mainText": "Controleren op\nbestaande inschrijving\n",
+        "highLight": "bestaande inschrijving",
+        "logoutStatus": "Sluit de browser om uit te loggen.",
+        "loginAgain": "Opnieuw inloggen",
+        "deleteTitle": "Je eduID is verwijderd",
+        "deleteStatus": "Sluit je browser om je eduID te verwijderen.",
+        "registerAgain": "Opnieuw registreren"
+    },
+    "yourVerifiedInformation": {
+        "title": "Je bevestigde gegevens",
+        "subtitle": "Dit is een overzicht van je gegevens die bevestigd zijn door onderwijs- of onderzoekinstellingen.",
+        "explainIcon": "Dit icoon geeft aan dat je eduID deze gegevens gebruikt.’",
+        "fromInstitution": "Van %1$s",
+        "atInstitution": "Bij %1$s",
+        "receivedOn": "Gekregen op ",
+        "validUntil": "Geldig tot ",
+        "removeThisInformation": "Verwijder deze gegevens",
+        "fromYourEduID": " van jouw eduID",
+        "confirmRemoval": {
+            "title": "Gegevens verwijderen?",
+            "description": "Let op: deze gegevens zijn nodig om met je eduID in te loggen bij bepaalde websites. Je kunt de gegevens later opnieuw toevoegen.",
+            "button": {
+                "cancel": "Nee, terug",
+                "yesDelete": "Ja, verwijder"
+            }
+        }
+    },
+    "profile": {
+        "youAreLoggedIn": "Je bent ingelogd",
+        "manageYourAccount": "Beheer je eduID",
+        "accountLinkError": {
+            "title": "De URL kon niet worden opgehaald voor het koppelen van je huidige account."
+        },
+        "addAnOrganisation": "Voeg een organisatie toe",
+        "organisationsHeader": "Organisaties",
+        "me": "mij",
+        "shareableInformation": "Deelbare gegevens",
+        "removeServicePrompt": {
+            "title": "Weet je het zeker?",
+            "description": "Deze dienst wordt definitief verwijderd.",
+            "delete": "Verwijder",
+            "cancel": "Ga terug"
+        },
+        "providedBy": "aangeboden door",
+        "providedByYou": "Zelf ingesteld",
+        "title": "Je persoonlijke gegevens",
+        "info": "Je persoonlijke gegevens kunnen gedeeld worden als je eduID gebruikt om in te loggen bij andere websites.",
+        "yourIdentity": "Je identiteit",
+        "verified": "bevestigd",
+        "notVerified": "niet bevestigd",
+        "verifiedGivenName": "Bevestigde voornaam",
+        "verifiedFamilyName": "Bevestigde achternaam",
+        "verifiedDateOfBirth": "Bevestigde geboortedatum",
+        "linkedAccountCreatedAt": "• op ",
+        "linkedAccountValidUntil": "• geldig tot ",
+        "manageYourVerifiedInformation": "Beheer je bevestigde gegevens",
+        "verifyNow": {
+            "title": "Voor sommige websites is het nodig dat je bewijst wie je bent. Dit doe je via een officiële partij, zoals je onderwijsinstelling of bank.",
+            "button": "Bevestig je identiteit"
+        },
+        "firstName": "Voornaam",
+        "lastName": "Achternaam",
+        "contactDetails": "Contactgegevens",
+        "basic": "Basisinformatie",
+        "email": "E-mailadres",
+        "verifyEmail": "Bevestig e-mailadres",
+        "name": "Naam",
+        "validated": "Bevestigde gegevens",
+        "firstAndLastName": "Voor- en achternaam",
+        "firstAndLastNameInfo": "Je voor- en achternaam zijn nog niet bevestigd door een officiële partij.",
+        "verify": "Bevestig",
+        "student": "Bewijs van studeren",
+        "studentInfo": "Je hebt nog niet bewezen dat je in Nederland studeert.",
+        "prove": "Bewijs",
+        "trusted": "Koppeling met officiële partij",
+        "trustedInfo": "Je eduID is nog niet gekoppeld aan een officiële partij.",
+        "link": "Koppel",
+        "institution": "Onderwijs- of onderzoeksinstelling",
+        "institutionAt": "Door %1$s",
+        "employee": "Medewerker",
+        "affiliations": "Rol(len)",
+        "expires": "Koppeling verloopt",
+        "expiresValue": "%1$s",
+        "verifiedBy": "Bevestigd door %1$s ",
+        "verifiedOn": "op %1$s",
+        "proceed": "Doorgaan",
+        "verifyFirstAndLastName": {
+            "addInstitution": "Bevestig naam",
+            "addInstitutionConfirmation": "Als je doorgaat word je gevraagd in te loggen via de onderwijsinstelling die je wilt koppelen. Selecteer eerst de instelling die je wilt koppelen en log daarna in.<br/> <br/>Nadat je succesvol bent ingelogd kom je hier weer terug."
+        },
+        "verifyStudent": {
+            "addInstitution": "Bewijs student",
+            "addInstitutionConfirmation": "Als je doorgaat word je gevraagd in te loggen via de onderwijsinstelling die je wilt koppelen. Selecteer eerst de instelling die je wilt koppelen en log daarna in.<br/> <br/>Nadat je succesvol bent ingelogd kom je hier weer terug."
+        },
+        "verifyParty": {
+            "addInstitution": "Koppel instelling",
+            "addInstitutionConfirmation": "Als je doorgaat word je gevraagd in te loggen via de onderwijsinstelling die je wilt koppelen. Selecteer eerst de instelling die je wilt koppelen en log daarna in.<br/> <br/>Nadat je succesvol bent ingelogd kom je hier weer terug."
+        }
+    },
+    "edit": {
+        "title": "Aanpassen profielgegevens",
+        "info": "Vul je volledige naam in.",
+        "givenName": "Je voornaam",
+        "familyName": "Je achternaam",
+        "update": "Opslaan",
+        "cancel": "Annuleren",
+        "updated": "Je profiel is bijgewerkt.",
+        "back": "/profile"
+    },
+    "email": {
+        "openLinkToConfirm": "Druk op de link in de email om je wijziging te bevestigen. De e-mail is verstuurd aan %1$s",
+        "updateError": "We konden de wijziging naar je nieuwe e-mailadres niet bevestigen: %1$s.",
+        "title": {
+            "edit": "Bewerk",
+            "emailAddress": "E-mailadres"
+        },
+        "info": "Vul je nieuwe e-mailadres in. Je krijgt daarna een e-mail om dit e-mailadres bevestigen.",
+        "newEmail": "Je nieuwe e-mailadres",
+        "placeholder": "bijv tim@bernerslee.com",
+        "update": "Verstuur",
+        "cancel": "Annuleer",
+        "save": "Opslaan",
+        "updated": "Een e-mail is verzonden naar %1$s",
+        "updatedVerified": "Een verificatie e-mail is verzonden naar %1$s",
+        "confirmed": "Je e-mail is gewijzigd naar %1$s",
+        "back": "/personal",
+        "emailEquality": "Je nieuwe e-mailadres is hetzelfde als je huidige e-mailadres",
+        "duplicateEmail": "Dit e-mailadres is al in gebruik.",
+        "outstandingPasswordForgotten": "Uitstaand reset-verzoek voor wachtwoord",
+        "outstandingPasswordForgottenConfirmation": "Er is eerder een code naar je gestuurd om je wachtwoord te resetten. Deze code is niet langer geldig. Je ontvant een nieuwe code om je e-mailwijziging te bevestigt."
+    },
+    "nameUpdated": {
+        "title": {
+            "yourSchool": "Je school of onderwijsinstelling",
+            "contactedSuccessfully": "is nu gekoppeld",
+            "contactedError": "is niet gekoppeld",
+            "failReason": {
+                "alreadyLinked": "Reden: Het account is al gekoppeld: %1$s",
+                "sessionExpired": "Reden: Je sessie is verlopen."
+            }
+        },
+        "description": "De volgende gegevens zijn toegevoegd aan je eduID.",
+        "fullName": "Volledige naam",
+        "continue": "Doorgaan"
+    },
+    "editName": {
+        "title": {
+            "edit": "Bewerk",
+            "yourName": "Je naam"
+        },
+        "firstName": "Voornaam",
+        "lastName": "Achternaam",
+        "button": {
+            "save": "Opslaan",
+            "cancel": "Annuleer"
+        }
+    },
+    "deleteAccount": {
+        "title": "Verwijder je eduID",
+        "disclaimer": "Let op: als je je eduID verwijdert, <strong>verlies je ook je unieke eduID-nummer</strong> dat gekoppeld is aan je e-mailadres.",
+        "longDescription": "Wanneer je een nieuwe eduID maakt met hetzelfde e-mailadres, krijg je een nieuw eduID-nummer. Door dit nieuwe nummer zien sommige websites jou ook als nieuwe gebruiker. Goed om te weten: als je je eduID verwijdert, betekent dat niet dat alle websites die gekoppeld zijn aan je eduID ook je gegevens verwijderen.",
+        "deleteAccountButton": "Verwijder je account"
+    },
+    "oneTimePassword": {
+        "generateError": {
+            "title": "Eenmalig wachtwoord aanmaken is mislukt",
+            "description": "Er is iets misgegaan bij het aanmaken van je eenmalige wachtwoord."
+        },
+        "title": "Je apparaat lijkt offline te zijn",
+        "description": "Gelukkig kan je ook op een andere manier inloggen:\n  1. Druk op ‘Code invoeren’ onder de QR-code op je computer.\n  2. Voer daarna deze code in:",
+        "yourId": "Je ID:",
+        "oneTimePassword": "Eénmalige code:",
+        "pinNotVerified": {
+            "title": "Opmerking: Je PIN is nog niet geverifieerd.",
+            "description": "Als je niet kunt inloggen met bovenstaande gegevens, scan dan opnieuw en voer de correcte pincode in."
+        },
+        "closeButton": "Sluiten"
+    },
+    "confirmDelete": {
+        "title": "Weet je zeker dat je je eduID wilt verwijderen?",
+        "disclaimer": "Je kunt deze actie niet ongedaan maken.",
+        "typeNameToConfirm": "Typ je voornamen en achternaam zoals die in 'Je persoonlijke gegevens' staan om verder te gaan.",
+        "yourFullNameLabel": "Je volledige naam",
+        "placeholder": "Je naam zoals opgeslagen in je eduID",
+        "button": {
+            "cancel": "Annuleer",
+            "confirm": "Bevestigen"
+        },
+        "nameDoesNotMatchError": {
+            "title": "Verkeerde naam",
+            "description": "De naam die je getypt had komt niet overeen met de naam in je profiel: \"%1$s\""
+        },
+        "deleteError": {
+            "title": "Je eduID kon niet verwijderd worden"
+        }
+    },
+    "myAccount": {
+        "title": "Gegevens in je eduID",
+        "accountCreatedOn": "Je eduID is gemaakt op",
+        "accountCreatedAt": "om",
+        "personalDataDisclaimer": "Alle gegevens in je eduID zijn van jou. Je kunt deze gegevens downloaden of verwijderen. Ze bevatten ook technische sleutels en referenties.",
+        "downloadDataButton": "Download gegevens",
+        "deleteAccountButton": "Verwijder je eduID",
+        "downloadSuccess": "De informatie is opgeslagen in de downloads-map.",
+        "downloadError": "Downloaden mislukt"
+    },
+    "security": {
+        "title": "Beveiliging",
+        "subTitle": "Hoe je kunt inloggen bij eduID",
+        "otherMethods": "Andere manieren",
+        "addPassword": "Wachtwoord toevoegen",
+        "passwordPlaceholder": "• • • • • • • • • •",
+        "changePassword": "Wachtwoord",
+        "passwordActivated": "Geactiveerd op %1$s",
+        "credentialActivated": "%1$s: Geactiveerd op %2$s",
+        "twoFAKey": "Inloggen met app",
+        "providedBy": "Gedeeld door",
+        "notAddedYet": "Nog niet toegevoegd aan je eduID",
+        "notSupported": "Niet ondersteund",
+        "useMagicLink": "Verificatie-code e-mail",
+        "useCode": "Verificatie-code e-mail",
+        "addSecurityKeyInfo": "Je kunt een passkey toevoegen aan je eduID om in te loggen.\n Dit kan bijv. de ingebouwde sensor van je apparaat\nzijn (TouchID, FaceID) of een los hardwaretoken (YubiKey).",
+        "rememberMeInfo": "<strong>Dit apparaat wordt momenteel onthouden. Je wordt automatisch ingelogd op eduD</strong>",
+        "noRememberMeInfo": "Als je inlogt met eduID kun je ervoor kiezen om <strong>ingelogd te blijven</strong>. Je login wordt onthouden op het apparaat dat je op dat moment gebruikt.",
+        "forgetMe": "Vergeet dit apparaat",
+        "tiqr": {
+            "title": "Wil je de volgende keer sneller en veiliger inloggen?",
+            "info": "Met de <strong>eduID app</strong> log je extra veilig in, zonder wachtwoord.",
+            "fetch": "Download app",
+            "deactivate": "Deactiveren",
+            "backupCodes": "Hersteloptie",
+            "app": "eduID app",
+            "phoneId": "Telefoon ID",
+            "aPNS": "iPhone",
+            "aPNS_DIRECT": "iPhone",
+            "fCM": "Android",
+            "gCM": "Android",
+            "fCM_DIRECT": "Android",
+            "appCode": "App-code",
+            "lastLogin": "Laatst ingelogd op",
+            "activated": "Geactiveerd op %1$s",
+            "dateTimeOn": "om",
+            "backupMethod": "Hersteloptie",
+            "sms": "sms",
+            "code": "Herstelcode",
+            "enrollmentCompleted": {
+                "title": "Al toegevoegd!",
+                "description": "Toevoegen is al voltooid."
+            },
+            "missingAccountDetails": {
+                "title": "Missende accountgegevens",
+                "description": "Kon de benodigde gegevens niet ophalen."
+            },
+            "enrollmentIncomplete": {
+                "title": "Toevoegen incompleet",
+                "description": "Toevoegen is incompleet, recovery was niet compleet of toegang is uitgeschakeld"
+            },
+            "alreadyEnrolled": {
+                "title": "Al toegevoegd aan een ander toestel",
+                "description": "Er is al een eduID app aan deze eduID gekoppeld.\nWil je de bestaande app-koppeling verwijderen en deze app koppelen?\n"
+            }
+        }
+    },
+    "passwordResetLink": {
+        "title": {
+            "addPassword": "Voeg een wachtwoord toe",
+            "changePassword": "Wachtwoord wijzigen of verwijderen"
+        },
+        "description": {
+            "addPassword": "We sturen je een e-mail om een wachtwoord in te stellen.",
+            "changePassword": "We sturen je een e-mail om je huidige wachtwoord opnieuw in te stellen of te verwijderen."
+        },
+        "button": {
+            "cancel": "Annuleer",
+            "sendEmail": "Stuur email"
+        }
+    },
+    "changePassword": {
+        "title": {
+            "addPassword": "Voeg een wachtwoord toe",
+            "changePassword": "Wachtwoord wijzigen"
+        },
+        "description": {
+            "newPassword": "Kies een wachtwoord van minstens 8 karakters met minimaal een hoofdletter en een cijfer. Een langer wachtwoord van minimaal 15 karakters mag ook.",
+            "boldPart": "Kies een wachtwoord"
+        },
+        "missingHashError": "Benodigde gegevens voor het veranderen van je wachtwoord zijn niet beschikbaar.",
+        "label": {
+            "newPassword": "Je wachtwoord",
+            "repeatPassword": "Herhaal wachtwoord",
+            "mismatchError": "De twee wachtwoorden zijn niet hetzelfde.",
+            "placeholder": "••••••••••"
+        },
+        "deleteHeader": {
+            "title": "Wil je je wachtwoord helemaal verwijderen?",
+            "description": "Als je liever op een andere manier inlogt, kun je je wachtwoord verwijderen."
+        },
+        "button": {
+            "reset": "Reset wachtwoord",
+            "add": "Wachtwoord toevoegen",
+            "delete": "Verwijder mijn wachtwoord"
+        }
+    },
+    "twoFactorKeys": {
+        "title": "2FA key(s)",
+        "description": "Sleutels om veilig in te loggen zonder wachtwoord of link.",
+        "yourKeys": "Je sleutel(s)",
+        "noKeys": "Je hebt geen sleutels.",
+        "label": {
+            "account": "Account",
+            "uniqueKeyId": "Uniek SleutelID",
+            "useBiometrics": "Biometrisch inloggen aanzetten"
+        },
+        "deleteKey": "Sleutel verwijderen"
+    },
+    "confirmDeleteKey": {
+        "title": "Verwijder sleutel",
+        "subtitle": "Je kunt dit niet ongedaan maken",
+        "description": "Weet je zeker dat je deze sleutel wil verwijderen?",
+        "button": {
+            "confirm": "Ja, verwijder",
+            "cancel": "Nee, ga terug"
+        }
+    },
+    "home": {
+        "home": "Home",
+        "welcome": "Welkom %1$s",
+        "dataAndActivity": "Activiteit",
+        "personal": "Je gegevens",
+        "security": "Beveiliging",
+        "account": "Account",
+        "institutions": "Koppelingen",
+        "services": "Diensten",
+        "favorites": "Favorieten",
+        "settings": "Instellingen",
+        "links": {
+            "teams": "Teams",
+            "teamsHref": "https://teams.%1$s"
+        }
+    },
+    "account": {
+        "title": "Je eduID account",
+        "titleDelete": "Verwijder je eduID",
+        "info": "Op deze pagina kun je je account beheren.",
+        "created": "Aangemaakt op",
+        "delete": "Verwijder je account",
+        "cancel": "Annuleer",
+        "deleteInfo": "Let op: als je je eduID verwijdert, <strong>verlies je ook je unieke eduID-nummer</strong> dat gekoppeld is aan je e-mailadres.",
+        "data": "Download gegevens",
+        "personalInfo": "Druk op de knop om al je persoonlijke gegevens in je eduID te downloaden.",
+        "downloadData": "Download",
+        "downloadDataConfirmation": "De download van je persoonlijke gegevens van je eduID-account bevat alle informatie die we over je hebben. Het bevat ook technische sleutels en referenties.",
+        "deleteTitle": "Je eduID verwijderen",
+        "info1": "Je kunt je eduID verwijderen wanneer je maar wilt.",
+        "info2": "Let op: als je je eduID verwijdert, verlies je ook je unieke eduID-nummer dat gekoppeld is aan je e-mailadres. Wanneer je een nieuwe eduID maakt met hetzelfde e-mailadres, krijg je een nieuw eduID-nummer. Door dit nieuwe nummer zien sommige websites jou ook als nieuwe gebruiker.",
+        "info3": "Goed om te weten: als je je eduID verwijdert, betekent dat niet dat alle websites die gekoppeld zijn aan je eduID ook je gegevens verwijderen.",
+        "info4": "Sluit na afloop de browser om de verwijdering van je eduID te voltooien.",
+        "deleteAccount": "Verwijder je eduID",
+        "deleteAccountConfirmation": "Weet je zeker dat je je eduID wilt verwijderen?",
+        "deleteAccountSure": "Je eduID voor altijd verwijderen?",
+        "deleteAccountWarning": "Je kunt deze actie daarna niet meer ongedaan maken.",
+        "proceed": "Typ 'verwijder' als je er zeker van bent dat je je eduID wil verwijderen.",
+        "name": "Je volledige naam",
+        "namePlaceholder": "Je volledige naam zoals gebruikt in je profiel"
+    },
+    "dataActivity": {
+        "title": "Activiteit",
+        "info": "Wanneer je eduID gebruikt om aan te melden bij andere websites, kunnen de volgende gegevens worden gedeeld.",
+        "explainIcon": "Dit pictogram geeft aan dat de dienst toegang heeft tot je gegevens.",
+        "appsHeader": "Diensten waarop je bent ingelogd via eduID",
+        "noServices": "Je bent nog niet ingelogd geweest bij een dienst via eduID.",
+        "name": "Naam",
+        "add": "Nieuwe instelling koppelen",
+        "access": "Heeft toegang tot je gegevens",
+        "details": {
+            "on": "op",
+            "login": "Logingegevens",
+            "delete": "Verwijder deze logingegevens",
+            "firstLogin": "Eerste login: ",
+            "uniqueEduID": "eduID#: ",
+            "homePage": "Homepagina",
+            "deleteDisclaimer": "* Als je deze logingegevens verwijdert, verdwijnt deze informatie uit je eduID. Je hebt wel nog een account bij de dienst zelf. Als je dat wilt verwijderen, doe dat dan rechtstreeks bij de dienst.",
+            "access": "Toegangsrechten",
+            "details": "Accountgegevens",
+            "consent": "Toestemming gegeven op: ",
+            "expires": "Toegang vervalt op: ",
+            "revoke": "Deze toegangsrechten intrekken"
+        }
+    },
+    "deleteService": {
+        "title": "Verwijder logingegevens van ",
+        "description": "Als je deze logingegevens verwijdert, verdwijnt deze\n  informatie uit je eduID. Je hebt nog wel een account bij de\n  dienst zelf. Als je dat wilt verwijderen, doe dat dan\n  rechtstreeks bij de dienst",
+        "button": {
+            "confirm": "Ja, verwijder",
+            "cancel": "Annuleer"
+        },
+        "error": "Fout bij verwijderen dienst"
+    },
+    "revokeAccessToken": {
+        "title": "Toegang intrekken",
+        "description": "Weet je zeker dat je de API access voor %1$s wilt intrekken?",
+        "button": {
+            "confirm": "Bevestigen",
+            "cancel": "Annuleer"
+        },
+        "error": "Fout bij verwijderen van toegang"
+    },
+    "institution": {
+        "title": "Gekoppelde instelling",
+        "info": "Deze instelling is op %1$s om %2$s: %3$s gekoppeld aan je eduID.",
+        "name": "Naam van de onderwijs- of onderzoeksinstelling",
+        "eppn": "Identifier bij de instelling",
+        "displayName": "Weergavenaam",
+        "affiliations": "Rol(len) bij de instelling",
+        "expires": "Deze koppeling verloopt op",
+        "expiresValue": "%1$s",
+        "delete": "Verwijder koppeling",
+        "cancel": "Annuleren",
+        "deleted": "De koppeling met instelling %1$s is verwijderd",
+        "back": "/instellingen",
+        "deleteInstitution": "Verwijder koppeling",
+        "deleteInstitutionConfirmation": "Weet je zeker dat je de koppeling met deze instelling wilt verwijderen?<br/> <br/> Voor sommige diensten is het nodig dat je eduID gekoppeld is met een onderwijsinstelling. Daarom word je mogelijk gevraagd een instelling te koppelen als je in de toekomst zo’n dienst gebruikt."
+    },
+    "credential": {
+        "title": "Bewerk passkey",
+        "info": "Je hebt deze passkey toegevoegd op %1$s om %2$s: %3$s",
+        "name": "Naam passkey",
+        "cancel": "Annuleren",
+        "update": "Bewaar",
+        "deleted": "Je passkey %1$s is verwijderd",
+        "updated": "Je passkey %1$s is bewaard",
+        "back": "/weauthn",
+        "deleteCredential": "Verwijder passkey",
+        "deleteCredentialConfirmation": "Weet je zeker dat je de passkey %1$s wilt verwijderen? De passkey wordt verwijderd uit je eduID, maar wordt niet verwijderd uit je browser en / of van je YubiKey-apparaat."
+    },
+    "password": {
+        "addTitle": "Voeg wachtwoord toe",
+        "updateTitle": "Wijzig wachtwoord",
+        "addInfo": "Wil je een wachtwoord toevoegen aan je eduID? Druk dan hieronder op <strong>Bevestigen</strong> en ontvang een e-mail met een code. Daarna kan je een wachtwoord toevoegen.",
+        "updateInfo": "Wil je het wachtwoord van je eduID resetten of verwijderen? Druk hieronder op <strong>Bevestigen</strong> om direct een e-mail te ontvangen met een code. Nadat je de code invult, kun je je wachtwoord opnieuw instellen of verwijderen.",
+        "resetTitle": "Stel je wachtwoord opnieuw in",
+        "newPassword": "Nieuw wachtwoord",
+        "confirmPassword": "Bevestig nieuw wachtwoord",
+        "setUpdate": "Wachtwoord opnieuw instellen",
+        "updateUpdate": "Wachtwoord opslaan",
+        "cancel": "Annuleren",
+        "set": "Je wachtwoord is opnieuw ingesteld",
+        "reset": "Je wachtwoord is opnieuw ingesteld",
+        "updated": "Je wachtwoord is aangepast",
+        "deleted": "Je wachtwoord is verwijderd",
+        "deletePassword": "Verwijder wachtwoord",
+        "deletePasswordConfirmation": "Weet je zeker dat je je wachtwoord wilt verwijderen? Het is hierna niet meer mogelijk om in te loggen met dit wachtwoord.",
+        "back": "/security",
+        "passwordDisclaimer": "Kies een wachtwoord van tenminste 8 karakters met minimaal een hoofdletter en een cijfer. Een langer wachtwoord van minimaal 15 karakters mag ook.",
+        "invalidCurrentPassword": "Je huidige wachtwoord is niet correct.",
+        "passwordResetHashExpired": "De code om je wachtwoord in te stellen is verlopen. ",
+        "forgotPassword": "Ik ben mijn wachtwoord vergeten",
+        "passwordResetSendAgain": "Stuur een e-mail om mijn wachtwoord opnieuw in te stellen.",
+        "forgotPasswordConfirmation": "Wachtwoord vergeten? Druk hieronder op 'Bevestigen' om direct een e-mail te ontvangen met een code, waarmee je je huidige wachtwoord opnieuw kunt instellen.",
+        "outstandingEmailReset": "Openstaand verzoek om e-mailadres aan te passen",
+        "outstandingEmailResetConfirmation": "Je hebt recent een code ontvangen voor het bevestigen van een nieuwe e-mail. Deze code is niet langer geldig. Je ontvangt een nieuwe code om je wachtwoord te wijzigen.",
+        "flash": {
+            "passwordLink": "Een e-mail is verstuurd naar %1$s om je wachtwoord opnieuw in te stellen."
+        }
+    },
+    "webauthn": {
+        "setTitle": "Passkey toevoegen",
+        "updateTitle": "Passkey toevoegen",
+        "publicKeys": "Je publieke keys",
+        "noPublicKeys": "Je hebt nog geen passkey toegevoegd.",
+        "nameRequired": "Voordat je een passkey kan toevoegen, moet je deze eerst een naam geven.",
+        "revoke": "Intrekken",
+        "addDevice": "Voeg dit apparaat toe",
+        "info": "Een passkey is een los of ingebouwd apparaat dat strikt persoonlijk van jou is, waarmee je kunt bewijzen dat jij de eigenaar van je eduID bent. Nadat je een passkey hebt toegevoegd aan je eduID kun je deze gebruiken om mee in te loggen. Ook kun je nog steeds inloggen met een code via e-mail of wachtwoord.",
+        "back": "/security",
+        "setUpdate": "Start",
+        "updateUpdate": "Voeg deze passkey toe",
+        "credentialName": "Naam van passkey",
+        "credentialNamePlaceholder": "bijv. mijn gele Yubikey",
+        "test": "Test",
+        "testInfo": "Druk op de <strong>test</strong>knop om een 1 van je passkeys te testen. Je wordt doorgestuurd naar het eduID-loginscherm.",
+        "testFlash": "Je hebt met succes de beveiligingssleutel getest voor inloggen."
+    },
+    "format": {
+        "creationDate": "%1$s om %2$s:%3$s"
+    },
+    "deactivate": {
+        "titleDelete": "Deactiveer je eduID app",
+        "info": "Je kunt je eduID app deactiveren als je de app opnieuw wilt installeren of als je een nieuw apparaat hebt.",
+        "recoveryCode": "Herstelcode",
+        "recoveryCodeInfo": "Voer de <strong>herstelcode</strong> in die je tijdens het registeren van de eduID app hebt bewaard.",
+        "verificationCode": "Stuur controlecode",
+        "codeIncorrect": "Verkeerde herstelcode",
+        "next": "Volgende",
+        "deactivateApp": "Deactiveer",
+        "sendSms": "Druk op volgende om een sms met een controlecode naar je telefoonnummer te sturen.",
+        "maxAttempts": "Maximum aantal pogingen bereikt. Neem contact op met <a href=\"mailto:help@eduid.nl\">help@eduid.nl</a> voor hulp."
+    },
+    "backupCodes": {
+        "title": "Herstelmethode",
+        "info": "Je hebt de eduID app geïnstalleerd en geregistreerd. Wil je je herstelmethode wijzigen? Bevestig dan eerst dat jij het bent via de eduID app.",
+        "phoneNumber": "Mobiel nummer",
+        "startTiqrAuthentication": "Wijzig",
+        "code": "Code"
+    },
+    "createFromInstitution": {
+        "title": "Maak een eduID van je instelling",
+        "header": "Je staat op het punt een eduID aan te maken die wordt gekoppeld aan je account van je instelling.",
+        "alreadyHaveAnEduID": "Heb je al een eduID-account? <a href=\"%1$s\">Login!</a>",
+        "info": "Als je verder gaat, wordt je gevraagd om in te loggen bij de instelling die je aan je eduID wilt koppelen. Na het inloggen kom je hier terug.",
+        "startFlow": "Start registratie",
+        "welcome": "Je eduID is aangemaakt",
+        "welcomeExisting": "Je eduID is gekoppeld aan je acccount van je instelling"
+    },
+    "linkFromInstitution": {
+        "header": "Hi %1$s",
+        "info": "Je bent succesvol ingelogd bij je instelling. Vul nu je persoonlijke e-mailadres in. Dit wordt het e-maildres dat eduID gebruikt.",
+        "email": "E-mailadres",
+        "emailPlaceholder": "e.g. user@gmail.com",
+        "emailForbidden": "Het aanmaken van een eduID met dit e-mailadres is niet toegestaan. Neem contact op met <a href=\"mailto:help@eduid.nl\">help@eduid.nl</a> als je denkt dat het e-mailadres geldig is.",
+        "emailInUse1": "Dit e-mailadres is al in gebruik.",
+        "emailInUse2": "Probeer een andere, of ",
+        "emailInUse3": " koppel met deze eduID.",
+        "invalidEmail": "Ongeldig e-mailadres",
+        "institutionDomainNameWarning": "Dit lijkt een school- of werkmail. Gebruik een <b>persoonlijk e-mailadres</b>, omdat dat ook blijft werken als je van school of baan verandert.",
+        "institutionDomainNameWarning2": "We raden je aan om je persoonlijke e-mailadres te gebruiken voor eduID.",
+        "allowedDomainNamesError": "Domeinnaam %1$s niet toegestaan.",
+        "allowedDomainNamesError2": "eduID is beperkt om alleen te worden gebruikt voor toegestane domeinen.",
+        "agreeWithTerms": "<span>Ik ga akkoord met <a tabindex='-1' href='https://eduid.nl/gebruiksvoorwaarden/' target='_blank'>de voorwaarden</a> en ik heb de <a tabindex='-1' href='https://eduid.nl/privacy/' target='_blank'>de privacyverklaring</a> gelezen.</span>",
+        "requestEduIdButton": "Maak een eduID"
+    },
+    "pollFromInstitution": {
+        "header": "Je krijgt een e-mail van ons",
+        "awaiting": "Wachten tot je op de link klikt…",
+        "openGMail": "Open gmail.com",
+        "openOutlook": "Open outlook.com",
+        "spam": "Kan je de e-mail niet vinden? Controleer je spam.",
+        "loggedIn": "Inloggen is gelukt",
+        "loggedInInfo": "Je kan dit tabblad / venster sluiten.",
+        "timeOutReached": "Je code is niet meer geldig",
+        "timeOutReachedInfo": "Ga terug naar de website waar je wilde inloggen en probeer het opnieuw. Je kijgt dan een nieuwe code toegestuurd.",
+        "resend": "E-mail nog steeds niet gevonden?",
+        "resendLink": "Stuur de e-mail opnieuw.",
+        "mailResend": "Controleer je inbox. We hebben je de e-mail met de link opnieuw verzonden."
+    },
+    "useLink": {
+        "header": "Vraag een link aan",
+        "next": "Stuur een link"
+    },
+    "pinAndBioMetrics": {
+        "setupBiometrics": "Biometrisch inloggen instellen",
+        "skip": "Overslaan",
+        "biometricsApproval": "Biometrische goedkeuring",
+        "biometricsExplain": "Wil je met je biometrisch inloggen makkelijker toegang krijgen tot de eduID app?",
+        "biometricsExplainBoldPart": "biometrie",
+        "biometricsPrompt": "Gebruik biometrisch inloggen",
+        "skipAlertTitle": "Doorgaan zonder gebruik te maken van biometrisch inloggen?",
+        "skipAlertText": "Hierdoor wordt deze functie definitief uitgeschakeld",
+        "firstPinScreenSelectTitle": "Kies een pincode",
+        "pinScreenEnterTitle": "Pincode invoeren",
+        "firstPinScreenText": "Je hebt een pincode nodig om eduID te kunnen gebruiken",
+        "secondPinScreenSelectTitle": "Herhaal je pincode",
+        "secondPinScreenText": "Voer je pincode nog een keer in",
+        "verifyPinScreenText": "Voer je pincode in en druk op OK",
+        "signIn": "Inloggen",
+        "oKButton": "OK",
+        "loginRequest": "Verzoek om in te loggen",
+        "doYouWantToLogInTo": "Wil je inloggen bij",
+        "enteredPinNotEqual": "De ingevoerde pincodes waren niet hetzelfde",
+        "retryPin": "Oeps, laten we het opnieuw proberen",
+        "verifyPin": "Controleer pincode",
+        "button": {
+            "retry": "Probeer opnieuw",
+            "back": "Terug"
+        },
+        "checkMessages": "Controleer je berichten",
+        "enterSixDigitCode": "Voer de sms-code in die hebt ontvangen. Deze bestaat uit 6 cijfers.",
+        "sixDigitCode": "zescijferige",
+        "authenticate": "Authenticeren",
+        "authenticateForUseTitle": "Voer je pincode in om met eduID te bewijzen wie je bent"
+    },
+    "generic": {
+        "requestError": {
+            "title": "Het verzoek kan niet worden voltooid",
+            "description": "Onverwachte fout: %1$s, probeer het opnieuw.",
+            "closeButton": "Sluiten"
+        }
+    },
+    "welcomeToApp": {
+        "title": "Welkom! Je kunt de eduID app gebruiken voor",
+        "quickly": {
+            "text": "bij diensten in het onderwijs",
+            "highlight": "Snel inloggen"
+        },
+        "viewWhat": {
+            "text": "die je eduID met deze diensten deelt",
+            "highlight": "Je gegevens beheren"
+        },
+        "verifyYour": {
+            "text": "om toegang te krijgen tot beveiligde diensten",
+            "highlight": "Je identiteit bevestigen"
+        },
+        "gotItButton": "Ok, ik snap het",
+        "returnBrowserTitle": "Ga terug naar je webbrowser",
+        "returnBrowserText": "Ga verder in je browser om de koppeling van deze app met je eduID af te maken"
+    },
+    "createEduID": {
+        "errorCreateFailed": {
+            "title": "Je eduID aanmaken is niet gelukt",
+            "message": "Er ging iets mis bij het aanmaken van je account. Probeer het opnieuw."
+        },
+        "landingPage": {
+            "mainText": "Bewijs wie je bent in het veld van onderwijs en onderzoek",
+            "signInButton": "Inloggen",
+            "scanQrButton": "QR-code scannen",
+            "noEduIdButton": "Ik heb nog geen eduID"
+        },
+        "firstTimeDialog": {
+            "mainTextPoint1": "Je volledige naam, bevestigd door een officiële partij",
+            "mainTextPoint2": "Bewijs dat je student bent",
+            "mainTextPoint3": "Je huidige instelling"
+        },
+        "explanation": {
+            "mainTitleLabel": "Heb je nog geen eduID?",
+            "mainExplanationText": "eduID is een account om te bewijzen wie je bent aan Nederlandse onderwijs- en onderzoekinstellingen. Het is van jou en dus niet van de instellingen zelf.\n\n\n• Log in bij verschillende diensten die zijn aangeloten bij SURFconext.\n• Je kunt een eduID ook al aanmaken als je nog geen account bij een onderwijsinstelling hebt.\n• eduID is je hele leven geldig. Ook nadat je afstudeert.\n",
+            "createEduidButton": "Maak een nieuw eduID aan"
+        },
+        "create": {
+            "mainTitleLabel": "eduID aanmaken"
+        },
+        "created": {
+            "mainTitleLabel": "Je eduID is gemaakt!",
+            "mainText": "Je hoeft alleen nog een pincode in te stellen om de app veilig te gebruiken. Tip: voeg ook een telefoonnummer toe voor het geval je de code vergeet."
+        },
+        "enterPersonalInfo": {
+            "emailFieldTitle": "Je e-mailadres",
+            "emailFieldPlaceHolder": "bijv. timbernerslee@gmail.com",
+            "agreement": "Ik ga akkoord met de voorwaarden en heb het privacybeleid gelezen"
+        },
+        "enterPhoneNumber": {
+            "phoneFieldTitle": "Vul je telefoonnummer in",
+            "phoneFieldPlaceholder": "0612345678",
+            "mainText": "Lukt het niet om in te loggen in eduID via de app of e-mail? Dan kun je ook met een sms-code inloggen.\n\nWelk telefoonnummer wil je hiervoor gebruiken?\n",
+            "boldRange": "38",
+            "verifyPhoneNumber": "Stuur sms-code"
+        },
+        "addInstitution": {
+            "mainTitle": "Je onderwijsinstelling is succesvol gekoppeld",
+            "mainTitleBoldPart": "Je onderwijsinstelling",
+            "mainText": "De volgende gegevens zijn aan je eduID toegevoegd en kun je nu delen met andere diensten:"
+        }
+    },
+    "regEXError": {
+        "name": "Deze naam lijkt niet te kloppen. Vul een andere naam in.",
+        "email": "Dit e-mailadres lijkt niet te kloppen. Vul een ander e-mailadres in.",
+        "phone": "Dit telefoonnummer lijkt niet te kloppen. Vul een ander telefoonnummer in.",
+        "password": "Wachtwoord is niet sterk genoeg"
+    },
+    "responseErrors": {
+        "generalRequestError": "Verzoek kan op dit moment niet worden voltooid. Probeer het later opnieuw.",
+        "authenticationFailedTitle": "Inloggen mislukt",
+        "authenticationFailedMessage": "Probeer het zo opnieuw.",
+        "unauthorizedTitle": "Gegevens kunnen niet laden",
+        "unauthorizedText": "Verzoek kan niet worden voltooid, log in en geef toegang.",
+        "requestSMSError": "Kan geen sms-code aanvragen, probeer het opnieuw.",
+        "removeControlCodeError": "Kan de controlecode niet verwijderen, probeer het opnieuw.",
+        "passwordUpdateError": "Wachtwoord kan niet worden bijgewerkt",
+        "invalidPasswordError": "Het gekozen wachtwoord is ongeldig",
+        "passwordMismatchError": "Wachtwoorden zijn niet hetzelfde",
+        "invalidPasswordHash": "Ongeldige wachtwoord-hash, stuur de e-maillink opnieuw",
+        "missingPasswordHash": "Ontbrekende wachtwoord-hash, stuur de e-maillink opnieuw",
+        "deleteKeyLostError": "De sleutel die je wilt verwijderen, is niet gevonden",
+        "modifyKeyLostError": "De sleutel die je wilt wijzigen, is niet gevonden",
+        "requestResetLinkError": "Kan de link voor het opnieuw instellen van het wachtwoord niet aanvragen.",
+        "confirmSMSError": "Sms-code niet bevestigd, probeer het opnieuw.",
+        "invalidChallenge": {
+            "title": "Inschrijvingsuitdaging is ongeldig",
+            "description": "Kan de inschrijvingsuitdaging niet parseren, de uitdaging is ongeldig."
+        },
+        "deactivationError": {
+            "title": "Kan deactiveringscode niet aanvragen",
+            "description": "Kon geen deactiveringscode aanvragen voor bekend telefoonnummer: %1$s."
+        },
+        "emailInUse": {
+            "title": "E-mailadres al in gebruik",
+            "description": "Er is al een eduID gekoppeld aan dit e-mailadres"
+        },
+        "forbiddenDomainTitle": "Verboden domein",
+        "forbiddenDomainText": "Het door jou opgegeven e-mailadres mag niet worden gebruikt",
+        "noInternetAccessTitle": "Er is iets fout gegaan",
+        "noInternetAccessText": "Kon de benodigde gegevens niet ophalen",
+        "sMSErrorTitle": "Verkeerde verificatie",
+        "sMSErrorText": "Je hebt een verkeerde verificatiecombinatie ingevoerd",
+        "unknownErrorTitle": "Onbekende fout",
+        "unknownErrorText": "Er is een onbekende fout opgetreden met de volgende statuscode",
+        "existingUserAndDeviceTitle": "Al gekoppeld",
+        "existingUserAndDeviceText": "Dit account is al gekoppeld aan een ander apparaat. Verwijder eerst je andere apparaat uit je account voordat je een nieuw apparaat registreert.",
+        "personalDetailsRetrieveError": "Ophalen van persoonlijke gegevens mislukt",
+        "activityHistoryRetrieveError": "Ophalen van activiteit mislukt",
+        "deleteError": {
+            "title": "Verwijderen lukt niet",
+            "description": "Account kan niet verwijderd worden",
+            "nameMismatchDescription": "De getypte naam is niet dezelfde als de naam die bekend is bij ons"
+        },
+        "accountCreateError": "Kan geen eduid-account maken voor e-mail %1$s.",
+        "emailDomainForbidden": {
+            "title": "E-maildomein is verboden",
+            "description": "Het e-maildomein gebruikt in %1$s is niet toegestaan."
+        },
+        "generateControlCodeError": "Kan geen controlecode genereren",
+        "sendOneTimeCodeError": "Verzenden van eenmalige code mislukt",
+        "verifyOneTimeCodeError": "Verifiëren van eenmalige code mislukt",
+        "emailCodeError": {
+            "title": "Verificatie van code mislukt",
+            "expired": "De code is verlopen",
+            "incorrect": "De code is onjuist",
+            "rateLimited": "Te veel pogingen, probeer het later opnieuw"
+        },
+        "auth": {
+            "invalid": {
+                "title": "Autorisatie ongeldig",
+                "description": "Ontvangen verificatie is ongeldig."
+            },
+            "failed": {
+                "title": "Autorisatie mislukt",
+                "description": "Er zijn geen autorisatiegegevens opgeslagen - herautorisatie is nodig.",
+                "tokenFailedDescription": {
+                    "generic": "Autorisatiecode-uitwisseling mislukt",
+                    "withException": "Autorisatiecode-uitwisseling mislukt: %1$s."
+                }
+            }
+        }
+    },
+    "verifyIdentity": {
+        "titleHasInternalLink": "Voeg een instelling toe",
+        "subtitleHasInternalLink": "Door een onderwijs- of onderzoeksinstelling toe te voegen, bewijs je aan eduID dat je een student of medewerker bent van die instelling.",
+        "title": {
+            "firstLine": "Bevestig wie je bent",
+            "secondLine": "Snel en eenvoudig"
+        },
+        "subtitle": "Kies een manier om te bewijzen wie je bent. Daarna worden je voornaam, achternaam en eventueel geboortedatum aan je eduID toegevoegd.",
+        "verifyViaDutchInstitution": {
+            "title": "<strong>Heb je</strong> een account bij een Nederlands school of onderzoeksinstelling?",
+            "titleHasInternalLink": "Voeg je instelling toe door in te loggen",
+            "button": "Gebruik je school- of werkaccount"
+        },
+        "verifyViaOptions": {
+            "title": "<strong>Als je geen</strong> account hebt bij een Nederlandse school of onderzoeksinstelling, kies dan een van de volgende mogelijkheden"
+        },
+        "verifyWithBankApp": {
+            "title": "Nederlandse bank-app",
+            "button": "Gebruik je bank"
+        },
+        "verifyWithAEuropianId": {
+            "title": "Europese identiteit",
+            "button": "Gebruik een Europees ID"
+        },
+        "otherOptions": "Toon andere manieren",
+        "visitSupport": {
+            "full": "Kun je deze manieren niet gebruiken? Bezoek dan onze Hulp-pagina.",
+            "highlightedPart": "Hulp-pagina",
+            "link": "https://eduid.nl/help/"
+        }
+    },
+    "selectYourBank": {
+        "title": "Kies je bank",
+        "subtitle": {
+            "full": "Via iDIN krijgen we je naam en geboortedatum van je bank. Zo weten we zeker wie je bent. Je doet geen betaling. Meer informatie over iDIN",
+            "highlightedPart": "Je doet geen betaling"
+        },
+        "moreAboutIdin": "Meer informatie over iDIN",
+        "idinkLink": "https://www.idin.nl/",
+        "bankNotInList": {
+            "full": "Staat je bank er niet tussen? Kies dan een andere manier om te bewijzen wie je bent.",
+            "highlightedPart": "andere manier"
+        }
+    },
+    "linkingSuccess": {
+        "title": "Je persoonlijke gegevens",
+        "subtitle": "De volgende gegevens zijn toegevoegd aan je eduID en kunnen nu worden gedeeld.",
+        "subtitlePreferInstitution": "We hebben ook nieuwe gegevens gekregen. Wil je deze gebruiken voor je eduID?",
+        "button": {
+            "continue": "Ga door",
+            "yesPlease": "Ja, graag",
+            "noThanks": "Nee, bedankt"
+        }
+    },
+    "externalAccountLinkingError": {
+        "title": "Er is iets fout gegaan",
+        "subtitle": "Helaas konden we de gevraagde gegevens niet ophalen.",
+        "tryAnotherOption": "Probeer een andere manier"
+    },
+    "referenceNames": {
+        "idin": "iDIN",
+        "eherkenning": "eIDAS"
+    },
+    "confirmIdentityWithIdIntro": {
+        "title": {
+            "firstLine": "Bevestig wie je bent",
+            "secondLine": "met je identiteitsbewijs"
+        }
+    },
+    "serviceDesk": {
+        "confirmIdentityHeader": "Bevestig wie je bent met je identiteitsbewijs",
+        "confirmIdentity": "Je kunt je identiteit ook bevestigen via een van onze eduID Service Desks.",
+        "stepsHeader": "Volg deze stappen:",
+        "step1": "Vul je volledige naam in zoals die op je identiteitsbewijs staat (voornamen en achternaam).",
+        "step2": "Genereer een persoonlijke controlecode.",
+        "step3": "Laat je controlecode en identiteitsbewijs zien aan een eduID Service Desk. Die bevestigt zo je identiteit.",
+        "redirectWarning": "We sturen je door naar een andere website om je naam in te vullen. Je kunt daarna nog niet gelijk inloggen bij <strong>%1$s</strong>, maar je moet eerst contact opnemen met een eduID Service Desk.",
+        "acceptedIds": "Geldige identiteitsbewijzen:",
+        "passports": "paspoorten",
+        "eea": "EEA<sup>*</sup> ID-kaarten",
+        "driverLicense": "Nederlandse rijbewijzen",
+        "residencePermit": "Nederlandse verblijfsvergunningen",
+        "note": "Let op: kopieën, OV-kaarten en studentenkaarten zijn geen geldige identiteitsbewijzen.",
+        "eeaNote": "<sup>*</sup>EEA: alle EU-lidstaten + Liechtenstein, Noorwegen en IJsland.",
+        "next": "Naar gegevens invullen",
+        "idCard": {
+            "information": "Vul je gegevens in zoals die op je identiteitsbewijs staan.",
+            "lastName": "Achternaam",
+            "firstName": "Voornamen",
+            "dayOfBirth": "Geboortedatum",
+            "generateControlCode": "Genereer controlcode",
+            "selectPlaceholder": "Selecteer...",
+            "dateOfBirth": "Geboortedag",
+            "monthOfBirth": "Maand",
+            "yearOfBirth": "Jaar"
+        },
+        "controlCode": {
+            "controlCode": "Controlecode",
+            "yourControlCode": "Je controlecode",
+            "info": "Je krijgt ook een e-mail met deze code. De code is %1$s dagen geldig en is bedoeld voor:",
+            "typoPrefix": "Typfout gemaakt? ",
+            "typoLink": "Pas gegevens aan",
+            "todo": "Wat moet je nu doen?",
+            "todoDetails": "Maak een afspraak met een eduID Service Desk (digitaal of op locatie). Laat tijdens je afspraak je controlecode en identiteisbewijs zien.",
+            "serviceDesks": "Bekijk eduID Service Desks",
+            "serviceDesksLocations": "https://eduID.nl/servicedesk",
+            "back": "Terug naar overzicht",
+            "rethink": "Wil je toch op een andere manier bewijzen wie je bent? Verwijder dan eerst je controlecode.",
+            "deleteControlCode": "Verwijder controlecode",
+            "deletedControlCode": "Verificatie-code verwijderd",
+            "banner": "Bevestig je identiteit bij een eduID Service Desk. Dit doe je door je identiteitsbewijs en controlecode te laten zien.",
+            "showCode": "Toon code",
+            "validityCode": "Je code is nog geldig voor %1$s dagen.",
+            "cantUse": "Ik kan geen van bovenstaande manieren gebruiken"
+        }
+    },
+    "loginCode": {
+        "header": "Check je e-mail",
+        "title": "Eenmalige verificatiecode",
+        "info": "Voer de code in die verstuurd is naar <strong>%1$s</strong>",
+        "continue": "Doorgaan",
+        "resend": "E-mail niet ontvangen? Controleer uw spamfolder of ",
+        "resendLink": "klik om opnieuw te versturen",
+        "error": "Verkeerde code. Probeer het opnieuw.",
+        "errorHeader": "Maximale pogingen bereikt",
+        "errorInfo": "Je hebt het maximale aantal pogingen bereikt en je account is voor 15 minuten geschorst.",
+        "mailResend": "Check je inbox. We hebben je de e-mail met de code opnieuw verzonden."
+    },
+    "logInWithEmailCode": {
+        "checkYourEmail": "Controleer je e-mail",
+        "enterTheCodeSentTo": "Voer de code in die is verzonden naar %1$s",
+        "problems": "Problemen?",
+        "resendTheCode": "Stuur de code opnieuw",
+        "codeHasBeenResent": "De code is opnieuw verzonden naar je e-mailadres."
     }
 };
 export default nl;
