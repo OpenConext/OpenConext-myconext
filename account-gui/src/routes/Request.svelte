@@ -300,7 +300,7 @@
                     class="message-email-in-use"
             />
         </div>
-        <Button href="/login/${id}"
+        <Button href={`/login/${id}`}
                 label={I18n.t("Login.LoginWithThisEmail.COPY")}
                 useLink="true"/>
 
