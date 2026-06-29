@@ -7,6 +7,10 @@ All notable changes to this project will be documented in this file.
 ## [8.4.0] juli 2026
 
 - Use oidc directly for logging in to myconext-gui and servicedesk-gui, instead of shibboleth
+- Add preferred auth cookie to set login default method
+- Fix the app download link in the QR from mijn.eduid.nl
+- Expanded the promethues metrix with app registration count
+- Graciously handle empty notification type (support devices without Google Play Services)
 
 ## [8.3.6] juni 2026
 
