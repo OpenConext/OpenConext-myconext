@@ -98,8 +98,8 @@ public class SecurityConfiguration {
                             @Value("${certificate_path}") Resource certificatePath,
                             @Value("${idp_entity_id}") String idpEntityId,
                             @Value("${sp_entity_id}") String spEntityId,
-                            @Value("${sp_entity_metadata_url}") String spMetaDataUrl,
-                            @Value("${idp_redirect_url}") String redirectUrl,
+                            @Value("${account_metadata_url}") String accountMetadataUrl,
+                            @Value("${account_redirect_url}") String accountRedirectUrl,
                             @Value("${remember_me_max_age_seconds}") int rememberMeMaxAge,
                             @Value("${tiqr_trust_for_pn_max_age_seconds}") int tiqrCookieMaxAge,
                             @Value("${nudge_eduid_app_login_days}") int nudgeAppDays,
@@ -148,7 +148,7 @@ public class SecurityConfiguration {
             final List<SAMLServiceProvider> serviceProviders = new ArrayList<>();
 
             List<String> spEntityIdentifiers = commaSeparatedToList(spEntityId);
-            List<String> spMetaDataUrls = commaSeparatedToList(spMetaDataUrl);
+            List<String> spMetaDataUrls = commaSeparatedToList(accountMetadataUrl);
             for (int i = 0; i < spEntityIdentifiers.size(); i++) {
                 serviceProviders.add(new SAMLServiceProvider(spEntityIdentifiers.get(i), spMetaDataUrls.get(i)));
             }
@@ -159,7 +159,7 @@ public class SecurityConfiguration {
                     requiresSignedAuthnRequest
             );
             this.guestIdpAuthenticationRequestFilter = new GuestIdpAuthenticationRequestFilter(
-                    redirectUrl,
+                    accountRedirectUrl,
                     serviceProviderResolver,
                     authenticationRequestRepository,
                     userRepository,
@@ -255,7 +255,7 @@ public class SecurityConfiguration {
                 Manage manage,
                 UserRepository userRepository,
                 ExternalUserRepository externalUserRepository,
-                @Value("${mijn_eduid_entity_id}") String mijnEduIDEntityId,
+                @Value("${myconext_entityid}") String mijnEduIDEntityId,
                 @Value("${service_desk_roles}") String[] serviceDeskRoles,
                 @Value("${service_desk_role_auto_provisioning}") boolean serviceDeskRoleAutoProvisioning,
                 @Value("${host_headers.active}") String activeHost,

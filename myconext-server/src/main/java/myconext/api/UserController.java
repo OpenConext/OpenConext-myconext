@@ -53,17 +53,13 @@ import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.View;
-import org.springframework.web.servlet.view.RedirectView;
 import tiqr.org.model.Registration;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Field;
-import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.nio.charset.Charset;
-import java.nio.charset.StandardCharsets;
 import java.security.SecureRandom;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
@@ -95,7 +91,7 @@ public class UserController implements UserAuthentication {
     private final String magicLinkUrl;
     private final String schacHomeOrganization;
     private final String webAuthnSpRedirectUrl;
-    private final String idpBaseUrl;
+    private final String accountRedirectUrl;
     private final RelyingParty relyingParty;
     private final UserCredentialRepository userCredentialRepository;
     private final ChallengeRepository challengeRepository;
@@ -106,7 +102,7 @@ public class UserController implements UserAuthentication {
     private final EmailGuessingPrevention emailGuessingPreventor;
     private final EmailDomainGuard emailDomainGuard;
     private final DisposableEmailProviders disposableEmailProviders;
-    private final String spBaseUrl;
+    private final String myconextRedirectUrl;
     private final ObjectMapper objectMapper;
     private final RegistrationRepository registrationRepository;
     private final boolean featureDefaultRememberMe;
@@ -136,10 +132,10 @@ public class UserController implements UserAuthentication {
                           @Value("${email.magic-link-url}") String magicLinkUrl,
                           @Value("${schac_home_organizations}") String schacHomeOrganizations,
                           @Value("${email_guessing_sleep_millis}") int emailGuessingSleepMillis,
-                          @Value("${sp_redirect_url}") String spBaseUrl,
-                          @Value("${idp_redirect_url}") String idpBaseUrl,
-                          @Value("${rp_origin}") String rpOrigin,
-                          @Value("${rp_id}") String rpId,
+                          @Value("${myconext_redirect_url}") String myconextRedirectUrl,
+                          @Value("${account_redirect_url}") String accountRedirectUrl,
+                          @Value("${account_origin}") String accountOrigin,
+                          @Value("${account_id}") String accountId,
                           @Value("${feature.default_remember_me}") boolean featureDefaultRememberMe,
                           @Value("${feature.send_js_exceptions}") boolean sendJsExceptions,
                           @Value("${feature.service_desk_active}") boolean serviceDeskActive,
@@ -162,11 +158,11 @@ public class UserController implements UserAuthentication {
         this.captchaVerifier = captchaVerifier;
         this.magicLinkUrl = magicLinkUrl;
         this.schacHomeOrganization = Stream.of(schacHomeOrganizations.split(",")).map(String::trim).toList().getFirst();
-        this.idpBaseUrl = idpBaseUrl;
-        this.spBaseUrl = spBaseUrl;
-        this.webAuthnSpRedirectUrl = String.format("%s/security", spBaseUrl);
+        this.accountRedirectUrl = accountRedirectUrl;
+        this.myconextRedirectUrl = myconextRedirectUrl;
+        this.webAuthnSpRedirectUrl = String.format("%s/security", myconextRedirectUrl);
         this.servicesConfiguration = servicesConfiguration;
-        this.relyingParty = relyingParty(rpId, rpOrigin);
+        this.relyingParty = relyingParty(accountId, accountOrigin);
         this.emailGuessingPreventor = new EmailGuessingPrevention(emailGuessingSleepMillis);
         this.featureDefaultRememberMe = featureDefaultRememberMe;
         this.sendJsExceptions = sendJsExceptions;
@@ -391,7 +387,7 @@ public class UserController implements UserAuthentication {
                     url = this.magicLinkUrl + "?h=" + hash;
                 } else {
                     //Mobile app
-                    url = this.idpBaseUrl + "/mobile/api/create-from-mobile-api/in-app?h=" + hash;
+                    url = this.accountRedirectUrl + "/mobile/api/create-from-mobile-api/in-app?h=" + hash;
                 }
                 return ResponseEntity.status(201).body(Map.of("url", url, "email", user.getEmail()));
             }
@@ -467,7 +463,7 @@ public class UserController implements UserAuthentication {
         User user = doCreateEduIDAccount(createAccount);
 
         String inAppPath = inAppIndicator ? "/in-app" : "";
-        String linkUrl = String.format("%s/mobile/api/create-from-mobile-api%s", this.idpBaseUrl, inAppPath);
+        String linkUrl = String.format("%s/mobile/api/create-from-mobile-api%s", this.accountRedirectUrl, inAppPath);
         mailBox.sendAccountVerificationMobileAPI(user, user.getCreateFromInstitutionKey(), linkUrl);
 
         logWithContext(user, "create", "user", LOG, "Create user in mobile API");
@@ -1059,7 +1055,7 @@ public class UserController implements UserAuthentication {
         String email = URLEncoder.encode(user.getEmail(), Charset.defaultCharset().name());
 
         String loginUrl = String.format("%s/webauthnTest/%s?name=Test-webAuthn&email=%s&testWebAuthn=true",
-                idpBaseUrl, samlAuthenticationRequest.getId(), email);
+                accountRedirectUrl, samlAuthenticationRequest.getId(), email);
         return ResponseEntity.status(200).body(Collections.singletonMap("url", loginUrl));
     }
 
@@ -1266,7 +1262,7 @@ public class UserController implements UserAuthentication {
             if (samlAuthenticationRequest.isTestInstance()) {
                 //back to SP
                 String credentialId = credentialId(body);
-                String url = String.format("%s/credential?id=%s&success=false", spBaseUrl, credentialId);
+                String url = String.format("%s/credential?id=%s&success=false", myconextRedirectUrl, credentialId);
                 return ResponseEntity.status(201).body(Collections.singletonMap("url", url));
             }
             throw new ForbiddenException("Unsuccessfully SAML authentication ");
@@ -1282,7 +1278,7 @@ public class UserController implements UserAuthentication {
         if (samlAuthenticationRequest.isTestInstance()) {
             //back to SP
             String credentialId = credentialId(body);
-            String url = String.format("%s/credential?id=%s&success=true", spBaseUrl, credentialId);
+            String url = String.format("%s/credential?id=%s&success=true", myconextRedirectUrl, credentialId);
             return ResponseEntity.status(201).body(Collections.singletonMap("url", url));
         }
 

@@ -55,24 +55,24 @@ public class LoginController {
     private final AuthenticationRequestRepository authenticationRequestRepository;
     private final SecurityContextRepository securityContextRepository;
     private final List<String> createFromInstitutionAllowedReturnDomains;
-    private final String spBaseUrl;
-    private final String spServiceDeskBaseUrl;
+    private final String myconextRedirectUrl;
+    private final String servicedeskRedirectUrl;
     private final String myconextLoginUrl;
 
     public LoginController(UserRepository userRepository,
                            AuthenticationRequestRepository authenticationRequestRepository,
                            SecurityContextRepository securityContextRepository,
-                           @Value("${base_path}") String basePath,
-                           @Value("${base_path_service_desk}") String basePathServiceDesk,
+                           @Value("${myconext_base_path}") String myconextBasePath,
+                           @Value("${servicedesk_base_path}") String servicedeskBasePath,
                            @Value("${base_domain}") String baseDomain,
                            @Value("${my_conext_url}") String myConextUrl,
                            @Value("${continue_after_login_url}") String continueAfterLoginUrl,
                            @Value("${email.magic-link-url}") String magicLinkUrl,
                            @Value("${domain}") String domain,
                            @Value("${secure_cookie}") boolean secureCookie,
-                           @Value("${idp_redirect_url}") String idpBaseUrl,
-                           @Value("${sp_redirect_url}") String spBaseUrl,
-                           @Value("${sp_servicedesk_redirect_url}") String spServiceDeskBaseUrl,
+                           @Value("${account_redirect_url}") String accountRedirectUrl,
+                           @Value("${myconext_redirect_url}") String myconextRedirectUrl,
+                           @Value("${servicedesk_redirect_url}") String servicedeskRedirectUrl,
                            @Value("${feature.webauthn}") boolean featureWebAuthn,
                            @Value("${feature.connections}") boolean featureConnections,
                            @Value("${feature.warning_educational_email_domain}") boolean featureWarningEducationalEmailDomain,
@@ -93,17 +93,18 @@ public class LoginController {
                            @Value("${feature.use_app}") boolean useApp,
                            CreateFromInstitutionProperties createFromInstitutionProperties
     ) {
-        this.config.put("basePath", basePath);
-        this.config.put("loginUrl", basePath + "/auth/login");
-        this.config.put("loginUrlServiceDesk", basePathServiceDesk + "/auth/login");
+        // Todo rename in frontend is needed
+        this.config.put("basePath", myconextBasePath);
+        this.config.put("loginUrl", myconextBasePath + "/auth/login");
+        this.config.put("loginUrlServiceDesk", servicedeskBasePath + "/auth/login");
         this.config.put("continueAfterLoginUrl", continueAfterLoginUrl);
         this.config.put("baseDomain", baseDomain);
         this.config.put("magicLinkUrl", magicLinkUrl);
-        this.config.put("idpBaseUrl", idpBaseUrl);
-        this.config.put("spBaseUrl", spBaseUrl);
-        this.config.put("spServiceDeskBaseUrl", spServiceDeskBaseUrl);
-        this.config.put("myconextWebAuthUrl", String.format("%s/webauthn", idpBaseUrl));
-        this.config.put("myconextWebAuthnRedirectSpUrl", String.format("%s/security", spBaseUrl));
+        this.config.put("idpBaseUrl", accountRedirectUrl);
+        this.config.put("spBaseUrl", myconextRedirectUrl);
+        this.config.put("spServiceDeskBaseUrl", servicedeskRedirectUrl);
+        this.config.put("myconextWebAuthUrl", String.format("%s/webauthn", accountRedirectUrl));
+        this.config.put("myconextWebAuthnRedirectSpUrl", String.format("%s/security", myconextRedirectUrl));
         this.config.put("domain", domain);
         this.config.put("featureWebAuthn", featureWebAuthn);
         this.config.put("featureWarningEducationalEmailDomain", featureWarningEducationalEmailDomain);
@@ -129,8 +130,8 @@ public class LoginController {
         this.authenticationRequestRepository = authenticationRequestRepository;
         this.securityContextRepository = securityContextRepository;
         this.createFromInstitutionAllowedReturnDomains = createFromInstitutionProperties.getReturnUrlAllowedDomains();
-        this.spBaseUrl = spBaseUrl;
-        this.spServiceDeskBaseUrl = spServiceDeskBaseUrl;
+        this.myconextRedirectUrl = myconextRedirectUrl;
+        this.servicedeskRedirectUrl = servicedeskRedirectUrl;
         this.myconextLoginUrl = myConextUrl + "/oauth2/authorization/my_conext";
     }
 
@@ -147,8 +148,8 @@ public class LoginController {
             @RequestParam(value = "registration_id") String registrationId
     ) {
         String baseUrl = InternalSecurityConfigurationAdapter.REGISTRATION_ID_SERVICE_DESK.equals(registrationId)
-                ? spServiceDeskBaseUrl
-                : spBaseUrl;
+                ? servicedeskRedirectUrl
+                : myconextRedirectUrl;
         String target = baseUrl;
         if (StringUtils.hasText(redirectPath)) {
             String path = URLDecoder.decode(redirectPath, StandardCharsets.UTF_8);

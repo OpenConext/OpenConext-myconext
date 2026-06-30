@@ -20,13 +20,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.core.oidc.user.OidcUser;
-import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.View;
-import org.springframework.web.servlet.view.RedirectView;
 
-import java.net.URLDecoder;
-import java.nio.charset.StandardCharsets;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -42,16 +37,16 @@ public class ServiceDeskController {
     private final UserRepository userRepository;
     private final ExternalUserRepository externalUserRepository;
     private final AttributeMapper attributeMapper;
-    private final String spBaseUrl;
+    private final String myconextRedirectUrl;
 
     public ServiceDeskController(UserRepository userRepository,
                                  ExternalUserRepository externalUserRepository,
                                  AttributeMapper attributeMapper,
-                                 @Value("${sp_redirect_url}") String spBaseUrl) {
+                                 @Value("${myconext_redirect_url}") String myconextRedirectUrl) {
         this.userRepository = userRepository;
         this.externalUserRepository = externalUserRepository;
         this.attributeMapper = attributeMapper;
-        this.spBaseUrl = spBaseUrl;
+        this.myconextRedirectUrl = myconextRedirectUrl;
     }
 
     @GetMapping("/me")

@@ -95,13 +95,13 @@ public class AccountLinkerController implements UserAuthentication {
     private final MailBox mailBox;
     private final AttributeMapper attributeMapper;
     private final String magicLinkUrl;
-    private final String idpBaseRedirectUrl;
-    private final String spRedirectUrl;
-    private final String basePath;
+    private final String accountRedirectUrl;
+    private final String myconextRedirectUrl;
+    private final String myconextBasePath;
     private final long removalValidatedDurationDays;
     private final String myConextSpEntityId;
     private final Manage manage;
-    private final String mijnEduIDEntityId;
+    private final String myconextEntityid;
     private final String schacHomeOrganization;
     private final boolean createEduIDInstitutionEnabled;
     private final List<String> createFromInstitutionAllowedReturnDomains;
@@ -130,11 +130,11 @@ public class AccountLinkerController implements UserAuthentication {
             AttributeMapper attributeMapper,
             Manage manage,
             DisposableEmailProviders disposableEmailProviders,
-            @Value("${mijn_eduid_entity_id}") String mijnEduIDEntityId,
+            @Value("${myconext_entityid}") String myconextEntityid,
             @Value("${schac_home_organizations}") String schacHomeOrganizations,
             @Value("${email.magic-link-url}") String magicLinkUrl,
-            @Value("${idp_redirect_url}") String idpBaseRedirectUrl,
-            @Value("${sp_redirect_url}") String spRedirectUrl,
+            @Value("${account_redirect_url}") String accountRedirectUrl,
+            @Value("${myconext_redirect_url}") String myconextRedirectUrl,
             @Value("${oidc.client-id}") String clientId,
             @Value("${oidc.secret}") String clientSecret,
             @Value("${oidc.idp-flow-redirect-url}") String idpFlowRedirectUri,
@@ -142,7 +142,7 @@ public class AccountLinkerController implements UserAuthentication {
             @Value("${oidc.mobile-flow-redirect-url}") String mobileFlowRedirectUri,
             @Value("${oidc.sp-create-from-institution-redirect-url}") String spCreateFromInstitutionRedirectUri,
             @Value("${oidc.base-url}") String oidcBaseUrl,
-            @Value("${base_path}") String basePath,
+            @Value("${myconext_base_path}") String myconextBasePath,
             @Value("${linked_accounts.removal-duration-days-validated}") long removalValidatedDurationDays,
             @Value("${account_linking.myconext_sp_entity_id}") String myConextSpEntityId,
             @Value("${feature.create_eduid_institution_enabled}") boolean createEduIDInstitutionEnabled,
@@ -165,17 +165,17 @@ public class AccountLinkerController implements UserAuthentication {
         this.manage = manage;
         this.disposableEmailProviders = disposableEmailProviders;
         this.schacHomeOrganization = Stream.of(schacHomeOrganizations.split(",")).map(String::trim).toList().getFirst();
-        this.mijnEduIDEntityId = mijnEduIDEntityId;
+        this.myconextEntityid = myconextEntityid;
         this.magicLinkUrl = magicLinkUrl;
-        this.idpBaseRedirectUrl = idpBaseRedirectUrl;
-        this.spRedirectUrl = spRedirectUrl;
+        this.accountRedirectUrl = accountRedirectUrl;
+        this.myconextRedirectUrl = myconextRedirectUrl;
         this.clientId = clientId;
         this.clientSecret = clientSecret;
         this.idpFlowRedirectUri = idpFlowRedirectUri;
         this.spFlowRedirectUri = spFlowRedirectUri;
         this.mobileFlowRedirectUri = mobileFlowRedirectUri;
         this.spCreateFromInstitutionRedirectUri = spCreateFromInstitutionRedirectUri;
-        this.basePath = basePath;
+        this.myconextBasePath = myconextBasePath;
         this.oidcBaseUrl = oidcBaseUrl;
         this.removalValidatedDurationDays = removalValidatedDurationDays;
         this.myConextSpEntityId = myConextSpEntityId;
@@ -203,7 +203,7 @@ public class AccountLinkerController implements UserAuthentication {
 
         Optional<SamlAuthenticationRequest> optionalSamlAuthenticationRequest = authenticationRequestRepository.findByIdAndNotExpired(id);
         if (!optionalSamlAuthenticationRequest.isPresent()) {
-            return ResponseEntity.status(HttpStatus.FOUND).location(URI.create(this.idpBaseRedirectUrl + "/expired")).build();
+            return ResponseEntity.status(HttpStatus.FOUND).location(URI.create(this.accountRedirectUrl + "/expired")).build();
         }
         SamlAuthenticationRequest samlAuthenticationRequest = optionalSamlAuthenticationRequest.get();
 
@@ -253,11 +253,11 @@ public class AccountLinkerController implements UserAuthentication {
         String eppn = (String) userInfo.get("eduperson_principal_name");
         String subjectId = (String) userInfo.get("subject_id");
         if (!StringUtils.hasText(eppn) && !StringUtils.hasText(subjectId)) {
-            String uri = this.spRedirectUrl + "/create-from-institution/attribute-missing?fromInstitution=true";
+            String uri = this.myconextRedirectUrl + "/create-from-institution/attribute-missing?fromInstitution=true";
             return ResponseEntity.status(HttpStatus.FOUND).location(URI.create(uri)).build();
         }
         //Check if the eppn is taken before proceeding
-        String eppnAlreadyLinkedRequiredUri = this.spRedirectUrl + "/create-from-institution/eppn-already-linked?fromInstitution=true";
+        String eppnAlreadyLinkedRequiredUri = this.myconextRedirectUrl + "/create-from-institution/eppn-already-linked?fromInstitution=true";
         Optional<ResponseEntity<Object>> eppnAlreadyLinkedOptional = checkEppnAlreadyLinked(eppnAlreadyLinkedRequiredUri, eppn, subjectId);
         if (eppnAlreadyLinkedOptional.isPresent()) {
             LOG.debug("EPPN already linked in create-institution-flow for " + eppn);
@@ -269,7 +269,7 @@ public class AccountLinkerController implements UserAuthentication {
                 storedState, requestInstitutionEduID.getHash(), requestInstitutionEduID.getReturnUrl()));
         requestInstitutionEduIDRepository.save(requestInstitutionEduID);
         //Now the user needs to enter email and validate this email to finish up the registration
-        String returnUri = this.spRedirectUrl + "/create-from-institution/link/" + requestInstitutionEduID.getHash();
+        String returnUri = this.myconextRedirectUrl + "/create-from-institution/link/" + requestInstitutionEduID.getHash();
         return ResponseEntity.status(HttpStatus.FOUND).location(URI.create(returnUri)).build();
     }
 
@@ -379,7 +379,7 @@ public class AccountLinkerController implements UserAuthentication {
                     (String) userInfo.get("family_name"),
                     schacHomeOrganization,
                     preferredLanguage,
-                    mijnEduIDEntityId,
+                    myconextEntityid,
                     manage);
         }
         user.setCreateFromInstitutionKey(hash());
@@ -388,7 +388,7 @@ public class AccountLinkerController implements UserAuthentication {
                 email, user.isNewUser(), user.getId(), user.getCreateFromInstitutionKey(), user.getCreateFromInstitutionReturnUrl()));
         ResponseEntity<Object> responseEntity = saveOrUpdateLinkedAccountToUser(
                 user,
-                this.idpBaseRedirectUrl + "/create-from-institution-login?key=" + user.getCreateFromInstitutionKey(),
+                this.accountRedirectUrl + "/create-from-institution-login?key=" + user.getCreateFromInstitutionKey(),
                 false,
                 false,
                 false,
@@ -527,7 +527,7 @@ public class AccountLinkerController implements UserAuthentication {
         VerifyState verifyState = attributeMapper.serializeFromBase64(state);
         Optional<MobileLinkAccountRequest> optionalMobileLinkAccountRequest = this.mobileLinkAccountRequestRepository.findByHash(verifyState.getStateIdentifier());
         if (!optionalMobileLinkAccountRequest.isPresent()) {
-            return ResponseEntity.status(HttpStatus.FOUND).location(URI.create(this.idpBaseRedirectUrl + "/client/mobile/expired")).build();
+            return ResponseEntity.status(HttpStatus.FOUND).location(URI.create(this.accountRedirectUrl + "/client/mobile/expired")).build();
         }
         MobileLinkAccountRequest mobileLinkAccountRequest = optionalMobileLinkAccountRequest.get();
         String userId = mobileLinkAccountRequest.getUserId();
@@ -544,7 +544,7 @@ public class AccountLinkerController implements UserAuthentication {
                                                       User user) {
         if (!StringUtils.hasText(code) || !StringUtils.hasText(state)) {
 
-            String clientRedirectUrl = isMobileFlow ? idpBaseRedirectUrl + "/client/mobile/external-account-linked-error" : spRedirectUrl;
+            String clientRedirectUrl = isMobileFlow ? accountRedirectUrl + "/client/mobile/external-account-linked-error" : myconextRedirectUrl;
             URI location = URI.create(String.format("%s/external-account-linked-error?error=%s&error_description=%s",
                             clientRedirectUrl,
                             StringUtils.hasText(error) ? URLEncoder.encode(error, Charset.defaultCharset()) : "",
@@ -598,8 +598,8 @@ public class AccountLinkerController implements UserAuthentication {
                     verifyState.getIdpScoping()));
             String encodedOtherMail = URLEncoder.encode(optionalUsers.stream().findFirst().get().getEmail(), Charset.defaultCharset());
             String clientRedirectUrl = isMobileFlow ?
-                    idpBaseRedirectUrl + String.format("/client/mobile/verify-already-used?email=%s", encodedOtherMail) :
-                    spRedirectUrl + String.format("/subject-already-linked?idp_scoping=%s&email=%s",
+                    accountRedirectUrl + String.format("/client/mobile/verify-already-used?email=%s", encodedOtherMail) :
+                    myconextRedirectUrl + String.format("/subject-already-linked?idp_scoping=%s&email=%s",
                             verifyState.getIdpScoping().name(), encodedOtherMail);
             return ResponseEntity.status(HttpStatus.FOUND)
                     .location(URI.create(clientRedirectUrl))
@@ -616,8 +616,8 @@ public class AccountLinkerController implements UserAuthentication {
 
         String queryParam = "?verify=" + externalLinkedAccount.getIdpScoping();
         String clientRedirectUrl = isMobileFlow ?
-                idpBaseRedirectUrl + "/client/mobile/external-account-linked" + queryParam :
-                spRedirectUrl + "/personal" + queryParam;
+                accountRedirectUrl + "/client/mobile/external-account-linked" + queryParam :
+                myconextRedirectUrl + "/personal" + queryParam;
         URI location = URI.create(clientRedirectUrl);
         return ResponseEntity.status(HttpStatus.FOUND).location(location).build();
     }
@@ -629,7 +629,7 @@ public class AccountLinkerController implements UserAuthentication {
                                                                             @RequestParam(value = "bankId", required = false) String bankId) {
         Optional<SamlAuthenticationRequest> optionalSamlAuthenticationRequest = authenticationRequestRepository.findByIdAndNotExpired(id);
         if (!optionalSamlAuthenticationRequest.isPresent()) {
-            return ResponseEntity.status(HttpStatus.FOUND).location(URI.create(this.idpBaseRedirectUrl + "/expired")).build();
+            return ResponseEntity.status(HttpStatus.FOUND).location(URI.create(this.accountRedirectUrl + "/expired")).build();
         }
         SamlAuthenticationRequest samlAuthenticationRequest = optionalSamlAuthenticationRequest.get();
 
@@ -670,7 +670,7 @@ public class AccountLinkerController implements UserAuthentication {
 
         if (!StringUtils.hasText(code) || !StringUtils.hasText(state)) {
             URI location = URI.create(String.format("%s/external-account-linked-error?error=%s&error_description=%s",
-                            this.idpBaseRedirectUrl,
+                            this.accountRedirectUrl,
                             StringUtils.hasText(error) ? URLEncoder.encode(error, Charset.defaultCharset()) : "",
                             StringUtils.hasText(errorDescription) ? URLEncoder.encode(errorDescription, Charset.defaultCharset()) : "Unexpected+error+occurred"
                     )
@@ -688,7 +688,7 @@ public class AccountLinkerController implements UserAuthentication {
 
         Optional<SamlAuthenticationRequest> optionalSamlAuthenticationRequest = authenticationRequestRepository.findByIdAndNotExpired(id);
         if (!optionalSamlAuthenticationRequest.isPresent()) {
-            return ResponseEntity.status(HttpStatus.FOUND).location(URI.create(this.idpBaseRedirectUrl + "/expired")).build();
+            return ResponseEntity.status(HttpStatus.FOUND).location(URI.create(this.accountRedirectUrl + "/expired")).build();
         }
         SamlAuthenticationRequest samlAuthenticationRequest = optionalSamlAuthenticationRequest.get();
 
@@ -729,7 +729,7 @@ public class AccountLinkerController implements UserAuthentication {
             //Not allowed to link an external linked account whose identity is already linked to another user
             LOG.warn(String.format("Subject %s already linked to user %s", externalLinkedAccount.getSubjectId(), user.getEmail()));
             String encodedEmail = URLEncoder.encode(optionalUsers.get(0).getEmail(), Charset.defaultCharset());
-            String subjectAlreadyLinkedRequiredUri = this.idpBaseRedirectUrl + "/subject-already-linked/" +
+            String subjectAlreadyLinkedRequiredUri = this.accountRedirectUrl + "/subject-already-linked/" +
                     samlAuthenticationRequest.getId() +
                     "?h=" + samlAuthenticationRequest.getHash() +
                     "&redirect=" + URLEncoder.encode(this.magicLinkUrl, Charset.defaultCharset()) +
@@ -788,9 +788,9 @@ public class AccountLinkerController implements UserAuthentication {
             throw new ForbiddenException("Non matching user");
         }
 
-        return doRedirect(code, user, this.spFlowRedirectUri, this.spRedirectUrl + "/personal",
+        return doRedirect(code, user, this.spFlowRedirectUri, this.myconextRedirectUrl + "/personal",
                 false, false, true, null, null,
-                this.spRedirectUrl + "/eppn-already-linked", this.spRedirectUrl + "/attribute-missing");
+                this.myconextRedirectUrl + "/eppn-already-linked", this.myconextRedirectUrl + "/attribute-missing");
     }
 
     @GetMapping("/mobile/oidc/redirect")
@@ -800,7 +800,7 @@ public class AccountLinkerController implements UserAuthentication {
         String decodedState = URLDecoder.decode(state, StandardCharsets.UTF_8);
         Optional<MobileLinkAccountRequest> optionalMobileLinkAccountRequest = this.mobileLinkAccountRequestRepository.findByHash(decodedState);
         if (!optionalMobileLinkAccountRequest.isPresent()) {
-            return ResponseEntity.status(HttpStatus.FOUND).location(URI.create(this.idpBaseRedirectUrl + "/client/mobile/expired")).build();
+            return ResponseEntity.status(HttpStatus.FOUND).location(URI.create(this.accountRedirectUrl + "/client/mobile/expired")).build();
         }
 
         MobileLinkAccountRequest mobileLinkAccountRequest = optionalMobileLinkAccountRequest.get();
@@ -811,9 +811,9 @@ public class AccountLinkerController implements UserAuthentication {
 
         this.mobileLinkAccountRequestRepository.delete(mobileLinkAccountRequest);
 
-        return doRedirect(code, user, this.mobileFlowRedirectUri, this.idpBaseRedirectUrl + "/client/mobile/account-linked",
+        return doRedirect(code, user, this.mobileFlowRedirectUri, this.accountRedirectUrl + "/client/mobile/account-linked",
                 false, false, true, null, null,
-                this.idpBaseRedirectUrl + "/client/mobile/eppn-already-linked", this.idpBaseRedirectUrl + "/client/mobile/attribute-missing");
+                this.accountRedirectUrl + "/client/mobile/eppn-already-linked", this.accountRedirectUrl + "/client/mobile/attribute-missing");
     }
 
     @GetMapping("/idp/oidc/redirect")
@@ -826,7 +826,7 @@ public class AccountLinkerController implements UserAuthentication {
 
         Optional<SamlAuthenticationRequest> optionalSamlAuthenticationRequest = authenticationRequestRepository.findByIdAndNotExpired(id);
         if (!optionalSamlAuthenticationRequest.isPresent()) {
-            return ResponseEntity.status(HttpStatus.FOUND).location(URI.create(this.idpBaseRedirectUrl + "/expired")).build();
+            return ResponseEntity.status(HttpStatus.FOUND).location(URI.create(this.accountRedirectUrl + "/expired")).build();
         }
         SamlAuthenticationRequest samlAuthenticationRequest = optionalSamlAuthenticationRequest.get();
         String userId = samlAuthenticationRequest.getUserId();
@@ -845,22 +845,22 @@ public class AccountLinkerController implements UserAuthentication {
 
         String charSet = Charset.defaultCharset().name();
 
-        String idpStudentAffiliationRequiredUri = this.idpBaseRedirectUrl + "/affiliation-missing/" +
+        String idpStudentAffiliationRequiredUri = this.accountRedirectUrl + "/affiliation-missing/" +
                 samlAuthenticationRequest.getId() +
                 "?h=" + samlAuthenticationRequest.getHash() +
                 "&redirect=" + URLEncoder.encode(this.magicLinkUrl, charSet);
 
-        String idpValidNamesRequiredUri = this.idpBaseRedirectUrl + "/valid-name-missing/" +
+        String idpValidNamesRequiredUri = this.accountRedirectUrl + "/valid-name-missing/" +
                 samlAuthenticationRequest.getId() +
                 "?h=" + samlAuthenticationRequest.getHash() +
                 "&redirect=" + URLEncoder.encode(this.magicLinkUrl, charSet);
 
-        String eppnAlreadyLinkedRequiredUri = this.idpBaseRedirectUrl + "/eppn-already-linked/" +
+        String eppnAlreadyLinkedRequiredUri = this.accountRedirectUrl + "/eppn-already-linked/" +
                 samlAuthenticationRequest.getId() +
                 "?h=" + samlAuthenticationRequest.getHash() +
                 "&redirect=" + URLEncoder.encode(this.magicLinkUrl, charSet);
 
-        String attributeMissingUri = this.idpBaseRedirectUrl + "/attribute-missing/" +
+        String attributeMissingUri = this.accountRedirectUrl + "/attribute-missing/" +
                 samlAuthenticationRequest.getId() +
                 "?h=" + samlAuthenticationRequest.getHash() +
                 "&redirect=" + URLEncoder.encode(this.magicLinkUrl, charSet);
