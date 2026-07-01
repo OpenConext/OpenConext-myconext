@@ -44,7 +44,7 @@ export const About_EN = () => {
                         <p>Click 'Create eduID' and follow the steps.</p>
                         <p>Use a <strong>personal email address</strong> that you will continue to use, even if
                             you change schools or jobs.</p>
-                        <Button onClick={() => window.location.href = `${config.idpBaseUrl}/register`}
+                        <Button onClick={() => window.location.href = `${config.accountBaseUrl}/register`}
                                 txt={I18n.t("header.register")}/>
 
                     </InfoLinkField>

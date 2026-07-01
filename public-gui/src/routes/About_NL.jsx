@@ -44,7 +44,7 @@ export const About_NL = () => {
                         <p>Gebruik een <strong>persoonlijk e-mailadres</strong> dat je blijft gebruiken, ook als je van
                             school of baan
                             verandert.</p>
-                        <Button onClick={() => window.location.href = `${config.idpBaseUrl}/register`}
+                        <Button onClick={() => window.location.href = `${config.accountBaseUrl}/register`}
                                 txt={I18n.t("header.register")}/>
                     </InfoLinkField>
                     <InfoLinkField id="2-verify-your-identity-with-an-official-party"

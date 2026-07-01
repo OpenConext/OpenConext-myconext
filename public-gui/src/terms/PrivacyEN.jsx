@@ -281,7 +281,7 @@ export const PrivacyEN = () => {
                     the application from receiving your data. You cannot log in to the application with eduID.
                 </p>
                 <p>
-                    Via <a href={config.spBaseUrl}>My eduID</a> you can see which services you have logged into with
+                    Via <a href={config.myconextBaseUrl}>My eduID</a> you can see which services you have logged into with
                     eduID.
                 </p>
                 <p>
@@ -338,7 +338,7 @@ export const PrivacyEN = () => {
                     or deleted.
                     You can also request access to the personal data that is processed about you. You can view the
                     information that
-                    eduID has about you on <a href={config.spBaseUrl}>My eduID</a>. You can also change or supplement
+                    eduID has about you on <a href={config.myconextBaseUrl}>My eduID</a>. You can also change or supplement
                     your details
                     there.
                 </p>
@@ -346,7 +346,7 @@ export const PrivacyEN = () => {
                     If it concerns automatic processing of data provided by you based on consent or the execution of an
                     agreement,
                     you can request an overview in a structured and common form of the personal data that we process
-                    about you via <a href={config.spBaseUrl}>Mijn eduID</a>. You also have the right to have this data transferred to
+                    about you via <a href={config.myconextBaseUrl}>Mijn eduID</a>. You also have the right to have this data transferred to
                     another
                     party, provided this is technically possible.
                 </p>

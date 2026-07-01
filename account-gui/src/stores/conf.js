@@ -1,14 +1,14 @@
 import {writable} from 'svelte/store';
 
 export const conf = writable({
-    basePath: "",
+    myconextBasePath: "",
     magicLinkUrl: "",
     continueAfterLoginUrl: "",
     domain: "",
-    myconextWebAuthnRedirectSpUrl: "",
+    myconextWebAuthnRedirectUrl: "",
     featureWebAuthn: false,
     featureAllowList: false,
-    idpBaseUrl: "",
+    accountBaseUrl: "",
     featureWarningEducationalEmailDomain: false,
     featureIdVerify: false,
     featureServiceDeskActive: false,

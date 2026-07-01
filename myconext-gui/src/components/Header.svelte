@@ -15,7 +15,7 @@
                 familyName: "",
                 usePassword: false
             };
-            window.location.href = `${$config.idpBaseUrl}/doLogout?param=${encodeURIComponent("logout=true")}`;
+            window.location.href = `${$config.accountBaseUrl}/doLogout?param=${encodeURIComponent("logout=true")}`;
         });
     }
 

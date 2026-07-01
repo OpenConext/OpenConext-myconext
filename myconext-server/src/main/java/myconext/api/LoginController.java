@@ -93,18 +93,17 @@ public class LoginController {
                            @Value("${feature.use_app}") boolean useApp,
                            CreateFromInstitutionProperties createFromInstitutionProperties
     ) {
-        // Todo rename in frontend is needed
-        this.config.put("basePath", myconextBasePath);
+        this.config.put("myconextBasePath", myconextBasePath);
         this.config.put("loginUrl", myconextBasePath + "/auth/login");
         this.config.put("loginUrlServiceDesk", servicedeskBasePath + "/auth/login");
         this.config.put("continueAfterLoginUrl", continueAfterLoginUrl);
         this.config.put("baseDomain", baseDomain);
         this.config.put("magicLinkUrl", magicLinkUrl);
-        this.config.put("idpBaseUrl", accountRedirectUrl);
-        this.config.put("spBaseUrl", myconextRedirectUrl);
-        this.config.put("spServiceDeskBaseUrl", servicedeskRedirectUrl);
-        this.config.put("myconextWebAuthUrl", String.format("%s/webauthn", accountRedirectUrl));
-        this.config.put("myconextWebAuthnRedirectSpUrl", String.format("%s/security", myconextRedirectUrl));
+        this.config.put("accountBaseUrl", accountRedirectUrl);
+        this.config.put("myconextBaseUrl", myconextRedirectUrl);
+        this.config.put("servicedeskBaseUrl", servicedeskRedirectUrl);
+        this.config.put("accountWebAuthUrl", String.format("%s/webauthn", accountRedirectUrl));
+        this.config.put("myconextWebAuthnRedirectUrl", String.format("%s/security", myconextRedirectUrl));
         this.config.put("domain", domain);
         this.config.put("featureWebAuthn", featureWebAuthn);
         this.config.put("featureWarningEducationalEmailDomain", featureWarningEducationalEmailDomain);
@@ -191,7 +190,7 @@ public class LoginController {
         response.addCookie(loginPreferenceCookie);
         response.addCookie(usernameCookie);
 
-        String redirectLocation = this.config.get("spBaseUrl") + "/security";
+        String redirectLocation = this.config.get("myconextBaseUrl") + "/security";
         response.sendRedirect(redirectLocation);
     }
 
@@ -212,7 +211,7 @@ public class LoginController {
         loginPreferenceCookie.setPath("/");
         response.addCookie(loginPreferenceCookie);
 
-        response.sendRedirect(this.config.get("spBaseUrl") + "/security");
+        response.sendRedirect(this.config.get("myconextBaseUrl") + "/security");
     }
 
     @GetMapping("/servicedesk/{id}")
@@ -222,8 +221,8 @@ public class LoginController {
                                                       HttpServletResponse response) {
         Optional<SamlAuthenticationRequest> optionalSamlAuthenticationRequest = authenticationRequestRepository.findByIdAndNotExpired(id);
         if (!optionalSamlAuthenticationRequest.isPresent()) {
-            String idpBaseUrl = (String) this.config.get("idpBaseUrl");
-            return ResponseEntity.status(HttpStatus.FOUND).location(URI.create(idpBaseUrl + "/expired")).build();
+            String accountBaseUrl = (String) this.config.get("accountBaseUrl");
+            return ResponseEntity.status(HttpStatus.FOUND).location(URI.create(accountBaseUrl + "/expired")).build();
         }
         SamlAuthenticationRequest samlAuthenticationRequest = optionalSamlAuthenticationRequest.get();
         String userId = samlAuthenticationRequest.getUserId();
@@ -235,7 +234,7 @@ public class LoginController {
         context.setAuthentication(authentication);
         this.securityContextRepository.saveContext(SecurityContextHolder.getContext(), request, response);
 
-        String redirectUrl = String.format("%s/personal?servicedesk=start", this.config.get("spBaseUrl"));
+        String redirectUrl = String.format("%s/personal?servicedesk=start", this.config.get("myconextBaseUrl"));
 
         LOG.info(String.format("User %s logged in to process servicedesk request. Redirecting to %s", user.getEmail(), redirectUrl));
 
@@ -271,7 +270,7 @@ public class LoginController {
         }
         request.getSession().invalidate();
         SecurityContextHolder.clearContext();
-        String redirectLocation = String.format("%s/landing?%s", this.config.get("spBaseUrl"), param);
+        String redirectLocation = String.format("%s/landing?%s", this.config.get("myconextBaseUrl"), param);
 
         LOG.info(String.format("Logout and redirect to %s", redirectLocation));
 
@@ -282,7 +281,7 @@ public class LoginController {
     public void createFromInstitutionLogin(HttpServletRequest request,
                                            HttpServletResponse response,
                                            @RequestParam(value = "key") String key) throws IOException {
-        String redirectUrl = String.format("%s/security", this.config.get("spBaseUrl"));
+        String redirectUrl = String.format("%s/security", this.config.get("myconextBaseUrl"));
         doCreateUserFromInstitutionKey(request, response, key, redirectUrl);
     }
 
@@ -290,7 +289,7 @@ public class LoginController {
     public void createFromMobileApi(HttpServletRequest request,
                                     HttpServletResponse response,
                                     @RequestParam(value = "h") String hash) throws IOException {
-        String redirectUrl = String.format("%s/client/mobile/created", this.config.get("idpBaseUrl"));
+        String redirectUrl = String.format("%s/client/mobile/created", this.config.get("accountBaseUrl"));
         doCreateUserFromInstitutionKey(request, response, hash, redirectUrl);
     }
 

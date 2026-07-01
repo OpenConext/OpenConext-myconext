@@ -89,7 +89,7 @@
                         onClick={startFlow}/>
             </div>
             <div class="footer">
-                <span>{@html I18n.t("createFromInstitution.alreadyHaveAnEduID", {location: $config.spBaseUrl})}</span>
+                <span>{@html I18n.t("createFromInstitution.alreadyHaveAnEduID", {location: $config.myconextBaseUrl})}</span>
             </div>
         </div>
     {/if}

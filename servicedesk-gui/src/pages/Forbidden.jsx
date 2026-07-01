@@ -12,7 +12,7 @@ const Forbidden = () => {
         const {config} = useAppStore.getState();
         logout().then(() => {
             useAppStore.setState(() => ({breadcrumbPath: [], user: {}, controlCode: {}}));
-            window.location.href = `${config.idpBaseUrl}/doLogout?param=${encodeURIComponent("logout=true")}`;
+            window.location.href = `${config.accountBaseUrl}/doLogout?param=${encodeURIComponent("logout=true")}`;
         });
     }
 

@@ -294,7 +294,7 @@ export const PrivacyNL = () => {
                     applicatie.
                 </p>
                 <p>
-                    Via <a href={config.spBaseUrl}>Mijn eduID</a> kun je zien welke diensten je via eduID hebt gebruikt.
+                    Via <a href={config.myconextBaseUrl}>Mijn eduID</a> kun je zien welke diensten je via eduID hebt gebruikt.
                     Aan andere partijen dan bovenstaande verstrekken we je gegevens alléén na jouw toestemming, tenzij
                     het wettelijk verplicht of toegestaan is je gegevens te verstrekken. Zo kan bijvoorbeeld de politie
                     in het kader van een fraudeonderzoek gegevens bij ons opvragen. SURF is dan wettelijk verplicht deze
@@ -340,14 +340,14 @@ export const PrivacyNL = () => {
                 <p className="info">
                     Je hebt het recht om de persoonsgegevens die eduID van jou verwerkt te laten wijzigen, aanvullen of
                     verwijderen. Ook kun je inzage verzoeken in de persoonsgegevens die van je worden verwerkt. De
-                    gegevens die eduID van jou heeft kun je inzien op <a href={config.spBaseUrl}>Mijn eduID</a>.
+                    gegevens die eduID van jou heeft kun je inzien op <a href={config.myconextBaseUrl}>Mijn eduID</a>.
                     Daar kun je je gegevens ook wijzigen
                     of aanvullen.
                 </p>
                 <p className="info">
                     Als het gaat om een automatische verwerking van door jou zelf verstrekte gegevens op basis van
                     toestemming of de uitvoering van een overeenkomst, kun je een overzicht in een gestructureerde en
-                    gangbare vorm opvragen van de persoonsgegevens die wij van jou verwerken via <a href={config.spBaseUrl}>Mijn eduID</a>. Ook heb je
+                    gangbare vorm opvragen van de persoonsgegevens die wij van jou verwerken via <a href={config.myconextBaseUrl}>Mijn eduID</a>. Ook heb je
                     het recht op overdraagbaarheid van deze gegevens naar een andere partij, mits dit technisch mogelijk
                     is.
                 </p>
