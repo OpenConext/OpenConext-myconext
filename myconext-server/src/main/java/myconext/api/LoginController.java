@@ -131,7 +131,7 @@ public class LoginController {
         this.createFromInstitutionAllowedReturnDomains = createFromInstitutionProperties.getReturnUrlAllowedDomains();
         this.spBaseUrl = spBaseUrl;
         this.spServiceDeskBaseUrl = spServiceDeskBaseUrl;
-        this.myconextLoginUrl = myConextUrl + "/oauth2/authorization/oidcng";
+        this.myconextLoginUrl = myConextUrl + "/oauth2/authorization/my_conext";
     }
 
     @GetMapping("/config")
