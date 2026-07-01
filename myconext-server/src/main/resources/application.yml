@@ -95,7 +95,6 @@ sp_entity_id: https://engine.test.surfconext.nl/authentication/sp/metadata, http
 account_metadata_url: https://engine.test.surfconext.nl/authentication/sp/metadata, https://engine.test2.surfconext.nl/authentication/sp/metadata
 proxy_idp_entity_id: https://localhost.surf.id
 my_conext_url: https://my.test2.surfconext.nl
-domain: eduid.nl
 myconext_entityid: http://mijn.localhost/shibboleth
 myconext_service_name: "Mijn eduID"
 mobile_app_redirect: eduid:///client/mobile

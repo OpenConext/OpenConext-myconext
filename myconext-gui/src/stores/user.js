@@ -30,7 +30,6 @@ export const config = writable({
     createEduIDInstitutionLanding: false,
     accountWebAuthUrl: "",
     magicLinkUrl: "",
-    domain: "",
     accountBaseUrl: "",
     featureWebAuthn: false,
     featureOidcTokenAPI: false,

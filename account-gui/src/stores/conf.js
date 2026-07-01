@@ -4,7 +4,7 @@ export const conf = writable({
     myconextBasePath: "",
     magicLinkUrl: "",
     continueAfterLoginUrl: "",
-    domain: "",
+    baseDomain: "",
     myconextWebAuthnRedirectUrl: "",
     featureWebAuthn: false,
     featureAllowList: false,

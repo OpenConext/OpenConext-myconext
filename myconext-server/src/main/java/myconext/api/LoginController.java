@@ -68,7 +68,6 @@ public class LoginController {
                            @Value("${my_conext_url}") String myConextUrl,
                            @Value("${continue_after_login_url}") String continueAfterLoginUrl,
                            @Value("${email.magic-link-url}") String magicLinkUrl,
-                           @Value("${domain}") String domain,
                            @Value("${secure_cookie}") boolean secureCookie,
                            @Value("${account_redirect_url}") String accountRedirectUrl,
                            @Value("${myconext_redirect_url}") String myconextRedirectUrl,
@@ -104,7 +103,6 @@ public class LoginController {
         this.config.put("servicedeskBaseUrl", servicedeskRedirectUrl);
         this.config.put("accountWebAuthUrl", String.format("%s/webauthn", accountRedirectUrl));
         this.config.put("myconextWebAuthnRedirectUrl", String.format("%s/security", myconextRedirectUrl));
-        this.config.put("domain", domain);
         this.config.put("featureWebAuthn", featureWebAuthn);
         this.config.put("featureWarningEducationalEmailDomain", featureWarningEducationalEmailDomain);
         this.config.put("featureAllowList", featureAllowList);

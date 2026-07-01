@@ -9,7 +9,7 @@
     const changeLanguage = lang => () => {
         const urlSearchParams = new URLSearchParams(window.location.search);
         urlSearchParams.set("lang", lang);
-        Cookies.set("lang", lang, {expires: 365, secure: true, sameSite: "Lax", domain: $config.domain});
+        Cookies.set("lang", lang, {expires: 365, secure: true, sameSite: "Lax", domain: $config.baseDomain});
         window.location.search = urlSearchParams.toString();
         updateLanguage(lang).then(() => {
             flash.setValue("Footer.LanguageChanged.COPY");
