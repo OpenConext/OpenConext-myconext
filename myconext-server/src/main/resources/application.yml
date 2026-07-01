@@ -94,7 +94,7 @@ servicedesk_redirect_url: http://localhost:3003
 sp_entity_id: https://engine.test.surfconext.nl/authentication/sp/metadata, https://engine.test2.surfconext.nl/authentication/sp/metadata
 account_metadata_url: https://engine.test.surfconext.nl/authentication/sp/metadata, https://engine.test2.surfconext.nl/authentication/sp/metadata
 proxy_idp_entity_id: https://localhost.surf.id
-myconext_entityid: http://mijn.localhost/shibboleth
+myconext_entityid: http://mijn.localhost
 myconext_service_name: "Mijn eduID"
 mobile_app_redirect: eduid:///client/mobile
 mobile_app_rp_entity_id: mobile_app_rp_entity_id
