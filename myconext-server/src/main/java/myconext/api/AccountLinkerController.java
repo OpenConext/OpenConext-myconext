@@ -65,6 +65,7 @@ import java.security.MessageDigest;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static myconext.crypto.HashGenerator.hash;
 import static myconext.log.MDCContext.logWithContext;
@@ -130,7 +131,7 @@ public class AccountLinkerController implements UserAuthentication {
             Manage manage,
             DisposableEmailProviders disposableEmailProviders,
             @Value("${mijn_eduid_entity_id}") String mijnEduIDEntityId,
-            @Value("${schac_home_organization}") String schacHomeOrganization,
+            @Value("${schac_home_organizations}") String schacHomeOrganizations,
             @Value("${email.magic-link-url}") String magicLinkUrl,
             @Value("${idp_redirect_url}") String idpBaseRedirectUrl,
             @Value("${sp_redirect_url}") String spRedirectUrl,
@@ -163,7 +164,7 @@ public class AccountLinkerController implements UserAuthentication {
         this.attributeMapper = attributeMapper;
         this.manage = manage;
         this.disposableEmailProviders = disposableEmailProviders;
-        this.schacHomeOrganization = schacHomeOrganization;
+        this.schacHomeOrganization = Stream.of(schacHomeOrganizations.split(",")).map(String::trim).toList().getFirst();
         this.mijnEduIDEntityId = mijnEduIDEntityId;
         this.magicLinkUrl = magicLinkUrl;
         this.idpBaseRedirectUrl = idpBaseRedirectUrl;

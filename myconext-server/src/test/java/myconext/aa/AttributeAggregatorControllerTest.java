@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Value;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Stream;
 
 import static io.restassured.RestAssured.given;
 import static org.junit.Assert.assertEquals;
@@ -17,8 +18,8 @@ import static org.junit.Assert.assertTrue;
 
 public class AttributeAggregatorControllerTest extends AbstractIntegrationTest {
 
-    @Value("${schac_home_organization}")
-    private String schacHomeOrganization;
+    @Value("${schac_home_organizations}")
+    private String schacHomeOrganizations;
 
     private final String eppn = "1234567890@surfguest.nl";
 
@@ -39,7 +40,8 @@ public class AttributeAggregatorControllerTest extends AbstractIntegrationTest {
 
     @Test
     public void aggregateWithEduIDIdP() {
-        String eduIDEppn = String.format("mdoe@%s", this.schacHomeOrganization);
+        String schacHomeOrganization = Stream.of(schacHomeOrganizations.split(",")).map(String::trim).toList().getFirst();
+        String eduIDEppn = String.format("mdoe@%s", schacHomeOrganization);
         List<UserAttribute> userAttributes = doAggregate(
                 "aa", "secret", "http://brand-new-sp", eduIDEppn);
         assertEquals(1, userAttributes.size());

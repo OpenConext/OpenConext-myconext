@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 
 @RestController
@@ -34,14 +35,14 @@ public class AttributeAggregatorController implements HasUserRepository {
     @Getter
     private final UserRepository userRepository;
     private final Manage manage;
-    private final String schacHomeOrganization;
+    private final List<String> schacHomeOrganizations;
 
     public AttributeAggregatorController(UserRepository userRepository,
                                          Manage manage,
-                                         @Value("${schac_home_organization}") String schacHomeOrganization) {
+                                         @Value("${schac_home_organizations}") String schacHomeOrganization) {
         this.userRepository = userRepository;
         this.manage = manage;
-        this.schacHomeOrganization = schacHomeOrganization;
+        this.schacHomeOrganizations = Stream.of(schacHomeOrganization.split(",")).map(String::trim).toList();
     }
 
     @GetMapping(value = {"attribute-aggregation"})
@@ -53,7 +54,7 @@ public class AttributeAggregatorController implements HasUserRepository {
         //it might be that the eppn if from the eduID IdP, and then we can look up the user based on that
         int indexOfAt = eduPersonPrincipalName.indexOf("@");
         String schacHome = eduPersonPrincipalName.substring(indexOfAt + 1);
-        if (this.schacHomeOrganization.equals(schacHome)) {
+        if (this.schacHomeOrganizations.contains(schacHome)) {
             String uid = eduPersonPrincipalName.substring(0, indexOfAt);
             userOptional = userRepository.findUserByUid(uid);
         } else if (StringUtils.hasText(eduPersonPrincipalName)) {

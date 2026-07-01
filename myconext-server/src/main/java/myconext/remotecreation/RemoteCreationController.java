@@ -58,12 +58,12 @@ public class RemoteCreationController implements HasUserRepository {
                                     Manage manage,
                                     MailBox mailBox,
                                     AttributeMapper attributeMapper,
-                                    @Value("${schac_home_organization}") String schacHomeOrganization) {
+                                    @Value("${schac_home_organizations}") String schacHomeOrganizations) {
         this.userRepository = userRepository;
         this.manage = manage;
         this.mailBox = mailBox;
         this.attributeMapper = attributeMapper;
-        this.schacHomeOrganization = schacHomeOrganization;
+        this.schacHomeOrganization = Stream.of(schacHomeOrganizations.split(",")).map(String::trim).toList().getFirst();
     }
 
     @GetMapping(value = {"/email-eduid-exists"})

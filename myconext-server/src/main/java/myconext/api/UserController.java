@@ -69,6 +69,7 @@ import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static myconext.SwaggerOpenIdConfig.OPEN_ID_SCHEME_NAME;
 import static myconext.crypto.HashGenerator.hash;
@@ -133,7 +134,7 @@ public class UserController implements UserAuthentication {
                           CaptchaVerifier captchaVerifier,
                           @Qualifier("jsonMapper") ObjectMapper objectMapper,
                           @Value("${email.magic-link-url}") String magicLinkUrl,
-                          @Value("${schac_home_organization}") String schacHomeOrganization,
+                          @Value("${schac_home_organizations}") String schacHomeOrganizations,
                           @Value("${email_guessing_sleep_millis}") int emailGuessingSleepMillis,
                           @Value("${sp_redirect_url}") String spBaseUrl,
                           @Value("${idp_redirect_url}") String idpBaseUrl,
@@ -160,7 +161,7 @@ public class UserController implements UserAuthentication {
         this.objectMapper = objectMapper;
         this.captchaVerifier = captchaVerifier;
         this.magicLinkUrl = magicLinkUrl;
-        this.schacHomeOrganization = schacHomeOrganization;
+        this.schacHomeOrganization = Stream.of(schacHomeOrganizations.split(",")).map(String::trim).toList().getFirst();
         this.idpBaseUrl = idpBaseUrl;
         this.spBaseUrl = spBaseUrl;
         this.webAuthnSpRedirectUrl = String.format("%s/security", spBaseUrl);
