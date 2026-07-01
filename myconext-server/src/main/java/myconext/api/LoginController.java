@@ -65,7 +65,6 @@ public class LoginController {
                            @Value("${myconext_base_path}") String myconextBasePath,
                            @Value("${servicedesk_base_path}") String servicedeskBasePath,
                            @Value("${base_domain}") String baseDomain,
-                           @Value("${my_conext_url}") String myConextUrl,
                            @Value("${continue_after_login_url}") String continueAfterLoginUrl,
                            @Value("${email.magic-link-url}") String magicLinkUrl,
                            @Value("${secure_cookie}") boolean secureCookie,
@@ -129,7 +128,7 @@ public class LoginController {
         this.createFromInstitutionAllowedReturnDomains = createFromInstitutionProperties.getReturnUrlAllowedDomains();
         this.myconextRedirectUrl = myconextRedirectUrl;
         this.servicedeskRedirectUrl = servicedeskRedirectUrl;
-        this.myconextLoginUrl = myConextUrl + "/oauth2/authorization/my_conext";
+        this.myconextLoginUrl = myconextBasePath + "/oauth2/authorization/my_conext";
     }
 
     @GetMapping("/config")
