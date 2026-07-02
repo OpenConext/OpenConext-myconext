@@ -41,7 +41,7 @@
                     return setLoginPreference("usePassword");
                 })
                 .then(res => {
-                    window.location.href = `${$config.idpBaseUrl}/register/login-preference/${res.token}`;
+                    window.location.href = `${$config.accountBaseUrl}/register/login-preference/${res.token}`;
                 })
                 .catch(() => {
                     passwordResetHashExpired = true;

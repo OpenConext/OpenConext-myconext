@@ -35,7 +35,7 @@
                     })
                     .catch(() => {
                         //happens when the key is already registered
-                        window.location.href = $conf.myconextWebAuthnRedirectSpUrl;
+                        window.location.href = $conf.myconextWebAuthnRedirectUrl;
                     })
             })
             .catch(() => navigate("/404"));

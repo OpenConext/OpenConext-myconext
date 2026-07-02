@@ -42,9 +42,9 @@ export const Navigation = ({mobile, path}) => {
             </Link>
             <div className="links">
                 <Button type={ButtonType.Secondary}
-                        onClick={() => window.location.href = `${config.spBaseUrl}`}
+                        onClick={() => window.location.href = `${config.myconextBaseUrl}`}
                         txt={I18n.t("header.mineEduID")}/>
-                <Button onClick={() => window.location.href = `${config.idpBaseUrl}/register`}
+                <Button onClick={() => window.location.href = `${config.accountBaseUrl}/register`}
                         txt={I18n.t("header.register")}/>
                 <LanguageSelector/>
 

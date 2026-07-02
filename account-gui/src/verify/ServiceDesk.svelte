@@ -10,7 +10,7 @@
     export let id;
 
     const proceed = () => {
-        window.location.href = `${$conf.idpBaseUrl}/servicedesk/${id}`;
+        window.location.href = `${$conf.accountBaseUrl}/servicedesk/${id}`;
     }
 
 </script>

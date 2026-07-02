@@ -24,8 +24,8 @@ function App() {
         const host = window.location.host;//test.eduid.nl
         useAppStore.setState(() => ({
             config: {
-                idpBaseUrl: `https://login.${host}`,
-                spBaseUrl: `https://mijn.${host}`
+                accountBaseUrl: `https://login.${host}`,
+                myconextBaseUrl: `https://mijn.${host}`
             }
         }))
     }, []);

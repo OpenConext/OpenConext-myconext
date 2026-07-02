@@ -144,7 +144,7 @@ public class LoginControllerTest extends AbstractIntegrationTest {
                 .get("/register")
                 .then()
                 .statusCode(302)
-                .header("Location", "https://my.test2.surfconext.nl/oauth2/authorization/my_conext?lang=en");
+                .header("Location", "http://localhost:8081/oauth2/authorization/my_conext?lang=en");
     }
 
     @Test

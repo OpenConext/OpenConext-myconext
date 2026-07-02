@@ -30,7 +30,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
                 "cron.node-cron-job-responsible=false",
                 "email_guessing_sleep_millis=1",
                 "sp_entity_id=https://engine.test.surfconext.nl/authentication/sp/metadata",
-                "sp_entity_metadata_url=https://engine.test.surfconext.nl/authentication/sp/metadata",
+                "account_metadata_url=https://engine.test.surfconext.nl/authentication/sp/metadata",
                 "spring.main.lazy-initialization=true",
                 "cron.service-name-resolver-initial-delay-milliseconds=60000",
                 "feature.use_deny_allow_list.allow_enabled=false",

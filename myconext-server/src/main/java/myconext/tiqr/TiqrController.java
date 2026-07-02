@@ -70,7 +70,7 @@ public class TiqrController implements UserAuthentication {
     private final RegistrationRepository registrationRepository;
     private final RateLimitEnforcer rateLimitEnforcer;
     private final CookieValueEncoder cookieValueEncoder;
-    private final String mijnEduIdServiceName;
+    private final String myconextServiceName;
 
     @Autowired
     public TiqrController(@Value("${tiqr_configuration}") Resource resource,
@@ -83,7 +83,7 @@ public class TiqrController implements UserAuthentication {
                           SMSService smsService,
                           Environment environment,
                           @Value("${email.magic-link-url}") String magicLinkUrl,
-                          @Value("${mijn_eduid_service_name}") String mijnEduIdServiceName,
+                          @Value("${myconext_service_name}") String myconextServiceName,
                           CookieValueEncoder cookieValueEncoder) throws IOException {
         this.tiqrConfiguration = new Yaml().loadAs(resource.getInputStream(), TiqrConfiguration.class);
         this.cookieValueEncoder = cookieValueEncoder;
@@ -114,7 +114,7 @@ public class TiqrController implements UserAuthentication {
         this.serviceProviderResolver = serviceProviderResolver;
         this.smsService = smsService;
         this.magicLinkUrl = magicLinkUrl;
-        this.mijnEduIdServiceName = mijnEduIdServiceName;
+        this.myconextServiceName = myconextServiceName;
         this.rateLimitEnforcer = new RateLimitEnforcer(userRepository, tiqrConfiguration);
     }
 
@@ -408,7 +408,7 @@ public class TiqrController implements UserAuthentication {
     public ResponseEntity<StartAuthentication> startAuthenticationForSP(HttpServletRequest request,
                                                                         org.springframework.security.core.Authentication authentication) throws IOException, WriterException, TiqrException {
         User user = userFromAuthentication(authentication);
-        ResponseEntity<StartAuthentication> startAuthenticationResponseEntity = doStartAuthentication(request, user, this.mijnEduIdServiceName);
+        ResponseEntity<StartAuthentication> startAuthenticationResponseEntity = doStartAuthentication(request, user, this.myconextServiceName);
         String sessionKey = startAuthenticationResponseEntity.getBody().getSessionKey();
         request.getSession().setAttribute(SESSION_KEY, sessionKey);
         return startAuthenticationResponseEntity;

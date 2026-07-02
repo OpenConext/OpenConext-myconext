@@ -18,7 +18,7 @@ import static org.hamcrest.core.IsEqual.equalTo;
                 "certificate_path=classpath:/nope.pub",
                 "cron.node-cron-job-responsible=false",
                 "sp_entity_id=https://engine.test.surfconext.nl/authentication/sp/metadata",
-                "sp_entity_metadata_url=https://engine.test.surfconext.nl/authentication/sp/metadata",
+                "account_metadata_url=https://engine.test.surfconext.nl/authentication/sp/metadata",
                 "management.health.mail.enabled=false"
         })
 @ActiveProfiles("test")

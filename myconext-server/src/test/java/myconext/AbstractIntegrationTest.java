@@ -85,7 +85,7 @@ import static org.junit.Assert.assertTrue;
                 "cron.node-cron-job-responsible=false",
                 "email_guessing_sleep_millis=1",
                 "sp_entity_id=https://engine.test.surfconext.nl/authentication/sp/metadata",
-                "sp_entity_metadata_url=https://engine.test.surfconext.nl/authentication/sp/metadata",
+                "account_metadata_url=https://engine.test.surfconext.nl/authentication/sp/metadata",
                 "spring.main.lazy-initialization=true",
                 "eduid_api.oidcng_introspection_uri=http://localhost:8098/introspect",
                 "cron.service-name-resolver-initial-delay-milliseconds=60000",
