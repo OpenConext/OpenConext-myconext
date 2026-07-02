@@ -4,6 +4,9 @@
 
 All notable changes to this project will be documented in this file.
 
+## [8.4.1] juli 2026
+- Refactor variable naming conventions to reflect which party it reflects (myconext, servicedesk, or account)
+
 ## [8.4.0] juli 2026
 
 - Use oidc directly for logging in to myconext-gui and servicedesk-gui, instead of shibboleth
