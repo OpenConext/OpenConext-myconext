@@ -126,6 +126,7 @@ public class GuestIdpAuthenticationRequestFilter extends OncePerRequestFilter {
     private final boolean featureDefaultRememberMe;
     private final boolean featureDefaultAffiliateEmail;
     private final boolean featureUseApp;
+    private final boolean featureUseGlobalUid;
     private final String defaultAffiliateEmailDomain;
     private final DefaultSAMLService samlService;
     private final CookieValueEncoder cookieValueEncoder;
@@ -150,6 +151,7 @@ public class GuestIdpAuthenticationRequestFilter extends OncePerRequestFilter {
                                                boolean featureDefaultRememberMe,
                                                boolean featureDefaultAffiliateEmail,
                                                boolean featureUseApp,
+                                               boolean featureUseGlobalUid,
                                                String defaultAffiliateEmailDomain,
                                                SAMLConfiguration configuration,
                                                IdentityProviderMetaData identityProviderMetaData,
@@ -181,6 +183,7 @@ public class GuestIdpAuthenticationRequestFilter extends OncePerRequestFilter {
         this.featureDefaultRememberMe = featureDefaultRememberMe;
         this.featureDefaultAffiliateEmail = featureDefaultAffiliateEmail;
         this.featureUseApp = featureUseApp;
+        this.featureUseGlobalUid = featureUseGlobalUid;
         this.defaultAffiliateEmailDomain = defaultAffiliateEmailDomain;
         this.samlService = new DefaultSAMLService(configuration);
         this.executor = Executors.newSingleThreadExecutor();
@@ -811,19 +814,22 @@ public class GuestIdpAuthenticationRequestFilter extends OncePerRequestFilter {
         }
         String displayName = String.format("%s %s", chosenName, familyName);
         String eppn = user.getEduPersonPrincipalName();
+
+        String eduIDValue = user.computeEduIdForServiceProviderIfAbsent(requesterEntityId, manage);
+        String uidValue = featureUseGlobalUid ? user.getUid() : eduIDValue;
+        String eppnValue = featureUseGlobalUid ? eppn : eduIDValue + "@" + user.getSchacHomeOrganization();
         //we need a mutable list
         List<SAMLAttribute> attributes = new ArrayList<>(Arrays.asList(
                 attribute("urn:mace:dir:attribute-def:cn", displayName),
                 attribute("urn:mace:dir:attribute-def:displayName", displayName),
-                attribute("urn:mace:dir:attribute-def:eduPersonPrincipalName", eppn),
+                attribute("urn:mace:dir:attribute-def:eduPersonPrincipalName", eppnValue),
                 attribute("urn:oasis:names:tc:SAML:attribute:subject-id", eppn),
                 attribute("urn:mace:dir:attribute-def:givenName", givenName),
                 attribute("urn:mace:dir:attribute-def:mail", user.getEmail()),
                 attribute("urn:mace:dir:attribute-def:sn", familyName),
-                attribute("urn:mace:dir:attribute-def:uid", user.getUid()),
+                attribute("urn:mace:dir:attribute-def:uid", uidValue),
                 attribute("urn:mace:terena.org:attribute-def:schacHomeOrganization", user.getSchacHomeOrganization())
         ));
-        String eduIDValue = user.computeEduIdForServiceProviderIfAbsent(requesterEntityId, manage);
         user.setLastLogin(System.currentTimeMillis());
 
         if (StringUtils.hasText(user.getPreferredLanguage())) {

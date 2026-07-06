@@ -155,6 +155,9 @@ feature:
   enable_account_linking: True
   # Set to true to show the app login option
   use_app: True
+  # When true (default) release the global uid in the uid and eduPersonPrincipalName SAML attributes.
+  # When false, release the per-SP targeted eduID instead.
+  use_global_uid: False
 
 default_affiliate_email_domain: eduid.nl
 
