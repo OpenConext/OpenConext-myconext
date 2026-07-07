@@ -38,6 +38,8 @@ public class GuestIdpAuthenticationRequestFilterTest {
         subject.setManage(new MockManage(objectMapper));
         subject.setUserRepository(Mockito.mock(UserRepository.class));
         ReflectionTestUtils.setField(subject, "expiryNonValidatedDurationDays", 180);
+        ReflectionTestUtils.setField(subject, "featureUseGlobalUid", false);
+        ReflectionTestUtils.setField(subject, "forceGlobalUidEntities", Collections.emptyList());
     }
 
     @Test
@@ -157,6 +159,46 @@ public class GuestIdpAuthenticationRequestFilterTest {
                 .toList();
         assertTrue(eduPersonScopedAffiliations.stream().anyMatch(aff -> aff.getValue().startsWith("valid-aff")));
         assertFalse(eduPersonScopedAffiliations.stream().anyMatch(aff -> aff.getValue().startsWith("expired-aff")));
+    }
+
+    // Done
+    @Test
+    public void attributesGlobalUidWhenFeatureEnabled() {
+        ReflectionTestUtils.setField(subject, "featureUseGlobalUid", true);
+
+        User user = user("global@example.com", "nl");
+        List<SAMLAttribute> attributes = subject.attributes(user, "requesterEntityID");
+
+        assertEquals(user.getUid(), getValue(attributes, "urn:mace:dir:attribute-def:uid"));
+        assertEquals(user.getEduPersonPrincipalName(), getValue(attributes, "urn:mace:dir:attribute-def:eduPersonPrincipalName"));
+        assertEquals(user.getEduPersonPrincipalName(), getValue(attributes, "urn:oasis:names:tc:SAML:attribute:subject-id"));
+    }
+
+    @Test
+    public void attributesTargetedEduIdWhenFeatureDisabled() {
+        ReflectionTestUtils.setField(subject, "featureUseGlobalUid", false);
+
+        User user = user("targeted@example.com", "nl");
+        List<SAMLAttribute> attributes = subject.attributes(user, "requesterEntityID");
+
+        String eduIDValue = getValue(attributes, "urn:mace:eduid.nl:1.1");
+        assertEquals(eduIDValue, getValue(attributes, "urn:mace:dir:attribute-def:uid"));
+        assertEquals(eduIDValue + "@" + user.getSchacHomeOrganization(), getValue(attributes, "urn:mace:dir:attribute-def:eduPersonPrincipalName"));
+        //the subject-id stays the global eduPersonPrincipalName, regardless of the feature flag
+        assertEquals(user.getEduPersonPrincipalName(), getValue(attributes, "urn:oasis:names:tc:SAML:attribute:subject-id"));
+    }
+
+    @Test
+    public void attributesGlobalUidWhenRequesterIsForced() {
+        ReflectionTestUtils.setField(subject, "featureUseGlobalUid", false);
+        ReflectionTestUtils.setField(subject, "forceGlobalUidEntities", List.of("requesterEntityID"));
+
+        User user = user("forced@example.com", "nl");
+        List<SAMLAttribute> attributes = subject.attributes(user, "requesterEntityID");
+
+        assertEquals(user.getUid(), getValue(attributes, "urn:mace:dir:attribute-def:uid"));
+        assertEquals(user.getEduPersonPrincipalName(), getValue(attributes, "urn:mace:dir:attribute-def:eduPersonPrincipalName"));
+        assertEquals(user.getEduPersonPrincipalName(), getValue(attributes, "urn:oasis:names:tc:SAML:attribute:subject-id"));
     }
 
     @Test
