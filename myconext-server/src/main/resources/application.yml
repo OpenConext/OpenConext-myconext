@@ -157,7 +157,11 @@ feature:
   use_app: True
   # When true (default) release the global uid in the uid and eduPersonPrincipalName SAML attributes.
   # When false, release the per-SP targeted eduID instead.
-  use_global_uid: False
+  use_global_uid: True
+  # SP entityIds that always receive the global uid in the uid and eduPersonPrincipalName SAML attributes,
+  # even when use_global_uid is false.
+  force_global_uid_entities: "dummy_non_existing_entity,playground_client"
+
 
 default_affiliate_email_domain: eduid.nl
 

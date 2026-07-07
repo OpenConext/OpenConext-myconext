@@ -127,6 +127,7 @@ public class GuestIdpAuthenticationRequestFilter extends OncePerRequestFilter {
     private final boolean featureDefaultAffiliateEmail;
     private final boolean featureUseApp;
     private final boolean featureUseGlobalUid;
+    private final List<String> forceGlobalUidEntities;
     private final String defaultAffiliateEmailDomain;
     private final DefaultSAMLService samlService;
     private final CookieValueEncoder cookieValueEncoder;
@@ -152,6 +153,7 @@ public class GuestIdpAuthenticationRequestFilter extends OncePerRequestFilter {
                                                boolean featureDefaultAffiliateEmail,
                                                boolean featureUseApp,
                                                boolean featureUseGlobalUid,
+                                               List<String> forceGlobalUidEntities,
                                                String defaultAffiliateEmailDomain,
                                                SAMLConfiguration configuration,
                                                IdentityProviderMetaData identityProviderMetaData,
@@ -184,6 +186,7 @@ public class GuestIdpAuthenticationRequestFilter extends OncePerRequestFilter {
         this.featureDefaultAffiliateEmail = featureDefaultAffiliateEmail;
         this.featureUseApp = featureUseApp;
         this.featureUseGlobalUid = featureUseGlobalUid;
+        this.forceGlobalUidEntities = forceGlobalUidEntities;
         this.defaultAffiliateEmailDomain = defaultAffiliateEmailDomain;
         this.samlService = new DefaultSAMLService(configuration);
         this.executor = Executors.newSingleThreadExecutor();
@@ -815,9 +818,19 @@ public class GuestIdpAuthenticationRequestFilter extends OncePerRequestFilter {
         String displayName = String.format("%s %s", chosenName, familyName);
         String eppn = user.getEduPersonPrincipalName();
 
+        boolean forceGlobalUid = forceGlobalUidEntities != null && forceGlobalUidEntities.contains(requesterEntityId);
+
         String eduIDValue = user.computeEduIdForServiceProviderIfAbsent(requesterEntityId, manage);
-        String uidValue = featureUseGlobalUid ? user.getUid() : eduIDValue;
-        String eppnValue = featureUseGlobalUid ? eppn : eduIDValue + "@" + user.getSchacHomeOrganization();
+        String uidValue;
+        String eppnValue;
+        if (featureUseGlobalUid || forceGlobalUid) {
+            uidValue = user.getUid();
+            eppnValue = eppn;
+        } else {
+            uidValue = eduIDValue;
+            eppnValue = eduIDValue + "@" + user.getSchacHomeOrganization();
+        }
+
         //we need a mutable list
         List<SAMLAttribute> attributes = new ArrayList<>(Arrays.asList(
                 attribute("urn:mace:dir:attribute-def:cn", displayName),
