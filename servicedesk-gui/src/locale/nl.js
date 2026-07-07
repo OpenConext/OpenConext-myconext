@@ -11,14 +11,14 @@ const nl = {
             title: "ServiceDesk",
             subTitle: "",
             login: "Log in",
-            sup: "EduID ServiceDesk is alleen op uitnodiging beschikbaar.",
+            sup: "eduID ServiceDesk is alleen op uitnodiging beschikbaar.",
         },
         works: "Hoe werkt het?",
         adminFunction: "Medewerker",
         studentFunction: "Student",
         info: [
             //Matrices met titels en infoblokken en of een functie een beheerdersfunctie is
-            ["Beveiliging", "<p>EduID ServiceDesk is een beveiligd platform ontworpen om de identiteit te valideren van studenten die een identiteitscontrole hebben aangevraagd. Deze dienst waarborgt naleving van formele identificatienormen en biedt tegelijkertijd een gebruiksvriendelijk proces voor medewerkers en studenten. </p>",
+            ["Beveiliging", "<p>eduID ServiceDesk is een beveiligd platform ontworpen om de identiteit te valideren van studenten die een identiteitscontrole hebben aangevraagd. Deze dienst waarborgt naleving van formele identificatienormen en biedt tegelijkertijd een gebruiksvriendelijk proces voor medewerkers en studenten. </p>",
                 true],
             ["Compliance", "<p>Gebouwd om te voldoen aan de formele identificatievoorschriften en nauwkeurigheid bij identiteitsverificatie te garanderen. Vermindert fouten door een gestructureerd en stapsgewijs validatieproces</p>", true],
             ["Authenticatie", "<p>Medewerkers initiëren het verificatieproces met behulp van een unieke code die via e-mail naar de student wordt verzonden. Het systeem zorgt ervoor dat alleen studenten met geldige aanmeldingscodes door kunnen gaan met de identiteitscontrole.</p><br/> ", false],
@@ -27,7 +27,7 @@ const nl = {
             "<p>Wil je meer weten? <a href='https://support.surfconext.nl/servicedesk-nl'>Lees verder</a>.</p>",
     },
     header: {
-        title: "EduID ServiceDesk",
+        title: "eduID ServiceDesk",
         links: {
             logout: "Logout"
         }
