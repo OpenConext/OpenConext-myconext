@@ -3247,8 +3247,8 @@ SHARED:
         nl: " "
     Linked_institution:
       COPY:
-        en: Your eduID must be connected to an official party.
-        nl: Je eduID moet gekoppeld zijn aan een officiële instelling.
+        en: Your eduID must be connected to an official institution where you are a student.
+        nl: Je eduID moet gekoppeld zijn aan een officiële instelling waar je student bent.
     Validate_names:
       COPY:
         en: Your first name and last name must be verified by an official party.
