@@ -141,7 +141,8 @@ public class LoginController {
     @GetMapping("/auth/login")
     public View login(
             @RequestParam(value = "redirect_path", required = false) String redirectPath,
-            @RequestParam(value = "registration_id") String registrationId
+            @RequestParam(value = "registration_id") String registrationId,
+            @RequestParam(value = "force", required = false, defaultValue = "false") Boolean force
     ) {
         String baseUrl = InternalSecurityConfigurationAdapter.REGISTRATION_ID_SERVICE_DESK.equals(registrationId)
                 ? servicedeskRedirectUrl

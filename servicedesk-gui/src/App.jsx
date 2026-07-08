@@ -12,6 +12,7 @@ import {Login} from "./pages/Login.jsx";
 import {Home} from "./pages/Home.jsx";
 import {Footer} from "./components/Footer.jsx";
 import Forbidden from "./pages/Forbidden.jsx";
+import {useNavigate} from "react-router-dom";
 
 const AUTH_STATUS = {
     LOADING: 'loading',
@@ -23,6 +24,7 @@ const AUTH_STATUS = {
 const App = () => {
 
     const [authStatus, setAuthStatus] = useState(AUTH_STATUS.LOADING);
+    const navigate = useNavigate();
 
     useEffect(() => {
         if (window.location.pathname.endsWith("/login")) {
@@ -36,14 +38,18 @@ const App = () => {
                     setAuthStatus(AUTH_STATUS.UNAUTHENTICATED);
                     return;
                 }
-                return me().then(user => {
-                    useAppStore.setState(() => ({user}));
-                    setAuthStatus(user.serviceDeskMember
-                        ? AUTH_STATUS.AUTHORIZED
-                        : AUTH_STATUS.FORBIDDEN);
-                });
+                return me()
+                    .then(user => {
+                        useAppStore.setState(() => ({user}));
+                        setAuthStatus(user.serviceDeskMember
+                            ? AUTH_STATUS.AUTHORIZED
+                            : AUTH_STATUS.FORBIDDEN);
+                    });
             })
-            .catch(() => setAuthStatus(AUTH_STATUS.UNAUTHENTICATED));
+            .catch(() => {
+                setAuthStatus(AUTH_STATUS.UNAUTHENTICATED);
+                navigate("/login?unauthorized=true")
+            });
     }, []);
 
     if (authStatus === AUTH_STATUS.LOADING) {

@@ -32,6 +32,10 @@ const en = {
             logout: "Logout"
         }
     },
+    login: {
+        unauthorized: "Not authorized",
+        unauthorizedInfo: "You have successfully loged in, but do not have access to this application. You can close your browser and try logging with a different account."
+    },
     serviceDesk: {
         member: "ServiceDesk member"
     },

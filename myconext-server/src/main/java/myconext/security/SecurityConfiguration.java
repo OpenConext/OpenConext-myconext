@@ -275,6 +275,8 @@ public class SecurityConfiguration {
                     .csrf(csrf -> csrf.disable())
                     .sessionManagement(smc -> smc.sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED))
                     .authorizeHttpRequests(authz -> authz
+                            .requestMatchers("/myconext/api/servicedesk/logout")
+                            .permitAll()
                             .requestMatchers(
                                     "/myconext/api/servicedesk/**").hasAuthority(SERVICE_DESK)
                             .requestMatchers(
@@ -315,6 +317,7 @@ public class SecurityConfiguration {
         private AuthenticationEntryPoint appAwareAuthenticationEntryPoint() {
             return (request, response, authException) -> {
                 String registrationId = request.getParameter("registration_id");
+                String force = request.getParameter("force");
                 if (!StringUtils.hasText(registrationId) || !ALLOWED_REGISTRATION_IDS.contains(registrationId)) {
                     registrationId = REGISTRATION_ID_MY_CONEXT;
                 }
