@@ -24,6 +24,7 @@
     let yearOfBirth = null;
     let dayOfBirth = "";
     let code = "";
+    let errorOccurred = false;
 
     const currentYear = new Date().getFullYear();
     const yearItems = range(currentYear - 100, currentYear, false, true);
@@ -56,6 +57,7 @@
     }
 
     const backToPersonal = () => {
+        setTimeout(() => errorOccurred = false, 125);
         cancelView();
     }
 
@@ -75,7 +77,9 @@
                 code = res.code;
                 $user.controlCode = res;
                 step = 2;
-            });
+            }).catch(()=> {
+                errorOccurred = true;
+        });
     }
 
     const onChangeDateOfBirth = e => {
@@ -273,7 +277,16 @@
 </style>
 
 <div class="info-container">
-    {#if step === 0}
+    {#if errorOccurred}
+        <div class="header-container">
+            <h2 class="header">{I18n.t("serviceDesk.errorOccured")}</h2>
+        </div>
+        <p>{@html I18n.t("serviceDesk.errorOccuredInfo")}</p>
+        <Button label={I18n.t("ServiceDesk.ControlCode.Back.COPY")}
+                fullSize={true}
+                className="cancel"
+                onClick={backToPersonal}/>
+    {:else if step === 0}
         <div class="header-container">
             <span class="back" on:click={cancel} aria-label="toggle-view">
                 {@html arrowLeftIcon}
