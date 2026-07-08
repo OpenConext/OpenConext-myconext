@@ -15,6 +15,8 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.boot.context.properties.bind.Bindable;
+import org.springframework.boot.context.properties.bind.Binder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
@@ -45,6 +47,7 @@ import java.io.IOException;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
@@ -123,9 +126,9 @@ public class SecurityConfiguration {
                             @Value("${feature.default_affiliate_email}") boolean featureDefaultAffiliateEmail,
                             @Value("${feature.use_app}") boolean featureUseApp,
                             @Value("${feature.use_global_uid}") boolean featureUseGlobalUid,
-                            @Value("${feature.force_global_uid_entities}") String forceGlobalUidEntities,
                             @Value("${default_affiliate_email_domain}") String defaultAffiliateEmailDomain,
                             @Value("${feature.requires_signed_authn_request}") boolean requiresSignedAuthnRequest,
+                            Environment environment,
                             AuthenticationRequestRepository authenticationRequestRepository,
                             UserRepository userRepository,
                             UserLoginRepository userLoginRepository,
@@ -148,6 +151,10 @@ public class SecurityConfiguration {
             );
             String[] keys = this.getKeys(certificatePath, privateKeyPath);
             final List<SAMLServiceProvider> serviceProviders = new ArrayList<>();
+
+            List<String> forceGlobalUidEntities = Binder.get(environment)
+                    .bind("feature.force-global-uid-entities", Bindable.listOf(String.class))
+                    .orElse(Collections.emptyList());
 
             List<String> spEntityIdentifiers = commaSeparatedToList(spEntityId);
             List<String> spMetaDataUrls = commaSeparatedToList(accountMetadataUrl);
@@ -182,7 +189,7 @@ public class SecurityConfiguration {
                     featureDefaultAffiliateEmail,
                     featureUseApp,
                     featureUseGlobalUid,
-                    commaSeparatedToList(forceGlobalUidEntities),
+                    forceGlobalUidEntities,
                     defaultAffiliateEmailDomain,
                     configuration,
                     identityProviderMetaData,
