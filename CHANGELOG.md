@@ -10,7 +10,8 @@ All notable changes to this project will be documented in this file.
 - Fix grammatical and textual errors during recovery flow ([#1260](https://github.com/OpenConext/OpenConext-myconext/issues/1260))
 - Fix typos in the messages during the recovery flow ([#1262](https://github.com/OpenConext/OpenConext-myconext/issues/1262))
 - Do not offer user an alternative login method, while MFA is required ([#1265](https://github.com/OpenConext/OpenConext-myconext/issues/1265))
-
+- Servicedesk feedback if role is missing ([#1257](https://github.com/OpenConext/OpenConext-myconext/issues/1257))
+- 
 ## [8.4.1] juli 2026
 - Refactor variable naming conventions to reflect which party it reflects (myconext, servicedesk, or account)
 
