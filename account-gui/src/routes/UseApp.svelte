@@ -21,12 +21,10 @@
 
     let showSpinner = true;
     let timeOut = false;
-    let serviceName = "";
     let qrCode = "";
     let url = "";
     let showQrCode = false;
     let showTOTPLink = false;
-    let status;
     let successResult = null;
     let suspendedResult = null;
     let sessionKey = "";
@@ -92,7 +90,6 @@
                 url = res.url;
                 sessionKey = res.sessionKey;
                 showQrCode = !res.tiqrCookiePresent;
-                status = authenticationStatus.PENDING;
                 poll({
                     fn: () => pollAuthentication(sessionKey, id),
                     validate: res => {

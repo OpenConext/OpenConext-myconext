@@ -103,31 +103,33 @@
     }
 
 </style>
-<div class="{interContent ? 'inter-content' : 'sub-content'} {showButton ? 'show-button' : ''}">
-    <div class="sub-content-inner">
-    <span class="question">{@html question}
-        {#if preLink}
-            <span class="pre-link">{preLink}</span>
-        {/if}
-        {#if !showButton && route && (userOverride || !isMfaParameter || !isMfa)}
-            <a href={route} use:link>
-                {linkText}
-            </a>
-        {:else if showButton && route && (userOverride || !isMfaParameter || !isMfa)}
-            <Button href="{route}" useLink="true" label={linkText} className="full" big="true"/>
-        {:else if !showButton && route && !userOverride && isMfaParameter && isMfa}
-            <a href={route}
-               on:click|preventDefault|stopPropagation={() => showModal = true}>
-                {linkText}
-            </a>
-        {:else if showButton && route && !userOverride && isMfaParameter && isMfa}
-            <Button href="{route}" label={linkText} onClick="{() => showModal = true}" className="full"/>
-        {:else}
-            <a href={href} target="_blank">{linkText}</a>
-        {/if}
-    </span>
+{#if !isMfaParameter}
+    <div class="{interContent ? 'inter-content' : 'sub-content'} {showButton ? 'show-button' : ''}">
+        <div class="sub-content-inner">
+        <span class="question">{@html question}
+            {#if preLink}
+                <span class="pre-link">{preLink}</span>
+            {/if}
+            {#if !showButton && route && (userOverride || !isMfaParameter || !isMfa)}
+                <a href={route} use:link>
+                    {linkText}
+                </a>
+            {:else if showButton && route && (userOverride || !isMfaParameter || !isMfa)}
+                <Button href="{route}" useLink="true" label={linkText} className="full" big="true"/>
+            {:else if !showButton && route && !userOverride && isMfaParameter && isMfa}
+                <a href={route}
+                   on:click|preventDefault|stopPropagation={() => showModal = true}>
+                    {linkText}
+                </a>
+            {:else if showButton && route && !userOverride && isMfaParameter && isMfa}
+                <Button href="{route}" label={linkText} onClick="{() => showModal = true}" className="full"/>
+            {:else}
+                <a href={href} target="_blank">{linkText}</a>
+            {/if}
+        </span>
+        </div>
     </div>
-</div>
+{/if}
 {#if showModal}
     <Modal submit={() => showModal = false}
            cancel={() => mfaWarning(false)}

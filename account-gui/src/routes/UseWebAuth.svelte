@@ -87,4 +87,5 @@
 
 <SubContent question={I18n.t("Login.UseAnother.COPY")}
             linkText={I18n.t("Login.OptionsLink.COPY")}
-            route="/options/{id}" interContent="true"/>
+            route="/options/{id}"
+            interContent="true"/>

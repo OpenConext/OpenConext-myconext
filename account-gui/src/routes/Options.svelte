@@ -88,4 +88,5 @@
 <SubContent question={I18n.t("Options.NoLogin.COPY")}
             preLink={I18n.t("Options.Learn.COPY")}
             linkText={I18n.t("Options.LearnLink.COPY")}
-            href="https://eduid.nl/help" interContent="true"/>
+            href="https://eduid.nl/help"
+            interContent="true"/>

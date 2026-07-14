@@ -388,5 +388,6 @@
 <div hidden={emailInUse}>
     <SubContent question={I18n.t("Login.AlreadyGuestAccount.COPY")}
                 linkText={I18n.t("Login.LoginEduId.COPY")}
-                route="/login/{id}" interContent="true"/>
+                route="/login/{id}"
+                interContent="true"/>
 </div>
