@@ -841,13 +841,13 @@
       "entityid": "https://www.hbo-stagemarkt.nl/",
       "state": "prodaccepted",
       "metaDataFields": {
-        "name:en": "HBO-stagemarkt.nl",
+        "name:en": "hbo-stagemarkt.nl",
         "OrganizationName:en": "Stichting ELBHO",
         "OrganizationName:nl": "Stichting ELBHO",
         "coin:application_url": "https://www.hbo-stagemarkt.nl/",
         "logo:0:url": "https://static.surfconext.nl/media/sp/hbo-stagemarkt.png",
         "coin:institution_guid": "fe430edd-30ff-ea11-9101-0050569571ea",
-        "name:nl": "HBO-stagemarkt.nl"
+        "name:nl": "hbo-stagemarkt.nl"
       }
     }
   },

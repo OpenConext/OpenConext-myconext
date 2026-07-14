@@ -49,7 +49,7 @@ export const Support_NL = () => {
                         <p>Nee. Je hebt maar één eduID nodig.</p>
                         <ul>
                             <li>Je maakt deze aan met je privé e-mailadres.</li>
-                            <li>Je voegt daarna organisaties toe, zoals een MBO, HBO of universiteit.</li>
+                            <li>Je voegt daarna organisaties toe, zoals een mbo, hbo of universiteit.</li>
                             <li>Wissel je van studie of werk? Dan blijft je eduID bestaan.</li>
                         </ul>
                         <p>Heb je per ongeluk een eduID aangemaakt met het e-mailadres van je school of organisatie?
