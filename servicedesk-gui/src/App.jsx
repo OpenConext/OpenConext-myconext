@@ -47,8 +47,8 @@ const App = () => {
                     });
             })
             .catch(() => {
-                setAuthStatus(AUTH_STATUS.UNAUTHENTICATED);
-                navigate("/login?unauthorized=true")
+                setAuthStatus(AUTH_STATUS.FORBIDDEN);
+                setTimeout(() => navigate("/forbidden?unauthorized=true"), 125);
             });
     }, []);
 
