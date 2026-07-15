@@ -1355,6 +1355,9 @@ public class UserController implements UserAuthentication {
             description = "Delete the current logged in user")
     public ResponseEntity<StatusResponse> deleteUser(Authentication authentication, HttpServletRequest request) {
         User user = userFromAuthentication(authentication);
+
+        request.getSession().getAttribute("TodoDidStepUp"); // Die bij dat nieuwe endpoint bedacht was
+
         userRepository.delete(user);
 
         logWithContext(user, "delete", "account", LOG, "Delete account");

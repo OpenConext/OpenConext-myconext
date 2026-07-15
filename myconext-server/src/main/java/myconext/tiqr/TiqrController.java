@@ -429,6 +429,7 @@ public class TiqrController implements UserAuthentication {
         return doStartAuthentication(request, user, serviceName);
     }
 
+    // Logic for QR
     private ResponseEntity<StartAuthentication> doStartAuthentication(HttpServletRequest request, User user, String serviceName) throws WriterException, IOException, TiqrException {
         Optional<Cookie> optionalTiqrCookie = cookieByName(request, TIQR_COOKIE_NAME);
         AtomicBoolean tiqrCookieValid = new AtomicBoolean(false);
@@ -458,6 +459,18 @@ public class TiqrController implements UserAuthentication {
         return ResponseEntity.ok(startAuthentication);
     }
 
+    // new endpoint : POST
+    // Authentication authentication = tiqrService.authenticationStatus(sessionKey);
+    // AuthenticationStatus status = authentication.getStatus(); --> check if success --> OK no content
+    // Updates request Session --> the "TodoDidStepUp"
+    // Note for context: we do not trust the frontend to confirm the polling endpoint returns SUCCESS, therefore we perform this extra check
+    // Example of a consumer of this flag:
+    // src/main/java/myconext/api/UserController.java --> @DeleteMapping("/sp/delete")
+
+    // ---------------------------------------
+
+    // Cannot implement above logic here, since that is a very specific use case
+    // When polling returns a SUCCESS state, the frontend will POST the above mentioned endpoint to confirm
     @Operation(summary = "Poll authentication", description = "Poll Tiqr authentication status for current user")
     @GetMapping("/sp/poll-authentication")
     public ResponseEntity<PollAuthenticationResult> spAuthenticationStatus(org.springframework.security.core.Authentication authentication,

@@ -1,5 +1,6 @@
 <script>
     import {config, user} from "../stores/user";
+    import {get} from "svelte/store";
     import I18n from "../locale/I18n";
     import {navigate} from "svelte-routing";
     import critical from "../icons/critical.svg?raw";
@@ -18,20 +19,43 @@
         return inputSanitized !== "delete" && inputSanitized !== "verwijder";
     }
 
+    const has2ndFactor = () => {
+        const currentUser = get(user);
+        const options = currentUser.loginOptions || [];
+        return options.includes("useApp");
+    }
+
     const deleteUserAction = showConfirmation => () => {
         if (showConfirmation) {
             showModal = true
         } else {
-            deleteUser().then(() => {
-                $user = {
-                    id: "",
-                    email: "",
-                    givenName: "",
-                    familyName: "",
-                    usePassword: false
-                };
-                window.location.href = `${$config.accountBaseUrl}/doLogout?param=${encodeURIComponent("delete=true")}`;
-            });
+            if(has2ndFactor()) {
+                alert('Confirm with 2nd factor');
+                // Get inspiration from http://localhost:3001/use-app
+                // - make the component reusable
+                // - use the QR/app confirm module in this delete-modal
+
+                // 1 Are you certain to delete? (including typing VERWIJDER)
+                // 2 Confirm with 2nd factor
+                // 3 Call Delete endpoint (see below)
+                // 4 Message "deleting went successfull" --> this is the redirect (see below)
+            }
+            else {
+                alert('No need to confirm with 2nd factor');
+            }
+
+            // Todo remove before PR -- This is an example of a destructive action and need 2nd factor to confirm
+            alert("Deleting user!!! (But not now)");
+            // deleteUser().then(() => {
+            //     $user = {
+            //         id: "",
+            //         email: "",
+            //         givenName: "",
+            //         familyName: "",
+            //         usePassword: false
+            //     };
+            //     window.location.href = `${$config.accountBaseUrl}/doLogout?param=${encodeURIComponent("delete=true")}`;
+            // });
         }
     }
 
