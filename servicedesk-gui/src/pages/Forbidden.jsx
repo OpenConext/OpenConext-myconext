@@ -12,7 +12,8 @@ const Forbidden = () => {
         const {config} = useAppStore.getState();
         logout().then(() => {
             useAppStore.setState(() => ({breadcrumbPath: [], user: {}, controlCode: {}}));
-            window.location.href = `${config.accountBaseUrl}/doLogout?param=${encodeURIComponent("logout=true")}&app=servicedesk`;
+            const param = encodeURIComponent("logout=true&delete=true");
+            window.location.href = `${config.accountBaseUrl}/doLogout?param=${param}&app=servicedesk`;
         });
     }
 
