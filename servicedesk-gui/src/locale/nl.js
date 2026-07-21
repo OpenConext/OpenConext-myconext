@@ -34,7 +34,7 @@ const nl = {
     },
     login: {
         unauthorized: "Niet geautoriseerd",
-        unauthorizedInfo: "Je bent succesvol ingelogd, maar heeft geen toegang tot deze applicatie.. Je kan je browser sluiten en proberen in te loggen met een ander account."
+        unauthorizedInfo: "Je bent succesvol ingelogd. Helaas heb je geen toegang tot deze applicatie. Sluit je browser en log opnieuw in met een account dat wel toegang heeft."
     },
     serviceDesk: {
         member: "ServiceDesk lid"
