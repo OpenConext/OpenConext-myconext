@@ -1,5 +1,7 @@
 package myconext.security;
 
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
@@ -11,6 +13,48 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class ACRTest {
+
+    // ACR's fields are mutable public statics shared across the whole JVM (not per-test/per-context),
+    // so any test that calls ACR.initialize(...) must restore the originals afterwards or it silently
+    // corrupts every other test (in this fork) that relies on the real, config-driven ACR values.
+    private String originalLinkedInstitution;
+    private String originalValidateNames;
+    private String originalValidateNamesExternal;
+    private String originalAffiliationStudent;
+    private String originalProfileMfa;
+    private String originalLinkedInstitutionMfa;
+    private String originalValidateNamesMfa;
+    private String originalValidateNamesExternalMfa;
+    private String originalAffiliationStudentMfa;
+
+    @BeforeEach
+    void snapshotAcrStaticState() {
+        originalLinkedInstitution = ACR.LINKED_INSTITUTION;
+        originalValidateNames = ACR.VALIDATE_NAMES;
+        originalValidateNamesExternal = ACR.VALIDATE_NAMES_EXTERNAL;
+        originalAffiliationStudent = ACR.AFFILIATION_STUDENT;
+        originalProfileMfa = ACR.PROFILE_MFA;
+        originalLinkedInstitutionMfa = ACR.LINKED_INSTITUTION_MFA;
+        originalValidateNamesMfa = ACR.VALIDATE_NAMES_MFA;
+        originalValidateNamesExternalMfa = ACR.VALIDATE_NAMES_EXTERNAL_MFA;
+        originalAffiliationStudentMfa = ACR.AFFILIATION_STUDENT_MFA;
+    }
+
+    @AfterEach
+    void restoreAcrStaticState() {
+        ACR.initialize(
+                originalLinkedInstitution,
+                originalValidateNames,
+                originalValidateNamesExternal,
+                originalAffiliationStudent,
+                originalProfileMfa,
+                originalLinkedInstitutionMfa,
+                originalValidateNamesMfa,
+                originalValidateNamesExternalMfa,
+                originalAffiliationStudentMfa
+        );
+    }
+
     // selectACR
     @Test
     void testSelectACR_ProfileMfaHasHighestPriority() {
