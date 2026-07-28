@@ -1,5 +1,6 @@
 <script>
     import {config, user} from "../stores/user";
+    import {get} from "svelte/store";
     import I18n from "../locale/I18n";
     import {navigate} from "svelte-routing";
     import critical from "../icons/critical.svg?raw";
@@ -10,6 +11,7 @@
     import {isEmpty} from "../utils/utils";
 
     let showModal = false;
+    let show2ndFactorModal = false;
 
     let name = "";
 
@@ -18,21 +20,43 @@
         return inputSanitized !== "delete" && inputSanitized !== "verwijder";
     }
 
-    const deleteUserAction = showConfirmation => () => {
-        if (showConfirmation) {
-            showModal = true
-        } else {
-            deleteUser().then(() => {
-                $user = {
-                    id: "",
-                    email: "",
-                    givenName: "",
-                    familyName: "",
-                    usePassword: false
-                };
-                window.location.href = `${$config.accountBaseUrl}/doLogout?param=${encodeURIComponent("delete=true")}`;
-            });
+    const has2ndFactor = () => {
+        const currentUser = get(user);
+        const options = currentUser.loginOptions || [];
+        return options.includes("useApp");
+    }
+
+    const startDeleteUserFlow = () => {
+        if(has2ndFactor()) {
+            // Get inspiration from http://localhost:3001/use-app
+            // - make the component reusable
+            // - use the QR/app confirm module in this delete-modal
+
+            // 1 Are you certain to delete? (including typing VERWIJDER)
+            // 2 Confirm with 2nd factor
+            // 3 Call Delete endpoint (see below)
+            // 4 Message "deleting went successfull" --> this is the redirect (see below)
+
+            show2ndFactorModal = true;
         }
+        else {
+            // Todo: remove before PR
+            alert('No need to confirm with 2nd factor');
+            doDeleteUser();
+        }
+    }
+
+    const doDeleteUser = () => {
+        deleteUser().then(() => {
+            $user = {
+                id: "",
+                email: "",
+                givenName: "",
+                familyName: "",
+                usePassword: false
+            };
+            window.location.href = `${$config.accountBaseUrl}/doLogout?param=${encodeURIComponent("delete=true")}`;
+        });
     }
 
 </script>
@@ -111,29 +135,40 @@
                 onClick={() => navigate("/account")} className="cancel"/>
         <Button href="/delete" label={I18n.t("Account.Delete.COPY")}
                 large={true}
-                onClick={deleteUserAction(true)}/>
+                onClick={() => showModal = true}/>
     </div>
 </div>
 
-{#if showModal}
-    <Modal submit={deleteUserAction(false)}
-           cancel={() => showModal = false}
-           warning={true}
-           confirmTitle={I18n.t("YourVerifiedInformation.ConfirmRemoval.Button.YesDelete.COPY")}
-           disableSubmit={disableDeleteButton(name)}
-           title={I18n.t("ConfirmDelete.Title.COPY")}>
-        <div class="slot">
-            <div class="warning-box">
-                <span>{@html critical}</span>
-                <span>{I18n.t("ConfirmDelete.Disclaimer.COPY")}</span>
+<!-- Todo: 2nd factor modal does NOT need a submit, it is handled by internal component -->
+{#if showModal || show2ndFactorModal}
+    {#if show2ndFactorModal}
+        <Modal submit={() => doDeleteUser()}
+               cancel={() => show2ndFactorModal = false}
+               title="Confirm 2nd factor">
+            <div class="slot">
+                <h1>Todo: Confirm 2nd factor</h1>
             </div>
-            <p>{I18n.t("Account.Proceed.COPY")}</p>
-            <label for="name">{I18n.t("account.confirmation")}</label>
-            <input id="name"
-                   placeholder={I18n.t("Profile.RemoveServicePrompt.Delete.COPY")}
-                   type="text"
-                   spellcheck="false"
-                   bind:value={name}/>
-        </div>
-    </Modal>
+        </Modal>
+    {:else}
+        <Modal submit={() => startDeleteUserFlow()}
+               cancel={() => showModal = false}
+               warning={true}
+               confirmTitle={I18n.t("YourVerifiedInformation.ConfirmRemoval.Button.YesDelete.COPY")}
+               disableSubmit={disableDeleteButton(name)}
+               title={I18n.t("ConfirmDelete.Title.COPY")}>
+            <div class="slot">
+                <div class="warning-box">
+                    <span>{@html critical}</span>
+                    <span>{I18n.t("ConfirmDelete.Disclaimer.COPY")}</span>
+                </div>
+                <p>{I18n.t("Account.Proceed.COPY")}</p>
+                <label for="name">{I18n.t("account.confirmation")}</label>
+                <input id="name"
+                       placeholder={I18n.t("Profile.RemoveServicePrompt.Delete.COPY")}
+                       type="text"
+                       spellcheck="false"
+                       bind:value={name}/>
+            </div>
+        </Modal>
+    {/if}
 {/if}
