@@ -37,9 +37,9 @@ An IdP for OpenConext. A user can create and manage his own identity. Authentica
 
 - Java 21
 - Maven 3
-- MongoDB 3.4.x
+- MongoDB 7.x
 - Yarn 1.x
-- NodeJS (version 23.2.0)
+- NodeJS (version 24.3.0)
 - Mailpit
 
 ## Building and running
@@ -91,7 +91,7 @@ Browse to the [application homepage](http://localhost:3001/).
 
 ### Servicedesk-GUI (SP)
 
-The myconext servicedesk is also built with Svelte and to get initially started:
+The myconext servicedesk is built with React and Vite and to get initially started:
 
 ```shell
 cd servicedesk-gui
