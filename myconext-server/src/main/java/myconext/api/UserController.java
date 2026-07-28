@@ -1356,20 +1356,23 @@ public class UserController implements UserAuthentication {
                                                       HttpServletRequest request,
                                                       @RequestParam(value = "confirmedSecondFactorSessionKey", required = false) String confirmedSecondFactorSessionKey) {
         User user = userFromAuthentication(authentication);
-
-        // Only block destructive action when user has a second factor and this is not confirmed yet
-        if (user.loginOptions().contains(LoginOptions.APP.getValue())) {
-            String sessionKey = (String) request.getSession().getAttribute("confirmedSecondFactorSessionKey");
-            if (!StringUtils.hasText(confirmedSecondFactorSessionKey) || !confirmedSecondFactorSessionKey.equals(sessionKey)) {
-                throw new ForbiddenException("User has a 2nd factor enabled, confirmation of the 2nd factor is required to delete the account");
-            }
-        }
+        checkSecondFactorConfirmation(user, request, confirmedSecondFactorSessionKey);
 
         userRepository.delete(user);
 
         logWithContext(user, "delete", "account", LOG, "Delete account");
 
         return doLogout(request);
+    }
+
+    // Only block destructive action when user has a second factor and this is not confirmed yet
+    private void checkSecondFactorConfirmation(User user, HttpServletRequest request, String confirmedSecondFactorSessionKey) {
+        if (user.loginOptions().contains(LoginOptions.APP.getValue())) {
+            String sessionKey = (String) request.getSession().getAttribute("confirmedSecondFactorSessionKey");
+            if (!StringUtils.hasText(confirmedSecondFactorSessionKey) || !confirmedSecondFactorSessionKey.equals(sessionKey)) {
+                throw new ForbiddenException("User has a 2nd factor enabled, confirmation of the 2nd factor is required for this destructive action");
+            }
+        }
     }
 
     @Operation(summary = "Create verification control code password link",
