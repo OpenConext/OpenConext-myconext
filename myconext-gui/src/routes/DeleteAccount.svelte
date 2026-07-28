@@ -6,9 +6,10 @@
     import critical from "../icons/critical.svg?raw";
 
     import Modal from '../components/Modal.svelte';
-    import {deleteUser} from "../api";
+    import {deleteUser, confirmStepUp} from "../api";
     import Button from "../components/Button.svelte";
     import {isEmpty} from "../utils/utils";
+    import TiqrAuthentication from "../components/TiqrAuthentication.svelte";
 
     let showModal = false;
     let show2ndFactorModal = false;
@@ -28,26 +29,20 @@
 
     const startDeleteUserFlow = () => {
         if(has2ndFactor()) {
-            // Get inspiration from http://localhost:3001/use-app
-            // - make the component reusable
-            // - use the QR/app confirm module in this delete-modal
-
-            // 1 Are you certain to delete? (including typing VERWIJDER)
-            // 2 Confirm with 2nd factor
-            // 3 Call Delete endpoint (see below)
-            // 4 Message "deleting went successfull" --> this is the redirect (see below)
-
             show2ndFactorModal = true;
         }
         else {
-            // Todo: remove before PR
-            alert('No need to confirm with 2nd factor');
             doDeleteUser();
         }
     }
 
-    const doDeleteUser = () => {
-        deleteUser().then(() => {
+    // todo: add if statement for STATUS, handle other states?
+    const handle2ndFactor = ({status, sessionKey}) => {
+        confirmStepUp(sessionKey).then(() => doDeleteUser(sessionKey));
+    }
+
+    const doDeleteUser = (sessionKey) => {
+        deleteUser(sessionKey).then(() => {
             $user = {
                 id: "",
                 email: "",
@@ -139,14 +134,13 @@
     </div>
 </div>
 
-<!-- Todo: 2nd factor modal does NOT need a submit, it is handled by internal component -->
 {#if showModal || show2ndFactorModal}
     {#if show2ndFactorModal}
-        <Modal submit={() => doDeleteUser()}
-               cancel={() => show2ndFactorModal = false}
+        <Modal cancel={() => show2ndFactorModal = false}
+               warning={true}
                title="Confirm 2nd factor">
             <div class="slot">
-                <h1>Todo: Confirm 2nd factor</h1>
+                <TiqrAuthentication onDone={handle2ndFactor}/>
             </div>
         </Modal>
     {:else}

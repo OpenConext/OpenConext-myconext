@@ -16,6 +16,10 @@ function validateResponse(res) {
         throw res;
     }
 
+    if (res.status === 204) {
+        return null;
+    }
+
     return res.json();
 }
 
@@ -135,8 +139,9 @@ export function setLoginPreference(loginPreference) {
     return postPutJson("/myconext/api/sp/login-preference", {loginPreference}, "PUT");
 }
 
-export function deleteUser() {
-    return fetchDelete("/myconext/api/sp/delete").then(() => logout());
+export function deleteUser(sessionKey) {
+    const sessionKeyParam = isEmpty(sessionKey) ? "" : `?confirmedSecondFactorSessionKey=${encodeURIComponent(sessionKey)}`;
+    return fetchDelete(`/myconext/api/sp/delete${sessionKeyParam}`).then(() => logout());
 }
 
 export function deleteLinkedAccount(linkedAccount) {
@@ -270,6 +275,10 @@ export function startTiqrAuthentication() {
 
 export function pollAuthentication(sessionKey) {
     return fetchJson(`/tiqr/sp/poll-authentication?sessionKey=${sessionKey}`)
+}
+
+export function confirmStepUp(sessionKey) {
+    return postPutJson(`/tiqr/sp/confirm-step-up`, {sessionKey}, "POST")
 }
 
 export function manualResponse(sessionKey, response) {

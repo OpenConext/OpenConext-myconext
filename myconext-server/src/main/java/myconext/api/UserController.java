@@ -1349,12 +1349,22 @@ public class UserController implements UserAuthentication {
         return doLogout(request);
     }
 
-
     @DeleteMapping("/sp/delete")
     @Operation(summary = "Delete",
             description = "Delete the current logged in user")
-    public ResponseEntity<StatusResponse> deleteUser(Authentication authentication, HttpServletRequest request) {
+    public ResponseEntity<StatusResponse> deleteUser(Authentication authentication,
+                                                      HttpServletRequest request,
+                                                      @RequestParam(value = "confirmedSecondFactorSessionKey", required = false) String confirmedSecondFactorSessionKey) {
         User user = userFromAuthentication(authentication);
+
+        // Only block destructive action when user has a second factor and this is not confirmed yet
+        if (user.loginOptions().contains(LoginOptions.APP.getValue())) {
+            String sessionKey = (String) request.getSession().getAttribute("confirmedSecondFactorSessionKey");
+            if (!StringUtils.hasText(confirmedSecondFactorSessionKey) || !confirmedSecondFactorSessionKey.equals(sessionKey)) {
+                throw new ForbiddenException("User has a 2nd factor enabled, confirmation of the 2nd factor is required to delete the account");
+            }
+        }
+
         userRepository.delete(user);
 
         logWithContext(user, "delete", "account", LOG, "Delete account");
