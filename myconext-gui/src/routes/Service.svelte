@@ -1,22 +1,32 @@
 <script>
     import {flash, user} from "../stores/user";
+    import {get} from "svelte/store";
     import I18n from "../locale/I18n";
 
-    import {deleteServiceAndTokens, deleteTokens, oidcTokens} from "../api";
+    import {confirmStepUp, deleteServiceAndTokens, deleteTokens, oidcTokens} from "../api";
     import Button from "../components/Button.svelte";
     import Modal from "../components/Modal.svelte";
     import {formatJsDate} from "../format/date";
     import Spinner from "../components/Spinner.svelte";
+    import TiqrAuthentication from "../components/TiqrAuthentication.svelte";
+    import {authenticationStatus} from "../constants/authenticationStatus.js";
 
     export let service = {data: {}};
     export let refresh;
 
     let showModal = false;
+    let show2ndFactorModal = false;
     let modalOptions = {};
     let loading = false;
 
+    const has2ndFactor = () => {
+        const currentUser = get(user);
+        const options = currentUser.loginOptions || [];
+        return options.includes("useApp");
+    }
+
     const modalDeleteEduId = () => ({
-        submit: deleteEduId(false),
+        submit: startDeleteEduIdFlow,
         question: I18n.t("dataActivity.deleteServiceConfirmation", {name: service.name}),
         title: I18n.t("dataActivity.deleteService")
     });
@@ -46,13 +56,33 @@
             modalOptions = modalDeleteEduId();
             showModal = true;
         } else {
-            loading = true;
-            showModal = false;
-            deleteServiceAndTokens(service.entityId, service.allTokens)
-                .then(res => {
-                    doRefresh(res, "dataActivity.deleted");
-                });
+            startDeleteEduIdFlow();
         }
+    }
+
+    const startDeleteEduIdFlow = () => {
+        showModal = false;
+        if (has2ndFactor()) {
+            show2ndFactorModal = true;
+        } else {
+            doDeleteEduId();
+        }
+    }
+
+    const handle2ndFactor = ({status, sessionKey}) => {
+        show2ndFactorModal = false;
+        if (status === authenticationStatus.SUCCESS) {
+            confirmStepUp(sessionKey).then(() => doDeleteEduId());
+        }
+    }
+
+    const doDeleteEduId = () => {
+        loading = true;
+        deleteServiceAndTokens(service.entityId, service.allTokens)
+            .then(res => {
+                doRefresh(res, "dataActivity.deleted");
+            });
+        loading = false;
     }
 
     const revokeTokens = showConfirmation => () => {
@@ -147,6 +177,10 @@
 
     }
 
+    .slot {
+        display: flex;
+        flex-direction: column;
+    }
 
 </style>
 {#if loading}
@@ -243,12 +277,22 @@
 </tr>
 {/if}
 
-{#if showModal}
-    <Modal submit={modalOptions.submit}
-           cancel={() => showModal = false}
-           warning={true}
-           confirmTitle={I18n.t("YourVerifiedInformation.ConfirmRemoval.Button.YesDelete.COPY")}
-           question={modalOptions.question}
-           title={modalOptions.title}>
-    </Modal>
+{#if showModal || show2ndFactorModal}
+    {#if show2ndFactorModal}
+        <Modal cancel={() => show2ndFactorModal = false}
+               warning={true}
+               title="Confirm 2nd factor">
+            <div class="slot">
+                <TiqrAuthentication onDone={handle2ndFactor}/>
+            </div>
+        </Modal>
+    {:else}
+        <Modal submit={modalOptions.submit}
+               cancel={() => showModal = false}
+               warning={true}
+               confirmTitle={I18n.t("YourVerifiedInformation.ConfirmRemoval.Button.YesDelete.COPY")}
+               question={modalOptions.question}
+               title={modalOptions.title}>
+        </Modal>
+    {/if}
 {/if}

@@ -639,8 +639,11 @@ public class UserControllerTest extends AbstractIntegrationTest {
     }
 
     @Test
-    public void removeUserService() {
+    public void removeUserServiceWithoutSecondFactor() {
         User user = userRepository.findOneUserByEmail("jdoe@example.com");
+        user.getSurfSecureId().remove(SURFSecureID.RECOVERY_CODE);
+        userRepository.save(user);
+
         String entityID = "http://mock-sp";
 
         assertEquals(2, user.getEduIDS().size());
@@ -660,6 +663,49 @@ public class UserControllerTest extends AbstractIntegrationTest {
         assertFalse(userFromDB.getEduIDS().stream()
                 .anyMatch(val -> val.getServices().stream().anyMatch(service -> entityID.equals(service.getEntityId()))));
         assertEquals(1, userFromDB.getEduIDS().size());
+    }
+
+    @Test
+    public void removeUserServiceWithSecondFactor() {
+        String entityID = "http://mock-sp";
+
+        MongoSession session = mongoSessionRepository.createSession();
+        session.setAttribute("hasConfirmedSecondFactor", true);
+        mongoSessionRepository.save(session);
+        String sessionCookieValue = Base64.getEncoder().encodeToString(session.getId().getBytes());
+
+        given()
+                .when()
+                .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+                .cookie("SESSION", sessionCookieValue)
+                .body(new DeleteService(entityID, new ArrayList<>()))
+                .put("/myconext/api/sp/service")
+                .then()
+                .statusCode(HttpStatus.OK.value());
+
+        User userFromDB = userRepository.findOneUserByEmail("jdoe@example.com");
+
+        assertFalse(userFromDB.getEduIDS().stream()
+                .anyMatch(val -> val.getServices().stream().anyMatch(service -> entityID.equals(service.getEntityId()))));
+        assertEquals(1, userFromDB.getEduIDS().size());
+    }
+
+    @Test
+    public void removeUserServiceWithSecondFactor_NotConfirmed() {
+        String entityID = "http://mock-sp";
+
+        given()
+                .when()
+                .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+                .body(new DeleteService(entityID, new ArrayList<>()))
+                .put("/myconext/api/sp/service")
+                .then()
+                .statusCode(HttpStatus.FORBIDDEN.value());
+
+        User userFromDB = userRepository.findOneUserByEmail("jdoe@example.com");
+
+        assertTrue(userFromDB.getEduIDS().stream()
+                .anyMatch(val -> val.getServices().stream().anyMatch(service -> entityID.equals(service.getEntityId()))));
     }
 
     @Test

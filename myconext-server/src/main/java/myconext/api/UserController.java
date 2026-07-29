@@ -1016,8 +1016,10 @@ public class UserController implements UserAuthentication {
             description = "Remove user service by the eduID value")
     @PutMapping("/sp/service")
     public ResponseEntity<UserResponse> removeUserService(Authentication authentication,
-                                                          @Valid @RequestBody DeleteService deleteService) {
+                                                          @Valid @RequestBody DeleteService deleteService,
+                                                          HttpServletRequest request) {
         User user = userFromAuthentication(authentication);
+        checkSecondFactorConfirmation(user, request);
 
         String entityId = deleteService.getServiceProviderEntityId();
         user.getEduIDS().forEach(eduID -> eduID.getServices().removeIf(service ->
