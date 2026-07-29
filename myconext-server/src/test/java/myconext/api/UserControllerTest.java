@@ -13,6 +13,7 @@ import myconext.AbstractIntegrationTest;
 import myconext.model.*;
 import myconext.repository.ChallengeRepository;
 import myconext.security.ACR;
+import myconext.tiqr.SURFSecureID;
 import org.apache.commons.io.IOUtils;
 import org.apache.http.client.CookieStore;
 import org.junit.Test;
@@ -24,6 +25,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.session.data.mongo.MongoIndexedSessionRepository;
+import org.springframework.session.data.mongo.MongoSession;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.util.StringUtils;
 
@@ -51,6 +54,9 @@ public class UserControllerTest extends AbstractIntegrationTest {
 
     @Autowired
     private ChallengeRepository challengeRepository;
+
+    @Autowired
+    private MongoIndexedSessionRepository mongoSessionRepository;
 
     @Test
     public void existingUser() throws IOException {
@@ -780,7 +786,11 @@ public class UserControllerTest extends AbstractIntegrationTest {
     }
 
     @Test
-    public void deleteUser() {
+    public void deleteUserWithoutSecondFactor() {
+        User user = userRepository.findOneUserByEmail("jdoe@example.com");
+        user.getSurfSecureId().remove(SURFSecureID.RECOVERY_CODE);
+        userRepository.save(user);
+
         given()
                 .when()
                 .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
@@ -791,6 +801,39 @@ public class UserControllerTest extends AbstractIntegrationTest {
 
         Optional<User> optionalUser = userRepository.findUserByEmailAndRateLimitedFalse("jdoe@example.com");
         assertFalse(optionalUser.isPresent());
+    }
+
+    @Test
+    public void deleteUserWithSecondFactor() {
+        MongoSession session = mongoSessionRepository.createSession();
+        session.setAttribute("hasConfirmedSecondFactor", true);
+        mongoSessionRepository.save(session);
+        String sessionCookieValue = Base64.getEncoder().encodeToString(session.getId().getBytes());
+
+        given()
+                .when()
+                .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+                .cookie("SESSION", sessionCookieValue)
+                .delete("/myconext/api/sp/delete")
+                .then()
+                .statusCode(HttpStatus.OK.value())
+                .cookie("SESSION", "");
+
+        Optional<User> optionalUser = userRepository.findUserByEmailAndRateLimitedFalse("jdoe@example.com");
+        assertFalse(optionalUser.isPresent());
+    }
+
+    @Test
+    public void deleteUserWithSecondFactor_NotConfirmed() {
+        given()
+                .when()
+                .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+                .delete("/myconext/api/sp/delete")
+                .then()
+                .statusCode(HttpStatus.FORBIDDEN.value());
+
+        Optional<User> optionalUser = userRepository.findUserByEmailAndRateLimitedFalse("jdoe@example.com");
+        assertTrue(optionalUser.isPresent());
     }
 
     @Test
