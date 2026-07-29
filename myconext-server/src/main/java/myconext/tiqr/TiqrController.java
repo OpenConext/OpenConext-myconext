@@ -466,7 +466,7 @@ public class TiqrController implements UserAuthentication {
         if (!status.equals(AuthenticationStatus.SUCCESS)) {
             throw new ForbiddenException("Forbidden step-up confirmation, wrong status: " + status);
         }
-        request.getSession().setAttribute("confirmedSecondFactorSessionKey", sessionKey);
+        request.getSession().setAttribute("hasConfirmedSecondFactor", true);
         return ResponseEntity.noContent().build();
     }
 

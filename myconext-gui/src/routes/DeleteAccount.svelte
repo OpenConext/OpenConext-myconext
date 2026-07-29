@@ -10,6 +10,7 @@
     import Button from "../components/Button.svelte";
     import {isEmpty} from "../utils/utils";
     import TiqrAuthentication from "../components/TiqrAuthentication.svelte";
+    import {authenticationStatus} from "../constants/authenticationStatus.js";
 
     let showModal = false;
     let show2ndFactorModal = false;
@@ -36,13 +37,15 @@
         }
     }
 
-    // todo: add if statement for STATUS, handle other states?
     const handle2ndFactor = ({status, sessionKey}) => {
-        confirmStepUp(sessionKey).then(() => doDeleteUser(sessionKey));
+        console.log(status, sessionKey);
+        if (status === authenticationStatus.SUCCESS) {
+            confirmStepUp(sessionKey).then(() => doDeleteUser());
+        }
     }
 
-    const doDeleteUser = (sessionKey) => {
-        deleteUser(sessionKey).then(() => {
+    const doDeleteUser = () => {
+        deleteUser().then(() => {
             $user = {
                 id: "",
                 email: "",

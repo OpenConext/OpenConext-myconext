@@ -139,9 +139,8 @@ export function setLoginPreference(loginPreference) {
     return postPutJson("/myconext/api/sp/login-preference", {loginPreference}, "PUT");
 }
 
-export function deleteUser(sessionKey) {
-    const sessionKeyParam = isEmpty(sessionKey) ? "" : `?confirmedSecondFactorSessionKey=${encodeURIComponent(sessionKey)}`;
-    return fetchDelete(`/myconext/api/sp/delete${sessionKeyParam}`).then(() => logout());
+export function deleteUser() {
+    return fetchDelete(`/myconext/api/sp/delete`).then(() => logout());
 }
 
 export function deleteLinkedAccount(linkedAccount) {
