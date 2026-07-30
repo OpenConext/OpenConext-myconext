@@ -1,5 +1,4 @@
 <script>
-    import {get} from "svelte/store";
     import {config, flash, user} from "../stores/user";
     import I18n from "../locale/I18n";
     import verifiedSvg from "../icons/redesign/shield-full.svg?raw";
@@ -8,7 +7,6 @@
     import alertSvg from "../icons/alert-circle.svg?raw";
     import Button from "../components/Button.svelte";
     import {
-        confirmStepUp,
         deleteLinkedAccount,
         generateEmailChangeCode,
         iDINIssuers,
@@ -27,7 +25,7 @@
     import check from "../icons/redesign/check.svg?raw";
     import {navigate} from "svelte-routing";
     import {onMount} from "svelte";
-    import {doLogOutAfterRateLimit, isEmpty} from "../utils/utils";
+    import {doLogOutAfterRateLimit, hasSecondFactor, isEmpty} from "../utils/utils";
     import InstitutionRole from "../components/InstitutionRole.svelte";
     import {institutionName} from "../utils/services";
     import ValidatedData from "../components/ValidatedData.svelte";
@@ -35,8 +33,7 @@
     import {dateFromEpoch} from "../utils/date";
     import LinkedAccountSummary from "../components/LinkedAccountSummary.svelte";
     import CodeValidation from "../components/CodeValidation.svelte";
-    import TiqrAuthentication from "../components/TiqrAuthentication.svelte";
-    import {authenticationStatus} from "../constants/authenticationStatus.js";
+    import SecondFactorConfirmModal from "../components/SecondFactorConfirmModal.svelte";
 
     const resendMailAllowedTimeOut = $config.emailSpamThresholdSeconds * 1000;
 
@@ -131,12 +128,6 @@
         showModal = true;
     }
 
-    const has2ndFactor = () => {
-        const currentUser = get(user);
-        const options = currentUser.loginOptions || [];
-        return options.includes("useApp");
-    }
-
     const deleteInstitution = (showConfirmation, linkedAccount) => {
         selectedInstitution = linkedAccount;
         if (showConfirmation) {
@@ -148,17 +139,10 @@
 
     const startDeleteInstitutionFlow = linkedAccount => {
         showDeleteInstitutionModal = false;
-        if (has2ndFactor()) {
+        if (hasSecondFactor($user)) {
             show2ndFactorModal = true;
         } else {
             doDeleteInstitution(linkedAccount);
-        }
-    }
-
-    const handle2ndFactor = ({status, sessionKey}) => {
-        show2ndFactorModal = false;
-        if (status === authenticationStatus.SUCCESS) {
-            confirmStepUp(sessionKey).then(() => doDeleteInstitution(selectedInstitution));
         }
     }
 
@@ -627,11 +611,6 @@
         text-align: center;
     }
 
-    .slot {
-        display: flex;
-        flex-direction: column;
-    }
-
 </style>
 <div class="profile">
     {#if showManageVerifiedInformation}
@@ -820,13 +799,8 @@
 
 {#if showDeleteInstitutionModal || show2ndFactorModal}
     {#if show2ndFactorModal}
-        <Modal cancel={() => show2ndFactorModal = false}
-               warning={true}
-               title="Confirm 2nd factor">
-            <div class="slot">
-                <TiqrAuthentication onDone={handle2ndFactor}/>
-            </div>
-        </Modal>
+        <SecondFactorConfirmModal onConfirmed={() => doDeleteInstitution(selectedInstitution)}
+                                  onClose={() => show2ndFactorModal = false}/>
     {:else}
         <Modal submit={() => deleteInstitution(false, selectedInstitution)}
                cancel={() => showDeleteInstitutionModal = false}

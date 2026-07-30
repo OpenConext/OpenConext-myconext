@@ -1,15 +1,14 @@
 <script>
     import {flash, user} from "../stores/user";
-    import {get} from "svelte/store";
     import I18n from "../locale/I18n";
 
-    import {confirmStepUp, deleteServiceAndTokens, deleteTokens, oidcTokens} from "../api";
+    import {deleteServiceAndTokens, deleteTokens, oidcTokens} from "../api";
     import Button from "../components/Button.svelte";
     import Modal from "../components/Modal.svelte";
     import {formatJsDate} from "../format/date";
     import Spinner from "../components/Spinner.svelte";
-    import TiqrAuthentication from "../components/TiqrAuthentication.svelte";
-    import {authenticationStatus} from "../constants/authenticationStatus.js";
+    import SecondFactorConfirmModal from "../components/SecondFactorConfirmModal.svelte";
+    import {hasSecondFactor} from "../utils/utils";
 
     export let service = {data: {}};
     export let refresh;
@@ -18,12 +17,6 @@
     let show2ndFactorModal = false;
     let modalOptions = {};
     let loading = false;
-
-    const has2ndFactor = () => {
-        const currentUser = get(user);
-        const options = currentUser.loginOptions || [];
-        return options.includes("useApp");
-    }
 
     const modalDeleteEduId = () => ({
         submit: startDeleteEduIdFlow,
@@ -62,17 +55,10 @@
 
     const startDeleteEduIdFlow = () => {
         showModal = false;
-        if (has2ndFactor()) {
+        if (hasSecondFactor($user)) {
             show2ndFactorModal = true;
         } else {
             doDeleteEduId();
-        }
-    }
-
-    const handle2ndFactor = ({status, sessionKey}) => {
-        show2ndFactorModal = false;
-        if (status === authenticationStatus.SUCCESS) {
-            confirmStepUp(sessionKey).then(() => doDeleteEduId());
         }
     }
 
@@ -177,11 +163,6 @@
 
     }
 
-    .slot {
-        display: flex;
-        flex-direction: column;
-    }
-
 </style>
 {#if loading}
     <Spinner/>
@@ -279,13 +260,8 @@
 
 {#if showModal || show2ndFactorModal}
     {#if show2ndFactorModal}
-        <Modal cancel={() => show2ndFactorModal = false}
-               warning={true}
-               title="Confirm 2nd factor">
-            <div class="slot">
-                <TiqrAuthentication onDone={handle2ndFactor}/>
-            </div>
-        </Modal>
+        <SecondFactorConfirmModal onConfirmed={doDeleteEduId}
+                                  onClose={() => show2ndFactorModal = false}/>
     {:else}
         <Modal submit={modalOptions.submit}
                cancel={() => showModal = false}

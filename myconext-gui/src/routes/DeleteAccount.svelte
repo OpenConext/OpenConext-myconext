@@ -1,16 +1,14 @@
 <script>
     import {config, user} from "../stores/user";
-    import {get} from "svelte/store";
     import I18n from "../locale/I18n";
     import {navigate} from "svelte-routing";
     import critical from "../icons/critical.svg?raw";
 
     import Modal from '../components/Modal.svelte';
-    import {deleteUser, confirmStepUp} from "../api";
+    import {deleteUser} from "../api";
     import Button from "../components/Button.svelte";
-    import {isEmpty} from "../utils/utils";
-    import TiqrAuthentication from "../components/TiqrAuthentication.svelte";
-    import {authenticationStatus} from "../constants/authenticationStatus.js";
+    import {hasSecondFactor, isEmpty} from "../utils/utils";
+    import SecondFactorConfirmModal from "../components/SecondFactorConfirmModal.svelte";
 
     let showModal = false;
     let show2ndFactorModal = false;
@@ -22,25 +20,11 @@
         return inputSanitized !== "delete" && inputSanitized !== "verwijder";
     }
 
-    const has2ndFactor = () => {
-        const currentUser = get(user);
-        const options = currentUser.loginOptions || [];
-        return options.includes("useApp");
-    }
-
     const startDeleteUserFlow = () => {
-        if(has2ndFactor()) {
+        if (hasSecondFactor($user)) {
             show2ndFactorModal = true;
-        }
-        else {
+        } else {
             doDeleteUser();
-        }
-    }
-
-    const handle2ndFactor = ({status, sessionKey}) => {
-        console.log(status, sessionKey);
-        if (status === authenticationStatus.SUCCESS) {
-            confirmStepUp(sessionKey).then(() => doDeleteUser());
         }
     }
 
@@ -139,13 +123,8 @@
 
 {#if showModal || show2ndFactorModal}
     {#if show2ndFactorModal}
-        <Modal cancel={() => show2ndFactorModal = false}
-               warning={true}
-               title="Confirm 2nd factor">
-            <div class="slot">
-                <TiqrAuthentication onDone={handle2ndFactor}/>
-            </div>
-        </Modal>
+        <SecondFactorConfirmModal onConfirmed={doDeleteUser}
+                                  onClose={() => show2ndFactorModal = false}/>
     {:else}
         <Modal submit={() => startDeleteUserFlow()}
                cancel={() => showModal = false}
