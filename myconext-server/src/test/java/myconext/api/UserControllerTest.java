@@ -544,8 +544,11 @@ public class UserControllerTest extends AbstractIntegrationTest {
     }
 
     @Test
-    public void removeUserLinkedAccounts() {
+    public void removeUserLinkedAccountsWithoutSecondFactor() {
         User user = userRepository.findOneUserByEmail("jdoe@example.com");
+        user.getSurfSecureId().remove(SURFSecureID.RECOVERY_CODE);
+        userRepository.save(user);
+
         assertEquals(2, user.getLinkedAccounts().size());
         LinkedAccount linkedAccount = user.getLinkedAccounts().get(0);
         UpdateLinkedAccountRequest updateLinkedAccountRequest = new UpdateLinkedAccountRequest(linkedAccount.getEduPersonPrincipalName(), null, false, null, "nope");
@@ -563,8 +566,54 @@ public class UserControllerTest extends AbstractIntegrationTest {
     }
 
     @Test
+    public void removeUserLinkedAccountsWithSecondFactor() {
+        User user = userRepository.findOneUserByEmail("jdoe@example.com");
+        assertEquals(2, user.getLinkedAccounts().size());
+        LinkedAccount linkedAccount = user.getLinkedAccounts().get(0);
+        UpdateLinkedAccountRequest updateLinkedAccountRequest = new UpdateLinkedAccountRequest(linkedAccount.getEduPersonPrincipalName(), null, false, null, "nope");
+
+        MongoSession session = mongoSessionRepository.createSession();
+        session.setAttribute("hasConfirmedSecondFactor", true);
+        mongoSessionRepository.save(session);
+        String sessionCookieValue = Base64.getEncoder().encodeToString(session.getId().getBytes());
+
+        given()
+                .when()
+                .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+                .cookie("SESSION", sessionCookieValue)
+                .body(updateLinkedAccountRequest)
+                .put("/myconext/api/sp/institution")
+                .then()
+                .statusCode(HttpStatus.OK.value());
+
+        User userFromDB = userRepository.findOneUserByEmail("jdoe@example.com");
+
+        assertEquals(1, userFromDB.getLinkedAccounts().size());
+    }
+
+    @Test
+    public void removeUserLinkedAccountsWithSecondFactor_NotConfirmed() {
+        User user = userRepository.findOneUserByEmail("jdoe@example.com");
+        LinkedAccount linkedAccount = user.getLinkedAccounts().get(0);
+        UpdateLinkedAccountRequest updateLinkedAccountRequest = new UpdateLinkedAccountRequest(linkedAccount.getEduPersonPrincipalName(), null, false, null, "nope");
+
+        given()
+                .when()
+                .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+                .body(updateLinkedAccountRequest)
+                .put("/myconext/api/sp/institution")
+                .then()
+                .statusCode(HttpStatus.FORBIDDEN.value());
+
+        User userFromDB = userRepository.findOneUserByEmail("jdoe@example.com");
+
+        assertEquals(2, userFromDB.getLinkedAccounts().size());
+    }
+
+    @Test
     public void removeUserExternalLinkedAccount() {
         User user = userRepository.findOneUserByEmail("jdoe@example.com");
+        user.getSurfSecureId().remove(SURFSecureID.RECOVERY_CODE);
         ExternalLinkedAccount externalLinkedAccount = new ExternalLinkedAccount(
                 "subjectID", IdpScoping.idin, true
         );

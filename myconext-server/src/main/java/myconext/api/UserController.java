@@ -953,8 +953,11 @@ public class UserController implements UserAuthentication {
     @Operation(summary = "Remove linked account",
             description = "Remove linked account for a logged in user")
     public ResponseEntity<UserResponse> removeUserLinkedAccounts(Authentication authentication,
-                                                                 @RequestBody UpdateLinkedAccountRequest updateLinkedAccountRequest) {
+                                                                 @RequestBody UpdateLinkedAccountRequest updateLinkedAccountRequest,
+                                                                 HttpServletRequest request) {
         User user = userFromAuthentication(authentication);
+        checkSecondFactorConfirmation(user, request);
+
         if (updateLinkedAccountRequest.isExternal()) {
             //Only one external linked account is allowed
             user.getExternalLinkedAccounts().clear();

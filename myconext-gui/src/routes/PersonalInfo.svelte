@@ -1,4 +1,5 @@
 <script>
+    import {get} from "svelte/store";
     import {config, flash, user} from "../stores/user";
     import I18n from "../locale/I18n";
     import verifiedSvg from "../icons/redesign/shield-full.svg?raw";
@@ -7,6 +8,7 @@
     import alertSvg from "../icons/alert-circle.svg?raw";
     import Button from "../components/Button.svelte";
     import {
+        confirmStepUp,
         deleteLinkedAccount,
         generateEmailChangeCode,
         iDINIssuers,
@@ -33,6 +35,8 @@
     import {dateFromEpoch} from "../utils/date";
     import LinkedAccountSummary from "../components/LinkedAccountSummary.svelte";
     import CodeValidation from "../components/CodeValidation.svelte";
+    import TiqrAuthentication from "../components/TiqrAuthentication.svelte";
+    import {authenticationStatus} from "../constants/authenticationStatus.js";
 
     const resendMailAllowedTimeOut = $config.emailSpamThresholdSeconds * 1000;
 
@@ -60,6 +64,7 @@
     let serviceDeskStart = false;
     let showIdinOptions = false;
     let showDeleteInstitutionModal = false;
+    let show2ndFactorModal = false;
     let showNewInstitutionModal = false;
     let showPreferredInstitutionModal = false;
     let selectedInstitution;
@@ -126,17 +131,42 @@
         showModal = true;
     }
 
+    const has2ndFactor = () => {
+        const currentUser = get(user);
+        const options = currentUser.loginOptions || [];
+        return options.includes("useApp");
+    }
+
     const deleteInstitution = (showConfirmation, linkedAccount) => {
         selectedInstitution = linkedAccount;
         if (showConfirmation) {
             showDeleteInstitutionModal = true;
         } else {
-            deleteLinkedAccount(linkedAccount).then(res => {
-                showDeleteInstitutionModal = false;
-                copyServerInformation(res);
-                flash.setValue(I18n.t("Institution.Deleted.COPY", {name: institutionName(linkedAccount)}));
-            });
+            startDeleteInstitutionFlow(linkedAccount);
         }
+    }
+
+    const startDeleteInstitutionFlow = linkedAccount => {
+        showDeleteInstitutionModal = false;
+        if (has2ndFactor()) {
+            show2ndFactorModal = true;
+        } else {
+            doDeleteInstitution(linkedAccount);
+        }
+    }
+
+    const handle2ndFactor = ({status, sessionKey}) => {
+        show2ndFactorModal = false;
+        if (status === authenticationStatus.SUCCESS) {
+            confirmStepUp(sessionKey).then(() => doDeleteInstitution(selectedInstitution));
+        }
+    }
+
+    const doDeleteInstitution = linkedAccount => {
+        deleteLinkedAccount(linkedAccount).then(res => {
+            copyServerInformation(res);
+            flash.setValue(I18n.t("Institution.Deleted.COPY", {name: institutionName(linkedAccount)}));
+        });
     }
 
     const markExternalLinkedAccountExpired = externalLinkedAccount => {
@@ -597,6 +627,11 @@
         text-align: center;
     }
 
+    .slot {
+        display: flex;
+        flex-direction: column;
+    }
+
 </style>
 <div class="profile">
     {#if showManageVerifiedInformation}
@@ -783,14 +818,24 @@
     </Modal>
 {/if}
 
-{#if showDeleteInstitutionModal}
-    <Modal submit={() => deleteInstitution(false, selectedInstitution)}
-           cancel={() => showDeleteInstitutionModal = false}
-           warning={true}
-           confirmTitle={I18n.t("YourVerifiedInformation.ConfirmRemoval.Button.YesDelete.COPY")}
-           question={I18n.t("Institution.DeleteInstitutionConfirmation.COPY")}
-           title={I18n.t("YourVerifiedInformation.ConfirmRemoval.Title.COPY")}>
-    </Modal>
+{#if showDeleteInstitutionModal || show2ndFactorModal}
+    {#if show2ndFactorModal}
+        <Modal cancel={() => show2ndFactorModal = false}
+               warning={true}
+               title="Confirm 2nd factor">
+            <div class="slot">
+                <TiqrAuthentication onDone={handle2ndFactor}/>
+            </div>
+        </Modal>
+    {:else}
+        <Modal submit={() => deleteInstitution(false, selectedInstitution)}
+               cancel={() => showDeleteInstitutionModal = false}
+               warning={true}
+               confirmTitle={I18n.t("YourVerifiedInformation.ConfirmRemoval.Button.YesDelete.COPY")}
+               question={I18n.t("Institution.DeleteInstitutionConfirmation.COPY")}
+               title={I18n.t("YourVerifiedInformation.ConfirmRemoval.Title.COPY")}>
+        </Modal>
+    {/if}
 {/if}
 
 {#if showPreferredInstitutionModal}
