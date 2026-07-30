@@ -45,7 +45,7 @@ public class PasswordStrength {
                     .map(word -> word.toLowerCase(Locale.ROOT))
                     .collect(Collectors.toUnmodifiableSet());
         } catch (IOException e) {
-            throw new IllegalStateException("Unable to load password denylist from " + DENYLIST_RESOURCE, e);
+            return Set.of();
         }
     }
 }
