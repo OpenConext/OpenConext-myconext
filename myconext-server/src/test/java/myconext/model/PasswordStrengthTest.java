@@ -15,10 +15,22 @@ public class PasswordStrengthTest {
         assertFalse(strongEnough("abcdefghijklmn"));
         assertFalse(strongEnough("#!@$%$Aaaa"));
 
-        assertTrue(strongEnough("A1qwerty"));
+        assertTrue(strongEnough("A1xwerty"));
         assertTrue(strongEnough("abcdefghijklmno"));
         assertTrue(strongEnough("Secret123"));
         assertTrue(strongEnough("#!@$%$A1"));
+    }
+
+    @Test
+    public void testDeniedWords() {
+        assertFalse(strongEnough("Password123"));
+        assertFalse(strongEnough("pAsSwOrD123"));
+        assertFalse(strongEnough("MyConext2026"));
+        assertFalse(strongEnough("A1qwertyPassword"));
+        assertFalse(strongEnough("welcomeWELCOME123"));
+        assertFalse(strongEnough("UniversiteitLeiden123"));
+        assertFalse(strongEnough("MBOUtrecht2026"));
+        assertFalse(strongEnough("WindesheimA1"));
     }
 
 }
