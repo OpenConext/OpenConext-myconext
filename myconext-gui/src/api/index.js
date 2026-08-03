@@ -140,7 +140,7 @@ export function setLoginPreference(loginPreference) {
 }
 
 export function deleteUser() {
-    return fetchDelete(`/myconext/api/sp/delete`).then(() => logout());
+    return fetchDelete("/myconext/api/sp/delete").then(() => logout());
 }
 
 export function deleteLinkedAccount(linkedAccount) {
@@ -277,7 +277,7 @@ export function pollAuthentication(sessionKey) {
 }
 
 export function confirmStepUp(sessionKey) {
-    return postPutJson(`/tiqr/sp/confirm-step-up`, {sessionKey}, "POST")
+    return postPutJson("/tiqr/sp/confirm-step-up", {sessionKey}, "POST")
 }
 
 export function manualResponse(sessionKey, response) {

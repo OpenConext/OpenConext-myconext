@@ -14,8 +14,10 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import static io.restassured.RestAssured.given;
 import static org.junit.Assert.*;
@@ -247,5 +249,67 @@ public class UserMobileControllerTest extends AbstractMailBoxTest {
         assertNull(userFromDB.getCreateFromInstitutionKey());
     }
 
+    // Destructive action does not require second factor confirmation when using the mobile app
+    @Test
+    public void deleteUser() throws IOException {
+        Map<String, Object> results = given()
+                .when()
+                .accept(ContentType.JSON)
+                .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+                .auth().oauth2(opaqueAccessToken(true, "eduid.nl/mobile"))
+                .delete("/mobile/api/sp/delete")
+                .as(new TypeRef<>() {
+                });
+        assertEquals(200, results.get("status"));
+
+        Optional<User> optionalUser = userRepository.findUserByEmailAndRateLimitedFalse("jdoe@example.com");
+        assertFalse(optionalUser.isPresent());
+    }
+
+    // Destructive action does not require second factor confirmation when using the mobile app
+    @Test
+    public void removeUserLinkedAccounts() throws IOException {
+        User user = userRepository.findOneUserByEmail("jdoe@example.com");
+        LinkedAccount linkedAccount = user.getLinkedAccounts().getFirst();
+        UpdateLinkedAccountRequest updateLinkedAccountRequest = new UpdateLinkedAccountRequest(
+                linkedAccount.getEduPersonPrincipalName(), null, false, null, "nope");
+
+        given()
+                .when()
+                .accept(ContentType.JSON)
+                .contentType(ContentType.JSON)
+                .auth().oauth2(opaqueAccessToken(true, "eduid.nl/mobile"))
+                .body(updateLinkedAccountRequest)
+                .put("/mobile/api/sp/institution")
+                .then()
+                .statusCode(200);
+
+        User userFromDB = userRepository.findOneUserByEmail("jdoe@example.com");
+
+        assertEquals(1, userFromDB.getLinkedAccounts().size());
+    }
+
+    // Destructive action does not require second factor confirmation when using the mobile app
+    @Test
+    public void removeUserService() throws IOException {
+        String entityId = "http://mock-sp";
+
+        given()
+                .when()
+                .accept(ContentType.JSON)
+                .contentType(ContentType.JSON)
+                .auth().oauth2(opaqueAccessToken(true, "eduid.nl/mobile"))
+                .body(new DeleteService(entityId, new ArrayList<>()))
+                .put("/mobile/api/sp/service")
+                .then()
+                .statusCode(200);
+
+        User userFromDB = userRepository.findOneUserByEmail("jdoe@example.com");
+
+        assertFalse(userFromDB.getEduIDS().stream()
+                .anyMatch(eduID -> eduID.getServices().stream()
+                        .anyMatch(service -> entityId.equals(service.getEntityId()))));
+        assertEquals(1, userFromDB.getEduIDS().size());
+    }
 
 }

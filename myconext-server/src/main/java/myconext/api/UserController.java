@@ -956,7 +956,7 @@ public class UserController implements UserAuthentication {
                                                                  @RequestBody UpdateLinkedAccountRequest updateLinkedAccountRequest,
                                                                  HttpServletRequest request) {
         User user = userFromAuthentication(authentication);
-        checkSecondFactorConfirmation(user, request);
+        checkSecondFactorConfirmation(authentication, request);
 
         if (updateLinkedAccountRequest.isExternal()) {
             //Only one external linked account is allowed
@@ -1022,7 +1022,7 @@ public class UserController implements UserAuthentication {
                                                           @Valid @RequestBody DeleteService deleteService,
                                                           HttpServletRequest request) {
         User user = userFromAuthentication(authentication);
-        checkSecondFactorConfirmation(user, request);
+        checkSecondFactorConfirmation(authentication, request);
 
         String entityId = deleteService.getServiceProviderEntityId();
         user.getEduIDS().forEach(eduID -> eduID.getServices().removeIf(service ->
@@ -1360,7 +1360,7 @@ public class UserController implements UserAuthentication {
     public ResponseEntity<StatusResponse> deleteUser(Authentication authentication,
                                                       HttpServletRequest request) {
         User user = userFromAuthentication(authentication);
-        checkSecondFactorConfirmation(user, request);
+        checkSecondFactorConfirmation(authentication, request);
 
         userRepository.delete(user);
 
@@ -1370,7 +1370,14 @@ public class UserController implements UserAuthentication {
     }
 
     // Only block destructive action when user has a second factor and this is not confirmed yet
-    private void checkSecondFactorConfirmation(User user, HttpServletRequest request) {
+    private void checkSecondFactorConfirmation(Authentication authentication, HttpServletRequest request) {
+        // The confirmation is held in the HTTP session, which the bearer token authenticated app does not have
+        // Calls from the mobile app currently do not require a confirmation of second factor
+        if (isMobileRequest(authentication)) {
+            return;
+        }
+
+        User user = userFromAuthentication(authentication);
         if (user.loginOptions().contains(LoginOptions.APP.getValue())) {
             if (!Boolean.TRUE.equals(request.getSession().getAttribute("hasConfirmedSecondFactor"))) {
                 throw new ForbiddenException("User has a 2nd factor enabled, confirmation of the 2nd factor is required for this destructive action");
