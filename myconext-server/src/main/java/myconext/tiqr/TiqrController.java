@@ -458,6 +458,18 @@ public class TiqrController implements UserAuthentication {
         return ResponseEntity.ok(startAuthentication);
     }
 
+    @PostMapping("/sp/confirm-step-up")
+    public ResponseEntity<Void> confirmStepUp(HttpServletRequest request) throws TiqrException {
+        String sessionKey = (String) request.getSession().getAttribute(SESSION_KEY);
+        Authentication authentication = tiqrService.authenticationStatus(sessionKey);
+        AuthenticationStatus status = authentication.getStatus();
+        if (!status.equals(AuthenticationStatus.SUCCESS)) {
+            throw new ForbiddenException("Forbidden step-up confirmation, wrong status: " + status);
+        }
+        request.getSession().setAttribute("hasConfirmedSecondFactor", true);
+        return ResponseEntity.noContent().build();
+    }
+
     @Operation(summary = "Poll authentication", description = "Poll Tiqr authentication status for current user")
     @GetMapping("/sp/poll-authentication")
     public ResponseEntity<PollAuthenticationResult> spAuthenticationStatus(org.springframework.security.core.Authentication authentication,

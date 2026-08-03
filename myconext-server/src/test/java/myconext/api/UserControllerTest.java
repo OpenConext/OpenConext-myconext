@@ -13,6 +13,7 @@ import myconext.AbstractIntegrationTest;
 import myconext.model.*;
 import myconext.repository.ChallengeRepository;
 import myconext.security.ACR;
+import myconext.tiqr.SURFSecureID;
 import org.apache.commons.io.IOUtils;
 import org.apache.http.client.CookieStore;
 import org.junit.Test;
@@ -24,6 +25,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.session.data.mongo.MongoIndexedSessionRepository;
+import org.springframework.session.data.mongo.MongoSession;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.util.StringUtils;
 
@@ -51,6 +54,9 @@ public class UserControllerTest extends AbstractIntegrationTest {
 
     @Autowired
     private ChallengeRepository challengeRepository;
+
+    @Autowired
+    private MongoIndexedSessionRepository mongoSessionRepository;
 
     @Test
     public void existingUser() throws IOException {
@@ -538,8 +544,11 @@ public class UserControllerTest extends AbstractIntegrationTest {
     }
 
     @Test
-    public void removeUserLinkedAccounts() {
+    public void removeUserLinkedAccountsWithoutSecondFactor() {
         User user = userRepository.findOneUserByEmail("jdoe@example.com");
+        user.getSurfSecureId().remove(SURFSecureID.RECOVERY_CODE);
+        userRepository.save(user);
+
         assertEquals(2, user.getLinkedAccounts().size());
         LinkedAccount linkedAccount = user.getLinkedAccounts().get(0);
         UpdateLinkedAccountRequest updateLinkedAccountRequest = new UpdateLinkedAccountRequest(linkedAccount.getEduPersonPrincipalName(), null, false, null, "nope");
@@ -557,8 +566,54 @@ public class UserControllerTest extends AbstractIntegrationTest {
     }
 
     @Test
+    public void removeUserLinkedAccountsWithSecondFactor() {
+        User user = userRepository.findOneUserByEmail("jdoe@example.com");
+        assertEquals(2, user.getLinkedAccounts().size());
+        LinkedAccount linkedAccount = user.getLinkedAccounts().get(0);
+        UpdateLinkedAccountRequest updateLinkedAccountRequest = new UpdateLinkedAccountRequest(linkedAccount.getEduPersonPrincipalName(), null, false, null, "nope");
+
+        MongoSession session = mongoSessionRepository.createSession();
+        session.setAttribute("hasConfirmedSecondFactor", true);
+        mongoSessionRepository.save(session);
+        String sessionCookieValue = Base64.getEncoder().encodeToString(session.getId().getBytes());
+
+        given()
+                .when()
+                .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+                .cookie("SESSION", sessionCookieValue)
+                .body(updateLinkedAccountRequest)
+                .put("/myconext/api/sp/institution")
+                .then()
+                .statusCode(HttpStatus.OK.value());
+
+        User userFromDB = userRepository.findOneUserByEmail("jdoe@example.com");
+
+        assertEquals(1, userFromDB.getLinkedAccounts().size());
+    }
+
+    @Test
+    public void removeUserLinkedAccountsWithSecondFactor_NotConfirmed() {
+        User user = userRepository.findOneUserByEmail("jdoe@example.com");
+        LinkedAccount linkedAccount = user.getLinkedAccounts().get(0);
+        UpdateLinkedAccountRequest updateLinkedAccountRequest = new UpdateLinkedAccountRequest(linkedAccount.getEduPersonPrincipalName(), null, false, null, "nope");
+
+        given()
+                .when()
+                .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+                .body(updateLinkedAccountRequest)
+                .put("/myconext/api/sp/institution")
+                .then()
+                .statusCode(HttpStatus.FORBIDDEN.value());
+
+        User userFromDB = userRepository.findOneUserByEmail("jdoe@example.com");
+
+        assertEquals(2, userFromDB.getLinkedAccounts().size());
+    }
+
+    @Test
     public void removeUserExternalLinkedAccount() {
         User user = userRepository.findOneUserByEmail("jdoe@example.com");
+        user.getSurfSecureId().remove(SURFSecureID.RECOVERY_CODE);
         ExternalLinkedAccount externalLinkedAccount = new ExternalLinkedAccount(
                 "subjectID", IdpScoping.idin, true
         );
@@ -633,8 +688,11 @@ public class UserControllerTest extends AbstractIntegrationTest {
     }
 
     @Test
-    public void removeUserService() {
+    public void removeUserServiceWithoutSecondFactor() {
         User user = userRepository.findOneUserByEmail("jdoe@example.com");
+        user.getSurfSecureId().remove(SURFSecureID.RECOVERY_CODE);
+        userRepository.save(user);
+
         String entityID = "http://mock-sp";
 
         assertEquals(2, user.getEduIDS().size());
@@ -654,6 +712,49 @@ public class UserControllerTest extends AbstractIntegrationTest {
         assertFalse(userFromDB.getEduIDS().stream()
                 .anyMatch(val -> val.getServices().stream().anyMatch(service -> entityID.equals(service.getEntityId()))));
         assertEquals(1, userFromDB.getEduIDS().size());
+    }
+
+    @Test
+    public void removeUserServiceWithSecondFactor() {
+        String entityID = "http://mock-sp";
+
+        MongoSession session = mongoSessionRepository.createSession();
+        session.setAttribute("hasConfirmedSecondFactor", true);
+        mongoSessionRepository.save(session);
+        String sessionCookieValue = Base64.getEncoder().encodeToString(session.getId().getBytes());
+
+        given()
+                .when()
+                .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+                .cookie("SESSION", sessionCookieValue)
+                .body(new DeleteService(entityID, new ArrayList<>()))
+                .put("/myconext/api/sp/service")
+                .then()
+                .statusCode(HttpStatus.OK.value());
+
+        User userFromDB = userRepository.findOneUserByEmail("jdoe@example.com");
+
+        assertFalse(userFromDB.getEduIDS().stream()
+                .anyMatch(val -> val.getServices().stream().anyMatch(service -> entityID.equals(service.getEntityId()))));
+        assertEquals(1, userFromDB.getEduIDS().size());
+    }
+
+    @Test
+    public void removeUserServiceWithSecondFactor_NotConfirmed() {
+        String entityID = "http://mock-sp";
+
+        given()
+                .when()
+                .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+                .body(new DeleteService(entityID, new ArrayList<>()))
+                .put("/myconext/api/sp/service")
+                .then()
+                .statusCode(HttpStatus.FORBIDDEN.value());
+
+        User userFromDB = userRepository.findOneUserByEmail("jdoe@example.com");
+
+        assertTrue(userFromDB.getEduIDS().stream()
+                .anyMatch(val -> val.getServices().stream().anyMatch(service -> entityID.equals(service.getEntityId()))));
     }
 
     @Test
@@ -780,7 +881,11 @@ public class UserControllerTest extends AbstractIntegrationTest {
     }
 
     @Test
-    public void deleteUser() {
+    public void deleteUserWithoutSecondFactor() {
+        User user = userRepository.findOneUserByEmail("jdoe@example.com");
+        user.getSurfSecureId().remove(SURFSecureID.RECOVERY_CODE);
+        userRepository.save(user);
+
         given()
                 .when()
                 .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
@@ -791,6 +896,39 @@ public class UserControllerTest extends AbstractIntegrationTest {
 
         Optional<User> optionalUser = userRepository.findUserByEmailAndRateLimitedFalse("jdoe@example.com");
         assertFalse(optionalUser.isPresent());
+    }
+
+    @Test
+    public void deleteUserWithSecondFactor() {
+        MongoSession session = mongoSessionRepository.createSession();
+        session.setAttribute("hasConfirmedSecondFactor", true);
+        mongoSessionRepository.save(session);
+        String sessionCookieValue = Base64.getEncoder().encodeToString(session.getId().getBytes());
+
+        given()
+                .when()
+                .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+                .cookie("SESSION", sessionCookieValue)
+                .delete("/myconext/api/sp/delete")
+                .then()
+                .statusCode(HttpStatus.OK.value())
+                .cookie("SESSION", "");
+
+        Optional<User> optionalUser = userRepository.findUserByEmailAndRateLimitedFalse("jdoe@example.com");
+        assertFalse(optionalUser.isPresent());
+    }
+
+    @Test
+    public void deleteUserWithSecondFactor_NotConfirmed() {
+        given()
+                .when()
+                .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+                .delete("/myconext/api/sp/delete")
+                .then()
+                .statusCode(HttpStatus.FORBIDDEN.value());
+
+        Optional<User> optionalUser = userRepository.findUserByEmailAndRateLimitedFalse("jdoe@example.com");
+        assertTrue(optionalUser.isPresent());
     }
 
     @Test

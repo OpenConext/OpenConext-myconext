@@ -486,6 +486,7 @@
   "UseApp.AccountSuspended.COPY": "Je moet %1$s %2$s wachten voordat je het opnieuw kan proberen.",
   "UseApp.Minutes.COPY": "minuten",
   "UseApp.Minute.COPY": "minuut",
+  "UseApp.ConfirmSecondFactor.COPY": "Bevestig 2e factor",
   "CreateFromInstitution.Title.COPY": "Maak een eduID van je instelling",
   "CreateFromInstitution.Header.COPY": "Je staat op het punt een eduID aan te maken die wordt gekoppeld aan je account van je instelling.",
   "CreateFromInstitution.AlreadyHaveAnEduID.COPY": "Heb je al een eduID-account? <a href=\"%1$s\">Login!</a>",

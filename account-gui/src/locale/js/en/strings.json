@@ -486,6 +486,7 @@
   "UseApp.AccountSuspended.COPY": "You'll have to wait %1$s %2$s before you can try again.",
   "UseApp.Minutes.COPY": "minutes",
   "UseApp.Minute.COPY": "minute",
+  "UseApp.ConfirmSecondFactor.COPY": "Confirm 2nd factor",
   "CreateFromInstitution.Title.COPY": "Create an eduID from your institution",
   "CreateFromInstitution.Header.COPY": "You are about to create an eduID that will be connected to your institution account.",
   "CreateFromInstitution.AlreadyHaveAnEduID.COPY": "Already have an eduID account? <a href=\"%1$s\">Login!</a>",

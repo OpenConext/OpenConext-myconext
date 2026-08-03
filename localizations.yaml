@@ -2382,6 +2382,10 @@ SHARED:
       COPY:
         en: minute
         nl: minuut
+    ConfirmSecondFactor:
+      COPY:
+        en: Confirm 2nd factor
+        nl: Bevestig 2e factor
   CreateFromInstitution:
     Title:
       COPY:
