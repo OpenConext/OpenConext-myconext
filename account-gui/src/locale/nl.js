@@ -1275,42 +1275,79 @@ const nl = {
     "useMagicLinkNoWebAuthn": "Gebruik magische link.",
     "useWebAuth": "Login in met een beveiligingssleutel",
     "useOr": " of ",
+    // Unused translation
     "requestEduIdButton": "Vraag een eduID aan",
+    // Unused translation
     "rememberMe": "Ingelogd blijven",
+    // Unused translation
     "password": "Je wachtwoord",
+    // Unused translation
     "passwordForgotten": "Wachtwoord vergeten of liever een magische link? ",
+    // Unused translation
     "passwordForgottenLink": "Ontvang een e-mail om direct in te loggen.",
+    // Unused translation
     "login": "Login",
+    // Unused translation
     "create": "Aanmaken",
+    // Unused translation
     "newTo": "Voor het eerst bij eduID?",
+    // Unused translation
     "createAccount": "Maak een account aan.",
+    // Unused translation
     "useExistingAccount": "Gebruik een bestaand account",
+    // Unused translation
     "invalidEmail": "Ongeldig e-mailadres",
+    // Unused translation
     "requiredAttribute": "{{attr}} is verplicht",
+    // Unused translation
     "emailInUse1": "Dit e-mailadres is al in gebruik.",
+    // Unused translation
     "emailInUse2": "Probeer een andere, of ",
+    // Unused translation
     "emailInUse3": " login met dit eduID account.",
+    // Unused translation
     "emailForbidden": "Het aanmaken van een eduID-account met deze email is niet toegestaan, neem contact op met <a href=\"mailto:help@eduid.nl\">help@eduid.nl</a> als je denkt dat het e-maildomein geldig is.",
+    // Unused translation
     "emailNotFound1": "We konden geen eduID vinden met deze mail.",
+    // Unused translation
     "emailNotFound2": "Probeer een andere, of ",
+    // Unused translation
     "emailNotFound3": "maak een nieuw eduID account aan.",
+    // Unused translation
     "emailOrPasswordIncorrect": "E-mailadres of wachtwoord is niet juist",
+    // Unused translation
     "institutionDomainNameWarning": "Het lijkt erop dat je een instellings e-mailadres hebt ingevoerd. Houd er rekening mee dat wanneer je niet meer studeert of werkt bij die instelling, je geen toegang meer hebt tot dat e-mail adres.",
+    // Unused translation
     "institutionDomainNameWarning2": "We raden je aan om je persoonlijke e-mailadres te gebruiken voor eduID.",
+    // Unused translation
     "allowedDomainNamesError": "Domeinnaam {{domain}} niet toegestaan.",
+    // Unused translation
     "allowedDomainNamesError2": "eduID is beperkt om alleen te worden gebruikt door toegestane domeinen.",
+    // Unused translation
     "passwordDisclaimer": "Je wachtwoord moet minimaal 15 karakters lang zijn, of minimaal 8 als het een hoofdletter en een getal bevat.",
+    // Unused translation
     "alreadyGuestAccount": "Heb je al een eduID?",
+    // Unused translation
     "usePasswordLink": "Gebruik toch een wachtwoord",
+    // Unused translation
     "useWebAuthnLink": "Of gebruik een beveiligingssleutel",
+    // Unused translation
     "agreeWithTerms": "<span>Ik ga akkoord met <a tabindex='-1' href='https://eduid.nl/gebruiksvoorwaarden/' target='_blank'>de voorwaarden.</a> En ik begrijp <a tabindex='-1' href='https://eduid.nl/privacyverklaring/' target='_blank'>de privacyverklaring</a>.</span>",
+    // Unused translation
     "next": "Volgende",
+    // Unused translation
     "useOtherAccount": "Gebruik een andere login",
+    // Unused translation
     "noAppAccess": "Heb je de app niet bij de hand?",
+    // Unused translation
     "noMailAccess": "Kun je niet bij je email?",
+    // Unused translation
     "forgotPassword": "Wachtwoord vergeten?",
+    // Unused translation
     "useAnother": "Gebruik een andere",
+    // Unused translation
     "optionsLink": "inlogmethode.",
+    // Unused translation
     "sendingEmail": "Email aan het sturen...",
     "termsRequired": "Je moet akkoord gaan met de voorwaarden en privacyverklaring"
   },
@@ -1481,12 +1518,19 @@ const nl = {
     "existingRegistration": "Bestaande registratie",
     "existingRegistrationInfoFirst": "Je kan geen nieuwe registratie starten, omdat je al een registratie hebt. Klik op ",
     "existingRegistrationInfoLast": " om opnieuw in te loggen.",
+    // Unused translation
     "existingRegistrationInfoLink": "link",
+    // Unused translation
     "responseIncorrect": "De code is niet juist.",
+    // Unused translation
     "suspendedResult": "De verficatie van je eduID app is mislukt. ",
+    // Unused translation
     "accountNotSuspended": "Je kan het opnieuw proberen.",
+    // Unused translation
     "accountSuspended": "Je zal {{minutes}} {{plural}} moeten wachten totdat je het opnieuw kan proberen.",
+    // Unused translation
     "minutes": "minuten",
+    // Unused translation
     "minute": "minuut"
   },
   "enrollApp": {
@@ -1651,13 +1695,20 @@ const nl = {
         "please": "Gebruik een van de volgende methodes om te bewijzen wie je bent.",
         "educationalInstitution": "Verifïeer met een Nederlandse onderwijsinstelling",
         "selectInstitution": "Selecteer je instelling",
+        // Unused translation
         "other": "Andere opties...",
+        // Unused translation
         "verifyBank": "Verifïeer met een Nederlandse bank app",
+        // Unused translation
         "selectBank": "Selecteer je bank",
+        // Unused translation
         "verifyEuropeanId": "Verifïeer met een Europees ID",
+        // Unused translation
         "supportEuropean": "We ondersteunen de meederheid van de de nationalie digitale ID's",
+        // Unused translation
         "useEuropean": "gebruik een Europees ID",
         "cantUse": "Neem contact met de Service Desk",
+        // Unused translation
         "help": "Als je geen van deze opties kan gebruiken, bezoek dan onze <a href='https://eduid.nl/help' target='_blank' rel='noreferrer'>support pagina's</a>"
       },
       "bank": {
@@ -1672,12 +1723,16 @@ const nl = {
       "newInstitutionInfo": "De volgende informatie is toegevoegd aan je eduID account en kan nu worden gedeeld.",
       "validatedGivenName": "Geverifïeerde voornaam",
       "validatedFamilyName": "Geverifïeerde achternaam",
+      // Unused translation
       "validatedDayOfBirth": "Geverifïeerde geboortedatum"
     },
     "issuers": {
       "eherkenning": "eIDAS",
+      // Unused translation
       "idin": "Idin",
+      // Unused translation
       "studielink": "Studielink",
+      // Unused translation
       "servicedesk": "Service Desk"
     }
   },

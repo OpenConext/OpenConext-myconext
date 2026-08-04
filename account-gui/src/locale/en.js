@@ -1275,42 +1275,79 @@ const en = {
     "useMagicLinkNoWebAuthn": "Email a magic link.",
     "useWebAuth": "Sign in with a security key",
     "useOr": "or",
+    // Unused translation
     "requestEduIdButton": "Request your eduID",
+    // Unused translation
     "rememberMe": "Stay logged in",
+    // Unused translation
     "password": "Your password",
+    // Unused translation
     "passwordForgotten": "Forgot your password or prefer a magic link? ",
+    // Unused translation
     "passwordForgottenLink": "Receive an email to sign in instantly.",
+    // Unused translation
     "login": "Login",
+    // Unused translation
     "create": "Create",
+    // Unused translation
     "newTo": "New to eduID?",
+    // Unused translation
     "createAccount": " Create an account.",
+    // Unused translation
     "useExistingAccount": "Use existing account",
+    // Unused translation
     "invalidEmail": "Invalid email",
+    // Unused translation
     "requiredAttribute": "{{attr}} is required",
+    // Unused translation
     "emailInUse1": "This email is already in use.",
+    // Unused translation
     "emailInUse2": "Try another, or ",
+    // Unused translation
     "emailInUse3": " login with this eduID account.",
+    // Unused translation
     "emailForbidden": "The creation of an eduID account for this email-domain is denied, please contact <a href=\"mailto:help@eduid.nl\">help@eduid.nl</a> if you think this email-domain is valid.",
+    // Unused translation
     "emailNotFound1": "We could not find an eduID with that email.",
+    // Unused translation
     "emailNotFound2": "Try another, or ",
+    // Unused translation
     "emailNotFound3": "create a new eduID account.",
+    // Unused translation
     "emailOrPasswordIncorrect": "Email or password are incorrect",
+    // Unused translation
     "institutionDomainNameWarning": "It looks like you entered an institutional email address. Please note that when you no longer study at or work for that institution, you can no longer use that email address.",
+    // Unused translation
     "institutionDomainNameWarning2": "We recommend using your personal email address for eduID.",
+    // Unused translation
     "allowedDomainNamesError": "Domain name {{domain}} not allowed.",
+    // Unused translation
     "allowedDomainNamesError2": "eduID is restricted to be used only for allowed domains.",
+    // Unused translation
     "passwordDisclaimer": "Make sure it's at least 15 characters long OR at least 8 characters when including a number and an UpperCase letter.",
+    // Unused translation
     "alreadyGuestAccount": "Already have an eduID?",
+    // Unused translation
     "usePasswordLink": "Type a password anyway",
+    // Unused translation
     "useWebAuthnLink": "Or use a security key",
+    // Unused translation
     "agreeWithTerms": "<span>I agree with <a tabindex='-1' href='https://eduid.nl/terms-of-use/' target='_blank'>the terms of service.</a> I also understand <a tabindex='-1' href='https://eduid.nl/privacy_policy/' target='_blank'>the privacy policy</a>.</span>",
+    // Unused translation
     "next": "Next",
+    // Unused translation
     "useOtherAccount": "Use another account",
+    // Unused translation
     "noAppAccess": "No access to your app?",
+    // Unused translation
     "noMailAccess": "No access to your mail?",
+    // Unused translation
     "forgotPassword": "Forgot your password?",
+    // Unused translation
     "useAnother": "Use another",
+    // Unused translation
     "optionsLink": "sign-in option.",
+    // Unused translation
     "sendingEmail": "Sending email...",
     "termsRequired": "Please agree with the terms and privacy statement"
   },
@@ -1481,12 +1518,19 @@ const en = {
     "existingRegistration": "Existing registration",
     "existingRegistrationInfoFirst": "You can't start a new registration as you already have a registration. Click this ",
     "existingRegistrationInfoLast": " to try to login again.",
+    // Unused translation
     "existingRegistrationInfoLink": "link",
+    // Unused translation
     "responseIncorrect": "The response is invalid.",
+    // Unused translation
     "suspendedResult": "The verification from your eduID app failed. ",
+    // Unused translation
     "accountNotSuspended": "You can try again.",
+    // Unused translation
     "accountSuspended": "You'll have to wait {{minutes}} {{plural}} before you can try again.",
+    // Unused translation
     "minutes": "minutes",
+    // Unused translation
     "minute": "minute"
   },
   "enrollApp": {
@@ -1651,13 +1695,20 @@ const en = {
         "please": "Use one of the following services to prove to us who you are.",
         "educationalInstitution": "Verify via a Dutch educational institution",
         "selectInstitution": "Select your institution",
+        // Unused translation
         "other": "Other options...",
+        // Unused translation
         "verifyBank": "Verify with a Dutch bank app",
+        // Unused translation
         "selectBank": "Select your bank",
+        // Unused translation
         "verifyEuropeanId": "Verify with a European ID",
+        // Unused translation
         "supportEuropean": "We support the majority of National digital IDs",
+        // Unused translation
         "useEuropean": "Use a European ID",
         "cantUse": "Contact the Service Desk",
+        // Unused translation
         "help": "If you can't use any of the these methods, please visit our <a href='https://eduid.nl/help' target='_blank' rel='noreferrer'>support pages</a>"
       },
       "bank": {
@@ -1672,12 +1723,16 @@ const en = {
       "newInstitutionInfo": "The following information has been added to your eduID and can now be shared.",
       "validatedGivenName": "Verified given name",
       "validatedFamilyName": "Verified family name",
+      // Unused translation
       "validatedDayOfBirth": "Verified date of birth"
     },
     "issuers": {
       "eherkenning": "eIDAS",
+      // Unused translation
       "idin": "Idin",
+      // Unused translation
       "studielink": "Studielink",
+      // Unused translation
       "servicedesk": "Service Desk"
     }
   },

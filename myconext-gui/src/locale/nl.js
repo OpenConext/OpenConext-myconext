@@ -1313,56 +1313,94 @@ const nl = {
     "familyName": "Achternaam",
     "validatedFamilyName": "Geverifieerde achternaam",
     "validatedDayOfBirth": "Geverifieerde geboortedatum",
+    // Unused translation
     "validatedAffiliations": "Geverifieerde affiliations",
+    // Unused translation
     "linkedAccounts": "Je rollen",
+    // Unused translation
     "addInstitution": "Voeg een organisatie toe",
+    // Unused translation
     "addInstitutionInfo": "Door een organisatie toe te voegen, bewijs je dat je een student of medewerker bent van die organisatie. Dit verifïeert ook je eduID.",
+    // Unused translation
     "addInstitutionAction": "Voeg je organisatie toe door in te loggen",
+    // Unused translation
     "proceedConext": "Voeg dit toe via SURFconext",
+    // Unused translation
     "proceedVerify": "Voeg dit toe via SURFconext of een andere Identity Provider",
+    // Unused translation
     "validated": "Gevalideerde informatie",
+    // Unused translation
     "firstAndLastName": "Voor- en achternaam",
+    // Unused translation
     "firstAndLastNameInfo": "Jouw voor- en achternaam zijn nog niet geverifieerd door een derde partij.",
+    // Unused translation
     "verify": "Verifïeer",
+    // Unused translation
     "student": "Bewijs van studeren",
+    // Unused translation
     "studentInfo": "Je hebt nog niet bewezen dat je in Nederland een studie volgt.",
+    // Unused translation
     "prove": "Bewijs",
+    // Unused translation
     "trusted": "Koppeling met vertrouwde partij",
+    // Unused translation
     "trustedInfo": "Je eduID account is nog niet gekoppeld aan een vertrouwde partij.",
+    // Unused translation
     "link": "Koppel",
+    // Unused translation
     "institution": "Instelling",
+    // Unused translation
     "affiliations": "Betrekking(en)",
+    // Unused translation
     "expires": "Koppeling verloopt",
+    // Unused translation
     "expiresValue": "{{date}}",
+    // Unused translation
     "verifiedAt": "Geverifieerd door <strong>{{name}}</strong> op {{date}}",
+    // Unused translation
     "proceed": "Doorgaan",
+    // Unused translation
     "verified": "Geverifieerd",
+    // Unused translation
     "notVerified": "Niet geverifieerd",
     "editable": "Bewerkbaar door jou",
     "nonEditable": "Geverifieerd door {{name}}",
+    // Unused translation
     "verifiedBy": "Geverifieerd door {{name}}",
+    // Unused translation
     "validUntil": "Geldig tot",
     "from": "Van {{name}}",
     "verifyFirstAndLastName": {
       "addInstitution": "Instelling toevoegen",
       "addInstitutionConfirmation": "Als je doorgaat word je gevraagd in te loggen via de onderwijsinstelling die je wilt koppelen. Selecteer eerst welke instelling je wilt koppelen en log daarna in.<br/> <br/>Nadat je succesvol bent ingelogd kom je hier weer terug."
     },
+    // Unused translation
     "remove": "Verwijder",
+    // Unused translation
     "atInstitution": "Bij {{name}}",
+    // Unused translation
     "studentRole": "Student",
+    // Unused translation
     "preferInstitution": "Verifieer je instelling",
+    // Unused translation
     "preferredInstitutionInfo": "We hebben ook nieuwe informatie gekregen. Wil je deze gebruiken voor je eduID?",
+    // Unused translation
     "personalInfo": "Je persoonlijke informatie",
     "preferred": "{{name}} is nu de bron van je persoonsinformatie",
     "expired": "Verlopen",
+    // Unused translation
     "newInstitutionTitle": "is succesvol benaderd",
+    // Unused translation
     "newInstitutionInfo": "De volgende informatie is toegevoegd aan jouw eduID account en kan nu worden gedeeld.",
+    // Unused translation
     "newInstitutionInfoAttributes": "We hebben de volgende informatie ontvangen wat we gaan gebruiken voor je eduID.",
+    // Unused translation
     "ok": "Ga door",
     "yes": "Ja, graag",
     "no": "Nee, bedankt",
     "eppn": "EPPN",
     "subjectId": "Subject ID",
+    // Unused translation
     "manageInformation": "Beheer je geverifieerde informatie",
     "noValidInformation": "{{name}} heeft geen valide informatie opgeleverd"
   },
@@ -1596,6 +1634,7 @@ const nl = {
     "passwordResetSendAgain": "Stuur een e-mail om mijn wachtwoord opnieuw in te stellen.",
     "forgotPasswordConfirmation": "Wachtwoord vergeten? Druk hieronder op 'Bevestigen' om direct een e-mail te ontvangen waarmee je je huidige wachtwoord opnieuw kunt instellen.",
     "outstandingEmailReset": "Openstaand wijzigingsverzoek voor e-mail",
+    // Unused translation
     "outstandingEmailResetConfirmation": "Je hebt een openstaande bevestigingslink voor een nieuwe e-mail. Deze link is niet langer geldig als je dit verzoek voor een vergeten wachtwoord bevestigt.",
     "flash": {
       "passwordLink": "Een e-mail is verstuurd naar {{name}} om je wachtwoord opnieuw in te stellen."
@@ -1748,10 +1787,15 @@ const nl = {
     "timeOutInfoLast": " om het opnieuw te proberen.",
     "timeOutInfoLink": "link",
     "responseIncorrect": "De code is niet juist.",
+    // Unused translation
     "suspendedResult": "De verficatie van je eduID app is mislukt. ",
+    // Unused translation
     "accountNotSuspended": "Je kan het opnieuw proberen.",
+    // Unused translation
     "accountSuspended": "Je zal {{minutes}} {{plural}} moeten wachten totdat je het opnieuw kan proberen.",
+    // Unused translation
     "minutes": "minuten",
+    // Unused translation
     "minute": "minuut"
   },
   "createFromInstitution": {
@@ -1777,7 +1821,9 @@ const nl = {
     "institutionDomainNameWarning2": "We raden je aan om je persoonlijke e-mailadres te gebruiken voor eduID.",
     "allowedDomainNamesError": "Domeinnaam {{domain}} niet toegestaan.",
     "allowedDomainNamesError2": "eduID is beperkt om alleen te worden gebruikt door toegestane domeinen.",
+    // Unused translation
     "agreeWithTerms": "<span>Ik ga akkoord met <a tabindex='-1' href='https://eduid.nl/gebruiksvoorwaarden/' target='_blank'>de voorwaarden.</a> En ik begrijp <a tabindex='-1' href='https://eduid.nl/privacyverklaring/' target='_blank'>de privacyverklaring</a>.</span>",
+    // Unused translation
     "requestEduIdButton": "Vraag je eduID aan"
   },
   "pollFromInstitution": {
@@ -1820,6 +1866,7 @@ const nl = {
         "supportEuropean": "Dit kan met de inlogmiddelen van België, Denemarken, Duitsland, Estland, Italië, Kroatië, Litouwen, Letland, Liechtenstein, Luxemburg, Malta, Oostenrijk, Polen, Portugal, Slowakije, Slovenië, Spanje, Tsjechië en Zweden",
         "useEuropean": "Selecteer een Europees ID",
         "cantUse": "Neem contact met de Service Desk",
+        // Unused translation
         "help": "Kun je deze opties niet gebruiken, bezoek dan onze <a href='https://eduid.nl/help' target='_blank' rel='noreferrer'>support pagina's</a>"
       },
       "bank": {
@@ -1832,14 +1879,23 @@ const nl = {
     "issuers": {
       "eherkenning": "eIDAS",
       "idin": "Idin",
+      // Unused translation
       "studielink": "Studielink",
+      // Unused translation
       "servicedesk": "Service Desk",
+      // Unused translation
       "abn amro": "ABN AMRO",
+      // Unused translation
       "asn bank": "ASN Bank",
+      // Unused translation
       "bunq": "Bunq",
+      // Unused translation
       "ing": "ING",
+      // Unused translation
       "rabobank": "Rabobank",
+      // Unused translation
       "regiobank": "RegioBank",
+      // Unused translation
       "sns": "SNS"
     }
   },

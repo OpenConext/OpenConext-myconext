@@ -1313,56 +1313,94 @@ const en = {
     "familyName": "Last name",
     "validatedFamilyName": "Verified family name",
     "validatedDayOfBirth": "Verified date of birth",
+    // Unused translation
     "validatedAffiliations": "Verified affiliations",
+    // Unused translation
     "linkedAccounts": "Your role(s)",
+    // Unused translation
     "addInstitution": "Add an organisation",
+    // Unused translation
     "addInstitutionInfo": "By adding an organisation to your eduID, you prove that you are a student or employee of that organisation. This also verifies your eduID.",
+    // Unused translation
     "addInstitutionAction": "Add your organisation by logging in",
+    // Unused translation
     "proceedConext": "Proceed to add this via SURFconext",
+    // Unused translation
     "proceedVerify": "Proceed to add this via SURFconext or another Identity Provider",
+    // Unused translation
     "validated": "Validated information",
+    // Unused translation
     "firstAndLastName": "First and last name",
+    // Unused translation
     "firstAndLastNameInfo": "Your first and last name are not yet verified by a third party",
+    // Unused translation
     "verify": "Verify",
+    // Unused translation
     "student": "Proof of student",
+    // Unused translation
     "studentInfo": "You have not yet proven that you are a student in the Netherlands.",
+    // Unused translation
     "prove": "Prove",
+    // Unused translation
     "trusted": "Link with third party",
+    // Unused translation
     "trustedInfo": "You eduID account is not yet linked to a third party",
+    // Unused translation
     "link": "Link",
+    // Unused translation
     "institution": "Institution",
+    // Unused translation
     "affiliations": "Affiliation(s)",
+    // Unused translation
     "expires": "Link expires",
+    // Unused translation
     "expiresValue": "{{date}}",
+    // Unused translation
     "verifiedAt": "Verified by <strong>{{name}}</strong> on {{date}}",
+    // Unused translation
     "proceed": "Proceed",
+    // Unused translation
     "verified": "Verified",
+    // Unused translation
     "notVerified": "Not verified",
     "editable": "Editable by you",
     "nonEditable": "Verified by {{name}}",
+    // Unused translation
     "verifiedBy": "Verified by {{name}}",
+    // Unused translation
     "validUntil": "Valid until",
     "from": "From {{name}}",
     "verifyFirstAndLastName": {
       "addInstitution": "Add institution",
       "addInstitutionConfirmation": "When you proceed you will be asked to login at the institution you want to link to your eduID. First, select which institution you want to connect; then, login at that institution.<br/><br/>After a successful login you will come back here."
     },
+    // Unused translation
     "remove": "Remove",
+    // Unused translation
     "atInstitution": "At {{name}}",
+    // Unused translation
     "studentRole": "Student",
+    // Unused translation
     "preferInstitution": "Verify your identity",
+    // Unused translation
     "personalInfo": "Your personal info",
+    // Unused translation
     "preferredInstitutionInfo": "We also have received new information. Do you want to use this for your eduID?",
     "preferred": "{{name}} is now your preferred source of information",
     "expired": "Expired",
+    // Unused translation
     "newInstitutionTitle": "was contacted successfully",
+    // Unused translation
     "newInstitutionInfo": "The following information has been added to your eduID and can now be shared.",
+    // Unused translation
     "newInstitutionInfoAttributes": "We have received the following information which we will use for your eduID.",
+    // Unused translation
     "ok": "Continue",
     "yes": "Yes, please",
     "no": "No, thanks",
     "eppn": "EPPN",
     "subjectId": "Subject ID",
+    // Unused translation
     "manageInformation": "Manage your verified information",
     "noValidInformation": "{{name}} has not provided any valid information"
   },
@@ -1596,6 +1634,7 @@ const en = {
     "passwordResetSendAgain": "Send an email to reset my password.",
     "forgotPasswordConfirmation": "Forgot your password? Press 'Confirm' below to instantly receive an email with a link to reset your current password.",
     "outstandingEmailReset": "Outstanding email change request",
+    // Unused translation
     "outstandingEmailResetConfirmation": "You have an outstanding new email confirmation link. This link will no longer be valid if you confirm your password forgotten request.",
     "flash": {
       "passwordLink": "An email has been sent to {{name}} with a link to reset your password"
@@ -1748,10 +1787,15 @@ const en = {
     "timeOutInfoLast": " to try again.",
     "timeOutInfoLink": "link",
     "responseIncorrect": "The response is invalid.",
+    // Unused translation
     "suspendedResult": "The verification from your eduID app failed. ",
+    // Unused translation
     "accountNotSuspended": "You can try again.",
+    // Unused translation
     "accountSuspended": "You'll have to wait {{minutes}} {{plural}} before you can try again.",
+    // Unused translation
     "minutes": "minutes",
+    // Unused translation
     "minute": "minute"
   },
   "createFromInstitution": {
@@ -1777,7 +1821,9 @@ const en = {
     "institutionDomainNameWarning2": "We recommend using your personal email address for eduID.",
     "allowedDomainNamesError": "Domain name {{domain}} not allowed.",
     "allowedDomainNamesError2": "eduID is restricted to be used only for allowed domains.",
+    // Unused translation
     "agreeWithTerms": "<span>I agree with <a tabindex='-1' href='https://eduid.nl/terms-of-use/' target='_blank'>the terms of service.</a> I also understand <a tabindex='-1' href='https://eduid.nl/privacy_policy/' target='_blank'>the privacy policy</a>.</span>",
+    // Unused translation
     "requestEduIdButton": "Request your eduID"
   },
   "pollFromInstitution": {
@@ -1820,6 +1866,7 @@ const en = {
         "supportEuropean": "We accept the ID's of Austria, Belgium, Croatia, Czech Republic, Denmark, Estonia, Germany, Italy, Latvia, Liechtenstein, Lithuania, Luxembourg, Malta, Poland, Portugal, Slovakia, Slovenia, Spain and Sweden.",
         "useEuropean": "Use a European ID",
         "cantUse": "Contact the Service Desk",
+        // Unused translation
         "help": "If you can't use any of the these methods, please visit our <a href='https://eduid.nl/help' target='_blank' rel='noreferrer'>support pages</a>"
       },
       "bank": {
@@ -1832,14 +1879,23 @@ const en = {
     "issuers": {
       "eherkenning": "eIDAS",
       "idin": "Idin",
+      // Unused translation
       "studielink": "Studielink",
+      // Unused translation
       "servicedesk": "Service Desk",
+      // Unused translation
       "abn amro": "ABN AMRO",
+      // Unused translation
       "asn bank": "ASN Bank",
+      // Unused translation
       "bunq": "Bunq",
+      // Unused translation
       "ing": "ING",
+      // Unused translation
       "rabobank": "Rabobank",
+      // Unused translation
       "regiobank": "RegioBank",
+      // Unused translation
       "sns": "SNS"
     }
   },
