@@ -42,7 +42,7 @@
             mount.addEventListener("frc:widget.complete", () => captchaShowWarning = false);
 
             const sdk = new FriendlyCaptchaSDK();
-            const language = I18n.currentLocale();
+            const language = I18n.locale;
             captchaWidget = sdk.createWidget({
                 element: mount,
                 sitekey: $conf.captchaSiteKey,

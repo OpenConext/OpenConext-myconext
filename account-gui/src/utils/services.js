@@ -2,9 +2,9 @@ import I18n from "../locale/I18n";
 
 export const institutionName = linkedAccount => {
   if (linkedAccount.external) {
-    return I18n.t(`verify.issuers.${linkedAccount.issuer.name}`,{}, linkedAccount.issuer.name);
+    return I18n.t(`verify.issuers.${linkedAccount.issuer.name}`, {defaultValue: linkedAccount.issuer.name});
   }
-  if (I18n.currentLocale() === "en") {
+  if (I18n.locale === "en") {
     return linkedAccount.displayNameEn || linkedAccount.displayNameNl || linkedAccount.schacHomeOrganization;
   }
   return linkedAccount.displayNameNl || linkedAccount.displayNameEn || linkedAccount.schacHomeOrganization;

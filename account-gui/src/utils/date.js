@@ -2,7 +2,7 @@ import I18n from "../locale/I18n";
 
 export function dateFromEpoch(epochMilli, includeTime = false) {
     const options = {month: "long", day: "numeric", year: "numeric"};
-    const locale = I18n.currentLocale();
+    const locale = I18n.locale;
     const dateTimeFormat = new Intl.DateTimeFormat(`${locale}-${locale.toUpperCase()}`, options)
     if (!includeTime) {
         const startOfDay = new Date(epochMilli - (epochMilli % 86400000));

@@ -70,7 +70,7 @@
             if (["nl", "en"].indexOf(locale) < 0) {
                 locale = "en";
             }
-            I18n.changeLocale(locale);
+            I18n.locale = locale;
 
             $user.knownUser = Cookies.get(cookieNames.USERNAME);
             $user.email = $user.knownUser || "";

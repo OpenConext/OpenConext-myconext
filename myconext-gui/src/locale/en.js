@@ -10,7 +10,7 @@ const en = {
     "Account": "Account"
   },
   "Start": {
-    "Hi": "Hi %1$s!",
+    "Hi": "Hi {{name}}!",
     "Manage": "Manage your personal info, your privacy, and the security of your eduID."
   },
   "EnvironmentSwitcher": {
@@ -72,8 +72,8 @@ const en = {
     "Title": "Your verified information",
     "Subtitle": "This is an overview of your information verified by educational or research institutions.",
     "ExplainIcon": "This icon indicates that your eduID uses this information.",
-    "FromInstitution": "From %1$s",
-    "AtInstitution": "At %1$s",
+    "FromInstitution": "From {{name}}",
+    "AtInstitution": "At {{name}}",
     "ReceivedOn": "Received on ",
     "ValidUntil": "Valid until ",
     "RemoveThisInformation": "Remove this information",
@@ -138,13 +138,13 @@ const en = {
     "TrustedInfo": "You eduID is not yet connected to a official party",
     "Link": "Connect",
     "Institution": "Educational or research institution",
-    "InstitutionAt": "At %1$s",
+    "InstitutionAt": "At {{name}}",
     "Employee": "Employee",
     "Affiliations": "Role(s)",
     "Expires": "Connection expires",
-    "ExpiresValue": "%1$s",
-    "VerifiedBy": "Verified by %1$s ",
-    "VerifiedOn": "on %1$s",
+    "ExpiresValue": "{{date}}",
+    "VerifiedBy": "Verified by {{name}} ",
+    "VerifiedOn": "on {{date}}",
     "Proceed": "Proceed",
     "VerifyFirstAndLastName": {
       "AddInstitution": "Verify name",
@@ -164,9 +164,9 @@ const en = {
       "AccountNotConnected": "Account not connected!",
       "VerificationFailed": "Verification failed!"
     },
-    "Info": "Your eduID could not be connected. The account with which you just logged in, is already connected to a different eduID: %1$s.",
+    "Info": "Your eduID could not be connected. The account with which you just logged in, is already connected to a different eduID: {{email}}.",
     "InfoExternalAccountWithoutEmail": "Your eduID could not be verified. The external account with which you just logged in, is already linked to a different eduID account.",
-    "InfoExternalAccountWithEmail": "Your eduID could not be verified. The external account with which you just logged in, is already linked to a different eduID account: %1$s",
+    "InfoExternalAccountWithEmail": "Your eduID could not be verified. The external account with which you just logged in, is already linked to a different eduID account: {{email}}",
     "RetryButton": "Retry"
   },
   "Edit": {
@@ -180,8 +180,8 @@ const en = {
     "Back": "/personal"
   },
   "Email": {
-    "OpenLinkToConfirm": "Press the link in the email to confirm your change. The email was sent to %1$s.",
-    "UpdateError": "We couldn't confirm the change to your new email address: %1$s.",
+    "OpenLinkToConfirm": "Press the link in the email to confirm your change. The email was sent to {{email}}.",
+    "UpdateError": "We couldn't confirm the change to your new email address: {{email}}.",
     "Title": {
       "Edit": "Edit",
       "EmailAddress": "Email address"
@@ -192,9 +192,9 @@ const en = {
     "Update": "Request",
     "Cancel": "Cancel",
     "Save": "Save",
-    "Updated": "An email has been sent to %1$s",
-    "UpdatedVerified": "A verification email has been sent to %1$s",
-    "Confirmed": "Your email address has been changed to %1$s",
+    "Updated": "An email has been sent to {{email}}",
+    "UpdatedVerified": "A verification email has been sent to {{email}}",
+    "Confirmed": "Your email address has been changed to {{email}}",
     "Back": "/personal",
     "EmailEquality": "Your new email address is the same as your current email",
     "DuplicateEmail": "This email address is already in use.",
@@ -207,7 +207,7 @@ const en = {
       "ContactedSuccessfully": "was connected successfully",
       "ContactedError": "could not be connected",
       "FailReason": {
-        "AlreadyLinked": "Reason: The account is already connected: %1$s",
+        "AlreadyLinked": "Reason: The account is already connected: {{account}}",
         "SessionExpired": "Reason: Your session expired."
       }
     },
@@ -260,7 +260,7 @@ const en = {
     },
     "NameDoesNotMatchError": {
       "Title": "Name mismatch",
-      "Description": "The name you have typed does not match the name in your profile: \"%1$s\""
+      "Description": "The name you have typed does not match the name in your profile: \"{{name}}\""
     },
     "DeleteError": {
       "Title": "Your eduID couldn't be deleted"
@@ -283,8 +283,8 @@ const en = {
     "AddPassword": "Add a password",
     "PasswordPlaceholder": "• • • • • • • • • •",
     "ChangePassword": "Password",
-    "PasswordActivated": "Activated on %1$s",
-    "CredentialActivated": "%1$s: Activated on %2$s",
+    "PasswordActivated": "Activated on {{date}}",
+    "CredentialActivated": "{{name}}: Activated on {{date}}",
     "TwoFAKey": "Login with app",
     "ProvidedBy": "Provided by",
     "NotAddedYet": "Not added to your eduID yet",
@@ -310,7 +310,7 @@ const en = {
       "FCM_DIRECT": "Android",
       "AppCode": "App code",
       "LastLogin": "Last login",
-      "Activated": "Activated on %1$s",
+      "Activated": "Activated on {{date}}",
       "DateTimeOn": "on",
       "BackupMethod": "Recovery method",
       "Sms": "SMS",
@@ -396,7 +396,7 @@ const en = {
   },
   "Home": {
     "Home": "Home",
-    "Welcome": "Welcome %1$s",
+    "Welcome": "Welcome {{name}}",
     "DataAndActivity": "Activity",
     "Personal": "Personal info",
     "Security": "Security",
@@ -407,7 +407,7 @@ const en = {
     "Settings": "Settings",
     "Links": {
       "Teams": "Teams",
-      "TeamsHref": "https://teams.%1$s"
+      "TeamsHref": "https://teams.{{baseDomain}}"
     }
   },
   "Account": {
@@ -470,7 +470,7 @@ const en = {
   },
   "RevokeAccessToken": {
     "Title": "Revoke access",
-    "Description": "Are you sure you want to revoke the API access for %1$s?",
+    "Description": "Are you sure you want to revoke the API access for {{name}}?",
     "Button": {
       "Confirm": "Confirm",
       "Cancel": "Cancel"
@@ -479,31 +479,31 @@ const en = {
   },
   "Institution": {
     "Title": "Connected institution",
-    "Info": "This institution was connected to your eduID on %1$s at %2$s:%3$s",
+    "Info": "This institution was connected to your eduID on {{date}} at {{hours}}:{{minutes}}",
     "Name": "Name of educational or research institution",
     "Eppn": "Identifier at institution",
     "DisplayName": "Display name",
     "Affiliations": "Role(s) at institution",
     "Expires": "This connection expires at",
-    "ExpiresValue": "%1$s",
+    "ExpiresValue": "{{date}}",
     "Delete": "Remove connection",
     "Cancel": "Cancel",
-    "Deleted": "The connection with your institution %1$s has been removed",
+    "Deleted": "The connection with your institution {{name}} has been removed",
     "Back": "/institutions",
     "DeleteInstitution": "Delete institution",
     "DeleteInstitutionConfirmation": "Are you sure you want to delete the connection with this institution?<br/><br/>Some services require that you your eduID is connected to an educational institution. You may be asked to connect an institution again if you use such a service in the future."
   },
   "Credential": {
     "Title": "Edit passkey",
-    "Info": "You added this passkey on %1$s at %2$s:%3$s",
+    "Info": "You added this passkey on {{date}} at {{hours}}:{{minutes}}",
     "Name": "Passkey name",
     "Cancel": "Cancel",
     "Update": "Update",
-    "Deleted": "Your passkey %1$s has been deleted",
-    "Updated": "Your passkey %1$s has been updated",
+    "Deleted": "Your passkey {{name}} has been deleted",
+    "Updated": "Your passkey {{name}} has been updated",
     "Back": "/weauthn",
     "DeleteCredential": "Delete passkey",
-    "DeleteCredentialConfirmation": "Are you sure you want to delete your passkey %1$s? The passkey will be deleted from your eduID, but will not be removed from your browser and / or Yubikey device."
+    "DeleteCredentialConfirmation": "Are you sure you want to delete your passkey {{name}}? The passkey will be deleted from your eduID, but will not be removed from your browser and / or Yubikey device."
   },
   "Password": {
     "AddTitle": "Add password",
@@ -532,7 +532,7 @@ const en = {
     "OutstandingEmailReset": "Outstanding email address change request",
     "OutstandingEmailResetConfirmation": "You recently received a code to confirm a new email address. This code will no longer be valid. You will receive a new code to confirm your change password request.",
     "Flash": {
-      "PasswordLink": "An email has been sent to %1$s with a link to reset your password"
+      "PasswordLink": "An email has been sent to {{name}} with a link to reset your password"
     }
   },
   "Webauthn": {
@@ -570,7 +570,7 @@ const en = {
     "Confirm": "Confirm"
   },
   "Format": {
-    "CreationDate": "%1$s at %2$s:%3$s"
+    "CreationDate": "{{date}} at {{hours}}:{{minutes}}"
   },
   "GetApp": {
     "Header": "Download the eduID app",
@@ -663,7 +663,7 @@ const en = {
     "ResponseIncorrect": "The code is invalid.",
     "SuspendedResult": "The verification from your eduID app failed. ",
     "AccountNotSuspended": "You can try again.",
-    "AccountSuspended": "You'll have to wait %1$s %2$s before you can try again.",
+    "AccountSuspended": "You'll have to wait {{minutes}} {{plural}} before you can try again.",
     "Minutes": "minutes",
     "Minute": "minute",
     "ConfirmSecondFactor": "Confirm 2nd factor"
@@ -671,14 +671,14 @@ const en = {
   "CreateFromInstitution": {
     "Title": "Create an eduID from your institution",
     "Header": "You are about to create an eduID that will be connected to your institution account.",
-    "AlreadyHaveAnEduID": "Already have an eduID account? <a href=\"%1$s\">Login!</a>",
+    "AlreadyHaveAnEduID": "Already have an eduID account? <a href=\"{{location}}\">Login!</a>",
     "Info": "When you proceed you will be asked to login at the institution you want to connect to your eduID. After a successful login you will come back here.",
     "StartFlow": "Start registration",
     "Welcome": "Your eduID has been created",
     "WelcomeExisting": "Your eduID has been connected to your insitutional account"
   },
   "LinkFromInstitution": {
-    "Header": "Hi %1$s",
+    "Header": "Hi {{name}}",
     "Info": "You have successfully logged in at your institution. Please enter your personal email address now. This will be the email address eduID uses.",
     "Email": "Email address",
     "EmailPlaceholder": "e.g. user@gmail.com",
@@ -689,7 +689,7 @@ const en = {
     "InvalidEmail": "Invalid email address",
     "InstitutionDomainNameWarning": "This looks like a school or work email. Use a <b>personal email</b>, because that one can still be used when you switch school or job.",
     "InstitutionDomainNameWarning2": "We recommend using your personal email address for eduID.",
-    "AllowedDomainNamesError": "Domain name %1$s not allowed.",
+    "AllowedDomainNamesError": "Domain name {{domain}} not allowed.",
     "AllowedDomainNamesError2": "eduID is restricted to be used only for allowed domains.",
     "AgreeWithTerms": "<span>I agree with <a tabindex='-1' href='https://eduid.nl/terms-of-use/' target='_blank'>the terms of service</a> and I've read <a tabindex='-1' href='https://eduid.nl/privacy' target='_blank'>the privacy policy</a>.</span>",
     "RequestEduIdButton": "Make an eduID"
@@ -753,7 +753,7 @@ const en = {
     "CreateAccount": " Create an account.",
     "UseExistingAccount": "Use existing account",
     "InvalidEmail": "Invalid email",
-    "RequiredAttribute": "%1$s is required",
+    "RequiredAttribute": "{{attr}} is required",
     "EmailInUse1": "This email is already in use.",
     "EmailInUse2": "Try another, or ",
     "EmailInUse3": " login with this eduID account.",
@@ -764,7 +764,7 @@ const en = {
     "EmailOrPasswordIncorrect": "Email address or password are incorrect",
     "InstitutionDomainNameWarning": "This appears to be an email address from an educational or research institution. Note: if, in the future, you no longer study or work at this institution, you will lose access to this email address.",
     "InstitutionDomainNameWarning2": "We recommend using your personal email address for eduID.",
-    "AllowedDomainNamesError": "E-mail address %1$s not allowed.",
+    "AllowedDomainNamesError": "E-mail address {{domain}} not allowed.",
     "AllowedDomainNamesError2": "eduID is restricted to be used only for allowed e-mail addresses.",
     "PasswordDisclaimer": "Make sure it's at least 15 characters long. Or at least 8 characters when including a number and an UpperCase letter.",
     "AlreadyGuestAccount": "Already have an eduID?",
@@ -778,7 +778,7 @@ const en = {
     "ForgotPassword": "Forgot your password?",
     "UseAnother": "Use another",
     "OptionsLink": "login option.",
-    "RateLimited": "You are still suspended. Try again in %1$s minutes.",
+    "RateLimited": "You are still suspended. Try again in {{minutes}} minutes.",
     "TryOtherEmail": "Try another email address",
     "LoginWithThisEmail": "Log in with this email address",
     "OrDivider": "or"
@@ -822,12 +822,12 @@ const en = {
   },
   "ConfirmStepup": {
     "Header": "Thanks!",
-    "Proceed": "Go to %1$s",
+    "Proceed": "Go to {{name}}",
     "ConditionMet": "All conditions are met."
   },
   "Stepup": {
     "Header": "Almost there",
-    "Info": "To continue to <strong>%1$s</strong>, just complete the following:",
+    "Info": "To continue to <strong>{{name}}</strong>, just complete the following:",
     "Link": "Verify this via SURFconext",
     "LinkExternalValidation": "Verify this via ReadID"
   },
@@ -871,14 +871,14 @@ const en = {
   "AffiliationMissing": {
     "Header": "Account is connected, but…",
     "Info": "Your eduID is successfully connected, however the institution you choose did not provide the correct affiliation.",
-    "Proceed": "You can try to connect to another institution or proceed to %1$s.",
+    "Proceed": "You can try to connect to another institution or proceed to {{name}}.",
     "ProceedLink": "Proceed",
     "RetryLink": "Retry"
   },
   "ValidNameMissing": {
     "Header": "Account is connected, but…",
     "Info": "Your eduID is successfully connected, however the institution you choose did not provide a valid name.",
-    "Proceed": "You can try to connect to another institution or proceed to %1$s.",
+    "Proceed": "You can try to connect to another institution or proceed to {{name}}.",
     "ProceedLink": "Proceed",
     "RetryLink": "Retry"
   },
@@ -915,7 +915,7 @@ const en = {
     "No": "I refuse",
     "YesLink": "/proceed",
     "Yes": "Proceed",
-    "Warning": "We discourage to log in without the eduID app. The service %1$s will not receive your attributes.",
+    "Warning": "We discourage to log in without the eduID app. The service {{service}} will not receive your attributes.",
     "WarningTitle": "Get the eduID app",
     "ConfirmLabel": "Get the eduID app",
     "CancelLabel": "I still refuse"
@@ -961,7 +961,7 @@ const en = {
   "Generic": {
     "RequestError": {
       "Title": "Cannot complete request",
-      "Description": "Unexpected error: %1$s, please retry.",
+      "Description": "Unexpected error: {{error}}, please retry.",
       "CloseButton": "Close"
     }
   },
@@ -1058,7 +1058,7 @@ const en = {
     },
     "DeactivationError": {
       "Title": "Failed to request deactivation code",
-      "Description": "Could not request deactivation code for known phone number: %1$s."
+      "Description": "Could not request deactivation code for known phone number: {{phoneNumber}}."
     },
     "EmailInUse": {
       "Title": "E-mail address already in use",
@@ -1081,10 +1081,10 @@ const en = {
       "Description": "Could not delete account",
       "NameMismatchDescription": "Typed name does not match known name"
     },
-    "AccountCreateError": "Could not create eduid account for email %1$s.",
+    "AccountCreateError": "Could not create eduid account for email {{email}}.",
     "EmailDomainForbidden": {
       "Title": "Email domain is forbidden",
-      "Description": "The email domain used in %1$s is not allowed."
+      "Description": "The email domain used in {{email}} is not allowed."
     },
     "GenerateControlCodeError": "Could not generate control code",
     "SendOneTimeCodeError": "Could not send one-time code",
@@ -1105,7 +1105,7 @@ const en = {
         "Description": "No authorization state retained - reauthorization required.",
         "TokenFailedDescription": {
           "Generic": "Authorization token code exchange failed.",
-          "WithException": "Authorization code exchange failed: %1$s."
+          "WithException": "Authorization code exchange failed: {{exception}}."
         }
       }
     }
@@ -1186,7 +1186,7 @@ const en = {
     "Step1": "Enter your full name as it appears on your ID (first and last name).",
     "Step2": "Generate a personal verification code.",
     "Step3": "Present your code and ID to an eduID Service Desk. They will verify your identity manually.\"",
-    "RedirectWarning": "We will redirect you to another website to enter your name. You won’t be able to log in to <strong>%1$s</strong> immediately afterward; you will first need to contact a eduID Service Desk.",
+    "RedirectWarning": "We will redirect you to another website to enter your name. You won’t be able to log in to <strong>{{service}}</strong> immediately afterward; you will first need to contact a eduID Service Desk.",
     "AcceptedIds": "Accepted IDs:",
     "Passports": "Passports",
     "Eea": "EEA<sup>*</sup> ID cards",
@@ -1209,7 +1209,7 @@ const en = {
     "ControlCode": {
       "ControlCode": "Verification code",
       "YourControlCode": "Your verification code",
-      "Info": "You will also receive an email with this code. The code is valid for %1$s more days and is intended for:",
+      "Info": "You will also receive an email with this code. The code is valid for {{nbr}} more days and is intended for:",
       "TypoPrefix": "Made a typo? ",
       "TypoLink": "Edit your details",
       "Todo": "What's next?",
@@ -1222,7 +1222,7 @@ const en = {
       "DeletedControlCode": "Verification code deleted",
       "Banner": "Verify your identity at an eduID Service Desk by presenting your ID and verification code.",
       "ShowCode": "Show code",
-      "ValidityCode": "Your code is valid for %1$s more days.",
+      "ValidityCode": "Your code is valid for {{nbr}} more days.",
       "CantUse": "I can't use any of the above methods"
     }
   },
@@ -1233,7 +1233,7 @@ const en = {
   "LoginCode": {
     "Header": "Check your email",
     "Title": "One-time verification code",
-    "Info": "Enter the code sent to <strong>%1$s</strong>",
+    "Info": "Enter the code sent to <strong>{{email}}</strong>",
     "Continue": "Continue",
     "Resend": "Didn’t receive the email? Check your spam folder, or ",
     "ResendLink": "click to resend",
@@ -1244,7 +1244,7 @@ const en = {
   },
   "LogInWithEmailCode": {
     "CheckYourEmail": "Check your email",
-    "EnterTheCodeSentTo": "Enter the code sent to %1$s",
+    "EnterTheCodeSentTo": "Enter the code sent to {{email}}",
     "Problems": "Problems?",
     "ResendTheCode": "Resend the code",
     "CodeHasBeenResent": "The code has been resent to your email address."

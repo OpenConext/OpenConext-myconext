@@ -30,7 +30,7 @@ function validFetch(path, options) {
     options.headers = {
         Accept: "application/json",
         "Content-Type": "application/json",
-        "Accept-Language": I18n.currentLocale(),
+        "Accept-Language": I18n.locale,
         "X-CSRF-TOKEN": csrfToken
     };
     return fetch(path, options).then(res => validateResponse(res));

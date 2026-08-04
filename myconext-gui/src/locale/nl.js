@@ -10,7 +10,7 @@ const nl = {
     "Account": "Account"
   },
   "Start": {
-    "Hi": "Hoi %1$s!",
+    "Hi": "Hoi {{name}}!",
     "Manage": "Beheer je persoonlijke gegevens, privacy en de beveiliging van je eduID."
   },
   "EnvironmentSwitcher": {
@@ -72,8 +72,8 @@ const nl = {
     "Title": "Je bevestigde gegevens",
     "Subtitle": "Dit is een overzicht van je gegevens die bevestigd zijn door onderwijs- of onderzoekinstellingen.",
     "ExplainIcon": "Dit icoon geeft aan dat je eduID deze gegevens gebruikt.’",
-    "FromInstitution": "Van %1$s",
-    "AtInstitution": "Bij %1$s",
+    "FromInstitution": "Van {{name}}",
+    "AtInstitution": "Bij {{name}}",
     "ReceivedOn": "Gekregen op ",
     "ValidUntil": "Geldig tot ",
     "RemoveThisInformation": "Verwijder deze gegevens",
@@ -138,13 +138,13 @@ const nl = {
     "TrustedInfo": "Je eduID is nog niet gekoppeld aan een officiële partij.",
     "Link": "Koppel",
     "Institution": "Onderwijs- of onderzoeksinstelling",
-    "InstitutionAt": "Door %1$s",
+    "InstitutionAt": "Door {{name}}",
     "Employee": "Medewerker",
     "Affiliations": "Rol(len)",
     "Expires": "Koppeling verloopt",
-    "ExpiresValue": "%1$s",
-    "VerifiedBy": "Bevestigd door %1$s ",
-    "VerifiedOn": "op %1$s",
+    "ExpiresValue": "{{date}}",
+    "VerifiedBy": "Bevestigd door {{name}} ",
+    "VerifiedOn": "op {{date}}",
     "Proceed": "Doorgaan",
     "VerifyFirstAndLastName": {
       "AddInstitution": "Bevestig naam",
@@ -164,9 +164,9 @@ const nl = {
       "AccountNotConnected": "Koppeling niet gemaakt!",
       "VerificationFailed": "Verificatie mislukt!"
     },
-    "Info": "Je eduID kon niet worden gekoppeld. Het account waarmee je zojuist bent ingelogd, is al aan een ander eduID gekoppeld: %1$s.",
+    "Info": "Je eduID kon niet worden gekoppeld. Het account waarmee je zojuist bent ingelogd, is al aan een ander eduID gekoppeld: {{email}}.",
     "InfoExternalAccountWithoutEmail": "Je eduID kon niet worden geverifïeerd. Het externe account waarmee je zojuist bent ingelogd, is al aan een ander eduID-account gekoppeld.",
-    "InfoExternalAccountWithEmail": "Je eduID kon niet worden geverifïeerd. Het externe account waarmee je zojuist bent ingelogd, is al aan een ander eduID-account gekoppeld: %1$s",
+    "InfoExternalAccountWithEmail": "Je eduID kon niet worden geverifïeerd. Het externe account waarmee je zojuist bent ingelogd, is al aan een ander eduID-account gekoppeld: {{email}}",
     "RetryButton": "Opnieuw proberen"
   },
   "Edit": {
@@ -180,8 +180,8 @@ const nl = {
     "Back": "/profile"
   },
   "Email": {
-    "OpenLinkToConfirm": "Druk op de link in de email om je wijziging te bevestigen. De e-mail is verstuurd aan %1$s",
-    "UpdateError": "We konden de wijziging naar je nieuwe e-mailadres niet bevestigen: %1$s.",
+    "OpenLinkToConfirm": "Druk op de link in de email om je wijziging te bevestigen. De e-mail is verstuurd aan {{email}}",
+    "UpdateError": "We konden de wijziging naar je nieuwe e-mailadres niet bevestigen: {{email}}.",
     "Title": {
       "Edit": "Bewerk",
       "EmailAddress": "E-mailadres"
@@ -192,9 +192,9 @@ const nl = {
     "Update": "Verstuur",
     "Cancel": "Annuleer",
     "Save": "Opslaan",
-    "Updated": "Een e-mail is verzonden naar %1$s",
-    "UpdatedVerified": "Een verificatie e-mail is verzonden naar %1$s",
-    "Confirmed": "Je e-mail is gewijzigd naar %1$s",
+    "Updated": "Een e-mail is verzonden naar {{email}}",
+    "UpdatedVerified": "Een verificatie e-mail is verzonden naar {{email}}",
+    "Confirmed": "Je e-mail is gewijzigd naar {{email}}",
     "Back": "/personal",
     "EmailEquality": "Je nieuwe e-mailadres is hetzelfde als je huidige e-mailadres",
     "DuplicateEmail": "Dit e-mailadres is al in gebruik.",
@@ -207,7 +207,7 @@ const nl = {
       "ContactedSuccessfully": "is nu gekoppeld",
       "ContactedError": "is niet gekoppeld",
       "FailReason": {
-        "AlreadyLinked": "Reden: Het account is al gekoppeld: %1$s",
+        "AlreadyLinked": "Reden: Het account is al gekoppeld: {{account}}",
         "SessionExpired": "Reden: Je sessie is verlopen."
       }
     },
@@ -260,7 +260,7 @@ const nl = {
     },
     "NameDoesNotMatchError": {
       "Title": "Verkeerde naam",
-      "Description": "De naam die je getypt had komt niet overeen met de naam in je profiel: \"%1$s\""
+      "Description": "De naam die je getypt had komt niet overeen met de naam in je profiel: \"{{name}}\""
     },
     "DeleteError": {
       "Title": "Je eduID kon niet verwijderd worden"
@@ -283,8 +283,8 @@ const nl = {
     "AddPassword": "Wachtwoord toevoegen",
     "PasswordPlaceholder": "• • • • • • • • • •",
     "ChangePassword": "Wachtwoord",
-    "PasswordActivated": "Geactiveerd op %1$s",
-    "CredentialActivated": "%1$s: Geactiveerd op %2$s",
+    "PasswordActivated": "Geactiveerd op {{date}}",
+    "CredentialActivated": "{{name}}: Geactiveerd op {{date}}",
     "TwoFAKey": "Inloggen met app",
     "ProvidedBy": "Gedeeld door",
     "NotAddedYet": "Nog niet toegevoegd aan je eduID",
@@ -310,7 +310,7 @@ const nl = {
       "FCM_DIRECT": "Android",
       "AppCode": "App-code",
       "LastLogin": "Laatst ingelogd op",
-      "Activated": "Geactiveerd op %1$s",
+      "Activated": "Geactiveerd op {{date}}",
       "DateTimeOn": "om",
       "BackupMethod": "Hersteloptie",
       "Sms": "sms",
@@ -396,7 +396,7 @@ const nl = {
   },
   "Home": {
     "Home": "Home",
-    "Welcome": "Welkom %1$s",
+    "Welcome": "Welkom {{name}}",
     "DataAndActivity": "Activiteit",
     "Personal": "Je gegevens",
     "Security": "Beveiliging",
@@ -407,7 +407,7 @@ const nl = {
     "Settings": "Instellingen",
     "Links": {
       "Teams": "Teams",
-      "TeamsHref": "https://teams.%1$s"
+      "TeamsHref": "https://teams.{{baseDomain}}"
     }
   },
   "Account": {
@@ -470,7 +470,7 @@ const nl = {
   },
   "RevokeAccessToken": {
     "Title": "Toegang intrekken",
-    "Description": "Weet je zeker dat je de API access voor %1$s wilt intrekken?",
+    "Description": "Weet je zeker dat je de API access voor {{name}} wilt intrekken?",
     "Button": {
       "Confirm": "Bevestigen",
       "Cancel": "Annuleer"
@@ -479,31 +479,31 @@ const nl = {
   },
   "Institution": {
     "Title": "Gekoppelde instelling",
-    "Info": "Deze instelling is op %1$s om %2$s: %3$s gekoppeld aan je eduID.",
+    "Info": "Deze instelling is op {{date}} om {{hours}}: {{minutes}} gekoppeld aan je eduID.",
     "Name": "Naam van de onderwijs- of onderzoeksinstelling",
     "Eppn": "Identifier bij de instelling",
     "DisplayName": "Weergavenaam",
     "Affiliations": "Rol(len) bij de instelling",
     "Expires": "Deze koppeling verloopt op",
-    "ExpiresValue": "%1$s",
+    "ExpiresValue": "{{date}}",
     "Delete": "Verwijder koppeling",
     "Cancel": "Annuleren",
-    "Deleted": "De koppeling met instelling %1$s is verwijderd",
+    "Deleted": "De koppeling met instelling {{name}} is verwijderd",
     "Back": "/instellingen",
     "DeleteInstitution": "Verwijder koppeling",
     "DeleteInstitutionConfirmation": "Weet je zeker dat je de koppeling met deze instelling wilt verwijderen?<br/> <br/> Voor sommige diensten is het nodig dat je eduID gekoppeld is met een onderwijsinstelling. Daarom word je mogelijk gevraagd een instelling te koppelen als je in de toekomst zo’n dienst gebruikt."
   },
   "Credential": {
     "Title": "Bewerk passkey",
-    "Info": "Je hebt deze passkey toegevoegd op %1$s om %2$s: %3$s",
+    "Info": "Je hebt deze passkey toegevoegd op {{date}} om {{hours}}: {{minutes}}",
     "Name": "Naam passkey",
     "Cancel": "Annuleren",
     "Update": "Bewaar",
-    "Deleted": "Je passkey %1$s is verwijderd",
-    "Updated": "Je passkey %1$s is bewaard",
+    "Deleted": "Je passkey {{name}} is verwijderd",
+    "Updated": "Je passkey {{name}} is bewaard",
     "Back": "/weauthn",
     "DeleteCredential": "Verwijder passkey",
-    "DeleteCredentialConfirmation": "Weet je zeker dat je de passkey %1$s wilt verwijderen? De passkey wordt verwijderd uit je eduID, maar wordt niet verwijderd uit je browser en / of van je YubiKey-apparaat."
+    "DeleteCredentialConfirmation": "Weet je zeker dat je de passkey {{name}} wilt verwijderen? De passkey wordt verwijderd uit je eduID, maar wordt niet verwijderd uit je browser en / of van je YubiKey-apparaat."
   },
   "Password": {
     "AddTitle": "Voeg wachtwoord toe",
@@ -532,7 +532,7 @@ const nl = {
     "OutstandingEmailReset": "Openstaand verzoek om e-mailadres aan te passen",
     "OutstandingEmailResetConfirmation": "Je hebt recent een code ontvangen voor het bevestigen van een nieuwe e-mail. Deze code is niet langer geldig. Je ontvangt een nieuwe code om je wachtwoord te wijzigen.",
     "Flash": {
-      "PasswordLink": "Een e-mail is verstuurd naar %1$s om je wachtwoord opnieuw in te stellen."
+      "PasswordLink": "Een e-mail is verstuurd naar {{name}} om je wachtwoord opnieuw in te stellen."
     }
   },
   "Webauthn": {
@@ -570,7 +570,7 @@ const nl = {
     "Confirm": "Bevestig"
   },
   "Format": {
-    "CreationDate": "%1$s om %2$s:%3$s"
+    "CreationDate": "{{date}} om {{hours}}:{{minutes}}"
   },
   "GetApp": {
     "Header": "Download de eduID app",
@@ -663,7 +663,7 @@ const nl = {
     "ResponseIncorrect": "De code is niet juist.",
     "SuspendedResult": "De controle van je eduID app is mislukt. ",
     "AccountNotSuspended": "Je kan het opnieuw proberen.",
-    "AccountSuspended": "Je moet %1$s %2$s wachten voordat je het opnieuw kan proberen.",
+    "AccountSuspended": "Je moet {{minutes}} {{plural}} wachten voordat je het opnieuw kan proberen.",
     "Minutes": "minuten",
     "Minute": "minuut",
     "ConfirmSecondFactor": "Bevestig 2e factor"
@@ -671,14 +671,14 @@ const nl = {
   "CreateFromInstitution": {
     "Title": "Maak een eduID van je instelling",
     "Header": "Je staat op het punt een eduID aan te maken die wordt gekoppeld aan je account van je instelling.",
-    "AlreadyHaveAnEduID": "Heb je al een eduID-account? <a href=\"%1$s\">Login!</a>",
+    "AlreadyHaveAnEduID": "Heb je al een eduID-account? <a href=\"{{location}}\">Login!</a>",
     "Info": "Als je verder gaat, wordt je gevraagd om in te loggen bij de instelling die je aan je eduID wilt koppelen. Na het inloggen kom je hier terug.",
     "StartFlow": "Start registratie",
     "Welcome": "Je eduID is aangemaakt",
     "WelcomeExisting": "Je eduID is gekoppeld aan je acccount van je instelling"
   },
   "LinkFromInstitution": {
-    "Header": "Hi %1$s",
+    "Header": "Hi {{name}}",
     "Info": "Je bent succesvol ingelogd bij je instelling. Vul nu je persoonlijke e-mailadres in. Dit wordt het e-maildres dat eduID gebruikt.",
     "Email": "E-mailadres",
     "EmailPlaceholder": "e.g. user@gmail.com",
@@ -689,7 +689,7 @@ const nl = {
     "InvalidEmail": "Ongeldig e-mailadres",
     "InstitutionDomainNameWarning": "Dit lijkt een school- of werkmail. Gebruik een <b>persoonlijk e-mailadres</b>, omdat dat ook blijft werken als je van school of baan verandert.",
     "InstitutionDomainNameWarning2": "We raden je aan om je persoonlijke e-mailadres te gebruiken voor eduID.",
-    "AllowedDomainNamesError": "Domeinnaam %1$s niet toegestaan.",
+    "AllowedDomainNamesError": "Domeinnaam {{domain}} niet toegestaan.",
     "AllowedDomainNamesError2": "eduID is beperkt om alleen te worden gebruikt voor toegestane domeinen.",
     "AgreeWithTerms": "<span>Ik ga akkoord met <a tabindex='-1' href='https://eduid.nl/gebruiksvoorwaarden/' target='_blank'>de voorwaarden</a> en ik heb de <a tabindex='-1' href='https://eduid.nl/privacy/' target='_blank'>de privacyverklaring</a> gelezen.</span>",
     "RequestEduIdButton": "Maak een eduID"
@@ -753,7 +753,7 @@ const nl = {
     "CreateAccount": "Maak een account aan.",
     "UseExistingAccount": "Gebruik een bestaand account",
     "InvalidEmail": "Ongeldig e-mailadres",
-    "RequiredAttribute": "%1$s is verplicht",
+    "RequiredAttribute": "{{attr}} is verplicht",
     "EmailInUse1": "Dit e-mailadres is al in gebruik.",
     "EmailInUse2": "Probeer een andere, of ",
     "EmailInUse3": " log in met dit eduID account.",
@@ -764,7 +764,7 @@ const nl = {
     "EmailOrPasswordIncorrect": "E-mailadres of wachtwoord is niet juist",
     "InstitutionDomainNameWarning": "Dit lijkt op een e-mailadres van een instelling. Let op: als je in de toekomst niet meer studeert of werkt bij deze instelling, heb je geen toegang meer tot dit e-mailadres.",
     "InstitutionDomainNameWarning2": "We raden je aan om je persoonlijke e-mailadres te gebruiken voor eduID.",
-    "AllowedDomainNamesError": "E-mailadres %1$s niet toegestaan.",
+    "AllowedDomainNamesError": "E-mailadres {{domain}} niet toegestaan.",
     "AllowedDomainNamesError2": "eduID is beperkt om alleen te worden gebruikt door toegestane e-mailadressen.",
     "PasswordDisclaimer": "Je wachtwoord moet minimaal 15 karakters zijn. Of minimaal 8 als het een hoofdletter en een getal bevat.",
     "AlreadyGuestAccount": "Heb je al een eduID?",
@@ -778,7 +778,7 @@ const nl = {
     "ForgotPassword": "Wachtwoord vergeten?",
     "UseAnother": "Gebruik een andere",
     "OptionsLink": "inlogmethode.",
-    "RateLimited": "Je bent nog steeds geschorst. Probeer het over %1$s minuten opnieuw.",
+    "RateLimited": "Je bent nog steeds geschorst. Probeer het over {{minutes}} minuten opnieuw.",
     "TryOtherEmail": "Probeer een ander e-mailadres",
     "LoginWithThisEmail": "Log in met dit e-mailadres",
     "OrDivider": "of"
@@ -822,12 +822,12 @@ const nl = {
   },
   "ConfirmStepup": {
     "Header": "Gelukt!",
-    "Proceed": "Ga naar %1$s",
+    "Proceed": "Ga naar {{name}}",
     "ConditionMet": "Je hebt aan alle voorwaarden voldaan."
   },
   "Stepup": {
     "Header": "Je bent er bijna",
-    "Info": "Je hoeft alleen nog het volgende doen om door te gaan naar <strong>%1$s</strong>:",
+    "Info": "Je hoeft alleen nog het volgende doen om door te gaan naar <strong>{{name}}</strong>:",
     "Link": "Controleer dit via SURFconext",
     "LinkExternalValidation": "Controleer dit via ReadID"
   },
@@ -871,14 +871,14 @@ const nl = {
   "AffiliationMissing": {
     "Header": "Account is gekoppeld, maar…",
     "Info": "Je eduID is succesvol gekoppeld, maar de instelling die je hebt gekozen heeft niet de juiste attributen teruggegeven.",
-    "Proceed": "Je kan een andere instelling proberen te koppelen of doorgaan naar %1$s.",
+    "Proceed": "Je kan een andere instelling proberen te koppelen of doorgaan naar {{name}}.",
     "ProceedLink": "Doorgaan",
     "RetryLink": "Opnieuw proberen"
   },
   "ValidNameMissing": {
     "Header": "Account is gekoppeld, maar…",
     "Info": "Je eduID is succesvol gekoppeld, maar de instelling die je hebt gekozen heeft niet de juiste attributen teruggegeven.",
-    "Proceed": "Je kan een andere instelling proberen te koppelen of doorgaan naar %1$s.",
+    "Proceed": "Je kan een andere instelling proberen te koppelen of doorgaan naar {{name}}.",
     "ProceedLink": "Doorgaan",
     "RetryLink": "Opnieuw proberen"
   },
@@ -909,13 +909,13 @@ const nl = {
   },
   "AppRequired": {
     "Header": "Log in met de eduID app",
-    "Info": "Dienst <strong>%1$s</strong> heeft een login verzocht met de eduID app om je identiteit te bevestigen.",
+    "Info": "Dienst <strong>{{service}}</strong> heeft een login verzocht met de eduID app om je identiteit te bevestigen.",
     "Info2": "Met de <strong>eduID app</strong> log je extra veilig in, zonder wachtwoord. Het installeren van de app is zo gebeurd. Druk op <strong>Doorgaan</strong> voor de volgende stap.",
     "Cancel": "/cancel",
     "No": "Ik weiger",
     "YesLink": "/proceed",
     "Yes": "Doorgaan",
-    "Warning": "We raden het af om zonder de eduID app in te loggen. De dienst %1$s zal niet je attributen ontvangen.",
+    "Warning": "We raden het af om zonder de eduID app in te loggen. De dienst {{service}} zal niet je attributen ontvangen.",
     "WarningTitle": "Download eduID app",
     "ConfirmLabel": "Download eduID app",
     "CancelLabel": "Ik weiger echt"
@@ -961,7 +961,7 @@ const nl = {
   "Generic": {
     "RequestError": {
       "Title": "Het verzoek kan niet worden voltooid",
-      "Description": "Onverwachte fout: %1$s, probeer het opnieuw.",
+      "Description": "Onverwachte fout: {{error}}, probeer het opnieuw.",
       "CloseButton": "Sluiten"
     }
   },
@@ -1058,7 +1058,7 @@ const nl = {
     },
     "DeactivationError": {
       "Title": "Kan deactiveringscode niet aanvragen",
-      "Description": "Kon geen deactiveringscode aanvragen voor bekend telefoonnummer: %1$s."
+      "Description": "Kon geen deactiveringscode aanvragen voor bekend telefoonnummer: {{phoneNumber}}."
     },
     "EmailInUse": {
       "Title": "E-mailadres al in gebruik",
@@ -1081,10 +1081,10 @@ const nl = {
       "Description": "Account kan niet verwijderd worden",
       "NameMismatchDescription": "De getypte naam is niet dezelfde als de naam die bekend is bij ons"
     },
-    "AccountCreateError": "Kan geen eduid-account maken voor e-mail %1$s.",
+    "AccountCreateError": "Kan geen eduid-account maken voor e-mail {{email}}.",
     "EmailDomainForbidden": {
       "Title": "E-maildomein is verboden",
-      "Description": "Het e-maildomein gebruikt in %1$s is niet toegestaan."
+      "Description": "Het e-maildomein gebruikt in {{email}} is niet toegestaan."
     },
     "GenerateControlCodeError": "Kan geen controlecode genereren",
     "SendOneTimeCodeError": "Verzenden van eenmalige code mislukt",
@@ -1105,7 +1105,7 @@ const nl = {
         "Description": "Er zijn geen autorisatiegegevens opgeslagen - herautorisatie is nodig.",
         "TokenFailedDescription": {
           "Generic": "Autorisatiecode-uitwisseling mislukt",
-          "WithException": "Autorisatiecode-uitwisseling mislukt: %1$s."
+          "WithException": "Autorisatiecode-uitwisseling mislukt: {{exception}}."
         }
       }
     }
@@ -1186,7 +1186,7 @@ const nl = {
     "Step1": "Vul je volledige naam in zoals die op je identiteitsbewijs staat (voornamen en achternaam).",
     "Step2": "Genereer een persoonlijke controlecode.",
     "Step3": "Laat je controlecode en identiteitsbewijs zien aan een eduID Service Desk. Die bevestigt zo je identiteit.",
-    "RedirectWarning": "We sturen je door naar een andere website om je naam in te vullen. Je kunt daarna nog niet gelijk inloggen bij <strong>%1$s</strong>, maar je moet eerst contact opnemen met een eduID Service Desk.",
+    "RedirectWarning": "We sturen je door naar een andere website om je naam in te vullen. Je kunt daarna nog niet gelijk inloggen bij <strong>{{service}}</strong>, maar je moet eerst contact opnemen met een eduID Service Desk.",
     "AcceptedIds": "Geldige identiteitsbewijzen:",
     "Passports": "paspoorten",
     "Eea": "EEA<sup>*</sup> ID-kaarten",
@@ -1209,7 +1209,7 @@ const nl = {
     "ControlCode": {
       "ControlCode": "Controlecode",
       "YourControlCode": "Je controlecode",
-      "Info": "Je krijgt ook een e-mail met deze code. De code is %1$s dagen geldig en is bedoeld voor:",
+      "Info": "Je krijgt ook een e-mail met deze code. De code is {{nbr}} dagen geldig en is bedoeld voor:",
       "TypoPrefix": "Typfout gemaakt? ",
       "TypoLink": "Pas gegevens aan",
       "Todo": "Wat moet je nu doen?",
@@ -1222,7 +1222,7 @@ const nl = {
       "DeletedControlCode": "Verificatie-code verwijderd",
       "Banner": "Bevestig je identiteit bij een eduID Service Desk. Dit doe je door je identiteitsbewijs en controlecode te laten zien.",
       "ShowCode": "Toon code",
-      "ValidityCode": "Je code is nog geldig voor %1$s dagen.",
+      "ValidityCode": "Je code is nog geldig voor {{nbr}} dagen.",
       "CantUse": "Ik kan geen van bovenstaande manieren gebruiken"
     }
   },
@@ -1233,7 +1233,7 @@ const nl = {
   "LoginCode": {
     "Header": "Check je e-mail",
     "Title": "Eenmalige verificatiecode",
-    "Info": "Voer de code in die verstuurd is naar <strong>%1$s</strong>",
+    "Info": "Voer de code in die verstuurd is naar <strong>{{email}}</strong>",
     "Continue": "Doorgaan",
     "Resend": "E-mail niet ontvangen? Controleer uw spamfolder of ",
     "ResendLink": "klik om opnieuw te versturen",
@@ -1244,7 +1244,7 @@ const nl = {
   },
   "LogInWithEmailCode": {
     "CheckYourEmail": "Controleer je e-mail",
-    "EnterTheCodeSentTo": "Voer de code in die is verzonden naar %1$s",
+    "EnterTheCodeSentTo": "Voer de code in die is verzonden naar {{email}}",
     "Problems": "Problemen?",
     "ResendTheCode": "Stuur de code opnieuw",
     "CodeHasBeenResent": "De code is opnieuw verzonden naar je e-mailadres."

@@ -233,8 +233,8 @@
                     <td class="value">
                         <ul>
                             {#each service.scopes as scope}
-                                {#if scope.descriptions[I18n.currentLocale()] || scope.descriptions["en"]}
-                                    <li>{scope.descriptions[I18n.currentLocale()] || scope.descriptions["en"]}</li>
+                                {#if scope.descriptions[I18n.locale] || scope.descriptions["en"]}
+                                    <li>{scope.descriptions[I18n.locale] || scope.descriptions["en"]}</li>
                                 {/if}
                             {/each}
                         </ul>
