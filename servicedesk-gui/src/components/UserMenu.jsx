@@ -5,16 +5,13 @@ import {stopEvent} from "../utils/Utils";
 import {UserInfo} from "@surfnet/sds";
 import {useAppStore} from "../stores/AppStore";
 import {logout} from "../api";
-import {useNavigate} from "react-router-dom";
 
 export const UserMenu = ({user}) => {
 
     const [dropDownActive, setDropDownActive] = useState(false);
-    const navigate = useNavigate();
 
     const logoutUser = e => {
         stopEvent(e);
-        const {config} = useAppStore.getState();
         logout().then(() => {
             useAppStore.setState(() => ({breadcrumbPath: [], user: {}, controlCode: {}}));
             window.location.href = "/"

@@ -1,11 +1,12 @@
 import React, {useEffect, useState} from "react";
-import {Button, ButtonSize, ButtonType} from "@surfnet/sds";
+import {Button, ButtonSize, ButtonType, Modal} from "@surfnet/sds";
 import './Login.scss';
 import I18n from "../locale/I18n";
 import DOMPurify from "dompurify";
 import FrontDesk from "../icons/frontdesk.svg";
 import {LandingInfo} from "../components/LandingInfo";
-import {configuration} from "../api";
+import {configuration, logout} from "../api";
+import {useSearchParams} from "react-router-dom";
 
 export const Login = () => {
 
@@ -27,6 +28,7 @@ export const Login = () => {
         const loginUrl = new URL(config.loginUrlServiceDesk);
         loginUrl.searchParams.set("redirect_path", "/");
         loginUrl.searchParams.set("registration_id", "service_desk");
+        loginUrl.searchParams.set("force", "true");
         window.location.href = loginUrl.toString();
     }
 

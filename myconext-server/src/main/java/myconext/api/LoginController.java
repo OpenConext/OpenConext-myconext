@@ -141,7 +141,8 @@ public class LoginController {
     @GetMapping("/auth/login")
     public View login(
             @RequestParam(value = "redirect_path", required = false) String redirectPath,
-            @RequestParam(value = "registration_id") String registrationId
+            @RequestParam(value = "registration_id") String registrationId,
+            @RequestParam(value = "force", required = false, defaultValue = "false") Boolean force
     ) {
         String baseUrl = InternalSecurityConfigurationAdapter.REGISTRATION_ID_SERVICE_DESK.equals(registrationId)
                 ? servicedeskRedirectUrl
@@ -253,7 +254,8 @@ public class LoginController {
     @GetMapping("/doLogout")
     public void doLogout(HttpServletRequest request,
                          HttpServletResponse response,
-                         @RequestParam(value = "param") String param) throws IOException {
+                         @RequestParam(value = "param") String param,
+                         @RequestParam(value = "app", required = false, defaultValue = "mijn") String app) throws IOException {
         if (param.contains("delete")) {
             Cookie[] cookies = request.getCookies();
             if (cookies != null) {
@@ -267,7 +269,9 @@ public class LoginController {
         }
         request.getSession().invalidate();
         SecurityContextHolder.clearContext();
-        String redirectLocation = String.format("%s/landing?%s", this.config.get("myconextBaseUrl"), param);
+        String key = StringUtils.hasText(app) && "servicedesk".equalsIgnoreCase(app) ? "servicedeskBaseUrl" : "myconextBaseUrl";
+        Object url = this.config.get(key);
+        String redirectLocation = String.format("%s/landing?%s", url, param);
 
         LOG.info(String.format("Logout and redirect to %s", redirectLocation));
 

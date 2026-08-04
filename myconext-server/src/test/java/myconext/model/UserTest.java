@@ -6,6 +6,7 @@ import myconext.exceptions.WeakPasswordException;
 import myconext.manage.Manage;
 import myconext.manage.MockManage;
 import myconext.security.ServicesConfiguration;
+import myconext.validation.PasswordStrength;
 import org.junit.Test;
 import org.mockito.Mockito;
 import org.springframework.test.util.ReflectionTestUtils;
@@ -74,7 +75,7 @@ public class UserTest {
     @Test(expected = WeakPasswordException.class)
     public void encryptPassword() {
         User user = new User();
-        user.encryptPassword(null, null);
+        user.encryptPassword(null, null, new PasswordStrength(new ObjectMapper()));
     }
 
 

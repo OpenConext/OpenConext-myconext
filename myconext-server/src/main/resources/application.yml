@@ -91,6 +91,7 @@ account_id: localhost
 account_origin: http://localhost:3000
 myconext_redirect_url: http://localhost:3001
 servicedesk_redirect_url: http://localhost:3003
+# sp_entity_id represents the SP's that are allowed to connect -- It is a comma separated list
 sp_entity_id: https://engine.test.surfconext.nl/authentication/sp/metadata, https://engine.test2.surfconext.nl/authentication/sp/metadata
 account_metadata_url: https://engine.test.surfconext.nl/authentication/sp/metadata, https://engine.test2.surfconext.nl/authentication/sp/metadata
 proxy_idp_entity_id: https://localhost.surf.id
@@ -327,6 +328,10 @@ spring:
             token-uri: "http://localhost:8098/oidc/token"
             user-info-uri: "http://localhost:8098/oidc/userinfo"
             jwk-set-uri: "http://localhost:8098/oidc/certs"
+#            authorization-uri: "https://connect.test2.surfconext.nl/oidc/authorize"
+#            token-uri: "https://connect.test2.surfconext.nl/oidc/token"
+#            user-info-uri: "https://connect.test2.surfconext.nl/oidc/userinfo"
+#            jwk-set-uri: "https://connect.test2.surfconext.nl/oidc/certs"
             user-name-attribute: sub
             user-info-authentication-method: client_secret_basic
 

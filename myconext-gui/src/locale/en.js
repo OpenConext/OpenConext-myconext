@@ -593,6 +593,10 @@ const en = {
             regiobank: "RegioBank",
             sns: "SNS"
         }
+    },
+    serviceDesk: {
+        errorOccured: "An error occurred",
+        errorOccuredInfo: "The servicedesk is currently unavailable. Please contact <a href='mailto: help@eduid.nl'>help@eduid.nl</a> for support",
     }
 };
 

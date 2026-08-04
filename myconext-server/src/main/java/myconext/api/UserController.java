@@ -34,6 +34,7 @@ import myconext.model.*;
 import myconext.oidcng.OpenIDConnect;
 import myconext.repository.*;
 import myconext.security.*;
+import myconext.validation.PasswordStrength;
 import myconext.webauthn.UserCredentialRepository;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -114,6 +115,7 @@ public class UserController implements UserAuthentication {
     private final List<String> unknownIssuers = List.of("CURRNL2A");
     private final boolean serviceDeskActive;
     private final boolean secureCookie;
+    private final PasswordStrength passwordStrength;
 
     public UserController(UserRepository userRepository,
                           UserCredentialRepository userCredentialRepository,
@@ -168,6 +170,7 @@ public class UserController implements UserAuthentication {
         this.sendJsExceptions = sendJsExceptions;
         this.serviceDeskActive = serviceDeskActive;
         this.secureCookie = secureCookie;
+        this.passwordStrength = new PasswordStrength(objectMapper);
 
         List<IdinIssuers> idinIssuers = objectMapper.readValue(issuersResource.getInputStream(), new TypeReference<>() {
         });
@@ -824,7 +827,7 @@ public class UserController implements UserAuthentication {
         if (deletePassword) {
             user.deletePassword();
         } else {
-            user.encryptPassword(newPassword, passwordEncoder);
+            user.encryptPassword(newPassword, passwordEncoder, passwordStrength);
         }
 
         user.setForgottenPassword(false);
@@ -953,8 +956,11 @@ public class UserController implements UserAuthentication {
     @Operation(summary = "Remove linked account",
             description = "Remove linked account for a logged in user")
     public ResponseEntity<UserResponse> removeUserLinkedAccounts(Authentication authentication,
-                                                                 @RequestBody UpdateLinkedAccountRequest updateLinkedAccountRequest) {
+                                                                 @RequestBody UpdateLinkedAccountRequest updateLinkedAccountRequest,
+                                                                 HttpServletRequest request) {
         User user = userFromAuthentication(authentication);
+        checkSecondFactorConfirmation(authentication, request);
+
         if (updateLinkedAccountRequest.isExternal()) {
             //Only one external linked account is allowed
             user.getExternalLinkedAccounts().clear();
@@ -1016,8 +1022,10 @@ public class UserController implements UserAuthentication {
             description = "Remove user service by the eduID value")
     @PutMapping("/sp/service")
     public ResponseEntity<UserResponse> removeUserService(Authentication authentication,
-                                                          @Valid @RequestBody DeleteService deleteService) {
+                                                          @Valid @RequestBody DeleteService deleteService,
+                                                          HttpServletRequest request) {
         User user = userFromAuthentication(authentication);
+        checkSecondFactorConfirmation(authentication, request);
 
         String entityId = deleteService.getServiceProviderEntityId();
         user.getEduIDS().forEach(eduID -> eduID.getServices().removeIf(service ->
@@ -1349,17 +1357,36 @@ public class UserController implements UserAuthentication {
         return doLogout(request);
     }
 
-
     @DeleteMapping("/sp/delete")
     @Operation(summary = "Delete",
             description = "Delete the current logged in user")
-    public ResponseEntity<StatusResponse> deleteUser(Authentication authentication, HttpServletRequest request) {
+    public ResponseEntity<StatusResponse> deleteUser(Authentication authentication,
+                                                      HttpServletRequest request) {
         User user = userFromAuthentication(authentication);
+        checkSecondFactorConfirmation(authentication, request);
+
         userRepository.delete(user);
 
         logWithContext(user, "delete", "account", LOG, "Delete account");
 
         return doLogout(request);
+    }
+
+    // Only block destructive action when user has a second factor and this is not confirmed yet
+    private void checkSecondFactorConfirmation(Authentication authentication, HttpServletRequest request) {
+        // The confirmation is held in the HTTP session, which the bearer token authenticated app does not have
+        // Calls from the mobile app currently do not require a confirmation of second factor
+        if (isMobileRequest(authentication)) {
+            return;
+        }
+
+        User user = userFromAuthentication(authentication);
+        if (user.loginOptions().contains(LoginOptions.APP.getValue())) {
+            if (!Boolean.TRUE.equals(request.getSession().getAttribute("hasConfirmedSecondFactor"))) {
+                throw new ForbiddenException("User has a 2nd factor enabled, confirmation of the 2nd factor is required for this destructive action");
+            }
+            request.getSession().removeAttribute("hasConfirmedSecondFactor");
+        }
     }
 
     @Operation(summary = "Create verification control code password link",

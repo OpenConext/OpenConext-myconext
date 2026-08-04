@@ -7,16 +7,19 @@
     import Modal from "../components/Modal.svelte";
     import {formatJsDate} from "../format/date";
     import Spinner from "../components/Spinner.svelte";
+    import SecondFactorConfirmModal from "../components/SecondFactorConfirmModal.svelte";
+    import {hasSecondFactor} from "../utils/utils";
 
     export let service = {data: {}};
     export let refresh;
 
     let showModal = false;
+    let show2ndFactorModal = false;
     let modalOptions = {};
     let loading = false;
 
     const modalDeleteEduId = () => ({
-        submit: deleteEduId(false),
+        submit: startDeleteEduIdFlow,
         question: I18n.t("dataActivity.deleteServiceConfirmation", {name: service.name}),
         title: I18n.t("dataActivity.deleteService")
     });
@@ -46,13 +49,26 @@
             modalOptions = modalDeleteEduId();
             showModal = true;
         } else {
-            loading = true;
-            showModal = false;
-            deleteServiceAndTokens(service.entityId, service.allTokens)
-                .then(res => {
-                    doRefresh(res, "dataActivity.deleted");
-                });
+            startDeleteEduIdFlow();
         }
+    }
+
+    const startDeleteEduIdFlow = () => {
+        showModal = false;
+        if (hasSecondFactor($user)) {
+            show2ndFactorModal = true;
+        } else {
+            doDeleteEduId();
+        }
+    }
+
+    const doDeleteEduId = () => {
+        loading = true;
+        deleteServiceAndTokens(service.entityId, service.allTokens)
+            .then(res => {
+                doRefresh(res, "dataActivity.deleted");
+            });
+        loading = false;
     }
 
     const revokeTokens = showConfirmation => () => {
@@ -146,7 +162,6 @@
         }
 
     }
-
 
 </style>
 {#if loading}
@@ -243,12 +258,17 @@
 </tr>
 {/if}
 
-{#if showModal}
-    <Modal submit={modalOptions.submit}
-           cancel={() => showModal = false}
-           warning={true}
-           confirmTitle={I18n.t("YourVerifiedInformation.ConfirmRemoval.Button.YesDelete.COPY")}
-           question={modalOptions.question}
-           title={modalOptions.title}>
-    </Modal>
+{#if showModal || show2ndFactorModal}
+    {#if show2ndFactorModal}
+        <SecondFactorConfirmModal onConfirmed={doDeleteEduId}
+                                  onClose={() => show2ndFactorModal = false}/>
+    {:else}
+        <Modal submit={modalOptions.submit}
+               cancel={() => showModal = false}
+               warning={true}
+               confirmTitle={I18n.t("YourVerifiedInformation.ConfirmRemoval.Button.YesDelete.COPY")}
+               question={modalOptions.question}
+               title={modalOptions.title}>
+        </Modal>
+    {/if}
 {/if}

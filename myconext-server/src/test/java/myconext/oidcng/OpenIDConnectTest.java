@@ -7,6 +7,8 @@ import myconext.model.DeleteService;
 import myconext.model.DeleteServiceTokens;
 import myconext.model.TokenRepresentation;
 import myconext.model.TokenType;
+import myconext.model.User;
+import myconext.tiqr.SURFSecureID;
 import org.hamcrest.Matchers;
 import org.junit.ClassRule;
 import org.junit.Test;
@@ -72,6 +74,10 @@ public class OpenIDConnectTest extends AbstractIntegrationTest {
 
     @Test
     public void deleteTokens() {
+        User user = userRepository.findOneUserByEmail("jdoe@example.com");
+        user.getSurfSecureId().remove(SURFSecureID.RECOVERY_CODE);
+        userRepository.save(user);
+
         stubFor(put(urlPathMatching("/tokens"))
                 .willReturn(aResponse()
                         .withStatus(HttpStatus.NO_CONTENT.value())

@@ -7,9 +7,11 @@
     import Modal from '../components/Modal.svelte';
     import {deleteUser} from "../api";
     import Button from "../components/Button.svelte";
-    import {isEmpty} from "../utils/utils";
+    import {hasSecondFactor, isEmpty} from "../utils/utils";
+    import SecondFactorConfirmModal from "../components/SecondFactorConfirmModal.svelte";
 
     let showModal = false;
+    let show2ndFactorModal = false;
 
     let name = "";
 
@@ -18,21 +20,25 @@
         return inputSanitized !== "delete" && inputSanitized !== "verwijder";
     }
 
-    const deleteUserAction = showConfirmation => () => {
-        if (showConfirmation) {
-            showModal = true
+    const startDeleteUserFlow = () => {
+        if (hasSecondFactor($user)) {
+            show2ndFactorModal = true;
         } else {
-            deleteUser().then(() => {
-                $user = {
-                    id: "",
-                    email: "",
-                    givenName: "",
-                    familyName: "",
-                    usePassword: false
-                };
-                window.location.href = `${$config.accountBaseUrl}/doLogout?param=${encodeURIComponent("delete=true")}`;
-            });
+            doDeleteUser();
         }
+    }
+
+    const doDeleteUser = () => {
+        deleteUser().then(() => {
+            $user = {
+                id: "",
+                email: "",
+                givenName: "",
+                familyName: "",
+                usePassword: false
+            };
+            window.location.href = `${$config.accountBaseUrl}/doLogout?param=${encodeURIComponent("delete=true")}`;
+        });
     }
 
 </script>
@@ -111,29 +117,34 @@
                 onClick={() => navigate("/account")} className="cancel"/>
         <Button href="/delete" label={I18n.t("Account.Delete.COPY")}
                 large={true}
-                onClick={deleteUserAction(true)}/>
+                onClick={() => showModal = true}/>
     </div>
 </div>
 
-{#if showModal}
-    <Modal submit={deleteUserAction(false)}
-           cancel={() => showModal = false}
-           warning={true}
-           confirmTitle={I18n.t("YourVerifiedInformation.ConfirmRemoval.Button.YesDelete.COPY")}
-           disableSubmit={disableDeleteButton(name)}
-           title={I18n.t("ConfirmDelete.Title.COPY")}>
-        <div class="slot">
-            <div class="warning-box">
-                <span>{@html critical}</span>
-                <span>{I18n.t("ConfirmDelete.Disclaimer.COPY")}</span>
+{#if showModal || show2ndFactorModal}
+    {#if show2ndFactorModal}
+        <SecondFactorConfirmModal onConfirmed={doDeleteUser}
+                                  onClose={() => show2ndFactorModal = false}/>
+    {:else}
+        <Modal submit={() => startDeleteUserFlow()}
+               cancel={() => showModal = false}
+               warning={true}
+               confirmTitle={I18n.t("YourVerifiedInformation.ConfirmRemoval.Button.YesDelete.COPY")}
+               disableSubmit={disableDeleteButton(name)}
+               title={I18n.t("ConfirmDelete.Title.COPY")}>
+            <div class="slot">
+                <div class="warning-box">
+                    <span>{@html critical}</span>
+                    <span>{I18n.t("ConfirmDelete.Disclaimer.COPY")}</span>
+                </div>
+                <p>{I18n.t("Account.Proceed.COPY")}</p>
+                <label for="name">{I18n.t("account.confirmation")}</label>
+                <input id="name"
+                       placeholder={I18n.t("Profile.RemoveServicePrompt.Delete.COPY")}
+                       type="text"
+                       spellcheck="false"
+                       bind:value={name}/>
             </div>
-            <p>{I18n.t("Account.Proceed.COPY")}</p>
-            <label for="name">{I18n.t("account.confirmation")}</label>
-            <input id="name"
-                   placeholder={I18n.t("Profile.RemoveServicePrompt.Delete.COPY")}
-                   type="text"
-                   spellcheck="false"
-                   bind:value={name}/>
-        </div>
-    </Modal>
+        </Modal>
+    {/if}
 {/if}

@@ -25,7 +25,7 @@
     import check from "../icons/redesign/check.svg?raw";
     import {navigate} from "svelte-routing";
     import {onMount} from "svelte";
-    import {doLogOutAfterRateLimit, isEmpty} from "../utils/utils";
+    import {doLogOutAfterRateLimit, hasSecondFactor, isEmpty} from "../utils/utils";
     import InstitutionRole from "../components/InstitutionRole.svelte";
     import {institutionName} from "../utils/services";
     import ValidatedData from "../components/ValidatedData.svelte";
@@ -33,6 +33,7 @@
     import {dateFromEpoch} from "../utils/date";
     import LinkedAccountSummary from "../components/LinkedAccountSummary.svelte";
     import CodeValidation from "../components/CodeValidation.svelte";
+    import SecondFactorConfirmModal from "../components/SecondFactorConfirmModal.svelte";
 
     const resendMailAllowedTimeOut = $config.emailSpamThresholdSeconds * 1000;
 
@@ -60,6 +61,7 @@
     let serviceDeskStart = false;
     let showIdinOptions = false;
     let showDeleteInstitutionModal = false;
+    let show2ndFactorModal = false;
     let showNewInstitutionModal = false;
     let showPreferredInstitutionModal = false;
     let selectedInstitution;
@@ -131,12 +133,24 @@
         if (showConfirmation) {
             showDeleteInstitutionModal = true;
         } else {
-            deleteLinkedAccount(linkedAccount).then(res => {
-                showDeleteInstitutionModal = false;
-                copyServerInformation(res);
-                flash.setValue(I18n.t("Institution.Deleted.COPY", {name: institutionName(linkedAccount)}));
-            });
+            startDeleteInstitutionFlow(linkedAccount);
         }
+    }
+
+    const startDeleteInstitutionFlow = linkedAccount => {
+        showDeleteInstitutionModal = false;
+        if (hasSecondFactor($user)) {
+            show2ndFactorModal = true;
+        } else {
+            doDeleteInstitution(linkedAccount);
+        }
+    }
+
+    const doDeleteInstitution = linkedAccount => {
+        deleteLinkedAccount(linkedAccount).then(res => {
+            copyServerInformation(res);
+            flash.setValue(I18n.t("Institution.Deleted.COPY", {name: institutionName(linkedAccount)}));
+        });
     }
 
     const markExternalLinkedAccountExpired = externalLinkedAccount => {
@@ -783,14 +797,19 @@
     </Modal>
 {/if}
 
-{#if showDeleteInstitutionModal}
-    <Modal submit={() => deleteInstitution(false, selectedInstitution)}
-           cancel={() => showDeleteInstitutionModal = false}
-           warning={true}
-           confirmTitle={I18n.t("YourVerifiedInformation.ConfirmRemoval.Button.YesDelete.COPY")}
-           question={I18n.t("Institution.DeleteInstitutionConfirmation.COPY")}
-           title={I18n.t("YourVerifiedInformation.ConfirmRemoval.Title.COPY")}>
-    </Modal>
+{#if showDeleteInstitutionModal || show2ndFactorModal}
+    {#if show2ndFactorModal}
+        <SecondFactorConfirmModal onConfirmed={() => doDeleteInstitution(selectedInstitution)}
+                                  onClose={() => show2ndFactorModal = false}/>
+    {:else}
+        <Modal submit={() => deleteInstitution(false, selectedInstitution)}
+               cancel={() => showDeleteInstitutionModal = false}
+               warning={true}
+               confirmTitle={I18n.t("YourVerifiedInformation.ConfirmRemoval.Button.YesDelete.COPY")}
+               question={I18n.t("Institution.DeleteInstitutionConfirmation.COPY")}
+               title={I18n.t("YourVerifiedInformation.ConfirmRemoval.Title.COPY")}>
+        </Modal>
+    {/if}
 {/if}
 
 {#if showPreferredInstitutionModal}

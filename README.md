@@ -37,9 +37,9 @@ An IdP for OpenConext. A user can create and manage his own identity. Authentica
 
 - Java 21
 - Maven 3
-- MongoDB 3.4.x
+- MongoDB 7.x
 - Yarn 1.x
-- NodeJS (version 23.2.0)
+- NodeJS (version 24.3.0)
 - Mailpit
 
 ## Building and running
@@ -54,7 +54,12 @@ docker compose up -d
 
 ### MyConext-Server
 
-This project uses Spring Boot and Maven. To run locally, type:
+Spring Boot backend implementing the eduID/SURFconext "MyConext" Identity Provider: SAML2 and
+OIDC authentication flows, MongoDB-backed user/session persistence, RSA-based SAML request
+signing, attribute manipulation/aggregation APIs, and the OpenAPI/Swagger documentation for all
+of it.
+
+To run locally, type:
 
 ```shell
 cd myconext-server
@@ -65,6 +70,16 @@ When developing, it's convenient to just execute the applications main-method, w
 Don't forget to set the active profile to dev.
 
 ### Account-GUI (IDP)
+
+The Account-GUI is the SAML/OIDC Identity Provider frontend for MyConext. It is the screen a user
+lands on when a Service Provider redirects them to the "Local SURFconext Guest IdP" / "Local eduID
+IdP" — it drives the magic-link, password, FIDO2/WebAuthn and Tiqr (mobile app) sign-in flows, as
+well as account-linking and step-up/MFA screens.
+
+There is **no home page**: the app only makes sense as the target of an authentication redirect
+coming from a Service Provider (e.g. the OIDC-Playground, MyConext-GUI or Servicedesk-GUI). Visiting
+it directly without a valid request id will land you on the "Whoops... Something went wrong (404)"
+route, which is expected.
 
 The IdP is also built with Svelte and to get initially started:
 
@@ -77,6 +92,17 @@ yarn dev
 There is no home page, you'll need to visit an SP and choose "Local SURFconext Guest IdP" to login. App is running on port 3000.
 
 ### MyConext-GUI (SP)
+
+MyConext-GUI is the "My eduID" self-service Service Provider frontend for MyConext. Once a user is
+authenticated (via [`account-gui`](../account-gui)), this is where they land to manage their own
+eduID identity: personal info, linked (institution/external) accounts, security methods (password,
+FIDO2/WebAuthn, the Tiqr mobile app), connected services and account deletion.
+
+Like `account-gui`, this app has no meaningful anonymous landing page for most routes: on mount it
+calls `/myconext/api/sp/me`, and if the user isn't authenticated it redirects to the configured
+`loginUrl` (see [`src/App.svelte`](src/App.svelte)). A small set of routes (`/create-from-institution`,
+`/landing`, `/install-app`) are reachable without an existing session, to support the "create an
+eduID linked to your institution account" flow for guests.
 
 The myconext ServiceProvider is built with Svelte and to get initially started:
 
@@ -91,7 +117,17 @@ Browse to the [application homepage](http://localhost:3001/).
 
 ### Servicedesk-GUI (SP)
 
-The myconext servicedesk is also built with Svelte and to get initially started:
+ServiceDesk-GUI is the internal tool SURF/SURFconext service-desk staff use to perform **in-person
+identity verification** for eduID users. A student (or other eduID user) who needs a formally
+verified identity generates a numeric verification code in the eduID app, visits (or calls) the
+service desk, and a service-desk employee uses this application to: look up the code, manually
+check the person's ID document against the data on file, and approve the check — after which the
+person's identity is marked as verified in eduID.
+
+There is no self-service function here: every route except `/login` requires an authenticated,
+authorized service-desk employee (see [Overview](#overview)).
+
+The myconext servicedesk is built with React and Vite and to get initially started:
 
 ```shell
 cd servicedesk-gui
@@ -102,6 +138,12 @@ yarn dev
 Browse to the [application homepage](http://localhost:3003/).
 
 ### Public-GUI (Content website)
+
+Public-GUI is the public-facing marketing/content site for **eduID** — the informational website a
+visitor lands on at the bare domain (e.g. `eduid.nl`) *before* they have an account. It explains what
+eduID is, lets people install the eduID mobile app, hosts the Terms of Use / Privacy Policy, and
+serves a couple of Dutch-service-desk-facing pages. It is **not** where anyone logs in or registers —
+those actions link out to the other GUIs (see [Overview](#overview)).
 
 The myconext public gui is built with Vite and to get initially started:
 
