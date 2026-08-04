@@ -9,7 +9,7 @@ const nl = {
     landing: {
         header: {
             title: "ServiceDesk",
-            subTitle: "",
+            subTitle: "Hallo {{name}}",
             login: "Log in",
             sup: "eduID ServiceDesk is alleen op uitnodiging beschikbaar.",
         },

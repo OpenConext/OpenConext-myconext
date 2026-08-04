@@ -12,6 +12,6 @@ export function dateFromEpoch(epochMilli, includeTime = false) {
     const dateFormatted = dateTimeFormat.format(date);
     const minutes = date.getMinutes() ;
     const minutesFormatted = minutes < 10 ? `0${minutes}` : minutes;
-    const timeFormatted = ` ${I18n.t("security.tiqr.dateTimeOn")} ${date.getHours()}:${minutesFormatted}`;
+    const timeFormatted = ` ${I18n.t("Security.Tiqr.DateTimeOn")} ${date.getHours()}:${minutesFormatted}`;
     return `${dateFormatted}${timeFormatted}`
 }
