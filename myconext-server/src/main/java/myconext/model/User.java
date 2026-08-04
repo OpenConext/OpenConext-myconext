@@ -12,6 +12,7 @@ import myconext.manage.Manage;
 import myconext.remotecreation.NewExternalEduID;
 import myconext.security.ServicesConfiguration;
 import myconext.tiqr.SURFSecureID;
+import myconext.validation.PasswordStrength;
 import myconext.verify.AttributeMapper;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.Transient;
@@ -31,7 +32,6 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 import static myconext.security.SecurityConfiguration.InternalSecurityConfigurationAdapter.ROLE_GUEST;
-import static myconext.validation.PasswordStrength.strongEnough;
 
 @NoArgsConstructor
 @Getter
@@ -170,8 +170,8 @@ public class User implements Serializable, UserDetails {
         Assert.notNull(familyName, "FamilyName is required");
     }
 
-    public void encryptPassword(String password, PasswordEncoder encoder) {
-        if (!strongEnough(password)) {
+    public void encryptPassword(String password, PasswordEncoder encoder, PasswordStrength passwordStrength) {
+        if (!passwordStrength.strongEnough(password)) {
             throw new WeakPasswordException("Weak password: " + password);
         }
         this.password = encoder.encode(password);
