@@ -260,7 +260,7 @@
                         {@html tab.icon}
                         <a href="/{tab.name}"
                            on:click|preventDefault|stopPropagation={switchTab(tab.name)}>
-                            {I18n.t(`Home.${tab.alias}.COPY`)}
+                            {I18n.t(`Home.${tab.alias}`)}
                         </a>
                     </li>
                 {/if}

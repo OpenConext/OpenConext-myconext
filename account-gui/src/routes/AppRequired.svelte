@@ -66,26 +66,26 @@
     <Spinner/>
 {/if}
 
-<h2>{I18n.t("Stepup.Header.COPY")}</h2>
+<h2>{I18n.t("Stepup.Header")}</h2>
 <p class="explanation">{@html I18n.t("stepup.info", {name: DOMPurify.sanitize(serviceName)})}</p>
-<Verification explanationText={I18n.t("AppRequired.Info.COPY", {service: DOMPurify.sanitize(serviceName)})} verified={false}/>
-<p class="explanation last">{@html I18n.t("AppRequired.Info2.COPY")}</p>
+<Verification explanationText={I18n.t("AppRequired.Info", {service: DOMPurify.sanitize(serviceName)})} verified={false}/>
+<p class="explanation last">{@html I18n.t("AppRequired.Info2")}</p>
 <ButtonContainer>
     <Button className="cancel"
-            href={I18n.t("AppRequired.Cancel.COPY")}
+            href={I18n.t("AppRequired.Cancel")}
             onClick={() => cancel(true)}
-            label={I18n.t("AppRequired.No.COPY")}/>
-    <Button href={I18n.t("NudgeApp.NoLink.COPY")}
+            label={I18n.t("AppRequired.No")}/>
+    <Button href={I18n.t("NudgeApp.NoLink")}
             onClick={submit}
-            label={I18n.t("Profile.Proceed.COPY")}/>
+            label={I18n.t("Profile.Proceed")}/>
 </ButtonContainer>
 {#if showModal}
     <Modal submit={submit}
            cancel={() => cancel(false)}
-           question={I18n.t("AppRequired.Warning.COPY", {service: serviceName})}
-           title={I18n.t("AppRequired.WarningTitle.COPY")}
-           cancelLabel={I18n.t("AppRequired.CancelLabel.COPY")}
-           confirmLabel={I18n.t("AppRequired.ConfirmLabel.COPY")}>
+           question={I18n.t("AppRequired.Warning", {service: serviceName})}
+           title={I18n.t("AppRequired.WarningTitle")}
+           cancelLabel={I18n.t("AppRequired.CancelLabel")}
+           confirmLabel={I18n.t("AppRequired.ConfirmLabel")}>
     </Modal>
 {/if}
 

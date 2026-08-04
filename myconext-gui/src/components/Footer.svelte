@@ -12,7 +12,7 @@
         Cookies.set("lang", lang, {expires: 365, secure: true, sameSite: "Lax", domain: $config.baseDomain});
         window.location.search = urlSearchParams.toString();
         updateLanguage(lang).then(() => {
-            flash.setValue("Footer.LanguageChanged.COPY");
+            flash.setValue("Footer.LanguageChanged");
         }).catch(() => {
             //ignore
         })
@@ -115,11 +115,11 @@
     <div class="inner-container">
         <div class="help">
             <div class="terms">
-                <a href={privacyUrl} target="_blank">{I18n.t("Footer.Privacy.COPY")}</a>
+                <a href={privacyUrl} target="_blank">{I18n.t("Footer.Privacy")}</a>
                 <span>|</span>
-                <a href={termsUrl} target="_blank">{I18n.t("Footer.Terms.COPY")}</a>
+                <a href={termsUrl} target="_blank">{I18n.t("Footer.Terms")}</a>
             </div>
-            <a href={helpUrl} target="_blank">{I18n.t("Footer.Help.COPY")}</a>
+            <a href={helpUrl} target="_blank">{I18n.t("Footer.Help")}</a>
         </div>
 
         <ul>
@@ -132,7 +132,7 @@
         </ul>
 
         <div class="info">
-            <span>{I18n.t("Footer.PoweredBy.COPY")}</span>
+            <span>{I18n.t("Footer.PoweredBy")}</span>
             <a href="https://www.surf.nl/" target="_blank">{@html surfLogo}</a>
         </div>
     </div>

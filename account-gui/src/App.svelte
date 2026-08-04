@@ -232,10 +232,10 @@
         </div>
         <Router url="{url}">
             <Route path="/useapp/:id" let:params>
-                <SubContent question={I18n.t("Login.NoAppAccess.COPY")}
-                            preLink={I18n.t("Login.UseAnother.COPY")}
+                <SubContent question={I18n.t("Login.NoAppAccess")}
+                            preLink={I18n.t("Login.UseAnother")}
                             isMfa={true}
-                            linkText={I18n.t("Login.OptionsLink.COPY")}
+                            linkText={I18n.t("Login.OptionsLink")}
                             route="/options/{params.id}"/>
             </Route>
         </Router>

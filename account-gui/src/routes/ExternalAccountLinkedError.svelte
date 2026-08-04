@@ -42,5 +42,5 @@
     <p class="last">{@html DOMPurify.sanitize(errorDescription)}</p>
 {/if}
 
-<Button label={I18n.t("Expired.Back.COPY")} href={`https://${$conf.baseDomain}`}
+<Button label={I18n.t("Expired.Back")} href={`https://${$conf.baseDomain}`}
         onClick={() => window.location.href = `https://${$conf.baseDomain}`}/>

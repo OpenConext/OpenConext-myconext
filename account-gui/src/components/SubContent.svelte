@@ -133,10 +133,10 @@
 {#if showModal}
     <Modal submit={() => showModal = false}
            cancel={() => mfaWarning(false)}
-           question={I18n.t("SubContent.Warning.COPY", {service: "test"})}
-           title={I18n.t("SubContent.WarningTitle.COPY")}
-           cancelLabel={I18n.t("SubContent.ConfirmLabel.COPY")}
-           confirmLabel={I18n.t("SubContent.CancelLabel.COPY")}>
+           question={I18n.t("SubContent.Warning", {service: "test"})}
+           title={I18n.t("SubContent.WarningTitle")}
+           cancelLabel={I18n.t("SubContent.ConfirmLabel")}
+           confirmLabel={I18n.t("SubContent.CancelLabel")}>
     </Modal>
 {/if}
 

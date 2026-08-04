@@ -162,7 +162,7 @@
 {#if wrongCode && !maxAttempts}
     <div class="error">
         <span class="svg">{@html critical}</span>
-        <span>{I18n.t("Sms.CodeIncorrect.COPY")}</span>
+        <span>{I18n.t("Sms.CodeIncorrect")}</span>
     </div>
 {/if}
 
@@ -170,13 +170,13 @@
     <div class="error">
         <span class="svg">{@html critical}</span>
         <div class="max-attempts">
-            <span>{I18n.t("Sms.MaxAttemptsPre.COPY")}</span>
+            <span>{I18n.t("Sms.MaxAttemptsPre")}</span>
             <a href="/phone"
-               on:click|preventDefault|stopPropagation={sendSMSAgain}>{I18n.t("Sms.Here.COPY")}</a>
+               on:click|preventDefault|stopPropagation={sendSMSAgain}>{I18n.t("Sms.Here")}</a>
             {#if reEnter}
-                <span>{I18n.t("Sms.MaxAttemptsPost.COPY")}</span>
+                <span>{I18n.t("Sms.MaxAttemptsPost")}</span>
             {:else}
-                <span>{I18n.t("Sms.MaxAttemptsPostNoReEnter.COPY")}</span>
+                <span>{I18n.t("Sms.MaxAttemptsPostNoReEnter")}</span>
             {/if}
         </div>
     </div>
@@ -184,8 +184,8 @@
 {#if rateLimited && showRateLimitedModal}
     <Modal submit={() => showRateLimitedModal = false}
            warning={true}
-           question={I18n.t("PhoneVerification.RateLimitedInfo.COPY")}
-           title={I18n.t("PhoneVerification.RateLimited.COPY")}
-           confirmTitle={I18n.t("PhoneVerification.Ok.COPY")}>
+           question={I18n.t("PhoneVerification.RateLimitedInfo")}
+           title={I18n.t("PhoneVerification.RateLimited")}
+           confirmTitle={I18n.t("PhoneVerification.Ok")}>
     </Modal>
 {/if}

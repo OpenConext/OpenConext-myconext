@@ -203,8 +203,8 @@
         </div>
         {#if showInstitutionOption}
             <div class="alert-info">
-                <p>{@html I18n.t("VerifyIdentity.VerifyViaDutchInstitution.Title.COPY")}</p>
-                <Button label={I18n.t("VerifyIdentity.VerifyViaDutchInstitution.Button.COPY")}
+                <p>{@html I18n.t("VerifyIdentity.VerifyViaDutchInstitution.Title")}</p>
+                <Button label={I18n.t("VerifyIdentity.VerifyViaDutchInstitution.Button")}
                         large={true}
                         disabled={busyProcessing}
                         onClick={() => proceed(addInstitution)}/>
@@ -213,10 +213,10 @@
         {#if otherOptionsAllowed}
             {#if showInstitutionOption}
                 <div class="info-id-verify-container">
-                    <p>{@html I18n.t("VerifyIdentity.VerifyViaOptions.Title.COPY")}</p>
+                    <p>{@html I18n.t("VerifyIdentity.VerifyViaOptions.Title")}</p>
                 </div>
             {/if}
-            <Button label={I18n.t("VerifyIdentity.VerifyWithBankApp.Button.COPY")}
+            <Button label={I18n.t("VerifyIdentity.VerifyWithBankApp.Button")}
                     icon={idinSvg}
                     disabled={busyProcessing}
                     large={true}
@@ -224,7 +224,7 @@
                     className="secondary"
                     big="true"
             />
-            <Button label={I18n.t("VerifyIdentity.VerifyWithAEuropianId.Button.COPY")}
+            <Button label={I18n.t("VerifyIdentity.VerifyWithAEuropianId.Button")}
                     icon={eIDASSvg}
                     disabled={busyProcessing}
                     large={true}
@@ -250,7 +250,7 @@
             <span class="back" on:click={() => showBankOptions = !showBankOptions}>
                 {@html arrowLeftIcon}
             </span>
-                <h2 class="header">{I18n.t("VerifyIdentity.VerifyWithBankApp.Button.COPY")}</h2>
+                <h2 class="header">{I18n.t("VerifyIdentity.VerifyWithBankApp.Button")}</h2>
             </div>
             <p>{@html I18n.t("verify.modal.bank.disclaimer")}</p>
         </div>
@@ -269,7 +269,7 @@
         {@html alertSvg}
         <span>{I18n.t("verify.modal.bank.anotherMethodPrefix")}
             <a href="/#" on:click|preventDefault|stopPropagation={() => showBankOptions = !showBankOptions}>
-                {I18n.t("SelectYourBank.BankNotInList.HighlightedPart.COPY")}
+                {I18n.t("SelectYourBank.BankNotInList.HighlightedPart")}
             </a>
         </span>
     </div>

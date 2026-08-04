@@ -1,7 +1,6 @@
-import en from "./js/en/strings.json";
-import nl from "./js/nl/strings.json";
+import en from "./en";
+import nl from "./nl";
 import {reportError} from "../api";
-import I18nLocal from "./I18nRemote";
 
 
 const translations = {
@@ -18,23 +17,27 @@ const format = (msg, ...args) => {
     return result;
 };
 
+const resolveTranslation = (dictionary, key) => {
+    return key.split(".").reduce((value, part) => {
+        if (!value || typeof value !== "object") {
+            return undefined;
+        }
+        return value[part];
+    }, dictionary);
+};
+
 let locale = "en"
 
 const I18n = {
     changeLocale: lang => {
         locale = lang;
-        I18nLocal.locale = lang;
     },
     currentLocale: () => locale,
     t: (key, model = {}, fallback = null) => {
-        const msg = translations[locale][key]
+        const msg = resolveTranslation(translations[locale], key)
         if (!msg) {
             if (fallback) {
                 return fallback;
-            }
-            const oldTranslation = I18nLocal.t(key, model);
-            if (oldTranslation) {
-                return oldTranslation;
             }
             reportError({"Missing translation": `${key} in ${locale} translation`});
             return `[missing "${key}" translation]`;

@@ -65,10 +65,10 @@
             {@html eduidLogo}
         </a>
     </div>
-    <h1>{I18n.t("Header.Title.COPY")}</h1>
+    <h1>{I18n.t("Header.Title")}</h1>
     {#if !$user.guest}
         <div class="logout">
-            <Button href="/logout" label={I18n.t("Header.Logout.COPY")} onClick={logoutUser}
+            <Button href="/logout" label={I18n.t("Header.Logout")} onClick={logoutUser}
                     medium={true}
                     className="cancel"/>
         </div>

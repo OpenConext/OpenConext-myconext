@@ -196,19 +196,19 @@
     {#if showSpinner}
         <Spinner/>
     {:else if timeOut}
-        <h2 class="header">{I18n.t("UseApp.TimeOut.COPY")}</h2>
+        <h2 class="header">{I18n.t("UseApp.TimeOut")}</h2>
         <p class="time-out">
-            <span>{I18n.t("UseApp.TimeOutInfoFirst.COPY")}</span>
+            <span>{I18n.t("UseApp.TimeOutInfoFirst")}</span>
             <a href="/"
-               on:click|preventDefault|stopPropagation={() => window.location.reload(true)}>{I18n.t("UseApp.TimeOutInfoLink.COPY")}</a>
-            <span>{I18n.t("UseApp.TimeOutInfoLast.COPY")}</span>
+               on:click|preventDefault|stopPropagation={() => window.location.reload(true)}>{I18n.t("UseApp.TimeOutInfoLink")}</a>
+            <span>{I18n.t("UseApp.TimeOutInfoLast")}</span>
         </p>
     {:else}
         {#if showQrCode}
-            <h2 class="header">{I18n.t("UseApp.Scan.COPY")}</h2>
+            <h2 class="header">{I18n.t("UseApp.Scan")}</h2>
         {:else}
-            <h2 class="header">{I18n.t("UseApp.Header.COPY")}</h2>
-            <p class="explanation">{I18n.t("UseApp.Info.COPY")}</p>
+            <h2 class="header">{I18n.t("UseApp.Header")}</h2>
+            <p class="explanation">{I18n.t("UseApp.Info")}</p>
         {/if}
         <ImageContainer icon={showQrCode ? null : pushIcon} margin={!showQrCode}>
             {#if showQrCode}
@@ -221,7 +221,7 @@
                             <Button href={url}
                                     onClick={() => window.location.href = url}
                                     larger={true}
-                                    label={I18n.t("UseApp.OpenEduIDApp.COPY")}/>
+                                    label={I18n.t("UseApp.OpenEduIDApp")}/>
                         </div>
                     </div>
                 {:else}
@@ -232,9 +232,9 @@
 
         {#if showQrCode}
             <div class="info-row">
-            <span class:on-mobile={onMobile}>{I18n.t("UseApp.Offline.COPY")}
+            <span class:on-mobile={onMobile}>{I18n.t("UseApp.Offline")}
                 <a href="/qr"
-                   on:click|preventDefault|stopPropagation={toggleShowTOTPLink}>{I18n.t("UseApp.OfflineLink.COPY")}</a>
+                   on:click|preventDefault|stopPropagation={toggleShowTOTPLink}>{I18n.t("UseApp.OfflineLink")}</a>
             </span>
             </div>
             {#if showTOTPLink}
@@ -256,23 +256,23 @@
                 {#if wrongResponse}
                     <div class="error">
                         <span class="svg">{@html critical}</span>
-                        <span>{I18n.t("UseApp.ResponseIncorrect.COPY")}</span>
+                        <span>{I18n.t("UseApp.ResponseIncorrect")}</span>
                     </div>
                 {/if}
             {/if}
         {:else}
             <div class="info-row">
                 <span>
-                    <span class="note">{I18n.t("UseApp.NoNotification.COPY")}</span>
+                    <span class="note">{I18n.t("UseApp.NoNotification")}</span>
                     <a href="/qr"
-                       on:click|preventDefault|stopPropagation={() => showQrCode = !showQrCode}>{I18n.t("UseApp.QrCodeLink.COPY")}</a>
-                    <span>{I18n.t("UseApp.QrCodePostfix.COPY")}</span>
+                       on:click|preventDefault|stopPropagation={() => showQrCode = !showQrCode}>{I18n.t("UseApp.QrCodeLink")}</a>
+                    <span>{I18n.t("UseApp.QrCodePostfix")}</span>
                 </span>
             </div>
             <div class="info-row">
                 <span>
-                    <span class="note">{I18n.t("UseApp.Lost.COPY")}</span>
-                    {@html I18n.t("UseApp.LostLink.COPY")}
+                    <span class="note">{I18n.t("UseApp.Lost")}</span>
+                    {@html I18n.t("UseApp.LostLink")}
                 </span>
             </div>
         {/if}
@@ -280,16 +280,16 @@
             <div class="error">
                 <span class="svg">{@html critical}</span>
                 <div class="suspended">
-                    <span>{I18n.t("UseApp.SuspendedResult.COPY")}</span>
+                    <span>{I18n.t("UseApp.SuspendedResult")}</span>
                     {#if minutes > 0}
-                        <span>{I18n.t("UseApp.AccountSuspended.COPY",
+                        <span>{I18n.t("UseApp.AccountSuspended",
                             {
                                 minutes: minutes,
                                 plural: I18n.t(`useApp.${minutes === 1 ? "minute" : "minutes"}`)
                             }
                         )}</span>
                     {:else}
-                        <span>{I18n.t("UseApp.AccountNotSuspended.COPY")}</span>
+                        <span>{I18n.t("UseApp.AccountNotSuspended")}</span>
                     {/if}
                 </div>
             </div>

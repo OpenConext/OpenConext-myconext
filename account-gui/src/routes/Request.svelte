@@ -272,46 +272,46 @@
     <Spinner/>
 {/if}
 <form on:keydown={(e) => e.key === 'Enter' && e.preventDefault()}>
-    <h2 class="header">{I18n.t("Login.RequestHeader.COPY")}</h2>
+    <h2 class="header">{I18n.t("Login.RequestHeader")}</h2>
 
-    <h2 class="top">{I18n.t("Login.RequestSubHeader.COPY")}</h2>
+    <h2 class="top">{I18n.t("Login.RequestSubHeader")}</h2>
 
-    <label for="email" class="pre-input-label">{I18n.t("LinkFromInstitution.Email.COPY")}</label>
+    <label for="email" class="pre-input-label">{I18n.t("LinkFromInstitution.Email")}</label>
     <input type="email"
            autocomplete="username"
            id="email"
            spellcheck="false"
            class:error={emailForbidden}
-           placeholder={I18n.t("LinkFromInstitution.EmailPlaceholder.COPY")}
+           placeholder={I18n.t("LinkFromInstitution.EmailPlaceholder")}
            use:init
            on:input={handleInput}
            value={$user.email}
            on:blur={handleEmailBlur}>
     {#if !initial && !validEmail($user.email)}
         <div class="error"><span
-                class="svg">{@html critical}</span><span>{I18n.t("LinkFromInstitution.InvalidEmail.COPY")}</span></div>
+                class="svg">{@html critical}</span><span>{I18n.t("LinkFromInstitution.InvalidEmail")}</span></div>
     {/if}
     {#if emailInUse}
 
         <div class="message-email-in-use">
             <Alert
-                    message={I18n.t("Login.EmailInUse1.COPY")}
+                    message={I18n.t("Login.EmailInUse1")}
                     alertType={AlertType.Warning}
                     class="message-email-in-use"
             />
         </div>
         <Button href={`/login/${id}`}
-                label={I18n.t("Login.LoginWithThisEmail.COPY")}
+                label={I18n.t("Login.LoginWithThisEmail")}
                 useLink="true"/>
 
         <div class="or-divider">
             <div class="stripe"></div>
-            <span class="or-divider-text">{I18n.t("Login.OrDivider.COPY")}</span>
+            <span class="or-divider-text">{I18n.t("Login.OrDivider")}</span>
             <div class="stripe"></div>
         </div>
 
         <Button href="/"
-                label={I18n.t("Login.TryOtherEmail.COPY")}
+                label={I18n.t("Login.TryOtherEmail")}
                 onClick={otherEmail}
                 className="secondary"
         />
@@ -321,13 +321,13 @@
         <div class="error">
             <span class="svg">{@html critical}</span>
             <div>
-                <span>{@html I18n.t("LinkFromInstitution.EmailForbidden.COPY")}</span>
+                <span>{@html I18n.t("LinkFromInstitution.EmailForbidden")}</span>
             </div>
         </div>
     {/if}
     {#if $domains.institutionDomainNameWarning && !emailInUse}
         <Alert
-                message={I18n.t("LinkFromInstitution.InstitutionDomainNameWarning.COPY")}
+                message={I18n.t("LinkFromInstitution.InstitutionDomainNameWarning")}
                 alertType={AlertType.Warning}
         />
     {/if}
@@ -336,39 +336,39 @@
         <div class="domain-not-allowed">
             <span class="svg error">{@html critical}</span>
             <div class="text">
-                <span>{I18n.t("Login.AllowedDomainNamesError.COPY",
+                <span>{I18n.t("Login.AllowedDomainNamesError",
                     {domain: $user.email.substring($user.email.indexOf("@") + 1)})}</span>
                 <br/>
-                <span>{I18n.t("LinkFromInstitution.AllowedDomainNamesError2.COPY")}</span>
+                <span>{I18n.t("LinkFromInstitution.AllowedDomainNamesError2")}</span>
             </div>
         </div>
 
     {/if}
     <div hidden={emailInUse}>
-        <label for="given-name" class="pre-input-label">{I18n.t("Profile.FirstName.COPY")}</label>
+        <label for="given-name" class="pre-input-label">{I18n.t("Profile.FirstName")}</label>
         <input type="text"
                id="given-name"
-               placeholder={I18n.t("Login.GivenNamePlaceholder.COPY")}
+               placeholder={I18n.t("Login.GivenNamePlaceholder")}
                spellcheck="false"
                on:input={updateGivenName}
                on:blur={handleGivenNameBlur}>
         {#if !initial && !$user.givenName}
-            <span class="error">{I18n.t("Login.RequiredAttribute.COPY", {attr: I18n.t("Profile.FirstName.COPY")})}</span>
+            <span class="error">{I18n.t("Login.RequiredAttribute", {attr: I18n.t("Profile.FirstName")})}</span>
         {/if}
-        <label for="family-name" class="pre-input-label">{I18n.t("Profile.LastName.COPY")}</label>
+        <label for="family-name" class="pre-input-label">{I18n.t("Profile.LastName")}</label>
         <input type="text"
                id="family-name"
                spellcheck="false"
-               placeholder={I18n.t("Login.FamilyNamePlaceholder.COPY")}
+               placeholder={I18n.t("Login.FamilyNamePlaceholder")}
                on:input={updateFamilyName}
                on:blur={handleFamilyNameBlur}>
         {#if !initial && !$user.familyName}
-            <span class="error">{I18n.t("Login.RequiredAttribute.COPY", {attr: I18n.t("Profile.LastName.COPY")})}</span>
+            <span class="error">{I18n.t("Login.RequiredAttribute", {attr: I18n.t("Profile.LastName")})}</span>
         {/if}
         <div class="controls">
             <CheckBox value={agreedWithTerms}
                       className="light"
-                      label={I18n.t("LinkFromInstitution.AgreeWithTerms.COPY")}
+                      label={I18n.t("LinkFromInstitution.AgreeWithTerms")}
                       onChange={val => agreedWithTerms = val}/>
             {#if !initial && !agreedWithTerms}
                 <span class="error">{I18n.t("login.termsRequired")}</span>
@@ -380,14 +380,14 @@
             <Button disabled={!initial && (showSpinner || !allowedNext($user.email, $user.familyName, $user.givenName, agreedWithTerms))}
                     href="/magic"
                     className="full"
-                    label={I18n.t("LinkFromInstitution.RequestEduIdButton.COPY")}
+                    label={I18n.t("LinkFromInstitution.RequestEduIdButton")}
                     onClick={handleNext}/>
         </div>
     </div>
 </form>
 <div hidden={emailInUse}>
-    <SubContent question={I18n.t("Login.AlreadyGuestAccount.COPY")}
-                linkText={I18n.t("Login.LoginEduId.COPY")}
+    <SubContent question={I18n.t("Login.AlreadyGuestAccount")}
+                linkText={I18n.t("Login.LoginEduId")}
                 route="/login/{id}"
                 interContent="true"/>
 </div>

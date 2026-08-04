@@ -107,8 +107,8 @@
 <div class="footer">
     <div class="inner">
         <div class="help">
-            <a class="white" href={termsUrl} target="_blank">{I18n.t("Footer.Terms.COPY")}</a>
-            <a class="white" href={privacyUrl} target="_blank">{I18n.t("Footer.Privacy.COPY")}</a>
+            <a class="white" href={termsUrl} target="_blank">{I18n.t("Footer.Terms")}</a>
+            <a class="white" href={privacyUrl} target="_blank">{I18n.t("Footer.Privacy")}</a>
         </div>
 
         <ul>
@@ -121,7 +121,7 @@
         </ul>
 
         <div class="info">
-            <span>{I18n.t("Footer.PoweredBy.COPY")}</span>
+            <span>{I18n.t("Footer.PoweredBy")}</span>
             <a href="https://surf.nl" target="_blank">{@html surfLogo}</a>
         </div>
     </div>

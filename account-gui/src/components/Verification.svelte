@@ -36,11 +36,11 @@
     }
 </style>
 {#if verified}
-    <p class="info">{I18n.t("ConfirmStepup.ConditionMet.COPY")}</p>
+    <p class="info">{I18n.t("ConfirmStepup.ConditionMet")}</p>
 {/if}
 <div class="conditions-container">
     <p class="conditions">
-        {@html verified ? I18n.t(`StepUpVerification.${capitalizeForLocalizationsFile(explanation)}.COPY`) : (DOMPurify.sanitize(explanationText) || I18n.t(`StepUpExplanation.${capitalizeForLocalizationsFile(explanation)}.COPY`))}
+        {@html verified ? I18n.t(`StepUpVerification.${capitalizeForLocalizationsFile(explanation)}`) : (DOMPurify.sanitize(explanationText) || I18n.t(`StepUpExplanation.${capitalizeForLocalizationsFile(explanation)}`))}
     </p>
     <span class="icon">{@html verified ? oneMoreThingFilled : oneMoreThingEmpty}</span>
 

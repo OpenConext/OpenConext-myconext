@@ -132,8 +132,8 @@
     <Spinner/>
 {/if}
 
-<h2 class="header">{I18n.t("Sms.Header.COPY")}</h2>
-<p class="explanation">{I18n.t("Sms.Info.COPY")}</p>
+<h2 class="header">{I18n.t("Sms.Header")}</h2>
+<p class="explanation">{I18n.t("Sms.Info")}</p>
 <div class="totp-value-container" class:with-error={wrongCode || maxAttempts}>
 
     {#each Array(6).fill("") as val, index}
@@ -156,7 +156,7 @@
 {#if wrongCode && !maxAttempts}
     <div class="error">
         <span class="svg">{@html critical}</span>
-        <span>{I18n.t("Sms.CodeIncorrect.COPY")}</span>
+        <span>{I18n.t("Sms.CodeIncorrect")}</span>
     </div>
 {/if}
 
@@ -164,10 +164,10 @@
     <div class="error">
         <span class="svg">{@html critical}</span>
         <div class="max-attempts">
-            <span>{I18n.t("Sms.MaxAttemptsPre.COPY")}</span>
+            <span>{I18n.t("Sms.MaxAttemptsPre")}</span>
             <a href="/phone"
-               on:click|preventDefault|stopPropagation={() => navigate(`/phone-verification?h=${hash}`)}>{I18n.t("Sms.Here.COPY")}</a>
-            <span>{I18n.t("Sms.MaxAttemptsPost.COPY")}</span>
+               on:click|preventDefault|stopPropagation={() => navigate(`/phone-verification?h=${hash}`)}>{I18n.t("Sms.Here")}</a>
+            <span>{I18n.t("Sms.MaxAttemptsPost")}</span>
         </div>
     </div>
 {/if}
@@ -176,7 +176,7 @@
     <Button className="cancel"
             href="/sms"
             disabled={rateLimited}
-            label={I18n.t("Sms.SendSMSAgain.COPY")}
+            label={I18n.t("Sms.SendSMSAgain")}
             onClick={sendSMSAgain}/>
 </div>
 

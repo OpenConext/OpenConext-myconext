@@ -117,12 +117,12 @@
         {/if}
         </span>
         <div class="role">
-            <p>{affiliations || I18n.t("Profile.Student.COPY")}
+            <p>{affiliations || I18n.t("Profile.Student")}
                 {#if linkedAccount.expired}
                     <span class="expired">{` (${I18n.t("profile.expired")})`}</span>
                 {/if}
             </p>
-            <span>{I18n.t("Profile.InstitutionAt.COPY", {name: institutionName(linkedAccount)})}</span>
+            <span>{I18n.t("Profile.InstitutionAt", {name: institutionName(linkedAccount)})}</span>
         </div>
 
         <span class="icon" class:show-drop-down={!showDropDown}>

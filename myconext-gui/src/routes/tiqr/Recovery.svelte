@@ -66,11 +66,11 @@
         {:else}
             <h2 class="header">{I18n.t(`recovery.${change ? "changeHeader" : "header"}`)}</h2>
             <p class="explanation">{I18n.t(`recovery.${change ? "changeInfo" : "info"}`)}</p>
-            <p class="methods">{I18n.t("Recovery.Methods.COPY")}</p>
+            <p class="methods">{I18n.t("Recovery.Methods")}</p>
             <div class="phone-number">
                 <LoginOption icon={phoneIcon}
-                             label={I18n.t("Recovery.PhoneNumber.COPY")}
-                             subLabel={I18n.t("Recovery.PhoneNumberInfo.COPY")}
+                             label={I18n.t("Recovery.PhoneNumber")}
+                             subLabel={I18n.t("Recovery.PhoneNumberInfo")}
                              action={phoneNumber}
                              index={1}
                              preferred={true}/>

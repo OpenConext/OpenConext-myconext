@@ -7,7 +7,7 @@
 
     export let onConfirmed;
     export let onClose;
-    export let title = I18n.t("UseApp.ConfirmSecondFactor.COPY");
+    export let title = I18n.t("UseApp.ConfirmSecondFactor");
 
     const handleDone = ({status, sessionKey}) => {
         onClose();

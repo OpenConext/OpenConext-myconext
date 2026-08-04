@@ -74,24 +74,24 @@
 </style>
 <div class="backup-codes">
     <Flash/>
-    <h2>{I18n.t("Security.Tiqr.BackupCodes.COPY")}</h2>
-    <p class="info">{I18n.t("BackupCodes.Info.COPY")}</p>
+    <h2>{I18n.t("Security.Tiqr.BackupCodes")}</h2>
+    <p class="info">{I18n.t("BackupCodes.Info")}</p>
     <div class="tiqr-app">
         <table cellspacing="0" class="no-bottom-margin">
             <thead></thead>
             <tbody>
             <tr>
-                <td class="attr">{I18n.t("Security.Tiqr.BackupCodes.COPY")}</td>
+                <td class="attr">{I18n.t("Security.Tiqr.BackupCodes")}</td>
                 <td class="value">{I18n.t(`security.tiqr.${$user.registration.recoveryCode ? "code" : "sms"}`)}</td>
             </tr>
             {#if $user.registration.phoneVerified}
                 <tr>
-                    <td class="attr last">{I18n.t("BackupCodes.PhoneNumber.COPY")}</td>
+                    <td class="attr last">{I18n.t("BackupCodes.PhoneNumber")}</td>
                     <td class="value last">{`** ** *** ${$user.registration.phoneNumber}`}</td>
                 </tr>
             {:else}
                 <tr>
-                    <td class="attr last">{I18n.t("BackupCodes.Code.COPY")}</td>
+                    <td class="attr last">{I18n.t("BackupCodes.Code")}</td>
                     <td class="value last">{"**** ****"}</td>
                 </tr>
             {/if}
@@ -99,8 +99,8 @@
         </table>
     </div>
     <div class="options">
-        <Button className="cancel" label={I18n.t("YourVerifiedInformation.ConfirmRemoval.Button.Cancel.COPY")} onClick={cancel}/>
-        <Button label={I18n.t("BackupCodes.StartTiqrAuthentication.COPY")}
+        <Button className="cancel" label={I18n.t("YourVerifiedInformation.ConfirmRemoval.Button.Cancel")} onClick={cancel}/>
+        <Button label={I18n.t("BackupCodes.StartTiqrAuthentication")}
                 onClick={doStartTiqrAuthentication}/>
     </div>
 </div>

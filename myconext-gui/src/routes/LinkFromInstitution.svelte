@@ -207,32 +207,32 @@
 
     <div class="inner">
 
-        <h2 class="header">{I18n.t("LinkFromInstitution.Header.COPY", {name: `${userInfo.given_name}`})}</h2>
-        <p>{I18n.t("LinkFromInstitution.Info.COPY")}</p>
+        <h2 class="header">{I18n.t("LinkFromInstitution.Header", {name: `${userInfo.given_name}`})}</h2>
+        <p>{I18n.t("LinkFromInstitution.Info")}</p>
         <input type="email"
                autocomplete="username"
                id="email"
                spellcheck="false"
                class:error={emailInUse || emailForbidden}
-               placeholder={I18n.t("LinkFromInstitution.EmailPlaceholder.COPY")}
+               placeholder={I18n.t("LinkFromInstitution.EmailPlaceholder")}
                use:init
                on:input={updateEmail}
                on:blur={handleEmailBlur}>
         {#if !initial && !validEmail($user.email)}
             <div class="error">
                 <span class="svg">{@html critical}</span>
-                <span>{I18n.t("LinkFromInstitution.InvalidEmail.COPY")}</span>
+                <span>{I18n.t("LinkFromInstitution.InvalidEmail")}</span>
             </div>
         {/if}
         {#if emailInUse}
             <div class="error">
                 <span class="svg">{@html critical}</span>
                 <div>
-                    <span>{I18n.t("LinkFromInstitution.EmailInUse1.COPY")}</span>
-                    <span>{I18n.t("LinkFromInstitution.EmailInUse2.COPY")}</span>
+                    <span>{I18n.t("LinkFromInstitution.EmailInUse1")}</span>
+                    <span>{I18n.t("LinkFromInstitution.EmailInUse2")}</span>
                     <a href="/next"
                        on:click|preventDefault|stopPropagation={() => handleNext(false)}>
-                        {I18n.t("LinkFromInstitution.EmailInUse3.COPY")}
+                        {I18n.t("LinkFromInstitution.EmailInUse3")}
                     </a>
                 </div>
             </div>
@@ -241,7 +241,7 @@
             <div class="error">
                 <span class="svg">{@html critical}</span>
                 <div>
-                    <span>{@html I18n.t("LinkFromInstitution.EmailForbidden.COPY")}</span>
+                    <span>{@html I18n.t("LinkFromInstitution.EmailForbidden")}</span>
                 </div>
             </div>
         {/if}
@@ -249,9 +249,9 @@
             <div class="institution-warning">
                 <span class="svg attention">{@html attention}</span>
                 <div class="text">
-                    <span>{I18n.t("LinkFromInstitution.InstitutionDomainNameWarning.COPY")}</span>
+                    <span>{I18n.t("LinkFromInstitution.InstitutionDomainNameWarning")}</span>
                     <br/>
-                    <span>{I18n.t("LinkFromInstitution.InstitutionDomainNameWarning2.COPY")}</span>
+                    <span>{I18n.t("LinkFromInstitution.InstitutionDomainNameWarning2")}</span>
                 </div>
             </div>
 
@@ -261,10 +261,10 @@
             <div class="domain-not-allowed">
                 <span class="svg error">{@html critical}</span>
                 <div class="text">
-            <span>{I18n.t("LinkFromInstitution.AllowedDomainNamesError.COPY",
+            <span>{I18n.t("LinkFromInstitution.AllowedDomainNamesError",
                 {domain: $user.email.substring($user.email.indexOf("@") + 1)})}</span>
                     <br/>
-                    <span>{I18n.t("LinkFromInstitution.AllowedDomainNamesError2.COPY")}</span>
+                    <span>{I18n.t("LinkFromInstitution.AllowedDomainNamesError2")}</span>
                 </div>
             </div>
 
@@ -273,13 +273,13 @@
         <CheckBox value={agreedWithTerms}
                   className="light"
                   terms={true}
-                  label={I18n.t("LinkFromInstitution.AgreeWithTerms.COPY")}
+                  label={I18n.t("LinkFromInstitution.AgreeWithTerms")}
                   onChange={val => agreedWithTerms = val}/>
         <div class="actions">
             <Button disabled={showSpinner || !allowedNext($user.email, agreedWithTerms)}
                     href="/finish"
                     large={true}
-                    label={I18n.t("LinkFromInstitution.RequestEduIdButton.COPY")}
+                    label={I18n.t("LinkFromInstitution.RequestEduIdButton")}
                     onClick={handleNext}/>
 
         </div>

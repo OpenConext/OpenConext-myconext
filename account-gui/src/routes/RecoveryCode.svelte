@@ -21,7 +21,7 @@
     const onConfirmRefresh = e => {
         e.preventDefault();
         window.removeEventListener("beforeunload", onConfirmRefresh, {capture: true});
-        return e.returnValue = I18n.t("Recovery.LeaveConfirmation.COPY");
+        return e.returnValue = I18n.t("Recovery.LeaveConfirmation");
     }
 
     const handlePopState = (event) => {
@@ -104,8 +104,8 @@
 {#if showSpinner}
     <Spinner/>
 {/if}
-<h2 class="header">{I18n.t("Recovery.Save.COPY")}</h2>
-<p class="explanation">{I18n.t("Recovery.Active.COPY")}</p>
+<h2 class="header">{I18n.t("Recovery.Save")}</h2>
+<p class="explanation">{I18n.t("Recovery.Active")}</p>
 <div class="recovery-code">
     <span>{recoveryCode}</span>
 </div>
@@ -113,11 +113,11 @@
     <Button onClick={copyToClipboard}
             href={"/copy"}
             className="full"
-            label={copied ? I18n.t("Recovery.Copied.COPY") : I18n.t("Recovery.Copy.COPY")}/>
+            label={copied ? I18n.t("Recovery.Copied") : I18n.t("Recovery.Copy")}/>
     <Button onClick={next}
             className="cancel full"
             href={"/next"}
-            label={I18n.t("Recovery.Continue.COPY")}/>
+            label={I18n.t("Recovery.Continue")}/>
 </div>
 {#if showModalBackButton}
     <Modal submit={() => {

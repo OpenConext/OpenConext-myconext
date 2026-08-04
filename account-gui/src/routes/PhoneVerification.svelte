@@ -126,16 +126,16 @@
             href={"/next"}
             label={I18n.t("recovery.next")}/>
 {:else}
-    <h2 class="header">{I18n.t("PhoneVerification.Header.COPY")}</h2>
+    <h2 class="header">{I18n.t("PhoneVerification.Header")}</h2>
     <p class="explanation">{I18n.t("phoneVerification.info")}</p>
-    <p class="methods">{I18n.t("PhoneVerification.Text.COPY")}</p>
+    <p class="methods">{I18n.t("PhoneVerification.Text")}</p>
 
     <input class:error={phoneNumberIncorrect}
            autocomplete="current-password"
            id="password-field"
            spellcheck="false"
            on:keydown={handleEnter}
-           placeholder={I18n.t("PhoneVerification.PlaceHolder.COPY")}
+           placeholder={I18n.t("PhoneVerification.PlaceHolder")}
            use:init
            bind:value={phoneNumber}>
     {#if phoneNumberIncorrect}
@@ -147,7 +147,7 @@
 
     <Button href="/next"
             disabled={showSpinner || !allowedNext || rateLimited}
-            label={I18n.t("PhoneVerification.Verify.COPY")}
+            label={I18n.t("PhoneVerification.Verify")}
             className="full"
             onClick={next}/>
 

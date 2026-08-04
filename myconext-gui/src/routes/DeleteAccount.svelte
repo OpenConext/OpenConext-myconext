@@ -107,15 +107,15 @@
 
 <div class="account">
 
-    <h2>{I18n.t("Account.TitleDelete.COPY")}</h2>
-    <p class="divider">{I18n.t("Account.Info1.COPY")}</p>
-    <p class="divider">{I18n.t("Account.Info2.COPY")}</p>
-    <p class="divider">{I18n.t("Account.Info3.COPY")}</p>
-    <p class="divider">{I18n.t("Account.Info4.COPY")}</p>
+    <h2>{I18n.t("Account.TitleDelete")}</h2>
+    <p class="divider">{I18n.t("Account.Info1")}</p>
+    <p class="divider">{I18n.t("Account.Info2")}</p>
+    <p class="divider">{I18n.t("Account.Info3")}</p>
+    <p class="divider">{I18n.t("Account.Info4")}</p>
     <div class="options">
-        <Button href="/cancel" label={I18n.t("YourVerifiedInformation.ConfirmRemoval.Button.Cancel.COPY")}
+        <Button href="/cancel" label={I18n.t("YourVerifiedInformation.ConfirmRemoval.Button.Cancel")}
                 onClick={() => navigate("/account")} className="cancel"/>
-        <Button href="/delete" label={I18n.t("Account.Delete.COPY")}
+        <Button href="/delete" label={I18n.t("Account.Delete")}
                 large={true}
                 onClick={() => showModal = true}/>
     </div>
@@ -129,18 +129,18 @@
         <Modal submit={() => startDeleteUserFlow()}
                cancel={() => showModal = false}
                warning={true}
-               confirmTitle={I18n.t("YourVerifiedInformation.ConfirmRemoval.Button.YesDelete.COPY")}
+               confirmTitle={I18n.t("YourVerifiedInformation.ConfirmRemoval.Button.YesDelete")}
                disableSubmit={disableDeleteButton(name)}
-               title={I18n.t("ConfirmDelete.Title.COPY")}>
+               title={I18n.t("ConfirmDelete.Title")}>
             <div class="slot">
                 <div class="warning-box">
                     <span>{@html critical}</span>
-                    <span>{I18n.t("ConfirmDelete.Disclaimer.COPY")}</span>
+                    <span>{I18n.t("ConfirmDelete.Disclaimer")}</span>
                 </div>
-                <p>{I18n.t("Account.Proceed.COPY")}</p>
+                <p>{I18n.t("Account.Proceed")}</p>
                 <label for="name">{I18n.t("account.confirmation")}</label>
                 <input id="name"
-                       placeholder={I18n.t("Profile.RemoveServicePrompt.Delete.COPY")}
+                       placeholder={I18n.t("Profile.RemoveServicePrompt.Delete")}
                        type="text"
                        spellcheck="false"
                        bind:value={name}/>

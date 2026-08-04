@@ -129,16 +129,16 @@
                 </p>
             {/if}
         {:else}
-            <h2 class="header">{I18n.t("PhoneVerification.Header.COPY")}</h2>
+            <h2 class="header">{I18n.t("PhoneVerification.Header")}</h2>
             <p class="explanation">{I18n.t("phoneVerification.info")}</p>
-            <p class="methods">{I18n.t("PhoneVerification.Text.COPY")}</p>
+            <p class="methods">{I18n.t("PhoneVerification.Text")}</p>
 
             <input class:error={phoneNumberIncorrect}
                    type="tel"
                    id="password-field"
                    spellcheck="false"
                    on:keydown={handleEnter}
-                   placeholder={I18n.t("PhoneVerification.PlaceHolder.COPY")}
+                   placeholder={I18n.t("PhoneVerification.PlaceHolder")}
                    use:init
                    bind:value={phoneNumber}>
             {#if phoneNumberIncorrect}
@@ -151,7 +151,7 @@
             <Button href="/next"
                     larger={true}
                     disabled={showSpinner || !allowedNext}
-                    label={I18n.t("PhoneVerification.Verify.COPY")}
+                    label={I18n.t("PhoneVerification.Verify")}
                     onClick={next}/>
         {/if}
     </div>
@@ -160,8 +160,8 @@
 {#if rateLimited && showRateLimitedModal}
     <Modal submit={() => showRateLimitedModal = false}
            warning={true}
-           question={I18n.t("PhoneVerification.RateLimitedInfo.COPY")}
-           title={I18n.t("PhoneVerification.RateLimited.COPY")}
-           confirmTitle={I18n.t("PhoneVerification.Ok.COPY")}>
+           question={I18n.t("PhoneVerification.RateLimitedInfo")}
+           title={I18n.t("PhoneVerification.RateLimited")}
+           confirmTitle={I18n.t("PhoneVerification.Ok")}>
     </Modal>
 {/if}

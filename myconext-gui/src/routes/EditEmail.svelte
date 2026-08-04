@@ -35,7 +35,7 @@
                     .then(() => {
                         hasCodeValidation = true;
                         showCodeValidation = true;
-                        flash.setValue(I18n.t("Email.UpdatedVerified.COPY", {email: verifiedEmail}), 6500);
+                        flash.setValue(I18n.t("Email.UpdatedVerified", {email: verifiedEmail}), 6500);
                         setTimeout(() => allowedToResend = true, resendMailAllowedTimeOut);
                     }).catch(e => {
                     if (e.status === 409) {
@@ -184,9 +184,9 @@
 
 </style>
 <div class="email">
-    <h2>{I18n.t("Email.Title.Edit.COPY")}</h2>
+    <h2>{I18n.t("Email.Title.Edit")}</h2>
     <p class="info">{I18n.t("email.info")}</p>
-    <label for="verifiedEmail">{I18n.t("Email.Info.COPY")}</label>
+    <label for="verifiedEmail">{I18n.t("Email.Info")}</label>
     <input id="verifiedEmail"
            class:error={emailEquality || duplicateEmail}
            type="email"
@@ -195,19 +195,19 @@
     {#if emailEquality}
         <div class="error">
             <span class="svg">{@html critical}</span>
-            <span class="error">{I18n.t("Email.EmailEquality.COPY")}</span>
+            <span class="error">{I18n.t("Email.EmailEquality")}</span>
         </div>
     {/if}
     {#if duplicateEmail}
         <div class="error">
             <span class="svg">{@html critical}</span>
-            <span class="error">{I18n.t("Email.DuplicateEmail.COPY")}</span>
+            <span class="error">{I18n.t("Email.DuplicateEmail")}</span>
         </div>
     {/if}
     <div class="options">
-        <Button className="cancel" label={I18n.t("YourVerifiedInformation.ConfirmRemoval.Button.Cancel.COPY")}
+        <Button className="cancel" label={I18n.t("YourVerifiedInformation.ConfirmRemoval.Button.Cancel")}
                 onClick={cancel}/>
-        <Button label={I18n.t("Email.Update.COPY")} onClick={update}
+        <Button label={I18n.t("Email.Update")} onClick={update}
                 disabled={!validEmail(verifiedEmail) || emailEquality}/>
     </div>
 </div>
@@ -215,36 +215,36 @@
     <Modal submit={() => update(true)}
            cancel={() => history.back()}
            warning={true}
-           question={I18n.t("Email.OutstandingPasswordForgottenConfirmation.COPY")}
-           title={I18n.t("Email.OutstandingPasswordForgotten.COPY")}>
+           question={I18n.t("Email.OutstandingPasswordForgottenConfirmation")}
+           title={I18n.t("Email.OutstandingPasswordForgotten")}>
     </Modal>
 {/if}
 
 {#if showCodeValidation}
     <Modal showOptions={false}
            cancel={() => showCodeValidation = false}
-           title={I18n.t("LoginCode.Title.COPY")}>
+           title={I18n.t("LoginCode.Title")}>
         <div class="login-code">
-            <h2 class="header">{I18n.t("LoginCode.Header.COPY")}</h2>
-            <p class="validation-info">{@html I18n.t("LoginCode.Info.COPY", {email: verifiedEmail})}</p>
+            <h2 class="header">{I18n.t("LoginCode.Header")}</h2>
+            <p class="validation-info">{@html I18n.t("LoginCode.Info", {email: verifiedEmail})}</p>
             <div class="code-validation">
                 <CodeValidation verify={verifyCode}
                                 size={6}
                                 validate={val => !isNaN(val)}
                                 intermediateCallback={valueCallback}/>
                 {#if wrongCode}
-                    <p class="error">{I18n.t("LoginCode.Error.COPY")}</p>
+                    <p class="error">{I18n.t("LoginCode.Error")}</p>
                 {/if}
             </div>
 
             <div class="resend-mail">
                 {#if allowedToResend}
-                    <p>{I18n.t("LoginCode.Resend.COPY")}
+                    <p>{I18n.t("LoginCode.Resend")}
                         <a href="resend"
-                           on:click|preventDefault|stopPropagation={resendMail}>{I18n.t("LoginCode.ResendLink.COPY")}</a>
+                           on:click|preventDefault|stopPropagation={resendMail}>{I18n.t("LoginCode.ResendLink")}</a>
                     </p>
                 {:else if mailHasBeenResend}
-                    <span>{I18n.t("MagicLink.MailResend.COPY")}</span>
+                    <span>{I18n.t("MagicLink.MailResend")}</span>
                 {/if}
 
             </div>

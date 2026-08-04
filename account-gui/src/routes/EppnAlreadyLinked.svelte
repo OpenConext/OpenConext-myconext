@@ -52,16 +52,16 @@
 {/if}
 <div class="home">
     <div class="card">
-        <h2>{I18n.t("EppnAlreadyLinked.Title.AccountNotConnected.COPY")}</h2>
-        <p class="info">{I18n.t("EppnAlreadyLinked.Info.COPY", {email: email})}</p>
+        <h2>{I18n.t("EppnAlreadyLinked.Title.AccountNotConnected")}</h2>
+        <p class="info">{I18n.t("EppnAlreadyLinked.Info", {email: email})}</p>
         <p class="info">{I18n.t("eppnAlreadyLinked.proceed", {name: serviceName})}</p>
 
         <Button href="/proceed" onClick={() => proceed($conf.magicLinkUrl)}
                 className="cancel"
-                label={I18n.t("Profile.Proceed.COPY")}/>
+                label={I18n.t("Profile.Proceed")}/>
         <div class="last">
             <Button href="/retry" onClick={retry}
-                    label={I18n.t("EppnAlreadyLinked.RetryButton.COPY")}/>
+                    label={I18n.t("EppnAlreadyLinked.RetryButton")}/>
         </div>
 
     </div>

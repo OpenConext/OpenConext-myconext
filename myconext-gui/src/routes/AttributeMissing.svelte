@@ -72,7 +72,7 @@
         <Button href={`/link`}
                 didisabled={busy}
                 large={true}
-                label={I18n.t("EppnAlreadyLinked.RetryButton.COPY")}
+                label={I18n.t("EppnAlreadyLinked.RetryButton")}
                 onClick={retry}/>
     </div>
 </div>

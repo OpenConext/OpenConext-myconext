@@ -23,6 +23,6 @@
 
 </style>
 <div class="not-found">
-    <h1>{I18n.t("NotFound.Title.COPY")}</h1>
-    <p>{I18n.t("NotFound.Title2.COPY")}</p>
+    <h1>{I18n.t("NotFound.Title")}</h1>
+    <p>{I18n.t("NotFound.Title2")}</p>
 </div>
