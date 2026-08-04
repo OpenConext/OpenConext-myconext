@@ -34,6 +34,7 @@ import myconext.model.*;
 import myconext.oidcng.OpenIDConnect;
 import myconext.repository.*;
 import myconext.security.*;
+import myconext.validation.PasswordStrength;
 import myconext.webauthn.UserCredentialRepository;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -114,6 +115,7 @@ public class UserController implements UserAuthentication {
     private final List<String> unknownIssuers = List.of("CURRNL2A");
     private final boolean serviceDeskActive;
     private final boolean secureCookie;
+    private final PasswordStrength passwordStrength;
 
     public UserController(UserRepository userRepository,
                           UserCredentialRepository userCredentialRepository,
@@ -168,6 +170,7 @@ public class UserController implements UserAuthentication {
         this.sendJsExceptions = sendJsExceptions;
         this.serviceDeskActive = serviceDeskActive;
         this.secureCookie = secureCookie;
+        this.passwordStrength = new PasswordStrength(objectMapper);
 
         List<IdinIssuers> idinIssuers = objectMapper.readValue(issuersResource.getInputStream(), new TypeReference<>() {
         });
@@ -824,7 +827,7 @@ public class UserController implements UserAuthentication {
         if (deletePassword) {
             user.deletePassword();
         } else {
-            user.encryptPassword(newPassword, passwordEncoder);
+            user.encryptPassword(newPassword, passwordEncoder, passwordStrength);
         }
 
         user.setForgottenPassword(false);
