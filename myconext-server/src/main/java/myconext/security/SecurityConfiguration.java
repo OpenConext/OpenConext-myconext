@@ -90,7 +90,7 @@ public class SecurityConfiguration {
     //1. SamlSecurity (@Order(1)) — Secures the SAML guest IdP endpoint (myconext guest login).
     @Configuration
     @Order(1)
-    @EnableConfigurationProperties(IdentityProviderMetaData.class)
+    @EnableConfigurationProperties({IdentityProviderMetaData.class, FeatureProperties.class})
     public static class SamlSecurity {
 
         private final GuestIdpAuthenticationRequestFilter guestIdpAuthenticationRequestFilter;
@@ -123,8 +123,10 @@ public class SecurityConfiguration {
                             @Value("${feature.default_remember_me}") boolean featureDefaultRememberMe,
                             @Value("${feature.default_affiliate_email}") boolean featureDefaultAffiliateEmail,
                             @Value("${feature.use_app}") boolean featureUseApp,
+                            @Value("${feature.use_global_uid}") boolean featureUseGlobalUid,
                             @Value("${default_affiliate_email_domain}") String defaultAffiliateEmailDomain,
                             @Value("${feature.requires_signed_authn_request}") boolean requiresSignedAuthnRequest,
+                            FeatureProperties featureProperties,
                             AuthenticationRequestRepository authenticationRequestRepository,
                             UserRepository userRepository,
                             UserLoginRepository userLoginRepository,
@@ -180,6 +182,8 @@ public class SecurityConfiguration {
                     featureDefaultRememberMe,
                     featureDefaultAffiliateEmail,
                     featureUseApp,
+                    featureUseGlobalUid,
+                    featureProperties.getForceGlobalUidEntities(),
                     defaultAffiliateEmailDomain,
                     configuration,
                     identityProviderMetaData,
