@@ -15,8 +15,6 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
-import org.springframework.boot.context.properties.bind.Bindable;
-import org.springframework.boot.context.properties.bind.Binder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
@@ -48,7 +46,6 @@ import java.io.IOException;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
@@ -93,7 +90,7 @@ public class SecurityConfiguration {
     //1. SamlSecurity (@Order(1)) — Secures the SAML guest IdP endpoint (myconext guest login).
     @Configuration
     @Order(1)
-    @EnableConfigurationProperties(IdentityProviderMetaData.class)
+    @EnableConfigurationProperties({IdentityProviderMetaData.class, FeatureProperties.class})
     public static class SamlSecurity {
 
         private final GuestIdpAuthenticationRequestFilter guestIdpAuthenticationRequestFilter;
@@ -129,7 +126,7 @@ public class SecurityConfiguration {
                             @Value("${feature.use_global_uid}") boolean featureUseGlobalUid,
                             @Value("${default_affiliate_email_domain}") String defaultAffiliateEmailDomain,
                             @Value("${feature.requires_signed_authn_request}") boolean requiresSignedAuthnRequest,
-                            Environment environment,
+                            FeatureProperties featureProperties,
                             AuthenticationRequestRepository authenticationRequestRepository,
                             UserRepository userRepository,
                             UserLoginRepository userLoginRepository,
@@ -152,10 +149,6 @@ public class SecurityConfiguration {
             );
             String[] keys = this.getKeys(certificatePath, privateKeyPath);
             final List<SAMLServiceProvider> serviceProviders = new ArrayList<>();
-
-            List<String> forceGlobalUidEntities = Binder.get(environment)
-                    .bind("feature.force-global-uid-entities", Bindable.listOf(String.class))
-                    .orElse(Collections.emptyList());
 
             List<String> spEntityIdentifiers = commaSeparatedToList(spEntityId);
             List<String> spMetaDataUrls = commaSeparatedToList(accountMetadataUrl);
@@ -190,7 +183,7 @@ public class SecurityConfiguration {
                     featureDefaultAffiliateEmail,
                     featureUseApp,
                     featureUseGlobalUid,
-                    forceGlobalUidEntities,
+                    featureProperties.getForceGlobalUidEntities(),
                     defaultAffiliateEmailDomain,
                     configuration,
                     identityProviderMetaData,
