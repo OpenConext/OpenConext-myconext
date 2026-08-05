@@ -10,6 +10,7 @@ import io.restassured.response.Response;
 import io.restassured.response.ValidatableResponse;
 import lombok.SneakyThrows;
 import myconext.AbstractIntegrationTest;
+import myconext.AbstractMailBoxTest;
 import myconext.model.*;
 import myconext.repository.ChallengeRepository;
 import myconext.security.ACR;
@@ -48,7 +49,7 @@ import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.*;
 
 @SuppressWarnings("unchecked")
-public class UserControllerTest extends AbstractIntegrationTest {
+public class UserControllerTest extends AbstractMailBoxTest {
 
     private final SecureRandom random = new SecureRandom();
 
