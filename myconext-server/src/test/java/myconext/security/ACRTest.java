@@ -21,11 +21,15 @@ class ACRTest {
     private String originalValidateNames;
     private String originalValidateNamesExternal;
     private String originalAffiliationStudent;
+    private String originalIapMedium;
+    private String originalIapHigh;
     private String originalProfileMfa;
     private String originalLinkedInstitutionMfa;
     private String originalValidateNamesMfa;
     private String originalValidateNamesExternalMfa;
     private String originalAffiliationStudentMfa;
+    private String originalIapMediumMfa;
+    private String originalIapHighMfa;
 
     @BeforeEach
     void snapshotAcrStaticState() {
@@ -33,11 +37,15 @@ class ACRTest {
         originalValidateNames = ACR.VALIDATE_NAMES;
         originalValidateNamesExternal = ACR.VALIDATE_NAMES_EXTERNAL;
         originalAffiliationStudent = ACR.AFFILIATION_STUDENT;
+        originalIapMedium = ACR.IAP_MEDIUM;
+        originalIapHigh = ACR.IAP_HIGH;
         originalProfileMfa = ACR.PROFILE_MFA;
         originalLinkedInstitutionMfa = ACR.LINKED_INSTITUTION_MFA;
         originalValidateNamesMfa = ACR.VALIDATE_NAMES_MFA;
         originalValidateNamesExternalMfa = ACR.VALIDATE_NAMES_EXTERNAL_MFA;
         originalAffiliationStudentMfa = ACR.AFFILIATION_STUDENT_MFA;
+        originalIapMediumMfa = ACR.IAP_MEDIUM_MFA;
+        originalIapHighMfa = ACR.IAP_HIGH_MFA;
     }
 
     @AfterEach
@@ -47,11 +55,15 @@ class ACRTest {
                 originalValidateNames,
                 originalValidateNamesExternal,
                 originalAffiliationStudent,
+                originalIapMedium,
+                originalIapHigh,
                 originalProfileMfa,
                 originalLinkedInstitutionMfa,
                 originalValidateNamesMfa,
                 originalValidateNamesExternalMfa,
-                originalAffiliationStudentMfa
+                originalAffiliationStudentMfa,
+                originalIapMediumMfa,
+                originalIapHighMfa
         );
     }
 
@@ -325,11 +337,13 @@ class ACRTest {
         List<String> result = ACR.allAccountLinkingContextClassReferences();
 
         // Then;
-        assertEquals(4, result.size());
+        assertEquals(6, result.size());
         assertTrue(result.contains(ACR.VALIDATE_NAMES));
         assertTrue(result.contains(ACR.VALIDATE_NAMES_EXTERNAL));
         assertTrue(result.contains(ACR.LINKED_INSTITUTION));
         assertTrue(result.contains(ACR.AFFILIATION_STUDENT));
+        assertTrue(result.contains(ACR.IAP_MEDIUM));
+        assertTrue(result.contains(ACR.IAP_HIGH));
     }
 
     @Test
@@ -339,11 +353,15 @@ class ACRTest {
         String newValidateNames = "https://test.nl/validate-names";
         String newExternalValidateNames = "https://test.nl/validate-names-external";
         String newAffiliationStudent = "https://test.nl/affiliation-student";
+        String newIapMedium = "https://test.nl/iap/medium";
+        String newIapHigh = "https://test.nl/iap/high";
         String newProfileMfa = "https://refeds.org/profile/mfa";
         String newLinkedInstitutionMfa = "https://test.nl/linked-institution/mfa";
         String newValidateNamesMfa = "https://test.nl/validate-names/mfa";
         String newExternalValidateNamesMfa = "https://test.nl/validate-names-external/mfa";
         String newAffiliationStudentMfa = "https://test.nl/affiliation-student/mfa";
+        String newIapMediumMfa = "https://test.nl/iap/medium/mfa";
+        String newIapHighMfa = "https://test.nl/iap/high/mfa";
 
         // When
         ACR.initialize(
@@ -351,11 +369,15 @@ class ACRTest {
                 newValidateNames,
                 newExternalValidateNames,
                 newAffiliationStudent,
+                newIapMedium,
+                newIapHigh,
                 newProfileMfa,
                 newLinkedInstitutionMfa,
                 newValidateNamesMfa,
                 newExternalValidateNamesMfa,
-                newAffiliationStudentMfa
+                newAffiliationStudentMfa,
+                newIapMediumMfa,
+                newIapHighMfa
                 );
 
         // Then
@@ -363,11 +385,15 @@ class ACRTest {
         assertEquals(newValidateNames, ACR.VALIDATE_NAMES);
         assertEquals(newExternalValidateNames, ACR.VALIDATE_NAMES_EXTERNAL);
         assertEquals(newAffiliationStudent, ACR.AFFILIATION_STUDENT);
+        assertEquals(newIapMedium, ACR.IAP_MEDIUM);
+        assertEquals(newIapHigh, ACR.IAP_HIGH);
         assertEquals(newProfileMfa, ACR.PROFILE_MFA);
         assertEquals(newLinkedInstitutionMfa, ACR.LINKED_INSTITUTION_MFA);
         assertEquals(newValidateNamesMfa, ACR.VALIDATE_NAMES_MFA);
         assertEquals(newExternalValidateNamesMfa, ACR.VALIDATE_NAMES_EXTERNAL_MFA);
         assertEquals(newAffiliationStudentMfa, ACR.AFFILIATION_STUDENT_MFA);
+        assertEquals(newIapMediumMfa, ACR.IAP_MEDIUM_MFA);
+        assertEquals(newIapHighMfa, ACR.IAP_HIGH_MFA);
 
     }
 }

@@ -112,11 +112,15 @@ public class SecurityConfiguration {
                             @Value("${account_linking_context_class_ref.validate_names}") String validateNames,
                             @Value("${account_linking_context_class_ref.validate_names_external}") String validateNamesExternal,
                             @Value("${account_linking_context_class_ref.affiliation_student}") String affiliationStudent,
+                            @Value("${account_linking_context_class_ref.iap_medium}") String iapMedium,
+                            @Value("${account_linking_context_class_ref.iap_high}") String iapHigh,
                             @Value("${account_linking_context_class_ref.profile_mfa}") String profileMfa,
                             @Value("${account_linking_context_class_ref.linked_institution_mfa}") String linkedInstitutionMfa,
                             @Value("${account_linking_context_class_ref.validate_names_mfa}") String validateNamesMfa,
                             @Value("${account_linking_context_class_ref.validate_names_external_mfa}") String validateNamesExternalMfa,
                             @Value("${account_linking_context_class_ref.affiliation_student_mfa}") String affiliationStudentMfa,
+                            @Value("${account_linking_context_class_ref.iap_medium_mfa}") String iapMediumMfa,
+                            @Value("${account_linking_context_class_ref.iap_high_mfa}") String iapHighMfa,
                             @Value("${linked_accounts.expiry-duration-days-non-validated}") long expiryNonValidatedDurationDays,
                             @Value("${sso_mfa_duration_seconds}") long ssoMFADurationSeconds,
                             @Value("${mobile_app_rp_entity_id}") String mobileAppROEntityId,
@@ -141,11 +145,15 @@ public class SecurityConfiguration {
                     validateNames,
                     validateNamesExternal,
                     affiliationStudent,
+                    iapMedium,
+                    iapHigh,
                     profileMfa,
                     linkedInstitutionMfa,
                     validateNamesMfa,
                     validateNamesExternalMfa,
-                    affiliationStudentMfa
+                    affiliationStudentMfa,
+                    iapMediumMfa,
+                    iapHighMfa
             );
             String[] keys = this.getKeys(certificatePath, privateKeyPath);
             final List<SAMLServiceProvider> serviceProviders = new ArrayList<>();
