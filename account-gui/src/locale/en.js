@@ -888,7 +888,8 @@ const en = {
     "Validate_names": "Your first name and last name must be verified by an official party.",
     "Validate_names_external": "Your identity must be verified by a trusted party.",
     "Affiliation_student": "You need to prove that you are enrolled in education. You can do this by connecting your eduID to an official institution.",
-    "Profile_mfa": "You must log in using the eduID app for multi-factor authentication."
+    "Profile_mfa": "You must log in using the eduID app for multi-factor authentication.",
+    "Any_link": "Your eduID account must be linked to a trusted party, such as your institution, bank or eHerkenning."
   },
   "StepUpVerification": {
     "Info": " ",
@@ -896,7 +897,8 @@ const en = {
     "Validate_names": "Your first name and last name are verified by an official party.",
     "Validate_names_external": "Your identity is verified by a trusted party.",
     "Affiliation_student": "You have proven that you are following education by connecting your eduID account to an official party.",
-    "Profile_mfa": "You have successfully logged in using the eduID app with multi-factor authentication."
+    "Profile_mfa": "You have successfully logged in using the eduID app with multi-factor authentication.",
+    "Any_link": "Your eduID account is linked to a trusted party."
   },
   "NudgeApp": {
     "New": "Your eduID has been created",

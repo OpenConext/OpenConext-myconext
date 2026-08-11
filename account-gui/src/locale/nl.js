@@ -888,7 +888,8 @@ const nl = {
     "Validate_names": "Je voornaam en achternaam moeten worden bevestigd door een officiële instelling.",
     "Validate_names_external": "Je voornaam en achternaam moeten worden geverifieerd door een externe vertrouwde instelling.",
     "Affiliation_student": "Je moet aantonen dat je student bent. Dit doe je door je eduID te koppelen aan een officiële instelling.",
-    "Profile_mfa": "Je moet inloggen met de eduID app voor multi-factor authenticatie."
+    "Profile_mfa": "Je moet inloggen met de eduID app voor multi-factor authenticatie.",
+    "Any_link": "Je eduID-account moet gekoppeld zijn aan een vertrouwde partij, zoals je instelling, bank of eHerkenning."
   },
   "StepUpVerification": {
     "Info": " ",
@@ -896,7 +897,8 @@ const nl = {
     "Validate_names": "Je voornaam en achternaam zijn bevestigd door een officiële instelling.",
     "Validate_names_external": "Je voornaam en achternaam moeten worden geverifieerd door een externe vertrouwde instelling.",
     "Affiliation_student": "Je hebt aangetoond dat je student bent, doordat je eduID is gekoppeld aan een officiële instelling.",
-    "Profile_mfa": "Je bent succesvol ingelogd met de eduID app met multi-factor authenticatie."
+    "Profile_mfa": "Je bent succesvol ingelogd met de eduID app met multi-factor authenticatie.",
+    "Any_link": "Je eduID-account is gekoppeld aan een vertrouwde partij."
   },
   "NudgeApp": {
     "New": "Je eduID is aangemaakt",
