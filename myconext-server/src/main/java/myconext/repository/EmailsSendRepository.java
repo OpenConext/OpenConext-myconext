@@ -12,7 +12,7 @@ import java.util.Optional;
 @Repository
 public interface EmailsSendRepository extends MongoRepository<EmailsSend, String> {
 
-    @Query(collation = "{ 'locale' : 'en_US', 'strength' : 2 }")
+    @Query(collation = "{ 'locale' : 'en', 'strength' : 2 }")
     Optional<EmailsSend> findByEmail(String email);
 
     Long deleteBySendAtBefore(Date expiryDate);
