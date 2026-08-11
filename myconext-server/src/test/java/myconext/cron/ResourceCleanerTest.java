@@ -128,12 +128,9 @@ public class ResourceCleanerTest extends AbstractIntegrationTest {
     @Test
     public void testClean() {
         ResourceCleaner resourceCleaner = getResourceCleaner();
-        doExpireWithFindProperty(SamlAuthenticationRequest.class, "id", "1");
         expireUserLinkedAccount();
 
         resourceCleaner.clean();
-
-        assertEquals(0, authenticationRequestRepository.findAll().size());
 
         User user = userRepository.findOneUserByEmail("jdoe@example.com");
         assertEquals(0, user.getLinkedAccounts().size());
@@ -151,7 +148,6 @@ public class ResourceCleanerTest extends AbstractIntegrationTest {
 
     private ResourceCleaner getResourceCleaner() {
         return new ResourceCleaner(
-                authenticationRequestRepository,
                 userRepository,
                 passwordResetHashRepository,
                 changeEmailHashRepository,

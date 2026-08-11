@@ -26,7 +26,6 @@ public class ResourceCleaner extends AbstractNodeLeader {
 
     private static final Log LOG = LogFactory.getLog(ResourceCleaner.class);
 
-    private final AuthenticationRequestRepository authenticationRequestRepository;
     private final UserRepository userRepository;
     private final PasswordResetHashRepository passwordResetHashRepository;
     private final ChangeEmailHashRepository changeEmailHashRepository;
@@ -35,8 +34,7 @@ public class ResourceCleaner extends AbstractNodeLeader {
     private final MobileLinkAccountRequestRepository mobileLinkAccountRequestRepository;
 
     @Autowired
-    public ResourceCleaner(AuthenticationRequestRepository authenticationRequestRepository,
-                           UserRepository userRepository,
+    public ResourceCleaner(UserRepository userRepository,
                            PasswordResetHashRepository passwordResetHashRepository,
                            ChangeEmailHashRepository changeEmailHashRepository,
                            EmailsSendRepository emailsSendRepository,
@@ -47,7 +45,6 @@ public class ResourceCleaner extends AbstractNodeLeader {
                            @Value("${mongodb_db}") String databaseName) {
         super(LOCK_NAME, mongoClient, databaseName, cronJobResponsible);
 
-        this.authenticationRequestRepository = authenticationRequestRepository;
         this.userRepository = userRepository;
         this.passwordResetHashRepository = passwordResetHashRepository;
         this.changeEmailHashRepository = changeEmailHashRepository;
@@ -65,7 +62,6 @@ public class ResourceCleaner extends AbstractNodeLeader {
         Date now = new Date();
         Instant nowInstant = now.toInstant();
 
-        info(SamlAuthenticationRequest.class, authenticationRequestRepository.deleteByExpiresInBeforeAndRememberMe(now, false));
         info(PasswordResetHash.class, passwordResetHashRepository.deleteByExpiresInBefore(now));
         info(ChangeEmailHash.class, changeEmailHashRepository.deleteByExpiresInBefore(now));
         info(RequestInstitutionEduID.class, requestInstitutionEduIDRepository.deleteByExpiresInBefore(now));
