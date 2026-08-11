@@ -80,7 +80,6 @@ import static myconext.log.MDCContext.logLoginWithContext;
 import static myconext.log.MDCContext.logWithContext;
 import static myconext.security.CookieResolver.cookieByName;
 
-@SuppressWarnings("unchecked")
 @NoArgsConstructor(force = true)
 public class GuestIdpAuthenticationRequestFilter extends OncePerRequestFilter {
 
@@ -278,7 +277,7 @@ public class GuestIdpAuthenticationRequestFilter extends OncePerRequestFilter {
                         redirect = "/" + LoginOptions.APP.getValue().toLowerCase() + "/";
                         mfa = "&mfa=true";
                     } else {
-                        redirect = "/" + loginOptions.get(0).toLowerCase() + "/";
+                        redirect = "/" + loginOptions.getFirst().toLowerCase() + "/";
                     }
                 }
                 String location = this.redirectUrl + redirect + samlAuthenticationRequest.getId()
@@ -385,9 +384,6 @@ public class GuestIdpAuthenticationRequestFilter extends OncePerRequestFilter {
             return Collections.emptyList();
         }
         List<AuthnContextClassRef> authnContextClassRefs = requestedAuthnContext.getAuthnContextClassRefs();
-        if (authnContextClassRefs == null) {
-            return Collections.emptyList();
-        }
         return authnContextClassRefs.stream()
                 .map(XSURI::getURI)
                 .collect(toList());
@@ -420,7 +416,7 @@ public class GuestIdpAuthenticationRequestFilter extends OncePerRequestFilter {
         String issuerValue = issuer != null ? issuer.getValue() : "";
         Scoping scoping = authenticationRequest.getScoping();
         List<RequesterID> requesterIDS = scoping != null ? scoping.getRequesterIDs() : null;
-        return CollectionUtils.isEmpty(requesterIDS) ? issuerValue : requesterIDS.get(0).getURI();
+        return CollectionUtils.isEmpty(requesterIDS) ? issuerValue : requesterIDS.getFirst().getURI();
     }
 
     private boolean nudgeMagicLink(AuthnRequest authenticationRequest) {
@@ -442,7 +438,7 @@ public class GuestIdpAuthenticationRequestFilter extends OncePerRequestFilter {
             return;
         }
         Optional<SamlAuthenticationRequest> optionalSamlAuthenticationRequest = authenticationRequestRepository.findByHash(hash);
-        if (!optionalSamlAuthenticationRequest.isPresent()) {
+        if (optionalSamlAuthenticationRequest.isEmpty()) {
             response.sendRedirect(this.redirectUrl + "/expired");
             return;
         }
@@ -472,7 +468,7 @@ public class GuestIdpAuthenticationRequestFilter extends OncePerRequestFilter {
         }
 
         Optional<Cookie> optionalCookie = cookieByName(request, BROWSER_SESSION_COOKIE_NAME);
-        if (!optionalCookie.isPresent() && !samlAuthenticationRequest.isOneTimeLoginCodeFlow()) {
+        if (optionalCookie.isEmpty() && !samlAuthenticationRequest.isOneTimeLoginCodeFlow()) {
             samlAuthenticationRequest.setLoginStatus(LoginStatus.LOGGED_IN_DIFFERENT_DEVICE);
             samlAuthenticationRequest.setVerificationCode(VerificationCodeGenerator.generate());
             if (incrementVerificationCodeRetry(samlAuthenticationRequest)) {
@@ -581,7 +577,7 @@ public class GuestIdpAuthenticationRequestFilter extends OncePerRequestFilter {
     private void continueAfterLogin(HttpServletRequest request, HttpServletResponse response) throws IOException {
         String id = request.getParameter("id");
         Optional<SamlAuthenticationRequest> optionalSamlAuthenticationRequest = authenticationRequestRepository.findById(id);
-        if (!optionalSamlAuthenticationRequest.isPresent()) {
+        if (optionalSamlAuthenticationRequest.isEmpty()) {
             response.sendRedirect(this.redirectUrl + "/expired");
             return;
         }
@@ -592,7 +588,7 @@ public class GuestIdpAuthenticationRequestFilter extends OncePerRequestFilter {
                 response.sendRedirect(this.redirectUrl + "/max-attempts");
                 return;
             }
-            String currentUrl = URLDecoder.decode(request.getParameter("currentUrl"), Charset.defaultCharset().name());
+            String currentUrl = URLDecoder.decode(request.getParameter("currentUrl"), Charset.defaultCharset());
             response.sendRedirect(currentUrl + "&mismatch=true");
             return;
         }
@@ -688,7 +684,7 @@ public class GuestIdpAuthenticationRequestFilter extends OncePerRequestFilter {
             user.setTrackingUuid(UUID.randomUUID().toString());
             userRepository.save(user);
         }
-        if (!optionalCookie.isPresent() || !user.getTrackingUuid().equalsIgnoreCase(optionalCookie.get().getValue())) {
+        if (optionalCookie.isEmpty() || !user.getTrackingUuid().equalsIgnoreCase(optionalCookie.get().getValue())) {
             Cookie cookie = new Cookie(TRACKING_DEVICE_COOKIE_NAME, user.getTrackingUuid());
             cookie.setMaxAge(Integer.MAX_VALUE - 1);
             cookie.setSecure(secureCookie);
