@@ -361,7 +361,21 @@ public class GuestIdpAuthenticationRequestFilter extends OncePerRequestFilter {
                 validatedName;
         boolean linkedInstitutionMissing = ACR.containsAcr(authenticationContextClassReferenceValues, ACR.LINKED_INSTITUTION) &&
                 nonExpiredLinkedAccounts.isEmpty();
-        return atLeastOneNotExpired && hasRequiredStudentAffiliation && hasValidatedNames && !linkedInstitutionMissing;
+        return atLeastOneNotExpired && hasRequiredStudentAffiliation && hasValidatedNames && !linkedInstitutionMissing &&
+                hasRequiredIapAssurance(user, authenticationContextClassReferenceValues);
+    }
+
+    private boolean hasRequiredIapAssurance(User user, List<String> authenticationContextClassReferenceValues) {
+        boolean highRequired = ACR.containsAcr(authenticationContextClassReferenceValues, ACR.IAP_HIGH);
+        boolean mediumRequired = ACR.containsAcr(authenticationContextClassReferenceValues, ACR.IAP_MEDIUM);
+        if (!highRequired && !mediumRequired) {
+            return true;
+        }
+        List<String> assurances = eduPersonAssurances(user);
+        if (highRequired) {
+            return assurances.contains(ACR.IAP_HIGH);
+        }
+        return assurances.contains(ACR.IAP_MEDIUM);
     }
 
     public static boolean hasValidatedName(User user) {
@@ -379,6 +393,7 @@ public class GuestIdpAuthenticationRequestFilter extends OncePerRequestFilter {
                 .anyMatch(affiliation -> affiliation.toLowerCase().contains("student"));
     }
 
+    // Contains a list of requested ACR's -- "What does the SP require the user to be"
     private List<String> getAuthenticationContextClassReferenceValues(AuthnRequest authenticationRequest) {
         RequestedAuthnContext requestedAuthnContext = authenticationRequest.getRequestedAuthnContext();
         if (requestedAuthnContext == null) {
@@ -517,12 +532,19 @@ public class GuestIdpAuthenticationRequestFilter extends OncePerRequestFilter {
                 (CollectionUtils.isEmpty(user.getLinkedAccounts()) || user.getLinkedAccounts().stream()
                         .allMatch(linkedAccount -> now.isAfter(linkedAccount.getExpiresAt().toInstant())));
 
+        boolean missingIapAssurance = !hasRequiredIapAssurance(user, authenticationContextClassReferences);
+
         if (user.isNewUser()) {
             user.setNewUser(false);
             userRepository.save(user);
 
             logWithContext(user, "add", "account", LOG, "Saving user after new registration and magic link");
             mailBox.sendAccountConfirmation(user);
+
+            if(missingIapAssurance) {
+                return false;
+            }
+
             if (inStepUpFlow) {
                 finishStepUp(samlAuthenticationRequest);
             }
@@ -539,6 +561,9 @@ public class GuestIdpAuthenticationRequestFilter extends OncePerRequestFilter {
             response.sendRedirect(url);
             return false;
         } else if (inStepUpFlow) {
+            if (missingIapAssurance) {
+                return false;
+            }
             finishStepUp(samlAuthenticationRequest);
             if (missingStudentAffiliation || missingValidName || missingLinkedInstitution) {
                 //When we send the assertion, EB stops the flow, but this will be fixed upstream
@@ -608,6 +633,7 @@ public class GuestIdpAuthenticationRequestFilter extends OncePerRequestFilter {
         List<String> authenticationContextClassReferences = samlAuthenticationRequest.getAuthenticationContextClassReferences();
         String explanation = ACR.explanationKeyWord(authenticationContextClassReferences, hasStudentAffiliation);
 
+        // Performs check if ACR is coorrect
         boolean proceed = this.checkStepUp(response, request, samlAuthenticationRequest.getHash(), samlAuthenticationRequest, user, charSet, explanation);
         if (!proceed) {
             return;
@@ -903,7 +929,7 @@ public class GuestIdpAuthenticationRequestFilter extends OncePerRequestFilter {
                         samlAttribute.getValue().equals("student"))) {
             attributes.add(attribute("urn:mace:dir:attribute-def:eduPersonAffiliation", "student"));
         }
-        List<String> eduPersonAssurances = eduPersonAssurances(user);
+        List<String> eduPersonAssurances = eduPersonAssurances(user); // Todo: needs to be called earlier -- we need to do the check ACR matches
         eduPersonAssurances
                 .forEach(eduPersonAssurance -> attributes.add(attribute("urn:mace:dir:attribute-def:eduPersonAssurance", eduPersonAssurance)));
         // lastLogin is updated, possible an new eduID value or deleted affiliations

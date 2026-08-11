@@ -323,6 +323,24 @@ class ACRTest {
     }
 
     @Test
+    void testExplanationKeyWord_IapMedium() {
+        List<String> acrValues = Collections.singletonList(ACR.IAP_MEDIUM);
+
+        String result = ACR.explanationKeyWord(acrValues, true);
+
+        assertEquals("any_link", result);
+    }
+
+    @Test
+    void testExplanationKeyWord_IapHigh() {
+        List<String> acrValues = Collections.singletonList(ACR.IAP_HIGH);
+
+        String result = ACR.explanationKeyWord(acrValues, true);
+
+        assertEquals("any_link", result);
+    }
+
+    @Test
     void testExplanationKeyWord_RandomText() {
         List<String> acrValues = Collections.singletonList("unknown-acr");
 

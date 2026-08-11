@@ -7,6 +7,17 @@ import java.util.List;
 
 public class ACR {
 
+    // Dev notes:
+    // New user + ACR HIGH --> any_link
+    // Existing user without institution link + ACR HIGH --> any_link
+    //
+    // (Note: do close in private window after linking)
+    // Existing user with institution link + ACR HIGH --> any_link
+    // Existing user with high assurance + ACR HIGH --> NO STEPUP
+    //
+    // Extra:
+    // User with any_link but fails to get HIGH assurance --> validated external only
+
     private ACR() {
     }
 
@@ -63,11 +74,15 @@ public class ACR {
     public static String selectACR(List<String> acrValues, boolean studentAffiliationPresent) {
         List<String> priorityOrder = Arrays.asList(
             VALIDATE_NAMES_EXTERNAL_MFA,
+            IAP_HIGH_MFA,
+            IAP_MEDIUM_MFA,
             VALIDATE_NAMES_MFA,
             AFFILIATION_STUDENT_MFA,
             LINKED_INSTITUTION_MFA,
             PROFILE_MFA,
             VALIDATE_NAMES_EXTERNAL,
+            IAP_HIGH,
+            IAP_MEDIUM,
             VALIDATE_NAMES,
             AFFILIATION_STUDENT,
             LINKED_INSTITUTION
@@ -119,9 +134,15 @@ public class ACR {
 
         return acrValues.stream().anyMatch(acr -> acr.endsWith(MFA));
     }
-
     public static String explanationKeyWord(List<String> acrValues, boolean studentAffiliationPresent) {
-        if (CollectionUtils.isEmpty(acrValues) || containsAcr(acrValues, LINKED_INSTITUTION)) {
+        if (CollectionUtils.isEmpty(acrValues)) {
+            return "linked_institution";
+        }
+        // HIGH can also be IdP-asserted; do not force external validation — frontend handles any_link
+        if (containsAcr(acrValues, IAP_HIGH) || containsAcr(acrValues, IAP_MEDIUM)) {
+            return "any_link";
+        }
+        if (containsAcr(acrValues, LINKED_INSTITUTION)) {
             return "linked_institution";
         }
         if (containsAcr(acrValues, PROFILE_MFA)) {
