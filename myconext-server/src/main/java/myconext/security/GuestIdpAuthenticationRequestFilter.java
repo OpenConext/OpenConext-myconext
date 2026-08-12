@@ -541,14 +541,10 @@ public class GuestIdpAuthenticationRequestFilter extends OncePerRequestFilter {
             logWithContext(user, "add", "account", LOG, "Saving user after new registration and magic link");
             mailBox.sendAccountConfirmation(user);
 
-            if(missingIapAssurance) {
-                return false;
-            }
-
             if (inStepUpFlow) {
                 finishStepUp(samlAuthenticationRequest);
             }
-            if (missingStudentAffiliation || missingValidName || missingLinkedInstitution) {
+            if (missingStudentAffiliation || missingValidName || missingLinkedInstitution || missingIapAssurance) {
                 //When we send the assertion, EB stops the flow, but this will be fixed upstream
                 return true;
             }
@@ -561,11 +557,8 @@ public class GuestIdpAuthenticationRequestFilter extends OncePerRequestFilter {
             response.sendRedirect(url);
             return false;
         } else if (inStepUpFlow) {
-            if (missingIapAssurance) {
-                return false;
-            }
             finishStepUp(samlAuthenticationRequest);
-            if (missingStudentAffiliation || missingValidName || missingLinkedInstitution) {
+            if (missingStudentAffiliation || missingValidName || missingLinkedInstitution || missingIapAssurance) {
                 //When we send the assertion, EB stops the flow, but this will be fixed upstream
                 return true;
             }
@@ -766,7 +759,9 @@ public class GuestIdpAuthenticationRequestFilter extends OncePerRequestFilter {
                     (CollectionUtils.isEmpty(user.getLinkedAccounts()) || user.getLinkedAccounts().stream()
                             .allMatch(linkedAccount -> now.isAfter(linkedAccount.getExpiresAt().toInstant())));
 
-            if (missingStudentAffiliation || missingValidName || missingExternalName || missingLinkedInstitution) {
+            boolean missingIapAssurance = !hasRequiredIapAssurance(user, authenticationContextClassReferences);
+
+            if (missingStudentAffiliation || missingValidName || missingExternalName || missingLinkedInstitution || missingIapAssurance) {
                 if (missingValidName) {
                     optionalMessage = "The requesting service has indicated that the authenticated user is required to have a first_name and last_name." +
                             " Your institution has not provided those attributes.";
@@ -776,6 +771,9 @@ public class GuestIdpAuthenticationRequestFilter extends OncePerRequestFilter {
                 } else if (missingLinkedInstitution) {
                     optionalMessage = "The requesting service has indicated that the authenticated user has linked its account to an Institution." +
                             " Your identity is not verified by an external educational institution.";
+                } else if (missingIapAssurance) {
+                    optionalMessage = "The requesting service has indicated that the authenticated user is required to have a certain level of identity assurance." +
+                            " Your institution has not provided the required assurance level.";
                 } else {
                     optionalMessage = "The requesting service has indicated that the authenticated user is required to have an affiliation Student." +
                             " Your institution has not provided this affiliation.";
