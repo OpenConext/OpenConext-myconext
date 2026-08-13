@@ -882,6 +882,15 @@ const en = {
     "ProceedLink": "Proceed",
     "RetryLink": "Retry"
   },
+  "IapAssuranceMissing": {
+    "Header": "Account is connected, but…",
+    "Info": "Your eduID is successfully connected, however the institution you choose did not provide the required {{level}} level of assurance.",
+    "LevelHigh": "High",
+    "LevelMedium": "Medium",
+    "Proceed": "You can try to verify your identity via another trusted party or proceed to {{name}}.",
+    "ProceedLink": "Proceed",
+    "RetryLink": "Retry"
+  },
   "StepUpExplanation": {
     "Info": " ",
     "Linked_institution": "Your eduID must be connected to an official institution where you are a student.",

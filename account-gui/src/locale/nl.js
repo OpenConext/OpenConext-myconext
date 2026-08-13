@@ -882,6 +882,15 @@ const nl = {
     "ProceedLink": "Doorgaan",
     "RetryLink": "Opnieuw proberen"
   },
+  "IapAssuranceMissing": {
+    "Header": "Account is gekoppeld, maar…",
+    "Info": "Je eduID is succesvol gekoppeld, maar de instelling die je hebt gekozen heeft niet het vereiste betrouwbaarheidsniveau {{level}} teruggegeven.",
+    "LevelHigh": "Hoog",
+    "LevelMedium": "Midden",
+    "Proceed": "Je kan proberen je identiteit via een andere vertrouwde partij te verifiëren of doorgaan naar {{name}}.",
+    "ProceedLink": "Doorgaan",
+    "RetryLink": "Opnieuw proberen"
+  },
   "StepUpExplanation": {
     "Info": " ",
     "Linked_institution": "Je eduID moet gekoppeld zijn aan een officiële instelling waar je student bent.",

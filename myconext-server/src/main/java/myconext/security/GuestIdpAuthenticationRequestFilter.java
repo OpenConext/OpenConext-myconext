@@ -365,7 +365,8 @@ public class GuestIdpAuthenticationRequestFilter extends OncePerRequestFilter {
                 hasRequiredIapAssurance(user, authenticationContextClassReferenceValues);
     }
 
-    private boolean hasRequiredIapAssurance(User user, List<String> authenticationContextClassReferenceValues) {
+    // Todo Consider moving to ACR.java
+    public static boolean hasRequiredIapAssurance(User user, List<String> authenticationContextClassReferenceValues) {
         boolean highRequired = ACR.containsAcr(authenticationContextClassReferenceValues, ACR.IAP_HIGH);
         boolean mediumRequired = ACR.containsAcr(authenticationContextClassReferenceValues, ACR.IAP_MEDIUM);
         if (!highRequired && !mediumRequired) {
@@ -935,7 +936,7 @@ public class GuestIdpAuthenticationRequestFilter extends OncePerRequestFilter {
         return attributes;
     }
 
-    private List<String> eduPersonAssurances(User user) {
+    private static List<String> eduPersonAssurances(User user) {
         //we need a mutable list
         List<LinkedAccount> linkedAccounts = user.getLinkedAccounts();
         List<String> eduPersonAssuranceIdP = linkedAccounts.stream()
