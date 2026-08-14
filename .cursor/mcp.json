@@ -1,0 +1,16 @@
+{
+  "mcpServers": {
+    "teni-shared-ai": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "-p",
+        "git+ssh://git@gitlab.surf.nl/surfconext/shared-ai.git#v0.3.0",
+        "teni-shared-ai-mcp",
+        "--packs",
+        "java,react,nosql,documentation,refactor"
+      ],
+      "env": {}
+    }
+  }
+}
