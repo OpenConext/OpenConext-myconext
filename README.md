@@ -258,3 +258,80 @@ Note: Account-GUI starts with `Whoops… Something went wrong (404)`, this is ok
 4. User is `jdoe@example.com`, chose one-time login via e-mail
 5. See [Mailpit](http://user:password@145.90.230.133:8025/) for the OTP
 6. You get redirected back to the playground with JWT data
+
+## Flowchart eduID authentication
+```mermaid
+flowchart TB
+  eduid@{shape: circle, label: eduID OP}
+  sso[SSO]@{shape: diam}
+  loggedin@{shape: dbl-circ, label: logged <br> in}
+  usercookie@{shape: diam}
+  requestemail@{shape: event, label: email input}
+  validatemail@{shape: diam, label: vaildate email}
+  registration@{shape: rect, label: start <br> registration}
+  authMethod@{shape: diam, label: determine <br> auth method}
+  sendOtp@{shape: rect, label: send email OTP}
+  otpVerified@{shape: diam, label: OTP <br> verified}
+  setUsercookie@{shape: rect, label: set usercookie}
+  askPassword@{shape: event, label: user password input}
+  passwordValidate@{shape: diam, label: password <br> validated}
+  attestation@{shape: diam, label: attestation <br> verified}
+  trustedbrowser@{shape: diam, label: trusted <br> browser}
+  webauthn@{shape: event, label: passkey authentication}
+  showQr@{shape: rect, label: show QR code}
+  ocraVerified@{shape: diam, label: OCRA <br> verified}
+  sendPush@{shape: event, label: send Push Notification}
+  trustBrowser@{shape: event, label: Set browser trust cookie}
+  knownMfa@{shape: diam, label: Known MFA <br> factor}
+  firstFactor@{shape: event, label: Perform 1st factor authentication}
+  registerMfa@{shape: event, label: Register MFA + recovery}
+
+  eduid --> |eduID chosen as <br> the OP for authN|sso
+  sso --> |yes| loggedin
+  sso --> |no| usercookie
+  usercookie --> |invalid cookie| requestemail
+  usercookie --> |valid cookie| validatemail
+  requestemail --> validatemail
+  validatemail --> |unknown email| registration
+  validatemail --> |known email| authMethod
+  registration --> |send validation email|sendOtp
+  authMethod ---> |code| sendOtp
+  subgraph code
+    direction LR
+    sendOtp --> otpVerified
+    otpVerified --> |no| sendOtp
+  end
+  otpVerified --> |yes| setUsercookie
+  setUsercookie ---> loggedin
+  authMethod --> |password| askPassword
+  subgraph password
+    direction LR
+    askPassword --> passwordValidate
+    passwordValidate --> |no| askPassword
+  end
+  passwordValidate ----> |yes|setUsercookie
+  authMethod --> |webAuthN| webauthn
+  subgraph Passkey
+  direction RL
+    webauthn --> attestation
+    attestation --> |no attestation| invalidAuth@{shape: fr-circ, label: STOP}
+  end
+  attestation ----> |yes|setUsercookie
+  authMethod --> |app| trustedbrowser
+  subgraph APP
+    direction LR
+    trustedbrowser --> |No| showQr
+    showQr --> ocraVerified
+    ocraVerified --> |No| sendPush
+    sendPush --> ocraVerified
+    ocraVerified --> |yes| trustBrowser
+  end
+  trustBrowser --> setUsercookie
+  authMethod --> |MFA|knownMfa
+  subgraph MFA
+    knownMfa --> |yes| trustedbrowser
+    knownMfa --> |no| firstFactor
+    firstFactor --> registerMfa
+    registerMfa --> trustBrowser
+  end
+```
