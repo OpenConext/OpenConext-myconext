@@ -394,7 +394,6 @@ public class GuestIdpAuthenticationRequestFilter extends OncePerRequestFilter {
                 .anyMatch(affiliation -> affiliation.toLowerCase().contains("student"));
     }
 
-    // Contains a list of requested ACR's -- "What does the SP require the user to be"
     private List<String> getAuthenticationContextClassReferenceValues(AuthnRequest authenticationRequest) {
         RequestedAuthnContext requestedAuthnContext = authenticationRequest.getRequestedAuthnContext();
         if (requestedAuthnContext == null) {
@@ -627,7 +626,6 @@ public class GuestIdpAuthenticationRequestFilter extends OncePerRequestFilter {
         List<String> authenticationContextClassReferences = samlAuthenticationRequest.getAuthenticationContextClassReferences();
         String explanation = ACR.explanationKeyWord(authenticationContextClassReferences, hasStudentAffiliation);
 
-        // Performs check if ACR is coorrect
         boolean proceed = this.checkStepUp(response, request, samlAuthenticationRequest.getHash(), samlAuthenticationRequest, user, charSet, explanation);
         if (!proceed) {
             return;

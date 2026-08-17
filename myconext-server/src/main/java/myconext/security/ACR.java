@@ -7,17 +7,6 @@ import java.util.List;
 
 public class ACR {
 
-    // Dev notes:
-    // New user + ACR HIGH --> any_link
-    // Existing user without institution link + ACR HIGH --> any_link
-    //
-    // (Note: do close in private window after linking)
-    // Existing user with institution link + ACR HIGH --> any_link
-    // Existing user with high assurance + ACR HIGH --> NO STEPUP
-    //
-    // Extra:
-    // User with any_link but fails to get HIGH assurance --> validated external only
-
     private ACR() {
     }
 
@@ -138,7 +127,6 @@ public class ACR {
         if (CollectionUtils.isEmpty(acrValues)) {
             return "linked_institution";
         }
-        // HIGH can also be IdP-asserted; do not force external validation — frontend handles any_link
         if (containsAcr(acrValues, IAP_HIGH) || containsAcr(acrValues, IAP_MEDIUM)) {
             return "any_link";
         }
