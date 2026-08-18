@@ -360,7 +360,22 @@ public class GuestIdpAuthenticationRequestFilter extends OncePerRequestFilter {
                 validatedName;
         boolean linkedInstitutionMissing = ACR.containsAcr(authenticationContextClassReferenceValues, ACR.LINKED_INSTITUTION) &&
                 nonExpiredLinkedAccounts.isEmpty();
-        return atLeastOneNotExpired && hasRequiredStudentAffiliation && hasValidatedNames && !linkedInstitutionMissing;
+        return atLeastOneNotExpired && hasRequiredStudentAffiliation && hasValidatedNames && !linkedInstitutionMissing &&
+                hasRequiredIapAssurance(user, authenticationContextClassReferenceValues);
+    }
+
+    // Todo Consider moving to ACR.java
+    public static boolean hasRequiredIapAssurance(User user, List<String> authenticationContextClassReferenceValues) {
+        boolean highRequired = ACR.containsAcr(authenticationContextClassReferenceValues, ACR.IAP_HIGH);
+        boolean mediumRequired = ACR.containsAcr(authenticationContextClassReferenceValues, ACR.IAP_MEDIUM);
+        if (!highRequired && !mediumRequired) {
+            return true;
+        }
+        List<String> assurances = eduPersonAssurances(user);
+        if (highRequired) {
+            return assurances.contains(ACR.IAP_HIGH);
+        }
+        return assurances.contains(ACR.IAP_MEDIUM);
     }
 
     public static boolean hasValidatedName(User user) {
@@ -513,16 +528,19 @@ public class GuestIdpAuthenticationRequestFilter extends OncePerRequestFilter {
                 (CollectionUtils.isEmpty(user.getLinkedAccounts()) || user.getLinkedAccounts().stream()
                         .allMatch(linkedAccount -> now.isAfter(linkedAccount.getExpiresAt().toInstant())));
 
+        boolean missingIapAssurance = !hasRequiredIapAssurance(user, authenticationContextClassReferences);
+
         if (user.isNewUser()) {
             user.setNewUser(false);
             userRepository.save(user);
 
             logWithContext(user, "add", "account", LOG, "Saving user after new registration and magic link");
             mailBox.sendAccountConfirmation(user);
+
             if (inStepUpFlow) {
                 finishStepUp(samlAuthenticationRequest);
             }
-            if (missingStudentAffiliation || missingValidName || missingLinkedInstitution) {
+            if (missingStudentAffiliation || missingValidName || missingLinkedInstitution || missingIapAssurance) {
                 //When we send the assertion, EB stops the flow, but this will be fixed upstream
                 return true;
             }
@@ -536,7 +554,7 @@ public class GuestIdpAuthenticationRequestFilter extends OncePerRequestFilter {
             return false;
         } else if (inStepUpFlow) {
             finishStepUp(samlAuthenticationRequest);
-            if (missingStudentAffiliation || missingValidName || missingLinkedInstitution) {
+            if (missingStudentAffiliation || missingValidName || missingLinkedInstitution || missingIapAssurance) {
                 //When we send the assertion, EB stops the flow, but this will be fixed upstream
                 return true;
             }
@@ -736,7 +754,9 @@ public class GuestIdpAuthenticationRequestFilter extends OncePerRequestFilter {
                     (CollectionUtils.isEmpty(user.getLinkedAccounts()) || user.getLinkedAccounts().stream()
                             .allMatch(linkedAccount -> now.isAfter(linkedAccount.getExpiresAt().toInstant())));
 
-            if (missingStudentAffiliation || missingValidName || missingExternalName || missingLinkedInstitution) {
+            boolean missingIapAssurance = !hasRequiredIapAssurance(user, authenticationContextClassReferences);
+
+            if (missingStudentAffiliation || missingValidName || missingExternalName || missingLinkedInstitution || missingIapAssurance) {
                 if (missingValidName) {
                     optionalMessage = "The requesting service has indicated that the authenticated user is required to have a first_name and last_name." +
                             " Your institution has not provided those attributes.";
@@ -746,6 +766,9 @@ public class GuestIdpAuthenticationRequestFilter extends OncePerRequestFilter {
                 } else if (missingLinkedInstitution) {
                     optionalMessage = "The requesting service has indicated that the authenticated user has linked its account to an Institution." +
                             " Your identity is not verified by an external educational institution.";
+                } else if (missingIapAssurance) {
+                    optionalMessage = "The requesting service has indicated that the authenticated user is required to have a certain level of identity assurance." +
+                            " Your institution has not provided the required assurance level.";
                 } else {
                     optionalMessage = "The requesting service has indicated that the authenticated user is required to have an affiliation Student." +
                             " Your institution has not provided this affiliation.";
@@ -899,7 +922,7 @@ public class GuestIdpAuthenticationRequestFilter extends OncePerRequestFilter {
                         samlAttribute.getValue().equals("student"))) {
             attributes.add(attribute("urn:mace:dir:attribute-def:eduPersonAffiliation", "student"));
         }
-        List<String> eduPersonAssurances = eduPersonAssurances(user);
+        List<String> eduPersonAssurances = eduPersonAssurances(user); // Todo: needs to be called earlier -- we need to do the check ACR matches
         eduPersonAssurances
                 .forEach(eduPersonAssurance -> attributes.add(attribute("urn:mace:dir:attribute-def:eduPersonAssurance", eduPersonAssurance)));
         // lastLogin is updated, possible an new eduID value or deleted affiliations
@@ -907,7 +930,7 @@ public class GuestIdpAuthenticationRequestFilter extends OncePerRequestFilter {
         return attributes;
     }
 
-    private List<String> eduPersonAssurances(User user) {
+    private static List<String> eduPersonAssurances(User user) {
         //we need a mutable list
         List<LinkedAccount> linkedAccounts = user.getLinkedAccounts();
         List<String> eduPersonAssuranceIdP = linkedAccounts.stream()

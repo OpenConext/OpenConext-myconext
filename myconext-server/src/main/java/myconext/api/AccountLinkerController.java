@@ -70,6 +70,7 @@ import java.util.stream.Stream;
 import static myconext.crypto.HashGenerator.hash;
 import static myconext.log.MDCContext.logWithContext;
 import static myconext.security.CookieResolver.cookieByName;
+import static myconext.security.GuestIdpAuthenticationRequestFilter.hasRequiredIapAssurance;
 import static myconext.security.GuestIdpAuthenticationRequestFilter.hasRequiredStudentAffiliation;
 import static myconext.security.GuestIdpAuthenticationRequestFilter.hasValidatedName;
 import static org.springframework.security.web.context.HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY;
@@ -395,6 +396,8 @@ public class AccountLinkerController implements UserAuthentication {
                 null,
                 null,
                 null,
+                null,
+                Collections.emptyList(),
                 null,
                 userInfo);
         requestInstitutionEduIDRepository.save(requestInstitutionEduID);
@@ -790,7 +793,8 @@ public class AccountLinkerController implements UserAuthentication {
 
         return doRedirect(code, user, this.spFlowRedirectUri, this.myconextRedirectUrl + "/personal",
                 false, false, true, null, null,
-                this.myconextRedirectUrl + "/eppn-already-linked", this.myconextRedirectUrl + "/attribute-missing");
+                this.myconextRedirectUrl + "/eppn-already-linked", this.myconextRedirectUrl + "/attribute-missing",
+                Collections.emptyList(), null);
     }
 
     @GetMapping("/mobile/oidc/redirect")
@@ -813,7 +817,8 @@ public class AccountLinkerController implements UserAuthentication {
 
         return doRedirect(code, user, this.mobileFlowRedirectUri, this.accountRedirectUrl + "/client/mobile/account-linked",
                 false, false, true, null, null,
-                this.accountRedirectUrl + "/client/mobile/eppn-already-linked", this.accountRedirectUrl + "/client/mobile/attribute-missing");
+                this.accountRedirectUrl + "/client/mobile/eppn-already-linked", this.accountRedirectUrl + "/client/mobile/attribute-missing",
+                Collections.emptyList(), null);
     }
 
     @GetMapping("/idp/oidc/redirect")
@@ -855,6 +860,13 @@ public class AccountLinkerController implements UserAuthentication {
                 "?h=" + samlAuthenticationRequest.getHash() +
                 "&redirect=" + URLEncoder.encode(this.magicLinkUrl, charSet);
 
+        boolean iapHighRequired = ACR.containsAcr(samlAuthenticationRequest.getAuthenticationContextClassReferences(), ACR.IAP_HIGH);
+        String idpIapAssuranceRequiredUri = this.accountRedirectUrl + "/iap-assurance-missing/" +
+                samlAuthenticationRequest.getId() +
+                "?h=" + samlAuthenticationRequest.getHash() +
+                "&redirect=" + URLEncoder.encode(this.magicLinkUrl, charSet) +
+                "&level=" + (iapHighRequired ? "high" : "medium");
+
         String eppnAlreadyLinkedRequiredUri = this.accountRedirectUrl + "/eppn-already-linked/" +
                 samlAuthenticationRequest.getId() +
                 "?h=" + samlAuthenticationRequest.getHash() +
@@ -866,7 +878,8 @@ public class AccountLinkerController implements UserAuthentication {
                 "&redirect=" + URLEncoder.encode(this.magicLinkUrl, charSet);
 
         ResponseEntity redirect = doRedirect(code, user, this.idpFlowRedirectUri, location, validateNames, studentAffiliationRequired, false,
-                idpStudentAffiliationRequiredUri, idpValidNamesRequiredUri, eppnAlreadyLinkedRequiredUri, attributeMissingUri);
+                idpStudentAffiliationRequiredUri, idpValidNamesRequiredUri, eppnAlreadyLinkedRequiredUri, attributeMissingUri,
+                samlAuthenticationRequest.getAuthenticationContextClassReferences(), idpIapAssuranceRequiredUri);
 
         StepUpStatus stepUpStatus = redirect.getHeaders().getLocation()
                 .toString().contains("affiliation-missing") ? StepUpStatus.MISSING_AFFILIATION : StepUpStatus.IN_STEP_UP;
@@ -887,13 +900,16 @@ public class AccountLinkerController implements UserAuthentication {
                                       String idpStudentAffiliationRequiredUri,
                                       String idpValidNamesRequiredUri,
                                       String eppnAlreadyLinkedRequiredUri,
-                                      String attributeMissingUri) throws UnsupportedEncodingException {
+                                      String attributeMissingUri,
+                                      List<String> authenticationContextClassReferences,
+                                      String idpIapAssuranceRequiredUri) throws UnsupportedEncodingException {
         Map<String, Object> body = requestUserInfo(code, oidcRedirectUri);
 
         LOG.info(String.format("In redirect link account for user %s with user info %s", user.getEmail(), body));
 
         return saveOrUpdateLinkedAccountToUser(user, clientRedirectUri, validateNames, studentAffiliationRequired,
-                appendEPPNQueryParam, idpStudentAffiliationRequiredUri, idpValidNamesRequiredUri, eppnAlreadyLinkedRequiredUri, attributeMissingUri, body);
+                appendEPPNQueryParam, idpStudentAffiliationRequiredUri, idpValidNamesRequiredUri, eppnAlreadyLinkedRequiredUri, attributeMissingUri,
+                authenticationContextClassReferences, idpIapAssuranceRequiredUri, body);
     }
 
     private ResponseEntity<Object> saveOrUpdateLinkedAccountToUser(User user,
@@ -905,6 +921,8 @@ public class AccountLinkerController implements UserAuthentication {
                                                                    String idpValidNamesRequiredUri,
                                                                    String eppnAlreadyLinkedRequiredUri,
                                                                    String attributeMissingUri,
+                                                                   List<String> authenticationContextClassReferences,
+                                                                   String idpIapAssuranceRequiredUri,
                                                                    Map<String, Object> body) throws UnsupportedEncodingException {
         String eppn = (String) body.get("eduperson_principal_name");
         String subjectId = (String) body.get("subject_id");
@@ -968,6 +986,11 @@ public class AccountLinkerController implements UserAuthentication {
         if (validateNames && !hasValidNames) {
             //Corner case where the user has been stepped Up, but there is no valid name
             return ResponseEntity.status(HttpStatus.FOUND).location(URI.create(idpValidNamesRequiredUri)).build();
+        }
+
+        if (!hasRequiredIapAssurance(user, authenticationContextClassReferences)) {
+            //Corner case where the user has been stepped up to link an institution, but that institution did not assert the required IAP Medium / High assurance level
+            return ResponseEntity.status(HttpStatus.FOUND).location(URI.create(idpIapAssuranceRequiredUri)).build();
         }
 
         if (appendEPPNQueryParam) {
