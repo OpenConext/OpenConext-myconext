@@ -301,6 +301,9 @@ service_desk_roles: >
   role3
 
 spring:
+  http:
+    converters:
+      preferred-json-mapper: jackson2
   data:
     mongodb:
       uri: mongodb://127.0.0.1:27017/${mongodb_db}

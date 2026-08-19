@@ -3,7 +3,7 @@ package myconext.api;
 import myconext.exceptions.DuplicateUserEmailException;
 import org.junit.Before;
 import org.junit.Test;
-import org.springframework.boot.web.servlet.error.DefaultErrorAttributes;
+import org.springframework.boot.webmvc.error.DefaultErrorAttributes;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.mock.web.MockHttpServletRequest;
@@ -36,7 +36,7 @@ public class DefaultErrorControllerTest {
     @Test
     public void errorAnnotated() throws URISyntaxException {
         MockHttpServletRequest request = new MockHttpServletRequest();
-        request.setAttribute("org.springframework.boot.web.servlet.error.DefaultErrorAttributes.ERROR",
+        request.setAttribute("org.springframework.boot.webmvc.error.DefaultErrorAttributes.ERROR",
                 new DuplicateUserEmailException("There already exists a user with email test@test.com"));
 
         ResponseEntity responseEntity = subject.error(request);
@@ -50,7 +50,7 @@ public class DefaultErrorControllerTest {
     @Test
     public void errorNotAnnotated() throws URISyntaxException {
         MockHttpServletRequest request = new MockHttpServletRequest();
-        request.setAttribute("org.springframework.boot.web.servlet.error.DefaultErrorAttributes.ERROR",
+        request.setAttribute("org.springframework.boot.webmvc.error.DefaultErrorAttributes.ERROR",
                 new IllegalArgumentException("dope"));
         request.setAttribute("jakarta.servlet.error.status_code", 409);
 
