@@ -135,11 +135,6 @@
         </dependency>
         <dependency>
             <groupId>org.openconext</groupId>
-            <artifactId>openconext-oidc-client</artifactId>
-            <version>0.0.4</version>
-        </dependency>
-        <dependency>
-            <groupId>org.openconext</groupId>
             <artifactId>tiqr-java-connector</artifactId>
             <version>3.1.5</version>
         </dependency>

@@ -10,6 +10,7 @@ import org.springframework.test.context.ActiveProfiles;
 
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.core.IsEqual.equalTo;
+import static org.hamcrest.core.StringStartsWith.startsWith;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
         properties = {
@@ -33,5 +34,23 @@ public class SecurityConfigurationTest extends AbstractIntegrationTest {
                 .then()
                 .body("status", equalTo("UP"));
 
+    }
+
+    /**
+     * Regression test for the AppAwareAuthorizationRequestResolver's inlined
+     * authorization-request customizer. This endpoint is Spring Security's own OAuth2
+     * authorization-initiation filter, resolved through AppAwareAuthorizationRequestResolver;
+     * a binary-incompatible library on the classpath here previously threw
+     * NoSuchMethodError on every hit (production login outage), with no test catching it
+     * because the rest of the suite never exercises the oauth2Login redirect path.
+     */
+    @Test
+    public void oauth2AuthorizationRedirect() {
+        given().redirects().follow(false)
+                .when()
+                .get("/oauth2/authorization/my_conext")
+                .then()
+                .statusCode(302)
+                .header("Location", startsWith("http://localhost:8098/oidc/authorize"));
     }
 }
