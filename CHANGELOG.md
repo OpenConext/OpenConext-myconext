@@ -4,6 +4,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## [8.4.4] unreleased
+- Upgraded to Spring Boot 4
+
+## [8.4.3] unreleased
+- 
+
 ## [8.4.2] unreleased
 - Improve ACR affiliation-student text request ([#1230](https://github.com/OpenConext/OpenConext-myconext/issues/1230))
 - Error when requesting servicedesk code ([#1256](https://github.com/OpenConext/OpenConext-myconext/issues/1256))
