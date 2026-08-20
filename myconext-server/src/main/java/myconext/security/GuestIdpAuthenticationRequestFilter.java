@@ -364,7 +364,6 @@ public class GuestIdpAuthenticationRequestFilter extends OncePerRequestFilter {
                 hasRequiredIapAssurance(user, authenticationContextClassReferenceValues);
     }
 
-    // Todo Consider moving to ACR.java
     public static boolean hasRequiredIapAssurance(User user, List<String> authenticationContextClassReferenceValues) {
         boolean highRequired = ACR.containsAcr(authenticationContextClassReferenceValues, ACR.IAP_HIGH);
         boolean mediumRequired = ACR.containsAcr(authenticationContextClassReferenceValues, ACR.IAP_MEDIUM);
@@ -922,7 +921,7 @@ public class GuestIdpAuthenticationRequestFilter extends OncePerRequestFilter {
                         samlAttribute.getValue().equals("student"))) {
             attributes.add(attribute("urn:mace:dir:attribute-def:eduPersonAffiliation", "student"));
         }
-        List<String> eduPersonAssurances = eduPersonAssurances(user); // Todo: needs to be called earlier -- we need to do the check ACR matches
+        List<String> eduPersonAssurances = eduPersonAssurances(user);
         eduPersonAssurances
                 .forEach(eduPersonAssurance -> attributes.add(attribute("urn:mace:dir:attribute-def:eduPersonAssurance", eduPersonAssurance)));
         // lastLogin is updated, possible an new eduID value or deleted affiliations
