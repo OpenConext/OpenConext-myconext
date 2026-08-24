@@ -4,15 +4,23 @@
 
 All notable changes to this project will be documented in this file.
 
-## [8.4.4] unreleased
-- Upgraded to Spring Boot 4
+## [8.5.0] unreleased
+- Upgraded to Spring Boot 4 ([#1263](https://github.com/OpenConext/OpenConext-myconext/issues/1263))
+- Revert Localicious and restore translation method to pre-localicious state ([#984](https://github.com/OpenConext/OpenConext-myconext/issues/984)) & ([#1299](https://github.com/OpenConext/OpenConext-myconext/issues/1299))
+- Add support for refeds IAP ACR values ([#1032](https://github.com/OpenConext/OpenConext-myconext/issues/1032))
+- Replace global uid values for EPPN with the targeted eduID ([#648](https://github.com/OpenConext/OpenConext-myconext/issues/648))
+- Improve validation for destructive operation when MFA is enabled ([#580](https://github.com/OpenConext/OpenConext-myconext/issues/580))
+- Performance improvements for MongoDB ([#1269](https://github.com/OpenConext/OpenConext-myconext/issues/1269)) & ([#1268](https://github.com/OpenConext/OpenConext-myconext/issues/1268))
+- Improve error messages when an incorrrect SMS OTP was enterd ([#1276](https://github.com/OpenConext/OpenConext-myconext/issues/1276))
 
-## [8.4.3] unreleased
+
+
+## [8.4.3] juli 2026
 - Fix timeout on pipeline ([#1275](https://github.com/OpenConext/OpenConext-myconext/issues/1275))
 - Improve minor text issues ([#1266](https://github.com/OpenConext/OpenConext-myconext/issues/1266))
 - Improve grammar and text for user messages ([#1270](https://github.com/OpenConext/OpenConext-myconext/issues/1270))
 
-## [8.4.2] unreleased
+## [8.4.2] juli 2026
 - Improve ACR affiliation-student text request ([#1230](https://github.com/OpenConext/OpenConext-myconext/issues/1230))
 - Error when requesting servicedesk code ([#1256](https://github.com/OpenConext/OpenConext-myconext/issues/1256))
 - Fix grammatical and textual errors during recovery flow ([#1260](https://github.com/OpenConext/OpenConext-myconext/issues/1260))
