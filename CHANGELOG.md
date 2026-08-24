@@ -8,7 +8,9 @@ All notable changes to this project will be documented in this file.
 - Upgraded to Spring Boot 4
 
 ## [8.4.3] unreleased
-- 
+- Fix timeout on pipeline ([#1275](https://github.com/OpenConext/OpenConext-myconext/issues/1275))
+- Improve minor text issues ([#1266](https://github.com/OpenConext/OpenConext-myconext/issues/1266))
+- Improve grammar and text for user messages ([#1270](https://github.com/OpenConext/OpenConext-myconext/issues/1270))
 
 ## [8.4.2] unreleased
 - Improve ACR affiliation-student text request ([#1230](https://github.com/OpenConext/OpenConext-myconext/issues/1230))
