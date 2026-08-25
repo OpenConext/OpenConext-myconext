@@ -1,12 +1,11 @@
 import React, {useEffect, useState} from "react";
-import {Button, ButtonSize, ButtonType, Modal} from "@surfnet/sds";
+import {Button, ButtonSize, ButtonType} from "@surfnet/sds";
 import './Login.scss';
 import I18n from "../locale/I18n";
 import DOMPurify from "dompurify";
 import FrontDesk from "../icons/frontdesk.svg";
 import {LandingInfo} from "../components/LandingInfo";
-import {configuration, logout} from "../api";
-import {useSearchParams} from "react-router-dom";
+import {configuration} from "../api";
 
 export const Login = () => {
 

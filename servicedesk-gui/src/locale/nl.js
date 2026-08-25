@@ -32,10 +32,6 @@ const nl = {
             logout: "Logout"
         }
     },
-    login: {
-        unauthorized: "Niet geautoriseerd",
-        unauthorizedInfo: "Je bent succesvol ingelogd. Helaas heb je geen toegang tot deze applicatie. Sluit je browser en log opnieuw in met een account dat wel toegang heeft."
-    },
     serviceDesk: {
         member: "ServiceDesk lid"
     },
