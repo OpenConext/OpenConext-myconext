@@ -105,6 +105,8 @@ public class AccountLinkerController implements UserAuthentication {
     private final String myconextEntityid;
     private final String schacHomeOrganization;
     private final boolean createEduIDInstitutionEnabled;
+    private final boolean sendLinkNotificationToEduidAccount;
+    private final boolean sendLinkNotificationToLinkedAccount;
     private final List<String> createFromInstitutionAllowedReturnDomains;
 
     private final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder(4);
@@ -147,6 +149,8 @@ public class AccountLinkerController implements UserAuthentication {
             @Value("${linked_accounts.removal-duration-days-validated}") long removalValidatedDurationDays,
             @Value("${account_linking.myconext_sp_entity_id}") String myConextSpEntityId,
             @Value("${feature.create_eduid_institution_enabled}") boolean createEduIDInstitutionEnabled,
+            @Value("${feature.send_link_notification_to_eduid_account}") boolean sendLinkNotificationToEduidAccount,
+            @Value("${feature.send_link_notification_to_linked_account}") boolean sendLinkNotificationToLinkedAccount,
             CreateFromInstitutionProperties createFromInstitutionProperties,
             @Value("${email_guessing_sleep_millis}") int emailGuessingSleepMillis,
             @Value("${verify.client_id}") String verifyClientId,
@@ -181,6 +185,8 @@ public class AccountLinkerController implements UserAuthentication {
         this.removalValidatedDurationDays = removalValidatedDurationDays;
         this.myConextSpEntityId = myConextSpEntityId;
         this.createEduIDInstitutionEnabled = createEduIDInstitutionEnabled;
+        this.sendLinkNotificationToEduidAccount = sendLinkNotificationToEduidAccount;
+        this.sendLinkNotificationToLinkedAccount = sendLinkNotificationToLinkedAccount;
         this.createFromInstitutionAllowedReturnDomains = createFromInstitutionProperties.getReturnUrlAllowedDomains();
         this.emailGuessingPreventor = new EmailGuessingPrevention(emailGuessingSleepMillis);
         this.verifyClientId = verifyClientId;
@@ -931,6 +937,7 @@ public class AccountLinkerController implements UserAuthentication {
 
         String givenName = (String) body.get("given_name");
         String familyName = (String) body.get("family_name");
+        String institutionEmail = (String) body.get("email");
 
         String institutionIdentifier = StringUtils.hasText(surfCrmId) ? surfCrmId : schacHomeOrganization;
 
@@ -946,7 +953,8 @@ public class AccountLinkerController implements UserAuthentication {
             Optional<LinkedAccount> optionalLinkedAccount = linkedAccounts.stream()
                     .filter(linkedAccount -> linkedAccount.isMatch(updateLinkedAccountRequest))
                     .findFirst();
-            if (optionalLinkedAccount.isPresent()) {
+            boolean isNewLink = optionalLinkedAccount.isEmpty();
+            if (!isNewLink) {
                 optionalLinkedAccount.get().updateExpiresIn(institutionIdentifier, eppn, subjectId, givenName, familyName, affiliations, expiresAt);
             } else {
                 Optional<ResponseEntity<Object>> eppnAlreadyLinkedOptional = checkEppnAlreadyLinked(eppnAlreadyLinkedRequiredUri, eppn, subjectId);
@@ -971,6 +979,10 @@ public class AccountLinkerController implements UserAuthentication {
                     eppnValue, institutionIdentifier, affiliations));
 
             userRepository.save(user);
+
+            if (isNewLink) {
+                notifyAccountLinkAdded(user, schacHomeOrganization, institutionIdentifier, institutionEmail);
+            }
         } else {
             LOG.error("Account linking requested, but no subjectId or eppn provided by the IdP");
             return ResponseEntity.status(HttpStatus.FOUND).location(URI.create(attributeMissingUri)).build();
@@ -999,6 +1011,24 @@ public class AccountLinkerController implements UserAuthentication {
             clientRedirectUri += appender + "institution=" + URLEncoder.encode(identifier, Charset.defaultCharset());
         }
         return ResponseEntity.status(HttpStatus.FOUND).location(URI.create(clientRedirectUri)).build();
+    }
+
+    private void notifyAccountLinkAdded(User user, String schacHomeOrganization, String institutionIdentifier, String institutionEmail) {
+        String institutionName = manage.findIdentityProviderByDomainName(schacHomeOrganization)
+                .map(identityProvider -> "nl".equals(user.getPreferredLanguage()) ? identityProvider.getNameNl() : identityProvider.getName())
+                .filter(StringUtils::hasText)
+                .orElse(institutionIdentifier);
+
+        if (sendLinkNotificationToEduidAccount) {
+            mailBox.sendLinkedAccountAddedEduID(user, institutionName);
+        }
+
+        if (!StringUtils.hasText(institutionEmail)) {
+            LOG.warn(String.format("Account linking added for user %s with institution %s, but no email address was released by the IdP",
+                    user.getEmail(), institutionIdentifier));
+        } else if (sendLinkNotificationToLinkedAccount) {
+            mailBox.sendLinkedAccountAddedInstitution(user, institutionName, institutionEmail);
+        }
     }
 
     private Optional<ResponseEntity<Object>> checkEppnAlreadyLinked(String eppnAlreadyLinkedRequiredUri, String eppn, String subjectId) throws UnsupportedEncodingException {

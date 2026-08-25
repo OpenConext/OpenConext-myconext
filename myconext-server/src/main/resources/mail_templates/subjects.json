@@ -78,5 +78,13 @@
   "service_desk_control_code": {
     "en": "Your verification code to conform your identity",
     "nl": "Je verificatie-code om je identiteit te bevestigen"
+  },
+  "linked_account_added_eduid": {
+    "en": "An account has been linked to your eduID",
+    "nl": "Er is een account gekoppeld aan je eduID"
+  },
+  "linked_account_added_institution": {
+    "en": "Your institutional account was linked to an eduID",
+    "nl": "Je instellingsaccount is gekoppeld aan een eduID"
   }
 }

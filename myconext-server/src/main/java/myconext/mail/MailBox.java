@@ -233,6 +233,21 @@ public class MailBox {
         sendMail("service_desk_control_code", title, variables, preferredLanguage(user), user.getEmail(), true);
     }
 
+    public void sendLinkedAccountAddedEduID(User user, String institutionName) {
+        String title = this.getTitle("linked_account_added_eduid", user);
+        Map<String, Object> variables = variables(user, title);
+        variables.put("institutionName", institutionName);
+        variables.put("mySurfConextURL", mySURFconextURL);
+        sendMail("linked_account_added_eduid", title, variables, preferredLanguage(user), user.getEmail(), false);
+    }
+
+    public void sendLinkedAccountAddedInstitution(User user, String institutionName, String institutionEmail) {
+        String title = this.getTitle("linked_account_added_institution", user);
+        Map<String, Object> variables = variables(user, title);
+        variables.put("institutionName", institutionName);
+        sendMail("linked_account_added_institution", title, variables, preferredLanguage(user), institutionEmail, false);
+    }
+
     public void sendUserValidated(User user, UpdateExternalEduID externalEduID, String source) {
         String title = this.getTitle("account_validated", user);
         Map<String, Object> variables = variables(user, title);

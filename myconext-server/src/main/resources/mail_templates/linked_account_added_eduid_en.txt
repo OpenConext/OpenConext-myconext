@@ -1,0 +1,7 @@
+Hi {{name}},
+
+An account from {{institutionName}} has been linked to your eduID. If this isn't you, we suggest checking your security settings as soon as possible.
+
+{{mySurfConextURL}}/security
+
+{{> footer_en.txt}}

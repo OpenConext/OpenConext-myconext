@@ -1,0 +1,7 @@
+Hi {{name}},
+
+Een account van {{institutionName}} is gekoppeld aan je eduID. Als jij dit niet was, raden we je aan om je beveiligingsinstellingen zo snel mogelijk te controleren.
+
+{{mySurfConextURL}}/security
+
+{{> footer_nl.txt}}
