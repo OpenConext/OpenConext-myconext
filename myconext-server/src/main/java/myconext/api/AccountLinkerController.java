@@ -1052,9 +1052,14 @@ public class AccountLinkerController implements UserAuthentication {
         if (!StringUtils.hasText(returnTo)) {
             return null;
         }
-        return CreateFromInstitutionReturnUrlSupport
+        //If the returnTo is unknown just return null
+        String validatedUrl = CreateFromInstitutionReturnUrlSupport
                 .validateAndNormalize(returnTo, this.createFromInstitutionAllowedReturnDomains)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid return_to parameter"));
+                .orElse(null);
+        if (!StringUtils.hasText(validatedUrl)) {
+            LOG.error("Invalid returnTo URL. Ignoring: " + returnTo);
+        }
+        return validatedUrl;
     }
 
     private ResponseEntity<?> responseWithJsonLocationForSpa(HttpServletRequest request, ResponseEntity<?> responseEntity) {
