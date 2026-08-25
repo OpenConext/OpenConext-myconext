@@ -11,7 +11,7 @@ const en = {
   },
   "Start": {
     "Hi": "Hi {{name}}!",
-    "Manage": "Manage your personal info, your privacy, and the security of your eduID."
+    "Manage": "Manage your personal info, your privacy and the security of your eduID."
   },
   "EnvironmentSwitcher": {
     "Button": "Environment",

@@ -11,7 +11,7 @@ const en = {
   },
   "Start": {
     "Hi": "Hi {{name}}!",
-    "Manage": "Manage your personal info, your privacy, and the security of your eduID."
+    "Manage": "Manage your personal info, your privacy and the security of your eduID."
   },
   "EnvironmentSwitcher": {
     "Button": "Environment",
@@ -599,7 +599,7 @@ const en = {
     "Info": "Can’t log in to eduID through the app or email? Try using a recovery method instead.",
     "Methods": "You can choose from these methods:",
     "PhoneNumber": "Add a recovery phone number",
-    "PhoneNumberInfo": "You'll receive a SMS with a code.",
+    "PhoneNumberInfo": "you will receive a SMS with a code.",
     "BackupCode": "Request a recovery code.",
     "BackupCodeInfo": "The code can be used to log in with.",
     "Save": "Save the code somewhere safe",
@@ -663,7 +663,7 @@ const en = {
     "ResponseIncorrect": "The code is invalid.",
     "SuspendedResult": "The verification from your eduID app failed. ",
     "AccountNotSuspended": "You can try again.",
-    "AccountSuspended": "You'll have to wait {{minutes}} {{plural}} before you can try again.",
+    "AccountSuspended": "you will have to wait {{minutes}} {{plural}} before you can try again.",
     "Minutes": "minutes",
     "Minute": "minute",
     "ConfirmSecondFactor": "Confirm 2nd factor"
@@ -1258,7 +1258,7 @@ const en = {
   },
   "start": {
     "hi": "Hi {{name}}!",
-    "manage": "Manage your personal info, your privacy, and the security of your eduID account.",
+    "manage": "Manage your personal info, your privacy and the security of your eduID account.",
     "app": {
       "title": "Are you studying in NL? Connect your institution!",
       "infoBold": "When you study in the Netherlands ",
@@ -1501,7 +1501,7 @@ const en = {
       "dateTimeOn": "on",
       "backupMethod": "Recovery method",
       "sms": "SMS/Text message",
-      "smsInfo": "You'll receive one-time codes at: {{phone}}",
+      "smsInfo": "you will receive one-time codes at: {{phone}}",
       "getSmsInfo": "Receive one-time codes on your mobile",
       "code": "Backup code",
       "getCode": "Request a code",
@@ -1554,8 +1554,8 @@ const en = {
   },
   "dataActivity": {
     "title": "Data & Activity",
-    "info": "Each application you accessed through eduID receives certain personal data from your eduID account. For example, your name, your email address or a unique eduID number which the application can use to identify you.",
-    "explanation": "Apps you logged in to using eduID.",
+    "info": "Each application you access with your eduID receives personal data from your eduID account. This includes your name, your email address or a unique eduID number which the application can use to identify you.",
+    "explanation": "Apps you logged into with eduID.",
     "noServices": "You did not yet use eduID to login to any application.",
     "name": "Name",
     "add": "Connect new institution",
@@ -1719,7 +1719,7 @@ const en = {
     "changeInfo": "You have successfully authenticated with the eduID app. You can now change your recovery method. ATTENTION: your current recovery method will be deactivated.",
     "methods": "The following methods are available.",
     "phoneNumber": "Add a recovery phone number.",
-    "phoneNumberInfo": "You'll receive a text message with a code.",
+    "phoneNumberInfo": "you will receive a text message with a code.",
     "backupCode": "Request a recovery code.",
     "backupCodeInfo": "Keep this code in a safe place.",
     "save": "Save the code somewhere safe.",
@@ -1792,7 +1792,7 @@ const en = {
     // Unused translation
     "accountNotSuspended": "You can try again.",
     // Unused translation
-    "accountSuspended": "You'll have to wait {{minutes}} {{plural}} before you can try again.",
+    "accountSuspended": "you will have to wait {{minutes}} {{plural}} before you can try again.",
     // Unused translation
     "minutes": "minutes",
     // Unused translation
