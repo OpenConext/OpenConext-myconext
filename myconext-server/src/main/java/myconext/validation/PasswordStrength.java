@@ -8,6 +8,7 @@ import org.springframework.util.StringUtils;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Locale;
 import java.util.Set;
@@ -15,6 +16,9 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 public class PasswordStrength {
+
+    //BCrypt refuses to hash passwords longer than 72 bytes
+    public static final int MAX_PASSWORD_BYTES = 72;
 
     private static final Pattern pattern = Pattern.compile("^(((?=.*[A-Z])(?=.*[0-9])(.{8,}))|(.{15,}))$");
     private  final Set<String> deniedWords ;
@@ -33,6 +37,11 @@ public class PasswordStrength {
         return StringUtils.hasText(password)
                 && pattern.matcher(password).matches()
                 && !containsDeniedWord(password);
+    }
+
+    public boolean tooLong(String password) {
+        return StringUtils.hasText(password)
+                && password.getBytes(StandardCharsets.UTF_8).length > MAX_PASSWORD_BYTES;
     }
 
     private boolean containsDeniedWord(String password) {

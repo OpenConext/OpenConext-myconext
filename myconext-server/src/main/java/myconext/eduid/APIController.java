@@ -1,10 +1,18 @@
 package myconext.eduid;
 
-import io.swagger.v3.oas.annotations.Hidden;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.ExampleObject;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.Getter;
+import myconext.SwaggerOpenIdConfig;
 import myconext.api.HasUserRepository;
 import myconext.exceptions.UserNotFoundException;
 import myconext.model.EduID;
+import myconext.model.StatusResponse;
 import myconext.model.User;
 import myconext.repository.UserRepository;
 import org.apache.commons.logging.Log;
@@ -20,12 +28,16 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping(value = "/myconext/api/eduid", produces = MediaType.APPLICATION_JSON_VALUE)
-@Hidden
 public class APIController implements HasUserRepository {
 
     private static final Log LOG = LogFactory.getLog(APIController.class);
@@ -36,6 +48,7 @@ public class APIController implements HasUserRepository {
         this.userRepository = userRepository;
     }
 
+    @SecurityRequirement(name = SwaggerOpenIdConfig.OPEN_ID_SCHEME_NAME, scopes = {"eduid.nl/eppn"})
     @GetMapping("/eppn")
     @SuppressWarnings("unchecked")
     public List<Map<String, String>> eppn(BearerTokenAuthentication authentication, @RequestParam(value = "schachome", required = false) String schachome) {
@@ -58,9 +71,16 @@ public class APIController implements HasUserRepository {
         return results;
     }
 
+    @Operation(summary = "Get the eduID value for a logged in user",
+            description = "Return the eduID value of the client_id of the RP ",
+            responses = {
+                    @ApiResponse(responseCode = "201", description = "EduID",
+                            content = {@Content(schema = @Schema(implementation = StatusResponse.class),
+                                    examples = {@ExampleObject(value = "{\"eduid\":\"fc75dcc7-6def-4054-b8ba-3c3cc504dd4b\"}")})})})
+    @SecurityRequirement(name = SwaggerOpenIdConfig.OPEN_ID_SCHEME_NAME, scopes = {"eduid.nl/eduid"})
     @GetMapping("/eduid")
     @SuppressWarnings("unchecked")
-    public ResponseEntity<Map<String, String>> eduid(BearerTokenAuthentication authentication) {
+    public ResponseEntity<Map<String, String>> eduid(@Parameter(hidden = true) BearerTokenAuthentication authentication) {
         String clientId = (String) authentication.getTokenAttributes().get("client_id");
 
         LOG.info(String.format("Endpoint '/eduid/ called by authentication %s", clientId));
@@ -76,7 +96,7 @@ public class APIController implements HasUserRepository {
         List<String> eduIDs = user.getEduIDS().stream()
                 .filter(eduID -> clientId.equals(eduID.getServiceProviderEntityId()) ||
                         eduID.getServices().stream().anyMatch(service -> clientId.equals(service.getEntityId())))
-                .map(EduID::getValue).collect(Collectors.toList());
+                .map(EduID::getValue).toList();
         Map<String, String> results = eduIDs.isEmpty() ? new HashMap<>() : Collections.singletonMap("eduid", eduIDs.get(0));
 
         LOG.info(String.format("Endpoint '/eduid/ results %s for authentication %s", results, clientId));
@@ -84,6 +104,7 @@ public class APIController implements HasUserRepository {
         return ResponseEntity.ok(results);
     }
 
+    @SecurityRequirement(name = SwaggerOpenIdConfig.OPEN_ID_SCHEME_NAME, scopes = {"eduid.nl/links"})
     @GetMapping("/links")
     public List<Map<String, Object>> links(BearerTokenAuthentication authentication) {
         String clientId = (String) authentication.getTokenAttributes().get("client_id");

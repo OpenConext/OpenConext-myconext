@@ -772,6 +772,20 @@ public class UserControllerTest extends AbstractMailBoxTest {
     }
 
     @Test
+    public void updateUserPasswordTooLong() {
+        User user = userRepository.findOneUserByEmail("jdoe@example.com");
+        passwordResetHashRepository.save(new PasswordResetHash(user, "hash"));
+        String tooLongPassword = "A1" + "a".repeat(71);
+        given()
+                .when()
+                .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+                .body(new UpdateUserSecurityRequest(tooLongPassword, "hash"))
+                .put("/myconext/api/sp/update-password")
+                .then()
+                .statusCode(413);
+    }
+
+    @Test
     public void resetPasswordHashValid() {
         User user = userRepository.findOneUserByEmail("jdoe@example.com");
         passwordResetHashRepository.save(new PasswordResetHash(user, "hash"));

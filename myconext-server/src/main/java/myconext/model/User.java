@@ -7,6 +7,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import myconext.exceptions.PasswordTooLongException;
 import myconext.exceptions.WeakPasswordException;
 import myconext.manage.Manage;
 import myconext.remotecreation.NewExternalEduID;
@@ -171,6 +172,10 @@ public class User implements Serializable, UserDetails {
     }
 
     public void encryptPassword(String password, PasswordEncoder encoder, PasswordStrength passwordStrength) {
+        if (passwordStrength.tooLong(password)) {
+            throw new PasswordTooLongException("Password exceeds the maximum length of " +
+                    PasswordStrength.MAX_PASSWORD_BYTES + " bytes");
+        }
         if (!passwordStrength.strongEnough(password)) {
             throw new WeakPasswordException("Weak password: " + password);
         }

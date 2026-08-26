@@ -2,6 +2,7 @@ package myconext.model;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.SneakyThrows;
+import myconext.exceptions.PasswordTooLongException;
 import myconext.exceptions.WeakPasswordException;
 import myconext.manage.Manage;
 import myconext.manage.MockManage;
@@ -76,6 +77,13 @@ public class UserTest {
     public void encryptPassword() {
         User user = new User();
         user.encryptPassword(null, null, new PasswordStrength(new ObjectMapper()));
+    }
+
+    @Test(expected = PasswordTooLongException.class)
+    public void encryptPasswordTooLong() {
+        User user = new User();
+        String password = "A1" + "a".repeat(71);
+        user.encryptPassword(password, null, new PasswordStrength(new ObjectMapper()));
     }
 
 

@@ -25,6 +25,15 @@ public class PasswordStrengthTest {
     }
 
     @Test
+    public void testTooLong() {
+        assertFalse(passwordStrength.tooLong(null));
+        assertFalse(passwordStrength.tooLong("a".repeat(72)));
+        assertTrue(passwordStrength.tooLong("a".repeat(73)));
+        //Multi-byte characters count towards the byte limit, not the character limit
+        assertTrue(passwordStrength.tooLong("é".repeat(37)));
+    }
+
+    @Test
     public void testDeniedWords() {
         assertFalse(passwordStrength.strongEnough("Password123"));
         assertFalse(passwordStrength.strongEnough("pAsSwOrD123"));

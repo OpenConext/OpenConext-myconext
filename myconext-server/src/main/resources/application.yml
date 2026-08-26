@@ -18,6 +18,7 @@ server:
 springdoc:
   pathsToMatch:
     - "/api/remote-creation/**"
+    - "/myconext/api/eduid/eduid"
     - "/myconext/api/invite/**"
     - "/mobile/**"
   api-docs:

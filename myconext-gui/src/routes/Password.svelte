@@ -1,7 +1,7 @@
 <script>
     import {flash, user, config} from "../stores/user";
     import I18n from "../locale/I18n";
-    import {validPassword} from "../validation/regexp";
+    import {validPassword, passwordTooLong} from "../validation/regexp";
     import {resetPasswordHashValid, generatePasswordResetCode, updatePassword, setLoginPreference} from "../api";
     import {navigate} from "svelte-routing";
     import Button from "../components/Button.svelte";
@@ -17,7 +17,9 @@
     let showModalDeletePassword = false;
     let hash;
     let allowedNext = false;
+    let passwordTooLongError = false;
 
+    $: passwordTooLongError = passwordTooLong(newPassword);
     $: allowedNext = validPassword(newPassword) && newPassword === confirmPassword && !passwordResetHashExpired;
 
     onMount(() => {
@@ -43,8 +45,12 @@
                 .then(res => {
                     window.location.href = `${$config.accountBaseUrl}/register/login-preference/${res.token}`;
                 })
-                .catch(() => {
-                    passwordResetHashExpired = true;
+                .catch(e => {
+                    if (e.status === 413) {
+                        passwordTooLongError = true;
+                    } else {
+                        passwordResetHashExpired = true;
+                    }
                 });
 
         }
@@ -163,6 +169,12 @@
             <label for="confirmPassword">{I18n.t("Password.ConfirmPassword")}</label>
             <input id="confirmPassword" type="password" spellcheck="false" autocomplete="new-password"
                    bind:value={confirmPassword}>
+
+            {#if passwordTooLongError}
+                <div class="error-container">
+                    <span class="error">{I18n.t("Password.PasswordTooLong")}</span>
+                </div>
+            {/if}
 
             <div class="options">
                 {#if usePassword}
