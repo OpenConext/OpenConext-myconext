@@ -14,23 +14,33 @@ public class PasswordStrengthTest {
     @Test
     public void testStrongEnough() {
         assertFalse(passwordStrength.strongEnough(null));
-        assertFalse(passwordStrength.strongEnough("ABCDEFGH"));
-        assertFalse(passwordStrength.strongEnough("abcdefghijklmn"));
-        assertFalse(passwordStrength.strongEnough("#!@$%$Aaaa"));
 
-        assertTrue(passwordStrength.strongEnough("A1xwerty"));
-        assertTrue(passwordStrength.strongEnough("abcdefghijklmno"));
-        assertTrue(passwordStrength.strongEnough("Secret123"));
-        assertTrue(passwordStrength.strongEnough("#!@$%$A1"));
+        //Shorter than 8 characters is always too short
+        assertFalse(passwordStrength.strongEnough("short12"));
+
+        //8+ characters is strong enough, regardless of MFA
+        assertTrue(passwordStrength.strongEnough("eightchr"));
+        assertTrue(passwordStrength.strongEnough("fifteencharacte"));
+
+        //No composition rules: no uppercase, digit or special character is required
+        assertTrue(passwordStrength.strongEnough("alllowercase"));
+        assertTrue(passwordStrength.strongEnough("all lower case"));
+
+        //Whitespace is allowed, including a password of only whitespace
+        assertTrue(passwordStrength.strongEnough("               "));
+
+        //Unicode characters count as a single character each, not by their byte length
+        assertTrue(passwordStrength.strongEnough("wachtwoordé日本語🎉"));
     }
 
     @Test
     public void testTooLong() {
         assertFalse(passwordStrength.tooLong(null));
-        assertFalse(passwordStrength.tooLong("a".repeat(72)));
-        assertTrue(passwordStrength.tooLong("a".repeat(73)));
-        //Multi-byte characters count towards the byte limit, not the character limit
-        assertTrue(passwordStrength.tooLong("é".repeat(37)));
+        assertFalse(passwordStrength.tooLong("a".repeat(128)));
+        assertTrue(passwordStrength.tooLong("a".repeat(129)));
+        //Character count, not byte count, determines the maximum
+        assertFalse(passwordStrength.tooLong("é".repeat(128)));
+        assertTrue(passwordStrength.tooLong("é".repeat(129)));
     }
 
     @Test

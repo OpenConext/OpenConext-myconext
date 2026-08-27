@@ -775,7 +775,7 @@ public class UserControllerTest extends AbstractMailBoxTest {
     public void updateUserPasswordTooLong() {
         User user = userRepository.findOneUserByEmail("jdoe@example.com");
         passwordResetHashRepository.save(new PasswordResetHash(user, "hash"));
-        String tooLongPassword = "A1" + "a".repeat(71);
+        String tooLongPassword = "a".repeat(129);
         given()
                 .when()
                 .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
@@ -783,6 +783,36 @@ public class UserControllerTest extends AbstractMailBoxTest {
                 .put("/myconext/api/sp/update-password")
                 .then()
                 .statusCode(413);
+    }
+
+    @Test
+    public void updateUserPasswordShortAllowedWithSecondFactor() {
+        //The jdoe@example.com fixture has a recovery code, i.e. a registered second factor
+        User user = userRepository.findOneUserByEmail("jdoe@example.com");
+        passwordResetHashRepository.save(new PasswordResetHash(user, "hash"));
+        given()
+                .when()
+                .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+                .body(new UpdateUserSecurityRequest("eightchr", "hash"))
+                .put("/myconext/api/sp/update-password")
+                .then()
+                .statusCode(HttpStatus.CREATED.value());
+    }
+
+    @Test
+    public void updateUserPasswordShortAllowedWithoutSecondFactor() {
+        //A registered second factor no longer changes the length floor: 8 characters is always enough
+        User user = userRepository.findOneUserByEmail("jdoe@example.com");
+        user.getSurfSecureId().remove(SURFSecureID.RECOVERY_CODE);
+        userRepository.save(user);
+        passwordResetHashRepository.save(new PasswordResetHash(user, "hash"));
+        given()
+                .when()
+                .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+                .body(new UpdateUserSecurityRequest("eightchr", "hash"))
+                .put("/myconext/api/sp/update-password")
+                .then()
+                .statusCode(HttpStatus.CREATED.value());
     }
 
     @Test

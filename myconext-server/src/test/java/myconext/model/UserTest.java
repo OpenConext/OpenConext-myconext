@@ -6,11 +6,16 @@ import myconext.exceptions.PasswordTooLongException;
 import myconext.exceptions.WeakPasswordException;
 import myconext.manage.Manage;
 import myconext.manage.MockManage;
+import myconext.security.LongPasswordAwareBCryptPasswordEncoder;
 import myconext.security.ServicesConfiguration;
+import myconext.tiqr.SURFSecureID;
 import myconext.validation.PasswordStrength;
 import org.junit.Test;
 import org.mockito.Mockito;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.util.ReflectionTestUtils;
+
+import java.security.SecureRandom;
 
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
@@ -82,8 +87,50 @@ public class UserTest {
     @Test(expected = PasswordTooLongException.class)
     public void encryptPasswordTooLong() {
         User user = new User();
-        String password = "A1" + "a".repeat(71);
+        String password = "a".repeat(129);
         user.encryptPassword(password, null, new PasswordStrength(new ObjectMapper()));
+    }
+
+    @Test(expected = WeakPasswordException.class)
+    public void encryptPasswordTooShort() {
+        User user = new User();
+        //7 characters, below the flat 8-character floor
+        user.encryptPassword("seven12", null, new PasswordStrength(new ObjectMapper()));
+    }
+
+    @Test
+    public void encryptPasswordShortAllowed() {
+        User user = new User();
+        //A second factor no longer lowers (or raises) the floor: 8 characters is always enough
+        ReflectionTestUtils.setField(user, "surfSecureId", Map.of(SURFSecureID.PHONE_VERIFIED, true));
+        PasswordEncoder encoder = new LongPasswordAwareBCryptPasswordEncoder(4, new SecureRandom());
+        user.encryptPassword("eightchr", encoder, new PasswordStrength(new ObjectMapper()));
+        assertTrue(encoder.matches("eightchr", user.getPassword()));
+    }
+
+    @Test
+    public void encryptPasswordShortAllowedWithoutSecondFactor() {
+        User user = new User();
+        PasswordEncoder encoder = new LongPasswordAwareBCryptPasswordEncoder(4, new SecureRandom());
+        //No second factor registered, 8 characters is still enough
+        user.encryptPassword("eightchr", encoder, new PasswordStrength(new ObjectMapper()));
+        assertTrue(encoder.matches("eightchr", user.getPassword()));
+    }
+
+    @Test
+    public void encryptPasswordDoesNotTruncateLongPasswords() {
+        //Two long, unicode passwords that share an identical prefix exceeding BCrypt's 72-byte limit,
+        //but differ near the end. If the encoder truncated the input, both would hash identically.
+        String commonPrefix = "wachtwoordé".repeat(10);
+        String passwordA = commonPrefix + "AAAA";
+        String passwordB = commonPrefix + "BBBB";
+
+        User user = new User();
+        PasswordEncoder encoder = new LongPasswordAwareBCryptPasswordEncoder(4, new SecureRandom());
+        user.encryptPassword(passwordA, encoder, new PasswordStrength(new ObjectMapper()));
+
+        assertTrue(encoder.matches(passwordA, user.getPassword()));
+        assertFalse(encoder.matches(passwordB, user.getPassword()));
     }
 
 

@@ -4,24 +4,19 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.SneakyThrows;
 import org.springframework.core.io.ClassPathResource;
-import org.springframework.util.StringUtils;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.nio.charset.StandardCharsets;
 import java.util.List;
-import java.util.Locale;
 import java.util.Set;
-import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 public class PasswordStrength {
 
-    //BCrypt refuses to hash passwords longer than 72 bytes
-    public static final int MAX_PASSWORD_BYTES = 72;
+    //OWASP ASVS V6.2.1: no password shorter than 8 characters
+    public static final int MIN_PASSWORD_LENGTH = 8;
+    //OWASP ASVS V6.2.9: at least 64 characters must be permitted
+    public static final int MAX_PASSWORD_LENGTH = 128;
 
-    private static final Pattern pattern = Pattern.compile("^(((?=.*[A-Z])(?=.*[0-9])(.{8,}))|(.{15,}))$");
-    private  final Set<String> deniedWords ;
+    private final Set<String> deniedWords;
 
     @SneakyThrows
     public PasswordStrength(ObjectMapper objectMapper) {
@@ -34,14 +29,18 @@ public class PasswordStrength {
     }
 
     public boolean strongEnough(String password) {
-        return StringUtils.hasText(password)
-                && pattern.matcher(password).matches()
-                && !containsDeniedWord(password);
+        if (password == null) {
+            return false;
+        }
+        return characterLength(password) >= MIN_PASSWORD_LENGTH && !containsDeniedWord(password);
     }
 
     public boolean tooLong(String password) {
-        return StringUtils.hasText(password)
-                && password.getBytes(StandardCharsets.UTF_8).length > MAX_PASSWORD_BYTES;
+        return password != null && characterLength(password) > MAX_PASSWORD_LENGTH;
+    }
+
+    private int characterLength(String password) {
+        return password.codePointCount(0, password.length());
     }
 
     private boolean containsDeniedWord(String password) {

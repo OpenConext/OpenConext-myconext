@@ -174,10 +174,11 @@ public class User implements Serializable, UserDetails {
     public void encryptPassword(String password, PasswordEncoder encoder, PasswordStrength passwordStrength) {
         if (passwordStrength.tooLong(password)) {
             throw new PasswordTooLongException("Password exceeds the maximum length of " +
-                    PasswordStrength.MAX_PASSWORD_BYTES + " bytes");
+                    PasswordStrength.MAX_PASSWORD_LENGTH + " characters");
         }
         if (!passwordStrength.strongEnough(password)) {
-            throw new WeakPasswordException("Weak password: " + password);
+            throw new WeakPasswordException("Weak password: minimum length is " +
+                    PasswordStrength.MIN_PASSWORD_LENGTH + " characters");
         }
         this.password = encoder.encode(password);
         this.passwordUpdatedAt = System.currentTimeMillis();
@@ -336,12 +337,18 @@ public class User implements Serializable, UserDetails {
 
     @Transient
     @JsonIgnore
+    public boolean hasSecondFactor() {
+        return !CollectionUtils.isEmpty(this.surfSecureId) && (
+                this.surfSecureId.containsKey(SURFSecureID.PHONE_VERIFIED) ||
+                        this.surfSecureId.containsKey(SURFSecureID.RECOVERY_CODE));
+    }
+
+    @Transient
+    @JsonIgnore
     public List<String> loginOptions() {
         List<LoginOptions> result = new ArrayList<>();
         //Order by priority
-        if (!CollectionUtils.isEmpty(this.surfSecureId) && (
-                this.surfSecureId.containsKey(SURFSecureID.PHONE_VERIFIED) ||
-                        this.surfSecureId.containsKey(SURFSecureID.RECOVERY_CODE))) {
+        if (this.hasSecondFactor()) {
             result.add(LoginOptions.APP);
         }
         if (!CollectionUtils.isEmpty(this.publicKeyCredentials)) {

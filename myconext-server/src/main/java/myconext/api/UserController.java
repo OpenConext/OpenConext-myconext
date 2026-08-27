@@ -48,7 +48,6 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
@@ -99,7 +98,7 @@ public class UserController implements UserAuthentication {
     private final PasswordResetHashRepository passwordResetHashRepository;
     private final ChangeEmailHashRepository changeEmailHashRepository;
 
-    private final PasswordEncoder passwordEncoder = new BCryptPasswordEncoder(4, new SecureRandom());
+    private final PasswordEncoder passwordEncoder = new LongPasswordAwareBCryptPasswordEncoder(4, new SecureRandom());
     private final EmailGuessingPrevention emailGuessingPreventor;
     private final EmailDomainGuard emailDomainGuard;
     private final DisposableEmailProviders disposableEmailProviders;
