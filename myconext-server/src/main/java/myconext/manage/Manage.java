@@ -75,11 +75,13 @@ public interface Manage {
         Map<String, String> metaDataFields = (Map<String, String>) data.get("metaDataFields");
         String nameEn = metaDataFields.get("name:en");
         String nameNl = metaDataFields.get("name:nl");
+        String institutionGuid = metaDataFields.getOrDefault("eduIDInstitutionGuid",
+                metaDataFields.get("coin:institution_guid"));
         return new RemoteProvider(
                 entityId,
                 StringUtils.hasText(nameEn) ? nameEn : StringUtils.hasText(nameNl) ? nameNl : entityId,
                 StringUtils.hasText(nameNl) ? nameNl : StringUtils.hasText(nameEn) ? nameEn : entityId,
-                metaDataFields.get("coin:institution_guid"),
+                institutionGuid,
                 metaDataFields.get("logo:0:url")
         );
 

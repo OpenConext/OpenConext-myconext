@@ -520,6 +520,23 @@ public class User implements Serializable, UserDetails {
         return success;
     }
 
+    public void deleteEduIDService(String entityId) {
+        //First fill the eduIDInstitutionGuid for all eduID's
+        this.eduIDS.forEach(eduID -> {
+            eduID.getServices().stream()
+                    .filter(service -> StringUtils.hasText(service.getInstitutionGuid()))
+                    .findAny()
+                    .ifPresent(service -> eduID.setServiceInstutionGuid(service.getInstitutionGuid()));
+        });
+        this.eduIDS.forEach(eduID -> eduID.getServices().removeIf(service ->
+                entityId.equals(service.getEntityId()) || entityId.equals(service.getInstitutionGuid())));
+        List<EduID> newEduIDs = this.eduIDS.stream()
+                .filter(eduID -> StringUtils.hasText(eduID.getServiceInstutionGuid()))
+                .collect(Collectors.toList());
+        this.eduIDS = newEduIDs;
+
+    }
+
     private interface ProvisionedNameProvider {
 
         String derivedName(ProvisionedLinkedAccount provisionedLinkedAccount);

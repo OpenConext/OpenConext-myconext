@@ -54,7 +54,8 @@
       "metaDataFields": {
         "name:en": "Google RUG",
         "name:nl": "Google Groningen",
-        "OrganizationName:en": "GOOGLE"
+        "OrganizationName:en": "GOOGLE",
+        "eduIDInstitutionGuid": "nice"
       }
     }
   },

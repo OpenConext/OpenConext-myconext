@@ -12,6 +12,7 @@ import org.junit.ClassRule;
 import org.junit.Test;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
+import org.springframework.util.StringUtils;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -309,7 +310,10 @@ public class UserMobileControllerTest extends AbstractMailBoxTest {
         assertFalse(userFromDB.getEduIDS().stream()
                 .anyMatch(eduID -> eduID.getServices().stream()
                         .anyMatch(service -> entityId.equals(service.getEntityId()))));
-        assertEquals(1, userFromDB.getEduIDS().size());
+        //The eduID for the deleted service is kept - with an empty services list - as it has an institutionGuid
+        assertEquals(2, userFromDB.getEduIDS().size());
+        assertTrue(userFromDB.getEduIDS().stream()
+                .anyMatch(eduID -> eduID.getServices().isEmpty() && StringUtils.hasText(eduID.getServiceInstutionGuid())));
     }
 
 }

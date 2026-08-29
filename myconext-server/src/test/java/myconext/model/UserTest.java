@@ -52,6 +52,14 @@ public class UserTest {
     }
 
     @Test
+    public void computeEduIdForServiceProviderWithInstitutionGuid() {
+        User user = new User();
+        String entityId = "google.com/a/rug.nl";
+        user.computeEduIdForServiceProviderIfAbsent(entityId, manage);
+        user.getEduIDS().getFirst().getServiceInstutionGuid().equals("nice");
+    }
+
+    @Test
     public void computeEduIdForServiceProviderLastLoginDate() throws InterruptedException {
         User user = user("http://mock-sp");
         assertEquals(1, user.getEduIDS().size());
@@ -232,6 +240,46 @@ public class UserTest {
 
         Map<String, EduID> eduIdPerServiceProviderFiltered = user.convertEduIdPerServiceProvider(new ServicesConfiguration(List.of(entityId)));
         assertEquals(0, eduIdPerServiceProviderFiltered.size());
+    }
+
+    @Test
+    public void deleteEduIDService() {
+        User user = new User();
+
+        //Non-institutional eduID - has no institutionGuid on any of its services
+        String entityId = "https://sp_one";
+        ServiceProvider serviceProvider = new ServiceProvider(new RemoteProvider(
+                entityId, "spOneName", "spOneNameNl", null, "logoURL"), "homeURL");
+        EduID nonInstitutionalEduID = new EduID(UUID.randomUUID().toString(), serviceProvider);
+        user.getEduIDS().add(nonInstitutionalEduID);
+
+        //Institutional eduID shared by two services with the same institutionGuid
+        String institutionGuid = UUID.randomUUID().toString();
+        String institutionalEntityId = "https://sp_two";
+        String otherInstitutionalEntityId = "https://sp_three";
+        ServiceProvider institutionalServiceProvider = new ServiceProvider(new RemoteProvider(
+                institutionalEntityId, "spTwoName", "spTwoNameNl", institutionGuid, "logoURL"), "homeURL");
+        EduID institutionalEduID = new EduID(UUID.randomUUID().toString(), institutionalServiceProvider);
+        institutionalEduID.updateServiceProvider(new ServiceProvider(new RemoteProvider(
+                otherInstitutionalEntityId, "spThreeName", "spThreeNameNl", institutionGuid, "logoURL"), "homeURL"));
+        user.getEduIDS().add(institutionalEduID);
+
+        assertEquals(2, user.getEduIDS().size());
+        assertEquals(2, institutionalEduID.getServices().size());
+
+        //Deleting the non-institutional service removes its eduID entirely, the institutional eduID is untouched
+        user.deleteEduIDService(entityId);
+
+        assertEquals(1, user.getEduIDS().size());
+        assertEquals(institutionalEduID.getValue(), user.getEduIDS().get(0).getValue());
+        assertEquals(2, user.getEduIDS().get(0).getServices().size());
+
+        //Deleting one of the two services of the institutional eduID only removes that service, the eduID remains
+        user.deleteEduIDService(institutionalEntityId);
+
+        assertEquals(1, user.getEduIDS().size());
+        assertEquals(1, user.getEduIDS().get(0).getServices().size());
+        assertEquals(otherInstitutionalEntityId, user.getEduIDS().get(0).getServices().get(0).getEntityId());
     }
 
     @SneakyThrows

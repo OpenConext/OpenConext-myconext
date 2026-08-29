@@ -38,7 +38,8 @@ public class RemoteManage implements Manage {
         this.spRequestAttributes.put("REQUESTED_ATTRIBUTES", Arrays.asList(
                 "metaDataFields.coin:application_url",
                 "metaDataFields.logo:0:url",
-                "metaDataFields.coin:institution_guid"
+                "metaDataFields.coin:institution_guid",
+                "metaDataFields.eduIDInstitutionGuid"
         ));
         this.idpRequestAttributes.put("REQUESTED_ATTRIBUTES", Arrays.asList(
                 "metaDataFields.coin:institution_brin",

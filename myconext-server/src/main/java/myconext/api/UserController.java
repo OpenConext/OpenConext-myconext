@@ -1027,12 +1027,7 @@ public class UserController implements UserAuthentication {
         checkSecondFactorConfirmation(authentication, request);
 
         String entityId = deleteService.getServiceProviderEntityId();
-        user.getEduIDS().forEach(eduID -> eduID.getServices().removeIf(service ->
-                entityId.equals(service.getEntityId()) || entityId.equals(service.getInstitutionGuid())));
-        List<EduID> newEduIDs = user.getEduIDS().stream()
-                .filter(eduID -> !eduID.getServices().isEmpty())
-                .collect(Collectors.toList());
-        user.setEduIDS(newEduIDs);
+        user.deleteEduIDService(entityId);
         userRepository.save(user);
 
         logWithContext(user, "delete", "eppn", LOG, "Deleted eduID " + entityId);

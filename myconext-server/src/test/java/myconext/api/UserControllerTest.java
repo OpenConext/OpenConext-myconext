@@ -712,7 +712,10 @@ public class UserControllerTest extends AbstractMailBoxTest {
 
         assertFalse(userFromDB.getEduIDS().stream()
                 .anyMatch(val -> val.getServices().stream().anyMatch(service -> entityID.equals(service.getEntityId()))));
-        assertEquals(1, userFromDB.getEduIDS().size());
+        //The eduID for the deleted service is kept - with an empty services list - as it has an institutionGuid
+        assertEquals(2, userFromDB.getEduIDS().size());
+        assertTrue(userFromDB.getEduIDS().stream()
+                .anyMatch(val -> val.getServices().isEmpty() && StringUtils.hasText(val.getServiceInstutionGuid())));
     }
 
     @Test
@@ -737,7 +740,10 @@ public class UserControllerTest extends AbstractMailBoxTest {
 
         assertFalse(userFromDB.getEduIDS().stream()
                 .anyMatch(val -> val.getServices().stream().anyMatch(service -> entityID.equals(service.getEntityId()))));
-        assertEquals(1, userFromDB.getEduIDS().size());
+        //The eduID for the deleted service is kept - with an empty services list - as it has an institutionGuid
+        assertEquals(2, userFromDB.getEduIDS().size());
+        assertTrue(userFromDB.getEduIDS().stream()
+                .anyMatch(val -> val.getServices().isEmpty() && StringUtils.hasText(val.getServiceInstutionGuid())));
     }
 
     @Test
