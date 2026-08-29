@@ -6,7 +6,9 @@ import org.bson.Document;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.stereotype.Repository;
 
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 @Repository
 public class MetricsRepository {
@@ -39,6 +41,20 @@ public class MetricsRepository {
                         "{ \"$match\": { \"externalLinkedAccounts.idpScoping\": \"" + idpScoping.name() + "\" } },",
                         "{ \"$count\": \"countExternalLinkedAccounts\" }"
                 ), "countExternalLinkedAccounts");
+    }
+
+    public Map<String, Integer> countExternalLinkedAccountsByBrin() {
+        return mongoTemplate.execute("users", collection -> {
+            List<Document> pipeline = List.of(
+                    Document.parse("{ \"$unwind\": \"$externalLinkedAccounts\" }"),
+                    Document.parse("{ \"$unwind\": \"$externalLinkedAccounts.brinCodes\" }"),
+                    Document.parse("{ \"$group\": { \"_id\": \"$externalLinkedAccounts.brinCodes\", \"count\": { \"$sum\": 1 } } }")
+            );
+            AggregateIterable<Document> result = collection.aggregate(pipeline);
+            Map<String, Integer> countsByBrin = new LinkedHashMap<>();
+            result.forEach(doc -> countsByBrin.put(doc.getString("_id"), doc.getInteger("count")));
+            return countsByBrin;
+        });
     }
 
     public Integer countTotalExternalLinkedAccounts() {
