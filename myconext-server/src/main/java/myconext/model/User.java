@@ -10,11 +10,9 @@ import lombok.Setter;
 import myconext.exceptions.PasswordTooLongException;
 import myconext.exceptions.WeakPasswordException;
 import myconext.manage.Manage;
-import myconext.remotecreation.NewExternalEduID;
 import myconext.security.ServicesConfiguration;
 import myconext.tiqr.SURFSecureID;
 import myconext.validation.PasswordStrength;
-import myconext.verify.AttributeMapper;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.Transient;
 import org.springframework.data.mongodb.core.index.Indexed;
@@ -397,18 +395,6 @@ public class User implements Serializable, UserDetails {
         return result;
     }
 
-    @Transient
-    @JsonIgnore
-    public void updateWithExternalEduID(NewExternalEduID externalEduID) {
-        //Only update attributes when there is no validated account
-        if (CollectionUtils.isEmpty(this.externalLinkedAccounts) && CollectionUtils.isEmpty(this.linkedAccounts)) {
-            this.givenName = externalEduID.getFirstName();
-            String lastNamePrefix = externalEduID.getLastNamePrefix();
-            this.familyName = StringUtils.hasText(lastNamePrefix) ? String.format("%s %s", lastNamePrefix, externalEduID.getLastName()) : externalEduID.getLastName();
-            this.dateOfBirth = AttributeMapper.parseDate(externalEduID.getDateOfBirth());
-        }
-    }
-
     public String getEduPersonPrincipalName() {
         return uid + "@" + schacHomeOrganization;
     }
@@ -465,7 +451,17 @@ public class User implements Serializable, UserDetails {
     }
 
     public Date getDerivedDateOfBirth() {
-        return CollectionUtils.isEmpty(this.externalLinkedAccounts) ? null : this.externalLinkedAccounts.get(0).getDateOfBirth();
+        if (CollectionUtils.isEmpty(this.externalLinkedAccounts)) {
+            return null;
+        }
+        return this.externalLinkedAccounts.stream()
+                .filter(ExternalLinkedAccount::isPreferred)
+                .findFirst()
+                .or(() -> this.externalLinkedAccounts.stream()
+                        .filter(externalLinkedAccount -> externalLinkedAccount.getCreatedAt() != null)
+                        .max(Comparator.comparing(ExternalLinkedAccount::getCreatedAt)))
+                .map(ExternalLinkedAccount::getDateOfBirth)
+                .orElse(null);
     }
 
     public String getDerivedGivenName() {

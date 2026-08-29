@@ -436,6 +436,95 @@ class RemoteCreationControllerTest extends AbstractIntegrationTest {
     }
 
     @Test
+    void updateEduIDMakesStudielinkPreferredOverExistingLinkedAccounts() {
+        //jdoe@example.com already has 2 institutional linkedAccounts, one of which (guest@example.nl / "Mary Dahl") is preferred
+        User existingUser = userRepository.findUserByEmailAndRateLimitedFalse(email).get();
+        assertEquals(2, existingUser.getLinkedAccounts().size());
+        assertTrue(existingUser.getLinkedAccounts().stream().anyMatch(LinkedAccount::isPreferred));
+        assertEquals("Mary", existingUser.getDerivedGivenName());
+        assertEquals("Dahl", existingUser.getDerivedFamilyName());
+
+        UpdateExternalEduID externalEduID = new UpdateExternalEduID(
+                email,
+                "3060b9ce-9cf2-4e5b-8164-bf0a2b706720",
+                "Hedwig",
+                "Hedwig",
+                "von",
+                "Munich",
+                "19880327",
+                UUID.randomUUID().toString(),
+                Verification.Geverifieerd,
+                null
+        );
+        given()
+                .when()
+                .auth().preemptive().basic(userName, password)
+                .contentType(ContentType.JSON)
+                .body(externalEduID)
+                .put("/api/remote-creation/eduid-update")
+                .then()
+                .statusCode(HttpStatus.CREATED.value());
+
+        User userFromDB = userRepository.findUserByEmailAndRateLimitedFalse(email).get();
+        //The pre-existing linkedAccounts are untouched, but no longer preferred
+        assertEquals(2, userFromDB.getLinkedAccounts().size());
+        assertTrue(userFromDB.getLinkedAccounts().stream().noneMatch(LinkedAccount::isPreferred));
+
+        ExternalLinkedAccount studielinkAccount = userFromDB.getExternalLinkedAccounts().stream()
+                .filter(account -> IdpScoping.studielink.equals(account.getIdpScoping()))
+                .findFirst()
+                .orElseThrow();
+        assertTrue(studielinkAccount.isPreferred());
+        //StudieLink is now the preferred (verified) source for the name, even though "Mary Dahl" was already preferred
+        assertEquals("Hedwig", userFromDB.getDerivedGivenName());
+        assertEquals("von Munich", userFromDB.getDerivedFamilyName());
+    }
+
+    @Test
+    void updateEduIDUnverifiedDoesNotChangePreferredAccount() {
+        User user = userRepository.findUserByEmailAndRateLimitedFalse(email).get();
+        user.getLinkedAccounts().forEach(linkedAccount -> linkedAccount.setPreferred(false));
+        LinkedAccount preferredLinkedAccount = user.getLinkedAccounts().get(0);
+        preferredLinkedAccount.setPreferred(true);
+        String preferredEppn = preferredLinkedAccount.getEduPersonPrincipalName();
+        userRepository.save(user);
+
+        UpdateExternalEduID externalEduID = new UpdateExternalEduID(
+                email,
+                "3060b9ce-9cf2-4e5b-8164-bf0a2b706720",
+                "Mary",
+                "Mary",
+                "von",
+                "Munich",
+                "19880327",
+                UUID.randomUUID().toString(),
+                Verification.Ongeverifieerd,
+                null
+        );
+        given()
+                .when()
+                .auth().preemptive().basic(userName, password)
+                .contentType(ContentType.JSON)
+                .body(externalEduID)
+                .put("/api/remote-creation/eduid-update")
+                .then()
+                .statusCode(HttpStatus.CREATED.value());
+
+        User userFromDB = userRepository.findUserByEmailAndRateLimitedFalse(email).get();
+        //Verification.Ongeverifieerd: the externalLinkedAccount is created / DB fields are updated, but nothing else changes
+        ExternalLinkedAccount studielinkAccount = userFromDB.getExternalLinkedAccounts().stream()
+                .filter(account -> IdpScoping.studielink.equals(account.getIdpScoping()))
+                .findFirst()
+                .orElseThrow();
+        assertFalse(studielinkAccount.isPreferred());
+        assertTrue(userFromDB.getLinkedAccounts().stream()
+                .filter(linkedAccount -> preferredEppn.equals(linkedAccount.getEduPersonPrincipalName()))
+                .findFirst()
+                .orElseThrow()
+                .isPreferred());
+    }
+
+    @Test
     void updateEduIDNotFound() {
         UpdateExternalEduID externalEduID = new UpdateExternalEduID(
                 "new@user.com",

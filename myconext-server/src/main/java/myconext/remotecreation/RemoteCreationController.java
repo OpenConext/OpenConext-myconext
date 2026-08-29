@@ -362,36 +362,44 @@ public class RemoteCreationController implements HasUserRepository {
         User user = this.findUserByEduIDValue(eduIDValue)
                 .orElseThrow(() -> new UserNotFoundException(String.format("User not found by eduID %s", eduIDValue)));
         boolean isVerifiedStatus = !Verification.Ongeverifieerd.equals(externalEduID.getVerification());
-        if (isVerifiedStatus) {
-            user.setDateOfBirth(AttributeMapper.parseDate(externalEduID.getDateOfBirth()));
-        }
-        user.updateWithExternalEduID(externalEduID);
+        IdpScoping idpScoping = IdpScoping.valueOf(remoteUserName);
 
         AtomicBoolean userIsValidated = new AtomicBoolean(false);
         Optional<ExternalLinkedAccount> optionalExternalLinkedAccount = user.getExternalLinkedAccounts().stream()
-                .filter(account -> IdpScoping.valueOf(remoteUserName).equals(account.getIdpScoping()))
+                .filter(account -> idpScoping.equals(account.getIdpScoping()))
                 .findAny();
-        optionalExternalLinkedAccount.ifPresentOrElse(externalLinkedAccount -> {
+        ExternalLinkedAccount externalLinkedAccount = optionalExternalLinkedAccount.map(existingExternalLinkedAccount -> {
             //Prevent sending mail's again
-            boolean currentExternalAccountUnverified = Verification.Ongeverifieerd.equals(externalLinkedAccount.getVerification());
+            boolean currentExternalAccountUnverified = Verification.Ongeverifieerd.equals(existingExternalLinkedAccount.getVerification());
             if (isVerifiedStatus && currentExternalAccountUnverified) {
                 userIsValidated.set(true);
-                externalLinkedAccount.setPreferred(true);
             }
-            externalLinkedAccount.updateAttributesFromUpdateExternalEduID(externalEduID, this.attributeMapper);
-        }, () -> {
+            //Even when the verification status is Ongeverifieerd, we still update the DB fields
+            existingExternalLinkedAccount.updateAttributesFromUpdateExternalEduID(externalEduID, this.attributeMapper);
+            return existingExternalLinkedAccount;
+        }).orElseGet(() -> {
             //Create the StudieLink external account for this remoteAPI user
             RemoteProvider remoteProvider = getRemoteProvider(remoteUser, remoteUserName);
             String provisionedEduIDValue = user.computeEduIdForIdentityProviderProviderIfAbsent(remoteProvider, manage);
             externalEduID.setEduIDValue(provisionedEduIDValue);
-            ExternalLinkedAccount externalLinkedAccount = attributeMapper.createExternalLinkedAccount(externalEduID, IdpScoping.valueOf(remoteUserName));
-            externalLinkedAccount.setAffiliations(attributeMapper.externalAffiliations(externalEduID.getBrinCodes()));
+            ExternalLinkedAccount newExternalLinkedAccount = attributeMapper.createExternalLinkedAccount(externalEduID, idpScoping);
+            newExternalLinkedAccount.setAffiliations(attributeMapper.externalAffiliations(externalEduID.getBrinCodes()));
+            user.getExternalLinkedAccounts().add(newExternalLinkedAccount);
             if (isVerifiedStatus) {
                 userIsValidated.set(true);
-                externalLinkedAccount.setPreferred(true);
             }
-            user.getExternalLinkedAccounts().add(externalLinkedAccount);
+            return newExternalLinkedAccount;
         });
+        //Once verified, StudieLink is the source of truth for the preferred name / date of birth, even if the
+        //user already had a verified linkedAccount or externalLinkedAccount (e.g. iDIN, eHerkenning, ServiceDesk
+        //or an institution) - that other data is kept, but it is no longer preferred
+        if (isVerifiedStatus) {
+            user.getLinkedAccounts().forEach(linkedAccount -> linkedAccount.setPreferred(false));
+            user.getExternalLinkedAccounts().stream()
+                    .filter(account -> account != externalLinkedAccount)
+                    .forEach(account -> account.setPreferred(false));
+            externalLinkedAccount.setPreferred(true);
+        }
         userRepository.save(user);
         if (userIsValidated.get()) {
             mailBox.sendUserValidated(user, externalEduID, remoteUserName);
