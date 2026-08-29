@@ -961,6 +961,13 @@ public class UserController implements UserAuthentication {
         checkSecondFactorConfirmation(authentication, request);
 
         if (updateLinkedAccountRequest.isExternal()) {
+            //Studielink externalLinkedAccounts can only be deleted after studielink has deleted the connection
+            boolean hasActiveStudielinkConnection = user.getExternalLinkedAccounts().stream()
+                    .anyMatch(externalLinkedAccount -> IdpScoping.studielink.equals(externalLinkedAccount.getIdpScoping())
+                            && externalLinkedAccount.isConnectionActive());
+            if (hasActiveStudielinkConnection) {
+                throw new ForbiddenException("Can not delete a studielink externalLinkedAccount while the connection is still active for user " + user.getEmail());
+            }
             //Only one external linked account is allowed
             user.getExternalLinkedAccounts().clear();
             user.setDateOfBirth(null);

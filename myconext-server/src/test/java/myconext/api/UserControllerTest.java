@@ -637,6 +637,57 @@ public class UserControllerTest extends AbstractMailBoxTest {
     }
 
     @Test
+    public void removeUserExternalLinkedAccountStudielinkBlockedWhileConnectionActive() {
+        User user = userRepository.findOneUserByEmail("jdoe@example.com");
+        user.getSurfSecureId().remove(SURFSecureID.RECOVERY_CODE);
+        ExternalLinkedAccount externalLinkedAccount = new ExternalLinkedAccount(
+                "subjectID", IdpScoping.studielink, true
+        );
+        user.getExternalLinkedAccounts().add(externalLinkedAccount);
+        userRepository.save(user);
+
+        UpdateLinkedAccountRequest updateLinkedAccountRequest = new UpdateLinkedAccountRequest(
+                null, externalLinkedAccount.getSubjectId(), true, IdpScoping.studielink.name(), null);
+        given()
+                .when()
+                .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+                .body(updateLinkedAccountRequest)
+                .put("/myconext/api/sp/institution")
+                .then()
+                .statusCode(HttpStatus.FORBIDDEN.value());
+
+        User userFromDB = userRepository.findOneUserByEmail("jdoe@example.com");
+
+        assertEquals(1, userFromDB.getExternalLinkedAccounts().size());
+    }
+
+    @Test
+    public void removeUserExternalLinkedAccountStudielinkAllowedAfterConnectionDeleted() {
+        User user = userRepository.findOneUserByEmail("jdoe@example.com");
+        user.getSurfSecureId().remove(SURFSecureID.RECOVERY_CODE);
+        ExternalLinkedAccount externalLinkedAccount = new ExternalLinkedAccount(
+                "subjectID", IdpScoping.studielink, true
+        );
+        externalLinkedAccount.setConnectionActive(false);
+        user.getExternalLinkedAccounts().add(externalLinkedAccount);
+        userRepository.save(user);
+
+        UpdateLinkedAccountRequest updateLinkedAccountRequest = new UpdateLinkedAccountRequest(
+                null, externalLinkedAccount.getSubjectId(), true, IdpScoping.studielink.name(), null);
+        given()
+                .when()
+                .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+                .body(updateLinkedAccountRequest)
+                .put("/myconext/api/sp/institution")
+                .then()
+                .statusCode(HttpStatus.OK.value());
+
+        User userFromDB = userRepository.findOneUserByEmail("jdoe@example.com");
+
+        assertEquals(0, userFromDB.getExternalLinkedAccounts().size());
+    }
+
+    @Test
     public void updatePublicKeyCredential() {
         User user = userRepository.findOneUserByEmail("jdoe@example.com");
         PublicKeyCredentials publicKeyCredentials = user.getPublicKeyCredentials().get(0);

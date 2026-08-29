@@ -424,6 +424,11 @@ public class RemoteCreationController implements HasUserRepository {
         LOG.info(String.format("DELETE eduid-delete by %s for %s", remoteUser.getUsername(), eduIDValue));
         User user = userRepository.findByEduIDS_value(eduIDValue).orElseThrow(() -> new UserNotFoundException("User not found"));
         user.getEduIDS().removeIf(eduID -> eduID.getValue().equals(eduIDValue));
+        //The connection with the remote source is gone, so the user is now allowed to delete this externalLinkedAccount
+        IdpScoping idpScoping = IdpScoping.valueOf(remoteUser.getUsername());
+        user.getExternalLinkedAccounts().stream()
+                .filter(externalLinkedAccount -> idpScoping.equals(externalLinkedAccount.getIdpScoping()))
+                .forEach(externalLinkedAccount -> externalLinkedAccount.setConnectionActive(false));
         userRepository.save(user);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }

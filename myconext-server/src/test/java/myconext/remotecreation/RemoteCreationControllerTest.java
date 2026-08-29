@@ -560,6 +560,12 @@ class RemoteCreationControllerTest extends AbstractIntegrationTest {
     void deleteEduID() {
         User user = userRepository.findUserByEmailAndRateLimitedFalse(email).get();
         assertEquals(2, user.getEduIDS().size());
+
+        ExternalLinkedAccount externalLinkedAccount = new ExternalLinkedAccount(UUID.randomUUID().toString(), IdpScoping.studielink, true);
+        user.getExternalLinkedAccounts().add(externalLinkedAccount);
+        userRepository.save(user);
+        assertTrue(externalLinkedAccount.isConnectionActive());
+
         given()
                 .when()
                 .auth().preemptive().basic(userName, password)
@@ -571,6 +577,8 @@ class RemoteCreationControllerTest extends AbstractIntegrationTest {
 
         User updatedUser = userRepository.findUserByEmailAndRateLimitedFalse(email).get();
         assertEquals(1, updatedUser.getEduIDS().size());
+        //Studielink deleted the connection, so the externalLinkedAccount is no longer active and can now be deleted by the user
+        assertFalse(updatedUser.getExternalLinkedAccounts().get(0).isConnectionActive());
     }
 
     @Test

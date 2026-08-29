@@ -167,7 +167,7 @@
         {/if}
 
     </div>
-    {#if linkedAccount.idpScoping !== "studielink"}
+    {#if linkedAccount.idpScoping !== "studielink" || linkedAccount.connectionActive === false}
         <div class="button-container">
             {@html trash}
             <div class="remove">
