@@ -193,6 +193,12 @@ public class GuestIdpAuthenticationRequestFilter extends OncePerRequestFilter {
         this.securityContextRepository = securityContextRepository;
     }
 
+    //This filter is instantiated manually (not a Spring bean), so its executor is not shut down automatically -
+    //without this, its non-daemon thread keeps every JVM that creates this filter (e.g. tests) alive indefinitely
+    public void shutdown() {
+        this.executor.shutdown();
+    }
+
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         if (this.ssoSamlRequestMatcher.matches(request)) {

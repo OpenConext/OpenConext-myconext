@@ -256,6 +256,17 @@
                 <artifactId>spring-boot-maven-plugin</artifactId>
             </plugin>
             <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <configuration>
+                    <!-- The test suite caches many distinct Spring contexts (each with its own embedded Tomcat),
+                         all torn down sequentially at JVM exit. That teardown reliably takes just over the
+                         default 30s exit grace period, so Surefire force-halts the JVM on every run instead of
+                         letting it exit cleanly. Give it enough headroom to exit naturally. -->
+                    <forkedProcessExitTimeoutInSeconds>90</forkedProcessExitTimeoutInSeconds>
+                </configuration>
+            </plugin>
+            <plugin>
                 <groupId>io.github.git-commit-id</groupId>
                 <artifactId>git-commit-id-maven-plugin</artifactId>
                 <version>9.0.2</version>

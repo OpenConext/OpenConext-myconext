@@ -1,5 +1,6 @@
 package myconext.security;
 
+import jakarta.annotation.PreDestroy;
 import lombok.SneakyThrows;
 import myconext.config.CreateFromInstitutionProperties;
 import myconext.crypto.KeyGenerator;
@@ -198,6 +199,11 @@ public class SecurityConfiguration {
                     cookieValueEncoder,
                     securityContextRepository
             );
+        }
+
+        @PreDestroy
+        public void destroy() {
+            this.guestIdpAuthenticationRequestFilter.shutdown();
         }
 
         @Bean

@@ -25,7 +25,8 @@ class MetricsControllerTest {
 
     @Test
     void prometheus() throws IOException {
-        ConfigurableApplicationContext applicationContext = SpringApplication.run(MyConextServerApplication.class, "--server.port=8098");
+        ConfigurableApplicationContext applicationContext = SpringApplication.run(MyConextServerApplication.class,
+                "--server.port=8098", "--server.shutdown=immediate");
         RestAssured.port = 8098;
 
         //BRIN codes are data-driven, so seed one to deterministically assert the new per-BRIN metric
