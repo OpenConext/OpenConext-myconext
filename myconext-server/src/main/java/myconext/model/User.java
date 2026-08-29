@@ -527,10 +527,10 @@ public class User implements Serializable, UserDetails {
         this.eduIDS.forEach(eduID -> eduID.getServices().removeIf(service ->
                 entityId.equals(service.getEntityId()) || entityId.equals(service.getInstitutionGuid())));
         List<EduID> newEduIDs = this.eduIDS.stream()
-                .filter(eduID -> StringUtils.hasText(eduID.getServiceInstutionGuid()))
+                .filter(eduID -> StringUtils.hasText(eduID.getServiceInstutionGuid()) ||
+                        !CollectionUtils.isEmpty(eduID.getServices()))
                 .collect(Collectors.toList());
         this.eduIDS = newEduIDs;
-
     }
 
     private interface ProvisionedNameProvider {
