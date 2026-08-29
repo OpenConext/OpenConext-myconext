@@ -932,7 +932,15 @@ public class GuestIdpAuthenticationRequestFilter extends OncePerRequestFilter {
     private static List<String> eduPersonAssurances(User user) {
         //we need a mutable list
         List<LinkedAccount> linkedAccounts = user.getLinkedAccounts();
-        List<String> eduPersonAssuranceIdP = linkedAccounts.stream()
+        //If the user prefers the name of one specific linkedAccount, then that account's own assurance is leading -
+        //e.g. a IAP/high validated linkedAccount must not upgrade the assurance of a preferred IAP/medium linkedAccount
+        Optional<LinkedAccount> preferredLinkedAccount = linkedAccounts.stream()
+                .filter(LinkedAccount::isPreferred)
+                .findFirst();
+        List<String> eduPersonAssuranceIdP = preferredLinkedAccount
+                .<List<LinkedAccount>>map(List::of)
+                .orElse(linkedAccounts)
+                .stream()
                 .map(LinkedAccount::getEduPersonAssurances)
                 .flatMap(Collection::stream)
                 .map(String::toLowerCase)

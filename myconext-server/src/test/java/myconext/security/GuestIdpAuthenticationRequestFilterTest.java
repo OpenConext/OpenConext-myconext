@@ -247,6 +247,55 @@ public class GuestIdpAuthenticationRequestFilterTest {
         assertEquals(13, getEduPersonAssurancesCount(samlAttributes));
     }
 
+    @Test
+    public void assurancesPreferredLinkedAccountIsLeadingMedium() {
+        User user = new User();
+
+        LinkedAccount highLinkedAccount = new LinkedAccount();
+        highLinkedAccount.setEduPersonAssurances(List.of("https://refeds.org/assurance/IAP/high"));
+
+        LinkedAccount preferredMediumLinkedAccount = new LinkedAccount();
+        preferredMediumLinkedAccount.setEduPersonAssurances(List.of("https://refeds.org/assurance/IAP/medium"));
+        preferredMediumLinkedAccount.setPreferred(true);
+
+        user.setLinkedAccounts(List.of(highLinkedAccount, preferredMediumLinkedAccount));
+
+        List<SAMLAttribute> samlAttributes = subject.attributes(user, "requester");
+        List<String> eduPersonAssurances = getEduPersonAssurances(samlAttributes);
+
+        //Even though one of the linkedAccounts is IAP/high, the preferred linkedAccount is only IAP/medium
+        assertTrue(eduPersonAssurances.contains("https://refeds.org/assurance/IAP/medium"));
+        assertFalse(eduPersonAssurances.contains("https://refeds.org/assurance/IAP/high"));
+    }
+
+    @Test
+    public void assurancesPreferredLinkedAccountIsLeadingHigh() {
+        User user = new User();
+
+        LinkedAccount mediumLinkedAccount = new LinkedAccount();
+        mediumLinkedAccount.setEduPersonAssurances(List.of("https://refeds.org/assurance/IAP/medium"));
+
+        LinkedAccount preferredHighLinkedAccount = new LinkedAccount();
+        preferredHighLinkedAccount.setEduPersonAssurances(List.of("https://refeds.org/assurance/IAP/high"));
+        preferredHighLinkedAccount.setPreferred(true);
+
+        user.setLinkedAccounts(List.of(mediumLinkedAccount, preferredHighLinkedAccount));
+
+        List<SAMLAttribute> samlAttributes = subject.attributes(user, "requester");
+        List<String> eduPersonAssurances = getEduPersonAssurances(samlAttributes);
+
+        //The preferred linkedAccount is IAP/high, so IAP/high must be sent, even though another linkedAccount is only medium
+        assertTrue(eduPersonAssurances.contains("https://refeds.org/assurance/IAP/medium"));
+        assertTrue(eduPersonAssurances.contains("https://refeds.org/assurance/IAP/high"));
+    }
+
+    private static List<String> getEduPersonAssurances(List<SAMLAttribute> samlAttributes) {
+        return samlAttributes.stream()
+                .filter(attr -> attr.getName().equals("urn:mace:dir:attribute-def:eduPersonAssurance"))
+                .map(SAMLAttribute::getValue)
+                .toList();
+    }
+
     private static long getEduPersonAssurancesCount(List<SAMLAttribute> samlAttributes) {
         return samlAttributes.stream().filter(attr -> attr.getName().equals("urn:mace:dir:attribute-def:eduPersonAssurance")).count();
     }
