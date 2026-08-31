@@ -985,12 +985,11 @@ public class UserController implements UserAuthentication {
     }
 
     @PostMapping("/sp/credential")
-    @Hidden
     public ResponseEntity updatePublicKeyCredential(Authentication authentication,
-                                                    @RequestBody Map<String, String> credential) {
+                                                    @RequestBody UpdateCredential credential) {
         User user = userFromAuthentication(authentication);
 
-        String identifier = credential.get("identifier");
+        String identifier = credential.identifier();
         Optional<PublicKeyCredentials> publicKeyCredentials = user.getPublicKeyCredentials().stream()
                 .filter(key -> key.getIdentifier().equals(identifier))
                 .findFirst();
@@ -998,28 +997,27 @@ public class UserController implements UserAuthentication {
             return return404();
         }
         PublicKeyCredentials credentials = publicKeyCredentials.get();
-        credentials.setName(credential.get("name"));
+        credentials.setName(credential.name());
         userRepository.save(user);
 
-        logWithContext(user, "update", "webauthn_key", LOG, "Updated publicKeyCredential " + credential.get("name"));
+        logWithContext(user, "update", "webauthn_key", LOG, "Updated publicKeyCredential " + credential);
 
         return userResponseRememberMe(user);
     }
 
     @PutMapping("/sp/credential")
-    @Hidden
     public ResponseEntity removePublicKeyCredential(Authentication authentication,
-                                                    @RequestBody Map<String, String> credential) {
+                                                    @RequestBody UpdateCredential credential) {
         User user = userFromAuthentication(authentication);
 
-        String identifier = credential.get("identifier");
+        String identifier = credential.identifier();
         List<PublicKeyCredentials> publicKeyCredentials = user.getPublicKeyCredentials().stream()
                 .filter(key -> !key.getIdentifier().equals(identifier))
                 .collect(Collectors.toList());
         user.setPublicKeyCredentials(publicKeyCredentials);
         userRepository.save(user);
 
-        logWithContext(user, "delete", "webauthn_key", LOG, "Deleted publicKeyCredential " + credential.get("name"));
+        logWithContext(user, "delete", "webauthn_key", LOG, "Deleted publicKeyCredential " + credential);
 
         return userResponseRememberMe(user);
     }
