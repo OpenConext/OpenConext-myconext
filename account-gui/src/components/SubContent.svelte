@@ -103,9 +103,8 @@
     }
 
 </style>
-{#if !isMfaParameter}
-    <div class="{interContent ? 'inter-content' : 'sub-content'} {showButton ? 'show-button' : ''}">
-        <div class="sub-content-inner">
+<div class="{interContent ? 'inter-content' : 'sub-content'} {showButton ? 'show-button' : ''}">
+    <div class="sub-content-inner">
         <span class="question">{@html question}
             {#if preLink}
                 <span class="pre-link">{preLink}</span>
@@ -127,9 +126,8 @@
                 <a href={href} target="_blank">{linkText}</a>
             {/if}
         </span>
-        </div>
     </div>
-{/if}
+</div>
 {#if showModal}
     <Modal submit={() => showModal = false}
            cancel={() => mfaWarning(false)}
