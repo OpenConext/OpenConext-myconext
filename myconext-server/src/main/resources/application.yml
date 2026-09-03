@@ -169,7 +169,7 @@ feature:
   force_global_uid_entities:
     - dummy_non_existing_entity
     - playground_client
-
+    - mijn.myconext.nl
 
 default_affiliate_email_domain: eduid.nl
 
