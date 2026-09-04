@@ -14,8 +14,9 @@ eduid:
 spring:
   data:
     mongodb:
-      uri: mongodb://127.0.0.1:27017/${mongodb_db}
       auto-index-creation: false
+  mongodb:
+    uri: mongodb://127.0.0.1:27017/${mongodb_db}
 
 management:
   endpoints:

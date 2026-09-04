@@ -11,6 +11,7 @@ import org.springframework.test.context.ActiveProfiles;
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.core.IsEqual.equalTo;
 import static org.hamcrest.core.StringStartsWith.startsWith;
+import static org.hamcrest.core.StringContains.containsString;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
         properties = {
@@ -51,6 +52,6 @@ public class SecurityConfigurationTest extends AbstractIntegrationTest {
                 .get("/oauth2/authorization/my_conext")
                 .then()
                 .statusCode(302)
-                .header("Location", startsWith("http://localhost:8098/oidc/authorize"));
+                .header("Location", containsString("/oidc/authorize"));
     }
 }

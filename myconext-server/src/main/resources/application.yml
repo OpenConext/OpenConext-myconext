@@ -4,6 +4,7 @@ logging:
     org.springframework.data.mongodb: INFO
     org.springframework.data.convert: INFO
     org.springframework.security: WARN
+    org.springframework.boot.availability: DEBUG
     io.mongock.: TRACE
     tiqr.org: DEBUG
     myconext: DEBUG
@@ -305,6 +306,7 @@ service_desk_roles: >
   role2,
   role3
 
+
 spring:
   http:
     converters:
@@ -334,14 +336,14 @@ spring:
             provider: oidcng
         provider:
           oidcng:
-            authorization-uri: "http://localhost:8098/oidc/authorize"
-            token-uri: "http://localhost:8098/oidc/token"
-            user-info-uri: "http://localhost:8098/oidc/userinfo"
-            jwk-set-uri: "http://localhost:8098/oidc/certs"
-#            authorization-uri: "https://connect.test2.surfconext.nl/oidc/authorize"
-#            token-uri: "https://connect.test2.surfconext.nl/oidc/token"
-#            user-info-uri: "https://connect.test2.surfconext.nl/oidc/userinfo"
-#            jwk-set-uri: "https://connect.test2.surfconext.nl/oidc/certs"
+#            authorization-uri: "http://localhost:8098/oidc/authorize"
+#            token-uri: "http://localhost:8098/oidc/token"
+#            user-info-uri: "http://localhost:8098/oidc/userinfo"
+#            jwk-set-uri: "http://localhost:8098/oidc/certs"
+            authorization-uri: "https://connect.test2.surfconext.nl/oidc/authorize"
+            token-uri: "https://connect.test2.surfconext.nl/oidc/token"
+            user-info-uri: "https://connect.test2.surfconext.nl/oidc/userinfo"
+            jwk-set-uri: "https://connect.test2.surfconext.nl/oidc/certs"
             user-name-attribute: sub
             user-info-authentication-method: client_secret_basic
 
@@ -361,20 +363,26 @@ management:
       access: unrestricted
     health:
       access: unrestricted
-      show-details: when_authorized
+      show-details: always
       status:
         http-mapping:
           down: 200
           out_of_service: 200
           unknown: 200
           warning: 200
-
+      probes:
+        enabled: true
     prometheus:
       access: unrestricted
     mappings:
       access: none
     metrics:
       access: unrestricted
+  health:
+    ssl:
+      enabled: false
+    readinessstate:
+      enabled: true
   info:
     git:
       mode: full
