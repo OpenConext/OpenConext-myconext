@@ -166,16 +166,22 @@ public abstract class AbstractIntegrationTest implements HasUserRepository {
         RestAssured.config = RestAssuredConfig.config()
                 .objectMapperConfig(new ObjectMapperConfig(ObjectMapperType.JACKSON_2)
                         .jackson2ObjectMapperFactory((cls, charset) -> objectMapper));
-        Arrays.asList(SamlAuthenticationRequest.class, User.class, ExternalUser.class)
-                .forEach(clazz -> mongoTemplate.bulkOps(BulkOperations.BulkMode.ORDERED, clazz)
-                        .remove(new Query())
-                        .insert(readFromFile(clazz))
-                        .execute());
-        Arrays.asList(PasswordResetHash.class, ChangeEmailHash.class, Challenge.class, EmailsSend.class,
-                        Registration.class, Authentication.class, Enrollment.class, MobileLinkAccountRequest.class)
-                .forEach(clazz -> mongoTemplate.bulkOps(BulkOperations.BulkMode.ORDERED, clazz)
-                        .remove(new Query())
-                        .execute());
+        if (doSeed()) {
+            Arrays.asList(SamlAuthenticationRequest.class, User.class, ExternalUser.class)
+                    .forEach(clazz -> mongoTemplate.bulkOps(BulkOperations.BulkMode.ORDERED, clazz)
+                            .remove(new Query())
+                            .insert(readFromFile(clazz))
+                            .execute());
+            Arrays.asList(PasswordResetHash.class, ChangeEmailHash.class, Challenge.class, EmailsSend.class,
+                            Registration.class, Authentication.class, Enrollment.class, MobileLinkAccountRequest.class)
+                    .forEach(clazz -> mongoTemplate.bulkOps(BulkOperations.BulkMode.ORDERED, clazz)
+                            .remove(new Query())
+                            .execute());
+        }
+    }
+
+    protected boolean doSeed() {
+        return true;
     }
 
     protected String samlAuthnRequest() throws IOException {

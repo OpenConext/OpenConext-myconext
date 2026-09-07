@@ -11,9 +11,6 @@ logging:
 
 server:
   port: 8081
-  error:
-    path: "/error"
-    include-binding-errors: always
   forward-headers-strategy: framework
 
 springdoc:
@@ -209,7 +206,6 @@ external-api-configuration:
       password: "secret"
       scopes:
         - attribute-aggregation
-        - system
     -
       username: oidcng
       password: "secret"
@@ -232,6 +228,7 @@ external-api-configuration:
       password: "secret"
       scopes:
         - actuator
+        - system
 
 oidc-token-api:
   token-url: https://connect.test2.surfconext.nl/tokens
@@ -346,6 +343,10 @@ spring:
             jwk-set-uri: "https://connect.test2.surfconext.nl/oidc/certs"
             user-name-attribute: sub
             user-info-authentication-method: client_secret_basic
+  web:
+    error:
+      path: "/error"
+      include-binding-errors: always
 
 gui:
   disclaimer:

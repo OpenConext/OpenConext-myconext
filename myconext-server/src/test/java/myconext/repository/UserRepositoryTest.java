@@ -14,6 +14,7 @@ import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -139,4 +140,12 @@ public class UserRepositoryTest extends AbstractIntegrationTest {
                 regex, LocalDateTime.now(), PageRequest.of(0, mailInstitutionBatchSize));
         assertEquals(2, users.size());
     }
+
+    @Test
+    public void findByEduIDS_Services_EntityId() {
+        List<User> users = userRepository.findByEduIDS_Services_EntityId("playground_client");
+        assertEquals(1, users.size());
+    }
+
+
 }
