@@ -78,7 +78,7 @@ public class SystemController {
     @PreAuthorize("hasRole('ROLE_system')")
     public ResponseEntity<List<Map<String, String>>> serviceMigration(
             @Valid @RequestBody ServiceMigration serviceMigration, Authentication authentication) {
-        LOG.info("system/service-migration called by " + authentication.getName());
+        LOG.info("system/service-migration called by " + authentication.getName() + " with body " + serviceMigration);
 
         String institutionGUID = serviceMigration.getInstitutionGUID();
         String entityID = serviceMigration.getEntityID();
@@ -113,10 +113,10 @@ public class SystemController {
                         user.getEduIDS().remove(sourceEduID);
                     }
                     if (dryRun) {
-                        results.add(Map.of("user", user.getEmail(), "currentEduID", sourceEduID.getValue()));
+                        results.add(Map.of("user", user.getEmail(), "uid", user.getUid(), "currentEduID", sourceEduID.getValue()));
                     } else {
                         String newValue = user.doComputeEduIDIfAbsent(serviceProvider, manage, false);
-                        results.add(Map.of("user", user.getEmail(), "oldEduID", sourceEduID.getValue(), "newEduID", newValue));
+                        results.add(Map.of("user", user.getEmail(), "uid", user.getUid(), "oldEduID", sourceEduID.getValue(), "newEduID", newValue));
                     }
                 }
                 if (!dryRun) {
