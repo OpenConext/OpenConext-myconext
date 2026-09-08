@@ -98,16 +98,20 @@ public class SystemController {
                             .anyMatch(service -> entityID.equals(service.getEntityId())))
                     .findAny();
             optionalSourceEduID.ifPresent(sourceEduID -> {
+                boolean onlyServiceInSourceEduID = sourceEduID.getServices().size() == 1;
                 boolean hasOtherEduIDForNewInstitution = user.getEduIDS().stream()
                         .anyMatch(eduID -> eduID != sourceEduID && institutionGUID.equals(eduID.getServiceInstutionGuid()));
-                if (!hasOtherEduIDForNewInstitution) {
-                    //The user has not used any other service for the new institutionGUID, just update the institutionGUID for this service
+                if (onlyServiceInSourceEduID && !hasOtherEduIDForNewInstitution) {
+                    //The eduID exclusively represents this service and the user has not used any other service for the new institutionGUID,
+                    //so it is safe to just update the institutionGUID for this eduID as a whole
                     sourceEduID.setServiceInstutionGuid(institutionGUID);
                     sourceEduID.getServices().stream()
                             .filter(service -> entityID.equals(service.getEntityId()))
                             .forEach(service -> service.setInstitutionGuid(institutionGUID));
                 } else {
-                    //The user has already used another service with the given institutionGUID, move the service to that eduID identifier
+                    //Either the user already has another eduID for the new institutionGUID, or this eduID also holds other,
+                    //unrelated services that must stay behind - either way, detach this service and merge it into (or create)
+                    //the eduID for the new institutionGUID, leaving any other services on sourceEduID untouched
                     sourceEduID.getServices().removeIf(service -> entityID.equals(service.getEntityId()));
                     if (sourceEduID.getServices().isEmpty()) {
                         user.getEduIDS().remove(sourceEduID);

@@ -147,6 +147,102 @@ public class SystemControllerTest extends AbstractIntegrationTest {
     }
 
     @Test
+    public void serviceMigrationSplitCreatesNewEduID() {
+        //sourceEduID has 3 services sharing the same (wrong) institutionGuid; only "playground_client" is migrated and there
+        //is no other eduID yet for the target institutionGUID, so a brand new eduID must be created for it
+        User user = userRepository.findOneUserByEmail("jdoe@example.com");
+        user.getEduIDS().clear();
+        EduID sourceEduID = threeServiceEduID();
+        user.getEduIDS().add(sourceEduID);
+        userRepository.save(user);
+
+        List<Map<String, String>> results = doServiceMigration("playground_client", "correct-guid", false);
+
+        assertEquals(1, results.size());
+        assertEquals(sourceEduID.getValue(), results.get(0).get("oldEduID"));
+        String newValue = results.get(0).get("newEduID");
+        assertNotEquals(sourceEduID.getValue(), newValue);
+
+        User userFromDB = userRepository.findOneUserByEmail("jdoe@example.com");
+        assertEquals(2, userFromDB.getEduIDS().size());
+
+        EduID remaining = userFromDB.getEduIDS().stream()
+                .filter(e -> e.getValue().equals(sourceEduID.getValue())).findFirst().orElseThrow();
+        assertEquals("wrong-guid", remaining.getServiceInstutionGuid());
+        assertEquals(2, remaining.getServices().size());
+        assertTrue(remaining.getServices().stream().anyMatch(sp -> "second".equals(sp.getEntityId())));
+        assertTrue(remaining.getServices().stream().anyMatch(sp -> "third".equals(sp.getEntityId())));
+        assertFalse(remaining.getServices().stream().anyMatch(sp -> "playground_client".equals(sp.getEntityId())));
+
+        EduID created = userFromDB.getEduIDS().stream()
+                .filter(e -> e.getValue().equals(newValue)).findFirst().orElseThrow();
+        assertEquals("correct-guid", created.getServiceInstutionGuid());
+        assertEquals(1, created.getServices().size());
+        assertEquals("playground_client", created.getServices().get(0).getEntityId());
+    }
+
+    @Test
+    public void serviceMigrationSplitMergesIntoExistingEduID() {
+        //Same 3-service sourceEduID, but the user already has another eduID for the target institutionGUID,
+        //so the migrated service must merge into that existing eduID, not create a new one
+        User user = userRepository.findOneUserByEmail("jdoe@example.com");
+        user.getEduIDS().clear();
+        EduID sourceEduID = threeServiceEduID();
+        user.getEduIDS().add(sourceEduID);
+
+        ServiceProvider otherServiceProvider = new ServiceProvider(
+                new RemoteProvider("other_client", "Other", "Other", EXISTING_INSTITUTION_GUID, "https://logo"),
+                "https://home");
+        EduID targetEduID = new EduID(UUID.randomUUID().toString(), otherServiceProvider);
+        user.getEduIDS().add(targetEduID);
+
+        userRepository.save(user);
+
+        List<Map<String, String>> results = doServiceMigration("playground_client", EXISTING_INSTITUTION_GUID, false);
+
+        assertEquals(1, results.size());
+        assertEquals(sourceEduID.getValue(), results.get(0).get("oldEduID"));
+        assertEquals(targetEduID.getValue(), results.get(0).get("newEduID"));
+
+        User userFromDB = userRepository.findOneUserByEmail("jdoe@example.com");
+        assertEquals(2, userFromDB.getEduIDS().size());
+
+        EduID remaining = userFromDB.getEduIDS().stream()
+                .filter(e -> e.getValue().equals(sourceEduID.getValue())).findFirst().orElseThrow();
+        assertEquals(2, remaining.getServices().size());
+        assertFalse(remaining.getServices().stream().anyMatch(sp -> "playground_client".equals(sp.getEntityId())));
+
+        EduID merged = userFromDB.getEduIDS().stream()
+                .filter(e -> e.getValue().equals(targetEduID.getValue())).findFirst().orElseThrow();
+        assertEquals(2, merged.getServices().size());
+        assertTrue(merged.getServices().stream().anyMatch(sp -> "playground_client".equals(sp.getEntityId())));
+    }
+
+    @Test
+    public void serviceMigrationSplitDryRun() {
+        //Split under dryRun: results only report the current eduID, and nothing is persisted - the 3-service
+        //eduID must remain completely untouched
+        User user = userRepository.findOneUserByEmail("jdoe@example.com");
+        user.getEduIDS().clear();
+        EduID sourceEduID = threeServiceEduID();
+        user.getEduIDS().add(sourceEduID);
+        userRepository.save(user);
+
+        List<Map<String, String>> results = doServiceMigration("playground_client", "correct-guid", true);
+
+        assertEquals(1, results.size());
+        assertEquals(sourceEduID.getValue(), results.get(0).get("currentEduID"));
+        assertFalse(results.get(0).containsKey("oldEduID"));
+        assertFalse(results.get(0).containsKey("newEduID"));
+
+        User userFromDB = userRepository.findOneUserByEmail("jdoe@example.com");
+        assertEquals(1, userFromDB.getEduIDS().size());
+        EduID unchanged = userFromDB.getEduIDS().get(0);
+        assertEquals(3, unchanged.getServices().size());
+        assertEquals("wrong-guid", unchanged.getServiceInstutionGuid());
+    }
+
+    @Test
     public void serviceMigrationNotFound() {
         given()
                 .when()
@@ -156,6 +252,18 @@ public class SystemControllerTest extends AbstractIntegrationTest {
                 .post("/myconext/api/system/service-migration")
                 .then()
                 .statusCode(404);
+    }
+
+    private EduID threeServiceEduID() {
+        //"playground_client" must be a real entityId known to Manage (SystemController looks it up there); "second"/"third" need not be
+        ServiceProvider first = new ServiceProvider(
+                new RemoteProvider("playground_client", "First", "First", "wrong-guid", "https://logo"), "https://home");
+        EduID eduID = new EduID(UUID.randomUUID().toString(), first);
+        eduID.updateServiceProvider(new ServiceProvider(
+                new RemoteProvider("second", "Second", "Second", "wrong-guid", "https://logo"), "https://home"));
+        eduID.updateServiceProvider(new ServiceProvider(
+                new RemoteProvider("third", "Third", "Third", "wrong-guid", "https://logo"), "https://home"));
+        return eduID;
     }
 
     private List<Map<String, String>> doServiceMigration(String entityID, String institutionGUID, boolean dryRun) {
