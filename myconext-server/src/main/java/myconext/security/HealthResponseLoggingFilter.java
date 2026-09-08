@@ -4,8 +4,8 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 import org.springframework.web.util.ContentCachingResponseWrapper;
@@ -16,8 +16,7 @@ import java.nio.charset.StandardCharsets;
 @Component
 public class HealthResponseLoggingFilter extends OncePerRequestFilter {
 
-    private static final Logger LOG =
-        LoggerFactory.getLogger(HealthResponseLoggingFilter.class);
+    private static final Log LOG = LogFactory.getLog(HealthResponseLoggingFilter.class);
 
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) {
@@ -32,23 +31,16 @@ public class HealthResponseLoggingFilter extends OncePerRequestFilter {
             throws ServletException, IOException {
 
         ContentCachingResponseWrapper wrappedResponse =
-            new ContentCachingResponseWrapper(response);
+                new ContentCachingResponseWrapper(response);
 
         try {
             filterChain.doFilter(request, wrappedResponse);
         } finally {
             int status = wrappedResponse.getStatus();
             if (status != HttpServletResponse.SC_OK) {
-                String body = new String(
-                    wrappedResponse.getContentAsByteArray(),
-                    StandardCharsets.UTF_8
-                );
+                String body = new String(wrappedResponse.getContentAsByteArray(), StandardCharsets.UTF_8);
 
-                LOG.info(
-                    "Health endpoint returned HTTP {}: {}",
-                    status,
-                    body
-                );
+                LOG.info(String.format("Health endpoint returned HTTP %s: %s", status, body));
             }
 
             wrappedResponse.copyBodyToResponse();
