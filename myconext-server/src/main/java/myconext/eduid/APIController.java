@@ -48,62 +48,11 @@ public class APIController implements HasUserRepository {
         this.userRepository = userRepository;
     }
 
-    @SecurityRequirement(name = SwaggerOpenIdConfig.OPEN_ID_SCHEME_NAME, scopes = {"eduid.nl/eppn"})
-    @GetMapping("/eppn")
-    @SuppressWarnings("unchecked")
-    public List<Map<String, String>> eppn(BearerTokenAuthentication authentication, @RequestParam(value = "schachome", required = false) String schachome) {
-        String clientId = (String) authentication.getTokenAttributes().get("client_id");
-
-        LOG.info(String.format("Endpoint '/eppn/ called by authentication %s", clientId));
-
-        List<Map<String, String>> results = getUser(authentication).linkedAccountsSorted().stream()
-                .map(linkedAccount -> {
-                    Map<String, String> info = new HashMap<>();
-                    info.put("eppn", linkedAccount.getEduPersonPrincipalName());
-                    info.put("schac_home_organization", linkedAccount.getSchacHomeOrganization());
-                    return info;
-                })
-                .filter(info -> !StringUtils.hasText(schachome) || schachome.equals(info.get("schac_home_organization")))
-                .collect(Collectors.toList());
-
-        LOG.info(String.format("Endpoint '/eppn/ results %s for authentication %s", results, clientId));
-
-        return results;
-    }
-
-    @Operation(summary = "Get the eduID value for a logged in user",
-            description = "Return the eduID value of the client_id of the RP ",
-            responses = {
-                    @ApiResponse(responseCode = "201", description = "EduID",
-                            content = {@Content(schema = @Schema(implementation = StatusResponse.class),
-                                    examples = {@ExampleObject(value = "{\"eduid\":\"fc75dcc7-6def-4054-b8ba-3c3cc504dd4b\"}")})})})
-    @SecurityRequirement(name = SwaggerOpenIdConfig.OPEN_ID_SCHEME_NAME, scopes = {"eduid.nl/eduid"})
-    @GetMapping("/eduid")
-    @SuppressWarnings("unchecked")
-    public ResponseEntity<Map<String, String>> eduid(@Parameter(hidden = true) BearerTokenAuthentication authentication) {
-        String clientId = (String) authentication.getTokenAttributes().get("client_id");
-
-        LOG.info(String.format("Endpoint '/eduid/ called by authentication %s", clientId));
-
-        //Need to be backward compatible
-        Optional<User> optionalUser = userRepository
-                .findByEduIDS_serviceProviderEntityId(clientId)
-                .or(() -> userRepository.findByEduIDS_Services_EntityId(clientId));
-        if (optionalUser.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-        }
-        User user = optionalUser.get();
-        List<String> eduIDs = user.getEduIDS().stream()
-                .filter(eduID -> clientId.equals(eduID.getServiceProviderEntityId()) ||
-                        eduID.getServices().stream().anyMatch(service -> clientId.equals(service.getEntityId())))
-                .map(EduID::getValue).toList();
-        Map<String, String> results = eduIDs.isEmpty() ? new HashMap<>() : Collections.singletonMap("eduid", eduIDs.get(0));
-
-        LOG.info(String.format("Endpoint '/eduid/ results %s for authentication %s", results, clientId));
-
-        return ResponseEntity.ok(results);
-    }
-
+    /**
+     * Called by eduBadges to get information about the linked accounts of a User
+     * @param authentication injected by Spring
+     * @return userInfo containing eppn, schac_home_organization, preferred and validated_name
+     */
     @SecurityRequirement(name = SwaggerOpenIdConfig.OPEN_ID_SCHEME_NAME, scopes = {"eduid.nl/links"})
     @GetMapping("/links")
     public List<Map<String, Object>> links(BearerTokenAuthentication authentication) {

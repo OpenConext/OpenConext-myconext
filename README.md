@@ -218,10 +218,19 @@ curl -u oidcng:secret "http://login.test2.eduid.nl/myconext/api/attribute-manipu
 ```
 curl -u aa:secret "https://login.test2.eduid.nl/myconext/api/attribute-aggregation?sp_entity_id=https://mijn.test2.eduid.nl/shibboleth&eduperson_principal_name=j.doe@example.com"
 ```
+
+### System API
 Endpoint to detect duplicate eduID's for SP's that have the same institutionGuid
 ```
 curl -u aa:secret 'https://login.test2.eduid.nl/myconext/api/system/eduid-duplicates' | jq .
 ```
+
+Endpoint to migrate services to another institution
+```
+curl -u internal:secret --json '{"entityID":"https://service.com","institutionGUID":"A3C808F4-3698-4E30-8B1A-2D2FE8BD0D76", "dryRun":true}' \
+ 'https://login.test2.eduid.nl/myconext/api/system/service-migration' | jq .
+```
+
 
 ### OpenAPI Documentation
 
