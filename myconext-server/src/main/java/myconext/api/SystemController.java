@@ -98,8 +98,17 @@ public class SystemController {
                             .anyMatch(service -> entityID.equals(service.getEntityId())))
                     .findAny();
             optionalSourceEduID.ifPresent(sourceEduID -> {
-                if (institutionGUID.equals(sourceEduID.getServiceInstutionGuid())) {
-                    //This eduID - and by invariant all services in it - is already at the target institutionGUID, nothing to do
+                boolean alreadyAtTargetInstitution = sourceEduID.getServices().stream()
+                        .filter(service -> entityID.equals(service.getEntityId()))
+                        .anyMatch(service -> institutionGUID.equals(service.getInstitutionGuid()));
+                if (alreadyAtTargetInstitution) {
+                    //The service being migrated already has the target institutionGUID - checked on the service itself,
+                    //not the eduID's own (possibly stale or never-set) serviceInstutionGuid field. No institutionGUID is
+                    //actually being migrated, so this user must not be reported - but heal the legacy eduID-level field if needed
+                    if (!dryRun && !institutionGUID.equals(sourceEduID.getServiceInstutionGuid())) {
+                        sourceEduID.setServiceInstutionGuid(institutionGUID);
+                        userRepository.save(user);
+                    }
                     return;
                 }
                 boolean onlyServiceInSourceEduID = sourceEduID.getServices().size() == 1;

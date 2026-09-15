@@ -274,6 +274,61 @@ public class SystemControllerTest extends AbstractIntegrationTest {
     }
 
     @Test
+    public void serviceMigrationAlreadyAtTargetInstitutionIsNoOpWithMissingEduIDLevelGuidDryRun() {
+        //Legacy data: the eduID's own serviceInstutionGuid field was never set (null), but the service being
+        //migrated already carries the target institutionGuid on itself - must still be treated as a no-op.
+        //Under dryRun, the legacy field must NOT be healed either (nothing may be persisted)
+        User user = userRepository.findOneUserByEmail("jdoe@example.com");
+        user.getEduIDS().clear();
+        EduID sourceEduID = legacyEduIDMissingRootGuid();
+        user.getEduIDS().add(sourceEduID);
+        userRepository.save(user);
+
+        List<Map<String, String>> results = doServiceMigration("playground_client", EXISTING_INSTITUTION_GUID, true);
+
+        assertTrue(results.isEmpty());
+
+        User userFromDB = userRepository.findOneUserByEmail("jdoe@example.com");
+        assertEquals(1, userFromDB.getEduIDS().size());
+        EduID unchanged = userFromDB.getEduIDS().get(0);
+        assertEquals(2, unchanged.getServices().size());
+        assertNull(unchanged.getServiceInstutionGuid());
+    }
+
+    @Test
+    public void serviceMigrationAlreadyAtTargetInstitutionHealsMissingEduIDLevelGuid() {
+        //Same legacy shape, but not dryRun: the service itself doesn't need to move, so the user must not be
+        //reported in results, but the root-level serviceInstutionGuid must be healed/backfilled and persisted
+        User user = userRepository.findOneUserByEmail("jdoe@example.com");
+        user.getEduIDS().clear();
+        EduID sourceEduID = legacyEduIDMissingRootGuid();
+        user.getEduIDS().add(sourceEduID);
+        userRepository.save(user);
+
+        List<Map<String, String>> results = doServiceMigration("playground_client", EXISTING_INSTITUTION_GUID, false);
+
+        assertTrue(results.isEmpty());
+
+        User userFromDB = userRepository.findOneUserByEmail("jdoe@example.com");
+        assertEquals(1, userFromDB.getEduIDS().size());
+        EduID healed = userFromDB.getEduIDS().get(0);
+        assertEquals(sourceEduID.getValue(), healed.getValue());
+        assertEquals(2, healed.getServices().size());
+        assertEquals(EXISTING_INSTITUTION_GUID, healed.getServiceInstutionGuid());
+    }
+
+    private EduID legacyEduIDMissingRootGuid() {
+        ServiceProvider migrating = new ServiceProvider(
+                new RemoteProvider("playground_client", "Playground", "Playground", EXISTING_INSTITUTION_GUID, "https://logo"),
+                "https://home");
+        EduID eduID = new EduID(UUID.randomUUID().toString(), migrating);
+        eduID.updateServiceProvider(new ServiceProvider(
+                new RemoteProvider("second", "Second", "Second", EXISTING_INSTITUTION_GUID, "https://logo"), "https://home"));
+        eduID.setServiceInstutionGuid(null);
+        return eduID;
+    }
+
+    @Test
     public void serviceMigrationNotFound() {
         given()
                 .when()
