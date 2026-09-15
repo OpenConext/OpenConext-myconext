@@ -98,6 +98,10 @@ public class SystemController {
                             .anyMatch(service -> entityID.equals(service.getEntityId())))
                     .findAny();
             optionalSourceEduID.ifPresent(sourceEduID -> {
+                if (institutionGUID.equals(sourceEduID.getServiceInstutionGuid())) {
+                    //This eduID - and by invariant all services in it - is already at the target institutionGUID, nothing to do
+                    return;
+                }
                 boolean onlyServiceInSourceEduID = sourceEduID.getServices().size() == 1;
                 boolean hasOtherEduIDForNewInstitution = user.getEduIDS().stream()
                         .anyMatch(eduID -> eduID != sourceEduID && institutionGUID.equals(eduID.getServiceInstutionGuid()));

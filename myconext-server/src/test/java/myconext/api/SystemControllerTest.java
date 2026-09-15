@@ -243,6 +243,37 @@ public class SystemControllerTest extends AbstractIntegrationTest {
     }
 
     @Test
+    public void serviceMigrationAlreadyAtTargetInstitutionIsNoOp() {
+        //sourceEduID has 3 services and is already at the target institutionGUID - even though it's not a
+        //single-service eduID, this must be treated as a no-op, not a spurious split/merge
+        User user = userRepository.findOneUserByEmail("jdoe@example.com");
+        user.getEduIDS().clear();
+
+        ServiceProvider migrating = new ServiceProvider(
+                new RemoteProvider("playground_client", "Playground", "Playground", EXISTING_INSTITUTION_GUID, "https://logo"),
+                "https://home");
+        EduID sourceEduID = new EduID(UUID.randomUUID().toString(), migrating);
+        sourceEduID.updateServiceProvider(new ServiceProvider(
+                new RemoteProvider("second", "Second", "Second", EXISTING_INSTITUTION_GUID, "https://logo"), "https://home"));
+        sourceEduID.updateServiceProvider(new ServiceProvider(
+                new RemoteProvider("third", "Third", "Third", EXISTING_INSTITUTION_GUID, "https://logo"), "https://home"));
+        user.getEduIDS().add(sourceEduID);
+        userRepository.save(user);
+
+        List<Map<String, String>> results = doServiceMigration("playground_client", EXISTING_INSTITUTION_GUID, false);
+
+        assertTrue(results.isEmpty());
+
+        User userFromDB = userRepository.findOneUserByEmail("jdoe@example.com");
+        assertEquals(1, userFromDB.getEduIDS().size());
+        EduID unchanged = userFromDB.getEduIDS().get(0);
+        assertEquals(sourceEduID.getValue(), unchanged.getValue());
+        assertEquals(3, unchanged.getServices().size());
+        assertTrue(unchanged.getServices().stream().anyMatch(sp -> "playground_client".equals(sp.getEntityId())
+                && sp.getCreatedAt().equals(migrating.getCreatedAt())));
+    }
+
+    @Test
     public void serviceMigrationNotFound() {
         given()
                 .when()
