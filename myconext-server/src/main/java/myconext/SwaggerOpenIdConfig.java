@@ -10,7 +10,6 @@ import io.swagger.v3.oas.models.servers.Server;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.web.filter.ForwardedHeaderFilter;
 
 @Configuration
 @OpenAPIDefinition
@@ -44,8 +43,4 @@ public class SwaggerOpenIdConfig {
         return openAPI;
     }
 
-    @Bean
-    ForwardedHeaderFilter forwardedHeaderFilter() {
-        return new ForwardedHeaderFilter();
-    }
 }
