@@ -8,8 +8,11 @@ import io.swagger.v3.oas.models.security.SecurityRequirement;
 import io.swagger.v3.oas.models.security.SecurityScheme;
 import io.swagger.v3.oas.models.servers.Server;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.Ordered;
+import org.springframework.web.filter.ForwardedHeaderFilter;
 
 @Configuration
 @OpenAPIDefinition
@@ -43,4 +46,14 @@ public class SwaggerOpenIdConfig {
         return openAPI;
     }
 
+    @Bean
+    FilterRegistrationBean<ForwardedHeaderFilter> forwardedHeaderFilter() {
+        //A plain @Bean ForwardedHeaderFilter would run after Spring Security's filter chain,
+        //so oauth2Login redirects would be built with the backend's raw (http) scheme instead
+        //of the proxy's forwarded (https) one. HIGHEST_PRECEDENCE keeps it in front.
+        FilterRegistrationBean<ForwardedHeaderFilter> filterRegistrationBean =
+            new FilterRegistrationBean<>(new ForwardedHeaderFilter());
+        filterRegistrationBean.setOrder(Ordered.HIGHEST_PRECEDENCE);
+        return filterRegistrationBean;
+    }
 }
