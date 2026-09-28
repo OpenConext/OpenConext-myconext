@@ -7,11 +7,13 @@
         "dev": "vite",
         "build": "tsc -b && vite build",
         "lint": "eslint .",
-        "prettier": "prettier -c \"{**/*,*}.{ts,tsx,json,js,md,html}\"",
-        "prettier-fix": "prettier --write \"{**/*,*}.{ts,tsx,json,js,md,html}\"",
+        "prettier": "prettier -c \"{**/*,*}.{ts,tsx,json,js,md,html,scss}\"",
+        "prettier-fix": "prettier --write \"{**/*,*}.{ts,tsx,json,js,md,html,scss}\"",
         "preview": "vite preview"
     },
     "dependencies": {
+        "@phosphor-icons/react": "^2.1.10",
+        "@surfnet/curve-react": "^0.5.1",
         "react": "^19.2.8",
         "react-dom": "^19.2.8"
     },
