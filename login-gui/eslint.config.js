@@ -19,5 +19,22 @@ export default defineConfig([
         languageOptions: {
             globals: globals.browser,
         },
+        rules: {
+            'no-restricted-syntax': [
+                'error',
+                {
+                    selector: 'CallExpression[callee.property.name="then"]',
+                    message: 'Avoid .then(). Use async/await instead.',
+                },
+                {
+                    selector: 'CallExpression[callee.property.name="catch"]',
+                    message: 'Avoid .catch(). Use try/catch with async/await instead.',
+                },
+                {
+                    selector: 'CallExpression[callee.property.name="finally"]',
+                    message: 'Avoid .finally(). Use try/finally with async/await instead.',
+                },
+            ],
+        },
     },
 ]);

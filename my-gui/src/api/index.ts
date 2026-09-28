@@ -4,12 +4,11 @@ export type Config = {
     [key: string]: unknown;
 };
 
-export function fetchConfig(): Promise<Config> {
-    return fetch('/config', {
+export async function fetchConfig(): Promise<Config> {
+    const res = await fetch('/config', {
         credentials: 'same-origin',
         headers: { Accept: 'application/json' },
-    }).then((res) => {
-        if (!res.ok) throw res;
-        return res.json() as Promise<Config>;
     });
+    if (!res.ok) throw res;
+    return await ((await res.json()) as Promise<Config>);
 }
