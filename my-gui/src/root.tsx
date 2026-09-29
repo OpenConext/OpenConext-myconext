@@ -5,6 +5,7 @@ import '@surfnet/curve-react/styles.css';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 
+import { DarkModeProvider } from './context/DarkModeContext';
 import './index.scss';
 
 export function Layout({ children }: { children: React.ReactNode }) {
@@ -36,7 +37,9 @@ export default function Root() {
 
     return (
         <QueryClientProvider client={queryClient}>
-            <Outlet />
+            <DarkModeProvider>
+                <Outlet />
+            </DarkModeProvider>
             <ReactQueryDevtools initialIsOpen={false} />
         </QueryClientProvider>
     );
