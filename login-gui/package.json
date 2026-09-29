@@ -18,12 +18,17 @@
         "@tanstack/react-query": "^5.104.0",
         "@tanstack/react-query-devtools": "^5.104.0",
         "react": "^19.2.8",
-        "react-dom": "^19.2.8"
+        "react-dom": "^19.2.8",
+        "react-router": "^8.4.0",
+        "zustand": "^5.0.15",
+        "isbot": "^5"
     },
     "devDependencies": {
         "@eslint/js": "^10.0.1",
+        "@react-router/dev": "^8.4.0",
+        "@react-router/fs-routes": "^8.4.0",
         "@trivago/prettier-plugin-sort-imports": "^6.0.2",
-        "@types/node": "^24.13.3",
+        "@types/node": "^26.6.3",
         "@types/react": "^19.2.18",
         "@types/react-dom": "^19.2.7",
         "@vitejs/plugin-react": "^6.1.1",

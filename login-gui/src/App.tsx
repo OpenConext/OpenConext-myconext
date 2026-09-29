@@ -1,13 +1,15 @@
-import { useEffect, useState } from 'react';
+import { NavLink } from 'react-router';
 
 import { Button } from '@surfnet/curve-react';
 import { useQuery } from '@tanstack/react-query';
 
 import './App.scss';
 import { fetchConfig } from './api';
+import { useAppStore } from './store/store';
 
 function App() {
-    const [dark, setDark] = useState(false);
+    const dark = useAppStore((state) => state.dark);
+    const toggleDark = useAppStore((state) => state.toggleDark);
 
     const {
         data: config,
@@ -18,19 +20,16 @@ function App() {
         queryFn: fetchConfig,
     });
 
-    useEffect(() => {
-        document.documentElement.classList.toggle('dark', dark);
-    }, [dark]);
-
     if (isLoading) return <div>Loading...</div>;
     if (isError) return <div>Error!</div>;
 
     return (
         <>
             <h1>Hello Login-GUI!</h1>
-            <Button onClick={() => setDark((d) => !d)}>
+            <Button onClick={toggleDark}>
                 {dark ? '☀️ Light mode' : '🌙 Dark mode'}
             </Button>
+            <NavLink to="/about">ABOUT</NavLink>
             <pre>{JSON.stringify(config, null, 2)}</pre>
         </>
     );

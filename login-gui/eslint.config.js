@@ -7,7 +7,7 @@ import tseslint from 'typescript-eslint';
 import js from '@eslint/js';
 
 export default defineConfig([
-    globalIgnores(['dist']),
+    globalIgnores(['dist', '.react-router']),
     {
         files: ['**/*.{ts,tsx}'],
         extends: [
@@ -28,11 +28,13 @@ export default defineConfig([
                 },
                 {
                     selector: 'CallExpression[callee.property.name="catch"]',
-                    message: 'Avoid .catch(). Use try/catch with async/await instead.',
+                    message:
+                        'Avoid .catch(). Use try/catch with async/await instead.',
                 },
                 {
                     selector: 'CallExpression[callee.property.name="finally"]',
-                    message: 'Avoid .finally(). Use try/finally with async/await instead.',
+                    message:
+                        'Avoid .finally(). Use try/finally with async/await instead.',
                 },
             ],
         },
