@@ -13,7 +13,9 @@ All notable changes to this project will be documented in this file.
 - Performance improvements for MongoDB ([#1269](https://github.com/OpenConext/OpenConext-myconext/issues/1269)) & ([#1268](https://github.com/OpenConext/OpenConext-myconext/issues/1268))
 - Improve error messages when an incorrrect SMS OTP was enterd ([#1276](https://github.com/OpenConext/OpenConext-myconext/issues/1276))
 
+## [8.4.4] sept 2026
 
+- Fix for redirects on unauthenticated paths
 
 ## [8.4.3] juli 2026
 - Fix timeout on pipeline ([#1275](https://github.com/OpenConext/OpenConext-myconext/issues/1275))
