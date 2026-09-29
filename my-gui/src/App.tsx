@@ -5,10 +5,11 @@ import { useQuery } from '@tanstack/react-query';
 
 import './App.scss';
 import { fetchConfig } from './api';
-import { useDarkMode } from './context/DarkModeContext';
+import { useDarkModeStore } from './store/store';
 
 function App() {
-    const { dark, setDark } = useDarkMode();
+    const dark = useDarkModeStore((state) => state.dark);
+    const toggleDark = useDarkModeStore((state) => state.toggleDark);
 
     const {
         data: config,
@@ -25,7 +26,7 @@ function App() {
     return (
         <>
             <h1>Hello My-GUI!</h1>
-            <Button onClick={() => setDark((d) => !d)}>
+            <Button onClick={toggleDark}>
                 {dark ? '☀️ Light mode' : '🌙 Dark mode'}
             </Button>
             <NavLink to="/about">ABOUT</NavLink>

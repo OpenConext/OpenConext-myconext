@@ -1,12 +1,12 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Links, Meta, Outlet, Scripts, ScrollRestoration } from 'react-router';
 
 import '@surfnet/curve-react/styles.css';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 
-import { DarkModeProvider } from './context/DarkModeContext';
 import './index.scss';
+import { useDarkModeStore } from './store/store';
 
 export function Layout({ children }: { children: React.ReactNode }) {
     return (
@@ -34,12 +34,15 @@ export function Layout({ children }: { children: React.ReactNode }) {
 export default function Root() {
     // Global TanStack Query Client initialization
     const [queryClient] = useState(() => new QueryClient());
+    const dark = useDarkModeStore((state) => state.dark);
+
+    useEffect(() => {
+        document.documentElement.classList.toggle('dark', dark);
+    }, [dark]);
 
     return (
         <QueryClientProvider client={queryClient}>
-            <DarkModeProvider>
-                <Outlet />
-            </DarkModeProvider>
+            <Outlet />
             <ReactQueryDevtools initialIsOpen={false} />
         </QueryClientProvider>
     );
