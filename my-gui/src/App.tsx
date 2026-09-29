@@ -5,11 +5,11 @@ import { useQuery } from '@tanstack/react-query';
 
 import './App.scss';
 import { fetchConfig } from './api';
-import { useDarkModeStore } from './store/store';
+import { useAppStore } from './store/store';
 
 function App() {
-    const dark = useDarkModeStore((state) => state.dark);
-    const toggleDark = useDarkModeStore((state) => state.toggleDark);
+    const dark = useAppStore((state) => state.dark);
+    const toggleDark = useAppStore((state) => state.toggleDark);
 
     const {
         data: config,

@@ -1,11 +1,11 @@
 import { create } from 'zustand';
 
-interface DarkModeState {
+type AppStoreState = {
     dark: boolean;
     toggleDark: () => void;
-}
+};
 
-export const useDarkModeStore = create<DarkModeState>((set) => ({
+export const useAppStore = create<AppStoreState>((set) => ({
     dark: false,
     toggleDark: () => set((state) => ({ dark: !state.dark })),
 }));

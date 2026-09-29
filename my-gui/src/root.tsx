@@ -6,7 +6,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 
 import './index.scss';
-import { useDarkModeStore } from './store/store';
+import { useAppStore } from './store/store';
 
 export function Layout({ children }: { children: React.ReactNode }) {
     return (
@@ -34,7 +34,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
 export default function Root() {
     // Global TanStack Query Client initialization
     const [queryClient] = useState(() => new QueryClient());
-    const dark = useDarkModeStore((state) => state.dark);
+    const dark = useAppStore((state) => state.dark);
 
     useEffect(() => {
         document.documentElement.classList.toggle('dark', dark);
