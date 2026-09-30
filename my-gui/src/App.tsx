@@ -35,7 +35,7 @@ function App() {
                 {dark ? '☀️ Light mode' : '🌙 Dark mode'}
             </Button>
             <NavLink to="/about">[ABOUT]</NavLink>
-            <NavLink to="/dashboard">[DASHBOARD]</NavLink>
+            <NavLink to="/security">[Security (Authenticated only)]</NavLink>
             <pre>{JSON.stringify(config, null, 2)}</pre>
         </>
     );
