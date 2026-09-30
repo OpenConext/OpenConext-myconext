@@ -5,6 +5,7 @@ import myconext.exceptions.UserNotFoundException;
 import myconext.model.User;
 import org.junit.jupiter.api.Test;
 import org.springframework.security.authentication.TestingAuthenticationToken;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.oauth2.core.OAuth2AccessToken;
@@ -42,6 +43,15 @@ class UserAuthenticationTest extends AbstractIntegrationTest implements UserAuth
         User user = userRepository.findUserByUid(VALID_UID).get();
         TestingAuthenticationToken tokenAuthentication = testingAuthenticationTokenForUserId(user.getId());
         User userFromContext = userFromAuthentication(tokenAuthentication);
+        assertEquals(VALID_UID, userFromContext.getUid());
+    }
+
+    @Test
+    void testUserFromAuthenticationUserPrincipal() {
+        //The create-from-institution flow stores the User itself as principal in the session
+        User user = userRepository.findUserByUid(VALID_UID).get();
+        UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities());
+        User userFromContext = userFromAuthentication(authentication);
         assertEquals(VALID_UID, userFromContext.getUid());
     }
 

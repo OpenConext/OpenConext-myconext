@@ -323,7 +323,9 @@ public class SecurityConfiguration {
                     // registrationId based on the `registration_id` query parameter on the
                     // (typically /auth/login) request.
                     .exceptionHandling(eh -> eh.authenticationEntryPoint(appAwareAuthenticationEntryPoint()));
-            if (environment.acceptsProfiles(Profiles.of("local", "test"))) {
+            // Can be switched off (local_development_authentication=false) to test with the real authentication
+            if (environment.acceptsProfiles(Profiles.of("local", "test"))
+                    && environment.getProperty("local_development_authentication", Boolean.class, true)) {
                 // Fake OIDC user so APIs work without hitting SURFconext.
                 http.addFilterBefore(
                         new LocalDevelopmentAuthenticationFilter(userRepository, externalUserRepository, serviceDeskRoleAutoProvisioning),

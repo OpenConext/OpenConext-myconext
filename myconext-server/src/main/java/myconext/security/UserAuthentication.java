@@ -22,6 +22,9 @@ public interface UserAuthentication {
             Map<String, Object> tokenAttributes = ((BearerTokenAuthentication) authentication).getTokenAttributes();
             String uid = ((List<String>) tokenAttributes.get("uids")).getFirst();
             user = getUserRepository().findUserByUid(uid).orElseThrow(() -> new UserNotFoundException(uid));
+        } else if (authentication.getPrincipal() instanceof User principalUser) {
+            //Session authentication from the create-from-institution flow, where the principal is the User and not an OidcUser
+            user = getUserRepository().findById(principalUser.getId()).orElseThrow(() -> new UserNotFoundException(principalUser.getId()));
         } else {
             String userId = (String) ((OidcUser) authentication.getPrincipal()).getClaims().get("id");
             user = getUserRepository().findById(userId).orElseThrow(() -> new UserNotFoundException(userId));

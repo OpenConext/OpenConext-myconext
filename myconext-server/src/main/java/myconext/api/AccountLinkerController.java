@@ -1057,7 +1057,7 @@ public class AccountLinkerController implements UserAuthentication {
                 .validateAndNormalize(returnTo, this.createFromInstitutionAllowedReturnDomains)
                 .orElse(null);
         if (!StringUtils.hasText(validatedUrl)) {
-            LOG.error("Invalid returnTo URL. Ignoring: " + returnTo);
+            LOG.warn("Invalid returnTo URL. Ignoring: " + returnTo);
         }
         return validatedUrl;
     }
