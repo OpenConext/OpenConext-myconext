@@ -21,6 +21,7 @@ export default defineConfig([
         },
         rules: {
             curly: ['error', 'all'],
+            'no-console': ['error', { allow: ['error', 'warn'] }],
             'no-restricted-syntax': [
                 'error',
                 {
