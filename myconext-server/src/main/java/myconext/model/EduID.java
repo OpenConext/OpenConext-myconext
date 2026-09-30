@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.springframework.data.annotation.Transient;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.util.StringUtils;
@@ -20,6 +21,8 @@ import java.util.stream.Collectors;
 public class EduID implements Serializable {
     @Indexed
     private String value;
+    @Setter
+    private String serviceInstutionGuid;
 
     //All following properties are obsolete and will be replaced - on the fly - with the List of ServiceProvider
     private String serviceProviderEntityId;
@@ -27,7 +30,6 @@ public class EduID implements Serializable {
     private String serviceNameNl;
     private String serviceLogoUrl;
     private String serviceHomeUrl;
-    private String serviceInstutionGuid;
 
     //The new situation where services share the eduID value because of equals institution identifiers
     private List<ServiceProvider> services = new ArrayList<>();
@@ -38,6 +40,7 @@ public class EduID implements Serializable {
     public EduID(String value, ServiceProvider serviceProvider) {
         this.value = value;
         services.add(serviceProvider);
+        this.serviceInstutionGuid = serviceProvider.getInstitutionGuid();
         this.createdAt = new Date();
     }
 

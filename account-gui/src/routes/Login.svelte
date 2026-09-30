@@ -180,9 +180,9 @@
 {#if showSpinner}
     <Spinner/>
 {/if}
-<h2 class="header">{I18n.t("Login.Header.COPY")}</h2>
+<h2 class="header">{I18n.t("Login.Header")}</h2>
 {#if serviceName}
-    <h2 class="top">{I18n.t("Login.HeaderSubTitle.COPY")}<span>{serviceName}</span></h2>
+    <h2 class="top">{I18n.t("Login.HeaderSubTitle")}<span>{serviceName}</span></h2>
 {/if}
 {#if $user.knownUser}
     <div class="known-user">
@@ -195,17 +195,17 @@
     </div>
     <div class="other-account">
         <LoginOption icon={accountIcon}
-                     label={I18n.t("Login.UseOtherAccount.COPY")}
+                     label={I18n.t("Login.UseOtherAccount")}
                      action={otherAccount}
                      index={2}/>
     </div>
 {:else}
-    <label for="email" class="pre-input-label">{I18n.t("LinkFromInstitution.Email.COPY")}</label>
+    <label for="email" class="pre-input-label">{I18n.t("LinkFromInstitution.Email")}</label>
     <input type="email"
            autocomplete="username"
            id="email"
            class={`${(rateLimited) ? 'error' : ''}`}
-           placeholder={I18n.t("LinkFromInstitution.EmailPlaceholder.COPY")}
+           placeholder={I18n.t("LinkFromInstitution.EmailPlaceholder")}
            use:init
            on:input={handleInput}
            value={$user.email}
@@ -215,7 +215,7 @@
 {#if emailNotFound}
     <div class="message-email-not-found">
         <Alert
-                message={I18n.t("Login.EmailNotFound1.COPY")}
+                message={I18n.t("Login.EmailNotFound1")}
                 alertType={AlertType.Warning}
         />
     </div>
@@ -224,12 +224,12 @@
     <div class="error">
         <span class="svg">{@html critical}</span>
         <div>
-            <span>{I18n.t("Login.RateLimited.COPY", {minutes: minutesDelay})}</span>
+            <span>{I18n.t("Login.RateLimited", {minutes: minutesDelay})}</span>
         </div>
     </div>
 {/if}
 {#if emailNotFound}
-    <SubContent linkText={I18n.t("Login.RequestEduId3.COPY")}
+    <SubContent linkText={I18n.t("Login.RequestEduId3")}
                 route="/request/{id}"
                 interContent="true"
                 showButton="true"
@@ -237,23 +237,23 @@
 
     <div class="or-divider">
         <div class="stripe"></div>
-        <span class="or-divider-text">{I18n.t("Login.OrDivider.COPY")}</span>
+        <span class="or-divider-text">{I18n.t("Login.OrDivider")}</span>
         <div class="stripe"></div>
     </div>
 
     <Button href="/"
-            label={I18n.t("Login.TryOtherEmail.COPY")}
+            label={I18n.t("Login.TryOtherEmail")}
             className="secondary"
             onClick={otherAccount}/>
 {:else}
 <Button href="/next"
         disabled={showSpinner || !allowedNext($user.email)}
-        label={I18n.t("GetApp.Next.COPY")}
+        label={I18n.t("GetApp.Next")}
         className="full"
         onClick={nextStep}/>
 
-<SubContent question={I18n.t("Login.RequestEduId.COPY")}
-            linkText={I18n.t("Login.RequestEduId2.COPY")}
+<SubContent question={I18n.t("Login.RequestEduId")}
+            linkText={I18n.t("Login.RequestEduId2")}
             route="/request/{id}"
             interContent="true"
 />

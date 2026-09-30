@@ -1,0 +1,9 @@
+# Spring Boot's default graceful shutdown (server.shutdown=graceful) waits up to spring.lifecycle's
+# timeout-per-shutdown-phase (default 30s) for connections to drain on every embedded Tomcat instance.
+# Test contexts never receive real traffic worth draining, and the Spring TestContext cache keeps many
+# distinct contexts alive at once - at JVM exit, all of their shutdown hooks block in parallel for the
+# full timeout, adding a ~30s tax to every test run (surfaced by Surefire as "going to kill self fork JVM").
+# This applies to every test that activates the "test" profile - individual @SpringBootTest(properties = ...)
+# overrides on subclasses take precedence over this file if they ever need to set server.shutdown themselves.
+server:
+  shutdown: immediate

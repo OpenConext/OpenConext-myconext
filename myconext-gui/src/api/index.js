@@ -16,6 +16,10 @@ function validateResponse(res) {
         throw res;
     }
 
+    if (res.status === 204) {
+        return null;
+    }
+
     return res.json();
 }
 
@@ -26,7 +30,7 @@ function validFetch(path, options) {
     options.headers = {
         Accept: "application/json",
         "Content-Type": "application/json",
-        "Accept-Language": I18n.currentLocale(),
+        "Accept-Language": I18n.locale,
         "X-CSRF-TOKEN": csrfToken
     };
     return fetch(path, options).then(res => validateResponse(res));
@@ -270,6 +274,10 @@ export function startTiqrAuthentication() {
 
 export function pollAuthentication(sessionKey) {
     return fetchJson(`/tiqr/sp/poll-authentication?sessionKey=${sessionKey}`)
+}
+
+export function confirmStepUp(sessionKey) {
+    return postPutJson("/tiqr/sp/confirm-step-up", {sessionKey}, "POST")
 }
 
 export function manualResponse(sessionKey, response) {

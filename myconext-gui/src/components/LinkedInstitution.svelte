@@ -65,13 +65,13 @@
 <div class="linked-institution-container">
 
     <div class="linked-institution">
-        <p>{I18n.t("Profile.VerifiedBy.COPY", {name: institutionName(linkedAccount)})}</p>
+        <p>{I18n.t("Profile.VerifiedBy", {name: institutionName(linkedAccount)})}</p>
         <ul>
             <li>{@html I18n.t("profile.receivedOn", {date: dateFromEpoch(linkedAccount.createdAt)})}</li>
             <li>{@html I18n.t("profile.validUntilDate", {date: dateFromEpoch(expiresAt)})}</li>
         </ul>
         {#if includeAffiliations && !isEmpty(affiliations)}
-            <p class="details">{I18n.t("Profile.Affiliations.COPY")}</p>
+            <p class="details">{I18n.t("Profile.Affiliations")}</p>
             <ul>
                 {#each affiliations as aff}
                     <li>{aff}</li>
@@ -95,7 +95,7 @@
             <a class="manage-information"
                href="/#"
                on:click|preventDefault|stopPropagation={manageVerifiedInformation}>
-                {I18n.t("Profile.ManageYourVerifiedInformation.COPY")}
+                {I18n.t("Profile.ManageYourVerifiedInformation")}
             </a>
         </div>
     </div>

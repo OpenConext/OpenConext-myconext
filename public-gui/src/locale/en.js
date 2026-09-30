@@ -39,6 +39,9 @@ const en = {
         eduID: "Terms of Use",
         title: "Version June 17, 2024"
     },
+    notFound: {
+        alt: "Page not found"
+    },
     footer: {
         terms: "Terms of Use",
         privacy: "Privacy Policy",

@@ -106,23 +106,23 @@
             <p class="time-out">
                 <span>{I18n.t("enrollApp.existingRegistrationInfoFirst")}</span>
                 <a href="/security">
-                    {I18n.t("UseApp.TimeOutInfoLink.COPY")}
+                    {I18n.t("UseApp.TimeOutInfoLink")}
                 </a>
                 <span>{I18n.t("enrollApp.existingRegistrationInfoLast")}</span>
             </p>
         {:else if timeOut}
-            <h2 class="header">{I18n.t("UseApp.TimeOut.COPY")}</h2>
+            <h2 class="header">{I18n.t("UseApp.TimeOut")}</h2>
             <p class="time-out">
-                <span>{I18n.t("UseApp.TimeOutInfoFirst.COPY")}</span>
+                <span>{I18n.t("UseApp.TimeOutInfoFirst")}</span>
                 <a href="/"
                    on:click|preventDefault|stopPropagation={() => window.location.reload(true)}>
-                    {I18n.t("UseApp.TimeOutInfoLink.COPY")}
+                    {I18n.t("UseApp.TimeOutInfoLink")}
                 </a>
-                <span>{I18n.t("UseApp.TimeOutInfoLast.COPY")}</span>
+                <span>{I18n.t("UseApp.TimeOutInfoLast")}</span>
             </p>
 
         {:else if status === enrollmentStatus.INITIALIZED}
-            <h2 class="header">{I18n.t("UseApp.Scan.COPY")}</h2>
+            <h2 class="header">{I18n.t("UseApp.Scan")}</h2>
             <ImageContainer>
                 {#if onMobile}
                     <div class="mobile-qr-code">
@@ -133,7 +133,7 @@
                             <Button href={url}
                                     onClick={() => window.location.href = url}
                                     larger={true}
-                                    label={I18n.t("UseApp.OpenEduIDApp.COPY")}/>
+                                    label={I18n.t("UseApp.OpenEduIDApp")}/>
                         </div>
                     </div>
                 {:else}
@@ -141,7 +141,7 @@
                 {/if}
             </ImageContainer>
         {:else if status === enrollmentStatus.RETRIEVED}
-            <h2 class="header">{I18n.t("EnrollApp.Header.COPY")}</h2>
+            <h2 class="header">{I18n.t("EnrollApp.Header")}</h2>
             <div class="spinner-container">
                 <Spinner relative={true}/>
             </div>

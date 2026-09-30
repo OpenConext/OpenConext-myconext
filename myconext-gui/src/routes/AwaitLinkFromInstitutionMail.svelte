@@ -16,7 +16,7 @@
     let mailHasBeenResend = false;
 
     onMount(() => {
-        flash.setValue(I18n.t("Email.UpdatedVerified.COPY", {email: $user.email}), 6500);
+        flash.setValue(I18n.t("Email.UpdatedVerified", {email: $user.email}), 6500);
         setTimeout(() => allowedToResend = true, resendMailAllowedTimeOut);
     });
 
@@ -100,27 +100,27 @@
 <div class="institution-mail">
     {@html mailSvg}
     <Modal showOptions={false}
-           title={I18n.t("LoginCode.Title.COPY")}>
+           title={I18n.t("LoginCode.Title")}>
         <div class="login-code">
-            <h2 class="header">{I18n.t("LoginCode.Header.COPY")}</h2>
-            <p class="validation-info">{@html I18n.t("LoginCode.Info.COPY", {email: $user.email})}</p>
+            <h2 class="header">{I18n.t("LoginCode.Header")}</h2>
+            <p class="validation-info">{@html I18n.t("LoginCode.Info", {email: $user.email})}</p>
             <div class="code-validation">
                 <CodeValidation verify={verifyCode}
                                 size={6}
                                 validate={val => !isNaN(val)}/>
                 {#if wrongCode}
-                    <p class="error">{I18n.t("LoginCode.Error.COPY")}</p>
+                    <p class="error">{I18n.t("LoginCode.Error")}</p>
                 {/if}
             </div>
 
             <div class="resend-mail">
                 {#if allowedToResend}
-                    <p>{I18n.t("LoginCode.Resend.COPY")}
+                    <p>{I18n.t("LoginCode.Resend")}
                         <a href="resend"
-                           on:click|preventDefault|stopPropagation={resendMail}>{I18n.t("LoginCode.ResendLink.COPY")}</a>
+                           on:click|preventDefault|stopPropagation={resendMail}>{I18n.t("LoginCode.ResendLink")}</a>
                     </p>
                 {:else if mailHasBeenResend}
-                    <span>{I18n.t("MagicLink.MailResend.COPY")}</span>
+                    <span>{I18n.t("MagicLink.MailResend")}</span>
                 {/if}
 
             </div>

@@ -37,6 +37,6 @@
     <ValidatedData institution={institution}/>
     <Button href="/proceed" onClick={() => proceed($conf.magicLinkUrl)}
             className="full"
-            label={I18n.t("ConfirmStepup.Proceed.COPY", {name: serviceName})}/>
+            label={I18n.t("ConfirmStepup.Proceed", {name: serviceName})}/>
 {/if}
 

@@ -24,9 +24,9 @@
 </style>
 <div class="home">
     <div class="card">
-        <h1>{I18n.t("MaxAttempt.Title.COPY")}</h1>
-        <p>{@html I18n.t("MaxAttempt.Info.COPY")}</p>
-        <Button label={I18n.t("Expired.Back.COPY")} href={`https://${$conf.baseDomain}`}
+        <h1>{I18n.t("MaxAttempt.Title")}</h1>
+        <p>{@html I18n.t("MaxAttempt.Info")}</p>
+        <Button label={I18n.t("Expired.Back")} href={`https://${$conf.baseDomain}`}
                 onClick={() => window.location.href = `https://${$conf.baseDomain}`}/>
     </div>
 </div>

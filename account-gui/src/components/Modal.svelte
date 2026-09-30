@@ -8,8 +8,8 @@
     export let title;
     export let question;
     export let warning = false;
-    export let confirmLabel = I18n.t("ConfirmDelete.Button.Confirm.COPY");
-    export let cancelLabel = I18n.t("YourVerifiedInformation.ConfirmRemoval.Button.Cancel.COPY");
+    export let confirmLabel = I18n.t("ConfirmDelete.Button.Confirm");
+    export let cancelLabel = I18n.t("YourVerifiedInformation.ConfirmRemoval.Button.Cancel");
     export let disableSubmit = false;
     export let download = undefined;
     export let href = undefined;

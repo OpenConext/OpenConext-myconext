@@ -23,7 +23,7 @@
                 .filter(token => token.clientId === k);
             const tokens = allTokens
                 .filter(token => token.scopes && token.scopes.find(scope => scope.name !== "openid" && (
-                    scope.descriptions[I18n.currentLocale()] || scope.descriptions["en"])));
+                    scope.descriptions[I18n.locale] || scope.descriptions["en"])));
             const token = tokens.length === 0 ? null : (tokens.find(t => t.type === "REFRESH") || tokens[0]);
             const seen = new Set();
             const scopes = allTokens.reduce((acc, token) => {
@@ -35,7 +35,7 @@
                 })
                 return acc;
             }, []);
-            const locale = I18n.currentLocale() === "en" ? "en-US" : "nl-NL";
+            const locale = I18n.locale === "en" ? "en-US" : "nl-NL";
             //We don't need backward compatibility as every eduID which comes from the server is migrated
             service.services.forEach(s => {
                 acc.push({
@@ -225,10 +225,10 @@
 </style>
 <div class="services">
     <div class="inner-container">
-        <h2>{I18n.t("DataActivity.Title.COPY")}</h2>
+        <h2>{I18n.t("DataActivity.Title")}</h2>
         <p class="info">{I18n.t("dataActivity.info")}</p>
         {#if services.length === 0}
-            <p class="no-services">{I18n.t("DataActivity.NoServices.COPY")}</p>
+            <p class="no-services">{I18n.t("DataActivity.NoServices")}</p>
         {:else}
             <h3>{I18n.t("dataActivity.explanation")}</h3>
             <table cellspacing="0" class="data-activity">
@@ -252,7 +252,7 @@
                                     {#if service.token}
                                         <div class="access">
                                             <span class="svg-informational">{@html informationalSvg}</span>
-                                            <span class="access">{I18n.t("DataActivity.Access.COPY")}</span>
+                                            <span class="access">{I18n.t("DataActivity.Access")}</span>
                                         </div>
                                     {/if}
                                     <a class="toggle-link" href="/edit"

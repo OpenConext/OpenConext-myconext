@@ -80,8 +80,8 @@
     <Spinner/>
 {/if}
 
-<h2 class="header">{I18n.t("GetApp.Header.COPY")}</h2>
-<p class="explanation">{@html I18n.t("GetApp.Info.COPY")}</p>
+<h2 class="header">{I18n.t("GetApp.Header")}</h2>
+<p class="explanation">{@html I18n.t("GetApp.Info")}</p>
 <div class="store-container">
     <div class="qr-container">
         <QrCode size={140}
@@ -89,20 +89,20 @@
         />
     </div>
     <div class="store-icons">
-        <a class="google" href={I18n.t("GetApp.Google.COPY")} target="_blank">
+        <a class="google" href={I18n.t("GetApp.Google")} target="_blank">
             {@html googlePlay}
         </a>
-        <a class="apple" href={I18n.t("GetApp.Apple.COPY")} target="_blank">
+        <a class="apple" href={I18n.t("GetApp.Apple")} target="_blank">
             {@html appStore}
         </a>
     </div>
 </div>
 
-<p class="explanation">{@html I18n.t("GetApp.After.COPY")}</p>
+<p class="explanation">{@html I18n.t("GetApp.After")}</p>
 <ButtonContainer>
-    <Button className="cancel" href={I18n.t("GetApp.Back.COPY")} onClick={back}
-            label={I18n.t("GetApp.Back.COPY")}/>
-    <Button href={I18n.t("GetApp.Next.COPY")} onClick={next}
-            label={I18n.t("GetApp.Next.COPY")}/>
+    <Button className="cancel" href={I18n.t("GetApp.Back")} onClick={back}
+            label={I18n.t("GetApp.Back")}/>
+    <Button href={I18n.t("GetApp.Next")} onClick={next}
+            label={I18n.t("GetApp.Next")}/>
 </ButtonContainer>
 

@@ -5,7 +5,7 @@ import notFound from "../icons/school-building.svg?raw";
 
 export const serviceName = service => {
     //backward compatibility with eduID has multiple services
-    if (I18n.currentLocale() === "en") {
+    if (I18n.locale === "en") {
         return service.serviceName || service.name;
     }
     return service.serviceNameNl || service.serviceName || service.nameNl || service.name;

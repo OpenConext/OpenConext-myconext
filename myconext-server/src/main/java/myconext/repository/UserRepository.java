@@ -18,13 +18,13 @@ public interface UserRepository extends MongoRepository<User, String> {
 
     Optional<User> findUserByUid(String uid);
 
-    @Query(collation = "{ 'locale' : 'en_US', 'strength' : 2 }")
+    @Query(collation = "{ 'locale' : 'en', 'strength' : 2 }")
     Optional<User> findUserByEmail(String email);
 
-    @Query(collation = "{ 'locale' : 'en_US', 'strength' : 2 }")
+    @Query(collation = "{ 'locale' : 'en', 'strength' : 2 }")
     Optional<User> findUserByEmailAndRateLimitedFalse(String email);
 
-    @Query(collation = "{ 'locale' : 'en_US', 'strength' : 2 }")
+    @Query(collation = "{ 'locale' : 'en', 'strength' : 2 }")
     User findOneUserByEmail(String email);
 
     Optional<User> findUserByLinkedAccounts_eduPersonPrincipalName(String eduPersonPrincipalName);
@@ -39,9 +39,7 @@ public interface UserRepository extends MongoRepository<User, String> {
 
     Optional<User> findByEduIDS_value(String value);
 
-    Optional<User> findByEduIDS_serviceProviderEntityId(String serviceProviderEntityId);
-
-    Optional<User> findByEduIDS_Services_EntityId(String serviceProviderEntityId);
+    List<User> findByEduIDS_Services_EntityId(String serviceProviderEntityId);
 
     List<User> findByNewUserTrueAndCreatedLessThan(long millis);
 

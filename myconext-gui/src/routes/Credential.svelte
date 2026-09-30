@@ -18,7 +18,7 @@
         name = credential.name;
         const testWebAuthn = urlSearchParams.get("success");
         if (testWebAuthn) {
-            flash.setValue(I18n.t("Webauthn.TestFlash.COPY"), 3750);
+            flash.setValue(I18n.t("Webauthn.TestFlash"), 3750);
         }
     });
 
@@ -37,7 +37,7 @@
                     }
                 }
                 navigate("/security");
-                flash.setValue(I18n.t("Edit.Update.COPY", {name: name}));
+                flash.setValue(I18n.t("Edit.Update", {name: name}));
             });
     }
 
@@ -102,8 +102,8 @@
 
 </style>
 <div class="credential">
-    <h2>{I18n.t("Credential.Title.COPY")}</h2>
-    <label for="credentialName">{I18n.t("Credential.Name.COPY")}</label>
+    <h2>{I18n.t("Credential.Title")}</h2>
+    <label for="credentialName">{I18n.t("Credential.Name")}</label>
     <input id="credentialName" type="text" bind:value={name}>
 
     <div class="options">
@@ -111,12 +111,12 @@
             <Button deletion={true}
                     onClick={deleteCredential(true)}/></span>
         <Button className="cancel"
-                label={I18n.t("YourVerifiedInformation.ConfirmRemoval.Button.Cancel.COPY")}
+                label={I18n.t("YourVerifiedInformation.ConfirmRemoval.Button.Cancel")}
                 onClick={cancel}/>
-        <Button label={I18n.t("Webauthn.Test.COPY")}
+        <Button label={I18n.t("Webauthn.Test")}
                 className="ghost"
                 onClick={startTestFlow}/>
-        <Button label={I18n.t("Edit.Update.COPY")}
+        <Button label={I18n.t("Edit.Update")}
                 disabled={!name || name.trim().length === 0}
                 onClick={updateCredential}/>
     </div>
@@ -126,8 +126,8 @@
     <Modal submit={deleteCredential(false)}
            cancel={() => showModal = false}
            warning={true}
-           confirmTitle={I18n.t("YourVerifiedInformation.ConfirmRemoval.Button.YesDelete.COPY")}
-           question={I18n.t("Credential.DeleteCredentialConfirmation.COPY", {name: credential.name})}
-           title={I18n.t("Credential.DeleteCredential.COPY")}>
+           confirmTitle={I18n.t("YourVerifiedInformation.ConfirmRemoval.Button.YesDelete")}
+           question={I18n.t("Credential.DeleteCredentialConfirmation", {name: credential.name})}
+           title={I18n.t("Credential.DeleteCredential")}>
     </Modal>
 {/if}

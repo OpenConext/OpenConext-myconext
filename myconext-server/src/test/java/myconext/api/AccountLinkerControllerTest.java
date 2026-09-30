@@ -367,14 +367,14 @@ public class AccountLinkerControllerTest extends AbstractIntegrationTest {
     }
 
     @Test
-    public void createFromInstitutionRejectsReturnToWhenFeatureDisabled() {
+    public void createFromInstitutionIgnoresReturnToWhenFeatureEnabled() {
         given().redirects().follow(false)
                 .when()
                 .contentType(ContentType.JSON)
-                .queryParam("return_to", "https://sitte.myuniversity.nl/landing")
+                .queryParam("return_to", "https://bogus.xyz")
                 .get("/myconext/api/sp/create-from-institution")
                 .then()
-                .statusCode(400);
+                .statusCode(200);
     }
 
     @Test

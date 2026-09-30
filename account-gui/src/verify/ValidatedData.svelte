@@ -41,22 +41,22 @@
 <div class="validated-data">
     <div class="title">
         <h2><span class="green">{institutionName(institution)}</span>
-            {I18n.t("NameUpdated.Title.ContactedSuccessfully.COPY")}</h2>
+            {I18n.t("NameUpdated.Title.ContactedSuccessfully")}</h2>
     </div>
-    <p class="info">{I18n.t("NameUpdated.Description.COPY")}</p>
+    <p class="info">{I18n.t("NameUpdated.Description")}</p>
 
     {#if institution.idpScoping !== "idin"}
-        <ValidatedField label={I18n.t("Profile.VerifiedGivenName.COPY")}
+        <ValidatedField label={I18n.t("Profile.VerifiedGivenName")}
                         icon={preferredAccount ? personalInfo : null}
                         value={linkedAccountGivenName(institution)}/>
     {/if}
 
-    <ValidatedField label={I18n.t("Profile.VerifiedFamilyName.COPY")}
+    <ValidatedField label={I18n.t("Profile.VerifiedFamilyName")}
                     icon={preferredAccount ? personalInfo : null}
                     value={linkedAccountFamilyName(institution)}/>
 
     {#if !isEmpty(institution.dateOfBirth)}
-        <ValidatedField label={I18n.t("Profile.VerifiedDateOfBirth.COPY")}
+        <ValidatedField label={I18n.t("Profile.VerifiedDateOfBirth")}
                         icon={preferredAccount ? personalInfo : null}
                         value={dateFromEpoch(institution.dateOfBirth)}/>
     {/if}

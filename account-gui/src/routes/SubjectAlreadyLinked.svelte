@@ -57,10 +57,10 @@
 
         <Button href="/proceed" onClick={() => proceed($conf.magicLinkUrl)}
                 className="cancel"
-                label={I18n.t("Profile.Proceed.COPY")}/>
+                label={I18n.t("Profile.Proceed")}/>
         <div class="last">
             <Button href="/retry" onClick={retry}
-                    label={I18n.t("EppnAlreadyLinked.RetryButton.COPY")}/>
+                    label={I18n.t("EppnAlreadyLinked.RetryButton")}/>
         </div>
 
     </div>

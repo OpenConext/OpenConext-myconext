@@ -7,16 +7,19 @@
     import Modal from "../components/Modal.svelte";
     import {formatJsDate} from "../format/date";
     import Spinner from "../components/Spinner.svelte";
+    import SecondFactorConfirmModal from "../components/SecondFactorConfirmModal.svelte";
+    import {hasSecondFactor} from "../utils/utils";
 
     export let service = {data: {}};
     export let refresh;
 
     let showModal = false;
+    let show2ndFactorModal = false;
     let modalOptions = {};
     let loading = false;
 
     const modalDeleteEduId = () => ({
-        submit: deleteEduId(false),
+        submit: startDeleteEduIdFlow,
         question: I18n.t("dataActivity.deleteServiceConfirmation", {name: service.name}),
         title: I18n.t("dataActivity.deleteService")
     });
@@ -46,13 +49,26 @@
             modalOptions = modalDeleteEduId();
             showModal = true;
         } else {
-            loading = true;
-            showModal = false;
-            deleteServiceAndTokens(service.entityId, service.allTokens)
-                .then(res => {
-                    doRefresh(res, "dataActivity.deleted");
-                });
+            startDeleteEduIdFlow();
         }
+    }
+
+    const startDeleteEduIdFlow = () => {
+        showModal = false;
+        if (hasSecondFactor($user)) {
+            show2ndFactorModal = true;
+        } else {
+            doDeleteEduId();
+        }
+    }
+
+    const doDeleteEduId = () => {
+        loading = true;
+        deleteServiceAndTokens(service.entityId, service.allTokens)
+            .then(res => {
+                doRefresh(res, "dataActivity.deleted");
+            });
+        loading = false;
     }
 
     const revokeTokens = showConfirmation => () => {
@@ -147,7 +163,6 @@
 
     }
 
-
 </style>
 {#if loading}
     <Spinner/>
@@ -160,23 +175,23 @@
             <tr>
                 <td class="details" colspan="2">
                     <div class="content">
-                        <span>{I18n.t("DataActivity.Details.Login.COPY")}</span>
+                        <span>{I18n.t("DataActivity.Details.Login")}</span>
                         <span class="button">
                             <Button onClick={deleteEduId(true)}
                                     larger={true}
                                     inline={true}
-                                    label={I18n.t("DataActivity.Details.Delete.COPY")}/>
+                                    label={I18n.t("DataActivity.Details.Delete")}/>
                         </span>
                     </div>
                 </td>
             </tr>
             <tr>
-                <td class="attr">{I18n.t("DataActivity.Details.FirstLogin.COPY")}</td>
+                <td class="attr">{I18n.t("DataActivity.Details.FirstLogin")}</td>
                 <td class="value">{service.createdAt}</td>
             </tr>
             {#if service.lastLogin }
                 <tr>
-                    <td class="attr">{I18n.t("Security.Tiqr.LastLogin.COPY")}</td>
+                    <td class="attr">{I18n.t("Security.Tiqr.LastLogin")}</td>
                     <td class="value">{service.lastLogin}</td>
                 </tr>
             {/if}
@@ -186,7 +201,7 @@
             </tr>
             {#if service.data.serviceHomeUrl}
                 <tr>
-                    <td class="attr last">{I18n.t("DataActivity.Details.HomePage.COPY")}</td>
+                    <td class="attr last">{I18n.t("DataActivity.Details.HomePage")}</td>
                     <td class="value last"><a href={service.data.serviceHomeUrl}
                                               target="_blank">{service.data.serviceHomeUrl}</a></td>
                 </tr>
@@ -195,7 +210,7 @@
                 <td colspan="2" class="disclaimer">
                     <div class="content">
                         <span><sup>*</sup> </span>
-                        <span>{I18n.t("DataActivity.Details.DeleteDisclaimer.COPY")}</span>
+                        <span>{I18n.t("DataActivity.Details.DeleteDisclaimer")}</span>
                     </div>
                 </td>
             </tr>
@@ -203,23 +218,23 @@
                 <tr>
                     <td class="details" colspan="2">
                         <div class="content">
-                            <span>{I18n.t("DataActivity.Details.Access.COPY")}</span>
+                            <span>{I18n.t("DataActivity.Details.Access")}</span>
                             <span class="button">
                                 <Button onClick={revokeTokens(true)}
                                         large={true}
                                         inline={true}
-                                        label={I18n.t("RevokeAccessToken.Title.COPY")}/>
+                                        label={I18n.t("RevokeAccessToken.Title")}/>
                             </span>
                         </div>
                     </td>
                 </tr>
                 <tr>
-                    <td class="attr">{I18n.t("DataActivity.Details.Details.COPY")}</td>
+                    <td class="attr">{I18n.t("DataActivity.Details.Details")}</td>
                     <td class="value">
                         <ul>
                             {#each service.scopes as scope}
-                                {#if scope.descriptions[I18n.currentLocale()] || scope.descriptions["en"]}
-                                    <li>{scope.descriptions[I18n.currentLocale()] || scope.descriptions["en"]}</li>
+                                {#if scope.descriptions[I18n.locale] || scope.descriptions["en"]}
+                                    <li>{scope.descriptions[I18n.locale] || scope.descriptions["en"]}</li>
                                 {/if}
                             {/each}
                         </ul>
@@ -227,11 +242,11 @@
 
                 </tr>
                 <tr>
-                    <td class="attr">{I18n.t("DataActivity.Details.Consent.COPY")}</td>
+                    <td class="attr">{I18n.t("DataActivity.Details.Consent")}</td>
                     <td class="value">{formatJsDate(service.token.createdAt)}</td>
                 </tr>
                 <tr>
-                    <td class="attr last">{I18n.t("DataActivity.Details.Expires.COPY")}</td>
+                    <td class="attr last">{I18n.t("DataActivity.Details.Expires")}</td>
                     <td class="value last">
                         {formatJsDate(service.token.expiresIn)}</td>
                 </tr>
@@ -243,12 +258,17 @@
 </tr>
 {/if}
 
-{#if showModal}
-    <Modal submit={modalOptions.submit}
-           cancel={() => showModal = false}
-           warning={true}
-           confirmTitle={I18n.t("YourVerifiedInformation.ConfirmRemoval.Button.YesDelete.COPY")}
-           question={modalOptions.question}
-           title={modalOptions.title}>
-    </Modal>
+{#if showModal || show2ndFactorModal}
+    {#if show2ndFactorModal}
+        <SecondFactorConfirmModal onConfirmed={doDeleteEduId}
+                                  onClose={() => show2ndFactorModal = false}/>
+    {:else}
+        <Modal submit={modalOptions.submit}
+               cancel={() => showModal = false}
+               warning={true}
+               confirmTitle={I18n.t("YourVerifiedInformation.ConfirmRemoval.Button.YesDelete")}
+               question={modalOptions.question}
+               title={modalOptions.title}>
+        </Modal>
+    {/if}
 {/if}

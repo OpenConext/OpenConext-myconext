@@ -15,10 +15,10 @@
     const detectMobileOS = () => {
         const userAgent = navigator.userAgent || navigator.vendor || window.opera;
         if (/iPad|iPhone|iPod/.test(userAgent) && !window.MSStream) {
-            return I18n.t("GetApp.Apple.COPY");
+            return I18n.t("GetApp.Apple");
         }
         if (/android/i.test(userAgent)) {
-            return I18n.t("GetApp.Google.COPY");
+            return I18n.t("GetApp.Google");
         }
         return `${window.location.origin}/getapp`
     }

@@ -25,6 +25,6 @@
 
 </style>
 <div class="login-code">
-    <h2 class="header">{I18n.t("LoginCode.ErrorHeader.COPY")}</h2>
-    <p class="info">{@html I18n.t("LoginCode.ErrorInfo.COPY", {email: $user.email})}</p>
+    <h2 class="header">{I18n.t("LoginCode.ErrorHeader")}</h2>
+    <p class="info">{@html I18n.t("LoginCode.ErrorInfo", {email: $user.email})}</p>
 </div>

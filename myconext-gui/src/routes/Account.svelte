@@ -60,15 +60,15 @@
 
 <div class="account">
 
-    <h2>{I18n.t("MyAccount.Title.COPY")}</h2>
-    <p class="info">{I18n.t("Account.Info.COPY")}</p>
+    <h2>{I18n.t("MyAccount.Title")}</h2>
+    <p class="info">{I18n.t("Account.Info")}</p>
     <table cellspacing="0">
         <thead/>
         <tbody>
         {#if $user.created && $user.created > 0}
             <tr>
-                <td class="attr">{I18n.t("Account.Created.COPY")}</td>
-                <td class="value">{I18n.t("Format.CreationDate.COPY", formatCreateDate($user.created, true))}</td>
+                <td class="attr">{I18n.t("Account.Created")}</td>
+                <td class="value">{I18n.t("Format.CreationDate", formatCreateDate($user.created, true))}</td>
             </tr>
         {/if}
         <tr>
@@ -76,17 +76,17 @@
                 <Button href="/myconext/api/sp/personal"
                         onClick={() => showModal = true}
                         large={true}
-                        label={I18n.t("Account.Data.COPY")}/>
+                        label={I18n.t("Account.Data")}/>
             </td>
-            <td>{I18n.t("Account.PersonalInfo.COPY")}</td>
+            <td>{I18n.t("Account.PersonalInfo")}</td>
         </tr>
         <tr>
             <td>
                 <Button onClick={() => navigate("/delete-account")}
                         large={true}
-                        label={I18n.t("Account.Delete.COPY")}/>
+                        label={I18n.t("Account.Delete")}/>
             </td>
-            <td>{@html I18n.t("Account.DeleteInfo.COPY")}</td>
+            <td>{@html I18n.t("Account.DeleteInfo")}</td>
         </tr>
         </tbody>
     </table>
@@ -99,8 +99,8 @@
            cancel={() => showModal = false}
            download={personalDataFileName()}
            href="/myconext/api/sp/personal"
-           question={I18n.t("Account.DownloadDataConfirmation.COPY")}
-           title={I18n.t("Account.DownloadData.COPY")}
-           confirmTitle={I18n.t("Account.DownloadData.COPY")}>
+           question={I18n.t("Account.DownloadDataConfirmation")}
+           title={I18n.t("Account.DownloadData")}
+           confirmTitle={I18n.t("Account.DownloadData")}>
     </Modal>
 {/if}

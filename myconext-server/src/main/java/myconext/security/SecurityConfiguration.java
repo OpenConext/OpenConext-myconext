@@ -1,5 +1,6 @@
 package myconext.security;
 
+import jakarta.annotation.PreDestroy;
 import lombok.SneakyThrows;
 import myconext.config.CreateFromInstitutionProperties;
 import myconext.crypto.KeyGenerator;
@@ -90,7 +91,7 @@ public class SecurityConfiguration {
     //1. SamlSecurity (@Order(1)) — Secures the SAML guest IdP endpoint (myconext guest login).
     @Configuration
     @Order(1)
-    @EnableConfigurationProperties(IdentityProviderMetaData.class)
+    @EnableConfigurationProperties({IdentityProviderMetaData.class, FeatureProperties.class})
     public static class SamlSecurity {
 
         private final GuestIdpAuthenticationRequestFilter guestIdpAuthenticationRequestFilter;
@@ -112,19 +113,25 @@ public class SecurityConfiguration {
                             @Value("${account_linking_context_class_ref.validate_names}") String validateNames,
                             @Value("${account_linking_context_class_ref.validate_names_external}") String validateNamesExternal,
                             @Value("${account_linking_context_class_ref.affiliation_student}") String affiliationStudent,
+                            @Value("${account_linking_context_class_ref.iap_medium}") String iapMedium,
+                            @Value("${account_linking_context_class_ref.iap_high}") String iapHigh,
                             @Value("${account_linking_context_class_ref.profile_mfa}") String profileMfa,
                             @Value("${account_linking_context_class_ref.linked_institution_mfa}") String linkedInstitutionMfa,
                             @Value("${account_linking_context_class_ref.validate_names_mfa}") String validateNamesMfa,
                             @Value("${account_linking_context_class_ref.validate_names_external_mfa}") String validateNamesExternalMfa,
                             @Value("${account_linking_context_class_ref.affiliation_student_mfa}") String affiliationStudentMfa,
+                            @Value("${account_linking_context_class_ref.iap_medium_mfa}") String iapMediumMfa,
+                            @Value("${account_linking_context_class_ref.iap_high_mfa}") String iapHighMfa,
                             @Value("${linked_accounts.expiry-duration-days-non-validated}") long expiryNonValidatedDurationDays,
                             @Value("${sso_mfa_duration_seconds}") long ssoMFADurationSeconds,
                             @Value("${mobile_app_rp_entity_id}") String mobileAppROEntityId,
                             @Value("${feature.default_remember_me}") boolean featureDefaultRememberMe,
                             @Value("${feature.default_affiliate_email}") boolean featureDefaultAffiliateEmail,
                             @Value("${feature.use_app}") boolean featureUseApp,
+                            @Value("${feature.use_global_uid}") boolean featureUseGlobalUid,
                             @Value("${default_affiliate_email_domain}") String defaultAffiliateEmailDomain,
                             @Value("${feature.requires_signed_authn_request}") boolean requiresSignedAuthnRequest,
+                            FeatureProperties featureProperties,
                             AuthenticationRequestRepository authenticationRequestRepository,
                             UserRepository userRepository,
                             UserLoginRepository userLoginRepository,
@@ -139,11 +146,15 @@ public class SecurityConfiguration {
                     validateNames,
                     validateNamesExternal,
                     affiliationStudent,
+                    iapMedium,
+                    iapHigh,
                     profileMfa,
                     linkedInstitutionMfa,
                     validateNamesMfa,
                     validateNamesExternalMfa,
-                    affiliationStudentMfa
+                    affiliationStudentMfa,
+                    iapMediumMfa,
+                    iapHighMfa
             );
             String[] keys = this.getKeys(certificatePath, privateKeyPath);
             final List<SAMLServiceProvider> serviceProviders = new ArrayList<>();
@@ -180,12 +191,19 @@ public class SecurityConfiguration {
                     featureDefaultRememberMe,
                     featureDefaultAffiliateEmail,
                     featureUseApp,
+                    featureUseGlobalUid,
+                    featureProperties.getForceGlobalUidEntities(),
                     defaultAffiliateEmailDomain,
                     configuration,
                     identityProviderMetaData,
                     cookieValueEncoder,
                     securityContextRepository
             );
+        }
+
+        @PreDestroy
+        public void destroy() {
+            this.guestIdpAuthenticationRequestFilter.shutdown();
         }
 
         @Bean

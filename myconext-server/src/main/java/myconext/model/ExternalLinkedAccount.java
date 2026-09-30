@@ -59,6 +59,10 @@ public class ExternalLinkedAccount implements Serializable, ProvisionedLinkedAcc
     private boolean preferred;
     @Setter
     private String documentId;
+    //Only relevant for studielink - the user is not allowed to delete this externalLinkedAccount while the
+    //connection with the remote source still exists, i.e. before the remote source calls eduid-delete
+    @Setter
+    private boolean connectionActive = true;
 
     public ExternalLinkedAccount(String subjectId, IdpScoping idpScoping, boolean external) {
         this.subjectId = subjectId;

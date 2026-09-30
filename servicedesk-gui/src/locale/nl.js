@@ -9,7 +9,7 @@ const nl = {
     landing: {
         header: {
             title: "ServiceDesk",
-            subTitle: "",
+            subTitle: "Hallo {{name}}",
             login: "Log in",
             sup: "eduID ServiceDesk is alleen op uitnodiging beschikbaar.",
         },
@@ -31,10 +31,6 @@ const nl = {
         links: {
             logout: "Logout"
         }
-    },
-    login: {
-        unauthorized: "Niet geautoriseerd",
-        unauthorizedInfo: "Je bent succesvol ingelogd. Helaas heb je geen toegang tot deze applicatie. Sluit je browser en log opnieuw in met een account dat wel toegang heeft."
     },
     serviceDesk: {
         member: "ServiceDesk lid"

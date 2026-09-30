@@ -12,13 +12,13 @@
         Cookies.set("lang", lang, {expires: 365, secure: true, sameSite: "Lax", domain: $config.baseDomain});
         window.location.search = urlSearchParams.toString();
         updateLanguage(lang).then(() => {
-            flash.setValue("Footer.LanguageChanged.COPY");
+            flash.setValue("Footer.LanguageChanged");
         }).catch(() => {
             //ignore
         })
     };
 
-    let isEn = I18n.currentLocale() === "en";
+    let isEn = I18n.locale === "en";
     let helpUrl = isEn ? "/help_en/" : "/help/";
     let privacyUrl = isEn ? "https://eduid.nl/privacy-policy/" : "https://eduid.nl/privacy/";
     let termsUrl = isEn ? "https://eduid.nl/terms-of-use/" : "https://eduid.nl/gebruiksvoorwaarden/";
@@ -115,24 +115,24 @@
     <div class="inner-container">
         <div class="help">
             <div class="terms">
-                <a href={privacyUrl} target="_blank">{I18n.t("Footer.Privacy.COPY")}</a>
+                <a href={privacyUrl} target="_blank">{I18n.t("Footer.Privacy")}</a>
                 <span>|</span>
-                <a href={termsUrl} target="_blank">{I18n.t("Footer.Terms.COPY")}</a>
+                <a href={termsUrl} target="_blank">{I18n.t("Footer.Terms")}</a>
             </div>
-            <a href={helpUrl} target="_blank">{I18n.t("Footer.Help.COPY")}</a>
+            <a href={helpUrl} target="_blank">{I18n.t("Footer.Help")}</a>
         </div>
 
         <ul>
-            <li class="{I18n.currentLocale() === 'en' ? 'active' : 'non_active'}">
+            <li class="{I18n.locale === 'en' ? 'active' : 'non_active'}">
                 <a href="/en" on:click|preventDefault|stopPropagation={changeLanguage("en")}>EN</a>
             </li>
-            <li class="{I18n.currentLocale() === 'nl' ? 'active' : 'non_active'}">
+            <li class="{I18n.locale === 'nl' ? 'active' : 'non_active'}">
                 <a href="/nl" on:click|preventDefault|stopPropagation={changeLanguage("nl")}>NL</a>
             </li>
         </ul>
 
         <div class="info">
-            <span>{I18n.t("Footer.PoweredBy.COPY")}</span>
+            <span>{I18n.t("Footer.PoweredBy")}</span>
             <a href="https://www.surf.nl/" target="_blank">{@html surfLogo}</a>
         </div>
     </div>

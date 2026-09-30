@@ -4,20 +4,19 @@ logging:
     org.springframework.data.mongodb: INFO
     org.springframework.data.convert: INFO
     org.springframework.security: WARN
+    org.springframework.boot.availability: DEBUG
     io.mongock.: TRACE
     tiqr.org: DEBUG
     myconext: DEBUG
 
 server:
   port: 8081
-  error:
-    path: "/error"
-    include-binding-errors: always
   forward-headers-strategy: framework
 
 springdoc:
   pathsToMatch:
     - "/api/remote-creation/**"
+    - "/myconext/api/eduid/**"
     - "/myconext/api/invite/**"
     - "/mobile/**"
   api-docs:
@@ -126,6 +125,10 @@ feature:
     allow_location: "classpath:/deny-allow/allowed.json"
   # Do we allow the create-from-institution flow
   create_eduid_institution_enabled: True
+  # Do we email the eduID account when an institutional account gets linked to it
+  send_link_notification_to_eduid_account: True
+  # Do we email the institutional account when it gets linked to an eduID account
+  send_link_notification_to_linked_account: True
   # Do we show the landing page for the create-from-institution flow
   create_eduid_institution_landing: True
   # Do we default remember the user for a longer period
@@ -156,6 +159,15 @@ feature:
   enable_account_linking: True
   # Set to true to show the app login option
   use_app: True
+  # When true (default) release the global uid in the uid and eduPersonPrincipalName SAML attributes.
+  # When false, release the per-SP targeted eduID instead.
+  use_global_uid: True
+  # SP entityIds that always receive the global uid in the uid and eduPersonPrincipalName SAML attributes,
+  # even when use_global_uid is false.
+  force_global_uid_entities:
+    - dummy_non_existing_entity
+    - playground_client
+    - mijn.myconext.nl
 
 default_affiliate_email_domain: eduid.nl
 
@@ -194,7 +206,6 @@ external-api-configuration:
       password: "secret"
       scopes:
         - attribute-aggregation
-        - system
     -
       username: oidcng
       password: "secret"
@@ -217,6 +228,7 @@ external-api-configuration:
       password: "secret"
       scopes:
         - actuator
+        - system
 
 oidc-token-api:
   token-url: https://connect.test2.surfconext.nl/tokens
@@ -248,11 +260,15 @@ account_linking_context_class_ref:
   validate_names: https://eduid.nl/trust/validate-names
   validate_names_external: https://eduid.nl/trust/validate-names-external
   affiliation_student: https://eduid.nl/trust/affiliation-student
+  iap_medium: https://refeds.org/assurance/IAP/medium
+  iap_high: https://refeds.org/assurance/IAP/high
   profile_mfa: https://refeds.org/profile/mfa
   linked_institution_mfa: https://eduid.nl/trust/linked-institution/mfa
   validate_names_mfa: https://eduid.nl/trust/validate-names/mfa
   validate_names_external_mfa: https://eduid.nl/trust/validate-names-external/mfa
   affiliation_student_mfa: https://eduid.nl/trust/affiliation-student/mfa
+  iap_medium_mfa: https://refeds.org/assurance/IAP/medium/mfa
+  iap_high_mfa: https://refeds.org/assurance/IAP/high/mfa
 
 account_linking:
   myconext_sp_entity_id: https://mijn.test2.eduid.nl/shibboleth
@@ -287,11 +303,13 @@ service_desk_roles: >
   role2,
   role3
 
+
 spring:
-  data:
-    mongodb:
-      uri: mongodb://127.0.0.1:27017/${mongodb_db}
-      auto-index-creation: false
+  http:
+    converters:
+      preferred-json-mapper: jackson2
+  mongodb:
+    uri: mongodb://127.0.0.1:27017/${mongodb_db}
   mail:
     host: localhost
     port: 1025
@@ -315,16 +333,20 @@ spring:
             provider: oidcng
         provider:
           oidcng:
-            authorization-uri: "http://localhost:8098/oidc/authorize"
-            token-uri: "http://localhost:8098/oidc/token"
-            user-info-uri: "http://localhost:8098/oidc/userinfo"
-            jwk-set-uri: "http://localhost:8098/oidc/certs"
-#            authorization-uri: "https://connect.test2.surfconext.nl/oidc/authorize"
-#            token-uri: "https://connect.test2.surfconext.nl/oidc/token"
-#            user-info-uri: "https://connect.test2.surfconext.nl/oidc/userinfo"
-#            jwk-set-uri: "https://connect.test2.surfconext.nl/oidc/certs"
+#            authorization-uri: "http://localhost:8098/oidc/authorize"
+#            token-uri: "http://localhost:8098/oidc/token"
+#            user-info-uri: "http://localhost:8098/oidc/userinfo"
+#            jwk-set-uri: "http://localhost:8098/oidc/certs"
+            authorization-uri: "https://connect.test2.surfconext.nl/oidc/authorize"
+            token-uri: "https://connect.test2.surfconext.nl/oidc/token"
+            user-info-uri: "https://connect.test2.surfconext.nl/oidc/userinfo"
+            jwk-set-uri: "https://connect.test2.surfconext.nl/oidc/certs"
             user-name-attribute: sub
             user-info-authentication-method: client_secret_basic
+  web:
+    error:
+      path: "/error"
+      include-binding-errors: always
 
 gui:
   disclaimer:
@@ -342,13 +364,26 @@ management:
       access: unrestricted
     health:
       access: unrestricted
-      show-details: when_authorized
+      show-details: always
+      status:
+        http-mapping:
+          down: 200
+          out_of_service: 200
+          unknown: 200
+          warning: 200
+      probes:
+        enabled: true
     prometheus:
       access: unrestricted
     mappings:
       access: none
     metrics:
       access: unrestricted
+  health:
+    ssl:
+      enabled: false
+    readinessstate:
+      enabled: true
   info:
     git:
       mode: full

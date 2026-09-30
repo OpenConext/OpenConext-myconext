@@ -1,0 +1,5 @@
+Hi {{name}},
+
+Your account from {{institutionName}} has been linked to an eduID account. If this wasn't you, please contact the person who manages your institutional account.
+
+{{> footer_en.txt}}

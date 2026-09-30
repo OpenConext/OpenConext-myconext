@@ -24,6 +24,7 @@ import static org.awaitility.Awaitility.await;
 public abstract class AbstractMailBoxTest extends AbstractIntegrationTest {
 
     public static final int TIMEOUT_SECONDS = 10;
+
     @Rule
     public final GreenMailRule greenMail =
             new GreenMailRule(new ServerSetup(1025, null, ServerSetup.PROTOCOL_SMTP));

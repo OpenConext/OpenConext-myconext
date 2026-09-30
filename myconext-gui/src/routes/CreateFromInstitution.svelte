@@ -77,13 +77,13 @@
         <Spinner />
     {:else}
         <div class="inner">
-            <h3>{I18n.t("CreateFromInstitution.Title.COPY")}</h3>
+            <h3>{I18n.t("CreateFromInstitution.Title")}</h3>
             <div class="info">
-                <p class="header">{I18n.t("CreateFromInstitution.Header.COPY")}</p>
-                <p>{I18n.t("CreateFromInstitution.Info.COPY")}</p>
+                <p class="header">{I18n.t("CreateFromInstitution.Header")}</p>
+                <p>{I18n.t("CreateFromInstitution.Info")}</p>
             </div>
             <div class="actions">
-                <Button label={I18n.t("CreateFromInstitution.StartFlow.COPY")}
+                <Button label={I18n.t("CreateFromInstitution.StartFlow")}
                         large={true}
                         disabled={busy}
                         onClick={startFlow}/>

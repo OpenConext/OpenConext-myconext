@@ -38,6 +38,8 @@ public class GuestIdpAuthenticationRequestFilterTest {
         subject.setManage(new MockManage(objectMapper));
         subject.setUserRepository(Mockito.mock(UserRepository.class));
         ReflectionTestUtils.setField(subject, "expiryNonValidatedDurationDays", 180);
+        ReflectionTestUtils.setField(subject, "featureUseGlobalUid", false);
+        ReflectionTestUtils.setField(subject, "forceGlobalUidEntities", Collections.emptyList());
     }
 
     @Test
@@ -159,6 +161,46 @@ public class GuestIdpAuthenticationRequestFilterTest {
         assertFalse(eduPersonScopedAffiliations.stream().anyMatch(aff -> aff.getValue().startsWith("expired-aff")));
     }
 
+    // Done
+    @Test
+    public void attributesGlobalUidWhenFeatureEnabled() {
+        ReflectionTestUtils.setField(subject, "featureUseGlobalUid", true);
+
+        User user = user("global@example.com", "nl");
+        List<SAMLAttribute> attributes = subject.attributes(user, "requesterEntityID");
+
+        assertEquals(user.getUid(), getValue(attributes, "urn:mace:dir:attribute-def:uid"));
+        assertEquals(user.getEduPersonPrincipalName(), getValue(attributes, "urn:mace:dir:attribute-def:eduPersonPrincipalName"));
+        assertEquals(user.getEduPersonPrincipalName(), getValue(attributes, "urn:oasis:names:tc:SAML:attribute:subject-id"));
+    }
+
+    @Test
+    public void attributesTargetedEduIdWhenFeatureDisabled() {
+        ReflectionTestUtils.setField(subject, "featureUseGlobalUid", false);
+
+        User user = user("targeted@example.com", "nl");
+        List<SAMLAttribute> attributes = subject.attributes(user, "requesterEntityID");
+
+        String eduIDValue = getValue(attributes, "urn:mace:eduid.nl:1.1");
+        assertEquals(eduIDValue, getValue(attributes, "urn:mace:dir:attribute-def:uid"));
+        assertEquals(eduIDValue + "@" + user.getSchacHomeOrganization(), getValue(attributes, "urn:mace:dir:attribute-def:eduPersonPrincipalName"));
+        //the subject-id stays the global eduPersonPrincipalName, regardless of the feature flag
+        assertEquals(user.getEduPersonPrincipalName(), getValue(attributes, "urn:oasis:names:tc:SAML:attribute:subject-id"));
+    }
+
+    @Test
+    public void attributesGlobalUidWhenRequesterIsForced() {
+        ReflectionTestUtils.setField(subject, "featureUseGlobalUid", false);
+        ReflectionTestUtils.setField(subject, "forceGlobalUidEntities", List.of("requesterEntityID"));
+
+        User user = user("forced@example.com", "nl");
+        List<SAMLAttribute> attributes = subject.attributes(user, "requesterEntityID");
+
+        assertEquals(user.getUid(), getValue(attributes, "urn:mace:dir:attribute-def:uid"));
+        assertEquals(user.getEduPersonPrincipalName(), getValue(attributes, "urn:mace:dir:attribute-def:eduPersonPrincipalName"));
+        assertEquals(user.getEduPersonPrincipalName(), getValue(attributes, "urn:oasis:names:tc:SAML:attribute:subject-id"));
+    }
+
     @Test
     public void attributesExternalLinkedAccount() {
         User user = new User();
@@ -203,6 +245,55 @@ public class GuestIdpAuthenticationRequestFilterTest {
 
         samlAttributes = subject.attributes(user, "requester");
         assertEquals(13, getEduPersonAssurancesCount(samlAttributes));
+    }
+
+    @Test
+    public void assurancesPreferredLinkedAccountIsLeadingMedium() {
+        User user = new User();
+
+        LinkedAccount highLinkedAccount = new LinkedAccount();
+        highLinkedAccount.setEduPersonAssurances(List.of("https://refeds.org/assurance/IAP/high"));
+
+        LinkedAccount preferredMediumLinkedAccount = new LinkedAccount();
+        preferredMediumLinkedAccount.setEduPersonAssurances(List.of("https://refeds.org/assurance/IAP/medium"));
+        preferredMediumLinkedAccount.setPreferred(true);
+
+        user.setLinkedAccounts(List.of(highLinkedAccount, preferredMediumLinkedAccount));
+
+        List<SAMLAttribute> samlAttributes = subject.attributes(user, "requester");
+        List<String> eduPersonAssurances = getEduPersonAssurances(samlAttributes);
+
+        //Even though one of the linkedAccounts is IAP/high, the preferred linkedAccount is only IAP/medium
+        assertTrue(eduPersonAssurances.contains("https://refeds.org/assurance/IAP/medium"));
+        assertFalse(eduPersonAssurances.contains("https://refeds.org/assurance/IAP/high"));
+    }
+
+    @Test
+    public void assurancesPreferredLinkedAccountIsLeadingHigh() {
+        User user = new User();
+
+        LinkedAccount mediumLinkedAccount = new LinkedAccount();
+        mediumLinkedAccount.setEduPersonAssurances(List.of("https://refeds.org/assurance/IAP/medium"));
+
+        LinkedAccount preferredHighLinkedAccount = new LinkedAccount();
+        preferredHighLinkedAccount.setEduPersonAssurances(List.of("https://refeds.org/assurance/IAP/high"));
+        preferredHighLinkedAccount.setPreferred(true);
+
+        user.setLinkedAccounts(List.of(mediumLinkedAccount, preferredHighLinkedAccount));
+
+        List<SAMLAttribute> samlAttributes = subject.attributes(user, "requester");
+        List<String> eduPersonAssurances = getEduPersonAssurances(samlAttributes);
+
+        //The preferred linkedAccount is IAP/high, so IAP/high must be sent, even though another linkedAccount is only medium
+        assertTrue(eduPersonAssurances.contains("https://refeds.org/assurance/IAP/medium"));
+        assertTrue(eduPersonAssurances.contains("https://refeds.org/assurance/IAP/high"));
+    }
+
+    private static List<String> getEduPersonAssurances(List<SAMLAttribute> samlAttributes) {
+        return samlAttributes.stream()
+                .filter(attr -> attr.getName().equals("urn:mace:dir:attribute-def:eduPersonAssurance"))
+                .map(SAMLAttribute::getValue)
+                .toList();
     }
 
     private static long getEduPersonAssurancesCount(List<SAMLAttribute> samlAttributes) {

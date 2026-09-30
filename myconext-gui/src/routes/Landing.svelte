@@ -55,26 +55,26 @@
 <div class="landing">
     <div class="inner">
         {#if isLogoutRedirect}
-            <h2>{I18n.t("Landing.LogoutTitle.COPY")}</h2>
+            <h2>{I18n.t("Landing.LogoutTitle")}</h2>
             <div>
-                <Button label={I18n.t("RegistrationCheck.LoginAgain.COPY")}
+                <Button label={I18n.t("RegistrationCheck.LoginAgain")}
                         large={true}
                         onClick={loginAgain}/>
             </div>
 
         {/if}
         {#if isAccountDeletionRedirect}
-            <h2>{I18n.t("RegistrationCheck.DeleteTitle.COPY")}</h2>
+            <h2>{I18n.t("RegistrationCheck.DeleteTitle")}</h2>
             <div>
-                <Button label={I18n.t("RegistrationCheck.RegisterAgain.COPY")}
+                <Button label={I18n.t("RegistrationCheck.RegisterAgain")}
                         large={true}
                         onClick={loginAgain}/>
             </div>
         {/if}
         {#if isRateLimitedRedirect}
-            <h2>{I18n.t("Landing.RateLimitTitle.COPY")}</h2>
+            <h2>{I18n.t("Landing.RateLimitTitle")}</h2>
             <div>
-                <Button label={I18n.t("RegistrationCheck.LoginAgain.COPY")}
+                <Button label={I18n.t("RegistrationCheck.LoginAgain")}
                         large={true}
                         onClick={loginAgain}/>
             </div>

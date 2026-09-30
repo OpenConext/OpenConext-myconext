@@ -26,8 +26,8 @@
 </style>
 
 
-<h2 class="header">{I18n.t("Login.RequestSuccessHeader.COPY")}</h2>
+<h2 class="header">{I18n.t("Login.RequestSuccessHeader")}</h2>
 <ImageContainer icon={icon} margin={true} class="image-container-success" height="220px"/>
-<p class="info">{I18n.t("Login.RequestSuccessInfo.COPY")}</p>
+<p class="info">{I18n.t("Login.RequestSuccessInfo")}</p>
 <Button href={"/"} onClick={next}
-        label={I18n.t("Login.RequestSuccessNext.COPY")}/>
+        label={I18n.t("Login.RequestSuccessNext")}/>

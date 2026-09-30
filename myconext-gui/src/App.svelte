@@ -52,7 +52,7 @@
             if (["nl", "en"].indexOf(lang) < 0) {
                 lang = "en";
             }
-            I18n.changeLocale(lang);
+            I18n.locale = lang;
             const pathname = window.location.pathname;
             if (unprotectedRoutes.some(route => pathname.indexOf(route) > -1)) {
                 loaded = true;
@@ -66,7 +66,7 @@
                         }
                         $user.guest = false;
                         if (json.preferredLanguage !== lang && !isEmpty(json.preferredLanguage)) {
-                            I18n.changeLocale(json.preferredLanguage);
+                            I18n.locale = json.preferredLanguage;
                         }
                         loaded = true;
                         const useOidcApi = $config.featureOidcTokenAPI;

@@ -100,9 +100,9 @@
 {#if showSpinner}
     <Spinner/>
 {/if}
-<h2 class="header">{I18n.t("Login.Header.COPY")}</h2>
+<h2 class="header">{I18n.t("Login.Header")}</h2>
 {#if serviceName}
-    <h2 class="top">{I18n.t("Login.HeaderSubTitle.COPY")}<span>{serviceName}</span></h2>
+    <h2 class="top">{I18n.t("Login.HeaderSubTitle")}<span>{serviceName}</span></h2>
 {/if}
 <form>
     <input type="email"
@@ -117,26 +117,26 @@
            autocomplete="current-password"
            id="password-field"
            spellcheck="false"
-           placeholder={I18n.t("Security.ChangePassword.COPY")}
+           placeholder={I18n.t("Security.ChangePassword")}
            on:keydown={handlePasswordEnter}
            use:init
            bind:value={$user.password}>
     {#if passwordIncorrect}
         <div class="error">
             <span class="svg">{@html critical}</span>
-            <span>{I18n.t("UsePassword.PasswordIncorrect.COPY")}</span>
+            <span>{I18n.t("UsePassword.PasswordIncorrect")}</span>
         </div>
     {/if}
 </form>
 <Button href="/next"
         disabled={showSpinner || !allowedNext}
-        label={I18n.t("Login.Login.COPY")}
+        label={I18n.t("Login.Login")}
         className="full"
         onClick={passwordStart}/>
 
-<SubContent question={I18n.t("Login.ForgotPassword.COPY")}
-            preLink={I18n.t("Login.UseAnother.COPY")}
-            linkText={I18n.t("Login.OptionsLink.COPY")}
+<SubContent question={I18n.t("Login.ForgotPassword")}
+            preLink={I18n.t("Login.UseAnother")}
+            linkText={I18n.t("Login.OptionsLink")}
             route="/options/{id}"
             interContent="true"/>
 

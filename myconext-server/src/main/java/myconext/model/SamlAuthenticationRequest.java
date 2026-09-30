@@ -39,6 +39,7 @@ public class SamlAuthenticationRequest implements Serializable {
     private String hash;
 
     @Schema(type = "integer", format = "int64", example = "1634813554997")
+    @Indexed(name = "expiresIn_ttl_idx", expireAfter = "0s", partialFilter = "{ 'rememberMe': false }")
     private Date expiresIn;
 
     @Setter
@@ -65,6 +66,7 @@ public class SamlAuthenticationRequest implements Serializable {
     private boolean rememberMe;
 
     @Setter
+    @Indexed
     private String rememberMeValue;
 
     @Setter

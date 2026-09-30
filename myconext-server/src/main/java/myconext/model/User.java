@@ -7,12 +7,12 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import myconext.exceptions.PasswordTooLongException;
 import myconext.exceptions.WeakPasswordException;
 import myconext.manage.Manage;
-import myconext.remotecreation.NewExternalEduID;
 import myconext.security.ServicesConfiguration;
 import myconext.tiqr.SURFSecureID;
-import myconext.verify.AttributeMapper;
+import myconext.validation.PasswordStrength;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.Transient;
 import org.springframework.data.mongodb.core.index.Indexed;
@@ -31,7 +31,6 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 import static myconext.security.SecurityConfiguration.InternalSecurityConfigurationAdapter.ROLE_GUEST;
-import static myconext.validation.PasswordStrength.strongEnough;
 
 @NoArgsConstructor
 @Getter
@@ -170,9 +169,14 @@ public class User implements Serializable, UserDetails {
         Assert.notNull(familyName, "FamilyName is required");
     }
 
-    public void encryptPassword(String password, PasswordEncoder encoder) {
-        if (!strongEnough(password)) {
-            throw new WeakPasswordException("Weak password: " + password);
+    public void encryptPassword(String password, PasswordEncoder encoder, PasswordStrength passwordStrength) {
+        if (passwordStrength.tooLong(password)) {
+            throw new PasswordTooLongException("Password exceeds the maximum length of " +
+                    PasswordStrength.MAX_PASSWORD_LENGTH + " characters");
+        }
+        if (!passwordStrength.strongEnough(password)) {
+            throw new WeakPasswordException("Weak password: minimum length is " +
+                    PasswordStrength.MIN_PASSWORD_LENGTH + " characters");
         }
         this.password = encoder.encode(password);
         this.passwordUpdatedAt = System.currentTimeMillis();
@@ -331,12 +335,18 @@ public class User implements Serializable, UserDetails {
 
     @Transient
     @JsonIgnore
+    public boolean hasSecondFactor() {
+        return !CollectionUtils.isEmpty(this.surfSecureId) && (
+                this.surfSecureId.containsKey(SURFSecureID.PHONE_VERIFIED) ||
+                        this.surfSecureId.containsKey(SURFSecureID.RECOVERY_CODE));
+    }
+
+    @Transient
+    @JsonIgnore
     public List<String> loginOptions() {
         List<LoginOptions> result = new ArrayList<>();
         //Order by priority
-        if (!CollectionUtils.isEmpty(this.surfSecureId) && (
-                this.surfSecureId.containsKey(SURFSecureID.PHONE_VERIFIED) ||
-                        this.surfSecureId.containsKey(SURFSecureID.RECOVERY_CODE))) {
+        if (this.hasSecondFactor()) {
             result.add(LoginOptions.APP);
         }
         if (!CollectionUtils.isEmpty(this.publicKeyCredentials)) {
@@ -383,18 +393,6 @@ public class User implements Serializable, UserDetails {
             });
         }
         return result;
-    }
-
-    @Transient
-    @JsonIgnore
-    public void updateWithExternalEduID(NewExternalEduID externalEduID) {
-        //Only update attributes when there is no validated account
-        if (CollectionUtils.isEmpty(this.externalLinkedAccounts) && CollectionUtils.isEmpty(this.linkedAccounts)) {
-            this.givenName = externalEduID.getFirstName();
-            String lastNamePrefix = externalEduID.getLastNamePrefix();
-            this.familyName = StringUtils.hasText(lastNamePrefix) ? String.format("%s %s", lastNamePrefix, externalEduID.getLastName()) : externalEduID.getLastName();
-            this.dateOfBirth = AttributeMapper.parseDate(externalEduID.getDateOfBirth());
-        }
     }
 
     public String getEduPersonPrincipalName() {
@@ -453,7 +451,17 @@ public class User implements Serializable, UserDetails {
     }
 
     public Date getDerivedDateOfBirth() {
-        return CollectionUtils.isEmpty(this.externalLinkedAccounts) ? null : this.externalLinkedAccounts.get(0).getDateOfBirth();
+        if (CollectionUtils.isEmpty(this.externalLinkedAccounts)) {
+            return null;
+        }
+        return this.externalLinkedAccounts.stream()
+                .filter(ExternalLinkedAccount::isPreferred)
+                .findFirst()
+                .or(() -> this.externalLinkedAccounts.stream()
+                        .filter(externalLinkedAccount -> externalLinkedAccount.getCreatedAt() != null)
+                        .max(Comparator.comparing(ExternalLinkedAccount::getCreatedAt)))
+                .map(ExternalLinkedAccount::getDateOfBirth)
+                .orElse(null);
     }
 
     public String getDerivedGivenName() {
@@ -506,6 +514,23 @@ public class User implements Serializable, UserDetails {
             this.oneTimeLoginCode = null;
         }
         return success;
+    }
+
+    public void deleteEduIDService(String entityId) {
+        //First fill the eduIDInstitutionGuid for all eduID's
+        this.eduIDS.forEach(eduID -> {
+            eduID.getServices().stream()
+                    .filter(service -> StringUtils.hasText(service.getInstitutionGuid()))
+                    .findAny()
+                    .ifPresent(service -> eduID.setServiceInstutionGuid(service.getInstitutionGuid()));
+        });
+        this.eduIDS.forEach(eduID -> eduID.getServices().removeIf(service ->
+                entityId.equals(service.getEntityId()) || entityId.equals(service.getInstitutionGuid())));
+        List<EduID> newEduIDs = this.eduIDS.stream()
+                .filter(eduID -> StringUtils.hasText(eduID.getServiceInstutionGuid()) ||
+                        !CollectionUtils.isEmpty(eduID.getServices()))
+                .collect(Collectors.toList());
+        this.eduIDS = newEduIDs;
     }
 
     private interface ProvisionedNameProvider {

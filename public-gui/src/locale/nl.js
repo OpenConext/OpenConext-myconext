@@ -39,6 +39,9 @@ const nl = {
         eduID: "Gebruiksvoorwaarden",
         title: "Versie 17 juni 2024"
     },
+    notFound: {
+        alt: "Pagina niet gevonden"
+    },
     footer: {
         terms: "Gebruiksvoorwaarden",
         privacy: "Privacyverklaring",

@@ -28,12 +28,12 @@
         margin: 15px 0;
     }
 </style>
-<h2 class="header">{I18n.t("RememberMe.Header.COPY")}</h2>
-<p class="explanation">{I18n.t("RememberMe.Info.COPY")}</p>
+<h2 class="header">{I18n.t("RememberMe.Header")}</h2>
+<p class="explanation">{I18n.t("RememberMe.Info")}</p>
 <ButtonContainer>
     <Button href={"/no"} onClick={() => proceed($conf.magicLinkUrl)}
-            label={I18n.t("RememberMe.No.COPY")}/>
+            label={I18n.t("RememberMe.No")}/>
     <Button href={"/yes"} onClick={doRememberMe}
-            label={I18n.t("RememberMe.Yes.COPY")}/>
+            label={I18n.t("RememberMe.Yes")}/>
 
 </ButtonContainer>

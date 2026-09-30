@@ -156,8 +156,8 @@
 
 </style>
 <div class="start">
-    <h2>{I18n.t("Start.Hi.COPY", {name: $user.chosenName})}</h2>
-    <p class="manage">{I18n.t("Start.Manage.COPY")}</p>
+    <h2>{I18n.t("Start.Hi", {name: $user.chosenName})}</h2>
+    <p class="manage">{I18n.t("Start.Manage")}</p>
     <div class="card-container">
         {#if $config.enableAccountLinking && isEmpty($user.linkedAccounts)}
             <div class="info-container">
@@ -170,9 +170,9 @@
                         </p>
                         <p class="requirements">{I18n.t("start.app.requirements")}</p>
                         <ul>
-                            <li>{I18n.t("CreateEduID.FirstTimeDialog.MainTextPoint1.COPY")}</li>
-                            <li>{I18n.t("CreateEduID.FirstTimeDialog.MainTextPoint2.COPY")}</li>
-                            <li>{I18n.t("CreateEduID.FirstTimeDialog.MainTextPoint3.COPY")}</li>
+                            <li>{I18n.t("CreateEduID.FirstTimeDialog.MainTextPoint1")}</li>
+                            <li>{I18n.t("CreateEduID.FirstTimeDialog.MainTextPoint2")}</li>
+                            <li>{I18n.t("CreateEduID.FirstTimeDialog.MainTextPoint3")}</li>
                         </ul>
                     </div>
                     <div class="image">
@@ -190,19 +190,19 @@
 
         <Link to="/personal" class="card">
             {@html personalInfoSvg}
-            <h3>{I18n.t("Sidebar.PersonalInfo.COPY")}</h3>
+            <h3>{I18n.t("Sidebar.PersonalInfo")}</h3>
         </Link>
         <Link to="/data-activity" class="card">
             {@html dataActivitySvg}
-            <h3>{I18n.t("Sidebar.DataActivity.COPY")}</h3>
+            <h3>{I18n.t("Sidebar.DataActivity")}</h3>
         </Link>
         <Link to="/security" class="card">
             {@html securitySvg}
-            <h3>{I18n.t("Sidebar.Security.COPY")}</h3>
+            <h3>{I18n.t("Sidebar.Security")}</h3>
         </Link>
         <Link to="/account" class="card">
             {@html settingsSvg}
-            <h3>{I18n.t("Sidebar.Account.COPY")}</h3>
+            <h3>{I18n.t("Sidebar.Account")}</h3>
         </Link>
 
     </div>
@@ -211,8 +211,8 @@
 {#if showModal}
     <Modal submit={() => addInstitution(false)}
            cancel={() => showModal = false}
-           question={I18n.t(`Profile.VerifyFirstAndLastName.AddInstitutionConfirmation.COPY`)}
-           title={I18n.t(`Profile.VerifyFirstAndLastName.AddInstitution.COPY`)}
-           confirmTitle={I18n.t("Profile.Proceed.COPY")}>
+           question={I18n.t(`Profile.VerifyFirstAndLastName.AddInstitutionConfirmation`)}
+           title={I18n.t(`Profile.VerifyFirstAndLastName.AddInstitution`)}
+           confirmTitle={I18n.t("Profile.Proceed")}>
     </Modal>
 {/if}

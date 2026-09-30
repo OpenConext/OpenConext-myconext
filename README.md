@@ -37,9 +37,9 @@ An IdP for OpenConext. A user can create and manage his own identity. Authentica
 
 - Java 21
 - Maven 3
-- MongoDB 3.4.x
+- MongoDB 7.x
 - Yarn 1.x
-- NodeJS (version 23.2.0)
+- NodeJS (version 24.3.0)
 - Mailpit
 
 ## Building and running
@@ -54,7 +54,12 @@ docker compose up -d
 
 ### MyConext-Server
 
-This project uses Spring Boot and Maven. To run locally, type:
+Spring Boot backend implementing the eduID/SURFconext "MyConext" Identity Provider: SAML2 and
+OIDC authentication flows, MongoDB-backed user/session persistence, RSA-based SAML request
+signing, attribute manipulation/aggregation APIs, and the OpenAPI/Swagger documentation for all
+of it.
+
+To run locally, type:
 
 ```shell
 cd myconext-server
@@ -65,6 +70,16 @@ When developing, it's convenient to just execute the applications main-method, w
 Don't forget to set the active profile to dev.
 
 ### Account-GUI (IDP)
+
+The Account-GUI is the SAML/OIDC Identity Provider frontend for MyConext. It is the screen a user
+lands on when a Service Provider redirects them to the "Local SURFconext Guest IdP" / "Local eduID
+IdP" — it drives the magic-link, password, FIDO2/WebAuthn and Tiqr (mobile app) sign-in flows, as
+well as account-linking and step-up/MFA screens.
+
+There is **no home page**: the app only makes sense as the target of an authentication redirect
+coming from a Service Provider (e.g. the OIDC-Playground, MyConext-GUI or Servicedesk-GUI). Visiting
+it directly without a valid request id will land you on the "Whoops... Something went wrong (404)"
+route, which is expected.
 
 The IdP is also built with Svelte and to get initially started:
 
@@ -77,6 +92,17 @@ yarn dev
 There is no home page, you'll need to visit an SP and choose "Local SURFconext Guest IdP" to login. App is running on port 3000.
 
 ### MyConext-GUI (SP)
+
+MyConext-GUI is the "My eduID" self-service Service Provider frontend for MyConext. Once a user is
+authenticated (via [`account-gui`](../account-gui)), this is where they land to manage their own
+eduID identity: personal info, linked (institution/external) accounts, security methods (password,
+FIDO2/WebAuthn, the Tiqr mobile app), connected services and account deletion.
+
+Like `account-gui`, this app has no meaningful anonymous landing page for most routes: on mount it
+calls `/myconext/api/sp/me`, and if the user isn't authenticated it redirects to the configured
+`loginUrl` (see [`src/App.svelte`](src/App.svelte)). A small set of routes (`/create-from-institution`,
+`/landing`, `/install-app`) are reachable without an existing session, to support the "create an
+eduID linked to your institution account" flow for guests.
 
 The myconext ServiceProvider is built with Svelte and to get initially started:
 
@@ -91,7 +117,17 @@ Browse to the [application homepage](http://localhost:3001/).
 
 ### Servicedesk-GUI (SP)
 
-The myconext servicedesk is also built with Svelte and to get initially started:
+ServiceDesk-GUI is the internal tool SURF/SURFconext service-desk staff use to perform **in-person
+identity verification** for eduID users. A student (or other eduID user) who needs a formally
+verified identity generates a numeric verification code in the eduID app, visits (or calls) the
+service desk, and a service-desk employee uses this application to: look up the code, manually
+check the person's ID document against the data on file, and approve the check — after which the
+person's identity is marked as verified in eduID.
+
+There is no self-service function here: every route except `/login` requires an authenticated,
+authorized service-desk employee (see [Overview](#overview)).
+
+The myconext servicedesk is built with React and Vite and to get initially started:
 
 ```shell
 cd servicedesk-gui
@@ -102,6 +138,12 @@ yarn dev
 Browse to the [application homepage](http://localhost:3003/).
 
 ### Public-GUI (Content website)
+
+Public-GUI is the public-facing marketing/content site for **eduID** — the informational website a
+visitor lands on at the bare domain (e.g. `eduid.nl`) *before* they have an account. It explains what
+eduID is, lets people install the eduID mobile app, hosts the Terms of Use / Privacy Policy, and
+serves a couple of Dutch-service-desk-facing pages. It is **not** where anyone logs in or registers —
+those actions link out to the other GUIs (see [Overview](#overview)).
 
 The myconext public gui is built with Vite and to get initially started:
 
@@ -155,16 +197,6 @@ If you need to register the public key in EB then issue this command and copy & 
 ```
 cat myconext.crt |ghead -n -1 |tail -n +2 | tr -d '\n'; echo
 ```
-### Translations
-
-The github actions will generate new translations of the source is changed.
-
-```bash
-yarn localicious render ./localizations.yaml ./account-gui/src/locale/ --languages en,nl --outputTypes js -c SHARED
-rm -fr ./account-gui/src/locale/js/Localizable.ts
-yarn localicious render ./localizations.yaml ./myconext-gui/src/locale/ --languages en,nl --outputTypes js -c SHARED
-rm -fr ./myconext-gui/src/locale/js/Localizable.ts
-```
 
 ### Miscellaneous
 
@@ -186,10 +218,19 @@ curl -u oidcng:secret "http://login.test2.eduid.nl/myconext/api/attribute-manipu
 ```
 curl -u aa:secret "https://login.test2.eduid.nl/myconext/api/attribute-aggregation?sp_entity_id=https://mijn.test2.eduid.nl/shibboleth&eduperson_principal_name=j.doe@example.com"
 ```
+
+### System API
 Endpoint to detect duplicate eduID's for SP's that have the same institutionGuid
 ```
 curl -u aa:secret 'https://login.test2.eduid.nl/myconext/api/system/eduid-duplicates' | jq .
 ```
+
+Endpoint to migrate services to another institution
+```
+curl -u internal:secret --json '{"entityID":"https://service.com","institutionGUID":"A3C808F4-3698-4E30-8B1A-2D2FE8BD0D76", "dryRun":true}' \
+ 'https://login.test2.eduid.nl/myconext/api/system/service-migration' | jq .
+```
+
 
 ### OpenAPI Documentation
 
@@ -226,3 +267,80 @@ Note: Account-GUI starts with `Whoops… Something went wrong (404)`, this is ok
 4. User is `jdoe@example.com`, chose one-time login via e-mail
 5. See [Mailpit](http://user:password@145.90.230.133:8025/) for the OTP
 6. You get redirected back to the playground with JWT data
+
+## Flowchart eduID authentication
+```mermaid
+flowchart TB
+  eduid@{shape: circle, label: eduID OP}
+  sso[SSO]@{shape: diam}
+  loggedin@{shape: dbl-circ, label: logged <br> in}
+  usercookie@{shape: diam}
+  requestemail@{shape: event, label: email input}
+  validatemail@{shape: diam, label: vaildate email}
+  registration@{shape: rect, label: start <br> registration}
+  authMethod@{shape: diam, label: determine <br> auth method}
+  sendOtp@{shape: rect, label: send email OTP}
+  otpVerified@{shape: diam, label: OTP <br> verified}
+  setUsercookie@{shape: rect, label: set usercookie}
+  askPassword@{shape: event, label: user password input}
+  passwordValidate@{shape: diam, label: password <br> validated}
+  attestation@{shape: diam, label: attestation <br> verified}
+  trustedbrowser@{shape: diam, label: trusted <br> browser}
+  webauthn@{shape: event, label: passkey authentication}
+  showQr@{shape: rect, label: show QR code}
+  ocraVerified@{shape: diam, label: OCRA <br> verified}
+  sendPush@{shape: event, label: send Push Notification}
+  trustBrowser@{shape: event, label: Set browser trust cookie}
+  knownMfa@{shape: diam, label: Known MFA <br> factor}
+  firstFactor@{shape: event, label: Perform 1st factor authentication}
+  registerMfa@{shape: event, label: Register MFA + recovery}
+
+  eduid --> |eduID chosen as <br> the OP for authN|sso
+  sso --> |yes| loggedin
+  sso --> |no| usercookie
+  usercookie --> |invalid cookie| requestemail
+  usercookie --> |valid cookie| validatemail
+  requestemail --> validatemail
+  validatemail --> |unknown email| registration
+  validatemail --> |known email| authMethod
+  registration --> |send validation email|sendOtp
+  authMethod ---> |code| sendOtp
+  subgraph code
+    direction LR
+    sendOtp --> otpVerified
+    otpVerified --> |no| sendOtp
+  end
+  otpVerified --> |yes| setUsercookie
+  setUsercookie ---> loggedin
+  authMethod --> |password| askPassword
+  subgraph password
+    direction LR
+    askPassword --> passwordValidate
+    passwordValidate --> |no| askPassword
+  end
+  passwordValidate ----> |yes|setUsercookie
+  authMethod --> |webAuthN| webauthn
+  subgraph Passkey
+  direction RL
+    webauthn --> attestation
+    attestation --> |no attestation| invalidAuth@{shape: fr-circ, label: STOP}
+  end
+  attestation ----> |yes|setUsercookie
+  authMethod --> |app| trustedbrowser
+  subgraph APP
+    direction LR
+    trustedbrowser --> |No| showQr
+    showQr --> ocraVerified
+    ocraVerified --> |No| sendPush
+    sendPush --> ocraVerified
+    ocraVerified --> |yes| trustBrowser
+  end
+  trustBrowser --> setUsercookie
+  authMethod --> |MFA|knownMfa
+  subgraph MFA
+    knownMfa --> |yes| trustedbrowser
+    knownMfa --> |no| firstFactor
+    firstFactor --> registerMfa
+    registerMfa --> trustBrowser
+  end
+```

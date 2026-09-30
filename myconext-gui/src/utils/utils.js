@@ -42,3 +42,5 @@ export const redirectToLogin = (loginUrl, redirectTo) => {
     window.location.href = url.toString();
 }
 
+export const hasSecondFactor = user => (user.loginOptions || []).includes("useApp");
+

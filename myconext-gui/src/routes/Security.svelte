@@ -23,7 +23,7 @@
         const urlSearchParams = new URLSearchParams(window.location.search);
         const newUser = urlSearchParams.get("new");
         if (newUser) {
-            flash.setValue(I18n.t(`CreateFromInstitution.Welcome.COPY${newUser === "false" ? "Existing" : ""}`), 3750);
+            flash.setValue(I18n.t(`CreateFromInstitution.Welcome${newUser === "false" ? "Existing" : ""}`), 3750);
         }
 
     });
@@ -200,7 +200,7 @@
 </style>
 <div class="security">
     <div class="inner-container">
-        <h2>{I18n.t("Security.Title.COPY")}</h2>
+        <h2>{I18n.t("Security.Title")}</h2>
         <p class="info">{I18n.t("security.subTitle")}</p>
 
         <!-- Banner -->
@@ -218,7 +218,7 @@
                 <SecurityOption action={() => showAppDetails = !showAppDetails}
                                 icon={hasApp}
                                 label={I18n.t("security.options.app")}
-                                subLabel={I18n.t("Security.Tiqr.Activated.COPY", {
+                                subLabel={I18n.t("Security.Tiqr.Activated", {
                                     date: dateFromEpoch($user.registration.created, false)
                                 })}
                                 hasSubContent={true}
@@ -240,14 +240,14 @@
             {/if}
             <SecurityOption action={() => navigate("/edit-email")}
                             icon={codeIcon}
-                            label={I18n.t("Security.UseCode.COPY")}
+                            label={I18n.t("Security.UseCode")}
                             subLabel={$user.email}
                             active={true}/>
             {#if $user.usePassword}
                 <SecurityOption action={() => navigate("/reset-password-link")}
                                 icon={passwordIcon}
-                                label={I18n.t("Security.ChangePassword.COPY")}
-                                subLabel={I18n.t("Security.PasswordActivated.COPY", {
+                                label={I18n.t("Security.ChangePassword")}
+                                subLabel={I18n.t("Security.PasswordActivated", {
                                     date: $user.passwordUpdatedAt ? dateFromEpoch($user.passwordUpdatedAt, false) : ''
                                 })}
                                 active={true}/>
@@ -257,7 +257,7 @@
                     <SecurityOption action={credentialsDetails(credential)}
                                     icon={webAuthnIcon}
                                     label={I18n.t("security.options.passkey")}
-                                    subLabel={I18n.t("Security.CredentialActivated.COPY", {
+                                    subLabel={I18n.t("Security.CredentialActivated", {
                                         name: credential.name,
                                         date: dateFromEpoch(credential.createdAt, false)
                                     })}
@@ -271,9 +271,9 @@
             <h3 class="info">{I18n.t("security.recommendedOptions")}</h3>
             <div class="tiqr-app">
                 <div class="information">
-                    <h3 class="grey">{I18n.t("Security.Tiqr.Title.COPY")}</h3>
-                    <p>{@html I18n.t("Security.Tiqr.Info.COPY")}</p>
-                    <Button label={I18n.t("Security.Tiqr.Fetch.COPY")} large={true} onClick={() => navigate("/get-app")}/>
+                    <h3 class="grey">{I18n.t("Security.Tiqr.Title")}</h3>
+                    <p>{@html I18n.t("Security.Tiqr.Info")}</p>
+                    <Button label={I18n.t("Security.Tiqr.Fetch")} large={true} onClick={() => navigate("/get-app")}/>
                 </div>
                 <div class="image">
                     {@html getApp}
@@ -282,12 +282,12 @@
         {/if}
 
         <!-- Other methods -->
-        <h3 class="info">{I18n.t("Security.OtherMethods.COPY")}</h3>
+        <h3 class="info">{I18n.t("Security.OtherMethods")}</h3>
         <div class="security-options-group">
             {#if !$user.usePassword}
                 <SecurityOption action={() => navigate("/reset-password-link")}
                                 icon={passwordIcon}
-                                label={I18n.t("Security.AddPassword.COPY")}
+                                label={I18n.t("Security.AddPassword")}
                                 active={false}/>
             {/if}
             {#if $config.featureWebAuthn }
@@ -311,7 +311,7 @@
                 {:else}
                     <SecurityOption action={() => navigate("/backup-codes")}
                                     icon={mobilePhoneIcon}
-                                    label={I18n.t("Security.Tiqr.Sms.COPY")}
+                                    label={I18n.t("Security.Tiqr.Sms")}
                                     subLabel={I18n.t(`security.tiqr.${$user.registration.recoveryCode ? "getSmsInfo" : "smsInfo"}`
                                     , {phone: `** ** *** ${$user.registration.phoneNumber}`})}
                                     active={true}/>

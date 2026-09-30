@@ -24,6 +24,7 @@
     import Stepup from "./routes/Stepup.svelte";
     import AffiliationMissing from "./routes/AffiliationMissing.svelte";
     import ValidNameMissing from "./routes/ValidNameMissing.svelte";
+    import IapAssuranceMissing from "./routes/IapAssuranceMissing.svelte";
     import EppnAlreadyLinked from "./routes/EppnAlreadyLinked.svelte";
     import Request from "./routes/Request.svelte";
     import SubContent from "./components/SubContent.svelte";
@@ -70,7 +71,7 @@
             if (["nl", "en"].indexOf(locale) < 0) {
                 locale = "en";
             }
-            I18n.changeLocale(locale);
+            I18n.locale = locale;
 
             $user.knownUser = Cookies.get(cookieNames.USERNAME);
             $user.email = $user.knownUser || "";
@@ -204,6 +205,9 @@
                 <Route path="/valid-name-missing/:id" let:params>
                     <ValidNameMissing id="{params.id}"/>
                 </Route>
+                <Route path="/iap-assurance-missing/:id" let:params>
+                    <IapAssuranceMissing id="{params.id}"/>
+                </Route>
                 <Route path="/eppn-already-linked/:id" let:params>
                     <EppnAlreadyLinked id="{params.id}"/>
                 </Route>
@@ -232,10 +236,10 @@
         </div>
         <Router url="{url}">
             <Route path="/useapp/:id" let:params>
-                <SubContent question={I18n.t("Login.NoAppAccess.COPY")}
-                            preLink={I18n.t("Login.UseAnother.COPY")}
+                <SubContent question={I18n.t("Login.NoAppAccess")}
+                            preLink={I18n.t("Login.UseAnother")}
                             isMfa={true}
-                            linkText={I18n.t("Login.OptionsLink.COPY")}
+                            linkText={I18n.t("Login.OptionsLink")}
                             route="/options/{params.id}"/>
             </Route>
         </Router>

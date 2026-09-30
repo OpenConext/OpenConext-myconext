@@ -1,7 +1,7 @@
 <script>
     import {flash, user, config} from "../stores/user";
     import I18n from "../locale/I18n";
-    import {validPassword} from "../validation/regexp";
+    import {validPassword, passwordTooLong} from "../validation/regexp";
     import {resetPasswordHashValid, generatePasswordResetCode, updatePassword, setLoginPreference} from "../api";
     import {navigate} from "svelte-routing";
     import Button from "../components/Button.svelte";
@@ -17,7 +17,9 @@
     let showModalDeletePassword = false;
     let hash;
     let allowedNext = false;
+    let passwordTooLongError = false;
 
+    $: passwordTooLongError = passwordTooLong(newPassword);
     $: allowedNext = validPassword(newPassword) && newPassword === confirmPassword && !passwordResetHashExpired;
 
     onMount(() => {
@@ -43,8 +45,12 @@
                 .then(res => {
                     window.location.href = `${$config.accountBaseUrl}/register/login-preference/${res.token}`;
                 })
-                .catch(() => {
-                    passwordResetHashExpired = true;
+                .catch(e => {
+                    if (e.status === 413) {
+                        passwordTooLongError = true;
+                    } else {
+                        passwordResetHashExpired = true;
+                    }
                 });
 
         }
@@ -65,7 +71,7 @@
                     }
                 }
                 navigate("/security");
-                flash.setValue(I18n.t("Password.Deleted.COPY"));
+                flash.setValue(I18n.t("Password.Deleted"));
             }).catch(() => {
                 showModalDeletePassword = false;
                 passwordResetHashExpired = true;
@@ -76,7 +82,7 @@
     const resetPasswordLinkAgain = () => {
         generatePasswordResetCode().then(() => {
             navigate("/security");
-            flash.setValue(I18n.t("Password.Flash.PasswordLink.COPY", {name: $user.email}));
+            flash.setValue(I18n.t("Password.Flash.PasswordLink", {name: $user.email}));
         })
 
     }
@@ -142,27 +148,33 @@
     {#if loading}
         <Spinner/>
     {:else}
-        <h2>{usePassword ? I18n.t("ChangePassword.Title.ChangePassword.COPY") : I18n.t("PasswordResetLink.Title.AddPassword.COPY")}</h2>
+        <h2>{usePassword ? I18n.t("ChangePassword.Title.ChangePassword") : I18n.t("PasswordResetLink.Title.AddPassword")}</h2>
         {#if passwordResetHashExpired}
             <div class="error-container">
-            <span class="error">{I18n.t("Password.PasswordResetHashExpired.COPY")}
+            <span class="error">{I18n.t("Password.PasswordResetHashExpired")}
                 <a href="/reset-link" on:click|preventDefault|stopPropagation={resetPasswordLinkAgain}>
-                    {I18n.t("Password.PasswordResetSendAgain.COPY")}
+                    {I18n.t("Password.PasswordResetSendAgain")}
                 </a>
             </span>
             </div>
         {:else}
-            <p class="info">{I18n.t("Password.PasswordDisclaimer.COPY")}</p>
+            <p class="info">{I18n.t("Password.PasswordDisclaimer")}</p>
 
             <input id="username" autocomplete="username email" type="hidden" name="username" value={$user.email}>
 
-            <label for="newPassword">{I18n.t("Password.NewPassword.COPY")}</label>
+            <label for="newPassword">{I18n.t("Password.NewPassword")}</label>
             <input id="newPassword" type="password" autocomplete="new-password" spellcheck="false"
                    bind:value={newPassword}>
 
-            <label for="confirmPassword">{I18n.t("Password.ConfirmPassword.COPY")}</label>
+            <label for="confirmPassword">{I18n.t("Password.ConfirmPassword")}</label>
             <input id="confirmPassword" type="password" spellcheck="false" autocomplete="new-password"
                    bind:value={confirmPassword}>
+
+            {#if passwordTooLongError}
+                <div class="error-container">
+                    <span class="error">{I18n.t("Password.PasswordTooLong")}</span>
+                </div>
+            {/if}
 
             <div class="options">
                 {#if usePassword}
@@ -170,8 +182,8 @@
             <Button deletion={true} onClick={deletePasswordOption(true)}/>
         </span>
                 {/if}
-                <Button className="cancel" label={I18n.t("YourVerifiedInformation.ConfirmRemoval.Button.Cancel.COPY")} onClick={cancel}/>
-                <Button label={usePassword ? I18n.t("Password.UpdateUpdate.COPY") : I18n.t("Password.SetUpdate.COPY")}
+                <Button className="cancel" label={I18n.t("YourVerifiedInformation.ConfirmRemoval.Button.Cancel")} onClick={cancel}/>
+                <Button label={usePassword ? I18n.t("Password.UpdateUpdate") : I18n.t("Password.SetUpdate")}
                         onClick={update}
                         disabled={!allowedNext}/>
             </div>
@@ -182,8 +194,8 @@
     <Modal submit={deletePasswordOption(false)}
            cancel={() => showModalDeletePassword = false}
            warning={false}
-           confirmTitle={I18n.t("YourVerifiedInformation.ConfirmRemoval.Button.YesDelete.COPY")}
-           question={I18n.t("Password.DeletePasswordConfirmation.COPY")}
-           title={I18n.t("Password.DeletePassword.COPY")}>
+           confirmTitle={I18n.t("YourVerifiedInformation.ConfirmRemoval.Button.YesDelete")}
+           question={I18n.t("Password.DeletePasswordConfirmation")}
+           title={I18n.t("Password.DeletePassword")}>
     </Modal>
 {/if}

@@ -72,20 +72,20 @@
     <Spinner/>
 {/if}
 {#if !isMrcc}
-    <h2 class="header">{I18n.t("Login.UseWebAuth.COPY")}</h2>
+    <h2 class="header">{I18n.t("Login.UseWebAuth")}</h2>
     {#if serviceName}
-        <h2 class="top">{I18n.t("Login.HeaderSubTitle.COPY")}<span>{serviceName}</span></h2>
+        <h2 class="top">{I18n.t("Login.HeaderSubTitle")}<span>{serviceName}</span></h2>
     {/if}
-    <p class="explanation">{I18n.t("WebAuthn.Explanation.COPY")}</p>
+    <p class="explanation">{I18n.t("WebAuthn.Explanation")}</p>
     <Button href="/start"
             disabled={showSpinner}
-            label={I18n.t("WebAuthn.Next.COPY")}
+            label={I18n.t("WebAuthn.Next")}
             className="full"
             onClick={webAuthnStart}/>
 
 {/if}
 
-<SubContent question={I18n.t("Login.UseAnother.COPY")}
-            linkText={I18n.t("Login.OptionsLink.COPY")}
+<SubContent question={I18n.t("Login.UseAnother")}
+            linkText={I18n.t("Login.OptionsLink")}
             route="/options/{id}"
             interContent="true"/>

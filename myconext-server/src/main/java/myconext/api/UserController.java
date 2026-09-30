@@ -34,6 +34,7 @@ import myconext.model.*;
 import myconext.oidcng.OpenIDConnect;
 import myconext.repository.*;
 import myconext.security.*;
+import myconext.validation.PasswordStrength;
 import myconext.webauthn.UserCredentialRepository;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -47,7 +48,6 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
@@ -98,7 +98,7 @@ public class UserController implements UserAuthentication {
     private final PasswordResetHashRepository passwordResetHashRepository;
     private final ChangeEmailHashRepository changeEmailHashRepository;
 
-    private final PasswordEncoder passwordEncoder = new BCryptPasswordEncoder(4, new SecureRandom());
+    private final PasswordEncoder passwordEncoder = new LongPasswordAwareBCryptPasswordEncoder(4, new SecureRandom());
     private final EmailGuessingPrevention emailGuessingPreventor;
     private final EmailDomainGuard emailDomainGuard;
     private final DisposableEmailProviders disposableEmailProviders;
@@ -114,6 +114,7 @@ public class UserController implements UserAuthentication {
     private final List<String> unknownIssuers = List.of("CURRNL2A");
     private final boolean serviceDeskActive;
     private final boolean secureCookie;
+    private final PasswordStrength passwordStrength;
 
     public UserController(UserRepository userRepository,
                           UserCredentialRepository userCredentialRepository,
@@ -168,6 +169,7 @@ public class UserController implements UserAuthentication {
         this.sendJsExceptions = sendJsExceptions;
         this.serviceDeskActive = serviceDeskActive;
         this.secureCookie = secureCookie;
+        this.passwordStrength = new PasswordStrength(objectMapper);
 
         List<IdinIssuers> idinIssuers = objectMapper.readValue(issuersResource.getInputStream(), new TypeReference<>() {
         });
@@ -824,7 +826,7 @@ public class UserController implements UserAuthentication {
         if (deletePassword) {
             user.deletePassword();
         } else {
-            user.encryptPassword(newPassword, passwordEncoder);
+            user.encryptPassword(newPassword, passwordEncoder, passwordStrength);
         }
 
         user.setForgottenPassword(false);
@@ -953,9 +955,19 @@ public class UserController implements UserAuthentication {
     @Operation(summary = "Remove linked account",
             description = "Remove linked account for a logged in user")
     public ResponseEntity<UserResponse> removeUserLinkedAccounts(Authentication authentication,
-                                                                 @RequestBody UpdateLinkedAccountRequest updateLinkedAccountRequest) {
+                                                                 @RequestBody UpdateLinkedAccountRequest updateLinkedAccountRequest,
+                                                                 HttpServletRequest request) {
         User user = userFromAuthentication(authentication);
+        checkSecondFactorConfirmation(authentication, request);
+
         if (updateLinkedAccountRequest.isExternal()) {
+            //Studielink externalLinkedAccounts can only be deleted after studielink has deleted the connection
+            boolean hasActiveStudielinkConnection = user.getExternalLinkedAccounts().stream()
+                    .anyMatch(externalLinkedAccount -> IdpScoping.studielink.equals(externalLinkedAccount.getIdpScoping())
+                            && externalLinkedAccount.isConnectionActive());
+            if (hasActiveStudielinkConnection) {
+                throw new ForbiddenException("Can not delete a studielink externalLinkedAccount while the connection is still active for user " + user.getEmail());
+            }
             //Only one external linked account is allowed
             user.getExternalLinkedAccounts().clear();
             user.setDateOfBirth(null);
@@ -973,12 +985,11 @@ public class UserController implements UserAuthentication {
     }
 
     @PostMapping("/sp/credential")
-    @Hidden
     public ResponseEntity updatePublicKeyCredential(Authentication authentication,
-                                                    @RequestBody Map<String, String> credential) {
+                                                    @RequestBody UpdateCredential credential) {
         User user = userFromAuthentication(authentication);
 
-        String identifier = credential.get("identifier");
+        String identifier = credential.identifier();
         Optional<PublicKeyCredentials> publicKeyCredentials = user.getPublicKeyCredentials().stream()
                 .filter(key -> key.getIdentifier().equals(identifier))
                 .findFirst();
@@ -986,28 +997,27 @@ public class UserController implements UserAuthentication {
             return return404();
         }
         PublicKeyCredentials credentials = publicKeyCredentials.get();
-        credentials.setName(credential.get("name"));
+        credentials.setName(credential.name());
         userRepository.save(user);
 
-        logWithContext(user, "update", "webauthn_key", LOG, "Updated publicKeyCredential " + credential.get("name"));
+        logWithContext(user, "update", "webauthn_key", LOG, "Updated publicKeyCredential " + credential);
 
         return userResponseRememberMe(user);
     }
 
     @PutMapping("/sp/credential")
-    @Hidden
     public ResponseEntity removePublicKeyCredential(Authentication authentication,
-                                                    @RequestBody Map<String, String> credential) {
+                                                    @RequestBody UpdateCredential credential) {
         User user = userFromAuthentication(authentication);
 
-        String identifier = credential.get("identifier");
+        String identifier = credential.identifier();
         List<PublicKeyCredentials> publicKeyCredentials = user.getPublicKeyCredentials().stream()
                 .filter(key -> !key.getIdentifier().equals(identifier))
                 .collect(Collectors.toList());
         user.setPublicKeyCredentials(publicKeyCredentials);
         userRepository.save(user);
 
-        logWithContext(user, "delete", "webauthn_key", LOG, "Deleted publicKeyCredential " + credential.get("name"));
+        logWithContext(user, "delete", "webauthn_key", LOG, "Deleted publicKeyCredential " + credential);
 
         return userResponseRememberMe(user);
     }
@@ -1016,16 +1026,13 @@ public class UserController implements UserAuthentication {
             description = "Remove user service by the eduID value")
     @PutMapping("/sp/service")
     public ResponseEntity<UserResponse> removeUserService(Authentication authentication,
-                                                          @Valid @RequestBody DeleteService deleteService) {
+                                                          @Valid @RequestBody DeleteService deleteService,
+                                                          HttpServletRequest request) {
         User user = userFromAuthentication(authentication);
+        checkSecondFactorConfirmation(authentication, request);
 
         String entityId = deleteService.getServiceProviderEntityId();
-        user.getEduIDS().forEach(eduID -> eduID.getServices().removeIf(service ->
-                entityId.equals(service.getEntityId()) || entityId.equals(service.getInstitutionGuid())));
-        List<EduID> newEduIDs = user.getEduIDS().stream()
-                .filter(eduID -> !eduID.getServices().isEmpty())
-                .collect(Collectors.toList());
-        user.setEduIDS(newEduIDs);
+        user.deleteEduIDService(entityId);
         userRepository.save(user);
 
         logWithContext(user, "delete", "eppn", LOG, "Deleted eduID " + entityId);
@@ -1349,17 +1356,36 @@ public class UserController implements UserAuthentication {
         return doLogout(request);
     }
 
-
     @DeleteMapping("/sp/delete")
     @Operation(summary = "Delete",
             description = "Delete the current logged in user")
-    public ResponseEntity<StatusResponse> deleteUser(Authentication authentication, HttpServletRequest request) {
+    public ResponseEntity<StatusResponse> deleteUser(Authentication authentication,
+                                                      HttpServletRequest request) {
         User user = userFromAuthentication(authentication);
+        checkSecondFactorConfirmation(authentication, request);
+
         userRepository.delete(user);
 
         logWithContext(user, "delete", "account", LOG, "Delete account");
 
         return doLogout(request);
+    }
+
+    // Only block destructive action when user has a second factor and this is not confirmed yet
+    private void checkSecondFactorConfirmation(Authentication authentication, HttpServletRequest request) {
+        // The confirmation is held in the HTTP session, which the bearer token authenticated app does not have
+        // Calls from the mobile app currently do not require a confirmation of second factor
+        if (isMobileRequest(authentication)) {
+            return;
+        }
+
+        User user = userFromAuthentication(authentication);
+        if (user.loginOptions().contains(LoginOptions.APP.getValue())) {
+            if (!Boolean.TRUE.equals(request.getSession().getAttribute("hasConfirmedSecondFactor"))) {
+                throw new ForbiddenException("User has a 2nd factor enabled, confirmation of the 2nd factor is required for this destructive action");
+            }
+            request.getSession().removeAttribute("hasConfirmedSecondFactor");
+        }
     }
 
     @Operation(summary = "Create verification control code password link",

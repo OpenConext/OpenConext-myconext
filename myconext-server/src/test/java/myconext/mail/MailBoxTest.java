@@ -198,6 +198,36 @@ public class MailBoxTest extends AbstractMailBoxTest {
     }
 
     @Test
+    public void sendLinkedAccountAddedEduID() throws Exception {
+        User user = user("jdoe@example.com");
+        mailBox.sendLinkedAccountAddedEduID(user, "Utrecht University");
+
+        MimeMessage mimeMessage = mailMessage();
+        assertEquals("noreplyTest@surfconext.nl", mimeMessage.getFrom()[0].toString());
+        assertEquals("jdoe@example.com", mimeMessage.getRecipients(Message.RecipientType.TO)[0].toString());
+        MimeMessageParser parser = new MimeMessageParser(mimeMessage);
+        parser.parse();
+
+        String htmlContent = parser.getHtmlContent();
+        assertTrue(htmlContent.contains("Utrecht University"));
+    }
+
+    @Test
+    public void sendLinkedAccountAddedInstitution() throws Exception {
+        User user = user("jdoe@example.com");
+        mailBox.sendLinkedAccountAddedInstitution(user, "Utrecht University", "jdoe@uu.example.nl");
+
+        MimeMessage mimeMessage = mailMessage();
+        assertEquals("noreplyTest@surfconext.nl", mimeMessage.getFrom()[0].toString());
+        assertEquals("jdoe@uu.example.nl", mimeMessage.getRecipients(Message.RecipientType.TO)[0].toString());
+        MimeMessageParser parser = new MimeMessageParser(mimeMessage);
+        parser.parse();
+
+        String htmlContent = parser.getHtmlContent();
+        assertTrue(htmlContent.contains("Utrecht University"));
+    }
+
+    @Test
     public void sendResetPasswordMobile() throws Exception {
         User user = user("jdoe@example.com");
         mailBox.sendResetPassword(user, "hash", true);

@@ -183,14 +183,14 @@
 <div class="account-link-mod">
     {#if !showServiceDesk && !showControlCode && (!showBankOptions || busyProcessing)}
         <div class="info-container">
-            <p>{showIdinOptions ? I18n.t("verify.modal.info.please") : I18n.t("VerifyIdentity.SubtitleHasInternalLink.COPY")}</p>
+            <p>{showIdinOptions ? I18n.t("verify.modal.info.please") : I18n.t("VerifyIdentity.SubtitleHasInternalLink")}</p>
         </div>
         <div class="alert-info">
             <p class="question">{@html showIdinOptions
-                ? I18n.t("VerifyIdentity.VerifyViaDutchInstitution.Title.COPY")
-                : I18n.t("VerifyIdentity.VerifyViaDutchInstitution.TitleHasInternalLink.COPY")}</p>
+                ? I18n.t("VerifyIdentity.VerifyViaDutchInstitution.Title")
+                : I18n.t("VerifyIdentity.VerifyViaDutchInstitution.TitleHasInternalLink")}</p>
             <div class="button-container">
-                <Button label={I18n.t("VerifyIdentity.VerifyViaDutchInstitution.Button.COPY")}
+                <Button label={I18n.t("VerifyIdentity.VerifyViaDutchInstitution.Button")}
                         larger={true}
                         custom={false}
                         disabled={busyProcessing}
@@ -201,10 +201,10 @@
         </div>
         {#if $config.featureIdVerify && showIdinOptions && !showServiceDesk && !showControlCode}
             <div class="info-id-verify-container">
-                <p>{@html I18n.t("VerifyIdentity.VerifyViaOptions.Title.COPY")}</p>
+                <p>{@html I18n.t("VerifyIdentity.VerifyViaOptions.Title")}</p>
             </div>
             <div class="button-container">
-                <Button label={I18n.t("VerifyIdentity.VerifyWithBankApp.Button.COPY")}
+                <Button label={I18n.t("VerifyIdentity.VerifyWithBankApp.Button")}
                         icon={idinSvg}
                         custom={false}
                         disabled={busyProcessing}
@@ -216,7 +216,7 @@
                 />
             </div>
             <div class="button-container">
-                <Button label={I18n.t("VerifyIdentity.VerifyWithAEuropianId.Button.COPY")}
+                <Button label={I18n.t("VerifyIdentity.VerifyWithAEuropianId.Button")}
                         icon={eIDASSvg}
                         custom={false}
                         disabled={busyProcessing}
@@ -250,7 +250,7 @@
             <span class="back" on:click={() => showBankOptions = !showBankOptions}>
                 {@html arrowLeftIcon}
             </span>
-                <h3 class="header">{I18n.t("VerifyIdentity.VerifyWithBankApp.Button.COPY")}</h3>
+                <h3 class="header">{I18n.t("VerifyIdentity.VerifyWithBankApp.Button")}</h3>
             </div>
             <p>{@html I18n.t("verify.modal.bank.disclaimer")}</p>
         </div>
@@ -269,7 +269,7 @@
         {@html alertSvg}
         <span>{I18n.t("verify.modal.bank.anotherMethodPrefix")}
             <a href="/#" on:click|preventDefault|stopPropagation={() => showBankOptions = !showBankOptions}>
-                {I18n.t("SelectYourBank.BankNotInList.HighlightedPart.COPY")}
+                {I18n.t("SelectYourBank.BankNotInList.HighlightedPart")}
             </a>
         </span>
     </div>

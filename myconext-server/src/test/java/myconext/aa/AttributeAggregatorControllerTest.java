@@ -127,18 +127,6 @@ public class AttributeAggregatorControllerTest extends AbstractIntegrationTest {
                 .statusCode(403);
     }
 
-    @Test
-    @SuppressWarnings("unchecked")
-    public void eduIdDuplicates() {
-        Map<String, List<Map<String, Object>>> results = given()
-                .when()
-                .auth().preemptive().basic("aa", "secret")
-                .contentType(ContentType.JSON)
-                .get("/myconext/api/system/eduid-duplicates")
-                .as(Map.class);
-        assertEquals(0, results.size());
-    }
-
     private List<UserAttribute> doAggregate(String user, String password, String spEntityId, String edupersonPrincipalName) {
         return given()
                 .when()

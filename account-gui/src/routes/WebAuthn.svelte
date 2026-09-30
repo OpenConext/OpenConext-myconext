@@ -59,8 +59,8 @@
     {#if showSpinner}
         <Spinner/>
     {:else}
-        <h2>{I18n.t("WebAuthn.Info.COPY")}</h2>
-        <p class="info">{I18n.t("WebAuthn.BrowserPrompt.COPY")}</p>
-        <Button label={I18n.t("Webauthn.SetUpdate.COPY")} onClick={startWebAuthnRegistration}/>
+        <h2>{I18n.t("WebAuthn.Info")}</h2>
+        <p class="info">{I18n.t("WebAuthn.BrowserPrompt")}</p>
+        <Button label={I18n.t("Webauthn.SetUpdate")} onClick={startWebAuthnRegistration}/>
     {/if}
 </div>

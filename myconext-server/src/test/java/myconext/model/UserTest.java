@@ -2,13 +2,20 @@ package myconext.model;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.SneakyThrows;
+import myconext.exceptions.PasswordTooLongException;
 import myconext.exceptions.WeakPasswordException;
 import myconext.manage.Manage;
 import myconext.manage.MockManage;
+import myconext.security.LongPasswordAwareBCryptPasswordEncoder;
 import myconext.security.ServicesConfiguration;
+import myconext.tiqr.SURFSecureID;
+import myconext.validation.PasswordStrength;
 import org.junit.Test;
 import org.mockito.Mockito;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.util.ReflectionTestUtils;
+
+import java.security.SecureRandom;
 
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
@@ -45,6 +52,14 @@ public class UserTest {
     }
 
     @Test
+    public void computeEduIdForServiceProviderWithInstitutionGuid() {
+        User user = new User();
+        String entityId = "google.com/a/rug.nl";
+        user.computeEduIdForServiceProviderIfAbsent(entityId, manage);
+        user.getEduIDS().getFirst().getServiceInstutionGuid().equals("nice");
+    }
+
+    @Test
     public void computeEduIdForServiceProviderLastLoginDate() throws InterruptedException {
         User user = user("http://mock-sp");
         assertEquals(1, user.getEduIDS().size());
@@ -74,7 +89,56 @@ public class UserTest {
     @Test(expected = WeakPasswordException.class)
     public void encryptPassword() {
         User user = new User();
-        user.encryptPassword(null, null);
+        user.encryptPassword(null, null, new PasswordStrength(new ObjectMapper()));
+    }
+
+    @Test(expected = PasswordTooLongException.class)
+    public void encryptPasswordTooLong() {
+        User user = new User();
+        String password = "a".repeat(129);
+        user.encryptPassword(password, null, new PasswordStrength(new ObjectMapper()));
+    }
+
+    @Test(expected = WeakPasswordException.class)
+    public void encryptPasswordTooShort() {
+        User user = new User();
+        //7 characters, below the flat 8-character floor
+        user.encryptPassword("seven12", null, new PasswordStrength(new ObjectMapper()));
+    }
+
+    @Test
+    public void encryptPasswordShortAllowed() {
+        User user = new User();
+        //A second factor no longer lowers (or raises) the floor: 8 characters is always enough
+        ReflectionTestUtils.setField(user, "surfSecureId", Map.of(SURFSecureID.PHONE_VERIFIED, true));
+        PasswordEncoder encoder = new LongPasswordAwareBCryptPasswordEncoder(4, new SecureRandom());
+        user.encryptPassword("eightchr", encoder, new PasswordStrength(new ObjectMapper()));
+        assertTrue(encoder.matches("eightchr", user.getPassword()));
+    }
+
+    @Test
+    public void encryptPasswordShortAllowedWithoutSecondFactor() {
+        User user = new User();
+        PasswordEncoder encoder = new LongPasswordAwareBCryptPasswordEncoder(4, new SecureRandom());
+        //No second factor registered, 8 characters is still enough
+        user.encryptPassword("eightchr", encoder, new PasswordStrength(new ObjectMapper()));
+        assertTrue(encoder.matches("eightchr", user.getPassword()));
+    }
+
+    @Test
+    public void encryptPasswordDoesNotTruncateLongPasswords() {
+        //Two long, unicode passwords that share an identical prefix exceeding BCrypt's 72-byte limit,
+        //but differ near the end. If the encoder truncated the input, both would hash identically.
+        String commonPrefix = "wachtwoordé".repeat(10);
+        String passwordA = commonPrefix + "AAAA";
+        String passwordB = commonPrefix + "BBBB";
+
+        User user = new User();
+        PasswordEncoder encoder = new LongPasswordAwareBCryptPasswordEncoder(4, new SecureRandom());
+        user.encryptPassword(passwordA, encoder, new PasswordStrength(new ObjectMapper()));
+
+        assertTrue(encoder.matches(passwordA, user.getPassword()));
+        assertFalse(encoder.matches(passwordB, user.getPassword()));
     }
 
 
@@ -176,6 +240,46 @@ public class UserTest {
 
         Map<String, EduID> eduIdPerServiceProviderFiltered = user.convertEduIdPerServiceProvider(new ServicesConfiguration(List.of(entityId)));
         assertEquals(0, eduIdPerServiceProviderFiltered.size());
+    }
+
+    @Test
+    public void deleteEduIDService() {
+        User user = new User();
+
+        //Non-institutional eduID - has no institutionGuid on any of its services
+        String entityId = "https://sp_one";
+        ServiceProvider serviceProvider = new ServiceProvider(new RemoteProvider(
+                entityId, "spOneName", "spOneNameNl", null, "logoURL"), "homeURL");
+        EduID nonInstitutionalEduID = new EduID(UUID.randomUUID().toString(), serviceProvider);
+        user.getEduIDS().add(nonInstitutionalEduID);
+
+        //Institutional eduID shared by two services with the same institutionGuid
+        String institutionGuid = UUID.randomUUID().toString();
+        String institutionalEntityId = "https://sp_two";
+        String otherInstitutionalEntityId = "https://sp_three";
+        ServiceProvider institutionalServiceProvider = new ServiceProvider(new RemoteProvider(
+                institutionalEntityId, "spTwoName", "spTwoNameNl", institutionGuid, "logoURL"), "homeURL");
+        EduID institutionalEduID = new EduID(UUID.randomUUID().toString(), institutionalServiceProvider);
+        institutionalEduID.updateServiceProvider(new ServiceProvider(new RemoteProvider(
+                otherInstitutionalEntityId, "spThreeName", "spThreeNameNl", institutionGuid, "logoURL"), "homeURL"));
+        user.getEduIDS().add(institutionalEduID);
+
+        assertEquals(2, user.getEduIDS().size());
+        assertEquals(2, institutionalEduID.getServices().size());
+
+        //Deleting the non-institutional service removes its eduID entirely, the institutional eduID is untouched
+        user.deleteEduIDService(entityId);
+
+        assertEquals(1, user.getEduIDS().size());
+        assertEquals(institutionalEduID.getValue(), user.getEduIDS().get(0).getValue());
+        assertEquals(2, user.getEduIDS().get(0).getServices().size());
+
+        //Deleting one of the two services of the institutional eduID only removes that service, the eduID remains
+        user.deleteEduIDService(institutionalEntityId);
+
+        assertEquals(1, user.getEduIDS().size());
+        assertEquals(1, user.getEduIDS().get(0).getServices().size());
+        assertEquals(otherInstitutionalEntityId, user.getEduIDS().get(0).getServices().get(0).getEntityId());
     }
 
     @SneakyThrows

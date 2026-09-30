@@ -91,20 +91,20 @@
             <span class="back" on:click={() => toggleView()}>
                 {@html arrowLeftIcon}
             </span>
-        <h2 class="header">{I18n.t("ServiceDesk.ConfirmIdentityHeader.COPY")}</h2>
+        <h2 class="header">{I18n.t("ServiceDesk.ConfirmIdentityHeader")}</h2>
     </div>
-    <p>{I18n.t("ServiceDesk.ConfirmIdentity.COPY")}</p>
-    <p class="steps">{I18n.t("ServiceDesk.StepsHeader.COPY")}</p>
+    <p>{I18n.t("ServiceDesk.ConfirmIdentity")}</p>
+    <p class="steps">{I18n.t("ServiceDesk.StepsHeader")}</p>
     <ol>
-        <li>{I18n.t("ServiceDesk.Step1.COPY")}</li>
-        <li>{I18n.t("ServiceDesk.Step2.COPY")}</li>
-        <li>{I18n.t("ServiceDesk.Step3.COPY")}</li>
+        <li>{I18n.t("ServiceDesk.Step1")}</li>
+        <li>{I18n.t("ServiceDesk.Step2")}</li>
+        <li>{I18n.t("ServiceDesk.Step3")}</li>
     </ol>
     <div class="redirect">
         {@html alertSvg}
-        <span>{@html I18n.t("ServiceDesk.RedirectWarning.COPY", {service: serviceName})}</span>
+        <span>{@html I18n.t("ServiceDesk.RedirectWarning", {service: serviceName})}</span>
     </div>
-    <Button label={I18n.t("ServiceDesk.Next.COPY")}
+    <Button label={I18n.t("ServiceDesk.Next")}
             large={true}
             onClick={() => proceed()}/>
 

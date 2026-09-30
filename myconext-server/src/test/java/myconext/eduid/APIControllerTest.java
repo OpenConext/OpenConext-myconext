@@ -24,29 +24,6 @@ public class APIControllerTest extends AbstractIntegrationTest {
     public static WireMockRule wireMockRule = new WireMockRule(8098);
 
     @Test
-    public void eppn() throws Exception {
-        List<Map<String, String>> results = given()
-                .when()
-                .accept(ContentType.JSON)
-                .auth().oauth2(opaqueAccessToken(true, "eduid.nl/eppn"))
-                .get("/myconext/api/eduid/eppn")
-                .as(List.class);
-        String eppn = results.get(1).get("eppn");
-        assertEquals("1234567890@surfguest.nl", eppn);
-    }
-
-    @Test
-    public void eduid() throws Exception {
-        Map<String, String> results = given()
-                .when()
-                .accept(ContentType.JSON)
-                .auth().oauth2(opaqueAccessToken(true, "eduid.nl/eduid"))
-                .get("/myconext/api/eduid/eduid")
-                .as(Map.class);
-        assertEquals("fc75dcc7-6def-4054-b8ba-3c3cc504dd4b", results.get("eduid"));
-    }
-
-    @Test
     public void links() throws Exception {
         List<Map<String, Object>> results = given()
                 .when()
@@ -111,18 +88,6 @@ public class APIControllerTest extends AbstractIntegrationTest {
 
     }
 
-    @Test
-    public void eppnBySchacHome() throws Exception {
-        List<Map<String, String>> results = given()
-                .when()
-                .accept(ContentType.JSON)
-                .auth().oauth2(opaqueAccessToken(true, "eduid.nl/eppn"))
-                .queryParam("schachome", "groningen.nl")
-                .get("/myconext/api/eduid/eppn")
-                .as(List.class);
-        String value = results.get(0).get("eppn");
-        assertEquals("1234567890@surfguest.nl", value);
-    }
 
     @Test
     public void eppnInvalidToken() throws Exception {
@@ -130,54 +95,9 @@ public class APIControllerTest extends AbstractIntegrationTest {
                 .when()
                 .accept(ContentType.JSON)
                 .auth().oauth2(opaqueAccessToken(false))
-                .get("/myconext/api/eduid/eppn")
+                .get("/myconext/api/eduid/links")
                 .then()
                 .statusCode(401);
-    }
-
-    @Test
-    public void eppnInvalidUid() throws Exception {
-        given()
-                .when()
-                .accept(ContentType.JSON)
-                .auth().oauth2(doOpaqueAccessToken(true, new String[]{"eduid.nl/eppn"}, "introspect_invalid_user"))
-                .get("/myconext/api/eduid/eppn")
-                .then()
-                .statusCode(404);
-    }
-
-    @Test
-    public void missingUid() throws Exception {
-        List<Map<String, String>> results = given()
-                .when()
-                .accept(ContentType.JSON)
-                .auth().oauth2(doOpaqueAccessToken(true, new String[]{"eduid.nl/eppn"}, "introspect_missing_uid"))
-                .get("/myconext/api/eduid/eppn")
-                .as(List.class);
-        String value = results.get(1).get("eppn");
-        assertEquals("1234567890@surfguest.nl", value);
-    }
-
-    @Test
-    public void eppnInvalidScope() throws Exception {
-        given()
-                .when()
-                .accept(ContentType.JSON)
-                .auth().oauth2(opaqueAccessToken(true, "invalid-scope"))
-                .get("/myconext/api/eduid/eppn")
-                .then()
-                .statusCode(403);
-    }
-
-    @Test
-    public void eppnNoLinkedAccounts() throws Exception {
-        List<Map<String, String>> results = given()
-                .when()
-                .accept(ContentType.JSON)
-                .auth().oauth2(opaqueAccessTokenWithNoLinkedAccount("eduid.nl/eppn"))
-                .get("/myconext/api/eduid/eppn")
-                .as(List.class);
-        assertEquals(0, results.size());
     }
 
 }

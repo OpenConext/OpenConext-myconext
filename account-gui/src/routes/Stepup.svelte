@@ -100,7 +100,7 @@
                           serviceDeskActive={$conf.featureServiceDeskActive}
             />
         {:else}
-            <h2>{I18n.t("Stepup.Header.COPY")}</h2>
+            <h2>{I18n.t("Stepup.Header")}</h2>
             <p class="info">{@html I18n.t("stepup.info", {name: DOMPurify.sanitize(serviceName)})}</p>
             <Verification explanation={explanation} verified={false}/>
             <Button href="/proceed" onClick={() => proceed(false)}

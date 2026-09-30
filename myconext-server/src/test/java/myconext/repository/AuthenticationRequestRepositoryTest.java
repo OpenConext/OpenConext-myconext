@@ -9,11 +9,9 @@ import org.junit.Test;
 import org.springframework.dao.IncorrectResultSizeDataAccessException;
 
 import java.util.Collections;
-import java.util.Date;
 import java.util.Optional;
 import java.util.UUID;
 
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 public class AuthenticationRequestRepositoryTest extends AbstractIntegrationTest {
@@ -37,14 +35,6 @@ public class AuthenticationRequestRepositoryTest extends AbstractIntegrationTest
         return new SamlAuthenticationRequest(
                 "requestId", "issuer", "consumerAssertionServiceURL",
                 "relayState", "http://mock-sp", false, false, Collections.singletonList(ACR.LINKED_INSTITUTION));
-    }
-
-    @Test
-    public void testDeleteByExpiresInBefore() {
-        doExpireWithFindProperty(SamlAuthenticationRequest.class, "requestId", "requestId");
-
-        long deleted = authenticationRequestRepository.deleteByExpiresInBeforeAndRememberMe(new Date(), false);
-        assertEquals(1L, deleted);
     }
 
     @Test

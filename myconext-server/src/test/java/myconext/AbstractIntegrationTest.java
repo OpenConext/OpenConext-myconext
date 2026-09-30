@@ -5,8 +5,11 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.restassured.RestAssured;
+import io.restassured.config.ObjectMapperConfig;
+import io.restassured.config.RestAssuredConfig;
 import io.restassured.filter.Filter;
 import io.restassured.http.Cookie;
+import io.restassured.mapper.ObjectMapperType;
 import io.restassured.response.Response;
 import io.restassured.specification.RequestSpecification;
 import lombok.Getter;
@@ -160,16 +163,25 @@ public abstract class AbstractIntegrationTest implements HasUserRepository {
     @BeforeEach
     public void before() throws Exception {
         RestAssured.port = port;
-        Arrays.asList(SamlAuthenticationRequest.class, User.class, ExternalUser.class)
-                .forEach(clazz -> mongoTemplate.bulkOps(BulkOperations.BulkMode.ORDERED, clazz)
-                        .remove(new Query())
-                        .insert(readFromFile(clazz))
-                        .execute());
-        Arrays.asList(PasswordResetHash.class, ChangeEmailHash.class, Challenge.class, EmailsSend.class,
-                        Registration.class, Authentication.class, Enrollment.class, MobileLinkAccountRequest.class)
-                .forEach(clazz -> mongoTemplate.bulkOps(BulkOperations.BulkMode.ORDERED, clazz)
-                        .remove(new Query())
-                        .execute());
+        RestAssured.config = RestAssuredConfig.config()
+                .objectMapperConfig(new ObjectMapperConfig(ObjectMapperType.JACKSON_2)
+                        .jackson2ObjectMapperFactory((cls, charset) -> objectMapper));
+        if (doSeed()) {
+            Arrays.asList(SamlAuthenticationRequest.class, User.class, ExternalUser.class)
+                    .forEach(clazz -> mongoTemplate.bulkOps(BulkOperations.BulkMode.ORDERED, clazz)
+                            .remove(new Query())
+                            .insert(readFromFile(clazz))
+                            .execute());
+            Arrays.asList(PasswordResetHash.class, ChangeEmailHash.class, Challenge.class, EmailsSend.class,
+                            Registration.class, Authentication.class, Enrollment.class, MobileLinkAccountRequest.class)
+                    .forEach(clazz -> mongoTemplate.bulkOps(BulkOperations.BulkMode.ORDERED, clazz)
+                            .remove(new Query())
+                            .execute());
+        }
+    }
+
+    protected boolean doSeed() {
+        return true;
     }
 
     protected String samlAuthnRequest() throws IOException {

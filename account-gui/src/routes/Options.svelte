@@ -75,7 +75,7 @@
 {#if showSpinner}
     <Spinner/>
 {:else}
-    <h2 class="header">{I18n.t("Options.Header.COPY")}</h2>
+    <h2 class="header">{I18n.t("Options.Header")}</h2>
     {#each options as option, i}
         <LoginOption icon={option.icon}
                      translationKey={option.key}
@@ -85,8 +85,8 @@
     {/each}
 {/if}
 
-<SubContent question={I18n.t("Options.NoLogin.COPY")}
-            preLink={I18n.t("Options.Learn.COPY")}
-            linkText={I18n.t("Options.LearnLink.COPY")}
+<SubContent question={I18n.t("Options.NoLogin")}
+            preLink={I18n.t("Options.Learn")}
+            linkText={I18n.t("Options.LearnLink")}
             href="https://eduid.nl/help"
             interContent="true"/>

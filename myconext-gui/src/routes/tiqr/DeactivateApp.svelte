@@ -135,29 +135,29 @@
 <div class="deactivate-app">
     <div class="inner-container">
 
-        <h2>{I18n.t("Deactivate.TitleDelete.COPY")}</h2>
-        <p class="explanation">{I18n.t("Deactivate.Info.COPY")}</p>
+        <h2>{I18n.t("Deactivate.TitleDelete")}</h2>
+        <p class="explanation">{I18n.t("Deactivate.Info")}</p>
         {#if !useRecoveryCode && step === 1}
-            <p class="explanation">{I18n.t("Deactivate.SendSms.COPY")}</p>
+            <p class="explanation">{I18n.t("Deactivate.SendSms")}</p>
         {:else if useRecoveryCode}
-            <p class="explanation">{@html I18n.t("Deactivate.RecoveryCodeInfo.COPY")}</p>
+            <p class="explanation">{@html I18n.t("Deactivate.RecoveryCodeInfo")}</p>
         {/if}
         {#if useRecoveryCode}
             <input id="recoveryCode" type="text" spellcheck="false" bind:value={recoveryCode}/>
             {#if wrongCode && !maxAttempts}
                 <div class="error">
                     <span class="svg">{@html critical}</span>
-                    <span>{I18n.t("Deactivate.CodeIncorrect.COPY")}</span>
+                    <span>{I18n.t("Deactivate.CodeIncorrect")}</span>
                 </div>
             {/if}
             {#if maxAttempts}
                 <div class="error">
                     <span class="svg">{@html critical}</span>
-                    <span>{@html I18n.t("Deactivate.MaxAttempts.COPY")}</span>
+                    <span>{@html I18n.t("Deactivate.MaxAttempts")}</span>
                 </div>
             {/if}
         {:else if step === 2 && !useRecoveryCode}
-            <label for="recoveryCode">{I18n.t("Deactivate.VerificationCode.COPY")}</label>
+            <label for="recoveryCode">{I18n.t("Deactivate.VerificationCode")}</label>
             <CodeVerifier navigateTo="/security"
                           action={deactivateApp}
                           reEnter={false}
@@ -165,7 +165,7 @@
         {/if}
         <div class="options">
             <Button href="/cancel"
-                    label={I18n.t("YourVerifiedInformation.ConfirmRemoval.Button.Cancel.COPY")}
+                    label={I18n.t("YourVerifiedInformation.ConfirmRemoval.Button.Cancel")}
                     onClick={() => navigate("/security")}
                     medium={true}
                     className="cancel"/>
@@ -180,8 +180,8 @@
 {#if rateLimited && showRateLimitedModal}
     <Modal submit={() => showRateLimitedModal = false}
            warning={true}
-           question={I18n.t("PhoneVerification.RateLimitedInfo.COPY")}
-           title={I18n.t("PhoneVerification.RateLimited.COPY")}
-           confirmTitle={I18n.t("PhoneVerification.Ok.COPY")}>
+           question={I18n.t("PhoneVerification.RateLimitedInfo")}
+           title={I18n.t("PhoneVerification.RateLimited")}
+           confirmTitle={I18n.t("PhoneVerification.Ok")}>
     </Modal>
 {/if}

@@ -57,10 +57,10 @@
 </style>
 <div class="validated-data">
     <div class="title">
-        <h4 class="green">{I18n.t("Profile.Title.COPY")}</h4>
+        <h4 class="green">{I18n.t("Profile.Title")}</h4>
         <span class="icon">🎉</span>
     </div>
-    <p class="info">{I18n.t("NameUpdated.Description.COPY")}</p>
+    <p class="info">{I18n.t("NameUpdated.Description")}</p>
     <ValidatedField label={affiliation(institution)}
                     overrideShieldIcon={institutionLogo(institution)}
                     readOnly={true}
@@ -68,25 +68,25 @@
                     value={institutionName(institution)}/>
     <p class="info border">{I18n.t(`profile.${replacement ? "preferredInstitutionInfo" : "newInstitutionInfoAttributes"}`)}</p>
 
-    <ValidatedField label={I18n.t("Profile.VerifiedGivenName.COPY")}
+    <ValidatedField label={I18n.t("Profile.VerifiedGivenName")}
                     icon={preferredAccount ? personalInfo : null}
                     readOnly={readOnly}
                     value={linkedAccountGivenName(institution)}/>
 
-    <ValidatedField label={I18n.t("Profile.VerifiedFamilyName.COPY")}
+    <ValidatedField label={I18n.t("Profile.VerifiedFamilyName")}
                     icon={preferredAccount ? personalInfo : null}
                     readOnly={readOnly}
                     value={linkedAccountFamilyName(institution)}/>
 
     {#if !isEmpty(institution.dateOfBirth)}
-        <ValidatedField label={I18n.t("Profile.VerifiedDateOfBirth.COPY")}
+        <ValidatedField label={I18n.t("Profile.VerifiedDateOfBirth")}
                         readOnly={readOnly}
                         icon={preferredAccount ? personalInfo : null}
                         value={dateFromEpoch(institution.dateOfBirth)}/>
     {/if}
 
     <!--{#if !institution.external && !isEmpty(institution.eduPersonAffiliations)}-->
-    <!--    <ValidatedField label={I18n.t("Profile.Validated.COPYAffiliations")}-->
+    <!--    <ValidatedField label={I18n.t("Profile.ValidatedAffiliations")}-->
     <!--                    readOnly={true}-->
     <!--                    icon={preferredAccount ? personalInfo : null}-->
     <!--                    value={institution.eduPersonAffiliations.join(", ")}/>-->

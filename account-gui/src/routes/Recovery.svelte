@@ -39,21 +39,21 @@
     }
 </style>
 
-<h2 class="header">{I18n.t("Recovery.Header.COPY")}</h2>
-<p class="explanation">{I18n.t("Recovery.Info.COPY")}</p>
-<p class="methods">{I18n.t("Recovery.Methods.COPY")}</p>
+<h2 class="header">{I18n.t("Recovery.Header")}</h2>
+<p class="explanation">{I18n.t("Recovery.Info")}</p>
+<p class="methods">{I18n.t("Recovery.Methods")}</p>
 <div class="phone-number">
     <LoginOption icon={phoneIcon}
-                 label={I18n.t("Recovery.PhoneNumber.COPY")}
-                 subLabel={I18n.t("Recovery.PhoneNumberInfo.COPY")}
+                 label={I18n.t("Recovery.PhoneNumber")}
+                 subLabel={I18n.t("Recovery.PhoneNumberInfo")}
                  action={phoneNumber}
                  index={1}
                  preferred={true}/>
 </div>
 <div class="other-account">
     <LoginOption icon={backupIcon}
-                 label={I18n.t("Recovery.BackupCode.COPY")}
-                 subLabel={I18n.t("Recovery.BackupCodeInfo.COPY")}
+                 label={I18n.t("Recovery.BackupCode")}
+                 subLabel={I18n.t("Recovery.BackupCodeInfo")}
                  action={backUpCode}
                  index={2}/>
 </div>

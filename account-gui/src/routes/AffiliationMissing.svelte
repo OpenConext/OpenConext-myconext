@@ -48,14 +48,14 @@
     <Spinner/>
 {/if}
 
-<h2>{I18n.t("AffiliationMissing.Header.COPY")}</h2>
-<p class="info">{I18n.t("AffiliationMissing.Info.COPY")}</p>
-<p class="info">{I18n.t("AffiliationMissing.Proceed.COPY", {name: serviceName})}</p>
+<h2>{I18n.t("AffiliationMissing.Header")}</h2>
+<p class="info">{I18n.t("AffiliationMissing.Info")}</p>
+<p class="info">{I18n.t("AffiliationMissing.Proceed", {name: serviceName})}</p>
 
 <Button href="/proceed" onClick={() => proceed($conf.magicLinkUrl)}
         className="cancel"
-        label={I18n.t("Profile.Proceed.COPY")}/>
+        label={I18n.t("Profile.Proceed")}/>
 <div class="last">
     <Button href="/retry" onClick={retry}
-            label={I18n.t("EppnAlreadyLinked.RetryButton.COPY")}/>
+            label={I18n.t("EppnAlreadyLinked.RetryButton")}/>
 </div>

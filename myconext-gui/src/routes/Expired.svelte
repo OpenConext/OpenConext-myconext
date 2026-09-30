@@ -25,9 +25,9 @@
 
 </style>
 <div class="expired">
-    <h1>{I18n.t("MaxAttempt.Title.COPY")}</h1>
-    <p>{@html I18n.t("MaxAttempt.Info.COPY")}</p>
-    <Button label={I18n.t("Expired.Back.COPY")}
+    <h1>{I18n.t("MaxAttempt.Title")}</h1>
+    <p>{@html I18n.t("MaxAttempt.Info")}</p>
+    <Button label={I18n.t("Expired.Back")}
             href={`/create-from-institution`}
             onClick={() => window.location.href = `/create-from-institution`}/>
 </div>

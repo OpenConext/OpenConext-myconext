@@ -1,10 +1,18 @@
 package myconext.eduid;
 
-import io.swagger.v3.oas.annotations.Hidden;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.ExampleObject;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.Getter;
+import myconext.SwaggerOpenIdConfig;
 import myconext.api.HasUserRepository;
 import myconext.exceptions.UserNotFoundException;
 import myconext.model.EduID;
+import myconext.model.StatusResponse;
 import myconext.model.User;
 import myconext.repository.UserRepository;
 import org.apache.commons.logging.Log;
@@ -20,12 +28,16 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping(value = "/myconext/api/eduid", produces = MediaType.APPLICATION_JSON_VALUE)
-@Hidden
 public class APIController implements HasUserRepository {
 
     private static final Log LOG = LogFactory.getLog(APIController.class);
@@ -36,54 +48,12 @@ public class APIController implements HasUserRepository {
         this.userRepository = userRepository;
     }
 
-    @GetMapping("/eppn")
-    @SuppressWarnings("unchecked")
-    public List<Map<String, String>> eppn(BearerTokenAuthentication authentication, @RequestParam(value = "schachome", required = false) String schachome) {
-        String clientId = (String) authentication.getTokenAttributes().get("client_id");
-
-        LOG.info(String.format("Endpoint '/eppn/ called by authentication %s", clientId));
-
-        List<Map<String, String>> results = getUser(authentication).linkedAccountsSorted().stream()
-                .map(linkedAccount -> {
-                    Map<String, String> info = new HashMap<>();
-                    info.put("eppn", linkedAccount.getEduPersonPrincipalName());
-                    info.put("schac_home_organization", linkedAccount.getSchacHomeOrganization());
-                    return info;
-                })
-                .filter(info -> !StringUtils.hasText(schachome) || schachome.equals(info.get("schac_home_organization")))
-                .collect(Collectors.toList());
-
-        LOG.info(String.format("Endpoint '/eppn/ results %s for authentication %s", results, clientId));
-
-        return results;
-    }
-
-    @GetMapping("/eduid")
-    @SuppressWarnings("unchecked")
-    public ResponseEntity<Map<String, String>> eduid(BearerTokenAuthentication authentication) {
-        String clientId = (String) authentication.getTokenAttributes().get("client_id");
-
-        LOG.info(String.format("Endpoint '/eduid/ called by authentication %s", clientId));
-
-        //Need to be backward compatible
-        Optional<User> optionalUser = userRepository
-                .findByEduIDS_serviceProviderEntityId(clientId)
-                .or(() -> userRepository.findByEduIDS_Services_EntityId(clientId));
-        if (optionalUser.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-        }
-        User user = optionalUser.get();
-        List<String> eduIDs = user.getEduIDS().stream()
-                .filter(eduID -> clientId.equals(eduID.getServiceProviderEntityId()) ||
-                        eduID.getServices().stream().anyMatch(service -> clientId.equals(service.getEntityId())))
-                .map(EduID::getValue).collect(Collectors.toList());
-        Map<String, String> results = eduIDs.isEmpty() ? new HashMap<>() : Collections.singletonMap("eduid", eduIDs.get(0));
-
-        LOG.info(String.format("Endpoint '/eduid/ results %s for authentication %s", results, clientId));
-
-        return ResponseEntity.ok(results);
-    }
-
+    /**
+     * Called by eduBadges to get information about the linked accounts of a User
+     * @param authentication injected by Spring
+     * @return userInfo containing eppn, schac_home_organization, preferred and validated_name
+     */
+    @SecurityRequirement(name = SwaggerOpenIdConfig.OPEN_ID_SCHEME_NAME, scopes = {"eduid.nl/links"})
     @GetMapping("/links")
     public List<Map<String, Object>> links(BearerTokenAuthentication authentication) {
         String clientId = (String) authentication.getTokenAttributes().get("client_id");

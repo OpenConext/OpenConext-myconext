@@ -1,0 +1,5 @@
+Hi {{name}},
+
+Je account van {{institutionName}} is gekoppeld aan een eduID-account. Als jij dit niet was, neem dan contact op met de beheerder van je instellingsaccount.
+
+{{> footer_nl.txt}}
