@@ -9,6 +9,8 @@ export async function fetchConfig(): Promise<Config> {
         credentials: 'same-origin',
         headers: { Accept: 'application/json' },
     });
-    if (!res.ok) throw res;
+    if (!res.ok) {
+        throw res;
+    }
     return await ((await res.json()) as Promise<Config>);
 }

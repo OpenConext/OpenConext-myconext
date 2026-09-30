@@ -20,6 +20,7 @@ export default defineConfig([
             globals: globals.browser,
         },
         rules: {
+            curly: ['error', 'all'],
             'no-restricted-syntax': [
                 'error',
                 {

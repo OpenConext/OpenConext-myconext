@@ -8,6 +8,7 @@
         "build": "tsc -b && vite build",
         "tsc": "tsc --noEmit -p tsconfig.app.json",
         "lint": "eslint .",
+        "lint-fix": "eslint --fix .",
         "prettier": "prettier -c \"{**/*,*}.{ts,tsx,json,js,md,html,scss}\"",
         "prettier-fix": "prettier --write \"{**/*,*}.{ts,tsx,json,js,md,html,scss}\"",
         "preview": "vite preview"
