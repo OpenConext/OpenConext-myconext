@@ -34,7 +34,8 @@ function App() {
             <Button onClick={toggleDark}>
                 {dark ? '☀️ Light mode' : '🌙 Dark mode'}
             </Button>
-            <NavLink to="/about">ABOUT</NavLink>
+            <NavLink to="/about">[ABOUT]</NavLink>
+            <NavLink to="/dashboard">[DASHBOARD]</NavLink>
             <pre>{JSON.stringify(config, null, 2)}</pre>
         </>
     );
