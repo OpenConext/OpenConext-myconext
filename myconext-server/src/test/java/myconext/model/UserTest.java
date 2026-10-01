@@ -268,18 +268,55 @@ public class UserTest {
         assertEquals(2, institutionalEduID.getServices().size());
 
         //Deleting the non-institutional service removes its eduID entirely, the institutional eduID is untouched
-        user.deleteEduIDService(entityId);
+        user.deleteEduIDService(entityId, manage);
 
         assertEquals(1, user.getEduIDS().size());
         assertEquals(institutionalEduID.getValue(), user.getEduIDS().get(0).getValue());
         assertEquals(2, user.getEduIDS().get(0).getServices().size());
 
         //Deleting one of the two services of the institutional eduID only removes that service, the eduID remains
-        user.deleteEduIDService(institutionalEntityId);
+        user.deleteEduIDService(institutionalEntityId, manage);
 
         assertEquals(1, user.getEduIDS().size());
         assertEquals(1, user.getEduIDS().get(0).getServices().size());
         assertEquals(otherInstitutionalEntityId, user.getEduIDS().get(0).getServices().get(0).getEntityId());
+    }
+
+    @Test
+    public void deleteEduIDServiceLegacyGuidFromManage() {
+        String entityId = "https://legacy_sp";
+        String institutionGuid = UUID.randomUUID().toString();
+        Manage mockManage = mock(Manage.class);
+        Mockito.when(mockManage.findServiceProviderByEntityId(entityId))
+                .thenReturn(Optional.of(new ServiceProvider(new RemoteProvider(
+                        entityId, "name", "nameNl", institutionGuid, "logoURL"), "homeURL")));
+
+        User user = new User();
+        EduID legacyEduID = new EduID(UUID.randomUUID().toString(), new ServiceProvider(new RemoteProvider(
+                entityId, "name", "nameNl", null, "logoURL"), "homeURL"));
+        user.getEduIDS().add(legacyEduID);
+
+        user.deleteEduIDService(entityId, mockManage);
+
+        //The eduID is kept, without services, and the guid is taken from Manage
+        assertEquals(1, user.getEduIDS().size());
+        assertTrue(user.getEduIDS().get(0).getServices().isEmpty());
+        assertEquals(institutionGuid, user.getEduIDS().get(0).getServiceInstutionGuid());
+    }
+
+    @Test
+    public void deleteEduIDServiceLegacyNoGuidAnywhere() {
+        String entityId = "https://legacy_sp";
+        Manage mockManage = mock(Manage.class);
+        Mockito.when(mockManage.findServiceProviderByEntityId(entityId)).thenReturn(Optional.empty());
+
+        User user = new User();
+        user.getEduIDS().add(new EduID(UUID.randomUUID().toString(), new ServiceProvider(new RemoteProvider(
+                entityId, "name", "nameNl", null, "logoURL"), "homeURL")));
+
+        user.deleteEduIDService(entityId, mockManage);
+
+        assertTrue(user.getEduIDS().isEmpty());
     }
 
     @SneakyThrows

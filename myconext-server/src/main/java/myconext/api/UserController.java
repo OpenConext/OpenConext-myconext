@@ -1032,7 +1032,7 @@ public class UserController implements UserAuthentication {
         checkSecondFactorConfirmation(authentication, request);
 
         String entityId = deleteService.getServiceProviderEntityId();
-        user.deleteEduIDService(entityId);
+        user.deleteEduIDService(entityId, manage);
         userRepository.save(user);
 
         logWithContext(user, "delete", "eppn", LOG, "Deleted eduID " + entityId);

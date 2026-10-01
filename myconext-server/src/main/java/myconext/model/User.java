@@ -516,8 +516,19 @@ public class User implements Serializable, UserDetails {
         return success;
     }
 
-    public void deleteEduIDService(String entityId) {
-        //First fill the eduIDInstitutionGuid for all eduID's
+    public void deleteEduIDService(String entityId, Manage manage) {
+        //Legacy eduID's can miss the institutionGuid on both the eduID and its services, then fall back to Manage
+        this.eduIDS.stream()
+                .filter(eduID -> !StringUtils.hasText(eduID.getServiceInstutionGuid()))
+                .forEach(eduID -> eduID.getServices().stream()
+                        .filter(service -> !StringUtils.hasText(service.getInstitutionGuid()) &&
+                                StringUtils.hasText(service.getEntityId()) &&
+                                entityId.equals(service.getEntityId()))
+                        .forEach(service -> manage.findServiceProviderByEntityId(service.getEntityId())
+                                .map(ServiceProvider::getInstitutionGuid)
+                                .filter(StringUtils::hasText)
+                                .ifPresent(service::setInstitutionGuid)));
+        //Then fill the eduIDInstitutionGuid for all eduID's
         this.eduIDS.forEach(eduID -> {
             eduID.getServices().stream()
                     .filter(service -> StringUtils.hasText(service.getInstitutionGuid()))
