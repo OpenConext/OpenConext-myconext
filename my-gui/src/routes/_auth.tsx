@@ -4,7 +4,7 @@ import { Outlet } from 'react-router';
 
 import { useQuery } from '@tanstack/react-query';
 
-import { fetchConfig, redirectToLogin } from '../../api';
+import { fetchConfig, redirectToLogin } from '../api';
 
 export default function ProtectedLayout() {
     const { data, isLoading, isError } = useQuery({
