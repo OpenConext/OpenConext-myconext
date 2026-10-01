@@ -5,6 +5,7 @@ import '@surfnet/curve-react/styles.css';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 
+import { NavigationBar } from './components/NavigationBar';
 import './index.scss';
 import { useAppStore } from './store/store';
 
@@ -42,6 +43,7 @@ export default function Root() {
 
     return (
         <QueryClientProvider client={queryClient}>
+            <NavigationBar />
             <Outlet />
             <ReactQueryDevtools initialIsOpen={false} />
         </QueryClientProvider>

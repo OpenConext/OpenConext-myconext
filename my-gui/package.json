@@ -11,6 +11,7 @@
         "lint-fix": "eslint --fix .",
         "prettier": "prettier -c \"{**/*,*}.{ts,tsx,json,js,md,html,scss}\"",
         "prettier-fix": "prettier --write \"{**/*,*}.{ts,tsx,json,js,md,html,scss}\"",
+        "check": "yarn tsc && yarn lint && yarn prettier",
         "preview": "vite preview"
     },
     "dependencies": {
