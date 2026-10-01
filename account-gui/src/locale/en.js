@@ -10,7 +10,7 @@ const en = {
     "Account": "Account"
   },
   "Start": {
-    "Hi": "Hi {{name}}!",
+    "Hi": "Hello {{name}}!",
     "Manage": "Manage your personal info, your privacy and the security of your eduID."
   },
   "EnvironmentSwitcher": {
@@ -678,7 +678,7 @@ const en = {
     "WelcomeExisting": "Your eduID has been connected to your insitutional account"
   },
   "LinkFromInstitution": {
-    "Header": "Hi {{name}}",
+    "Header": "Hello {{name}}",
     "Info": "You have successfully logged in at your institution. Please enter your personal email address now. This will be the email address eduID uses.",
     "Email": "Email address",
     "EmailPlaceholder": "e.g. user@gmail.com",
