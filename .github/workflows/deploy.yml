@@ -194,7 +194,7 @@ jobs:
 #          type=raw,event=tag,value=latest
 #          type=raw,event=workflow_dispatch,value=snapshot
 #          type=semver,pattern={{version}},value=${{ steps.versioncheck.outputs.version }}
-          type=sha
+#          type=sha
 
     - name: Extract metadata (tags, labels) for Server Docker
       id: meta_server
