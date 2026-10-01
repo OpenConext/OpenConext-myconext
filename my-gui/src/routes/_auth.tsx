@@ -1,5 +1,4 @@
 import { useEffect } from 'react';
-
 import { Outlet } from 'react-router';
 
 import { useQuery } from '@tanstack/react-query';
