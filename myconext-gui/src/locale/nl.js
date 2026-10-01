@@ -679,7 +679,7 @@ const nl = {
     "WelcomeExisting": "Je eduID is gekoppeld aan je acccount van je instelling"
   },
   "LinkFromInstitution": {
-    "Header": "Hi {{name}}",
+    "Header": "Hallo {{name}}",
     "Info": "Je bent succesvol ingelogd bij je instelling. Vul nu je persoonlijke e-mailadres in. Dit wordt het e-maildres dat eduID gebruikt.",
     "Email": "E-mailadres",
     "EmailPlaceholder": "e.g. user@gmail.com",
@@ -1258,7 +1258,7 @@ const nl = {
     "account": "Account"
   },
   "start": {
-    "hi": "Hi {{name}}!",
+    "hi": "Hallo {{name}}!",
     "manage": "Beheer je persoonlijke informatie, je privacy, en de beveiliging van je eduID account.",
     "app": {
       "title": "Studeer je in NL? Koppel je instelling!",
@@ -1809,7 +1809,7 @@ const nl = {
     "welcomeExisting": "Je eduID account is gekoppeld aan de vertrouwde instellingsaccount"
   },
   "linkFromInstitution": {
-    "header": "Hi {{name}}",
+    "header": "Hallo {{name}}",
     "info": "Je bent succesvol ingelogd bij je instelling. Voer nu je persoonlijke email in, dit wordt je eduID email.",
     "email": "Je e-mail",
     "emailPlaceholder": "e.g. user@gmail.com",

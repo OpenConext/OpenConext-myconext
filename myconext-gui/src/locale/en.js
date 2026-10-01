@@ -10,7 +10,7 @@ const en = {
     "Account": "Account"
   },
   "Start": {
-    "Hi": "Hi {{name}}!",
+    "Hi": "Hello {{name}}!",
     "Manage": "Manage your personal info, your privacy and the security of your eduID."
   },
   "EnvironmentSwitcher": {
@@ -679,7 +679,7 @@ const en = {
     "WelcomeExisting": "Your eduID has been connected to your insitutional account"
   },
   "LinkFromInstitution": {
-    "Header": "Hi {{name}}",
+    "Header": "Hello {{name}}",
     "Info": "You have successfully logged in at your institution. Please enter your personal email address now. This will be the email address eduID uses.",
     "Email": "Email address",
     "EmailPlaceholder": "e.g. user@gmail.com",
@@ -1258,7 +1258,7 @@ const en = {
     "account": "Account"
   },
   "start": {
-    "hi": "Hi {{name}}!",
+    "hi": "Hello {{name}}!",
     "manage": "Manage your personal info, your privacy and the security of your eduID account.",
     "app": {
       "title": "Are you studying in NL? Connect your institution!",
@@ -1809,7 +1809,7 @@ const en = {
     "welcomeExisting": "Your eduID account has been linked to your insitutional account"
   },
   "linkFromInstitution": {
-    "header": "Hi {{name}}",
+    "header": "Hello {{name}}",
     "info": "You have successfully logged in at your institution. Please enter your personal email which will be your eduID email.",
     "email": "Your email address",
     "emailPlaceholder": "e.g. user@gmail.com",

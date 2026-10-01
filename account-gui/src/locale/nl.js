@@ -678,7 +678,7 @@ const nl = {
     "WelcomeExisting": "Je eduID is gekoppeld aan je acccount van je instelling"
   },
   "LinkFromInstitution": {
-    "Header": "Hi {{name}}",
+    "Header": "Hallo {{name}}",
     "Info": "Je bent succesvol ingelogd bij je instelling. Vul nu je persoonlijke e-mailadres in. Dit wordt het e-maildres dat eduID gebruikt.",
     "Email": "E-mailadres",
     "EmailPlaceholder": "e.g. user@gmail.com",
