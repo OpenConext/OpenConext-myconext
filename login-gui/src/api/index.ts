@@ -29,3 +29,16 @@ export async function fetchServiceName(id: string): Promise<ServiceName> {
     }
     return (await res.json()) as Promise<ServiceName>;
 }
+
+export async function fetchLoginMethods(email: string): Promise<string[]> {
+    const res = await fetch('/myconext/api/idp/service/email', {
+        method: 'POST',
+        credentials: 'same-origin',
+        headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+        body: JSON.stringify({ email }),
+    });
+    if (!res.ok) {
+        throw res;
+    }
+    return (await res.json()) as Promise<string[]>;
+}
