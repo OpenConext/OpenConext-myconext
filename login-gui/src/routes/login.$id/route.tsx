@@ -27,7 +27,7 @@ export default function Login() {
         mutationFn: (email: string) => fetchLoginMethods(email),
         onSuccess: (methods) => {
             if (methods.includes('useCode')) {
-                navigate(`/code/${id}`);
+                navigate(`/code/${id}`, { state: { email } });
             }
         },
         onError: (error) => {
