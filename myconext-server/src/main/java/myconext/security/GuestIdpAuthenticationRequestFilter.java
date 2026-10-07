@@ -376,7 +376,8 @@ public class GuestIdpAuthenticationRequestFilter extends OncePerRequestFilter {
         if (!highRequired && !mediumRequired) {
             return true;
         }
-        List<String> assurances = eduPersonAssurances(user);
+        //Any linked account may satisfy the requested level, not only the preferred one
+        List<String> assurances = eduPersonAssurances(user, false);
         if (highRequired) {
             return assurances.contains(ACR.IAP_HIGH);
         }
@@ -927,7 +928,7 @@ public class GuestIdpAuthenticationRequestFilter extends OncePerRequestFilter {
                         samlAttribute.getValue().equals("student"))) {
             attributes.add(attribute("urn:mace:dir:attribute-def:eduPersonAffiliation", "student"));
         }
-        List<String> eduPersonAssurances = eduPersonAssurances(user);
+        List<String> eduPersonAssurances = eduPersonAssurances(user, true);
         eduPersonAssurances
                 .forEach(eduPersonAssurance -> attributes.add(attribute("urn:mace:dir:attribute-def:eduPersonAssurance", eduPersonAssurance)));
         // lastLogin is updated, possible an new eduID value or deleted affiliations
@@ -935,14 +936,19 @@ public class GuestIdpAuthenticationRequestFilter extends OncePerRequestFilter {
         return attributes;
     }
 
-    private static List<String> eduPersonAssurances(User user) {
+    /**
+     * @param preferredOnly if true and the user prefers one specific linkedAccount, only that account's own assurance
+     *                      is leading (the assurances released to the SP). If false, all linkedAccounts count
+     *                      (checking whether the requested ACR can be met).
+     */
+    static List<String> eduPersonAssurances(User user, boolean preferredOnly) {
         //we need a mutable list
         List<LinkedAccount> linkedAccounts = user.getLinkedAccounts();
         //If the user prefers the name of one specific linkedAccount, then that account's own assurance is leading -
         //e.g. a IAP/high validated linkedAccount must not upgrade the assurance of a preferred IAP/medium linkedAccount
-        Optional<LinkedAccount> preferredLinkedAccount = linkedAccounts.stream()
+        Optional<LinkedAccount> preferredLinkedAccount = preferredOnly ? linkedAccounts.stream()
                 .filter(LinkedAccount::isPreferred)
-                .findFirst();
+                .findFirst() : Optional.empty();
         List<String> eduPersonAssuranceIdP = preferredLinkedAccount
                 .<List<LinkedAccount>>map(List::of)
                 .orElse(linkedAccounts)
@@ -957,12 +963,12 @@ public class GuestIdpAuthenticationRequestFilter extends OncePerRequestFilter {
             if (eduPersonAssuranceIdP.stream().noneMatch(ass -> ass.startsWith("https://refeds.org/assurance/iap/"))) {
                 eduPersonAssurances.add("https://refeds.org/assurance/IAP/medium");
                 eduPersonAssurances.add("https://eduid.nl/validated/institution");
-            } else if (eduPersonAssuranceIdP.stream().anyMatch(ass -> ass.equals("https://refeds.org/assurance/iap/medium"))) {
-                eduPersonAssurances.add("https://refeds.org/assurance/IAP/medium");
-                eduPersonAssurances.add("https://eduid.nl/validated/institution");
             } else if (eduPersonAssuranceIdP.stream().anyMatch(ass -> ass.equals("https://refeds.org/assurance/iap/high"))) {
                 eduPersonAssurances.add("https://refeds.org/assurance/IAP/medium");
                 eduPersonAssurances.add("https://refeds.org/assurance/IAP/high");
+                eduPersonAssurances.add("https://eduid.nl/validated/institution");
+            } else if (eduPersonAssuranceIdP.stream().anyMatch(ass -> ass.equals("https://refeds.org/assurance/iap/medium"))) {
+                eduPersonAssurances.add("https://refeds.org/assurance/IAP/medium");
                 eduPersonAssurances.add("https://eduid.nl/validated/institution");
             }
         }

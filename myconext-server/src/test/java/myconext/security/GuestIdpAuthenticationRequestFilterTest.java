@@ -161,6 +161,38 @@ public class GuestIdpAuthenticationRequestFilterTest {
         assertFalse(eduPersonScopedAffiliations.stream().anyMatch(aff -> aff.getValue().startsWith("expired-aff")));
     }
 
+    @Test
+    public void iapHighRequirementMetByNonPreferredLinkedAccount() {
+        User user = new User();
+        LinkedAccount medium = linkedAccount(new Date(), List.of("affiliation"));
+        medium.setEduPersonAssurances(List.of("https://refeds.org/assurance/IAP/medium"));
+        medium.setPreferred(true);
+        LinkedAccount high = linkedAccount(new Date(), List.of("affiliation"));
+        high.setEduPersonAssurances(List.of("https://refeds.org/assurance/IAP/high"));
+        user.setLinkedAccounts(Arrays.asList(medium, high));
+
+        List<String> acrHigh = List.of(ACR.IAP_HIGH);
+        List<String> acrMedium = List.of(ACR.IAP_MEDIUM);
+        assertTrue(GuestIdpAuthenticationRequestFilter.hasRequiredIapAssurance(user, acrHigh));
+        assertTrue(GuestIdpAuthenticationRequestFilter.hasRequiredIapAssurance(user, acrMedium));
+
+        //what is released to the SP is still determined by the preferred linked account only
+        List<String> released = GuestIdpAuthenticationRequestFilter.eduPersonAssurances(user, true);
+        assertTrue(released.contains("https://refeds.org/assurance/IAP/medium"));
+        assertFalse(released.contains("https://refeds.org/assurance/IAP/high"));
+    }
+
+    @Test
+    public void iapHighRequirementNotMetByMediumOnly() {
+        User user = new User();
+        LinkedAccount medium = linkedAccount(new Date(), List.of("affiliation"));
+        medium.setEduPersonAssurances(List.of("https://refeds.org/assurance/IAP/medium"));
+        user.setLinkedAccounts(List.of(medium));
+
+        assertFalse(GuestIdpAuthenticationRequestFilter.hasRequiredIapAssurance(user, List.of(ACR.IAP_HIGH)));
+        assertTrue(GuestIdpAuthenticationRequestFilter.hasRequiredIapAssurance(user, List.of(ACR.IAP_MEDIUM)));
+    }
+
     // Done
     @Test
     public void attributesGlobalUidWhenFeatureEnabled() {
