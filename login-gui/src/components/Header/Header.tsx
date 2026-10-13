@@ -10,7 +10,7 @@ import {
     DropdownMenuTrigger,
 } from '@surfnet/curve-react';
 
-import logo from '../assets/logo_eduID.svg';
+import logo from '../../assets/logo_eduID.svg';
 import styles from './Header.module.scss';
 
 const LANGUAGES = ['NL', 'EN'] as const;

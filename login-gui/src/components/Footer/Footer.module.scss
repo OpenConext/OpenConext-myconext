@@ -1,4 +1,4 @@
-@use '../styles/spacing' as *;
+@use '../../styles/spacing' as *;
 
 $gap: spacing(4);
 
@@ -23,7 +23,6 @@ $gap: spacing(4);
     justify-content: space-between;
     gap: $gap;
     width: 100%;
-    max-width: var(--container-7xl);
 }
 
 .links {

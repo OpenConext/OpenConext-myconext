@@ -5,7 +5,7 @@ import { Button, Input } from '@surfnet/curve-react';
 import { useMutation, useQuery } from '@tanstack/react-query';
 
 import { fetchLoginMethods, fetchServiceName } from '../../api';
-import { LoginContainer } from '../../components/LoginContainer.tsx';
+import { LoginContainer } from '../../components';
 
 export default function Login() {
     const { id } = useParams();
