@@ -10,6 +10,7 @@ import {
     DropdownMenuTrigger,
 } from '@surfnet/curve-react';
 
+import logo from '../assets/logo_eduID.svg';
 import styles from './Header.module.scss';
 
 const LANGUAGES = ['NL', 'EN'] as const;
@@ -51,8 +52,9 @@ export const Header = () => {
                     </DropdownMenuContent>
                 </DropdownMenu>
             </div>
-            {/* Todo: Place real logo here */}
-            <h1 className={styles.title}>eduID</h1>
+            <div className={styles.logo}>
+                <img src={logo} alt="eduID" />
+            </div>
         </header>
     );
 };
