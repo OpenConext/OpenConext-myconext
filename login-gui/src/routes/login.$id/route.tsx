@@ -5,6 +5,7 @@ import { Button, Input } from '@surfnet/curve-react';
 import { useMutation, useQuery } from '@tanstack/react-query';
 
 import { fetchLoginMethods, fetchServiceName } from '../../api';
+import { LoginContainer } from '../../components/LoginContainer.tsx';
 
 export default function Login() {
     const { id } = useParams();
@@ -46,8 +47,17 @@ export default function Login() {
     }
 
     return (
-        <div>
-            <h1>to continue to {service?.name}</h1>
+        <LoginContainer
+            title="Log in with eduID"
+            description={`to continue to ${service?.name ?? ''}`}
+            footer={
+                <>
+                    <p>Don't have an eduID yet?</p>
+                    {/* TODO: link to the registration route once it exists */}
+                    <a href="#">Create an eduID</a>
+                </>
+            }
+        >
             <Input
                 type="email"
                 value={email}
@@ -60,6 +70,6 @@ export default function Login() {
                 <p>Account does not exist, create new account?</p>
             )}
             <Button onClick={() => submitEmail(email)}>Continue</Button>
-        </div>
+        </LoginContainer>
     );
 }
