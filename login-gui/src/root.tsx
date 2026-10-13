@@ -5,6 +5,8 @@ import '@surfnet/curve-react/styles.css';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 
+import { Footer } from './components/Footer.tsx';
+import { Header } from './components/Header.tsx';
 import './index.scss';
 import { useAppStore } from './store/store';
 
@@ -42,7 +44,13 @@ export default function Root() {
 
     return (
         <QueryClientProvider client={queryClient}>
-            <Outlet />
+            <div className="app-layout">
+                <Header />
+                <main className="app-layout__content">
+                    <Outlet />
+                </main>
+                <Footer />
+            </div>
             <ReactQueryDevtools initialIsOpen={false} />
         </QueryClientProvider>
     );

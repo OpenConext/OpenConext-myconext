@@ -1,0 +1,44 @@
+@use '../styles/spacing' as *;
+
+$gap: spacing(4);
+
+.footer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: spacing(4) spacing(6);
+    border-top: 1px solid var(--primary);
+    background-color: var(--primary-strong);
+    color: var(--primary-foreground);
+    font-family: var(--font-sans);
+    font-size: var(--text-xs-font-size);
+    line-height: var(--text-xs-line-height);
+    font-weight: var(--font-weight-normal);
+}
+
+.container {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: $gap;
+    width: 100%;
+    max-width: var(--container-7xl);
+}
+
+.links {
+    display: flex;
+    align-items: center;
+    gap: $gap;
+}
+
+.link {
+    color: inherit;
+    text-decoration: underline;
+}
+
+.logo {
+    font-weight: var(--font-weight-bold);
+    font-size: var(--text-lg-font-size);
+    line-height: var(--text-lg-line-height);
+}
