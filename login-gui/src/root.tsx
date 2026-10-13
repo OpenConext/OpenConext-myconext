@@ -7,7 +7,7 @@ import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 
 import { Footer } from './components/Footer.tsx';
 import { Header } from './components/Header.tsx';
-import './index.scss';
+import styles from './root.module.scss';
 import { useAppStore } from './store/store';
 
 export function Layout({ children }: { children: React.ReactNode }) {
@@ -44,9 +44,9 @@ export default function Root() {
 
     return (
         <QueryClientProvider client={queryClient}>
-            <div className="app-layout">
+            <div className={styles.layout}>
                 <Header />
-                <main className="app-layout__content">
+                <main className={styles.content}>
                     <Outlet />
                 </main>
                 <Footer />
