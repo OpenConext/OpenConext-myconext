@@ -24,27 +24,44 @@ export const Header = () => {
     const [language, setLanguage] = useState<Language>('NL');
 
     return (
-        <header className={styles.header}>
-            <div className={styles.language}>
+        <header className={styles.header} data-testid="app-header">
+            <div className={styles.language} data-testid="language-selector">
                 <DropdownMenu>
                     <DropdownMenuTrigger
                         render={
-                            <Button aria-label="Language">
-                                <GlobeIcon aria-hidden />
+                            <Button
+                                aria-label="Language"
+                                data-testid="dropdown-trigger"
+                            >
+                                <GlobeIcon
+                                    aria-hidden
+                                    data-icon="inline-start"
+                                />
                                 {language}
-                                <CaretDownIcon aria-hidden />
+                                <CaretDownIcon
+                                    aria-hidden
+                                    data-icon="inline-end"
+                                />
                             </Button>
                         }
                     />
-                    <DropdownMenuContent align="end">
+                    <DropdownMenuContent
+                        align="end"
+                        data-testid="dropdown-content"
+                    >
                         <DropdownMenuRadioGroup
                             value={language}
+                            data-testid="languages"
                             onValueChange={(value) =>
                                 isLanguage(value) && setLanguage(value)
                             }
                         >
                             {LANGUAGES.map((lang) => (
-                                <DropdownMenuRadioItem key={lang} value={lang}>
+                                <DropdownMenuRadioItem
+                                    key={lang}
+                                    value={lang}
+                                    data-testid={`language-${lang}`}
+                                >
                                     {lang}
                                 </DropdownMenuRadioItem>
                             ))}
@@ -52,7 +69,8 @@ export const Header = () => {
                     </DropdownMenuContent>
                 </DropdownMenu>
             </div>
-            <div className={styles.logo}>
+
+            <div className={styles.logo} data-testid="logo">
                 <img src={logo} alt="eduID" />
             </div>
         </header>
