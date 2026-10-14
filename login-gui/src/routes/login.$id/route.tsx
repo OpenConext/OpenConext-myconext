@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { type FC, type ReactNode, useState } from 'react';
 import { useNavigate, useParams } from 'react-router';
 
 import { Button, Input } from '@surfnet/curve-react';
@@ -6,6 +6,14 @@ import { useMutation, useQuery } from '@tanstack/react-query';
 
 import { fetchLoginMethods, fetchServiceName } from '../../api';
 import { LoginContainer } from '../../components';
+
+const Footer = () => (
+    <>
+        <p>Don't have an eduID yet?</p>
+        {/* TODO: link to the registration route once it exists */}
+        <a href="#">Create an eduID</a>
+    </>
+);
 
 export default function Login() {
     const { id } = useParams();
@@ -38,25 +46,29 @@ export default function Login() {
         },
     });
 
+    const Container: FC<{ children: ReactNode }> = ({ children }) => (
+        <LoginContainer
+            title="Log in with eduID"
+            description={`to continue to ${service?.name ?? ''}`}
+            footer={<Footer />}
+        >
+            {children}
+        </LoginContainer>
+    );
+
     if (isLoading || isPending) {
-        return <div>Loading...</div>;
+        return <Container>Loading...</Container>;
     }
 
     if (isError) {
-        return <div>Error loading service name</div>;
+        return <Container>Error loading service name</Container>;
     }
 
     return (
         <LoginContainer
             title="Log in with eduID"
             description={`to continue to ${service?.name ?? ''}`}
-            footer={
-                <>
-                    <p>Don't have an eduID yet?</p>
-                    {/* TODO: link to the registration route once it exists */}
-                    <a href="#">Create an eduID</a>
-                </>
-            }
+            footer={<Footer />}
         >
             <Input
                 type="email"
