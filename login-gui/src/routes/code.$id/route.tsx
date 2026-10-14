@@ -1,10 +1,15 @@
-import { useEffect, useRef, useState } from 'react';
+import { type FC, type ReactNode, useEffect, useRef, useState } from 'react';
 import { useLocation, useParams } from 'react-router';
 
 import { Button, Input } from '@surfnet/curve-react';
 import { useMutation } from '@tanstack/react-query';
 
 import { generateCodeRequest, verifyCodeRequest } from '../../api';
+import { LoginContainer } from '../../components';
+
+const Container: FC<{ children: ReactNode }> = ({ children }) => (
+    <LoginContainer title="Enter your code">{children}</LoginContainer>
+);
 
 export default function Code() {
     const { id = '' } = useParams();
@@ -41,15 +46,15 @@ export default function Code() {
     });
 
     if (isGenerating) {
-        return <div>Sending code...</div>;
+        return <Container>Sending code...</Container>;
     }
 
     if (generateFailed) {
-        return <div>Failed to send code. Please try again.</div>;
+        return <Container>Failed to send code. Please try again.</Container>;
     }
 
     return (
-        <div>
+        <Container>
             <p>A code has been sent to {email}. Enter it below to continue.</p>
             <Input
                 type="text"
@@ -61,6 +66,6 @@ export default function Code() {
             <Button onClick={() => submitCode(code)} disabled={isVerifying}>
                 Continue
             </Button>
-        </div>
+        </Container>
     );
 }

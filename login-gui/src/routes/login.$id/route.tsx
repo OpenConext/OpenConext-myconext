@@ -15,6 +15,19 @@ const Footer = () => (
     </>
 );
 
+const Container: FC<{ children: ReactNode; serviceName?: string }> = ({
+    children,
+    serviceName,
+}) => (
+    <LoginContainer
+        title="Log in with eduID"
+        description={`to continue to ${serviceName ?? ''}`}
+        footer={<Footer />}
+    >
+        {children}
+    </LoginContainer>
+);
+
 export default function Login() {
     const { id } = useParams();
     const navigate = useNavigate();
@@ -46,30 +59,20 @@ export default function Login() {
         },
     });
 
-    const Container: FC<{ children: ReactNode }> = ({ children }) => (
-        <LoginContainer
-            title="Log in with eduID"
-            description={`to continue to ${service?.name ?? ''}`}
-            footer={<Footer />}
-        >
-            {children}
-        </LoginContainer>
-    );
-
     if (isLoading || isPending) {
-        return <Container>Loading...</Container>;
+        return <Container serviceName={service?.name}>Loading...</Container>;
     }
 
     if (isError) {
-        return <Container>Error loading service name</Container>;
+        return (
+            <Container serviceName={service?.name}>
+                Error loading service name
+            </Container>
+        );
     }
 
     return (
-        <LoginContainer
-            title="Log in with eduID"
-            description={`to continue to ${service?.name ?? ''}`}
-            footer={<Footer />}
-        >
+        <Container serviceName={service?.name}>
             <Input
                 type="email"
                 value={email}
@@ -82,6 +85,6 @@ export default function Login() {
                 <p>Account does not exist, create new account?</p>
             )}
             <Button onClick={() => submitEmail(email)}>Continue</Button>
-        </LoginContainer>
+        </Container>
     );
 }
