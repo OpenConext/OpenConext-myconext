@@ -18,17 +18,20 @@
         "@surfnet/curve-react": "^0.5.1",
         "@tanstack/react-query": "^5.104.0",
         "@tanstack/react-query-devtools": "^5.104.0",
+        "i18n-js": "^4.5.4",
+        "isbot": "^5",
+        "js-cookie": "^3.0.8",
         "react": "^19.2.8",
         "react-dom": "^19.2.8",
         "react-router": "^8.4.0",
-        "zustand": "^5.0.15",
-        "isbot": "^5"
+        "zustand": "^5.0.15"
     },
     "devDependencies": {
         "@eslint/js": "^10.0.1",
         "@react-router/dev": "^8.4.0",
         "@react-router/fs-routes": "^8.4.0",
         "@trivago/prettier-plugin-sort-imports": "^6.0.2",
+        "@types/js-cookie": "^3.0.6",
         "@types/node": "^26.6.3",
         "@types/react": "^19.2.18",
         "@types/react-dom": "^19.2.7",

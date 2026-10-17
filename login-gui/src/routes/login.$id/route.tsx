@@ -6,6 +6,7 @@ import { useMutation, useQuery } from '@tanstack/react-query';
 
 import { fetchLoginMethods, fetchServiceName } from '../../api';
 import { LoginContainer } from '../../components';
+import I18n from '../../locale/I18n';
 
 const Footer = () => (
     <>
@@ -20,7 +21,7 @@ const Container: FC<{ children: ReactNode; serviceName?: string }> = ({
     serviceName,
 }) => (
     <LoginContainer
-        title="Log in with eduID"
+        title={I18n.t('login.title')}
         description={`to continue to ${serviceName ?? ''}`}
         footer={<Footer />}
     >
