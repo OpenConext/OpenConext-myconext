@@ -6,13 +6,39 @@
     display: flex;
     justify-content: center;
     align-items: flex-start;
-    padding: spacing(12) spacing(4) spacing(8);
+    padding: 0 spacing(4) spacing(8);
     background-color: var(--primary-strong);
+}
+
+.inner {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    max-width: var(--container-sm);
+}
+
+.top {
+    padding-top: spacing(3);
+    padding-bottom: spacing(1);
+
+    &[data-hidden] {
+        visibility: hidden;
+    }
+}
+
+.back {
+    cursor: pointer;
+    color: var(--primary-foreground);
+
+    &:hover {
+        background-color: transparent;
+        color: var(--primary-foreground);
+        text-decoration: underline;
+    }
 }
 
 .card {
     width: 100%;
-    max-width: var(--container-sm);
     gap: 0;
     padding-bottom: 0;
 }

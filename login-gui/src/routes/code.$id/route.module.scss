@@ -1,0 +1,31 @@
+@use '../../styles/spacing' as *;
+
+.form {
+    display: flex;
+    flex-direction: column;
+    gap: spacing(6);
+}
+
+.submit {
+    width: 100%;
+}
+
+.help {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: spacing(1);
+    color: var(--muted-foreground);
+    font-size: var(--text-xs-font-size);
+    line-height: var(--text-xs-line-height);
+    text-align: center;
+}
+
+.link {
+    height: auto;
+    padding: 0;
+    color: var(--primary-strong);
+    font-size: inherit;
+    font-weight: var(--font-weight-medium);
+}

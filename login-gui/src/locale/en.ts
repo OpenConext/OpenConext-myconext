@@ -14,6 +14,16 @@ const en: AppTranslation = {
         title: 'Log in with myConext',
         email: 'Email address',
     },
+    codeScreen: {
+        title: 'Log in with eduID',
+        description: 'Enter the code sent to {{email}}',
+        inputLabel: 'Code',
+        submit: 'Continue',
+        noEmail: "Didn't receive the email? Check your spam folder, or",
+        resend: 'send a new code',
+        noAccess: "Can't access your mail?",
+        otherMethod: 'Use another login method',
+    },
 };
 
 export default en;
