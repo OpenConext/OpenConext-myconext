@@ -1,0 +1,7 @@
+@use '../../styles/spacing' as *;
+
+.form {
+    display: flex;
+    flex-direction: column;
+    gap: spacing(6);
+}

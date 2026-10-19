@@ -1,12 +1,13 @@
 import { type FC, type ReactNode, useState } from 'react';
 import { useNavigate, useParams } from 'react-router';
 
-import { Button, Input } from '@surfnet/curve-react';
+import { Button, Field, FieldLabel, Input } from '@surfnet/curve-react';
 import { useMutation, useQuery } from '@tanstack/react-query';
 
 import { fetchLoginMethods, fetchServiceName } from '../../api';
 import { LoginContainer } from '../../components';
 import I18n from '../../locale/I18n';
+import styles from './route.module.scss';
 
 const Footer = () => (
     <>
@@ -74,18 +75,32 @@ export default function Login() {
 
     return (
         <Container serviceName={service?.name}>
-            <Input
-                type="email"
-                value={email}
-                onChange={(e) => {
-                    setEmail(e.target.value);
-                    setAccountNotFound(false);
+            <form
+                className={styles.form}
+                onSubmit={(e) => {
+                    e.preventDefault();
+                    submitEmail(email);
                 }}
-            />
-            {accountNotFound && (
-                <p>Account does not exist, create new account?</p>
-            )}
-            <Button onClick={() => submitEmail(email)}>Continue</Button>
+            >
+                <Field>
+                    <FieldLabel htmlFor="email">
+                        {I18n.t('login.email')}
+                    </FieldLabel>
+                    <Input
+                        id="email"
+                        type="email"
+                        value={email}
+                        onChange={(e) => {
+                            setEmail(e.target.value);
+                            setAccountNotFound(false);
+                        }}
+                    />
+                </Field>
+                {accountNotFound && (
+                    <p>Account does not exist, create new account?</p>
+                )}
+                <Button type="submit">Continue</Button>
+            </form>
         </Container>
     );
 }

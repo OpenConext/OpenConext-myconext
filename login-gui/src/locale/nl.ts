@@ -12,6 +12,7 @@ const nl: AppTranslation = {
     },
     login: {
         title: 'Inloggen met myConext',
+        email: 'E-mailadres',
     },
 };
 
