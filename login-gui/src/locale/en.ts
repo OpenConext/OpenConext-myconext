@@ -11,7 +11,7 @@ const en: AppTranslation = {
         nl: 'Dutch',
     },
     login: {
-        title: 'Log in with eduID',
+        title: 'Log in with myConext',
     },
 };
 
