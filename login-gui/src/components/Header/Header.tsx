@@ -11,17 +11,23 @@ import {
 } from '@surfnet/curve-react';
 
 import logo from '../../assets/logo_eduID.svg';
+import I18n, { AVAILABLE_LANGUAGES, switchLocale } from '../../locale/I18n';
 import styles from './Header.module.scss';
 
-const LANGUAGES = ['NL', 'EN'] as const;
-
-type Language = (typeof LANGUAGES)[number];
+type Language = (typeof AVAILABLE_LANGUAGES)[number];
 
 const isLanguage = (value: unknown): value is Language =>
-    LANGUAGES.some((lang) => lang === value);
+    AVAILABLE_LANGUAGES.some((lang) => lang === value);
 
 export const Header = () => {
-    const [language, setLanguage] = useState<Language>('NL');
+    const [language, setLanguage] = useState<Language>(I18n.locale);
+
+    const handleLanguageChange = (updatedLanguage: string) => {
+        if (isLanguage(updatedLanguage)) {
+            setLanguage(updatedLanguage);
+            switchLocale(updatedLanguage);
+        }
+    };
 
     return (
         <header className={styles.header} data-testid="app-header">
@@ -37,7 +43,7 @@ export const Header = () => {
                                     aria-hidden
                                     data-icon="inline-start"
                                 />
-                                {language}
+                                {language.toUpperCase()}
                                 <CaretDownIcon
                                     aria-hidden
                                     data-icon="inline-end"
@@ -53,16 +59,16 @@ export const Header = () => {
                             value={language}
                             data-testid="languages"
                             onValueChange={(value) =>
-                                isLanguage(value) && setLanguage(value)
+                                handleLanguageChange(value)
                             }
                         >
-                            {LANGUAGES.map((lang) => (
+                            {AVAILABLE_LANGUAGES.map((lang) => (
                                 <DropdownMenuRadioItem
                                     key={lang}
                                     value={lang}
                                     data-testid={`language-${lang}`}
                                 >
-                                    {lang}
+                                    {lang.toUpperCase()}
                                 </DropdownMenuRadioItem>
                             ))}
                         </DropdownMenuRadioGroup>
