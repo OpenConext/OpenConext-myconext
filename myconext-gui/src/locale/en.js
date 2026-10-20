@@ -577,7 +577,7 @@ const en = {
     "Header": "Download the eduID app",
     "Info": "Download the eduID app (by SURF) in one of the app stores.",
     "Google": "https://play.google.com/store/apps/details?id=nl.eduid",
-    "Apple": "https://apps.apple.com/",
+    "Apple": "https://apps.apple.com/us/app/eduid/id1600756434",
     "After": "Have you installed the app? Then press ‘Next’",
     "Back": "Back",
     "Next": "Continue"
