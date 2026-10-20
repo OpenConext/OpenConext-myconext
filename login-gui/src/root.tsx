@@ -5,7 +5,10 @@ import '@surfnet/curve-react/styles.css';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 
-import './index.scss';
+import { appCustomization } from './appCustomizations';
+import { Footer, Header } from './components';
+import { CustomizationContextProvider } from './contexts/CustomizationContext.tsx';
+import styles from './root.module.scss';
 import { useAppStore } from './store/store';
 
 export function Layout({ children }: { children: React.ReactNode }) {
@@ -41,9 +44,17 @@ export default function Root() {
     }, [dark]);
 
     return (
-        <QueryClientProvider client={queryClient}>
-            <Outlet />
-            <ReactQueryDevtools initialIsOpen={false} />
-        </QueryClientProvider>
+        <CustomizationContextProvider appCustomization={appCustomization}>
+            <QueryClientProvider client={queryClient}>
+                <div className={styles.layout}>
+                    <Header />
+                    <main className={styles.content}>
+                        <Outlet />
+                    </main>
+                    <Footer />
+                </div>
+                <ReactQueryDevtools initialIsOpen={false} />
+            </QueryClientProvider>
+        </CustomizationContextProvider>
     );
 }

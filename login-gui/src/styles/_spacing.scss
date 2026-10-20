@@ -1,0 +1,3 @@
+@function spacing($n) {
+    @return calc(var(--spacing) * #{$n});
+}

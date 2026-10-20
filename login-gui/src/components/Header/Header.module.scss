@@ -1,0 +1,19 @@
+@use '../../styles/spacing' as *;
+
+.header {
+    display: flex;
+    flex-direction: column;
+    background-color: var(--primary-strong);
+}
+
+.language {
+    display: flex;
+    justify-content: flex-end;
+    padding: spacing(8) spacing(8) 0;
+}
+
+.logo {
+    display: flex;
+    justify-content: center;
+    margin: 0;
+}

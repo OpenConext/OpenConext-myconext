@@ -37,3 +37,7 @@ SPRING_MIGRATION.md
 SPRING_BOOT_410.md
 surfnet-curve-library
 DesignSystem
+
+# Folders for customizing the app
+app-customizations
+login-gui/src/appCustomizations/myCustomizations

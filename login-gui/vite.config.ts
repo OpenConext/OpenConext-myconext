@@ -9,8 +9,8 @@ export default defineConfig({
         tsconfigPaths: true,
     },
     server: {
-        port: 3002,
-        open: true,
+        port: 3000,
+        open: false,
         proxy: {
             '/config': {
                 target: 'http://localhost:8081',

@@ -3,7 +3,6 @@ import { NavLink } from 'react-router';
 import { Button } from '@surfnet/curve-react';
 import { useQuery } from '@tanstack/react-query';
 
-import './App.scss';
 import { fetchConfig } from './api';
 import { useAppStore } from './store/store';
 
