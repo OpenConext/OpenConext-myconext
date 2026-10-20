@@ -1,5 +1,8 @@
+export * from './activities.ts';
 export * from './config.ts';
+export * from './lang.ts';
 export * from './logout.ts';
+export * from './me.ts';
 
 export function redirectToLogin(loginUrl: string, redirectTo?: string): void {
     const url = new URL(loginUrl);

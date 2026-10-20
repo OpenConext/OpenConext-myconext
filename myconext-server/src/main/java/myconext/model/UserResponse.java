@@ -16,6 +16,9 @@ import java.util.stream.Collectors;
 @Getter
 public class UserResponse implements Serializable {
 
+    //The number of most recent activities in the user response, all activities are available in a separate endpoint
+    public static final int RECENT_ACTIVITIES_LIMIT = 4;
+
     private final String id;
     private final String email;
     private final String chosenName;
@@ -41,6 +44,7 @@ public class UserResponse implements Serializable {
     private final ControlCode controlCode;
     private final boolean serviceDeskMember;
     private final String preferredLanguage;
+    private final List<Activity> recentActivities;
 
     public UserResponse(User user,
                         Map<String, EduID> eduIdPerServiceProvider,
@@ -111,5 +115,6 @@ public class UserResponse implements Serializable {
         this.controlCode = user.getControlCode();
         this.serviceDeskMember = user.isServiceDeskMember();
         this.preferredLanguage = user.getPreferredLanguage();
+        this.recentActivities = user.recentActivities(RECENT_ACTIVITIES_LIMIT);
     }
 }

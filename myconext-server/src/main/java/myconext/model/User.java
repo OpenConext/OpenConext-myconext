@@ -37,6 +37,9 @@ import static myconext.security.SecurityConfiguration.InternalSecurityConfigurat
 @Document(collection = "users")
 public class User implements Serializable, UserDetails {
 
+    //The number of activities stored in the user document, the oldest are removed first
+    public static final int MAX_ACTIVITIES = 100;
+
     private static final List<SimpleGrantedAuthority> GUEST_AUTHORITIES = List.of(new SimpleGrantedAuthority(ROLE_GUEST));
 
     @Id
@@ -129,6 +132,10 @@ public class User implements Serializable, UserDetails {
     @Setter
     private boolean rateLimited;
 
+    //Chronological order, oldest first
+    @Setter
+    private List<Activity> activities = new ArrayList<>();
+
     public User(CreateInstitutionEduID createInstitutionEduID, Map<String, Object> userInfo) {
         this.email = createInstitutionEduID.getEmail();
         this.chosenName = (String) userInfo.get("given_name");
@@ -180,6 +187,30 @@ public class User implements Serializable, UserDetails {
         }
         this.password = encoder.encode(password);
         this.passwordUpdatedAt = System.currentTimeMillis();
+    }
+
+    @Transient
+    public void addActivity(ActivityEvent event, String description) {
+        List<Activity> all = new ArrayList<>(this.activities == null ? List.of() : this.activities);
+        all.add(new Activity(this.id, event, new Date(), description));
+        this.activities = all.size() > MAX_ACTIVITIES ? new ArrayList<>(all.subList(all.size() - MAX_ACTIVITIES, all.size())) : all;
+    }
+
+    /**
+     * @return the activities, most recent first
+     */
+    @Transient
+    public List<Activity> allActivities() {
+        return recentActivities(Integer.MAX_VALUE);
+    }
+
+    /**
+     * @return at most limit activities, most recent first
+     */
+    @Transient
+    public List<Activity> recentActivities(int limit) {
+        List<Activity> all = this.activities == null ? List.of() : this.activities;
+        return all.reversed().stream().limit(limit).toList();
     }
 
     public void deletePassword() {

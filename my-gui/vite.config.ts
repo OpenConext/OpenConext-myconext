@@ -17,6 +17,21 @@ export default defineConfig({
                 changeOrigin: false,
                 secure: false,
             },
+            '/tiqr': {
+                target: 'http://localhost:8081',
+                changeOrigin: false,
+                secure: false,
+            },
+            '/register': {
+                target: 'http://localhost:8081',
+                changeOrigin: false,
+                secure: false,
+            },
+            '/doLogout': {
+                target: 'http://localhost:8081',
+                changeOrigin: false,
+                secure: false,
+            },
             '/myconext/api': {
                 target: 'http://localhost:8081',
                 changeOrigin: false,

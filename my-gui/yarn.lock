@@ -609,17 +609,17 @@
   resolved "https://registry.npmjs.org/@radix-ui/react-use-layout-effect/-/react-use-layout-effect-1.1.4.tgz"
   integrity sha512-K20DkRkUwDnxEYMBPcg3Y6voLkEy5p5QQmszZgLngKKiC7dzBR/aEuK3w1qlx2JWDUNH6FluahYdgR3BP+QbYw==
 
-"@react-router/dev@^8.4.0":
-  version "8.4.0"
-  resolved "https://registry.npmjs.org/@react-router/dev/-/dev-8.4.0.tgz"
-  integrity sha512-GKznpn6h8c52xGXwtsypD5ZwNiWFSeqoKPdyGq7SfG+T9rFjGO8F0i/R/yECfZqHXaNz1NVmpODuBamBy9FfMg==
+"@react-router/dev@^8.5.0":
+  version "8.5.0"
+  resolved "https://registry.yarnpkg.com/@react-router/dev/-/dev-8.5.0.tgz#fcc52693d5c0cf7d2d1cc6f31cff9711da445e15"
+  integrity sha512-SXmL0ym9Wp8Hi0LdXLG6yPaN8V1rUW4PuavvBS9eqpr0hM3PFjiCUT44pRzCj4G9lKEQBeNcj4beOtpN7IxuCg==
   dependencies:
     "@babel/core" "^7.29.7"
     "@babel/generator" "^7.29.7"
     "@babel/parser" "^7.29.7"
     "@babel/traverse" "^7.29.7"
     "@babel/types" "^7.29.7"
-    "@react-router/node" "8.4.0"
+    "@react-router/node" "8.5.0"
     "@remix-run/node-fetch-server" "^0.14.1"
     babel-dead-code-elimination "^1.0.12"
     chokidar "^5.0.0"
@@ -638,17 +638,17 @@
     tinyglobby "^0.2.16"
     valibot "^1.4.1"
 
-"@react-router/fs-routes@^8.4.0":
-  version "8.4.0"
-  resolved "https://registry.npmjs.org/@react-router/fs-routes/-/fs-routes-8.4.0.tgz"
-  integrity sha512-CIEYxrapbr6iO589fBmN7/RBJ10H8X/Tl2i7MNkuJZQ9W2Z3wPifPCHv9bFR/+FlmzeLXJlYyHyUgaCkgOIZYg==
+"@react-router/fs-routes@^8.5.0":
+  version "8.5.0"
+  resolved "https://registry.yarnpkg.com/@react-router/fs-routes/-/fs-routes-8.5.0.tgz#4544677b2279a8dd8c0a575f8b023ff3b81819d1"
+  integrity sha512-CKH9PbqM8WMyjs2+UUBuEWi/uqyCShV9pu5tOvYev+50rPjbmCkdsIFH3VAnxgu4dpVitxg4tyULUC6jmrQHTQ==
   dependencies:
     minimatch "^10.2.5"
 
-"@react-router/node@8.4.0":
-  version "8.4.0"
-  resolved "https://registry.npmjs.org/@react-router/node/-/node-8.4.0.tgz"
-  integrity sha512-1teZHtk7XDm1pteQ2Plgtvtjjup5C5sIwFlOMYVIyoOH7X3bId3Qb//kUdbydX6NRIxcGK28UnfZlz4SrD/mkg==
+"@react-router/node@8.5.0":
+  version "8.5.0"
+  resolved "https://registry.yarnpkg.com/@react-router/node/-/node-8.5.0.tgz#c1e37058dcbbcefd2c4f7aa09db98ee12530208d"
+  integrity sha512-9a3a37TW5GAo/J336Uk1tca/X1OxjpseETz/zCHcojtL7oRlFrlFoDt6wSdCtFRCiwlLyHcWY+qwZ+xnb05kSg==
   dependencies:
     "@remix-run/node-fetch-server" "^0.14.1"
 
@@ -833,14 +833,13 @@
   resolved "https://registry.npmjs.org/@solid-primitives/utils/-/utils-6.4.1.tgz"
   integrity sha512-ISSB5QX1qP2ynrheIpYwc4oKR5Ny4siNuUyf1qZniy+Il+p/PtDB0QK1Dnle8noiHpwRD3gpPdubOC3qI/Zamg==
 
-"@surfnet/curve-react@^0.5.1":
-  version "0.5.1"
-  resolved "https://registry.npmjs.org/@surfnet/curve-react/-/curve-react-0.5.1.tgz"
-  integrity sha512-rswj6iikzrCWSOPRmLudCDvjhz3n4bFzkFF7l5huJDsukhEONg7l+AE1pxhYrsiJEyKdtoyVFNQFhuWYDiaJVA==
+"@surfnet/curve-react@^0.8.2":
+  version "0.8.2"
+  resolved "https://registry.yarnpkg.com/@surfnet/curve-react/-/curve-react-0.8.2.tgz#e169ba2168d6c15c8e3a9e59ef28cc795377c670"
+  integrity sha512-dnRqB8WrzbhihnqdRSdQ98zj7Tpms00YbT9cr2bI/84JXT7M+SRDnOwprYpNc027IdlwswS3kQ9BYRXoO5vcFg==
   dependencies:
     "@base-ui/react" "1.5.0"
     "@tanstack/react-table" "^8.21.3"
-    class-variance-authority "0.7.1"
     clsx "2.1.1"
     cmdk "^1.1.1"
     date-fns "^4.4.0"
@@ -850,7 +849,6 @@
     react-day-picker "^10.0.1"
     react-resizable-panels "^4.12.1"
     sonner "^2.0.7"
-    tailwind-merge "3.6.0"
 
 "@swc/helpers@^0.5.0":
   version "0.5.23"
@@ -938,15 +936,20 @@
   resolved "https://registry.npmjs.org/@types/estree/-/estree-1.0.9.tgz"
   integrity sha512-GhdPgy1el4/ImP05X05Uw4cw2/M93BCUmnEvWZNStlCzEKME4Fkk+YpoA5OiHNQmoS7Cafb8Xa3Pya8m1Qrzeg==
 
+"@types/js-cookie@^3.0.6":
+  version "3.0.6"
+  resolved "https://registry.yarnpkg.com/@types/js-cookie/-/js-cookie-3.0.6.tgz#a04ca19e877687bd449f5ad37d33b104b71fdf95"
+  integrity sha512-wkw9yd1kEXOPnvEeEV1Go1MmxtBJL0RR79aOTAApecWFVu7w0NNXNqhcWgvw2YgZDYadliXkl14pa3WXw5jlCQ==
+
 "@types/json-schema@^7.0.15":
   version "7.0.15"
   resolved "https://registry.npmjs.org/@types/json-schema/-/json-schema-7.0.15.tgz"
   integrity sha512-5+fP8P8MFNC+AyZCDxrB2pkZFPGzqQWUzpSeuuVLvm8VMcorNYavBqoFcxK8bQz4Qsbn4oUEEem4wDLfcysGHA==
 
-"@types/node@^26.6.3":
-  version "26.6.3"
-  resolved "https://registry.npmjs.org/@types/node/-/node-26.6.3.tgz"
-  integrity sha512-dsqMQQoeTLqu9wynDD00q573mNzso3IdQOAfHRJqLCcmCFPoGo9A1bDpUcv/9tnKpErQWv9uKeGfl37EIS02Yg==
+"@types/node@^26.6.5":
+  version "26.6.5"
+  resolved "https://registry.yarnpkg.com/@types/node/-/node-26.6.5.tgz#cb35209e7767c503551b5fa42a48231c7441d979"
+  integrity sha512-uMzsv9stDdofIZBx4UGh4Z9ZgXnGC9seRDscilBcTHAeOFk67MZg/k9bWVfO+bk4qZmG+l52hRnLwUiH2LnJTg==
   dependencies:
     undici-types "~8.9.0"
 
@@ -1117,6 +1120,11 @@ baseline-browser-mapping@^2.11.25:
   resolved "https://registry.npmjs.org/baseline-browser-mapping/-/baseline-browser-mapping-2.11.26.tgz"
   integrity sha512-GLQdD3y6UF8iVuMJl5fHgE4jdn/ua7n+toKfLgNlg3BqQtOZjpy68T8Tup8/wGWZCDlm7KMg7tPb4MPn7oN0TQ==
 
+bignumber.js@*:
+  version "11.1.5"
+  resolved "https://registry.yarnpkg.com/bignumber.js/-/bignumber.js-11.1.5.tgz#0f678769f989e6947138d16adaaaa475a9b0bc65"
+  integrity sha512-6WmzCNtUnfKpbozq+hOgWaZMMzORmYBwF1xZScyoIX3QRYWeKTtxxwDOW5tIz7C9BdjkIYHGTcelCLkXg0mndw==
+
 brace-expansion@^2.0.2:
   version "2.1.7"
   resolved "https://registry.npmjs.org/brace-expansion/-/brace-expansion-2.1.7.tgz"
@@ -1164,13 +1172,6 @@ chokidar@^5.0.0:
   integrity sha512-TQMmc3w+5AxjpL8iIiwebF73dRDF4fBIieAqGn9RGCWaEVwQ6Fb2cGe31Yns0RRIzii5goJ1Y7xbMwo1TxMplw==
   dependencies:
     readdirp "^5.0.0"
-
-class-variance-authority@0.7.1:
-  version "0.7.1"
-  resolved "https://registry.npmjs.org/class-variance-authority/-/class-variance-authority-0.7.1.tgz"
-  integrity sha512-Ka+9Trutv7G8M6WT6SeiRWz792K5qEqIGEGzXKhAE6xOWAY6pPH8U+9IY3oCMv6kqTmLsv7Xh/2w2RigkePMsg==
-  dependencies:
-    clsx "^2.1.1"
 
 clsx@2.1.1, clsx@^2.1.1:
   version "2.1.1"
@@ -1526,6 +1527,15 @@ hookified@^2.1.1:
   resolved "https://registry.npmjs.org/hookified/-/hookified-2.2.0.tgz"
   integrity sha512-p/LgFzRN5FeoD3DLS6bkUapeye6E4SI6yJs6KetENd18S+FBthqYq2amJUWpt5z0EQwwHemidjY5OqJGEKm5uA==
 
+i18n-js@^4.5.4:
+  version "4.5.4"
+  resolved "https://registry.yarnpkg.com/i18n-js/-/i18n-js-4.5.4.tgz#b26004c5657ee363ef29afea557b1a11938f2227"
+  integrity sha512-ALYO2ZAgayAbXy/MpHmPOd7DdjUh1guowJOO0nwAVLIoGACNBxBSwjzJHEbMoLQs91ytJgykgyAjQg4gTyRRAA==
+  dependencies:
+    bignumber.js "*"
+    lodash "*"
+    make-plural "7.5.0"
+
 ignore@^5.2.0:
   version "5.3.2"
   resolved "https://registry.npmjs.org/ignore/-/ignore-5.3.2.tgz"
@@ -1577,6 +1587,11 @@ javascript-natural-sort@^0.7.1:
   version "0.7.1"
   resolved "https://registry.npmjs.org/javascript-natural-sort/-/javascript-natural-sort-0.7.1.tgz"
   integrity sha512-nO6jcEfZWQXDhOiBtG2KvKyEptz7RVbpGP4vTD2hLBdmNQSsCiicO2Ioinv6UI4y9ukqnBpy+XZ9H6uLNgJTlw==
+
+js-cookie@^3.0.8:
+  version "3.0.8"
+  resolved "https://registry.yarnpkg.com/js-cookie/-/js-cookie-3.0.8.tgz#444e6f4b27a5d844594fef61c9d6bca5f0787688"
+  integrity sha512-yeJd4aNAdYZQjaon2bpD/Gb0B/omw7HQOsynXXcOiWVCacbBcPlgn8S/d1X6blFSaHao7ozqtW7NZW19xpCtIw==
 
 js-tokens@^4.0.0:
   version "4.0.0"
@@ -1704,7 +1719,7 @@ lodash-es@^4.17.21:
   resolved "https://registry.npmjs.org/lodash-es/-/lodash-es-4.18.1.tgz"
   integrity sha512-J8xewKD/Gk22OZbhpOVSwcs60zhd95ESDwezOFuA3/099925PdHJ7OFHNTGtajL3AlZkykD32HykiMo+BIBI8A==
 
-lodash@^4.18.1:
+lodash@*, lodash@^4.18.1:
   version "4.18.1"
   resolved "https://registry.npmjs.org/lodash/-/lodash-4.18.1.tgz"
   integrity sha512-dMInicTPVE8d1e5otfwmmjlxkZoUpiVLwyeTdUsi/Caj/gfzzblBcCE5sRHV/AsjuCmxWrte2TNGSYuCeCq+0Q==
@@ -1715,6 +1730,11 @@ lru-cache@^5.1.1:
   integrity sha512-KpNARQA3Iwv+jTA0utUVVbrh+Jlrr1Fv0e56GGzAFOXN7dk/FviaDW8LHmK52DlcH4WP2n6gI8vN1aesBFgo9w==
   dependencies:
     yallist "^3.0.2"
+
+make-plural@7.5.0:
+  version "7.5.0"
+  resolved "https://registry.yarnpkg.com/make-plural/-/make-plural-7.5.0.tgz#ff99598640d82ec7a69bea15d34ecc50152fc0db"
+  integrity sha512-0booA+aVYyVFoR67JBHdfVk0U08HmrBH2FrtmBqBa+NldlqXv/G2Z9VQuQq6Wgp2jDWdybEWGfBkk1cq5264WA==
 
 minimatch@^10.2.2, minimatch@^10.2.4, minimatch@^10.2.5:
   version "10.2.6"
@@ -1912,10 +1932,10 @@ react-resizable-panels@^4.12.1:
   resolved "https://registry.npmjs.org/react-resizable-panels/-/react-resizable-panels-4.14.1.tgz"
   integrity sha512-OB1bXDNTLcGgTTbaX6Dn5efZhlMboSnkfr1w4xpsJTHPEbRJpACBhXpgRCXozgPO1ztgFeZRUe5J3mFNCVKm5g==
 
-react-router@^8.4.0:
-  version "8.4.0"
-  resolved "https://registry.npmjs.org/react-router/-/react-router-8.4.0.tgz"
-  integrity sha512-JtydAkBvU9UTEe5qNC+POhu+ZBNM7rlKY2IegwXc7Idj7xfRG16x5RZrw3mju+XlqBxfvb2ky9P3jUp9WyWC1g==
+react-router@^8.5.0:
+  version "8.5.0"
+  resolved "https://registry.yarnpkg.com/react-router/-/react-router-8.5.0.tgz#c676f3c3e976f82702f774a6bb332c4979f6ba56"
+  integrity sha512-9nEd/deifcTJIIcUaNIyQGkyXD0D6QVB9XD2O5GgHpP3xu3U5RXm87YQ8++Wn8JQWgMBM/5+PjWPM/7n7O7WHA==
   dependencies:
     "@remix-run/route-pattern" "^0.22.1"
     cookie-es "^3.1.1"
@@ -2219,11 +2239,6 @@ sync-message-port@^1.0.0:
   version "1.2.0"
   resolved "https://registry.npmjs.org/sync-message-port/-/sync-message-port-1.2.0.tgz"
   integrity sha512-gAQ9qrUN/UCypHtGFbbe7Rc/f9bzO88IwrG8TDo/aMKAApKyD6E3W4Cm0EfhfBb6Z6SKt59tTCTfD+n1xmAvMg==
-
-tailwind-merge@3.6.0:
-  version "3.6.0"
-  resolved "https://registry.npmjs.org/tailwind-merge/-/tailwind-merge-3.6.0.tgz"
-  integrity sha512-uxL7qAVQriqRQPAyK3pj66VqskWqoZ37PW94jwOTwNfq/z9oyu1V+eqrZqtR2+fCiXdYOZe/Modt8GtvqNzu+w==
 
 tinyglobby@^0.2.15, tinyglobby@^0.2.16, tinyglobby@^0.2.17:
   version "0.2.17"

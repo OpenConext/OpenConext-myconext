@@ -5,8 +5,8 @@ import '@surfnet/curve-react/styles.css';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 
-import { NavigationBar } from './components/NavigationBar';
 import './index.scss';
+import I18n from './locale/I18n';
 import { useAppStore } from './store/store';
 
 export function Layout({ children }: { children: React.ReactNode }) {
@@ -19,7 +19,8 @@ export function Layout({ children }: { children: React.ReactNode }) {
                     content="width=device-width, initial-scale=1"
                 />
                 <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-                <title>my-gui!</title>
+                <link rel="stylesheet" href="/myconext/api/disclaimer" />
+                <title>{I18n.t('globalVariables.productName')}</title>
                 <Meta />
                 <Links />
             </head>
@@ -39,11 +40,11 @@ export default function Root() {
 
     useEffect(() => {
         document.documentElement.classList.toggle('dark', dark);
+        document.documentElement.lang = I18n.locale;
     }, [dark]);
 
     return (
         <QueryClientProvider client={queryClient}>
-            <NavigationBar />
             <Outlet />
             <ReactQueryDevtools initialIsOpen={false} />
         </QueryClientProvider>

@@ -7,6 +7,38 @@
     "givenName": "John",
     "familyName": "Doe",
     "schacHomeOrganization": "surfguest.nl",
+    "activities": [
+      {
+        "event": "ACCOUNT_CREATED",
+        "dateTime": "2020-03-04T09:41:00.000Z",
+        "description": "Account created from institution"
+      },
+      {
+        "event": "INSTITUTION_LINKED",
+        "dateTime": "2020-03-04T09:42:10.000Z",
+        "description": "Institution linked: surfguest.nl"
+      },
+      {
+        "event": "PASSKEY_ADDED",
+        "dateTime": "2021-03-03T09:07:00.000Z",
+        "description": "Passkey added: MacBook (Chrome)"
+      },
+      {
+        "event": "PASSWORD_UPDATED",
+        "dateTime": "2022-10-02T14:12:00.000Z",
+        "description": "Password updated"
+      },
+      {
+        "event": "APP_ACTIVATED",
+        "dateTime": "2023-11-27T11:09:00.000Z",
+        "description": "eduID app activated with a phone number"
+      },
+      {
+        "event": "NAME_UPDATED",
+        "dateTime": "2024-01-04T09:41:00.000Z",
+        "description": "Name updated"
+      }
+    ],
     "rateLimited": false,
     "linkedAccounts": [
       {

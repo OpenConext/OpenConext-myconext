@@ -1,3 +1,5 @@
-export default function Dashboard() {
-    return <h1>Dashboard (Authenticated)</h1>;
+import I18n from '../../locale/I18n';
+
+export default function Security() {
+    return <h1>{I18n.t('pages.security')}</h1>;
 }

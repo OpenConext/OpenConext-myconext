@@ -518,6 +518,107 @@ public class UserControllerTest extends AbstractMailBoxTest {
     }
 
     @Test
+    public void activities() {
+        int seeded = userRepository.findOneUserByEmail("jdoe@example.com").getActivities().size();
+        updateName("Mary");
+        passwordResetHashRepository.save(new PasswordResetHash(userRepository.findOneUserByEmail("jdoe@example.com"), "hash"));
+        given()
+                .when()
+                .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+                .body(new UpdateUserSecurityRequest("correctSecret001", "hash"))
+                .put("/myconext/api/sp/update-password")
+                .then()
+                .statusCode(HttpStatus.CREATED.value());
+
+        List<Map<String, Object>> activities = given()
+                .when()
+                .get("/myconext/api/sp/activities")
+                .then()
+                .statusCode(HttpStatus.OK.value())
+                .extract()
+                .as(new TypeRef<>() {
+                });
+        assertEquals(seeded + 2, activities.size());
+        //Most recent first
+        //The seeded user already has a password
+        assertEquals(ActivityEvent.PASSWORD_UPDATED.name(), activities.get(0).get("event"));
+        assertEquals(ActivityEvent.NAME_UPDATED.name(), activities.get(1).get("event"));
+        User userFromDB = userRepository.findOneUserByEmail("jdoe@example.com");
+        assertEquals(userFromDB.getId(), activities.get(0).get("userId"));
+        assertNotNull(activities.get(0).get("dateTime"));
+        //The seeded activities follow the new activities, most recent first
+        assertEquals(ActivityEvent.NAME_UPDATED.name(), activities.get(2).get("event"));
+        assertEquals("Password updated", activities.get(0).get("description"));
+    }
+
+    @Test
+    public void meContainsOnlyRecentActivities() {
+        int seeded = userRepository.findOneUserByEmail("jdoe@example.com").getActivities().size();
+        for (int i = 0; i < 6; i++) {
+            updateName("Mary" + i);
+        }
+        List<Map<String, Object>> recentActivities = given()
+                .when()
+                .get("/myconext/api/sp/me")
+                .then()
+                .statusCode(HttpStatus.OK.value())
+                .extract()
+                .path("recentActivities");
+        assertEquals(UserResponse.RECENT_ACTIVITIES_LIMIT, recentActivities.size());
+
+        List<Map<String, Object>> allActivities = given()
+                .when()
+                .get("/myconext/api/sp/activities")
+                .then()
+                .extract()
+                .as(new TypeRef<>() {
+                });
+        assertEquals(seeded + 6, allActivities.size());
+    }
+
+    @Test
+    public void meRecentActivitiesFromSeed() {
+        List<Map<String, Object>> recentActivities = given()
+                .when()
+                .get("/myconext/api/sp/me")
+                .then()
+                .extract()
+                .path("recentActivities");
+        assertEquals(UserResponse.RECENT_ACTIVITIES_LIMIT, recentActivities.size());
+        assertEquals(ActivityEvent.NAME_UPDATED.name(), recentActivities.get(0).get("event"));
+        assertEquals(ActivityEvent.APP_ACTIVATED.name(), recentActivities.get(1).get("event"));
+    }
+
+    @Test
+    public void changeLanguageRecordsActivityOnlyWhenChanged() {
+        User user = userRepository.findOneUserByEmail("jdoe@example.com");
+        int seeded = user.getActivities().size();
+        String newLanguage = "nl".equals(user.getPreferredLanguage()) ? "en" : "nl";
+        for (int i = 0; i < 2; i++) {
+            given()
+                    .when()
+                    .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+                    .body(new LanguageChangeRequest(newLanguage))
+                    .put("/myconext/api/sp/lang")
+                    .then()
+                    .statusCode(HttpStatus.CREATED.value());
+        }
+        List<Activity> activities = userRepository.findOneUserByEmail("jdoe@example.com").allActivities();
+        assertEquals(seeded + 1, activities.size());
+        assertEquals(ActivityEvent.LANGUAGE_CHANGED, activities.get(0).getEvent());
+    }
+
+    private void updateName(String givenName) {
+        given()
+                .when()
+                .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+                .body(new UpdateUserNameRequest("chosenName", givenName, "Poppins"))
+                .put("/myconext/api/sp/update")
+                .then()
+                .statusCode(HttpStatus.CREATED.value());
+    }
+
+    @Test
     public void changeLanguage() {
         LanguageChangeRequest languageChangeRequest = new LanguageChangeRequest("EN");
         given()

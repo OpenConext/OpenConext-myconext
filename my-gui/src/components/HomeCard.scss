@@ -1,0 +1,118 @@
+.home-card__link {
+    display: block;
+    min-width: 0;
+    text-decoration: none;
+}
+
+.home-card {
+    --card-spacing: calc(var(--spacing) * 6);
+    gap: 0;
+    padding-block: 0;
+
+    &__media {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        aspect-ratio: 312 / 175.5;
+        border-bottom: 1px solid var(--border-subtle);
+        background-color: var(--card-media-background);
+    }
+
+    &__icon {
+        position: relative;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: calc(var(--spacing) * 3) calc(var(--spacing) * 4);
+        border-radius: var(--radius-md);
+        background-color: var(--card-icon-background);
+    }
+
+    &__badge {
+        position: absolute;
+        top: -6px;
+        right: -6px;
+        display: flex;
+        padding: calc(var(--spacing) * 1);
+        border: 4px solid var(--card-badge-border);
+        border-radius: 12px;
+        background-color: var(--card-badge-background);
+    }
+
+    &__header {
+        padding-block: var(--card-spacing);
+    }
+
+    &__title {
+        display: flex;
+        align-items: center;
+        gap: calc(var(--spacing) * 2);
+        font-family: var(--font-sans);
+        font-size: var(--text-base-font-size);
+        font-weight: var(--font-weight-medium);
+        line-height: var(--text-base-line-height);
+    }
+
+    &__description {
+        overflow: hidden;
+        font-size: var(--text-sm-font-size);
+        line-height: var(--text-sm-line-height);
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    &--green {
+        --card-media-background: var(--surf-green-50);
+        --card-icon-background: var(--surf-green-200);
+        --card-badge-border: var(--surf-green-300);
+        --card-badge-background: var(--surf-green-700);
+    }
+
+    &--purple {
+        --card-media-background: var(--surf-purple-50);
+        --card-icon-background: var(--surf-purple-200);
+        --card-badge-border: var(--surf-purple-300);
+        --card-badge-background: var(--surf-purple-500);
+
+        // The building icon has filled windows in the design.
+        .home-card__icon::before,
+        .home-card__icon::after {
+            content: '';
+            position: absolute;
+            background-color: var(--surf-purple-300);
+        }
+
+        .home-card__icon::before {
+            top: 20.5px;
+            left: 24px;
+            width: 26px;
+            height: 31px;
+        }
+
+        .home-card__icon::after {
+            top: 29px;
+            left: 49px;
+            width: 9px;
+            height: 23px;
+        }
+
+        .home-card__icon img:first-child {
+            position: relative;
+            z-index: 1;
+        }
+    }
+
+    &--blue {
+        --card-media-background: var(--surf-blue-50);
+        --card-icon-background: var(--surf-blue-200);
+        --card-badge-border: var(--surf-blue-300);
+        --card-badge-background: var(--surf-blue-500);
+    }
+
+    &--turquoise {
+        --card-media-background: var(--surf-turquoise-50);
+        --card-icon-background: var(--surf-turquoise-200);
+        --card-badge-border: var(--surf-turquoise-300);
+        --card-badge-background: var(--surf-turquoise-700);
+    }
+}

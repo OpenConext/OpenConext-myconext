@@ -1,0 +1,13 @@
+// Number badge as designed in Figma (Badge, Type=Number, Variant=Info, Subtle=True)
+.count-badge {
+    box-sizing: border-box;
+    justify-content: center;
+    min-width: calc(var(--spacing) * 5);
+    height: calc(var(--spacing) * 5);
+    padding: 0 calc(var(--spacing) * 1);
+    border: 1px solid transparent;
+    border-radius: var(--radius-4xl);
+    font-size: var(--text-xs-font-size);
+    font-weight: var(--font-weight-medium);
+    line-height: var(--text-xs-line-height);
+}

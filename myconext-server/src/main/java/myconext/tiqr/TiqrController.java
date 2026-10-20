@@ -7,6 +7,7 @@ import io.swagger.v3.oas.annotations.Parameter;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
+import myconext.activity.ActivityRecorder;
 import myconext.exceptions.ExpiredAuthenticationException;
 import myconext.exceptions.ForbiddenException;
 import myconext.exceptions.NotAcceptableException;
@@ -48,6 +49,7 @@ import java.util.function.Function;
 
 import static myconext.crypto.HashGenerator.hash;
 import static myconext.log.MDCContext.logWithContext;
+import static myconext.model.ActivityEvent.*;
 import static myconext.security.CookieResolver.cookieByName;
 import static myconext.security.GuestIdpAuthenticationRequestFilter.TIQR_COOKIE_NAME;
 import static myconext.tiqr.SURFSecureID.*;
@@ -71,6 +73,7 @@ public class TiqrController implements UserAuthentication {
     private final RateLimitEnforcer rateLimitEnforcer;
     private final CookieValueEncoder cookieValueEncoder;
     private final String myconextServiceName;
+    private final ActivityRecorder activityRecorder;
 
     @Autowired
     public TiqrController(@Value("${tiqr_configuration}") Resource resource,
@@ -84,9 +87,11 @@ public class TiqrController implements UserAuthentication {
                           Environment environment,
                           @Value("${email.magic-link-url}") String magicLinkUrl,
                           @Value("${myconext_service_name}") String myconextServiceName,
-                          CookieValueEncoder cookieValueEncoder) throws IOException {
+                          CookieValueEncoder cookieValueEncoder,
+                          ActivityRecorder activityRecorder) throws IOException {
         this.tiqrConfiguration = new Yaml().loadAs(resource.getInputStream(), TiqrConfiguration.class);
         this.cookieValueEncoder = cookieValueEncoder;
+        this.activityRecorder = activityRecorder;
         String baseUrl = getEduIDServerBaseUrl();
         Service service = new Service(
                 tiqrConfiguration.getDisplayName(),
@@ -249,7 +254,8 @@ public class TiqrController implements UserAuthentication {
         //Can't have both
         List.of(PHONE_VERIFICATION_CODE, PHONE_VERIFIED, PHONE_NUMBER)
                 .forEach(surfSecureId::remove);
-        userRepository.save(user);
+        activityRecorder.record(user, regenerateSpFlow ? RECOVERY_METHOD_CHANGED : APP_ACTIVATED,
+                regenerateSpFlow ? "Recovery method changed to a recovery code" : "eduID app activated with a recovery code");
 
         if (!regenerateSpFlow) {
             tiqrService.finishRegistration(user.getId());
@@ -396,7 +402,8 @@ public class TiqrController implements UserAuthentication {
             } else {
                 tiqrService.finishRegistration(user.getId());
             }
-            userRepository.save(user);
+            activityRecorder.record(user, regenerateSpFlow ? RECOVERY_METHOD_CHANGED : APP_ACTIVATED,
+                    regenerateSpFlow ? "Recovery method changed to a phone number" : "eduID app activated with a phone number");
         } else {
             throw new ForbiddenException("Wrong phone code, wrong code: " + code);
         }
@@ -657,7 +664,7 @@ public class TiqrController implements UserAuthentication {
 
         if (MessageDigest.isEqual(userVerificationCode, verificationCode)) {
             user.getSurfSecureId().clear();
-            userRepository.save(user);
+            activityRecorder.record(user, APP_DEACTIVATED, "eduID app deactivated");
             Registration registration = registrationRepository.findRegistrationByUserId(user.getId()).orElseThrow(IllegalArgumentException::new);
             registrationRepository.delete(registration);
         } else {

@@ -381,4 +381,29 @@ public class UserTest {
                 serviceProviderEntityId, manage);
     }
 
+
+    @Test
+    public void addActivityMostRecentFirst() {
+        User user = new User();
+        user.addActivity(ActivityEvent.NAME_UPDATED, "first");
+        user.addActivity(ActivityEvent.PASSWORD_ADDED, "second");
+
+        List<Activity> activities = user.allActivities();
+        assertEquals(2, activities.size());
+        assertEquals("second", activities.get(0).getDescription());
+        assertEquals(ActivityEvent.NAME_UPDATED, activities.get(1).getEvent());
+        assertNotNull(activities.get(0).getDateTime());
+        assertEquals(1, user.recentActivities(1).size());
+    }
+
+    @Test
+    public void addActivityKeepsMostRecentOnly() {
+        User user = new User();
+        for (int i = 0; i < User.MAX_ACTIVITIES + 5; i++) {
+            user.addActivity(ActivityEvent.NAME_UPDATED, "activity " + i);
+        }
+        assertEquals(User.MAX_ACTIVITIES, user.getActivities().size());
+        assertEquals("activity " + (User.MAX_ACTIVITIES + 4), user.allActivities().get(0).getDescription());
+        assertEquals("activity 5", user.getActivities().get(0).getDescription());
+    }
 }

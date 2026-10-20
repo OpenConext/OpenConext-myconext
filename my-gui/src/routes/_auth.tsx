@@ -3,33 +3,43 @@ import { Outlet } from 'react-router';
 
 import { useQuery } from '@tanstack/react-query';
 
-import { fetchConfig, redirectToLogin } from '../api';
+import { fetchConfig, fetchMe, redirectToLogin } from '../api';
+import '../components/AuthLayout.scss';
+import { PageFooter } from '../components/PageFooter';
+import { TopNavigation } from '../components/TopNavigation';
+import I18n from '../locale/I18n';
 
 export default function ProtectedLayout() {
-    const { data, isLoading, isError } = useQuery({
-        queryKey: ['config'],
-        queryFn: fetchConfig,
+    const config = useQuery({ queryKey: ['config'], queryFn: fetchConfig });
+    const isAuthenticated = config.data?.isAuthenticated ?? false;
+
+    const me = useQuery({
+        queryKey: ['me'],
+        queryFn: fetchMe,
+        enabled: isAuthenticated,
     });
 
-    const isAuthenticated = data?.isAuthenticated ?? false;
-
     useEffect(() => {
-        if (data && !isAuthenticated && data.loginUrl) {
-            redirectToLogin(data.loginUrl, window.location.pathname);
+        if (config.data && !isAuthenticated && config.data.loginUrl) {
+            redirectToLogin(config.data.loginUrl, window.location.pathname);
         }
-    }, [data, isAuthenticated]);
+    }, [config.data, isAuthenticated]);
 
-    if (isLoading) {
-        return <div>Loading...</div>;
+    if (config.isError || me.isError) {
+        return <div>{I18n.t('common.error')}</div>;
     }
 
-    if (isError) {
-        return <div>Error!</div>;
+    if (!isAuthenticated || !me.data) {
+        return <div>{I18n.t('common.loading')}</div>;
     }
 
-    if (!isAuthenticated) {
-        return <div>Redirecting to login...</div>;
-    }
-
-    return <Outlet />;
+    return (
+        <div className="auth-layout">
+            <TopNavigation userName={me.data.chosenName} />
+            <main className="auth-layout__main">
+                <Outlet />
+            </main>
+            <PageFooter />
+        </div>
+    );
 }

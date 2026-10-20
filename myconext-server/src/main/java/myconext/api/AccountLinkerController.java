@@ -13,6 +13,7 @@ import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
+import myconext.activity.ActivityRecorder;
 import myconext.config.CreateFromInstitutionProperties;
 import myconext.cron.DisposableEmailProviders;
 import myconext.exceptions.DuplicateUserEmailException;
@@ -69,6 +70,7 @@ import java.util.stream.Stream;
 
 import static myconext.crypto.HashGenerator.hash;
 import static myconext.log.MDCContext.logWithContext;
+import static myconext.model.ActivityEvent.*;
 import static myconext.security.CookieResolver.cookieByName;
 import static myconext.security.GuestIdpAuthenticationRequestFilter.hasRequiredIapAssurance;
 import static myconext.security.GuestIdpAuthenticationRequestFilter.hasRequiredStudentAffiliation;
@@ -108,6 +110,7 @@ public class AccountLinkerController implements UserAuthentication {
     private final boolean sendLinkNotificationToEduidAccount;
     private final boolean sendLinkNotificationToLinkedAccount;
     private final List<String> createFromInstitutionAllowedReturnDomains;
+    private final ActivityRecorder activityRecorder;
 
     private final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder(4);
     private final RestTemplate restTemplate = new RestTemplate();
@@ -160,7 +163,9 @@ public class AccountLinkerController implements UserAuthentication {
             @Value("${verify.mobile_verify_redirect_url}") String mobileVerifyRedirectUri,
             @Value("${verify.base_uri}") String verifyBaseUri,
             @Value("${verify.issuers_path}") Resource issuersResource,
-            ObjectMapper objectMapper) throws IOException {
+            ObjectMapper objectMapper,
+            ActivityRecorder activityRecorder) throws IOException {
+        this.activityRecorder = activityRecorder;
         this.authenticationRequestRepository = authenticationRequestRepository;
         this.userRepository = userRepository;
         this.requestInstitutionEduIDRepository = requestInstitutionEduIDRepository;
@@ -407,6 +412,9 @@ public class AccountLinkerController implements UserAuthentication {
                 null,
                 userInfo);
         requestInstitutionEduIDRepository.save(requestInstitutionEduID);
+        if (!existingUser && user.getId() != null) {
+            activityRecorder.record(user, ACCOUNT_CREATED, "Account created from institution");
+        }
 
         //This is primarily for localhost development, in real environments the login will be done by Shibboleth filter
         UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(user, null,
@@ -621,7 +629,7 @@ public class AccountLinkerController implements UserAuthentication {
         if (user.getLinkedAccounts().isEmpty()) {
             externalLinkedAccount.setPreferred(true);
         }
-        userRepository.save(user);
+        activityRecorder.record(user, IDENTITY_VERIFIED, "Identity verified by " + externalLinkedAccount.getIdpScoping());
 
         String queryParam = "?verify=" + externalLinkedAccount.getIdpScoping();
         String clientRedirectUrl = isMobileFlow ?
@@ -753,7 +761,7 @@ public class AccountLinkerController implements UserAuthentication {
 
         LOG.info(String.format("New external linked account %s for user %s", externalLinkedAccount, user.getEmail()));
 
-        userRepository.save(user);
+        activityRecorder.record(user, IDENTITY_VERIFIED, "Identity verified by " + externalLinkedAccount.getIdpScoping());
 
         String location = this.magicLinkUrl + "?h=" + samlAuthenticationRequest.getHash();
 
@@ -978,7 +986,11 @@ public class AccountLinkerController implements UserAuthentication {
             logWithContext(user, "add", "linked_accounts", LOG, String.format("Account link with EPPN %s for institution %s with the affiliations %s",
                     eppnValue, institutionIdentifier, affiliations));
 
-            userRepository.save(user);
+            if (isNewLink) {
+                activityRecorder.record(user, INSTITUTION_LINKED, "Institution linked: " + institutionIdentifier);
+            } else {
+                userRepository.save(user);
+            }
 
             if (isNewLink) {
                 notifyAccountLinkAdded(user, schacHomeOrganization, institutionIdentifier, institutionEmail);

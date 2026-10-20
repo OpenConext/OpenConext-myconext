@@ -1,0 +1,20 @@
+// SURF colour palette used by the Figma designs (surf/<colour>/<step>).
+// curve-react does not expose these as tokens yet, so they are defined here.
+:root {
+    --surf-green-50: #f0fff8;
+    --surf-green-200: #b8f8dc;
+    --surf-green-300: #7befc0;
+    --surf-green-700: #028752;
+    --surf-purple-50: #f5f0fd;
+    --surf-purple-200: #dcccf8;
+    --surf-purple-300: #c4b1f2;
+    --surf-purple-500: #762dcb;
+    --surf-blue-50: #f5f8fe;
+    --surf-blue-200: #d5e2fa;
+    --surf-blue-300: #afc7f5;
+    --surf-blue-500: #064bcb;
+    --surf-turquoise-50: #f0fcfb;
+    --surf-turquoise-200: #bdeee9;
+    --surf-turquoise-300: #87e0d8;
+    --surf-turquoise-700: #26817a;
+}
