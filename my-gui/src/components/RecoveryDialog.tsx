@@ -1,6 +1,7 @@
 import { useRef, useState } from 'react';
 import type { FormEvent } from 'react';
 
+import { ArrowLeftIcon, DeviceMobileSpeakerIcon } from '@phosphor-icons/react';
 import {
     Button,
     Dialog,
@@ -10,13 +11,16 @@ import {
     DialogHeader,
     DialogTitle,
     Field,
+    FieldDescription,
     FieldError,
-    FieldGroup,
     FieldLabel,
     Input,
     InputOTP,
     InputOTPGroup,
     InputOTPSlot,
+    Item,
+    ItemContent,
+    ItemTitle,
     Spinner,
 } from '@surfnet/curve-react';
 import { useMutation, useQuery } from '@tanstack/react-query';
@@ -28,6 +32,7 @@ import {
     sendPhoneCode,
     verifyPhoneCode,
 } from '../api';
+import appReady from '../assets/app/app-ready.png';
 import I18n from '../locale/I18n';
 import './RecoveryDialog.scss';
 
@@ -139,7 +144,7 @@ export const RecoveryDialog = ({ onClose }: RecoveryDialogProps) => {
             <DialogContent showCloseButton={!locked}>
                 {step === 'choose' && (
                     <>
-                        <DialogHeader>
+                        <DialogHeader className="recovery-dialog__title">
                             <DialogTitle>
                                 {I18n.t('app.recovery.title')}
                             </DialogTitle>
@@ -147,32 +152,29 @@ export const RecoveryDialog = ({ onClose }: RecoveryDialogProps) => {
                                 {I18n.t('app.recovery.info')}
                             </DialogDescription>
                         </DialogHeader>
-                        <div className="recovery-dialog__options">
-                            <Button
-                                variant="outline"
-                                className="recovery-dialog__option"
-                                onClick={() => setStep('phone')}
-                            >
-                                <span>
+                        <Item
+                            variant="outline"
+                            className="recovery-dialog__option"
+                            render={<button type="button" />}
+                            onClick={() => setStep('phone')}
+                        >
+                            <DeviceMobileSpeakerIcon />
+                            <ItemContent>
+                                <ItemTitle>
                                     {I18n.t('app.recovery.phone.option')}
-                                </span>
-                                <span className="recovery-dialog__hint">
-                                    {I18n.t('app.recovery.phone.optionInfo')}
-                                </span>
-                            </Button>
-                            <Button
-                                variant="outline"
-                                className="recovery-dialog__option"
+                                </ItemTitle>
+                            </ItemContent>
+                        </Item>
+                        <div className="recovery-dialog__footer">
+                            <p>{I18n.t('app.recovery.noPhone')}</p>
+                            <button
+                                type="button"
+                                className="recovery-dialog__link"
                                 disabled={backup.isPending}
                                 onClick={() => backup.mutate()}
                             >
-                                <span>
-                                    {I18n.t('app.recovery.backup.option')}
-                                </span>
-                                <span className="recovery-dialog__hint">
-                                    {I18n.t('app.recovery.backup.optionInfo')}
-                                </span>
-                            </Button>
+                                {I18n.t('app.recovery.backup.option')}
+                            </button>
                             {backup.isError && (
                                 <FieldError>
                                     {I18n.t('common.error')}
@@ -183,8 +185,20 @@ export const RecoveryDialog = ({ onClose }: RecoveryDialogProps) => {
                 )}
 
                 {step === 'phone' && (
-                    <form onSubmit={submitPhone}>
-                        <DialogHeader>
+                    <form
+                        className="recovery-dialog__form"
+                        onSubmit={submitPhone}
+                    >
+                        <Button
+                            type="button"
+                            variant="ghost"
+                            className="recovery-dialog__back"
+                            onClick={() => setStep('choose')}
+                        >
+                            <ArrowLeftIcon />
+                            {I18n.t('app.recovery.back')}
+                        </Button>
+                        <DialogHeader className="recovery-dialog__title">
                             <DialogTitle>
                                 {I18n.t('app.recovery.phone.title')}
                             </DialogTitle>
@@ -192,51 +206,36 @@ export const RecoveryDialog = ({ onClose }: RecoveryDialogProps) => {
                                 {I18n.t('app.recovery.phone.info')}
                             </DialogDescription>
                         </DialogHeader>
-                        <FieldGroup className="recovery-dialog__fields">
-                            <Field>
-                                <FieldLabel htmlFor="phoneNumber">
-                                    {I18n.t('app.recovery.phone.label')}
-                                </FieldLabel>
-                                <Input
-                                    id="phoneNumber"
-                                    type="tel"
-                                    autoFocus
-                                    autoComplete="tel"
-                                    placeholder={I18n.t(
-                                        'app.recovery.phone.placeholder',
-                                    )}
-                                    value={phoneNumber}
-                                    onChange={(e) =>
-                                        setPhoneNumber(e.target.value)
-                                    }
-                                />
-                                {phoneTouched && !validPhone && (
-                                    <FieldError>
-                                        {I18n.t('app.recovery.phone.incorrect')}
-                                    </FieldError>
-                                )}
-                                {sendCode.isError && (
-                                    <FieldError>
-                                        {I18n.t(
-                                            'app.recovery.phone.rateLimited',
-                                        )}
-                                    </FieldError>
-                                )}
-                            </Field>
-                        </FieldGroup>
-                        <DialogFooter>
-                            <Button
-                                type="button"
-                                variant="outline"
-                                onClick={() => setStep('choose')}
-                            >
-                                {I18n.t('app.recovery.back')}
-                            </Button>
-                            <Button type="submit" disabled={sendCode.isPending}>
-                                {sendCode.isPending && <Spinner />}
-                                {I18n.t('app.recovery.phone.send')}
-                            </Button>
-                        </DialogFooter>
+                        <Field>
+                            <FieldLabel htmlFor="phoneNumber">
+                                {I18n.t('app.recovery.phone.label')}
+                            </FieldLabel>
+                            <Input
+                                id="phoneNumber"
+                                type="tel"
+                                autoFocus
+                                autoComplete="tel"
+                                value={phoneNumber}
+                                onChange={(e) => setPhoneNumber(e.target.value)}
+                            />
+                            <FieldDescription>
+                                {I18n.t('app.recovery.phone.hint')}
+                            </FieldDescription>
+                            {phoneTouched && !validPhone && (
+                                <FieldError>
+                                    {I18n.t('app.recovery.phone.incorrect')}
+                                </FieldError>
+                            )}
+                            {sendCode.isError && (
+                                <FieldError>
+                                    {I18n.t('app.recovery.phone.rateLimited')}
+                                </FieldError>
+                            )}
+                        </Field>
+                        <Button type="submit" disabled={sendCode.isPending}>
+                            {sendCode.isPending && <Spinner />}
+                            {I18n.t('app.recovery.phone.send')}
+                        </Button>
                     </form>
                 )}
 
@@ -315,7 +314,7 @@ export const RecoveryDialog = ({ onClose }: RecoveryDialogProps) => {
 
                 {step === 'backup' && (
                     <>
-                        <DialogHeader>
+                        <DialogHeader className="recovery-dialog__title">
                             <DialogTitle>
                                 {I18n.t('app.recovery.backup.title')}
                             </DialogTitle>
@@ -326,24 +325,27 @@ export const RecoveryDialog = ({ onClose }: RecoveryDialogProps) => {
                         <p className="recovery-dialog__recovery-code">
                             {recoveryCode}
                         </p>
-                        <DialogFooter>
-                            <Button variant="outline" onClick={copy}>
+                        <div className="recovery-dialog__actions">
+                            <Button onClick={copy}>
                                 {I18n.t(
                                     copied
                                         ? 'app.recovery.backup.copied'
                                         : 'app.recovery.backup.copy',
                                 )}
                             </Button>
-                            <Button onClick={() => setStep('congrats')}>
+                            <Button
+                                variant="outline"
+                                onClick={() => setStep('congrats')}
+                            >
                                 {I18n.t('app.recovery.backup.next')}
                             </Button>
-                        </DialogFooter>
+                        </div>
                     </>
                 )}
 
                 {step === 'congrats' && (
                     <>
-                        <DialogHeader>
+                        <DialogHeader className="recovery-dialog__title">
                             <DialogTitle>
                                 {I18n.t('app.recovery.congrats.title')}
                             </DialogTitle>
@@ -351,20 +353,23 @@ export const RecoveryDialog = ({ onClose }: RecoveryDialogProps) => {
                                 {I18n.t('app.recovery.congrats.info')}
                             </DialogDescription>
                         </DialogHeader>
+                        <img
+                            className="recovery-dialog__ready"
+                            src={appReady}
+                            alt=""
+                        />
                         {finish.isError && (
                             <FieldError>{I18n.t('common.error')}</FieldError>
                         )}
-                        <DialogFooter>
-                            <Button
-                                disabled={finish.isPending || finish.isSuccess}
-                                onClick={() => finish.mutate()}
-                            >
-                                {(finish.isPending || finish.isSuccess) && (
-                                    <Spinner />
-                                )}
-                                {I18n.t('app.recovery.congrats.next')}
-                            </Button>
-                        </DialogFooter>
+                        <Button
+                            disabled={finish.isPending || finish.isSuccess}
+                            onClick={() => finish.mutate()}
+                        >
+                            {(finish.isPending || finish.isSuccess) && (
+                                <Spinner />
+                            )}
+                            {I18n.t('app.recovery.congrats.next')}
+                        </Button>
                     </>
                 )}
             </DialogContent>

@@ -2,30 +2,74 @@
     text-align: center;
 }
 
-.recovery-dialog__options {
-    display: flex;
-    flex-direction: column;
-    gap: calc(var(--spacing) * 3);
-    margin-block: calc(var(--spacing) * 4);
+// the steps of the Figma design have a larger title
+.recovery-dialog__title [data-slot='dialog-title'] {
+    font-size: var(--text-xl-font-size);
+    font-weight: var(--font-weight-semibold);
+    line-height: 1;
 }
 
 .recovery-dialog__option {
+    padding: calc(var(--spacing) * 6) calc(var(--spacing) * 4);
+    color: var(--primary-strong);
+    cursor: pointer;
+
+    [data-slot='item-title'] {
+        color: var(--primary-strong);
+    }
+}
+
+// full-bleed footer, the dialog itself has 24px padding
+.recovery-dialog__footer {
+    display: flex;
     flex-direction: column;
-    align-items: flex-start;
-    justify-content: center;
-    height: auto;
-    padding: calc(var(--spacing) * 3) calc(var(--spacing) * 4);
-    text-align: left;
-    white-space: normal;
-}
-
-.recovery-dialog__hint {
+    align-items: center;
+    gap: calc(var(--spacing) * 1);
+    margin: 0 calc(var(--spacing) * -6) calc(var(--spacing) * -6);
+    padding: calc(var(--spacing) * 5) calc(var(--spacing) * 6);
+    border-top: 1px solid var(--border);
+    background-color: var(--muted);
+    font-size: var(--text-xs-font-size);
+    line-height: var(--text-xs-line-height);
     color: var(--muted-foreground);
-    font-weight: 400;
+    text-align: center;
+
+    p {
+        margin: 0;
+    }
 }
 
-.recovery-dialog__fields {
-    margin-block: calc(var(--spacing) * 4);
+.recovery-dialog__link {
+    cursor: pointer;
+    font-weight: var(--font-weight-medium);
+    color: var(--primary-strong);
+}
+
+.recovery-dialog__form {
+    display: flex;
+    flex-direction: column;
+    gap: calc(var(--spacing) * 6);
+}
+
+.recovery-dialog__back {
+    align-self: flex-start;
+    margin: calc(var(--spacing) * -2) 0 calc(var(--spacing) * -2)
+        calc(var(--spacing) * -2.5);
+    color: var(--primary-strong);
+}
+
+.recovery-dialog__actions {
+    display: flex;
+    flex-direction: column;
+    gap: calc(var(--spacing) * 3);
+}
+
+.recovery-dialog__ready {
+    display: block;
+    justify-self: center;
+    width: 13.875rem;
+    height: auto;
+    margin-bottom: calc(var(--spacing) * 6);
 }
 
 .recovery-dialog__code {
@@ -46,14 +90,16 @@
     }
 }
 
+// the recovery code in two groups of four
 .recovery-dialog__recovery-code {
-    margin: calc(var(--spacing) * 4) 0 calc(var(--spacing) * 6);
-    padding: calc(var(--spacing) * 4);
+    margin: 0;
+    padding: calc(var(--spacing) * 3.5) calc(var(--spacing) * 4);
+    border: 1px solid var(--border);
     border-radius: var(--radius-md);
     background: var(--muted);
-    font-family: ui-monospace, monospace;
-    font-size: var(--text-lg);
-    letter-spacing: 0.1em;
+    font-size: var(--text-xl-font-size);
+    font-weight: var(--font-weight-semibold);
+    line-height: 1;
     text-align: center;
     user-select: all;
 }
