@@ -1,6 +1,5 @@
-import { Navigate, useLocation } from 'react-router';
+import { Navigate } from 'react-router';
 
 export default function AddPasswordRedirect() {
-    const { search } = useLocation();
-    return <Navigate to={{ pathname: '/security/password', search }} replace />;
+    return <Navigate to={{ pathname: '/security' }} replace />;
 }

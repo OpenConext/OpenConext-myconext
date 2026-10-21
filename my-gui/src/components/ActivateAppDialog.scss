@@ -1,0 +1,65 @@
+.activate-app__stores {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    gap: calc(var(--spacing) * 6);
+    margin-block: calc(var(--spacing) * 6) calc(var(--spacing) * 6);
+
+    // a phone cannot scan its own screen, so the install QR is for wide screens
+    .store-badges {
+        flex-direction: column;
+        flex: 0 0 8.7rem;
+    }
+
+    // in a column the badges size by their width, not by flex
+    .store-badges__badge {
+        flex: none;
+        width: 100%;
+    }
+}
+
+.activate-app__qr {
+    display: flex;
+
+    svg {
+        width: 7.5rem;
+        height: 7.5rem;
+    }
+
+    @media (max-width: 480px) {
+        display: none;
+    }
+}
+
+@media (max-width: 480px) {
+    .activate-app__stores .store-badges {
+        flex-direction: row;
+        flex: 1;
+    }
+
+    .activate-app__stores .store-badges__badge {
+        flex: 1;
+        width: auto;
+    }
+}
+
+.activate-app__after {
+    margin: 0 0 calc(var(--spacing) * 6);
+    color: var(--muted-foreground);
+    font-size: var(--text-sm);
+    line-height: var(--text-sm--line-height);
+}
+
+.activate-app__enroll {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: calc(var(--spacing) * 4);
+    margin-block: calc(var(--spacing) * 4);
+}
+
+.activate-app__enroll-qr {
+    width: 14rem;
+    height: 14rem;
+    image-rendering: pixelated;
+}

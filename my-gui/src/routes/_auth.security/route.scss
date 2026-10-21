@@ -1,0 +1,89 @@
+.security {
+    display: flex;
+    flex-direction: column;
+    gap: calc(var(--spacing) * 8);
+    max-width: 36rem;
+    margin: 0 auto;
+
+    &__alert {
+        font-size: var(--text-sm-font-size);
+        line-height: var(--text-sm-line-height);
+    }
+
+    &__alert [data-slot='alert-description'] {
+        font-size: var(--text-sm-font-size);
+        line-height: var(--text-sm-line-height);
+    }
+
+    &__section {
+        display: flex;
+        flex-direction: column;
+        gap: calc(var(--spacing) * 4);
+    }
+
+    &__heading {
+        font-size: var(--text-lg-font-size);
+        font-weight: var(--font-weight-semibold);
+        line-height: var(--text-xl-line-height, 1.5rem);
+        color: var(--foreground);
+    }
+
+    &__card {
+        overflow: hidden;
+        border: 1px solid var(--border);
+        border-radius: var(--radius-xl);
+        background-color: var(--card);
+        box-shadow: var(--shadow-sm);
+    }
+
+    // the muted areas hold links to set up another method
+    &__actions {
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+        border: 1px solid var(--border);
+        border-radius: var(--radius-xl);
+        background-color: var(--muted);
+    }
+
+    &__action {
+        justify-content: center;
+        height: auto;
+        padding-block: calc(var(--spacing) * 5);
+        border-radius: 0;
+        color: var(--primary-strong);
+        font-size: var(--text-sm-font-size);
+
+        &:not(:last-child) {
+            border-bottom: 1px solid var(--border);
+        }
+
+        // match the container's rounded corners so the focus ring follows them
+        &:first-child {
+            border-top-left-radius: calc(var(--radius-xl) - 1px);
+            border-top-right-radius: calc(var(--radius-xl) - 1px);
+        }
+
+        &:last-child {
+            border-bottom-left-radius: calc(var(--radius-xl) - 1px);
+            border-bottom-right-radius: calc(var(--radius-xl) - 1px);
+        }
+
+        // the pressed 1px shift would be clipped by the container, leaving
+        // only the container's grey border visible at the bottom
+        &:active {
+            transform: none;
+        }
+
+        &:focus {
+            border-color: transparent;
+        }
+
+        // the container clips overflow, so draw the ring inside the button
+        &:focus-visible {
+            outline: 2px solid var(--ring);
+            outline-offset: -2px;
+            box-shadow: none;
+        }
+    }
+}

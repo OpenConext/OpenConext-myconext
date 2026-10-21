@@ -1,0 +1,115 @@
+.service-card {
+    display: flex;
+    flex-direction: column;
+    gap: calc(var(--spacing) * 2.5);
+    padding: calc(var(--spacing) * 6);
+    border-bottom: 1px solid var(--border);
+    background-color: var(--background);
+
+    &__header {
+        display: flex;
+        gap: calc(var(--spacing) * 2.5);
+        align-items: center;
+        width: 100%;
+        cursor: pointer;
+        text-align: left;
+    }
+
+    &__logo {
+        flex-shrink: 0;
+        width: calc(var(--spacing) * 12);
+        height: calc(var(--spacing) * 12);
+        object-fit: contain;
+
+        &--placeholder {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: var(--radius-md);
+            background-color: var(--muted);
+            font-size: 24px;
+        }
+    }
+
+    &__title {
+        display: flex;
+        flex: 1;
+        flex-direction: column;
+        gap: calc(var(--spacing) * 1.5);
+        min-width: 0;
+        font-size: var(--text-sm-font-size);
+        line-height: 1;
+    }
+
+    &__name {
+        font-weight: var(--font-weight-medium);
+        color: var(--foreground);
+    }
+
+    &__login {
+        color: var(--muted-foreground);
+    }
+
+    &__caret {
+        flex-shrink: 0;
+        transition: transform 150ms;
+
+        &[data-open] {
+            transform: rotate(180deg);
+        }
+    }
+
+    &__details {
+        display: flex;
+        flex-direction: column;
+        gap: calc(var(--spacing) * 4);
+        padding: calc(var(--spacing) * 4);
+        border-radius: var(--radius-md);
+        background-color: var(--muted);
+        font-size: var(--text-sm-font-size);
+        line-height: var(--text-sm-line-height);
+    }
+
+    &__section {
+        display: flex;
+        flex-direction: column;
+        gap: calc(var(--spacing) * 2);
+        color: var(--foreground);
+    }
+
+    &__list {
+        display: grid;
+        grid-template-columns: max-content 1fr;
+        gap: calc(var(--spacing) * 2) calc(var(--spacing) * 8);
+
+        dt {
+            color: var(--muted-foreground);
+        }
+
+        dd {
+            min-width: 0;
+            color: var(--foreground);
+            word-break: break-word;
+        }
+    }
+
+    &__eduid dt {
+        color: var(--muted-foreground);
+    }
+
+    &__eduid dd {
+        color: var(--foreground);
+        word-break: break-all;
+    }
+
+    &__actions {
+        display: flex;
+        gap: calc(var(--spacing) * 6);
+        justify-content: center;
+    }
+
+    &__action {
+        color: var(--primary-strong);
+        font-size: var(--text-sm-font-size);
+    }
+}

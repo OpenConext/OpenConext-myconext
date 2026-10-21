@@ -1,5 +1,42 @@
+@use './styles/breakpoints';
 @use './styles/surf-palette';
 
 body {
     background-color: var(--muted);
+}
+
+// Environment ribbon: the server only supplies `background` and `content`
+// (/myconext/api/disclaimer), the position lives here.
+body::after {
+    position: fixed;
+    top: 15px;
+    right: -25px;
+    z-index: 1000;
+    width: 109px;
+    height: 28px;
+    color: white;
+    font-family: var(--font-sans, sans-serif);
+    font-size: 16px;
+    font-weight: bold;
+    line-height: 30px;
+    text-align: center;
+    text-transform: uppercase;
+    transform: rotate(45deg);
+    box-shadow: 0 1px 3px rgb(0 0 0 / 30%);
+    // the ribbon sits on top of the header actions, do not block them
+    pointer-events: none;
+}
+
+// On mobile the corner would cover the hamburger button, so the ribbon
+// becomes a label centred in the top bar instead.
+@media (max-width: #{breakpoints.$mobile-breakpoint - 1px}) {
+    body::after {
+        top: calc((var(--spacing) * 16 - 28px) / 2);
+        right: 0;
+        left: 0;
+        margin: 0 auto;
+        border-radius: var(--radius-md);
+        line-height: 28px;
+        transform: none;
+    }
 }

@@ -1,0 +1,39 @@
+.institutions {
+    display: flex;
+    flex-direction: column;
+    gap: calc(var(--spacing) * 8);
+    max-width: 36rem;
+    margin: 0 auto;
+
+    &__card {
+        overflow: hidden;
+        border: 1px solid var(--border);
+        border-radius: var(--radius-xl);
+        background-color: var(--card);
+        box-shadow: var(--shadow-sm);
+    }
+
+    &__card > :last-child {
+        border-bottom: 0;
+    }
+
+    &__footer {
+        display: flex;
+        justify-content: center;
+        padding: calc(var(--spacing) * 5) calc(var(--spacing) * 6);
+    }
+
+    &__empty {
+        padding: calc(var(--spacing) * 6);
+    }
+
+    // the design has no dashed border around the empty state
+    &__empty [data-slot='empty'] {
+        border: 0;
+    }
+
+    &__link {
+        color: var(--primary-strong);
+        font-size: var(--text-sm-font-size);
+    }
+}

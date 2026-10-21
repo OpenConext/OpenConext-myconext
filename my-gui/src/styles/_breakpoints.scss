@@ -1,0 +1,3 @@
+// Viewports narrower than this use the mobile layout (hamburger menu).
+// Matches the curve-react mobile breakpoint (useIsMobile in the sidebar).
+$mobile-breakpoint: 768px;

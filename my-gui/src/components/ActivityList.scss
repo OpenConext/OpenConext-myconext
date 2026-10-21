@@ -32,3 +32,27 @@
         line-height: 1;
     }
 }
+
+.activity-list__more {
+    padding-block: calc(var(--spacing) * 1.5);
+    // match the card's rounded bottom corners so the focus ring follows them
+    border-radius: 0 0 calc(var(--radius-xl) - 1px) calc(var(--radius-xl) - 1px);
+    color: var(--primary-strong);
+    font-size: var(--text-sm-font-size);
+
+    // the card clips overflow: a pressed shift or the border would be cut off
+    &:active {
+        transform: none;
+    }
+
+    &:focus {
+        border-color: transparent;
+    }
+
+    // draw the ring inside the button
+    &:focus-visible {
+        outline: 2px solid var(--ring);
+        outline-offset: -2px;
+        box-shadow: none;
+    }
+}

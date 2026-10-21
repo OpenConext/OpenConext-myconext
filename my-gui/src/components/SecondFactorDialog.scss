@@ -1,0 +1,51 @@
+.second-factor__center {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: calc(var(--spacing) * 4);
+    margin-block: calc(var(--spacing) * 4);
+}
+
+.second-factor__qr {
+    width: 14rem;
+    height: 14rem;
+    image-rendering: pixelated;
+}
+
+.second-factor__help {
+    display: flex;
+    flex-direction: column;
+    gap: calc(var(--spacing) * 3);
+    font-size: var(--text-sm-font-size);
+    line-height: var(--text-sm-line-height);
+    color: var(--muted-foreground);
+
+    p {
+        margin: 0;
+    }
+
+    strong {
+        font-weight: var(--font-weight-medium);
+        color: var(--foreground);
+    }
+}
+
+.second-factor__link {
+    cursor: pointer;
+    font-weight: var(--font-weight-medium);
+    color: var(--primary-strong);
+}
+
+.second-factor__otp {
+    justify-content: center;
+}
+
+// the Figma design shows separate slots with a gap instead of a joined group
+.second-factor__slots {
+    gap: calc(var(--spacing) * 2);
+
+    [data-slot='input-otp-slot'] {
+        border: 1px solid var(--input);
+        border-radius: var(--radius-md);
+    }
+}

@@ -98,6 +98,7 @@ myconext_entityid: http://mijn.localhost
 myconext_service_name: "Mijn eduID"
 mobile_app_redirect: eduid:///client/mobile
 mobile_app_rp_entity_id: mobile_app_rp_entity_id
+supportedLanguages: en,nl
 
 create-from-institution:
   return-url-allowed-domains:

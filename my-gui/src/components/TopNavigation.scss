@@ -1,3 +1,5 @@
+@use '../styles/breakpoints' as *;
+
 .top-navigation {
     background-color: var(--sidebar, var(--background));
     border-bottom: 1px solid var(--border);
@@ -50,5 +52,67 @@
         display: flex;
         align-items: center;
         margin-left: auto;
+    }
+
+    // the menu is as wide as its longest label, not as the trigger
+    &__menu {
+        min-width: max-content;
+        white-space: nowrap;
+    }
+
+    &__burger {
+        display: none;
+        margin-left: auto;
+    }
+
+    &__sheet {
+        gap: calc(var(--spacing) * 4);
+        padding: calc(var(--spacing) * 4);
+    }
+
+    &__sheet-links,
+    &__sheet-section {
+        display: flex;
+        flex-direction: column;
+        gap: calc(var(--spacing) * 1);
+    }
+
+    &__sheet-section {
+        align-items: stretch;
+        padding-top: calc(var(--spacing) * 4);
+        border-top: 1px solid var(--border);
+    }
+
+    &__sheet-section > * {
+        justify-content: flex-start;
+    }
+
+    &__sheet-link {
+        display: flex;
+        gap: calc(var(--spacing) * 2);
+        align-items: center;
+        padding: calc(var(--spacing) * 2) calc(var(--spacing) * 3);
+        border-radius: var(--radius-md);
+        font-size: var(--text-sm-font-size);
+        font-weight: var(--font-weight-medium);
+
+        &[data-active] {
+            background-color: var(--muted);
+            color: var(--primary);
+        }
+    }
+
+    @media (max-width: #{$mobile-breakpoint - 1px}) {
+        &__content {
+            height: calc(var(--spacing) * 16);
+        }
+
+        &__desktop {
+            display: none;
+        }
+
+        &__burger {
+            display: inline-flex;
+        }
     }
 }

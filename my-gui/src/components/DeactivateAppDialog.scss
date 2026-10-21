@@ -1,0 +1,27 @@
+.deactivate-app__code {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: calc(var(--spacing) * 2);
+    margin-block: calc(var(--spacing) * 4);
+}
+
+// the Figma design shows separate slots with a gap instead of a joined group
+.deactivate-app__slots {
+    gap: calc(var(--spacing) * 2);
+
+    [data-slot='input-otp-slot'] {
+        border: 1px solid var(--input);
+        border-radius: var(--radius-md);
+    }
+}
+
+.deactivate-app__text {
+    display: flex;
+    flex-direction: column;
+    gap: calc(var(--spacing) * 1.5);
+
+    p {
+        margin: 0;
+    }
+}

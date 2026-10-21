@@ -89,6 +89,7 @@ public class LoginController {
                            @Value("${feature.use_remote_creation_for_affiliation}") boolean useRemoteCreationForAffiliation,
                            @Value("${feature.enable_account_linking}") boolean enableAccountLinking,
                            @Value("${feature.use_app}") boolean useApp,
+                           @Value("${supportedLanguages}") String supportedLanguages,
                            CreateFromInstitutionProperties createFromInstitutionProperties
     ) {
         this.config.put("myconextBasePath", myconextBasePath);
@@ -96,6 +97,7 @@ public class LoginController {
         this.config.put("loginUrlServiceDesk", servicedeskBasePath + "/auth/login");
         this.config.put("continueAfterLoginUrl", continueAfterLoginUrl);
         this.config.put("baseDomain", baseDomain);
+        this.config.put("supportedLanguages", supportedLanguages);
         this.config.put("magicLinkUrl", magicLinkUrl);
         this.config.put("accountBaseUrl", accountRedirectUrl);
         this.config.put("myconextBaseUrl", myconextRedirectUrl);

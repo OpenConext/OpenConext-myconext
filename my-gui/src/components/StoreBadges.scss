@@ -1,0 +1,32 @@
+.store-badges {
+    display: flex;
+    gap: calc(var(--spacing) * 4);
+    align-items: flex-start;
+    flex: 1;
+    min-width: 0;
+}
+
+.store-badges__badge {
+    position: relative;
+    display: block;
+    flex: 1;
+    min-width: 0;
+    aspect-ratio: 156 / 47;
+    overflow: hidden;
+
+    img {
+        position: absolute;
+        width: 105.13%;
+        height: 274.47%;
+        left: -1.28%;
+        max-width: none;
+    }
+}
+
+.store-badges__badge--google img {
+    top: -8.51%;
+}
+
+.store-badges__badge--apple img {
+    top: -163.83%;
+}

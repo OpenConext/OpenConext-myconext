@@ -1,0 +1,92 @@
+.linked-account {
+    &__title {
+        font-size: var(--text-xl-font-size);
+        font-weight: var(--font-weight-semibold);
+        line-height: 1;
+    }
+
+    &__continue {
+        width: 100%;
+    }
+
+    &__details {
+        display: grid;
+        grid-template-columns: max-content 1fr;
+        gap: calc(var(--spacing) * 2) calc(var(--spacing) * 8);
+        padding: calc(var(--spacing) * 4);
+        border-radius: var(--radius-md);
+        background-color: var(--muted);
+        font-size: var(--text-sm-font-size);
+        line-height: var(--text-sm-line-height);
+
+        dt {
+            color: var(--muted-foreground);
+        }
+
+        dd {
+            color: var(--foreground);
+        }
+    }
+
+    &__info {
+        font-size: var(--text-sm-font-size);
+        line-height: var(--text-sm-line-height);
+        color: var(--muted-foreground);
+    }
+
+    &__choices {
+        gap: calc(var(--spacing) * 3);
+    }
+
+    &__choice {
+        display: flex;
+        gap: calc(var(--spacing) * 2.5);
+        align-items: center;
+        padding: calc(var(--spacing) * 3.5) calc(var(--spacing) * 4);
+        border: 1px solid var(--border);
+        border-radius: var(--radius-md);
+        cursor: pointer;
+
+        &:has([data-checked]) {
+            border-color: var(--primary);
+        }
+    }
+
+    &__logo {
+        flex-shrink: 0;
+        width: calc(var(--spacing) * 12);
+        height: calc(var(--spacing) * 12);
+        object-fit: contain;
+
+        &--placeholder {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: var(--radius-md);
+            background-color: var(--muted);
+            font-size: 24px;
+        }
+    }
+
+    &__text {
+        display: flex;
+        flex: 1;
+        flex-direction: column;
+        gap: calc(var(--spacing) * 1.5);
+        min-width: 0;
+        font-size: var(--text-sm-font-size);
+        line-height: 1;
+    }
+
+    &__name {
+        display: flex;
+        gap: calc(var(--spacing) * 2);
+        align-items: center;
+        font-weight: var(--font-weight-medium);
+        color: var(--foreground);
+    }
+
+    &__detail {
+        color: var(--muted-foreground);
+    }
+}

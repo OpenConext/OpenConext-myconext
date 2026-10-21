@@ -22,6 +22,7 @@
         "i18n-js": "^4.5.4",
         "isbot": "^5",
         "js-cookie": "^3.0.8",
+        "qrcode.react": "^4.2.0",
         "react": "^19.2.8",
         "react-dom": "^19.2.8",
         "react-router": "^8.5.0",

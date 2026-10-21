@@ -1,0 +1,94 @@
+.login-method {
+    display: flex;
+    flex-direction: column;
+    gap: calc(var(--spacing) * 2.5);
+    padding: calc(var(--spacing) * 6);
+    border-bottom: 1px solid var(--border);
+    background-color: var(--background);
+
+    &:last-child {
+        border-bottom: 0;
+    }
+
+    &__main {
+        display: flex;
+        gap: calc(var(--spacing) * 2.5);
+        align-items: flex-start;
+        width: 100%;
+        text-align: left;
+    }
+
+    &__main--toggle {
+        cursor: pointer;
+    }
+
+    &__media {
+        display: flex;
+        flex-shrink: 0;
+        align-items: center;
+        justify-content: center;
+        width: calc(var(--spacing) * 8);
+        height: calc(var(--spacing) * 8);
+        border: 1px solid var(--border);
+        border-radius: var(--radius-sm);
+        background-color: var(--muted);
+        font-size: 16px;
+    }
+
+    &__text {
+        display: flex;
+        flex: 1;
+        flex-direction: column;
+        gap: calc(var(--spacing) * 1);
+        min-width: 0;
+        font-size: var(--text-sm-font-size);
+    }
+
+    &__title {
+        font-weight: var(--font-weight-medium);
+        line-height: var(--leading-4, 1rem);
+        color: var(--foreground);
+    }
+
+    &__description {
+        line-height: var(--text-sm-line-height);
+        color: var(--muted-foreground);
+    }
+
+    &__change {
+        align-self: center;
+        color: var(--primary-strong);
+        font-size: var(--text-sm-font-size);
+    }
+
+    &__caret {
+        flex-shrink: 0;
+        align-self: center;
+        transition: transform 150ms;
+
+        &[data-open] {
+            transform: rotate(180deg);
+        }
+    }
+
+    &__details {
+        display: grid;
+        grid-template-columns: max-content 1fr;
+        gap: calc(var(--spacing) * 2) calc(var(--spacing) * 8);
+        padding: calc(var(--spacing) * 6);
+        border-radius: var(--radius-lg);
+        background-color: var(--muted);
+        font-size: var(--text-sm-font-size);
+        line-height: var(--text-sm-line-height);
+
+        dt {
+            color: var(--muted-foreground);
+        }
+    }
+
+    &__action {
+        width: 100%;
+        color: var(--primary-strong);
+        font-size: var(--text-sm-font-size);
+    }
+}

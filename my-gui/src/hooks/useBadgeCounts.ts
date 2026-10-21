@@ -1,6 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
 
 import { fetchMe } from '../api';
+import { isVerified } from '../utils/verification';
 
 export type BadgeCounts = {
     identity: number;
@@ -12,8 +13,7 @@ export const useBadgeCounts = (): BadgeCounts => {
     const { data: me } = useQuery({ queryKey: ['me'], queryFn: fetchMe });
 
     return {
-        // TODO: derive from verification state once the identity page is built
-        identity: (me?.externalLinkedAccounts ?? []).length === 0 ? 1 : 0,
+        identity: me && !isVerified(me) ? 1 : 0,
         institutions:
             (me?.linkedAccounts ?? []).length +
             (me?.externalLinkedAccounts ?? []).length,

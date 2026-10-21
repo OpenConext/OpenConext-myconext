@@ -1,0 +1,31 @@
+.delete-institution {
+    &__header {
+        display: flex;
+        gap: calc(var(--spacing) * 6);
+        align-items: flex-start;
+        text-align: left;
+    }
+
+    &__media {
+        flex-shrink: 0;
+        width: calc(var(--spacing) * 16);
+        height: calc(var(--spacing) * 16);
+        font-size: 32px;
+        color: var(--destructive);
+        background-color: color-mix(in srgb, var(--destructive) 10%, white);
+    }
+
+    &__text {
+        display: flex;
+        flex: 1;
+        flex-direction: column;
+        gap: calc(var(--spacing) * 1.5);
+        min-width: 0;
+
+        p {
+            font-size: var(--text-sm-font-size);
+            line-height: var(--text-sm-line-height);
+            color: var(--muted-foreground);
+        }
+    }
+}
