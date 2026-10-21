@@ -1,6 +1,8 @@
 import { useRef, useState } from 'react';
 import type { FormEvent } from 'react';
 
+import { toast } from 'sonner';
+
 import { LinkBreakIcon } from '@phosphor-icons/react';
 import {
     AlertDialog,
@@ -60,6 +62,7 @@ export const DeactivateAppDialog = ({
         mutationFn: deactivateApp,
         onSuccess: async () => {
             await queryClient.invalidateQueries({ queryKey: ['me'] });
+            toast.success(I18n.t('toast.appDeactivated'));
             onClose();
         },
         onError: (error) => {

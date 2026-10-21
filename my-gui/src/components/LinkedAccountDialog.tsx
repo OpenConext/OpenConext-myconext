@@ -1,5 +1,7 @@
 import { useState } from 'react';
 
+import { toast } from 'sonner';
+
 import { BuildingOfficeIcon } from '@phosphor-icons/react';
 import {
     Badge,
@@ -52,8 +54,13 @@ export const LinkedAccountDialog = ({
 
     const { mutate, isPending } = useMutation({
         mutationFn: preferLinkedAccount,
-        onSuccess: (updated) => {
+        onSuccess: (updated, chosen) => {
             queryClient.setQueryData(['me'], updated);
+            toast.success(
+                I18n.t('toast.institutionPreferred', {
+                    name: institutionName(chosen),
+                }),
+            );
             onClose();
         },
     });

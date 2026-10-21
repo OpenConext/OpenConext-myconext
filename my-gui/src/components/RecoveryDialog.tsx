@@ -1,5 +1,7 @@
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import type { FormEvent } from 'react';
+
+import { toast } from 'sonner';
 
 import { ArrowLeftIcon, DeviceMobileSpeakerIcon } from '@phosphor-icons/react';
 import {
@@ -23,12 +25,15 @@ import {
     ItemTitle,
     Spinner,
 } from '@surfnet/curve-react';
-import { useMutation, useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 
 import {
     fetchConfig,
     finishEnrollment,
     generateBackupCode,
+    regenerateBackupCode,
+    resendPhoneCode,
+    reverifyPhoneCode,
     sendPhoneCode,
     verifyPhoneCode,
 } from '../api';
@@ -52,11 +57,17 @@ const formatRecoveryCode = (code: string) =>
     `${code.substring(0, 4)} ${code.substring(4)}`;
 
 type RecoveryDialogProps = {
+    // change the recovery method of an active app instead of enrolling
+    change?: boolean;
     onClose: () => void;
 };
 
 // the last step of enrolling the eduID app: a recovery method, then finishing
-export const RecoveryDialog = ({ onClose }: RecoveryDialogProps) => {
+export const RecoveryDialog = ({
+    change = false,
+    onClose,
+}: RecoveryDialogProps) => {
+    const queryClient = useQueryClient();
     const otpRef = useRef<HTMLInputElement>(null);
     const [step, setStep] = useState<Step>('choose');
     const [phoneNumber, setPhoneNumber] = useState('');
@@ -72,8 +83,15 @@ export const RecoveryDialog = ({ onClose }: RecoveryDialogProps) => {
         queryFn: fetchConfig,
     });
 
+    // the app stays active, only its recovery method changed
+    const finishChange = async () => {
+        await queryClient.invalidateQueries({ queryKey: ['me'] });
+        toast.success(I18n.t('toast.recoveryChanged'));
+        onClose();
+    };
+
     const backup = useMutation({
-        mutationFn: generateBackupCode,
+        mutationFn: change ? regenerateBackupCode : generateBackupCode,
         onSuccess: ({ recoveryCode: generated }) => {
             setRecoveryCode(formatRecoveryCode(generated));
             setStep('backup');
@@ -81,7 +99,7 @@ export const RecoveryDialog = ({ onClose }: RecoveryDialogProps) => {
     });
 
     const sendCode = useMutation({
-        mutationFn: sendPhoneCode,
+        mutationFn: change ? resendPhoneCode : sendPhoneCode,
         onSuccess: () => {
             setCode('');
             setWrongCode(false);
@@ -91,8 +109,8 @@ export const RecoveryDialog = ({ onClose }: RecoveryDialogProps) => {
     });
 
     const verifyCode = useMutation({
-        mutationFn: verifyPhoneCode,
-        onSuccess: () => setStep('congrats'),
+        mutationFn: change ? reverifyPhoneCode : verifyPhoneCode,
+        onSuccess: () => (change ? finishChange() : setStep('congrats')),
         onError: (error) => {
             setCode('');
             if (error instanceof Response && error.status === 429) {
@@ -139,6 +157,16 @@ export const RecoveryDialog = ({ onClose }: RecoveryDialogProps) => {
     // the recovery code is only shown once, so it can not be dismissed by accident
     const locked = step === 'backup' || step === 'congrats';
 
+    // leaving the page would lose the code that is shown once
+    useEffect(() => {
+        if (step !== 'backup') {
+            return;
+        }
+        const warn = (event: BeforeUnloadEvent) => event.preventDefault();
+        window.addEventListener('beforeunload', warn);
+        return () => window.removeEventListener('beforeunload', warn);
+    }, [step]);
+
     return (
         <Dialog open onOpenChange={(open) => !open && !locked && onClose()}>
             <DialogContent showCloseButton={!locked}>
@@ -146,10 +174,18 @@ export const RecoveryDialog = ({ onClose }: RecoveryDialogProps) => {
                     <>
                         <DialogHeader className="recovery-dialog__title">
                             <DialogTitle>
-                                {I18n.t('app.recovery.title')}
+                                {I18n.t(
+                                    change
+                                        ? 'app.recovery.changeTitle'
+                                        : 'app.recovery.title',
+                                )}
                             </DialogTitle>
                             <DialogDescription>
-                                {I18n.t('app.recovery.info')}
+                                {I18n.t(
+                                    change
+                                        ? 'app.recovery.changeInfo'
+                                        : 'app.recovery.info',
+                                )}
                             </DialogDescription>
                         </DialogHeader>
                         <Item
@@ -335,7 +371,11 @@ export const RecoveryDialog = ({ onClose }: RecoveryDialogProps) => {
                             </Button>
                             <Button
                                 variant="outline"
-                                onClick={() => setStep('congrats')}
+                                onClick={() =>
+                                    change
+                                        ? void finishChange()
+                                        : setStep('congrats')
+                                }
                             >
                                 {I18n.t('app.recovery.backup.next')}
                             </Button>

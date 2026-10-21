@@ -1,0 +1,14 @@
+.create-from-institution {
+    &__footer {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: calc(var(--spacing) * 4);
+    }
+
+    p {
+        font-size: var(--text-sm-font-size);
+        line-height: var(--text-sm-line-height);
+        color: var(--muted-foreground);
+    }
+}

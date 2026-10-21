@@ -65,6 +65,11 @@ export const TopNavigation = ({ userName }: TopNavigationProps) => {
         queryFn: fetchConfig,
     });
     const badgeCounts = useBadgeCounts();
+    // institutions are hidden when the server disabled linking accounts
+    const visibleItems = navigationItems.filter(
+        ({ to }) =>
+            to !== '/institutions' || config?.enableAccountLinking !== false,
+    );
     const baseDomain =
         typeof config?.baseDomain === 'string' ? config.baseDomain : undefined;
     const languages = AVAILABLE_LANGUAGES.filter((lang) =>
@@ -84,7 +89,7 @@ export const TopNavigation = ({ userName }: TopNavigationProps) => {
                 </NavLink>
                 <NavigationMenu className="top-navigation__desktop">
                     <NavigationMenuList>
-                        {navigationItems.map(({ to, labelKey, badge }) => (
+                        {visibleItems.map(({ to, labelKey, badge }) => (
                             <NavigationMenuItem key={to}>
                                 <NavigationMenuLink
                                     className="top-navigation__link"
@@ -178,7 +183,7 @@ export const TopNavigation = ({ userName }: TopNavigationProps) => {
                     <SheetContent className="top-navigation__sheet">
                         <SheetTitle>{I18n.t('navigation.menu')}</SheetTitle>
                         <nav className="top-navigation__sheet-links">
-                            {navigationItems.map(({ to, labelKey, badge }) => (
+                            {visibleItems.map(({ to, labelKey, badge }) => (
                                 <SheetClose
                                     key={to}
                                     className="top-navigation__sheet-link"

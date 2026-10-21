@@ -27,6 +27,10 @@ export async function request<T>(
         window.location.reload();
         return undefined as T;
     }
+    // the session is gone, a reload sends the user through the login
+    if (res.status === 401) {
+        window.location.reload();
+    }
     if (!res.ok) {
         throw res;
     }

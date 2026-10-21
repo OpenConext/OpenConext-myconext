@@ -10,7 +10,7 @@ export const StoreBadges = () => (
             href={I18n.t('app.get.google')}
             target="_blank"
             rel="noreferrer"
-            aria-label="Google Play"
+            aria-label={I18n.t('app.get.googleLabel')}
         >
             <img src={badges} alt="" />
         </a>
@@ -19,7 +19,7 @@ export const StoreBadges = () => (
             href={I18n.t('app.get.apple')}
             target="_blank"
             rel="noreferrer"
-            aria-label="App Store"
+            aria-label={I18n.t('app.get.appleLabel')}
         >
             <img src={badges} alt="" />
         </a>

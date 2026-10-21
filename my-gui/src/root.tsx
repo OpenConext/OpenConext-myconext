@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Links, Meta, Outlet, Scripts, ScrollRestoration } from 'react-router';
 
+import { Button, Toaster } from '@surfnet/curve-react';
 import '@surfnet/curve-react/styles.css';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
@@ -11,7 +12,7 @@ import { useAppStore } from './store/store';
 
 export function Layout({ children }: { children: React.ReactNode }) {
     return (
-        <html lang="en">
+        <html lang={I18n.locale}>
             <head>
                 <meta charSet="utf-8" />
                 <meta
@@ -46,7 +47,21 @@ export default function Root() {
     return (
         <QueryClientProvider client={queryClient}>
             <Outlet />
+            <Toaster position="top-center" />
             <ReactQueryDevtools initialIsOpen={false} />
         </QueryClientProvider>
+    );
+}
+
+// a render error would otherwise show the framework's default page
+export function ErrorBoundary() {
+    return (
+        <div className="error-boundary">
+            <h1>{I18n.t('errorBoundary.title')}</h1>
+            <p>{I18n.t('errorBoundary.info')}</p>
+            <Button onClick={() => window.location.reload()}>
+                {I18n.t('errorBoundary.reload')}
+            </Button>
+        </div>
     );
 }

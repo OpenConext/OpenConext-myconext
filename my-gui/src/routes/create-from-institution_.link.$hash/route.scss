@@ -1,0 +1,36 @@
+.link-from-institution {
+    display: flex;
+    flex-direction: column;
+    gap: calc(var(--spacing) * 6);
+
+    h1 {
+        font-size: var(--text-2xl-font-size);
+        font-weight: var(--font-weight-semibold);
+        line-height: var(--text-2xl-line-height);
+    }
+
+    p {
+        color: var(--muted-foreground);
+        font-size: var(--text-sm-font-size);
+        line-height: var(--text-sm-line-height);
+    }
+
+    &__link {
+        cursor: pointer;
+        font-weight: var(--font-weight-medium);
+        color: var(--primary-strong);
+    }
+
+    &__terms {
+        display: flex;
+        gap: calc(var(--spacing) * 2);
+        align-items: flex-start;
+        font-size: var(--text-sm-font-size);
+        line-height: var(--text-sm-line-height);
+
+        a {
+            color: var(--primary-strong);
+            text-decoration: underline;
+        }
+    }
+}

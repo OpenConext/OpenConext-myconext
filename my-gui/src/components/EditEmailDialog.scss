@@ -1,0 +1,63 @@
+.edit-email__centered {
+    text-align: center;
+}
+
+.edit-email__code {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: calc(var(--spacing) * 2);
+}
+
+.edit-email__sent {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--spacing);
+    margin: 0;
+    color: var(--muted-foreground);
+    font-size: var(--text-sm);
+    line-height: var(--text-sm--line-height);
+
+    strong {
+        color: var(--foreground);
+        font-weight: 600;
+    }
+}
+
+.edit-email__slots {
+    gap: calc(var(--spacing) * 2);
+
+    [data-slot='input-otp-slot'] {
+        border: 1px solid var(--input);
+        border-radius: var(--radius-md);
+    }
+}
+
+.edit-email__confirm > button {
+    flex: 1;
+}
+
+.edit-email__resend {
+    margin: calc(var(--spacing) * -2) 0 0;
+    text-align: center;
+    color: var(--muted-foreground);
+    font-size: var(--text-sm);
+}
+
+.edit-email__link {
+    height: auto;
+    padding: 0;
+}
+
+.edit-email__form {
+    display: grid;
+    gap: calc(var(--spacing) * 6);
+}
+
+// the Figma design has a larger title than the dialog default
+.edit-email__title {
+    font-size: var(--text-lg-font-size);
+    font-weight: var(--font-weight-medium);
+    line-height: var(--text-lg-line-height);
+}

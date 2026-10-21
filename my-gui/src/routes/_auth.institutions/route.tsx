@@ -16,7 +16,7 @@ import {
 } from '@surfnet/curve-react';
 import { useMutation, useQuery } from '@tanstack/react-query';
 
-import { fetchMe, startLinkAccountFlow } from '../../api';
+import { fetchConfig, fetchMe, startLinkAccountFlow } from '../../api';
 import type { LinkedAccount } from '../../api';
 import { DeleteInstitutionDialog } from '../../components/DeleteInstitutionDialog';
 import { InstitutionCard } from '../../components/InstitutionCard';
@@ -27,6 +27,11 @@ import './route.scss';
 
 export default function Institutions() {
     const { data: me } = useQuery({ queryKey: ['me'], queryFn: fetchMe });
+    const { data: config } = useQuery({
+        queryKey: ['config'],
+        queryFn: fetchConfig,
+    });
+    const linking = config?.enableAccountLinking !== false;
     const [deleting, setDeleting] = useState<LinkedAccount>();
 
     // the browser leaves for the institution to log in
@@ -65,17 +70,19 @@ export default function Institutions() {
                                 onDelete={() => setDeleting(account)}
                             />
                         ))}
-                        <div className="institutions__footer">
-                            <Button
-                                variant="ghost"
-                                className="institutions__link"
-                                disabled={isPending}
-                                onClick={() => link()}
-                            >
-                                <PlusIcon />
-                                {I18n.t('institutions.add')}
-                            </Button>
-                        </div>
+                        {linking && (
+                            <div className="institutions__footer">
+                                <Button
+                                    variant="ghost"
+                                    className="institutions__link"
+                                    disabled={isPending}
+                                    onClick={() => link()}
+                                >
+                                    <PlusIcon />
+                                    {I18n.t('institutions.add')}
+                                </Button>
+                            </div>
+                        )}
                     </>
                 ) : (
                     <div className="institutions__empty">
@@ -92,13 +99,15 @@ export default function Institutions() {
                                 </EmptyDescription>
                             </EmptyHeader>
                             <EmptyContent>
-                                <Button
-                                    disabled={isPending}
-                                    onClick={() => link()}
-                                >
-                                    <PlusIcon />
-                                    {I18n.t('institutions.add')}
-                                </Button>
+                                {linking && (
+                                    <Button
+                                        disabled={isPending}
+                                        onClick={() => link()}
+                                    >
+                                        <PlusIcon />
+                                        {I18n.t('institutions.add')}
+                                    </Button>
+                                )}
                                 <Button
                                     variant="ghost"
                                     className="institutions__link"

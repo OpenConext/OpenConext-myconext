@@ -19,6 +19,8 @@ export type LinkedAccount = {
     firstName?: string;
     legalLastName?: string;
     idpScoping?: string;
+    // false when the connection to Studielink has ended
+    connectionActive?: boolean;
     // epoch millis, only delivered by iDIN and eIDAS accounts
     dateOfBirth?: number | null;
     preferred: boolean;
@@ -38,8 +40,10 @@ export type AppRegistration = {
     notificationType?: string;
     created?: number;
     updated?: number;
-    // present when the user saved a recovery code instead of a phone number
-    recoveryCode?: string;
+    // true when the user saved a recovery code instead of a phone number
+    recoveryCode?: boolean;
+    // the last digits of the recovery phone number
+    phoneNumber?: string;
 };
 
 export type ServiceInfo = {

@@ -2209,7 +2209,7 @@ solid-transition-group@^0.2.3:
     "@solid-primitives/refs" "^1.0.5"
     "@solid-primitives/transition-group" "^1.0.2"
 
-sonner@^2.0.7:
+sonner@^2.0.7, sonner@^2.0.8:
   version "2.0.8"
   resolved "https://registry.npmjs.org/sonner/-/sonner-2.0.8.tgz"
   integrity sha512-UM/ByIoFra8yzV75n1o0Puu0bw5U/9UNnDacrJNspekBewIfsQ3D6ez1nvlWpt7aTsO6rujQtifBpycwIivqlg==

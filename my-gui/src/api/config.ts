@@ -12,6 +12,14 @@ export type Config = {
     featureWebAuthn?: boolean;
     useApp?: boolean;
     featureServiceDeskActive?: boolean;
+    featureOidcTokenAPI?: boolean;
+    // days a linked account without validated names stays valid
+    expirationNonValidatedDurationDays?: number;
+    createEduIDInstitutionEnabled?: boolean;
+    createEduIDInstitutionLanding?: boolean;
+    featureWarningEducationalEmailDomain?: boolean;
+    featureAllowList?: boolean;
+    myconextBaseUrl?: string;
     [key: string]: unknown;
 };
 

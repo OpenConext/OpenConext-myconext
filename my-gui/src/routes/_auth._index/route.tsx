@@ -10,7 +10,7 @@ import {
 } from '@surfnet/curve-react';
 import { useQuery } from '@tanstack/react-query';
 
-import { fetchMe } from '../../api';
+import { fetchConfig, fetchMe } from '../../api';
 import activityBadge from '../../assets/home/activity-badge.svg';
 import activity from '../../assets/home/activity.svg';
 import identityBadge from '../../assets/home/identity-badge.svg';
@@ -29,6 +29,11 @@ import './route.scss';
 
 export default function Home() {
     const { data: me } = useQuery({ queryKey: ['me'], queryFn: fetchMe });
+    const { data: config } = useQuery({
+        queryKey: ['config'],
+        queryFn: fetchConfig,
+    });
+    const linking = config?.enableAccountLinking !== false;
     const counts = useBadgeCounts();
     const recentActivities = me?.recentActivities ?? [];
     const introHidden = useAppStore((state) => state.introHidden);
@@ -72,21 +77,23 @@ export default function Home() {
                     badgeIcon={identityBadge}
                     count={counts.identity}
                 />
-                <HomeCard
-                    to="/institutions"
-                    title={I18n.t('home.cards.institutions.title')}
-                    description={
-                        counts.institutions > 0
-                            ? I18n.t('home.cards.institutions.count', {
-                                  count: counts.institutions,
-                              })
-                            : I18n.t('home.cards.institutions.none')
-                    }
-                    color="purple"
-                    icon={institutions}
-                    badgeIcon={institutionsBadge}
-                    count={counts.institutions}
-                />
+                {linking && (
+                    <HomeCard
+                        to="/institutions"
+                        title={I18n.t('home.cards.institutions.title')}
+                        description={
+                            counts.institutions > 0
+                                ? I18n.t('home.cards.institutions.count', {
+                                      count: counts.institutions,
+                                  })
+                                : I18n.t('home.cards.institutions.none')
+                        }
+                        color="purple"
+                        icon={institutions}
+                        badgeIcon={institutionsBadge}
+                        count={counts.institutions}
+                    />
+                )}
                 <HomeCard
                     to="/security"
                     title={I18n.t('home.cards.security.title')}

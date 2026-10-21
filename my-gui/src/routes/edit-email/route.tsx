@@ -1,8 +1,11 @@
-import { Navigate, useLocation } from 'react-router';
+import { Navigate } from 'react-router';
 
+// the email change is a dialog on the security page
 export default function EditEmailRedirect() {
-    const { search } = useLocation();
     return (
-        <Navigate to={{ pathname: '/identity/edit-email', search }} replace />
+        <Navigate
+            to={{ pathname: '/security', search: '?editEmail=1' }}
+            replace
+        />
     );
 }

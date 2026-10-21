@@ -15,7 +15,7 @@ export type VerifyIssuer = {
     logo?: string;
 };
 
-type AuthorizationUrl = { url: string };
+export type AuthorizationUrl = { url: string };
 
 export const updateName = (name: NameUpdate) =>
     putJson<User>('/myconext/api/sp/update', name);

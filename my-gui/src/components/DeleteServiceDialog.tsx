@@ -1,5 +1,7 @@
 import { useState } from 'react';
 
+import { toast } from 'sonner';
+
 import { LinkBreakIcon } from '@phosphor-icons/react';
 import {
     AlertDialog,
@@ -47,6 +49,14 @@ export const DeleteServiceDialog = ({
         onSuccess: async (updated) => {
             queryClient.setQueryData(['me'], updated);
             await queryClient.invalidateQueries({ queryKey: ['tokens'] });
+            toast.success(
+                I18n.t(
+                    kind === 'delete'
+                        ? 'toast.serviceDeleted'
+                        : 'toast.accessRevoked',
+                    { name: service.name },
+                ),
+            );
             onClose();
         },
     });

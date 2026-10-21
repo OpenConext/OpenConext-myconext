@@ -73,6 +73,7 @@ const nl: AppTranslation = {
                 verified: 'Bevestigd',
             },
             institutions: {
+                expired: 'Verlopen',
                 title: 'Instellingen',
                 none: 'Nog geen koppeling',
                 count: {
@@ -209,6 +210,7 @@ const nl: AppTranslation = {
             bankTitle: 'Gebruik je bank',
             bankDescription:
                 'Met iDIN controleren we via de bank wie je bent. Je maakt geen geld over.',
+            bankMoreUrl: 'https://www.idin.nl/',
             bankMore: 'Meer over iDIN',
             bankMissing: 'Staat je bank er niet tussen?',
             noOtherMethod:
@@ -306,6 +308,8 @@ const nl: AppTranslation = {
     },
     app: {
         get: {
+            googleLabel: 'Google Play',
+            appleLabel: 'App Store',
             title: 'Activeer je eduID-app',
             info: 'Download de eduID-app (van SURF) in een van de app-stores:',
             qr: 'QR-code om de eduID-app te installeren',
@@ -333,6 +337,9 @@ const nl: AppTranslation = {
             close: 'Sluiten',
         },
         recovery: {
+            changeTitle: 'Herstelmethode wijzigen',
+            changeInfo:
+                'Kies hoe je je eduID-app kunt herstellen als je die niet meer kunt gebruiken. Je huidige herstelmethode werkt dan niet meer.',
             title: 'Bijna klaar',
             info: 'Voeg een herstelmethode toe. Als je de eduID-app niet meer kunt gebruiken, bijvoorbeeld bij verlies van je mobiele telefoon, kun je met een herstelmethode de eduID-app opnieuw registreren.',
             noPhone: 'Kun je geen telefoonnummer opgeven?',
@@ -430,6 +437,36 @@ const nl: AppTranslation = {
             description:
                 'Je hebt nu één manier om in te loggen. Raak je die kwijt, dan verlies je ook toegang tot de diensten die je met je eduID gebruikt. Stel hieronder een extra inlogmethode in.',
         },
+        recovery: {
+            title: 'Herstelmethode',
+            code: 'Herstelcode',
+            codeInfo: 'Bewaar je herstelcode op een veilige plek',
+            phone: 'Hersteltelefoonnummer',
+            phoneInfo: 'Je ontvangt een code op ** ** *** {{phone}}',
+        },
+        emailFlow: {
+            confirmFailed:
+                'Deze link is niet meer geldig. Vraag op de beveiligingspagina een nieuwe verificatiecode aan.',
+            title: 'E-mailadres wijzigen',
+            newEmail: 'Nieuw e-mailadres',
+            hint: 'Naar dit adres wordt een code gestuurd.',
+            request: 'Verificatiecode aanvragen',
+            cancel: 'Annuleren',
+            invalid: 'Vul een geldig e-mailadres in',
+            same: 'Dit is al je e-mailadres',
+            duplicate: 'Er bestaat al een account met dit e-mailadres',
+            outstandingTitle: 'Openstaande wachtwoordaanvraag',
+            outstandingInfo:
+                'Je hebt onlangs een code aangevraagd om je wachtwoord te wijzigen. Die code is dan niet meer geldig. Je ontvangt een nieuwe code om dit e-mailadres te bevestigen.',
+            codeTitle: 'Voer verificatiecode in',
+            codeSentTo: 'Voer de code in die is verstuurd naar',
+            codeLabel: 'Verificatiecode',
+            wrongCode: 'Onjuiste code. Probeer het opnieuw.',
+            resendPrompt: 'Geen e-mail ontvangen? Kijk in je spamfolder, of',
+            resend: 'stuur een nieuwe code',
+            resent: 'We hebben je een nieuwe code gestuurd.',
+            confirm: 'Bevestigen',
+        },
         active: 'Actieve inlogmethoden',
         recommended: 'Aanbevolen inlogmethode',
         other: 'Andere inlogmethoden',
@@ -522,27 +559,108 @@ const nl: AppTranslation = {
             download: 'Download de eduID-app',
         },
     },
-    pages: {
-        identity: 'Identiteit',
-        identityEditEmail: 'E-mailadres wijzigen',
-        identityEppnAlreadyLinked: 'Instelling is al gekoppeld',
-        identityAttributeMissing: 'Attribuut ontbreekt',
-        identitySubjectAlreadyLinked: 'Account is al gekoppeld',
-        identityExternalAccountLinkedError: 'Koppelen van het account mislukt',
-        institutions: 'Instellingen',
-        security: 'Beveiliging',
-        securityApp: 'eduID-app',
-        activity: 'Activiteit',
-        account: 'Account',
-        accountDelete: 'Account verwijderen',
-        updateEmail: 'E-mailadres bevestigen',
-        createFromInstitution: 'eduID aanmaken via instelling',
-        createFromInstitutionStep: 'eduID aanmaken via instelling',
+    toast: {
+        nameUpdated: 'Je naam is bijgewerkt',
+        emailConfirmed: 'Je e-mailadres is gewijzigd',
+        emailCodeSent: 'Er is een verificatiecode verstuurd naar {{email}}',
+        passwordDeleted: 'Je wachtwoord is verwijderd',
+        passkeyUpdated: 'Je passkey is hernoemd',
+        passkeyDeleted: 'Je passkey is verwijderd',
+        passkeyTestSuccess: 'Je passkey werkt',
+        passkeyTestFailed: 'Het testen van je passkey is mislukt',
+        institutionRemoved: 'De instelling is verwijderd',
+        institutionPreferred: '{{name}} is nu de bron van je naam',
+        serviceDeleted: 'De logingegevens van {{name}} zijn verwijderd',
+        accessRevoked: 'De toegang van {{name}} is ingetrokken',
+        recoveryChanged: 'Je herstelmethode is gewijzigd',
+        appDeactivated: 'De eduID-app is gedeactiveerd',
+        controlCodeDeleted: 'Je controlecode is verwijderd',
+        welcome: 'Welkom bij eduID',
+        welcomeExisting: 'Welkom terug bij eduID',
+    },
+    errorBoundary: {
+        title: 'Er is iets misgegaan',
+        info: 'Er is een onverwachte fout opgetreden. Laad de pagina opnieuw om het nog eens te proberen.',
+        reload: 'Pagina herladen',
+    },
+    linkError: {
+        retry: 'Opnieuw proberen',
+        eppnAlreadyLinked: {
+            title: 'Koppeling niet gemaakt!',
+            info: 'Je eduID kon niet worden gekoppeld. Het vertrouwde account waarmee je zojuist bent ingelogd, is al aan een ander eduID-account gekoppeld: {{email}}.',
+            infoNew:
+                'Je kan geen eduID account aanvragen met het vertrouwde account waarmee je zojuist bent ingelogd. Dit instellings-account is al gekoppeld aan een ander eduID account: {{email}}.',
+        },
+        attributeMissing: {
+            title: 'Koppeling niet gemaakt!',
+            info: 'Je eduID kon niet worden gekoppeld. Het vertrouwde account waarmee je zojuist bent ingelogd, heeft geen EPPN vrijgegeven.',
+            infoNew:
+                'Je kan geen eduID account aanvragen met het vertrouwde account waarmee je zojuist bent ingelogd. Dit instellings-account heeft geen EPPN vrijgegeven.',
+        },
+        subjectAlreadyLinked: {
+            title: 'Verificatie mislukt!',
+            info: 'Je eduID kon niet worden geverifieerd. Het externe account waarmee je zojuist bent ingelogd, is al aan een ander eduID-account gekoppeld.',
+        },
+        externalAccountLinkedError: {
+            title: 'Verificatie mislukt!',
+            info: 'Je eduID kon niet worden geverifieerd. De vertrouwde partij die je hebt gekozen heeft een fout teruggemeld.',
+        },
+    },
+    createFromInstitution: {
+        title: 'Maak een eduID van je instelling',
+        header: 'Je staat op het punt een eduID-account aan te maken dat wordt gekoppeld aan je instellingsaccount.',
+        info: 'Als je verder gaat, wordt je gevraagd om in te loggen bij de instelling die je aan je eduID wilt koppelen. Na een succesvolle login kom je hier terug.',
+        startFlow: 'Start registratie',
+        alreadyHave: 'Heb je al een eduID-account?',
+        login: 'Login!',
+        disabled:
+            'Een eduID aanmaken vanuit je instelling is niet beschikbaar.',
+        linkTitle: 'Hallo {{name}}',
+        linkInfo:
+            'Je bent succesvol ingelogd bij je instelling. Voer nu je persoonlijke email in, dit wordt je eduID email.',
+        email: 'Je e-mail',
+        emailPlaceholder: 'bijv. gebruiker@gmail.com',
+        invalidEmail: 'Ongeldig e-mailadres',
+        emailInUse: 'Dit e-mailadres is al in gebruik. Probeer een andere, of',
+        emailInUseLink: 'koppel met dit eduID account.',
+        emailForbidden:
+            'Het aanmaken van een eduID-account met deze email is niet toegestaan, neem contact op met help@eduid.nl als je denkt dat het e-maildomein geldig is.',
+        institutionDomainWarning:
+            'Het lijkt erop dat je een instellings e-mailadres hebt ingevoerd. Houd er rekening mee dat wanneer je niet meer studeert of werkt bij die instelling, je geen toegang meer hebt tot dat e-mail adres. We raden je aan om je persoonlijke e-mailadres te gebruiken voor eduID.',
+        domainNotAllowed:
+            'Domeinnaam {{domain}} niet toegestaan. eduID is beperkt om alleen te worden gebruikt door toegestane domeinen.',
+        agreeStart: 'Ik ga akkoord met ',
+        termsLink: 'de voorwaarden',
+        termsUrl: 'https://eduid.nl/gebruiksvoorwaarden/',
+        agreeMiddle: ' en ik heb ',
+        privacyLink: 'de privacyverklaring',
+        privacyUrl: 'https://eduid.nl/privacyverklaring/',
+        agreeEnd: ' gelezen.',
+        request: 'Vraag je eduID aan',
+        verifyTitle: 'Controleer je e-mail',
+        verifyInfo: 'Voer de code in die is verstuurd naar',
+        codeLabel: 'Verificatiecode',
+        wrongCode: 'Onjuiste code. Probeer het opnieuw.',
+        resendPrompt: 'Geen e-mail ontvangen? Kijk in je spamfolder, of',
+        resend: 'klik om opnieuw te versturen',
+        resent: 'Controleer je inbox opnieuw. We hebben nog een e-mail met een code gestuurd.',
+        confirm: 'Doorgaan',
+        expiredTitle: 'Maximum aantal pogingen bereikt',
+        expiredInfo: 'Je hebt het maximale aantal controlepogingen bereikt.',
+        back: 'Opnieuw beginnen',
     },
     landing: {
-        logout: 'Je bent uitgelogd',
-        delete: 'Je account is verwijderd',
-        ratelimit: 'Te veel pogingen',
+        logoutTitle: 'Je bent uitgelogd',
+        logoutStatus:
+            'Om het uitlogproces te voltooien, moet je de browser nu afsluiten.',
+        loginAgain: 'Opnieuw inloggen',
+        deleteTitle: 'Jouw eduID is verwijderd',
+        deleteStatus:
+            'Om het verwijderen van je eduID te voltooien, moet je jouw browser nu afsluiten.',
+        registerAgain: 'Opnieuw registreren',
+        ratelimitTitle: 'Te veel mislukte pogingen',
+        ratelimitStatus:
+            'Voor je veiligheid is het account een tijdje geblokkeerd. Probeer het later opnieuw.',
         none: 'Pagina niet gevonden',
     },
     notFound: {

@@ -1,6 +1,8 @@
 import { useState } from 'react';
 import type { FormEvent } from 'react';
 
+import { toast } from 'sonner';
+
 import {
     Alert,
     AlertDescription,
@@ -47,18 +49,19 @@ export const EditPasskeyDialog = ({
     const [name, setName] = useState(credential.name);
     const [confirmingDelete, setConfirmingDelete] = useState(false);
 
-    const onSuccess = (updated: unknown) => {
+    const onSuccess = (updated: unknown, message: string) => {
         queryClient.setQueryData(['me'], updated);
+        toast.success(I18n.t(message));
         onClose();
     };
 
     const update = useMutation({
         mutationFn: updateCredential,
-        onSuccess,
+        onSuccess: (updated) => onSuccess(updated, 'toast.passkeyUpdated'),
     });
     const remove = useMutation({
         mutationFn: deleteCredential,
-        onSuccess,
+        onSuccess: (updated) => onSuccess(updated, 'toast.passkeyDeleted'),
     });
     const test = useMutation({
         mutationFn: fetchTestWebAuthnUrl,

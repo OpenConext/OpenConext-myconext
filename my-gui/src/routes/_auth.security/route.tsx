@@ -1,5 +1,7 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useSearchParams } from 'react-router';
+
+import { toast } from 'sonner';
 
 import {
     DeviceMobileSpeakerIcon,
@@ -19,7 +21,9 @@ import { useQuery } from '@tanstack/react-query';
 import { fetchConfig, fetchMe } from '../../api';
 import { ActivateAppDialog } from '../../components/ActivateAppDialog';
 import { AddPasskeyDialog } from '../../components/AddPasskeyDialog';
+import { ChangeRecoveryDialog } from '../../components/ChangeRecoveryDialog';
 import { DeactivateAppDialog } from '../../components/DeactivateAppDialog';
+import { EditEmailDialog } from '../../components/EditEmailDialog';
 import { EditPasskeyDialog } from '../../components/EditPasskeyDialog';
 import { LoginMethodRow } from '../../components/LoginMethodRow';
 import { PageHeader } from '../../components/PageHeader';
@@ -32,6 +36,8 @@ export default function Security() {
     const [showPassword, setShowPassword] = useState(false);
     const [showAddPasskey, setShowAddPasskey] = useState(false);
     const [showActivateApp, setShowActivateApp] = useState(false);
+    const [showEditEmail, setShowEditEmail] = useState(false);
+    const [showChangeRecovery, setShowChangeRecovery] = useState(false);
     const [showDeactivateApp, setShowDeactivateApp] = useState(false);
     const [searchParams, setSearchParams] = useSearchParams();
     // set by the redirect after a passkey test, or by the change button
@@ -43,9 +49,37 @@ export default function Security() {
         queryFn: fetchConfig,
     });
 
+    // after creating an eduID from an institution the server sends the user here
+    const welcome = searchParams.get('new');
+    useEffect(() => {
+        if (welcome !== null) {
+            toast.success(
+                I18n.t(
+                    welcome === 'false'
+                        ? 'toast.welcomeExisting'
+                        : 'toast.welcome',
+                ),
+            );
+            setSearchParams({}, { replace: true });
+        }
+    }, [welcome, setSearchParams]);
+
     if (!me) {
         return null;
     }
+
+    // mailed links and the old paths open the dialogs through the query string
+    const passwordHash = searchParams.get('passwordHash') ?? undefined;
+    const passwordOpen =
+        showPassword || Boolean(passwordHash) || searchParams.has('password');
+    const editEmailOpen = showEditEmail || searchParams.has('editEmail');
+    const closeDialog = () => {
+        setShowPassword(false);
+        setShowEditEmail(false);
+        if (searchParams.size > 0) {
+            setSearchParams({}, { replace: true });
+        }
+    };
 
     const showApp = Boolean(config?.useApp);
     const hasApp =
@@ -140,7 +174,7 @@ export default function Security() {
                         description={I18n.t('security.email.description', {
                             email: me.email,
                         })}
-                        changeTo="/identity/edit-email"
+                        onChange={() => setShowEditEmail(true)}
                     />
                     {hasPassword && (
                         <LoginMethodRow
@@ -175,6 +209,37 @@ export default function Security() {
                     ))}
                 </div>
             </section>
+
+            {hasApp && (
+                <section className="security__section">
+                    <h2 className="security__heading">
+                        {I18n.t('security.recovery.title')}
+                    </h2>
+                    <div className="security__card">
+                        <LoginMethodRow
+                            icon={
+                                me.registration?.recoveryCode ? (
+                                    <KeyIcon />
+                                ) : (
+                                    <DeviceMobileSpeakerIcon />
+                                )
+                            }
+                            title={I18n.t(
+                                me.registration?.recoveryCode
+                                    ? 'security.recovery.code'
+                                    : 'security.recovery.phone',
+                            )}
+                            description={I18n.t(
+                                me.registration?.recoveryCode
+                                    ? 'security.recovery.codeInfo'
+                                    : 'security.recovery.phoneInfo',
+                                { phone: me.registration?.phoneNumber },
+                            )}
+                            onChange={() => setShowChangeRecovery(true)}
+                        />
+                    </div>
+                </section>
+            )}
 
             {showApp && !hasApp && (
                 <section className="security__section">
@@ -224,11 +289,15 @@ export default function Security() {
                     </div>
                 </section>
             )}
-            {showPassword && (
+            {passwordOpen && (
                 <PasswordDialog
                     user={me}
-                    onClose={() => setShowPassword(false)}
+                    initialHash={passwordHash}
+                    onClose={closeDialog}
                 />
+            )}
+            {editEmailOpen && (
+                <EditEmailDialog user={me} onClose={closeDialog} />
             )}
             {showAddPasskey && (
                 <AddPasskeyDialog onClose={() => setShowAddPasskey(false)} />
@@ -241,6 +310,11 @@ export default function Security() {
                         setEditingId(null);
                         setSearchParams({}, { replace: true });
                     }}
+                />
+            )}
+            {showChangeRecovery && (
+                <ChangeRecoveryDialog
+                    onClose={() => setShowChangeRecovery(false)}
                 />
             )}
             {showActivateApp && (

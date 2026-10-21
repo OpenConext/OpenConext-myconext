@@ -1,15 +1,20 @@
 import { useState } from 'react';
 
 import { BuildingOfficeIcon, CaretDownIcon } from '@phosphor-icons/react';
-import { Button } from '@surfnet/curve-react';
+import { Badge, Button } from '@surfnet/curve-react';
+import { useQuery } from '@tanstack/react-query';
 
+import { fetchConfig } from '../api';
 import type { LinkedAccount } from '../api';
 import I18n from '../locale/I18n';
 import { formatDate } from '../utils/format';
 import {
+    accountExpiresAt,
     accountFamilyName,
     accountGivenName,
+    canDelete,
     institutionName,
+    isExpired,
     roleNames,
 } from '../utils/verification';
 import './InstitutionCard.scss';
@@ -28,6 +33,12 @@ export const InstitutionCard = ({
     bordered,
 }: InstitutionCardProps) => {
     const [open, setOpen] = useState(false);
+    const { data: config } = useQuery({
+        queryKey: ['config'],
+        queryFn: fetchConfig,
+    });
+    const days = config?.expirationNonValidatedDurationDays;
+    const expired = isExpired(account, days);
     const roles = roleNames(account);
 
     return (
@@ -54,6 +65,11 @@ export const InstitutionCard = ({
                 <span className="institution-card__title">
                     <span className="institution-card__name">
                         {institutionName(account)}
+                        {expired && (
+                            <Badge variant="secondary">
+                                {I18n.t('institutions.expired')}
+                            </Badge>
+                        )}
                     </span>
                     {roles && (
                         <span className="institution-card__role">
@@ -76,9 +92,9 @@ export const InstitutionCard = ({
                         <dt>{I18n.t('institutions.details.receivedOn')}</dt>
                         <dd>{formatDate(account.createdAt)}</dd>
                         <dt>{I18n.t('institutions.details.validUntil')}</dt>
-                        <dd>{formatDate(account.expiresAt)}</dd>
+                        <dd>{formatDate(accountExpiresAt(account, days))}</dd>
                     </dl>
-                    {onDelete && (
+                    {onDelete && canDelete(account) && (
                         <Button
                             variant="ghost"
                             className="institution-card__delete"

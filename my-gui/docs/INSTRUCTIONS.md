@@ -9,7 +9,7 @@
 - Data fetching: TanStack Query. State management: Zustand.
 - No backend changes, except introducing a model.
 - Environment ribbon: the server serves CSS at `/myconext/api/disclaimer` (`body::after`); load it in `root.tsx`.
-- Locales: `src/locale/{en,nl,pt}.ts` + `I18n.ts` (analogue to `login-gui/src/locale`). **No hardcoded strings in React**: use `I18n.t('key')`; add every key to en, nl and pt (pt is a copy of en for now). Sample data lives in `src/mocks`.
+- Locales: `src/locale/{en,nl,pt}.ts` + `I18n.ts` (analogue to `login-gui/src/locale`). **No hardcoded strings in React**: use `I18n.t('key')`; add every key to en, nl and pt (pt is a copy of en for now).
 - Limit code in `useEffect`; at most one `useEffect` per component.
 
 ## UI: `@surfnet/curve-react`
@@ -35,15 +35,17 @@
 
 ## Route map (old → new)
 
-| New path                                                                   | Old path(s)                                                                                                                                                    |
-| -------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `/`                                                                        | `/`, `/home`                                                                                                                                                   |
-| `/identity` (+ `/identity/edit-email`, linking-error pages)                | `/personal`, `/edit-name`, `/manage`, `/edit-email`, `/eppn-already-linked`, `/attribute-missing`, `/subject-already-linked`, `/external-account-linked-error` |
-| `/institutions`                                                            | linked accounts in `/personal`                                                                                                                                 |
-| `/security` (+ `/security/credential`, `/webauthn`, `/password`, `/app/*`) | `/security`, `/credential`, `/webauthn`, `/reset-password`, `/add-password`, `/reset-password-link`, tiqr wizard paths                                         |
-| `/activity`                                                                | `/data-activity`, `/services`, `/service`                                                                                                                      |
-| `/account`, `/account/delete`                                              | `/account`, `/delete-account`                                                                                                                                  |
-| `/update-email`                                                            | `/update-email`                                                                                                                                                |
-| public: `/landing`, `/install-app`, `/create-from-institution/*`           | same                                                                                                                                                           |
+| New path                                                                                                                                                                         | Old path(s)                                                                                                                                     |
+| -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------- |
+| `/`                                                                                                                                                                              | `/`, `/home`                                                                                                                                    |
+| `/identity` (+ linking-error pages `/identity/eppn-already-linked`, `attribute-missing`, `subject-already-linked`, `external-account-linked-error`)                              | `/personal`, `/edit-name`, `/manage`, `/eppn-already-linked`, `/attribute-missing`, `/subject-already-linked`, `/external-account-linked-error` |
+| `/institutions`                                                                                                                                                                  | linked accounts in `/personal` (`/personal?institution=` opens the new-institution dialog)                                                      |
+| `/security` (dialogs: password, passkeys, eduID app, recovery method, email change; opened by query params `passwordHash`, `password`, `editEmail`, `credential`)                | `/security`, `/credential`, `/webauthn`, `/reset-password?h=`, `/add-password?h=`, `/reset-password-link`, `/edit-email`, tiqr wizard paths     |
+| `/activity`                                                                                                                                                                      | `/data-activity`, `/services`, `/service`                                                                                                       |
+| `/account`, `/account/delete`                                                                                                                                                    | redirect to `/`, the user menu holds download data and delete account                                                                           |
+| `/update-email?h=`                                                                                                                                                               | `/update-email?h=`                                                                                                                              |
+| public: `/landing`, `/install-app`, `/create-from-institution`, `/create-from-institution/link/:hash`, `/verify/:hash`, `/expired`, `/eppn-already-linked`, `/attribute-missing` | same                                                                                                                                            |
+
+Routes that must not nest under a layout route use a trailing underscore on the parent segment (`create-from-institution_.link.$hash`, `_auth.identity_.eppn-already-linked`).
 
 The backend, emails and IdP still link to old paths, so keep redirect routes (preserving the query string) for them.

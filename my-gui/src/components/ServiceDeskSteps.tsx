@@ -1,5 +1,7 @@
 import { useState } from 'react';
 
+import { toast } from 'sonner';
+
 import {
     ArrowLeftIcon,
     ArrowSquareOutIcon,
@@ -135,6 +137,7 @@ export const ServiceDeskSteps = ({
         mutationFn: deleteControlCode,
         onSuccess: (updated) => {
             queryClient.setQueryData(['me'], updated);
+            toast.success(I18n.t('toast.controlCodeDeleted'));
             onClose();
         },
     });

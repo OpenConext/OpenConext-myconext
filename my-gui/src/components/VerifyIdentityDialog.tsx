@@ -98,13 +98,14 @@ export const VerifyIdentityDialog = ({
                                 <DialogDescription className="verify-identity__description">
                                     {I18n.t('identity.verify.bankDescription')}{' '}
                                     <a
-                                        href="https://www.idin.nl/"
+                                        href={I18n.t(
+                                            'identity.verify.bankMoreUrl',
+                                        )}
                                         target="_blank"
                                         rel="noreferrer"
                                     >
                                         {I18n.t('identity.verify.bankMore')}
                                     </a>
-                                    .
                                 </DialogDescription>
                             )}
                         </DialogHeader>
@@ -182,60 +183,68 @@ export const VerifyIdentityDialog = ({
                                         {I18n.t('identity.verify.institution')}
                                     </Button>
                                 </div>
-                                <div className="verify-identity__section">
-                                    <p className="verify-identity__text">
-                                        {I18n.t('identity.verify.otherMethods')}
-                                    </p>
-                                    <ItemGroup className="verify-identity__list">
-                                        <Item
-                                            render={<button type="button" />}
-                                            onClick={() => setView('banks')}
-                                        >
-                                            <ItemMedia>
-                                                <img
-                                                    src={idin}
-                                                    alt=""
-                                                    width={24}
-                                                    height={24}
-                                                />
-                                            </ItemMedia>
-                                            <ItemContent>
-                                                <ItemTitle className="verify-identity__option">
-                                                    {I18n.t(
-                                                        'identity.verify.bank',
-                                                    )}
-                                                </ItemTitle>
-                                            </ItemContent>
-                                        </Item>
-                                        <Item
-                                            render={<button type="button" />}
-                                            disabled={isPending}
-                                            onClick={() =>
-                                                start(() =>
-                                                    startVerifyAccountFlow(
-                                                        'eherkenning',
-                                                    ),
-                                                )
-                                            }
-                                        >
-                                            <ItemMedia>
-                                                <img
-                                                    src={eidas}
-                                                    alt=""
-                                                    width={24}
-                                                    height={24}
-                                                />
-                                            </ItemMedia>
-                                            <ItemContent>
-                                                <ItemTitle className="verify-identity__option">
-                                                    {I18n.t(
-                                                        'identity.verify.european',
-                                                    )}
-                                                </ItemTitle>
-                                            </ItemContent>
-                                        </Item>
-                                    </ItemGroup>
-                                </div>
+                                {config?.featureIdVerify && (
+                                    <div className="verify-identity__section">
+                                        <p className="verify-identity__text">
+                                            {I18n.t(
+                                                'identity.verify.otherMethods',
+                                            )}
+                                        </p>
+                                        <ItemGroup className="verify-identity__list">
+                                            <Item
+                                                render={
+                                                    <button type="button" />
+                                                }
+                                                onClick={() => setView('banks')}
+                                            >
+                                                <ItemMedia>
+                                                    <img
+                                                        src={idin}
+                                                        alt=""
+                                                        width={24}
+                                                        height={24}
+                                                    />
+                                                </ItemMedia>
+                                                <ItemContent>
+                                                    <ItemTitle className="verify-identity__option">
+                                                        {I18n.t(
+                                                            'identity.verify.bank',
+                                                        )}
+                                                    </ItemTitle>
+                                                </ItemContent>
+                                            </Item>
+                                            <Item
+                                                render={
+                                                    <button type="button" />
+                                                }
+                                                disabled={isPending}
+                                                onClick={() =>
+                                                    start(() =>
+                                                        startVerifyAccountFlow(
+                                                            'eherkenning',
+                                                        ),
+                                                    )
+                                                }
+                                            >
+                                                <ItemMedia>
+                                                    <img
+                                                        src={eidas}
+                                                        alt=""
+                                                        width={24}
+                                                        height={24}
+                                                    />
+                                                </ItemMedia>
+                                                <ItemContent>
+                                                    <ItemTitle className="verify-identity__option">
+                                                        {I18n.t(
+                                                            'identity.verify.european',
+                                                        )}
+                                                    </ItemTitle>
+                                                </ItemContent>
+                                            </Item>
+                                        </ItemGroup>
+                                    </div>
+                                )}
                                 {config?.featureServiceDeskActive && (
                                     <div className="verify-identity__footer">
                                         <p>

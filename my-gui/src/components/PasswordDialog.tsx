@@ -1,6 +1,8 @@
 import { useRef, useState } from 'react';
 import type { FormEvent } from 'react';
 
+import { toast } from 'sonner';
+
 import {
     Button,
     Dialog,
@@ -26,6 +28,7 @@ import {
     fetchConfig,
     fetchOutstandingEmailLinks,
     generatePasswordCode,
+    isPasswordHashValid,
     logout,
     resendPasswordCode,
     setLoginPreference,
@@ -41,6 +44,8 @@ const FOCUS_DELAY = 50;
 
 type PasswordDialogProps = {
     user: User;
+    // the hash of the mailed link, the dialog then starts at the new password
+    initialHash?: string;
     onClose: () => void;
 };
 
@@ -58,15 +63,19 @@ const isRateLimited = (error: unknown) =>
     error instanceof Response && (error.status === 400 || error.status === 403);
 
 // mounted only while open, so every flow starts at the first step
-export const PasswordDialog = ({ user, onClose }: PasswordDialogProps) => {
+export const PasswordDialog = ({
+    user,
+    initialHash,
+    onClose,
+}: PasswordDialogProps) => {
     const queryClient = useQueryClient();
     const usePassword = Boolean(user.usePassword);
     const prefix = usePassword ? 'update' : 'add';
 
     const otpRef = useRef<HTMLInputElement>(null);
-    const [step, setStep] = useState<Step>('confirm');
+    const [stepState, setStep] = useState<Step>('confirm');
     const [code, setCode] = useState('');
-    const [hash, setHash] = useState('');
+    const [verifiedHash, setHash] = useState('');
     const [wrongCode, setWrongCode] = useState(false);
     const [canResend, setCanResend] = useState(false);
     const [resent, setResent] = useState(false);
@@ -84,6 +93,24 @@ export const PasswordDialog = ({ user, onClose }: PasswordDialogProps) => {
         // the answer must be fresh each time the dialog opens
         gcTime: 0,
     });
+
+    const hashCheck = useQuery({
+        queryKey: ['passwordHashValid', initialHash],
+        queryFn: () => isPasswordHashValid(initialHash!),
+        enabled: Boolean(initialHash),
+        gcTime: 0,
+        retry: false,
+    });
+    const hash = verifiedHash || initialHash || '';
+    // a mailed link skips the code, once its hash is known to be valid
+    const step: Step | 'checking' =
+        initialHash && stepState === 'confirm'
+            ? hashCheck.isPending
+                ? 'checking'
+                : hashCheck.data
+                  ? 'password'
+                  : 'expired'
+            : stepState;
 
     const accountBaseUrl = config?.accountBaseUrl ?? '';
     const resendDelay = (config?.emailSpamThresholdSeconds ?? 0) * 1000;
@@ -123,8 +150,8 @@ export const PasswordDialog = ({ user, onClose }: PasswordDialogProps) => {
 
     const verifyCode = useMutation({
         mutationFn: verifyPasswordCode,
-        onSuccess: ({ hash: verifiedHash }) => {
-            setHash(verifiedHash);
+        onSuccess: ({ hash: verified }) => {
+            setHash(verified);
             setStep('password');
         },
         onError: (error) => {
@@ -162,6 +189,7 @@ export const PasswordDialog = ({ user, onClose }: PasswordDialogProps) => {
         mutationFn: () => updatePassword(user.id, null, hash),
         onSuccess: (updated) => {
             queryClient.setQueryData(['me'], updated);
+            toast.success(I18n.t('toast.passwordDeleted'));
             onClose();
         },
         onError: () => setStep('expired'),
@@ -444,6 +472,12 @@ export const PasswordDialog = ({ user, onClose }: PasswordDialogProps) => {
                             </Button>
                         </DialogFooter>
                     </>
+                )}
+
+                {step === 'checking' && (
+                    <div className="password-dialog__centered">
+                        <Spinner />
+                    </div>
                 )}
 
                 {step === 'expired' && (

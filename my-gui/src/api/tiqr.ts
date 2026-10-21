@@ -53,6 +53,22 @@ export const verifyPhoneCode = (phoneVerification: string) =>
 export const generateBackupCode = () =>
     request<BackupCode>('/tiqr/sp/generate-backup-code');
 
+// changing the recovery method of an active app, only after the app confirmed
+export const regenerateBackupCode = () =>
+    request<BackupCode>('/tiqr/sp/re-generate-backup-code');
+
+export const resendPhoneCode = (phoneNumber: string) =>
+    request<unknown>('/tiqr/sp/re-send-phone-code', {
+        method: 'POST',
+        body: JSON.stringify({ phoneNumber }),
+    });
+
+export const reverifyPhoneCode = (phoneVerification: string) =>
+    request<unknown>('/tiqr/sp/re-verify-phone-code', {
+        method: 'POST',
+        body: JSON.stringify({ phoneVerification }),
+    });
+
 // the key is exchanged on the login domain, which sets the secure cookie
 export const finishEnrollment = () =>
     request<EnrollmentVerificationKey>('/tiqr/sp/finish-enrollment');

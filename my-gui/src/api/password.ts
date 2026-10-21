@@ -35,3 +35,9 @@ export const setLoginPreference = (loginPreference: string) =>
     putJson<LoginPreferenceResponse>('/myconext/api/sp/login-preference', {
         loginPreference,
     });
+
+// false when the hash of a mailed link is unknown or expired
+export const isPasswordHashValid = (hash: string) =>
+    request<boolean>(
+        `/myconext/api/sp/password-reset-hash-valid?hash=${encodeURIComponent(hash)}`,
+    );

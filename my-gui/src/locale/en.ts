@@ -73,6 +73,7 @@ const en: AppTranslation = {
                 verified: 'Verified',
             },
             institutions: {
+                expired: 'Expired',
                 title: 'Institutions',
                 none: 'No connection yet',
                 count: {
@@ -208,6 +209,7 @@ const en: AppTranslation = {
             bankTitle: 'Use your bank',
             bankDescription:
                 'With iDIN we verify who you are through your bank. You do not transfer any money.',
+            bankMoreUrl: 'https://www.idin.nl/',
             bankMore: 'More about iDIN',
             bankMissing: 'Is your bank not listed?',
             noOtherMethod:
@@ -305,6 +307,8 @@ const en: AppTranslation = {
     },
     app: {
         get: {
+            googleLabel: 'Google Play',
+            appleLabel: 'App Store',
             title: 'Activate your eduID app',
             info: 'Download the eduID app (from SURF) in one of the app stores:',
             qr: 'QR code to install the eduID app',
@@ -332,6 +336,9 @@ const en: AppTranslation = {
             close: 'Close',
         },
         recovery: {
+            changeTitle: 'Change your recovery method',
+            changeInfo:
+                'Choose how you want to recover your eduID app if you can no longer use it. Your current recovery method will no longer work.',
             title: 'Almost ready',
             info: 'Add a recovery method. If you can no longer use the eduID app, for example if you lose your mobile phone, you can use a recovery method to register the eduID app again.',
             noPhone: "Can't you provide a phone number?",
@@ -429,6 +436,37 @@ const en: AppTranslation = {
             description:
                 'You now have one way to log in. If you lose it, you also lose access to the services you use with your eduID. Set up an extra login method below.',
         },
+        recovery: {
+            title: 'Recovery method',
+            code: 'Recovery code',
+            codeInfo: 'Keep your recovery code in a safe place',
+            phone: 'Recovery phone number',
+            phoneInfo: 'You receive a code at ** ** *** {{phone}}',
+        },
+        emailFlow: {
+            confirmFailed:
+                'This link is no longer valid. Request a new verification code on the security page.',
+            title: 'Edit email address',
+            newEmail: 'New email address',
+            hint: 'A code will be sent to this address.',
+            request: 'Request verification code',
+            cancel: 'Cancel',
+            invalid: 'Enter a valid email address',
+            same: 'This is already your email address',
+            duplicate: 'There is already an account with this email address',
+            outstandingTitle: 'Outstanding password request',
+            outstandingInfo:
+                'You recently requested a code to change your password. That code will no longer be valid. You will receive a new code to confirm this email address.',
+            codeTitle: 'Enter verification code',
+            codeSentTo: 'Enter the code sent to',
+            codeLabel: 'Verification code',
+            wrongCode: 'Wrong code. Please try again.',
+            resendPrompt:
+                "Didn't receive the email? Check your spam folder, or",
+            resend: 'send a new code',
+            resent: 'We sent you a new code.',
+            confirm: 'Confirm',
+        },
         active: 'Active login methods',
         recommended: 'Recommended login method',
         other: 'Other login methods',
@@ -520,27 +558,107 @@ const en: AppTranslation = {
             download: 'Download the eduID app',
         },
     },
-    pages: {
-        identity: 'Identity',
-        identityEditEmail: 'Edit email address',
-        identityEppnAlreadyLinked: 'Institution already linked',
-        identityAttributeMissing: 'Attribute missing',
-        identitySubjectAlreadyLinked: 'Account already linked',
-        identityExternalAccountLinkedError: 'Linking the account failed',
-        institutions: 'Institutions',
-        security: 'Security',
-        securityApp: 'eduID app',
-        activity: 'Activity',
-        account: 'Account',
-        accountDelete: 'Delete account',
-        updateEmail: 'Confirm email address',
-        createFromInstitution: 'Create eduID from institution',
-        createFromInstitutionStep: 'Create eduID from institution',
+    toast: {
+        nameUpdated: 'Your name has been updated',
+        emailConfirmed: 'Your email address has been changed',
+        emailCodeSent: 'A verification code has been sent to {{email}}',
+        passwordDeleted: 'Your password has been deleted',
+        passkeyUpdated: 'Your passkey has been renamed',
+        passkeyDeleted: 'Your passkey has been deleted',
+        passkeyTestSuccess: 'Your passkey works',
+        passkeyTestFailed: 'Testing your passkey failed',
+        institutionRemoved: 'The institution has been removed',
+        institutionPreferred: '{{name}} is now the source of your name',
+        serviceDeleted: 'The login details of {{name}} have been deleted',
+        accessRevoked: 'The access of {{name}} has been revoked',
+        recoveryChanged: 'Your recovery method has been changed',
+        appDeactivated: 'The eduID app has been deactivated',
+        controlCodeDeleted: 'Your verification code has been deleted',
+        welcome: 'Welcome to eduID',
+        welcomeExisting: 'Welcome back to eduID',
+    },
+    errorBoundary: {
+        title: 'Something went wrong',
+        info: 'An unexpected error occurred. Reload the page to try again.',
+        reload: 'Reload page',
+    },
+    linkError: {
+        retry: 'Retry',
+        eppnAlreadyLinked: {
+            title: 'Connection not added!',
+            info: 'Your eduID could not be linked. The trusted account with which you just logged in, is already linked to a different eduID account: {{email}}.',
+            infoNew:
+                "You can't request an eduID account with the trusted account with which you just logged in. This institutional account is already linked to a different eduID account: {{email}}.",
+        },
+        attributeMissing: {
+            title: 'Connection not added!',
+            info: 'Your eduID could not be linked. The trusted account with which you just logged in, did not provide an EPPN.',
+            infoNew:
+                "You can't request an eduID account with the trusted account with which you just logged in. The account did not provide an EPPN.",
+        },
+        subjectAlreadyLinked: {
+            title: 'Verification failed!',
+            info: 'Your eduID could not be verified. The external account with which you just logged in, is already linked to a different eduID account.',
+        },
+        externalAccountLinkedError: {
+            title: 'Verification failed!',
+            info: 'Your eduID could not be verified. The trusted party you selected returned an error.',
+        },
+    },
+    createFromInstitution: {
+        title: 'Create an eduID from your institution',
+        header: 'You are about to create an eduID account that will be linked to your institution account.',
+        info: 'When you proceed you will be asked to login at the institution you want to link to your eduID. After a successful login you will come back here.',
+        startFlow: 'Start registration',
+        alreadyHave: 'Already have an eduID account?',
+        login: 'Login!',
+        disabled: 'Creating an eduID from your institution is not available.',
+        linkTitle: 'Hello {{name}}',
+        linkInfo:
+            'You have successfully logged in at your institution. Please enter your personal email which will be your eduID email.',
+        email: 'Your email address',
+        emailPlaceholder: 'e.g. user@gmail.com',
+        invalidEmail: 'Invalid email',
+        emailInUse: 'This email is already in use. Try another, or',
+        emailInUseLink: 'link with this eduID account.',
+        emailForbidden:
+            'The creation of an eduID account for this email-domain is denied, please contact help@eduid.nl if you think this email-domain is valid.',
+        institutionDomainWarning:
+            'It looks like you entered an institutional email address. Please note that when you no longer study at or work for that institution, you can no longer use that email address. We recommend using your personal email address for eduID.',
+        domainNotAllowed:
+            'Domain name {{domain}} not allowed. eduID is restricted to be used only for allowed domains.',
+        agreeStart: 'I agree with ',
+        termsLink: 'the terms of service',
+        termsUrl: 'https://eduid.nl/terms-of-use/',
+        agreeMiddle: " and I've read ",
+        privacyLink: 'the privacy policy',
+        privacyUrl: 'https://eduid.nl/privacy',
+        agreeEnd: '.',
+        request: 'Request your eduID',
+        verifyTitle: 'Check your email',
+        verifyInfo: 'Enter the code sent to',
+        codeLabel: 'Verification code',
+        wrongCode: 'Wrong code. Please try again.',
+        resendPrompt: "Didn't receive the email? Check your spam folder, or",
+        resend: 'click to resend',
+        resent: "Check your inbox again. We've sent another email with a code",
+        confirm: 'Continue',
+        expiredTitle: 'Maximum attempts reached',
+        expiredInfo: "You've reached the maximum verification attempts.",
+        back: 'Start again',
     },
     landing: {
-        logout: 'You are logged out',
-        delete: 'Your account has been deleted',
-        ratelimit: 'Too many attempts',
+        logoutTitle: 'You have been logged out',
+        logoutStatus:
+            'To finalise the logout process you must now close this browser.',
+        loginAgain: 'Login again',
+        deleteTitle: 'Your eduID account has been deleted',
+        deleteStatus:
+            'To finalise the removal process you must now close this browser.',
+        registerAgain: 'Register again',
+        ratelimitTitle: 'Too many failed attempts',
+        ratelimitStatus:
+            'For your security the account is locked for a while. Please try again later.',
         none: 'Page not found',
     },
     notFound: {

@@ -1,5 +1,7 @@
 import { useState } from 'react';
 
+import { toast } from 'sonner';
+
 import { BuildingOfficeIcon } from '@phosphor-icons/react';
 import {
     AlertDialog,
@@ -39,6 +41,7 @@ export const DeleteInstitutionDialog = ({
         mutationFn: () => removeLinkedAccount(account),
         onSuccess: (updated) => {
             queryClient.setQueryData(['me'], updated);
+            toast.success(I18n.t('toast.institutionRemoved'));
             onClose();
         },
     });

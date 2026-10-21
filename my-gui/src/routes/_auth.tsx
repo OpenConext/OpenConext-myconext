@@ -21,7 +21,10 @@ export default function ProtectedLayout() {
 
     useEffect(() => {
         if (config.data && !isAuthenticated && config.data.loginUrl) {
-            redirectToLogin(config.data.loginUrl, window.location.pathname);
+            redirectToLogin(
+                config.data.loginUrl,
+                window.location.pathname + window.location.search,
+            );
         }
     }, [config.data, isAuthenticated]);
 

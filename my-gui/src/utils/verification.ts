@@ -4,6 +4,27 @@ import I18n from '../locale/I18n';
 const hasNames = (account: LinkedAccount) =>
     Boolean(account.givenName && account.familyName);
 
+const DAY_IN_MILLIS = 24 * 60 * 60 * 1000;
+
+/**
+ * When the account stops being valid. Institution accounts without names
+ * only live for `nonValidatedDays` after they were received.
+ */
+export const accountExpiresAt = (
+    account: LinkedAccount,
+    nonValidatedDays?: number,
+): number =>
+    !account.external && !hasNames(account) && nonValidatedDays
+        ? account.createdAt + nonValidatedDays * DAY_IN_MILLIS
+        : account.expiresAt;
+
+export const isExpired = (account: LinkedAccount, nonValidatedDays?: number) =>
+    accountExpiresAt(account, nonValidatedDays) < Date.now();
+
+// Studielink connections stay until the connection itself has ended
+export const canDelete = (account: LinkedAccount): boolean =>
+    account.idpScoping !== 'studielink' || account.connectionActive === false;
+
 export const isValid = (account: LinkedAccount) =>
     account.expiresAt > Date.now();
 

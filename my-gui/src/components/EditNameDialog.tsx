@@ -1,6 +1,8 @@
 import { useState } from 'react';
 import type { FormEvent } from 'react';
 
+import { toast } from 'sonner';
+
 import {
     Button,
     Dialog,
@@ -40,6 +42,7 @@ export const EditNameDialog = ({
         mutationFn: updateName,
         onSuccess: (updated) => {
             queryClient.setQueryData(['me'], updated);
+            toast.success(I18n.t('toast.nameUpdated'));
             onOpenChange(false);
         },
     });

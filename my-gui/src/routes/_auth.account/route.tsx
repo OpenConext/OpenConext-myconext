@@ -1,5 +1,6 @@
-import I18n from '../../locale/I18n';
+import { Navigate } from 'react-router';
 
-export default function Account() {
-    return <h1>{I18n.t('pages.account')}</h1>;
+// downloading the data and deleting the account are in the user menu
+export default function AccountRedirect() {
+    return <Navigate to={{ pathname: '/' }} replace />;
 }

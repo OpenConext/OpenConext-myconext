@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useSearchParams } from 'react-router';
 
 import { UserListIcon, WarningCircleIcon } from '@phosphor-icons/react';
 import {
@@ -35,11 +36,23 @@ export default function Identity() {
     });
     const [editingName, setEditingName] = useState(false);
     const [editingChosenName, setEditingChosenName] = useState(false);
-    const [verifying, setVerifying] = useState(false);
+    const [verifyingState, setVerifying] = useState(false);
+    const [searchParams, setSearchParams] = useSearchParams();
 
     if (!me) {
         return null;
     }
+
+    // the server and the error pages send the user back to continue verifying
+    const retry = searchParams.has('retry');
+    const serviceDesk = searchParams.has('servicedesk');
+    const verifying = verifyingState || retry || serviceDesk;
+    const closeVerify = () => {
+        setVerifying(false);
+        if (searchParams.size > 0) {
+            setSearchParams({}, { replace: true });
+        }
+    };
 
     const controlCode = me.controlCode;
     const verified = isVerified(me);
@@ -90,13 +103,11 @@ export default function Identity() {
             )}
 
             <div className="identity__list">
-                {verified && (
-                    <IdentityRow
-                        label={I18n.t('identity.chosenName')}
-                        value={me.chosenName}
-                        onEdit={() => setEditingChosenName(true)}
-                    />
-                )}
+                <IdentityRow
+                    label={I18n.t('identity.chosenName')}
+                    value={me.chosenName}
+                    onEdit={() => setEditingChosenName(true)}
+                />
                 <IdentityRow
                     label={I18n.t('identity.name.label')}
                     value={`${me.givenName} ${me.familyName}`}
@@ -155,9 +166,15 @@ export default function Identity() {
             {verifying && (
                 <VerifyIdentityDialog
                     user={me}
-                    initialView={controlCode ? 'serviceDesk' : 'methods'}
+                    initialView={
+                        controlCode || serviceDesk
+                            ? 'serviceDesk'
+                            : retry && config?.featureIdVerify
+                              ? 'banks'
+                              : 'methods'
+                    }
                     open
-                    onOpenChange={setVerifying}
+                    onOpenChange={closeVerify}
                 />
             )}
             <NewLinkedAccount />
