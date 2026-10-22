@@ -69,6 +69,7 @@ export default function CreateFromInstitution() {
                     </CardContent>
                     <CardFooter className="create-from-institution__footer">
                         <Button
+                            data-testid="create-from-institution-start"
                             disabled={!url}
                             onClick={() => url && window.location.assign(url)}
                         >

@@ -46,11 +46,13 @@ export const InstitutionCard = ({
 
     return (
         <div
+            data-testid="institution-card"
             className={`institution-card${bordered ? ' institution-card--bordered' : ''}`}
         >
             <button
                 type="button"
                 className="institution-card__header"
+                data-testid="institution-card-toggle"
                 aria-expanded={open}
                 onClick={() => setOpen(!open)}
             >
@@ -101,6 +103,7 @@ export const InstitutionCard = ({
                         <Button
                             variant="ghost"
                             className="institution-card__delete"
+                            data-testid="institution-card-delete"
                             onClick={onDelete}
                         >
                             {I18n.t('institutions.delete.button')}

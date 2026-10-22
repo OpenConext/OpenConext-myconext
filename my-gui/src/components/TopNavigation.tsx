@@ -136,6 +136,7 @@ export const TopNavigation = ({ userName }: TopNavigationProps) => {
                     </DropdownMenu>
                     <DropdownMenu>
                         <DropdownMenuTrigger
+                            data-testid="user-menu"
                             render={<Button variant="ghost" />}
                         >
                             {userName}
@@ -165,7 +166,10 @@ export const TopNavigation = ({ userName }: TopNavigationProps) => {
                                 {I18n.t('userMenu.logout')}
                             </DropdownMenuItem>
                             <DropdownMenuSeparator />
-                            <DropdownMenuItem onClick={() => setDeleting(true)}>
+                            <DropdownMenuItem
+                                data-testid="user-menu-delete-account"
+                                onClick={() => setDeleting(true)}
+                            >
                                 <TrashIcon />
                                 {I18n.t('userMenu.deleteAccount')}
                             </DropdownMenuItem>

@@ -255,6 +255,7 @@ export const PasswordDialog = ({
                         <DialogFooter>
                             {cancel}
                             <Button
+                                data-testid="password-confirm"
                                 disabled={sendCode.isPending}
                                 onClick={handleConfirm}
                             >
@@ -284,6 +285,7 @@ export const PasswordDialog = ({
                             <InputOTP
                                 ref={otpRef}
                                 autoFocus
+                                data-testid="password-code"
                                 maxLength={CODE_LENGTH}
                                 pattern="^\d+$"
                                 inputMode="numeric"
@@ -386,6 +388,7 @@ export const PasswordDialog = ({
                                 </FieldLabel>
                                 <Input
                                     id="newPassword"
+                                    data-testid="password-new"
                                     type="password"
                                     autoComplete="new-password"
                                     spellCheck={false}
@@ -405,6 +408,7 @@ export const PasswordDialog = ({
                                 </FieldLabel>
                                 <Input
                                     id="confirmPassword"
+                                    data-testid="password-confirm-new"
                                     type="password"
                                     autoComplete="new-password"
                                     spellCheck={false}
@@ -433,13 +437,18 @@ export const PasswordDialog = ({
                                     type="button"
                                     variant="outline"
                                     className="password-dialog__delete"
+                                    data-testid="password-delete"
                                     onClick={() => setStep('delete')}
                                 >
                                     {I18n.t('security.password.flow.delete')}
                                 </Button>
                             )}
                             {cancel}
-                            <Button type="submit" disabled={!canSave}>
+                            <Button
+                                type="submit"
+                                data-testid="password-save"
+                                disabled={!canSave}
+                            >
                                 {I18n.t('security.password.flow.save')}
                             </Button>
                         </DialogFooter>
@@ -465,6 +474,7 @@ export const PasswordDialog = ({
                             </Button>
                             <Button
                                 variant="destructive"
+                                data-testid="password-delete-confirm"
                                 disabled={removePassword.isPending}
                                 onClick={() => removePassword.mutate()}
                             >

@@ -7,6 +7,8 @@ import I18n from '../locale/I18n';
 import './IdentityRow.scss';
 
 type IdentityRowProps = {
+    // prefix of the data-testid attributes of the row and its controls
+    testId?: string;
     label: string;
     value: string;
     // shown in green below the value when the value is verified
@@ -18,6 +20,7 @@ type IdentityRowProps = {
 };
 
 export const IdentityRow = ({
+    testId,
     label,
     value,
     verifiedText,
@@ -25,7 +28,7 @@ export const IdentityRow = ({
     onEdit,
 }: IdentityRowProps) => {
     return (
-        <div className="identity-row">
+        <div className="identity-row" data-testid={testId}>
             <div className="identity-row__main">
                 <div className="identity-row__content">
                     <span className="identity-row__label">{label}</span>
@@ -35,6 +38,7 @@ export const IdentityRow = ({
                     <Button
                         variant="ghost"
                         className="identity-row__action"
+                        data-testid={testId && `${testId}-edit`}
                         onClick={onEdit}
                     >
                         <PencilSimpleIcon />

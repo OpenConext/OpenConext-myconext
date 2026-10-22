@@ -119,6 +119,7 @@ export default function VerifyFromInstitution() {
                     pattern="^\d+$"
                     inputMode="numeric"
                     autoComplete="one-time-code"
+                    data-testid="verify-from-institution-code"
                     aria-label={I18n.t('createFromInstitution.codeLabel')}
                     value={code}
                     disabled={verify.isPending}

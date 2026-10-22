@@ -84,6 +84,7 @@ export const DeleteAccountDialog = ({ onClose }: DeleteAccountDialogProps) => {
                     </FieldLabel>
                     <Input
                         id="deleteConfirmation"
+                        data-testid="delete-account-confirmation"
                         value={confirmation}
                         autoComplete="off"
                         spellCheck={false}
@@ -99,6 +100,7 @@ export const DeleteAccountDialog = ({ onClose }: DeleteAccountDialogProps) => {
                     </AlertDialogCancel>
                     <AlertDialogAction
                         variant="destructive"
+                        data-testid="delete-account-confirm"
                         disabled={!confirmed || isPending}
                         onClick={() =>
                             me && hasSecondFactor(me)

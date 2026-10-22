@@ -1,0 +1,5 @@
+# Overrides for the end-to-end tests, see myconext.e2e.E2eSeed. Run with --spring.profiles.active=test,e2e
+
+oidc:
+  # The OIDC mock of the tiqr-mock application plays the institution login
+  base-url: http://localhost:8088

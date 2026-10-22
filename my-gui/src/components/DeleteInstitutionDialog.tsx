@@ -85,6 +85,7 @@ export const DeleteInstitutionDialog = ({
                     </AlertDialogCancel>
                     <AlertDialogAction
                         variant="destructive"
+                        data-testid="delete-institution-confirm"
                         disabled={isPending}
                         onClick={() =>
                             me && hasSecondFactor(me)

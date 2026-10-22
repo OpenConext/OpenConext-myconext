@@ -107,6 +107,7 @@ export const ActivateAppDialog = ({ onClose }: ActivateAppDialogProps) => {
                                 {I18n.t('app.get.cancel')}
                             </Button>
                             <Button
+                                data-testid="activate-app-next"
                                 disabled={isPending}
                                 onClick={() => start()}
                             >
@@ -194,6 +195,7 @@ const EnrollmentStep = ({
             {!timedOut && !retrieved && (
                 <div className="activate-app__enroll">
                     <img
+                        data-testid="activate-app-enroll-qr"
                         className="activate-app__enroll-qr"
                         src={enrollment.qrcode}
                         alt={I18n.t('app.enroll.qr')}

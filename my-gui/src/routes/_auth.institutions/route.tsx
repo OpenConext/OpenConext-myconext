@@ -81,6 +81,7 @@ export default function Institutions() {
                                 <Button
                                     variant="ghost"
                                     className="institutions__link"
+                                    data-testid="institutions-add"
                                     disabled={isPending}
                                     onClick={() => link()}
                                 >
@@ -107,6 +108,7 @@ export default function Institutions() {
                             <EmptyContent>
                                 {linking && (
                                     <Button
+                                        data-testid="institutions-add"
                                         disabled={isPending}
                                         onClick={() => link()}
                                     >

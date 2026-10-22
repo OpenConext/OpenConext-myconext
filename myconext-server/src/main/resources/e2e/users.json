@@ -1,0 +1,128 @@
+[
+  {
+    "uid": "1234567890",
+    "email": "jdoe@example.com",
+    "password": "$2a$10$S5DMhg8WJyFGqwj22nuKze7tDNEO7FFqZFr8BI.idLpkn4b4vmPIm",
+    "chosenName": "Johnny",
+    "givenName": "John",
+    "familyName": "Doe",
+    "schacHomeOrganization": "surfguest.nl",
+    "activities": [
+      {
+        "event": "ACCOUNT_CREATED",
+        "dateTime": "2020-03-04T09:41:00.000Z",
+        "context": {}
+      },
+      {
+        "event": "INSTITUTION_LINKED",
+        "dateTime": "2020-03-04T09:42:10.000Z",
+        "context": {
+          "institution": "surfguest.nl"
+        }
+      },
+      {
+        "event": "PASSKEY_ADDED",
+        "dateTime": "2021-03-03T09:07:00.000Z",
+        "context": {
+          "name": "MacBook (Chrome)"
+        }
+      },
+      {
+        "event": "PASSWORD_UPDATED",
+        "dateTime": "2022-10-02T14:12:00.000Z",
+        "context": {}
+      },
+      {
+        "event": "APP_ACTIVATED",
+        "dateTime": "2023-11-27T11:09:00.000Z",
+        "context": {
+          "variant": "phone"
+        }
+      },
+      {
+        "event": "NAME_UPDATED",
+        "dateTime": "2024-01-04T09:41:00.000Z",
+        "context": {}
+      }
+    ],
+    "rateLimited": false,
+    "linkedAccounts": [
+      {
+        "createdAt": "2020-11-12T13:55:50.229Z",
+        "expiresAt": "2026-12-12T07:55:50.229Z",
+        "eduPersonPrincipalName": "1234567890@surfguest.nl",
+        "subjectId": "subject@surfguest.nl",
+        "institutionIdentifier": "institution.com",
+        "schacHomeOrganization": "groningen.nl"
+      },
+      {
+        "createdAt": "2019-11-12T13:55:50.229Z",
+        "expiresAt": "2028-12-12T07:55:50.229Z",
+        "eduPersonPrincipalName": "guest@example.nl",
+        "subjectId": "subject@example.nl",
+        "institutionIdentifier": "example.nl",
+        "schacHomeOrganization": "example.nl",
+        "givenName": "Mary",
+        "familyName": "Dahl",
+        "preferred": true
+      }
+    ],
+    "attributes": {},
+    "surfSecureId": {},
+    "publicKeyCredentials": [
+      {
+        "identifier": "AYF22iCGkHySQrbX2ClNXqs3KsEDt7A1eELysDEg74Z2HwJF2XkQNCnbPL3zkZeycHBGurWMZE6J1vOs8c5JwOXroT72m9foU2_Gtxnz57T6HDUwj-LAdle7QXGhYq3_KTtC8hK1kPKkp30XB9fPS_nPJfcxd1pbLGUu",
+        "credential": "pQMmAQIgASFYIALwgFv7Vb-8RiH3nkNZbC_iJULkhg8n_Tnalc89TmnrIlgg9Z3T7mBPZvgdikhi6viphhQitOa-49bjuDMwkm2g24E",
+        "name": "local mac fingerprint",
+        "createdAt": "2020-11-12T13:55:50.229Z"
+      }
+    ],
+    "userHandle": "ILWqa-yfidIbr-tmLbegkl_q9GYY53s5h-WPxDGJ36rzvDfR-lZqMlqARdUlPDRH_KH95owGCoEqMuigryV_qA",
+    "eduIDS": [
+      {
+        "value": "3060b9ce-9cf2-4e5b-8164-bf0a2b706720",
+        "createdAt": "2020-11-12T13:55:50.229Z",
+        "services": [
+          {
+            "entityId": "http://mock-sp",
+            "name": "Mock SP",
+            "nameNl": "Mock SP NL",
+            "logoUrl": "https://static.surfconext.nl/media/sp/eduid.png",
+            "homeUrl": "https://eduid.nl/",
+            "institutionGuid": "ad93daef-0911-e511-80d0-005056956c1a"
+          }
+        ]
+      },
+      {
+        "value": "fc75dcc7-6def-4054-b8ba-3c3cc504dd4b",
+        "createdAt": "2020-11-12T13:55:50.229Z",
+        "services": [
+          {
+            "entityId": "playground_client",
+            "name": "https://playground.client",
+            "institutionGuid": "ad93daef-0911-e511-80d0-005056956c1a"
+          }
+        ]
+      }
+    ],
+    "created": 1583337392
+  },
+  {
+    "uid": "e2e-other",
+    "email": "e2e-other@example.com",
+    "givenName": "Other",
+    "familyName": "Person",
+    "schacHomeOrganization": "surfguest.nl",
+    "created": 1583337392,
+    "rateLimited": false,
+    "linkedAccounts": [
+      {
+        "createdAt": "2020-11-12T13:55:50.229Z",
+        "expiresAt": "2036-12-12T07:55:50.229Z",
+        "eduPersonPrincipalName": "taken@institution.example",
+        "institutionIdentifier": "institution.example",
+        "schacHomeOrganization": "institution.example"
+      }
+    ]
+  }
+]

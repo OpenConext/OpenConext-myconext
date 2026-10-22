@@ -109,6 +109,7 @@ export default function Identity() {
 
             <div className="identity__list">
                 <IdentityRow
+                    testId="identity-chosen-name"
                     label={I18n.t('identity.chosenName')}
                     value={me.chosenName}
                     onEdit={() => setEditingChosenName(true)}

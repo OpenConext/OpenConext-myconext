@@ -131,6 +131,7 @@ export default function Security() {
                 <div className="security__card">
                     {hasApp && (
                         <LoginMethodRow
+                            testId="security-app"
                             icon={<DeviceMobileSpeakerIcon />}
                             title={I18n.t('security.app.title')}
                             description={I18n.t('security.app.description')}
@@ -157,6 +158,7 @@ export default function Security() {
                                     </dl>
                                     <Button
                                         variant="ghost"
+                                        data-testid="security-app-deactivate"
                                         className="login-method__action"
                                         onClick={() =>
                                             setShowDeactivateApp(true)
@@ -169,6 +171,7 @@ export default function Security() {
                         />
                     )}
                     <LoginMethodRow
+                        testId="security-email"
                         icon={<EnvelopeSimpleIcon />}
                         title={I18n.t('security.email.title')}
                         description={I18n.t('security.email.description', {
@@ -178,6 +181,7 @@ export default function Security() {
                     />
                     {hasPassword && (
                         <LoginMethodRow
+                            testId="security-password"
                             icon={<PasswordIcon />}
                             title={I18n.t('security.password.title')}
                             description={
@@ -195,6 +199,7 @@ export default function Security() {
                     {passkeys.map((passkey) => (
                         <LoginMethodRow
                             key={passkey.identifier}
+                            testId="security-passkey"
                             icon={<KeyIcon />}
                             title={I18n.t('security.passkey.title')}
                             description={I18n.t(
@@ -250,6 +255,7 @@ export default function Security() {
                         <Button
                             variant="ghost"
                             size="lg"
+                            data-testid="security-activate-app"
                             className="security__action"
                             onClick={() => setShowActivateApp(true)}
                         >
@@ -270,6 +276,7 @@ export default function Security() {
                             <Button
                                 variant="ghost"
                                 className="security__action"
+                                data-testid="security-add-password"
                                 onClick={() => setShowPassword(true)}
                             >
                                 <PasswordIcon />
@@ -280,6 +287,7 @@ export default function Security() {
                             <Button
                                 variant="ghost"
                                 className="security__action"
+                                data-testid="security-add-passkey"
                                 onClick={() => setShowAddPasskey(true)}
                             >
                                 <KeyIcon />

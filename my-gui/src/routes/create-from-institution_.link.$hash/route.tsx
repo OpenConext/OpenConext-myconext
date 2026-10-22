@@ -136,6 +136,7 @@ export default function LinkFromInstitution() {
                         </FieldLabel>
                         <Input
                             id="institutionEmail"
+                            data-testid="link-from-institution-email"
                             type="email"
                             autoFocus
                             autoComplete="email"
@@ -195,6 +196,7 @@ export default function LinkFromInstitution() {
                     )}
                     <label className="link-from-institution__terms">
                         <Checkbox
+                            data-testid="link-from-institution-agree"
                             checked={agreed}
                             onCheckedChange={(checked) =>
                                 setAgreed(checked === true)
@@ -224,6 +226,7 @@ export default function LinkFromInstitution() {
                     </label>
                     <Button
                         type="submit"
+                        data-testid="link-from-institution-submit"
                         disabled={!valid || !agreed || create.isPending}
                     >
                         {create.isPending && <Spinner />}

@@ -152,6 +152,7 @@ export const DeactivateAppDialog = ({
                             <InputOTP
                                 ref={otpRef}
                                 autoFocus
+                                data-testid="deactivate-app-code"
                                 maxLength={CODE_LENGTH}
                                 pattern="^\d+$"
                                 inputMode="numeric"
@@ -199,6 +200,7 @@ export const DeactivateAppDialog = ({
                     </AlertDialogCancel>
                     {step === 'intro' ? (
                         <AlertDialogAction
+                            data-testid="deactivate-app-next"
                             disabled={sendCode.isPending}
                             onClick={handleContinue}
                         >
@@ -209,6 +211,7 @@ export const DeactivateAppDialog = ({
                         <AlertDialogAction
                             type="submit"
                             form="deactivate-app-form"
+                            data-testid="deactivate-app-confirm"
                             disabled={
                                 !complete || deactivate.isPending || maxAttempts
                             }

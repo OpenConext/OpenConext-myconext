@@ -122,6 +122,7 @@ export const EditPasskeyDialog = ({
                         </Button>
                         <Button
                             variant="destructive"
+                            data-testid="edit-passkey-delete-confirm"
                             disabled={busy}
                             onClick={() => remove.mutate(credential)}
                         >
@@ -169,6 +170,7 @@ export const EditPasskeyDialog = ({
                             </FieldLabel>
                             <Input
                                 id="credentialName"
+                                data-testid="edit-passkey-name"
                                 spellCheck={false}
                                 value={name}
                                 onChange={(e) => setName(e.target.value)}
@@ -183,6 +185,7 @@ export const EditPasskeyDialog = ({
                             type="button"
                             variant="outline"
                             className="passkey-dialog__delete"
+                            data-testid="edit-passkey-delete"
                             onClick={() => setConfirmingDelete(true)}
                         >
                             {I18n.t('security.passkey.flow.delete')}
@@ -196,7 +199,11 @@ export const EditPasskeyDialog = ({
                             {test.isPending && <Spinner />}
                             {I18n.t('security.passkey.flow.test')}
                         </Button>
-                        <Button type="submit" disabled={!valid || busy}>
+                        <Button
+                            type="submit"
+                            data-testid="edit-passkey-update"
+                            disabled={!valid || busy}
+                        >
                             {I18n.t('security.passkey.flow.update')}
                         </Button>
                     </DialogFooter>

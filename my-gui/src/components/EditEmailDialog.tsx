@@ -173,6 +173,7 @@ export const EditEmailDialog = ({ user, onClose }: EditEmailDialogProps) => {
                             </FieldLabel>
                             <Input
                                 id="newEmail"
+                                data-testid="edit-email-input"
                                 type="email"
                                 autoFocus
                                 autoComplete="email"
@@ -204,6 +205,7 @@ export const EditEmailDialog = ({ user, onClose }: EditEmailDialogProps) => {
                             {cancel}
                             <Button
                                 type="submit"
+                                data-testid="edit-email-request"
                                 disabled={requestCode.isPending}
                             >
                                 {requestCode.isPending && <Spinner />}
@@ -256,6 +258,7 @@ export const EditEmailDialog = ({ user, onClose }: EditEmailDialogProps) => {
                             <InputOTP
                                 ref={otpRef}
                                 autoFocus
+                                data-testid="edit-email-code"
                                 maxLength={CODE_LENGTH}
                                 pattern="^\d+$"
                                 inputMode="numeric"

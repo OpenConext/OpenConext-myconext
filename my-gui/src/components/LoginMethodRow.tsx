@@ -9,6 +9,8 @@ import I18n from '../locale/I18n';
 import './LoginMethodRow.scss';
 
 type LoginMethodRowProps = {
+    // prefix of the data-testid attributes of the row and its controls
+    testId?: string;
     icon: ReactNode;
     title: string;
     description: string;
@@ -21,6 +23,7 @@ type LoginMethodRowProps = {
 };
 
 export const LoginMethodRow = ({
+    testId,
     icon,
     title,
     description,
@@ -41,12 +44,13 @@ export const LoginMethodRow = ({
     );
 
     return (
-        <div className="login-method">
+        <div className="login-method" data-testid={testId}>
             {details ? (
                 <button
                     type="button"
                     className="login-method__main login-method__main--toggle"
                     aria-expanded={open}
+                    data-testid={testId && `${testId}-toggle`}
                     onClick={() => setOpen(!open)}
                 >
                     {content}
@@ -62,6 +66,7 @@ export const LoginMethodRow = ({
                         <Button
                             variant="ghost"
                             className="login-method__change"
+                            data-testid={testId && `${testId}-change`}
                             render={
                                 changeTo ? <Link to={changeTo} /> : undefined
                             }

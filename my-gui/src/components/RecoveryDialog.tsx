@@ -190,6 +190,7 @@ export const RecoveryDialog = ({
                         </DialogHeader>
                         <Item
                             variant="outline"
+                            data-testid="recovery-phone-option"
                             className="recovery-dialog__option"
                             render={<button type="button" />}
                             onClick={() => setStep('phone')}
@@ -205,6 +206,7 @@ export const RecoveryDialog = ({
                             <p>{I18n.t('app.recovery.noPhone')}</p>
                             <button
                                 type="button"
+                                data-testid="recovery-backup-option"
                                 className="recovery-dialog__link"
                                 disabled={backup.isPending}
                                 onClick={() => backup.mutate()}
@@ -248,6 +250,7 @@ export const RecoveryDialog = ({
                             </FieldLabel>
                             <Input
                                 id="phoneNumber"
+                                data-testid="recovery-phone-input"
                                 type="tel"
                                 autoFocus
                                 autoComplete="tel"
@@ -268,7 +271,11 @@ export const RecoveryDialog = ({
                                 </FieldError>
                             )}
                         </Field>
-                        <Button type="submit" disabled={sendCode.isPending}>
+                        <Button
+                            type="submit"
+                            data-testid="recovery-phone-send"
+                            disabled={sendCode.isPending}
+                        >
                             {sendCode.isPending && <Spinner />}
                             {I18n.t('app.recovery.phone.send')}
                         </Button>
@@ -289,6 +296,7 @@ export const RecoveryDialog = ({
                             <InputOTP
                                 ref={otpRef}
                                 autoFocus
+                                data-testid="recovery-sms-code"
                                 maxLength={CODE_LENGTH}
                                 pattern="^\d+$"
                                 inputMode="numeric"
@@ -334,6 +342,7 @@ export const RecoveryDialog = ({
                                 {I18n.t('app.recovery.sms.resend')}
                             </Button>
                             <Button
+                                data-testid="recovery-sms-confirm"
                                 disabled={
                                     code.length < CODE_LENGTH ||
                                     verifyCode.isPending ||
@@ -358,7 +367,10 @@ export const RecoveryDialog = ({
                                 {I18n.t('app.recovery.backup.info')}
                             </DialogDescription>
                         </DialogHeader>
-                        <p className="recovery-dialog__recovery-code">
+                        <p
+                            data-testid="recovery-code"
+                            className="recovery-dialog__recovery-code"
+                        >
                             {recoveryCode}
                         </p>
                         <div className="recovery-dialog__actions">
@@ -370,6 +382,7 @@ export const RecoveryDialog = ({
                                 )}
                             </Button>
                             <Button
+                                data-testid="recovery-backup-next"
                                 variant="outline"
                                 onClick={() =>
                                     change
@@ -402,6 +415,7 @@ export const RecoveryDialog = ({
                             <FieldError>{I18n.t('common.error')}</FieldError>
                         )}
                         <Button
+                            data-testid="recovery-congrats-next"
                             disabled={finish.isPending || finish.isSuccess}
                             onClick={() => finish.mutate()}
                         >

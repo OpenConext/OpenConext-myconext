@@ -72,6 +72,7 @@ export const AddPasskeyDialog = ({ onClose }: AddPasskeyDialogProps) => {
                             </FieldLabel>
                             <Input
                                 id="passkeyName"
+                                data-testid="add-passkey-name"
                                 autoFocus
                                 spellCheck={false}
                                 placeholder={I18n.t(
@@ -93,7 +94,11 @@ export const AddPasskeyDialog = ({ onClose }: AddPasskeyDialogProps) => {
                         >
                             {I18n.t('security.passkey.flow.cancel')}
                         </Button>
-                        <Button type="submit" disabled={!valid || busy}>
+                        <Button
+                            type="submit"
+                            data-testid="add-passkey-start"
+                            disabled={!valid || busy}
+                        >
                             {busy && <Spinner />}
                             {I18n.t('security.passkey.flow.start')}
                         </Button>

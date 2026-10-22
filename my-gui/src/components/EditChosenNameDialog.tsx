@@ -69,6 +69,7 @@ export const EditChosenNameDialog = ({
                         </FieldLabel>
                         <Input
                             id="chosenName"
+                            data-testid="edit-chosen-name-input"
                             value={chosenName}
                             autoComplete="nickname"
                             spellCheck={false}
@@ -86,7 +87,11 @@ export const EditChosenNameDialog = ({
                         >
                             {I18n.t('identity.editName.cancel')}
                         </Button>
-                        <Button type="submit" disabled={!canSave || isPending}>
+                        <Button
+                            type="submit"
+                            data-testid="edit-chosen-name-save"
+                            disabled={!canSave || isPending}
+                        >
                             {I18n.t('identity.editName.save')}
                         </Button>
                     </DialogFooter>
