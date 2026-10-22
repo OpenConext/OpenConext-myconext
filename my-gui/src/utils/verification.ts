@@ -82,3 +82,7 @@ export const accountGivenName = (account: LinkedAccount) =>
 
 export const accountFamilyName = (account: LinkedAccount) =>
     (account.external ? account.legalLastName : account.familyName) ?? '';
+
+// identifies an account in the `?open=` parameter of the institutions page
+export const accountKey = (account: LinkedAccount): string =>
+    `${account.external ? 'external' : 'linked'}-${account.createdAt}`;

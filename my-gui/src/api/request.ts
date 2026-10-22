@@ -2,9 +2,16 @@ import I18n from '../locale/I18n';
 
 let csrfToken: string | null = null;
 
+export type RequestBehavior = {
+    // set for a wrong verification code: the server answers 401 for it as well
+    // as for a lost session, and a reload would close the dialog
+    keepOnUnauthorized?: boolean;
+};
+
 export async function request<T>(
     path: string,
     options: RequestInit = {},
+    { keepOnUnauthorized }: RequestBehavior = {},
 ): Promise<T> {
     const headers: Record<string, string> = {
         Accept: 'application/json',
@@ -28,7 +35,7 @@ export async function request<T>(
         return undefined as T;
     }
     // the session is gone, a reload sends the user through the login
-    if (res.status === 401) {
+    if (res.status === 401 && !keepOnUnauthorized) {
         window.location.reload();
     }
     if (!res.ok) {
@@ -40,5 +47,8 @@ export async function request<T>(
     return (await res.json()) as T;
 }
 
-export const putJson = <T>(path: string, body: unknown) =>
-    request<T>(path, { method: 'PUT', body: JSON.stringify(body) });
+export const putJson = <T>(
+    path: string,
+    body: unknown,
+    behavior?: RequestBehavior,
+) => request<T>(path, { method: 'PUT', body: JSON.stringify(body) }, behavior);

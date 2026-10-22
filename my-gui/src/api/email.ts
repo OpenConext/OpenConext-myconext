@@ -14,11 +14,13 @@ export const generateEmailCode = (email: string, force = false) =>
 export const resendEmailCode = () =>
     request<unknown>('/myconext/api/sp/resend-email-code');
 
-// 403 or 400 when the user has used all attempts
+// 401 for a wrong code, 403 or 400 when the user has used all attempts
 export const verifyEmailCode = (code: string) =>
-    putJson<EmailCodeVerification>('/myconext/api/sp/verify-email-code', {
-        code,
-    });
+    putJson<EmailCodeVerification>(
+        '/myconext/api/sp/verify-email-code',
+        { code },
+        { keepOnUnauthorized: true },
+    );
 
 // confirms the change with the hash from the mailed link or the verified code
 export const confirmEmail = (hash: string) =>

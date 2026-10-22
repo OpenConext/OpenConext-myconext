@@ -39,6 +39,11 @@
         margin-top: calc(var(--spacing) * 1.5);
     }
 
+    &__alert-actions {
+        display: flex;
+        gap: calc(var(--spacing) * 2);
+    }
+
     &__cards {
         display: grid;
         grid-template-columns: repeat(2, minmax(0, 1fr));

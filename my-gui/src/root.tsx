@@ -19,7 +19,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
                     name="viewport"
                     content="width=device-width, initial-scale=1"
                 />
-                <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+                <link rel="icon" type="image/png" href="/favicon.ico" />
                 <link rel="stylesheet" href="/myconext/api/disclaimer" />
                 <title>{I18n.t('globalVariables.productName')}</title>
                 <Meta />
@@ -47,7 +47,7 @@ export default function Root() {
     return (
         <QueryClientProvider client={queryClient}>
             <Outlet />
-            <Toaster position="top-center" />
+            <Toaster position="bottom-right" offset={35} mobileOffset={35} />
             <ReactQueryDevtools initialIsOpen={false} />
         </QueryClientProvider>
     );

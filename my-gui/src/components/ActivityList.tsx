@@ -13,6 +13,7 @@ import {
 
 import type { Activity } from '../api';
 import I18n from '../locale/I18n';
+import { activityText } from '../utils/activity';
 import { formatDateTime } from '../utils/format';
 import './ActivityList.scss';
 
@@ -29,18 +30,18 @@ export const ActivityList = ({ activities, pageSize }: ActivityListProps) => {
     return (
         <Card className="activity-list">
             <ItemGroup className="activity-list__group">
-                {shown.map(({ event, dateTime }) => (
+                {shown.map((activity) => (
                     <Item
-                        key={`${event}-${dateTime}`}
+                        key={`${activity.event}-${activity.dateTime}`}
                         className="activity-list__row"
                     >
                         <ItemContent>
                             <ItemTitle className="activity-list__text">
-                                {I18n.t(`activity.events.${event}`)}
+                                {activityText(activity)}
                             </ItemTitle>
                         </ItemContent>
                         <ItemActions className="activity-list__date">
-                            {formatDateTime(dateTime)}
+                            {formatDateTime(activity.dateTime)}
                         </ItemActions>
                     </Item>
                 ))}

@@ -1,6 +1,10 @@
 import { Link } from 'react-router';
 
-import { ArrowRightIcon, WarningCircleIcon } from '@phosphor-icons/react';
+import {
+    ArrowRightIcon,
+    WarningCircleIcon,
+    WarningDiamondIcon,
+} from '@phosphor-icons/react';
 import {
     Alert,
     AlertDescription,
@@ -24,8 +28,11 @@ import { HomeCard } from '../../components/HomeCard';
 import { useBadgeCounts } from '../../hooks/useBadgeCounts';
 import I18n from '../../locale/I18n';
 import { useAppStore } from '../../store/store';
+import { activityText, withHistory } from '../../utils/activity';
 import { formatDateTime } from '../../utils/format';
 import './route.scss';
+
+const RECENT_LIMIT = 4;
 
 export default function Home() {
     const { data: me } = useQuery({ queryKey: ['me'], queryFn: fetchMe });
@@ -35,7 +42,9 @@ export default function Home() {
     });
     const linking = config?.enableAccountLinking !== false;
     const counts = useBadgeCounts();
-    const recentActivities = me?.recentActivities ?? [];
+    const recentActivities = me
+        ? withHistory(me, me.recentActivities ?? [], RECENT_LIMIT)
+        : [];
     const introHidden = useAppStore((state) => state.introHidden);
     const hideIntro = useAppStore((state) => state.hideIntro);
 
@@ -47,6 +56,41 @@ export default function Home() {
                 </h1>
                 <p className="home__lead">{I18n.t('home.lead')}</p>
             </header>
+
+            {me?.controlCode && (
+                <Alert variant="warning" className="home__alert">
+                    <WarningDiamondIcon />
+                    <AlertTitle>{I18n.t('home.serviceDesk.title')}</AlertTitle>
+                    <AlertDescription>
+                        {I18n.t('home.serviceDesk.description')}
+                    </AlertDescription>
+                    <div className="home__alert-action home__alert-actions">
+                        <Button
+                            size="sm"
+                            nativeButton={false}
+                            render={<Link to="/identity?servicedesk" />}
+                        >
+                            {I18n.t('home.serviceDesk.showCode')}
+                        </Button>
+                        <Button
+                            variant="outline"
+                            size="sm"
+                            nativeButton={false}
+                            render={
+                                <a
+                                    href={I18n.t(
+                                        'identity.serviceDesk.locationsUrl',
+                                    )}
+                                    target="_blank"
+                                    rel="noreferrer"
+                                />
+                            }
+                        >
+                            {I18n.t('home.serviceDesk.locations')}
+                        </Button>
+                    </div>
+                </Alert>
+            )}
 
             {!introHidden && (
                 <Alert variant="info" className="home__alert">
@@ -114,7 +158,7 @@ export default function Home() {
                     title={I18n.t('home.cards.activity.title')}
                     description={
                         recentActivities.length > 0
-                            ? `${I18n.t(`activity.events.${recentActivities[0].event}`)}, ${formatDateTime(recentActivities[0].dateTime)}`
+                            ? `${activityText(recentActivities[0])}, ${formatDateTime(recentActivities[0].dateTime)}`
                             : I18n.t('home.activity.empty')
                     }
                     color="turquoise"

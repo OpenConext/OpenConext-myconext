@@ -13,6 +13,7 @@ import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
+import myconext.activity.ActivityContext;
 import myconext.activity.ActivityRecorder;
 import myconext.config.CreateFromInstitutionProperties;
 import myconext.cron.DisposableEmailProviders;
@@ -413,7 +414,7 @@ public class AccountLinkerController implements UserAuthentication {
                 userInfo);
         requestInstitutionEduIDRepository.save(requestInstitutionEduID);
         if (!existingUser && user.getId() != null) {
-            activityRecorder.record(user, ACCOUNT_CREATED, "Account created from institution");
+            activityRecorder.record(user, ACCOUNT_CREATED, ActivityContext.institution((String) userInfo.get("schac_home_organization"), manage));
         }
 
         //This is primarily for localhost development, in real environments the login will be done by Shibboleth filter
@@ -629,7 +630,7 @@ public class AccountLinkerController implements UserAuthentication {
         if (user.getLinkedAccounts().isEmpty()) {
             externalLinkedAccount.setPreferred(true);
         }
-        activityRecorder.record(user, IDENTITY_VERIFIED, "Identity verified by " + externalLinkedAccount.getIdpScoping());
+        activityRecorder.record(user, IDENTITY_VERIFIED, ActivityContext.of(ActivityContext.INSTITUTION, externalLinkedAccount.getIdpScoping().name()));
 
         String queryParam = "?verify=" + externalLinkedAccount.getIdpScoping();
         String clientRedirectUrl = isMobileFlow ?
@@ -761,7 +762,7 @@ public class AccountLinkerController implements UserAuthentication {
 
         LOG.info(String.format("New external linked account %s for user %s", externalLinkedAccount, user.getEmail()));
 
-        activityRecorder.record(user, IDENTITY_VERIFIED, "Identity verified by " + externalLinkedAccount.getIdpScoping());
+        activityRecorder.record(user, IDENTITY_VERIFIED, ActivityContext.of(ActivityContext.INSTITUTION, externalLinkedAccount.getIdpScoping().name()));
 
         String location = this.magicLinkUrl + "?h=" + samlAuthenticationRequest.getHash();
 
@@ -987,7 +988,7 @@ public class AccountLinkerController implements UserAuthentication {
                     eppnValue, institutionIdentifier, affiliations));
 
             if (isNewLink) {
-                activityRecorder.record(user, INSTITUTION_LINKED, "Institution linked: " + institutionIdentifier);
+                activityRecorder.record(user, INSTITUTION_LINKED, ActivityContext.institution(schacHomeOrganization, manage));
             } else {
                 userRepository.save(user);
             }

@@ -23,6 +23,8 @@ type InstitutionCardProps = {
     account: LinkedAccount;
     // without it the details are read-only
     onDelete?: () => void;
+    // starts with the details shown
+    defaultOpen?: boolean;
     // a standalone card, for example in a dialog, instead of a list row
     bordered?: boolean;
 };
@@ -30,9 +32,10 @@ type InstitutionCardProps = {
 export const InstitutionCard = ({
     account,
     onDelete,
+    defaultOpen,
     bordered,
 }: InstitutionCardProps) => {
-    const [open, setOpen] = useState(false);
+    const [open, setOpen] = useState(defaultOpen ?? false);
     const { data: config } = useQuery({
         queryKey: ['config'],
         queryFn: fetchConfig,

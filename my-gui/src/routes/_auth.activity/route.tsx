@@ -9,6 +9,7 @@ import { DeleteServiceDialog } from '../../components/DeleteServiceDialog';
 import { PageHeader } from '../../components/PageHeader';
 import { ServiceCard } from '../../components/ServiceCard';
 import I18n from '../../locale/I18n';
+import { withHistory } from '../../utils/activity';
 import { type Service, buildServices } from '../../utils/services';
 import './route.scss';
 
@@ -41,6 +42,7 @@ export default function Activity() {
     }
 
     const services = buildServices(me, tokens);
+    const history = withHistory(me, activities);
 
     return (
         <div className="activity">
@@ -78,15 +80,12 @@ export default function Activity() {
                 )}
             </section>
 
-            {activities.length > 0 && (
+            {history.length > 0 && (
                 <section className="activity__section">
                     <h2 className="activity__heading">
                         {I18n.t('activity.all')}
                     </h2>
-                    <ActivityList
-                        activities={activities}
-                        pageSize={PAGE_SIZE}
-                    />
+                    <ActivityList activities={history} pageSize={PAGE_SIZE} />
                 </section>
             )}
 

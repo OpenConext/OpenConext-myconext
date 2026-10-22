@@ -14,10 +14,13 @@ export const generatePasswordCode = () =>
 export const resendPasswordCode = () =>
     request<void>('/myconext/api/sp/resend-password-code');
 
+// 401 for a wrong code
 export const verifyPasswordCode = (code: string) =>
-    putJson<PasswordCodeVerification>('/myconext/api/sp/verify-password-code', {
-        code,
-    });
+    putJson<PasswordCodeVerification>(
+        '/myconext/api/sp/verify-password-code',
+        { code },
+        { keepOnUnauthorized: true },
+    );
 
 // a null password deletes the current password
 export const updatePassword = (

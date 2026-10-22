@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useSearchParams } from 'react-router';
 
 import {
     ArrowRightIcon,
@@ -23,6 +24,7 @@ import { InstitutionCard } from '../../components/InstitutionCard';
 import { NewLinkedAccount } from '../../components/NewLinkedAccount';
 import { PageHeader } from '../../components/PageHeader';
 import I18n from '../../locale/I18n';
+import { accountKey } from '../../utils/verification';
 import './route.scss';
 
 export default function Institutions() {
@@ -33,6 +35,9 @@ export default function Institutions() {
     });
     const linking = config?.enableAccountLinking !== false;
     const [deleting, setDeleting] = useState<LinkedAccount>();
+    const [searchParams] = useSearchParams();
+    // the identity page links to the institution it shows
+    const open = searchParams.get('open');
 
     // the browser leaves for the institution to log in
     const { mutate: link, isPending } = useMutation({
@@ -67,6 +72,7 @@ export default function Institutions() {
                             <InstitutionCard
                                 key={`${account.external}-${account.createdAt}`}
                                 account={account}
+                                defaultOpen={accountKey(account) === open}
                                 onDelete={() => setDeleting(account)}
                             />
                         ))}

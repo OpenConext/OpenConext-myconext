@@ -86,3 +86,13 @@
         text-align: center;
     }
 }
+
+.service-desk__actions {
+    display: flex;
+    gap: 20px;
+
+    // equal widths, whatever the label length
+    > * {
+        flex: 1 1 0;
+    }
+}

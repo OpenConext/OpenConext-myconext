@@ -70,6 +70,8 @@ export type User = {
     chosenName: string;
     givenName: string;
     familyName: string;
+    // epoch seconds
+    created?: number;
     preferredLanguage?: string;
     loginOptions?: string[];
     usePassword?: boolean;

@@ -56,9 +56,10 @@ export const resendInstitutionMail = (hash: string) =>
         `/myconext/api/sp/create-from-institution/resendMail?hash=${encodeURIComponent(hash)}`,
     );
 
-// 403 or 400 when the user has used all attempts
+// 401 for a wrong code, 403 or 400 when the user has used all attempts
 export const verifyInstitutionEduId = (hash: string, code: string) =>
     putJson<InstitutionVerification>(
         '/myconext/api/sp/create-from-institution/verify',
         { code, hash },
+        { keepOnUnauthorized: true },
     );

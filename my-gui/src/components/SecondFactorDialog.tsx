@@ -57,6 +57,7 @@ export const SecondFactorDialog = ({
     const [wrongCode, setWrongCode] = useState(false);
     const otpRef = useRef<HTMLInputElement>(null);
     const confirmed = useRef(false);
+    const polls = useRef(0);
 
     // a POST, but it is the first thing the dialog needs and runs only once
     const { data: authentication, isError } = useQuery({
@@ -69,25 +70,26 @@ export const SecondFactorDialog = ({
     });
     const sessionKey = authentication?.sessionKey;
 
-    const { data: poll, dataUpdateCount } = useQuery({
+    const { data: poll } = useQuery({
         queryKey: ['stepUp', sessionKey],
         queryFn: async () => {
             const result = await pollAuthentication(sessionKey!);
+            polls.current += 1;
             if (result.status === 'SUCCESS') {
                 await confirmStepUp(sessionKey!);
             }
-            return result;
+            return { ...result, polls: polls.current };
         },
         enabled: Boolean(sessionKey),
         refetchInterval: (query) =>
             query.state.data?.status === 'SUCCESS' ||
-            query.state.dataUpdateCount >= MAX_POLLS
+            (query.state.data?.polls ?? 0) >= MAX_POLLS
                 ? false
                 : POLL_INTERVAL,
         gcTime: 0,
     });
 
-    const timedOut = dataUpdateCount >= MAX_POLLS;
+    const timedOut = (poll?.polls ?? 0) >= MAX_POLLS;
     const success = poll?.status === 'SUCCESS';
 
     useEffect(() => {

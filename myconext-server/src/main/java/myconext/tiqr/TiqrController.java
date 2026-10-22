@@ -7,6 +7,7 @@ import io.swagger.v3.oas.annotations.Parameter;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
+import myconext.activity.ActivityContext;
 import myconext.activity.ActivityRecorder;
 import myconext.exceptions.ExpiredAuthenticationException;
 import myconext.exceptions.ForbiddenException;
@@ -255,7 +256,7 @@ public class TiqrController implements UserAuthentication {
         List.of(PHONE_VERIFICATION_CODE, PHONE_VERIFIED, PHONE_NUMBER)
                 .forEach(surfSecureId::remove);
         activityRecorder.record(user, regenerateSpFlow ? RECOVERY_METHOD_CHANGED : APP_ACTIVATED,
-                regenerateSpFlow ? "Recovery method changed to a recovery code" : "eduID app activated with a recovery code");
+                ActivityContext.of(ActivityContext.VARIANT, ActivityContext.VARIANT_RECOVERY_CODE));
 
         if (!regenerateSpFlow) {
             tiqrService.finishRegistration(user.getId());
@@ -403,7 +404,7 @@ public class TiqrController implements UserAuthentication {
                 tiqrService.finishRegistration(user.getId());
             }
             activityRecorder.record(user, regenerateSpFlow ? RECOVERY_METHOD_CHANGED : APP_ACTIVATED,
-                    regenerateSpFlow ? "Recovery method changed to a phone number" : "eduID app activated with a phone number");
+                    ActivityContext.of(ActivityContext.VARIANT, ActivityContext.VARIANT_PHONE));
         } else {
             throw new ForbiddenException("Wrong phone code, wrong code: " + code);
         }
@@ -664,7 +665,7 @@ public class TiqrController implements UserAuthentication {
 
         if (MessageDigest.isEqual(userVerificationCode, verificationCode)) {
             user.getSurfSecureId().clear();
-            activityRecorder.record(user, APP_DEACTIVATED, "eduID app deactivated");
+            activityRecorder.record(user, APP_DEACTIVATED, ActivityContext.none());
             Registration registration = registrationRepository.findRegistrationByUserId(user.getId()).orElseThrow(IllegalArgumentException::new);
             registrationRepository.delete(registration);
         } else {

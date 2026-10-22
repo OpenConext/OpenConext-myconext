@@ -60,6 +60,13 @@ const nl: AppTranslation = {
     home: {
         title: 'Welkom {{name}}',
         lead: 'Hier bekijk en wijzig je je gegevens, bepaal je hoe je inlogt en beheer je aan welke instellingen en diensten je eduID gekoppeld is.',
+        serviceDesk: {
+            title: 'Ga langs bij een eduID-servicedesk',
+            description:
+                'Laat je code en identiteitsbewijs zien bij een servicedesk om te bevestigen wie je bent.',
+            showCode: 'Toon code',
+            locations: 'Bekijk servicedesks',
+        },
         intro: {
             title: 'Wat is eduID?',
             description:
@@ -134,29 +141,41 @@ const nl: AppTranslation = {
         showMore: 'Toon meer',
         all: 'Alle activiteit',
         events: {
-            ACCOUNT_CREATED: 'Account aangemaakt',
-            NAME_UPDATED: 'Naam gewijzigd',
-            LANGUAGE_CHANGED: 'Taal gewijzigd',
-            EMAIL_CHANGED: 'E-mailadres gewijzigd',
+            ACCOUNT_CREATED: 'Account aangemaakt via {{institution}}',
+            NAME_UPDATED: 'Naam gewijzigd naar {{name}}',
+            LANGUAGE_CHANGED: 'Taal gewijzigd naar {{language}}',
+            EMAIL_CHANGED: 'E-mailadres gewijzigd naar {{email}}',
             PASSWORD_ADDED: 'Wachtwoord toegevoegd',
             PASSWORD_UPDATED: 'Wachtwoord gewijzigd',
             PASSWORD_DELETED: 'Wachtwoord verwijderd',
-            PASSKEY_ADDED: 'Passkey toegevoegd',
-            PASSKEY_RENAMED: 'Passkey hernoemd',
-            PASSKEY_DELETED: 'Passkey verwijderd',
-            APP_ACTIVATED: 'eduID-app geactiveerd',
+            PASSKEY_ADDED: 'Passkey {{name}} toegevoegd',
+            PASSKEY_RENAMED: 'Passkey hernoemd naar {{name}}',
+            PASSKEY_DELETED: 'Passkey {{name}} verwijderd',
+            APP_ACTIVATED: {
+                default: 'eduID-app geactiveerd',
+                phone: 'eduID-app geactiveerd met een telefoonnummer',
+                recoveryCode: 'eduID-app geactiveerd met een herstelcode',
+            },
             APP_DEACTIVATED: 'eduID-app gedeactiveerd',
-            RECOVERY_METHOD_CHANGED: 'Herstelmethode gewijzigd',
-            INSTITUTION_LINKED: 'Instelling gekoppeld',
-            INSTITUTION_REMOVED: 'Instelling verwijderd',
-            PREFERRED_INSTITUTION_CHANGED: 'Voorkeursinstelling gewijzigd',
-            IDENTITY_VERIFIED: 'Identiteit bevestigd',
-            IDENTITY_REMOVED: 'Bevestigde identiteit verwijderd',
+            RECOVERY_METHOD_CHANGED: {
+                default: 'Herstelmethode gewijzigd',
+                phone: 'Herstelmethode gewijzigd naar een telefoonnummer',
+                recoveryCode: 'Herstelmethode gewijzigd naar een herstelcode',
+            },
+            INSTITUTION_LINKED: 'Instelling {{institution}} gekoppeld',
+            INSTITUTION_REMOVED: 'Instelling {{institution}} verwijderd',
+            PREFERRED_INSTITUTION_CHANGED:
+                'Voorkeursinstelling gewijzigd naar {{institution}}',
+            IDENTITY_VERIFIED: 'Identiteit bevestigd door {{institution}}',
+            IDENTITY_REMOVED:
+                'Bevestigde identiteit van {{institution}} verwijderd',
             CONTROL_CODE_CREATED:
                 'Controlecode voor de servicedesk aangevraagd',
             CONTROL_CODE_DELETED: 'Controlecode voor de servicedesk verwijderd',
-            SERVICE_REMOVED: 'Inloggegevens van een dienst verwijderd',
+            SERVICE_REMOVED: 'Inloggegevens van {{service}} verwijderd',
             TOKENS_REMOVED: 'Toegang van een dienst ingetrokken',
+            SERVICE_FIRST_LOGIN: 'Eerste keer ingelogd bij {{service}}',
+            SERVICE_LAST_LOGIN: 'Laatst ingelogd bij {{service}}',
         },
     },
     identity: {
@@ -180,6 +199,8 @@ const nl: AppTranslation = {
         issuers: {
             idin: 'iDIN',
             eherkenning: 'eIDAS',
+            studielink: 'Studielink',
+            serviceDesk: 'Servicedesk',
         },
         unverified: {
             title: 'Nog niet bevestigd',
@@ -236,6 +257,7 @@ const nl: AppTranslation = {
             month: 'Maand',
             year: 'Jaar',
             select: 'Selecteer...',
+            proceed: 'Doorgaan',
             codeTitle: 'Je controlecode',
             codeInfo: {
                 one: 'Je krijgt ook een e-mail met deze code. De code is nog {{count}} dag geldig en is bedoeld voor:',
@@ -266,7 +288,7 @@ const nl: AppTranslation = {
         role: 'Rol: {{roles}}',
         add: 'Instelling koppelen',
         learnMore: 'Lees meer',
-        learnMoreUrl: 'https://eduid.nl/help/',
+        learnMoreUrl: 'https://eduid.nl?lang=nl',
         empty: {
             title: 'Geen gekoppelde instellingen',
         },
@@ -461,7 +483,7 @@ const nl: AppTranslation = {
             codeTitle: 'Voer verificatiecode in',
             codeSentTo: 'Voer de code in die is verstuurd naar',
             codeLabel: 'Verificatiecode',
-            wrongCode: 'Onjuiste code. Probeer het opnieuw.',
+            wrongCode: 'De ingevulde code is onjuist.',
             resendPrompt: 'Geen e-mail ontvangen? Kijk in je spamfolder, of',
             resend: 'stuur een nieuwe code',
             resent: 'We hebben je een nieuwe code gestuurd.',
@@ -540,7 +562,7 @@ const nl: AppTranslation = {
                 delete: 'Passkey verwijderen',
                 deleteTitle: 'Passkey verwijderen?',
                 deleteInfo:
-                    'Weet je zeker dat je de passkey {{name}} wilt verwijderen? De passkey wordt verwijderd uit je eduID, maar wordt niet verwijderd uit je browser en/of van je YubiKey-apparaat.',
+                    'Weet je zeker dat je de passkey {{name}} wilt verwijderen? De passkey wordt verwijderd uit je eduID en je browser als deze dit ondersteunt, maar wordt niet verwijderd van je YubiKey-apparaat.',
                 deleteAction: 'Verwijderen',
                 back: 'Terug',
             },
@@ -566,6 +588,8 @@ const nl: AppTranslation = {
         passwordDeleted: 'Je wachtwoord is verwijderd',
         passkeyUpdated: 'Je passkey is hernoemd',
         passkeyDeleted: 'Je passkey is verwijderd',
+        passkeyDeletedManual:
+            'Verwijder hem ook uit je wachtwoordmanager of apparaatinstellingen, als hij daar nog staat.',
         passkeyTestSuccess: 'Je passkey werkt',
         passkeyTestFailed: 'Het testen van je passkey is mislukt',
         institutionRemoved: 'De instelling is verwijderd',

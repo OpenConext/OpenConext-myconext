@@ -25,6 +25,7 @@ import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import lombok.Getter;
 import lombok.SneakyThrows;
+import myconext.activity.ActivityContext;
 import myconext.activity.ActivityRecorder;
 import myconext.captcha.CaptchaVerifier;
 import myconext.cron.DisposableEmailProviders;
@@ -231,7 +232,7 @@ public class UserController implements UserAuthentication {
         user.setPreferredLanguage(language);
         userRepository.save(user);
         if (languageChanged) {
-            activityRecorder.record(user, LANGUAGE_CHANGED, "Language changed to " + language);
+            activityRecorder.record(user, LANGUAGE_CHANGED, ActivityContext.of(ActivityContext.LANGUAGE, language));
         }
         return ResponseEntity.status(201).body(Map.of("status", 201));
     }
@@ -613,7 +614,8 @@ public class UserController implements UserAuthentication {
         }
         user.validate();
 
-        activityRecorder.record(user, NAME_UPDATED, "Name updated");
+        activityRecorder.record(user, NAME_UPDATED, ActivityContext.of(ActivityContext.NAME,
+                Stream.of(user.getChosenName(), user.getFamilyName()).filter(StringUtils::hasText).collect(Collectors.joining(" "))));
         logWithContext(user, "update", "name", LOG, "Update user profile");
 
         authenticationRequestRepository.deleteByUserId(user.getId());
@@ -626,6 +628,9 @@ public class UserController implements UserAuthentication {
     public ResponseEntity<UserResponse> updateLinkedAccount(Authentication authentication,
                                                             @Valid @RequestBody UpdateLinkedAccountRequest updateLinkedAccountRequest) {
         User user = userFromAuthentication(authentication);
+        Map<String, String> preferredContext = updateLinkedAccountRequest.isExternal() ?
+                ActivityContext.of(ActivityContext.INSTITUTION, updateLinkedAccountRequest.getIdpScoping()) :
+                ActivityContext.institution(updateLinkedAccountRequest.getSchacHomeOrganization(), manage);
         if (updateLinkedAccountRequest.isExternal()) {
             user.getExternalLinkedAccounts().stream()
                     .filter(externalLinkedAccount -> externalLinkedAccount.getIdpScoping().name().equals(updateLinkedAccountRequest.getIdpScoping()))
@@ -646,7 +651,7 @@ public class UserController implements UserAuthentication {
                         }
                     });
         }
-        activityRecorder.record(user, PREFERRED_INSTITUTION_CHANGED, "Preferred institution changed");
+        activityRecorder.record(user, PREFERRED_INSTITUTION_CHANGED, preferredContext);
 
         logWithContext(user, "update", "name", LOG, "Update user linked account");
 
@@ -792,7 +797,7 @@ public class UserController implements UserAuthentication {
                 .orElseThrow(() -> new ForbiddenException("wrong_hash"));
 
         user.setEmail(changeEmailHash.getNewEmail());
-        activityRecorder.record(user, EMAIL_CHANGED, "Email changed from " + oldEmail + " to " + user.getEmail());
+        activityRecorder.record(user, EMAIL_CHANGED, ActivityContext.of(ActivityContext.EMAIL, user.getEmail()));
 
         authenticationRequestRepository.deleteByUserId(user.getId());
         changeEmailHashRepository.deleteByUserId(user.getId());
@@ -850,7 +855,7 @@ public class UserController implements UserAuthentication {
         user.setForgottenPassword(false);
 
         ActivityEvent passwordEvent = deletePassword ? PASSWORD_DELETED : (existingPassword ? PASSWORD_UPDATED : PASSWORD_ADDED);
-        activityRecorder.record(user, passwordEvent, deletePassword ? "Password deleted" : (existingPassword ? "Password updated" : "Password added"));
+        activityRecorder.record(user, passwordEvent, ActivityContext.none());
         passwordResetHashRepository.deleteByUserId(user.getId());
 
         String action = deletePassword ? "delete" : (existingPassword ? "update" : "add");
@@ -997,8 +1002,9 @@ public class UserController implements UserAuthentication {
         user.reconcileLinkedAccounts();
 
         activityRecorder.record(user, updateLinkedAccountRequest.isExternal() ? IDENTITY_REMOVED : INSTITUTION_REMOVED,
-                updateLinkedAccountRequest.isExternal() ? "Verified identity removed" :
-                        "Institution removed: " + updateLinkedAccountRequest.getSchacHomeOrganization());
+                updateLinkedAccountRequest.isExternal() ?
+                        ActivityContext.of(ActivityContext.INSTITUTION, updateLinkedAccountRequest.getIdpScoping()) :
+                        ActivityContext.institution(updateLinkedAccountRequest.getSchacHomeOrganization(), manage));
 
         logWithContext(user, "delete", "linked_account", LOG, "Deleted linked account " + updateLinkedAccountRequest.getEduPersonPrincipalName());
 
@@ -1019,7 +1025,7 @@ public class UserController implements UserAuthentication {
         }
         PublicKeyCredentials credentials = publicKeyCredentials.get();
         credentials.setName(credential.name());
-        activityRecorder.record(user, PASSKEY_RENAMED, "Passkey renamed to " + credential.name());
+        activityRecorder.record(user, PASSKEY_RENAMED, ActivityContext.of(ActivityContext.NAME, credential.name()));
 
         logWithContext(user, "update", "webauthn_key", LOG, "Updated publicKeyCredential " + credential);
 
@@ -1040,7 +1046,7 @@ public class UserController implements UserAuthentication {
                 .map(PublicKeyCredentials::getName)
                 .findFirst().orElse(identifier);
         user.setPublicKeyCredentials(publicKeyCredentials);
-        activityRecorder.record(user, PASSKEY_DELETED, "Passkey deleted: " + removedName);
+        activityRecorder.record(user, PASSKEY_DELETED, ActivityContext.of(ActivityContext.NAME, removedName));
 
         logWithContext(user, "delete", "webauthn_key", LOG, "Deleted publicKeyCredential " + credential);
 
@@ -1057,8 +1063,10 @@ public class UserController implements UserAuthentication {
         checkSecondFactorConfirmation(authentication, request);
 
         String entityId = deleteService.getServiceProviderEntityId();
+        //The names are stored in the user document, so no need for Manage. Must be read before the service is removed
+        Map<String, String> serviceContext = ActivityContext.service(entityId, user.findEduIDService(entityId));
         user.deleteEduIDService(entityId, manage);
-        activityRecorder.record(user, SERVICE_REMOVED, "Service removed: " + entityId);
+        activityRecorder.record(user, SERVICE_REMOVED, serviceContext);
 
         logWithContext(user, "delete", "eppn", LOG, "Deleted eduID " + entityId);
 
@@ -1073,7 +1081,7 @@ public class UserController implements UserAuthentication {
                                                      @RequestBody DeleteServiceTokens serviceAndTokens) {
         User user = userFromAuthentication(authentication);
 
-        activityRecorder.record(user, TOKENS_REMOVED, "Tokens removed");
+        activityRecorder.record(user, TOKENS_REMOVED, ActivityContext.none());
         logWithContext(user, "delete", "tokens", LOG, "Deleted tokens " + serviceAndTokens.getTokens());
 
         return doRemoveTokens(serviceAndTokens.getTokens(), user);
@@ -1229,7 +1237,7 @@ public class UserController implements UserAuthentication {
         ByteArray publicKeyCose = result.getPublicKeyCose();
 
         user.addPublicKeyCredential(keyId, publicKeyCose, name);
-        activityRecorder.record(user, PASSKEY_ADDED, "Passkey added: " + name);
+        activityRecorder.record(user, PASSKEY_ADDED, ActivityContext.of(ActivityContext.NAME, name));
 
         logWithContext(user, "add", "webauthn_key", LOG, "Created publicKeyCredential " + name);
 
@@ -1455,7 +1463,7 @@ public class UserController implements UserAuthentication {
 
         user.setControlCode(controlCode);
 
-        activityRecorder.record(user, CONTROL_CODE_CREATED, "Service desk control code created");
+        activityRecorder.record(user, CONTROL_CODE_CREATED, ActivityContext.none());
 
         mailBox.sendServiceDeskControlCode(user, controlCode);
 
@@ -1471,7 +1479,7 @@ public class UserController implements UserAuthentication {
     public ResponseEntity<UserResponse> deleteUserControlCode(Authentication authentication) {
         User user = userFromAuthentication(authentication);
         user.setControlCode(null);
-        activityRecorder.record(user, CONTROL_CODE_DELETED, "Service desk control code deleted");
+        activityRecorder.record(user, CONTROL_CODE_DELETED, ActivityContext.none());
 
         LOG.info(String.format("User %s deleted controlCode", user.getEmail()));
 

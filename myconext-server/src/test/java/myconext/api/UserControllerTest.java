@@ -548,7 +548,8 @@ public class UserControllerTest extends AbstractMailBoxTest {
         assertNotNull(activities.get(0).get("dateTime"));
         //The seeded activities follow the new activities, most recent first
         assertEquals(ActivityEvent.NAME_UPDATED.name(), activities.get(2).get("event"));
-        assertEquals("Password updated", activities.get(0).get("description"));
+        assertEquals(Map.of(), activities.get(0).get("context"));
+        assertFalse(activities.get(0).containsKey("description"));
     }
 
     @Test
@@ -606,6 +607,7 @@ public class UserControllerTest extends AbstractMailBoxTest {
         List<Activity> activities = userRepository.findOneUserByEmail("jdoe@example.com").allActivities();
         assertEquals(seeded + 1, activities.size());
         assertEquals(ActivityEvent.LANGUAGE_CHANGED, activities.get(0).getEvent());
+        assertEquals(Map.of("language", newLanguage), activities.get(0).getContext());
     }
 
     private void updateName(String givenName) {
@@ -868,6 +870,10 @@ public class UserControllerTest extends AbstractMailBoxTest {
         assertEquals(2, userFromDB.getEduIDS().size());
         assertTrue(userFromDB.getEduIDS().stream()
                 .anyMatch(val -> val.getServices().isEmpty() && StringUtils.hasText(val.getServiceInstutionGuid())));
+        //The name is taken from the service as stored in the user document
+        Activity activity = userFromDB.allActivities().get(0);
+        assertEquals(ActivityEvent.SERVICE_REMOVED, activity.getEvent());
+        assertEquals(Map.of("service", "Mock SP", "serviceNl", "Mock SP NL"), activity.getContext());
     }
 
     @Test

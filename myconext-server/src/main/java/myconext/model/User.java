@@ -190,9 +190,9 @@ public class User implements Serializable, UserDetails {
     }
 
     @Transient
-    public void addActivity(ActivityEvent event, String description) {
+    public void addActivity(ActivityEvent event, Map<String, String> context) {
         List<Activity> all = new ArrayList<>(this.activities == null ? List.of() : this.activities);
-        all.add(new Activity(this.id, event, new Date(), description));
+        all.add(new Activity(this.id, event, new Date(), context));
         this.activities = all.size() > MAX_ACTIVITIES ? new ArrayList<>(all.subList(all.size() - MAX_ACTIVITIES, all.size())) : all;
     }
 
@@ -545,6 +545,18 @@ public class User implements Serializable, UserDetails {
             this.oneTimeLoginCode = null;
         }
         return success;
+    }
+
+    /**
+     * @return the service of any eduID of this user, as stored when the user logged in, so without a call to Manage
+     */
+    @Transient
+    public Optional<ServiceProvider> findEduIDService(String entityIdOrInstitutionGuid) {
+        return this.eduIDS.stream()
+                .flatMap(eduID -> eduID.getServices().stream())
+                .filter(service -> entityIdOrInstitutionGuid.equals(service.getEntityId()) ||
+                        entityIdOrInstitutionGuid.equals(service.getInstitutionGuid()))
+                .findFirst();
     }
 
     public void deleteEduIDService(String entityId, Manage manage) {

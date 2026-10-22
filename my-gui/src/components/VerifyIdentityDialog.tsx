@@ -121,9 +121,11 @@ export const VerifyIdentityDialog = ({
                                             <Item
                                                 key={issuer.id}
                                                 render={
-                                                    <button type="button" />
+                                                    <button
+                                                        type="button"
+                                                        disabled={isPending}
+                                                    />
                                                 }
-                                                disabled={isPending}
                                                 onClick={() =>
                                                     start(() =>
                                                         startVerifyAccountFlow(
@@ -215,9 +217,11 @@ export const VerifyIdentityDialog = ({
                                             </Item>
                                             <Item
                                                 render={
-                                                    <button type="button" />
+                                                    <button
+                                                        type="button"
+                                                        disabled={isPending}
+                                                    />
                                                 }
-                                                disabled={isPending}
                                                 onClick={() =>
                                                     start(() =>
                                                         startVerifyAccountFlow(

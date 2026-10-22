@@ -1,5 +1,4 @@
-import { useState } from 'react';
-import type { ReactNode } from 'react';
+import { Link } from 'react-router';
 
 import { PencilSimpleIcon, ShieldCheckIcon } from '@phosphor-icons/react';
 import { Button } from '@surfnet/curve-react';
@@ -12,8 +11,8 @@ type IdentityRowProps = {
     value: string;
     // shown in green below the value when the value is verified
     verifiedText?: string;
-    // expandable details of a verified value, opened with View
-    details?: ReactNode;
+    // the details of a verified value, opened with View
+    viewTo?: string;
     // makes the value editable
     onEdit?: () => void;
 };
@@ -22,11 +21,9 @@ export const IdentityRow = ({
     label,
     value,
     verifiedText,
-    details,
+    viewTo,
     onEdit,
 }: IdentityRowProps) => {
-    const [expanded, setExpanded] = useState(false);
-
     return (
         <div className="identity-row">
             <div className="identity-row__main">
@@ -44,12 +41,11 @@ export const IdentityRow = ({
                         {I18n.t('identity.edit')}
                     </Button>
                 )}
-                {details && (
+                {viewTo && (
                     <Button
                         variant="ghost"
                         className="identity-row__action"
-                        aria-expanded={expanded}
-                        onClick={() => setExpanded(!expanded)}
+                        render={<Link to={viewTo} />}
                     >
                         {I18n.t('identity.view')}
                     </Button>
@@ -61,7 +57,6 @@ export const IdentityRow = ({
                     {verifiedText}
                 </p>
             )}
-            {expanded && details}
         </div>
     );
 };

@@ -30,6 +30,7 @@ import {
 import type { PublicKeyCredential } from '../api';
 import I18n from '../locale/I18n';
 import { formatDateTime } from '../utils/format';
+import { signalPasskeyDeleted } from '../utils/passkey';
 import './PasskeyDialog.scss';
 
 type EditPasskeyDialogProps = {
@@ -60,8 +61,23 @@ export const EditPasskeyDialog = ({
         onSuccess: (updated) => onSuccess(updated, 'toast.passkeyUpdated'),
     });
     const remove = useMutation({
-        mutationFn: deleteCredential,
-        onSuccess: (updated) => onSuccess(updated, 'toast.passkeyDeleted'),
+        mutationFn: async (deleted: PublicKeyCredential) => {
+            const updated = await deleteCredential(deleted);
+            return {
+                updated,
+                signalled: await signalPasskeyDeleted(deleted.identifier),
+            };
+        },
+        onSuccess: ({ updated, signalled }) => {
+            queryClient.setQueryData(['me'], updated);
+            toast.success(
+                I18n.t('toast.passkeyDeleted'),
+                signalled
+                    ? undefined
+                    : { description: I18n.t('toast.passkeyDeletedManual') },
+            );
+            onClose();
+        },
     });
     const test = useMutation({
         mutationFn: fetchTestWebAuthnUrl,

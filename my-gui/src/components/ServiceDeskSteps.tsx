@@ -370,21 +370,26 @@ export const ServiceDeskSteps = ({
                             {I18n.t('identity.serviceDesk.todoDetails')}
                         </p>
                     </div>
-                    <Button
-                        nativeButton={false}
-                        render={
-                            <a
-                                href={I18n.t(
-                                    'identity.serviceDesk.locationsUrl',
-                                )}
-                                target="_blank"
-                                rel="noreferrer"
-                            />
-                        }
-                    >
-                        {I18n.t('identity.serviceDesk.locations')}
-                        <ArrowSquareOutIcon />
-                    </Button>
+                    <div className="service-desk__actions">
+                        <Button
+                            nativeButton={false}
+                            render={
+                                <a
+                                    href={I18n.t(
+                                        'identity.serviceDesk.locationsUrl',
+                                    )}
+                                    target="_blank"
+                                    rel="noreferrer"
+                                />
+                            }
+                        >
+                            {I18n.t('identity.serviceDesk.locations')}
+                            <ArrowSquareOutIcon />
+                        </Button>
+                        <Button variant="outline" onClick={onClose}>
+                            {I18n.t('identity.serviceDesk.proceed')}
+                        </Button>
+                    </div>
                     <div className="service-desk__footer">
                         <p>{I18n.t('identity.serviceDesk.rethink')}</p>
                         <button

@@ -76,7 +76,7 @@ export const LinkedAccountDialog = ({
 
     return (
         <Dialog open onOpenChange={(open) => !open && onClose()}>
-            <DialogContent className="linked-account">
+            <DialogContent className="linked-account" initialFocus={false}>
                 <DialogHeader>
                     <DialogTitle className="linked-account__title">
                         {I18n.t('institutions.linked.title')}

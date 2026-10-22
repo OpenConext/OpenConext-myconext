@@ -22,14 +22,18 @@ export type ActivityEvent =
     | 'CONTROL_CODE_CREATED'
     | 'CONTROL_CODE_DELETED'
     | 'SERVICE_REMOVED'
-    | 'TOKENS_REMOVED';
+    | 'TOKENS_REMOVED'
+    // never recorded by the server, derived on the client from the user data
+    | 'SERVICE_FIRST_LOGIN'
+    | 'SERVICE_LAST_LOGIN';
 
 export type Activity = {
     userId: string;
     event: ActivityEvent;
     // epoch milliseconds
     dateTime: number | string;
-    description: string;
+    // language-neutral values for the placeholders of the event translation
+    context: Record<string, string>;
 };
 
 export const fetchActivities = () =>

@@ -60,6 +60,13 @@ const en: AppTranslation = {
     home: {
         title: 'Welcome {{name}}',
         lead: 'Here you can view and edit your details, decide how you log in and manage which institutions and services your eduID is linked to.',
+        serviceDesk: {
+            title: 'Visit an eduID Service Desk',
+            description:
+                'Show your code and ID at a service desk to confirm who you are.',
+            showCode: 'Show code',
+            locations: 'View service desks',
+        },
         intro: {
             title: 'What is eduID?',
             description:
@@ -134,28 +141,39 @@ const en: AppTranslation = {
         showMore: 'Show more',
         all: 'All activity',
         events: {
-            ACCOUNT_CREATED: 'Account created',
-            NAME_UPDATED: 'Name changed',
-            LANGUAGE_CHANGED: 'Language changed',
-            EMAIL_CHANGED: 'Email address changed',
+            ACCOUNT_CREATED: 'Account created via {{institution}}',
+            NAME_UPDATED: 'Name changed to {{name}}',
+            LANGUAGE_CHANGED: 'Language changed to {{language}}',
+            EMAIL_CHANGED: 'Email address changed to {{email}}',
             PASSWORD_ADDED: 'Password added',
             PASSWORD_UPDATED: 'Password changed',
             PASSWORD_DELETED: 'Password removed',
-            PASSKEY_ADDED: 'Passkey added',
-            PASSKEY_RENAMED: 'Passkey renamed',
-            PASSKEY_DELETED: 'Passkey removed',
-            APP_ACTIVATED: 'eduID app activated',
+            PASSKEY_ADDED: 'Passkey {{name}} added',
+            PASSKEY_RENAMED: 'Passkey renamed to {{name}}',
+            PASSKEY_DELETED: 'Passkey {{name}} removed',
+            APP_ACTIVATED: {
+                default: 'eduID app activated',
+                phone: 'eduID app activated with a phone number',
+                recoveryCode: 'eduID app activated with a recovery code',
+            },
             APP_DEACTIVATED: 'eduID app deactivated',
-            RECOVERY_METHOD_CHANGED: 'Recovery method changed',
-            INSTITUTION_LINKED: 'Institution linked',
-            INSTITUTION_REMOVED: 'Institution removed',
-            PREFERRED_INSTITUTION_CHANGED: 'Preferred institution changed',
-            IDENTITY_VERIFIED: 'Identity verified',
-            IDENTITY_REMOVED: 'Verified identity removed',
+            RECOVERY_METHOD_CHANGED: {
+                default: 'Recovery method changed',
+                phone: 'Recovery method changed to a phone number',
+                recoveryCode: 'Recovery method changed to a recovery code',
+            },
+            INSTITUTION_LINKED: 'Institution {{institution}} linked',
+            INSTITUTION_REMOVED: 'Institution {{institution}} removed',
+            PREFERRED_INSTITUTION_CHANGED:
+                'Preferred institution changed to {{institution}}',
+            IDENTITY_VERIFIED: 'Identity verified by {{institution}}',
+            IDENTITY_REMOVED: 'Verified identity from {{institution}} removed',
             CONTROL_CODE_CREATED: 'Service desk control code requested',
             CONTROL_CODE_DELETED: 'Service desk control code removed',
-            SERVICE_REMOVED: 'Login details of a service removed',
+            SERVICE_REMOVED: 'Login details of {{service}} removed',
             TOKENS_REMOVED: 'Access of a service revoked',
+            SERVICE_FIRST_LOGIN: 'First login at {{service}}',
+            SERVICE_LAST_LOGIN: 'Latest login at {{service}}',
         },
     },
     identity: {
@@ -179,6 +197,8 @@ const en: AppTranslation = {
         issuers: {
             idin: 'iDIN',
             eherkenning: 'eIDAS',
+            studielink: 'Studielink',
+            serviceDesk: 'Service desk',
         },
         unverified: {
             title: 'Not confirmed yet',
@@ -235,6 +255,7 @@ const en: AppTranslation = {
             month: 'Month',
             year: 'Year',
             select: 'Select...',
+            proceed: 'Proceed',
             codeTitle: 'Your verification code',
             codeInfo: {
                 one: 'You will also receive an email with this code. The code is valid for {{count}} more day and is intended for:',
@@ -265,7 +286,7 @@ const en: AppTranslation = {
         role: 'Role: {{roles}}',
         add: 'Connect an institution',
         learnMore: 'Learn more',
-        learnMoreUrl: 'https://eduid.nl/help-en/',
+        learnMoreUrl: 'https://eduid.nl?lang=en',
         empty: {
             title: 'No connected institutions',
         },
@@ -460,7 +481,7 @@ const en: AppTranslation = {
             codeTitle: 'Enter verification code',
             codeSentTo: 'Enter the code sent to',
             codeLabel: 'Verification code',
-            wrongCode: 'Wrong code. Please try again.',
+            wrongCode: 'The entered code is incorrect.',
             resendPrompt:
                 "Didn't receive the email? Check your spam folder, or",
             resend: 'send a new code',
@@ -539,7 +560,7 @@ const en: AppTranslation = {
                 delete: 'Delete passkey',
                 deleteTitle: 'Delete passkey?',
                 deleteInfo:
-                    'Are you sure you want to delete your passkey {{name}}? The passkey will be deleted from your eduID, but will not be removed from your browser and/or Yubikey device.',
+                    'Are you sure you want to delete your passkey {{name}}? The passkey will be deleted from your eduID and your browser if this is supported, but will not be removed from your browser and/or Yubikey device.',
                 deleteAction: 'Delete',
                 back: 'Back',
             },
@@ -565,6 +586,8 @@ const en: AppTranslation = {
         passwordDeleted: 'Your password has been deleted',
         passkeyUpdated: 'Your passkey has been renamed',
         passkeyDeleted: 'Your passkey has been deleted',
+        passkeyDeletedManual:
+            'Also remove it from your password manager or device settings, if it is still listed there.',
         passkeyTestSuccess: 'Your passkey works',
         passkeyTestFailed: 'Testing your passkey failed',
         institutionRemoved: 'The institution has been removed',

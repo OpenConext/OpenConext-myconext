@@ -12,6 +12,7 @@ import {
 import { useQuery } from '@tanstack/react-query';
 
 import { fetchConfig, fetchMe } from '../../api';
+import type { LinkedAccount } from '../../api';
 import { EditChosenNameDialog } from '../../components/EditChosenNameDialog';
 import { EditNameDialog } from '../../components/EditNameDialog';
 import { IdentityRow } from '../../components/IdentityRow';
@@ -21,12 +22,16 @@ import { VerifyIdentityDialog } from '../../components/VerifyIdentityDialog';
 import I18n from '../../locale/I18n';
 import { formatDate, formatDateOfBirth } from '../../utils/format';
 import {
+    accountKey,
     institutionName,
     isValid,
     isVerified,
     preferredAccount,
 } from '../../utils/verification';
 import './route.scss';
+
+const institutionPath = (account: LinkedAccount) =>
+    `/institutions?open=${encodeURIComponent(accountKey(account))}`;
 
 export default function Identity() {
     const { data: me } = useQuery({ queryKey: ['me'], queryFn: fetchMe });
@@ -113,22 +118,7 @@ export default function Identity() {
                     value={`${me.givenName} ${me.familyName}`}
                     verifiedText={verifiedText}
                     onEdit={account ? undefined : () => setEditingName(true)}
-                    details={
-                        account && (
-                            <dl className="identity-row__details">
-                                <dt>{I18n.t('identity.details.verifiedBy')}</dt>
-                                <dd>{verifiedBy}</dd>
-                                <dt>{I18n.t('identity.details.firstName')}</dt>
-                                <dd>{me.givenName}</dd>
-                                <dt>{I18n.t('identity.details.lastName')}</dt>
-                                <dd>{me.familyName}</dd>
-                                <dt>{I18n.t('identity.details.receivedOn')}</dt>
-                                <dd>{formatDate(account.createdAt)}</dd>
-                                <dt>{I18n.t('identity.details.validUntil')}</dt>
-                                <dd>{formatDate(account.expiresAt)}</dd>
-                            </dl>
-                        )
-                    }
+                    viewTo={account && institutionPath(account)}
                 />
                 {dobAccount && me.dateOfBirth && (
                     <IdentityRow
@@ -138,16 +128,7 @@ export default function Identity() {
                             name: institutionName(dobAccount),
                             date: formatDate(dobAccount.createdAt),
                         })}
-                        details={
-                            <dl className="identity-row__details">
-                                <dt>{I18n.t('identity.details.verifiedBy')}</dt>
-                                <dd>{institutionName(dobAccount)}</dd>
-                                <dt>{I18n.t('identity.details.receivedOn')}</dt>
-                                <dd>{formatDate(dobAccount.createdAt)}</dd>
-                                <dt>{I18n.t('identity.details.validUntil')}</dt>
-                                <dd>{formatDate(dobAccount.expiresAt)}</dd>
-                            </dl>
-                        }
+                        viewTo={institutionPath(dobAccount)}
                     />
                 )}
             </div>
