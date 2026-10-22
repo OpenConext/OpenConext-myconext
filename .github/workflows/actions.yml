@@ -112,8 +112,11 @@ jobs:
       run: |
         server_jar=$(find jars -name 'myconext-server-*.jar' ! -name '*.original' | head -n 1)
         tiqr_jar=$(find jars -name 'tiqr-mock-*.jar' ! -name '*.original' | head -n 1)
-        # urandom: the server generates its signing keys at startup, do not wait for entropy
-        nohup java -Djava.security.egd=file:/dev/urandom -jar "$server_jar" --spring.profiles.active=test,e2e > server.log 2>&1 &
+        # The server fetches the SAML metadata of the SP at startup, that host is not reachable from the runner
+        sp_metadata="file://$GITHUB_WORKSPACE/.github/e2e/engine-test-sp-metadata.xml"
+        nohup java -jar "$server_jar" --spring.profiles.active=test,e2e \
+          --sp_entity_id=https://engine.test.surfconext.nl/authentication/sp/metadata \
+          --account_metadata_url="$sp_metadata" > server.log 2>&1 &
         server_pid=$!
         nohup java -jar "$tiqr_jar" > tiqr-mock.log 2>&1 &
         for url in http://localhost:8081/internal/health http://localhost:8088/internal/health; do

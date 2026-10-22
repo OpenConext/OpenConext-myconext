@@ -1,0 +1,75 @@
+<?xml version="1.0"?>
+<!-- No longer current, please use https://metadata.test.surfconext.nl/ -->
+<md:EntityDescriptor xmlns:md="urn:oasis:names:tc:SAML:2.0:metadata" ID="EBdf813f6d206632f7f61b944addcadf6ea3018392" entityID="https://engine.test.surfconext.nl/authentication/sp/metadata" validUntil="2026-10-23T16:42:07Z"><ds:Signature xmlns:ds="http://www.w3.org/2000/09/xmldsig#">
+  <ds:SignedInfo><ds:CanonicalizationMethod Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#"/>
+    <ds:SignatureMethod Algorithm="http://www.w3.org/2001/04/xmldsig-more#rsa-sha256"/>
+  <ds:Reference URI="#EBdf813f6d206632f7f61b944addcadf6ea3018392"><ds:Transforms><ds:Transform Algorithm="http://www.w3.org/2000/09/xmldsig#enveloped-signature"/><ds:Transform Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#"/></ds:Transforms><ds:DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha256"/><ds:DigestValue>eUBEk34Ty/hAV5I+zYtGKDcOy2fLlPn8BMqU0QXwRAA=</ds:DigestValue></ds:Reference></ds:SignedInfo><ds:SignatureValue>f0cSyl5ypLCV2xlnviLSBNp1KASjULpF/yrOD79PX2bxWz+2Q+wtiXcSUVjjDJWG9ziV6vKeOzHIIZd2+b3US+8NSKNLvY+8iRGIYWOo8Pnjuf7YHIQzFSnmElbc7whOwljT0Qdfg1VL/ELSn5TdblP6ldpN63sM4AdOe+U1A1pjV+aL8cIcXrZ0Z/zwHqTtjKhSYXEXKKbCmEHBBWwHFnj+uSd3YVC2EIRK1cRly4VFpti4/AiA5fJq/lYcZcMGMDhJvkgOwDeYTTTPx2uCCt7OC2+fdY4Hj6zK8SVm8l3R1U7Jc7eb9RMrtYfRQTPQE4uMZF3WyyPtg/u8B+YVcQ==</ds:SignatureValue>
+<ds:KeyInfo><ds:X509Data><ds:X509Certificate>MIIEATCCAumgAwIBAgIULxKkZBLB4NcvlnV253iUmoreAqIwDQYJKoZIhvcNAQELBQAwgYoxCzAJBgNVBAYTAk5MMRAwDgYDVQQIDAdVdHJlY2h0MRAwDgYDVQQHDAdVdHJlY2h0MRUwEwYDVQQKDAxTVVJGbmV0IEIuVi4xEzARBgNVBAsMClNVUkZjb25leHQxKzApBgNVBAMMImVuZ2luZS50ZXN0LnN1cmZjb25leHQubmwgMjAxODAyMDgwHhcNMTkwMjA4MTI0OTE1WhcNMjMxMTEzMTI0OTE1WjCBijELMAkGA1UEBhMCTkwxEDAOBgNVBAgMB1V0cmVjaHQxEDAOBgNVBAcMB1V0cmVjaHQxFTATBgNVBAoMDFNVUkZuZXQgQi5WLjETMBEGA1UECwwKU1VSRmNvbmV4dDErMCkGA1UEAwwiZW5naW5lLnRlc3Quc3VyZmNvbmV4dC5ubCAyMDE4MDIwODCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBANAJtsoE3s5adBMuO3BjV3mWaT4dLwgqHwyS/07Nnr/EwC4QlzryEwDXvxh/ZVSeyDa/VCOQZrx5hKcyUcoyCT+FCTfm5mF+90ROeyoIgMxK3S9vXPAwWugysUYEw2ZAV7xYSjZ/63rpFdJJ1dDgLdjOPsnEuYzrRIM9akBQlcg6xb4plRwRDwxkZvTEyD/xzEc3Xi62g6ag1cnhRubuxoGCdGUW+5U8WNyW4tY5NEN/t/pZPXqmEvAwlU3C5XZX0+aKbq1n73gsRv10nJzmDpwl/JYx73sgS6vrnIAdl942c9TnSiTxvL4SDtGP/mP2iq+q6ewZAPSkfEIl+5p4zAMCAwEAAaNdMFswHQYDVR0OBBYEFC7iwe/L6YQHDhtxYBdxBiIiaVnbMB8GA1UdIwQYMBaAFC7iwe/L6YQHDhtxYBdxBiIiaVnbMAwGA1UdEwQFMAMBAf8wCwYDVR0PBAQDAgeAMA0GCSqGSIb3DQEBCwUAA4IBAQC6MXBNfAPL5RSYuall2y0v2PjBigHD42zKC48h1Dp2K1zctTusPEStB1MfFTUA0dNYu+w10ablEtin8Nnk3UyNqOAqR55mNL0xDVnH/IG+iuGhmWmtv9DjI540hA9wR3bflzrpv4iBx3mlxpVO0+qvR+gwWZcDwC//g67TpGyRxFOZBS6g7FAnVJD0m72N68gQJ/zly8/ZfMjTrrLl5Gr3bqPJTG2JQazCXhE+2T9QRzdk+dyoTj0v9yrTlGkXFyOMn27Z0s5aW8iOrkJNClwSI5VO6i/g4p+g3aNVpcjzdRoX+YlC1fmoL9T66Uw2yVsmwRmQRmNghG8m27MuhRwO</ds:X509Certificate></ds:X509Data></ds:KeyInfo></ds:Signature>
+    <md:SPSSODescriptor WantAssertionsSigned="true" protocolSupportEnumeration="urn:oasis:names:tc:SAML:2.0:protocol">
+                <md:Extensions>
+            <mdui:UIInfo xmlns:mdui="urn:oasis:names:tc:SAML:metadata:ui">
+                        <mdui:DisplayName xml:lang="nl">SURFconext TEST EngineBlock</mdui:DisplayName>
+                                <mdui:DisplayName xml:lang="en">SURFconext TEST EngineBlock</mdui:DisplayName>
+                                    <mdui:Description xml:lang="nl">SURFconext TEST</mdui:Description>
+                                <mdui:Description xml:lang="en">SURFconext TEST</mdui:Description>
+                        <mdui:Logo height="96" width="96">https://engine.test.surfconext.nl/images/logo.png</mdui:Logo>
+                                </mdui:UIInfo>
+        </md:Extensions>
+                        <md:KeyDescriptor use="signing">
+            <ds:KeyInfo xmlns:ds="http://www.w3.org/2000/09/xmldsig#">
+                <ds:X509Data>
+                    <ds:X509Certificate>MIIEATCCAumgAwIBAgIULxKkZBLB4NcvlnV253iUmoreAqIwDQYJKoZIhvcNAQELBQAwgYoxCzAJBgNVBAYTAk5MMRAwDgYDVQQIDAdVdHJlY2h0MRAwDgYDVQQHDAdVdHJlY2h0MRUwEwYDVQQKDAxTVVJGbmV0IEIuVi4xEzARBgNVBAsMClNVUkZjb25leHQxKzApBgNVBAMMImVuZ2luZS50ZXN0LnN1cmZjb25leHQubmwgMjAxODAyMDgwHhcNMTkwMjA4MTI0OTE1WhcNMjMxMTEzMTI0OTE1WjCBijELMAkGA1UEBhMCTkwxEDAOBgNVBAgMB1V0cmVjaHQxEDAOBgNVBAcMB1V0cmVjaHQxFTATBgNVBAoMDFNVUkZuZXQgQi5WLjETMBEGA1UECwwKU1VSRmNvbmV4dDErMCkGA1UEAwwiZW5naW5lLnRlc3Quc3VyZmNvbmV4dC5ubCAyMDE4MDIwODCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBANAJtsoE3s5adBMuO3BjV3mWaT4dLwgqHwyS/07Nnr/EwC4QlzryEwDXvxh/ZVSeyDa/VCOQZrx5hKcyUcoyCT+FCTfm5mF+90ROeyoIgMxK3S9vXPAwWugysUYEw2ZAV7xYSjZ/63rpFdJJ1dDgLdjOPsnEuYzrRIM9akBQlcg6xb4plRwRDwxkZvTEyD/xzEc3Xi62g6ag1cnhRubuxoGCdGUW+5U8WNyW4tY5NEN/t/pZPXqmEvAwlU3C5XZX0+aKbq1n73gsRv10nJzmDpwl/JYx73sgS6vrnIAdl942c9TnSiTxvL4SDtGP/mP2iq+q6ewZAPSkfEIl+5p4zAMCAwEAAaNdMFswHQYDVR0OBBYEFC7iwe/L6YQHDhtxYBdxBiIiaVnbMB8GA1UdIwQYMBaAFC7iwe/L6YQHDhtxYBdxBiIiaVnbMAwGA1UdEwQFMAMBAf8wCwYDVR0PBAQDAgeAMA0GCSqGSIb3DQEBCwUAA4IBAQC6MXBNfAPL5RSYuall2y0v2PjBigHD42zKC48h1Dp2K1zctTusPEStB1MfFTUA0dNYu+w10ablEtin8Nnk3UyNqOAqR55mNL0xDVnH/IG+iuGhmWmtv9DjI540hA9wR3bflzrpv4iBx3mlxpVO0+qvR+gwWZcDwC//g67TpGyRxFOZBS6g7FAnVJD0m72N68gQJ/zly8/ZfMjTrrLl5Gr3bqPJTG2JQazCXhE+2T9QRzdk+dyoTj0v9yrTlGkXFyOMn27Z0s5aW8iOrkJNClwSI5VO6i/g4p+g3aNVpcjzdRoX+YlC1fmoL9T66Uw2yVsmwRmQRmNghG8m27MuhRwO</ds:X509Certificate>
+                </ds:X509Data>
+            </ds:KeyInfo>
+        </md:KeyDescriptor>
+                <md:KeyDescriptor use="signing">
+            <ds:KeyInfo xmlns:ds="http://www.w3.org/2000/09/xmldsig#">
+                <ds:X509Data>
+                    <ds:X509Certificate>MIIE7TCCA1WgAwIBAgIJANrbxA3xAUIIMA0GCSqGSIb3DQEBCwUAMIGMMQswCQYDVQQGEwJOTDEQMA4GA1UECAwHVXRyZWNodDEQMA4GA1UEBwwHVXRyZWNodDESMBAGA1UECgwJU1VSRiBCLlYuMRgwFgYDVQQLDA9TVVJGY29uZXh0IFRFU1QxKzApBgNVBAMMImVuZ2luZS50ZXN0LnN1cmZjb25leHQubmwgMjAyMzA0MDMwHhcNMjMwNDAzMTI1ODA0WhcNMjgwNDAyMTI1ODA0WjCBjDELMAkGA1UEBhMCTkwxEDAOBgNVBAgMB1V0cmVjaHQxEDAOBgNVBAcMB1V0cmVjaHQxEjAQBgNVBAoMCVNVUkYgQi5WLjEYMBYGA1UECwwPU1VSRmNvbmV4dCBURVNUMSswKQYDVQQDDCJlbmdpbmUudGVzdC5zdXJmY29uZXh0Lm5sIDIwMjMwNDAzMIIBojANBgkqhkiG9w0BAQEFAAOCAY8AMIIBigKCAYEAx+vZHDla/MMnksJjWfKwXXl7cmW9sEaavn3xNEGa9qjxA5GZXwQjSIrKwB9LLZLIPQIjyIzUJDl1oUrx3TYEg8wjYGs/PhavVLdlpJTqPHoSGKpHBQBoAqaN3hT9ahFkD3RyamLOWX0o4lOnManIuWMhdQe5qVbQehlbpKLbsLIApYryE2aTICQ0KxB1aobbudaslujYXuqAC8SZaP+lbZ7Pa9NkLI03UDk8wO5ZpCA/vad/6/QTfMqPrXM8xho8YjIXgUDSPbyyi8R0I6vDlk1asH2e8ujmregrSBu02reQLft4Drr1xBWLc7y23mFcixjEa1fynWcVvshfVJe2Syk+1Mak3TuAW2+/i6n8GcQejH5UgVBRpOi/XE9Gw37ImD4sld2kDnztsoqF1+LGTciolPJiB1mja6Ew9NRKy1y3waM3ZTKZyHg+GKZumtmTw+4dC72MnH8lkiB8iYInPB5jvUK/c14rDmOzaGWJavjLnxy8UXuKCJJUOMz0JxWlAgMBAAGjUDBOMB0GA1UdDgQWBBQC4qy6CHN6ndJyqycDbZYtOrjESDAfBgNVHSMEGDAWgBQC4qy6CHN6ndJyqycDbZYtOrjESDAMBgNVHRMEBTADAQH/MA0GCSqGSIb3DQEBCwUAA4IBgQAvrqfrfeY4J+wpSaaGHD53Z7X8SZx0jyHUbszYrKlAgxNO8bo0zbbCSkaJ/DJx7XmY2e1Po3u/qrYa3PQSlC31iQCF+8StLtGFdRLPAabl8OS5YqvOyHF0LHqhnJGkIgWIadkwlez4O4fA1X7JDk3K9oz/thR5xsJY31yCFxIWSaQVEW8j1vKcb0jK7ig7JHa7APvZNQY2A9Y06YhFEeNCu8MjmTHtY3Khko3PrsTIzXcUxWCztjvCmv4y7Jzhn4WzRKpRRskzaU6fZ6lty6Fk5L5u0PTfDQ8YNzgxfniIjdkeBLxSmvvoL6BhhDhwlHoSGekmDnyVh0n9qUKp5uBNsdy6LsQF6KJ1jNEN0raMOf3FS1bt0SWPTpZoXEEM6ao6TlfndvDX2zKzUdhE82QpNXThHZXrF6w3lgMyUugcxlvC2OwsJzmYH8fSU+xxSO8TrwDd9unmy+4hGfF3Gm7Oj+AI+6czR7VWtqz1dcV1sfi/fc9EVUD15XCiPD38F9s=</ds:X509Certificate>
+                </ds:X509Data>
+            </ds:KeyInfo>
+        </md:KeyDescriptor>
+                <md:AssertionConsumerService Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST" Location="https://engine.test.surfconext.nl/authentication/sp/consume-assertion" index="0"/>
+                    <md:AttributeConsumingService index="0">
+                                    <md:ServiceName xml:lang="nl">SURFconext TEST EngineBlock</md:ServiceName>
+                                    <md:ServiceName xml:lang="en">SURFconext TEST EngineBlock</md:ServiceName>
+                                                    <md:ServiceDescription xml:lang="nl">SURFconext TEST</md:ServiceDescription>
+                                    <md:ServiceDescription xml:lang="en">SURFconext TEST</md:ServiceDescription>
+                                                    <md:RequestedAttribute Name="urn:mace:dir:attribute-def:cn" NameFormat="urn:oasis:names:tc:SAML:2.0:attrname-format:uri" isRequired="false"/>
+                                    <md:RequestedAttribute Name="urn:mace:dir:attribute-def:displayName" NameFormat="urn:oasis:names:tc:SAML:2.0:attrname-format:uri" isRequired="false"/>
+                                    <md:RequestedAttribute Name="urn:mace:dir:attribute-def:eduPersonAffiliation" NameFormat="urn:oasis:names:tc:SAML:2.0:attrname-format:uri" isRequired="false"/>
+                                    <md:RequestedAttribute Name="urn:mace:dir:attribute-def:eduPersonPrincipalName" NameFormat="urn:oasis:names:tc:SAML:2.0:attrname-format:uri" isRequired="false"/>
+                                    <md:RequestedAttribute Name="urn:mace:dir:attribute-def:givenName" NameFormat="urn:oasis:names:tc:SAML:2.0:attrname-format:uri" isRequired="false"/>
+                                    <md:RequestedAttribute Name="urn:mace:dir:attribute-def:mail" NameFormat="urn:oasis:names:tc:SAML:2.0:attrname-format:uri" isRequired="false"/>
+                                    <md:RequestedAttribute Name="urn:mace:dir:attribute-def:sn" NameFormat="urn:oasis:names:tc:SAML:2.0:attrname-format:uri" isRequired="false"/>
+                                    <md:RequestedAttribute Name="urn:mace:dir:attribute-def:eduPersonScopedAffiliation" NameFormat="urn:oasis:names:tc:SAML:2.0:attrname-format:uri" isRequired="false"/>
+                                    <md:RequestedAttribute Name="urn:mace:dir:attribute-def:uid" NameFormat="urn:oasis:names:tc:SAML:2.0:attrname-format:uri" isRequired="true"/>
+                                    <md:RequestedAttribute Name="urn:mace:terena.org:attribute-def:schacHomeOrganization" NameFormat="urn:oasis:names:tc:SAML:2.0:attrname-format:uri" isRequired="true"/>
+                            </md:AttributeConsumingService>
+        
+    </md:SPSSODescriptor>
+                                        
+<md:Organization>
+                        <md:OrganizationName xml:lang="nl">SURFconext TEST</md:OrganizationName>
+                                <md:OrganizationName xml:lang="en">SURFconext TEST</md:OrganizationName>
+                                    <md:OrganizationDisplayName xml:lang="nl">SURFconext TEST</md:OrganizationDisplayName>
+                                <md:OrganizationDisplayName xml:lang="en">SURFconext TEST</md:OrganizationDisplayName>
+                                    <md:OrganizationURL xml:lang="nl">https://support.surfconext.nl/</md:OrganizationURL>
+                                <md:OrganizationURL xml:lang="en">https://support.surfconext.nl/en</md:OrganizationURL>
+            </md:Organization>
+                            <md:ContactPerson contactType="support">
+    <md:GivenName>SURFconext TEST</md:GivenName>
+    <md:SurName>Support</md:SurName>
+    <md:EmailAddress>mailto:help@surfconext.nl</md:EmailAddress>
+</md:ContactPerson>
+                    <md:ContactPerson contactType="technical">
+    <md:GivenName>SURFconext TEST</md:GivenName>
+    <md:SurName>Support</md:SurName>
+    <md:EmailAddress>mailto:help@surfconext.nl</md:EmailAddress>
+</md:ContactPerson>
+                    <md:ContactPerson contactType="administrative">
+    <md:GivenName>SURFconext TEST</md:GivenName>
+    <md:SurName>Support</md:SurName>
+    <md:EmailAddress>mailto:help@surfconext.nl</md:EmailAddress>
+</md:ContactPerson>
+            </md:EntityDescriptor>

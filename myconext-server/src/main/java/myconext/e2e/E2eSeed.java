@@ -5,9 +5,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import myconext.model.User;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.springframework.boot.ApplicationArguments;
-import org.springframework.boot.ApplicationRunner;
+import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.annotation.Profile;
+import org.springframework.context.event.EventListener;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.data.mongodb.core.BulkOperations;
 import org.springframework.data.mongodb.core.MongoTemplate;
@@ -27,7 +27,7 @@ import java.util.Map;
  */
 @Component
 @Profile("e2e")
-public class E2eSeed implements ApplicationRunner {
+public class E2eSeed {
 
     private static final Log LOG = LogFactory.getLog(E2eSeed.class);
 
@@ -39,8 +39,9 @@ public class E2eSeed implements ApplicationRunner {
         this.objectMapper = objectMapper;
     }
 
-    @Override
-    public void run(ApplicationArguments args) throws Exception {
+    // After the runners, so after the Mongock migrations: they can not handle the seeded users
+    @EventListener(ApplicationReadyEvent.class)
+    public void onApplicationReady() throws IOException {
         seed();
     }
 
