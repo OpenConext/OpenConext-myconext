@@ -112,10 +112,18 @@ jobs:
       run: |
         server_jar=$(find jars -name 'myconext-server-*.jar' ! -name '*.original' | head -n 1)
         tiqr_jar=$(find jars -name 'tiqr-mock-*.jar' ! -name '*.original' | head -n 1)
-        nohup java -jar "$server_jar" --spring.profiles.active=test,e2e > server.log 2>&1 &
+        # urandom: the server generates its signing keys at startup, do not wait for entropy
+        nohup java -Djava.security.egd=file:/dev/urandom -jar "$server_jar" --spring.profiles.active=test,e2e > server.log 2>&1 &
+        server_pid=$!
         nohup java -jar "$tiqr_jar" > tiqr-mock.log 2>&1 &
         for url in http://localhost:8081/internal/health http://localhost:8088/internal/health; do
-          timeout 120 bash -c "until curl -sf $url > /dev/null; do sleep 2; done"
+          if ! timeout 120 bash -c "until curl -sf $url > /dev/null; do sleep 2; done"; then
+            echo "::error::$url did not become healthy"
+            jcmd $server_pid Thread.print > threads.txt 2>&1 || true
+            tail -n 50 server.log
+            tail -n 20 tiqr-mock.log
+            exit 1
+          fi
         done
     - name: Install my-gui
       working-directory: my-gui
@@ -137,3 +145,4 @@ jobs:
           my-gui/test-results
           server.log
           tiqr-mock.log
+          threads.txt
