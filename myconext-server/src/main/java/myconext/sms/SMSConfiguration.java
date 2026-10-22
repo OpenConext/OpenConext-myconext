@@ -9,11 +9,12 @@ import org.springframework.core.env.Environment;
 public class SMSConfiguration {
 
     @Bean
-    public SMSService smsService(Environment environment, @Value("${sms.url}") String url,
+    public SMSService smsService(Environment environment,
+                                 @Value("${sms.enabled:false}") boolean enabled,
+                                 @Value("${sms.url}") String url,
                                  @Value("${sms.route}") String route,
                                  @Value("${sms.bearer}") String bearer) {
-        return environment.getActiveProfiles().length == 0 ?
-                new SMSServiceImpl(url, bearer, route) : new SMSServiceMock(environment);
+        return enabled ? new SMSServiceImpl(url, bearer, route) : new SMSServiceMock(environment);
     }
 
 }
