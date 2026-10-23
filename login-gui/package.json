@@ -11,7 +11,8 @@
         "lint-fix": "eslint --fix .",
         "prettier": "prettier -c \"{**/*,*}.{ts,tsx,json,js,md,html,scss}\"",
         "prettier-fix": "prettier --write \"{**/*,*}.{ts,tsx,json,js,md,html,scss}\"",
-        "preview": "vite preview"
+        "preview": "vite preview",
+        "check": "yarn tsc && yarn lint && yarn prettier"
     },
     "dependencies": {
         "@phosphor-icons/react": "^2.1.10",
@@ -28,8 +29,8 @@
     },
     "devDependencies": {
         "@eslint/js": "^10.0.1",
-        "@react-router/dev": "^8.4.0",
-        "@react-router/fs-routes": "^8.4.0",
+        "@react-router/dev": "^8.5.0",
+        "@react-router/fs-routes": "^8.5.0",
         "@trivago/prettier-plugin-sort-imports": "^6.0.2",
         "@types/js-cookie": "^3.0.6",
         "@types/node": "^26.6.3",

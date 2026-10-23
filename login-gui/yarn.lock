@@ -609,17 +609,17 @@
   resolved "https://registry.yarnpkg.com/@radix-ui/react-use-layout-effect/-/react-use-layout-effect-1.1.4.tgz#51a0bbc342315070983383b3f8f00061083782a8"
   integrity sha512-K20DkRkUwDnxEYMBPcg3Y6voLkEy5p5QQmszZgLngKKiC7dzBR/aEuK3w1qlx2JWDUNH6FluahYdgR3BP+QbYw==
 
-"@react-router/dev@^8.4.0":
-  version "8.4.0"
-  resolved "https://registry.yarnpkg.com/@react-router/dev/-/dev-8.4.0.tgz#8c11f26d942c7b46aa3254729850a1b7f11a7ffd"
-  integrity sha512-GKznpn6h8c52xGXwtsypD5ZwNiWFSeqoKPdyGq7SfG+T9rFjGO8F0i/R/yECfZqHXaNz1NVmpODuBamBy9FfMg==
+"@react-router/dev@^8.5.0":
+  version "8.5.0"
+  resolved "https://registry.yarnpkg.com/@react-router/dev/-/dev-8.5.0.tgz#fcc52693d5c0cf7d2d1cc6f31cff9711da445e15"
+  integrity sha512-SXmL0ym9Wp8Hi0LdXLG6yPaN8V1rUW4PuavvBS9eqpr0hM3PFjiCUT44pRzCj4G9lKEQBeNcj4beOtpN7IxuCg==
   dependencies:
     "@babel/core" "^7.29.7"
     "@babel/generator" "^7.29.7"
     "@babel/parser" "^7.29.7"
     "@babel/traverse" "^7.29.7"
     "@babel/types" "^7.29.7"
-    "@react-router/node" "8.4.0"
+    "@react-router/node" "8.5.0"
     "@remix-run/node-fetch-server" "^0.14.1"
     babel-dead-code-elimination "^1.0.12"
     chokidar "^5.0.0"
@@ -638,17 +638,17 @@
     tinyglobby "^0.2.16"
     valibot "^1.4.1"
 
-"@react-router/fs-routes@^8.4.0":
-  version "8.4.0"
-  resolved "https://registry.yarnpkg.com/@react-router/fs-routes/-/fs-routes-8.4.0.tgz#4fbded17b6d9abdc74f5f8f9e6a76afab1bf3d1c"
-  integrity sha512-CIEYxrapbr6iO589fBmN7/RBJ10H8X/Tl2i7MNkuJZQ9W2Z3wPifPCHv9bFR/+FlmzeLXJlYyHyUgaCkgOIZYg==
+"@react-router/fs-routes@^8.5.0":
+  version "8.5.0"
+  resolved "https://registry.yarnpkg.com/@react-router/fs-routes/-/fs-routes-8.5.0.tgz#4544677b2279a8dd8c0a575f8b023ff3b81819d1"
+  integrity sha512-CKH9PbqM8WMyjs2+UUBuEWi/uqyCShV9pu5tOvYev+50rPjbmCkdsIFH3VAnxgu4dpVitxg4tyULUC6jmrQHTQ==
   dependencies:
     minimatch "^10.2.5"
 
-"@react-router/node@8.4.0":
-  version "8.4.0"
-  resolved "https://registry.yarnpkg.com/@react-router/node/-/node-8.4.0.tgz#5853ca501bd111c66fb72bad419bf596d3cb4e3f"
-  integrity sha512-1teZHtk7XDm1pteQ2Plgtvtjjup5C5sIwFlOMYVIyoOH7X3bId3Qb//kUdbydX6NRIxcGK28UnfZlz4SrD/mkg==
+"@react-router/node@8.5.0":
+  version "8.5.0"
+  resolved "https://registry.yarnpkg.com/@react-router/node/-/node-8.5.0.tgz#c1e37058dcbbcefd2c4f7aa09db98ee12530208d"
+  integrity sha512-9a3a37TW5GAo/J336Uk1tca/X1OxjpseETz/zCHcojtL7oRlFrlFoDt6wSdCtFRCiwlLyHcWY+qwZ+xnb05kSg==
   dependencies:
     "@remix-run/node-fetch-server" "^0.14.1"
 
