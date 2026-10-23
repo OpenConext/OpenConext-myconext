@@ -26,7 +26,10 @@ class MetricsControllerTest {
     @Test
     void prometheus() throws IOException {
         ConfigurableApplicationContext applicationContext = SpringApplication.run(MyConextServerApplication.class,
-                "--server.port=8098", "--server.shutdown=immediate");
+                "--server.port=8098", "--server.shutdown=immediate",
+                //The default metadata URLs are fetched at startup, and not all of them are reachable from CI
+                "--sp_entity_id=https://engine.test.surfconext.nl/authentication/sp/metadata",
+                "--account_metadata_url=file:src/test/resources/saml/engine-test-sp-metadata.xml");
         RestAssured.port = 8098;
 
         //BRIN codes are data-driven, so seed one to deterministically assert the new per-BRIN metric

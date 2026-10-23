@@ -7,3 +7,13 @@
 # overrides on subclasses take precedence over this file if they ever need to set server.shutdown themselves.
 server:
   shutdown: immediate
+
+# The SP metadata is read from a file. The default of application.yml fetches the metadata of two hosts at startup,
+# and one of those is not reachable from the CI runners, so every context that did not override these properties
+# waited for the connect timeout (about 2 minutes). Subclasses that declare their own @SpringBootTest(properties)
+# do not inherit the properties of AbstractIntegrationTest, but they do get this file.
+sp_entity_id: https://engine.test.surfconext.nl/authentication/sp/metadata
+account_metadata_url: file:src/test/resources/saml/engine-test-sp-metadata.xml
+spring:
+  main:
+    lazy-initialization: true
