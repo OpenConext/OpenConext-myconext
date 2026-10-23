@@ -289,6 +289,7 @@ const nl: AppTranslation = {
         add: 'Instelling koppelen',
         learnMore: 'Lees meer',
         learnMoreUrl: 'https://eduid.nl?lang=nl',
+        expired: 'Verlopen',
         empty: {
             title: 'Geen gekoppelde instellingen',
         },

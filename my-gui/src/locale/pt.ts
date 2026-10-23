@@ -287,6 +287,7 @@ const pt: AppTranslation = {
         add: 'Connect an institution',
         learnMore: 'Learn more',
         learnMoreUrl: 'https://eduid.nl/help-en/',
+        expired: 'Expired',
         empty: {
             title: 'No connected institutions',
         },
